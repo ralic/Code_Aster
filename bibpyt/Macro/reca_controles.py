@@ -1,4 +1,4 @@
-#@ MODIF reca_controles Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF reca_controles Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,6 @@
 # ======================================================================
 
 import string, copy, Numeric, types, os, sys, pprint
-from externe_mess import UTMESS
 
 # Nom de la routine
 nompro = 'MACR_RECAL'

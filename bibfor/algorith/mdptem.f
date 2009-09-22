@@ -8,7 +8,7 @@
       CHARACTER*8        NOECHO(NBCHOC,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/09/2009   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       IC,IA,I,J,IVERI,JINST, N1,N2,N3,N4,N5,NBINST,
      &              NR,NT
-      REAL*8        KNORM, KTANG, KLOCX, KLOCY, KLOCZ, UNSGA
+      REAL*8        KNORM, KTANG 
       REAL*8        VALR(3)
       REAL*8        ZERO, DEUXPI, DTS, DTU, DTI, R8DEPI, R8GAEM
       CHARACTER*8   METHOD, VERIPA,NOMRES,TRAN
@@ -72,7 +72,6 @@ C     ------------------------------------------------------------------
 C
       CALL GETRES(NOMRES,TYPRES,NOMCMD)
 C
-      UNSGA = SQRT(1/R8GAEM())
       TINIT = 0.D0
       IER = 0
       IVERI = 0
@@ -120,25 +119,7 @@ C
      &      CALL U2MESG('I','ALGORITH16_92',1,NOECHO(I,IC),0,0,0,0.D0)
             DO 22 J = 1,NBMODE
                IF (PULSAT(J).EQ.ZERO) GOTO 22
-               KLOCX = ZERO
-               KLOCY = ZERO
-               KLOCZ = ZERO
-               IF (ABS(DPLMOD(I,J,1+IA)).GT.UNSGA)
-     &                       KLOCX = RIGGEN(J) / DPLMOD(I,J,1+IA)**2
-               IF (ABS(DPLMOD(I,J,2+IA)).GT.UNSGA)
-     &                       KLOCY = RIGGEN(J) / DPLMOD(I,J,2+IA)**2
-               IF (ABS(DPLMOD(I,J,3+IA)).GT.UNSGA)
-     &                       KLOCZ = RIGGEN(J) / DPLMOD(I,J,3+IA)**2
-               IF (KLOCX.LE.KNORM .OR. KLOCY.LE.KNORM
-     &                                      .OR. KLOCZ.LE.KNORM) THEN
-                  IF (INFO.EQ.2) THEN
-                  VALI = J
-                  VALR(1) = KLOCX
-                  VALR(2) = KLOCY
-                  VALR(3) = KLOCZ
-          CALL U2MESG('I','ALGORITH16_93',1,NOECHO(I,IC),0,0,3,VALR)
-                  ENDIF
-               ENDIF
+             
                IF (KNORM.NE.ZERO) THEN
                      DTI = DEUXPI / SQRT(PULSAT(J)**2 +
      &                     KNORM * DPLMOD(I,J,1+IA)**2 / MASGEN(J) )

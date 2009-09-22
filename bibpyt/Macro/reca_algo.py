@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF reca_algo Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,13 +23,13 @@ import Numeric, MLab
 from Numeric import take, size
 import copy, os
 import LinearAlgebra 
-from externe_mess import UTMESS
 
 try:
   import aster
   from Cata.cata import INFO_EXEC_ASTER
   from Cata.cata import DETRUIRE
   from Accas import _F
+  from Utilitai.Utmess import UTMESS
 except: pass
 
 
@@ -220,7 +220,7 @@ def Levenberg_bornes(val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out):
              res.write('\n\nval_ini= '+Numeric.array2string(val_init,array_output=1,separator=','))
              res.write('\n\nborne_inf= '+Numeric.array2string(borne_inf,array_output=1,separator=','))
              res.write('\n\nborne_sup= '+Numeric.array2string(borne_sup,array_output=1,separator=','))
-             UTMESS('F','MACR_RECAL',"Erreur dans l'algorithme de bornes de MACR_RECAL")
+             UTMESS('F','RECAL0_18')
              return 
    newval=copy.copy(val+dval)
    return newval,s,l,Act
@@ -264,7 +264,7 @@ def test_convergence(gradient_init,erreur,A,s):
    try:
       epsilon = Numeric.dot(gradient,gradient)/Numeric.dot(gradient_init,gradient_init)
    except:
-       UTMESS('F', "MACR_RECAL", "Erreur dans le test de convergence de MACR_RECAL")
+       UTMESS('F', "RECAL0_19")
        return 
    epsilon = epsilon**0.5
    return epsilon

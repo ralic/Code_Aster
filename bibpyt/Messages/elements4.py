@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF elements4 Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,10 +64,6 @@ cata_msg = {
 
 16 : _("""
  option "vari_elno_elga" impossible actuellement
-"""),
-
-17 : _("""
- seuls comportements autorises :"elas" et "vmis_isot_trac"
 """),
 
 31 : _("""
@@ -229,12 +225,8 @@ Le module d'Young est nul.
   Sur les elements quelconques on peut obtenir des résultats faux.
 """),
 
-75 : _("""
- la maille de numero:  %(i1)d appartient à plusieurs sous-domaines! %(i2)d
-"""),
-
 76 : _("""
- la maille du modèle de numéro:  %(i1)d n appartient à aucun sous-domaine ! %(i2)d
+ la maille du modèle de numéro:  %(i1)d n appartient à aucun sous-domaine !
 """),
 
 77 : _("""

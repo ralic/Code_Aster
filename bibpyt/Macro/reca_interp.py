@@ -1,4 +1,4 @@
-#@ MODIF reca_interp Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF reca_interp Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,7 @@
 
 import os, sys, pprint
 import Numeric
-from externe_mess import UTMESS
+from Utilitai.Utmess import UTMESS
 
 try: import Macro
 except: pass
@@ -52,10 +52,7 @@ class Sim_exp :
 
       n = len(points)
       if ( x0 < points[0][0] ) or ( x0 > points[n-1][0] ) :
-        txt  = "Problème lors de l'interpolation du calcul dérivé sur les données expérimentale!"
-        txt += "\nValeur à interpoler              :  " + str(x0)
-        txt += "\nDomaine couvert par l'experience : [" + str(points[0][0]) + ":" + str(points[n-1][0]) + "]"
-        UTMESS('F','MACR_RECAL', txt)
+        UTMESS('F','RECAL0_35', valk=(str(x0), str(points[0][0]), str(points[n-1][0])))
 
       i = 1
       while x0 > points[i][0]:
@@ -188,13 +185,11 @@ class Sim_exp :
          try:
             L_J[i] = L_J[i]/L_J_init[i]
          except ZeroDivisionError:
-            message=        'Problème de division par zéro dans la normalisation de la fonctionnelle.\n'
-            message=message+'Une des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine : %.2f \n'%L_J_init
             if unite_resu:
                fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
                fic.write(message)
                fic.close()
-            UTMESS('F', "MACR_RECAL", message)
+            UTMESS('F', "RECAL0_36", valr=L_J_init)
             return
 
       J = Numeric.sum(L_J)
@@ -236,7 +231,7 @@ class Sim_exp :
          if para[k] not in LIST_SENSI:
 
              # Message
-             if INFO>=2: UTMESS('I','MACR_RECAL','On utilise les differences finies pour calculer la sensibilite de : %s ' % para[k])
+             if INFO>=2: UTMESS('I','RECAL0_37',valk=para[k])
 
              fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
              fic.write('\nCalcul de la sensibilité par differences finies pour : '+para[k])
@@ -265,7 +260,7 @@ class Sim_exp :
                       fic.write('\n Probleme de division par zéro dans le calcul de la matrice de sensiblité')
                       fic.write('\n Le parametre '+para[k]+'est nul ou plus petit que la précision machine')
                       fic.close() 
-                      UTMESS('F','MACR_RECAL',"Probleme de division par zéro dans le calcul de la matrice de sensiblité.\n Le parametre "+para[k]+"est nul ou plus petit que la précision machine")
+                      UTMESS('F','RECAL0_38',valk=para[k])
                       return
 
 
@@ -273,7 +268,7 @@ class Sim_exp :
          # --------------------------------------------------------------
          # Dans ce cas, L_deriv_sensible a deja ete calculé pour le premier calcul pour val[k], aucun autre calcul_F n'est a lancer
          else:
-             if INFO>=2: UTMESS('I','MACR_RECAL','On utilise le calcul de SENSIBILITE pour : %s ' % para[k])
+             if INFO>=2: UTMESS('I','RECAL0_39',valk=para[k])
 
              # Message
              fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')

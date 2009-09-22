@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 04/11/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,6 @@ fichier_export = None
 mode_python = False
 type_fonctionnelle = 'float'
 
-from externe_mess import UTMESS
 
 # --------------------------------------------------------------------------------------------------
 def Ecriture_Fonctionnelle(output_file, type_fonctionnelle, fonctionnelle):
@@ -78,18 +77,16 @@ def Sortie(LIST_NOM_PARA, LIST_PARA, val, CALCUL_ASTER, Mess):
    import Cata, aster, Macro
    from Cata.cata import DEFI_LIST_REEL
    from Accas import _F
-   from externe_mess import UTMESS
    from Macro import reca_message
    from Macro import reca_algo
    from Macro import reca_interp
    from Macro import reca_utilitaires
    from Macro import reca_calcul_aster
    from Macro.reca_controles import gestion
+   from Utilitai.Utmess import UTMESS, MessageLog
 
    if CALCUL_ASTER.METHODE != 'EXTERNE':
-      txt = "Nombre d'evaluation de la fonction : " + str(CALCUL_ASTER.evaluation_fonction)
-      UTMESS('I','MACR_RECAL',txt)
-      Mess.ecrire("\n"+txt)
+      UTMESS('I','RECAL0_1', valk=str(CALCUL_ASTER.evaluation_fonction), cc=Mess.get_filename())
 
    LIST_NOM_PARA_ALPHA = [ para[0] for para in LIST_PARA ]
    LIST_NOM_PARA_ALPHA.sort()
@@ -175,7 +172,6 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
    from Macro import reca_utilitaires
    from Macro import reca_calcul_aster
    from Macro.reca_controles import gestion
-   from externe_mess import UTMESS
 
    # Gestion des Exceptions
    prev_onFatalError = aster.onFatalError()
@@ -206,7 +202,7 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
                ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
                GRAPHIQUE, SUIVI_ESCLAVE, METHODE, INFO, **args ):
 
-   from externe_mess import UTMESS
+   from Utilitai.Utmess import UTMESS
    # Import d'as_profil
    if os.environ.has_key('ASTER_ROOT'):
       sys.path.append(os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'lib'))
@@ -216,7 +212,7 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
    try:
       from as_profil import ASTER_PROFIL
    except:
-      UTMESS('F','MACR_RECAL',"Impossible d'importer le module as_profil ! Vérifier la variable d'environnement ASTER_ROOT ou mettez a jour ASTK.")
+      UTMESS('F','RECAL0_2')
 
    import Macro, Utilitai
    from Macro import reca_message
@@ -239,7 +235,7 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
             import Gnuplot
           except ImportError:
             GRAPHIQUE == None
-            if INFO>=1: UTMESS('A','MACR_RECAL',"Le logiciel Gnuplot ou le module python Gnuplot.py n'est pas disponible. On desactive l'affichage des courbes par Gnuplot.")
+            if INFO>=1: UTMESS('A','RECAL0_3')
 
 
    #_____________________________________________
@@ -250,9 +246,9 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
    # Lecture du fichier .export
    list_export = glob('*.export')
    if len(list_export) == 0:
-      UTMESS('F','MACR_RECAL',"Probleme : il n'y a pas de fichier .export dans le repertoire de travail!")
+      UTMESS('F','RECAL0_4')
    elif len(list_export) >1:
-      UTMESS('F','MACR_RECAL',"Probleme : il y a plus d'un fichier .export dans le repertoire de travail!")
+      UTMESS('F','RECAL0_5')
 
    prof = ASTER_PROFIL(list_export[0])
 
@@ -260,11 +256,10 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
    memjeveux = prof.args.get('memjeveux')
 
    if mem_aster in ('', '100'):
-      if INFO>=1: UTMESS('A','MACR_RECAL',"Attention : il faut specifier une valeur pour 'mem_aster' (menu Option de ASTK) " \
-                              "pour limiter la memoire allouee au calcul maitre.")
+      if INFO>=1: UTMESS('A','RECAL0_6')
       mem_aster = '0'
    if not memjeveux:
-      UTMESS('F','MACR_RECAL',"Probleme : aucune valeur pour le parametre 'memjeveux'. Verifier le .export")
+      UTMESS('F','RECAL0_7')
 
    try:
       if mem_aster == '0':
@@ -272,9 +267,9 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
       else:
          memjeveux_esclave = float(memjeveux) / float(mem_aster) * 100. - float(memjeveux)
    except:
-      UTMESS('F','MACR_RECAL',"Probleme : verifier les valeurs des parametres 'mem_aster' et 'memjeveux'")
+      UTMESS('F','RECAL0_8')
 
-   if INFO>=1: UTMESS('I','MACR_RECAL',"Information : les calculs esclaves utiliseront : %.1f Mega Mots." % memjeveux_esclave)
+   if INFO>=1: UTMESS('I','RECAL0_9', valr=memjeveux_esclave)
 
 
    #_____________________________________________
@@ -306,9 +301,9 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
    if METHODE in ['FMIN', 'FMINBFGS', 'FMINNCG']:
       # On ne peut tracer qu'a la derniere iteration
       if GRAPHIQUE:
-         if GRAPHIQUE['AFFICHAGE']=='TOUTE_ITERATION': UTMESS('I','MACR_RECAL',"Pour l'algorithme " + METHODE + " on ne peut tracer qu'a la derniere iteration")
+         if GRAPHIQUE['AFFICHAGE']=='TOUTE_ITERATION': UTMESS('I', 'RECAL0_10', valk=METHODE)
       # Les bornes ne sont pas gerees
-      UTMESS('I','MACR_RECAL',"Pour l'algorithme " + METHODE + " on ne tient pas compte des bornes sur les parametres.")
+      UTMESS('I','RECAL0_11', valk=METHODE)
 
    #_______________________________________________
    #
@@ -324,9 +319,9 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
    #_____________________________________________
    texte_erreur, texte_alarme = gestion(UNITE_ESCL,LIST_PARA,RESU_CALC,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE)
    if (texte_erreur != ""):
-      UTMESS('F', "MACR_RECAL", texte_erreur)
+      UTMESS('F', "RECAL0_12", valk=texte_erreur)
    if (texte_alarme != ""):
-      UTMESS('A', "MACR_RECAL", texte_alarme)
+      UTMESS('A', "RECAL0_12", valk=texte_alarme)
 
 
    #_____________________________________________
@@ -391,9 +386,7 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
 
    if( METHODE != 'EXTERNE'):
       Mess.initialise()
-      txt = "Lancement de l'optimisation avec la methode : " + METHODE
-      if INFO>=1: UTMESS('I','MACR_RECAL',txt)
-      Mess.ecrire(txt)
+      if INFO>=1: UTMESS('I','RECAL0_13', valk=METHODE, cc=Mess.get_filename())
 
 
 
@@ -537,8 +530,8 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
 
           if args.has_key('GRADIENT') and args['GRADIENT'] == 'NON_CALCULE': fprime=None
 
-          if fprime: UTMESS('I','MACR_RECAL',"Les derivees sont calculees par Aster")
-          else:      UTMESS('I','MACR_RECAL',"Les derivees sont calculees par l'algorithme")
+          if fprime: UTMESS('I','RECAL0_14')
+          else:      UTMESS('I','RECAL0_15')
 
           # Lancement de l'optimisation
           if METHODE == 'FMINBFGS':
@@ -598,13 +591,7 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
 
                 # Affichage iteration
                 Mess.affiche_result_iter(iter,J,val,residu,Act)
-                txt = "Informations de convergence :"
-                txt += '\n=======================================================\n'
-                txt += "Fin de l'iteration "+str(iter)+" :\n"
-                txt += '\n=> Fonctionnelle = '+str(J)
-                txt += '\n=> Residu        = '+str(residu)
-                txt += '\n=======================================================\n'
-                if INFO>=1: UTMESS('I','MACR_RECAL',txt)
+                if INFO>=1: UTMESS('I','RECAL0_16',vali=iter, valk=J, valr=residu)
 
                 if (GRAPHIQUE):
                    if GRAPHIQUE['AFFICHAGE']=='TOUTE_ITERATION':
@@ -648,7 +635,7 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
          if not args.has_key('prefix_graph'): fichier='graph'
          else:                                fichier = args['prefix_graph']
       if trace:
-         if INFO>=1: UTMESS('I','MACR_RECAL',"Trace des graphiques")
+         if INFO>=1: UTMESS('I','RECAL0_17')
          GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
          pilote=GRAPHIQUE['PILOTE']
          reca_utilitaires.graphique(GRAPHIQUE['FORMAT'],L_F,RESU_EXP,RESU_CALC,iter,GRAPHE_UL_OUT,pilote,fichier)
@@ -699,7 +686,7 @@ if __name__ == '__main__':
     mode_python = True
 
     from optparse import OptionParser, OptionGroup
-    from externe_mess import UTMESS
+    from Utilitai.Utmess import UTMESS
     
     p = OptionParser(usage='usage: %s fichier_export [options]' % sys.argv[0])
     p.add_option('-i', '--input',        action='store',   dest='input',         type='string',   default='input.txt',   help='fichier contenant les parametres')
@@ -756,7 +743,7 @@ if __name__ == '__main__':
     try:
       from as_profil import ASTER_PROFIL
     except:
-      UTMESS('F','MACR_RECAL',"Impossible de determiner l'emplacement d'Aster ! Fixer le chemin avec la variable d'environnement ASTER_ROOT.")
+      UTMESS('F','RECAL0_99')
 
     # Efface les fichiers resultats
     try:    os.remove(output)
@@ -770,7 +757,7 @@ if __name__ == '__main__':
       # Lecture du fichier .export
       list_export = glob('*.export')
       if len(list_export) != 1:
-         UTMESS('F','MACR_RECAL',"Impossible de determiner le fichier .export a utiliser. Specifier le sur la ligne de commande.")
+         UTMESS('F','RECAL0_98')
       else:
          fichier_export = list_export[0]
     prof = ASTER_PROFIL(fichier_export)
@@ -799,15 +786,15 @@ if __name__ == '__main__':
 
 
     if not nom_comm:
-       UTMESS('F','MACR_RECAL',"Probleme : le fichier .comm n'est pas defini dans le .export.")
+       UTMESS('F','RECAL0_97')
     if not os.path.isfile(nom_comm):
-       UTMESS('F','MACR_RECAL',"Probleme : le fichier .comm suivant n'est pas defini : " + nom_comm)
+       UTMESS('F','RECAL0_96', valk=nom_comm)
 
 
 
     # -------------------------------------------------------------------
     # Lecture des valeurs d'entree
-    if INFO==2: UTMESS('I',NOMPRO,"Lecture du fichier : " + input_file)
+    if INFO==2: UTMESS('I','RECAL0_95',valk=input_file)
     try:
        f = open(input_file, 'r')
        txt = f.read()
@@ -815,8 +802,8 @@ if __name__ == '__main__':
        txt = txt.replace(',', ' ')
        val_externe = [ float(x) for x in txt.strip().split() ]
     except:
-       UTMESS('F',NOMPRO,"Probleme : impossible de lire le fichier d'entree :\n" + input_file)
-    if INFO>=2: UTMESS('I',NOMPRO,"Parametres d'entree : " + str(val_externe))
+       UTMESS('F','RECAL0_94',valk=input_file)
+    if INFO>=2: UTMESS('I','RECAL0_93', valk=str(val_externe))
     if optparse_INFO and opts.INFO == -1: print '\n'+ str(val_externe)
 
 
@@ -870,8 +857,7 @@ if __name__ == '__main__':
           if debug: print 80*'*' + 2*'\n'+commandenew+80*'*' + 2*'\n'
           break
     if not fichiernew or not commandenew:
-       txt = "Probleme : Le fichier de commande :\n" + nom_comm + "\n ne semble pas comporter la commande MACR_RECAL"
-       UTMESS('F',NOMPRO,txt)
+       UTMESS('F','RECAL0_92', valk=nom_comm)
 
 
     # -------------------------------------------------------------------
@@ -882,7 +868,7 @@ if __name__ == '__main__':
        import Utilitai
        from Utilitai.System import ExecCommand
     except:
-       UTMESS('F','MACR_RECAL',"Probleme : impossible d'importer le module Utilitai! Prevenir la maintenance.")
+       UTMESS('F','RECAL0_91')
 
 
     # -------------------------------------------------------------------
@@ -904,7 +890,7 @@ if __name__ == '__main__':
        exec(fichiernew)
     except:
        txt = "Le mode EXTERNE tourne en mode degrade. Lire la documentation."
-       UTMESS('A',NOMPRO,txt)
+       UTMESS('A','RECAL0_90')
        lance_aster = True
     else:
        exec(commandenew.replace(txt1, 'macr_recal_externe'))
@@ -913,7 +899,7 @@ if __name__ == '__main__':
 #        except Exception, err:
 #           print err
 #           txt = "Erreur lors de l'execution de la commande MACR_RECAL" 
-#           UTMESS('F',NOMPRO,txt)
+#           UTMESS('F','RECAL0_12',valk=txt)
 
        Ecriture_Fonctionnelle(output_file, type_fonctionnelle, fonctionnelle)
        Ecriture_Derivees(output_grad, gradient)
@@ -937,7 +923,7 @@ if __name__ == '__main__':
     
        # -------------------------------------------------------------------
        # Modification du fichier .comm (changement des valeurs, ecriture du resultat dans un fichier)
-       if INFO==2: UTMESS('I',NOMPRO,"Lecture du fichier : " + nom_comm)
+       if INFO==2: UTMESS('I','RECAL0_89',valk=nom_comm)
        f = open(nom_comm, 'r')
        ok1 = ok3 = ok4 = False
        txt = ''
@@ -956,14 +942,14 @@ if __name__ == '__main__':
           else: txt += ligne
        f.close()
 
-       if not ok1:  UTMESS('F',NOMPRO,"Probleme : il faut mettre les parametres sous la forme d'une ligne python " + str(_PARAM_) + " = [param1, param2, ...]")
-       if not ok3:  UTMESS('F',NOMPRO,"Probleme : la commande MACR_RECAL n'a pas ete trouvee dans le .comm")
-       if not ok4:  UTMESS('F',NOMPRO,"Probleme : dans la commande MACR_RECAL, il faut choisir METHODE='EXTERNE'")
+       if not ok1:  UTMESS('F','RECAL0_88',valk=_PARAM_)
+       if not ok3:  UTMESS('F','RECAL0_87')
+       if not ok4:  UTMESS('F','RECAL0_86')
 
        txt = txt.replace('_RESU_', _RESU_)
 
        # Ecriture du nouveau fichier comm temporaire
-       if INFO==2: UTMESS('I',NOMPRO,"Ecriture du fichier : " + new_fichier_comm)
+       if INFO==2: UTMESS('I','RECAL0_85',valk=new_fichier_comm)
        f = open(new_fichier_comm, 'w')
        f.write(txt)
        f.close()
@@ -1000,10 +986,10 @@ if __name__ == '__main__':
 
        # Ecriture du nouveau fichier export
        try:
-          if INFO==2: UTMESS('I',NOMPRO,"Ecriture du fichier : " + new_fichier_export)
+          if INFO==2: UTMESS('I','RECAL0_85',valk=new_fichier_export)
           prof.WriteExportTo(new_fichier_export)
        except:
-          UTMESS('F',NOMPRO,"Probleme : Impossible d'ecrire le fichier export : " + new_fichier_export)
+          UTMESS('F','RECAL0_84',valk=new_fichier_export)
        if debug: prof.WriteExportTo('/tmp/exp')
 
 
@@ -1012,8 +998,7 @@ if __name__ == '__main__':
           as_run = os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'bin', 'as_run')
        else:
           as_run = 'as_run'
-          if INFO>=1: UTMESS('A', nompro, "Variable d'environnement ASTER_ROOT absente, " \
-                               "on essaiera avec 'as_run' dans le $PATH.")
+          if INFO>=1: UTMESS('A', 'RECAL0_83')
 
 
        # Import du module Utilitai
@@ -1022,14 +1007,14 @@ if __name__ == '__main__':
           import Utilitai
           from Utilitai.System import ExecCommand
        except:
-          UTMESS('F','MACR_RECAL',"Probleme : impossible d'importer le module Utilitai! Prevenir la maintenance.")
+          UTMESS('F','RECAL0_91')
 
 
        # Lancement d'Aster avec le deuxieme export
        cmd = '%s %s' % (as_run, new_fichier_export)
-       if INFO>=2: UTMESS('I','MACR_RECAL',"Lancement de la commande : " + cmd)
+       if INFO>=2: UTMESS('I','EXECLOGICIEL0_8',valk=cmd)
        iret, txt_output = ExecCommand(cmd, follow_output=opts.follow_output,verbose=opts.follow_output)
-       if INFO>=2: UTMESS('I','MACR_RECAL',"Fin du lancement de la commande : " + cmd)
+       if INFO>=2: UTMESS('I','EXECLOGICIEL0_12',valk=cmd)
 
        try:    os.remove(new_fichier_comm)
        except: pass

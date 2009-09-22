@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,7 +63,8 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM):
          jdc.memo_sensi = MEMORISATION_SENSIBILITE()
       jdc.memo_sensi.reparent(jdc)
 
-      if hasattr(jdc, 'msg_init') and jdc.msg_init == 1:
+      # ne faire qu'une fois
+      if not hasattr(jdc, 'msg_init'):
          # messages d'alarmes désactivés
          if IGNORE_ALARM:
             if not type(IGNORE_ALARM) in (list, tuple):
@@ -302,8 +303,9 @@ def detruire(self,d):
    """
        Cette fonction est la fonction op_init de la PROC DETRUIRE
    """
-   if hasattr(self,"executed") and self.executed == 1:
-      return
+#XXX introduit par issue11484, commenté par issue13713
+#   if hasattr(self,"executed") and self.executed == 1:
+#      return
    list_co = set()
    sd = []
    # par nom de concept (typ=assd)

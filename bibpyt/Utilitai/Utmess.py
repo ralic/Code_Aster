@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 25/11/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,22 +29,38 @@ from sets import Set
 # protection pour eficas
 try:
    import aster
+   aster_exists = True
    from Messages.context_info import message_context_concept
+   MessageError = aster.error
 except:
-   pass
+   aster_exists = False
+   class MessageError(Exception): pass
 
 def _(s):
    return s
 
 MAXLENGTH = 132
 
-# -----------------------------------------------------------------------------
 contacter_assistance = """
 Il y a probablement une erreur dans la programmation.
 Veuillez contacter votre assistance technique."""
 
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
+'''
+Pour la vérification des messages :
+   UTMESS('I', 'SUPERVIS_40')    surcharge émis par asrun
+   UTMESS('I', 'CATAMESS_6')
+   UTMESS('I', 'CATAMESS_41')
+   UTMESS('I', 'CATAMESS_55')    pour u2mesg.f
+   UTMESS('I', 'CATAMESS_57')
+   UTMESS('I', 'CATAMESS_69')    pour u2mesg.f
+   UTMESS('I', 'CATAMESS_70')    pour u2mesg.f
+   UTMESS('I', 'CATAMESS_89')
+   UTMESS('I', 'CATAMESS_90')
+   UTMESS('I', 'CATAMESS_91')
+   UTMESS('I', 'CATAMESS_92')
+'''
+
+
 class MESSAGE_LOGGER:
    """Classe gérant l'impression de messages.
    On ne crée qu'une instance de ce type.
@@ -74,15 +90,15 @@ class MESSAGE_LOGGER:
          self.default_args['r%d' % i] = 9.9999E99
          self.default_args['k%d' % i] = 'xxxxxx'
 
-# -----------------------------------------------------------------------------
+
    def __call__(self, *args, **kwargs):
       """Raccourci pour simplifier l'appel depuis astermodule.c et UTMESS.
       """
       self.print_message(*args, **kwargs)
 
-# -----------------------------------------------------------------------------
+
    def print_message(self, code, idmess, valk=(), vali=(), valr=(),
-                     exception=False, print_as=None):
+                     exception=False, print_as=None, cc=None):
       """Appelé par la routine fortran U2MESG ou à la fonction python UTMESS
       pour afficher un message.
       L'impression de ce message est différée si le `code` est suivi d'un "+".
@@ -104,14 +120,14 @@ class MESSAGE_LOGGER:
          self.update_counter()
          
          # on imprime le message en attente
-         self.print_buffer_content(print_as)
+         self.print_buffer_content(print_as, cc)
 
          if exception and code[0] in ('S', 'F'):
-            raise aster.error, ' <EXCEPTION LEVEE> %s' % idmess
+            raise MessageError, ' <EXCEPTION LEVEE> %s' % idmess
       
       return None
 
-# -----------------------------------------------------------------------------
+
    def build_dict_args(self, valk, vali, valr):
       """Construit le dictionnaire de formatage du message.
       """
@@ -132,7 +148,7 @@ class MESSAGE_LOGGER:
    
       return dicarg
 
-# -----------------------------------------------------------------------------
+
    def get_message(self, code, idmess, valk=(), vali=(), valr=()):
       """Retourne le texte du message dans un dictionnaire dont les clés sont :
          'code', 'id_message', 'corps_message'
@@ -151,9 +167,9 @@ class MESSAGE_LOGGER:
          # si le dictionnaire n'existe pas, on alertera au moment du formatage.
          cata_msg = getattr(mod, 'cata_msg', {})
       except Exception, msg:
-         # doit permettre d'éviter la récursivité
-         if catamess != 'supervis':
-            self.print_message('A', 'SUPERVIS_57', valk=(catamess, str(msg)))
+         # doit permettre d'éviter la récursivité (catamess réservé à Utmess)
+         if catamess != 'catamess':
+            self.print_message('A', 'CATAMESS_57', valk=(catamess, str(msg)))
          cata_msg = {}
       
       # corps du message
@@ -198,26 +214,26 @@ Exception : %s
       dictmess['corps_message'] = cut_long_lines(dictmess['corps_message'], MAXLENGTH)
       return dictmess
 
-# -----------------------------------------------------------------------------
+
    def GetText(self, *args, **kwargs):
       """Retourne le texte du message pret a etre imprime.
       """
       return self.format_message(self.get_message(*args, **kwargs))
 
-# -----------------------------------------------------------------------------
+
    def init_buffer(self):
       """Initialise le buffer.
       """
       self._buffer = []
 
-# -----------------------------------------------------------------------------
+
    def add_to_buffer(self, dictmess):
       """Ajoute le message décrit dans le buffer en vue d'une impression
       ultérieure.
       """
       self._buffer.append(dictmess)
 
-# -----------------------------------------------------------------------------
+
    def get_current_code(self):
       """Retourne le code du message du buffer = code du message le plus grave
       (cf. dgrav)
@@ -232,14 +248,14 @@ Exception : %s
       
       return current
 
-# -----------------------------------------------------------------------------
+
    def get_current_id(self):
       """Retourne l'id du message du buffer = id du premier message
       """
       return self._buffer[0]['id_message']
 
-# -----------------------------------------------------------------------------
-   def print_buffer_content(self, print_as=None):
+
+   def print_buffer_content(self, print_as=None, cc=None):
       """Extrait l'ensemble des messages du buffer dans un dictionnaire unique,
       imprime le message, et vide le buffer pour le message suivant.
          - code : celui du message le plus grave (cf. dgrav)
@@ -247,6 +263,7 @@ Exception : %s
          - corps : concaténation de tous les messages.
       'print'_as permet d'imprimer un message sur des fichiers autres que les fichiers
       habituels de 'code'. Par ex, imprimer un message d'info sur 'ERREUR'.
+      'cc' : liste de noms de fichiers ou objets fichier dans lesquels copier le message
       """
       if len(self._buffer) < 1:
          return None
@@ -270,11 +287,14 @@ Exception : %s
       # texte final et impression
       txt = self.format_message(dglob)
       for unite in l_unit:
-         aster.affiche(unite, txt)
+         self.affiche(unite, txt)
+      # "cc"
+      if cc:
+         copy_text_to(txt, cc)
       
       self.init_buffer()
 
-# -----------------------------------------------------------------------------
+
    def disable_alarm(self, idmess, hide=False):
       """Ignore l'alarme "idmess".
       """
@@ -307,7 +327,7 @@ Exception : %s
       # on sépare des éventuels messages en attente
       self.print_buffer_content()
       # entete
-      dictmess = self.get_message('I', 'SUPERVIS_89')
+      dictmess = self.get_message('I', 'CATAMESS_89')
       self.add_to_buffer(dictmess)
       # occurrences
       ieff = 0
@@ -316,18 +336,18 @@ Exception : %s
          ieff += 1
          if self._ignored_alarm.get(idmess) is not None:
             mark = '(*)'
-         dictmess = self.get_message('I', 'SUPERVIS_90', valk=(mark, idmess),
+         dictmess = self.get_message('I', 'CATAMESS_90', valk=(mark, idmess),
                                      vali=self.count_alarm_tot.get(idmess, 0))
          self.add_to_buffer(dictmess)
       if ieff == 0:
-         dictmess = self.get_message('I', 'SUPERVIS_92')
+         dictmess = self.get_message('I', 'CATAMESS_92')
          self.add_to_buffer(dictmess)
       # fermeture
-      dictmess = self.get_message('I', 'SUPERVIS_91')
+      dictmess = self.get_message('I', 'CATAMESS_91')
       self.add_to_buffer(dictmess)
       self.print_buffer_content(print_as='A')
 
-# -----------------------------------------------------------------------------
+
    def update_counter(self):
       """Mise à jour des compteurs et réaction si besoin.
       """
@@ -348,14 +368,14 @@ Exception : %s
             # ignorer l'alarme ou count_alarm > max, on vide le buffer
             self.init_buffer()
          elif self.count_alarm[idmess] == nmax_alarm:
-            # Pour mettre en relief le message SUPERVIS_41, on le sépare
+            # Pour mettre en relief le message CATAMESS_41, on le sépare
             # de la dernière alarme
             self.print_buffer_content()
-            dictmess = self.get_message(code, 'SUPERVIS_41',
+            dictmess = self.get_message(code, 'CATAMESS_41',
                                         valk=idmess, vali=nmax_alarm)
             self.add_to_buffer(dictmess)
 
-# -----------------------------------------------------------------------------
+
    def check_counter(self, info_alarm=0, silent=0):
       """Méthode "jusqu'ici tout va bien" ! (Interface C : chkmsg)
       Si des erreurs <E> se sont produites, on arrete le code en <F>.
@@ -368,12 +388,12 @@ Exception : %s
          iret = 4
          self.erreur_E = False
          if not silent:
-            self.print_message('F', 'SUPERVIS_6', exception=True)
+            self.print_message('F', 'CATAMESS_6', exception=True)
       if info_alarm:
          self.info_alarm()
       return iret
 
-# -----------------------------------------------------------------------------
+
    def reset_command(self):
       """Méthode appelée entre les commandes. (Interface C : resmsg)
       On remet à zéro le compteur d'alarme,
@@ -382,7 +402,7 @@ Exception : %s
       # reset des alarmes
       self.count_alarm = {}
 
-# -----------------------------------------------------------------------------
+
    def format_message(self, dictmess):
       """Formate le message décrit dans un dico :
          'code'          : A, E, S, F, I
@@ -474,7 +494,7 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
       
       return clean_string(os.linesep.join(l_txt))
 
-# -----------------------------------------------------------------------------
+
    def list_unit(self, code, idmess):
       """Retourne la liste des noms de fichiers (logiques) sur lesquels doit
       etre imprimé le message.
@@ -490,14 +510,14 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
       d['X'] = d['A']
       return d.get(code, d['F'])
 
-# -----------------------------------------------------------------------------
+
    def get_type_message(self, code):
       """Retourne le type du message affiché.
       En cas d'erreur, si on lève une exception au lieu de s'arreter,
       on n'affiche pas le type de l'erreur pour ne pas fausser le diagnostic
       """
       typmess = code.strip()
-      if aster.onFatalError() == 'EXCEPTION':
+      if self.onFatalError() == 'EXCEPTION':
          if typmess in ('E', 'F'):
             typmess = 'EXCEPTION'
       # dans tous les cas, pour S et Z (exception), on affiche EXCEPTION.
@@ -505,7 +525,7 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
          typmess = 'EXCEPTION'
       return typmess
 
-# -----------------------------------------------------------------------------
+
    def get_context(self, ctxt_msg, idmess, dicarg):
       """Prise en compte du context du message pour donner d'autres infos
       à l'utilisateur.
@@ -526,8 +546,23 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
       return os.linesep.join(msg)
 
 
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
+   # définitions pour fonctionner sans le module aster
+   def affiche(self, unite, txt):
+      """Affichage du message"""
+      if aster_exists:
+         aster.affiche(unite, txt)
+      else:
+         print txt
+
+
+   def onFatalError(self):
+      """Récupérer le comportement en cas d'erreur fatale."""
+      if aster_exists:
+         return aster.onFatalError()
+      else:
+         return 'EXCEPTION'
+
+
 def clean_string(chaine):
    """Supprime tous les caractères non imprimables.
    """
@@ -540,7 +575,7 @@ def clean_string(chaine):
          txt.append(invalid)
    return ''.join(txt)
 
-# -----------------------------------------------------------------------------
+
 def force_enum(obj):
    """Retourne `obj` si c'est une liste ou un tuple,
    sinon retourne [obj,]
@@ -549,7 +584,7 @@ def force_enum(obj):
       obj = [obj,]
    return obj
 
-# -----------------------------------------------------------------------------
+
 def maximize_lines(l_fields, maxlen, sep):
    """Construit des lignes dont la longueur est au plus de `maxlen` caractères.
    Les champs sont assemblés avec le séparateur `sep`.
@@ -584,14 +619,29 @@ def cut_long_lines(txt, maxlen, sep=os.linesep,
       newlines = os.linesep.join(newlines)
    return newlines
 
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
+
+def copy_text_to(text, files):
+   """Imprime le texte dans les fichiers.
+   """
+   if type(files) not in (list, tuple):
+      files = [files,]
+   for f in files:
+      assert type(f) in (str, file)
+      if type(f) == file:
+         fobj = file
+      else:
+         fobj = open(f, 'a')
+         # should be closed automatically
+      fobj.write(text)
+      fobj.write(os.linesep)
+      fobj.flush()
+
+
 # unique instance du MESSAGE_LOGGER
 MessageLog = MESSAGE_LOGGER()
 
 
-# -----------------------------------------------------------------------------
-def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None):
+def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None, cc=None):
    """Utilitaire analogue à la routine fortran U2MESS/U2MESG avec les arguments
    optionnels.
       code   : 'A', 'E', 'S', 'F', 'I'
@@ -599,7 +649,7 @@ def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None):
       valk, vali, valr : liste des chaines, entiers ou réels.
    
    Appel sans valeurs :                avec valeurs :
-      UTMESS('A', 'SUPERVIS_55')          UTMESS('A', 'SUPERVIS_55', vali=[1, 2])
+      UTMESS('A', 'SUPERVIS_40')          UTMESS('A', 'SUPERVIS_40', vali=[1, 2])
    
    Remarques :
       - Nommer les arguments permet de ne pas tous les passer.
@@ -607,9 +657,9 @@ def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None):
          + appel à MessageLog
          + puis exception ou abort en fonction du niveau d'erreur.
    """
-   MessageLog(code, idmess, valk, vali, valr, exception=True, print_as=print_as)
+   MessageLog(code, idmess, valk, vali, valr, exception=True, print_as=print_as, cc=cc)
 
-# -----------------------------------------------------------------------------
+
 def MasquerAlarme(idmess):
    """Masque une alarme : ni affichee, ni comptee.
    Utilisation dans les macros :
@@ -620,7 +670,7 @@ def MasquerAlarme(idmess):
    """
    MessageLog.disable_alarm(idmess, hide=True)
 
-# -----------------------------------------------------------------------------
+
 def RetablirAlarme(idmess):
    """Retablit l'etat initial pour l'alarme 'idmess'.
    """

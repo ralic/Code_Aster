@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
+#@ MODIF med Messages  DATE 21/09/2009   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -365,6 +365,13 @@ cata_msg = {
   -> Le mot clé "INFO_MAILLAGE" est réservé au format med.
 """),
 
+64 : _("""
+  -> Le modèle fourni à LIRE_CHAMP n'est pas cohérent avec le type du champ
+     que vous souaitez produire:
+     - phenomène du modèle: %(k1)s
+     - type du champ : %(k2)s 
+"""),
+
 65 : _("""
   -> Grandeur inconnue.
 """),
@@ -413,6 +420,15 @@ cata_msg = {
 76 : _("""
   -> Problème dans le diagnostic.
 """),
+
+77: _("""
+  -> On ne peut lire aucune valeur du champ %(k1)s dans le fichier d'unité %(i1)s.
+  -> Risques et conseils:
+     Ce problème est peut-être lié à une incohérence entre le champ à lire dans 
+     le fichier MED (NOEU/ELGA/ELNO/...) et le type du champ que vous avez demandé 
+     (mot clé TYPE_CHAM).
+"""),
+
 
 79 : _("""
   -> Attention le maillage n'est pas de type non structuré

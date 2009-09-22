@@ -1,4 +1,4 @@
-#@ MODIF table0 Messages  DATE 21/10/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF table0 Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,6 +83,57 @@ L'objet %(k1)s à l'instant %(r1)f existe déjà dans la table fournie.
 On l'écrase pour le remplacer par le nouveau.
 """),
 
+20 : _("""Erreur lors de la construction des n-uplets
+"""),
 
+21 : _("""La table doit avoir exactement deux paramètres pour une impression au format XMGRACE.
+"""),
+
+22 : _("""Les cellules ne doivent contenir que des nombres réels
+"""),
+
+23 : _("""Le paramètre %(k1)s est en double.
+"""),
+
+24 : _("""Le parametre %(k1)s existe déjà.
+"""),
+
+25 : _("""(fromfunction) '%(k1)s' n'a pas d'attribut '__call__'.
+"""),
+
+26 : _("""(fromfunction) '%(k1)s' n'a pas d'attribut 'nompar'.
+"""),
+
+27 : _("""Le (ou les) paramètre(s) n'existe(nt) pas dans la table : %(k1)s
+"""),
+
+28 : _("""(fromfunction) L'argument 'const' doit etre de type 'dict'.
+"""),
+
+29 : _("""Valeur incorrecte pour ORDRE : %(k1)s
+"""),
+
+30 : _("""Les paramètres doivent être les mêmes dans les deux tables pour
+faire l'intersection  ou l'union (opérateurs &, |).
+"""),
+
+31 : _("""Type du paramètre '%(k1)s' non défini.
+"""),
+
+32 : _("""Type du paramètre '%(k1)s' forcé à '%(k2)s'.
+"""),
+
+33 : _("""Erreur pour le paramètre '%(k1)s' :
+   %(k2)s
+"""),
+
+34 : _("""La colonne '%(k1)s' est vide.
+"""),
+
+35 : _("""La table est vide !
+"""),
+
+36 : _("""La table doit avoir exactement trois paramètres.
+"""),
 
 }

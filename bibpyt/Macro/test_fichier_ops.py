@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fichier_ops Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,8 +96,8 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
    # filtre par expression régulière
    try:
       fileobj = regexp_filter(fileobj, kwargs['EXPR_IGNORE'])
-   except TestFichierError, (idmess, valk):
-      UTMESS('S', idmess, valk=valk)
+   except TestFichierError, valk:
+      UTMESS('S', 'TEST0_1', valk=valk)
 
    # calcule le nombre de réels et la somme ou min/max
    nbval, valeur, md5sum = test_iter(fileobj, function=dict_func_test[TYPE_TEST], verbose=(INFO > 1))
@@ -162,7 +162,7 @@ def regexp_filter(file_in, regexp_ignore, debug=False):
       try:
          obj = re.compile(exp)
       except re.error, s:
-         raise TestFichierError, ('TEST0_1', (s, str(exp)))
+         raise TestFichierError, (s, str(exp))
       else:
          l_regexp.append(obj)
    # filtre du fichier

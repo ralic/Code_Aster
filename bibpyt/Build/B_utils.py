@@ -1,4 +1,4 @@
-#@ MODIF B_utils Build  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_utils Build  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,11 +180,12 @@ def Typast(ty):
       Cette fonction retourne une chaine de caracteres indiquant le type
       du concept ou de la liste de concepts passé en argument (ty)
    """
-   if type(ty) == tuple: 
+   if type(ty) in (list, tuple): 
 #      t=ty[0]
       return [Typast(elem) for elem in ty]
    else : 
       t=ty
+   if t is None : return ""
    if t == 'I'  : return "IS "
    if t == 'R'  : return "R8 "
    if t == 'C'  : return "C8 "
@@ -195,5 +196,5 @@ def Typast(ty):
       if t.__name__ == 'complexe':return "C8 "
       if t.__name__ == 'chaine'  :return "TX "
       return t.__name__
-   return None
+   return ""
 

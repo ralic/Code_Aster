@@ -5,7 +5,7 @@
      &                  ACMA,ACSM,REACRE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ELEMENTS  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,12 +155,10 @@ C REMPLISSAGE DU VECTEUR AUXILIAIRE '&FETI.MAILLE.NUMSD'
           IBUFF = ZI(IFETA+I-1)
           IF (ZI(INUMSD+IBUFF-1).GT.0) THEN
 C MAILLE COMMUNE A PLUSIEURS SOUS-DOMAINES
-                VALI (1) = IBUFF
-                VALI (2) = 0
-            CALL U2MESG('F', 'ELEMENTS4_75',0,' ',2,VALI,0,0.D0)
-
+             VALI (1) = IBUFF
+             CALL U2MESI('F', 'ALGORITH16_98',1,VALI)
           ELSE
-            ZI(INUMSD+IBUFF-1) = NUMSD
+             ZI(INUMSD+IBUFF-1) = NUMSD
           END IF
    10   CONTINUE
 
@@ -179,8 +177,7 @@ C MAILLE PAS DANS LA PARTITION FETI
               IF (ZI(IMAIL-1+I).NE.0) THEN
 C MAILLE POURTANT DANS LE MODELE
                 VALI (1) = I
-                VALI (2) = 0
-                CALL U2MESG('F', 'ELEMENTS4_76',0,' ',2,VALI,0,0.D0)
+                CALL U2MESI('F', 'ELEMENTS4_76',1,VALI)
               END IF
             END IF
    20     CONTINUE

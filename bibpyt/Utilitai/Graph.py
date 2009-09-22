@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF Graph Utilitai  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# RESPONSABLE MCOURTOI M.COURTOIS
+# RESPONSABLE COURTOIS M.COURTOIS
 __all__ = ['Graph', 'AjoutParaCourbe']
 
 import sys
@@ -30,6 +30,8 @@ import types
 import time
 import Numeric
 
+from Utilitai.Utmess import UTMESS
+
 # try/except pour utiliser hors aster
 try:
    import aster
@@ -38,12 +40,6 @@ except ImportError:
       def repout(self): return '/opt/aster/outils'
    aster=fake_aster()
 
-try:
-   from Macro.externe_mess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
 
 if not sys.modules.has_key('Table'):
    try:
@@ -225,10 +221,10 @@ class Graph:
          type(Val[1]) in (types.ListType, types.TupleType) and \
          (nbc==2 or type(Val[2]) in (types.ListType, types.TupleType)) and \
          len(Val[0]) == len(Val[1]) and (nbc==2 or len(Val[0]) == len(Val[2])) ):
-            UTMESS('S','Graph','"Val" doit etre une liste de 2 ou 3 listes de rééls de meme longueur')
+            UTMESS('F','GRAPH0_1')
       
       if len(Lab) <> nbc:
-            UTMESS('S','Graph','"Lab" doit etre une liste de 2 ou 3 chaines')
+            UTMESS('S','GRAPH0_2')
             
       # ajout dans les données
       self.Legendes.append(str(Leg))
@@ -295,7 +291,7 @@ class Graph:
          if opts<>{}:
             kargs['opts']=opts
       if not FORMAT in para.keys():
-         UTMESS('A', 'Objet Graph', 'Format inconnu : %s' % FORMAT)
+         UTMESS('A', 'GRAPH0_3', valk=FORMAT)
       else:
          kargs['fmod']=para[FORMAT]['mode']
          self.LastTraceArgs   = kargs.copy()
@@ -369,13 +365,13 @@ class TraceGraph:
          # verif si Min<0 à cause de la marge
          if graph.Min_X < 0.:
             if graph.BBXmin < 0.:
-               UTMESS('A', 'Graph', 'On limite la fenetre aux abscisses positives.')
+               UTMESS('A', 'GRAPH0_4')
             graph.Min_X=graph.MinP_X
       if graph.Echelle_Y=='LOG':
          graph.Grille_Y=10
          if graph.Min_Y < 0.:
             if graph.BBYmin < 0.:
-               UTMESS('A', 'Graph', 'On limite la fenetre aux ordonnées positives.')
+               UTMESS('A', 'GRAPH0_5')
             graph.Min_Y=graph.MinP_Y
       
       # formats de base (identiques à ceux du module Table)
@@ -503,7 +499,7 @@ class TraceTableau(TraceGraph):
          Tab.Impr(FICHIER=self.NomFich[0], FORMAT='TABLEAU', dform=self.DicForm)
          # erreurs ?
          if msg:
-            UTMESS('A', 'Graph.TraceTableau', '\n'.join(msg))
+            UTMESS('A', 'GRAPH0_6', valk='\n'.join(msg))
       return
 
 # ------------------------------------------------------------------------------
@@ -851,13 +847,13 @@ class TraceXmgrace(TraceGraph):
          g.Grille_X=10
          if g.Min_X < 0.:
             if g.BBXmin < 0.:
-               UTMESS('A', 'TraceXmgrace', 'On limite la fenetre aux abscisses positives.')
+               UTMESS('A', 'GRAPH0_4')
             g.Min_X=g.MinP_X
       if g.Echelle_Y=='LOG':
          g.Grille_Y=10
          if g.Min_Y < 0.:
             if g.BBYmin < 0.:
-               UTMESS('A', 'TraceXmgrace', 'On limite la fenetre aux ordonnées positives.')
+               UTMESS('A', 'GRAPH0_5')
             g.Min_Y=g.MinP_Y
       
       if g.NbCourbe < 1:
@@ -927,24 +923,23 @@ class TraceXmgrace(TraceGraph):
             lcmde = '%s %s' % (xmgr, nfwrk)
             if not os.environ.has_key('DISPLAY') or os.environ['DISPLAY']=='':
                os.environ['DISPLAY']=':0.0'
-               UTMESS('A','TraceXmgrace','Variable DISPLAY non définie')
-            UTMESS('I','TraceXmgrace','on fixe le DISPLAY à %s' % os.environ['DISPLAY'])
+               UTMESS('I','GRAPH0_7')
+            UTMESS('I','GRAPH0_8', valk=os.environ['DISPLAY'])
          else:
             if os.path.exists(os.path.join(aster.repout(),'gracebat')):
                xmgr = os.path.join(aster.repout(),'gracebat')
             lcmde = '%s -hdevice %s -hardcopy -printfile %s %s' % (xmgr, pilo, nfhard, nfwrk)
          # appel xmgrace
-         UTMESS('I','TraceXmgrace','Lancement de : '+lcmde)
+         UTMESS('I','EXECLOGICIEL0_8', valk=lcmde)
          if not os.path.exists(xmgr):
-            UTMESS('S','TraceXmgrace','Fichier inexistant : '+xmgr)
+            UTMESS('S','EXECLOGICIEL0_6', valk=xmgr)
          iret = os.system(lcmde)
          if iret == 0 or os.path.exists(nfhard):
             if pilo not in ('', 'X11'):
                new = open(nfhard, 'r').read()
                open(self.NomFich[0], 'a').write(new)
          else:
-            UTMESS('A','TraceXmgrace', "Erreur lors de l'utilisation du filtre %s" \
-                  "\nLe fichier retourné est le fichier '.agr'" % pilo)
+            UTMESS('A','GRAPH0_9', valk=pilo)
       # menage
       if self.PILOTE == 'INTERACTIF':
          os.remove(self.NomFich[0])
@@ -1198,12 +1193,7 @@ def IniGrace(fich):
       fpre.close()
       fnew.close()
       try:
-         UTMESS('I', 'Graph.IniGrace', """
-   <I> Informations sur le fichier '%s' :
-      Nombre de courbes    : %3d
-      Bornes des abscisses : [ %13.6G , %13.6G ]
-      Bornes des ordonnées : [ %13.6G , %13.6G ]
-""" % (fich, ns, x0, x1, y0, y1))
+         UTMESS('I', 'GRAPH0_10', valk=fich, vali=ns, valr=(x0, x1, y0, y1))
       except TypeError:
          # pas un format xmgrace
          pass

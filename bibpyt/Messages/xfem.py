@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -145,6 +145,12 @@ cata_msg={
 18: _("""
      Dimension de l'espace incorrecte. 
      Le modèle doit etre 2D ou 3D et ne pas comporter de sous-structures.
+"""),
+
+20: _("""
+   Le mot-clef ORIE_FOND est indispensable en 3D si vous n'utilisez pas 
+   le catalogue des formes de fissure prédéfinies : FORM_FISS pour définir
+   les level-sets.
 """),
 
 21: _("""

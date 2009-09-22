@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 12/05/2009   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF modelisa4 Messages  DATE 22/09/2009   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,22 +114,6 @@ cata_msg = {
 
 19 : _("""
  on ne peut extraire qu'1 numero d'ordre. vous en avez specifie plusieurs.
-"""),
-
-20 : _("""
- on est dans le cas d'un contact point-point et le vecteur vect_norm_escl n'a pas ete renseigne
-"""),
-
-21 : _("""
- impossibilite, la maille  %(k1)s  doit etre une maille de peau de type "quad" ou "tria" car on est en 3d et elle est de type :  %(k2)s
-"""),
-
-22 : _("""
- impossibilite,  soit la maille  %(k1)s  doit etre une  maille de peau de type "seg" car on est  en 2d et elle est de type :  %(k2)s , soit il faut renseigner "vect_pou_z" en 3d
-"""),
-
-23 : _("""
- impossibilite, la maille  %(k1)s  doit etre une maille de peau de type "seg" car on est en 2d et elle est de type :  %(k2)s
 """),
 
 24 : _("""

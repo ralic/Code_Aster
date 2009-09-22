@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF reca_calcul_aster Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,9 +28,9 @@ debug = False
 
 import copy, Numeric, types, os, sys, pprint, math
 from glob import glob
-from externe_mess import UTMESS
 
 from Utilitai.System import ExecCommand
+from Utilitai.Utmess import UTMESS
 
 # Nom de la routine
 nompro = 'MACR_RECAL'
@@ -67,7 +67,7 @@ class PARAMETRES:
           from Macro.lire_table_ops import lecture_table
           mode_aster = False
         except:
-          UTMESS('F','MACR_RECAL',"Probleme : impossible d'importer le module de lecture des tables!")
+          UTMESS('F','RECAL0_20')
     self.mode_include      = mode_include
     self.follow_output     = follow_output
     self.mode_aster        = mode_aster
@@ -124,7 +124,7 @@ class CALCUL_ASTER:
 
   def Lancement_Commande(self, cmd):
 
-          if self.INFO>=1: UTMESS('I','MACR_RECAL',"Lancement de la commande : " + cmd)
+          if self.INFO>=1: UTMESS('I','EXECLOGICIEL0_8',valk=cmd)
 
           fich_output       = self.fich_output
           follow_output     = self.follow_output
@@ -138,7 +138,7 @@ class CALCUL_ASTER:
              f.write( txt_output )
              f.close()
 
-          if self.INFO>=1: UTMESS('I','MACR_RECAL',"Fin du lancement de la commande : " + cmd)
+          if self.INFO>=1: UTMESS('I','EXECLOGICIEL0_12',valk=cmd)
 
           diag = self.Recuperation_Diagnostic(txt_output)
 
@@ -156,11 +156,11 @@ class CALCUL_ASTER:
         diag = ligne.split(txt)[-1].strip()
         break
 
-    if self.INFO>=1: UTMESS('I','MACR_RECAL',"Diagnostic du calcul esclave : " + diag)
+    if self.INFO>=1: UTMESS('I','RECAL0_21',valk=diag)
 
     if diag in ['OK', 'NOOK_TEST_RESU', '<A>_ALARM', '<F>_COPY_ERROR']: return True
     else:
-      UTMESS('F','MACR_RECAL',"Le fichier esclave ne s'est pas terminé correctement.")
+      UTMESS('F','RECAL0_22')
 
 
   # ------------------------------------------------------------------------------
@@ -185,7 +185,7 @@ class CALCUL_ASTER:
         table_sensibilite = self.table_sensibilite
 
         if self.evaluation_fonction > self.ITER_FONC_MAXI:
-           UTMESS('F', nompro, "Le nombre d'evaluation de la fonctionnelle depasse le critere ITER_FONC_MAXI.")
+           UTMESS('F', 'RECAL0_23')
         self.evaluation_fonction += 1
 
 
@@ -210,7 +210,7 @@ class CALCUL_ASTER:
            fichiersauv=copy.copy(fichier)
            fic.close()
         except:
-           UTMESS('F', nompro, "Impossible de relire le fichier esclave : \n " + str(self.fichier_esclave))
+           UTMESS('F', 'RECAL0_24', valk=self.fichier_esclave)
 
         # chemin vers as_run
         if os.environ.has_key('ASTER_ROOT'):
@@ -219,15 +219,14 @@ class CALCUL_ASTER:
            as_run = aster.repout() + os.sep + 'as_run'
         else:
            as_run = 'as_run'
-           if INFO>=1: UTMESS('A', nompro, "Variable d'environnement ASTER_ROOT absente, " \
-                               "on essaiera avec 'as_run' dans le $PATH.")
+           if INFO>=1: UTMESS('A', 'RECAL0_83')
 
         if __commandes_aster__:
           try:
             from Cata.cata import INCLUDE, DETRUIRE, FIN, DEFI_FICHIER, IMPR_TABLE, LIRE_TABLE, INFO_EXEC_ASTER, EXTR_TABLE, CREA_TABLE
           except: 
             message = "Erreur"
-            UTMESS('F', nompro, message)
+            UTMESS('F', 'DVP_1')
 
         # Utilisation du module Python de LIRE_TABLE
         if self.mode_aster:
@@ -237,12 +236,12 @@ class CALCUL_ASTER:
             sys.path.append( './Python/Macro' )
             from lire_table_ops import lecture_table
           except:
-            UTMESS('F','MACR_RECAL',"Probleme : impossible d'importer le module de lecture des tables!")
+            UTMESS('F','RECAL0_20')
 
         txt = []
         for i in para:
           txt.append( "\t\t\t%s : %s" % (i, val[para.index(i)]) )
-        if INFO>=1: UTMESS('I','MACR_RECAL',"Calcul de F avec les parametres:\n%s" % '\n'.join(txt))
+        if INFO>=1: UTMESS('I','RECAL0_25',valk='\n'.join(txt))
   
   
   # MARCHE PAS !!
@@ -491,8 +490,7 @@ class CALCUL_ASTER:
                   F = tREPONSE.Array( str(reponses[i][1]), str(reponses[i][2]) )
                   Lrep.append(F)
                 except:
-                  message = "Impossible de recuperer les resultats de calcul esclave!"
-                  UTMESS('F', nompro, message)
+                  UTMESS('F', 'RECAL0_26')
 
             else:
 
@@ -508,26 +506,14 @@ class CALCUL_ASTER:
                    file.close()
                 except Exception, err:
                    ier=1
-                   message = """Impossible de recuperer les resultats de calcul esclave (lecture des tables)! 
-Le calcul esclave n'a pas du se terminer correctement (ajouter un repertoire dans ASTK en Resultat avec 
-le type repe et voir l'output du fichier esclave dans ce repertoire.
-Message:
-"""
-                   message += str(err)
-                   UTMESS('F', nompro, message)
+                   UTMESS('F', 'RECAL0_27', valk=str(err))
 
                 try:
                    table_lue = lecture_table(texte, 1, ' ')
                    list_para = table_lue.para
                    tab_lue   = table_lue.values()
                 except Exception, err:
-                   ier=1
-                   message = "Impossible de recuperer les resultats de calcul esclave (lecture des tables)!\nMessage:\n" + str(err)
-                else:
-                   ier=0
-
-                if ier!=0 :
-                   UTMESS('F', nompro, message)
+                   UTMESS('F', 'RECAL0_28', valk=str(err))
 
                 try:
                     nb_val = len(tab_lue[ list_para[0] ])
@@ -539,8 +525,7 @@ Message:
                       F[k][1] = tab_lue[ str(reponses[i][2]) ][k]
                     Lrep.append(F)
                 except Exception, err:
-                    message = "Impossible de recuperer les resultats de calcul esclave (recuperation des tables)!\nMessage:\n" + str(err)
-                    UTMESS('F', nompro, message)
+                    UTMESS('F', 'RECAL0_29', valk=str(err))
 
 
           # ------------------------------------------------------
@@ -591,26 +576,14 @@ Message:
                              texte=file.read()
                              file.close()
                           except Exception, err:
-                             message = """Impossible de recuperer les resultats de calcul esclave (lecture des tables)! 
-Le calcul esclave n'a pas du se terminer correctement (ajouter un repertoire en Resultat avec 
-le type repe et voir l'output du fichier esclave dans ce repertoire.
-Message:
-"""
-                             message += str(err)
-                             UTMESS('F', nompro, message)
+                             UTMESS('F', 'RECAL0_27', valk=str(err))
 
                           try:
                              table_lue = lecture_table(texte, 1, ' ')
                              list_para = table_lue.para
                              tab_lue   = table_lue.values()
                           except Exception, err:
-                             ier=1
-                             message = "Impossible de recuperer les resultats de calcul esclave (lecture des tables)!\nMessage:\n" + str(err)
-                          else:
-                             ier=0
-
-                          if ier!=0 :
-                             UTMESS('F', nompro, message)
+                             UTMESS('F', 'RECAL0_28', valk=str(err))
 
                           try:
                               nb_val = len(tab_lue[ list_para[0] ])
@@ -623,8 +596,7 @@ Message:
                               L_deriv[_para].append(DF)
                               i+=1
                           except Exception, err:
-                             message = "Impossible de recuperer les resultats de calcul esclave (recuperation des tables)!\nMessage:\n" + str(err)
-                             UTMESS('F', nompro, message)
+                             UTMESS('F', 'RECAL0_29', valk=str(err))
 
 
           # Nettoyage du export
@@ -729,22 +701,18 @@ Message:
         print "norme de J (fonctionnelle)=", str(J)
 
      if self.INFO>=1: 
-        txt = "Informations de convergence :"
-        txt += '\n=======================================================\n'
-        if self.evaluation_fonction >1: txt += "\n   Nombre d'evaluation de la fonction =  "  + str(self.evaluation_fonction)
-        txt += "\n=> Fonctionnelle     = "+str(J)
+        UTMESS('I', 'RECAL0_30')
+        if self.evaluation_fonction >1:
+           UTMESS('I', 'RECAL0_1', valk=str(self.evaluation_fonction))
+        UTMESS('I', 'RECAL0_31', valk=J)
 
      if self.vector_output:
         if self.INFO>=1:
-           txt += "\n=> Norme de l'erreur = " + str(norme)
-           txt += '\n=======================================================\n'
-           UTMESS('I','MACR_RECAL',txt)
+           UTMESS('I', 'RECAL0_32', valk=str(norme))
         return erreur
      else:
         if self.INFO>=1:
-           txt += "\n=> Erreur           = " + str(norme)
-           txt += '\n=======================================================\n'
-           UTMESS('I','MACR_RECAL',txt)
+           UTMESS('I', 'RECAL0_33', valk=str(norme))
         return norme
 
 
@@ -776,10 +744,10 @@ Message:
      tmp_macr_recal = os.getcwd() + os.sep + 'tmp_macr_recal'
      try:    os.mkdir(tmp_macr_recal)
      except: pass
-     if not os.path.exists(tmp_macr_recal): UTMESS('F','MACR_RECAL',"Probleme : Impossible de creer le repertoire temporaire : " + tmp_macr_recal)
+     if not os.path.exists(tmp_macr_recal): UTMESS('F','RECAL0_34',valk=tmp_macr_recal)
      try:    os.mkdir(tmp_macr_recal + os.sep + 'REPE_TABLE')
      except: pass
-     if not os.path.exists(tmp_macr_recal + os.sep + 'REPE_TABLE'): UTMESS('F','MACR_RECAL',"Probleme : Impossible de creer le repertoire temporaire : " + tmp_macr_recal + os.sep + 'REPE_TABLE')
+     if not os.path.exists(tmp_macr_recal + os.sep + 'REPE_TABLE'): UTMESS('F','RECAL0_34',valk=tmp_macr_recal + os.sep + 'REPE_TABLE')
 
      return tmp_macr_recal
 
@@ -796,8 +764,8 @@ Message:
      # Recuperation du fichier .export
      list_export = glob('*.export')
 
-     if len(list_export) == 0: UTMESS('F','MACR_RECAL',"Probleme : il n'y a pas de fichier .export dans le repertoire de travail!")
-     elif len(list_export) >1: UTMESS('F','MACR_RECAL',"Probleme : il y a plus d'un fichier .export dans le repertoire de travail!")
+     if len(list_export) == 0: UTMESS('F','RECAL0_4')
+     elif len(list_export) >1: UTMESS('F','RECAL0_5')
 
      # On modifie le profil
      prof = ASTER_PROFIL(list_export[0])

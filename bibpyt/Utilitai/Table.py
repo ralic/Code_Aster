@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 10/11/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# RESPONSABLE MCOURTOI M.COURTOIS
+# RESPONSABLE COURTOIS M.COURTOIS
 __all__ = ['Table', 'merge']
 
 import sys
@@ -32,17 +32,7 @@ EnumTypes = (ListType, TupleType)
 NumberTypes = (IntType, LongType, FloatType, ComplexType)
 
 import transpose
-
-# try/except pour utiliser hors aster
-try:
-   from Macro.externe_mess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt = '\n <%s> <%s> %s\n\n'
-      if code == 'F':
-         raise StandardError, fmt % (code,sprg,texte)
-      else:
-         print fmt % (code,sprg,texte)
+from Utilitai.Utmess import UTMESS
 
 if not sys.modules.has_key('Graph'):
    try:
@@ -146,7 +136,7 @@ class TableBase(object):
          try:
             lnup = eval(s)
          except SyntaxError, s:
-            UTMESS('F','Table','Erreur lors de la construction des n-uplets')
+            UTMESS('F','TABLE0_20')
          # pour chaque n-uplet, on imprime la sous-table
          for nup in lnup:
             tab = self
@@ -260,8 +250,7 @@ class TableBase(object):
       """
       args=kargs.copy()
       if len(self.para) != 2:
-         UTMESS('A','Table','La table doit avoir exactement deux paramètres '\
-                'pour une impression au format XMGRACE.')
+         UTMESS('A','TABLE0_21')
          return
       # suppression des lignes contenant une cellule vide
       tnv = getattr(self, self.para[0]).NON_VIDE() \
@@ -296,7 +285,7 @@ class TableBase(object):
       try:
          graph.Trace(**args)
       except TypeError:
-         UTMESS('A','Table','Les cellules ne doivent contenir que des nombres réels')
+         UTMESS('A','TABLE0_22')
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -333,7 +322,7 @@ class Table(TableBase):
       self.para = list(para)
       for i in self.para :
           if self.para.count(i) != 1 :
-             UTMESS('F','Table','Parametre en double: %s' %i)
+             UTMESS('F','TABLE0_23', valk=i)
       if len(typ) == len(self.para):
          self.type = list(typ)
       else:
@@ -394,7 +383,7 @@ class Table(TableBase):
       if len(k_value) == 0:
          return
       if k_para in self.para :
-         UTMESS('F','Table','(setitem) Le parametre %s existe déjà.' % k_para)
+         UTMESS('F','TABLE0_24', valk=k_para)
       self.add_para(k_para, typ=_typaster(k_value[0]))
       i = 0
       for row in self:
@@ -418,24 +407,22 @@ class Table(TableBase):
       """
       # vérif préalables
       if not hasattr(funct, '__call__'):
-         UTMESS('F', 'Table', "(fromfunction) '%s' n'a pas d'attribut '__call__'." \
-            % funct.__name__)
+         UTMESS('F', 'TABLE0_25', valk=funct.__name__)
       if nom_para in self.para :
-         UTMESS('F','Table','Le parametre %s existe déjà.' % nom_para)
+         UTMESS('F','TABLE0_24', valk=nom_para)
       if l_para == None:
          if not hasattr(funct, 'nompar'):
-            UTMESS('F', 'Table', "(fromfunction) '%s' n'a pas d'attribut 'nompar'." \
-               % funct.__name__)
+            UTMESS('F', 'TABLE0_26', valk=funct.__name__)
          l_para = funct.nompar
       if not type(l_para) in EnumTypes:
          l_para = [l_para]
       not_found = ', '.join([p for p in l_para if not p in self.para])
       if not_found != '':
-         UTMESS('F','Table','Parametre(s) absent(s) de la table : %s' % not_found)
+         UTMESS('F','TABLE0_27', valk=not_found)
       if const == None:
          const = {}
       if type(const) is not DictType:
-         UTMESS('F', 'Table', "L'argument 'const' doit etre de type 'dict'.")
+         UTMESS('F', 'TABLE0_28')
       # liste des valeurs des paramètres
       tabpar = []
       for para in l_para:
@@ -484,9 +471,9 @@ class Table(TableBase):
          CLES = list(CLES)
       not_found = ', '.join([p for p in CLES if not p in self.para])
       if not_found != '':
-         UTMESS('F', 'Table', 'Parametre(s) absent(s) de la table : %s' % not_found)
+         UTMESS('F', 'TABLE0_27', valk=not_found)
       if not ORDRE in ('CROISSANT', 'DECROISSANT'):
-         UTMESS('F', 'Table', 'Valeur incorrecte pour ORDRE : %s' % ORDRE)
+         UTMESS('F', 'TABLE0_29', valk=ORDRE)
       # tri
       self.rows = sort_table(self.rows, self.para, CLES, (ORDRE=='DECROISSANT'))
 
@@ -499,7 +486,7 @@ class Table(TableBase):
          try:
             ind_item = self.para.index(item)
          except ValueError:
-            UTMESS('F', 'Table', 'Parametre(s) absent(s) de la table : %s' % item)
+            UTMESS('F', 'TABLE0_27', valk=item)
          del self.type[ind_item]
          self.para.remove(item)
          for line in self.rows:
@@ -539,7 +526,7 @@ class Table(TableBase):
    def __and__(self, other):
       """Intersection de deux tables (opérateur &)"""
       if other.para != self.para:
-         UTMESS('A','Table','Les paramètres sont différents')
+         UTMESS('A','TABLE0_30')
          return Table()
       else:
          dval_other = dict.fromkeys([self._tuplevalues(r) for r in other], 1)
@@ -550,7 +537,7 @@ class Table(TableBase):
    def __or__(self, other):
       """Union de deux tables (opérateur |)"""
       if other.para != self.para:
-         UTMESS('A','Table','Les paramètres sont différents')
+         UTMESS('A','TABLE0_30')
          return Table()
       else:
          tmp = self.rows[:]
@@ -581,12 +568,11 @@ class Table(TableBase):
          d={ 'PARA' : self.para[i], }
          typ=self.type[i]
          if typ==None:
-            UTMESS('F', 'Table', 'Type du paramètre %s non défini.' %\
-                   self.para[i])
+            UTMESS('F', 'TABLE0_31', valk=self.para[i])
          elif typ[0]=='K':
             mc='LISTE_K'
             if not typ in ('K8', 'K16', 'K24'):
-               UTMESS('A','Table','Type du paramètre %s forcé à %s' % (self.para[i],Kdef))
+               UTMESS('A','TABLE0_32', valk=(self.para[i],Kdef))
                typ=Kdef
             d['TYPE_K']=typ
          elif typ=='I':
@@ -599,19 +585,18 @@ class Table(TableBase):
             try:
                check_nan(vals)
             except ValueError, err:
-               UTMESS('F', 'Table', "Erreur pour le paramètre '%s' : %s" \
-                  % (self.para[i], str(err)))
+               UTMESS('F', 'TABLE0_33', valk=(self.para[i], str(err)))
          if vals.count(None)==0:
             d[mc]=vals
          else:
             d['NUME_LIGN'] = [j+1 for j in range(len(vals)) if vals[j] != None]
             d[mc]          = [v   for v in vals             if v       != None]
          if len(d[mc])==0:
-            UTMESS('I','Table','Colonne %s vide' % self.para[i])
+            UTMESS('I','TABLE0_34', valk=self.para[i])
          else:
             dico['LISTE'].append(d)
       if len(dico['LISTE'])==0:
-         UTMESS('F','Table','La table est vide')
+         UTMESS('F','TABLE0_35')
       return dico
 
 # ------------------------------------------------------------------------------
@@ -634,7 +619,7 @@ class Table(TableBase):
       trois paramètres (P1, P2, P3).
       """
       if len(self.para) != 3:
-         UTMESS('A', 'Table', 'La table doit avoir exactement trois paramètres.')
+         UTMESS('A', 'TABLE0_36')
          return Table()
       py, px, pz = self.para
       ly, lx, lz = [getattr(self,p).values() for p in self.para]
@@ -935,8 +920,8 @@ def merge(tab1, tab2, labels=[]):
    if type(labels) not in EnumTypes:
       labels=(labels,)
    for key in labels :
-       if key not in tb1.para : UTMESS('F','Table','Erreur, label non présent %s' % key)
-       if key not in tb2.para : UTMESS('F','Table','Erreur, label non présent %s' % key)
+       if key not in tb1.para : UTMESS('F','TABLE0_27', valk=key)
+       if key not in tb2.para : UTMESS('F','TABLE0_27', valk=key)
    # ensemble des paramètres et des types
    n_para=tb1.para[:]
    n_type=tb1.type[:]

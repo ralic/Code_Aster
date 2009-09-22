@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -698,5 +698,5 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       sauf pour INCLUDE et INCLUDE_MATERIAU.
       """
       if CONTEXT.debug: print ' `- MACRO sd_accessible :', self.nom
-      return not self.nom.startswith('INCLUDE')
+      return self.parent.sd_accessible() or not self.nom.startswith('INCLUDE')
 

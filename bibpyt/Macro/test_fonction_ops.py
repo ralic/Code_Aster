@@ -1,4 +1,4 @@
-#@ MODIF test_fonction_ops Macro  DATE 24/08/2009   AUTEUR SELLENET N.SELLENET 
+#@ MODIF test_fonction_ops Macro  DATE 22/09/2009   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,11 +17,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE SELLENET
+# RESPONSABLE SELLENET N.SELLENET
 
 import os
 
-# a modifier
 epsi = 1e-15
 
 # Format
@@ -183,8 +182,6 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
    # txt sert a l'affichage dans le fichier RESULTAT
    txt = ['',]
    txt.append(ligne_separatrice)
-   
-   print 'Ici'
 
    if VALEUR != None:
       # Boucle sur les VALEURS
@@ -369,7 +366,6 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
                   else: typeFct = 'fonction'
                
                # Calcul de la fonction
-               print 'La'
                res = 0
                if type(lafonc) in (fonction_sdaster, fonction_c):
                   res = lafonc(valpu[0])
@@ -425,7 +421,6 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
             
             nomLastPara = nompara[len(nompara)-1]
             valLastPara = valpu[len(valpu)-1]
-            print 'La La'
             # Test des valeurs calculees
             curDict=TesterValeur(nomLastPara,valLastPara,valref,res,epsi,crit,ssigne)
             

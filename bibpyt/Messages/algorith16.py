@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith16 Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -472,8 +472,13 @@ cata_msg = {
   Van_Genuchten non autorisé pour ce modèle de couplage
  """),
 
+96 : _("""
+  Comportement ZEDGAR : la dérivée est nulle.
+"""),
 
-
+98: _("""
+  La maille de numéro:  %(i1)d appartient à plusieurs sous-domaines ! 
+"""),
 
 99 : _("""
  Valeur du parametre SOLVEUR/DIST_PROC0 incorrecte, routine CRESOL.

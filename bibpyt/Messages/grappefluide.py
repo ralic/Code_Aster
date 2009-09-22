@@ -1,4 +1,4 @@
-#@ MODIF grappefluide Messages  DATE 06/11/2007   AUTEUR BOYERE E.BOYERE 
+#@ MODIF grappefluide Messages  DATE 21/09/2009   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ cata_msg={
 """),
 
 3: _("""
- Mécanisme - erreur résiduelle dans le calcul du mécanisme de commande %(r1)f > %(k1)s (altitude %(r2)f).
+ Mécanisme - erreur résiduelle dans le calcul du mécanisme de commande %(r1)f > %(k1)s (altitude %(r2)f m).
 """),
 
 4: _("""
@@ -42,13 +42,13 @@ cata_msg={
 
 5: _("""
  erreur résiduelle dans la résolution du modèle du dashpot
-  somme(f) > 1.0d-3 , somme(f) =  %(r1)f (altitude %(r8)% m)
+  somme(f) > 1.0d-3 , somme(f) =  %(r1)f (altitude %(r8)f m)
   f =  %(r2)f + %(r3)f + %(r4)f + %(r5)f + %(r6)f + %(r7)f
 """),
 
 6: _("""
  erreur résiduelle dans la résolution du modèle du tube guide
-  somme(f) > 1.0d-3 , somme(f) =  %(r1)f (altitude %(r7)% m)
+  somme(f) > 1.0d-3 , somme(f) =  %(r1)f (altitude %(r7)f m)
   f =  %(r2)f + %(r3)f + %(r4)f + %(r5)f + %(r6)f
 """),
 

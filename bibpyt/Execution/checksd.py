@@ -1,4 +1,4 @@
-#@ MODIF checksd Execution  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF checksd Execution  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,9 +85,7 @@ def check(checker, sd, l_before, etape):
         UTMESS("E+", 'SDVERI_30', valk=(nom_concept,nom_commande))
         for obj, msg in lerreur :
             UTMESS("E+", 'SDVERI_31', valk=(obj, msg))
-
-        # pour "fermer" le message :
-        UTMESS("E", 'SDVERI_32')
+        UTMESS("E", 'VIDE_1')
 
     # on détruit les messages déjà imprimés pour ne pas les réimprimer avec la SD suivante :
     checker.msg=[]
@@ -101,8 +99,6 @@ def check(checker, sd, l_before, etape):
         UTMESS("E+", 'SDVERI_40',valk=type_concept)
         for x in l_interdit :
             UTMESS('E+', 'SDVERI_41',valk=x)
-
-        # pour "fermer" le message :
-        UTMESS("E", 'SDVERI_42')
+        UTMESS("E", 'VIDE_1')
 
     return checker

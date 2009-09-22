@@ -6,7 +6,7 @@
       INTEGER                  NBCYCL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C
         CALL GETVID(' ','MATER',1,1,1,NOMMAT,NBVAL)
         PHENO = 'FATIGUE'
         CALL RCCOME (NOMMAT,PHENO,PHENOM,CODRET(1))
-        IF(CODRET(1).EQ.'NO') CALL U2MESS('F','FATIGEU1_24')
+        IF(CODRET(1).EQ.'NO') CALL U2MESS('F','FATIGUE1_24')
         CARA = 'MANSON_C'
         CALL RCPARE(NOMMAT,PHENO,CARA,CODMA)
         IF(CODMA.NE.'OK') THEN

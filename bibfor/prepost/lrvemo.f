@@ -3,7 +3,7 @@
       CHARACTER*8 MODELE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 21/09/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,8 +21,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C-----------------------------------------------------------------------
-C   BUT: ROUTINE DE LIRE RESU QUI VERIFIE LA COHERENCE ENTRE LE MODELE
-C        FOURNI ET LES DONNEES DU FICHIER MED
+C   BUT:ROUTINE DE LIRE RESU / LIRE_CHAMP QUI VERIFIE LA COHERENCE ENTRE
+C       LE MODELE FOURNI ET LES DONNEES DU FICHIER MED
 C     
 C   ENTREE: MODELE(K8)  = NOM DU MODELE
 C-----------------------------------------------------------------------
@@ -65,7 +65,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
       REAL*8 R8B
       CHARACTER*1 K1B
       CHARACTER*8 SAUX08,NOMAST(NTYMAX),NOMTM,NOMA,K8B
-      CHARACTER*16 TYPRES,PHENO,VALK(2)
+      CHARACTER*8 CHANOM,TYPECH
+      CHARACTER*16 TYPRES,PHENO,VALK(2),NOMCMD,TYCH
       CHARACTER*24 LIGRMO
       CHARACTER*32 NOMAMD
       CHARACTER*200 NOFIMD,DAUX
@@ -98,27 +99,41 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0/
+C-----------------------------------------------------------------------
 
       CALL JEMARQ()
+
+      CALL GETRES(CHANOM, TYPECH, NOMCMD) 
 
 C     ON VERIFIE QUE LE PHENOMENE DU MODELE FOURNI EST COHERENT AVEC
 C     LA SD RESULTAT A PRODUIRE
 C     ========================= 
-      CALL GETVTX(' ','TYPE_RESU',0,1,1,TYPRES,N1)
-      CALL DISMOI('F','PHENOMENE',MODELE,'MODELE',IBID,PHENO,N1)
-      VALK(1)=PHENO
-      VALK(2)=TYPRES
-      IF(TYPRES(1:9).EQ.'EVOL_THER')THEN
-        IF(PHENO(1:9).EQ.'MECANIQUE')THEN
-           CALL U2MESS('F+','MED_54')
-           CALL U2MESK('F','MED_56',2,VALK)
+      IF(NOMCMD(1:9).EQ.'LIRE_RESU')THEN
+        CALL GETVTX(' ','TYPE_RESU',0,1,1,TYPRES,N1)
+        CALL DISMOI('F','PHENOMENE',MODELE,'MODELE',IBID,PHENO,N1)
+        VALK(1)=PHENO
+        VALK(2)=TYPRES
+        IF(TYPRES(1:9).EQ.'EVOL_THER')THEN
+          IF(PHENO(1:9).EQ.'MECANIQUE')THEN
+            CALL U2MESS('F+','MED_54')
+            CALL U2MESK('F','MED_56',2,VALK)
+          ENDIF
+        ELSE
+          IF(PHENO(1:9).EQ.'THERMIQUE')THEN
+            CALL U2MESS('F+','MED_54')
+            CALL U2MESK('F','MED_56',2,VALK)
+          ENDIF
         ENDIF
-      ELSE
+      ELSEIF(NOMCMD(1:10).EQ.'LIRE_CHAMP')THEN
+        CALL DISMOI('F','PHENOMENE',MODELE,'MODELE',IBID,PHENO,N1)
+        CALL GETVTX ( ' ', 'TYPE_CHAM', 0, 1, 1, TYCH, N1)
         IF(PHENO(1:9).EQ.'THERMIQUE')THEN
-           CALL U2MESS('F+','MED_54')
-           CALL U2MESK('F','MED_56',2,VALK)
+           VALK(1)=PHENO
+           VALK(2)=TYCH
+           CALL U2MESK('F','MED_64',2,VALK)
         ENDIF
       ENDIF
+
  
 C     ON VERIFIE QUE LE MAILLAGE DU MODELE FOURNI ET CELUI
 C     CONTENU DANS LE FICHIER MED ONT

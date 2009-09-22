@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 22/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,6 +133,7 @@ C
          CALL GETMJM ( NOMRC, 1, 0, K16BID, K16BID, NBOBM )
          NBOBM = - NBOBM
 C
+        IF ( NOMRC.EQ.'THER_NL' ) NBOBM = NBOBM + 1
         CALL WKVECT(NOOBRC//'.VALR','G V R' ,  NBOBM,JVALRM)
         CALL WKVECT(NOOBRC//'.VALC','G V C' ,  NBOBM,JVALCM)
         CALL WKVECT(NOOBRC//'.VALK','G V K8',2*NBOBM,JVALKM)

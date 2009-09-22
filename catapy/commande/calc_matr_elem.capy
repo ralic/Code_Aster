@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 21/09/2009   AUTEUR BOYERE E.BOYERE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,7 +81,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
          ),
 
          b_meca_gyro = BLOC( condition = "OPTION=='MECA_GYRO'",
-           CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
+           CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
            CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
            CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
          ),

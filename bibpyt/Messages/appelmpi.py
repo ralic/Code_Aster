@@ -1,4 +1,4 @@
-#@ MODIF appelmpi Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF appelmpi Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,17 +35,8 @@ cata_msg={
  l'option FETAM %(i2)d est non prévue en compilation MPI
 """),
 
-5: _("""
- Erreur MPI: %(k1)s
-"""),
-
 6: _("""
  Processeur %(i1)d : option MUMMPI %(i2)d non prevue avec MUMPS !
 """),
-7: _("""
- &mumps.liste.sd.mpi existe deja !
-"""),
-
-
 
 }

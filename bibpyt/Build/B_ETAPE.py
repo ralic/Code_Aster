@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -371,7 +371,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
 
 
    def check_values(self, func, values):
-      """Vérifier que les éléments de 'values' sont des chaines de caractères (pour getvtx).
+      """Vérifier que les éléments de 'values' sont du bon type (pour getvid, getvtx, getvr8).
       """
       ok = True
       if not type(values) in (list, tuple):
@@ -384,6 +384,12 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          if not ok:
             break
       return ok
+
+
+   def check_float(self, values):
+      """Vérifier que les éléments de 'values' sont des réels (pour getvtx).
+      """
+      return self.check_values(lambda v : type(v) in (int, long, float), values)
 
 
    def check_text(self, values):
@@ -538,6 +544,15 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
       if CONTEXT.debug : prbanner("getvr8 %s %s %d %d %d" %(nom_motfac,nom_motcle,iocc,iarg,mxval))
 
       valeur=self.get_valeur_mc(nom_motfac,nom_motcle,iocc,iarg,mxval)
+
+      if not self.check_float(valeur[1]):
+         # elements de contexte
+         print '! Etape  :', getattr(self, 'nom', '?'), '/', nom_motfac, '/', nom_motcle
+         print '! Parent :', getattr(self.parent, 'nom', '?')
+         print "! ERREUR incoherence fortran/catalogue de commande, réel attendu et non :"
+         print "!", valeur[1]
+         raise AssertionError
+
       valeur=self.Traite_value(valeur,"R8")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVR8',nom_motfac,iocc,nom_motcle,valeur)

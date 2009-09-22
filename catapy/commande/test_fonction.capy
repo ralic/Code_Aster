@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/08/2009   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 22/09/2009   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# RESPONSABLE SELLENET N.SELLENET
 from Macro.test_fonction_ops import test_fonction_ops
 
 TEST_FONCTION=MACRO(nom="TEST_FONCTION",op=test_fonction_ops,sd_prod=None,

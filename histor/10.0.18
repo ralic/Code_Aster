@@ -1,0 +1,1380 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 21/09/2009 - 11:50:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013886 DU 2009-09-16 14:03:48
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Messages mal formatxc3xa9s
+FONCTIONNALITE
+   Probleme
+   ========
+   Quelques messages mal formates ds grappefluide.py et factor.py.
+   (Le 3ieme fichier soupçonne ds la fiche, context_info.py, ne comporte
+   finalement pas d'erreur de ce type).
+   
+   Solution
+   ========
+   Dans grappefluide je change les msgs:
+    -3: il manquait l'unite, le metre.
+    -5 et 6: le de float.
+   Dans factor.py:
+    -62: j'ai retouche le msg pour tenir compte d'une restit reçente 
+   (SOLVEUR/POST_TRAITEMENTS si MUMPS).
+    -73: corrections de pourcentages mal formates: % au lieu de %%.
+   
+   Sources modifiees
+   ==================
+   PY: factor.py, grappefluide.py.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013855 DU 2009-09-10 16:19:29
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.0.16, le cas-test sdll141b s'arrete en erreur_<F> sur Calibre 5.
+FONCTIONNALITE
+   Probleme
+   =========
+   Dans le cas test sdll141b, un calcul modal avec l'op.
+   MODE_ITER_SIMULT produit une mode dont la norme 
+   d'erreur a legerement bouge.
+   
+   Solution
+   ========
+    Il s'agit d'une resolution de QEP avec la methode de
+   SORENSEN. Celle-ci propose une solution simple pour
+   ameliorer la convergence des modes (et preconisee ds
+   les docs U et R): augmenter la taille de l'espace de
+   projection du pb de Rayleigh-Ritz associe.
+   Dans Code_Aster, l'utilisateur peut le faire dans
+   MODE_ITER_SIMULT via 2 mot-clé:
+     - DIM_SOUS_ESPACE= taille de l'espace en absolu,
+     - COEF_DIM_ESPACE= idem en relatif par rapport au
+    nbre de modes souhaites.
+   Comme:
+    - le mode incrimine depasse de peu, en norme
+    d'erreur, la preconisation du cas-test: 0.0021 au 
+   lieu de 0.002.
+    - que les autres modes ne semblent pas avoir bouge
+    (erreur moyenne sur bull/calibre 5 en NEW10:
+     0.4e-4/0.8e-4)
+    - qu'ils bougent un peu à chaque modifs de leurs
+   "environnement" (calcul elem, numerique, bibliotheque
+   ...). Erreur moy sur Bull NEW9/NEW10: 1.0e-4/0.8e-4.
+     - qu'il y'a peu de cas-tests utilisant explicite
+   ment le mot-cle COEF_DIM_ESPACE (sdls300a).
+   
+   Je propose de l'activer ici avec la valeur 3 (au lieu
+   de 2 par defaut avec SORENSEN)
+         COEF_DIM_ESPACE=3
+   Ainsi on projete sur un espace plus grand et la norme
+   d'erreur s'ameliore .
+   Sur calibre 5 le mode 29 passe d'une norme de
+        2.16E-3 à 1.23E-3
+   et l'erreur moyenne du spectre recherche passe de
+       0.89E-4 à 0.52E-4.
+   
+   RQ: Un autre alternative consiste a decouper la 
+   recherche du spectre en plusieurs morceaux. On 
+   cherche ici 30% des modes du pb d'un seul coup. 
+   Cf. MACRO_MODE_MECA.
+   
+   Validation
+   ===========
+   Cas-test sdll141b sur Bull et calibre5 en NEW10 
+   nodebug.
+   
+   Sources modifiees
+   =================
+   Cas-test sdll141b.comm.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test de non regression
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013853 DU 2009-09-10 16:11:11
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.0.16, le cas-test ssnp122a s'arrete en erreur_<F> sur Bull, Rocks et Calibre 5.
+FONCTIONNALITE
+   Probleme
+   ========
+   Ce cas-test utilisant le solveur lineaire MUMPS ne 
+   passe plus, en mode centralise sequentiel, depuis
+   la restit faite en 10.0.16 pour MUMPS (on ne transmet
+   plus les termes rigoureusement nuls en centralise).
+   
+   Analyse
+   ========
+   Cette modification (formelle) des inputs perturbe le
+   comptage prealable des pivots lors de la phase d'ana
+   lyse de MUMPS. Ces heuristiques internes controle mal
+   l'augmentation de la taille de l'espace de travail du
+   a ce pivotage. Pour l'aider ds cette tache on lui
+   indique, via le parametre PCENT_PIVOT, de combien de
+   pourcents, l'espace de travail va augmenter du fait
+   du pivotage. Cette estimation se fait "au doigt 
+   mouille" !  
+   Sur ce cas-test, on passe la valeur de
+                  PCENT_PIVOT=10 (valeur par defaut)
+   à
+                  PCENT_PIVOT=30
+   RQS:
+    * En general, une valeur de plus de 50%
+   est suspecte (sauf peut-être en cas de nbreux 
+   Lagranges sans ELIM_LAGR2).
+    * La doc MUMPS preconise la valeur par defaut de 20%
+   mais l'option (active par defaut) ELIM_LAGR2 d'Aster
+   permet de diminuer ce seuil à 10%.
+    * De nbreux cas-tests comportent des valeurs trop
+   grandes (100 voire 600%) qui entraine un surcout
+   memoire et donne le mauvais exemple. Avec ELIM_LAGR2
+   ces valeurs "ultra" devraient rester exceptionnelles.
+   
+   Validation
+   ==========
+   Cas-test ssnp122a sur Bull, Calibre5 et Rocks.
+   
+   Sources modifiees
+   =================
+   Cas-test snnp122a.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.0.16
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   non rxc3xa9gression
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 21/09/2009 - 16:11:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013895 DU 2009-09-18 07:44:59
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   rep? local pour la gyroscopie des discrets
+FONCTIONNALITE
+   Lors de la livraison de la gyroscopie pour les éléments discrets, le passage du repère
+   local au repère global a été omis. 
+   
+   Je modifie donc la te009 (celle de la gyroscopie pour les discrets) en ajoutant le passage
+   par la matrice de rotation du repère local au repère global.
+   J'ajoute une modélisation au test SDLL141 (gyroscopie d'une poutre en rotation) où on
+   remplace la masse de la poutre par des discrets équivalents et on fait faire une rotation
+   de 45 degrés à la poutre.
+   
+   Depuis l'introduction de la gyroscopie, il y avait un risque de résultats faux si on
+   calculait la gyroscopie d'éléments discrets définis dans un repère local.
+   
+   Je modifie aussi légèrement le catalogue de CALC_MATR_ELEM (et la routine meamgy) pour ne
+   plus rendre le matériau obligatoire. Ainsi on peut calculer la gyroscopie de systèmes
+   constitués exclusivement d'éléments discrets (J'en avais besoin pour des test
+   supplémentaires).
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.1.16
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.1.16
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v2.02.141
+VALIDATION
+   SDLL141e
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013795 DU 2009-08-31 07:36:14
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.0.14 le cas test sdld34a s'arrete en Erreur<F> sur Rocks
+FONCTIONNALITE
+   J'ai vérifié qu'en NEW10.0.17, le cas test SDLD34a tourne sans problème.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   SDLD34a sur ROCKS
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009509 DU 2006-03-01 14:09:49
+TYPE evolution concernant Documentation (VERSION )
+TITRE
+   doc U de DYNA_LINE_TRAN
+FONCTIONNALITE
+   En 2006, Jacques faisait remarquer que le mot clef solveur dans DYNA_LINE_TRAN possède des
+   spécificités qui méritaient d'être expliquées dans la doc u4.53.02. Une fiche avait été
+   émise et les modifications avaient été apportées lors du chantier doc lors de la sortie de
+   la version 8.
+   Malheureusement on avait oublié de fermer la fiche à l'époque.
+   Je le fais maintenant.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013908 DU 2009-09-18 08:22:12
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Affichages alarmants dans DYNA_TRAN_MODAL en INFO=2
+FONCTIONNALITE
+   Emile Luzzato a constaté que l'affichage en INFO=2 de DYNA_TRAN_MODAL avec CHOC produit
+   des messages inquiétants.
+   
+   Par exemple :
+   
+   <<
+      Au noeud de choc N351
+     
+   
+      Pour le noeud n0 : 99999999
+       - Raideur locale DEPX : 5.27412e+60
+       - Raideur locale DEPY : 1454282773709208787705547989822834009440256.000000
+       - Raideur locale DEPZ : 377.867340  
+   >>
+   
+   En fait, il s'agit uniquement d'un affichage indicatif. Il n'a pas de conséquences sur le
+   calcul.
+   Comme l'intérêt de son information est loin d'être évident, je préfère l'ôter que de réparer.
+   
+   Mais ce choix ne préjuge pas des évolutions à apporter sur les schémas en temps
+   disponibles (ou à introduire) dans DYNA_TRAN_MODAL pour traiter les chocs, avec leur
+   corollaire, les heuristiques de choix de pas de temps.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sur xc3xa9tude
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 21/09/2009 - 15:00:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013811 DU 2009-09-02 13:22:19
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   IGNORE_ALARM='SUPERVIS_1' ne fonctionne pas en POURSUITE
+FONCTIONNALITE
+   IGNORE_ALARM permet de désactiver l'affichage de certaines alarmes dans le jeu de commandes.
+   L'utilisateur ayant conscience de l'apparition d'une alarme en désactive l'affichage
+   (diagnostique du job devient OK), ce qui lui permet d'être alerter si une autre alarme
+   apparait (diagnostique <A>_ALARM).
+   
+   Il y avait un cas particulier où l'alarme n'était pas désactivée :
+   
+   POURSUITE(IGNORE_ALARM='SUPERVIS_1',PAR_LOT='NON',)
+   FIN()
+   
+   Car en effet, la mise en oeuvre du mécanisme était faite, en PAR_LOT='NON', juste après
+   l'appel à l'op de POURSUITE.
+   
+   Détail :
+     - le mécanisme est activé dans le sd_prod de DEBUT/POURSUITE
+     - on passe par sd_prod dans la phase de création du concept sortant et dans la phase de
+   validation.
+     - le mécanisme ne doit pas être activé plusieurs fois
+     - il faut donc le mettre en place au premier passage dans sd_prod et non le second.
+   
+   Existe en version 9.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   poursuite xc3xa9lxc3xa9mentaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013437 DU 2009-05-19 14:26:54
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Plantage dans CALC_TABLE (appelxc3xa9 par POST_K1_K2_K3)
+FONCTIONNALITE
+   Problème
+   ========
+   
+   L'utilisateur fait :
+   
+   POURSUITE(...)
+   AK1 = POST_K1_K2_K3(...)
+   
+   et obtient ce message :
+   
+   /opt/aster/NEW9/bibc/supervis/astermodule.c 1800 : erreur a l appel de gcucon dans la
+   partie Python
+   Traceback (most recent call last):
+     File "./Python/Build/B_ETAPE.py", line 701, in gcucon
+       elif B_utils.Typast(AsType(objet_sd)).upper() == concep.strip():
+     File "./Python/Build/B_utils.py", line 192, in Typast
+       if issubclass(t, ASSD):
+   TypeError: issubclass() arg 1 must be a class
+   
+   
+   Explication
+   ===========
+   
+   La base est un peu grosse... mais en fait, le pick.1 seul suffit à comprendre
+   ce qui s'est passé :
+   
+   import sys, pickle
+   sys.path.append('Python')
+   fpick='pick.1'
+   file=open(fpick,'r')
+   context=pickle.load(file)
+   file.close()
+   
+   print context['AK1']
+   [None, None, None, None]
+   
+   => AK1 a été utilisé dans la première partie du calcul en tant que liste de concepts :
+   AK1[0] = COMMANDE(...)
+   ...
+   
+   
+   Solution
+   ========
+    - contournement : AKxx = POST_K1_K2_K3(...)
+   
+    - Dans gcucon (dit si un concept existe avant la commande courante), on fait un test :
+    
+    if B_utils.Typast(AsType(objet_sd)).upper() == concep.strip()
+   
+    Deux problèmes dans Typast :
+     - gérer les listes (et non seulement les tuples)
+   
+   -   if type(ty) == tuple: 
+   +   if type(ty) in (list, tuple): 
+   
+     - respecter la spécif qui dit qu'elle retourne une chaine de caractères (et non None
+   quand on n'a rien trouvé) :
+   
+   +   if t is None : return ""
+   ...
+   -   return None
+   +   return ""
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude jointe
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013710 DU 2009-08-12 12:56:07
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Message ELEMENTS16_98 inexistant
+FONCTIONNALITE
+   Problème
+   ========
+   "as_run --messages check" a laissé passer pas mal de choses
+   
+   Il y a des erreurs dans les labels des messages :
+   
+   Invalid FROM_C_1 /opt/aster/NEW10/bibfor/algeline/fetsm.f
+   Invalid FROM_C_2 /opt/aster/NEW10/bibfor/algeline/fetsm.f
+   Invalid ZEDGAR : DERIVEE NULLE /opt/aster/NEW10/bibfor/algorith/zedgar.f
+   Invalid XFEM _20 /opt/aster/NEW10/bibfor/modelisa/xlorie.f
+   
+   
+   Des appels faits à un faux UTMESS :
+   
+   Invalid MACR_RECAL /opt/aster/NEW10/bibpyt/Macro/macr_recal_ops.py
+   Invalid MACR_RECAL /opt/aster/NEW10/bibpyt/Macro/reca_algo.py
+   Invalid MACR_RECAL /opt/aster/NEW10/bibpyt/Macro/reca_calcul_aster.py
+   Invalid MACR_RECAL /opt/aster/NEW10/bibpyt/Macro/reca_interp.py
+   Invalid MACR_RECAL /opt/aster/NEW10/bibpyt/Macro/reca_utilitaires.py
+   Invalid Graph /opt/aster/NEW10/bibpyt/Utilitai/Graph.py
+   Invalid Table /opt/aster/NEW10/bibpyt/Utilitai/Table.py
+   
+   
+   Solution
+   ========
+   
+   Erreurs sur les messages :
+   
+   - FROM_C_1, FROM_C_2 : on remplace par ASSERT (le message était objet existe déjà)
+   
+   - ZEDGAR : nouveau message ALGORITH16_96
+   
+   - ELEMENTS16_98 : maille commune à plusieurs sous-domaines
+    => Il s'agit en fait de ALGORITH16_98 qui a été supprimé (ajlipa.f).
+       C'est le même message que ELEMENTS4_75 qui je supprime.
+       ELEMENTS4_76 contenait un entier toujours égal à 0, je corrige (creso1.f).
+   
+   - FATIGEU1_24 => FATIGUE1_24
+   - "XFEM _20" => XFEM_20
+   
+   - INDICERREUR_1 => INDICATEUR_33
+   - INDICERREUR_2 => INDICATEUR_32
+   
+   - APPELMPI_5 : supprimé
+   
+   - SDVERI_32, SDVERI_42 => VIDE_1  (pour fermer un message F+, F+, ..., F)
+   - SDVERI_45 : supprimé
+   
+   - TEST0_1 : supprimé
+   
+   - SUPERVIS_6 SUPERVIS_41 SUPERVIS_57 SUPERVIS_89 SUPERVIS_90 SUPERVIS_91 SUPERVIS_92 :
+   messages propres à Utmess.py (module qui gère l'affichage des messages) : déplacés dans un
+   catalogue dédié catamess.py (+ ajout de faux appels à ces messages, car ils ne sont pas
+   appelés par UTMESS, pour ne pas tromper as_run --messages)
+   
+   - SUPERVIS_55, SUPERVIS_69, SUPERVIS_70 : appelés par u2mesg via UTPRIN (en C). On les
+   déplace dans catamess.py (+ faux appels dans Utmess.py)
+   
+   - Table.py/Graph.py et MACR_RECAL : modification de UTMESS pour être appelable sans le
+   module aster (aster.affiche devient print...)
+     On complète le catalogue table0.py. graph0.py et recal0.py sont créés.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   as_run --messages check + asrest
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013854 DU 2009-09-10 16:15:48
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.16, le cas-test mtlp103a s'arrete en temps CPU sur Bull.
+FONCTIONNALITE
+   Le test était quasi-fini. Les commandes restantes auraient pris moins d'une seconde.
+   Le test tourne fréquemment en 220-225 s alors que le .para autorise 230 + 10 s de réserve.
+   On ajoute une dizaine de secondes pour être tranquille.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   mtlp103a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013892 DU 2009-09-17 14:40:44
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Bug en PAR_LOT='NON'
+FONCTIONNALITE
+   Problème
+   ========
+   Lorsqu'il y a des INCLUDE dans une étude en PAR_LOT='NON' il n'est plus possible
+   d'utiliser des commande python (exemple LIST_PARA) dans les include. On obtient en effet
+   le message ci-dessous :
+   
+   
+   JDC.py : ERREUR A L'INTERPRETATION DANS ACCAS - INTERRUPTION
+   >> JDC.py : DEBUT RAPPORT
+   CR phase d'initialisation
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      ! Etape  INCLUDE ligne :  145 fichier :  fort.1  impossible d affecter un type au !
+      ! resultat                                                                        !
+      !    File "./Eficas/Cata/ops.py", line 278, in INCLUDE                            !
+      !     self.make_include(unite=UNITE)                                              !
+      !    File "./Eficas/Noyau/N_MACRO_ETAPE.py", line 598, in make_include            !
+      !     self.make_contexte(f,text)                                                  !
+      !    File "./Eficas/Noyau/N_MACRO_ETAPE.py", line 627, in make_contexte           !
+      !     exec code in globs,d                                                        !
+      !    File "fort.30", line 1, in ?                                                 !
+      !     last_c2 = RESU1.LIST_PARA()['INST'][-1]                                     !
+      !    File "./Eficas/SD/co_resultat.py", line 44, in LIST_PARA                     !
+      !     raise Accas.AsException("Erreur dans resultat.LIST_PARA en PAR_LOT='OUI'")  !
+      !  AsException: Erreur dans resultat.LIST_PARA en PAR_LOT='OUI'                   !
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   fin CR phase d'initialisation
+   
+   
+   Solution
+   ========
+   Quand on vérifie si on a le droit d'accéder au contenu d'un concept, on interroge la
+   méthode sd_accessible d'où on se trouve.
+   Pour les macro-commandes (qui sont localement en PAR_LOT='NON'), il y a le cas particulier
+   des INCLUDE.
+   On faisait comme si les INCLUDE étaient en PAR_LOT='OUI' or ils se comportent comme leur
+   "parent" :
+   
+   class MACRO_ETAPE:
+   [...]
+   . def sd_accessible(self):
+   . .  return self.parent.sd_accessible() or not self.nom.startswith('INCLUDE'
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   wtnl100a + un include
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013885 DU 2009-09-16 11:11:16
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   pb utilisation de getexm
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Si on fait appel à GETVR8 sur un mot-clé de type 'TXM', le traceback n'est pas forcément
+   très clair dans la mesure où l'erreur apparait plus tard (ici le CALL GETEXM suivant) :
+   
+   Traceback (most recent call last):
+     File "./Python/Build/B_ETAPE.py", line 213, in getexm
+       presence = int( self.get_mcsimp(nom_motfac, nom_motcle) != None )
+     File "./Python/Build/B_ETAPE.py", line 191, in get_mcsimp
+       l_mot_fac = self.definition.getmcfs(nom_motfac)
+     File "./Python/Build/B_ENTITE.py", line 137, in getmcfs
+       o=v.getmcfs(nom_motfac)
+     File "./Python/Build/B_ENTITE.py", line 130, in getmcfs
+       for k,v in self.entites.items():
+   TypeError: a float is required
+   
+   
+   Solution
+   ========
+   
+   On ajoute une vérification pour détecter cette incohérence (comme cela a déjà été fait
+   pour GETVID/GETVTX).
+   Dans ce cas, le message serait plus clair :
+   
+   ! Etape  : STAT_NON_LINE / SOLVEUR          / MIXER_PRECISION
+   ! Parent : fort.1
+   ! ERREUR incoherence fortran/catalogue de commande, réel attendu et non :
+   ! ('OUI',)
+   /opt/aster/NEW10/bibc/supervis/astermodule.c 1049 : erreur dans la partie Python
+   Traceback (most recent call last):
+     File "./Python/Build/B_ETAPE.py", line 557, in getvr8
+       raise AssertionError
+   AssertionError
+   
+   
+   A priori pas d'impact sur les performances, tester 1e6 valeurs prend environ 1 s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fichiers joints
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013713 DU 2009-08-13 07:42:38
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   comportement different de SDVERI entre PAR_LOT=NON/OUI
+FONCTIONNALITE
+   Problème
+   ========
+   
+   En PAR_LOT='NON' + SDVERI='OUI', le calcul s'arrête sur une erreur <E> : objet
+   PRCH....DEEQ interdit.
+   
+   En PAR_LOT='OUI' + SDVERI='OUI', le calcul passe sans problème, alors qu'un IMPR_CO
+   m'informe que l'objet PRCH....DEEQ pourtant interdit existe toujours...
+   
+   
+   Solution
+   ========
+   
+   Le calcul ressemble à ceci :
+   
+   U1=CREA_CHAMP( AFFE=_F( ... ))
+   
+   U2=CREA_CHAMP( AFFE=_F( ... ))
+   
+   DETRUIRE(CONCEPT=_F(NOM=U1,))
+   
+   U1=CREA_CHAMP( ASSE=_F( ... ))
+   
+   C'est juste après ce dernier CREA_CHAMP que le calcul s'arrête en PAR_LOT='NON'.
+   
+   
+   Fonctionnement de SDVERI :
+   
+   U1=CREA_CHAMP( AFFE=_F( ... ))
+    ---> on vérifie que les objets créés par ce CREA_CHAMP sont licites : quels sont les
+   nouveaux objets autorisés (=ceux appartenant à U1) : pas d'objet en dehors de U1, U1.xxxx
+   connu dans le catalogue sd_cham (*)
+   
+   U2=CREA_CHAMP( AFFE=_F( ... ))
+    ---> idem pour U2
+   
+   DETRUIRE(CONCEPT=_F(NOM=U1,))
+    ---> U1 "marqué comme détruit" (**)
+   
+   U1=CREA_CHAMP( ASSE=_F( ... )) (***)
+    ---> si U1 est un nouveau concept (par exemple s'il a été détruit comme c'est le cas
+   ici), on vérifie comme en (*).
+    ---> si U1 existait déjà et est enrichi (présence de reuse=U1), on fait la même
+   vérification qu'en (*).
+    ---> si U1 existait déjà (et pas de reuse), on en déduit qu'il a été produit par ailleurs
+   et donc déjà vérifié. Pas d'autre sd produite donc pas de nouveaux objets autorisés.
+   
+   
+    - En PAR_LOT='OUI', U1 est bien vu comme détruit, donc en (***), on est dans le 1er cas.
+   
+    - En PAR_LOT='NON', U1 n'est pas vu comme détruit, donc en (***), on se retrouve dans le
+   3ème cas. Or ce CREA_CHAMP (option ASSE) produit plus d'objets dans U1 que le premier qui
+   a produit U1 (option AFFE). La présence de ces "nouveaux" objets n'ayant pas été déjà
+   notés comme vérifiés déclenche une erreur.
+   
+   
+   En (***), pour savoir si U1 existait avant ou pas, on appele
+   get_contexte_avant(etape_courante).
+   Pour cela, le superviseur refait à chaque fois l'inventaire des sd produites par les
+   étapes précédentes.
+   Le bug est en (**) dans op_init de DETRUIRE : U1 est dans le get_contexte_avant("3ème
+   CREA_CHAMP").
+   
+   
+   Ce comportement existe depuis la 9.1.5 (cf. issue10561) avec l'ajout de l'attribut
+   'executed', on exécutait l'op_init que la première fois.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fichiers joints
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 22/09/2009 - 10:54:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013912 DU 2009-09-18 13:34:47
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Interpenetration suite a un calcul methode CONTINUE+GLISSIERE
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Cette fiche a pour but de conclure la fiche 13792 qui a été classée sans suite mais aussi
+   de valider la correction effectuée dans la fiche 13866.
+   
+   Dans cette fiche Martin Guiton joint un cas-test simple de deux cubes de même taille que
+   l'on appuie l'un sur l'autre. L'un des deux cubes ayant une face courbe à l'interface, il
+   y a une forte non-linéarité géométrique (les deux cubes glissent l'un sur l'autre).
+   
+   À la fin du chargement (plutôt complexe), on constate une forte interpénétration du cube
+   "plat" dans le cube "courbe".
+   
+   Analyse
+   =======
+   
+   L'analyse très rapide que l'on pourrait faire est la suivante : aux pas de temps où l'on
+   constate une interpénétration une alarme explicite a été émise. Il s'agit de l'alar
+   me CONTACT3_88 qui dit qu'il y a convergence forcée sur la géométrie, et qui indique
+   "Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles."
+   En gros la non-linéarité géométrique du contact n'ayant pas été bien résolue, il n'est pas
+   anormal d'observer une interpénétration.
+   La difficulté à faire vérifier le critère géométrique et le fait que l'alarme CONTACT3_88
+   est souvent ignorée (par qu'elle est très souvent émise) va être traitée en plusieurs points :
+   * une fois DEFI_CONTACT restitué par Mickaël, on aura accès à la valeur du critère à
+   vérifier (celui-ci est actuellement fixé à 1.E-4 alors qu'il est de 5.E-2 dans les
+   méthodes discrètes).
+   * les cas-tests seront modifiés pour ne plus faire apparaître cette alarme (en jouant sur
+   le critère ou tout simplement en augmentant le nombre max d'itérations).
+   * une meilleure explication de la notion de non-linéarité géométrique dans la doc U2 du
+   contact (à paraître)
+   
+   
+   Pour pousser un peu plus loin cependant et pour se rassurer, j'ai fait quelques essais
+   supplémentaires sur le cas-test : 
+   
+   a/ tout d'abord on notait parfois une action à distance suite au décollement des surfaces
+   sur une variante du test soumise par Martin. Ce problème était lié au fonctionnement du
+   mot-clé GLISSIERE. L'anomalie a été corrigée dans la fiche 13866, et on a vérifié ici sa
+   bonne prise en compte.
+   
+   b/ sur ce cas-test la non-linéarité géométrique est très importante : on a beau pousser le
+   nombre max d'itérations ITER_GEOM_MAXI à 50, le critère géométrique est très loin d'être
+   vérifié.
+   En observant l'interface M-E, on constate que même aux pas de temps où les noeuds esclaves
+   ne pénètrent pas dans la surface maître, on voit visuellement une interpénétration (car
+   les noeuds maîtres pénètrent la surface esclave).
+   
+   Dès lors on se rend bien compte que les maillages sont beaucoup trop grossiers. Ne
+   disposant pas de la géométrie pour ce maillage, je n'ai pas pu passer en quadratique (qui
+   aiderait pas mal). Par contre j'ai utilisé Homard pour raffiner 2 fois le cube "plat" qui
+   vient s'écraser sur le cube courbe. C'est le point suivant.
+   
+   c/ en raffinant le cube "plat" on constate que sur les 3 premiers pas de temps il n'y a
+   plus d'interpénétration : tout va bien et la surface plane se déforme bien pour épouser la
+   surface courbe. Le maillage a donc bien une énorme importance.
+   ==> pour aller plus loin il faudrait raffiner le cube "courbe" une fois.
+   
+   Conclusion
+   ==========
+   
+   Dans cette fiche je ne relève pas d'anomalies du code (hormis celle corrigée dans 13866).
+   La non-linéarité géométrique est le talon d'achille des méthodes de contact dans Aster
+   (discrètes comme continue). La démarche actuelle n'est pas forcément mauvaise, mais elle
+   est coûteuse en temps et très limite pour les cas pathologiques.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sur le cas-test joint
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013856 DU 2009-09-10 16:24:50
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.16, le cas-test ssnl133a s'arrete anormalement sur Rocks.
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Le cas-test SSNL133A s'arrête pour cause de matrice non inversible sur Rocks en 10.0.16.
+   
+   Dans la fiche 13594, j'ai proposé de modifier ce test quand il casserait pour la 5ème fois
+   (cette fois-ci donc). L'objectif était d'utiliser une méthode de pilotage en longueur
+   d'arc (ou déplacement imposé) pour passer l'instabilité de flambement (déversement).
+   
+   Malheureusement après de nombreux essais infructueux et l'émission d'une AL (fiche 13883,
+   pilotage en déplacement imposé), j'ai du capituler. Cet élément (POU_D_T_GD) refuse
+   catégoriquement de se faire piloter sur ce cas-test (il est vrai très non linéaire). Le
+   pilotage finit toujours par échouer ou bien on a une matrice singulière.
+   Je ne fais donc rien à part passer le test en INFO=2. Cela n'apporte pas grand chose,
+   sachant que je suis absolument convaincu qu'il n'y a pas de bug derrière ça.
+   Remarque : l'élément POU_D_TGM sur le cas-test SSNL133B utilise le pilotage qui n'est donc
+   pas à remettre en cause ici.
+   
+   Suite à l'EDA : j'ai essayé également de passer avec le solveur 'MUMPS'. Comme ce solveur
+   ne déclenche une erreur 'matrice non factorisable' qu'en dernier recours, je m'arrête
+   désormais par 'échec du pilotage'. Le problème reste le même.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnl133a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013810 DU 2009-09-02 10:57:02
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN10 - CONTACT - Retablir la verification de l'orientation des normales
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   Comme me le fait remarquer Nicolas, la vérification de l'orientation des normales des
+   groupes de mailles fournies à AFFE_CHAR_MECA a été désactivée (en 9.2.18) pour le CONTACT.
+   On propose de la rétablir.
+   
+   Détails
+   =======
+   
+   On corrige pour cela l'unique routine chargée de la vérification. La vérification est
+   active pour les mot-clés (GROUP_MA|MAILLE)_(MAIT|ESCL), et ce bien qu'en général seul la
+   surface maître a besoin d'être bien orientée (avec les réglages par défaut).
+   
+   On ne traite pas le cas des mailles points et des mailles SEG en 3D (cas du contact
+   poutre/poutre).
+   
+   On a fait passer un astout contact. Seul un test (SSNP503E) avait des surfaces mal
+   orientées. On rajoute le MODI_MAILLAGE adéquat dans ce test.
+   
+   On supprime par ailleurs quelques messages (ASSERT) et on ré-écrit les messages d'erreur :
+   
+   ...!----------------------------------------------------------------------------------------------------------------------------------!
+   ...!.<E>.<MODELISA8_56>...............................................................................................................!
+   ...!..................................................................................................................................!
+   ...!..................................................................................................................................!
+   ...!.Dans.le.GROUP_MA.L13,.il.y.a.32.mailles.mal.orientées..Utilisez.la.commande.MODI_MAILLAGE.pour.orienter.la.normale.aux.surfaces..!
+   ...!..................................................................................................................................!
+   ...!..................................................................................................................................!
+   ...!..................................................................................................................................!
+   ...!.Cette.erreur.sera.suivie.d'une.erreur.fatale.....................................................................................!
+   ...!----------------------------------------------------------------------------------------------------------------------------------!
+   
+   Impact
+   ======
+   
+   F : chveno.f
+   PY : modelisa4.py, modelisa8.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.11
+VALIDATION
+   astout contact
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013809 DU 2009-09-02 09:12:27
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN10 - CONTACT - Lecture des mailles de contact
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   Le catalogue de commandes oblige à n'utiliser qu'un seul mot-clé parmi GROUP_MA_* et
+   MAILLE_* pour sélectionner les surfaces maîtres et esclaves.
+   Par ailleurs dans le fortran un ASSERT empêche de donner une liste derrière ces mot-clés.
+   Cela restreint les erreurs d'utilisation pour GROUP_MA_* mais par contre limite beaucoup
+   l'intérêt de MAILLE_* (qui est dans les faits peu utilisé).
+   
+   Détails
+   =======
+   
+   On propose de garder la limite à un seul groupe, mais en l'imposant dans le catalogue de
+   commandes afin d'éviter un ASSERT peu clair.
+   Pour le mot-clé MAILLE_* on lève la limitation (qui n'a pas lieu d'être car on utilise
+   RELIEM).
+   Le fait de conserver une limite à un groupe derrière GROUP_MA_* limite les erreurs
+   d'utilisation en particulier elle oblige à bien penser ses zones de contact.
+   
+   Impact
+   ======
+   
+   F : nbzoco.f
+   CAPY : c_contact.capy
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.11
+VALIDATION
+   astout contact
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012861 DU 2008-11-20 08:59:53
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   Erreur dans tableau de valeurs V6.03.121
+FONCTIONNALITE
+   Les inversions dans les tableaux de résultats §6.1 et §8.1 de V6.03.121 ont été prises en
+   compte.
+   La figure n'a pas été revue par contre, parce que c'est une copie d'un livre (on précise
+   seulement que le point O est l'origine du repère).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   visu
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 22/09/2009 - 10:34:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013824 DU 2009-09-07 08:10:38
+TYPE anomalie concernant Code_Aster (VERSION 9.5)
+TITRE
+   probleme avec le systeme de glissement UNIAXIAL
+FONCTIONNALITE
+   L'étude consiste à utiliser un système de glissement UNIAXIAL, avec un comportement
+   simplifié :
+   ACIER=DEFI_MATERIAU(ELAS_ORTH=_F(...),
+                       ECOU_VISC1=_F(N=n,  K=t0,  C=0.,),
+                       ECRO_ISOT1=_F(R_0=0.0,  Q=0.0,  B=0.0,  H=0.0, ),
+                       ECRO_CINE1=_F(D=0.0,),);
+   MONO1=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
+   				 ECOULEMENT='ECOU_VISC1',
+   				 ECRO_ISOT='ECRO_ISOT1',
+   				 ECRO_CINE='ECRO_CINE1',
+   				 ELAS='ELAS_ORTH',
+   				 FAMI_SYST_GLIS='UNIAXIAL',),);
+   
+   Le calcul passe en OCTAEDRIQUE mais plante en UNIAXIAL en erreur numérique.
+   
+   Analyse et solution : le bug vient de la routine lcmmvx : on y trouve les lignes :
+               IF (DP.GT.0.D0) THEN
+                  SEUIL=1.D0
+               ELSE
+                  SEUIL = MAX(SEUIL, CRIT/RP)
+               ENDIF
+   ici DP = 0 (on n'a pas atteint le seuil). Mais RP=0 lui aussi (voir données matériau).
+   D'ou le plantage. La solution consiste simplement à remplacer les lignes précédentes (où
+   on voulait calculer un seuil négatif, ce qui est désormais inutile) par :
+   IF (DP.GT.0.D0) THEN
+      SEUIL=1.D0
+   ELSE
+      SEUIL = 0.D0
+   ENDIF
+   
+   Alors cela tourne (voir fichier joint)
+   
+   Restit aussi en version 9.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   le test joint
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013176 DU 2009-03-04 10:32:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Utiliser C_COMP_INCR dans DEFI_COMPOR
+FONCTIONNALITE
+   Idée initiale : dans le catalogue de DEFI_COMPOR, il y a encore une liste decomportements,
+   pas forcément mise à jour. L'idée de départ était sans doute de limiter les comportements
+   utilisables avec les éléments de poutres multi-fibres. 
+   Mais maintenant, avec les catalogues de comportements, chaque loi peut dire si les
+   modélisations 1D sont permises (avec Deborst ou non). 
+   Il s'agit donc enlever la liste de comportements de DEFI_COMPOR et appeler le mot-clé
+   commun c_comp_incr. Mais contrairement à STAT_NON_LINE, il n'y a pas de
+   mot-clé facteur COMP_INCR, mais un mot clé facteur :
+   MULTIFIBRE=(
+   _F( GROUP_FIBRE=xxx1, MATER=yyy1, ALGO_1D=zzz1, DEFORMATION=ttt1, RELATION=comportement1),
+   _F( GROUP_FIBRE=xxx2, MATER=yyy2, ALGO_1D=zzz2, DEFORMATION=ttt2, RELATION=comportement2),
+   etc...
+   
+   Grâce à l'idée de Mathieu, on choisit de créer un nouveau mot-clé simple commun :
+   C_RELATION contenant toute la liste des comportements incrémentaux du mot-clé RELATION de
+   COMP_INCR. Ce mot clé commun est maintenant appelé dans c_comp_incr.capy et dans defi_compor.
+   Remarque : d'autres commandes utilisent comp_incr, mais avec un ensemble de relations très
+   restreints : MACR_AS*_CALC (VMIS_ISOT_TRAC), 
+   CALC_G :"ELAS","VMIS_ISOT_TRAC","VMIS_ISOT_LINE","VMIS_CINE_LINE","ELAS_VMIS_PUIS"),
+   CALC_META (ACIER, ZIRC). On ne fait donc rien pour ces commandes-là.
+   
+   Pour COMP_ELAS, la mise en facteur est moins facile : les comportements licites sont
+   différents suivant les commandes : CLAC_G, POST_GP. Là encore on ne fait rien.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tous les tests MULTIFIBRE
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 21/09/2009 - 17:11:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013732 DU 2009-08-20 11:53:37
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   Erreur dans LIRE_CHAMP
+FONCTIONNALITE
+   Anomalie :
+   ---------
+   Code_Aster s'arretait dans LIRE_CHAMP avec un message peu explicite :"erreur 
+   de programmation, condition non respectee".
+   
+   L'utilisateur cherchait a lire un champ de contraintes au point de Gauss. Il 
+   s'agissait du champ 'SIGM____________________________'.
+   Le code s'arretait dans la routine lrmpga.f (L198, via un ASSERT) car on ne
+   rentrait jamais dans le bloc conditionnel de la ligne L178. Ceci signifie que 
+   pour chaque appel a la routine EFNPDT (L171), la variable de sortie NPDT 
+   etait toujours nulle (alors qu'elle aurait dû être non nulle au moins une 
+   fois!).
+   
+   Explication:
+   -----------
+   La routine EFNPDT permet de decouvrir pour le champ considere l'existence de
+   valeurs sur les entites de type geometrique contenu dans le fichier med. En
+   d'autre termes, pour le champ renseigne par l'utilisateur, elle verfie si
+   des valeurs existent.
+   Dans le cas present, aucune valeurs n'a ete trouvee.
+   Apres analyse du fichier med (via xmdump), on s'est apercu qu'il etait errone.
+   En effet, le champ ne contenait pas de valeurs aux points de Gauss.
+   
+   Correction
+   ----------
+   Nous avons introduit dans la routine lrmpga.f un appel a la routine 
+   d'emission de message afin d'informer l'utilisateur de la situation suivante:
+   -> On ne peut lire aucune valeur du champ xxxx dans le fichier d'unite xxxx.
+   -> Risques et conseils:
+   Ce probleme est peut-être lie a une incoherence entre le champ a lire dans le 
+   fichier MED (NOEU/ELGA/ELNO/...) et le type du champ que vous avez demande 
+   (mot cle TYPE_CHAM).
+   
+   Validation
+   ----------
+   Passage de l'etude fournie avec la fiche
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude jointe
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 21/09/2009 - 17:11:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013433 DU 2009-05-18 16:57:51
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   LIRE_CHAMP / champ ELXX : verification du modxc3xa8le fourni
+FONCTIONNALITE
+   Objectif :
+   ----------
+   Tout comme la fiche 12953, on verifie que le modèle fourni à l'operateur
+   LIRE_CHAMP est coherent avec le contenu du fichier med.
+   
+   
+   Développement :
+   ---------------
+    bibfor 
+   - lrvemo.f : nous avons adapte cette routine a l'operateur LIRE_CHAMP.
+   - op0193.f : nous avons introduit un appel a lrvemo.f dans le cas ou le type 
+   de champ est EL
+   
+   
+   Validation :
+   ------------
+   a)validation interne : on a repris le cas-test zzzz162a que l'on a enrichi 
+   par des LIRE_CHAMP dans lesquels on a introduit des erreurs afin de tester la 
+   coherence entre le fichier med et le modele aster.
+   b)Passage d'une liste de 5 cas-tests contenant LIRE_CHAMP pour la non-
+   regression: zzzz132a,zzzz161a,zzzz162a,zzzz162b,zzzz185a.
+   
+   
+   Sources impactées :
+   -------------------
+   lrvemo.f
+   op0193.f
+   med.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz162a modifie + cas tests LIRE_CHAMP
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 22/09/2009 - 11:11:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 006766 DU 2003-01-28 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   statut des mots cles caches
+FONCTIONNALITE
+   Le but de cette fiche est de supprimer la quasi totalité des mots-clés cachés.
+   
+   42 sont définis dans AFFE_MATERIAU pour les variables de commande. Ces mots clés sont
+   utiles et il est préférable de les laisser cacher.
+   
+   On commence par DEFI_MATERIAU. On rend visible le mot-clé TOLER_ET.
+   
+   On supprime les mots-clés cachés VERI_P, on corrige par la même occasion un bug que la
+   suppression de ce mot-clé dans le comportement THER_NL fait apparaître dans OP0005
+   (tableaux NOOBRC//'.VALR', NOOBRC//'.VALC' et NOOBRC//'.VALK' sous dimensionnés).
+   
+   Pour les mots-clés cachés COMP_THM et TYPE_DP, on ne les modifie pas car ils sont encore
+   utiles.
+   
+   Pour AFFE_CARA_ELEM, on rend visible le mot clé A_CIS.
+   
+   Pour DEFI_LIST_INST, on rend visible SUBD_ITER_IGNO, SUBD_ITER_FIN, SUBD_PAS et
+   SUBD_ITER_PLUS en modifiant la valeur mini de SUBD_ITER_IGNO en la passant à 3.
+   
+   Pour STANLEY, on rend visible UNITE_VALIDATION qui était d'ailleurs déjà noté visible dans
+   la doc.
+   
+   Pour THER_NON_LINE et THER_NON_LINE_MO, on ne modifie pas les mots-clés cachés.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.42.01 U4.43.01
+VALIDATION
+   liste perso de 680 cas tests
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013871 DU 2009-09-14 14:58:50
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Print dans test_fonction_ops
+FONCTIONNALITE
+   Problème :
+   """
+   Dans ssnl133b.mess par exemple :
+    
+       #  FIN COMMANDE NO : 0052   USER+SYST:        0.06s (SYST:        0.00s, ELAPS:      
+    0.06s)
+       # 
+   ------------------------------------------------------------------------------------------
+   Ici
+   La
+   La La
+   La
+   La La
+   La
+   La La
+   La
+   La La
+   La
+   La La
+   La
+   La La
+   La
+   La La
+   ....
+   """
+   
+   
+   Solution :
+   ----------
+   Retirer les "print" incriminés. J'en profite pour me mettre responsable de test_fonction.capy.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013893 DU 2009-09-17 15:07:45
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Ecrasement de tableau dans CALC_G
+FONCTIONNALITE
+   Problème :
+   ----------
+   En faisant passer la couverture de code, j'ai détecté un bug dans CALC_G qui a été
+   introduit en 10.0.14.
+   
+   En fait, on alloue les tableaux TYPRUP et NOPRUP à 10 et on va écrire à la case 11 ! D'où
+   écrasement.
+   
+   
+   Solution :
+   ----------
+   Allouer TYPRUP et NOPRUP à 11 au lieu de 10.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test sslv311a
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR torkhani     TORKHANI Mohamed       DATE 15/09/2009 - 16:43:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013658 DU 2009-07-29 09:06:12
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   sdll125a NOOK + sdll124/sdll125 : a mettre en liste complete
+FONCTIONNALITE
+   TITRE
+      sdll125a NOOK
+   FONCTIONNALITE
+      Avant la NEW10.0.11, les rotors tournaient à l'envers dans aster (vitesse de 
+   rotation negative). 
+      Le test de reference (RotorINSA) a ete modifie de la sorte pour rester 
+   coherent avec cette convention.
+      En meme temps que la restitution du cas-test SDLL125a (NEW10.0.11), Emmanuel 
+   Boyere a corrige ce biais
+      de modelisation dans la prise en compte de la gyroscopie en changeant la 
+   convention pour le sens de 
+      rotation du rotor).
+      La correction a eu un impact seulement sur le test SDLL125 car les paliers y 
+   figurant 
+      presentent des termes extra-diagonaux dans les matrices de rigidite et 
+   d'amortissement. 
+      Le test est corrige en mettant simplement un signe "moins" devant ces termes 
+   extra-diagonaux. 
+      Par ailleurs, Mathieu preconise aussi d'appliquer des modifications 
+   supplementaires
+      - fichier de commande du test sdll124a (import inutiles, ajout responsable + 
+   prise en compte de la 
+        recuperation dans la table_container modifiee en passant par NUME_VITE)
+      - fichier de commande du test sdll125a (idem)
+      - macro CALC_MODE_ROTATION (modif de remplissage de table_container pour 
+   pouvoir acceder
+        au mode_meca par le numero de la vitesse NUME_VITE). La modification de la 
+   macro 
+        IMPR_DIAGR_CAMPBELL pour permettre de ne pas redonner VITE_ROTA dans 
+   IMPR_DIAGR_CAMPBELL
+        sera faite ulterieurement.
+   IMPACT_DOCUMENTAIRE : 
+      doc V2.02.125
+   VALIDATION
+      SDLL125a
+   NB_JOURS_TRAV  : 2.0
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.0.11
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.02.125
+VALIDATION
+   sdll125a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdll141e                       boyere E.BOYERE           194    194      0
+ CASTEST MODIF mac3c01a                      boiteau O.BOITEAU          438     24      5
+ CASTEST MODIF mtlp103a                     courtois M.COURTOIS         863      2      1
+ CASTEST MODIF perf001a                     sellenet N.SELLENET          67      2      2
+ CASTEST MODIF sdll124a                     torkhani M.TORKHANI         248      6     15
+ CASTEST MODIF sdll125a                     torkhani M.TORKHANI         268     14     23
+ CASTEST MODIF sdll141b                      boiteau O.BOITEAU          186      2      1
+ CASTEST MODIF sdll141c                       boyere E.BOYERE           282      1      1
+ CASTEST MODIF ssnl133a                       desoza T.DESOZA           278      3      2
+ CASTEST MODIF ssnp115b                        proix J-M.PROIX          168      2      1
+ CASTEST MODIF ssnp115c                        proix J-M.PROIX          208      2      1
+ CASTEST MODIF ssnp122a                      boiteau O.BOITEAU          299      2      2
+ CASTEST MODIF ssnp503e                       desoza T.DESOZA           193      7      2
+ CASTEST MODIF ssnv172a                        proix J-M.PROIX         1100      1      1
+CATALOPY AJOUT commun/c_relation               proix J-M.PROIX          144    144      0
+CATALOPY MODIF commande/affe_cara_elem      sellenet N.SELLENET         587      2      2
+CATALOPY MODIF commande/calc_matr_elem        boyere E.BOYERE           155      2      2
+CATALOPY MODIF commande/defi_compor            proix J-M.PROIX           96      3     46
+CATALOPY MODIF commande/defi_list_inst      sellenet N.SELLENET         198      5      5
+CATALOPY MODIF commande/defi_materiau       sellenet N.SELLENET        2767      2    134
+CATALOPY MODIF commande/stanley             sellenet N.SELLENET          35      2      2
+CATALOPY MODIF commande/test_fonction       sellenet N.SELLENET          95      2      2
+CATALOPY MODIF commun/c_comp_incr              proix J-M.PROIX          138      2    127
+CATALOPY MODIF commun/c_contact               desoza T.DESOZA           322      3      3
+FORTRAN90 MODIF mumps/amumpc                  boiteau O.BOITEAU          368      1      4
+ FORTRAN MODIF algeline/fetsm               courtois M.COURTOIS         106      3      5
+ FORTRAN MODIF algeline/mumsm               courtois M.COURTOIS         104      2      2
+ FORTRAN MODIF algorith/ajlipa              courtois M.COURTOIS         251      2      2
+ FORTRAN MODIF algorith/lcmmvx                 proix J-M.PROIX          126      2      2
+ FORTRAN MODIF algorith/mdptem                boyere E.BOYERE           193      3     22
+ FORTRAN MODIF algorith/zedgar              courtois M.COURTOIS         301      2      2
+ FORTRAN MODIF calculel/meamgy                boyere E.BOYERE           101      2      2
+ FORTRAN MODIF calculel/op0100              sellenet N.SELLENET        1060      3      3
+ FORTRAN MODIF calculel/uthk                courtois M.COURTOIS         360      3      3
+ FORTRAN MODIF elements/creso1              courtois M.COURTOIS         189      3      6
+ FORTRAN MODIF elements/te0009                boyere E.BOYERE            98     18      9
+ FORTRAN MODIF modelisa/chveno                desoza T.DESOZA           374     46     69
+ FORTRAN MODIF modelisa/nbzoco                desoza T.DESOZA           103      2     11
+ FORTRAN MODIF modelisa/op0005              sellenet N.SELLENET         185      2      1
+ FORTRAN MODIF modelisa/rcstoc              sellenet N.SELLENET         445      2     33
+ FORTRAN MODIF modelisa/xlorie              courtois M.COURTOIS         157      2      2
+ FORTRAN MODIF prepost/fgtahe               courtois M.COURTOIS         113      2      2
+ FORTRAN MODIF prepost/lrmpga                rezette C.REZETTE          322      6      3
+ FORTRAN MODIF prepost/lrvemo                rezette C.REZETTE          232     19      4
+ FORTRAN MODIF utilifor/u2mesg              courtois M.COURTOIS         144      4      4
+ FORTRAN MODIF utilitai/op0192               rezette C.REZETTE          341      8      1
+  PYTHON AJOUT Messages/catamess            courtois M.COURTOIS          77     77      0
+  PYTHON AJOUT Messages/graph0              courtois M.COURTOIS          60     60      0
+  PYTHON AJOUT Messages/recal0              courtois M.COURTOIS         234    234      0
+  PYTHON MODIF Build/B_ETAPE                courtois M.COURTOIS         803     17      2
+  PYTHON MODIF Build/B_utils                courtois M.COURTOIS         200      4      3
+  PYTHON MODIF Cata/ops                     courtois M.COURTOIS         503      6      4
+  PYTHON MODIF Execution/checksd            courtois M.COURTOIS         104      3      7
+  PYTHON MODIF Macro/calc_europlexus_ops     rezette C.REZETTE         2546      3      1
+  PYTHON MODIF Macro/calc_mode_rotation_ops   torkhani M.TORKHANI          99      7      8
+  PYTHON MODIF Macro/macr_recal_ops         courtois M.COURTOIS        1024     44     59
+  PYTHON MODIF Macro/reca_algo              courtois M.COURTOIS         297      4      4
+  PYTHON MODIF Macro/reca_calcul_aster      courtois M.COURTOIS         844     30     62
+  PYTHON MODIF Macro/reca_controles         courtois M.COURTOIS         244      1      2
+  PYTHON MODIF Macro/reca_interp            courtois M.COURTOIS         313      7     12
+  PYTHON MODIF Macro/reca_message           courtois M.COURTOIS         168      6      4
+  PYTHON MODIF Macro/reca_utilitaires       courtois M.COURTOIS         232      8      6
+  PYTHON MODIF Macro/test_fichier_ops       courtois M.COURTOIS         313      4      4
+  PYTHON MODIF Macro/test_fonction_ops      sellenet N.SELLENET         724      2      7
+  PYTHON MODIF Messages/algorith16          courtois M.COURTOIS         491      7      2
+  PYTHON MODIF Messages/appelmpi            courtois M.COURTOIS          42      1     10
+  PYTHON MODIF Messages/contact3              desoza T.DESOZA           262     19     15
+  PYTHON MODIF Messages/elements4           courtois M.COURTOIS         282      2      6
+  PYTHON MODIF Messages/execlogiciel0       courtois M.COURTOIS          83      5      1
+  PYTHON MODIF Messages/factor               boiteau O.BOITEAU          361      5      6
+  PYTHON MODIF Messages/grappefluide         boiteau O.BOITEAU          103      4      4
+  PYTHON MODIF Messages/indicateur          courtois M.COURTOIS         149     10      1
+  PYTHON MODIF Messages/med                  rezette C.REZETTE          547     17      1
+  PYTHON MODIF Messages/modelisa4             desoza T.DESOZA           421      1     17
+  PYTHON MODIF Messages/modelisa8             desoza T.DESOZA           384      3      3
+  PYTHON MODIF Messages/sdveri              courtois M.COURTOIS          65      1     13
+  PYTHON MODIF Messages/supervis            courtois M.COURTOIS         402      1     51
+  PYTHON MODIF Messages/table0              courtois M.COURTOIS         139     52      1
+  PYTHON MODIF Messages/xfem                courtois M.COURTOIS         245      7      1
+  PYTHON MODIF Noyau/asojb                  courtois M.COURTOIS         347      2      2
+  PYTHON MODIF Noyau/N_MACRO_ETAPE          courtois M.COURTOIS         702      2      2
+  PYTHON MODIF Utilitai/Graph               courtois M.COURTOIS        1200     18     28
+  PYTHON MODIF Utilitai/Table               courtois M.COURTOIS        1033     26     41
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         679    101     51
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    5         709       709              +709
+ MODIF :   79       31015       658    1013      -355
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   84       31724      1367    1013      +354 

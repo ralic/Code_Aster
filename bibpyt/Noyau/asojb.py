@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF asojb Noyau  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,7 +77,7 @@ class AsBase(Type):
                         v( checker )
                     except :
                         mess=60*'-'+'\n'
-                        mess=mess+'Erreur SDVERI_45 (Attention : vérification incomplète)'+'\n'
+                        mess=mess+'Erreur SDVERI (Attention : vérification incomplète)'+'\n'
                         mess=mess.join(traceback.format_tb(sys.exc_traceback))
                         checker.err(self,mess)
 

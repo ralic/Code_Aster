@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF factor Messages  DATE 21/09/2009   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -245,8 +245,7 @@ Alarme Solveur MUMPS :
   La procédure de raffinement itératif aurait besoin de plus que les %(i1)d d'itérations
   imposées en dur dans l'appel MUMPS par Code_Aster.
 Solution :
-  On peut essayer de corriger l'affectation de XMPSK%ICNTL(10) dans AMUMPR/C.F.
-  Contactez l'assistance.
+  On peut essayer la valeur du mot-clé POSTTRAITEMENTS='FORCE'.
 """),
 
 
@@ -347,14 +346,14 @@ Solution:
 
 73: _("""
 Solveur MUMPS :
-  Lors de la factorisation numérique, le pourcentage de pivots, %(r1)d %, a dépassé le pourcentage
-  prévu par le paramètre SOLVEUR/PCENT_PIVOT= %(r2)d %.
+  Lors de la factorisation numérique, le pourcentage de pivots, %(r1)d %%, a dépassé le 
+  pourcentage prévu par le paramètre SOLVEUR/PCENT_PIVOT= %(r2)d %%.
   Cela peut engendrer un résultat de mauvaise qualité. Vérifiez bien la qualité de celui-ci
   en fin de résolution via la mot-clé RESI_RELA.
 Solution:
   Pour améliorer la qualité de la solution vous pouvez activez les options de pré et post-
   traitements (PRETRAITEMENTS='AUTO' et POSTTRAITEMENTS='FORCE' ou 'AUTO'), durcir le critère
-  de qualité RESI_RELA ou, si vous avez beaucoup de Lagranges (>10% de la taille du pb),
+  de qualité RESI_RELA ou, si vous avez beaucoup de Lagranges (>10%% de la taille du pb),
   désactivez l'option ELIM_LAGR2 (ELIM_LAGR2='NON').
   Sinon, contactez l'équipe de développement.
 """),

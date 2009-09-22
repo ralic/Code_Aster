@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/07/2009   AUTEUR BOYERE E.BOYERE 
+C MODIF ELEMENTS  DATE 21/09/2009   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,12 +46,13 @@ C       --- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C       ---  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 
-      INTEGER NDDLM,NL
-      INTEGER I, N, NC, JDM, JDC, J, INFOD, INFODI
+      INTEGER NDDLM,NL1, IPOINT, LORIEN
+      PARAMETER (NDDLM=6,NL1=(NDDLM+1)*NDDLM/2)
+      INTEGER I, N, NC, NNO, JDM, JDC, J, INFODI
       REAL*8  VXX,R8BID
+      REAL*8  PGL(3,3), KLV(NL1), KLW(NL1)
       CHARACTER*16 NOMCMD,TYPRES
       CHARACTER*19 NOMFON
-      PARAMETER (NDDLM=6,NL=NDDLM*NDDLM)
 
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -75,15 +76,23 @@ C
       ENDIF
       CALL JEVECH('PMATUNS','E',JDM)
 
-      DO 60 I = 1,NL
-         ZR(JDM+I-1) = 0.D0
-60    CONTINUE
+      DO 60 I=1,NL1
+         KLV(I)=0.D0
+ 60   CONTINUE
 
 C     I : LIGNE ; J : COLONNE
       I = 5
       J = 6
-      ZR(JDM-1+NC*(J-1) + I) =-VXX
-      ZR(JDM-1+NC*(I-1) + J) =VXX
+      IPOINT = INT(J*(J-1)/2)+I
+      KLV(IPOINT) = -VXX
 C
+      CALL JEVECH('PCAORIE','L',LORIEN)
+      CALL MATROT(ZR(LORIEN),PGL)
+      NNO  = 1
+      CALL UTPALG(NNO,NC,PGL,KLV,KLW)
+      CALL UPLETR(NDDLM,ZR(JDM),KLW)
+
+
+
       CALL JEDEMA()
       END

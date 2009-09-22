@@ -1,4 +1,5 @@
-# MODIF  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 15/09/2009   AUTEUR TORKHANI M.TORKHANI 
+# RESPONSABLE TORKHANI M.TORKHANI
 # TITRE DIAGRAMME DE CAMPBELL D'UNE LIGNE D'ARBRE SIMPLIFIEE
 # sdll124a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,10 +22,8 @@
 # CAS_TEST__:SDLL124A
 #
 
-from Numeric import *
-import aster
-DEBUT(CODE=_F(NOM='SDLL124A', NIV_PUB_WEB='INTERNET'),
-      PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NOM='SDLL124A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),);
 
 mail=LIRE_MAILLAGE();
 
@@ -124,12 +123,11 @@ GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
 DEBV=0.0;
 FINV=30000;
 PASV = 10000.0;
-VIT=arange(DEBV,FINV+1,PASV);
+VIT=Numeric.arange(DEBV,FINV+1,PASV);
 nbF=14;
 nbF_camp=10;
 nbV=len(VIT);
 
-aster.affiche('RESULTAT', 'CALCUL DES FREQUENCES ET DES MODES EN ROTATION')
 # --------------------------------------------------------------
 # APPEL MACRO DE CALCUL DES FREQUENCES ET DES MODES EN ROTATION
 # --------------------------------------------------------------
@@ -151,11 +149,10 @@ IMPR_TABLE(TABLE=l_mod);
 
 lmod=[None]*nbV
 for ii in range(0,nbV):
-   nom = 'OM_'+str(ii)
    lmod[ii]=EXTR_TABLE(TYPE_RESU='MODE_MECA',
                        TABLE=l_mod,
                        NOM_PARA='NOM_SD',
-                       FILTRE=_F(NOM_PARA='NOM_OBJET',VALE_K=nom),);
+                       FILTRE=_F(NOM_PARA='NUME_VITE',VALE_I=ii),);
    IMPR_RESU(FORMAT='RESULTAT',
              RESU=_F(RESULTAT=lmod[ii],
                      NOM_PARA=('NUME_MODE','FREQ','OMEGA2'),
@@ -246,12 +243,6 @@ IMPR_DIAG_CAMPBELL(MAILLAGE   =mail,
                  UNIT_TOT   = unit_tot,
                  UNIT_INT   = unit_int,
                  L_S        = L_S);
-
-if 'L_S' in locals():
-    nbl=len(L_S)
-    for ii in range(nbl):
-       il =nbl-ii-1;
-       del L_S[il];         
 
 FIN();
 

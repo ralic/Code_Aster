@@ -1,4 +1,4 @@
-#@ MODIF calc_mode_rotation_ops Macro  DATE 28/07/2009   AUTEUR TORKHANI M.TORKHANI 
+#@ MODIF calc_mode_rotation_ops Macro  DATE 15/09/2009   AUTEUR TORKHANI M.TORKHANI 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,11 +69,13 @@ def calc_mode_rotation_ops(self,MATR_A, MATR_B, MATR_AMOR, MATR_GYRO,
     
     NBV=len(VITE_ROTA);
     
-    mod=[None]*NBV;
+    _mod=[None]*NBV;
     
+    tab=Table()
     for ii in range(0,NBV):
         OM=VITE_ROTA[ii]
-              
+        nom = 'OM_'+str(ii)
+
         # ----------------------------------
         # Ajout des effets gyroscopiques w*G
         # dans la matrice d amortissement C
@@ -83,18 +85,15 @@ def calc_mode_rotation_ops(self,MATR_A, MATR_B, MATR_AMOR, MATR_GYRO,
         GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATR_GYRO, COEF_R=OM,),
                             _F(MATR_ASSE=MATR_AMOR, COEF_R=1.,),))
 
-        mod[ii]=MODE_ITER_SIMULT(MATR_A=MATR_A,
+        _mod[ii]=MODE_ITER_SIMULT(MATR_A=MATR_A,
                        MATR_B=MATR_B,
                        MATR_C=GYOM,
                        METHODE=METHODE,
                        **motscit)
         
         DETRUIRE(CONCEPT=_F(NOM=GYOM),INFO=1,)
-    tab=Table()
-    for ii in range(0,NBV):
-        vitesse=VITE_ROTA[ii]
-        nom = 'OM_'+str(ii);
-        tab.append({'NOM_OBJET': nom,'TYPE_OBJET': 'MODE_MECA','NOM_SD' : mod[ii].nom})
+        tab.append({'NUME_VITE' : ii, 'VITE_ROTA' : OM, 'NOM_OBJET': 'MODE_MECA', 'TYPE_OBJET': 'MODE_MECA', 'NOM_SD' : _mod[ii].nom})
+
     motcles=tab.dict_CREA_TABLE()
     tab_out=CREA_TABLE(TYPE_TABLE = 'TABLE_CONTENEUR', **motcles);
     return ier

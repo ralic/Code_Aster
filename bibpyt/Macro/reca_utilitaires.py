@@ -1,4 +1,4 @@
-#@ MODIF reca_utilitaires Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_utilitaires Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,14 +21,15 @@
 
 import Numeric, LinearAlgebra, copy, os, string, types, sys, glob
 from Numeric import take
-from externe_mess import UTMESS
 
 try:    import Gnuplot
 except: pass
 
 try:
+   import aster
    from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, IMPR_FONCTION, DETRUIRE
    from Accas import _F
+   from Utilitai.Utmess import UTMESS, MessageLog
 except : pass
 
 
@@ -131,7 +132,8 @@ def temps_CPU(restant_old,temps_iter_old):
             temps_iter=(temps_iter_old + (restant_old-restant))/2.
          if ((temps_iter>0.96*restant)or(restant<0.)):
             err=1
-            UTMESS('F','MACR_RECAL',"Arret de MACR_RECAL par manque de temps CPU.")
+            msg = MessageLog.GetText('F', 'RECAL0_40')
+            raise aster.ArretCpuError, msg
 
    return restant,temps_iter,err
 
@@ -188,7 +190,7 @@ def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, pilote, fichier=None
      elif FORMAT=='GNUPLOT':
 
          if fichier:
-            if INFO>=2: UTMESS('I','MACR_RECAL',"Trace des courbes dans le fichier " + fichier )
+            if INFO>=2: UTMESS('I','RECAL0_41',valk=fichier )
             # On efface les anciens graphes
             liste = glob.glob(fichier + '*.ps')
             for fic in liste:
@@ -217,7 +219,7 @@ def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, pilote, fichier=None
                   graphe[i]('pause 5')
                else:
                   if fichier:
-                     if INFO>=2: UTMESS('I','MACR_RECAL',"Trace des courbes dans le fichier " + fichier + '_' + str(i) + '.ps' )
+                     if INFO>=2: UTMESS('I','RECAL0_41',valk=fichier + '_' + str(i) + '.ps' )
                      graphe[i].hardcopy(fichier + '_' + str(i) + '.ps', enhanced=1, color=1)
 
                impr.xlabel(reponses[i][1])
@@ -226,5 +228,5 @@ def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, pilote, fichier=None
                impr.plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
 
   except Exception, err:
-     UTMESS('A','MACR_RECAL',"Probleme lors de l'affichage des courbes. On ignore et on continue. Erreur :\n" + str(err) )
+     UTMESS('A','RECAL0_42',valk=str(err) )
 

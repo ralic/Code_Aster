@@ -1,4 +1,4 @@
-#@ MODIF sdveri Messages  DATE 16/06/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sdveri Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,10 +52,6 @@ cata_msg = {
       Objet : '%(k1)s'    Message : %(k2)s
 """),
 
-32 : _("""
-      Fin Message 30
-"""),
-
 40 : _("""
  Erreur de programmation (catalogue des SD) :
    Vérification d'une structure de donnée :
@@ -64,14 +60,6 @@ cata_msg = {
 
 41 : _("""
    Objet '%(k1)s'   INTERDIT
-"""),
-
-42 : _("""
-      Fin Message 40
-"""),
-
-45 : _("""
-      Erreur Python : voir traceback ci-dessous
 """),
 
 }

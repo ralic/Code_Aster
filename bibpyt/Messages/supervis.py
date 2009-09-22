@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,10 +49,6 @@ cata_msg={
 
 5: _("""
  Erreur(s) à l'exécution de "%(k1)s" : arret immédiat du programme.
-"""),
-
-6: _("""
- Fin à la suite de message(s) <E>
 """),
 
 7: _("""
@@ -214,10 +210,6 @@ cata_msg={
    %(ktout)s
 """),
 
-41 : _("""
-Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
-"""),
-
 43: _("""
  Debug SDVERI suspendu
 """),
@@ -256,23 +248,8 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
  niveaux de profondeur pour des appels par la procédure %(k1)s
 """),
 
-55: _("""
- Appels récursifs de messages d'erreur ou d'alarme.
-"""),
-
 56: _("""
  Incohérence entre le catalogue et le corps de la macro.
-"""),
-
-57: _("""
-   Impossible d'importer '%(k1)s' dans Messages.
-   Le fichier %(k1)s.py n'existe pas dans le répertoire 'Messages'
-   ou bien la syntaxe du fichier est incorrecte.
-
-   Merci de signaler cette anomalie.
-
-   Traceback :
-   %(k2)s
 """),
 
 60: _("""
@@ -316,14 +293,6 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 
 68: _("""
  information sur les concepts devant etre créés.
-"""),
-
-69: _("""
-   Destruction du concept '%(k1)s'.
-"""),
-
-70: _("""
-   Validation du concept '%(k1)s'.
 """),
 
 71: _("""
@@ -414,25 +383,6 @@ Types incompatibles entre glob.1 et pick.1 pour le concept de nom %(k1)s.
 
 88: _("""
 Concept de nom %(k1)s et de type %(k2)s introuvable dans la base globale"
-"""),
-
-# on ne veut pas émettre d'alarme mais que le message se voit, donc on fait la mise en forme ici !
-89 : _("""
-   !-----------------------------------------------------------------------!
-   !   Liste des alarmes émises lors de l'exécution du calcul.             !
-   !                                                                       !
-   !   Les alarmes que vous avez choisies d'ignorer sont précédées de (*). !
-   !   Nombre d'occurrences pour chacune des alarmes :                     !
-"""),
-        
-90 : _("""   !      %(k1)3s %(k2)-20s émise %(i1)4d fois                         !
-"""),
-
-91 : _("""   !-----------------------------------------------------------------------!
-
-"""),
-
-92 : _("""   !          aucune alarme                                                !
 """),
 
 93 : _("""

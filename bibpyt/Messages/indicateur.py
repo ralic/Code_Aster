@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 24/08/2009   AUTEUR DELMAS J.DELMAS 
+#@ MODIF indicateur Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,6 +114,15 @@ Ces valeurs doivent etre strictement positives.
 
 31: _("""
 deltat: division par zéro
+"""),
+
+32 : _("""
+ Dans le programme %(k1)s, impossible de trouver le diamètre
+ pour un élément de type %(k2)s
+"""),
+
+33 : _("""
+ Le diamètre de l'élément de type %(k1)s vaut : %(r1)f
 """),
 
 90 : _("""

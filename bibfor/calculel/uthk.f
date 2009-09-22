@@ -1,7 +1,7 @@
       SUBROUTINE UTHK(NOMTE,IGEOM,HK,NDIM,NOE,NSOMM,ITYP,INO,NIV,IFM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -341,7 +341,7 @@ C
       ELSE
         VALK(1) = NOMPRO
         VALK(2) = NOMTE2
-        CALL U2MESK('F','INDICERREUR_2', 2, VALK)
+        CALL U2MESK('F','INDICATEUR_32', 2, VALK)
       ENDIF
 C
 C====
@@ -352,7 +352,7 @@ C
       HK = SQRT(HK)
 C
       IF ( NIV.EQ.2 ) THEN
-        CALL U2MESG('I', 'INDICERREUR_1', 1, NOMTE2, 0, 0, 1, HK )
+        CALL U2MESG('I', 'INDICATEUR_33', 1, NOMTE2, 0, 0, 1, HK )
       ENDIF
 C
       NIV=1

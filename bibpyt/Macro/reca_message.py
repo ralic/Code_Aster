@@ -1,4 +1,4 @@
-#@ MODIF reca_message Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF reca_message Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,6 @@
 # ======================================================================
 
 import os, Numeric
-from externe_mess import UTMESS
 
 #===========================================================================================
 
@@ -41,9 +40,12 @@ class Message :
       self.ul_out = ul_out
 
 # ------------------------------------------------------------------------------
+   def get_filename(self):
+      return os.getcwd()+'/fort.'+str(self.ul_out)
+   
    
    def initialise(self):
-      res=open(os.getcwd()+'/fort.'+str(self.ul_out),'w')
+      res=open(self.get_filename(), 'w')
       res.close()
 
       txt = ' <INFO>  MACR_RECAL\n\n'
@@ -52,7 +54,7 @@ class Message :
 # ------------------------------------------------------------------------------
    
    def ecrire(self,txt):
-      res=open(os.getcwd()+'/fort.'+str(self.ul_out),'a')
+      res=open(self.get_filename(), 'a')
       res.write(txt+'\n')
       res.flush()
       res.close()

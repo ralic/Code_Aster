@@ -1,8 +1,8 @@
-#@ MODIF execlogiciel0 Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF graph0 Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,64 +20,41 @@
 
 def _(x) : return x
 
-cata_msg={
-1 : _("""
-Format Salome, l'argument 1 doit etre 
-le nom du fichier med produit par le script python.
+cata_msg = {
+ 1 : _(""""Val" doit etre une liste de 2 ou 3 listes de rééls de meme longueur.
 """),
 
-2 : _("""
-On ne sait pas traiter le format %(k1)s
+ 2 : _(""""Lab" doit etre une liste de 2 ou 3 chaines.
 """),
 
-3 : _("""
-Code retour incorrect (MAXI %(i1)d) : %(i2)d
-
+ 3 : _("""Le format est inconnu : %(k1)s.
 """),
 
-4 : _("""
-Le mot-cle logiciel n'est pas utilise avec ce format.
+ 4 : _("""On limite la fenetre aux abscisses positives.
 """),
 
-5 : _("""
-Erreurs lors de l'execution du fichier ci-dessous :
-<<<<<<<<<<<<<<< DEBUT DU FICHIER >>>>>>>>>>>>>>>
-%(k1)s
-<<<<<<<<<<<<<<<  FIN  DU FICHIER >>>>>>>>>>>>>>>
+ 5 : _("""On limite la fenetre aux ordonnées positives.
 """),
 
-6 : _("""
-Le fichier %(k1)s n'existe pas.
-"""),
-
-7 : _("""
-Mode de lancement inconnu : %(k1)s
-"""),
-
-8 : _("""
-----------------------------------------------------------------------------------
- Commande :
+ 6 : _("""Des erreurs se sont produites :
    %(k1)s
 """),
 
-9 : _("""
------ Sortie standard (stdout) ---------------------------------------------------
-%(k1)s
------ fin stdout -----------------------------------------------------------------
+ 7 : _("""La variable DISPLAY n'est pas définie.
+"""),
+
+ 8 : _("""On fixe la variable DISPLAY à %(k1)s.
+"""),
+
+ 9 : _("""Erreur lors de l'utilisation du filtre '%(k1)s'.
+Le fichier retourné est le fichier '.agr'.
 """),
 
 10 : _("""
------ Sortie erreur standard (stderr) --------------------------------------------
-%(k1)s
------ fin stderr -----------------------------------------------------------------
-"""),
-
-11 : _("""
- Code retour = %(i1)d      (maximum toléré : %(i2)d)
-"""),
-
-12 : _("""
- Fin de la commande : %(k1)s
+   <I> Informations sur le fichier '%(k1)s' :
+      Nombre de courbes    : %(i1)3d
+      Bornes des abscisses : [ %(r1)13.6G , %(r2)13.6G ]
+      Bornes des ordonnées : [ %(r3)13.6G , %(r4)13.6G ]
 """),
 
 }

@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 21/09/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,6 +151,13 @@ C        AUTRES CHAMPS ELGA : NON PREVU
 C        CHAMPS ELNO OU AUTRES :
          OPTION=' '
          PARAM=' '
+      ENDIF
+C
+C - -  VERIFICATIONS - -
+C
+      IF(TYCH(1:2).EQ.'EL')THEN
+         CALL GETVID ( ' ', 'MODELE', 0, 1, 1, NOMO, IAUX )
+         CALL LRVEMO(NOMO)
       ENDIF
 C
 C 2.3. ==> NOM DES COMPOSANTES VOULUES

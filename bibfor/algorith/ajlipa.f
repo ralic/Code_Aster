@@ -3,7 +3,7 @@
       CHARACTER*(*) NOMO
       CHARACTER*1 BASE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -159,7 +159,7 @@ C     ----------------------------------------
               IF (ZI(JNUMSD-1+I2).NE.-999) THEN
 C                 -- MAILLE COMMUNE A PLUSIEURS SOUS-DOMAINES
                 VALI(1)=I2
-                CALL U2MESI('F','ELEMENTS16_98',1,VALI)
+                CALL U2MESI('F','ALGORITH16_98',1,VALI)
               ELSE
                 ZI(JNUMSD-1+I2)=RANG
               ENDIF

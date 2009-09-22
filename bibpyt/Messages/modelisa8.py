@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
+#@ MODIF modelisa8 Messages  DATE 22/09/2009   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,7 +125,7 @@ cata_msg = {
 """),
 
 28 : _("""
- affectation deja effectuee du ddl  %(k1)s du noeud %(k2)s   %(k3)s
+ affectation déjà effectuée du ddl  %(k1)s du noeud %(k2)s : on applique la règle de surcharge
 """),
 
 29 : _("""
@@ -231,11 +231,11 @@ Seule l'extraction est possible : OPERATION='EXTR'
 """),
 
 56 : _("""
- group_ma  %(k1)s mailles mal orientees  %(i1)d
+Dans le groupe de mailles %(k1)s, il y a %(i1)d mailles mal orientées. Utilisez la commande MODI_MAILLAGE pour orienter la normale aux surfaces.
 """),
 
 57 : _("""
- maille mal orientee:  %(k1)s
+La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orienter la normale aux surfaces.
 """),
 
 58 : _("""
@@ -251,10 +251,33 @@ Seule l'extraction est possible : OPERATION='EXTR'
 """),
 
 70 : _("""
- pour l'occurence de affe   numero  %(i1)d
-  on n'a pas pu affecter  %(i2)d
-  mailles de dimension  %(i3)d
-  (info=2 pour details)  %(i4)d
+ Possible erreur utilisateur dans la commande AFFE_MODELE :
+   Un problème a été détecté lors de l'affectation des éléments finis.
+   Pour l'occurrence AFFE de numéro %(i1)d, certaines mailles de meme dimension topologique
+   que la (ou les) modélisation(s) (ici dimension = %(i3)d) n'ont pas pu etre affectées.
+
+   Cela veut dire que la (ou les) modélisation(s) que l'on cherche à affecter
+   ne supporte(nt) pas tous les types de mailles présents dans le maillage.
+
+   Le nombre de mailles que l'on n'a pas pu affecter (pour cette occurrence de AFFE) est :  %(i2)d
+
+ Risques & conseils :
+   * Comme certaines mailles n'ont peut-etre pas été affectées, il y a un risque
+     de résultats faux (présence de "trous" dans la modélisation).
+     Pour connaitre les mailles non affectées (à la fin de l'opérateur), on peut utiliser INFO=2.
+   * Ce problème est fréquent quand on souhaite une modélisation "sous-intégrée"
+     (par exemple AXIS_SI). Pour l'éviter, il faut donner une modélisation de
+     "substitution" pour les mailles qui n'existent pas dans la modélisation désirée (ici 'AXIS_SI').
+     On fera par exemple :
+        MO=AFFE_MODELE( MAILLAGE=MA,  INFO=2,
+                        AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION=('AXIS','AXIS_SI')))
+
+     Ce qui aura le meme effet (mais sans provoquer l'alarme) que :
+        MO=AFFE_MODELE( MAILLAGE=MA,  INFO=2, AFFE=(
+                        _F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION=('AXIS')),
+                        _F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION=('AXIS_SI')),
+                        ))
+
 """),
 
 71 : _("""

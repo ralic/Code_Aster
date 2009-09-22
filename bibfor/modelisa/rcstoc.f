@@ -8,7 +8,7 @@
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 22/09/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C
       CHARACTER*24       PROL1,PROL2,VALKK(2)
       CHARACTER*16       TYPECO
       COMPLEX*16         VALC8
-      INTEGER            NBPAR,JTYPO,JNOMO,JPARA,IBK,NBMAX,VALI,LXLGUT
+      INTEGER            JTYPO,JNOMO,IBK,NBMAX,VALI,LXLGUT
       INTEGER            I,J,K,II,JFCT,JPRO,JRPV,JVALE,NBCOUP,N,NF
       INTEGER            IRET,NBFCT,NBPTS,JPROL,NBPTM,IEXIST,LPRO1,LPRO2
       LOGICAL            EXIST,GETEXM
@@ -78,7 +78,6 @@ C
       CALL JEMARQ()
       CALL WKVECT ( '&&RCSTOC.TYPOBJ', 'V V K8' , NBOBJ, JTYPO )
       CALL WKVECT ( '&&RCSTOC.NOMOBJ', 'V V K16', NBOBJ, JNOMO )
-      CALL WKVECT ( '&&RCSTOC.PARAME', 'V V K8' , 12, JPARA )
       CALL GETMJM ( NOMRC,1,NBOBJ,ZK16(JNOMO),ZK8(JTYPO),N)
 
 C     ON VERIFIE QUE 2 MOTS CLES DIFFERENTS N'ONT PAS LES MEMES
@@ -107,14 +106,6 @@ C        ON EST OBLIGE DE RECOPIER LA GLUTE ELAS_FLUI :
          END IF
 777   CONTINUE
       CALL JEDETR('&&RCSTOC.TEMPOR')
-C
-      EXIST = GETEXM(NOMRC,'VERI_P')
-      NBPAR = 0
-      IF (EXIST) THEN
-        CALL GETVTX(NOMRC,'VERI_P',1,1,10,ZK8(JPARA+NBPAR),N)
-        CALL ASSERT ( N .GE. 0 )
-        NBPAR = NBPAR + N
-      ENDIF
 C
       NBR = 0
       NBC = 0
@@ -215,27 +206,6 @@ C
                CALL GETTCO ( VALCH, TYPECO )
                IBK = IBK + 1
                VALK(NBR+NBC+NBK+IBK) = VALCH
-               IF ( TYPECO(1:8) .EQ. 'FONCTION' ) THEN
-                  CH19 = VALCH
-                  CALL JEVEUO ( CH19//'.PROL', 'L', JPRO )
-                  CALL FONBPA ( CH19,ZK24(JPRO),TYPFON,10,NF,NOMPF)
-                  DO 130 J = 1 , NF
-                    DO 140 K = 1 , NBPAR
-                     IF ( NOMPF(J) .EQ. ZK8(JPARA+K-1) ) GOTO 130
- 140                CONTINUE
-                    VALKK (1) = CH19(1:8)
-                    CALL U2MESG('F+','MODELISA9_58',1,VALKK,0,0,0,0.D0)
-                    DO 141 II = 1 , NF
-                      VALKK(1) = NOMPF(II)
-                  CALL U2MESG('F+','MODELISA9_91',1,VALKK,0,0,0,0.D0)
- 141                CONTINUE
-                   DO 142 II = 1 , NBPAR
-                      VALKK(1) = ZK8(JPARA-1+II)
-                   CALL U2MESG('F+','MODELISA9_92',1,VALKK,0,0,0,0.D0)
- 142                CONTINUE
-                    CALL U2MESS('F','MODELISA9_93')
- 130              CONTINUE
-               ENDIF
             ENDIF
          ENDIF
  120  CONTINUE
@@ -470,7 +440,6 @@ C --- 7 VERIFICATION DES NOMS DES PARAMETRES DES TABLES
 C
       CALL JEDETR('&&RCSTOC.TYPOBJ')
       CALL JEDETR('&&RCSTOC.NOMOBJ')
-      CALL JEDETR('&&RCSTOC.PARAME')
 C FIN ------------------------------------------------------------------
       CALL JEDEMA()
       END
