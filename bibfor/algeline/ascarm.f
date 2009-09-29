@@ -1,9 +1,9 @@
       SUBROUTINE ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ, NBMODE,
      +                    VECMOD, PARMOD, ID, REASUP, SPECTR, REPMOD,
-     +                    CORFRE, AMORT, MUAPDE, TCOSUP, IM )
+     +                    CORFRE, AMORT, MUAPDE, TCOSUP, IM, NBDIS)
       IMPLICIT  NONE
       INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID,
-     +                  TCOSUP(NBSUP,*), IM
+     +                  TCOSUP(NBSUP,*), IM, NBDIS(*)
       REAL*8            VECMOD(NEQ,*), SPECTR(*), AMORT(*)
       REAL*8            PARMOD(NBMODE,*), REPMOD(NBSUP,NEQ,*)
       REAL*8            REASUP(NBSUP,NBMODE,*)
@@ -11,7 +11,7 @@
       LOGICAL           MONOAP, CORFRE, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/10/2008   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +46,9 @@ C IN  : SPECTR : TABLEAU DES VALEURS DU SPECTRE
 C OUT : REPMOD : VECTEUR DES REPONSES MODALES
 C IN  : CORFRE : = .TRUE.  , CORRECTION DES FREQUENCES
 C IN  : AMORT  : VECTEUR DES AMORTISSEMENTS MODAUX
+C IN  : NBDIS  : APPARTENANCE DES SUPPORTS AUX INTRAGROUPES
 C     ------------------------------------------------------------------
-      INTEGER   IN, IS, IND
+      INTEGER   IN, IS, IND, IOC
       REAL*8    UN, XAMO, OMEGA, OMEGA2, XXM, XXX, YYY
 C     ------------------------------------------------------------------
 C
@@ -71,6 +72,11 @@ C
 C     --- CAS DU MULTI-APPUI ---
 C
       ELSE
+            DO 13 IS = 1,NBSUP
+               DO 17 IN = 1,NEQ
+                  REPMOD(IS,IN,ID) = 0.D0
+ 17            CONTINUE
+ 13         CONTINUE         
             OMEGA = SQRT(PARMOD(IM,1))
             XAMO  = AMORT(IM)
             IF ( CORFRE ) OMEGA = OMEGA * SQRT( UN - XAMO*XAMO )
@@ -82,12 +88,14 @@ C
                IND = ID + 3*(IM-1) + 3*NBMODE*(IS-1)
                XXX = REASUP(IS,IM,ID) * XXM * SPECTR(IND)
                DO 24 IN = 1,NEQ
-                  REPMOD(IS,IN,ID) = XXX * VECMOD(IN,IM)
+                  IOC = NBDIS(IS)
+                  REPMOD(IOC,IN,ID) =  REPMOD(IOC,IN,ID)+
+     &                                        XXX * VECMOD(IN,IM)
  24            CONTINUE
  22         CONTINUE
       ENDIF
 C
-C --- CAS DECORRELE : ON RECOMBINE LES SUPPORTS 
+C --- CAS CORRELE : ON RECOMBINE LES SUPPORTS 
 C
       IF ( .NOT.MUAPDE ) THEN
          DO 100 IN = 1,NEQ

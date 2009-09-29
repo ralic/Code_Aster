@@ -1,11 +1,11 @@
       SUBROUTINE ASCORM ( MONOAP, TYPCMO, NBSUP, NSUPP, NEQ, NBMODE,
      +                    REPMO1, REPMO2, AMORT, MODAL, ID, TEMPS, 
      +                    RECMOD, TABS, NOMSY, VECMOD, REASUP, SPECTR,
-     +                    CORFRE, MUAPDE, TCOSUP)
+     +                    CORFRE, MUAPDE, TCOSUP, NINTRA, NBDIS)
 
       IMPLICIT  NONE
-      INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID,
-     +                  TCOSUP(NBSUP,*)
+      INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID, NINTRA,
+     +                  TCOSUP(NBSUP,*),NBDIS(NBSUP)
       REAL*8            VECMOD(NEQ,*), SPECTR(*)
       REAL*8            REPMO1(NBSUP,NEQ,*), AMORT(*)
       REAL*8            REPMO2(NBSUP,NEQ,*)
@@ -17,7 +17,7 @@
       LOGICAL           MONOAP, CORFRE, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/10/2008   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,8 +52,10 @@ C IN  : MODAL  : VECTEUR DES PARAMETRES MODAUX
 C IN  : ID     : DIRECTION
 C IN  : TEMPS  : DUREE DE LA PARTIE FORTE SU SEISME (TYPCMO='DSC')
 C OUT : RECMOD : VECTEUR DES COMBINAISONS DES REPONSES DES MODES
+C IN  : NINTRA : NOMBRE d'INTRA-GROUPE
+C IN  : NBDIS  : APPARTENANCE DES SUPPORTS AUX INTRAGROUPES
 C     ------------------------------------------------------------------
-      INTEGER  NSUP, II, IM, IM1, IM2, IN, IS
+      INTEGER  NSUP, II, IM, IM1, IM2, IN, IS, IOC
       REAL*8   B1, B12, B2, B22, W0, W1, W12, W2, W22
       REAL*8   B1W1, B2W2, BP1, BP2, WP1, WP2, BP1W1, BP2W2
       REAL*8   XNU, XDE, XXX, XX1, XX2, TEST
@@ -86,17 +88,21 @@ C
             CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
      +                    NBMODE, VECMOD, MODAL, ID, REASUP,
      +                    SPECTR, REPMO1, CORFRE, AMORT, MUAPDE,
-     +                    TCOSUP, IM)
+     +                    TCOSUP, IM, NBDIS)
             DO 4 IS = 1,NSUP 
                DO 6 IN = 1,NEQ
                   XXX = REPMO1(IS,IN,ID)
-                  RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) + ABS(XXX)
+                  IOC = NBDIS(IS)
+                  RECMOD(IOC,IN,ID) = RECMOD(IOC,IN,ID) + 
+     +                                      ABS(XXX)
  6             CONTINUE
  4          CONTINUE
  5       CONTINUE
          DO 7 IS = 1,NSUP      
             DO 8 IN = 1,NEQ
-               RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) * RECMOD(IS,IN,ID)
+               IOC = NBDIS(IS)
+               RECMOD(IOC,IN,ID) = RECMOD(IOC,IN,ID) * 
+     +                             RECMOD(IOC,IN,ID)
  8          CONTINUE
  7       CONTINUE
 C
@@ -110,7 +116,7 @@ C     --- AVEC REGLE DES "DIX POUR CENT" ---
             CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
      +                    NBMODE, VECMOD, MODAL, ID, REASUP,
      +                    SPECTR, REPMO1, CORFRE, AMORT, MUAPDE,
-     +                    TCOSUP, IM1)
+     +                    TCOSUP, IM1, NBDIS)
             DO 41 IS = 1,NSUP
                DO 42 IN = 1,NEQ
                   TABS(IS,IN) = ABS(REPMO1(IS,IN,ID))  
@@ -130,7 +136,7 @@ C     --- AVEC REGLE DES "DIX POUR CENT" ---
               CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
      +                      NBMODE, VECMOD, MODAL, ID, REASUP,
      +                      SPECTR, REPMO2, CORFRE, AMORT, MUAPDE,
-     +                      TCOSUP, IM2)
+     +                      TCOSUP, IM2, NBDIS)
                      DO 45 IS = 1,NSUP      
                         DO 46 IN = 1,NEQ
                            XXX = ABS(REPMO2(IS,IN,ID))
@@ -148,7 +154,9 @@ C     --- AVEC REGLE DES "DIX POUR CENT" ---
             DO 49 IS = 1,NSUP      
                DO 50 IN = 1,NEQ
                    XXX =  TABS(IS,IN)
-                   RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) + XXX*XXX
+                   IOC = NBDIS(IS)
+                   RECMOD(IOC,IN,ID) = RECMOD(IOC,IN,ID) + 
+     +                                       XXX*XXX
  50            CONTINUE
  49         CONTINUE
             GOTO 40
@@ -160,11 +168,13 @@ C     --- COMBINAISON QUADRATIQUE SIMPLE ---
          CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
      +                 NBMODE, VECMOD, MODAL, ID, REASUP,
      +                 SPECTR, REPMO1, CORFRE, AMORT, MUAPDE,
-     +                 TCOSUP, IM)
+     +                 TCOSUP, IM, NBDIS)
          DO 10 IS = 1,NSUP      
             DO 12 IN = 1,NEQ
-               XXX = REPMO1(IS,IN,ID)            
-               RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) + ( XXX * XXX )
+               XXX = REPMO1(IS,IN,ID)   
+               IOC = NBDIS(IS)         
+               RECMOD(IOC,IN,ID) = RECMOD(IOC,IN,ID) + 
+     +                                   ( XXX * XXX )
  12         CONTINUE
  10      CONTINUE
  11   CONTINUE
@@ -190,16 +200,17 @@ C     --- CQC AVEC FORMULE DE DER-KIUREGHIAN ---
                CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
      +                       NBMODE, VECMOD, MODAL, ID, REASUP,
      +                       SPECTR, REPMO1, CORFRE, AMORT, MUAPDE ,
-     +                       TCOSUP, IM1)
+     +                       TCOSUP, IM1, NBDIS)
                CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
      +                       NBMODE, VECMOD, MODAL, ID, REASUP,
      +                       SPECTR, REPMO2, CORFRE, AMORT, MUAPDE ,
-     +                       TCOSUP, IM2)
+     +                       TCOSUP, IM2, NBDIS)
                DO 21 IS = 1,NSUP      
                   DO 24 IN = 1,NEQ
                      XX1 = REPMO1(IS,IN,ID)
                      XX2 = REPMO2(IS,IN,ID)
-                     RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) 
+                     IOC = NBDIS(IS)
+                     RECMOD(IOC,IN,ID) = RECMOD(IOC,IN,ID) 
      +                                + (DEUX*XX1*XX2*XXX)
  24               CONTINUE
  21            CONTINUE
@@ -225,16 +236,17 @@ C     --- DSC AVEC FORMULE DE ROSENBLUETH ---
                CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
      +                       NBMODE, VECMOD, MODAL, ID, REASUP,
      +                       SPECTR, REPMO1, CORFRE, AMORT, MUAPDE,
-     +                       TCOSUP, IM1)
+     +                       TCOSUP, IM1, NBDIS)
                CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
      +                       NBMODE, VECMOD, MODAL, ID, REASUP,
      +                       SPECTR, REPMO2, CORFRE, AMORT, MUAPDE,
-     +                       TCOSUP, IM2)
+     +                       TCOSUP, IM2, NBDIS)
                DO 32 IS = 1,NSUP      
                   DO 34 IN = 1,NEQ
                      XX1 = REPMO1(IS,IN,ID)
                      XX2 = REPMO2(IS,IN,ID)
-                     RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) 
+                     IOC = NBDIS(IS)
+                     RECMOD(IOC,IN,ID) = RECMOD(IOC,IN,ID) 
      +                                + (DEUX*XX1*XX2*XXX)
  34               CONTINUE
  32            CONTINUE

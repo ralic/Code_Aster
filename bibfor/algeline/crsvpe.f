@@ -1,6 +1,6 @@
       SUBROUTINE CRSVPE(MOTFAC,SOLVEU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,14 +48,15 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
 
       INTEGER      IBID,NIREMP,NMAXIT
       INTEGER      ISLVK,ISLVI,ISLVR
-      REAL*8       FILLIN,EPSMAX
+      REAL*8       FILLIN,EPSMAX,EPSMAT
       CHARACTER*3  SYME
       CHARACTER*8  KVARI,KPREC,RENUM
       LOGICAL      EXISYM,GETEXM
 
 C------------------------------------------------------------------
       CALL JEMARQ()
-
+      
+      EPSMAT=-1.D0
       SYME='NON'
       EXISYM = GETEXM(MOTFAC,'SYME')
       IF (EXISYM) CALL GETVTX(MOTFAC,'SYME',1,1,1,SYME,IBID)
@@ -79,6 +80,7 @@ C     ---------------------------------------------------
       ZK24(ISLVK-1+4) = RENUM
       ZK24(ISLVK-1+5) = SYME
 
+      ZR(ISLVR-1+1) = EPSMAT
       ZR(ISLVR-1+2) = EPSMAX
       ZR(ISLVR-1+3) = FILLIN
 

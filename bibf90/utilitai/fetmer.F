@@ -1,0 +1,54 @@
+      SUBROUTINE FETMER(IERMPI)
+!-----------------------------------------------------------------------
+!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
+!& MODIF FETMER UTILITAI  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+! ================================================================== 
+! COPYRIGHT (C) 1991 - 2009  EDF R&D              WWW.CODE-ASTER.ORG 
+!                                                                    
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
+!                                                                    
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
+! ================================================================== 
+
+!-----------------------------------------------------------------------
+!    - FONCTION REALISEE:  GESTION DES ERREURS DU MPI DE FETAM
+!     ------------------------------------------------------------------
+!     IN  IERMPI : IN2  : CODE DE RETOUR D'ERREUR DE ROUTINE MPI
+!     IN  TEMPS  : R8	: VECTEUR DE TIMING POUR UTTCPU
+!     IN  INFOFE : CH19 : CHAINE DE CHARACTERES POUR MONITORING FETI
+!     IN  RANG   : IN	: RANG DU PROCESSEUR
+!     IN  IFM	 : IN	: UNITE LOGIQUE D'IMPRESSION STANDARD
+!----------------------------------------------------------------------
+!C RESPONSABLE ABBAS M.ABBAS
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+C DECLARATION PARAMETRES D'APPELS
+      INTEGER*4     IERMPI
+
+#ifdef _USE_MPI
+      INCLUDE 'mpif.h'
+
+C VARIABLES LOCALES
+      CHARACTER*512 SERR
+      INTEGER*4     LENSER,IERMP2
+      INTEGER       IAUX1,IAUX2
+      
+      IAUX1=IERMPI
+      IAUX2=MPI_SUCCESS
+      IF (IAUX1.NE.IAUX2) THEN
+        CALL MPI_ERROR_STRING(IERMPI,SERR,LENSER,IERMP2)
+        IAUX1=LENSER
+        CALL U2MESK('F','APPELMPI_5',1,SERR(1:IAUX1))
+      ENDIF
+      
+#endif
+      END

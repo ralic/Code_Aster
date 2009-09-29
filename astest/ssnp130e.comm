@@ -1,5 +1,6 @@
-# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE DETECTION DES SINGULARITES DANS UNE PLAQUE FISSUREE (TETRA4)
+# ssnp130e.para = tps_job 90 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,13 +18,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE PELLET J.PELLET
 # TEST V6.03.130
 # CHARGEMENT EN PRESSION
 # MAILLAGE : TETRA4
 # COMPORTEMENT ELASTIQUE
 
-DEBUT(CODE=_F(NOM='SSNP130E',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='SSNP130E',
+              NIV_PUB_WEB='INTERNET',),);
 
 MA=LIRE_MAILLAGE();
 
@@ -35,10 +36,12 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
 # DEFINITION DES INSTANTS POUR STAT_NON_LINE                            
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
 
-F_INST=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,1.0,1.0,),);
+F_INST=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                           1.0,1.0,
+                           ),);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
@@ -47,36 +50,66 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_3D=_F(GROUP_MA='HAUT',),);
+                 ORIE_PEAU_3D=(_F(GROUP_MA='HAUT',),
+                               _F(GROUP_MA='ARRIERE',),
+                               _F(GROUP_MA='AVANT',),
+                               _F(GROUP_MA='GAUCHE',),
+                               _F(GROUP_MA='DROITE',),
+                               _F(GROUP_MA='S1',),
+                               _F(GROUP_MA='S3',),
+                               _F(GROUP_MA='S4',),),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',MATER=ACIER,),);
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
+
+# REMARQUE : ON IMPOSE EXPLICITEMENT LA PRESSION NULLE SUR LES BORDS LIBRES
+#            POUR QUE LE CALCUL DE L'INDICATEUR D'ERREUR SOIT CORRECT
+PRES_0 = 0.0;
+
 
 CHP=AFFE_CHAR_MECA(MODELE=MO,
-                   PRES_REP=_F(GROUP_MA='HAUT',PRES=1.0,),);
+                   PRES_REP=(_F(GROUP_MA='HAUT',
+                                PRES=1.0,),
+                             _F(GROUP_MA='ARRIERE',
+                                PRES=PRES_0,),
+                             _F(GROUP_MA='AVANT',
+                                PRES=PRES_0,),
+                             _F(GROUP_MA='GAUCHE',
+                                PRES=PRES_0,),
+                             _F(GROUP_MA='DROITE',
+                                PRES=PRES_0,),
+                             _F(GROUP_MA='S1',
+                                PRES=PRES_0,),
+                             _F(GROUP_MA='S3',
+                                PRES=PRES_0,),
+                             _F(GROUP_MA='S4',
+                                PRES=PRES_0,),),);
 
 CHCL=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='PT2'   , DX=0.0,),
-                              _F(GROUP_NO='PT3'   , DX=0.0,),
-                              _F(GROUP_MA='L1210' , DY=0.0,),
-                              _F(GROUP_MA='S2'    , DZ=0.0,),),);
+                    DDL_IMPO=(_F(GROUP_NO='PT2',
+                                 DX=0.0,),
+                              _F(GROUP_NO='PT3',
+                                 DX=0.0,),
+                              _F(GROUP_MA='L1210',
+                                 DY=0.0,),
+                              _F(GROUP_MA='S2',
+                                 DZ=0.0,),),);
 
 DEPLA=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
-                    EXCIT=(_F(CHARGE=CHP,FONC_MULT=F_INST,),
+                    EXCIT=(_F(CHARGE=CHP,
+                              FONC_MULT=F_INST,),
                            _F(CHARGE=CHCL,),),
-                    COMP_INCR=_F(RELATION='ELAS',TOUT='OUI',),
+                    COMP_INCR=_F(RELATION='ELAS',
+                                 TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),);
 
 DEPLA=CALC_ELEM(reuse =DEPLA,
                 RESULTAT=DEPLA,
                 INST=1.,
-                PREC_ERR=0.8,
-                OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',
-                        'ETOT_ELEM','SING_ELEM','SING_ELNO_ELEM',),);
-
-
-
+                OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM','ETOT_ELEM','SING_ELEM','SING_ELNO_ELEM',),
+                PREC_ERR=0.8,);
 
 # TEST DE SING_ELEM VALEUR MAX ET MIN DES 2 COMPOSANTES
 
@@ -98,42 +131,46 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    CRITERE='RELATIF',
                    PRECISION=0.01,
                    REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=DEPLA,
+                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELEM',
                    NOM_CMP='RAPPORT',
                    TYPE_TEST='MAX',
-                   VALE=2.96,
+                   VALE=2.77,
                    CRITERE='RELATIF',
                    PRECISION=0.02,
-                   REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=DEPLA,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.04',),
+                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELEM',
                    NOM_CMP='RAPPORT',
                    TYPE_TEST='MIN',
-                   VALE=0.268,
+                   VALE=0.155,
                    CRITERE='RELATIF',
                    PRECISION=0.02,
-                   REFERENCE='NON_REGRESSION',), 
-               _F(RESULTAT=DEPLA,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.04',),
+                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELEM',
                    NOM_CMP='TAILLE',
                    TYPE_TEST='MAX',
-                   VALE=6.0,
+                   VALE=9.1,
                    CRITERE='RELATIF',
                    PRECISION=0.02,
-                   REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=DEPLA,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.04',),
+                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELEM',
                    NOM_CMP='TAILLE',
                    TYPE_TEST='MIN',
-                   VALE=0.46,
+                   VALE=0.44,
                    CRITERE='RELATIF',
                    PRECISION=0.02,
-                   REFERENCE='NON_REGRESSION',),),); 
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.04',),),);
 
 # TEST DE SING_ELNO_ELEM
 
@@ -155,40 +192,45 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    CRITERE='RELATIF',
                    PRECISION=0.01,
                    REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=DEPLA,
+                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELNO_ELEM',
                    NOM_CMP='RAPPORT',
                    TYPE_TEST='MAX',
-                   VALE=2.96,
+                   VALE=2.77,
                    CRITERE='RELATIF',
                    PRECISION=0.01,
-                   REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=DEPLA,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.04',),
+                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELNO_ELEM',
                    NOM_CMP='RAPPORT',
                    TYPE_TEST='MIN',
-                   VALE=0.268,
+                   VALE=0.155,
                    CRITERE='RELATIF',
                    PRECISION=0.01,
-                   REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=DEPLA,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.04',),
+                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELNO_ELEM',
                    NOM_CMP='RAPPORT',
                    TYPE_TEST='MAX',
-                   VALE=2.96,
+                   VALE=2.77,
                    CRITERE='RELATIF',
                    PRECISION=0.01,
-                   REFERENCE='NON_REGRESSION',),
-               _F(RESULTAT=DEPLA,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.04',),
+                _F(RESULTAT=DEPLA,
                    INST=1.0,
                    NOM_CHAM='SING_ELNO_ELEM',
                    NOM_CMP='RAPPORT',
                    TYPE_TEST='MIN',
-                   VALE=0.268,
+                   VALE=0.155,
                    CRITERE='RELATIF',
                    PRECISION=0.01,
-                   REFERENCE='NON_REGRESSION',),),);                   
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.04',),),);
+
 FIN();

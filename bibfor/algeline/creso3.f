@@ -1,7 +1,7 @@
       SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,KTYPSZ,KTYPRZ,
-     &           KLAG2,EPS,ISTOP,SDFETZ,KOOC,KMD,KTYPPZ)
+     &           KLAG2,EPS,ISTOP,KOOC,KMD,KTYPPZ,EPSZ,MIXPRZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF ALGELINE  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,10 +20,10 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) SOLVEZ
-      CHARACTER*(*) KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2,SDFETZ,KOOC,KMD,
-     &              KTYPPZ      
-      INTEGER       PCPIVZ ,ISTOP
-      REAL*8        EPS
+      CHARACTER*(*) KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2,KOOC,KMD,KTYPPZ,
+     &              MIXPRZ      
+      INTEGER       PCPIVZ,ISTOP
+      REAL*8        EPS,EPSZ
 C ----------------------------------------------------------
 C BUT : CREER UN SOLVEUR POUR MUMPS
 C
@@ -46,12 +46,16 @@ C                  0.  -> DEFAUT
 C IN/JXOUT    SOLVEU  : LE SOLVEUR EST CREE ET REMPLI
 C IN I   ISTOP   : 0 : STOP_SINGULIER=OUI
 C                  1 : STOP_SINGULIER=NON
-C IN K  SDFETZ    : NOM DE LA SD_FETI
 C IN K KOOC  :  TRAITEMENT OUT_OF_CORE DES PHASES DE FACT + RESOL
 C               DE MUMPS : /OUI/NON (PAR DEFAUT NON)
 C IN K KMD  :  STOCKAGE DISTRIBUEE DE LA MATRICE ASSEMBLEE
+C IN R EPSZ     : SEUIL POUR FILTRER LES TERMES DE LA MATRICE
+C                TANGENTE TRANSMISE A MUMPS (LICITE UNIQUEMENT EN
+C                NON LINEAIRE)
+C IN K MIXPRZ : MIXER LES PRECISIONS (SIMPLE/DOUBLE): LICITE UNIQUEMENT
+C               SUR LES MATRICES TANGENTES EN NON LINEAIRE.
 C ----------------------------------------------------------
-C RESPONSABLE PELLET J.PELLET
+C RESPONSABLE BOITEAU
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 
@@ -72,11 +76,11 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
 
-      REAL*8 EPSMAX
+      REAL*8       EPSMAX,EPSMAT
       INTEGER      I,IBID
       INTEGER      ISLVK,ISLVI,ISLVR,PCPIV
       CHARACTER*3  SYME
-      CHARACTER*8  K8BID,KTYPR,KTYPRN,KTYPS,SDFETI,KTYPP
+      CHARACTER*8  K8BID,KTYPR,KTYPRN,KTYPS,KTYPP,MIXPRE
       CHARACTER*19 SOLVEU
 
 C------------------------------------------------------------------
@@ -89,58 +93,12 @@ C------------------------------------------------------------------
       KTYPRN=KTYPRZ
       PCPIV=PCPIVZ
       EPSMAX=EPS
-      SDFETI=SDFETZ
-
-C     SYME : (CE MOT CLE NE CONCERNE QUE L'ASSEMBLAGE)
-C     -------------------------------------------------
-      IF (SYME.EQ.' ') SYME='NON'
-
-
-C     PCENT_PIVOT :
-C     ------------
-      IF (PCPIV.EQ.0) PCPIV=80
-
-
-C     TYPE_RESOL :
-C     ------------
-      IF (KTYPR.EQ.' ') KTYPR='AUTO'
-
-C     TYPE_PRETRAITEMENT :
-C     -------------------
-      IF (KTYPS.EQ.' ') KTYPS='AUTO'
-      
-C     TYPE_POSTTRAITEMENT :
-C     -------------------
-      IF (KTYPP.EQ.' ') KTYPP='AUTO'
-
-C     TYPE_RENUM :
-C     ------------
-      IF (KTYPRN.EQ.' ') KTYPRN='AUTO'
-
-C     ELIM_LAG2 :
-C     ------------
-      IF (KLAG2.EQ.' ') KLAG2='OUI'
-
-C     ERRE_RELA_MAX :
-C     ------------
-      IF (EPSMAX.EQ.0.D0) EPSMAX=1.D-6
-
-C     PARALLELISME :
-C     ------------
-
-C     OUT-OF-CORE  :
-C     -----------
-      IF (KOOC.EQ.' ') KOOC='NON'
-
-C     MATR_DISTRIBUEE :
-C     ---------------
-      IF (KMD.EQ.' ') KMD='NON'
-
-
+      EPSMAT=EPSZ
+      MIXPRE=MIXPRZ      
 
 C     CREATION DE LA SD ET STOCKAGE DES VALEURS OBTENUES :
 C     ---------------------------------------------------
-      CALL WKVECT(SOLVEU//'.SLVK','V V K24',12,ISLVK)
+      CALL WKVECT(SOLVEU//'.SLVK','V V K24',11,ISLVK)
       CALL WKVECT(SOLVEU//'.SLVR','V V R',4,ISLVR)
       CALL WKVECT(SOLVEU//'.SLVI','V V I',6,ISLVI)
 
@@ -150,7 +108,7 @@ C     ---------------------------------------------------
       ZK24(ISLVK-1+4)  = KTYPRN
       ZK24(ISLVK-1+5)  = SYME
       ZK24(ISLVK-1+6)  = KLAG2
-      ZK24(ISLVK-1+8)  = SDFETI
+      ZK24(ISLVK-1+7)  = MIXPRE
       ZK24(ISLVK-1+9)  = KOOC
       ZK24(ISLVK-1+10) = KMD
       ZK24(ISLVK-1+11) = KTYPP
@@ -159,10 +117,10 @@ C     ---------------------------------------------------
       ZI(ISLVI-1+2) = PCPIV
       ZI(ISLVI-1+3) = ISTOP
       ZI(ISLVI-1+4) = -9999
-
+      
+      ZR(ISLVR-1+1) = EPSMAT
       ZR(ISLVR-1+2) = EPSMAX
 
 
-C FIN ------------------------------------------------------
       CALL JEDEMA()
       END

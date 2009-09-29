@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 07/09/2009   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel5 Messages  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,13 +111,13 @@ Conseil :
  ! pas de lumpe en 3d p2: hexa20_d --> face8_d !
 """),
 
-28 : _("""
- ! pas de lumpe en 3d p2: hexa27 --> face9_d !
-"""),
 
-29 : _("""
- ! pas de lumpe en 3d p2: penta15_d --> face6/8_d !
-"""),
+
+
+
+
+
+
 
 30 : _("""
  ! pas de lumpe en 3d p2: tetra10_d --> face6_d !

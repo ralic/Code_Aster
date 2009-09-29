@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE CALCUL DE CHARGE LIMITE EN 3D - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,9 +55,9 @@ L_INST=DEFI_LIST_REEL(         DEBUT=0.0,
 
 CH_CL=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
 
-                               _F(  GROUP_NO = 'FACEXINF', DX = 0.),
-                               _F(  GROUP_NO = 'FACEYINF',     DY = 0.),
-                               _F(  GROUP_NO = 'FACEZINF',         DZ = 0.))
+                               _F(  GROUP_MA = 'FXINF', DX = 0.),
+                               _F(  GROUP_MA = 'FYINF',     DY = 0.),
+                               _F(  GROUP_MA = 'FZINF',         DZ = 0.))
                         )
 
 INCOMP = AFFE_CHAR_MECA(
@@ -68,6 +68,8 @@ INCOMP = AFFE_CHAR_MECA(
 
 
 # ----------- CHARGEMENT A PILOTER ------------------------------------
+# REMARQUE : ON IMPOSE EXPLICITEMENT LA FORCE NULLE POUR UN CALCUL
+#            CORRECT DE ERRE_ELEM_SIGM
 
 CH1=AFFE_CHAR_MECA(    MODELE=MO,FORCE_FACE=(
 #
@@ -75,8 +77,11 @@ CH1=AFFE_CHAR_MECA(    MODELE=MO,FORCE_FACE=(
                                         FX = -0.2),
 #
                            _F(  GROUP_MA = 'FYSUP',
-                                        FY = -0.8E0))
-                        )
+                                        FY = -0.8E0),
+#
+                           _F(  GROUP_MA = 'FZSUP',
+                                        FZ = 0.0)
+                        ),);
 
 
 
@@ -159,8 +164,8 @@ TEST_RESU(RESU=(
                POINT = 1,
                MAILLE='MA1',
                NOM_CMP = 'NUEST',
-               VALE = 9.8000335371758,
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE = 1.6016085020794E+01,
+               REFERENCE = 'NON_REGRESSION',VERSION = '9.05.04'),
              ),
             );
 
@@ -173,8 +178,8 @@ TEST_RESU(RESU=(
                NOEUD= 'N1',
                MAILLE='MA1',
                NOM_CMP = 'ERREST',
-               VALE = 2.2433786491081,
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE = 3.6963973431755,
+               REFERENCE = 'NON_REGRESSION',VERSION = '9.05.04'),
              ),
             );
 

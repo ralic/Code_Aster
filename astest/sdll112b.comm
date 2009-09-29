@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
 # sdll112b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,15 +140,15 @@ SPECT_Z=DEFI_NAPPE(  NOM_PARA='AMOR',    INTERPOL='LOG',
 #-----------------------------------------
 
 SISM_MO1=COMB_SISM_MODAL(      MODE_MECA=MODE,
-                             AMOR_REDUIT=0.03,
+                               AMOR_REDUIT=0.03,
                                MASS_INER=MAS,
                                CORR_FREQ='NON',
-                                   EXCIT=_F( MONO_APPUI = 'OUI',
-                                             AXE = ( 1., 0., 0., ),
-                                             SPEC_OSCI = SPECT_XY,
-                                             ECHELLE = 1.),
+                               MONO_APPUI = 'OUI',
+                               EXCIT=_F( AXE = ( 1., 0., 0., ),
+                                         SPEC_OSCI = SPECT_XY,
+                                         ECHELLE = 1.),
                                COMB_MODE=_F( TYPE = 'CQC'),
-                                  OPTION=( 'DEPL', 'ACCE_ABSOLU', 'REAC_NODA',)
+                               OPTION=( 'DEPL', 'ACCE_ABSOLU', 'REAC_NODA',)
                            )
 
 #-----------------------------------------
@@ -278,17 +278,17 @@ MODE_ST1=CALC_NO(  reuse=MODE_ST1,  RESULTAT=MODE_ST1,  MODELE=MODELE,
 
 #-----------------------------------------
 
-SISM_MO2=COMB_SISM_MODAL(     MODE_MECA=MODE,
+SISM_MO2=COMB_SISM_MODAL(    MODE_MECA=MODE,
                              AMOR_REDUIT=0.03,
-                               MASS_INER=MAS,
-                               CORR_FREQ='NON',
-                               MODE_CORR=MODE_ST1,
-                                   EXCIT=_F( MONO_APPUI = 'OUI',
-                                             AXE = ( 1., 0., 0., ),
-                                             SPEC_OSCI = SPECT_XY,
-                                             ECHELLE = 1.),
-                               COMB_MODE=_F( TYPE = 'CQC'),
-                                  OPTION=('DEPL', 'ACCE_ABSOLU', 'REAC_NODA', )
+                             MASS_INER=MAS,
+                             CORR_FREQ='NON',
+                             MODE_CORR=MODE_ST1,
+                             MONO_APPUI = 'OUI',
+                             EXCIT=_F( AXE = ( 1., 0., 0., ),
+                                       SPEC_OSCI = SPECT_XY,
+                                       ECHELLE = 1.),
+                             COMB_MODE=_F( TYPE = 'CQC'),
+                             OPTION=('DEPL', 'ACCE_ABSOLU', 'REAC_NODA', )
                            )
 
 #-----------------------------------------
@@ -395,15 +395,15 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'REAC_NODA',
 #-----------------------------------------
 
 SISM_MO3=COMB_SISM_MODAL(      MODE_MECA=MODE,
-                             AMOR_REDUIT=0.03,
+                               AMOR_REDUIT=0.03,
                                MASS_INER=MAS,
                                CORR_FREQ='NON',
-                                   EXCIT=_F( MONO_APPUI = 'OUI',
-                                             AXE = ( 1., 0., 0., ),
-                                             SPEC_OSCI = SPECT_XY,
-                                             ECHELLE = 1.),
+                               MONO_APPUI = 'OUI',
+                               EXCIT=_F( AXE = ( 1., 0., 0., ),
+                                         SPEC_OSCI = SPECT_XY,
+                                         ECHELLE = 1.),
                                COMB_MODE=_F( TYPE = 'SRSS'),
-                                  OPTION=( 'DEPL', 'ACCE_ABSOLU', 'REAC_NODA',)
+                               OPTION=( 'DEPL', 'ACCE_ABSOLU', 'REAC_NODA',)
                            )
 
 #-----------------------------------------
@@ -535,24 +535,22 @@ MODE_STA=CALC_NO(  reuse=MODE_STA,  RESULTAT=MODE_STA,  MODELE=MODELE,
 #
 
 SISM_MU1=COMB_SISM_MODAL(      MODE_MECA=MODE,
-                             AMOR_REDUIT=0.03,
+                               AMOR_REDUIT=0.03,
                                MASS_INER=MAS,
                                CORR_FREQ='NON',
-                                   EXCIT=(_F( MULTI_APPUI ='CORRELE',
-                                              GROUP_NO = 'ENCASTRE',
-                                              AXE = ( 1., 0., 0., ),
-                                              SPEC_OSCI = SPECT_XY,
-                                              ECHELLE = 1.),
-                                          _F( MULTI_APPUI ='CORRELE',
-                                              NOEUD = 'N5',
-                                              AXE = ( 1., 0., 0., ),
-                                              SPEC_OSCI = SPECT_XY,
-                                              ECHELLE = 1.),
-                                          _F( MULTI_APPUI ='CORRELE',
-                                              NOEUD = 'N9',
-                                              AXE = ( 1., 0., 0., ),
-                                              SPEC_OSCI = SPECT_XY,
-                                              ECHELLE = 1.)),
+                               MULTI_APPUI ='CORRELE',
+                               EXCIT=(_F( GROUP_NO = 'ENCASTRE',
+                                          AXE = ( 1., 0., 0., ),
+                                          SPEC_OSCI = SPECT_XY,
+                                          ECHELLE = 1.),
+                                      _F( NOEUD = 'N5',
+                                          AXE = ( 1., 0., 0., ),
+                                          SPEC_OSCI = SPECT_XY,
+                                          ECHELLE = 1.),
+                                      _F( NOEUD = 'N9',
+                                          AXE = ( 1., 0., 0., ),
+                                          SPEC_OSCI = SPECT_XY,
+                                          ECHELLE = 1.)),
                          COMB_MULT_APPUI=(_F( GROUP_NO = 'ENCASTRE',
                                               TYPE_COMBI = 'LINE'),
                                           _F( NOEUD = ( 'N5',  'N9', ),
@@ -691,21 +689,19 @@ SISM_MU2=COMB_SISM_MODAL(  MODE_MECA=MODE,
                                MASS_INER=MAS,
                                CORR_FREQ='NON',
                                MODE_CORR=MODE_ST1,
-                                   EXCIT=(_F( MULTI_APPUI ='CORRELE',
-                                              GROUP_NO = 'ENCASTRE',
-                                              AXE = ( 1., 0., 0., ),
-                                              SPEC_OSCI = SPECT_XY,
-                                              ECHELLE = 1.),
-                                          _F( MULTI_APPUI ='CORRELE',
-                                              NOEUD = 'N5',
-                                              AXE = ( 1., 0., 0., ),
-                                              SPEC_OSCI = SPECT_XY,
-                                              ECHELLE = 1.5),
-                                          _F( MULTI_APPUI ='CORRELE',
-                                              NOEUD = 'N9',
-                                              AXE = ( 1., 0., 0., ),
-                                              SPEC_OSCI = SPECT_XY,
-                                              ECHELLE = 2.)),
+                               MULTI_APPUI ='CORRELE',
+                               EXCIT=(_F( GROUP_NO = 'ENCASTRE',
+                                          AXE = ( 1., 0., 0., ),
+                                          SPEC_OSCI = SPECT_XY,
+                                          ECHELLE = 1.),
+                                      _F( NOEUD = 'N5',
+                                          AXE = ( 1., 0., 0., ),
+                                          SPEC_OSCI = SPECT_XY,
+                                          ECHELLE = 1.5),
+                                      _F( NOEUD = 'N9',
+                                          AXE = ( 1., 0., 0., ),
+                                          SPEC_OSCI = SPECT_XY,
+                                          ECHELLE = 2.)),
                          COMB_MULT_APPUI=(_F( GROUP_NO = 'ENCASTRE',
                                               TYPE_COMBI = 'LINE'),
                                           _F( NOEUD = ( 'N5',  'N9', ),

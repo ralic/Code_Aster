@@ -1,14 +1,16 @@
       SUBROUTINE ASEFEN ( MUAPDE, NOMSY, ID, STAT, NEQ, NBSUP, NDIR,
-     &                    NSUPP, MASSE, NOMSUP, DEPSUP, RECMOD )
+     &                    NSUPP, MASSE, NOMSUP, DEPSUP, RECMOD,
+     &                    NINTRA, NBDIS)
       IMPLICIT  NONE
-      INTEGER           ID, NEQ, NBSUP, NSUPP(*), NDIR(*)
+      INTEGER           ID, NEQ, NBSUP, NSUPP(*), NDIR(*), NINTRA, 
+     &                  NBDIS(NBSUP)
       REAL*8            DEPSUP(NBSUP,*), RECMOD(NBSUP,NEQ,*)
       CHARACTER*(*)     STAT, NOMSUP(NBSUP,*), MASSE
       CHARACTER*16      NOMSY
       LOGICAL           MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +42,8 @@ C IN  : NSUPP  : MAX DU NOMBRE DE SUPPORT PAR DIRECTION
 C IN  : NOMSUP : VECTEUR DES NOMS DES SUPPORTS
 C OUT : DEPSUP : VECTEUR DES DEPLACEMENTS DES SUPPORTS
 C OUT : RECMOD : VECTEUR DES RECOMBINAISONS MODALES
+C IN  : NINTRA : NOMBRE d'INTRA-GROUPE
+C IN  : NBDIS  : APPARTENANCE DES SUPPORTS AUX INTRAGROUPES
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -61,7 +65,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, IDI, IER, IGR, IN, INO, INORF, IOC, IORDR,
      &              IRE1, IRE2, IRET, IS, JDGN, JGRN, JNOE, JVALE,
      &              NBTROU, NCAS, NG, NGR, NN, NNO, NNR, NX, NY, NZ
-      REAL*8        DX, DY, DZ, R8B, XX1, XXX
+      REAL*8        DX, DY, DZ, R8B, XX1, XXX, REPMO1(NBSUP*NEQ)
       COMPLEX*16    CBID
       CHARACTER*1   K1BID
       CHARACTER*8   K8B, NOEU, CMP, NOMCMP(3), NOMA, GRNOEU
@@ -198,6 +202,11 @@ C
  2    CONTINUE
 C
       CMP = NOMCMP(ID)
+      DO 11 IS=1,NBSUP
+        DO 12 IN = 1,NEQ
+           REPMO1(IN + (IS-1)*NEQ) = 0.D0
+  12    CONTINUE
+  11  CONTINUE
       DO 110 IS = 1,NSUPP(ID)
          NOEU   = NOMSUP(IS,ID)
          MONACC = NOEU//CMP
@@ -212,9 +221,10 @@ C
            CALL JEVEUO(CHEXTR//'.CELV','L',JVALE)
          END IF
          IF ( MUAPDE ) THEN
+            IOC = NBDIS(IS)
             DO 112 IN = 1,NEQ
                XXX = ZR(JVALE+IN-1) * XX1
-               RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) + XXX*XXX
+               REPMO1(IN+(IOC-1)*NEQ) = REPMO1(IN+(IOC-1)*NEQ) + XXX
  112        CONTINUE
          ELSE
             DO 114 IN = 1,NEQ
@@ -223,6 +233,14 @@ C
  114        CONTINUE
          ENDIF
  110  CONTINUE
+      IF ( MUAPDE ) THEN
+        DO 111 IOC = 1,NINTRA
+            DO 113 IN = 1,NEQ
+               XXX =  REPMO1(IN+(IOC-1)*NEQ)
+               RECMOD(IOC,IN,ID) = RECMOD(IOC,IN,ID) + XXX*XXX
+ 113        CONTINUE
+ 111    CONTINUE
+      ENDIF
 C
  9999 CONTINUE
 

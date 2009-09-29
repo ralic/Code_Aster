@@ -1,9 +1,8 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 # TITRE SYSTEME 2 MASSES 3 RESSORTS
 #       SYSTEME MASSE-RESSORT A 2 DEGRES DE LIBERTE
 #       ANALYSE SPECTRALE MULTI SUPPORTEE
 # sdld301a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -341,35 +340,33 @@ L_TEMPS=DEFI_LIST_REEL(        DEBUT=0.0,
 #
 #--------------------------------
 #
-MUQASRS=COMB_SISM_MODAL(
-                           MODE_MECA=MODES,
+MUQASRS=COMB_SISM_MODAL( MODE_MECA=MODES,
                          AMOR_REDUIT=0.0,
-                           MASS_INER=MAS,
-                           CORR_FREQ='NON',
-                               EXCIT=(_F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P1',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC1,
-                                          ECHELLE = 1.),
-                                      _F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P4',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC2,
-                                          ECHELLE = 1.)),
-                     COMB_MULT_APPUI=_F(  NOEUD = ( 'P1', 'P4', ),
-                                          TYPE_COMBI = 'QUAD'),
-                     DEPL_MULT_APPUI=_F(  NUME_CAS =1,
+                         MASS_INER=MAS,
+                         CORR_FREQ='NON',
+                         MULTI_APPUI ='DECORRELE',
+                         EXCIT=(_F( NOEUD = 'P1',
+                                    AXE = ( 1., 0., 0., ),
+                                    SPEC_OSCI = SPEC1,
+                                    ECHELLE = 1.),
+                                _F( NOEUD = 'P4',
+                                    AXE = ( 1., 0., 0., ),
+                                    SPEC_OSCI = SPEC2,
+                                    ECHELLE = 1.)),
+                         GROUP_APPUI=(_F( NOEUD = ( 'P1', ),),
+                                      _F( NOEUD = ( 'P4', ),),),
+                         DEPL_MULT_APPUI=_F(  NUME_CAS =1,
                                           NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
                                           MODE_STAT = MODE_STA,
                                           NOEUD_REFE = 'P1',
                                           NOEUD = ( 'P1', 'P4', ),
                                           DX = 0.),
-                           COMB_MODE=_F(  TYPE = 'SRSS'),
-                              OPTION=( 'DEPL',
-                                       'SIEF_ELGA_DEPL',
-                                       'EFGE_ELNO_DEPL',
-                                       'FORC_NODA',
-                                       'REAC_NODA', )
+                         COMB_MODE=_F(  TYPE = 'SRSS'),
+                         OPTION=( 'DEPL',
+                                  'SIEF_ELGA_DEPL',
+                                  'EFGE_ELNO_DEPL',
+                                  'FORC_NODA',
+                                  'REAC_NODA', )
                            )
 #
 TEST_RESU(RESU=(
@@ -383,35 +380,33 @@ TEST_RESU(RESU=(
             NOEUD = 'P3',    VALE = 5.65E-3))
           )
 
-MUQAABS=COMB_SISM_MODAL(
-                           MODE_MECA=MODES,
+MUQAABS=COMB_SISM_MODAL( MODE_MECA=MODES,
                          AMOR_REDUIT=0.0,
-                           MASS_INER=MAS,
-                           CORR_FREQ='NON',
-                               EXCIT=(_F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P1',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC1,
-                                          ECHELLE = 1.),
-                                      _F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P4',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC2,
-                                          ECHELLE = 1.)),
-                     COMB_MULT_APPUI=_F(  NOEUD = ( 'P1', 'P4', ),
-                                          TYPE_COMBI = 'QUAD'),
-                     DEPL_MULT_APPUI=_F( NUME_CAS =1,
-                                         NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
-                                         MODE_STAT = MODE_STA,
-                                         NOEUD_REFE = 'P1',
-                                         NOEUD = ( 'P1', 'P4', ),
-                                         DX = 0.),
-                          COMB_MODE=_F(  TYPE = 'ABS'),
-                             OPTION=( 'DEPL',
-                                      'SIEF_ELGA_DEPL',
-                                       'EFGE_ELNO_DEPL',
-                                       'FORC_NODA',
-                                       'REAC_NODA', )
+                         MASS_INER=MAS,
+                         CORR_FREQ='NON',
+                         MULTI_APPUI ='DECORRELE',
+                         EXCIT=(_F( NOEUD = 'P1',
+                                    AXE = ( 1., 0., 0., ),
+                                    SPEC_OSCI = SPEC1,
+                                    ECHELLE = 1.),
+                               _F( NOEUD = 'P4',
+                                   AXE = ( 1., 0., 0., ),
+                                   SPEC_OSCI = SPEC2,
+                                   ECHELLE = 1.)),
+                         GROUP_APPUI=(_F( NOEUD = ( 'P1', ),),
+                                      _F( NOEUD = ( 'P4', ),),),
+                         DEPL_MULT_APPUI=_F( NUME_CAS =1,
+                                             NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
+                                             MODE_STAT = MODE_STA,
+                                             NOEUD_REFE = 'P1',
+                                             NOEUD = ( 'P1', 'P4', ),
+                                             DX = 0.),
+                         COMB_MODE=_F(  TYPE = 'ABS'),
+                         OPTION=( 'DEPL',
+                                  'SIEF_ELGA_DEPL',
+                                  'EFGE_ELNO_DEPL',
+                                  'FORC_NODA',
+                                  'REAC_NODA', )
                            )
 
 #
@@ -428,30 +423,29 @@ TEST_RESU(RESU=(
 
 #
 MUQADPC=COMB_SISM_MODAL(
-                           MODE_MECA=MODES,
+                         MODE_MECA=MODES,
                          AMOR_REDUIT=0.0,
-                           MASS_INER=MAS,
-                           CORR_FREQ='NON',
-                               EXCIT=(_F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P1',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC1,
-                                          ECHELLE = 1.),
-                                      _F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P4',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC2,
-                                          ECHELLE = 1.)),
-                     COMB_MULT_APPUI=_F(  NOEUD = ( 'P1', 'P4', ),
-                                          TYPE_COMBI = 'QUAD'),
-                     DEPL_MULT_APPUI=_F(  NUME_CAS =1,
+                         MASS_INER=MAS,
+                         CORR_FREQ='NON',
+                         MULTI_APPUI ='DECORRELE',
+                         EXCIT=(_F( NOEUD = 'P1',
+                                    AXE = ( 1., 0., 0., ),
+                                    SPEC_OSCI = SPEC1,
+                                    ECHELLE = 1.),
+                                _F( NOEUD = 'P4',
+                                    AXE = ( 1., 0., 0., ),
+                                    SPEC_OSCI = SPEC2,
+                                    ECHELLE = 1.)),
+                         GROUP_APPUI=(_F(  NOEUD = ( 'P1',),),
+                                      _F(  NOEUD = ( 'P4',),),),
+                         DEPL_MULT_APPUI=_F(  NUME_CAS =1,
                                           NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
                                           MODE_STAT = MODE_STA,
                                           NOEUD_REFE = 'P1',
                                           NOEUD = ( 'P1', 'P4', ),
                                           DX = 0.),
-                           COMB_MODE=_F(  TYPE = 'DPC'),
-                              OPTION=( 'DEPL',
+                         COMB_MODE=_F(  TYPE = 'DPC'),
+                         OPTION=( 'DEPL',
                                        'SIEF_ELGA_DEPL',
                                        'EFGE_ELNO_DEPL',
                                        'FORC_NODA',
@@ -469,35 +463,31 @@ TEST_RESU(RESU=(
             NOEUD = 'P3',    VALE = 5.65E-3))
           )
 
-MUQACQC=COMB_SISM_MODAL(
-                           MODE_MECA=MODES,
+MUQACQC=COMB_SISM_MODAL( MODE_MECA=MODES,
                          AMOR_REDUIT=0.05,
-                           MASS_INER=MAS,
-                           CORR_FREQ='NON',
-                               EXCIT=(_F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P1',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC1,
-                                          ECHELLE = 1.),
-                                      _F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P4',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC2,
-                                          ECHELLE = 1.)),
-                     COMB_MULT_APPUI=_F(  NOEUD = ( 'P1', 'P4', ),
-                                          TYPE_COMBI = 'QUAD'),
-                     DEPL_MULT_APPUI=_F(  NUME_CAS =1,
+                         MASS_INER=MAS,
+                         CORR_FREQ='NON',
+                         MULTI_APPUI ='DECORRELE',
+                         EXCIT=(_F( NOEUD = 'P1',
+                                    AXE = ( 1., 0., 0., ),
+                                    SPEC_OSCI = SPEC1,
+                                    ECHELLE = 1.),
+                                _F( NOEUD = 'P4',
+                                    AXE = ( 1., 0., 0., ),
+                                    SPEC_OSCI = SPEC2,
+                                    ECHELLE = 1.)),
+                         DEPL_MULT_APPUI=_F(  NUME_CAS =1,
                                           NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
                                           MODE_STAT = MODE_STA,
                                           NOEUD_REFE = 'P1',
                                           NOEUD = ( 'P1', 'P4', ),
                                           DX = 0.),
-                           COMB_MODE=_F(  TYPE = 'CQC'),
-                              OPTION=( 'DEPL',
-                                       'SIEF_ELGA_DEPL',
-                                       'EFGE_ELNO_DEPL',
-                                       'FORC_NODA',
-                                       'REAC_NODA', )
+                         COMB_MODE=_F( TYPE = 'CQC'),
+                         OPTION=( 'DEPL',
+                                  'SIEF_ELGA_DEPL',
+                                  'EFGE_ELNO_DEPL',
+                                  'FORC_NODA',
+                                  'REAC_NODA', )
                            )
 
 #
@@ -506,43 +496,41 @@ TEST_RESU(RESU=(
             NOEUD_CMP = ('DIR', 'X',),
             REFERENCE = 'ANALYTIQUE',
             NOEUD = 'P2',    VALE = 5.650E-3),
-          _F(  RESULTAT = MUQACQC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+     _F(  RESULTAT = MUQACQC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
             NOEUD_CMP = ('DIR', 'X',),
             REFERENCE = 'ANALYTIQUE',
             NOEUD = 'P3',    VALE = 5.65157E-3))
           )
 
 #
-MUQADSC=COMB_SISM_MODAL(
-                           MODE_MECA=MODES,
+MUQADSC=COMB_SISM_MODAL( MODE_MECA=MODES,
                          AMOR_REDUIT=0.05,
-                           MASS_INER=MAS,
-                           CORR_FREQ='NON',
-                               EXCIT=(_F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P1',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC1,
-                                          ECHELLE = 1.),
-                                      _F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P4',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC2,
-                                          ECHELLE = 1.)),
-                     COMB_MULT_APPUI=_F(  NOEUD = ( 'P1', 'P4', ),
-                                          TYPE_COMBI = 'QUAD'),
-                     DEPL_MULT_APPUI=_F(  NUME_CAS =1,
-                                          NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
-                                          MODE_STAT = MODE_STA,
-                                          NOEUD_REFE = 'P1',
-                                          NOEUD = ( 'P1', 'P4', ),
-                                          DX = 0.),
-                           COMB_MODE=_F(  TYPE = 'DSC',
-                                          DUREE = 15.),
-                               OPTION=( 'DEPL',
-                                        'SIEF_ELGA_DEPL',
-                                        'EFGE_ELNO_DEPL',
-                                        'FORC_NODA',
-                                        'REAC_NODA', )
+                         MASS_INER=MAS,
+                         CORR_FREQ='NON',
+                         MULTI_APPUI ='DECORRELE',
+                         EXCIT=(_F( NOEUD = 'P1',
+                                    AXE = ( 1., 0., 0., ),
+                                    SPEC_OSCI = SPEC1,
+                                    ECHELLE = 1.),
+                                _F( NOEUD = 'P4',
+                                    AXE = ( 1., 0., 0., ),
+                                    SPEC_OSCI = SPEC2,
+                                    ECHELLE = 1.)),
+                         GROUP_APPUI=(_F( NOEUD = ( 'P1',),),
+                                      _F( NOEUD = ( 'P4',),),),
+                         DEPL_MULT_APPUI=_F( NUME_CAS =1,
+                                             NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
+                                             MODE_STAT = MODE_STA,
+                                             NOEUD_REFE = 'P1',
+                                             NOEUD = ( 'P1', 'P4', ),
+                                             DX = 0.),
+                         COMB_MODE=_F( TYPE = 'DSC',
+                                       DUREE = 15.),
+                         OPTION=( 'DEPL',
+                                  'SIEF_ELGA_DEPL',
+                                  'EFGE_ELNO_DEPL',
+                                  'FORC_NODA',
+                                  'REAC_NODA', )
                            )
 
 #
@@ -551,232 +539,14 @@ TEST_RESU(RESU=(
             NOEUD_CMP = ('DIR', 'X',),
             REFERENCE = 'ANALYTIQUE',
             NOEUD = 'P2',    VALE = 5.649E-3),
-          _F(  RESULTAT = MUQADSC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+     _F(  RESULTAT = MUQADSC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
             NOEUD_CMP = ('DIR', 'X',),
             REFERENCE = 'ANALYTIQUE',
             NOEUD = 'P3',    VALE = 5.6521E-3))
           )
 
-MULISRS=COMB_SISM_MODAL(
-                           MODE_MECA=MODES,
-                         AMOR_REDUIT=0.00,
-                           MASS_INER=MAS,
-                           CORR_FREQ='NON',
-                               EXCIT=(_F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P1',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC1,
-                                          ECHELLE = 1.),
-                                      _F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P4',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC2,
-                                          ECHELLE = 1.)),
-                     COMB_MULT_APPUI=_F(  NOEUD = ( 'P1', 'P4', ),
-                                          TYPE_COMBI = 'LINE'),
-                      DEPL_MULT_APPUI=_F( NUME_CAS =1,
-                                          NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
-                                          MODE_STAT = MODE_STA,
-                                          NOEUD_REFE = 'P1',
-                                          NOEUD = ( 'P1', 'P4', ),
-                                          DX = 0.),
-                           COMB_MODE=_F(  TYPE = 'SRSS'),
-                              OPTION=( 'DEPL',
-                                       'SIEF_ELGA_DEPL',
-                                       'EFGE_ELNO_DEPL',
-                                       'FORC_NODA',
-                                       'REAC_NODA', )
-                           )
-
 #
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MULISRS, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',    VALE = 7.547E-3),
-          _F(  RESULTAT = MULISRS, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',    VALE = 7.547E-3))
-          )
-
 #
-MULIABS=COMB_SISM_MODAL(
-                           MODE_MECA=MODES,
-                         AMOR_REDUIT=0.00,
-                           MASS_INER=MAS,
-                           CORR_FREQ='NON',
-                               EXCIT=(_F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P1',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC1,
-                                          ECHELLE = 1.),
-                                      _F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P4',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC2,
-                                          ECHELLE = 1.)),
-                     COMB_MULT_APPUI=_F(  NOEUD = ( 'P1', 'P4', ),
-                                          TYPE_COMBI = 'LINE'),
-                     DEPL_MULT_APPUI=_F(  NUME_CAS =1,
-                                          NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
-                                          MODE_STAT = MODE_STA,
-                                          NOEUD_REFE = 'P1',
-                                          NOEUD = ( 'P1', 'P4', ),
-                                          DX = 0.),
-                           COMB_MODE=_F(  TYPE = 'ABS'),
-                              OPTION=( 'DEPL',
-                                       'SIEF_ELGA_DEPL',
-                                       'EFGE_ELNO_DEPL',
-                                       'FORC_NODA',
-                                       'REAC_NODA', )
-                           )
-
-#
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MULIABS, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',    VALE = 8.903E-3),
-          _F(  RESULTAT = MULIABS, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',    VALE = 8.903E-3))
-          )
-
-#
-
-MULIDPC=COMB_SISM_MODAL(
-                           MODE_MECA=MODES,
-                         AMOR_REDUIT=0.00,
-                           MASS_INER=MAS,
-                           CORR_FREQ='NON',
-                               EXCIT=(_F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P1',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC1,
-                                          ECHELLE = 1.),
-                                      _F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P4',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC2,
-                                          ECHELLE = 1.)),
-                     COMB_MULT_APPUI=_F(  NOEUD = ( 'P1', 'P4', ),
-                                          TYPE_COMBI = 'LINE'),
-                     DEPL_MULT_APPUI=_F(  NUME_CAS =1,
-                                          NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
-                                          MODE_STAT = MODE_STA,
-                                          NOEUD_REFE = 'P1',
-                                          NOEUD = ( 'P1', 'P4', ),
-                                          DX = 0.),
-                           COMB_MODE=_F(  TYPE = 'DPC'),
-                              OPTION=( 'DEPL',
-                                       'SIEF_ELGA_DEPL',
-                                       'EFGE_ELNO_DEPL',
-                                       'FORC_NODA',
-                                       'REAC_NODA', )
-                           )
-
-#
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MULIDPC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',    VALE = 7.547E-3, PRECISION = 0.40),
-          _F(  RESULTAT = MULIDPC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',    VALE = 7.547E-3, PRECISION = 0.40))
-          )
-
-MULICQC=COMB_SISM_MODAL(
-                           MODE_MECA=MODES,
-                         AMOR_REDUIT=0.05,
-                           MASS_INER=MAS,
-                           CORR_FREQ='NON',
-                               EXCIT=(_F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P1',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC1,
-                                          ECHELLE = 1.),
-                                      _F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P4',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC2,
-                                          ECHELLE = 1.)),
-                     COMB_MULT_APPUI=_F(  NOEUD = ( 'P1', 'P4', ),
-                                          TYPE_COMBI = 'LINE'),
-                     DEPL_MULT_APPUI=_F(  NUME_CAS =1,
-                                          NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
-                                          MODE_STAT = MODE_STA,
-                                          NOEUD_REFE = 'P1',
-                                          NOEUD = ( 'P1', 'P4', ),
-                                          DX = 0.),
-                           COMB_MODE=_F(  TYPE = 'CQC'),
-                              OPTION=( 'DEPL',
-                                       'SIEF_ELGA_DEPL',
-                                       'EFGE_ELNO_DEPL',
-                                       'FORC_NODA',
-                                       'REAC_NODA', )
-                           )
-
-#
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MULICQC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',    VALE = 7.534E-3),
-          _F(  RESULTAT = MULICQC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',    VALE = 7.554E-3))
-          )
-
-#
-MULIDSC=COMB_SISM_MODAL(
-                           MODE_MECA=MODES,
-                         AMOR_REDUIT=0.05,
-                           MASS_INER=MAS,
-                           CORR_FREQ='NON',
-                               EXCIT=(_F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P1',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC1,
-                                          ECHELLE = 1.),
-                                      _F( MULTI_APPUI ='DECORRELE',
-                                          NOEUD = 'P4',
-                                          AXE = ( 1., 0., 0., ),
-                                          SPEC_OSCI = SPEC2,
-                                          ECHELLE = 1.)),
-                     COMB_MULT_APPUI=_F(  NOEUD = ( 'P1', 'P4', ),
-                                          TYPE_COMBI = 'LINE'),
-                     DEPL_MULT_APPUI=_F(  NUME_CAS =1,
-                                          NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
-                                          MODE_STAT = MODE_STA,
-                                          NOEUD_REFE = 'P1',
-                                          NOEUD = ( 'P1', 'P4', ),
-                                          DX = 0.),
-                           COMB_MODE=_F(  TYPE = 'DSC',
-                                          DUREE = 15.),
-                              OPTION=( 'DEPL',
-                                       'SIEF_ELGA_DEPL',
-                                       'EFGE_ELNO_DEPL',
-                                       'FORC_NODA',
-                                       'REAC_NODA', )
-                           )
-
-#
-TEST_RESU(RESU=(
-     _F(  RESULTAT = MULIDSC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P2',    VALE = 7.530E-3),
-          _F(  RESULTAT = MULIDSC, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-            NOEUD_CMP = ('DIR', 'X',),
-            REFERENCE = 'ANALYTIQUE',
-            NOEUD = 'P3',    VALE = 7.5638E-3))
-          )
-
 # --------------------------------------
 #
 FIN( )

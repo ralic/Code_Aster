@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DE MUMPS AVEC UNE MATRICE NON-SYMETRIQUE
 # mumps04a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,6 +178,67 @@ TEST_RESU(RESU=(
               _F( REFERENCE = 'AUTRE_ASTER', RESULTAT = EVOL2,  NOM_CHAM = 'VARI_ELGA',  INST = 3.,
 MAILLE='M1',POINT=1,NOM_CMP='V1',PRECISION=1.E-3,   VALE= 8.3333333333334E-01 ),
               _F( REFERENCE = 'AUTRE_ASTER', RESULTAT = EVOL2,   NOM_CHAM = 'SIEF_ELGA',  INST = 3.,
+MAILLE='M1',POINT=1,NOM_CMP='SIYY',PRECISION=1.E-3, VALE= 9.9999999999994E+02 ))
+            )
+
+#---------------------------------------------------------------------------------------------
+# CALCUL 2b : SOLVEUR MUMPS CENTRALISE + MIXER_PRECISION + FILTRAGE
+#-------------------------------
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
+EVOL21=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',MIXER_PRECISION='OUI'),
+                        CHAM_MATER=MAT,
+                         INCREMENT=_F(
+                LIST_INST = INSTANTS,
+                NUME_INST_FIN = 2),
+                            MODELE=MO,EXCIT=(
+                             _F(
+                CHARGE = LIAISON), _F(
+                CHARGE = TRACTION,
+                FONC_MULT = RAMPE)),
+                         COMP_INCR=_F(
+                RELATION = 'ENDO_FRAGILE',
+                ITER_INTE_MAXI = 30),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                PREDICTION = 'TANGENTE',
+                REAC_INCR = 1),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.E-4,
+                ITER_GLOB_MAXI = 1,
+                ARRET = 'OUI'),
+              )
+
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
+EVOL21=STAT_NON_LINE( reuse=EVOL21, SOLVEUR=_F(METHODE='MUMPS',FILTRAGE_MATRICE=1.E-8),
+                        CHAM_MATER=MAT,
+                         INCREMENT=_F(
+                LIST_INST = INSTANTS,
+                NUME_INST_FIN = 3),
+                         ETAT_INIT=_F(
+                EVOL_NOLI = EVOL2,
+                NUME_ORDRE = 2),
+                            MODELE=MO,EXCIT=(
+                             _F(
+                CHARGE = LIAISON), _F(
+                CHARGE = TRACTION,
+                FONC_MULT = RAMPE)),
+                         COMP_INCR=_F(
+                ITER_INTE_MAXI = 30,
+                RELATION = 'ENDO_FRAGILE'),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                PREDICTION = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.E-4,
+                ITER_GLOB_MAXI = 1,
+                ARRET = 'OUI'),
+              )
+
+TEST_RESU(RESU=(
+              _F( REFERENCE = 'AUTRE_ASTER', RESULTAT = EVOL21,  NOM_CHAM = 'VARI_ELGA',  INST = 3.,
+MAILLE='M1',POINT=1,NOM_CMP='V1',PRECISION=1.E-3,   VALE= 8.3333333333334E-01 ),
+              _F( REFERENCE = 'AUTRE_ASTER', RESULTAT = EVOL21,   NOM_CHAM = 'SIEF_ELGA',  INST = 3.,
 MAILLE='M1',POINT=1,NOM_CMP='SIYY',PRECISION=1.E-3, VALE= 9.9999999999994E+02 ))
             )
 

@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, LZON, MXZON, IADZON, LMO, CMES, CVIG,IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -123,7 +123,7 @@ C ----------------------------------------------------------------------
 C --------------------------------- ------------------------------------
       INTEGER          MXLICI , IPREM  , INIT
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM, LOUAEM
-      INTEGER          LOR8EM , LOC8EM , ISNNEM
+      INTEGER          LOR8EM , LOC8EM , ISNNEM , IRT
       REAL*8           MAXBAS
       PARAMETER      ( MXLICI = 67 )
       CHARACTER *(MXLICI) CLICIT
@@ -137,7 +137,7 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       IF (VAL .LE. 0 ) THEN
          MFIC = MOFIEM()
       ELSE
-         MFIC = VAL*1024
+         MFIC = NINT(VAL)*1024
       ENDIF
       WRITE(6,'(/,1X,A,F12.2,A)') 'LIMITE TAILLE DES BASES       : '    
      &      ,MFIC/(1024*1024.0D0),'   Go '
@@ -277,6 +277,7 @@ C
       LGPUTI = 0
       IPGC   = 0
       INIT   = 100
-      IPREM  = JJPREM(INIT)
+      IRT    = 0
+      IPREM  = JJPREM(INIT,IRT)
 C FIN ------------------------------------------------------------------
       END

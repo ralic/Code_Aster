@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -314,4 +314,24 @@ cata_msg = {
 
 """), 
  
+
+64 : _("""
+
+ ATTENTION la taille de répertoire de noms atteint %(i1)d pour la base %(k1)s.
+ Il sera impossible de l'agrandir.  
+  -> Conseil :     
+     Il faut réduire le nombre de concepts sur la base GLOBALE en utilisant
+     la commande DETRUIRE.     
+
+"""), 
+
+65 : _("""
+
+ ATTENTION la taille de répertoire de noms atteint %(i1)d pour la base %(k1)s.
+ Il sera impossible de l'agrandir.  
+  -> Conseil :     
+     Il y a trop d'objets créés sur la base VOLATILE, cela peut provenir d'une
+     erreur dans la programmation de la commande.     
+
+"""), 
 }

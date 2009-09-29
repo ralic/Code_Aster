@@ -1,5 +1,5 @@
-# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
-# TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS) -ancien SSLP09b
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS) - ANCIEN SSLP09b
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,13 +24,6 @@ DEBUT(CODE=_F(NOM='SSLS09B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE()
 
-#
-# DEFINITION DES GROUPES DE NOEUDS
-MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
-                       _F(  GROUP_MA = 'APPUI'),
-                       _F(  GROUP_MA = 'LEF'),
-                       _F(  GROUP_MA = 'LCD'))
-                   )
 
 #
 # DEFINITION DU MODELE
@@ -54,7 +47,7 @@ CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
 CLIM=AFFE_CHAR_MECA(    MODELE=MODELE,
-                           DDL_IMPO=_F(  GROUP_NO = 'APPUI',  DY = 0.)
+                           DDL_IMPO=_F(  GROUP_MA = 'APPUI',  DY = 0.)
                         )
 
 #

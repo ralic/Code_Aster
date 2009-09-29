@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 21/09/2009   AUTEUR REZETTE C.REZETTE 
+#@ MODIF med Messages  DATE 28/09/2009   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,15 +193,21 @@ cata_msg = {
 """),
 
 31 : _("""
-  -> Ce champ existe déjà dans le fichier MED. 
-     On ne peut pas le créer de nouveau.
+  -> Ce champ existe déjà dans le fichier MED avec un nombre de composantes
+     différent à un instant précédent. On ne peut pas le créer de nouveau.
 
      Nom MED du champ : "%(k1)s"
 
   -> Risque & Conseil :
-     Si vous essayez d'imprimer les différentes composantes d'un champ,
-     ne faites qu'un seul IMPR_RESU avec la liste des composantes à
-     retenir derrière le mot-clé NOM_CMP.
+     On ne peut pas imprimer un champ dont le nombre de composantes varie en
+     fonction du temps. Plusieurs possibilités s'offrent à vous:
+     - si vous souhaitez disposer d'un champ disposant des memes composantes
+     à chaque instant, il faut renseigner derrière le mot-clé NOM_CMP le nom 
+     des composantes commun aux différents instants.
+     - si vous souhaitez imprimer un champ avec l'ensemble des composantes
+     Aster qu'il contient, il suffit de faire plusieurs IMPR_RESU et de 
+     renseigner pour chaque impression une liste d'instants adoc.
+     
      Pour la visualisation dans Salomé (Scalar Map par exemple),
      sélectionner la composante dans Scalar Range/Scalar Mode.
 """),

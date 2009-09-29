@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE VALIDATION DE L'ESTIMATEUR D'ERREUR SUR UNE PLAQUE FISSUREE
 # sslp316b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,7 +101,7 @@ UTOT=STAT_NON_LINE(MODELE=MODK,
 
 UTOT=CALC_ELEM(reuse =UTOT,
                RESULTAT=UTOT,
-               OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM',),);
+               OPTION=('SIEF_ELNO_ELGA',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    INST=1.0,
@@ -154,24 +154,6 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    NOM_CMP='X4',
                    TYPE_TEST='MIN',
                    VALE=-1.21e-1,
-                   CRITERE='RELATIF',
-                   PRECISION=0.005,
-                   REFERENCE='NON_REGRESSION',),
-                 _F(RESULTAT=UTOT,
-                   INST=1.0,
-                   NOM_CHAM='ERRE_ELEM_SIGM',
-                   NOM_CMP='ERREST',
-                   TYPE_TEST='MAX',
-                   VALE=1.3e-4,
-                   CRITERE='RELATIF',
-                   PRECISION=0.005,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=UTOT,
-                   INST=1.0,
-                   NOM_CHAM='ERRE_ELEM_SIGM',
-                   NOM_CMP='ERREST',
-                   TYPE_TEST='MIN',
-                   VALE=2.42e-9,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',),),);

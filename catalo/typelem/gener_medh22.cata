@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
+%& MODIF TYPELEM  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -75,6 +75,8 @@ MODE_LOCAL__
     EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    CFORCEF  = FORC_F   ELEM__         (FX       FY       )
+    NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
@@ -160,10 +162,10 @@ OPTION__
                                      EDEFONC  PDEFORC
     EQUI_ELNO_SIGM      330   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
-    ERRE_ELEM_SIGM      497   IN__   ECONTNO  PCONTNM  ECONTNO  PCONTNO  CREFERI  PFORCE   EFORCER  PFRVOLU
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CREFERI  PPRESS
-                                     CROTATR  PROTATR  CPDTTH_R PTEMPSR  EVOISIN  PVOISIN  E2NEUTR  PGRDCA
-                                     DDL_MECA PDEPLMR  DDL_MECA PDEPLAR  EERREUR  PERREM
+    ERRE_ELEM_SIGM      497   IN__   NGEOMER  PGEOMER  CPDTTH_R PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
+                                     CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR
+                                     EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ECONTNO  PCONTNO  ECONTNO  PCONTNM
+                                     DDL_MECA PDEPLMR  DDL_MECA PDEPLAR  EERREUR  PERREM   E2NEUTR  PGRDCA
                               OUT__  EERREUR  PERREUR
     ERRE_TEMPS          500   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ECONTPG  PCONTGP  ECONTPG  PCONTGM
                                      CPDTTH_R PTEMPSR  E2NEUTR  PGRDCA

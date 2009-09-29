@@ -1,6 +1,6 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,6 +151,7 @@ C ----------------------------------------------------------------------
       CHARACTER*24     VALK(3)
       CHARACTER*32     NOMSYS,D32
       INTEGER          KAT(LIDBAS),LSO(LIDBAS),KDY(LIDBAS),LGBL,IADYN
+      INTEGER          IRT
       REAL*8           VALR
       LOGICAL          LEXP
       DATA CIDBAS  / '$$CARA  ' , '$$IADD  ' , '$$GENR  ' , '$$TYPE  ' ,
@@ -479,7 +480,7 @@ C
         IF(GENR(JGENR(IC)+K).EQ.'N') THEN
           LTYPI = LTYP(JLTYP(IC)+K)
           LONGJ = LONG(JLONG(IC)+K)
-          LONOK = (IDEHC + JJPREM(LONGJ))*LOIS + (LONGJ+1)*LTYPI
+          LONOK = (IDEHC + JJPREM(LONGJ,IRT))*LOIS + (LONGJ+1)*LTYPI
           IF ( MOD(LONOK,LTYPI) .GT. 0 ) THEN
             LONOK = (LONOK/LTYPI + 1 )
           ELSE

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 # TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -207,31 +207,31 @@ SPECT=DEFI_NAPPE(  NOM_PARA='AMOR',
 # ----------------------------------------------------------------------
 
 SISM_SP3=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
-                               NUME_MODE=( 1,  2,  3, ),
-                                 AMOR_REDUIT=0.01,
-                               MASS_INER=TABL_MAS,
-                               CORR_FREQ='NON',
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      TRI_AXE = ( 1.,  1.,  1., ),
-                                      SPEC_OSCI = SPECT),
-                              COMB_MODE=_F(  TYPE = 'DPC'),
-                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                                OPTION=( 'DEPL',  'REAC_NODA',
-                                         'EFGE_ELNO_DEPL',
-                                         'SIPO_ELNO_DEPL',  )
+                           NUME_MODE=( 1,  2,  3, ),
+                           AMOR_REDUIT=0.01,
+                           MASS_INER=TABL_MAS,
+                           CORR_FREQ='NON',
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F(TRI_AXE = ( 1.,  1.,  1., ),
+                                    SPEC_OSCI = SPECT),
+                           COMB_MODE=_F(  TYPE = 'DPC'),
+                           COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                           OPTION=( 'DEPL',  'REAC_NODA',
+                                      'EFGE_ELNO_DEPL',
+                                      'SIPO_ELNO_DEPL',  )
                             )
 
 SISMSP32=COMB_SISM_MODAL(  MODE_MECA=MODEMEC2,
-                               NUME_MODE=( 1,  2,  3, ),
-                                 AMOR_REDUIT=0.01,
-                               CORR_FREQ='NON',
-                               MASS_INER=TABL_MAS,
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      TRI_AXE = ( 1.,  1.,  1., ),
+                           NUME_MODE=( 1,  2,  3, ),
+                           AMOR_REDUIT=0.01,
+                           CORR_FREQ='NON',
+                           MASS_INER=TABL_MAS,
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F(  TRI_AXE = ( 1.,  1.,  1., ),
                                       SPEC_OSCI = SPECT),
-                              COMB_MODE=_F(  TYPE = 'DPC'),
-                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                                OPTION=( 'DEPL',  'REAC_NODA', )
+                           COMB_MODE=_F(  TYPE = 'DPC'),
+                           COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                           OPTION=( 'DEPL',  'REAC_NODA', )
                             )
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'DEPL',
@@ -323,15 +323,15 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISMSP32, NOM_CHAM = 'REAC_NODA',
 #
 
 SISM_SP6=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
-                                 AMOR_REDUIT=0.01,
-                               MASS_INER=TABL_MAS,
-                               CORR_FREQ='NON',
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      TRI_AXE = ( 1.,  1.,  1., ),
+                           AMOR_REDUIT=0.01,
+                           MASS_INER=TABL_MAS,
+                           CORR_FREQ='NON',
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F(  TRI_AXE = ( 1.,  1.,  1., ),
                                       SPEC_OSCI = SPECT),
-                              COMB_MODE=_F(  TYPE = 'DPC'),
-                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                                OPTION=( 'DEPL',  'REAC_NODA',
+                           COMB_MODE=_F(  TYPE = 'DPC'),
+                           COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                           OPTION=( 'DEPL',  'REAC_NODA',
                                          'VITE',  'ACCE_ABSOLU', )
                             )
 
@@ -387,17 +387,17 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'REAC_NODA',
                    )
 
 SISM_3ST=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
-                               NUME_MODE=( 1,  2,  3, ),
-                               MODE_CORR=MODE_STA,
-                                 AMOR_REDUIT=0.01,
-                               MASS_INER=TABL_MAS,
-                               CORR_FREQ='NON',
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      TRI_AXE = ( 1.,  1.,  1., ),
+                           NUME_MODE=( 1,  2,  3, ),
+                           MODE_CORR=MODE_STA,
+                           AMOR_REDUIT=0.01,
+                           MASS_INER=TABL_MAS,
+                           CORR_FREQ='NON',
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F(  TRI_AXE = ( 1.,  1.,  1., ),
                                       SPEC_OSCI = SPECT),
-                              COMB_MODE=_F(  TYPE = 'SRSS'),
-                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                                OPTION=( 'DEPL',  'REAC_NODA', )
+                           COMB_MODE=_F(  TYPE = 'SRSS'),
+                           COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                           OPTION=( 'DEPL',  'REAC_NODA', )
                             )
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
@@ -455,15 +455,15 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'REAC_NODA',
 # ----------------------------------------------------------------------
 
 SISM_CQC=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
-                                 AMOR_REDUIT=0.01,
-                               MASS_INER=TABL_MAS,
-                               CORR_FREQ='NON',
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      TRI_AXE = ( 1.,  1.,  1., ),
+                           AMOR_REDUIT=0.01,
+                           MASS_INER=TABL_MAS,
+                           CORR_FREQ='NON',
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F(  TRI_AXE = ( 1.,  1.,  1., ),
                                       SPEC_OSCI = SPECT),
-                              COMB_MODE=_F(  TYPE = 'CQC'),
-                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                                OPTION=( 'DEPL',  'REAC_NODA', )
+                           COMB_MODE=_F(  TYPE = 'CQC'),
+                           COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                           OPTION=( 'DEPL',  'REAC_NODA', )
                             )
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
@@ -521,16 +521,16 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'REAC_NODA',
 # ----------------------------------------------------------------------
 
 SISM_DPC=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
-                                 AMOR_REDUIT=0.01,
-                               MASS_INER=TABL_MAS,
-                               CORR_FREQ='NON',
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      TRI_AXE = ( 1.,  1.,  1., ),
+                           AMOR_REDUIT=0.01,
+                           MASS_INER=TABL_MAS,
+                           CORR_FREQ='NON',
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F(  TRI_AXE = ( 1.,  1.,  1., ),
                                       SPEC_OSCI = SPECT),
-                              COMB_MODE=_F(  TYPE = 'DSC',
-                                          DUREE = 5.),
-                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                                OPTION=( 'DEPL',  'REAC_NODA', )
+                           COMB_MODE=_F(  TYPE = 'DSC',
+                                       DUREE = 5.),
+                           COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                           OPTION=( 'DEPL',  'REAC_NODA', )
                             )
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,11 +54,11 @@
 #                   OPPOSE  : 1    NO8(1.,1.,1.)
 # 
 # NOMBRE DE GROUPES DE MAILLES : 7
-#                   BORD_EXT  : 12  Les 12 triangles de bord
 #                   MOITIE1   :  3  cote ORIGINE par rapport au plan (2,4,5,7)
 #                   MOITIE2   :  3  cote OPPOSE par rapport au plan (2,4,5,7)
 #                   Y_0       :  2  triangles du plan y=0 (1,2,4,3)
 #                   Z_1       :  2  triangles du plan z=1 (3,4,7,8)
+#                   BORD_EXT  :  8  Les 8 autres triangles de bord
 #                   O_I       :  1  segment de la ligne y=z=0 (NO1->NO2)
 #                   MP_K      :  1  maille-point basee sur K (NO3)
 #                   MP_O      :  1  maille-point basee sur ORIGINE (NO1)
@@ -104,7 +104,7 @@ MODEZERO=AFFE_MODELE(MAILLAGE=MZERO,
 
 MZERO=MODI_MAILLAGE(reuse =MZERO,
                     MAILLAGE=MZERO,
-                    ORIE_PEAU_3D=_F(GROUP_MA='BORD_EXT',),);
+                    ORIE_PEAU_3D=_F(GROUP_MA=('BORD_EXT','Z_1','Y_0',),),);
 #
 # 3.2. MISE EN PLACE DES MATERIAUX
 
@@ -115,17 +115,23 @@ MATEZERO=AFFE_MATERIAU(MAILLAGE=MZERO,
                                 MATER=MATER2,),),);
 #
 # 3.4. CHARGEMENTS
-
+FORCE_Z=78480.;
+PRES_0 = 0.0;
+PRES_0 = 1.E-14;
 CHARZERO=AFFE_CHAR_MECA(MODELE=MODEZERO,
                         PESANTEUR=(9.81,0.,0.,-1.,),
-                        DDL_IMPO=_F(GROUP_NO='J',
+                        DDL_IMPO=(_F(GROUP_NO='J',
                                     DZ=0.,),
-                        FACE_IMPO=_F(GROUP_MA='O_I',
+                                  _F(GROUP_MA='O_I',
                                      DX=0.,
                                      DY=0.,
-                                     DZ=0.,),
+                                     DZ=0.,),),
                         FORCE_FACE=_F(GROUP_MA='Z_1',
-                                      FZ=78480.,),);
+                                      FZ=FORCE_Z,),
+                        PRES_REP=(_F(GROUP_MA='Y_0',
+                                     PRES=PRES_0,),
+                                  _F(GROUP_MA='BORD_EXT',
+                                     PRES=PRES_0,),),);
 #
 # 3.5. RESOLUTION
 
@@ -163,14 +169,18 @@ MATEUN=AFFE_MATERIAU(MAILLAGE=MUN,
 
 CHARUN=AFFE_CHAR_MECA(MODELE=MODEUN,
                       PESANTEUR=(9.81,0.,0.,-1.,),
-                      DDL_IMPO=_F(GROUP_NO='J',
+                      DDL_IMPO=(_F(GROUP_NO='J',
                                   DZ=0.,),
-                      FACE_IMPO=_F(GROUP_MA='O_I',
+                                _F(GROUP_MA='O_I',
                                    DX=0.,
                                    DY=0.,
-                                   DZ=0.,),
+                                   DZ=0.,),),
                       FORCE_FACE=_F(GROUP_MA='Z_1',
-                                    FZ=78480.,),);
+                                    FZ=FORCE_Z,),
+                      PRES_REP=(_F(GROUP_MA='Y_0',
+                                   PRES=PRES_0,),
+                                _F(GROUP_MA='BORD_EXT',
+                                   PRES=PRES_0,),),);
 #
 # 5.5. RESOLUTION
 
@@ -271,14 +281,18 @@ MATEDEUX=AFFE_MATERIAU(MAILLAGE=MDEUX,
 
 CHARDEUX=AFFE_CHAR_MECA(MODELE=MODEDEUX,
                         PESANTEUR=(9.81,0.,0.,-1.,),
-                        DDL_IMPO=_F(GROUP_NO='J',
+                        DDL_IMPO=(_F(GROUP_NO='J',
                                     DZ=0.,),
-                        FACE_IMPO=_F(GROUP_MA='O_I',
+                                  _F(GROUP_MA='O_I',
                                      DX=0.,
                                      DY=0.,
-                                     DZ=0.,),
+                                     DZ=0.,),),
                         FORCE_FACE=_F(GROUP_MA='Z_1',
-                                      FZ=78480.,),);
+                                      FZ=FORCE_Z,),
+                        PRES_REP=(_F(GROUP_MA='Y_0',
+                                     PRES=PRES_0,),
+                                  _F(GROUP_MA='BORD_EXT',
+                                     PRES=PRES_0,),),);
 #
 # 8.4. RESOLUTION
 
@@ -301,31 +315,31 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLDEUX,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    GROUP_NO='OPPOSE',
-                   VALE=0.0168243275,
+                   VALE=7.16394889E-3,
                    CRITERE='RELATIF',
                    PRECISION=1E-06,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.02.05',),
+                   VERSION='9.05.04',),
                 _F(RESULTAT=RESUDEUX,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='OPPOSE',
-                   VALE=0.101817503,
+                   VALE=6.32300372E-2,
                    CRITERE='RELATIF',
                    PRECISION=1E-06,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.02.05',),
+                   VERSION='9.05.04',),
                 _F(RESULTAT=RESUDEUX,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    GROUP_NO='OPPOSE',
-                   VALE=-0.00314065302,
+                   VALE=3.32149366E-2,
                    CRITERE='RELATIF',
                    PRECISION=1E-06,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.02.05',),),);
+                   VERSION='9.05.04',),),);
 #
 # 10. ADAPTATION DU MAILLAGE DE DEUX VERS TROIS
 #     . NI RAFFINEMENT, NI DERAFFINEMENT
@@ -361,14 +375,18 @@ MATETROI=AFFE_MATERIAU(MAILLAGE=MTROI,
 
 CHA_TROI=AFFE_CHAR_MECA(MODELE=MODETROI,
                         PESANTEUR=(9.81,0.,0.,-1.,),
-                        DDL_IMPO=_F(GROUP_NO='J',
+                        DDL_IMPO=(_F(GROUP_NO='J',
                                     DZ=0.,),
-                        FACE_IMPO=_F(GROUP_MA='O_I',
+                                  _F(GROUP_MA='O_I',
                                      DX=0.,
                                      DY=0.,
-                                     DZ=0.,),);
+                                     DZ=0.,),),
+                        PRES_REP=(_F(GROUP_MA='Y_0',
+                                     PRES=PRES_0,),
+                                  _F(GROUP_MA='BORD_EXT',
+                                     PRES=PRES_0,),),);
 
-FZ=DEFI_PARA_SENSI(VALE=78480.0,);
+FZ=DEFI_PARA_SENSI(VALE=FORCE_Z,);
 
 CHAFTROI=AFFE_CHAR_MECA_F(MODELE=MODETROI,
                           FORCE_FACE=_F(GROUP_MA='Z_1',
@@ -387,41 +405,41 @@ RESUTROI=MECA_STATIQUE(MODELE=MODETROI,
 TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLTROI,
                      GROUP_NO='OPPOSE',
                      NOM_CMP='DZ',
-                     VALE=-0.00314065302,
+                     VALE=3.32149366E-2,
                      CRITERE='RELATIF',
                      PRECISION=1E-06,
                      REFERENCE='NON_REGRESSION',
-                     VERSION='8.02.05',),
+                     VERSION='9.05.04',),
           RESU=(_F(RESULTAT=RESUTROI,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    GROUP_NO='OPPOSE',
-                   VALE=0.0168243275,
+                   VALE=7.16394889E-3,
                    CRITERE='RELATIF',
                    PRECISION=1E-06,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.02.05',),
+                   VERSION='9.05.04',),
                 _F(RESULTAT=RESUTROI,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='OPPOSE',
-                   VALE=0.101817503,
+                   VALE=6.32300372E-2,
                    CRITERE='RELATIF',
                    PRECISION=1E-06,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.02.05',),
+                   VERSION='9.05.04',),
                 _F(RESULTAT=RESUTROI,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    GROUP_NO='OPPOSE',
-                   VALE=-0.00314065302,
+                   VALE=3.32149366E-2,
                    CRITERE='RELATIF',
                    PRECISION=1E-06,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.02.05',),),);
+                   VERSION='9.05.04',),),);
 #
 # 13. ADAPTATION DU MAILLAGE DE TROIS VERS QUATRE
 #     . RAFFINEMENT SELON LA VALEUR RELATIVE DE l'INDICATEUR
@@ -435,7 +453,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=MTROI,
                INDICATEUR='DEPL',
                SENSIBILITE=FZ,
                NOM_CMP_INDICA='DX',
-               TYPE_VALEUR_INDICA='V_RELATIVE',
+               TYPE_VALEUR_INDICA='V_ABSOLUE',
                CRIT_RAFF_PE=0.20,
                CRIT_DERA_PE=0.25,
                MAJ_CHAM=(_F(CHAM_MAJ=CO('DUDFQUAT'),
@@ -470,14 +488,18 @@ MATEQUAT=AFFE_MATERIAU(MAILLAGE=MQUAT,
 
 CHARQUAT=AFFE_CHAR_MECA(MODELE=MODEQUAT,
                         PESANTEUR=(9.81,0.,0.,-1.,),
-                        DDL_IMPO=_F(GROUP_NO='J',
+                        DDL_IMPO=(_F(GROUP_NO='J',
                                     DZ=0.,),
-                        FACE_IMPO=_F(GROUP_MA='O_I',
+                                  _F(GROUP_MA='O_I',
                                      DX=0.,
                                      DY=0.,
-                                     DZ=0.,),
+                                     DZ=0.,),),
                         FORCE_FACE=_F(GROUP_MA='Z_1',
-                                      FZ=78480.,),);
+                                      FZ=FORCE_Z,),
+                        PRES_REP=(_F(GROUP_MA='Y_0',
+                                     PRES=PRES_0,),
+                                  _F(GROUP_MA='BORD_EXT',
+                                     PRES=PRES_0,),),);
 #
 # 14.4. RESOLUTION
 
@@ -496,21 +518,21 @@ RESUQUAT=CALC_ELEM(reuse =RESUQUAT,
 TEST_RESU(CHAM_NO=_F(CHAM_GD=DUDFQUAT,
                      GROUP_NO='OPPOSE',
                      NOM_CMP='DX',
-                     VALE=-1.78227646E-05,
+                     VALE=-1.94138756E-05,
                      CRITERE='RELATIF',
                      PRECISION=1E-06,
                      REFERENCE='NON_REGRESSION',
-                     VERSION='8.03.19',),
+                     VERSION='9.05.04',),
           RESU=_F(RESULTAT=RESUQUAT,
                   NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
                   GROUP_NO='OPPOSE',
-                  VALE=-0.0625349976,
+                  VALE=1.24340262E-03,
                   CRITERE='RELATIF',
                   PRECISION=1E-06,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.02.23',),);
+                  VERSION='9.05.04',),);
 #
 # 16. ADAPTATION DU MAILLAGE DE QUATRE VERS CINQ
 #     . RAFFINEMENT SELON L'INDICATEUR D'ERREUR
@@ -545,14 +567,18 @@ MATECINQ=AFFE_MATERIAU(MAILLAGE=MCINQ,
 
 CHARCINQ=AFFE_CHAR_MECA(MODELE=MODECINQ,
                         PESANTEUR=(9.81,0.,0.,-1.,),
-                        DDL_IMPO=_F(GROUP_NO='J',
+                        DDL_IMPO=(_F(GROUP_NO='J',
                                     DZ=0.,),
-                        FACE_IMPO=_F(GROUP_MA='O_I',
+                                  _F(GROUP_MA='O_I',
                                      DX=0.,
                                      DY=0.,
-                                     DZ=0.,),
+                                     DZ=0.,),),
                         FORCE_FACE=_F(GROUP_MA='Z_1',
-                                      FZ=78480.,),);
+                                      FZ=FORCE_Z,),
+                        PRES_REP=(_F(GROUP_MA='Y_0',
+                                     PRES=PRES_0,),
+                                  _F(GROUP_MA='BORD_EXT',
+                                     PRES=PRES_0,),),);
 #
 # 17.4. RESOLUTION
 
@@ -567,11 +593,11 @@ TEST_RESU(RESU=_F(RESULTAT=RESUCINQ,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
                   GROUP_NO='OPPOSE',
-                  VALE=-0.0820487462,
+                  VALE=2.26799862E-03,
                   CRITERE='RELATIF',
                   PRECISION=1E-06,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.02.23',),);
+                  VERSION='9.05.04',),);
 #
 # 19. LES GRANDEURS GLOBALES
 # 19.1. MAILLAGE INITIAL

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DU SOLVEUR MUMPS POUR UN MODELE DPLAN_INCO
 # mumps02a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,7 +52,7 @@ MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 RESU1=STAT_NON_LINE(MODELE=MO,     
                    SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',
                    RESI_RELA=1.E-8,POSTTRAITEMENTS='AUTO',),
-                   CHAM_MATER=CH_MATER, INFO=2,
+                   CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2,),),
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=INSTANTS, ),
@@ -70,7 +70,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1, INST       = 1.0,  NOM_CHAM   = 'DEPL',
 RESU11=STAT_NON_LINE(MODELE=MO,     
                    SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',
                    RESI_RELA=1.E-5,POSTTRAITEMENTS='SANS',),
-                   CHAM_MATER=CH_MATER, INFO=2,
+                   CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2,),),
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=INSTANTS, ),
@@ -83,6 +83,40 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU11, INST       = 1.0,  NOM_CHAM   = 'DEPL',
                 _F(RESULTAT   = RESU11, INST       = 1.0, NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
                    PRECISION  = 1.E-5, REFERENCE  = 'ANALYTIQUE',)
+                   ));
+
+RESU12=STAT_NON_LINE(MODELE=MO,     
+                   SOLVEUR=_F(METHODE='MUMPS',MIXER_PRECISION='OUI'),
+                   CHAM_MATER=CH_MATER, INFO=1,
+                   EXCIT=(  _F(CHARGE=SYMETRI2,),),
+                   COMP_INCR=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=INSTANTS, ),
+                   NEWTON=_F(REAC_ITER=1,),
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESU12, INST       = 1.0,  NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
+                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',),
+                _F(RESULTAT   = RESU12, INST       = 1.0, NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
+                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',)
+                   ));
+
+RESU13=STAT_NON_LINE(MODELE=MO,     
+                   SOLVEUR=_F(METHODE='MUMPS',FILTRAGE_MATRICE=1.E-8),
+                   CHAM_MATER=CH_MATER, INFO=1,
+                   EXCIT=(  _F(CHARGE=SYMETRI2,),),
+                   COMP_INCR=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=INSTANTS, ),
+                   NEWTON=_F(REAC_ITER=1,),
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
+
+TEST_RESU(RESU=(_F(RESULTAT   = RESU13, INST       = 1.0,  NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
+                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',),
+                _F(RESULTAT   = RESU13, INST       = 1.0, NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
+                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',)
                    ));
 #  2 : MUMPS (distribue par mailles)
 # ------------------------------------

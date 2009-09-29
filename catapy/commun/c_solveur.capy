@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMUN  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,6 +46,8 @@ def C_SOLVEUR() : return FACT(statut='d',
              PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
              OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+             FILTRAGE_MATRICE =SIMP(statut='f',typ='R',defaut=-1.0,),
+             MIXER_PRECISION =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
              ),
            b_feti          =BLOC(condition = "METHODE == 'FETI' ",fr="Paramètres de la méthode FETI 1",
              PARTITION       =SIMP(statut='o',typ=sd_feti_sdaster),

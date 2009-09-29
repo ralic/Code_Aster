@@ -1,4 +1,4 @@
-# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE TEST DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'SSLV113D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSLV113D',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
 MESH=LIRE_MAILLAGE();
 
@@ -27,6 +29,16 @@ MO=AFFE_MODELE(MAILLAGE=MESH,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='AXIS',),);
+
+MESH=MODI_MAILLAGE(reuse =MESH,
+                   MAILLAGE=MESH,
+                   ORIE_PEAU_2D=_F(GROUP_MA=('GRMA1','GRMA2','GRMA3','GRMA4',),),);
+
+##IMPR_RESU(
+##FORMAT='MED',
+##
+##RESU=_F(MAILLAGE=MESH,),
+##);
 
 MA1=DEFI_MATERIAU(ELAS=_F(E=2.0,
                           NU=0.3,
@@ -69,12 +81,12 @@ RESUPRIM=MECA_STATIQUE(MODELE=MO,
 RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
                    RESULTAT=RESUPRIM,
                    TOUT_ORDRE='OUI',
-                   OPTION=('SIRE_ELNO_DEPL',),);
+                   OPTION='SIRE_ELNO_DEPL',);
 
 RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
                    RESULTAT=RESUPRIM,
                    TOUT_ORDRE='OUI',
-                   OPTION=('ERRE_ELEM_SIGM',),);
+                   OPTION='ERRE_ELEM_SIGM',);
 
 #-----------------------------------------------------------------------
 #
@@ -91,8 +103,12 @@ CHARDUAL=AFFE_CHAR_MECA(MODELE=MO,
                                       DY=0.0,),
                                    _F(GROUP_MA='GRMA2',
                                       DY=0.91333,),),
+                        FORCE_CONTOUR=(_F(GROUP_MA='GRMA3',
+                                          FX=0.0,),
+                                       _F(GROUP_MA='GRMA4',
+                                          FX=0.0,),),
                         EPSI_INIT=_F(TOUT='OUI',
-                                         EPXX=1.0,),);
+                                     EPXX=1.0,),);
 
 RESUDUAL=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CM,
@@ -101,12 +117,12 @@ RESUDUAL=MECA_STATIQUE(MODELE=MO,
 RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
                    RESULTAT=RESUDUAL,
                    TOUT_ORDRE='OUI',
-                   OPTION=('SIRE_ELNO_DEPL',),);
+                   OPTION='SIRE_ELNO_DEPL',);
 
 RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
                    RESULTAT=RESUDUAL,
                    TOUT_ORDRE='OUI',
-                   OPTION=('ERRE_ELEM_SIGM',),);
+                   OPTION='ERRE_ELEM_SIGM',);
 
 #-----------------------------------------------------------------------
 #
@@ -115,9 +131,9 @@ RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
 #-----------------------------------------------------------------------
 
 RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
-                 RESULTAT=RESUPRIM,
-                 OPTION=('QIRE_ELEM_SIGM','QIRE_ELNO_ELEM',),
-                 RESU_DUAL=RESUDUAL,);
+                   RESULTAT=RESUPRIM,
+                   OPTION=('QIRE_ELEM_SIGM','QIRE_ELNO_ELEM',),
+                   RESU_DUAL=RESUDUAL,);
 
 #-----------------------------------------------------------------------
 #
@@ -125,15 +141,13 @@ RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
 #
 #-----------------------------------------------------------------------
 
-
-
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
                   NOM_CHAM='ERRE_ELEM_SIGM',
                   NOM_CMP='ERREST',
                   MAILLE='M1',
                   POINT=1,
-                  VALE=2.76907E-02,
+                  VALE=0.0276906923335,
                   CRITERE='RELATIF',
                   PRECISION=1e-05,
                   REFERENCE='NON_REGRESSION',
@@ -145,11 +159,11 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M1',
                   POINT=1,
-                  VALE=6.2004E-03,
+                  VALE=-0.0504310414658,
                   CRITERE='RELATIF',
                   PRECISION=1e-05,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.3.15',),);
+                  VERSION='9.05.04',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
@@ -157,20 +171,19 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M4',
                   NOEUD='N1',
-                  VALE=1.0142E-04,
+                  VALE=-0.0203244881025,
                   CRITERE='RELATIF',
                   PRECISION=1e-05,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.3.15',),);
-
+                  VERSION='9.05.04',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
                   PARA='ERREUR_QIRE',
-                  VALE=6.53117E-03,
+                  VALE=0.0567173736649,
                   CRITERE='RELATIF',
                   PRECISION=1e-05,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.3.15',),);
+                  VERSION='9.05.04',),);
 
 FIN();

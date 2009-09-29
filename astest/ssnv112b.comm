@@ -1,4 +1,4 @@
-# MODIF  DATE 07/09/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 # ssnv112b.para = tps_job 60 mem_job 200Mo mem_aster 70 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,8 +57,7 @@ M=DEFI_GROUP(reuse =M,
                                GROUP_MA='GM4',),
                             _F(NOM='FACINF',
                                GROUP_MA='GM3',),),
-             CREA_GROUP_NO=(_F(GROUP_MA=('FACEAB','FACSUP','FACINF',),),
-                            _F(GROUP_MA='GM1',
+             CREA_GROUP_NO=(_F(GROUP_MA='GM1',
                                NOM='A',),
                             _F(GROUP_MA='GM2',
                                NOM='F',),),);
@@ -71,7 +70,7 @@ MO=AFFE_MODELE(MAILLAGE=M,
 
 M=MODI_MAILLAGE(reuse =M,
                 MAILLAGE=M,
-                ORIE_PEAU_3D=_F(GROUP_MA=('FACEEF','FACEAE','FACEAB',),),);
+                ORIE_PEAU_3D=_F(GROUP_MA=('FACEEF','FACEAE','FACEAB','FACSUP','FACINF',),),);
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.,
                          NU=0.49999,
@@ -84,11 +83,11 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                          MATER=MA,),);
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
-                  DDL_IMPO=(_F(GROUP_NO='FACEAB',
+                  DDL_IMPO=(_F(GROUP_MA='FACEAB',
                                DY=0.,),
-                            _F(GROUP_NO='FACSUP',
+                            _F(GROUP_MA='FACSUP',
                                DZ=0.,),
-                            _F(GROUP_NO='FACINF',
+                            _F(GROUP_MA='FACINF',
                                DZ=0.,),),
                   FACE_IMPO=(_F(GROUP_MA='FACEEF',
                                 DNOR=0.,),
@@ -132,6 +131,10 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                    SOLVEUR=_F(METHODE='MUMPS',
                               PCENT_PIVOT=100,),);
 
+# REMARQUE : STRICTO SENSU, LE CALCUL DE ERRE_ELEM_SIGM EST FAUX CAR
+#            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
+#            MAILLAGE ET A FORTIORI DANS LE CHARGEMENT
+#            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
 EVOL=CALC_ELEM(reuse =EVOL,
                RESULTAT=EVOL,
                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
@@ -328,11 +331,11 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NOM_CMP='NUEST',
                   MAILLE='M537',
                   POINT=1,
-                  VALE=2.1148842082445,
+                  VALE=2.1937947611240,
                   CRITERE='RELATIF',
                   PRECISION=6.E-7,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='10.0.16',),);
+                  VERSION='9.05.04',),);
 
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   INST=1.0,
@@ -340,11 +343,11 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NOM_CMP='ERREST',
                   MAILLE='M537',
                   GROUP_NO='A',
-                  VALE=6.4335040227032E-04,
+                  VALE=6.6736644029739E-04,
                   CRITERE='RELATIF',
                   PRECISION=6.E-7,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='10.0.16',),);
+                  VERSION='9.05.04',),);
 
 FIN();
 

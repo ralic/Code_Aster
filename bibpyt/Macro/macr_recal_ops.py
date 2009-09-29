@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_recal_ops Macro  DATE 28/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -678,6 +678,13 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
 
 
 
+def get_absolute_path(path):
+   """Retourne le chemin absolu en suivant les liens éventuels.
+   """
+   if os.path.islink(path):
+      path = os.path.realpath(path)
+   res = os.path.normpath(os.path.abspath(path))
+   return res
 
 
 #-------------------------------------------------------------------------------
@@ -686,8 +693,10 @@ if __name__ == '__main__':
     mode_python = True
 
     from optparse import OptionParser, OptionGroup
+    # récupère "bibpyt" à partir de "bibpyt/Macro/macr_recal_ops.py"
+    sys.path.append(get_absolute_path(os.path.join(sys.argv[0], '..', '..')))
     from Utilitai.Utmess import UTMESS
-    
+
     p = OptionParser(usage='usage: %s fichier_export [options]' % sys.argv[0])
     p.add_option('-i', '--input',        action='store',   dest='input',         type='string',   default='input.txt',   help='fichier contenant les parametres')
     p.add_option('-o', '--output',       action='store',   dest='output',        type='string',   default='output.txt',  help='fichier contenant la fonctionnelle')

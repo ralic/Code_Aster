@@ -1,6 +1,6 @@
       SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILIFOR  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,8 +79,8 @@ C
 C
 C     --- REMONTEE D'ERREUR SI DISPO
       IF ( LTRACE ) THEN
-          CALL TRACEB('Liste des appels successifs ' //
-     &                '(option -traceback)', -1)
+        CALL TRABCK('Liste des appels successifs ' //
+     &              '(option -traceback)', -1)
       ENDIF
 
 C --- EN CAS DE MESSAGE AVEC SUITE, PAS D'ARRET, PAS D'EXCEPTION
@@ -88,7 +88,6 @@ C --- EN CAS DE MESSAGE AVEC SUITE, PAS D'ARRET, PAS D'EXCEPTION
 C
 C     -- ABORT SUR ERREUR <F> "ORDINAIRE"
          IF ( LABORT ) THEN
-C           CALL JXVERI('ERREUR',' ')
             CALL JEFINI('ERREUR')
 
 C     -- LEVEE D'UNE EXCEPTION

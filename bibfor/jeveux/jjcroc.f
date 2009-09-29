@@ -1,6 +1,6 @@
       SUBROUTINE JJCROC ( KNAT , ICRE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,12 +78,13 @@ C ----------------------------------------------------------------------
       CHARACTER *75    CMESS
       CHARACTER *24    NOM
       CHARACTER *8     CIOC
-      INTEGER          JITAB
+      INTEGER          JITAB,IRT
 C
       CHARACTER *8     NUME       , NOME
       DATA             NUME       , NOME
      &               / '$$XNUM  ' , '$$XNOM  ' /
 C DEB ------------------------------------------------------------------
+      IRT = 0
       IF ( KNAT .EQ. '        ' ) THEN
 C
 C ------ REPERTOIRE DE NOM
@@ -99,7 +100,7 @@ C
           NUTIEX = NUTI
           NOM   = RNOM (JRNOM(ICLAOS)+IDATOS )(1:24)
           IF ( NUTI .EQ. 0 ) THEN
-             NHCOD = JJPREM(NMAX)
+             NHCOD = JJPREM(NMAX,IRT)
              ISZON(JITAB + ILOREP) = NHCOD
              ISZON(JITAB + IDENO ) = ( IDEHC + NHCOD ) * LOIS
              ISZON(JITAB + ILNOM ) = LTYPI
@@ -123,7 +124,7 @@ C
            IDATOC = 0
            NOMOC  = BL32
         ENDIF
-        NOMCO = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
+        NOMCO = '$$$$$$$$$$$$$$$$$$$$$$$$'
         IF ( NUTIEX .NE. NUTI ) LUTI (JLUTI(ICLAOS)+IDATOS) = NUTI
       ELSE
 C
@@ -189,7 +190,7 @@ C
               NOM     = RNOM (JRNOM(IC)+IXNOM )(1:24)
               LONGNO = LTYP (JLTYP(IC)+IXNOM )
               IF ( NUTI .EQ. 0 ) THEN
-                NHCOD = JJPREM(NMAX)
+                NHCOD = JJPREM(NMAX,IRT)
                 ISZON(JITAB + ILOREP) = NHCOD
                 ISZON(JITAB + IDENO ) = ( IDEHC + NHCOD ) * LOIS
                 ISZON(JITAB + ILNOM ) = LONGNO

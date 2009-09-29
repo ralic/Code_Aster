@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS 3D EN HEXAEDRES
 # zzzz121e.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -78,6 +78,7 @@ DEBUT(CODE=_F(NOM='ZZZZ121E',
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),
       DEBUG=_F(SDVERI='OUI',),);
+
 #
 # 1. DEFINITION DU MATERIAU
 
@@ -85,12 +86,14 @@ MATER2=DEFI_MATERIAU(ELAS=_F(E=220000.,
                              NU=0.33,
                              RHO=8300.,
                              ALPHA=16.E-6,),);
+
 #
 #
 # 2. LECTURE DU MAILLAGE ET TEST DE LA MACRO SUR L'INFORMATION
 
 M00=LIRE_MAILLAGE(FORMAT='MED',
                   NOM_MED='3x3___________________________00',);
+
 #
 
 MACR_INFO_MAIL(MAILLAGE=M00,
@@ -99,6 +102,7 @@ MACR_INFO_MAIL(MAILLAGE=M00,
                CONNEXITE='OUI',
                TAILLE='OUI',
                INTERPENETRATION='OUI',);
+
 #
 # 3. CALCUL SUR LE MAILLAGE 00
 # 3.1. MODELE MECANIQUE
@@ -111,17 +115,22 @@ MODE00=AFFE_MODELE(MAILLAGE=M00,
 M00=MODI_MAILLAGE(reuse =M00,
                   MAILLAGE=M00,
                   ORIE_PEAU_3D=_F(GROUP_MA=('X_0','X_MAX','Y_MI_MA','Z_MI_MA',),),);
+
 #
 # 3.2. MISE EN PLACE DU MATERIAU
 
 MATE00=AFFE_MATERIAU(MAILLAGE=M00,
                      AFFE=_F(TOUT='OUI',
                              MATER=MATER2,),);
+
 #
 # 3.3. CHARGEMENTS
 G = 9.81;
 
 PRE = -300000.0;
+
+PRES_0 = 1e-14;
+
 
 #
 
@@ -131,20 +140,25 @@ CHAR00=AFFE_CHAR_MECA(MODELE=MODE00,
                                    DX=0.,
                                    DY=0.,
                                    DZ=0.,),
-                      PRES_REP=_F(GROUP_MA='X_MAX',
-                                  PRES=PRE,),);
+                      PRES_REP=(_F(GROUP_MA='X_MAX',
+                                   PRES=PRE,),
+                                _F(GROUP_MA=('Y_MI_MA','Z_MI_MA',),
+                                   PRES=PRES_0,),),);
+
 #
 # 3.4. RESOLUTION
 
 RESU00=MECA_STATIQUE(MODELE=MODE00,
                      CHAM_MATER=MATE00,
                      EXCIT=_F(CHARGE=CHAR00,),);
+
 #
 # 3.5. INDICATEUR D'ERREUR
 
 RESU00=CALC_ELEM(reuse =RESU00,
                  RESULTAT=RESU00,
                  OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM',),);
+
 #
 # 3.6. IMPRESSION
 ##IMPR_RESU(
@@ -152,6 +166,7 @@ RESU00=CALC_ELEM(reuse =RESU00,
 ##
 ##RESU=_F(RESULTAT=RESU00,),
 ##);
+
 
 #
 # 4. ADAPTATION DU MAILLAGE DE 00 VERS 01 SELON L'INDICATEUR D'ERREUR
@@ -166,6 +181,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M00,
                QUALITE='OUI',
                CONNEXITE='OUI',
                TAILLE='OUI',);
+
 #
 # 5. CALCUL SUR LE MAILLAGE 01
 # 5.1. MODELE MECANIQUE
@@ -174,12 +190,14 @@ MODE01=AFFE_MODELE(MAILLAGE=M01,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),);
+
 #
 # 5.2. MISE EN PLACE DES MATERIAUX
 
 MATE01=AFFE_MATERIAU(MAILLAGE=M01,
                      AFFE=_F(TOUT='OUI',
                              MATER=MATER2,),);
+
 #
 # 5.3. CHARGEMENTS
 
@@ -189,14 +207,18 @@ CHAR01=AFFE_CHAR_MECA(MODELE=MODE01,
                                    DX=0.,
                                    DY=0.,
                                    DZ=0.,),
-                      PRES_REP=_F(GROUP_MA='X_MAX',
-                                  PRES=PRE,),);
+                      PRES_REP=(_F(GROUP_MA='X_MAX',
+                                   PRES=PRE,),
+                                _F(GROUP_MA=('Y_MI_MA','Z_MI_MA',),
+                                   PRES=PRES_0,),),);
+
 #
 # 5.4. RESOLUTION
 
 RESU01=MECA_STATIQUE(MODELE=MODE01,
                      CHAM_MATER=MATE01,
                      EXCIT=_F(CHARGE=CHAR01,),);
+
 #
 # 5.5. IMPRESSION
 ##IMPR_RESU(
@@ -204,6 +226,7 @@ RESU01=MECA_STATIQUE(MODELE=MODE01,
 ##
 ##RESU=_F(RESULTAT=RESU01,),
 ##);
+
 
 #
 # 7. ADAPTATION DU MAILLAGE DE 01 VERS 02
@@ -219,6 +242,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M01,
                        Z_MINI=-0.01,
                        Z_MAXI=1.01,),
                QUALITE='OUI',);
+
 #
 # 8. CALCUL SUR LE MAILLAGE 02
 # 8.1. MODELE MECANIQUE
@@ -227,12 +251,14 @@ MODE02=AFFE_MODELE(MAILLAGE=M02,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),);
+
 #
 # 8.2. MISE EN PLACE DES MATERIAUX
 
 MATE02=AFFE_MATERIAU(MAILLAGE=M02,
                      AFFE=_F(TOUT='OUI',
                              MATER=MATER2,),);
+
 #
 # 8.3. CHARGEMENTS
 
@@ -242,15 +268,30 @@ CHAR02=AFFE_CHAR_MECA(MODELE=MODE02,
                                    DX=0.,
                                    DY=0.,
                                    DZ=0.,),
-                      PRES_REP=_F(GROUP_MA='X_MAX',
-                                  PRES=PRE,),);
+                      PRES_REP=(_F(GROUP_MA='X_MAX',
+                                   PRES=PRE,),
+                                _F(GROUP_MA=('Y_MI_MA','Z_MI_MA',),
+                                   PRES=PRES_0,),),);
+
 #
 # 8.4. RESOLUTION
 
 RESU02=MECA_STATIQUE(MODELE=MODE02,
                      CHAM_MATER=MATE02,
                      EXCIT=_F(CHARGE=CHAR02,),);
-# 8.5. IMPRESSION
+
+#
+# 8.5. INDICATEUR D'ERREUR
+
+RESU02=CALC_ELEM(reuse =RESU02,
+                 RESULTAT=RESU02,
+                 OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+
+RESU02=CALC_NO(reuse =RESU02,
+               RESULTAT=RESU02,
+               OPTION='ERRE_NOEU_ELEM',);
+
+# 8.6. IMPRESSION
 ##IMPR_RESU(
 ##FORMAT='MED',
 ##
@@ -258,15 +299,25 @@ RESU02=MECA_STATIQUE(MODELE=MODE02,
 ##);
 
 
-TEST_RESU(RESU=_F(RESULTAT=RESU02,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
-                  GROUP_NO='A',
-                  VALE=-19.8173561,
-                  CRITERE='RELATIF',
-                  PRECISION=1e-08,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.02.23',),);
+TEST_RESU(RESU=(_F(RESULTAT=RESU02,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='A',
+                   VALE=-19.8173561,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-8,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.02.23',),
+                _F(RESULTAT=RESU02,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CMP='ERREST',
+                   GROUP_NO='A',
+                   VALE=1.64631332E5,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-6,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.04',),),);
 
 FIN();

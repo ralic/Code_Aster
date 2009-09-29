@@ -1,6 +1,6 @@
       SUBROUTINE JEECRA ( NOMLU , CATR , IVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C     ------------------------------------------------------------------
       CHARACTER *1    GENRI , TYPEI
       CHARACTER *8    CATRLU
       LOGICAL         LCONST , LCONTI , LLONG , LLUTI
-      INTEGER         ICRE , IRET , ITAB(1) , JTAB
+      INTEGER         ICRE , IRET , ITAB(1) , JTAB , IRT
       INTEGER         IBACOL , IXIADD , IXDESO , IXLONG
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     ,
@@ -76,6 +76,7 @@ C     ------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
       CATRLU = CATR
       NOML32 = NOMLU
+      IRT = 0
 C
 C --- CAS GENERAL
 C
@@ -166,7 +167,7 @@ C
                 LONO ( JLONO(IC) + ID ) = LONGJ
               ELSE IF ( GENRI .EQ. 'N' ) THEN
                 LTYPI = LTYP ( JLTYP(IC) + ID )
-                LONOK = (IDEHC + JJPREM(LONGJ))*LOIS + (LONGJ+1)*LTYPI
+                LONOK = (IDEHC + JJPREM(LONGJ,IRT))*LOIS+(LONGJ+1)*LTYPI
                 IF ( MOD(LONOK,LTYPI) .GT. 0 ) THEN
                    LONOK = (LONOK/LTYPI + 1 )
                 ELSE
@@ -182,7 +183,7 @@ C
                   IADM(JIADM(IC)+2*ID  ) = IADYN
                   CALL JJECRS(IADMI,IADYN,IC,ID,0,'E',
      &                              IMARQ(JMARQ(IC)+2*ID-1))
-                  NHC = JJPREM(IVAL)
+                  NHC = JJPREM(IVAL,IRT)
                   JITAB = JISZON + IADMI - 1
                   ISZON(JITAB + ILOREP ) = NHC
                   ISZON(JITAB + IDENO  ) = (IDEHC+NHC)*LOIS

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 # TITRE LIRE_FONCTION ET SPECTRE D'OSCILLATEUR
 # zzzz102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1205,15 +1205,15 @@ TABMAS35=POST_ELEM(        MODELE=MO,
 # 0.2HZ
 #
 SISM02=COMB_SISM_MODAL(   MODE_MECA=MODE02,
-                            NUME_MODE=(1,),
-                             AMOR_REDUIT=(0.03,),
-                            MASS_INER=TABMAS02,
-                                EXCIT=_F( MONO_APPUI = 'OUI',
-                                       AXE = ( 1.,  0.,  0., ),
-                                       SPEC_OSCI = SPECT_X,
-                                       NATURE = 'DEPL'),
-                            COMB_MODE=_F( TYPE = 'ABS'),
-                               OPTION=('DEPL',
+                          NUME_MODE=(1,),
+                          AMOR_REDUIT=(0.03,),
+                          MASS_INER=TABMAS02,
+                          MONO_APPUI = 'OUI',
+                          EXCIT=_F( AXE = ( 1.,  0.,  0., ),
+                                    SPEC_OSCI = SPECT_X,
+                                    NATURE = 'DEPL'),
+                          COMB_MODE=_F( TYPE = 'ABS'),
+                          OPTION=('DEPL',
                                       )
                        )
 
@@ -1236,16 +1236,16 @@ TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX02,
 # 1HZ
 #
 SISM1=COMB_SISM_MODAL(   MODE_MECA=MODE1,
-                            NUME_MODE=(1,),
-                            AMOR_REDUIT=(0.03,),
-                            MASS_INER=TABMAS1,
-                                EXCIT=_F( MONO_APPUI = 'OUI',
-                                       AXE = ( 1.,  0.,  0., ),
-#                                       SPEC_OSCI  : SPECT_X
-                                       SPEC_OSCI = SPECT3,
-                                       NATURE = 'DEPL'),
-                            COMB_MODE=_F( TYPE = 'ABS'),
-                               OPTION=('DEPL',
+                         NUME_MODE=(1,),
+                         AMOR_REDUIT=(0.03,),
+                         MASS_INER=TABMAS1,
+                         MONO_APPUI = 'OUI',
+                         EXCIT=_F(  AXE = ( 1.,  0.,  0., ),
+#                                    SPEC_OSCI  : SPECT_X
+                                    SPEC_OSCI = SPECT3,
+                                    NATURE = 'DEPL'),
+                         COMB_MODE=_F( TYPE = 'ABS'),
+                         OPTION=('DEPL',
                                       )
                        )
 
@@ -1268,16 +1268,16 @@ TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX1,
 # 5HZ
 #
 SISM5=COMB_SISM_MODAL(   MODE_MECA=MODE5,
-                            NUME_MODE=(1,),
-                            AMOR_REDUIT=(0.03,),
-                            MASS_INER=TABMAS5,
-                                EXCIT=_F( MONO_APPUI = 'OUI',
-                                       AXE = ( 1.,  0.,  0., ),
-                                       SPEC_OSCI = SPECT3,
-#                                       SPEC_OSCI  : SPECT_X
-                                       NATURE = 'DEPL'),
-                            COMB_MODE=_F( TYPE = 'ABS'),
-                               OPTION=('DEPL',
+                         NUME_MODE=(1,),
+                         AMOR_REDUIT=(0.03,),
+                         MASS_INER=TABMAS5,
+                         MONO_APPUI = 'OUI',
+                         EXCIT=_F( AXE = ( 1.,  0.,  0., ),
+                                   SPEC_OSCI = SPECT3,
+#                                   SPEC_OSCI  : SPECT_X
+                                   NATURE = 'DEPL'),
+                                   COMB_MODE=_F( TYPE = 'ABS'),
+                                   OPTION=('DEPL',
                                       )
                        )
 
@@ -1300,16 +1300,16 @@ TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX5,
 # 10HZ
 #
 SISM10=COMB_SISM_MODAL(   MODE_MECA=MODE10,
-                            NUME_MODE=(1,),
-                                 AMOR_REDUIT=(0.03,),
-                            MASS_INER=TABMAS10,
-                                EXCIT=_F( MONO_APPUI = 'OUI',
-                                       AXE = ( 1.,  0.,  0., ),
-                                       SPEC_OSCI = SPECT3,
-#                                       SPEC_OSCI  : SPECT_X
-                                       NATURE = 'DEPL'),
-                            COMB_MODE=_F( TYPE = 'ABS'),
-                               OPTION=('DEPL',
+                          NUME_MODE=(1,),
+                          AMOR_REDUIT=(0.03,),
+                          MASS_INER=TABMAS10,
+                          MONO_APPUI = 'OUI',
+                          EXCIT=_F( AXE = ( 1.,  0.,  0., ),
+                                    SPEC_OSCI = SPECT3,
+#                                    SPEC_OSCI  : SPECT_X
+                                    NATURE = 'DEPL'),
+                          COMB_MODE=_F( TYPE = 'ABS'),
+                          OPTION=('DEPL',
                                       )
                        )
 
@@ -1332,16 +1332,16 @@ TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX10,
 # 15HZ
 #
 SISM15=COMB_SISM_MODAL(   MODE_MECA=MODE15,
-                            NUME_MODE=(1,),
-                            AMOR_REDUIT=(0.03,),
-                            MASS_INER=TABMAS15,
-                                EXCIT=_F( MONO_APPUI = 'OUI',
-                                       AXE = ( 1.,  0.,  0., ),
-                                       SPEC_OSCI = SPECT3,
-#                                       SPEC_OSCI  : SPECT_X
-                                       NATURE = 'DEPL'),
-                            COMB_MODE=_F( TYPE = 'ABS'),
-                               OPTION=('DEPL',
+                          NUME_MODE=(1,),
+                          AMOR_REDUIT=(0.03,),
+                          MASS_INER=TABMAS15,
+                          MONO_APPUI = 'OUI',
+                          EXCIT=_F( AXE = ( 1.,  0.,  0., ),
+                                    SPEC_OSCI = SPECT3,
+#                                    SPEC_OSCI  : SPECT_X
+                                    NATURE = 'DEPL'),
+                          COMB_MODE=_F( TYPE = 'ABS'),
+                          OPTION=('DEPL',
                                       )
                        )
 
@@ -1364,16 +1364,16 @@ TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX15,
 # 20HZ
 #
 SISM20=COMB_SISM_MODAL(   MODE_MECA=MODE20,
-                            NUME_MODE=(1,),
-                            AMOR_REDUIT=(0.03,),
-                            MASS_INER=TABMAS20,
-                                EXCIT=_F( MONO_APPUI = 'OUI',
-                                       AXE = ( 1.,  0.,  0., ),
-                                       SPEC_OSCI = SPECT3,
-#                                       SPEC_OSCI  : SPECT_X
-                                       NATURE = 'DEPL'),
-                            COMB_MODE=_F( TYPE = 'ABS'),
-                               OPTION=('DEPL',
+                          NUME_MODE=(1,),
+                          AMOR_REDUIT=(0.03,),
+                          MASS_INER=TABMAS20,
+                          MONO_APPUI = 'OUI',
+                          EXCIT=_F( AXE = ( 1.,  0.,  0., ),
+                                    SPEC_OSCI = SPECT3,
+#                                    SPEC_OSCI  : SPECT_X
+                                    NATURE = 'DEPL'),
+                          COMB_MODE=_F( TYPE = 'ABS'),
+                          OPTION=('DEPL',
                                       )
                        )
 
@@ -1396,16 +1396,16 @@ TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX20,
 # 25HZ
 #
 SISM25=COMB_SISM_MODAL(   MODE_MECA=MODE25,
-                            NUME_MODE=(1,),
-                            AMOR_REDUIT=(0.03,),
-                            MASS_INER=TABMAS25,
-                                EXCIT=_F( MONO_APPUI = 'OUI',
-                                       AXE = ( 1.,  0.,  0., ),
-                                       SPEC_OSCI = SPECT3,
-#                                       SPEC_OSCI  : SPECT_X
-                                       NATURE = 'DEPL'),
-                            COMB_MODE=_F( TYPE = 'ABS'),
-                               OPTION=('DEPL',
+                          NUME_MODE=(1,),
+                          AMOR_REDUIT=(0.03,),
+                          MASS_INER=TABMAS25,
+                          MONO_APPUI = 'OUI',
+                          EXCIT=_F( AXE = ( 1.,  0.,  0., ),
+                                    SPEC_OSCI = SPECT3,
+#                                    SPEC_OSCI  : SPECT_X
+                                    NATURE = 'DEPL'),
+                          COMB_MODE=_F( TYPE = 'ABS'),
+                          OPTION=('DEPL',
                                       )
                        )
 
@@ -1428,16 +1428,16 @@ TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX25,
 # 29.5HZ
 #
 SISM29=COMB_SISM_MODAL(   MODE_MECA=MODE29,
-                            NUME_MODE=(1,),
-                            AMOR_REDUIT=(0.03,),
-                            MASS_INER=TABMAS29,
-                                EXCIT=_F( MONO_APPUI = 'OUI',
-                                       AXE = ( 1.,  0.,  0., ),
-                                       SPEC_OSCI = SPECT3,
-#                                       SPEC_OSCI  : SPECT_X
-                                       NATURE = 'DEPL'),
-                            COMB_MODE=_F( TYPE = 'ABS'),
-                               OPTION=('DEPL',
+                          NUME_MODE=(1,),
+                          AMOR_REDUIT=(0.03,),
+                          MASS_INER=TABMAS29,
+                          MONO_APPUI = 'OUI',
+                          EXCIT=_F( AXE = ( 1.,  0.,  0., ),
+                                    SPEC_OSCI = SPECT3,
+#                                    SPEC_OSCI  : SPECT_X
+                                    NATURE = 'DEPL'),
+                          COMB_MODE=_F( TYPE = 'ABS'),
+                          OPTION=('DEPL',
                                       )
                        )
 
@@ -1460,16 +1460,16 @@ TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX29,
 # 35.5HZ
 #
 SISM35=COMB_SISM_MODAL(   MODE_MECA=MODE35,
-                            NUME_MODE=(1,),
-                            AMOR_REDUIT=(0.03,),
-                            MASS_INER=TABMAS35,
-                                EXCIT=_F( MONO_APPUI = 'OUI',
-                                       AXE = ( 1.,  0.,  0., ),
-                                       SPEC_OSCI = SPECT3,
-#                                       SPEC_OSCI  : SPECT_X
-                                       NATURE = 'DEPL'),
-                            COMB_MODE=_F( TYPE = 'ABS'),
-                               OPTION=('DEPL',
+                          NUME_MODE=(1,),
+                          AMOR_REDUIT=(0.03,),
+                          MASS_INER=TABMAS35,
+                          MONO_APPUI = 'OUI',
+                          EXCIT=_F( AXE = ( 1.,  0.,  0., ),
+                                    SPEC_OSCI = SPECT3,
+#                                    SPEC_OSCI  : SPECT_X
+                                    NATURE = 'DEPL'),
+                          COMB_MODE=_F( TYPE = 'ABS'),
+                          OPTION=('DEPL',
                                       )
                        )
 

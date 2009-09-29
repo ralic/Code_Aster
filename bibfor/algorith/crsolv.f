@@ -3,7 +3,7 @@
       CHARACTER*(*)      METHOD, RENUM, SOLVE , BAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      REAL*8             JEVTBL
+      REAL*8             JEVTBL,EPSMAT
       CHARACTER*1        BASE
       CHARACTER*3        SYME
       CHARACTER*8        PRECO
@@ -60,6 +60,7 @@ C
 C
       RESIRE = 1.D-6
       NPREC = 8
+      EPSMAT=-1.D0
 C
 C --- CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SOLVEUR
 C
@@ -78,7 +79,7 @@ C
       ZK24(ISLVK-1+4) = RENUM
       ZK24(ISLVK-1+5) = SYME
 C
-      ZR(ISLVR-1+1) = 0.D0
+      ZR(ISLVR-1+1) = EPSMAT
       ZR(ISLVR-1+2) = RESIRE
       TBLOC=JEVTBL()
       ZR(ISLVR-1+3) = TBLOC

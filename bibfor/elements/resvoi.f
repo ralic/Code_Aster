@@ -6,7 +6,7 @@ C
       CHARACTER*(*)       MOZ,  MAZ, CHVOIZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C TOLE CRP_20
 C ----------------------------------------------------------------------
 C ......................................................................
 C    - FONCTION REALISEE:  RECHERCHE DES VOISINS DES ELEMENTS D'UN
@@ -45,13 +44,13 @@ C
       CHARACTER*19     LIGRMO, CHVOIS
       INTEGER          IBID
       INTEGER IBIDT(1)
-      INTEGER          NBNO, NBMA, NBS,NBF,ITYPE
+      INTEGER          NBNO, NBMA, NBS,NBF,TYMVOL
       INTEGER          IMA, INO, INO1,INO2,INO3,INO4, KMA, JMA
       INTEGER          IAMAV1,IAMAV2,IAMAV3,IAMAV4,IAREPE,IAVALE
       INTEGER          IFA,IMA1,IMA2,IMA3,IMA4,IER
       INTEGER          IGREL, IEL, IAVAL1, IAVAL2, JAD, IAD, IADV
       INTEGER          JCELD,NBMAV1,NBMAV2,NBMAV3,NBMAV4
-      INTEGER          NUMAV1,NUMAV2,NUMAV3,NUMAV4,TYP,SOM(4,6,3),IATYMA
+      INTEGER          NUMAV1,NUMAV2,NUMAV3,NUMAV4,TYP,SOM(4,6,4),IATYMA
       LOGICAL          TROISD
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -73,14 +72,32 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*1 K1BID
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-C   INITIALISATION DES NUMEROS DE NOEUDS DES FACES D'ELEMENTS 3D
+C   INITIALISATION DES NUMEROS DE SOMMETS DES FACES D'ELEMENTS 3D
+C     SOM (IN,IFA,TYMVOL) : IN     : NUMERO DU SOMMET DANS LA FACE
+C                           IFA    : NUMERO DE LA FACE
+C                           TYMVOL : TYPE DE LA MAILLE VOLUMIQUE
+C                                    1 : HEXAEDRES
+C                                    2 : PENTAEDRES
+C                                    3 : TETRAEDRES
+C                                    4 : PYRAMIDES
+C  ==> POUR LE IN-EME SOMMET DE LA IFA-EME FACE D'UNE MAILLE DE TYPE
+C      TYMVOL, SOMMET (IN,IFA,TYMVOL) EST SON NUMERO LOCAL DANS LA
+C      DESCRIPTION DE LA MAILLE VOLUMIQUE.
+C      ON RAPPELLE QU'EN FORTRAN L'ORDRE DE RANGEMENT EST LE SUIVANT :
+C   (1,1,1) (2,1,1) (3,1,1) (4,1,1) (1,2,1) (2,2,1) ... (4,2,1)
+C   (1,3,1)  ...    (3,6,4) (4,6,4)
+C    ON COMMENCE AINSI PAR LES 4 SOMMETS DE LA 1ERE FACE DE L'HEXAEDRE,
+C    PUIS LES 4 SOMMETS DE LA 2EME FACE DE L'HEXAEDRE,
+C    ETC JUSQU'AUX 4 SOMMETS DE LA 6EME FACE DE L'HEXAEDRE.
+C    ENSUITE ON A LES 3 SOMMETS DE LA 1ERE FACE DU PENTAEDRE, ETC
+C    ON CHOISIT UNE ORIENTATION ENTRANTE POUR DECRIRE UNE FACE
+C     VOIR TE003 POUR LES EXPLICATIONS DETAILLEES
 C
-C    HEXAEDRES
-C    PENTAEDRES
-      DATA SOM/1,2,3,4, 3,4,7,8, 5,6,7,8, 1,2,5,6, 2,3,6,7, 1,4,5,8,
-     &         1,2,3,0, 4,5,6,0, 1,2,4,5, 2,3,5,6, 1,3,4,6, 0,0,0,0,
-     &         1,2,3,0, 2,3,4,0, 3,4,1,0, 1,2,4,0, 0,0,0,0, 0,0,0,0/
-C    TETRAEDRES
+      DATA SOM/1,2,3,4, 1,5,6,2, 2,6,7,3, 3,7,8,4, 4,8,5,1, 5,8,7,6,
+     &         1,2,3,0, 4,6,5,0, 1,4,5,2, 2,5,6,3, 1,3,6,4, 0,0,0,0,
+     &         1,2,3,0, 2,4,3,0, 3,4,1,0, 1,4,2,0, 0,0,0,0, 0,0,0,0,
+     &         1,5,2,0, 2,5,3,0, 3,5,4,0, 4,5,1,0, 1,2,3,4, 0,0,0,0/
+C
 C --------- CONSTRUCTION DE LA CONNECTIVITE INVERSE --------------------
 C
       CALL JEMARQ()
@@ -135,7 +152,7 @@ C    CAS 3D
 C
 C ----------- BOUCLE SUR LES MAILLES -------------------------------
 C
-       DO 801 IMA = 1,NBMA
+      DO 801 , IMA = 1 , NBMA
 C
         CALL JEVEUO (JEXNUM(CONNEX,IMA),'L',JAD)
         IAD=IATYMA-1+IMA
@@ -143,13 +160,17 @@ C
 C
         IF (TYPEMA(1:4) .EQ. 'HEXA')THEN
            NBF = 6
-           ITYPE = 1
+           TYMVOL = 1
         ELSE IF (TYPEMA(1:4) .EQ. 'PENT' ) THEN
            NBF = 5
-           ITYPE = 2
+           TYMVOL = 2
         ELSE IF (TYPEMA(1:4) .EQ. 'TETR' ) THEN
            NBF = 4
-           ITYPE = 3
+           TYMVOL = 3
+        ELSE IF (TYPEMA(1:4) .EQ. 'PYRA' ) THEN
+           NBF = 5
+           TYMVOL = 4
+CGN        WRITE(6,*) '. MAILLE ',IMA
         ELSE
            GOTO 801
         ENDIF
@@ -162,83 +183,122 @@ C
         IAVAL2 = IAVAL1 + 14*(IEL-1)
 C
 C ---------- BOUCLE SUR LES FACES DE LA MAILLE -------------------
+C      NBMAVI = NOMBRE DE MAILLES POSSEDANT LE I-EME SOMMET
+C               S'IL N'Y EN A QU'UNE, C'EST LA MAILLE COURANTE DONC
+C               IL N'Y A PAS DE VOISINS PAR CETTE FACE : ON PASSE
+C               A LA FACE SUIVANTE.
 C
-       DO 802 IFA = 1,NBF
-         INO1 = SOM(1,IFA,ITYPE)
-         NOE1 = JEXNUM(CONINV,ZI(JAD-1+INO1))
-         CALL JELIRA (NOE1,'LONMAX',NBMAV1,K1BID)
-         CALL JEVEUO (NOE1,'L',IAMAV1)
-
-         IF (NBMAV1 .EQ. 1) GO TO 802
+        DO 802 , IFA = 1 , NBF
+CGN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '.. FACE NUMERO ',IFA
+          INO1 = SOM(1,IFA,TYMVOL)
+          NOE1 = JEXNUM(CONINV,ZI(JAD-1+INO1))
+CGN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... INO1 ',INO1
+          CALL JELIRA (NOE1,'LONMAX',NBMAV1,K1BID)
+          IF ( NBMAV1.EQ.1 ) GO TO 802
+CGN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... NBMAV1 ',NBMAV1
+          CALL JEVEUO (NOE1,'L',IAMAV1)
 C
-         INO2 = SOM(2,IFA,ITYPE)
-         NOE2 = JEXNUM(CONINV,ZI(JAD-1+INO2))
-         CALL JELIRA (NOE2,'LONMAX',NBMAV2,K1BID)
-         CALL JEVEUO (NOE2,'L',IAMAV2)
-
-         IF (NBMAV2 .EQ. 1) GO TO 802
+          INO2 = SOM(2,IFA,TYMVOL)
+CGN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... INO2 ',INO2
+          NOE2 = JEXNUM(CONINV,ZI(JAD-1+INO2))
+          CALL JELIRA (NOE2,'LONMAX',NBMAV2,K1BID)
+CGN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... NBMAV2 ',NBMAV2
+          IF ( NBMAV2.EQ.1 ) GO TO 802
+          CALL JEVEUO (NOE2,'L',IAMAV2)
 C
-         INO3 = SOM(3,IFA,ITYPE)
-         NOE3 = JEXNUM(CONINV,ZI(JAD-1+INO3))
-         CALL JELIRA (NOE3,'LONMAX',NBMAV3,K1BID)
-         CALL JEVEUO (NOE3,'L',IAMAV3)
-         IF (NBMAV3 .EQ. 1) GO TO 802
+          INO3 = SOM(3,IFA,TYMVOL)
+CGN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... INO3 ',INO3
+          NOE3 = JEXNUM(CONINV,ZI(JAD-1+INO3))
+          CALL JELIRA (NOE3,'LONMAX',NBMAV3,K1BID)
+CGN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... NBMAV3 ',NBMAV3
+          IF ( NBMAV3.EQ.1 ) GO TO 802
+          CALL JEVEUO (NOE3,'L',IAMAV3)
 C
-         INO4 = SOM(4,IFA,ITYPE)
-         IF (INO4 .NE. 0) THEN
-                NOE4 = JEXNUM(CONINV,ZI(JAD-1+INO4))
-                CALL JELIRA (NOE4,'LONMAX',NBMAV4,K1BID)
-                CALL JEVEUO (NOE4,'L',IAMAV4)
-         ENDIF
-C        
-                DO 803 IMA1 = 1,NBMAV1
-                NUMAV1 = ZI(IAMAV1-1+IMA1)
-                IF (NUMAV1 .EQ. IMA) GO TO 803
-C
-                        DO 804 IMA2 = 1,NBMAV2
-                        NUMAV2 = ZI(IAMAV2-1+IMA2)
-                        IF (NUMAV2 .EQ. NUMAV1) THEN
-C
-                                DO 805 IMA3 = 1,NBMAV3
-                                NUMAV3 = ZI(IAMAV3-1+IMA3)
-                                IF (NUMAV3 .EQ. NUMAV1) THEN
-C
-                                IF (INO4 .NE. 0) THEN
 CAS DES FACES QUADRANGULAIRES
-                                IF (NBMAV4 .EQ. 1) GO TO 802
-                                        DO 806 IMA4 = 1,NBMAV4
-                                        NUMAV4 = ZI(IAMAV4-1+IMA4)
-                                         IF (NUMAV4 .EQ. NUMAV1) THEN
+          INO4 = SOM(4,IFA,TYMVOL)
+CGN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... INO4 ',INO4
+          IF (INO4 .NE. 0) THEN
+            NOE4 = JEXNUM(CONINV,ZI(JAD-1+INO4))
+            CALL JELIRA (NOE4,'LONMAX',NBMAV4,K1BID)
+CGN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... NBMAV4 ',NBMAV4
+            IF ( NBMAV4.EQ.1 ) GO TO 802
+            CALL JEVEUO (NOE4,'L',IAMAV4)
+          ENDIF
+C
+C REPERAGE ET STOCKAGE DES VOISINS
+C  BOUCLE 803 : ON REGARDE TOUTES LES MAILLES POSSEDANT LE 1ER SOMMET
+C               DE LA MAILLE COURANTE, IMA, ET QUI NE SONT PAS IMA
+C
+          DO 803 , IMA1 = 1,NBMAV1
+            NUMAV1 = ZI(IAMAV1-1+IMA1)
+            IF ( NUMAV1.NE.IMA ) THEN
+C
+C  BOUCLE 804 : ON REGARDE TOUTES LES MAILLES POSSEDANT LE 2EME SOMMET
+C               DE LA MAILLE COURANTE
+C               ON RETIENT CELLES QUI POSSEDENT AUSSI LE PREMIER
+C
+              DO 804 , IMA2 = 1,NBMAV2
+                NUMAV2 = ZI(IAMAV2-1+IMA2)
+                IF ( NUMAV2.EQ.NUMAV1 ) THEN
+C
+C  BOUCLE 805 : ON REGARDE TOUTES LES MAILLES POSSEDANT LE 3EME SOMMET
+C               DE LA MAILLE COURANTE
+C               ON RETIENT CELLES QUI POSSEDENT AUSSI LE PREMIER
+C               ELLES POSSEDENT AUSSI LE DEUXIEME.
+C
+                  DO 805 , IMA3 = 1,NBMAV3
+                    NUMAV3 = ZI(IAMAV3-1+IMA3)
+                    IF (NUMAV3.EQ.NUMAV1) THEN
+C
+C       CAS DES FACES QUADRANGULAIRES
+C  BOUCLE 806 : ON REGARDE TOUTES LES MAILLES POSSEDANT LE 4EME SOMMET
+C               DE LA MAILLE COURANTE
+C               ON RETIENT CELLES QUI POSSEDENT AUSSI LE PREMIER
+C               ELLES POSSEDENT AUSSI LE DEUXIEME ET LE TROISIEME.
+                      IF ( INO4.NE.0 ) THEN
+C
+                        DO 806 IMA4 = 1,NBMAV4
+                          NUMAV4 = ZI(IAMAV4-1+IMA4)
+                         IF (NUMAV4 .EQ. NUMAV1) THEN
+C- ------STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
+                            ZI(IAVAL2+IFA) = NUMAV1
+                            IADV=IATYMA-1+NUMAV1
+                            TYP = ZI(IADV)
+                            ZI(IAVAL2+IFA+7) = TYP
+                            GOTO 802
+                          ENDIF
+  806                   CONTINUE
+C
+                      ELSE
+C
+C       CAS DES FACES TRIANGULAIRES
 C-------STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
-                                                ZI(IAVAL2+IFA) = NUMAV1
-                                                IADV=IATYMA-1+NUMAV1
-                                                TYP = ZI(IADV)
-                                                ZI(IAVAL2+IFA+7) = TYP
-                                                GOTO 802
-                                                ENDIF
-  806                                   CONTINUE
-                                ELSE
-CAS DES FACES TRIANGULAIRES
-C-------STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
-                                        ZI(IAVAL2+IFA) = NUMAV1
-                                        IADV=IATYMA-1+NUMAV1
-                                        TYP = ZI(IADV)
-                                        ZI(IAVAL2+IFA+7) = TYP
-                                        GOTO 802
-                                ENDIF
-                                ENDIF
-  805                           CONTINUE
-                        ENDIF
-  804                   CONTINUE
-  803           CONTINUE
-  802  CONTINUE
+                        ZI(IAVAL2+IFA) = NUMAV1
+                        IADV=IATYMA-1+NUMAV1
+                        TYP = ZI(IADV)
+                        ZI(IAVAL2+IFA+7) = TYP
+                        GOTO 802
+C
+                      ENDIF
+                    ENDIF
+C
+  805             CONTINUE
+                ENDIF
+C
+  804         CONTINUE
+C
+            ENDIF
+C
+  803     CONTINUE
+  802   CONTINUE
 C
 C --------- STOCKAGE DU NUMERO DE L'ELEMENT ET DE SON TYPE -------------
 C
-       ZI(IAVAL2) = IMA
-       TYP = ZI(IAD)
-       ZI(IAVAL2+7) = TYP
-  801  CONTINUE
+        ZI(IAVAL2) = IMA
+        TYP = ZI(IAD)
+        ZI(IAVAL2+7) = TYP
+C
+  801 CONTINUE
 C
 C
       ELSE

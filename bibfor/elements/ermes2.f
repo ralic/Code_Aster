@@ -6,7 +6,7 @@
       CHARACTER*8 TYPEMA,TYPMAV
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,7 +29,7 @@ C  **        **                   *                *
 C ======================================================================
 C
 C     BUT:
-C         DEUXIEME TERME DE L'ESTIMATEUR D'ERREUR EN RESIDU EXPLICITE : 
+C         DEUXIEME TERME DE L'ESTIMATEUR D'ERREUR EN RESIDU EXPLICITE :
 C         CALCUL DU SAUT DE CONTRAINTE ENTRE UN ELEMENT ET SON VOISIN.
 C
 C
@@ -40,7 +40,11 @@ C      ENTREE :
 C-------------
 C IN   INO      : NUMERO DE L'ARETE
 C IN   TYPEMA   : TYPE DE LA MAILLE COURANTE
+C               'QU4', 'QU8', 'QU9'
+C               'TR3', 'TR6', 'TR7'
 C IN   TYPMAV   : TYPE DE LA MAILLE VOISINE
+C               'QUAD4', 'QUAD8', 'QUAD9'
+C               'TRIA3', 'TRIA6', 'TRIA7'
 C IN   IREF1    : ADRESSE DES CHARGEMENTS DE TYPE FORCE (CONTENANT AUSSI
 C                 LES INFOS SUR LES VOISINS)
 C IN   IVOIS    : ADRESSE DES VOISINS
@@ -105,17 +109,17 @@ C
 C ----- TESTS SUR LA MAILLE COURANTE -----------------------------------
 C
       FORM=TYPEMA(1:2)
-      NOEU=TYPEMA(5:5)
+      NOEU=TYPEMA(3:3)
 C
       IF (FORM.EQ.'TR') THEN
         NBS=3
         ELSE
         NBS=4
       ENDIF
-      IF (NOEU.EQ.'6'.OR.NOEU.EQ.'8'.OR.NOEU.EQ.'9') THEN
-        NBNA=3
-        ELSE
+      IF (NOEU.EQ.'3'.OR.NOEU.EQ.'4') THEN
         NBNA=2
+        ELSE
+        NBNA=3
       ENDIF
 C
 C ----- TESTS SUR LA MAILLE VOISINE ------------------------------------
@@ -127,8 +131,10 @@ C
         NBSV=3
         IF (NOEUV.EQ.'3') THEN
           NBNV=3
-          ELSE
+          ELSE IF (NOEUV.EQ.'6') THEN
           NBNV=6
+          ELSE
+          NBNV=7
         ENDIF
       ELSE IF (FORMV.EQ.'QU') THEN
         NBSV=4

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134d.para = tps_job 120 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,10 +37,6 @@ MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  MODI_MAILLE=_F(OPTION='NOEUD_QUART',
                                 GROUP_NO_FOND='LFF1',),);
-
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=_F(GROUP_MA=('SLA2_I','SLA2_S','SAV_I','SAV_S','SSUP_1',),),);
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -123,6 +119,12 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),);
 
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_PEAU_3D=_F(GROUP_MA=('SAR_I','SLAT_I','SINF_1','SINF_S',
+                                             'SAV_I','SAV_S','SLA2_I','SLA2_S',),),
+                   INFO=2,);
+
 E = 200000000000.0;
 
 NU = 0.3;
@@ -167,9 +169,9 @@ THETA1=CALC_THETA(OPTION='COURONNE',
 SYMETRIE=AFFE_CHAR_MECA(MODELE=MO,
                         DDL_IMPO=(_F(GROUP_NO='D',
                                      DZ=0.,),
-                                  _F(GROUP_NO=('SLA2_I','SLA2_S',),
+                                  _F(GROUP_MA=('SLA2_I','SLA2_S',),
                                      DX=0.,),
-                                  _F(GROUP_NO=('SAV_I','SAV_S',),
+                                  _F(GROUP_MA=('SAV_I','SAV_S',),
                                      DY=0.,),),);
 
 PRESSION=AFFE_CHAR_MECA(MODELE=MO,
@@ -177,12 +179,20 @@ PRESSION=AFFE_CHAR_MECA(MODELE=MO,
                                        FZ=1.E6,),
                                     _F(GROUP_MA='SINF_1',
                                        FZ=-1.E6,),),);
+LIBRE=AFFE_CHAR_MECA(MODELE=MO,
+                     PRES_REP=(_F(GROUP_MA='SLAT_I',PRES=0.,),
+                               _F(GROUP_MA='SAR_I',PRES=0.,),),)
 
 RESU1=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE=PRESSION,),
-                           _F(CHARGE=SYMETRIE,),),);
+                           _F(CHARGE=SYMETRIE,),
+                           _F(CHARGE=LIBRE,),),);
 
+# REMARQUE : STRICTO SENSU, LE CALCUL DE ERRE_ELEM_SIGM EST FAUX CAR
+#            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
+#            MAILLAGE ET A FORTIORI DANS LE CHARGEMENT
+#            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
 RESU1=CALC_ELEM(reuse =RESU1,
                RESULTAT=RESU1,
                OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),);
@@ -543,13 +553,13 @@ TORSION=AFFE_CHAR_MECA_F(MODELE=MO,
                                         FY=MTY,),),);
 
 ANTISYM=AFFE_CHAR_MECA(MODELE=MO,
-                       DDL_IMPO=(_F(GROUP_NO='SSUP_1',
+                       DDL_IMPO=(_F(GROUP_MA='SSUP_1',
                                     DX=0.,
                                     DY=0.,),
-                                 _F(GROUP_NO=('SLA2_I','SLA2_S',),
+                                 _F(GROUP_MA=('SLA2_I','SLA2_S',),
                                     DY=0.,
                                     DZ=0.,),
-                                 _F(GROUP_NO=('SAV_I','SAV_S',),
+                                 _F(GROUP_MA=('SAV_I','SAV_S',),
                                     DX=0.,
                                     DZ=0.,),),);
 
@@ -1324,10 +1334,10 @@ TEST_TABLE(TABLE=TABK13A3,
 TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   NUME_ORDRE=1,
                   PARA='ERREUR_ERRE',
-                  VALE=2.4153175191656E+06,
+                  VALE=3.1675404418243E+06,
                   PRECISION=1E-10,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.0.4',),);
+                  VERSION='9.03.25',),);
 
 #
 FIN();

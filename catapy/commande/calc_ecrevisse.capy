@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/07/2009   AUTEUR MICHEL S.MICHEL 
+#& MODIF COMMANDE  DATE 29/09/2009   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,6 +72,8 @@ CALC_ECREVISSE=MACRO(nom="CALC_ECREVISSE",op=calc_ecrevisse_ops,sd_prod=calc_ecr
            ZETA                =SIMP(statut='o',typ='R',fr="Coefficient de la perte de charge singuliere a l'entree [zeta]" ),
            RUGOSITE            =SIMP(statut='o',typ='R',fr="Rugosite absolu (metres) [eps]" ),
            OUVERT_REMANENTE    =SIMP(statut='o',typ='R',val_min=0.,defaut=10.E-6,fr="Ouverture remanente"),
+           TORTUOSITE          =SIMP(statut='f',typ='R',defaut=1.0, val_min=0., val_max=1.0,
+                                       fr="Coefficient de tortuosite de la fissure" ),
            SECTION             =SIMP(statut='o',typ='TXM',into=("ELLIPSE","RECTANGLE"),fr="Type de section [is]" ),
            b_section_ellipse   =BLOC(condition="SECTION=='ELLIPSE'",fr="Fissure a section elliptique",
              LISTE_COTES_BL      =SIMP(statut='f',typ='R',max='**',

@@ -1,7 +1,7 @@
       SUBROUTINE TE0003(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,10 @@ C TOLE CRP_20
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
 C      SUR UN ELEMENT ISOPARAMETRIQUE 2D/3D, LUMPE OU NON, VIA L'OPTION
-C     'ERTH_ELEM_THER_F/R'
+C     'ERRE_ELEM_THER_F/R'
 
 C IN OPTION : NOM DE L'OPTION
 C IN NOMTE  : NOM DU TYPE D'ELEMENT
-
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
 C       MESSAGE:INFNIV,U2MESS,U2MESG.
@@ -39,7 +38,6 @@ C       MATERIAUX/CHARGES:RCVALA,RCCOMA,FOINTE.
 C       NON LINEAIRE: NTFCMA,RCFODE.
 C       DEDIEES A TE0003:UTHK,UTJAC,UTINTC,UTIN3D,UTNORM,UTNO3D,
 C                        UTVOIS,UTERFL,UTEREC,UTERSA,UTNBNV.
-
 C     FONCTIONS INTRINSEQUES:
 C       ABS,SQRT,SIGN.
 C   -------------------------------------------------------------------
@@ -62,7 +60,6 @@ C DECLARATION PARAMETRES D'APPELS
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
-      INTEGER VALI(2)
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
@@ -76,62 +73,306 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES
-      INTEGER JGANO,NNO,NPG1,IPOIDS,IVF,IDFDE,IGEOM,
-     &        IFLUM,IFLUP,ISOUR,IMATE,ICHARG,IVOIS,IERRE,I,ITEMM,ITEMP,
-     &        J,KP,K,ICODE,I1,NDIM,IJ,I2,MCELD,MCELV,PCELD,PCELV,IAUX1,
-     &        IAVAF,NCMPF,IAVAH,NCMPH,NARET,NSOMM,INO,JNO,MNO,TYPMC,
-     &        TYPMV,IMAV,IRET,IAPTMA,IENTF,IENTH,IENTT,IAVAT,NCMPT,NBSV,
-     &        NBNV,JAD,JADV,IGREL,IEL,IAVALP,IAVALM,IAREPE,IFM,NIV,
-     &        NIVEAU,IFON(3),NBPAR,ITYP,NDEGRE,
-     &        NSOMM2,IDFDX,IDFDX2,IDFDY,IDFDY2,IPG,NPGF,NPGF2,
-     &        NOE(9,6,3),TABNIV(20),IJEVEO,NNOS
-      REAL*8 R8PREM,INSOLD,INST,VALTHE,AUX,RHOCP,DFDX(27),DFDY(27),
-     &       POIDS,R,VALFP(9),VALFM(9),R8CART,VALPAR(4),VALSP,VALSM,
-     &       VALUNT,TERBUF,TEMPM,TEMPP,FLUXM(3),FLUXP(3),FFORME,DELTAT,
-     &       R8MIEM,PREC,OVFL,DER(6),FLURP,FLURM,UNSURR,X3,Y3,XN(9),
-     &       YN(9),ZN(9),TERM22,JAC(9),HK,HF,ZRJNO1,ZRJNO2,ZRINO1,
-     &       ZRINO2,POINC1,POINC2,VALHP(9),VALHM(9),VALTP(9),VALTM(9),
-     &       R8CAR1,ERTABS,ERTREL,TERMNO,TERMVO,TERMSA,TERMFL,TERMEC,
-     &       TERMV1,TERMV2,TERMS1,TERMS2,TERMF1,TERMF2,TERME1,TERME2,
-     &       JACOB,UNSURD,R8BID,RHOCPM,RHOCPP,DFDZ(27),X,Y,Z,POIDS1(27),
-     &       POIDS2(27),POIDS3(27)
-      CHARACTER*2 CODRET,FORMV
-      CHARACTER*3 NOMT3
+      INTEGER IFM,NIV
+      INTEGER TABNIV(20)
+      INTEGER IADZI,IAZK24
+      INTEGER IBID,ITAB(7),IRET
+      INTEGER NOE(9,6,4)
+      INTEGER IGEOM
+      INTEGER IERR,IVOIS
+      INTEGER IMATE
+      INTEGER ISOUR,ICHARG
+      INTEGER IFLUM,IFLUP,ITEMM,ITEMP
+      INTEGER NDIM
+      INTEGER NNO , NNOS , NPG , IPOIDS, IVF , IDFDE , JGANO
+      INTEGER NDIMF
+      INTEGER NNOF, NNOSF, NPGF, IPOIDF, IVFF, IDFDXF, IDFDYF, JGANOF
+      INTEGER NNO2, NNOS2, NPG2, IPOID2, IVF2, IDFDX2, IDFDY2, JGANO2
+      INTEGER I,J,K,ICODE,I1,IJ,I2,MCELD,MCELV,PCELD,PCELV,IAUX1,
+     >        IAVAF,NCMPF,IAVAH,NCMPH,JNO,MNO,
+     >        IMAV,IAPTMA,IENTF,IENTH,IENTT,IAVAT,NCMPT,NBSV,
+     >        NBNV,JAD,JADV,IGREL,IEL,IAVALP,IAVALM,IAREPE,
+     >        NIVEAU,IFON(3),NBPAR,
+     >        IJEVEO
+      INTEGER IPG
+      INTEGER NBF
+      INTEGER TYMVOL,NDEGRE,IFA,TYV
+C
+      REAL*8 R8BID,R8BID2,R8BID3(4),R8BID4(3)
+      REAL*8 R8PREM
+      REAL*8 INSOLD,INST,VALTHE,AUX,RHOCP,DFDX(27),DFDY(27),
+     >       POIDS,R,VALFP(9),VALFM(9),R8CART,VALSP,VALSM,
+     >       VALUNT,TERBUF,TEMPM,TEMPP,FLUXM(3),FLUXP(3),FFORME,DELTAT,
+     >       R8MIEM,PREC,OVFL,DER(6),FLURP,FLURM,UNSURR,X3,Y3,XN(9),
+     >       YN(9),ZN(9),TERM22,JAC(9),HK,HF,ZRJNO1,ZRJNO2,ZRINO1,
+     >       ZRINO2,POINC1,POINC2,VALHP(9),VALHM(9),VALTP(9),VALTM(9),
+     >       R8CAR1,ERTABS,ERTREL,TERMNO,TERMVO,TERMSA,TERMFL,TERMEC,
+     >       TERMV1,TERMV2,TERMS1,TERMS2,TERMF1,TERMF2,TERME1,TERME2,
+     >       JACOB,UNSURD,RHOCPM,RHOCPP,DFDZ(27),X,Y,Z
+C
+      CHARACTER*2 CODRET(2),FORMV
       CHARACTER*4 EVOL
-      CHARACTER*8 MA,NOMPAR(4),TYPMAC,TYPMAV,K8CART,K8CAR1,ELREFE,ELREF2
+      CHARACTER*8 TYPMAV, ELREFE
+      CHARACTER*8 ELREFF, ELREFB
+      CHARACTER*8 MA,NOMPAR(4),TYPMAC,K8CART,K8CAR1
       CHARACTER*16 PHENOM
       CHARACTER*19 CARTEF,CARTEH,CARTET,CARTES,NOMGDF,NOMGDH,NOMGDT,
-     &             NOMGDS,LIGREL,CHFLUM,CHFLUP
-      CHARACTER*32 JEXNUM
+     >             NOMGDS,LIGREL,CHFLUM,CHFLUP
+      CHARACTER*24 VALK(2)
       LOGICAL LEVOL,LTHETA,LAXI,LMAJ,LNONLI,L2D,LLUMPE,LTEATT
-
-C DATA POUR 3D
-C TABLEAU DES NUMEROS DE NOEUDS FACE ET PAR TYPE D'ELEMENT 3D
-      DATA NOE/1,2,3,4,9,10,11,12,21,  3,7,8,4,15,19,16,11,24,
-     &         5,8,7,6,20,19,18,17,26, 1,5,6,2,13,17,14,9,22,
-     &         2,6,7,3,14,18,15,10,23, 4,8,5,1,16,20,13,12,25,
-     &         1,2,3,7,8,9,3*0,        4,6,5,15,14,13,3*0,
-     &         1,4,5,2,10,13,11,7,0,   2,5,6,3,11,14,12,8,0,
-     &         1,3,6,4,9,12,15,10,0,   9*0,
-     &         1,2,3,5,6,7,3*0,        2,4,3,9,10,6,3*0,
-     &         3,4,1,10,8,7,3*0,       1,4,2,8,9,5,3*0,
-     &         9*0,                    9*0/
+C
+C --- INITIALISATION DU TABLEAU DES NUMEROS DE NOEUDS FACE PAR FACE ----
+C     REMARQUE : NE PAS SUPPRIMER CE COMMENTAIRE DETAILLE CAR IL EST
+C                COMMUN A TOUS LES PROGRAMMES UTILISANT NOE
+C
+C     NOE (IN,IFA,TYMVOL) : IN     : NUMERO DU NOEUD DANS LA FACE
+C                           IFA    : NUMERO DE LA FACE
+C                           TYMVOL : TYPE DE LA MAILLE VOLUMIQUE
+C                                    1 : HEXAEDRE A 8,20 ET 27 NOEUDS
+C                                    2 : PENTAEDRE A 6 ET 15 NOEUDS
+C                                    3 : TETRAEDRE A 4 ET 10 NOEUDS
+C                                    4 : PYRAMIDE A 5 ET 13 NOEUDS
+C  ==> POUR LE IN-EME NOEUD DE LA IFA-EME FACE D'UNE MAILLE DE TYPE
+C      TYMVOL, NOE (IN,IFA,TYMVOL) EST SON NUMERO LOCAL DANS LA
+C      DESCRIPTION DE LA MAILLE VOLUMIQUE.
+C   . ON CHOISIT UNE ORIENTATION SORTANTE POUR DECRIRE UNE FACE.
+C   . L'ORDRE DES FACES N'A PAS D'IMPORTANCE EN SOI MAIS IL FAUT
+C     ETRE COHERENT :
+C      - MEME DESCRIPTION PAR LES SOMMETS POUR LES VOISINAGES (RESVOI)
+C      - CONVENTION POUR LE PENTAEDRE ET DE LA PYRAMIDE POUR LESQUELS
+C        ON COMMENCE PAR LES TRIANGLES.
+C
+C      ON RAPPELLE QU'EN FORTRAN L'ORDRE DE RANGEMENT EST LE SUIVANT :
+C   (1,1,1) (2,1,1) (3,1,1) ... (9,1,1) (1,2,1) (2,2,1) ... (9,2,1)
+C   (1,3,1)  ...    (8,6,4) (9,6,4)
+C    ON COMMENCE AINSI PAR LES 9 NOEUDS DE LA 1ERE FACE DE L'HEXAEDRE,
+C    PUIS LES 9 NOEUDS DE LA 2EME FACE DE L'HEXAEDRE,
+C    ETC JUSQU'AUX 9 NOEUDS DE LA 6EME FACE DE L'HEXAEDRE.
+C    ENSUITE ON A LES 6 NOEUDS DE LA 1ERE FACE DU PENTAEDRE, ETC
+C
+C CONVENTIONS ASTER POUR UN HEXAEDRE :
+C  (N1,N2,N3,N4) EST ENTRANT
+C  (N5,N6,N7,N8) EST SORTANT (DONC DANS LE MEME SENS QUE (N1,N2,N3,N4))
+C  N9 EST AU MILIEU DE (N1,N2)
+C N10 EST AU MILIEU DE (N2,N3)
+C N11 EST AU MILIEU DE (N3,N4)
+C N12 EST AU MILIEU DE (N4,N1)
+C N13 EST AU MILIEU DE (N1,N5)
+C N14 EST AU MILIEU DE (N2,N6)
+C N15 EST AU MILIEU DE (N3,N7)
+C N16 EST AU MILIEU DE (N4,N8)
+C N17 EST AU MILIEU DE (N5,N6)
+C N18 EST AU MILIEU DE (N6,N7)
+C N19 EST AU MILIEU DE (N7,N8)
+C N20 EST AU MILIEU DE (N8,N5)
+C
+C             N1                  N2
+C             ---------N9----------
+C            /                   /.
+C        N12/                  N10.
+C          /                   /  .
+C         /   N13             /   .
+C      N4 ---------N11--------N3  .N14
+C         .                  .    .
+C         .                  .    .
+C         .    .N5     N17   .    .N6
+C      N16.                  N15 /
+C         . N20              .  /N18
+C         .                  . /
+C         .                  ./
+C         ---------N19--------
+C       N8                    N7
+C
+C
+C CONVENTIONS ASTER POUR UN PENTAEDRE :
+C  (N1,N2,N3) EST ENTRANT
+C  (N4,N5,N6) EST SORTANT (DONC DANS LE MEME SENS QUE (N1,N2,N3))
+C  N7 EST AU MILIEU DE (N1,N2)
+C  N8 EST AU MILIEU DE (N2,N3)
+C  N9 EST AU MILIEU DE (N3,N1)
+C N10 EST AU MILIEU DE (N1,N4)
+C N11 EST AU MILIEU DE (N2,N5)
+C N12 EST AU MILIEU DE (N3,N6)
+C N13 EST AU MILIEU DE (N4,N5)
+C N14 EST AU MILIEU DE (N5,N6)
+C N15 EST AU MILIEU DE (N6,N4)
+C
+C          N2                     N11                  N5
+C           X------------------------------------------X
+C          .                                          .
+C         .  .                                       .  .
+C        .                                          .
+C     N8.     .                                 N14.     .
+C      .                                          .
+C     .        .                                 .        .
+C    .          N7                              .           N13
+C N3.           .         N12                 N6.           .
+C  X------------------------------------------X
+C     .          .                               .          .
+C          .                                      N15 .
+C              .  .                                       .  .
+C        N9        X------------------------------------------X
+C                 N1                     N10                  N4
+C
+C CONVENTIONS ASTER POUR UN TETRAEDRE :
+C  (N1,N2,N3) EST ENTRANT
+C  N5 EST AU MILIEU DE (N1,N2)
+C  N6 EST AU MILIEU DE (N2,N3)
+C  N7 EST AU MILIEU DE (N3,N1)
+C  N8 EST AU MILIEU DE (N1,N4)
+C  N9 EST AU MILIEU DE (N2,N4)
+C N10 EST AU MILIEU DE (N3,N4)
+C
+C                     N1
+C                     *
+C                    .  ..
+C                   .     . .
+C                  .        .  *N8
+C                 .           .   .
+C                .              *    .  N4
+C             N7*               N5.    *
+C              .                  . .   .
+C             .              .        .  .
+C            .          *N10             . *N9
+C           .      .                      ..
+C          .  .                             .
+C         *................*.................*
+C       N3                 N6                N2
+C
+C
+C CONVENTIONS ASTER POUR UNE PYRAMIDE :
+C  (N1,N2,N3,N4) EST ENTRANT
+C  N5 EST LE SOMMET OPPOSE AU QUADRANGLE
+C  N6 EST AU MILIEU DE (N1,N2)
+C  N7 EST AU MILIEU DE (N2,N3)
+C  N8 EST AU MILIEU DE (N3,N4)
+C  N9 EST AU MILIEU DE (N4,N1)
+C N10 EST AU MILIEU DE (N1,N5)
+C N11 EST AU MILIEU DE (N2,N5)
+C N12 EST AU MILIEU DE (N3,N5)
+C N13 EST AU MILIEU DE (N4,N5)
+C                            N5
+C                            X
+C                         . . . .
+C                       .  .   .   .
+C                     .   .   N13     .
+C                   .    .       .       .
+C                 .     .        X .         .
+C             N10.      .     .   N4    .        .N12
+C             .       .  .                 .       .
+C           .        .                         .      .
+C         .      .  .N11                           .     .
+C       .    .     .                            N8     .    .
+C     .  .  N9    .                                        .   .
+C N1 .           .                                             .  .
+C  X .         .                                                  .  .
+C         .    .                                                      .
+C       N6    X--------------------------------------------------------X
+C           N2                           N7                          N3
+C
+      DATA NOE/1,4,3,2,12,11,10, 9,21, 1,2,6,5, 9,14,17,13,22,
+     >         2,3,7,6,10,15,18,14,23, 3,4,8,7,11,16,19,15,24,
+     >         4,1,5,8,12,13,20,16,25, 5,6,7,8,17,18,19,20,26,
+     >         1,3,2,9,8,7, 3*0,       4,5,6,13,14,15, 3*0,
+     >         1,2,5,4, 7,11,13,10, 0, 2,3,6,5,8,12,14,11,0,
+     >         1,4,6,3,10,15,12, 9, 0,  9*0,
+     >         1,3,2,7,6, 5, 3*0,      2,3,4,6,10,9, 3*0,
+     >         3,1,4,7,8,10, 3*0,      1,2,4,5, 9,8, 3*0,
+     >         9*0,                    9*0,
+     >         1,2,5,6,11,10, 3*0,     2,3,5,7,12,11, 3*0,
+     >         3,4,5,8,13,12, 3*0,     4,1,5,9,10,13, 3*0,
+     >         1,4,3,2,9,8,7,6, 0,     9*0 /
 C--------------------------------------------------------------------
 C INITIALISATIONS/RECUPERATION DE LA GEOMETRIE ET DES CHAMPS LOCAUX
 C--------------------------------------------------------------------
+ 1000 FORMAT(A,' :',(6(1X,1PE17.10)))
+ 1001 FORMAT(A,' :',9I10)
+ 2000 FORMAT(A,10I8)
+C ----------------------------------------------------------------------
+C 1 -------------- GESTION DES DONNEES ---------------------------------
+C ----------------------------------------------------------------------
       CALL JEMARQ()
 
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,
-     &              JGANO)
+      CALL INFNIV(IFM,NIV)
+C
+      CALL TECAEL(IADZI,IAZK24)
+      VALK(1)=ZK24(IAZK24-1+3)
+      VALK(2)=OPTION
+C
+      CALL ELREF1(ELREFE)
 
+C NIVEAU D'AFFICHAGE DIFFERENCIE PAR ROUTINE (0: RIEN, 2 AFFICHAGE)
+      DO 10 IBID = 1,20
+        TABNIV(IBID) = 0
+   10 CONTINUE
+      IF (NIV.EQ.2) THEN
+C INFO GENERALES SUR L'ELEMENT K
+        TABNIV(1) = 2
+        TABNIV(2) = 0
+C POUR UTHK: INFO SUR LE DIAMETRE DE L'ELEMENT K
+        TABNIV(3) = 2
+C AFFICHAGE DU PHENOMENE DE LA MAILLE ET DU RHOCP
+        TABNIV(4) = 0
+C AFFICHAGE DU JACOBIEN
+        TABNIV(5) = 2
+C AFFICHAGE DES DETAILS DE CONSTRUCTION DU TERME SOURCE
+        TABNIV(6) = 0
+C AFFICHAGE DU TOTAL DU TERME SOURCE
+        TABNIV(7) = 2
+C POUR UTNORM: INFO SUR HF, NORMAL, CONNECTIQUE DES FACES
+        TABNIV(8) = 0
+C POUR UTINTC/3D: INTERPOLATION FLUX + INFO CARTE
+        TABNIV(9) = 0
+C POUR UTERFL: CALCUL TERME ERREUR FLUX
+        TABNIV(10) = 0
+C AFFICHAGE DU TOTAL DU TERME DE FLUX
+        TABNIV(11) = 2
+C POUR UTINC/3D: INTERPOLATION ECHANGE + INFO CARTE
+        TABNIV(12) = 0
+C POUR UTERFL: CALCUL TERME ERREUR ECHANGE
+        TABNIV(13) = 0
+C AFFICHAGE DU TOTAL DU TERME D'ECHANGE
+        TABNIV(14) = 2
+C POUR UTERSA: CALCUL TERME ERREUR SAUT
+        TABNIV(15) = 0
+C AFFICHAGE DU TOTAL DU TERME DE SAUT
+        TABNIV(16) = 2
+      END IF
+C
+      IF (TABNIV(1).EQ.2) THEN
+      WRITE(IFM,*) ' '
+      WRITE(IFM,*) '================================================='
+      WRITE(IFM,*) ' '
+      WRITE(IFM,*) 'MAILLE NUMERO', ZI(IADZI),', DE TYPE ', ELREFE
+      END IF
+
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+
+      CALL JEVECH('PGEOMER','L',IGEOM)
+C
+      CALL JEVECH('PERREUR','E',IERR)
+      DO 1 IBID=1,14
+        ZR(IERR-1+IBID)=0.D0
+ 1    CONTINUE
+C
 C INITIALISATION DIMENSION DE L'ESPACE DE TRAVAIL/LLUMPE OU PAS
       LLUMPE = .FALSE.
       IF(LTEATT(' ','LUMPE','OUI')) LLUMPE = .TRUE.
       L2D = .TRUE.
       IF(LTEATT(' ','DIM_TOPO_MAILLE','X3')) L2D = .FALSE.
+      IF ( LLUMPE ) THEN
+        IF ( ( ELREFE(1:3).EQ.'H20' ) .OR.
+     >       ( ELREFE(1:3).EQ.'H27' ) .OR.
+     >       ( ELREFE(1:3).EQ.'P15' ) .OR.
+     >       ( ELREFE(1:3).EQ.'T10' ) .OR.
+     >       ( ELREFE(1:3).EQ.'P13' ) ) THEN
+          CALL U2MESS('F','CALCULEL5_27')
+        ENDIF
+      ENDIF
 
 C INIT. GENERALES (PARAM NUMERIQUE, INTERPOLATION, FLAG SI AXI...)
       PREC = R8PREM()
@@ -152,12 +393,11 @@ C INIT. GENERALES (PARAM NUMERIQUE, INTERPOLATION, FLAG SI AXI...)
       END IF
 
 C RECUPERATION DES ADRESSES DES CHAMPS LOCAUX ASSOCIES AUX PARAMETRES:
-C GEOMETRIE (IGEOM), FLUX TEMP - ET +(IFLUM ET IFLUP),SOURCE (ISOUR),
-C MATERIAU (IMATE),CHARGE (ICHARG),VOISIN (IVOIS),ERREUR (IERR).
+C FLUX TEMP - ET +(IFLUM ET IFLUP),SOURCE (ISOUR),
+C MATERIAU (IMATE),CHARGE (ICHARG),
 C FLAG EVOL='EVOL' OU '',THETA (VALTHE),INSTANT - ET + (INSOLD/INST)
-      CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PCHARG','L',ICHARG)
-      EVOL = ZK24(ICHARG+15)
+      EVOL = ZK24(ICHARG+15)(1:4)
       IF (EVOL.EQ.'EVOL') THEN
         CALL JEVECH('PTEMP_M','L',ITEMM)
         CALL JEVECH('PFLUX_M','L',IFLUM)
@@ -193,60 +433,20 @@ C FIN DE LECTURE DE LA CARTE ETENDUE: LECTURE VECT '&&RESTHE.JEVEUO'
       CALL JEVECH('PFLUX_P','L',IFLUP)
       CALL TECACH('ONN','PSOURCR',1,ISOUR,IRET)
       CALL JEVECH('PMATERC','L',IMATE)
-      CALL JEVECH('PVOISIN','L',IVOIS)
-      CALL JEVECH('PERREUR','E',IERRE)
 
-C NIVEAU D'AFFICHAGE DIFFERENCIE PAR ROUTINE (0: RIEN, 2 AFFICHAGE)
-      DO 10 I = 1,20
-        TABNIV(I) = 0
-   10 CONTINUE
-      IF (NIV.EQ.2) THEN
-C INFO GENERALES SUR L'ELEMENT K
-        TABNIV(1) = 2
-        TABNIV(2) = 0
-C POUR UTHK: INFO SUR LE DIAMETRE DE L'ELEMENT K
-        TABNIV(3) = 2
-C AFFICHAGE DU PHENOMENE DE LA MAILLE ET DU RHOCP
-        TABNIV(4) = 0
-C AFFICHAGE DU JACOBIEN
-        TABNIV(5) = 2
-C AFFICHAGE DES DETAILS DE CONSTRUCTION DU TERME SOURCE
-        TABNIV(6) = 0
-C AFFICHAGE DU TOTAL DU TERME SOURCE
-        TABNIV(7) = 2
-C POUR UTNORM: INFO SUR HF, NORMAL, CONNECTIQUE DES FACES
-        TABNIV(8) = 2
-C POUR UTINTC/3D: INTERPOLATION FLUX + INFO CARTE
-        TABNIV(9) = 0
-C POUR UTERFL: CALCUL TERME ERREUR FLUX
-        TABNIV(10) = 0
-C AFFICHAGE DU TOTAL DU TERME DE FLUX
-        TABNIV(11) = 2
-C POUR UTINC/3D: INTERPOLATION ECHANGE + INFO CARTE
-        TABNIV(12) = 0
-C POUR UTERFL: CALCUL TERME ERREUR ECHANGE
-        TABNIV(13) = 0
-C AFFICHAGE DU TOTAL DU TERME D'ECHANGE
-        TABNIV(14) = 2
-C POUR UTERSA: CALCUL TERME ERREUR SAUT
-        TABNIV(15) = 0
-C AFFICHAGE DU TOTAL DU TERME DE SAUT
-        TABNIV(16) = 2
-      END IF
 
 C RECUPERATION DES CARTES FLUX, CHARGEMENT ET DE LEUR TYPE
-      MA = ZK24(ICHARG)
-      LIGREL = ZK24(ICHARG+1)
-      CHFLUM = ZK24(ICHARG+2)
-      CHFLUP = ZK24(ICHARG+3)
-      CARTEF = ZK24(ICHARG+4)
-      NOMGDF = ZK24(ICHARG+5)
-      CARTEH = ZK24(ICHARG+6)
-      NOMGDH = ZK24(ICHARG+7)
-      CARTET = ZK24(ICHARG+8)
-      NOMGDT = ZK24(ICHARG+9)
-      CARTES = ZK24(ICHARG+10)
-      NOMGDS = ZK24(ICHARG+11)
+      MA = ZK24(ICHARG)(1:8)
+      CHFLUM = ZK24(ICHARG+2)(1:19)
+      CHFLUP = ZK24(ICHARG+3)(1:19)
+      CARTEF = ZK24(ICHARG+4)(1:19)
+      NOMGDF = ZK24(ICHARG+5)(1:19)
+      CARTEH = ZK24(ICHARG+6)(1:19)
+      NOMGDH = ZK24(ICHARG+7)(1:19)
+      CARTET = ZK24(ICHARG+8)(1:19)
+      NOMGDT = ZK24(ICHARG+9)(1:19)
+      CARTES = ZK24(ICHARG+10)(1:19)
+      NOMGDS = ZK24(ICHARG+11)(1:19)
 
 C FLAG POUR EFFECTUER LES CALCULS IMPLIQUANT (1-THETA)
       IF (VALUNT.GT.PREC) THEN
@@ -255,26 +455,27 @@ C FLAG POUR EFFECTUER LES CALCULS IMPLIQUANT (1-THETA)
         LTHETA = .FALSE.
       END IF
 
-C IMPRESSIONS NIVEAU 2 POUR DIAGNOSTIC...
-      IF (TABNIV(1).EQ.2) THEN
-        WRITE (IFM,*)
-        WRITE (IFM,*) 'TE0003 **********'
-        WRITE (IFM,*) 'NOMTE/L2D ',NOMTE,' / ',L2D
-      END IF
+C IMPRESSIONS NIVEAU 2 POUR DIAGNOSTIC
       IF (TABNIV(2).EQ.2) THEN
-        IF (L2D) WRITE (IFM,*) 'LAXI ',LAXI
-        WRITE (IFM,*) 'VALTHE/VALUNT ',VALTHE,VALUNT
-        WRITE (IFM,*) 'LEVOL/LTHETA ',LEVOL,LTHETA
-        WRITE (IFM,*) 'MA/LIGREL ',MA,' / ',LIGREL
-        WRITE (IFM,*) 'CHFLUM/P ',CHFLUM,' / ',CHFLUP
-        WRITE (IFM,*) 'CARTEF/NOMGDF ',CARTEF,' / ',NOMGDF
-        WRITE (IFM,*) 'CARTEH/NOMGDH ',CARTEH,' / ',NOMGDH
-        WRITE (IFM,*) 'CARTET/NOMGDT ',CARTET,' / ',NOMGDT
-        WRITE (IFM,*) 'CARTES/NOMGDS ',CARTES,' / ',NOMGDS
+        WRITE (IFM,*) 'NOMTE : ',NOMTE,', L2D : ',L2D
+        IF (L2D) WRITE (IFM,*) 'LAXI =',LAXI
+        WRITE (IFM,*) 'VALTHE =',VALTHE,', VALUNT =',VALUNT
+        WRITE (IFM,*) 'LEVOL =',LEVOL,', LTHETA =',LTHETA
+        LIGREL = ZK24(ICHARG+1)(1:19)
+        WRITE (IFM,*) 'MA = ',MA,', LIGREL = ',LIGREL
+        WRITE (IFM,*) 'CHFLUM = ',CHFLUM,', CHFLUP = ',CHFLUP
+        WRITE (IFM,*) 'CARTEF = ',CARTEF,', NOMGDF = ',NOMGDF
+        WRITE (IFM,*) 'CARTEH = ',CARTEH,', NOMGDH = ',NOMGDH
+        WRITE (IFM,*) 'CARTET = ',CARTET,', NOMGDT = ',NOMGDT
+        WRITE (IFM,*) 'CARTES = ',CARTES,', NOMGDS = ',NOMGDS
       END IF
 
-C CALCUL DU DIAMETRE HK DE L'ELEMENT K
-      CALL UTHK(NOMTE,IGEOM,HK,NDIM,NOE,NSOMM,ITYP,INO,TABNIV(3),IFM)
+C ----------------------------------------------------------------------
+C ---------------- CALCUL DU PREMIER TERME DE L'ERREUR -----------------
+C ----------------------------------------------------------------------
+C
+C ----- CALCUL DU DIAMETRE HK DE LA MAILLE ----
+      CALL UTHK(NOMTE,IGEOM,HK,NDIM,ITAB,IBID,IBID,IBID,TABNIV(3),IFM)
 
 C------------------------------------------------------------------
 C CALCUL DU TERME VOLUMIQUE
@@ -282,12 +483,12 @@ C------------------------------------------------------------------
 
 C RECHERCHE DE LA VALEUR DE RHO*CP EN LINEAIRE ET EN NON-LINEAIRE
       CALL RCCOMA(ZI(IMATE),'THER',PHENOM,CODRET)
-      CALL ASSERT(CODRET.EQ.'OK')
+      CALL ASSERT(CODRET(1).EQ.'OK')
       IF (PHENOM.EQ.'THER') THEN
         LNONLI = .FALSE.
         CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'INST',INST,1,'RHO_CP',
      &             RHOCP, CODRET,'FM')
-        IF (CODRET.NE.'OK') CALL U2MESS('F','ELEMENTS2_62')
+        IF (CODRET(1).NE.'OK') CALL U2MESS('F','ELEMENTS2_62')
       ELSE IF (PHENOM.EQ.'THER_NL') THEN
         LNONLI = .TRUE.
         CALL NTFCMA(ZI(IMATE),IFON)
@@ -296,31 +497,31 @@ C RECHERCHE DE LA VALEUR DE RHO*CP EN LINEAIRE ET EN NON-LINEAIRE
         CALL U2MESS('F','ELEMENTS2_63')
       END IF
       IF (TABNIV(4).EQ.2) THEN
-        WRITE (IFM,*) 'PHENOM ',PHENOM
-        IF (.NOT.LNONLI) WRITE (IFM,*) 'RHOCP ',RHOCP
+        WRITE (IFM,*) 'PHENOM =',PHENOM
+        IF (.NOT.LNONLI) WRITE (IFM,1000) 'RHOCP',RHOCP
       END IF
 
 C---------------------------------
-C BOUCLE SUR LES POINTS DE GAUSS ------------------------------------
+C ----- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE GAUSS -------------
 C---------------------------------
       TERMVO = 0.D0
       TERMV1 = 0.D0
       AUX = 0.D0
       LMAJ = .FALSE.
-      DO 70 KP = 1,NPG1
+      DO 12 , IPG = 1,NPG
 
         TERBUF = 0.D0
-        K = (KP-1)*NNO
+        K = (IPG-1)*NNO
 C FONCTIONS DE FORME ET LEURS DERIVEES
         IF (L2D) THEN
-          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
+          CALL DFDM2D(NNO,IPG,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
         ELSE
-          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+          CALL DFDM3D ( NNO, IPG, IPOIDS, IDFDE,
      &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
         END IF
 
 C CALCUL L'ORIENTATION DE LA MAILLE
-        CALL UTJAC ( L2D, IGEOM, KP, IDFDE,
+        CALL UTJAC ( L2D, IGEOM, IPG, IDFDE,
      &                                    TABNIV(5), IFM, NNO, JACOB )
 
 C---------------------------------
@@ -345,29 +546,29 @@ C SOURCE FONCTION (R,Z,TEMPS) (VALSP/M S+/- AU POINT DE GAUSS)
             Y = Y + ZR(I2+1)*FFORME
             IF (.NOT.L2D) Z = Z + ZR(I2+2)*FFORME
    20     CONTINUE
-          VALPAR(1) = X
-          VALPAR(2) = Y
-          IF (.NOT.L2D) VALPAR(3) = Z
-          VALPAR(NBPAR) = INST
-          CALL FOINTE('FM',ZK8(ISOUR),NBPAR,NOMPAR,VALPAR,VALSP,ICODE)
+          R8BID3(1) = X
+          R8BID3(2) = Y
+          IF (.NOT.L2D) R8BID3(3) = Z
+          R8BID3(NBPAR) = INST
+          CALL FOINTE('FM',ZK8(ISOUR),NBPAR,NOMPAR,R8BID3,VALSP,ICODE)
           IF (LTHETA) THEN
-            VALPAR(NBPAR) = INSOLD
-            CALL FOINTE('FM',ZK8(ISOUR),NBPAR,NOMPAR,VALPAR,VALSM,ICODE)
+            R8BID3(NBPAR) = INSOLD
+            CALL FOINTE('FM',ZK8(ISOUR),NBPAR,NOMPAR,R8BID3,VALSM,ICODE)
             TERBUF = VALTHE*VALSP + VALUNT*VALSM
           ELSE
             TERBUF = VALTHE*VALSP
           END IF
           IF (TABNIV(6).EQ.2) THEN
-            WRITE (IFM,*) 'X / Y / Z / INST ',X,Y,Z,INST
-            WRITE (IFM,*) 'TERMVO SOUR_F',VALSP,VALSM
+            WRITE (IFM,1000) 'X / Y / Z / INST ',X,Y,Z,INST
+            WRITE (IFM,1000) 'TERMVO SOUR_F',VALSP,VALSM
           END IF
 
 C---------------------------------
 C CAS SOURCE CONSTANTE
 C---------------------------------
         ELSE IF (NOMGDS(1:6).EQ.'SOUR_R') THEN
-          TERBUF = ZR(ISOUR+KP-1)
-          IF (TABNIV(6).EQ.2) WRITE (IFM,*) 'TERMVO SOUR_R',TERBUF
+          TERBUF = ZR(ISOUR+IPG-1)
+          IF (TABNIV(6).EQ.2) WRITE (IFM,1000) 'TERMVO SOUR_R',TERBUF
         END IF
 
         IF (TERBUF.GT.PREC) LMAJ = .TRUE.
@@ -398,13 +599,13 @@ C INTERPOLATION DERIVEE CHAMP D'ENTHALPIE IFON(1) A T- ET T+
             CALL RCFODE(IFON(1),TEMPM,R8BID,RHOCPM)
             CALL RCFODE(IFON(1),TEMPP,R8BID,RHOCPP)
             TERBUF = TERBUF - (RHOCPP-RHOCPM)*UNSURD
-            IF (TABNIV(6).EQ.2) WRITE (IFM,*) 'RHOCPP/M ',RHOCPP,RHOCPM
+          IF (TABNIV(6).EQ.2) WRITE (IFM,1000) 'RHOCPP/M',RHOCPP,RHOCPM
           ELSE
 C CAS LINEAIRE
             TERBUF = TERBUF - (TEMPP-TEMPM)*RHOCP*UNSURD
           END IF
 C IMPRESSIONS NIVEAU 2 POUR DIAGNOSTIC...
-          IF (TABNIV(6).EQ.2) WRITE (IFM,*) 'TERMVO TEMPP/M/DELTAT',
+          IF (TABNIV(6).EQ.2) WRITE (IFM,1000) 'TERMVO TEMPP/M/DELTAT',
      &        TEMPP,TEMPM,DELTAT
         END IF
 
@@ -452,31 +653,31 @@ C TRAITEMENT PARTICULIER DU A L'AXI (PART III)
         END IF
         IF (L2D) THEN
           TERBUF = TERBUF - VALTHE* (FLUXP(1)+FLUXP(2))
-          IF (TABNIV(6).EQ.2) WRITE (IFM,*) 'TERMVO FLUXP',FLUXP(1),
-     &        FLUXP(2)
+          IF (TABNIV(6).EQ.2) WRITE (IFM,1000) 'TERMVO FLUXP',
+     &        FLUXP(1),FLUXP(2)
           IF (LAXI) THEN
             TERBUF = TERBUF - VALTHE*UNSURR*FLURP
-            IF (TABNIV(6).EQ.2) WRITE (IFM,*) 'TERMVO FLURP/R',
+            IF (TABNIV(6).EQ.2) WRITE (IFM,1000) 'TERMVO FLURP/R',
      &          FLURP*UNSURR,R
           END IF
           IF (LTHETA) THEN
             TERBUF = TERBUF - VALUNT* (FLUXM(1)+FLUXM(2))
-            IF (TABNIV(6).EQ.2) WRITE (IFM,*) 'TERMVO FLUXM',FLUXM(1),
-     &          FLUXM(2)
+            IF (TABNIV(6).EQ.2) WRITE (IFM,1000) 'TERMVO FLUXM',
+     &          FLUXM(1),FLUXM(2)
             IF (LAXI) THEN
               TERBUF = TERBUF - VALUNT*UNSURR*FLURM
-              IF (TABNIV(6).EQ.2) WRITE (IFM,*) 'TERMVO FLURM',
+              IF (TABNIV(6).EQ.2) WRITE (IFM,1000) 'TERMVO FLURM',
      &            FLURM*UNSURR
             END IF
           END IF
         ELSE
           TERBUF = TERBUF - VALTHE* (FLUXP(1)+FLUXP(2)+FLUXP(3))
-          IF (TABNIV(6).EQ.2) WRITE (IFM,*) 'TERMVO FLUXP',FLUXP(1),
-     &        FLUXP(2),FLUXP(3)
+          IF (TABNIV(6).EQ.2) WRITE (IFM,1000) 'TERMVO FLUXP',
+     &        FLUXP(1),FLUXP(2),FLUXP(3)
           IF (LTHETA) THEN
             TERBUF = TERBUF - VALUNT* (FLUXM(1)+FLUXM(2)+FLUXM(3))
-            IF (TABNIV(6).EQ.2) WRITE (IFM,*) 'TERMVO FLUXM',FLUXM(1),
-     &          FLUXM(2),FLUXM(3)
+            IF (TABNIV(6).EQ.2) WRITE (IFM,1000) 'TERMVO FLUXM',
+     &          FLUXM(1),FLUXM(2),FLUXM(3)
           END IF
         END IF
         TERMVO = TERMVO + TERBUF*TERBUF*POIDS
@@ -485,44 +686,83 @@ C TRAITEMENT PARTICULIER DU A L'AXI (PART III)
 C---------------------------------
 C FIN BOUCLE SUR LES POINTS DE GAUSS --------------------------------
 C---------------------------------
-   70 CONTINUE
+   12 CONTINUE
 
 C CALCUL FINAL DU TERME VOLUMIQUE ET DU TERME SOURCE DE NORMALISATION
       TERMVO = HK*SQRT(TERMVO)
       TERMV1 = HK*SQRT(TERMV1)
-      IF (TABNIV(7).EQ.2) WRITE (IFM,*) '---> TERMVO/TERMV1',TERMVO,
-     &    TERMV1
+      IF (TABNIV(7).EQ.2) WRITE (IFM,1000) '---> TERMVO/TERMV1',
+     &    TERMVO,TERMV1
 
-C--------------------------------------------------------------------
-C CALCUL DES TERMES SURFACIQUES
-C--------------------------------------------------------------------
-
-C---------------------------------
-C ACCES AUX DONNEES GENERALES DES TERMES DE BORD
-C---------------------------------
-
+C
+C ----------------------------------------------------------------------
+C ------------ FIN DU CALCUL DU PREMIER TERME DE L'ERREUR --------------
+C ----------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
+C --------- CALCUL DES DEUXIEME ET TROISIEME TERMES DE L'ERREUR --------
+C ----------------------------------------------------------------------
+C
+      CALL JEVECH('PVOISIN','L',IVOIS)
+C
+      IF ( L2D ) THEN
 C TYPE DE LA MAILLE COURANTE
-      TYPMC = ZI(IVOIS+7)
-      CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',TYPMC),TYPMAC)
-
+      IBID = ZI(IVOIS+7)
+      CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',IBID),TYPMAC)
 C CALCUL DES CARACTERISTIQUES DE SES ARETES (OU DE SES FACES) ET
 C RECUPERATION DE SES DERIVEES DE FONCTIONS DE FORME (EN 3D ONLY).
-      CALL UTVOIS(TYPMAC,L2D,LMAJ,NARET,NSOMM,NSOMM2,POINC1,POINC2,ITYP,
-     &            ELREFE,ELREF2,NDEGRE,POIDS1,POIDS2,IDFDX,IDFDX2,IDFDY,
-     &            IDFDY2,NPGF,NPGF2,LLUMPE)
+      CALL UTVOIS(TYPMAC,LMAJ,NBF,NNOSF,POINC1,POINC2,
+     &            ELREFF,NDEGRE)
+      ELSE
+C
+C --------- INFORMATIONS SUR LA MAILLE COURANTE : --------------------
+C       TYMVOL : TYPE DE LA MAILLE VOLUMIQUE
+C       NDEGRE : DEGRE DE L'ELEMENT
+C       NBF    : NOMBRE DE FACES DE LA MAILLE VOLUMIQUE
+C       ELREFF : DENOMINATION DE LA MAILLE FACE DE ELREFE - FAMILLE 1
+C       ELREFB : DENOMINATION DE LA MAILLE FACE DE ELREFE - FAMILLE 2
+C      --- REMARQUE : ON IMPOSE UNE FAMILLE DE POINTS DE GAUSS
+C
+      CALL ELREF7 ( ELREFE,
+     >              TYMVOL, NDEGRE, NBF, ELREFF, ELREFB )
+C
+CGN      WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
+C --- CARACTERISTIQUES DES FACES DE BORD DE LA FAMILLE 1 ---------------
+CGN      WRITE(IFM,*) 'ELREFF : ',ELREFF
+      CALL ELREF4 ( ELREFF, 'MASS',
+     &              NDIMF, NNOF, NNOSF, NPGF, IPOIDF, IVFF,
+     &              IDFDXF, JGANOF )
+      IDFDYF = IDFDXF + 1
+CGN      WRITE(IFM,2000) 'NDIMF,NNOF',NDIMF,NNOF
+CGN      WRITE(IFM,2000) 'NNOSF,NPGF',NNOSF,NPGF
+CGN      WRITE(IFM,1000) 'IPOIDF', (ZR(IPOIDF+IFA),IFA=0,NPGF-1)
+C
+C --- COMPLEMENT EVENTUEL POUR LES MAILLES QUI ONT 2 TYPES DE ---
+C --- MAILLES DE BORD (PENTAEDRE, PYRAMIDE) ---
+C
+      IF ( ELREFB(1:1).NE.' ' ) THEN
+         CALL ELREF4 ( ELREFB, 'NOEU',
+     &                 NDIMF, NNO2, NNOS2, NPG2, IPOID2, IVF2,
+     &                 IDFDX2, JGANO2 )
+        IDFDY2 = IDFDX2 + 1
+CGN       WRITE(IFM,2000) 'NDIMF,NNO2',NDIMF,NNO2
+CGN       WRITE(IFM,2000) 'NNOS2,NPG2',NNOS2,NPG2
+CGN       WRITE(IFM,1000) 'IPOID2', (ZR(IPOID2+IFA),IFA=0,NPG2-1)
+      ENDIF
+
+      ENDIF
 
       IF (TABNIV(1).EQ.2) THEN
-        WRITE (IFM,*) '>>> MAILLE COURANTE <<<',ZI(IVOIS),' ',TYPMAC
         WRITE (IFM,*) 'DIAMETRE ',HK
         IF (L2D) THEN
-          WRITE (IFM,*) ' ARETES DE TYPE ',ELREFE
+          WRITE (IFM,*) ' ARETES DE TYPE ',ELREFF
         ELSE
-          WRITE (IFM,*) ' FACE DE TYPE   ',ELREFE,ELREF2
+          WRITE (IFM,*) ' FACES DE TYPE   ',ELREFF,ELREFB
         END IF
         WRITE (IFM,*) '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
       END IF
 C---------------------------------
-C BOUCLE SUR LES ARETES OU LES FACES   --------------------------------
+C BOUCLE SUR LES ARETES OU LES FACES DE LA MAILLE VOLUMIQUE -------
 C---------------------------------
       TERMSA = 0.D0
       TERMS1 = 0.D0
@@ -530,8 +770,20 @@ C---------------------------------
       TERMF1 = 0.D0
       TERMEC = 0.D0
       TERME1 = 0.D0
-      DO 140 INO = 1,NARET
-
+      DO 300 , IFA=1,NBF
+C
+C ------TEST DU TYPE DE VOISIN -----------------------------------------
+C
+        TYV=ZI(IVOIS+7+IFA)
+C
+        IF ( TYV.NE.0 ) THEN
+C
+C ------- RECUPERATION DU TYPE DE LA MAILLE VOISINE
+C
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',TYV),TYPMAV)
+      IF (TABNIV(1).EQ.2) THEN
+      WRITE(IFM,*) 'IFA =', IFA,' ==> TYPMAV = ', TYPMAV
+      ENDIF
 C---------------------------------
 C CALCULS PRELIMINAIRES
 C---------------------------------
@@ -539,58 +791,55 @@ C---------------------------------
 C CALCUL HF + POINTS INTEGRATION + NORMALE/JACOBIEN
         IF (L2D) THEN
 C CAS 2D
-          CALL UTNORM(IGEOM,NSOMM,NARET,INO,POINC1,POINC2,JNO,MNO,
+          CALL UTNORM(IGEOM,NNOSF,NBF,IFA,POINC1,POINC2,JNO,MNO,
      &                ZRINO2,ZRINO1,ZRJNO2,ZRJNO1,X3,Y3,HF,XN,YN,JAC,
      &                LAXI,JACOB,IFM,TABNIV(8))
         ELSE
 
 C CAS 3D
-C CAS PARTICULIER DU PENTAEDRE. A PARTIR DE NARET=3 INCLUS ON TRAITE
-C LES FACES DE TYPE 2.
-          IF ((INO.GE.3) .AND. (NARET.EQ.5)) THEN
-            NPGF = NPGF2
-            NSOMM = NSOMM2
-            IDFDX = IDFDX2
-            IDFDY = IDFDY2
-            DO 80 IPG = 1,NSOMM
-              POIDS3(IPG) = POIDS2(IPG)
-   80       CONTINUE
-          ELSE
-            DO 90 IPG = 1,NSOMM
-              POIDS3(IPG) = POIDS1(IPG)
-   90       CONTINUE
-          END IF
-          CALL UTNO3D(IFM,TABNIV(8),NSOMM,INO,ITYP,IGEOM,XN,YN,ZN,JAC,
-     &                IDFDX,IDFDY,HF,POIDS3,NPGF,NOE)
+C
+C --- QUAND ON ARRIVE AUX FACES QUAD DES PENTAEDRES OU DES PYRAMIDES ---
+C --- IL FAUT REMPLACER LES CARACTERISTIQUES DE LA FAMILLE 1         ---
+C --- PAR CELLES DE LA FAMILLE 2                                     ---
+C
+          IF ( ( TYMVOL.EQ.2 .AND. IFA.GE.3 ) .OR.
+     >         ( TYMVOL.EQ.4 .AND. IFA.GE.5 ) ) THEN
+C
+            NNOF   = NNO2
+            NPGF   = NPG2
+            NNOSF  = NNOS2
+            IPOIDF = IPOID2
+            IDFDXF = IDFDX2
+            IDFDYF = IDFDY2
+C
+          ENDIF
+C
+          IBID = IFA
+          CALL UTNO3D(IFM,TABNIV(8),NNOSF,IBID,TYMVOL,IGEOM,
+     &                XN,YN,ZN,JAC,
+     &                IDFDXF,IDFDYF,HF,ZR(IPOIDF),NPGF,NOE)
+C
         END IF
 
-C TEST DU TYPE DE LA MAILLE VOISINE PARTAGEANT L'ARETE INO
-        TYPMV = ZI(IVOIS+7+INO)
-        IF (TYPMV.NE.0) THEN
-          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',TYPMV),TYPMAV)
-          FORMV = TYPMAV(1:2)
+C TEST DU TYPE DE LA MAILLE VOISINE PARTAGEANT L'ARETE/LA FACE IFA
+        FORMV = TYPMAV(1:2)
 
 C NUMERO DE CETTE MAILLE VOISINE
-          IMAV = ZI(IVOIS+INO)
-        ELSE
-
-C PAS DE MAILLE VOISINE
-          TYPMAV = ' '
-          FORMV = ' '
-          IMAV = 0
-        END IF
+        IMAV = ZI(IVOIS+IFA)
 
         IF (TABNIV(1).EQ.2) THEN
-          WRITE (IFM,*) '<<< MAILLE VOISINE ',IMAV,'  ',TYPMAV
+        WRITE(IFM,1003)  IFA, IMAV, TYPMAV
+ 1003 FORMAT (I2,'-EME FACE DE NUMERO',I10,' ==> TYPMAV = ', A)
           CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMAV),'L',IAUX1)
-          WRITE (IFM,*) '<<< DE 2 PREMIERS NOEUDS ',ZI(IAUX1),
-     &      ZI(IAUX1+1)
+          WRITE (IFM,1001) '<<< DE PREMIERS SOMMETS ',
+     &      (ZI(IAUX1+IBID),IBID=0,NNOSF-1)
         END IF
-
-C---------------------------------
-C MAILLE VOISINE DE TYPE ELEMENT DE PEAU -------------------------
-C---------------------------------
-
+C
+C ----------------------------------------------------------------------
+C --------------- CALCUL DU TROISIEME TERME DE L'ERREUR ----------------
+C --------------- LE BORD VOISIN EST UNE MAILLE DE PEAU ----------------
+C ----------------------------------------------------------------------
+C
         IF ((L2D.AND. ((FORMV.EQ.'SE').OR. (FORMV.EQ.'SL'))) .OR.
      &      (.NOT.L2D.AND. ((FORMV.EQ.'QU').OR. (FORMV.EQ.'TR').OR.
      &      (FORMV.EQ.'QL').OR. (FORMV.EQ.'TL')))) THEN
@@ -620,7 +869,7 @@ C---------------------------------
           LMAJ = .FALSE.
           IF (NOMGDF(1:6).EQ.'FLUN_F') THEN
 
-C FLUX IMPOSE FONCTION (VALFP/M(I)=Q+/- AU POINT INO/JNO/MNO)
+C FLUX IMPOSE FONCTION (VALFP/M(I)=Q+/- AU POINT IFA/JNO/MNO)
             K8CART = ZK8(IAVAF+ (IENTF-1)*NCMPF)
             IF (TABNIV(9).EQ.2) WRITE (IFM,*) 'TERMFL FLUN_F ',K8CART
             IF (K8CART.NE.'&FOZERO') THEN
@@ -629,17 +878,17 @@ C FLUX IMPOSE FONCTION (VALFP/M(I)=Q+/- AU POINT INO/JNO/MNO)
 C INTERPOLATION F AUX INSTANTS +/-
               IF (L2D) THEN
                 CALL UTINTC(ZRINO2,ZRINO1,ZRJNO2,ZRJNO1,X3,Y3,INST,
-     &                      INSOLD,K8CART,LTHETA,NSOMM,VALFP,VALFM,
+     &                      INSOLD,K8CART,LTHETA,NNOSF,VALFP,VALFM,
      &                      TABNIV(9),IFM,1)
               ELSE
-                CALL UTIN3D(IGEOM,NSOMM,INO,ITYP,INST,INSOLD,K8CART,
+                CALL UTIN3D(IGEOM,NNOSF,IFA,TYMVOL,INST,INSOLD,K8CART,
      &                      LTHETA,TABNIV(9),IFM,1,VALFP,VALFM,NOE)
               END IF
 
 C CALCUL DU TERME D'ERREUR ET DE NORMALISATION ASSOCIE
-              CALL UTERFL(NDIM,IFLUP,IFLUM,INO,MNO,JNO,NSOMM,JAC,TERM22,
+              CALL UTERFL(NDIM,IFLUP,IFLUM,IFA,MNO,JNO,NNOSF,JAC,TERM22,
      &                    AUX,LTHETA,VALTHE,VALUNT,TABNIV(10),IFM,XN,YN,
-     &                    ZN,VALFP,VALFM,ITYP,NOE)
+     &                    ZN,VALFP,VALFM,TYMVOL,NOE)
             END IF
 
 C---------------------------------
@@ -647,24 +896,24 @@ C CAS FLUX CONSTANT
 C---------------------------------
           ELSE IF (NOMGDF(1:6).EQ.'FLUN_R') THEN
 
-C FLUX IMPOSE CONSTANT (VALFP(I)=Q AU POINT INO/JNO/MNO VALFM(I)=0)
+C FLUX IMPOSE CONSTANT (VALFP(I)=Q AU POINT IFA/JNO/MNO VALFM(I)=0)
             R8CART = ZR(IAVAF+ (IENTF-1)*NCMPF)
             IF (TABNIV(9).EQ.2) WRITE (IFM,*) 'TERMFL FLUN_R',R8CART
             IF (ABS(R8CART).GT.PREC) THEN
 
               LMAJ = .TRUE.
 C CALCUL DU TERME D'ERREUR ET DE NORMALISATION ASSOCIE
-              DO 100 I = 1,NSOMM
+              DO 100 I = 1,NNOSF
                 VALFP(I) = R8CART
   100         CONTINUE
               IF (LTHETA) THEN
-                DO 110 I = 1,NSOMM
+                DO 110 I = 1,NNOSF
                   VALFM(I) = R8CART
   110           CONTINUE
               END IF
-              CALL UTERFL(NDIM,IFLUP,IFLUM,INO,MNO,JNO,NSOMM,JAC,TERM22,
+              CALL UTERFL(NDIM,IFLUP,IFLUM,IFA,MNO,JNO,NNOSF,JAC,TERM22,
      &                    AUX,LTHETA,VALTHE,VALUNT,TABNIV(10),IFM,XN,YN,
-     &                    ZN,VALFP,VALFM,ITYP,NOE)
+     &                    ZN,VALFP,VALFM,TYMVOL,NOE)
             END IF
           END IF
 
@@ -675,7 +924,7 @@ C MISE A JOUR DU TERME DE FLUX
             TERMFL = TERMFL + TERM22
             TERMF1 = TERMF1 + AUX
             IF (TABNIV(11).EQ.2) THEN
-              WRITE (IFM,*) '---> TERMFL/TERMF1 ',TERM22,AUX
+              WRITE (IFM,1000) '---> TERMFL/TERMF1 ',TERM22,AUX
               WRITE (IFM,*)
             END IF
             LMAJ = .FALSE.
@@ -712,9 +961,9 @@ C---------------------------------
           LMAJ = .FALSE.
           IF (NOMGDH(1:6).EQ.'COEH_F') THEN
 
-C COEF_H IMPOSE FONCTION (VALHP/M(I)=Q+/- AU POINT INO/JNO/MNO)
+C COEF_H IMPOSE FONCTION (VALHP/M(I)=Q+/- AU POINT IFA/JNO/MNO)
             K8CART = ZK8(IAVAH+ (IENTH-1)*NCMPH)
-C TEMPERATURE IMPOSEE FONCTION (VALTP/M(I)=TEXT+/-  INO/JNO/MNO)
+C TEMPERATURE IMPOSEE FONCTION (VALTP/M(I)=TEXT+/-  IFA/JNO/MNO)
             K8CAR1 = ZK8(IAVAT+ (IENTT-1)*NCMPT)
             IF (TABNIV(12).EQ.2) WRITE (IFM,*) 'TERMEC COEH_F ',K8CART,
      &          ' / ',K8CAR1
@@ -725,23 +974,23 @@ C TEMPERATURE IMPOSEE FONCTION (VALTP/M(I)=TEXT+/-  INO/JNO/MNO)
               IF (L2D) THEN
 C INTERPOLATION H AUX INSTANTS +/-
                 CALL UTINTC(ZRINO2,ZRINO1,ZRJNO2,ZRJNO1,X3,Y3,INST,
-     &                      INSOLD,K8CART,LTHETA,NSOMM,VALHP,VALHM,
+     &                      INSOLD,K8CART,LTHETA,NNOSF,VALHP,VALHM,
      &                      TABNIV(12),IFM,2)
 C INTERPOLATION TEXT AUX INSTANTS +/-
                 CALL UTINTC(ZRINO2,ZRINO1,ZRJNO2,ZRJNO1,X3,Y3,INST,
-     &                      INSOLD,K8CAR1,LTHETA,NSOMM,VALTP,VALTM,
+     &                      INSOLD,K8CAR1,LTHETA,NNOSF,VALTP,VALTM,
      &                      TABNIV(12),IFM,3)
               ELSE
-                CALL UTIN3D(IGEOM,NSOMM,INO,ITYP,INST,INSOLD,K8CART,
+                CALL UTIN3D(IGEOM,NNOSF,IFA,TYMVOL,INST,INSOLD,K8CART,
      &                      LTHETA,TABNIV(12),IFM,2,VALHP,VALHM,NOE)
-                CALL UTIN3D(IGEOM,NSOMM,INO,ITYP,INST,INSOLD,K8CAR1,
+                CALL UTIN3D(IGEOM,NNOSF,IFA,TYMVOL,INST,INSOLD,K8CAR1,
      &                      LTHETA,TABNIV(12),IFM,3,VALTP,VALTM,NOE)
               END IF
 
 C CALCUL DU TERME D'ERREUR ET DE NORMALISATION ASSOCIE
-              CALL UTEREC(NDIM,IFLUP,IFLUM,INO,MNO,JNO,NSOMM,JAC,TERM22,
+              CALL UTEREC(NDIM,IFLUP,IFLUM,IFA,MNO,JNO,NNOSF,JAC,TERM22,
      &                    AUX,LTHETA,VALTHE,VALUNT,TABNIV(13),IFM,XN,YN,
-     &                    ZN,VALHP,VALHM,VALTP,VALTM,ITYP,ITEMP,ITEMM,
+     &                    ZN,VALHP,VALHM,VALTP,VALTM,TYMVOL,ITEMP,ITEMM,
      &                    NOE)
 
             END IF
@@ -751,30 +1000,30 @@ C CAS ECHANGE CONSTANT
 C---------------------------------
           ELSE IF (NOMGDH(1:6).EQ.'COEH_R') THEN
 
-C COEF_H IMPOSE CONSTANT (VALHP(I)=Q AU POINT INO/JNO/MNO VALHM(I)=0)
+C COEF_H IMPOSE CONSTANT (VALHP(I)=Q AU POINT IFA/JNO/MNO VALHM(I)=0)
             R8CART = ZR(IAVAH+ (IENTH-1)*NCMPH)
-C TEMPERATURE IMPOSEE CONSTANT (VALTP(I)=TEXT+  INO/JNO/MNO VALTM(I)=0)
+C TEMPERATURE IMPOSEE CONSTANT (VALTP(I)=TEXT+  IFA/JNO/MNO VALTM(I)=0)
             R8CAR1 = ZR(IAVAT+ (IENTT-1)*NCMPT)
-            IF (TABNIV(12).EQ.2) WRITE (IFM,*) 'TERMEC COEH_R',R8CART,
-     &          R8CAR1
+            IF (TABNIV(12).EQ.2) WRITE (IFM,1000) 'TERMEC COEH_R',
+     &          R8CART,R8CAR1
 
             IF ((ABS(R8CART).GT.PREC) .OR. (ABS(R8CAR1).GT.PREC)) THEN
 
               LMAJ = .TRUE.
 C CALCUL DU TERME D'ERREUR ET DE NORMALISATION ASSOCIE
-              DO 120 I = 1,NSOMM
+              DO 120 I = 1,NNOSF
                 VALHP(I) = R8CART
                 VALTP(I) = R8CAR1
   120         CONTINUE
               IF (LTHETA) THEN
-                DO 130 I = 1,NSOMM
+                DO 130 I = 1,NNOSF
                   VALHM(I) = R8CART
                   VALTM(I) = R8CAR1
   130           CONTINUE
               END IF
-              CALL UTEREC(NDIM,IFLUP,IFLUM,INO,MNO,JNO,NSOMM,JAC,TERM22,
+              CALL UTEREC(NDIM,IFLUP,IFLUM,IFA,MNO,JNO,NNOSF,JAC,TERM22,
      &                    AUX,LTHETA,VALTHE,VALUNT,TABNIV(13),IFM,XN,YN,
-     &                    ZN,VALHP,VALHM,VALTP,VALTM,ITYP,ITEMP,ITEMM,
+     &                    ZN,VALHP,VALHM,VALTP,VALTM,TYMVOL,ITEMP,ITEMM,
      &                    NOE)
             END IF
           END IF
@@ -786,16 +1035,17 @@ C CALCUL FINAL DU TERME D'ECHANGE
             TERMEC = TERMEC + TERM22
             TERME1 = TERME1 + AUX
             IF (TABNIV(14).EQ.2) THEN
-              WRITE (IFM,*) '---> TERMEC/TERME1',TERM22,AUX
+              WRITE (IFM,1000) '---> TERMEC/TERME1',TERM22,AUX
               WRITE (IFM,*)
             END IF
             LMAJ = .FALSE.
           END IF
 
-C---------------------------------
-C MAILLE VOISINE VOLUMIQUE         -------------------------
-C---------------------------------
-
+C ----------------------------------------------------------------------
+C --------------- CALCUL DU DEUXIEME TERME DE L'ERREUR -----------------
+C --------------- LE BORD VOISIN EST UN VOLUME -------------------------
+C ----------------------------------------------------------------------
+C
 C---------------------------------
 C CALCUL DE LA PARTIE SAUT DU FLUX CALCULE
 C---------------------------------
@@ -821,10 +1071,10 @@ C DANS ZR DE LA CMP 1 DU PT 1 DE LA MAILLE 1 DU GREL IEL
      &                         ZI(MCELD-1+ZI(MCELD-1+4+IGREL)+8)
 
 C CALCUL DU TERME D'ERREUR ET DE NORMALISATION ASSOCIE
-          CALL UTERSA(NDIM,IFLUP,IFLUM,INO,MNO,JNO,IVOIS,MA,IEL,NBNV,
-     &                NBSV,IAVALP,IAVALM,NSOMM,JAC,LTHETA,VALTHE,VALUNT,
-     &                TABNIV(15),IFM,ITYP,XN,YN,ZN,TERM22,AUX,JAD,JADV,
-     &                NOE)
+          CALL UTERSA(NDIM,IFLUP,IFLUM,IFA,MNO,JNO,IVOIS,MA,IEL,NBNV,
+     &                NBSV,IAVALP,IAVALM,NNOSF,JAC,LTHETA,VALTHE,VALUNT,
+     &                TABNIV(15),IFM,TYMVOL,XN,YN,ZN,TERM22,AUX,
+     &                JAD,JADV,NOE)
 
 C CALCUL FINAL DU TERME DE SAUT
           TERM22 = 0.5D0*SQRT(HF*TERM22)
@@ -832,17 +1082,30 @@ C CALCUL FINAL DU TERME DE SAUT
           TERMSA = TERMSA + TERM22
           TERMS1 = TERMS1 + AUX
           IF (TABNIV(16).EQ.2) THEN
-            WRITE (IFM,*) '---> TERMSA/TERMS1',TERM22,AUX
+            WRITE (IFM,1000) '---> TERMSA/TERMS1',TERM22,AUX
             WRITE (IFM,*)
           END IF
+C
+C ----------------------------------------------------------------------
+C --------------- CURIEUX ----------------------------------------------
+C ----------------------------------------------------------------------
+C
+        ELSE
+C
+          VALK(1)=TYPMAV(1:4)
+          CALL U2MESK('F','INDICATEUR_10',1,VALK)
 C---------------------------------
 C FIN IF FORMV                    --------------------------------
 C---------------------------------
         END IF
 C---------------------------------
+C FIN IF (TYV.NE.0) THEN          --------------------------------
+C---------------------------------
+        END IF
+C---------------------------------
 C FIN DE BOUCLE SUR LES ARETES    --------------------------------
 C---------------------------------
-  140 CONTINUE
+  300 CONTINUE
 
 C---------------------------------
 C MISE EN FORME DES DIFFERENTS TERMES DE ERRETEMP
@@ -867,26 +1130,22 @@ C ERREURS PARTIELLES
       END IF
 
 C STOCKAGE
-      ZR(IERRE) = ERTABS
-      ZR(IERRE+1) = ERTREL
-      ZR(IERRE+2) = TERMNO
+      ZR(IERR) = ERTABS
+      ZR(IERR+1) = ERTREL
+      ZR(IERR+2) = TERMNO
       IF (NIVEAU.EQ.2) THEN
-        ZR(IERRE+3) = TERMVO
-        ZR(IERRE+4) = TERMV2
-        ZR(IERRE+5) = TERMV1
-        ZR(IERRE+6) = TERMSA
-        ZR(IERRE+7) = TERMS2
-        ZR(IERRE+8) = TERMS1
-        ZR(IERRE+9) = TERMFL
-        ZR(IERRE+10) = TERMF2
-        ZR(IERRE+11) = TERMF1
-        ZR(IERRE+12) = TERMEC
-        ZR(IERRE+13) = TERME2
-        ZR(IERRE+14) = TERME1
-      ELSE
-        DO 150 I = 3,14
-          ZR(IERRE+I) = 0.D0
-  150   CONTINUE
+        ZR(IERR+3) = TERMVO
+        ZR(IERR+4) = TERMV2
+        ZR(IERR+5) = TERMV1
+        ZR(IERR+6) = TERMSA
+        ZR(IERR+7) = TERMS2
+        ZR(IERR+8) = TERMS1
+        ZR(IERR+9) = TERMFL
+        ZR(IERR+10) = TERMF2
+        ZR(IERR+11) = TERMF1
+        ZR(IERR+12) = TERMEC
+        ZR(IERR+13) = TERME2
+        ZR(IERR+14) = TERME1
       END IF
 
       IF (TABNIV(1).EQ.2) THEN

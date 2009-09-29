@@ -1,6 +1,6 @@
       SUBROUTINE JJCREC ( ICL , IDA , GENRI , TYPEI , NB , IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,9 @@ C     ------------------------------------------------------------------
       CHARACTER*4      IFMT
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
+      INTEGER          IRT
 C DEB ------------------------------------------------------------------
+      IRT = 0
       GENR(JGENR (ICL) + IDA ) = GENRI(1:1)
       TYPE(JTYPE (ICL) + IDA ) = TYPEI(1:1)
       IF ( GENRI .EQ. 'N' .AND. TYPEI(1:1) .NE. 'K' ) THEN
@@ -107,7 +109,7 @@ C DEB ------------------------------------------------------------------
       IF ( NB .GT. 0 ) THEN
         IF ( GENRI .EQ. 'N' ) THEN
           LONG ( JLONG(ICL) + IDA ) = NB
-          LONOI = (IDEHC + JJPREM(NB)) * LOIS + (NB+1) * IV
+          LONOI = (IDEHC + JJPREM(NB,IRT)) * LOIS + (NB+1) * IV
           IF ( MOD(LONOI,IV) .GT. 0 ) THEN
             LONO ( JLONO(ICL) + IDA ) = (LONOI / IV) + 1
           ELSE
@@ -126,7 +128,7 @@ C DEB ------------------------------------------------------------------
         IADM(JIADM (ICL) + 2*IDA   ) = IADYN
         CALL JJECRS(IADMI,IADYN,ICL,IDA,0,'E',IMARQ(JMARQ(ICL)+2*IDA-1))
         IF ( GENRI .EQ. 'N' ) THEN
-          NHC = JJPREM(NB)
+          NHC = JJPREM(NB,IRT)
           ISZON(JISZON + IADMI - 1 + ILOREP ) = NHC
           ISZON(JISZON + IADMI - 1 + IDENO  ) = (IDEHC+NHC)*LOIS
           ISZON(JISZON + IADMI - 1 + ILNOM  ) = IV

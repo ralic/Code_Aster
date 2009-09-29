@@ -57,10 +57,10 @@ COABS=COMB_SISM_MODAL(CORR_FREQ='NON',
                       MODE_MECA=MODES,
                       AMOR_REDUIT=0.0,
                       NUME_MODE=2,
+                      MONO_APPUI='OUI',
                       OPTION=('DEPL','EFGE_ELNO_DEPL','FORC_NODA','REAC_NODA'),
                       MODE_CORR=MODE_CO,
-                      EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               MONO_APPUI='OUI',
+                      EXCIT=_F(AXE=(1.0,0.0,0.0),                               
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
@@ -87,10 +87,11 @@ COSRS=COMB_SISM_MODAL(CORR_FREQ='NON',
                       MODE_MECA=MODES,
                       AMOR_REDUIT=0.05,
                       NUME_MODE=2,
+                      MONO_APPUI='OUI',
                       OPTION=('DEPL','EFGE_ELNO_DEPL','FORC_NODA','REAC_NODA'),
                       MODE_CORR=MODE_CO,
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               MONO_APPUI='OUI',
+                               
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
@@ -119,8 +120,8 @@ CODPC=COMB_SISM_MODAL(CORR_FREQ='NON',
                       NUME_MODE=2,
                       OPTION=('DEPL','EFGE_ELNO_DEPL','FORC_NODA','REAC_NODA'),
                       MODE_CORR=MODE_CO,
+                      MONO_APPUI='OUI',
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               MONO_APPUI='OUI',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
@@ -149,8 +150,8 @@ COCQC=COMB_SISM_MODAL(CORR_FREQ='NON',
                       NUME_MODE=2,
                       OPTION=('DEPL','EFGE_ELNO_DEPL','FORC_NODA','REAC_NODA'),
                       MODE_CORR=MODE_CO,
+                      MONO_APPUI='OUI',
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               MONO_APPUI='OUI',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
@@ -180,8 +181,8 @@ CODSC=COMB_SISM_MODAL(CORR_FREQ='NON',
                       NUME_MODE=2,
                       OPTION=('DEPL','EFGE_ELNO_DEPL','FORC_NODA','REAC_NODA'),
                       MODE_CORR=MODE_CO,
+                      MONO_APPUI='OUI',
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               MONO_APPUI='OUI',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 

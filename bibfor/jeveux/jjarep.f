@@ -1,6 +1,6 @@
       SUBROUTINE JJAREP ( ICLAS , NRMAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/11/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,8 @@ C ----------------------------------------------------------------------
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
      &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
+      CHARACTER*8      NOMBAS
+      COMMON /KBASJE/  NOMBAS(N)
 C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
@@ -67,15 +69,17 @@ C
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE 
 C ----------------------------------------------------------------------
       CHARACTER *32    CLEL,CLE
+      REAL *8          RBID
       CHARACTER *4     Z
       INTEGER          JCOD,KADHC,JNOM,KADNO,LOREP,IADRS(20),KAT(20)
       INTEGER          LGNOM,NUTI,LSO(20),IMQ(2),IADDI(2),KDY(20),IBID
       PARAMETER       (NBATT=12,NBTOT=NBATT+2,LGNOM=32)
-      INTEGER          NUMATT(NBTOT),IDM(NBTOT),IDY(NBTOT)
+      INTEGER          NUMATT(NBTOT),IDM(NBTOT),IDY(NBTOT),IRT
       DATA NUMATT,Z   /2,3,4,5,6,8,9,10,11,12,16,7,13,20,'INIT'/
 C DEB ------------------------------------------------------------------
       IPGCA = IPGC
       IPGC  = -2
+      IRT = 0
       IC = ICLAS
       KAT (17)= 0
       KDY (17)= 0
@@ -91,7 +95,14 @@ C
 C
 C --- ALLOCATION DU SEGMENT DE VALEURS POUR LE NOUVEAU REPERTOIRE
 C
-      LHCOD  = JJPREM ( NRMAX )
+      LHCOD  = JJPREM ( NRMAX , IRT )
+      IF ( IRT .EQ. 1 ) THEN 
+        IF ( IC .EQ. 1 ) THEN
+          CALL U2MESG('A','JEVEUX_64',1,NOMBAS(IC),1,NRMAX,0,RBID)
+        ELSE 
+          CALL U2MESG('A','JEVEUX_65',1,NOMBAS(IC),1,NRMAX,0,RBID)
+        ENDIF
+      ENDIF
       CALL JJALLS (LHCOD*LOIS,IC,'V','I',LOIS,'INIT',HCOD,JCOD,KADHC,
      &             KHCDY)
       CALL JJECRS (KADHC,KHCDY,IC,13,0,'E',IMQ)

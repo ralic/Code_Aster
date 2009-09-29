@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (PENTA15 HEXA20)
 # sslv130a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -48,9 +48,6 @@ M=MODI_MAILLAGE( reuse=M,
                  MAILLAGE=M,
                  ORIE_PEAU_3D=_F(  GROUP_MA = ( 'FACEEF', 'FACEAE', ),  )
                       )
-M = DEFI_GROUP( reuse         = M,
-                MAILLAGE      = M,
-                CREA_GROUP_NO = _F (GROUP_MA = ('FACEAB','FACSUP','FACINF'),),)
 MA=DEFI_MATERIAU( ELAS=_F(  E = 200000.,
                             NU = 0.4999,
                             ALPHA = 0.,    ))
@@ -61,9 +58,9 @@ CM=AFFE_MATERIAU( MAILLAGE=M,
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=(
-                         _F(  GROUP_NO = 'FACEAB',   DX = 0.,     ),
-                         _F(  GROUP_NO = 'FACSUP',   DZ = 0.,     ),
-                         _F(  GROUP_NO = 'FACINF',   DZ = 0.,     )),
+                         _F(  GROUP_MA = 'FACEAB',   DX = 0.,     ),
+                         _F(  GROUP_MA = 'FACSUP',   DZ = 0.,     ),
+                         _F(  GROUP_MA = 'FACINF',   DZ = 0.,     )),
                   FACE_IMPO=_F(  GROUP_MA = 'FACEEF',   DNOR = 0.,   ),
                   PRES_REP =_F(  GROUP_MA = 'FACEAE',   PRES = 60., )
                   )
@@ -214,9 +211,9 @@ M = DEFI_GROUP(reuse = M,
 
 CH_AC1=AFFE_CHAR_CINE(MODELE=MO, INFO=2,
                   MECA_IMPO=(
-                         _F(  GROUP_NO = 'FACEAB',     DX = 0., ),
-                         _F(  GROUP_NO = 'FACSUP',     DZ = 0., ),
-                         _F(  GROUP_NO = 'FACINF',     DZ = 0., ),),
+                         _F(  GROUP_MA = 'FACEAB',     DX = 0., ),
+                         _F(  GROUP_MA = 'FACSUP',     DZ = 0., ),
+                         _F(  GROUP_MA = 'FACINF',     DZ = 0., ),),
                   )
 CH_AC2=AFFE_CHAR_CINE(MODELE=MO, INFO=2,
                   MECA_IMPO=(
@@ -256,8 +253,6 @@ EVOL2 = CALC_ELEM (reuse=EVOL2,
                'SIEF_ELNO_ELGA',
                'EQUI_ELNO_SIGM',
                'EQUI_ELNO_EPSI',
-               'ERRE_ELEM_SIGM',
-               'ERRE_ELNO_ELEM',
            ),   ) ;
 
 EVOL2 = CALC_NO (reuse=EVOL2,
@@ -363,36 +358,6 @@ TEST_RESU(RESU=(
          _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'RELATIF',    PRECISION = 5.E-3,
              GROUP_NO = 'NOEUMI',   NOM_CMP = 'SIZZ',      VALE = 20., REFERENCE = 'ANALYTIQUE'),),)
 #--------------------------------------------------------------------------------
-#
-#  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
-
-TEST_RESU(RESU=(
-           _F( RESULTAT = EVOL2,
-               INST = 1.,
-               NOM_CHAM = 'ERRE_ELEM_SIGM',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.001,
-               POINT = 1,
-               MAILLE='M1',
-               NOM_CMP = 'NUEST',
-               VALE = 9.3646517567771,
-               REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
-             ),
-            );
-
-TEST_RESU(RESU=(
-           _F( RESULTAT = EVOL2,
-               INST = 1.,
-               NOM_CHAM = 'ERRE_ELNO_ELEM',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.001,
-               GROUP_NO= 'A',
-               MAILLE='M1',
-               NOM_CMP = 'ERREST',
-               VALE = 6.0242884446932E-03,
-               REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
-             ),
-            );
 
 
 FIN( )

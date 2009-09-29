@@ -1,0 +1,509 @@
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# RESPONSABLE GNICOLAS G.NICOLAS
+# TITRE INDICATEUR D'ERREUR MAILLES VOLUMIQUES ET FONCTIONS
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# sslv153a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# Attention : ceci est un test de non regression et non pas d'evaluation
+# de l'indicateur d'erreur en quantite d'interet.
+#
+# But : tester la non regression des indicateurs d'erreurs en residu et en
+# quantite d'interet pour un melange de volumes : HEXA, TETR, PENT et PYRA
+#
+# Le test est fait en un noeud qui se trouve etre un sommet pour chacune des
+# mailles 3D :
+#   . fleche verticale
+#   . valeur de ERRE pour les problemes primal et dual
+#   . valeur de QIRE
+# On notera que toutes les conditions aux limites de contraintes nulles au
+# nord ont ete explicitement definies via les groupes de mailles LIBRE et
+# LIBRE2. Si on ne le fait pas, ces bords sont consideres comme a deplacement
+# impose par le calcul des indicateurs d'erreur ; cela fausse le calcul des
+# termes de saut avec l'exterieur : on ne controle plus l'ecart entre la
+# contrainte calculee et le contrainte voulue, 0.
+
+DEBUT(CODE=_F(NOM='SSLV153A',
+              NIV_PUB_WEB='INTERNET',),);
+###########################################################################
+
+
+# A. Prealables
+# A.1. Constantes
+_prestetr = 13.0;
+
+_prespyra = 14.0;
+
+_prespent = 15.0;
+
+_preshexa = 16.0;
+
+_pres0 = 1e-14;
+
+
+# A.2. Maillage initial
+
+BLOC=LIRE_MAILLAGE(UNITE=20,
+                   FORMAT='MED',);
+
+G_00=CREA_MAILLAGE(MAILLAGE=BLOC,
+                   LINE_QUAD=_F(TOUT='OUI',),);
+
+# A.3. Modele mecanique
+
+MODE=AFFE_MODELE(MAILLAGE=G_00,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='3D',),);
+
+# A.4. Orientation des mailles de bord
+
+G_00=MODI_MAILLAGE(reuse =G_00,
+                   MAILLAGE=G_00,
+                   ORIE_PEAU_3D=_F(GROUP_MA=('MURHEXA','MURPENT','CHARTETR','CHARPYRA','CHARPENT','CHARHEXA','LIBRE','LIBRE2',),),
+                   INFO=2,);
+##IMPR_RESU(
+##FORMAT='MED',
+##
+##RESU=_F(MAILLAGE=G_00,),
+##);
+##IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE=G_00,),);
+
+
+# A.5. Mise en place des materiaux
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=400000.0,
+                            NU=0.3,),);
+
+MATE=AFFE_MATERIAU(MAILLAGE=G_00,
+                   AFFE=_F(GROUP_MA='VOLUME',
+                           MATER=MATER,),);
+###########################################################################
+
+
+# B. Cas de chargement defini par des reels
+#
+# B.1. Calcul pimal
+# B.1.1. Chargement
+
+CHAR=AFFE_CHAR_MECA(MODELE=MODE,
+                    FACE_IMPO=_F(GROUP_MA=('MURHEXA','MURPENT',),
+                                 DX=0.,
+                                 DY=0.,
+                                 DZ=0.,),
+                    PRES_REP=(_F(GROUP_MA='CHARTETR',
+                                 PRES=_prestetr,),
+                              _F(GROUP_MA='CHARPYRA',
+                                 PRES=_prespyra,),
+                              _F(GROUP_MA='CHARPENT',
+                                 PRES=_prespent,),
+                              _F(GROUP_MA='CHARHEXA',
+                                 PRES=_preshexa,),
+                              _F(GROUP_MA=('LIBRE','LIBRE2',),
+                                 PRES=_pres0,),),);
+
+# B.1.2. Resolution
+
+SOLUPR=MECA_STATIQUE(MODELE=MODE,
+                     CHAM_MATER=MATE,
+                     EXCIT=_F(CHARGE=CHAR,),);
+##IMPR_RESU(
+##FORMAT='MED',
+##
+##RESU=_F(RESULTAT=SOLUPR,),
+##);
+##DEPL_M=POST_RELEVE_T(
+##
+##ACTION=_F(OPERATION='EXTRACTION',
+##INTITULE='DZ en M - 1',
+##RESULTAT=SOLUPR,
+##NOM_CHAM='DEPL',
+##GROUP_NO='MESURE',
+##TOUT_CMP='OUI',),
+##);
+##IMPR_TABLE(
+##TABLE=DEPL_M,
+##NOM_PARA=('INTITULE','NOM_CHAM','NOEUD','DX','DY','DZ',),
+##);
+
+
+# B.2. Calcul d'erreur
+# B.2.1. Erreur en residu
+
+SOLUPR=CALC_ELEM(reuse =SOLUPR,
+                 RESULTAT=SOLUPR,
+                 TYPE_OPTION='SIGM_MASSIF',
+                 OPTION='SIEF_ELNO_ELGA',);
+##IMPR_RESU(
+##FORMAT='RESULTAT',
+##
+##RESU=_F(RESULTAT=SOLUPR,
+##NOM_CHAM='SIEF_ELNO_ELGA',),
+##);
+
+
+SOLUPR=CALC_ELEM(reuse =SOLUPR,
+                 RESULTAT=SOLUPR,
+                 TYPE_OPTION='INDI_ERREUR',
+                 OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
+                 EXCIT=_F(CHARGE=CHAR,),);
+
+SOLUPR=CALC_NO(reuse =SOLUPR,
+               RESULTAT=SOLUPR,
+               OPTION='ERRE_NOEU_ELEM',);
+##IMPR_RESU(
+##FORMAT='RESULTAT',
+##
+##RESU=_F(RESULTAT=SOLUPR,
+##NOM_CHAM='ERRE_ELEM_SIGM',
+##NOM_CMP=('ERREST','TERMRE','TERMNO','TERMSA',),),
+##);
+##IMPR_RESU(
+##FORMAT='MED',
+##
+##RESU=_F(RESULTAT=SOLUPR,
+##NOM_CHAM='ERRE_ELEM_SIGM',
+##NOM_CMP='ERREST',),
+##);
+
+
+# B.2.2. Erreur en quantite d'interet
+# B.2.2.1. Chargement dual
+#          Remarque : on cherche a optimiser le deplacement DZ partout,
+#                     donc la force interne est partout dans le volume
+
+CHARDU=AFFE_CHAR_MECA(MODELE=MODE,
+                      FACE_IMPO=_F(GROUP_MA=('MURHEXA','MURPENT',),
+                                   DX=0.,
+                                   DY=0.,
+                                   DZ=0.,),
+                      FORCE_INTERNE=_F(TOUT='OUI',
+                                       FX=0.,
+                                       FZ=1.0,),
+                      PRES_REP=(_F(GROUP_MA='CHARTETR',
+                                   PRES=_pres0,),
+                                _F(GROUP_MA='CHARPYRA',
+                                   PRES=_pres0,),
+                                _F(GROUP_MA='CHARPENT',
+                                   PRES=_pres0,),
+                                _F(GROUP_MA='CHARHEXA',
+                                   PRES=_pres0,),
+                                _F(GROUP_MA=('LIBRE','LIBRE2',),
+                                   PRES=_pres0,),),);
+
+# B.2.2.2. Resolution du probleme dual
+
+SOLUDU=MECA_STATIQUE(MODELE=MODE,
+                     CHAM_MATER=MATE,
+                     EXCIT=_F(CHARGE=CHARDU,),);
+
+# B.2.2.3. Calcul d'erreur
+
+SOLUDU=CALC_ELEM(reuse =SOLUDU,
+                 RESULTAT=SOLUDU,
+                 TYPE_OPTION='SIGM_MASSIF',
+                 OPTION='SIEF_ELNO_ELGA',);
+
+SOLUDU=CALC_ELEM(reuse =SOLUDU,
+                 RESULTAT=SOLUDU,
+                 TYPE_OPTION='INDI_ERREUR',
+                 OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
+                 EXCIT=_F(CHARGE=CHARDU,),);
+
+SOLUDU=CALC_NO(reuse =SOLUDU,
+               RESULTAT=SOLUDU,
+               OPTION='ERRE_NOEU_ELEM',);
+##IMPR_RESU(
+##FORMAT='MED',
+##
+##RESU=_F(RESULTAT=SOLUDU,),
+##);
+##IMPR_RESU(
+##FORMAT='RESULTAT',
+##
+##RESU=_F(RESULTAT=SOLUDU,),
+##);
+
+
+# B.3. Calcul de l'estimateur d'erreur en quantite d'interet
+
+SOLUPR=CALC_ELEM(reuse =SOLUPR,
+                 RESULTAT=SOLUPR,
+                 OPTION=('QIRE_ELEM_SIGM','QIRE_ELNO_ELEM',),
+                 RESU_DUAL=SOLUDU,);
+
+SOLUPR=CALC_NO(reuse =SOLUPR,
+               RESULTAT=SOLUPR,
+               OPTION='QIRE_NOEU_ELEM',);
+##IMPR_RESU(
+##FORMAT='RESULTAT',
+##
+##RESU=_F(RESULTAT=SOLUPR,
+##NOM_CHAM=('QIRE_ELEM_SIGM','QIRE_ELNO_ELEM','QIRE_NOEU_ELEM',),
+##NOM_CMP='ERREST',),
+##);
+
+
+# B.4. Test de non regression
+
+TEST_RESU(RESU=(_F(RESULTAT=SOLUPR,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='MESURE',
+                   VALE=-0.0186729786376,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-08,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.02',),
+                _F(RESULTAT=SOLUPR,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CMP='ERREST',
+                   GROUP_NO='MESURE',
+                   VALE=9358.16222031,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-08,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.02',),
+                _F(RESULTAT=SOLUDU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CMP='ERREST',
+                   GROUP_NO='MESURE',
+                   VALE=39919.0267977,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-08,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.02',),
+                _F(RESULTAT=SOLUPR,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='QIRE_NOEU_ELEM',
+                   NOM_CMP='ERREST',
+                   GROUP_NO='MESURE',
+                   VALE=-4623.29451753,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-08,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.02',),),);
+
+# B.5. Menage
+
+DETRUIRE(CONCEPT=_F(NOM=(CHAR,CHARDU,SOLUDU,SOLUPR,),),
+         INFO=1,);
+###########################################################################
+
+
+# C. Cas de chargement defini par des fonctions
+# C.0. Fonctions
+
+F_0=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                        ),);
+
+F_1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,1.,
+                        ),);
+
+F_ZERO=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_pres0,
+                           ),);
+
+F_TETR=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_prestetr,
+                           ),);
+
+F_PYRA=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_prespyra,
+                           ),);
+
+F_PENT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_prespent,
+                           ),);
+
+F_HEXA=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_preshexa,
+                           ),);
+##IMPR_FONCTION(
+##FORMAT='TABLEAU',
+##
+##COURBE=_F(FONCTION=F_HEXA,),
+##UNITE=8,
+##);
+
+
+# C.1. Calcul primal
+# C.1.1. Chargement
+
+CHAR=AFFE_CHAR_MECA_F(MODELE=MODE,
+                      FACE_IMPO=_F(GROUP_MA=('MURHEXA','MURPENT',),
+                                   DX=F_0,
+                                   DY=F_0,
+                                   DZ=F_0,),
+                      PRES_REP=(_F(GROUP_MA='CHARTETR',
+                                   PRES=F_TETR,),
+                                _F(GROUP_MA='CHARPYRA',
+                                   PRES=F_PYRA,),
+                                _F(GROUP_MA='CHARPENT',
+                                   PRES=F_PENT,),
+                                _F(GROUP_MA='CHARHEXA',
+                                   PRES=F_HEXA,),
+                                _F(GROUP_MA=('LIBRE','LIBRE2',),
+                                   PRES=F_ZERO,),),);
+
+# C.1.2. Resolution
+
+SOLUPR=MECA_STATIQUE(MODELE=MODE,
+                     CHAM_MATER=MATE,
+                     EXCIT=_F(CHARGE=CHAR,),);
+##IMPR_RESU(
+##FORMAT='MED',
+##
+##RESU=_F(RESULTAT=SOLUPR,),
+##);
+
+
+# C.2. Calcul d'erreur
+# C.2.1. Erreur en residu
+
+SOLUPR=CALC_ELEM(reuse =SOLUPR,
+                 RESULTAT=SOLUPR,
+                 TYPE_OPTION='SIGM_MASSIF',
+                 OPTION='SIEF_ELNO_ELGA',);
+
+SOLUPR=CALC_ELEM(reuse =SOLUPR,
+                 RESULTAT=SOLUPR,
+                 TYPE_OPTION='INDI_ERREUR',
+                 OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
+                 EXCIT=_F(CHARGE=CHAR,),);
+
+SOLUPR=CALC_NO(reuse =SOLUPR,
+               RESULTAT=SOLUPR,
+               OPTION='ERRE_NOEU_ELEM',);
+
+# C.2.2. Erreur en quantite d'interet
+# C.2.2.1. Chargement dual
+#          Remarque : on cherche a optimiser le deplacement DZ partout,
+#                     donc la force interne est partout dans le volume
+
+CHARDU=AFFE_CHAR_MECA_F(MODELE=MODE,
+                        FACE_IMPO=_F(GROUP_MA=('MURHEXA','MURPENT',),
+                                     DX=F_0,
+                                     DY=F_0,
+                                     DZ=F_0,),
+                        FORCE_INTERNE=_F(TOUT='OUI',
+                                         FX=F_0,
+                                         FZ=F_1,),
+                        PRES_REP=(_F(GROUP_MA='CHARTETR',
+                                     PRES=F_ZERO,),
+                                  _F(GROUP_MA='CHARPYRA',
+                                     PRES=F_ZERO,),
+                                  _F(GROUP_MA='CHARPENT',
+                                     PRES=F_ZERO,),
+                                  _F(GROUP_MA='CHARHEXA',
+                                     PRES=F_ZERO,),
+                                  _F(GROUP_MA=('LIBRE','LIBRE2',),
+                                     PRES=F_ZERO,),),);
+
+# C.2.2.2. Resolution du probleme dual
+
+SOLUDU=MECA_STATIQUE(MODELE=MODE,
+                     CHAM_MATER=MATE,
+                     EXCIT=_F(CHARGE=CHARDU,),);
+
+# C.2.2.3. Calcul d'erreur
+
+SOLUDU=CALC_ELEM(reuse =SOLUDU,
+                 RESULTAT=SOLUDU,
+                 TYPE_OPTION='SIGM_MASSIF',
+                 OPTION='SIEF_ELNO_ELGA',);
+
+SOLUDU=CALC_ELEM(reuse =SOLUDU,
+                 RESULTAT=SOLUDU,
+                 TYPE_OPTION='INDI_ERREUR',
+                 OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
+                 EXCIT=_F(CHARGE=CHARDU,),);
+
+SOLUDU=CALC_NO(reuse =SOLUDU,
+               RESULTAT=SOLUDU,
+               OPTION='ERRE_NOEU_ELEM',);
+
+# C.3. Calcul de l'estimateur d'erreur en quantite d'interet
+
+SOLUPR=CALC_ELEM(reuse =SOLUPR,
+                 RESULTAT=SOLUPR,
+                 OPTION=('QIRE_ELEM_SIGM','QIRE_ELNO_ELEM',),
+                 RESU_DUAL=SOLUDU,);
+
+SOLUPR=CALC_NO(reuse =SOLUPR,
+               RESULTAT=SOLUPR,
+               OPTION='QIRE_NOEU_ELEM',);
+
+# C.4. Test de non regression
+
+TEST_RESU(RESU=(_F(RESULTAT=SOLUPR,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='MESURE',
+                   VALE=-0.0186729786376,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-08,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.02',),
+                _F(RESULTAT=SOLUPR,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CMP='ERREST',
+                   GROUP_NO='MESURE',
+                   VALE=9358.16222031,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-08,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.02',),
+                _F(RESULTAT=SOLUDU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CMP='ERREST',
+                   GROUP_NO='MESURE',
+                   VALE=39919.0267977,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-08,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.02',),
+                _F(RESULTAT=SOLUPR,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='QIRE_NOEU_ELEM',
+                   NOM_CMP='ERREST',
+                   GROUP_NO='MESURE',
+                   VALE=-4623.29451753,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-08,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.05.02',),),);
+
+FIN();

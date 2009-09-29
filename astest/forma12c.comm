@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 # TITRE TP ANALYSE SISMIQUE
+# forma12c.para = tps_job 260 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -713,8 +714,9 @@ SPEC=COMB_SISM_MODAL(
                        MODE_MECA=MODES,
                        AMOR_REDUIT=0.02,
                        MASS_INER=MASSINER,
+                       MONO_APPUI='OUI',
                        EXCIT=_F(
-                           MONO_APPUI='OUI',
+                           
                            TRI_SPEC='OUI',
                            SPEC_OSCI=(SROXY,SROXY,SROZ),
                            ECHELLE=(9.81,9.81,9.81),),

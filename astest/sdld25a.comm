@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 # TITRE SYSTEME MASSE-RESSORT: REPONSE SPECTRALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -145,19 +145,19 @@ SPECT=DEFI_NAPPE(  NOM_PARA='AMOR',
 #
 
 SISM_SPE=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
-                                AMOR_REDUIT=(
-                                 0.00868241,  0.01710101,  0.02500000,
-                                 0.03213938,  0.03830222,  0.04331841,
-                                 0.04698464,  0.04924040, ),
-                               MASS_INER=TABL_MAS,
-                               CORR_FREQ='NON',
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      AXE = ( 1.,  0.,  0., ),
-                                      SPEC_OSCI = SPECT,
-                                      NATURE = 'ACCE'),
-                             COMB_MODE=_F(  TYPE = 'SRSS'),
-                               OPTION=( 'ACCE_ABSOLU',),
-                    TITRE=( 'CAS TEST &CODE','&RL DATE &DATE',)
+                           AMOR_REDUIT=(
+                               0.00868241,  0.01710101,  0.02500000,
+                               0.03213938,  0.03830222,  0.04331841,
+                               0.04698464,  0.04924040, ),
+                            MASS_INER=TABL_MAS,
+                            CORR_FREQ='NON',
+                            MONO_APPUI = 'OUI',
+                            EXCIT=_F(AXE = ( 1.,  0.,  0., ),
+                                    SPEC_OSCI = SPECT,
+                                    NATURE = 'ACCE'),
+                            COMB_MODE=_F(  TYPE = 'SRSS'),
+                            OPTION=( 'ACCE_ABSOLU',),
+                            TITRE=( 'CAS TEST &CODE','&RL DATE &DATE',)
                      )
 
 ###--->> REFERENCE : FICHE DE VALIDATION (DYNAM S&M)

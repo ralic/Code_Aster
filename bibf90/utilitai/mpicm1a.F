@@ -1,47 +1,42 @@
       SUBROUTINE MPICM1A(OPTMPI,TYPSCA,NBV,VI,VR)
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF FROM_C  DATE 24/11/2008   AUTEUR PELLET J.PELLET 
-C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C (AT YOUR OPTION) ANY LATER VERSION.
-C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-C ======================================================================
-C----------------------------------------------------------------------
-C       ENTRE TOUS LES PROCESSEURS MPI
-C
-C ARGUMENTS D'APPELS
-C IN OPTMPI   :
-C      /'MPI_MAX'  == 'ALLREDUCE + MAX'
-C      /'MPI_MIN'  == 'ALLREDUCE + MIN'
-C      /'MPI_SUM'  == 'ALLREDUCE + SUM'
-C
-C      /'REDUCE'   == 'REDUCE + SUM' : TOUS -> 0
-C      /'BCAST'    == 'BCAST'        : 0    -> TOUS
-C
-C IN   TYPSCA: /'I' /'R'
-C IN   NBV   : LONGUEUR DU VECTEUR VI, VR
-C IN   VI(*) : VECTEUR D'ENTIERS A ECHANGER (SI TYPSC1='I')
-C IN   VR(*) : VECTEUR DE REELS A ECHANGER (SI TYPSC1='R')
-C----------------------------------------------------------------------
-C RESPONSABLE PELLET J.PELLET
-C TOLE CRS_200
-C TOLE CRS_505
-C TOLE CRS_506
-C TOLE CRS_507
+!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
+!& MODIF MPICM1A UTILITAI  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+! ================================================================== 
+! COPYRIGHT (C) 1991 - 2009  EDF R&D              WWW.CODE-ASTER.ORG 
+!                                                                    
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
+!                                                                    
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
+! ================================================================== 
+!----------------------------------------------------------------------
+!	ENTRE TOUS LES PROCESSEURS MPI
+!
+! ARGUMENTS D'APPELS
+! IN OPTMPI   :
+!      /'MPI_MAX'  == 'ALLREDUCE + MAX'
+!      /'MPI_MIN'  == 'ALLREDUCE + MIN'
+!      /'MPI_SUM'  == 'ALLREDUCE + SUM'
+!
+!      /'REDUCE'   == 'REDUCE + SUM' : TOUS -> 0
+!      /'BCAST'    == 'BCAST'	     : 0    -> TOUS
+!
+! IN   TYPSCA: /'I' /'R'
+! IN   NBV   : LONGUEUR DU VECTEUR VI, VR
+! IN   VI(*) : VECTEUR D'ENTIERS A ECHANGER (SI TYPSC1='I')
+! IN   VR(*) : VECTEUR DE REELS A ECHANGER (SI TYPSC1='R')
+!----------------------------------------------------------------------
+! RESPONSABLE PELLET J.PELLET
 
       IMPLICIT NONE
-      INCLUDE 'mpif.h'
 
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -69,6 +64,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       LOGICAL      FIRST
       SAVE         LR8,LINT,FIRST
       DATA         FIRST /.TRUE./
+
+#ifdef _USE_MPI
+      INCLUDE 'mpif.h'
 
 C ---------------------------------------------------------------------
 
@@ -217,4 +215,5 @@ C     ---------------------------------
 
 
  9999 CONTINUE
+#endif
       END

@@ -2,7 +2,7 @@
      &                  CRITER,NSECM,RSOLU,CSOLU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -209,14 +209,14 @@ C     ----------------------------------------------------
       ELSEIF (METRES.EQ.'MUMPS') THEN
 C     ----------------------------------------------------
         IF (NSECM.GT.0) THEN
-          CALL AMUMPS('RESOUD',SOLV19,MATR19,RSOLU,CSOLU,
+          CALL AMUMPH('RESOUD',SOLV19,MATR19,RSOLU,CSOLU,
      &                 CINE19,NSECM,IRET)
         ELSE
           IF (TYPE.EQ.'R') THEN
-            CALL AMUMPS('RESOUD',SOLV19,MATR19,ZR(JTRAV),CBID,
+            CALL AMUMPH('RESOUD',SOLV19,MATR19,ZR(JTRAV),CBID,
      &                 CINE19,1,IRET)
           ELSE
-            CALL AMUMPS('RESOUD',SOLV19,MATR19,RBID,ZC(JTRAV),
+            CALL AMUMPH('RESOUD',SOLV19,MATR19,RBID,ZC(JTRAV),
      &                 CINE19,1,IRET)
           ENDIF
         ENDIF

@@ -1,4 +1,4 @@
-# MODIF  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 28/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DU MODE EXTERNE DE LA MACRO-COMMANDE DE RECALAGE
 # zzzz159f.para = tps_job 150 mem_job 300Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,9 +35,6 @@ for REPPY in ['Eficas', 'Python']:
       break
 
 sys.path.append(os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'lib'))
-sys.path.append(os.path.join(ROOT, REPPY))
-sys.path.append(os.path.join(ROOT, REPPY, 'Macro'))
-sys.path.append(os.path.join(ROOT, REPPY, 'Utilitai'))
 
 from Utilitai.System import ExecCommand
 from as_profil import ASTER_PROFIL

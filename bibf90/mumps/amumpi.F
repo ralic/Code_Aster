@@ -1,7 +1,7 @@
       SUBROUTINE  AMUMPI(OPTION,LQUALI,LDIST,KXMPS,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPI MUMPS  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPI MUMPS  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -27,6 +27,8 @@ C IN  LDIST :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
 C IN  KXMPS :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
 C IN  TYPE  :   K1   : TYPE DU POINTEUR R OU C
 C---------------------------------------------------------------
+C RESPONSABLE BOITEAU
+
       INTEGER      KXMPS,OPTION
       LOGICAL      LQUALI,LDIST
       CHARACTER*1  TYPE
@@ -35,6 +37,8 @@ C---------------------------------------------------------------
 
 C============================================================
       INCLUDE 'mpif.h'
+      INCLUDE 'smumps_struc.h'
+      INCLUDE 'cmumps_struc.h'
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
 C============================================================
@@ -42,22 +46,28 @@ C============================================================
       PARAMETER (NICNTL=26,NCNTL=5)
       INTEGER    NMXINS
       PARAMETER (NMXINS=5)
+      TYPE (SMUMPS_STRUC) , TARGET  :: SMPS(NMXINS)
+      TYPE (CMUMPS_STRUC) , TARGET  :: CMPS(NMXINS)
+      TYPE (SMUMPS_STRUC) , POINTER :: SMPSK
+      TYPE (CMUMPS_STRUC) , POINTER :: CMPSK
       TYPE (DMUMPS_STRUC) , TARGET  :: DMPS(NMXINS)
       TYPE (ZMUMPS_STRUC) , TARGET  :: ZMPS(NMXINS)
-      TYPE (DMUMPS_STRUC) , POINTER :: XMPSK
-      TYPE (ZMUMPS_STRUC) , POINTER :: YMPSK
+      TYPE (DMUMPS_STRUC) , POINTER :: DMPSK
+      TYPE (ZMUMPS_STRUC) , POINTER :: ZMPSK
       INTEGER      IFM,NIV,ICNTL(NICNTL),I,JREFA,ISYMM,JSLVK,ISYMV,ISYM,
      &             JSLVI,IVERS,N1,N3,N5,IISNAN
-      INTEGER*4    KXMPS4,I4
+      INTEGER*4    I4
       REAL*8       RVERS,CNTL(NCNTL)
-      CHARACTER*1  ROUCS(NMXINS)
+      CHARACTER*1  ROUCS(NMXINS),PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),TYPM,ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
       CHARACTER*80 NVERS
-      COMMON /SMUMPS1/ DMPS
-      COMMON /SMUMPS2/ ZMPS
-      COMMON /SMUMPS/  NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
+      COMMON /MUMPSS/ SMPS
+      COMMON /MUMPSC/ CMPS
+      COMMON /MUMPSD/ DMPS
+      COMMON /MUMPSZ/ ZMPS
+      COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
@@ -81,11 +91,14 @@ C=================================================================
 C       ------------------------------------------------
 C        INITS
 C       ------------------------------------------------
-      KXMPS4=KXMPS
-      IF (TYPE.EQ.'R') THEN
-        XMPSK=>DMPS(KXMPS4)
+      IF (TYPE.EQ.'S') THEN
+        SMPSK=>SMPS(KXMPS)
       ELSE IF (TYPE.EQ.'C') THEN
-        YMPSK=>ZMPS(KXMPS4)
+        CMPSK=>CMPS(KXMPS)
+      ELSE IF (TYPE.EQ.'D') THEN
+        DMPSK=>DMPS(KXMPS)
+      ELSE IF (TYPE.EQ.'Z') THEN
+        ZMPSK=>ZMPS(KXMPS)
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -103,10 +116,16 @@ C        INITIALISATION SYM, PAR ET JOB POUR MUMPS
 C       ------------------------------------------------
       IF (OPTION.EQ.0) THEN
 
-        IF (TYPE.EQ.'R') THEN
-          XMPSK%COMM = MPI_COMM_WORLD
+        IF (TYPE.EQ.'S') THEN
+          SMPSK%COMM = MPI_COMM_WORLD
         ELSE IF (TYPE.EQ.'C') THEN
-          YMPSK%COMM = MPI_COMM_WORLD
+          CMPSK%COMM = MPI_COMM_WORLD
+        ELSE IF (TYPE.EQ.'D') THEN
+          DMPSK%COMM = MPI_COMM_WORLD
+        ELSE IF (TYPE.EQ.'Z') THEN
+          ZMPSK%COMM = MPI_COMM_WORLD
+	ELSE
+	  CALL ASSERT(.FALSE.)
         ENDIF
 
 C ---   ISYM = 0 => NON-SYMETRIQUE
@@ -153,14 +172,24 @@ C --- SINON, ON APPLIQUE LE CHOIX DE L'UTILISATEUR
 
 C ---   PARAMETRES D'INITIALISATION DE L'OCCURENCE MUMPS KXMPS
         I4=ISYM
-        IF (TYPE.EQ.'R') THEN
-          XMPSK%SYM = I4 
-          XMPSK%PAR = 1
-          XMPSK%JOB = -1
+        IF (TYPE.EQ.'S') THEN
+          SMPSK%SYM = I4 
+          SMPSK%PAR = 1
+          SMPSK%JOB = -1
+        ELSE IF (TYPE.EQ.'C') THEN
+          CMPSK%SYM = I4 
+          CMPSK%PAR = 1
+          CMPSK%JOB = -1
+        ELSE IF (TYPE.EQ.'D') THEN
+          DMPSK%SYM = I4 
+          DMPSK%PAR = 1
+          DMPSK%JOB = -1
+        ELSE IF (TYPE.EQ.'Z') THEN
+          ZMPSK%SYM = I4
+          ZMPSK%PAR = 1
+          ZMPSK%JOB = -1
         ELSE
-          YMPSK%SYM = I4
-          YMPSK%PAR = 1
-          YMPSK%JOB = -1
+          CALL ASSERT(.FALSE.)
         ENDIF
 
 C       ------------------------------------------------
@@ -176,13 +205,18 @@ C ---      INIT
           CNTL(I)=0.D0
         ENDDO
         NVERS(1:80)=''
-        IF (TYPE.EQ.'R') THEN
-          NVERS(1:5)=XMPSK%VERSION_NUMBER
+        IF (TYPE.EQ.'S') THEN
+          NVERS(1:5)=SMPSK%VERSION_NUMBER
         ELSE IF (TYPE.EQ.'C') THEN
-          NVERS(1:5)=YMPSK%VERSION_NUMBER
+          NVERS(1:5)=CMPSK%VERSION_NUMBER
+        ELSE IF (TYPE.EQ.'D') THEN
+          NVERS(1:5)=DMPSK%VERSION_NUMBER
+        ELSE IF (TYPE.EQ.'Z') THEN
+          NVERS(1:5)=ZMPSK%VERSION_NUMBER
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
+	
 C       DECRYPTAGE (TRES FRUSTE) DU NUMERO DE VERSION DE MUMPS
         IVERS=0
         IF (NVERS.NE.' ') THEN
@@ -313,10 +347,16 @@ C---    LE FICHIER PERMETTANT A MUMPS D EFFECTUER SON TRAITEMENT OOC
 C---    EST CREE DANS LE REPETOIRE COURANT VIA LE PARAMETRE OOC_TMPDIR
 C---    ON N'AJOUTE PAS DE PREFIXE AU FICHIER CREE PAR MUMPS
 
-          IF (TYPE.EQ.'R') THEN
-            XMPSK%OOC_TMPDIR='.'
+          IF (TYPE.EQ.'S') THEN
+            SMPSK%OOC_TMPDIR='.'
           ELSE IF (TYPE.EQ.'C') THEN
-            YMPSK%OOC_TMPDIR='.'
+            CMPSK%OOC_TMPDIR='.'
+          ELSE IF (TYPE.EQ.'D') THEN
+            DMPSK%OOC_TMPDIR='.'
+          ELSE IF (TYPE.EQ.'Z') THEN
+            ZMPSK%OOC_TMPDIR='.'
+	  ELSE
+	    CALL ASSERT(.FALSE.)
           ENDIF
         ELSE IF (ZK24(JSLVK-1+9)(1:3).EQ.'NON') THEN
 C ---     CAS IN_CORE (FACTO/RESOLUTION)
@@ -329,18 +369,32 @@ C ---     CHOIX NON LICITE
 
 C --- REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
 C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
-        IF (TYPE.EQ.'R') THEN
+        IF (TYPE.EQ.'S') THEN
           DO I=1,NICNTL
             I4=ICNTL(I)
-            XMPSK%ICNTL(I)=I4
+            SMPSK%ICNTL(I)=I4
           ENDDO
-          XMPSK%CNTL(2)=CNTL(2)
+          SMPSK%CNTL(2)=CNTL(2)
         ELSE IF (TYPE.EQ.'C') THEN
           DO I=1,NICNTL
             I4=ICNTL(I)
-            YMPSK%ICNTL(I)=I4
+            CMPSK%ICNTL(I)=I4
           ENDDO
-          YMPSK%CNTL(2)=CNTL(2)
+          CMPSK%CNTL(2)=CNTL(2)
+        ELSE IF (TYPE.EQ.'D') THEN
+          DO I=1,NICNTL
+            I4=ICNTL(I)
+            DMPSK%ICNTL(I)=I4
+          ENDDO
+          DMPSK%CNTL(2)=CNTL(2)
+        ELSE IF (TYPE.EQ.'Z') THEN
+          DO I=1,NICNTL
+            I4=ICNTL(I)
+            ZMPSK%ICNTL(I)=I4
+          ENDDO
+          ZMPSK%CNTL(2)=CNTL(2)
+	ELSE
+	    CALL ASSERT(.FALSE.)
         ENDIF
 
 C       ------------------------------------------------

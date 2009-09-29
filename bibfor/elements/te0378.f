@@ -1,421 +1,662 @@
       SUBROUTINE TE0378 (OPTION,NOMTE)
-      IMPLICIT NONE
-      CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE DELMAS J.DELMAS
+C TOLE CRP_20
 C
 C     BUT:
-C         CALCUL DE L'INDICATEUR D'ERREUR EN QUANTITE D'INTERET
-C         SUR UN ELEMENT 2D AVEC LA METHODE DES RESIDUS EXPLICITES.
-C         OPTION : 'QIRE_ELEM_SIGM'
+C       CALCUL DE L'INDICATEUR D'ERREUR EN MECANIQUE 2D AVEC LA
+C       METHODE EN QUANTITE D'INTERET BASEE SUR LES RESIDUS EXPLICITES.
+C       OPTION : 'QIRE_ELEM_SIGM'
 C
+C REMARQUE : LES PROGRAMMES SUIVANTS DOIVENT RESTER TRES SIMILAIRES
+C            TE0368, TE0375, TE0377, TE0378, TE0382, TE0497
 C
-C     ARGUMENTS:
-C     ----------
+C ----------------------------------------------------------------------
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
 C
-C      ENTREE :
-C-------------
-C IN   OPTION : OPTION DE CALCUL
-C IN   NOMTE  : NOM DU TYPE ELEMENT
-C
-C ......................................................................
-C
+C DECLARATION PARAMETRES D'APPELS
+      CHARACTER*16 OPTION,NOMTE
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      INTEGER        ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8         ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16     ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL        ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM
 C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER NPG,IPG,NNO,NNOS,TYP,TYPV,IPOIDS,IVF,IDFDE
-      INTEGER IGEOM,IBID,IADP,IADD,IFORP,IFORD,IERR,IROTP,IROTD,IMATE
-      INTEGER IVOIS,NBS,NBNA,NBCMP,NDIM,JGANO,IRET,IS,IPESP,IPESD
-      INTEGER JTIME,NIV,IPP,IRP,IPD,IRD,IREFP1,IREFP2,IREFD1,IREFD2
-      INTEGER I,IADPG
-      INTEGER IATYMA,INO,ITABP(7),ITABD(7),IAUX
+C DECLARATION VARIABLES LOCALES
+C
+      INTEGER IFM,NIV
       INTEGER IADZI,IAZK24
+      INTEGER IBID,IAUX,IRET,ITAB(7)
+      INTEGER IGEOM,JTIME
+      INTEGER IERR, IVOIS
+      INTEGER IMATE
+      INTEGER IADP
+      INTEGER IADD
+      INTEGER IFOVRP, IFOVFP
+      INTEGER IFOVRD, IFOVFD
+      INTEGER IPESP,IROTP
+      INTEGER IPESD,IROTD
+      INTEGER IREFP1,IREFP2
+      INTEGER IREFD1,IREFD2
+      INTEGER NDIM
+      INTEGER NNO , NNOS , NPG , IPOIDS, IVF , IDFDE , JGANO
+      INTEGER NDIMF
+      INTEGER NNOF, NNOSF, NPGF, IPOIDF, IVFF, IDFDXF, JGANOF
+      INTEGER NBCMP
+      INTEGER IPG, IN
+      INTEGER IPGF
+      INTEGER NBF
+      INTEGER TYMVOL,NDEGRE,IFA,TYV
+      INTEGER TYP,TYPV
+      INTEGER NBS
+      INTEGER IATYMA,INO,ITABP(7),ITABD(7)
 
-      REAL*8 DFDX(9),DFDY(9),HE,HF,POIDS
-      REAL*8 FORPX,FORPY,FORDX,FORDY,FPPX,FPPY,FPDX,FPDY
-      REAL*8 FRPX(9),FRPY(9),FRDX(9),FRDY(9),RHO,R8BID
-      REAL*8 ERREST,COEFF,ORIEN
-      REAL*8 TERPL1,TERMO1,TERPL2,TERMO2,TERPL3,TERMO3
-      REAL*8 SGP11(3),SGP22(3),SGP12(3),SGD11(3),SGD22(3),SGD12(3)
-      REAL*8 JAC(3),NX(3),NY(3),TX(3),TY(3)
+      REAL*8 R8BID,R8BID2,R8BID3(2),R8BID4(2)
+      REAL*8 DFDX(9),DFDY(9),HK,POIDS
+      REAL*8 FPPX,FPPY
+      REAL*8 FPDX,FPDY
+      REAL*8 FRPX(9),FRPY(9)
+      REAL*8 FRDX(9),FRDY(9)
+      REAL*8 FOVOP(2)
+      REAL*8 FOVOD(2)
+      REAL*8 DSPX,DSPY
+      REAL*8 DSDX,DSDY
+      REAL*8 S, UNSURS
+      REAL*8 NX(3),NY(3),TX(3),TY(3),JACO(3)
       REAL*8 CHPX(3),CHPY(3),CHDX(3),CHDY(3)
-      REAL*8 SOPL11(3),SOPL22(3),SOPL12(3),SOMO11(3),SOMO22(3),SOMO12(3)
+      REAL*8 SGP11(3),SGP22(3),SGP12(3)
+      REAL*8 SGD11(3),SGD22(3),SGD12(3)
+      REAL*8 SIGP11(3),SIGP22(3),SIGP12(3)
+      REAL*8 SIGD11(3),SIGD22(3),SIGD12(3)
       REAL*8 CHPLX(3),CHPLY(3),CHMOX(3),CHMOY(3)
-      REAL*8 SIPL11(3),SIPL22(3),SIPL12(3),SIMO11(3),SIMO22(3),SIMO12(3)
-      REAL*8 INST,INTPL,INTMO,S
-      REAL*8 SIGP11(3),SIGP22(3),SIGP12(3),SIGD11(3),SIGD22(3),SIGD12(3)
-      REAL*8 DSPX,DSPY,DSDX,DSDY,NUPLUS,NUMOIN
-      
-      CHARACTER*2 CODRET(1),FORM,FORMV,NOEU
-      CHARACTER*8 TYPEMA,TYPMAV
+      REAL*8 SOPL11(3),SOPL22(3),SOPL12(3)
+      REAL*8 SOMO11(3),SOMO22(3),SOMO12(3)
+      REAL*8 SIPL11(3),SIPL22(3),SIPL12(3)
+      REAL*8 SIMO11(3),SIMO22(3),SIMO12(3)
+      REAL*8 NUPLUS,NUMOIN
+      REAL*8 RHO,VALRES(1)
+      REAL*8 ERREST,COEFF,ORIEN
+      REAL*8 HF,INTPL,INTMO,INST
+      REAL*8 TERPL1,TERMO1,TERPL2,TERMO2,TERPL3,TERMO3
+C
+      CHARACTER*2 CODRET(2)
+      CHARACTER*8 TYPMAV, ELREFE
+      CHARACTER*8 ELREFF, ELREFB
+      CHARACTER*8 NOMPAR(1)
       CHARACTER*16 PHENOM
       CHARACTER*24 VALK(2)
+
+      LOGICAL YAPRP, YAROP
+      LOGICAL YAPRD, YAROD
 C
 C ----------------------------------------------------------------------
-C
+ 1000 FORMAT(A,' :',(6(1X,1PE17.10)))
+ 2000 FORMAT(A,10I8)
+C ----------------------------------------------------------------------
+C 1 -------------- GESTION DES DONNEES ---------------------------------
+C ----------------------------------------------------------------------
       CALL JEMARQ()
+
+      CALL INFNIV(IFM,NIV)
+
+C 1.1. --- LES INCONTOURNABLES
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PVOISIN','L',IVOIS)
 C
+      CALL JEVECH('PTEMPSR','L',JTIME)
+      INST=ZR(JTIME-1+1)
+C
+      CALL JEVECH('PERREUR','E',IERR)
+
+C 1.2. --- LES CARACTERISTIQUES DE LA MAILLE EN COURS
+
       CALL TECAEL(IADZI,IAZK24)
       VALK(1)=ZK24(IAZK24-1+3)
       VALK(2)=OPTION
-C      
+
+      CALL ELREF1(ELREFE)
+
+      IF ( NIV.GE.2 ) THEN
+      WRITE(IFM,*) ' '
+      WRITE(IFM,*) '================================================='
+      WRITE(IFM,*) ' '
+      WRITE(IFM,*) 'MAILLE NUMERO', ZI(IADZI),', DE TYPE ', ELREFE
+      ENDIF
+
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-C
-      CALL JEVECH ('PGEOMER', 'L', IGEOM )
-      CALL TECACH ('OOO','PCONTNOP',3,ITABP,IRET)
-      CALL TECACH ('OOO','PCONTNOD',3,ITABD,IRET)
-      CALL JEVECH ('PFRVOLUP','L',IFORP)
-      CALL JEVECH ('PFRVOLUD','L',IFORD)
-      CALL JEVECH ('PERREUR','E',IERR)
-      CALL JEVECH ('PTEMPSR','L',JTIME)
-C
-C ----- CALCUL DU COEFFICIENT S ----------------------------------------
-C
-      CALL JEVECH('PCONSTR','L',IS)
 
-      S=ZR(IS-1+1)
-      INST=ZR(JTIME-1+1)
-      IADP=ITABP(1)
-      IADD=ITABD(1)
-      NBCMP=ITABP(2)/NNO
+C 1.3. --- CHAMP DE CONTRAINTES
 
-      DO 1 I=1,10
-        ZR(IERR-1+I)=0.D0
- 1    CONTINUE
-
-C ----------------------------------------------------------------------
-C ---------------- CALCUL DU PREMIER TERME DE L'ERREUR -----------------
-C ----------------------------------------------------------------------
+      CALL TECACH('OOO','PCONTNOP',3,ITAB,IRET)
+      IADP=ITAB(1)
+      NBCMP=ITAB(2)/NNO
+      CALL TECACH('OOO','PCONTNOD',3,ITAB,IRET)
+      IADD=ITAB(1)
 C
-C ----- CALCUL DU DIAMETRE HE DU CERCLE CIRCONSCRIT A L'ELEMENT --------
+C 1.4. --- CARTES DE PESANTEUR ET ROTATION
 C
-      NDIM=2
-      NIV=1 
-      CALL UTHK(NOMTE,IGEOM,HE,NDIM,IBID,IBID,IBID,IBID,NIV,IBID)
-C
-C ----- CALCUL DES FORCES DE PESANTEUR ET DE ROTATION ---------------
-C ------- INITIALISATION DES FORCES ------------------------------------
-C
-      FPPX=0.D0
-      FPPY=0.D0
-      FPDX=0.D0
-      FPDY=0.D0
-      CALL R8INIR(9,0.D0,FRPX,1)
-      CALL R8INIR(9,0.D0,FRPY,1)
-      CALL R8INIR(9,0.D0,FRDX,1)
-      CALL R8INIR(9,0.D0,FRDY,1)
-C
-C ------- TEST D'EXISTENCE DES CARTES DE PESA ET ROTA ------------------
-C
-      CALL TECACH('ONN','PPESANRP',1,IPP,IRET)
-      CALL TECACH('ONN','PROTATRP',1,IRP,IRET)
-      CALL TECACH('ONN','PPESANRD',1,IPD,IRET)
-      CALL TECACH('ONN','PROTATRD',1,IRD,IRET)
-      IF (IPP.NE.0.OR.IRP.NE.0.OR.IPD.NE.0.OR.IRD.NE.0) THEN
-         CALL JEVECH('PMATERC','L',IMATE)
-         CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
-         CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',R8BID,1,'RHO',
-     &                 RHO,CODRET,'FM')
-C
-C ------- CALCUL DE LA FORCE DE PESANTEUR PB. PRIMAL -------------------
-C
-         IF (IPP.NE.0) THEN
-           CALL JEVECH('PPESANRP','L',IPESP)
-           FPPX=RHO*ZR(IPESP)*ZR(IPESP+1)
-           FPPY=RHO*ZR(IPESP)*ZR(IPESP+2)
-         ENDIF
-C
-C ------- CALCUL DE LA FORCE DE PESANTEUR PB. DUAL ---------------------
-C
-         IF (IPD.NE.0) THEN
-           CALL JEVECH('PPESANRD','L',IPESD)
-           FPDX=RHO*ZR(IPESD)*ZR(IPESD+1)
-           FPDY=RHO*ZR(IPESD)*ZR(IPESD+2)
-         ENDIF
-C
-C ------- CALCUL DE LA FORCE DE ROTATION AUX PTS DE GAUSS PB. PRIMAL ---
-C
-         IF (IRP.NE.0)THEN
-           CALL JEVECH('PROTATRP','L',IROTP)
-           CALL RESROT (ZR(IROTP),ZR(IGEOM),ZR(IVF),RHO,NNO,NPG,
-     &                  FRPX,FRPY)
-         ENDIF
-C
-C ------- CALCUL DE LA FORCE DE ROTATION AUX PTS DE GAUSS PB. DUAL -----
-C
-         IF (IRD.NE.0)THEN
-           CALL JEVECH('PROTATR','L',IROTD)
-           CALL RESROT (ZR(IROTD),ZR(IGEOM),ZR(IVF),RHO,NNO,NPG,
-     &                  FRDX,FRDY)
-         ENDIF
+      CALL TECACH('ONN','PPESANRP',1,ITAB,IRET)
+      IF ( ITAB(1).NE.0 ) THEN
+        CALL JEVECH('PPESANRP','L',IPESP)
+        YAPRP = .TRUE.
+      ELSE
+        YAPRP = .FALSE.
+      ENDIF
+      CALL TECACH('ONN','PROTATRP',1,ITAB,IRET)
+      IF ( ITAB(1).NE.0 ) THEN
+        CALL JEVECH('PROTATRP','L',IROTP)
+        YAROP = .TRUE.
+      ELSE
+        YAROP = .FALSE.
+      ENDIF
+      CALL TECACH('ONN','PPESANRD',1,ITAB,IRET)
+      IF ( ITAB(1).NE.0 ) THEN
+        CALL JEVECH('PPESANRD','L',IPESD)
+        YAPRD = .TRUE.
+      ELSE
+        YAPRD = .FALSE.
+      ENDIF
+      CALL TECACH('ONN','PROTATRD',1,ITAB,IRET)
+      IF ( ITAB(1).NE.0 ) THEN
+        CALL JEVECH('PROTATRD','L',IROTD)
+        YAROD = .TRUE.
+      ELSE
+        YAROD = .FALSE.
       ENDIF
 C
-C ----- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE GAUSS -------------
+C 1.5. --- FORCES VOLUMIQUES EVENTUELLES
+C          VALEURS REELLES ?
+      CALL TECACH('ONN','PFRVOLUP',1,IFOVRP,IRET)
+C          OU FONCTIONS ?
+      IF ( IFOVRP.EQ.0 ) THEN
+        CALL TECACH('ONN','PFFVOLUP',1,IFOVFP,IRET)
+      ELSE
+        IFOVFP = 0
+      ENDIF
+C          VALEURS REELLES ?
+      CALL TECACH('ONN','PFRVOLUD',1,IFOVRD,IRET)
+C          OU FONCTIONS ?
+      IF ( IFOVRD.EQ.0 ) THEN
+        CALL TECACH('ONN','PFFVOLUD',1,IFOVFD,IRET)
+      ELSE
+        IFOVFD = 0
+      ENDIF
 C
-      TERPL1=0.D0
-      TERMO1=0.D0
+C 1.6. --- FORCES ET PRESSIONS AUX BORDS
 C
-      DO 10 IPG=1,NPG
+      CALL JEVECH('PFORCEP','L',IREFP1)
+      CALL JEVECH('PFORCED','L',IREFD1)
+C
+      CALL JEVECH('PPRESSP','L',IREFP2)
+      CALL JEVECH('PPRESSD','L',IREFD2)
+C
+C 1.7. --- MATERIAU SI BESOIN
+C
+      IF ( YAPRP .OR. YAROP .OR. YAPRD .OR. YAROD ) THEN
+C
+        CALL JEVECH('PMATERC','L',IMATE)
+        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+        NOMPAR(1)='RHO'
+        CALL RCVALA ( ZI(IMATE), ' ', PHENOM, 1, ' ', R8BID,
+     >                1, NOMPAR, VALRES, CODRET, 'FM')
+        RHO = VALRES(1)
+CGN        WRITE(IFM,1000) 'RHO', RHO
+C
+      ENDIF
+C
+C 1.8. --- CALCUL DU COEFFICIENT S
+C
+      CALL JEVECH('PCONSTR','L',IBID)
+      S = ZR(IBID-1+1)
+      UNSURS = 1.D0/S
+
+C ----------------------------------------------------------------------
+C 2 -------------- CALCUL DU PREMIER TERME DE L'ERREUR -----------------
+C ----------------------------------------------------------------------
+C
+C 2.1. --- CALCUL DU DIAMETRE HK DE LA MAILLE ----
+C
+      CALL UTHK(NOMTE,IGEOM,HK,NDIM,ITAB,IBID,IBID,IBID,NIV,IFM)
+C
+C 2.2. --- CALCUL DE LA FORCE DE PESANTEUR  ---
+C
+C ------ CALCUL DE LA FORCE DE PESANTEUR PB. PRIMAL --------------------
+      IF ( YAPRP ) THEN
+        FPPX=RHO*ZR(IPESP)*ZR(IPESP+1)
+        FPPY=RHO*ZR(IPESP)*ZR(IPESP+2)
+      ELSE
+        FPPX=0.D0
+        FPPY=0.D0
+      ENDIF
+CGN      WRITE(IFM,1000) 'P PRIMAL',FPPX,FPPY
+C ------ CALCUL DE LA FORCE DE PESANTEUR PB. DUAL ----------------------
+      IF ( YAPRD ) THEN
+        FPDX=RHO*ZR(IPESD)*ZR(IPESD+1)
+        FPDY=RHO*ZR(IPESD)*ZR(IPESD+2)
+      ELSE
+        FPDX=0.D0
+        FPDY=0.D0
+      ENDIF
+CGN      WRITE(IFM,1000) 'P DUAL  ',FPDX,FPDY
+C
+C 2.3. --- CALCUL DE LA FORCE DE ROTATION ---
+C ------ CALCUL DE LA FORCE DE ROTATION AUX POINTS DE GAUSS PB. PRIMAL -
+C
+      IF ( YAROP ) THEN
+        CALL RESROT (ZR(IROTP),ZR(IGEOM),ZR(IVF),RHO,NNO,NPG,
+     >               FRPX,FRPY)
+      ELSE
+        DO 231 , IPG = 1 , NPG
+          FRPX(IPG) = 0.D0
+          FRPY(IPG) = 0.D0
+  231   CONTINUE
+      ENDIF
+CGN      WRITE(IFM,1000) 'R PRIMAL X',(FRPX(IPG),IPG = 1 , NPG)
+CGN      WRITE(IFM,1000) 'R PRIMAL Y',(FRPY(IPG),IPG = 1 , NPG)
+C ------ CALCUL DE LA FORCE DE ROTATION AUX POINTS DE GAUSS PB. DUAL ---
+      IF ( YAROD ) THEN
+        CALL RESROT (ZR(IROTD),ZR(IGEOM),ZR(IVF),RHO,NNO,NPG,
+     >               FRDX,FRDY)
+      ELSE
+        DO 232 , IPG = 1 , NPG
+          FRDX(IPG) = 0.D0
+          FRDY(IPG) = 0.D0
+  232   CONTINUE
+      ENDIF
+CGN      WRITE(IFM,1000) 'R DUAL X  ',(FRDX(IPG),IPG = 1 , NPG)
+CGN      WRITE(IFM,1000) 'R DUAL Y  ',(FRDY(IPG),IPG = 1 , NPG)
+C
+C 2.4. --- CALCUL DE LA FORCE VOLUMIQUE EVENTUELLE ---
+C
+      IF ( IFOVRP.NE.0 ) THEN
+        FOVOP(1) = ZR(IFOVRP  )
+        FOVOP(2) = ZR(IFOVRP+1)
+C
+      ELSEIF ( IFOVFP.NE.0 ) THEN
+        NOMPAR(1) = 'INST'
+        R8BID3(1) = INST
+C       SI UNE COMPOSANTE N'A PAS ETE DECRITE, ASTER AURA MIS PAR
+C       DEFAUT LA FONCTION NULLE &FOZERO. ON LE REPERE POUR
+C       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
+        DO 241 , IBID = 1 , NDIM
+          IF ( ZK8(IFOVFP+IBID-1)(1:7).EQ.'&FOZERO' ) THEN
+            FOVOP(IBID) = 0.D0
+          ELSE
+            CALL FOINTE('FM',ZK8(IFOVFP+IBID-1),1,NOMPAR,R8BID3,
+     >                   FOVOP(IBID),IRET)
+          ENDIF
+  241   CONTINUE
+CGN        WRITE(IFM,*) 'F PRIMAL X : ',ZK8(IFOVFP)
+CGN        WRITE(IFM,*) 'F PRIMAL Y : ',ZK8(IFOVFP+1)
+      ENDIF
+CGN      WRITE(IFM,2000) 'IFOVRP', IFOVRP
+CGN      WRITE(IFM,2000) 'IFOVFP', IFOVRP
+C
+      IF ( IFOVRD.NE.0 ) THEN
+        FOVOD(1) = ZR(IFOVRD  )
+        FOVOD(2) = ZR(IFOVRD+1)
+C
+      ELSEIF ( IFOVFD.NE.0 ) THEN
+        NOMPAR(1) = 'INST'
+        R8BID3(1) = INST
+C       SI UNE COMPOSANTE N'A PAS ETE DECRITE, ASTER AURA MIS PAR
+C       DEFAUT LA FONCTION NULLE &FOZERO. ON LE REPERE POUR
+C       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
+        DO 242 , IBID = 1 , NDIM
+          IF ( ZK8(IFOVFD+IBID-1)(1:7).EQ.'&FOZERO' ) THEN
+            FOVOD(IBID) = 0.D0
+          ELSE
+            CALL FOINTE('FM',ZK8(IFOVFD+IBID-1),1,NOMPAR,R8BID3,
+     >                   FOVOD(IBID),IRET)
+          ENDIF
+  242   CONTINUE
+CGN        WRITE(IFM,*) 'F DUAL X   : ',ZK8(IFOVFD)
+CGN        WRITE(IFM,*) 'F DUAL Y   : ',ZK8(IFOVFD+1)
+      ENDIF
+CGN      WRITE(IFM,2000) 'IFOVRD', IFOVRD
+CGN      WRITE(IFM,2000) 'IFOVFD', IFOVRD
+C
+C 2.5. --- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE GAUSS ---
+C
+      TERPL1 = 0.D0
+      TERMO1 = 0.D0
+C
+      DO 25 , IPG = 1 , NPG
 C
 C ------- CALCUL DES DERIVEES DES FONCTIONS DE FORMES /X ET /Y ---------
 C
-        CALL DFDM2D (NNO,IPG,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
+        IAUX = IPG
+        CALL DFDM2D (NNO,IAUX,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
 C
-C ------- CALCUL L'ORIENTATION DE LA MAILLE ----------------------------
+C ------- CALCUL DE L'ORIENTATION DE LA MAILLE -------------------------
 C
-        CALL UTJAC(.TRUE.,IGEOM,IPG,IDFDE,0,IBID,NNO,ORIEN)
+        CALL UTJAC(.TRUE.,IGEOM,IAUX,IDFDE,0,IBID,NNO,ORIEN)
 C
 C ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA PB. PRIMAL ---
 C
-        IADPG=IVF+(IPG-1)*NNO
-        IBID = 1        
-        CALL ERMEV2(NNO,IGEOM,ZR(IADPG),IADP,NBCMP,DFDX,DFDY,
-     &              POIDS,IBID,
-     &              DSPX,DSPY,R8BID)
+        IAUX=IVF+(IPG-1)*NNO
+        IBID = 1
+        CALL ERMEV2(NNO,IGEOM,ZR(IAUX),IADP,NBCMP,DFDX,DFDY,
+     >              POIDS,IBID,
+     >              DSPX,DSPY,R8BID)
 C
 C ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA PB. DUAL -----
 C
-        IBID = 0
-        CALL ERMEV2(NNO,IGEOM,ZR(IADPG),IADD,NBCMP,DFDX,DFDY,
-     &              POIDS,IBID,
-     &              DSDX,DSDY,R8BID)
+        IBID = 1
+        CALL ERMEV2(NNO,IGEOM,ZR(IAUX),IADD,NBCMP,DFDX,DFDY,
+     >              POIDS,IBID,
+     >              DSDX,DSDY,R8BID)
 C
-C ------- CALCUL DE L'EFFORT VOLUMIQUE PB. PRIMAL ----------------------
+C ------- CUMUL
 C
-        FORPX=ZR(IFORP-1+2*(IPG-1)+1)+FPPX+FRPX(IPG)
-        FORPY=ZR(IFORP-1+2*(IPG-1)+2)+FPPY+FRPY(IPG)
+        R8BID3(1) = FPPX + FRPX(IPG) + DSPX
+        R8BID3(2) = FPPY + FRPY(IPG) + DSPY
 C
-C ------- CALCUL DE L'EFFORT VOLUMIQUE PB. DUAL ------------------------
+        R8BID4(1) = FPDX + FRDX(IPG) + DSDX
+        R8BID4(2) = FPDY + FRDY(IPG) + DSDY
 C
-        FORDX=ZR(IFORD-1+2*(IPG-1)+1)+FPDX+FRDX(IPG)
-        FORDY=ZR(IFORD-1+2*(IPG-1)+2)+FPDY+FRDY(IPG)
+C ------- PRISE EN COMPTE DE L'EFFORT VOLUMIQUE PRIMAL EVENTUEL --------
 C
-C ------- CALCUL DES TERMES D'ERREUR AVEC INTEGRATION DE GAUSS ---------
+        IF ( IFOVRP.NE.0 .OR. IFOVFP.NE.0 ) THEN
 C
-        TERPL1=TERPL1+((S*(FORPX+DSPX)+(1.D0/S)*(FORDX+DSDX))**2
-     &                +(S*(FORPY+DSPY)+(1.D0/S)*(FORDY+DSDY))**2)*POIDS
+CGN          WRITE(IFM,1000) 'F PRIMAL X', FOVOP(1)
+CGN          WRITE(IFM,1000) 'F PRIMAL Y', FOVOP(2)
+          R8BID3(1) = R8BID3(1) + FOVOP(1)
+          R8BID3(2) = R8BID3(2) + FOVOP(2)
 C
-        TERMO1=TERMO1+((S*(FORPX+DSPX)-(1.D0/S)*(FORDX+DSDX))**2
-     &                +(S*(FORPY+DSPY)-(1.D0/S)*(FORDY+DSDY))**2)*POIDS
-C
-  10  CONTINUE
-C
-        IF ((TERPL1.LT.0.D0).OR.(TERMO1.LT.0.D0)) THEN
-          CALL U2MESK('A','INDICATEUR_9',2,VALK)
-          GOTO 9999
         ENDIF
 C
-      TERPL1=(HE**2)*(SQRT(TERPL1))**2
-      TERMO1=(HE**2)*(SQRT(TERMO1))**2   
-C     
+C ------- PRISE EN COMPTE DE L'EFFORT VOLUMIQUE DUAL EVENTUEL ----------
+C
+        IF ( IFOVRD.NE.0 .OR. IFOVFD.NE.0 ) THEN
+C
+CGN          WRITE(IFM,1000) 'F DUAL X  ',FOVOD(1)
+CGN          WRITE(IFM,1000) 'F DUAL Y  ',FOVOD(2)
+          R8BID4(1) = R8BID4(1) + FOVOD(1)
+          R8BID4(2) = R8BID4(2) + FOVOD(2)
+C
+        ENDIF
+C
+C ------- CUMUL DU TERME D'ERREUR
+C
+        TERPL1 = TERPL1
+     >         + ( (S*R8BID3(1)+UNSURS*R8BID4(1))**2
+     >         +   (S*R8BID3(2)+UNSURS*R8BID4(2))**2 ) * POIDS
+C
+        TERMO1 = TERMO1
+     >         + ( (S*R8BID3(1)-UNSURS*R8BID4(1))**2
+     >         +   (S*R8BID3(2)-UNSURS*R8BID4(2))**2 ) * POIDS
+        IF ( NIV.GE.2 ) THEN
+          WRITE(IFM,1000) 'POIDS', POIDS
+          WRITE(IFM,1000) 'A2 + B2',
+     >             (S*R8BID3(1)+UNSURS*R8BID4(1))**2
+     >         +   (S*R8BID3(2)+UNSURS*R8BID4(2))**2
+          WRITE(IFM,1000) '==> TERPL1    ', TERPL1
+          WRITE(IFM,1000) 'A2 + B2',
+     >             (S*R8BID3(1)-UNSURS*R8BID4(1))**2
+     >         +   (S*R8BID3(2)-UNSURS*R8BID4(2))**2
+          WRITE(IFM,1000) '==> TERMO1    ', TERMO1
+        ENDIF
+C
+   25 CONTINUE
+C
+      TERPL1=(HK**2)*ABS(TERPL1)
+      TERMO1=(HK**2)*ABS(TERMO1)
+CGN            WRITE(IFM,*) TERPL1,TERMO1
+C
 C ----------------------------------------------------------------------
 C ------------ FIN DU CALCUL DU PREMIER TERME DE L'ERREUR --------------
 C ----------------------------------------------------------------------
 C
 C ----------------------------------------------------------------------
-C ----------- CALCUL DU DEUXIEME ET TROISIEME TERME DE L'ERREUR --------
+C 3. ------- CALCUL DES DEUXIEME ET TROISIEME TERMES DE L'ERREUR -------
 C ----------------------------------------------------------------------
 C
-      CALL JEVECH('PFORCEP','L',IREFP1)
-      CALL JEVECH('PFORCED','L',IREFD1)
-      CALL JEVECH('PPRESSP','L',IREFP2)
-      CALL JEVECH('PPRESSD','L',IREFD2)
-      CALL JEVECH('PVOISIN','L',IVOIS)
-
-C ----- TEST SUR LE TYPE DE LA MAILLE COURANTE -------------------------
+C 3.1. ---- INFORMATIONS SUR LA MAILLE COURANTE : ----------------------
+C       TYMVOL : TYPE DE LA MAILLE VOLUMIQUE
+C       NDEGRE : DEGRE DE L'ELEMENT
+C       NBF    : NOMBRE DE FACES DE LA MAILLE VOLUMIQUE
+C       ELREFF : DENOMINATION DE LA MAILLE FACE DE ELREFE - FAMILLE 1
+C       ELREFB : DENOMINATION DE LA MAILLE FACE DE ELREFE - FAMILLE 2
+C      --- REMARQUE : ON IMPOSE UNE FAMILLE DE POINTS DE GAUSS
 C
-      TYP=ZI(IVOIS+7)
-      IATYMA=ZI(IREFP1+3)
-      TYPEMA=ZK8(IATYMA-1+TYP)      
+      CALL ELREF7 ( ELREFE,
+     >              TYMVOL, NDEGRE, NBF, ELREFF, ELREFB )
+CGN      WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
+C --- CARACTERISTIQUES DES FACES DE BORD -------------------------------
+C     ON EST TENTE DE FAIRE L'APPEL A ELREF4 COMME EN 3D MAIS C'EST EN
+C     FAIT INUTILE CAR ON N'A BESOIN QUE DE NNOF ET NPGF.
+C     CELA TOMBE BIEN CAR L'APPEL MARCHE RAREMENT ...
 C
-      FORM=TYPEMA(1:2)
-      IF (FORM.EQ.'TR') THEN
-        NBS=3
-        ELSE
-        NBS=4
-      ENDIF
-      NOEU=TYPEMA(5:5)
-      IF (NOEU.EQ.'6'.OR.NOEU.EQ.'8'.OR.NOEU.EQ.'9') THEN
-        NBNA=3
-        ELSE
-        NBNA=2
-      ENDIF
+       IF ( NDEGRE.EQ.1 ) THEN
+         NNOF = 2
+       ELSE
+         NNOF = 3
+       ENDIF
+CGN      CALL ELREF4 ( ELREFF, 'RIGI',
+CGN     >              NDIMF, NNOF, NNOSF, NPGF, IPOIDF, IVFF,
+CGN     >              IDFDXF, JGANOF )
+CGN      WRITE(IFM,2000) 'NDIMF',NDIMF
+CGN      WRITE(IFM,2000) 'NNOSF,NNOF,NPGF',NNOSF,NNOF,NPGF
+CGN      WRITE(IFM,1000) 'IPOIDF', (ZR(IPOIDF+IFA),IFA=0,NPGF-1)
 C
-C ----- BOUCLE SUR LES ARETES ------------------------------------------
+C 3.2. --- BOUCLE SUR LES FACES DE LA MAILLE VOLUMIQUE --------------
 C
-      TERPL2=0.D0
-      TERMO2=0.D0
-      TERPL3=0.D0
-      TERMO3=0.D0
-      DO 20 INO=1,NBS
+      TERPL2 = 0.D0
+      TERMO2 = 0.D0
+      TERPL3 = 0.D0
+      TERMO3 = 0.D0
+      DO 320 , IFA = 1 , NBF
 C
-C ----- CALCUL DE NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE L'ARETE
+C ------TEST DU TYPE DE VOISIN -----------------------------------------
 C
-          IAUX = INO
+        TYV=ZI(IVOIS+7+IFA)
 C
-          CALL CALNOR( '2D' , IAUX, IBID, IBID, NBS  , NBNA, IBID,
-     &                 IGEOM, IBID, IBID, IBID, ORIEN,
-     &                 HF   , JAC , NX  , NY  , R8BID, TX  , TY   )
+        IF ( TYV.NE.0 ) THEN
 C
-C ----- TEST DU TYPE DE VOISIN -----------------------------------------
+C ------- RECUPERATION DU TYPE DE LA MAILLE VOISINE
 C
-        TYPV=ZI(IVOIS+7+INO)
-        IF (TYPV.NE.0) THEN
-          TYPMAV=ZK8(IATYMA-1+TYPV)      
-          FORMV=TYPMAV(1:2)
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',TYV),TYPMAV)
+          IF ( NIV.GE.2  ) THEN
+            WRITE(IFM,1003)  IFA, ZI(IVOIS+IFA), TYPMAV
+ 1003 FORMAT (I2,'-EME FACE DE NUMERO',I10,' ==> TYPMAV = ', A)
+          ENDIF
+C
+C ----- CALCUL DE NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE GAUSS
+C
+          IAUX = IFA
+          CALL CALNOR ( '2D' , IGEOM,
+     >                  IAUX, NNOS, NNOF, ORIEN,
+     >                  IBID, IBID, ITAB, IBID, IBID, IBID,
+     >                  JACO, NX, NY, R8BID3,
+     >                  TX, TY, HF )
 C
 C ----------------------------------------------------------------------
 C --------------- CALCUL DU DEUXIEME TERME DE L'ERREUR -----------------
+C --------------- LE BORD VOISIN EST UN VOLUME -------------------------
 C ----------------------------------------------------------------------
 C
-          IF (FORMV.EQ.'TR'.OR.
-     &        FORMV.EQ.'QU') THEN
+          IF ( TYPMAV(1:4).EQ.'TRIA' .OR.
+     >         TYPMAV(1:4).EQ.'QUAD' ) THEN
 C
-C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS PB. PRIMAL -------
+C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS ------------------
 C
-          CALL ERMES2(INO,TYPEMA,TYPMAV,IREFP1,IVOIS,IADP,NBCMP,
-     &                SGP11,SGP22,SGP12)
+            IAUX = IFA
+            CALL ERMES2(IAUX,ELREFE,TYPMAV,IREFP1,IVOIS,IADP,NBCMP,
+     >                  SGP11,SGP22,SGP12)
 C
 C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS PB. DUAL ---------
 C
-          CALL ERMES2(INO,TYPEMA,TYPMAV,IREFD1,IVOIS,IADD,NBCMP,
-     &                SGD11,SGD22,SGD12)
+            CALL ERMES2(IAUX,ELREFE,TYPMAV,IREFD1,IVOIS,IADD,NBCMP,
+     >                  SGD11,SGD22,SGD12)
 C
-C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS PB. GLOBAL -------
-C
-          DO 201 I=1,NBNA
-            SOPL11(I)=S*SGP11(I)+(1.D0/S)*SGD11(I)
-            SOPL22(I)=S*SGP22(I)+(1.D0/S)*SGD22(I)
-            SOPL12(I)=S*SGP12(I)+(1.D0/S)*SGD12(I)
-            SOMO11(I)=S*SGP11(I)-(1.D0/S)*SGD11(I)
-            SOMO22(I)=S*SGP22(I)-(1.D0/S)*SGD22(I)
-            SOMO12(I)=S*SGP12(I)-(1.D0/S)*SGD12(I)
-  201     CONTINUE
-C
-C ------- CALCUL DE L'INTEGRALE SUR LE BORD ----------------------------
-C     
-          CALL R8INIR(3,0.D0,CHPLX,1)
-          CALL R8INIR(3,0.D0,CHPLY,1)
-          CALL R8INIR(3,0.D0,CHMOX,1)
-          CALL R8INIR(3,0.D0,CHMOY,1)
-C
-          CALL INTENC(NBNA,JAC,CHPLX,CHPLY,SOPL11,SOPL22,SOPL12,NX,NY,
-     &                INTPL)
-C
-          CALL INTENC(NBNA,JAC,CHMOX,CHMOY,SOMO11,SOMO22,SOMO12,NX,NY,
-     &                INTMO)
-C
+C ------- CALCUL DE L'INTEGRALE SUR LA FACE ----------------------------
 C ------- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE NEWTON-COTES ----
+C ------- ATTENTION : CELA MARCHE CAR ON A CHOISI LA FAMILLE -----------
+C ------- AVEC LES POINTS DE GAUSS SUR LES NOEUDS ----------------------
 C
-          IF ((INTPL.LT.0.D0).OR.(INTMO.LT.0.D0)) THEN
-            CALL U2MESK('A','INDICATEUR_9',2,VALK)
-            GOTO 9999
-          ENDIF
+            DO 321 , IN = 1 , NNOF
 C
-          TERPL2=TERPL2+0.5D0*HF*(SQRT(INTPL))**2
-          TERMO2=TERMO2+0.5D0*HF*(SQRT(INTMO))**2
+              SOPL11(IN)=S*SGP11(IN)+UNSURS*SGD11(IN)
+              SOPL22(IN)=S*SGP22(IN)+UNSURS*SGD22(IN)
+              SOPL12(IN)=S*SGP12(IN)+UNSURS*SGD12(IN)
+C
+              SOMO11(IN)=S*SGP11(IN)-UNSURS*SGD11(IN)
+              SOMO22(IN)=S*SGP22(IN)-UNSURS*SGD22(IN)
+              SOMO12(IN)=S*SGP12(IN)-UNSURS*SGD12(IN)
+C
+              CHPLX(IN) = 0.D0
+              CHPLY(IN) = 0.D0
+              CHMOX(IN) = 0.D0
+              CHMOY(IN) = 0.D0
+C
+  321       CONTINUE
+C
+            CALL INTENC(NNOF,JACO,CHPLX,CHPLY,SOPL11,SOPL22,SOPL12,
+     >                  NX,NY,INTPL)
+C
+            CALL INTENC(NNOF,JACO,CHMOX,CHMOY,SOMO11,SOMO22,SOMO12,
+     >                  NX,NY,INTMO)
+C
+C ------- CALCUL DU TERME D'ERREUR -------------------------------------
+C
+            IF ((INTPL.LT.0.D0).OR.(INTMO.LT.0.D0)) THEN
+              CALL U2MESK('A','INDICATEUR_9',2,VALK)
+              GOTO 9999
+            ENDIF
+C
+            TERPL2=TERPL2+0.5D0*HF*ABS(INTPL)
+            TERMO2=TERMO2+0.5D0*HF*ABS(INTMO)
+            IF ( NIV.GE.2 ) THEN
+              WRITE(IFM,1000) 'VOLU INTPL', INTPL
+              WRITE(IFM,1000) '==> TERPL2', TERPL2
+              WRITE(IFM,1000) 'VOLU INTMO', INTMO
+              WRITE(IFM,1000) '==> TERMO2', TERMO2
+            ENDIF
 C
 C ----------------------------------------------------------------------
 C --------------- CALCUL DU TROISIEME TERME DE L'ERREUR ----------------
+C --------------- LE BORD VOISIN EST UNE FACE --------------------------
 C ----------------------------------------------------------------------
 C
-          ELSE IF (FORMV.EQ.'SE') THEN
+          ELSEIF ( TYPMAV(1:3).EQ.'SEG' ) THEN
 C
 C ------- CALCUL EFFORTS SURFACIQUES ET DES CONTRAINTES PB. PRIMAL -----
 C
-           CALL ERMEB2(INO,IREFP1,IREFP2,IVOIS,IGEOM,IADP,TYPEMA,NBCMP,
-     &                 INST,NX,NY,TX,TY,SIGP11,SIGP22,SIGP12,CHPX,CHPY)
+            IAUX = IFA
+            CALL ERMEB2 (IAUX,IREFP1,IREFP2,IVOIS,IGEOM,IADP,
+     >                   ELREFE,NBCMP,INST,NX,NY,TX,TY,
+     >                   SIGP11,SIGP22,SIGP12,CHPX,CHPY)
 C
 C ------- CALCUL EFFORTS SURFACIQUES ET DES CONTRAINTES PB. DUAL -------
 C
-            CALL ERMEB2(INO,IREFD1,IREFD2,IVOIS,IGEOM,IADD,TYPEMA,NBCMP,
-     &                  INST,NX,NY,TX,TY,SIGD11,SIGD22,SIGD12,CHDX,CHDY)
+            IAUX = IFA
+            CALL ERMEB2(IAUX,IREFD1,IREFD2,IVOIS,IGEOM,IADD,
+     >                   ELREFE,NBCMP,INST,NX,NY,TX,TY,
+     >                   SIGD11,SIGD22,SIGD12,CHDX,CHDY)
 C
 C ------- CALCUL EFFORTS SURFACIQUES ET DES CONTRAINTES PB. GLOBAL -----
 C
-          DO 202 I=1,NBNA
-            CHPLX(I)=S*CHPX(I)+(1.D0/S)*CHDX(I)
-            CHPLY(I)=S*CHPY(I)+(1.D0/S)*CHDY(I)
-            SIPL11(I)=S*SIGP11(I)+(1.D0/S)*SIGD11(I)
-            SIPL22(I)=S*SIGP22(I)+(1.D0/S)*SIGD22(I)
-            SIPL12(I)=S*SIGP12(I)+(1.D0/S)*SIGD12(I)
+            DO 322 , IN = 1 , NNOF
 C
-            CHMOX(I)=S*CHPX(I)-(1.D0/S)*CHDX(I)
-            CHMOY(I)=S*CHPY(I)-(1.D0/S)*CHDY(I)
-            SIMO11(I)=S*SIGP11(I)-(1.D0/S)*SIGD11(I)
-            SIMO22(I)=S*SIGP22(I)-(1.D0/S)*SIGD22(I)
-            SIMO12(I)=S*SIGP12(I)-(1.D0/S)*SIGD12(I)
-  202     CONTINUE
+              CHPLX(IN)=S*CHPX(IN)+UNSURS*CHDX(IN)
+              CHPLY(IN)=S*CHPY(IN)+UNSURS*CHDY(IN)
+              SIPL11(IN)=S*SIGP11(IN)+UNSURS*SIGD11(IN)
+              SIPL22(IN)=S*SIGP22(IN)+UNSURS*SIGD22(IN)
+              SIPL12(IN)=S*SIGP12(IN)+UNSURS*SIGD12(IN)
+C
+              CHMOX(IN)=S*CHPX(IN)-UNSURS**CHDX(IN)
+              CHMOY(IN)=S*CHPY(IN)-UNSURS**CHDY(IN)
+              SIMO11(IN)=S*SIGP11(IN)-UNSURS**SIGD11(IN)
+              SIMO22(IN)=S*SIGP22(IN)-UNSURS**SIGD22(IN)
+              SIMO12(IN)=S*SIGP12(IN)-UNSURS**SIGD12(IN)
+C
+  322       CONTINUE
 C
 C ------- CALCUL DE L'INTEGRALE SUR LE BORD ----------------------------
-C     
-            CALL INTENC(NBNA,JAC,CHPLX,CHPLY,SIPL11,SIPL22,SIPL12,NX,NY,
-     &                  INTPL)
-C
-            CALL INTENC(NBNA,JAC,CHMOX,CHMOY,SIMO11,SIMO22,SIMO12,NX,NY,
-     &                  INTMO)
-C
 C ------- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE NEWTON-COTES ----
 C
-          IF ((INTPL.LT.0.D0).OR.(INTMO.LT.0.D0)) THEN
-            CALL U2MESK('A','INDICATEUR_9',2,VALK)
-            GOTO 9999
-          ENDIF
+            CALL INTENC(NNOF,JACO,CHPLX,CHPLY,SIPL11,SIPL22,SIPL12,
+     >                  NX,NY,INTPL)
 C
-            TERPL3=TERPL3+HF*(SQRT(INTPL))**2
-            TERMO3=TERMO3+HF*(SQRT(INTMO))**2
+            CALL INTENC(NNOF,JACO,CHMOX,CHMOY,SIMO11,SIMO22,SIMO12,
+     >                  NX,NY,INTMO)
+C
+C ------- CALCUL DU TERME D'ERREUR -------------------------------------
+C
+            IF ((INTPL.LT.0.D0).OR.(INTMO.LT.0.D0)) THEN
+              CALL U2MESK('A','INDICATEUR_9',2,VALK)
+              GOTO 9999
+            ENDIF
+C
+            TERPL3=TERPL3+HF*ABS(INTPL)
+            TERMO3=TERMO3+HF*ABS(INTMO)
+            IF ( NIV.GE.2 ) THEN
+              WRITE(IFM,1000) 'SURF INTPL', INTPL
+              WRITE(IFM,1000) '==> TERPL3', TERPL3
+              WRITE(IFM,1000) 'SURF INTMO', INTMO
+              WRITE(IFM,1000) '==> TERMO3', TERMO3
+            ENDIF
+C
+C ----------------------------------------------------------------------
+C --------------- CURIEUX ----------------------------------------------
+C ----------------------------------------------------------------------
+C
+          ELSE
+C
+            VALK(1)=TYPMAV(1:4)
+            CALL U2MESK('F','INDICATEUR_10',1,VALK)
+C
+          ENDIF
 C
         ENDIF
 C
-      ENDIF
-C
-  20  CONTINUE
+  320 CONTINUE
 C
 C ----------------------------------------------------------------------
 C ------- FIN DU CALCUL DU DEUXIEME ET TROISIEME TERME DE L'ERREUR -----
 C ----------------------------------------------------------------------
 C
 C ----------------------------------------------------------------------
-C ------------ MISE EN MEMOIRE DES DIFFERENTS TERMES DE IERR -----------
+C 4. ------- MISE EN MEMOIRE DES DIFFERENTS TERMES DE L'ERREUR ---------
 C ----------------------------------------------------------------------
 C
-      IF (NBNA.EQ.3) THEN
+      IF (NDEGRE.EQ.2) THEN
         COEFF=SQRT(96.D0)
-        ELSE
+      ELSE
         COEFF=SQRT(24.D0)
       ENDIF
 C
@@ -423,23 +664,23 @@ C
       NUMOIN=SQRT(TERMO1+TERMO2+TERMO3)
       ERREST=(1.D0/4.D0)*(NUPLUS-NUMOIN)/COEFF
 C
-      ZR(IERR-1+1)=ERREST
+      ZR(IERR)=ERREST
 C
       ERREST=(1.D0/4.D0)*(SQRT(TERPL1)-SQRT(TERMO1))/COEFF
 C
-      ZR(IERR-1+4)=ERREST
+      ZR(IERR+3)=ERREST
 C
       ERREST=(1.D0/4.D0)*(SQRT(TERPL3)-SQRT(TERMO3))/COEFF
 C
-      ZR(IERR-1+6)=ERREST
+      ZR(IERR+5)=ERREST
 C
       ERREST=(1.D0/4.D0)*(SQRT(TERPL2)-SQRT(TERMO2))/COEFF
 C
-      ZR(IERR-1+8)=ERREST
+      ZR(IERR+7)=ERREST
+C       DIAMETRE
+      ZR(IERR+9)=HK
 C
-      ZR(IERR-1+10)=HE
-C      
-9999  CONTINUE
+ 9999 CONTINUE
 C
       CALL JEDEMA()
 C

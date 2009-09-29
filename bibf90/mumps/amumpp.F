@@ -2,7 +2,7 @@
      &                  IFMUMP,ELI2LG,RSOLU,CSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPP MUMPS  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -37,6 +37,8 @@ C IN/OUT CSOLU :  C   : EN ENTREE : SECONDS MEMBRES COMPLEXES
 C                     : EN SORTIE : SOLUTIONS
 C IN   VCINE :  K19   : NOM DU CHAM_NO DE CHARGEMENT CINEMATIQUE
 C---------------------------------------------------------------
+C RESPONSABLE BOITEAU
+
       INTEGER       OPTION,NBSOL,KXMPS,IFMUMP
       LOGICAL       LDIST,ELI2LG
       CHARACTER*1   TYPE
@@ -49,6 +51,8 @@ C---------------------------------------------------------------
 
 C============================================================
       INCLUDE 'mpif.h'
+      INCLUDE 'smumps_struc.h'
+      INCLUDE 'cmumps_struc.h'
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
 C============================================================
@@ -56,23 +60,30 @@ C============================================================
       PARAMETER (NICNTL=26)
       INTEGER    NMXINS
       PARAMETER (NMXINS=5)
+      TYPE (SMUMPS_STRUC) , TARGET  :: SMPS(NMXINS)
+      TYPE (CMUMPS_STRUC) , TARGET  :: CMPS(NMXINS)
+      TYPE (SMUMPS_STRUC) , POINTER :: SMPSK
+      TYPE (CMUMPS_STRUC) , POINTER :: CMPSK
       TYPE (DMUMPS_STRUC) , TARGET  :: DMPS(NMXINS)
       TYPE (ZMUMPS_STRUC) , TARGET  :: ZMPS(NMXINS)
-      TYPE (DMUMPS_STRUC) , POINTER :: XMPSK
-      TYPE (ZMUMPS_STRUC) , POINTER :: YMPSK
+      TYPE (DMUMPS_STRUC) , POINTER :: DMPSK
+      TYPE (ZMUMPS_STRUC) , POINTER :: ZMPSK
       INTEGER      N,NNBSOL,RANG,LMAT,I,IERD,IDVALC,IBID,
      &             JDELG,K,IFM,NIV
-      INTEGER*4    N4,KXMPS4
-      CHARACTER*1  ROUCS(NMXINS),ROUC
+      INTEGER*4    N4
+      CHARACTER*1  ROUCS(NMXINS),ROUC,PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
       CHARACTER*24 VCIVAL
+      LOGICAL      LTYPR
       REAL*8       RBID
       COMPLEX*16   CBID
-      COMMON /SMUMPS1/ DMPS
-      COMMON /SMUMPS2/ ZMPS
-      COMMON /SMUMPS/  NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
+      COMMON /MUMPSS/ SMPS
+      COMMON /MUMPSC/ CMPS
+      COMMON /MUMPSD/ DMPS
+      COMMON /MUMPSZ/ ZMPS
+      COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
       
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
@@ -96,19 +107,34 @@ C-----------------------------------------------------------------------
 C     ------------------------------------------------
 C     INITS
 C     ------------------------------------------------
-      KXMPS4=KXMPS
-      IF (TYPE.EQ.'R') THEN
-        XMPSK=>DMPS(KXMPS4)
-        RANG=XMPSK%MYID
-        N=XMPSK%N
-        XMPSK%NRHS=NBSOL
-        XMPSK%LRHS=N
+      IF (TYPE.EQ.'S') THEN
+        SMPSK=>SMPS(KXMPS)
+        RANG=SMPSK%MYID
+        N=SMPSK%N
+        SMPSK%NRHS=NBSOL
+        SMPSK%LRHS=N
+	LTYPR=.TRUE.
       ELSE IF (TYPE.EQ.'C') THEN
-        YMPSK=>ZMPS(KXMPS4)
-        RANG=YMPSK%MYID
-        N=YMPSK%N
-        YMPSK%NRHS=NBSOL
-        YMPSK%LRHS=N
+        CMPSK=>CMPS(KXMPS)
+        RANG=CMPSK%MYID
+        N=CMPSK%N
+        CMPSK%NRHS=NBSOL
+        CMPSK%LRHS=N
+	LTYPR=.FALSE.
+      ELSE IF (TYPE.EQ.'D') THEN
+        DMPSK=>DMPS(KXMPS)
+        RANG=DMPSK%MYID
+        N=DMPSK%N
+        DMPSK%NRHS=NBSOL
+        DMPSK%LRHS=N
+        LTYPR=.TRUE.
+      ELSE IF (TYPE.EQ.'Z') THEN
+        ZMPSK=>ZMPS(KXMPS)
+        RANG=ZMPSK%MYID
+        N=ZMPSK%N
+        ZMPSK%NRHS=NBSOL
+        ZMPSK%LRHS=N
+	LTYPR=.FALSE.
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -118,6 +144,7 @@ C     ------------------------------------------------
       NOSOLV=NOSOLS(KXMPS)
       NONU=NONUS(KXMPS)
       ETAM=ETAMS(KXMPS)
+      
 
       VCIVAL=VCINE//'.VALE'
       CALL MTDSCR(NOMAT)
@@ -132,19 +159,25 @@ C       ------------------------------------------------
 
         IF (((RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
           IF (RANG.EQ.0) THEN
-            IF (TYPE.EQ.'R') THEN
-              ALLOCATE(XMPSK%RHS(NNBSOL))
-            ELSE
-              ALLOCATE(YMPSK%RHS(NNBSOL))
+            IF (TYPE.EQ.'S') THEN
+              ALLOCATE(SMPSK%RHS(NNBSOL))
+            ELSE IF (TYPE.EQ.'C') THEN
+              ALLOCATE(CMPSK%RHS(NNBSOL))
+            ELSE IF (TYPE.EQ.'D') THEN
+              ALLOCATE(DMPSK%RHS(NNBSOL))
+            ELSE IF (TYPE.EQ.'Z') THEN
+              ALLOCATE(ZMPSK%RHS(NNBSOL))
+	    ELSE
+	      CALL ASSERT(.FALSE.)
             ENDIF
           ENDIF
 
 C         --- PRISE EN COMPTE DU CONDITIONNEMENT DES LAGRANGES :
           IF (RANG.EQ.0) THEN
-             IF (TYPE.EQ.'R') THEN
-               CALL MRCONL(LMAT,N,TYPE,RSOLU,NBSOL)
+             IF (LTYPR) THEN
+               CALL MRCONL(LMAT,N,'R',RSOLU,NBSOL)
              ELSE
-               CALL MCCONL(LMAT,N,TYPE,CSOLU,NBSOL)
+               CALL MCCONL(LMAT,N,'C',CSOLU,NBSOL)
              ENDIF
           ENDIF
 
@@ -155,7 +188,7 @@ C         --- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
 C             -- POUR NE PAS CUMULER LE CHARGEMENT INITIAL:
               IF (RANG.NE.0) THEN
                 DO I=1,NNBSOL
-                  IF (TYPE.EQ.'R') THEN
+                  IF (LTYPR) THEN
                     RSOLU(I)=0.D0
                   ELSE
                     CSOLU(I)=DCMPLX(0.D0,0.D0)
@@ -165,23 +198,24 @@ C             -- POUR NE PAS CUMULER LE CHARGEMENT INITIAL:
             ENDIF
             CALL JEVEUO(VCIVAL,'L',IDVALC)
             CALL JELIRA(VCIVAL,'TYPE',IBID,ROUC)
-            CALL ASSERT(ROUC.EQ.TYPE)
-            IF (TYPE.EQ.'R') THEN
+            IF (LTYPR) THEN
+              CALL ASSERT(ROUC.EQ.'R')
               DO I=1,NBSOL
                 CALL CSMBGG(LMAT,RSOLU(N*(I-1)+1),ZR(IDVALC),
-     &                    CBID,CBID,TYPE)
+     &                    CBID,CBID,'R')
               ENDDO
             ELSE
+              CALL ASSERT(ROUC.EQ.'C')
               DO I=1,NBSOL
                 CALL CSMBGG(LMAT,RBID,RBID,CSOLU(N*(I-1)+1),
-     &                    ZC(IDVALC),TYPE)
+     &                    ZC(IDVALC),'C')
               ENDDO
             ENDIF
           ENDIF
 
 C         -- REDUCE DU SECOND MEMBRE AU PROC MAITRE
           IF (LDIST) THEN
-            IF (TYPE.EQ.'R') THEN
+            IF (LTYPR) THEN
               CALL MPICM1('REDUCE','R',NNBSOL,IBID,RSOLU)
             ELSE
               CALL MPICM1('REDUCE','R',2*NNBSOL,IBID,CSOLU)
@@ -190,10 +224,20 @@ C         -- REDUCE DU SECOND MEMBRE AU PROC MAITRE
 
 C         -- COPIE DE SOLU DANS %RHS:
           IF (RANG.EQ.0) THEN
-            IF (TYPE.EQ.'R') THEN
-              CALL DCOPY(N4,RSOLU,1,XMPSK%RHS,1)
-            ELSE
-              CALL ZCOPY(N4,CSOLU,1,YMPSK%RHS,1)
+	    IF (TYPE.EQ.'S') THEN
+	      DO I=1,NNBSOL
+	        SMPSK%RHS(I)=RSOLU(I)
+	      ENDDO
+	    ELSE IF (TYPE.EQ.'C') THEN
+	      DO I=1,NNBSOL
+	        CMPSK%RHS(I)=CSOLU(I)
+	      ENDDO
+            ELSE IF (TYPE.EQ.'D') THEN
+              CALL DCOPY(N4,RSOLU,1,DMPSK%RHS,1)
+            ELSE IF (TYPE.EQ.'Z') THEN
+              CALL ZCOPY(N4,CSOLU,1,ZMPSK%RHS,1)
+	    ELSE
+	      CALL ASSERT(.FALSE.)
             ENDIF
 
           ENDIF
@@ -201,14 +245,24 @@ C         -- COPIE DE SOLU DANS %RHS:
 C         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
           IF (IMPR(1:3).EQ.'OUI') THEN
             IF (RANG.EQ.0) THEN
-              IF (TYPE.EQ.'R') THEN
+              IF (TYPE.EQ.'S') THEN
                 DO K=1,NNBSOL
-                  WRITE(IFMUMP,*) K,XMPSK%RHS(K)
+                  WRITE(IFMUMP,*) K,SMPSK%RHS(K)
                 ENDDO
-              ELSE
+              ELSE IF (TYPE.EQ.'C') THEN
                 DO K=1,NNBSOL
-                  WRITE(IFMUMP,*) K,YMPSK%RHS(K)
+                  WRITE(IFMUMP,*) K,CMPSK%RHS(K)
                 ENDDO
+              ELSE IF (TYPE.EQ.'D') THEN
+                DO K=1,NNBSOL
+                  WRITE(IFMUMP,*) K,DMPSK%RHS(K)
+                ENDDO
+              ELSE IF (TYPE.EQ.'Z') THEN
+                DO K=1,NNBSOL
+                  WRITE(IFMUMP,*) K,ZMPSK%RHS(K)
+                ENDDO
+	      ELSE
+	        CALL ASSERT(.FALSE.)
               ENDIF
               WRITE(IFMUMP,*) 'MUMPS FIN RHS'
             ENDIF
@@ -225,12 +279,24 @@ C       ------------------------------------------------
 C        POST-TRAITEMENTS ASTER DE LA SOLUTION :
 C       ------------------------------------------------
         IF (RANG.EQ.0) THEN
-          IF (TYPE.EQ.'R') THEN
-            CALL DCOPY(N4,XMPSK%RHS,1,RSOLU,1)
-            DEALLOCATE(XMPSK%RHS)
-          ELSE
-            CALL ZCOPY(N4,YMPSK%RHS,1,CSOLU,1)
-            DEALLOCATE(YMPSK%RHS)
+          IF (TYPE.EQ.'S') THEN
+	    DO I=1,NNBSOL
+	      RSOLU(I)=SMPSK%RHS(I)
+	    ENDDO
+            DEALLOCATE(SMPSK%RHS)
+          ELSE IF (TYPE.EQ.'C') THEN
+	    DO I=1,NNBSOL
+	      CSOLU(I)=CMPSK%RHS(I)
+	    ENDDO
+            DEALLOCATE(CMPSK%RHS)
+	  ELSE IF (TYPE.EQ.'D') THEN
+            CALL DCOPY(N4,DMPSK%RHS,1,RSOLU,1)
+            DEALLOCATE(DMPSK%RHS)
+          ELSE IF (TYPE.EQ.'Z') THEN
+            CALL ZCOPY(N4,ZMPSK%RHS,1,CSOLU,1)
+            DEALLOCATE(ZMPSK%RHS)
+	  ELSE
+	    CALL ASSERT(.FALSE.)
           ENDIF
 
           IF (ELI2LG) THEN
@@ -238,7 +304,7 @@ C           -- PRISE EN COMPTE DES LAGRANGES "2" :
 C           -- VALIDE QUE SUR PROC 0, MAIS C'EST OK CAR ON
 C           -- BROADCAST LA SOLUTION APRES
             CALL JEVEUO(NONU//'.NUME.DELG','L',JDELG)
-            IF (TYPE.EQ.'R') THEN
+            IF (LTYPR) THEN
               DO I=1,NBSOL
                 DO K=1,N
                   IF (ZI(JDELG-1+K).EQ.-2) RSOLU((I-1)*N+K)=0.D0
@@ -254,15 +320,15 @@ C           -- BROADCAST LA SOLUTION APRES
             ENDIF
           ENDIF
 
-          IF (TYPE.EQ.'R') THEN
-            CALL MRCONL(LMAT,N,TYPE,RSOLU,NBSOL)
+          IF (LTYPR) THEN
+            CALL MRCONL(LMAT,N,'R',RSOLU,NBSOL)
           ELSE
-            CALL MCCONL(LMAT,N,TYPE,CSOLU,NBSOL)
+            CALL MCCONL(LMAT,N,'C',CSOLU,NBSOL)
           ENDIF
         ENDIF
 
 C       -- BROADCAST DE SOLU A TOUS LES PROC
-        IF (TYPE.EQ.'R') THEN
+        IF (LTYPR) THEN
           CALL MPICM1('BCAST','R',NNBSOL,IBID,RSOLU)
         ELSE
 C         -- EST-CE AUSSI SIMPLE POUR LES COMPLEXES ?
@@ -272,7 +338,7 @@ C         -- EST-CE AUSSI SIMPLE POUR LES COMPLEXES ?
 C       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :
         IF (IMPR(1:9).EQ.'OUI_SOLVE') THEN
           IF (RANG.EQ.0) THEN
-            IF (TYPE.EQ.'R') THEN
+            IF (LTYPR) THEN
               DO K=1,NNBSOL
                 WRITE(IFMUMP,*) K,RSOLU(K)
               ENDDO

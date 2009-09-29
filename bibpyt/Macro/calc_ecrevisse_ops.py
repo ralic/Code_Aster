@@ -1,4 +1,4 @@
-#@ MODIF calc_ecrevisse_ops Macro  DATE 07/07/2009   AUTEUR MICHEL S.MICHEL 
+#@ MODIF calc_ecrevisse_ops Macro  DATE 29/09/2009   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -457,7 +457,7 @@ def calc_ecrevisse_ops(self,
                            INFO=INFO,
                            LOGICIEL=LOGICIEL,
                            VERSION=VERSION,
-                           FISSURE=_F(LONGUEUR           = max(_l_dy1),
+                           FISSURE=_F(LONGUEUR           = max(_l_dy1)/dFISSURE['TORTUOSITE'],
                                    ANGLE              = alpha,
                                    RUGOSITE           = dFISSURE['RUGOSITE'],
                                    ZETA               = dFISSURE['ZETA'],

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
+#& MODIF COMMUN  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -103,6 +103,7 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "ERZ2_ELEM_SIGM",
                         "QIRE_ELEM_SIGM",
                         "QIRE_ELNO_ELEM",
+                        "QIRE_NOEU_ELEM",
                         "QIZ1_ELEM_SIGM",
                         "QIZ2_ELEM_SIGM",
                         "SING_ELEM",

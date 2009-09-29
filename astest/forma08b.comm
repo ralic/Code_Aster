@@ -1,6 +1,7 @@
-# MODIF  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE sellali N.SELLALI
 # TITRE CORRIGE DU TP3D DE LA FORMATION POST TRAITEMENT
+# forma08b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,26 +26,19 @@ PRE_GIBI();
 
 MAIL=LIRE_MAILLAGE( );
 
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_NO=(_F(GROUP_MA='ENCAST',),
-                               _F(GROUP_MA='SYMETRIE',),
-                               _F(GROUP_MA='EFOND',),
-                               _F(GROUP_MA='SURFINT',),
-                               _F(GROUP_MA='SURFEXT',),
-),);
-
-MAIL=MODI_MAILLAGE(reuse =MAIL,
-                   MAILLAGE=MAIL,
-                   ORIE_PEAU_3D=(_F(GROUP_MA='SURFINT',),
-                                 _F(GROUP_MA='EFOND',),),
-                   );
-
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D',),);
 
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_3D=(_F(GROUP_MA='ENCAST',),
+                                 _F(GROUP_MA='SYMETRIE',),
+                                 _F(GROUP_MA='EFOND',),
+                                 _F(GROUP_MA='SURFINT',),
+                                 _F(GROUP_MA='SURFEXT',),),
+                   );
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.04E11,
                             NU=0.3,
@@ -68,14 +62,19 @@ SFON=SEXT-SINT;
 
 FYREP=FYTOT/SFON;
 
+PRES_0 = 0.;
 
 CHARGF=AFFE_CHAR_MECA(MODELE=MODMECA,
-                      DDL_IMPO=(_F(GROUP_NO='ENCAST',
+                      DDL_IMPO=(_F(GROUP_MA='ENCAST',
                                    DX=0.0,
                                    DY=0.0,
                                    DZ=0.0,),
-                                _F(GROUP_NO='SYMETRIE',
+                                _F(GROUP_MA='SYMETRIE',
                                    DZ=0.0,),),
+                      PRES_REP=(_F(GROUP_MA='SURFINT',
+                                   PRES=PRES_0,),
+                                _F(GROUP_MA='SURFEXT',
+                                   PRES=PRES_0,),),
                       FORCE_FACE=_F(GROUP_MA='EFOND',
                                     FY=FYREP,),);
 
@@ -83,6 +82,11 @@ RESU=MECA_STATIQUE(MODELE=MODMECA,
                    CHAM_MATER=CHMAT,
                     EXCIT=_F(CHARGE=CHARGF,),);
 
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='EFOND',),
+),);
 
 TABDEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB1',
                                 GROUP_NO='EFOND',
@@ -347,6 +351,9 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                  GROUP_NO_ORIG='AE2',
                                  GROUP_NO_EXTR='E_SUP',),);
 
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(GROUP_MA='ENCAST',),);
 #
 # 3.1.2. CREATION DES TABLES
 #

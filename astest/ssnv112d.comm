@@ -1,4 +1,4 @@
-# MODIF  DATE 07/09/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM GRANDES DEFORMATIONS
 # ssnv112d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,6 +36,8 @@ M=LIRE_MAILLAGE();
 
 PRES = FORMULE(VALE='60.',
                NOM_PARA=('X','Y',),);
+PRES_0 = 0.0;
+
 
 MO=AFFE_MODELE(MAILLAGE=M,
                VERIF='MAILLE',
@@ -54,14 +56,16 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                          MATER=MA,),);
 
 CLIM=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='FACINF',
+                    DDL_IMPO=(_F(GROUP_MA='GRMA11',
                                  DY=0.0,),
-                              _F(GROUP_NO='FACSUP',
+                              _F(GROUP_MA='GRMA12',
                                  DY=0.0,),),);
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   FACE_IMPO=_F(GROUP_MA='GRMA13',
-                               DX=6e-05,),);
+                               DX=6e-05,),
+                  PRES_REP=_F(GROUP_MA='GRMA14',
+                              PRES=PRES_0,),);
 
 #                       PRES_REP=_F(  GROUP_MA = 'GRMA13',  PRES = PRES) )
 
@@ -282,11 +286,11 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NOM_CMP='NUEST',
                   MAILLE='M2',
                   POINT=1,
-                  VALE=6.3337380280555E-05,
+                  VALE=6.33373802806e-05,
                   CRITERE='RELATIF',
                   PRECISION=5e-07,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='10.0.16',),);
+                  VERSION='9.05.04',),);
 
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   INST=1.0,
@@ -294,10 +298,10 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NOM_CMP='ERREST',
                   MAILLE='M2',
                   GROUP_NO='A',
-                  VALE=1.1473115529256E-07,
+                  VALE=1.14731155293e-07,
                   CRITERE='RELATIF',
                   PRECISION=5e-07,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='10.0.16',),);
+                  VERSION='9.05.04',),);
 
 FIN();

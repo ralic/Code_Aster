@@ -1,4 +1,4 @@
-# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,9 @@ RESU=[None]*nbcalc
 
 MATERI=DEFI_MATERIAU( THER=_F(  LAMBDA = 0.75, RHO_CP = 2.0))
 #
-M[1]=LIRE_MAILLAGE( )
+MD1=LIRE_MAILLAGE( )
+M[1]=CREA_MAILLAGE(MAILLAGE=MD1,
+                   LINE_QUAD=_F(TOUT='OUI',),);
 
 #-------------------------------------------------------------------------------
 #                     BOUCLE CALCUL INDICATEUR/REMAILLAGE
@@ -51,9 +53,15 @@ for k in range(1,nbcalc):
    MODE[k]=AFFE_MODELE( MAILLAGE=M[k],
                       AFFE=_F( TOUT = 'OUI', MODELISATION = '3D',
                                       PHENOMENE = 'THERMIQUE'))
+   if ( k==1 ) :
+     M[k]=MODI_MAILLAGE( reuse=M[k],
+                 MAILLAGE=M[k],
+                 ORIE_PEAU_3D=_F(  GROUP_MA = ( 'ECHA', 'F1INF', 'FLUX', 'Z_0', 'Z_0_05', 'FACE_A', 'FACE_B', ),  )
+                      )
    CHA1[k]=AFFE_CHAR_THER( MODELE=MODE[k],
              TEMP_IMPO=_F( GROUP_MA = 'F1INF',   TEMP = 100.),
-             FLUX_REP=_F( GROUP_MA = 'FLUX',    FLUN = -1200.),
+             FLUX_REP=(_F( GROUP_MA = 'FLUX',    FLUN = -1200.),
+                       _F( GROUP_MA = ('Z_0', 'Z_0_05', 'FACE_A', 'FACE_B',),    FLUN = 0.),),
              ECHANGE=_F( GROUP_MA = 'ECHA',  COEF_H = 30., TEMP_EXT = 140.))
 
 # Calcul thermique
@@ -69,6 +77,7 @@ for k in range(1,nbcalc):
               OPTION=('FLUX_ELNO_TEMP','ERRE_ELEM_TEMP','ERRE_ELNO_ELEM'))
 
    IMPR_RESU( FORMAT='MED', RESU=_F( RESULTAT = RESU[k]))
+###   IMPR_RESU( FORMAT='RESULTAT', RESU=_F( RESULTAT = RESU[k]))
 
    if ( k < nbcalc-1 ) :
 # Adaptation du maillage en se basant sur la composante ERTABS du champ
@@ -90,26 +99,28 @@ for k in range(1,nbcalc):
 
 # Tests de non-regression de ERRE_ELEM_TEMP/ERTH_ELNO_TEMP et de la
 # connection ASTER/HOMARD
+# La maille MA1 est le triangle du groupe TEST_S
 TEST_RESU(RESU=(
             _F( RESULTAT = RESU[1],          NUME_ORDRE = 0,
                 NOM_CHAM = 'ERRE_ELEM_TEMP', MAILLE = 'MA1',
                 POINT =1,                    PRECISION = 1.E-5,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 4.2644155582454E-05,
-                VERSION='9.00.13',              CRITERE='RELATIF')))
+                VALE = 3.3606481315358E-05,
+                VERSION = '9.05.04',              CRITERE='RELATIF')))
 TEST_RESU(RESU=(
             _F( RESULTAT = RESU[1],          NUME_ORDRE = 0,
                 NOM_CHAM = 'ERRE_ELNO_ELEM', MAILLE = 'MA1',
                 NOEUD = 'NO4',               PRECISION = 1.E-5,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 4.2644155582454E-05,
-                VERSION='9.00.13',              CRITERE='RELATIF')))
+                VALE = 3.3606481315358E-05,
+                VERSION = '9.05.04',              CRITERE='RELATIF')))
 
+# La maille MA65 est le tetraedre du groupe TEST_V
 TEST_RESU(RESU=(
             _F( RESULTAT = RESU[2],          NUME_ORDRE = 0,
-                NOM_CHAM = 'ERRE_ELEM_TEMP', MAILLE = 'M25',
+                NOM_CHAM = 'ERRE_ELEM_TEMP', MAILLE = 'M65',
                 POINT =1,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 4.4751085026497E-05,  PRECISION = 1.E-5,
-                VERSION='ASTER 9.00.13/HOMARD V8.5', CRITERE='RELATIF')))
+                VALE = 3.2310167150848E-05,  PRECISION = 1.E-5,
+                VERSION = '9.05.04', CRITERE='RELATIF')))
 FIN()

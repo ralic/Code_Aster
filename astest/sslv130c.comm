@@ -1,4 +1,4 @@
-# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -223,8 +223,6 @@ EVOL2 = CALC_ELEM (reuse=EVOL2,
                'SIEF_ELNO_ELGA',
                'EQUI_ELNO_SIGM',
                'EQUI_ELNO_EPSI',
-#               'ERRE_ELEM_SIGM',
-#               'ERRE_ELNO_ELEM',
            ),   ) ;
 
 EVOL2 = CALC_NO (reuse=EVOL2,
@@ -313,36 +311,6 @@ TEST_RESU(RESU=(
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'VMIS_SG',      VALE = 138.5641, REFERENCE='ANALYTIQUE'),
 ),)
 
-#
-#  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
-#
-#TEST_RESU(RESU=(
-#           _F( RESULTAT = EVOL2,
-#               INST = 1.,
-#               NOM_CHAM = 'ERRE_ELEM_SIGM',
-#               CRITERE = 'RELATIF',
-#               PRECISION = 0.0001,
-#               POINT = 1,
-#               MAILLE='M1',
-#               NOM_CMP = 'NUEST',
-#               VALE = 1.6283363234735E-01,
-#               REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
-#             ),
-#            );
-#
-#TEST_RESU(RESU=(
-#           _F( RESULTAT = EVOL2,
-#               INST = 1.,
-#               NOM_CHAM = 'ERRE_ELNO_ELEM',
-#               CRITERE = 'RELATIF',
-#               PRECISION = 0.0001,
-#               GROUP_NO= 'A',
-#               MAILLE='M1',
-#               NOM_CMP = 'ERREST',
-#               VALE = 8.0080061799083E-04,
-#               REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
-#             ),
-#            );
 
 FIN()
 

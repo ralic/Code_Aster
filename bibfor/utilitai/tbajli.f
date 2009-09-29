@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMTA,        NOMPAR(*),          VK(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF UTILITAI  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C
 C
       NDIM = NBPU + 1
       IF ( NDIM .GT. NBPM ) THEN
-         NDIM = NDIM + 1000
+         NDIM = NINT((NDIM*3.D0)/2.D0)
          DO 10 I = 1 , NBPARA
             NOMJV = ZK24(JTBLP+4*(I-1)+2)
             CALL JUVECA ( NOMJV , NDIM )

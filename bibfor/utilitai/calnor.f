@@ -1,10 +1,11 @@
-      SUBROUTINE CALNOR ( DIM  , INO  , NNO  , NPG, NBS, NBNA, NOE,
-     &                    IGEOM, IDFDE,
-     &                    IFA  , ITYP , ORIEN,
-     &                    HF   , JAC  , NX   , NY , NZ , TX  , TY )
+      SUBROUTINE CALNOR ( CHDIM, IGEOM,
+     >                    IARE, NNOS, NNOA, ORIEN,
+     >                    NNO, NPG, NOE, IFA, TYMVOL, IDFDE,
+     >                    JAC, NX, NY, NZ,
+     >                    TX, TY, HF )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/08/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,54 +27,79 @@ C     BUT:
 C         CALCUL DE LA NORMALE SORTANTE D'UN ELEMENT LINEAIRE
 C         OU QUADRATIQUE.
 C
-C
 C     ARGUMENTS:
 C     ----------
 C
 C      ENTREE :
 C-------------
-C IN   DIM    : DIMENSION DE L'ESPACE : '2D' OU '3D'
-C IN   INO    : NUMERO DU PREMIER POINT DE L'ARETE
-C IN   NNO    : NOMBRE DE NOEUDS DE L'ELEMENT
-C IN   NPG    : NOMBRE DE POINTS DE GAUSS DE L'ELEMENT (POUR DU 3D)
-C IN   NBS    : NOMBRE DE SOMMETS DE L'ELEMENT
-C IN   NBNA   : NOMBRE DE NOEUDS PAR ARETE
-C IN   NOE    : LISTE DES NOEUDS PAR FACE (POUR DU 3D)
+C IN   CHDIM  : DIMENSION DE L'ESPACE : '2D' OU '3D'
 C IN   IGEOM  : ADRESSE DES COORDONNEES
-C IN   IDFDE  : ADRESSE DES DERIVEES DES FONCTIONS DE FORME (POUR DU 3D)
-C IN   IFA    : NUMERO DE LA FACE (POUR DU 3D)
-C IN   ITYPE  : TYPE DE LA FACE (POUR DU 3D)
+C
+C POUR DU 2D :
+C ON CHERCHE LA NORMALE SORTANTE A L'ARETE D'UNE FACE QUAD OU TRIA.
+C PAR CONVENTION, L'ARETE NUMERO I EST SITUE ENTRE LES SOMMETS I
+C ET I+1 DE LA FACE (MODULO LE DERNIER QUI REPART A 1)
+C EXEMPLE POUR UN QUAD :
+C                           ARETE 1
+C                1 o---------------------o 2
+C                  .                     .
+C          ARETE 4 .                     . ARETE 2
+C                  .                     .
+C                4 o---------------------o 3
+C                           ARETE 3
+C
+C
+C IN   IARE   : NUMERO DE L'ARETE A EXAMINER
+C IN   NNOS   : NOMBRE DE SOMMETS DE LA FACE (3 OU 4)
+C IN   NNOA   : NOMBRE DE NOEUDS PAR ARETE (2 OU 3)
 C IN   ORIEN  : ORIENTATION DE LA MAILLE PAR RAPPORT A ELREF
 C                1 SI IDEM ELEMENT DE REFERENCE
 C               -1 SI DIFFERENT
 C
+C POUR DU 3D :
+C ON CHERCHE LA NORMALE SORTANTE A LA FACE QUAD OU TRIA D'UNE
+C MAILLE VOLUMIQUE.
+C IN   NNO    : NOMBRE DE NOEUDS DE LA FACE (3 OU 4)
+C IN   NPG    : NOMBRE DE POINTS DE GAUSS DE L'ELEMENT FACE.
+C IN   NOE    : LISTE DES NUMEROS DES NOEUDS PAR FACE (VOIR TE0003)
+C IN   IFA    : NUMERO DE LA FACE (POUR DU 3D)
+C IN   TYMVOL : TYPE DE LA MAILLE VOLUMIQUE
+C               1 : HEXAEDRE      2 : PENTAEDRE
+C               3 : TETRAEDRE     4 : PYRAMIDE
+C IN   IDFDE  : ADRESSE DES DERIVEES DES FONCTIONS DE FORME SUR LA FACE
+C
 C      SORTIE :
 C-------------
-C OUT  HF     : LONGUEUR DE L'ARETE
+C POUR DU 2D :
 C OUT  JAC    : VECTEUR DES JACOBIENS DE LA TRANSFORMATION AUX NOEUDS
-C OUT  NX     : VECTEUR DES ABSCISSES DES NORMALES
-C                   * EN 2D : AUX NOEUDS
-C                   * EN 3D : AUX POINTS DE GAUSS
-C OUT  NY     : VECTEUR DES ORDONNEES DES NORMALES
-C                   * EN 2D : AUX NOEUDS
-C                   * EN 3D : AUX POINTS DE GAUSS
-C OUT  NZ     : VECTEUR DES COTES DES NORMALES
-C                   * EN 2D : AUX NOEUDS
-C                   * EN 3D : AUX POINTS DE GAUSS
+C OUT  NX     : VECTEUR DES ABSCISSES DES NORMALES AUX NOEUDS
+C OUT  NY     : VECTEUR DES ORDONNEES DES NORMALES AUX NOEUDS
 C OUT  TX     : VECTEUR DES ABSCISSES DES TANGENTES AUX NOEUDS
 C OUT  TY     : VECTEUR DES ORDONNEES DES TANGENTES AUX NOEUDS
+C OUT  HF     : EN 2D : LONGUEUR DE L'ARETE
+C POUR DU 3D :
+C OUT  JAC    : VECTEUR DES JACOBIENS DE LA TRANSFORMATION AUX NOEUDS
+C OUT  NX     : VECTEUR DES ABSCISSES DES NORMALES AUX POINTS DE GAUSS
+C OUT  NY     : VECTEUR DES ORDONNEES DES NORMALES AUX POINTS DE GAUSS
+C OUT  NZ     : VECTEUR DES COTES DES NORMALES AUX POINTS DE GAUSS
 C
 C ......................................................................
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER INO, NNO, NPG, NBS, NBNA, NOE(9,6,3)
-      INTEGER IGEOM, IDFDE
-      INTEGER IFA, ITYP
-      REAL*8  ORIEN, HF
-      REAL*8  JAC(9), NX(9), NY(9), NZ(9), TX(3), TY(3)
-      CHARACTER*2 DIM
+      CHARACTER*2 CHDIM
+C
+      INTEGER IGEOM
+      INTEGER IARE, NNOS, NNOA
+      REAL*8  ORIEN
+C
+      INTEGER NNO, NPG, NOE(9,6,4)
+      INTEGER IFA, TYMVOL, IDFDE
+C
+      REAL*8 JAC(NPG)
+      REAL*8 NX(*), NY(*), NZ(*)
+      REAL*8 HF, TX(3), TY(3)
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
@@ -96,7 +122,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C DECLARATION VARIABLES LOCALES
 C
 
-      INTEGER I, J, JNO, MNO, IPG,IDEC, JDEC, KDEC
+      INTEGER I, J, INO, JNO, MNO, IPG,IDEC, JDEC, KDEC
       INTEGER LENOEU, NUMNO, NNOS2
 
       REAL*8 X1, Y1, X2, Y2, X3, Y3, NORME
@@ -121,9 +147,9 @@ C       EST NUL EN POINTE DE FISSURE.
 C
 C              X1          X3          X2
 C               O-----------O-----------O
-C              INO         MNO         JNO
+C              IARE      MNO         JNO
 C
-C         POINTS  1 --> INO PREMIER POINT DE L'ARETE COURANTE
+C         POINTS  1 --> IARE PREMIER POINT DE L'ARETE COURANTE
 C                 2 --> JNO DEUXIEME POINT  DE L'ARETE COURANTE
 C                 3 --> MNO NOEUD MILIEU S'IL EXISTE
 C
@@ -131,7 +157,7 @@ C====
 C 1. --- CAS DU 2D -----------------------------------------------------
 C====
 C
-      IF ( DIM.EQ.'2D' ) THEN
+      IF ( CHDIM.EQ.'2D' ) THEN
 C
 C 1.1. ==> PREALABLE
 C
@@ -143,14 +169,14 @@ C
 C
 C 1.2. ==> COORDONNEES DES 3 NOEUDS
 C
-        IF ( INO.EQ.NBS ) THEN
+        IF ( IARE.EQ.NNOS ) THEN
           JNO=1
         ELSE
-          JNO=INO+1
+          JNO=IARE+1
         ENDIF
 C
-        X1=ZR(IGEOM+2*INO-2)
-        Y1=ZR(IGEOM+2*INO-1)
+        X1=ZR(IGEOM+2*IARE-2)
+        Y1=ZR(IGEOM+2*IARE-1)
         X2=ZR(IGEOM+2*JNO-2)
         Y2=ZR(IGEOM+2*JNO-1)
 C
@@ -158,11 +184,10 @@ C 1.3. ==> LONGUEUR DE L'ARETE
 C
         HF=SQRT((X1-X2)**2+(Y1-Y2)**2)
 C
-        IF ( NBNA.EQ.3 ) THEN
-          MNO = NBS + INO
+        IF ( NNOA.EQ.3 ) THEN
+          MNO = NNOS + IARE
           X3 = ZR(IGEOM+2*MNO-2)
           Y3 = ZR(IGEOM+2*MNO-1)
-C
 C
 C 1.2.1. ==> TRAITEMENT ELEMENTS DE BARSOUM
 C
@@ -213,7 +238,7 @@ C
 C
 C 1.5. ==> CALCUL NORMALE SORTANTE, TANGENTE ET JACOBIEN TROISIEME POINT
 C
-        IF (NBNA.EQ.3) THEN
+        IF (NNOA.EQ.3) THEN
 C
           JAC(3) = HF*0.5D0
 C
@@ -228,7 +253,7 @@ C
 C
 C 1.6. ==> CALCUL DES TANGENTES
 C
-        DO 16 , I = 1 , NBNA
+        DO 16 , I = 1 , NNOA
           TX(I) =  NY(I)
           TY(I) = -NX(I)
    16   CONTINUE
@@ -237,31 +262,25 @@ C====
 C 2. -- CAS DU 3D ------------------------------------------------------
 C====
 C
-      ELSE IF ( DIM.EQ.'3D' ) THEN
+      ELSE IF ( CHDIM.EQ.'3D' ) THEN
 C
-C 2.1. ==> PREALABLE
+C 2.1. ==> COORDONNEES DES NOEUDS
 C
-        CALL R8INIR(9,0.D0,NX,1)
-        CALL R8INIR(9,0.D0,NY,1)
-        CALL R8INIR(9,0.D0,NZ,1)
-C
-C 2.2. ==> COORDONNEES DES NOEUDS
-C
-        DO 10 NUMNO=1,NNO
-          LENOEU=NOE(NUMNO,IFA,ITYP)
+        DO 21 , NUMNO=1,NNO
+          LENOEU=NOE(NUMNO,IFA,TYMVOL)
           X(NUMNO)=ZR(IGEOM+3*LENOEU-3)
           Y(NUMNO)=ZR(IGEOM+3*LENOEU-2)
           Z(NUMNO)=ZR(IGEOM+3*LENOEU-1)
-  10    CONTINUE
+  21    CONTINUE
 C
-C 2.3. ==> TRAITEMENT ELEMENTS DE BARSOUM
+C 2.2. ==> TRAITEMENT ELEMENTS DE BARSOUM
 C
 C ----- LA NORMALE EST CALCULEE EN UTILISANT LE POINT MILIEU
         IF ((NNO.EQ.6).OR.(NNO.EQ.8)) THEN
 C
           NNOS2=NNO/2
 
-          DO 11 INO=1,NNOS2
+          DO 22 , INO=1,NNOS2
 C
             IF (INO.EQ.NNOS2) THEN
               JNO=1
@@ -283,33 +302,37 @@ C
               Z(MNO)=(Z(INO)+Z(JNO))*0.5D0
             ENDIF
 C
-  11      CONTINUE
+   22     CONTINUE
         ENDIF
 C
-C 2.4. ==> CALCUL DU PRODUIT VECTORIEL OMI OMJ
+C 2.3. ==> CALCUL DU PRODUIT VECTORIEL OMI OMJ
+
+        DO 23 , I=1,NNO
 C
-        DO 20 IPG=1,NPG
+          DO 231 , J=1,NNO
 C
-          DO 210 I=1,NNO
+            SX(I,J)=Y(I)*Z(J)-Z(I)*Y(J)
+            SY(I,J)=Z(I)*X(J)-X(I)*Z(J)
+            SZ(I,J)=X(I)*Y(J)-Y(I)*X(J)
 C
-            DO 220 J=1,NNO
+  231     CONTINUE
 C
-              SX(I,J)=Y(I)*Z(J)-Z(I)*Y(J)
-              SY(I,J)=Z(I)*X(J)-X(I)*Z(J)
-              SZ(I,J)=X(I)*Y(J)-Y(I)*X(J)
+   23   CONTINUE
 C
-  220       CONTINUE
+C 2.4. ==> SOMMATION DES DERIVEES
 C
-  210     CONTINUE
+        DO 24 , IPG=1,NPG
 C
-C 2.5. ==> SOMMATION DES DERIVEES
+          NX(IPG) = 0.D0
+          NY(IPG) = 0.D0
+          NZ(IPG) = 0.D0
 C
           KDEC=2*(IPG-1)*NNO
 C
-          DO 230 I=1,NNO
+          DO 241 , I=1,NNO
             IDEC=2*(I-1)
 C
-            DO 240 J=1,NNO
+            DO 242 , J=1,NNO
               JDEC=2*(J-1)
               NX(IPG)=NX(IPG)-ZR(IDFDE+KDEC+IDEC)
      &                *ZR(IDFDE+KDEC+JDEC+1)*SX(I,J)
@@ -317,24 +340,24 @@ C
      &                *ZR(IDFDE+KDEC+JDEC+1)*SY(I,J)
               NZ(IPG)=NZ(IPG)-ZR(IDFDE+KDEC+IDEC)
      &                *ZR(IDFDE+KDEC+JDEC+1)*SZ(I,J)
-  240       CONTINUE
+  242       CONTINUE
 C
-  230     CONTINUE
+  241     CONTINUE
 C
-C 2.5. ==> CALCUL DU JACOBIEN
+C        CALCUL DU JACOBIEN
 C
           JAC(IPG)=SQRT(NX(IPG)**2+NY(IPG)**2+NZ(IPG)**2)
           NX(IPG)=NX(IPG)/JAC(IPG)
           NY(IPG)=NY(IPG)/JAC(IPG)
           NZ(IPG)=NZ(IPG)/JAC(IPG)
 C
-  20    CONTINUE
+   24    CONTINUE
 C
 C ----- PROBLEME -------------------------------------------------------
 C
       ELSE
 C
-        CALL U2MESK('F','UTILITAI_9',1,DIM)
+        CALL U2MESK('F','UTILITAI_9',1,CHDIM)
 C
       ENDIF
 C

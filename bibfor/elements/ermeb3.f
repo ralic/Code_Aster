@@ -1,9 +1,10 @@
-      SUBROUTINE ERMEB3(NOE,IFA,ITYP,IREF1,IREF2,IVOIS,IGEOM,ISIG,
-     &                  NBCMP,INST,NPGB,NX,NY,NZ,
+      SUBROUTINE ERMEB3(NOE,IFA,TYMVOL,NNOF,
+     &                  IREF1,IREF2,IVOIS,IGEOM,ISIG,
+     &                  NBCMP,INST,
+     &                  NX,NY,NZ,
      &                  SIG11,SIG22,SIG33,SIG12,SIG13,SIG23,CHX,CHY,CHZ)
-C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/08/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,7 +30,7 @@ C =====================================================================
 C
 C     BUT:
 C         TROISIEME TERME DE L'ESTIMATEUR D'ERREUR EN RESIDU EXPLICITE :
-C         CALCUL DE LA DIFFERENCE ENTRE LES EFFORTS APPLIQUES SUR LE  
+C         CALCUL DE LA DIFFERENCE ENTRE LES EFFORTS APPLIQUES SUR LE
 C         BORD ET LA CONTRAINTE NORMALE EN 3D.
 C
 C
@@ -38,47 +39,44 @@ C     ----------
 C
 C      ENTREE :
 C-------------
-C IN   NOE      : LISTE DES NOEUDS PAR FACE (POUR DU 3D)
-C IN   IFA      : NUMERO DE LA FACE
-C IN   ITYP     : TYPE DE LA MAILLE
-C IN   IREF1    : ADRESSE DES CHARGEMENTS DE TYPE FORCE
-C IN   IREF2    : ADRESSE DES CHARGEMENTS DE TYPE PRESSION
-C IN   IVOIS    : ADRESSE DES VOISINS
-C IN   IGEOM    : ADRESSE DE LA GEOMETRIE
-C IN   ISIG     : ADRESSE DES CONTRAINTES AUX NOEUDS
-C IN   NBCMP    : NOMBRE DE COMPOSANTES DU VECTEUR CONTRAINTE PAR NOEUD
-C IN   INST     : INSTANT DE CALCUL
-C IN   NPGB     : NOMBRE DE POINTS DE GAUSS PAR FACE
-C IN   NX       : VECTEUR DES ABSCISSES DES NORMALES AUX NOEUDS
-C IN   NY       : VECTEUR DES ORDONNEES DES NORMALES AUX NOEUDS
-C IN   NX       : VECTEUR DES COTES DES NORMALES AUX NOEUDS
+C IN   NOE    : LISTE DES NUMEROS DES NOEUDS PAR FACE (VOIR TE0003)
+C IN   IFA    : NUMERO LOCAL DE LA FACE
+C IN   TYMVOL : NUMERO DU TYPE DE LA MAILLE VOLUMIQUE COURANTE
+C               1 : HEXAEDRE; 2 : PENTAEDRE; 3 : TETRAEDRE; 4 : PYRAMIDE
+C IN   NNOF   : NOMBRE DE NOEUDS DE LA FACE
+C IN   IREF1  : ADRESSE DES CHARGEMENTS DE TYPE FORCE
+C IN   IREF2  : ADRESSE DES CHARGEMENTS DE TYPE PRESSION
+C IN   IVOIS  : ADRESSE DES VOISINS
+C IN   IGEOM  : ADRESSE DE LA GEOMETRIE
+C IN   ISIG   : ADRESSE DES CONTRAINTES AUX NOEUDS
+C IN   NBCMP  : NOMBRE DE COMPOSANTES DU VECTEUR CONTRAINTE PAR NOEUD
+C IN   INST   : INSTANT DE CALCUL
+C IN   NX     : VECTEUR DES ABSCISSES DES NORMALES AUX NOEUDS
+C IN   NY     : VECTEUR DES ORDONNEES DES NORMALES AUX NOEUDS
+C IN   NX     : VECTEUR DES COTES DES NORMALES AUX NOEUDS
 C
 C      SORTIE :
 C-------------
-C OUT  SIG11    : VECTEUR DES CONTRAINTES AUX NOEUDS 
-C                 ( COMPOSANTE SIG11 )
-C OUT  SIG22    : VECTEUR DES CONTRAINTES AUX NOEUDS 
-C                 ( COMPOSANTE SIG22 )
-C OUT  SIG33    : VECTEUR DES CONTRAINTES AUX NOEUDS 
-C                 ( COMPOSANTE SIG33 )
-C OUT  SIG12    : VECTEUR DES CONTRAINTES AUX NOEUDS 
-C                 ( COMPOSANTE SIG12 )
-C OUT  SIG13    : VECTEUR DES CONTRAINTES AUX NOEUDS 
-C                 ( COMPOSANTE SIG13 )
-C OUT  SIG23    : VECTEUR DES CONTRAINTES AUX NOEUDS 
-C                 ( COMPOSANTE SIG23 )
-C OUT  CHX      : VECTEUR DES CHARGEMENTS AUX NOEUDS SELON X 
-C OUT  CHY      : VECTEUR DES CHARGEMENTS AUX NOEUDS SELON Y
-C OUT  CHZ      : VECTEUR DES CHARGEMENTS AUX NOEUDS SELON Z
+C OUT  SIG11  : VECTEUR DES CONTRAINTES AUX NOEUDS - COMPOSANTE SIG11
+C OUT  SIG22  : VECTEUR DES CONTRAINTES AUX NOEUDS - COMPOSANTE SIG22
+C OUT  SIG33  : VECTEUR DES CONTRAINTES AUX NOEUDS - COMPOSANTE SIG33
+C OUT  SIG12  : VECTEUR DES CONTRAINTES AUX NOEUDS - COMPOSANTE SIG12
+C OUT  SIG13  : VECTEUR DES CONTRAINTES AUX NOEUDS - COMPOSANTE SIG13
+C OUT  SIG23  : VECTEUR DES CONTRAINTES AUX NOEUDS - COMPOSANTE SIG23
+C OUT  CHX    : VECTEUR DES CHARGEMENTS AUX NOEUDS SELON X
+C OUT  CHY    : VECTEUR DES CHARGEMENTS AUX NOEUDS SELON Y
+C OUT  CHZ    : VECTEUR DES CHARGEMENTS AUX NOEUDS SELON Z
 C
 C ......................................................................
 C
       IMPLICIT NONE
 C 
 C DECLARATION PARAMETRES D'APPEL
-      INTEGER NOE(9,6,3),IFA,ITYP,IREF1,IREF2,IVOIS,IGEOM,ISIG
-      INTEGER NBCMP,NPGB
-      REAL*8 INST,NX(9),NY(9),NZ(9),CHX(9),CHY(9),CHZ(9)
+      INTEGER NOE(9,6,4),IFA,TYMVOL,IREF1,IREF2,IVOIS,IGEOM,ISIG
+      INTEGER NBCMP,NNOF
+      REAL*8 INST
+      REAL*8 NX(9),NY(9),NZ(9)
+      REAL*8 CHX(9),CHY(9),CHZ(9)
       REAL*8 SIG11(9),SIG22(9),SIG12(9),SIG33(9),SIG13(9),SIG23(9)
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -102,186 +100,244 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
 C DECLARATION VARIABLES LOCALES
 C
-      INTEGER IAGD,IADE1,IADE2,IAVA1,IAVA2,IAPTM1,IAPTM2,IGD1,IGD2,IACMP
-      INTEGER NCMPM1,NCMPM2,INO,IMAV,IPGF
+      INTEGER IAUX
+      INTEGER IN
       INTEGER IER,IER1,IER2,IER3
-      INTEGER IENT1,IENT2,NUMGD1,NUMGD2
+C
+C     IMAV : NUMERO DE LA MAILLE SURFACIQUE A TRAITER
+      INTEGER INO, IMAV
+      INTEGER IAGD, IACMP
+      INTEGER IADE1, IAVA1, IAPTM1, IGD1, IENT1, NCMPM1, NUMGD1
+      INTEGER IADE2, IAVA2, IAPTM2, IGD2, IENT2, NCMPM2, NUMGD2
 
-      REAL*8  PR,FX,FY,FZ,VALPAR(4),PRC(9),FXC(9),FYC(9),FZC(9)
+      REAL*8 PR,FX,FY,FZ,VALPAR(4)
+      REAL*8 PRC(9),FXC(9),FYC(9),FZC(9)
 
       CHARACTER*4 NOMPAR(4)
       CHARACTER*8 PRF,FXF,FYF,FZF
-      CHARACTER*19 NOMGD1,NOMGD2
+      CHARACTER*19 NOMGD1
+      CHARACTER*19 NOMGD2
+C
+      LOGICAL CALRE1, CALFO1
+      LOGICAL CALRE2, CALFO2
+      LOGICAL CALCUL
+C
 
 C ----------------------------------------------------------------------
-C ------- RECHERCHE DES ADRESSES POUR LES CHARGES SUR LES FACES --------
+C 1. ---- RECHERCHE DES ADRESSES POUR LES CHARGES SUR LES FACES --------
+C-------- VOIR RESLOC --------------------------------------------------
 
       IAGD=ZI(IREF1+4)
 C
+C 1.1. ==> LES FORCES
+C
+      CALRE1 = .FALSE.
+      CALFO1 = .FALSE.
+      NOMGD1=' '
       IADE1=ZI(IREF1+6)
       IAVA1=ZI(IREF1+7)
       IAPTM1=ZI(IREF1+8)
-      IF (IADE1.NE.0) THEN
+      IF ( IADE1.NE.0 ) THEN
         IGD1=ZI(IADE1)
         IACMP=ZI(IREF1+5)
         NCMPM1=ZI(IACMP-1+IGD1)
-      ENDIF
-C
-      IADE2 = ZI(IREF2+4)
-      IAVA2 = ZI(IREF2+5)
-      IAPTM2 = ZI(IREF2+6)
-      IF (IADE2 .NE. 0) THEN
-        IGD2   = ZI(IADE2)
-        IACMP  = ZI(IREF1+5)
-        NCMPM2 = ZI(IACMP-1+IGD2)
-      ENDIF
-C
-C ----------------------------------------------------------------------
-C
-      NOMGD1=' '
-      NOMGD2=' '
-      IF (IADE1.NE.0) THEN
-        IMAV=ZI(IVOIS+IFA)
-        IF (IAPTM1.EQ.0) THEN
+        IF ( IAPTM1.EQ.0 ) THEN
 C         CARTE CONSTANTE
           IENT1=1
         ELSE
 C         LA CARTE A ETE ETENDUE
+          IMAV=ZI(IVOIS+IFA)
           IENT1=ZI(IAPTM1-1+IMAV)
         ENDIF
         NUMGD1=ZI(IREF1+9)
         NOMGD1=ZK8(IAGD-1+NUMGD1)
-      ENDIF
-C
-      IF (IADE2.NE.0) THEN
-        IMAV=ZI(IVOIS+IFA)
-        IF (IAPTM2.EQ.0) THEN
-C         CARTE CONSTANTE
-          IENT2=1
-        ELSE
-C       LA CARTE A ETE ETENDUE
-        IENT2=ZI(IAPTM2-1+IMAV)
-        ENDIF
-        NUMGD2 = ZI(IREF2+7)
-        NOMGD2 = ZK8(IAGD-1+NUMGD2)
-      ENDIF
-C
-C ----- BOUCLE SUR LES POINTS DE GAUSS DE LA FACE ----------------------
-C
-        CALL R8INIR(9,0.D0,CHX,1)
-        CALL R8INIR(9,0.D0,CHY,1)
-        CALL R8INIR(9,0.D0,CHZ,1)
-C
-        CALL R8INIR(9,0.D0,SIG11,1)
-        CALL R8INIR(9,0.D0,SIG22,1)
-        CALL R8INIR(9,0.D0,SIG33,1)
-        CALL R8INIR(9,0.D0,SIG12,1)
-        CALL R8INIR(9,0.D0,SIG13,1)
-        CALL R8INIR(9,0.D0,SIG23,1)
-      DO 10 IPGF=1,NPGB
-C
-         INO=NOE(IPGF,IFA,ITYP)
-C
-         IF (NPGB.EQ.6.AND.IPGF.LE.3) GOTO 10
-C
-C ----- CALCUL DES CHARGES APPLIQUEES SUR LE BORD ----------------------
-C ------- RECUPERATION DES PRESSIONS -----------------------------------
-C
-        IF (NOMGD2(1:6).EQ.'PRES_R') THEN
-          PR=ZR(IAVA2-1+(IENT2-1)*NCMPM2+1)
-C
-          IF (ABS(PR).GT.1.D-15) THEN
-C
-            CHX(IPGF)=-PR*NX(IPGF)
-            CHY(IPGF)=-PR*NY(IPGF)
-            CHZ(IPGF)=-PR*NZ(IPGF)
-C
-          END IF
-C  
-        ELSE IF (NOMGD2(1:6).EQ.'PRES_F') THEN
-          PRF=ZK8(IAVA2-1+(IENT2-1)*NCMPM2+1)
-C
-          IF (PRF.NE.'&FOZERO') THEN
-C
-            NOMPAR(1)='X'
-            NOMPAR(2)='Y'
-            NOMPAR(3)='Z'
-            NOMPAR(4)='INST'
-            VALPAR(1)=ZR(IGEOM+3*INO-3)
-            VALPAR(2)=ZR(IGEOM+3*INO-2)
-            VALPAR(3)=ZR(IGEOM+3*INO-1)
-            VALPAR(4)=INST
-            CALL FOINTE('FM',PRF,4,NOMPAR,VALPAR,PRC(IPGF),IER)
-C
-            CHX(IPGF)=-PRC(IPGF)*NX(IPGF)
-            CHY(IPGF)=-PRC(IPGF)*NY(IPGF)
-            CHZ(IPGF)=-PRC(IPGF)*NZ(IPGF)
-C
-          END IF
-C
-C ------- RECUPERATION DES FORCES --------------------------------------
-C
-        ELSE IF (NOMGD1(1:6).EQ.'FORC_R') THEN
+        IF (NOMGD1(1:6).EQ.'FORC_R') THEN
           FX=ZR(IAVA1-1+(IENT1-1)*NCMPM1+1)
           FY=ZR(IAVA1-1+(IENT1-1)*NCMPM1+2)
           FZ=ZR(IAVA1-1+(IENT1-1)*NCMPM1+3)
-
-          IF (ABS(FX).GT.1.D-15.OR.
-     &        ABS(FY).GT.1.D-15.OR.
-     &        ABS(FZ).GT.1.D-15) THEN
-C
-            CHX(IPGF)=FX
-            CHY(IPGF)=FY
-            CHZ(IPGF)=FZ
-C
-          END IF
-
+          IF ( ABS(FX).GT.1.D-15 .OR.
+     &         ABS(FY).GT.1.D-15 .OR.
+     &         ABS(FZ).GT.1.D-15 ) THEN
+            CALRE1 = .TRUE.
+          ENDIF
         ELSE IF (NOMGD1(1:6).EQ.'FORC_F') THEN
           FXF=ZK8(IAVA1-1+(IENT1-1)*NCMPM1+1)
           FYF=ZK8(IAVA1-1+(IENT1-1)*NCMPM1+2)
           FZF=ZK8(IAVA1-1+(IENT1-1)*NCMPM1+3)
-
-          IF (FXF.NE.'&FOZERO'.OR.
-     &        FYF.NE.'&FOZERO'.OR.
-     &        FZF.NE.'&FOZERO') THEN
+          IF ( FXF.NE.'&FOZERO' .OR.
+     &         FYF.NE.'&FOZERO' .OR.
+     &         FZF.NE.'&FOZERO' ) THEN
+            CALFO1 = .TRUE.
+          ENDIF
+        ENDIF
+      ENDIF
 C
-            NOMPAR(1)='X'
-            NOMPAR(2)='Y'
-            NOMPAR(3)='Z'
-            NOMPAR(4)='INST'
-            VALPAR(1)=ZR(IGEOM+3*INO-3)
-            VALPAR(2)=ZR(IGEOM+3*INO-2)
-            VALPAR(3)=ZR(IGEOM+3*INO-1)
-            VALPAR(4)=INST
-            CALL FOINTE('FM',FXF,4,NOMPAR,VALPAR,FXC(IPGF),IER1)
-            CALL FOINTE('FM',FYF,4,NOMPAR,VALPAR,FYC(IPGF),IER2)
-            CALL FOINTE('FM',FZF,4,NOMPAR,VALPAR,FZC(IPGF),IER3)
+C 1.2. ==> LES PRESSIONS
 C
-            CHX(IPGF)=FXC(IPGF)
-            CHY(IPGF)=FYC(IPGF)
-            CHZ(IPGF)=FZC(IPGF)
+      CALRE2 = .FALSE.
+      CALFO2 = .FALSE.
+      NOMGD2=' '
+      IADE2 = ZI(IREF2+4)
+      IAVA2 = ZI(IREF2+5)
+      IAPTM2 = ZI(IREF2+6)
+      IF ( IADE2.NE.0 ) THEN
+        IGD2   = ZI(IADE2)
+        IACMP  = ZI(IREF1+5)
+        NCMPM2 = ZI(IACMP-1+IGD2)
+        IF ( IAPTM2.EQ.0 ) THEN
+C         CARTE CONSTANTE
+          IENT2=1
+        ELSE
+C       LA CARTE A ETE ETENDUE
+          IMAV=ZI(IVOIS+IFA)
+          IENT2=ZI(IAPTM2-1+IMAV)
+        ENDIF
+        NUMGD2 = ZI(IREF2+7)
+        NOMGD2 = ZK8(IAGD-1+NUMGD2)
+CGN      WRITE(6,*) 'NUMGD2=',NUMGD2
+        IF (NOMGD2(1:6).EQ.'PRES_R') THEN
+          PR=ZR(IAVA2-1+(IENT2-1)*NCMPM2+1)
+          IF ( ABS(PR).GT.1.D-15 ) THEN
+            CALRE2 = .TRUE.
+          ENDIF
+        ELSE IF (NOMGD2(1:6).EQ.'PRES_F') THEN
+          PRF=ZK8(IAVA2-1+(IENT2-1)*NCMPM2+1)
+          IF (PRF.NE.'&FOZERO') THEN
+            CALFO2 = .TRUE.
+          ENDIF
+        ENDIF
+      ENDIF
+         IF ( NNOF.EQ.1789) THEN
+          WRITE(6,*) 'NOMGD2 :',NOMGD2
+          WRITE(6,*) '.. IMAV=',IMAV,' ==> IENT2 =',IENT2
+CGN          WRITE(6,*) '.. (IENT2-1)*NCMPM2+1 =',(IENT2-1)*NCMPM2+1
+          IF (NOMGD2(1:6).EQ.'PRES_R') THEN
+            WRITE(6,*) '.. PR =',PR
+          ELSE IF (NOMGD2(1:6).EQ.'PRES_F') THEN
+            WRITE(6,*) '.. PRF =',PRF
+          ENDIF
+          WRITE(6,*) 'CALRE1 : ',CALRE1,', CALFO1 : ',CALFO1
+          WRITE(6,*) 'CALRE2 : ',CALRE2,', CALFO2 : ',CALFO2
+         ENDIF
 C
-          END IF
-        END IF
+C 1.3. ==> CALCULS PREALABLES
 C
-C ----- RECUPERATION DES CONTRAINTES AUX PTS DE GAUSS ------------------
+      IF ( CALFO1 .OR. CALFO2 ) THEN
+        NOMPAR(1)='X'
+        NOMPAR(2)='Y'
+        NOMPAR(3)='Z'
+        NOMPAR(4)='INST'
+      ENDIF
 C
+      IF ( CALRE1 .OR. CALFO1 .OR. CALRE2 .OR. CALFO2 ) THEN
+        CALCUL = .TRUE.
+      ELSE
+        CALCUL = .FALSE.
+      ENDIF
 C
-        IF ((NOMGD1(1:6).EQ.'FORC_R').OR.
-     &      (NOMGD1(1:6).EQ.'FORC_F').OR.
-     &      (NOMGD2(1:6).EQ.'PRES_R').OR.
-     &      (NOMGD2(1:6).EQ.'PRES_F')) THEN
-C	
+C 2. ---- BOUCLE SUR LES NOEUDS DE LA FACE -----------------------------
+C
+      DO 20 , IN = 1 , NNOF
+C
+C 2.1. ==> RECUPERATION DES CONTRAINTES AUX NOEUDS ------------------
 C ----- PAS DE CHARGEMENT EXPLICITE SUR LE BORD ==> SIGMA RESTE NUL
-          SIG11(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+1)
-          SIG22(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+2)
-          SIG33(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+3)
-          SIG12(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+4)
-          SIG13(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+5)
-          SIG23(IPGF)=ZR(ISIG-1+NBCMP*(INO-1)+6)
-C    
-        END IF
 C
- 10   CONTINUE
+        IF ( CALCUL) THEN
+C
+          INO = NOE(IN,IFA,TYMVOL)
+C
+          IAUX = ISIG-1+NBCMP*(INO-1)+1
+          SIG11(IN) = ZR(IAUX)
+          SIG22(IN) = ZR(IAUX+1)
+          SIG33(IN) = ZR(IAUX+2)
+          SIG12(IN) = ZR(IAUX+3)
+          SIG13(IN) = ZR(IAUX+4)
+          SIG23(IN) = ZR(IAUX+5)
+C
+        ELSE
+C
+          SIG11(IN) = 0.D0
+          SIG22(IN) = 0.D0
+          SIG33(IN) = 0.D0
+          SIG12(IN) = 0.D0
+          SIG13(IN) = 0.D0
+          SIG23(IN) = 0.D0
+C
+        ENDIF
+C
+C 2.2. ==> CALCUL DES CHARGES APPLIQUEES SUR LE BORD -------------------
+C 2.2.1. ==> RECUPERATION DES FORCES -----------------------------------
+C
+        IF ( CALRE1 ) THEN
+C
+          CHX(IN) = FX
+          CHY(IN) = FY
+          CHZ(IN) = FZ
+C
+        ELSEIF ( CALFO1 ) THEN
+C
+          VALPAR(1) = ZR(IGEOM+3*INO-3)
+          VALPAR(2) = ZR(IGEOM+3*INO-2)
+          VALPAR(3) = ZR(IGEOM+3*INO-1)
+          VALPAR(4) = INST
+          CALL FOINTE('FM',FXF,4,NOMPAR,VALPAR,FXC(IN),IER1)
+          CALL FOINTE('FM',FYF,4,NOMPAR,VALPAR,FYC(IN),IER2)
+          CALL FOINTE('FM',FZF,4,NOMPAR,VALPAR,FZC(IN),IER3)
+C
+          CHX(IN) = FXC(IN)
+          CHY(IN) = FYC(IN)
+          CHZ(IN) = FZC(IN)
+C
+C 2.2.2. ==> RECUPERATION DES PRESSIONS --------------------------------
+C
+        ELSEIF ( CALRE2 ) THEN
+C
+          CHX(IN) = -PR*NX(IN)
+          CHY(IN) = -PR*NY(IN)
+          CHZ(IN) = -PR*NZ(IN)
+C
+        ELSEIF ( CALFO2 ) THEN
+C
+          VALPAR(1) = ZR(IGEOM+3*INO-3)
+          VALPAR(2) = ZR(IGEOM+3*INO-2)
+          VALPAR(3) = ZR(IGEOM+3*INO-1)
+          VALPAR(4) = INST
+          CALL FOINTE('FM',PRF,4,NOMPAR,VALPAR,PRC(IN),IER)
+C
+          CHX(IN) = -PRC(IN)*NX(IN)
+          CHY(IN) = -PRC(IN)*NY(IN)
+          CHZ(IN) = -PRC(IN)*NZ(IN)
+C
+C 2.2.3. ==> PAS DE CHARGEMENT EXPLICITE SUR LE BORD
+C
+        ELSE
+C
+          CHX(IN) = 0.D0
+          CHY(IN) = 0.D0
+          CHZ(IN) = 0.D0
+C
+        ENDIF
+C
+   20 CONTINUE
+C
+         IF ( NNOF.EQ.1789 ) THEN
+          WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
+          WRITE(6,1001)
+ 1000 FORMAT(I3,6X,(6(1X,1PE12.5)))
+ 1001 FORMAT('INO        SIXX         SIYY         SIZZ         SIXY',
+     >           '         SIXZ         SIYZ')
+ 1002 FORMAT('INO        CHX          CHY          CHZ          NX  ',
+     >           '         NY           NZ')
+      DO 110 , IN = 1 , NNOF
+        INO=NOE(IN,IFA,TYMVOL)
+        WRITE(6,1000) INO,SIG11(IN),SIG22(IN),SIG33(IN),
+     >                   SIG12(IN),SIG13(IN),SIG23(IN)
+ 110  CONTINUE
+          WRITE(6,1002)
+      DO 120 , IN = 1 , NNOF
+        INO=NOE(IN,IFA,TYMVOL)
+        WRITE(6,1000) INO,CHX(IN),CHY(IN),CHZ(IN),NX(IN),NY(IN),NZ(IN)
+ 120  CONTINUE
+              ENDIF
 C
       END

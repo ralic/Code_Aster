@@ -1,4 +1,4 @@
-#@ MODIF macr_ecre_calc_ops Macro  DATE 07/07/2009   AUTEUR MICHEL S.MICHEL 
+#@ MODIF macr_ecre_calc_ops Macro  DATE 29/09/2009   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

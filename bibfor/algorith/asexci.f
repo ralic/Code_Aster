@@ -8,7 +8,7 @@
       LOGICAL            MONOAP, MUAPDE, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IBID, IER, IM1, IM2, IOC, NM, NN, NG, NBOCC, 
      &             JPSE, JASY, NEQ, JDDL1, NBA, NBBLOQ, NBL, NBLIAI,
-     &             JNNO, JNSP, JDSP, JESP, JSPE, JNAS
+     &             JNNO, JNSP, JDSP, JESP, JSPE, JNAS,NOC
+      CHARACTER*4  K4B
       CHARACTER*5  MOTFAC
       CHARACTER*8  K8B, NOMA
       CHARACTER*14 NUME
@@ -78,25 +79,26 @@ C
       IER = 0
       MONOAP = .FALSE.
       MUAPDE = .TRUE.
-      MOTFAC = 'EXCIT'
-      CALL GETFAC ( MOTFAC, NBOCC )
 C
 C     --- EST-ON EN MONO-APPUI OU MULTI-APPUI ? ---
       IM1 = 0
       IM2 = 0
+      CALL GETVTX(' ','MONO_APPUI',1,1,1,K8B,NM)
+      IF ( NM .NE. 0 ) THEN
+         IM1 = IM1 + 1
+         IF (K8B(1:3).EQ.'OUI' ) MONOAP = .TRUE.
+      ENDIF
+C
+      CALL GETVTX(' ','MULTI_APPUI',1,1,1,K8B,NM)
+      IF ( NM .NE. 0 ) THEN
+         IM2 = IM2 + 1
+         IF (K8B(1:7).EQ.'CORRELE' ) MUAPDE = .FALSE.
+      ENDIF
+C
+C     --- VERIFICATION DES APPUIS ---
+      MOTFAC = 'EXCIT'
+      CALL GETFAC ( MOTFAC, NBOCC )
       DO 10 IOC = 1,NBOCC
-C
-         CALL GETVTX(MOTFAC,'MONO_APPUI',IOC,1,1,K8B,NM)
-         IF ( NM .NE. 0 ) THEN
-            IM1 = IM1 + 1
-            IF (K8B(1:3).EQ.'OUI' ) MONOAP = .TRUE.
-         ENDIF
-C
-         CALL GETVTX(MOTFAC,'MULTI_APPUI',IOC,1,1,K8B,NM)
-         IF ( NM .NE. 0 ) THEN
-            IM2 = IM2 + 1
-            IF (K8B(1:7).EQ.'CORRELE' ) MUAPDE = .FALSE.
-         ENDIF
 C
          CALL GETVTX(MOTFAC,'NOEUD',IOC,1,0,K8B,NN)
          IF ( NN.NE.0 .AND. MONOAP ) THEN
@@ -113,6 +115,14 @@ C
 C
       IF (IER.NE.0) CALL U2MESS('F','SEISME_6')
       IF (IM1.NE.0 .AND. IM2.NE.0) CALL U2MESS('F','SEISME_8')
+      
+C
+C SI DECORRELE LA SOMME INTERGROUPE DOIT ETRE QUADRATIQUE
+C
+      IF ((.NOT.MONOAP) .AND. (.NOT.MUAPDE)) THEN
+        CALL GETFAC ( 'GROUP_APPUI', NOC )      
+        IF (NOC.NE.0) CALL U2MESS('F','SEISME_29')
+      ENDIF
 C
       IF ( MONOAP ) THEN
          NBSUP = 1

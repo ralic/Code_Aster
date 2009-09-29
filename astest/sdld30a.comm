@@ -1,4 +1,4 @@
-# MODIF  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  SYSTEME 2 MASSES - 3 RESSORTS ENCASTRE EN NO1 ET NO4
 #        SOUMISE A UNE EXCITATION  SPECTRALE MULTIPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,178 +25,180 @@
 #SPEC1                  SPEC2
 # DDS1                   DDS2
 ##############################
-DEBUT(CODE=_F(NOM='SDLD30A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-
-M2=10.0
-M3=10.0
 
 
-K1=1000.0
-K2=1000.0
-K3=10000.0
+DEBUT(CODE=_F(NOM='SDLD30A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
+M2 = 10.0;
+
+M3 = 10.0;
+
+K1 = 1000.0;
+
+K2 = 1000.0;
+
+K3 = 10000.0;
 
 
 # PARAMETRES EXCITATIONS MULTI APPUIS SRO+DDS
 # NO1
-A1_F1=7.0
-A1_F2=5.0
-DDS1=-0.04
+A1_F1 = 7.0;
+
+A1_F2 = 5.0;
+
+DDS1 = -0.04;
+
+
 # NO4
-A2_F1=12.0
-A2_F2=6.0
-DDS2=0.06
+A2_F1 = 12.0;
 
-MAILLAGE=LIRE_MAILLAGE( )
+A2_F2 = 6.0;
 
-MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
-         _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
-                GROUP_MA = 'RESSORT'),
-              _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
-                GROUP_NO = 'MASSES'))
-                    )
-
-#
-CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
-                _F(  CARA = 'K_T_D_L',
-                           REPERE = 'GLOBAL',
-                          MAILLE = 'ELN1',
-                          VALE = (K1, 1., K1, )),
-                _F(  CARA = 'K_T_D_L',
-                           REPERE = 'GLOBAL',
-                          MAILLE = 'ELN2',
-                          VALE = (K2, 1., K2, )),
-                 _F(  CARA = 'K_T_D_L',
-                           REPERE = 'GLOBAL',
-                          MAILLE = 'ELN3',
-                          VALE = (K3, 1., K3, )),
+DDS2 = 0.06;
 
 
-                        _F(  CARA = 'M_T_D_N',  NOEUD = 'NO2',  VALE = M2),
-                        _F(  CARA = 'M_T_D_N',  NOEUD = 'NO3',  VALE = M3),
+MAILLAGE=LIRE_MAILLAGE();
 
-
-                        )
-                         )
-
-MAT=DEFI_MATERIAU(     ELAS=_F(  E = 1.6E+11,
-                                       RHO = 1.3E+04,
-                                       NU = 0.3)
-                           )
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=(_F(GROUP_MA='RESSORT',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),
+                         _F(GROUP_NO='MASSES',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),),);
 
 #
 
-CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAILLAGE,
-                                   AFFE=_F(  TOUT = 'OUI',
-                             MATER = MAT)
-                           )
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
+                        DISCRET=(_F(REPERE='GLOBAL',
+                                    CARA='K_T_D_L',
+                                    MAILLE='ELN1',
+                                    VALE=(K1,1.,K1,),),
+                                 _F(REPERE='GLOBAL',
+                                    CARA='K_T_D_L',
+                                    MAILLE='ELN2',
+                                    VALE=(K2,1.,K2,),),
+                                 _F(REPERE='GLOBAL',
+                                    CARA='K_T_D_L',
+                                    MAILLE='ELN3',
+                                    VALE=(K3,1.,K3,),),
+                                 _F(CARA='M_T_D_N',
+                                    NOEUD='NO2',
+                                    VALE=M2,),
+                                 _F(CARA='M_T_D_N',
+                                    NOEUD='NO3',
+                                    VALE=M3,),),);
 
+MAT=DEFI_MATERIAU(ELAS=_F(E=1.6E+11,
+                          NU=0.3,
+                          RHO=1.3E+04,),);
 
 #
-CON_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
-# ------------ LES DEPL_IMPO SONT DEFINIS DANS LE REPERE GLOBAL
-               _F(  GROUP_NO = 'ENCASTRE',  DX = 0.,  DY = 0.,  DZ = 0.),
-               _F(  GROUP_NO = 'MASSES',    DY = 0.,  DZ = 0.))
-                        )
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MAT,),);
 
 #
-MACRO_MATR_ASSE(  MODELE=MODELE,   CHARGE=CON_LIM,   CARA_ELEM=CARA_ELE,
-               CHAM_MATER=CHAMPMAT,
-                   NUME_DDL=CO("NUMEDDL"),MATR_ASSE=(
-                 _F(  MATRICE = CO("RIGIDITE"),  OPTION = 'RIGI_MECA'),
-                           _F(  MATRICE = CO("MASSE"),     OPTION = 'MASS_MECA'))
-               )
+
+CON_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=(_F(GROUP_NO='ENCASTRE',
+                                    DX=0.,
+                                    DY=0.,
+                                    DZ=0.,),
+                                 _F(GROUP_NO='MASSES',
+                                    DY=0.,
+                                    DZ=0.,),),);
+
+#
+
+MACRO_MATR_ASSE(MODELE=MODELE,
+                CHAM_MATER=CHAMPMAT,
+                CARA_ELEM=CARA_ELE,
+                CHARGE=CON_LIM,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),),);
 
 #
 # CALCUL DES MODES AVEC BLOCAGE DES ANCRAGES:
 #---------------------------------------------
-MASSINER=POST_ELEM(
-               MODELE=MODELE,
-               CHARGE=CON_LIM,
-               CARA_ELEM=CARA_ELE,
-               CHAM_MATER=CHAMPMAT,
-               MASS_INER=_F( TOUT = 'OUI',)
-                        ),
 
+MASSINER=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+                   MODELE=MODELE,
+                   CHAM_MATER=CHAMPMAT,
+                   CARA_ELEM=CARA_ELE,
+                   CHARGE=CON_LIM,);
 
-
-MODES=MODE_ITER_SIMULT(
-                                MATR_A=RIGIDITE,
-                                MATR_B=MASSE,
-                               METHODE='SORENSEN',
-                             CALC_FREQ=_F(  NMAX_FREQ = 3)
-                          )
-
+MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
+                       MATR_B=MASSE,
+                       METHODE='SORENSEN',
+                       CALC_FREQ=_F(NMAX_FREQ=3,),);
 
 #
-MODES=NORM_MODE(reuse=MODES,
-                          MODE=MODES,
-                         NORME='MASS_GENE',
-                  )
 
+MODES=NORM_MODE(reuse =MODES,
+                MODE=MODES,
+                NORME='MASS_GENE',);
 
 #
-MODES=CALC_ELEM(reuse=MODES,
-                          MODELE=MODELE,
-                        RESULTAT=MODES,
-                       CARA_ELEM=CARA_ELE,
-                      CHAM_MATER=CHAMPMAT,
-                          OPTION=( 'SIEF_ELGA_DEPL',
-                                    'EFGE_ELNO_DEPL',)
-                  )
 
-MODES=CALC_NO(reuse=MODES,
-               MODELE=MODELE,
-               CARA_ELEM=CARA_ELE,
-               TOUT_ORDRE='OUI',
-               OPTION=('REAC_NODA','FORC_NODA'),
-               RESULTAT=MODES
-               )
+MODES=CALC_ELEM(reuse =MODES,
+                MODELE=MODELE,
+                CHAM_MATER=CHAMPMAT,
+                CARA_ELEM=CARA_ELE,
+                RESULTAT=MODES,
+                OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
 
-
+MODES=CALC_NO(reuse =MODES,
+              RESULTAT=MODES,
+              TOUT_ORDRE='OUI',
+              OPTION=('REAC_NODA','FORC_NODA',),
+              MODELE=MODELE,
+              CARA_ELEM=CARA_ELE,);
 
 # TESTS DES FREQUENCES PROPRES
 # REF : ANALYTIQUE
 #-------------------------------------------------
-TEST_RESU(RESU=( _F(  RESULTAT = MODES,
-                      PARA = 'FREQ',
-                     NUME_MODE = 1,
-                     PRECISION=0.001,
-                     VALE = 2.18815,
-                     REFERENCE='ANALYTIQUE',
-                     ),
-                   _F(  RESULTAT = MODES,
-                        PARA = 'FREQ',
-                     NUME_MODE = 2,
-                     PRECISION=0.001,
-                     VALE = 5.30485,
-                     REFERENCE='ANALYTIQUE',
-                     ),
-                   ),),
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_MODE=1,
+                   PARA='FREQ',
+                   VALE=2.18815,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODES,
+                   NUME_MODE=2,
+                   PARA='FREQ',
+                   VALE=5.30485,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 #
 # CALCUL DES MODES STATIQUES AUX POINTS D'ANCRAGE:
 #-------------------------------------------------
-MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
-                         MODE_STAT=_F(  TOUT = 'OUI', AVEC_CMP = 'DX') )
 
-MODE_STA=CALC_ELEM(reuse=MODE_STA,
-                          MODELE=MODELE,
-                        RESULTAT=MODE_STA,
-                       CARA_ELEM=CARA_ELE,
-                      CHAM_MATER=CHAMPMAT,
-                          OPTION=( 'SIEF_ELGA_DEPL',
-                                    'EFGE_ELNO_DEPL',)
-                  )
+MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
+                       MATR_MASS=MASSE,
+                       MODE_STAT=_F(TOUT='OUI',
+                                    AVEC_CMP='DX',),);
 
-MODE_STA=CALC_NO(reuse=MODE_STA,
-               MODELE=MODELE,
-               CARA_ELEM=CARA_ELE,
-               TOUT_ORDRE='OUI',
-               OPTION=('REAC_NODA','FORC_NODA'),
-               RESULTAT=MODE_STA
-               )
+MODE_STA=CALC_ELEM(reuse =MODE_STA,
+                   MODELE=MODELE,
+                   CHAM_MATER=CHAMPMAT,
+                   CARA_ELEM=CARA_ELE,
+                   RESULTAT=MODE_STA,
+                   OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
 
-
+MODE_STA=CALC_NO(reuse =MODE_STA,
+                 RESULTAT=MODE_STA,
+                 TOUT_ORDRE='OUI',
+                 OPTION=('REAC_NODA','FORC_NODA',),
+                 MODELE=MODELE,
+                 CARA_ELEM=CARA_ELE,);
 
 #-------------------------------------------------
 #-------------------------------------------------
@@ -206,917 +208,398 @@ MODE_STA=CALC_NO(reuse=MODE_STA,
 # CUMULEES LORS DU CALCUL DES REPONSES PAR APPUI
 #-------------------------------------------------
 #-------------------------------------------------
-
 # ACC X NO1
 
-ACCX1=DEFI_FONCTION(NOM_PARA='FREQ',
-                        INTERPOL='LOG',
-                       VALE=(
-                       2.18815, A1_F1,
-                       5.30485, A1_F2,
-                              ),
-                       PROL_GAUCHE='CONSTANT',
-                       PROL_DROITE='CONSTANT')
+ACCX1=DEFI_FONCTION(NOM_PARA='FREQ',VALE=(2.18815,A1_F1,
+                          5.30485,A1_F2,
+                          ),INTERPOL='LOG',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 SPEX1=DEFI_NAPPE(NOM_PARA='AMOR',
-                     INTERPOL=('LIN','LOG',),
-                       INFO=2,
-                    PARA=(0.0, 1.0, ),
-                    PROL_GAUCHE='CONSTANT',
-                    PROL_DROITE='CONSTANT',
-                    FONCTION=(ACCX1, ACCX1,)
-                    )
+                 PARA=(0.0,1.0,),
+                 FONCTION=(ACCX1,ACCX1,),
+                 INTERPOL=('LIN','LOG',),
+                 PROL_DROITE='CONSTANT',
+                 PROL_GAUCHE='CONSTANT',
+                 INFO=2,);
 
 # ACC X NO4
 
-ACCX2=DEFI_FONCTION(NOM_PARA='FREQ',
-                        INTERPOL='LOG',
-                       VALE=(
-                       2.18815, A2_F1,
-                       5.30485, A2_F2,
-                              ),
-                       PROL_GAUCHE='CONSTANT',
-                       PROL_DROITE='CONSTANT')
+ACCX2=DEFI_FONCTION(NOM_PARA='FREQ',VALE=(2.18815,A2_F1,
+                          5.30485,A2_F2,
+                          ),INTERPOL='LOG',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 SPEX2=DEFI_NAPPE(NOM_PARA='AMOR',
-                     INTERPOL=('LIN','LOG',),
-                       INFO=2,
-                    PARA=(0.0, 1.0, ),
-                    PROL_GAUCHE='CONSTANT',
-                    PROL_DROITE='CONSTANT',
-                    FONCTION=(ACCX2, ACCX2,)
-                    )
+                 PARA=(0.0,1.0,),
+                 FONCTION=(ACCX2,ACCX2,),
+                 INTERPOL=('LIN','LOG',),
+                 PROL_DROITE='CONSTANT',
+                 PROL_GAUCHE='CONSTANT',
+                 INFO=2,);
 
 #------------------------------------------
 # RGQBC
 # REPONSE GLOBALE SUR BASE MODALE COMPLETE
 # MODES 1 2
-# COMB_MULT_APPUI QUAD
+# GROUP_APPUI QUAD
 #------------------------------------------
-RGQBC=COMB_SISM_MODAL(
-              MODE_MECA=MODES,
-              NUME_MODE=(1,2),
-              AMOR_REDUIT=0.05,
-              CORR_FREQ='NON',
-              MASS_INER=MASSINER,
-              EXCIT=(
-# APPUI NO1
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO1',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX1,
-                  ECHELLE = 1.,
-                  ),
-# APPUI NO4
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO4',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX2,
-                  ECHELLE = 1.,
-                  ),),
 
-              COMB_MODE=_F(  TYPE = 'SRSS',  ),
-
-              COMB_MULT_APPUI=_F(
-                        TOUT ='OUI',
-                        TYPE_COMBI = 'QUAD',
-                         ),
-
-
-               DEPL_MULT_APPUI=(
-              _F(
-               NOM_CAS ='DDS NO1',
-               NUME_CAS =1,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO1',
-               DX = DDS1,
-                     ),
-              _F(
-               NOM_CAS ='DDS NO4',
-               NUME_CAS =2,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDS2,
-                     ),
-
-
-                     ),
-
-              OPTION=(
-                        'DEPL',
-                        'REAC_NODA',
-                     ),
-
-              IMPRESSION=_F( TOUT = 'OUI',),
-              INFO=2,
-                  ),
+RGQBC=COMB_SISM_MODAL(MODE_MECA=MODES,
+                      NUME_MODE=(1,2,),
+                      AMOR_REDUIT=0.05,
+                      MASS_INER=MASSINER,
+                      CORR_FREQ='NON',
+                      MULTI_APPUI ='DECORRELE',
+                      EXCIT=(_F(NOEUD='NO1',
+                                AXE=(1.,0.,0.,),
+                                SPEC_OSCI=SPEX1,
+                                ECHELLE=1.,),
+                             _F(NOEUD='NO4',
+                                AXE=(1.,0.,0.,),
+                                SPEC_OSCI=SPEX2,
+                                ECHELLE=1.,),),
+                      COMB_MODE=_F(TYPE='SRSS',),
+                      DEPL_MULT_APPUI=(_F(NOM_CAS='DDS NO1',
+                                          NUME_CAS=1,
+                                          MODE_STAT=MODE_STA,
+                                          NOEUD='NO1',
+                                          DX=DDS1,),
+                                       _F(NOM_CAS='DDS NO4',
+                                          NUME_CAS=2,
+                                          MODE_STAT=MODE_STA,
+                                          NOEUD='NO4',
+                                          DX=DDS2,),),
+                      OPTION=('DEPL','REAC_NODA',),
+                      GROUP_APPUI=(_F(NOEUD='NO1',),),
+                      INFO=2,
+                      IMPRESSION=_F(TOUT='OUI',),);
 
 # TESTS DES DEPLACEMENTS
 #------------------------------------------
 
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 5.4382e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 5.75544e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = RGQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 6.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=RGQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=0.04,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.054382,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.0575544,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.06,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # TESTS DES REACTIONS NODALES AUX APPUIS
 #------------------------------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGQBC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 53.6769,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
 
-                   _F(
-                        RESULTAT = RGQBC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 74.412,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
-
-
-
-#------------------------------------------
-# RGLBC
-# REPONSE GLOBALE SUR BASE MODALE COMPLETE
-# MODES 1 2
-# COMB_MULT_APPUI LINE
-#------------------------------------------
-RGLBC=COMB_SISM_MODAL(
-              MODE_MECA=MODES,
-              NUME_MODE=(1,2),
-              AMOR_REDUIT=0.05,
-              CORR_FREQ='NON',
-              MASS_INER=MASSINER,
-              EXCIT=(
-# APPUI NO1
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO1',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX1,
-                  ECHELLE = 1.,
-                  ),
-# APPUI NO4
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO4',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX2,
-                  ECHELLE = 1.,
-                  ),),
-
-              COMB_MODE=_F(  TYPE = 'SRSS',  ),
-
-              COMB_MULT_APPUI=_F(
-                        NOEUD =('NO1','NO4'),
-                        TYPE_COMBI = 'LINE',
-                         ),
-
-
-               DEPL_MULT_APPUI=(
-              _F(
-               NOM_CAS ='DDS NO1',
-               NUME_CAS =1,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO1',
-               DX = DDS1,
-                     ),
-              _F(
-               NOM_CAS ='DDS NO4',
-               NUME_CAS =2,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDS2,
-                     ),
-
-
-                     ),
-
-              OPTION=(
-                        'DEPL',
-                        'REAC_NODA',
-                     ),
-
-              IMPRESSION=_F( TOUT = 'OUI',),
-              INFO=2,
-                  ),
-
-
-# TESTS DES DEPLACEMENTS
-#------------------------------------------
-
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGLBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGLBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 7.48259e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGLBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 6.03377e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = RGLBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 6.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
-
-# TESTS DES REACTIONS NODALES AUX APPUIS
-#------------------------------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGLBC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 73.4576,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-
-                   _F(
-                        RESULTAT = RGLBC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 97.2617,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
-
-
+TEST_RESU(RESU=(_F(RESULTAT=RGQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=53.6769,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=74.412,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 #------------------------------------------
 # RGQBI
 # REPONSE GLOBALE SUR BASE MODALE INCOMPLETE
 # SANS CORRECTION STATIQUE
 # MODES 1
-# COMB_MULT_APPUI QUAD
+# GROUP_APPUI QUAD
 #------------------------------------------
-RGQBI=COMB_SISM_MODAL(
-              MODE_MECA=MODES,
-              NUME_MODE=(1,),
-              AMOR_REDUIT=0.05,
-              CORR_FREQ='NON',
-              MASS_INER=MASSINER,
-              EXCIT=(
-# APPUI NO1
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO1',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX1,
-                  ECHELLE = 1.,
-                  ),
-# APPUI NO4
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO4',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX2,
-                  ECHELLE = 1.,
-                  ),),
 
-              COMB_MODE=_F(  TYPE = 'SRSS',  ),
-
-              COMB_MULT_APPUI=_F(
-                        NOEUD=('NO1','NO4'),
-                        TYPE_COMBI = 'QUAD',
-                         ),
-
-
-               DEPL_MULT_APPUI=(
-              _F(
-               NOM_CAS ='DDS NO1',
-               NUME_CAS =1,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO1',
-               DX = DDS1,
-                     ),
-              _F(
-               NOM_CAS ='DDS NO4',
-               NUME_CAS =2,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDS2,
-                     ),
-
-
-                     ),
-
-              OPTION=(
-                        'DEPL',
-                        'REAC_NODA',
-                     ),
-
-              IMPRESSION=_F( TOUT = 'OUI',),
-              INFO=2,
-                  ),
-
+RGQBI=COMB_SISM_MODAL(MODE_MECA=MODES,
+                      NUME_MODE=1,
+                      AMOR_REDUIT=0.05,
+                      MASS_INER=MASSINER,
+                      CORR_FREQ='NON',
+                      MULTI_APPUI ='DECORRELE',
+                      EXCIT=(_F(NOEUD='NO1',
+                                AXE=(1.,0.,0.,),
+                                SPEC_OSCI=SPEX1,
+                                ECHELLE=1.,),
+                             _F(NOEUD='NO4',
+                                AXE=(1.,0.,0.,),
+                                SPEC_OSCI=SPEX2,
+                                ECHELLE=1.,),),
+                      COMB_MODE=_F(TYPE='SRSS',),
+                      DEPL_MULT_APPUI=(_F(NOM_CAS='DDS NO1',
+                                          NUME_CAS=1,
+                                          MODE_STAT=MODE_STA,
+                                          NOEUD='NO1',
+                                          DX=DDS1,),
+                                       _F(NOM_CAS='DDS NO4',
+                                          NUME_CAS=2,
+                                          MODE_STAT=MODE_STA,
+                                          NOEUD='NO4',
+                                          DX=DDS2,),),
+                      GROUP_APPUI=(_F(NOEUD='NO1',),
+                                   _F(NOEUD='NO4',),),
+                      OPTION=('DEPL','REAC_NODA',),
+                      INFO=2,
+                      IMPRESSION=_F(TOUT='OUI',),);
 
 # TESTS DES DEPLACEMENTS
 #------------------------------------------
 
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGQBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGQBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 5.43794e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGQBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 5.73536e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = RGQBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 6.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=RGQBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=0.04,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.0543794,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.0573536,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.06,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # TESTS DES REACTIONS NODALES AUX APPUIS
 #------------------------------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGQBI,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 53.6743,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
 
-                   _F(
-                        RESULTAT = RGQBI,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 56.8312,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
-
-
-#------------------------------------------
-# RGLBI
-# REPONSE GLOBALE SUR BASE MODALE INCOMPLETE
-# SANS CORRECTION STATIQUE
-# MODES 1
-# COMB_MULT_APPUI LINE
-#------------------------------------------
-RGLBI=COMB_SISM_MODAL(
-              MODE_MECA=MODES,
-              NUME_MODE=(1,),
-              AMOR_REDUIT=0.05,
-              CORR_FREQ='NON',
-              MASS_INER=MASSINER,
-              EXCIT=(
-# APPUI NO1
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO1',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX1,
-                  ECHELLE = 1.,
-                  ),
-# APPUI NO4
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO4',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX2,
-                  ECHELLE = 1.,
-                  ),),
-
-              COMB_MODE=_F(  TYPE = 'SRSS',  ),
-
-              COMB_MULT_APPUI=_F(
-                        TOUT='OUI',
-                        TYPE_COMBI = 'LINE',
-                         ),
-
-
-               DEPL_MULT_APPUI=(
-              _F(
-               NOM_CAS ='DDS NO1',
-               NUME_CAS =1,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO1',
-               DX = DDS1,
-                     ),
-              _F(
-               NOM_CAS ='DDS NO4',
-               NUME_CAS =2,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDS2,
-                     ),
-
-
-                     ),
-
-              OPTION=(
-                        'DEPL',
-                        'REAC_NODA',
-                     ),
-
-              IMPRESSION=_F( TOUT = 'OUI',),
-              INFO=2,
-                  ),
-
-
-# TESTS DES DEPLACEMENTS
-#------------------------------------------
-
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 7.48229e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 6.01363e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = RGLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 6.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
-
-# TESTS DES REACTIONS NODALES AUX APPUIS
-#------------------------------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGLBI,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 73.4546,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-
-                   _F(
-                        RESULTAT = RGLBI,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 77.6841,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
-
-
-
+TEST_RESU(RESU=(_F(RESULTAT=RGQBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=53.6743,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=56.8312,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 #---------------------------------------------------
 # CALCUL PSEUDO MODES POUR LA CORRECTION STATIQUE
 # ACCELEARATION UNITAIRE PAR APPUI
 #---------------------------------------------------
 
-MODEC=MODE_STATIQUE(   MATR_RIGI=RIGIDITE,
-                          MATR_MASS=MASSE,
-                          PSEUDO_MODE=_F(  NOEUD = ('NO1','NO4',),
-                                           AVEC_CMP = ( 'DX', ),)
-                          )
+MODEC=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
+                    MATR_MASS=MASSE,
+                    PSEUDO_MODE=_F(NOEUD=('NO1','NO4',),
+                                   AVEC_CMP='DX',),);
 
-MODEC=CALC_ELEM(reuse=MODEC,
-                          MODELE=MODELE,
-                        RESULTAT=MODEC,
-                       CARA_ELEM=CARA_ELE,
-                      CHAM_MATER=CHAMPMAT,
-                          OPTION=( 'SIEF_ELGA_DEPL',
-                                    'EFGE_ELNO_DEPL',)
-                  )
+MODEC=CALC_ELEM(reuse =MODEC,
+                MODELE=MODELE,
+                CHAM_MATER=CHAMPMAT,
+                CARA_ELEM=CARA_ELE,
+                RESULTAT=MODEC,
+                OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
 
-MODEC=CALC_NO(reuse=MODEC,
-               MODELE=MODELE,
-               CARA_ELEM=CARA_ELE,
-               TOUT_ORDRE='OUI',
-               OPTION='REAC_NODA',
-               RESULTAT=MODEC
-               )
-
-
-
+MODEC=CALC_NO(reuse =MODEC,
+              RESULTAT=MODEC,
+              TOUT_ORDRE='OUI',
+              OPTION='REAC_NODA',
+              MODELE=MODELE,
+              CARA_ELEM=CARA_ELE,);
 
 #------------------------------------------
 # RGQBIC
 # REPONSE GLOBALE SUR BASE INCOMPLETE
 # AVEC CORRECTION STATIQUE
 # MODES 1
-# COMB_MULT_APPUI QUAD
+# GROUP_APPUI QUAD
 #------------------------------------------
 
-
-RGQBIC=COMB_SISM_MODAL(
-              MODE_MECA=MODES,
-              AMOR_REDUIT=0.05,
-              NUME_MODE=(1,),
-              MODE_CORR=MODEC,
-              CORR_FREQ='NON',
-              MASS_INER=MASSINER,
-              EXCIT=(
-# APPUI NO1
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO1',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX1,
-                  ECHELLE = 1.,
-                  ),
-# APPUI NO4
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO4',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX2,
-                  ECHELLE = 1.,
-                  ),),
-
-              COMB_MODE=_F(  TYPE = 'SRSS',  ),
-
-              COMB_MULT_APPUI=_F(
-                        TOUT ='OUI',
-                        TYPE_COMBI = 'QUAD',
-                         ),
-
-
-               DEPL_MULT_APPUI=(
-              _F(
-               NOM_CAS ='DDS NO1',
-               NUME_CAS =1,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO1',
-               DX = DDS1,
-                     ),
-              _F(
-               NOM_CAS ='DDS NO4',
-               NUME_CAS =2,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDS2,
-                     ),
-
-
-                     ),
-
-
-              OPTION=(
-                        'DEPL',
-                        'REAC_NODA',
-                     ),
-
-              IMPRESSION=_F( TOUT = 'OUI',),
-              INFO=2,
-                  ),
+RGQBIC=COMB_SISM_MODAL(MODE_MECA=MODES,
+                       NUME_MODE=1,
+                       MODE_CORR=MODEC,
+                       AMOR_REDUIT=0.05,
+                       MASS_INER=MASSINER,
+                       CORR_FREQ='NON',
+                       MULTI_APPUI ='DECORRELE',
+                       EXCIT=(_F(NOEUD='NO1',
+                                 AXE=(1.,0.,0.,),
+                                 SPEC_OSCI=SPEX1,
+                                 ECHELLE=1.,),
+                              _F(NOEUD='NO4',
+                                 AXE=(1.,0.,0.,),
+                                 SPEC_OSCI=SPEX2,
+                                 ECHELLE=1.,),),
+                       COMB_MODE=_F(TYPE='SRSS',),
+                       DEPL_MULT_APPUI=(_F(NOM_CAS='DDS NO1',
+                                           NUME_CAS=1,
+                                           MODE_STAT=MODE_STA,
+                                           NOEUD='NO1',
+                                           DX=DDS1,),
+                                        _F(NOM_CAS='DDS NO4',
+                                           NUME_CAS=2,
+                                           MODE_STAT=MODE_STA,
+                                           NOEUD='NO4',
+                                           DX=DDS2,),),
+                       GROUP_APPUI=(_F(NOEUD='NO1',),
+                                   _F(NOEUD='NO4',),),
+                       OPTION=('DEPL','REAC_NODA',),
+                       INFO=2,
+                       IMPRESSION=_F(TOUT='OUI',),);
 
 # TESTS DES DEPLACEMENTS
 #------------------------------------------
 
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGQBIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGQBIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 5.43820e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGQBIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 5.75544e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = RGQBIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 6.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=RGQBIC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=0.04,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBIC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.054382,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBIC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.0575544,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBIC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.06,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # TESTS DES REACTIONS NODALES AUX APPUIS
 #------------------------------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGQBIC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 53.6769,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
 
-                   _F(
-                        RESULTAT = RGQBIC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 74.412,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
-
-#------------------------------------------
-# RGLBIC
-# REPONSE GLOBALE SUR BASE INCOMPLETE
-# AVEC CORRECTION STATIQUE
-# MODES 1
-# COMB_MULT_APPUI LINE
-#------------------------------------------
+TEST_RESU(RESU=(_F(RESULTAT=RGQBIC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=53.6769,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RGQBIC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=74.412,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 
-RGLBIC=COMB_SISM_MODAL(
-              MODE_MECA=MODES,
-              AMOR_REDUIT=0.05,
-              NUME_MODE=(1,),
-              MODE_CORR=MODEC,
-              CORR_FREQ='NON',
-              MASS_INER=MASSINER,
-              EXCIT=(
-# APPUI NO1
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO1',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX1,
-                  ECHELLE = 1.,
-                  ),
-# APPUI NO4
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO4',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX2,
-                  ECHELLE = 1.,
-                  ),),
+# TESTS D IMPRESSIONS
+#----------------------
 
-              COMB_MODE=_F(  TYPE = 'SRSS',  ),
+IMPR_RESU(RESU=_F(RESULTAT =RGQBIC));
 
-              COMB_MULT_APPUI=_F(
-                        NOEUD=('NO1','NO4'),
-                        TYPE_COMBI = 'LINE',
-                         ),
-
-
-               DEPL_MULT_APPUI=(
-              _F(
-               NOM_CAS ='DDS NO1',
-               NUME_CAS =1,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO1',
-               DX = DDS1,
-                     ),
-              _F(
-               NOM_CAS ='DDS NO4',
-               NUME_CAS =2,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDS2,
-                     ),
-
-
-                     ),
-
-
-              OPTION=(
-                        'DEPL',
-                        'REAC_NODA',
-                     ),
-
-              IMPRESSION=_F( TOUT = 'OUI',),
-              INFO=2,
-                  ),
-
-# TESTS DES DEPLACEMENTS
-#------------------------------------------
-
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGLBIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGLBIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 7.48259e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = RGLBIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 6.03377e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = RGLBIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 6.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
-
-# TESTS DES REACTIONS NODALES AUX APPUIS
-#------------------------------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = RGLBIC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 73.4576,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-
-                   _F(
-                        RESULTAT = RGLBIC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 97.2617,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
-
+TES_R = POST_RELEVE_T(ACTION=(_F(RESULTAT=RGQBIC,
+                                 INTITULE='DEPLACEMENT_N1',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO1',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=RGQBIC,
+                                 INTITULE='DEPLACEMENT_N2',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO2',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=RGQBIC,
+                                 INTITULE='DEPLACEMENT_N3',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO3',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=RGQBIC,
+                                 INTITULE='DEPLACEMENT_N4',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO4',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                               _F(RESULTAT=RGQBIC,
+                                 INTITULE='FORCE_N1',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO1',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=RGQBIC,
+                                 INTITULE='FORCE_N2',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO2',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=RGQBIC,
+                                 INTITULE='FORCE_N3',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO3',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=RGQBIC,
+                                 INTITULE='FORCE_N4',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO4',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION')));
+                                 
+IMPR_TABLE(TABLE=TES_R);
 
 #-------------------------------------------------
 #-------------------------------------------------
@@ -1127,667 +610,647 @@ TEST_RESU(RESU=(
 # COMPOSANTE SECONDAIRE ENTRAINEMENT (DDS)
 #-------------------------------------------------
 #-------------------------------------------------
-
 #------------------------------------------
 # PQQBC
 # REPONSE PRIMAIRE SUR BASE MODALE COMPLETE
 #     MODES 1 2
-#     COMB_MULT_APPUI QUAD
+#     GROUP_APPUI QUAD
 # REPONSE SECONDAIRE
 #     COMB_DEPL_APPUI QUAD
 #------------------------------------------
 
-PQQBC=COMB_SISM_MODAL(
-              MODE_MECA=MODES,
-              AMOR_REDUIT=0.05,
-              NUME_MODE=(1,2),
-              CORR_FREQ='NON',
-              MASS_INER=MASSINER,
-              EXCIT=(
-# APPUI NO1
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO1',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX1,
-                  ECHELLE = 1.,
-                  ),
-# APPUI NO4
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO4',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX2,
-                  ECHELLE = 1.,
-                  ),),
-
-              COMB_MODE=_F(  TYPE = 'SRSS',  ),
-
-              COMB_MULT_APPUI=_F(
-                        TOUT ='OUI',
-                        TYPE_COMBI = 'QUAD',
-                         ),
-
-
-               DEPL_MULT_APPUI=(
-              _F(
-               NOM_CAS ='DDS NO1',
-               NUME_CAS =1,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO1',
-               DX = DDS1,
-                     ),
-              _F(
-               NOM_CAS ='DDS NO4',
-               NUME_CAS =2,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDS2,
-                     ),
-
-
-                     ),
-
-               COMB_DEPL_APPUI=(
-                     _F(
-                        LIST_CAS=(1,2),
-                        TYPE_COMBI = 'QUAD',
-                         ),
-                         ),
-
-              OPTION=(
-                        'DEPL',
-                        'REAC_NODA',
-                     ),
-
-              IMPRESSION=_F( TOUT = 'OUI',),
-              INFO=2,
-                  ),
+PQQBC=COMB_SISM_MODAL(MODE_MECA=MODES,
+                      NUME_MODE=(1,2,),
+                      AMOR_REDUIT=0.05,
+                      MASS_INER=MASSINER,
+                      CORR_FREQ='NON',
+                      MULTI_APPUI ='DECORRELE',
+                      EXCIT=(_F(NOEUD='NO1',
+                                AXE=(1.,0.,0.,),
+                                SPEC_OSCI=SPEX1,
+                                ECHELLE=1.,),
+                             _F(NOEUD='NO4',
+                                AXE=(1.,0.,0.,),
+                                SPEC_OSCI=SPEX2,
+                                ECHELLE=1.,),),
+                      COMB_MODE=_F(TYPE='SRSS',),
+                      COMB_DEPL_APPUI=_F(LIST_CAS=(1,2,),
+                                         TYPE_COMBI='QUAD',),
+                      DEPL_MULT_APPUI=(_F(NOM_CAS='DDS NO1',
+                                          NUME_CAS=1,
+                                          MODE_STAT=MODE_STA,
+                                          NOEUD='NO1',
+                                          DX=DDS1,),
+                                       _F(NOM_CAS='DDS NO4',
+                                          NUME_CAS=2,
+                                          MODE_STAT=MODE_STA,
+                                          NOEUD='NO4',
+                                          DX=DDS2,),),
+                      GROUP_APPUI=(_F(NOEUD='NO1',),
+                                   _F(NOEUD='NO4',),),
+                      OPTION=('DEPL','REAC_NODA',),
+                      INFO=2,
+                      IMPRESSION=_F(TOUT='OUI',),);
 
 # TEST COMPONSANTE PRIMAIRE
 #------------------------------------------
 # DEPLACEMENT
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 0.0,
-                        PRECISION=0.0,
-                        CRITERE = 'ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 4.12562e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 6.60152e-03,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 0.0,
-                        PRECISION=0.,
-                        CRITERE = 'ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+
+TEST_RESU(RESU=(_F(RESULTAT=PQQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.0412562,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.00660152,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.0,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # REACTIONS AUX APPUIS
 #----------------------
 
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 41.2562,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-
-                   _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 66.0152,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=PQQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=41.2562,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQQBC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=66.0152,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # TEST COMPONSANTE SECONDAIRE
 #------------------------------------------
 # DEPLACEMENT
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 3.54306e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 5.71746e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 6.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+
+TEST_RESU(RESU=(_F(RESULTAT=PQQBC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=0.04,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQQBC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.0354306,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQQBC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.0571746,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQQBC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.06,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # REACTIONS AUX APPUIS
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 34.3386,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
 
-                   _F(
-                        RESULTAT = PQQBC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 34.3386,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=PQQBC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=34.3386,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQQBC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=34.3386,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
+
+# TESTS D IMPRESSIONS
+#----------------------
+
+IMPR_RESU(RESU=_F(RESULTAT =PQQBC));
+
+TES_R0 = POST_RELEVE_T(ACTION=(_F(RESULTAT=PQQBC,
+                                 INTITULE='DEPLACEMENT_N1',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO1',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQQBC,
+                                 INTITULE='DEPLACEMENT_N2',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO2',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQQBC,
+                                 INTITULE='DEPLACEMENT_N3',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO3',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQQBC,
+                                 INTITULE='DEPLACEMENT_N4',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO4',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                               _F(RESULTAT=PQQBC,
+                                 INTITULE='FORCE_N1',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO1',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQQBC,
+                                 INTITULE='FORCE_N2',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO2',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQQBC,
+                                 INTITULE='FORCE_N3',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO3',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQQBC,
+                                 INTITULE='FORCE_N4',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO4',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION')));
+                                 
+IMPR_TABLE(TABLE=TES_R0);
 
 #------------------------------------------
 # PQLBI
 # REPONSE PRIMAIRE SUR BASE MODALE INCOMPLETE
 #     SANS CORRECTION STATIQUE
 #     MODES 1
-#     COMB_MULT_APPUI QUAD
+#     GROUP_APPUI QUAD
 # REPONSE SECONDAIRE
 #     COMB_DEPL_APPUI LINE
 #------------------------------------------
 
-PQLBI=COMB_SISM_MODAL(
-              MODE_MECA=MODES,
-              AMOR_REDUIT=0.05,
-              NUME_MODE=(1,),
-              CORR_FREQ='NON',
-              MASS_INER=MASSINER,
-              EXCIT=(
-# APPUI NO1
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO1',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX1,
-                  ECHELLE = 1.,
-                  ),
-# APPUI NO4
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO4',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX2,
-                  ECHELLE = 1.,
-                  ),),
-
-              COMB_MODE=_F(  TYPE = 'SRSS',  ),
-
-              COMB_MULT_APPUI=_F(
-                        NOEUD=('NO1','NO4'),
-                        TYPE_COMBI = 'QUAD',
-                         ),
-
-
-               DEPL_MULT_APPUI=(
-              _F(
-               NOM_CAS ='DDS NO1',
-               NUME_CAS =1,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO1',
-               DX = DDS1,
-                     ),
-              _F(
-               NOM_CAS ='DDS NO4',
-               NUME_CAS =2,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDS2,
-                     ),
-
-
-                     ),
-
-               COMB_DEPL_APPUI=(
-                     _F(
-                        TOUT='OUI',
-                        TYPE_COMBI = 'LINE',
-                         ),
-                         ),
-
-              OPTION=(
-                        'DEPL',
-                        'REAC_NODA',
-                     ),
-
-              IMPRESSION=_F( TOUT = 'OUI',),
-              INFO=2,
-                  ),
+PQLBI=COMB_SISM_MODAL(MODE_MECA=MODES,
+                      NUME_MODE=1,
+                      AMOR_REDUIT=0.05,
+                      MASS_INER=MASSINER,
+                      CORR_FREQ='NON',
+                      MULTI_APPUI ='DECORRELE',
+                      EXCIT=(_F(NOEUD='NO1',
+                                AXE=(1.,0.,0.,),
+                                SPEC_OSCI=SPEX1,
+                                ECHELLE=1.,),
+                             _F(NOEUD='NO4',
+                                AXE=(1.,0.,0.,),
+                                SPEC_OSCI=SPEX2,
+                                ECHELLE=1.,),),
+                      COMB_MODE=_F(TYPE='SRSS',),
+                      COMB_DEPL_APPUI=_F(TOUT='OUI',
+                                         TYPE_COMBI='LINE',),
+                      DEPL_MULT_APPUI=(_F(NOM_CAS='DDS NO1',
+                                          NUME_CAS=1,
+                                          MODE_STAT=MODE_STA,
+                                          NOEUD='NO1',
+                                          DX=DDS1,),
+                                       _F(NOM_CAS='DDS NO4',
+                                          NUME_CAS=2,
+                                          MODE_STAT=MODE_STA,
+                                          NOEUD='NO4',
+                                          DX=DDS2,),),
+                      GROUP_APPUI=(_F(NOEUD='NO1',),
+                                   _F(NOEUD='NO4',),),
+                      OPTION=('DEPL','REAC_NODA',),
+                      INFO=2,
+                      IMPRESSION=_F(TOUT='OUI',),);
 
 # TEST COMPONSANTE PRIMAIRE
 #------------------------------------------
 # DEPLACEMENT
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 0.0,
-                        PRECISION=0.0,
-                        CRITERE = 'ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 4.12562e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 4.52841e-03,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 0.0,
-                        PRECISION=0.0,
-                        CRITERE = 'ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+
+TEST_RESU(RESU=(_F(RESULTAT=PQLBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQLBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.0412562,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQLBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.00452841,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQLBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.0,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # REACTIONS AUX APPUIS
 #----------------------
 
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 41.2562,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-
-                   _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 45.2841,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=PQLBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=41.2562,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQLBI,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=45.2841,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # TEST COMPONSANTE SECONDAIRE
 #------------------------------------------
 # DEPLACEMENT
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = -4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 7.61905e-03,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 5.52381e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 6.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+
+TEST_RESU(RESU=(_F(RESULTAT=PQLBI,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=-0.04,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQLBI,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.00761905,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQLBI,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.0552381,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQLBI,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.06,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # REACTIONS AUX APPUIS
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = -47.619,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
 
-                   _F(
-                        RESULTAT = PQLBI,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 47.619,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=PQLBI,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=-47.619,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQLBI,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=47.619,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
+
+# TESTS D IMPRESSIONS
+#----------------------
+
+IMPR_RESU(RESU=_F(RESULTAT =PQLBI));
+
+TES_R1 = POST_RELEVE_T(ACTION=(_F(RESULTAT=PQLBI,
+                                 INTITULE='DEPLACEMENT_N1',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO1',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQLBI,
+                                 INTITULE='DEPLACEMENT_N2',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO2',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQLBI,
+                                 INTITULE='DEPLACEMENT_N3',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO3',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQLBI,
+                                 INTITULE='DEPLACEMENT_N4',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO4',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                               _F(RESULTAT=PQLBI,
+                                 INTITULE='FORCE_N1',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO1',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQLBI,
+                                 INTITULE='FORCE_N2',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO2',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQLBI,
+                                 INTITULE='FORCE_N3',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO3',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQLBI,
+                                 INTITULE='FORCE_N4',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO4',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION')));
+                                 
+IMPR_TABLE(TABLE=TES_R1);
 
 #------------------------------------------
 # PQABIC
 # REPONSE PRIMAIRE SUR BASE MODALE INCOMPLETE
 #     AVEC CORRECTION STATIQUE
 #     MODES 1
-#     COMB_MULT_APPUI QUAD
+#     GROUP_APPUI QUAD
 # REPONSE SECONDAIRE
 #     COMB_DEPL_APPUI ABS
 #------------------------------------------
 
-PQABIC=COMB_SISM_MODAL(
-              MODE_MECA=MODES,
-              AMOR_REDUIT=0.05,
-              NUME_MODE=(1,),
-              MODE_CORR=MODEC,
-              CORR_FREQ='NON',
-              MASS_INER=MASSINER,
-              EXCIT=(
-# APPUI NO1
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO1',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX1,
-                  ECHELLE = 1.,
-                  ),
-# APPUI NO4
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO4',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX2,
-                  ECHELLE = 1.,
-                  ),),
+PQABIC=COMB_SISM_MODAL(MODE_MECA=MODES,
+                       NUME_MODE=1,
+                       MODE_CORR=MODEC,
+                       AMOR_REDUIT=0.05,
+                       MASS_INER=MASSINER,
+                       CORR_FREQ='NON',
+                       MULTI_APPUI ='DECORRELE',
+                       EXCIT=(_F(NOEUD='NO1',
+                                 AXE=(1.,0.,0.,),
+                                 SPEC_OSCI=SPEX1,
+                                 ECHELLE=1.,),
+                              _F(NOEUD='NO4',
+                                 AXE=(1.,0.,0.,),
+                                 SPEC_OSCI=SPEX2,
+                                 ECHELLE=1.,),),
+                       COMB_MODE=_F(TYPE='SRSS',),
+                       COMB_DEPL_APPUI=_F(LIST_CAS=(1,2,),
+                                          TYPE_COMBI='ABS',),
+                       DEPL_MULT_APPUI=(_F(NOM_CAS='DDS NO1',
+                                           NUME_CAS=1,
+                                           MODE_STAT=MODE_STA,
+                                           NOEUD='NO1',
+                                           DX=DDS1,),
+                                        _F(NOM_CAS='DDS NO4',
+                                           NUME_CAS=2,
+                                           MODE_STAT=MODE_STA,
+                                           NOEUD='NO4',
+                                           DX=DDS2,),),
+                       GROUP_APPUI=(_F(NOEUD='NO1',),
+                                   _F(NOEUD='NO4',),),
+                       OPTION=('DEPL','REAC_NODA',),
+                       INFO=2,
+                       IMPRESSION=_F(TOUT='OUI',),);
 
-              COMB_MODE=_F(  TYPE = 'SRSS',  ),
-
-              COMB_MULT_APPUI=_F(
-                        NOEUD=('NO1','NO4'),
-                        TYPE_COMBI = 'QUAD',
-                         ),
-
-
-               DEPL_MULT_APPUI=(
-              _F(
-               NOM_CAS ='DDS NO1',
-               NUME_CAS =1,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO1',
-               DX = DDS1,
-                     ),
-              _F(
-               NOM_CAS ='DDS NO4',
-               NUME_CAS =2,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDS2,
-                     ),
-
-
-                     ),
-
-               COMB_DEPL_APPUI=(
-                     _F(
-                        LIST_CAS=(1,2),
-                        TYPE_COMBI = 'ABS',
-                         ),
-                         ),
-
-              OPTION=(
-                        'DEPL',
-                        'REAC_NODA',
-                     ),
-
-              IMPRESSION=_F( TOUT = 'OUI',),
-              INFO=2,
-                  ),
 
 # TEST COMPONSANTE PRIMAIRE
 #------------------------------------------
 # DEPLACEMENT
 #----------------------
-TEST_RESU(RESU=(
 
-                  _F(
-                        RESULTAT = PQABIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 4.12562e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = PQABIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 6.60152e-03,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=PQABIC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.0412562,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQABIC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.00660152,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # REACTIONS AUX APPUIS
 #----------------------
 
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = PQABIC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 41.2562,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-
-                   _F(
-                        RESULTAT = PQABIC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 1,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 66.0152,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=PQABIC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=41.2562,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQABIC,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=66.0152,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # TEST COMPONSANTE SECONDAIRE
 #------------------------------------------
 # DEPLACEMENT
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = PQABIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = PQABIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 4.95238e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = PQABIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 5.90476e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = PQABIC,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 6.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+
+TEST_RESU(RESU=(_F(RESULTAT=PQABIC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=0.04,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQABIC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.0495238,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQABIC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.0590476,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQABIC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.06,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # REACTIONS AUX APPUIS
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = PQABIC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 47.619,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
 
-                   _F(
-                        RESULTAT = PQABIC,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 47.619,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=PQABIC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=47.619,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=PQABIC,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=47.619,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
+# TESTS D IMPRESSIONS
+#----------------------
+
+IMPR_RESU(RESU=_F(RESULTAT =PQABIC));
+
+TES_R2 = POST_RELEVE_T(ACTION=(_F(RESULTAT=PQABIC,
+                                 INTITULE='DEPLACEMENT_N1',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO1',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQABIC,
+                                 INTITULE='DEPLACEMENT_N2',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO2',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQABIC,
+                                 INTITULE='DEPLACEMENT_N3',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO3',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQABIC,
+                                 INTITULE='DEPLACEMENT_N4',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO4',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                               _F(RESULTAT=PQABIC,
+                                 INTITULE='FORCE_N1',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO1',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQABIC,
+                                 INTITULE='FORCE_N2',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO2',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQABIC,
+                                 INTITULE='FORCE_N3',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO3',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=PQABIC,
+                                 INTITULE='FORCE_N4',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO4',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION')));
+                                 
+IMPR_TABLE(TABLE=TES_R2);
 
 #------------------------------------------
 # CDDS
 # REPONSE PRIMAIRE SUR BASE MODALE INCOMPLETE
 #     AVEC CORRECTION STATIQUE
 #     MODES 1
-#     COMB_MULT_APPUI QUAD
+#     GROUP_APPUI QUAD
 # REPONSE SECONDAIRE
 #     TEST SUR LES CUMULS DE DDS
 #     AUCUNE SIGNIFIACTION PHYSIQUE
@@ -1795,480 +1258,412 @@ TEST_RESU(RESU=(
 #     PLUSIEURS OCCURRENCES DE DEPL_MULT_APPUI
 #     PLUSIEURS OCCURRENCES DE COMB_DEPL_APPUI
 #------------------------------------------
+DDSA = -0.04;
 
-DDSA=-0.04
-DDSB=0.06
-DDSC=0.03
-DDSD=-0.07
-DDSE=0.05
+DDSB = 0.06;
 
+DDSC = 0.03;
 
-CDDS=COMB_SISM_MODAL(
-              MODE_MECA=MODES,
-              AMOR_REDUIT=0.05,
-              NUME_MODE=(1,),
-              MODE_CORR=MODEC,
-              CORR_FREQ='NON',
-              MASS_INER=MASSINER,
-              EXCIT=(
-# APPUI NO1
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO1',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX1,
-                  ECHELLE = 1.,
-                  ),
-# APPUI NO4
-              _F( MULTI_APPUI ='DECORRELE',
-                  NOEUD = 'NO4',
-                  AXE = ( 1., 0., 0. ),
-                  SPEC_OSCI = SPEX2,
-                  ECHELLE = 1.,
-                  ),),
+DDSD = -0.07;
 
-              COMB_MODE=_F(  TYPE = 'SRSS',  ),
-
-              COMB_MULT_APPUI=_F(
-                        NOEUD=('NO1','NO4'),
-                        TYPE_COMBI = 'QUAD',
-                         ),
+DDSE = 0.05;
 
 
-               DEPL_MULT_APPUI=(
-              _F(
-               NOM_CAS ='DDS CAS 1',
-               NUME_CAS =1,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO1',
-               DX = DDSA,
-                     ),
-               _F(
-               NOM_CAS ='DDS CAS 4',
-               NUME_CAS =4,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO1',
-               DX = DDSD,
-                     ),
-              _F(
-               NOM_CAS ='DDS CAS 2',
-               NUME_CAS =2,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDSB,
-                     ),
-               _F(
-               NOM_CAS ='DDS CAS 3',
-               NUME_CAS =3,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDSC,
-                     ),
-               _F(
-               NOM_CAS ='DDS CAS 5',
-               NUME_CAS =5,
-               MODE_STAT = MODE_STA,
-               NOEUD = 'NO4',
-               DX = DDSE,
-                     ),
-
-                     ),
-
-               COMB_DEPL_APPUI=(
-                     _F(
-                        LIST_CAS=(1,2),
-                        TYPE_COMBI = 'LINE',
-                         ),
-                     _F(
-                        LIST_CAS=(1,3),
-                        TYPE_COMBI = 'ABS',
-                         ),
-                      _F(
-                        LIST_CAS=(4,5),
-                        TYPE_COMBI = 'QUAD',
-                         ),
-                      _F(
-                        LIST_CAS=(1,5),
-                        TYPE_COMBI = 'LINE',
-                         ),
-
-                         ),
-
-              OPTION=(
-                        'DEPL',
-                        'REAC_NODA',
-                     ),
-
-              IMPRESSION=_F( TOUT = 'OUI',),
-              INFO=2,
-                  ),
+CDDS=COMB_SISM_MODAL(MODE_MECA=MODES,
+                     NUME_MODE=1,
+                     MODE_CORR=MODEC,
+                     AMOR_REDUIT=0.05,
+                     MASS_INER=MASSINER,
+                     CORR_FREQ='NON',
+                     MULTI_APPUI ='DECORRELE',
+                     EXCIT=(_F(NOEUD='NO1',
+                               AXE=(1.,0.,0.,),
+                               SPEC_OSCI=SPEX1,
+                               ECHELLE=1.,),
+                            _F(NOEUD='NO4',
+                               AXE=(1.,0.,0.,),
+                               SPEC_OSCI=SPEX2,
+                               ECHELLE=1.,),),
+                     COMB_MODE=_F(TYPE='SRSS',),
+                     COMB_DEPL_APPUI=(_F(LIST_CAS=(1,2,),
+                                         TYPE_COMBI='LINE',),
+                                      _F(LIST_CAS=(1,3,),
+                                         TYPE_COMBI='ABS',),
+                                      _F(LIST_CAS=(4,5,),
+                                         TYPE_COMBI='QUAD',),
+                                      _F(LIST_CAS=(1,5,),
+                                         TYPE_COMBI='LINE',),),
+                     DEPL_MULT_APPUI=(_F(NOM_CAS='DDS CAS 1',
+                                         NUME_CAS=1,
+                                         MODE_STAT=MODE_STA,
+                                         NOEUD='NO1',
+                                         DX=DDSA,),
+                                      _F(NOM_CAS='DDS CAS 4',
+                                         NUME_CAS=4,
+                                         MODE_STAT=MODE_STA,
+                                         NOEUD='NO1',
+                                         DX=DDSD,),
+                                      _F(NOM_CAS='DDS CAS 2',
+                                         NUME_CAS=2,
+                                         MODE_STAT=MODE_STA,
+                                         NOEUD='NO4',
+                                         DX=DDSB,),
+                                      _F(NOM_CAS='DDS CAS 3',
+                                         NUME_CAS=3,
+                                         MODE_STAT=MODE_STA,
+                                         NOEUD='NO4',
+                                         DX=DDSC,),
+                                      _F(NOM_CAS='DDS CAS 5',
+                                         NUME_CAS=5,
+                                         MODE_STAT=MODE_STA,
+                                         NOEUD='NO4',
+                                         DX=DDSE,),),
+                     GROUP_APPUI=(_F(NOEUD='NO1',),
+                                   _F(NOEUD='NO4',),),
+                     OPTION=('DEPL','REAC_NODA',),
+                     INFO=2,
+                     IMPRESSION=_F(NIVEAU=('SPEC_OSCI','MASS_EFFE','MAXI_GENE',),),);
 
 #----------------- OCCURRENCE 1 COMB_DEPL_APPUI ----
-
 # DEPLACEMENT
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = -4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 7.61905e-03,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 5.52381e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 6.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+
+TEST_RESU(RESU=(_F(RESULTAT=CDDS,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=-0.04,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.00761905,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.0552381,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.06,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # REACTIONS AUX APPUIS
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = -47.619,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
 
-                   _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 200,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 47.619,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=CDDS,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=-47.619,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=47.619,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 #----------------- OCCURRENCE 2 COMB_DEPL_APPUI ----
-
 # DEPLACEMENT
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 201,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 201,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 3.52381e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 201,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 3.04762e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 201,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 3.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+
+TEST_RESU(RESU=(_F(RESULTAT=CDDS,
+                   NUME_ORDRE=201,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=0.04,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=201,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.0352381,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=201,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.0304762,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=201,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.03,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # REACTIONS AUX APPUIS
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 201,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 33.333,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
 
-                   _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 201,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 33.333,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=CDDS,
+                   NUME_ORDRE=201,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=33.333,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=201,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=33.333,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 #----------------- OCCURRENCE 3 COMB_DEPL_APPUI ----
-
 # DEPLACEMENT
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 202,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 7.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 202,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 4.37189e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 202,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 4.77356e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 202,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 5.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+
+TEST_RESU(RESU=(_F(RESULTAT=CDDS,
+                   NUME_ORDRE=202,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=0.07,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=202,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.0437189,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=202,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.0477356,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=202,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.05,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # REACTIONS AUX APPUIS
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 202,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 40.9635,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
 
-                   _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 202,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 40.9635,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
-
+TEST_RESU(RESU=(_F(RESULTAT=CDDS,
+                   NUME_ORDRE=202,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=40.9635,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=202,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=40.9635,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 #----------------- OCCURRENCE 4 COMB_DEPL_APPUI ----
-
 # DEPLACEMENT
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 203,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = -4.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 203,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 2.85714e-03,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 203,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 4.57143e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 203,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 5.0e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+
+TEST_RESU(RESU=(_F(RESULTAT=CDDS,
+                   NUME_ORDRE=203,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=-0.04,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=203,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.00285714,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=203,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.0457143,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=203,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.05,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # REACTIONS AUX APPUIS
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 203,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = -42.8571,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
 
-                   _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 203,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 42.8571,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=CDDS,
+                   NUME_ORDRE=203,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=-42.8571,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=203,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=42.8571,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 #----------------- CUMUL QUAD DES OCCURRENCES COMB_DEPL_APPUI --
-
 # DEPLACEMENT
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 204,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 9.84886e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 204,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO2',
-                        VALE = 5.67386e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                  _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 204,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO3',
-                        VALE = 9.13703e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                   _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'DEPL',
-                        NUME_ORDRE  = 204,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 9.74679e-02,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+
+TEST_RESU(RESU=(_F(RESULTAT=CDDS,
+                   NUME_ORDRE=204,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=0.0984886,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=204,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO2',
+                   VALE=0.0567386,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=204,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO3',
+                   VALE=0.0913703,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=204,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=0.0974679,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
 
 # REACTIONS AUX APPUIS
 #----------------------
-TEST_RESU(RESU=(
-                _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 204,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO1',
-                        VALE = 83.0266,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
 
-                   _F(
-                        RESULTAT = CDDS,
-                        NOM_CHAM = 'REAC_NODA',
-                        NUME_ORDRE  = 204,
-                        NOM_CMP = 'DX',
-                        NOEUD = 'NO4',
-                        VALE = 83.0266,
-                        PRECISION=0.001,
-                        REFERENCE='ANALYTIQUE',
-                             ),
-                             ),),
+TEST_RESU(RESU=(_F(RESULTAT=CDDS,
+                   NUME_ORDRE=204,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO1',
+                   VALE=83.0266,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=CDDS,
+                   NUME_ORDRE=204,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   NOEUD='NO4',
+                   VALE=83.0266,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
+                   
 
-FIN(),
+# TESTS D IMPRESSIONS
+#----------------------
 
+IMPR_RESU(RESU=_F(RESULTAT =CDDS));
 
+TES_RE = POST_RELEVE_T(ACTION=(_F(RESULTAT=CDDS,
+                                 INTITULE='DEPLACEMENT_N1',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO1',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=CDDS,
+                                 INTITULE='DEPLACEMENT_N2',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO2',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=CDDS,
+                                 INTITULE='DEPLACEMENT_N3',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO3',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=CDDS,
+                                 INTITULE='DEPLACEMENT_N4',
+                                 NOM_CHAM=('DEPL',),
+                                 NOEUD='NO4',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                                 _F(RESULTAT=CDDS,
+                                 INTITULE='FORCE_N1',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO1',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=CDDS,
+                                 INTITULE='FORCE_N2',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO2',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=CDDS,
+                                 INTITULE='FORCE_N3',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO3',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION'),
+                              _F(RESULTAT=CDDS,
+                                 INTITULE='FORCE_N4',
+                                 NOM_CHAM=('REAC_NODA',),
+                                 NOEUD='NO4',
+                                 NOM_CMP = 'DX',
+                                 OPERATION = 'EXTRACTION')));
+                                 
+IMPR_TABLE(TABLE=TES_RE);
 
+FIN();

@@ -1,5 +1,6 @@
-# MODIF  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
+# sslv07d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# sslv07d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 #CAS_TEST__: SSLV07D
@@ -139,6 +141,11 @@ DEPLD2=STAT_NON_LINE(MODELE=MO,
                      ARCHIVAGE=_F(LIST_INST=L_INST,
                                   CHAM_EXCLU='VARI_ELGA',),);
 
+# REMARQUE : STRICTO SENSU, LE CALCUL DE ERRE_ELEM_SIGM EST FAUX CAR
+#            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
+#            MAILLAGE ET A FORTIORI DANS LE CHARGEMENT
+#            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
+
 DEPLD2 = CALC_ELEM (reuse=DEPLD2,
               RESULTAT= DEPLD2,
 
@@ -157,18 +164,20 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    NOM_CMP='NUEST',
                    MAILLE='M10',
                    POINT=1,
-                   VALE=9.6615245616178E-04,
+                   VALE=2.0047249622391E+01,
+                   PRECISION=1.E-8,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.02.10',),
+                   VERSION='9.05.04',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
                    NOM_CHAM='ERRE_ELNO_ELEM',
                    NOM_CMP='ERREST',
                    MAILLE='M6',
                    NOEUD='N96',
-                   VALE=1.7228918364607E-01,
+                   VALE=2.1086799332511E-01,
+                   PRECISION=1.E-8,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.02.10',),
+                   VERSION='9.05.04',),
                 ),
           )
 #---------------------------------------------------------------------

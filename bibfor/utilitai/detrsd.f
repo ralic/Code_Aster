@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -330,7 +330,7 @@ C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS OU PETSC :
           CALL DISMOI('F','METH_RESO',MATAS,'MATR_ASSE',IBID,METRES
      &                                                      ,IBID)
           IF (METRES.EQ.'MUMPS') THEN
-            CALL AMUMPS('DETR_MAT',' ',MATAS,RBID,CBID,' ',0,IBID)
+            CALL AMUMPH('DETR_MAT',' ',MATAS,RBID,CBID,' ',0,IBID)
           ELSE IF(METRES.EQ.'PETSC') THEN
             CALL APETSC('DETR_MAT',' ',MATAS,RBID,' ',0,IBID)
           END IF

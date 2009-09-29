@@ -1,4 +1,4 @@
-# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,6 +37,8 @@ M=LIRE_MAILLAGE();
 
 PRES = FORMULE(VALE='60.',
                NOM_PARA=('X','Y',),);
+PRES_0 = FORMULE(VALE='0.',
+               NOM_PARA=('X','Y',),);
 
 MO=AFFE_MODELE(MAILLAGE=M,
                VERIF='MAILLE',
@@ -53,14 +55,14 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                          MATER=MA,),);
 
 CLIM=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='FACINF',
+                    DDL_IMPO=(_F(GROUP_MA='GRMA11',
                                  DY=0.0,),
-                              _F(GROUP_NO='FACSUP',
+                              _F(GROUP_MA='GRMA12',
                                  DY=0.0,),),);
 
 CH=AFFE_CHAR_MECA_F(MODELE=MO,
-                    PRES_REP=_F(GROUP_MA='GRMA13',
-                                PRES=PRES,),);
+                    PRES_REP=(_F(GROUP_MA='GRMA13',PRES=PRES,),
+                              _F(GROUP_MA='GRMA14',PRES=PRES_0,),),);
 
 L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=1.0,
@@ -397,7 +399,7 @@ EVOL2=CALC_ELEM(reuse =EVOL2,
                 MODELE=MO,
                 CHAM_MATER=CM,
                 RESULTAT=EVOL2,
-                OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','EQUI_ELNO_EPSI','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+                OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','EQUI_ELNO_EPSI',),);
 
 EVOL2=CALC_NO(reuse =EVOL2,
               RESULTAT=EVOL2,
@@ -771,31 +773,5 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='ANALYTIQUE',),),);
-#
-#  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
-
-TEST_RESU(RESU=_F(RESULTAT=EVOL2,
-                  INST=1.0,
-                  NOM_CHAM='ERRE_ELEM_SIGM',
-                  NOM_CMP='NUEST',
-                  MAILLE='M2',
-                  POINT=1,
-                  VALE=6.4600e-5,
-                  CRITERE='RELATIF',
-                  PRECISION=0.0001,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.3.15',),);
-
-TEST_RESU(RESU=_F(RESULTAT=EVOL2,
-                  INST=1.0,
-                  NOM_CHAM='ERRE_ELNO_ELEM',
-                  NOM_CMP='ERREST',
-                  MAILLE='M2',
-                  GROUP_NO='A',
-                  VALE=1.1705e-07,
-                  CRITERE='RELATIF',
-                  PRECISION=0.0001,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.3.15',),);
 
 FIN();

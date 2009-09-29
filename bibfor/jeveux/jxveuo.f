@@ -1,6 +1,6 @@
       SUBROUTINE JXVEUO (CEL , ITAB , INAT , JITAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       CHARACTER*1      TYPEI , GENRI
       CHARACTER*75     CMESS
-      INTEGER          LTYPI , IADDI(2) , IADMI ,  LONOI
+      INTEGER          LTYPI , IADDI(2) , IADMI ,  LONOI , IRT
       LOGICAL          LDEPS  , LCONST
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
@@ -74,6 +74,7 @@ C ----------------------------------------------------------------------
      &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C DEB ------------------------------------------------------------------
       JITAB = 0
+      IRT = 0
       GOTO ( 10 , 20 , 30 ) , INAT
 C
 C ----- INAT =  1 : OBJET SIMPLE
@@ -130,7 +131,7 @@ C
                 IF ( GENRI .EQ. 'V' ) THEN
                   LONOJ = LONGJ
                 ELSE IF ( GENRI .EQ. 'N' ) THEN
-                  LONOK = (IDEHC+JJPREM(LONGJ))*LOIS + (LONGJ+1)*LTYPI
+                  LONOK = (IDEHC+JJPREM(LONGJ,IRT))*LOIS+(LONGJ+1)*LTYPI
                   IF ( MOD(LONOK,LTYPI) .GT. 0 ) THEN
                     LONOK = (LONOK/LTYPI + 1 )
                   ELSE

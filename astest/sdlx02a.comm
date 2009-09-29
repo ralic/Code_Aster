@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PROBLEME DE HOVGAARD: CALCUL MODAL ET CALCUL SPECTRAL
 # ======================================================================
 # sdlx02a.para = tps_job 60 mem_job 400Mo ncpus 1 liste_test R
@@ -200,18 +200,18 @@ SPECT_Z=DEFI_NAPPE(  NOM_PARA='AMOR',
 #
 
 SISM_SPE=COMB_SISM_MODAL(  MODE_MECA=MODE_DIA,
-                                AMOR_REDUIT=0.02,
-                               MASS_INER=TABL_MAS,
-                               CORR_FREQ='NON',
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      TRI_SPEC = 'OUI',
-                                      SPEC_OSCI = ( SPECT_XY,  SPECT_XY, 
-                                                   SPECT_XY, ),
-                                      ECHELLE = ( 1.,  1.,  0.5, )),
-                              COMB_MODE=_F(  TYPE = 'SRSS'),
-                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                                OPTION=( 'DEPL',  'EFGE_ELNO_DEPL', 
-                                         'REAC_NODA', )
+                           AMOR_REDUIT=0.02,
+                           MASS_INER=TABL_MAS,
+                           CORR_FREQ='NON',
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F( TRI_SPEC = 'OUI',
+                                     SPEC_OSCI = ( SPECT_XY,  SPECT_XY, 
+                                                SPECT_XY, ),
+                           ECHELLE = ( 1.,  1.,  0.5, )),
+                           COMB_MODE=_F(  TYPE = 'SRSS'),
+                           COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                           OPTION=( 'DEPL',  'EFGE_ELNO_DEPL', 
+                                      'REAC_NODA', )
                             )
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'DEPL',
@@ -361,18 +361,18 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
 # ----------------------------------------------------------------------
 
 SISM_SIS=COMB_SISM_MODAL(  MODE_MECA=MODE_DIA,
-                                 AMOR_REDUIT=0.02,
-                               CORR_FREQ='OUI',
-                               MASS_INER=TABL_MAS,
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      TRI_SPEC = 'OUI',
-                                      SPEC_OSCI = ( SPECT_XY,  SPECT_XY, 
-                                                   SPECT_Z,  ),
-                                      ECHELLE = ( 1.,  1.,  1., )),
-                              COMB_MODE=_F(  TYPE = 'SRSS'),
-                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                                OPTION=( 'DEPL',  'EFGE_ELNO_DEPL', 
-                                         'REAC_NODA', )
+                           AMOR_REDUIT=0.02,
+                           CORR_FREQ='OUI',
+                           MASS_INER=TABL_MAS,
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F( TRI_SPEC = 'OUI',
+                                     SPEC_OSCI = ( SPECT_XY,  SPECT_XY, 
+                                                SPECT_Z,  ),
+                                     ECHELLE = ( 1.,  1.,  1., )),
+                           COMB_MODE=_F(  TYPE = 'SRSS'),
+                           COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                           OPTION=( 'DEPL',  'EFGE_ELNO_DEPL', 
+                                      'REAC_NODA', )
                             )
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'DEPL',

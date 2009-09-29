@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE PARALLELIPIPEDE SOUS SON PROPRE POIDS (HEXA8 FIN)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +29,8 @@
 DEBUT(CODE=_F(NOM='SSLV07B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(  )
+##IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=MA,),);
+
 
 MO=AFFE_MODELE(  MAILLAGE=MA,
      AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D') )
@@ -72,6 +74,11 @@ DEP2=MECA_STATIQUE(     MODELE=MO,     CHAM_MATER=CHMAT,EXCIT=(
                          _F(  CHARGE = CH1),
                                _F(  CHARGE = CH2))
                       )
+
+# REMARQUE : STRICTO SENSU, LE CALCUL DE ERRE_ELEM_SIGM EST FAUX CAR
+#            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
+#            MAILLAGE ET A FORTIORI DANS LE CHARGEMENT
+#            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
 
 CALC_ELEM(     reuse=DEP2,  MODELE=MO,            CHAM_MATER=CHMAT,
                          RESULTAT=DEP2,        NUME_ORDRE=1,
@@ -126,17 +133,21 @@ TEST_RESU(CHAM_NO=(
      # ERREUR RELATIVE
 
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
-              CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              MAILLE = 'HEX12',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 5.0318334625225),
+              CRITERE = 'RELATIF',   PRECISION = 1.E-6,
+              MAILLE = 'HEX12',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.6358301826735E1,
+              VERSION='9.05.04',),
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
-              CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              MAILLE = 'HEX100',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 18.218314622368),
+              CRITERE = 'RELATIF',   PRECISION = 1.E-6,
+              MAILLE = 'HEX100',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 18.218314622367,
+              VERSION='9.05.04',),
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELNO_ELEM',
-              CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              MAILLE = 'HEX300',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 5.2043574900480),
+              CRITERE = 'RELATIF',   PRECISION = 1.E-6,
+              MAILLE = 'HEX300',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.6465156518372E1,
+              VERSION='9.05.04',),
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELNO_ELEM',
-              CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              MAILLE = 'HEX600',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 5.2554833994913))
+              CRITERE = 'RELATIF',   PRECISION = 1.E-6,
+              MAILLE = 'HEX600',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.6500507058230E1,
+              VERSION='9.05.04',),)
 
      )
 

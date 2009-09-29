@@ -3,7 +3,7 @@
      &                   LQUALI,RDESQ,TYPE,IETDEB,IETRAT,RCTDEB,LDIST)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPT MUMPS  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPT MUMPS  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -34,6 +34,7 @@ C IN  RDESQ  :  R8    : PARAMETRE POUR LE DESEQUILIBRAGE MAX
 C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
 C IN  LDIST  :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
 C---------------------------------------------------------------
+C RESPONSABLE BOITEAU
  
       INTEGER      OPTION,RANG,NBPROC,KXMPS,IETDEB,IETRAT
       CHARACTER*1  TYPE
@@ -45,28 +46,35 @@ C---------------------------------------------------------------
 
 C============================================================
       INCLUDE 'mpif.h'
+      INCLUDE 'smumps_struc.h'
+      INCLUDE 'cmumps_struc.h'
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
 C============================================================
       INTEGER    NMXINS
       PARAMETER (NMXINS=5)
+      TYPE (SMUMPS_STRUC) , TARGET  :: SMPS(NMXINS)
+      TYPE (CMUMPS_STRUC) , TARGET  :: CMPS(NMXINS)
+      TYPE (SMUMPS_STRUC) , POINTER :: SMPSK
+      TYPE (CMUMPS_STRUC) , POINTER :: CMPSK
       TYPE (DMUMPS_STRUC) , TARGET  :: DMPS(NMXINS)
       TYPE (ZMUMPS_STRUC) , TARGET  :: ZMPS(NMXINS)
-      TYPE (DMUMPS_STRUC) , POINTER :: XMPSK
-      TYPE (ZMUMPS_STRUC) , POINTER :: YMPSK
+      TYPE (DMUMPS_STRUC) , POINTER :: DMPSK
+      TYPE (ZMUMPS_STRUC) , POINTER :: ZMPSK
       INTEGER      IFM,NIV,IBID,IAUX1,IAUX2,IAUX3,K,I,N,INFO(100),IRET,
      &             MONIT(12),IETFIN,IETMAX
-      INTEGER*4    KXMPS4
-      CHARACTER*1  ROUCS(NMXINS)
+      CHARACTER*1  ROUCS(NMXINS),PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS)
       CHARACTER*14 NONUS(NMXINS)
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),KTEMP
       CHARACTER*80 NVERS
       REAL*8       RMONIT(18),RAUX,VALR(2),RINFOG(100),RCTFIN,RETFIN
       LOGICAL      LDEBUG
-      COMMON /SMUMPS1/ DMPS
-      COMMON /SMUMPS2/ ZMPS
-      COMMON /SMUMPS/  NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
+      COMMON /MUMPSS/ SMPS
+      COMMON /MUMPSC/ CMPS
+      COMMON /MUMPSD/ DMPS
+      COMMON /MUMPSZ/ ZMPS
+      COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
       
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
@@ -97,29 +105,50 @@ C        INITS
 C       ------------------------------------------------
 C --- REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
 C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
-      KXMPS4=KXMPS
-      IF (TYPE.EQ.'R') THEN
-        XMPSK=>DMPS(KXMPS4)
-        N=XMPSK%N
-        INFO(9)=XMPSK%INFO(9)
-        INFO(15)=XMPSK%INFO(15)
-        INFO(16)=XMPSK%INFO(16)
-        INFO(17)=XMPSK%INFO(17)
-        RINFOG(7)=XMPSK%RINFOG(7)
-        RINFOG(9)=XMPSK%RINFOG(9)
-        RINFOG(10)=XMPSK%RINFOG(10)
-        NVERS(1:5)=XMPSK%VERSION_NUMBER
+      IF (TYPE.EQ.'S') THEN
+        SMPSK=>SMPS(KXMPS)
+        N=SMPSK%N
+        INFO(9)=SMPSK%INFO(9)
+        INFO(15)=SMPSK%INFO(15)
+        INFO(16)=SMPSK%INFO(16)
+        INFO(17)=SMPSK%INFO(17)
+        RINFOG(7)=SMPSK%RINFOG(7)
+        RINFOG(9)=SMPSK%RINFOG(9)
+        RINFOG(10)=SMPSK%RINFOG(10)
+        NVERS(1:12)='SMUMPS '//SMPSK%VERSION_NUMBER
       ELSE IF (TYPE.EQ.'C') THEN
-        YMPSK=>ZMPS(KXMPS4)
-        N=YMPSK%N
-        INFO(9)=YMPSK%INFO(9)
-        INFO(15)=YMPSK%INFO(15)
-        INFO(16)=YMPSK%INFO(16)
-        INFO(17)=YMPSK%INFO(17)
-        RINFOG(7)=YMPSK%RINFOG(7)
-        RINFOG(9)=YMPSK%RINFOG(9)
-        RINFOG(10)=YMPSK%RINFOG(10)
-        NVERS(1:5)=YMPSK%VERSION_NUMBER
+        CMPSK=>CMPS(KXMPS)
+        N=CMPSK%N
+        INFO(9)=CMPSK%INFO(9)
+        INFO(15)=CMPSK%INFO(15)
+        INFO(16)=CMPSK%INFO(16)
+        INFO(17)=CMPSK%INFO(17)
+        RINFOG(7)=CMPSK%RINFOG(7)
+        RINFOG(9)=CMPSK%RINFOG(9)
+        RINFOG(10)=CMPSK%RINFOG(10)
+        NVERS(1:12)='CMUMPS '//CMPSK%VERSION_NUMBER
+      ELSE IF (TYPE.EQ.'D') THEN
+        DMPSK=>DMPS(KXMPS)
+        N=DMPSK%N
+        INFO(9)=DMPSK%INFO(9)
+        INFO(15)=DMPSK%INFO(15)
+        INFO(16)=DMPSK%INFO(16)
+        INFO(17)=DMPSK%INFO(17)
+        RINFOG(7)=DMPSK%RINFOG(7)
+        RINFOG(9)=DMPSK%RINFOG(9)
+        RINFOG(10)=DMPSK%RINFOG(10)
+        NVERS(1:12)='DMUMPS '//DMPSK%VERSION_NUMBER
+      ELSE IF (TYPE.EQ.'Z') THEN
+        ZMPSK=>ZMPS(KXMPS)
+        N=ZMPSK%N
+        INFO(9)=ZMPSK%INFO(9)
+        INFO(15)=ZMPSK%INFO(15)
+        INFO(16)=ZMPSK%INFO(16)
+        INFO(17)=ZMPSK%INFO(17)
+        RINFOG(7)=ZMPSK%RINFOG(7)
+        RINFOG(9)=ZMPSK%RINFOG(9)
+        RINFOG(10)=ZMPSK%RINFOG(10)
+        NVERS(1:12)='ZMUMPS '//ZMPSK%VERSION_NUMBER
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -167,7 +196,12 @@ C --      ON NE FAIT RIEN DE PLUS !
             CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
             CALL CPU_TIME(RCTDEB)
           ENDIF
+C       -- ON INTERROMPT LA MESURE CPU.RESO.4 PENDANT CPU.RESO.3 :
+          CALL UTTCPU('CPU.RESO.4','FIN',' ')
+          CALL UTTCPU('CPU.RESO.3','DEBUT',' ')
         ELSE IF (OPTION.EQ.4) THEN
+          CALL UTTCPU('CPU.RESO.3','FIN',' ')
+          CALL UTTCPU('CPU.RESO.4','DEBUT',' ')
           CALL UTTCPU('CPU.AMUMPT','FIN',' ')
           CALL UTTCPR('CPU.AMUMPT',6,TEMPS)
           ZI(MONIT(10)+RANG)=INFO(15)
@@ -243,7 +277,7 @@ C -- AFFICHAGE
              WRITE(IFM,*)
              WRITE(IFM,*)'*********************************************'
      &                  //'*********************************'
-             WRITE(IFM,*)'<MONITORING MUMPS '//NVERS(1:5)//' >'
+             WRITE(IFM,*)'<MONITORING '//NVERS(1:12)//' >'
              WRITE(IFM,'(A19,I9)')' TAILLE DU SYSTEME ',N
              IF (LQUALI) THEN
                WRITE(IFM,'(A28,1PD11.4,1PD11.4)')'CONDITIONNEMENT'//
@@ -278,10 +312,16 @@ C
              ENDDO
 
 C            MONITORING MEMOIRE
-             IF (TYPE.EQ.'R') THEN             
-               IBID=XMPSK%ICNTL(22)
-             ELSE
-               IBID=YMPSK%ICNTL(22)
+             IF (TYPE.EQ.'S') THEN             
+               IBID=SMPSK%ICNTL(22)
+             ELSE IF (TYPE.EQ.'C') THEN
+               IBID=CMPSK%ICNTL(22)
+             ELSE IF (TYPE.EQ.'D') THEN             
+               IBID=DMPSK%ICNTL(22)
+             ELSE IF (TYPE.EQ.'Z') THEN
+               IBID=ZMPSK%ICNTL(22)
+	     ELSE
+	       CALL ASSERT(.FALSE.)
              ENDIF
              IF (IBID.EQ.0) THEN 
                KTEMP='IN-CORE'

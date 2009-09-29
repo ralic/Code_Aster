@@ -10,9 +10,9 @@ MOSRS=COMB_SISM_MODAL(CORR_FREQ='NON',
                       COMB_MODE=_F(TYPE='SRSS',),
                       MODE_MECA=MODES,
                       AMOR_REDUIT=0.0,
+                      MONO_APPUI='OUI',
                       OPTION=('DEPL','VITE','SIEF_ELGA_DEPL','EFGE_ELNO_DEPL','FORC_NODA','REAC_NODA'),
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               MONO_APPUI='OUI',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
@@ -38,9 +38,9 @@ MOABS=COMB_SISM_MODAL(CORR_FREQ='NON',
                       COMB_MODE=_F(TYPE='ABS',),
                       MODE_MECA=MODES,
                       AMOR_REDUIT=0.0,
+                      MONO_APPUI='OUI',
                       OPTION=('DEPL','VITE','SIEF_ELGA_DEPL','EFGE_ELNO_DEPL','FORC_NODA','REAC_NODA'),
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               MONO_APPUI='OUI',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
@@ -66,9 +66,10 @@ MODPC=COMB_SISM_MODAL(CORR_FREQ='NON',
                       COMB_MODE=_F(TYPE='DPC',),
                       MODE_MECA=MODES,
                       AMOR_REDUIT=0.0,
+                      MONO_APPUI='OUI',
                       OPTION=('DEPL','VITE','SIEF_ELGA_DEPL','EFGE_ELNO_DEPL','FORC_NODA','REAC_NODA'),
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               MONO_APPUI='OUI',
+                              
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
@@ -95,8 +96,8 @@ MOCQC=COMB_SISM_MODAL(CORR_FREQ='NON',
                       MODE_MECA=MODES,
                       AMOR_REDUIT=0.05,
                       OPTION=('DEPL','VITE','SIEF_ELGA_DEPL','EFGE_ELNO_DEPL','FORC_NODA','REAC_NODA'),
+                      MONO_APPUI='OUI',
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               MONO_APPUI='OUI',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 
@@ -123,9 +124,9 @@ MODSC=COMB_SISM_MODAL(CORR_FREQ='NON',
                                    TYPE='DSC',),
                       MODE_MECA=MODES,
                       AMOR_REDUIT=0.05,
+                      MONO_APPUI='OUI',
                       OPTION=('DEPL','VITE','SIEF_ELGA_DEPL','EFGE_ELNO_DEPL','FORC_NODA','REAC_NODA'),
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               MONO_APPUI='OUI',
                                SPEC_OSCI=SPEC1,
                                ECHELLE=1.0,),);
 

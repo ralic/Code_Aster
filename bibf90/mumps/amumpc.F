@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPC MUMPS  DATE 21/09/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPC MUMPS  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -21,15 +21,15 @@
 ! ==================================================================
 C--------------------------------------------------------------
 C OBJET: DRIVER EN MODE COMPLEXE DE LA RESOLUTION DE SYSTEMES LINEAIRES
-C        VIA MUMPS
+C        VIA MUMPS (EN SIMPLE PRECISION POUR MUMPS UNIQUEMENT)
 C
 C IN : ACTION :
 C     /'PRERES'  : POUR DEMANDER LA FACTORISATION
 C     /'RESOUD'  : POUR DEMANDER LA DESCENTE/REMONTEE
-C     /'DETR_MAT': POUR DEMANDER LA DESTRUCTION DE L'INSTANCE MUMPS
+C     /'DETR_MAT/OCC': POUR DEMANDER LA DESTRUCTION DE L'INSTANCE MUMPS
 C                  ASSOCIEE A UNE MATRICE
 C
-C IN : KXMPS (I)   : INDICE DE L'INSTANCE MUMPS DANS DMPS
+C IN : KXMPS (I)   : INDICE DE L'INSTANCE MUMPS DANS CMPS
 C VAR: CSOLU (C)   : EN ENTREE : VECTEUR SECOND MEMBRE (COMPLEXE)
 C                    EN SORTIE : VECTEUR SOLUTION (COMPLEXE)
 C            (SI ACTION=RESOUD)
@@ -39,8 +39,10 @@ C OUT : IRET (I) : CODE_RETOUR :
 C            0 : OK
 C            2 : MATRICE NUMERIQUEMENT SINGULIERE
 C IN  : NBSOL  : NBRE DE SYSTEMES A RESOUDRE
-C IN  : IMPR,IFMUMP : PARAMETRES POUR SORTIE FICHIER MATRICE CF AMUMPS
+C IN  : IMPR,IFMUMP : PARAMETRES POUR SORTIE FICHIER MATRICE CF AMUMPH
 C---------------------------------------------------------------
+C RESPONSABLE BOITEAU
+
       CHARACTER*(*) ACTION
       CHARACTER*14  IMPR
       CHARACTER*19  VCINE,NOSOLV
@@ -51,8 +53,7 @@ C---------------------------------------------------------------
 
 C================================================================
       INCLUDE 'mpif.h'
-      INCLUDE 'dmumps_struc.h'
-      INCLUDE 'zmumps_struc.h'
+      INCLUDE 'cmumps_struc.h'
 C================================================================
 C --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
@@ -72,22 +73,19 @@ C --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C================================================================
       INTEGER    NMXINS
       PARAMETER (NMXINS=5)
-      TYPE (DMUMPS_STRUC) , TARGET  :: DMPS(NMXINS)
-      TYPE (ZMUMPS_STRUC) , TARGET  :: ZMPS(NMXINS)
-      TYPE (ZMUMPS_STRUC) , POINTER :: XMPSK
+      TYPE (CMUMPS_STRUC) , TARGET  :: CMPS(NMXINS)
+      TYPE (CMUMPS_STRUC) , POINTER :: CMPSK
       INTEGER      JSLVK,JSLVR,RANG,NBPROC,NIV,IFM,IBID,IETDEB
       INTEGER      IETRAT,JREFA
-      INTEGER*4    KXMPS4
-      CHARACTER*1  ROUCS(NMXINS),ROUC,TYPE
+      CHARACTER*1  ROUCS(NMXINS),ROUC,TYPE,PREC,PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOMAT,NOSOLS(NMXINS)
       CHARACTER*24 KMONIT(12)
-      REAL*8       EPSMAX,VALR(2),TEMPS(6),RDESQ,RBID(1),RCTDEB
+      REAL*8       EPSMAX,VALR(2),RDESQ,RCTDEB,RBID(1),TEMPS(6),EPSMAT
       LOGICAL      LQUALI,ELI2LG,LDIST,LRESOL,LMD
-      COMMON /SMUMPS1/ DMPS
-      COMMON /SMUMPS2/ ZMPS
-      COMMON /SMUMPS/  NONUS,NOMATS,NOSOLS,ETAMS,ROUCS
+      COMMON /MUMPSC/ CMPS
+      COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
 C=================================================================
       CALL JEMARQ()
 
@@ -103,7 +101,6 @@ C --- PARAMETRE POUR IMPRESSION FICHIER
       LRESOL=((IMPR(1:3).EQ.'NON').OR.(IMPR(1:9).EQ.'OUI_SOLVE'))
 
 C --- TYPE DE SYSTEME: REEL OU COMPLEXE
-      KXMPS4=KXMPS
       TYPE='C'
       CALL ASSERT(KXMPS.GT.0)
       CALL ASSERT(KXMPS.LE.NMXINS)
@@ -112,8 +109,9 @@ C --- TYPE DE SYSTEME: REEL OU COMPLEXE
       NONU=NONUS(KXMPS)
       ETAM=ETAMS(KXMPS)
       ROUC=ROUCS(KXMPS)
-      CALL ASSERT(ROUC.EQ.TYPE)
-      XMPSK=>ZMPS(KXMPS4)
+      PREC=PRECS(KXMPS)
+      CALL ASSERT((ROUC.EQ.'C').AND.(PREC.EQ.'S'))
+      CMPSK=>CMPS(KXMPS)
       IRET=0
 
 C --- RDESQ: TAUX DE DESEQUILIBRAGE MAX. POUR PROFILING ACTIVE
@@ -133,13 +131,16 @@ C --- POUR "ELIMINER" LE 2EME LAGRANGE :
 C --- MUMPS PARALLELE DISTRIBUE ?
       CALL JEVEUO(NOMAT//'.REFA','L',JREFA)
       LDIST=(ZK24(JREFA-1+11).NE.'MPI_COMPLET')
-      RANG=XMPSK%MYID
-      NBPROC=XMPSK%NPROCS
+      RANG=CMPSK%MYID
+      NBPROC=CMPSK%NPROCS
 
 C --- MATRICE ASTER DISTRIBUEE ?
       LMD = .FALSE.
       LMD = ZK24(JSLVK-1+10)(1:3).EQ.'OUI'
 
+C --- FILTRAGE DE LA MATRICE DONNEE A MUMPS (UNIQUEMENT NON LINEAIRE)
+      EPSMAT=ZR(JSLVR-1+1)
+      
 C --- POUR MONITORING
       CALL AMUMPT(0,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &            IETDEB,IETRAT,RCTDEB,LDIST)
@@ -155,9 +156,9 @@ C       ------------------------------------------------
 C        INITIALISATION DE L'OCCURENCE MUMPS KXMPS:
 C       ------------------------------------------------
         CALL AMUMPI(0,LQUALI,LDIST,KXMPS,TYPE)
-        CALL ZMUMPS(XMPSK)
-        RANG=XMPSK%MYID
-        NBPROC=XMPSK%NPROCS
+        CALL CMUMPS(CMPSK)
+        RANG=CMPSK%MYID
+        NBPROC=CMPSK%NPROCS
 
 C       ------------------------------------------------
 C        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS :
@@ -169,7 +170,9 @@ C        REMPLISSAGE DE LA MATRICE MUMPS :
 C       ------------------------------------------------
         CALL AMUMPT(1,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
-        CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE,LMD)
+        CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE,LMD,
+     &              EPSMAT)
+
         CALL JJLDYN(IBID)
 
 C       ------------------------------------------------
@@ -177,87 +180,82 @@ C        ANALYSE MUMPS:
 C       ------------------------------------------------
         CALL AMUMPT(2,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
-C       -- ON INTERROMPT LA MESURE CPU.RESO.4 PENDANT CPU.RESO.3 :
-        CALL UTTCPU('CPU.RESO.4','FIN',' ')
-        CALL UTTCPU('CPU.RESO.3','DEBUT',' ')
-        XMPSK%JOB = 1
-        CALL ZMUMPS(XMPSK)
-        CALL UTTCPU('CPU.RESO.3','FIN',' ')
-        CALL UTTCPU('CPU.RESO.4','DEBUT',' ')
+        CMPSK%JOB = 1
+        CALL CMUMPS(CMPSK)
         CALL AMUMPT(4,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
 
 C       ------------------------------------------------
 C        GESTION ERREURS ET MENAGE ASTER:
 C       ------------------------------------------------
-        IF (XMPSK%INFOG(1).EQ.0) THEN
+        IF (CMPSK%INFOG(1).EQ.0) THEN
 C              -- C'EST OK
-        ELSE IF ((XMPSK%INFOG(1).EQ.-5).OR.(XMPSK%INFOG(1).EQ.-7)) THEN
+        ELSE IF ((CMPSK%INFOG(1).EQ.-5).OR.(CMPSK%INFOG(1).EQ.-7)) THEN
           CALL U2MESS('F','FACTOR_64')
-        ELSE IF (XMPSK%INFOG(1).EQ.-6) THEN
+        ELSE IF (CMPSK%INFOG(1).EQ.-6) THEN
           CALL U2MESS('F','FACTOR_69')
         ELSE
-          IF (XMPSK%INFOG(1).LT.0) THEN
-            CALL U2MESI('F','FACTOR_55',1,XMPSK%INFOG(1))
+          IF (CMPSK%INFOG(1).LT.0) THEN
+            CALL U2MESI('F','FACTOR_55',1,CMPSK%INFOG(1))
           ELSE
-            CALL U2MESI('A','FACTOR_55',1,XMPSK%INFOG(1))
+            CALL U2MESI('A','FACTOR_55',1,CMPSK%INFOG(1))
           ENDIF
         ENDIF
-C        IF (RANG.EQ.0) CALL ASSERT(XMPSK%INFOG(1).EQ.0)
+C        IF (RANG.EQ.0) CALL ASSERT(CMPSK%INFOG(1).EQ.0)
 C --- VERIFICATION DU RENUMEROTEUR EFFECTIVEMENT UTILISE
         IF(ZK24(JSLVK-1+4).NE.'AUTO' .AND.
-     &     XMPSK%ICNTL(7).NE.XMPSK%INFOG(7))
+     &     CMPSK%ICNTL(7).NE.CMPSK%INFOG(7))
      &     CALL U2MESK('A','FACTOR_50',1,ZK24(JSLVK-1+4))
 
 C       ------------------------------------------------
 C        FACTORISATION NUMERIQUE MUMPS:
 C       ------------------------------------------------
-        XMPSK%JOB = 2
-        IF (LRESOL) CALL ZMUMPS(XMPSK)
+        CMPSK%JOB = 2
+        IF (LRESOL) CALL CMUMPS(CMPSK)
         CALL AMUMPT(6,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
 
 C       ------------------------------------------------
 C        GESTION ERREURS ET MENAGE ASTER:
 C       ------------------------------------------------
-        VALR(1)=(XMPSK%INFOG(13)*100.D0)/XMPSK%N
-        VALR(2)=XMPSK%ICNTL(14)*1.D0
+        VALR(1)=(CMPSK%INFOG(13)*100.D0)/CMPSK%N
+        VALR(2)=CMPSK%ICNTL(14)*1.D0
         IF (VALR(1).GE.VALR(2)) THEN
 C     PROBLEME DU TROP GRAND NBRE DE PIVOTS NUMERIQUES
           CALL U2MESR('I','FACTOR_73',2,VALR)
         ENDIF
-        IF (XMPSK%INFOG(1).EQ.0) THEN
+        IF (CMPSK%INFOG(1).EQ.0) THEN
 C              -- C'EST OK
-        ELSE IF ((XMPSK%INFOG(1).EQ.-8).OR.(XMPSK%INFOG(1).EQ.-9).OR.
-     &         (XMPSK%INFOG(1).EQ.-14).OR.(XMPSK%INFOG(1).EQ.-15).OR.
-     &         (XMPSK%INFOG(1).EQ.-17).OR.(XMPSK%INFOG(1).EQ.-20)) THEN
+        ELSE IF ((CMPSK%INFOG(1).EQ.-8).OR.(CMPSK%INFOG(1).EQ.-9).OR.
+     &         (CMPSK%INFOG(1).EQ.-14).OR.(CMPSK%INFOG(1).EQ.-15).OR.
+     &         (CMPSK%INFOG(1).EQ.-17).OR.(CMPSK%INFOG(1).EQ.-20)) THEN
           CALL U2MESS('F','FACTOR_53')
-        ELSE IF (XMPSK%INFOG(1).EQ.-10) THEN
+        ELSE IF (CMPSK%INFOG(1).EQ.-10) THEN
           IRET=2
-        ELSE IF (XMPSK%INFOG(1).EQ.-13) THEN
+        ELSE IF (CMPSK%INFOG(1).EQ.-13) THEN
           CALL U2MESS('F','FACTOR_54')
-        ELSE IF (XMPSK%INFOG(1).EQ.-37) THEN
+        ELSE IF (CMPSK%INFOG(1).EQ.-37) THEN
           CALL U2MESS('F','FACTOR_65')
-       ELSE IF (XMPSK%INFOG(1).EQ.-90) THEN
+       ELSE IF (CMPSK%INFOG(1).EQ.-90) THEN
 C     PROBLEME DU TRAITEMENT OUT-OF-CORE DE MUMPS
           CALL U2MESS('F','FACTOR_66')
         ELSE
-          IF (XMPSK%INFOG(1).LT.0) THEN
-            CALL U2MESI('F','FACTOR_55',1,XMPSK%INFOG(1))
+          IF (CMPSK%INFOG(1).LT.0) THEN
+            CALL U2MESI('F','FACTOR_55',1,CMPSK%INFOG(1))
           ELSE
-            CALL U2MESI('A','FACTOR_55',1,XMPSK%INFOG(1))
+            CALL U2MESI('A','FACTOR_55',1,CMPSK%INFOG(1))
           ENDIF
         ENDIF
         IF ((( RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
           IF (.NOT.LQUALI) THEN
             IF (LDIST) THEN
-              DEALLOCATE(XMPSK%A_loc)
-              DEALLOCATE(XMPSK%IRN_loc)
-              DEALLOCATE(XMPSK%JCN_loc)
+              DEALLOCATE(CMPSK%A_loc)
+              DEALLOCATE(CMPSK%IRN_loc)
+              DEALLOCATE(CMPSK%JCN_loc)
             ELSE
-              DEALLOCATE(XMPSK%A)
-              DEALLOCATE(XMPSK%IRN)
-              DEALLOCATE(XMPSK%JCN)
+              DEALLOCATE(CMPSK%A)
+              DEALLOCATE(CMPSK%IRN)
+              DEALLOCATE(CMPSK%JCN)
             ENDIF
           ENDIF
         ENDIF
@@ -281,31 +279,31 @@ C        RESOLUTION MUMPS :
 C       ------------------------------------------------
         CALL AMUMPT(8,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
-        XMPSK%JOB = 3
-        IF (LRESOL) CALL ZMUMPS(XMPSK)
+        CMPSK%JOB = 3
+        IF (LRESOL) CALL CMUMPS(CMPSK)
         CALL AMUMPT(10,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
 
 C       ------------------------------------------------
 C        GESTION ERREURS ET MENAGE ASTER:
 C       ------------------------------------------------
-        IF (XMPSK%INFOG(1).EQ.0) THEN
+        IF (CMPSK%INFOG(1).EQ.0) THEN
 C              -- C'EST OK
-        ELSE IF ((XMPSK%INFOG(1).EQ.8).AND.(LQUALI)) THEN
-          CALL U2MESI('A','FACTOR_62',1,XMPSK%ICNTL(10))
-        ELSE IF (XMPSK%INFOG(1).LT.0) THEN
-          CALL U2MESI('F','FACTOR_55',1,XMPSK%INFOG(1))
-        ELSE IF (XMPSK%INFOG(1).EQ.4) THEN
-C          -- PERMUTATION DE COLONNES, XMPSK%JCN MODIFIE VOLONTAIREMENT
+        ELSE IF ((CMPSK%INFOG(1).EQ.8).AND.(LQUALI)) THEN
+          CALL U2MESI('A','FACTOR_62',1,CMPSK%ICNTL(10))
+        ELSE IF (CMPSK%INFOG(1).LT.0) THEN
+          CALL U2MESI('F','FACTOR_55',1,CMPSK%INFOG(1))
+        ELSE IF (CMPSK%INFOG(1).EQ.4) THEN
+C          -- PERMUTATION DE COLONNES, CMPSK%JCN MODIFIE VOLONTAIREMENT
 C          -- PAR MUMPS. IL NE FAUT DONC PAS LE MANIPULER TEL QUE
 C          -- PAS GRAVE POUR ASTER.
         ELSE
-          CALL U2MESI('A','FACTOR_55',1,XMPSK%INFOG(1))
+          CALL U2MESI('A','FACTOR_55',1,CMPSK%INFOG(1))
         ENDIF
 C --- CONTROLE DE L'ERREUR SUR LA SOLUTION :
         IF (LQUALI) THEN
-          IF (XMPSK%RINFOG(9).GT.EPSMAX) THEN
-            VALR(1)=XMPSK%RINFOG(9)
+          IF (CMPSK%RINFOG(9).GT.EPSMAX) THEN
+            VALR(1)=CMPSK%RINFOG(9)
             VALR(2)=EPSMAX
             CALL U2MESR('F','FACTOR_57',2,VALR)
           ENDIF
@@ -325,7 +323,7 @@ C       ------------------------------------------------
 
 C     ------------------------------------------------
 C     ------------------------------------------------
-      ELSE IF (ACTION(1:8).EQ.'DETR_MAT') THEN
+      ELSE IF (ACTION(1:5).EQ.'DETR_') THEN
 C     ------------------------------------------------
 C     ------------------------------------------------
 
@@ -335,18 +333,15 @@ C        MENAGE ASTER ET MUMPS:
 C       ------------------------------------------------
         IF (NOMATS(KXMPS).NE.' ') THEN
           IF ((( RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
-            CALL JEVEUO(NOSOLS(KXMPS)//'.SLVR','L',JSLVR)
-            EPSMAX=ZR(JSLVR-1+2)
-            LQUALI=(EPSMAX.GT.0.D0)
             IF (LQUALI) THEN
               IF (LDIST) THEN
-                DEALLOCATE(XMPSK%A_loc)
-                DEALLOCATE(XMPSK%IRN_loc)
-                DEALLOCATE(XMPSK%JCN_loc)
+                DEALLOCATE(CMPSK%A_loc)
+                DEALLOCATE(CMPSK%IRN_loc)
+                DEALLOCATE(CMPSK%JCN_loc)
               ELSE
-                DEALLOCATE(XMPSK%A)
-                DEALLOCATE(XMPSK%IRN)
-                DEALLOCATE(XMPSK%JCN)
+                DEALLOCATE(CMPSK%A)
+                DEALLOCATE(CMPSK%IRN)
+                DEALLOCATE(CMPSK%JCN)
               ENDIF
             ENDIF
           ENDIF
@@ -355,8 +350,9 @@ C       ------------------------------------------------
           NOMATS(KXMPS)=' '
           NOSOLS(KXMPS)=' '
           ROUCS(KXMPS)=' '
-          XMPSK%JOB = -2
-          CALL ZMUMPS(XMPSK)
+          PRECS(KXMPS)=' '
+          CMPSK%JOB = -2
+          CALL CMUMPS(CMPSK)
         ENDIF
       ENDIF
 

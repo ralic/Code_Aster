@@ -1,6 +1,6 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 02/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16     K16BID
       CHARACTER*24     VALK(3)
       INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2), LGBL
-      INTEGER          VALI(7)
+      INTEGER          VALI(7),IRT
       REAL*8           VALR(1)
       PARAMETER      ( NCAR = 11 )
 C ----------------------------------------------------------------------
@@ -123,6 +123,7 @@ C ----------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
       IPGCA = IPGC
       IPGC  = -2
+      IRT = 0
 C
       KAT(17) = 0
       KDY(17) = 0
@@ -173,7 +174,16 @@ C
       IF ( KSTIN .EQ. 'DEBUT   ' .OR. KSTIN .EQ. 'DUMMY   ') THEN
         NREMAX(IC) = NREP
         NREUTI(IC) = 0
-        NRHCOD(IC) = JJPREM ( NREMAX(IC) )
+        NRHCOD(IC) = JJPREM(NREMAX(IC),IRT)
+        IF ( IRT .EQ. 1 ) THEN
+          IF ( IC .EQ. 1 ) THEN
+            CALL U2MESG('A','JEVEUX_64',1,NOMBAS(IC),1,NREMAX(IC),
+     &                   0,VALR)
+          ELSE 
+            CALL U2MESG('A','JEVEUX_65',1,NOMBAS(IC),1,NREMAX(IC),
+     &                   0,VALR)
+          ENDIF
+        ENDIF
         NBLUTI(IC) = 0
         LONGBL(IC) = LBLOC
         IF ( NBLOC .EQ. 0 ) THEN

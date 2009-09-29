@@ -1,4 +1,4 @@
-# MODIF  DATE 07/09/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (TRIA6 QUAD8) PLAN
 # ssnv112c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,7 +51,7 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                          MATER=MA,),);
 
 CLIM=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=_F(GROUP_NO='GRNM11',
+                    DDL_IMPO=_F(GROUP_MA='GRMA11',
                                 DX=0.0,),
                     FACE_IMPO=(_F(GROUP_MA='GRMA12',
                                   DNOR=0.0,),

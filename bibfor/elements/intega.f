@@ -11,7 +11,7 @@
       REAL*8 INTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/08/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,10 +31,10 @@ C ======================================================================
 C
 C     BUT:
 C         CALCUL DES TERMES PAR POINT DE GAUSS POUR UNE INTEGRATION
-C         DE GAUSS DU TYPE : 
+C         DE GAUSS DU TYPE :
 C              (
-C              |     (VECT-MAT.N)**2 dFACE
-C              )FACE 
+C              |     (VECT-MAT.N)**2 DFACE
+C              )FACE
 C
 C
 C     ARGUMENTS:
@@ -48,7 +48,7 @@ C IN   POIDSF : VECTEUR DES POIDS AUX NOEUDS POUR LA FACE
 C IN   VECTX  : COMPOSANTES EN X DU VECTEUR AUX NOEUDS
 C IN   VECTY  : COMPOSANTES EN Y DU VECTEUR AUX NOEUDS
 C IN   VECTZ  : COMPOSANTES EN Z DU VECTEUR AUX NOEUDS
-C IN   MATij  : COMPOSANTES ij DE LA MATRICE AUX NOEUDS
+C IN   MATIJ  : COMPOSANTES IJ DE LA MATRICE AUX NOEUDS
 C IN   NX     : COMPOSANTES EN X DES NORMALES AUX NOEUDS
 C IN   NY     : COMPOSANTES EN Y DES NORMALES AUX NOEUDS
 C IN   NZ     : COMPOSANTES EN Z DES NORMALES AUX NOEUDS
@@ -60,12 +60,10 @@ C
 C ......................................................................
       INTEGER IPGF
 C ----------------------------------------------------------------------
-C        
+C
       INTE=0.0D0
 C
-      DO 10 IPGF=1,NPGF
-C
-        IF (NPGF.EQ.6.AND.IPGF.LE.3) GOTO 10
+      DO 10 , IPGF = 1 , NPGF
 C
        INTE=INTE+((VECTX(IPGF)-MAT11(IPGF)*NX(IPGF)
      &            -MAT12(IPGF)*NY(IPGF)-MAT13(IPGF)*NZ(IPGF))**2
@@ -74,7 +72,7 @@ C
      &           +(VECTZ(IPGF)-MAT13(IPGF)*NX(IPGF)
      &            -MAT23(IPGF)*NY(IPGF)-MAT33(IPGF)*NZ(IPGF))**2)
      &            *POIDSF(IPGF)*JAC(IPGF)
-C     
+C
   10  CONTINUE
 C
       END

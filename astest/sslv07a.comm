@@ -1,5 +1,6 @@
-# MODIF  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
+# sslv07a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -216,6 +217,11 @@ DEPLD3=STAT_NON_LINE(MODELE=MO,
                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-06),
                      ARCHIVAGE=_F(LIST_INST=L_INST,
                                   CHAM_EXCLU='VARI_ELGA',),);
+
+# REMARQUE : STRICTO SENSU, LE CALCUL DE ERRE_ELEM_SIGM EST FAUX CAR
+#            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
+#            MAILLAGE ET A FORTIORI DANS LE CHARGEMENT
+#            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
 
 DEPLD2 = CALC_ELEM (reuse=DEPLD2,
               RESULTAT= DEPLD2,
@@ -438,18 +444,20 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    NOM_CMP='NUEST',
                    MAILLE='M10',
                    POINT=1,
-                   VALE=8.1917658043271E-04,
+                   VALE=2.0047109687680E+1,
+                   PRECISION=1.E-6,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.03.26',),
+                   VERSION='9.05.04',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
                    NOM_CHAM='ERRE_ELNO_ELEM',
                    NOM_CMP='ERREST',
                    MAILLE='M6',
                    NOEUD='N96',
-                   VALE=9.9102820670140E-02,
+                   VALE=1.3018281360424E-01,
+                   PRECISION=1.E-6,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.03.26',),
+                   VERSION='9.05.04',),
                 ),
           )
 TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
@@ -458,36 +466,40 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    NOM_CMP='ERREST',
                    MAILLE='M12',
                    POINT=1,
-                   VALE=7.88728E-01,
+                   VALE=1.9701930581635E+4,
+                   PRECISION=1.E-6,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.01.22',),
+                   VERSION='9.05.04',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
                    NOM_CHAM='ERRE_ELEM_SIGM',
                    NOM_CMP='TERMRE',
                    MAILLE='M12',
                    POINT=1,
-                   VALE=4.61706E-01,
+                   VALE=4.6170599564344E-01,
+                   PRECISION=1.E-6,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.01.22',),
+                   VERSION='9.05.04',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
                    NOM_CHAM='ERRE_ELEM_SIGM',
                    NOM_CMP='TERMSA',
                    MAILLE='M12',
                    POINT=1,
-                   VALE=2.02266E-01,
+                   VALE=3.5070437607475E-01,
+                   PRECISION=1.E-6,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.01.22',),
+                   VERSION='9.05.04',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
                    NOM_CHAM='ERRE_ELEM_SIGM',
                    NOM_CMP='TERMNO',
                    MAILLE='M12',
                    POINT=1,
-                   VALE=1.24756E-01,
+                   VALE=1.9701118171263E+4,
+                   PRECISION=1.E-6,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.01.22',),
+                   VERSION='9.05.04',),
                 ),
           )
 #---------------------------------------------------------------------

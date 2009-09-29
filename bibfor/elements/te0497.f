@@ -1,6 +1,7 @@
       SUBROUTINE TE0497(OPTION,NOMTE)
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,19 +24,11 @@ C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
 C      SUR UN ELEMENT ISOPARAMETRIQUE 2D, VIA L'OPTION 'ERRE_ELEM_SIGM'
 C      POUR LES MODELISATIONS HM SATUREES
-C IN OPTION : NOM DE L'OPTION
-C IN NOMTE  : NOM DU TYPE D'ELEMENT
 C   -------------------------------------------------------------------
-C     SUBROUTINES APPELLEES :
-C       MESSAGE           : U2MESS,U2MESK.
-C       JEVEUX            : JEMARQ,JEDEMA.
-C       CHAMPS LOCAUX     : JEVECH,TECACH.
-C       ENVIMA            : R8MIEM.
-C       MATERIAUX/CHARGES : RCVALA.
-C       DEDIEES A TE0497  : CAETHM,UTHK,ERHMV2,CALNOR,ERHMS2,
-C                           ERHMB2,RESROT,UTJAC
-C     FONCTIONS INTRINSEQUES :
-C       SQRT.
+C
+C REMARQUE : LES PROGRAMMES SUIVANTS DOIVENT RESTER TRES SIMILAIRES
+C            TE0368, TE0375, TE0377, TE0378, TE0382, TE0497
+C
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS :
 C       03/07/06 (SM): CREATION EN S'INSPIRANT DE TE0003.F ET DE
@@ -46,10 +39,8 @@ C                      STATIONNAIRE .
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
-
 C DECLARATION PARAMETRES D'APPELS
       CHARACTER*16 OPTION,NOMTE
-
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER        ZI
       COMMON /IVARJE/ZI(1)
@@ -65,21 +56,35 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                          ZK32
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES
 C
-      INTEGER INO    ,NNO   ,NPG   ,NDIM  ,IGEOM ,JGANO,
-     &        IMATE  ,IVOIS ,IERRE ,IERRM ,NBS   ,IRET  ,NIV  ,
+      INTEGER IFM,NIV
+      INTEGER IBID,IAUX,IRET,ITAB(7)
+      INTEGER IGEOM,JTIME
+      INTEGER IERR, IVOIS
+      INTEGER IERRM
+      INTEGER IMATE
+      INTEGER IFOVR, IFOVF
+      INTEGER IPES,IROT
+      INTEGER IREF1,IREF2
+      INTEGER NDIM
+      INTEGER NNO , NNOS , NPG , IPOIDS, IVF , IDFDE , JGANO
+      INTEGER                    IPOID2, IVF2, IDFDE2
+      INTEGER NBCMP
+      INTEGER IPG
+      INTEGER TYMVOL,NDEGRE,IFA,TYV
+      INTEGER NBS   ,
      &        ISIENP ,ISIENM,IDEPLP,IDEPLM,JKP   ,NBNA ,
-     &        ITAB(7),IFOR  ,IBID  ,IAGD  ,IATYMA,TYP  ,
-     &        TYPV   ,IACMP ,IREF1 ,IREF2 ,NBCMP
+     &        IAGD  ,IATYMA,TYP  ,
+     &        TYPV   ,IACMP
       INTEGER IADE2,IAVA2,IAPTM2,IGD2,NCMPM2
       INTEGER IADE3,IAVA3,IAPTM3,IGD3,NCMPM3
-      INTEGER IAUX,IGRDCA
+      INTEGER IGRDCA
       INTEGER DIMDEP,DIMDEF,DIMCON
-      INTEGER IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2
-      INTEGER NMEC,NPI,NP1,NP2,NNOS,NNOM,NDDLS,NDDLM
+      INTEGER NMEC,NPI,NP1,NP2,NNOM,NDDLS,NDDLM
       INTEGER MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),DIMUEL
       INTEGER ADSIP
       INTEGER YAMEC,ADDEME,ADCOME,YATE,ADDETE
@@ -87,13 +92,16 @@ C
       INTEGER YAP2,ADDEP2
       INTEGER II
 C
-      REAL*8 R8MIEM,OVFL,R8BID
-      REAL*8 VALPAR(1)
-      REAL*8 ORIEN,NX(3),NY(3),NZ(3),TX(3),TY(3)
-      REAL*8 FPX,FPY,FRX(9),FRY(9)
+      REAL*8 R8MIEM,OVFL
+      REAL*8 R8BID,R8BID2,R8BID3(2),R8BID4(2)
+      REAL*8 VALRES(1)
+      REAL*8 ORIEN,NX(3),NY(3),TX(3),TY(3),HF
+      REAL*8 FPX,FPY
+      REAL*8 FRX(9),FRY(9)
+      REAL*8 FOVO(2)
       REAL*8 INSTPM(2)
-      REAL*8 BIOT,RHOLIQ,UNSURK,UNSURM,JAC(27)
-      REAL*8 HT,DELTAT,THETA
+      REAL*8 BIOT,RHOLIQ,UNSURK,UNSURM,JACO(27)
+      REAL*8 HK,DELTAT,THETA
       REAL*8 CYOUNG,RHOHOM,PERMIN,VISCLI,POROSI,POISSO
       REAL*8 TM2H1V(3),TM2H1B(3),TM2H1S(3)
       REAL*8 TSIVOM,TDEVOM,TSIVOH,TSIBOM,TDEBOM,TSIBSH,TSIBBH,
@@ -102,7 +110,7 @@ C
 C
       LOGICAL      LAXI,PERMAN
 C
-      CHARACTER*2  FORMV,FORM,NOEU
+      CHARACTER*2  FORM,NOEU
       CHARACTER*3  MODINT
       CHARACTER*4  NOMPAR(1)
       CHARACTER*8  TYPEMA,TYPMAV
@@ -118,16 +126,27 @@ C
      &             CODME3(NBRE3),CODME4(NBRE4)
       CHARACTER*8  NOMRE1(NBRE1),NOMRE2(NBRE2),
      &             NOMRE3(NBRE3),NOMRE4(NBRE4)
-      CHARACTER*8 VALK
+      CHARACTER*8 VALK(2)
+
+      LOGICAL YAPR, YARO
 C
       DATA NOMRE1 / 'RHO','BIOT_COE','PERM_IN' /
       DATA NOMRE2 / 'RHO','VISC' /
       DATA NOMRE3 / 'PORO'       /
       DATA NOMRE4 / 'E', 'NU'    /
 C
+C ----------------------------------------------------------------------
+ 1000 FORMAT(A,' :',(6(1X,1PE17.10)))
+ 2000 FORMAT(A,10I8)
+C ----------------------------------------------------------------------
+C 1 -------------- GESTION DES DONNEES ---------------------------------
+C ----------------------------------------------------------------------
+      CALL JEMARQ()
+
+      CALL INFNIV(IFM,NIV)
+C
 C ------------------------------------------------------------------
 C
-      CALL JEMARQ()
       OVFL = R8MIEM()
 
 C =====================================================================
@@ -202,9 +221,34 @@ C
         ISIENM   = ITAB(1)
       ENDIF
 C
-C 2.4. LES FORCES VOLUMIQUES :
+C 2.4. CARTES DE PESANTEUR ET ROTATION
 C
-      CALL JEVECH('PFRVOLU','L', IFOR)
+      CALL TECACH('ONN','PPESANR',1,ITAB,IRET)
+      IF ( ITAB(1).NE.0 ) THEN
+        CALL JEVECH('PPESANR','L',IPES)
+        YAPR = .TRUE.
+      ELSE
+        YAPR = .FALSE.
+      ENDIF
+      CALL TECACH('ONN','PROTATR',1,ITAB,IRET)
+      IF ( ITAB(1).NE.0 ) THEN
+        CALL JEVECH('PROTATR','L',IROT)
+        YARO = .TRUE.
+      ELSE
+        YARO = .FALSE.
+      ENDIF
+C
+C 2.5. LES FORCES VOLUMIQUES EVENTUELLES :
+C          VALEURS REELLES ?
+      CALL TECACH('ONN','PFRVOLU',1,IFOVR,IRET)
+C          OU FONCTIONS ?
+      IF ( IFOVR.EQ.0 ) THEN
+        CALL TECACH('ONN','PFFVOLU',1,IFOVF,IRET)
+      ELSE
+        IFOVF = 0
+      ENDIF
+CGN      WRITE(IFM,2000) 'IFOVR', IFOVR
+CGN      WRITE(IFM,2000) 'IFOVF', IFOVF
 C--------------------------------------------------------------------
 C 3. RECHERCHE DES VALEURS NECESSAIRES AU CALCUL DE L'INDICATEUR
 C     . COEFFICIENT DE BIOT
@@ -213,9 +257,9 @@ C     . MASSE VOLUMIQUE DU LIQUIDE RHOLIQ
 C     . CONDUCTIVITE HYDRAULIQUE
 C--------------------------------------------------------------------
       NOMPAR(1) = 'INST'
-      VALPAR(1) = INSTPM(1)
+      VALRES(1) = INSTPM(1)
 C
-      CALL RCVALA ( ZI(IMATE), ' ', 'THM_DIFFU', 1, NOMPAR, VALPAR,
+      CALL RCVALA ( ZI(IMATE), ' ', 'THM_DIFFU', 1, NOMPAR, VALRES,
      &              NBRE1, NOMRE1, VALRE1, CODME1, 'FM' )
 C
       IF ( CODME1(1).EQ.'OK' .AND. CODME1(2).EQ.'OK' .AND.
@@ -228,7 +272,7 @@ C
      &              NOMRE1(1)//NOMRE1(2)//NOMRE1(3))
       ENDIF
 C
-      CALL RCVALA ( ZI(IMATE), ' ', 'THM_LIQU', 1, NOMPAR, VALPAR,
+      CALL RCVALA ( ZI(IMATE), ' ', 'THM_LIQU', 1, NOMPAR, VALRES,
      &              NBRE2, NOMRE2, VALRE2, CODME2, 'FM' )
 C
       IF ( ( CODME2(1).EQ.'OK' ) .AND. ( CODME2(2).EQ.'OK' ) ) THEN
@@ -254,7 +298,7 @@ C
 C
 C 4.1. RECHERCHE DE LA POROSITE INITIALE
 C
-        CALL RCVALA ( ZI(IMATE), ' ', 'THM_INIT', 1, NOMPAR, VALPAR,
+        CALL RCVALA ( ZI(IMATE), ' ', 'THM_INIT', 1, NOMPAR, VALRES,
      &                NBRE3, NOMRE3, VALRE3, CODME3, 'FM' )
 C
         IF ( CODME3(1).EQ.'OK' ) THEN
@@ -265,7 +309,7 @@ C
 C
 C 4.2. RECHERCHE DU COEFFICIENT DE POISSON ET DU MODULE DE YOUNG
 C
-        CALL RCVALA ( ZI(IMATE), ' ', 'ELAS', 1, NOMPAR, VALPAR,
+        CALL RCVALA ( ZI(IMATE), ' ', 'ELAS', 1, NOMPAR, VALRES,
      &                NBRE4, NOMRE4, VALRE4, CODME4, 'FM' )
 C
         IF (( CODME4(1).EQ.'OK' ).AND. ( CODME4(2).EQ.'OK' )) THEN
@@ -287,44 +331,7 @@ C
       ENDIF
 
 C--------------------------------------------------------------------
-C 5. INITIALISATION DES FORCES
-C--------------------------------------------------------------------
-C 5.1. FORCES DE PESANTEUR :
-C . SOIT A PARTIR D'UNE CARTE
-C . SOIT A ZERO
-C
-      CALL TECACH('ONN','PPESANR',1,ITAB,IRET)
-C
-      IF ( ITAB(1).NE.0 ) THEN
-        FPX = RHOHOM * ZR(ITAB(1)) * ZR(ITAB(1)+1)
-        FPY = RHOHOM * ZR(ITAB(1)) * ZR(ITAB(1)+2)
-      ELSE
-        FPX = 0.D0
-        FPY = 0.D0
-      ENDIF
-C
-C 5.2. FORCES DE ROTATION
-C . SOIT A PARTIR D'UNE CARTE
-C . SOIT A ZERO
-C CALCUL DE LA FORCE DE ROTATION AUX POINTS DE GAUSS
-C REMARQUE : LE TABLEAU EST DIMENSIONNE A 9 CASES CAR
-C C'EST LE MAX DE POINTS DE GAUSS POSSIBLE EN 2D
-C
-      CALL TECACH('ONN','PROTATR',1,ITAB,IRET)
-C
-      IF ( ITAB(1).NE.0 ) THEN
-        CALL RESROT (ZR(ITAB(1)),ZR(IGEOM),ZR(IVF),RHOHOM,NNO,NPG,
-     &               FRX, FRY)
-      ELSE
-C
-        DO 10 JKP =1, 9
-          FRX(JKP) = 0.D0
-          FRY(JKP) = 0.D0
-   10   CONTINUE
-C
-      ENDIF
-C--------------------------------------------------------------------
-C 6. RECUPERATION DES GRANDEURS CARACTERISTIQUES
+C 5. RECUPERATION DES GRANDEURS CARACTERISTIQUES
 C--------------------------------------------------------------------
       CALL JEVECH('PGRDCA','L',IGRDCA)
       LONGC = ZR(IGRDCA)
@@ -333,10 +340,10 @@ C
       IAUX = 0
       IF ( PRESC.LE.OVFL ) THEN
         IAUX = 1
-        VALK = 'pression'
+        VALK(1) = 'pression'
       ELSEIF ( LONGC.LE.OVFL ) THEN
         IAUX = 1
-        VALK = 'longueur'
+        VALK(1) = 'longueur'
       ENDIF
 C
       IF ( IAUX.NE.0 ) THEN
@@ -348,20 +355,74 @@ C D. --- CALCUL DES INDICATEURS ---------------------------------------
 C =====================================================================
 C
 C------------------------------------------------------------------
-C 1. CALCUL DES TERMES VOLUMIQUES
+C 1. -------------- CALCUL DU PREMIER TERME DE L'ERREUR -----------
 C------------------------------------------------------------------
 C
-C CALCUL DU DIAMETRE HT DE L'ELEMENT T
+C 2.1. --- CALCUL DU DIAMETRE HK DE LA MAILLE ----
 C
-      NIV = 1
-      CALL UTHK(NOMTE,IGEOM,HT,NDIM,IBID,IBID,IBID,IBID,NIV,IBID)
+      CALL UTHK(NOMTE,IGEOM,HK,NDIM,ITAB,IBID,IBID,IBID,NIV,IFM)
+C
+C 2.2. --- CALCUL DE LA FORCE DE PESANTEUR ---
+C
+      IF ( YAPR ) THEN
+        FPX = RHOHOM * ZR(IPES) * ZR(IPES+1)
+        FPY = RHOHOM * ZR(IPES) * ZR(IPES+2)
+      ELSE
+        FPX = 0.D0
+        FPY = 0.D0
+      ENDIF
+CGN      WRITE(IFM,1000) 'P',FPX,FPY,FPZ
+C
+C 2.3. --- CALCUL DE LA FORCE DE ROTATION ---
+C
+      IF ( YARO ) THEN
+        CALL RESROT (ZR(IROT),ZR(IGEOM),ZR(IVF),RHOHOM,NNO,NPG,
+     &               FRX, FRY)
+      ELSE
+C
+        DO 52 , IPG = 1 , NPG
+          FRX(IPG) = 0.D0
+          FRY(IPG) = 0.D0
+   52   CONTINUE
+C
+      ENDIF
+C
+C 2.4. --- CALCUL DE LA FORCE VOLUMIQUE EVENTUELLE ---
+C
+      IF ( IFOVR.NE.0 ) THEN
+        FOVO(1) = ZR(IFOVR  )
+        FOVO(2) = ZR(IFOVR+1)
+C
+      ELSEIF ( IFOVF.NE.0 ) THEN
+        NOMPAR(1) = 'INST'
+        R8BID3(1) = INSTPM(1)
+C       SI UNE COMPOSANTE N'A PAS ETE DECRITE, ASTER AURA MIS PAR
+C       DEFAUT LA FONCTION NULLE &FOZERO. ON LE REPERE POUR
+C       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
+        DO 24 , IBID = 1 , NDIM
+          IF ( ZK8(IFOVF+IBID-1)(1:7).EQ.'&FOZERO' ) THEN
+            FOVO(IBID) = 0.D0
+          ELSE
+            CALL FOINTE('FM',ZK8(IFOVF+IBID-1),1,NOMPAR,R8BID3,
+     >                   FOVO(IBID),IRET)
+          ENDIF
+   24   CONTINUE
+CGN        WRITE(IFM,*) 'F X : ',ZK8(IFOVF),FOVO(1)
+CGN        WRITE(IFM,*) 'F Y : ',ZK8(IFOVF+1),FOVO(2)
+C
+      ELSE
+        FOVO(1) = 0.D0
+        FOVO(2) = 0.D0
+      ENDIF
+C
+C 2.3. --- TERME VOLUMIQUE ---
 C
       CALL ERHMV2(LAXI      , PERMAN    , DELTAT  , DIMDEP,
      &            DIMDEF    , NMEC      , NP1     , NP2   , NDIM  ,
      &            NNO       , NNOS      , NNOM    , NPI   ,
      &            NPG       , NDDLS     , NDDLM   , DIMUEL,
      &            IPOIDS    , IVF       , IDFDE   , IPOID2, IVF2  ,
-     &            IDFDE2    , ZR(IGEOM) , ZR(IFOR),
+     &            IDFDE2    , ZR(IGEOM) , FOVO,
      &            ZR(IDEPLP), ZR(IDEPLM),
      &            ZR(ISIENP), ZR(ISIENM), NBCMP   , BIOT  , UNSURM,
      &            FPX       , FPY       , FRX     , FRY   ,
@@ -371,14 +432,14 @@ C
 C ON ADIMENSIONNE LES INDICATEURS VOLUMIQUES
 C
       ADMEC = 1.D0/(PRESC**2*LONGC**NDIM)
-      TSIVOM =  HT**2 * ADMEC * TM2H1V(1)
+      TSIVOM =  HK**2 * ADMEC * TM2H1V(1)
 C
       IF ( .NOT. PERMAN ) THEN
 C
-        TDEVOM = HT**2 * ADMEC * TM2H1V(2)
+        TDEVOM = HK**2 * ADMEC * TM2H1V(2)
 C
         ADV1H     = CYOUNG*UNSURK*ADMEC
-        TSIVOH = DELTAT * HT**2 * ADV1H * TM2H1V(3)
+        TSIVOH = DELTAT * HK**2 * ADV1H * TM2H1V(3)
 C
       ENDIF
 C
@@ -470,54 +531,74 @@ C
 C
 C BOUCLE SUR LES ARETES : IMPLICITEMENT, ON NUMEROTE LOCALEMENT LES
 C                         ARETES COMME LES NOEUDS SOMMETS
-C . DONC LE PREMIER NOEUD DE L'ARETE A LE MEME NUMERO QUE L'ARETE : INO
-C . LE NOEUD SUIVANT EST INO+1, SAUF SI ON EST SUR LA DERNIERE ARETE ;
+C . DONC LE PREMIER NOEUD DE L'ARETE A LE MEME NUMERO QUE L'ARETE : IFA
+C . LE NOEUD SUIVANT EST IFA+1, SAUF SI ON EST SUR LA DERNIERE ARETE ;
 C   LE NOEUD SUIVANT EST ALORS LE PREMIER, 1.
 C . L'EVENTUEL NOEUD MILIEU EST LE 1ER NOEUD, DECALE DU NOMBRE DE NOEUDS
-C   SOMMETS : INO + NBS
+C   SOMMETS : IFA + NBS
 C
-      DO 20 , INO = 1,NBS
+      DO 20 , IFA = 1,NBS
+C
+C ------TEST DU TYPE DE VOISIN -----------------------------------------
+C
+        TYV=ZI(IVOIS+7+IFA)
+C
+        IF ( TYV.NE.0 ) THEN
+C
+C ------- RECUPERATION DU TYPE DE LA MAILLE VOISINE
+C
+          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',TYV),TYPMAV)
+          IF ( NIV.GE.2  ) THEN
+            WRITE(IFM,1003)  IFA, ZI(IVOIS+IFA), TYPMAV
+ 1003 FORMAT (I2,'-EME FACE DE NUMERO',I10,' ==> TYPMAV = ', A)
+            WRITE(IFM,1000) 'TM2H1B', TM2H1B
+            WRITE(IFM,1000) 'TM2H1S', TM2H1S
+          ENDIF
 C
 C --- CALCUL DES NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE L'ARETE
 C
-        IAUX = INO
-        CALL CALNOR ( '2D' , IAUX, NNO  , IBID , NBS, NBNA, ITAB,
-     &                IGEOM, IBID,
-     &                IBID , IBID, ORIEN,
-     &                R8BID, JAC , NX   , NY   , NZ , TX  , TY  )
+          IAUX = IFA
+          CALL CALNOR ( '2D' , IGEOM,
+     >                  IAUX, NBS, NBNA, ORIEN,
+     >                  IBID, IBID, ITAB, IBID, IBID, IBID,
+     >                  JACO, NX, NY, R8BID3,
+     >                  TX, TY, HF )
 C
-C TEST DU TYPE DE VOISIN : TYPV VAUT 0 POUR UN BORD LIBRE ==> ON NE SAIT
-C PAS FAIRE AUJOURD'HUI
+C ------- SI L'ARRETE N'EST PAS SUR LA FRONTIERE DE LA STRUCTURE...
+C         CALCUL DES TERMES DE SAUT A TRAVERS LES FACES INTERIEURES
+C         DE LA MAILLE
 C
-        TYPV = ZI(IVOIS+7+INO)
-        IF (TYPV.NE.0) THEN
+          IF (TYPMAV(1:4).EQ.'TRIA'.OR.
+     >        TYPMAV(1:4).EQ.'QUAD') THEN
 C
-          TYPMAV = ZK8(IATYMA-1+TYPV)
-          FORMV  = TYPMAV(1:2)
+            CALL ERHMS2( PERMAN    , IFA      , NBS       , NBNA ,
+     &                   THETA     , JACO      , NX        , NY   ,
+     &                   ZR(ISIENP), ADSIP    , ZR(ISIENM), NBCMP,
+     &                   TYPMAV    , ZI(IREF1), ZI(IREF2) , IVOIS,
+     &                   TM2H1S                                   )
 C
-          IF (FORMV.EQ.'SE') THEN
-C ---------------------------------------------------------------
-C 2.4. CALCUL DES TERMES DE VERIFICATION DES CONDITIONS DE BORD
-C ---------------------------------------------------------------
-
-            CALL ERHMB2( PERMAN    , INO       , NBS   , NBNA  ,
-     &                   NDIM      , THETA     , INSTPM, JAC   , NX,
+C ------- SI L'ARRETE EST SUR LA FRONTIERE DE LA STRUCTURE...
+C         CALCUL DES TERMES DE VERIFICATION DES CONDITIONS DE BORD
+C
+          ELSE IF (TYPMAV(1:2).EQ.'SE') THEN
+C
+            CALL ERHMB2( PERMAN    , IFA       , NBS   , NBNA  ,
+     &                   NDIM      , THETA     , INSTPM, JACO   , NX,
      &                   NY        , TX        , TY    , NBCMP ,
      &                   ZR(IGEOM) , IVOIS     ,
      &                   ZR(ISIENP), ZR(ISIENM), ADSIP , IAGD  ,
      &                   ZI(IREF2) , IADE2     , IAVA2 , NCMPM2, IAPTM2,
      &                   IADE3     , IAVA3     , NCMPM3, IAPTM3, TM2H1B)
+C ----------------------------------------------------------------
 C
-          ELSE IF (FORMV.EQ.'TR'.OR.FORMV.EQ.'QU') THEN
-C ----------------------------------------------------------------
-C 2.5. CALCUL DES TERMES DE SAUT A TRAVERS LES FACES INTERIEURES
-C DE LA MAILLE
-C ----------------------------------------------------------------
-            CALL ERHMS2( PERMAN    , INO      , NBS       , NBNA ,
-     &                   THETA     , JAC      , NX        , NY   ,
-     &                   ZR(ISIENP), ADSIP    , ZR(ISIENM), NBCMP,
-     &                   TYPMAV    , ZI(IREF1), ZI(IREF2) , IVOIS,
-     &                   TM2H1S                                   )
+C ----------------------------------------------------------------------
+C --------------- CURIEUX ----------------------------------------------
+C ----------------------------------------------------------------------
+C
+          ELSE
+C
+            VALK(1)=TYPMAV(1:4)
+            CALL U2MESK('F','INDICATEUR_10',1,VALK)
 C
           ENDIF
 C
@@ -535,25 +616,25 @@ C
       ADHY0  = UNSURK**2/DENOMI
       ADHY1  = ADHY0/(LONGC**2)
 C
-      TSISAM = HT * ADMEC * TM2H1S(1)
-      TSIBOM = HT * ADMEC * TM2H1B(1)
+      TSISAM = HK * ADMEC * TM2H1S(1)
+      TSIBOM = HK * ADMEC * TM2H1B(1)
 C
       IF (PERMAN) THEN
 C
-        TSIBSH = HT * ADHY0 * TM2H1B(3)
-        TSIBBH = HT**3 * ADHY1 * TM2H1B(3)
+        TSIBSH = HK * ADHY0 * TM2H1B(3)
+        TSIBBH = HK**3 * ADHY1 * TM2H1B(3)
 C
-        TSISSH = HT * ADHY0 * TM2H1S(3)
-        TSISBH = HT**3 * ADHY1 * TM2H1S(3)
+        TSISSH = HK * ADHY0 * TM2H1S(3)
+        TSISBH = HK**3 * ADHY1 * TM2H1S(3)
 C
       ELSE
 C
         CALL JEVECH('PERREM','L',IERRM)
 C
-        TDEBOM = HT * ADMEC * TM2H1B(2)
-        TDESAM = HT * ADMEC * TM2H1S(2)
+        TDEBOM = HK * ADMEC * TM2H1B(2)
+        TDESAM = HK * ADMEC * TM2H1S(2)
 C
-        ADHYMD = DELTAT * HT * CYOUNG * PERMIN/VISCLI * ADHY1
+        ADHYMD = DELTAT * HK * CYOUNG * PERMIN/VISCLI * ADHY1
         TSIBSH = ADHYMD * TM2H1B(3)
         TSISSH = ADHYMD * TM2H1S(3)
 C
@@ -561,28 +642,28 @@ C
 C
 C ON STOCKE LES INDICATEURS
 C
-      CALL JEVECH('PERREUR','E',IERRE)
+      CALL JEVECH('PERREUR','E',IERR)
 C
       IF ( PERMAN ) THEN
 C
-        ZR(IERRE  ) =   SQRT(TSIVOM + TSIBOM + TSISAM)
+        ZR(IERR  ) =   SQRT(TSIVOM + TSIBOM + TSISAM)
      &                + SQRT(TSIBSH + TSISSH)
-        ZR(IERRE+1) =   SQRT(TSIVOM + TSIBOM + TSISAM)
+        ZR(IERR+1) =   SQRT(TSIVOM + TSIBOM + TSISAM)
      &                + SQRT(TSIBBH + TSISBH)
-        ZR(IERRE+2) = TSIBSH + TSISSH
-        ZR(IERRE+3) = TSIVOM + TSIBOM + TSISAM
-        ZR(IERRE+4) = TSIBBH + TSISBH
+        ZR(IERR+2) = TSIBSH + TSISSH
+        ZR(IERR+3) = TSIVOM + TSIBOM + TSISAM
+        ZR(IERR+4) = TSIBBH + TSISBH
 C
       ELSE
 C
-        ZR(IERRE+1) = TSIVOM + TSISAM + TSIBOM
-        ZR(IERRE+2) = TDEVOM + TDEBOM + TDESAM
-        ZR(IERRE+3) = TSIVOH + TSIBSH + TSISSH
+        ZR(IERR+1) = TSIVOM + TSISAM + TSIBOM
+        ZR(IERR+2) = TDEVOM + TDEBOM + TDESAM
+        ZR(IERR+3) = TSIVOH + TSIBSH + TSISSH
 C
-        ZR(IERRE+4) = MAX(ZR(IERRM+4),SQRT(ZR(IERRE+1)))
-        ZR(IERRE+5) = ZR(IERRM+5) + SQRT(ZR(IERRE+2))
-        ZR(IERRE+6) = SQRT(ZR(IERRM+6)**2+ZR(IERRE+3))
-        ZR(IERRE)   = ZR(IERRE+4)+ZR(IERRE+5)+ZR(IERRE+6)
+        ZR(IERR+4) = MAX(ZR(IERRM+4),SQRT(ZR(IERR+1)))
+        ZR(IERR+5) = ZR(IERRM+5) + SQRT(ZR(IERR+2))
+        ZR(IERR+6) = SQRT(ZR(IERRM+6)**2+ZR(IERR+3))
+        ZR(IERR)   = ZR(IERR+4)+ZR(IERR+5)+ZR(IERR+6)
 C
       ENDIF
 C

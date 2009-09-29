@@ -1,0 +1,460 @@
+# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+# TITRE  SYSTEME 2 MASSES - 4 RESSORTS ENCASTRE EN NO1 ET NO5
+# sdld33a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#        SOUMISE A UNE EXCITATION  SPECTRALE MULTIPLE
+# sdld33a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+#    K1       K2       K3       K4
+# # <><><>M1<><><> # <><><>M2<><><> #
+# NO1    NO2      NO3      NO4    NO5
+#SPEC1           SPEC2          SPEC3
+# DDS1            DDS2           DDS3
+##############################
+DEBUT(CODE=_F(NOM='SDLD33A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
+
+#
+
+MAILLAGE=LIRE_MAILLAGE();
+
+#
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=(_F(GROUP_MA=('RESK','RES2K',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),
+                         _F(GROUP_NO=('MASSE',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),),VERI_JACOBIEN='OUI',
+                     );
+
+#
+
+CARA=AFFE_CARA_ELEM(MODELE=MODELE,
+                    DISCRET=(_F(SYME='OUI',
+                                CARA='K_T_D_L',
+                                MAILLE='E12',
+                                REPERE='GLOBAL',
+                                VALE=(1.E3,1.,1.,),),
+                             _F(SYME='OUI',
+                                CARA='K_T_D_L',
+                                MAILLE='E23',
+                                REPERE='GLOBAL',
+                                VALE=(1.E3,1.,1.,),),
+                              _F(SYME='OUI',
+                                CARA='K_T_D_L',
+                                MAILLE='E34',
+                                REPERE='GLOBAL',
+                                VALE=(2.E3,1.,1.,),),
+                             _F(SYME='OUI',
+                                CARA='K_T_D_L',
+                                MAILLE='E45',
+                                REPERE='GLOBAL',
+                                VALE=(2.E3,1.,1.,),),
+                             _F(NOEUD='P2',
+                                CARA='M_T_D_N',
+                                SYME='OUI',
+                                VALE=10.0),
+                             _F(NOEUD='P4',
+                                CARA='M_T_D_N',
+                                SYME='OUI',
+                                VALE=10.0,),),);
+
+#
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=1.6E+11,
+                          NU=0.3,
+                          RHO=1.3E+04,),);
+
+#
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MAT,),);
+
+#
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(NOEUD=('P1','P3','P5',),
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,),
+                                  _F(GROUP_NO='MASSE',
+                                     DY=0.,
+                                     DZ=0.,),),);
+
+#
+
+RIGIELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MODELE,
+                        CARA_ELEM=CARA,
+                        CHARGE=COND_LIM,);
+
+#
+
+MASSELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MODELE,
+                        CARA_ELEM=CARA,
+                        CHARGE=COND_LIM,);
+
+#
+
+NUMEROTA=NUME_DDL(MATR_RIGI=RIGIELEM,);
+
+#
+
+MATRRIGI=ASSE_MATRICE(MATR_ELEM=RIGIELEM,
+                      NUME_DDL=NUMEROTA,);
+
+MATRMASS=ASSE_MATRICE(MATR_ELEM=MASSELEM,
+                      NUME_DDL=NUMEROTA,);
+
+#
+
+MAS=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+              MODELE=MODELE,
+              CARA_ELEM=CARA,);
+
+#
+
+MODES=MODE_ITER_SIMULT(MATR_A=MATRRIGI,
+                       MATR_B=MATRMASS,
+                       METHODE='SORENSEN',
+                       CALC_FREQ=_F(NMAX_FREQ=2,),);
+
+#
+
+MODES=NORM_MODE(reuse =MODES,
+                MODE=MODES,
+                NORME='TRAN',);
+
+#
+
+MODES=CALC_ELEM(reuse =MODES,
+                MODELE=MODELE,
+                CHAM_MATER=CHAMPMAT,
+                CARA_ELEM=CARA,
+                RESULTAT=MODES,
+                OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
+
+MODES=CALC_NO(reuse =MODES,
+              RESULTAT=MODES,
+              OPTION='FORC_NODA',
+              MODELE=MODELE,
+              CHAM_MATER=CHAMPMAT,
+              CARA_ELEM=CARA,);
+
+MODES=CALC_NO(reuse =MODES,
+              RESULTAT=MODES,
+              OPTION='REAC_NODA',
+              MODELE=MODELE,
+              CHAM_MATER=CHAMPMAT,
+              CARA_ELEM=CARA,);
+
+#
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE=2.25079,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODES,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   VALE=3.183,
+                   REFERENCE='ANALYTIQUE',),),);
+
+#
+#-----------------------------------------------------------------------
+#
+# CALCUL DES MODES STATIQUES POUR L'ENTRAINEMENT
+#
+#-----------------------------------------------------------------------
+
+MODE_STA=MODE_STATIQUE(MATR_RIGI=MATRRIGI,
+                       MATR_MASS=MATRMASS,
+                       MODE_STAT=_F(GROUP_NO=('PO1','PO3','PO5',),
+                                    AVEC_CMP='DX',),);
+
+#
+
+MODE_STA=CALC_ELEM(reuse =MODE_STA,
+                   MODELE=MODELE,
+                   CHAM_MATER=CHAMPMAT,
+                   CARA_ELEM=CARA,
+                   RESULTAT=MODE_STA,
+                   OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
+
+MODE_STA=CALC_NO(reuse =MODE_STA,
+                 RESULTAT=MODE_STA,
+                 OPTION='FORC_NODA',
+                 MODELE=MODELE,
+                 CHAM_MATER=CHAMPMAT,
+                 CARA_ELEM=CARA,);
+
+MODE_STA=CALC_NO(reuse =MODE_STA,
+                 RESULTAT=MODE_STA,
+                 OPTION='REAC_NODA',
+                 MODELE=MODELE,
+                 CHAM_MATER=CHAMPMAT,
+                 CARA_ELEM=CARA,);
+
+#
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_STA,
+                   NOEUD_CMP=('P1','DX',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='P1',
+                   VALE=1.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_STA,
+                   NOEUD_CMP=('P1','DX',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='P2',
+                   VALE=0.5,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_STA,
+                   NOEUD_CMP=('P1','DX',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='P3',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_STA,
+                   NOEUD_CMP=('P3','DX',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='P2',
+                   VALE=0.5,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_STA,
+                   NOEUD_CMP=('P3','DX',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='P3',
+                   VALE=1.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_STA,
+                   NOEUD_CMP=('P3','DX',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='P4',
+                   VALE=0.5,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODE_STA,
+                   NOEUD_CMP=('P5','DX',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='P4',
+                   VALE=0.5,
+                   REFERENCE='ANALYTIQUE',),),);
+
+#
+# -------------------------------
+#
+#   DEFINITION DU SEISME
+#
+#--------------------------------
+#
+
+SORA1=DEFI_FONCTION(NOM_PARA='FREQ',
+                    VALE=(2.25079,7.0,
+                          3.1831, 5),
+                    INTERPOL='LOG',
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+SORA2=DEFI_FONCTION(NOM_PARA='FREQ',
+                    VALE=(2.25079,7.7,
+                          3.1831, 5.5),
+                    INTERPOL='LOG',
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+SORA3=DEFI_FONCTION(NOM_PARA='FREQ',
+                    VALE=(2.25079,12.0,
+                          3.1831, 6.0),
+                    INTERPOL='LOG',
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+#
+SPEC1=DEFI_NAPPE(NOM_PARA='AMOR',
+                    INTERPOL=('LIN','LOG',),
+                    INFO=2,
+                    PARA=(0.0, 1.0, ),
+                    PROL_GAUCHE='CONSTANT',
+                    PROL_DROITE='CONSTANT',
+                    FONCTION=(SORA1, SORA1,),);
+SPEC2=DEFI_NAPPE(NOM_PARA='AMOR',
+                    INTERPOL=('LIN','LOG',),
+                    INFO=2,
+                    PARA=(0.0, 1.0, ),
+                    PROL_GAUCHE='CONSTANT',
+                    PROL_DROITE='CONSTANT',
+                    FONCTION=(SORA2, SORA2,),);
+SPEC3=DEFI_NAPPE(NOM_PARA='AMOR',
+                    INTERPOL=('LIN','LOG',),
+                    INFO=2,
+                    PARA=(0.0, 1.0, ),
+                    PROL_GAUCHE='CONSTANT',
+                    PROL_DROITE='CONSTANT',
+                    FONCTION=(SORA3, SORA3,),);
+
+
+#
+# REPONSE GLOBALE 
+# COMME COMBINAISON QUADRATIQUE INTERGROUPE 
+#--------------------------------
+
+MUDEQA=COMB_SISM_MODAL(MODE_MECA=MODES,
+                        AMOR_REDUIT=0.0,
+                        MASS_INER=MAS,
+                        CORR_FREQ='NON',
+                        MULTI_APPUI='DECORRELE',
+                        EXCIT=(_F(GROUP_NO='PO5',
+                                  AXE=(1.,0.,0.,),
+                                  SPEC_OSCI=SPEC3,
+                                  ECHELLE=1.,),
+                              _F(GROUP_NO=('PO1'),
+                                  AXE=(1.,0.,0.,),
+                                  SPEC_OSCI=SPEC1,),
+                              _F(GROUP_NO=('PO3'),
+                                  AXE=(1.,0.,0.,),
+                                  SPEC_OSCI=SPEC2,),       ),
+                        DEPL_MULT_APPUI=(_F(  NUME_CAS =1,
+                                          NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
+                                          MODE_STAT = MODE_STA,
+                                          GROUP_NO = ( 'PO1', ),
+                                          DX = -0.04),
+                                         _F(  NUME_CAS =1,
+                                          NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
+                                          MODE_STAT = MODE_STA,
+                                          GROUP_NO = ( 'PO3', ),
+                                          DX = -0.044),
+                                         _F(  NUME_CAS =1,
+                                          NOM_CAS ='DEPL EN X NUL EN P1 ET P4',
+                                          MODE_STAT = MODE_STA,
+                                          GROUP_NO = ( 'PO5', ),
+                                          DX = 0.06),),
+                        COMB_MODE=_F(TYPE='SRSS',),
+                        GROUP_APPUI=(_F(NOEUD =('P1','P3',),),
+                                     _F(GROUP_NO =('PO5',),),
+                                     ),
+                        OPTION=('DEPL','REAC_NODA'),);
+
+#
+
+TEST_RESU(RESU=(_F(RESULTAT=MUDEQA,
+                   NOEUD_CMP=('DIR','X',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PO1',
+                   VALE=0.04,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MUDEQA,
+                   NOEUD_CMP=('DIR','X',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PO2',
+                   VALE=0.0558,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MUDEQA,
+                   NOEUD_CMP=('DIR','X',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PO3',
+                   VALE=0.044,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MUDEQA,
+                   NOEUD_CMP=('DIR','X',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PO4',
+                   VALE=0.03856,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MUDEQA,
+                   NOEUD_CMP=('DIR','X',),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PO5',
+                   VALE=0.06,
+                   REFERENCE='ANALYTIQUE',),),);
+TEST_RESU(RESU=(_F(RESULTAT=MUDEQA,
+                   NOEUD_CMP=('DIR','X',),
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   GROUP_NO='PO1',
+                   VALE=36.80,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MUDEQA,
+                   NOEUD_CMP=('DIR','X',),
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   GROUP_NO='PO2',
+                   CRITERE='ABSOLU',
+                   VALE=0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MUDEQA,
+                   NOEUD_CMP=('DIR','X',),
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   GROUP_NO='PO3',
+                   VALE=86.49,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MUDEQA,
+                   NOEUD_CMP=('DIR','X',),
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   GROUP_NO='PO4',
+                   CRITERE='ABSOLU',
+                   VALE=0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MUDEQA,
+                   NOEUD_CMP=('DIR','X',),
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   GROUP_NO='PO5',
+                   VALE=77.14,
+                   REFERENCE='ANALYTIQUE',),),);
+
+#
+
+FIN();

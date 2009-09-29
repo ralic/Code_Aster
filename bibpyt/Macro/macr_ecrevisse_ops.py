@@ -1,4 +1,4 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 07/07/2009   AUTEUR MICHEL S.MICHEL 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 29/09/2009   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,7 +61,7 @@ def macr_ecrevisse_ops(self,reuse,
    # Niveaux de debug
    debug1 = (INFO>1)
    debug2 = (INFO>2)
-   debug3 = (INFO>3)
+  
    #
    InfoAster = 1
    #
@@ -166,13 +166,19 @@ def macr_ecrevisse_ops(self,reuse,
    # Precision demandee pour converger sur le critere de la macro
    # Nombre de decoupages succesifs d'un pas de temps
    # Pas de temps en dessous duquel on ne decoupe plus
-   MacrNbDecoupage   = dMacr_Conv['SUBD_NIVEAU']
-   MacrPasMini       = dMacr_Conv['SUBD_PAS_MINI']
+   if dMacr_Conv.has_key('SUBD_NIVEAU'):
+       MacrNbDecoupage   = dMacr_Conv['SUBD_NIVEAU']
+   if dMacr_Conv.has_key('SUBD_PAS_MINI'):
+       MacrPasMini       = dMacr_Conv['SUBD_PAS_MINI']
    MacrTempRef       = dMacr_Conv['TEMP_REF']
    MacrPresRef       = dMacr_Conv['PRES_REF']
    MacrCritere       = dMacr_Conv['CRITERE']
-   MacrPrecisCritere = dMacr_Conv['PREC_CRIT']
-   MacrNumeOrdre     = dMacr_Conv['NUME_ORDRE_MIN']
+   if dMacr_Conv.has_key('PREC_CRIT'):
+      MacrPrecisCritere = dMacr_Conv['PREC_CRIT']
+   else:
+      MacrPrecisCritere = None
+   if dMacr_Conv.has_key('NUME_ORDRE_MIN'):
+      MacrNumeOrdre     = dMacr_Conv['NUME_ORDRE_MIN']
 
    #
    # il faut 2 pas au minimum dans la liste
@@ -577,24 +583,27 @@ def macr_ecrevisse_ops(self,reuse,
             else:
                Erreur = ErreurG
             #
-            Convergence = ( Erreur <= MacrPrecisCritere )
+            print 'CONVERGENCE_MACR_ECREVISSE. Instant de calcul : %.3f .' % (_inst_p_un)
+            print '  Erreur en Temperature : %f . Ecart en Temperature : %.3f' % (ErreurT,max_T_diff_01)
+            print '  Erreur en Pression    : %f . Ecart en Pression    : %.3f' % (ErreurP,max_P_diff_01)
+            print '  Erreur Temp-Press     : %f' % (ErreurG)
+            if ( MacrCritere != 'EXPLICITE' ):
+               Convergence = ( Erreur <= MacrPrecisCritere )
+               print 'CONVERGENCE_MACR_ECREVISSE . Nature du Critere %s . Valeur du critere %s . Convergence %s ' % (MacrCritere,MacrPrecisCritere,Convergence,)
 
-            print 'CONVERGENCE_MACR_ECREVISSE. Instant de calcul : %.3f . Convergence %s . Nature du Critere %s' % (_inst_p_un,Convergence,MacrCritere)
-            print '  Erreur en Temperature : %f . Ecart en Temperature : %.3f . Critere sur la Temperature %.3f' % (ErreurT,max_T_diff_01,MacrTempRef)
-            print '  Erreur en Pression    : %f . Ecart en Pression    : %.3f . Critere sur la Pression    %.3f' % (ErreurP,max_P_diff_01,MacrPresRef)
-            print '  Erreur Globale : %f , pour une erreur maximale autorisee de %f ' % (ErreurG,MacrPrecisCritere)
          else:
             Convergence = True
             print 'CONVERGENCE_MACR_ECREVISSE. 1er Instant de calcul : %f . Pas de calcul de critere.' % (_inst_p_un)
          # --------------------
 
          #
-         
-         if ( (_nume_ordre != 0) and (_nume_ordre+1 <= MacrNumeOrdre) ):
-            UTMESS('A','ECREVISSE0_33', vali=[_nume_ordre+1,MacrNumeOrdre],valr=[_inst_p_un])
-            Convergence = True
+
          if ( MacrCritere == 'EXPLICITE' ):
             Convergence = True
+         else:
+            if ( (_nume_ordre != 0) and (_nume_ordre+1 <= MacrNumeOrdre) ):
+               UTMESS('A','ECREVISSE0_33', vali=[_nume_ordre+1,MacrNumeOrdre],valr=[_inst_p_un])
+               Convergence = True
 
          if ( Convergence ):
             nb_lignes_t1 = len(T_TABL_TMP1["COTES"])

@@ -1,4 +1,4 @@
-#@ MODIF seisme Messages  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+#@ MODIF seisme Messages  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,6 +149,23 @@ cata_msg={
 """),
 
 27: _("""
+"""),
+
+28: _("""
+  Dans le cas d'excitations décorrelées, 
+  le mot-clé COMB_MULT_APPUI n'est pas pris en compte.
+"""),
+
+29: _("""
+  La définition du groupe d'appuis n'est pas correcte dans le cas décorrélé:
+  au moins une excitation appartient à plusieurs groupes d'appuis. 
+  Les groupes d'appuis doivent être disjoints.
+"""),
+
+30: _("""
+  La définition du groupe d'appuis n'est pas correcte dans le cas décorrélé.
+  Un seul groupe d'appuis a été constitué contenant tous les appuis. 
+  Relancez le calcul avec le mot-clé MULTI_APPUI=CORRELE.
 """),
 
 }

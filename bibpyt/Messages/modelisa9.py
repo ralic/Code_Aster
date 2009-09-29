@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 20/07/2009   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF modelisa9 Messages  DATE 28/09/2009   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -237,11 +237,6 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
  pour la maille  %(k1)s
 """),
 
-58 : _("""
- Le matériau ne dépend pas des bons paramètres %(k1)s
-  depend de  %(k1)s il ne peut dependre que de %(k2)s
-"""),
-
 59 : _("""
  erreur lors de la definition de la courbe de traction : %(k1)s
  le premier point de la courbe de traction %(k2)s a pour abscisse:  %(r1)f
@@ -405,14 +400,6 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 
  Risques & Conseils
    Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
-"""),
-
-91 : _("""
- depend de  %(k1)s
-"""),
-
-92 : _("""
- il ne peut dependre que de %(k1)s
 """),
 
 93 : _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
 # TITRE : Table de Neubert
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,20 +140,20 @@ SPECT_Y=DEFI_NAPPE(  NOM_PARA='AMOR',
                           FONCTION=( ACCE_Y,   ACCE_Y,   ACCE_Y,  )  )
 
 SISM_SPE=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
-                               AMOR_REDUIT=0.02,
-                               MASS_INER=TABL_MAS,
-                               CORR_FREQ='NON',
-                               MODE_CORR=MODE_STA,
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      TRI_SPEC = 'OUI',
-                                      SPEC_OSCI = ( SPECT_XZ,  SPECT_Y,
-                                                   SPECT_XZ, ),
-                                      ECHELLE = ( 9.81, 9.81, 9.81, )),
-                              COMB_MODE=_F(  TYPE = 'SRSS'),
-                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                               OPTION=( 'DEPL',
-                                        'REAC_NODA',  'EFGE_ELNO_DEPL',
-                                        'EFGE_ELNO_CART', )
+                           AMOR_REDUIT=0.02,
+                           MASS_INER=TABL_MAS,
+                           CORR_FREQ='NON',
+                           MODE_CORR=MODE_STA,
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F(TRI_SPEC = 'OUI',
+                                    SPEC_OSCI = ( SPECT_XZ,  SPECT_Y,
+                                                  SPECT_XZ, ),
+                                    ECHELLE = ( 9.81, 9.81, 9.81, )),
+                           COMB_MODE=_F(  TYPE = 'SRSS'),
+                           COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                           OPTION=( 'DEPL',
+                                     'REAC_NODA',  'EFGE_ELNO_DEPL',
+                                     'EFGE_ELNO_CART', )
                              )
 #
 # FREQUENCES: LES VALEURS DE REFERENCE ONT ETE OBTENUES AVEC LE
@@ -318,19 +318,19 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
 #
 
 SISM_SP1=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
-                                AMOR_REDUIT=0.02,
-                               MASS_INER=TABL_MAS,
-                               CORR_FREQ='NON',
-                               MODE_CORR=MODE_STA,
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      TRI_SPEC = 'OUI',
+                           AMOR_REDUIT=0.02,
+                           MASS_INER=TABL_MAS,
+                           CORR_FREQ='NON',
+                           MODE_CORR=MODE_STA,
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F(  TRI_SPEC = 'OUI',
                                       SPEC_OSCI = ( SPECT_XZ,  SPECT_Y,
                                                    SPECT_XZ, ),
                                       ECHELLE = ( 9.81, 9.81, 9.81, )),
-                              COMB_MODE=_F(  TYPE = 'SRSS'),
-                              COMB_DIRECTION=_F(  TYPE = 'NEWMARK'),
-                               OPTION=( 'DEPL',
-                                        'REAC_NODA',  'EFGE_ELNO_DEPL', )
+                           COMB_MODE=_F(  TYPE = 'SRSS'),
+                           COMB_DIRECTION=_F(  TYPE = 'NEWMARK'),
+                           OPTION=( 'DEPL',
+                                     'REAC_NODA',  'EFGE_ELNO_DEPL', )
                              )
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP1,  NOM_CHAM = 'DEPL',

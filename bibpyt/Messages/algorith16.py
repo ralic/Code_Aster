@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith16 Messages  DATE 28/09/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -455,13 +455,6 @@ cata_msg = {
 
 92 : _("""
    Au noeud de choc %(k1)s
-  """),
-
-93 : _("""
-   Pour le noeud n0 : %(i1)d
-    - Raideur locale DEPX : %(r1)f
-    - Raideur locale DEPY : %(r2)f
-    - Raideur locale DEPZ : %(r3)f
   """),
 
 94 : _("""
