@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith2 Messages  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,7 +97,7 @@ cata_msg = {
 """),
 
 23 : _("""
- la maille doit etre de type TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 ou HEXA20.
+ la maille doit etre de type TETRA4, TETRA10, PYRAM5, PYRAM10, PENTA6, PENTA15, HEXA8 ou HEXA20.
  or la maille est de type :  %(k1)s .
 """),
 

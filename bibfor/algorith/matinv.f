@@ -1,10 +1,11 @@
-      SUBROUTINE MATINV(NDIM,MAT,INV,DET)
+      SUBROUTINE MATINV(STOP,NDIM,MAT,INV,DET)
       IMPLICIT NONE
       INTEGER    NDIM
       REAL*8     MAT(NDIM,NDIM),INV(NDIM,NDIM),DET
+      CHARACTER*1  STOP
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +30,10 @@ C ***                     ***
 C
 C ----------------------------------------------------------------------
 C
+C IN  STOP   : /'S' : ON S'ARRETE EN ERREUR <F> EN CAS D'ECHEC
+C              /'C' : ON CONTINUE EN CAS D'ECHEC (SI LA VALEUR ABS DU 
+C                     DETERMINANT EST INFERIEURE A LA PRECISION MACHINE)
+C                     ET ON MET DET = 0
 C IN  NDIM   : DIMENSION DE LA MATRICE
 C IN  MAT    : MATRICE A INVERSER
 C OUT INV    : MATRICE INVERSE
@@ -37,7 +42,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER       IDIM,JDIM
-      REAL*8        M(NDIM,NDIM),R8GAEM,UNSDET
+      REAL*8        M(NDIM,NDIM),R8PREM,UNSDET
 C
       IF (NDIM.EQ.1) THEN
 C
@@ -78,8 +83,15 @@ C
         CALL U2MESS('F','ALGORITH5_20')
       ENDIF
 C
-      IF(ABS(DET).LE.1.D0/R8GAEM()) THEN
-        CALL U2MESS('F','ALGORITH5_19')
+      IF (ABS(DET).LE.R8PREM()) THEN
+        IF (STOP.EQ.'S') THEN
+          CALL U2MESS('F','ALGORITH5_19')
+        ELSEIF(STOP.EQ.'C') THEN
+          DET = 0.D0
+          GOTO 999
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
       ENDIF
 C
 C --- CALCUL DE L'INVERSE
@@ -93,4 +105,5 @@ C
  20     CONTINUE
  10   CONTINUE
 C
+ 999  CONTINUE
       END

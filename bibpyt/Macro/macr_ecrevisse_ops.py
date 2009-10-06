@@ -1,4 +1,4 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 29/09/2009   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 05/10/2009   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

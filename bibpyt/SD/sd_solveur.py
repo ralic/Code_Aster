@@ -1,4 +1,4 @@
-#@ MODIF sd_solveur SD  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_solveur SD  DATE 05/10/2009   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ class sd_solveur(AsBase):
     nomj = SDNom(fin=19)
     SLVK = AsVK24(SDNom(debut=19), lonmax=11, )
     SLVR = AsVR(SDNom(debut=19), lonmax=4, )
-    SLVI = AsVI(SDNom(debut=19), lonmax=6, )
+    SLVI = AsVI(SDNom(debut=19), lonmax=7, )
 
 
     def check_SLVK(self,checker):

@@ -1,6 +1,6 @@
-      SUBROUTINE INVJAX(NNO   ,NDIM  ,DFF   ,COOR  ,INVJAC)
+      SUBROUTINE INVJAX(STOP,NNO   ,NDIM  ,DFF   ,COOR  ,INVJAC,IPB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,9 +21,10 @@ C
 C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT   NONE
-      INTEGER    NNO,NDIM
+      INTEGER    NNO,NDIM,IPB
       REAL*8     COOR(NDIM*NNO)
       REAL*8     DFF(3,NNO),INVJAC(NDIM,NDIM)
+      CHARACTER*1  STOP
 C
 C ----------------------------------------------------------------------
 C
@@ -32,19 +33,25 @@ C             ***           ***           *
 C
 C ----------------------------------------------------------------------
 C
+C IN  STOP   : /'S' : ON S'ARRETE EN ERREUR <F> EN CAS D'ECHEC
+C              /'C' : ON CONTINUE EN CAS D'ECHEC (IPB=1)
 C IN  NNO    : NOMBRE DE NOEUDS DE L'ELT
 C IN  NDIM   : DIMENSION DE L'ESPACE
 C IN  DFF    : DÉRIVÉES DES FONCTION DES FORMES AU POINT XE
 C IN  COOR   : COORDONNEES DES NOEUDS DE L'ÉLÉMENT
 C OUT INVJAC : INVERSE DE LA JACOBIENNE AU POINT XE
+C OUT IPB    : =0 SI TOUT S'EST BIEN PASSE
+C              =1 SI MATRICE SINGULIERE
 C
 C ----------------------------------------------------------------------
 C
       INTEGER       IDIM,JDIM,INO
-      REAL*8        JACOBI(NDIM,NDIM),R8BID
+      REAL*8        JACOBI(NDIM,NDIM),DET,R8GAEM
 C
 C ----------------------------------------------------------------------
 C
+      IPB = 0
+      
 C --- JACOBIENNE EN XE
 C
       DO 10 JDIM=1,NDIM
@@ -64,6 +71,7 @@ C
 C
 C --- INVERSE DE LA JACOBIENNE
 C
-      CALL MATINV(NDIM,JACOBI,INVJAC,R8BID)
+      CALL MATINV(STOP,NDIM,JACOBI,INVJAC,DET)
+      IF (DET.EQ.0.D0) IPB = 1
 C
       END

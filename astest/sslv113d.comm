@@ -1,5 +1,6 @@
-# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 05/10/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
+# sslv113d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE DELMAS J.DELMAS
 
 DEBUT(CODE=_F(NOM='SSLV113D',
               NIV_PUB_WEB='INTERNET',),
@@ -159,11 +161,11 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M1',
                   POINT=1,
-                  VALE=-0.0504310414658,
+                  VALE=5.4281800533798E-03,
                   CRITERE='RELATIF',
                   PRECISION=1e-05,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.05.04',),);
+                  VERSION='10.00.20',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
@@ -171,19 +173,19 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M4',
                   NOEUD='N1',
-                  VALE=-0.0203244881025,
+                  VALE=8.1689076417331E-05,
                   CRITERE='RELATIF',
                   PRECISION=1e-05,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.05.04',),);
+                  VERSION='10.00.20',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
                   PARA='ERREUR_QIRE',
-                  VALE=0.0567173736649,
+                  VALE=5.7885189411087E-03,
                   CRITERE='RELATIF',
                   PRECISION=1e-05,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.05.04',),);
+                  VERSION='10.00.20',),);
 
 FIN();

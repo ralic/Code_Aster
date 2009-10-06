@@ -1,4 +1,4 @@
-# MODIF  DATE 29/06/2009   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 05/10/2009   AUTEUR DESOZA T.DESOZA 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100a.para = tps_job 80 mem_job 64Mo liste_test S
@@ -132,7 +132,7 @@ U=DYNA_NON_LINE(  SOLVEUR=_F(SYME='OUI',),
            SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT',
                            BETA = ALF, GAMMA = DEL),
            NEWTON      =_F( MATRICE = 'TANGENTE',  REAC_ITER = 1),
-           CONVERGENCE =_F(ITER_GLOB_MAXI = 200),
+           CONVERGENCE =_F(ITER_GLOB_MAXI = 20),
            INFO = 1,
            )
 

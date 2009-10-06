@@ -4,7 +4,7 @@
       CHARACTER*8    NOMA
   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,6 +65,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8         LSNA,LSNB,LSTA,LSTB
       CHARACTER*8    K8BID,TYPMA
       CHARACTER*19   MAI
+      LOGICAL        ISMALI
       
 C-----------------------------------------------------------------------
 C     DEBUT
@@ -87,9 +88,7 @@ C     BOUCLE SUR TOUTES LES MAILLES DU MAILLAGE
       DO 100 IMA=1,NBMA
         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(JMA-1+IMA)),TYPMA)
         
-        IF ((TYPMA.NE.'HEXA20').AND.(TYPMA.NE.'PENTA15').AND.
-     &      (TYPMA.NE.'TETRA10').AND.(TYPMA.NE.'QUAD8').AND.
-     &      (TYPMA.NE.'TRIA6'))  GOTO 100
+        IF (ISMALI(TYPMA)) GOTO 100
         
         CALL CONARE(TYPMA,AR,NBAR)
         

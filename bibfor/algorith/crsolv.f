@@ -3,7 +3,7 @@
       CHARACTER*(*)      METHOD, RENUM, SOLVE , BAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 05/10/2009   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C --- CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SOLVEUR
 C
       CALL WKVECT(SOLVEU//'.SLVK',BASE//' V K24',11,ISLVK)
       CALL WKVECT(SOLVEU//'.SLVR',BASE//' V R'  ,4,ISLVR)
-      CALL WKVECT(SOLVEU//'.SLVI',BASE//' V I'  ,6,ISLVI)
+      CALL WKVECT(SOLVEU//'.SLVI',BASE//' V I'  ,7,ISLVI)
 C
       ZK24(ISLVK-1+1) = METHOD
       ZK24(ISLVK-1+2) = PRECO
@@ -74,17 +74,31 @@ C
         ZK24(ISLVK-1+3) = 'AUTO'
         ZK24(ISLVK-1+6) = 'OUI'
       ELSE
-        ZK24(ISLVK-1+3) = ' '
+        ZK24(ISLVK-1+3) = 'XXXX'
+        ZK24(ISLVK-1+6) = 'XXXX'
       ENDIF
       ZK24(ISLVK-1+4) = RENUM
       ZK24(ISLVK-1+5) = SYME
+      ZK24(ISLVK-1+7) = 'XXXX'
+      ZK24(ISLVK-1+8) = 'XXXX'
+      ZK24(ISLVK-1+9) = 'XXXX'
+      ZK24(ISLVK-1+10) = 'XXXX'
+      ZK24(ISLVK-1+11) = 'XXXX'
+
 C
       ZR(ISLVR-1+1) = EPSMAT
       ZR(ISLVR-1+2) = RESIRE
-      TBLOC=JEVTBL()
-      ZR(ISLVR-1+3) = TBLOC
+      ZR(ISLVR-1+3) = JEVTBL()
+      ZR(ISLVR-1+4) = 0.D0
 C
       ZI(ISLVI-1+1) = NPREC
+      ZI(ISLVI-1+2) =-9999
+      ZI(ISLVI-1+3) =-9999
+      ZI(ISLVI-1+4) =-9999
+      ZI(ISLVI-1+5) =-9999
+      ZI(ISLVI-1+6) =-9999
+      ZI(ISLVI-1+7) =-9999
+
 C
       CALL JEDEMA()
 C

@@ -1,8 +1,8 @@
       SUBROUTINE FROGDP(DEFICO,RESOCO,LMAT  ,NOMA  ,RESU  ,
-     &                  RESIGR,REAPRE,DEPDEL,CTCFIX)
+     &                  RESIGR,REAPRE,DEPDEL)
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 05/10/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO,RESOCO
       CHARACTER*19 RESU,DEPDEL
-      LOGICAL      REAPRE,CTCFIX
+      LOGICAL      REAPRE
       INTEGER      LMAT
 C      
 C ----------------------------------------------------------------------
@@ -101,7 +101,7 @@ C
       INTEGER      ICOMA,II,JJ,KK,JAPJFX,JAPJFY,JZOCO
       INTEGER      JRESU,JMU,JATMU,NDIM
       INTEGER      JDEPDE,JDELT0,JDELTA,JLIAC,JCOCO,JAPMEM
-      INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBLCIN,NBDDL
+      INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBDDL
       INTEGER      LLIAC,JDECAL,IPENA
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JNOCO,JMACO
       INTEGER      JAPCOF,JAFMU,LMAF1,JENAT,JFRO2,IFRO,ITER
@@ -265,8 +265,6 @@ C ======================================================================
 C
 C ======================================================================
 C
-      NBLCIN = NBLIAC
-
       IF ( NIV .GE. 2 ) THEN
         WRITE(IFM,1000) NBLIAI
         WRITE(IFM,1005) NBLIAC
@@ -538,10 +536,6 @@ C ======================================================================
 C --- STOCKAGE DE L'ETAT DE CONTACT DEFINITIF
 C ======================================================================
  999  CONTINUE
-C --- ATTENTE POINT FIXE
-      IF ( NBLIAC.NE.NBLCIN ) THEN
-        CTCFIX = .TRUE.
-      ENDIF
       ZI(JCOCO+2) = NBLIAC
 C ======================================================================
 C --- AFFICHAGE FINAL

@@ -4,7 +4,7 @@
       CHARACTER*8      TYPMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,6 +107,25 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PENTA6 OU PENTA15
         AR(8,2)=5
         AR(9,1)=3
         AR(9,2)=6
+      ELSEIF (TYPMA.EQ.'PYRAM5'.OR.TYPMA.EQ.'PYRAM13') THEN
+        NBAR=8
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE PYRAM5 OU PYRAM13
+        AR(1,1)=1
+        AR(1,2)=2
+        AR(2,1)=1
+        AR(2,2)=4
+        AR(3,1)=1
+        AR(3,2)=5
+        AR(4,1)=2
+        AR(4,2)=3
+        AR(5,1)=2
+        AR(5,2)=5
+        AR(6,1)=3
+        AR(6,2)=4
+        AR(7,1)=3
+        AR(7,2)=5
+        AR(8,1)=4
+        AR(8,2)=5
       ELSEIF (TYPMA.EQ.'TETRA4'.OR.TYPMA.EQ.'TETRA10') THEN
         NBAR=6
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TETRA4 OU TETRA10

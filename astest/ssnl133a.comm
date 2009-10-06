@@ -1,4 +1,4 @@
-# MODIF  DATE 22/09/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 05/10/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE POST-FLAMBEMENT ELASTIQUE D'UNE STRUCTURE EN L
 # ssnl133a.para = tps_job 260 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,7 +84,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 1e-7),)
 
-RESO=STAT_NON_LINE(INFO=2,
+RESO=STAT_NON_LINE(INFO=1,
                    MODELE=MO,
                    CHAM_MATER=MAT,
                    CARA_ELEM=CARA,
@@ -99,7 +99,8 @@ RESO=STAT_NON_LINE(INFO=2,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=50,),
-                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);
+                   SOLVEUR=_F(METHODE='LDLT',
+                              STOP_SINGULIER='DECOUPE',),);
 
 ##RESO=STAT_NON_LINE(
 ##reuse =RESO,

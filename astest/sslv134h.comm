@@ -1,5 +1,6 @@
-# MODIF  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
+# sslv134h.para = tps_job 280 mem_job 1600Mo mem_aster 33 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -286,16 +287,16 @@ TEST_TABLE(      TABLE=SIFTH2,
 TEST_TABLE(      TABLE=SIFTH3,
                  TYPE_TEST='MAX',
                  NOM_PARA='K1_LOCAL',
-                 VALE=2.7194886717768E+06 ,
-                 PRECISION=1.E-10  ,
+                 VALE=2.719488E+06 ,
+                 PRECISION=1.E-4  ,
                  REFERENCE='NON_REGRESSION'      )
 
 # TEST DU LISSAGE LAGRANGE + REPARTITION UNIFORME DE 24 POINTS : OSCILLATIONS MOINDRES
 TEST_TABLE(      TABLE=SIFTH4,
                  TYPE_TEST='MAX',
                  NOM_PARA='K1_LOCAL',
-                 VALE=2.0299520043718E+06,
-                 PRECISION=2.E-7  ,
+                 VALE=2.02995E+06,
+                 PRECISION=1.E-4 ,
                  REFERENCE='NON_REGRESSION'      )
 
 # TEST DU LISSAGE LAGRANGE + REPARTITION UNIFORME DE 10 POINTS : PLUS D'OSCILLATIONS
@@ -319,7 +320,7 @@ TEST_TABLE(      TABLE=SIFK1,
                  
 TEST_TABLE(      TABLE=SIFK1,
                  FILTRE=(_F(  NOM_PARA = 'PT_FOND',
-                            VALE_I = 24), 
+                            VALE_I = 23), 
                             _F(NOM_PARA = 'METHODE',
                             VALE_I = 3),),
                  NOM_PARA='K1_MAX',

@@ -2,7 +2,7 @@
      &                   REAGEO,REAPRE,RESU  ,CTCCVG,CTCFIX)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 05/10/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -532,6 +532,7 @@ C ======================================================================
 C --- ON ENLEVE TOUTES LES LIAISONS DE CONTACT POUR LESQUELLES
 C --- LA PRESSION EST NEGATIVE
 C ======================================================================
+      INDIC = 0
       CALL CFNEG(RESOCO,DEFICO,NOMA,NDIM,
      &           INDIC,NBLIAI,NBLIAC,AJLIAI,
      &           SPLIAI,LLF,LLF1,LLF2)
@@ -554,7 +555,7 @@ C
 C
 C --- ATTENTE POINT FIXE
 C
-      IF ( NBLIAC.NE.NBLCIN ) THEN
+      IF ((NBLIAC.NE.NBLCIN).AND.(INDIC.NE.0)) THEN
         CTCFIX = .TRUE.
       ENDIF
 C      

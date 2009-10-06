@@ -1,4 +1,4 @@
-#@ MODIF raff_xfem_ops Macro  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF raff_xfem_ops Macro  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,6 +134,9 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
                        OPERATION='EVAL',
                        CHAM_F=__CHFOR,
                        CHAM_PARA=(__CHLN,__CHLT,));
+
+         DETRUIRE(CONCEPT=_F(NOM=__CHLT),INFO=1) 
+
       elif typ_ds == 'INTERFACE' : 
          __CERRB=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                        OPERATION='EVAL',
@@ -141,7 +144,6 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
                        CHAM_PARA=(__CHLN,));
 
       DETRUIRE(CONCEPT=_F(NOM=__CHLN),INFO=1) 
-      DETRUIRE(CONCEPT=_F(NOM=__CHLT),INFO=1) 
       DETRUIRE(CONCEPT=_F(NOM=__CHFOR),INFO=1) 
 
       # champ d'Erreur de la fissure i

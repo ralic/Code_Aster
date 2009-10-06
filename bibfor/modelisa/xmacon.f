@@ -1,7 +1,7 @@
       SUBROUTINE XMACON(CHAR  ,NOMA  ,NOMO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF MODELISA  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -72,7 +72,7 @@ C
       CHARACTER*24 MAESCL,TABFIN
       CHARACTER*19 CHS1,CHS2,CHS3,FACLON,AINTER
       CHARACTER*19 CARSD,CARTE,MAI
-      LOGICAL  PINTNO,ESCLAV,MAITRE
+      LOGICAL  PINTNO,ESCLAV,MAITRE,MALIN,ISMALI
       INTEGER  JCMCF,ZCMCF,TYPINT,NNINT
       INTEGER  ZXAIN,XXMMVD
 C
@@ -193,12 +193,9 @@ C
                ITYPMA=ZI(JMA-1+IMA)
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
                IF (NDIM.EQ.3) THEN
-                IF ((TYPMA.EQ.'HEXA8').OR.(TYPMA.EQ.'PENTA6')
-     &                                 .OR.(TYPMA.EQ.'TETRA4')) THEN
-                  ELREF = 'TR3'
-                ELSE
-                  CALL U2MESS('F','XFEM_27')
-                ENDIF
+                 ELREF = 'TR3'
+                 MALIN = ISMALI(TYPMA)
+                 IF (.NOT.MALIN) CALL U2MESS('F','XFEM_27')
                ELSEIF (NDIM.EQ.2) THEN
                   ELREF = 'SE2'
                ENDIF

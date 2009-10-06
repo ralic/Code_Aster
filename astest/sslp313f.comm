@@ -1,0 +1,311 @@
+# MODIF  DATE 06/10/2009   AUTEUR MACOCCO K.MACOCCO 
+# TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
+# sslp313f.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# SOUMISE A UNE TRACTION UNIFORME A L'INFINI (MATERIAU HOMOGENE)
+#
+# - METHODE ARLEQUIN
+#
+# sslp313f.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# ARLEQUIN : SUBSTITUTION 2D/2D INCOMPATIBLE.
+#            MAILLAGES DE DENSITES DIFFERENTES
+
+DEBUT(CODE=_F(NOM='SSLP313F',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
+
+MA=LIRE_MAILLAGE(UNITE=20,
+                   FORMAT='MED',
+                   VERI_MAIL=_F(VERIF='OUI',),);
+
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                GROUP_NO_FOND='P0',),
+                 INFO=2,);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='C_PLAN',),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                            NU=0.299999999,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=3.,
+                                 SY=1.88E9,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
+
+BL=AFFE_CHAR_MECA(MODELE=MO,
+                  DDL_IMPO=(_F(GROUP_MA='L34',
+                               DY=0.0,),
+                            _F(GROUP_NO='PS4',
+                               DX=0.0,),),);
+
+CH=AFFE_CHAR_MECA(MODELE=MO,
+                  FORCE_CONTOUR=_F(GROUP_MA='L12',
+                                   FY=1.E8,),);
+##################################################
+
+
+# 1. Creation des relations de couplage Arlequin
+#    entre les groupes de mailles
+#    couronne et fissure (maillage fin)
+#    et la plaque (maillage grossier)
+#    Collage sur le modele fin
+##################################################
+
+
+AR=AFFE_CHAR_MECA(MODELE=MO,
+                  ARLEQUIN=_F(GROUP_MA_1=('COUR','FISS',),
+                              GROUP_MA_2='PLAQ',
+                              GROUP_MA_COLL='COUR',
+                              COLLAGE='GROUP_MA_1',
+                              POIDS_1=0.99999,),);
+
+LIST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=10.,
+                                  NOMBRE=10,),);
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=AR,),
+                          _F(CHARGE=CH,),
+                          _F(CHARGE=BL,),),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                   INCREMENT=_F(LIST_INST=LIST,),);
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('EQUI_ELNO_SIGM','SIEF_ELNO_ELGA','EPSP_ELNO','VARI_ELNO_ELGA',),);
+
+RESU=CALC_NO(reuse =RESU,
+             RESULTAT=RESU,
+             OPTION=('EQUI_NOEU_SIGM','SIEF_NOEU_ELGA','EPSP_NOEU','VARI_NOEU_ELGA',),);
+
+FOND1=DEFI_FOND_FISS(MAILLAGE=MA,
+                     FOND_FISS=_F(GROUP_NO='P0',),
+                     NORMALE=(-0.6018,0.7986,0.0,),);
+
+THETA01=CALC_THETA(MODELE=MO,
+                   DIRECTION=(0.7986,0.6018,0.0,),
+                   THETA_2D=_F(GROUP_NO='P0',
+                               MODULE=1.0,
+                               R_INF=1.875E-05,
+                               R_SUP=7.5E-05,),);
+
+G01=CALC_G(THETA=_F(THETA=THETA01,),
+           RESULTAT=RESU,
+           NUME_ORDRE=1,
+           SYME_CHAR='SANS',
+           COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+           OPTION='CALC_G',);
+
+GK01=CALC_G(THETA=_F(FOND_FISS=FOND1,
+                     R_INF=1.875E-05,
+                     R_SUP=7.5E-05,
+                     MODULE=1.0,
+                     DIRECTION=(0.7986,0.6018,0.0,),),
+            RESULTAT=RESU,
+            NUME_ORDRE=1,
+            SYME_CHAR='SANS',
+            COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+            OPTION='CALC_K_G',);
+
+LEVH=INTE_MAIL_2D(MAILLAGE=MA,
+                  DEFI_CHEMIN=_F(GROUP_MA='LPOP8',),
+                  GROUP_NO_ORIG='P0',);
+
+LEVB=INTE_MAIL_2D(MAILLAGE=MA,
+                  DEFI_CHEMIN=_F(GROUP_MA='LPOP8B',),
+                  GROUP_NO_ORIG='P0',);
+
+DEPH=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='DEPL_DH',
+                             RESULTAT=RESU,
+                             NOM_CHAM='DEPL',
+                             INST=10,
+                             CHEMIN=LEVH,
+                             NOM_CMP=('DX','DY',),),);
+
+DEPB=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='DEPL_DB',
+                             RESULTAT=RESU,
+                             NOM_CHAM='DEPL',
+                             INST=10,
+                             CHEMIN=LEVB,
+                             NOM_CMP=('DX','DY',),),);
+
+TABL_K=POST_K1_K2_K3(MODELISATION='C_PLAN',
+                     MATER=ACIER,
+                     TABL_DEPL_SUP=DEPH,
+                     TABL_DEPL_INF=DEPB,
+                     ABSC_CURV_MAXI=7.51E-05,
+                     INST=10,
+                     VECT_K1=(0.0,1.0,0.0,),);
+
+TEST_TABLE(TABLE=GK01,
+           NOM_PARA='K1',
+           VALE=3539626.7117738,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=GK01,
+           NOM_PARA='K2',
+           VALE=2711715.8212290,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=GK01,
+           NOM_PARA='G',
+           VALE=99.403312892024,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=1,),
+           NOM_PARA='K1_MAX',
+           VALE=3544191.8858026,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=1,),
+           NOM_PARA='K1_MIN',
+           VALE=3536294.6369102,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=1,),
+           NOM_PARA='K2_MAX',
+           VALE=2714738.3056623,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=1,),
+           NOM_PARA='K2_MIN',
+           VALE=2709412.3392801,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=1,),
+           NOM_PARA='G_MAX',
+           VALE=99.571677326891,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=1,),
+           NOM_PARA='G_MIN',
+           VALE=99.259230832699,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=2,),
+           NOM_PARA='K1_MAX',
+           VALE=3538682.8256214,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=2,),
+           NOM_PARA='K1_MIN',
+           VALE=3475273.8862200,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=2,),
+           NOM_PARA='K2_MAX',
+           VALE=2708400.3270560,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=2,),
+           NOM_PARA='K2_MIN',
+           VALE=2656513.1299853,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=2,),
+           NOM_PARA='G_MAX',
+           VALE=99.288542359723,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+TEST_TABLE(TABLE=TABL_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=2,),
+           NOM_PARA='G_MIN',
+           VALE=95.672952970137,
+           PRECISION=8e-08,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.19',);
+
+FIN();

@@ -5,7 +5,7 @@
       CHARACTER*8   TYPMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -161,6 +161,31 @@ C ----------------------------------------------------------------------
         AREPAR(3,5)=1
         AREPAR(3,6)=0
         NIT=3
+      ELSEIF (TYPMA(1:5).EQ.'PYRAM') THEN
+C       SOUS-TETRAS 
+C       CONNEC = [1 2 3 5
+C                 1 3 4 5]
+        CONNEC(1,1)=1
+        CONNEC(1,2)=2
+        CONNEC(1,3)=3
+        CONNEC(1,4)=5
+        CONNEC(2,1)=1
+        CONNEC(2,2)=3
+        CONNEC(2,3)=4
+        CONNEC(2,4)=5
+        AREPAR(1,1)=1
+        AREPAR(1,2)=0
+        AREPAR(1,3)=3
+        AREPAR(1,4)=4
+        AREPAR(1,5)=5
+        AREPAR(1,6)=7
+        AREPAR(2,1)=0
+        AREPAR(2,2)=2
+        AREPAR(2,3)=3
+        AREPAR(2,4)=6
+        AREPAR(2,5)=7
+        AREPAR(2,6)=8
+        NIT=2
       ELSEIF (TYPMA(1:5).EQ.'TETRA') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
@@ -203,7 +228,7 @@ C ----------------------------------------------------------------------
         NIT=1  
       ELSE
 C       TYPE D'ELEMENT FINI PAS TRAITE
-        CALL ASSERT(TYPMA(1:4).EQ.'HEXA')
+        CALL ASSERT(.FALSE.)
       ENDIF
 
       CALL JEDEMA()

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 05/10/2009   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DE L'ESTIMATEUR D'ERREUR SUR UNE PLAQUE FISSUREE
 # sslp316b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# TEST V
+# RESPONSABLE DELMAS J.DELMAS
+# TEST V3.02.316
 # CHARGEMENT EN DEPLACEMENT
 # MAILLAGE : QUAD LINEAIRE
 # COMPORTEMENT ELASTIQUE D_PLAN
@@ -101,7 +102,7 @@ UTOT=STAT_NON_LINE(MODELE=MODK,
 
 UTOT=CALC_ELEM(reuse =UTOT,
                RESULTAT=UTOT,
-               OPTION=('SIEF_ELNO_ELGA',),);
+               OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    INST=1.0,
@@ -111,7 +112,8 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    VALE=2.01e+1,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.03.16',),
                 _F(RESULTAT=UTOT,
                    INST=1.0,
                    NOM_CHAM='SIEF_ELNO_ELGA',
@@ -120,7 +122,8 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    VALE=1.97e+1,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.03.16',),
                  _F(RESULTAT=UTOT,
                    INST=1.0,
                    NOM_CHAM='SIEF_ELNO_ELGA',
@@ -129,7 +132,8 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    VALE=2.58e-1,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.03.16',),
                 _F(RESULTAT=UTOT,
                    INST=1.0,
                    NOM_CHAM='SIEF_ELNO_ELGA',
@@ -138,7 +142,8 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    VALE=-1.76e-1,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.03.16',),
                  _F(RESULTAT=UTOT,
                    INST=1.0,
                    NOM_CHAM='SIEF_SENO_SEGA',
@@ -147,7 +152,8 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    VALE=2.69e-1,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.03.16',),
                 _F(RESULTAT=UTOT,
                    INST=1.0,
                    NOM_CHAM='SIEF_SENO_SEGA',
@@ -156,6 +162,27 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    VALE=-1.21e-1,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
-                   REFERENCE='NON_REGRESSION',),),);
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.03.16',),
+                 _F(RESULTAT=UTOT,
+                   INST=1.0,
+                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NOM_CMP='ERREST',
+                   TYPE_TEST='MAX',
+                   VALE=1.87e-4,
+                   CRITERE='RELATIF',
+                   PRECISION=0.005,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.00.20',),
+                _F(RESULTAT=UTOT,
+                   INST=1.0,
+                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NOM_CMP='ERREST',
+                   TYPE_TEST='MIN',
+                   VALE=2.42e-9,
+                   CRITERE='RELATIF',
+                   PRECISION=0.005,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.03.16',),),);
 
 FIN();

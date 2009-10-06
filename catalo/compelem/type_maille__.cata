@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
+%& MODIF COMPELEM  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -240,6 +240,7 @@ MAILLE__ PYRAM5     5       DIM__  3   CODE__  'PY5'
          FAMILLE__ FPG5        5
          FAMILLE__ FPG6        6
          FAMILLE__ FPG27       27
+         FAMILLE__ XFEM180     180
 
 MAILLE__ PYRAM13    13      DIM__  3   CODE__  'P13'
    ELREFE__ P13
@@ -249,6 +250,7 @@ MAILLE__ PYRAM13    13      DIM__  3   CODE__  'P13'
          FAMILLE__ FPG5        5
          FAMILLE__ FPG6        6
          FAMILLE__ FPG27       27
+         FAMILLE__ XFEM180     180
 
 MAILLE__ HEXA8      8       DIM__  3   CODE__  'HE8'
    ELREFE__ HE8

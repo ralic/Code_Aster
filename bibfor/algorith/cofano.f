@@ -1,9 +1,9 @@
       SUBROUTINE       COFANO(TYPMA,FANO,NONO,NBFANO,NBNONO)
       IMPLICIT NONE
-      INTEGER          FANO(8,3),NONO(8,3),NBFANO,NBNONO
+      INTEGER          FANO(8,4),NONO(8,4),NBFANO,NBNONO
       CHARACTER*8      TYPMA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,7 +67,7 @@ C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       DO 100 I=1,8
-        DO 110 J=1,3
+        DO 110 J=1,4
           FANO(I,J)=0
           NONO(I,J)=0
  110    CONTINUE
@@ -202,6 +202,44 @@ C CONNECTIVITÉ DES NOEUDS
         NONO(6,2)=4
         NONO(6,3)=5
 
+      ELSEIF (TYPMA(1:5).EQ.'PYRAM') THEN
+C     CONNECTIVITÉ DES FACES PAR NOEUD POUR UNE MAILLE PYRAM
+        NBFANO=4
+        FANO(1,1)=4
+        FANO(1,2)=1
+        FANO(1,3)=5
+        FANO(2,1)=1
+        FANO(2,2)=2
+        FANO(2,3)=5
+        FANO(3,1)=2
+        FANO(3,2)=3
+        FANO(3,3)=5
+        FANO(4,1)=3
+        FANO(4,2)=4
+        FANO(4,3)=5
+        FANO(5,1)=1
+        FANO(5,2)=2
+        FANO(5,3)=3
+        FANO(5,4)=4
+
+C CONNECTIVITÉ DES NOEUDS
+        NBNONO=4
+        NONO(1,1)=4
+        NONO(1,2)=2
+        NONO(1,3)=5
+        NONO(2,1)=1
+        NONO(2,2)=3
+        NONO(2,3)=5
+        NONO(3,1)=2
+        NONO(3,2)=4
+        NONO(3,3)=5
+        NONO(4,1)=3
+        NONO(4,2)=1
+        NONO(4,3)=5
+        NONO(5,1)=1
+        NONO(5,2)=2
+        NONO(5,3)=3
+        NONO(5,4)=4
       ELSEIF (TYPMA.EQ.'QUAD4'.OR.TYPMA.EQ.'QUAD8') THEN
 C       CONNECTIVITE DES ARETES PAR NOEUD POUR UNE MAILLE QUAD4 OU QUAD8
 C       INDEX DANS AR() CF. CONARE

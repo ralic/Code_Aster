@@ -1,0 +1,1174 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 05/10/2009 - 17:09:26
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013960 DU 2009-10-01 09:30:40
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Petits problxc3xa8mes Ecrevisse
+FONCTIONNALITE
+   Suite à la dernière restitution, il y a eu un petit loupé :
+   - En NEW9, les cas-test ont été oubliés
+   - En NEW9/NEW10, correction d'un petit bug qui n'apparait que dans le cas où l'on veut
+   appeler CALC_ECERVISSE (donc sans la macro) et sans specifier le mot-clé LOGICIEL. Dans
+   les cas normaux d'utilisation il n'y a pas de problème.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz218a et zzzz218b
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 05/10/2009 - 11:29:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013959 DU 2009-09-30 14:27:17
+TYPE express concernant Code_Aster (VERSION 10.1)
+TITRE
+   Maintenance preventive: Menage dans les routines creeant et remplissant les SD SOLVEUR
+FONCTIONNALITE
+   Contexte - Problématique
+   =========================
+    Il y'a plusieurs routines crééant et remplissant une
+    structure de données SOLVEUR (suivant les op. Aster
+   et les solveurs). Leurs sources finissent par être
+   très touffues, éparpillées voire contradictoires 
+   (tailles d'objets JEVEUX différentes, initialisations
+   "variées", redondance avec le capy..). Pour l'instant
+   sans risque de résultats faux car on veille
+   au grain et la base de cas-test est très riche.
+   
+   Cependant, il faut faire attention car:
+    - cette SD est indispensable à tous calcul Aster,
+    - elle est au coeur de la recherche de perf 
+   actuelle,
+    - elle est enrichie régulièrement et par plusieurs
+   intervenants,
+    - elle est peu testée par SD_VERI car elle reste
+    souvent en interne aux ops (sauf cmdes éclatées).
+    - les cas-tests ne peuvent pas faire remonter auto
+   matiquement toutes les subtilités des paramètres
+   transmis aux solveurs. C'est au développeur d'être 
+   très sérieux ds ses devts et ses tests. En 
+   transmettant un mauvais paramètre du .comm au solveur 
+   linéaire (via cette SD), on risque souvent d'être 
+   juste sous-performant. Et donc de ne pas s'en 
+   apercevoir !
+   
+   Chantier logiciel
+   =================
+    * Je regroupe ds la routine CRESOL:
+     - la lecture (conditionnelle) de mot-clés 
+   (potentiellement) communs à tous les solveurs (SYME, 
+   STOP_SINGULIER....).
+     - la création des 3 objets JEVEUX de ls SD SOLVEUR,
+     - l'aiguillage vers de nouvelles routines 
+   spécialisées pour la lecture des paramètres propres à
+   chaque solveur, l'initialisation (unifiée) et le 
+   remplissage ad hoc de la SD
+    (CRSVMU, CRSVFE, CRSVPE, CRSVLD, CRSVGC et CRSVMF).
+   
+    * Reste 2 cas particuliers:
+     - les cmdes éclatées qui passent par une version
+     "light" de CRESOL: CRSOLV.
+     - le solveur multi-domaines FETI qui a besoin de
+     N+1 SD SOLVEUR pour N sous-domaines. On passe alors
+     par CRESO3/CRSVFE/CRESO1.
+    
+    * Je résorbe donc CRESO3.
+    * Je corrige le catalogue Python de la SD.
+    * J'ai nettoyé et mis au carré le Wiki sur la Doc D 
+   et le fortran.
+    * J'ai fait passer la liste restreinte sur la
+    Bull (nodebug seq)
+   
+   Reste à faire (pour une prochaine fois)
+   ========================================
+   
+    PY et CAPY
+    ----------
+     * Lorsqu'on pourra filtrer ds le Capy/commun avec
+   le nom de la cmde et du solveur:
+     - il faudra remonter les mot-clés indépendants des
+      solveurs en dehors des blocs,
+     - utiliser les paramètres (cmde,solveur) pour 
+   établir la possibilité d'un mot-clé ou son périmètre
+   de valeur ou sa valeur par défaut.
+     - enrichir le catalogue Python de toutes ces 
+   règles.
+   
+    PY et F77
+   -----------
+     - Dans l'absolue, il serait plus confortable de
+    ne pas réutiliser le même emplacement ds la SD 
+   SOLVEUR pour 2 paramètres différents (suivant le
+   solveur activé). Il faudrait créer des objets dimen
+   sionnés au max des paramètres disponibles. Tant pis
+   pour la place perdue, c'est peanuts par rapport au
+   confort de manipulation et au risque de bugs.
+   
+   Sources modifiées
+   ==================
+    F77: creso1.f  cresol.f  crsolv.f  crsvfe.f  
+   crsvgc.f  crsvld.f  crsvmf.f  crsvmu.f  crsvpe.f
+    PY: sd_solveur.py
+    UNIGEST: creso3.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique,non-rxc3xa9gression
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 05/10/2009 - 13:39:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013976 DU 2009-10-05 09:20:20
+TYPE express concernant Code_Aster (VERSION 9.6)
+TITRE
+   Test de ERRE_ELEM_SIGM pour XFEM
+FONCTIONNALITE
+   Problème :
+   ========
+   Un grand ménage salutaire a été fait dans les tests pour ERRE_ELEM_SIGM. Malheureusement,
+   le seul TEST_RESU de l'option ERRE_ELEM_SIGM pour XFEM a été supprimé.
+   
+   Correction :
+   ==========
+   On rétablit à l'identique les TEST_RESU supprimés.
+   Au passage, je prends la responsabilité des tests.
+   
+   Impacts :
+   =======
+   sslp316a
+   sslp316b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests incrimines
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013968 DU 2009-10-01 16:19:49
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   Depuis 10.0.19 plantage dans QIRE_ELEM_SIGM en 2D
+FONCTIONNALITE
+   Problème :
+   ========
+   Depuis 10.0.19, le test joint plante dans QIRE_ELEM_SIGM en 2D.
+   Erreur FPE
+   
+   Analyse :
+   =======
+   Il s'agit d'une faute de frappe, à la place de * on a mis **.
+   On arrivait ainsi à des valeurs très importantes (Infinity) multipliée par zéro.
+   
+   Correction :
+   ==========
+   601,605c601,605
+   <               CHMOX(IN)=S*CHPX(IN)-UNSURS**CHDX(IN)
+   <               CHMOY(IN)=S*CHPY(IN)-UNSURS**CHDY(IN)
+   <               SIMO11(IN)=S*SIGP11(IN)-UNSURS**SIGD11(IN)
+   <               SIMO22(IN)=S*SIGP22(IN)-UNSURS**SIGD22(IN)
+   <               SIMO12(IN)=S*SIGP12(IN)-UNSURS**SIGD12(IN)
+   ---
+   >               CHMOX(IN)=S*CHPX(IN)-UNSURS*CHDX(IN)
+   >               CHMOY(IN)=S*CHPY(IN)-UNSURS*CHDY(IN)
+   >               SIMO11(IN)=S*SIGP11(IN)-UNSURS*SIGD11(IN)
+   >               SIMO22(IN)=S*SIGP22(IN)-UNSURS*SIGD22(IN)
+   >               SIMO12(IN)=S*SIGP12(IN)-UNSURS*SIGD12(IN)
+   
+   Impact :
+   ======
+   te0378.f
+   
+   sslv113c
+   sslv113d
+   ssnp130a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test joint
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013860 DU 2009-09-10 17:30:11
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   Doc V sans test
+FONCTIONNALITE
+   Il existe des doc orphelines de tests :
+   [V1.02.120] CABRI01 - CABRI. Validation de MACR_CABRI_MAIL (accès restreint)
+   [V1.02.121] CABRI02 - CABRI. Validation de MACR_CABRI_CALC (accès restreint)
+   [V7.21.100] HSNL100 - Echauffement d'un câble par effet Joule
+   [V2.03.101] SDLS101 - Plaque rectangulaire mince sur matelas élastique
+   [V6.03.136] SNP136  - Test de fondation filante avec la loi de Cam-Clay
+   [V3.03.109] SSLS109 - Plaque en traction constituée de trois nappes d'armatures (Modèle...
+   [V3.04.112] SSLV112 - Calcul de G par la méthode lagrangienne pour une fissure circulaire
+   [V6.01.100] SSNA100 - Tube de Bree : Méthode Zarka-Casier (ZAC)
+   [V6.02.108] SSNL108 - Liaison tube-grille avec frottement de Coulomb
+   [V6.02.110] SSNL110 - Ressort non linéaire incluant du frottement de Coulomb
+   [V6.05.104] SSNS104 - Flexion d'une dalle en béton armé béton (modèle GLRC_DAMAGE) appuyée...
+   [V6.04.109] SSNV109 - Plaque en traction-cisaillement : viscoélasticité du Zircaloy ...
+   [V6.04.111] SSNV111 - Plaque en traction-cisaillement : viscoélasticité du Zircaloy ...
+   [V6.04.123] SSNV123 - Massif reposant sur un matelas élastique
+   [V6.04.125] SSNV125 - Essai de traction cisaillement avec le modèle polycristallin CFC
+   [V6.04.162] SSNV162 - Calcul de fluage de dessication intrinsèque avec le modèle de Bazant
+   [V6.04.165] SSNV165 - Essai triaxial non drainé avec la loi CAM_CLAY
+   [V7.31.107] WTNV107 - Surface poreuse saturée soumise à un choc thermo-hydraulique
+   [V1.10.109] YYYY109 - Patte de volute de pompe primaire
+   [V1.01.113] ZZZZ113 - Chaînages 3D(r,théta) et 2D(r,z) CYRANO3-Code_Aster
+   
+   
+   On a donc supprimé dans l'appli les documents suivants :
+   
+   [V1.02.120] CABRI01 - CABRI. Validation de MACR_CABRI_MAIL (accès restreint)
+   [V1.02.121] CABRI02 - CABRI. Validation de MACR_CABRI_CALC (accès restreint)
+   [V7.21.100] HSNL100 - Echauffement d'un câble par effet Joule
+   [V2.03.101] SDLS101 - Plaque rectangulaire mince sur matelas élastique
+   [V3.03.109] SSLS109 - Plaque en traction constituée de trois nappes d'armatures (Modèle
+   GRILLE)
+   [V3.04.112] SSLV112 - Calcul de G par la méthode lagrangienne pour une fissure circulaire
+   [V6.01.100] SSNA100 - Tube de Bree : Méthode Zarka-Casier (ZAC)
+   [V6.02.108] SSNL108 - Liaison tube-grille avec frottement de Coulomb
+   [V6.02.110] SSNL110 - Ressort non linéaire incluant du frottement de Coulomb
+   [V6.05.104] SSNS104 - Flexion d'une dalle en béton armé béton (modèle GLRC_DAMAGE) appuyée
+   sur 2 cotés: régime de poutre plastique
+   [V6.04.109] SSNV109 - Plaque en traction-cisaillement : viscoélasticité du Zircaloy
+   (Modèle de CYRANO 2)
+   [V6.04.111] SSNV111 - Plaque en traction-cisaillement : viscoélasticité du Zircaloy
+   (Modèle de l'EPRI)
+   [V6.04.123] SSNV123 - Massif reposant sur un matelas élastique
+   [V6.04.125] SSNV125 - Essai de traction cisaillement avec le modèle polycristallin CFC
+   [V6.04.162] SSNV162 - Calcul de fluage de dessication intrinsèque avec le modèle de Bazant
+   [V6.04.165] SSNV165 - Essai triaxial non drainé avec la loi CAM_CLAY
+   [V7.31.107] WTNV107 - Surface poreuse saturée soumise à un choc thermo-hydraulique
+   [V1.10.109] YYYY109 - Patte de volute de pompe primaire
+   [V1.01.113] ZZZZ113 - Chaînages 3D(r,théta) et 2D(r,z) CYRANO3-Code_Aster
+   
+   Ce document n'est pas supprimé, le nom du test dans le titre était erroné, on corrige les
+   métadonnées.
+   < [V6.03.136] SNP136  - Test de fondation filante avec la loi de Cam-Clay
+   > [V6.03.136] SSNP136  - Test de fondation filante avec la loi de Cam-Clay
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   *
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013829 DU 2009-09-08 11:39:25
+TYPE express concernant Code_Aster (VERSION 10.1)
+TITRE
+   Bug option QI(Z1/Z2)_ELEM_SIGM
+FONCTIONNALITE
+   Problème :
+   ========
+   On s'arrête dans le calcul de l'option QIZ1_ELEM_SIGM avec le message suivant :
+   
+         Objet JEVEUX inexistant dans les bases ouvertes : >&&MECA01.CHARGESD< 
+         l'objet n'a pas été créé ou il a été détruit                          
+   
+   Correction :
+   ==========
+   Il s'agit d'erreurs de frappe :
+   
+   609c609
+   <           CALL MEDOM2(MODELE,MATE,CARA,KCHAP,NCHARP,CTYP,
+   ---
+   >           CALL MEDOM2(MODELE,MATE,CARA,KCHAD,NCHARD,CTYP,
+   616c616
+   <           CALL RSEXC2(1,1,RESUP,'SIGM_NO'//OPTION(8:9)//'_ELGA  ',
+   ---
+   >           CALL RSEXC2(1,1,RESUP,'SIGM_NO'//OPTION(3:4)//'_ELGA  ',
+   621c621
+   <           CALL RSEXC2(1,1,RESUD,'SIGM_NO'//OPTION(8:9)//'_ELGA  ',
+   ---
+   >           CALL RSEXC2(1,1,RESUD,'SIGM_NO'//OPTION(3:4)//'_ELGA  ',
+   653,654d652
+   <           CALL ERGLOB(CHELEM,.FALSE.,.FALSE.,OPTION,IORDR,
+   <      &                TIME  ,RESUCO ,LERES1)
+   
+   Impact :
+   ======
+   meca01.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013788 DU 2009-08-27 16:29:30
+TYPE anomalie concernant Site web (VERSION )
+TITRE
+   Titre du lien vers plan de dxc3xa9veloppement dans Salomxc3xa9 (A2-01-10) est erronxc3xa9
+FONCTIONNALITE
+   Problème :
+   ========
+   L'intitulé du lien vers A2.01.10 est faux (version incomplète de celui vers A2.01.03).
+   
+   Correction :
+   ==========
+   On corrige les métadonnées dans l'appli doc.
+   
+   Validation :
+   ==========
+   Visuel dans l'appli doc et le site web.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   visuel appli doc + site web
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013783 DU 2009-08-27 09:06:42
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   Doc V1.10.125B cas tes MISS06-mise en page
+FONCTIONNALITE
+   Correction faite dans l'appli doc (revision 1847)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Nxc3xa9ant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013417 DU 2009-05-14 13:56:02
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.0.3, le cas-test ssnp130a est NOOK sur Calibre 4.
+FONCTIONNALITE
+   Problème :
+   ========
+   En NEW10.0.3, le cas-test ssnp130a est NOOK sur Calibre 4.
+   
+   Analyse :
+   =======
+   On observait un léger NOOK sur une valeur. Mais les valeurs de références incriminées ont
+   été modifiées plusieurs fois (issue13789 et issue13968).
+   
+   Correction :
+   ==========
+   On ne fait rien de plus pour le moment mais une fiche est émise (issue13971) pour tracer
+   le comportement suspect de l'option incriminée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test lui meme
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011458 DU 2007-11-13 14:25:08
+TYPE evolution concernant Documentation (VERSION )
+TITRE
+   Precision de la regle de surcharge dans U4.44.01 - AFFE_CHAR_MECA
+FONCTIONNALITE
+   Correction faite dans l'appli (révision 1854)
+   
+   on écrit :
+   
+   Pour définir le domaine d'affectation le plus simplement possible, on utilise la règle de
+   surcharge définie dans le document ''Règles de surcharge'' [U1.03.00] :
+   lorsque différentes occurrences d'un même mot clé facteur existent, c'est la dernière
+   affectation qui prime.
+   
+   Les mots clés facteurs différents se cumulent toujours.
+   
+   Si par exemple, l'utilisateur fait :
+   FORCE_FACE(GROUP_MA='G1', FX=12.)
+   PRES_REP (GROUP_MA='G1', PRES=13.)
+   
+   et si la normale pour G1 est orientée selon X,
+   
+   Alors tout se passera comme si on avait fait :
+   FORCE_FACE(GROUP_MA='G1', FX=25.)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Nxc3xa9ant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 05/10/2009 - 15:15:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013973 DU 2009-10-02 16:28:14
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Messages inexistants et non appeles
+FONCTIONNALITE
+   Express
+   =======
+   
+   On supprime CALCULEL5_30 qui n'est plus appelé.
+   
+   On rajoute APPELMPI_5 qui avait été supprimé par erreur.
+   
+   On corrige MUMAM.F pour remplacer APPELMPI_7 par un ASSERT.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   as_run --messages
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013938 DU 2009-09-24 14:44:01
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.18, le cas-test ssnl133a s'arrete en NO_RESU_FILE sur Rocks.
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Actuellement en 10.0.18, le cas-test ssnl133a a le comportement suivant sur Rocks :
+   
+   MUMPS
+   -----
+   clpaster     OK
+   compute-0-0  <F>
+   compute-0-1  OK
+   compute-0-2  <F>
+   compute-0-3  OK
+   
+   MULT_FRONT
+   ----------
+   <F> sur tous les noeuds
+   
+   LDLT
+   ----
+   OK sur tous les noeuds
+   
+   Je propose donc de le basculer en LDLT. Il est possible que la très forte sensibilité de
+   ce cas-test à l'environnement d'exécution (due à la quasi-singularité de la matrice
+   tangente) soit moins marquée dans un solveur linéaire complètement interne à Aster.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnl133a
+NB_JOURS_TRAV  : 0.25
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013878 DU 2009-09-15 09:13:04
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   probleme de convergence en contact (VMIS_ISOT_LINE)
+FONCTIONNALITE
+   AOM Nanoindentation
+   ===================
+   
+   Description
+   -----------
+   
+   Lors d'une indentation (indenteur élastique - bloc VMIS_ISOT_LINE) la convergence se passe
+   bien jusqu'à un instant donné ~0.98 où la convergence ne se fait plus...
+   Le stagiaire en charge de cette étude a essayé de raffiner le pas de temps mais sans
+   succès, il a aussi modifié l'algorithme d'intégration de la loi de comportement mais sans
+   plus de résultat, que préconiser dans cette situation ?
+   
+   Analyse initiale
+   ================
+   
+   Sur la LdC (JMP)
+   ----------------
+   
+   A priori, la loi de comportement n'est pas en cause. En effet :
+   - la loi utilisée est VMIS_ISOT_LINE, et D_SIGM_EPSI est assez fort => pas de charge limite
+   - l'intégration de ce comportement est analytique. Les mots-clés RESI_INTE_RELA,
+   ITER_INTE_MAXI, RESO_INTE, ITER_INTE_PAS ne servent à rien. 
+   
+   Ce n'est donc pas l'intégration du comportement qui est en cause mais la convergence
+   globale. Qu'en est-il sans contact, par exemple en imposant le déplacement du noeud qui
+   est enfoncé par l'indenteur ?
+   
+   Sur le contact (TdS)
+   --------------------
+   
+   1/ Paramètres de Newton
+   
+   Pourquoi avez-vous mis REAC_ITER=3 et REAC_INCR=10 ?
+   Est-ce parce que sinon on a une matrice non inversible ou bien une divergence immédiate ?
+   
+   Si ce n'est pas le cas, alors pourquoi ne pas essayer PREDICTION='ELASTIQUE',
+   MATRICE='TANGENTE', REAC_INCR=1, REAC_ITER=1 ?
+   
+   2/ Sur le contact en lui même
+   
+   On voit qu'il y a plus de 2000 noeuds esclaves, cela dépasse les limites de la méthode par
+   défaut ('CONTRAINTE'). Cela veut dire que l'on peut arriver à résoudre mais en général,
+   une autre méthode pourra être plus rapide.
+   
+   Comme je le préconise systématiquement désormais, il faut essayer la méthode 'CONTINUE',
+   pour voir. L'intérêt de cette méthode par rapport aux autres méthodes discrètes (hors
+   pénalisation) c'est qu'elle n'induit pas de surcoût important par itération.
+   Ici sur votre cas actuel, il faut plus d'une heure pour n'arriver ... à pas converger et
+   cela essentiellement à cause du contact.
+   
+   3/ Sur le problème physique
+   
+   Je ne vois pas trop ce qui peut empêcher la convergence ici, je n'ai pas regardé le
+   maillage. Ce qui est inquiétant c'est que le résidu ne descend pas (c'est pour cela que le
+   point 1/ est important pour se rassurer).
+   La réactualisation géométrique est souvent le problème mais ici vous êtes en automatique,
+   j'en déduis que vous n'avez pas eu de problèmes (sûrement parce que les déplacements ne
+   sont pas importants).
+   Vous êtes en petits déplacements, cela devrait toujours converger, quitte à sortir du
+   domaine de validité.
+   
+   Conclusion
+   ==========
+   
+   Nicolas nous signale que la modification des paramètres de Newton en particulier
+   PREDICTION='ELASTIQUE' suffit à faire converger le calcul.
+   
+   Remarque : utiliser une prédiction 'ELASTIQUE' avec du contact et une LdC non linéaire
+   marche bien comme l'a montré Jean-Michel dans la fiche issue12737. Cela permet de faire la
+   prédiction sur de bonnes bases (régularisation du problème avec une matrice très raide).
+   Ensuite selon le degré de non-linéarité du problème on utilise une matrice 'TANGENTE' avec
+   un pas de réactualisation plus ou moins grand (si le contact pose problème).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U2.04.04
+VALIDATION
+   utilisateur
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013257 DU 2009-03-30 07:39:53
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN10 - Point fixe sur contact discret
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   Les méthodes de contact discrètes dans Code_Aster utilisent pour certaines une notion de
+   point de fixe sur le nombre de liaisons.
+   Il s'agit de la méthode 'LAGRANGIEN' sans frottement et avec frottement pénalisé, ainsi
+   que de la méthode 'PENALISATION' sans et avec frottement.
+   L'objectif de cette fiche est de faire le point sur cette notion, pas très claire, et de
+   voir si on peut la supprimer. En effet elle conduit à faire des itérations supplémentaires
+   alors que la convergence (de Newton) est atteinte.
+   
+   Analyse
+   =======
+   
+   La particularité des méthodes de résolution s'appuyant sur une dualisation des conditions
+   de contact dans Aster est d'être proposée en deux variantes 'CONTRAINTE' et 'LAGRANGIEN'.
+   
+   Dans le premier cas ('CONTRAINTE'), l'algorithme résout le système avec contact à partir
+   de la donnée de la solution sans contact. En sortant de cet algorithme le système est
+   entièrement résolu et le déplacement est donc corrigé pour vérifier les conditions de contact.
+   L'algorithme d'optimisation utilisée (contraintes actives) garantie la convergence en un
+   nombre fini d'itérations. Il faut pour cela :
+   - 1 - établir l'ensemble a priori des contraintes actives à partir du jeu
+   - 2 - boucler tant que l'ensemble des liaisons non actives ne vérifie pas la condition de
+   Hertz (sur le jeu) en ajoutant une par une les liaisons
+   - 3 - boucler en - 2 - tant que l'ensemble des liaisons actives ne vérifie pas la
+   condition de Signorini (sur la pression) en enlevant une par une les liaisons
+   
+   Dans le second cas ('LAGRANGIEN'), l'algorithme est à peu de choses près le même que celui
+   décrit plus haut sauf que en - 3 - on ne boucle pas - 2 - mais on enlève d'un coup toutes
+   les liaisons ne vérifiant pas la condition de Signorini. Ainsi en sortant de l'algorithme
+   on n'a pas résolu exactement le système avec contact.
+   Pour pallier à cela, on s'oblige à avoir 2 itérations de Newton de suite, le même nombre
+   de liaisons actives. Cela peut vouloir dire qu'en - 2 - et - 3 - on n'a rien fait (ni
+   ajout, ni retrait) donc que l'on a convergé mais ce n'est pas garanti.
+   
+   Les méthodes pénalisées ont pour certaines le même mécanisme de "point fixe" sur les
+   liaisons. La justification est encore moins claire que celles pour les méthodes dualisées.
+   Comme on a montré que le point fixe conduit à freiner la convergence (voire à l'empêcher),
+   on propose sa suppression dans ce cas.
+   
+   Conclusion
+   ==========
+   
+   On supprime le point fixe dans les méthodes pénalisées.
+   Impact : algocp.f, frogdp.f
+   
+   On modifie la prise en compte du point fixe dans les méthode dualisées. En effet dans le
+   cas où en - 3 - dans l'algorithme aucune liaison n'est enlevée (on a donc *vraiment*
+   convergé), le point fixe pouvait quand même être activé.
+   Impact : algocl.f, fropgd.f
+   
+   On profite de l'occasion pour nettoyer les algorithmes de contact de quelques arguments ne
+   servant à rien.
+   Impact : algocg.f, algocu.f, cfalgo.f, nmcofr.f, nmcoun.f, nmunil.f
+   
+   Ne reste donc un point fixe que dans le 'LAGRANGIEN' sans frottement et la 'PENALISATION'
+   sur le frottement seul.
+   
+   On repasse enfin le test sdnv100a à ITER_GLOB_MAXI=20 (celui-ci avait du être changé pour
+   tolérer les itérations dues au point fixe).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.50
+VALIDATION
+   astout contact
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 06/10/2009 - 10:24:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012621 DU 2008-10-13 11:39:31
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : element PYRA
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Pour le moment, les éléments X-FEM ne peuvent pas être des basés sur des 
+   mailles PYRA.
+   
+   Je pensais que seul GIBI produisait des PYRA, et compte tenu de l'abandon 
+   progressif de GIBI, ce n'était pas nécessaire.
+   
+   Cependant, le sous-découpage des HEXA par HOMARD peut engendrer la création de 
+   PYRA.
+   
+   
+   Solution :
+   ----------
+   
+   1) L'ajout des PYRA a un fort impact car de nombreuses routines font des tests sur le
+   TYPMA pour savoir par ex si une maille est une maille de bord, principale, linéaire,
+   quadratique, ...
+   
+   J'ai donc mis au propre tout cela.
+   
+   Les bonnes méthodes sont:
+   
+   pour savoir si c'est une maille de bord ou une maille principale, il faut comparer la
+   dimension du maillage (NDIM) avec la dimension topologique de la maille (NDIME)
+   on rappelle que NDIM est donné par le .DIME de la sd_maillage, alors que NDIME est obtenu
+   en exploitant le catalogue &CATA.TM.TMDIM.
+   
+   pour savoir si c'est une maille linéaire ou quadratique, il n'existait aucune routine.
+   j'ai donc créer la fonction ismali.f qui prend en entrée TYPMA et qui vaut TRUE si la
+   maille est linéaire, cad pour les TYPMA suivants :
+   'POI1'  
+   'SEG2'  
+   'TRIA3' 
+   'QUAD4' 
+   'TETRA4'
+   'PYRAM5'
+   'PENTA6'
+   'HEXA8'
+   vaut FALSE si la maille est quadratique :
+   'SEG3'  
+   'TRIA6' 
+   'TRIA7' 
+   'QUAD8' 
+   'QUAD9' 
+   'TETRA10
+   'PYRAM13
+   'PENTA15
+   'HEXA20'
+   'HEXA27'
+   et on s'arrete en erreur F si le type est autre.
+   
+   
+   2) complétion des routines utilitaires sur la connectivé des éléments du maillage :
+   ismali : voir ci-dessus
+   xdivte : division d'une maille en mailles simplexes
+   confac : connectivité des faces des mailles (liste des noeuds des faces)
+   conare : connectivité des aretes des mailles (liste des noeuds des aretes)
+   cofano : connectivité inverses des faces et des aretes (liste des faces et des aretes
+   connectées au noeud N)
+   
+   
+   
+   3) De plus, une refonte du calcul des points du fond de fissure a été faite.
+   le but est de trouver le point M où un champ scalaire s'annule sur une face d'élément.
+   Si la face est triangulaire, le problème est linéaire et on peut trouver analytiquement la
+   position du point M.
+   Si la face est quadrangulaire, c'est un problème non-linéaire, que l'on résout avec un
+   Newton (routine reereg.f).
+   Ce qui était programmé n'était pas propre (on utilisait le Newton que pour les HEXA).
+   Maintenant, on utilise Newton pour tous les TYPMA (même si les faces sont triangulaires).
+   De plus, cette opération était faite à deux endroits différents : dans un TE (xcfacf.f)
+   dans hors d'un TE (xptfon.f). Pour ne pas dupliquer la programmation, la partie commune a
+   été mise dans une nouvelle routine intfac.f. L'environnement TE a été simulé depuis
+   xptfon.f en créant les champs locaux d'entrée pour chaque maille (copie).
+   
+   
+   4) un bug sur les dérivées des fonctions de forme du PYRA de référence a été détecté
+   (voir fiche 13827)
+   
+   
+   5) impact
+   
+   cofano.f 
+   conare.f
+   confac.f
+   intfac.f
+   ismali.f
+   loncar.f
+   panbno.f
+   xbarvi.f
+   xcfacf.f
+   xdecou.f
+   xdelco.f
+   xdivte.f
+   xenrch.f
+   xfabor.f
+   xlagsl.f
+   xlagsp.f
+   xmacon.f
+   xmmres.f
+   xmoimp.f
+   xmoini.f
+   xmolig.f
+   xmrema.f
+   xoula.f
+   xpoajd.f
+   xprls0.f
+   xprmil.f
+   xprrei.f
+   xprreo.f
+   xptfon.f
+   xstan2.f
+   
+   gener_me3d_3.cata
+   gener_me_xh.cata
+   gener_me_xhc.cata
+   gener_me_xht.cata
+   gener_me_xhtc.cata
+   gener_me_xt.cata
+   gener_me_xtc.cata
+   phenomene_modelisation__.cata
+   type_maille__.cata
+   
+   
+   6) validation
+   
+   on valide avec 2 nouveaux tests :
+   ssnv173k : interface X-FEM (  5s / 30Mo)
+   ssnv185r : fissure X-FEM   (100s / 500Mo)
+   Pour générer les PYRA, on part de maillages hexa existants (ssnv173b et ssnv185c) puis on
+   utilise RAFF_XFEM et Homard pour raffiner au niveau de la fissure.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.02.12, D6.00.01, V6.04.185, V6.04.173
+VALIDATION
+   ssnv173q, ssnv185r
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013827 DU 2009-09-07 16:29:58
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   bug dans elrfdf : derivee des ff du PYRA5
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Les dérivées par rapport à Z des 4 premières fonctions de forme du PY5 sont fausses au
+   noeud N5 :
+             DFF(3,1) = -UNDEMI
+             DFF(3,2) = -UNDEMI
+             DFF(3,3) = -UNDEMI
+             DFF(3,4) = -UNDEMI
+   
+   Solution :
+   ----------
+   
+   Par passage à la limite des expressions des dérivées des fonctions de formes (voir en PJ
+   la feuille Maple), on trouve -1/4.
+   
+   impact : 
+   elrfdf.f
+   
+   risque de RESU_FAUX :
+   potentiel mais réduit car les dérivées ne sont fausses qu'au noeud N5, c'est-à-dire que si
+   on utilise la famille d'intégration NOEU.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 1.0.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 1.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv173q, ssnv185r
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien      DATE 06/10/2009 - 14:00:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011577 DU 2007-12-18 16:48:25
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   lot validation Arlequin
+FONCTIONNALITE
+   Objectif:
+   --------
+   Dans le cadre de cette première fiche, on restitue les fichiers pythons .py  
+   permettant de générer les fichiers de maillages .med et les fichiers de 
+   commandes .comm .
+   
+   Ceux-ci sont modifiés afin de désormais lire les fichiers .med à la place des 
+   fichiers de maillages Gibi. De plus, les noms des noeuds dans le post-traitement sont
+   modifiés afin de s?adapter aux nouveaux maillages .med.
+   
+   Realisations:
+   ------------
+   Les certains cas-tests ont été renommés:
+   
+   sslp104a devient ssnp141a:
+   ssnp141a.comm
+   ssnp141a1.py
+   ssnp141a2.py
+   ssnp141a.20
+   ssnp141a.21
+   Les points d'observations n'étant pas les mêmes, les valeurs de non-régression sont modifiées.
+   Le ssnp141a.para:
+   tps_job 60 mem_job 32Mo ncpus 1 liste_test R
+   
+   sslp104b devient sslv151a:
+   sslv151a.comm
+   sslv151a1.py
+   sslv151a2.py
+   sslv151a.20
+   sslv151a.21
+   Ce cas-test ne sera pas restitué car les tests concernant les contraintes ne sont pas
+   satisfaisants. Plusieurs tests ont été réalisés afin de mettre en évidence une anomalie
+   sousjacente sans résultat. Une fiche sera émise retracant tous les tests réalisés et le
+   test sera mis en piece jointe.
+   Le sslv151a.para:
+   tps_job 120 mem_job 128Mo ncpus 1 liste_test S
+   
+   sslp104c devient sslv152a:
+   sslv152a.comm
+   sslv152a1.py
+   sslv152a2.py
+   sslv152a.20
+   sslv152a.21
+   Le sslv152a.para:
+   tps_job 160 mem_job 192Mo ncpus 1 liste_test S
+   Les points d'observations n'étant pas les mêmes, les valeurs de non-régression sont
+   modifiées et les valeurs analytiques recalculées.
+   
+   Nouveaux cas-tests :
+   
+   ssnp141c : Version de sslp104a avec une loi de comportement VMIS_ISOT_LINE.
+   ssnp141c.comm
+   ssnp141c1.py
+   ssnp141c2.py
+   ssnp141c.20
+   ssnp141c.21
+   Le ssnp141c.para:
+   tps_job 200 mem_job 64Mo ncpus 1 liste_test R
+   
+   sslv152b : Version de sslp104c avec une loi de comportement VMIS_ISOT_TRAC.
+   sslv152b.comm
+   sslv152b1.py
+   sslv152b2.py
+   sslv152b.20
+   sslv152b.21
+   Le sslv152b.para:
+   tps_job 320 mem_job 284Mo ncpus 1 liste_test S
+   
+   sslp108c : Version de sslp108b avec une loi de comportement VMIS_ISOT_LINE et 
+   un maillage de type quadratique 2D_2/2D_1.
+   sslp108c.comm
+   sslp108c.20
+   Le sslp108c.para:
+   tps_job 200 mem_job 256Mo ncpus 1 liste_test S
+   
+   sslp313f : Version de sslp313c avec une loi de comportement VMIS_ISOT_LINE et 
+   un maillage de       type quadratique 2D_2/2D_2.
+   sslp313f.comm
+   sslp313f.20
+   Le sslp313f.para:
+   tps_job 300 mem_job 256Mo ncpus 1 liste_test S
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.02.313-A
+VALIDATION
+   sslp104,sslp108,sslp313
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013430 DU 2009-05-18 09:26:12
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   Redaction documentation V Arlequin
+FONCTIONNALITE
+   Objectif:
+   --------
+   L'objectif de cette fiche est de rédiger la documentation des cas tests utilisant la
+   méthode Arlequin. En version 10.0.3, 10 tests utilisent la méthode. Aucun test n'est
+   documenté. On enrichit la base de tests de 6 tests. 4 nouvelles documentations doivent
+   être rédigées.
+   
+   Realisations :
+   ---------------
+   ssnp141 ancien sslp104a : 2 modélisations
+   ---------
+   
+   => 1 modélisations existantes : a
+   => 1 modélisation nouvelle : c
+   c : version de sslp104a avec une loi vmis_isot_line
+   Titre du test : Poutre console en flexion
+   Clé documentaire : V6.03.141
+   
+   sslv151 ancien sslp104b : 1 modélisation
+   ---------
+   
+   => 1 modélisations existantes : a
+   Titre du test : Poutre console en flexion
+   Clé documentaire : V3.04.151
+   
+   sslv152 ancien sslp104c : 2 modélisations
+   ---------
+   
+   => 1 modélisations existantes : a
+   => 1 modélisation nouvelle : b
+   b : version de sslp104c avec une loi vmis_isot_line
+   Titre du test : Poutre console en flexion
+   Clé documentaire : V3.04.152
+   
+   
+   sslp108 : 3 modélisations
+   ---------
+   
+   => 2 modélisations existantes : a, b. Seule la modélisation b utilise la méthode Arlequin
+   => 1 modélisation nouvelle : c. Version de sslp108b avec une loi de comportement
+   VMIS_ISOT_LINE et 
+   un maillage de type quadratique 2D_2/2D_1
+   Titre du test : Plaque fissurée en mode 1
+   Clé documentaire : V3.02.108
+   
+   sslp313 : 6 modélisations
+   ---------
+   
+   => 5 modélisations existantes : a, b, c, d, e. Seule la modélisation c utilise la méthode
+   Arlequin
+   => 1 modélisation nouvelle: f. Version de sslp313c avec une loi de comportement
+   VMIS_ISOT_LINE et un maillage de type quadratique 2D_2/2D_2.
+   Titre du test : Fissure inclinée dans une plaque illimitée
+   Clé documentaire : V3.02.313 (la doc existe déjà !)
+   
+   sslv145 : 1 modélisation
+   ---------
+   
+   => 1 modélisation existante : a
+   Titre du test : Raccord 3D-plaque avec la méthode Arlequin
+   Clé documentaire : V3.04.145
+   
+   ssnp135 : 5 modélisations
+   ---------
+   
+   => 5 modélisations existantes : a, b, c, d, e. Seules les modélisations b, c, e utilisent
+   la méthode Arlequin. On fusionne les modélisations b et c (voir la fiche 12952). On a donc
+   réellement 4 modélisations existantes : a, b, c, d.
+   => 3 modélisations nouvelles : e, f, g.
+   e : Version avec un maillage quadratique de ssnp135b
+   
+   On aura donc au final 5 modélisations (a, b, c, d, e)
+   
+   Titre du test : Plaque trouée en traction
+   Clé documentaire : V6.03.135
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.02.104,V3.02.108,V3.02.313,V3.04.145,V6.03.135
+VALIDATION
+   Aucune
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sslp108c                      macocco K.MACOCCO          369    369      0
+ CASTEST AJOUT sslp313f                      macocco K.MACOCCO          311    311      0
+ CASTEST AJOUT sslv152a                      macocco K.MACOCCO          229    229      0
+ CASTEST AJOUT sslv152b                      macocco K.MACOCCO          258    258      0
+ CASTEST AJOUT ssnp141a                      macocco K.MACOCCO          270    270      0
+ CASTEST AJOUT ssnp141c                      macocco K.MACOCCO          291    291      0
+ CASTEST AJOUT ssnv173k                      geniaut S.GENIAUT          288    288      0
+ CASTEST AJOUT ssnv185r                      geniaut S.GENIAUT          261    261      0
+ CASTEST MODIF sdnv100a                       desoza T.DESOZA           386      2      2
+ CASTEST MODIF sslp316a                       delmas J.DELMAS           220     35      8
+ CASTEST MODIF sslp316b                       delmas J.DELMAS           188     36      9
+ CASTEST MODIF sslv113c                       delmas J.DELMAS           191      9      7
+ CASTEST MODIF sslv113d                       delmas J.DELMAS           191      9      7
+ CASTEST MODIF sslv134h                      geniaut S.GENIAUT          345      5      5
+ CASTEST MODIF ssnl133a                       desoza T.DESOZA           279      4      3
+ CASTEST MODIF ssnp130a                       delmas J.DELMAS           326     47     38
+ CASTEST MODIF ssnp130b                       delmas J.DELMAS           303      2      1
+ CASTEST MODIF ssnp130c                       delmas J.DELMAS           262      2      1
+ CASTEST MODIF ssnp130d                       delmas J.DELMAS           278      2      1
+ CASTEST MODIF ssnp130e                       delmas J.DELMAS           237      2      1
+ CASTEST MODIF ssnp130f                       delmas J.DELMAS           236      2      1
+ CASTEST SUPPR sslp104a.comm                 macocco K.MACOCCO          241      0    241
+ CASTEST SUPPR sslp104c.comm                 macocco K.MACOCCO          204      0    204
+CATALOGU MODIF compelem/phenomene_modelisation__    geniaut S.GENIAUT         1499     27     16
+CATALOGU MODIF compelem/type_maille__        geniaut S.GENIAUT          399      3      1
+CATALOGU MODIF typelem/gener_me3d_3          geniaut S.GENIAUT          660     11      1
+CATALOGU MODIF typelem/gener_me_xhc          geniaut S.GENIAUT          332     15      1
+CATALOGU MODIF typelem/gener_me_xh           geniaut S.GENIAUT          288     14      1
+CATALOGU MODIF typelem/gener_me_xhtc         geniaut S.GENIAUT          338     15      1
+CATALOGU MODIF typelem/gener_me_xht          geniaut S.GENIAUT          286     11      1
+CATALOGU MODIF typelem/gener_me_xtc          geniaut S.GENIAUT          337     15      1
+CATALOGU MODIF typelem/gener_me_xt           geniaut S.GENIAUT          288     11      1
+FORTRAN90 MODIF mumps/mumam                    desoza T.DESOZA           354      2      2
+ FORTRAN AJOUT algeline/crsvgc               boiteau O.BOITEAU          112    112      0
+ FORTRAN AJOUT algeline/crsvld               boiteau O.BOITEAU          105    105      0
+ FORTRAN AJOUT algeline/crsvmf               boiteau O.BOITEAU          105    105      0
+ FORTRAN AJOUT algorith/intfac               geniaut S.GENIAUT          160    160      0
+ FORTRAN AJOUT utilitai/ismali               geniaut S.GENIAUT           65     65      0
+ FORTRAN MODIF algeline/crsvpe               boiteau O.BOITEAU          117     43     21
+ FORTRAN MODIF algorith/algocg                desoza T.DESOZA           636      7      8
+ FORTRAN MODIF algorith/algocl                desoza T.DESOZA           600      3      2
+ FORTRAN MODIF algorith/algocp                desoza T.DESOZA           346      3     12
+ FORTRAN MODIF algorith/algocu                desoza T.DESOZA           516      3      7
+ FORTRAN MODIF algorith/cfalgo                desoza T.DESOZA           176      8     10
+ FORTRAN MODIF algorith/cofano               geniaut S.GENIAUT          292     41      3
+ FORTRAN MODIF algorith/conare               geniaut S.GENIAUT          176     20      1
+ FORTRAN MODIF algorith/confac               geniaut S.GENIAUT          305     61      7
+ FORTRAN MODIF algorith/cresol               boiteau O.BOITEAU          180     87     99
+ FORTRAN MODIF algorith/crsolv               boiteau O.BOITEAU          106     19      5
+ FORTRAN MODIF algorith/crsvfe               boiteau O.BOITEAU          280     40     30
+ FORTRAN MODIF algorith/crsvmu               boiteau O.BOITEAU          184     71     78
+ FORTRAN MODIF algorith/frogdp                desoza T.DESOZA           564      4     10
+ FORTRAN MODIF algorith/fropgd                desoza T.DESOZA           825      3      2
+ FORTRAN MODIF algorith/loncar               geniaut S.GENIAUT          145     22      3
+ FORTRAN MODIF algorith/matinv               geniaut S.GENIAUT          109     17      4
+ FORTRAN MODIF algorith/nmcofr                desoza T.DESOZA           172      5      7
+ FORTRAN MODIF algorith/nmcoun                desoza T.DESOZA           126      5      5
+ FORTRAN MODIF algorith/nmgr2d               geniaut S.GENIAUT          363      2      2
+ FORTRAN MODIF algorith/nmgr3d               geniaut S.GENIAUT          353      2      2
+ FORTRAN MODIF algorith/nmunil                desoza T.DESOZA           116      5      9
+ FORTRAN MODIF algorith/xbarvi               geniaut S.GENIAUT          380      5      8
+ FORTRAN MODIF algorith/xcfacf               geniaut S.GENIAUT          181     46    152
+ FORTRAN MODIF algorith/xdecou               geniaut S.GENIAUT          193      3      3
+ FORTRAN MODIF algorith/xdivte               geniaut S.GENIAUT          235     27      2
+ FORTRAN MODIF algorith/xenrch               geniaut S.GENIAUT          426      3      6
+ FORTRAN MODIF algorith/xfabor               geniaut S.GENIAUT          145     29     10
+ FORTRAN MODIF algorith/xlagsl               geniaut S.GENIAUT          460     15     24
+ FORTRAN MODIF algorith/xlagsp               geniaut S.GENIAUT          376     16     23
+ FORTRAN MODIF algorith/xmmres               geniaut S.GENIAUT          507     19      9
+ FORTRAN MODIF algorith/xmrema               geniaut S.GENIAUT          302      5     16
+ FORTRAN MODIF algorith/xoula                geniaut S.GENIAUT           91      3      3
+ FORTRAN MODIF algorith/xprls0               geniaut S.GENIAUT          655      7     10
+ FORTRAN MODIF algorith/xprmil               geniaut S.GENIAUT          124      3      4
+ FORTRAN MODIF algorith/xprrei               geniaut S.GENIAUT          572     10     14
+ FORTRAN MODIF algorith/xprreo               geniaut S.GENIAUT          558     10     13
+ FORTRAN MODIF algorith/xptfon               geniaut S.GENIAUT          212     73    252
+ FORTRAN MODIF algorith/xstan2               geniaut S.GENIAUT          253      3      7
+ FORTRAN MODIF calculel/meca01                delmas J.DELMAS           726      4      6
+ FORTRAN MODIF calculel/refere               geniaut S.GENIAUT          151      2      2
+ FORTRAN MODIF elements/arltep               geniaut S.GENIAUT          134      2      2
+ FORTRAN MODIF elements/creso1               boiteau O.BOITEAU          188      2      3
+ FORTRAN MODIF elements/elrfdf               geniaut S.GENIAUT         1197      5      5
+ FORTRAN MODIF elements/invjac               geniaut S.GENIAUT           78      2      2
+ FORTRAN MODIF elements/invjax               geniaut S.GENIAUT           77     13      5
+ FORTRAN MODIF elements/reeref               geniaut S.GENIAUT          222      2      2
+ FORTRAN MODIF elements/reereg               geniaut S.GENIAUT          148     14      4
+ FORTRAN MODIF elements/s1calb               geniaut S.GENIAUT           75      2      2
+ FORTRAN MODIF elements/s2calb               geniaut S.GENIAUT           70      2      2
+ FORTRAN MODIF elements/s6calb               geniaut S.GENIAUT           77      2      2
+ FORTRAN MODIF elements/sh6rig               geniaut S.GENIAUT          552      2      2
+ FORTRAN MODIF elements/shcalb               geniaut S.GENIAUT           73      2      2
+ FORTRAN MODIF elements/te0378                delmas J.DELMAS           687      6      6
+ FORTRAN MODIF modelisa/drz03d               geniaut S.GENIAUT          803      2      2
+ FORTRAN MODIF modelisa/panbno               geniaut S.GENIAUT           89      4      1
+ FORTRAN MODIF modelisa/xdelco               geniaut S.GENIAUT          307      9      8
+ FORTRAN MODIF modelisa/xmacon               geniaut S.GENIAUT          290      4      7
+ FORTRAN MODIF modelisa/xmoimp               geniaut S.GENIAUT          165     11      5
+ FORTRAN MODIF modelisa/xmoini               geniaut S.GENIAUT          111     10      6
+ FORTRAN MODIF modelisa/xmolig               geniaut S.GENIAUT          395     33     12
+ FORTRAN MODIF prepost/xpoajd                geniaut S.GENIAUT          288      3     10
+ FORTRAN SUPPR algeline/creso3               boiteau O.BOITEAU          126      0    126
+  PYTHON MODIF Macro/calc_ecrevisse_ops       assire A.ASSIRE           799      1      1
+  PYTHON MODIF Macro/macr_ecre_calc_ops       assire A.ASSIRE           638      2      2
+  PYTHON MODIF Macro/macr_ecrevisse_ops       assire A.ASSIRE           711      1      1
+  PYTHON MODIF Macro/raff_xfem_ops           geniaut S.GENIAUT          199      4      2
+  PYTHON MODIF Messages/algorith2            geniaut S.GENIAUT          274      2      2
+  PYTHON MODIF Messages/appelmpi              desoza T.DESOZA            46      5      1
+  PYTHON MODIF Messages/calculel5             desoza T.DESOZA           347      2      4
+  PYTHON MODIF Messages/xfem                 geniaut S.GENIAUT          245      2      2
+  PYTHON MODIF SD/sd_solveur                 boiteau O.BOITEAU           43      2      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   13        2824      2824             +2824
+ MODIF :   94       30785      1188    1108       +80
+ SUPPR :    3         571               571      -571
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  110       34180      4012    1679     +2333 

@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF xfem Messages  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,7 +190,7 @@ cata_msg={
 27: _("""
      Si vous êtes en 3D pour l'approche de contact <<Grands glissements avec XFEM>>,
      seul la formulation aux noeuds sommets est possible, les mailles doivent être de type
-     HEXA8, PENTA6 ou TETRA4
+     HEXA8, PENTA6, PYRAM5 ou TETRA4
 """),
 
 28: _("""

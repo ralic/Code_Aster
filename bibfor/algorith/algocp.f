@@ -1,8 +1,7 @@
-      SUBROUTINE ALGOCP(DEFICO,RESOCO,LMAT  ,NOMA  ,RESU  ,
-     &                  CTCFIX)
+      SUBROUTINE ALGOCP(DEFICO,RESOCO,LMAT  ,NOMA  ,RESU  )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 05/10/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +21,6 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      LOGICAL      CTCFIX
       INTEGER      LMAT
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO,RESOCO
@@ -72,7 +70,6 @@ C VAR RESU   : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS L'ITERATION
 C              DE NEWTON PRECEDENTE
 C                 EN ENTREE : SOLUTION OBTENUE SANS TRAITER LE CONTACT
 C                 EN SORTIE : SOLUTION CORRIGEE PAR LE CONTACT
-C OUT CTCFIX : .TRUE.  SI ATTENTE POINT FIXE CONTACT
 C
 C ON UTILISE UNIQUEMENT LE VECTEUR AFMU CAR LES DONNEES DE ATMU SONT
 C NECESSAIRE POUR LE CALCUL DE LA MATRICE TANGENTE QUI SE FAIT
@@ -108,7 +105,7 @@ C
       CHARACTER*24 LIAC,NOZOCO,COCO,APPOIN
       INTEGER      JLIAC,JZOCO,JAPPTR
       INTEGER      NESCL,NBLIAI,NEQ,NBLIAC,AJLIAI,SPLIAI,INDIC
-      INTEGER      NBDDL,NBLCIN,LLF,LLF1,LLF2
+      INTEGER      NBDDL,LLF,LLF1,LLF2
       CHARACTER*19 MAFROT
       INTEGER      IBID,ILIAI,IER,IRET,KK,ITER
       CHARACTER*19 MAT
@@ -238,8 +235,6 @@ C ======================================================================
 C
 C ======================================================================
 C
-      NBLCIN = NBLIAC
-C
       IF ( NIV .GE. 2 ) THEN
         WRITE(IFM,1000) NBLIAI
         WRITE(IFM,1005) NBLIAC
@@ -324,10 +319,6 @@ C ======================================================================
 C --- STOCKAGE DE L'ETAT DE CONTACT DEFINITIF
 C ======================================================================
  999  CONTINUE
-C --- ATTENTE POINT FIXE
-      IF ( NBLIAC.NE.NBLCIN ) THEN
-        CTCFIX = .TRUE.
-      ENDIF
       ZI(JCOCO+2) = NBLIAC
 C ======================================================================
 C --- AFFICHAGE FINAL

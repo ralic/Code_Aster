@@ -1,4 +1,4 @@
-#@ MODIF appelmpi Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF appelmpi Messages  DATE 05/10/2009   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,6 +33,10 @@ cata_msg={
 4: _("""
  Processeur %(i1)d :
  l'option FETAM %(i2)d est non prévue en compilation MPI
+"""),
+
+5: _("""
+ Erreur MPI: %(k1)s
 """),
 
 6: _("""

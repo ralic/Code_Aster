@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -798,10 +798,10 @@ C     ------------------------------------------------------------------
           DFF(2,2) = UNDEMI
           DFF(2,4) = -UNDEMI
 
-          DFF(3,1) = -UNDEMI
-          DFF(3,2) = -UNDEMI
-          DFF(3,3) = -UNDEMI
-          DFF(3,4) = -UNDEMI
+          DFF(3,1) = -1.D0/4.D0
+          DFF(3,2) = -1.D0/4.D0
+          DFF(3,3) = -1.D0/4.D0
+          DFF(3,4) = -1.D0/4.D0
           DFF(3,5) = UN
 
         ELSE

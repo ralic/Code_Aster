@@ -3,7 +3,7 @@
      &                  CTCCVG,CTCFIX)
 C   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 05/10/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -570,6 +570,7 @@ C ======================================================================
 C --- ON ENLEVE TOUTES LES LIAISONS DE CONTACT POUR LESQUELLES
 C --- LA PRESSION EST NEGATIVE
 C ======================================================================
+      INDIC = 0
       IF (NBLIAC.NE.0) THEN
          CALL CFNEG(RESOCO,DEFICO,NOMA,NDIM,
      &              INDIC,NBLIAI,NBLIAC,AJLIAI,SPLIAI,
@@ -785,7 +786,7 @@ C ======================================================================
 C --- STOCKAGE DE L'ETAT DE CONTACT DEFINITIF
 C ======================================================================
 C --- ATTENTE POINT FIXE
-      IF ( NBLIAC.NE.NBLCIN ) THEN
+      IF ((NBLIAC.NE.NBLCIN).AND.(INDIC.NE.0)) THEN
         CTCFIX = .TRUE.
       ENDIF
       ZI(JCOCO+2) = NBLIAC

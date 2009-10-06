@@ -1,4 +1,4 @@
-#@ MODIF macr_ecre_calc_ops Macro  DATE 29/09/2009   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_ecre_calc_ops Macro  DATE 05/10/2009   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -268,7 +268,7 @@ def macr_ecre_calc_ops(
     else:
       chemin_executable = str(LOGICIEL)
   else:
-    chemin_executable = os.path.join(aster.repout(), ecrevisse)
+    chemin_executable = os.path.join(aster.repout(), 'ecrevisse')
 
   # Soit on fait un lien symbolique (incompatible avec certaines plate-formes) soit on recopie l'executable
   if not os.path.isfile(os.path.join(tmp_ecrevisse, 'ecrevisse')):

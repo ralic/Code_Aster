@@ -5,7 +5,7 @@
      &                  ACMA,ACSM,REACRE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 05/10/2009   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,8 +24,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C-----------------------------------------------------------------------
-C    - FONCTION REALISEE:  CREATION DES OBJETS JEVEUX DE LA STRUCTURE
-C      DE DONNEES SOLVEUR. UTILITAIRE DE BAS NIVEAU LANCE PAR CRESOL.
+C    BUT :  REMPLISSAGE DE LA SD SOLVEUR FETI (NIVEAU 2)
 C-----------------------------------------------------------------------
 C IN SOLVEU   : NOM DE LA SD SOLVEUR
 C IN METHOD....NIREMP : SES PARAMETRES, POUR SIGNIFICATION VOIR CRESOL.
