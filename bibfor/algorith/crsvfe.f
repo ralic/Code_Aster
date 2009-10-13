@@ -7,7 +7,7 @@
       CHARACTER*16 MOTFAC
       CHARACTER*19 SOLVEU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2009   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C IN  R8 EPSMAT  :                           FILTRAGE_MATRICE
 C IN  K3 MIXPRE  :                           MIXER_PRECISION
 C IN  K3 KMD     :                           MATR_DISTRIBUEE
 C ----------------------------------------------------------
-C RESPONSABLE BOITEAU
+C RESPONSABLE COURTOIS M.COURTOIS
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 
       INTEGER ZI

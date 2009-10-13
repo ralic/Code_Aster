@@ -1,0 +1,311 @@
+# MODIF  DATE 13/10/2009   AUTEUR DELMAS J.DELMAS 
+# TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
+# zzzz257c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE DELMAS J.DELMAS
+# DOC V1.01.257
+# CHARGEMENT EN TRACTION
+# MAILLAGE : TRIA6
+# COMPORTEMENT ELASTIQUE
+
+DEBUT(CODE=_F(NOM='ZZZZ257C',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
+
+#####################################
+###Definition de la fissure en dur###
+#####################################
+
+#Absc_curv_maxi
+#Equivalent quatre noeuds sur le maillage initial
+Lfiss = 3.5;
+Dmax = Lfiss / 2.;
+
+
+# Vect_KI
+#  c'est le vecteur pour avoir l'erreur sur KI
+
+vx = 0.5;
+
+vy = 0.866025404;
+
+vz = 0.0;
+
+# Vect_KII
+#  c'est le vecteur pour avoir l'erreur sur KII
+#
+#vx = 0.866025404;
+#
+#vy = -0.5;
+#
+#vz = 0.0;
+
+#Fond de fissure
+
+X0 = 3.03;
+
+Y0 = 5.25;
+
+#####################################
+###Definition de la fissure en dur###
+#####################################
+
+e = 200000.0;
+nu = 0.3;
+
+#Fonctions necessaires a la definition du chargement pour le probleme dual
+const = ((e * sqrt((2 * pi))) / 8.);
+
+
+FPLUSX = FORMULE(VALE='const*2/(Dmax)**2*sqrt((X-X0)**2+(Y-Y0)**2)*vx',
+                 NOM_PARA=('X','Y',),);
+
+FPLUSY = FORMULE(VALE='const*2/(Dmax)**2*sqrt((X-X0)**2+(Y-Y0)**2)*vy',
+                 NOM_PARA=('X','Y',),);
+
+FPLUSZ = FORMULE(VALE='(const/(1+nu))*2/(Dmax)**2*sqrt((X-X0)**2+(Y-Y0)**2)*vz',
+                 NOM_PARA=('X','Y',),);
+
+FMOINX = FORMULE(VALE='-const*2/(Dmax)**2*sqrt((X-X0)**2+(Y-Y0)**2)*vx',
+                 NOM_PARA=('X','Y',),);
+
+FMOINY = FORMULE(VALE='-const*2/(Dmax)**2*sqrt((X-X0)**2+(Y-Y0)**2)*vy',
+                 NOM_PARA=('X','Y',),);
+
+FMOINZ = FORMULE(VALE='-(const/(1+nu))*2/(Dmax)**2*sqrt((X-X0)**2+(Y-Y0)**2)*vz',
+                 NOM_PARA=('X','Y',),);
+
+MAI=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAIB=CREA_MAILLAGE(MAILLAGE=MAI,
+                   LINE_QUAD=_F(TOUT='OUI',
+                                PREF_NOEUD='QN',
+                                PREF_NUME=1,),);
+
+MAIB=MODI_MAILLAGE(reuse =MAIB,
+                   MAILLAGE=MAIB,
+                   MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                  GROUP_MA_FOND='FONDFISS',),);
+
+MAIB=DEFI_GROUP(reuse =MAIB,
+                MAILLAGE=MAIB,
+                CREA_GROUP_NO=_F(GROUP_MA='FONDFISS',
+                                 NOM='NOEUFOND',),);
+
+MATE=DEFI_MATERIAU(ELAS=_F(E=e,
+                           NU=nu,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIB,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATE,),);
+
+MODL=AFFE_MODELE(MAILLAGE=MAIB,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='C_PLAN',),);
+
+BLOC=AFFE_CHAR_MECA(MODELE=MODL,
+                    DDL_IMPO=(_F(GROUP_MA='FONDFISS',
+                                 DY=0.0,),
+                              _F(GROUP_MA='BLOCAGE',
+                                 DX=0.0,
+                                 DY=0.0,),),);
+
+# -----------------------------
+# definition du probleme primal
+# -----------------------------
+
+CHAR=AFFE_CHAR_MECA(MODELE=MODL,
+                    FORCE_CONTOUR=(_F(GROUP_MA='HAUT',
+                                      FY=1.0,),
+                                   _F(GROUP_MA='BAS',
+                                      FY=-1.0,),),);
+
+RESU=MECA_STATIQUE(MODELE=MODL,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=BLOC,),
+                          _F(CHARGE=CHAR,),),);
+
+MAIB=DEFI_GROUP(reuse =MAIB,
+                MAILLAGE=MAIB,
+                CREA_GROUP_MA=(_F(NOM='CURVMAX',
+                                  OPTION='SPHERE',
+                                  GROUP_NO_CENTRE='NOEUFOND',
+                                  RAYON=Dmax,),
+                               _F(NOM='LSUP',
+                                  INTERSEC=('LEVSUP','CURVMAX',),),
+                               _F(NOM='LINF',
+                                  INTERSEC=('LEVINF','CURVMAX',),),),);
+
+FISS=DEFI_FOND_FISS(MAILLAGE=MAIB,
+                    FOND_FISS=_F(GROUP_NO='NOEUFOND',),
+                    LEVRE_SUP=_F(GROUP_MA='LSUP',),
+                    LEVRE_INF=_F(GROUP_MA='LINF',),);
+
+# VECT_K1 permet d'orienter la fissure
+# c'est le vecteur pour l'ouverture en mode I
+POST_K=POST_K1_K2_K3(MODELISATION='C_PLAN',
+                     FOND_FISS=FISS,
+                     MAILLAGE=MAIB,
+                     TYPE_MAILLAGE='REGLE',
+                     MATER=MATE,
+                     RESULTAT=RESU,
+                     ABSC_CURV_MAXI=Dmax,
+                     VECT_K1=(0.5,0.866025404,0.,),);
+
+IMPR_TABLE(TABLE=POST_K,
+           UNITE=8,);
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('SIEF_ELNO_ELGA',
+                       'ERRE_ELEM_SIGM',
+                       'ERZ1_ELEM_SIGM',
+                       ),);
+#                       'ERZ2_ELEM_SIGM',
+#                       ),);
+
+# ---------------------------
+# definition du probleme dual
+# ---------------------------
+
+CHARDUAL=AFFE_CHAR_MECA_F(MODELE=MODL,
+                          FORCE_CONTOUR=(_F(GROUP_MA='LSUP',
+                                            FX=FPLUSX,
+                                            FY=FPLUSY,
+                                            FZ=FPLUSZ,),
+                                         _F(GROUP_MA='LINF',
+                                            FX=FMOINX,
+                                            FY=FMOINY,
+                                            FZ=FMOINZ,),),);
+
+RESUDUAL=MECA_STATIQUE(MODELE=MODL,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=(_F(CHARGE=BLOC,),
+                              _F(CHARGE=CHARDUAL,),),);
+
+RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
+                   RESULTAT=RESUDUAL,
+                   OPTION=('SIEF_ELNO_ELGA',
+                           'ERRE_ELEM_SIGM',
+                           'ERZ1_ELEM_SIGM',
+                           ),);
+#                           'ERZ2_ELEM_SIGM',
+#                           ),);
+
+# ---------------------------
+# estimation de l'erreur en quantite d'interet
+# ---------------------------
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               TYPE_OPTION='TOUTES',
+               OPTION='QIRE_ELEM_SIGM',
+               RESU_DUAL=RESUDUAL,);
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               TYPE_OPTION='TOUTES',
+               OPTION='QIZ1_ELEM_SIGM',
+               RESU_DUAL=RESUDUAL,);
+
+#RESU=CALC_ELEM(reuse =RESU,
+#               RESULTAT=RESU,
+#               TYPE_OPTION='TOUTES',
+#               OPTION='QIZ2_ELEM_SIGM',
+#               RESU_DUAL=RESUDUAL,);
+
+# ---------------------------
+# tests sur les resultats
+# ---------------------------
+
+TEST_TABLE(TABLE=POST_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=3,),
+           NOM_PARA='K1_MAX',
+           VALE=6.33,
+           CRITERE='RELATIF',
+           PRECISION=0.099,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=POST_K,
+           FILTRE=_F(NOM_PARA='METHODE',
+                     VALE_I=3,),
+           NOM_PARA='K1_MAX',
+           VALE=6.95029,
+           CRITERE='RELATIF',
+           PRECISION=1.E-6,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.00.21',);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  PARA='ERREUR_ERRE',
+                  VALE=2.2009669815803E-03,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.00.21',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  PARA='ERREUR_ERZ1',
+                  VALE=2.2766563775709E-03,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.00.21',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUDUAL,
+                  NUME_ORDRE=1,
+                  PARA='ERREUR_ERRE',
+                  VALE=5.2902256540711E+01,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.00.21',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUDUAL,
+                  NUME_ORDRE=1,
+                  PARA='ERREUR_ERZ1',
+                  VALE=5.5578633368626E+01,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.00.21',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  PARA='ERREUR_QIRE',
+                  VALE=7.6783302550272E+01,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.00.21',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  PARA='ERREUR_QIZ1',
+                  VALE=2.2766563775709E-03,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.00.21',),);
+
+FIN();

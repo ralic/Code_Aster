@@ -1,4 +1,4 @@
-#@ MODIF recal0 Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal0 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,8 +74,8 @@ pour limiter la mémoire allouée au calcul maître.
 Informations de convergence :
 =======================================================
 Fin de l'iteration %(i1)d
-=> Fonctionnelle = %(k1)s
-=> Residu        = %(r1)s
+=> Fonctionnelle = %(r1)s
+=> Residu        = %(r2)s
 =======================================================
 """),
 

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,8 +70,7 @@ C     ------------------------------------------------------------------
       MASS = MATASS
       CALL DISMOI('F','METH_RESO',MASS,'MATR_ASSE',IBID,METRES,IBID)
 
-      IF (METRES.EQ.'GCPC'.OR.METRES.EQ.'PETSC'.OR.
-     &    METRES.EQ.'MUMPS') THEN
+      IF (METRES.EQ.'GCPC'.OR.METRES.EQ.'PETSC') THEN
         CALL UTTCPU('CPU.RESO.1','DEBUT',' ')
         CALL UTTCPU('CPU.RESO.4','DEBUT',' ')
       ENDIF
@@ -101,7 +100,7 @@ C        VERIFICATION : MATR_ASSE A VALEURS COMPLEXES INTERDIT
         ISTOP = 0
       ELSE IF (KSTOP.EQ.'NON') THEN
         ISTOP = 1
-      END IF
+      ENDIF
 
 
 
@@ -121,6 +120,7 @@ C     ----------------------
          CALL JEVEUO(SOLVEU//'.SLVI','E',JSLVI)
          CALL JEVEUO(SOLVEU//'.SLVK','E',JSLVK)
          CALL JEVEUO(SOLVEU//'.SLVR','E',JSLVR)
+         ZI(JSLVI-1+1)  =NPREC
          ZI(JSLVI-1+2)  =PCPIV
          ZI(JSLVI-1+3)  =ISTOP
          ZK24(JSLVK-1+2)=KTYPS
@@ -129,11 +129,9 @@ C     ----------------------
          ZK24(JSLVK-1+7)=MIXPRE
          ZK24(JSLVK-1+9)=KOOC
          ZR(JSLVR-1+1)  =EPSMAT
-         CALL AMUMPH('DETR_OCC',SOLVEU,MFAC,RBID,CBID,' ',0,IRET)
-         CALL AMUMPH('PRERES',SOLVEU,MFAC,RBID,CBID,' ',0,IRET)
-         IF (IRET.NE.0) CALL U2MESS('F','FACTOR_42')
-         GO TO 9999
-      END IF
+         ILDEB = 1
+         ILFIN = 0
+      ENDIF
 
 
 C     CAS DU SOLVEUR PETSC :
@@ -156,98 +154,104 @@ C        ON EST OBLIGE DE MODIFIER DIRECTEMENT MASS
          CALL APETSC('DETR_MAT',' ',MFAC,RBID,' ',0,IRET)
          CALL APETSC('PRERES',SOLVEU,MFAC,RBID,' ',0,IRET)
          IRET=0
-         GO TO 9999
-      END IF
+         GOTO 9999
+      ENDIF
 
 
-C     CAS DES SOLVEURS LDLT ET MULT_FRONT :
+C     CAS DES SOLVEURS LDLT/MULT_FRONT/MUMPS :
 C     -------------------------------------
 C
 C     --- RECUPERATION DES INDICES DE DEBUT ET FIN DE LA FACTORISATION -
 C     - 1) AVEC DDL_XXX
-      ILDEB = 1
-      ILFIN = 0
-      CALL GETVIS('  ','DDL_DEBUT',0,1,1,ILDEB,IBID)
-      CALL GETVIS('  ','DDL_FIN',0,1,1,ILFIN,IBID)
+      IF (METRES.NE.'MUMPS') THEN
+        ILDEB = 1
+        ILFIN = 0
+        CALL GETVIS('  ','DDL_DEBUT',0,1,1,ILDEB,IBID)
+        CALL GETVIS('  ','DDL_FIN',0,1,1,ILFIN,IBID)
 C     - 2) AVEC BLOC_XXX
-      IBDEB = 1
-      IBFIN = 0
-      CALL GETVIS('  ','BLOC_DEBUT',0,1,1,IBDEB,LDTBLO)
-      CALL GETVIS('  ','BLOC_FIN',0,1,1,IBFIN,LFNBLO)
+        IBDEB = 1
+        IBFIN = 0
+        CALL GETVIS('  ','BLOC_DEBUT',0,1,1,IBDEB,LDTBLO)
+        CALL GETVIS('  ','BLOC_FIN',0,1,1,IBFIN,LFNBLO)
 
 
 C     --- EXISTENCE / COMPATIBILITE DES MATRICES ---
-      CALL MTEXIS(MFAC,IRET)
-      IF (IRET.NE.0) THEN
-        CALL VRREFE(MASS,MFAC,IER1)
-        IF (IER1.NE.0) THEN
-           VALK(1) = MATASS
-           VALK(2) = MATFAC
-           CALL U2MESK('F','ALGELINE2_18', 2 ,VALK)
-        ELSE IF (MFAC.NE.MASS) THEN
-          IF (ILDEB.EQ.1 .AND. IBDEB.EQ.1) THEN
-            CALL MTCOPY(MASS,MFAC,IRET)
-            CALL ASSERT(IRET.EQ.0)
-          END IF
-        END IF
-      ELSE
-        TYPE = ' '
-        CALL MTDEFS(MFAC,MASS,'GLOBALE',TYPE)
-        CALL MTCOPY(MASS,MFAC,IRET)
-        CALL ASSERT(IRET.EQ.0)
-      END IF
-
+        CALL MTEXIS(MFAC,IRET)
+        IF (IRET.NE.0) THEN
+          CALL VRREFE(MASS,MFAC,IER1)
+          IF (IER1.NE.0) THEN
+             VALK(1) = MATASS
+             VALK(2) = MATFAC
+             CALL U2MESK('F','ALGELINE2_18', 2 ,VALK)
+          ELSE IF (MFAC.NE.MASS) THEN
+            IF (ILDEB.EQ.1 .AND. IBDEB.EQ.1) THEN
+              CALL MTCOPY(MASS,MFAC,IRET)
+              CALL ASSERT(IRET.EQ.0)
+            ENDIF
+          ENDIF
+        ELSE
+          TYPE = ' '
+          CALL MTDEFS(MFAC,MASS,'GLOBALE',TYPE)
+          CALL MTCOPY(MASS,MFAC,IRET)
+          CALL ASSERT(IRET.EQ.0)
+        ENDIF
+      ENDIF
+      
 C     --- CHARGEMENT DES DESCRIPTEURS DE LA MATRICE A FACTORISER ---
       CALL MTDSCR(MFAC)
       CALL JEVEUO(MFAC(1:19)//'.&INT','E',IATFAC)
       IF (IATFAC.EQ.0) THEN
         CALL U2MESK('F','ALGELINE2_19',1,MATFAC)
-      END IF
+      ENDIF
       CALL MTDSC2(ZK24(ZI(IATFAC+1)),'SXDI','L',JADIA)
 
 C     --- NEQ : NOMBRE D'EQUATIONS (ORDRE DE LA MATRICE) ---
       NEQ = ZI(IATFAC+2)
 
+      IF (METRES.NE.'MUMPS') THEN
+
 C     --- VERIFICATION DES ARGUMENTS RELATIF A LA PARTIE A FACTORISER --
 C     --- 1) AVEC DDL_XXX
-      IF (ILFIN.LT.ILDEB .OR. ILFIN.GT.NEQ) ILFIN = NEQ
+        IF (ILFIN.LT.ILDEB .OR. ILFIN.GT.NEQ) ILFIN = NEQ
 
 C     --- 2) AVEC BLOC_XXX
-      IF (LDTBLO.NE.0) THEN
-        IF (IBDEB.LT.1) THEN
-          CALL U2MESS('A','ALGELINE2_1')
-          IBDEB = 1
-        ELSE IF (IBDEB.GT.ZI(IATFAC+13)) THEN
-          CALL U2MESS('F','ALGELINE2_20')
-        END IF
-        ILDEB = ZI(JADIA+IBDEB-2) + 1
-      END IF
-      IF (LFNBLO.NE.0) THEN
-        IF (IBFIN.LT.1) THEN
-          CALL U2MESS('F','ALGELINE2_21')
-        ELSE IF (IBDEB.GT.ZI(IATFAC+13)) THEN
-          CALL U2MESS('A','ALGELINE2_8')
-          IBFIN = ZI(IATFAC+13)
-        END IF
-        ILFIN = ZI(JADIA+IBFIN-1)
-      END IF
+        IF (LDTBLO.NE.0) THEN
+          IF (IBDEB.LT.1) THEN
+            CALL U2MESS('A','ALGELINE2_1')
+            IBDEB = 1
+          ELSE IF (IBDEB.GT.ZI(IATFAC+13)) THEN
+            CALL U2MESS('F','ALGELINE2_20')
+          ENDIF
+          ILDEB = ZI(JADIA+IBDEB-2) + 1
+        ENDIF
+        IF (LFNBLO.NE.0) THEN
+          IF (IBFIN.LT.1) THEN
+            CALL U2MESS('F','ALGELINE2_21')
+          ELSE IF (IBDEB.GT.ZI(IATFAC+13)) THEN
+            CALL U2MESS('A','ALGELINE2_8')
+            IBFIN = ZI(IATFAC+13)
+          ENDIF
+          ILFIN = ZI(JADIA+IBFIN-1)
+        ENDIF
 
 C     --- IMPRESSION SUR LE FICHIER MESSAGE ----------------------------
-      IF (NIV.EQ.2) THEN
-        WRITE (IFM,*) ' +++ EXECUTION DE "',NOMCMD,'"'
-        WRITE (IFM,*) '       NOM DE LA MATRICE ASSEMBLEE  "',MATASS,'"'
-        WRITE (IFM,*) '       NOM DE LA MATRICE FACTORISEE "',MATFAC,'"'
-        IF (ILDEB.EQ.1 .AND. ILFIN.EQ.NEQ) THEN
-          WRITE (IFM,*) '     FACTORISATION COMPLETE DEMANDEE'
-        ELSE
-          WRITE (IFM,*) '     FACTORISATION PARTIELLE DE LA LIGNE',
-     &      ILDEB,' A LA LIGNE ',ILFIN
-        END IF
-        WRITE (IFM,*) '     NOMBRE TOTAL D''EQUATIONS  ',NEQ
-        WRITE (IFM,*) '     NB. DE CHIFFRES SIGNIF. (NPREC) ',NPREC
-        WRITE (IFM,*) ' +++ -------------------------------------------'
-      END IF
+        IF (NIV.EQ.2) THEN
+          WRITE(IFM,*)' +++ EXECUTION DE "',NOMCMD,'"'
+          WRITE(IFM,*)'       NOM DE LA MATRICE ASSEMBLEE  "',MATASS,'"'
+          WRITE(IFM,*)'       NOM DE LA MATRICE FACTORISEE "',MATFAC,'"'
+          IF (ILDEB.EQ.1 .AND. ILFIN.EQ.NEQ) THEN
+            WRITE(IFM,*)'     FACTORISATION COMPLETE DEMANDEE'
+          ELSE
+            WRITE(IFM,*)'     FACTORISATION PARTIELLE DE LA LIGNE',
+     &        ILDEB,' A LA LIGNE ',ILFIN
+          ENDIF
+          WRITE(IFM,*)'     NOMBRE TOTAL D''EQUATIONS  ',NEQ
+          WRITE(IFM,*)'     NB. DE CHIFFRES SIGNIF. (NPREC) ',NPREC
+          WRITE(IFM,*)' +++ -------------------------------------------'
+        ENDIF
+      ENDIF
 
+   
 C     ------------------ FACTORISATION EFFECTIVE -------------------
       CALL TLDLGG(ISTOP,IATFAC,ILDEB,ILFIN,NPREC,NDECI,ISINGU,NPVNEG,
      &            IRET)
@@ -255,8 +259,7 @@ C     --------------------------------------------------------------
 
  9999 CONTINUE
 
-      IF (METRES.EQ.'GCPC'.OR.METRES.EQ.'PETSC'.OR.
-     &    METRES.EQ.'MUMPS') THEN
+      IF (METRES.EQ.'GCPC'.OR.METRES.EQ.'PETSC') THEN
         CALL UTTCPU('CPU.RESO.1','FIN',' ')
         CALL UTTCPU('CPU.RESO.4','FIN',' ')
       ENDIF

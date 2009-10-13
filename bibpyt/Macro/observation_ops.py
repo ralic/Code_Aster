@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF observation_ops Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -295,7 +295,7 @@ def observation_ops(self,
             RESU = DEFI_BASE_MODALE( RITZ = (
                                              _F( MODE_MECA = RESULTAT,
                                                  NMAX_MODE = 0,),
-                                             _F( MULT_ELAS = _RESBID),
+                                             _F( MODE_INTF = _RESBID),
                                             ),
                                      NUME_REF=NUME_DDL
                                    );

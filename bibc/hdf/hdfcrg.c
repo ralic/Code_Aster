@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfcrg hdf  DATE 27/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF hdfcrg hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -33,7 +33,7 @@ INTEGER DEFPSS(HDFCRG, hdfcrg, INTEGER *idf, char *nomgp, STRING_SIZE lp, char *
 {
   hid_t  idgrp,idfic;     
   char *nomd;
-  STRING_SIZE k,lg2;
+  int k,lg2;
   long iret=-1;
   void *malloc(size_t size);
     

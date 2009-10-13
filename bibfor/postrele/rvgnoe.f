@@ -6,7 +6,7 @@
       CHARACTER*24                           NLSTND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF POSTRELE  DATE 13/10/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,6 +138,9 @@ C
  252     CONTINUE
       ENDIF
 C
+      IF (NBTND.EQ.0) THEN
+          CALL U2MESS('F','POSTRELE_64')
+      ENDIF
       CALL WKVECT ( NLSTND, 'V V I', NBTND, ALSTND )
       NBTND = LIBRE - 1
       IF ( NBTROU .EQ. 0 ) THEN

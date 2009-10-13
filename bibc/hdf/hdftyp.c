@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftyp hdf  DATE 27/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF hdftyp hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -37,7 +37,7 @@ INTEGER DEFPSPS(HDFTYP, hdftyp, INTEGER *idf, char *nomgr, STRING_SIZE ln, INTEG
   hid_t idfic;
   char *nomg, *pt, *ptype; 
   int indx,j,ind;
-  STRING_SIZE k, ll;
+  int k, ll;
   void *malloc(size_t size);
   
   herr_t indiceType(hid_t loc_id, const char *name, void *opdata);

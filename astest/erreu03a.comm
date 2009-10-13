@@ -1,0 +1,210 @@
+# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+# TITRE DETECTION DE SINGULARITE SIMPLE AVEC LES SOLVEURS LINEAIRES 
+# erreu03a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       DIRECTS ET UNE COMMANDE INTEGREE
+#       
+# RESPONSABLE COURTOIS M.COURTOIS
+#########################################################################
+# VALIDATION DE LA DETECTION DE SINGULARITE SIMPLE (BLOCAGE ABSENT OU
+# SURABONDANT) AVEC LES SOLVEURS LINEAIRES DIRECTS: MUMPS, LDLT ET MF.
+# CAS SYMETRIQUE REEL AVEC UN OPERATEUR INTEGRE: MECA_STATIQUE
+# ON TESTE LES MSGS SUIVANT:
+#    1. MANQUE DE BLOCAGE: FACTOR_20 POUR LDLT/MF/MUMPS
+#             + FACTOR_57 SI MUMPS ET NPREC<0
+#    2. BLOCAGE SURABONDANTS: FACTOR_41 POUR LDLT/MF/MUMPS
+#             + FACTOR_42 SI MUMPS ET NPREC<0
+#########################################################################
+
+DEBUT(CODE=_F(NOM='ERREU03A',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
+     DEBUG=_F(SDVERI='OUI'),
+      ERREUR=_F(ERREUR_F='EXCEPTION',),
+      PAR_LOT='NON',)
+
+import re
+fmt_raison='-'*80+"""
+
+   Exception interceptee
+   Raison : %s
+
+"""+'-'*80+'\n'
+
+PRE_GIBI()
+MA=LIRE_MAILLAGE( )
+DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',))
+MO=AFFE_MODELE(   MAILLAGE=MA,
+           AFFE=_F( TOUT = 'OUI',  PHENOMENE = 'MECANIQUE', MODELISATION = '3D')
+                  )
+MAT=DEFI_MATERIAU(   ELAS=_F( E = 1.E+05,  NU = 0.3, RHO=9800.)  )
+CHAM_MAT=AFFE_MATERIAU(   MAILLAGE=MA,  AFFE=_F( TOUT = 'OUI', MATER = MAT) )
+CHAR=AFFE_CHAR_MECA( MODELE=MO,
+       DDL_IMPO=  _F( GROUP_MA = 'BASE1',  DZ = 0., DY = 0.),
+       PESANTEUR=(9.81, 0., 0., -1.,) )
+CTROP=AFFE_CHAR_MECA( MODELE=MO,
+       DDL_IMPO=  _F( GROUP_MA = 'BASE1',  DZ = 0., DY = 0., DX = 0.),
+       PESANTEUR=(9.81, 0., 0., -1.,) )
+CHARP=AFFE_CHAR_MECA( MODELE=MO, PESANTEUR=(9.81, 0., 0., -1.,) )
+CHARCI=AFFE_CHAR_CINE( MODELE=MO, MECA_IMPO=  _F( GROUP_NO = 'BASE1',  DX = 10.),  )
+
+# 1 : MANQUE DE BLOCAGE DETECTE VIA LE MECANISME NPREC/STOP_SINGULIER
+#     TEST AVEC LDLT/MF/MUMPS. AVEC MUMPS ON TESTE AUSSI LE MECANISME NPREC<0
+#----------------------------------------------------------------------
+is_ok = 0
+try :
+  RESU11=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, INFO=1,
+                     EXCIT=( _F(CHARGE = CHAR),), 
+                     SOLVEUR=_F(METHODE='LDLT',NPREC=8,STOP_SINGULIER='OUI',), 
+                   )
+
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("FACTOR_20", str(err))<>None :
+      is_ok = 1
+TAB11=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB11,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=(RESU11, TAB11),),)
+
+is_ok = 0
+try :
+  RESU12=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, INFO=1,
+                     EXCIT=( _F(CHARGE = CHAR),), 
+                     SOLVEUR=_F(METHODE='MULT_FRONT',NPREC=8,STOP_SINGULIER='OUI',), 
+                   )
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("FACTOR_20", str(err))<>None :
+      is_ok = 1
+TAB12=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB12,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=(RESU12, TAB12),),)
+
+is_ok = 0
+try :
+  RESU130=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, INFO=1,
+                     EXCIT=( _F(CHARGE = CHAR),), 
+                     SOLVEUR=_F(METHODE='MUMPS',NPREC=8,STOP_SINGULIER='OUI',), 
+                   )
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("FACTOR_20", str(err))<>None :
+      is_ok = 1
+TAB130=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB130,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=(RESU130, TAB130),),)
+
+is_ok = 0
+try :
+  RESU131=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, INFO=1,
+                     EXCIT=( _F(CHARGE = CHAR),), 
+                     SOLVEUR=_F(METHODE='MUMPS',NPREC=-8,STOP_SINGULIER='OUI',), 
+                   )
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("FACTOR_57", str(err))<>None :
+      is_ok = 1
+TAB131=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB131,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=(RESU131, TAB131),),)
+
+
+# 2 : REDONDANCE DE BLOCAGES DETECTE VIA LE MECANISME NPREC/STOP_SINGULIER
+#     TEST AVEC LDLT/MF/MUMPS. AVEC MUMPS ON TESTE AUSSI LE MECANISME NPREC<0
+#----------------------------------------------------------------------
+is_ok = 0
+try :
+  RESU21=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, INFO=1,
+                     EXCIT=( _F(CHARGE = CTROP),_F(CHARGE = CHARCI)), 
+                     SOLVEUR=_F(METHODE='LDLT',NPREC=8,STOP_SINGULIER='OUI',), 
+                   )
+
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("FACTOR_41", str(err))<>None :
+      is_ok = 1
+TAB21=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB21,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=(RESU21, TAB21),),)
+
+is_ok = 0
+try :
+  RESU22=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, INFO=1,
+                     EXCIT=( _F(CHARGE = CTROP),_F(CHARGE = CHARCI)),  
+                     SOLVEUR=_F(METHODE='MULT_FRONT',NPREC=8,STOP_SINGULIER='OUI',), 
+                   )
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("FACTOR_41", str(err))<>None :
+      is_ok = 1
+TAB22=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB22,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=(RESU22, TAB22),),)
+
+is_ok = 0
+try :
+  RESU230=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, INFO=1,
+                     EXCIT=( _F(CHARGE = CTROP),_F(CHARGE = CHARCI)),  
+                     SOLVEUR=_F(METHODE='MUMPS',NPREC=8,STOP_SINGULIER='OUI',), 
+                   )
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("FACTOR_41", str(err))<>None :
+      is_ok = 1
+TAB230=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB230,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=(RESU230, TAB230),),)
+
+is_ok = 0
+try :
+  RESU231=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, INFO=2,
+                     EXCIT=( _F(CHARGE = CTROP),_F(CHARGE = CHARCI)),  
+                     SOLVEUR=_F(METHODE='MUMPS',NPREC=-8,STOP_SINGULIER='OUI',), 
+                   )
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if re.search("FACTOR_42", str(err))<>None :
+      is_ok = 1
+TAB231=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB231,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=(RESU231, TAB231),),)
+FIN();
+

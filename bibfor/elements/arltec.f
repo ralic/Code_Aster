@@ -2,7 +2,7 @@
      &                  MCPLN ,MCPLB ,MCPLC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,7 +50,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER      I,J,INO,JNO,IDIM,JDIM
+      INTEGER      IAUX,JAUX,INO,JNO,IDIM,JDIM
       REAL*8       MCPLNZ(NDIM*NNS,NDIM*NNC)
 C
 C ----------------------------------------------------------------------
@@ -65,13 +65,13 @@ C
       DO 110 JNO = 1, NNC
         DO 100 INO = 1, NNS
           DO 90 JDIM = 1, NDIM
-            J = JDIM + (JNO - 1)*NDIM
+            JAUX = JDIM + (JNO - 1)*NDIM
             DO 80 IDIM = 1, NDIM
-              I = IDIM + (INO - 1)*NDIM
+              IAUX = IDIM + (INO - 1)*NDIM
               IF (IDIM.EQ.JDIM) THEN
-                 MCPLNZ(I,J) = MCPLN(INO,JNO)
+                 MCPLNZ(IAUX,JAUX) = MCPLN(INO,JNO)
               ELSE
-                 MCPLNZ(I,J) = 0.D0
+                 MCPLNZ(IAUX,JAUX) = 0.D0
               ENDIF
   80        CONTINUE
   90      CONTINUE
@@ -84,9 +84,10 @@ C     ON COMPLETE AVEC LES TERMES EXRA-DIAGONAUX
 C ===
 C --- COEF 2 PARCE QUE RATEAU A MIS 0.5 DEVANT LCARA = L2
 C
-      DO 130 J = 1,NNC*NDIM
-        DO 120 I = 1,NNS*NDIM
-          MCPLC(I,J) = MCPLNZ(I,J) + 2*LCARA*MCPLB(I,J)
+      DO 130 JAUX = 1,NNC*NDIM
+        DO 120 IAUX = 1,NNS*NDIM
+          MCPLC(IAUX,JAUX) = MCPLNZ(IAUX,JAUX) + 2*LCARA*MCPLB(IAUX,
+     &    JAUX)
  120    CONTINUE
  130  CONTINUE
 C

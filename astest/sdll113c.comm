@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONDENSATION DYNAMIQUE TRANSITOIRE : POUTRE AMORTIE EN TRACTION
 # sdll113c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -240,7 +240,7 @@ INTERDY1=DEFI_INTERF_DYNA(  NUME_DDL=NUME1,
 
 BAMO1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE1,
                                 NMAX_MODE=6,),
-                             _F(MODE_STAT=MODSTA1,
+                             _F(MODE_INTF=MODSTA1,
                                 NMAX_MODE=1999,),
                              ),
                        INTERF_DYNA=INTERDY1,

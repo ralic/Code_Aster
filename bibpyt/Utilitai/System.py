@@ -1,4 +1,4 @@
-#@ MODIF System Utilitai  DATE 22/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF System Utilitai  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,90 +23,25 @@
 """Ce module définit la classe `SYSTEM` et la fonction `ExecCommand`
 qui est présente uniquement pour commodité pour les Macros.
 
-La classe SYSTEM est semblable à celle utilisée dans ASTK_SERV.
+La classe SYSTEM est semblable à celle utilisée dans asrun.
 """
 
 __all__ = ["SYSTEM", "ExecCommand"]
 
 import sys
 import os
-import time
-import popen2
 import re
-from sets import Set
-from types import FileType
-
-try:
-   import threading as _threading
-except ImportError:
-   import dummy_threading as _threading
+import tempfile
 
 # ----- differ messages translation
 def _(mesg):
    return mesg
 
-#-------------------------------------------------------------------------------
-class NonBlockingReader(_threading.Thread):
-   """Classe pour lire l'output/error d'un process fils sans bloquer."""
-   def __init__(self, process, file, bufsize=10000, sleep=0.1, follow=True):
-      _threading.Thread.__init__(self)
-      self.process = process
-      self.file    = file
-      self.bufsize = bufsize
-      if not follow:
-         self.bufsize = -1
-      self.lock    = _threading.Lock()
-      self.content = []
-      self.buffer  = []
-      self.sleeptime = sleep
-      self.ended   = False
 
-   def fill_buffer(self, bufsize=-1):
-      if bufsize < 0:
-         # file.read waits to read bufsize bytes
-         add = self.file.read(bufsize)
-      else:
-         # os.read doesn't block if only few bytes can be read
-         add = os.read(self.file.fileno(), self.bufsize)
-      if add:
-         self.lock.acquire()
-         self.buffer.append(add)
-         self.lock.release()
-
-   def run(self):
-      while self.process.poll() == -1:
-         self.fill_buffer(self.bufsize)
-         time.sleep(self.sleeptime)
-      self.fill_buffer()
-      self.ended = True
-
-   def flush(self):
-      if len(self.buffer) > 0:
-         self.content.extend(self.buffer)
-         self.buffer = []
-
-   def getcurrent(self):
-      time.sleep(self.sleeptime)
-      if self.ended:
-         self.fill_buffer()
-      self.lock.acquire()
-      txt = ''.join(self.buffer)
-      self.flush()
-      self.lock.release()
-      return txt
-
-   def read(self):
-      self.fill_buffer()
-      self.lock.acquire()
-      self.flush()
-      txt = ''.join(self.content)
-      self.lock.release()
-      return txt
-
-#-------------------------------------------------------------------------------
 def _exitcode(status, default=0):
-   """Extrait le code retour du status. Retourne `default` si le process
-   n'a pas fini par exit.
+   """
+   Extract the exit code from status. Return 'default' if the process
+   has not been terminated by exit.
    """
    if os.WIFEXITED(status):
       iret = os.WEXITSTATUS(status)
@@ -118,11 +53,11 @@ def _exitcode(status, default=0):
       iret = default
    return iret
 
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
+
+
 class SYSTEM:
-   """Class to encapsultate "system" commands (this a simplified version of
+   """
+   Class to encapsultate "system" commands (this a simplified version of
    ASTER_SYSTEM class defined in ASTK_SERV part).
    """
    # this value should be set during installation step.
@@ -130,9 +65,9 @@ class SYSTEM:
    # line length -9
    _LineLen = 80-9
    
-#-------------------------------------------------------------------------------
    def __init__(self, **kargs):
-      """Initialization.
+      """
+      Initialization.
       Optionnal arguments : silent, verbose, debug, cc_files, maxcmdlen.
       """
       self.verbose   = kargs.get('verbose', True)
@@ -141,33 +76,33 @@ class SYSTEM:
       if kargs.has_key('maxcmdlen'):
          self.MaxCmdLen = kargs['maxcmdlen']
 
-#-------------------------------------------------------------------------------
    def _mess(self, msg, cod=''):
-      """Just print a message
+      """
+      Just print a message
       """
       self._print('%-18s %s' % (cod, msg))
 
-#-------------------------------------------------------------------------------
    def _print(self, *args, **kargs):
-      """print replacement.
+      """
+      print replacement.
       Optionnal argument :
          term  : line terminator (default to os.linesep).
       """
       term = kargs.get('term', os.linesep)
-      files = Set([sys.stdout])
+      files = set([sys.stdout])
       if self.cc_files:
          files.add(self.cc_files)
       for f in files:
-         if type(f) is FileType:
+         if type(f) is file:
             txt = ' '.join(['%s'%a for a in args])
             f.write(txt.replace(os.linesep+' ', os.linesep)+term)
             f.flush()
          else:
-            print _('FileType object expected : %s / %s') % (type(f), repr(f))
+            print _('file object expected : %s / %s') % (type(f), repr(f))
 
-#-------------------------------------------------------------------------------
    def VerbStart(self, cmd, verbose=None):
-      """Start message in verbose mode
+      """
+      Start message in verbose mode
       """
       Lm = self._LineLen
       if verbose == None:
@@ -178,9 +113,9 @@ class SYSTEM:
             pcmd = pcmd+'\n'+' '*Lm
          self._print(('%-'+str(Lm)+'s') % (pcmd,), term='')
 
-#-------------------------------------------------------------------------------
    def VerbEnd(self, iret, output='', verbose=None):
-      """Ends message in verbose mode
+      """
+      End message in verbose mode
       """
       if verbose == None:
          verbose = self.verbose
@@ -193,124 +128,91 @@ class SYSTEM:
          if (iret != 0 or self.debug) and output:
             self._print(output)
 
-#-------------------------------------------------------------------------------
    def VerbIgnore(self, verbose=None):
-      """Ends message in verbose mode
+      """
+      End message in verbose mode
       """
       if verbose == None:
          verbose = self.verbose
       if verbose:
          self._print(_('[ SKIP ]'))
 
-#-------------------------------------------------------------------------------
-   def Shell(self, cmd, bg=False, verbose=None, follow_output=False,
-             alt_comment=None, interact=False,
-             capturestderr=True, separated_stderr=False,
-             heavy_output=False):
-      """Execute a command shell
-         cmd      : command
-         bg       : put command in background if True
-         verbose  : print status messages during execution if True
+   def Shell(self, cmd, bg=False, verbose=False, follow_output=False,
+                   alt_comment=None, interact=False, separated_stderr=False):
+      """
+      Execute a command shell
+         cmd           : command
+         bg            : put command in background if True
+         verbose       : print status messages during execution if True
          follow_output : follow interactively output of command
-         alt_comment : print this "alternative comment" instead of "cmd"
-         interact : allow the user to interact with the process
-            (don't close stdin). bg=True implies interact=False.
+         alt_comment   : print this "alternative comment" instead of "cmd"
+         interact      : allow the user to interact with the process.
       Return :
          iret     : exit code if bg = False,
-                    process id if bg = True
+                    0 if bg = True
          output   : output lines (as string)
       """
       if not alt_comment:
          alt_comment = cmd
-      if not capturestderr:
-         separated_stderr = False
-      if verbose == None:
-         verbose = self.verbose
       if bg:
          interact = False
       if len(cmd) > self.MaxCmdLen:
          self._mess((_('length of command shell greater '\
-               'than %d characters.') % self.MaxCmdLen), _('<A>_ALARM'))
+               'than %d characters.') % self.MaxCmdLen), '<A>_ALARM')
       if self.debug:
-         self._print('<DBG> <local_shell>', cmd)
-         self._print('<DBG> <local_shell> background mode : ', bg)
-      # exec
+         self._print('cmd :', cmd, 'background : %s' % bg, 'follow_output : %s' % follow_output)
       self.VerbStart(alt_comment, verbose=verbose)
       if follow_output and verbose:
-         self._print(_('\nCommand output :'))
-      # run interactive command
-      if interact:
-         iret = os.system(cmd)
-         return _exitcode(iret), ''
-      # adapt parameters (bufsize, sleeptime) according to output volume
-      bufsize, sleeptime = 1000, 0.
-      if heavy_output:
-         bufsize, sleeptime = 100000, 0.1
-      # use popen to manipulate stdout/stderr
-      output = ''
-      error  = ''
-      if separated_stderr or not capturestderr:
-         p = popen2.Popen3(cmd, capturestderr=capturestderr)
-      else:
-         p = popen2.Popen4(cmd)
-      p.tochild.close()
-      if not bg:
-         th_out = NonBlockingReader(p, p.fromchild, bufsize=bufsize, sleep=sleeptime, follow=follow_output)
-         th_out.start()
-         if separated_stderr:
-            th_err = NonBlockingReader(p, p.childerr, bufsize=bufsize, sleep=sleeptime, follow=follow_output)
-            th_err.start()
-         if follow_output:
-            while p.poll() == -1:
-               new = th_out.getcurrent()
-               if new:
-                  # \n already here...
-                  self._print(new, term='')
-            # to be sure to empty the buffer
-            new = th_out.getcurrent()
-            self._print(new)
-         th_out.join()
-         if separated_stderr:
-            th_err.join()
-         # store all output/error
-         output = th_out.read()
-         if separated_stderr:
-            error  = th_err.read()
-         try:
-            iret = _exitcode(p.wait())
-         except OSError, e:
-            self._print("OSError = %s" % str(e))
-            iret = 4
-      else:
-         iret = 0
-      p.fromchild.close()
-      if separated_stderr:
-         p.childerr.close()
+         print os.linesep+_('Command output :')
 
-      # repeat header message
+      fout = tempfile.NamedTemporaryFile()
+      ferr = tempfile.NamedTemporaryFile()
+      if bg:
+         new_cmd = cmd + ' &'
+      elif follow_output:
+         new_cmd = '( %s ) | tee %s' % (cmd, fout.name)
+      else:
+         if not separated_stderr:
+            new_cmd = '( %s ) > %s 2>&1' % (cmd, fout.name)
+         else:
+            new_cmd = '( %s ) > %s 2> %s' % (cmd, fout.name, ferr.name)
+      if self.debug:
+         self._print('modified cmd :', new_cmd)
+      # execution
+      iret = os.system(new_cmd)
+      fout.seek(0)
+      output = fout.read()
+      ferr.seek(0)
+      error = ferr.read()
+      fout.close()
+      ferr.close()
+      
       if follow_output:
+         # repeat header message
          self.VerbStart(alt_comment, verbose=verbose)
       mat = re.search('EXIT_CODE=([0-9]+)', output)
       if mat:
          iret = int(mat.group(1))
       self.VerbEnd(iret, output, verbose=verbose)
+      if self.debug and iret != 0:
+         self._print('<debug> ERROR : iret = %s' % iret)
+         self._print('STDOUT', output, all=True)
+         self._print('STDERR', error, all=True)
       if bg:
-         iret = p.pid
-         if verbose:
-            self._print(_('Process ID : '), iret)
-      if separated_stderr:
-         return iret, output, error
-      return iret, output
+         iret = 0
+      if not separated_stderr:
+         result = iret, output
+      else:
+         result = iret, output, error
+      return result
 
-#-------------------------------------------------------------------------------
+
 # Juste par commodité.
 system = SYSTEM()
 ExecCommand = system.Shell
 
 
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
+
 if __name__ == '__main__':
    iret, output = ExecCommand('ls', alt_comment='Lancement de la commande...')
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES : POUTRE 3D SOUS-STRUCTUREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,7 +175,7 @@ INTERFA2=DEFI_INTERF_DYNA(NUME_DDL=NUME,
 BASE1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,
                                 NMAX_MODE=0,
                                 ),
-                             _F(MODE_STAT=MODSTA1,),),
+                             _F(MODE_INTF=MODSTA1,),),
                        INTERF_DYNA=INTERFA1,
                        NUME_REF=NUME,);
 
@@ -184,7 +184,7 @@ BASE1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,
 BASE2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,
                                 NMAX_MODE=0,
                                 ),
-                             _F(MODE_STAT=MODSTA2,),),
+                             _F(MODE_INTF=MODSTA2,),),
                        INTERF_DYNA=INTERFA2,
                        NUME_REF=NUME,);
 

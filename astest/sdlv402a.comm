@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : MAILLAGE INCOMPATIBLE ET MODES
 # sdlv402a.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,7 +96,7 @@ MODESTA1=MODE_STATIQUE(MATR_RIGI=KASS1,
 BASE1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES1,
                                 NMAX_MODE=0,),
                              _F(NMAX_MODE=999,
-                                MODE_STAT=MODESTA1,),),
+                                MODE_INTF=MODESTA1,),),
                        INTERF_DYNA=LINT1,
                        NUME_REF=NUME1,
                        );
@@ -169,7 +169,7 @@ MODESTA2=MODE_STATIQUE(MATR_RIGI=KASS2,
 BASE2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES2,
                                 NMAX_MODE=0,),
                              _F(NMAX_MODE=999,
-                                MODE_STAT=MODESTA2,),),
+                                MODE_INTF=MODESTA2,),),
                        INTERF_DYNA=LINT2,
                        NUME_REF=NUME2,);
 

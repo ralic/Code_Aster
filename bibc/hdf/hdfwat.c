@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwat hdf  DATE 27/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF hdfwat hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -37,7 +37,7 @@ INTEGER DEFPSPS(HDFWAT, hdfwat, INTEGER *iddat, char *nomat, STRING_SIZE ln, INT
   herr_t ret,retc; 
   hsize_t dimsf[1];
   int rank=1;
-  STRING_SIZE k;
+  int k;
   long iret=-1;
   char *nom;
   void *malloc(size_t size); 

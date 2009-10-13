@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_modifstruct Meidee  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_calcul_modifstruct Meidee  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -343,7 +343,7 @@ class ModifStruct:
         self.clear_concept(self.x_bsmo)
         __BSMO = DEFI_BASE_MODALE( RITZ = (
                 _F(MODE_MECA = self.support_modele_res, NMAX_MODE = 0,),
-                _F(MODE_STAT = __MODST, NMAX_MODE = len(nume_modes),),
+                _F(MODE_INTF = __MODST, NMAX_MODE = len(nume_modes),),
                                         ),
                                   NUME_REF = self.nume_support_modele,)
 
@@ -617,7 +617,7 @@ class ModifStruct:
         self.clear_concept( self.x_baseint )
         __BASINT=DEFI_BASE_MODALE(RITZ=( _F(MODE_MECA=self.support_modele_res,
                                             NMAX_MODE=0,),
-                                         _F(MODE_STAT=self.x_modstint,
+                                         _F(MODE_INTF=self.x_modstint,
                                             NMAX_MODE=len(nume_modes),),
                                          ),
                                   NUME_REF=self.nume_support_modele,);

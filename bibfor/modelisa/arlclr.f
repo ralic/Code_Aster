@@ -2,7 +2,7 @@
      &                  NOMC  ,TANG  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,11 +73,11 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       CHARACTER*8  CLIM,K8BID
-      INTEGER      CMP,NBCL,NBOCCH,N,NO,INO,IRET,JARLEQ,IBID,JDIM
-      INTEGER      ICL,IOC,I,K,JCINO,NBCINO
-      INTEGER      JLIEL,JLICUM,JNEMA,JNECUM,P4,P5,P6,JTANG
+      INTEGER      CMP,NBCL,NBOCCH,NBEV,NBEVO,INO,IRET,JARLEQ,IBID,JDIM
+      INTEGER      ICL,IOC,IAUX,KAUX,JCINO,NBCINO
+      INTEGER      JLIEL,JLICUM,JNEMA,JNECUM,PMAT4,PMAT5,PMAT6,JTANG
       INTEGER      JDICO,NNC,JEQ
-      REAL*8       R1,R2
+      REAL*8       VLR1,VLR2
       INTEGER      IFM,NIV
       INTEGER      NTECMP
       PARAMETER    (NTECMP=6)
@@ -98,8 +98,8 @@ C
       CALL JEDETR(NOMARL(1:8)//'.EXCLU')
       CALL WKVECT(NOMARL(1:8)//'.EXCLU', 'V V L', 5*NNC, JARLEQ)
 C
-      DO 90 I = 1, 5*NNC
-        ZL(JARLEQ-1+I) = .TRUE.
+      DO 90 IAUX = 1, 5*NNC
+        ZL(JARLEQ-1+IAUX) = .TRUE.
  90   CONTINUE
 C
 
@@ -108,8 +108,8 @@ C
 C
 C --- NUMERO DES DDLS
 C
-      DO 10 I = 1, NTECMP
-        CALL JENONU(JEXNOM('&CATA.TE.NOMTE',TECMP(I)),NU(I))
+      DO 10 IAUX = 1, NTECMP
+        CALL JENONU(JEXNOM('&CATA.TE.NOMTE',TECMP(IAUX)),NU(IAUX))
  10   CONTINUE
 C
 C --- CREATION OBJET TEMPORAIRE
@@ -120,8 +120,8 @@ C --- LECTURE DONNEES COLLAGE
 C
       CALL JELIRA(NOMC(1:10)//'.INO','LONMAX',NBCINO,K8BID)
       CALL JEVEUO(NOMC(1:10)//'.INO','L',JCINO)
-      DO 30 I = 1, NBCINO
-        ZI(JDICO-1+ZI(JCINO)) = I
+      DO 30 IAUX = 1, NBCINO
+        ZI(JDICO-1+ZI(JCINO)) = IAUX
         JCINO = JCINO + 1
  30   CONTINUE
 C
@@ -149,41 +149,41 @@ C ----- LECTURE DONNEES
 
 C ----- PARCOURS DES LIELS ASSOCIEES AUX CONDITIONS LIMITES
 
-        P5 = ZI(JLICUM)
+        PMAT5 = ZI(JLICUM)
 
         DO 40 IOC = 1, NBOCCH
 
-          P4 = P5
-          P5 = ZI(JLICUM+IOC)
-          P6 = JLIEL-1+P4
+          PMAT4 = PMAT5
+          PMAT5 = ZI(JLICUM+IOC)
+          PMAT6 = JLIEL-1+PMAT4
 
 C ------- COMPOSANTE
 
-          K = ZI(JLIEL-2+P5)
+          KAUX = ZI(JLIEL-2+PMAT5)
 
           CMP = 0
  50       CONTINUE
           IF (CMP.EQ.6) GOTO 40
           CMP = CMP + 1
-          IF (NU(CMP).NE.K) GOTO 50
+          IF (NU(CMP).NE.KAUX) GOTO 50
 
 C ------- PARCOURS DES NOEUDS
 
-          N = P5 - P4 - 1
+          NBEV = PMAT5 - PMAT4 - 1
 
-          DO 60 K = 1, N
+          DO 60 KAUX = 1, NBEV
 
-            INO = ZI(JNEMA-1+ZI(JNECUM-1-ZI(P6)))
-            NO = ZI(JDICO-1+INO)
-            P6 = P6 + 1
+            INO = ZI(JNEMA-1+ZI(JNECUM-1-ZI(PMAT6)))
+            NBEVO = ZI(JDICO-1+INO)
+            PMAT6 = PMAT6 + 1
 
-            IF (NO.EQ.0) GOTO 60
+            IF (NBEVO.EQ.0) GOTO 60
 
 C --------- CAS DES TRANSLATIONS
 
             IF (CMP.LE.DIME) THEN
 
-              JEQ = CMP+(NO-1)*5
+              JEQ = CMP+(NBEVO-1)*5
               ZL(JARLEQ-1+JEQ) = .FALSE.
 
 
@@ -191,21 +191,21 @@ C --------- CAS DES ROTATIONS 2D
 
             ELSEIF (DIME.EQ.2) THEN
 
-              JEQ = 3+(NO-1)*5
+              JEQ = 3+(NBEVO-1)*5
               ZL(JARLEQ-1+JEQ) = .FALSE.
 
 C --------- CAS DES ROTATIONS 3D
 
             ELSE
 
-              R1 = ABS(ZR(JTANG+6*INO+CMP-7))
-              R2 = ABS(ZR(JTANG+6*INO+CMP-10))
+              VLR1 = ABS(ZR(JTANG+6*INO+CMP-7))
+              VLR2 = ABS(ZR(JTANG+6*INO+CMP-10))
 
-              IF (R1.GT.R2) THEN
-                JEQ = 4+(NO-1)*5
+              IF (VLR1.GT.VLR2) THEN
+                JEQ = 4+(NBEVO-1)*5
                 ZL(JARLEQ-1+JEQ) = .FALSE.
               ELSE
-                JEQ = 5+(NO-1)*5
+                JEQ = 5+(NBEVO-1)*5
                 ZL(JARLEQ-1+JEQ) = .FALSE.
               ENDIF
 

@@ -1,9 +1,9 @@
       SUBROUTINE ARLTDS(NDIM  ,NNS   ,NPGS  ,
      &                  IPOIDS,ICOORS,IVFS  ,IDFDES,
-     &                  POIJCS,FS    ,DFDXS ,DFDYS ,DFDZS )
+     &                  POIJCS,FCTFS    ,DFDXS ,DFDYS ,DFDZS )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +26,7 @@ C
       INTEGER      NDIM,NNS,NPGS
       INTEGER      IVFS,IPOIDS,IDFDES,ICOORS
       REAL*8       POIJCS(NPGS)
-      REAL*8       FS(NPGS*NNS)
+      REAL*8       FCTFS(NPGS*NNS)
       REAL*8       DFDXS(NPGS*NNS),DFDYS(NPGS*NNS),DFDZS(NPGS*NNS)
 C
 C ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ C IN  ICOORS : POINTEUR VERS COORD. NOEUDS DE LA MAILLE SUPPORT S
 C IN  IVFS   : POINTEUR VERS FONCTIONS DE FORME DE LA MAILLE SUPPORT S
 C IN  IDFDES : POINTEUR VERS DER. FONCTIONS DE FORME DE LA MAILLE S
 C OUT POIJCS : POIDS DE GAUSS*JACOBIEN
-C OUT FS     : FONCTIONS DE FORME
+C OUT FCTFS  : FONCTIONS DE FORME
 C OUT DFDXS  : DER/X FONCTIONS DE FORME
 C OUT DFDYS  : DER/Y FONCTIONS DE FORME
 C OUT DFDZS  : DER/Z FONCTIONS DE FORME
@@ -71,7 +71,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER  L,KPGS
+      INTEGER  MTL,KPGS
 C
 C ----------------------------------------------------------------------
 C
@@ -79,20 +79,20 @@ C
 C --- CALCUL DES DERIVEES DE FCT FORMES+JACOBIEN TRANSFO MAILLE SUPPORT
 C
       DO 10 KPGS = 1,NPGS
-        L  = NNS*(KPGS-1)+1
-        CALL DCOPY(NNS,ZR(IVFS-1+L),1,FS(L)   ,1)
+        MTL  = NNS*(KPGS-1)+1
+        CALL DCOPY(NNS,ZR(IVFS-1+MTL),1,FCTFS(MTL)   ,1)
         IF (NDIM.EQ.2) THEN
           CALL DFDM2D(NNS       ,KPGS  ,IPOIDS,IDFDES,
      &                ZR(ICOORS),
-     &                DFDXS(L),
-     &                DFDYS(L),
+     &                DFDXS(MTL),
+     &                DFDYS(MTL),
      &                POIJCS(KPGS))
         ELSEIF (NDIM.EQ.3) THEN
           CALL DFDM3D(NNS       ,KPGS  ,IPOIDS,IDFDES,
      &                ZR(ICOORS),
-     &                DFDXS(L)  ,
-     &                DFDYS(L)   ,
-     &                DFDZS(L)  ,
+     &                DFDXS(MTL)  ,
+     &                DFDYS(MTL)   ,
+     &                DFDZS(MTL)  ,
      &                POIJCS(KPGS))
         ELSE
           CALL ASSERT(.FALSE.)

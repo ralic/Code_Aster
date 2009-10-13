@@ -1,9 +1,9 @@
       SUBROUTINE ARLAS0(NUM1  ,NUM2  ,CNX   ,CNXC  ,
-     &                  INO1  ,NI    ,INO2  ,INO2C ,
-     &                  IJ)
+     &                  INO1  ,NBVLI    ,INO2  ,INO2C ,
+     &                  PTMT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +26,8 @@ C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       INTEGER NUM1,NUM2,CNX(*),CNXC(*)
-      INTEGER INO1(*),NI,INO2(*),INO2C(*)
-      INTEGER IJ(*)
+      INTEGER INO1(*),NBVLI,INO2(*),INO2C(*)
+      INTEGER PTMT(*)
 C
 C ----------------------------------------------------------------------
 C
@@ -43,11 +43,11 @@ C IN  NUM1    : NUMERO DE MAILLE LIGNE (INDEX CNXC)
 C IN  NUM2    : NUMERO DE MAILLE COLONNE (INDEX CNXC)
 C IN  CNX     : COLLECTION CONNECTIVITE DU MAILLAGE
 C IN  CNXC    : LONGUEUR CUMULEE ASSOCIEE A CNX
-C IN  INO1    : LISTE NOEUDS LIGNES (CF ARLFAC)
-C IN  NI      : LONGUEUR DU VECTEUR INO1
+C IN  INO1    : LISTE NOEUDS LIGNES (CF ARLFC*)
+C IN  NBVLI   : LONGUEUR DU VECTEUR INO1
 C IN  INO2    : COLLECTION NOEUDS COLONNES
 C IN  INO2C   : LONGUEUR CUMULEE ASSOCIEE A INO2
-C OUT IJ(*)   : POINTEURS DANS LA MATRICE MORSE,
+C OUT PTMT(*) : POINTEURS DANS LA MATRICE MORSE,
 C                  DEFINIE PAR INO1 ET INO2, POUR LES
 C                  NOEUDS DES MAILLES NUM1 ET NUM2
 C                 ( POINTEUR (NUM1.NO1,NUM2.NO1),
@@ -56,69 +56,70 @@ C                   POINTEUR (NUM1.NO2,NUM2.NO1), ... )
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER NR1,NR2,P,N1,Q,Q0,N2,D,D0,F,F0,M,NT,I,J,K
+      INTEGER NBVLR1,NBVLR2,PMAT,NBEV1,LGNM,LGNM0,NBEV2,VLTER,VLTER0,
+     &        FCPIG,FCPIG0,MOY,NTRG,IAUX,JAUX,KAUX
 C
 C ----------------------------------------------------------------------
 C
-      K = 0
+      KAUX = 0
 
-      P   = CNXC(NUM1)
-      NR1 = CNXC(NUM1+1) - P
-      Q0  = CNXC(NUM2)
-      NR2 = CNXC(NUM2+1) - Q0
+      PMAT   = CNXC(NUM1)
+      NBVLR1 = CNXC(NUM1+1) - PMAT
+      LGNM0  = CNXC(NUM2)
+      NBVLR2 = CNXC(NUM2+1) - LGNM0
 
 
-      DO 10 I = 1, NR1
+      DO 10 IAUX = 1, NBVLR1
 
-        D = 1
-        F = NI + 1
-        N1 = CNX(P)
-        P = P + 1
+        VLTER = 1
+        FCPIG = NBVLI + 1
+        NBEV1 = CNX(PMAT)
+        PMAT = PMAT + 1
 
 C ----- RECHERCHE PAR DICHOTOMIE
 
  20     CONTINUE
-        M = (D + F)/2
-        NT = INO1(M)
+        MOY = (VLTER + FCPIG)/2
+        NTRG = INO1(MOY)
 
-        IF (N1.NE.NT) THEN
-          IF (N1.LT.NT) THEN
-            F = M
+        IF (NBEV1.NE.NTRG) THEN
+          IF (NBEV1.LT.NTRG) THEN
+            FCPIG = MOY
           ELSE
-            D = M
+            VLTER = MOY
           ENDIF
 
           GOTO 20
         ENDIF
 
-        D0 = INO2C(M)
-        F0 = INO2C(M+1)
-        Q = Q0
+        VLTER0 = INO2C(MOY)
+        FCPIG0 = INO2C(MOY+1)
+        LGNM = LGNM0
 
-        DO 10 J = 1, NR2
+        DO 10 JAUX = 1, NBVLR2
 
-          D = D0
-          F = F0
-          N2 = CNX(Q)
-          Q = Q + 1
+          VLTER = VLTER0
+          FCPIG = FCPIG0
+          NBEV2 = CNX(LGNM)
+          LGNM = LGNM + 1
 
 C ------- RECHERCHE PAR DICHOTOMIE
 
  30       CONTINUE
-          M = (D + F)/2
-          NT = INO2(M)
+          MOY = (VLTER + FCPIG)/2
+          NTRG = INO2(MOY)
 
-          IF (N2.NE.NT) THEN
-            IF (N2.LT.NT) THEN
-              F = M
+          IF (NBEV2.NE.NTRG) THEN
+            IF (NBEV2.LT.NTRG) THEN
+              FCPIG = MOY
             ELSE
-              D = M
+              VLTER = MOY
             ENDIF
             GOTO 30
           ENDIF
 C ------- STOCKAGE
-          K = K + 1
-          IJ(K) = M
+          KAUX = KAUX + 1
+          PTMT(KAUX) = MOY
 
  10   CONTINUE
 

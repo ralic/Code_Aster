@@ -1,6 +1,7 @@
-# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/10/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE VABHHTS J.PELLET
+# ssls200a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +19,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
 # ========================================================================
 # TEST DE NON REGRESSION :
 # (les valeurs de reference ont ete obtenues par Code_Aster)
@@ -30,208 +30,371 @@
 #      MECANIQUE THERMO LINEAIRE, MODELISATION='DKT','COQUE_3D', ...
 # =========================================================================
 
-DEBUT(CODE=_F(NOM='SSLS200A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSLS200A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-M1=LIRE_MAILLAGE()
+M1=LIRE_MAILLAGE();
 
-M1=DEFI_GROUP( reuse=M1,   MAILLAGE=M1,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+M1=DEFI_GROUP(reuse =M1,
+              MAILLAGE=M1,
+              CREA_GROUP_MA=_F(NOM='TOUT',
+                               TOUT='OUI',),);
 
-MA=CREA_MAILLAGE(     MAILLAGE=M1,MODI_MAILLE=(
-       _F(  OPTION = 'QUAD8_9', MAILLE = 'Q9'),
-       _F(  OPTION = 'TRIA6_7', MAILLE = 'T7')))
+MA=CREA_MAILLAGE(MAILLAGE=M1,
+                 MODI_MAILLE=(_F(MAILLE='Q9',
+                                 OPTION='QUAD8_9',),
+                              _F(MAILLE='T7',
+                                 OPTION='TRIA6_7',),),);
 
-MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
-    _F(  MAILLE = 'S1',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
-    _F(  MAILLE = 'Q1',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
-    _F(  MAILLE = 'T1',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
-    _F(  MAILLE = 'T2',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(MAILLE='S1',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),
+                     _F(MAILLE='Q1',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),
+                     _F(MAILLE='T1',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),
+                     _F(MAILLE='T2',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),
+                     _F(MAILLE='Q2',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='Q4G',),
+                     _F(MAILLE='Q3',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DST',),
+                     _F(MAILLE='T3',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DST',),
+                     _F(MAILLE='Q9',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='COQUE_3D',),
+                     _F(MAILLE='T7',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='COQUE_3D',),),);
 
-    _F(  MAILLE = 'Q2',  PHENOMENE = 'MECANIQUE', MODELISATION = 'Q4G'),
+F1=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(-1000.,-1200.,
+                       1000.,1200.,
+                       ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='CONSTANT',);
 
-    _F(  MAILLE = 'Q3',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DST'),
-    _F(  MAILLE = 'T3',  PHENOMENE = 'MECANIQUE', MODELISATION = 'DST'),
+F2=DEFI_CONSTANTE(VALE=0.3,);
 
-    _F(  MAILLE = 'Q9',  PHENOMENE = 'MECANIQUE', MODELISATION = 'COQUE_3D'),
-    _F(  MAILLE = 'T7',  PHENOMENE = 'MECANIQUE', MODELISATION = 'COQUE_3D'))
-                           )
+MAT=DEFI_MATERIAU(ELAS_FO=_F(E=F1,
+                             NU=F2,
+                             RHO=8.1,
+                             TEMP_DEF_ALPHA=1.5,
+                             ALPHA=F1,),);
 
-F1=DEFI_FONCTION(    NOM_PARA='TEMP',
-           VALE=( -1000.,  -1200.,
-                   1000.,   1200., ),
-            PROL_DROITE='LINEAIRE',   PROL_GAUCHE='CONSTANT' )
+CARA=AFFE_CARA_ELEM(MODELE=MO,
+                    COQUE=_F(GROUP_MA='TOUT',
+                             EPAIS=0.7,
+                             ANGL_REP=(10.,-20.,),
+                             A_CIS=0.6,),);
 
-F2=DEFI_CONSTANTE(  VALE=0.3)
+TEMPLIN=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                   OPERATION='AFFE',
+                   MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP',),
+                           VALE=(12.,18.,24.,),),);
 
-MAT=DEFI_MATERIAU(
-             ELAS_FO=_F( E = F1,  NU = F2, RHO = 8.1, ALPHA = F1,
-                         TEMP_DEF_ALPHA  = 1.5))
+TEMPLI=CREA_RESU(OPERATION='AFFE',
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=TEMPLIN,
+                         INST=0.0,),);
 
+TEMPER=CREA_RESU(OPERATION='PREP_VRC2',
+                 TYPE_RESU='EVOL_THER',
+                 PREP_VRC2=_F(EVOL_THER=TEMPLI,
+                              MODELE=MO,
+                              CARA_ELEM=CARA,),);
 
-CARA=AFFE_CARA_ELEM(   MODELE=MO,
-                       COQUE=_F( GROUP_MA = 'TOUT',
-                                 EPAIS = 0.7,
-                                 A_CIS = 0.6,
-                                 ANGL_REP = (10.,-20.,))       )
-
-TEMPLIN=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-                    MAILLAGE=MA,
-             AFFE=_F( TOUT = 'OUI',
-                   NOM_CMP = ('TEMP_INF','TEMP','TEMP_SUP',),
-                   VALE = (12., 18.,  24.,)))
-
-TEMPLI=CREA_RESU( OPERATION='AFFE',
-                   TYPE_RESU='EVOL_THER',
-                   NOM_CHAM='TEMP',
-                   AFFE=_F( CHAM_GD=TEMPLIN,
-                             INST=0.0,      ), );
-
-TEMPER=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
-    PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARA, EVOL_THER = TEMPLI, ),)
-
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-             AFFE=_F(  TOUT = 'OUI', MATER = MAT, ),
-             AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER,NOM_VARC='TEMP',
-                                     NOM_CHAM='TEMP',VALE_REF=1.5), )
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),
+                    AFFE_VARC=_F(TOUT='OUI',
+                                 EVOL=TEMPER,
+                                 NOM_VARC='TEMP',
+                                 NOM_CHAM='TEMP',
+                                 VALE_REF=1.5,),);
 
 # ------------------------------------------------------------------
 
-CHPES=AFFE_CHAR_MECA(  MODELE=MO,
-                               PESANTEUR=(9.8,  0.3,  0.1, -0.4,),
-                      #  ROTATION      : (0.2  0.5 -0.2  0.2)
-         FORCE_ARETE=_F(  MAILLE = 'S1',      FZ = 8.),
-         FORCE_COQUE=_F(  TOUT = 'OUI',   F1 = 5., F2 = 8., F3 = 9., MF1 = 5.),DDL_IMPO=(
-          _F(  NOEUD = 'N1',  DX = 1.,  DY = 2.,  DZ = 3.,
-                                 DRX = 1., DRY = 2., DRZ = 3.),
-          _F(  NOEUD = 'N6',  DX = 2.,  DY = 3.,  DZ = 4.,
-                                 DRX = 1., DRY = 2., DRZ = 5.))
-                                                            )
+CHPES=AFFE_CHAR_MECA(MODELE=MO,
+                     PESANTEUR=(9.8,0.3,0.1,-0.4,),
+                     DDL_IMPO=(_F(NOEUD='N1',
+                                  DX=1.,
+                                  DY=2.,
+                                  DZ=3.,
+                                  DRX=1.,
+                                  DRY=2.,
+                                  DRZ=3.,),
+                               _F(NOEUD='N6',
+                                  DX=2.,
+                                  DY=3.,
+                                  DZ=4.,
+                                  DRX=1.,
+                                  DRY=2.,
+                                  DRZ=5.,),),
+                     FORCE_ARETE=_F(MAILLE='S1',
+                                    FZ=8.,),
+                     FORCE_COQUE=_F(TOUT='OUI',
+                                    F1=5.,
+                                    F2=8.,
+                                    F3=9.,
+                                    MF1=5.,),);
 
-CHME2=AFFE_CHAR_MECA(  MODELE=MO,
-         FORCE_COQUE=_F(  TOUT = 'OUI',   PRES = 5.))
+CHME2=AFFE_CHAR_MECA(MODELE=MO,
+                     FORCE_COQUE=_F(TOUT='OUI',
+                                    PRES=5.,),);
 
 # ------------------------------------------------------------------
-MESTAT=MECA_STATIQUE(       MODELE=MO,
-              CARA_ELEM=CARA,    CHAM_MATER=CHMAT,
-                      EXCIT=(_F( CHARGE = CHPES),
-                             _F( CHARGE = CHME2))
-           )
 
-MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,
-                      OPTION=( 'SIEF_ELGA_DEPL', 'SIGM_ELNO_DEPL',
-                               'EPSI_ELNO_DEPL', 'EFGE_ELNO_DEPL', )
-                     )
+MESTAT=MECA_STATIQUE(MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CARA,
+                     EXCIT=(_F(CHARGE=CHPES,),
+                            _F(CHARGE=CHME2,),),);
 
-MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,
-                MAILLE=('Q1','T1','Q2','Q3','T3',),
-                      OPTION='DEGE_ELNO_DEPL'        )
+MESTAT=CALC_ELEM(reuse =MESTAT,
+                 RESULTAT=MESTAT,
+                 OPTION=('SIEF_ELGA_DEPL','SIGM_ELNO_DEPL','EPSI_ELNO_DEPL','EFGE_ELNO_DEPL',),);
 
-MESTAT=CALC_NO( reuse=MESTAT,    RESULTAT=MESTAT,
-                         OPTION=( 'EPSI_NOEU_DEPL', 'SIGM_NOEU_DEPL',
-                                 )
-                   )
+MESTAT=CALC_ELEM(reuse =MESTAT,
+                 RESULTAT=MESTAT,
+                 MAILLE=('Q1','T1','Q2','Q3','T3',),
+                 OPTION='DEGE_ELNO_DEPL',);
 
-ENGENDRE_TEST (  CO = MESTAT, )
+MESTAT=CALC_NO(reuse =MESTAT,
+               RESULTAT=MESTAT,
+               OPTION=('EPSI_NOEU_DEPL','SIGM_NOEU_DEPL',),);
 
-TEST_RESU(RESU=(
-          _F( RESULTAT= MESTAT  , NOM_CHAM= 'DEPL', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  4.3664517535810E+04 ),
-          _F( RESULTAT= MESTAT  , NOM_CHAM= 'EFGE_ELNO_DEPL', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  1.7267140215898E+05 ),
-          _F( RESULTAT= MESTAT  , NOM_CHAM= 'EPSI_ELNO_DEPL', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  2.9086923330592E+04 ),
-          _F( RESULTAT= MESTAT  , NOM_CHAM= 'EPSI_NOEU_DEPL', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  9.3606522299548E+03 ),
-          _F( RESULTAT= MESTAT  , NOM_CHAM= 'SIEF_ELGA_DEPL', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  1.0217292859318E+06 ),
-          _F( RESULTAT= MESTAT  , NOM_CHAM= 'SIGM_ELNO_DEPL', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  2.2580708503420E+05 ),
-          _F( RESULTAT= MESTAT  , NOM_CHAM= 'SIGM_NOEU_DEPL', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  5.6853496583903E+04 ),
-          _F( RESULTAT= MESTAT  , NOM_CHAM= 'DEGE_ELNO_DEPL', NUME_ORDRE=      1,
-              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  2.4389796231471E+04 ),
-          ),)
+ENGENDRE_TEST(CO=MESTAT,);
+
+TEST_RESU(RESU=(_F(RESULTAT=MESTAT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   VALE=43664.5175358,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=MESTAT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EFGE_ELNO_DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   VALE=172671.402159,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=MESTAT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   VALE=29086.9233306,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=MESTAT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EPSI_NOEU_DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   VALE=9360.65222995,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=MESTAT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   VALE=1021729.28593,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=MESTAT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   VALE=225807.085034,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=MESTAT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   VALE=56853.4965839,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=MESTAT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   VALE=24389.7962315,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',),),);
 
 # ----------------------------------------------------------------------
 
-MASS2=POST_ELEM(  MODELE=MO, CHAM_MATER=CHMAT,  CARA_ELEM=CARA,
-                    RESULTAT=MESTAT,
-                     ENER_POT=_F( MAILLE = ('Q1','T1','Q2','Q3','T3',)))
+MASS2=POST_ELEM(ENER_POT=_F(MAILLE=('Q1','T1','Q2','Q3','T3',),),
+                MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARA,
+                RESULTAT=MESTAT,);
 
-MASS3=POST_ELEM(  MODELE=MO, CHAM_MATER=CHMAT,  CARA_ELEM=CARA,
-                    RESULTAT=MESTAT,   MASS_INER=_F( TOUT = 'OUI') )
+MASS3=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+                MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARA,
+                RESULTAT=MESTAT,);
 
-ENGENDRE_TEST (  CO = (MASS2,MASS3) )
+ENGENDRE_TEST(CO=(MASS2,MASS3,),);
 
-TEST_TABLE( TABLE= MASS2   , NOM_PARA= 'NUME_ORDRE',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE_I=         5 )
-TEST_TABLE( TABLE= MASS2   , NOM_PARA= 'INST',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            CRITERE= 'ABSOLU',
-            TYPE_TEST= 'SOMM_ABS', VALE=  0.0000000000000E+00 )
-TEST_TABLE( TABLE= MASS2   , NOM_PARA= 'TOTALE',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  2.5814353229416E+07 )
-TEST_TABLE( TABLE= MASS2   , NOM_PARA= 'POUR_CENT',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  1.0000000000000E+02 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'MASSE',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  8.8749538026967E+01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'CDG_X',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  7.6190476190476E-01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'CDG_Y',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  4.2857142857143E-01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'CDG_Z',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  8.5714285714286E-01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'IX_G',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  3.8338894820119E+01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'IY_G',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  4.6709525851170E+01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'IZ_G',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  2.8054916322420E+01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'IXY_G',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  2.5658880041810E+00 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'IXZ_G',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  5.1317760083620E+00 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'IYZ_G',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  1.2436406352500E+01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'IX_PRIN_G',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  2.0037957902234E+01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'IY_PRIN_G',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  4.0137650064055E+01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'IZ_PRIN_G',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  5.2927729027420E+01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'ALPHA',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  1.2503147008953E+02 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'BETA',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  5.8590833306415E+01 )
-TEST_TABLE( TABLE= MASS3   , NOM_PARA= 'GAMMA',
-            REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-            TYPE_TEST= 'SOMM_ABS', VALE=  1.4910778168762E+02 )
+TEST_TABLE(TABLE=MASS2,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='NUME_ORDRE',
+           VALE_I=5,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
 
-FIN( )
+TEST_TABLE(TABLE=MASS2,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='INST',
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS2,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='TOTALE',
+           VALE=25814353.2294,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS2,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='POUR_CENT',
+           VALE=100.0,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='MASSE',
+           VALE=88.749538027,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='CDG_X',
+           VALE=0.761904761905,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='CDG_Y',
+           VALE=0.428571428571,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='CDG_Z',
+           VALE=0.857142857143,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='IX_G',
+           VALE=38.3388948201,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='IY_G',
+           VALE=46.7095258512,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='IZ_G',
+           VALE=28.0549163224,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='IXY_G',
+           VALE=2.56588800418,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='IXZ_G',
+           VALE=5.13177600836,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='IYZ_G',
+           VALE=12.4364063525,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='IX_PRIN_G',
+           VALE=20.0379579022,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='IY_PRIN_G',
+           VALE=40.1376500641,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='IZ_PRIN_G',
+           VALE=52.9277290274,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='ALPHA',
+           VALE=125.03147009,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='BETA',
+           VALE=58.5908333064,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=MASS3,
+           TYPE_TEST='SOMM_ABS',
+           NOM_PARA='GAMMA',
+           VALE=149.107781688,
+           PRECISION=1e-10,
+           REFERENCE='NON_REGRESSION',);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(MAILLAGE=MA,
+                  RESULTAT=MESTAT,
+                  NOM_CHAM='SIEF_ELGA_DEPL',),);
+
+FIN();
+
 #
+

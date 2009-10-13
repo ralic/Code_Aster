@@ -1,5 +1,6 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE validation du solveur MUMPS
+# mumps01a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,11 +59,13 @@ L1=DEFI_LIST_REEL(VALE=(1., 2.))
 # 1 : calcul de reference (METIS)
 #----------------------------------------
 RESU0=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
-                           EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
-                   SOLVEUR=_F(METHODE='MULT_FRONT',), )
+                           EXCIT=( _F(CHARGE = CHAR), 
+                                   _F(CHARGE = CHARCI)
+                                    ),
+                           SOLVEUR=_F(METHODE='MULT_FRONT',), 
+                   )
 TEST_RESU( RESU=_F(  RESULTAT = RESU0,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL', REFERENCE='NON_REGRESSION',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
-
 
 
 
@@ -71,7 +74,7 @@ TEST_RESU( RESU=_F(  RESULTAT = RESU0,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL', REFER
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 RESU1=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',ELIM_LAGR2='NON',PCENT_PIVOT=80,NPREC=8), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU1,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
 
@@ -80,7 +83,7 @@ TEST_RESU( RESU=_F(  RESULTAT = RESU1,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERE
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 RESU3=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHARCI3),_F(CHARGE = CHARP)  ),
-                   SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='SYMDEF'), )
+                   SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='SYMDEF',NPREC=-8), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU3,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
 

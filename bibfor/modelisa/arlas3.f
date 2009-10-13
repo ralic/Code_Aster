@@ -1,8 +1,8 @@
-      SUBROUTINE ARLAS3(DIME  ,LCARA ,NN1   ,NN2   ,IJ     ,
-     &                  MA2   ,NORM  ,CK    ,C)
+      SUBROUTINE ARLAS3(DIME  ,LCARA ,NDML1   ,NDML2   ,PTMT     ,
+     &                  CNML2   ,NORM  ,MTEL    ,MTMO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,12 +24,12 @@ C ======================================================================
 C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
-      INTEGER  DIME,NN1,NN2
-      INTEGER  IJ(NN2/2,*)
-      INTEGER  MA2(*)
+      INTEGER  DIME,NDML1,NDML2
+      INTEGER  PTMT(NDML2/2,*)
+      INTEGER  CNML2(*)
       REAL*8   LCARA
       REAL*8   NORM(DIME,*)
-      REAL*8   CK(*),C(*)
+      REAL*8   MTEL(*),MTMO(*)
 C
 C ----------------------------------------------------------------------
 C
@@ -44,124 +44,125 @@ C
 C
 C IN  DIME   : DIMENSION DE L'ESPACE
 C IN  LCARA  : LONGUEUR CARACTERISTIQUE POUR TERME DE COUPLAGE
-C IN  NN1    : NOMBRE DE NOEUDS MAILLE 1
-C IN  NN2    : NOMBRE DE NOEUDS MAILLE 2
-C IN  IJ     : POINTEURS DANS C (CF ARLAS0)
-C IN  MA2    : CONNECTIVITE MAILLE 2
+C IN  NDML1  : NOMBRE DE NOEUDS MAILLE 1
+C IN  NDML2  : NOMBRE DE NOEUDS MAILLE 2
+C IN  PTMT   : POINTEURS DANS C (CF ARLAS0)
+C IN  CNML2  : CONNECTIVITE MAILLE 2
 C IN  NORM   : NORMALES LISSEES POUR COQUE (CF LISNOR)
-C IN  CK     : MATRICES ELEMENTAIRES (CF ARLTE)
-C I/O C      : MATRICE MORSE (CF ARLFAC)
+C IN  MTEL   : MATRICES ELEMENTAIRES (CF ARLTE)
+C I/O MTMO      : MATRICE MORSE (CF ARLFC*)
 C
-C MATRICE PONCTUELLE DANS C : (X1.X2, X1.Y2, [X1.Z2], Y1.X2, ...,
+C MATRICE PONCTUELLE DANS MTMO : (X1.X2, X1.Y2, [X1.Z2], Y1.X2, ...,
 C                 (N X X1.*2).1, (N X X1.*2).2, ..., (N X Y1.*2).1, ...)
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER NOECOQ(2,9),NN12,D,D2,DR
-      INTEGER NBNO,IN2,I,J,K,J1,J2,P,P0,P1,P2,Q,Q1,Q2
-      REAL*8  TR1,TR2,R1,R2,C1(9),B2(9),C2(9)
+      INTEGER NOECOQ(2,9),NDML12,VLTER,VLTER2,VLTERR
+      INTEGER NBNO,IN2,IAUX,JAUX,KAUX,JND1,JND2,PMAT,PMAT0,PMAT1,
+     &        PMAT2,LGNM,LGNM1,LGNM2
+      REAL*8  TRMT1,TRMT2,VLR1,VLR2,MTMO1(9),VLMT2(9),MTMO2(9)
 C
 C ----------------------------------------------------------------------
 C
       IF (DIME.EQ.2) THEN
-        D2 = 4
-        DR = 2
-        D = 6
+        VLTER2 = 4
+        VLTERR = 2
+        VLTER = 6
       ELSE IF (DIME.EQ.3) THEN
-        D2 = 9
-        DR = 9
-        D = 18
+        VLTER2 = 9
+        VLTERR = 9
+        VLTER = 18
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
 
-      NBNO = NN2/2
-      NN12 = NN1*NN2
+      NBNO = NDML2/2
+      NDML12 = NDML1*NDML2
 
-C --- ASSEMBLAGE DE LA MATRICE ELEMENTAIRE CK
+C --- ASSEMBLAGE DE LA MATRICE ELEMENTAIRE MTEL
 
-      P0 = -NN2
+      PMAT0 = -NDML2
 
       CALL NOCOQU(DIME,NBNO,NOECOQ)
 
-      DO 10 I = 1, NN1
+      DO 10 IAUX = 1, NDML1
 
-        P0 = P0 + NN2
+        PMAT0 = PMAT0 + NDML2
 
-        DO 10 J = 1, NBNO
+        DO 10 JAUX = 1, NBNO
 
-          Q = 1 + D*(IJ(J,I)-1)
+          LGNM = 1 + VLTER*(PTMT(JAUX,IAUX)-1)
 
-          IN2 = MA2(J)
+          IN2 = CNML2(JAUX)
 
-          J1 = NOECOQ(2,J)
-          J2 = NOECOQ(1,J)
+          JND1 = NOECOQ(2,JAUX)
+          JND2 = NOECOQ(1,JAUX)
 
-          P1 = P0 + J1
-          P2 = P0 + J2
+          PMAT1 = PMAT0 + JND1
+          PMAT2 = PMAT0 + JND2
 
-          Q1 = NN12 + D2*(P1-1)
-          Q2 = NN12 + D2*(P2-1)
+          LGNM1 = NDML12 + VLTER2*(PMAT1-1)
+          LGNM2 = NDML12 + VLTER2*(PMAT2-1)
 
-C ------- CALCUL DE LA TRACE DE CK+ ET CK-
+C ------- CALCUL DE LA TRACE DE MTEL+ ET MTEL-
 
-          TR1 = 0.D0
-          TR2 = 0.D0
+          TRMT1 = 0.D0
+          TRMT2 = 0.D0
 
-          P = 1
-          DO 20 K = 1, DIME
-            TR1 = TR1 + CK(Q1+P)
-            TR2 = TR2 + CK(Q2+P)
-            P = P + DIME + 1
+          PMAT = 1
+          DO 20 KAUX = 1, DIME
+            TRMT1 = TRMT1 + MTEL(LGNM1+PMAT)
+            TRMT2 = TRMT2 + MTEL(LGNM2+PMAT)
+            PMAT = PMAT + DIME + 1
  20       CONTINUE
 
-C ------- CALCUL DES MATRICES PONCTUELLES C1 ET C2
+C ------- CALCUL DES MATRICES PONCTUELLES MTMO1 ET MTMO2
 
-          DO 30 K = 1, D2
-            Q1 = Q1 + 1
-            Q2 = Q2 + 1
-            C1(K) = LCARA*(CK(Q1)+CK(Q2))
-            B2(K) = LCARA*(CK(Q1)-CK(Q2))
+          DO 30 KAUX = 1, VLTER2
+            LGNM1 = LGNM1 + 1
+            LGNM2 = LGNM2 + 1
+            MTMO1(KAUX) = LCARA*(MTEL(LGNM1)+MTEL(LGNM2))
+            VLMT2(KAUX) = LCARA*(MTEL(LGNM1)-MTEL(LGNM2))
  30       CONTINUE
 
-          R1 = CK(P1) + CK(P2) + LCARA*(TR1+TR2)
-          R2 = CK(P1) - CK(P2) + LCARA*(TR1-TR2)
+          VLR1 = MTEL(PMAT1) + MTEL(PMAT2) + LCARA*(TRMT1+TRMT2)
+          VLR2 = MTEL(PMAT1) - MTEL(PMAT2) + LCARA*(TRMT1-TRMT2)
 
-          P = 1
-          DO 40 K = 1, DIME
-            C1(P) = C1(P) + R1
-            B2(P) = B2(P) + R2
-            P = P + DIME + 1
+          PMAT = 1
+          DO 40 KAUX = 1, DIME
+            MTMO1(PMAT) = MTMO1(PMAT) + VLR1
+            VLMT2(PMAT) = VLMT2(PMAT) + VLR2
+            PMAT = PMAT + DIME + 1
  40       CONTINUE
 
           IF (DIME.EQ.2) THEN
 
-            R1 = NORM(1,IN2)
-            R2 = NORM(2,IN2)
+            VLR1 = NORM(1,IN2)
+            VLR2 = NORM(2,IN2)
 
-            C2(1) = R1*B2(2) - R2*B2(1)
-            C2(2) = R1*B2(4) - R2*B2(3)
+            MTMO2(1) = VLR1*VLMT2(2) - VLR2*VLMT2(1)
+            MTMO2(2) = VLR1*VLMT2(4) - VLR2*VLMT2(3)
 
           ELSE
 
-            P = 1
-            DO 50 K = 1, DIME
-              CALL PROVEC(NORM(1,IN2),B2(P),C2(P))
-              P = P + DIME
+            PMAT = 1
+            DO 50 KAUX = 1, DIME
+              CALL PROVEC(NORM(1,IN2),VLMT2(PMAT),MTMO2(PMAT))
+              PMAT = PMAT + DIME
  50         CONTINUE
 
           ENDIF
 
-C ------- ASSEMBLAGE DES MATRICES PONCTUELLES C1 ET C2
+C ------- ASSEMBLAGE DES MATRICES PONCTUELLES MTMO1 ET MTMO2
 
-          DO 60 K = 1, D2
-            C(Q) = C(Q) + C1(K)
-            Q = Q + 1
+          DO 60 KAUX = 1, VLTER2
+            MTMO(LGNM) = MTMO(LGNM) + MTMO1(KAUX)
+            LGNM = LGNM + 1
  60       CONTINUE
 
-          DO 70 K = 1, DR
-            C(Q) = C(Q) + C2(K)
-            Q = Q + 1
+          DO 70 KAUX = 1, VLTERR
+            MTMO(LGNM) = MTMO(LGNM) + MTMO2(KAUX)
+            LGNM = LGNM + 1
  70       CONTINUE
 
  10   CONTINUE

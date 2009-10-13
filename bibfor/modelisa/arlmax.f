@@ -1,8 +1,8 @@
-      SUBROUTINE ARLMAX(DIME  ,IAN   ,IAC   ,NNC   ,B     ,
-     &                  ILGN  ,MX)
+      SUBROUTINE ARLMAX(DIME  ,IAN   ,IAC   ,NNC   ,VLMT     ,
+     &                  ILGN  ,MAXMT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,9 +27,9 @@ C
       INTEGER  DIME
       LOGICAL  IAN,IAC
       INTEGER  NNC
-      REAL*8   B(*)
+      REAL*8   VLMT(*)
       INTEGER  ILGN(*)
-      REAL*8   MX(2,*)
+      REAL*8   MAXMT(2,*)
 C
 C ----------------------------------------------------------------------
 C
@@ -45,9 +45,9 @@ C IN  DIME   : DIMENSION DE L'ESPACE
 C IN  IAN    : .TRUE. SI MODELE ZONE MECANIQUE EST DE TYPE COQUE
 C IN  IAC    : .TRUE. SI MODELE ZONE COLLAGE EST DE TYPE COQUE
 C IN  NNC    : NOMBRE DE NOEUDS MAILLES DE COLLAGE
-C IN  B      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCAL)
-C IN  ILGN   : LONGUEUR CUMULEE COLLECTION NOEUDS COLONNES DE B
-C OUT MX     : MAXIMA EN VALEUR ABSOLUE TERMES DE LA MATRICE
+C IN  VLMT      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCAL)
+C IN  ILGN   : LONGUEUR CUMULEE COLLECTION NOEUDS COLONNES DE VLMT
+C OUT MAXMT     : MAXIMA EN VALEUR ABSOLUE TERMES DE LA MATRICE
 C                       ARLEQUIN MORSE POUR NOEUDS DU DOMAINE DE COLLAGE
 C                       SUIVANT LES DDLS DE TRANSLATION ET DE ROTATION
 C                       ( MAX.LIGNE.1.TRANSLATION, MAX.LIGNE.1.ROTATION,
@@ -55,58 +55,58 @@ C                         MAX.LIGNE.2.TRANSLATION, ... )
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER  P0,P1,P2,I,J,K,L,DR
-      REAL*8   R
+      INTEGER  PMAT0,PMAT1,PMAT2,IAUX,JAUX,KAUX,LAUX,VLTERR
+      REAL*8   VLR
 C
 C ----------------------------------------------------------------------
 C
-      DR = 2*DIME - 3
-      P1 = ILGN(1)
-      P2 = 0
+      VLTERR = 2*DIME - 3
+      PMAT1 = ILGN(1)
+      PMAT2 = 0
 C
-      DO 10 I = 1, NNC
-        P0 = P1
-        P1 = ILGN(I+1)
-        DO 11 J = 1, P1-P0
+      DO 10 IAUX = 1, NNC
+        PMAT0 = PMAT1
+        PMAT1 = ILGN(IAUX+1)
+        DO 11 JAUX = 1, PMAT1-PMAT0
 C
 C --- COUPLAGE TRANSLATION / TRANSLATION
 C
-          DO 20 K = 1, DIME
-            DO 20 L = 1, DIME
-              P2 = P2 + 1
-              R = ABS(B(P2))
-              IF (R.GT.MX(1,I)) MX(1,I) = R
+          DO 20 KAUX = 1, DIME
+            DO 20 LAUX = 1, DIME
+              PMAT2 = PMAT2 + 1
+              VLR = ABS(VLMT(PMAT2))
+              IF (VLR.GT.MAXMT(1,IAUX)) MAXMT(1,IAUX) = VLR
  20       CONTINUE
 C
 C --- COUPLAGE ROTATION / TRANSLATION
 C
           IF (IAC) THEN
-            DO 30 K = 2, DIME
-              DO 30 L = 1, DIME
-                P2 = P2 + 1
-                R = ABS(B(P2))
-                IF (R.GT.MX(2,I)) MX(2,I) = R
+            DO 30 KAUX = 2, DIME
+              DO 30 LAUX = 1, DIME
+                PMAT2 = PMAT2 + 1
+                VLR = ABS(VLMT(PMAT2))
+                IF (VLR.GT.MAXMT(2,IAUX)) MAXMT(2,IAUX) = VLR
  30         CONTINUE
           ENDIF
 C
 C --- COUPLAGE TRANSLATION / ROTATION
 C
           IF (IAN) THEN
-            DO 40 K = 1, DIME
-              DO 40 L = 1, DR
-                P2 = P2 + 1
-                R = ABS(B(P2))
-                IF (R.GT.MX(1,I)) MX(1,I) = R
+            DO 40 KAUX = 1, DIME
+              DO 40 LAUX = 1, VLTERR
+                PMAT2 = PMAT2 + 1
+                VLR = ABS(VLMT(PMAT2))
+                IF (VLR.GT.MAXMT(1,IAUX)) MAXMT(1,IAUX) = VLR
  40         CONTINUE
 C
 C --- COUPLAGE ROTATION / ROTATION
 C
             IF (IAC) THEN
-              DO 50 K = 2, DIME
-                DO 50 L = 1, DR
-                  P2 = P2 + 1
-                  R = ABS(B(P2))
-                  IF (R.GT.MX(2,I)) MX(2,I) = R
+              DO 50 KAUX = 2, DIME
+                DO 50 LAUX = 1, VLTERR
+                  PMAT2 = PMAT2 + 1
+                  VLR = ABS(VLMT(PMAT2))
+                  IF (VLR.GT.MAXMT(2,IAUX)) MAXMT(2,IAUX) = VLR
  50           CONTINUE
             ENDIF
           ENDIF

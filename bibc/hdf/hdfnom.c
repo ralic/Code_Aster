@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfnom hdf  DATE 27/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF hdfnom hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -33,7 +33,7 @@ INTEGER DEFPSS(HDFNOM, hdfnom, INTEGER *idf, char *nomgr, STRING_SIZE ln, char *
 {
   hid_t idfic;
   char *nomg, *pnomdts, *pnom;
-  STRING_SIZE k, ll;
+  int k, ll;
   int l,ind,indx;
   long nbobj=0;
   void *malloc(size_t size);

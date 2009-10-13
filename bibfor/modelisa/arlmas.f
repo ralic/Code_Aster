@@ -2,11 +2,11 @@
      &                  NOM1  ,NOM2  ,IMA1  ,IMA2  ,NNEL  ,
      &                  CONNEX,LONCUM,COORD ,NORMAL,
      &                  IMAIL ,INOEU ,ITYTR3,ITYTE4,
-     &                  TRAVR ,TRAVI ,TRAVL ,JTRAV ,NT    ,
+     &                  TRAVR ,TRAVI ,TRAVL ,JTRAV ,NTRG    ,
      &                  NUMMAI,CXCUMU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C
       INTEGER      IMAIL,INOEU
       INTEGER      IMA1,IMA2
       INTEGER      ITYTR3,ITYTE4
-      INTEGER      NT,NUMMAI,CXCUMU
+      INTEGER      NTRG,NUMMAI,CXCUMU
       INTEGER      TRAVI(*)
       LOGICAL      TRAVL(*)
       REAL*8       TRAVR(*)
@@ -78,7 +78,7 @@ C IN  TRAVI  : VECTEURS DE TRAVAIL D'ENTIERS
 C IN  TRAVL  : VECTEURS DE TRAVAIL DE BOOLEENS
 C IN  JTRAV  : POINTEUR SUR TABLEAU POUR LES CONNECTIVITES DES
 C              MAILLES DECOUPEES
-C OUT NT     : NOMBRE DE TRIA/TETRA DANS L'INTERSECTION
+C OUT NTRG     : NOMBRE DE TRIA/TETRA DANS L'INTERSECTION
 C OUT NUMMAI : NUMERO ABSOLU DE LA MAILLE DANS LE MAILLAGE
 C I/O CXCUMU : LONGUEUR CUMULEE DE LA CONNEXITE
 C
@@ -106,12 +106,12 @@ C
       PARAMETER     (NNM = 27)
 C
       INTEGER      IFM,NIV
-      INTEGER      IT,INO,IRET
+      INTEGER      ITRG,INO,IRET
       INTEGER      NUMMA1,NUMMA2
-      CHARACTER*8  TM1,NOMMA1,TM2,NOMMA2
-      REAL*8       H1,H2
-      INTEGER      NN1,NN2,CXMAX
-      REAL*8       NO1(3*NNM),NO2(3*NNM),X,Y,Z
+      CHARACTER*8  TYGEO1,NOMMA1,TYGEO2,NOMMA2
+      REAL*8       DIMBT1,DIMBT2
+      INTEGER      NDML1,NDML2,CXMAX
+      REAL*8       NBEVO1(3*NNM),NBEVO2(3*NNM),XCOOR,YCOOR,ZCOOR
       CHARACTER*8  NOMND ,NOMEL ,K8BID
       INTEGER      INDABS,IELABS,INDND
       CHARACTER*24 COOVAL
@@ -142,40 +142,40 @@ C --- INFOS ET COORD. SOMMETS DE LA MAILLE M1
 C
       CALL ARLGRC(MAIL     ,TYPMAI   ,NOM1     ,NDIM  ,IMA1 ,
      &            CONNEX   ,LONCUM   ,COORD    ,NORMAL,
-     &            NUMMA1   ,NOMMA1   ,TM1      ,H1       ,
-     &            NN1      ,NO1)
+     &            NUMMA1   ,NOMMA1   ,TYGEO1      ,DIMBT1       ,
+     &            NDML1      ,NBEVO1)
 C
 C --- INFOS ET COORD. SOMMETS DE LA MAILLE M2
 C
       CALL ARLGRC(MAIL     ,TYPMAI   ,NOM2     ,NDIM  ,IMA2 ,
      &            CONNEX   ,LONCUM   ,COORD    ,NORMAL,
-     &            NUMMA2   ,NOMMA2   ,TM2      ,H2       ,
-     &            NN2      ,NO2)
+     &            NUMMA2   ,NOMMA2   ,TYGEO2      ,DIMBT2       ,
+     &            NDML2      ,NBEVO2)
 C
 C --- CALCUL INTERSECTION PAR DECOUPE
 C
       CALL INTMAM(NDIM  ,NOMARL,
-     &            NOMMA1,TM1   ,NO1  ,NN1   ,H1    ,
-     &            NOMMA2,TM2   ,NO2  ,NN2   ,H2    ,
-     &            TRAVR ,TRAVI ,TRAVL,NT)
+     &            NOMMA1,TYGEO1   ,NBEVO1  ,NDML1   ,DIMBT1    ,
+     &            NOMMA2,TYGEO2   ,NBEVO2  ,NDML2   ,DIMBT2    ,
+     &            TRAVR ,TRAVI ,TRAVL,NTRG)
 C
 C --- INDICE DES NOEUDS DANS LE MAILLAGE
 C
-      IF (NT.EQ.0) THEN
+      IF (NTRG.EQ.0) THEN
         GOTO 999
       ENDIF
 C
       NUMMAI = NUMMA2
 C
       INDND  = 1
-      DO 90 IT = 1, NT
+      DO 90 ITRG = 1, NTRG
 C
 C --- CONNEX INITIAL
 C
-        CNX(1) = TRAVI(NNEL*(IT-1)+1)
-        CNX(2) = TRAVI(NNEL*(IT-1)+2)
-        CNX(3) = TRAVI(NNEL*(IT-1)+3)
-        CNX(4) = TRAVI(NNEL*(IT-1)+4)
+        CNX(1) = TRAVI(NNEL*(ITRG-1)+1)
+        CNX(2) = TRAVI(NNEL*(ITRG-1)+2)
+        CNX(3) = TRAVI(NNEL*(ITRG-1)+3)
+        CNX(4) = TRAVI(NNEL*(ITRG-1)+4)
 C
         DO 100 INO = 1,NNEL
 C
@@ -194,20 +194,20 @@ C
 C
 C --- COORDONNEES DU NOEUD
 C
-          X = TRAVR(NDIM*(CNX(INO)-1)+1)
-          Y = TRAVR(NDIM*(CNX(INO)-1)+2)
+          XCOOR = TRAVR(NDIM*(CNX(INO)-1)+1)
+          YCOOR = TRAVR(NDIM*(CNX(INO)-1)+2)
           IF (NDIM.EQ.2) THEN
-            Z = 0.D0
+            ZCOOR = 0.D0
           ELSE
-            Z = TRAVR(NDIM*(CNX(INO)-1)+3)
+            ZCOOR = TRAVR(NDIM*(CNX(INO)-1)+3)
           ENDIF
 C
 C --- SAUVEGARDE COORDONNEES
 C
-          ZR(JCOOR+3*(INDABS-1)  ) = X
-          ZR(JCOOR+3*(INDABS-1)+1) = Y
+          ZR(JCOOR+3*(INDABS-1)  ) = XCOOR
+          ZR(JCOOR+3*(INDABS-1)+1) = YCOOR
           IF (NDIM.EQ.3) THEN
-            ZR(JCOOR+3*(INDABS-1)+2) = Z
+            ZR(JCOOR+3*(INDABS-1)+2) = ZCOOR
           ENDIF
 C
 C --- CREATION DU NOM DU NOEUD
@@ -228,11 +228,11 @@ C
 C
 C --- AJOUT DES ELEMENTS
 C
-      DO 91 IT = 1, NT
+      DO 91 ITRG = 1, NTRG
 C
 C --- INDICE ABSOLU DE L'ELEMENT DANS LE MAILLAGE
 C
-        IELABS = IMAIL+IT-1
+        IELABS = IMAIL+ITRG-1
 C
 C --- GENERATION DU NOM DE L'ELEMENT
 C
@@ -251,19 +251,19 @@ C
 C --- TYPE
 C
         IF (NDIM.EQ.2) THEN
-          ZI(JTYPM+IMAIL+IT-2)  = ITYTR3
+          ZI(JTYPM+IMAIL+ITRG-2)  = ITYTR3
         ELSEIF (NDIM.EQ.3) THEN
-          ZI(JTYPM+IMAIL+IT-2)  = ITYTE4
+          ZI(JTYPM+IMAIL+ITRG-2)  = ITYTE4
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
 C
 C --- CONNECTIVITE
 C
-        CNX(1) = TRAVI(NNEL*(IT-1)+1)
-        CNX(2) = TRAVI(NNEL*(IT-1)+2)
-        CNX(3) = TRAVI(NNEL*(IT-1)+3)
-        CNX(4) = TRAVI(NNEL*(IT-1)+4)
+        CNX(1) = TRAVI(NNEL*(ITRG-1)+1)
+        CNX(2) = TRAVI(NNEL*(ITRG-1)+2)
+        CNX(3) = TRAVI(NNEL*(ITRG-1)+3)
+        CNX(4) = TRAVI(NNEL*(ITRG-1)+4)
 C
         CXCUMU = CXCUMU + NNEL
 

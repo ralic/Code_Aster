@@ -1,12 +1,12 @@
       SUBROUTINE ARLTEM(LINCLU,NDIM  ,NOMTE,
      &                  NNS   ,JCOORS,
      &                  NPGS  ,IVFS  ,IDFDES,IPOIDS,
-     &                  ELREF1,NN1   ,JCOOR1,
-     &                  ELREF2,NN2   ,JCOOR2,
+     &                  ELREF1,NDML1   ,JCOOR1,
+     &                  ELREF2,NDML2   ,JCOOR2,
      &                  MCPLN1,MCPLN2,MCPLB1,MCPLB2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,12 +33,12 @@ C
       INTEGER      NNS,NPGS,JCOORS
       INTEGER      IVFS,IPOIDS,IDFDES
       CHARACTER*8  ELREF1,ELREF2
-      INTEGER      NN1,JCOOR1
-      INTEGER      NN2,JCOOR2
-      REAL*8       MCPLN1(NN1,NN1)
-      REAL*8       MCPLN2(NN1,NN2)
-      REAL*8       MCPLB1(NDIM*NN1,NDIM*NN1)
-      REAL*8       MCPLB2(NDIM*NN1,NDIM*NN2)
+      INTEGER      NDML1,JCOOR1
+      INTEGER      NDML2,JCOOR2
+      REAL*8       MCPLN1(NDML1,NDML1)
+      REAL*8       MCPLN2(NDML1,NDML2)
+      REAL*8       MCPLB1(NDIM*NDML1,NDIM*NDML1)
+      REAL*8       MCPLB2(NDIM*NDML1,NDIM*NDML2)
 C
 C ----------------------------------------------------------------------
 C
@@ -66,18 +66,18 @@ C IN  JCOORC : POINTEUR VERS COORD. NOEUDS DE LA MAILLE C
 C OUT MCPLN1 : MATRICE DES TERMES DE COUPLAGE NST.NS
 C              MATRICE CARREE (NNSxNNS)
 C OUT MCPLN2 : MATRICE DES TERMES DE COUPLAGE NST.NC
-C              MATRICE RECTANGULAIRE (NNSxNN1)
+C              MATRICE RECTANGULAIRE (NNSxNDML1)
 C OUT MCPLB1 : MATRICE DES TERMES DE COUPLAGE BST.BS
 C              MATRICE RECTANGULAIRE (NDIMxNNSxNNS)
 C OUT MCPLB2 : MATRICE DES TERMES DE COUPLAGE BST.BC
-C              MATRICE RECTANGULAIRE (NDIMxNNSxNN1)
+C              MATRICE RECTANGULAIRE (NDIMxNNSxNDML1)
 C
 C ----------------------------------------------------------------------
 C
       REAL*8      POIJCS(NPGS)
-      REAL*8      F1(NPGS*NN1),F2(NPGS*NN2)
-      REAL*8      DFDX1(NPGS*NN1),DFDY1(NPGS*NN1),DFDZ1(NPGS*NN1)
-      REAL*8      DFDX2(NPGS*NN2),DFDY2(NPGS*NN2),DFDZ2(NPGS*NN2)
+      REAL*8      FCPIG1(NPGS*NDML1),FCPIG2(NPGS*NDML2)
+      REAL*8      DFDX1(NPGS*NDML1),DFDY1(NPGS*NDML1),DFDZ1(NPGS*NDML1)
+      REAL*8      DFDX2(NPGS*NDML2),DFDY2(NPGS*NDML2),DFDZ2(NPGS*NDML2)
       CHARACTER*8 NBSIG
       INTEGER     NBSIGM, IRET
 C
@@ -88,24 +88,24 @@ C
       CALL ARLTED(LINCLU,NDIM  ,
      &            NNS   ,JCOORS,
      &            NPGS  ,IVFS  ,IDFDES,IPOIDS,
-     &            ELREF1,NN1   ,JCOOR1,
-     &            ELREF2,NN2   ,JCOOR2,
-     &            F1    ,F2    ,POIJCS,
+     &            ELREF1,NDML1   ,JCOOR1,
+     &            ELREF2,NDML2   ,JCOOR2,
+     &            FCPIG1    ,FCPIG2    ,POIJCS,
      &            DFDX1 ,DFDY1 ,DFDZ1 ,
      &            DFDX2 ,DFDY2 ,DFDZ2 )
 C
 C --- TERME (N1)T.N1
 C
       CALL ARLTEN(NPGS  ,POIJCS,
-     &            NN1   ,F1    ,
-     &            NN1   ,F1    ,
+     &            NDML1   ,FCPIG1    ,
+     &            NDML1   ,FCPIG1    ,
      &            MCPLN1)
 C
 C --- TERME (N1)T.N2
 C
       CALL ARLTEN(NPGS  ,POIJCS,
-     &            NN1   ,F1    ,
-     &            NN2   ,F2    ,
+     &            NDML1   ,FCPIG1    ,
+     &            NDML2   ,FCPIG2    ,
      &            MCPLN2)
 C
 C --- NOMBRE DE CONTRAINTES ASSOCIEES A L'ELEMENT
@@ -125,15 +125,15 @@ C
 C --- TERME (B1)T.B1
 C
       CALL ARLTEB(NDIM  ,NBSIGM ,NPGS  ,POIJCS,
-     &            NN1   ,DFDX1 ,DFDY1 ,DFDZ1 ,
-     &            NN1   ,DFDX1 ,DFDY1 ,DFDZ1 ,
+     &            NDML1   ,DFDX1 ,DFDY1 ,DFDZ1 ,
+     &            NDML1   ,DFDX1 ,DFDY1 ,DFDZ1 ,
      &            MCPLB1)
 C
 C --- TERME (B1)T.B2
 C
       CALL ARLTEB(NDIM  ,NBSIGM ,NPGS  ,POIJCS,
-     &            NN1   ,DFDX1 ,DFDY1 ,DFDZ1 ,
-     &            NN2   ,DFDX2 ,DFDY2 ,DFDZ2 ,
+     &            NDML1   ,DFDX1 ,DFDY1 ,DFDZ1 ,
+     &            NDML2   ,DFDX2 ,DFDY2 ,DFDZ2 ,
      &            MCPLB2)
 C
       END

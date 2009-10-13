@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 12/10/2009   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# RESPONSABLE SELLENET N.SELLENET
 IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
             UIinfo={"groupes":("Impression",)},
                fr="Imprimer un maillage et/ou les résultats d'un calcul (différents formats)",
@@ -56,15 +56,15 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
            VERSION         =SIMP(statut='f',typ='R',defaut=1.2,into=(1.0,1.2)),
          ),
 
-         RESTREINT   =FACT(statut='f',fr="Réduire le maillage et les champs imprimés sur un ensemble de mailles",max=1,
+
+         RESTREINT   =FACT(statut='f', max=1,
+           fr="Pour réduire une ou plusieurs sd_resultat sur un ensemble de mailles",
            regles=(AU_MOINS_UN('GROUP_MA','MAILLE',),),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
            TOUT_GROUP_MA   =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON'),),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            TOUT_GROUP_NO   =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON'),),
-           MODELE          =SIMP(statut='f',typ=modele_sdaster,
-                                 fr="Nécessaire s'il y a des cham_elem dans la sd_resultat à imprimer."),
          ),
 
          RESU            =FACT(statut='o',max='**',

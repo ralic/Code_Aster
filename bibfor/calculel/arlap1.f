@@ -12,7 +12,7 @@
      &                  NAPP  ,NAPT                        )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/07/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -129,23 +129,24 @@ C
       INTEGER       JARLIA
       INTEGER       JTRAUX
       INTEGER       NVIS,NMACAN
-      INTEGER       N
+      INTEGER       NBEV
       INTEGER       LCOQUE
       INTEGER       NVOIS(2),NUMA,IMA1,IMA2
-      INTEGER       NNOH,DEFDIM,DIMPL2,IAUX,JAUX,JLIMA,KAUX,LAUX,P0,P1
+      INTEGER       NNOH,DEFDIM,DIMPL2,IAUX,JAUX,JLIMA,KAUX,LAUX,PMAT0,
+     &              PMAT1
       INTEGER       NOEARE(48),NOEPAN(60)
       INTEGER       NSOM,NPAN,NARE
-      REAL*8        CNOEUD(81),R
+      REAL*8        CNOEUD(81),VLR
       LOGICAL       LINTER,MINTER
       REAL*8        DDOT
       INTEGER       NBSOM,NBARE,NBPAN
       INTEGER       IFM,NIV
 C
-      INTEGER      NI, NR, NK
-      PARAMETER   ( NI = 1 , NR = 1 , NK = 1 )
-      INTEGER      VALI(NI)
-      REAL*8       VALR(NR)
-      CHARACTER*24 VALK(NK)
+      INTEGER      NBVLI, NBVLR, NBVLK
+      PARAMETER   ( NBVLI = 1 , NBVLR = 1 , NBVLK = 1 )
+      INTEGER      VALI(NBVLI)
+      REAL*8       VALR(NBVLR)
+      CHARACTER*24 VALK(NBVLK)
 
       CHARACTER*6  NOMPRO
       PARAMETER   (NOMPRO='ARLAP1')
@@ -236,29 +237,30 @@ C
 C --- SI LE POINT EST AU DEHORS DE LA BOITE MINMAX, ON PASSE
 C     A LA MAILLE SUIVANTE
 C
-            P0 = JBO2MM + DEFDIM*(IMA2-1)
+            PMAT0 = JBO2MM + DEFDIM*(IMA2-1)
 C
             DO 322 , KAUX = 1, DIME
-              R = ZR(JTRAUX-1+KAUX)
-              IF ( (R.LT.ZR(P0)) .OR. (R.GT.ZR(P0+1)) ) THEN
+              VLR = ZR(JTRAUX-1+KAUX)
+              IF ( (VLR.LT.ZR(PMAT0)) .OR. (VLR.GT.ZR(PMAT0+1)) ) THEN
                 GOTO 321
               ENDIF
-              P0 = P0 + 2
+              PMAT0 = PMAT0 + 2
  322        CONTINUE
 C
 C --- SI LE POINT EST AU DEHORS DE LA BOITE INSCRITE, ON PASSE
 C     A LA MAILLE SUIVANTE
 C
-            P0 = BOI2SD(2*IMA2+1)
-            N  = BOI2SD(2*IMA2+3) - P0
-            P0 = JBO2PA + DIMPL2*(P0-1)
+            PMAT0 = BOI2SD(2*IMA2+1)
+            NBEV  = BOI2SD(2*IMA2+3) - PMAT0
+            PMAT0 = JBO2PA + DIMPL2*(PMAT0-1)
 C
-            DO 323 , KAUX = 1, N
-              R = DDOT(DIME,ZR(P0),1,ZR(JTRAUX),1) + ZR(P0+DIME)
-              IF ( R.GT.0.D0 ) THEN
+            DO 323 , KAUX = 1, NBEV
+              VLR = DDOT(DIME,ZR(PMAT0),1,ZR(JTRAUX),1) 
+     &              + ZR(PMAT0+DIME)
+              IF ( VLR.GT.0.D0 ) THEN
                 GOTO 321
               ENDIF
-              P0 = P0 + DIMPL2
+              PMAT0 = PMAT0 + DIMPL2
  323        CONTINUE
 C
 C ---  STOCKAGE : LE POINT EST DANS LA BOITE INSCRITE DE LA MAILLE
@@ -332,25 +334,25 @@ C
 C --- SI LE BARYCENTRE EST AU DEHORS DE LA BOITE MINMAX, ON PASSE
 C     A LA SUITE
 C
-          P0 = JBO1MM + DEFDIM*(IMA1-1)
+          PMAT0 = JBO1MM + DEFDIM*(IMA1-1)
 C
           DO 42 , KAUX = 1, DIME
-            R = CNOEUD(KAUX)
-            IF ((R.LT.ZR(P0)).OR.(R.GT.ZR(P0+1))) GOTO 61
-            P0 = P0 + 2
+            VLR = CNOEUD(KAUX)
+            IF ((VLR.LT.ZR(PMAT0)).OR.(VLR.GT.ZR(PMAT0+1))) GOTO 61
+            PMAT0 = PMAT0 + 2
   42      CONTINUE
 C
 C --- SI LE BARYCENTRE EST AU DEHORS DE LA BOITE INSCRITE, ON PASSE
 C     A LA SUITE
 C
-          P0 = BOI1SD(2*IMA1+1)
-          N  = BOI1SD(2*IMA1+3)- P0
-          P0 = JBO1PA + DIMPL2*(P0-1)
+          PMAT0 = BOI1SD(2*IMA1+1)
+          NBEV  = BOI1SD(2*IMA1+3)- PMAT0
+          PMAT0 = JBO1PA + DIMPL2*(PMAT0-1)
 C
-          DO 43 , KAUX = 1, N
-            R = DDOT(DIME,ZR(P0),1,CNOEUD,1) + ZR(P0+DIME)
-            IF (R.GT.0.D0) GOTO 61
-            P0 = P0 + DIMPL2
+          DO 43 , KAUX = 1, NBEV
+            VLR = DDOT(DIME,ZR(PMAT0),1,CNOEUD,1) + ZR(PMAT0+DIME)
+            IF (VLR.GT.0.D0) GOTO 61
+            PMAT0 = PMAT0 + DIMPL2
   43      CONTINUE
 C
 C --- STOCKAGE : LE BARYCENTRE EST DANS LA BOITE INSCRITE DE LA MAILLE
@@ -376,13 +378,13 @@ C 5.1. ==> INITIALISATION PARCOURS DU VOISINAGE
 C
         KAUX = 1
         LAUX = 2
-        P0 = JVOISI(1)
-        P1 = TALIEN(IMA1)
+        PMAT0 = JVOISI(1)
+        PMAT1 = TALIEN(IMA1)
         NVOIS(1) = NVIS
 
         DO 51 , IAUX = 1, NVIS
-          ZI(P0-1+IAUX) = ZI(P1)
-          P1 = ZI(P1+1)
+          ZI(PMAT0-1+IAUX) = ZI(PMAT1)
+          PMAT1 = ZI(PMAT1+1)
   51    CONTINUE
 C
 C 5.2. ==> PARCOURS
@@ -391,21 +393,21 @@ C
 
         NVOIS(LAUX) = 0
         NMACAN = NVOIS(KAUX)
-        P0     = JVOISI(KAUX)
+        PMAT0     = JVOISI(KAUX)
 
         DO 521 , IAUX = 1, NMACAN
 
-          JAUX = ZI(P0)
-          P0 = P0 + 1
+          JAUX = ZI(PMAT0)
+          PMAT0 = PMAT0 + 1
 
-          P1 = GRMALC(JAUX)
-          N  = GRMALC(JAUX+1) - P1
-          P1 = JGRMAM - 1 + P1
+          PMAT1 = GRMALC(JAUX)
+          NBEV  = GRMALC(JAUX+1) - PMAT1
+          PMAT1 = JGRMAM - 1 + PMAT1
 
-          DO 522 , JAUX = 1, N
+          DO 522 , JAUX = 1, NBEV
 
-            IMA2 = ZI(P1)
-            P1 = P1 + 1
+            IMA2 = ZI(PMAT1)
+            PMAT1 = PMAT1 + 1
 
             IF (TABFIL(IMA2)) THEN
 

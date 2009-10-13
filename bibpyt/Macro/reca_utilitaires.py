@@ -1,4 +1,4 @@
-#@ MODIF reca_utilitaires Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_utilitaires Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,10 +27,12 @@ except: pass
 
 try:
    import aster
+   CPU_Exception = aster.ArretCPUError
    from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, IMPR_FONCTION, DETRUIRE
    from Accas import _F
    from Utilitai.Utmess import UTMESS, MessageLog
-except : pass
+except:
+   CPU_Exception = StandardError
 
 
 # ------------------------------------------------------------------------------
@@ -133,7 +135,7 @@ def temps_CPU(restant_old,temps_iter_old):
          if ((temps_iter>0.96*restant)or(restant<0.)):
             err=1
             msg = MessageLog.GetText('F', 'RECAL0_40')
-            raise aster.ArretCpuError, msg
+            raise CPU_Exception, msg
 
    return restant,temps_iter,err
 

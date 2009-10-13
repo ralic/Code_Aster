@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF ENVIMA UTILITAI  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -40,11 +40,14 @@ static long   R8UND[2] = { 0x00000000 , 0x7ff80000 };
 #endif
 
 
-/* entier max, réel max, réel min, précision en réel */
+/* entier max, réel max, réel min, précision en réel simple et double */
 static long   ISMAX    = LONG_MAX ;
 static DOUBLE R8MAX    = DBL_MAX ;
 static DOUBLE R8MIN    = DBL_MIN ;
 static DOUBLE R8PREC   = DBL_EPSILON ;
+static float  R4MAX    = FLT_MAX ;
+static float  R4MIN    = FLT_MIN ;
+static float  R4PREC   = FLT_EPSILON ;
 
 /* taille max d'une base */
 static INTEGER   ISMFIC   = 50331648;
@@ -139,10 +142,10 @@ DOUBLE STDCALL(RMAXEM,rmaxem)() { return pow(2,1023)*(1.-pow(2,-53)); }
 /* ---------------------REEL NOT.A.NUMBER (IEEE) OU UNDEF (CRAY) */
 DOUBLE STDCALL(R8NNEM,r8nnem)() { return *(DOUBLE*)R8UND; }
 
-/* -------------------------------------- VALEUR MAXIMALE REELLE */
+/* -------------------------------------- VALEUR MAXIMALE REELLE R8*/
 DOUBLE STDCALL(R8MAEM,r8maem)() { return R8MAX; }
 
-/* -------------------------------------- VALEUR MINIMALE REELLE */
+/* -------------------------------------- VALEUR MINIMALE REELLE R8*/
 DOUBLE STDCALL(R8MIEM,r8miem)() { return R8MIN; }
 
 /* ----------------------------  REEL A BOUCHER LES CASES (R8MAX)*/
@@ -151,7 +154,7 @@ DOUBLE STDCALL(R8VIDE,r8vide)() { return R8MAX; }
 /* -----------------------------------------  BASE DE NUMERATION */
 DOUBLE STDCALL(R8BAEM,r8baem)() { return (DOUBLE)2.; }
 
-/* -----------------------------------------  PRECISION RELATIVE */
+/* -----------------------------------------  PRECISION RELATIVE  R8*/
 DOUBLE STDCALL(R8PREM,r8prem)() { return R8PREC; }
 
 
@@ -181,3 +184,12 @@ INTEGER STDCALL(LLBLOC,llbloc)() { return OPT_TAILLE_BLOC_MULT_FRONT; }
 /* ----------------------------------------  Pour tester un NaN */
 /* on fait un chapeau (iisnan) à la fonction C isnan  pour éviter le conflit avec la fonction intrinsèque (logique) isnan de fortran 95 */
 INTEGER DEFP(IISNAN, iisnan, DOUBLE *x) { return isnan(*x); }
+
+/* -------------------------------------- VALEUR MAXIMALE REELLE R4*/
+DOUBLE STDCALL(R4MAEM,r4maem)() { return R4MAX; }
+
+/* -------------------------------------- VALEUR MINIMALE REELLE R4*/
+DOUBLE STDCALL(R4MIEM,r4miem)() { return R4MIN; }
+
+/* -----------------------------------------  PRECISION RELATIVE  R4*/
+DOUBLE STDCALL(R4PREM,r4prem)() { return R4PREC; }

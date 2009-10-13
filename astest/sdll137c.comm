@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC CALC_ESSAI (LMME)
 # sdll137c.para = tps_job 70 mem_job 256Mo mem_aster 40 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -337,7 +337,7 @@ MODSTINT=MODE_STATIQUE(MATR_RIGI=KASSUP,
 
 BASEINT=DEFI_BASE_MODALE(RITZ=(
                              _F(MODE_MECA=MODESUP,NMAX_MODE=0,),
-                             _F(MODE_STAT=MODSTINT,NMAX_MODE=8,),
+                             _F(MODE_INTF=MODSTINT,NMAX_MODE=8,),
                              ),
                        NUME_REF=NUMSUP,);
 

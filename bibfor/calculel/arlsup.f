@@ -1,7 +1,7 @@
-      SUBROUTINE ARLSUP(DIME  ,PRECBO,NOMGRP,BC    ,APP)
+      SUBROUTINE ARLSUP(DIME  ,PRECBO,NOMGRP,BTRC    ,APP)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C
       REAL*8       PRECBO
       CHARACTER*10 NOMGRP
       INTEGER      DIME
-      REAL*8       BC(2,*)
+      REAL*8       BTRC(2,*)
       LOGICAL      APP(*)
 C
 C ----------------------------------------------------------------------
@@ -38,7 +38,7 @@ C
 C
 C IN  DIME   : DIMENSION DE L'ESPACE
 C IN  PRECBO : PRECISION RELATIVE POUR TESTER LA BOITE ENGLOBANTE
-C IN  BC     : BOITE ENGLOBANT LA ZONE DE RECOUVREMENT
+C IN  BTRC     : BOITE ENGLOBANT LA ZONE DE RECOUVREMENT
 C IN  NOMGRP : NOMGRP DE LA SD DE STOCKAGE MAILLES
 C I/O APP(*) : IN  - .TRUE. SSI MAILLE * APPARIEE (INDEX GLOBAL)
 C              OUT - .TRUE. SSI MAILLE * DANS ZONE SUPERPOSITION
@@ -64,10 +64,11 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      REAL*8       PREC,C1,C2
-      INTEGER      NMA,NC,MA,IMA,DIM2,I,J,K
-      INTEGER      A0,A1,A2,A3,A4,P0,P1,Q0,Q1,Q2,Q3
-      REAL*8       MX(3),MN(3),R,R1,R2
+      REAL*8       PREC,MTMO1,MTMO2
+      INTEGER      NMA,NNDC,CNML,IMA,DIM2,IAUX,JAUX,KAUX
+      INTEGER      VLA0,VLA1,VLA2,VLA3,VLA4,PMAT0,PMAT1,LGNM0,LGNM1,
+     &             LGNM2,LGNM3
+      REAL*8       MAXMT(3),MTCP(3),VLR,VLR1,VLR2
       CHARACTER*16 NOMBOI
       CHARACTER*8  K8BID
       CHARACTER*24 NGRMA,GRMAMA
@@ -80,8 +81,8 @@ C --- INITIALISATIONS
 C
       DIM2 = 2*DIME
       PREC = SQRT(PRECBO)
-      C1   = (1+PREC)/(1+2.D0*PREC)
-      C2   = PREC/(1+2.D0*PREC)
+      MTMO1   = (1+PREC)/(1+2.D0*PREC)
+      MTMO2   = PREC/(1+2.D0*PREC)
 C
 C --- LECTURE DONNEES GROUPE DE MAILLES
 C
@@ -90,102 +91,102 @@ C
       IF (NMA.EQ.1) THEN
         GOTO 999
       ELSE
-        CALL JEVEUO(NGRMA,'L',A0)
+        CALL JEVEUO(NGRMA,'L',VLA0)
       ENDIF
 C
 C --- LECTURE DONNEES BOITES
 C
       NOMBOI = NOMGRP(1:10)//'.BOITE'
-      CALL JEVEUO(NOMBOI(1:16)//'.MINMAX','L',A1)
-      CALL JEVEUO(NOMBOI(1:16)//'.MMGLOB','L',A2)
+      CALL JEVEUO(NOMBOI(1:16)//'.MINMAX','L',VLA1)
+      CALL JEVEUO(NOMBOI(1:16)//'.MMGLOB','L',VLA2)
 C
 C --- LECTURE GRAPHE MAILLE/MAILLE
 C
       GRMAMA = NOMGRP(1:10)//'.GRMAMA'
-      CALL JEVEUO(GRMAMA,'L',A3)
-      CALL JEVEUO(JEXATR(GRMAMA,'LONCUM'),'L',A4)
+      CALL JEVEUO(GRMAMA,'L',VLA3)
+      CALL JEVEUO(JEXATR(GRMAMA,'LONCUM'),'L',VLA4)
 C
 C --- ALLOCATION OBJETS TEMPORAIRES
 C
-      CALL WKVECT('&&ARLSUP.CMP','V V I',NMA,Q0)
-      CALL WKVECT('&&ARLSUP.PILE','V V I',NMA,Q1)
+      CALL WKVECT('&&ARLSUP.CMP','V V I',NMA,LGNM0)
+      CALL WKVECT('&&ARLSUP.PILE','V V I',NMA,LGNM1)
 
 C --- 1. CALCUL DES COMPOSANTES CONNEXES DES ZONES NON APPARIEES
 
-      DO 10 I = 1, NMA
-        IMA = ZI(A0-1+I)
+      DO 10 IAUX = 1, NMA
+        IMA = ZI(VLA0-1+IAUX)
         IF (APP(IMA)) THEN
-          ZI(Q0-1+I) = -1
+          ZI(LGNM0-1+IAUX) = -1
         ELSE
-          ZI(Q0-1+I) = 0
+          ZI(LGNM0-1+IAUX) = 0
         ENDIF
  10   CONTINUE
 
-      NC = 0
+      NNDC = 0
 
-      DO 20 I = 1, NMA
+      DO 20 IAUX = 1, NMA
 
-        IF (ZI(Q0-1+I).NE.0) GOTO 20
+        IF (ZI(LGNM0-1+IAUX).NE.0) GOTO 20
 
-        NC = NC + 1
-        ZI(Q0-1+I) = NC
+        NNDC = NNDC + 1
+        ZI(LGNM0-1+IAUX) = NNDC
 
-        ZI(Q1) = I
-        Q2 = Q1
-        Q3 = Q1
+        ZI(LGNM1) = IAUX
+        LGNM2 = LGNM1
+        LGNM3 = LGNM1
 
  30     CONTINUE
 
-        MA = ZI(Q2)
-        Q2 = Q2 + 1
+        CNML = ZI(LGNM2)
+        LGNM2 = LGNM2 + 1
 
-        P0 = ZI(A4-1+MA)
-        P1 = ZI(A4+MA)-1
+        PMAT0 = ZI(VLA4-1+CNML)
+        PMAT1 = ZI(VLA4+CNML)-1
 
-        DO 40 J = P0, P1
+        DO 40 JAUX = PMAT0, PMAT1
 
-          MA = ZI(A3-1+J)
-          IF (ZI(Q0-1+MA).NE.0) GOTO 40
+          CNML = ZI(VLA3-1+JAUX)
+          IF (ZI(LGNM0-1+CNML).NE.0) GOTO 40
 
-          Q3 = Q3 + 1
-          ZI(Q3) = MA
-          ZI(Q0-1+MA) = NC
+          LGNM3 = LGNM3 + 1
+          ZI(LGNM3) = CNML
+          ZI(LGNM0-1+CNML) = NNDC
 
  40     CONTINUE
 
-        IF (Q2.LE.Q3) GOTO 30
+        IF (LGNM2.LE.LGNM3) GOTO 30
 
  20   CONTINUE
 
 C --- 2. COMPOSANTES CONNEXES APPARTENANT A LA ZONE DE RECOUVREMENT
 
-      DO 50 I = 1, NC
+      DO 50 IAUX = 1, NNDC
 
-C ----- 2.1. BOITE ENGLOBANT LA COMPOSANTE CONNEXE I
+C ----- 2.1. BOITE ENGLOBANT LA COMPOSANTE CONNEXE IAUX
 
-        P0 = A2
-        DO 60 J = 1, DIME
-          MX(J) = ZR(P0)
-          MN(J) = ZR(P0+1)
-          P0 = P0 + 2
+        PMAT0 = VLA2
+        DO 60 JAUX = 1, DIME
+          MAXMT(JAUX) = ZR(PMAT0)
+          MTCP(JAUX) = ZR(PMAT0+1)
+          PMAT0 = PMAT0 + 2
  60     CONTINUE
 
-        DO 70 J = 1, NMA
+        DO 70 JAUX = 1, NMA
 
-          IF (ZI(Q0-1+J).NE.I) GOTO 70
+          IF (ZI(LGNM0-1+JAUX).NE.IAUX) GOTO 70
 
-          P0 = A1+DIM2*(J-1)
+          PMAT0 = VLA1+DIM2*(JAUX-1)
 
-          DO 80 K = 1, DIME
+          DO 80 KAUX = 1, DIME
 
-            R1 = ZR(P0)
-            R2 = ZR(P0+1)
-            P0 = P0 + 2
+            VLR1 = ZR(PMAT0)
+            VLR2 = ZR(PMAT0+1)
+            PMAT0 = PMAT0 + 2
 
-            R = C1*R1+C2*R2
-            IF (R.LT.MN(K)) MN(K) = R
-            R = C1*R2+C2*R1
-            IF (R.GT.MX(K)) MX(K) = R
+            VLR = MTMO1*VLR1+MTMO2*VLR2
+            IF (VLR.LT.MTCP(KAUX)) MTCP(KAUX) = VLR
+            VLR = MTMO1*VLR2+MTMO2*VLR1
+            IF (VLR.GT.MAXMT(KAUX)) MAXMT(KAUX) = VLR
 
  80       CONTINUE
 
@@ -193,14 +194,15 @@ C ----- 2.1. BOITE ENGLOBANT LA COMPOSANTE CONNEXE I
 
 C ----- 2.2. INCLUSION STRICTE DANS BOITE ENGLOBANT ZONE COLLAGE ?
 
-        DO 90 J = 1, DIME
-          IF (.NOT.((BC(1,J).LT.MN(J)).AND.(BC(2,J).GT.MX(J)))) GOTO 50
+        DO 90 JAUX = 1, DIME
+          IF (.NOT.((BTRC(1,JAUX).LT.MTCP(JAUX)).AND.
+     &       (BTRC(2,JAUX).GT.MAXMT(JAUX)))) GOTO 50
  90     CONTINUE
 
 C ----- 2.3. MARQUAGE VECTEUR APP
 
-        DO 100 J = 1, NMA
-          IF (ZI(Q0-1+J).EQ.I) APP(ZI(A0-1+J)) = .TRUE.
+        DO 100 JAUX = 1, NMA
+          IF (ZI(LGNM0-1+JAUX).EQ.IAUX) APP(ZI(VLA0-1+JAUX)) = .TRUE.
  100    CONTINUE
 
  50   CONTINUE

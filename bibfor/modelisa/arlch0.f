@@ -1,8 +1,8 @@
       SUBROUTINE ARLCH0(DIME  ,IAN   ,IAC   ,NNC   ,ILGN  ,
-     &                  MX    ,PREC  ,EQ    ,B     ,NT)
+     &                  MAXMT    ,PREC  ,EQ    ,VLMT     ,NTRG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,12 +27,12 @@ C
       INTEGER  DIME
       LOGICAL  IAN,IAC
       INTEGER  NNC
-      REAL*8   B(*)
+      REAL*8   VLMT(*)
       INTEGER  ILGN(*)
-      REAL*8   MX(2,*)
+      REAL*8   MAXMT(2,*)
       REAL*8   PREC
       LOGICAL  EQ(5,*)
-      INTEGER  NT
+      INTEGER  NTRG
 C
 C ----------------------------------------------------------------------
 C
@@ -49,47 +49,47 @@ C IN  IAN    : .TRUE. SI MODELE ZONE MECANIQUE EST DE TYPE COQUE
 C IN  IAC    : .TRUE. SI MODELE ZONE COLLAGE EST DE TYPE COQUE
 C IN  NNC    : NOMBRE DE NOEUDS MAILLES DE COLLAGE
 C IN  ILGN   : LONGUEUR CUMULEE COLLECTION NOEUDS COLONNES DE B
-C IN  MX     : MAXIMA EN VALEUR ABSOLUE SUIVANT LIGNES DE B
+C IN  MAXMT  : MAXIMA EN VALEUR ABSOLUE SUIVANT LIGNES DE B
 C                       POUR TRANSLATION ET ROTATION (CF ARLMAX)
 C IN  PREC   : PRECISION RELATIVE SUR LES TERMES DE B
 C IN  EQ     : EQUATIONS DE COUPLAGE SELECTIONNEES (CF ARLCLR)
-C I/O B      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCAL)O
-C I/O NT     : NOMBRE DE TERMES NON-NEGLIGEABLES DANS LES
+C I/O VLMT   : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCAL)O
+C I/O NTRG   : NOMBRE DE TERMES NON-NEGLIGEABLES DANS LES
 C                       RELATIONS LINEAIRES DE COUPLAGE ARLEQUIN
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER  P0,P1,P2,I,J,K,L,DR,OF
-      REAL*8   R
+      INTEGER  PMAT0,PMAT1,PMAT2,IAUX,JAUX,KAUX,LAUX,VLTERR,OF
+      REAL*8   VLR
 C
 C ----------------------------------------------------------------------
 C
 
 C --- PARCOURS DES LIGNES
 
-      DR = 2*DIME - 3
+      VLTERR = 2*DIME - 3
       OF = DIME - 1
-      P1 = ILGN(1)
-      P2 = 0
+      PMAT1 = ILGN(1)
+      PMAT2 = 0
 
-      DO 10 I = 1, NNC
+      DO 10 IAUX = 1, NNC
 
-        P0 = P1
-        P1 = ILGN(I+1)
+        PMAT0 = PMAT1
+        PMAT1 = ILGN(IAUX+1)
 
-        DO 20 J = 1, P1-P0
+        DO 20 JAUX = 1, PMAT1-PMAT0
 
 C ------- COUPLAGE TRANSLATION / TRANSLATION
 
-          DO 30 K = 1, DIME
-            IF (.NOT.EQ(K,I)) THEN
-              P2 = P2 + DIME
+          DO 30 KAUX = 1, DIME
+            IF (.NOT.EQ(KAUX,IAUX)) THEN
+              PMAT2 = PMAT2 + DIME
             ELSE
-              DO 40 L = 1, DIME
-                P2 = P2 + 1
-                R = B(P2)/MX(1,I)
-                B(P2) = R
-                IF (ABS(R).GT.PREC) NT = NT + 1
+              DO 40 LAUX = 1, DIME
+                PMAT2 = PMAT2 + 1
+                VLR = VLMT(PMAT2)/MAXMT(1,IAUX)
+                VLMT(PMAT2) = VLR
+                IF (ABS(VLR).GT.PREC) NTRG = NTRG + 1
  40           CONTINUE
             ENDIF
  30       CONTINUE
@@ -97,15 +97,15 @@ C ------- COUPLAGE TRANSLATION / TRANSLATION
 C ------- COUPLAGE ROTATION / TRANSLATION
 
           IF (IAC) THEN
-            DO 50 K = 2, DIME
-              IF (.NOT.EQ(OF+K,I)) THEN
-                P2 = P2 + DIME
+            DO 50 KAUX = 2, DIME
+              IF (.NOT.EQ(OF+KAUX,IAUX)) THEN
+                PMAT2 = PMAT2 + DIME
               ELSE
-                DO 60 L = 1, DIME
-                  P2 = P2 + 1
-                  R = B(P2)/MX(2,I)
-                  B(P2) = R
-                  IF (ABS(R).GT.PREC) NT = NT + 1
+                DO 60 LAUX = 1, DIME
+                  PMAT2 = PMAT2 + 1
+                  VLR = VLMT(PMAT2)/MAXMT(2,IAUX)
+                  VLMT(PMAT2) = VLR
+                  IF (ABS(VLR).GT.PREC) NTRG = NTRG + 1
  60             CONTINUE
               ENDIF
  50         CONTINUE
@@ -115,15 +115,15 @@ C ------- COUPLAGE TRANSLATION / ROTATION
 
           IF (IAN) THEN
 
-            DO 70 K = 1, DIME
-              IF (.NOT.EQ(K,I)) THEN
-                P2 = P2 + DR
+            DO 70 KAUX = 1, DIME
+              IF (.NOT.EQ(KAUX,IAUX)) THEN
+                PMAT2 = PMAT2 + VLTERR
               ELSE
-                DO 80 L = 1, DR
-                  P2 = P2 + 1
-                  R = B(P2)/MX(1,I)
-                  B(P2) = R
-                  IF (ABS(R).GT.PREC) NT = NT + 1
+                DO 80 LAUX = 1, VLTERR
+                  PMAT2 = PMAT2 + 1
+                  VLR = VLMT(PMAT2)/MAXMT(1,IAUX)
+                  VLMT(PMAT2) = VLR
+                  IF (ABS(VLR).GT.PREC) NTRG = NTRG + 1
  80             CONTINUE
               ENDIF
  70         CONTINUE
@@ -131,15 +131,15 @@ C ------- COUPLAGE TRANSLATION / ROTATION
 C --------- COUPLAGE ROTATION / ROTATION
 
             IF (IAC) THEN
-              DO 90 K = 2, DIME
-                IF (.NOT.EQ(OF+K,I)) THEN
-                  P2 = P2 + DR
+              DO 90 KAUX = 2, DIME
+                IF (.NOT.EQ(OF+KAUX,IAUX)) THEN
+                  PMAT2 = PMAT2 + VLTERR
                 ELSE
-                  DO 100 L = 1, DR
-                    P2 = P2 + 1
-                    R = B(P2)/MX(2,I)
-                    B(P2) = R
-                    IF (ABS(R).GT.PREC) NT = NT + 1
+                  DO 100 LAUX = 1, VLTERR
+                    PMAT2 = PMAT2 + 1
+                    VLR = VLMT(PMAT2)/MAXMT(2,IAUX)
+                    VLMT(PMAT2) = VLR
+                    IF (ABS(VLR).GT.PREC) NTRG = NTRG + 1
  100              CONTINUE
                 ENDIF
  90           CONTINUE

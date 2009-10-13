@@ -1,4 +1,4 @@
-#@ MODIF test_temps_ops Macro  DATE 08/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_temps_ops Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,6 @@ def test_temps_ops(self, RESU, INFO, **args):
    import aster
    from Accas import _F
    from Utilitai.Utmess import UTMESS, MessageLog
-   from Utilitai.System import ExecCommand
 
    # On importe les definitions des commandes a utiliser dans la macro
    # Le nom de la variable doit etre obligatoirement le nom de la commande

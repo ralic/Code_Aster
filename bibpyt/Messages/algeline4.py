@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF algeline4 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
- Seules les méthodes de résolution LDLT et MULT_FRONT sont autorisées.
+ Seules les méthodes de résolution LDLT, MUMPS et MULT_FRONT sont autorisées.
 """),
 
 2 : _("""

@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF postrele Messages  DATE 13/10/2009   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -386,6 +386,11 @@ cata_msg = {
  Attention lors de la définition de votre liste de noeuds,
  %(i1)d noeuds sont hors de la matière 
  
+"""),
+
+64 : _("""
+On cherche à faire une extraction sur des noeuds qui ne font 
+pas partie du maillage, peut-etre créés par PROPA_FISS 
 """),
 
 }

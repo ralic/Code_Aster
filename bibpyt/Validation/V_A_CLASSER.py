@@ -1,4 +1,4 @@
-#@ MODIF V_A_CLASSER Validation  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_A_CLASSER Validation  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,9 +22,6 @@
 # ======================================================================
 
 
-
-import types
-
 class A_CLASSER:
    """
       La règle A_CLASSER vérifie que ...
@@ -35,24 +32,22 @@ class A_CLASSER:
         print "Erreur à la création de la règle A_CLASSER(",args,")"
         return
       self.args=args
-      if type(args[0]) == types.TupleType:
+      if type(args[0]) == tuple:
         self.args0 = args[0]
-      elif type(args[0]) == types.StringType:
+      elif type(args[0]) == str:
         self.args0 = (args[0],)
       else :
         print "Le premier argument de :",args," doit etre un tuple ou une string"
-      if type(args[1]) == types.TupleType:
+      if type(args[1]) == tuple:
         self.args1 = args[1]
-      elif type(args[1]) == types.StringType:
+      elif type(args[1]) == str:
         self.args1 = (args[1],)
       else :
         print "Le deuxième argument de :",args," doit etre un tuple ou une string"
       # création de la liste des mcs
       liste = []
-      for arg0 in self.args0:
-        liste.append(arg0)
-      for arg1 in self.args1:
-        liste.append(arg1)
+      liste.extend(self.args0)
+      liste.extend(self.args1)
       self.mcs = liste
       self.init_couples_permis()
 
@@ -81,9 +76,7 @@ class A_CLASSER:
           couple.append(nom)
           if len(couple) == 2 :
             l_couples.append(tuple(couple))
-            couple=[]
-            if nom not in self.args1:
-              couple.append(nom)
+            couple = [nom,]
       if len(couple) > 0 :
         l_couples.append(tuple(couple))
       # l_couples peut etre vide si l'on n'a pas réussi à trouver au moins un

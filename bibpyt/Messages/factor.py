@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 21/09/2009   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF factor Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,15 +25,16 @@ cata_msg={
 
 #-----------------------------------------------------------------------------------------------
 10: _("""
-Matrice non factorisable :
-  pivot presque nul à la ligne : %(i1)d
-  nombre de décimales perdues  : %(i2)d
+Matrice non factorisable !
+  - pivot presque nul à la ligne : %(i1)d
+  - nombre de décimales perdues  : %(i2)d (critère non pertinent avec le solveur linéaire MUMPS)
 """),
 
 #-----------------------------------------------------------------------------------------------
 11: _("""
-Matrice non factorisable :
-  pivot vraiment nul à la ligne : %(i1)d
+Matrice non factorisable !
+  Si le solveur linéaire est LDLT ou MULT_FRONT on sait en plus que:
+   - pivot vraiment nul à la ligne : %(i1)d 
 """),
 
 #-----------------------------------------------------------------------------------------------
@@ -47,10 +48,11 @@ Solution :
 
 #-----------------------------------------------------------------------------------------------
 20: _("""
-  -> Matrice non factorisable :
+  -> Matrice non factorisable !
      Le pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
      la composante %(k2)s.
-     Pour information, le nombre de décimales perdues est de %(i2)d.
+     Si le solveur linéaire est LDLT ou MULT_FRONT, on sait en plus que le nombre de décimales
+     perdues est de %(i2)d. 
 
   -> Conseil & Risque :
      Il s'agit peut etre d'un mouvement de corps rigide mal bloqué.
@@ -61,18 +63,20 @@ Solution :
 
 #-----------------------------------------------------------------------------------------------
 21: _("""
-Matrice non factorisable :
-  pivot vraiment nul à la ligne : %(i1)d
-  pour le noeud %(k1)s et la composante %(k2)s
+Matrice non factorisable !
+  Si le solveur linéaire est LDLT ou MULT_FRONT on sait en plus que:
+    - pivot est vraiment nul à la ligne %(i1)d
+    - pour le noeud %(k1)s et la composante %(k2)s
 """),
 
 #-----------------------------------------------------------------------------------------------
 22: _("""
-  -> Matrice non factorisable :
+  -> Matrice non factorisable !
      Le pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
      la composante %(k2)s.
-     Pour information, le nombre de décimales perdues est de %(i2)d.
-
+     Si le solveur linéaire est LDLT ou MULT_FRONT, on sait en plus que le nombre de décimales
+     perdues est de %(i2)d.
+     
   -> Conseil & Risque :
      Il s'agit peut etre d'un mouvement de corps rigide mal bloqué.
      Vérifiez les conditions aux limites.
@@ -84,16 +88,15 @@ Matrice non factorisable :
      Si le nombre de décimal n'est pas trop grand (maxi 10 décimales)
      vous pouvez relancer le calcul en augmentant le nombre de décimales perdues autorisé :
      mot-clé NPREC dans STAT_NON_LINE/SOLVEUR.
-
      Sinon, contactez l'équipe de développement.
 
 """),
 
 #-----------------------------------------------------------------------------------------------
 30: _("""
-Matrice non factorisable :
-  pivot presque nul à la ligne : %(i1)d
-  nombre de décimales perdues  : %(i2)d
+Matrice non factorisable !
+  - pivot presque nul à la ligne : %(i1)d
+  - nombre de décimales perdues  : %(i2)d (critère non pertinent avec le solveur linéaire MUMPS)
   Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
   La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
 
@@ -105,8 +108,9 @@ Risques & conseils :
 
 #-----------------------------------------------------------------------------------------------
 31: _("""
-Matrice non factorisable :
-  pivot vraiment nul à la ligne : %(i1)d
+Matrice non factorisable !
+  Si le solveur linéaire est LDLT ou MULT_FRONT on sait en plus que:
+   - pivot vraiment nul à la ligne : %(i1)d
   Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
   La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
 
@@ -119,17 +123,18 @@ Risques & conseils :
 
 #-----------------------------------------------------------------------------------------------
 40: _("""
-Matrice non factorisable :
-  pivot presque nul à la ligne : %(i1)d
-  nombre de décimales perdues  : %(i2)d
+Matrice non factorisable !
+  - pivot presque nul à la ligne : %(i1)d
+  - nombre de décimales perdues  : %(i2)d (critère non pertinent avec le solveur linéaire MUMPS)
   Il s'agit sans doute d'une relation de blocage surabondante.
   blocage concerné : %(k4)s
 """),
 
 #-----------------------------------------------------------------------------------------------
 41: _("""
-Matrice non factorisable :
-  pivot vraiment nul à la ligne : %(i1)d
+Matrice non factorisable !
+  Si le solveur linéaire est LDLT ou MULT_FRONT on sait en plus que:
+  - pivot vraiment nul à la ligne : %(i1)d
   Il s'agit sans doute d'une relation de blocage surabondante.
   blocage concerné : %(k4)s
 """),
@@ -137,12 +142,11 @@ Matrice non factorisable :
 #-----------------------------------------------------------------------------------------------
 42: _("""
 Matrice non factorisable :
-  Le solveur MUMPS considère la matrice comme numériquement singulière.
-  (Mais il n'en dit pas plus)
+  Le solveur MUMPS considère la matrice comme singulière (en structure ou numériquement).
 
 Conseil :
-  Il s'agit peut-etre d'un manque de conditions aux limites,
-  ou au contraire, de redondances entre de trop nombreuses conditions.
+  Il peut s'agir d'une erreur de programmation ou d'un problème de mise en données (blocage
+  absent ou surabondant).
 """),
 #-----------------------------------------------------------------------------------------------
 50: _("""
@@ -248,11 +252,6 @@ Solution :
   On peut essayer la valeur du mot-clé POSTTRAITEMENTS='FORCE'.
 """),
 
-
-
-
-
-
 #-----------------------------------------------------------------------------------------------
 
 64: _("""
@@ -308,8 +307,8 @@ Solveur MUMPS :
   La matrice Aster fournie à MUMPS est singulière structurellement (il manque
   au moins une ligne/colonne).
 Solution :
-  Il y a sans doute une erreur de programmation.
-  Contactez l'assistance.
+  Il peut s'agir d'une erreur de programmation ou d'un problème de mise en données (blocage
+  absent ou surabondant) 
 """),
 
 #-----------------------------------------------------------------------------------------------
@@ -358,4 +357,13 @@ Solution:
   Sinon, contactez l'équipe de développement.
 """),
 
+#-----------------------------------------------------------------------------------------------
+74: _("""
+Solveur MUMPS :
+  Vous utilisez une version de MUMPS antérieure à la 4.8.4: la %(k1)s.
+  Celle-ci ne permet pas la détection de singularité. On désactive cette fonctionnalité avec
+  une valeur SOLVEUR/NPREC négative.
+Attention:
+  Cette désactivation peut nuire à certains type de calculs (modal, option CRIT_FLAMB...).
+"""),
 }

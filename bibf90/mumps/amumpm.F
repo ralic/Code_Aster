@@ -2,7 +2,7 @@
      &                  TYPE,LMD,EPSMAT)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPM MUMPS  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -71,7 +71,8 @@ C============================================================
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
       CHARACTER*24 KFILTR
-      REAL*8       RAUX,RFILTR
+      REAL*4       R4MAEM
+      REAL*8       RAUX,RFILTR,RR4MAX,RAUX1
       COMPLEX*16   CAUX
       LOGICAL      LMNSY,LTYPR,LNN,LFILTR
       COMMON /MUMPSS/ SMPS
@@ -102,6 +103,10 @@ C-----------------------------------------------------------------------
 C       ------------------------------------------------
 C        INITS
 C       ------------------------------------------------
+      RR4MAX=R4MAEM()
+      LFILTR=.FALSE.
+      KFILTR='&&AMUMPM.FILTRAGE'
+      NFILTR=0
       NOMAT=NOMATS(KXMPS)
       NOSOLV=NOSOLS(KXMPS)
       NONU=NONUS(KXMPS)
@@ -174,11 +179,8 @@ C --- DES CAS SYM EN MUMPS NON SYMETRIQUE
           CALL JELIRA(JEXNUM(NOMAT//'.VALM',2),'LONMAX',NLONG,KBID)
           CALL ASSERT(NLONG.EQ.NZ)
         ENDIF
-      ENDIF
 
 C ---- DETERMINATION DES TERMES DE REFERENCE POUR LE FILTRAGE
-       KFILTR='&&AMUMPM.FILTRAGE'
-       NFILTR=0
        IF (EPSMAT.GT.0.D0) THEN
          LFILTR=.TRUE.
          CALL JEEXIN(KFILTR,IRET)
@@ -196,6 +198,7 @@ C ---- DETERMINATION DES TERMES DE REFERENCE POUR LE FILTRAGE
        ELSE
          LFILTR=.FALSE.
        ENDIF
+      ENDIF
 
 C       ------------------------------------------------
 C       DETERMINATION DU NBRE LOCAL DE TERMES PAR PROC: NZLOC
@@ -393,6 +396,12 @@ C --- PARTIE TRIANGULAIRE SUPERIEURE
 C ---- TERME NON NUL
           IF (LNN) THEN
             ITERM=ITERM+1
+	    IF (TYPE.EQ.'S') THEN
+	      IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
+	    ELSE IF (TYPE.EQ.'C') THEN
+	      RAUX1=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
+	      IF (RAUX1.GT.RR4MAX) CALL ASSERT(.FALSE.)
+	    ENDIF
             IF (LDIST) THEN
               IF (TYPE.EQ.'S') THEN
                 SMPSK%IRN_loc(ITERM)=ILIGG
@@ -482,6 +491,12 @@ C --- PARTIE TRIANGULAIRE INFERIEURE
                 ILIGG=ILIGL
                 JCOLG=JCOLL
               ENDIF
+	      IF (TYPE.EQ.'S') THEN
+	        IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
+	      ELSE IF (TYPE.EQ.'C') THEN
+	        RAUX1=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
+	        IF (RAUX1.GT.RR4MAX) CALL ASSERT(.FALSE.)
+	      ENDIF
               IF (LDIST) THEN
                 IF (TYPE.EQ.'S') THEN
                   SMPSK%IRN_loc(ITERM)=JCOLG

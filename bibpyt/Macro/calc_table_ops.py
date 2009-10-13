@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,8 +19,6 @@
 # ======================================================================
 
 # RESPONSABLE MCOURTOI M.COURTOIS
-from types import *
-EnumTypes = (ListType, TupleType)
 
 def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    """
@@ -92,7 +90,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
       # 2. Traitement de EXTR
       if occ['OPERATION'] == 'EXTR':
          lpar = occ['NOM_PARA']
-         if not type(lpar) in EnumTypes:
+         if type(lpar) not in (list, tuple):
             lpar = [lpar]
          for p in lpar:
             if not p in tab.para:
@@ -116,18 +114,18 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
       # 5. Traitement de COMB
       if occ['OPERATION'] == 'COMB':
          tab2 = occ['TABLE'].EXTR_TABLE()
-         opts = [tab, tab2]
+         lpar = []
          if occ.get('NOM_PARA') != None:
             lpar = occ['NOM_PARA']
-            if not type(lpar) in EnumTypes:
+            if type(lpar) not in (list, tuple):
                lpar = [lpar]
             for p in lpar:
                if not p in tab.para:
                   UTMESS('F','TABLE0_4',valk=[p, TABLE.nom])
                if not p in tab2.para:
                   UTMESS('F','TABLE0_5',valk=[p,occ['TABLE'].nom] )
-            opts.append(lpar)
-         tab = merge(*opts)
+         restrict = occ.get('RESTREINT') == 'OUI'
+         tab = merge(tab, tab2, lpar, restrict=restrict)
    
       #----------------------------------------------
       # 6. Traitement de OPER
@@ -167,7 +165,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    # surcharge par le titre fourni
    tit = args['TITRE']
    if tit != None:
-      if not type(tit) in EnumTypes:
+      if type(tit) not in (list, tuple):
          tit = [tit]
       dprod['TITRE'] = tuple(['%-80s' % lig for lig in tit])
    # type de la table de sortie à passer à CREA_TABLE

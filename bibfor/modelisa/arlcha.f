@@ -2,7 +2,7 @@
      &                  CHARGE,EQ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,16 +76,18 @@ C
       CHARACTER*19  LIGRE,CIMPO,CMULT
       CHARACTER*16  NOMMO1,NOMMO2
       CHARACTER*8   K8BID
-      INTEGER       NNC,DDC,NL,NT,MX
-      INTEGER       B0,B1,B2,C0,C1,C2,D0,D1,D2,D3,D4,D5,IRET
-      INTEGER       P0,P1,I,J,I1,I2,NEL0,NEL,NDD0,NDD,NLG0,NLG
-      LOGICAL       IA1,IA2,IAC
-      REAL*8        R
+      INTEGER       NNC,DDC,NMTE,NTRG,MAXMT
+      INTEGER       VLMT0,VLMT1,VLMT2,MTMO0,MTMO1,MTMO2,NTERM0,NTERM1,
+     &              NTERM2,NTERM3,NTERM4,NTERM5,IRET
+      INTEGER       PMAT0,PMAT1,IAUX,JAUX,IND1,IND2,NEL0,NEL,NDD0,NDD,
+     &              NLAGR0,NLAGR
+      LOGICAL       INDA1,INDA2,INDAC
+      REAL*8        VLR
       INTEGER       IFM,NIV
       INTEGER       NTECMP
       PARAMETER     (NTECMP=6)
       CHARACTER*16  TECMP(NTECMP)
-      INTEGER       NU(NTECMP)
+      INTEGER       NELEM(NTECMP)
 C
       DATA TECMP / 'D_DEPL_R_DX ','D_DEPL_R_DY ','D_DEPL_R_DZ ',
      &             'D_DEPL_R_DRX','D_DEPL_R_DRY','D_DEPL_R_DRZ' /
@@ -105,83 +107,83 @@ C
 C
 C --- NUMERO D'ASSEMBLAGE
 C
-      IA1 = (CINE(1).EQ.'COQUE   ')
-      IA2 = (CINE(2).EQ.'COQUE   ')
-      IAC = (CINE(3).EQ.'COQUE   ')
-      I1 = 0
-      IF (IA1) I1 = IOR(I1,1)
-      IF (IAC) I1 = IOR(I1,2)
-      I2 = 0
-      IF (IA2) I2 = IOR(I2,1)
-      IF (IAC) I2 = IOR(I2,2)
+      INDA1 = (CINE(1).EQ.'COQUE   ')
+      INDA2 = (CINE(2).EQ.'COQUE   ')
+      INDAC = (CINE(3).EQ.'COQUE   ')
+      IND1 = 0
+      IF (INDA1) IND1 = IOR(IND1,1)
+      IF (INDAC) IND1 = IOR(IND1,2)
+      IND2 = 0
+      IF (INDA2) IND2 = IOR(IND2,1)
+      IF (INDAC) IND2 = IOR(IND2,2)
       DDC = DIME
-      IF (IAC) DDC = DDC + DIME - 1
-      IF ((I1.LT.0).OR.(I1.GT.3)) CALL ASSERT(.FALSE.)
-      IF ((I2.LT.0).OR.(I2.GT.3)) CALL ASSERT(.FALSE.)
+      IF (INDAC) DDC = DDC + DIME - 1
+      IF ((IND1.LT.0).OR.(IND1.GT.3)) CALL ASSERT(.FALSE.)
+      IF ((IND2.LT.0).OR.(IND2.GT.3)) CALL ASSERT(.FALSE.)
 C
 C --- LECTURE DONNEES MATRICES MORSES
 C
       NOMMO1 = NOM1(1:10)//'.MORSE'
       CALL JELIRA(NOMMO1(1:16)//'.INO','NMAXOC',NNC,ZK8)
-      NL = DDC*NNC
-      CALL JEVEUO(NOMMO1(1:16)//'.VALE','L',B0)
-      CALL JEVEUO(NOMMO1(1:16)//'.INO','L',B1)
-      CALL JEVEUO(JEXATR(NOMMO1(1:16)//'.INO','LONCUM'),'L',B2)
+      NMTE = DDC*NNC
+      CALL JEVEUO(NOMMO1(1:16)//'.VALE','L',VLMT0)
+      CALL JEVEUO(NOMMO1(1:16)//'.INO','L',VLMT1)
+      CALL JEVEUO(JEXATR(NOMMO1(1:16)//'.INO','LONCUM'),'L',VLMT2)
 C
       NOMMO2 = NOM2(1:10)//'.MORSE'
-      CALL JEVEUO(NOMMO2(1:16)//'.VALE','L',C0)
-      CALL JEVEUO(NOMMO2(1:16)//'.INO','L',C1)
-      CALL JEVEUO(JEXATR(NOMMO2(1:16)//'.INO','LONCUM'),'L',C2)
+      CALL JEVEUO(NOMMO2(1:16)//'.VALE','L',MTMO0)
+      CALL JEVEUO(NOMMO2(1:16)//'.INO','L',MTMO1)
+      CALL JEVEUO(JEXATR(NOMMO2(1:16)//'.INO','LONCUM'),'L',MTMO2)
 C
 C --- NUMERO DES DDLS
 C
-      DO 10 I = 1, NTECMP
-        CALL JENONU(JEXNOM('&CATA.TE.NOMTE',TECMP(I)),NU(I))
+      DO 10 IAUX = 1, NTECMP
+        CALL JENONU(JEXNOM('&CATA.TE.NOMTE',TECMP(IAUX)),NELEM(IAUX))
  10   CONTINUE
 C
 C --- SELECTION DES EQUATIONS DE COUPLAGE
 C
-      CALL WKVECT('&&ARLCHA.MAX','V V R',2*NNC,MX)
+      CALL WKVECT('&&ARLCHA.MAX','V V R',2*NNC,MAXMT)
 C
 C --- CALCUL MAXIMA TERMES POUR ADIMENSIONNEMENT
 C
-      CALL ARLMAX(DIME,IA1,IAC,NNC,ZR(B0),
-     &            ZI(B2),ZR(MX))
-      CALL ARLMAX(DIME,IA2,IAC,NNC,ZR(C0),
-     &            ZI(C2),ZR(MX))
+      CALL ARLMAX(DIME,INDA1,INDAC,NNC,ZR(VLMT0),
+     &            ZI(VLMT2),ZR(MAXMT))
+      CALL ARLMAX(DIME,INDA2,INDAC,NNC,ZR(MTMO0),
+     &            ZI(MTMO2),ZR(MAXMT))
 C
-      P0 = MX
-      R = 0.D0
-      DO 30 I = 1, NNC
-        IF (ZR(P0).GT.R) R = ZR(P0)
-        P0 = P0 + 2
+      PMAT0 = MAXMT
+      VLR = 0.D0
+      DO 30 IAUX = 1, NNC
+        IF (ZR(PMAT0).GT.VLR) VLR = ZR(PMAT0)
+        PMAT0 = PMAT0 + 2
  30   CONTINUE
 C
-      P0 = MX-2
-      R  = R*PREC2
-      DO 40 I = 1, NNC
-        P0 = P0 + 2
-        IF (ZR(P0).GE.R) GOTO 40
-        DO 50 J = 1, 5
-          EQ(J,I) = .FALSE.
+      PMAT0 = MAXMT-2
+      VLR  = VLR*PREC2
+      DO 40 IAUX = 1, NNC
+        PMAT0 = PMAT0 + 2
+        IF (ZR(PMAT0).GE.VLR) GOTO 40
+        DO 50 JAUX = 1, 5
+          EQ(JAUX,IAUX) = .FALSE.
  50     CONTINUE
  40   CONTINUE
 C
 C --- COMPTE NOMBRE D'EQUATIONS DE COUPLAGE
 C
-      NL = 0
-      DO 60 I = 1, NNC
-        DO 60 J = 1, DDC
-          IF (EQ(J,I)) NL = NL + 1
+      NMTE = 0
+      DO 60 IAUX = 1, NNC
+        DO 60 JAUX = 1, DDC
+          IF (EQ(JAUX,IAUX)) NMTE = NMTE + 1
  60   CONTINUE
 C
 C --- ADIMENSIONNEMENT ET COMPTE DES TERMES DES EQUATIONS
 C
-      NT = 0
-      CALL ARLCH0(DIME  ,IA1   ,IAC   ,NNC   ,ZI(B2),
-     &            ZR(MX),PRECBB,EQ    ,ZR(B0),NT)
-      CALL ARLCH0(DIME  ,IA2   ,IAC   ,NNC   ,ZI(C2),
-     &            ZR(MX),PRECBB,EQ    ,ZR(C0),NT)
+      NTRG = 0
+      CALL ARLCH0(DIME  ,INDA1   ,INDAC   ,NNC   ,ZI(VLMT2),
+     &            ZR(MAXMT),PRECBB,EQ    ,ZR(VLMT0),NTRG)
+      CALL ARLCH0(DIME  ,INDA2   ,INDAC   ,NNC   ,ZI(MTMO2),
+     &            ZR(MAXMT),PRECBB,EQ    ,ZR(MTMO0),NTRG)
       CALL JEDETR('&&ARLCHA.MAX')
 C
 C --- ALLOCATION / AGRANDISSEMENT .CHME
@@ -189,54 +191,54 @@ C
       CALL JEEXIN(LIGRE//'.LIEL',IRET)
       IF (IRET.NE.0) THEN
         CALL JELIRA(LIGRE//'.LIEL','LONT',NEL,K8BID)
-        CALL JEVEUO(LIGRE//'.LIEL','L',D0)
-        NEL0 = -ZI(D0-2+NEL)
+        CALL JEVEUO(LIGRE//'.LIEL','L',NTERM0)
+        NEL0 = -ZI(NTERM0-2+NEL)
       ELSE
         NEL0 = 0
       ENDIF
 C
 C --- CREATION OU EXTENSION DES CARTES .CMULT ET .CIMPO
 C
-      CALL CRAGCH(NT,'REEL','REEL',LIGRE)
+      CALL CRAGCH(NTRG,'REEL','REEL',LIGRE)
 C
 C --- CREATION OU EXTENSION DU LIGREL DE CHARGE LIGRCH
 C
-      CALL CRAGLC(NT,LIGRE)
+      CALL CRAGLC(NTRG,LIGRE)
 C
 C --- LECTURE OBJETS CHARGE
 C
-      CALL JEVEUO(CIMPO(1:19)//'.DESC','E',D0)
-      CALL JEVEUO(CIMPO(1:19)//'.NOLI','E',D1)
-      CALL JEVEUO(CIMPO(1:19)//'.LIMA','E',D2)
+      CALL JEVEUO(CIMPO(1:19)//'.DESC','E',NTERM0)
+      CALL JEVEUO(CIMPO(1:19)//'.NOLI','E',NTERM1)
+      CALL JEVEUO(CIMPO(1:19)//'.LIMA','E',NTERM2)
 C
-      CALL JEVEUO(CMULT(1:19)//'.DESC','E',D3)
-      CALL JEVEUO(CMULT(1:19)//'.NOLI','E',D4)
-      CALL JEVEUO(CMULT(1:19)//'.LIMA','E',D5)
+      CALL JEVEUO(CMULT(1:19)//'.DESC','E',NTERM3)
+      CALL JEVEUO(CMULT(1:19)//'.NOLI','E',NTERM4)
+      CALL JEVEUO(CMULT(1:19)//'.LIMA','E',NTERM5)
 
-      NDD0 = ZI(D0+2)
-      ZI(D0+2) = ZI(D0+1)
-      ZI(D3+2) = ZI(D3+1)
+      NDD0 = ZI(NTERM0+2)
+      ZI(NTERM0+2) = ZI(NTERM0+1)
+      ZI(NTERM3+2) = ZI(NTERM3+1)
 
       NDD = NDD0
-      P0 = 3 + 2*NDD0
-      P1 = P0 + NDD0 + 2*NT
+      PMAT0 = 3 + 2*NDD0
+      PMAT1 = PMAT0 + NDD0 + 2*NTRG
 
       NEL = NEL0
 
-      DO 70 I = 1, NT
+      DO 70 IAUX = 1, NTRG
 
-        ZK24(D1+NDD) = LIGRE
-        ZK24(D4+NDD) = LIGRE
+        ZK24(NTERM1+NDD) = LIGRE
+        ZK24(NTERM4+NDD) = LIGRE
         NDD = NDD + 1
         NEL = NEL + 1
-        ZI(D0+P0  )  = -3
-        ZI(D3+P0  )  = -3
-        ZI(D0+P0+1)  = NDD
-        ZI(D3+P0+1)  = NDD
-        ZI(D0+P1  )  = 2
-        ZI(D3+P1  )  = 2
-        ZI(D2-1+NDD) = -NEL
-        ZI(D5-1+NDD) = -NEL
+        ZI(NTERM0+PMAT0  )  = -3
+        ZI(NTERM3+PMAT0  )  = -3
+        ZI(NTERM0+PMAT0+1)  = NDD
+        ZI(NTERM3+PMAT0+1)  = NDD
+        ZI(NTERM0+PMAT1  )  = 2
+        ZI(NTERM3+PMAT1  )  = 2
+        ZI(NTERM2-1+NDD) = -NEL
+        ZI(NTERM5-1+NDD) = -NEL
         CALL JECROC(JEXNUM(CIMPO(1:19)//'.LIMA',NDD))
         CALL JEECRA(JEXNUM(CIMPO(1:19)//'.LIMA',NDD),'LONMAX',1,' ')
         CALL JECROC(JEXNUM(CMULT(1:19)//'.LIMA',NDD))
@@ -245,100 +247,100 @@ C
         CALL JEECRA(JEXNUM(LIGRE(1:19)//'.LIEL',NEL),'LONMAX',2,' ')
         CALL JECROC(JEXNUM(LIGRE(1:19)//'.NEMA',NEL))
         CALL JEECRA(JEXNUM(LIGRE(1:19)//'.NEMA',NEL),'LONMAX',4,' ')
-        P0 = P0 + 2
-        P1 = P1 + 1
+        PMAT0 = PMAT0 + 2
+        PMAT1 = PMAT1 + 1
 
  70   CONTINUE
 
-      CALL JEVEUO(LIGRE(1:19)//'.NBNO','E',D0)
-      NLG0 = ZI(D0)
-      ZI(D0) = NLG0 + 2*NL
+      CALL JEVEUO(LIGRE(1:19)//'.NBNO','E',NTERM0)
+      NLAGR0 = ZI(NTERM0)
+      ZI(NTERM0) = NLAGR0 + 2*NMTE
 
-      CALL POSLAG('12',P0,P1)
-      CALL JEVEUO(LIGRE//'.LGNS','E',D0)
-      D0 = D0 + NLG0
+      CALL POSLAG('12',PMAT0,PMAT1)
+      CALL JEVEUO(LIGRE//'.LGNS','E',NTERM0)
+      NTERM0 = NTERM0 + NLAGR0
 
-      DO 80 I = 1, NL
-        ZI(D0  ) = P0
-        ZI(D0+1) = P1
-        D0 = D0 + 2
+      DO 80 IAUX = 1, NMTE
+        ZI(NTERM0  ) = PMAT0
+        ZI(NTERM0+1) = PMAT1
+        NTERM0 = NTERM0 + 2
  80   CONTINUE
 C
 C --- ECRITURE .CHME
 C
-      CALL JEVEUO(CIMPO(1:19)//'.VALE','E',D0)
-      CALL JEVEUO(CMULT(1:19)//'.VALE','E',D1)
-      CALL JEVEUO(LIGRE(1:19)//'.LIEL','E',D2)
-      CALL JEVEUO(JEXNUM(LIGRE(1:19)//'.NEMA',NEL0+1),'E',D3)
-      D3 = D3 - 4*NEL0
+      CALL JEVEUO(CIMPO(1:19)//'.VALE','E',NTERM0)
+      CALL JEVEUO(CMULT(1:19)//'.VALE','E',NTERM1)
+      CALL JEVEUO(LIGRE(1:19)//'.LIEL','E',NTERM2)
+      CALL JEVEUO(JEXNUM(LIGRE(1:19)//'.NEMA',NEL0+1),'E',NTERM3)
+      NTERM3 = NTERM3 - 4*NEL0
       NDD = NDD0
       NEL = NEL0
 C
 C --- MATRICE MORSE 1
 C
-      NLG = NLG0
+      NLAGR = NLAGR0
 
-      GOTO (90,100,110) I1
+      GOTO (90,100,110) IND1
 
-      CALL ARLCH1(DIME  ,NNC   ,0     ,NU    ,ZR(B0),
-     &            ZI(B1),ZI(B2),PRECBB,EQ    ,NDD   ,
-     &            NEL   ,NLG   ,ZR(D0),ZR(D1),ZI(D2),
-     &            ZI(D3))
+      CALL ARLCH1(DIME  ,NNC   ,0     ,NELEM    ,ZR(VLMT0),
+     &            ZI(VLMT1),ZI(VLMT2),PRECBB,EQ    ,NDD   ,
+     &            NEL   ,NLAGR   ,ZR(NTERM0),ZR(NTERM1),ZI(NTERM2),
+     &            ZI(NTERM3))
       GOTO 120
 
  90   CONTINUE
-      CALL ARLCH2(DIME  ,NNC   ,0     ,NU    ,ZR(B0),
-     &            ZI(B1),ZI(B2),PRECBB,EQ    ,NDD   ,
-     &            NEL   ,NLG   ,ZR(D0),ZR(D1),ZI(D2),
-     &            ZI(D3))
+      CALL ARLCH2(DIME  ,NNC   ,0     ,NELEM    ,ZR(VLMT0),
+     &            ZI(VLMT1),ZI(VLMT2),PRECBB,EQ    ,NDD   ,
+     &            NEL   ,NLAGR   ,ZR(NTERM0),ZR(NTERM1),ZI(NTERM2),
+     &            ZI(NTERM3))
       GOTO 120
 
  100  CONTINUE
-      CALL ARLCH3(DIME  ,NNC   ,0     ,NU    ,ZR(B0),
-     &            ZI(B1),ZI(B2),PRECBB,EQ    ,NDD   ,
-     &            NEL   ,NLG   ,ZR(D0),ZR(D1),ZI(D2),
-     &            ZI(D3))
+      CALL ARLCH3(DIME  ,NNC   ,0     ,NELEM    ,ZR(VLMT0),
+     &            ZI(VLMT1),ZI(VLMT2),PRECBB,EQ    ,NDD   ,
+     &            NEL   ,NLAGR   ,ZR(NTERM0),ZR(NTERM1),ZI(NTERM2),
+     &            ZI(NTERM3))
       GOTO 120
 
  110  CONTINUE
-      CALL ARLCH4(DIME  ,NNC   ,0     ,NU    ,ZR(B0),
-     &            ZI(B1),ZI(B2),PRECBB,EQ    ,NDD   ,
-     &            NEL   ,NLG   ,ZR(D0),ZR(D1),ZI(D2),
-     &            ZI(D3))
+      CALL ARLCH4(DIME  ,NNC   ,0     ,NELEM    ,ZR(VLMT0),
+     &            ZI(VLMT1),ZI(VLMT2),PRECBB,EQ    ,NDD   ,
+     &            NEL   ,NLAGR   ,ZR(NTERM0),ZR(NTERM1),ZI(NTERM2),
+     &            ZI(NTERM3))
 
  120  CONTINUE
 C
 C --- MATRICE MORSE 2
 C
-      NLG = NLG0
+      NLAGR = NLAGR0
 
-      GOTO (130,140,150) I2
+      GOTO (130,140,150) IND2
 
-      CALL ARLCH1(DIME  ,NNC   ,1     ,NU    ,ZR(C0),
-     &            ZI(C1),ZI(C2),PRECBB,EQ    ,NDD   ,
-     &            NEL   ,NLG   ,ZR(D0),ZR(D1),ZI(D2),
-     &            ZI(D3))
+      CALL ARLCH1(DIME  ,NNC   ,1     ,NELEM    ,ZR(MTMO0),
+     &            ZI(MTMO1),ZI(MTMO2),PRECBB,EQ    ,NDD   ,
+     &            NEL   ,NLAGR   ,ZR(NTERM0),ZR(NTERM1),ZI(NTERM2),
+     &            ZI(NTERM3))
       GOTO 160
 
  130  CONTINUE
-      CALL ARLCH2(DIME  ,NNC   ,1     ,NU    ,ZR(C0),
-     &            ZI(C1),ZI(C2),PRECBB,EQ    ,NDD   ,
-     &            NEL   ,NLG   ,ZR(D0),ZR(D1),ZI(D2),
-     &            ZI(D3))
+      CALL ARLCH2(DIME  ,NNC   ,1     ,NELEM    ,ZR(MTMO0),
+     &            ZI(MTMO1),ZI(MTMO2),PRECBB,EQ    ,NDD   ,
+     &            NEL   ,NLAGR   ,ZR(NTERM0),ZR(NTERM1),ZI(NTERM2),
+     &            ZI(NTERM3))
       GOTO 160
 
  140  CONTINUE
-      CALL ARLCH3(DIME  ,NNC   ,1     ,NU    ,ZR(C0),
-     &            ZI(C1),ZI(C2),PRECBB,EQ    ,NDD   ,
-     &            NEL   ,NLG   ,ZR(D0),ZR(D1),ZI(D2),
-     &            ZI(D3))
+      CALL ARLCH3(DIME  ,NNC   ,1     ,NELEM    ,ZR(MTMO0),
+     &            ZI(MTMO1),ZI(MTMO2),PRECBB,EQ    ,NDD   ,
+     &            NEL   ,NLAGR   ,ZR(NTERM0),ZR(NTERM1),ZI(NTERM2),
+     &            ZI(NTERM3))
       GOTO 160
 
  150  CONTINUE
-      CALL ARLCH4(DIME  ,NNC   ,1     ,NU    ,ZR(C0),
-     &            ZI(C1),ZI(C2),PRECBB,EQ    ,NDD   ,
-     &            NEL   ,NLG   ,ZR(D0),ZR(D1),ZI(D2),
-     &            ZI(D3))
+      CALL ARLCH4(DIME  ,NNC   ,1     ,NELEM    ,ZR(MTMO0),
+     &            ZI(MTMO1),ZI(MTMO2),PRECBB,EQ    ,NDD   ,
+     &            NEL   ,NLAGR   ,ZR(NTERM0),ZR(NTERM1),ZI(NTERM2),
+     &            ZI(NTERM3))
 
  160  CONTINUE
 C

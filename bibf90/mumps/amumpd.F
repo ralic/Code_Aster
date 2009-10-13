@@ -3,7 +3,7 @@
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
 !&           CONFIGURATION MANAGEMENT OF EDF VERSION                   
-!& MODIF AMUMPD MUMPS  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPD MUMPS  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -76,13 +76,13 @@ C================================================================
       PARAMETER (NMXINS=5)
       TYPE (DMUMPS_STRUC) , TARGET  :: DMPS(NMXINS)
       TYPE (DMUMPS_STRUC) , POINTER :: DMPSK
-      INTEGER      JSLVK,JSLVR,RANG,NBPROC,NIV,IFM,IBID,IETDEB
-      INTEGER      IETRAT,JREFA
+      INTEGER      JSLVK,JSLVR,RANG,NBPROC,NIV,IFM,IBID,IETDEB,
+     &             IETRAT,JREFA,NPREC,JSLVI,N,IPIV,I
       CHARACTER*1  ROUCS(NMXINS),ROUC,TYPE,PREC,PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOMAT,NOSOLS(NMXINS)
-      CHARACTER*24 KMONIT(12)
+      CHARACTER*24 KMONIT(12),KPIV
       REAL*8       EPSMAX,VALR(2),RDESQ,RCTDEB,TEMPS(6),EPSMAT
       COMPLEX*16   CBID(1)
       LOGICAL      LQUALI,ELI2LG,LDIST,LRESOL,LMD
@@ -130,6 +130,10 @@ C --- => LQUALI
 C --- POUR "ELIMINER" LE 2EME LAGRANGE :
       ELI2LG=ZK24(JSLVK-1+6)(1:3).EQ.'OUI'
 
+C --- PARAMETRE NPREC
+      CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
+      NPREC=ZI(JSLVI)
+      
 C --- MUMPS PARALLELE DISTRIBUE ?
       CALL JEVEUO(NOMAT//'.REFA','L',JREFA)
       LDIST=(ZK24(JREFA-1+11).NE.'MPI_COMPLET')
@@ -194,7 +198,8 @@ C              -- C'EST OK
         ELSE IF ((DMPSK%INFOG(1).EQ.-5).OR.(DMPSK%INFOG(1).EQ.-7)) THEN
           CALL U2MESS('F','FACTOR_64')
         ELSE IF (DMPSK%INFOG(1).EQ.-6) THEN
-          CALL U2MESS('F','FACTOR_69')
+	  IRET=2
+	  GOTO 99
         ELSE
           IF (DMPSK%INFOG(1).LT.0) THEN
             CALL U2MESI('F','FACTOR_55',1,DMPSK%INFOG(1))
@@ -203,7 +208,6 @@ C              -- C'EST OK
           ENDIF
         ENDIF
 C        IF(RANG.EQ.0) CALL ASSERT(DMPSK%INFOG(1).EQ.0)
-C --- VERIFICATION DU RENUMEROTEUR EFFECTIVEMENT UTILISE
         IF(ZK24(JSLVK-1+4).NE.'AUTO' .AND.
      &     DMPSK%ICNTL(7).NE.DMPSK%INFOG(7))
      &     CALL U2MESK('A','FACTOR_50',1,ZK24(JSLVK-1+4))
@@ -222,8 +226,7 @@ C       ------------------------------------------------
         VALR(1)=(DMPSK%INFOG(13)*100.D0)/DMPSK%N
         VALR(2)=DMPSK%ICNTL(14)*1.D0
         IF (VALR(1).GE.VALR(2)) THEN
-C     PROBLEME DU TROP GRAND NBRE DE PIVOTS NUMERIQUES
-          CALL U2MESR('I','FACTOR_73',2,VALR)
+          IF (NIV.GE.2) CALL U2MESR('I','FACTOR_73',2,VALR)
         ENDIF
         IF (DMPSK%INFOG(1).EQ.0) THEN
 C              -- C'EST OK
@@ -233,12 +236,12 @@ C              -- C'EST OK
           CALL U2MESS('F','FACTOR_53')
         ELSE IF (DMPSK%INFOG(1).EQ.-10) THEN
           IRET=2
+	  GOTO 99
         ELSE IF (DMPSK%INFOG(1).EQ.-13) THEN
           CALL U2MESS('F','FACTOR_54')
         ELSE IF (DMPSK%INFOG(1).EQ.-37) THEN
           CALL U2MESS('F','FACTOR_65')
        ELSE IF (DMPSK%INFOG(1).EQ.-90) THEN
-C     PROBLEME DU TRAITEMENT OUT-OF-CORE DE MUMPS
           CALL U2MESS('F','FACTOR_66'  )
        ELSE
           IF (DMPSK%INFOG(1).LT.0) THEN
@@ -247,6 +250,34 @@ C     PROBLEME DU TRAITEMENT OUT-OF-CORE DE MUMPS
             CALL U2MESI('A','FACTOR_55',1,DMPSK%INFOG(1))
           ENDIF
         ENDIF
+
+C       ------------------------------------------------
+C        DETECTION DE SINGULARITE:
+C       ------------------------------------------------        
+        IF ((NPREC.GE.0).AND.(LRESOL)) THEN
+          KPIV='&&AMUMP.PIVNUL'
+          CALL JEEXIN(KPIV,IBID)
+          IF (IBID.NE.0) THEN
+            CALL ASSERT(.FALSE.)
+          ELSE
+
+	    N=DMPSK%N
+            CALL WKVECT(KPIV,'V V I',N+2,IPIV)
+C --- KPIV(1)= NOMBRE DE PIVOTS QUASI NULS
+            IF (DMPSK%INFOG(28).GT.N) CALL ASSERT(.FALSE.)
+            ZI(IPIV)=DMPSK%INFOG(28)
+C --- KPIV(2)= NOMBRE DE PIVOTS NEGATIFS
+            IF (DMPSK%INFO(12).GT.N) CALL ASSERT(.FALSE.)
+            ZI(IPIV+1)=DMPSK%INFO(12)
+C --- KPIV(3..) LES PIVOTS QUASI NULS
+C            WRITE(IFM,*)'INFOG(28) NPVNEG ',ZI(IPIV),ZI(IPIV+1)
+            DO I=1,DMPSK%INFOG(28)
+              ZI(IPIV+1+I)=DMPSK%PIVNUL_LIST(I)
+C	      WRITE(IFM,*)'AMUMPD I PIVOT ',I,ZI(IPIV+1+I)
+            ENDDO
+          ENDIF   
+        ENDIF
+        
         IF ((( RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
           IF (.NOT.LQUALI) THEN
             IF (LDIST) THEN
@@ -357,7 +388,7 @@ C       ------------------------------------------------
       ENDIF
 
 C     -- ON REACTIVE LA LEVEE D'EXCEPTION
-      CALL MATFPE(1)
+   99 CALL MATFPE(1)
       CALL JEDEMA()
 
 #endif

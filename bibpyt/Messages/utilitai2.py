@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai2 Messages  DATE 13/10/2009   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,31 +23,31 @@ def _(x) : return x
 cata_msg = {
 
 4 : _("""
- problème pour récupérer les variables d'accès
+ Il y a un problème pour récupérer les variables d'accès.
 """),
 
 5 : _("""
- on ne traite que des variables d'accès réelles
+ Seules les variables d'accès réelles sont traitées.
 """),
 
 6 : _("""
- on ne traite que des paramètres réels
+ Seuls les paramètres réels sont traités.
 """),
 
 7 : _("""
- unite logique inexistante
+ L'unité logique est inexistante.
 """),
 
 8 : _("""
- fonction a une seule variable admis
+  Les fonctions à une seule variable sont admises.
 """),
 
 10 : _("""
- on n'imprime pas encore de fonction de type " %(k1)s "      desole.
+  Les fonctions de type " %(k1)s " ne sont pas encore imprimées.
 """),
 
 11 : _("""
- on ne sait pas imprimer une fonction de type " %(k1)s "      desole.
+  Les fonctions de type " %(k1)s " ne sont pas imprimées.
 """),
 
 12 : _("""
@@ -74,9 +74,9 @@ cata_msg = {
  on ne trouve pas l'equation  %(k1)s  dans le "prof_chno"
 """),
 
-35 : _("""
- il y a un bug
-"""),
+
+
+
 
 36 : _("""
  group_ma_interf: un element n'est ni tria3 ni tria6 ni quad4 ni quad8
@@ -99,7 +99,7 @@ cata_msg = {
 
 
 47 : _("""
- le fichier " %(k1)s " n'est relie a aucune unite logique.
+  Le fichier " %(k1)s " n'est relié a aucune unité logique.
 """),
 
 
@@ -110,11 +110,11 @@ cata_msg = {
 """),
 
 53 : _("""
- nombre max d'iterations atteint
+ Le nombre maximum d'iterations est atteint.
 """),
 
 54 : _("""
- la dimension d'espace doit etre <= 3
+  La dimension de l'espace doit être inférieur ou égal à 3.
 """),
 
 55 : _("""
@@ -261,8 +261,8 @@ cata_msg = {
 """),
 
 94 : _("""
- Champ non prevu :  %(k1)s
- Demandez l'évolution
+ Le champ %(k1)s n'est pas prévu.
+ Vous pouvez demander l'évolution.
 """),
 
 95 : _("""

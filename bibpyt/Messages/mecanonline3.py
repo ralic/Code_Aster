@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF mecanonline3 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,10 +28,6 @@ cata_msg = {
 
 71 : _("""
  chargement onde plane et FETI incompatibles
-"""),
-
-72 : _("""
- forces fluides sur les grappes et FETI incompatibles
 """),
 
 73 : _("""

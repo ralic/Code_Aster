@@ -4,7 +4,7 @@
       REAL*8        XYZL(3,*), PGL(3,*), DEPL(*), CDL(*)
       CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 13/10/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C     CONTRAINTES ET DEFORMATIONS DE L'ELEMENT DE PLAQUE DST
+C     DEFORMATIONS DE L'ELEMENT DE PLAQUE DST
 C     ------------------------------------------------------------------
 C     IN  XYZL   : COORDONNEES LOCALES DES TROIS NOEUDS
 C     IN  OPTION : NOM DE L'OPTION DE CALCUL
@@ -30,8 +30,8 @@ C     IN  PGL    : MATRICE DE PASSAGE GLOBAL - LOCAL
 C     IN  ICOU   : NUMERO DE LA COUCHE
 C     IN  INIV   : NIVEAU DANS LA COUCHE (-1:INF , 0:MOY , 1:SUP)
 C     IN  DEPL   : DEPLACEMENTS
-C     OUT CDL    : CONTRAINTES OU DEFORMATIONS AUX NOEUDS DANS LE REPERE
-C                  INTRINSEQUE A L'ELEMENT
+C     OUT CDL    : DEFORMATIONS AUX NOEUDS 'EPSI_ELNO_DEPL'
+C                   DANS LE REPERE INTRINSEQUE A L'ELEMENT
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -49,31 +49,24 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  MULTIC,NE,JCACO,K,J,I,IE
-      REAL*8   DEPF(9),DEPM(6)
+      INTEGER  MULTIC,NE,JCACO,K,J,I,IE,NBCOU,JNBSP
+      REAL*8   DEPF(9),DEPM(6),HIC,ZMIN
       REAL*8   DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2)
       REAL*8   H(3,3),D1I(2,2),D2I(2,4),DFC(3,2)
       REAL*8   HFT2(2,6),HLT2(4,6),AN(3,9)
       REAL*8   BFB(3,9),BFA(3,3),BFN(3,9),BF(3,9),BCA(2,3),BCN(2,9)
       REAL*8   BM(3,6),SM(3),SF(3),TA(6,3),BLA(4,3),BLN(4,9)
-      REAL*8   VT(2),LAMBDA(4)
+      REAL*8   VT(2),LAMBDA(4),EXCEN
       REAL*8   EPS(3),SIG(3),DCIS(2),CIST(2),X3I,EPAIS,C(3),S(3)
       REAL*8   QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
       LOGICAL  ELASCO
       CHARACTER*4 FAMI
 C     ------------------------------------------------------------------
 C
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-        CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+      CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
      +                                         IVF,IDFDX,IDFD2,JGANO)
-        NE  = NPG
-        FAMI='RIGI'
-      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-        CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
-     +                                         IVF,IDFDX,IDFD2,JGANO)
-        NE  = NNO
-        FAMI='NOEU'
-      END IF
+      NE  = NNO
+      FAMI='NOEU'
 C
 C     ----- RAPPEL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEES -------------------------
@@ -86,11 +79,17 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
       IF (MULTIC.EQ.0) THEN
         CALL JEVECH('PCACOQU','L',JCACO)
         EPAIS = ZR(JCACO)
-        X3I = 0.D0
+        EXCEN = ZR(JCACO+5-1)
+        CALL JEVECH('PNBSP_I','L',JNBSP)
+        NBCOU = ZI(JNBSP)
+        HIC = EPAIS/NBCOU
+        ZMIN = -EPAIS/2.0D0
         IF (INIV.LT.0) THEN
-          X3I = X3I - EPAIS/2.D0
+          X3I = ZMIN + (ICOU-1)*HIC + EXCEN
+        ELSE IF (INIV.EQ.0) THEN
+          X3I = ZMIN + (ICOU-1)*HIC + HIC/2.0D0 + EXCEN
         ELSE IF (INIV.GT.0) THEN
-          X3I = X3I + EPAIS/2.D0
+          X3I = ZMIN + (ICOU-1)*HIC + HIC + EXCEN
         END IF
         DO 10 K = 1,9
           H(K,1) = DM(K,1)/EPAIS
@@ -144,7 +143,6 @@ C     ------ VT = BCA.AN.DEPF ------------------------------------------
 C     ------- CALCUL DE LA MATRICE BFB ---------------------------------
       CALL DSTBFB ( CARAT3(9) , BFB )
 C
-      IF (OPTION(1:4).EQ.'EPSI') THEN
         DO 190 IE = 1,NE
 C ---     COORDONNEES DU POINT D'INTEGRATION COURANT :
 C         ------------------------------------------
@@ -187,108 +185,5 @@ C           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
           CDL(5+6* (IE-1)) = DCIS(1)/2.D0
           CDL(6+6* (IE-1)) = DCIS(2)/2.D0
   190   CONTINUE
-C
-      ELSE IF (OPTION(1:4).EQ.'SIGM') THEN
-C        ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ---------
-        CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
-        CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
-        IF (MULTIC.GT.0) THEN
-C           ------- CALCUL DU PRODUIT HL.T2 ---------------------------
-          CALL DSXHLT ( DF, CARAT3(9), HLT2 )
-C           -------------- BLA = HLT2.TA ------------------------------
-          C(1) = CARAT3(16)
-          C(2) = CARAT3(17)
-          C(3) = CARAT3(18)
-          S(1) = CARAT3(19)
-          S(2) = CARAT3(20)
-          S(3) = CARAT3(21)
-          DO 200 K = 1,18
-            TA(K,1) = 0.D0
-  200     CONTINUE
-          TA(1,1) = -8.D0*C(1)
-          TA(2,3) = -8.D0*C(3)
-          TA(3,1) = -4.D0*C(1)
-          TA(3,2) = 4.D0*C(2)
-          TA(3,3) = -4.D0*C(3)
-          TA(4,1) = -8.D0*S(1)
-          TA(5,3) = -8.D0*S(3)
-          TA(6,1) = -4.D0*S(1)
-          TA(6,2) = 4.D0*S(2)
-          TA(6,3) = -4.D0*S(3)
-          DO 210 K = 1,12
-            BLA(K,1) = 0.D0
-  210     CONTINUE
-          DO 240 I = 1,4
-            DO 230 J = 1,3
-              DO 220 K = 1,6
-                BLA(I,J) = BLA(I,J) + HLT2(I,K)*TA(K,J)
-  220         CONTINUE
-  230       CONTINUE
-  240     CONTINUE
-C           -------- LAMBDA = BLA.AN.DEPF ------------------------------
-          DO 250 K = 1,36
-            BLN(K,1) = 0.D0
-  250     CONTINUE
-          DO 260 I = 1,4
-            LAMBDA(I) = 0.D0
-  260     CONTINUE
-          DO 290 I = 1,4
-            DO 280 J = 1,9
-              DO 270 K = 1,3
-                BLN(I,J) = BLN(I,J) + BLA(I,K)*AN(K,J)
-  270         CONTINUE
-              LAMBDA(I) = LAMBDA(I) + BLN(I,J)*DEPF(J)
-  280       CONTINUE
-  290     CONTINUE
-          DO 300 J = 1,4
-            CIST(1) = CIST(1) + D2I(1,J)*LAMBDA(J)
-            CIST(2) = CIST(2) + D2I(2,J)*LAMBDA(J)
-  300     CONTINUE
-        END IF
-        DO 410 IE = 1,NE
-C ---     COORDONNEES DU POINT D'INTEGRATION COURANT :
-C         ------------------------------------------
-          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
-          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
-C           ----- CALCUL DE LA MATRICE BFA AU POINT QSI ETA -----------
-          CALL DSTBFA ( QSI, ETA , CARAT3 , BFA )
-C           ------ BF = BFB + BFA.AN -----------------------------------
-          DO 310 K = 1,27
-            BFN(K,1) = 0.D0
-  310     CONTINUE
-          DO 340 I = 1,3
-            DO 330 J = 1,9
-              DO 320 K = 1,3
-                BFN(I,J) = BFN(I,J) + BFA(I,K)*AN(K,J)
-  320         CONTINUE
-              BF(I,J) = BFB(I,J) + BFN(I,J)
-  330       CONTINUE
-  340     CONTINUE
-C           ------ SF = BF.DEPF ---------------------------------------
-          DO 350 I = 1,3
-            SF(I) = 0.D0
-  350     CONTINUE
-          DO 370 I = 1,3
-            DO 360 J = 1,9
-              SF(I) = SF(I) + BF(I,J)*DEPF(J)
-  360       CONTINUE
-  370     CONTINUE
-          DO 380 I = 1,3
-            EPS(I) = SM(I) + X3I*SF(I)
-            SIG(I) = 0.D0
-  380     CONTINUE
-          DO 400 I = 1,3
-            DO 390 J = 1,3
-              SIG(I) = SIG(I) + H(I,J)*EPS(J)
-  390       CONTINUE
-  400     CONTINUE
-          CDL(1+6* (IE-1)) = SIG(1)
-          CDL(2+6* (IE-1)) = SIG(2)
-          CDL(3+6* (IE-1)) = 0.D0
-          CDL(4+6* (IE-1)) = SIG(3)
-          CDL(5+6* (IE-1)) = CIST(1)
-          CDL(6+6* (IE-1)) = CIST(2)
-  410   CONTINUE
-      END IF
 C
       END

@@ -3,7 +3,7 @@
      &                  TANG  ,LCARA ,DIME)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 15/09/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,26 +96,26 @@ C
 C
       CHARACTER*24  NOMCOL
       CHARACTER*16  NOMMO1,NOMMO2
-      CHARACTER*8   TMS,TM1,TM2,K8BID,NOMMA1,NOMMA2,NOMFAM
+      CHARACTER*8   TMS,TYGEO1,TYGEO2,K8BID,NOMMA1,NOMMA2,NOMFAM
       INTEGER       NFAM,NMA
       INTEGER       JCOLM,JNORM,JTANG
       INTEGER       VALI(2),IMA1,IMA2,NUMMA1,NUMMA2,FAMIL
-      INTEGER       NG,NT,NC,NN1,NN2,NNS
-      INTEGER       IAS,J,K
+      INTEGER       NPIG,NTRG,NNDC,NDML1,NDML2,NNS
+      INTEGER       IAS,JAUX,KAUX
       INTEGER       IFAM,IMA
-      INTEGER       IJ1(NNM*NNM),IJ2(NNM*NNM)
-      REAL*8        WG(NGM),WJACG(NGM)
-      REAL*8        FG(NGM*NNM),F1(NGM*NNM),F2(NGM*NNM)
-      REAL*8        DF1(3*NGM*NNM),DF2(3*NGM*NNM),DFG(3*NGM*NNM)
-      REAL*8        NO1(3*NNM),NO2(3*NNM)
-      REAL*8        L1(10*NNM*NNM),L2(10*NNM*NNM)
+      INTEGER       PTMT1(NNM*NNM),PTMT2(NNM*NNM)
+      REAL*8        WPIG(NGM),WJACG(NGM)
+      REAL*8        FCIG(NGM*NNM),FCPIG1(NGM*NNM),FCPIG2(NGM*NNM)
+      REAL*8        DFPIG1(3*NGM*NNM),DFPIG2(3*NGM*NNM),DFG(3*NGM*NNM)
+      REAL*8        NBEVO1(3*NNM),NBEVO2(3*NNM)
+      REAL*8        MTL1(10*NNM*NNM),MTL2(10*NNM*NNM)
       INTEGER       JCOOR,JCONX,JCUMU
-      INTEGER       P,P1,P2,IRET
+      INTEGER       PMAT,PMAT1,PMAT2,IRET
       INTEGER       JTRAVR,JTRAVI,JTRAVL
       INTEGER       JCINO
       INTEGER       JMINO1,JMCUM1,JMVAL1
       INTEGER       JMINO2,JMCUM2,JMVAL2
-      REAL*8        H1,H2,G(3*NGM)
+      REAL*8        DIMBT1,DIMBT2,ITG(3*NGM)
       LOGICAL       LMATEL,LINCL1,LINCL2,LINCLU,LSSMAI
       INTEGER       JQNUME,JQTYPM,JQCUMU,JQMAMA,JQLIMA
       INTEGER       JQDEB,JQFIN
@@ -173,7 +173,7 @@ C
 C --- LECTURE DONNEES ZONE COLLAGE
 C
       CALL JEVEUO(NOMC(1:10)//'.INO','L',JCINO)
-      CALL JELIRA(NOMC(1:10)//'.INO','LONMAX',NC,K8BID)
+      CALL JELIRA(NOMC(1:10)//'.INO','LONMAX',NNDC,K8BID)
 C
 C --- LECTURE DONNEES MATRICES MORSES
 C
@@ -213,26 +213,26 @@ C
 C
 C =>  NOMBRE, POIDS ET COORDONNEES DES POINTS DE GAUSS
 C
-        CALL PGAUSS(TMS,NOMFAM,NNS,WG    ,G     ,NG    )
-        IF (NG.GT.NGM) THEN
-          CALL U2MESK('F','ARLEQUIN_99',1,'ARLSUI_1')
+        CALL PGAUSS(TMS,NOMFAM,NNS,WPIG    ,ITG     ,NPIG    )
+        IF (NPIG.GT.NGM) THEN
+          CALL U2MESK('F','ARLEQUIN_99',1,'ARLCP1')
         ENDIF
 C
 C =>  FONCTIONS DE FORME ET LEURS DERIVEES PREMIERES AUX POINTS DE GAUSS
 C
-        CALL PFORME(TMS,NG    ,G     ,FG    ,DFG   )
+        CALL PFORME(TMS,NPIG    ,ITG     ,FCIG    ,DFG   )
 C
 C --- COUPLE DE MAILLES DE LA FAMILLE
 C
         JQDEB   = ZI(JQCUMU+IFAM-1)
         JQFIN   = ZI(JQCUMU+IFAM)
 C
-        DO 50 J = JQDEB, JQFIN-1
+        DO 50 JAUX = JQDEB, JQFIN-1
 C
 C --- ACCES AU COUPLE
 C
-          IMA1 = ZI(JQMAMA + 2*(ZI(JQLIMA+J-1)-1))
-          IMA2 = ZI(JQMAMA + 2*(ZI(JQLIMA+J-1)-1)+1)
+          IMA1 = ZI(JQMAMA + 2*(ZI(JQLIMA+JAUX-1)-1))
+          IMA2 = ZI(JQMAMA + 2*(ZI(JQLIMA+JAUX-1)-1)+1)
 C
 C --- TYPE D'INTEGRATION
 C
@@ -243,21 +243,21 @@ C --- INFOS ET COORD. SOMMETS DE LA MAILLE M1
 C
           CALL ARLGRC(MAIL     ,TYPMAI   ,NOM1     ,DIME  ,IMA1 ,
      &                ZI(JCONX),ZI(JCUMU),ZR(JCOOR),ZR(JNORM),
-     &                NUMMA1   ,NOMMA1   ,TM1      ,H1       ,
-     &                NN1      ,NO1)
+     &                NUMMA1   ,NOMMA1   ,TYGEO1      ,DIMBT1       ,
+     &                NDML1      ,NBEVO1)
 C
 C --- INFOS ET COORD. SOMMETS DE LA MAILLE M2
 C
           CALL ARLGRC(MAIL     ,TYPMAI   ,NOM2     ,DIME  ,IMA2 ,
      &                ZI(JCONX),ZI(JCUMU),ZR(JCOOR),ZR(JNORM),
-     &                NUMMA2   ,NOMMA2   ,TM2      ,H2       ,
-     &                NN2      ,NO2)
+     &                NUMMA2   ,NOMMA2   ,TYGEO2      ,DIMBT2       ,
+     &                NDML2      ,NBEVO2)
 C
 C --- MISE A ZERO DES MATRICES DE COUPLAGE ELEMENTAIRES
 C
-          DO 60 K = 1, 10*NNM*NNM
-            L1(K) = 0.D0
-            L2(K) = 0.D0
+          DO 60 KAUX = 1, 10*NNM*NNM
+            MTL1(KAUX) = 0.D0
+            MTL2(KAUX) = 0.D0
  60       CONTINUE
 C
           LMATEL = .TRUE.
@@ -273,10 +273,10 @@ C
 C --- FCT. FORME ET DERIV FCT. FORME
 C
               CALL INTINC(DIME  ,PRECCP,ITEMCP,NNS   ,
-     &                    WG    ,NG    ,FG    ,DFG   ,
-     &                    NN1   ,NN2   ,NO1   ,NO2   ,
-     &                    TM2   ,H2    ,F2    ,
-     &                    WJACG ,DF1   ,DF2   ,IRET)
+     &                    WPIG    ,NPIG    ,FCIG    ,DFG   ,
+     &                    NDML1   ,NDML2   ,NBEVO1   ,NBEVO2   ,
+     &                    TYGEO2   ,DIMBT2    ,FCPIG2    ,
+     &                    WJACG ,DFPIG1   ,DFPIG2   ,IRET)
 
               IF (IRET.NE.0) THEN
                 GOTO 140
@@ -284,9 +284,9 @@ C
 C
 C --- MATRICE ELEMENTAIRE
 C
-              CALL ARLTE(DIME  ,NG    ,WJACG    ,
-     &                   FG    ,DF1   ,NN1   ,L1    ,
-     &                   F2    ,DF2   ,NN2   ,L2)
+              CALL ARLTE(DIME  ,NPIG    ,WJACG    ,
+     &                   FCIG    ,DFPIG1   ,NDML1   ,MTL1    ,
+     &                   FCPIG2    ,DFPIG2   ,NDML2   ,MTL2)
 C
 C --- INTEGRATION SUR MA2
 C
@@ -295,10 +295,10 @@ C
 C --- FCT. FORME ET DERIV FCT. FORME
 C
               CALL INTINC(DIME  ,PRECCP,ITEMCP,NNS   ,
-     &                    WG    ,NG    ,FG    ,DFG   ,
-     &                    NN2   ,NN1   ,NO2   ,NO1   ,
-     &                    TM1   ,H1    ,F1    ,
-     &                    WJACG ,DF2   ,DF1   ,IRET)
+     &                    WPIG    ,NPIG    ,FCIG    ,DFG   ,
+     &                    NDML2   ,NDML1   ,NBEVO2   ,NBEVO1   ,
+     &                    TYGEO1   ,DIMBT1    ,FCPIG1    ,
+     &                    WJACG ,DFPIG2   ,DFPIG1   ,IRET)
 
               IF (IRET.NE.0) THEN
                 GOTO 140
@@ -306,9 +306,9 @@ C
 C
 C --- MATRICE ELEMENTAIRE
 C
-             CALL ARLTE(DIME  ,NG    ,WJACG    ,
-     &                  F1    ,DF1   ,NN1   ,L1    ,
-     &                  FG    ,DF2   ,NN2   ,L2)
+             CALL ARLTE(DIME  ,NPIG    ,WJACG    ,
+     &                  FCPIG1    ,DFPIG1   ,NDML1   ,MTL1    ,
+     &                  FCIG    ,DFPIG2   ,NDML2   ,MTL2)
 
             ELSE
               CALL ASSERT(.FALSE.)
@@ -319,31 +319,37 @@ C
 C --- CALCUL DE L'INTERSECTION
 C
             CALL INTMAM(DIME  ,NOMARL,
-     &                  NOMMA1,TM1   ,NO1,NN1,H1,
-     &                  NOMMA2,TM2   ,NO2,NN2,H2,
-     &                  ZR(JTRAVR),ZI(JTRAVI),ZL(JTRAVL),NT)
+     &                  NOMMA1,TYGEO1   ,NBEVO1,NDML1,DIMBT1,
+     &                  NOMMA2,TYGEO2   ,NBEVO2,NDML2,DIMBT2,
+     &                  ZR(JTRAVR),ZI(JTRAVI),ZL(JTRAVL),NTRG)
 
-            LMATEL = NT.GT.0
-            P      = JTRAVI
+            LMATEL = NTRG.GT.0
+            PMAT      = JTRAVI
 
-            DO 90 K = 1, NT
+            DO 90 KAUX = 1, NTRG
 C
 C --- INTEGRATION PAR SOUS-MAILLES
 C
               CALL INTSMA(DIME  ,PRECCP,ITEMCP,
-     &                    TMS   ,WG    ,NG    ,FG    ,
-     &                    ZR(JTRAVR)   ,ZI(P) ,
-     &                    TM1   ,NO1   ,NN1   ,H1    ,F1    ,DF1   ,
-     &                    TM2   ,NO2   ,NN2   ,H2    ,F2    ,DF2   ,
+     &                    TMS   ,WPIG    ,NPIG    ,FCIG    ,
+     &                    ZR(JTRAVR)   ,ZI(PMAT) ,
+     &                    TYGEO1   ,NBEVO1   ,NDML1   ,DIMBT1    ,
+     &                    FCPIG1    ,DFPIG1   ,
+     &                    TYGEO2   ,NBEVO2   ,NDML2   ,DIMBT2    ,
+     &                    FCPIG2    ,DFPIG2   ,
      &                    WJACG    ,IRET)
+
+              IF (IRET.NE.0) THEN
+                GOTO 140
+              ENDIF
 C
 C --- MATRICE ELEMENTAIRE
 C
-              CALL ARLTE(DIME  ,NG    ,WJACG    ,
-     &                   F1    ,DF1   ,NN1   ,L1    ,
-     &                   F2    ,DF2   ,NN2   ,L2)
+              CALL ARLTE(DIME  ,NPIG    ,WJACG    ,
+     &                   FCPIG1    ,DFPIG1   ,NDML1   ,MTL1    ,
+     &                   FCPIG2    ,DFPIG2   ,NDML2   ,MTL2)
 
-              P = P + DIME + 1
+              PMAT = PMAT + DIME + 1
  90         CONTINUE
           ELSE
             CALL ASSERT(.FALSE.)
@@ -353,8 +359,8 @@ C --- DEBOGUAGE
 C
           IF (NIV.GE.2) THEN
             CALL ARLTIM(6     ,DIME  ,NNM   ,LINCLU,LINCL1,
-     &                  NUMMA1,NUMMA2,L1    ,L2    ,TM1,
-     &                  TM2   ,H1    ,H2    ,NG    ,NT)
+     &                  NUMMA1,NUMMA2,MTL1    ,MTL2    ,TYGEO1,
+     &                  TYGEO2   ,DIMBT1    ,DIMBT2    ,NPIG    ,NTRG)
           ENDIF
 C
 C --- SI PAS DE MATRICE ELEM. CALCULEES -> ON N'ASSEMBLE PAS
@@ -369,53 +375,53 @@ C
           ZL(JCOLM+NUMMA2-1) = .TRUE.
 
           CALL ARLAS0(NUMMA1  ,NUMMA1  ,ZI(JCONX) ,ZI(JCUMU),
-     &                ZI(JCINO),NC    ,ZI(JMINO1) ,ZI(JMCUM1),
-     &                IJ1)
+     &                ZI(JCINO),NNDC    ,ZI(JMINO1) ,ZI(JMCUM1),
+     &                PTMT1)
           CALL ARLAS0(NUMMA1  ,NUMMA2  ,ZI(JCONX) ,ZI(JCUMU),
-     &                ZI(JCINO),NC    ,ZI(JMINO2) ,ZI(JMCUM2),
-     &                IJ2)
+     &                ZI(JCINO),NNDC    ,ZI(JMINO2) ,ZI(JMCUM2),
+     &                PTMT2)
 
           GOTO (110,120,130) IAS
 
-          CALL ARLAS1(DIME  ,LCARA ,NN1   ,NN1   ,IJ1   ,
-     &                L1    ,ZR(JMVAL1))
-          CALL ARLAS1(DIME  ,LCARA ,NN1   ,NN2   ,IJ2   ,
-     &                L2    ,ZR(JMVAL2))
+          CALL ARLAS1(DIME  ,LCARA ,NDML1   ,NDML1   ,PTMT1   ,
+     &                MTL1    ,ZR(JMVAL1))
+          CALL ARLAS1(DIME  ,LCARA ,NDML1   ,NDML2   ,PTMT2   ,
+     &                MTL2    ,ZR(JMVAL2))
 
           GOTO 50
 
  110      CONTINUE
 
-          P1 = JCONX-1+ZI(JCUMU-1+NUMMA1)
+          PMAT1 = JCONX-1+ZI(JCUMU-1+NUMMA1)
 
-          CALL ARLAS4(DIME  ,LCARA ,NN1   ,NN1      ,IJ1 ,
-     &                ZI(P1),ZI(P1),ZR(JNORM),ZR(JTANG),L1  ,
+          CALL ARLAS4(DIME  ,LCARA ,NDML1   ,NDML1      ,PTMT1 ,
+     &                ZI(PMAT1),ZI(PMAT1),ZR(JNORM),ZR(JTANG),MTL1  ,
      &                ZR(JMVAL1))
-          CALL ARLAS2(DIME  ,LCARA ,NN1   ,NN2   ,IJ2   ,
-     &                ZI(P1),ZR(JTANG),L2,ZR(JMVAL2))
+          CALL ARLAS2(DIME  ,LCARA ,NDML1   ,NDML2   ,PTMT2   ,
+     &                ZI(PMAT1),ZR(JTANG),MTL2,ZR(JMVAL2))
           GOTO 50
 
  120      CONTINUE
 
-          P2 = JCONX-1+ZI(JCUMU-1+NUMMA2)
+          PMAT2 = JCONX-1+ZI(JCUMU-1+NUMMA2)
 
-          CALL ARLAS1(DIME  ,LCARA ,NN1   ,NN1   ,IJ1   ,
-     &                L1    ,ZR(JMVAL1))
-          CALL ARLAS3(DIME  ,LCARA ,NN1   ,NN2   ,IJ2   ,
-     &                ZI(P2),ZR(JNORM),L2,ZR(JMVAL2))
+          CALL ARLAS1(DIME  ,LCARA ,NDML1   ,NDML1   ,PTMT1   ,
+     &                MTL1    ,ZR(JMVAL1))
+          CALL ARLAS3(DIME  ,LCARA ,NDML1   ,NDML2   ,PTMT2   ,
+     &                ZI(PMAT2),ZR(JNORM),MTL2,ZR(JMVAL2))
           GOTO 50
 
  130      CONTINUE
 
-          P1 = JCONX-1+ZI(JCUMU-1+NUMMA1)
-          P2 = JCONX-1+ZI(JCUMU-1+NUMMA2)
+          PMAT1 = JCONX-1+ZI(JCUMU-1+NUMMA1)
+          PMAT2 = JCONX-1+ZI(JCUMU-1+NUMMA2)
 
-          CALL ARLAS4(DIME  ,LCARA ,NN1      ,NN1      ,IJ1 ,
-     &                ZI(P1),ZI(P1),ZR(JNORM),ZR(JTANG),L1  ,
+          CALL ARLAS4(DIME  ,LCARA ,NDML1      ,NDML1      ,PTMT1 ,
+     &                ZI(PMAT1),ZI(PMAT1),ZR(JNORM),ZR(JTANG),MTL1  ,
      &                ZR(JMVAL1))
 
-          CALL ARLAS4(DIME  ,LCARA ,NN1      ,NN2      ,IJ2 ,
-     &                ZI(P1),ZI(P2),ZR(JNORM),ZR(JTANG),L2  ,
+          CALL ARLAS4(DIME  ,LCARA ,NDML1      ,NDML2      ,PTMT2 ,
+     &                ZI(PMAT1),ZI(PMAT2),ZR(JNORM),ZR(JTANG),MTL2  ,
      &                ZR(JMVAL2))
 
  50     CONTINUE

@@ -1,7 +1,7 @@
-      LOGICAL FUNCTION ARLCOL(VEC1,N1,VEC2,N2,LVEC)
+      LOGICAL FUNCTION ARLCOL(VEC1,NBEV1,VEC2,NBEV2,LVEC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +21,9 @@ C ======================================================================
 C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
-      INTEGER N1,N2
-      INTEGER VEC1(N1),VEC2(N2)
-      LOGICAL LVEC(N2)
+      INTEGER NBEV1,NBEV2
+      INTEGER VEC1(NBEV1),VEC2(NBEV2)
+      LOGICAL LVEC(NBEV2)
 C
 C ----------------------------------------------------------------------
 C
@@ -34,15 +34,15 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C ARLCOL = VEC1(N1) EST INCLU DANS VEC2(N2)
+C ARLCOL = VEC1(NBEV1) EST INCLU DANS VEC2(NBEV2)
 C
 C IN  VEC1   : VECTEUR D'ENTIERS TRIES PAR ORDRE CROISSANT
-C IN  N1     : NOMBRE D'ELEMENTS DE VEC1
+C IN  NBEV1     : NOMBRE D'ELEMENTS DE VEC1
 C IN  VEC2   : VECTEUR D'ENTIERS TRIES PAR ORDRE CROISSANT
-C IN  N2     : NOMBRE D'ELEMENTS DE VEC2
+C IN  NBEV2     : NOMBRE D'ELEMENTS DE VEC2
 C OUT LVEC   : .TRUE. SI VEC2(I) SE TROUVE DANS VEC1
 C                 .FALSE. SINON
-C               DE LONGUEUR N2
+C               DE LONGUEUR NBEV2
 C
 C RESULTAT FONCTION
 C   ARLCOL      : .TRUE.  SI VEC1 INCLUS DANS VEC2
@@ -50,62 +50,62 @@ C                 .FALSE. SINON
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER V1,V2,I1,I2
+      INTEGER NVEC1,NVEC2,IND1,IND2
 C
 C ----------------------------------------------------------------------
 C
       ARLCOL = .FALSE.
-      IF ((N1.LE.0).OR.(N2.LE.0).OR.(N1.GT.N2)) GOTO 30
+      IF ((NBEV1.LE.0).OR.(NBEV2.LE.0).OR.(NBEV1.GT.NBEV2)) GOTO 30
 
-      I1 = 0
-      I2 = 0
+      IND1 = 0
+      IND2 = 0
 
-C --- V1 .EQ. V2
+C --- NVEC1 .EQ. NVEC2
 
  10   CONTINUE
 
-        I1 = I1 + 1
-        I2 = I2 + 1
+        IND1 = IND1 + 1
+        IND2 = IND2 + 1
 
-        IF (I1.GT.N1) THEN
+        IF (IND1.GT.NBEV1) THEN
           ARLCOL = .TRUE.
           GOTO 30
         ENDIF
 
-        IF (I2.GT.N2) GOTO 30
+        IF (IND2.GT.NBEV2) GOTO 30
 
-        V1 = VEC1(I1)
-        V2 = VEC2(I2)
+        NVEC1 = VEC1(IND1)
+        NVEC2 = VEC2(IND2)
 
-        IF (V1.EQ.V2) THEN
-          LVEC(I2) = .TRUE.
+        IF (NVEC1.EQ.NVEC2) THEN
+          LVEC(IND2) = .TRUE.
           GOTO 10
         ENDIF
 
-        IF (V1.LT.V2) GOTO 30
+        IF (NVEC1.LT.NVEC2) GOTO 30
 
-C --- V2 .LT. V1
+C --- NVEC2 .LT. NVEC1
 
  20   CONTINUE
 
-        LVEC(I2) = .FALSE.
+        LVEC(IND2) = .FALSE.
 
-        I2 = I2 + 1
-        IF (I2.GT.N2) GOTO 30
+        IND2 = IND2 + 1
+        IF (IND2.GT.NBEV2) GOTO 30
 
-        V2 = VEC2(I2)
-        IF (V2.LT.V1) GOTO 20
+        NVEC2 = VEC2(IND2)
+        IF (NVEC2.LT.NVEC1) GOTO 20
 
-        IF (V2.EQ.V1) THEN
-          LVEC(I2) = .TRUE.
+        IF (NVEC2.EQ.NVEC1) THEN
+          LVEC(IND2) = .TRUE.
           GOTO 10
         ENDIF
 
  30   CONTINUE
 
       IF (.NOT.ARLCOL) THEN
-        DO 40 I2 = 1, N2
-          LVEC(I2) = .FALSE.
+        DO 40 IND2 = 1, NBEV2
+          LVEC(IND2) = .FALSE.
  40     CONTINUE
       ENDIF
 

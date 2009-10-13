@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwsv hdf  DATE 27/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF hdfwsv hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -38,7 +38,7 @@ INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg, cha
   hsize_t dimsf[1];
   int istat,lg2,lmot;
   char *nomd,*vtype,*mot,*pmot;
-  STRING_SIZE k;
+  int k;
   void *malloc(size_t size);
   
   idfic=(hid_t) *idf;

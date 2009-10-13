@@ -1,10 +1,10 @@
-      SUBROUTINE ARLCH2(DIME,NC  ,SIGN,NU  ,B   ,
-     &                  INO ,INC ,PREC,EQ  ,ND  ,
-     &                  NE  ,NLG ,IMPO,MULT,LIEL,
+      SUBROUTINE ARLCH2(DIME,NNDC  ,SIGN,NELEM  ,VLMT   ,
+     &                  INO ,INC ,PREC,EQ  ,NTERM  ,
+     &                  NEQ  ,NLAGR ,IMPO,MULT,LIEL,
      &                  NEMA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,14 +28,14 @@ C
       IMPLICIT NONE
       INTEGER DIME
       INTEGER SIGN
-      INTEGER ND
-      INTEGER NE
-      INTEGER NLG
-      INTEGER NC
-      INTEGER NU(*)
+      INTEGER NTERM
+      INTEGER NEQ
+      INTEGER NLAGR
+      INTEGER NNDC
+      INTEGER NELEM(*)
       INTEGER INO(*)
       INTEGER INC(*)
-      REAL*8  B(*)
+      REAL*8  VLMT(*)
       REAL*8  PREC
       LOGICAL EQ(5,*)
       INTEGER LIEL(*)
@@ -54,18 +54,18 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  DIME   : DIMENSION DE L'ESPACE
-C IN  NC     : NOMBRE DE NOEUDS DOMAINE DE COLLAGE
+C IN  NNDC     : NOMBRE DE NOEUDS DOMAINE DE COLLAGE
 C IN  SIGN   : SIGNE DEVANT LA MATRICE B (0 : +, 1 : -)
-C IN  NU     : NUMERO DES ELEMENTS DE LIAISON 'D_DEPL_R_*'
+C IN  NELEM     : NUMERO DES ELEMENTS DE LIAISON 'D_DEPL_R_*'
 C                       * = (DX, DY, DZ, DRX, DRY, DRZ)
-C IN  B      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCPL)
-C IN  INO    : COLLECTION NOEUDS COLONNES DE B
+C IN  VLMT      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCPL)
+C IN  INO    : COLLECTION NOEUDS COLONNES DE VLMT
 C IN  INC    : LONGUEUR CUMULEE ASSOCIEE A INO
-C IN  PREC   : PRECISION RELATIVE SUR LES TERMES DE B
+C IN  PREC   : PRECISION RELATIVE SUR LES TERMES DE VLMT
 C IN  EQ     : EQUATIONS SELECTIONNEES
-C I/O ND     : NOMBRE DE TERMES
-C I/O NE     : NOMBRE D'EQUATIONS
-C I/O NLG    : NOMBRE DE LAGRANGES
+C I/O NTERM     : NOMBRE DE TERMES
+C I/O NEQ     : NOMBRE D'EQUATIONS
+C I/O NLAGR    : NOMBRE DE LAGRANGES
 C I/O IMPO   : VECTEUR CHME.CIMPO.VALE
 C I/O MULT   : VECTEUR CHME.CMULT.VALE
 C I/O LIEL   : COLLECTION CHME.LIGRE.LIEL
@@ -73,71 +73,71 @@ C I/O NEMA   : COLLECTION CHME.LIGRE.NEMA
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER I,J,K,L,P0,P1,Q,NL,NO
-      REAL*8  R
+      INTEGER IAUX,JAUX,KAUX,LAUX,PMAT0,PMAT1,LGNM,NMTE,NBEVO
+      REAL*8  VLR
 C
 C ----------------------------------------------------------------------
 C
-      Q  = 0
-      P1 = INC(1)
-      DO 10 I = 1, NC
-        P0 = P1
-        P1 = INC(1+I)
-        DO 20 J = P0, P1-1
-          NO = INO(J)
+      LGNM  = 0
+      PMAT1 = INC(1)
+      DO 10 IAUX = 1, NNDC
+        PMAT0 = PMAT1
+        PMAT1 = INC(1+IAUX)
+        DO 20 JAUX = PMAT0, PMAT1-1
+          NBEVO = INO(JAUX)
 C ------- RELATIONS COUPLAGE TRANSLATION / TRANSLATION
-          NL = NLG
-          DO 30 K = 1, DIME
-            IF (.NOT.EQ(K,I)) THEN
-              Q = Q + DIME
+          NMTE = NLAGR
+          DO 30 KAUX = 1, DIME
+            IF (.NOT.EQ(KAUX,IAUX)) THEN
+              LGNM = LGNM + DIME
             ELSE
-              DO 40 L = 1, DIME
-                Q = Q + 1
-                R = B(Q)
-                IF (ABS(R).GT.PREC) THEN
-                  CALL ARLASS(SIGN,NO  ,NU  ,L   ,R   ,
-     &                        ND  ,NE  ,NL  ,IMPO,MULT,
+              DO 40 LAUX = 1, DIME
+                LGNM = LGNM + 1
+                VLR = VLMT(LGNM)
+                IF (ABS(VLR).GT.PREC) THEN
+                  CALL ARLASS(SIGN,NBEVO  ,NELEM  ,LAUX   ,VLR   ,
+     &                        NTERM  ,NEQ  ,NMTE  ,IMPO,MULT,
      &                        LIEL,NEMA)
                 ENDIF
  40           CONTINUE
-              NL = NL + 2
+              NMTE = NMTE + 2
             ENDIF
  30       CONTINUE
-          NL = NLG
+          NMTE = NLAGR
 C ------- RELATIONS COUPLAGE TRANSLATION / ROTATION 2D
           IF (DIME.EQ.2) THEN
-            DO 50 K = 1, 2
-              Q = Q + 1
-              IF (.NOT.EQ(K,I)) GOTO 50
-              R = B(Q)
-              IF (ABS(R).GT.PREC) THEN
-                CALL ARLASS(SIGN,NO  ,NU  ,6   ,R   ,
-     &                      ND  ,NE  ,NL  ,IMPO,MULT,
+            DO 50 KAUX = 1, 2
+              LGNM = LGNM + 1
+              IF (.NOT.EQ(KAUX,IAUX)) GOTO 50
+              VLR = VLMT(LGNM)
+              IF (ABS(VLR).GT.PREC) THEN
+                CALL ARLASS(SIGN,NBEVO  ,NELEM  ,6   ,VLR   ,
+     &                      NTERM  ,NEQ  ,NMTE  ,IMPO,MULT,
      &                      LIEL,NEMA)
               ENDIF
-              NL = NL + 2
+              NMTE = NMTE + 2
  50         CONTINUE
 C ------- RELATIONS COUPLAGE TRANSLATION / ROTATION 3D
           ELSE
-            DO 60 K = 1, 3
-              IF (.NOT.EQ(K,I)) THEN
-                Q = Q + 3
+            DO 60 KAUX = 1, 3
+              IF (.NOT.EQ(KAUX,IAUX)) THEN
+                LGNM = LGNM + 3
               ELSE
-                DO 70 L = 1, 3
-                  Q = Q + 1
-                  R = B(Q)
-                  IF (ABS(R).GT.PREC) THEN
-                    CALL ARLASS(SIGN,NO  ,NU  ,3+L ,R   ,
-     &                          ND  ,NE  ,NL  ,IMPO,MULT,
+                DO 70 LAUX = 1, 3
+                  LGNM = LGNM + 1
+                  VLR = VLMT(LGNM)
+                  IF (ABS(VLR).GT.PREC) THEN
+                    CALL ARLASS(SIGN,NBEVO  ,NELEM  ,3+LAUX ,VLR   ,
+     &                          NTERM  ,NEQ  ,NMTE  ,IMPO,MULT,
      &                          LIEL,NEMA)
                   ENDIF
  70             CONTINUE
-                NL = NL + 2
+                NMTE = NMTE + 2
               ENDIF
  60         CONTINUE
           ENDIF
  20     CONTINUE
-        NLG = NL
+        NLAGR = NMTE
  10   CONTINUE
 
       END

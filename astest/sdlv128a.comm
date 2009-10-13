@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  EXPANSION MODALE SUR UN TUBE 3D A PARTIR DE MESURES EXTENSIOMETRIQUES
 # sdlv128a.para = tps_job 300 mem_job 600Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -301,7 +301,7 @@ MODESTA = CALC_NO( reuse    = MODESTA,
 
 NUMSTAT  = DEFI_BASE_MODALE( RITZ = (_F( MODE_MECA  = MODEAIR,
                                          NMAX_MODE = 0),
-                                     _F( MULT_ELAS = MODESTA,
+                                     _F( MODE_INTF = MODESTA,
                                          NMAX_MODE = 16 ),
                                     ),
                              NUME_REF = NUMENUM,

@@ -1,4 +1,4 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 21/10/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF exec_logiciel_ops Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,8 +114,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
    if mode_lancement == CMD_EXTERNE:
       scmd = cmd % d_para
       comment = "Lancement de la commande :\n%s" % scmd
-      iret, output, error = ExecCommand(scmd, alt_comment=comment, verbose=False, 
-                                        capturestderr=True, separated_stderr=True)
+      iret, output, error = ExecCommand(scmd, alt_comment=comment, verbose=False, separated_stderr=True)
       erreur = iret > CODE_RETOUR_MAXI
       
       # output

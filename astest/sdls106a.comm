@@ -1,4 +1,4 @@
-# MODIF  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -188,14 +188,14 @@ MODESTA2=MODE_STATIQUE(  MATR_RIGI=RAID_2,
 
 
 BAMO1_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
-                          _F( MODE_STAT = MODESTA1,
+                          _F( MODE_INTF = MODESTA1,
                                     NMAX_MODE = 999)),
                            INTERF_DYNA=LINT1_CL,
                         NUME_REF=NUMDDL_1)
 
 #
 BAMO2_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_2),
-                          _F( MODE_STAT = MODESTA2,
+                          _F( MODE_INTF = MODESTA2,
                                     NMAX_MODE = 999)),
                            INTERF_DYNA=LINT2_CL,
                         NUME_REF=NUMDDL_2)

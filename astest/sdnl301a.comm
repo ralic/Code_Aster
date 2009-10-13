@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -264,7 +264,7 @@ MODE_STA = MODE_STATIQUE(MATR_RIGI   = MATR,
                          
 BASEMODA = DEFI_BASE_MODALE(RITZ =(_F(MODE_MECA=MODE,
                                       NMAX_MODE=30),
-                                   _F(MODE_STAT=MODE_STA)),
+                                   _F(MODE_INTF=MODE_STA)),
                             NUME_REF=NDDL,
                             INFO=2);
 

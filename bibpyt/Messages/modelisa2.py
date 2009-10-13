@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa2 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -251,66 +251,6 @@ Note DVP: erreur de cohérence fortran/catalogue.
 
 66: _("""
  trop de valeurs d'angles, on ne garde que les 3 premiers.
-"""),
-
-67: _("""
- le mot cle "group_ma" doit etre present a la premiere occurence
-"""),
-
-68: _("""
-  un des mots cles "group_no_orig" ou "noeud_orig" doit etre present a la premiere occurence
-"""),
-
-69: _("""
-  un des mots cles "group_no_extr" ou "noeud_extr" doit etre present a la premiere occurence
-"""),
-
-70: _("""
- le mot cle "z0" doit etre present a la premiere occurence
-"""),
-
-71: _("""
- nombre cara_hydr different de vale_hydr
-"""),
-
-72: _("""
- nombre cara_grappe different de vale_grappe
-"""),
-
-73: _("""
- nombre cara_commande different de vale_commande
-"""),
-
-74: _("""
- nombre cara_manchette different de vale_manchette
-"""),
-
-75: _("""
- nombre cara_guide different de vale_guide
-"""),
-
-76: _("""
- nombre cara_assemblage different de vale_assemblage
-"""),
-
-77: _("""
- nombre cara_pdc different de vale_pdc
-"""),
-
-78: _("""
- erreur: oubli de la table "mass_iner" dans fichier de commandes.
-"""),
-
-79: _("""
- probleme pour recuperer le "cdg_x" dans  %(k1)s
-"""),
-
-80: _("""
- probleme pour recuperer le "cdg_y" dans  %(k1)s
-"""),
-
-81: _("""
- probleme pour recuperer le "cdg_z" dans  %(k1)s
 """),
 
 82: _("""

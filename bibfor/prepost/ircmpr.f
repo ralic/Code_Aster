@@ -4,9 +4,9 @@
      &                    NCMPRF, NCMPVE, NTLCMP,
      &                    NBVATO, NBENEC, LIENEC, ADSD, ADSL,
      &                    NOMAAS, MODELE, TYPGEO, NOMTYP,
-     &                    NTPROA )
+     &                    NTPROA, CHANOM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 12/10/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE GNICOLAS G.NICOLAS
+C RESPONSABLE SELLENET N.SELLENET
 C_______________________________________________________________________
 C     ECRITURE D'UN CHAMP -  FORMAT MED - CREATION DU PROFIL
 C        -  -       -               -                 --
@@ -77,6 +77,7 @@ C
       CHARACTER*(*) NTLCMP, NTPROA
       CHARACTER*8 NOMAAS, MODELE, TYPECH
       CHARACTER*8 NOMTYP(*)
+      CHARACTER*19 CHANOM
       CHARACTER*24 NCAIMI, NCAIMK
 C
 C 0.2. ==> COMMUNS
@@ -265,7 +266,8 @@ C
      &                NBVATO, NBENEC, LIENEC, ADSD, ADSL,
      &                NBIMPR, NCAIMI, NCAIMK,
      &                ZI(IAUX), ZI(ADTYP2), TYPGEO, NOMTYP, TYPECH,
-     &                ZI(ADPROA), ZI(ADPROM), ZI(ADPROR), ZI(ADAUXI) )
+     &                ZI(ADPROA), ZI(ADPROM), ZI(ADPROR), ZI(ADAUXI),
+     &                CHANOM )
 C
       ENDIF
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,13 +28,11 @@ DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=mode_meca,
            NMAX_MODE       =SIMP(statut='f',typ='I',defaut= 10 ),
          ),
          RITZ            =FACT(statut='f',max='**',
-           regles=(UN_PARMI('MODE_STAT','MODE_MECA','MULT_ELAS','BASE_MODALE','MODE_INTF'),),
+           regles=(UN_PARMI('MODE_MECA','BASE_MODALE','MODE_INTF'),),
            MODE_MECA       =SIMP(statut='f',typ=mode_meca,max='**'  ),
            NMAX_MODE       =SIMP(statut='f',typ='I'),
-           MODE_STAT       =SIMP(statut='f',typ=mode_meca ),
-           MULT_ELAS       =SIMP(statut='f',typ=mult_elas ),
            BASE_MODALE     =SIMP(statut='f',typ=mode_meca ),
-           MODE_INTF       =SIMP(statut='f',typ=mode_meca ),
+           MODE_INTF       =SIMP(statut='f',typ=(mode_meca,mult_elas), ),
          ),
          b_ritz          =BLOC(condition = "RITZ != None",
            INTERF_DYNA     =SIMP(statut='f',typ=interf_dyna_clas ),
@@ -55,22 +53,33 @@ DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=mode_meca,
            MATRICE    =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
          ),
 
-
          SOLVEUR         =FACT(statut='d', fr="Méthode de résolution des systèmes linéaires",
-         METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("LDLT","MULT_FRONT",) ),
-         # remarque : on ne peut pas utiliser MUMPS tant qu'il ne sait pas faire STOP_SINGULIER="NON"
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("LDLT","MULT_FRONT","MUMPS") ),
 
            b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
-             NPREC           =SIMP(statut='f',typ='I',defaut=8),
-             STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            ),
 
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
-             NPREC           =SIMP(statut='f',typ='I',defaut=8),
+           ),
+           b_ldlt_mult_mumps =BLOC( condition = "METHODE=='LDLT' or METHODE=='MULT_FRONT' or METHODE=='MUMPS' ",
+                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
+             NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            ),
+           b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
+             TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
+             PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
+             POSTTRAITEMENTS =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO","FORCE")),             
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
+             ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+             PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
+             OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+             FILTRAGE_MATRICE =SIMP(statut='f',typ='R',defaut=-1.0,),
+             MIXER_PRECISION =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+             ),
          ),
 
 

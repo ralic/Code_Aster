@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 22/09/2009   AUTEUR DESOZA T.DESOZA 
+#@ MODIF modelisa8 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -163,17 +163,6 @@ cata_msg = {
 40 : _("""
  la maille de nom :  %(k1)s n'est pas de type  %(k2)s  ou  %(k3)s
  elle ne sera pas affectee par  %(k4)s
-"""),
-
-41 : _("""
- mgrappmasse de la tige calculee:      %(r1)f
- masse de l'araignee calculee:  %(r2)f
- masse du crayon calculee:       %(r3)f
- masse grappe=tige+araignee+crayon:  %(r4)f
-"""),
-
-42 : _("""
- erreurs dans les donneeslongueur modelisee:  %(r1)f longueur donnee   :  %(r2)f
 """),
 
 43 : _("""

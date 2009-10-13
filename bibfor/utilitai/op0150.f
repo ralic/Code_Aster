@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/08/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 13/10/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -725,6 +725,11 @@ C       LA SD RESULTAT
             TYPCHA = 'ELGA'
             OPTION = 'EQUI_ELGA_SIGM'
             PARAM  = 'PCONTEQ'
+          ELSE IF (NOCH.EQ.'EQUI_ELGA_EPSI') THEN
+            NOMGD = 'EPSI_R'
+            TYPCHA = 'ELGA'
+            OPTION = 'EQUI_ELGA_EPSI'
+            PARAM  = 'PDEFOEQ'
           ELSE IF (NOCH.EQ.'PRES') THEN
             NOMGD = 'PRES_R  '
             TYPCHA = 'ELEM'

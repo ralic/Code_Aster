@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopd hdf  DATE 27/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF hdfopd hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -32,7 +32,7 @@
 INTEGER DEFPSS(HDFOPD, hdfopd, INTEGER *idf, char *nomg, STRING_SIZE lg, char *nomd, STRING_SIZE ln)
 {
   hid_t id,idfic; 
-  STRING_SIZE k,lg2;
+  int k,lg2;
   long iret=-1;
   char *nom;
   void *malloc(size_t size); 

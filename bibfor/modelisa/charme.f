@@ -1,6 +1,6 @@
       SUBROUTINE CHARME ( FONREE )
 
-C MODIF MODELISA  DATE 06/05/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -216,10 +216,6 @@ C         ================
 C --- FORCE_ELEC ----
 
          CALL CBELEC ( CHAR, LIGRMO, NOMA )
-
-C --- GRAPPE_FLUIDE ----
-
-         CALL CAGRFL ( CHAR, NOMA )
 
 C --- FORCES DE LAPLACE ----
 

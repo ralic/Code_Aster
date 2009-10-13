@@ -1,7 +1,7 @@
       SUBROUTINE  AMUMPI(OPTION,LQUALI,LDIST,KXMPS,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPI MUMPS  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPI MUMPS  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -19,7 +19,7 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
 C--------------------------------------------------------------
-C BUT : ROUTINE DE PARAMETRAGE MUMPS POUR AMUMPR/C.
+C BUT : ROUTINE DE PARAMETRAGE MUMPS POUR AMUMPS/C/D/Z
 C
 C IN  OPTION:   IN   : OPTION D'UTILISATION.
 C IN  LQUALI:  LOG   : LOGICAL EN CAS DE CRITERE DE QUALITE
@@ -55,9 +55,10 @@ C============================================================
       TYPE (DMUMPS_STRUC) , POINTER :: DMPSK
       TYPE (ZMUMPS_STRUC) , POINTER :: ZMPSK
       INTEGER      IFM,NIV,ICNTL(NICNTL),I,JREFA,ISYMM,JSLVK,ISYMV,ISYM,
-     &             JSLVI,IVERS,N1,N3,N5,IISNAN
+     &             JSLVI,IVERS,N1,N3,N5,IISNAN,NPREC
       INTEGER*4    I4
-      REAL*8       RVERS,CNTL(NCNTL)
+      REAL*4       R4MAEM
+      REAL*8       RVERS,CNTL(NCNTL),RR4MAX
       CHARACTER*1  ROUCS(NMXINS),PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),TYPM,ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
@@ -91,6 +92,8 @@ C=================================================================
 C       ------------------------------------------------
 C        INITS
 C       ------------------------------------------------
+      RR4MAX=R4MAEM()
+      
       IF (TYPE.EQ.'S') THEN
         SMPSK=>SMPS(KXMPS)
       ELSE IF (TYPE.EQ.'C') THEN
@@ -110,6 +113,7 @@ C       ------------------------------------------------
       CALL JEVEUO(NOMAT//'.REFA','L',JREFA)
       CALL JEVEUO(NOSOLV//'.SLVK','L',JSLVK)
       CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
+      NPREC=ZI(JSLVI)
 
 C       ------------------------------------------------
 C        INITIALISATION SYM, PAR ET JOB POUR MUMPS
@@ -204,6 +208,8 @@ C ---      INIT
         DO I=1,NCNTL
           CNTL(I)=0.D0
         ENDDO
+	CNTL(4)=-1.D0
+	
         NVERS(1:80)=''
         IF (TYPE.EQ.'S') THEN
           NVERS(1:5)=SMPSK%VERSION_NUMBER
@@ -229,7 +235,7 @@ C         TESTS DE NAN
           RVERS=1.D0*IVERS
           CALL ASSERT(IISNAN(RVERS).EQ.0)
           CALL ASSERT((IVERS.GE.100).AND.(IVERS.LT.999))
-          IF (IVERS.LT.473) CALL U2MESK('F','FACTOR_72',1,NVERS(1:5))
+          IF (IVERS.LT.473) CALL U2MESK('F','FACTOR_72',1,NVERS(1:5))	  
         ENDIF
         
 C ---      MESSAGES/ALERTES MUMPS
@@ -290,7 +296,7 @@ C ---      TYPE DE RESOLUTION: A OU AT
 
 C ---      RAFFINEMENT ITERATIF
         ICNTL(10) = 0
-        CNTL(2)=10.D+99
+        CNTL(2)=0.D0
         IF (LQUALI)  THEN
           IF (ZK24(JSLVK-1+11).EQ.'SANS') THEN
           ELSE IF (ZK24(JSLVK-1+11).EQ.'AUTO') THEN
@@ -304,18 +310,34 @@ C ---      RAFFINEMENT ITERATIF
         ICNTL(11) = 0
         IF (LQUALI)  ICNTL(11) = 1
 
-C ---      CONTROLE DU PARALLELISME INDUIT PAR SCALAPACK
+C ---      PARALLELISME INDUIT PAR SCALAPACK (VOIR NPREC PLUS BAS)
         ICNTL(13) = 0
 
 C ---      MEMOIRE SUPPL. POUR PIVOTAGE (DEFAUT:10)
         ICNTL(14) = ZI(JSLVI-1+2)
 
-C ---      RECHERCHE DE NOYAU
+C ---      PAS UTILISES
         ICNTL(15)=0
         ICNTL(16)=0
         ICNTL(17)=0
-        ICNTL(24)=0
+
+C --       RECHERCHE DE NOYAU
+        IF (IVERS.LT.484) THEN
+	  CALL U2MESK('A','FACTOR_74',1,NVERS(1:5))
+	  NPREC=-9999	  
+        ENDIF  
         ICNTL(25)=0
+	IF (NPREC.GE.0) THEN
+	  ICNTL(13)=1
+	  ICNTL(24)=1
+	  CNTL(3)=-10.D0**(-NPREC)
+	  CNTL(5)=1.D0
+	ELSE
+	  ICNTL(24)=0
+	  CNTL(3)=0.D0
+	  CNTL(5)=0.D0
+	ENDIF	  
+	  
 
 C ---       PARALLELISME/DISTRIBUTION SECOND MEMBRE/SOLUTION
         IF (LDIST) THEN
@@ -371,28 +393,34 @@ C --- REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
 C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         IF (TYPE.EQ.'S') THEN
           DO I=1,NICNTL
-            I4=ICNTL(I)
-            SMPSK%ICNTL(I)=I4
+            SMPSK%ICNTL(I)=ICNTL(I)
           ENDDO
-          SMPSK%CNTL(2)=CNTL(2)
+          DO I=2,NCNTL
+            IF (ABS(CNTL(I)).GT.RR4MAX) CALL ASSERT(.FALSE.)
+            SMPSK%CNTL(I)=CNTL(I)
+          ENDDO
         ELSE IF (TYPE.EQ.'C') THEN
           DO I=1,NICNTL
-            I4=ICNTL(I)
-            CMPSK%ICNTL(I)=I4
+            CMPSK%ICNTL(I)=ICNTL(I)
           ENDDO
-          CMPSK%CNTL(2)=CNTL(2)
+          DO I=2,NCNTL
+            IF (ABS(CNTL(I)).GT.RR4MAX) CALL ASSERT(.FALSE.)
+            CMPSK%CNTL(I)=CNTL(I)
+          ENDDO
         ELSE IF (TYPE.EQ.'D') THEN
           DO I=1,NICNTL
-            I4=ICNTL(I)
-            DMPSK%ICNTL(I)=I4
+            DMPSK%ICNTL(I)=ICNTL(I)
           ENDDO
-          DMPSK%CNTL(2)=CNTL(2)
-        ELSE IF (TYPE.EQ.'Z') THEN
+          DO I=2,NCNTL
+            DMPSK%CNTL(I)=CNTL(I)
+          ENDDO
+	ELSE IF (TYPE.EQ.'Z') THEN
           DO I=1,NICNTL
-            I4=ICNTL(I)
-            ZMPSK%ICNTL(I)=I4
+            ZMPSK%ICNTL(I)=ICNTL(I)
           ENDDO
-          ZMPSK%CNTL(2)=CNTL(2)
+          DO I=2,NCNTL
+            ZMPSK%CNTL(I)=CNTL(I)
+          ENDDO
 	ELSE
 	    CALL ASSERT(.FALSE.)
         ENDIF

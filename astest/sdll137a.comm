@@ -1,4 +1,4 @@
-# MODIF  DATE 24/11/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -164,7 +164,7 @@ MODSTSUP=MODE_STATIQUE(MATR_RIGI=KASSUP,SOLVEUR=_F(METHODE='GCPC'),
 
 BASEMO=DEFI_BASE_MODALE(RITZ=(
                              _F(MODE_MECA=MODESUP,NMAX_MODE=0,),
-                             _F(MODE_STAT=MODSTSUP,NMAX_MODE=8,),
+                             _F(MODE_INTF=MODSTSUP,NMAX_MODE=8,),
                              ),
                        NUME_REF=NUMSUP,);
 
@@ -309,7 +309,7 @@ MODSTINT=MODE_STATIQUE(MATR_RIGI=KASSUP, SOLVEUR=_F(METHODE='GCPC'),
 
 BASEINT=DEFI_BASE_MODALE(RITZ=(
                              _F(MODE_MECA=MODESUP,NMAX_MODE=0,),
-                             _F(MODE_STAT=MODSTINT,NMAX_MODE=4,),
+                             _F(MODE_INTF=MODSTINT,NMAX_MODE=4,),
                              ),
                        NUME_REF=NUMSUP,);
 

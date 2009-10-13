@@ -1,9 +1,9 @@
-      SUBROUTINE ARLASS(SIGN ,INO ,NU  ,CMP ,R   ,
-     &                  ND   ,NE  ,NL  ,IMPO,MULT,
+      SUBROUTINE ARLASS(SIGN ,INO ,NELEM  ,CMP ,VLR   ,
+     &                  NTERM   ,NEQ  ,NLARG  ,IMPO,MULT,
      &                  LIEL ,NEMA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,14 +25,14 @@ C
       IMPLICIT NONE
       INTEGER SIGN
       INTEGER INO
-      INTEGER NU(*)
+      INTEGER NELEM(*)
       INTEGER CMP
-      INTEGER ND
-      INTEGER NE
-      INTEGER NL
+      INTEGER NTERM
+      INTEGER NEQ
+      INTEGER NLARG
       INTEGER LIEL(2,*)
       INTEGER NEMA(4,*)
-      REAL*8  R
+      REAL*8  VLR
       REAL*8  IMPO(*)
       REAL*8  MULT(6,*)
 C
@@ -47,13 +47,13 @@ C
 C
 C IN  SIGN   : SIGNE DEVANT R (0 : +, 1 : -)
 C IN  INO    : NUMERO DU NOEUD
-C IN  NU     : NUMERO DES ELEMENTS DE LIAISON 'D_DEPL_R_*'
+C IN  NELEM  : NUMERO DES ELEMENTS DE LIAISON 'D_DEPL_R_*'
 C                       * = (DX, DY, DZ, DRX, DRY, DRZ)
 C IN  CMP    : NUMERO DE LA COMPOSANTE (INDEX NU)
-C IN  R      : VALEUR DU TERME
-C I/O ND     : NOMBRE DE TERME
-C I/O NE     : NUMERO DE L'EQUATION
-C I/O NL     : NUMERO DU PREMIER LAGRANGE - 1
+C IN  VLR    : VALEUR DU TERME
+C I/O NTERM  : NOMBRE DE TERME
+C I/O NEQ    : NUMERO DE L'EQUATION
+C I/O NLARG  : NUMERO DU PREMIER LAGRANGE - 1
 C I/O IMPO   : VECTEUR CHME.CIMPO.VALE
 C I/O MULT   : VECTEUR CHME.CMULT.VALE
 C I/O LIEL   : COLLECTION CHME.LIGRE.LIEL
@@ -61,21 +61,21 @@ C I/O NEMA   : COLLECTION CHME.LIGRE.NEMA
 C
 C ----------------------------------------------------------------------
 C
-      NE         = NE + 1
-      LIEL(1,NE) = -NE
-      LIEL(2,NE) = NU(CMP)
-      NEMA(1,NE) = INO
-      NEMA(2,NE) = -(NL+1)
-      NEMA(3,NE) = -(NL+2)
-      NEMA(4,NE) = 4
+      NEQ         = NEQ + 1
+      LIEL(1,NEQ) = -NEQ
+      LIEL(2,NEQ) = NELEM(CMP)
+      NEMA(1,NEQ) = INO
+      NEMA(2,NEQ) = -(NLARG+1)
+      NEMA(3,NEQ) = -(NLARG+2)
+      NEMA(4,NEQ) = 4
 C
-      ND         = ND + 1
-      IMPO(ND)   = 0.D0
+      NTERM         = NTERM + 1
+      IMPO(NTERM)   = 0.D0
 C
       IF (SIGN.EQ.0) THEN
-        MULT(1,ND) = R
+        MULT(1,NTERM) = VLR
       ELSE
-        MULT(1,ND) = -R
+        MULT(1,NTERM) = -VLR
       ENDIF
 C
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,10 +81,12 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
 
            b_ldlt_gene      =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
-             NPREC           =SIMP(statut='f',typ='I',defaut=8),
+           ),
+           b_ldlt_mumps_gene =BLOC( condition = "METHODE=='LDLT' or METHODE=='MUMPS' ",
+                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
+             NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
-
            b_mumps_gene     =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
              TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
              PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
@@ -105,16 +107,16 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
 
            b_mult_front_phys=BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
-             NPREC           =SIMP(statut='f',typ='I',defaut=8),
-             STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
 
            b_ldlt_phys      =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
-             NPREC           =SIMP(statut='f',typ='I',defaut=8),
+           ),
+           b_ldlt_mult_mumps_phys =BLOC( condition = "METHODE=='LDLT' or METHODE=='MULT_FRONT' or METHODE=='MUMPS' ",
+                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
+             NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
-
            b_mumps_phys     =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
              TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
              PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),

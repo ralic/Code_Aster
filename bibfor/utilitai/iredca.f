@@ -3,7 +3,7 @@
       CHARACTER*8         MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 13/10/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -197,7 +197,7 @@ C
          DO 26 NUME2 = 1 , NBNOEU
             IF ( INO .EQ. ZI(JNOEU+NUME2-1) ) GOTO 28
  26      CONTINUE
-         CALL U2MESS('F','UTILITAI2_35')
+         CALL ASSERT(.FALSE.)
  28      CONTINUE
          WRITE(IFMA,'(1X,A8,2(1X,I10))') NOMAIL, NUME1, NUME2
  20   CONTINUE

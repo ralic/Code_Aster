@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_calcul_aster Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,7 +150,7 @@ class CALCUL_ASTER:
   def Recuperation_Diagnostic(self, output):
 
     txt = '--- DIAGNOSTIC JOB :'
-    diag = None
+    diag = ''
     for ligne in output.splitlines():
       if ligne.find(txt) > -1:
         diag = ligne.split(txt)[-1].strip()

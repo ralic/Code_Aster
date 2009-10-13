@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 # sdnl105c.para = tps_job 140 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -338,13 +338,13 @@ BAMODA=DEFI_BASE_MODALE( reuse=BAMODA,
 
 BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
                     RITZ=( _F( BASE_MODALE=BAMODA),
-                           _F( MULT_ELAS = MODESTAA,
+                           _F( MODE_INTF = MODESTAA,
                                      NMAX_MODE = 999)),
                          NUME_REF=NUM)
  
 BAMODA=DEFI_BASE_MODALE( reuse=BAMODA, 
                     RITZ=( _F( BASE_MODALE=BAMODA),
-                           _F( MULT_ELAS = MODESTAB,
+                           _F( MODE_INTF = MODESTAB,
                                      NMAX_MODE = 999)),
                          NUME_REF=NUM)
 

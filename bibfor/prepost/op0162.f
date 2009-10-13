@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF PREPOST  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C
       CHARACTER*24 NOMCH1, NOMCH2, KBID, NOMCH0
       CHARACTER*8  MAEL, BASEMO, NOMGR, NOMNOE, NOMFON, INTERF
       CHARACTER*80 TITRE
-      REAL*8       R8B, PETIR8, DI(3)
+      REAL*8       R8B, PETIR8, DI(6)
       REAL*8       TINI, TFIN, FINI, FFIN, PAS
 C     ------------------------------------------------------------------
       DATA  REFE  /'                  _REFE'/
@@ -143,6 +143,11 @@ C     ----- RECUPERATION INSTANTS OU FREQUENCES ---
      &  1X,''PAS'',1X,1PE12.5)') FINI,FFIN,PAS
         WRITE(IFM,'(''FREQ DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,
      &  1X,''PAS'',1X,1PE12.5)') FINI,FFIN,PAS
+      ENDIF
+      CALL GETVR8(' ','DIRE_ONDE',IC,1,3,DI(1),N)
+      IF (N.NE.0) THEN
+         WRITE(IFMIS,'(''DIRE ONDE'')') 
+         WRITE(IFMIS,'(3(1X,1PE12.5))') (DI(I),I=1,3)
       ENDIF
 C     ----- RECUPERATION NIVEAU IMPRESSION ---
 C
@@ -278,6 +283,67 @@ C
      +    (ZR(JFONC+K-1),ZR(JFONC+K+NBVAL-1),K=1,NBVAL)
    73 CONTINUE
  9999 CONTINUE
+C
+      CALL GETFAC('SOURCE_SOL',NSOURS)
+      IF (NSOURS.EQ.0) GOTO 9995
+      WRITE(IFMIS,'(''SOUS'',1X,I6)') NSOURS
+      WRITE(IFM,'(''SOUS'',1X,I6)') NSOURS
+      DO 74 IC = 1,NSOURS
+C         IC = 1
+         CALL GETVR8('SOURCE_SOL','POINT',IC,1,3,DI(1),N)
+         CALL GETVR8('SOURCE_SOL','DIRECTION',IC,1,3,DI(4),N)
+         CALL GETVTX('SOURCE_SOL','NOM_CHAM',IC,1,1,TYPI,N)
+         IF (NIV.GT.1) WRITE(IFM,'(''DIRE SOUS'',1X,I6)') IC
+         IF (NIV.GT.1) WRITE(IFM,'(3(1X,1PE12.5))') (DI(I),I=1,6)
+         IF (NIV.GT.1) WRITE(IFM,'(''SOLS'',1X,I6,1X,
+     +    ''TYPE'',1X,A8)') IC,TYPI
+         WRITE(IFMIS,'(''DIRE SOUS'',1X,I6)') IC
+         WRITE(IFMIS,'(3(1X,1PE12.5))') (DI(I),I=1,6)
+         WRITE(IFMIS,'(''TYPE SOUS'',1X,I6,1X,A8)') IC,TYPI
+         CALL GETVID('SOURCE_SOL','FONC_SIGNAL',IC,1,1,NOMFON,N)
+         FONC = NOMFON
+         CALL JELIRA(FONC//'.VALE','LONMAX',NBVAL,KBID)
+         CALL JEVEUO(FONC//'.VALE','L',JFONC)
+         NBVAL = NBVAL/2
+         IF (NIV.GT.1) WRITE(IFM,'(''FONC SOUS'',1X,I6,1X,
+     +    ''VALE'',1X,I6)') IC,NBVAL
+         IF (NIV.GT.1) WRITE(IFM,'(6(1X,1PE12.5))')
+     +    (ZR(JFONC+K-1),ZR(JFONC+K+NBVAL-1),K=1,NBVAL)
+         WRITE(IFMIS,'(''FONC SOUS'',2(1X,I6))') IC,NBVAL
+         WRITE(IFMIS,'(6(1X,1PE12.5))')
+     +    (ZR(JFONC+K-1),ZR(JFONC+K+NBVAL-1),K=1,NBVAL)
+   74 CONTINUE
+ 9995 CONTINUE
+C
+      CALL GETFAC('SOURCE_FLUIDE',NSOURF)
+      IF (NSOURF.EQ.0) GOTO 9996
+      WRITE(IFMIS,'(''SOUF'',1X,I6)') NSOURF
+      WRITE(IFM,'(''SOUF'',1X,I6)') NSOURF
+      DO 75 IC = 1,NSOURF
+C         IC = 1
+         CALL GETVR8('SOURCE_FLUIDE','POINT',IC,1,3,DI(1),N)
+         CALL GETVTX('SOURCE_FLUIDE','NOM_CHAM',IC,1,1,TYPI,N)
+         IF (NIV.GT.1) WRITE(IFM,'(''DIRE SOUF'',1X,I6)') IC
+         IF (NIV.GT.1) WRITE(IFM,'(3(1X,1PE12.5))') (DI(I),I=1,3)
+         IF (NIV.GT.1) WRITE(IFM,'(''SOLS'',1X,I6,1X,
+     +    ''TYPE'',1X,A8)') IC,TYPI
+         WRITE(IFMIS,'(''DIRE SOUF'',1X,I6)') IC
+         WRITE(IFMIS,'(3(1X,1PE12.5))') (DI(I),I=1,3)
+         WRITE(IFMIS,'(''TYPE SOUF'',1X,I6,1X,A8)') IC,TYPI
+         CALL GETVID('SOURCE_FLUIDE','FONC_SIGNAL',IC,1,1,NOMFON,N)
+         FONC = NOMFON
+         CALL JELIRA(FONC//'.VALE','LONMAX',NBVAL,KBID)
+         CALL JEVEUO(FONC//'.VALE','L',JFONC)
+         NBVAL = NBVAL/2
+         IF (NIV.GT.1) WRITE(IFM,'(''FONC SOUF'',1X,I6,1X,
+     +    ''VALE'',1X,I6)') IC,NBVAL
+         IF (NIV.GT.1) WRITE(IFM,'(6(1X,1PE12.5))')
+     +    (ZR(JFONC+K-1),ZR(JFONC+K+NBVAL-1),K=1,NBVAL)
+         WRITE(IFMIS,'(''FONC SOUF'',2(1X,I6))') IC,NBVAL
+         WRITE(IFMIS,'(6(1X,1PE12.5))')
+     +    (ZR(JFONC+K-1),ZR(JFONC+K+NBVAL-1),K=1,NBVAL)
+   75 CONTINUE
+ 9996 CONTINUE
 C
       CALL JEDEMA()
       END

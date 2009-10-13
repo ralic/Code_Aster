@@ -3,7 +3,7 @@
      &                   LQUALI,RDESQ,TYPE,IETDEB,IETRAT,RCTDEB,LDIST)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPT MUMPS  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPT MUMPS  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -21,7 +21,7 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
 C--------------------------------------------------------------
-C BUT : ROUTINE DE MONITORING POUR AMUMPR/C.
+C BUT : ROUTINE DE MONITORING POUR AMUMPS/C/D/Z.
 C
 C IN  OPTION :   IN   : OPTION D'UTILISATION.
 C IN/OUT KMONIT: K24  : VECTEUR DE NOMS DES OBJ JEVEUX
@@ -406,6 +406,8 @@ C            POUR LES CALCULS DES MIN
      &            1PD10.2)
 
            DO I=1,NBPROC
+             ZI(MONIT(1)+I-1)=0
+             ZI(MONIT(2)+I-1)=0
              ZI(MONIT(10)+I-1)=0
              ZI(MONIT(11)+I-1)=0
              ZI(MONIT(12)+I-1)=0             

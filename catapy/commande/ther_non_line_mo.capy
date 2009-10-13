@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,15 +40,15 @@ THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
            ARRET           =SIMP(statut='c',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),
          SOLVEUR         =FACT(statut='d',
-           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC") ),
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS") ),
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
            ),
            b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
            ),
-           b_ldlt_mult     =BLOC(condition = "METHODE == 'LDLT' or METHODE == 'MULT_FRONT' ",
-                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factorise",
+           b_ldlt_mult_mumps =BLOC( condition = "METHODE=='LDLT' or METHODE=='MULT_FRONT' or METHODE=='MUMPS' ",
+                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
              NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),

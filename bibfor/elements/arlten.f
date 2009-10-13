@@ -1,10 +1,10 @@
       SUBROUTINE ARLTEN(NPGS  ,POIJCS,
-     &                  NN1   ,F1    ,
-     &                  NN2   ,F2    ,
+     &                  NDML1   ,FCPIG1    ,
+     &                  NDML2   ,FCPIG2    ,
      &                  MCPLN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,9 +26,9 @@ C
       IMPLICIT    NONE
       INTEGER     NPGS
       REAL*8      POIJCS(NPGS)
-      INTEGER     NN1,NN2
-      REAL*8      F1(NPGS*NN1),F2(NPGS*NN2)
-      REAL*8      MCPLN(NN1,NN2)
+      INTEGER     NDML1,NDML2
+      REAL*8      FCPIG1(NPGS*NDML1),FCPIG2(NPGS*NDML2)
+      REAL*8      MCPLN(NDML1,NDML2)
 C
 C ----------------------------------------------------------------------
 C
@@ -45,14 +45,14 @@ C
 C
 C IN  NPGS   : NOMBRE DE POINTS DE GAUSS DE LA MAILLE S
 C IN  POIJCS : PRODUIT POIDS DE GAUSS*JACOBIEN  DE LA MAILLE S
-C IN  NN1    : NOMBRE DE NOEUDS DE LA MAILLE 1
-C IN  F1     : FCT. FORME DE MAILLE 1 AU POINT DE GAUSS KPGS
+C IN  NDML1  : NOMBRE DE NOEUDS DE LA MAILLE 1
+C IN  FCPIG1 : FCT. FORME DE MAILLE 1 AU POINT DE GAUSS KPGS
 C               DE LA MAILLE S
-C IN  NN2    : NOMBRE DE NOEUDS DE LA MAILLE 2
-C IN  F2     : FCT. FORME DE MAILLE 2 AU POINT DE GAUSS KPGS
+C IN  NDML2  : NOMBRE DE NOEUDS DE LA MAILLE 2
+C IN  FCPIG2 : FCT. FORME DE MAILLE 2 AU POINT DE GAUSS KPGS
 C               DE LA MAILLE S
 C OUT MCPLN  : MATRICE DES TERMES DE COUPLAGE (N1)T.N2
-C              MATRICE RECTANGULAIRE (NN1xNN2)
+C              MATRICE RECTANGULAIRE (NDML1xNDML2)
 C
 C NB: SI MAILLE 1 == MAILLE 2 ALORS MCPLN EQUIVALENTE A UNE MATRICE
 C     MASSE DE DENSITE 1 (ET DONC MATRICE CARREE)
@@ -60,7 +60,7 @@ C
 C ----------------------------------------------------------------------
 C
       REAL*8  POIDS
-      INTEGER KPGS,I,J
+      INTEGER KPGS,IAUX,JAUX
 C
 C ----------------------------------------------------------------------
 C
@@ -69,18 +69,19 @@ C
 C --- CALCUL DES TERMES DE COUPLAGE
 C
       POIDS = POIJCS(1)
-      DO 10 J = 1,NN2
-        DO 20 I = 1,NN1
-          MCPLN(I,J) = POIDS*F1(I)*F2(J)
+      DO 10 JAUX = 1,NDML2
+        DO 20 IAUX = 1,NDML1
+          MCPLN(IAUX,JAUX) = POIDS*FCPIG1(IAUX)*FCPIG2(JAUX)
  20     CONTINUE
  10   CONTINUE
 
       DO 30 KPGS = 2,NPGS
         POIDS = POIJCS(KPGS)
-        DO 40 J = 1,NN2
-          DO 50 I = 1,NN1
-            MCPLN(I,J) = MCPLN(I,J)
-     &            + POIDS*F1(NN1*(KPGS-1)+I)*F2(NN2*(KPGS-1)+J)
+        DO 40 JAUX = 1,NDML2
+          DO 50 IAUX = 1,NDML1
+            MCPLN(IAUX,JAUX) = MCPLN(IAUX,JAUX)
+     &            + POIDS*FCPIG1(NDML1*(KPGS-1)
+     &            + IAUX)*FCPIG2(NDML2*(KPGS-1)+JAUX)
  50       CONTINUE
  40     CONTINUE
  30   CONTINUE

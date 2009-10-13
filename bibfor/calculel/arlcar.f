@@ -1,7 +1,7 @@
       SUBROUTINE ARLCAR(NOMARL,BASE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/08/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER      IBID,NH,ARLGEI
+      INTEGER      IBID,NUMHAR,ARLGEI
 C
 C ----------------------------------------------------------------------
 C
@@ -55,13 +55,16 @@ C
 C
 C --- PARAMETRE POUR LONGUEUR DU VECTEUR DE TRAVAIL
 C
-      NH = ARLGEI(NOMARL,'NH    ')
+      NUMHAR = ARLGEI(NOMARL,'NH    ')
 C
 C --- CREATION VECTEURS JEVEUX
 C
-      CALL WKVECT(NOMARL(1:8)//'.TRAVR',BASE//' V R'  ,12+276*NH ,IBID)
-      CALL WKVECT(NOMARL(1:8)//'.TRAVI',BASE//' V I'  ,56+1536*NH,IBID)
-      CALL WKVECT(NOMARL(1:8)//'.TRAVL',BASE//' V L'  ,24*NH     ,IBID)
+      CALL WKVECT(NOMARL(1:8)//'.TRAVR',BASE//' V R'  ,12+276*NUMHAR ,
+     &  IBID)
+      CALL WKVECT(NOMARL(1:8)//'.TRAVI',BASE//' V I'  ,56+1536*NUMHAR,
+     & IBID)
+      CALL WKVECT(NOMARL(1:8)//'.TRAVL',BASE//' V L'  ,24*NUMHAR     ,
+     & IBID)
       CALL WKVECT(NOMARL(1:8)//'.POIDS',BASE//' V K24',1         ,IBID)
 C
       CALL JEDEMA()

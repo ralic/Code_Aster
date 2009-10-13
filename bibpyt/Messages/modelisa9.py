@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 28/09/2009   AUTEUR SELLENET N.SELLENET 
+#@ MODIF modelisa9 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -330,76 +330,6 @@ Erreur utilisateur (création d'un cham_elem à partir d'une table):
 
 83 : _("""
   Erreur a l'interpolation, paramètres non trouvé.
-"""),
-
-84 : _("""
-    Mots clés: CARA_HYDR, VALE_HYDR, il manque des données:
-      - Nombre de données recues :    %(i1)d
-      - Nombre de données attendues : %(i2)d
-      - Données recues : %(k1)s %(k2)s %(k3)s, ...
-
- Risques & Conseils
-   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
-"""),
-
-85 : _("""
-    Mots clés: CARA_GRAPPE, VALE_GRAPPE, il manque des données:
-      - Nombre de données recues :    %(i1)d
-      - Nombre de données attendues : %(i2)d
-      - Données recues : %(k1)s %(k2)s %(k3)s, ...
-
- Risques & Conseils
-   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
-"""),
-
-86 : _("""
-    Mots clés: CARA_COMMANDE, VALE_COMMANDE, il manque des données:
-      - Nombre de données recues :    %(i1)d
-      - Nombre de données attendues : %(i2)d
-      - Données recues : %(k1)s %(k2)s %(k3)s, ...
-
- Risques & Conseils
-   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
-"""),
-
-87 : _("""
-    Mots clés: CARA_MANCHETTE, VALE_MANCHETTE, il manque des données:
-      - Nombre de données recues :    %(i1)d
-      - Nombre de données attendues : %(i2)d
-      - Données recues : %(k1)s %(k2)s %(k3)s, ...
-
- Risques & Conseils
-   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
-"""),
-
-88 : _("""
-    Mots clés: CARA_GUIDE, VALE_GUIDE, il manque des données:
-      - Nombre de données recues :    %(i1)d
-      - Nombre de données attendues : %(i2)d
-      - Données recues : %(k1)s %(k2)s %(k3)s, ...
-
- Risques & Conseils
-   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
-"""),
-
-89 : _("""
-    Mots clés: CARA_ASSEMBLAGE, VALE_ASSEMBLAGE, il manque des données:
-      - Nombre de données recues :    %(i1)d
-      - Nombre de données attendues : %(i2)d
-      - Données recues : %(k1)s %(k2)s %(k3)s, ...
-
- Risques & Conseils
-   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
-"""),
-
-90 : _("""
-    Mots clés: CARA_PDC, VALE_PDC, il manque des données:
-      - Nombre de données recues :    %(i1)d
-      - Nombre de données attendues : %(i2)d
-      - Données recues : %(k1)s %(k2)s %(k3)s, ...
-
- Risques & Conseils
-   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
 """),
 
 93 : _("""

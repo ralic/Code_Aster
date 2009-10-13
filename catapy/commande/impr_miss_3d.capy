@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,6 +36,20 @@ IMPR_MISS_3D=PROC(nom="IMPR_MISS_3D",op= 162,
            NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut="DEPL",
                                  into=("DEPL","VITE","ACCE","FORC",) ),
          ),
+         SOURCE_SOL      =FACT(statut='f',max='**',
+           POINT           =SIMP(statut='o',typ='R',min=3,max=3),
+           DIRECTION       =SIMP(statut='o',typ='R',min=3,max=3),
+           FONC_SIGNAL     =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut="DEPL",
+                                 into=("DEPL","VITE","ACCE","FORC",) ),
+         ),
+         SOURCE_FLUIDE   =FACT(statut='f',max='**',
+           POINT           =SIMP(statut='o',typ='R',min=3,max=3),
+           FONC_SIGNAL     =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut="DEPL",
+                                 into=("DEPL","VITE","ACCE","FORC",) ),
+         ),
+         DIRE_ONDE       =SIMP(statut='f',typ='R',min=3,max=3),
          INST_INIT       =SIMP(statut='f',typ='R' ),
          INST_FIN        =SIMP(statut='f',typ='R' ),
          FREQ_INIT       =SIMP(statut='f',typ='R' ),

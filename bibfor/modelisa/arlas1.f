@@ -1,8 +1,8 @@
-      SUBROUTINE ARLAS1(NDIM  ,LCARA ,NN1   ,NN2   ,IJ    ,
-     &                  CK, C)
+      SUBROUTINE ARLAS1(NDIM  ,LCARA ,NDML1   ,NDML2   ,PTMT    ,
+     &                  MTEL, MTMO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,11 +24,11 @@ C ======================================================================
 C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
-      INTEGER  NDIM,NN1,NN2
-      INTEGER  IJ(NN2,NN1)
+      INTEGER  NDIM,NDML1,NDML2
+      INTEGER  PTMT(NDML2,NDML1)
       REAL*8   LCARA
-      REAL*8   CK(*)
-      REAL*8   C(*)
+      REAL*8   MTEL(*)
+      REAL*8   MTMO(*)
 C
 C ----------------------------------------------------------------------
 C
@@ -43,62 +43,62 @@ C
 C
 C IN  NDIM   : NDIMNSION DE L'ESPACE
 C IN  LCARA  : LONGUEUR CARACTERISTIQUE POUR TERME DE COUPLAGE
-C IN  NN1    : NOMBRE DE NOEUDS MAILLE 1
-C IN  NN2    : NOMBRE DE NOEUDS MAILLE 2
-C IN  IJ     : POINTEURS DANS C (CF ARLAS0)
-C IN  CK     : MATRICES ELEMENTAIRES (CF ARLTE)
-C I/O C      : MATRICE MORSE (CF ARLFAC)
+C IN  NDML1  : NOMBRE DE NOEUDS MAILLE 1
+C IN  NDML2  : NOMBRE DE NOEUDS MAILLE 2
+C IN  PTMT   : POINTEURS DANS C (CF ARLAS0)
+C IN  MTEL   : MATRICES ELEMENTAIRES (CF ARLTE)
+C I/O MTMO   : MATRICE MORSE (CF ARLFC*)
 C
-C MATRICE PONCTUELLE DANS C : (X1.X2, X1.Y2, [X1.Z2], Y1.X2, ...)
-C
-C ----------------------------------------------------------------------
-C
-      INTEGER  INO1,INO2,K,P1,Q1,P,Q
-      REAL*8   TR,R,C0(9)
+C MATRICE PONCTUELLE DANS MTMO : (X1.X2, X1.Y2, [X1.Z2], Y1.X2, ...)
 C
 C ----------------------------------------------------------------------
 C
+      INTEGER  INO1,INO2,KAUX,PMAT1,LGNM1,PMAT,LGNM
+      REAL*8   TRMT,VLR,MTMO0(9)
+C
+C ----------------------------------------------------------------------
+C
 
 C
-C --- ASSEMBLAGE DE LA MATRICE ELEMENTAIRE CK
+C --- ASSEMBLAGE DE LA MATRICE ELEMENTAIRE MTEL
 
-      P1 = 1
-      Q1 = NN1*NN2
-      DO 10 INO1 = 1, NN1
-        DO 11 INO2 = 1, NN2
+      PMAT1 = 1
+      LGNM1 = NDML1*NDML2
+      DO 10 INO1 = 1, NDML1
+        DO 11 INO2 = 1, NDML2
 
-          Q = 1 + NDIM*NDIM*(IJ(INO2,INO1)-1)
+          LGNM = 1 + NDIM*NDIM*(PTMT(INO2,INO1)-1)
 
-C ------- CALCUL DE LA TRACE DE CK
+C ------- CALCUL DE LA TRACE DE MTEL
 
-          TR = 0.D0
+          TRMT = 0.D0
 
-          P = 1
-          DO 20 K = 1, NDIM
-            TR = TR + CK(Q1+P)
-            P  = P + NDIM + 1
+          PMAT = 1
+          DO 20 KAUX = 1, NDIM
+            TRMT = TRMT + MTEL(LGNM1+PMAT)
+            PMAT  = PMAT + NDIM + 1
  20       CONTINUE
 
 C ------- CALCUL DE LA MATRICE PONCTUELLE C0
 
-          DO 30 K = 1, NDIM*NDIM
-            Q1 = Q1 + 1
-            C0(K) = LCARA*CK(Q1)
+          DO 30 KAUX = 1, NDIM*NDIM
+            LGNM1 = LGNM1 + 1
+            MTMO0(KAUX) = LCARA*MTEL(LGNM1)
  30       CONTINUE
 
-          R = CK(P1) + LCARA*TR
-          P1 = P1 + 1
+          VLR = MTEL(PMAT1) + LCARA*TRMT
+          PMAT1 = PMAT1 + 1
 
-          P = 1
-          DO 40 K = 1, NDIM
-            C0(P) = C0(P) + R
-            P = P + NDIM + 1
+          PMAT = 1
+          DO 40 KAUX = 1, NDIM
+            MTMO0(PMAT) = MTMO0(PMAT) + VLR
+            PMAT = PMAT + NDIM + 1
  40       CONTINUE
 
-C ------- ASSEMBLAGE DE LA MATRICE PONCTUELLE C0
-          DO 50 K = 1, NDIM*NDIM
-            C(Q) = C(Q) + C0(K)
-            Q = Q + 1
+C ------- ASSEMBLAGE DE LA MATRICE PONCTUELLE MTMO0
+          DO 50 KAUX = 1, NDIM*NDIM
+            MTMO(LGNM) = MTMO(LGNM) + MTMO0(KAUX)
+            LGNM = LGNM + 1
  50       CONTINUE
 
  11     CONTINUE

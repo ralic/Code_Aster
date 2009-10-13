@@ -1,7 +1,7 @@
-      SUBROUTINE ARLAS9(NDIM,NN1,NN2,IJ,IDEB,IMATUU,C)
+      SUBROUTINE ARLAS9(NDIM,NDML1,NDML2,PTMT,IDEB,IMATUU,MTMO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +21,9 @@ C ======================================================================
 C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT      NONE
-      INTEGER       NDIM,NN1,NN2,IDEB,IMATUU
-      INTEGER       IJ(NN2,NN1)
-      REAL*8        C(*)
+      INTEGER       NDIM,NDML1,NDML2,IDEB,IMATUU
+      INTEGER       PTMT(NDML2,NDML1)
+      REAL*8        MTMO(*)
 C
 C ----------------------------------------------------------------------
 C
@@ -37,12 +37,12 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  NDIM   : DIMENSION DE L'ESPACE
-C IN  NN1   : NOMBRE DE NOEUDS MAILLE 1
-C IN  NN2   : NOMBRE DE NOEUDS MAILLE 2
-C IN  IJ     : POINTEURS DANS C (CF ARLAS0)
-C I/O C      : MATRICE MORSE (CF ARLFAC)
+C IN  NDML1   : NOMBRE DE NOEUDS MAILLE 1
+C IN  NDML2   : NOMBRE DE NOEUDS MAILLE 2
+C IN  PTMT  : POINTEURS DANS C (CF ARLAS0)
+C I/O MTMO  : MATRICE MORSE (CF ARLFC*)
 C
-C MATRICE PONCTUELLE DANS C : (X1.X2, X1.Y2, [X1.Z2], Y1.X2, ...)
+C MATRICE PONCTUELLE DANS MTMO : (X1.X2, X1.Y2, [X1.Z2], Y1.X2, ...)
 C
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -65,19 +65,19 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 
-      INTEGER  IDIM1,IDIM2,INO1,INO2,I
-      REAL*8   MCPLCZ(NDIM,NDIM,NN1,NN2)
+      INTEGER  IDIM1,IDIM2,INO1,INO2,IAUX
+      REAL*8   MCPLCZ(NDIM,NDIM,NDML1,NDML2)
 C
 C ----------------------------------------------------------------------
 C
 
-       I = IDEB
-       DO 50 INO1 = 1,NN1
+       IAUX = IDEB
+       DO 50 INO1 = 1,NDML1
          DO 40 IDIM1 = 1,NDIM
-           DO 30 INO2 = 1,NN2
+           DO 30 INO2 = 1,NDML2
              DO 20 IDIM2 = 1,NDIM
-               I = I+1
-               MCPLCZ(IDIM1,IDIM2,INO1,INO2) = ZR(IMATUU-1+I)
+               IAUX = IAUX+1
+               MCPLCZ(IDIM1,IDIM2,INO1,INO2) = ZR(IMATUU-1+IAUX)
  20          CONTINUE
  30        CONTINUE
  40      CONTINUE
@@ -86,13 +86,13 @@ C
 
 C --- ASSEMBLAGE DE LA MATRICE ELEMENTAIRE CK
 
-      DO 90 INO1 = 1,NN1
-        DO 80 INO2 = 1,NN2
-          I = NDIM*NDIM*(IJ(INO2,INO1)-1)
+      DO 90 INO1 = 1,NDML1
+        DO 80 INO2 = 1,NDML2
+          IAUX = NDIM*NDIM*(PTMT(INO2,INO1)-1)
           DO 70 IDIM1 = 1,NDIM
             DO 60 IDIM2 = 1,NDIM
-              I = I+1
-              C(I) = C(I) + MCPLCZ(IDIM1,IDIM2,INO1,INO2)
+              IAUX = IAUX+1
+              MTMO(IAUX) = MTMO(IAUX) + MCPLCZ(IDIM1,IDIM2,INO1,INO2)
  60         CONTINUE
  70       CONTINUE
  80     CONTINUE

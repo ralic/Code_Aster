@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,6 +94,8 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
          NOM_PARA = SIMP(statut='f',typ='TXM',max='**',
                          fr="Noms des paramètres dont les valeurs doivent etre identiques dans les deux tables "\
                             "pour que les colonnes soient combinées"),
+         RESTREINT = SIMP(statut='f', typ='TXM', into=('OUI', 'NON'), defaut='NON',
+                          fr="Restreint la fusion uniquement aux lignes où les NOM_PARA sont communs"),
       ),
       
       b_append = BLOC(condition="OPERATION == 'AJOUT'",

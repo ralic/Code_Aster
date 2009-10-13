@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 13/10/2009   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -664,6 +664,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
     # détermination du type de résultat à créer
     if   nomgd[:6] == 'TEMP_R' : TYPE_RESU='EVOL_THER'
     elif nomgd[:6] == 'DEPL_R' : TYPE_RESU='EVOL_ELAS'
+    elif nomgd[:6] == 'EPSI_R' : TYPE_RESU='EVOL_ELAS'
     elif nomgd[:6] == 'SIEF_R' :
        if   NOM_CHAM[:4]=='SIGM':TYPE_RESU='EVOL_ELAS'
        elif NOM_CHAM[:4]=='SIEF':TYPE_RESU='EVOL_NOLI'

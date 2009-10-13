@@ -1,9 +1,9 @@
       SUBROUTINE ARLTIM(UNIT  ,DIME  ,NNM   ,LINCLU,LINCL1,
-     &                  NUM1  ,NUM2  ,L1    ,L2    ,TYPEM1,
-     &                  TYPEM2,H1    ,H2    ,NG    ,NT)
+     &                  NUM1  ,NUM2  ,MTL1    ,MTL2    ,TYPEM1,
+     &                  TYPEM2,DIMBT1    ,DIMBT2    ,NPIG    ,NTRG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 13/10/2009   AUTEUR CAO B.CAO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,12 +24,12 @@ C RESPONSABLE MEUNIER S.MEUNIER
 C
       IMPLICIT NONE
       INTEGER  UNIT,DIME,NNM
-      REAL*8   L1(*),L2(*)
+      REAL*8   MTL1(*),MTL2(*)
       INTEGER  NUM1,NUM2
       LOGICAL  LINCLU,LINCL1
-      INTEGER  NG,NT
+      INTEGER  NPIG,NTRG
       CHARACTER*8  TYPEM1,TYPEM2
-      REAL*8       H1,H2
+      REAL*8       DIMBT1,DIMBT2
 C
 C ----------------------------------------------------------------------
 C
@@ -47,16 +47,16 @@ C IN  LINCLU : .TRUE.  INTEGRATION STANDARD
 C              .FALSE. INTEGRATION PAR SOUS-MAILLES
 C IN  LINCL1 : .TRUE.  INTEGRATION SUR LA PREMIERE MAILLE SI INTG. STD.
 C              .FALSE. INTEGRATION SUR LA SECONDE MAILLE SI INTG. STD.
-C IN  L1     : MATRICE ELEMENTAIRE SUR LA MAILLE 1
+C IN  MTL1     : MATRICE ELEMENTAIRE SUR LA MAILLE 1
 C IN  NUM1   : NUMERO ABSOLU (DANS MAILLAGE) DE LA MAILLE 1
 C IN  TYPEM1 : TYPE DE LA MAILLE 1
-C IN  H1     : TAILLE DE LA MAILLE 1
-C IN  L2     : MATRICE ELEMENTAIRE SUR LA MAILLE 2
+C IN  DIMBT1 : TAILLE DE LA MAILLE 1
+C IN  MTL2   : MATRICE ELEMENTAIRE SUR LA MAILLE 2
 C IN  NUM2   : NUMERO ABSOLU (DANS MAILLAGE) DE LA MAILLE 2
 C IN  TYPEM2 : TYPE DE LA MAILLE 2
-C IN  H2     : TAILLE DE LA MAILLE 2
-C IN  NG     : NOMBRE DE POINTS D'INTEGRATION NUMERIQUE
-C IN  NT     : NOMBRE DE TRIANGLE/TETRAEDRE SI DECOUPE (INT.
+C IN  DIMBT2 : TAILLE DE LA MAILLE 2
+C IN  NPIG   : NOMBRE DE POINTS D'INTEGRATION NUMERIQUE
+C IN  NTRG   : NOMBRE DE TRIANGLE/TETRAEDRE SI DECOUPE (INT.
 C              SOUS-MAILLES)
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -79,7 +79,7 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER      J
+      INTEGER      JAUX
       CHARACTER*8  NOMO,NOMA,NOMMA1,NOMMA2
       INTEGER      IOCC,JLGRF
       REAL*8       VAL1,VAL2
@@ -98,18 +98,18 @@ C
       CALL JEVEUO(NOMO(1:8)//'.MODELE    .LGRF','L',JLGRF)
       NOMA = ZK8(JLGRF)
 C
-C --- CALCUL EQUIVALENT MATRICE L1
+C --- CALCUL EQUIVALENT MATRICE MTL1
 C
       VAL1 = 0.D0
-      DO 10 J = 1, 10*NNM*NNM
-        VAL1 = VAL1 + J*L1(J)
+      DO 10 JAUX = 1, 10*NNM*NNM
+        VAL1 = VAL1 + JAUX*MTL1(JAUX)
   10  CONTINUE
 C
-C --- CALCUL EQUIVALENT MATRICE L2
+C --- CALCUL EQUIVALENT MATRICE MTL2
 C
       VAL2 = 0.D0
-      DO 20 J = 1, 10*NNM*NNM
-        VAL2 = VAL2 + J*L2(J)
+      DO 20 JAUX = 1, 10*NNM*NNM
+        VAL2 = VAL2 + JAUX*MTL2(JAUX)
   20  CONTINUE
 C
       CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUM1),NOMMA1)
@@ -120,28 +120,28 @@ C
       IF (LINCLU) THEN
         IF (LINCL1) THEN
           WRITE(UNIT,*) '<ARLTE   > ...... INTEGRATION STANDARD SUR ',
-     &                  NOMMA1,'( NB GAUSS: ',NG,' )'
+     &                  NOMMA1,'( NB GAUSS: ',NPIG,' )'
         ELSE
           WRITE(UNIT,*) '<ARLTE   > ...... INTEGRATION STANDARD SUR ',
-     &                  NOMMA2,'( NB GAUSS: ',NG,' )'
+     &                  NOMMA2,'( NB GAUSS: ',NPIG,' )'
         ENDIF
       ELSE
         IF (DIME.EQ.2) THEN
           WRITE(UNIT,*) '<ARLTE   > ...... INTEGRATION PAR '//
-     &                  'SOUS-MAILLES ( NB GAUSS: ',NG,' - '//
-     &                  'NB TRIANGLES: ',NT,' )'
+     &                  'SOUS-MAILLES ( NB GAUSS: ',NPIG,' - '//
+     &                  'NB TRIANGLES: ',NTRG,' )'
         ELSE
           WRITE(UNIT,*) '<ARLTE   > ...... INTEGRATION PAR '//
-     &                  'SOUS-MAILLES ( NB GAUSS: ',NG,' - '//
-     &                  'NB TETRAEDRES: ',NT,' )'
+     &                  'SOUS-MAILLES ( NB GAUSS: ',NPIG,' - '//
+     &                  'NB TETRAEDRES: ',NTRG,' )'
 
         ENDIF
       ENDIF
 C
       WRITE(UNIT,*) '<ARLTE   > ...... ',NOMMA1,'( ',
-     &               TYPEM1,') - TAILLE: ',H1,' - VALE : ',VAL1
+     &               TYPEM1,') - TAILLE: ',DIMBT1,' - VALE : ',VAL1
       WRITE(UNIT,*) '<ARLTE   > ...... ',NOMMA2,'( ',
-     &               TYPEM2,') - TAILLE: ',H2,' - VALE : ',VAL2
+     &               TYPEM2,') - TAILLE: ',DIMBT2,' - VALE : ',VAL2
 
 C
   999 CONTINUE

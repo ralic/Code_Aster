@@ -2,7 +2,7 @@
      &                  NUMEDD,SDSENS,SDPILO,SDDYNA,VALMOI,
      &                  SOLALG,LACC0 ,INSTIN)
 C
-C MODIF ALGORITH  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,7 +93,7 @@ C
       CHARACTER*24 SENSNB
       INTEGER      JSENSN 
       LOGICAL      ISFONC,LPILO,LPIARC,LCTCC
-      LOGICAL      NDYNLO,LDYNA,LEXGE,LGRFL
+      LOGICAL      NDYNLO,LDYNA,LEXGE
       INTEGER      IFM,NIV
 C      
 C ----------------------------------------------------------------------
@@ -123,7 +123,6 @@ C
       LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')  
       LCTCC  = ISFONC(FONACT,'CONT_CONTINU')
       LEXGE  = NDYNLO(SDDYNA,'EXPL_GENE')
-      LGRFL  = NDYNLO(SDDYNA,'FORCE_FLUIDE')          
 C   
 C --- EXTRACTION VARIABLES CHAPEAUX
 C       
@@ -445,14 +444,6 @@ C
           ENDIF
         ENDIF      
       ENDIF  
-C
-C --- CHARGEMENT GRAPPE FLUIDE
-C
-      IF (LDYNA) THEN
-        IF (LGRFL) THEN
-          CALL NMGRIN(NUMEDD,SDDYNA,VALMOI,NUME  )  
-        ENDIF        
-      ENDIF 
 C
 C --- PROJECTION MODALE EN EXPLICITE
 C

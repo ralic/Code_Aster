@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 28/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_recal_ops Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -252,17 +252,20 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
 
    prof = ASTER_PROFIL(list_export[0])
 
-   mem_aster = prof['mem_aster'][0]
+   try:
+      mem_aster = float(prof['mem_aster'][0])
+   except ValueError:
+      mem_aster = 100.0
    memjeveux = prof.args.get('memjeveux')
 
-   if mem_aster in ('', '100'):
+   if mem_aster in (0., 100.):
       if INFO>=1: UTMESS('A','RECAL0_6')
-      mem_aster = '0'
+      mem_aster = 0.
    if not memjeveux:
       UTMESS('F','RECAL0_7')
 
    try:
-      if mem_aster == '0':
+      if mem_aster == 0.:
          memjeveux_esclave = float(memjeveux)
       else:
          memjeveux_esclave = float(memjeveux) / float(mem_aster) * 100. - float(memjeveux)
@@ -591,7 +594,7 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
 
                 # Affichage iteration
                 Mess.affiche_result_iter(iter,J,val,residu,Act)
-                if INFO>=1: UTMESS('I','RECAL0_16',vali=iter, valk=J, valr=residu)
+                if INFO>=1: UTMESS('I','RECAL0_16',vali=iter, valr=(J, residu))
 
                 if (GRAPHIQUE):
                    if GRAPHIQUE['AFFICHAGE']=='TOUTE_ITERATION':

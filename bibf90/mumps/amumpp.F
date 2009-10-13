@@ -2,7 +2,7 @@
      &                  IFMUMP,ELI2LG,RSOLU,CSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPP MUMPS  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -21,7 +21,7 @@
 ! ==================================================================
 C--------------------------------------------------------------
 C BUT : ROUTINE DE PRE/POST-TRAITEMENT DE LA SOLUTION ET DU
-C       SECOND MEMBRE POUR AMUMPR/C
+C       SECOND MEMBRE POUR AMUMPS/C/D/Z
 C
 C IN  OPTION :   IN   : OPTION D'UTILISATION.
 C IN  NBSOL  :   IN   : NBRE DE SYSTEMES A RESOUDRE
@@ -39,13 +39,13 @@ C IN   VCINE :  K19   : NOM DU CHAM_NO DE CHARGEMENT CINEMATIQUE
 C---------------------------------------------------------------
 C RESPONSABLE BOITEAU
 
-      INTEGER       OPTION,NBSOL,KXMPS,IFMUMP
-      LOGICAL       LDIST,ELI2LG
-      CHARACTER*1   TYPE
-      CHARACTER*14  IMPR
-      CHARACTER*19  VCINE
-      REAL*8 RSOLU(*)
-      COMPLEX*16 CSOLU(*)
+      INTEGER      OPTION,NBSOL,KXMPS,IFMUMP
+      LOGICAL      LDIST,ELI2LG
+      CHARACTER*1  TYPE
+      CHARACTER*14 IMPR
+      CHARACTER*19 VCINE
+      REAL*8       RSOLU(*)
+      COMPLEX*16   CSOLU(*)
 
 #ifdef _HAVE_MUMPS
 
@@ -77,8 +77,9 @@ C============================================================
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
       CHARACTER*24 VCIVAL
       LOGICAL      LTYPR
-      REAL*8       RBID
-      COMPLEX*16   CBID
+      REAL*4       R4MAEM
+      REAL*8       RBID,RR4MAX,RAUX
+      COMPLEX*16   CBID,CAUX
       COMMON /MUMPSS/ SMPS
       COMMON /MUMPSC/ CMPS
       COMMON /MUMPSD/ DMPS
@@ -107,6 +108,7 @@ C-----------------------------------------------------------------------
 C     ------------------------------------------------
 C     INITS
 C     ------------------------------------------------
+      RR4MAX=R4MAEM()
       IF (TYPE.EQ.'S') THEN
         SMPSK=>SMPS(KXMPS)
         RANG=SMPSK%MYID
@@ -226,11 +228,16 @@ C         -- COPIE DE SOLU DANS %RHS:
           IF (RANG.EQ.0) THEN
 	    IF (TYPE.EQ.'S') THEN
 	      DO I=1,NNBSOL
-	        SMPSK%RHS(I)=RSOLU(I)
+	        RAUX=RSOLU(I)
+	        IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
+	        SMPSK%RHS(I)=RAUX
 	      ENDDO
 	    ELSE IF (TYPE.EQ.'C') THEN
 	      DO I=1,NNBSOL
-	        CMPSK%RHS(I)=CSOLU(I)
+	        CAUX=CSOLU(I)
+		RBID=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
+	        IF (RBID.GT.RR4MAX) CALL ASSERT(.FALSE.)
+	        CMPSK%RHS(I)=CAUX
 	      ENDDO
             ELSE IF (TYPE.EQ.'D') THEN
               CALL DCOPY(N4,RSOLU,1,DMPSK%RHS,1)

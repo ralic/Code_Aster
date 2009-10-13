@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -906,7 +906,7 @@ def FMT(dform, nform, typAster=None, larg=0, val=''):
    return fmt
 
 # ------------------------------------------------------------------------------
-def merge(tab1, tab2, labels=[]):
+def merge(tab1, tab2, labels=[], restrict=False):
    """Assemble les deux tables tb1 et tb2 selon une liste de labels communs.
       Si labels est vide:
        - les lignes de tb2 sont ajoutés à celles de tb1,
@@ -960,14 +960,21 @@ def merge(tab1, tab2, labels=[]):
       if dlab1.has_key(cle):
          dic1[dlab2[cle]] = dlab1[cle]
    # insertion des valeurs de tb2 dans tb1 quand les labels sont communs
-   # (et uniques dans chaque table) OU ajout de la ligne de tb2 dans tb1
+   # (et uniques dans chaque table)
+   # OU ajout de la ligne de tb2 dans tb1 (si restrict == False)
+   if restrict:
+      def func_append_r2(row):
+         pass
+   else:
+      def func_append_r2(row):
+         rows1.append(row)
    i2 = -1
    for r2 in rows2:
       i2 += 1
       try:
          rows1[dic1[i2]].update(r2)
       except KeyError:
-         rows1.append(r2)
+         func_append_r2(r2)
    # concaténation des titres + info sur le merge
    tit = '\n'.join([tb1.titr, tb2.titr, 'MERGE avec labels=%s' % repr(labels)])
    return Table(rows1, n_para, n_type, tit)

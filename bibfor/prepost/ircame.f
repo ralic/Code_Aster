@@ -6,8 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
-C RESPONSABLE GNICOLAS G.NICOLAS
+C MODIF PREPOST  DATE 12/10/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +23,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE SELLENET N.SELLENET
 C     ECRITURE D'UN CHAMP - FORMAT MED
 C        -  -       - -            --
 C-----------------------------------------------------------------------
@@ -239,7 +239,7 @@ C
      &              NCMPRF, NCMPVE, NTLCMP,
      &              NBVATO, NBENEC, LIENEC, ADSD, ADSL,
      &              NOMAAS, MODELE, TYPGEO, NOMTYP,
-     &              NTPROA )
+     &              NTPROA, CHANOM )
 C
       CALL JEVEUO ( NCAIMI, 'L', ADCAII )
       CALL JEVEUO ( NCAIMK, 'L', ADCAIK )
