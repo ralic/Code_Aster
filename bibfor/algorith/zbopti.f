@@ -1,7 +1,7 @@
-      LOGICAL FUNCTION ZBOPTI(X,F)
+      SUBROUTINE ZBOPTI(RHO   ,F     ,RHOOPT,FOPT  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C      
       IMPLICIT NONE
-      REAL*8   X,F
+      REAL*8   RHO,F,RHOOPT,FOPT
 C      
 C ----------------------------------------------------------------------
 C
@@ -31,29 +31,27 @@ C REACTUALISATION DE LA SOLUTION OPTIMALE
 C      
 C ----------------------------------------------------------------------
 C 
-C IN  X      : SOLUTION COURANTE
-C IN  F      : VALEUR DE LA FONCTION EN X
+C IN  RHO    : SOLUTION COURANTE
+C IN  F      : VALEUR DE LA FONCTION EN RHO
+C OUT RHOOPT : SOLUTION OPTIMALE
+C I/O FOPT   : VALEUR DE LA FONCTION EN RHOOPT
 C
 C ----------------------------------------------------------------------
 C       
-      REAL*8  XEXCLU,XNEG  ,XPOS  ,XOPT
-      REAL*8  PARMUL,FNEG  ,FPOS  ,FOPT
-      INTEGER ITER  ,DIMCPL,NBCPL
-      LOGICAL BPOS  ,OPTI      
-      COMMON /ZBPAR/ XEXCLU,XNEG  ,XPOS  ,XOPT,
-     &               PARMUL,FNEG  ,FPOS  ,FOPT,
-     &               ITER  ,DIMCPL,NBCPL ,BPOS,
-     &               OPTI
+      REAL*8  RHONEG,RHOPOS 
+      REAL*8  PARMUL,FNEG  ,FPOS  
+      INTEGER DIMCPL,NBCPL
+      LOGICAL BPOS  ,LOPTI
+      COMMON /ZBPAR/ RHONEG,RHOPOS,
+     &               PARMUL,FNEG  ,FPOS  ,
+     &               DIMCPL,NBCPL ,BPOS  ,LOPTI
 C      
 C ----------------------------------------------------------------------
-C               
-       ZBOPTI = .FALSE.
-       IF (.NOT. OPTI .OR. ABS(F).LT.ABS(FOPT)) THEN
-         IF (X.GE.XEXCLU) THEN
-           OPTI   = .TRUE.
-           XOPT   = X
-           FOPT   = F
-           ZBOPTI = .TRUE.
-         END IF
+C        
+       IF (ABS(F).LT.ABS(FOPT)) THEN
+         RHOOPT = RHO
+         FOPT   = F
+         LOPTI  = .TRUE.
        END IF
+
        END 

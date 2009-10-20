@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -281,8 +281,8 @@ Conseils :
 57 : _("""
  Erreur Utilisateur :
    On cherche à transformer un champ simple en cham_elem.
-   Le nombre de "points" (points de Gauss ou noeuds) du champ simple (%(i1)d) est
-   différent du nombre de points attendu pour le cham_elem (%(i2)d) :
+   Le nombre de "points" (points de Gauss ou noeuds) du champ simple (%(i2)d) est
+   différent du nombre de points attendu pour le cham_elem (%(i1)d) :
      - maille              :  %(k1)s
      - nom du cham_elem    :  %(k4)s
      - nom du champ simple :  %(k5)s

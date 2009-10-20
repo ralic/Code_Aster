@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE RESATURATION D UNE ALVEOLE TEST THHD, 2D , MODELISATION THMC=LIQU_GAZ
 # wtnp113a.para = tps_job 1850 mem_job 128Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -262,9 +262,8 @@ RESU0=STAT_NON_LINE(
                 RELATION = 'KIT_THH',
                 RELATION_KIT = ('LIQU_GAZ','HYDR_UTIL')),
                 RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  , 
-                                  RHO_MIN = 0.1,
-                                  RHO_MAX = 0.2,METHODE='MIXTE',
-                                  ITER_LINE_MAXI = 3,),
+                                  METHODE='MIXTE',
+                                  ITER_LINE_MAXI = 1,),
                 INCREMENT=_F(  LIST_INST = LI,
                              INST_FIN = 473040000.,),
                 NEWTON=_F(MATRICE='TANGENTE',
@@ -323,9 +322,8 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                 INCREMENT=_F( LIST_INST = LI,
                               ),
                 RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  , 
-                                  RHO_MIN = 0.1,METHODE='MIXTE',
-                                  RHO_MAX = 0.2,
-                                  ITER_LINE_MAXI = 3,),
+                                  METHODE='MIXTE',
+                                  ITER_LINE_MAXI = 1,),
                 ETAT_INIT = _F (SIGM=SIG1,
                                 VARI=VARI1,
                                 DEPL=DEP1,

@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -525,6 +525,8 @@ Paramètres répétés : %s""" % args
       # appel de fonction definie dans le corps du jeu de commandes
       try:
            context={}
+           # récupération des constantes locales en cas de MACRO
+           context.update(getattr(self.parent, 'const_context', {}))
            # on reduit le dict au seul parametre de la formule
            dp = dict(zip(nom_param, val))
            for param in inter:

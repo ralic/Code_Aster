@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF factor Messages  DATE 20/10/2009   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -299,16 +299,6 @@ Erreur d'utilisation (commande RESOUDRE) :
   La matrice et le second membre fournis à la commande RESOUDRE
   ne sont pas du meme type (réel/complex).
 Conseil: Vérifier la cohérence des arguments MATR et CHAM_NO.
-"""),
-#-----------------------------------------------------------------------------------------------
-
-69: _("""
-Solveur MUMPS :
-  La matrice Aster fournie à MUMPS est singulière structurellement (il manque
-  au moins une ligne/colonne).
-Solution :
-  Il peut s'agir d'une erreur de programmation ou d'un problème de mise en données (blocage
-  absent ou surabondant) 
 """),
 
 #-----------------------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
-      SUBROUTINE ZBBORN(X,F)
+      SUBROUTINE ZBBORN(RHO,F)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C        
       IMPLICIT NONE
-      REAL*8   X,F
+      REAL*8   RHO,F
 C      
 C ----------------------------------------------------------------------
 C
@@ -31,35 +31,35 @@ C REACTUALISATION DES BORNES A VALEUR NEGATIVE ET POSITIVE
 C      
 C ----------------------------------------------------------------------
 C 
-C IN  X      : SOLUTION COURANTE
-C IN  F      : VALEUR DE LA FONCTION EN X
+C
+C IN  RHO    : SOLUTION COURANTE
+C IN  F      : VALEUR DE LA FONCTION EN RHO
 C
 C ----------------------------------------------------------------------
 C      
-      REAL*8  XEXCLU,XNEG  ,XPOS  ,XOPT
-      REAL*8  PARMUL,FNEG  ,FPOS  ,FOPT
-      INTEGER ITER  ,DIMCPL,NBCPL
-      LOGICAL BPOS  ,OPTI      
-      COMMON /ZBPAR/ XEXCLU,XNEG  ,XPOS  ,XOPT,
-     &               PARMUL,FNEG  ,FPOS  ,FOPT,
-     &               ITER  ,DIMCPL,NBCPL ,BPOS,
-     &               OPTI
+      REAL*8  RHONEG,RHOPOS 
+      REAL*8  PARMUL,FNEG  ,FPOS  
+      INTEGER DIMCPL,NBCPL
+      LOGICAL BPOS  ,LOPTI
+      COMMON /ZBPAR/ RHONEG,RHOPOS,
+     &               PARMUL,FNEG  ,FPOS  ,
+     &               DIMCPL,NBCPL ,BPOS  ,LOPTI
 C
 C ----------------------------------------------------------------------
 C
 C    
 C --- C'EST UNE BORNE POTENTIELLE A VALEUR NEGATIVE        
 C
-       IF (F.LT.0) THEN
-         XNEG = X
-         FNEG = F
+      IF (F.LT.0) THEN
+        RHONEG = RHO
+        FNEG   = F
 C         
 C --- C'EST UNE BORNE POTENTIELLE A VALEUR POSITIVE        
 C
-       ELSE
-         BPOS = .TRUE.
-         XPOS = X
-         FPOS = F
-       END IF
+      ELSE
+        BPOS   = .TRUE.
+        RHOPOS = RHO
+        FPOS   = F
+      END IF
          
-       END 
+      END 

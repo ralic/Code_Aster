@@ -7,7 +7,7 @@
       LOGICAL     IRET
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/07/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 20/10/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,6 +123,8 @@ C ----- PERMUTATION
             B(I,K) = B(J,K)
             B(J,K) = D
  50       CONTINUE
+
+          DET = (-1.D0)*DET
 
         ENDIF
 

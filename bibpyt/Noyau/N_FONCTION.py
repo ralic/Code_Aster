@@ -1,4 +1,4 @@
-#@ MODIF N_FONCTION Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_FONCTION Noyau  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,9 +38,11 @@ class formule(ASSD,AsBase):
       self.expression=None
 
    def __call__(self,*val):
-      if hasattr(self.parent,'contexte_fichier_init'):
-                        context=self.parent.contexte_fichier_init
-      else            : context={}
+      context = {}
+      # cas de INCLUDE (ou POURSUITE dans Eficas)
+      context.update(getattr(self.parent, 'contexte_fichier_init', {}))
+      # récupération des constantes locales en cas de MACRO
+      context.update(getattr(self.parent, 'const_context', {}))
       i=0
       for param in self.nompar : 
          context[param]=val[i]

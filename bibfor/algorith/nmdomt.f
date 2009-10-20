@@ -1,7 +1,7 @@
       SUBROUTINE NMDOMT(METHOD,PARMET,NOMCMD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER      IRET, ITMP,REINCR, REITER, NOCC
-      REAL*8       PASMIN
+      REAL*8       PASMIN,R8PREM
       INTEGER      IFM,NIV
 C
 C ----------------------------------------------------------------------
@@ -182,6 +182,17 @@ C   VERIFICATION SUR LES PARAMETRES DE RECHERCHES LINEAIRES
           CALL U2MESS('A','MECANONLINE5_47')
           PARMET(15) = -PARMET(16)
         ENDIF
+        
+        IF (PARMET(15).LT.PARMET(14)) THEN
+          CALL U2MESS('A','MECANONLINE5_44')
+          CALL GETVR8('RECH_LINEAIRE','RHO_MIN' ,1,1,1,PARMET(15),IRET)
+          CALL GETVR8('RECH_LINEAIRE','RHO_MAX' ,1,1,1,PARMET(14),IRET)
+        ENDIF
+        
+        IF (ABS(PARMET(14)-PARMET(15)).LE.R8PREM())THEN
+          CALL U2MESS('F','MECANONLINE5_43')     
+        ENDIF
+                
       ELSE
         PARMET(10) = 0
       END IF

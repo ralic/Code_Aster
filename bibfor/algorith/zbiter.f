@@ -1,7 +1,8 @@
-      SUBROUTINE ZBITER(X,F,MEM,OPT,Y)
+      SUBROUTINE ZBITER(RHO   ,F     ,RHOOPT,FOPT  ,MEM   ,
+     &                  RHONEW,ECHEC )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,62 +22,66 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C      
       IMPLICIT NONE
-      LOGICAL  OPT
-      REAL*8   X,F,MEM,Y
+      REAL*8   MEM
+      REAL*8   RHO,RHOOPT,RHONEW
+      REAL*8   F,FOPT
+      LOGICAL  ECHEC
 C      
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (RECH. LINE. - METHODE MIXTE)
 C
-C RESOLUTION F(X) = 0 : ITERATION COURANTE
+C RESOLUTION F(RHO) = 0 : ITERATION COURANTE
 C      
 C ----------------------------------------------------------------------
 C 
-C  IN  X      : SOLUTION COURANTE
-C  IN  F      : VALEUR DE LA FONCTION EN X
-C  I/O MEM    : COUPLES (X,F) ARCHIVES - GESTION INTERNE PAR ZEITER
-C  OUT OPTI   : .TRUE. SI X EST UNE SOLUTION OPTIMALE
-C  OUT Y      : NOUVEL ITERE
+C  IN  RHO    : SOLUTION COURANTE
+C  IN  F      : VALEUR DE LA FONCTION EN RHO
+C  I/O MEM    : COUPLES (RHO,F) ARCHIVES - GESTION INTERNE PAR ZEITER
+C  I/O RHOOPT : VALEUR OPTIMALE DU RHO 
+C  I/O FOPT   : VALEUR OPTIMALE DE LA FONCTIONNELLE
+C  OUT RHONEW : NOUVEL ITERE
+C  OUT ECHEC  : .TRUE. SI LA RECHERCHE A ECHOUE
 C
 C ----------------------------------------------------------------------
 C
-      REAL*8  XEXCLU,XNEG  ,XPOS  ,XOPT
-      REAL*8  PARMUL,FNEG  ,FPOS  ,FOPT
-      INTEGER ITER  ,DIMCPL,NBCPL
-      LOGICAL BPOS  ,OPTI      
-      COMMON /ZBPAR/ XEXCLU,XNEG  ,XPOS  ,XOPT,
-     &               PARMUL,FNEG  ,FPOS  ,FOPT,
-     &               ITER  ,DIMCPL,NBCPL ,BPOS,
-     &               OPTI
-C
-      LOGICAL ZBOPTI
-      REAL*8  ZBROOT
+      REAL*8  RHONEG,RHOPOS 
+      REAL*8  PARMUL,FNEG  ,FPOS  
+      INTEGER DIMCPL,NBCPL
+      LOGICAL BPOS  ,LOPTI
+      COMMON /ZBPAR/ RHONEG,RHOPOS,
+     &               PARMUL,FNEG  ,FPOS  ,
+     &               DIMCPL,NBCPL ,BPOS  ,LOPTI
 C      
 C ----------------------------------------------------------------------
 C
+      ECHEC = .FALSE.
 C       
-C --- ARCHIVAGE DU NOUVEAU COUPLE (X,F)
+C --- ARCHIVAGE DU NOUVEAU COUPLE (RHO,F)
 C   
-       CALL ZBARCH(X,F,MEM)
+      CALL ZBARCH(RHO,F,MEM)
 C
-C -- ACTUALISATION DES BORNES 
+C --- ACTUALISATION DES BORNES FLOTTANTES
 C
-       CALL ZBBORN(X,F)
+      CALL ZBBORN(RHO,F)
 C
 C --- DETECTION S'IL S'AGIT DE LA SOLUTION OPTIMALE JUSQU'A PRESENT
 C
-       OPT = ZBOPTI(X,F)
+      CALL ZBOPTI(RHO   ,F     ,RHOOPT,FOPT  )
 C
 C --- RECHERCHE DE LA BORNE MAX
 C
-       IF (BPOS) THEN
-         Y = ZBROOT(MEM)
-       ELSE
-         Y = X * PARMUL
-       END IF
+      IF (BPOS) THEN
+        CALL ZBROOT(MEM,RHONEW,ECHEC)
+        IF (ECHEC) GOTO 999
+      ELSE
+        RHONEW = RHO * PARMUL
+      END IF
 C             
 C --- PROJECTION DE LA NOUVELLE SOLUTION SUR LES BORNES
 C 
-       CALL ZBPROJ(Y)
+      CALL ZBPROJ(RHONEW,ECHEC)
+C    
+  999 CONTINUE 
 C
-       END 
+      END 

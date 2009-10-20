@@ -2,7 +2,7 @@
      &                  IFMUMP,ELI2LG,RSOLU,CSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF AMUMPP MUMPS  DATE 20/10/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -77,8 +77,7 @@ C============================================================
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
       CHARACTER*24 VCIVAL
       LOGICAL      LTYPR
-      REAL*4       R4MAEM
-      REAL*8       RBID,RR4MAX,RAUX
+      REAL*8       RBID,RR4MAX,RAUX,R4MAEM
       COMPLEX*16   CBID,CAUX
       COMMON /MUMPSS/ SMPS
       COMMON /MUMPSC/ CMPS

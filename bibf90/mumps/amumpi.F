@@ -1,7 +1,7 @@
       SUBROUTINE  AMUMPI(OPTION,LQUALI,LDIST,KXMPS,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPI MUMPS  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF AMUMPI MUMPS  DATE 20/10/2009   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -57,8 +57,7 @@ C============================================================
       INTEGER      IFM,NIV,ICNTL(NICNTL),I,JREFA,ISYMM,JSLVK,ISYMV,ISYM,
      &             JSLVI,IVERS,N1,N3,N5,IISNAN,NPREC
       INTEGER*4    I4
-      REAL*4       R4MAEM
-      REAL*8       RVERS,CNTL(NCNTL),RR4MAX
+      REAL*8       RVERS,CNTL(NCNTL),RR4MAX,R4MAEM
       CHARACTER*1  ROUCS(NMXINS),PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),TYPM,ETAM
       CHARACTER*14 NONUS(NMXINS),NONU

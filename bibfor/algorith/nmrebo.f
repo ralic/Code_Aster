@@ -1,9 +1,10 @@
       SUBROUTINE NMREBO(F     ,MEM   ,SENS  ,RHO   ,RHOOPT,
-     &                  LICOPT,LICCVG,FOPT  ,FCVG  ,OPT   ,
-     &                  ACT   ,OPTI  ,STITE)
+     &                  LDCOPT,LDCCVG,FOPT  ,FCVG  ,OPT   ,
+     &                  ACT   ,RHOMIN,RHOMAX,RHOEXM,RHOEXP,
+     &                  STITE ,ECHEC)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,11 +25,14 @@ C TOLE CRP_21
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      REAL*8       MEM(2,10),SENS,RHO,F,RHOOPT
-      LOGICAL      OPTI,STITE
-      INTEGER      LICOPT,LICCVG
-      REAL*8       FOPT,FCVG 
-      INTEGER      OPT,ACT           
+      REAL*8       MEM(2,*),SENS
+      REAL*8       RHO,RHOOPT
+      LOGICAL      ECHEC,STITE
+      INTEGER      LDCOPT,LDCCVG
+      REAL*8       F,FOPT,FCVG 
+      INTEGER      OPT,ACT
+      REAL*8       RHOMIN,RHOMAX,RHOEXM,RHOEXP
+              
 C      
 C ----------------------------------------------------------------------
 C
@@ -39,29 +43,49 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C  IN  RHO    : SOLUTION COURANTE
+C  IN  F      : VALEUR DE LA FONCTION EN RHO
+C  I/O MEM    : COUPLES (RHO,F) ARCHIVES - GESTION INTERNE PAR ZEITER
+C  I/O RHOOPT : VALEUR OPTIMALE DU RHO 
+C  I/O FOPT   : VALEUR OPTIMALE DE LA FONCTIONNELLE
+C  OUT RHONEW : NOUVEL ITERE
+C  OUT ECHEC  : .TRUE. SI LA RECHERCHE A ECHOUE
 C      
 C ----------------------------------------------------------------------
 C
-      REAL*8       RHONEW
+      REAL*8  RHONEG,RHOPOS 
+      REAL*8  PARMUL,FNEG  ,FPOS  
+      INTEGER DIMCPL,NBCPL
+      LOGICAL BPOS  ,LOPTI
+      COMMON /ZBPAR/ RHONEG,RHOPOS,
+     &               PARMUL,FNEG  ,FPOS  ,
+     &               DIMCPL,NBCPL ,BPOS  ,LOPTI
+C     
+      REAL*8  RHONEW
 C      
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
       STITE = .FALSE.
-      CALL ZBITER(SENS*RHO,SENS*F,MEM,OPTI,RHONEW)     
-      RHO    = RHONEW * SENS
-
+      ECHEC = .FALSE.
+      CALL ZBITER(SENS*RHO,SENS*F,RHOOPT,FOPT  ,MEM   ,
+     &            RHONEW,ECHEC )
+C
+C --- GESTION DES BORNES
+C
+      CALL ZBINTE(RHONEW,RHOMIN,RHOMAX,RHOEXM,RHOEXP)  
+      CALL ZBINTE(RHOOPT,RHOMIN,RHOMAX,RHOEXM,RHOEXP)
 C      
 C --- PRISE EN COMPTE D'UN RESIDU OPTIMAL SI NECESSAIRE
 C
-      IF (OPTI) THEN
-        RHOOPT = RHO
-        LICOPT = LICCVG
-        FOPT   = ABS(F)
+      IF (LOPTI) THEN
+        LDCOPT = LDCCVG
         OPT    = ACT
         ACT    = 3 - ACT
-        IF (ABS(F) .LT. FCVG) THEN
+        IF (FOPT .LT. FCVG) THEN
           STITE = .TRUE.
-        ENDIF 
-      END IF      
-      
+        ENDIF
+      ENDIF
+C
+      RHO    = RHONEW * SENS
+   
       END

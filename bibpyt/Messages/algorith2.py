@@ -1,26 +1,34 @@
-#@ MODIF algorith2 Messages  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF algorith2 Messages  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
 
 cata_msg = {
+
+1 : _("""
+Erreur utilisateur dans la commande CREA_RESU / AFFE :
+ Le maillage associé au mot clé CHAM_GD           : %(k1)s
+ est différent de celui associé au mot clé MODELE : %(k2)s
+"""),
+
+
 
 3 : _("""
  la liste des CHAM_NO n'existe pas
@@ -205,31 +213,31 @@ cata_msg = {
 
 55 : _("""
  erreur d'intégration
- - essai d(integration  numero  %(k1)s 
+ - essai d(integration  numero  %(k1)s
  - convergence vers une solution non conforme
  - incrément de déformation cumulée négative = - %(k2)s
  - redécoupage du pas de temps
 """),
 
 56 : _("""
-  erreur 
-  - non convergence à l'itération maxi  %(k1)s  
-  - convergence régulière mais trop lente 
-  - erreur >  %(k2)s 
+  erreur
+  - non convergence à l'itération maxi  %(k1)s
+  - convergence régulière mais trop lente
+  - erreur >  %(k2)s
   - redécoupage du pas de temps
 """),
 
 57 : _("""
   erreur
-  - non convergence à l'itération maxi  %(k1)s 
-  - convergence irrégulière & erreur >  %(k2)s 
+  - non convergence à l'itération maxi  %(k1)s
+  - convergence irrégulière & erreur >  %(k2)s
   - redécoupage du pas de temps
 """),
 
 58 : _("""
   erreur
-  - non convergence à l'itération maxi  %(k1)s 
-  - erreur >  %(k2)s 
+  - non convergence à l'itération maxi  %(k1)s
+  - erreur >  %(k2)s
   - redécoupage du pas de temps
 """),
 

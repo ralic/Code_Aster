@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -62,32 +62,33 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
               avec l'argument args.
 
       """
-      self.definition=oper
-      self.reuse=reuse
-      self.valeur=args
+      self.definition = oper
+      self.reuse = reuse
+      self.valeur = args
       self.nettoiargs()
-      self.parent=CONTEXT.get_current_step()
+      self.parent = CONTEXT.get_current_step()
       self.etape = self
-      self.nom=oper.nom
-      self.idracine=oper.label
-      self.appel=N_utils.callee_where()
-      self.mc_globaux={}
-      self.g_context={}
+      self.nom = oper.nom
+      self.idracine = oper.label
+      self.appel = N_utils.callee_where()
+      self.mc_globaux = {}
+      self.g_context = {}
       # Contexte courant
-      self.current_context={}
-      self.index_etape_courante=0
-      self.etapes=[]
-      self.index_etapes={}
-      self.sds=[]
+      self.current_context = {}
+      self.const_context = {}
+      self.index_etape_courante = 0
+      self.etapes = []
+      self.index_etapes = {}
+      self.sds = []
       #  Dans le cas d'une macro écrite en Python, l'attribut Outputs est un 
       #  dictionnaire qui contient les concepts produits de sortie 
       #  (nom : ASSD) déclarés dans la fonction sd_prod
-      self.Outputs={}
-      self.sd=None
-      self.actif=1
-      self.sdprods=[]
+      self.Outputs = {}
+      self.sd = None
+      self.actif = 1
+      self.sdprods = []
       self.make_register()
-      self.UserError="UserError"
+      self.UserError = "UserError"
 
    def make_register(self):
       """
@@ -691,6 +692,17 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
            concept.jdc=self.jdc
        for e in self.etapes:
            e.reparent(self)
+
+   def update_const_context(self, d):
+      """
+         Met à jour le contexte des constantes pour l'évaluation de
+         formules dans la macro.
+      """
+      # Dans le jdc, const_context est mis à jour par exec_compile
+      # Dans la macro, on n'a pas le code à compiler pour récupèrer les
+      # constantes locales à la macro. On demande donc explicitement de
+      # définir les constantes "locales".
+      self.const_context.update(d)
 
    def sd_accessible(self):
       """On peut acceder aux "valeurs" (jeveux) des ASSD dans

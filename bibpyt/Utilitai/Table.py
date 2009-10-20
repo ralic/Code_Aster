@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -181,12 +181,16 @@ class TableBase(object):
       lspa=['',]
       # lmax : largeur max des colonnes = max(form{K,R,I},len(parametre))
       lmax=[]
-      for p in para:
-         t=typ[para.index(p)]
+      # formats
+      strfmt, strfmt_none = {}, {}
+      for t, p in zip(typ, para):
          larg_max=max([len(str(p))] + \
                [len(FMT(dform,k,t) % 0) for k in ('formK','formR','formI')])
          lspa.append(FMT(dform,'formK',t,larg_max,str(p)) % p)
          lmax.append(larg_max)
+         assert t is not None, "Type de la colonne '%s' non défini" % p
+         strfmt[p] = FMT(dform, 'form'+t[0], t, larg_max)
+         strfmt_none[p] = FMT(dform, 'formK', t, larg_max)
       if typdef:
          stype=dform['csep'].join([''] + \
           [FMT(dform,'formK',typ[i],lmax[i]) % typ[i] for i in range(len(para))])
@@ -207,22 +211,13 @@ class TableBase(object):
       for r in rows:
          lig=['']
          empty=True
-         for v in para:
-            i=para.index(v)
-            t=typ[i]
-            rep=r.get(v,None)
-            if type(rep) is FloatType:
-               lig.append(FMT(dform,'formR',t,lmax[i]) % rep)
-               empty=False
-            elif type(rep) in (IntType, LongType):
-               lig.append(FMT(dform,'formI',t,lmax[i]) % rep)
-               empty=False
+         for t, p, lmax_i in zip(typ, para, lmax):
+            val = r.get(p)
+            if val is not None:
+               empty = False
+               lig.append(strfmt[p] % val)
             else:
-               if rep==None:
-                  rep='-'
-               else:
-                  empty=False
-               s=FMT(dform,'formK',t,lmax[i],rep) % str(rep)
+               s = strfmt_none[p] % '-'
                # format AGRAF = TABLEAU + '\' devant les chaines de caractères !
                if FORMAT=='AGRAF':
                   s='\\'+s
@@ -366,16 +361,21 @@ class Table(TableBase):
       self.rows.append(obj)
 
 # ------------------------------------------------------------------------------
-   def SansColonneVide(self):
+   def SansColonneVide(self, l_para=None):
       """Retourne une copie de la table dans laquelle on a supprimé les colonnes
       vides (les lignes vides sont automatiquement supprimées).
       """
-      tab = self.copy()
-      lp = []
-      for para in tab.para:
-         if len(tab[para]) != 0:
-            lp.append(para)
-      return tab[lp]
+      # ptest : colonnes potentiellement vides
+      pkeep = l_para or self.para
+      ptest = pkeep[:]
+      for row in self:
+         notNone = [p for p in ptest if row.get(p) is not None]
+         ptest = [p for p in ptest if not p in notNone]
+         if len(ptest) == 0:
+            break
+      # pkeep : on conserve les colonnes non vides
+      pkeep = [p for p in pkeep if not p in ptest]
+      return self[pkeep]
 
 # ------------------------------------------------------------------------------
    def __setitem__(self, k_para, k_value):
@@ -644,7 +644,7 @@ class Table(TableBase):
             for dz in taux.rows:
                d[dz[py]]=dz[pz]
             new_rows.append(d)
-      new_type=[self.type[0],] + [self.type[2]]*len(new_para)
+      new_type=[self.type[0],] + [self.type[2]]*(len(new_para) - 1)
       new_titr=self.titr
       if new_titr != '': new_titr+='\n'
       new_titr+=pz + ' FONCTION DE ' + px + ' ET ' + py

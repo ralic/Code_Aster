@@ -1,10 +1,10 @@
       SUBROUTINE NMINI0(ZFON  ,ZPMET ,ZPCRI ,ZCONV ,ZPCON ,
      &                  ZNMETH,ZLICC ,FONACT,PARMET,PARCRI,
      &                  CONV  ,PARCON,METHOD,LICCVG,ETA   ,  
-     &                  NUMINS,MTCPUI,MTCPUP,FINPAS)
+     &                  NUMINS,MTCPUI,MTCPUP,FINPAS,MATASS)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,6 +33,7 @@ C
       CHARACTER*16 METHOD(ZNMETH)  
       INTEGER      LICCVG(ZLICC)         
       LOGICAL      MTCPUI, MTCPUP, FINPAS
+      CHARACTER*19 MATASS
       INTEGER      NUMINS
       REAL*8       ETA
 C
@@ -141,5 +142,6 @@ C
       MTCPUP = .FALSE.
       ETA    = 0.D0
       FINPAS = .FALSE.  
+      MATASS = '&&OP0070.MATASS'      
 C
       END

@@ -7,7 +7,7 @@
      &                  MATGEO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/11/2008   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 19/10/2009   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -120,13 +120,13 @@ C
       CHARACTER*19 NMCHEX,RIGI2,MASSE,AMORT,MEMASS,MEGEOM
       INTEGER      NBMAT
       REAL*8       COEMAT(3)
-      CHARACTER*24 LIMAT(3)
+      CHARACTER*24 LIMAT(3),VALMO2(8)
       CHARACTER*4  TYPCST(3)      
       INTEGER      NBMATR
       CHARACTER*6  LTYPMA(20)
       CHARACTER*16 LOPTME(20),LOPTMA(20)
       LOGICAL      LASSME(20),LCALME(20) 
-      INTEGER      IFM,NIV
+      INTEGER      IFM,NIV,II
 C      
 C ----------------------------------------------------------------------
 C
@@ -254,9 +254,17 @@ C
 C --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
 C
       IF (NBMATR.GT.0) THEN
+C
+C On utilise les champs en T+, pas T-, sauf les variables de commande :
+C on doit avoir COMPLU et COMMOI !!!
+C        
+        DO 100 II=1,8
+          VALMO2(II)=VALPLU(II)
+ 100    CONTINUE
+        VALMO2(4)=VALMOI(4)
         CALL NMXMAT(MODELZ,MATE  ,CARELE,COMPOR,CARCRI,
      &              SDDISC,SDDYNA,FONACT,NUMINS,ITERAT,
-     &              VALMOI,VALPLU,POUGD ,SOLALG,LISCHA,
+     &              VALMO2,VALPLU,POUGD ,SOLALG,LISCHA,
      &              COMREF,DEFICO,RESOCO,SOLVEU,NUMEDD,
      &              SDTIME,NBMATR,LTYPMA,LOPTME,LOPTMA,
      &              LCALME,LASSME,LCFINT,MEELEM,MEASSE,

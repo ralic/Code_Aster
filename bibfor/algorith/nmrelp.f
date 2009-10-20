@@ -5,7 +5,7 @@
      &                  VEASSE,SDTIME,CONV  ,LDCCVG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,6 +60,19 @@ C IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 C IN  SDNURO : SD POUTRES EN GRANDES ROTATIONS
 C IN  DELTAT : INCREMENT DE TEMPS
 C IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
+C                 1 : REAC_INCR
+C                 2 : REAC_ITER
+C                 3 : PAS_MINI_ELAS
+C                 4 : REAC_ITER_ELAS
+C             5 - 9 : -- INUTILISE --
+C                10 : ITER_LINE_MAXI
+C                11 : RESI_LINE_RELA
+C                12 : ITER_LINE_CRIT
+C                13 : PAS_MINI_CRIT
+C                14 : RHO_MIN
+C                15 : RHO_MAX
+C                16 : RHO_EXCL
+C           17 - 30 : -- INUTILISE --
 C IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
 C IN  VALMOI : VARIABLE CHAPEAU POUR ETAT EN T-
 C IN  VALPLU : VARIABLE CHAPEAU POUR ETAT EN T+
@@ -96,17 +109,18 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      ITEMAX,ITERHO,NEQ   ,ACT   ,OPT   , LDCOPT,IRET
-      REAL*8       RHOMIN,RHOMAX,RHOEXM,RHOEXP,RHOEXC
+      INTEGER      DIMMEM
+      REAL*8       RHOMIN,RHOMAX,RHOEXM,RHOEXP
       REAL*8       RHOM  ,RHOOPT, RHO
       REAL*8       F0, FM, F, FOPT, FCVG
       REAL*8       R8MAEM
-      REAL*8       MEM(2,10), PARMUL, RATCVG,SENS,RHOPT1
+      REAL*8       MEM(2,10), PARMUL, RATCVG,SENS
       CHARACTER*8  K8BID
-      LOGICAL      OPTI,STITE
+      LOGICAL      STITE
       LOGICAL      ISFONC,REAROT
       CHARACTER*19 CNFINS(2),CNDIRS(2)
       CHARACTER*24 DEPPLU,SIGPLU,VARPLU,COMPLU
-      INTEGER      JDDEPL   
+      INTEGER      JDDEPL 
       CHARACTER*24 SIGPLT,VARPLT,DEPPLT,VALPLT(8,2)
       CHARACTER*24 K24BID,K24BLA
       CHARACTER*24 CODERE,DEFICO    
@@ -115,7 +129,7 @@ C
       CHARACTER*19 DEPDET,DDEPLA,DEPDEL    
       CHARACTER*19 SOLALT(30)
       CHARACTER*19 NMCHEX
-      LOGICAL      LBID
+      LOGICAL      LBID,ECHEC
       REAL*8       R8BID          
       INTEGER      IFM,NIV
 C
@@ -138,7 +152,6 @@ C --- INITIALISATIONS
 C
       K24BLA = ' '
       DEFICO = ' '
-      RHOEXC = 0.D0
       PARMUL = 3.D0    
       FOPT   = R8MAEM()
       CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
@@ -154,7 +167,8 @@ C
       RHOMAX = PARMET(15)
       RHOEXM = -PARMET(16)
       RHOEXP = PARMET(16)      
-      RATCVG = PARMET(11) 
+      RATCVG = PARMET(11)
+      DIMMEM = 10
       IF (ITEMAX .GT. 1000) THEN
         CALL ASSERT(.FALSE.)
       ENDIF             
@@ -208,7 +222,9 @@ C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<MECANONLINE> ... FONCTIONNELLE INITIALE: ',F0 
       ENDIF          
-      
+C
+C --- VALEUR DE CONVERGENCE
+C     
       FCVG = ABS(RATCVG * F0) 
 C                 
 C --- INITIALISATION ET DIRECTION DE DESCENTE      
@@ -223,7 +239,8 @@ C
         ELSE
           SENS = -1
         ENDIF 
-        CALL ZBINIT(SENS*F0,PARMUL,RHOEXC,10,MEM)     
+        CALL ZBINIT(SENS*F0,PARMUL,DIMMEM,MEM   )
+        RHOOPT = 1.D0
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -246,6 +263,7 @@ C --- AFFICHAGE
 C        
         IF (NIV.GE.2) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... ITERATION <',ITERHO,'>'
+          WRITE (IFM,*) '<MECANONLINE> ...... RHO COURANT = ',RHO
           WRITE (IFM,*) '<MECANONLINE> ...... INCREMENT DEPL.'
           CALL NMDEBG('VECT',DEPPLT,6)
           WRITE (IFM,*) '<MECANONLINE> ...... INCREMENT DEPL. TOTAL'
@@ -306,17 +324,15 @@ C
           CALL NMRECH(FM    ,F     ,FOPT  ,FCVG  ,RHOMIN,
      &                RHOMAX,RHOEXM,RHOEXP,RHOM  ,RHO   ,
      &                RHOOPT,LDCOPT,LDCCVG,OPT   ,ACT   ,     
-     &                OPTI  ,STITE)    
+     &                STITE)    
      
         ELSEIF (METHOD(7).EQ.'MIXTE') THEN
           CALL NMREBO(F     ,MEM   ,SENS  ,RHO   ,RHOOPT,
      &                LDCOPT,LDCCVG,FOPT  ,FCVG  ,OPT   ,
-     &                ACT   ,OPTI  ,STITE)  
-          IF (ITERHO.EQ.0)THEN
-            RHOPT1 = RHO
-          ENDIF
-          IF (RHO.GT.RHOMAX .OR. RHO.LT.RHOMIN)THEN
-            GOTO 90
+     &                ACT   ,RHOMIN,RHOMAX,RHOEXM,RHOEXP,
+     &                STITE ,ECHEC)
+          IF (ECHEC) THEN
+            GOTO 100
           ENDIF   
         ELSE
           CALL ASSERT(.FALSE.)
@@ -325,13 +341,7 @@ C
           GOTO 100
         ENDIF
  20   CONTINUE
-      ITERHO = ITEMAX
-C      
- 90   CONTINUE      
-      IF (METHOD(7).EQ.'MIXTE') THEN
-        ITERHO = 1
-        RHOOPT = RHOPT1
-      ENDIF      
+      ITERHO = ITEMAX  
 C
 C --- STOCKAGE DU RHO OPTIMAL ET DES CHAMPS CORRESPONDANTS
 C

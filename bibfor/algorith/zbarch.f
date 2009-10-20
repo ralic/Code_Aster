@@ -1,7 +1,7 @@
-      SUBROUTINE ZBARCH(X,F,MEM)
+      SUBROUTINE ZBARCH(RHO,F,MEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C           
       IMPLICIT NONE
-      REAL*8   X,F,MEM(2,*)
+      REAL*8   RHO,F,MEM(2,*)
 C      
 C ----------------------------------------------------------------------
 C
@@ -31,20 +31,19 @@ C ARCHIVAGE DES SOLUTIONS
 C      
 C ----------------------------------------------------------------------
 C 
-C IN  X      : SOLUTION COURANTE
-C IN  F      : VALEUR DE LA FONCTION EN X
+C IN  RHO    : SOLUTION COURANTE
+C IN  F      : VALEUR DE LA FONCTION EN RHO
 C I/O MEM    : COUPLES ARCHIVES
 C
 C ----------------------------------------------------------------------
 C    
-      REAL*8  XEXCLU,XNEG  ,XPOS  ,XOPT
-      REAL*8  PARMUL,FNEG  ,FPOS  ,FOPT
-      INTEGER ITER  ,DIMCPL,NBCPL
-      LOGICAL BPOS  ,OPTI      
-      COMMON /ZBPAR/ XEXCLU,XNEG  ,XPOS  ,XOPT,
-     &               PARMUL,FNEG  ,FPOS  ,FOPT,
-     &               ITER  ,DIMCPL,NBCPL ,BPOS,
-     &               OPTI
+      REAL*8  RHONEG,RHOPOS 
+      REAL*8  PARMUL,FNEG  ,FPOS  
+      INTEGER DIMCPL,NBCPL
+      LOGICAL BPOS  ,LOPTI
+      COMMON /ZBPAR/ RHONEG,RHOPOS,
+     &               PARMUL,FNEG  ,FPOS  ,
+     &               DIMCPL,NBCPL ,BPOS  ,LOPTI
 C  
       INTEGER I
 C         
@@ -57,7 +56,8 @@ C
         MEM(2,I) = MEM(2,I-1)
  10   CONTINUE
  
-      MEM(1,1) = X
+      MEM(1,1) = RHO
       MEM(2,1) = F
+      
                
       END 

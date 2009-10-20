@@ -1,7 +1,7 @@
-      SUBROUTINE ZBINIT(F0,COEF,BEXCLU,DIMMEM,MEM)
+      SUBROUTINE ZBINIT(F0,COEF,DIMMEM,MEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C RESPONSABLE ABBAS M.ABBAS
 C         
       IMPLICIT NONE
       INTEGER  DIMMEM
-      REAL*8   F0,COEF,BEXCLU,MEM(2,DIMMEM)
+      REAL*8   F0,COEF,MEM(2,DIMMEM)
 C      
 C ----------------------------------------------------------------------
 C
@@ -35,38 +35,32 @@ C
 C   
 C IN  F0     : VALEUR DE LA FONCTION EN X0
 C IN  COEF   : COEFFICIENT D'AMPLIFICATION POUR LA RECHERCHE DE BORNE
-C IN  BEXMIN : DEBUT DE L'INTERVALLE D'EXCLUSION
-C IN  BEXMAX : FIN DE L'INTERVALLE D'EXCLUSION
 C IN  DIMMEM : NOMBRE MAX DE COUPLES MEMORISES
 C IN  MEM    : COUPLES MEMORISES   
 C      
 C ----------------------------------------------------------------------
 C       
-      REAL*8  XEXCLU,XNEG  ,XPOS  ,XOPT
-      REAL*8  PARMUL,FNEG  ,FPOS  ,FOPT
-      INTEGER ITER  ,DIMCPL,NBCPL
-      LOGICAL BPOS  ,OPTI      
-      COMMON /ZBPAR/ XEXCLU,XNEG  ,XPOS  ,XOPT,
-     &               PARMUL,FNEG  ,FPOS  ,FOPT,
-     &               ITER  ,DIMCPL,NBCPL ,BPOS,
-     &               OPTI     
+      REAL*8  RHONEG,RHOPOS 
+      REAL*8  PARMUL,FNEG  ,FPOS  
+      INTEGER DIMCPL,NBCPL
+      LOGICAL BPOS  ,LOPTI
+      COMMON /ZBPAR/ RHONEG,RHOPOS,
+     &               PARMUL,FNEG  ,FPOS  ,
+     &               DIMCPL,NBCPL ,BPOS  ,LOPTI
 C       
 C ----------------------------------------------------------------------
 C 
       IF (F0.GE.0) THEN 
-        CALL U2MESS('F','MECANONLINE_81')
+        CALL ASSERT(.FALSE.)
       ENDIF
       PARMUL   = COEF
-      XEXCLU   = BEXCLU
       DIMCPL   = DIMMEM
       MEM(1,1) = 0.D0
       MEM(2,1) = F0
       NBCPL    = 1
-      ITER     = 0
       BPOS     = .FALSE.
-      OPTI     = .FALSE.
-      FOPT     = 0
-      XNEG     = 0.D0
+      RHONEG   = 0.D0
       FNEG     = F0
+      LOPTI    = .FALSE.
       
       END 

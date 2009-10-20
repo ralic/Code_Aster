@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*6 TYPEGD
       CHARACTER*24 VALKK(2)
       CHARACTER*8 K8B,RESU,NOMF,NOMA,TYPMOD,CRITER,MATR
-      CHARACTER*8 MODELE,MATERI,CARELE,BLAN8,VALK(2)
+      CHARACTER*8 MODELE,MATERI,CARELE,BLAN8,VALK(3),NOMA2
       CHARACTER*14 NUMEDD
       CHARACTER*16 NOMP(MXPARA),TYPE,OPER,ACCES,K16B
       CHARACTER*19 NOMCH,CHAMP,CHAMP1,LISTR8,EXCIT,PCHN1,RESU19
@@ -100,7 +100,7 @@ C ----------------------------------------------------------------------
 
       DO 80 IOCC = 1,NBFAC
 
-        MODELE = BLAN8
+        MODELE = ' '
         CALL GETVID('AFFE','MODELE',IOCC,1,1,MODELE,N1)
 
         MATERI = BLAN8
@@ -111,9 +111,17 @@ C ----------------------------------------------------------------------
 
         CALL GETVID('AFFE','CHAM_GD',IOCC,1,1,CHAMP,N1)
         ZK8(JCHAM+IOCC-1) = CHAMP(1:8)
+        CALL DISMOI('F','NOM_MAILLA',CHAMP,'CHAMP',IBID,NOMA,IER)
+        IF (MODELE.NE.' ') THEN
+          CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,NOMA2,IER)
+          IF (NOMA.NE.NOMA2) THEN
+            VALK(1)=NOMA
+            VALK(2)=NOMA2
+            CALL U2MESK('F','ALGORITH2_1',2,VALK)
+          ENDIF
+        ENDIF
 
         CALL DISMOI('F','TYPE_SUPERVIS',CHAMP,'CHAMP',IBID,K24,IER)
-        CALL DISMOI('F','NOM_MAILLA',CHAMP,'CHAMP',IBID,NOMA,IER)
         CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
 
 C       CALCUL DE LFONC ET TYPEGD :

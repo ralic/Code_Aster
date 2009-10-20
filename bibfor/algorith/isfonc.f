@@ -1,7 +1,7 @@
       LOGICAL FUNCTION ISFONC(FONACT,NOMFOZ)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,6 +61,7 @@ C       ERRE_TEMPS         :  ERREUR EN TEMPS
 C       DIDI               :  FORCE DE TYPE DIFF. DIRICHLET
 C       SOUS_STRUC         :  CALCUL PAR SOUS-STRUCTURATION
 C       IMPL_EX            :  ALGORITHME IMPL_EX
+C       DIS_CHOC           :  PRESENCE D'ELEMENTS DIS_CHOC
 C
 C ---------------------------------------------------------------------
 C
@@ -89,6 +90,8 @@ C
         ISFONC = FONACT(17) 
       ELSEIF (NOMFON.EQ.'CONT_GEOM') THEN
         ISFONC = FONACT(23)
+      ELSEIF (NOMFON.EQ.'DIS_CHOC') THEN
+        ISFONC = FONACT(26)        
 C
       ELSEIF (NOMFON.EQ.'FROTTEMENT') THEN
         ISFONC = FONACT(10).OR.FONACT(3)

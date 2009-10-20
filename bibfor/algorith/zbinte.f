@@ -1,9 +1,9 @@
-      SUBROUTINE ZBPROJ(RHO,ECHEC)
-C
+      SUBROUTINE ZBINTE(RHO   ,RHOMIN,RHOMAX,RHOEXM,RHOEXP)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,52 +19,35 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
-C       
+C
       IMPLICIT NONE
-      REAL*8   RHO
-      LOGICAL  ECHEC
+      REAL*8       RHO
+      REAL*8       RHOMIN,RHOMAX,RHOEXM,RHOEXP         
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE MECA_NON_LINE (RECH. LINE. - METHODE MIXTE)
+C ROUTINE MECA_NON_LINE (RECH. LINE. - UTILITAIRE)
 C
-C PROJECTION DE LA SOLUTION SUR LES BORNES ADMISSIBLES 
-C REACTUALISATION DES BORNES ADMISSIBLES
+C GESTION DES BORNES POUR LE RHO
 C      
 C ----------------------------------------------------------------------
-C 
-C  I/O RHO      : SOLUTION COURANTE
-C  OUT ECHEC : .TRUE. SI LA RECHERCHE DE RACINE A ECHOUE
 C
-C ----------------------------------------------------------------------
+C I/O RHO    : RHO AVEC RESPECT DES BORNES
+C IN  RHOMIN : BORNE INFERIEURE DE RECHERCHE 
+C IN  RHOMAX : BORNE SUPERIEURE DE RECHERCHE 
+C IN  RHOEXM : INTERVALLE [RHOEXM,RHOEXP] POUR EXCLUSION 
+C IN  RHOEXP : INTERVALLE [RHOEXM,RHOEXP] POUR EXCLUSION 
 C      
-      REAL*8  RHONEG,RHOPOS 
-      REAL*8  PARMUL,FNEG  ,FPOS  
-      INTEGER DIMCPL,NBCPL
-      LOGICAL BPOS  ,LOPTI
-      COMMON /ZBPAR/ RHONEG,RHOPOS,
-     &               PARMUL,FNEG  ,FPOS  ,
-     &               DIMCPL,NBCPL ,BPOS  ,LOPTI
-C     
 C ----------------------------------------------------------------------
-C          
 C
-C --- BORNE MIN
-C       
-      IF (RHO.LT.RHONEG) THEN
-        IF (BPOS) THEN
-          RHO   = (RHONEG+RHOPOS)/2
-        ELSE
-          ECHEC = .TRUE.
-        ENDIF
-      ENDIF
+      REAL*8       RHOTMP
+C      
+C-----------------------------------------------------------------------
 C
-C --- BORNE MAX
-C       
-      IF (BPOS) THEN
-        IF (RHO.GT.RHOPOS) THEN
-          RHO = (RHONEG+RHOPOS)/2
-        ENDIF
-      ENDIF
-C
-      END 
+      RHOTMP = RHO
+      IF (RHOTMP.LT.RHOMIN) RHO = RHOMIN
+      IF (RHOTMP.GT.RHOMAX) RHO = RHOMAX
+      IF (RHOTMP.LT.0.D0.AND.RHOTMP.GE.RHOEXM) RHO = RHOEXM
+      IF (RHOTMP.GE.0.D0.AND.RHOTMP.LE.RHOEXP) RHO = RHOEXP
+   
+      END

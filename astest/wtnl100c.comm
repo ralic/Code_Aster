@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8  
 # wtnl100c.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test R
@@ -137,8 +137,21 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     ARCHIVAGE=_F(INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0,),
                                  PRECISION=0.001,),);
 
+#############################################
+
+RESU1=CALC_ELEM( reuse      = RESU1,
+              OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EQUI_ELNO_SIGM'),
+              RESULTAT   = RESU1,
+              MODELE     = MODELE,
+              CHAM_MATER = CHMAT0,
+              );
+              
+RESU1= CALC_NO( reuse    = RESU1,     
+                   RESULTAT = RESU1,
+                   OPTION   = ( 'SIEF_NOEU_ELGA', 'VARI_NOEU_ELGA')
+                  )
 ##########################################################
-# EXEMPLE DE POST-TRAITEMENT POUR MODELISATION SELECTIVE #
+# EXEMPLE DE POST-TRAITEMENT D ISOVALEURS POUR MODELISATION SELECTIVE #
 ##########################################################
 
 MAILLIN = CREA_MAILLAGE(
@@ -175,20 +188,24 @@ IMPR_RESU(FORMAT = 'IDEAS', UNITE = 30,
                    NOM_CMP  ='PRE1',
                    TOUT_ORDRE = 'OUI', ) )
 
-#############################################
-
-RESU1=CALC_ELEM( reuse      = RESU1,
-              OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EQUI_ELNO_SIGM'),
-              RESULTAT   = RESU1,
-              MODELE     = MODELE,
-              CHAM_MATER = CHMAT0,
-              );
-              
-RESU1= CALC_NO( reuse    = RESU1,     
-                   RESULTAT = RESU1,
-                   OPTION   = ( 'SIEF_NOEU_ELGA', 'VARI_NOEU_ELGA')
-                  )
                   
+RESULINS = PROJ_CHAMP(
+               METHODE='ELEM',
+               RESULTAT=RESU1,
+               MODELE_1=MODELE,
+               MODELE_2=MODELIN,
+               NOM_CHAM ='SIEF_NOEU_ELGA',
+               NUME_ORDRE = (10,),)        
+
+IMPR_RESU(FORMAT = 'GMSH', UNITE = 37,
+          RESU=_F( RESULTAT = RESULINS,
+                   MAILLAGE=MAILLIN,
+                   NOM_CHAM ='SIEF_NOEU_ELGA',
+                   NOM_CMP  ='SIYY',
+                   NUME_ORDRE = (10,), ), )
+
+
+#############
 SIGMA2=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA',
                             RESULTAT=RESU1,
                                            GROUP_NO ='BORDVERT',

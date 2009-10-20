@@ -2,7 +2,7 @@
      &                  FORCOL,LONGR ,PRECR ,LONGI ,LONGK )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,9 +40,7 @@ C
 C IN SDIMPR : SD SUR L'AFFICHAGE DES COLONNES
 C IN OPER   : OPERATION SUR LA COLONNE
 C              'AJOU': AJOUTER UNE COLONNE A LA FIN (ICOL=0 OBLIGATOIRE)
-C              'SUPP': SUPPRIMER UNE COLONNE EN ICOL
 C              'LIRE': LIRE UNE COLONNE
-C              'ECRI': ECRIRE UNE COLONNE
 C IN ICOL   : NUMERO DE LA COLONNE
 C IN ICOD   : CODE TYPE DE LA COLONNE (VOIR LISTE DANS IMPREF)
 C IN TITCOL : TITRE DE LA COLONNE
@@ -78,7 +76,7 @@ C
       CHARACTER*24 IMPCOL,IMPTIT,IMPFOR,IMPTYP,IMPIN
       CHARACTER*1  OPEJEV
       CHARACTER*14 SDIMPR
-      INTEGER      I,IBID
+      INTEGER      IBID
       INTEGER      COLMAX,TITMAX,LARMAX,COLUTI
 C
 C ----------------------------------------------------------------------
@@ -90,10 +88,6 @@ C
       IF (OPER.EQ.'LIRE') THEN
         OPEJEV = 'L'
       ELSE IF (OPER.EQ.'AJOU') THEN
-        OPEJEV = 'E'
-      ELSE IF (OPER.EQ.'SUPP') THEN
-        OPEJEV = 'E'
-      ELSE IF (OPER.EQ.'ECRI') THEN
         OPEJEV = 'E'
       ELSE
         CALL ASSERT(.FALSE.)
@@ -139,41 +133,23 @@ C
         IF (COLUTI.EQ.COLMAX) THEN
           CALL ASSERT(.FALSE.)
         ENDIF
-      ELSE IF (OPER.EQ.'SUPP') THEN
-        IF ((ICOL.LE.0).OR.(ICOL.GT.COLUTI)) THEN
-          CALL ASSERT(.FALSE.)
-        ENDIF
       ELSE IF (OPER.EQ.'LIRE') THEN
-        IF ((ICOL.LE.0).OR.(ICOL.GT.COLUTI)) THEN
-          CALL ASSERT(.FALSE.)
-        ENDIF
-      ELSE IF (OPER.EQ.'ECRI') THEN
         IF ((ICOL.LE.0).OR.(ICOL.GT.COLUTI)) THEN
           CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
 
 
-      IF (OPER.EQ.'ECRI') THEN
-        ZI(JIMPCO-1+ICOL)              = ICOD
-        ZK16(JIMPTI+TITMAX*(ICOL-1))   = TITCOL(1)
-        ZK16(JIMPTI+TITMAX*(ICOL-1)+1) = TITCOL(2)
-        ZK16(JIMPTI+TITMAX*(ICOL-1)+2) = TITCOL(3)
-        ZI(JIMPTY-1+ICOL)              = FORCOL
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1)   = LONGR
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1+1) = PRECR
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1+2) = LONGI
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1+3) = LONGK
-      ELSE IF (OPER.EQ.'LIRE') THEN
+      IF (OPER.EQ.'LIRE') THEN
         ICOD      = ZI(JIMPCO-1+ICOL)
         TITCOL(1) = ZK16(JIMPTI+TITMAX*(ICOL-1))
         TITCOL(2) = ZK16(JIMPTI+TITMAX*(ICOL-1)+1)
         TITCOL(3) = ZK16(JIMPTI+TITMAX*(ICOL-1)+2)
         FORCOL    = ZI(JIMPTY-1+ICOL)
-        LONGR     = ZI(JIMPFO+4*(ICOL-1)+ICOL-1)
-        PRECR     = ZI(JIMPFO+4*(ICOL-1)+ICOL-1+1)
-        LONGI     = ZI(JIMPFO+4*(ICOL-1)+ICOL-1+2)
-        LONGK     = ZI(JIMPFO+4*(ICOL-1)+ICOL-1+3)
+        LONGR     = ZI(JIMPFO+4*(ICOL-1))
+        PRECR     = ZI(JIMPFO+4*(ICOL-1)+1)
+        LONGI     = ZI(JIMPFO+4*(ICOL-1)+2)
+        LONGK     = ZI(JIMPFO+4*(ICOL-1)+3)
       ELSE IF (OPER.EQ.'AJOU') THEN
         ICOL      = COLUTI+1
         ZI(JIMPCO-1+ICOL)              = ICOD
@@ -181,46 +157,16 @@ C
         ZK16(JIMPTI+TITMAX*(ICOL-1)+1) = TITCOL(2)
         ZK16(JIMPTI+TITMAX*(ICOL-1)+2) = TITCOL(3)
         ZI(JIMPTY-1+ICOL)              = FORCOL
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1)   = LONGR
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1+1) = PRECR
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1+2) = LONGI
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1+3) = LONGK
-      ELSE IF (OPER.EQ.'SUPP') THEN
-        DO 10 I = ICOL,COLUTI-1
-          ZI(JIMPCO-1+I) =
-     &         ZI(JIMPCO-1+I+1)
-          ZK16(JIMPTI+TITMAX*(I-1)) =
-     &         ZK16(JIMPTI+TITMAX*(I))
-          ZK16(JIMPTI+TITMAX*(I-1)+1) =
-     &         ZK16(JIMPTI+TITMAX*(I-1+1)+1)
-          ZK16(JIMPTI+TITMAX*(I-1)+2) =
-     &         ZK16(JIMPTI+TITMAX*(I-1+2)+1)
-          ZI(JIMPTY-1+I) =
-     &         ZI(JIMPTY-1+I)
-          ZI(JIMPFO+4*(I-1)+I-1) =
-     &         ZI(JIMPFO+4*I+I)
-          ZI(JIMPFO+4*(I-1)+I-1+1) =
-     &         ZI(JIMPFO+4*I+I+1)
-          ZI(JIMPFO+4*(I-1)+I-1+2) =
-     &         ZI(JIMPFO+4*I+I+2)
-          ZI(JIMPFO+4*(I-1)+I-1+3) =
-     &         ZI(JIMPFO+4*I+I+3)
-   10   CONTINUE
-        ZI(JIMPCO-1+ICOL)              = 0
-        ZK16(JIMPTI+TITMAX*(ICOL-1))   = '                '
-        ZK16(JIMPTI+TITMAX*(ICOL-1)+1) = '                '
-        ZK16(JIMPTI+TITMAX*(ICOL-1)+2) = '                '
-        ZI(JIMPTY-1+ICOL)              = 0
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1)   = 0
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1+1) = 0
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1+2) = 0
-        ZI(JIMPFO+4*(ICOL-1)+ICOL-1+3) = 0
+        ZI(JIMPFO+4*(ICOL-1))   = LONGR
+        ZI(JIMPFO+4*(ICOL-1)+1) = PRECR
+        ZI(JIMPFO+4*(ICOL-1)+2) = LONGI
+        ZI(JIMPFO+4*(ICOL-1)+3) = LONGK
+      ELSE
+        CALL ASSERT(.FALSE.)   
       ENDIF
 
       IF (OPER.EQ.'AJOU') THEN
         COLUTI = COLUTI + 1
-      ELSE IF (OPER.EQ.'SUPP') THEN
-        COLUTI = COLUTI - 1
       ENDIF
 
       ZI(JIMPIN-1+4) = COLUTI

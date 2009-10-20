@@ -1,24 +1,28 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV185L',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV185L',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('CALCULEL2_63'))
+
+# <CALCULEL2_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
+#  LE MODELE PROVOQUANT CES ALARMES NE SERT QU'A LA VISUALISATION
 
 #----------------------------------------------
 #             MAILLAGE : hexa_3_11_31.mgib
@@ -111,7 +115,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 #                   CHARGEMENTS COMMUNS
 #----------------------------------------------------------
 
-# blocage des modes rigides 
+# blocage des modes rigides
 CHBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
                      LIAISON_DDL=(
                                   _F(GROUP_NO=('A1','A2',),DDL=('DX','DX',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
@@ -212,9 +216,9 @@ UTOT3=STAT_NON_LINE(MODELE=MODELEK,
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
                        MODELE        = MODELEK,
@@ -229,7 +233,7 @@ MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         MAILLAGE_FISS = MA_XFEM,
@@ -238,7 +242,7 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         RESULTAT      = UTOT2,
                         NOM_CHAM      = ('DEPL','SIEF_ELGA'),
                         INFO          = 2)
- 
+
 #IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL'));
 
 TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT SUR LA FACE DE DROITE',
@@ -257,7 +261,7 @@ TABDEP = CALC_TABLE(reuse = TABDEP,
                                 CRIT_COMP = 'REGEXP',
                                 VALE_K    = 'NP',),
                                 )
-        
+
 IMPR_TABLE(TABLE=TABDEP);
 
 # TEST POUR VALIDER LE POST-TRAITEMENT DES GROUP_MA
@@ -342,7 +346,7 @@ K2REF2=1.
 K3REF2=0.
 
 prec_k2 = 0.015
- 
+
 for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF2[i],
@@ -402,7 +406,7 @@ K2REF3=0.
 K3REF3=1.
 
 prec_k3 = 0.08
- 
+
 for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF3[i],

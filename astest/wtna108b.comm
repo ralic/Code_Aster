@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONDITION DE SUINTEMENT SUR UN BLOC SATURE
 # wtna108b.para = tps_job 70 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='WTNA108B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('ALGORITH16_97'))
+      )
 
 PRE_GIBI()
 
@@ -178,13 +178,6 @@ MODELIN=AFFE_MODELE(MAILLAGE=MAILLIN,
                            PHENOMENE='MECANIQUE',
                            MODELISATION='AXIS',),);
 
-RESULIN = PROJ_CHAMP(
-               METHODE='ELEM',
-               RESULTAT=MESTAT,
-               MODELE_1=MODELE,
-               MODELE_2=MODELIN,
-               NOM_CHAM ='DEPL',
-               TOUT_ORDRE='OUI')
 
 IMPR_RESU(RESU=_F( RESULTAT  =  MESTAT,
                    IMPR_COOR = 'OUI',
@@ -354,8 +347,5 @@ TEST_RESU(RESU=(
                   NOEUD='N28',
                   VALE= 5.63088E+02,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '9.2.18', ),))
-
-
-
+                  VERSION = '9.2.18', ),),);
 FIN();

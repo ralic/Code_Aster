@@ -1,7 +1,7 @@
       SUBROUTINE MGAUSS(CARA,A,B,DIM,NORDRE,NB,DET,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/07/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 20/10/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,11 +75,12 @@ C                              IRET = 0 : OK
 C                              IRET > 0 : PB
 
 C ----------------------------------------------------------------------
-      INTEGER N,NRHS,LDB,LDX,IFM,NIV,I,J,LDA,LDAF,INDI
+      INTEGER N,NRHS,LDB,LDX,IFM,NIV,I,J,LDA,LDAF
       INTEGER*4 IPIV4(DIM),INF4,IWORK4(DIM)
       INTEGER VALI(2)
       REAL*8 AF(DIM,DIM),R(DIM),C(DIM),X(DIM,NB),RCOND
       REAL*8 WORK(4*DIM),FERR(NB),BERR(NB),R8NNEM,AA(DIM,DIM)
+      REAL*8 DETR,DETC
       CHARACTER*1 FACT,EQUED,TRANS2
       CHARACTER*4 CARA2
       CHARACTER*24 VALK(2)
@@ -136,15 +137,22 @@ C       -- RECOPIE DE X DANS B :
    20   CONTINUE
 
         IF (LDET) THEN
-          DET = 1.D0
-          DO 25 I = 1,N-1
-            INDI = I+1
-            DO 25 J = INDI, N
-              IF(IPIV4(I).GE.IPIV4(J)) DET = DET*(-1.D0)
-   25     CONTINUE
+          DET  = 1.D0
+          DETR = 1.D0
+          DETC = 1.D0
           DO 30 I = 1,N
-            DET = DET*AF(I,I)
+            IF(IPIV4(I).NE.I) DET = (-1.D0)*DET
+            DET  = DET  * AF(I,I)
+            DETR = DETR *    R(I)
+            DETC = DETC *    C(I)
    30     CONTINUE
+          IF (EQUED.EQ.'R') THEN
+            DET = DET / DETR
+          ELSEIF (EQUED.EQ.'C') THEN
+            DET = DET / DETC
+          ELSEIF (EQUED.EQ.'B') THEN
+            DET = DET / (DETR * DETC)
+          ENDIF
         END IF
 
 
@@ -179,12 +187,8 @@ C       ---   RESOLUTION
         IRET = INF4
         IF (LDET) THEN
           DET = 1.D0
-          DO 75 I = 1,N-1
-            INDI = I+1
-            DO 75 J = INDI, N
-              IF(IPIV4(I).GE.IPIV4(J)) DET = DET*(-1.D0)
-   75     CONTINUE
           DO 80 I = 1,N
+            IF(IPIV4(I).NE.I) DET = (-1.D0)*DET
             DET = DET*AF(I,I)
    80     CONTINUE
         END IF
