@@ -9,7 +9,7 @@ C
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,11 +53,11 @@ C --- : DEVGII : NORME DU DEVIATEUR DE G -------------------------------
 C --- : IRTET  : CONTROLE DU REDECOUPAGE DU PAS DE TEMPS ---------------
 C ======================================================================
       LOGICAL       PRJSOM, LGLCOV
-      INTEGER       II, NDT, NDI, ITER, IRTETI, VALI
+      INTEGER       II, NDT, NDI, ITER, IRTETI, CODRET
       REAL*8        SIGE(6), LGLEPS, GAMP, SE(6), SIIE, INVARE, YD(10)
       REAL*8        GAMPS, INVARS, B, S(6), DELTA, TRACE, DY(10), YF(10)
       REAL*8        FITER, DKOOH(6,6), EPSF(6), I1, TRACEG, TROIS
-      REAL*8        EVP, EVPS, VALR
+      REAL*8        EVP, EVPS
       CHARACTER*10  CTOL, CITER
       CHARACTER*24 VALK(2)
 C ======================================================================
@@ -127,7 +127,8 @@ C ======================================================================
 C --- CALCUL INITIAL (ITERATION 0) -------------------------------------
 C ======================================================================
          CALL LGLINI(YD, NBMAT, MATER, SEUIL, SIGD, DEPS,
-     &               DEVG, DEVGII, TRACEG, DY)
+     &               DEVG, DEVGII, TRACEG, DY, CODRET)
+         IF (CODRET.NE.0) GOTO 100
          ITER = 0
  1       CONTINUE
 C ======================================================================
@@ -153,9 +154,9 @@ C ======================================================================
                IRTETI = 3
                GOTO 100
             ELSE
-               VALI = ITER
-               VALR = TOLER
-               CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
+               CALL U2MESK('I','ALGELINE5_52', 0 ,' ')
+C               CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
+               CODRET = 2
             ENDIF
          ENDIF
 C ======================================================================
@@ -209,8 +210,9 @@ C ======================================================================
 C --- NOUVEAU CALCUL PLASTIQUE -----------------------------------------
 C ======================================================================
                CALL LGLITE(YF, NBMAT, MATER, FITER,
-     &                     DEVG, DEVGII, TRACEG, DY)
+     &                     DEVG, DEVGII, TRACEG, DY, CODRET)
                IRTETI = 1
+               IF (CODRET.NE.0) GOTO 100
             ELSE
 C ======================================================================
 C --- ON NE CONVERGE VRAIMENT PAS ! ------------------------------------
@@ -231,9 +233,9 @@ C ======================================================================
                      IRTETI = 3
                      GOTO 100
                   ELSE
-                     VALI = ITER
-                     VALR = TOLER
-                     CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
+                     CALL U2MESK('I','ALGELINE5_52', 0 ,' ')
+C                     CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
+                     CODRET = 2
                   ENDIF
 C ======================================================================
 C --- ON PROJETE AU SOMMET DU DOMAINE ----------------------------------
@@ -272,9 +274,9 @@ C ======================================================================
                      IRTETI = 3
                      GOTO 100
                   ELSE
-                     VALI = ITER
-                     VALR = TOLER
-                     CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
+                     CALL U2MESK('I','ALGELINE5_52', 0 ,' ')
+C                     CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
+                     CODRET = 2
                   ENDIF
                ENDIF
             ENDIF
@@ -287,6 +289,7 @@ C ======================================================================
       ELSE
          IRTET = 0
       ENDIF
+      IF (CODRET.EQ.2) IRTET = 2
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================

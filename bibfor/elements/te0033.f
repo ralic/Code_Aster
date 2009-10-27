@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 27/10/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +56,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8        PGL(3,3), XYZL(3,4), VALPU(2),R8BID
       REAL*8        DEPL(24), DEPLR(24), DEPLI(24), SIGMR(32),SIGMI(32)
       REAL*8        DEPGR(24), DEPGI(24), SIGMRL(32), SIGMIL(32)
-      REAL*8        EFFGT(32), SIGTOT(24)
+      REAL*8        EFFGT(32), SIGTOT(24), SIETOT(72)
       REAL*8        T2EV(4), T2VE(4), T1VE(9)
       LOGICAL       LTEATT
       CHARACTER*2   CODRET,VAL
@@ -184,15 +184,13 @@ C
 
            IF ( NOMTE.EQ.'MEDKTR3 ' .OR.
      &          NOMTE.EQ.'MEDKTG3 ' ) THEN
-              CALL DKTCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,ZR(JSIGM),
-     &                    MULTIC)
+              CALL DKTSIE(FAMI,XYZL,OPTION,PGL,DEPL,ZR(JSIGM))
            ELSE IF (NOMTE.EQ.'MEDSTR3 ' ) THEN
               CALL DSTCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
      &                    ZR(JSIGM),NPG)
            ELSE IF (NOMTE.EQ.'MEDKQU4 ' .OR.
      &              NOMTE.EQ.'MEDKQG4 ' ) THEN
-              CALL DKQCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
-     &                    ZR(JSIGM),NPG)
+              CALL DKQSIE(FAMI,XYZL,OPTION,PGL,DEPL,ZR(JSIGM))
            ELSE IF (NOMTE.EQ.'MEDSQU4 ' ) THEN
               CALL DSQCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
      &                    ZR(JSIGM),NPG)
@@ -200,7 +198,7 @@ C
               CALL Q4GCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
      &                    ZR(JSIGM),NPG)
            END IF
-           CALL DXSIR2 ( NP, NBCOU, 3, T2EV, ZR(JSIGM), ZR(JSIGM) )
+C
         ELSEIF ( PHENOM.EQ.'ELAS_COQMU' ) THEN
 C
 C       EXCEPTION POUR LES MULTICOUCHES COMPÖSITES : ON STOCKE DANS UNE

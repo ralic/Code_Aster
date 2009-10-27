@@ -1,5 +1,5 @@
       SUBROUTINE CALCPJ(NBMAT, MATER, GAMP, EVP, SIGD, SIGE,
-     +                  EPSSIG, INVARE, GAMPS, INVARS, EVPS, B)
+     +                  EPSSIG, INVARE, GAMPS, EVPS, INVARS, B)
 C
       IMPLICIT      NONE
       INTEGER       NBMAT
@@ -7,7 +7,7 @@ C
       REAL*8        INVARE, GAMPS, INVARS, EVPS, B,DDOT
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

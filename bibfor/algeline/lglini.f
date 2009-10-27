@@ -1,13 +1,13 @@
       SUBROUTINE LGLINI(YD, NBMAT, MATER, F0, SIGD, DEPS,
-     +                  DEVG, DEVGII, TRACEG, DY)
+     +                  DEVG, DEVGII, TRACEG, DY, CODRET)
 C
       IMPLICIT      NONE
-      INTEGER       NBMAT
+      INTEGER       NBMAT, CODRET
       REAL*8        YD(10), MATER(NBMAT,2), F0, SIGD(6), DEPS(6)
       REAL*8        DEVG(6), DEVGII, TRACEG, DY(10)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,11 +111,12 @@ C ======================================================================
          CALL   LCDEVI(SIGD,SI)
          INVN = TRACE (NDI,SIGD)
          CALL   SOLREI(GAMP, SI, INVN, ZR(JPARA), NBMAT,
-     +                 MATER, Q, VECN)
+     +                 MATER, Q, VECN, CODRET)
       ELSE
          CALL   SOLREI(GAMP, SE, IE,   ZR(JPARA), NBMAT,
-     +                 MATER, Q, VECN)
+     +                 MATER, Q, VECN, CODRET)
       ENDIF
+      IF (CODRET.NE.0) GOTO 100
 C ======================================================================
 C --- INITIALISATION ---------------------------------------------------
 C ======================================================================
@@ -137,6 +138,7 @@ C ======================================================================
 C ======================================================================
 C --- DESTRUCTION DES VECTEURS INUTILES --------------------------------
 C ======================================================================
+ 100  CONTINUE
       CALL JEDETR(PARECR)
       CALL JEDETR(DERIVE)
 C ======================================================================

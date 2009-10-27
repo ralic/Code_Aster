@@ -2,7 +2,7 @@
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C     Y CONTIENT LES CONTRAINTES : SIG
 C                LES VARIABLES INTERNES : QISO, R, X
 C                LES MULTIPLICATEURS PLASTIQUES : LAMBI, LAMBD
 C ======================================================================
-        INTEGER       NDT, NDI, I, J
+        INTEGER       NDT, NDI, I, J, CODRET
         REAL*8        EPSD(6), DEPS(6), DEPSE(6), TRDEPS, HOOKNL(6,6)
         REAL*8        DSIG(6), SIGD(6), SIGE(6), QISO, GQISO, DQISO
         REAL*8        YD(*), DY(*), RCOS3T, COS3T, DQ(6), DQE(6)
@@ -190,9 +190,9 @@ C --- DONC LE TENSEUR QQ(SIGD) N'EXISTE PAS. ON PRENDRA ALORS ----------
 C --- A LA PLACE QQ(SIG_PREDICTION ELAS) -------------------------------
 C ======================================================================
         IF( QIIREL .LE. EPSSIG ) THEN
-           CALL CALCQ ( QE, GAMMA, PREF, EPSSIG, QQ)
+           CALL CALCQ ( QE, GAMMA, PREF, EPSSIG, QQ, CODRET)
         ELSE
-           CALL CALCQ ( Q, GAMMA, PREF, EPSSIG, QQ)
+           CALL CALCQ ( Q, GAMMA, PREF, EPSSIG, QQ, CODRET)
         ENDIF
         CALL LCPRSC(QQ,QQ,QQII)
         QQII = SQRT(QQII)

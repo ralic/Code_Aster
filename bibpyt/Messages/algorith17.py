@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 12/05/2009   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF algorith17 Messages  DATE 26/10/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,5 +38,8 @@ cata_msg={
 5 : _("""
   Le champ posttraité est un cham_elem, le calcul de moyenne ne fonctionne que
  sur les cham_no. Pour les cham_elem utiliser POST_ELEM mot-clé INTEGRALE.
+"""), 
+6 : _("""
+  Le calcul de la racine numero %(i1)d par la méthode de la matrice compagnon a échoué.
 """), 
 }

@@ -1,13 +1,13 @@
-      SUBROUTINE LGLJPL(MOD,NBMAT,MATER,SIG,DEVG,DEVGII,VIN,DSDE)
+      SUBROUTINE LGLJPL(MOD,NBMAT,MATER,SIG,DEVG,DEVGII,VIN,DSDE,CODRET)
 C
       IMPLICIT      NONE
-      INTEGER       NBMAT
+      INTEGER       NBMAT,CODRET
       REAL*8        MATER(NBMAT,2), SIG(6), VIN(*), DSDE(6,6)
       REAL*8        DEVG(6), DEVGII
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +112,8 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE Q A L'ITERATION COURANTE -------------------------------
 C ======================================================================
-      CALL SOLREN(SN, NBMAT, MATER, Q)
+      CALL SOLREN(SN, NBMAT, MATER, Q, CODRET)
+      IF (CODRET.NE.0) GOTO 100
 C ======================================================================
 C --- CALCUL DES DIFFERENTES DERIVEES ----------------------------------
 C ======================================================================
@@ -140,6 +141,7 @@ C ======================================================================
 C ======================================================================
 C --- DESTRUCTION DES VECTEURS INUTILES --------------------------------
 C ======================================================================
+ 100  CONTINUE
       CALL JEDETR(PARECR)
       CALL JEDETR(DERIVE)
 C ======================================================================

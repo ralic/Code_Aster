@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/11/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -183,7 +183,6 @@ C                                       = 4  AXIS  C_PLAN  D_PLAN
 C                                       = 1  1D
 C               NDI             NB DE COMPOSANTE DIRECTES DES TENSEURS
 C               NR              NB EQUATION SYSTEME INTEGRE A RESOUDRE
-C               JFIS1           INDICATEUR DE FISSURATION POUR NADAI_B
 C       ----------------------------------------------------------------
 C       ORDRE DES TENSEURS      3D      XX YY ZZ XY XZ YZ
 C                               DP      XX YY ZZ XY
@@ -200,8 +199,8 @@ C       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C       ----------------------------------------------------------------
         INTEGER         IMAT , NDT   , NDI   , NR  , NVI
-        INTEGER         ITMAX, ICOMP  , JFIS1, KPG, KSP
-        INTEGER         NMAT
+        INTEGER         ITMAX, ICOMP , KPG, KSP
+        INTEGER         NMAT, CODRET
         INTEGER         IRTET, IRTETI, K, L, IRET
         REAL*8          TOLER
         REAL*8          EPSI
@@ -238,7 +237,6 @@ C       ----------------------------------------------------------------
 C
 C --    INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
 C
-        JFIS1 = 0
         IRTETI = 0
         IRTET = 0
         ITMAX    = INT(CRIT(1))
@@ -291,18 +289,11 @@ C
 C
 C --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
 C
-              IF( LOI(1:7) .EQ. 'NADAI_B' ) THEN
-C
-C ------------- ETAT DU BETON A T POUR NADAI_B
-C
-                CALL INSETA (ETATD,VIND,NVI)
-              ELSE
-                IF  ( ABS(VIND (NVI)) .LE. EPSI ) THEN
-                ETATD = 'ELASTIC'
-                ELSE
-                ETATD = 'PLASTIC'
-                ENDIF
-              ENDIF
+        IF  ( ABS(VIND (NVI)) .LE. EPSI ) THEN
+           ETATD = 'ELASTIC'
+        ELSE
+           ETATD = 'PLASTIC'
+        ENDIF
 C
 C
 C --> REDECOUPAGE IMPOSE
@@ -322,16 +313,6 @@ C
         CALL LCELAS ( LOI  ,MOD , NMAT, MATERD, MATERF, MATCST,
      1                NVI,  DEPS,
      2                SIGD ,VIND,  SIGF,  VINF, THETA )
-C
-C --    TEST DE FISSURATION POUR NADAI_B , SI LE BETON EST FISSURE
-C       LE TRAITEMENT EST EFFECTUE DANS INSTEF
-C
-       IF ( LOI(1:7) .EQ. 'NADAI_B') THEN
-          CALL INSTEF ( NMAT, MATERF, SIGD, SIGF, VIND, VINF,
-     1    ETATF, EPSD, DEPS, DSDE, JFIS1, NVI, MOD )
-C
-         IF ( JFIS1 .EQ. 1 ) GOTO 10
-        ENDIF
 C
 C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
@@ -360,13 +341,7 @@ C
                VINF(NVI)=0.D0
           ENDIF
 C
-C --    TEST DE FISSURATION POUR NADAI_B , SI LE BETON EST FISSURE
-C       LE TRAITEMENT EST EFFECTUE DANS INSTEF
-C
-       IF ( LOI(1:7) .EQ. 'NADAI_B') THEN
-          CALL INSTEF ( NMAT, MATERF, SIGD, SIGF, VIND, VINF,
-     1    ETATF, EPSD, DEPS, DSDE, JFIS1, NVI, MOD )
-       ELSE IF ( LOI(1:6) .EQ. 'LAIGLE') THEN
+       IF ( LOI(1:6) .EQ. 'LAIGLE') THEN
           CALL LGLDCM( NMAT, MATERF, SIGF, VINF )
        ENDIF
    10  CONTINUE
@@ -385,15 +360,10 @@ C       ET CALCUL ELASTIQUE    ET   A (T)    POUR 'RIGI_MECA_TANG'
 C       ----------------------------------------------------------------
 C
         IF ( OPT .EQ. 'RIGI_MECA_TANG' .OR. OPT .EQ. 'FULL_MECA' ) THEN
-C
-        IF ( LOI(1:7) .NE. 'NADAI_B' .OR. JFIS1 .EQ. 0 ) THEN
-        CALL LCINMA ( 0.D0 , DSDE )
-        ENDIF
-C
           IF ( OPT .EQ. 'RIGI_MECA_TANG' ) THEN
-          IF (ETATD.EQ.'ELASTIC'.OR.JFIS1.EQ.1.OR.LOI.EQ.'LAIGLE') THEN
+          IF (ETATD.EQ.'ELASTIC'.OR.LOI.EQ.'LAIGLE') THEN
             CALL LCJELA ( LOI  , MOD , NMAT, MATERD, VIND, DSDE)
-            ELSEIF ( ETATD .EQ. 'PLASTIC' .AND. JFIS1 .EQ. 0 ) THEN
+            ELSEIF ( ETATD .EQ. 'PLASTIC') THEN
 C   ------> ELASTOPLASTICITE ==> TYPMA = 'VITESSE '
 C   ------> VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> CALCUL ELASTIQUE
                 IF( TYPMA .EQ. 'COHERENT' ) THEN
@@ -415,14 +385,15 @@ C ------------ DEVIATEUR ELASTIQUE -------------------------------------
                ENDIF
                CALL LCJPLA (FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATERD,
      2              NVI,DEPS,SIGD,VIND,DSDE,SIGD,VIND,VP,VECP,
-     3              THETA, DT, DEVG, DEVGII)
+     3              THETA, DT, DEVG, DEVGII, CODRET)
+                IF (CODRET.EQ.2) GOTO 2
                 ENDIF
             ENDIF
 C
           ELSEIF ( OPT .EQ . 'FULL_MECA' ) THEN
-                IF  ( ETATF .EQ. 'ELASTIC' .OR. JFIS1 .EQ. 1 ) THEN
+                IF  ( ETATF .EQ. 'ELASTIC' ) THEN
             CALL LCJELA ( LOI  , MOD , NMAT, MATERF, VINF, DSDE)
-            ELSEIF ( ETATF .EQ. 'PLASTIC' .AND. JFIS1 .EQ. 0 ) THEN
+            ELSEIF ( ETATF .EQ. 'PLASTIC' ) THEN
 C   ------> ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                 IF     ( TYPMA .EQ. 'COHERENT' ) THEN
@@ -436,7 +407,8 @@ C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
                CALL LCJPLA (FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATERD,
      2              NVI,DEPS,SIGF,VINF,DSDE,SIGD,VIND,VP,VECP,
-     3              THETA, DT, DEVG, DEVGII)
+     3              THETA, DT, DEVG, DEVGII,CODRET)
+                     IF (CODRET.EQ.2) GOTO 2
                 ENDIF
             ENDIF
 C

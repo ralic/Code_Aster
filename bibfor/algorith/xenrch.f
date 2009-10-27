@@ -2,7 +2,7 @@
      &                  FISS  ,LISMAE,LISNOE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -78,7 +78,6 @@ C
       INTEGER       NBFOND,JFISAR,JFISDE,JBORD,NPTBOR,NUFI
       INTEGER       IFM,NIV
       INTEGER       NMAEN1,NMAEN2,NMAEN3,NCOUCH
-      CHARACTER*3   NUFIK3
       CHARACTER*8   K8BID
       CHARACTER*12  K12
       CHARACTER*16  TYPDIS
@@ -137,16 +136,17 @@ C-------------------------------------------------------------------
 C    1) ON RESTREINT LA ZONE D'ENRICHISSEMENT AUTOUR DE LA FISSURE
 C-------------------------------------------------------------------
 
-      WRITE(IFM,*)'XENRCH-1) RESTRICTION DE LA ZONE D ENRICHISSEMENT'
+      IF (NIV.GE.3) 
+     &    WRITE(IFM,*)'1) RESTRICTION DE LA ZONE D ENRICHISSEMENT'
 
       MAFIS='&&XENRCH.MAFIS'
       CALL WKVECT(MAFIS,'V V I',NXMAFI,JMAFIS)
 C     ATTENTION, MAFIS EST LIMITÉ À NXMAFI MAILLES
 
       CALL XMAFIS(NOMA,CNSLN,NXMAFI,MAFIS,NMAFIS,LISMAE)
-      WRITE(IFM,*)'NOMBRE DE MAILLES DE LA ZONE FISSURE :',NMAFIS
-      IF (NIV.GT.1) THEN
-        WRITE(IFM,*)'NUMERO DES MAILLES DE LA ZONE FISSURE'
+      IF (NIV.GE.2) CALL U2MESI('I','XFEM_19',1,NMAFIS)
+      IF (NIV.GE.3) THEN
+        CALL U2MESS('I','XFEM_26')
         DO 110 IMAE=1,NMAFIS
           WRITE(IFM,*)' ',ZI(JMAFIS-1+IMAE)
  110    CONTINUE
@@ -156,8 +156,8 @@ C--------------------------------------------------------------------
 C    2°) ON ATTRIBUE LE STATUT DES NOEUDS DE GROUP_ENRI
 C--------------------------------------------------------------------
 
-      WRITE(IFM,*)'XENRCH-2) ATTRIBUTION DU STATUT DES NOEUDS '//
-     &                          'DE GROUPENRI'
+      IF (NIV.GE.3) 
+     &   WRITE(IFM,*)'2) ATTRIBUTION DU STATUT DES NOEUDS DE GROUPENRI'
 
 C     CREATION DU VECTEUR STATUT DES NOEUDS
       STANO='&&XENRCH.STANO'
@@ -177,7 +177,7 @@ C        ET ON CONSTRUIT LES MAILLES DE MAFOND (NB MAX = NMAFIS)
 C        + MAJ DU STANO SI ENRICHISSEMENT A NB COUCHES
 C--------------------------------------------------------------------
 
-      WRITE(IFM,*)'XENRCH-3) ATTRIBUTION DU STATUT DES MAILLES'
+      IF (NIV.GE.3) WRITE(IFM,*)'3) ATTRIBUTION DU STATUT DES MAILLES'
 
       IF (NMAFIS.EQ.0) THEN
         CALL U2MESS('A','XFEM_57')
@@ -244,7 +244,7 @@ C    4°) RECHERCHES DES POINTS DE FONFIS (ALGO BOOK I 18/12/03)
 C        ET REPERAGE DES POINTS DE BORD
 C--------------------------------------------------------------------
 
-      WRITE(IFM,*)'XENRCH-4) RECHERCHE DES POINTS DE FONFIS'
+      IF (NIV.GE.3) WRITE(IFM,*)'4) RECHERCHE DES POINTS DE FONFIS'
 
       NXPTFF = NMAEN1 + NMAEN2 + NMAEN3
       CALL WKVECT('&&XENRCH.FONFIS','V V R',4*NXPTFF,JFON)
@@ -253,7 +253,7 @@ C--------------------------------------------------------------------
 
       CALL XPTFON(NOMA,NMAFON,CNSLT,CNSLN,CNXINV,JMAFON,NXPTFF,
      &            JFON,NFON,JBAS,JBORD,NPTBOR,FISS)
-      WRITE(IFM,*)'NOMBRE DE POINTS DE FOND DE FISSURE :',NFON
+      CALL U2MESI('I','XFEM_33',1,NFON)
 
       IF (NFON.EQ.0) THEN
         CALL U2MESS('A','XFEM_58')
@@ -271,7 +271,7 @@ C--------------------------------------------------------------------
 C     SEULEMENT EN 3D
       IF (NDIM.EQ.3) THEN
 
-        WRITE(IFM,*)'XENRCH-5) ORIENTATION DU FOND DE FISSURE'
+        IF (NIV.GE.3) WRITE(IFM,*)'5) ORIENTATION DU FOND DE FISSURE'
 
         CALL XORIFF(NDIM,NFON,JFON,JBAS,JBORD,PFI,ORI,VOR,AUTO)
 
@@ -281,7 +281,7 @@ C--------------------------------------------------------------------
 C    6°) CALCUL DES FONDS MULTIPLES EVENTUELS
 C--------------------------------------------------------------------
 
-      WRITE(IFM,*)'XENRCH-6) CALCUL DES EVENTUELS FONDS MULTIPLES'
+      IF (NIV.GE.3) WRITE(IFM,*)'6) CALCUL DES FONDS MULTIPLES'
 
       CALL WKVECT('&&XENRCH.FOMUDEP','V V I',NFON,JFISDE)
       CALL WKVECT('&&XENRCH.FOMUARR','V V I',NFON,JFISAR)
@@ -327,7 +327,7 @@ C       LES POINTS DE DEPART ET D'ARRIVEES SONT LES MEMES
 
       ENDIF
 
-      WRITE(IFM,*)'NOMBRE DE FONDS DE FISSURES DETECTES :',NBFOND
+      CALL U2MESI('I','XFEM_34',1,NBFOND)
 
 C--------------------------------------------------------------------
 C    7°) CALCUL DE L'ABSCISSE CURVILIGNE : S
@@ -335,7 +335,7 @@ C--------------------------------------------------------------------
 
       IF (NDIM.EQ.3) THEN
 
-        WRITE(IFM,*)'XENRCH-6) CALCUL DES ABSCISSES CURVILIGNES'
+        IF (NIV.GE.3) WRITE(IFM,*)'6) CALCUL DES ABSCISSES CURVILIGNES'
 
         CALL WKVECT('&&XENRCH.ABSC','V V R',NFON,JABSC)
 
@@ -373,7 +373,7 @@ C       ON REMPLACE LES VALEURS DE THETA PAR CELLES DE S
 
 C     IMPRESSION DES POINTS DE FOND DE FISSURE (2D/3D)
       NUFI=1
-      WRITE(IFM,*)'COORDONNEES DES POINTS DE FONFIS'
+      CALL U2MESS('I','XFEM_35')
       DO 799 I=1,NFON
         Q(1)=ZR(JFON-1+4*(I-1)+1)
         Q(2)=ZR(JFON-1+4*(I-1)+2)
@@ -382,8 +382,7 @@ C     IMPRESSION DES POINTS DE FOND DE FISSURE (2D/3D)
           Q(4)=ZR(JFON-1+4*(I-1)+4)
         ENDIF  
         IF (ZI(JFISDE-1+NUFI).EQ.I) THEN
-          CALL CODENT(NUFI,'D',NUFIK3)
-          WRITE(IFM,*)'FOND DE FISSURE'//NUFIK3          
+          CALL U2MESI('I','XFEM_36',1,NUFI)          
           IF (NDIM.EQ.3) WRITE(IFM,797)
           IF (NDIM.EQ.2) WRITE(IFM,7970)
         ENDIF
@@ -420,7 +419,7 @@ C
       CALL JEDETR ('&&XENRCH.FOMUDEP')
       CALL JEDETR ('&&XENRCH.FOMUARR')
 
-      WRITE(IFM,*)'XENRCH-7) FIN DE XENRCH'
+      IF (NIV.GE.3) WRITE(IFM,*)'7) FIN DE XENRCH'
 
       CALL JEDEMA()
       END

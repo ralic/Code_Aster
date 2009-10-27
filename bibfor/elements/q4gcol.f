@@ -6,7 +6,7 @@
       CHARACTER*16  OPTION
       CHARACTER*4 FAMI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 27/10/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C     CONTRAINTES ET DEFORMATIONS DE L'ELEMENT DE PLAQUE Q4GAMMA
+C     CONTRAINTES DE L'ELEMENT DE PLAQUE Q4GAMMA
 C     ------------------------------------------------------------------
 C     IN  XYZL   : COORDONNEES LOCALES DES TROIS NOEUDS
 C     IN  OPTION : NOM DE L'OPTION DE CALCUL
@@ -32,8 +32,10 @@ C     IN  PGL    : MATRICE DE PASSAGE GLOBAL - LOCAL
 C     IN  ICOU   : NUMERO DE LA COUCHE
 C     IN  INIV   : NIVEAU DANS LA COUCHE (-1:INF , 0:MOY , 1:SUP)
 C     IN  DEPL   : DEPLACEMENTS
-C     OUT CDL    : CONTRAINTES OU DEFORMATIONS AUX NOEUDS DANS LE REPERE
+C     OUT CDL    : CONTRAINTES AUX NOEUDS SIGM_ELNO_DEPL DANS LE REPERE
 C                  INTRINSEQUE A L'ELEMENT
+C                : CONTRAINTES AUX GAUSS SIEF_ELGA_DEPL DANS LE REPERE
+C                  INTRINSEQUE A L'ELEMENT CAS ELAS_COQUE
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER         ZI
       COMMON /IVARJE/ ZI(1)
@@ -50,11 +52,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                       ZK80
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER  NDIM,NNO,NNOS,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  MULTIC,NE,JCACO,I,J,K,IE,JMATE,IC,ICPG,IG
+      INTEGER  NDIM,NNO,NNOS,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO,JNBSP
+      INTEGER  MULTIC,NE,JCACO,I,J,K,IE,JMATE,IC,ICPG,IG,NBCOU
       REAL*8        R8BID,ZIC,HIC,ZMIN,DEUX,X3I,EPAIS,EXCEN
-      REAL*8        DEPF(12),DEPM(8),H(3,3),D1I(2,2),D2I(2,4)
-      REAL*8        DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2)
+      REAL*8        DEPF(12),DEPM(8),H(3,3),D1I(2,2),D2I(2,4),DMC(3,2)
+      REAL*8        DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DFC(3,2)
       REAL*8        BF(3,12),BM(3,8),BC(2,12),BLB(4,12)
       REAL*8        SM(3),SF(3),HLT2(4,6),TB(6,12),VT(2),LAMBDA(4)
       REAL*8        EPS(3),SIG(3),BCDF(2),CIST(2),CARAQ4(25)
@@ -62,6 +64,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*2   VAL, CODRET
       CHARACTER*3   NUM
       CHARACTER*8   NOMRES
+      LOGICAL  ELASCO
 C     ------------------------------------------------------------------
 C
       IF (OPTION(6:9).EQ.'ELGA') THEN
@@ -82,19 +85,24 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
       CALL GQUAD4 ( XYZL, CARAQ4 )
 C
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
-      CALL DMATEL(FAMI,DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,
-     +                                         T2EV,T2VE,T1VE,NPG)
+      CALL DXMATE(FAMI,DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
+     +                                         ELASCO,T2EV,T2VE,T1VE)
 C
 C     -------- CALCUL DE D1I ET D2I ------------------------------------
       IF (MULTIC.EQ.0) THEN
         CALL JEVECH('PCACOQU','L',JCACO)
         EPAIS = ZR(JCACO)
-        X3I = 0.D0
+        CALL JEVECH('PNBSP_I','L',JNBSP)
+        NBCOU = ZI(JNBSP)
+        HIC = EPAIS/NBCOU
+        ZMIN = -EPAIS/2.0D0
         EXCEN = ZR(JCACO+5-1)
         IF (INIV.LT.0) THEN
-          X3I = X3I - EPAIS/DEUX + EXCEN
+          X3I = ZMIN + (ICOU - 1)*HIC + EXCEN
+        ELSE IF (INIV.EQ.0) THEN
+          X3I = ZMIN + (ICOU - 1)*HIC + HIC/2.0D0 + EXCEN
         ELSE IF (INIV.GT.0) THEN
-          X3I = X3I + EPAIS/DEUX + EXCEN
+          X3I = ZMIN + (ICOU - 1)*HIC + HIC + EXCEN
         END IF
         DO 10 K = 1,9
           H(K,1) = DM(K,1)/EPAIS
@@ -118,65 +126,14 @@ C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
    30 CONTINUE
 
 C
-      IF (OPTION(1:4).EQ.'EPSI') THEN
-C         ---------------------
-        DO 100 IE = 1,NE
-
-          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
-          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
-
-C           ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE -----------------
-          CALL JQUAD4(XYZL,QSI,ETA,JACOB)
-C           ----- CALCUL DE LA MATRICE BM ------------------------------
-          CALL DXQBM(QSI,ETA,JACOB(2),BM)
-C           ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA -------------
-          CALL DSQBFB(QSI,ETA,JACOB(2),BF)
-C           ---- CALCUL DE LA MATRICE BC AU POINT QSI ETA --------------
-          CALL Q4GBC(QSI,ETA,JACOB(2),CARAQ4,BC)
-C           ------ SM = BM.DEPM ----------------------------------------
-          DO 110 I = 1,3
-            SM(I) = 0.D0
- 110      CONTINUE
-          DO 112 I = 1,3
-            DO 114 J = 1,8
-              SM(I) = SM(I) + BM(I,J)*DEPM(J)
- 114        CONTINUE
- 112      CONTINUE
-C           ------ SF = BF.DEPF ---------------------------------------
-          DO 116 I = 1,3
-            SF(I) = 0.D0
- 116      CONTINUE
-          DO 118 I = 1,3
-            DO 120 J = 1,12
-              SF(I) = SF(I) + BF(I,J)*DEPF(J)
- 120       CONTINUE
- 118      CONTINUE
-          DO 122 I = 1,3
-            EPS(I) = SM(I) + X3I*SF(I)
- 122      CONTINUE
-C           ------ BCDF = BC.DEPF --------------------------------------
-          BCDF(1) = 0.D0
-          BCDF(2) = 0.D0
-          DO 124 J = 1,12
-            BCDF(1) = BCDF(1) + BC(1,J)*DEPF(J)
-            BCDF(2) = BCDF(2) + BC(2,J)*DEPF(J)
- 124      CONTINUE
-          CDL(1+6* (IE-1)) = EPS(1)
-          CDL(2+6* (IE-1)) = EPS(2)
-          CDL(3+6* (IE-1)) = 0.D0
-C           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
-          CDL(4+6* (IE-1)) = EPS(3)/DEUX
-          CDL(5+6* (IE-1)) = BCDF(1)/DEUX
-          CDL(6+6* (IE-1)) = BCDF(2)/DEUX
- 100    CONTINUE
-
-C
-      ELSE IF (OPTION(1:4).EQ.'SIGM') THEN
+      IF (OPTION(1:4).EQ.'SIGM') THEN
 C              ---------------------
         IF (MULTIC.GT.0) THEN
 C           ---- CALCUL DE LA MATRICE TB -------------------------------
-          DO 200 K = 1,72
-            TB(K,1) = 0.D0
+          DO 200 K = 1,6
+            DO 201 J = 1,12
+              TB(K,J) = 0.D0
+ 201        CONTINUE
  200      CONTINUE
           TB(3,2) = 0.25D0
           TB(3,5) = -0.25D0
@@ -244,11 +201,9 @@ C           ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ------
           CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
           IF (MULTIC.GT.0) THEN
 C              -------------- BLB = HLT2.TB ---------------------------
-            DO 232 K = 1,48
-              BLB(K,1) = 0.D0
- 232        CONTINUE
             DO 234 I = 1,4
               DO 236 J = 1,12
+                BLB(I,J) = 0.D0
                 DO 238 K = 1,6
                   BLB(I,J) = BLB(I,J) + HLT2(I,K)*TB(K,J)
  238            CONTINUE
@@ -279,25 +234,6 @@ C              -------- LAMBDA = BLB.DEPF -----------------------------
 C
       ELSE IF (OPTION(1:4).EQ.'SIEF') THEN
 C              ---------------------
-        IF (MULTIC.EQ.0) THEN
-          CALL JEVECH ( 'PCACOQU', 'L', JCACO )
-          EPAIS = ZR(JCACO)
-        ELSE
-          CALL JEVECH ( 'PMATERC', 'L', JMATE )
-C           ---- CALCUL DE LA MATRICE TB -------------------------------
-          DO 300 K = 1,72
-            TB(K,1) = 0.D0
- 300      CONTINUE
-          TB(3,2)  =  0.25D0
-          TB(3,5)  = -0.25D0
-          TB(3,8)  =  0.25D0
-          TB(3,11) = -0.25D0
-          TB(6,3)  =  0.25D0
-          TB(6,6)  = -0.25D0
-          TB(6,9)  =  0.25D0
-          TB(6,12) = -0.25D0
-        END IF
-
         DO 310 IE = 1,NE
           QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
           ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
@@ -332,13 +268,6 @@ C           ------ SF = BF.DEPF ---------------------------------------
 
           DO 350 IC = 1 , ICOU
 
-            IF (MULTIC.NE.0) THEN
-              CALL CODENT ( IC, 'G', NUM )
-              CALL CODENT (  1, 'G', VAL )
-              NOMRES = 'C'//NUM//'_V'//VAL
-              CALL RCVALA(ZI(JMATE),' ', 'ELAS_COQMU', 0, ' ', R8BID,
-     +                      1, NOMRES, EPAIS, CODRET, 'FM' )
-            END IF
             HIC  =  EPAIS/ICOU
             ZMIN = -EPAIS/DEUX
 
@@ -381,11 +310,9 @@ C           ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ------
               CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
               IF (MULTIC.GT.0) THEN
 C              -------------- BLB = HLT2.TB ---------------------------
-                DO 332 K = 1,48
-                  BLB(K,1) = 0.D0
- 332            CONTINUE
                 DO 334 I = 1,4
                   DO 336 J = 1,12
+                    BLB(I,J) = 0.D0
                     DO 338 K = 1,6
                       BLB(I,J) = BLB(I,J) + HLT2(I,K)*TB(K,J)
  338                CONTINUE

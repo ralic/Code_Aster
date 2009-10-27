@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline5 Messages  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -208,5 +208,13 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
    - Choisir REAC_ITER et REAC_INCR judicieusement pour avoir une
    matrice en CORRECTION.
 """),
+
+
+50 : _("""
+ Pilotage.
+ La composante <%(k1)s> n'a pas été trouvée dans la numérotation.
+ Vérifier NOM_CMP dans le mot-clef PILOTAGE.
+"""),
+
 
 }

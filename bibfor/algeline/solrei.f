@@ -1,11 +1,11 @@
-      SUBROUTINE SOLREI(GAMP, S, I1N, PARAME, NBMAT, MATER, Q, VECN)
+      SUBROUTINE SOLREI(GAMP,S,I1N,PARAME,NBMAT,MATER,Q,VECN,CODRET)
 C
       IMPLICIT   NONE
-      INTEGER    NBMAT
+      INTEGER    NBMAT,CODRET
       REAL*8     S(6),I1N,PARAME(5),MATER(NBMAT,2),Q(6),VECN(6),GAMP
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,8 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE Q ------------------------------------------------------
 C ======================================================================
-      CALL CALCQ(S, GAMCJS, PREF, EPSSIG, Q)
+      CALL CALCQ(S, GAMCJS, PREF, EPSSIG, Q, CODRET)
+      IF (CODRET.NE.0) GOTO 100
 C ======================================================================
 C --- CALCUL DE N ------------------------------------------------------
 C ======================================================================
@@ -76,6 +77,7 @@ C ======================================================================
       ENDIF
       CALL     CALCN (S, B, VECN)
 C ======================================================================
+ 100  CONTINUE
       CALL JEDEMA ()
 C ======================================================================
       END

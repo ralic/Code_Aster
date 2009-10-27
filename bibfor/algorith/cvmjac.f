@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -570,7 +570,7 @@ C - DRDQ(T+DT)
            XX = GR * MR * ((ABS(QR-R))**(MR-1.D0))
      1        * ( 1.D0 -2.D0 * (QM-GRQ) * QR0 / (QM**2) )
            DRDQ = (Q0-QM) *2.D0 * MU * EXP( -2.D0*MU*Q )
-     1          * ( B * DP - XX * DT)
+     1          * ( B * DP + XX * DT)
 C
 C - DTDQ(T+DT)
            DTDQ   = 1.D0

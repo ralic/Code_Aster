@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 27/10/2009   AUTEUR DESROCHES X.DESROCHES 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 08/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -200,7 +200,28 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    GROUP_NO='F',
                    VALE=600000.0,
                    PRECISION=0.4,
-                   REFERENCE='SOURCE_EXTERNE',),),);
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M368',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   VALE=532100.0,
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M368',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   VALE=499200.0,
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',),
+                   ),);
 #
 #---------------------------------------------------------------------
 #          TEST REFERENCE BATOZ

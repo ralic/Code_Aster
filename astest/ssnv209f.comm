@@ -1,5 +1,6 @@
-# MODIF  DATE 17/06/2008   AUTEUR MAZET S.MAZET 
+# MODIF  DATE 26/10/2009   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
+# ssnv209f.para = tps_job 320 mem_job 1000Mo mem_aster 100 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -140,6 +141,9 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1,),)
 
+# LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
+# ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
+# CORRIGE LES EVENTUELLES DERIVES.
 U2M=STAT_NON_LINE(MODELE    = MO,
                   CHAM_MATER = CHMAT,
                   EXCIT      =(_F(CHARGE = CHCINE,),
@@ -155,7 +159,7 @@ U2M=STAT_NON_LINE(MODELE    = MO,
                                  ITER_GLOB_MAXI = 30,
                                  RESI_GLOB_RELA = 1.0E-6,),
                   SOLVEUR=_F(METHODE='MUMPS',
-                             PCENT_PIVOT=80,),
+                             PCENT_PIVOT=80,NPREC=-1),
                   INFO=1,)
 
 #----------------------------------------------

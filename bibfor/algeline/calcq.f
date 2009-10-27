@@ -1,10 +1,11 @@
-      SUBROUTINE CALCQ(S, GAMCJS, PREF, EPSSIG, Q)
+      SUBROUTINE CALCQ(S, GAMCJS, PREF, EPSSIG, Q, CODRET)
 C
       IMPLICIT      NONE
+      INTEGER       CODRET
       REAL*8        S(6), GAMCJS, PREF, EPSSIG, Q(6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +39,7 @@ C ======================================================================
       INTEGER II, NDT, NDI
       REAL*8  SII, T(6), DEVT(6), INVH5, FACT1, FACT2
       REAL*8  RHLODE, HLODE, COS3T, RCOS3T
-      REAL*8  UN, DEUX, CINQ, SIX,DDOT
+      REAL*8  UN, DEUX, CINQ, SIX, DDOT, R8PREM
 C ======================================================================
 C --- INITIALISATION DE PARAMETRE --------------------------------------
 C ======================================================================
@@ -50,6 +51,7 @@ C ======================================================================
       COMMON /TDIM/   NDT , NDI
 C ======================================================================
       CALL JEMARQ ()
+      CODRET = 0
 C ======================================================================
 C --- CALCUL DES VARIABLES UTILES --------------------------------------
 C ======================================================================
@@ -63,6 +65,7 @@ C ======================================================================
 C ======================================================================
 C --- VARIABLES INTERMEDIAIRES -----------------------------------------
 C ======================================================================
+      IF (SII.LT.R8PREM()) GOTO 100
       FACT1  = INVH5*(UN+GAMCJS*RCOS3T/DEUX)/SII
       FACT2  = INVH5*GAMCJS*SQRT(54.0D0)/(SIX*SII*SII)
 C ======================================================================
@@ -71,7 +74,11 @@ C ======================================================================
       DO 10 II=1,NDT
          Q(II) = FACT1*S(II)+FACT2*DEVT(II)
  10   CONTINUE
+      GOTO 200
 C ======================================================================
+ 100  CONTINUE
+      CODRET = 2
+ 200  CONTINUE
       CALL JEDEMA ()
 C ======================================================================
       END

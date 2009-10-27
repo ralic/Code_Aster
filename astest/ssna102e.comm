@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 27/10/2009   AUTEUR TARDIEU N.TARDIEU 
 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102e.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
@@ -205,7 +205,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   GROUP_NO='PA4',
                   VALE=-0.840525775283,
                   CRITERE='RELATIF',
-                  PRECISION=1.2E-3,
+                  PRECISION=2.5E-3,
                   REFERENCE='AUTRE_ASTER',
                   VERSION='9.1.6',),);
 #
@@ -237,11 +237,11 @@ TEST_TABLE(TABLE=REACENC,
 
 TEST_TABLE(TABLE=REACENC,
            NOM_PARA='DY',
-           VALE=17475.2913183,
+           VALE=1.7430071186090E+04,
            CRITERE='RELATIF',
-           PRECISION=1.2e-3,
+           PRECISION=1.e-3,
            REFERENCE='NON_REGRESSION',
-           VERSION='9.1.6',);
+           VERSION='10.0.23',);
 
 
 

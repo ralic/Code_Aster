@@ -7,7 +7,7 @@
       CHARACTER*3   GRAD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 27/10/2009   AUTEUR MESSIER J.MESSIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,7 +66,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER       NNOF,I,J,NNE,INO,IRET
-      REAL*8        R8PREM,COORMA(8),PREC,MP(2),EPSI(2),FF(NNO)
+      REAL*8        R8PREM,COORMA(8),PREC,MP(2),EPSI(2),FF(NNO),
+     &              LSTA,LSNA,LSTB,LSNB   
       CHARACTER*8   ELREF,ALIAS
       LOGICAL       CHGSGN     
 
@@ -83,6 +84,13 @@ C ----------------------------------------------------------------------
       PREC=100.D0*R8PREM()
       CODRET = 0
 
+C     Initialisation des coordonnées (LS) des noeuds de la face
+      CALL VECINI(8,0.D0,COORMA)
+      LSTA=0.D0
+      LSNA=0.D0
+      LSTB=0.D0
+      LSNB=0.D0
+
 C     NOMBRE DE SOMMETS DE LA FACE
       IF (FA(IFQ,4).EQ.0) THEN
         NNOF = 3
@@ -95,36 +103,59 @@ C     NOMBRE DE SOMMETS DE LA FACE
 
 C     NOEUDS SOMMETS DE LA FACE : FA(IFQ,1) ... FA(IFQ,NNOF)
 
-C     ON INTRODUIT UN COMPTEUR POUR NE S'INTERESSER QU'AUX FACES OU
-C     LST ET LSN CHANGENT CONJOINTEMENT DE SIGNE  
-      CHGSGN = .FALSE.         
+      CHGSGN = .FALSE.        
+      DO 220 I=1,NNOF
+         IF (I.EQ.1) THEN
+           J = NNOF
+         ELSE
+           J = I-1
+         ENDIF
+        LSTA=LST(FA(IFQ,I))
+        LSNA=LSN(FA(IFQ,I))
+        LSTB=LST(FA(IFQ,J))
+        LSNB=LSN(FA(IFQ,J))        
+        COORMA(2*I-1)=LSTA
+        COORMA(2*I)=LSNA
 
-      DO 210 I=1,NNOF
-        COORMA(2*I-1)=LST(FA(IFQ,I))
-        COORMA(2*I)  =LSN(FA(IFQ,I))
-        IF (I.EQ.1) GOTO 210
-        DO 220 J=1,(I-1)         
+C       On accepte tout de suite la face si le front coincide
+C       avec l'un des noeuds ou un point de l'arete
+        IF (((LSNA.EQ.0.D0).AND.(LSTA.EQ.0.D0)).OR.
+     &(((LSNA.EQ.0.D0).AND.(LSNB.EQ.0.D0)).AND.
+     &((LSTA*LSTB).LT.R8PREM()))) THEN
+         CHGSGN = .TRUE.
+         GOTO 220
+        
+        ENDIF
 
-          IF (((ABS(LST(FA(IFQ,I))-LST(FA(IFQ,J))).LT.PREC).AND.
-     &             (LST(FA(IFQ,I))*LST(FA(IFQ,J))).GE.0.D0)) GOTO 220
-     
-          IF (((ABS(LSN(FA(IFQ,I))-LSN(FA(IFQ,J))).LT.PREC).AND.
-     &             (LSN(FA(IFQ,I))*LSN(FA(IFQ,J))).GE.0.D0)) GOTO 220
+C     On ne conserve que les faces coupees
+C     sur une seule arete par le demi-plan (lsn=0/lst<0)
+C     Pour cela, on controle le signe de lst(I) ou I est le point 
+C     d'intersection de l'arete avec lsn=0
+C     (on a lsn(I)=lst(B)-lsn(B)*(lst(A)-lst(B))/(lsn(A)-lsn(B)))
+        IF ((LSNA*LSNB).LT.PREC) THEN      
 
-          IF ( LST(FA(IFQ,I)) * LST(FA(IFQ,J)) .LE.0.D0 .AND.
-     &         LSN(FA(IFQ,I)) * LSN(FA(IFQ,J)) .LE.0.D0 ) CHGSGN=.TRUE.
-                       
-  220   CONTINUE    
- 210  CONTINUE
+           IF (((ABS((LSNA-LSNB)).GT.R8PREM()).AND.
+     &((LSTB-(LSNB*(LSTA-LSTB)/(LSNA-LSNB))).LT.PREC)).OR.
+     &((ABS((LSNA-LSNB)).LE.R8PREM()).AND.
+     &((LSTA*LSTB).LT.R8PREM()))) THEN
 
-      IF (.NOT.CHGSGN) GOTO 999
+              CHGSGN = .TRUE.
+
+            ENDIF
+
+        ENDIF   
+
+ 220  CONTINUE
+
+       IF (.NOT. CHGSGN) GOTO 999
        
 C     ON CHERCHE SUR LA MAILLE LE POINT CORRESPONDANT à LSN=LST=0
       MP(1)=0.D0
       MP(2)=0.D0
       CALL REEREG('C',ALIAS,NNOF,COORMA,MP,2,EPSI,IRET)
+
       IF (IRET.EQ.1) GOTO 999
-      
+ 
 C     ON NE PREND PAS EN COMPTE LES POINTS QUI SORTENT DU DOMAINE
       IF (ALIAS.EQ.'QU4') THEN
         IF (ABS(EPSI(1)).GT.1.D0) GOTO 999
@@ -134,7 +165,7 @@ C     ON NE PREND PAS EN COMPTE LES POINTS QUI SORTENT DU DOMAINE
         IF (EPSI(2).LT.0.D0)         GOTO 999
         IF (EPSI(1)+EPSI(2).GT.1.D0) GOTO 999
       ENDIF
-      
+          
       MP(1)=EPSI(1)
       MP(2)=EPSI(2)                    
 C     ON DOIT MAINTENANT MULTIPLIER LES COORD. PARAM. DE M PAR CHACUNE
@@ -150,6 +181,7 @@ C     DES FF DES NOEUDS DE L'éLéMENT POUR OBTENIR LES COORD. CART.
           ENDIF
  240    CONTINUE          
  230  CONTINUE          
+
 
 C     TOUT S'EST BIEN PASSE
       CODRET = 1

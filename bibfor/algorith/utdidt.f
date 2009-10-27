@@ -2,7 +2,7 @@
       IMPLICIT      NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 27/10/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,8 +77,6 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-
       CALL ASSERT(TYPQUE.EQ.'LIST'.OR.
      &            TYPQUE.EQ.'ECHE'.OR.
      &            TYPQUE.EQ.'ADAP')
@@ -101,10 +99,10 @@ C     ------------------------------------------------------------------
         IF (QUEST.EQ.'METHODE') THEN
           CALL JEVEUO(SD//'.LINF','L',JLIR)
           VALI = NINT(ZR(JLIR-1+1))
-          IF (VALI.EQ.1) VALK = 'MANUEL' 
-          IF (VALI.EQ.2) VALK = 'AUTO' 
-          IF (VALI.EQ.3) VALK = 'CFL' 
-          IF (VALI.EQ.4) VALK = 'MODAL' 
+          IF (VALI.EQ.1) VALK = 'MANUEL'
+          IF (VALI.EQ.2) VALK = 'AUTO'
+          IF (VALI.EQ.3) VALK = 'CFL'
+          IF (VALI.EQ.4) VALK = 'MODAL'
 
         ELSEIF (QUEST.EQ.'DTMIN') THEN
           CALL JEVEUO(SD//'.LINF','L',JLIR)
@@ -153,31 +151,31 @@ C     ------------------------------------------------------------------
      &              QUEST.EQ.'NB_OCC')
         
         IF (QUEST.EQ.'NB_OCC') THEN
-          CALL JELIRA(SD//'.EEVR','LONMAX',IRET,K8BID)   
+          CALL JELIRA(SD//'.EEVR','LONMAX',IRET,K8BID)
           VALI = IRET /LEEVR
 
         ELSEIF (QUEST.EQ.'NOM_EVEN') THEN
           CALL JEVEUO(SD//'.EEVR','L',JEEVR)
           N = NINT(ZR(JEEVR-1+LEEVR*(IOCC-1)+1))
-          IF (N.EQ.0) VALK = 'DIVERGENCE_ITER' 
-          IF (N.EQ.1) VALK = 'DIVERGENCE_ERRE' 
-          IF (N.EQ.2) VALK = 'COLLISION' 
+          IF (N.EQ.0) VALK = 'DIVERGENCE_ITER'
+          IF (N.EQ.1) VALK = 'DIVERGENCE_ERRE'
+          IF (N.EQ.2) VALK = 'COLLISION'
 
         ELSEIF (QUEST.EQ.'SUBD_METH') THEN
           CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
           IF (GETSET.EQ.'L') THEN
             N = NINT(ZR(JESUR-1+LESUR*(IOCC-1)+1))
-            IF (N.EQ.0) VALK = 'AUCUNE' 
-            IF (N.EQ.1) VALK = 'UNIFORME' 
-            IF (N.EQ.2) VALK = 'EXTRAP_IGNO' 
-            IF (N.EQ.3) VALK = 'EXTRAP_FIN' 
+            IF (N.EQ.0) VALK = 'AUCUNE'
+            IF (N.EQ.1) VALK = 'UNIFORME'
+            IF (N.EQ.2) VALK = 'EXTRAP_IGNO'
+            IF (N.EQ.3) VALK = 'EXTRAP_FIN'
           ELSEIF (GETSET.EQ.'E') THEN
             IF (VALK .EQ. 'AUCUNE')      N=0
             IF (VALK .EQ. 'UNIFORME')    N=1
             IF (VALK .EQ. 'EXTRAP_IGNO') N=2
             IF (VALK .EQ. 'EXTRAP_FIN')  N=3
             ZR(JESUR-1+LESUR*(IOCC-1)+1) = N
-          ENDIF      
+          ENDIF
 
         ELSEIF (QUEST.EQ.'SUBD_PAS') THEN
           CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
@@ -208,7 +206,7 @@ C     ------------------------------------------------------------------
           VALR = ZR(JESUR-1+LESUR*(IOCC-1)+8)
           VALI = NINT(VALR)
         
-        ENDIF      
+        ENDIF
 
 C     ------------------------------------------------------------------
 C                     QUESTION SUR L'ADAPTATION
@@ -231,16 +229,16 @@ C     ------------------------------------------------------------------
      &              QUEST.EQ.'NB_OCC')
 
         IF (QUEST.EQ.'NB_OCC') THEN
-          CALL JELIRA(SD//'.AEVR','LONMAX',IRET,K8BID)   
+          CALL JELIRA(SD//'.AEVR','LONMAX',IRET,K8BID)
           VALI = IRET /LAEVR
 
         ELSEIF (QUEST.EQ.'NOM_EVEN') THEN
           CALL JEVEUO(SD//'.AEVR','L',JAEVR)
           N = NINT(ZR(JAEVR-1+LAEVR*(IOCC-1)+1))
-          IF (N.EQ.0) VALK = 'AUCUN' 
-          IF (N.EQ.1) VALK = 'TOUT_INST' 
-          IF (N.EQ.2) VALK = 'SEUIL_SANS_FORMULE' 
-          IF (N.EQ.3) VALK = 'SEUIL_AVEC_FORMULE' 
+          IF (N.EQ.0) VALK = 'AUCUN'
+          IF (N.EQ.1) VALK = 'TOUT_INST'
+          IF (N.EQ.2) VALK = 'SEUIL_SANS_FORMULE'
+          IF (N.EQ.3) VALK = 'SEUIL_AVEC_FORMULE'
 
         ELSEIF (QUEST.EQ.'NB_INCR_SEUIL') THEN
           CALL JEVEUO(SD//'.AEVR','L',JAEVR)
@@ -249,16 +247,16 @@ C     ------------------------------------------------------------------
         ELSEIF (QUEST.EQ.'NOM_PARA') THEN
           CALL JEVEUO(SD//'.AEVR','L',JAEVR)
           VALI = NINT(ZR(JAEVR-1+LAEVR*(IOCC-1)+3))
-          IF (VALI.EQ.1) VALK = 'NB_ITER_NEWT' 
-          IF (VALI.EQ.2) VALK = 'DP' 
+          IF (VALI.EQ.1) VALK = 'NB_ITER_NEWT'
+          IF (VALI.EQ.2) VALK = 'DP'
 
         ELSEIF (QUEST.EQ.'CRIT_COMP') THEN
           CALL JEVEUO(SD//'.AEVR','L',JAEVR)
           VALI = NINT(ZR(JAEVR-1+LAEVR*(IOCC-1)+4))
-          IF (VALI.EQ.1) VALK = 'LT' 
-          IF (VALI.EQ.2) VALK = 'GT' 
-          IF (VALI.EQ.3) VALK = 'LE' 
-          IF (VALI.EQ.4) VALK = 'GE' 
+          IF (VALI.EQ.1) VALK = 'LT'
+          IF (VALI.EQ.2) VALK = 'GT'
+          IF (VALI.EQ.3) VALK = 'LE'
+          IF (VALI.EQ.4) VALK = 'GE'
 
         ELSEIF (QUEST.EQ.'VALE') THEN
           CALL JEVEUO(SD//'.AEVR',GETSET,JAEVR)
@@ -272,10 +270,10 @@ C     ------------------------------------------------------------------
         ELSEIF (QUEST.EQ.'METHODE') THEN
           CALL JEVEUO(SD//'.ATPR','L',JATPR)
           VALI = NINT(ZR(JATPR-1+LATPR*(IOCC-1)+1))
-          IF (VALI.EQ.1) VALK = 'FIXE' 
-          IF (VALI.EQ.2) VALK = 'DELTA_GRANDEUR' 
-          IF (VALI.EQ.3) VALK = 'ITER_NEWTON' 
-          IF (VALI.EQ.4) VALK = 'FORMULE' 
+          IF (VALI.EQ.1) VALK = 'FIXE'
+          IF (VALI.EQ.2) VALK = 'DELTA_GRANDEUR'
+          IF (VALI.EQ.3) VALK = 'ITER_NEWTON'
+          IF (VALI.EQ.4) VALK = 'FORMULE'
 
         ELSEIF (QUEST.EQ.'PCENT_AUGM') THEN
           CALL JEVEUO(SD//'.ATPR','L',JATPR)
@@ -306,6 +304,5 @@ C     ------------------------------------------------------------------
         ENDIF
 
       ENDIF
-
-      CALL JEDEMA()      
+     
       END

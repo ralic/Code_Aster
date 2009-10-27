@@ -1,6 +1,7 @@
-      SUBROUTINE NUEQCH (CHAMNO,NBNO,NUMNO,NOMCMP,NUEQ)
+      SUBROUTINE NUEQCH(CHAMNO,NBNO,NUMNO,NOMCMP,NUEQ)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,22 +18,31 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER *19      CHAMNO
-      CHARACTER *8       NOMCMP(*)
-      INTEGER            NBNO,NUMNO(*),NUEQ(*)
+C      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT       NONE
+      CHARACTER*19 CHAMNO
+      CHARACTER*8  NOMCMP(*)
+      INTEGER      NBNO,NUMNO(*),NUEQ(*)
+C 
 C ----------------------------------------------------------------------
-C     PERMET DE RECUPERER LES NUMEROS DES EQUATIONS DANS LE .VALE A
-C     PARTIR DES NOMS DE NOEUD ET DES NOMS DE COMPOSANTE
 C
+C ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
+C
+C PERMET DE RECUPERER LES NUMEROS DES EQUATIONS DANS LE .VALE A
+C PARTIR DES NOMS DE NOEUD ET DES NOMS DE COMPOSANTE
+C      
+C ----------------------------------------------------------------------
+C
+C      
 C IN  CHAMNO  : CHAM_NO A MODIFIER
 C IN  NBNO    : NOMBRE DE NOEUDS
 C IN  NUMNO   : LISTE DES NUMEROS DE NOEUD
 C IN  NOMCMP  : LISTE DES NOMS DE COMPOSANTE
 C OUT NUEQ    : LISTE DES POSITIONS DANS LE .VALE
 C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
+C
+      CHARACTER*32       JEXNOM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -47,14 +57,20 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      CHARACTER *19      PFCHNO
-      CHARACTER *8       NOMGD,KBID
-      INTEGER            IBID,IER,NBCMPX,LONK8,ICO,ITROU
-      LOGICAL            EXIS,EXISDG
-      CHARACTER*8        K8BID
+C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
+C
+      CHARACTER*19 PFCHNO
+      CHARACTER*8  NOMGD,KBID
+      INTEGER      IBID,IER,NBCMPX,LONK8,ICO,ITROU
+      INTEGER      I,K,IDC,NEC,INDIK8
+      INTEGER      JK8,JNUEQ,JPRNO
+      LOGICAL      EXIS,EXISDG
+      CHARACTER*8  K8BID
       CHARACTER*24 VALK
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
       CALL DISMOI('F','NOM_GD',      CHAMNO,'CHAM_NO',IBID,NOMGD , IER)
       CALL DISMOI('F','PROF_CHNO',CHAMNO,'CHAM_NO',IBID,PFCHNO, IER)
@@ -67,6 +83,7 @@ C
 C
       DO 10 K = 1,NBNO
         IDC = INDIK8(ZK8(JK8),NOMCMP(K),1,LONK8)
+        VALK = NOMCMP(K)
         ICO = 0
         DO 100 I=1,NBCMPX
           IF(EXISDG(ZI(JPRNO-1+(NEC+2)*(NUMNO(K)-1)+2+1),I)) THEN
@@ -79,16 +96,15 @@ C
             IF ( EXIS ) THEN
               ITROU = ICO
               GOTO 101
-            ELSE
-              VALK = NOMCMP(K)
-              CALL U2MESG('F', 'ALGORITH13_74',1,VALK,0,0,0,0.D0)
+            ELSE      
+              CALL U2MESK('F', 'MECANONLINE5_50',1,VALK)
             ENDIF
           ENDIF
  100    CONTINUE
-        CALL U2MESS('F','ALGORITH9_9')
+        CALL U2MESK('F', 'MECANONLINE5_50',1,VALK)
  101    CONTINUE
         NUEQ(K)=ZI(JNUEQ-1+ZI(JPRNO-1+(NEC+2)*(NUMNO(K)-1)+1)+ITROU-1)
  10   CONTINUE
-C FIN -----------------------------------------------------------------
+C 
       CALL JEDEMA()
       END

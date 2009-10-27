@@ -1,4 +1,4 @@
-#@ MODIF algorith13 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith13 Messages  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -207,9 +207,7 @@ cata_msg = {
  le noeud: %(k1)s  ne peut pas etre TYPL et TYPB
 """),
 
-74 : _("""
- composante non définie  dans la numérotation :  %(k1)s 
-"""),
+
 
 75 : _("""
  détection d'une sous-structure non connectée

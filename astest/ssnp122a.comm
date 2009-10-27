@@ -1,5 +1,5 @@
 
-# MODIF  DATE 21/09/2009   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 26/10/2009   AUTEUR PELLET J.PELLET 
 #
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER
 # ssnp122a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -138,6 +138,9 @@ U_L=STAT_NON_LINE(MODELE=MO_L,
 #                   R=50.0,
 #                   ITER_PRIM_MAXI=10,),);
 
+# LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
+# ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
+# CORRIGE LES EVENTUELLES DERIVES.
 U_NLG=STAT_NON_LINE(MODELE=MO_NLG,
                 CHAM_MATER=CHP_MAT,
                 EXCIT=_F(CHARGE=CHA_NLG,
@@ -149,7 +152,8 @@ U_NLG=STAT_NON_LINE(MODELE=MO_NLG,
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
-                SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=30),
+                SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=30,
+                           NPREC=-1,),
                 CONVERGENCE=_F(RESI_REFE_RELA=1.E-4,
                                SIGM_REFE = 500 ,
                                EPSI_REFE = 1),);

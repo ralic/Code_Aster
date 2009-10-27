@@ -1,4 +1,4 @@
-# MODIF  DATE 08/09/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 27/10/2009   AUTEUR MESSIER J.MESSIER 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,7 +117,10 @@ LST = [None]*nbcalc
 da=0.4
 
 # ANGLE DE PROPAGATION IMPOSE
-beta=30.0/180.0*3.1415
+import Numeric 
+
+deg_rad = pi/180. ;
+beta=30.0*deg_rad
 
 # FUNCTION POUR IMPOSER L'ANGLE DE PROPAGATION CI-DESSUS
 # DANS LA TABLE ISSUE PAR CALC_G
@@ -125,8 +128,8 @@ ZERO=FORMULE(NOM_PARA='G_LOCAL',
              VALE='0.0*G_LOCAL+beta',);
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
-RI = 0.2
-RS = 0.8
+RI = 0.1
+RS = 0.4
 
 for i in range(nbcalc) :
 
@@ -143,6 +146,8 @@ for i in range(nbcalc) :
                          INCREMENT=_F(LIST_INST=L_INS1,
                                       INST_FIN=1.0,),
                          NEWTON=_F(REAC_ITER=1,),
+#                         SOLVEUR=_F(METHODE='MULT_FRONT',
+#                                    NPREC=12,),
                          ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                          INFO=1,);
 
@@ -187,7 +192,7 @@ for i in range(nbcalc) :
                               M=1.,
                               N=0.,
                               MATER=ACIER),
-                 RAYON=RS*0.6,
+                 RAYON=RS,
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  INFO=0,);

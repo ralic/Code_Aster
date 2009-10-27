@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 28/09/2009   AUTEUR REZETTE C.REZETTE 
+#@ MODIF med Messages  DATE 27/10/2009   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -435,6 +435,11 @@ cata_msg = {
      (mot clé TYPE_CHAM).
 """),
 
+78: _("""
+  Problème à l'ouverture du fichier MED sur l'unité %(k1)s
+  -> Conseil :
+     Vérifier la présence de ce fichier dans le répertoire de lancement de l'étude.
+"""),
 
 79 : _("""
   -> Attention le maillage n'est pas de type non structuré

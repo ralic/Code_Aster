@@ -1,8 +1,8 @@
-      SUBROUTINE XINILS(IFM,NOMA,METH,NFONF,NFONG,GEOFIS,A,B,NOEUD,COTE,
+      SUBROUTINE XINILS(NOMA,METH,NFONF,NFONG,GEOFIS,A,B,NOEUD,COTE,
      &                                         VECT1,VECT2,CNSLT,CNSLN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,6 @@ C RESPONSABLE GENIAUT S.GENIAUT
 C TOLE CRP_20
 C
       IMPLICIT NONE
-      INTEGER       IFM
       CHARACTER*8   NOMA,METH,NFONF,NFONG,COTE
       CHARACTER*16  GEOFIS
       CHARACTER*19  CNSLT,CNSLN
@@ -33,7 +32,6 @@ C ----------------------------------------------------------------------
 C                      CALCUL INITIAL DES LEVEL-SETS
 C
 C ENTREE :
-C  IFM    :  FICHIER D'IMPRESSION
 C  NOMA   :  OBJET MAILLAGE
 C  METH   :  MÉTHODE DE CALUL DES LEVEL-SETS
 C  NFONF  :  NOM DE LA FONCTION LEVEL SET TANGENTE
@@ -80,8 +78,11 @@ C
       CHARACTER*24  LISMA,LISNO,LISSE
       REAL*8        R8PREM
       LOGICAL       CALLST
+      INTEGER       IFM,NIV
 C
       CALL JEMARQ()
+      CALL INFDBG('XFEM',IFM,NIV)  
+      IF (NIV.GE.3) WRITE(IFM,*)'CALCUL DES LEVEL-SETS'
 C
       CALL GETRES(FISS,K16BID,K16BID)
 
@@ -116,7 +117,6 @@ C-----------------------------------------------------------------------
 C       DANS LE CAS OU ON DONNE FONC_LT ET FONC_LN
 C-----------------------------------------------------------------------
 
-        WRITE(IFM,*)'CALCUL DES LEVEL-SETS AVEC LA METHODE 1'
         DO 1 INO=1,NBNO
           DO 12 DIMNO=1, DIMENS
             VALPU(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
@@ -139,7 +139,6 @@ C-----------------------------------------------------------------------
 C       DANS LE CAS OU ON DONNE GROUP_MA_FISS ET GROUP_MA_FOND
 C-----------------------------------------------------------------------
 
-        WRITE(IFM,*)'CALCUL DES LEVEL-SETS AVEC LA METHODE 2'  
         LISMA = '&&XINILS.LISTE_MA_FISSUR'    
         CALL RELIEM(' ',NOMA,'NU_MAILLE','DEFI_FISS',1,1,
      &              'GROUP_MA_FISS','GROUP_MA',LISMA,NBMAF)       
@@ -165,8 +164,6 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C       DANS LE CAS OU ON DONNE LA GEOMETRIE DE LA FISSURE
 C-----------------------------------------------------------------------
-
-        WRITE(IFM,*)'CALCUL DES LEVEL-SETS AVEC LA METHODE 3'    
 
 C       VERIFICATIONS (CAR REGLES INMPOSSIBLES DANS CAPY)
         IF (.NOT.CALLST) THEN
@@ -538,7 +535,6 @@ C-----------------------------------------------------------------------
 C       DANS LE CAS OU ON DONNE UN CHAMP DE LEVEL SET
 C-----------------------------------------------------------------------
 
-        WRITE(IFM,*)'CALCUL DES LEVEL-SETS AVEC LA METHODE 4'
         CALL GETVID('DEFI_FISS','CHAM_NO_LSN',1,1,1,NCHAMN,ME4)
         CALL GETVID('DEFI_FISS','CHAM_NO_LST',1,1,1,NCHAMT,IBID)
 
@@ -580,8 +576,7 @@ C-----------------------------------------------------------------------
 
       CALL XAJULS(IFM,NOMA,NBMA,CNSLT,CNSLN,JCONX1,JCONX2,CLSM)
 
-      WRITE(IFM,*)'NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:',CLSM
-      WRITE(IFM,*)'FIN DU CALCUL DES LEVEL-SETS'
+      IF (NIV.GE.2) CALL U2MESI('I','XFEM_37',1,CLSM)
 
 C-----------------------------------------------------------------------
 C     FIN

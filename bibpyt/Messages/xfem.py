@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,6 +147,10 @@ cata_msg={
      Le modèle doit etre 2D ou 3D et ne pas comporter de sous-structures.
 """),
 
+19: _("""
+     Il y a %(i1)s mailles dans la zone fissure. 
+"""),
+
 20: _("""
    Le mot-clef ORIE_FOND est indispensable en 3D si vous n'utilisez pas 
    le catalogue des formes de fissure prédéfinies : FORM_FISS pour définir
@@ -187,6 +191,10 @@ cata_msg={
      Pour ne plus obtenir ce message, ne renseignez pas %(k1)s.
 """),
 
+26: _("""
+     Numeros des mailles de la zone fissure. 
+"""),
+
 27: _("""
      Si vous êtes en 3D pour l'approche de contact <<Grands glissements avec XFEM>>,
      seul la formulation aux noeuds sommets est possible, les mailles doivent être de type
@@ -197,6 +205,42 @@ cata_msg={
      Pour un modèle XFEM avec contact utilisant l'approche Lagranges aux noeuds,
      il est indispensable d'utiliser ALGO_LAG='VERSION1' ou 'VERSION2'. On
      passe outre ALGO_LAG='NON' dans ce cas, et on utilise la version 2.
+"""),
+
+29: _("""
+     Nombre de mailles contenant le fond de fissure : %(i1)s  
+"""),
+
+30: _("""
+     Nombre de mailles de type Heaviside : %(i1)s  
+"""),
+
+31: _("""
+     Nombre de mailles de type Crack-tip : %(i1)s  
+"""),
+
+32: _("""
+     Nombre de mailles de type Heaviside Crack-tip : %(i1)s  
+"""),
+
+33: _("""
+     Nombre de points du fond de fissure : %(i1)s  
+"""),
+
+34: _("""
+     Nombre de fonds de fissure : %(i1)s  
+"""),
+
+35: _("""
+     Coordonnées des points des fonds de fissure
+"""),
+
+36: _("""
+     fond de fissure : %(i1)s  
+"""),
+
+37: _("""
+     Nombre de level-sets réajustées : %(i1)s  
 """),
 
 40: _("""

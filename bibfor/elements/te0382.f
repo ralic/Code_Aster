@@ -1,7 +1,7 @@
       SUBROUTINE TE0382(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ELEMENTS  DATE 26/10/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE DELMAS J.DELMAS
+C TOLE CRP_20
 C
 C     BUT:
 C         CALCUL DE L'INDICATEUR D'ERREUR SUR UN ELEMENT 2D
@@ -58,49 +59,43 @@ C
       INTEGER NBNASE,NBNAMX
 C     SOUS-ELEMENTS TOUJOURS LINEAIRES => ON A TOUJOURS NBNASE=2
       PARAMETER (NBNASE=2)
-C     ON DIMENSIONNE LES VECTEURS POUR LE NBRE MAX DE NOEUDS PAR ARRETE
+C     ON DIMENSIONNE LES VECTEURS POUR LE NBRE MAX DE NOEUDS PAR ARETE
 C     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
       PARAMETER (NBNAMX=3)
 
       INTEGER IFM,NIV
       INTEGER IADZI,IAZK24
-      INTEGER IBID,IAUX,IRET,ITAB(7)
+      INTEGER IBID,IAUX,IRET,ITAB(7),ITABID(9,6,4)
       INTEGER IGEOM,JTIME
       INTEGER IERR, IVOIS
       INTEGER IMATE
-      INTEGER IAD
-      INTEGER IFOVR, IFOVF
-      INTEGER IPES,IROT
       INTEGER IREF1,IREF2
       INTEGER NDIM
-      INTEGER NNO , NNOS , NPG , IPOIDS, IVF , IDFDE , JGANO
-      INTEGER NDIMF
-      INTEGER NNOF, NNOSF, NPGF, IPOIDF, IVFF, IDFDXF, JGANOF
+      INTEGER NNO,NPG,IDFDE,JGANO
       INTEGER NBCMP
-      INTEGER IPG
-      INTEGER IPGF
-      INTEGER NBF
-      INTEGER TYMVOL,NDEGRE,IFA,TYV
+      INTEGER TYV
       INTEGER NPGP,NNOP,NNOSP,IPOIDP,IVFP
       INTEGER ISIGNO
       INTEGER NBS,JCOORS,IDFSE
       INTEGER INP
       INTEGER INO,NBSIGM,NBNAPA
       INTEGER JPINTT,JCNSET,JLONCH,JVOXSE,JSIGSE
-      INTEGER NIT,NSE,IT,ISE,CPT,IN,J
+      INTEGER NIT,NSE,IT,ISE,CPT,IN,J,IPG
       INTEGER LEVOIS
 
-      REAL*8 R8BID,R8BID2,R8BID3(2),R8BID4(2)
-      REAL*8 HE,HSE,HF,COEFF
+      REAL*8 R8BID,RTBID3(3)
+      REAL*8 DFDXP(9),DFDYP(9),POIDP,HE,HSE,HF,COEFF
       REAL*8 SG11(NBNAMX),SG22(NBNAMX),SG12(NBNAMX),JACO(NBNAMX)
       REAL*8 NX(NBNAMX),NY(NBNAMX),TX(NBNAMX),TY(NBNAMX)
       REAL*8 CHX(NBNAMX),CHY(NBNAMX)
       REAL*8 INST,INTE,ORIEN
       REAL*8 SIG11(NBNAMX),SIG22(NBNAMX),SIG12(NBNAMX)
-      REAL*8 TVOL,TVOLSE,TBOR,E,NU,VALRES(2),R8TMP
+      REAL*8 TVOL,TVOLSE,TSAU,TNOR,NOR,NORSIG,SIGCAL
+      REAL*8 E,NU,VALRES(2),R8TMP
 
       CHARACTER*2 CODRET(2)
       CHARACTER*2 NOEU
+      CHARACTER*3 TYPNOR
       CHARACTER*8 TYPMAV, ELREFE
       CHARACTER*8 FAMI(3),ELRESE(3)
       CHARACTER*8 NOMPAR(2)
@@ -108,15 +103,15 @@ C     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
       CHARACTER*24 COORSE
       CHARACTER*24 VALK(2)
 
-      LOGICAL NRJ
-      LOGICAL YAPR, YARO
-
       DATA    ELRESE /'SE2','TR3','TE4'/
       DATA    FAMI   /'BID','XINT','XINT'/
 C
 C ----------------------------------------------------------------------
- 1000 FORMAT(A,' :',(6(1X,1PE17.10)))
- 2000 FORMAT(A,10I8)
+C ----- NORME CALCULEE : SEMI-H1 (H1) ou ENERGIE (NRJ) -----------------
+C ----------------------------------------------------------------------
+C
+      DATA TYPNOR / 'NRJ' /
+C
 C ----------------------------------------------------------------------
 C 1 -------------- GESTION DES DONNEES ---------------------------------
 C ----------------------------------------------------------------------
@@ -188,28 +183,51 @@ C ----------------------------------------------------------------------
 C ----------------------------- PREALABLES -----------------------------
 C ----------------------------------------------------------------------
 C
-C --- INITIALISATION DES TERMES VOLUMIQUE ET DE BORD
+C --- INITIALISATION DES TERMES VOLUMIQUE, DE SAUT ET NORMAL
 C
       TVOL=0.D0
-      TBOR=0.D0
+      TSAU=0.D0
+      TNOR=0.D0
 C
 C --- CALCUL DU DIAMETRE DE L'ELEMENT PARENT
 C
       CALL UTHK(NOMTE,IGEOM,HE,NDIM,ITAB,IBID,IBID,IBID,NIV,IFM)
+C
+C --- CALCUL DE LA NORME DE SIGMA
+C
+      NORSIG = 0.D0
+C
+      DO 100 , IPG=1,NPGP
+C
+C ----- CALCUL DES DERIVEES DES FONCTIONS DE FORMES /X ET /Y
+C
+        CALL DFDM2D (NNO,IPG,IPOIDP,IDFDE,ZR(IGEOM),DFDXP,DFDYP,POIDP)
+C
+C ----- CALCUL DE LA DIVERGENCE (INUTILISEE ICI) ET DE LANORME DE SIGMA
+C
+        IAUX=IVFP+(IPG-1)*NNOP
+        IBID = 1
+        CALL ERMEV2(NNOP,IGEOM,ZR(IAUX),ISIGNO,NBCMP,DFDXP,DFDYP,
+     &              POIDP,IBID,
+     &              R8BID,R8BID,NOR)
+
+        NORSIG=NORSIG+NOR*POIDP
+
+ 100  CONTINUE
 C
 C ----------------------------------------------------------------------
 C ------------ BOUCLE SUR LES COTES DE L'ELEMENT PARENT : --------------
 C ------------ CALCUL DU TERME DE BORD SUR CHAQUE COTE    --------------
 C ----------------------------------------------------------------------
 C
-C     NBS : NOMBRE DE NOEUDS SOMMETS PAR ARRETE POUR L'ELEMENT PARENT
+C     NBS : NOMBRE DE NOEUDS SOMMETS PAR ARETE POUR L'ELEMENT PARENT
       IF(ELREFE(1:2).EQ.'TR')THEN
         NBS=3
       ELSE
         NBS=4
       ENDIF
 C
-C     NBNAPA : NBRE DE NOEUDS PAR ARRETE POUR L'ELEMENT PARENT
+C     NBNAPA : NBRE DE NOEUDS PAR ARETE POUR L'ELEMENT PARENT
       NOEU=ELREFE(3:3)
       IF (NOEU.EQ.'3'.OR.NOEU.EQ.'4') THEN
         NBNAPA=2
@@ -223,7 +241,7 @@ C
 C
 C --- BOUCLE SUR LES COTES DU PARENT
 C
-      DO 100 , INP=1,NBS
+      DO 200 , INP=1,NBS
 C
 C ----- TYPE DU DU VOISIN
 C
@@ -239,15 +257,16 @@ C ------- CALCUL DE : NORMALE, TANGENTE, ET JACOBIEN
 C
           IAUX = INP
           CALL CALNOR ( '2D' , IGEOM,
-     >                  IAUX, NBS, NBNAPA, ORIEN,
-     >                  IBID, IBID, ITAB, IBID, IBID, IBID,
-     >                  JACO, NX, NY, R8BID3,
-     >                  TX, TY, HF )
+     &                  IAUX, NBS, NBNAPA, ORIEN,
+     &                  IBID, IBID, ITABID, IBID, IBID, IBID,
+     &                  JACO, NX, NY, RTBID3,
+     &                  TX, TY, HF )
 C
-C ------- SI L'ARRETE N'EST PAS SUR LA FRONTIERE DE LA STRUCTURE...
+C ------- SI L'ARETE N'EST PAS SUR LA FRONTIERE DE LA STRUCTURE...
+C ------- ON CALCULE LE TERME DE SAUT POUR LES ELEMENTS PARENTS
 C
           IF (TYPMAV(1:4).EQ.'TRIA'.OR.
-     >        TYPMAV(1:4).EQ.'QUAD') THEN
+     &        TYPMAV(1:4).EQ.'QUAD') THEN
 C
 C --------- CALCUL DU SAUT DE CONTRAINTES
 C
@@ -262,9 +281,14 @@ C
 C
 C --------- ACTUALISATION DU TERME DE BORD
 C
-            TBOR=TBOR+0.5D0*INTE*HF
+            IF (TYPNOR.EQ.'NRJ') THEN
+              TSAU=TSAU+0.5D0*HF*INTE
+            ELSE 
+              TSAU=TSAU+0.5D0*SQRT(HF)*SQRT(INTE)
+            ENDIF                
 C
-C ------- SI L'ARRETE EST SUR LA FRONTIERE DE LA STRUCTURE...
+C ------- SI L'ARETE EST SUR LA FRONTIERE DE LA STRUCTURE...
+C ------- ON CALCULE LE TERME NORMAL POUR LES ELEMENTS PARENTS
 C
           ELSE IF (TYPMAV(1:2).EQ.'SE') THEN
 C
@@ -278,11 +302,15 @@ C
 C --------- CALCUL DE L'INTEGRALE DE BORD
 C
             CALL INTENC(NBNAPA,JACO,CHX,CHY,SIG11,SIG22,SIG12,
-     >                  NX,NY,INTE)
+     &                  NX,NY,INTE)
 C
 C --------- ACTUALISATION DU TERME DE BORD
 C
-            TBOR=TBOR+INTE*HF
+            IF (TYPNOR.EQ.'NRJ') THEN
+              TNOR=TNOR+HF*INTE
+            ELSE 
+              TNOR=TNOR+SQRT(HF)*SQRT(INTE)
+            ENDIF                
 C
 C ----------------------------------------------------------------------
 C --------------- CURIEUX ----------------------------------------------
@@ -297,7 +325,7 @@ C
 C
         END IF
 C
- 100  CONTINUE
+ 200  CONTINUE
 C
 C ----------------------------------------------------------------------
 C ---------- FIN BOUCLE SUR LES COTES DE L'ELEMENT PARENT  -------------
@@ -307,7 +335,7 @@ C ----------------------------------------------------------------------
 C ------------------- BOUCLE SUR LES SOUS ELEMENTS ---------------------
 C ----------------------------------------------------------------------
 C
-C --- INITIALISATION DU NÂ° DE SS-ELEMENT COURANT
+C --- INITIALISATION DU N° DE SS-ELEMENT COURANT
 C
       CPT=0
 C
@@ -332,7 +360,7 @@ C
 C ------- CALCUL DES COORDONNEES DES NOEUDS ET ECRITURE DANS ZR()
 C
           COORSE='&&TE0288.COORSE'
-          CALL WKVECT(COORSE,'V V R',NDIM*(NNO),JCOORS)
+          CALL WKVECT(COORSE,'V V R',NDIM*NNO,JCOORS)
 C
 C ------- BOUCLE SUR LES 3 SOMMETS DU SOUS-ELEMENT
 C
@@ -364,7 +392,11 @@ C
           TVOLSE=0.D0
           CALL XRMEV2(CPT,NPG,NDIM,IGEOM,JSIGSE,COORSE,TVOLSE)
 C
-          TVOL=TVOL+TVOLSE*HSE**2
+          IF (TYPNOR.EQ.'NRJ') THEN
+            TVOL=TVOL+TVOLSE*HSE**2
+          ELSE 
+            TVOL=TVOL+SQRT(TVOLSE)*HSE
+          ENDIF                
 C
 C ----------------------------------------------------------------------
 C --------------- BOUCLE SUR LES ARETES DU SOUS-ELEMENT ----------------
@@ -372,7 +404,7 @@ C ----------------------------------------------------------------------
 C
           DO 314 IN=1,NNO
 C
-            LEVOIS=ZI(JVOXSE-1+(NNO)*(CPT-1)+IN)
+            LEVOIS=ZI(JVOXSE-1+NNO*(CPT-1)+IN)
 C
 C --------- PRESENCE OU NON D'UN VOISIN DE L'AUTRE COTE DE L'ARETE
 C
@@ -381,11 +413,11 @@ C
 C ----------- CALCUL DE NORMALES, TANGENTES ET JACOBIENS
 C
               IAUX = IN
-              CALL CALNOR ( '2D' , JCOORS,
-     >                      IAUX, NBS, NBNASE, ORIEN,
-     >                      IBID, IBID, ITAB, IBID, IBID, IBID,
-     >                      JACO, NX, NY, R8BID3,
-     >                      TX, TY, HF )
+              CALL CALNOR('2D',JCOORS,
+     &                    IAUX,NNO,NBNASE,ORIEN,
+     &                    IBID,IBID,ITABID,IBID,IBID,IBID,
+     &                    JACO,NX,NY,RTBID3,
+     &                    TX,TY,HF)
 C
 C ----------- CALCUL DU SAUT DE CONTRAINTES AUX NOEUDS S-E/VOISIN
 C ----------- (EQUIVALENT XFEM DE ERMES2)
@@ -403,7 +435,11 @@ C             D'ENTREE SONT DIMENSIONNES A 3, MAIS CA NA POSE PAS DE PB
 C
 C ----------- ACTUALISATION DU TERME DE BORD
 C
-              TBOR=TBOR+0.5D0*INTE*HF
+              IF (TYPNOR.EQ.'NRJ') THEN
+                TSAU=TSAU+0.5D0*HF*INTE
+              ELSE 
+                TSAU=TSAU+0.5D0*SQRT(HF)*SQRT(INTE)
+              ENDIF                
 C
             END IF
 C
@@ -431,9 +467,7 @@ C
         COEFF=SQRT(24.D0)
       ENDIF
 
-      NRJ=.TRUE.
-
-      IF (NRJ) THEN
+      IF (TYPNOR.EQ.'NRJ') THEN
 
         NOMPAR(1)='E'
         NOMPAR(2)='NU'
@@ -448,24 +482,49 @@ C
         ELSE
           COEFF=SQRT(24.D0*E/(1-NU))
         ENDIF
-
-        R8TMP=SQRT(TVOL+TBOR)/COEFF
+C
+        R8TMP=SQRT(TVOL+TNOR+TSAU)/COEFF
+        SIGCAL=SQRT(NORSIG)
         ZR(IERR-1+1)=R8TMP
-        ZR(IERR-1+2)=R8TMP**2
-        ZR(IERR-1+3)=TVOL
-        ZR(IERR-1+4)=TBOR
-
+        ZR(IERR-1+2)=100.D0*SQRT(R8TMP**2/(R8TMP**2+NORSIG))
+        ZR(IERR-1+3)=SIGCAL
+C
+        R8TMP=SQRT(TVOL)/COEFF
+        ZR(IERR-1+4)=R8TMP
+        ZR(IERR-1+5)=100.D0*SQRT(R8TMP**2/(R8TMP**2+NORSIG))
+C
+        R8TMP=SQRT(TNOR)/COEFF
+        ZR(IERR-1+6)=R8TMP
+        ZR(IERR-1+7)=100.D0*SQRT(R8TMP**2/(R8TMP**2+NORSIG))
+C
+        R8TMP=SQRT(TSAU)/COEFF
+        ZR(IERR-1+8)=SQRT(TSAU)/COEFF
+        ZR(IERR-1+9)=100.D0*SQRT(R8TMP**2/(R8TMP**2+NORSIG))
+C
       ELSE
-        R8TMP=(SQRT(TVOL)+SQRT(TBOR))/COEFF
+C
+        R8TMP=(TVOL+TNOR+TSAU)/COEFF
+        SIGCAL=SQRT(NORSIG)
         ZR(IERR-1+1)=R8TMP
-        ZR(IERR-1+2)=R8TMP**2
+        ZR(IERR-1+2)=100.D0*SQRT(R8TMP**2/(R8TMP**2+NORSIG))
+        ZR(IERR-1+3)=SIGCAL
+C
+        R8TMP=TVOL/COEFF
+        ZR(IERR-1+4)=R8TMP
+        ZR(IERR-1+5)=100.D0*SQRT(R8TMP**2/(R8TMP**2+NORSIG))
+C
+        R8TMP=TNOR/COEFF
+        ZR(IERR-1+6)=R8TMP
+        ZR(IERR-1+7)=100.D0*SQRT(R8TMP**2/(R8TMP**2+NORSIG))
+C
+        R8TMP=TSAU/COEFF
+        ZR(IERR-1+8)=R8TMP
+        ZR(IERR-1+9)=100.D0*SQRT(R8TMP**2/(R8TMP**2+NORSIG))
+C
       END IF
-      ZR(IERR-1+5)=0.D0
-      ZR(IERR-1+6)=0.D0
-      ZR(IERR-1+7)=0.D0
-      ZR(IERR-1+8)=0.D0
-      ZR(IERR-1+9)=0.D0
+
       ZR(IERR-1+10)=HE
+
       CALL JEDEMA()
 
       END

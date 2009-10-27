@@ -1,5 +1,6 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
+# sslv110f.para = tps_job 450 mem_job 1200Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -175,14 +176,14 @@ TEST_TABLE(      TABLE=SIFTH,
                             VALE_I = 21),
                  NOM_PARA='K1_LOCAL',
                       VALE=4.068E+00,
-                 PRECISION=8.E-2  ,
+                 PRECISION=10.E-2  ,
                       REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=SIFTH,
                    FILTRE=_F(  NOM_PARA = 'NUM_PT',
                             VALE_I = 21),
                  NOM_PARA='K1_LOCAL',
-                      VALE=3.753745E+00,
+                      VALE=3.7537E+00,
                  PRECISION=1.E-3  ,
                       REFERENCE='NON_REGRESSION'      )
                                             

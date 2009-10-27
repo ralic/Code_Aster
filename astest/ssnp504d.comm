@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+# MODIF  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp504d.para = tps_job 300 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,21 +70,19 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='C_PLAN_XFEM_CONT',),),);       
 
 LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.24*X-2.125');
-LT1=FORMULE(NOM_PARA=('X','Y'),VALE='-X-50. ');  
                     
 LN2=FORMULE(NOM_PARA=('X','Y'),VALE='-Y+0.24*X+6.125');
-LT2=FORMULE(NOM_PARA=('X','Y'),VALE='-X-50. '); 
  
  
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,  
-                    DEFI_FISS=_F(FONC_LT=LT1,FONC_LN=LN1,),
-                    GROUP_MA_ENRI='SURF',
-                    INFO=1,);
+                     TYPE_DISCONTINUITE='INTERFACE',
+                     DEFI_FISS=_F(FONC_LN=LN1,),
+                     GROUP_MA_ENRI='SURF');
 
 FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,  
-                    DEFI_FISS=_F(FONC_LT=LT2,FONC_LN=LN2,),
-                    GROUP_MA_ENRI='SURF',
-                    INFO=1,);
+                     TYPE_DISCONTINUITE='INTERFACE',
+                     DEFI_FISS=_F(FONC_LN=LN2,),
+                     GROUP_MA_ENRI='SURF');
                     
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102c.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,6 +144,7 @@ TRAN_DY=DYNA_NON_LINE(  MODELE=MODELE,
                                FORMULATION='ACCELERATION',
                                STOP_CFL='NON',),
                SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),
+               NEWTON=_F(  REAC_ITER = 1),
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
                       )

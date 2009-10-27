@@ -1,11 +1,11 @@
-      SUBROUTINE SOLREN(SN, NBMAT, MATER, Q)
+      SUBROUTINE SOLREN(SN, NBMAT, MATER, Q, CODRET)
 C
       IMPLICIT   NONE
-      INTEGER    NBMAT
+      INTEGER    NBMAT,CODRET
       REAL*8     SN(6), MATER(NBMAT,2), Q(6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGELINE  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE Q ------------------------------------------------------
 C ======================================================================
-      CALL CALCQ(SN, GAMCJS, PREF, EPSSIG, Q)
+      CALL CALCQ(SN, GAMCJS, PREF, EPSSIG, Q, CODRET)
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================

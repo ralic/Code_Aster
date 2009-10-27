@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF rupture0 Messages  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -352,6 +352,7 @@ groupe identique au premier noeud du groupe suivant dans la liste.
 
 63 : _("""
 Les mailles du fond de fissure doivent etre du type segment (SEG2 ou SEG3).
+En 2D, utiliser GROUP_NO ou NOEUD pour définir le fond de fissure.
 """),
 
 64 : _("""

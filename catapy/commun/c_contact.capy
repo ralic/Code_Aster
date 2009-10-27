@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 22/09/2009   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMUN  DATE 27/10/2009   AUTEUR TARDIEU N.TARDIEU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -297,7 +297,7 @@ def C_CONTACT() : return FACT(statut='f',max='**',
                                  fr="Paramètres de la méthode du gradient conjugué projeté (contact uniquement)",
                 RESI_ABSO       =SIMP(statut='o',typ='R',
                                       fr="Critère de convergence (niveau d'interpénétration autorisé)"),
-                REAC_ITER       =SIMP(statut='f',typ='I',defaut=3, fr="Fréquence de réinitialisation de la conjugaison"),
+                REAC_ITER       =SIMP(statut='f',typ='I',defaut=20, fr="Fréquence de réinitialisation de la conjugaison"),
                 ITER_GCP_MAXI   =SIMP(statut='f',typ='I',defaut=0, fr="Nombre d'itérations maximal pour le GCP"),
                 REAC_GEOM       =SIMP(statut='f',typ='TXM',defaut="AUTOMATIQUE",
                                       into=("AUTOMATIQUE","CONTROLE","SANS")),

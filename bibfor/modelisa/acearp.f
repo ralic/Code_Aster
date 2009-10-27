@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/07/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 26/10/2009   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -299,8 +299,8 @@ C                 A LA SURFACE, ET CE N'EST PAS NORMAL
                   WRITE(IFM,*)'GROUP_MA :',(' '//ZK8(JDLS+II-1),II=1,NG)
                   CALL U2MESK('F','MODELISA_21',1,NOMNOE)
  22            CONTINUE
-C              PREPARATION DES IMPRESSIONS DANS LE FICHIER RESULTAT
-               IFR = IUNIFI('RESULTAT')
+C              PREPARATION DES IMPRESSIONS DANS LE FICHIER MESSAGE
+C               IFR = IUNIFI('RESULTAT')
                IF ( IREP .EQ. 1) THEN
                   LOREP  = 6
                ELSE
@@ -308,44 +308,50 @@ C              PREPARATION DES IMPRESSIONS DANS LE FICHIER RESULTAT
                ENDIF
                IF ( NIV .EQ. 2 ) THEN
                   IF ( TRANSL ) THEN
-                     WRITE(IFR,1005) CAR(NC)(1:LOKM)
+                     WRITE(IFM,1005) CAR(NC)(1:LOKM)
                   ELSE
-                     WRITE(IFR,1006) CAR(NC)(1:LOKM),
+                     WRITE(IFM,1006) CAR(NC)(1:LOKM),
      &                               RIROT(1),RIROT(2),RIROT(3)
                   ENDIF
                ENDIF
 C
-               DO 28 I = 1,NBNO
-                  IV = 1
-                  JD = ITBMP + I - 1
-                  JN = ITBNO + I - 1
-                  IF ( NIV .EQ. 2 ) THEN
+               IF ( NIV .EQ. 2 ) THEN
+                  DO 27 I = 1,NBNO
+                     IV = 1
+                     JD = ITBMP + I - 1
+                     JN = ITBNO + I - 1
                      IF ( NBNOEU .EQ. 1 ) THEN
                         IF ( TRANSL ) THEN
-                           WRITE(IFR,1010) 'NOEUD',ZK8(JN),
+                           WRITE(IFM,1010) 'NOEUD',ZK8(JN),
      &                           CAR(NC)(1:LOKM),
      &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
      &                           REPDIS(IREP)(1:LOREP)
                         ELSE
-                           WRITE(IFR,1011) 'NOEUD',ZK8(JN),
+                           WRITE(IFM,1011) 'NOEUD',ZK8(JN),
      &                           CAR(NC)(1:LOKM),
      &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
      &                           REPDIS(IREP)(1:LOREP)
                         ENDIF
                      ELSE
                         IF ( TRANSL ) THEN
-                           WRITE(IFR,1010) 'MAILLE',ZK8(JD),
+                           WRITE(IFM,1010) 'MAILLE',ZK8(JD),
      &                           CAR(NC)(1:LOKM),
      &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
      &                           REPDIS(IREP)(1:LOREP)
                         ELSE
-                           WRITE(IFR,1011) 'MAILLE',ZK8(JD),
+                           WRITE(IFM,1011) 'MAILLE',ZK8(JD),
      &                           CAR(NC)(1:LOKM),
      &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
      &                           REPDIS(IREP)(1:LOREP)
                         ENDIF
                      ENDIF
-                  ENDIF
+ 27               CONTINUE
+               ENDIF
+                  
+               DO 28 I = 1,NBNO
+                  IV = 1
+                  JD = ITBMP + I - 1
+                  JN = ITBNO + I - 1
 C                 POUR EUROPLEXUS PREPARATION DE L'ATTRIBUT PYTHON
                   IF ( EURPLX ) THEN
                      IF ( NBNOEU .EQ. 1 ) THEN
@@ -373,6 +379,39 @@ C
                   CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
  28            CONTINUE
             ELSE
+               LOKM   = 0
+               IF ( TRANSL ) LOKM = 7
+               IF ( TRAROT ) LOKM = 8
+               IF ( IREP .EQ. 1) THEN
+                  LOREP  = 6
+               ELSE
+                  LOREP  = 5
+               ENDIF
+               IF ( NIV .EQ. 2 ) THEN
+                  IF ( TRANSL ) THEN
+                     WRITE(IFM,1005) CAR(NC)(1:LOKM)
+                  ELSE
+                     WRITE(IFM,1006) CAR(NC)(1:LOKM),
+     &                               RIROT(1),RIROT(2),RIROT(3)
+                  ENDIF
+               ENDIF
+               IF ( NIV .EQ. 2 ) THEN
+                  DO 35 I = 1,NBNO
+                     IV = 1
+                     JD = ITBNO + I - 1
+                     IF ( TRANSL ) THEN
+                        WRITE(IFM,1010) 'NOEUD',ZK8(JD),
+     &                        CAR(NC)(1:LOKM),
+     &                        (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
+     &                        REPDIS(IREP)(1:LOREP)
+                     ELSE
+                        WRITE(IFM,1011) 'NOEUD',ZK8(JD),
+     &                        CAR(NC)(1:LOKM),
+     &                        (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
+     &                        REPDIS(IREP)(1:LOREP)
+                     ENDIF
+ 35               CONTINUE
+               ENDIF
                DO 36 I = 1,NBNO
                   IV = 1
                   JD = ITBNO + I - 1

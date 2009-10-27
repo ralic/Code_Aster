@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 08/09/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem2 Messages  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,15 +75,6 @@ cata_msg = {
   -> Risque & Conseil:
      Veuillez utiliser la commande MODI_MODELE_XFEM pour fournir à 
      AFFE_CHAR_MECA/CONTACT_XFEM un modèle XFEM.
-"""),
-
-
-14 : _("""
-  -> La discrétisation du fond de fissure est grossière par rapport à la 
-     courbure du fond de fissure.
-  -> Risque & Conseil:
-     - possibilité de résultats faux
-     - il faudrait raffiner le maillage autour du fond de fissure.
 """),
 
 15 : _("""

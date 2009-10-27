@@ -1,6 +1,6 @@
-# MODIF  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 27/10/2009   AUTEUR MESSIER J.MESSIER 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
-# sslv315b.para = tps_job 500 mem_job 1024Mo liste_test S
+# sslv315b.para = tps_job 260 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,8 +92,8 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
 #----------------------------------------------
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
-RI = 0.2
-RS = 0.8
+RI = 0.1
+RS = 0.4
 PRES=-1.E6
 
 for i in range(nbcalc) :
@@ -162,7 +162,7 @@ for i in range(nbcalc) :
                         METHODE_PROPA='MAILLAGE',
                         LOI_PROPA=_F(LOI='PARIS',
                                      M=1.,
-                                     DA_MAX=0.3,),
+                                     DA_MAX=0.4,),
                         MA_STRUC=MAILLAG1,
                         MA_XFEM1 = MAX[i],
                         MA_XFEM2 = MAX[i+1],
@@ -195,16 +195,49 @@ IMPR_TABLE(TABLE=TAB);
 TEST_TABLE(TABLE=TAB,
            REFERENCE='NON_REGRESSION',
            NOM_PARA='COOR_Y',
-           PRECISION=1.E-3,
+           PRECISION=5.E-2,
            TYPE_TEST='MAX',
-           VALE= 2.600032 )
+           VALE= 2.8)
 
 TEST_TABLE(TABLE=TAB,
            REFERENCE='NON_REGRESSION',
            NOM_PARA='COOR_Z',
-           PRECISION=1.E-3,
+           PRECISION=5.E-2,
            TYPE_TEST='MAX',
-           VALE= 9.019195  )
+           VALE= 9.  )
+
+
+# ON DEFINIT ICI LES NOEUDS VOISINANT LE FOND DE FISSURE
+# A DES FINS DE COMPARAISON AVEC LES MODELISATIONS A ET D
+
+MA[i+1]   =DEFI_GROUP( reuse =MA[i+1],
+                     MAILLAGE=MA[i+1],
+                     CREA_GROUP_NO=(_F(NOM='VOIS_CYL',
+                                       OPTION='ENV_CYLINDRE',
+                                       POINT=(1.,2.8,9.),
+                                       RAYON=1./3.,
+                                       VECT_NORMALE=(1.,0.,0.),
+                                       PRECISION=0.06,),
+                                    _F(NOM='VOIS_PLA',
+                                       OPTION='PLAN',
+                                       POINT=(1.,2.8,9.),
+                                       VECT_NORMALE=(1.,0.,0.),
+                                       PRECISION=0.01,),),  
+                      INFO=1, );
+
+MA[i+1]   =DEFI_GROUP( reuse =MA[i+1],
+                     MAILLAGE=MA[i+1],
+                     CREA_GROUP_NO=_F(NOM='VOISINS',
+                                      INTERSEC=('VOL','VOIS_CYL','VOIS_PLA',),),
+                      INFO=2,);
+
+
+#MAVOIS=CREA_MAILLAGE(MAILLAGE=MA[i+1],
+#             RESTREINT=_F(
+#                GROUP_MA=('VOISINS',),),);
+
+#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MAVOIS))
+
 
 i=nbcalc-1
 MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i],

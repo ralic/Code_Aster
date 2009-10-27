@@ -1,5 +1,6 @@
-# MODIF  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
+# sdnd102d.para = tps_job 110 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,6 +122,7 @@ TRAN_DY=DYNA_NON_LINE(  MODELE=MODELE,
                SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
                                FORMULATION='ACCELERATION',
                                STOP_CFL='NON',),
+               NEWTON=_F(  REAC_ITER = 1),
                SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),  
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
@@ -185,6 +187,7 @@ TRAN_DYT=DYNA_NON_LINE(  MODELE=MODELE,
                            GROUP_MA = 'RESSORT1'),
                _F(  RELATION = 'DIS_CHOC',
                            GROUP_MA = 'MASSES1')),
+               NEWTON=_F(  REAC_ITER = 1),            
                SCHEMA_TEMPS=_F(SCHEMA='TCHAMWA',
                                FORMULATION='ACCELERATION',
                                PHI=1.05,STOP_CFL='NON',),

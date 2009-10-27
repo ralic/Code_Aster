@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline Messages  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,9 +128,6 @@ cata_msg = {
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
 """),
 
-81 : _("""
-   Echec dans la recherche linéaire. Contactez les développeurs.
-"""),
 
 82 : _("""
    Arret pour cause de matrice non inversible.

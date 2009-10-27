@@ -1,7 +1,7 @@
-      SUBROUTINE ZEROPN( DEGRE, AI, RACINE )
+      SUBROUTINE ZEROPN( KSTOP, DEGRE, AI, RACINE, IER )
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 26/10/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,14 +19,27 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =====================================================================
-      IMPLICIT      NONE
-      INTEGER       DEGRE
-      REAL*8        AI(DEGRE),RACINE(2*DEGRE)
+      IMPLICIT NONE
+      INTEGER     DEGRE
+      REAL*8      AI(DEGRE),RACINE(2*DEGRE)
+      CHARACTER*1 KSTOP
 C =====================================================================
 C --- RECHERCHE DES RACINES D'UN POLYNOME PAR LA METHODE --------------
 C --- COMPANION MATRIX POLYNOMIAL -------------------------------------
 C --- LE POLYNOME ETANT DE LA FORME : ---------------------------------
 C --- P(X) = X^N+A_(N-1).X^(N-1)+...A_K.X^K+...+A_1.X+A_0 -------------
+C
+C KSTOP : COMPORTEMENT EN CAS DE PROBLEME :
+C        / 'A' : ON EMET UNE ALARME
+C        / 'F' : ON EMET UNE ERREUR FATALE
+C        / ' ' : ON N'EMET PAS DE MESSAGE
+C DEGRE : DEGRE DU POLYNOME
+C AI : COEFFICIENTS DU POLYNOME
+C RACINE : RACINES DU POLYNOME
+C OUT IER : PARAMETRE  D'ERREUR
+C           IER = 0 OK
+C           IER = J > 0 , NON CONVERGENCE POUR LA J-IEME RACINE
+C                LES J PREMIERES RACINES NE SONT PAS CALCULEES
 C =====================================================================
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 C =====================================================================
@@ -84,7 +97,13 @@ C =====================================================================
       CALL VPHQRP(ZR(JMAT),DEGRE,DEGRE,ICODE,RACINE,BIDON,
      &                                              1,VBID,30,IER,IBID)
 C =====================================================================
-      CALL ASSERT(IER.EQ.0)
+      IF (KSTOP.EQ.' ') GOTO 40
+
+      IF (IER .NE. 0) THEN
+        CALL U2MESI(KSTOP,'ALGORITH17_6',1,IER)
+      ENDIF
+
+ 40   CONTINUE
       CALL JEDETR(COMAPO)
 C =====================================================================
       END

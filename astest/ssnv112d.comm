@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 26/10/2009   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM GRANDES DEFORMATIONS
 # ssnv112d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,6 +77,9 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           1.0,1.0,
                           ),PROL_DROITE='CONSTANT',);
 
+# LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
+# ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
+# CORRIGE LES EVENTUELLES DERIVES.
 EVOL=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=(_F(CHARGE=CLIM,),
@@ -90,7 +93,7 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                                   EPSI_REFE=3.E-4,
                                   RESI_REFE_RELA=1.E-3,),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=600,),);
+                              PCENT_PIVOT=600,NPREC=-1),);
 
 EVOL=CALC_ELEM(reuse =EVOL,
                RESULTAT=EVOL,

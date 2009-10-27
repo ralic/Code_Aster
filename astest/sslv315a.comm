@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 27/10/2009   AUTEUR MESSIER J.MESSIER 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv315a.para = tps_job 250 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -33,7 +33,7 @@ DEBUT(CODE=_F(NOM='SSLV315A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F
 
 PRE_GIBI();
 
-nbcalc = 2
+nbcalc = 3
 
 MAILLAG1=LIRE_MAILLAGE(INFO=1,);
 
@@ -111,10 +111,10 @@ RESU = [None]*nbcalc
 SIF = [None]*nbcalc
 LSN = [None]*nbcalc
 LST = [None]*nbcalc
-
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
-RI = 0.2
-RS = 0.8
+RI = 0.1
+RS = 0.4
+RP = RS
 
 for i in range(nbcalc) :
 
@@ -132,6 +132,8 @@ for i in range(nbcalc) :
                                       INST_FIN=1.0,),
 #                         SOLVEUR=_F(METHODE='MUMPS',),
                          NEWTON=_F(REAC_ITER=1,),
+                         SOLVEUR=_F(METHODE='MULT_FRONT',
+                                    NPREC=12,),
                          ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                          INFO=1,);
 
@@ -163,27 +165,102 @@ for i in range(nbcalc) :
                               MATER=ACIER,),
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
-                 DA_MAX=0.5,
-                 RAYON=RS,
+                 DA_MAX=0.4,
+                 #DA_MAX=0.166666641831398,
+                 RAYON=RP,
                  INFO=1,);
 
-#----------------------------------------------
-#         POST TRAITEMENT
-#----------------------------------------------
-i=nbcalc-1
-TEST_TABLE(TABLE=SIF[i],
-           REFERENCE='NON_REGRESSION',
-           NOM_PARA='K1_LOCAL',
-           PRECISION=5.E-2,
-           TYPE_TEST='MAX',
-           VALE= 3.2963386204942E+06  )
+#     LEVEL SET AU PAS DE PROPAGATION COURANT
+      LSN[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                          OPERATION='EXTR',
+                          FISSURE=FISS[i+1],
+                          NOM_CHAM='LNNO',);
+      LST[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                          OPERATION='EXTR',
+                          FISSURE=FISS[i+1],
+                          NOM_CHAM='LTNO',);
 
-TEST_TABLE(TABLE=SIF[i],
+      IMPR_RESU(FORMAT='MED',
+                UNITE=30,
+                RESU=_F(CHAM_GD=LSN[i+1],),);
+      IMPR_RESU(FORMAT='MED',
+                UNITE=30,
+                RESU=_F(CHAM_GD=LST[i+1],),);
+
+
+i=nbcalc-1
+# *********************************************
+# VERIFICATION DE LA POSITION DU FOND DE FISSURE
+# *********************************************
+
+# LES COORDONNES DU FOND DE FISSURE ONT ETE CALCULEES
+# PAR LA METHODE PAR PROJECTION (SSLV315B):
+# Y=2.8
+# Z=9.
+#LES DEUX NOEUDS LES PLUS PROCHES VOISINS SONT DONNES DANS SSLV315.MESS
+# NOEUD 1= N928
+# NOEUD 2= N1132
+
+
+# ON PEUT DONC CALCULER LA VALEUR DES LEVEL SETS POUR CES NOEUDS:
+
+TABLSN= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
+                                NOEUD=('N1132','N928',),                                
+                                CHAM_GD=LSN[i],
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+TABLST= POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
+                                NOEUD=('N1132','N928',),
+                                CHAM_GD=LST[i],
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TABLSN,);
+IMPR_TABLE(TABLE=TABLST,);
+
+# ON PEUT ENFIN VERIFIER QUE LE FOND DE FISSURE CALCULE PAR PROPA_FISS
+# EST DANS L'ELEMENT EN VERIFIENT QUE LA VALEUR DES LEVEL SETS EST
+# INFERIEURE A LA DISTANCE MAXIMALE ENTRE LES QUATRE NOEUDS (EGAL A 1/3)
+
+DISTMAX=1./3.
+
+TEST_TABLE(TABLE=TABLSN,
            REFERENCE='NON_REGRESSION',
-           NOM_PARA='K2_LOCAL',
-           PRECISION=5.E-2,
+           NOM_PARA='X1',
+           PRECISION=DISTMAX,
            TYPE_TEST='MAX',
-           VALE= 4.0259145440442E+05    )
+           CRITERE='ABSOLU',
+           VALE= 0.0,
+           VALE_ABS='OUI',)
+
+TEST_TABLE(TABLE=TABLSN,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='X1',
+           PRECISION=DISTMAX,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0,
+           VALE_ABS='OUI',)
+
+TEST_TABLE(TABLE=TABLST,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='X1',
+           PRECISION=DISTMAX,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= 0.0,
+           VALE_ABS='OUI',)
+
+TEST_TABLE(TABLE=TABLST,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='X1',
+           PRECISION=DISTMAX,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0,
+           VALE_ABS='OUI',)
+
 
 MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i],
                           MAILLAGE_SAIN = MAILLAG1,);

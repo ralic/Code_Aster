@@ -1,10 +1,10 @@
         SUBROUTINE LCJPLA (FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATER,NVI,
      1                     DEPS,SIGF,VIN,DSDE,SIGD,VIND,VP,VECP,
-     2                     THETA, DT, DEVG, DEVGII)
+     2                     THETA, DT, DEVG, DEVGII,CODRET)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C           VP     : VALEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN)
 C           VECP   : VECTEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
 C       ----------------------------------------------------------------
 C TOLE CRP_21
-        INTEGER         IMAT, NMAT , NVI, NR,KPG,KSP
+        INTEGER         IMAT, NMAT , NVI, NR,KPG,KSP,CODRET
         REAL*8          DSDE(6,6),DEVG(*),DEVGII,SIGF(6),DEPS(6),DG
         REAL*8          VIN(*), VIND(*),THETA,DT,MATER(NMAT,2)
         REAL*8          VP(3),VECP(3,3),SIGD(6)
@@ -54,11 +54,8 @@ C       ----------------------------------------------------------------
           CALL  RSLJPL(FAMI,KPG,KSP,LOI,IMAT,NMAT,MATER,
      &                 SIGF,VIN,VIND,DEPS,THETA,DT,DSDE)
 C
-        ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B'    ) THEN
-          CALL  INSJPL(MOD,NMAT,MATER,SIGF,VIN,DSDE)
-C
         ELSEIF ( LOI(1:6) .EQ. 'LAIGLE'   ) THEN
-          CALL  LGLJPL(MOD,NMAT,MATER,SIGF,DEVG,DEVGII,VIN,DSDE)
+          CALL  LGLJPL(MOD,NMAT,MATER,SIGF,DEVG,DEVGII,VIN,DSDE,CODRET)
 C
         ELSEIF (( LOI(1:10) .EQ. 'HOEK_BROWN'   ).OR.
      1          ( LOI(1:14) .EQ. 'HOEK_BROWN_EFF'   ))THEN

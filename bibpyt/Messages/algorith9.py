@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith9 Messages  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,10 +40,6 @@ cata_msg = {
 
 7 : _("""
  la charge  %(k1)s  n'est pas compatible avec FONC_MULT
-"""),
-
-9 : _("""
- composante non trouvée dans la numérotation
 """),
 
 10 : _("""

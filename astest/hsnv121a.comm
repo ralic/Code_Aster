@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE TRACTION THERMIQUE PLASTIQUE GRANDES DEFORMATIONS 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -177,6 +177,7 @@ VT=STAT_NON_LINE( reuse=VT,
                 LIST_INST = L_INST),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
+                PREDICTION = 'EXTRAPOL',
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,

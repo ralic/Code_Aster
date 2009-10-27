@@ -1,5 +1,5 @@
-# MODIF  DATE 05/10/2009   AUTEUR DELMAS J.DELMAS 
-# TITRE VALIDATION DE L'ESTIMATEUR D'ERREUR SUR UNE PLAQUE FISSUREE
+# MODIF  DATE 26/10/2009   AUTEUR DELMAS J.DELMAS 
+# TITRE VALIDATION DE L'ESTIMATEUR D'ERREUR XFEM SUR UNE PLAQUE FISSUREE
 # sslp316a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -201,11 +201,11 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                     NOM_CHAM='ERRE_ELEM_SIGM',
                     NOM_CMP='ERREST',
                     TYPE_TEST='MAX',
-                    VALE=1.315e-3,
+                    VALE=5.73e-4,
                     CRITERE='RELATIF',
                     PRECISION=0.005,
                     REFERENCE='NON_REGRESSION',
-                    VERSION='10.00.20',),
+                    VERSION='9.03.16',),
                  _F(RESULTAT=UTOT,
                     INST=1.0,
                     NOM_CHAM='ERRE_ELEM_SIGM',

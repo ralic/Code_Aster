@@ -1,4 +1,4 @@
-#@ MODIF archivage Messages  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF archivage Messages  DATE 26/10/2009   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,11 @@ L'archivage va écraser des instants déjà calculés (ARCHIVAGE)
 
 98 : _("""
 L'archivage va laisser des trous dans la sd EVOL_NOLI (ARCHIVAGE, NUME_INIT)
+"""),
+
+99 : _("""
+L'option d'archivage de l'état initial ne sert que lors du premier calcul,
+son appel dans les poursuites suivantes est ignoré (ARCHIVAGE, ARCH_ETAT_INIT)
 """),
 
 }

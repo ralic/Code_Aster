@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 27/10/2009   AUTEUR DESROCHES X.DESROCHES 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 08/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -40,9 +40,9 @@ MO=AFFE_MODELE(MAILLAGE=MAIL,
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(GROUP_MA='CD',
-                                 OPTION='NOEUD_ORDO',
+                CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
                                  NOM='CD',
+                                 GROUP_MA='CD',
                                  GROUP_NO_ORIG='C',
                                  GROUP_NO_EXTR='D',),);
 
@@ -93,33 +93,33 @@ RESU=CALC_ELEM(reuse =RESU,
                CARA_ELEM=CAR_ELE,
                RESULTAT=RESU,
                TOUT_ORDRE='OUI',
-               OPTION='SIGM_ELNO_DEPL',
-               REPE_COQUE =_F( NUME_COUCHE=1,
-                               NIVE_COUCHE='SUP',),);
+               REPE_COQUE=_F(NUME_COUCHE=1,
+                             NIVE_COUCHE='SUP',),
+               OPTION='SIGM_ELNO_DEPL',);
 
-DEP_DZ=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_DZ ',
-                               GROUP_NO='CD',
+DEP_DZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='TAB_DZ ',
                                RESULTAT=RESU,
                                NOM_CHAM='DEPL',
-                               NOM_CMP='DZ',
-                               OPERATION='EXTRACTION',),);
+                               GROUP_NO='CD',
+                               NOM_CMP='DZ',),);
 
-DEP_NORM=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_NORM',
-                                 GROUP_NO='CD',
+DEP_NORM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='TAB_NORM',
                                  RESULTAT=RESU,
                                  NOM_CHAM='DEPL',
+                                 GROUP_NO='CD',
                                  NOM_CMP=('DX','DY','DZ',),
                                  REPERE='CYLINDRIQUE',
                                  ORIGINE=(0.0,0.0,0.0,),
-                                 AXE_Z=(0.0,1.0,0.0,),
-                                 OPERATION='EXTRACTION',),);
+                                 AXE_Z=(0.0,1.0,0.0,),),);
 
-SIGMA=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_SIGM ',
-                              GROUP_NO='CD',
+SIGMA=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='TAB_SIGM ',
                               RESULTAT=RESU,
                               NOM_CHAM='SIGM_ELNO_DEPL',
-                              TOUT_CMP='OUI',
-                              OPERATION='EXTRACTION',),);
+                              GROUP_NO='CD',
+                              TOUT_CMP='OUI',),);
 
 DEPZ=RECU_FONCTION(TABLE=DEP_DZ,
                    PARA_X='ABSC_CURV',
@@ -138,19 +138,23 @@ SIGY=RECU_FONCTION(TABLE=SIGMA,
                    PARA_Y='SIYY',);
 
 IMPR_FONCTION(FORMAT='AGRAF',
-            TITRE='dep_norm fonction de abscisse curviligne',
-            COURBE=(_F(FONCTION=DEPZ,),
-                    _F(FONCTION=DEPNOR,),),);
+              UNITE=25,
+              UNITE_DIGR=26,
+              COURBE=(_F(FONCTION=DEPZ,),
+                      _F(FONCTION=DEPNOR,),),
+              TITRE='dep_norm fonction de abscisse curviligne',);
 
-IMPR_FONCTION(UNITE=27, UNITE_DIGR=28,
-            FORMAT='AGRAF',
-            TITRE='sigma XX fonction de abscisse curviligne',
-            COURBE=_F(FONCTION=SIGX,),);
+IMPR_FONCTION(FORMAT='AGRAF',
+              UNITE=27,
+              UNITE_DIGR=28,
+              COURBE=_F(FONCTION=SIGX,),
+              TITRE='sigma XX fonction de abscisse curviligne',);
 
-IMPR_FONCTION(UNITE=29, UNITE_DIGR=30,
-            FORMAT='AGRAF',
-            TITRE='sigma YY fonction de abscisse curviligne',
-            COURBE=_F(FONCTION=SIGY,),);
+IMPR_FONCTION(FORMAT='AGRAF',
+              UNITE=29,
+              UNITE_DIGR=30,
+              COURBE=_F(FONCTION=SIGY,),
+              TITRE='sigma YY fonction de abscisse curviligne',);
 
 #
 #---------------------------------------------------------------------
@@ -199,7 +203,29 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    GROUP_NO='F',
                    VALE=600000.0,
                    PRECISION=0.2,
-                   REFERENCE='SOURCE_EXTERNE',),),);
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M184',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   VALE=302341.0,
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M184',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   VALE=879983.0,
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',),
+                   ),);
+
 #
 #---------------------------------------------------------------------
 #              TEST REFERENCE BATOZ 
@@ -229,6 +255,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VALE=-2.5e-05,
                    PRECISION=0.5,
                    REFERENCE='ANALYTIQUE',),),);
+
 #
 #---------------------------------------------------------------------
 #                  TEST SIGMA     

@@ -1,6 +1,6 @@
-# MODIF  DATE 04/11/2008   AUTEUR CNGUYEN C.NGUYEN 
+# MODIF  DATE 27/10/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE CALCUL ELASTO-PLASTIQUE D'UN ANNEAU CREUX SOUMIS A UNE PRESSION INTERIEURE
-# perf004c.para = tps_job 3500 mem_job 580Mo ncpus 1 liste_test P
+# perf004c.para = tps_job 3700 mem_job 580Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

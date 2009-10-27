@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     OUT  R        :  SECOND MEMBRE
 C          SIGNE    :  SIGNE DE S:DEPSDP
 C          DRDY     :  JACOBIEN
 C ======================================================================
-        INTEGER       NDT, NDI, NMOD, I, J, K
+        INTEGER       NDT, NDI, NMOD, I, J, K, CODRET
         PARAMETER     (NMOD = 16)
         REAL*8        EPSD(6), DEPS(6), DEPSE(6), DEPSDP(6)
         REAL*8        DSIGNL(6), DSIGL(6), SIGF(6)
@@ -234,7 +234,7 @@ C ======================================================================
      &               S, SII, SIIREL, COS3TS, HTS, DETS,
      &               Q, QII, QIIREL, COS3TQ, HTQ, DETQ )
 
-        CALL CALCQ(Q,GAMMA,PREF,EPSSIG,QQ)
+        CALL CALCQ(Q,GAMMA,PREF,EPSSIG,QQ,CODRET)
         CALL LCPRSC(QQ,QQ,TRUC)
         QQII = SQRT(TRUC)
         CALL LCPRSC(XF,XF,TRUC)

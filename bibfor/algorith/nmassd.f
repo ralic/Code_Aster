@@ -3,7 +3,7 @@
      &                  CNDONN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,9 +77,10 @@ C
       INTEGER      I,NBVEC ,NEQ 
       REAL*8       COEF(8)
       CHARACTER*19 VECT(8)
-      CHARACTER*19 NMCHEX,CNDIPI,CNDIDO,CNBEST(2),K19BLA
+      CHARACTER*19 NMCHEX,CNDIPI,CNDIDO,CNBEST(2),K19BLA,CNDIDI
       CHARACTER*19 VEDEST(2)
       CHARACTER*24 VALEST(8),K24BLA
+      LOGICAL      ISFONC,LDIDI
 C 
 C ----------------------------------------------------------------------
 C
@@ -104,6 +105,10 @@ C
       CALL VTCREB(CNBEST(2),NUMEDD,'V','R',NEQ)      
       K24BLA    = ' ' 
       K19BLA    = ' '    
+C
+C --- FONCTIONNALITES ACTIVEES
+C     
+      LDIDI  = ISFONC(FONACT,'DIDI')      
 C
 C --- DEPLACEMENT IMPOSES 
 C             
@@ -130,6 +135,12 @@ C
       CALL NMBUDI(MODELE,NUMEDD,LISCHA,DEPEST,VEDEST(2),
      &            CNBEST(2))
 C
+C --- CONDITIONS DE TYPE DIDI
+C
+      IF (LDIDI) THEN
+        CNDIDI = NMCHEX(VEASSE,'VEASSE','CNDIDI')
+      ENDIF
+C
 C --- VALEURS POUR SOMME DES FORCES
 C  
       NBVEC   = 3
@@ -139,6 +150,11 @@ C
       VECT(1) = CNDIDO
       VECT(2) = CNBEST(1) 
       VECT(3) = CNBEST(2)
+      IF (LDIDI) THEN
+        NBVEC = 4
+        VECT(4) = CNDIDI
+        COEF(4) = 1.D0
+      ENDIF
 C
 C --- CHARGEMENT FIXE
 C       

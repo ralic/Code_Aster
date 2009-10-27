@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 26/10/2009   AUTEUR GREFFET N.GREFFET 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_NON_LINE
 # sdld31a.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -227,7 +227,7 @@ REPHHTP=DYNA_NON_LINE(
                  ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
              );
 #
-tpsr2 = 0.4 * tfin
+tpsr2 = 0.6 * tfin
 REPHHTP=DYNA_NON_LINE( reuse=REPHHTP,
                        ETAT_INIT=_F(EVOL_NOLI=REPHHTP,
                                     INST=tpsr1,
@@ -246,6 +246,7 @@ REPHHTP=DYNA_NON_LINE( reuse=REPHHTP,
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 1),
+                 ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
              );
 #
 REPHHTP=DYNA_NON_LINE( reuse=REPHHTP,
@@ -266,6 +267,7 @@ REPHHTP=DYNA_NON_LINE( reuse=REPHHTP,
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 1),
+                 ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
             );
 #
 #  Solution obtenue avec schema KRENK  en vitesse

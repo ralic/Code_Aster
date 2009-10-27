@@ -7,7 +7,7 @@
      &               CNXINV
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 27/10/2009   AUTEUR MESSIER J.MESSIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,9 +79,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &               JDELFI,JDEFIL,JDEFID,JALPHA,JALPHL,JALPHD,NBNOMA,
      &               ITYPMA,IADMET,IADDFI,INO,IADALP,NUNO,IBID,J,JZERO,
      &               JNOSOM,JRESDU,NMANOI,JMANOI,CPTNOV,IMAI,NUMAI,
-     &               JCOOR,JTMDIM,NDIME
+     &               JCOOR,JTMDIM,NDIME,NUMIN
       REAL*8         SIGNLN,NORMGN,NORMGT,SIGMLT,SDIFF,LTPREC,LTNOUV,
-     &               R8PREM,SIGLST,SDIFFT,GRAD(3),JI(3),PROSCA,SIGLSI
+     &               R8PREM,SIGLST,SDIFFT,GRAD(3),JI(3),PROSCA,SIGLSI,
+     &               DIST,DISMIN,SIGNLS,R8MAEM
       CHARACTER*3    ITERK3,ITRPK3
       CHARACTER*8    K8B,LPAIN(4),LPAOUT(2),TYPMA,LICMP(3),NOMNO,METHOD
       CHARACTER*10   RESK10,REMK10,RETK10
@@ -92,7 +93,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8         RESIMX
       PARAMETER      (RESIMX=1.D-3)
       INTEGER        ITERMX
-      PARAMETER      (ITERMX=100)
+      PARAMETER      (ITERMX=500)
       REAL*8         RESIDU(ITERMX),RESIT(ITERMX)
 
 C-----------------------------------------------------------------------
@@ -362,9 +363,9 @@ C  ON ECARTE LES NOEUDS CALCULES PRECEDEMMENT
             LTPREC = ZR(JLTNO-1+I)
             IF (ABS(ZR(JWI-1+I)).GT.R8PREM()) THEN
 C               WRITE(*,*)'La réortho du noeud N',I,' se fait à WI>0'
-               ZR(JLTNO-1+I) = ZR(JLTNO-1+I) - DELTAT *
+               LTNOUV = ZR(JLTNO-1+I) - DELTAT *
      &                       ( ZR(JVI-1+I) / ZR(JWI-1+I) )
-               LTNOUV = ZR(JLTNO-1+I)
+               ZR(JLTNO-1+I) = LTNOUV
                IF (ZL(JRESDU-1+I)) THEN
                   SDIFF = SDIFF + (LTNOUV-LTPREC)**2.0D0
                   SIGMLT = SIGMLT + LTPREC**2.0D0
@@ -393,66 +394,71 @@ C---------------------------------
 C  ON ECARTE LES NOEUDS MILIEUX
             IF (.NOT.ZL(JNOSOM-1+I)) GOTO 800
 C  ON ECARTE LES NOEUDS CALCULES PLUS HAUT
-            IF (ZL(JZERO-1+I)) GOTO 800
-            
+            IF (ZL(JZERO-1+I)) GOTO 800            
             
             IF (ABS(ZR(JWI-1+I)).LT.R8PREM()) THEN
-C               WRITE(*,*)'La réortho du noeud N',I,'se fait à WI=0'
-               CPTNOV = 0
-               SIGLSI = 0.D0
+C           WRITE(*,*)'La réortho du noeud d"indice',I,' se fait à WI=0'
+                          
 C    RECUPERATION DES MAILLES CONTENANT LE NOEUD I
                CALL JELIRA(JEXNUM(CNXINV,I),'LONMAX',NMANOI,K8B)
                CALL JEVEUO(JEXNUM(CNXINV,I),'L',JMANOI)
 C     BOUCLE SUR LES MAILLES CONTENANT LE NOEUD I
+               DISMIN = R8MAEM()
+C    ON ECARTE LES NOEUDS APPARTENANT A LA STRUCTURE MASSIVE
+               IF (((NMANOI.GT.2).AND.(NDIM.EQ.2)).OR.
+     &          ((NMANOI.GT.4).AND.(NDIM.EQ.3))) GOTO 800
+               NUMIN = 0
                DO 160 IMAI=1,NMANOI
                   NUMAI = ZI(JMANOI-1+IMAI)
-C                 ON SAUTE LES MAILLES DE BORD
-                  NDIME = ZI(JTMDIM-1+ZI(JMAI-1+NUMAI))
-                  IF (NDIME.NE.NDIM) GOTO 160
-                    
+                  ITYPMA = ZI(JMAI-1+NUMAI)
+                  CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
+C     SI MAILLE NON VOLUMIQUE (en 3D) OU SURFACIQUE (en 2D) ON LA SAUTE
+               IF ((((TYPMA(1:5).NE.'TETRA').AND.
+     &             (TYPMA(1:4).NE.'HEXA')).AND.(NDIM.EQ.3)).OR.
+     &             ((TYPMA(1:4).NE.'QUAD').AND.(NDIM.EQ.2))) GOTO 160
 C     BOUCLE SUR LES NOEUDS DE LA MAILLE
                   NBNOMA = ZI(JCONX2+NUMAI) - ZI(JCONX2+NUMAI-1)
+
+C    Algo modifié par Julien 
+C   (On cherche à appliquer une réinitialisation aux mailles de bord
+C   et uniquement à elles!)
+
                   DO 170 INO=1,NBNOMA
                      NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAI-1)+INO-1)
                      IF (.NOT.ZL(JNOSOM-1+NUNO)) GOTO 170
+                     
                      IF (ABS(ZR(JWI-1+NUNO)).GT.R8PREM()) THEN
-                        IF (NDIM.EQ.3) THEN
-                         DO 175 J=1,3
+                     
+                        DIST=0.D0
+                         DO 175 J=1,NDIM                         
                            JI(J) = ZR(JCOOR-1+3*(I-1)+J)
      &                           - ZR(JCOOR-1+3*(NUNO-1)+J)
-                           GRAD(J)=ZR(JGLTNO-1+3*(I-1)+J)  
+                            DIST=DIST+JI(J)**2
  175                     CONTINUE
-                        ENDIF
-                        IF (NDIM.EQ.2) THEN
-                         DO 176 J=1,2
-                           JI(J) = ZR(JCOOR-1+3*(I-1)+J)
-     &                           - ZR(JCOOR-1+3*(NUNO-1)+J)
-                           GRAD(J)=ZR(JGLTNO-1+2*(I-1)+J)  
- 176                     CONTINUE
-                        ENDIF 
-                        CALL LCPRSN(NDIM,JI,GRAD,PROSCA)
-                        SIGLSI = SIGLSI + ZR(JLTNO-1+NUNO) + PROSCA
-                        CPTNOV = CPTNOV+1
-                     ENDIF
+                         DIST=DIST**0.5D0
+C     On repère le noeud le plus proche                         
+                         IF (DIST.LT.DISMIN) THEN
+                           DISMIN = DIST
+                           NUMIN = NUNO
+                         ENDIF
+                     ENDIF 
+                                        
  170              CONTINUE
  160           CONTINUE
-               IF (CPTNOV.NE.0) THEN
-                  ZR(JLTNO-1+I) = SIGLSI/CPTNOV
-               ELSE
-                IF (NDIM.EQ.3) ZR(JLTNO-1+I) = ZR(JLTNO-1+I) - DELTAT *
-     &            ( ZR(JGLTNO-1+3*(I-1)+1) * ZR(JVF-1+3*(I-1)+1) +
-     &              ZR(JGLTNO-1+3*(I-1)+2) * ZR(JVF-1+3*(I-1)+2) +
-     &              ZR(JGLTNO-1+3*(I-1)+3) * ZR(JVF-1+3*(I-1)+3) )
-                IF (NDIM.EQ.2) ZR(JLTNO-1+I) = ZR(JLTNO-1+I) - DELTAT *
-     &            ( ZR(JGLTNO-1+2*(I-1)+1) * ZR(JVF-1+3*(I-1)+1) +
-     &              ZR(JGLTNO-1+2*(I-1)+2) * ZR(JVF-1+3*(I-1)+2) )
-               ENDIF
+C On affecte au noeud I (WI=0), la réactualisation du noeud NUMIN (WI>0)
+               LTPREC = ZR(JLTNO-1+I)
+               LTNOUV = ZR(JLTNO-1+I)
+     &          -DELTAT*(ZR(JVI-1+NUMIN)/ZR(JWI-1+NUMIN))              
+                
+               ZR(JLTNO-1+I) = LTNOUV 
+
+            
+            
             ENDIF
             
             
             
  800     CONTINUE
-
 C---------------------------------------------------
 C     CALCUL DU GRADIENT DE LA LEVEL SET RESULTANTE
 C---------------------------------------------------

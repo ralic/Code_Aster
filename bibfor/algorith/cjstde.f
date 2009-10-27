@@ -2,7 +2,7 @@
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C          VIN     :  VARIABLES INTERNES
 C     OUT  DSDESY  :  MATRICE TANGENTE
 C       ----------------------------------------------------------------
 C ======================================================================
-        INTEGER      NDT, NDI , NVI, I, J
+        INTEGER      NDT, NDI , NVI, I, J, CODRET
         REAL*8       MATER(14,2), VIN(*), SIG(6), DSDE(6,6)
         REAL*8       HOOK(6,6), I1, EPS(6), EPSV, E, NU, AL, LA, MU
         REAL*8       R, GR, X(6), GX(6), XII, DFDDS(6), GD(6), KRON(6)
@@ -149,7 +149,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE Q ------------------------------------------------------
 C ======================================================================
-        CALL CALCQ(Q, GAMMA, PREF, EPSSIG, QQ)
+        CALL CALCQ(Q, GAMMA, PREF, EPSSIG, QQ, CODRET)
 C ======================================================================
 C --- CALCUL DE PC (CONTRAINTE MOYENNE CRITIQUE) -----------------------
 C ======================================================================

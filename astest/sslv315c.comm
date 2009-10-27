@@ -1,6 +1,6 @@
-# MODIF  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 27/10/2009   AUTEUR MESSIER J.MESSIER 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
-# sslv315c.para = tps_job 500 mem_job 1024Mo liste_test S
+# sslv315c.para = tps_job 260 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,10 +21,12 @@
 # METHODE PAR PROJECTION SUR UN MAILLAGE - FISSURE INITIALE INCLINEE
 
 DEBUT(CODE=_F(NOM='SSLV315C', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('XFEM2_14','RUPTURE1_35'))
+      IGNORE_ALARM=('XFEM2_14','RUPTURE1_35','CALCULEL5_48'))
 
 # POUR LIMITER LES TEMPS DE CALCUL, LES MAILLAGES SONT RELATIVEMENT GROSSIERS,
 # D OU LES MESSAGES XFEM2_14 ET RUPTURE1_35 QUE L ON IGNORE DANS CE TEST
+# UN POINT DU FRONT PEUT SE PROJETER A L EXTERIEUR DE LA STRUCTURE : 
+# ON IGNORE CALCULEL5_48
 
 #----------------------------------------------
 #                 MAILLAGE
@@ -32,7 +34,7 @@ DEBUT(CODE=_F(NOM='SSLV315C', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F
 
 PRE_GIBI();
 
-nbcalc= 2
+nbcalc= 3
 
 MODELE = [None]*nbcalc
 MODELX = [None]*nbcalc
@@ -93,7 +95,6 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 RI = 0.2
-RS = 0.8
 PRES=-1.E6
 
 for i in range(nbcalc) :
@@ -160,7 +161,7 @@ for i in range(nbcalc) :
                         METHODE_PROPA='MAILLAGE',
                         LOI_PROPA=_F(LOI='PARIS',
                                      M=1.,
-                                     DA_MAX=0.2,),
+                                     DA_MAX=0.4,),
                         MA_STRUC=MAILLAG1,
                         MA_XFEM1 = MAX[i],
                         MA_XFEM2 = MAX[i+1],
@@ -187,7 +188,7 @@ MA[i]=DEFI_GROUP(reuse =MA[i],
                     
 TAB= POST_RELEVE_T(ACTION=_F(INTITULE='test',
                                             GROUP_NO='FOND_'+str(i),
-                                           CHAM_GD=CHLN,
+                                            CHAM_GD=CHLN,
                                             TOUT_CMP='OUI',
                                             OPERATION='EXTRACTION',),);               
 
@@ -196,16 +197,16 @@ IMPR_TABLE(TABLE=TAB);
 TEST_TABLE(TABLE=TAB,
            REFERENCE='NON_REGRESSION',
            NOM_PARA='COOR_Y',
-           PRECISION=1.E-3,
+           PRECISION=5.E-2,
            TYPE_TEST='MAX',
-           VALE= 2.198679  )
+           VALE= 2.8,)
 
 TEST_TABLE(TABLE=TAB,
            REFERENCE='NON_REGRESSION',
            NOM_PARA='COOR_Z',
-           PRECISION=1.E-3,
+           PRECISION=5.E-2,
            TYPE_TEST='MAX',
-           VALE= 9.02323   )
+           VALE= 9.   )
 
 
 i=nbcalc-1

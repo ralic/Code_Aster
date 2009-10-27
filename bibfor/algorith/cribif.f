@@ -1,7 +1,7 @@
       SUBROUTINE CRIBIF( MOD, DSIDEP, VBIFUR , NBRAC4, RACINE )
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 26/10/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C =====================================================================
 C =====================================================================
 C --- RECHERCHE DE ZONES DE LOCALISATION PAR LE CRITERE DE RICE -------
 C =====================================================================
-      INTEGER     TESTIV,II,DEGRE,COMPT,NBRAC3
+      INTEGER     TESTIV,II,DEGRE,COMPT,NBRAC3,IER
       REAL*8      ZERO, UN, DEUX, TROIS, QUATRE, R8PREM, R8NNEM, R8PI
       REAL*8      A0, A1, A2, A3, A4, LAMBA, LAMBB, LAMBC, LAMBP, LAMBQ
       REAL*8      VALEUR, FBIFUR, DELTA, LAMBR, LAMBT, TRIGOM
@@ -103,7 +103,7 @@ C =====================================================================
           AI(2) = A1/A4
           AI(3) = A2/A4
           AI(4) = A3/A4
-          CALL ZEROPN(DEGRE, AI(1), RAC4)
+          CALL ZEROPN('F', DEGRE, AI(1), RAC4, IER)
 C =====================================================================
 C --- ON RECUPERE LES RACINES REELLES ---------------------------------
 C =====================================================================
