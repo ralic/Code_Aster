@@ -1,7 +1,7 @@
       SUBROUTINE MPJEFT(CORRES)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -248,7 +248,7 @@ C        -- RECUPERATION DE LA LISTE DE NOEUDS LNO1 (CALCUL):
 C        ----------------------------------------------
           MOTCLE(1) = 'NOEU_CALCUL'
           TYMOCL(1) = 'NOEUD'
-          CALL RELIEM(MODEL1,NOMA1,'NU_NOEUD','CORR_MANU',IOCC,1,
+          CALL RELIEM(' ',NOMA1,'NU_NOEUD','CORR_MANU',IOCC,1,
      &                MOTCLE,TYMOCL,'&&PJEFTE.LINONU1',NBNO1)
           IF (NBNO1 .EQ. 0) THEN
             CALL U2MESS('F','ALGORITH6_21')
@@ -260,7 +260,7 @@ C        -- RECUPERATION DE LA LISTE DE NOEUDS LNO2 (MESURE):
 C        ----------------------------------------------
           MOTCLE(1) = 'NOEU_MESURE'
           TYMOCL(1) = 'NOEUD'
-          CALL RELIEM(MODEL2,NOMA2,'NU_NOEUD','CORR_MANU',IOCC,1,
+          CALL RELIEM(' ',NOMA2,'NU_NOEUD','CORR_MANU',IOCC,1,
      &                MOTCLE,TYMOCL,'&&PJEFTE.LINONU2',NBNO2)
           IF (NBNO2 .EQ. 0) THEN
             CALL U2MESS('F','ALGORITH6_22')

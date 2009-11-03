@@ -7,7 +7,7 @@
       CHARACTER*(*) LITROZ,TYPEM,MOTFAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
 C RESPONSABLE PELLET J.PELLET
 C TOLE CRP_4
 C ======================================================================
@@ -76,13 +76,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER JNO,JMA,KNO,KMA,IACNEX,IEM,NEM,NUMNO,NNO,NMA
-      INTEGER VALI
+      INTEGER JNO,JMA,KNO,KMA,IACNEX,IEM,NEM,NUMNO,NNO,NMA,NBENC
+      INTEGER IBID,IENT,JPRNM
       INTEGER ITRNO,ITRMA,IMA,INO,NBMA,NBNO,NBNOMA,IMO,IER,JMODEL
       INTEGER LMA,LNO,ITBMA,ITBNO,IRET,INOEM,NTOU,K,IFM,NIV
-      CHARACTER*8 KARG,K8B,TYPE2,OUI,NOENT
-      CHARACTER*24 VALK(3)
-      CHARACTER*16 MOTFAC,MOTCLE,TYPMCL
+      REAL*8  R8BID
+      CHARACTER*8 KARG,K8B,TYPE2,OUI,NOENT,NOMGD
+      CHARACTER*16 MOTFAC,MOTCLE,TYPMCL,PHENOM
+      CHARACTER*19 LIGREL
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -95,9 +96,7 @@ C     --- VERIFICATIONS PRELIMINAIRES ---
 
       IF (TYPEM.NE.'NO_MAILLE' .AND. TYPEM.NE.'NO_NOEUD' .AND.
      &    TYPEM.NE.'NU_MAILLE' .AND. TYPEM.NE.'NU_NOEUD') THEN
-          VALK (1) = TYPEM
-          VALK (2) = ' '
-        CALL U2MESG('F', 'MODELISA8_95',2,VALK,0,0,0,0.D0)
+        CALL ASSERT(.FALSE.)
       END IF
 
       TYPE2 = TYPEM(4:)
@@ -106,19 +105,11 @@ C     --- VERIFICATIONS PRELIMINAIRES ---
         TYPMCL = TYMOCL(IMO)
         IF (TYPMCL.EQ.'NOEUD' .OR. TYPMCL.EQ.'GROUP_NO') THEN
           IF (TYPE2.EQ.'MAILLE') THEN
-          VALI = IMO
-          VALK (1) = TYPMCL
-          VALK (2) = ' '
-          VALK (3) = 'MAILLE'
-            CALL U2MESG('F', 'MODELISA8_96',3,VALK,1,VALI,0,0.D0)
+            CALL ASSERT(.FALSE.)
           END IF
         ELSE IF (TYPMCL.NE.'MAILLE' .AND. TYPMCL.NE.'GROUP_MA' .AND.
      &           TYPMCL.NE.'TOUT') THEN
-          VALI = IMO
-          VALK (1) = TYPMCL
-          VALK (2) = ' '
-          VALK (3) = ' '
-          CALL U2MESG('F', 'MODELISA8_97',3,VALK,1,VALI,0,0.D0)
+          CALL ASSERT(.FALSE.)
         END IF
    10 CONTINUE
 
@@ -242,7 +233,7 @@ C        --- COMPTAGE DES MAILLES ---
         DO 120 IMA = 1,NBMA
           IF (ZI4(ITRMA-1+IMA).NE.0) NBTROU = NBTROU + 1
   120   CONTINUE
-        IF (NBTROU.EQ.0) GO TO 190
+        IF (NBTROU.EQ.0) GO TO 200
 
 
 
@@ -288,7 +279,8 @@ C       ----------------------------------------------------
               END IF
             END IF
   150     CONTINUE
-          IF (IER.NE.0) CALL U2MESK('F','MODELISA6_96',1,MOTFAC)
+          IF (IER.NE.0) CALL U2MESG('F','MODELISA6_96',1,MOTFAC,1,IER,
+     &                                                          0,R8BID)
         END IF
 
 
@@ -301,7 +293,7 @@ C        --- COMPTAGE DES NOEUDS ---
         DO 160 INO = 1,NBNO
           IF (ZI4(ITRNO-1+INO).NE.0) NBTROU = NBTROU + 1
   160   CONTINUE
-        IF (NBTROU.EQ.0) GO TO 190
+        IF (NBTROU.EQ.0) GO TO 200
 
 
 
@@ -332,12 +324,36 @@ C           --- RANGEMENT DES NOMS DE NOEUDS ---
   180     CONTINUE
         END IF
 
+C       -- ON VERIFIE QUE LES NOEUDS FONT PARTIE DU MODELE :
+C       ----------------------------------------------------
+        IF (MODELE.NE.' ') THEN
+          CALL DISMOI('F','PHENOMENE',MODELE,'MODELE',IBID,PHENOM,IRET)
+          CALL DISMOI('F','NOM_GD',PHENOM,'PHENOMENE',IBID,NOMGD ,IRET)
+          CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NBENC,K8B,IRET)
+          CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IBID,LIGREL,IRET)
+          CALL JEVEUO(LIGREL//'.PRNM','L',JPRNM)
+          IER = 0
+          DO 191 INO = 1,NBNO
+            IF (ZI4(ITRNO-1+INO).NE.0) THEN
+              DO 190 IENT  = 1,NBENC
+                IF (ZI(JPRNM-1+NBENC*(INO-1)+IENT).NE.0) GOTO 191
+  190         CONTINUE
+C             LE NOEUD NE PORTE AUCUNE COMPOSANTE DE LA GRANDEUR
+C             ASSOCIEE AU PHENOMENE
+              IER = IER + 1
+              CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOENT)
+              WRITE (IFM,*) ' NOEUD : ',NOENT
+            END IF
+  191     CONTINUE
+          IF (IER.NE.0) CALL U2MESG('F','MODELISA6_13',1,MOTFAC,1,IER,
+     &                                                          0,R8BID)
+        END IF
 
       END IF
 
 
 C     --- DESTRUCTION DES TABLEAUX DE TRAVAIL ---
-  190 CONTINUE
+  200 CONTINUE
       CALL JEDETR('&&RELIEM.INDIC_MAILLE')
       CALL JEDETR('&&RELIEM.INDIC_NOEUD')
 

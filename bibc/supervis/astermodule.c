@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 14/09/2009   AUTEUR DESOZA T.DESOZA */
+/* MODIF astermodule supervis  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2538,7 +2538,7 @@ PyObject *args;
    INTEGER *liord, *ival;
    INTEGER *val, nbval ;
    DOUBLE *rval;
-   char *nomsd, *mode, *liscmp, *nom, nomsd32[33] ;
+   char *nomsd, *mode, *liscmp, *nom, nomsd32[33], *cmp ;
    char nomch[16], ctype, nomva[16];
    int i, lo;
    PyObject *dico, *liste, *key;
@@ -2579,9 +2579,9 @@ PyObject *args;
 
        if (strcmp(mode,"COMPOSANTES") == 0) {
          for (i=0; i<nbcmp; i++) {
-            nom = &(liscmp[i*8]);
-            lo = 8; while (nom[lo-1] == ' ')  lo--;
-            PyList_Append(liste,PyString_FromStringAndSize(nom,lo));
+            cmp = &(liscmp[i*8]);
+            lo = 8; while (cmp[lo-1] == ' ')  lo--;
+            PyList_Append(liste,PyString_FromStringAndSize(cmp,lo));
          }
        }
 

@@ -1,7 +1,7 @@
       SUBROUTINE PJEFTE (RESU1, RESU2 )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -184,7 +184,7 @@ C           ----------------------------------------------
             TYMOCL(4) = 'GROUP_MA'
             MOTCLE(5) = 'TOUT_2'
             TYMOCL(5) = 'TOUT'
-            CALL RELIEM(MODEL2,NOMA2,'NU_NOEUD','VIS_A_VIS',IOCC,5,
+            CALL RELIEM(' ',NOMA2,'NU_NOEUD','VIS_A_VIS',IOCC,5,
      &                  MOTCLE,TYMOCL,'&&PJEFTE.LINONU2',NBNO2)
             CALL JEVEUO('&&PJEFTE.LINONU2','L',IAGNO2)
 

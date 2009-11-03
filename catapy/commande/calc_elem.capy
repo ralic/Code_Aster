@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 02/11/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -139,7 +139,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                EXCIT           =FACT(statut='f',max='**',
                                      fr="Charges contenant les températures, les efforts répartis pour les poutres...",
                                      regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
-                    CHARGE          =SIMP(statut='o',typ=char_meca ),
+                    CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca) ),
                     FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                     FONC_MULT_C     =SIMP(statut='f',typ=fonction_c),
                     COEF_MULT       =SIMP(statut='f',typ='R'),
@@ -163,7 +163,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                       (type(OPTION)==type(()) and  'SIEF_ELGA_DEPL' in OPTION ) ",
                                       fr="charge contenant les temperatures ou autre charge",
                          EXCIT           =FACT(statut='f',max='**',
-                         CHARGE          =SIMP(statut='o',typ=char_meca ),),
+                         CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca) ),),
                                     ),
                                   ),
 
@@ -184,7 +184,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                             fr="charge contenant les temperatures ou les efforts répartis (poutres) ou autre",
                     EXCIT           =FACT(statut='f',max='**',
                                           regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
-                         CHARGE          =SIMP(statut='f',typ=char_meca ),
+                         CHARGE          =SIMP(statut='f',typ=(char_meca,char_cine_meca) ),
                          FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                          FONC_MULT_C     =SIMP(statut='f',typ=fonction_c),
                          COEF_MULT       =SIMP(statut='f',typ='R'),
@@ -211,7 +211,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                       (type(OPTION)==type(()) and  'EPME_ELGA_DEPL' in OPTION ) ",
                                       fr="charge contenant les temperatures",
                     EXCIT           =FACT(statut='f',max='**',
-                         CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
+                         CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou,char_cine_meca,) ),),
                                  ),
                                        ),
           b_ener         =BLOC( condition = "TYPE_OPTION=='ENER'",

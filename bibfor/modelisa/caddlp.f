@@ -4,7 +4,7 @@
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,7 +153,7 @@ C --------------------------------------------------------------
       DO 100 IOC = 1, NDDLI
 
 C ------ RECUPERATION DE LA LISTE DES NOEUDS :
-         CALL RELIEM ( MOD, NOMA, 'NU_NOEUD', MOTFAC, IOC, 2, MOTCL1,
+         CALL RELIEM ( ' ', NOMA, 'NU_NOEUD', MOTFAC, IOC, 2, MOTCL1,
      &                                TYMOC1, '&&CADDLP.NOEUD', NBNO )
          CALL JEVEUO ( '&&CADDLP.NOEUD','L', IALINO )
          CALL RELIEM ( MOD, NOMA, 'NU_MAILLE', MOTFAC, IOC, 2, MOTCL2,

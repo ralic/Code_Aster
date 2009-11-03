@@ -5,10 +5,11 @@ C
       INTEGER       NBMAT
       REAL*8        DT, DP, PLAS
       REAL*8        MATER(NBMAT,2), VIM(4), VIP(4), SIG(6), DSIDEP(6,6)
+      REAL*8        MATER2(3,2)
       CHARACTER*8   MOD
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 03/11/2009   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,7 +43,7 @@ C =====================================================================
       REAL*8   SCAL1, SCAL2, SCAL3, SCAL4, SCAL5, SCAL6, SCAL7, SCAL8
       REAL*8   SCAL11, SCAL12
       REAL*8   DENOM, INT, DFDP, CONST, CONST1
-      REAL*8   KRON(6),  IDEN6(6,6) 
+      REAL*8   KRON(6)
       REAL*8   DSEDE(6,6)
       REAL*8   S(6)
       REAL*8   DSDSIG(6,6),DQDSIG(6) ,DFDSIG(6),DPDSIG(6)
@@ -55,7 +56,7 @@ C =====================================================================
       REAL*8   MATR1A(6,6), MATR1B(6,6)
       REAL*8   PART1(6,6) , PART2(6,6) , PART3(6,6), PART4(6,6)
       REAL*8   INTER1(6,6), INTER2(6,6), INTER3(6,6)
-      REAL*8   INT2A(6,6), INT2B(6,6)
+      REAL*8   INT2A(6,6), INT2B(6,6), DSDEPT(6,6)
       REAL*8   TOL
 C =====================================================================
       PARAMETER  ( ZERO  = 0.0D0 )
@@ -64,29 +65,23 @@ C =====================================================================
       PARAMETER  ( TROIS = 3.0D0 )
       PARAMETER  ( NEUF  = 9.0D0 )
       PARAMETER  ( UNSTR = 1.D0/3.0D0)
-      PARAMETER  (TOL = 1.D-12)
+      PARAMETER  ( TOL = 1.D-12)
       
 C =====================================================================
       COMMON /TDIM/   NDT , NDI
 C =================================================================
       DATA   KRON /UN , UN , UN , ZERO ,ZERO ,ZERO/
-      DATA   IDEN6   /UN     , ZERO  , ZERO  , ZERO  ,ZERO  ,ZERO,
-     &                 ZERO   , UN    , ZERO  , ZERO  ,ZERO  ,ZERO,
-     &                 ZERO   , ZERO  , UN    , ZERO  ,ZERO  ,ZERO,
-     &                 ZERO   , ZERO  , ZERO  , UN    ,ZERO  ,ZERO,
-     &                 ZERO   , ZERO  , ZERO  , ZERO  ,UN    ,ZERO,
-     &                 ZERO   , ZERO  , ZERO  , ZERO  ,ZERO  ,UN/
 C =================================================================
 C ---- RECUPERATION DES PARAMETRES MATERIAUX ----------------------
 C =================================================================
       
-          MU          = MATER(4,1)
-          K             = MATER(5,1)
+          MU        = MATER(4,1)
+          K         = MATER(5,1)
           PREF      = MATER(1,2)
-          A             = MATER(2,2)
-          N             = MATER(3,2)
-          TROISK   = TROIS*K
-          DEUXMU = DEUX*MU
+          A         = MATER(2,2)
+          N         = MATER(3,2)
+          TROISK    = TROIS*K
+          DEUXMU    = DEUX*MU
 C =====================================================================
 C --- INITIALISATIONS DES VECTEURS ------------------------------------
 C =====================================================================
@@ -124,6 +119,7 @@ C =====================================================================
           CALL     LCINMA ( 0.0D0, INTER3  )
           CALL     LCINMA ( 0.0D0, DSDSIG  )
           CALL     LCINMA ( 0.0D0, DSDEPS  )
+          CALL     LCINMA ( 0.0D0, DSDEPT  )
           CALL     LCINMA ( 0.0D0, DQDEPS  )
           CALL     LCINMA ( 0.0D0, DSIDEP  )
           CALL     LCINMA ( 0.0D0, DSEDE   )
@@ -131,16 +127,14 @@ C =====================================================================
           CALL LCOPLI ( 'ISOTROPE', MOD, MATER(1,1), DSEDE )
 C =====================================================================
 C --- CAS ELASTIQUE ---------------------------------------------------
-C =====================================================================
       IF ((PLAS.EQ.0.0D0).OR.(DP.EQ.0.D0).OR. (ABS(DP).LT.TOL)) THEN
          CALL LCEQMA(DSEDE, DSIDEP)
-         GOTO 9999
+          GOTO 9999
       ELSE
 C =================================================================
 C ----  CALCUL DU DEVIATEUR - DE LA CONTRAINTE EQUIVALENTE  -------
 C ----  ET DE LA TRACE --------------------------------------------
 C =================================================================
-
          CALL LCDEVI(SIG,S)
          CALL LCPRSC(S,S,SII)
          SEQ  = SQRT(TROIS*SII/DEUX)
@@ -157,23 +151,25 @@ C =====================================================================
          RM      = FONECM(2)
          BETAM   = FONECM(3)   
 
-         BETA     = FONECP(3)   
+         BETA       = FONECP(3)   
 
          DALPDP = FONDER(1)
-         DRDP   = FONDER(2)   
+         DRDP     = FONDER(2)   
          DBETDP = FONDER(3)
          
-C        CONST     = ((A*DT)**(UN/N))/PREF
          CONST = A*DT/(PREF)**N
 C =====================================================================
 C --- CALCUL DE DSIDEP ------------------------------------------------
 C =====================================================================
+               DO 30 II = 1, NDI
+                  DO 40 JJ = 1, NDI
+                     DSDSIG(II,JJ) = - UN/TROIS
+ 40               CONTINUE
+ 30            CONTINUE
+               DO 50 II = 1, NDT
+                  DSDSIG(II,II) = DSDSIG(II,II) + UN
+ 50            CONTINUE
 
-         DO 40 II = 1, NDT
-         DO 50 JJ = 1, NDT
-            DSDSIG(II,JJ) = IDEN6(II,JJ) - KRON(II)*KRON(JJ)/TROIS 
- 50      CONTINUE
- 40      CONTINUE
 
 C =====================================================================
 C --- CALCUL DE LA TROISIEME PARTIE DU TERME DS/DEPS ------------------
@@ -182,8 +178,9 @@ C --- CALCUL DE DSIEQ/ DSIG -------------------------------------------
 C =====================================================================
             
              SCAL1 = TROIS/DEUX/SEQ
-
-             CALL LCPRSV(SCAL1,S,DQDSIG)
+             
+             CALL LCPRMV(DSDSIG,S,DQDSIG)
+             CALL LCPRSV(SCAL1,DQDSIG,DQDSIG)
 C =====================================================================
 C --- CALCUL DE ALPHA * DI1/ DSIG -------------------------------------
 C =====================================================================
@@ -211,8 +208,8 @@ C =====================================================================
              FONC4 = NEUF*K*DALPDP*DBETDP
         
          
-              FONC  = FONC1 - FONC2*DP - FONC3*DP**2 - FONC4*DP**3
-              FONCP = -FONC2 -DEUX*DP*FONC3-TROIS*DP**2*FONC4
+             FONC  = FONC1 - FONC2*DP - FONC3*DP**2 - FONC4*DP**3
+             FONCP = -FONC2 -DEUX*DP*FONC3-TROIS*DP**2*FONC4
              
               IF (FONC .GT. ZERO) THEN
                   FONC = FONC
@@ -221,8 +218,8 @@ C =====================================================================
                   GOTO 9999
               ENDIF
 
-              CONST1 = N * CONST *  FONC**(N-UN)
-              DFDP = CONST1 * FONCP - UN
+             CONST1 = N * CONST *  FONC**(N-UN)
+             DFDP = CONST1 * FONCP - UN
 
               IF (DFDP . EQ. ZERO) THEN
                CALL LCEQMA(DSEDE, DSIDEP)
@@ -275,19 +272,23 @@ C --- CALCUL DE LA  DEUXIEME PARTIE DU TERME DS/DEPS ------------------
 C =====================================================================
 C --- CALCUL DE 3GDP/SEQ**2 *(se * dSEQ/dEPS ------------------------
 C =====================================================================
-             SCAL5 = NEUF * MU * DP /DEUX /SEQ/ SEQ/ SEQ
-         
+             SCAL5 = NEUF * MU *MU* DP/SEQ/ SEQ/ SEQ         
              CALL LCPRTE(S,S,MATR3)
            
-             CALL LCPRMM(MATR3,DSEDE,DQDEPS)
-      
-             CALL LCPRSM(SCAL5, DQDEPS ,PART2)
+             CALL LCPRSM(SCAL5, MATR3 ,PART2)
 C =====================================================================
 C --- SOMMATION DES PARTIES DE ds/dEPS --------------------------------
 C =====================================================================
              CALL LCSOMA(PART1,PART2,INTER1)
          
              CALL LCSOMA(INTER1,PART3,DSDEPS)
+             
+             CALL LCTRMA(DSDEPS,DSDEPT)
+             DO 980 II   = 1, NDT
+             DO 990 JJ = 1, NDT
+               DSDEPS(II,JJ) = UN/DEUX*(DSDEPS(II,JJ)+DSDEPT(II,JJ))
+ 990      CONTINUE
+ 980      CONTINUE
 C =====================================================================
 C --- CALCUL  DU TERME DI/DEPS ----------------------------------------
 C =====================================================================
@@ -319,8 +320,8 @@ C =====================================================================
                INTER2(II,JJ) = UN/DEUX*(INT2A(II,JJ)+INT2B(II,JJ))
    99      CONTINUE
    98      CONTINUE
-             CALL LCPRSM(UNSTR,INTER2,INTER2)
-             CALL LCSOMA(DSDEPS, INTER2, DSIDEP)
+           CALL LCPRSM(UNSTR,INTER2,INTER2)
+           CALL LCSOMA(DSDEPS, INTER2, DSIDEP)
            ENDIF     
 C =====================================================================
  9999 CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa8 Messages  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -339,25 +339,6 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 
  evaluation impossible  d une fonction materiau - on deborde a droite  pour la temperature
  temp : %(r1)f
-"""),
-
-95 : _("""
- erreur dans les parametres valeur de typem :  %(k1)s
- les valeurs possibles sont no_maille,  no_noeud, nu_maille et nu_noeud %(k2)s
-"""),
-
-96 : _("""
- erreur dans les parametres pour l'indice :  %(i1)d
- la valeur de tymocl est :  %(k1)s
- les valeurs possibles sont maille et group_ma %(k2)s
- car type2 vaut  %(k3)s
-"""),
-
-97 : _("""
- erreur dans les parametres pour l'indice :  %(i1)d
- la valeur de tymocl est :  %(k1)s
- les valeurs possibles sont maille, noeud, %(k2)s
- group_ma,group_no et tout %(k3)s
 """),
 
 98 : _("""

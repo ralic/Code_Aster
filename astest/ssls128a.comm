@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/11/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE  : VALIDATION DE  CRIT_ELNO_RUPT DE CALC_ELEM
 # ssls128a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -296,7 +296,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP = 'SIGLT' ,
                   MAILLE='M49',
                   NOEUD='N1',
-                  VALE = -21 ,
+                  VALE = 21 ,
                   PRECISION = 0.006 ,
                   CRITERE = 'RELATIF',
                   REFERENCE='AUTRE_ASTER')

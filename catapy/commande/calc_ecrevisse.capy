@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/09/2009   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 02/11/2009   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -133,7 +133,7 @@ CALC_ECREVISSE=MACRO(nom="CALC_ECREVISSE",op=calc_ecrevisse_ops,sd_prod=calc_ecr
            b_ecou_gele         =BLOC(condition="ECOULEMENT=='GELE'",fr="Modele d'ecoulement gele",
              PRESS_EBULLITION    =SIMP(statut='o',typ='R',fr="Pression d'ebullition [corrp*psat(t)]" ),
            ),
-           FROTTEMENT          =SIMP(statut='o',typ='I',into=(-4,-3,-2,-1,0,1,2,3,4),fr="Correlation de frottement [ifrot]" ),
+           FROTTEMENT          =SIMP(statut='o',typ='I',into=(-3,-2,-1,0,1,2,3),fr="Correlation de frottement [ifrot]" ),
            b_frottement        =BLOC(condition="FROTTEMENT<0",fr="Modele d'ecoulement gele",
              REYNOLDS_LIM        =SIMP(statut='o',typ='R',fr="Coefficient de Reynolds limite [relim]" ),
              FROTTEMENT_LIM      =SIMP(statut='o',typ='R',fr="Coefficient de frottement impose [frtlim]" ),

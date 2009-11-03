@@ -1,8 +1,9 @@
       SUBROUTINE TE0040 ( OPTION, NOMTE )
       IMPLICIT NONE
        CHARACTER*16       OPTION, NOMTE
+C Routine modified by Laurent VELUT
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 02/11/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -141,8 +142,8 @@ C     AU REPERE LOCAL DE LA COUCHE DEFINI PAR ORIEN
 C     -------------------------------------------------------
        
        PGL(1,1) = COS(ORIENR)
-       PGL(2,1) =-SIN(ORIENR)
-       PGL(1,2) = SIN(ORIENR)
+       PGL(2,1) = SIN(ORIENR)
+       PGL(1,2) =-SIN(ORIENR)
        PGL(2,2) = COS(ORIENR)
        
        CALL DXSIRO(NNO,PGL,ZR(ICONT),SIGM)

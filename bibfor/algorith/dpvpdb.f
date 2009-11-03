@@ -3,7 +3,7 @@
      &                   DP, NBRE, RETCOM)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 03/11/2009   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,8 +49,9 @@ C --- RESOLUTION NUMERIQUE DE L EQ NON LINEAIRE AVEC BRACKETING ET ----
 C --------------LA METHODE DES CORDES (APPEL A ZEROCO)-----------------
 C =====================================================================
       INTEGER  NITER, I
+      INTEGER  SIGNF, SIGNFI
       REAL*8   MU, K
-      REAL*8   TROIS, NEUF, ZERO, DIX
+      REAL*8   TROIS, NEUF, ZERO
       REAL*8   PREF, A, N, CONST
       REAL*8   FONC1, FONC2, FONC3, FONC4
       REAL*8   F, FP, SEUIL, V0, XINF, XSUP, FINF, FSUP
@@ -58,13 +59,12 @@ C =====================================================================
       REAL*8   DPVPEQ
       REAL*8   ALPHAM, RM, BETAM
       REAL*8   DALPDP, DRDP, DBETDP 
-      REAL*8   X(4), Y(4), R8MIEM, TOL, DIFF
+      REAL*8   X(4), Y(4), DP0
+      REAL*8   DPVPDF, FI, FS
 C =====================================================================
       PARAMETER ( TROIS  =  3.0D0 )
       PARAMETER ( NEUF   =  9.0D0 )
-      PARAMETER ( DIX    = 10.0D0 )
       PARAMETER ( ZERO   =  0.0D0 )
-      PARAMETER ( TOL    = 1.D-12)
 C =====================================================================
 C --- AFFECTATION DES VARIABLES ---------------------------------------
 C =====================================================================
@@ -111,8 +111,9 @@ C
        ENDIF    
 C
        XINF = ZERO
-       XSUP = A * (FONC1/PREF)**N * DT
-
+              
+       XSUP = A * (ABS(FONC1)/PREF)**N * DT
+       
        FINF   = DPVPEQ(XINF,N,CONST,FONC1,FONC2,FONC3,FONC4)
  
        FSUP   = DPVPEQ(XSUP,N,CONST,FONC1,FONC2,FONC3,FONC4)
@@ -120,171 +121,72 @@ C
         
        NITER  = INT(CRIT(1))
 
-       IF (ABS(FINF) .LE. CRIT(3)) THEN
-           DP = XINF
+      
+       DP0 = XINF
+
+      
+       F    = DPVPEQ(DP0,N,CONST,FONC1,FONC2,FONC3,FONC4)
+       FP   = DPVPDF(DP0,N,CONST,FONC1,FONC2,FONC3,FONC4)
+       
+       SEUIL = DPVPEQ(XINF,N,CONST,FONC1,FONC2,FONC3,FONC4)
+       
+       IF (ABS(FINF/SEUIL) .LE. CRIT(3)) THEN
+           DP0 = XINF
            NBRE = 1
            GOTO 50
-       ELSEIF (ABS(FSUP) .LE. CRIT(3)) THEN
-           DP = XSUP
+       ELSEIF (ABS(FSUP/SEUIL) .LE. CRIT(3)) THEN
+           DP0 = XSUP
            NBRE = 1
            GOTO 50
-       ELSEIF (FINF .GT. ZERO) THEN 
-           X(2) = XINF
-           Y(2) = FINF
-       
-        IF (FSUP  .LT. ZERO) THEN
-          DO 31 I = 1, NITER
-           XSUP = XSUP/DIX
-           FSUP = DPVPEQ(XSUP,N,CONST,FONC1,FONC2,FONC3,FONC4)
-           
-           IF (ABS(FSUP).LE.CRIT(3)) THEN
-              DP = XSUP
-              NBRE=I
-              GOTO 50
-           ELSEIF (FSUP.GT.ZERO) THEN
-C             ON RECALCULE LA VALEUR PRECEDENTE DE DPMAX 
-              XSUP = XSUP*DIX
-              FSUP = DPVPEQ(XSUP,N,CONST,FONC1,FONC2,FONC3,FONC4)
-              
-              IF (ABS(FSUP).LE.CRIT(3)) THEN
-               DP = XSUP
-               NBRE=I
-               GOTO 50
-              ELSE
-               X(1) = XSUP
-               Y(1) = FSUP
-               GOTO 20
-              ENDIF
-           ENDIF
-  31      CONTINUE
-           X(1) = XSUP
-           Y(1) = FSUP
-           GOTO 20
-        ELSE
-C        FSUP >0. On augmente DPMAX jusqu'à ce que F(DPMAX) < 0
-           DO 30 I = 1, NITER
-              FSUP = DPVPEQ(XSUP,N,CONST,FONC1,FONC2,FONC3,FONC4)
-              IF (ABS(FSUP).LE.CRIT(3)) THEN
-                 DP = XSUP
-                 NBRE=I
-                 GOTO 50
-              ELSEIF (FSUP.LT.ZERO) THEN
-                 X(1) = XSUP
-                 Y(1) = FSUP
-                 GOTO 20
-              ELSE
-                 XSUP = XSUP*DIX
-              ENDIF
-  30       CONTINUE
-           CALL U2MESS('A','ALGORITH6_79')
-           GOTO 20
-        ENDIF
-        
-       ELSEIF (FINF .LT. ZERO) THEN 
-        X(1) = XINF
-        Y(1) = FINF
-       
-         IF (FSUP  .GT. ZERO) THEN
-          DO 32 I = 1, NITER
-           XSUP = XSUP/DIX
-           FSUP = DPVPEQ(XSUP,N,CONST,FONC1,FONC2,FONC3,FONC4)
-           IF (ABS(FSUP).LE.CRIT(3)) THEN
-              DP = XSUP
-              NBRE=I
-              GOTO 50
-           ELSEIF (FSUP.LT.ZERO) THEN
-C             ON RECALCULE LA VALEUR PRECEDENTE DE DPMAX 
-              XSUP = XSUP*DIX
-              FSUP = DPVPEQ(XSUP,N,CONST,FONC1,FONC2,FONC3,FONC4)
-
-              IF (ABS(FSUP).LE.CRIT(3)) THEN
-              DP = XSUP
-              NBRE=I
-              GOTO 50
-              ELSE
-              X(2) = XSUP
-              Y(2) = FSUP
-              GOTO 20
-              ENDIF
-           ENDIF
-  32      CONTINUE
-           X(2) = XSUP
-           Y(2) = FSUP
-           GOTO 20
-         ELSE
-C        FSUP <0. On augmente DPMAX jusqu'à ce que F(DPMAX) > 0
-           DO 33 I = 1, NITER
-              FSUP = DPVPEQ(XSUP,N,CONST,FONC1,FONC2,FONC3,FONC4)
-              IF (ABS(FSUP).LE.CRIT(3)) THEN
-                 DP = XSUP
-                 NBRE=I
-                 GOTO 50
-              ELSEIF (FSUP.GT.ZERO) THEN
-                 X(2) = XSUP
-                 Y(2) = FSUP
-                 GOTO 20
-              ELSE
-                 XSUP = XSUP*DIX
-              ENDIF
-  33       CONTINUE
-           CALL U2MESS('A','ALGORITH6_79')
-           GOTO 20
-        ENDIF
-
        ENDIF
-C
-   20 CONTINUE
-C
-C --- CALCUL DE X(4) SOLUTION DE L'EQUATION F = 0 :
-C     ===========================================
-      X(3) = X(1)
-      Y(3) = Y(1)
-      X(4) = X(2)
-      Y(4) = Y(2)
 
-      IF (ABS(Y(4)).LT.CRIT(3)) GOTO 50
-      
-      DO 40 I = 1, NITER
-      
-        IF (Y(1).GT.ZERO .OR. Y(2).LT.ZERO) THEN
-         CALL U2MESS('A','ALGORITH6_78')
-         GOTO 41
-        ENDIF
-        
-        IF ((ABS(X(3)).LT.TOL).AND.(ABS(X(4)).LT.TOL)) THEN
-         CALL U2MESS('A','ALGORITH9_84')
-         DP = ZERO
-         NBRE = I
-         GOTO 50
-        ENDIF
-        
-        IF (X(3).EQ.X(4)) THEN
-         CALL U2MESS('A','ALGORITH9_84')
-         GOTO 41
-        ENDIF
-        
-        CALL ZEROCO(X,Y)
-        DP = X(4)
-        
-        IF (ABS(DP).LT.TOL)  THEN
-         DP = ZERO
+       DO 40 I = 1, NITER
+         
+        IF ((ABS(F/SEUIL)).LT.CRIT(3)) THEN
          NBRE = I
          GOTO 50
         ENDIF 
+
+        DP0 = DP0 - F/FP        
         
-        Y(4) = DPVPEQ(DP,N,CONST,FONC1,FONC2,FONC3,FONC4)
+        IF (DP0.GE.XSUP.OR.DP0.LE.XINF)  DP0 = (XINF+XSUP)/2
 
+        F    = DPVPEQ(DP0,N,CONST,FONC1,FONC2,FONC3,FONC4)
+        FP   = DPVPDF(DP0,N,CONST,FONC1,FONC2,FONC3,FONC4)
+        
+        
+        IF (F.GT.ZERO) THEN
+         SIGNF =  1
+        ELSE 
+         SIGNF = -1
+        ENDIF
+        
+        FI    = DPVPEQ(XINF,N,CONST,FONC1,FONC2,FONC3,FONC4)
+        IF (FI.GT.ZERO) THEN
+         SIGNFI =  1
+        ELSE 
+         SIGNFI = -1
+        ENDIF
 
-        IF ((ABS(Y(4)/FINF)).LT.CRIT(3)) THEN
-         NBRE = I
-         GOTO 50
-        ENDIF 
-    
+        IF ((SIGNF*SIGNFI).LT.ZERO) XSUP = DP0
+        IF ((SIGNF*SIGNFI).GT.ZERO) XINF = DP0
+        
+        IF (ABS(FINF/SEUIL) .LE. CRIT(3)) THEN
+           DP0 = XINF
+           NBRE = 1
+           GOTO 50
+        ELSEIF (ABS(FSUP/SEUIL) .LE. CRIT(3)) THEN
+           DP0 = XSUP
+           NBRE = 1
+           GOTO 50
+        ENDIF
+
   40  CONTINUE
-
-  41  CONTINUE
-       RETCOM = 1
+      RETCOM = 1
+      GOTO 30
 C =====================================================================
  50   CONTINUE
+      DP=DP0
+ 30   CONTINUE
 C =====================================================================
       END

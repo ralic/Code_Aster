@@ -1,0 +1,715 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 03/11/2009 - 16:09:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014089 DU 2009-10-23 11:41:44
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.0.22, le cas-test ssnv204a s'arrete en erreur_<F> sur Bull, Calibre4, Calibre5 et Rocks.
+FONCTIONNALITE
+   En NEW10.0.22, le cas-test ssnv204a s'arrete en erreur_<F> sur Bull, Calibre4, Calibre5 et
+   Rocks.
+   A titre d'exemple, le message d'erreur sur Bull est le suivant:
+   "---------------------------------------------------------------------
+    
+   INSTANT DE CALCUL :  1.990000000E+01
+    
+   ---------------------------------------------------------------------
+   |   ITERATIONS   |     RESIDU     |     RESIDU     |     OPTION     |
+   |     NEWTON     |     RELATIF    |     ABSOLU     |   ASSEMBLAGE   |
+   |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |                |
+   ---------------------------------------------------------------------
+   |     0        X | 7.24473E-06  X | 6.11455E-01    |TANGENTE        |
+   |     1          | 4.72710E-09    | 3.98968E-04    |TANGENTE        |
+   ---------------------------------------------------------------------
+    
+   <*> CRITERE(S) DE CONVERGENCE ATTEINT(S)       
+    
+   Le probleme vient de l'utilisation d'un meme chargement mecanique utilise deux 
+   fois dans la partie EXCIT du STAT_NON_LINE avec deux FONC_MULT differents.
+   On modifie le fichier de commande qui corrige le probleme
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv204a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014080 DU 2009-10-22 07:33:02
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   sdls108a en accord avec sa doc
+FONCTIONNALITE
+   Dans la doc v du test sdls108a, on fait état de 15 (3*5) valeurs testés. On ne trouve que
+   8 test_resu dans le fichier de commandes.
+   
+   Verification faite, tout se passe bien si on ajoute les test_resu manquants. Ouf !
+   
+   Il suffit donc juste de restituer le fichier de commandes joint à cette fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdls108a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 02/11/2009 - 16:51:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014093 DU 2009-10-23 15:41:32
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   macr_ecrevisse
+FONCTIONNALITE
+   Les différentes options pour le frottement sont directement transmises  
+   Ecrevisse par l'intermédiaire des 3 macro-commandes imbriquées. 
+   Il suffit donc de supprimer les valeurs 4 et -4 (qui ne sont pas acceptées par 
+   Ecrevisse) dans macr_ecrevisse.capy, calc_ecrevisse.capy et macr_ecre_calc.capy
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 03/11/2009 - 11:45:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013941 DU 2009-09-25 07:20:10
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Message peu clair dans le contact
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Lors du TP, on s'est aperçu que le fait de ne pas mettre les mailles dans le modèle pour
+   les mailles de surface esclave provoquait un arrêt (salutaire !) dans STAT_NON_LINE, dans
+   la routine CFCRSD. Cet arrêt est un CALL ASSERT, peu sympathique pour l'utilisateur.
+   Il s'agirait de remonter la vérification "noeuds esclaves appartiennent effectivement au
+   modèle" au niveau d'AFFE_CHAR_MECA, avec un message clair.
+   
+   Correction
+   ==========
+   
+   Le problème vient de la routine RELIEM. Dans AFFE_CHAR_MECA/CONTACT, on croyait vérifier
+   que tous les noeuds des surfaces de contact appartenaient bien au modèle grâce à RELIEM.
+   Or contrairement à ce qu'indique son en-tête, lorsque le nom du MODELE est donné en
+   argument, RELIEM ne vérifie que l'appartenance des GROUP_MA au modèle et non celle des
+   noeuds appartenant aux GROUP_MA.
+   
+   On corrige donc RELIEM pour faire cette vérification. Dès lors on s'arrête sur un message
+   du type : 
+   ...!--------------------------------------------------------------------------------------------------------------------------------------!
+   ...!.<F>.<MODELISA6_13>...................................................................................................................!
+   ...!......................................................................................................................................!
+   ...!......................................................................................................................................!
+   ...!..les.172.noeuds.imprimés.ci-dessus.n'appartiennent.pas.au.modèle.(c'est.à.dire.qu'ils.ne.portent.aucun.degré.de.liberté).et.pourtant.!
+   ...!.ils.ont.ete.affectés.dans.le.mot-clé.facteur.:.CONTACT...............................................................................!
+   ...!......................................................................................................................................!
+   ...!......................................................................................................................................!
+   ...!......................................................................................................................................!
+   ...!.Cette.erreur.est.fatale..Le.code.s'arrete............................................................................................!
+   ...!--------------------------------------------------------------------------------------------------------------------------------------!
+   
+   Remarque : on est obligé de corriger les quelques routines qui appellent RELIEM sur des
+   noeuds et qui donnaient le MODELE en entrée (DDL_IMPO, LIAISON_MAIL, etc ...). On remplace
+   cet argument par ' ' pour retrouver le même comportement qu'avant (pas d'erreur).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.11
+VALIDATION
+   ssnv104 modifixc3xa9
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014059 DU 2009-10-16 16:29:41
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   TOLE_APPA provoque un depassement de tableau
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Lorsque le mot-clé TOLE_APPA est utilisé et qu'il provoque l'élimination d'un noeud du
+   contact (par que **tous** les noeuds maîtres sont situés à une distance > TOLE_APPA) alors
+   on a une seg_fault dans le contact discret uniquement.
+   
+   Correction
+   ==========
+   
+   Lorsque que l'on se trouve dans un tel cas, on saute l'ajout du noeud (CFADDM) et on met à
+   jour le pointeur (APPOIN).
+   Impact : chmano.f
+   
+   Validation
+   ==========
+   
+   Dans ZZZZ237A, mettre TOLE_APPA à 1.0 élimine bien tous les noeuds du contact et on se
+   retrouve donc dans le cas sans contact (avant ça plantait).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz237a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014114 DU 2009-10-28 12:16:46
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Plantage de Stanley
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   '''
+   Stanley ne fonctionne plus sur la BULL (NEW9 et NEW10).
+   
+   Le message d'erreur n'est pas hyper clair :
+       # 
+   ------------------------------------------------------------------------------------------
+       #  COMMANDE NO :  0002            CONCEPT DE TYPE :
+       #  -------------                  -----------------
+      STANLEY();
+   
+   Lecture du fichier d'environnement : /home01/assire/.stanley/local.stn
+   *** glibc detected *** double free or corruption (!prev): 0x6000000002eec390 ***
+   Aborted (core dumped)
+   '''
+   
+   Correction
+   ==========
+   
+   Ce double "free" qui apparaît suite à mes corrections sur astermodule.c en 10.0.17
+   (essentiellement pour compléter les paires malloc/free), est du en fait à une erreur de
+   programmation antérieure. À un endroit dans le code, on fait :
+   
+     2581	         for (i=0; i<nbcmp; i++) {
+     2582	            nom = &(liscmp[i*8]);
+     2583	            lo = 8; while (nom[lo-1] == ' ')  lo--;
+     2584	            PyList_Append(liste,PyString_FromStringAndSize(nom,lo));
+     2585	         }
+   
+   Le problème se situe à la ligne 2582. On met dans le pointeur "nom" l'adresse du
+   (i*8+1)ème caractère de la chaîne "liscmp". On perd donc l'emplacement de l'adresse
+   mémoire pointée par "nom"
+   Plus loin, j'ai rajouté un :
+   
+     2592	     free(liscmp);
+   
+   On libère donc l'espace de la chaîne temporaire "liscmp". À la fin de la routine, on fait
+   par ailleurs :
+   
+     2655	   free(nom);
+   
+   Forcément dans ce cas on ne libère pas l'objet initial de pointeur "nom" (qu'on ne connaît
+   plus) mais l'objet "liscmp" qui a déjà été effacé !
+   
+   Il faut laisser le free et plutôt changer la programmation de manière à ne pas perdre
+   l'objet "nom". Il suffit de créer un pointeur "cmp".
+   
+   --------------------------
+   Impact : astermodule.c
+   NB jours : 1.0 (AA+JD+TDS)
+   
+   À faire en V9
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   stanley
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR elgharib     EL-GHARIB Joumana      DATE 03/11/2009 - 13:40:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014107 DU 2009-10-27 10:39:35
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Ameliorations  des performances avec la loi VISC_DRUC_PRAG
+FONCTIONNALITE
+   resolu
+   Par rapport à la programmation rendue en juin des fichiers de la loi VISC_DRUC_PRAG,
+   j'ai changé quelques fortrans ce qui m'a permis de faire une étude avec plus de performance.
+   
+   Les fortrans modifiés sont les suivants:
+   
+   correction dans dpvpot.f : correspondant à l'op tangent (termes de l'op tgt rapprochés de
+   celui en perturbation avec TYP_MATR_TANG='VERIFICATION)
+   
+   modification dans dpvpdb.f : correspondant à la résolution locale - résolution avec NEWTON
+   et dichotomie au lieu de l'appel à zeroco
+   
+   correction dans dpvpre.f : dans le calcul de la contrainte de prédiction
+   
+   ajout d'une fonction : dpvpdf.f pour le calcul du critère
+   
+   Avec cette modification, les tests ssnv211a, wtnv137a et wtn138a ne sont pas modifiés.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage cas tests ssnv211 wtnv137a wtnv138a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 02/11/2009 - 13:48:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013950 DU 2009-09-28 15:17:20
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   POST_RELEVE_T et instant supxc3xa9rieur xc3xa0 l'instant max de la sd_resultat
+FONCTIONNALITE
+   Problème
+   --------
+   Dans le cadre du TP de la formation avancée à 
+   Code_Aster, on s'est aperçu que faire un
+   POST_RELEVE_T sur un instant qui n'existe pas dans la 
+   sd_resultat (par exemple 10.0 alors
+   que le dernier instant est 1.0) provoque l'apparition du 
+   message JEVEUX "Longueur du
+   segment de valeurs à allouer invalide 0."
+   
+   
+   Analyse
+   -------
+   En l'absence des fichiers conduisant à l'anomalie, il 
+   n'a pas été possible de reproduire
+   l'anomalie.
+   A partir des cas-tests ssnl129c et ssnv506f on a imposé 
+   dans POST_RELEVE_T un instant
+   supérieur aux instants calculés. Code_Aster a dans les 
+   deux cas émis le message suivant:
+   
+     !--------------------------------------------!
+      ! <F> <POSTRELE_2>                           !
+      !                                            !
+      !                                            !
+      !  post_traitement numéro :  1               !
+      !  inexistence de CHAM_GD                    !
+      !  pas de post-traitement                    !
+      !                                            !
+      !                                            !
+      !                                            !
+      ! Cette erreur est fatale. Le code s'arrête. !
+      !--------------------------------------------!
+   
+   
+   Ne pouvant pas reproduire l'anomalie, on propose de la 
+   classer sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013609 DU 2009-07-10 11:25:05
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   CRIT_ELNO_RUPT - bug dans le changement de base
+FONCTIONNALITE
+   1) Problème
+   -----------
+   Sur le forum un utilisateur a constaté, lors du calcul 
+   des contraintes dans le repère local , une erreur dans 
+   la matrice de rotation pour le changement de base: 
+   repère global => repère local.
+   Les calculs sont :
+    - corrects lorsque l'angle d'orientation des couches 
+   est 0 ou 90, 
+    - faux lorsque l'angle d'orientation des couches est 
+   différent de 0 ou 90.
+   
+   L'étude fournie avec la fiche montre que les résultats 
+   fournis avec le logiciel LAMINATOR
+   (www.thelaminator.net) sont différents de ceux obtenus 
+   avec Code_Aster lorsque l'angle est de 45°.
+   
+   2 Correction
+   --------------------
+   a) te0040 ligne 144
+      Avant : PGL(1,1) = COS(ORIENR)
+              PGL(2,1) =-SIN(ORIENR)
+              PGL(1,2) = SIN(ORIENR)
+              PGL(2,2) = COS(ORIENR)
+   
+      Après : PGL(1,1) = COS(ORIENR)
+              PGL(2,1) = SIN(ORIENR)
+              PGL(1,2) =-SIN(ORIENR)
+              PGL(2,2) = COS(ORIENR)
+   
+   b) cas-test ssls128a
+      correction du signe de valeur de référence de SIGLT 
+   de la deuxième couche
+   
+   3 Vérification
+   --------------
+   3.1) test ssns128a avec une seule couche, sollicitation 
+   en compression. La contrainte analytique dans le repère 
+   local de la fibre est de SIGL=-175. on doit trouver les 
+   mêmes valeurs dans le repère local.
+        a) maillage de référence
+           - Repère global :  SIXX= -175. ; SIYY= 0. ; 
+   SIXY=  0.
+   	- Repère local  :  SIGL= -175. ; SIGT= 0. ; 
+   SIGLT= 0. 
+        b) maillage "tourne" de 45° autour de Z
+           - Repère global :  SIXX= -87.49; SIYY= -87.49; 
+   SIXY= -87.49
+   	- Repère local  :  SIGL= -175. ; SIGT=   0.  ; 
+   SIGLT=  0.
+   3.1) cas-test avec maillage identique au cas-test 
+   ssls128a sauf qu'il a "tourné" de 45 autour de Z. On 
+   doit trouver les mêmes valeurs dans le repère local avec 
+   et sans surcharge pour la deuxième couche.
+    a) contraintes dans la deuxième couche (sans surcharge)
+           SIGL = -8.7499999977130D+01
+           SIGT = -8.7499999976932D+01
+           SIGLT=  2.0877119650568D+01
+    b) contraintes dans la deuxième couche (avec surcharge)
+           SIXX = -8.7499999976932D+01
+           SIYY = -8.7499999977130D+01
+           SIXY = -2.0877119650568D+01
+   
+   3.3) étude
+   on a repasse l'étude fournie, avec la surcharge. On 
+   retrouve bien les valeurs calculées par le logiciel 
+   LAMINATOR
+   
+   3.4) passage des cas-tests contenant DEFI_COQU_MULT
+   
+   4 Documentation
+   ---------------
+   Correction de la doc V3.03.128 du cas-test ssls128
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 3.1.1
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 3.1.1
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.03.128
+VALIDATION
+   SSLS128A
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 02/11/2009 - 13:48:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013562 DU 2009-06-25 07:19:06
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   objet JEVEUX inexistant
+FONCTIONNALITE
+   Problème:
+   ---------
+   L'uilisation de POST_ELEM / INTEGRALE est impossible si le champ à intégrer a été calculé
+   sur un sous-ensemble du modèle.
+   
+   Analyse :
+   ---------
+   Le problème vient du fait que l'intégrale est calculée sur un cham_elem calculé par
+   CALC_ELEM avec usage du mot clé GROUP_MA pour restreindre les calculs élémentaires sur un
+   sous-ensemble des mailles.
+   Dans ce cas, le DISMOI de la ligne 75 de chpond.f n'a pas de sens car le ligrel n'est pas
+   un ligrel de modèle.
+   
+   Correction: 
+   -> suppression du DISMOI de la ligne 72 de chpond 
+   -> ajout d'un nouvel argument MODELE pour la routine chpond.f
+   
+   Remarque: Le modèle est stocké dans la SD_RESULTAT (EVOL_ELAS) lors du MECA_STATIQUE. Il
+   est extrait de la SD résultat dans la routine op0107(POST_ELEM), routine medome et
+   transféré à PEEINT puis à PEECAL puis à chpond.
+   
+   Validation
+   ----------
+   -> Passage de l'étude
+   -> Passage des 11 cas-tests contenant POST_ELEM(INTEGRALE)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude jointe
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013445 DU 2009-05-20 15:42:15
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   CALC_ELEM - charge de type contact
+FONCTIONNALITE
+   Problèmes constatés
+   -------------------
+   Si dans CALC_ELEM on laisse :
+    a) dans EXCIT une charge de type contact, on a un message d'alarme surprenant :
+          <A> <CALCULEL6_65>                                                   
+            !  Le nombre de charges fourni par l'utilisateur 3 est différent du    !
+            !  nombre de charges trouvées dans la SD_resultat -6456360408816457140 !
+   	   
+    b) des charges cinématiques, on a un plantage. 
+   	
+   Analyse et Correction
+   --------------------- 
+   a) CALC_ELEM(EXCIT=CONTACT)
+   Le problème n'a rien a voir avec les charges de contact, c'est avant tout un problème
+   d'affichage. L'anomalie est apparue avec la charge de contact c'est un hasard. Si on
+   remplace dans la poursuite la charge de contact par une autre charge, on a le même
+   problème. Le message CALCULEL6_65 est déclenché par la routine rslesd.f. Le problème se
+   produit lors du remplissage du tableau VALI avant l'impression du message, VALI était mal
+   rempli.
+   on a ligne 314 ...
+         IF(NCHALU.NE.NCHASD) THEN
+            VALI(1)=NCHALU
+            VALI(1)=NCHASD
+            CALL U2MESI('A','CALCULEL6_65',2,VALI)
+         ENDIF
+         
+          correction : 
+         IF(NCHALU.NE.NCHASD) THEN
+            VALI(1)=NCHALU
+            VALI(2)=NCHASD   <-- correction
+            CALL U2MESI('A','CALCULEL6_65',2,VALI)
+         ENDIF
+   
+   Remarque : cette correction a déjà été restituée par Mathieu Courtois en 10.0.12.
+   
+   b) charges cinématiques
+   Le plantage est du au fait que la commande CALC_ELEM n'accepte pas des concepts de
+   char_meca_cine. 
+   On modifie les catalogues calc_elem.capy et de calc_no.capy pour prendre en compte les
+   charges de type cinématique.
+   La vérification a été effectuée sur la base du cas-test ssnv134.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.01 U4.81.02
+VALIDATION
+   ssnv134, ssnv104b
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nistor       NISTOR Ionel           DATE 02/11/2009 - 14:52:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014052 DU 2009-10-16 09:46:36
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   Trace de REST_BASE_PHYS dans les docs
+FONCTIONNALITE
+   Josselin a remarqué pas mal de traces de REST_BASE_PHYS dans plusieurs manuels (R, U et V). 
+   Cet opérateur a été supprimé en 9.3.17, ses fonctionalités étant transférées aux opérateurs 
+   REST_GENE_PHYS, REST_SOUS_STRUC et REST_COND_TRAN. J'ai corrigé donc les docs en question:
+   u4.24.01
+   u1.03.00
+   u4.90.02
+   u4.73.01
+   u2.07.03
+   u4.90.01
+   u4.32.03
+   u4.81.02
+   u4.90.03
+   u4.66.01
+   u4.63.01
+   r5.06.01
+   r7.20.02
+   r4.06.03
+   r4.07.02
+   v2.03.001
+   v5.01.102
+   v2.03.004
+   v2.02.113
+   v5.03.107
+   v5.02.032
+   v5.01.100
+   v2.02.006
+   v5.01.103
+   v5.01.112
+   v2.01.022
+   v2.01.029
+   v2.01.325
+   v2.01.102
+   v2.01.104
+   v7.15.100
+   v2.01.103
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : u4.24.01, u1.03.00, u4.90.02, u4.73.01, u2.07.03, u4.90.01, u4.32.03, u4.81.02, u4.90.03, u4.66.01, u4.63.01, r5.06.01, r7.20.02, r4.06.03, r4.07.02, v2.03.001, v5.01.102, v2.03.004, v2.02.113, v5.03.107, v5.02.032, v5.01.100, v2.02.006, v5.01.103
+VALIDATION
+   neant
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 03/11/2009 - 08:42:27
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013673 DU 2009-08-03 11:53:09
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   tests dont la convergence est tres differente suivant les machines
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Je liste ci-dessous les tests en question, avec le nom des plates-formes sur lesquelles
+   les tests plantent, l'instant où les convergences diffèrent de celles de la bull, plus le
+   nom du responsable s'il existe ou de l'auteur de la doc V associée.
+   
+   ssnv112b - Rocks - instant = 1.000000000E+00 -> S. Michel-Ponnelle
+   forma12d - Rocks + Calibre4 - instant = 3.430000000E+00 -> E. Boyere
+   sdnv104a - Rocks + Calibre4 - instant = 3.430000000E+00 -> S. Lamarche
+   sdnd100c - Rocks - instant = 1.325000000E-01 -> Fe. Waeckel
+   ssnp117a - Rocks - instant = 6.625000000E+00 -> R. Masson
+   """
+   
+   
+   Analyse :
+   ---------
+   Pour sdnd100c, j'ai trouvé une différence importante de comportement entre le debug et le
+   nodebug sur clpaster dans le calcul du second membre. Ce phénomène est dû à la routine
+   DICHOC ligne 225. On fait un test dans lequel on compare 2 valeurs pratiquement égales. Le
+   résultat de cette comparaison entre aster et clpaster n'est pas le même. Les valeurs étant
+   très proches, cela peut arriver.
+   
+   On pourrait rajouter un test dans le fortran qui comparerait ces valeurs à epsilon près
+   mais cela ne changera pas fondamentalement le problème puisqu'il suffirait que a = b +
+   2*epsilon pour avoir le même problème.
+   
+   Bref, l'élément rassurant, c'est que les TEST_RESU qui ont une tolérence faible sont ok.
+   Donc ce genre de problème peut arriver mais ce n'est pas fondamentalement grave.
+   
+   Dernier point, j'ai essayé une idée de Jacques, j'ai changé dans le fichier de commande la
+   variable coulomb en la passant de 0,1 à 0,099999999 et sur clpaster, ça change le
+   convergence du cas test mais pas les résultats.
+   
+   ======
+   
+   En ce qui concerne ssnv112b, il n'y a plus de différence de convergence depuis la 10.0.23...
+   
+   ======
+   
+   Pour ssnp117a et sdnv104a, les critères de convergences sont toujours atteints à quelques
+   itérations près et les TEST_RESU sont ok. J'ai aussi fait un WRITE du second membre pour
+   sdnv104a à la dernière itération sur la bull et clpaster et j'ai constaté que l'erreur
+   entre les deux plates formes est toujours du même ordre (10^-8 ou 10^-9).
+   
+   
+   Solution :
+   ----------
+   Etant donné que je pense que ces différences de convergence ne révèlent pas de bug, je
+   classe la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF sdls108a                        abbas M.ABBAS           2468     45      1
+ CASTEST MODIF ssls128a                    lebouvier F.LEBOUVIER        305      2      2
+ CASTEST MODIF ssnv204a                        abbas M.ABBAS            625     10     37
+ CASTEST MODIF ssnv211a                     elgharib J.EL-GHARIB        283      1      1
+ CASTEST MODIF wtnv137a                     elgharib J.EL-GHARIB        332      1      1
+ CASTEST MODIF wtnv138a                     elgharib J.EL-GHARIB        346      1      1
+CATALOPY MODIF commande/calc_ecrevisse        assire A.ASSIRE           173      2      2
+CATALOPY MODIF commande/calc_elem          lebouvier F.LEBOUVIER        542      5      5
+CATALOPY MODIF commande/calc_no            lebouvier F.LEBOUVIER        110      2      2
+CATALOPY MODIF commande/macr_ecre_calc        assire A.ASSIRE           180      2      2
+CATALOPY MODIF commande/macr_ecrevisse        assire A.ASSIRE           280      2      2
+       C MODIF supervis/astermodule           desoza T.DESOZA          4174      5      5
+ FORTRAN AJOUT algorith/dpvpdf              elgharib J.EL-GHARIB         48     48      0
+ FORTRAN MODIF algorith/chmano                desoza T.DESOZA           262      9      5
+ FORTRAN MODIF algorith/dpvpdb              elgharib J.EL-GHARIB        192     47    145
+ FORTRAN MODIF algorith/dpvpot              elgharib J.EL-GHARIB        329     25     24
+ FORTRAN MODIF algorith/dpvpre              elgharib J.EL-GHARIB        177      6     17
+ FORTRAN MODIF algorith/mpjeft                desoza T.DESOZA           383      3      3
+ FORTRAN MODIF calculel/pjefte                desoza T.DESOZA           247      2      2
+ FORTRAN MODIF elements/te0040             lebouvier F.LEBOUVIER        206      4      3
+ FORTRAN MODIF modelisa/caddli                desoza T.DESOZA           318      7      7
+ FORTRAN MODIF modelisa/caddlp                desoza T.DESOZA           259      2      2
+ FORTRAN MODIF modelisa/cafono                desoza T.DESOZA           325      2      2
+ FORTRAN MODIF modelisa/calirc                desoza T.DESOZA           536      5      5
+ FORTRAN MODIF modelisa/calyrc                desoza T.DESOZA           613      6      6
+ FORTRAN MODIF modelisa/reliem                desoza T.DESOZA           361     39     23
+ FORTRAN MODIF utilitai/chpond             lebouvier F.LEBOUVIER        212      4      5
+ FORTRAN MODIF utilitai/peecal             lebouvier F.LEBOUVIER        251      2      2
+  PYTHON MODIF Messages/modelisa6             desoza T.DESOZA           351      5      3
+  PYTHON MODIF Messages/modelisa8             desoza T.DESOZA           354      1     20
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    1          48        48               +48
+ MODIF :   29       15194       247     335       -88
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   30       15242       295     335       -40 

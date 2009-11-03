@@ -13,7 +13,7 @@ C --- LOI DE COMPORTEMENT DRUCKER PRAGER VISCOPLASTIQUE ---------------
 C --- VISC_DRUC_PRAG --------------------------------------------------
 C ----RESOLUTION -----------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 03/11/2009   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,22 +33,20 @@ C ======================================================================
 C =====================================================================
       LOGICAL     RESI
       INTEGER     NDT,NDI,II,JJ, POS, NBRE
-      REAL*8      ZERO,DEUX,TROIS
+      REAL*8      DEUX,TROIS
       REAL*8      BETAP
       REAL*8      PPIC, PULT
       REAL*8      DP,DPDENO
       REAL*8      DT,PLAS
       REAL*8      FCRIT, DPVPCR 
       REAL*8      SIIM, SIIE,SEQM,SEQE,I1M,I1E,TRACE
-      REAL*8      SII,SEQ,I1
+      REAL*8      SII, SEQ, I1
       REAL*8      FONECM(3), FONECP(3)
       REAL*8      HOOKF(6,6),DKOOH(6,6)
       REAL*8      EPSP(6),EPSM2(6)
       REAL*8      SIGE(6),SE(6), SM(6), S(6)
-      REAL*8      DSIG(6), DEPSE(6), DEPSVP(6)
-      REAL*8      FONC
+      REAL*8      DSIG(6), DEPSE(6), DEPSVP(6), INTE(6)
 C =====================================================================
-      PARAMETER ( ZERO   = 0.0D0 )
       PARAMETER ( DEUX    = 2.0D0 )
       PARAMETER ( TROIS   = 3.0D0 )
       COMMON /TDIM/   NDT  , NDI
@@ -92,10 +90,9 @@ C =====================================================================
 C --- PREDICTION ELASTIQUE : SIGF = HOOKF EPSP -----------------------
 C =====================================================================
 
-      CALL LCPRMV ( DKOOH, SIGM, EPSM2 )
-      CALL LCSOVE ( EPSM2, DEPS, EPSP  )
-      CALL LCPRMV ( HOOKF, EPSP, SIGE  )
             
+      CALL LCPRMV (HOOKF, DEPS, INTE ) 
+      CALL LCSOVE (SIGM , INTE, SIGE)    
 
       CALL  LCDEVI(SIGE,SE)
       CALL  LCPRSC(SE,SE,SIIE)
@@ -140,14 +137,6 @@ C =====================================================================
            
                CALL DPVPVA (VIP(1), NBMAT, MATERF, FONECP)
                CALL DPVPSI (NBMAT,MATERF,SE,SEQE,I1E,FONECP,DP,SIG)
-               CALL  LCDEVI(SIG,S)
-               CALL  LCPRSC(S,S,SII)
-               SEQ  = SQRT (TROIS*SII/DEUX)
-               I1   = TRACE(NDI,SIG)
-               FCRIT  = DPVPCR(FONECP, SEQ, I1)
-               IF (FCRIT.LT.ZERO) THEN
-                  IRET =1
-               ENDIF
           ENDIF 
 C =====================================================================
 C --- STOCKAGE DES VARIABLES INTERNES ---------------------------------
@@ -180,9 +169,9 @@ C =====================================================================
         IF (VIP(2) .EQ. 1.D0) THEN
              CALL DPVPOT(MOD,VIM(1),VIP(1),NBMAT,MATERF,SIGE, 
      &                   DT,DP,PLAS,DSIDEP)
-            ELSEIF (VIP(2).EQ.0.D0) THEN
+        ELSEIF (VIP(2).EQ.0.D0) THEN
              CALL LCEQMA(HOOKF, DSIDEP)
-         ENDIF
+        ENDIF
       ENDIF
 C =====================================================================
       END

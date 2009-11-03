@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 03/11/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE ETUDE:  ESSAI DE CONSOLIDATION CYCLIQUE DRAINE (MECA PUR)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,18 +131,11 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 #    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
 #***********************************************************************
 CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
-                       PRES_REP=_F(GROUP_MA='COTE',
+                       PRES_REP=_F(GROUP_MA=('COTE','APPUI'),
                                    PRES = 1.));
 
 CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
-                       PRES_REP=_F(GROUP_MA='APPUI',
-                                   PRES = 1.));
-
-CHAR_U3=AFFE_CHAR_MECA(MODELE=MODELE,
-                       PRES_REP=_F(GROUP_MA='COTE',
-                                   PRES = -1.));
-CHAR_U4=AFFE_CHAR_MECA(MODELE=MODELE,
-                       PRES_REP=_F(GROUP_MA='APPUI',
+                       PRES_REP=_F(GROUP_MA=('COTE','APPUI',),
                                    PRES = -1.));
 
                                              
@@ -163,8 +156,6 @@ U0M=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=(_F(CHARGE    = CHAR_U1,
                            FONC_MULT = COEF0),
-                        _F(CHARGE    = CHAR_U2,
-                           FONC_MULT = COEF0),
                         _F(CHARGE    = DEPL_1)),
                  COMP_INCR=_F(RELATION = 'ELAS'),
                  NEWTON=_F(MATRICE = 'ELASTIQUE'),
@@ -183,12 +174,15 @@ SIG0=CREA_CHAMP(INFO=2,
 COEF1=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(-10.0, P0,
-                           0.0, 3*P0));
+                           0.0, 3*P0,
+                           10.0,3*P0,
+                           20.0,3*P0+2.4E5));
 
-COEF4=DEFI_FONCTION(NOM_PARA='INST',
+COEF2=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=( 0.0, 0.0,
                           10.0, 2*P0));
+                          
 DEFLIST0 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS0),
                         ECHEC=_F(SUBD_METHODE='UNIFORME',
                                  SUBD_PAS=10,
@@ -206,8 +200,6 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,
                  EXCIT=(_F(CHARGE    = CHAR_U1,
-                           FONC_MULT = COEF1),
-                        _F(CHARGE    = CHAR_U2,
                            FONC_MULT = COEF1),
                         _F(CHARGE    = DEPL_1)),
                  ETAT_INIT=_F(SIGM=SIG0),
@@ -244,13 +236,9 @@ VAR1=CREA_CHAMP(INFO=2,
 U1=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,
                  EXCIT=(_F(CHARGE    = CHAR_U1,
-                           FONC_MULT = COEF1),
-                        _F(CHARGE    = CHAR_U2,
-                           FONC_MULT = COEF1),                  
-                        _F(CHARGE      = CHAR_U3,
-                           FONC_MULT   = COEF4),
-                        _F(CHARGE      = CHAR_U4,
-                           FONC_MULT   = COEF4),                            
+                           FONC_MULT = COEF1),               
+                        _F(CHARGE      = CHAR_U2,
+                           FONC_MULT   = COEF2),                          
                         _F(CHARGE      = DEPL_1)),
                  ETAT_INIT=_F(SIGM=SIG1,
                               VARI=VAR1),
@@ -283,13 +271,6 @@ VAR2=CREA_CHAMP(INFO=2,
 
 
 
-
-
-COEF5=DEFI_FONCTION(NOM_PARA='INST',
-                    PROL_DROITE='CONSTANT',
-                    VALE=(10.0, 0.0,
-                          20.0, 240000.0));     
-
 #***********************************************************************
 #    CONSOLIDATION CYCLIQUE RETOUR JUSQU'A 340KPA
 #***********************************************************************
@@ -304,15 +285,7 @@ U2=STAT_NON_LINE(MODELE=MODELE,
                  EXCIT=(_F(CHARGE    = CHAR_U1,
                            FONC_MULT = COEF1),
                         _F(CHARGE    = CHAR_U2,
-                           FONC_MULT = COEF1),                  
-                        _F(CHARGE      = CHAR_U3,
-                           FONC_MULT   = COEF4),
-                        _F(CHARGE      = CHAR_U4,
-                           FONC_MULT   = COEF4),
-                        _F(CHARGE      = CHAR_U1,
-                           FONC_MULT   = COEF5),
-                        _F(CHARGE      = CHAR_U2,
-                           FONC_MULT   = COEF5),   
+                           FONC_MULT = COEF2),
                         _F(CHARGE      = DEPL_1)),
                  ETAT_INIT=_F(SIGM=SIG2,
                               VARI=VAR2),

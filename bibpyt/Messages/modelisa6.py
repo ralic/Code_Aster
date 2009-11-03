@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa6 Messages  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,7 +70,9 @@ cata_msg = {
  PREF_MAILLE est trop long
 """),
 
-
+13 : _("""
+ les %(i1)d noeuds imprimés ci-dessus n'appartiennent pas au modèle (c'est à dire qu'ils ne portent aucun degré de liberté) et pourtant ils ont ete affectés dans le mot-clé facteur : %(k1)s
+"""),
 
 
 17 : _("""
@@ -331,7 +333,7 @@ cata_msg = {
 """),
 
 96 : _("""
- les mailles imprimées ci-dessus n'appartiennent pas au modèle et pourtant elles ont ete affectées dans le mot-clé facteur : %(k1)s
+ les %(i1)d mailles imprimées ci-dessus n'appartiennent pas au modèle et pourtant elles ont ete affectées dans le mot-clé facteur : %(k1)s
 """),
 
 97 : _("""
