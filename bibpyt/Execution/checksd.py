@@ -1,4 +1,4 @@
-#@ MODIF checksd Execution  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF checksd Execution  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,22 +23,20 @@
    Utilitaires pour tester la sd produite par une commande.
 """
 
-from sets import Set
-
-from Utilitai.Utmess import UTMESS
 from Noyau.asojb import OJB
 
 # pour utilisation dans eficas
 try:
     import aster
+    from Utilitai.Utmess import UTMESS
 except:
     pass
 
 
 def get_list_objects():
-    """Retourne la liste (Set) des objets jeveux présents à un moment donné
+    """Retourne la liste (set) des objets jeveux présents à un moment donné
     """
-    return Set(aster.jeveux_getobjects(' '))
+    return set(aster.jeveux_getobjects(' '))
 
 
 def check(checker, sd, l_before, etape):
@@ -91,7 +89,7 @@ def check(checker, sd, l_before, etape):
     checker.msg=[]
 
     # on vérifie que la commande n'a pas créé d'objets interdits
-    l_possible = Set(checker.names.keys())
+    l_possible = set(checker.names.keys())
     l_interdit = list(l_new - l_possible)
     l_interdit.sort()
     if len(l_interdit) > 0 :

@@ -1,4 +1,4 @@
-#@ MODIF utils Utilitai  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF utils Utilitai  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-from sets import Set
 
 """
 Module fournissant quelques fonctions utilitaires.
@@ -28,15 +27,15 @@ Module fournissant quelques fonctions utilitaires.
 def miss_dble(list1, list2):
    """miss = elements de list1 absents de list2
       dble = elements de list2 presents dans list1, fournis plusieurs fois."""
-   s_ini = Set(list1)
+   s_ini = set(list1)
    inter = s_ini.intersection(list2)
    miss = s_ini.copy()
-   dble = Set()
+   dble = set()
    for p in list2:
       try:
          miss.remove(p)
       except KeyError:
-         if Set(p).issubset(s_ini) and p.strip() != '':
+         if set(p).issubset(s_ini) and p.strip() != '':
             dble.add(p)
    return miss, inter, dble
 

@@ -1,4 +1,4 @@
-#@ MODIF modes Meidee  DATE 03/11/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF modes Meidee  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,10 +40,6 @@ from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, CO, MACRO_EXPANS
 from Cata.cata import AFFE_CARA_ELEM, AFFE_MATERIAU, AFFE_CHAR_MECA
 from Cata.cata import CALC_MATR_ELEM, NUME_DDL, ASSE_MATRICE, DEPL_INTERNE
 
-try:
-    set
-except NameError:
-    from sets import Set as set
 
 def txtfield( root, title, var, row ):
     Label(root,text=title).grid(row=row,column=0)

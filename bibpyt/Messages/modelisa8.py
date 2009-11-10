@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
+#@ MODIF modelisa8 Messages  DATE 10/11/2009   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -232,7 +232,11 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
 """),
 
 68 : _("""
-  la maille  de num  %(i1)d  de nom  %(k1)s
+Certaines mailles constituant le groupe de mailles %(k1)s ne sont pas 
+des mailles surfaciques.
+Risques & Conseils :
+Verifiez la constitution des groupes de mailles renseignees sous le 
+mot-cle GROUP_MA_ESCL.
 """),
 
 69 : _("""

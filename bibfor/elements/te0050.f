@@ -1,6 +1,6 @@
       SUBROUTINE TE0050 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 10/11/2009   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,19 +133,11 @@ C
         VALRES(2) = 0.D0
         CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
      &                2,NOMRES,VALRES,CODRET, BL2 )
-C FIN TEST CABLE
-        IF ( CODRET(1) .NE. 'OK' .AND. CODRET(2) .NE. 'OK') THEN
-            VALRES(1) = 0.D0
-            VALRES(2) = 0.D0
-        ELSEIF  (CODRET(1) .NE. 'OK' .AND. CODRET(2) .EQ. 'OK') THEN
-            VALRES(1) = 0.D0
-        ELSEIF  (CODRET(1) .EQ. 'OK' .AND. CODRET(2) .NE. 'OK') THEN
-            VALRES(2) = 0.D0
-        ENDIF
 C
       ELSE IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
 C     ------------------------------------------
         NOMRES(1)='AMOR_HYST'
+        VALRES(1) = 0.D0
         CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
      &                1,NOMRES,VALRES,CODRET, BL2 )
         IF (CODRET(1) .NE. 'OK') THEN

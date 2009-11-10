@@ -1,5 +1,6 @@
-# MODIF  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+# MODIF  DATE 09/11/2009   AUTEUR GREFFET N.GREFFET 
 # TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE) 
+# sdls119a.para = tps_job 300 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-DEBUT(CODE=_F(NOM='SDLS119A', NIV_PUB_WEB='INTERNET',) );
+DEBUT(CODE=_F(NOM='SDLS119A', NIV_PUB_WEB='INTERNET',));
 #
 import aster
 #
@@ -414,10 +415,83 @@ TEST_RESU(RESU=(
             CRITERE = ('RELATIF','RELATIF',), 
             PRECISION = (2.E-3,1.E-3,),
             INST = 2.34,         VALE = 6.54736E-03, 
-            REFERENCE = 'AUTRE_ASTER', ),
-
-                                                               )
+            REFERENCE = 'AUTRE_ASTER', ),)
    );                    
-
-
+#
+# Calcul de la solution de reference en passant par la FFT (python) de CALC_FONCTION :
+#
+dephx = RECU_FONCTION(RESULTAT=EVOLH, TOUT_ORDRE='OUI',
+                       NOM_CHAM='DEPL', NOM_CMP='DX',
+                       GROUP_NO='P3',
+                       NOM_PARA='FREQ',
+                       );
+dephy = RECU_FONCTION(RESULTAT=EVOLH, TOUT_ORDRE='OUI',
+                       NOM_CHAM='DEPL', NOM_CMP='DY',
+                       GROUP_NO='P3',
+                       NOM_PARA='FREQ',
+                       );
+#
+depx=CALC_FONCTION( FFT=_F( FONCTION = dephx, METHODE='PROL_ZERO',SYME='NON',));
+depy=CALC_FONCTION( FFT=_F( FONCTION = dephy, METHODE='PROL_ZERO',SYME='NON',));
+#
+tabx = CREA_TABLE( FONCTION = _F(FONCTION=depx,PARA=('INST','DX')));
+taby = CREA_TABLE( FONCTION = _F(FONCTION=depy,PARA=('INST','DY')));
+#
+# Si on accepte un PAR_LOT=NON, alors on peut avoir directement la valeur a tester ainsi :
+#valx = tabx['DX',235]
+#valy = taby['DY',235]
+#Pour un instant valant :
+#tx = tabx['INST',235]
+#ty = taby['INST',235]
+#print 'VALX(',tx,')=',valx
+#print 'VALY(',ty,')=',valy
+#
+# Avec PAR_LOT=OUI, il faut faire ce qui suit :
+#
+tevolx=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               RESULTAT=EVOLT,
+                               NOM_CHAM='DEPL',
+                               INST=2.34,
+                               GROUP_NO='P3',
+                               NOM_CMP = 'DX',
+                               INTITULE='EVOLT DEPX',
+                               ),);
+tevoly=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               RESULTAT=EVOLT,
+                               NOM_CHAM='DEPL',
+                               INST=2.34,
+                               GROUP_NO='P3',
+                               NOM_CMP = 'DY',
+                               INTITULE='EVOLT DEPY',
+                               ),);
+#
+tabxx = CREA_TABLE( FONCTION = _F(FONCTION=depx,PARA=('INST','DEPX')));
+tabyy = CREA_TABLE( FONCTION = _F(FONCTION=depy,PARA=('INST','DEPY')));
+#
+tabx2 = CALC_TABLE(TABLE = tabxx,
+                   ACTION=_F(OPERATION = 'FILTRE',NOM_PARA = 'INST',CRIT_COMP = 'EQ',
+                             VALE = 2.34,));
+taby2 = CALC_TABLE(TABLE = tabyy,
+                   ACTION=_F(OPERATION = 'FILTRE',NOM_PARA = 'INST',CRIT_COMP = 'EQ',
+                             VALE = 2.34,));
+#
+tcompx=CALC_TABLE(TABLE = tevolx,
+                  ACTION=_F(OPERATION = 'COMB', TABLE = tabx2, NOM_PARA = ('INST',)),);
+tcompy=CALC_TABLE(TABLE = tevoly, 
+                  ACTION=_F(OPERATION = 'COMB', TABLE = taby2, NOM_PARA = ('INST',)),);
+#
+DIFFDX = FORMULE(NOM_PARA=('DX','DEPX'),VALE='(DX - DEPX)');
+tresx = CALC_TABLE(TABLE = tcompx,
+                   ACTION = _F(OPERATION = 'OPER',FORMULE=DIFFDX,NOM_PARA='DELTA_DX'),);
+DIFFDY = FORMULE(NOM_PARA=('DY','DEPY'),VALE='(DY - DEPY)');
+tresy = CALC_TABLE(TABLE = tcompy,
+                   ACTION = _F(OPERATION = 'OPER',FORMULE=DIFFDY,NOM_PARA='DELTA_DY'),);
+#
+# On compare ce qui vient de REST_SPEC_TEMP au resultat de CALC_FONCTION (option FFT) :
+#
+TEST_TABLE(TABLE=tresx,NOM_PARA='DELTA_DX',
+           REFERENCE='AUTRE_ASTER', CRITERE='ABSOLU', PRECISION=1.0E-10,VALE=0.);
+TEST_TABLE(TABLE=tresy,NOM_PARA='DELTA_DY',
+           REFERENCE='AUTRE_ASTER', CRITERE='ABSOLU', PRECISION=1.0E-10,VALE=0.);
+#
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 09/11/2009   AUTEUR MESSIER J.MESSIER 
 # TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
 # sslp317a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,38 +35,39 @@ FISS4 = [None]*(nb_raff+1)
 
 PRE_GIBI();
 
-def SIGN(x) : 
-   if x<0. : return -1. 
-   if x>=0. : return 1.
+def SIGN1(y) : 
+   if y<0. : return 0. 
+   if y>=0. : return 1.
 
-def atan3(x,y) : 
-   if (x*x+y*y) < 1.e-16 : return 0. 
-   else : return atan2(x,y)
+def SIGN2(y) : 
+   if y>=0. : return 0. 
+   if y<0. : return 1.
 
-r1 = 0.2
-LN1=FORMULE(NOM_PARA=('X','Y'),VALE='sqrt((X-r1*cos(atan3(Y,X)))**2+(Y-r1*sin(atan3(Y,X)))**2)*SIGN(r1*r1-X*X-Y*Y)');
-LT1=FORMULE(NOM_PARA=('X','Y'),VALE='Y');         
+
+r1 = 0.2       
+LN1=FORMULE(NOM_PARA=('X','Y'),VALE='X**2+Y**2-r1**2');
+LT1=FORMULE(NOM_PARA=('Y'),VALE='Y'); 
 
 
 r2 = 0.1
-LN2=FORMULE(NOM_PARA=('X','Y'),VALE='sqrt((X-r2*cos(atan3(Y,X)))**2+(Y-r2*sin(atan3(Y,X)))**2)*SIGN(r2*r2-X*X-Y*Y)');
-#LT2=FORMULE(NOM_PARA=('X','Y'),VALE='-Y');         
+LN2=FORMULE(NOM_PARA=('X','Y'),VALE='X**2+Y**2-r2**2');
+LT2=FORMULE(NOM_PARA=('Y'),VALE='-1*Y');       
 
 
-def FLT3(x,y) :
-     if ( x+0.3 ) >= 0. : return   x+0.3  -  0.1
-     else :  return   -x-0.3  -  0.1
+def FLT4(x) :
+     if ( x-0.3 ) >= 0. : return   x-0.3  -  0.1
+     else :  return   -x+0.3 -  0.1
      
 LN3=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.25');
-LT3=FORMULE(NOM_PARA=('X','Y'),VALE='FLT3(X,Y)');
+LT3=FORMULE(NOM_PARA='X',VALE='FLT3(X)');
 
 
-def FLT4(x,y) :
-     if ( x-0.2 ) >= 0. : return   x-0.2  -  0.1
-     else :  return   -x+0.2  -  0.1
+def FLT3(x) :
+     if ( x+0.2 ) <= 0. : return   -x-0.2  -  0.1
+     else :  return   x+0.2  -  0.1
 
 LN4=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.25');
-LT4=FORMULE(NOM_PARA=('X','Y'),VALE='FLT4(X,Y)');
+LT4=FORMULE(NOM_PARA='X',VALE='FLT4(X)');
 
 num_calc=0   
 
@@ -83,11 +84,9 @@ for num_calc in range(0,nb_raff+1) :
                                   DEFI_FISS=_F(FONC_LT=LT1,FONC_LN=LN1,),
                                   GROUP_MA_ENRI='SURF');
 
-
    FISS2[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
-                                  TYPE_DISCONTINUITE='INTERFACE',
-                                  DEFI_FISS=_F(FONC_LN=LN2,),
-                                  GROUP_MA_ENRI='SURF');
+                                  DEFI_FISS=_F(FONC_LT=LT2,FONC_LN=LN2,),
+                                  GROUP_MA_ENRI='SURF')
 
    FISS3[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
                                   DEFI_FISS=_F(FONC_LT=LT3,FONC_LN=LN3,),
@@ -101,6 +100,7 @@ for num_calc in range(0,nb_raff+1) :
    if num_calc < nb_raff :
 
       CHERR[num_calc] = RAFF_XFEM(FISSURE=(FISS1[num_calc],FISS2[num_calc],FISS3[num_calc],FISS4[num_calc]),)
+
       IMPR_RESU(FORMAT='GMSH',UNITE=85,RESU=_F(CHAM_GD = CHERR[num_calc]));
       IMPR_RESU(RESU=_F(CHAM_GD = CHERR[num_calc]));
 
@@ -235,7 +235,7 @@ TAB=POST_RELEVE_T(TITRE='TAB',
 #IMPR_TABLE(TABLE=TAB)
 
 # NOMBRE DE NOEUDS DU MAILLAGE FINAL
-nbno = 2322
+nbno = 1115
 
 TEST_TABLE(TABLE=TAB,
            TYPE_TEST='SOMM',

@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_gp_ops Macro  DATE 10/11/2009   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,9 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-from types import ListType, TupleType
-EnumTypes = (ListType, TupleType)
-from sets import Set
+EnumTypes = (list, tuple)
 
 # -----------------------------------------------------------------------------
 def post_gp_ops(self, **args):
@@ -89,6 +87,10 @@ def post_gp_ops(self, **args):
    jdc = CONTEXT.get_current_step().jdc
    maya = jdc.sds_dict[nom_maillage]
    
+   # Excitation 
+   args={}                    
+   if self['EXCIT']:args={'EXCIT'   : self['EXCIT'].List_F()}
+
    # 1. ----- calcul de G-theta
    
    # Cas 2D
@@ -113,11 +115,11 @@ def post_gp_ops(self, **args):
                                           R_SUP=dMC['R_SUP']),)
    
          __gtheta = CALC_G(THETA=_F(THETA=__theta),
-                           EXCIT=self['EXCIT'].List_F(),
                            RESULTAT=self['RESULTAT'],
                            TOUT_ORDRE='OUI',
                            SYME_CHAR=self['SYME_CHAR'],
-                           COMP_ELAS=self['COMP_ELAS'].List_F(),)
+                           COMP_ELAS=self['COMP_ELAS'].List_F(),
+                           **args)
    
          tab = __gtheta.EXTR_TABLE()
          
@@ -146,13 +148,12 @@ def post_gp_ops(self, **args):
                                     MODULE=1.0,
                                     FOND_FISS=self['FOND_FISS'],
                                     **dpar_theta),
-                           EXCIT=self['EXCIT'].List_F(),
                            RESULTAT=self['RESULTAT'],
                            TOUT_ORDRE='OUI',
                            SYME_CHAR=self['SYME_CHAR'],
                            COMP_ELAS=self['COMP_ELAS'].List_F(),
-                           LISSAGE=self['LISSAGE'].List_F()
-                           )
+                           LISSAGE=self['LISSAGE'].List_F(),
+                           **args)
 
  
          tab = __gtheta.EXTR_TABLE()
@@ -203,9 +204,11 @@ def post_gp_ops(self, **args):
    # liste des tables tb_Gpmax repartie aux noeuds
    l_tb_Gpmax_noeuds = []
       
+   # Charges 
+   args={}
+   if self['EXCIT']:args={'CHARGE': [charg['CHARGE'] for charg in self['EXCIT']]}
    for i in range(0,nb_tranches):
       l_copo = l_copo_tot[i*nbcop:(i+1)*nbcop]   
-      l_charg = [charg['CHARGE'] for charg in self['EXCIT']]
       
       if info >= 2 and not is_2D:
          print "<I> Calcul de la tranche %i"%(i+1)
@@ -243,10 +246,10 @@ def post_gp_ops(self, **args):
             
             E_el[kk] = POST_ELEM(MODELE=self['MODELE'],
                                  RESULTAT=self['RESULTAT'],
-                                 CHARGE=l_charg,
                                  TOUT_ORDRE='OUI',
                                  ENER_ELAS=_F(MAILLE=elem),
-                                 TITRE='Energie élastique',)
+                                 TITRE='Energie élastique',
+                                 **args)
             
             T_el[kk] = E_el[kk].EXTR_TABLE()
             
@@ -360,10 +363,10 @@ def post_gp_ops(self, **args):
       
          __ener = POST_ELEM(MODELE=self['MODELE'],
                                  RESULTAT=self['RESULTAT'],
-                                 CHARGE=l_charg,
                                  TOUT_ORDRE='OUI',
                                  ENER_ELAS=_F(GROUP_MA=l_copo),
-                                 TITRE='Energie élastique',)
+                                 TITRE='Energie élastique',
+                                 **args)
       
          t_enel = __ener.EXTR_TABLE()
    
@@ -376,7 +379,7 @@ def post_gp_ops(self, **args):
       
       t_enel['ICOP'] = l_icop
    
-      l_numord = list(Set(t_enel.NUME_ORDRE.values()))
+      l_numord = list(set(t_enel.NUME_ORDRE.values()))
       l_numord.sort()
 
       if self['PAS_ENTAILLE'] is not None:

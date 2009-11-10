@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 19/05/2009   AUTEUR SELLENET N.SELLENET 
+#@ MODIF prepost3 Messages  DATE 10/11/2009   AUTEUR CORUS M.CORUS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,6 +150,10 @@ cata_msg = {
 
 73 : _("""
  l'impression avec selection sur des entites topologiques n'a pas de sens au format castem  : toutes les valeurs sur tout le maillage seront donc imprimees.
+"""),
+
+74 : _("""
+ Le maillage %(k1)s n'est pas coherent avec le maillage %(k2)s portant le resultat %(k3)s
 """),
 
 75 : _("""

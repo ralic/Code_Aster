@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,7 +75,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       self.g_context = {}
       # Contexte courant
       self.current_context = {}
-      self.const_context = {}
+      self.macro_const_context = {}
       self.index_etape_courante = 0
       self.etapes = []
       self.index_etapes = {}
@@ -702,7 +702,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       # Dans la macro, on n'a pas le code à compiler pour récupèrer les
       # constantes locales à la macro. On demande donc explicitement de
       # définir les constantes "locales".
-      self.const_context.update(d)
+      self.macro_const_context.update(d)
 
    def sd_accessible(self):
       """On peut acceder aux "valeurs" (jeveux) des ASSD dans

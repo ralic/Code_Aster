@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,6 @@ import sys
 import os
 import re
 from copy  import copy
-from sets  import Set
 from types import ListType, TupleType, IntType, LongType, FloatType, ComplexType, \
                   DictType, StringType, StringTypes, UnicodeType, NoneType
 EnumTypes = (ListType, TupleType)
@@ -627,13 +626,13 @@ class Table(TableBase):
       #lpz='%s=f(%s,%s)' % (pz,px,py)
       lpz='%s/%s' % (px,py)
       # attention aux doublons dans lx et ly
-      new_para=Set(ly)
+      new_para=set(ly)
       new_para.discard(None)
       new_para = list(new_para)
       new_para.sort()
       new_para.insert(0, lpz)
       # attention aux doublons dans lx et ly
-      newx=Set(lx)
+      newx=set(lx)
       newx.discard(None)
       newx = list(newx)
       newx.sort()

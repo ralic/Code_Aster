@@ -3,7 +3,7 @@
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
 !&           CONFIGURATION MANAGEMENT OF EDF VERSION                   
-!& MODIF AMUMPH MUMPS  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF AMUMPH MUMPS  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -215,14 +215,14 @@ C       ON PREND CELUI ASSOCIE A LA MATRICE
         CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
         IF (ZK24(JSLVK)(1:5).EQ.'MUMPS') THEN
           IF (ZK24(JSLVK-1+7)(1:3).EQ.'OUI') THEN
-	    PREC='S'
-	  ELSE IF (ZK24(JSLVK-1+7)(1:3).EQ.'NON') THEN
-	    PREC='D'
-	  ELSE
+            PREC='S'
+          ELSE IF (ZK24(JSLVK-1+7)(1:3).EQ.'NON') THEN
+            PREC='D'
+          ELSE
 C --- ON A OUBLIE UNE INITIALISATION AMONT DE MIXPRE DS .SLVK
-	    CALL ASSERT(.FALSE.)
-	  ENDIF
-	ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+        ELSE
 C --- A PRECISER POUR GCPC AVEC IC SIMPLE PRECISION AVEC MUMPS
           CALL ASSERT(.FALSE.)
         ENDIF
@@ -265,7 +265,7 @@ C       ARITHMETIQUE) ASSOCIEES A UNE MATRICE SI 'DETR_MAT'
           IF ( ((NSMDI.EQ.N).AND.(IMD.EQ.0)).OR.(IMD.EQ.1) ) THEN
             KXMPS=K
             ROUC=ROUCS(K)
-	    PREC=PRECS(K)
+            PREC=PRECS(K)
             GOTO 2
           ENDIF
         ENDIF
@@ -316,7 +316,7 @@ C           POUR LDLT ET MF C'EST FAIT DS TLDLR8/MULFR8...
          ELSE
            ZK24(JREFA-1+8)='DECT'
          ENDIF
-	 
+         
 C        --- PARAMETRE NPREC
          CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
          NPREC=ZI(JSLVI)
@@ -369,16 +369,16 @@ C        --- PARAMETRE NPREC
       IF (ACTION(1:6).EQ.'PRERES') THEN
         CALL ASSERT((IRET.EQ.0).OR.(IRET.EQ.2))
         IF (IRET.EQ.2) THEN
-	  IF (NPREC.LT.0) THEN
+          IF (NPREC.LT.0) THEN
 C --- FONCTIONNALITE DE DETECTION DE SINGULARITE NON ACTIVEE: 
 C                                               STOP EN UTMESS_F
-	    CALL U2MESS('F','FACTOR_42')
-	  ELSE
+            CALL U2MESS('F','FACTOR_42')
+          ELSE
 C --- FONCTIONNALITE DE DETECTION DE SINGULARITE ACTIVEE: 
 C                                    ALARME + GESTION DU PB VIA TLDLG3
-	    CALL U2MESS('A','FACTOR_42')
-	  ENDIF
-	ENDIF
+            CALL U2MESS('A','FACTOR_42')
+          ENDIF
+        ENDIF
       ENDIF
 
 9999  CONTINUE

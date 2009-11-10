@@ -1,4 +1,4 @@
-# MODIF  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/11/2009   AUTEUR MEUNIER S.MEUNIER 
 # TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 # sslp313f.para = tps_job 400 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,42 +25,40 @@ DEBUT(CODE=_F(NOM='SSLP313F',
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 
-MA=LIRE_MAILLAGE(UNITE=20,
+MAIL=LIRE_MAILLAGE(UNITE=20,
                    FORMAT='MED',
                    VERI_MAIL=_F(VERIF='OUI',),);
 
-MA=MODI_MAILLAGE(reuse =MA,
-                 MAILLAGE=MA,
-                 MODI_MAILLE=_F(OPTION='NOEUD_QUART',
-                                GROUP_NO_FOND='P0',),
-                 INFO=2,);
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                GROUP_NO_FOND='P0',),);
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+MODARL=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),);
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                             NU=0.299999999,),
                     ECRO_LINE=_F(D_SIGM_EPSI=3.,
                                  SY=1.88E9,),);
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             MATER=ACIER,),);
 
-BL=AFFE_CHAR_MECA(MODELE=MO,
-                  DDL_IMPO=(_F(GROUP_MA='L34',
-                               DY=0.0,),
-                            _F(GROUP_NO='PS4',
-                               DX=0.0,),),);
+BLOC=AFFE_CHAR_MECA(MODELE=MODARL,
+                    DDL_IMPO=(_F(GROUP_MA='L34',
+                                 DY=0.0,),
+                              _F(GROUP_NO='PS4',
+                                 DX=0.0,),),);
 
-CH=AFFE_CHAR_MECA(MODELE=MO,
-                  FORCE_CONTOUR=_F(GROUP_MA='L12',
-                                   FY=1.E8,),);
+CHAREX=AFFE_CHAR_MECA(MODELE=MODARL,
+                      FORCE_CONTOUR=_F(GROUP_MA='L12',
+                                       FY=1.E8,),);
+
 ##################################################
-
-
 # 1. Creation des relations de couplage Arlequin
 #    entre les groupes de mailles
 #    couronne et fissure (maillage fin)
@@ -68,23 +66,26 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
 #    Collage sur le modele fin
 ##################################################
 
-
-AR=AFFE_CHAR_MECA(MODELE=MO,
-                  ARLEQUIN=_F(GROUP_MA_1=('COUR','FISS',),
-                              GROUP_MA_2='PLAQ',
-                              GROUP_MA_COLL='COUR',
-                              COLLAGE='GROUP_MA_1',
-                              POIDS_1=0.99999,),);
+ARLEQ=AFFE_CHAR_MECA(MODELE=MODARL,
+                     ARLEQUIN=_F(GROUP_MA_1=('COUR','FISS',),
+                                 GROUP_MA_2='PLAQ',
+                                 GROUP_MA_COLL='COUR',
+                                 COLLAGE='GROUP_MA_1',
+                                 POIDS_1=0.99999,),);
 
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=10.,
                                   NOMBRE=10,),);
 
-RESU=STAT_NON_LINE(MODELE=MO,
+##################################
+# 2. CALCUL STATIQUE NON LINEAIRE
+##################################
+
+RESU=STAT_NON_LINE(MODELE=MODARL,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=AR,),
-                          _F(CHARGE=CH,),
-                          _F(CHARGE=BL,),),
+                   EXCIT=(_F(CHARGE=ARLEQ,),
+                          _F(CHARGE=CHAREX,),
+                          _F(CHARGE=BLOC,),),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                    INCREMENT=_F(LIST_INST=LIST,),);
 
@@ -96,20 +97,73 @@ RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION=('EQUI_NOEU_SIGM','SIEF_NOEU_ELGA','EPSP_NOEU','VARI_NOEU_ELGA',),);
 
-FOND1=DEFI_FOND_FISS(MAILLAGE=MA,
+########################################################
+# 3. POST-TRAITEMENT MECANIQUE DE LA RUPTURE
+# Attention : on est sur un modele Arlequin !
+#             Il faut donc restreindre le resultat RESU
+#             au groupe de mailles du patch (RESU_RES).
+########################################################
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=81,
+          RESTREINT=_F(GROUP_MA=('COUR','FISS','LPOP8','LPOP8B',),
+                       TOUT_GROUP_NO='OUI',),
+          RESU=_F(RESULTAT=RESU,NOM_CHAM=('DEPL','SIEF_ELGA','EPSP_ELNO','VARI_ELNO_ELGA',)))
+
+MA_RES=LIRE_MAILLAGE(UNITE=81,
+                     FORMAT='MED',
+                     VERI_MAIL=_F(VERIF='OUI',),);
+
+MA_RES=MODI_MAILLAGE(reuse =MA_RES,
+                     MAILLAGE=MA_RES,
+                     MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                    GROUP_NO_FOND='P0',),);
+
+MO_RES=AFFE_MODELE(MAILLAGE=MA_RES,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),);
+
+MAT_RES=AFFE_MATERIAU(MAILLAGE=MA_RES,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=ACIER,),);
+
+RESU_RES=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
+                   FORMAT='MED',
+                   MODELE=MO_RES,
+                   CHAM_MATER=MAT_RES,
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                   UNITE=81,
+                   FORMAT_MED=(
+                   _F(NOM_CHAM='DEPL',
+                      NOM_CHAM_MED='&RESUR1_DEPL____________________',),
+                   _F(NOM_CHAM='SIEF_ELGA',
+                      NOM_CHAM_MED='&RESUR1_SIEF_ELGA_______________',),
+                   _F(NOM_CHAM='EPSP_ELNO',
+                      NOM_CHAM_MED='&RESUR1_EPSP_ELNO_______________',),
+                   _F(NOM_CHAM='VARI_ELNO_ELGA',
+                      NOM_CHAM_MED='&RESUR1_VARI_ELNO_ELGA__________',),),
+                   INST=10.0,);
+
+FOND1=DEFI_FOND_FISS(MAILLAGE=MA_RES,
                      FOND_FISS=_F(GROUP_NO='P0',),
                      NORMALE=(-0.6018,0.7986,0.0,),);
 
-THETA01=CALC_THETA(MODELE=MO,
+THETA01=CALC_THETA(MODELE=MO_RES,
                    DIRECTION=(0.7986,0.6018,0.0,),
                    THETA_2D=_F(GROUP_NO='P0',
                                MODULE=1.0,
                                R_INF=1.875E-05,
                                R_SUP=7.5E-05,),);
 
+###################################################
+# 4. On peut post-traiter sur le modele restreint :
+#    => calcul de G, K1, K2
+###################################################
+
 G01=CALC_G(THETA=_F(THETA=THETA01,),
-           RESULTAT=RESU,
-           NUME_ORDRE=1,
+           RESULTAT=RESU_RES,
+           NUME_ORDRE=10,
            SYME_CHAR='SANS',
            COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
            OPTION='CALC_G',);
@@ -119,23 +173,23 @@ GK01=CALC_G(THETA=_F(FOND_FISS=FOND1,
                      R_SUP=7.5E-05,
                      MODULE=1.0,
                      DIRECTION=(0.7986,0.6018,0.0,),),
-            RESULTAT=RESU,
-            NUME_ORDRE=1,
+            RESULTAT=RESU_RES,
+            NUME_ORDRE=10,
             SYME_CHAR='SANS',
             COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
             OPTION='CALC_K_G',);
 
-LEVH=INTE_MAIL_2D(MAILLAGE=MA,
+LEVH=INTE_MAIL_2D(MAILLAGE=MA_RES,
                   DEFI_CHEMIN=_F(GROUP_MA='LPOP8',),
                   GROUP_NO_ORIG='P0',);
 
-LEVB=INTE_MAIL_2D(MAILLAGE=MA,
+LEVB=INTE_MAIL_2D(MAILLAGE=MA_RES,
                   DEFI_CHEMIN=_F(GROUP_MA='LPOP8B',),
                   GROUP_NO_ORIG='P0',);
 
 DEPH=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='DEPL_DH',
-                             RESULTAT=RESU,
+                             RESULTAT=RESU_RES,
                              NOM_CHAM='DEPL',
                              INST=10,
                              CHEMIN=LEVH,
@@ -143,7 +197,7 @@ DEPH=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 DEPB=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='DEPL_DB',
-                             RESULTAT=RESU,
+                             RESULTAT=RESU_RES,
                              NOM_CHAM='DEPL',
                              INST=10,
                              CHEMIN=LEVB,

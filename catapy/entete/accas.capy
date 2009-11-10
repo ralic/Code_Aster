@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF ENTETE  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ JdC = JDC_CATA(code='ASTER',
                          AU_MOINS_UN('FIN'),
                          A_CLASSER(('DEBUT','POURSUITE'),'FIN')))
 # Type le plus general
-class entier   (ASSD):
+class entier   (ASSD, AsBase):
    def __init__(self,valeur=None,**args):
       ASSD.__init__(self,**args)
       self.valeur=valeur
@@ -61,7 +61,7 @@ class entier   (ASSD):
          #validateur into et valid
          return self
 
-class reel(ASSD):
+class reel(ASSD, AsBase):
    def __init__(self,valeur=None,**args):
       ASSD.__init__(self,**args)
       self.valeur=valeur

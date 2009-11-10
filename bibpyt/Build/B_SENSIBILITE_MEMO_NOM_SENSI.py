@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,8 +22,6 @@
 """
 Classe pour la mémorisation des paramètres nécessaires à la dérivation du jdc.
 """
-
-from sets import Set
 
 # protection pour eficas
 try:
@@ -70,10 +68,10 @@ class MEMORISATION_SENSIBILITE:
       self.l_regjv = []
       
       # liste de tous les para_sensi (même ceux qui ne sont pas utilisés par la suite)
-      self._all_para_sensi = Set()
-      # dictionnaire : para_sensi : Set(commande1, commande2, ...)
+      self._all_para_sensi = set()
+      # dictionnaire : para_sensi : set(commande1, commande2, ...)
       self.d_para_cmde = {}
-      # dictionnaire : para_autre : Set()       (pour les theta geom)
+      # dictionnaire : para_autre : set()       (pour les theta geom)
       self.d_para_autre = {}
       
       # pour l'enregistrement différé
@@ -90,7 +88,7 @@ class MEMORISATION_SENSIBILITE:
       """Ajoute une commande concerné par le paramètre sensible donné.
       """
       if self.d_para_cmde.get(para) is None:
-         self.d_para_cmde[para] = Set()
+         self.d_para_cmde[para] = set()
       if nom_cmde is not None:
          self.d_para_cmde[para].add(nom_cmde)
       if self._debug:
@@ -115,7 +113,7 @@ class MEMORISATION_SENSIBILITE:
       """Ajoute un paramètre autre (champ theta).
       """
       if self.d_para_autre.get(para) is None:
-         self.d_para_autre[para] = Set()
+         self.d_para_autre[para] = set()
       if self._debug:
          print '#memo_sensi# add_para_autre : ', para
 

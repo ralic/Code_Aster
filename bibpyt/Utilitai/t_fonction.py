@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Utilitai  DATE 24/08/2009   AUTEUR SELLENET N.SELLENET 
+#@ MODIF t_fonction Utilitai  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,6 @@
 from Numeric import *
 import copy
 import types
-from sets import Set
 
 # -----------------------------------------------------------------------------
 class FonctionError(Exception): pass
@@ -48,7 +47,7 @@ import Numeric
 def is_ordo(liste):
   if len(liste) > 1:
     val = Numeric.array(liste, Numeric.Float)
-    return min(val[1:] - val[:len(val)-1]) >= 0.
+    return min(val[1:len(val)] - val[0:len(val)-1]) >= 0.
   else: return True
 
 # -----------------------------------------------------------------------------
@@ -200,7 +199,7 @@ class t_fonction :
     prol_droite=f_d.para['PROL_DROITE']
     vale_x=concatenate((self.vale_x,other.vale_x))
     vale_x=clip(vale_x,val_min,val_max)
-    vale_x=sort(list(Set(vale_x)))
+    vale_x=sort(list(set(vale_x)))
     return vale_x, prol_gauche, prol_droite
 
   def cut(self,rinf,rsup,prec,crit='RELATIF') :
@@ -616,7 +615,7 @@ class t_nappe :
     if self==other:
        return self
     vale_para=self.vale_para.tolist()+other.vale_para.tolist()
-    vale_para=list(Set(vale_para))
+    vale_para=list(set(vale_para))
     vale_para.sort()
     vale_para=array(vale_para)
     l_fonc=[]
@@ -681,7 +680,7 @@ def func_union(func,l_f) :
     for f in l_f :
         vale_x = vale_x + f.vale_x.tolist()
     # on ote les abscisses doublons
-    vale_x = list(Set(vale_x))
+    vale_x = list(set(vale_x))
     vale_x.sort()
     vale_x = array(vale_x)
     # interpolation des fonctions sur l'union des abscisses
@@ -710,7 +709,7 @@ def fractile(l_f, fract):
     for f in l_f :
         vale_x = vale_x + f.vale_x.tolist()
     # on ote les abscisses doublons
-    vale_x = list(Set(vale_x))
+    vale_x = list(set(vale_x))
     vale_x.sort()
     vale_x = array(vale_x)
     #

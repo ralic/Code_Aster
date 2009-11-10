@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/11/2009   AUTEUR MEUNIER S.MEUNIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,7 +85,6 @@ MODE_LOCAL__
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (PRES11   PRES12   PRES21   PRES22   SIG111   SIG112
                                         SIG121   SIG122   SIG211   SIG212   SIG221   SIG222
                                         DEPV11   DEPV12   DEPV21   DEPV22   )
-    CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
 

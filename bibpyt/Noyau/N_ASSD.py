@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ASSD Noyau  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -60,6 +60,8 @@ class ASSD(object):
       # permet de savoir si le concept a été calculé (1) ou non (0)
       self.executed = 0
       # initialise la partie "sd"
+      # fonctionne uniquement si self est une instance d'une classe dérivée
+      # dont l'__init__ accepte l'argument nomj (donc AsBase).
       super(ASSD, self).__init__(nomj='?&?&?&?&')
       
    def __getitem__(self,key):

@@ -1,4 +1,4 @@
-#@ MODIF sd_resultat SD  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_resultat SD  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,6 @@ from SD.sd_l_table import sd_l_table
 from SD.sd_champ import sd_champ
 from SD.sd_l_charges import sd_l_charges
 from SD.sd_char_contact import sd_char_contact
-from sets import Set
 from SD.sd_util import *
 
 
@@ -64,7 +63,7 @@ class sd_resultat(sd_titre):
     # indirection vers les objets de .TAVA :
     def check_resultat_i_TAVA(self, checker):
         tava = self.TAVA.get()
-        S1=Set()
+        S1=set()
         for knova in tava.keys():
             suffix=tava[knova][0][:5]
             if not suffix.strip(): continue       # JP : est-ce possible ?
@@ -79,7 +78,7 @@ class sd_resultat(sd_titre):
     def check_resultat_i_EXCIT(self, checker):
         lnom = self.CHAR.get()
         if not lnom: return
-        S1=Set()
+        S1=set()
         for nom in lnom:
             if not nom.strip(): continue
             S1.add(nom)
@@ -173,7 +172,7 @@ class sd_resultat(sd_titre):
                 nom=self.nomj()[:19]+suffix
                 sd2 = AsObject(SDNom(nomj=nom,debut=0),)
                 vect=sd2.get()
-                S1=Set()
+                S1=set()
                 for k in range(nbuti_ordr) :
                     S1.add(vect[k*nbpara+nupara-1])
                 for nom in S1 :

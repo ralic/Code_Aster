@@ -4,7 +4,7 @@
       INTEGER             NSENS
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/11/2009   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19  NOMFS
       REAL*8        PAS,PASFRQ
       INTEGER       NBVAL,NBVA,NBPTS,NBPTS1,NBPTS2,LTRA,LRES,LRES1,IER
-      INTEGER       NIN,NOUT,NBVIN,NBVOUT,LVAR,N,LFON,I,II
+      INTEGER       NIN,NOUT,NBVIN,NBVOUT,LVAR,N,LFON,I,II,VALMAX
 C     ----------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -123,8 +123,10 @@ C         NBPTS=2*NBPTS
          IF ( SYM.EQ.'NON' ) THEN
             NBPTS2 = (2*NBPTS)
          ENDIF
-         CALL WKVECT('&&TRAVAIL','V V C',NBPTS2,LTRA)
-         DO 201 I = 1, (NBPTS2/2)
+         CALL WKVECT('&&TRAVAIL','V V C',(NBPTS2+1),LTRA)
+         VALMAX = (NBPTS2/2)
+         IF ( NBVA .LT. (NBPTS2/2) ) VALMAX = NBVA
+         DO 201 I = 1, VALMAX
             II = (2*I)-1
             ZC(LTRA+I-1) = DCMPLX(ZR(LFON+II-1),ZR(LFON+II))
             ZC(LTRA+NBPTS2-I+1) =

@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,6 @@ import sys
 import traceback
 import imp
 import re
-from sets import Set
 
 # protection pour eficas
 try:
@@ -319,7 +318,7 @@ Exception : %s
    def info_alarm(self, only_ignored=False):
       """Fournit les infos sur les alarmes activées.
       """
-      s_alarm = Set(self._ignored_alarm.keys())
+      s_alarm = set(self._ignored_alarm.keys())
       if not only_ignored:
          s_alarm.update(self.count_alarm_tot.keys())
       l_alarm = list(s_alarm)
@@ -517,7 +516,7 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
       on n'affiche pas le type de l'erreur pour ne pas fausser le diagnostic
       """
       typmess = code.strip()
-      if self.onFatalError() == 'EXCEPTION':
+      if self.onFatalError().startswith('EXCEPTION'):
          if typmess in ('E', 'F'):
             typmess = 'EXCEPTION'
       # dans tous les cas, pour S et Z (exception), on affiche EXCEPTION.

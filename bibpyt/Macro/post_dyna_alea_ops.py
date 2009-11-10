@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 06/10/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF post_dyna_alea_ops Macro  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,6 @@
 
 import random
 import Numeric
-from sets  import Set
 from types import ListType, TupleType
 from math  import pi,sqrt,log,exp
 
@@ -242,7 +241,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 
       if NUME_VITE_FLUI_present :
          if TOUT_ORDRE != None :
-            jvite = list(Set(intespec.NUME_VITE_FLUI.not_none_values()))
+            jvite = list(set(intespec.NUME_VITE_FLUI.not_none_values()))
             jvite.sort()
          else :
             jvite=[NUME_VITE_FLUI,]
@@ -288,7 +287,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                intespec = intespec.NUME_VITE_FLUI == jvite[0]
 
          if NUME_ORDRE_I_present :
-            imode = list(Set(intespec.NUME_ORDRE_I.not_none_values()))
+            imode = list(set(intespec.NUME_ORDRE_I.not_none_values()))
             l_ind_i=imode
             l_ind_j=imode
             # paramètres fixes de la table
@@ -326,7 +325,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       l_moments=[0,1,2,3,4]
       if MOMENT!=None :
          l_moments.extend(list(MOMENT))
-         l_moments=list(Set(l_moments))
+         l_moments=list(set(l_moments))
 
 #     ------------------------------------------------------------------
 #     Boucle sur les fonctions
@@ -383,10 +382,11 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 
            val_mom={}
            for i_mom in l_moments :
-               trapz     = Numeric.zeros(len(fvaly),Numeric.Float)
+               n         = len(fvaly)
+               trapz     = Numeric.zeros(n,Numeric.Float)
                trapz[0]  = 0.
                valy      = fvaly*(2*pi*fvalx)**i_mom
-               trapz[1:] = (valy[1:]+valy[:-1])/2*(fvalx[1:]-fvalx[:-1])
+               trapz[1:n] = (valy[1:n]+valy[:-1])/2*(fvalx[1:n]-fvalx[:-1])
                prim_y    = Numeric.cumsum(trapz)
                val_mom[i_mom] = prim_y[-1]
            for i_mom in l_moments :

@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,6 @@
 #
 #
 # ======================================================================
-
 """
 """
 # Modules Python
@@ -526,12 +525,12 @@ Paramètres répétés : %s""" % args
       try:
            context={}
            # récupération des constantes locales en cas de MACRO
-           context.update(getattr(self.parent, 'const_context', {}))
+           context.update(getattr(self.parent, 'macro_const_context', {}))
            # on reduit le dict au seul parametre de la formule
            dp = dict(zip(nom_param, val))
            for param in inter:
                context[param]=dp[param]
-           res=eval(objet_sd.code,self.jdc.const_context,context)
+           res=eval(objet_sd.code, self.jdc.const_context, context)
       except:
            msgerr = """Erreur lors de l'évaluation de la formule.
 La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :

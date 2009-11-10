@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 09/11/2009   AUTEUR MEUNIER S.MEUNIER 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -198,7 +198,7 @@ C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
 
       CALL MODOPT(RESUCO,LESOPT,NBOPT)
       CALL JEVEUO(LESOPT,'L',JOPT)
-C     ON RECUPERE LE TYPE DE MODE: DYNAMIQUE OU STATIQUE  
+C     ON RECUPERE LE TYPE DE MODE: DYNAMIQUE OU STATIQUE
       IF (TYSD.EQ.'MODE_MECA') THEN
         CALL RSADPA(RESUCO,'L',1,'TYPE_MODE',1,0,LTYMO,K8B)
         TYPEMO=ZK16(LTYMO)
@@ -227,7 +227,7 @@ C=======================================================================
 C-------on verifie si deriere le concept mode_meca on trouve un mode_dyn
 C        IF (CONCEP.EQ.'MODE_MECA' .OR. CONCEP.EQ.'DYNA_TRANS' .OR.
 C     &      CONCEP.EQ.'MODE_ACOU' .OR. CONCEP.EQ.'DYNA_HARMO') THEN
-        IF ((CONCEP.EQ.'MODE_MECA'.AND.TYPEMO(1:8).EQ.'MODE_DYN') .OR. 
+        IF ((CONCEP.EQ.'MODE_MECA'.AND.TYPEMO(1:8).EQ.'MODE_DYN') .OR.
      &       CONCEP.EQ.'DYNA_TRANS' .OR.
      &       CONCEP.EQ.'MODE_ACOU' .OR. CONCEP.EQ.'DYNA_HARMO') THEN
           REFE = RESUCO
@@ -526,8 +526,7 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
      &        .OR. (OPTION.EQ.'ECIN_ELEM_DEPL')
      &        .OR. (OPTION.EQ.'ENEL_ELGA')
      &        .OR. (OPTION.EQ.'ENEL_ELNO_ELGA')) THEN
-777             CONTINUE
-             ELSE
+              ELSE
                 GO TO 520
               END IF
 
@@ -911,6 +910,8 @@ C ---- VERIF SENSIBILITE
             ENDIF
             IF(CODSEN.NE.0) GO TO 900
 C ---- VERIF SENSIBILITE FIN
+
+
             DO 130,IAUX = 1,NBORDR
               CALL JEMARQ()
               CALL JERECU('V')

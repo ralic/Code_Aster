@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,10 +22,8 @@
 
 import os.path
 import re
-from sets import Set
 
 
-# ------------------------------------------------------------------------------
 def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    """
    Macro IMPR_TABLE permettant d'imprimer une table dans un fichier.
@@ -199,7 +197,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       if args['IMPR_FONCTION'] == 'OUI':
          # cherche parmi les cellules celles qui contiennent un nom de fonction
          dfon = []
-         p_extr = Set(['FONCTION', 'FONCTION_C'])
+         p_extr = set(['FONCTION', 'FONCTION_C'])
          p_extr.intersection_update(timp.para)
          if len(p_extr) > 0:
             # on réduit timp aux colonnes FONCTION et FONCTION_C
@@ -228,7 +226,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    UL.EtatInit()
    return ier
 
-# ------------------------------------------------------------------------------
+
 def fmtF2PY(fformat):
    """Convertit un format Fortran en format Python (printf style).
    Gère uniquement les fortrans réels, par exemple : E12.5, 1PE13.6, D12.5...

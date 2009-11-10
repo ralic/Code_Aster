@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 21/09/2009   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_europlexus_ops Macro  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,6 @@ import os
 import Numeric as N
 import math 
 import copy
-import sets
 
 # Protection pour Eficas
 try:
@@ -768,8 +767,8 @@ class EUROPLEXUS:
       # crea_maillage a faire de facon centraliser pour RIGI_PARASOL et le POST-TRAITEMENT ailleurs
       courbe_fact = self.COURBE
       if courbe_fact is None: courbe_fact = []
-      lnoeuds=sets.Set([])
-      lmailles=sets.Set([])
+      lnoeuds=set()
+      lmailles=set()
       dicma=[]
       for courbe in courbe_fact :
         if courbe['GROUP_NO'] != None :
@@ -1397,8 +1396,8 @@ class EUROPLEXUS:
       epx[MODULE].append(2*' ' + "FICH ALIT 11  %s %s" %(cle_freq,vale_freq))
 
       # Liste les noeuds a postraiter
-      lnoeuds=sets.Set([])
-      lmailles=sets.Set([])
+      lnoeuds=set()
+      lmailles=set()
       for courbe in courbe_fact :
         if courbe['GROUP_NO'] != None :
             noeuds = courbe['GROUP_NO']

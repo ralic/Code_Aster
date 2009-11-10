@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 13/10/2009   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -371,7 +371,6 @@ def crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou):
   from Accas import _F
   from Utilitai.Utmess import  UTMESS
   import os
-  from sets import Set
   POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
   DEFI_GROUP    = self.get_cmd('DEFI_GROUP')
 
@@ -393,19 +392,19 @@ def crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou):
   listenoe_b = dictb.NOEUD.values()
   # lno_b2=liste des noeuds de la ligne de coupe après élimination des doublons
   # (attention, on perd l'ordre des noeuds)
-  lno_b2 = Set(listenoe_b)
+  lno_b2 = set(listenoe_b)
 
   # dictc=table (extraite de dictb) contenant uniquement des noeuds dans la matière
   if m['NOM_CMP']!=None:
      dictc=getattr(dictb,m['NOM_CMP'][0]).NON_VIDE()
-     lno_c2 = Set(dictc.NOEUD.values())
+     lno_c2 = set(dictc.NOEUD.values())
   else:# TOUT_CMP='OUI'
      # on garde uniquement les composantes pour conserver les noeuds où il y a des valeurs
-     a_suppr = Set(['INTITULE', 'RESU', 'NOM_CHAM', 'NUME_ORDRE', 'INST', 'ABSC_CURV', 'COOR_X', 'COOR_Y', 'COOR_Z'])
-     new_para = Set(dictb.para)
+     a_suppr = set(['INTITULE', 'RESU', 'NOM_CHAM', 'NUME_ORDRE', 'INST', 'ABSC_CURV', 'COOR_X', 'COOR_Y', 'COOR_Z'])
+     new_para = set(dictb.para)
      new_para.difference_update(a_suppr)
 
-     lno_c2 = Set()
+     lno_c2 = set()
      for comp in new_para.difference(['NOEUD']):
         dictc = getattr(dictb, comp).NON_VIDE()
         lno_c2.update(dictc.NOEUD.values())

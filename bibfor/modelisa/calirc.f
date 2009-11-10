@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 10/11/2009   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*4 FONREE
       CHARACTER*4 TYPCOE,ZCST,TYPLIA
       CHARACTER*8 NOMA,MO,M8BLAN,KELIM
-      CHARACTER*8 KBETA,NONO1,NONO2,CHARGE,CMP,DDL2,LISTYP(10)
+      CHARACTER*8 KBETA,NONO1,NONO2,CHARGE,CMP,DDL2,LISTYP(8)
       CHARACTER*16 MOTFAC,CORRES,TYMOCL(4),MOTCLE(4),NOMCMD
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL
@@ -113,17 +113,15 @@ C ----------------------------------------------------------------------
         LISTYP(2) = 'SEG3'
         LISTYP(3) = 'SEG4'
       ELSE IF (NDIM.EQ.3) THEN
-        NBTYP = 10
+        NBTYP = 8
         LISTYP(1) = 'TRIA3'
         LISTYP(2) = 'TRIA6'
-        LISTYP(3) = 'TRIA9'
-        LISTYP(4) = 'QUAD4'
-        LISTYP(5) = 'QUAD8'
-        LISTYP(6) = 'QUAD9'
-        LISTYP(7) = 'QUAD12'
-        LISTYP(8) = 'SEG2'
-        LISTYP(9) = 'SEG3'
-        LISTYP(10) = 'SEG4'
+        LISTYP(3) = 'QUAD4'
+        LISTYP(4) = 'QUAD8'
+        LISTYP(5) = 'QUAD9'
+        LISTYP(6) = 'SEG2'
+        LISTYP(7) = 'SEG3'
+        LISTYP(8) = 'SEG4'
       END IF
 
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NNOMX,KB,IER)

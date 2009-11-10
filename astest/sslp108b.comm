@@ -1,5 +1,6 @@
-# MODIF  DATE 11/08/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/11/2009   AUTEUR MEUNIER S.MEUNIER 
 # TITRE PLAQUE FISSUREE 2D EN MODE 1 - METHODE ARLEQUIN
+# sslp108b.para = tps_job 30 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,37 +25,37 @@ DEBUT(CODE=_F(NOM='SSLP108B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI();
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
 
-MA=MODI_MAILLAGE(reuse =MA,
-                 MAILLAGE=MA,
-                 MODI_MAILLE=_F(OPTION='NOEUD_QUART',
-                                GROUP_NO_FOND='P0',));
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                  GROUP_NO_FOND='P0',),);
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+MODARL=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),);
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
-                          NU=0.3,
-                          ALPHA=0.0,),);
+MATERI=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
+                             NU=0.3,
+                             ALPHA=0.0,),);
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MATERI,),);
 
-BL=AFFE_CHAR_MECA(MODELE=MO,
-                  DDL_IMPO=_F(GROUP_MA='L23',
-                              LIAISON='ENCASTRE',),);
+BLOC=AFFE_CHAR_MECA(MODELE=MODARL,
+                    DDL_IMPO=_F(GROUP_MA='L23',
+                                LIAISON='ENCASTRE',),);
 
-CH=AFFE_CHAR_MECA(MODELE=MO,
-                  FORCE_CONTOUR=(_F(GROUP_MA='L12',
-                                    FY=1.E8,
-                                    FX=1.E8,),
-                                 _F(GROUP_MA='L34',
-                                    FY=-1.E8,
-                                    FX=-1.E8,),),);
+CHAREX=AFFE_CHAR_MECA(MODELE=MODARL,
+                      FORCE_CONTOUR=(_F(GROUP_MA='L12',
+                                        FX=1.E8,
+                                        FY=1.E8,),
+                                     _F(GROUP_MA='L34',
+                                        FX=-1.E8,
+                                        FY=-1.E8,),),);
 
 ##################################################
 # 1. Creation des relations de couplage Arlequin
@@ -64,22 +65,22 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
 #    Collage sur le modele fin
 ##################################################
 
-AR=AFFE_CHAR_MECA(MODELE=MO,
-                  ARLEQUIN=_F(GROUP_MA_1=('COUR','FISS',),
-                              GROUP_MA_2='PLAQ',
-                              GROUP_MA_COLL='COUR',
-                              COLLAGE='GROUP_MA_1',
-                              POIDS_1=0.99999,),);
+ARLEQ=AFFE_CHAR_MECA(MODELE=MODARL,
+                     ARLEQUIN=_F(GROUP_MA_1=('COUR','FISS',),
+                                 GROUP_MA_2='PLAQ',
+                                 GROUP_MA_COLL='COUR',
+                                 COLLAGE='GROUP_MA_1',
+                                 POIDS_1=0.99999,),);
 
 ####################
 # 2. CALCUL STATIQUE
 ####################
 
-RESU=MECA_STATIQUE(MODELE=MO,
+RESU=MECA_STATIQUE(MODELE=MODARL,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=AR,),
-                          _F(CHARGE=BL,),
-                          _F(CHARGE=CH,),),);
+                   EXCIT=(_F(CHARGE=ARLEQ,),
+                          _F(CHARGE=BLOC,),
+                          _F(CHARGE=CHAREX,),),);
 
 ############################
 # 3. POST-TRAITEMENT GENERAL
@@ -95,13 +96,11 @@ RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION=('EQUI_NOEU_SIGM','SIGM_NOEU_DEPL',),);
 
-
-LIGAM=INTE_MAIL_2D(MAILLAGE=MA,
+LIGAM=INTE_MAIL_2D(MAILLAGE=MAIL,
                    DEFI_CHEMIN=_F(GROUP_MA='LPOP11',),);
 
-BHAUT=INTE_MAIL_2D(MAILLAGE=MA,
+BHAUT=INTE_MAIL_2D(MAILLAGE=MAIL,
                    DEFI_CHEMIN=_F(GROUP_MA='L12',),);
-
 
 SIYY_LIG=POST_RELEVE_T(ACTION=_F(INTITULE='SIYY_LIG',
                                  CHEMIN=LIGAM,
@@ -118,48 +117,76 @@ DEPL_H=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL_H',
                                NOM_CMP='DY',
                                OPERATION='EXTRACTION',),);
 
-############################################
+########################################################
 # 4. POST-TRAITEMENT MECANIQUE DE LA RUPTURE
-#    => calcul de G, K1, K2, G_IRWIN
-############################################
+# Attention : on est sur un modele Arlequin !
+#             Il faut donc restreindre le resultat RESU
+#             au groupe de mailles du patch (RESU_RES).
+########################################################
 
-DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                OPERATION='EXTR',
-                RESULTAT=RESU,
-                NOM_CHAM='DEPL',
-                NUME_ORDRE=1,);
+IMPR_RESU(FORMAT='MED',
+          UNITE=81,
+          RESTREINT=_F(GROUP_MA=('COUR','FISS',),
+                       TOUT_GROUP_NO='OUI',),
+          RESU=_F(RESULTAT=RESU,
+                  NOM_CHAM='DEPL',),);
 
-FOND1=DEFI_FOND_FISS(MAILLAGE=MA,
+MA_RES=LIRE_MAILLAGE(UNITE=81,
+                     FORMAT='MED',
+                     VERI_MAIL=_F(VERIF='OUI',),);
+
+MA_RES=MODI_MAILLAGE(reuse =MA_RES,
+                     MAILLAGE=MA_RES,
+                     MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                    GROUP_NO_FOND='P0',),);
+
+MO_RES=AFFE_MODELE(MAILLAGE=MA_RES,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='C_PLAN',),);
+
+MAT_RES=AFFE_MATERIAU(MAILLAGE=MA_RES,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATERI,),);
+
+RESU_RES=LIRE_RESU(TYPE_RESU='EVOL_ELAS',
+                   FORMAT='MED',
+                   MODELE=MO_RES,
+                   CHAM_MATER=MAT_RES,
+                   UNITE=81,
+                   FORMAT_MED=_F(NOM_CHAM='DEPL',
+                                 NOM_CHAM_MED='&RESUR1_DEPL____________________',),
+                   TOUT_ORDRE='OUI',);
+
+FOND1=DEFI_FOND_FISS(MAILLAGE=MA_RES,
                      FOND_FISS=_F(GROUP_NO='P0',),
                      NORMALE=(0.0,-1.0,0.0,),);
 
-THETA01=CALC_THETA(MODELE=MO,
+THETA01=CALC_THETA(MODELE=MO_RES,
                    DIRECTION=(-1.0,0.0,0.0,),
                    THETA_2D=_F(GROUP_NO='P0',
                                MODULE=1.0,
                                R_INF=1e-05,
                                R_SUP=0.00014,),);
 
-GK01=CALC_G(RESULTAT=RESU,
-            THETA=_F(THETA=THETA01,),
-            EXCIT=(_F(CHARGE=BL,),
-                   _F(CHARGE=CH,),
-                   _F(CHARGE=AR,),),
-            SYME_CHAR='SANS',
-            OPTION='CALC_G',
-            INFO=1,);
+###################################################
+# 5. On peut post-traiter sur le modele restreint :
+#    => calcul de G, K1, K2, G_IRWIN
+###################################################
 
-GK02=CALC_G(RESULTAT=RESU,
-            THETA=_F(THETA=THETA01,FOND_FISS=FOND1,),
-            EXCIT=(_F(CHARGE=BL,),
-                   _F(CHARGE=CH,),
-                   _F(CHARGE=AR,),),
+GK01=CALC_G(THETA=_F(THETA=THETA01,),
+            RESULTAT=RESU_RES,
             SYME_CHAR='SANS',
-            OPTION='CALC_K_G',
-            INFO=1,);
+            OPTION='CALC_G',);
+
+GK02=CALC_G(THETA=_F(THETA=THETA01,
+                     FOND_FISS=FOND1,),
+            RESULTAT=RESU_RES,
+            SYME_CHAR='SANS',
+            OPTION='CALC_K_G',);
 
 #########################
-# 5. TESTS NON REGRESSION
+# 6. TESTS NON REGRESSION
 #    => deplacements
 #    => contraintes
 #########################
@@ -197,7 +224,7 @@ TEST_TABLE(TABLE=SIYY_LIG,
            VERSION='9.0.4',);
 
 ##############################################################
-# 6. TESTS PAR RAPPORT A CALCUL SANS ARLEQUIN (MODELISATION A)
+# 7. TESTS PAR RAPPORT A CALCUL SANS ARLEQUIN (MODELISATION A)
 #    => contraintes
 ##############################################################
 
@@ -215,7 +242,6 @@ TEST_TABLE(TABLE=SIYY_LIG,
            PRECISION=0.02,
            REFERENCE='AUTRE_ASTER');
 
-
 TEST_TABLE(TABLE=SIYY_LIG,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=8.00000E-04),
            NOM_PARA='SIYY',
@@ -224,7 +250,7 @@ TEST_TABLE(TABLE=SIYY_LIG,
            REFERENCE='AUTRE_ASTER');
 
 #################################################
-# 7. TESTS NON REGRESSION MECANIQUE DE LA RUPTURE
+# 8. TESTS NON REGRESSION MECANIQUE DE LA RUPTURE
 #    => G, K1, K2, G_IRWIN
 #################################################
 
@@ -264,7 +290,7 @@ TEST_TABLE(TABLE=GK02,
            VERSION='9.0.4',);
 
 ##############################################################
-# 8. TESTS PAR RAPPORT A CALCUL SANS ARLEQUIN (MODELISATION A)
+# 9. TESTS PAR RAPPORT A CALCUL SANS ARLEQUIN (MODELISATION A)
 #    => G, K1, K2, G_IRWIN
 ##############################################################
 

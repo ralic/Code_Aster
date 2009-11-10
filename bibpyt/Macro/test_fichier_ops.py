@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fichier_ops Macro  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,13 +21,24 @@
 import sys
 import os
 import re
-import md5
 
-#-------------------------------------------------------------------------------
+# hashlib only exists in python>=2.5
+def hash_new():
+   try:
+      import hashlib
+      _hash_new = hashlib.md5()
+      print 'hashlib'
+   except ImportError:
+      import md5
+      _hash_new = md5.new()
+      print 'md5'
+   return _hash_new
+
+
 class TestFichierError(Exception):
    pass
 
-#-------------------------------------------------------------------------------
+
 def convert(x):
    return float(x)
 
@@ -100,12 +111,12 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
       UTMESS('S', 'TEST0_1', valk=valk)
 
    # calcule le nombre de réels et la somme ou min/max
-   nbval, valeur, md5sum = test_iter(fileobj, function=dict_func_test[TYPE_TEST], verbose=(INFO > 1))
+   nbval, valeur, chksum = test_iter(fileobj, function=dict_func_test[TYPE_TEST], verbose=(INFO > 1))
    fileobj.close()
 
    # produit le TEST_TABLE
-   md5ref = VALE_K or 'non testé'
-   is_ok = int(md5sum == md5ref)
+   refsum = VALE_K or 'non testé'
+   is_ok = int(chksum == refsum)
    tab1__ = CREA_TABLE(LISTE=(_F(PARA='NBVAL',  LISTE_I=nbval,),
                               _F(PARA='VALEUR', LISTE_R=valeur,),
                               _F(PARA='TEXTE',  LISTE_I=is_ok),),)
@@ -113,7 +124,7 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
       sVALE = '%20.13e' % VALE
    else:
       sVALE = 'non testé'
-   UTMESS('I', 'TEST0_4', vali=(nbval, NB_VALE), valr=valeur, valk=(md5sum, md5ref, FICHIER, sVALE))
+   UTMESS('I', 'TEST0_4', vali=(nbval, NB_VALE), valr=valeur, valk=(chksum, refsum, FICHIER, sVALE))
    
    kwopt = { 'REFERENCE' : kwargs['REFERENCE'], }
    if kwargs['REFERENCE'] == 'NON_REGRESSION':
@@ -208,7 +219,7 @@ def test_iter(obj, function, verbose=False):
    max_buff_size = 1000
    nbval = 0
    val = 0.
-   md5text = md5.new()
+   hfile = hash_new()
    
    # Si on lit tout le fichier d'un coup, on va environ 3 fois plus vite
    # que si on le lit ligne à ligne, mais on consomme en mémoire environ
@@ -255,7 +266,7 @@ def test_iter(obj, function, verbose=False):
       val    = function(val, l_float)
 
       text = ''.join([s.strip() for s in text.split()])
-      md5text.update(text)
+      hfile.update(text)
       
       if verbose:
          print 'Nombres réels et entiers :'
@@ -263,9 +274,9 @@ def test_iter(obj, function, verbose=False):
          print 'Texte :'
          print text
    
-   md5sum = md5text.hexdigest()
+   chksum = hfile.hexdigest()
    
-   return nbval, val, md5sum
+   return nbval, val, chksum
 
 #-------------------------------------------------------------------------------
 def test_file(filename, regexp_ignore=[], type_test='SOMM', verbose=False):
@@ -277,9 +288,9 @@ def test_file(filename, regexp_ignore=[], type_test='SOMM', verbose=False):
    fileobj = open(filename, 'r')
    fileobj = regexp_filter(fileobj, regexp_ignore)
 
-   nbv, val, md5sum = test_iter(fileobj, function=dict_func_test[type_test], verbose=verbose)
+   nbv, val, chksum = test_iter(fileobj, function=dict_func_test[type_test], verbose=verbose)
 
-   return nbv, val, md5sum
+   return nbv, val, chksum
 
 #-------------------------------------------------------------------------------
 if __name__ == '__main__':
@@ -307,7 +318,7 @@ if __name__ == '__main__':
 
    fileobj = open(args[0], 'r')
    fileobj = regexp_filter(fileobj, exp)
-   nbv2, sumv2, md5sum2 = test_iter(fileobj, function=dict_func_test[opts.type_test], verbose=opts.verbose)
-   print '%6d valeurs, resultat = %f, texte : %s' % (nbv2, sumv2, md5sum2)
+   nbv2, sumv2, chksum2 = test_iter(fileobj, function=dict_func_test[opts.type_test], verbose=opts.verbose)
+   print '%6d valeurs, resultat = %f, texte : %s' % (nbv2, sumv2, chksum2)
 
 

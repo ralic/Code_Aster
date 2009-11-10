@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa2 Messages  DATE 09/11/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,15 +28,19 @@ cata_msg={
 """),
 
 2: _("""
- resserrer le mot cle precision pour le materiau elas_fo
+ resserrer le mot cle PRECISION pour le materiau ELAS_FO
 """),
 
 3: _("""
- calcul de la tension le long du cable no %(k1)s  : la longueur sur laquelle on devrait prendre en compte les pertes de tension par recul de l ancrage est superieure a la longueur du cable
+ calcul de la tension le long du cable numéro %(k1)s  :
+ la longueur sur laquelle on devrait prendre en compte les pertes de tension par recul de l ancrage
+ est supérieure à la longueur du cable
 """),
 
 4: _("""
- calcul de la tension le long du cable no %(k1)s  : la longueur sur laquelle on doit prendre en compte les pertes de tension par recul de l ancrage est egale a la longueur du cable
+ calcul de la tension le long du cable numéro %(k1)s  :
+ la longueur sur laquelle on doit prendre en compte les pertes de tension par recul de l ancrage
+ est égale à la longueur du cable
 """),
 
 5: _("""
@@ -52,35 +56,35 @@ cata_msg={
 """),
 
 13: _("""
- problème pour recuperer une grandeur dans la table "cara_geom"
+ problème pour récupérer une grandeur dans la table CARA_GEOM
 """),
 
 14: _("""
- plus petite taille de maille negative ou nulle
+ plus petite taille de maille négative ou nulle
 """),
 
 15: _("""
- groupe de maille group_ma_1= %(k1)s  inexistant dans le maillage  %(k2)s
+ groupe de maille GROUP_MA_1= %(k1)s  inexistant dans le maillage  %(k2)s
 """),
 
 16: _("""
- groupe de maille group_ma_2= %(k1)s  inexistant dans le maillage  %(k2)s
+ groupe de maille GROUP_MA_2= %(k1)s  inexistant dans le maillage  %(k2)s
 """),
 
 17: _("""
- les groupes de mailles group_ma_1= %(k1)s  et group_ma_2= %(k2)s  ont des cardinaux différents
+ les groupes de mailles GROUP_MA_1= %(k1)s  et GROUP_MA_2= %(k2)s  ont des cardinaux différents
 """),
 
 18: _("""
- nombre de noeuds incoherent sous les 2 group_ma a coller
+ nombre de noeuds incohérent sous les 2 GROUP_MA à coller
 """),
 
 19: _("""
- un noeud de group_ma_2 n est geometriquement appariable avec aucun de group_ma_1
+ un noeud de GROUP_MA_2 n'est géometriquement appariable avec aucun de GROUP_MA_1
 """),
 
 20: _("""
- les 2 maillages doivent etre du meme type : 2d (ou 3d).
+ les 2 maillages doivent être du même type : 2d (ou 3d).
 """),
 
 21: _("""
@@ -98,43 +102,43 @@ cata_msg={
 """),
 
 23: _("""
- traitement non prevu pour un modele avec mailles tardives.
+ traitement non prévu pour un modèle avec mailles tardives.
 """),
 
 24: _("""
- abscence de carte d'orientation des elements. la structure etudiee n'est pas une poutre.
+ absence de carte d'orientation des éléments. la structure etudiée n'est pas une poutre.
 """),
 
 25: _("""
- probleme pour determiner les rangs des composantes <alpha> , <beta> , <gamma> de la grandeur <caorie>
+ problème pour déterminer les rangs des composantes <ALPHA> , <BETA> , <GAMMA> de la grandeur <CAORIE>
 """),
 
 26: _("""
- erreur a l'appel de la routine etenca pour extension de la carte  %(k1)s .
+ erreur à l'appel de la routine ETENCA pour l'extension de la carte  %(k1)s .
 """),
 
 27: _("""
- detection d'un element d'un type non admissible. la structure etudiee n'est pas une poutre droite.
+ Détection d'un élément d'un type non admissible. La structure étudiée n'est pas une poutre droite.
 """),
 
 28: _("""
- l'element supporte par la maille no %(k1)s  n'a pas ete oriente.
+ l'élément supporté par la maille numéro %(k1)s  n'a pas ete orienté.
 """),
 
 29: _("""
- carte d'orientation incomplete pour l'element supporte par la maille no %(k1)s .
+ carte d'orientation incomplète pour l'élément supporté par la maille numéro %(k1)s .
 """),
 
 30: _("""
- les elements de la structure ne sont pas d'un type attendu. la structure etudiee n'est pas une poutre droite.
+ les éléments de la structure ne sont pas d'un type attendu. la structure étudiée n'est pas une poutre droite.
 """),
 
 31: _("""
- l'axe directeur de la poutre doit etre parallele avec l'un des axes du repere global.
+ l'axe directeur de la poutre doit etre parallèle avec l'un des axes du repère global.
 """),
 
 32: _("""
- la structure etudiee n'est pas une poutre droite.
+ la structure étudiée n'est pas une poutre droite.
 """),
 
 
@@ -143,37 +147,36 @@ cata_msg={
 """),
 
 38: _("""
- les courbures ky et kz ne sont pas prises en compte pour les poutres courbes
+ les courbures KY et KZ ne sont pas prises en compte pour les poutres courbes
 """),
 
 42: _("""
 Erreur Utilisateur :
  Le paramètre ALPHA (dilatation) du matériau est une fonction de la température.
- Cette fonction (%(k1)s) n'est définie que par 1 point.
+ Cette fonction (%(k1)s) n'est définie que par un point.
  TEMP_DEF_ALPHA et TEMP_REF ne sont pas identiques.
  On ne peut pas faire le changement de variable TEMP_DEF_ALPHA -> TEMP_REF.
- On s'arrete donc.
+ On s'arrête donc.
 
 Risque & Conseil:
- Il faut définir la fonction ALPHA avec plus d'1 point.
+ Il faut définir la fonction ALPHA avec plus d'un point.
 """),
-
 
 
 43: _("""
- deux mailles poi1 interdit
+ deux mailles POI1 interdit
 """),
 
 45: _("""
- aucun noeud ne connait le ddl:  %(k1)s
+ aucun noeud ne connait le DDL:  %(k1)s
 """),
 
 46: _("""
- le descripteur_grandeur associe au modele ne tient pas sur dix entiers codes
+ le descripteur_grandeur associé au modèle ne tient pas sur dix entiers codés
 """),
 
 47: _("""
- fonree non traite  %(k1)s
+ FONREE non traite  %(k1)s
 """),
 
 48: _("""
@@ -181,51 +184,51 @@ Risque & Conseil:
 """),
 
 49: _("""
- les caracteristiques materielles n ont pas ete affectees a la maille no %(k1)s  appartenant au cable no %(k2)s
+ les caractéristiques matérielles n'ont pas ete affectées à la maille no %(k1)s  appartenant au cable no %(k2)s
 """),
 
 50: _("""
- des materiaux differents ont ete affectes aux mailles appartenant au cable no %(k1)s
+ des matériaux différents ont été affectés aux mailles appartenant au cable no %(k1)s
 """),
 
 51: _("""
- recuperation des caracteristiques du materiau acier associe au cable no %(k1)s  : absence de relation de comportement de type <elas>
+ récupération des caractéristiques du matériau ACIER associé au cable no %(k1)s  : absence de relation de comportement de type <elas>
 """),
 
 52: _("""
- recuperation des caracteristiques du materiau acier associe au cable no %(k1)s , relation de comportement <elas> : module d young indefini
+ récupération des caractéristiques du matériau ACIER associé au cable no %(k1)s , relation de comportement <ELAS> : module d'Young indéfini
 """),
 
 53: _("""
- recuperation des caracteristiques du materiau acier associe au cable no %(k1)s , relation de comportement <elas> : valeur invalide pour le module d young
+ récupération des caractéristiques du matériau ACIER associé au cable no %(k1)s , relation de comportement <ELAS> : valeur invalide pour le module d'Young
 """),
 
 54: _("""
- recuperation des caracteristiques du materiau acier associe au cable no %(k1)s  : absence de relation de comportement de type <bpel_acier>
+ récupération des caractéristiques du matériau ACIER associé au cable no %(k1)s  : absence de relation de comportement de type <BPEL_ACIER>
 """),
 
 55: _("""
- recuperation des caracteristiques du materiau acier associe au cable no %(k1)s , relation de comportement <bpel_acier> : au moins un parametre indefini
+ récupération des caractéristiques du matériau ACIER associé au cable no %(k1)s , relation de comportement <BPEL_ACIER> : au moins un paramètre indéfini
 """),
 
 56: _("""
- recuperation des caracteristiques du materiau acier associe au cable no %(k1)s , relation de comportement <bpel_acier> : au moins une valeur de parametre invalide
+ récupération des caractéristiques du matériau ACIER associé au cable no %(k1)s , relation de comportement <BPEL_ACIER> : au moins une valeur de paramètre invalide
 """),
 
 57: _("""
- les caracteristiques geometriques n ont pas ete affectees a la maille no %(k1)s  appartenant au cable no %(k2)s
+ les caractéristiques géometriques n'ont pas été affectées à la maille no %(k1)s  appartenant au cable no %(k2)s
 """),
 
 58: _("""
- l aire de la section droite n a pas ete affectee a la maille no %(k1)s  appartenant au cable no %(k2)s
+ l'aire de la section droite n a pas été affectée à la maille no %(k1)s  appartenant au cable no %(k2)s
 """),
 
 59: _("""
- valeur invalide pour l aire de la section droite affectee a la maille no %(k1)s  appartenant au cable no %(k2)s
+ valeur invalide pour l'aire de la section droite affectée à la maille numéro %(k1)s  appartenant au cable numéro %(k2)s
 """),
 
 60: _("""
- des aires de section droite differentes ont ete affectees aux mailles appartenant au cable no %(k1)s
+ des aires de section droite différentes ont été affectées aux mailles appartenant au cable no %(k1)s
 """),
 
 61: _("""
@@ -234,19 +237,20 @@ Note DVP: erreur de cohérence fortran/catalogue.
 """),
 
 62: _("""
-  numero d"occurence negatif
+  numero d"occurence négatif
 """),
 
 63: _("""
- pas de blocage de deplacement tangent sur des faces d'elements 3d. rentrer la condition aux limites par ddl_impo ou liaison_ddl
+ pas de blocage de déplacement tangent sur des faces d'éléments 3D.
+ rentrer la condition aux limites par DDL_IMPO ou LIAISON_DDL
 """),
 
 64: _("""
- il faut choisir entre : flux_x ,  flux_y , flux_zet flun , flun_inf , flun_sup.
+ il faut choisir entre : FLUX_X ,  FLUX_Y , FLUX_Z et FLUN , FLUN_INF , FLUN_SUP.
 """),
 
 65: _("""
- le descripteur_grandeur des forces ne tient pas sur dix entiers codes
+ le descripteur_grandeur des forces ne tient pas sur dix entiers codés
 """),
 
 66: _("""
@@ -254,27 +258,27 @@ Note DVP: erreur de cohérence fortran/catalogue.
 """),
 
 82: _("""
- pour liaison_unif entrer plus de un noeud
+ pour LIAISON_UNIF, entrer plus d'un seul noeud
 """),
 
 83: _("""
- on doit utiliser le mot cle cham_no pour donner le cham_no dont les composantes seront les seconds membres de la relation lineaire.
+ on doit utiliser le mot cle CHAM_NO pour donner le CHAM_NO dont les composantes seront les seconds membres de la relation linéaire.
 """),
 
 84: _("""
- il faut que le cham_no dont les termes  servent de seconds membres a la relation lineaire a ecrire ait ete defini.
+ il faut que le CHAM_NO dont les termes servent de seconds membres à la relation linéaire à écrire ait été défini.
 """),
 
 85: _("""
- on doit donner un cham_no apres le mot cle cham_no derriere le mot facteur chamno_impo .
+ on doit donner un CHAM_NO après le mot cle CHAM_NO derrière le mot facteur CHAMNO_IMPO .
 """),
 
 86: _("""
- il faut definir la valeur du coefficient  de la relation lineaire apres le mot cle coef_mult derriere le mot facteur chamno_impo .
+ il faut definir la valeur du coefficient de la relation linéaire après le mot clé COEF_MULT derrière le mot facteur CHAMNO_IMPO
 """),
 
 87: _("""
- le descripteur_grandeur de la grandeur de nom  %(k1)s  ne tient pas sur dix entiers codes
+ le descripteur_grandeur de la grandeur de nom  %(k1)s  ne tient pas sur dix entiers codés
 """),
 
 89: _("""
@@ -293,17 +297,17 @@ La fonction n'a pas été trouvée dans la colonne %(k1)s de la table %(k2)s
 """),
 
 92: _("""
-Les mots-cles admissibles pour definir la premiere liste de noeuds sous le mot-facteur  %(k1)s sont :
+Les mots-cles admissibles pour définir la premiere liste de noeuds sous le mot-facteur  %(k1)s sont :
 "GROUP_NO_1" ou "NOEUD_1" ou "GROUP_MA_1" ou "MAILLE_1".
 """),
 
 93: _("""
-Les mots-cles admissibles pour definir la seconde liste de noeuds sous le mot-facteur  %(k1)s  sont :
+Les mots-cles admissibles pour définir la seconde liste de noeuds sous le mot-facteur  %(k1)s  sont :
 "GROUP_NO_2" ou "NOEUD_2" ou "GROUP_MA_2" ou "MAILLE_2".
 """),
 
 94: _("""
-  LIAISON_GROUP : on ne sait pas calculer la normale a un noeud il faut passer par les mailles
+  LIAISON_GROUP : on ne sait pas calculer la normale à un noeud. Il faut passer par les mailles
 """),
 
 95: _("""
@@ -314,11 +318,15 @@ Les mots-cles admissibles pour definir la seconde liste de noeuds sous le mot-fa
   %(k1)s   %(k2)s ne fait pas partie du maillage :  %(k3)s
 """),
 
+97: _("""
+  Assemblage de maillages : Présence de noeuds confondus dans la zone à coller GROUP_MA_1.
+"""),
+
 98: _("""
- on doit utiliser le mot cle cham_no pour donner le cham_no dont les composantes seront les coefficients de la relation lineaire.
+ on doit utiliser le mot clé CHAM_NO pour donner le CHAM_NO dont les composantes seront les coefficients de la relation linéaire.
 """),
 
 99: _("""
- il faut que le cham_no dont les termes  servent de coefficients a la relation lineaire a ecrire ait ete defini.
+ il faut que le CHAM_NO dont les termes servent de coefficients à la relation linéaire à écrire ait été défini.
 """),
 }

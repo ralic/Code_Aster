@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/10/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 09/11/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -744,6 +744,11 @@ C       LA SD RESULTAT
           ELSE IF (NOCH.EQ.'EPME_ELNO_DEPL') THEN
             NOMGD  = 'EPSI_R'
             TYPCHA = 'ELNO'
+          ELSE IF (NOCH.EQ.'EPSP_ELNO') THEN
+            NOMGD  = 'EPSI_R'
+            TYPCHA = 'ELNO'
+            OPTION = 'EPSP_ELNO'
+            PARAM  = 'PDEFOPL'
           ELSE
             CALL U2MESK('F','UTILITAI2_94',1,NOCH)
           END IF

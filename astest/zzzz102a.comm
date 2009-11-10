@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 09/11/2009   AUTEUR GREFFET N.GREFFET 
 # TITRE LIRE_FONCTION ET SPECTRE D'OSCILLATEUR
 # zzzz102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -63,11 +63,16 @@ TEST_TABLE(  TABLE=MAXLBEWA,
 
 G=9.81
 UNSURG=1/G
+FMAX = 100.
+
+LFREQ1 = DEFI_LIST_REEL(DEBUT=0.1,INTERVALLE=(_F(JUSQU_A=FMAX,PAS=0.05,),),)
+
 
 SLBEWA=CALC_FONCTION(
                  SPEC_OSCI=_F(  FONCTION = LBEWA,
                             NATURE = 'ACCE', AMOR_REDUIT = ( 0.01, ),
-                            NORME = UNSURG)  )
+                            NORME = UNSURG,
+                             LIST_FREQ = LFREQ1,)  )
 
 MSLBEWA=INFO_FONCTION(    MAX=_F(  FONCTION = SLBEWA)  )
 
@@ -86,8 +91,8 @@ TEST_TABLE(   TABLE=MSLBEWA,
 VAL=6.38000E-01 * G
 TEST_FONCTION(
          VALEUR=_F(  FONCTION = SLBEWA,        NOM_PARA = ('AMOR', 'FREQ',),
-                  VALE_PARA = ( 0.01, 35.5, ),
-                  VALE_REFE = VAL, PRECISION = 5.E-2),ATTRIBUT=(
+                  VALE_PARA = ( 0.01, FMAX, ),
+                  VALE_REFE = VAL, PRECISION = 1.E-3),ATTRIBUT=(
        _F(  FONCTION = SLBEWA,         ATTR = 'NOM_PARA',
                   PARA = 0.01,                ATTR_REFE = 'AMOR'),
        _F(  FONCTION = SLBEWA,         ATTR = 'NOM_RESU',
@@ -107,16 +112,17 @@ TEST_FONCTION(
 SLBEWD=CALC_FONCTION(
                SPEC_OSCI=_F(  FONCTION = LBEWA,
                             NATURE = 'DEPL', AMOR_REDUIT = ( 0.01, ),
-                            NORME = 1.)  )
+                            NORME = 1.,
+                            LIST_FREQ = LFREQ1,)  )
 
-OMEGA2=4. * pi * pi * 35.5 * 35.5
+OMEGA2=4. * pi * pi * FMAX * FMAX
 VAL= 6.38000E-01 / OMEGA2
 
 TEST_FONCTION(
          VALEUR=_F(  FONCTION = SLBEWD,        NOM_PARA = ('AMOR', 'FREQ',),
-                  VALE_PARA = ( 0.01, 35.5, ),
+                  VALE_PARA = ( 0.01, FMAX, ),
                   VALE_REFE = VAL,
-                  PRECISION = 5.E-2),
+                  PRECISION = 1.E-3),
        ATTRIBUT=_F(  FONCTION = SLBEWD,         ATTR = 'NOM_RESU',
                   PARA = 0.01,                ATTR_REFE = 'DEPL')
                 )
@@ -160,12 +166,26 @@ TEST_TABLE(   TABLE=MAXLBEWS,
 SLBEWS=CALC_FONCTION(
               SPEC_OSCI=_F(  FONCTION = LBEWS,
                             NATURE = 'ACCE', AMOR_REDUIT = ( 0.01, ),
-                            NORME = 1.)  )
+                            NORME = 1.,
+                            LIST_FREQ = LFREQ1,)  )
+
+
+# ---------------------------------------------------------------
+#
+#   Visualisation des spectres :
+#   utile pour tester le contenu frequentiel et dimensionner en consequence
+#   la liste de frequence LIST_FREQ pour le calcul SPEC_OSCI.
+#
+#IMPR_FONCTION(FORMAT='XMGRACE', UNITE=52, COURBE= _F(FONCTION=SLBEWA))
+#IMPR_FONCTION(FORMAT='XMGRACE', UNITE=53, COURBE= _F(FONCTION=SLBEWD))
+#IMPR_FONCTION(FORMAT='XMGRACE', UNITE=54, COURBE= _F(FONCTION=SLBEWS))
+#
+# ---------------------------------------------------------------
 
 TEST_FONCTION(
          VALEUR=_F(  FONCTION = SLBEWS,        NOM_PARA = ('AMOR', 'FREQ',),
-                  VALE_PARA = ( 0.01, 35.5, ),
-                  VALE_REFE = 1.00000E+00,  PRECISION = 10.E-2),ATTRIBUT=(
+                  VALE_PARA = ( 0.01, FMAX, ),
+                  VALE_REFE = 1.00000E+00,  PRECISION = 1.E-3),ATTRIBUT=(
        _F(  FONCTION = SLBEWS,         ATTR = 'NOM_PARA',
                   PARA = 0.01,                ATTR_REFE = 'AMOR'),
        _F(  FONCTION = SLBEWS,         ATTR = 'NOM_RESU',
@@ -200,21 +220,24 @@ LBEWA2=LIRE_FONCTION(          UNITE=19,
 SPECT1=CALC_FONCTION(    SPEC_OSCI=_F(  FONCTION = LBEWA,
                                         NATURE = 'DEPL',
                                  AMOR_REDUIT = (0.01, 0.03, 0.05,),
-                                        NORME = 1.)
+                                        NORME = 1.,
+                                         LIST_FREQ = LFREQ1,)
                         )
 
 #
 SPECT2=CALC_FONCTION(    SPEC_OSCI=_F(  FONCTION = LBEWA,
                                         NATURE = 'DEPL',
                                  AMOR_REDUIT = (0.01, 0.05,),
-                                        NORME = 1.)
+                                        NORME = 1.,
+                                         LIST_FREQ = LFREQ1,)
                         )
 
 #
 SPECT3=CALC_FONCTION(    SPEC_OSCI=_F(  FONCTION = LBEWA2,
                                         NATURE = 'DEPL',
                                  AMOR_REDUIT = (0.01, 0.05,),
-                                        NORME = 1.)
+                                        NORME = 1.,
+                                         LIST_FREQ = LFREQ1,)
                         )
 
 #

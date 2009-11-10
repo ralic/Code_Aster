@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+%& MODIF TYPELEM  DATE 09/11/2009   AUTEUR MEUNIER S.MEUNIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -173,7 +173,6 @@ MODE_LOCAL__
     ESINGUL  = SING_R   ELEM__         (DEGRE   RAPPORT   TAILLE   )
     ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   RAPPORT   TAILLE   )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
-    CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )

@@ -1,4 +1,4 @@
-#@ MODIF sd_util SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_util SD  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,6 @@ try:
 except:
    pass
 
-from sets import Set
 import copy
 
 
@@ -81,7 +80,7 @@ def sdu_tous_differents(ojb,checker,sequence=None,comment=''):
     else :
         seq=ojb.get()
 
-    sdu_compare(ojb, checker, len(seq), '==', len(Set(seq)), comment='Tous différents: '+comment)
+    sdu_compare(ojb, checker, len(seq), '==', len(set(seq)), comment='Tous différents: '+comment)
 
 
 def sdu_tous_non_blancs(ojb,checker,sequence=None,comment=''):

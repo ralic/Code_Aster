@@ -1,4 +1,4 @@
-#@ MODIF optimize Utilitai  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF optimize Utilitai  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,12 +49,12 @@ abs = Num.absolute
 __version__="0.3.1"
 
 def rosen(x):  # The Rosenbrock function
-    return MLab.sum(100.0*(x[1:]-x[:-1]**2.0)**2.0 + (1-x[:-1])**2.0)
+    return MLab.sum(100.0*(x[1:len(x)]-x[0:-1]**2.0)**2.0 + (1-x[0:-1])**2.0)
 
 def rosen_der(x):
     xm = x[1:-1]
-    xm_m1 = x[:-2]
-    xm_p1 = x[2:]
+    xm_m1 = x[0:-2]
+    xm_p1 = x[2:len(x)]
     der = MLab.zeros(x.shape,x.typecode())
     der[1:-1] = 200*(xm-xm_m1**2) - 400*(xm_p1 - xm**2)*xm - 2*(1-xm)
     der[0] = -400*x[0]*(x[1]-x[0]**2) - 2*(1-x[0])
@@ -129,11 +129,11 @@ def fmin(func, x0, args=(), xtol=1e-4, ftol=1e-4, maxiter=None, maxfun=None, ful
     funcalls = N+1
     
     while (funcalls < maxfun and iterations < maxiter):
-        if (max(Num.ravel(abs(sim[1:]-sim[0]))) <= xtol \
-            and max(abs(fsim[0]-fsim[1:])) <= ftol):
+        if (max(Num.ravel(abs(sim[1:len(sim)]-sim[0]))) <= xtol \
+            and max(abs(fsim[0]-fsim[1:len(fsim)])) <= ftol):
             break
 
-        xbar = Num.add.reduce(sim[:-1],0) / N
+        xbar = Num.add.reduce(sim[0:-1],0) / N
         xr = (1+rho)*xbar - rho*sim[-1]
         fxr = apply(func,(xr,)+args)
         funcalls = funcalls + 1

@@ -1,4 +1,4 @@
-#@ MODIF arlequin Messages  DATE 15/09/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF arlequin Messages  DATE 09/11/2009   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,7 +73,7 @@ cata_msg={
 
 10: _("""
  Le groupe de mailles de collage (GROUP_MA_COLL) doit être un sous ensemble
- d'un des deux sous domaines GROUP_MA_1 ou GROUP_MA_2
+ d'un des deux sous domaines GROUP_MA_1 ou GROUP_MA_2.
  """),
 
 11: _("""
@@ -104,15 +104,18 @@ cata_msg={
 """),
 
 17: _("""
- Le noeud <%(i1)d> est redondant
+ Vérifiez votre maillage. Il est possible qu'un noeud situé dans
+ la zone de collage soit utilisé à la fois pour être un noeud du maillage 1 et un
+ noeud du maillage 2. Veuillez donner 2 noms différents pour les noeuds du maillage 1 et du
+ maillage 2 situés dans la zone de collage et géométriquement au même endroit.
 """),
 
 18: _("""
- intégration par sous-mailles - 2d : le découpage en tria6 ne marche pas encore
+ Intégration par sous-mailles - 2d : le découpage en tria6 ne marche pas encore
 """),
 
 19: _("""
- élément de type <%(k1)s> interdit
+ Elément de type <%(k1)s> interdit
 """),
 
 20: _("""
@@ -160,8 +163,15 @@ Vous pouvez réduire ce risque en raffinant le maillage ou en utilisant des maill
  Le nombre de noeuds est incohérent : %(i1)d
 """),
 
+28: _("""
+ Vous faites un calcul Arlequin. Le calcul de l'option %(k1)s est impossible dans ce cas.
+"""),
 
-
+29: _("""
+ Vous faites un calcul Arlequin. Faites attention ! Le calcul de mécanique de la rupture doit
+ être réalisé sur un seul et unique maillage. Par exemple, pour le calcul de G, il faut être sûr
+ que la couronne d'intégration n'intersecte qu'un seul maillage.
+"""),
 
 34: _("""
  La famille d'intégration %(i1)d n'existe pas pour les mailles de type %(k1)s.

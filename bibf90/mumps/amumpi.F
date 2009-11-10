@@ -1,7 +1,7 @@
       SUBROUTINE  AMUMPI(OPTION,LQUALI,LDIST,KXMPS,TYPE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPI MUMPS  DATE 20/10/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPI MUMPS  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -127,8 +127,8 @@ C       ------------------------------------------------
           DMPSK%COMM = MPI_COMM_WORLD
         ELSE IF (TYPE.EQ.'Z') THEN
           ZMPSK%COMM = MPI_COMM_WORLD
-	ELSE
-	  CALL ASSERT(.FALSE.)
+        ELSE
+          CALL ASSERT(.FALSE.)
         ENDIF
 
 C ---   ISYM = 0 => NON-SYMETRIQUE
@@ -207,8 +207,8 @@ C ---      INIT
         DO I=1,NCNTL
           CNTL(I)=0.D0
         ENDDO
-	CNTL(4)=-1.D0
-	
+        CNTL(4)=-1.D0
+        
         NVERS(1:80)=''
         IF (TYPE.EQ.'S') THEN
           NVERS(1:5)=SMPSK%VERSION_NUMBER
@@ -221,7 +221,7 @@ C ---      INIT
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-	
+        
 C       DECRYPTAGE (TRES FRUSTE) DU NUMERO DE VERSION DE MUMPS
         IVERS=0
         IF (NVERS.NE.' ') THEN
@@ -234,7 +234,7 @@ C         TESTS DE NAN
           RVERS=1.D0*IVERS
           CALL ASSERT(IISNAN(RVERS).EQ.0)
           CALL ASSERT((IVERS.GE.100).AND.(IVERS.LT.999))
-          IF (IVERS.LT.473) CALL U2MESK('F','FACTOR_72',1,NVERS(1:5))	  
+          IF (IVERS.LT.473) CALL U2MESK('F','FACTOR_72',1,NVERS(1:5))     
         ENDIF
         
 C ---      MESSAGES/ALERTES MUMPS
@@ -322,21 +322,21 @@ C ---      PAS UTILISES
 
 C --       RECHERCHE DE NOYAU
         IF (IVERS.LT.484) THEN
-	  CALL U2MESK('A','FACTOR_74',1,NVERS(1:5))
-	  NPREC=-9999	  
+          CALL U2MESK('A','FACTOR_74',1,NVERS(1:5))
+          NPREC=-9999     
         ENDIF  
         ICNTL(25)=0
-	IF (NPREC.GE.0) THEN
-	  ICNTL(13)=1
-	  ICNTL(24)=1
-	  CNTL(3)=-10.D0**(-NPREC)
-	  CNTL(5)=1.D0
-	ELSE
-	  ICNTL(24)=0
-	  CNTL(3)=0.D0
-	  CNTL(5)=0.D0
-	ENDIF	  
-	  
+        IF (NPREC.GE.0) THEN
+          ICNTL(13)=1
+          ICNTL(24)=1
+          CNTL(3)=-10.D0**(-NPREC)
+          CNTL(5)=1.D0
+        ELSE
+          ICNTL(24)=0
+          CNTL(3)=0.D0
+          CNTL(5)=0.D0
+        ENDIF     
+          
 
 C ---       PARALLELISME/DISTRIBUTION SECOND MEMBRE/SOLUTION
         IF (LDIST) THEN
@@ -376,8 +376,8 @@ C---    ON N'AJOUTE PAS DE PREFIXE AU FICHIER CREE PAR MUMPS
             DMPSK%OOC_TMPDIR='.'
           ELSE IF (TYPE.EQ.'Z') THEN
             ZMPSK%OOC_TMPDIR='.'
-	  ELSE
-	    CALL ASSERT(.FALSE.)
+          ELSE
+            CALL ASSERT(.FALSE.)
           ENDIF
         ELSE IF (ZK24(JSLVK-1+9)(1:3).EQ.'NON') THEN
 C ---     CAS IN_CORE (FACTO/RESOLUTION)
@@ -413,15 +413,15 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
           DO I=2,NCNTL
             DMPSK%CNTL(I)=CNTL(I)
           ENDDO
-	ELSE IF (TYPE.EQ.'Z') THEN
+        ELSE IF (TYPE.EQ.'Z') THEN
           DO I=1,NICNTL
             ZMPSK%ICNTL(I)=ICNTL(I)
           ENDDO
           DO I=2,NCNTL
             ZMPSK%CNTL(I)=CNTL(I)
           ENDDO
-	ELSE
-	    CALL ASSERT(.FALSE.)
+        ELSE
+            CALL ASSERT(.FALSE.)
         ENDIF
 
 C       ------------------------------------------------

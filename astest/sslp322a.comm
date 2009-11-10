@@ -1,4 +1,4 @@
-# MODIF  DATE 07/09/2009   AUTEUR MESSIER J.MESSIER 
+# MODIF  DATE 09/11/2009   AUTEUR MESSIER J.MESSIER 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS AVEC 3 TROUS
 # sslp322a.para = tps_job 800 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -179,7 +179,7 @@ for i in range(NPAS+1) :
                TYPE_TEST='MAX',
                VALE=K1REF[i],
                CRITERE='RELATIF',
-               PRECISION=0.001,
+               PRECISION=0.015,
                REFERENCE='NON_REGRESSION',);
                               
 # TEST DE KII PAR RAPPORT A KII MAILLAGE
