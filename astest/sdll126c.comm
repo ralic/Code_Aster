@@ -1,4 +1,4 @@
-# MODIF  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 16/11/2009   AUTEUR TORKHANI M.TORKHANI 
 # TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_LINE_TRAN
 # sdll126c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,23 +166,22 @@ PHA_Y_D2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DY_DIS2,
 
 TEST_FONCTION(VALEUR=_F(FONCTION=MOD_Y_D2,
                         VALE_PARA=FREQ,
-                        VALE_REFE=.4255E-3,
+                        VALE_REFE=0.5721E-3,
                         REFERENCE='AUTRE_ASTER',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=MOD_Z_D2,
                         VALE_PARA=FREQ,
-                        VALE_REFE=.5558E-3,
+                        VALE_REFE=0.7023E-3,
                         REFERENCE='AUTRE_ASTER',),);
-
 
 TEST_FONCTION(VALEUR=_F(FONCTION=PHA_Y_D2,
                         VALE_PARA=FREQ,
-                        VALE_REFE=-172.3,
+                        VALE_REFE=-172.08,
                         REFERENCE='AUTRE_ASTER',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=PHA_Z_D2,
                         VALE_PARA=FREQ,
-                        VALE_REFE=-84.4,
+                        VALE_REFE=-83.91,
                         REFERENCE='AUTRE_ASTER',),);
 
 FIN();

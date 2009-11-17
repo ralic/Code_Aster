@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
       CHARACTER*2 CODRET(NBRES)
       REAL*8 VALRES(NBRES)
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,VOLUME
-      REAL*8 X(27),Y(27),Z(27),XG,YG,ZG,MATINE(6)
+      REAL*8 X(27),Y(27),Z(27),XG,YG,ZG,MATINE(6),R8PREM
       INTEGER IPOIDS,IVF,IDFDE,IGEOM
       INTEGER JGANO,NNO,KP,NPG,I,J,IMATE
 C     ------------------------------------------------------------------
@@ -61,6 +61,9 @@ C     ------------------------------------------------------------------
       CALL RCVALA(ZI(IMATE),' ','FLUIDE',0,' ',R8BID,2,NOMRES,VALRES,
      &          CODRET,  'FM')
       RHO = VALRES(1)
+      IF(RHO.LE.R8PREM()) THEN
+        CALL U2MESS('F','ELEMENTS5_45')
+      ENDIF
 
       DO 20 I = 1,NNO
         X(I) = ZR(IGEOM+3* (I-1))

@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa9 Messages  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -156,10 +156,6 @@ Conseil :
 29 : _("""
  trop de noeuds dans le GROUP_NO mot cle facteur  %(k1)s  occurrence  %(i1)d
    noeud utilise:  %(k2)s
-"""),
-
-30 : _("""
- Le MODELE doit etre de type mécanique.
 """),
 
 31 : _("""

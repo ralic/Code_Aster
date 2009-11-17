@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -420,4 +420,13 @@ Causes possibles :
       """
       if CONTEXT.debug: print '`- ETAPE sd_accessible :', self.nom
       return self.parent.sd_accessible()
+
+   def get_concept(self, nomsd):
+      """
+          Méthode pour recuperer un concept à partir de son nom
+      """
+      # pourrait être appelée par une commande fortran faisant appel à des fonctions python
+      # on passe la main au parent
+      return self.parent.get_concept()
+
 

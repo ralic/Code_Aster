@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF elements5 Messages  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -200,4 +200,7 @@ Conseil :
   Pour l'acier, il faut renseigner V1, V2, ..., V5
 """),
 
+45 : _("""
+OPTION MASS_INER : la masse volumique RHO doit être non nulle
+"""),
 }

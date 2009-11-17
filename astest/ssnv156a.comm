@@ -1,5 +1,6 @@
-# MODIF  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
 # TITRE COLONNE PLASTIQUE A GRADIENT SOUS CHARGE VOLUMIQUE (3D) 
+# ssnv156a.para = tps_job 280 mem_job 256Mo memjeveux_stat 256 ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +18,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE GJBHHEL E.LORENTZ 
 
 DEBUT(CODE=_F(NOM='SSNV156A',NIV_PUB_WEB='INTERNET'),  
   MEMOIRE=_F(

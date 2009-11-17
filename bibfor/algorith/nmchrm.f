@@ -4,7 +4,7 @@
      &                  REASMA,REAMOR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -154,9 +154,6 @@ C
           IF (REITER.NE.0) THEN
             REASMA = MOD(ITERAT+1,REITER) .EQ. 0
           ENDIF  
-          IF (MATFRO) THEN
-            REASMA = .TRUE.
-          ENDIF
         ELSE
           REASMA = .FALSE.
         END IF

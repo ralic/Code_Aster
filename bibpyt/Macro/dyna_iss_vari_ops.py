@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,37 +81,40 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
 #   dint = INTERF[0].cree_dict_valeurs(INTERF[0].mc_liste)
 #   dcoh = MATR_COHE[0].cree_dict_valeurs(MATR_COHE[0].mc_liste)
    
-   from SD.sd_maillage import sd_maillage
+   from SD.sd_maillage      import sd_maillage
+   from SD.sd_nume_ddl_gd   import sd_nume_ddl_gd    
+   from SD.sd_nume_ddl_gene import sd_nume_ddl_gene    
    from SD.sd_mode_meca import sd_mode_meca 
    from SD.sd_resultat import sd_resultat
-   from SD.sd_cham_gene import sd_cham_gene       
+   from SD.sd_cham_gene import sd_cham_gene
+
+   v_refa_rigi = MATR_GENE['MATR_RIGI'].REFA.get()
+   v_refa_mass = MATR_GENE['MATR_MASS'].REFA.get()
    # MAILLAGE
-   nom_bamo = MATR_GENE['MATR_RIGI'].REFA.get()[0]
+   nom_bamo = v_refa_rigi[0]
    nume_ddl = aster.getvectjev(nom_bamo[0:8] + '           .REFD        ' )[3]
    nom_mail = aster.getvectjev( nume_ddl[0:19] + '.REFN        ' )[0] 
-   num_mail = sd_maillage(nom_mail)
+   maillage = sd_maillage(nom_mail)
    # MODELE, DDLGENE
-   nom_ddlgene = MATR_GENE['MATR_RIGI'].REFA.get()[1]  
+   nom_ddlgene = v_refa_rigi[1]  
    nom_modele = aster.getvectjev( nume_ddl[0:19] + '.LILI        ' )[1]   
-   nume_resu = self.jdc.sds_dict[string.strip(nom_bamo)]
-   nume_ddlgene = self.jdc.sds_dict[string.strip(nom_ddlgene)]
-   nume_modele = self.jdc.sds_dict[string.strip(nom_modele[0:8])]   
+   resultat = self.get_concept(nom_bamo)
+   nume_ddlgene = self.get_concept(nom_ddlgene)
+   modele = self.get_concept(nom_modele[0:8])
 
    #TEST base modale
-   nom_bamo1 = MATR_GENE['MATR_MASS'].REFA.get()[0]
-   nom_bamo2 = MATR_GENE['MATR_RIGI'].REFA.get()[0] 
-   if string.strip(nom_bamo) != string.strip(nom_bamo1) or string.strip(nom_bamo) != string.strip(nom_bamo2) or string.strip(nom_bamo1) != string.strip(nom_bamo2):
+   nom_bamo2 = v_refa_mass[0]
+   if nom_bamo.strip() != nom_bamo2.strip():
       UTMESS('F','ALGORITH5_42')
    
-
-   nbnot, nbl, nbma, nbsm, nbsmx, dime = num_mail.DIME.get()
+   nbnot, nbl, nbma, nbsm, nbsmx, dime = maillage.DIME.get()
 
    # coordonnees des noeuds
-   l_coordo = num_mail.COORDO.VALE.get()
+   l_coordo = maillage.COORDO.VALE.get()
    t_coordo = Num.array(l_coordo)
    t_coordo.shape = nbnot, 3
    # groupes de noeuds
-   coll_grno = num_mail.GROUPENO.get()
+   coll_grno = maillage.GROUPENO.get()
    GROUP_NO_INTER=INTERF['GROUP_NO_INTERF']
    noe_interf = get_group_coord(GROUP_NO_INTER)
    #  print noe_interf  
@@ -209,7 +212,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
          __CHAM=CREA_CHAMP( TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',                  
                 NUME_ORDRE=nmo,
-                RESULTAT = nume_resu  ,
+                RESULTAT = resultat  ,
                 NOM_CHAM = 'DEPL'
                       );
          MCMP =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER]).valeurs
@@ -263,7 +266,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
       if k>0:
          DETRUIRE(CONCEPT=_F(NOM=(__impe,__fosi,__rito)),INFO=1) 
 
-      __impe = LIRE_IMPE_MISS(BASE=nume_resu,  
+      __impe = LIRE_IMPE_MISS(BASE=resultat,  
                            TYPE=TYPE,
                            NUME_DDL_GENE=nume_ddlgene,               
                            UNITE_RESU_IMPE= UNITE_RESU_IMPE, 
@@ -277,7 +280,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
                                  ),
                                  SANS_CMP='LAGR',
                                  );                                                                            
-      __fosi = LIRE_FORC_MISS(BASE=nume_resu,  
+      __fosi = LIRE_FORC_MISS(BASE=resultat,  
                            NUME_DDL_GENE=nume_ddlgene,
                            NOM_CMP=NOM_CMP,
                            NOM_CHAM='DEPL',               
@@ -299,7 +302,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
          FS2=Num.concatenate((Fzero,Num.reshape(FS,(1,nbmods))),1)
       #  Calcul harmonique
          __fosi.RECU_VECT_GENE_C(FS2[0]) 
-         __dyge = DYNA_LINE_HARM(MODELE= nume_modele,
+         __dyge = DYNA_LINE_HARM(MODELE=modele,
                           MATR_MASS = MATR_GENE['MATR_MASS'],
                           MATR_RIGI = __rito, 
                           FREQ = freqk,

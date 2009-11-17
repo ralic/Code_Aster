@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -489,6 +489,34 @@ Causes possibles :
 
    def get_global_contexte(self):
       return self.g_context.copy()
+
+
+   def get_contexte_courant(self, etape_courante=None):
+      """
+         Retourne le contexte tel qu'il est (ou 'sera' si on est en phase
+         de construction) au moment de l'exécution de l'étape courante.
+      """
+      if etape_courante is None:
+         etape_courante = CONTEXT.get_current_step()
+      return self.get_contexte_avant(etape_courante)
+
+
+   def get_concept(self, nomsd):
+      """
+          Méthode pour recuperer un concept à partir de son nom
+      """
+      return self.get_contexte_courant().get(nomsd.strip(), None)
+
+   def del_concept(self, nomsd):
+      """
+         Méthode pour supprimer la référence d'un concept dans le sds_dict.
+         Ne détruire pas le concept (différent de supprime).
+      """
+      try:
+         del self.sds_dict[nomsd.strip()]
+      except:
+         pass
+
 
    def get_cmd(self,nomcmd):
       """

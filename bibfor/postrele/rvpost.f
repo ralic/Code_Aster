@@ -4,7 +4,7 @@
      >                    NLSMAC, NLSNAC, NOMTAB, XNOVAR)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF POSTRELE  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,7 @@ C
 10       CONTINUE
          GD = ZI(N1 + 1-1)
          IF (NIV.GT.1) CALL RVINFO(IFM,IOCC,I1,I2,'B',NCHEFF)
-         IF ( NRESU.EQ.' ' ) NRESU = NCH19(1:8)
+         IF ( NRESU(1:1).EQ.' ' ) NRESU = NCH19(1:8)
          CALL RVCPNC(MCF,IOCC,NCH19,GD,DOCU,NBCAC,LSCPCD,LSCPNC,
      +               REPERE,OPTION,QUANT,IDIR,ZR(JDIR),IRET)
 C        /* POSSIBILITE AGRANDISSEMENT DE LSCPCD => ON REFAIT JEVEUO */

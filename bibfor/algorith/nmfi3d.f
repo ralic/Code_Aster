@@ -4,7 +4,7 @@
      &                  COMPOR,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 17/11/2009   AUTEUR LAVERNE J.LAVERNE 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -65,9 +65,9 @@ C-----------------------------------------------------------------------
       DATA TYPMOD /'3D','ELEMJOIN'/
 C-----------------------------------------------------------------------
 
-
       RESI = OPTION.EQ.'RAPH_MECA'      .OR. OPTION(1:9).EQ.'FULL_MECA'
       RIGI = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RIGI_MECA'
+      
       CALL R8INIR(3,0.D0,DSU,1)
       IF (RESI) CALL R8INIR(NDDL,0.D0,FINT,1)
       IF (RIGI) CALL R8INIR((NDDL*(NDDL+1))/2,0.D0, KTAN,1)
@@ -75,7 +75,6 @@ C-----------------------------------------------------------------------
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
       CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
-
 
       DO 10 KPG=1,NPG
 
@@ -110,25 +109,21 @@ C -   APPEL A LA LOI DE COMPORTEMENT
      &                OPTION,ANGMAS,RBID,
      &                SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)
 
-
 C FORCES INTERIEURES
 
         IF (RESI) THEN
           DO 20 NI=1,NDDL
-
             FINT(NI) = FINT(NI) + POIDS*DDOT(3,B(1,NI),1,SIGMA(1,KPG),1)
-
  20       CONTINUE
         ENDIF
 
-
-C MATRICE TANGENTE (STOCKAGE SYMETRIQUE LIGNE INFERIEUR)
+C MATRICE TANGENTE 
 
         IF (RIGI) THEN
-
+C         STOCKAGE SYMETRIQUE LIGNE INFERIEUR
           KK = 0
           DO 50 NI=1,NDDL
-          DO 52 MJ=1,NDDL
+          DO 52 MJ=1,NI
             KK = KK+1
             DO 60 P=1,3
             DO 62 Q=1,3
@@ -139,7 +134,6 @@ C MATRICE TANGENTE (STOCKAGE SYMETRIQUE LIGNE INFERIEUR)
  60         CONTINUE
  52       CONTINUE
  50       CONTINUE
-
         ENDIF
 
  10   CONTINUE

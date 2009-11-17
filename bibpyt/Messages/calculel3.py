@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel3 Messages  DATE 16/11/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -218,8 +218,36 @@ cata_msg = {
  données incorrectes.
 """),
 
+46 : _("""
+Erreur de programmation :
+  On cherche à utiliser dans CALCUL un cham_elem "IN" ayant %(i1)d composantes
+  alors que le catalogue de l'élément en attend %(i2)d.
+
+Conseils :
+  Il s'agit probablement d'une erreur de programmation.
+  Mais il faut peut etre émettre une demande d'évolution pour traiter ce cas.
+"""),
+
+
+
+
+
+
 50 : _("""
   la commande a besoin d'un nom de modèle
+"""),
+
+51 : _("""
+  Erreur Utilisateur :
+    On essaie d'utiliser dans la commande %(k1)s
+    un modèle pour lequel des éléments finis ont été affectés directement
+    sur des noeuds (AFFE_MODELE / AFFE / GROUP_NO).
+    Ceci est interdit.
+
+  Conseils :
+    Il faut définir le modèle avec les mots clé GROUP_MA et MAILLE.
+    Pour cela, il faut créer dans le maillage des mailles de type POI1.
+    C'est possible avec la commande CREA_MAILLAGE / CREA_POI1.
 """),
 
 52 : _("""

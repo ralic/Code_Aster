@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE BLOC AVEC INTERFACE EN CONTACT GLISSIERE AVEC X-FEM
 # ssnv201a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,6 +184,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
+                   NEWTON=_F(REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=8,
                                   RESI_GLOB_MAXI=1e-04,
                                   ),               

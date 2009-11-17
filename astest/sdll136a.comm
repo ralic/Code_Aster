@@ -1,6 +1,6 @@
-# MODIF  DATE 19/10/2009   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE CALCUL D USURE SUR UN TUBE GV SOUMIS A UNE EXCITATION ALEATOIRE MULTIDIRECTIONNELLE
-# sdll136a.para = tps_job 260 mem_job 600Mo ncpus 1 liste_test S
+# sdll136a.para = tps_job 500 mem_job 600Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# FICHIER MODELE GEVIBUS
 # RESPONSABLE ADOBES A.ADOBES
 
 DEBUT( CODE=_F(  NOM = 'SDLL136A',NIV_PUB_WEB='INTRANET'),DEBUG=_F(SDVERI='OUI'))
@@ -612,7 +613,7 @@ TRANGENE = DYNA_TRAN_MODAL (
              INCREMENT=_F(
                   INST_INIT=0.0,
                   INST_FIN=5.000000e+01,
-                  PAS=5.000000e-05,
+                  PAS=1.000000e-05,
                   ),
              ARCHIVAGE=_F(PAS_ARCH=1,),
              );

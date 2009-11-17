@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR GREFFET N.GREFFET 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -203,6 +203,9 @@ C     CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
 C     --------------------------------------
         CALL JEVECH('PMASSINE','E',JMATR)
         CALL DXROEP(RHO,EPAIS)
+        IF(RHO.LE.R8PREM()) THEN
+           CALL U2MESS('F','ELEMENTS5_45')
+        ENDIF
         CALL DXINER(NNO,ZR(JGEOM),RHO,EPAIS,ZR(JMATR),ZR(JMATR+1),
      &              ZR(JMATR+4))
 C

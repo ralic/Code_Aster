@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -364,12 +364,5 @@ class JDC:
       for attr, value in d.items():
          #assert attr in self.l_pick_attr
          setattr(self, attr, value)
-
-
-   def get_concept(self, nomsd):
-      """
-          Méthode pour recuperer un concept à partir de son nom
-      """
-      return self.sds_dict.get(sdnom,None)
 
 

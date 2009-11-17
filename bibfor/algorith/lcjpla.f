@@ -1,10 +1,10 @@
         SUBROUTINE LCJPLA (FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATER,NVI,
-     1                     DEPS,SIGF,VIN,DSDE,SIGD,VIND,VP,VECP,
-     2                     THETA, DT, DEVG, DEVGII,CODRET)
+     &                     DEPS,SIGF,VIN,DSDE,SIGD,VIND,VP,VECP,
+     &                     THETA, DT, DEVG, DEVGII,CODRET)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,9 @@ C           SIGD    :  CONTRAINTE A L INSTANT -
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C           VP     : VALEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN)
 C           VECP   : VECTEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
+C           CODRET : CODE RETOUR
+C                    = 0, TOUT VA BIEN PAS DE REDECOUPAGE
+C                    = 1 ou 2, CORRESPOND AU CODE RETOUR DE PLASTI.F
 C       ----------------------------------------------------------------
 C TOLE CRP_21
         INTEGER         IMAT, NMAT , NVI, NR,KPG,KSP,CODRET
@@ -49,8 +52,11 @@ C TOLE CRP_21
         CHARACTER*16    LOI
         CHARACTER*(*)   FAMI
 C       ----------------------------------------------------------------
+        
+        CODRET = 0
+        
         IF     ( LOI(1:8) .EQ. 'ROUSS_PR' .OR.
-     1           LOI(1:10) .EQ. 'ROUSS_VISC' ) THEN
+     &           LOI(1:10) .EQ. 'ROUSS_VISC' ) THEN
           CALL  RSLJPL(FAMI,KPG,KSP,LOI,IMAT,NMAT,MATER,
      &                 SIGF,VIN,VIND,DEPS,THETA,DT,DSDE)
 C
@@ -58,7 +64,7 @@ C
           CALL  LGLJPL(MOD,NMAT,MATER,SIGF,DEVG,DEVGII,VIN,DSDE,CODRET)
 C
         ELSEIF (( LOI(1:10) .EQ. 'HOEK_BROWN'   ).OR.
-     1          ( LOI(1:14) .EQ. 'HOEK_BROWN_EFF'   ))THEN
+     &          ( LOI(1:14) .EQ. 'HOEK_BROWN_EFF'   ))THEN
           CALL  HBRJPL(MOD,NMAT,MATER,SIGF,VIN,VIND,VP,VECP,DSDE)
         ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M'   ) THEN
           CALL  IRRJPL(FAMI,KPG,KSP,MOD,NMAT,MATER,NR,NVI,SIGF,VIND,

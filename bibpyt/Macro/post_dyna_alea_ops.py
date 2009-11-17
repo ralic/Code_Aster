@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_dyna_alea_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,10 +28,10 @@ EnumTypes = (ListType, TupleType)
 
 def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
    import aster
-   from Accas               import _F
-   from Utilitai.Utmess     import UTMESS
-   from Utilitai.t_fonction import t_fonction
-   from Utilitai.Table      import Table
+   from Accas                 import _F
+   from Utilitai.Utmess       import UTMESS
+   from Cata_Utils.t_fonction import t_fonction
+   from Utilitai.Table        import Table
 
    commande='POST_DYNA_ALEA'
 

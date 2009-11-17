@@ -19,7 +19,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*8 TYCHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -227,6 +227,7 @@ C        LISTE DES COMPOSANTES
             TBCMP(2)='DY      '
             TBCMP(3)='DZ      '
          ELSEIF(VERSIO.EQ.2)THEN
+            TBCMP(3)='        '
             DO 104 I=1,NBCMPI
               TBCMP(I)=ZK8(JNCMP+I-1)
  104        CONTINUE

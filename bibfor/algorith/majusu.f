@@ -1,7 +1,7 @@
       SUBROUTINE MAJUSU(NOMA  ,DEFICO,RESOCO,DEPMOI,DEPDEL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -263,7 +263,7 @@ C
               DO 312  K=1,NDIM
                 DEPPT(I) = C(I,K)*(DEPLPE(K)-DEPLPM(K))+DEPPT(I)
                 DEPMT(I) = C(I,K)*(DEPLME(K)-DEPLMM(K))+DEPMT(I)
-                DEP(I)   = DEPPT(I) - DEPMT(I)
+                DEP(I)   = DEPPT(I)
   312         CONTINUE
   322       CONTINUE
 C
@@ -364,7 +364,7 @@ C
              DO 314  K=1,NDIM
                DEPPT(I)= C(I,K)*(DEPLPE(K)-DEPLPM(K))+DEPPT(I)
                DEPMT(I)= C(I,K)*(DEPLME(K)-DEPLMM(K))+DEPMT(I)
-               DEP(I)  = DEPPT(I) - DEPMT(I)
+               DEP(I)  = DEPPT(I)
   314        CONTINUE
   324      CONTINUE
 C

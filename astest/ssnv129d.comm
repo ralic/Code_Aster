@@ -1,5 +1,6 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
+# ssnv129d.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,6 +115,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=CHA0,),
                           _F(CHARGE=CHA2,),),
                    COMP_INCR=_F(RELATION='ELAS',),
+                   NEWTON=_F(REAC_ITER=1,),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    INFO=1,);
 

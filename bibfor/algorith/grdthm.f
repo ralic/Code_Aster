@@ -8,7 +8,7 @@
       CHARACTER*16 NOMTE
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -91,6 +91,12 @@ C --- EN THM ----------------------------------------------------------
 C =====================================================================
 C --- SI MODELISATION = THHM ------------------------------------------
 C =====================================================================
+      MECANI(1)=0
+      PRESS1(1)=0
+      PRESS2(1)=0
+      PRESS1(2)=0
+      PRESS2(2)=0
+      TEMPE(1) =0
       IF (NOMTE(1:4).EQ.'THHM') THEN
          MECANI(1) = 1
          PRESS1(1) = 1

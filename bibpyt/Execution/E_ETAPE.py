@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -273,10 +273,7 @@ class ETAPE:
       """ Cette méthode supprime le concept produit par la commande
           du registre tenu par le JDC
       """
-      try:
-          del self.jdc.sds_dict[self.sd.nom]
-      except:
-          pass
+      self.jdc.del_concept(self.sd.nom)
 
    def BuildExec(self):
       """

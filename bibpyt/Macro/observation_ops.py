@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF observation_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,7 @@ def observation_ops(self,
         if nom_cara_elem.strip() == "#AUCUN" :
             cara_elem = None
         else :
-            cara_elem = jdc.sds_dict[nom_cara_elem.strip()]
+            cara_elem = self.get_concept(nom_cara_elem.strip())
     else:
         cara_elem = None
 
@@ -124,7 +124,7 @@ def observation_ops(self,
         if nom_cham_mater.strip() == "#AUCUN" :
             cham_mater = None
         else :
-            cham_mater = jdc.sds_dict[nom_cham_mater.strip()]
+            cham_mater = self.get_concept(nom_cham_mater.strip())
     else:
         cham_mater = None
 
@@ -132,12 +132,12 @@ def observation_ops(self,
     _maillag = aster.getvectjev( MODELE_2.nom.ljust(8) + '.MODELE    .LGRF' )
     maillage = _maillag[0].strip()
     jdc = CONTEXT.get_current_step().jdc
-    mayaexp = jdc.sds_dict[maillage]
+    mayaexp = self.get_concept(maillage)
 
     _maillag = aster.getvectjev( MODELE_1.nom.ljust(8) + '.MODELE    .LGRF' )
     maillage = _maillag[0].strip()
     jdc = CONTEXT.get_current_step().jdc
-    mayanum = jdc.sds_dict[maillage]
+    mayanum = self.get_concept(maillage)
 
 
     if MODIF_REPERE != None :
@@ -332,7 +332,7 @@ def crea_normale(self, modele_1, modele_2,
     _maillag = aster.getvectjev( nom_modele_num.ljust(8) + '.MODELE    .LGRF' )
     maillage = _maillag[0].strip()
     jdc = CONTEXT.get_current_step().jdc
-    mayanum = jdc.sds_dict[maillage]
+    mayanum = self.get_concept(maillage)
 
 
     DEFI_GROUP( reuse = mayanum,

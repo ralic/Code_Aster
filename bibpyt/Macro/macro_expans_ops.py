@@ -1,4 +1,4 @@
-#@ MODIF macro_expans_ops Macro  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF macro_expans_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,7 +169,7 @@ def macro_expans_ops( self,
     if RESU_EX.REFD.get():
         tmp = RESU_EX.REFD.get()[3]
         if tmp.strip() :
-            nume = self.jdc.sds_dict[tmp.strip()]
+            nume = self.get_concept(tmp)
     elif NUME_DDL:
         nume = NUME_DDL
     if not nume :

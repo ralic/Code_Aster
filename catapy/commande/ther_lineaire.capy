@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,13 +108,11 @@ THER_LINEAIRE=OPER(nom="THER_LINEAIRE",op=25,sd_prod=evol_ther,reentrant='f',
          ),
          PARM_THETA      =SIMP(statut='f',typ='R',defaut= 0.57),
          ARCHIVAGE       =FACT(statut='f',
-           regles=(EXCLUS('PAS_ARCH','LIST_INST','INST'),
-                   EXCLUS('ARCH_ETAT_INIT','NUME_INIT'), ),
+           regles=EXCLUS('PAS_ARCH','LIST_INST','INST'),
            LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
            PAS_ARCH        =SIMP(statut='f',typ='I' ),
            PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-           ARCH_ETAT_INIT  =SIMP(statut='f',typ='TXM',into=("OUI",)),
            NUME_INIT       =SIMP(statut='f',typ='I'),
            DETR_NUME_SUIV  =SIMP(statut='f',typ='TXM',into=("OUI",)),
            CHAM_EXCLU      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',

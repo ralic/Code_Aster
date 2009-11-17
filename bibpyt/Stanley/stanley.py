@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 07/09/2009   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2843,9 +2843,8 @@ def concept_exists_and_intypes(co, jdc, types, append_to):
    """Ajoute le concept dans la liste 'append_to' si 'co' existe
    (c'est à dire si son étape a été exécutée) et si son type est parmi 'types'.
    """
-
-   if jdc.sds_dict.get(co) != None:
-      concept = jdc.sds_dict[co]
+   concept = jdc.get_concept(co)
+   if concept != None:
       if concept.__class__.__name__ in types and getattr(concept, 'executed', 0) == 1:
          append_to.append(co)
 
@@ -2895,10 +2894,11 @@ class PRE_STANLEY :
 
     lst = [ 'maillage_sdaster', 'modele_sdaster', 'evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans', 'cham_mater', 'cara_elem_sdaster', 'para_sensi' ]
 
-    for i in self.jdc_recupere.sds_dict.keys( ):
+    current_context = self.jdc_recupere.get_contexte_courant()
+    for i in current_context.keys( ):
 
       # On supprime de la liste les concept issus de la sensibilite
-      if i.startswith(ignore_prefixe) and self.jdc_recupere.sds_dict[i].__class__.__name__ in lst:
+      if i.startswith(ignore_prefixe) and current_context[i].__class__.__name__ in lst:
           UTMESS('I','STANLEY_35',valk=[i])
 
       else:
@@ -3092,7 +3092,7 @@ class PRE_STANLEY :
      else:
         i=int(self.cara_elem.listbox.curselection()[0])
         cara_elem=self.t_cara_elem[i]
-        c_cara_elem = self.jdc_recupere.sds_dict[cara_elem]
+        c_cara_elem = self.jdc_recupere.get_concept(cara_elem)
 
      if self.t_para_sensi == []:
         para_sensi=None
@@ -3104,7 +3104,7 @@ class PRE_STANLEY :
            c_para_sensi=None
         else:
            para_sensi=self.t_para_sensi[i-1]
-           c_para_sensi = self.jdc_recupere.sds_dict[para_sensi]
+           c_para_sensi = self.jdc_recupere.get_concept(para_sensi)
 
      self.Sortir()
 
@@ -3126,7 +3126,7 @@ class PRE_STANLEY :
            self.FICHIER_VALID = None
 
      # Lancement de Stanley
-     STANLEY(self.jdc_recupere.sds_dict[evol], self.jdc_recupere.sds_dict[maillage], self.jdc_recupere.sds_dict[modele], self.jdc_recupere.sds_dict[cham_mater], c_cara_elem, c_para_sensi, self.FICHIER_VALID)
+     STANLEY(self.jdc_recupere.get_concept(evol), self.jdc_recupere.get_concept(maillage), self.jdc_recupere.get_concept(modele), self.jdc_recupere.get_concept(cham_mater), c_cara_elem, c_para_sensi, self.FICHIER_VALID)
 #
 
   def Sortir(self):

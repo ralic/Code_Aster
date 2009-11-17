@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE INDENTATION ELASTOPLASTIQUE D UN DEMI-PLAN
 # ssnv506f.para = tps_job 780 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,8 +166,7 @@ SSNV506=STAT_NON_LINE(MODELE=MO,
 # ON NE VA PAS PLUS LOIN CAR LE TEMPS DU TEST EST DEJA GRAND
                                     INST_FIN=0.02,),
                        NEWTON=_F(MATRICE='TANGENTE',
-# INOPERANT POUR L'INSTANT (REAC_ITER=1 FORCE PAR CONTACT CONTINU)
-                                 REAC_ITER=3,
+                                 REAC_ITER=1,
                                  ),
                        CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-06,
                                       ITER_GLOB_MAXI=15,

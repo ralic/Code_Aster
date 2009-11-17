@@ -7,7 +7,7 @@
      &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/05/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -254,6 +254,7 @@ C
             IF ( NIVINF.GT.1 ) THEN
               WRITE (IFM,4002) NOMTYP(TYMAST), TYGEOM
             ENDIF
+            TYPENT=EDMAIL
             CALL EFNPDT ( IDFIMD, NOCHMD,TYPENT, TYGEOM,NBPT,IRET)
             IF(IRET.NE.-1)THEN
               DO 411 I=1,NBPT

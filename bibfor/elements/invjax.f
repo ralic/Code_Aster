@@ -1,6 +1,6 @@
       SUBROUTINE INVJAX(STOP,NNO   ,NDIM  ,DFF   ,COOR  ,INVJAC,IPB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C
       IMPLICIT   NONE
       INTEGER    NNO,NDIM,IPB
       REAL*8     COOR(NDIM*NNO)
-      REAL*8     DFF(3,NNO),INVJAC(NDIM,NDIM)
+      REAL*8     DFF(3,NNO),INVJAC(3,3),INV(NDIM,NDIM)
       CHARACTER*1  STOP
 C
 C ----------------------------------------------------------------------
@@ -45,7 +45,7 @@ C              =1 SI MATRICE SINGULIERE
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER       IDIM,JDIM,INO
+      INTEGER       IDIM,JDIM,INO,I,J
       REAL*8        JACOBI(NDIM,NDIM),DET,R8GAEM
 C
 C ----------------------------------------------------------------------
@@ -71,7 +71,18 @@ C
 C
 C --- INVERSE DE LA JACOBIENNE
 C
-      CALL MATINV(STOP,NDIM,JACOBI,INVJAC,DET)
+      CALL MATINV(STOP,NDIM,JACOBI,INV,DET)
       IF (DET.EQ.0.D0) IPB = 1
+C
+      DO 30 I=1,3
+        DO 40 J=1,3
+           INVJAC(I,J)=0.D0
+ 40     CONTINUE
+ 30   CONTINUE
+      DO 31 I=1,NDIM
+        DO 41 J=1,NDIM
+           INVJAC(I,J)=INV(I,J)
+ 41     CONTINUE
+ 31   CONTINUE
 C
       END

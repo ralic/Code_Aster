@@ -13,7 +13,7 @@ C
       REAL*8             DSIDE(6,6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/10/2008   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -117,6 +117,7 @@ C =================================================================
       DGAMV = ZERO
       DXIP  = ZERO
       DXIV  = ZERO
+      SEUIVM= ZERO
 C =================================================================
 C --- RECUPERATION DES PARAMETRES DU MODELE -----------------------
 C --- LES COEFFICIENTS MATERIAU N EVOLUENT PAS AVEC LE TEMPS-------

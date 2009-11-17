@@ -1,11 +1,11 @@
       SUBROUTINE CALNOR ( CHDIM, IGEOM,
-     >                    IARE, NNOS, NNOA, ORIEN,
-     >                    NNO, NPG, NOE, IFA, TYMVOL, IDFDE,
-     >                    JAC, NX, NY, NZ,
-     >                    TX, TY, HF )
+     &                    IARE, NNOS, NNOA, ORIEN,
+     &                    NNO, NPG, NOE, IFA, TYMVOL, IDFDE,
+     &                    JAC, NX, NY, NZ,
+     &                    TX, TY, HF )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 16/11/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE DELMAS J.DELMAS
 C
 C     BUT:
 C         CALCUL DE LA NORMALE SORTANTE D'UN ELEMENT LINEAIRE
@@ -97,9 +98,8 @@ C
       INTEGER NNO, NPG, NOE(9,6,4)
       INTEGER IFA, TYMVOL, IDFDE
 C
-      REAL*8 JAC(NPG)
-      REAL*8 NX(*), NY(*), NZ(*)
-      REAL*8 HF, TX(3), TY(3)
+      REAL*8 JAC(9), NX(9), NY(9), NZ(9)
+      REAL*8 TX(3), TY(3), HF 
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 

@@ -5,10 +5,10 @@
      &                    VAATFA, NOGRFA, TABAUX,
      &                    NOMGRO, NUMGRO, NUMENT,
      &                    INFMED, NIVINF, IFM,
-     &                    VECGRM, NBCGRM )
-C
+     &                    VECGRM, NBCGRM, NBGRLO )
+C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF MODELISA  DATE 16/11/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,7 @@ C
       INTEGER VAATFA(*)
       INTEGER TABAUX(*)
       INTEGER INFMED
-      INTEGER IFM, NIVINF
+      INTEGER IFM, NIVINF, NBGRLO
 C
       CHARACTER*(*) NOMGRO, NUMGRO, NUMENT
       CHARACTER*80 NOGRFA(*)
@@ -112,6 +112,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32 JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
@@ -120,15 +121,15 @@ C
       CHARACTER*24 VALK(4)
       PARAMETER ( NOMPRO = 'LRMMF3' )
 C
-      INTEGER CODRET, I
+      INTEGER CODRET, I, J
       INTEGER VALI
       INTEGER IAUX, JAUX, KAUX,JAU2
       INTEGER ITYP, INDIK8, INOM, ITMP, IVGRM
       INTEGER NUMFAM, MI(2)
       INTEGER NBATTR, NBGROU, NBENFA
       INTEGER IDATFA(200)
-      INTEGER ADNOMG, ADNUMG, ADNUME
-      INTEGER ILMED, ILNEW
+      INTEGER ADNOMG, ADNUMG, ADNUME, NVNBGR
+      INTEGER ILMED, ILNEW, NOGRLO, NOGRCO, JNOGRL, JNOGRC
       LOGICAL IERR, RENOMM, ERRGM
       REAL*8  MR
       CHARACTER*80 KBID, NEWGRM
@@ -168,6 +169,10 @@ C
         SAUX08='EFFAMI  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
+C
+      CALL JEVEUO('&&LRMMF1.NOM_GR_LONG','E',JNOGRL)
+      CALL JELIRA('&&LRMMF1.NOM_GR_LONG','LONMAX',NOGRLO, KBID)
+      CALL JEVEUO('&&LRMMF1.NOM_GR_COURT','E',JNOGRC)
 C
 C 1.2. ==> INFORMATION EVENTUELLE
 C
@@ -374,6 +379,14 @@ C
 C
           IF ( NBGROU.EQ.0 ) THEN
 C
+            NVNBGR = NBGRLO+NBATTR
+            IF ( NVNBGR.GT.NOGRLO ) THEN
+              CALL JUVECA('&&LRMMF1.NOM_GR_LONG    ',NVNBGR)
+              CALL JUVECA('&&LRMMF1.NOM_GR_COURT   ',NVNBGR)
+              CALL JEVEUO('&&LRMMF1.NOM_GR_LONG','E',JNOGRL)
+              CALL JEVEUO('&&LRMMF1.NOM_GR_COURT','E',JNOGRC)
+            ENDIF
+C
             DO 251 , IAUX = 1 , NBATTR
               CALL CODENT (VAATFA(IAUX),'G',SAUX08)
               IF ( VAATFA(IAUX).LT.0 ) THEN
@@ -384,9 +397,20 @@ C
               SAUX08(1:2) = SAUX02
               ZK8(ADNOMG-1+IAUX) = SAUX08
               ZI(ADNUMG-1+IAUX)  = JAUX
+              ZK80(JNOGRL-1+IAUX+NBGRLO) = SAUX08
+              ZK8(JNOGRC-1+IAUX+NBGRLO) = SAUX08
   251       CONTINUE
+            NBGRLO = NBGRLO + NBATTR
 C
           ELSE
+C
+            NVNBGR = NBGRLO+NBGROU
+            IF ( NVNBGR.GT.NOGRLO ) THEN
+              CALL JUVECA('&&LRMMF1.NOM_GR_LONG    ',NVNBGR)
+              CALL JUVECA('&&LRMMF1.NOM_GR_COURT   ',NVNBGR)
+              CALL JEVEUO('&&LRMMF1.NOM_GR_LONG','E',JNOGRL)
+              CALL JEVEUO('&&LRMMF1.NOM_GR_COURT','E',JNOGRC)
+            ENDIF
 C
             DO 252 , IAUX = 1 , NBGROU
 C
@@ -405,7 +429,10 @@ C
                ENDIF
                ZK8(ADNOMG-1+IAUX) = K8B
                ZI(ADNUMG-1+IAUX) = JAUX
+               ZK80(JNOGRL-1+IAUX+NBGRLO) = NOGRFA(IAUX)
+               ZK8(JNOGRC-1+IAUX+NBGRLO) = K8B
   252       CONTINUE
+            NBGRLO = NBGRLO + NBGROU
 C
           ENDIF
 C

@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ASSD Noyau  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,31 +59,27 @@ class ASSD(object):
         self.id = self.parent.o_register(self)
       # permet de savoir si le concept a été calculé (1) ou non (0)
       self.executed = 0
-      # initialise la partie "sd"
-      # fonctionne uniquement si self est une instance d'une classe dérivée
-      # dont l'__init__ accepte l'argument nomj (donc AsBase).
-      super(ASSD, self).__init__(nomj='?&?&?&?&')
       
    def __getitem__(self,key):
       return self.etape[key]
-
+   
    def set_name(self, nom):
       """Positionne le nom de self (et appelle sd_init)
       """
       self.nom = nom
-      # test car FORMULE n'a pas de SD associée
-      meth = getattr(super(ASSD, self), 'set_name', None)
-      if meth:
-         meth(nom)
+      # initialise la partie "sd" (pas pour entier, reel, formule)
+      sup = super(ASSD, self)
+      if hasattr(sup, 'nomj'):   # == AsBase
+         sup.__init__(nomj=nom)
+      self.reparent_sd()
    
    def reparent_sd(self):
       """Repositionne le parent des attributs de la SD associée.
       """
-      # test car FORMULE n'a pas de SD associée
-      meth = getattr(super(ASSD, self), 'reparent', None)
-      if meth:
-         meth(None, None)
-   
+      sup = super(ASSD, self)
+      if hasattr(sup, 'nomj'):   # == AsBase
+         sup.reparent(None, None)
+
    def get_name(self):
       """
           Retourne le nom de self, éventuellement en le demandant au JDC

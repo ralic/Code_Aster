@@ -1,6 +1,6 @@
       SUBROUTINE JJVERN ( NOML32 , ICRE , IRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,12 +30,14 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       CHARACTER *75    CMESS
       CHARACTER *24    NOML24
-      CHARACTER *32    NOM32
+      CHARACTER *32    NOM32,BLAN32
       CHARACTER *8     NUME     , NOME     , NOMATR   ,  NOML8
       DATA             NUME     , NOME     , NOMATR
      &               /'$$XNUM  ','$$XNOM  ','$$XATR  '/
 C DEB ------------------------------------------------------------------
       IRET   = 0
+      BLAN32='                                '
+      NOM32=BLAN32
       NOMUTI = NOML32
       NOML8  = NOML32(25:32)
       NOML24 = NOML32(1:24)

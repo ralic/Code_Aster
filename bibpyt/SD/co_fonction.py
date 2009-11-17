@@ -1,4 +1,4 @@
-#@ MODIF co_fonction SD  DATE 24/08/2009   AUTEUR SELLENET N.SELLENET 
+#@ MODIF co_fonction SD  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,7 +86,7 @@ class fonction_sdaster(fonction_class, sd_fonction_aster):
       Retourne un objet de la classe t_fonction
       représentation python de la fonction
       """
-      from Utilitai.t_fonction import t_fonction,t_fonction_c
+      from Cata_Utils.t_fonction import t_fonction,t_fonction_c
       if arg=='real' :
         return t_fonction(self.Absc(),
                           self.Ordo(),
@@ -151,7 +151,7 @@ class fonction_c(fonction_class, sd_fonction_aster):
       Retourne un objet de la classe t_fonction ou t_fonction_c,
       représentation python de la fonction complexe
       """
-      from Utilitai.t_fonction import t_fonction,t_fonction_c
+      from Cata_Utils.t_fonction import t_fonction,t_fonction_c
       if arg=='real' :
         return t_fonction(self.Absc(),
                           self.Ordo(),
@@ -244,7 +244,7 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
       """
       Retourne un objet de la classe t_nappe, représentation python de la nappe
       """
-      from Utilitai.t_fonction import t_fonction,t_nappe
+      from Cata_Utils.t_fonction import t_fonction,t_nappe
       para=self.Parametres()
       vale=self.Valeurs()
       l_fonc=[]

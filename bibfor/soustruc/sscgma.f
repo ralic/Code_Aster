@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 16/11/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -416,12 +416,15 @@ C               ----------------------------------
 C
 C        -- ON FILTRE LES TYPES DE MAILLES :
 C           --------------------------------
-          CALL GETVTX('CREA_GROUP_MA','TYPE_MAILLE',IOCC,1,1,TYMA,NTYP)
-          IF(TYMA(1:4).NE.'TOUT')THEN
-             CALL CGMFTM(TYMA,MA,LISMA,NBMA,IERR)
-             IF(IERR.NE.0)THEN
-                CALL U2MESK('F','SOUSTRUC2_7',1,NOGMA)
-             ENDIF
+          IF (NBMA.GT.0) THEN
+            CALL GETVTX('CREA_GROUP_MA','TYPE_MAILLE',IOCC,1,1,
+     &                  TYMA,NTYP)
+            IF(TYMA(1:4).NE.'TOUT')THEN
+               CALL CGMFTM(TYMA,MA,LISMA,NBMA,IERR)
+               IF(IERR.NE.0)THEN
+                  CALL U2MESK('F','SOUSTRUC2_7',1,NOGMA)
+               ENDIF
+            ENDIF
           ENDIF
 C
 C        -- CREATION ET AFFECTATION DU GROUP_MA :
@@ -443,11 +446,8 @@ C            ----------------------------------
   200       CONTINUE
 
             NBGNAJ = NBGNAJ + 1
-
           END IF
-
           CALL JEDETR(LISMA)
-
         END IF
 
   210 CONTINUE

@@ -8,7 +8,7 @@
       LOGICAL             TOUSNO, MULTAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C     ------------------------------------------------------------------
 C
       MODE = BASEMO
 C
+      CHAMP(1)=' '
       CALL GETVTX ( ' ', 'TOUT_CHAM', 1,1,1, CHAMP, N1 )
 C
       IF ( CHAMP(1) .EQ. 'OUI' ) THEN

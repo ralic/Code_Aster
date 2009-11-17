@@ -1,4 +1,4 @@
-#@ MODIF context_info Messages  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF context_info Messages  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ def context_concept(nom_concept):
    """
    dico = { 'concept' : nom_concept, 'cmde_prod' : '', 'cmde_use' : [] }
    jdc = CONTEXT.get_current_step()
-   co = jdc.sds_dict.get(nom_concept)
+   co = jdc.get_concept(nom_concept)
    if co == None:
       return dico
    dico['cmde_prod'] = co.etape

@@ -5,7 +5,7 @@
      &                    TYPESE, STYPSE, NOPASE, VAPRIN, REPRIN,
      &                    BASE, COMPOR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,6 +141,7 @@ C               12345678
 
 C               123456789012345678901234
       BLAN24 = '                        '
+      K24BID = BLAN24
       LHYDR=.FALSE.
       LSECH=.FALSE.
 C 1.2. ==> LES CONSTANTES

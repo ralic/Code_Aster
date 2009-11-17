@@ -8,7 +8,7 @@ C
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,7 @@ C =================================================================
       INDAL=1
       IF (CERR(3).NE.'OK') INDAL=0
 
-      CALL RCVALA(IMAT,' ', 'LETK', 1, 'TEMP', TEMPD, 29,
+      CALL RCVALA(IMAT,' ', 'LETK', 1, 'TEMP', TEMPD, 27,
      &               NOMC(4),  MATERD(1,2),  CERR(4), ' ' )
 C =================================================================
 C - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-

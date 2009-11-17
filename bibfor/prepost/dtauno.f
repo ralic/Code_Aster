@@ -1,7 +1,7 @@
       SUBROUTINE DTAUNO(JRWORK, LISNOE, NBNOT, NBORDR, NNOINI, NBNOP,
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, NOMMAI, CNSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 16/11/2009   AUTEUR ANGLES J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -234,6 +234,11 @@ C QUI PORTENT LE NOEUD COURANT.
             CALL RNOMAT (ICESD, ICESL, ICESV, I, NOMCRI, ADRMA, JTYPMA,
      &                   K, OPTIO, VALA, VALB, COEFPA, NOMMAT)
  410     CONTINUE
+
+         CALL RCPARE( NOMMAT, 'FATIGUE', 'WOHLER', CODWO )
+         IF ( CODWO .EQ. 'NO' ) THEN
+            CALL U2MESK('F','FATIGUE1_90',1,NOMCRI(1:16))
+         ENDIF
 
          IF (K .EQ. 0) THEN
             VALI (1) = NUNOE
@@ -595,15 +600,12 @@ C CALCUL DU NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
             CALL RCCOME ( NOMMAT, 'FATIGUE', PHENOM, CODRET )
             IF ( CODRET .EQ. 'NO' ) CALL U2MESS('F','FATIGUE1_24')
 
-            CALL RCPARE( NOMMAT, 'FATIGUE', 'WOHLER', CODWO )
-            IF ( CODWO .EQ. 'OK' ) THEN
-               CALL LIMEND( NOMMAT,SIGEQ(K),'WOHLER',ENDUR)
-               IF (ENDUR) THEN
-                  NRUPT(K)=R8MAEM()
-               ELSE
+            CALL LIMEND( NOMMAT,SIGEQ(K),'WOHLER',ENDUR)
+            IF (ENDUR) THEN
+               NRUPT(K)=R8MAEM()
+            ELSE
                CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM    ',SIGEQ(K),1,
-     &                     'WOHLER  ',NRUPT(K),CODRET,'F')
-               ENDIF
+     &                  'WOHLER  ',NRUPT(K),CODRET,'F')
             ENDIF
 
             DOM(K) = 1.D0/NRUPT(K)

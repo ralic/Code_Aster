@@ -1,6 +1,6 @@
-# MODIF  DATE 19/02/2008   AUTEUR CANO V.CANO 
-# RESPONSABLE CANO V.CANO
+# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
 # TITRE TREMPE D'UN BARREAU INFINI A SECTION CARREE (3D)
+# mtlp100b.para = tps_job 160 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

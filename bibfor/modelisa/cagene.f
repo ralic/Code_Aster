@@ -5,7 +5,7 @@
       CHARACTER*16        OPER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,8 +53,9 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*4   CDIM
       CHARACTER*8   K8BID, MOD
-      CHARACTER*24  NOMO
+      CHARACTER*24  NOMO,REP
       CHARACTER*19  LIGRMO
+      INTEGER       IER,IBID
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -63,6 +64,16 @@ C
 C     RECUPERATION DU LIGREL DE MODELE ET DU NOM DU MAILLAGE
 C
       LIGRMO = MOD//'.MODELE'
+      CALL DISMMO('A','PHENOMENE',LIGRMO,IBID,REP,IER)
+C
+C    COHERENCE DU MODELE AVEC LA CHARGE
+C
+      IF(OPER(11:14).EQ.'THER'.AND.REP.NE.'THERMIQUE') THEN
+         CALL U2MESS('F','UTILITAI8_64')          
+      ENDIF
+      IF(OPER(11:14).EQ.'MECA'.AND.REP.NE.'MECANIQUE') THEN
+         CALL U2MESS('F','UTILITAI8_65')          
+      ENDIF
 C
       CALL JEVEUO (LIGRMO//'.LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)

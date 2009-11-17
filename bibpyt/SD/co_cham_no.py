@@ -1,4 +1,4 @@
-#@ MODIF co_cham_no SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_cham_no SD  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,7 +77,7 @@ class cham_no_sdaster(cham_gd_sdaster, sd_cham_no):
       # on recupere le nom du maillage
       __nomMaillage=self.REFE.get()[0].strip()
       # on recupere l'objet du maillage
-      __maillage=CONTEXT.get_current_step().sds_dict[__nomMaillage]
+      __maillage=CONTEXT.get_current_step().get_concept(__nomMaillage)
       # on recupere le nom a gauche du signe "="
       toto=GetNomConceptResultat(self)
       __CHAM = CREA_CHAMP(OPERATION='ASSE',

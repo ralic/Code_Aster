@@ -1,4 +1,4 @@
-# MODIF  DATE 01/09/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102f.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -197,6 +197,7 @@ RESU=STAT_NON_LINE(
                                 _F(  CHARGE = CONT)),
                           COMP_ELAS=_F(  RELATION = 'ELAS'),
                           INCREMENT=_F(  LIST_INST = LINST),
+                          NEWTON=_F(REAC_ITER=1,),
                           CONVERGENCE=_F( 
                                         RESI_GLOB_RELA = 1.E-6,
                                         ITER_GLOB_MAXI = 50,

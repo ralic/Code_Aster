@@ -1,4 +1,4 @@
-# MODIF  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 16/11/2009   AUTEUR TORKHANI M.TORKHANI 
 # TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_TRAN_MODAL
 # sdll126b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,12 +184,12 @@ DY_GED2=RECU_FONCTION(RESU_GENE=TRANSMO,
 
 TEST_FONCTION(VALEUR=_F(FONCTION=DY_GED2,
                         VALE_PARA=4.997913,
-                        VALE_REFE=0.0004255,
+                        VALE_REFE=0.0005721,
                         REFERENCE='AUTRE_ASTER',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=DZ_GED2,
-                        VALE_PARA=4.9969375,
-                        VALE_REFE=0.0005558,
+                        VALE_PARA=4.996937,
+                        VALE_REFE=0.0007023,
                         REFERENCE='AUTRE_ASTER',),);
 
 FIN();

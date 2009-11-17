@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv182e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,7 +120,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                   RESI_GLOB_RELA=1E-9)),
                    SOLVEUR=_F(METHODE='MUMPS',
                               ),
-                   NEWTON=_F(REAC_ITER=10,),
+                   NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 

@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_fonction_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
       Ecriture de la macro CALC_FONCTION
    """
    ier=0
-   from Utilitai.t_fonction import t_fonction, t_fonction_c, t_nappe, homo_support_nappe, \
+   from Cata_Utils.t_fonction import t_fonction, t_fonction_c, t_nappe, homo_support_nappe, \
             FonctionError, ParametreError, InterpolationError, ProlongementError, enveloppe, fractile
    from Utilitai import liss_enveloppe
    from Accas import _F

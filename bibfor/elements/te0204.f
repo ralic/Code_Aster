@@ -2,7 +2,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C DECLARATION VARIABLES LOCALES
 C
 C
       CHARACTER*2   CODRET,CODRES(3)
-      CHARACTER*8   NOMPAR(3),TYPMOD(2),ELREFE,NOMRES(3)
+      CHARACTER*8   NOMPAR(3),TYPMOD(2),ELREFE,NOMRES(3), BLAN8
       CHARACTER*16  COMPOR(4),OPRUPT
 
       REAL*8   E,NU,DPSIDE,LAM,MU,TRA,TRADE
@@ -119,6 +119,8 @@ C =====================================================================
       DP     = .FALSE.
       EPSINI = .FALSE.
       DERFOR = .FALSE.
+      BLAN8  = '        '
+      TYPMOD(2) = BLAN8
 
       IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS    '

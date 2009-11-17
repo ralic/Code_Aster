@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopd hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfopd hdf  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -43,14 +43,20 @@ INTEGER DEFPSS(HDFOPD, hdfopd, INTEGER *idf, char *nomg, STRING_SIZE lg, char *n
      nom[k] = nomg[k];
   }
   k=lg-1;
-  while (nom[k] == ' ' || nom[k] == '/') { k--;}
+  while (k>=0){
+     if(nom[k] == ' ' || nom[k] == '/') { k--;}
+     else break;
+  }
   nom[k+1] = '/';
   lg2=k+2;
   for (k=0;k<ln;k++) {
      nom[lg2+k] = nomd[k];
   }
   k=lg2+ln-1;
-  while (nom[k] == ' ') { k--;}
+  while (k>=0){
+    if (nom[k] == ' ') { k--;}
+    else break;
+  }
   nom[k+1] = '\0';
 
   if ( (id = H5Dopen(idfic,nom)) >= 0) 

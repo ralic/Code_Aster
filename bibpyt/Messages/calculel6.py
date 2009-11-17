@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 10/08/2009   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel6 Messages  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -361,6 +361,10 @@ Solution :
   L'option %(k1)s n'est pas traitée pour un résultat de type fourier_elas 
 (produit par MACRO_ELAS_MULT). Il faut faire après MACRO_ELAS_MULT une
  recombinaison de Fourier par l'opérateur COMB_FOURIER. 
+"""),
+
+84: _("""
+  Le mot-clé MODELE est obligatoire quand RESULTAT est absent
 """),
 
 }

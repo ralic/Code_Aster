@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfcrg hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfcrg hdf  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -43,14 +43,20 @@ INTEGER DEFPSS(HDFCRG, hdfcrg, INTEGER *idf, char *nomgp, STRING_SIZE lp, char *
      nomd[k] = nomgp[k];
   }
   k=lp-1;
-  while (nomd[k] == ' ' || nomd[k] == '/') { k--;}
+  while (k>=0){
+     if(nomd[k] == ' ' || nomd[k] == '/') { k--;}
+     else break;
+  }
   nomd[k+1] = '/';
   lg2=k+1+1;
   for (k=0;k<ln;k++) {
      nomd[lg2+k] = nomgr[k];
   }
   k=lg2+ln-1;
-  while (nomd[k] == ' ') { k--;}
+  while (k>=0){
+    if (nomd[k] == ' ') { k--;}
+    else break;
+  }
   nomd[k+1] = '\0';
  
   if ((idgrp = H5Gcreate(idfic, nomd, 0)) >= 0) 

@@ -1,7 +1,7 @@
       SUBROUTINE AVDOWH( NBVEC, NBORDR, NOMMAT, NOMCRI, NCYCL, GDEQ,
      &                   DOMEL, NRUPT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 16/11/2009   AUTEUR ANGLES J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,21 +78,23 @@ C234567                                                              012
 
       IF ( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) THEN
          CALL RCPARE( NOMMAT, 'FATIGUE', 'MANSON_C', CODRET )
+         IF (CODRET .EQ. 'NO' ) THEN
+            CALL U2MESK('F','FATIGUE1_89',1,NOMCRI(1:16))
+         ENDIF
+
          DO 10 IVECT=1, NBVEC
             DO 20 ICYCL=1, NCYCL(IVECT)
                ADRS = (IVECT-1)*NBORDR + ICYCL
 
-               IF ( CODRET .EQ. 'OK' ) THEN
-                  CALL RCVALE(NOMMAT,'FATIGUE',1,'EPSI    ',GDEQ(ADRS),
-     &                     1,'MANSON_C',NRUPT(ADRS),CODRET,'F')
+               CALL RCVALE(NOMMAT,'FATIGUE',1,'EPSI    ',GDEQ(ADRS),
+     &                  1,'MANSON_C',NRUPT(ADRS),CODRET,'F')
 
-                  CALL LIMEND( NOMMAT, GDEQ(ADRS), 'MANSON_C', LIMIT )
-                  IF (LIMIT) THEN
-                     NRUPT(ADRS)=R8MAEM()
-                  ELSE
-                     CALL RCVALE(NOMMAT,'FATIGUE',1,'EPSI    ',
-     &                  GDEQ(ADRS),1,'MANSON_C',NRUPT(ADRS),CODRET,'F')
-                  ENDIF
+               CALL LIMEND( NOMMAT, GDEQ(ADRS), 'MANSON_C', LIMIT )
+               IF (LIMIT) THEN
+                  NRUPT(ADRS)=R8MAEM()
+               ELSE
+                  CALL RCVALE(NOMMAT,'FATIGUE',1,'EPSI    ',
+     &               GDEQ(ADRS),1,'MANSON_C',NRUPT(ADRS),CODRET,'F')
                ENDIF
 
                DOMEL(ADRS) = 1.0D0/NRUPT(ADRS)
@@ -104,18 +106,20 @@ C234567                                                              012
       ELSE
 
          CALL RCPARE( NOMMAT, 'FATIGUE', 'WOHLER', CODRET )
+         IF (CODRET .EQ. 'NO' ) THEN
+            CALL U2MESK('F','FATIGUE1_90',1,NOMCRI(1:16))
+         ENDIF
+
          DO 30 IVECT=1, NBVEC
             DO 40 ICYCL=1, NCYCL(IVECT)
                ADRS = (IVECT-1)*NBORDR + ICYCL
 
-               IF ( CODRET .EQ. 'OK' ) THEN
-                  CALL LIMEND( NOMMAT, GDEQ(ADRS), 'WOHLER', LIMIT)
-                  IF (LIMIT) THEN
-                     NRUPT(ADRS)=R8MAEM()
-                  ELSE
-                     CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM    ',
-     &                  GDEQ(ADRS),1,'WOHLER  ',NRUPT(ADRS),CODRET,'F')
-                  ENDIF
+               CALL LIMEND( NOMMAT, GDEQ(ADRS), 'WOHLER', LIMIT)
+               IF (LIMIT) THEN
+                  NRUPT(ADRS)=R8MAEM()
+               ELSE
+                  CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM    ',
+     &               GDEQ(ADRS),1,'WOHLER  ',NRUPT(ADRS),CODRET,'F')
                ENDIF
 
                DOMEL(ADRS) = 1.0D0/NRUPT(ADRS)

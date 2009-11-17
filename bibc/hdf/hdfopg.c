@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopg hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfopg hdf  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -42,7 +42,10 @@ INTEGER DEFPS(HDFOPG, hdfopg, INTEGER *idf, char *nomgr, STRING_SIZE ln)
      nomd[k] = nomgr[k];
   }
   k=ln-1;
-  while (nomd[k] == ' ' || nomd[k] == '/') { k--;}
+  while (k>=0){
+     if (nomd[k] == ' ' || nomd[k] == '/') { k--;}
+     else break;
+  }
   if ( k == -1 ) {
     nomd[k+1] = '/';
     k++;

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 #
 # TITRE VALIDATION DE POU_D_TGM
 # ssnv505h.para = tps_job 550 mem_job 256Mo ncpus 1 liste_test V
@@ -160,7 +160,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                 INCREMENT=_F(LIST_INST=L_INST,
 #                             INST_FIN=1.,
                              ),
-                NEWTON=_F(REAC_ITER=5,),
+                NEWTON=_F(REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
 #                ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
 #                             LIST_INST=L_ARCH),
@@ -272,7 +272,7 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                 INCREMENT=_F(LIST_INST=L_INST,
 #                             INST_FIN=1.,
                              ),
-                NEWTON=_F(REAC_ITER=5,),
+                NEWTON=_F(REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
 #                ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
 #                             LIST_INST=L_ARCH),
@@ -375,7 +375,7 @@ USIG=STAT_NON_LINE(MODELE=MODE,
                 INCREMENT=_F(LIST_INST=L_INST,
 #                             INST_FIN=1.,
                              ),
-                NEWTON=_F(REAC_ITER=5,),
+                NEWTON=_F(REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
 #                ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
 #                             LIST_INST=L_ARCH),

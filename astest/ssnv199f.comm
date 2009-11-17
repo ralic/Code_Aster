@@ -1,4 +1,4 @@
-# MODIF  DATE 26/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/11/2009   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURATION INTERFACE 3D (PENTA15) SUR DCB, LOI CZM_OUV_MIX
 # ssnv199f.para = tps_job 860 mem_job 512Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,8 +49,6 @@ PRE_GMSH()
 MA0  =  LIRE_MAILLAGE()
 
 MA=CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
-
-
 
 MA  =  DEFI_GROUP(
   reuse  = MA, 
@@ -141,12 +139,10 @@ CM=AFFE_MATERIAU(
                        MATER = MAT),
               )
 
-
-
              
-SYMETRIE = AFFE_CHAR_MECA(
+SYMETRIE = AFFE_CHAR_CINE(
   MODELE = MO,
-  DDL_IMPO = ( 
+  MECA_IMPO = ( 
                _F(GROUP_NO='JOINT_B',DY=0)
              ))
 
@@ -159,7 +155,6 @@ TRACTION = AFFE_CHAR_MECA(
                                 DX = deplx ,
                                 DZ = deplz ),                 
          ))
-
 
 L_INST=DEFI_LIST_REEL(
               
@@ -179,7 +174,6 @@ INS_ARCH=DEFI_LIST_REEL(
       
       ))
      
-
   
 FCT = DEFI_FONCTION(
   NOM_PARA = 'INST',
@@ -212,7 +206,6 @@ U=STAT_NON_LINE(
   SOLVEUR    = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100, NPREC=-1),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
-
 
   
 U=STAT_NON_LINE(reuse=U, 
@@ -251,7 +244,6 @@ U=STAT_NON_LINE(reuse=U,
   SOLVEUR      = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100, NPREC=-1),                  
   ARCHIVAGE    = _F(LIST_INST  = INS_ARCH)
   )
-
 
 
 U = CALC_NO(reuse = U,
@@ -296,7 +288,6 @@ TEST_RESU (
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
       VALE      = 4.87012,
-#      PRECISION = 0.005,      
       GROUP_NO  = 'NO7',
       INST      = 2.0
       ),
@@ -307,7 +298,6 @@ TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',VALE=2.0)),
            NOM_PARA='DY',
            VALE=6.87460E+00,
-#           PRECISION=0.01,
            REFERENCE='ANALYTIQUE')
   
 
@@ -319,7 +309,6 @@ TEST_RESU (
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
       VALE      = 6.75984E+00,
-#      PRECISION = 0.015,
       GROUP_NO  = 'NO7',
       INST      = 3.0
       ),
@@ -330,7 +319,6 @@ TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',VALE=3.0)),
            NOM_PARA  = 'DY',
            VALE      = 5.83764679,
-#           PRECISION = 0.005,
            REFERENCE = 'ANALYTIQUE')
   
     
@@ -342,7 +330,6 @@ TEST_RESU (
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
       VALE      = 8.91468E+00,
-#      PRECISION = 0.02,
       GROUP_NO  = 'NO7',
       INST      = 4.0
       ),
@@ -353,7 +340,6 @@ TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',VALE=4.0)),
            NOM_PARA  = 'DY',
            VALE      = 5.05991E+00,
-#           PRECISION = 0.005,
            REFERENCE = 'ANALYTIQUE')
     
            

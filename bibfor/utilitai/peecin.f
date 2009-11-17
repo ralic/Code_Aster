@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF UTILITAI  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,6 +83,7 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
       RUNDF = R8VIDE()
       EXITIM = .FALSE.
       INST = 0.D0
+      CHTEMP=K24B
       CALL GETVID(' ','CHAM_GD',1,1,1,DEPLA,ND)
       IF(ND.NE.0)THEN
          CALL CHPVE2('F',DEPLA,3,TABTYP,IER)

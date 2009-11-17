@@ -1,4 +1,4 @@
-#@ MODIF meidee_cata Meidee  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_cata Meidee  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -686,7 +686,7 @@ class InterSpectre:
 
         try:
             # Methode de recherche rapide des fonctions
-            ctx = CONTEXT.get_current_step().jdc.sds_dict
+            ctx = CONTEXT.get_current_step().get_contexte_courant()
             fonc_py = [ ctx[fonc].convert('complex') for fonc in nom_fonc ]
         except KeyError:
             fonc_py = []
@@ -827,11 +827,23 @@ class MeideeObjects:
         self.grno = {}
 
 
-    def recup_objects( self ):
+    def recup_objects( self, update_only=False ):
+        """Stocke les concepts existants par type.
+        Si update_only, on ne crée l'objet que s'il est nouveau."""
         self.del_weakref()
-        jdc = CONTEXT.get_current_step().jdc
+        ctx = CONTEXT.get_current_step().get_contexte_courant()
 
-        for i, v in jdc.sds_dict.items():
+        for i, v in ctx.items():
+            # nouveau ?
+            if update_only:
+               is_new = True
+               for attr in ('modeles', 'resultats', 'dyna_harmo', 'matrices', 'maillages', 'cara_elem', 'cham_mater', 'inter_spec', 'nume_ddl'):
+                  if getattr(self, attr, {}).get(i):
+                     is_new = False
+                     break
+               if not is_new:
+                  continue
+
             if isinstance( v, modele_sdaster ):
                 self.modeles[i] = Modele(objects = self, nom = i,obj_ast = v,mess = self.mess)
             elif isinstance( v, mode_meca ):
@@ -876,6 +888,9 @@ class MeideeObjects:
 
     def update( self, name, obj ):
         """ Ajout d'un nouvel objet dans self"""
+        # Lors de l'init de MeideeObjects, les concepts calculés
+        # par CALC_ESSAI ne sont pas encore connus, il faut donc raffraichir cette liste.
+        self.recup_objects(update_only=True)
         self.del_weakref()
         if isinstance( obj, mode_meca ):
             self.resultats[name] = Resultat(self,name,obj,self.mess)

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C
       REAL*8             VALRES(NBRES)
       REAL*8             RHO, XG, YG, DEPI, R8DEPI, ZERO
       REAL*8             DFDX(9),DFDY(9),POIDS,R,X(9),Y(9),VOLUME
-      REAL*8             MATINE(6), XXI, YYI, XYI, R8BID
+      REAL*8             MATINE(6), XXI, YYI, XYI, R8BID, R8PREM
       CHARACTER*2        CODRET(NBRES)
       CHARACTER*8        NOMRES(NBRES)
       LOGICAL            LTEATT
@@ -69,6 +69,9 @@ C
       CALL RCVALA ( ZI(IMATE),' ','FLUIDE',0,' ',R8BID,2,NOMRES,VALRES,
      &              CODRET, 'FM' )
       RHO    = VALRES(1)
+      IF(RHO.LE.R8PREM()) THEN
+         CALL U2MESS('F','ELEMENTS5_45')
+      ENDIF
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       DO 10 I=1,NNO

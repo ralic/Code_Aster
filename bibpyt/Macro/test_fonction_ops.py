@@ -1,4 +1,4 @@
-#@ MODIF test_fonction_ops Macro  DATE 22/09/2009   AUTEUR SELLENET N.SELLENET 
+#@ MODIF test_fonction_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,7 +167,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
    from Noyau.N_FONCTION import formule, formule_c
    from SD.co_fonction import fonction_sdaster, fonction_c, nappe_sdaster
    from SD.sd_fonction import sd_fonction
-   from Utilitai.t_fonction import t_fonction_c
+   from Cata_Utils.t_fonction import t_fonction_c
    
    CALC_FONCTION = self.get_cmd('CALC_FONCTION')
    DETRUIRE = self.get_cmd('DETRUIRE')

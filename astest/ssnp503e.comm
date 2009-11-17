@@ -1,4 +1,4 @@
-# MODIF  DATE 22/09/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503e.para = tps_job 80 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,6 +138,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELE,
                           _F(CHARGE=CH2,FONC_MULT=VAR2),),
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
+                   NEWTON=_F(REAC_ITER=1,),
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=8,
                                   RESI_GLOB_MAXI=1E-06)),
                    INFO=1,);

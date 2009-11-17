@@ -1,4 +1,4 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF exec_logiciel_ops Macro  DATE 16/11/2009   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,7 +116,8 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
       comment = "Lancement de la commande :\n%s" % scmd
       iret, output, error = ExecCommand(scmd, alt_comment=comment, verbose=False, separated_stderr=True)
       erreur = iret > CODE_RETOUR_MAXI
-      
+      if CODE_RETOUR_MAXI == -1: erreur = False
+
       # output
       if INFO > 0 or erreur:
          UTMESS('I', 'EXECLOGICIEL0_11', vali=(iret, CODE_RETOUR_MAXI))

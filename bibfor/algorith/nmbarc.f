@@ -4,7 +4,7 @@
      &                   DSIDP1,SIPM,SIPP,RETCOM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/06/2008   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,8 +154,8 @@ C
       
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
      &                 NOMRES(1),VALRES(1),CODRET(1), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-         ALPHA = VALRES(3)
+         IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
+         ALPHA = VALRES(1)
          
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,13,
      &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )

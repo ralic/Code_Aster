@@ -1,4 +1,4 @@
-#@ MODIF grille_isot_line Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF grille_isot_line Comportement  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

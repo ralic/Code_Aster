@@ -7,7 +7,7 @@
       CHARACTER*8         NOMRES,NOECHO(NBCHTO,*),NIVEAU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,11 +56,13 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       I, IFR, ICHO, IPAS, NBSEG, IX, IY, IZ, NBTITR,JM
       REAL*8        R8DEPI, R8DGRD
       REAL*8        Y1, Z1, R1, T1
-      CHARACTER*8   K8B, TYPEOB
+      CHARACTER*8   K8B, TYPEOB, BLAN8
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       IFR = IUNIFI('RESULTAT')
+      BLAN8='        '
+      NIVEAU = BLAN8
 C
 C     --- LECTURE MOT-CLE FACTEUR IMPRESSION ---
 C

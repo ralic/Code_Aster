@@ -3,7 +3,7 @@
 C RESPONSABLE PELLET J.PELLET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -593,6 +593,7 @@ C     --- VERIFICATION DE LA DIMENSION DES TYPE_ELEM DU MODELE
 C     ----------------------------------------------------------
       CALL DISMOI('F','DIM_GEOM',NOMU,'MODELE',IDIM,K8B,IBID)
       IF (IDIM.GT.3) THEN
+        IDIM2 = 0
         CALL U2MESS('A','MODELISA4_4')
       ELSE
         IDIM2 = 3

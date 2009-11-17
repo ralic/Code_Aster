@@ -1,4 +1,4 @@
-#@ MODIF meidee_modifstruct Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_modifstruct Meidee  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -292,7 +292,7 @@ class InterfaceExpansion(Frame):
         """Selectionne les matrices de raideur compatibles avec le modèle
         support sélectionné
         """
-        obj_dict = CONTEXT.get_current_step().jdc.sds_dict
+        obj_dict = CONTEXT.get_current_step().get_contexte_courant()
         modsup = self.var_modl_sup.get()
         # choix des matrices de raideur assemblees de ce modele support
         mat_asse = self.root.meidee_objects.matrices.items()

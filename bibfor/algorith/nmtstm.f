@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,11 +39,11 @@ C ----------------------------------------------------------------------
       IF (COMPOR(1)(1:16) . EQ . 'ENDO_ORTH_BETON') THEN
         MATSYM = .FALSE.
       ENDIF
-      
+
       IF (COMPOR(1)(1:3) . EQ . 'CJS') THEN
         MATSYM = .FALSE.
       ENDIF
-      
+
       IF (COMPOR(1)(1:6) . EQ . 'HUJEUX') THEN
         MATSYM = .FALSE.
       ENDIF
@@ -55,15 +55,15 @@ C ----------------------------------------------------------------------
       IF (COMPOR(1)(1:4) . EQ . 'LETK') THEN
         MATSYM = .FALSE.
       ENDIF
-      
+
       IF (COMPOR(1)(1:10) . EQ . 'HOEK_BROWN') THEN
         MATSYM = .FALSE.
       ENDIF
-      
+
       IF (COMPOR(1)(1:10) . EQ . 'DRUCK_PRAG_N_A') THEN
         MATSYM = .FALSE.
       ENDIF
-      
+
       IF (COMPOR(1)(1:6) . EQ . 'MAZARS') THEN
         MATSYM = .FALSE.
       ENDIF
@@ -71,8 +71,8 @@ C ----------------------------------------------------------------------
       IF (COMPOR(3).EQ.'SIMO_MIEHE') MATSYM = .FALSE.
 
       IF (MATSYM) THEN
-        CALL JEVECH('PMATUUR','L',IMATRI)
+        CALL JEVECH('PMATUUR','E',IMATRI)
       ELSE
-        CALL JEVECH('PMATUNS','L',IMATRI)
+        CALL JEVECH('PMATUNS','E',IMATRI)
       ENDIF
       END

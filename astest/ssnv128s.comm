@@ -1,5 +1,6 @@
-# MODIF  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/11/2009   AUTEUR TORKHANI M.TORKHANI 
 # TITRE CONTACT AVEC FROTTEMENT ET USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
+# ssnv128s.para = tps_job 100 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,28 +128,28 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N2',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -8.496E+05,
+                   VALE       = -9.342E+05,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '8.3.23'),
+                   VERSION    = '10.0.25'),
                 _F(RESULTAT   = U4M,
                    INST       = 0.04,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N4',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -1.762E+06,
+                   VALE       = -1.745E+06,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '8.3.23'),
+                   VERSION    = '10.0.25'),
                 _F(RESULTAT   = U4M,
                    INST       = 0.04,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N10',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -1.970E+06,
+                   VALE       = -1.981E+06,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '8.3.23'),
+                   VERSION    = '10.0.25'),
                 _F(RESULTAT   = U4M,
                    INST       = 0.04,
                    NOM_CHAM   = 'DEPL',
@@ -157,7 +158,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    VALE       = -2.303E+06,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '8.3.23'),
+                   VERSION    = '10.0.25'),
 
 # ---- CETTE VALEUR NE CORRESPOND PLUS, CAR L'ELEMENT
 #      DE CONTACT DE BORD INTERVIENT DESORMAIS DANS LE CALCUL DU
@@ -173,7 +174,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
 #                    VALE       = -6.605E+06,
 #                    PRECISION  = 1.E-3,
 #                    REFERENCE  = 'NON_REGRESSION',
-#                    VERSION    = '8.3.23')
+#                    VERSION    = '10.0.25')
                    ));
 
 PRFUS4=POST_RELEVE_T(ACTION=_F(INTITULE='USURE',

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT AVEC FROTTEMENT D UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128p.para = tps_job 280 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,6 +95,7 @@ U2M=STAT_NON_LINE(MODELE     = MO,
                                _F(CHARGE = CHA2)),
                   COMP_ELAS  = _F(RELATION = 'ELAS'),
                   INCREMENT  = _F(LIST_INST = L_INST),
+                  NEWTON=_F(REAC_ITER=1,),
                   CONVERGENCE= _F(ARRET = 'OUI',
                                  ITER_GLOB_MAXI = 20,
                                  RESI_GLOB_RELA = 1.0E-5),

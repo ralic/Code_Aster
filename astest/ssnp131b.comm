@@ -1,4 +1,4 @@
-# MODIF  DATE 01/09/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 3D
 # ssnp131b.para = tps_job 500 mem_job 1400Mo mem_aster 30 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -359,6 +359,15 @@ TEST_TABLE(TABLE=tabident,
                      VALE=kjc1,),
            NOM_PARA='GPMAX',
            VALE=0.30740456474220,
+           CRITERE='RELATIF',
+           PRECISION=0.0001,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabident,
+           FILTRE=_F(NOM_PARA='KJ_CRIT',
+                     VALE=kjc1,),
+           NOM_PARA='KGPMAX',
+           VALE=272.147,
            CRITERE='RELATIF',
            PRECISION=0.0001,
            REFERENCE='AUTRE_ASTER',);

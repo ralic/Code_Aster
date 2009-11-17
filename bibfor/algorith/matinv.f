@@ -5,7 +5,7 @@
       CHARACTER*1  STOP
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER       IDIM,JDIM
-      REAL*8        M(NDIM,NDIM),R8PREM,UNSDET
+      REAL*8        M(NDIM,NDIM),UNSDET,R8GAEM
 C
       IF (NDIM.EQ.1) THEN
 C
@@ -83,7 +83,7 @@ C
         CALL U2MESS('F','ALGORITH5_20')
       ENDIF
 C
-      IF (ABS(DET).LE.R8PREM()) THEN
+      IF (ABS(DET).LE.1.D0/R8GAEM()) THEN
         IF (STOP.EQ.'S') THEN
           CALL U2MESS('F','ALGORITH5_19')
         ELSEIF(STOP.EQ.'C') THEN

@@ -1,6 +1,6 @@
       SUBROUTINE TE0421 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C ......................................................................
 C
       PARAMETER        ( NBRES=10 )
       CHARACTER*16       PHENOM
-      CHARACTER*8        NOMRES(NBRES),NOMPAR
+      CHARACTER*8        NOMRES(NBRES),NOMPAR,BLAN8
       CHARACTER*4        FAMI
       CHARACTER*2        BL2, CODRET(NBRES)
       REAL*8             VALRES(NBRES),VALPAR,ZERO
@@ -59,6 +59,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       DATA  ZERO / 0.D0 /
 C
+      BLAN8='        '
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
@@ -73,6 +74,9 @@ C
       END IF
 C
       BL2 = '  '
+      DO 10 I=1,NBRES
+         NOMRES(I)=BLAN8
+ 10   CONTINUE
       IF (PHENOM.EQ.'ELAS')  THEN
         NOMRES(1) = 'E'
         NOMRES(2) = 'NU'

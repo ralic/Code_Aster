@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -188,6 +188,8 @@ C
 C --- MULTI-APPUIS
 C
       MULTAP = .FALSE.
+      MONMOT(1)=BLANC
+      MONMOT(2)=BLANC
       CALL GETVTX ( ' ','MULT_APPUI',1,1,1, MONMOT(1), N1 )
       CALL GETVTX ( ' ','CORR_STAT' ,1,1,1, MONMOT(2), N2 )
 

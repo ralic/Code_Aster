@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C     -- COMMON MESTPS POUR MESURE_TEMPS
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS
       CHARACTER*16 MEMOIR
-      INTEGER SEGJVX,LSEGJV,L,NCODE,IVAL
+      INTEGER SEGJVX,LSEGJV,L,NCODE,IVAL,NDBG
       REAL*8 VPARJV
 C
 C     --- OPTIONS PAR DEFAUT ---
@@ -62,16 +62,14 @@ C     --- OPTIONS PAR DEFAUT ---
       MEMOIR = 'RAPIDE'
       TBLOC=800.D0
 
-C     MOT-CLE CODE PRESENT ?
+C     -- WARNING SUR LES MOTS-CLES CODE ET DEBUG
       CALL GETFAC('CODE',NCODE)
-
-C     -- MOT-CLE CODE
-      IF (NCODE.GT.0) THEN
+      CALL GETFAC('DEBUG',NDBG)
+      IF (NCODE.GT.0 .OR. NDBG.GT.0) THEN
          CALL U2MESS('I','SUPERVIS_22')
       ENDIF
 
 C     -- DEBUG / JXVERI :
-C     -----------------------------------------------------
       REPONS = 'NON'
       CALL GETVTX('DEBUG','JXVERI',1,1,1,REPONS,L)
       IF (L.EQ.0) THEN
@@ -83,7 +81,6 @@ C           VOIR ROUTINE EXPASS.F
       ENDIF
 
 C     -- DEBUG / SDVERI :
-C     -----------------------------------------------------
       REPONS = 'NON'
       CALL GETVTX('DEBUG','SDVERI',1,1,1,REPONS,L)
       IF (L.EQ.0) THEN

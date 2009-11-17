@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -788,6 +788,10 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   if n_modele in self.get_global_contexte().keys() : MODELE_1=self.get_global_contexte()[n_modele]
   else                                             : MODELE_1=self.jdc.current_context[n_modele]
+
+
+  if NOM_CHAM[5:9]=='ELGA' : UTMESS('F','POST0_18',valk=[NOM_CHAM,])
+
   __recou=PROJ_CHAMP(METHODE='ELEM',
                      RESULTAT=RESULTAT,
                      MODELE_1=MODELE_1,

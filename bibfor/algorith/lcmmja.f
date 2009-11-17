@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,14 +55,14 @@ C       ----------------------------------------------------------------
       REAL*8          TOUTMS(5,24,6),HSR(5,24,24),SQ,PR
 C     ALLOCATION DYNAMIQUE
       REAL*8          SIGF(6),DDVIS(3,3),DDVIR(NVI),DRSDPR(NVI)
-      REAL*8          FHOOK(6,6),CRITR,DGAMM2,DP2,DALPH2
+      REAL*8          FHOOK(6,6),CRITR,DGAMM2,DP2
       REAL*8          EXPBP(24),DHDALR,HS
       REAL*8          PGL(3,3),MS(6),NG(3),VIS(3),TAUS,TIMED, TIMEF
       REAL*8          P,DP,YF(*),DY(*),DRDY(NR,NR),SMSMS(6,6),DFDGA
       REAL*8          MATERF(NMAT*2), DT,RP,DADV(3),DFDTAR,DGDALR,DFDRR
       REAL*8          DVDTAU(3),DTAUDS(3,6),MSMS(6,6),DRRDPS,DELTSR
       REAL*8          MSDGDT(6,6),D,R0,Q,B,N,K,C,DGAMMS,ABSDGA,H,RR
-      REAL*8          ALPHAM,DALPHA,ALPHAP,CRIT,DALDGA,DGAMMA,DALPHR
+      REAL*8          ALPHAM,DALPHA,ALPHAP,CRIT,DALDGA,DGAMMA
       REAL*8          DRDGA,SGNS,TAUR,SGNR,ALPHAR,GAMMAP,PM,GAMMAR
       REAL*8          DAR,DGR,ARM,DGDAL,DFDR,DGAMMR,ALPHMR,PS,TOLER
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
@@ -92,7 +92,7 @@ C         NMATER=CPMONO(5*(IFA-1)+2)
          NECRIS=CPMONO(5*(IFA-1)+4)
          NECRCI=CPMONO(5*(IFA-1)+5)
          IFL=NBCOMM(IFA,1)
-         NUECOU=MATERF(NMAT+IFL)
+         NUECOU=NINT(MATERF(NMAT+IFL))
 
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG)
 
@@ -200,7 +200,7 @@ C                  IF(NECOUL.NE.'KOCKS_RAUCH') THEN
                   IF (NUECOU.NE.4) THEN
                      DGAMMR=DY(NUVR)
                      CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
-     &               ITMAX,TOLER,ALPHAM,DGAMMS,DALPHA,IRET )
+     &               ITMAX,TOLER,ALPHAM,DGAMMR,DALPHA,IRET )
                      IF (IRET.GT.0)  GOTO 9999
                      ALPHAR=ALPHMR+DALPHA
 
@@ -217,7 +217,7 @@ C                    CALCUL DE R(P)
                   IF (NUECOU.NE.4) THEN
                      CALL LCMMFE(TAUS,MATERF(NMAT+1),MATERF(1),IFA,
      &               NMAT,NBCOMM,NECOUL,IS,NBSYS,VIND(NSFV+1),
-     &               DY(NSFA+1),RR,ALPHAR,GAMMAR,DT,DALPH2,DGAMM2,DP2,
+     &               DY(NSFA+1),RR,ALPHAR,GAMMAR,DT,DALPHA,DGAMM2,DP2,
      &               CRITR,SGNR,HSR,IRET)
                      IF (IRET.GT.0)  GOTO 9999
                   ENDIF
@@ -225,7 +225,7 @@ C                    CALCUL DE R(P)
 C                 CALCUL de dF/dRr, dF/dalphar, dF/dtau
                   CALL LCMMJF( TAUR,MATERF(NMAT+1),
      &               MATERF(1),IFA,NMAT,NBCOMM,DT,NECOUL,IS,IR,NBSYS,
-     &               VIND(NSFV+1),DY(NSFA+1),HSR,RR,ALPHAR,DALPHR,
+     &               VIND(NSFV+1),DY(NSFA+1),HSR,RR,ALPHAR,DALPHA,
      &               GAMMAR,DGAMM2,SGNR,DFDTAR,DGDALR,DFDRR,IRET)
                   IF (IRET.GT.0)  GOTO 9999
 

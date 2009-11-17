@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai8 Messages  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -245,6 +245,16 @@ Conseil:
 Conseil:
    Limiter le post traitement à des GROUP_MA contenant des mailles 
 de type valide
+"""),
+
+64 : _("""
+  Vous definissez une charge thermique sur un modele mecanique ! 
+  Le MODELE doit être de type thermique.
+"""),
+
+65 : _("""
+  Vous definissez une charge mecanique sur un modele thermique ! 
+  Le MODELE doit être de type mécanique.
 """),
 
 }

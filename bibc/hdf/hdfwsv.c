@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwsv hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfwsv hdf  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -47,14 +47,20 @@ INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg, cha
      nomd[k] = nomg[k];
   }
   k=lg-1;
-  while (nomd[k] == ' ') { k--;}
+  while (k>=0){
+    if (nomd[k] == ' ') { k--;}
+    else break;
+  }
   nomd[k+1] = '/';
   lg2=k+1+1;
   for (k=0;k<ln;k++) {
      nomd[lg2+k] = nomdts[k];
   }
   k=lg2+ln-1;
-  while (nomd[k] == ' ') { k--;}
+  while (k>=0){
+    if (nomd[k] == ' ') { k--;}
+    else break;
+  }
   nomd[k+1] = '\0';
 
   vtype = (char *) malloc((lt+1) * sizeof(char));

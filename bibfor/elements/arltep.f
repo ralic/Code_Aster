@@ -4,7 +4,7 @@
      &                  FCTFC ,DFDXC ,DFDYC ,DFDZC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/10/2009   AUTEUR CAO B.CAO 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,7 +71,7 @@ C
       REAL*8   COORR(3),COORPC(3)
       INTEGER  IDIM,JDIM,INO,IBID,JBID,JDECAL
       REAL*8   DFR(3,NNC)
-      REAL*8   INVJAC(NDIM,NDIM)
+      REAL*8   INVJAC(3,3)
       INTEGER  IRET
 C
 C ----------------------------------------------------------------------

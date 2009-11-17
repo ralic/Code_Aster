@@ -1,4 +1,4 @@
-#@ MODIF info_fonction_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF info_fonction_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
   """
   ier=0
   import string
-  from Utilitai.t_fonction import t_fonction,t_fonction_c,t_nappe
+  from Cata_Utils.t_fonction import t_fonction,t_fonction_c,t_nappe
   import math
   from Accas import _F
   from Utilitai.Utmess import  UTMESS

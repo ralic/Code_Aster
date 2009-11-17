@@ -10,7 +10,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/05/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF CALCULEL  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,6 +80,7 @@ C              12345678
       MODELE = ' '
       CARA   = ' '
       MATERI = ' '
+      NOMO   = BLAN8
       IEXCIT = 1
 C
       CALL GETRES(K8B,CONCEP,NOMCMD)

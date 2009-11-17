@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER            NDIM,NNO,NNOS,KP,NPG,I,J,K,LCASTR,JGANO
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
-      REAL*8             RHO, XG, YG, DEPI, R8DEPI, ZERO
+      REAL*8             RHO, XG, YG, DEPI, R8DEPI, ZERO, R8PREM
       REAL*8             DFDX(9),DFDY(9),POIDS,R,X(9),Y(9)
       REAL*8             MATINE(6), R8B, XXI, XYI, YYI, VOLUME
       REAL*8             IXRP2, IYRP2, XP(9),YP(9),XPG,YPG
@@ -75,6 +75,9 @@ C
      &     PHENOM .EQ. 'ELAS_ORTH_FO'  )  THEN
             CALL RCVALA(ZI(IMATE),' ', PHENOM, 0, ' ', R8B,
      &                 1, 'RHO', RHO, CODRET, 'FM' )
+            IF(RHO.LE.R8PREM()) THEN
+              CALL U2MESS('F','ELEMENTS5_45')
+            ENDIF
             CALL JEVECH('PMASSINE','E',LCASTR)
          ELSE
            CALL U2MESS('F','ELEMENTS_50')

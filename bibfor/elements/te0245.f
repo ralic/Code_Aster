@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C
       CHARACTER*2  CODRES
       CHARACTER*16 CH16, PHENOM
       CHARACTER*8  NOMAIL
-      REAL*8       RHO, A, XL, R8B
+      REAL*8       RHO, A, XL, R8B, R8PREM
       INTEGER      IADZI,IAZK24
 C     ------------------------------------------------------------------
 C
@@ -65,6 +65,9 @@ C
      &     PHENOM .EQ. 'ELAS_ORTH_FO'  )  THEN
          CALL RCVALA(ZI(LMATER),' ', PHENOM, 0, ' ', R8B,
      &                 1, 'RHO', RHO, CODRES, 'FM' )
+         IF(RHO.LE.R8PREM()) THEN
+           CALL U2MESS('F','ELEMENTS5_45')
+         ENDIF
       ELSE
         CALL U2MESS('F','ELEMENTS_50')
       ENDIF

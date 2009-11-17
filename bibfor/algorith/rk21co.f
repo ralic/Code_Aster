@@ -8,7 +8,7 @@
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,6 +78,10 @@ C     ----------------------------------------------------------------
 C      POUR GAGNER EN TEMPS CPU
       REAL*8 TOUTMS(NBPHAS,NBFSYM,24,6)
 C
+      DO 1 I=1,NVI
+        EE(I)=0.D0
+        F(I)=0.D0
+   1  CONTINUE
       IF (KP.EQ.1) THEN
         CALL RDIF01(FAMI,KPG,KSP,COMP,MOD,IMAT,MATCST,NBCOMM,
      &              CPMONO,NBFSYM,TOUTMS,

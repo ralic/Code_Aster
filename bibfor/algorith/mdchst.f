@@ -11,7 +11,7 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -258,6 +258,7 @@ C
 C
             KTANG = 0.D0
             CTANG = 0.D0
+            NAMTAN = 0
             IF (MOTFAC.EQ.'CHOC') THEN
            CALL GETVTX(MOTFAC,'INTITULE'   ,IOC,1,1,INTITU(ILIAI)   ,N1)
            CALL GETVR8(MOTFAC,'JEU'        ,IOC,1,1,PARCHO(ILIAI,1) ,N1)

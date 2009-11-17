@@ -1,6 +1,6 @@
       SUBROUTINE ZEROFO(F,F0,XAP,EPSI,NITMAX,SOLU,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C DEB-------------------------------------------------------------------
 C
 C     INITIALISATIONS
 C
+      IRET = 0
       N = 1
       X = 0.D0
       FX = F0

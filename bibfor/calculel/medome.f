@@ -7,7 +7,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C              12345678
       IER = 0
       CTYP   = ' '
       MODELE = ' '
+      NOMO   = ' '
       CARA   = ' '
       MATERI = ' '
       IEXCIT = 1
@@ -108,7 +109,7 @@ C
       ELSE
 
         CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
-        CALL ASSERT(N1.NE.0)
+        IF (N1.EQ.0) CALL U2MESS('F','CALCULEL6_84')
 
         CALL GETVID(' ','CARA_ELEM' ,0,1,1,CARA  ,N2)
         CALL DISMOI('F','EXI_RDM',MODELE,'MODELE',IBID,K8B,IE)

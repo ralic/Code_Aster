@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -303,9 +303,6 @@ def detruire(self,d):
    """
        Cette fonction est la fonction op_init de la PROC DETRUIRE
    """
-#XXX introduit par issue11484, commenté par issue13713
-#   if hasattr(self,"executed") and self.executed == 1:
-#      return
    list_co = set()
    sd = []
    # par nom de concept (typ=assd)

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT-FROTTANT EN GRANDS GLISSEMENTS
 # ssnp503c.para = tps_job 60 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,6 +126,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELE,
                           ),  
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
+                   NEWTON=_F(REAC_ITER=1,),
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=8,
                                   RESI_GLOB_MAXI=1E-06)),
                    INFO=1,);

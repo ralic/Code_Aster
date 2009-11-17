@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -638,6 +638,25 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       d=self.parent.get_global_contexte()
       d.update(self.g_context)
       return d
+
+   def get_contexte_courant(self, etape_fille_du_jdc=None):
+      """
+         Retourne le contexte tel qu'il est au moment de l'exécution de
+         l'étape courante.
+      """
+      ctx = self.parent.get_contexte_courant(self)
+      # on peut mettre None car toujours en PAR_LOT='NON', donc la dernière
+      ctx.update( self.get_contexte_avant(None) )
+      return ctx
+
+   def get_concept(self, nomsd):
+      """
+          Méthode pour recuperer un concept à partir de son nom
+          dans le contexte du jdc connu avant l'exécution de la macro courante.
+      """
+      # chercher dans self.get_contexte_avant, puis si non trouve
+      # self.parent.get_concept est peut-etre plus performant
+      return self.get_contexte_courant().get(nomsd.strip(), None)
 
    def copy(self):
       """ Méthode qui retourne une copie de self non enregistrée auprès du JDC

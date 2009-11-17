@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 14/09/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 16/11/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,15 @@
 def _(x) : return x
 
 cata_msg={
+
+1: _("""
+Erreur utilisateur :
+ Les deux champs suivants : %(k1)s et %(k2)s
+ sont associés à deux maillages différents : %(k3)s et %(k4)s
+Risques & conseils :
+ Si l'un des champs est de type ETAT_INIT, il faut que son maillage
+ soit le meme que celui qui est associé au modèle.
+"""),
 
 2: _("""
  le CHAMP_S:  %(k1)s  est a la fois CHAM_ELEM_S et CHAM_NO_S.

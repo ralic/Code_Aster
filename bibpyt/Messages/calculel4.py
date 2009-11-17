@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 14/09/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 16/11/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,6 +53,17 @@ Conseils :
   Il s'agit peut-etre d'une erreur de programmation.
   S'il s'agit de la commande CREA_CHAMP, vérifiez le mot clé TYPE_CHAM.
 
+"""),
+
+5 : _("""
+Erreur utilisateur dans la commande IMPR_RESU / RESTREINT :
+  Quand on utilise le mot clé RESTREINT, le mot clé RESULTAT est obligatoire
+  pour chaque occurence du mot clé facteur RESU
+
+Conseil :
+  On ne peut pas restreindre un champ "isolé".
+  On ne traite que les sd_resultat.
+  Il faut donc au préalable créer une sd_resultat avec CREA_RESU
 """),
 
 

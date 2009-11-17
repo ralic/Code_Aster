@@ -1,4 +1,4 @@
-#@ MODIF post0 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post0 Messages  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,12 +30,12 @@ Valeurs incorrectes pour VECT_Y.
 """),
 
 3: _("""
-Valeurs incorrectes pour VECT_Y: x colinéaire a y.
+Valeurs incorrectes pour VECT_Y: X colinéaire à Y.
 """),
 
 4: _("""
-Le vecteur Y n'est pas orthogonal a la ligne de coupe.
-Le vecteur Y a ete orthonormalise pour vous.
+Le vecteur Y n'est pas orthogonal à la ligne de coupe.
+Le vecteur Y a été orthonormalisé pour vous.
 VECT_Y=(%(r1)f,%(r2)f,%(r3)f)
 """),
 
@@ -76,11 +76,11 @@ Le mot-clé 'DNOR' est obligatoire en 3D pour le type 'ARC'.
 """),
 
 13: _("""
-Le group_no %(k1)s n'est pas dans le maillage %(k2)s.
+Le GROUP_NO %(k1)s n'est pas dans le maillage %(k2)s.
 """),
 
 14: _("""
-Le group_ma %(k1)s n'est pas dans le maillage %(k2)s.
+Le GROUP_MA %(k1)s n'est pas dans le maillage %(k2)s.
 """),
 
 15: _("""
@@ -93,8 +93,14 @@ avec des lignes de coupes SEGMENT ou GROUP_NO.
 """),
 
 17: _("""
-Le champ %(k1)s n'est pas traité par macr_ligne_coupe en repère %(k2)s.
+Le champ %(k1)s n'est pas traité par MACR_LIGNE_COUPE en repère %(k2)s.
 Le calcul est effectué en repère global.
+"""),
+
+18: _("""
+%(k1)s est un type de champ aux éléments, non traité par PROJ_CHAMP, donc par MACR_LIGN_COUPE
+
+Conseil : pour un champ aux points de Gauss, veuillez passer par un champ ELNO
 """),
 
 }

@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/09/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,22 +105,18 @@ C
      &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIN(NSFV+1),DY(NSFA+1),
      &      RP,ALPHAM,GAMMAM,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET)
      
-     
-           IF (IRET.GT.0) THEN
-              DP=1.D0
-           ENDIF
-
+            IF (IRET.GT.0) THEN
+               DP=1.D0
+            ENDIF
             IF (DP.GT.0.D0) THEN
                SEUIL=1.D0
-            ELSE
-               SEUIL = 0.D0
+               GOTO 9999
             ENDIF
 
  7     CONTINUE
 
         NSFA=NSFA+NBSYS
         NSFV=NSFV+3*NBSYS
-
-
   6   CONTINUE
-        END
+ 9999 CONTINUE
+      END

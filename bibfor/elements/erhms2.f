@@ -4,7 +4,7 @@
      &                  TYPMAV, TBREF1, TBREF2, IVOIS ,
      &                  TM2H1S                         )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,9 +106,9 @@ C
       REAL*8      FLUXP(3) ,FLUYP(3) ,FLUXM(3) ,FLUYM(3)
       REAL*8      FLUXPV(3),FLUYPV(3),FLUXMV(3),FLUYMV(3)
       REAL*8      DMXP(3)  ,DMYP(3)  ,DMXM(3)  ,DMYM(3)
-      REAL*8      DMXFIN(3), DMYFIN(3)
+      REAL*8      DMXFIN(3),DMYFIN(3)
 C
-      REAL*8      INTME1(NBNA),INTME2(NBNA),INTHYD(NBNA)
+      REAL*8      INTME1(3),INTME2(3),INTHYD(3)
       REAL*8      TA1
 C
       INTEGER     IAREPE,JCELDP,JCELVP,JCELDM,JCELVM,IMAV,IGREL,IEL,
@@ -416,6 +416,9 @@ C
      &         ( (DSGXXP(I)*NX(I) + DSGXYP(I)*NY(I))**2
      &          +(DSGXYP(I)*NX(I) + DSGYYP(I)*NY(I))**2 )
 C
+        DMXFIN(I) = THETA * DMXP(I)
+        DMYFIN(I) = THETA * DMYP(I)
+C
         IF ( .NOT. PERMAN ) THEN
 C
           DSGXXM(I) = SIXXM(I) - SIXXMV(I)
@@ -431,10 +434,10 @@ C
      &              +( (DSGXYP(I) - DSGXYM(I))*NX(I)
      &                +(DSGYYP(I) - DSGYYM(I))*NY(I))**2 )
 C
-        ENDIF
+          DMXFIN(I) = THETA * DMXP(I) + TA1 * DMXM(I)
+          DMYFIN(I) = THETA * DMYP(I) + TA1 * DMYM(I)
 C
-        DMXFIN(I) = THETA * DMXP(I) + TA1 * DMXM(I)
-        DMYFIN(I) = THETA * DMYP(I) + TA1 * DMYM(I)
+        ENDIF
 C
 C =====================================================================
 C 3.B --- PARTIE HYDRAULIQUE

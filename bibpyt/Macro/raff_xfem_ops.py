@@ -1,4 +1,4 @@
-#@ MODIF raff_xfem_ops Macro  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF raff_xfem_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,7 +90,7 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
       # on recupere le concept maillage associe a la level set normale
       iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',__CHLN.nom,'CHAM_NO')
       nom_ma=nom_ma.strip()
-      MA = self.jdc.sds_dict[nom_ma]
+      MA = self.get_concept(nom_ma)
 
       if typ_ds == 'FISSURE' : 
          __CHLTB=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',

@@ -3,7 +3,7 @@
       CHARACTER*16         OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/07/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -240,7 +240,7 @@ C CALCUL DE !![[U]]_TAU!!
 331     CONTINUE
 
         DO 312 I = 1,NDIM
-          GEOMI (I)= (DEPLE(I)-DEPLM(I)) - (DEPLME(I)-DEPLMM(I))
+          GEOMI (I)= (DEPLE(I)-DEPLM(I))
           BIDON (I)= 0.D0
           VECT  (I)= 0.D0
 312     CONTINUE

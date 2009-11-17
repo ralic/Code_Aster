@@ -7,7 +7,7 @@
       CHARACTER*3   GRAD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/10/2009   AUTEUR MESSIER J.MESSIER 
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,7 +67,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER       NNOF,I,J,NNE,INO,IRET
       REAL*8        R8PREM,COORMA(8),PREC,MP(2),EPSI(2),FF(NNO),
-     &              LSTA,LSNA,LSTB,LSNB   
+     &              LSTA,LSNA,LSTB,LSNB,SOLSN,PADIST,PT(3)
       CHARACTER*8   ELREF,ALIAS
       LOGICAL       CHGSGN     
 
@@ -84,7 +84,7 @@ C ----------------------------------------------------------------------
       PREC=100.D0*R8PREM()
       CODRET = 0
 
-C     Initialisation des coordonnées (LS) des noeuds de la face
+C     INITIALISATION DES COORDONNéES (LS) DES NOEUDS DE LA FACE
       CALL VECINI(8,0.D0,COORMA)
       LSTA=0.D0
       LSNA=0.D0
@@ -104,12 +104,21 @@ C     NOMBRE DE SOMMETS DE LA FACE
 C     NOEUDS SOMMETS DE LA FACE : FA(IFQ,1) ... FA(IFQ,NNOF)
 
       CHGSGN = .FALSE.        
+
+C     SI LA FACE COINCIDE AVEC LA SURFACE DE LA FISSURE, ON SORT
+C     (CAD SI LES LSN DES SOMMETS DE LA FACE SONT TOUS NULS)
+      SOLSN = 0.D0
+      DO 200 I =1,NNOF
+        SOLSN = SOLSN + ABS( LSN(FA(IFQ,I)) )
+ 200  CONTINUE
+      IF (SOLSN.EQ.0.D0) GOTO 999
+
       DO 220 I=1,NNOF
-         IF (I.EQ.1) THEN
-           J = NNOF
-         ELSE
-           J = I-1
-         ENDIF
+        IF (I.EQ.1) THEN
+          J = NNOF
+        ELSE
+          J = I-1
+        ENDIF
         LSTA=LST(FA(IFQ,I))
         LSNA=LSN(FA(IFQ,I))
         LSTB=LST(FA(IFQ,J))
@@ -117,37 +126,41 @@ C     NOEUDS SOMMETS DE LA FACE : FA(IFQ,1) ... FA(IFQ,NNOF)
         COORMA(2*I-1)=LSTA
         COORMA(2*I)=LSNA
 
-C       On accepte tout de suite la face si le front coincide
-C       avec l'un des noeuds ou un point de l'arete
+C       SI LE FOND COINCIDE AVEC UN COTE DE LA FACE, ON SORT
+        IF (LSNA.EQ.0.D0.AND.LSNB.EQ.0.D0.AND.
+     &      LSTA.EQ.0.D0.AND.LSTB.EQ.0.D0) GOTO 999
+
+C       ON ACCEPTE TOUT DE SUITE LA FACE SI LE FRONT COINCIDE
+C       AVEC L'UN DES NOEUDS OU UN POINT DE L'ARETE
         IF (((LSNA.EQ.0.D0).AND.(LSTA.EQ.0.D0)).OR.
-     &(((LSNA.EQ.0.D0).AND.(LSNB.EQ.0.D0)).AND.
-     &((LSTA*LSTB).LT.R8PREM()))) THEN
+     &     (((LSNA.EQ.0.D0).AND.(LSNB.EQ.0.D0)).AND.
+     &      ((LSTA*LSTB).LT.R8PREM()))) THEN
          CHGSGN = .TRUE.
          GOTO 220
         
         ENDIF
 
-C     On ne conserve que les faces coupees
-C     sur une seule arete par le demi-plan (lsn=0/lst<0)
-C     Pour cela, on controle le signe de lst(I) ou I est le point 
-C     d'intersection de l'arete avec lsn=0
-C     (on a lsn(I)=lst(B)-lsn(B)*(lst(A)-lst(B))/(lsn(A)-lsn(B)))
+C       ON NE CONSERVE QUE LES FACES COUPEES
+C       SUR UNE SEULE ARETE PAR LE DEMI-PLAN (LSN=0/LST<0)
+C       POUR CELA, ON CONTROLE LE SIGNE DE LST(I) OU I EST LE POINT 
+C       D'INTERSECTION DE L'ARETE AVEC LSN=0
+C       (ON A LSN(I)=LST(B)-LSN(B)*(LST(A)-LST(B))/(LSN(A)-LSN(B)))
         IF ((LSNA*LSNB).LT.PREC) THEN      
 
-           IF (((ABS((LSNA-LSNB)).GT.R8PREM()).AND.
-     &((LSTB-(LSNB*(LSTA-LSTB)/(LSNA-LSNB))).LT.PREC)).OR.
-     &((ABS((LSNA-LSNB)).LE.R8PREM()).AND.
-     &((LSTA*LSTB).LT.R8PREM()))) THEN
+          IF (((ABS((LSNA-LSNB)).GT.R8PREM()).AND.
+     &        ((LSTB-(LSNB*(LSTA-LSTB)/(LSNA-LSNB))).LT.PREC)).OR.
+     &        ((ABS((LSNA-LSNB)).LE.R8PREM()).AND.
+     &        ((LSTA*LSTB).LT.R8PREM()))) THEN
 
               CHGSGN = .TRUE.
 
-            ENDIF
+          ENDIF
 
         ENDIF   
 
  220  CONTINUE
 
-       IF (.NOT. CHGSGN) GOTO 999
+      IF (.NOT. CHGSGN) GOTO 999
        
 C     ON CHERCHE SUR LA MAILLE LE POINT CORRESPONDANT à LSN=LST=0
       MP(1)=0.D0

@@ -1,6 +1,6 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
-# RESPONSABLE Alexis COURTOIS (MMC)
+# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
 # TITRE : TUNNEL CIRCULAIRE REVETU EN CHAMP DE CONTRAINTES INITIAL ISOTROPE
+# sslp105a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG

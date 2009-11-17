@@ -1,4 +1,4 @@
-#@ MODIF sech_nappe Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF sech_nappe Comportement  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

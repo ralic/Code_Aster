@@ -8,7 +8,7 @@
      >                    VECGRM, NBCGRM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF MODELISA  DATE 16/11/2009   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -96,9 +96,10 @@ C
       INTEGER IAUX
       INTEGER RANGFA
       INTEGER ADNOGR, ADVALA
-      INTEGER NBGRMX, NBATMX
+      INTEGER NBGRMX, NBATMX, IBID, NBGRLO, JNOGRL, JNOGRC, JAUX
 C
-      CHARACTER*24 VAATFA, NOGRFA
+      CHARACTER*80 MK(3)
+      CHARACTER*24 VAATFA, NOGRFA, NOGRLO, NOGRCO
 C
 C     ------------------------------------------------------------------
 C
@@ -136,6 +137,11 @@ C====
 C 3. DECODAGE DE CHAQUE FAMILLE
 C====
 C
+      NOGRLO = '&&LRMMF1.NOM_GR_LONG    '
+      CALL WKVECT ( NOGRLO, 'V V K80', NBRFAM, IBID )
+      NOGRCO = '&&LRMMF1.NOM_GR_COURT   '
+      CALL WKVECT ( NOGRCO, 'V V K8', NBRFAM, IBID )
+      NBGRLO = 0
       DO 3 , IAUX = 1 , NBRFAM
 C
         RANGFA = IAUX
@@ -147,9 +153,28 @@ C
      >                ZI(ADVALA), ZK80(ADNOGR), TABAUX,
      >                NOMGRO, NUMGRO, NUMENT,
      >                INFMED, NIVINF, IFM,
-     >                VECGRM, NBCGRM )
+     >                VECGRM, NBCGRM, NBGRLO )
 C
     3 CONTINUE
+C
+      CALL JEVEUO(NOGRLO,'L',JNOGRL)
+      CALL JEVEUO(NOGRCO,'L',JNOGRC)
+      DO 4 , IAUX = 1 , NBGRLO
+        IF ( ZK80(JNOGRL-1+IAUX).NE.ZK8(JNOGRC-1+IAUX) ) THEN
+          DO 5 , JAUX = 1, NBGRLO
+            IF ( JAUX.EQ.IAUX ) GOTO 5
+            IF ( (ZK8(JNOGRC-1+IAUX).EQ.ZK8(JNOGRC-1+JAUX)) .AND.
+     &           (ZK80(JNOGRL-1+IAUX).NE.ZK80(JNOGRL-1+JAUX)) ) THEN
+              MK(1) = ZK80(JNOGRL-1+IAUX)
+              MK(2) = ZK80(JNOGRL-1+JAUX)
+              MK(3) = ZK8(JNOGRC-1+IAUX)
+              CALL U2MESK('F', 'MED2_1', 3, MK)
+            ENDIF
+    5     CONTINUE
+        ENDIF
+    4 CONTINUE
+      CALL JEDETR(NOGRLO)
+      CALL JEDETR(NOGRCO)
 C
 C====
 C 4. LA FIN

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -178,9 +178,8 @@ U=STAT_NON_LINE(MODELE=MO,
                        _F(CHARGE=CHA2,),),
                 COMP_ELAS=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,),
-#                NEWTON=_F(MATRICE='ELASTIQUE',
-#                          REAC_INCR=0),
-                NEWTON=_F(MATRICE='TANGENTE',),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20),
                 );
 

@@ -1,7 +1,7 @@
-      SUBROUTINE PTGY01(SK,NL,E,RHO,A,XL,XIY,XIZ,XJX,G,ALFINV,
+      SUBROUTINE PTGY01(SK,NL,XNU,RHO,A,XL,XIY,XIZ,XJX,ALFINV,
      &                   EY,EZ,IST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2008   AUTEUR BOYERE E.BOYERE 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C ======================================================================
       IMPLICIT NONE
       REAL*8 SK(*)
-      REAL*8 E,RHO,A,XL,XIY,XIZ,XJX,G,EY,EZ
+      REAL*8 XNU,RHO,A,XL,XIY,XIZ,XJX,EY,EZ
       INTEGER NL,IST
 C    -------------------------------------------------------------------
 C    * CE SOUS PROGRAMME CALCULE LA MATRICE D'AMORITSSEMENT GYROSCOPIQUE
@@ -100,7 +100,7 @@ C
         CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       END IF
       IP = (XIY+XIZ)
-      PHI = 12.D0*E*IP*ALFINV/(2.D0*G*A*XL*XL)
+      PHI = 12.D0*IP*ALFINV*(1.D0+XNU)/(A*XL*XL)
       COM =  RHO * IP / (30.D0 * XL*(1.D0+PHI)*(1.D0+PHI))
       
 C
@@ -108,67 +108,67 @@ C     I : LIGNE ; J : COLONNE
       I = 2 
       J = 3
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) = -36.D0 * COM
+      SK(IPOINT) = 36.D0 * COM
       I = 2 
       J = 5
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) = (3.D0 - 15.D0 * PHI) * COM *XL
+      SK(IPOINT) = -(3.D0 - 15.D0 * PHI) * COM *XL
       I = 3 
       J = 6
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) = (3.D0  - 15.D0 * PHI) * COM *XL
+      SK(IPOINT) = -(3.D0  - 15.D0 * PHI) * COM *XL
       I = 5 
       J = 6
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) = -(4.D0+5.D0*PHI+10.D0*PHI*PHI)*COM*XL*XL
+      SK(IPOINT) = (4.D0+5.D0*PHI+10.D0*PHI*PHI)*COM*XL*XL
       I = 3
       J = 8
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) =  -36.D0 * COM
+      SK(IPOINT) =  36.D0 * COM
       I = 5
       J = 8
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) = (3.D0 - 15.D0 * PHI) * COM * XL
+      SK(IPOINT) = -(3.D0 - 15.D0 * PHI) * COM * XL
       I = 2
       J = 9
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) = +36.D0 * COM
+      SK(IPOINT) = -36.D0 * COM
       I = 6
       J = 9
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) = (3.D0 - 15.D0 * PHI) * COM * XL
+      SK(IPOINT) = -(3.D0 - 15.D0 * PHI) * COM * XL
       I = 8
       J = 9
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) = - 36.D0 * COM
+      SK(IPOINT) = 36.D0 * COM
       I = 2
-      J = 11
-      IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) = (3.D0 - 15.D0 * PHI) * COM * XL
-      I = 6
-      J = 11
-      IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) =-(1.D0+5.D0*PHI-5.D0*PHI*PHI)*COM*XL*XL
-      I = 8
       J = 11
       IPOINT = INT(J*(J-1)/2)+I
       SK(IPOINT) = -(3.D0 - 15.D0 * PHI) * COM * XL
+      I = 6
+      J = 11
+      IPOINT = INT(J*(J-1)/2)+I
+      SK(IPOINT) = (1.D0+5.D0*PHI-5.D0*PHI*PHI)*COM*XL*XL
+      I = 8
+      J = 11
+      IPOINT = INT(J*(J-1)/2)+I
+      SK(IPOINT) = (3.D0 - 15.D0 * PHI) * COM * XL
       I = 3
       J = 12
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) = (3.D0 - 15.D0 * PHI) * COM * XL
+      SK(IPOINT) = -(3.D0 - 15.D0 * PHI) * COM * XL
       I = 5
       J = 12
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) =(1.D0+5.D0*PHI-5.D0*PHI*PHI)*COM*XL*XL
+      SK(IPOINT) = -(1.D0+5.D0*PHI-5.D0*PHI*PHI)*COM*XL*XL
       I = 9
       J = 12
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) = -(3.D0 - 15.D0 * PHI) * COM * XL
+      SK(IPOINT) = (3.D0 - 15.D0 * PHI) * COM * XL
       I = 11
       J = 12
       IPOINT = INT(J*(J-1)/2)+I
-      SK(IPOINT) =-(4.D0+5.D0*PHI+10.D0*PHI*PHI)*COM*XL*XL
+      SK(IPOINT) = (4.D0+5.D0*PHI+10.D0*PHI*PHI)*COM*XL*XL
 C
 
  9999 CONTINUE

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
       CHARACTER*16 PHENOM
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,VOLUME
       REAL*8 X(27),Y(27),Z(27),XG,YG,ZG,MATINE(6),R8B
-      REAL*8 RHOPOU,RHOFLU,TPG,VALRES(NBRES),AYZ,YCELL,RAPP,YF
+      REAL*8 RHOPOU,RHOFLU,TPG,VALRES(NBRES),AYZ,YCELL,RAPP,YF,R8PREM
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,NBV,LSECT,LCORR
       INTEGER JGANO,NNO,KP,NPG,I,J,IMATE,NTROU
 C     ------------------------------------------------------------------
@@ -113,6 +113,9 @@ C                 AYZ  := AIRE_SECTION_POUTRE
      &      PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ORTH_FO') THEN
           CALL RCVALA(ZI(IMATE),' ',PHENOM,0,' ',R8B,1,'RHO',RHO,
      &               CODRET,'FM')
+          IF(RHO.LE.R8PREM()) THEN
+            CALL U2MESS('F','ELEMENTS5_45')
+          ENDIF
         ELSE
           CALL U2MESS('F','ELEMENTS_50')
         END IF

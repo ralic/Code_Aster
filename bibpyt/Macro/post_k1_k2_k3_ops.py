@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 17/11/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -399,7 +399,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         iret,ibid,n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
         n_modele=n_modele.rstrip()
         if len(n_modele)==0 : UTMESS('F','RUPTURE0_18')
-        MODEL = self.jdc.sds_dict[n_modele]
+        MODEL = self.get_concept(n_modele)
         dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
         for i in range(Nbf1):
           Porig = array(d_coorf[Lnf1[i]] )
@@ -560,7 +560,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      iret,ibid,n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
      n_modele=n_modele.rstrip()
      if len(n_modele)==0 : UTMESS('F','RUPTURE0_18')
-     MODEL = self.jdc.sds_dict[n_modele]
+     MODEL = self.get_concept(n_modele)
      xcont = MODEL.xfem.XFEM_CONT.get()
      if xcont[0] == 0 :
        __RESX = RESULTAT
@@ -783,7 +783,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      
 #   ----------Recuperation de la temperature au fond -------------  
    if Tempe3D :
-      Rth = self.jdc.sds_dict[resuth]
+      Rth = self.get_concept(resuth)
       __TEMP=POST_RELEVE_T(ACTION=_F(INTITULE='Temperature fond de fissure',
                                        NOEUD=Lnofon,TOUT_CMP='OUI',
                                        RESULTAT=Rth,NOM_CHAM='TEMP',TOUT_ORDRE='OUI',
@@ -1154,10 +1154,11 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #     ------------------------------------------------------------------
 #                           --- METHODE 1 ---
 #     ------------------------------------------------------------------
+         nabs = len(abscs)
          x1 = abscs[1:-1]
-         x2 = abscs[2:  ]
+         x2 = abscs[2:nabs]
          y1 = saut[:,1:-1]/x1
-         y2 = saut[:,2:  ]/x2
+         y2 = saut[:,2:nabs]/x2
          k  = abs(y1-x1*(y2-y1)/(x2-x1))
          g  = coefg*(k[0]+k[1])+coefg3*k[2]
          kg1 = [max(k[0]),min(k[0]),max(k[1]),min(k[1]),max(k[2]),min(k[2])]
@@ -1179,8 +1180,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #     ------------------------------------------------------------------
 #                           --- METHODE 2 ---
 #     ------------------------------------------------------------------
-         x1 = abscs[1: ]
-         y1 = saut[:,1:]
+         nabs = len(abscs)
+         x1 = abscs[1:nabs]
+         y1 = saut[:,1:nabs]
          k  = abs(y1/x1)
          g  = coefg*(k[0]+k[1])+coefg3*k[2]
          kg2= [max(k[0]),min(k[0]),max(k[1]),min(k[1]),max(k[2]),min(k[2])]
@@ -1201,10 +1203,11 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #     ------------------------------------------------------------------
 #                           --- METHODE 3 ---
 #     ------------------------------------------------------------------
+         nabs = len(abscs)
          x1 = abscs[:-1]
-         x2 = abscs[1: ]
+         x2 = abscs[1:nabs]
          y1 = saut[:,:-1]
-         y2 = saut[:,1: ]
+         y2 = saut[:,1:nabs]
          k  = (sqrt(y2)*sqrt(x2)+sqrt(y1)*sqrt(x1))*(x2-x1)
          k  = Numeric.sum(transpose(k))
          de = abscs[-1]

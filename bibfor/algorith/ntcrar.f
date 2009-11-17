@@ -1,0 +1,259 @@
+      SUBROUTINE NTCRAR(RESULT,SDDISC,DERNIE,DELMIN,NOMCMD)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT     NONE
+      CHARACTER*19 SDDISC
+      INTEGER      DERNIE
+      CHARACTER*8  RESULT
+      REAL*8       DELMIN
+      CHARACTER*16 NOMCMD
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE *_NON_LINE (STRUCTURES DE DONNES)
+C DUPLICATION DE NMCRAR POUR SUPPRIMER LA REQUETE A ARCH_ETAT_INIT
+C
+C CREATION SD ARCHIVAGE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NOMCMD : NOM DE LA COMMANDE APPELANTE (THER, STAT ou DYNA)
+C I/O SDDISC : SD DISCRETISATION
+C IN  NBTEMP : NOMBRE D'INSTANTS DE CALCUL
+C OUT DERNIE : DERNIER NUMERO ARCHIVE (OU 0 SI NON REENTRANT)
+C IN  DELMIN : PAS DE TEMPS MINI ENTRE INSTANT DE LA LISTE
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER      ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8       ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16   ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL      ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8  ZK8
+      CHARACTER*16    ZK16
+      CHARACTER*24        ZK24
+      CHARACTER*32            ZK32
+      CHARACTER*80                ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      INTEGER      JINSAR,JORDAR
+      INTEGER      IRET,I,IBID
+      INTEGER      NLIARC
+      INTEGER      NUMINS,JPARA
+      INTEGER      NB,N1,N2,N3,N4,N5,N6,NOCC
+      INTEGER      NBRESU,NBTEMP,NORDAR
+      REAL*8       TOLE,INST,R8BID
+      REAL*8       VALE,INSTAR,DIFF
+      LOGICAL      TEST
+      CHARACTER*8  K8BID
+      COMPLEX*16   C16BID
+      CHARACTER*16 K16BID
+      CHARACTER*19 LISARC
+      INTEGER      JLIARC
+      INTEGER      NUMARC,FREARC
+      CHARACTER*24 TPSDIA,TPSDIE,TPSDIT,TPSDII
+      INTEGER      JARCH ,JEXCL ,JTEMPS,JINFO
+      INTEGER      IFM,NIV
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- AFFICHAGE
+C
+      IF (NOMCMD(1:4).EQ.'THER') THEN
+        CALL INFDBG('THER_NON_LINE',IFM,NIV)
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<THERNONLINE> ... CREATION SD ARCHIVAGE'
+        ENDIF
+      ELSE
+        CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<MECANONLINE> ... CREATION SD ARCHIVAGE'
+        ENDIF
+      ENDIF
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+C
+C --- INITIALISATIONS
+C
+      TPSDIA = SDDISC(1:19)//'.DIAL'
+      TPSDIE = SDDISC(1:19)//'.DIEK'
+      TPSDII = SDDISC(1:19)//'.DIIR'
+C
+C --- ACCES SD LISTE D'INSTANTS
+C
+      TPSDIT = SDDISC(1:19)//'.DITR'
+      CALL JEVEUO(TPSDIT,'L',JTEMPS)
+      CALL JELIRA(TPSDIT,'LONUTI',NBTEMP,K8BID)
+      NBTEMP = NBTEMP - 1
+C
+C --- ACCES SD RESULTAT
+C
+      CALL JEEXIN(RESULT(1:8)//'           .DESC',IRET)
+      IF (IRET.EQ.0) THEN
+        DERNIE = 0
+      ELSE
+        CALL RSORAC(RESULT,'DERNIER',IBID   ,R8BID ,K8BID,
+     &              C16BID,0.D0    ,'ABSOLU',DERNIE,1    ,
+     &              IBID)
+        CALL JELIRA(RESULT(1:8)// '           .ORDR','LONUTI',
+     &              NBRESU,K8BID)
+        CALL JEVEUO(RESULT(1:8)// '           .ORDR','L',JORDAR)
+      ENDIF
+C
+C --- CREATION ET INITIALISATION SD
+C
+      CALL WKVECT(TPSDIA,'V V L',NBTEMP+1,JARCH)
+      DO 25 I = 1, NBTEMP
+        ZL(JARCH+I) = .FALSE.
+ 25   CONTINUE
+      CALL GETVIS('ARCHIVAGE','PAS_ARCH' ,1,1,1,FREARC,N1)
+      CALL GETVID('ARCHIVAGE','LIST_INST',1,1,1,LISARC,N2)
+      CALL GETVR8('ARCHIVAGE','INST'     ,1,1,0,R8BID ,N3)
+      N3 = -N3
+C
+C --- AUCUN MOT-CLE : PAS_ARCH=1
+C
+      IF (N1+N2+N3 .EQ. 0) THEN
+        FREARC = 1
+        N1     = 1
+      ENDIF
+C
+C --- CONSTRUCTION LISTE D'INSTANT D'ARCHIVAGE
+C
+      IF (N1 .GE. 1) THEN
+C       MOT-CLE FREQ_ARCH
+        DO 30 I = FREARC, NBTEMP, FREARC
+          ZL(JARCH+I) = .TRUE.
+ 30     CONTINUE
+      ELSE
+C       PRECISION D'ACCES A LA LISTE D'INSTANTS
+        CALL GETVR8('ARCHIVAGE','PRECISION'     ,1,1,1,TOLE,NOCC)
+        TOLE = DELMIN * TOLE
+C       RECUPERATION DE LA LISTE DES INSTANTS A ARCHIVER
+        IF (N3.GE.1) THEN
+          LISARC = '&&NMCRAR.LISARC'
+          NLIARC =  N3
+          CALL WKVECT(LISARC,'V V R8',N3,JLIARC)
+          CALL GETVR8('ARCHIVAGE','INST',1,1,NLIARC,ZR(JLIARC),IRET)
+        ELSE
+          CALL JEVEUO(LISARC//'.VALE','L',JLIARC)
+          CALL JELIRA(LISARC//'.VALE','LONMAX',NLIARC,K8BID)
+        ENDIF
+C    CONSTRUCTION DE LA LISTE
+        DO 50 I = 1,NLIARC
+          INST = ZR(JLIARC-1+I)
+          CALL UTACLI(INST,ZR(JTEMPS),NBTEMP,TOLE,NUMINS)
+          IF (NUMINS.NE.-1) THEN
+            ZL(JARCH+NUMINS) = .TRUE.
+          ENDIF
+50      CONTINUE
+        FREARC  = 0
+      ENDIF
+C
+C --- CONSTRUCTION CHAMPS EXCLUS DE L'ARCHIVAGE
+C
+      CALL GETVTX('ARCHIVAGE','CHAM_EXCLU' ,1,1,0,K16BID,NB)
+      NB = -NB
+      IF (NB .NE. 0) THEN
+        CALL WKVECT(TPSDIE,'V V K16',NB,JEXCL)
+        CALL GETVTX('ARCHIVAGE','CHAM_EXCLU',1,1,NB,ZK16(JEXCL),IBID)
+      ENDIF
+C
+C --- DETERMINATION DU PREMIER NUMERO ARCHIVE
+C
+      CALL GETVIS('ARCHIVAGE','NUME_INIT'     ,1,1,1,NUMARC,N6)
+      CALL GETVIS('ETAT_INIT','NUME_ORDRE'    ,1,1,1,IBID  ,N3)
+      CALL GETVR8('ETAT_INIT','INST'          ,1,1,1,R8BID ,N4)
+      CALL GETVR8('ETAT_INIT','INST_ETAT_INIT',1,1,1,R8BID ,N5)
+C
+        IF (N6.EQ.0) THEN
+          IF ((N3.EQ.1).OR.(N4.EQ.1)) THEN
+            IF ((DERNIE.EQ.0).OR.(N5.EQ.1)) THEN
+              NUMARC = DERNIE+1
+            ELSE
+              DO 60 I=2,NBTEMP+1
+                TEST = ZL(JARCH+I-1)
+                IF ( TEST ) THEN
+                  VALE = ZR(JTEMPS+I-1)
+                  GOTO 1000
+                ENDIF
+  60          CONTINUE
+ 1000         CONTINUE
+              TEST = .FALSE.
+              DO 70 I=1,NBRESU
+                CALL RSADPA(RESULT,'L',1,'INST',ZI(JORDAR-1+I),1,
+     &                      JPARA,K8BID)
+                INSTAR = ZR(JPARA)
+                DIFF   = ABS(INSTAR-VALE)
+                IF (DIFF.LE.1.D-10) THEN
+                  NORDAR = ZI(JORDAR+I-1)
+                  TEST = .TRUE.
+                  GOTO 2000
+                ENDIF
+ 70           CONTINUE
+ 2000         CONTINUE
+              IF (TEST ) THEN
+                NUMARC = NORDAR
+              ELSE
+                NUMARC = DERNIE+ 1
+              ENDIF
+            ENDIF
+          ELSE
+            NUMARC = DERNIE + 1
+          ENDIF
+        ELSE
+C  ON VERIFIE LES RISQUES D'ECRASEMENT
+
+          IF (NUMARC.LE.DERNIE) THEN
+            CALL GETVTX('ARCHIVAGE','DETR_NUME_SUIV',1,1,1,K16BID,NOCC)
+            IF (NOCC.EQ.0) THEN
+              CALL U2MESS('F','ARCHIVAGE_97')
+            ENDIF
+
+C  ON VERIFIE QU'ON NE CREE PAS DE TROUS DANS L'ARCHIVAGE
+
+          ELSE IF (NUMARC.GT.DERNIE+1) THEN
+            CALL U2MESS('F','ARCHIVAGE_98')
+          END IF
+        END IF
+C
+C --- ECRITURE DES DIFFERENTES INFOS
+C     ZR(JINFO-1 + 1) <===> 'ARCHIVAGE','NUME_INIT'
+C     ZR(JINFO-1 + 2) <===> 'ARCHIVAGE','PAS_ARCH'
+C     SUITE DANS NMCRSU
+C
+      CALL WKVECT(TPSDII,'V V R8',8,JINFO)
+      ZR(JINFO-1 + 1) = NUMARC
+      ZR(JINFO-1 + 2) = FREARC
+C
+      IF (N2.NE.0) THEN
+        CALL JEDETR(LISARC)
+      ENDIF
+      CALL JEDEMA()
+
+      END

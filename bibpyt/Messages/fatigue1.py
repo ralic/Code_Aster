@@ -1,4 +1,4 @@
-#@ MODIF fatigue1 Messages  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
+#@ MODIF fatigue1 Messages  DATE 16/11/2009   AUTEUR ANGLES J.ANGLES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -303,7 +303,7 @@ cata_msg={
 """),
 
 80 : _("""
-   Attention, la contrainte statique en ce point est supérieure à la contrainte 
+   Attention, la contrainte statique en ce point est supérieure à la contrainte
    à la rupture du matériau.
 """),
 
@@ -321,15 +321,15 @@ cata_msg={
 """),
 
 83 : _("""
-   Attention, la contrainte statique en un ou plusieurs points est supérieure à 
+   Attention, la contrainte statique en un ou plusieurs points est supérieure à
    la contrainte à la rupture du matériau.
    Contrainte statique maximale = %(r1)f
    Contrainte à la rupture      = %(r2)f
 """),
 
 84 : _("""
-   Le résultat correspondant à la contrainte statique (mot clé 
-   RESULTAT_STATIQUE) comporte %(i1)d instants. 
+   Le résultat correspondant à la contrainte statique (mot clé
+   RESULTAT_STATIQUE) comporte %(i1)d instants.
    Le calcul en fatigue vibratoire n'est possible que si le résultat statique
    comporte un et un seul instant. Vérifiez les données.
 """),
@@ -353,13 +353,27 @@ cata_msg={
 
 88 : _("""
  Le paramètre %(k1)s est absent dans la définition du matériau. Le calcul est impossible.
- Risques et conseils : pour l'option FATIGUE_VIBR de CALC_FATIGUE, il est obligatoire de 
+ Risques et conseils : pour l'option FATIGUE_VIBR de CALC_FATIGUE, il est obligatoire de
  définir les propriétés matériaux suivantes (dans DEFI_MATERIAU) :
  - la contrainte à la rupture (opérande SU, mot clé facteur RCCM) ;
- - la limite d'endurance (première abscisse de la courbe de fatigue définie dans l'opérande 
+ - la limite d'endurance (première abscisse de la courbe de fatigue définie dans l'opérande
  WOHLER du mot clé facteur FATIGUE).
+
 """),
 
+89: _("""
+ Dans la commande DEFI_MATERIAU, l'opérande WOHLER du mot clé facteur
+ FATIGUE est incompatible avec le critère %(k1)s requis dans le mot
+ clé facteur CISA_PLAN_CRIT.
+
+"""),
+
+90: _("""
+ Dans la commande DEFI_MATERIAU, l'opérande MANSON_COFFIN du mot clé
+ facteur FATIGUE est incompatible avec le critère %(k1)s requis dans
+ le mot clé facteur CISA_PLAN_CRIT.
+
+"""),
 
 
 }

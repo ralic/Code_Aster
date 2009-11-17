@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 # sdnl111e.para = tps_job 1140 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -110,7 +110,8 @@ RESU=DYNA_NON_LINE(MODELE=MODELE,
                 SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                 FORMULATION='DEPLACEMENT',
                                 ALPHA = -0.30, ),
-                NEWTON=_F(MATRICE='TANGENTE',),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
                 SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
 ##############################################

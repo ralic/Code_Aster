@@ -1,6 +1,6 @@
       SUBROUTINE TE0449(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
-      CHARACTER*8   TYPMOD(2)
+      CHARACTER*8   TYPMOD(2),BLAN8
       CHARACTER*8   ELREFE,ELREF2,ALIAS8
       CHARACTER*4   FAMI
       INTEGER NNO1,NNO2,NPG1,IMATUU,JCRET,CODRET,IRET,ICAMAS
@@ -82,12 +82,13 @@ C   FONCTIONS DE FORMES ET POINTS DE GAUSS
       CALL ELREF4(ELREF2,FAMI,NDIM,NNO2,NNOS,NPG2,IPOIDS,IVF2,
      &                                              IDFDE2,JGANO)
 
+      BLAN8='        '
+      TYPMOD(1) = BLAN8
+      TYPMOD(2) = BLAN8
       IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS    '
       ELSE IF (NOMTE(3:4).EQ.'PL') THEN
         TYPMOD(1) = 'D_PLAN  '
-      ELSE
-        TYPMOD(1) = '        '
       END IF
       CODRET = 0
 
