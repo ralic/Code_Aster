@@ -1,6 +1,6 @@
       SUBROUTINE RCFODE(IFON,TEMP,F,DF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 23/11/2009   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,8 @@ C DEB ------------------------------------------------------------------
         F  = ZR(JVALF+1)
         DF = 0.D0
         GOTO 101
+      ELSEIF (ZK24(JPRO)(1:1).EQ.'I') THEN
+        CALL U2MESS('F','MODELISA6_31')
       ENDIF
       ISAVE = ZI(IFON+INDFCT)
       IF (ZK24(JPRO)(1:1).EQ.'N') THEN

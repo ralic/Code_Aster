@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
       CHARACTER*1  K1BID
       CHARACTER*8  NOMA,K8B,TYPMCL(2)
-      CHARACTER*16 TYMATG,COMP,TXCP,RESO,MOCLES(2),MOCLEF(2)
+      CHARACTER*16 TYMATG,COMP,RESO,MOCLES(2),MOCLEF(2)
       CHARACTER*16 TEXTE(2),COMCOD
       CHARACTER*19 CARCRI, CARCR0
       CHARACTER*24 CARCRZ
@@ -46,7 +46,7 @@ C ----------------------------------------------------------------------
       REAL*8  RESI,R8VIDE,RESID,TSAMPL,TSRETU,TSEUIL,PERT,THETA
       REAL*8  VALCMP(12)
       COMPLEX*16   CBID
-      LOGICAL EXITS,GETEXM
+      INTEGER EXITS,GETEXM
       
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER        ZI
@@ -68,7 +68,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C ----------------------------------------------------------------------
       CALL JEMARQ()
      
-      CARCRI = CARCRZ
+      CARCRI = CARCRZ(1:19)
       CALL DISMOI('I','NOM_MAILLA',MODELE(1:8),'MODELE',I,NOMA,IRETT)
 
 C CARTE DES CRITERES DE CONVERGENCE LOCAUX
@@ -150,10 +150,16 @@ C         CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
           IF ( MOCLEF(I).EQ. 'COMP_INCR') THEN
                 CALL GETVIS(MOCLEF(I),'ITER_MAXI_DEBORST',
      &                  K,1,1,ITDEBO,IRET)
-                CALL GETVR8(MOCLEF(I),'RESI_DEBORST',K,1,1,
+                CALL GETVR8(MOCLEF(I),'RESI_DEBO_MAXI',K,1,1,
      &                     RESID,IRET)
+                IF (IRET.NE.0) THEN
+                   RESID=-RESID
+                ELSE
+                   CALL GETVR8(MOCLEF(I),'RESI_DEBO_RELA',K,1,1,
+     &                     RESID,IRET)
+                ENDIF
              EXITS = GETEXM(MOCLEF(I),'TYPE_MATR_TANG')
-             IF (EXITS) THEN
+             IF (EXITS .EQ. 1) THEN
 C            dans ZR(JVALC+1) on stocke le type de matrice tgte
              CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,TYMATG,IRET)
                 IF (IRET.EQ.0) THEN

@@ -1,7 +1,7 @@
       SUBROUTINE NMBORS(BORST)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,7 +49,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER      NBOCC,IOCC,N1
       CHARACTER*16 TXCP,TX1D
-      LOGICAL      GETEXM,EXICP,EXI1D
+      INTEGER      GETEXM,EXICP,EXI1D
 C
 C ----------------------------------------------------------------------
 C
@@ -61,7 +61,7 @@ C
 
         TXCP  = 'ANALYTIQUE      '
         EXICP = GETEXM('COMP_INCR','ALGO_C_PLAN')
-        IF (EXICP) THEN
+        IF (EXICP .EQ. 1) THEN
           CALL GETVTX('COMP_INCR','ALGO_C_PLAN',IOCC,1,1,TXCP,N1)
           IF (TXCP.EQ.'DEBORST') THEN 
             BORST = .TRUE.
@@ -70,7 +70,7 @@ C
 
         TX1D = 'ANALYTIQUE      '
         EXI1D = GETEXM('COMP_INCR','ALGO_1D')
-        IF (EXI1D) THEN
+        IF (EXI1D .EQ. 1) THEN
           CALL GETVTX('COMP_INCR','ALGO_1D',IOCC,1,1,TX1D,N1)
           IF (TX1D.EQ.'DEBORST') THEN
             BORST = .TRUE.

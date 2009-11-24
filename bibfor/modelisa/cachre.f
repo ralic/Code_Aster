@@ -1,14 +1,14 @@
       SUBROUTINE CACHRE ( CHAR, LIGRMO, NOMA, NDIM, FONREE,
      &                    PARAM, MOTCL )
       IMPLICIT   NONE
-      INTEGER           NBCA, NBET, NDIM
+      INTEGER           NDIM
       CHARACTER*4       FONREE
       CHARACTER*5       PARAM
       CHARACTER*8       CHAR, NOMA
       CHARACTER*(*)     LIGRMO, MOTCL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
-      LOGICAL       GETEXM,XTOUT
+      INTEGER       GETEXM,XTOUT
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -403,7 +403,7 @@ C
 C
          XTOUT=GETEXM( MOTCLF, 'TOUT')
          NBTOU=0
-         IF (XTOUT) THEN
+         IF (XTOUT .EQ. 1) THEN
             CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
          ENDIF
 C

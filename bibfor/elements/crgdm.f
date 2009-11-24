@@ -1,7 +1,7 @@
       SUBROUTINE CRGDM (IMATE,COMPOR,T,LAMBDA,DEUXMU,
-     &                  LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA,EP)
+     &                  LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA,EP,LRGM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 23/11/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,6 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
       IMPLICIT NONE
+      LOGICAL LRGM
       CHARACTER*16 COMPOR
       INTEGER      IMATE, T(2,2)
       REAL*8       LAMBDA, DEUXMU, DEUMUF, LAMF
@@ -135,21 +136,30 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
         GC  = 1.D0 - GC
       ELSE
         GC = 1.D0
-      ENDIF
+      END IF
 
       IF (GC .EQ. 1.D0 .AND. GT .EQ. 1.D0) THEN
         CALL U2MESR('F','ALGORITH6_1',0,RMESG)
       END IF
 
 C    CALCUL DU SEUIL (k0 DANS R7.01.32) ET DE ALPHA
-      SEUIL = LAMBDA*(1.0D0 - GT)*(1.0D0-2.0D0*NU)**2  +
-     &        DEUXMU*(1.0D0 - GT + (1.0D0 - GC)*NU**2)
+      IF (LRGM) THEN
+        ALPHA = 1.D0
+        SEUIL = 0.D0
+      ELSE
+        SEUIL = LAMBDA*(1.0D0 - GT)*(1.0D0-2.0D0*NU)**2  +
+     &          DEUXMU*(1.0D0 - GT + (1.0D0 - GC)*NU**2)
 
-      SEUIL = SEUIL/(2.0D0*(LAMBDA*(1.0D0-2.0D0*NU) + DEUXMU))**2
-      SEUIL = SEUIL*SYT**2
+        SEUIL = SEUIL/(2.0D0*(LAMBDA*(1.0D0-2.0D0*NU) + DEUXMU))**2
+        SEUIL = SEUIL*SYT**2
 
-      ALPHA = LAMF*(1.0D0-NUF)**2 + DEUMUF
-      ALPHA = ALPHA/(2.0D0*(LAMF*(1.0D0-NUF) + DEUMUF)**2)
-      ALPHA = ALPHA*(1.0D0 - GF)*SYF**2/SEUIL
+        IF (SEUIL .NE. 0.D0) THEN
+          ALPHA = LAMF*(1.0D0-NUF)**2 + DEUMUF
+          ALPHA = ALPHA/(2.0D0*(LAMF*(1.0D0-NUF) + DEUMUF)**2)
+          ALPHA = ALPHA*(1.0D0 - GF)*SYF**2/SEUIL
+        ELSE
+          CALL U2MESR('F','ALGORITH6_3',0,RMESG)
+        END IF
+      END IF
 
       END

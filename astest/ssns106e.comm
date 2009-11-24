@@ -1,4 +1,4 @@
-# MODIF  DATE 26/10/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 23/11/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106e.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test R
@@ -343,8 +343,16 @@ DIFR_MY = FORMULE(VALE='(MYG-MY)/MY',
 TFN_B_R=CALC_TABLE(reuse =TFN_B_R,
                    TABLE=TFN_B_R,
                    ACTION=(_F(OPERATION='EXTR',
-                              NOM_PARA=('INST','DX','DY',),),
-                           _F(OPERATION='OPER',
+                              NOM_PARA=('INST','DX','DY',),),),);
+
+TFN_B_R=CALC_TABLE(TABLE=TFN_B_R, reuse = TFN_B_R,
+                    ACTION=(_F(OPERATION='FILTRE',
+                               NOM_PARA='DX',
+                               CRIT_COMP='NE',
+                               VALE=0.0,),),);
+
+TFN_B_R=CALC_TABLE(TABLE=TFN_B_R, reuse = TFN_B_R,
+                    ACTION=(_F(OPERATION='OPER',
                               FORMULE=FORM_V,
                               NOM_PARA='V',),
                            _F(OPERATION='RENOMME',
@@ -352,25 +360,42 @@ TFN_B_R=CALC_TABLE(reuse =TFN_B_R,
                            _F(OPERATION='RENOMME',
                               NOM_PARA=('DY','FY',),),),);
 
-#TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
-                   #TABLE=TFN_B_G,
-                   #ACTION=(_F(OPERATION='EXTR',
-                              #NOM_PARA=('INST','DX','DY',),),
-                           #_F(OPERATION='OPER',
-                              #FORMULE=FORM_V,
-                              #NOM_PARA='VG',),
-                           #_F(OPERATION='RENOMME',
-                              #NOM_PARA=('DX','FXG',),),
-                           #_F(OPERATION='RENOMME',
-                              #NOM_PARA=('DY','FYG',),),),);
+TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
+                   TABLE=TFN_B_G,
+                   ACTION=(_F(OPERATION='EXTR',
+                              NOM_PARA=('INST','DX','DY',),),),);
 
-#TFN_B=CALC_TABLE(TABLE=TFN_B_R,
-                 #ACTION=(_F(OPERATION='COMB',
-                            #TABLE=TFN_B_G,
-                            #NOM_PARA='INST',),
-                         #_F(OPERATION='OPER',
-                            #FORMULE=DIFR_V,
-                            #NOM_PARA='VG_V (%)',),),);
+TFN_B_G=CALC_TABLE(TABLE=TFN_B_G, reuse = TFN_B_G,
+                    ACTION=(_F(OPERATION='FILTRE',
+                               NOM_PARA='DX',
+                               CRIT_COMP='NE',
+                               VALE=0.0,),),);
+
+TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
+                   TABLE=TFN_B_G,
+                   ACTION=(_F(OPERATION='OPER',
+                              FORMULE=FORM_V,
+                              NOM_PARA='VG',),
+                           _F(OPERATION='RENOMME',
+                              NOM_PARA=('DX','FXG',),),
+                           _F(OPERATION='RENOMME',
+                              NOM_PARA=('DY','FYG',),),),);
+
+TFN_B=CALC_TABLE(TABLE=TFN_B_R,
+                 ACTION=(_F(OPERATION='COMB',
+                            TABLE=TFN_B_G,
+                            NOM_PARA='INST',),),);
+
+TFN_B=CALC_TABLE(TABLE=TFN_B, reuse = TFN_B,
+                 ACTION=(_F(OPERATION='FILTRE',
+                               NOM_PARA='V',
+                               CRIT_COMP='NE',
+                               VALE=0.0,),),);
+
+TFN_B=CALC_TABLE(TABLE=TFN_B, reuse = TFN_B,
+                 ACTION=(_F(OPERATION='OPER',
+                            FORMULE=DIFR_V,
+                            NOM_PARA='VG_V (%)',),),);
 
 TMY_B_R=CALC_TABLE(reuse =TMY_B_R,
                    TABLE=TMY_B_R,
@@ -389,8 +414,16 @@ TMY_B_G=CALC_TABLE(reuse =TMY_B_G,
 TMY_B=CALC_TABLE(TABLE=TMY_B_R,
                  ACTION=(_F(OPERATION='COMB',
                             TABLE=TMY_B_G,
-                            NOM_PARA='INST',),
-                         _F(OPERATION='OPER',
+                            NOM_PARA='INST',),),);
+
+TMY_B=CALC_TABLE(TABLE=TMY_B, reuse=TMY_B,
+                 ACTION=(_F(OPERATION='FILTRE',
+                               NOM_PARA='MY',
+                               CRIT_COMP='NE',
+                               VALE=0.0,),),);
+
+TMY_B=CALC_TABLE(TABLE=TMY_B, reuse=TMY_B,
+                 ACTION=(_F(OPERATION='OPER',
                             FORMULE=DIFR_MY,
                             NOM_PARA='MYG_MY (%)',),),);
 
@@ -403,7 +436,7 @@ VAR_ENDO=CALC_TABLE(reuse =VAR_ENDO,
                             _F(OPERATION='RENOMME',
                                NOM_PARA=('V2','D2',),),),);
 
-#IMPR_TABLE(TABLE=TFN_B,);
+IMPR_TABLE(TABLE=TFN_B,);
 IMPR_TABLE(TABLE=TMY_B,);
 IMPR_TABLE(TABLE=VAR_ENDO,);
 

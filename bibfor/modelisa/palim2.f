@@ -4,7 +4,7 @@
       CHARACTER*(*)       MCFACT,       NOMAZ, NOMVEI, NOMVEK
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       N1, IER, KOTYP, IM, NUMA, ITYP, NUME, IBID, IATYMA,
      &              LGP, LGM, ILIST, KLIST, LXLGUT, NBMC, NBMA, JNOMA
       PARAMETER     ( NBMC = 3 )
-      LOGICAL       LOPT, LNOM, LNUME, GETEXM, LMAIL
+      LOGICAL       LNUME, LMAIL
+      INTEGER       LOPT, LNOM, GETEXM
       CHARACTER*8   K8B, NOMA, OPTION, OLDTYP, PRFM, NOMMAI, KNUME
       CHARACTER*16  TYMOCL(NBMC), MOTCLE(NBMC)
       CHARACTER*24  NOMAMA, NOMATY, NOMJV
@@ -66,7 +67,7 @@ C
       CALL JEVEUO ( NOMVEK , 'E' , KLIST )
       IER = 0
 C
-      IF ( LOPT ) THEN
+      IF ( LOPT .EQ. 1) THEN
         CALL GETVTX ( MCFACT, 'OPTION', IOCC,1,1, OPTION, N1)
         IF ( OPTION .EQ. 'TRIA6_7' ) THEN
           OLDTYP = 'TRIA6'
@@ -80,7 +81,7 @@ C
 C
       LMAIL = .FALSE.
       LNUME = .FALSE.
-      IF ( LNOM ) THEN
+      IF ( LNOM .EQ. 1) THEN
         CALL GETVTX ( MCFACT, 'PREF_MAILLE', IOCC,1,0, K8B, N1)
         IF ( N1 .NE. 0 ) THEN
           CALL GETVTX ( MCFACT, 'PREF_MAILLE', IOCC,1,1, PRFM, N1)
@@ -131,7 +132,7 @@ C
                 NOMMAI = PRFM(1:LGP)//NOMMAI
               ENDIF
             ENDIF
-            IF ( LOPT ) THEN
+            IF ( LOPT .EQ. 1) THEN
               CALL JEVEUO ( NOMATY, 'L',IATYMA)
               ITYP=IATYMA-1+NUMA
               IF ( ZI(ITYP) .EQ. KOTYP ) THEN

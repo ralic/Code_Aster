@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 14/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+#@ MODIF algorith6 Messages  DATE 23/11/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,6 +29,11 @@ cata_msg = {
 2 : _("""
  -> La valeur de SYC %(r1)s ne permet pas de respecter GAMMA_C < 1.
  -> Conseil : Choisissez une valeur de SYC inférieure à %(r2)s
+"""),
+
+3 : _("""
+ -> Les valeurs des paramètres de la loi GLRC_DM entraîne un seuil d'endommagement nul.
+ -> Conseil : Modifier les valeurs des paramètres matériaux
 """),
 
 8 : _("""

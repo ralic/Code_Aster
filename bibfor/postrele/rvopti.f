@@ -9,7 +9,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C OUT OPTION : K : NOM OPTION CALC_ELEM POUR CHLM OU ADAPTATION CHNO
 C     ------------------------------------------------------------------
 C
       INTEGER    IOCC, NC, IER
-      LOGICAL    LNCH, GETEXM
+      INTEGER    LNCH, GETEXM
 C
 C======================================================================
 C
@@ -52,7 +52,7 @@ C ------ POUR LES OPTIONS XXXX_NOEU_XXXX, ON RECUPERE L'OPTION
 C        PAR LE MOT CLE "NOM_CHAM"
 C
          LNCH = GETEXM ( MCF, 'NOM_CHAM' )
-         IF ( LNCH ) THEN
+         IF ( LNCH .EQ. 1 ) THEN
             CALL GETVTX ( MCF, 'NOM_CHAM', IOCC,1,1, OPTION, NC )
             IF ( OPTION(6:9) .EQ. 'NOEU' )  GOTO 9999
          ENDIF

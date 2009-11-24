@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 23/11/2009   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -316,6 +316,39 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 17),
            VALE=964.E+5,
            PRECISION=0.03,
+           REFERENCE = 'ANALYTIQUE')
+
+# TESTS SUR K2 ET K3 POUR S'ASSURER QU'ILS SONT BIEN NULS
+TEST_TABLE(TABLE=GLO1,
+           NOM_PARA='K2_LOCAL',
+           TYPE_TEST='MAX',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE = 'ANALYTIQUE')
+
+TEST_TABLE(TABLE=GLO1,
+           NOM_PARA='K2_LOCAL',
+           TYPE_TEST='MIN',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE = 'ANALYTIQUE')
+
+TEST_TABLE(TABLE=GLO1,
+           NOM_PARA='K3_LOCAL',
+           TYPE_TEST='MAX',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE = 'ANALYTIQUE')
+
+TEST_TABLE(TABLE=GLO1,
+           NOM_PARA='K3_LOCAL',
+           TYPE_TEST='MIN',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
            REFERENCE = 'ANALYTIQUE')
 
 ###################################

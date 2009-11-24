@@ -2,7 +2,7 @@
        IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,13 +36,13 @@ C
 C-----FIN DE INF001-----------------------------------------------------
 C
        INTEGER    INFO, NBVAL, IUNIFI
-       LOGICAL    LINFO, GETEXM
+       INTEGER    LINFO, GETEXM
 C
        INFO = 1
 C
        LINFO = GETEXM ( ' ' , 'INFO' )
 C
-       IF ( LINFO ) CALL GETVIS ( ' ', 'INFO', 0,1,1, INFO, NBVAL )
+       IF (LINFO .EQ. 1) CALL GETVIS (' ', 'INFO', 0,1,1, INFO, NBVAL)
 C
        NIVUTI = INFO
        NIVPGM = INFO

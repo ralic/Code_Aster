@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/09/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,8 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       NORIEN, NORIE1, NORIE2
       INTEGER       UTMOTP
       REAL*8        R8B, DNOR, R8PREM, ARMIN, PREC
-      LOGICAL       GETEXM, REORIE, MCFL(NBT)
+      INTEGER       GETEXM
+      LOGICAL       REORIE, MCFL(NBT)
       COMPLEX*16    CBID
       CHARACTER*1   K1BID
       CHARACTER*8   K8B, MOT, NOGR, NOMAIL, NOMMA, TYPEL
@@ -127,7 +128,7 @@ C
 C
 C       CAS OU UN MOT CLE N'EXISTE QUE POUR CERTAINS CATALOGUES
 C       (PAR EXEMPLE EFFE_FOND)
-        IF ( .NOT. GETEXM(MOTFAC,' ') ) GOTO 100
+        IF ( GETEXM(MOTFAC,' ') .EQ. 0) GOTO 100
 C
         CALL GETFAC ( MOTFAC, NOCC )
         DO 200  IOCC = 1 , NOCC

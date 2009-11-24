@@ -1,7 +1,7 @@
       SUBROUTINE LGDMVM(IMATE,COMPOR,EPSM,DEPS,VIM,OPTION,SIGM,
-     &                  SIG,VIP,DSIDEP)
+     &                  SIG,VIP,DSIDEP,CRIT,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 23/11/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,9 +21,9 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*16       OPTION,COMPOR
       REAL*8             EPSM(6),DEPS(6),VIM(*),EP
-      REAL*8             TM, TP, TREF,SECHM,SECHP,SREF,R8BID
+      REAL*8             TM, TP, TREF,SECHM,SECHP,SREF,R8BID, CRIT(*)
       REAL*8             SIGM(*),SIG(*),VIP(*),DSIDEP(6,*)
-      INTEGER            IMATE
+      INTEGER            IMATE, IRET
 C ----------------------------------------------------------------------
 C
 C      LOI GLOBALE COUPLEE POUR LES PLAQUES/COQUES DKTG
@@ -44,11 +44,11 @@ C ----------------------------------------------------------------------
 
       REAL*8   EMMP(6),DEMP(6),CEL(6,6),CELINV(6,6),CELDAM(6,6),EMEL(6)
       REAL*8   TANDAM(6,6),TANEPL(6,6),SIGPD(6),SIGP(6),DEDA(6),RESIDU
-      INTEGER  I,J,K,IERR,NVV,ICP,NCPMAX,NSGMAX,ISG,IRET,ICARA,T(2,2)
+      INTEGER  I,J,K,IERR,NVV,ICP,NCPMAX,NSGMAX,ISG,ICARA,T(2,2)
       REAL*8   CRBID,INBID,SIGPP(6),RAC2,EMDA(6)
       REAL*8   EMPL(6),DEPZZ,EPS2D(6),DEPS2D(6),D22,D21EPS,TAN3D(6,6)
-      REAL*8   SIG2DM(6),SIG2DP(6),SCM(4),SIGPEQ,CRITCP,SIGNUL,PRECR
-      REAL*8   DDEMP(6),TANLOC(6,6),TANPOM(6,6)
+      REAL*8   SIG2DM(6),SIG2DP(6),SCM(4),SIGPEQ,CRITCP,SIGNUL,PREC
+      REAL*8   DDEMP(6),TANLOC(6,6),TANPOM(6,6),PRECR
       REAL*8   LAMBDA,DEUXMU,LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA,VBID(4)
       LOGICAL  CONVCP,RIGI,RESI,CPCONV
       CHARACTER*8   TYPMOD(2)
@@ -71,19 +71,27 @@ C-----LA CONTRAINTE PLANE
       ENDIF  
 
 C-----TOLERANCE POUR LA CONTRAINTE HORS PLAN
-      CRITCP = 1.0D-6
-      SIGNUL = CRITCP
-      NCPMAX = 15
+ 
+
+      CRITCP = CRIT(3)
+      SIGNUL = CRIT(3)
+      NCPMAX = NINT(CRIT(9))
+
+      IF (NCPMAX.LE.1) THEN 
+        NCPMAX = 15
+      ENDIF
+
+      PREC = CRIT(8)
 
       IF(RESI) THEN
-        NSGMAX = 15
+        NSGMAX = NINT(CRIT(1))
       ELSE
         NSGMAX = 1
       ENDIF
 
 C-----LECTURE DES PARAMETRES D ENDOMMAGEMENT
       CALL CRGDM(IMATE,'GLRC_DM         ',T,LAMBDA,DEUXMU,LAMF,DEUMUF,
-     &                 GT,GC,GF,SEUIL,ALPHA,EP)
+     &                 GT,GC,GF,SEUIL,ALPHA,EP,.FALSE.)
 
 C-----OBTENTION DU MODULE ELASTIQUE INITIAL
       DO 100, I = 1,6
@@ -121,40 +129,6 @@ C-----CALCUL DE LA DEFORMATION ELASTIQUE A L INSTANT -
           EMEL(I) = EMEL(I) + CELINV(I,J)*SIGM(J)
  150  CONTINUE
 
-C C-----OBTENTION DU MODULE ELASTIQUE ENDOMMAGE
-C C     QUI NOUS SERT A OBTENIR EMMP
-C C     LE PROBLEME C EST QUE POUR CALCULER LE MODULE ENDOMMAGE ON
-C C     A BESOIN DE CONNAITRE LES SIGNES DES VALEURS PROPRES
-C C     DE ... EMMP !
-C C     POUR SORTIR DE CE CERCLE VICIEUX ON SUPPOSE QUE EMMP ET EPSM
-C C     ONT LES MEMES SIGNES DES VALEURS PROPRES.
-C       CALL R8INIR(36,0.D0,CELDAM,1)
-C       VBID(1) = VIM(1)
-C       VBID(2) = VIM(2)
-C       VBID(3) = 0.0D0
-C       VBID(4) = 0.0D0
-C
-C       CALL LCGLDM(DEMP,DEMP,VBID,'RIGI_MECA_TANG  ',DEMP,VIP,CELDAM,T,
-C      &            LAMBDA,DEUXMU,LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA)
-C       DO 120, I = 1,4
-C         VIP(I) = 0.0D0
-C  120  CONTINUE
-C
-C C-----TRIANGULATION DU MODULE ELASTIQUE ENDOMMAGE
-C C       DO 122, J = 1,6
-C C         DO 122, I = 1,6
-C C           CELDAM(I,J) = CEL(I,J)
-C C  122  CONTINUE
-C
-C       CALL TRLDS(CELDAM,6,6,IERR)
-C       CALL ASSERT(IERR.EQ.0)
-C
-C C-----CALCUL DE CELDAM^(-1)*SIGM
-C       DO 140, J = 1,6
-C         EMMP(J) = SIGM(J)
-C  140  CONTINUE
-C       CALL RRLDS(CELDAM,6,6,EMMP,1)
-
 C-----INITIALISATION DES VARIABLES DEPS^(-P), EPS^(-P) ET EMDA
       CALL R8INIR(6,0.D0,DEMP,1)
       DO 200, I = 1,6
@@ -172,14 +146,8 @@ C       CORRECTION DE LA VARIABLE PRINCIPALE
           DEMP(I) = DEMP(I) + DDEMP(I)
  205    CONTINUE
 
-        DEPZZ=VIP(NVV+1)
-     &       -VIP(NVV+2)*DEPS(1)-VIP(NVV+3)*DEPS(2)
-     &       -VIP(NVV+4)*DEPS(4)/RAC2
-
 C-------CALCUL DE L ENDOMMAGEMENT
         CALL R8INIR(6,0.D0,SIGPD,1)
-C         CALL LCGLDM(EMMP,DEMP,VIM,OPTION,SIGPD,VIP,TANDAM,T,
-C      &              LAMBDA,DEUXMU,LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA)
         CALL LCGLDM(EMMP,DEMP,VIM,'FULL_MECA       ',SIGPD,VIP,TANDAM,T,
      &              LAMBDA,DEUXMU,LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA)
 
@@ -229,12 +197,11 @@ C---------VMIS_CINE_LINE--------------------
           IF (COMPOR(1:14) .EQ. 'VMIS_CINE_LINE') THEN
             CALL NMCINE ('RIGI',1,1,3,IMATE,COMPOR,CRBID,
      &                   INBID,INBID,EPS2D,DEPS2D,SIG2DM,VIM(5),
-     &                   OPTION,SIG2DP,VIP(5),TAN3D)
+     &                   'FULL_MECA       ',SIG2DP,VIP(5),TAN3D)
 
 C---------VMIS_ISOT_LINE--------------------
           ELSEIF (COMPOR (1:14) .EQ. 'VMIS_ISOT_LINE') THEN
 C     --    POUR POUVOIR UTILISER NMISOT
-C           TYPMOD(1) = 'C_PLAN  '
             TYPMOD(1) = '3D  '
             TYPMOD(2) = '        '
             CALL NMISOT ('RIGI',1,1,3,TYPMOD,IMATE,'VMIS_ISOT_LINE  ',
@@ -245,16 +212,19 @@ C           TYPMOD(1) = 'C_PLAN  '
 
           D22    = TAN3D(3,3)
 
-          SIGPEQ=0.D0
-          DO 301 J = 1,4
-            SIGPEQ     = SIGPEQ + SIG2DP(J)**2
- 301      CONTINUE
-          SIGPEQ = SQRT(SIGPEQ)
-
-          IF (SIGPEQ.LT.SIGNUL) THEN
-             PRECR = CRITCP
+          IF (PREC .GT. 0D0) THEN
+            SIGPEQ=0.D0
+            DO 301 J = 1,4
+              SIGPEQ = SIGPEQ + SIG2DP(J)**2
+ 301        CONTINUE
+            SIGPEQ = SQRT(SIGPEQ)
+            IF (SIGPEQ.LT.SIGNUL) THEN
+              PRECR = CRITCP
+            ELSE
+              PRECR = CRITCP*SIGPEQ
+            ENDIF
           ELSE
-             PRECR = CRITCP*SIGPEQ
+            PRECR = ABS(PREC)
           ENDIF
 
           IF((ICP.GE.NCPMAX .OR. ABS(SIG2DP(3)).LT.PRECR)) GOTO 1001
@@ -265,12 +235,10 @@ C           TYPMOD(1) = 'C_PLAN  '
  1001   CONTINUE
 
         IF (ABS(SIG2DP(3)).GT.PRECR) THEN
-           CPCONV = .FALSE.
+           IRET = 1
         ELSE
-           CPCONV = .TRUE.
+           IRET = 0
         ENDIF
-
-        CALL ASSERT(CPCONV)
 
         D21EPS = TAN3D(3,1)*DEDA(1)+TAN3D(3,2)*DEDA(2)
      &          + TAN3D(3,4)*DEDA(4)/RAC2
@@ -288,18 +256,6 @@ C           TYPMOD(1) = 'C_PLAN  '
         DO 310 J=1,4
            SIG2DP(J)=SIG2DP(J)+SCM(J)
  310    CONTINUE
-
-        SIGPEQ=0.D0
-        DO 320 J = 1,4
-          SIGPEQ     = SIGPEQ + SIG2DP(J)**2
- 320    CONTINUE
-        SIGPEQ = SQRT(SIGPEQ)
-
-        IF (SIGPEQ.LT.SIGNUL) THEN
-           PRECR = CRITCP
-        ELSE
-             PRECR = CRITCP*SIGPEQ
-        ENDIF
 
         DO 336 J=1,6
            IF (J.EQ.3) GO TO 336
@@ -358,14 +314,6 @@ C-------CALCUL DU RESIDU
 C-------CONSTRUCTION DU MODULE TANGENT LOCAL
 C       ET ITERATION NEWTON
 
-C-------Ce^(-1)*Cd
-        CALL R8INIR(36,0.D0,TANLOC,1)
-        DO 550 I = 1,6
-          DO 550 J = 1,6
-            DO 550 K = 1,6
-            TANLOC(I,J) = TANLOC(I,J) + CELINV(I,K)*TANDAM(K,J)
- 550    CONTINUE
-
 C-------Cp*Ce^(-1)*Cd
         CALL R8INIR(36,0.D0,TANLOC,1)
         CALL R8INIR(36,0.D0,TANPOM,1)
@@ -398,15 +346,20 @@ C-------RESOLUTION DU DDEMP
 C-----FIN DE BOUCLE INTERNE
  2001 CONTINUE
 
+C-----TEST DE CV SIG = SIGPD = SIDPP
+      IF (ABS(RESIDU) .LT. CRITCP .AND. IRET .EQ. 0 ) THEN
+         IRET = 0
+      ELSE
+         IRET = 1
+      ENDIF
+
       DO 660 J = 1,6
         SIG(J)      = SIGPD(J)
         VIP(NVV-6 + J) = EMMP(J) + DEMP(J)
  660  CONTINUE
 
-
 C-----CALCUL DE LA MATRICE TANGENTE
       IF (RIGI) THEN
-
 
 C-------INVERSION DU MODULE DE PLASTICITE
 

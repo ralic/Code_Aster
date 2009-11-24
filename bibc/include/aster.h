@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster include  DATE 03/11/2008   AUTEUR PELLET J.PELLET */
+/* MODIF aster include  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2006  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -43,11 +43,6 @@
 /* Fonction retournant PI en R8 */
 #define R8PI() F_FUNC(R8PI,r8pi)()
 extern DOUBLE STDCALL(R8PI,r8pi)();
-
-/* pour representer les logical sur toutes les stations */
-/* FORTRAN_TRUE = -1 sur HP-UX avec l'option de compilation +DAportable +apollo */
-enum ENUM_LOGICAL { FORTRAN_TRUE=-1, FORTRAN_FALSE=0} ;
-#define FORTRAN_LOGICAL enum ENUM_LOGICAL
 
 
 /* pour preciser quel fichier affiche les  messages et les valeurs */

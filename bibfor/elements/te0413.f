@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 23/11/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -188,7 +188,8 @@ C           CALL DKTBF ( QSI, ETA, CARA, BF )
         IF(ZK16(ICOMPO)(1:7).EQ.'GLRC_DM') THEN
 
           CALL CRGDM(ZI(IMATE),'GLRC_DM         ',TMA,R8B(1),R8B(2),
-     &               R8B(3),R8B(4),R8B(5),R8B(6),R8B(7),SEUIL,R8B(8),EP)
+     &               R8B(3),R8B(4),R8B(5),R8B(6),R8B(7),SEUIL,R8B(8),EP,
+     &               .FALSE.)
 
         ENDIF  
 

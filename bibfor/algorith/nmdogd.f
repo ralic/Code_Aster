@@ -1,15 +1,15 @@
       SUBROUTINE NMDOGD(MOCLEF,COMP,K,NCOMEL,LCOMEL,DEFO)
 C RESPONSABLE PROIX J-M.PROIX
       IMPLICIT NONE
-      INTEGER NCOMEL,K,IRETT
+      INTEGER NCOMEL,K
       CHARACTER*(*) COMP
-      CHARACTER*16 LCOMEL(5),DEFO,MOCLEF,TEXTE(2)
-      INTEGER IRET,N1
-      LOGICAL EXIST,GETEXM
+      CHARACTER*16 LCOMEL(5),DEFO,MOCLEF
+      INTEGER N1
+      INTEGER EXIST,GETEXM
       
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,7 +38,7 @@ C ----------------------------------------------------------------------
       
       EXIST = GETEXM(MOCLEF,'DEFORMATION')
       DEFO='PETIT'
-      IF (EXIST) THEN     
+      IF (EXIST .EQ. 1) THEN     
           CALL GETVTX(MOCLEF,'DEFORMATION',K,1,1,DEFO,N1)
           IF(DEFO.EQ.'SIMO_MIEHE') THEN
              NCOMEL=NCOMEL+1

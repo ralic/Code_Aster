@@ -7,7 +7,7 @@
       CHARACTER*(*)       MOTFAC, BASZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*16  K16BID, NOMCMD
       CHARACTER*24  CONEC, TYPP, NOMMAI, NOMNOE, MESMAI,VALK(2)
       INTEGER       NJONC,N,I,K,ARDM,JCOUR1,JCOUR2,JCOUR3,JCOUR4,NBNO
-      LOGICAL       GETEXM, BUG
+      INTEGER       GETEXM
+      LOGICAL       BUG
 C DEB-------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -76,6 +77,7 @@ C
       NOMMAI = NOMAIL//'.NOMMAI         '
       NOMNOE = NOMAIL//'.NOMNOE         '
       CALL JEVEUO ( TYPP, 'L', IATYMA )
+      TYPMP = ' '
 C
 C     ------------------------------------------------------------------
 C     --- VERIFICATION DE L'EXISTENCE DES MAILLES ET GROUPES DE MAILLES
@@ -170,12 +172,12 @@ C --- LECTURE DU NOM DU NOEUD ORIGINE (S'IL EST FOURNI)
 C --- LECTURE DU NOM DU NOEUD EXTREMITE (S'IL EST FOURNI)
 
       IF ( MOTFAC(6:10).EQ. 'FERME' ) GOTO 100
-      IF ( GETEXM ( MOTFAC, 'NOEUD_EXTR' ) ) THEN
+      IF ( GETEXM ( MOTFAC, 'NOEUD_EXTR' ) .EQ. 1) THEN
          CALL GETVTX ( MOTFAC, 'NOEUD_EXTR',    IOCC,1,0, K8B, N1 )
       ELSE
          N1 = 0
       ENDIF
-      IF ( GETEXM ( MOTFAC, 'GROUP_NO_EXTR' ) ) THEN
+      IF ( GETEXM ( MOTFAC, 'GROUP_NO_EXTR' ) .EQ. 1) THEN
          CALL GETVTX ( MOTFAC, 'GROUP_NO_EXTR', IOCC,1,0, K8B, N2 )
       ELSE
          N2 = 0
@@ -466,6 +468,5 @@ C     ------------------------------------------------------------------
       CALL JEDETR ( '&&FONFIS.MAILLE'     )
       CALL JEDETR ( MESMAI                )
 C
-9999  CONTINUE
       CALL JEDEMA()
       END

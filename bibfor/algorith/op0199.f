@@ -3,7 +3,7 @@
       INTEGER             IERR
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/11/2009   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,6 +110,8 @@ C
       IF ( N7.NE.0 ) THEN
          IF ( ND .EQ. 'OUI' )  NDBLE = 1
       ENDIF
+C                
+      MODEL = '  '
 C
 C--------------------------------------------------------------
 C --- CALCUL DE LA MATRICE ASSEMBLEE DE RIGIDITE DU FLUIDE

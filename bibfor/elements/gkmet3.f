@@ -6,7 +6,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/11/2009   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -84,12 +84,12 @@ C
       DO 10 I=1,NNOFF
         ZR(IADABS-1+(I-1)+1)=ZR(IFON-1+4*(I-1)+4)
         GTHI(I)=ZR(IADRGK-1+(I-1)*8+1)
-        K1TH(I)=ZR(IADRGK-1+(I-1)*8+5)
-        K2TH(I)=ZR(IADRGK-1+(I-1)*8+6)
-        K3TH(I)=ZR(IADRGK-1+(I-1)*8+7)
         G1TH(I)=ZR(IADRGK-1+(I-1)*8+2)
         G2TH(I)=ZR(IADRGK-1+(I-1)*8+3)
         G3TH(I)=ZR(IADRGK-1+(I-1)*8+4)
+        K1TH(I)=ZR(IADRGK-1+(I-1)*8+5)
+        K2TH(I)=ZR(IADRGK-1+(I-1)*8+6)
+        K3TH(I)=ZR(IADRGK-1+(I-1)*8+7)
         GITH(I)=G1TH(I)*G1TH(I) +G2TH(I)*G2TH(I) +G3TH(I)*G3TH(I)
 10    CONTINUE
 

@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
+#@ MODIF modelisa6 Messages  DATE 23/11/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,11 +23,11 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
- problème d'orientation: aucune maille ne touche le noeud indiqué
+ Problème d'orientation: aucune maille ne touche le noeud indiqué
 """),
 
 2 : _("""
- certaines mailles n'ont pas pu être réorientées. l'ensemble des mailles n'est pas connexe
+ Certaines mailles n'ont pas pu être réorientées. L'ensemble des mailles n'est pas connexe.
 """),
 
 3 : _("""
@@ -35,15 +35,15 @@ cata_msg = {
 """),
 
 4 : _("""
-  erreurs dans les données
+  Erreurs dans les données
 """),
 
 5 : _("""
- extraction de plus de noeuds que n'en contient la maille
+ Extraction de plus de noeuds que n'en contient la maille
 """),
 
 6 : _("""
-  nombre de noeuds négatif
+  Nombre de noeuds négatif
 """),
 
 7 : _("""
@@ -110,6 +110,16 @@ cata_msg = {
 30 : _("""
  l'indicateur :  %(k1)s de position des multiplicateurs de lagrange associés à une relation lineaire n'est pas correct.
 """),
+
+31 : _("""
+  ->  En thermique, les fonctions définissant le matériau (enthalpie, capacité calorifique, conductivité)
+      doivent obligatoirement être décrites par des fonctions tabulées et non des formules.
+      En effet, on a besoin d'évaluer la dérivée de ces fonctions. Elle peut être plus facilement et
+      précisément obtenue pour une fonction linéaire par morceaux que pour une expression 'formule'.
+  -> Conseil:
+      Tabulez votre formule, à une finesse de discrétisation d'abcisse (TEMP) à votre convenance,
+      par la commande CALC_FONC_INTERP
+ """),
 
 33 : _("""
  il faut COEF_GROUP ou FONC_GROUP

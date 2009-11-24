@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA */
+/* MODIF astermodule supervis  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -841,8 +841,8 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
 
 
 /* ------------------------------------------------------------------ */
-FORTRAN_LOGICAL DEFSS( GETEXM, getexm, _IN char *motfac,_IN STRING_SIZE lfac,
-                                       _IN char *motcle,_IN STRING_SIZE lcle)
+INTEGER DEFSS( GETEXM, getexm, _IN char *motfac,_IN STRING_SIZE lfac,
+                               _IN char *motcle,_IN STRING_SIZE lcle)
 {
         /*
           Procedure GETEXM pour le FORTRAN : emule le fonctionnement
@@ -852,11 +852,9 @@ FORTRAN_LOGICAL DEFSS( GETEXM, getexm, _IN char *motfac,_IN STRING_SIZE lfac,
             le nom d un mot cle simple ou sous mot cle : motcle (string)
           Retourne :
             0 si n existe pas 1 si existe
-
-          ATTENTION : la valeur C 0 correspond a le valeur Fortran .FORTRAN_FALSE.
         */
         PyObject *res  = (PyObject*)0 ;
-        FORTRAN_LOGICAL presence     = FORTRAN_FALSE;
+        INTEGER presence;
                                                                         ASSERT(motcle!=(char*)0);
                                                                         ASSERT(commande!=(PyObject*)0);
         res=PyObject_CallMethod(commande,"getexm","ss",
@@ -864,7 +862,7 @@ FORTRAN_LOGICAL DEFSS( GETEXM, getexm, _IN char *motfac,_IN STRING_SIZE lfac,
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
-        presence=PyInt_AsLong(res) ? FORTRAN_TRUE : FORTRAN_FALSE ;
+        presence = (INTEGER)PyLong_AsLong(res);
         /*  decrement sur le refcount du retour */
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         return presence;

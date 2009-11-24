@@ -1,4 +1,4 @@
-#@ MODIF calc_mode_rotation_ops Macro  DATE 15/09/2009   AUTEUR TORKHANI M.TORKHANI 
+#@ MODIF calc_mode_rotation_ops Macro  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,6 @@ from Numeric import *
 import aster 
 from Accas import _F
 from types import ListType, TupleType
-from Utilitai.Table import Table
 
 
 def calc_mode_rotation_ops(self,MATR_A, MATR_B, MATR_AMOR, MATR_GYRO,
@@ -37,6 +36,7 @@ def calc_mode_rotation_ops(self,MATR_A, MATR_B, MATR_AMOR, MATR_GYRO,
 # METHODE, methode de calcul, QZ par defaut ou SORENSEN
 # CALC_FREQ
 # VERI_MODE
+    from Utilitai.Table import Table
     ier=0
      
     # On importe les definitions des commandes a utiliser dans la macro

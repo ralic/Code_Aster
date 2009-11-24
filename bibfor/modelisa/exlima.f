@@ -3,7 +3,7 @@
       CHARACTER*(*)       MOTFAZ, BASE, MODELZ, LIGREL
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C OUT/JXOUT   : LIGREL  : LIGREL REDUIT
 C     ATTENTION :
 C          - LE NOM DE LIGREL EST TOUJOURS "OUT"
 C          - PARFOIS ON REND LIGREL=LIGREL(MODELE) :
-C             - ON NE TIENT DONC PAS COMPTE DE 'BASE'
+C             - ALORS ON NE TIENT DONC PAS COMPTE DE 'BASE'
 C             - IL NE FAUT PAS LE DETRUIRE !
 C          - PARFOIS ON EN CREE UN NOUVEAU SUR LA BASE 'BASE'
 C             - LE NOM DU LIGREL EST OBTENU PAR GNOMSD
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  -------------------------
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL,GETEXM
+      LOGICAL            ZL
       COMMON  / LVARJE / ZL(1)
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
@@ -51,12 +51,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  -------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------
 C
-      INTEGER         I, IB, NMOFAC, N1, N2, JMA, NBMA, INUM, IRET
-      CHARACTER*6     KNUM
+      INTEGER         I, IB, NMOFAC, N1, JMA, NBMA
       CHARACTER*8     MODELE, NOMA, K8BID
-      CHARACTER*16    MOTFAC, MOTCLE(2), TYPMCL(2)
+      CHARACTER*16    MOTFAC,MOTCLE(2),TYPMCL(2),OPER,K16B
       CHARACTER*19    LIGRMO
       CHARACTER*24    LISMAI,NOOJB
+      INTEGER         GETEXM
 C     -----------------------------------------------------------------
 C
       MOTFAC = MOTFAZ
@@ -74,7 +74,7 @@ C     ------------------------------------------------------
          CALL GETFAC( MOTFAC, NMOFAC )
          IF ( NMOFAC .EQ. 0 )  GOTO 9998
             DO 10 I = 1 , NMOFAC
-               IF (GETEXM(MOTFAC,'TOUT')) THEN
+               IF (GETEXM(MOTFAC,'TOUT') .EQ. 1) THEN
                  CALL GETVTX ( MOTFAC, 'TOUT' , I,1,0, K8BID, N1 )
                  IF ( N1 .NE. 0 )  GOTO 9998
                ENDIF
@@ -104,11 +104,19 @@ C     -- SI LES MOTS CLES GROUP_MA ET MAILLE N'ONT PAS ETE UTILISES:
 C
 C --- CREATION DU LIGREL
 C     ---------------------------------
-      NOOJB='12345678.LIGR000000.LIEL'
-      CALL GNOMSD(NOOJB,14,19)
+      CALL GETRES(K16B,K16B,OPER)
+      IF (OPER.NE.'IMPR_RESU') THEN
+        NOOJB='12345678.LIGR000000.LIEL'
+        CALL GNOMSD(NOOJB,14,19)
+      ELSE
+C     -- DANS LE CAS IMPR_RESU, GNOMSD NE PEUT PAS SERVIR CAR
+C        LA COMMANDE NE CREE PAS DE CONCEPT
+        CALL ASSERT(BASE.EQ.'V')
+        NOOJB='&&EXLIMA.LIGR000000.LIEL'
+        CALL GNOMS2(NOOJB,14,19)
+      ENDIF
       LIGREL=NOOJB(1:19)
-C     -- POUR LE CAS D'UNE COMMANDE SANS CONCEPT "OUT" :
-      IF (LIGREL(1:8).EQ.' ') LIGREL(1:8)='&&EXLIMA'
+      CALL ASSERT(LIGREL(1:8).NE.' ')
       CALL JEVEUO ( LISMAI, 'L', JMA )
       CALL EXLIM1 ( ZI(JMA), NBMA, MODELE, BASE, LIGREL)
       CALL JEDETR ( LISMAI )
