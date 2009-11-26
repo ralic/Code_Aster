@@ -1,0 +1,44 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 26/11/2009 - 17:18:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014239 DU 2009-11-26 15:55:08
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Stanley
+FONCTIONNALITE
+   Stanley ne fonctionne pas convenablement (probleme dans le trace de courbes avec Xmgrace).
+   NEW10 uniquement
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          3225     50     17
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :    1        3225        50      17       +33
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    1        3225        50      17       +33 

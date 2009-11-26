@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley Stanley  DATE 26/11/2009   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,6 +69,7 @@ from Cata.cata import *
 from Accas import _F
 from types import *
 from Macro.test_fichier_ops import test_file
+import types
 
 # Salome
 try:
@@ -97,6 +98,15 @@ texte_sensibilite = "Résultat non dérivé"
 
 
 # ==============================================================================
+def DETR(lnom):
+   """ Encapsulation de la commande DETRUIRE """
+   if not type(lnom) in [ types.TupleType, types.ListType ]: lnom = [ lnom ]
+   try:        DETRUIRE(CONCEPT = _F(NOM = lnom), INFO=1, ALARME='NON')
+   except:
+       try:    DETRUIRE(OBJET = _F(CHAINE = lnom), INFO=1, ALARME='NON')
+       except: pass
+
+# ==============================================================================
 
 # Definition d'une table de concept maillage, d'une variable d'increment et de 
 # deux unités logiques disponibles pour les operations du superviseur GMSH
@@ -112,10 +122,14 @@ DEFI_FICHIER(FICHIER='TMP', UNITE=_ULGMSH, INFO=1)
 _TUL2=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
 _ULMAIL=_TUL2['UNITE_LIBRE',1]
 DEFI_FICHIER(ACTION='LIBERER', UNITE=_ULGMSH, INFO=1)
-DETRUIRE(CONCEPT = _F(NOM = (_TUL,_TUL2)), INFO=1, ALARME='NON')
+#DETRUIRE(CONCEPT = _F(NOM = (_TUL,_TUL2)), INFO=1, ALARME='NON')
+DETR( (_TUL,_TUL2) )
+
 _UL =[_ULGMSH,_ULMAIL]
 
 # ==============================================================================
+
+
 
 class ERREUR:
   """
@@ -139,7 +153,12 @@ class ERREUR:
 
 
   def DETRUIRE(self, l_detr=[]):
-    if len(l_detr)>0: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
+    if len(l_detr)>0: 
+       DETR( tuple(l_detr) )
+#        try:     DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
+#        except:
+#           try:    DETRUIRE(OBJET = _F(CHAINE = tuple(l_detr)), INFO=1, ALARME='NON')
+#           except: pass
 
 
 
@@ -1635,7 +1654,8 @@ class STANLEY:
     l_detr=[]
     for i in range(_NUM):
       l_detr.append( '_MA_'+str(i) )
-    if len(l_detr)>0: DETRUIRE(CONCEPT=_F(NOM= l_detr ), INFO=1, ALARME='NON')
+#    if len(l_detr)>0: DETRUIRE(OBJET=_F(CHAINE= l_detr ), INFO=1, ALARME='NON')
+    if len(l_detr)>0: DETR( l_detr )
     self.selection.interface.rootTk.quit()
     self.parametres.Terminer(self.interface)
 
@@ -1658,7 +1678,8 @@ class STANLEY:
            pass
 
      for i in range(_NUM):
-        DETRUIRE(CONCEPT=_F(NOM='_MA_'+str(i)), INFO=1, ALARME='NON')
+#        DETRUIRE(OBJET=_F(CHAINE='_MA_'+str(i)), INFO=1, ALARME='NON')
+        DETR( '_MA_'+str(i) )
      self.interface.Kill()
 
 
@@ -2395,7 +2416,8 @@ class DRIVER_GMSH(DRIVER_ISOVALEURS):
        self.Test_fichier_resu(driver=selection.mode, FICHIER='fort.'+str(ul), FICHIER_VALID=self.stan.FICHIER_VALID, selection=selection)
 
     if l_detr : 
-       DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
+#       DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
+       DETR( tuple(l_detr) )
 
 
     self.terminal = gmsh.GMSH('POST', gmshFileName, self.stan.parametres, options)
@@ -2483,8 +2505,9 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
     DEFI_FICHIER(ACTION='LIBERER',UNITE=ul)
         
     if l_detr :
-        DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1)
-        
+#        DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1)
+        DETR( tuple(l_detr) )
+
                            
     self.terminal = salomeVisu.ISOVALEURS( medFileName, self.stan.parametres, selection )
 
@@ -2539,9 +2562,11 @@ class DRIVER_COURBES(DRIVER) :
     # Options supplementaires du IMPR_RESU pour la SENSIBILITE
     if contexte.para_sensi:
        para['SENSIBILITE'] = contexte.para_sensi
-       DETRUIRE(CONCEPT = _F(NOM = 'STNTBLG2'),INFO=1, ALARME='NON')
+#       DETRUIRE(OBJET = _F(CHAINE = 'STNTBLG2'),INFO=1, ALARME='NON')
+       DETR( 'STNTBLG2' )
 
-    DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
+#    DETRUIRE(OBJET = _F(CHAINE = 'STNTBLGR'),INFO=1, ALARME='NON')
+    DETR( 'STNTBLGR' )
 
     if selection.geom[0] == 'POINT' :
 
@@ -2580,9 +2605,12 @@ class DRIVER_COURBES(DRIVER) :
 
           l_courbes.append( (courbe, nom) )
 
-        DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
-        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
-        if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ),INFO=1, ALARME='NON')
+#        DETRUIRE(OBJET = _F(CHAINE = 'STNTBLGR'),INFO=1, ALARME='NON')
+        DETR( 'STNTBLGR' )
+#        if contexte.para_sensi: DETRUIRE(OBJET = _F(CHAINE = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
+        if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
+#        if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ),INFO=1, ALARME='NON')
+        if l_detr: DETR( tuple(l_detr) )
 
 
     elif selection.geom[0] == 'CHEMIN' :
@@ -2627,10 +2655,13 @@ class DRIVER_COURBES(DRIVER) :
 
           l_courbes.append( (courbe, nom) )
 
-        DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
-        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
+#        DETRUIRE(OBJET = _F(CHAINE = 'STNTBLGR'),INFO=1, ALARME='NON')
+        DETR( 'STNTBLGR' )
+#        if contexte.para_sensi: DETRUIRE(OBJET = _F(CHAINE = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
+        if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
 
-      if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1, ALARME='NON')
+#      if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1, ALARME='NON')
+      if l_detr: DETR( tuple(l_detr) )
 
     else:
       UTMESS('A','STANLEY_5',valk='')
@@ -2789,7 +2820,8 @@ class DRIVER_SUP_GMSH(DRIVER) :
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [__ma, _MA[INDICE]], 1, texte)
 
-    DETRUIRE(CONCEPT = _F(NOM = __ma), INFO=1, ALARME='NON')
+#    DETRUIRE(CONCEPT = _F(NOM = __ma), INFO=1, ALARME='NON')
+    DETR( __ma )
     _NUM = _NUM + 1
 
     return ETAT_GEOM(_MA[INDICE])
@@ -2832,7 +2864,8 @@ class DRIVER_SUP_GMSH(DRIVER) :
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1, texte)
 
-    DETRUIRE(CONCEPT = _F(NOM = ma), INFO=1, ALARME='NON')
+#    DETRUIRE(CONCEPT = _F(NOM = ma), INFO=1, ALARME='NON')
+    DETR( ma )
     _NUM = _NUM + 1
 
     return ETAT_GEOM(_MA[INDICE])
