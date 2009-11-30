@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/11/2009   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128e.para = tps_job 170 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -55,6 +55,16 @@ MA=MODI_MAILLAGE(reuse=MA,
 #                               _F(GROUP_MA = 'SBATI',),
 )
                 )
+
+MA=MODI_MAILLAGE(reuse=MA,
+                 MAILLAGE=MA,
+                 ORIE_NORM_COQUE=(_F(GROUP_MA = 'SBATI',
+                                     GROUP_NO = 'PBS',
+                                     VECT_NORM = (0,1,0,),),
+                               
+)
+                )
+
 #
 MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,
                              NU = 0.2,)
@@ -69,7 +79,9 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_MA = 'SBATI',  DX = 0.0, DY = 0.0, DZ=0.0,),
                               _F(GROUP_MA = 'SBLOCX', DX = 0.0,),
                               _F(GROUP_MA = 'LBLOCY', DY = 0.0,),
-                              _F(GROUP_MA = 'VPLAQ',  DZ = 0.0,)),
+                              _F(GROUP_MA = 'VPLAQ',  DZ = 0.0,),
+                              _F(GROUP_MA = 'SPRESV',  DZ = 0.0,),
+                              ),
                     PRES_REP=(_F(GROUP_MA = 'SPRESV', PRES = 5.E07,),
                               _F(GROUP_MA = 'SPRESH', PRES = 15.E07,))
                    )
@@ -88,6 +100,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
 CHA3=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(GROUP_MA_MAIT     = 'SBATI',
                                GROUP_MA_ESCL     = 'SCONTA',
+                               APPARIEMENT    = 'NODAL',
                                REAC_GEOM      = 'CONTROLE',
                                NB_REAC_GEOM   = 2,
                                METHODE        = 'PENALISATION',
@@ -95,6 +108,7 @@ CHA3=AFFE_CHAR_MECA(MODELE=MO,
                                E_N            = 1.0E14,
                                COEF_MATR_FROT = 0.4,
                                FROTTEMENT     = 'COULOMB',
+                               SANS_GROUP_NO  = ('PPS','PPSZ',),
                                COULOMB        = 1.0,)
                     )
 #
