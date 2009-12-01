@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 26/11/2009   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 01/12/2009   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,11 +100,13 @@ texte_sensibilite = "Résultat non dérivé"
 # ==============================================================================
 def DETR(lnom):
    """ Encapsulation de la commande DETRUIRE """
+
    if not type(lnom) in [ types.TupleType, types.ListType ]: lnom = [ lnom ]
-   try:        DETRUIRE(CONCEPT = _F(NOM = lnom), INFO=1, ALARME='NON')
-   except:
-       try:    DETRUIRE(OBJET = _F(CHAINE = lnom), INFO=1, ALARME='NON')
-       except: pass
+   if type(lnom[0]) == types.StringType:
+       DETRUIRE(OBJET   = _F(CHAINE = lnom), INFO=1, ALARME='NON')
+   else:
+       DETRUIRE(CONCEPT = _F(NOM    = lnom), INFO=1, ALARME='NON')
+
 
 # ==============================================================================
 

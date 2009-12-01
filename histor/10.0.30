@@ -1,0 +1,44 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 01/12/2009 - 17:42:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014252 DU 2009-12-01 16:38:13
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   stanley en NEW10
+FONCTIONNALITE
+   Quelques petits soucis residuels suite à la recette graphique.
+   A restituer en NEW10.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   recette stanley
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          3227      7      5
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :    1        3227         7       5        +2
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    1        3227         7       5        +2 
