@@ -1,5 +1,6 @@
-# MODIF  DATE 01/09/2008   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE THERMIQUE AVEC FLUX NON LINEAIRE EN TRANSITOIRE 2D
+# ttnl04a.para = tps_job 110 mem_job 50Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

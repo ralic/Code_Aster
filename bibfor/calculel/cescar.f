@@ -1,6 +1,6 @@
       SUBROUTINE CESCAR(CESZ,CARTZ,BASZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,9 +47,10 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER JCE1K,JCE1D,JCE1C,JCE1L,JCE1V,NBMAM,NCMP1,NCMPMX
+      INTEGER JCE1K,JCE1D,JCE1C,JCE1L,JCE1V,NBMAM,NCMP,NCMPMX
       INTEGER JNCMP,JVALV,IAD1,KCMP,NCMPMA,NBPT,NBSP,IMA,IBID
-      LOGICAL EXISDG
+      INTEGER JLIMA,K,JVALS,NBPAQU,NBCMPS,JNOMS
+      LOGICAL EXISDG,IDPREC,PREMIE
       CHARACTER*1 KBID,BASE
       CHARACTER*8 MA,NOMGD
       CHARACTER*3 TSCA
@@ -58,9 +59,9 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
 C      CALL IMPRSD('CHAMP',CESZ,6,'AJOCOT CESCAR IN')
 
-      CES1 = CESZ
-      CART = CARTZ
-      BASE = BASZ
+      CES1=CESZ
+      CART=CARTZ
+      BASE=BASZ
 
 
 
@@ -72,10 +73,9 @@ C     ------------------------------------------
       CALL JEVEUO(CES1//'.CESV','L',JCE1V)
       CALL JEVEUO(CES1//'.CESL','L',JCE1L)
 
-      MA = ZK8(JCE1K-1+1)
-      NOMGD = ZK8(JCE1K-1+2)
-      NBMAM = ZI(JCE1D-1+1)
-      NCMP1 = ZI(JCE1D-1+2)
+      MA=ZK8(JCE1K-1+1)
+      NOMGD=ZK8(JCE1K-1+2)
+      NBMAM=ZI(JCE1D-1+1)
 
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
       CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NCMPMX,KBID,IBID)
@@ -85,45 +85,221 @@ C     ------------------------------------------
       CALL JEVEUO(CART//'.NCMP','E',JNCMP)
       CALL JEVEUO(CART//'.VALV','E',JVALV)
 
-      DO 20,IMA = 1,NBMAM
-        NBPT = ZI(JCE1D-1+5+4* (IMA-1)+1)
-        NBSP = ZI(JCE1D-1+5+4* (IMA-1)+2)
-C        CALL ASSERT(NBPT.EQ.1)
-C        CALL ASSERT(NBSP.EQ.1)
-        IF(NBPT*NBSP.EQ.0)GOTO 20
+      CALL WKVECT('&&CESCAR.LIMA','V V I',NBMAM,JLIMA)
+      CALL WKVECT('&&CESCAR.NOMS','V V K8',NCMPMX,JNOMS)
+      CALL WKVECT('&&CESCAR.VALS','V V '//TSCA,NCMPMX,JVALS)
+
+C     -- POUR ECONOMISER L'ESPACE ET LE TEMPS, ON REGROUPE
+C        LES MAILLES SUCCESSIVES QUI PORTENT LES MEMES VALEURS :
+
+C     -- IDPREC : .TRUE. -> LA MAILLE EST IDENTIQUE A LA PRECEDENTE
+      IDPREC=.FALSE.
+C     -- NBPAQU : NOMBRE DE MAILLES DU "PAQUET" DE MAILLES IDENTIQUES
+      NBPAQU=0
+C     -- NBCMPS : NOMBRE DE CMPS DU PAQUET
+      NBCMPS=0
+
+      DO 80,IMA=1,NBMAM
+        NBPT=ZI(JCE1D-1+5+4*(IMA-1)+1)
+        NBSP=ZI(JCE1D-1+5+4*(IMA-1)+2)
+        NCMP=ZI(JCE1D-1+5+4*(IMA-1)+3)
+        CALL ASSERT(NBPT.LE.1)
+        CALL ASSERT(NBSP.LE.1)
+        IF (NBPT*NBSP.EQ.0)GOTO 80
 
 C       -- NCMPMA : NBRE DE CMPS SUR LA MAILLE :
-        NCMPMA = 0
-        DO 10,KCMP = 1,NCMP1
+        NCMPMA=0
+        DO 10,KCMP=1,NCMP
           CALL CESEXI('C',JCE1D,JCE1L,IMA,1,1,KCMP,IAD1)
           CALL ASSERT(IAD1.NE.0)
           IF (IAD1.GT.0) THEN
-            NCMPMA = NCMPMA + 1
-            ZK8(JNCMP-1+NCMPMA) = ZK8(JCE1C-1+KCMP)
+            NCMPMA=NCMPMA+1
+            ZK8(JNCMP-1+NCMPMA)=ZK8(JCE1C-1+KCMP)
 
             IF (TSCA.EQ.'R') THEN
-              ZR(JVALV-1+NCMPMA) = ZR(JCE1V-1+IAD1)
+              ZR(JVALV-1+NCMPMA)=ZR(JCE1V-1+IAD1)
             ELSEIF (TSCA.EQ.'C') THEN
-              ZC(JVALV-1+NCMPMA) = ZC(JCE1V-1+IAD1)
+              ZC(JVALV-1+NCMPMA)=ZC(JCE1V-1+IAD1)
             ELSEIF (TSCA.EQ.'I') THEN
-              ZI(JVALV-1+NCMPMA) = ZI(JCE1V-1+IAD1)
+              ZI(JVALV-1+NCMPMA)=ZI(JCE1V-1+IAD1)
             ELSEIF (TSCA.EQ.'K8') THEN
-              ZK8(JVALV-1+NCMPMA) = ZK8(JCE1V-1+IAD1)
+              ZK8(JVALV-1+NCMPMA)=ZK8(JCE1V-1+IAD1)
             ELSEIF (TSCA.EQ.'K16') THEN
-              ZK16(JVALV-1+NCMPMA) = ZK16(JCE1V-1+IAD1)
+              ZK16(JVALV-1+NCMPMA)=ZK16(JCE1V-1+IAD1)
             ELSEIF (TSCA.EQ.'K24') THEN
-              ZK24(JVALV-1+NCMPMA) = ZK24(JCE1V-1+IAD1)
+              ZK24(JVALV-1+NCMPMA)=ZK24(JCE1V-1+IAD1)
+            ELSEIF (TSCA.EQ.'K32') THEN
+              ZK32(JVALV-1+NCMPMA)=ZK32(JCE1V-1+IAD1)
+            ELSEIF (TSCA.EQ.'K80') THEN
+              ZK80(JVALV-1+NCMPMA)=ZK80(JCE1V-1+IAD1)
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF
           ENDIF
    10   CONTINUE
+        IF (NCMPMA.EQ.0)GOTO 80
 
-C       -- S'IL EXISTE DES VALEURS SUR LA MAILLE :
-        IF (NCMPMA.EQ.0) GOTO 20
-        CALL NOCART(CART,3,KBID,'NUM',1,KBID,IMA,' ',NCMPMA)
 
-   20 CONTINUE
+        IF (NBCMPS.EQ.0) THEN
+C         -- C'EST LE 1ER PAQUET QUI COMMENCE
+          CALL ASSERT(.NOT.IDPREC)
+          NBCMPS=NCMPMA
+          PREMIE=.TRUE.
+
+        ELSE
+C         -- LA MAILLE EST-ELLE COMME LA MAILLE SAUVEGARDEE ?
+          IF (NCMPMA.NE.NBCMPS)GOTO 30
+          DO 20,K=1,NBCMPS
+            IF (ZK8(JNOMS-1+K).NE.ZK8(JNCMP-1+K))GOTO 30
+            IF (TSCA.EQ.'R') THEN
+              IF (ZR(JVALS-1+K).NE.ZR(JVALV-1+K))GOTO 30
+            ELSEIF (TSCA.EQ.'C') THEN
+              IF (ZC(JVALS-1+K).NE.ZC(JVALV-1+K))GOTO 30
+            ELSEIF (TSCA.EQ.'I') THEN
+              IF (ZI(JVALS-1+K).NE.ZI(JVALV-1+K))GOTO 30
+            ELSEIF (TSCA.EQ.'K8') THEN
+              IF (ZK8(JVALS-1+K).NE.ZK8(JVALV-1+K))GOTO 30
+            ELSEIF (TSCA.EQ.'K16') THEN
+              IF (ZK16(JVALS-1+K).NE.ZK16(JVALV-1+K))GOTO 30
+            ELSEIF (TSCA.EQ.'K24') THEN
+              IF (ZK24(JVALS-1+K).NE.ZK24(JVALV-1+K))GOTO 30
+            ELSEIF (TSCA.EQ.'K32') THEN
+              IF (ZK32(JVALS-1+K).NE.ZK32(JVALV-1+K))GOTO 30
+            ELSEIF (TSCA.EQ.'K80') THEN
+              IF (ZK80(JVALS-1+K).NE.ZK80(JVALV-1+K))GOTO 30
+            ENDIF
+   20     CONTINUE
+          IDPREC=.TRUE.
+          GOTO 40
+
+   30     CONTINUE
+          IDPREC=.FALSE.
+   40     CONTINUE
+        ENDIF
+
+
+        IF (.NOT.IDPREC) THEN
+C          -- SI LA MAILLE EST DIFFERENTE :
+C            - IL FAUT STOCKER LE PAQUET PRECEDENT
+C            - PUIS IL FAUT SAUVEGARDER LA NOUVELLE MAILLE
+C          -----------------------------------------------------
+          IF (.NOT.PREMIE) THEN
+            DO 50,K=1,NBCMPS
+              ZK8(JNCMP-1+K)=ZK8(JNOMS-1+K)
+              IF (TSCA.EQ.'R') THEN
+                ZR(JVALV-1+K)=ZR(JVALS-1+K)
+              ELSEIF (TSCA.EQ.'C') THEN
+                ZC(JVALV-1+K)=ZC(JVALS-1+K)
+              ELSEIF (TSCA.EQ.'I') THEN
+                ZI(JVALV-1+K)=ZI(JVALS-1+K)
+              ELSEIF (TSCA.EQ.'K8') THEN
+                ZK8(JVALV-1+K)=ZK8(JVALS-1+K)
+              ELSEIF (TSCA.EQ.'K16') THEN
+                ZK16(JVALV-1+K)=ZK16(JVALS-1+K)
+              ELSEIF (TSCA.EQ.'K24') THEN
+                ZK24(JVALV-1+K)=ZK24(JVALS-1+K)
+              ELSEIF (TSCA.EQ.'K32') THEN
+                ZK32(JVALV-1+K)=ZK32(JVALS-1+K)
+              ELSEIF (TSCA.EQ.'K80') THEN
+                ZK80(JVALV-1+K)=ZK80(JVALS-1+K)
+              ENDIF
+   50       CONTINUE
+            CALL NOCART(CART,3,KBID,'NUM',NBPAQU,KBID,ZI(JLIMA),' ',
+     &                  NBCMPS)
+
+C           -- POUR FAIRE LE NOCART, ON A DU ECRASER JVALV.
+C           -- IL FAUT LE RETABLIR :
+            NCMPMA=0
+            DO 60,KCMP=1,NCMP
+              CALL CESEXI('C',JCE1D,JCE1L,IMA,1,1,KCMP,IAD1)
+              CALL ASSERT(IAD1.NE.0)
+              IF (IAD1.GT.0) THEN
+                NCMPMA=NCMPMA+1
+                ZK8(JNCMP-1+NCMPMA)=ZK8(JCE1C-1+KCMP)
+
+                IF (TSCA.EQ.'R') THEN
+                  ZR(JVALV-1+NCMPMA)=ZR(JCE1V-1+IAD1)
+                ELSEIF (TSCA.EQ.'C') THEN
+                  ZC(JVALV-1+NCMPMA)=ZC(JCE1V-1+IAD1)
+                ELSEIF (TSCA.EQ.'I') THEN
+                  ZI(JVALV-1+NCMPMA)=ZI(JCE1V-1+IAD1)
+                ELSEIF (TSCA.EQ.'K8') THEN
+                  ZK8(JVALV-1+NCMPMA)=ZK8(JCE1V-1+IAD1)
+                ELSEIF (TSCA.EQ.'K16') THEN
+                  ZK16(JVALV-1+NCMPMA)=ZK16(JCE1V-1+IAD1)
+                ELSEIF (TSCA.EQ.'K24') THEN
+                  ZK24(JVALV-1+NCMPMA)=ZK24(JCE1V-1+IAD1)
+                ELSEIF (TSCA.EQ.'K32') THEN
+                  ZK32(JVALV-1+NCMPMA)=ZK32(JCE1V-1+IAD1)
+                ELSEIF (TSCA.EQ.'K80') THEN
+                  ZK80(JVALV-1+NCMPMA)=ZK80(JCE1V-1+IAD1)
+                ENDIF
+              ENDIF
+   60       CONTINUE
+          ENDIF
+
+          PREMIE=.FALSE.
+          NBCMPS=NCMPMA
+          DO 70,K=1,NBCMPS
+            ZK8(JNOMS-1+K)=ZK8(JNCMP-1+K)
+            IF (TSCA.EQ.'R') THEN
+              ZR(JVALS-1+K)=ZR(JVALV-1+K)
+            ELSEIF (TSCA.EQ.'C') THEN
+              ZC(JVALS-1+K)=ZC(JVALV-1+K)
+            ELSEIF (TSCA.EQ.'I') THEN
+              ZI(JVALS-1+K)=ZI(JVALV-1+K)
+            ELSEIF (TSCA.EQ.'K8') THEN
+              ZK8(JVALS-1+K)=ZK8(JVALV-1+K)
+            ELSEIF (TSCA.EQ.'K16') THEN
+              ZK16(JVALS-1+K)=ZK16(JVALV-1+K)
+            ELSEIF (TSCA.EQ.'K24') THEN
+              ZK24(JVALS-1+K)=ZK24(JVALV-1+K)
+            ELSEIF (TSCA.EQ.'K32') THEN
+              ZK32(JVALS-1+K)=ZK32(JVALV-1+K)
+            ELSEIF (TSCA.EQ.'K80') THEN
+              ZK80(JVALS-1+K)=ZK80(JVALV-1+K)
+            ENDIF
+   70     CONTINUE
+          NBPAQU=1
+          ZI(JLIMA-1+NBPAQU)=IMA
+
+
+        ELSE
+C         -- SI LA MAILLE EST IDENTIQUE :
+C         --------------------------------
+          NBPAQU=NBPAQU+1
+          ZI(JLIMA-1+NBPAQU)=IMA
+        ENDIF
+
+   80 CONTINUE
+
+C     -- IL NE FAUT PAS OUBLIER LE DERNIER PAQUET :
+      DO 90,K=1,NBCMPS
+        ZK8(JNCMP-1+K)=ZK8(JNOMS-1+K)
+        IF (TSCA.EQ.'R') THEN
+          ZR(JVALV-1+K)=ZR(JVALS-1+K)
+        ELSEIF (TSCA.EQ.'C') THEN
+          ZC(JVALV-1+K)=ZC(JVALS-1+K)
+        ELSEIF (TSCA.EQ.'I') THEN
+          ZI(JVALV-1+K)=ZI(JVALS-1+K)
+        ELSEIF (TSCA.EQ.'K8') THEN
+          ZK8(JVALV-1+K)=ZK8(JVALS-1+K)
+        ELSEIF (TSCA.EQ.'K16') THEN
+          ZK16(JVALV-1+K)=ZK16(JVALS-1+K)
+        ELSEIF (TSCA.EQ.'K24') THEN
+          ZK24(JVALV-1+K)=ZK24(JVALS-1+K)
+        ELSEIF (TSCA.EQ.'K32') THEN
+          ZK32(JVALV-1+K)=ZK32(JVALS-1+K)
+        ELSEIF (TSCA.EQ.'K80') THEN
+          ZK80(JVALV-1+K)=ZK80(JVALS-1+K)
+        ENDIF
+   90 CONTINUE
+      CALL NOCART(CART,3,KBID,'NUM',NBPAQU,KBID,ZI(JLIMA),' ',NBCMPS)
+
+
+      CALL JEDETR('&&CESCAR.LIMA')
+      CALL JEDETR('&&CESCAR.NOMS')
+      CALL JEDETR('&&CESCAR.VALS')
 
       CALL JEDEMA()
       END

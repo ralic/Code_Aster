@@ -1,4 +1,4 @@
-#@ MODIF vide Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vide Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,12 +17,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE GRANET S.GRANET
 
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'VIDE',
-   doc = """comportement inopérant""",
+   doc = """comportement inopérant, nécessaire pour THM quand absence de comportement mécanique""",
    num_lc         = 9999,
    nb_vari        = 0,
    nom_vari       = None, 

@@ -9,7 +9,7 @@ C IN  MXCMDU : IS : NOMBRE DE COMMANDES UTILISATEURS MAXIMUM
 C IN  BASE   : CH : TYPE DE LA BASE 'L' 'G' 'V' ....
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 04/03/2009   AUTEUR ANGLES J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +129,6 @@ C        ---- MESSAGES RELATIF A L'EXECUTION PRECEDENTE ---
              VALK(1) = NOMUSR(1:LG1)
              VALK(2) = TYPCON(1:LG2)
              CALL U2MESK('I+','SUPERVIS_77',2,VALK)
-             CALL UTSAUT()
             SPVR = NOMUSR
             SPVR(20:24) = '.SPVR'
             CALL JEEXIN(SPVR,IRET)
@@ -142,7 +141,6 @@ C        ---- MESSAGES RELATIF A L'EXECUTION PRECEDENTE ---
                CALL U2MESS('I+','SUPERVIS_79')
             ENDIF
             NOMUSR = '   '
-            CALL UTSAUT()
          ENDIF
         CALL U2MESS('I','SUPERVIS_80')
 C

@@ -6,7 +6,7 @@
       REAL*8            FR(*),AM(*),OMECOR,ERNORM(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,9 +114,9 @@ C           --- ON PREND LA NORME EUCLIDIENNE ---
           ANORM2 = 0.D0
           DO 3 J = 0, NEQ-1
               ANORM1 = ANORM1 +
-     +             DCONJG(ZC(IAUX1+J))*ZC(IAUX1+J)*EXCL(J+1)
+     +             DBLE(DCONJG(ZC(IAUX1+J))*ZC(IAUX1+J)*EXCL(J+1))
               ANORM2 = ANORM2 +
-     +             DCONJG(ZC(IAUX2+J))*ZC(IAUX2+J)*EXCL(J+1)
+     +             DBLE(DCONJG(ZC(IAUX2+J))*ZC(IAUX2+J)*EXCL(J+1))
  3        CONTINUE
           IF ( ABS(FREQ) .GT. XSEUIL ) THEN
             IF (  ANORM1 .NE. 0.D0 ) THEN

@@ -4,7 +4,7 @@
       CHARACTER*8         NOMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF POSTRELE  DATE 24/03/2009   AUTEUR GALENNE E.GALENNE 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -292,30 +292,14 @@ C
 C ------ TRANSITOIRE THERMIQUE ASSOCIE A LA SITUATION:
 C        ---------------------------------------------
 C
-         CALL GETVIS ( MOTCL2, 'NUME_RESU_THER', IOCC,1,0, IBID, N1 )
-         NBTH = -N1
+         NBTH = 0
          CALL JECROC (JEXNUM('&&RC3600.SITU_THERMIQUE',NBSITU+IOCC))
          NBM = MAX(1,NBTH)
          CALL JEECRA (JEXNUM('&&RC3600.SITU_THERMIQUE',NBSITU+IOCC),
      &                                      'LONMAX',NBM ,' ')
 C
-         IF ( NBTH .EQ. 0 ) THEN
-            CALL JEECRA (JEXNUM('&&RC3600.SITU_THERMIQUE',NBSITU+IOCC),
+         CALL JEECRA (JEXNUM('&&RC3600.SITU_THERMIQUE',NBSITU+IOCC),
      &                                      'LONUTI', 0,' ')
-         ELSE
-            CALL JEECRA (JEXNUM('&&RC3600.SITU_THERMIQUE',NBSITU+IOCC),
-     &                                              'LONUTI', NBTH,' ')
-            CALL JEVEUO (JEXNUM('&&RC3600.SITU_THERMIQUE',NBSITU+IOCC),
-     &                                              'E', JRETH )
-            CALL GETVIS ( MOTCL2, 'NUME_RESU_THER', IOCC,1,
-     &                                            NBTH,ZI(JRETH), N1 )
-C     ------------------------------------------------------------------
-C                   RESULTATS DES CALCULS THERMIQUES
-C     ------------------------------------------------------------------
-C
-           CALL RC36TH (NOMA,NBMA,LISTMA,ZK24(JCHTH),NBSITU+IOCC,NBTH,
-     &                                               ZI(JRETH))
-         ENDIF
 C
  110  CONTINUE
 C

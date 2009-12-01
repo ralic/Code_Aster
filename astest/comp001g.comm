@@ -1,7 +1,7 @@
-# MODIF  DATE 27/10/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VMIS_CIN2_CHAB
-# comp001g.para = tps_job 900 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
+# comp001g.para = tps_job 270 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -4,7 +4,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 07/04/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,11 +70,6 @@ C
      &                 INTG, TYPESS, ESSAI, ICOMP, IRTET)
          IF ( IRTET.GT.0 ) GOTO (1,2,3), IRTET
 C
-      ELSEIF ( LOI(1:7) .EQ. 'NADAI_B' ) THEN
-         CALL INSCVG (       DY,     DDY,   NR, ITMAX,  TOLER, ITER,
-     &                 INTG, TYPESS, ESSAI, ICOMP, IRTET)
-         IF ( IRTET.GT.0 ) GOTO (1,2,3), IRTET
-
       ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS' ) THEN
          CALL LCMMCV (       DY,     DDY,   NR, ITMAX,  TOLER, ITER,
      &          NMAT,NBCOMM,R,RINI,IRTET)

@@ -4,7 +4,7 @@
       REAL*8 E, RHO, XNU,KLV(*)
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2008   AUTEUR BOYERE E.BOYERE 
+C MODIF ELEMENTS  DATE 03/03/2009   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,15 +47,14 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
       INTEGER LSECT,LSECT2, LX, LRCOU, ISTRUC, ITYPE,IADZI,IAZK24
-      REAL*8 ZERO, UN, DEUX, TRIGOM
-      REAL*8 G, EY, EZ, XL, RAD, ANG, ANGS2, XFL, XFLY, XFLZ
+      REAL*8 ZERO, DEUX, TRIGOM
+      REAL*8 EY, EZ, XL, RAD, ANG, ANGS2, XFL, XFLY, XFLZ
       REAL*8 A, XIY, XIZ, XJX, ALFAY, ALFAZ, ALFINV
+      REAL*8 A2, XIY2, XIZ2, XJX2, ALFAY2, ALFAZ2
 C     ------------------------------------------------------------------
 
       ZERO = 0.D0
-      UN = 1.D0
       DEUX = 2.D0
-      G = E/ (DEUX* (UN+XNU))
 
 
 C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -119,16 +118,31 @@ C        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
       END IF
 
 
-      IF (ITYPE.EQ.0) THEN
-C        --- POUTRE DROITE A SECTION CONSTANTE ---
-C RAJOUT NL POUR APPEL A PTGY01
-        CALL PTGY01(KLV,NL,E,RHO,A,XL,XIY,XIZ,XJX,G,ALFINV,
-     &                     EY,EZ,ISTRUC)
-
-      ELSE
-C        --- POUTRE DROITE A SECTION VARIABLE (TYPE 1 OU 2) ---
-        CH16 = NOMTE
-        CALL U2MESK('F','ELEMENTS2_66',1,CH16)
+      IF (ITYPE.EQ.1 .OR. ITYPE.EQ.2) THEN
+C     --- POUTRE DROITE A SECTION VARIABLE (TYPE 1 OU 2) ---
+         LSECT2 = LSECT + 11
+         A2 = ZR(LSECT2+1)
+         XIY2 = ZR(LSECT2+2)
+         XIZ2 = ZR(LSECT2+3)
+         ALFAY2 = ZR(LSECT2+4)
+         ALFAZ2 = ZR(LSECT2+5)
+         XJX2 = ZR(LSECT2+8)
+C     ---- MOYENNAGE -------------------------------------
+         LSECT=(LSECT+LSECT2)/DEUX
+         A=(A+A2)/DEUX
+         XIY=(XIY+XIY2)/DEUX
+         XIZ=(XIZ+XIZ2)/DEUX
+         ALFAY=(ALFAY+ALFAY2)/DEUX
+         ALFAZ=(ALFAZ+ALFAZ2)/DEUX
+         XJX=(XJX+XJX2)/DEUX
+         IF (NOMTE(1:12).EQ.'MECA_POU_D_E') THEN
+           ALFINV = ZERO
+         ELSE
+           ALFINV = DEUX/(ALFAY+ALFAZ)
+         ENDIF
       END IF
+
+      CALL PTGY01(KLV,NL,XNU,RHO,A,XL,XIY,XIZ,XJX,ALFINV,
+     &                     EY,EZ,ISTRUC)
         
       END

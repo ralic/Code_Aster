@@ -1,5 +1,6 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE  DSR3 - RENUM MDA / AFFE_CHAR_CINE  / MULT_FRONT
+# yyyy104p.para = tps_job 150 mem_job 460Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

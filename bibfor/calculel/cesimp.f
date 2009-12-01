@@ -1,6 +1,6 @@
       SUBROUTINE CESIMP(CESZ,UNITE,NBMAT,NUMMAI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 06/04/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8 MA,NOMGD,NOMMA,POIN,SPOIN,TYPCES
       CHARACTER*3 TSCA
       CHARACTER*19 CES
-      CHARACTER*40 FMT
+      CHARACTER*60 FMT,FMT1
       LOGICAL EXICMP
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -107,10 +107,15 @@ C     ------------------------------------------------------------
 
 
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-      IF ((TSCA.EQ.'I').OR.(TSCA.EQ.'K8')) THEN
-        FMT = '(A12,XXX(''|'',A12))'
-      ELSEIF (((TSCA.EQ.'R').OR.TSCA.EQ.'K16')) THEN
-        FMT = '(A12,XXX(''|'',A16))'
+      IF (TSCA.EQ.'I'.OR.TSCA.EQ.'K8') THEN
+        FMT1= '(3(''|'',A12),XXX(''|'',A12))'
+        FMT = '(3(''|'',A12),XXX(''|'',A12))'
+      ELSEIF (TSCA.EQ.'R'.OR.TSCA.EQ.'K16') THEN
+        FMT1= '(3(''|'',A12),XXX(''|'',A16))'
+        FMT = '(3(''|'',A12),XXX(''|'',A16))'
+      ELSEIF (TSCA.EQ.'C') THEN
+        FMT1= '(3(''|'',A12),XXX(''|'',A33))'
+        FMT = '(3(''|'',A12),XXX(''|'',A16,'' '',A16))'
       ELSE
 C       ON ATTEND UN TYPE PARMI : I/R/K8/K16
         CALL ASSERT(.FALSE.)
@@ -120,13 +125,18 @@ C       ON ATTEND UN TYPE PARMI : I/R/K8/K16
 C     1- ALLOCATION D'UN TABLEAU DE K16 QUI CONTIENDRA LES VALEURS
 C        D'UNE LIGNE A ECRIRE
 C     ------------------------------------------------------------
-      CALL WKVECT('&&CESIMP.LVALEURS','V V K16',MAX(NCMPU,1),JLVAL)
+      IF (TSCA.NE.'C') THEN
+        CALL WKVECT('&&CESIMP.LVALEURS','V V K16',MAX(NCMPU,1),JLVAL)
+      ELSE
+        CALL WKVECT('&&CESIMP.LVALEURS','V V K16',2*MAX(NCMPU,1),JLVAL)
+      ENDIF
 
 
 C     2- FORMAT DES LIGNES :
 C     ----------------------
       CALL ASSERT(NCMPU.LE.997)
-      CALL CODENT(NCMPU+2,'D',FMT(6:8))
+      CALL CODENT(NCMPU,'D',FMT1(13:15))
+      CALL CODENT(NCMPU,'D',FMT(13:15))
 
 
 C     3- ECRITURE DE L'ENTETE DU CHAMP :
@@ -134,7 +144,7 @@ C     ---------------------------------------
       WRITE (UNITE,*) ' '
       WRITE (UNITE,*) ' GRANDEUR: ',NOMGD
       WRITE (UNITE,*) ' '
-      WRITE (UNITE,FMT) 'MAILLE','POINT','SOUS-POINT',
+      WRITE (UNITE,FMT1) 'MAILLE','POINT','SOUS-POINT',
      &  (ZK8(JCESC-1+LICMPU(IK)),IK=1,NCMPU)
 
 
@@ -169,7 +179,6 @@ C       -- ON N'ECRIT UN SOUS-POINT QUE S'IL EXISTE AU MOINS 1 CMP :
 
 
 
-C       -- ON MET LES VALEURS NON AFFECTEES A " " :
             DO 80,IK = 1,NCMPU
               K = LICMPU(IK)
               CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,K,IAD)
@@ -177,6 +186,12 @@ C       -- ON MET LES VALEURS NON AFFECTEES A " " :
 
                 IF (TSCA.EQ.'R') THEN
                  WRITE (ZK16(JLVAL-1+IK),'(1PE16.9)') ZR(JCESV-1+IAD)
+
+                ELSE IF (TSCA.EQ.'C') THEN
+                 WRITE (ZK16(JLVAL-1+2*(IK-1)+1),'(1PE16.9)')
+     &                  DBLE(ZC(JCESV-1+IAD))
+                 WRITE (ZK16(JLVAL-1+2*(IK-1)+2),'(1PE16.9)') 
+     &                  DIMAG(ZC(JCESV-1+IAD))
 
                 ELSE IF (TSCA.EQ.'I') THEN
                  WRITE (ZK16(JLVAL-1+IK),'(I12,A4)') ZI(JCESV-1+IAD),' '
@@ -187,10 +202,13 @@ C       -- ON MET LES VALEURS NON AFFECTEES A " " :
                 ELSE IF (TSCA.EQ.'K16') THEN
                  WRITE (ZK16(JLVAL-1+IK),'(A16)') ZK16(JCESV-1+IAD)
                 END IF
+
               ELSE
+C               -- ON MET LES VALEURS NON AFFECTEES A " " :
                 WRITE (ZK16(JLVAL-1+IK),'(A16)') ' '
               END IF
    80       CONTINUE
+
 
             IF (TYPCES.EQ.'ELNO') THEN
               INO = ZI(JCONX1-1+ZI(JCONX2+IMA-1)+IPT-1)
@@ -200,8 +218,13 @@ C       -- ON MET LES VALEURS NON AFFECTEES A " " :
             END IF
 
             WRITE (SPOIN,'(I8)') ISP
-            WRITE (UNITE,FMT) NOMMA,POIN,SPOIN,
-     &        (ZK16(JLVAL-1+IK),IK=1,NCMPU)
+            IF (TSCA.NE.'C') THEN
+               WRITE (UNITE,FMT) NOMMA,POIN,SPOIN,
+     &               (ZK16(JLVAL-1+IK),IK=1,NCMPU)
+            ELSE
+               WRITE (UNITE,FMT) NOMMA,POIN,SPOIN,
+     &               (ZK16(JLVAL-1+IK),IK=1,2*NCMPU)
+            ENDIF
 
    90     CONTINUE
   100   CONTINUE

@@ -1,5 +1,6 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE TEST HM, 2D (HM_DPTR3), MODELISATION THMC=LIQU_SATU
+# wtnv113k.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

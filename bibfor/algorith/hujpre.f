@@ -2,7 +2,7 @@
      &                    SIGF, EPSD, VIND, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,7 +62,7 @@ C                              IRET=1 => ECHEC
       REAL*8      CRIT(*), VIND(*)
       REAL*8      EPSD(6), DEPS(6)
       REAL*8      SIGD(6), SIGF(6), DSIG(6), DSDE(6,6)
-      REAL*8      MATER(22,2), I1, D13, TOLE, TRACE
+      REAL*8      MATER(22,2), I1, D13, TOLE1, TRACE, UN, ZERO
       REAL*8      PTRAC, PREF, PISO, MAXI, COHES, FACTOR
       CHARACTER*7 ETAT
       CHARACTER*8 MOD, NOMAIL
@@ -71,10 +71,12 @@ C                              IRET=1 => ECHEC
       COMMON /TDIM/   NDT, NDI
       COMMON /MESHUJ/ DEBUG
       
-      DATA   D13, TOLE  / 0.33333333334D0, 1.0D-6/
-      
-      PREF = MATER(8,2)
-      PISO =1.5D0*MATER(21,2)
+      DATA   UN, ZERO / 1.D0, 0.D0/
+      DATA   D13, TOLE1 /0.33333333334D0, 1.0D-6/ 
+
+      PREF  = MATER(8,2)
+      PTRAC = MATER(21,2)
+      PISO  = 1.5D0*PTRAC
 
       IF (ETAT .EQ. 'ELASTIC') THEN
       
@@ -100,7 +102,7 @@ C                              IRET=1 => ECHEC
           ENDIF
         ENDIF
         
-        IF ((I1 -PISO)/PREF .LE. TOLE) THEN
+        IF ((I1 -PISO)/PREF .LE. TOLE1) THEN
           IF (DEBUG) THEN
             CALL TECAEL(IADZI,IAZK24)
             NOMAIL = ZK24(IAZK24-1+3) (1:8)
@@ -120,14 +122,15 @@ C ---> CONTROLE QU'AUCUNE COMPOSANTE DU VECTEUR SIGF NE SOIT POSITIVE
         DSIG(I)= SIGF(I) - SIGD(I)
   10  CONTINUE
 
-      MAXI  = 0.D0
+      MAXI  = UN
       INDM = 0
-      COHES = -1.D1
+      COHES = -1.D2+PTRAC
+      FACTOR = UN
 
       DO 20 I = 1, NDI
-        IF(SIGF(I).GT.TOLE)THEN
+        IF(SIGF(I).GT.PTRAC)THEN
           FACTOR = (-SIGD(I)+COHES)/DSIG(I)
-          IF(FACTOR.GT.MAXI) THEN
+          IF((FACTOR.GT.ZERO).AND.(FACTOR.LT.MAXI)) THEN
             MAXI = FACTOR
             INDM = I
           ENDIF
@@ -136,8 +139,8 @@ C ---> CONTROLE QU'AUCUNE COMPOSANTE DU VECTEUR SIGF NE SOIT POSITIVE
 
 
 C ---> SI IL EXISTE SIG(I)>0, ALORS MODIFICATION DE LA PREDICTION      
-      IF(INDM.NE.0)THEN
-        IF(DSIG(INDM).GT.TOLE)THEN
+      IF(INDM.GT.0)THEN
+        IF(DSIG(INDM).GT.TOLE1)THEN
           DO 30 I = 1, NDT
             DSIG(I) = MAXI * DSIG(I)
   30      CONTINUE

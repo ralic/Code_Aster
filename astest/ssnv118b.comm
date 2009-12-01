@@ -1,5 +1,6 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 22/12/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE ESSAI DE TRACTION CISAILLEMENT EN 3D (VISCOCHAB)
+# ssnv118b.para = tps_job 60 mem_job 64Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG

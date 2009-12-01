@@ -6,7 +6,7 @@
       CHARACTER*24        NCNCIN, CHINDI, CHCARA, CHRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -82,18 +82,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM, JEXATR
+      CHARACTER*32     JEXNUM, JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      IG, NBGR, NBSIGR, JNSG, IS, IS1, IOC1, NOCC, NUMGR,
+      INTEGER      IG, NBGR, NBSIGR, JNSG, IS1, IOC1, NOCC, NUMGR,
      +             JCOMBI, JPRESA, JPRESB, JMOMEA, JMOMEB, JNBOCC, I1,
      +             NBTH1, JTH1, NBTH2, NBCRS, NBCIN, NBCCA, JNSITU,
      +             JCHMAT, JMAT, JCESD, JCESV, JCESL, JCINV, JCIND,
      +             JCCAV, JCCAD, IM, IMA, NBPT, DECRS, DECIN, DECCA,
      +             IPT, INO, ADRM, NBM, ICMP, JCONX1, JCONX2,JFACT,
-     +             JNUMGR, JPASSA, NPASS, NUM1, NUM2, IFM, NIV, IOCS,
+     +             JNUMGR, JPASSA, NPASS, IFM, NIV, IOCS,
      +             IAD, JSEIGR, IOC2, JCINL, JCCAL, NBP12, NBP23, NBP13
-      REAL*8       R8B, PPI, PPJ, SNMAX, SAMAX, UTOT, SALTIJ, UG, NADM,
+      REAL*8       PPI, PPJ, SNMAX, SAMAX, UTOT, SALTIJ, UG, NADM,
      +             MPI(3), MPJ(3), SM, SN, SP, C(3), K(3), CARA(3),
      +             MATPI(14), MATPJ(14), MSE(3), SNB, SAB, SMM, VALE(2)
       LOGICAL      SEISME,ENDUR

@@ -1,7 +1,7 @@
         SUBROUTINE HUJTID (MOD, IMAT, SIGR, VIN, DSDE, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/10/2008   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,22 +31,22 @@ C ======================================================================
         INTEGER   NBMECA, IND(4), IRET, IMAT
         REAL*8    N, BETA, DHUJ, M, PCO, PREF, PC
         REAL*8    PHI, ANGDIL, MDIL, DEGR, BHUJ
-        REAL*8    RC(4), YD(15), DPSIDS(6,6), P(4), Q(3) 
+        REAL*8    RC(4), YD(15), DPSIDS(6,6), P(4), Q(4) 
         REAL*8    MATER(22,2), VIN(*), SIG(6), DSDE(6,6)
         REAL*8    HOOK(6,6), I1, E, NU, AL, DEMU
         REAL*8    COEF, ZERO, D13, UN, DEUX
         REAL*8    EPSV, TRACE, DFDEVP, EVL, TP, TP1, TEMPF
         REAL*8    PSI(24), DFDS(24), B1(4,4), B2(4,4), B(4,4)
         REAL*8    D(4,6), TE(6,6), SIGD(12), B3(4), LA
-        REAL*8    ACYC, AMON, CMON, KSI(3), AD(3), X4, CCYC
-        REAL*8    TOLE, DET, XK(2), TH(2), PROD, PS, DEV(3)
+        REAL*8    ACYC, AMON, CMON, KSI(4), AD(4), X4, CCYC
+        REAL*8    TOLE1, DET, XK(2), TH(2), PROD, PS, DEV(3)
         REAL*8    SIGR(6), PTRAC, PISO, PK, DPSI
         REAL*8    E1,E2,E3,NU12,NU13,NU23,G1,G2,G3,NU21,NU31,NU32,DELTA
         CHARACTER*8 MOD
 
         COMMON /TDIM/ NDT, NDI
 C ======================================================================
-        PARAMETER   ( TOLE = 1.D-6 )
+        PARAMETER   ( TOLE1 = 1.D-6 )
         PARAMETER   ( ZERO = 0.D0 )
         PARAMETER   ( D13  = 0.333333333334D0 )
         PARAMETER   ( UN   = 1.D0 )
@@ -64,7 +64,6 @@ C ======================================================================
           SIG(6)=ZERO
           NDT  = 6
         ENDIF        
-
 
 C ======================================================================
 C - RECUPERATION DES GRANDEURS UTILES : I1, VARIABLES INTERNES R ET X, -
@@ -108,17 +107,15 @@ C ---> INITIALISATION DE NBMECA, IND ET YD PAR VIN
           RC(K)  = ZERO
           IND(K) = 0
           P(K)   = ZERO
+          Q(K)   = ZERO
+          AD(K)  = ZERO
+          KSI(K) = ZERO
   12      CONTINUE
         
         DO 13 K = 1, 15
           YD(K) = ZERO
   13      CONTINUE        
         
-        DO 14 K = 1, 3
-          Q(K) = ZERO
-  14      CONTINUE
-
-Caf 31/05/07 Debut
 C --- MODIFICATION A APPORTER POUR MECANISMES CYCLIQUES
         YD(NDT+1) = VIN(23)
         NBMECA = 0      
@@ -132,7 +129,7 @@ C --- MODIFICATION A APPORTER POUR MECANISMES CYCLIQUES
             IF (K .LT. 4) THEN
               CALL HUJPRJ (K, SIG, SIGD(NBMECA*3-2), P(NBMECA), 
      &                     Q(NBMECA))    
-              IF (((P(NBMECA) -PTRAC)/PREF) .LE. TOLE) THEN
+              IF (((P(NBMECA) -PTRAC)/PREF) .LE. TOLE1) THEN
                 IRET = 1
                 GOTO 999
               ENDIF
@@ -144,7 +141,7 @@ C --- MODIFICATION A APPORTER POUR MECANISMES CYCLIQUES
             IF ((K .GT.4) .AND. (K .LT. 8)) THEN            
               CALL HUJPRC(NBMECA, K-4, SIG, VIN, MATER, YD,
      &                      P(NBMECA), Q(NBMECA), SIGD(NBMECA*3-2))
-              IF (((P(NBMECA) -PTRAC)/PREF) .LE. TOLE) THEN
+              IF (((P(NBMECA) -PTRAC)/PREF) .LE. TOLE1) THEN
                 IRET = 1
                 GOTO 999
               ENDIF
@@ -162,7 +159,7 @@ C --- MODIFICATION A APPORTER POUR MECANISMES CYCLIQUES
  16     CONTINUE
          
         CALL LCEQVN (NDT, SIG, YD)
-Caf 31/05/07 Fin        
+
         DO 17 K = 1, NBMECA
           CALL HUJDDD('DFDS  ', IND(K), MATER, IND, YD,
      &         VIN, DFDS((K-1)*NDT+1), DPSIDS, IRET)     
@@ -287,7 +284,7 @@ Caf 04/06/07 Debut
            TH(2) = VIN(4*KK-8)
            PROD  = SIGD(3*K-2)*(XK(1)-RC(K)*TH(1)) + 
      &             SIGD(3*K)*(XK(2)-RC(K)*TH(2))/DEUX  
-           IF(Q(K).LT.TOLE)THEN
+           IF(Q(K).LT.TOLE1)THEN
              DFDEVP = -M*PK*BETA*BHUJ*RC(K)
            ELSE
              DFDEVP = -M*PK*BETA*BHUJ*(-PROD/Q(K)+RC(K))
@@ -303,7 +300,6 @@ Caf 04/06/07 Debut
            ENDIF
          
          ENDIF
-Caf 04/06/07 Fin
          
          DO 41 L = 1, NBMECA
          
@@ -312,14 +308,14 @@ Caf 04/06/07 Fin
            IF (LL .LT. 4) THEN
            
 Ckh --- traction
-             IF ((P(L)/PREF).GT.TOLE) THEN
-                IF(ABS(P(L)).LT.TOLE)THEN
+             IF ((P(L)/PREF).GT.TOLE1) THEN
+                IF(ABS(P(L)).LT.TOLE1)THEN
                   DPSI = MDIL
                 ELSE
                   DPSI = MDIL+Q(L)/P(L)
                 ENDIF
               ELSE
-                IF(ABS(P(L)).LT.TOLE)THEN
+                IF(ABS(P(L)).LT.TOLE1)THEN
                   DPSI = ZERO
                 ELSE
                   DPSI = -Q(L)/P(L)
@@ -331,20 +327,19 @@ Ckh --- traction
            
              EVL = -UN
              
-Caf 04/06/07 Debut
            ELSEIF ((LL .GT. 4) .AND. (LL .LT. 8)) THEN
            
              CALL HUJPRJ(LL-4, SIG, DEV, TP, TP1)
              PS = 2*SIGD(3*L-2)*DEV(1)+SIGD(3*L)*DEV(3)
 Ckh --- traction
-             IF ((P(L)/PREF).GT.TOLE) THEN
-               IF((Q(L).LT.TOLE).OR.(ABS(P(L)).LT.TOLE))THEN
+             IF ((P(L)/PREF).GT.TOLE1) THEN
+               IF((Q(L).LT.TOLE1).OR.(ABS(P(L)).LT.TOLE1))THEN
                  DPSI = MDIL
                ELSE
                  DPSI =MDIL+PS/(2.D0*P(L)*Q(L))
                ENDIF
              ELSE
-               IF((Q(L).LT.TOLE).OR.(ABS(P(L)).LT.TOLE))THEN
+               IF((Q(L).LT.TOLE1).OR.(ABS(P(L)).LT.TOLE1))THEN
                  DPSI = ZERO
                ELSE
                  DPSI =-PS/(2.D0*P(L)*Q(L))
@@ -361,7 +356,6 @@ Ckh --- traction
                EVL = - UN
              ENDIF
              
-Caf 04/06/07 Fin
            ENDIF
            
            B2(K,L) = DFDEVP*EVL
@@ -384,7 +378,6 @@ C           TERME DIAGONAL
          
            B3(K) = DHUJ*PC * (UN-RC(K))**DEUX /CMON
            
-Caf 04/06/07 Debut
          ELSEIF ((KK .GT. 4) .AND. (KK .LT. 8)) THEN
          
            XK(1) = VIN(4*KK-11)
@@ -392,25 +385,15 @@ Caf 04/06/07 Debut
            TH(1) = VIN(4*KK-9)
            TH(2) = VIN(4*KK-8)
            PROD  = SIGD(3*K-2)*TH(1) + SIGD(3*K)*TH(2)/DEUX
-           IF(Q(K).LT.TOLE)THEN 
-             B3(K) = M*PK*(UN-BHUJ*LOG(PK/PC))*DEUX*
+           B3(K) = M*PK*(UN-BHUJ*LOG(PK/PC))*DEUX*
      &              (UN-RC(K))**DEUX /AD(K)
-           ELSE
-             B3(K) = M*PK*(UN-BHUJ*LOG(PK/PC))*
-     &              (UN+PROD/Q(K))*(UN-RC(K))**DEUX /AD(K)
-           ENDIF              
 
          ELSEIF (KK .EQ. 8) THEN
            
            B3(K) = DHUJ*PC*(UN-RC(K))**DEUX /CCYC   
                   
-Caf 04/06/07 Fin           
          ENDIF
          
-         IF ((ABS(B3(K)).LT.TOLE) .AND. (RC(K).NE.UN)) THEN
-C           WRITE(6,'(A,I2,A,F12.5)')
-C     &     'HUJTID :: KK =',KK,' ; B3 =',B3(K)
-         ENDIF
  43      CONTINUE    
 C ------------ FIN I.3.
 

@@ -1,5 +1,6 @@
-# MODIF  DATE 19/11/2007   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE - REEEQUILIBRAGE GRAVITAIRE D UNE COLONNE - MODELISATION HHD
+# wtnp118a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

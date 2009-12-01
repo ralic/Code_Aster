@@ -1,5 +1,6 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN CONTRAINTES PLANES (CHABOCHE)
+# ssnv101b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,7 +110,7 @@ SOLNL=STAT_NON_LINE(
                 TYPE_CHARGE = 'FIXE_CSTE'),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_CIN2_CHAB',ALGO_C_PLAN='DEBORST',
-                RESI_DEBORST=1.E-4,
+                RESI_DEBO_RELA=1.E-4,
                 DEFORMATION = 'PETIT',
                 ITER_INTE_MAXI = 200,RESI_INTE_RELA=1.E-6,
                 TOUT = 'OUI'),

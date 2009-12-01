@@ -1,7 +1,7 @@
-        SUBROUTINE HUJPXD (K, MATER, SIG ,VIN, PROX)
+        SUBROUTINE HUJPXD (K, MATER, SIG ,VIN, PROX, PROXC)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/10/2008   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,12 +34,12 @@ C    ---------------------------------------------------------------
         INTEGER      K, NDT, NDI
         INTEGER      IFM, NIV
         REAL*8       MATER(22,2), SIG(6), VIN(*), SEUILD
-        REAL*8       UN, R, EPSVP, PCR, PA, TOLE
+        REAL*8       UN, R, EPSVP, PCR, PA, TOLE1
         REAL*8       DEGR, BETA, B, M, PHI, PCREF, PTRAC
         REAL*8       SIGD(3), P, Q, DIST, RH
-        LOGICAL      DEBUG, PROX
+        LOGICAL      DEBUG, PROX, PROXC
         PARAMETER    (UN = 1.D0)
-        PARAMETER    (TOLE = 1.D-6)
+        PARAMETER    (TOLE1 = 1.D-6)
         PARAMETER    (DEGR = 0.0174532925199D0)
         
         COMMON /TDIM/   NDT, NDI
@@ -72,7 +72,7 @@ C ==================================================================
 C --- PROJECTION DANS LE PLAN DEVIATEUR K ------------------------
 C ==================================================================
         CALL HUJPRJ (K-4, SIG, SIGD, P, Q)
-        IF (((P -PTRAC)/PA) .LE. TOLE) THEN        
+        IF (((P -PTRAC)/PA) .LE. TOLE1) THEN        
           IF (DEBUG) WRITE (IFM,'(A)')
      &               'HUJPXD :: LOG(P/PA) NON DEFINI'
           PROX = .FALSE.
@@ -95,11 +95,16 @@ C ==================================================================
 C ==================================================================
 C --- SEUIL CYCLIQUE ELASTIQUE  + TANGENT AU SEUIL MONOTONE --------
 C ==================================================================
-C       R = SQRT(VIN(4*K-11)**2+(VIN(4*K-10)**2)/2.D0)
-C       DIST = ABS(R-RH)/RH
-C       IF((DIST .LT. TOLE).AND.(VIN(K).EQ.MATER(18,2)))THEN
-C         PROX = .TRUE.
-C       ENDIF
+       RH = SQRT(VIN(4*K-11)**2+(VIN(4*K-10)**2)/2.D0)
+       IF(RH.GT.TOLE1)THEN
+         DIST = ABS(R-RH)/RH
+       ELSE
+         DIST = ABS(R-RH)
+       ENDIF
+
+       IF((DIST .LT. TOLE1).AND.(VIN(K).EQ.MATER(18,2)))THEN
+         PROXC = .TRUE.
+       ENDIF
 
  999   CONTINUE
        END

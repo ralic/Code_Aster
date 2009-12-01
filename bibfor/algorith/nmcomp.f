@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/12/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -159,8 +159,8 @@ C        POUR EVITER LA RECURSIVITE
 
 C       VERIFIER LA CONVERGENCE DES CONTRAINTES PLANES ET 
 C       SORTIR DE LA BOUCLE SI NECESSAIRE
-        IF(CP) CALL 
-     &     NMCPL3(OPTION,CRIT,DEPS,DSIDEP,NDIM,SIGP,VIP,CPL,ICP,CONVCP)
+        IF(CP) CALL NMCPL3(COMPOR,OPTION,CRIT,DEPS,DSIDEP,NDIM,
+     &     SIGP,VIP,CPL,ICP,CONVCP)
      
         IF(CONVCP) GOTO 1001
         

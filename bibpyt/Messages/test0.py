@@ -1,4 +1,4 @@
-#@ MODIF test0 Messages  DATE 05/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test0 Messages  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

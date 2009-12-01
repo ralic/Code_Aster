@@ -1,7 +1,7 @@
-      SUBROUTINE NMCVGI(TYPAFF,MAXREL)
+      SUBROUTINE NMCVGI(TYPAFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/04/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,26 +21,26 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      LOGICAL  MAXREL
-      CHARACTER*3 TYPAFF
-           
+      CHARACTER*6 TYPAFF           
 C 
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (AFFICHAGE)
 C
-C IMPRESSION DE CONVERGENCE
+C ENCAPSULATION DES AFFICHAGES DU TABLEAU DE CONVERGENCE ET INFOS
 C
 C ----------------------------------------------------------------------
 C
 C
-C IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-C IN  SDDYNA : SD POUR LA DYNAMIQUE
-C IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
-C IN  DEFICO : SD DEFINITION DU CONTACT
-C IN  ETA    : PARAMETRE DE PILOTAGE
-C OUT CNPILO : VECTEUR ASSEMBLE DES FORCES PILOTEES
-C OUT CNDONN : VECTEUR ASSEMBLE DES FORCES DONNEES
+C IN  TYPAFF : TYPE AFFICHAGE
+C               'CVG_OK'  MESSAGE DE CONVERGENCE NORMALE 
+C               'CVG_MX'  MESSAGE DE CONVERGENCE SI CRITERE 
+C                             RESI_GLOB_RELA ET CHARGEMENT = 0,
+C                             ON UTILISE RESI_GLOB_MAXI (MAXREL)
+C               'CVG_FO'  MESSAGE DE CONVERGENCE SI CONVERGENCE
+C                             FORCEE (ARRET=NON)
+C               'CVG_NO'  MESSAGE DE CONVERGENCE SI PAS DE CRITERES DE 
+C                             CONVERGENCE 
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -61,23 +61,38 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-  
+
 C 
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      IF (TYPAFF.EQ.'CVG') THEN
+C --- INITIALISATIONS
+C
+
+C
+      IF (TYPAFF.EQ.'CVG_OK') THEN
+        CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)
         CALL NMIMPR('IMPR','LIGNE',' ',0.D0,0)
-        IF (MAXREL) THEN
-          CALL NMIMPR('IMPR','MAXI_RELA',' ',0.D0,0)
-        ELSE
-          CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
-        ENDIF
+        CALL NMIMPR('IMPR','CONV_OK',' ',0.D0,0)
+        CALL NMIMPR('IMPR','CONV_RECA',' ',0.D0,0)        
+      ELSEIF (TYPAFF.EQ.'CVG_MX') THEN
+        CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)
+        CALL NMIMPR('IMPR','LIGNE',' ',0.D0,0)
+        CALL NMIMPR('IMPR','CONV_MAXI',' ',0.D0,0)
         CALL NMIMPR('IMPR','CONV_RECA',' ',0.D0,0) 
+      ELSEIF (TYPAFF.EQ.'CVG_NO') THEN
+        CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)
+        CALL NMIMPR('IMPR','LIGNE',' ',0.D0,0)
+        CALL NMIMPR('IMPR','CONV_NONE',' ',0.D0,0)
+      ELSEIF (TYPAFF.EQ.'CVG_FO') THEN
+        CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)
+        CALL NMIMPR('IMPR','LIGNE',' ',0.D0,0)
+        CALL NMIMPR('IMPR','CONV_FORC',' ',0.D0,0)
+        CALL NMIMPR('IMPR','CONV_RECA',' ',0.D0,0)
       ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF        
+        CALL ASSERT(.FALSE.)   
+      ENDIF     
 C     
       CALL JEDEMA()
       END

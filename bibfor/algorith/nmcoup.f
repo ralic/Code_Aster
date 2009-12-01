@@ -3,7 +3,7 @@
      &                   SIGD,VIND,OPT,ELGEOM,NUMLC,SIGF,VINF,DSDE,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 07/04/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,8 +124,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &       CMP2(1:14).EQ. 'VMIS_ISOT_LINE'   .OR.
      &       CMP2(1:8) .EQ. 'ROUSS_PR'         .OR.
      &       CMP2(1:5) .EQ. 'LMARC'            .OR.
-     &       CMP2(1:15).EQ. 'BETON_DOUBLE_DP'  .OR.
-     &       CMP2(1:7) .EQ. 'NADAI_B'              ) THEN
+     &       CMP2(1:15).EQ. 'BETON_DOUBLE_DP') THEN
 
            CALL NMCPLA (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
      &                      TIMED,TIMEF,
@@ -192,7 +191,7 @@ C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
             OPTION(2)(1:16) = CMP2(1:16)
 
             CALL LGDMVM(IMAT,CMP2,EPSDT,DEPST,VIND,OPT,SIGD,
-     &                  SIGF,VINF,DSDE)
+     &                  SIGF,VINF,DSDE,CRIT,IRET)
 
         ELSE
           CALL U2MESS('F','ALGORITH7_3')

@@ -1,5 +1,6 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE SSLV103/C DSR3 AVEC RENUM / AFFE_CHAR_MECA / MECA_STAT(LDLT)
+# yyyy104c.para = tps_job 1050 mem_job 400Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

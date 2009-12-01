@@ -1,4 +1,4 @@
-#@ MODIF czm_ouv_mix Comportement  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+#@ MODIF czm_ouv_mix Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

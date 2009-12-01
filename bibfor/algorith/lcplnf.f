@@ -4,7 +4,7 @@
 C RESPONSABLE PROIX J-M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/04/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,11 +42,6 @@ C       ----------------------------------------------------------------
         REAL*8          EPSEQ
 C       ----------------------------------------------------------------
 
-        IF ( LOI(1:7) .EQ. 'NADAI_B' ) THEN
-           DO 10  I = 3 , NVI-1
-              VIND ( I ) = 0.D0
-   10      CONTINUE
-        ENDIF
 C
 C --   DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
 C

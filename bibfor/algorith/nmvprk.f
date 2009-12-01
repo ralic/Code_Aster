@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/12/2008   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -283,14 +283,14 @@ C      POUR POLYCRISTAL
 
       NBPHAS=NBCOMM(1,1)
 
-      IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI-2
+      IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI-3
 
       CALL GERPAS(  FAMI,KPG,KSP,
      &              COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBPHAS,
      &              NVI,NMAT,VINF,DTIME,ITMAX,TOLER,YMFS,COTHE,
      &              COEFF,DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL,ANGMAS,
      &              SIGI,EPSD,DETOT,X,HSR)
-      IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI +2
+      IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI +3
 
 
 C --    DEBUT TRAITEMENT DE VENDOCHAB --

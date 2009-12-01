@@ -5,7 +5,7 @@
       INTEGER      IRET
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C     --------------------------------------------
 C        ON N'A RIEN A FAIRE
 C     --------------------------------------------
       ELSEIF(TYPFON.EQ.'FONCTION')THEN
-         MESS='DE LA FONCTION'
+         MESS='de la fonction'
          CALL JEVEUO(CHVAL,'E',IVAL)
          CALL JELIRA(CHVAL,'LONUTI',NBVAL,CHBID)
          NBPTS=NBVAL/2
@@ -98,7 +98,7 @@ C     --------------------------------------------
          ENDIF
 C     --------------------------------------------
       ELSEIF(TYPFON.EQ.'FONCT_C')THEN
-         MESS='DE LA FONCTION'
+         MESS='de la fonction'
          CALL JEVEUO(CHVAL,'E',IVAL)
          CALL JELIRA(CHVAL,'LONUTI',NBVAL,CHBID)
          NBPTS=NBVAL/3
@@ -119,7 +119,7 @@ C     --------------------------------------------
          ENDIF
 C     --------------------------------------------
       ELSEIF(TYPFON.EQ.'NAPPE')THEN
-         MESS='D UNE FONCTION DE LA NAPPE'
+         MESS='d''une fonction de la nappe'
          CALL JEVEUO(NOMFON//'.PARA','E',IPAR)
          CALL JELIRA(NOMFON//'.PARA','LONUTI',NBPARA,CHBID)
          IER=0
@@ -161,18 +161,15 @@ C
       IF(IMES.EQ.4)THEN
          VALK (1) = MESS
          VALK (2) = NOMFON
-         VALK (3) = CHBID
-         CALL U2MESG('F', 'UTILITAI6_57',3,VALK,0,0,0,0.D0)
+         CALL U2MESK('F', 'UTILITAI6_57',2,VALK)
       ELSEIF(IMES.EQ.2)THEN
          VALK (1) = MESS
          VALK (2) = NOMFON
-         VALK (3) = CHBID
-         CALL U2MESG('A', 'UTILITAI6_58',2,VALK,0,0,0,0.D0)
+         CALL U2MESK('A', 'UTILITAI6_58',2,VALK)
       ELSEIF(IMES.EQ.1)THEN
          VALK (1) = MESS
          VALK (2) = NOMFON
-         VALK (3) = CHBID
-         CALL U2MESG('A', 'UTILITAI6_59',2,VALK,0,0,0,0.D0)
+         CALL U2MESK('A', 'UTILITAI6_59',2,VALK)
       ENDIF
       CALL JEDEMA()
       END

@@ -1,5 +1,6 @@
-# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE DISCRETS AVEC COMPORTEMENT CINEMATIQUE 3D : T ET TR SUR NOEUD ET SEG2
+# ssnd102a.para = tps_job 180 mem_job 128Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

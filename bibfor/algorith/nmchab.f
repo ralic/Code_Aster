@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/04/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/01/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -204,7 +204,13 @@ C
          RPVM   = VIM(15) 
          RPM    = RPVM + R0
          QM     = VIM(16)
-         DO 101 I=1,6
+         DO 103 I=1,6
+            KSIM(I)=0.D0
+            KSIP(I)=0.D0
+            EPSPM(I)=0.D0
+            EPSPP(I)=0.D0
+ 103     CONTINUE
+         DO 101 I=1,NDIMSI
             KSIM(I) = VIM(I+16)
   101    CONTINUE
          DO 91 I = 1,NDIMSI
@@ -430,10 +436,10 @@ C     ========================================
          IF (MEMO.EQ.1) THEN
             VIP(15)=RPVP
             VIP(16)=QP
-            DO 102 I=1,6
+            DO 102 I=1,NDIMSI
                VIP(16+I)=KSIP(I)
   102       CONTINUE
-            DO 105 I=1,6
+            DO 105 I=1,NDIMSI
                VIP(22+I)=EPSPP(I)
   105       CONTINUE
          ENDIF

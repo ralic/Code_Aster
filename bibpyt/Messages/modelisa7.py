@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF modelisa7 Messages  DATE 26/01/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -256,11 +256,13 @@ cata_msg={
 """),
 
 61: _("""
- vous devez fournir le mot cle maillage pour un champ aux noeuds
+Erreur utilisateur :
+ Vous devez fournir le mot cle MAILLAGE pour un champ aux noeuds ou une carte.
 """),
 
 62: _("""
- vous devez fournir les mots cles modele et option pour un champ elementaire
+Erreur utilisateur :
+ vous devez fournir les mots cles MODELE et OPTION pour un champ élementaire
 """),
 
 63: _("""

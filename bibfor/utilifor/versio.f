@@ -25,18 +25,18 @@ C OUT   UTIL  : SOUS-VERSION D'ASTER
 C OUT   NIVO  : NIVEAU DE SOUS-VERSION D'ASTER
 C OUT   DATE  : DATE DE LA MISE A JOUR DE CETTE VERSION
 C OUT   EXPLOI: BOOLEEN POUR INDIQUER QUE C"EST UNE VERSION 
-C               D'EXPLOITAION OU UN VERSION NORMALE
+C               D'EXPLOITATION OU UN VERSION NORMALE
 C----------------------------------------------------------------------
-C   
+C      
       IMPLICIT NONE   
       INTEGER VERS,UTIL,NIVO
       CHARACTER*16 DATE
       LOGICAL     EXPLOI
 C
       VERS = 10
-      UTIL = 0
-      NIVO = 30
+      UTIL = 1
+      NIVO = 0
       DATE = '02/12/2009'
       EXPLOI = .FALSE.
-C      
+C
       END

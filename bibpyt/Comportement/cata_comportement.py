@@ -1,4 +1,4 @@
-#@ MODIF cata_comportement Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF cata_comportement Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

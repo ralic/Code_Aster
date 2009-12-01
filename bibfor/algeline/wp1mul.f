@@ -6,7 +6,7 @@
       REAL*8                                       TOLF,RESUFR(MXRESF,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      MATDYN = '&&WP1MUL.MAT.DYNAMIQUE'
+      MATDYN = '&&WP1MUL.MAT.DYNA'
 C
 C
 C     --- CREATION DE LA MATRICE DYNAMIQUE A VALEUR COMPLEXE ---

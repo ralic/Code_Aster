@@ -1,6 +1,6 @@
       SUBROUTINE  ANIVER(MATER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,8 +66,8 @@ C      ---------------
       UN     = 1.0D0
       DEUX   = 2.0D0
 C
-      M2BLAN = '  '
-      K8BID  = '        '
+      M2BLAN = ' '
+      K8BID  = ' '
 C
       DO 10 I = 1, 6
       DO 10 J = 1, 6

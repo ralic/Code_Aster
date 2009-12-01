@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 24/03/2009   AUTEUR GALENNE E.GALENNE 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,14 +43,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      N1, NBSITU, IOCC, IBID, NUME, I, II, NOCC, ING,
-     &             JNBOCC, JNUMGR, JPRESA, JPRESB, NBCHAR, JCHAR, IP,
+      INTEGER      N1, NBSITU, IOCC, IBID, NUME, II, NOCC, ING,
+     &             JNBOCC, JNUMGR, JPRESA, JPRESB, NBCHAR, JCHAR,
      &             JNSITU, JCOMBI, JNBGR, IG, NUMPAS(2), NBVG, JNBVG,
      &             NBGR, NUMGR, NBSIGR, JNSG, NBTH, JSEIGR, NSCY,
      &             NBM, VALI(3), NBGRT, NUMG1, NUMG2, NBSEIS, NUMGS, 
      &             NBSG1, NBSG2, NBSG3, NBP12, NBP23, NBP13, NDIM,
      &             JSPAS, JSIGR, JSP12, JSP23, JSP13
-      LOGICAL      YAPASS, YASEIS
+      LOGICAL      YAPASS
       CHARACTER*8  K8B, KNUME, OUINON
       CHARACTER*16 MOTCL1, MOTCL2
 C DEB ------------------------------------------------------------------
@@ -265,27 +265,16 @@ C
          CALL JEVEUO (JEXNOM('&&RC3200.SITU_ETAT_A',KNUME),'E', JCHAR )
          CALL GETVIS ( MOTCL2,'CHAR_ETAT',IOCC,1,NBCHAR,ZI(JCHAR),N1)
 C
-C ------ TRANSITOIRE THERMIQUE ASSOCIE A LA SITUATION:
+C ------ SEISME : PAS DE TRANSITOIRE THERMIQUE 
 C        ---------------------------------------------
 C
-         CALL GETVIS ( MOTCL2, 'NUME_RESU_THER', IOCC,1,0, IBID, N1 )
-         NBTH = -N1
+         NBTH = 0
          CALL JECROC (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME))
          NBM = MAX(1,NBTH)
          CALL JEECRA (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME),
      &                                      'LONMAX',NBM ,' ')
-C
-         IF ( NBTH .EQ. 0 ) THEN
-            CALL JEECRA (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME),
+         CALL JEECRA (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME),
      &                                      'LONUTI', 0,' ')
-         ELSE
-            CALL JEECRA (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME),
-     &                                              'LONUTI', NBTH,' ')
-            CALL JEVEUO (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME),'E',
-     &                                                          JCHAR )
-            CALL GETVIS ( MOTCL2, 'NUME_RESU_THER', IOCC,1,
-     &                                            NBTH,ZI(JCHAR), N1 )
-         ENDIF
 C
  110  CONTINUE
 C

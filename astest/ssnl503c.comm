@@ -1,8 +1,9 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 21/09/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
 # TITRE  : RUINE ELASTO-PLASTIQUE D'UN TUYAU COUDE MINCE
+# ssnl503c.para = tps_job 200 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

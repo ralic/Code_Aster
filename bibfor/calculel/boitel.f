@@ -2,7 +2,7 @@
      &                  DIME  ,MINMAX,PAN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/08/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 27/04/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,27 +71,20 @@ C
 C
 C --- BOITE MINMAX
 C
-      DO 10 IDIME = 1, DIME
-        R = CNOEUD(IDIME,1)
-        MINMAX(1,IDIME) = R
-        MINMAX(2,IDIME) = R
-10    CONTINUE
-C
-      DO 20 IND = 2, NSOM
-        DO 21 IDIME= 1, DIME
-          R = CNOEUD(IDIME,IND)
-          IF (R.LT.MINMAX(1,IDIME)) THEN
-            MINMAX(1,IDIME) = R
-          ELSEIF (R.GT.MINMAX(2,IDIME)) THEN
-            MINMAX(2,IDIME) = R
-          ENDIF
- 21     CONTINUE
- 20   CONTINUE
+      DO 11 , IDIME = 1, DIME
+        MINMAX(1,IDIME) = CNOEUD(IDIME,1)
+        MINMAX(2,IDIME) = CNOEUD(IDIME,1)
+        DO 111 , IND = 2, NSOM
+          MINMAX(1,IDIME) = MIN ( MINMAX(1,IDIME), CNOEUD(IDIME,IND) )
+          MINMAX(2,IDIME) = MAX ( MINMAX(2,IDIME), CNOEUD(IDIME,IND) )
+  111   CONTINUE
+   11 CONTINUE
 C
 C --- CALCUL DES PANS
 C
       JPAN = 0
       IF (DIME.EQ.2) THEN
+C
         DO 30 IPAN = 1, NPAN
           JPAN  = JPAN + 1
           NBPAN = NOEPAN(JPAN)
@@ -119,7 +112,9 @@ C
           PAN(3,IPAN) = -S1
           PAN(4,IPAN) = -S2
  30     CONTINUE
+C
       ELSEIF (DIME.EQ.3) THEN
+C
         DO 60 IPAN = 1, NPAN
           JPAN  = JPAN + 1
           NBPAN = NOEPAN(JPAN)
@@ -178,8 +173,11 @@ C
           PAN(5,IPAN) = -S2
           JPAN = JPAN + ABS(NBPAN)
 60      CONTINUE
+C
       ELSE
+C
         CALL ASSERT(.FALSE.)
+C
       ENDIF
 C
 

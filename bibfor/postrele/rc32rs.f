@@ -5,7 +5,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,10 +27,8 @@ C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 C     STOCKAGE DES RESULTATS DANS LA TABLE DE SORTIE
 C
 C     ------------------------------------------------------------------
-      INTEGER       IRET
       CHARACTER*8   NOMRES
       CHARACTER*16  CONCEP, NOMCMD
-      CHARACTER*19  NOT19A, NOT19S, NOT19M, NOT19R, NT19CA, NT19SA
 C DEB ------------------------------------------------------------------
 C
       CALL GETRES ( NOMRES , CONCEP , NOMCMD )

@@ -1,7 +1,7 @@
       SUBROUTINE NMCHCR (MAT,DP,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,
      &  ALFA2M,DEUXMU,VISC,MEMO,RM,RP,QM,Q,KSIM,KSI,DT,F)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/04/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/01/2009   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -140,20 +140,20 @@ C --- DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES
             EPSPP(I)=EPSPM(I)+DEPSP(I)
   121    CONTINUE
          GRJEPS=0.0D0
-         DO 17 I=1,6
+         DO 17 I=1,NDIMSI
              GRJEPS=GRJEPS+(EPSPP(I)-KSIM(I))**2
    17    CONTINUE
          GRJEPS=SQRT(GRJEPS*1.5D0)
          CRITME=GRJEPS/1.5D0-QM
          IF (CRITME.LE.0.0D0) THEN
             DQ=0.0D0
-            DO 18 I=1,6
+            DO 18 I=1,NDIMSI
                DKSI(I)=0.0D0
    18       CONTINUE
          ELSE
             DQ=ETAM*CRITME
             COEF=ETAM*QM+DQ
-            DO 19 I=1,6
+            DO 19 I=1,NDIMSI
                IF (COEF.GT.R8MIEM()) THEN
                   DKSI(I)=(1.D0-ETAM)*DQ*(EPSPP(I)-KSIM(I))/COEF
                ELSE

@@ -2,7 +2,7 @@
      &                   NBVAL,VALRES,NMAT,HSR,NBHSR,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/01/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,26 +137,13 @@ C         DEFINITION DE LA MATRICE D'INTERACTION POUR KOCKS-RAUCH
           ENDIF
       
           CALL LCMHSR (NBSYS, NBCOEF, VALH, HSRI)
-          EPSI=R8PREM()
-          IDIFF=0
-          DO 3 N=1,NBHSR
-          DO 1 I=1,NBSYS
-          DO 2 J=1,NBSYS
-              IF (ABS(HSR(NBHSR,I,J)-HSRI(I,J)).GT.EPSI)  IDIFF=1
-  2       CONTINUE
-  1       CONTINUE
-  3       CONTINUE
-  4       CONTINUE
-          IF (IDIFF.GT.0.OR.NBHSR.EQ.0) THEN
-             NBHSR=NBHSR+1
-             IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_22')
-             DO 5 I=1,NBSYS
-             DO 6 J=1,NBSYS
-                 HSR(NBHSR,I,J)=HSRI(I,J)
-  6          CONTINUE
-  5          CONTINUE
-          ENDIF
-      
+          NBHSR=NBHSR+1
+          IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_22')
+          DO 5 I=1,NBSYS
+          DO 6 J=1,NBSYS
+              HSR(NBHSR,I,J)=HSRI(I,J)
+  6       CONTINUE
+  5       CONTINUE
           NBVAL=NBVAL+1
           VALRES(NBVAL)=NBHSR
 

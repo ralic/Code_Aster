@@ -1,12 +1,11 @@
       SUBROUTINE RC32FS ( NBSIGR, NOCC, SITU, FUIJS, FUIJ, 
-     +                    FUSE, NS, NSCY, MATER, UG )
+     +                    FUSE, NS, NSCY, UG )
       IMPLICIT   NONE
       INTEGER             NBSIGR, NOCC(*), SITU(*), NS, NSCY
       REAL*8              FUIJS(*), FUIJ(*), FUSE, UG
-      CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,20 +29,19 @@ C     CALCUL DU FACTEUR D'USAGE
 C
 C     ------------------------------------------------------------------
       INTEGER      IS1, IS2, I, I1, IFM, K, L, NIV, NS2, ICOMP
-      REAL*8       SALT, FUM, NADM, U1KL, U2KL, VALE(2)
-      LOGICAL      TROUVE,ENDUR
-      CHARACTER*2  CODRET
+      REAL*8       SALT, FUM, U1KL, U2KL
+      LOGICAL      TROUVE
 C     ------------------------------------------------------------------
 C
       CALL INFNIV ( IFM, NIV )
 C
       IF ( NIV .GE. 2 ) THEN
-        WRITE(IFM,*) 'MATRICE FACTEUR D USAGE INITIALE (SEISME)'
+        WRITE(IFM,*) 'MATRICE FACTEUR D USAGE INITIALE (AVEC SEISME)'
         WRITE(IFM,1012) ( SITU(L),L=1,NBSIGR )
         WRITE(IFM,1010) ( NOCC(L),L=1,NBSIGR )
         DO 100 I = 1 , NBSIGR
           I1 = NBSIGR*(I-1)
-          WRITE(IFM,1000) SITU(I), NOCC(I), (FUIJ(I1+L),L=1,NBSIGR)
+          WRITE(IFM,1000) SITU(I), NOCC(I), (FUIJS(I1+L),L=1,NBSIGR)
  100    CONTINUE
       ENDIF
 C
@@ -88,21 +86,26 @@ C
          U2KL = DBLE( 2*NSCY-1 ) * FUSE
 C
          IF ( NIV .GE. 2 ) THEN
-           WRITE(IFM,1040)'=> FU MAXI = ', 
+           WRITE(IFM,1040)'=> FU MAXI (SANS SEISME) = ', 
      +               FUIJ(NBSIGR*(IS1-1)+IS2), SITU(IS1), SITU(IS2)
            WRITE(IFM,1020)'        U1KL = ', U1KL
            WRITE(IFM,1020)'        U2KL = ', U2KL
          ENDIF
 C
          FUIJ(NBSIGR*(IS1-1)+IS2) = 0.D0
+         FUIJ(NBSIGR*(IS2-1)+IS1) = 0.D0
+C POUR L IMPRESSION ON MODIFIE AUSSI FUIJS           
+         FUIJS(NBSIGR*(IS1-1)+IS2) = 0.D0
+         FUIJS(NBSIGR*(IS2-1)+IS1) = 0.D0
+       
 C
          IF ( NIV .GE. 2 ) THEN
-           WRITE(IFM,*) 'MATRICE FACTEUR D USAGE MODIFIEE (SEISME)'
+           WRITE(IFM,*) 'MATRICE FACTEUR D USAGE MODIFIEE (AVEC SEISME)'
          WRITE(IFM,1012) ( SITU(L),L=1,NBSIGR )
          WRITE(IFM,1010) ( NOCC(L),L=1,NBSIGR )
            DO 110 I = 1 , NBSIGR
              I1 = NBSIGR*(I-1)
-             WRITE(IFM,1000) SITU(I), NOCC(I), (FUIJ(I1+L),L=1,NBSIGR)
+             WRITE(IFM,1000) SITU(I), NOCC(I), (FUIJS(I1+L),L=1,NBSIGR)
  110       CONTINUE
          ENDIF
 C
@@ -116,8 +119,7 @@ C
  1000 FORMAT(1P,I7,I9,'|',40(E9.2,'|'))
  1010 FORMAT(1P,7X,'NB_OCCUR ','|',40(I9,'|'))
  1012 FORMAT(1P,7X,'SITUATION','|',40(I9,'|'))
- 1040 FORMAT(1P,A15,E12.5,', LIGNE:',I4,', COLONNE:',I4)
- 1030 FORMAT(1P,A15,I12)
+ 1040 FORMAT(1P,A30,E12.5,', LIGNE:',I4,', COLONNE:',I4)
  1020 FORMAT(1P,A15,E12.5)
 C
       END

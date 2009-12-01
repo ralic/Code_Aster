@@ -3,7 +3,7 @@
      &           DEPS, SIGD, VIND, OPT, SIGF, VINF, DSDE, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -116,7 +116,7 @@ C  ----------------------------------------------------------------
       REAL*8        DEPSTH(6), EPSDTH(6), ALPHA(3)
       REAL*8        DET, R8PREM, R8VIDE, BID16(6), BID66(6,6)
       REAL*8        MATERF(22,2), I1D, D13, ZERO, UN, DEUX
-      REAL*8        RMOB
+      REAL*8        NEPS, NSIG
       INTEGER       UMESS, IUNIFI, IISNAN
       LOGICAL       DEBUG, CONV, REORIE
       
@@ -132,8 +132,9 @@ C     ----------------------------------------------------------------
       DATA       DEUX / 2.0D0 /
 
 
+      IRET = 0
 C --- DEBUG = .TRUE. : MODE AFFICHAGE ENRICHI
-C      DEBUG = .true.
+      IF(DEBUG)WRITE(6,*)'HHHHHHHHHHHHHHHHHHHHHH'
 
       MOD   = TYPMOD(1)
 
@@ -153,6 +154,9 @@ C     REPERE LOCAL DONNE PAR LES ANGLES NAUTIQUES (ANGMAS)
       CALL HUJORI ('LOCAL', 1, REORIE, ANGMAS, EPSD, BID66)
       CALL HUJORI ('LOCAL', 1, REORIE, ANGMAS, DEPS, BID66)
       
+C --- ON TRAVAILLE TOUJOURS AVEC UN TENSEUR CONTRAINTES
+C     DEFINI EN 3D
+
       NDTT = 6
       IF(NDT.LT.6)THEN
         NDTT = 4
@@ -234,6 +238,10 @@ C ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
            
            CALL HUJCRD(I, MATERF, SIGD, VIND, SEUIL)
            
+C --- SI LE SEUIL EST DESEQUILIBRE A L'ETAT INITIAL
+C     ON EQUILIBRE LE SEUIL EN CALCULANT LA VALEUR DE R
+C     APPROPRIEE
+
            IF(SEUIL.GT.ZERO)THEN
              CALL HUJPRJ(I,SIGD,TIN,PISO,Q)
              B          = MATERF(4,2)
@@ -247,6 +255,7 @@ C ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
         ENDIF
   30    CONTINUE
   
+C ---> INITIALISATION SEUIL ISOTROPE SI NUL
       IF (VIND(4) .EQ. ZERO) THEN
          IF (MATERF(14, 2) .EQ. ZERO) THEN
            VIND(4) = 1.D-3
@@ -256,6 +265,10 @@ C ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
          
          CALL HUJCRI(MATERF, SIGD, VIND, SEUIL)   
          
+C --- SI LE SEUIL EST DESEQUILIBRE A L'ETAT INITIAL
+C     ON EQUILIBRE LE SEUIL EN CALCULANT LA VALEUR DE R
+C     APPROPRIEE
+
          IF (SEUIL .GT. ZERO) THEN
            PISO    = (SIGD(1)+SIGD(2)+SIGD(3))/3
            D       = MATERF(3,2)
@@ -265,7 +278,6 @@ C ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
          ENDIF
          
       ENDIF
-Caf 14/05/07 Debut
 
 C ---> INITIALISATION SEUIL CYCLIQUE SI NUL
       DO 40 I = 1, NDI
@@ -285,11 +297,9 @@ C ---> INITIALISATION SEUIL CYCLIQUE SI NUL
            VIND(8) = MATERF(19,2)
          ENDIF
       ENDIF
-Caf 14/05/07 Fin
         
       IF (OPT(1:9).NE.'RIGI_MECA') CALL LCEQVN (50, VIND, VINF)
 
-Caf 30/04/07 debut
 C ---> ETAT ELASTIQUE OU PLASTIQUE A T
       IF (((VIND(24) .EQ. ZERO) .OR.
      &   (VIND(24) .EQ. -UN .AND. VIND(28) .EQ. ZERO)) .AND.  
@@ -303,7 +313,6 @@ C ---> ETAT ELASTIQUE OU PLASTIQUE A T
       ELSE
         ETATD = 'PLASTIC'
       ENDIF
-Caf 30/04/07 fin
 
 C     -------------------------------------------------------------
 C     OPTIONS 'FULL_MECA' ET 'RAPH_MECA' = CALCUL DE SIG(T+DT)
@@ -331,8 +340,8 @@ C - INITIALISATION DU COMPTEUR D'ITERATIONS LOCALES
 C -----------------------------------------------------
 C ---> PREDICTION VIA TENSEUR ELASTIQUE DES CONTRAINTES
 C -----------------------------------------------------
-        INC    =0
-        INCMAX =1
+        INC    = 0
+        INCMAX = 1
  100    CONTINUE
 
         INC = INC + 1
@@ -350,6 +359,7 @@ C ----------------------------------------------------
         IF (DEBUG .AND. IRET1.EQ.1)
      &  WRITE(6,'(A)')'NMHUJ :: HUJDP :: PAS DE RESUBDIVISON'
       
+C --- ON LIMITE LE REDECOUPAGE LOCAL A 20 POUR HUJDP
         IF     (INCMAX.GE.20) THEN
           INCMAX =20
         ELSEIF (INCMAX.LE.1 ) THEN
@@ -368,7 +378,7 @@ C ----------------------------------------------------
 C ---------------------------------------------
 C CALCUL DE L'ETAT DE CONTRAINTES CORRESPONDANT
 C ---------------------------------------------
-        CALL HUJRES(MOD, CRIT, MATERF, NVI, EPSDTH, DEPSR,
+        CALL HUJRES(MOD, CRIT, MATERF, IMAT, NVI, EPSDTH, DEPSR,
      &       SIGD, VIND, SIGF, VINF, IRET, ETATF)
         IF (IRET.EQ.1) GOTO 9999
 
@@ -389,16 +399,21 @@ C -------------------------------------------
       
 C --- CALCUL DU CRITERE DE HILL: DSIG*DEPS       
           HILL = ZERO
+          NSIG = ZERO
+          NEPS = ZERO
           DO 57 I = 1, NDT
             DSIG(I) = SIGF(I) - SIGD0(I)
             HILL    = HILL + DSIG(I)*DEPS0(I)
+            NSIG    = NSIG + DSIG(I)**2
+            NEPS    = NEPS + DEPS0(I)**2
  57       CONTINUE
  
-          IF(INSTAM.NE.INSTAP)THEN
-            VINF(32) = HILL/(INSTAP-INSTAM)**2
+C --- NORMALISATION DU CRITERE : VARIE ENTRE -1 ET 1 
+          IF((NEPS.GT.R8PREM()).AND.(NSIG.GT.R8PREM()))THEN
+            VINF(32) = HILL/SQRT(NEPS*NSIG)
           ELSE
-            VINF(32) = HILL
-          ENDIF
+            VINF(32) = ZERO
+          ENDIF          
           
       ENDIF
 Caf 07/05/07 fin <IF RAPH_MECA et FULL_MECA>
@@ -490,6 +505,8 @@ C --- RELIE AUX MECANISMES ACTIFS
  60       CONTINUE
 
       ENDIF
+C --- ON RENVOIE LA VALEUR ADEQUATE DE NDT 
+C     POUR MODELISATION D_PLAN
       IF (NDTT.EQ.4) NDT = 4
       
       IF (OPT .EQ. 'RAPH_MECA' .OR. OPT(1:9) .EQ. 'FULL_MECA')
@@ -497,23 +514,25 @@ C --- RELIE AUX MECANISMES ACTIFS
       
  9999 CONTINUE
         
-C      IF (IRET .EQ. 1)THEN
-C        CALL LCEQVE(SIGD0,SIGF)
-C        CALL LCEQVN (NVI, VIND0, VINF)
-C        IRET = 0
+      IF (OPT(1:9).EQ.'RAPH_MECA'.OR.OPT(1:9).EQ.'FULL_MECA')THEN
+        IF(IRET.EQ.1)THEN
+          CALL LCINMA (ZERO, DSDE)
+          CALL HUJTEL (MOD, MATERF, SIGD, DSDE)
+          CALL LCEQVE(SIGD0,SIGF)
+          CALL LCEQVN (50, VIND0, VINF)
 
-C        IF(OPT .EQ.'FULL_MECA')THEN  
-C ---> CALCUL MATRICE DE RIGIDITE ELASTIQUE
-C          IF (ETATF .EQ. 'ELASTIC')  THEN
-C            CALL HUJTEL (MOD, MATERF, SIGF, DSDE)
-C          ENDIF
+          IF(DEBUG)THEN
+            WRITE(6,*)'************************************'
+            WRITE(6,*)'DEPS =',(DEPS0(I),I=1,NDT)
+            WRITE(6,*)'SIGD =',(SIGD0(I),I=1,NDT)
+            WRITE(6,*)'VIND =',(VIND0(I),I=1,50)
+            WRITE(6,*)
+          ENDIF
 
-C ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
-C          IF (ETATF .EQ. 'PLASTIC') THEN
-C            CALL HUJTID (MOD, IMAT, SIGF, VINF, DSDE, IRET)
-C          ENDIF
-          
-C        ENDIF
-C      ENDIF
+        ENDIF
+        CALL LCEQVE(SIGD0,SIGD)
+        CALL LCEQVE(DEPS0,DEPS)
+        CALL LCEQVN (50, VIND0, VIND)
+      ENDIF
  
       END

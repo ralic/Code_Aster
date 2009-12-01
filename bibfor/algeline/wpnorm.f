@@ -7,7 +7,7 @@
       REAL*8              RESUFR(NBMODE,*), COEF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C        --- NORMALISATION SUR LES DDL NON EXCLUS
             IF ( NORM .EQ. 'EUCL' ) THEN
                DO 4 IEQ = 1 , NEQ
                   XX1 = VECPRO(IEQ,IM) * DDLEXC(IEQ)
-                  RNORM = RNORM + XX1*DCONJG(XX1)
+                  RNORM = RNORM + DBLE(XX1*DCONJG(XX1))
  4             CONTINUE
                RNORM = SQRT( RNORM )
             ELSE
@@ -152,15 +152,15 @@ C        --- DU PROBLEME GENERALISE ASSOCIE AU PROBLEME QUADRATIQUE ---
                XNORM = XNORM + VECPRO(IEQ,IM) * ZC(LACC1+IEQ-1)
    31      CONTINUE
            XNORM = 1.D0 / SQRT(XNORM)
-           COEF(IM) = XNORM
+           COEF(IM) = DBLE(XNORM)
            DO 32 IEQ = 1, NEQ
               VECPRO(IEQ,IM) = VECPRO(IEQ,IM) * XNORM
    32      CONTINUE
             IF ( PARA .EQ. 'OUI' ) THEN
                XNORM = XNORM * XNORM
-               RESUFR(IM,4) = RESUFR(IM,4) * XNORM
-               RESUFR(IM,5) = RESUFR(IM,5) * XNORM
-               RESUFR(IM,6) = RESUFR(IM,6) * XNORM
+               RESUFR(IM,4) = RESUFR(IM,4) * DBLE(XNORM)
+               RESUFR(IM,5) = RESUFR(IM,5) * DBLE(XNORM)
+               RESUFR(IM,6) = RESUFR(IM,6) * DBLE(XNORM)
             ENDIF
    30    CONTINUE
          CALL JEDETC('V','&&WPNORM',1)

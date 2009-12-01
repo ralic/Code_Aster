@@ -1,5 +1,6 @@
-# MODIF  DATE 15/09/2008   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
+# ssnv192a.para = tps_job 130 mem_job 512Mo mem_aster 50 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG

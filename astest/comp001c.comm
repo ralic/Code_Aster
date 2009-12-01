@@ -1,6 +1,7 @@
-# MODIF  DATE 21/01/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D CINE_LINE
+# comp001c.para = tps_job 230 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -2,7 +2,7 @@
      &                  NGRMM ,DEGMAX)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/07/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 27/01/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       CHARACTER*8   K8BID
-      INTEGER       NNO,NARE
+      INTEGER       NNO,NARE,LONG
       INTEGER       IMA1,IMA2
       INTEGER       INO
       INTEGER       IAD1,IAD2
@@ -101,6 +101,8 @@ C
           ELSEIF (DIMVAR.EQ.3) THEN
             NARE = NARE + N*(N-1)
           ENDIF
+        ELSE
+          NARE = NARE + 1
         ENDIF
  10   CONTINUE
 C
@@ -166,7 +168,12 @@ C --- COPIE LISTE -> GRAPHE MAILLE/MAILLE
 C
       DO 60 I = 1, NMA
         CALL JECROC(JEXNUM(NGRMM,I))
-        CALL JEECRA(JEXNUM(NGRMM,I),'LONMAX',ZI(Q0-1+I),' ')
+        IF (ZI(Q0-1+I).NE.0) THEN
+          LONG = ZI(Q0-1+I)
+        ELSE
+          LONG = 1
+        ENDIF
+        CALL JEECRA(JEXNUM(NGRMM,I),'LONMAX',LONG,' ')
         CALL JEVEUO(JEXNUM(NGRMM,I),'E',Q2)
         L = ZI(Q1-1+I)
  70     CONTINUE

@@ -1,6 +1,7 @@
-# MODIF  DATE 27/05/2008   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE VALIDATION ARCHITECTURE PARTITIONNEMENT SCOTCH ET CALCUL FETI
+# feti007a.para = tps_job 190 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -7,7 +7,7 @@
       CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -116,9 +116,9 @@ C
                TABPRE = TABPR0
             ELSE
                CFAIT  = .TRUE.
-               TABLE  = '&&RCEV22.RESU_MECA'
-               TABFLE = '&&RCEV22.SIGM_THER'
-               TABPRE = '&&RCEV22.RESU_PRES'
+               TABLE  = '&&RCEV22.RESU_ME'
+               TABFLE = '&&RCEV22.SIGM_TH'
+               TABPRE = '&&RCEV22.RESU_PR'
                CALL TBEXTB ( TABL0, 'V', TABLE, 1, 'INTITULE', 'EQ',
      +                       IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
                IF ( IRET .EQ. 10 ) THEN
@@ -180,9 +180,9 @@ C
             TABPRE = TABPR0
          ELSE
             CFAIT  = .TRUE.
-            TABLE  = '&&RCEV22.RESU_MECA'
-            TABFLE = '&&RCEV22.SIGM_THER'
-            TABPRE = '&&RCEV22.RESU_PRES'
+            TABLE  = '&&RCEV22.RESU_ME'
+            TABFLE = '&&RCEV22.SIGM_TH'
+            TABPRE = '&&RCEV22.RESU_PR'
             CALL TBEXTB ( TABL0, 'V', TABLE, 1, 'INTITULE', 'EQ',
      +                    IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
             IF ( IRET .EQ. 10 ) THEN

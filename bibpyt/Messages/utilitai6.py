@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai6 Messages  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,18 @@ cata_msg = {
 
 1 : _("""
  La grandeur fournie : %(k1)s ne figure pas dans le catalogue des grandeurs
+"""),
+
+2 : _("""
+ Erreur utilisateur (CREA_CHAMP/AFFE) :
+   Le type du champ que l'on cherche à créer (réel, entier, complexe, fonction)
+   n'est pas compatible avec le mot clé utilisé (VALE, VALE_I, VALE_C, VALE_F).
+
+ Il faut respecter la correspondance suivante :
+    - champ réel        -> VALE
+    - champ complexe    -> VALE_C
+    - champ entier      -> VALE_I
+    - champ fonction    -> VALE_F
 """),
 
 3 : _("""
@@ -186,15 +198,15 @@ cata_msg = {
 """),
 
 57 : _("""
- les abscisses  %(k1)s %(k2)s ne sont pas monotones. %(k3)s
+ les abscisses %(k1)s %(k2)s ne sont pas monotones.
 """),
 
 58 : _("""
- les abscisses  %(k1)s %(k2)s ont ete reordonnees. %(k3)s
+ les abscisses %(k1)s %(k2)s ont été réordonnées.
 """),
 
 59 : _("""
- l'ordre des abscisses  %(k1)s %(k2)s a ete inverse. %(k3)s
+ l'ordre des abscisses %(k1)s %(k2)s a été inversé.
 """),
 
 60 : _("""

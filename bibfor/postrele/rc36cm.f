@@ -6,7 +6,7 @@
       CHARACTER*24        CHMOME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C
      +             JLICH, JLICM, JLICR
       INTEGER      VALI(2)
       LOGICAL      SEISME, AUTRE
-      CHARACTER*8  K8B, NOCMP(3), TYPE
+      CHARACTER*8  K8B, NOCMP(3)
       CHARACTER*24 CHAMS0
       COMPLEX*16   CBID
 C DEB ------------------------------------------------------------------

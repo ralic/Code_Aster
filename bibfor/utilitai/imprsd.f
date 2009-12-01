@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD,TITRE
       INTEGER IFIC
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +29,7 @@ C  BUT : IMPRIMER UNE STRUCTURE DE DONNEE DONT ON CONNAIT LE TYPE
 C TYPESD  IN K*   : TYPE DE LA STRUCTURE DE DONNEE A IMPRIMER
 C                      'CHAMP' :   /CHAM_NO/CHAM_ELEM/RESUELEM/CARTE
 C                                  /CHAM_NO_S/CHAM_ELEM_S
+C                      'MATRICE' : MATR_ASSE/MATR_GENE
 C NOMSD   IN K*  : NOM DE LA STRUCTURE DE DONNEES A IMPRIMER
 C IFIC    IN I   : NUMERO LOGIQUE DU FICHIER ASCII POUR L'IMPRESSION
 C TITRE   IN K*  : CHAINE DE CARACTERES IMPRIMEE EN TETE
@@ -51,24 +52,25 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER      IBID,IFR,I1,I2,I3,I4,I5,I6,IB
+      INTEGER      IBID,I1,I2,I3,I4,I5,I6,IB
+      INTEGER      J1,J2,J3,K,NPARA
       CHARACTER*16 TYP2SD
-      CHARACTER*19 CH,CHS
+      CHARACTER*19 CH,CHS,MATR
+      CHARACTER*17 TABLE
 
 C -DEB------------------------------------------------------------------
 
       CALL JEMARQ()
       TYP2SD = TYPESD
 
-      IFR = IFIC
-      CALL ASSERT((IFR.NE.0) .AND. (IFR.LE.100))
+      CALL ASSERT((IFIC.NE.0) .AND. (IFIC.LE.100))
       IBID = 0
 
 C     1. ECRITURE DU TITRE :
 C     ----------------------
-      WRITE (IFR,*) ' '
-      WRITE (IFR,*) '-----------------------------------------------'
-      WRITE (IFR,*) TITRE
+      WRITE (IFIC,*) ' '
+      WRITE (IFIC,*) '-----------------------------------------------'
+      WRITE (IFIC,*) TITRE
 
 
 C     2. APPEL A LA BONNE ROUTINE :
@@ -88,31 +90,49 @@ C     ------------------------------------
         CALL EXISD('RESUELEM',CH,I6)
 
 
-        IF (I1.GT.0) CALL CNSIMP(CH,IFR)
-        IF (I2.GT.0) CALL CESIMP(CH,IFR,IBID,IBID)
+        IF (I1.GT.0) CALL CNSIMP(CH,IFIC)
+        IF (I2.GT.0) CALL CESIMP(CH,IFIC,IBID,IBID)
 
         IF (I3.GT.0) THEN
           CALL CNOCNS(CH,'V',CHS)
-          CALL CNSIMP(CHS,IFR)
+          CALL CNSIMP(CHS,IFIC)
           CALL DETRSD('CHAM_NO_S',CHS)
         END IF
 
         IF (I4.GT.0) THEN
           CALL CELCES(CH,'V',CHS)
-          CALL CESIMP(CHS,IFR,IBID,IBID)
+          CALL CESIMP(CHS,IFIC,IBID,IBID)
           CALL DETRSD('CHAM_ELEM_S',CHS)
         END IF
 
         IF (I5.GT.0) THEN
           CALL CARCES(CH,'ELEM',' ','V',CHS,IB)
-          CALL CESIMP(CHS,IFR,IBID,IBID)
+          CALL CESIMP(CHS,IFIC,IBID,IBID)
           CALL DETRSD('CHAM_ELEM_S',CHS)
         END IF
 
-        IF (I6.GT.0) WRITE (IFR,*) 'TYPE : RESUELEM NON TRAITE.'
+        IF (I6.GT.0) WRITE (IFIC,*) 'TYPE : RESUELEM NON TRAITE.'
+
 
       ELSE IF (TYP2SD.EQ.'TABLE') THEN
 C     --------------------------------------
+        TABLE=NOMSD
+        CALL JEVEUO(TABLE//'  .TBNP','L',J1)
+        CALL JEVEUO(TABLE//'  .TBLP','L',J2)
+        NPARA=ZI(J1)
+        CALL WKVECT('&&IMPRSD.LIPARA','V V K16',NPARA,J3)
+        DO 1, K=1,NPARA
+          ZK16(J3-1+K)=ZK24(J2-1+4*(K-1)+1)
+1       CONTINUE
+        CALL TBIMPR(TABLE,' ','ASTER',IFIC,NPARA,ZK16(J3),0,
+     &   ' ','1PE12.5','RI')
+        CALL JEDETR('&&IMPRSD.LIPARA')
+
+
+      ELSE IF (TYP2SD.EQ.'MATRICE') THEN
+C     --------------------------------------
+        MATR=NOMSD
+        CALL MATIMP(MATR,IFIC)
 
 
       ELSE

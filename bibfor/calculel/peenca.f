@@ -5,7 +5,7 @@
       REAL*8                       VR(13)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/12/2008   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -158,7 +158,11 @@ C                 --- TOTALE ---
                INUM = INUM + NEL + 1
  42         CONTINUE
  40      CONTINUE
-         VR(2) = 100.0D0 * VR(1) / ZTOT
+         IF (( VR(1).LT.R8PREM() ).AND.( ZTOT.LT.R8PREM() )) THEN
+            VR(2) = 0.0D0
+         ELSE
+            VR(2) = 100.0D0 * VR(1) / ZTOT
+         ENDIF
       ENDIF
 C
       CALL JEDEMA()

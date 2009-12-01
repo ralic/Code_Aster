@@ -1,6 +1,6 @@
       SUBROUTINE TE0410 ( OPTIOZ , NOMTZ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/06/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF ELEMENTS  DATE 21/04/2009   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       PARAMETER (NPGT=10)
       INTEGER    NB1
-      REAL*8     SIGTOT(6,9),EFFGT(8,9),SIGMPG(162)
+      REAL*8     SIGTOT(6,9),EFFGT(8,9)
       REAL*8     MATEVN(2,2,NPGT), MATEVG(2,2,NPGT)
       CHARACTER*24  DESI , DESR
 C DEB
@@ -59,10 +59,11 @@ C
       NB2  =ZI(LZI-1+2)
       NPGSN=ZI(LZI-1+4)
 C
-      IF ( OPTION(11:14) .EQ. 'DEPL') THEN
-         CALL VDXSIG(NOMTE,OPTION,ZR(JGEOM),NB1,NPGSR,SIGTOT,
-     &               SIGMPG,EFFGT)
-      ENDIF
+      CALL JEVECH('PNBSP_I','L',JCOU)
+      NBCOU=ZI(JCOU)
+      CALL WKVECT('&&TE0410.SIGPG','V V R',162*NBCOU,JSIGPG)
+      CALL VDXSIG(NOMTE,OPTION,ZR(JGEOM),NB1,NPGSR,SIGTOT,
+     &            ZR(JSIGPG),EFFGT)
 C
 C --- DETERMINATION DES MATRICES DE PASSAGE DES REPERES INTRINSEQUES
 C --- AUX NOEUDS ET AUX POINTS D'INTEGRATION DE L'ELEMENT
@@ -95,8 +96,8 @@ C --- 1 COUCHE - 3 PTS DANS L'EPAISSEUR
 C---- 162 = NPGSN*6(6 CONTRAINTES STOCKEES)*NPGE
 C     ------------------------------------------------------
 C
-              DO 10 I = 1,NPGSN*18
-                  ZR(ICONTR-1+I)=SIGMPG(I)
+              DO 10 I = 1,NPGSN*18*NBCOU
+                  ZR(ICONTR-1+I)=ZR(JSIGPG-1+I)
  10           CONTINUE
 
   
@@ -122,5 +123,6 @@ C     --------------------------------------------------------
            ENDIF
 C
       ENDIF
+      CALL JEDETR('&&TE0410.SIGPG')
 C
       END

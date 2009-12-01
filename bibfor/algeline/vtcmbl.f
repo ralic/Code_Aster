@@ -3,7 +3,7 @@ C     ------------------------------------------------------------------
 C     COMBINAISON LINEAIRE DE CHAM_NO OU DE CHAM_ELEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -290,7 +290,7 @@ C SOUS-DOMAINE N°IDD
                IF ( TYPCST(ICMB)(1:1) .EQ. 'R') THEN
                  DO 120 IVAL = 0,NBVALE-1
                    ZR(LVALE+IVAL) = ZR(LVALE+IVAL) +
-     &                                CONST(ICONST)*ZC(JVALE+IVAL)
+     &                              CONST(ICONST)*DBLE(ZC(JVALE+IVAL))
   120            CONTINUE
                ELSEIF ( TYPCST(ICMB)(1:1) .EQ. 'I') THEN
                  DO 130 IVAL = 0,NBVALE-1

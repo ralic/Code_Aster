@@ -1,6 +1,7 @@
-# MODIF  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 
 # TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
+# sdll135c.para = tps_job 770 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG

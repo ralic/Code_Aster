@@ -1,6 +1,7 @@
 
-# MODIF  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE DMT94.132 EPROUVETTE CT BIMETALLIQUE
+# ssnp312b.para = tps_job 270 mem_job 128Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

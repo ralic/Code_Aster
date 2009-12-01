@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+#@ MODIF algorith7 Messages  DATE 21/04/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,85 +87,6 @@ cata_msg = {
 20 : _("""
  le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s 
 """),
-
-22 : _("""
- la charge  %(k1)s  n'est pas mécanique
-"""),
-
-23 : _("""
- la charge  %(k1)s  ne peut etre suiveuse
-"""),
-
-24 : _("""
- la charge  %(k1)s  ne peut etre différentielle
-"""),
-
-25 : _("""
- il y a plusieurs charges thermiques 
-"""),
-
-27 : _("""
- la charge  %(k1)s  ne peut etre pilotée
-"""),
-
-28 : _("""
- on ne peut piloter une charge fonction du temps
-"""),
-
-29 : _("""
- la charge thermique  %(k1)s  ne peut etre pilotée
-"""),
-
-30 : _("""
- il y a plusieurs charges de séchage 
-"""),
-
-31 : _("""
- la charge de séchage  %(k1)s  ne peut etre pilotée
-"""),
-
-32 : _("""
- il y a plusieurs charges de déformations anélastiques 
-"""),
-
-33 : _("""
- la charge de déformations anélastiques  %(k1)s  ne peut etre pilotée
-"""),
-
-34 : _("""
- la charge de type EVOL_CHAR  %(k1)s  ne peut etre pilotée
-"""),
-
-35 : _("""
- une meme charge ne peut contenir à la fois
- le mot-cle "LIAISON_UNIL" et le mot-cle "CONTACT"
-"""),
-
-36 : _("""
- la charge de type liaison_unilatérale  %(k1)s  ne peut etre pilotée
-"""),
-
-37 : _("""
- la charge de type contact  %(k1)s  ne peut etre pilotée
-"""),
-
-38 : _("""
- la charge  %(k1)s  ne peut pas utiliser de fonction multiplicative FONC_MULT
- car elle est pilotée
-"""),
-
-39 : _("""
- on ne peut pas faire de pilotage en l'absence de forces de type "FIXE_PILO"
-"""),
-
-40 : _("""
- il ne peut pas y avoir de contact (mot-cle "contact") dans plus d'une charge
-"""),
-
-41 : _("""
- il y a au moins une charge non mécanique : vérifier le fichier de commandes
-"""),
-
 
 48 : _("""
  ETA_PILO_MAX doit etre inférieur a ETA_PILO_R_MAX

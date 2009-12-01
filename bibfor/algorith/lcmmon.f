@@ -9,7 +9,7 @@
         CHARACTER*(*) FAMI
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -86,7 +86,7 @@ C     NSFV : debut de la famille IFA dans les variables internes
 
       DO 6 IFA=1,NBFSYS
             IFL=NBCOMM(IFA,1)
-            NUECOU=COEFT(IFL)
+            NUECOU=NINT(COEFT(IFL))
 
          NOMFAM=CPMONO(5*(IFA-1)+1)
 C         NMATER=CPMONO(5*(IFA-1)+2)

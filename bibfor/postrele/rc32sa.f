@@ -2,12 +2,12 @@
      &        TYPEKE, SPMECA, SPTHER, KEMECA, KETHER, SALTIJ, SM,FUIJ )
       IMPLICIT   NONE
       REAL*8            MATI(*), MATJ(*), SNPQ, SPIJ(2), SALTIJ(2), SM
-      REAL*8            TYPEKE, SPMECA, SPTHER,FUIJ(2)
+      REAL*8            TYPEKE, SPMECA(2), SPTHER(2),FUIJ(2)
       CHARACTER*8       NOMMAT
       CHARACTER*(*)     TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,9 @@ C
 C     ------------------------------------------------------------------
 C
       REAL*8    R8VIDE, E, EC, PARA(3), M, N, NADM, SALTM, SALTH,
-     +          KEMECA, KETHER, KETHE1, SALT1, SALT2
+     +          KEMECA, KETHER, KETHE1, VALR(2),R8MAEM
+      CHARACTER*2  CODRET
+      LOGICAL       ENDUR
 C DEB ------------------------------------------------------------------
 C
 C --- LE MATERIAU
@@ -68,34 +70,62 @@ C --- CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT
 C --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM
 C
       IF (TYPEKE.LT.0.D0) THEN
-         IF (TYPZ.EQ.'SITU') THEN
-           CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPIJ(1),KEMECA,SALTIJ(1),
+         CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPIJ(1),KEMECA,SALTIJ(1),
      +                 NADM )
-           FUIJ(1) = 1.D0 / NADM
-         ELSE
-           CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPIJ(1),KEMECA,SALTIJ(1),
-     +                 NADM )
-           FUIJ(1) = 1.D0 / NADM
+         FUIJ(1) = 1.D0 / NADM
+         IF (TYPZ.EQ.'COMB') THEN
            CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPIJ(2),KEMECA,SALTIJ(2),
      +                 NADM )
            FUIJ(2) = 1.D0 / NADM
-
          ENDIF  
          KETHER = R8VIDE()
       ELSE
-         CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPMECA,KEMECA,SALTM,NADM )
-           FUIJ(1) = 1.D0 / NADM
 C
-C       CALCUL DE KE THER
+C --- CAS KE_MIXTE
 C
          KETHE1 = 1.86D0*(1.D0-(1.D0/(1.66D0+SNPQ/SM)))
          KETHER = MAX(1.D0,KETHE1)
-C
-C        CALCUL DE SALTH
-         SALTH=  0.5D0 * PARA(3) * KETHER * SPTHER
-
+         CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPMECA(1),KEMECA,SALTM,NADM )
+         SALTH =  0.5D0 * PARA(3) * KETHER * SPTHER(1)
          SALTIJ(1) = SALTM + SALTH
+
+C --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM : TR. 1
+C
+         CALL LIMEND( NOMMAT,SALTIJ(1),'WOHLER',ENDUR)
+         IF (ENDUR) THEN
+            NADM=R8MAEM()
+         ELSE
+           CALL RCVALE (NOMMAT,'FATIGUE', 1, 'SIGM    ',SALTIJ(1), 1,
+     +                      'WOHLER  ', NADM, CODRET, 'F ' )
+           IF ( NADM .LT. 0 ) THEN
+             VALR (1) = SALTIJ(1)
+             VALR (2) = NADM
+             CALL U2MESG('A','POSTRELE_61',0,' ',0,0,2,VALR)
+           ENDIF
+         ENDIF
+         FUIJ(1) = 1.D0 / NADM
          
+         IF (TYPZ.EQ.'COMB') THEN
+           CALL PRCCM3 (NOMMAT,PARA,SM,SNPQ,SPMECA(2),KEMECA,SALTM,NADM)
+           SALTH =  0.5D0 * PARA(3) * KETHER * SPTHER(2)
+           SALTIJ(2) = SALTM + SALTH
+C --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM : TR. 2
+C
+           CALL LIMEND( NOMMAT,SALTIJ(2),'WOHLER',ENDUR)
+           IF (ENDUR) THEN
+              NADM=R8MAEM()
+           ELSE
+             CALL RCVALE (NOMMAT,'FATIGUE', 1, 'SIGM    ',SALTIJ(2), 1,
+     +                      'WOHLER  ', NADM, CODRET, 'F ' )
+             IF ( NADM .LT. 0 ) THEN
+               VALR (1) = SALTIJ(1)
+               VALR (2) = NADM
+               CALL U2MESG('A','POSTRELE_61',0,' ',0,0,2,VALR)
+             ENDIF
+           ENDIF
+           FUIJ(2) = 1.D0 / NADM
+         ENDIF
+        
       ENDIF
 C
       END

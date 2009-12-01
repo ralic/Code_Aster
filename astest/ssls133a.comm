@@ -1,0 +1,162 @@
+# MODIF  DATE 16/02/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+# TITRE PLAQUE EN FLEXION A EPAISSEUR VARIABLE. MODELISATION SHB8 VARIATION LINEAIRE
+# ssls133a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSLS133A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+#YG : Module d'Young, L: longueur, b: largeur, h1: epaisseur initiale, 
+#h2: epaisseur finale, F: effort
+
+YG=2.E11
+L=100.
+F=1.
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=YG,
+                          NU=0.0,),);
+
+b=100.
+h1=10.
+h2=5. 
+
+PRE_GIBI(UNITE_GIBI=21,UNITE_MAILLAGE=31);
+
+MAIL31=LIRE_MAILLAGE(UNITE=31);
+
+MAIL31=MODI_MAILLAGE(reuse=MAIL31,MAILLAGE=MAIL31,
+ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
+
+MAIL31=DEFI_GROUP(reuse =MAIL31, MAILLAGE=MAIL31,
+                CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
+                               _F(GROUP_MA='SUDEPIM',),
+                               _F(GROUP_MA='LI15',),
+                               _F(GROUP_MA='LI21',),
+                               _F(GROUP_MA='LI87',),),);
+
+CHMAT31=AFFE_MATERIAU(MAILLAGE=MAIL31,
+                  AFFE=_F(TOUT='OUI',MATER=MAT,),);
+
+MODMEC31=AFFE_MODELE(MAILLAGE=MAIL31,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='SHB8',),);
+
+
+CHARG31=AFFE_CHAR_MECA(MODELE=MODMEC31,
+                      DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
+                                   DX=0.0,),
+                                _F(GROUP_MA='LI15',
+                                   DY=0.0,),
+                                _F(GROUP_MA='LI21',
+                                   DZ=0.0,),),
+                      FORCE_ARETE=(_F(GROUP_MA='LI87',
+                                      FZ=F/b,),),
+                           );
+
+RESU31=MECA_STATIQUE(MODELE=MODMEC31,
+                    CHAM_MATER=CHMAT31,
+                    EXCIT=_F(CHARGE=CHARG31,),
+                    );
+
+RESU31=CALC_ELEM(reuse=RESU31, RESULTAT=RESU31,
+
+                    OPTION=('SIEF_ELNO_ELGA','EQUI_ELGA_SIGM','EQUI_ELNO_SIGM'),
+                    );
+
+
+#calcul des deplacements
+Iy1=b*h1*h1*h1/12.
+Iy2=b*h2*h2*h2/12. 
+
+c=(Iy2/Iy1)**(1./3.)-1.
+
+Uz=-F*L*L/(2.*YG*Iy1*c*c*c)
+Uz=Uz*(2.*L*L*c+c*c*L*L-c*c*c*L*L+2.*L*(L+c*L)*log(L/(L+c*L)))
+Uz=Uz/(L+L*c)
+
+#calcul des contraintes au centre de la poutre
+
+x = 5.
+h12 = (h2-h1)*x/L+h1
+Iy12 = b*h12*h12*h12/12.
+
+moment1=(L-x)*F
+# coordonnees des points de Gauss
+z1=0.90618/2.*h12
+z2=0.5385/2.*h12
+z3=0.
+z4=-0.5385/2.*h12
+z5=-0.90618/2.*h12
+
+Sig1=moment1*z1/Iy12
+Sig2=moment1*z2/Iy12
+Sig3=moment1*z3/Iy12
+Sig4=moment1*z4/Iy12
+Sig5=moment1*z5/Iy12
+
+
+TEST_RESU(RESU=(
+            _F(  RESULTAT = RESU31, NOM_CHAM='DEPL', PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
+              GROUP_NO = 'P7',      NOM_CMP = 'DZ',           VALE = Uz),
+
+            _F(   RESULTAT = RESU31, NOM_CHAM='DEPL',  PRECISION = 1.E-2, REFERENCE='ANALYTIQUE',NUME_ORDRE=1,
+              GROUP_NO = 'P8',      NOM_CMP = 'DZ',           VALE = Uz),
+              ),)
+
+TEST_RESU(RESU=(
+            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELGA_DEPL', PRECISION = 1.E-3, POINT=1,
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig1 ),
+            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELGA_DEPL', PRECISION = 1.E-3, POINT=2,
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig2 ),
+            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELGA_DEPL', PRECISION = 1.E-9, POINT=3, CRITERE='ABSOLU',
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig3),
+            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELGA_DEPL', PRECISION = 1.E-3, POINT=4,
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig4 ),
+            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELGA_DEPL', PRECISION = 1.5E-3, POINT=5,
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig5 ),
+            ),)
+
+TEST_RESU(RESU=(
+            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELNO_ELGA', PRECISION = 1.E-3, NOEUD='N22',
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig1 ),
+            _F(  RESULTAT = RESU31, NOM_CHAM='SIEF_ELNO_ELGA', PRECISION = 1.5E-3, NOEUD='N20',
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig5 ),
+            ),)
+
+TEST_RESU(RESU=(
+            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELGA_SIGM', PRECISION = 2.E-2, POINT=1,
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig1 ),
+            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELGA_SIGM', PRECISION = 2.E-2, POINT=2,
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig2 ),
+            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELGA_SIGM', PRECISION = 2.E-2, POINT=3, CRITERE='ABSOLU',
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig3),
+            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELGA_SIGM', PRECISION = 2.E-2, POINT=4,
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig4 ),
+            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELGA_SIGM', PRECISION = 2.E-2, POINT=5,
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig5 ),
+            ),)
+
+TEST_RESU(RESU=(
+            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELNO_SIGM', PRECISION = 1.E-2, NOEUD='N22',
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig1 ),
+            _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELNO_SIGM', PRECISION = 1.E-2, NOEUD='N20',
+            REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig5 ),
+            ),)
+
+FIN()

@@ -20,7 +20,7 @@ C ======================================================================
       INTEGER             IFR, NPARIM
       CHARACTER*(*)       TABLE, FORMAR, LIPAIM(*)
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C TOLE CRS_602
 C      IMPRESSION DE LA TABLE AU FORMAT "TABLEAU"
 C ----------------------------------------------------------------------
@@ -398,7 +398,7 @@ C
             I2 = I2 + 1
          ELSEIF ( TYPEL(1:1) .EQ. 'C' ) THEN
             WRITE(CHAINE(IDEB:IFIN),FORMR) ZC(JLIG+J-1)
-            VR(I3) = ZC(JLIG+J-1)
+            VR(I3) = DBLE(ZC(JLIG+J-1))
             I3 = I3 + 1
          ELSEIF ( TYPEL(1:3) .EQ. 'K80' ) THEN
             CHAINE(IDEB:IFIN) = ZK80(JLIG+J-1)

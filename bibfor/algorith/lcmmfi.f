@@ -5,7 +5,7 @@
         REAL*8 COEFT(NMAT),DY(*),VIND(*),HSR(5,24,24),SQ,EXPBP(*)
         CHARACTER*16 NECRIS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,7 +49,7 @@ C     ----------------------------------------------------------------
 C     ----------------------------------------------------------------
 
       IEI=NBCOMM(IFA,3)
-      NUEISO=COEFT(IEI)
+      NUEISO=NINT(COEFT(IEI))
 
 C--------------------------------------------------------------------
 C     POUR UN NOUVEAU TYPE D'ECROUISSAGE ISOTROPE, AJOUTER UN BLOC IF
@@ -60,7 +60,7 @@ C      IF (NECRIS.EQ.'ECRO_ISOT1') THEN
          R0    =COEFT(IEI+1)
          Q     =COEFT(IEI+2)
          B     =COEFT(IEI+3)
-         NUMHSR=COEFT(IEI+4)
+         NUMHSR=NINT(COEFT(IEI+4))
          
          IF (IEXP.EQ.1) THEN
            DO 10 IR = 1, NBSYS                              
@@ -86,7 +86,7 @@ C      ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
          B1=COEFT(IEI+3)
          Q2=COEFT(IEI+5)
          B2=COEFT(IEI+6)
-         NUMHSR=COEFT(IEI+7)
+         NUMHSR=NINT(COEFT(IEI+7))
 
 
 C        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT

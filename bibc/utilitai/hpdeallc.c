@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF HPDEALLC UTILITAI  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF HPDEALLC UTILITAI  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

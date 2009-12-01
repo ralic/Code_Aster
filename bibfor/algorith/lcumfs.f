@@ -2,7 +2,7 @@
      &                   ISPH,TDT,HINI,HFIN,
      &                   AFPS,BFPS,CFPS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C
       VRSP = CMAT(4)
       RISP = CMAT(5)
 C     VISP = CMAT(6)
-      IFPO = CMAT(13)
+      IFPO = NINT(CMAT(13))
 C
       HVINI = HINI
       HVFIN = HFIN

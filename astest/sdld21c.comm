@@ -1,5 +1,6 @@
-# MODIF  DATE 14/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 27/04/2009   AUTEUR NISTOR I.NISTOR 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
+# sdld21c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,7 +108,7 @@ MODESN=NORM_MODE(MODE=MODES,NORME='MASS_GENE')
 MODE_QZ1=CALC_MODAL(MODELE=MO,
                  CHAM_MATER=CHMATER,
                  CARA_ELEM=CARELEM,
-                 AMORTISEMENT='OUI',
+                 AMORTISSEMENT='OUI',
                  CHARGE=CH,
                  METHODE='QZ',TYPE_QZ='QZ_SIMPLE',
                  CALC_FREQ=_F(OPTION='CENTRE',

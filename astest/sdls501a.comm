@@ -1,9 +1,10 @@
 
-# MODIF  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 24/03/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
 # TITRE  : VIBRATIONS LIBRES D'UNE TOLE ONDULEE
+# sdls501a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,6 +1,6 @@
-      SUBROUTINE NUMECN(MODELE,CHAMP,NU)
+      SUBROUTINE NUMECN(MODELE,CHAMP,NUME)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,14 +18,20 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       24/11/03 (OB): PAR ADHERENCE A NUEFFE.
 C----------------------------------------------------------------------
       IMPLICIT NONE
-      CHARACTER*(*) MODELE,CHAMP,NU
+      CHARACTER*(*) MODELE,CHAMP
+      CHARACTER*(*) NUME
 C ----------------------------------------------------------------------
-C BUT CREER UN NUME_DDL SANS STOCKAGE (POUR CALC_NO)
+C  IN/JXIN   : MODELE : MODELE
+C  IN/JXIN   : CHAMP  : CHAMP "MODELE" POUR LA NUMEROTATION
+C  VAR/JXOUT : NUME   : NUME_EQUA
+C ----------------------------------------------------------------------
+C BUT CREER UN NUME_EQUA (SANS STOCKAGE) (POUR CALC_NO)
+C
+C CETTE ROUTINE ETANT APPELEE DANS UNE BOUCLE SUR LES NUMEROS D'ORDRE
+C ON CHERCHE A LIMITER LE NOMBRE DE NUME DIFFERENTS CREES
+C EN COMPARANT 2 APPELS SUCCESSIFS
 C ----------------------------------------------------------------------
       CHARACTER*32 JEXNUM
       INTEGER ZI
@@ -45,19 +51,24 @@ C ----------------------------------------------------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8 KBID,MO
-      CHARACTER*24 LLIGR
-      CHARACTER*19 PRFCHN,NOMLIG
-      INTEGER IBID,NB1,JLLIGR,I1,I2,IRET,NB2
-      CHARACTER*19 K19BID,NU19
+      CHARACTER*24 LLIGR,LLIGRS,NOOJB
+      CHARACTER*19 PRFCHN,NOMLIG,NUMES
+      INTEGER IBID,NB1,JLLIGR,I1,I2,IRET,NB2,IEXI
+      CHARACTER*14 NU14
+      CHARACTER*19 NU19,K19BID
+      LOGICAL IDENOB,NEWNUM
+      SAVE NUMES
 C DEB ------------------------------------------------------------------
 
       CALL JEMARQ()
-      K19BID = ' '
       MO=MODELE
-
       CALL DISMOI('F','PROF_CHNO',CHAMP,'CHAM_NO',IBID,PRFCHN,IBID)
       CALL JELIRA(PRFCHN//'.LILI','NOMMAX',NB1,KBID)
 
+
+
+C     1. -- CALCUL DE LLIGR : LISTE DES LIGRELS:
+C     ----------------------------------------
       LLIGR = '&&NUMECN.LISTE_LIGREL'
       IF (NB1.EQ.1) THEN
         CALL WKVECT(LLIGR,'V V K24',1,JLLIGR)
@@ -87,13 +98,43 @@ C       ON N'AJOUTE QUE LES LIGRELS QUI EXISTENT ENCORE :
    11   CONTINUE
       END IF
 
-      CALL NUEFFE(LLIGR,'VG',NU,'SANS',' ',K19BID,IBID)
+
+C     2. -- ON SAUVEGARDE LA LISTE DES LIGRELS D'UNE FOIS SUR L'AUTRE
+C           POUR NE PAS RECREER PLUSIEURS FOIS LE MEME NUME_EQUA
+C       => NEWNUM : FAUT-IL CREER UN NOUVEAU NUME_EQUA ?
+C       => LLIGRS : LISTE DES LIGRELS SAUVEGARDEE
+C     ----------------------------------------------------------------
+      LLIGRS= '&&NUMECN.LISTE_LIGREL_S'
+      NEWNUM=.TRUE.
+      CALL JEEXIN(LLIGRS,IEXI)
+      IF (IEXI.GT.0) THEN
+        IF (IDENOB(LLIGR,LLIGRS)) NEWNUM=.FALSE.
+        CALL JEDETR(LLIGRS)
+      ENDIF
+      CALL JEDUPO(LLIGR,'V',LLIGRS,.FALSE.)
+
+
+
+C     3. -- ON CALCULE NU14 SI NECESSAIRE :
+C     -------------------------------------
+      IF (NEWNUM) THEN
+        NOOJB='12345678.00000.NUME.PRNO'
+        CALL GNOMSD ( NOOJB,10,14)
+        NU14=NOOJB(1:14)
+
+        K19BID=' '
+        CALL NUEFFE(LLIGR,'VG',NU14,'SANS',' ',K19BID,IBID)
+        NU19=NU14
+        CALL JEDETR(NU19//'.ADLI')
+        CALL JEDETR(NU19//'.ADNE')
+        NUME=NU14//'.NUME'
+        NUMES=NUME
+      ELSE
+        NUME=NUMES
+      ENDIF
+
+
 
       CALL JEDETR(LLIGR)
-      NU19=NU
-      CALL JEDETR(NU19//'.ADLI')
-      CALL JEDETR(NU19//'.ADNE')
-
-
       CALL JEDEMA()
       END

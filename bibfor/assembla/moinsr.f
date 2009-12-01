@@ -6,7 +6,7 @@
       CHARACTER*(*) NOSUIV,NOIP
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C----------------------------------------------------------------------
 C        --- LA CHAINE J EST VIDE. ON L'INITIALISE PAR IL(1:N) ---
         ZI(IDIICH-1+J) = IILIB
         IF ((IILIB+N).GE.IIMAX) THEN
-          IIMAX = 1.5D0*IIMAX
+          IIMAX = NINT(1.5D0*IIMAX)
           CALL JUVECA(NOIP,IIMAX)
           CALL JEVEUO(NOIP,'E',IDIP)
           CALL JUVECA(NOSUIV,IIMAX)
@@ -100,7 +100,7 @@ C           INSERTION DE IL(1) EN DEBUT DE CHAINE
           II1 = IILIB
           KIL = 2
           IF ((IILIB+1).GE.IIMAX) THEN
-            IIMAX = 1.5D0*IIMAX
+            IIMAX = NINT(1.5D0*IIMAX)
             CALL JUVECA(NOIP,IIMAX)
             CALL JEVEUO(NOIP,'E',IDIP)
             CALL JUVECA(NOSUIV,IIMAX)
@@ -161,7 +161,7 @@ C                  ENTRE CES 2 ELEMENTS
               ZI(IDSUIV-1+II1) = KIP
               ZI(IDIP-1+IILIB) = ZI(IDIL-1+KIL)
               IF ((IILIB+1).GE.IIMAX) THEN
-                IIMAX = 1.5D0*IIMAX
+                IIMAX = NINT(1.5D0*IIMAX)
                 CALL JUVECA(NOIP,IIMAX)
                 CALL JEVEUO(NOIP,'E',IDIP)
                 CALL JUVECA(NOSUIV,IIMAX)
@@ -179,7 +179,7 @@ C              LA CHAINE J A ETE ENTIEREMENT PARCOURUE.
 C              INSERTION DES ELEMENT RESTANT DE IL EN FIN DE CHAINE  .
             ZI(IDSUIV-1+II1) = IILIB
             IF ((IILIB+1+N-KIL).GE.IIMAX) THEN
-              IIMAX = 1.5D0*IIMAX
+              IIMAX = NINT(1.5D0*IIMAX)
               CALL JUVECA(NOIP,IIMAX)
               CALL JEVEUO(NOIP,'E',IDIP)
               CALL JUVECA(NOSUIV,IIMAX)

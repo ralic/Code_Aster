@@ -1,5 +1,6 @@
-# MODIF  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / UNITAIRE
+# rccm01b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,99 +22,76 @@
 
 DEBUT(CODE=_F(NOM='RCCM01B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-#Definition du materiau
-WOHLER=DEFI_FONCTION(
-             NOM_PARA='SIGM',
-   VALE=(      138.,     1000000.,
-               152.,      500000.,
-               165.,      200000.,
-               180.,      100000.,
-               200.,       50000.,
-               250.,       20000.,
-               295.,       12000.,
-               305.,       10000.,
-               340.,        5000.,
-               430.,        2000.,
-               540.,        1000.,
-               690.,         500.,
-               930.,         200.,
-              1210.,         100.,
-              1590.,          50.,
-              2210.,          20.,
-              2900.,          10.,
-               ),
-               INTERPOL='LOG',
-            PROL_DROITE='LINEAIRE',
-            PROL_GAUCHE='LINEAIRE' )
+
+COURFATA = FORMULE(NOM_PARA='SIGM',VALE='5.E5/SIGM ')
+
+L_INST=DEFI_LIST_REEL(  DEBUT=1.,
+                        INTERVALLE=_F(  JUSQU_A = 1000., PAS = 1.) )
+                           
+FWOHLER=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,
+                          NOM_PARA = 'SIGM',PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='CONSTANT',
+                          NOM_RESU='NADM'       )
 
 MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
-                    FATIGUE=_F( WOHLER = WOHLER,
-                                E_REFE = 200000.),
-                    RCCM=_F(  M_KE = 1.7,
-                              N_KE = 0.3,
-                              SM = 200.,
+                    FATIGUE=_F(  WOHLER = FWOHLER, E_REFE = 200000.),
+                    RCCM=_F(  M_KE = 2.,
+                              N_KE = 0.2,
+                              SM = 2000.,
                               SY_02 = 200.)
                                )
 
-#Relecture des tables de contraintes
-TBTHME = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
-                     NUME_TABLE=1,)
+# CONTRAINTES "MX"    (SIG POUR ASBSCUR=0)            
+T_MX = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=1,)
 
-TBTHER = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
-                     NUME_TABLE=2,)
+# CONTRAINTES "MY"     (SIG POUR ASBSCUR=0.5)                           
+T_MY = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=2,)
+                      
+# CONTRAINTES "MZ"     (SIG POUR ASBSCUR=1)                             
+T_MZ = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=3,)
 
-TBTHM2 = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
-                     NUME_TABLE=3,)
+#  CONTRAINTES "PRES"                    
+T_PRES = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=4,)
 
-TBTHE2 = LIRE_TABLE (UNITE=36, FORMAT='ASTER',SEPARATEUR=' ',
-                     NUME_TABLE=4,)
+#  CONTRAINTES THERMIQUE (SITUATION 1)                 
+T_THER = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=5,)
 
-#--------------------------------------------------------------------------------
-#   option = PM_PB
-#   chargement unitaire - Validation PM_PB
-#--------------------------------------------------------------------------------
+#  CONTRAINTES THERMIQUE (SITUATION 3)                 
+T_THER2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=6,)
 
-UNIPM=POST_RCCM( MATER=MAT,
+# VALIDATION DU CALCUL DE PM ET PB
+PMPB1=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
                  TYPE_RESU_MECA='UNITAIRE',
                  OPTION='PM_PB',
                  INFO=2,
                  CHAR_MECA=(
-                  _F(NUME_CHAR=1,
-                     NOM_CHAR='NUL',
-                     FX=0.0,
-                     FY=0.0,
-                     FZ=0.0,
-                     MX=0.0,
-                     MY=0.0,
-                     MZ=0.0,),
-                  _F(NUME_CHAR=2,
-                     NOM_CHAR='UNIT',
-                     FX=2.0,
-                     FY=0.0,
-                     FZ=0.0,
-                     MX=0.0,
-                     MY=0.0,
-                     MZ=0.0,),),
-                  RESU_MECA_UNIT=(
-                   _F(TABL_FX=TBTHME,
-                      TABL_FY=TBTHME,
-                      TABL_FZ=TBTHME,
-                      TABL_MX=TBTHME,
-                      TABL_MY=TBTHME,
-                      TABL_MZ=TBTHME,
-                      TABL_PRES=TBTHME,),),
-                  RESU_THER=(
-                   _F(NUME_RESU_THER=1,
-                      TABL_RESU_THER=TBTHER, ),
-                   _F(NUME_RESU_THER=2,
-                      TABL_RESU_THER=TBTHE2, ),
-                  ),
-                  SITUATION=(
+                   _F(NUME_CHAR=1,
+                      NOM_CHAR='ETAT A - SITU1',
+                      MX=1.0,  MY=0.5,  MZ=0.0,),
+                   _F(NUME_CHAR=2,
+                      NOM_CHAR='ETAT B - SITU1',
+                      MX=1.0,  MY=2.0,  MZ=3.0,),),
+                 RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
                   _F(NB_OCCUR=1,
                      NUME_SITU=1,
-                     NOM_SITU='Unitaire FX',
+                     NOM_SITU='Situation 1',
                      NUME_GROUPE=1,
-                     NUME_RESU_THER = 1,
                      CHAR_ETAT_A=1,
                      CHAR_ETAT_B=2,
                      PRES_A=0,
@@ -121,91 +99,176 @@ UNIPM=POST_RCCM( MATER=MAT,
                      TEMP_REF_A=20.0,
                      TEMP_REF_B=20.0,),),);
 
-#---le PM_PB
-TEST_TABLE(    TABLE=UNIPM,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PM_MAX',
-                      VALE=200.        )
-TEST_TABLE(    TABLE=UNIPM,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PB_MAX',
-                  CRITERE='ABSOLU',
-                      VALE= 0.         )
-TEST_TABLE(    TABLE=UNIPM,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PMPB_MAX',
-                      VALE= 200.       )
+IMPR_TABLE(    TABLE=PMPB1,)        
 
-TEST_TABLE(    TABLE=UNIPM,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PM_MAX',
-                      VALE=200.        )
-TEST_TABLE(    TABLE=UNIPM,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PB_MAX',
-                  CRITERE='ABSOLU',
-                      VALE= 0.         )
-TEST_TABLE(    TABLE=UNIPM,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PMPB_MAX',
-                      VALE= 200.       )
+PMPB2=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='PM_PB',
+                 INFO=1,
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=0.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=2.0,  MY=0.5,  MZ=-1.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 SITUATION= _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),
+                  );
 
-#--------------------------------------------------------------------------------
-#   option = SN*
-#   chargement unitaire - Validation SN*
-#--------------------------------------------------------------------------------
+IMPR_TABLE(    TABLE=PMPB2,)  
 
-UNISN=POST_RCCM( MATER=MAT,
+# VALIDATION DU CALCUL DE SN ET DE SN*
+SN1=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
                  TYPE_RESU_MECA='UNITAIRE',
                  OPTION='SN',
                  INFO=2,
                  CHAR_MECA=(
                   _F(NUME_CHAR=1,
-                     NOM_CHAR='NUL',
-                     FX=0.0,
-                     FY=0.0,
-                     FZ=0.0,
-                     MX=0.0,
-                     MY=0.0,
-                     MZ=0.0,),
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
                   _F(NUME_CHAR=2,
-                     NOM_CHAR='UNIT',
-                     FX=2.0,
-                     FY=0.0,
-                     FZ=0.0,
-                     MX=0.0,
-                     MY=0.0,
-                     MZ=0.0,),),
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),),
                   RESU_MECA_UNIT=(
-                   _F(TABL_FX=TBTHME,
-                      TABL_FY=TBTHME,
-                      TABL_FZ=TBTHME,
-                      TABL_MX=TBTHME,
-                      TABL_MY=TBTHME,
-                      TABL_MZ=TBTHME,
-                      TABL_PRES=TBTHME,),),
-                  RESU_THER=(
-                   _F(NUME_RESU_THER=1,
-                      TABL_RESU_THER=TBTHER, ),
-                   _F(NUME_RESU_THER=2,
-                      TABL_RESU_THER=TBTHE2, ),
-                  ),
-                  SITUATION=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
                   _F(NB_OCCUR=1,
                      NUME_SITU=1,
-                     NOM_SITU='Unitaire FX',
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),),);
+
+IMPR_TABLE(    TABLE=SN1,)        
+
+SN2=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='SN',
+                 INFO=2,
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=0.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=2.0,  MY=0.5,  MZ=-1.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 SITUATION= _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),
+                  );
+
+IMPR_TABLE(    TABLE=SN2,)  
+
+SN3=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='SN',
+                 INFO=1,
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=0.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=2.0,  MY=0.5,  MZ=-1.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION= _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 3',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     NUME_RESU_THER = 2,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),
+                  );
+
+IMPR_TABLE(    TABLE=SN3,) 
+
+# VALIDATION DU CALCUL EN FATIGUE : SITUATION 1 + SITUATION 2
+FAT12_A = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=0.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=2.0,  MY=0.5,  MZ=-1.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
                      NUME_GROUPE=1,
                      NUME_RESU_THER = 1,
                      CHAR_ETAT_A=1,
@@ -213,82 +276,52 @@ UNISN=POST_RCCM( MATER=MAT,
                      PRES_A=0,
                      PRES_B=0,
                      TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
                      TEMP_REF_B=20.0,),),);
+                     
+IMPR_TABLE(    TABLE=FAT12_A,) 
 
-#---le SN
-TEST_TABLE(    TABLE=UNISN,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN_MAX',
-                      VALE=200.        )
-
-TEST_TABLE(    TABLE=UNISN,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN_MAX',
-                      VALE=200.        )
-
-#---le SN*
-TEST_TABLE(    TABLE=UNISN,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN*_MAX',
-                      VALE=200.          )
-
-TEST_TABLE(    TABLE=UNISN,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN*_MAX',
-                      VALE=200.          )
-
-#--------------------------------------------------------------------------------
-#   option = 'FATIGUE'
-#   chargement unitaire - Validation FATIGUE
-#--------------------------------------------------------------------------------
-
-UNIFA=POST_RCCM( MATER=MAT,
+FAT12_B = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
                  TYPE_RESU_MECA='UNITAIRE',
                  OPTION='FATIGUE',
                  INFO=2,
+                 TYPE_KE='KE_MECA',
                  CHAR_MECA=(
                   _F(NUME_CHAR=1,
-                     NOM_CHAR='NUL',
-                     FX=0.0,
-                     FY=0.0,
-                     FZ=0.0,
-                     MX=0.0,
-                     MY=0.0,
-                     MZ=0.0,),
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
                   _F(NUME_CHAR=2,
-                     NOM_CHAR='UNIT',
-                     FX=2.0,
-                     FY=0.0,
-                     FZ=0.0,
-                     MX=0.0,
-                     MY=0.0,
-                     MZ=0.0,),),
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=0.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=2.0,  MY=0.5,  MZ=-1.0,),),
                   RESU_MECA_UNIT=(
-                   _F(TABL_FX=TBTHME,
-                      TABL_FY=TBTHME,
-                      TABL_FZ=TBTHME,
-                      TABL_MX=TBTHME,
-                      TABL_MY=TBTHME,
-                      TABL_MZ=TBTHME,
-                      TABL_PRES=TBTHME,),),
-                  RESU_THER=(
-                   _F(NUME_RESU_THER=1,
-                      TABL_RESU_THER=TBTHER, ),
-                   _F(NUME_RESU_THER=2,
-                      TABL_RESU_THER=TBTHE2, ),
-                  ),
-                  SITUATION=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
                   _F(NB_OCCUR=1,
                      NUME_SITU=1,
-                     NOM_SITU='Unitaire FX',
+                     NOM_SITU='Situation 1',
                      NUME_GROUPE=1,
                      NUME_RESU_THER = 1,
                      CHAR_ETAT_A=1,
@@ -296,203 +329,321 @@ UNIFA=POST_RCCM( MATER=MAT,
                      PRES_A=0,
                      PRES_B=0,
                      TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),
+                  _F(NB_OCCUR=10,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
                      TEMP_REF_B=20.0,),),);
+                     
+IMPR_TABLE(    TABLE=FAT12_B,) 
 
-#---le PM
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PM_MAX',
-                      VALE=200.        )
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PM_MAX',
-                      VALE=200.        )
-#---le PB
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PB_MAX',
-                  CRITERE='ABSOLU',
-                      VALE= 0.         )
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PB_MAX',
-                  CRITERE='ABSOLU',
-                      VALE= 0.         )
-#---le PMPB
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PMPB_MAX',
-                      VALE= 200.       )
-
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PMPB_MAX',
-                      VALE= 200.       )
-
-#---le SN
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN_MAX',
-                      VALE=200.        )
-
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN_MAX',
-                      VALE=200.        )
-#---le SN*
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN*_MAX',
-                      VALE=200.          )
-
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN*_MAX',
-                      VALE=200.          )
-
-#---le SP
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SP_MAX',
-                      VALE=200.          )
-
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SP_MAX',
-                      VALE=200.          )
-
-#---le SALT
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SALT_MAX',
-                      VALE=100.          )
-
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SALT_MAX',
-                      VALE=100.          )
-
-#---le FACT_USAGE
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'ORIG'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='FACT_USAGE_CUMU',
-                      VALE=4.24242E-07  )
-
-TEST_TABLE(    TABLE=UNIFA,
-               FILTRE=( _F(  NOM_PARA = 'LIEU',
-                             VALE_K   = 'EXTR'),),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='FACT_USAGE_CUMU',
-                      VALE=4.24242E-07  )
-
-
-#--------------------------------------------------------------------------------
-#   option = 'FATIGUE'
-#   chargement unitaire - Validation FATIGUE
-#--------------------------------------------------------------------------------
-
-UNIF2=POST_RCCM( MATER=MAT,
+# VALIDATION DU CALCUL EN FATIGUE : SITUATION 1 + SITUATION 3
+FAT13_A = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
                  TYPE_RESU_MECA='UNITAIRE',
                  OPTION='FATIGUE',
                  INFO=2,
+                 TYPE_KE='KE_MECA',
                  CHAR_MECA=(
                   _F(NUME_CHAR=1,
-                     NOM_CHAR='NUL',
-                     FX=0.0,
-                     FY=0.0,
-                     FZ=0.0,
-                     MX=0.0,
-                     MY=0.0,
-                     MZ=0.0,),
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
                   _F(NUME_CHAR=2,
-                     NOM_CHAR='UNIT',
-                     FX=2.0,
-                     FY=0.0,
-                     FZ=0.0,
-                     MX=0.0,
-                     MY=0.0,
-                     MZ=0.0,),),
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=0.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=2.0,  MY=0.5,  MZ=-1.0,),),
                   RESU_MECA_UNIT=(
-                   _F(TABL_FX=TBTHME,
-                      TABL_FY=TBTHME,
-                      TABL_FZ=TBTHME,
-                      TABL_MX=TBTHME,
-                      TABL_MY=TBTHME,
-                      TABL_MZ=TBTHME,
-                      TABL_PRES=TBTHME,),),
-                  RESU_THER=(
-                   _F(NUME_RESU_THER=1,
-                      TABL_RESU_THER=TBTHME, ),
-                  ),
-                  SITUATION=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
                   _F(NB_OCCUR=1,
                      NUME_SITU=1,
-                     NOM_SITU='Unitaire FX',
+                     NOM_SITU='Situation 1',
                      NUME_GROUPE=1,
                      NUME_RESU_THER = 1,
                      CHAR_ETAT_A=1,
                      CHAR_ETAT_B=2,
-                     PRES_A=0.,
-                     PRES_B=1.,
-                     TEMP_REF_A=0.0,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=3,
+                     NOM_SITU='Situation 3',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     NUME_RESU_THER = 2,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
                      TEMP_REF_B=20.0,),),);
 
-TEST_TABLE(    TABLE=UNIF2,
-               FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K   = 'EXTR'),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SY',
-                      VALE= 200.       )
+IMPR_TABLE(    TABLE=FAT13_A,) 
 
-TEST_TABLE(    TABLE=UNIF2,
-               FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K   = 'EXTR'),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SIGM_M_PRES',
-                      VALE= 100.       )
+FAT13_B = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='FATIGUE',
+                 INFO=1,
+                 TYPE_KE='KE_MECA',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=0.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=2.0,  MY=0.5,  MZ=-1.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),
+                  _F(NB_OCCUR=10,
+                     NUME_SITU=3,
+                     NOM_SITU='Situation 3',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     NUME_RESU_THER = 2,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),),);
 
-TEST_TABLE(    TABLE=UNIF2,
-               FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K   = 'EXTR'),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='VALE_MAXI_LINE',
-                      VALE= 400.       )
+IMPR_TABLE(    TABLE=FAT13_B,) 
 
-TEST_TABLE(    TABLE=UNIF2,
-               FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K   = 'EXTR'),
-                 REFERENCE='ANALYTIQUE',
-                  NOM_PARA='VALE_MAXI_PARAB',
-                      VALE= 540.       )
+
+
+
+########### A METTRE DANS COM2 ################
+
+#-------------------------------------------------------------------------------
+#   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
+#--------------------------------------------------------------------------------
+# PM_PB - SITUATION 1
+TEST_TABLE(TABLE=PMPB1,
+           REFERENCE='ANALYTIQUE',
+           TYPE_TEST = 'MAX',
+           NOM_PARA='PM_MAX',
+           VALE=200.  )
+           
+TEST_TABLE(TABLE=PMPB1,
+           REFERENCE='ANALYTIQUE',
+           TYPE_TEST = 'MAX',
+           NOM_PARA='PB_MAX',
+           VALE=100.  )
+           
+TEST_TABLE(TABLE=PMPB1,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='PMPB_MAX',
+           VALE=100.  )
+
+TEST_TABLE(TABLE=PMPB1,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='PMPB_MAX',
+           VALE=300.  )
+
+# PM_PB - SITUATION 2
+TEST_TABLE(TABLE=PMPB2,
+           REFERENCE='ANALYTIQUE',
+           TYPE_TEST = 'MAX',
+           NOM_PARA='PM_MAX',
+           VALE=50.  )
+           
+TEST_TABLE(TABLE=PMPB2,
+           REFERENCE='ANALYTIQUE',
+           TYPE_TEST = 'MAX',
+           NOM_PARA='PB_MAX',
+           VALE=150.  )
+           
+TEST_TABLE(TABLE=PMPB2,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='PMPB_MAX',
+           VALE=200.  )
+
+TEST_TABLE(TABLE=PMPB2,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='PMPB_MAX',
+           VALE=100.  )
+
+# SN - SITUATION 1
+TEST_TABLE(TABLE=SN1,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='SN_MAX',
+           VALE=150.  )
+
+TEST_TABLE(TABLE=SN1,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='SN_MAX',
+           VALE=725.  )
+           
+TEST_TABLE(TABLE=SN1,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='SN*_MAX',
+           VALE=200.  )
+           
+TEST_TABLE(TABLE=SN1,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='SN*_MAX',
+           VALE=575.  )
+
+# SN - SITUATION 2
+TEST_TABLE(TABLE=SN2,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='SN_MAX',
+           VALE=200.  )
+
+TEST_TABLE(TABLE=SN2,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='SN_MAX',
+           VALE=100.  )
+           
+# SN - SITUATION 3
+TEST_TABLE(TABLE=SN3,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='SN_MAX',
+           VALE=250.  )
+
+TEST_TABLE(TABLE=SN3,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='SN_MAX',
+           VALE=150.  )
+           
+TEST_TABLE(TABLE=SN3,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='SN*_MAX',
+           VALE=200.  )
+           
+TEST_TABLE(TABLE=SN3,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='SN*_MAX',
+           VALE=100.  )           
+
+# FATIGUE - SITUATION 1 + SITUATION 2
+TEST_TABLE(TABLE=FAT12_A,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=4.E-4  )
+           
+TEST_TABLE(TABLE=FAT12_A,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=1.2E-3  )
+           
+TEST_TABLE(TABLE=FAT12_B,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=2.2E-3  )
+           
+TEST_TABLE(TABLE=FAT12_B,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=2.1E-3  )
+
+# FATIGUE - SITUATION 1 + SITUATION 3
+TEST_TABLE(TABLE=FAT13_A,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=4.5E-4  )
+           
+TEST_TABLE(TABLE=FAT13_A,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=8.5E-4  )
+           
+TEST_TABLE(TABLE=FAT13_B,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=2.7E-3  )
+           
+TEST_TABLE(TABLE=FAT13_B,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=2.2E-3  )
+
 
 FIN();

@@ -1,7 +1,8 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE TREILLIS 3D SANS RENFORT
+# demo004a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG

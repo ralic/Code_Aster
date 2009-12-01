@@ -12,7 +12,7 @@ C       POUR GAGNER EN TEMPS CPU
         CHARACTER*(*)  FAMI
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -196,13 +196,13 @@ C            NOMFAM=CPMONO(INDCP+5*(IFA-1)+1)
             NECRCI=CPMONO(INDCP+5*(IFA-1)+5)
 
 C            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
-            NBSYS=TOUTMS(IPHAS,5,IFA,1)
+            NBSYS=NINT(TOUTMS(IPHAS,5,IFA,1))
 
 C           indice de la famille IFA
             INDFA=INDPHA+IFA
             
             IFL=NBCOMM(INDFA,1)
-            NUECOU=COEFT(IFL)
+            NUECOU=NINT(COEFT(IFL))
 
             DO 7 IS=1,NBSYS
                NUMS=NUMS+1

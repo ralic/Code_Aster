@@ -1,4 +1,4 @@
-#@ MODIF calc_modal_ops Macro  DATE 14/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF calc_modal_ops Macro  DATE 27/04/2009   AUTEUR NISTOR I.NISTOR 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 #-*- coding: iso-8859-1 -*-
 
 
-def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISEMENT,
+def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISSEMENT,
                         SOLVEUR,CHARGE,INST,METHODE,CALC_FREQ, MODE_RIGIDE,
                         VERI_MODE,INFO,**args):
   """
@@ -47,13 +47,13 @@ def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISEMENT,
   if CARA_ELEM  != None: motsclece['CARA_ELEM']   =CARA_ELEM
   if INST       != None: motsclece['INST']        =INST
 
-  #c'est avec le mot cle AMORTISEMENT qu'on decide si on calcule la matrice C
-  # d'amortisement 
+  #c'est avec le mot cle AMORTISSEMENT qu'on decide si on calcule la matrice C
+  # d'amortissement 
 
   
   _a=CALC_MATR_ELEM(MODELE=MODELE, OPTION='RIGI_MECA', **motsclece)
   _b=CALC_MATR_ELEM(MODELE=MODELE, OPTION='MASS_MECA', **motsclece)
-  if AMORTISEMENT=='OUI':  
+  if AMORTISSEMENT=='OUI':  
     _c=CALC_MATR_ELEM(MODELE=MODELE, OPTION='AMOR_MECA',
                        RIGI_MECA=_a, MASS_MECA=_b,**motsclece)
 
@@ -68,7 +68,7 @@ def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISEMENT,
   #assemblages des matrices 
   _rigas=ASSE_MATRICE(MATR_ELEM=_a,NUME_DDL=_num)
   _masas=ASSE_MATRICE(MATR_ELEM=_b,NUME_DDL=_num)
-  if AMORTISEMENT=='OUI':     
+  if AMORTISSEMENT=='OUI':     
     _amoras=ASSE_MATRICE(MATR_ELEM=_c,NUME_DDL=_num)
 
   #lancement du calcul des modes propres
@@ -143,14 +143,14 @@ def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISEMENT,
  
   self.DeclareOut('modes',self.sd)
   
-  if AMORTISEMENT=='NON':
+  if AMORTISSEMENT=='NON':
      modes=MODE_ITER_SIMULT(MATR_A  =_rigas,
                             MATR_B  =_masas,
                             METHODE =METHODE,
                             OPTION  =mode_rigi,
                             INFO    =INFO,
                             **motscit)
-  elif AMORTISEMENT=='OUI':
+  elif AMORTISSEMENT=='OUI':
      modes=MODE_ITER_SIMULT(MATR_A  =_rigas,
                             MATR_B  =_masas,
                             MATR_C  =_amoras,

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
-      INTEGER VALI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -46,7 +45,6 @@ C
      &             I, J, K, L, NDIM, JCONT, NCMP, JCORP
       PARAMETER  ( NCMP = 6 )
       REAL*8       PREC, MOMEN0, MOMEN1
-      REAL*8 VALR
       COMPLEX*16   CBID
       LOGICAL      EXIST
       CHARACTER*8  K8B, CRIT, NOCMP(NCMP), TBSIG(13)

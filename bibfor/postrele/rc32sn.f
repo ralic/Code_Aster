@@ -8,7 +8,7 @@
       CHARACTER*(*)       TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF POSTRELE  DATE 24/03/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,13 +60,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                              ZK32
       CHARACTER*80                                       ZK80
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32    JEXNOM, JEXNUM, JEXATR
+      CHARACTER*32    JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      ICMP, JSIGU, ICMPS, INDICE, NBINST, LONG, I1,
-     +             NBTHEP, NBTHEQ, JTHER, ITH, NUMTH, JTHUN, JORIG
-      REAL*8       PIJ, MIJ(12), SN, SIJ(6), SIGU, SNMA(6), SNMI(6),
-     +             SQMA(6), SQMI(6), SN1, SN2
+      INTEGER      ICMP, JSIGU, ICMPS, NBINST, LONG, I1,
+     +             NBTHEP, NBTHEQ, JTHER, ITH, NUMTH, JTHUN,
+     +             INDICP,INDICQ
+      REAL*8       PIJ, MIJ(12), SN, SIJ(6), SIGU,
+     +             SQMA(6), SQMI(6), SN1, SN2, SNTH(6)
       CHARACTER*4  TYP2
       CHARACTER*8  K8B, TYPE, KNUMES, KNUMET 
 C DEB ------------------------------------------------------------------
@@ -112,7 +113,7 @@ C
      &                                          'LONUTI', NBTHEP, K8B )
          IF ( NBTHEP .EQ. 0 ) THEN
             NBINST = 0
-            INDICE = 1
+            INDICP = 1
             IF( TYPE .EQ.  'SN_COMB' .OR.
      &          TYPE .EQ. 'SN*_COMB' ) THEN
                TYP2 = 'COMB'
@@ -122,15 +123,11 @@ C
             ENDIF
             IF ( SEISME ) THEN
                CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
-     &                                          NBINST, ZR(INDICE), SN )
+     &                                          NBINST, ZR(INDICP), SN )
             ELSE
-               CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
+               CALL RC32ST ( SIJ, NBINST, ZR(INDICP), SN )
             END IF
             SNIJ = MAX( SNIJ , SN )
-            DO 12 I1 = 1,6
-               SNMI(I1) = SIJ(I1)
-               SNMA(I1) = SIJ(I1)
- 12         CONTINUE
          ELSE
             CALL JEVEUO ( JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),
      &                                                     'L', JTHER )
@@ -144,30 +141,29 @@ C
      &                                                     'L', JTHUN )
                NBINST = 2
                IF( TYPE .EQ. 'SN_COMB' ) THEN
-                 INDICE = JTHUN + 6*NBINST
+                 INDICP = JTHUN + 6*NBINST
                  TYP2 = 'COMB'
                ELSEIF( TYPE .EQ. 'SN*_COMB' ) THEN
-                 INDICE = JTHUN + 12*NBINST
+                 INDICP = JTHUN + 12*NBINST
                  TYP2 = 'COMB'
                ELSEIF( TYPE .EQ. 'SN_SITU' ) THEN
-                 INDICE = JTHUN + 6*NBINST
+                 INDICP = JTHUN + 6*NBINST
                  TYP2 = 'SITU'
                ELSEIF( TYPE .EQ. 'SN*_SITU' ) THEN
-                 INDICE = JTHUN + 12*NBINST
+                 INDICP = JTHUN + 12*NBINST
                  TYP2 = 'SITU'
                ENDIF
+               DO 14 I1 = 1,6
+                 SNTH(I1) = ZR(INDICP+6+I1-1) -ZR(INDICP+I1-1)
+ 14            CONTINUE
                IF ( SEISME ) THEN
                  CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
-     &                                          NBINST, ZR(INDICE), SN )
+     &                                          NBINST, SNTH, SN )
                ELSE
                  IF (TYP2.EQ.'SITU') THEN
-                   CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
+                   CALL RC32ST ( SIJ, NBINST, SNTH, SN )
                  ELSE
                    SN = 0.D0
-                   DO 14 I1 = 1,6
-                     SNMI(I1) = SIJ(I1) + ZR(INDICE+I1-1)
-                     SNMA(I1) = SIJ(I1) + ZR(INDICE+6+I1-1)
- 14                CONTINUE
                  ENDIF
                END IF
                SNIJ = MAX( SNIJ , SN )
@@ -185,7 +181,7 @@ C
      &                                          'LONUTI', NBTHEQ, K8B )
          IF ( NBTHEQ .EQ. 0 ) THEN
             NBINST = 0
-            INDICE = 1
+            INDICQ = 1
             IF( TYPE .EQ.  'SN_COMB' .OR.
      &          TYPE .EQ. 'SN*_COMB' ) THEN
                TYP2 = 'COMB'
@@ -195,15 +191,18 @@ C
             ENDIF
             IF ( SEISME ) THEN
                CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78), NBINST, 
-     &                                                ZR(INDICE), SN )
+     &                                                ZR(INDICQ), SN )
             ELSE
-               CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
+               CALL RC32ST ( SIJ, NBINST, ZR(INDICQ), SN )
             END IF
             SNIJ = MAX( SNIJ , SN )
             IF ( TYP2.EQ.'COMB' .AND. NBTHEP.NE.0 ) THEN
-               CALL RCTRES ( SNMI, SN1 )
-               CALL RCTRES ( SNMA, SN2 )
-               SN = MAX( SN1, SN2 )
+               IF (SEISME) THEN
+                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
+     &                                      NBINST,SNTH, SN )
+               ELSE
+                 CALL RC32ST ( SIJ, 2, SNTH, SN )
+               ENDIF
                SNIJ = MAX( SNIJ , SN )
             END IF
          ELSE
@@ -219,34 +218,47 @@ C
      &                                                     'L', JTHUN )
                NBINST = 2
                IF( TYPE .EQ.  'SN_COMB' ) THEN
-                 INDICE = JTHUN + 6*NBINST
+                 INDICQ = JTHUN + 6*NBINST
                  TYP2 = 'COMB'
                ELSEIF( TYPE .EQ. 'SN*_COMB' ) THEN
-                 INDICE = JTHUN + 12*NBINST
+                 INDICQ = JTHUN + 12*NBINST
                  TYP2 = 'COMB'
                ELSEIF( TYPE .EQ. 'SN_SITU' ) THEN
-                 INDICE = JTHUN + 6*NBINST
+                 INDICQ = JTHUN + 6*NBINST
                  TYP2 = 'SITU'
                ELSEIF( TYPE .EQ. 'SN*_SITU' ) THEN
-                 INDICE = JTHUN + 12*NBINST
+                 INDICQ = JTHUN + 12*NBINST
                  TYP2 = 'SITU'
                ENDIF
-               IF ( SEISME ) THEN
-                  CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
-     &                                          NBINST, ZR(INDICE), SN )
-               ELSE
-                 IF (TYP2.EQ.'SITU') THEN
-                   CALL RC32ST ( TYP2, SIJ, NBINST, ZR(INDICE), SN )
+               DO 24 I1 = 1,6
+                 SNTH(I1) = ZR(INDICQ+6+I1-1) -ZR(INDICQ+I1-1)
+ 24            CONTINUE
+               IF (TYP2.EQ.'SITU') THEN
+                 IF (SEISME) THEN
+                   CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
+     &                                         NBINST, SNTH, SN )
                  ELSE
-                   DO 114 I1 = 1,6
-                     SQMI(I1) = SNMA(I1) - ZR(INDICE+I1-1)
-                     SQMA(I1) = SNMI(I1) - ZR(INDICE+6+I1-1)
- 114               CONTINUE
-                   CALL RCTRES ( SQMI, SN1 )
-                   CALL RCTRES ( SQMA, SN2 )
-                   SN = MAX( SN1, SN2 )
+                   CALL RC32ST ( SIJ, NBINST, SNTH, SN )
                  ENDIF
-               END IF
+               ELSE
+                 IF ( NBTHEP .NE. 0 ) THEN
+                   DO 114 I1 = 1,6
+                     SQMI(I1) = ZR(INDICP+I1-1) - ZR(INDICQ+6+I1-1)
+                     SQMA(I1) = ZR(INDICP+6+I1-1) - ZR(INDICQ+I1-1)
+ 114               CONTINUE
+                   IF (SEISME) THEN
+                     CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
+     &                                       NBINST, SQMI, SN1 )
+                     CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU+78),  
+     &                                       NBINST, SQMA, SN2 )
+                     SN = MAX( SN1, SN2 )
+                   ELSE
+                     CALL RC32ST ( SIJ, NBINST, SQMI, SN1 )
+                     CALL RC32ST ( SIJ, NBINST, SQMA, SN2 )
+                     SN = MAX( SN1, SN2 )
+                   ENDIF
+                 ENDIF
+               ENDIF             
                SNIJ = MAX( SNIJ , SN )
  110        CONTINUE
          END IF

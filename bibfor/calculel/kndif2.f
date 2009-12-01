@@ -4,7 +4,7 @@
       CHARACTER*(*)       LK1(L1), LK2(L2), LK3(L3)
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 26/01/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
-C RESPONSABLE REZETTE C.REZETTE
+C RESPONSABLE PELLET J.PELLET
 C
 C BUT: DIFFERENCE ENTRE 2 LISTES   LK3 = LK1 - LK2
 C      CET UTILITAIRE EST A UTILISER LORSQUE LES LISTES LK1 ET LK2

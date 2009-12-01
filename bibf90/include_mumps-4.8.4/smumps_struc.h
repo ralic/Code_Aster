@@ -253,7 +253,7 @@
 !    Indices of nul pivots
          INTEGER*4,DIMENSION(:), POINTER :: PIVNUL_LIST
 !    Internal control array
-         REAL DKEEP(30)
+         REAL*4 DKEEP(30)
 !    Array needed to manage additionnal candidate processor 
          INTEGER*4, DIMENSION(:,:), POINTER :: SUP_PROC
 !   ------------------------

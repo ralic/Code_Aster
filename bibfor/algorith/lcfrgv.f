@@ -3,7 +3,7 @@
      &                   DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,7 +124,7 @@ C                     CALCUL DE L'ENDOMMAGEMENT
 C ----------------------------------------------------------------------
 
       D    = VIM(1)
-      ETAT = VIM(2)
+      ETAT = NINT(VIM(2))
       IF (.NOT.RESI) GOTO 5000
       
 

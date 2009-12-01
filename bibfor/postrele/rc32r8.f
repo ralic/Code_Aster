@@ -4,7 +4,7 @@
       CHARACTER*8         NOMRES, MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,7 +42,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       IBID, NPAR1, IM, JRESU
@@ -53,7 +52,6 @@ C
       CHARACTER*4   LIEU(2)
       CHARACTER*8   K8B, TYPAR1(NPAR1), VALEK(2)
       CHARACTER*16  NOPAR1(NPAR1)
-      CHARACTER*19  NOT19R
 C     ------------------------------------------------------------------
       DATA LIEU   / 'ORIG' , 'EXTR' /
 C

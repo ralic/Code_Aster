@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF matfpe utilitai  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF matfpe utilitai  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2006  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

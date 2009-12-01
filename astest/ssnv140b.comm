@@ -1,5 +1,6 @@
-# MODIF  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE CARRE CYLINDRIQUE SOUS PRESSION SUIVEUSE
+# ssnv140b.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

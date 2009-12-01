@@ -1,6 +1,6 @@
-# MODIF  DATE 04/11/2008   AUTEUR CNGUYEN C.NGUYEN 
+# MODIF  DATE 27/04/2009   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
-# perf005c.para = tps_job 13000 mem_job 1300Mo ncpus 1 liste_test P
+# perf005c.para = tps_job 18000 mem_job 1300Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,32 +22,10 @@
 #       (ISSU DE SSNV104I)
 #---------------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='PERF005C',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='PERF005C',NIV_PUB_WEB='INTERNET'),
+      IGNORE_ALARM='TEST0_9')
 
 MA=LIRE_MAILLAGE(FORMAT='MED')
-
-MA=DEFI_GROUP(reuse =MA,  MAILLAGE=MA,
-                    CREA_GROUP_NO=(_F(OPTION='PLAN',
-                                      NOM='LIM1',
-                                      POINT=(0.0,0.0,0.0),
-                                      VECT_NORMALE=(1.0,0.0,0.0),
-                                      PRECISION=1.E-2,),
-                                   _F(OPTION='PLAN',
-                                      NOM='LIM2',
-                                      POINT=(0.0,0.0,0.0),
-                                      VECT_NORMALE=(0.0,0.0,1.0),
-                                      PRECISION=1.E-2,),
-                                   _F(OPTION='PLAN',
-                                      NOM='FACEINF',
-                                      POINT=(0.0,0.0,0.0),
-                                      VECT_NORMALE=(0.0,1.0,0.0),
-                                      PRECISION=1.E-2,),
-                                   _F(OPTION='PLAN',
-                                      NOM='FACESUP',
-                                      POINT=(0.0,100.0,0.0),
-                                      VECT_NORMALE=(0.0,-1.0,0.0),
-                                      PRECISION=1.E-2,),
-                                   ))
 
 #_____________________________________________________________________
 #
@@ -127,5 +105,23 @@ if 0 : # pour compter les noeuds en contact (ceux qui ont CONT != 0.) :
                      NOM_CHAM='VALE_CONT', RESULTAT=RESU, NUME_ORDRE=1)
     # pour compter les noeuds en contact, on peut faire :
     #    cat xxxx.mess pipe  grep 'N[0-9]* * pipe *0"backslash".[1-9]' pipe wc -l
+
+TEST_TEMPS(
+   RESU = (_F(
+      COMMANDE  = 'STAT_NON_LINE',
+      MACHINE   = 'all',
+      VALE      =  5000.,
+      CRITERE   = 'RELATIF',
+      PRECISION =  0.20,
+      TYPE_TEST = 'USER', ),
+         _F(
+      COMMANDE  = 'STAT_NON_LINE',
+      MACHINE   = 'all',
+      VALE      =  10000.,
+      CRITERE   = 'RELATIF',
+      PRECISION =  0.20,
+      TYPE_TEST = 'USER+SYS',),
+   ),
+)
 
 FIN();

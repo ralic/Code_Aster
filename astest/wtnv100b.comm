@@ -1,6 +1,7 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE
+# wtnv100b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG

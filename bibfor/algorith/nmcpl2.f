@@ -1,7 +1,7 @@
       SUBROUTINE NMCPL2(COMPOR,TYPMOD,OPTION,OPTIO2,CP,NVV,CRIT,DEPS,
      &                  DSIDEP,NDIM,SIGP,VIP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/10/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 08/12/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,8 +56,7 @@ C VAR VIP     : LES 4 DERNIERES SONT RELATIVES A LA METHODE DE BORST
       NDIMSI = 2*NDIM
       IRET=0
       SIGNUL=CRIT(3)
-      PREC=CRIT(3)
-C     MATRIC = OPTION .EQ. 'FULL_MECA' .OR. OPTION .EQ. 'RIGI_MECA_TANG'
+
       VECTEU = OPTION(1:9) .EQ. 'FULL_MECA' .OR. 
      &         OPTION(1:9) .EQ. 'RAPH_MECA'
 
@@ -88,17 +87,25 @@ C        ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
                SIGP(K)=SIGP(K)+SCM(K)
  130        CONTINUE
 
-            SIGPEQ=0.D0
-            DO 131 K = 1,NDIMSI
-              SIGPEQ     = SIGPEQ + SIGP(K)**2
- 131        CONTINUE
+            IF (PREC.GT.0.D0) THEN
+C              PRECISION RELATIVE
+               SIGPEQ=0.D0
+               DO 131 K = 1,NDIMSI
+                 SIGPEQ     = SIGPEQ + SIGP(K)**2
+ 131           CONTINUE
  
-            SIGPEQ = SQRT(SIGPEQ)
-            IF (SIGPEQ.LT.SIGNUL) THEN
-               PRECR=PREC
+               SIGPEQ = SQRT(SIGPEQ)
+               IF (SIGPEQ.LT.SIGNUL) THEN
+                  PRECR=PREC
+               ELSE
+                  PRECR=PREC*SIGPEQ
+               ENDIF
             ELSE
-               PRECR=PREC*SIGPEQ
+C              PRECISION ABSOLUE        
+               PRECR=ABS(PREC)
             ENDIF
+            
+            
             IF (ABS(SIGP(3)).GT.PRECR) THEN
                IRET=3
             ENDIF

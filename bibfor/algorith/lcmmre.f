@@ -3,7 +3,7 @@
      1       ITMAX, TOLER, TIMED, TIMEF,YD ,YF,DEPS, DY, R, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C     NSFV : debut de la famille IFA dans les variables internes
 
       DO 6 IFA=1,NBFSYS
          IFL=NBCOMM(IFA,1)           
-         NUECOU=MATERF(NMAT+IFL)
+         NUECOU=NINT(MATERF(NMAT+IFL))
 
          NOMFAM=CPMONO(5*(IFA-1)+1)
 C         NMATER=CPMONO(5*(IFA-1)+2)

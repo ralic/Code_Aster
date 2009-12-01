@@ -3,7 +3,7 @@
      &                  MESUIV)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/04/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,6 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
-      niv = 2
 C
 C --- INITIALISATIONS
 C   
@@ -144,7 +143,6 @@ C
 C
 C --- PREPARATION DES MATR_ELEM 
 C
-      write(6,*) 'MESUIV: ',MESUIV
       CALL JEEXIN(MESUIV//'.RELR',IRET)
       IF (IRET.EQ.0) THEN
         CALL MEMARE('V',MESUIV,MODELE(1:8),MATE,CARELE,'CHAR_MECA')
@@ -214,7 +212,6 @@ C
 C      
       IF (PREM) THEN
         DO 30 ICHA = 1,NCHAR
-          write(6,*) 'ICHA: ',ICHA
           INUM = 0
           LCHOUT(1) = MESUIV(1:8)//'. '
           NOMCHA = ZK24(JCHAR+ICHA-1) (1:8)
@@ -222,7 +219,7 @@ C
           NUMCHM = ZI(JINF+NCHAR+ICHA)
           CALL DISMOI('F','TYPE_CHARGE',ZK24(JCHAR+ICHA-1),'CHARGE',
      &                IBID,AFFCHA,IERD)
-          write(6,*) 'NUMCHM: ',NUMCHM,NBCHMX,AFFCHA
+
           IF (NUMCHM.EQ.4) THEN
 
 C ---- BOUCLES SUR LES TOUS LES TYPES DE CHARGE POSSIBLES SAUF LAPLACE)
@@ -232,9 +229,9 @@ C ---- BOUCLES SUR LES TOUS LES TYPES DE CHARGE POSSIBLES SAUF LAPLACE)
               LCHIN(1) = LIGRCH(1:13)//NOMLIG(K)//'.DESC'
               CALL EXISD('CHAMP_GD',LCHIN(1),IRET)
               TAB(K) = IRET
-              write(6,*) 'IRET: ',IRET,K,LCHIN(1)
+
               IF (IRET.NE.0) THEN
-                write(6,*) 'REP: ',REPCT,REPVR
+
                 IF ((K.NE.2) .OR. ((REPCT(1:3).EQ.'OUI').OR. (REPVR(1:
      &              3).EQ.'OUI'))) THEN
                   IF (AFFCHA(5:7).EQ.'_FO') THEN
@@ -248,8 +245,6 @@ C ---- BOUCLES SUR LES TOUS LES TYPES DE CHARGE POSSIBLES SAUF LAPLACE)
                   INUM = INUM + 1
                   CALL CODENT(ICHA,'D0',LCHOUT(1) (7:8))
                   CALL CODENT(INUM,'D0',LCHOUT(1) (12:14))
-                  
-                  write(6,*) 'LCHOUT: ',LCHOUT(1)
                   
 C               POUR UNE MATRICE NON SYMETRIQUE EN COQUE3D (VOIR TE0486)
                   IF (K.EQ.4) LPAOUT(1) = 'PMATUNS'
@@ -314,7 +309,7 @@ C               POUR UNE MATRICE NON SYMETRIQUE EN COQUE3D (VOIR TE0486)
       END IF
       
       CALL JELIRA(MESUIV//'.RELR','LONUTI',NBCHME,K8BID)
-      write(6,*) 'RELR: ',NBCHME
+
 
    60 CONTINUE
 C

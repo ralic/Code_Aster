@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,11 +40,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32 JEXNOM,JEXNUM,JEXATR
+      CHARACTER*32 JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       IBID, NPAR2, NPAR1, NPAR4, NPAR6, IM, IG, IS, I3,
-     +              IRET, NBSIGR, VALEI(3), JNUMGR, JNSITU, JNSG, JVALE,
+     +              NBSIGR, VALEI(3), JNUMGR, JNSITU, JNSG, JVALE,
      +              JPMPB, NBGR, IOC, NUMGR, IS1, IS2, JREAS, JRESS, N1,
      +              JSEIGR, JCOMBI, IOC1, IOC2, IOCS, II, NPAR0
       PARAMETER    ( NPAR0 = 35, NPAR2 = 7, NPAR1 = 11, NPAR4 = 15,

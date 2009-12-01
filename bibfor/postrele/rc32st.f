@@ -1,11 +1,10 @@
-      SUBROUTINE RC32ST ( TYPE, SIJM, NBINST, STH, SN )
+      SUBROUTINE RC32ST ( SIJM, NBINST, STH, SN )
       IMPLICIT   NONE
       INTEGER             NBINST
       REAL*8              SIJM(6), STH(6*NBINST), SN
-      CHARACTER*4         TYPE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,15 +26,13 @@ C
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 C     CALCUL DU SN MAX SUR LES INSTANTS
 C
-C IN  : TYPE   : ='COMB'  +-SIGM_M + SIGM_TH
-C                ='SITU'    SIGM_M + SIGM_TH
 C IN  : SIJM   : CONTRAINTES LINEARISEES OU EN PEAU (CHARGEMENTS MECA)
 C IN  : NBINST : NOMBRE D'INTANTS DE CALCUL THERMOMECA
 C IN  : STH    : CONTRAINTES LINEARISEES OU EN PEAU ( THERMOMECA)
 C OUT : SN     : AMPLITUDE DE VARIATION DES CONTRAINTES DE TRESCA
 C     ------------------------------------------------------------------
 C
-      INTEGER  I, I1, IT, IT1
+      INTEGER  I, IT1
       REAL*8   SIJMT(6), TRESCA
       REAL*8   E1(2)
 C DEB ------------------------------------------------------------------
@@ -55,7 +52,7 @@ C     --------------------------------------
         E1(2) = -1.D0
             DO 12 IT1 = 1,2
               DO 14 I = 1,6
-                 SIJMT(I) = SIJM(I)*E1(IT1) + STH(6+I) - STH(I)
+                 SIJMT(I) = SIJM(I)*E1(IT1) + STH(I)
  14           CONTINUE
               CALL RCTRES ( SIJMT, TRESCA )
               SN = MAX( SN , TRESCA )

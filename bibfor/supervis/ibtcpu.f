@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 12/11/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C
       L2=0
 C     RECUPERATION DU TEMPS LIMITE DE L'EXECUTION
       CALL UTTLIM ( TPMAX )
-      ITPMAX = TPMAX
+      ITPMAX = NINT(TPMAX)
 C
       CALL GETFAC('CODE',IRET)
 C
@@ -53,7 +53,7 @@ C
 C     SI CODE PRESENT
 C
       IF ( IRET.GT.0 .AND. L1.EQ.0 .AND. L2.EQ.0 ) THEN
-        NTPMAX=TPMAX-DIX
+        NTPMAX=NINT(TPMAX-DIX)
         CALL UTCLIM ( ITPMAX-NTPMAX )
         GOTO 100
       ENDIF
@@ -62,7 +62,7 @@ C     SI CODE ABSENT
 C
       IF ( IRET.EQ.0 .AND. L1.EQ.0 .AND. L2.EQ.0 ) THEN
         PCCPU=0.1D0
-        NTPMAX = MAX ( TPMAX*(1-PCCPU) , TPMAX-IBORNE )
+        NTPMAX = NINT (MAX ( TPMAX*(1-PCCPU) , TPMAX-IBORNE ))
         CALL UTCLIM ( ITPMAX-NTPMAX )
         GOTO 100
       ENDIF
@@ -73,12 +73,12 @@ C
           CALL U2MESS('F','SUPERVIS_31')
           IER = 1
         ENDIF
-        NTPMAX = TPMAX-LCPU
+        NTPMAX = NINT(TPMAX-LCPU)
         CALL UTCLIM ( ITPMAX-NTPMAX )
       ENDIF
 C
       IF ( L2 .GT. 0 ) THEN
-        NTPMAX = MAX ( TPMAX*(1-PCCPU) , TPMAX-IBORNE )
+        NTPMAX = NINT(MAX ( TPMAX*(1-PCCPU) , TPMAX-IBORNE ))
         CALL UTCLIM ( ITPMAX-NTPMAX )
       ENDIF
 C

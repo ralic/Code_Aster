@@ -1,7 +1,7 @@
       SUBROUTINE SUIIMP(SDSUIV,ISUIV ,ZTIT  ,TITRE)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,11 +126,11 @@ C
           TITRE(3)(12:13) = SUBTOZ
         ENDIF
       ELSE IF (ZI(JEXTR-1+ISUIV).EQ.1) THEN
-          TITRE(3)(1:2)   = '    '
+          TITRE(3)(1:2)   = '  '
           TITRE(3)(3:12)  = 'VALEUR MIN'
           TITRE(3)(13:15) = '   '
       ELSE IF (ZI(JEXTR-1+ISUIV).EQ.2) THEN
-          TITRE(3)(1:2)   = '    '
+          TITRE(3)(1:2)   = '  '
           TITRE(3)(3:12)  = 'VALEUR MAX'
           TITRE(3)(13:15) = '   '
       ELSE

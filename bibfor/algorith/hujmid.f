@@ -1,9 +1,9 @@
         SUBROUTINE HUJMID ( MOD, CRIT, MATER, NVI, EPSD, DEPS,
      &  SIGD, SIGF, VIND, VINF, NOCONV, AREDEC, STOPNC, 
-     &  NEGMUL, IRET, SUBD, LOOP, NDEC0 )
+     &  NEGMUL, IRET, SUBD, LOOP, NDEC0)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_20
 C ---------------------------------------------------------------------
 C INTEGRATION PLASTIQUE (MECANISMES ISOTROPE ET DEVIATOIRE) DE HUJEUX
 C IN   MOD     :  MODELISATION
@@ -43,12 +44,11 @@ C      SUBD     =.TRUE. SUBDIVISION DU A (DR/R) < CRIT
 C      NDEC0   :  NOMBRE D'INCREMENTS DE SUBDIVISION LIE A SUBD
 C      IRET    :  CODE RETOUR
 C   -------------------------------------------------------------------
-C TOLE CRP_20
-        INTEGER   NDT, NDI, NVI, NR, NMOD, IRET
+        INTEGER   NDT, NDI, NVI, NR, NMOD, IRET, JJ
         INTEGER   I, J, K, KK, ITER, INDI(4), NDEC0, NDEC
-        INTEGER   NITIMP, NBMECA
+        INTEGER   NITIMP, NBMECA, COMPT
         INTEGER   UMESS, IUNIFI, IFM, NIV
-        INTEGER   ESSAI, ESSMAX
+        INTEGER   ESSAI, ESSMAX, RESI
         LOGICAL   DEBUG, NOCONV, AREDEC, STOPNC, NEGMUL(8), SUBD
         LOGICAL   LOOP
          
@@ -65,30 +65,54 @@ C TOLE CRP_20
         REAL*8    CRIT(*), MATER(22,2)
         REAL*8    R(NMOD), DRDY(NMOD,NMOD)
         REAL*8    DDY(NMOD), DY(NMOD), YD(NMOD), YF(NMOD)
-        REAL*8    ERR, ERR1, ERR2, SIGNE(4), DSIG(6)
+        REAL*8    ERR, ERR1, ERR2, DSIG(6)
         REAL*8    DET, ZERO, UN, RATIO, MAXI
         REAL*8    EVOL, KSI, ACYC, AMON, AD
         REAL*8    RDEC, PCO, BETA, CMON, CCYC
         
         REAL*8    RELAX(ESSMAX+1), ROTAGD(ESSMAX+1), NOR1(7), NOR2(7)
         REAL*8    ERIMP(NITIMP,4)
-        REAL*8    R8PREM, PTRAC
+        REAL*8    R8PREM, PTRAC, YE(NMOD), PSF
+
+        REAL*8    PREDI0(6), SIGD0(6), DEPS0(6), VIND0(50), PROB(4)
+        LOGICAL   AREDE0, STOPN0, LOOP0, PROX(4), PROBT, PROXC(4)
+        LOGICAL   TRACTI, CYCL
        
         CHARACTER*8 MOD
 
         DATA   ZERO, UN, DEUX / 0.D0, 1.D0, 2.D0/
 
 C ====================================================================
+C ----  SAUVEGARDE DES GRANDEURS D ENTREE INITIALES
 
+        CALL LCEQVE(SIGF,PREDI0)
+        CALL LCEQVE(SIGD,SIGD0)
+        CALL LCEQVE(DEPS,DEPS0)
+        CALL LCEQVN(NVI,VIND,VIND0)
+        AREDE0 = AREDEC
+        STOPN0 = STOPNC
+        LOOP0   = LOOP
+        COMPT   = 0
+        PROBT   = .FALSE.
+        DO 12 I = 1, 4
+          PROX(I)  = .FALSE.
+          PROXC(I) = .FALSE.
+ 12     CONTINUE
+
+ 1      CONTINUE
+        COMPT = COMPT + 1 
 C ---> DIMENSION DU PROBLEME:
 C      NR = NDT(SIG)+ 1(EVP)+ NBMECA(R)+ NBMEC(DLAMB)
         UMESS  = IUNIFI('MESSAGE')
         CALL INFNIV(IFM,NIV)
-        NOCONV = .FALSE.
+        NOCONV   = .FALSE.
+        TRACTI = .FALSE.
+        DO 2 K =1 ,4
+          PROB(K) = ZERO
+  2     CONTINUE
 
         PTRAC = MATER(21,2)
 
-Caf 30/04/07 debut
         NBMECA = 0
         DO 5 K = 1, 8
           IF(VIND(23+K) .EQ. UN) THEN
@@ -98,8 +122,6 @@ Caf 30/04/07 debut
  5      CONTINUE
         NR = NDT + 1 + 2*NBMECA
         
-Caf 30/04/07 fin
-
 C ---> MISE A ZERO DES DATAS
         DO 10 I = 1, NMOD
           DDY(I) = ZERO
@@ -112,7 +134,6 @@ C ---> MISE A ZERO DES DATAS
 C ---> INITIALISATION DE YD = (SIGD, VIND, ZERO)
         CALL LCEQVN (NDT, SIGD, YD)
         
-Caf 30/04/07 debut
         YD(NDT+1) = VIND(23)
 
         DO 15 K = 1, 4
@@ -137,8 +158,14 @@ Caf 30/04/07 debut
           ENDIF
  16       CONTINUE
 
-         
-Caf 30/04/07 fin
+          IF(DEBUG)THEN
+            WRITE(6,*)'INDI = ',(INDI(I),I=1,NBMECA)
+            WRITE(6,*)'SIGD = ',(SIGD(I),I=1,NDT)
+            WRITE(6,*)'VIND = ',(VIND(I),I=1,50)
+            WRITE(6,*)'LOOP = ',LOOP
+            WRITE(6,*)
+          ENDIF         
+
          I1F = (SIGF(1) + SIGF(2) + SIGF(3))/3
          IF(LOOP)THEN
            DO 17 I = 1, NDT
@@ -157,6 +184,7 @@ C      (SOLUTION EXPLICITE)
 
 C ---> INCREMENTATION DE YF = YD + DY
         CALL LCSOVN (NR, YD, DY, YF)
+        CALL LCEQVN(NMOD,YF,YE)
 
         IF(IRET.EQ.1)GOTO 9999
         
@@ -183,16 +211,34 @@ C----------------------------------------------------------
  60         CONTINUE
  50       CONTINUE
 C ---> CALCUL DU SECOND MEMBRE A T+DT : -R(DY)
-C      CALCUL DE SIGNE(S:DEPSDP)
 C      ET CALCUL DU JACOBIEN DU SYSTEME A T+DT : DRDY(DY)
 
-        CALL HUJJID (MOD, MATER, INDI, DEPS, YD, YF, VIND,
-     &               R, SIGNE, DRDY, IRET)
-        IF (IRET.EQ.1) GOTO 9999
+        CALL HUJJID (MOD, MATER, INDI, DEPS, PROX, PROXC,
+     &               YD, YF, VIND, R, DRDY, IRET)
+
+        DO 11 I = 1, 3
+          IF(PROX(I))THEN
+            PROB(I) = UN
+            PROBT   = .TRUE.
+          ELSEIF(PROXC(I))THEN
+            PROB(I) = DEUX
+            PROBT   = .TRUE.
+          ENDIF
+ 11     CONTINUE        
+
+        IF (IRET.EQ.1) THEN
+          DO 255 I = 1, NDI
+            IF(YF(I).GT.PTRAC)THEN
+              TRACTI = .TRUE.
+            ENDIF
+ 255      CONTINUE          
+          GOTO 9999
+        ENDIF
 
 C ---> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
         CALL LCEQVN (NR, R, DDY)
         CALL MGAUSS ('NCVP', DRDY, DDY, NMOD, NR, 1, DET, IRET)
+
         IF (IRET.EQ.1) GOTO 9999
         RELAX(1) = UN
         ESSAI    = 1
@@ -218,11 +264,15 @@ C --- MISE A JOUR DU VECTEUR SOLUTION
           WRITE(IFM,1000) '     DDY=',(DDY(I),I=1,NR)
           WRITE(IFM,1000) '     DY =',(DY(I),I=1,NR)
           WRITE(IFM,1000) '     YF =',(YF(I),I=1,NR)
+          WRITE(IFM,1000) '     R  =',(R(I),I=1,NR)
           
         ENDIF
 
          DO 44 I = 1, NDI
-           IF(YF(I).GT.PTRAC)GOTO 9999
+           IF(YF(I).GT.PTRAC)THEN
+             TRACTI = .TRUE.
+             GOTO 9999
+           ENDIF
  44      CONTINUE
 
 C ---> 2) ERREUR = RESIDU
@@ -255,6 +305,7 @@ C ----  NON CONVERVENCE: ITERATION MAXI ATTEINTE  ----
      &                   ERIMP, EPSD, DEPS, SIGD, VIND)
            ELSE
              IRET = 1
+
              GOTO 9999
            ENDIF
           
@@ -290,7 +341,15 @@ Caf 15/05/07 Fin
         DO 250 K = 1, NBMECA
           KK       = INDI(K)
           IF (YF(NDT+1+K) .GT. VIND(KK)) THEN
-            VINF(KK) = YF(NDT+1+K)
+            IF((KK.GT.4).AND.(KK.LT.8))THEN
+              IF(YF(NDT+1+K).LE.VIND(KK-4))THEN
+                VINF(KK) = YF(NDT+1+K)
+              ELSE
+                VINF(KK) = VIND(KK-4)
+              ENDIF
+            ELSE
+              VINF(KK) = YF(NDT+1+K)
+            ENDIF
           ELSE 
             VINF(KK) = VIND(KK)
           ENDIF   
@@ -312,6 +371,7 @@ C     SI DR/R > TOLE ---> SUBD = .TRUE.
                 ACYC   = MATER(9,2)
                 AMON   = MATER(10,2)
                 CALL HUJKSI ('KSI   ',MATER,YF(NDT+1+K),KSI,IRET)
+            
                 IF(IRET.EQ.1)THEN
                   IF(DEBUG) WRITE(6,'(A,E16.9)')'HUJKSI --- R =',
      &                                           YF(NDT+1+K)
@@ -355,12 +415,129 @@ C     SI DR/R > TOLE ---> SUBD = .TRUE.
             IF(NDEC0.GT.1)SUBD=.TRUE.
  251      CONTINUE
         ENDIF
-Caf 12/06/07 fin 
         
         GOTO 2000
 
  9999   CONTINUE
-        NOCONV = .TRUE.
+        IF(COMPT.GT.5)THEN
+          NOCONV = .TRUE.
+          GOTO 2000
+        ENDIF
+
+        IF(PROBT)THEN
+          CALL LCEQVE(PREDI0,SIGF)
+          CALL LCEQVE(SIGD0,SIGD)
+          CALL LCEQVE(DEPS0,DEPS)
+          CALL LCEQVN(NVI,VIND0,VIND)
+          AREDEC = AREDE0
+          STOPNC = STOPN0
+          LOOP   = LOOP0
+          DO 252 I = 1, 3
+            IF(PROB(I).EQ.UN)THEN
+              VIND(I+4)    = MATER(18,2)
+              VIND(23+I)   = UN
+              VIND(27+I)   = ZERO
+              VIND(4*I+5)  = ZERO
+              VIND(4*I+6)  = ZERO
+              VIND(4*I+7)  = ZERO
+              VIND(4*I+8)  = ZERO
+              VIND(5*I+31) = ZERO
+              VIND(5*I+32) = ZERO
+              VIND(5*I+33) = ZERO
+              VIND(5*I+34) = ZERO
+              VIND(5*I+35) = MATER(18,2)
+            ELSEIF(PROB(I).EQ.DEUX)THEN
+              VIND(27+I)   = ZERO
+            ENDIF
+  252     CONTINUE
+          IRET = 0
+          PROBT = .FALSE.
+          CALL LCEQVN(NVI,VIND,VINF)
+          GOTO 1
+
+        ELSEIF(TRACTI)THEN
+          CALL LCEQVE(PREDI0,SIGF)
+          CALL LCEQVE(SIGD0,SIGD)
+          CALL LCEQVE(DEPS0,DEPS)
+          CALL LCEQVN(NVI,VIND0,VIND)
+          AREDEC = AREDE0
+          STOPNC = STOPN0
+          LOOP   = LOOP0
+          DO 254 I = 1, NBMECA
+            IF(YE(NDT+1+NBMECA+I).EQ.ZERO)THEN
+              VIND(23+INDI(I)) = ZERO
+              TRACTI = .FALSE.
+            ENDIF
+  254     CONTINUE 
+          IF(TRACTI)THEN
+            DO 354 I = 1, NBMECA
+             IF((INDI(I).NE.4).AND.
+     &         (INDI(I).NE.8)) VIND(23+INDI(I)) = ZERO
+ 354        CONTINUE
+          ENDIF
+          IRET = 0
+          PROBT = .FALSE.
+          CALL LCEQVN(NVI,VIND,VINF)
+          GOTO 1
+
+        ELSE
+          MAXI = ZERO
+          RESI = 0
+          DO 256 I = 1, NR
+            IF(ABS(R(I)).GT.MAXI)THEN
+              MAXI = ABS(R(I))
+              RESI = I
+            ENDIF
+ 256      CONTINUE
+          CYCL = .FALSE.
+          DO 260 I = 1, NBMECA
+            IF((INDI(I).GT.4)
+     &       .AND.(INDI(I).LT.8)
+     &       .AND.(VIND(INDI(I)).EQ.MATER(18,2)))THEN
+              CYCL = .TRUE.
+            ENDIF
+  260     CONTINUE
+          IF((RESI.GT.7).AND.(RESI.LE.7+NBMECA))THEN
+            RESI = RESI - 7
+            IF((INDI(RESI).GT.4).AND.(INDI(RESI).LT.8))THEN
+              CALL LCEQVE(PREDI0,SIGF)
+              CALL LCEQVE(SIGD0,SIGD)
+              CALL LCEQVE(DEPS0,DEPS)
+              CALL LCEQVN(NVI,VIND0,VIND)
+              AREDEC = AREDE0
+              STOPNC = STOPN0
+              LOOP   = LOOP0
+              VIND(23+INDI(RESI)) = ZERO
+              IRET = 0
+              PROBT = .FALSE.
+              CALL LCEQVN(NVI,VIND,VINF)
+              GOTO 1
+            ELSE
+              NOCONV = .TRUE.
+            ENDIF
+          ELSEIF(CYCL)THEN
+            CALL LCEQVE(PREDI0,SIGF)
+            CALL LCEQVE(SIGD0,SIGD)
+            CALL LCEQVE(DEPS0,DEPS)
+            CALL LCEQVN(NVI,VIND0,VIND)
+            AREDEC = AREDE0
+            STOPNC = STOPN0
+            LOOP   = LOOP0
+            DO 261 I = 1, NBMECA
+              IF((INDI(I).GT.4)
+     &       .AND.(INDI(I).LT.8)
+     &       .AND.(VIND(INDI(I)).EQ.MATER(18,2)))THEN
+                VIND(23+INDI(I)) = ZERO
+              ENDIF
+ 261        CONTINUE
+            IRET = 0
+            PROBT = .FALSE.
+            CALL LCEQVN(NVI,VIND,VINF)
+            GOTO 1
+          ELSE
+            NOCONV = .TRUE.
+          ENDIF
+        ENDIF
  
  1000   FORMAT(A,15(1X,E12.5))
  1001   FORMAT(A,2(I3))

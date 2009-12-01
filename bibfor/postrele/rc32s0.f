@@ -1,11 +1,11 @@
-      SUBROUTINE RC32S0 ( TYPE, MM, PR, MSE, SIGUN, NBINST, STH, SNP )
+      SUBROUTINE RC32S0 ( OPTION, MM, PR, MSE, SIGUN, NBINST, STH, SNP )
       IMPLICIT   NONE
       INTEGER             NBINST
       REAL*8              MM(*),PR,MSE(*),SIGUN(*),STH(6*NBINST),SNP
-      CHARACTER*4         TYPE
+      CHARACTER*4         OPTION
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,19 +29,19 @@ C     CALCUL DU SN MAX SUR LES INSTANTS ET LES 64 POSSIBILITES DE SIGNE
 C     POUR LES CMP DE SEISME
 C     64 POSSIBLITES DE SIGNE DE MSE
 C
-C IN  : TYPE   : ='COMB'  +-SIGM_M + SIGM_TH
-C                ='SITU'    SIGM_M + SIGM_TH
+C IN  : OPTION : ='PMPB'  MAX(+-SIGM_M + SIGM_SEISME)
+C              : ='SITU' OU 'COMB'  ON CALCULE UNE AMPLITUDE (SN,SP) :
+C                        MAX(+-SIGM_M + 2 * SIGM_SEISME)
 C IN  : MM     : EFFORTS ASSOCIEES A L'ETAT DE CONTRAINTE MECANIQUE
 C IN  : PR     : PRESSION
 C IN  : MSE    : EFFORTS DUS AU SEISME
 C IN  : SIGUN  : CONTRAINTES UNITAIRES
-C IN  : NBINST : NOMBRE D'INTANTS DE CALCUL THERMOMECA
+C IN  : NBINST : 0 SI MECA PUR / >0 SI TRANSITOIRE THERMOMECA
 C IN  : STH    : CONTRAINTES LINEARISEES OU EN PEAU ( THERMOMECA)
 C OUT : SNP    : AMPLITUDE DE VARIATION DES CONTRAINTES DE TRESCA
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
-      INTEGER VALI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -57,11 +57,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER  I1, I2, I3, I4, I5, I6, I, IT, IT1, ICMPS, ICMP, JCORP
-      INTEGER  I11, I21, I31, I41, I51, I61
+      INTEGER  I1, I2, I3, I4, I5, I6, I, ICMPS, ICMP, JCORP
+      INTEGER  I11, I21, I31, I41, I51, I61, FACT
       REAL*8   MTT(6), MTC(6), SIJ(6), SIJT(6), SNP1, STH1, TRESCA
       REAL*8   SIGT, SIGC, SIGP
-      REAL*8   E1(2), E2(2), E3(2), E4(2), E5(2), E6(2)
+      REAL*8   E1(2), E2(2), E3(2), E4(2), E5(2), E6(2), E7(2)
 C DEB ------------------------------------------------------------------
 C
       SNP = 0.D0
@@ -69,14 +69,17 @@ C ON DISTINGUE LE CAS CLASSIQUE DU CAS CORPS/TUBU POUR OPTIMISER
 C LES PERFORMANCES      
       CALL JEVEUO ('&&RC3200.CORPS', 'L ', JCORP )
 C
+      FACT = 2
+      IF (OPTION .EQ.  'PMPB') FACT = 1
       DO 2 I = 1 , 2
          I1 = 2*(I-2)+1
-         E1(I) = I1
-         E2(I) = I1
-         E3(I) = I1
-         E4(I) = I1
-         E5(I) = I1
-         E6(I) = I1
+         E1(I) = I1 * FACT
+         E2(I) = I1 * FACT
+         E3(I) = I1 * FACT
+         E4(I) = I1 * FACT
+         E5(I) = I1 * FACT
+         E6(I) = I1 * FACT
+         E7(I) = I1
  2    CONTINUE
 C
 C --- CALCUL MECANIQUE :
@@ -195,29 +198,15 @@ C CAS CORPS/TUBULURE
                       SIGP = SIGUN(72+ICMPS)
                       SIJ(ICMPS) = SIJ(ICMPS) + PR*SIGP
  110                 CONTINUE
-                     IF ( TYPE .EQ. 'COMB' ) THEN
-                      DO 200 IT = 1,NBINST
-                        DO 202 I = 1,2
-                          DO 204 ICMP = 1,6
-                            STH1 = STH((IT-1)*6+ICMP)
-                            SIJT(ICMP) = SIJ(ICMP)*E1(I) + STH1
- 204                      CONTINUE
-                          CALL RCTRES ( SIJT, TRESCA )
-                          SNP1 = TRESCA
-                          SNP = MAX( SNP , SNP1 )
- 202                    CONTINUE
- 200                  CONTINUE
-                     ELSE
-                      DO 210 IT = 1,NBINST
-                        DO 212 ICMP = 1,6
-                          STH1 = STH((IT-1)*6+ICMP)
-                          SIJT(ICMP) = SIJ(ICMP) + STH1
- 212                    CONTINUE
-                        CALL RCTRES ( SIJT, TRESCA )
-                        SNP1 = TRESCA
-                        SNP = MAX( SNP , SNP1 )
- 210                  CONTINUE
-                     ENDIF
+                     DO 202 I = 1,2
+                       DO 204 ICMP = 1,6
+                         STH1 = STH(ICMP)
+                         SIJT(ICMP) = SIJ(ICMP)*E7(I) + STH1
+ 204                   CONTINUE
+                       CALL RCTRES ( SIJT, TRESCA )
+                       SNP1 = TRESCA
+                       SNP = MAX( SNP , SNP1 )
+ 202                 CONTINUE
  121                CONTINUE
  131               CONTINUE
  141              CONTINUE
@@ -235,29 +224,15 @@ C
                   SIGP = SIGUN(72+ICMPS)
                   SIJ(ICMPS) = SIJ(ICMPS) + PR*SIGP
  1101           CONTINUE
-                IF ( TYPE .EQ. 'COMB' ) THEN
-                  DO 2001 IT = 1,NBINST
-                    DO 2021 I = 1,2
-                      DO 2041 ICMP = 1,6
-                        STH1 = STH((IT-1)*6+ICMP)
-                        SIJT(ICMP) = SIJ(ICMP)*E1(I) + STH1
- 2041                 CONTINUE
-                      CALL RCTRES ( SIJT, TRESCA )
-                      SNP1 = TRESCA
-                      SNP = MAX( SNP , SNP1 )
- 2021              CONTINUE
- 2001             CONTINUE
-                ELSE
-                  DO 2101 IT = 1,NBINST
-                    DO 2121 ICMP = 1,6
-                      STH1 = STH((IT-1)*6+ICMP)
-                      SIJT(ICMP) = SIJ(ICMP) + STH1
- 2121               CONTINUE
-                    CALL RCTRES ( SIJT, TRESCA )
-                    SNP1 = TRESCA
-                    SNP = MAX( SNP , SNP1 )
- 2101             CONTINUE
-                ENDIF
+                DO 2021 I = 1,2
+                  DO 2041 ICMP = 1,6
+                    STH1 = STH(ICMP)
+                    SIJT(ICMP) = SIJ(ICMP)*E7(I) + STH1
+ 2041             CONTINUE
+                  CALL RCTRES ( SIJT, TRESCA )
+                  SNP1 = TRESCA
+                  SNP = MAX( SNP , SNP1 )
+ 2021           CONTINUE
               ENDIF
 C
  120         CONTINUE

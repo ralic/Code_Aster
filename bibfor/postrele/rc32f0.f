@@ -6,7 +6,7 @@
       LOGICAL             TROUVE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D               WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,7 +33,7 @@ C OUT : NK    : NB D'OCCURENCE DE LA SITATION K
 C OUT : NL    : NB D'OCCURENCE DE LA SITATION L
 C
 C     ------------------------------------------------------------------
-      INTEGER      I, K, L
+      INTEGER      K, L
       REAL*8       SALT
 C     ------------------------------------------------------------------
 C

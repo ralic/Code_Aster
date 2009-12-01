@@ -4,7 +4,7 @@
       CHARACTER*(*)       LK1(L1), LK2(L2), LK3(L3)
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 26/01/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,8 +24,6 @@ C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
 C
 C BUT: DIFFERENCE ENTRE 2 LISTES   LK3 = LK1 - LK2
-C      CET UTILITAIRE EST A UTILISER LORSQUE LES LISTES LK1 ET LK2
-C      NE SONT PAS TROP LONGUES.
 C ---------------------------------------------------------------------
 C     ARGUMENTS:
 C LONG   IN   I     : 8,16 OU 24 : LONGUEUR DES CHAINES DE LK1 ET LK2
@@ -57,7 +55,7 @@ C DEB
 
 C     -- SI LES LISTES SONT LONGUES, ON UTILISE KNDIF2 :
 C     --------------------------------------------------
-      IF (DBLE(L1*L2).GT.3.D4) THEN
+      IF (DBLE(L1*L2).GT.1.D4) THEN
          CALL KNDIF2( LONG, LK1,L1, LK2,L2, LK3,NBK3 )
          L3=NBK3
          GOTO 9999

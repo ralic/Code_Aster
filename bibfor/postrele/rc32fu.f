@@ -1,12 +1,11 @@
       SUBROUTINE RC32FU ( NBSIGR, NOCC, SITU, FUIJ, 
-     +                    NOMMAT, UG, FACTUS )    
+     +                   UG, FACTUS )    
       IMPLICIT   NONE
       INTEGER             NBSIGR, NOCC(*), SITU(*)
       REAL*8              FUIJ(*), UG, FACTUS(*)
-      CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,12 +29,10 @@ C
 C     CALCUL DU FACTEUR D'USAGE 
 C
 C     ------------------------------------------------------------------
-      INTEGER      ISK, ISL, K, L, NK, NL, N0, I1, NSITUP,
+      INTEGER      ISK, ISL, K, L, NK, NL, N0, I1, 
      +             IFM, NIV, ICOMPT
-      REAL*8       FUIJM, NADM, UKL, VALE(2)
-      LOGICAL      TROUVE, ENDUR
-      CHARACTER*2  CODRET
-      CHARACTER*8  K8B
+      REAL*8       FUIJM, UKL
+      LOGICAL      TROUVE
 C     ------------------------------------------------------------------
 C
       CALL INFNIV ( IFM, NIV )

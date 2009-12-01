@@ -4,7 +4,7 @@
       LOGICAL                     PMPB, SN, SNET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32 JEXNOM,JEXNUM,JEXATR
+      CHARACTER*32 JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       NPAR0, NPAR1, NPAR2, IM, IG, IS, NBSIGR, VALEI(2),
@@ -53,7 +53,6 @@ C
       CHARACTER*4   LIEU(2)
       CHARACTER*8   K8B, VALEK(3), TYPAR0(NPAR0), TYPAR1(NPAR1), TYPTAB
       CHARACTER*16  NOPAR0(NPAR0), NOPAR1(NPAR1), NOPAR2(NPAR2)
-      CHARACTER*19  NOT19A, NOT19S
       CHARACTER*24  K24A, K24S
 C     ------------------------------------------------------------------
       DATA LIEU   / 'ORIG' , 'EXTR' /

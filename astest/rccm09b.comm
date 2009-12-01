@@ -1,5 +1,6 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / option = 'AMORCAGE'
+# rccm09b.para = tps_job 90 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -196,7 +197,7 @@ TEST_TABLE(  TABLE=FAMOR,
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.E-5,
-             VALE= 1.321302E-03      )
+             VALE= 1.15196E-03      )
 
 TEST_TABLE(  TABLE=FAMOR,
              FILTRE=_F(  NOM_PARA = 'THETA',
@@ -204,7 +205,7 @@ TEST_TABLE(  TABLE=FAMOR,
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.E-5,
-             VALE= 6.730039E-01     )
+             VALE= 5.8675414E-01     )
 
 TEST_TABLE(  TABLE=FAMOR,
              FILTRE=_F(  NOM_PARA = 'THETA',
@@ -212,7 +213,7 @@ TEST_TABLE(  TABLE=FAMOR,
              REFERENCE='ANALYTIQUE',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.5E-1,
-             VALE= 6.067E-01      )
+             VALE= 0.529      )
 
 FAMOR2=POST_RCCM(TYPE_RESU_MECA = 'EVOLUTION',
                  OPTION = 'AMORCAGE',
@@ -235,7 +236,7 @@ TEST_TABLE(  TABLE=FAMOR2,
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.E-5,
-             VALE= 1.785656E-03      )
+             VALE= 1.616323E-03      )
 
 TEST_TABLE(  TABLE=FAMOR2,
              FILTRE=_F(  NOM_PARA = 'THETA',
@@ -243,7 +244,7 @@ TEST_TABLE(  TABLE=FAMOR2,
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.E-5,
-             VALE= 9.095228E-01     )
+             VALE= 8.2327296E-01     )
 
 TEST_TABLE(  TABLE=FAMOR2,
              FILTRE=_F(  NOM_PARA = 'THETA',
@@ -251,5 +252,45 @@ TEST_TABLE(  TABLE=FAMOR2,
              REFERENCE='ANALYTIQUE',
              NOM_PARA='FACT_AMORCAGE',
              PRECISION=1.5E-1,
-             VALE= 8.199E-01      )
+             VALE= 0.742    )
+
+
+FAMOR3=POST_RCCM(TYPE_RESU_MECA = 'EVOLUTION',
+                 OPTION = 'AMORCAGE',
+                 TYPE_RESU = 'VALE_MAX',
+                 MATER=MAT,
+                 TITRE='Calcul du facteur d amorcage',
+                 TRANSITOIRE=(_F(TABL_SIGM_THETA = TAB_SIG1,
+                                 INST = (0., 1. ),
+                                 NB_OCCUR = 1 ),
+                              _F(TABL_SIGM_THETA = TAB_SIG2,
+                                 INST = (0., 1., 2., ),
+                                 NB_OCCUR = 3 ),),
+                 )
+
+IMPR_TABLE(TABLE = FAMOR3 )
+
+TEST_TABLE(  TABLE=FAMOR3,
+             FILTRE=_F(  NOM_PARA = 'THETA',
+                           VALE   = 90.   ),
+             REFERENCE='NON_REGRESSION',
+             NOM_PARA='FACT_AMORCAGE',
+             PRECISION=1.E-5,
+             VALE= 2.4242877209583E-03     )
+
+TEST_TABLE(  TABLE=FAMOR3,
+             FILTRE=_F(  NOM_PARA = 'THETA',
+                           VALE   = 180.   ),
+             REFERENCE='NON_REGRESSION',
+             NOM_PARA='FACT_AMORCAGE',
+             PRECISION=1.E-5,
+             VALE= 1.2348089303143E+00     )
+
+TEST_TABLE(  TABLE=FAMOR3,
+             FILTRE=_F(  NOM_PARA = 'THETA',
+                           VALE   = 180.   ),
+             REFERENCE='ANALYTIQUE',
+             NOM_PARA='FACT_AMORCAGE',
+             PRECISION=1.5E-1,
+             VALE= 1.113     )
 FIN( )

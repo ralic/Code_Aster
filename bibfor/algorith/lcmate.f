@@ -5,7 +5,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/04/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,10 +94,6 @@ C
       ELSEIF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
          CALL CVMMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,MATERD,
      1                 MATERF, MATCST, TYPMA,  NDT,   NDI , NR , NVI )
-C
-      ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B' ) THEN
-         CALL INSMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,
-     1                 MATERD, MATERF, MATCST,NDT,NDI,NR,NVI )
 C
       ELSEIF ( LOI(1:9) .EQ. 'VENDOCHAB' ) THEN
          CALL VECMAT ( FAMI, KPG, KSP, MOD,    IMAT,   NMAT, MATERD,

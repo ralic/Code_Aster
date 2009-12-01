@@ -5,7 +5,7 @@
       CHARACTER*24        CHCARA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,7 +57,7 @@ C
       INTEGER      NBCMP, JCNSV, JCNSL, IRET, JCESD, JCESV, 
      +             IM, IMA, NBPT, DECAL, IPT, ICMP, IAD
       REAL*8       IY1, IZ1, R1, EP1, IY2, IZ2, R2, EP2 
-      CHARACTER*8  K8B, NOMGD
+      CHARACTER*8  NOMGD
       CHARACTER*16 NOCMP(4)
       CHARACTER*19 K19B, CES
 C DEB ------------------------------------------------------------------

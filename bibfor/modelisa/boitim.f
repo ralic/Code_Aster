@@ -1,7 +1,7 @@
       SUBROUTINE BOITIM(UNIT  ,NOMBOZ,NGRMAZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 23/03/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,8 @@ C
       INTEGER      JDIME,JMNMX,JBPAN,JBSOM,JMMGL,JBOIH
       INTEGER      NDIME,NMA,NPAN,NSOM
       INTEGER      IMA,IPAN,ISOM
-      INTEGER      INDMA,IRET,NUMMAI,JGRMA
+      INTEGER      IRET,NUMMAI,JGRMA
+      INTEGER INDSOM, INDXYZ, INDPAN
       REAL*8       A1,B1,C1,D1,E1
       REAL*8       X1,Y1,Z1
       LOGICAL      DEBUG
@@ -74,10 +75,14 @@ C ----------------------------------------------------------------------
 C
       DEBUG = .TRUE.
 
-      NOMBOI=NOMBOZ
-      NGRMA=NGRMAZ
+      NOMBOI = NOMBOZ
+      NGRMA = NGRMAZ
 C
-C --- RECUPERATION MAILLAGE
+C===
+C 1. INFORMATIONS GENERALES SUR LES BOITES
+C    VOIR BOITCR POUR LA STRUCTURE
+C===
+C 1.1. ==> NOMS ET NUMEROS DES MAILLES ASSOCIEES
 C
       CALL GETVID(' ','MODELE',0,1,1,NOMO,IOCC)
       IF (IOCC.EQ.0) THEN
@@ -89,6 +94,8 @@ C
 C
       CALL JEVEUO(NGRMA,'L',JGRMA)
 C
+C 1.2. ==> DIMENSION
+C
       CALL JEEXIN(NOMBOI//'.DIME'  ,IRET)
       IF (IRET.EQ.0) THEN
         WRITE(UNIT,*) '<BOITES  > SD BOITE INCORRECTE: <',
@@ -97,7 +104,7 @@ C
         CALL JEVEUO(NOMBOI//'.DIME'  ,'L',JDIME)
         NDIME = ZI(JDIME)
         NMA   = ZI(JDIME+1)
-        IF (NDIME.GT.3) THEN
+        IF ( NDIME.LT.2 .OR. NDIME.GT.3 ) THEN
           WRITE(UNIT,*) '<BOITES  > SD BOITE INCORRECTE (DIMENSION) '
           GOTO 999
         ENDIF
@@ -105,9 +112,10 @@ C
           WRITE(UNIT,*) '<BOITES  > SD BOITE INCORRECTE (NBRE) '
           GOTO 999
         ENDIF
-        WRITE(UNIT,*) '<BOITES  > ... NOMBRE DE BOITES  : ',NMA
-        WRITE(UNIT,*) '<BOITES  > ... DIMENSION ESPACE  : ',NDIME
+        WRITE(UNIT,*) '<BOITES  > .. DIMENSION ESPACE  : ',NDIME
       ENDIF
+C
+C 1.3. ==> BOITE ENGLOBANT TOUTES LES MAILLES
 C
       CALL JEEXIN(NOMBOI//'.MMGLOB',IRET)
       IF (IRET.EQ.0) THEN
@@ -115,127 +123,149 @@ C
      &                NOMBOI//'.MMGLOB','> N''EXISTE PAS'
       ELSE
         CALL JEVEUO(NOMBOI//'.MMGLOB','L',JMMGL)
-        WRITE(UNIT,*) '<BOITES  > ... BOITE ENGLOBANTE DE LA ZONE...'
-        WRITE(UNIT,*) '<BOITES  > ...... X = (',ZR(JMMGL),',',
-     &                                      ZR(JMMGL+1),')'
-        WRITE(UNIT,*) '<BOITES  > ...... Y = (',ZR(JMMGL+2),',',
-     &                                      ZR(JMMGL+3),')'
+        WRITE(UNIT,1301)
+        WRITE(UNIT,1302) '. X', ZR(JMMGL  ), ZR(JMMGL+1)
+        WRITE(UNIT,1302) '. Y', ZR(JMMGL+2), ZR(JMMGL+3)
         IF (NDIME.EQ.3) THEN
-          WRITE(UNIT,*) '<BOITES  > ...... Z = (',ZR(JMMGL+4),',',
-     &                                      ZR(JMMGL+5),')'
+          WRITE(UNIT,1302) '. Z', ZR(JMMGL+4), ZR(JMMGL+5)
         ENDIF
+      ENDIF
+C
+ 1301 FORMAT('BOITE ENGLOBANTE DE LA ZONE')
+ 1302 FORMAT(A,' MIN/MAX = (',G20.13,',',G20.13,')')
+C
+C 1.4. ==> LES SOMMETS
+C
+      CALL JEEXIN(NOMBOI//'.SOMMET',IRET)
+      IF (IRET.EQ.0) THEN
+        WRITE(UNIT,*) '<BOITES  > SD BOITE INCORRECTE: <',
+     &         NOMBOI//'.SOMMET','> N''EXISTE PAS'
+        GOTO 999
+      ELSE
+        CALL JEVEUO(NOMBOI//'.SOMMET','L',JBSOM)
+      ENDIF
+C
+C 1.5. ==> LES GRANDEURS CARACTERISTIQUES
+C
+      CALL JEEXIN(NOMBOI//'.MINMAX',IRET)
+      IF (IRET.EQ.0) THEN
+        WRITE(UNIT,*) '<BOITES  > SD BOITE INCORRECTE: <',
+     &              NOMBOI//'.MINMAX','> N''EXISTE PAS'
+        GOTO 999
+      ELSE
+        CALL JEVEUO(NOMBOI//'.MINMAX','L',JMNMX)
+      ENDIF
+C
+      CALL JEEXIN(NOMBOI//'.H'     ,IRET)
+      IF (IRET.EQ.0) THEN
+        WRITE(UNIT,*) '<BOITES  > SD BOITE INCORRECTE: <',
+     &              NOMBOI//'.H','> N''EXISTE PAS'
+        GOTO 999
+      ELSE
+        CALL JEVEUO(NOMBOI//'.H'     ,'L',JBOIH)
+      ENDIF
+C
+C 1.6. ==> LES PANS
+C
+      CALL JEEXIN(NOMBOI//'.PAN'   ,IRET)
+      IF (IRET.EQ.0) THEN
+        WRITE(UNIT,*) '<BOITES  > SD BOITE INCORRECTE: <',
+     &              NOMBOI//'.PAN','> N''EXISTE PAS'
+        GOTO 999
+      ELSE
+        CALL JEVEUO(NOMBOI//'.PAN'   ,'L',JBPAN)
       ENDIF
 C
       IF (.NOT.DEBUG) GOTO 999
 C
-      DO 10 IMA = 1 , NMA
+C 2. ==> LES BOITES ASSOCIEES AUX MAILELS
 C
-        NPAN = ZI(JDIME+2+2*(IMA-1)+2) -
-     &         ZI(JDIME+2+2*(IMA-1))
-        NSOM = ZI(JDIME+2+2*(IMA-1)+3) -
-     &         ZI(JDIME+2+2*(IMA-1)+1)
+      WRITE(UNIT,*) '<BOITES  > .. NOMBRE DE BOITES  : ',NMA
+C
+      INDSOM = JBSOM
+      INDXYZ = JMNMX
+      INDPAN = JBPAN
+C
+      DO 20 , IMA = 1 , NMA
 C
         NUMMAI = ZI(JGRMA+IMA-1)
         CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUMMAI),NOMMAI)
 C
-        WRITE(UNIT,*) '<BOITES  > ... BOITE NUMERO (',IMA,
-     &                ' ) - MAILLE ',NOMMAI
+        WRITE(UNIT,2001) IMA, NOMMAI
+ 2001 FORMAT('.. BOITE NUMERO',I6' ASSOCIEE A LA MAILLE ',A)
 C
-        CALL JEEXIN(NOMBOI//'.MINMAX',IRET)
-        INDMA = NDIME*2*(IMA-1)
-        IF (IRET.EQ.0) THEN
-          WRITE(UNIT,*) '<BOITES  > SD BOITE INCORRECTE: <',
-     &                NOMBOI//'.MINMAX','> N''EXISTE PAS'
-        ELSE
-          CALL JEVEUO(NOMBOI//'.MINMAX','L',JMNMX)
-          WRITE(UNIT,*) '<BOITES  > ...... MINMAX '
-          WRITE(UNIT,*) '<BOITES  > ......... X = (',
-     &                 ZR(JMNMX+INDMA  ),',',
-     &                 ZR(JMNMX+INDMA+1),')'
-          WRITE(UNIT,*) '<BOITES  > ......... Y = (',
-     &                 ZR(JMNMX+INDMA+2),',',
-     &                 ZR(JMNMX+INDMA+3),')'
-          IF (NDIME.EQ.3) THEN
-            WRITE(UNIT,*) '<BOITES  > ......... Z = (',
-     &                 ZR(JMNMX+INDMA+4),',',
-     &                 ZR(JMNMX+INDMA+5),')'
+C 2.1. ==> LES SOMMETS
+C
+        NSOM = ZI(JDIME+2+2*(IMA-1)+3) -
+     &         ZI(JDIME+2+2*(IMA-1)+1)
+C
+        WRITE(UNIT,2101) NSOM
+ 2101 FORMAT('... NOMBRE DE SOMMETS :',I3)
+C
+        DO 21 , ISOM = 1 , NSOM
+          WRITE(UNIT,2111) ISOM
+ 2111 FORMAT('.... SOMMET NUMERO',I3)
+          IF ( NDIME.EQ.2 ) THEN
+            X1 = ZR(INDSOM+2*(ISOM-1))
+            Y1 = ZR(INDSOM+2*(ISOM-1)+1)
+            WRITE(UNIT,2112) X1, Y1
+ 2112 FORMAT('X =',G20.13,', Y =',G20.13)
+          ELSE
+            X1 = ZR(INDSOM+3*(ISOM-1))
+            Y1 = ZR(INDSOM+3*(ISOM-1)+1)
+            Z1 = ZR(INDSOM+3*(ISOM-1)+2)
+            WRITE(UNIT,2113) X1, Y1, Z1
+ 2113 FORMAT('X =',G20.13,', Y =',G20.13,', Z =',G20.13)
           ENDIF
-        ENDIF
+  21    CONTINUE
+        INDSOM = INDSOM + NDIME*NSOM
 C
-        CALL JEEXIN(NOMBOI//'.H'     ,IRET)
-        IF (IRET.EQ.0) THEN
-          WRITE(UNIT,*) '<BOITES  > SD BOITE INCORRECTE: <',
-     &                NOMBOI//'.H','> N''EXISTE PAS'
-        ELSE
-          CALL JEVEUO(NOMBOI//'.H'     ,'L',JBOIH)
-          WRITE(UNIT,*) '<BOITES  > ...... LONGUEUR CARACTERISTIQUE :',
-     &                 ZR(JBOIH+IMA-1)
-        ENDIF
+C 2.2. ==> LES GRANDEURS CARACTERISTIQUES
 C
-        CALL JEEXIN(NOMBOI//'.PAN'   ,IRET)
-        IF (IRET.EQ.0) THEN
-          WRITE(UNIT,*) '<BOITES  > SD BOITE INCORRECTE: <',
-     &                NOMBOI//'.PAN','> N''EXISTE PAS'
-        ELSE
-          CALL JEVEUO(NOMBOI//'.PAN'   ,'L',JBPAN)
-
-          WRITE(UNIT,*) '<BOITES  > ...... NOMBRE DE PANS : ',NPAN
-C
-          DO 20 IPAN = 1 , NPAN
-            WRITE(UNIT,*) '<BOITES  > ......... PAN (',IPAN,' )'
-            IF (NDIME.EQ.2) THEN
-              A1 = ZR(JBPAN+4*(IPAN-1))
-              B1 = ZR(JBPAN+4*(IPAN-1)+1)
-              D1 = ZR(JBPAN+4*(IPAN-1)+2)
-              E1 = ZR(JBPAN+4*(IPAN-1)+3)
-              WRITE(UNIT,*) '<BOITES  > ......... * ENGLOBANT: ',
-     &                      A1,B1,D1
-              WRITE(UNIT,*) '<BOITES  > ......... * INSCRIT  : ',
-     &                      A1,B1,E1
-            ELSEIF (NDIME.EQ.3) THEN
-              A1 = ZR(JBPAN+5*(IPAN-1))
-              B1 = ZR(JBPAN+5*(IPAN-1)+1)
-              C1 = ZR(JBPAN+5*(IPAN-1)+2)
-              D1 = ZR(JBPAN+5*(IPAN-1)+3)
-              E1 = ZR(JBPAN+5*(IPAN-1)+4)
-              WRITE(UNIT,*) '<BOITES  > ......... * ENGLOBANT: ',
-     &                      A1,B1,C1,D1
-              WRITE(UNIT,*) '<BOITES  > ......... * INSCRIT  : ',
-     &                      A1,B1,C1,E1
-            ELSE
-              CALL ASSERT(.FALSE.)
-            ENDIF
-  20      CONTINUE
+        WRITE(UNIT,1302) '... X', ZR(INDXYZ  ), ZR(INDXYZ+1)
+        WRITE(UNIT,1302) '... Y', ZR(INDXYZ+2), ZR(INDXYZ+3)
+        IF (NDIME.EQ.3) THEN
+          WRITE(UNIT,1302) '... Z', ZR(INDXYZ+4), ZR(INDXYZ+5)
         ENDIF
+        INDXYZ = INDXYZ + NDIME*2
 C
-        CALL JEEXIN(NOMBOI//'.SOMMET',IRET)
-        IF (IRET.EQ.0) THEN
-          WRITE(UNIT,*) '<BOITES  > SD BOITE INCORRECTE: <',
-     &           NOMBOI//'.SOMMET','> N''EXISTE PAS'
-        ELSE
-          CALL JEVEUO(NOMBOI//'.SOMMET','L',JBSOM)
-
-          WRITE(UNIT,*) '<BOITES  > ...... NOMBRE DE SOMMETS : ',
-     &                   NSOM
-          DO 30 ISOM = 1 , NSOM
-            WRITE(UNIT,*) '<BOITES  > ......... SOMMET (',ISOM,' )'
-            IF (NDIME.EQ.2) THEN
-              X1 = ZR(JBSOM+2*(ISOM-1))
-              Y1 = ZR(JBSOM+2*(ISOM-1)+1)
-              WRITE(UNIT,*) '<BOITES  > ......... * COORD : (',X1,',',
-     &                      Y1,')'
-            ELSEIF (NDIME.EQ.3) THEN
-              X1 = ZR(JBSOM+3*(ISOM-1))
-              Y1 = ZR(JBSOM+3*(ISOM-1)+1)
-              Z1 = ZR(JBSOM+3*(ISOM-1)+2)
-              WRITE(UNIT,*) '<BOITES  > ......... * COORD : (',X1,',',
-     &                      Y1,',',Z1,')'
-            ELSE
-              CALL ASSERT(.FALSE.)
-            ENDIF
-  30      CONTINUE
-        ENDIF
- 10   CONTINUE
+        WRITE(UNIT,2201) ZR(JBOIH+IMA-1)
+ 2201 FORMAT('... DIAMETRE :',G20.13)
+C
+C 2.3. ==> LES PANS
+C
+        NPAN = ZI(JDIME+2+2*(IMA-1)+2) -
+     &         ZI(JDIME+2+2*(IMA-1))
+C
+        WRITE(UNIT,2302) NPAN
+ 2302 FORMAT('... NOMBRE DE PANS :',I3)
+C
+        DO 23 , IPAN = 1 , NPAN
+          WRITE(UNIT,2311) IPAN
+ 2311 FORMAT('.... PAN ENGLOBANT/INSCRIT NUMERO',I3)
+          IF (NDIME.EQ.2) THEN
+            A1 = ZR(INDPAN+4*(IPAN-1))
+            B1 = ZR(INDPAN+4*(IPAN-1)+1)
+            D1 = ZR(INDPAN+4*(IPAN-1)+2)
+            E1 = ZR(INDPAN+4*(IPAN-1)+3)
+            WRITE(UNIT,2312) A1, B1, D1
+            WRITE(UNIT,2312) A1, B1, E1
+ 2312 FORMAT('X*',G20.13,'+ Y*',G20.13,'+',G20.13,' <= 0')
+          ELSE
+            A1 = ZR(INDPAN+5*(IPAN-1))
+            B1 = ZR(INDPAN+5*(IPAN-1)+1)
+            C1 = ZR(INDPAN+5*(IPAN-1)+2)
+            D1 = ZR(INDPAN+5*(IPAN-1)+3)
+            E1 = ZR(INDPAN+5*(IPAN-1)+4)
+            WRITE(UNIT,2313) A1, B1, C1, D1
+            WRITE(UNIT,2313) A1, B1, C1, E1
+ 2313 FORMAT
+     >('X*',G20.13,'+ Y*',G20.13,'+ Z*',G20.13,'+',G20.13,' <= 0')
+          ENDIF
+  23    CONTINUE
+        INDPAN = INDPAN + (NDIME+2)*NPAN
+C
+  20  CONTINUE
 
  999  CONTINUE
 

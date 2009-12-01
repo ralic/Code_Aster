@@ -4,7 +4,7 @@
       REAL *8 D(*), E(*)
       COMPLEX    *16 A(LDA,*), TAU(*), W(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF ALGELINE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C-----------------------------------------------------------------------
       COMPLEX    *16 TEMP1
       COMPLEX    *16 CMPLX, CONJG
       REAL *8 R8PREM
-      COMPLEX    *16 ZDOTC
+      COMPLEX    *16 ZDOTC, VC
 C
       TOL = 0.0D0
       DO 10  I=1, N
@@ -54,7 +54,8 @@ C
 C  --- REALISATION DE N-2 TRANSFORMATIONS SIMILAIRES ---
       DO 30  K=2, N - 1
          TAU(K) = 0.0D0
-         VR = ZDOTC(N-K+1,A(K,K-1),1,A(K,K-1),1)
+         VC = ZDOTC(N-K+1,A(K,K-1),1,A(K,K-1),1)
+         VR=MAX(ABS(DBLE(VC)),ABS(DIMAG(VC)))
          IF (VR .LE. DGAMMA*TOL**2) GO TO 30
          IF (DBLE(A(K,K-1)).EQ.0.0D0 .AND. DIMAG(A(K,K-1)).EQ.0.0D0)
      &       THEN

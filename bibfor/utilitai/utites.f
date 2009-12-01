@@ -7,7 +7,7 @@
       COMPLEX*16                          VALC,REFC(NBREF)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 22/12/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
       CENT   = 100.0D0
       ZERO   = 0.D0
       ZEROC  = DCMPLX(0.D0,0.D0)
-      TESTOK = 'NOOK '
+      TESTOK = 'NOOK'
 C
       IF ( TYPE(1:1) .EQ. 'R' ) THEN
          IF ( SSIGNE .EQ. 'OUI' )  VALR = ABS(VALR)
@@ -123,7 +123,7 @@ C
          IF ( RELA .EQ. 'RELA' ) THEN
             LOK = ( ABS( ERR ) .LE. EPSI*ABS(REFI(IMIN)) )
             IF ( REFI(IMIN) .NE. 0 ) THEN
-               ERR = ( VALI - REFI(IMIN) ) / REFI(IMIN) *CENT
+               ERR = ( VALI - REFI(IMIN) )*CENT / REFI(IMIN)
             ELSE
                ERR = 999.999999D0
             ENDIF

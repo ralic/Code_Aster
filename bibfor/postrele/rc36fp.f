@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,11 +44,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
       INTEGER      ISK, ISL, K, L, NK, NL, N0, I1, I1A4, NSITUP,
-     +             IFM, NIV, ICOMPT, NPASS, JSPAS, NBSG1, NBSG2, NBSG3,
+     +             IFM, NIV, ICOMPT, JSPAS, NBSG1, NBSG2, NBSG3,
      +             NBP12, NBP23, NBP13
       REAL*8       SALTM, NADM, UKL, VALE(2)
       LOGICAL      TROUVE, ENDUR, YAPASS
@@ -71,7 +70,7 @@ C --- MISE A ZERO DES LIGNES ET COLONNES DE LA MATRICE SALT
 C     S'IL N'EXISTE PAS DE SITUATIONS DE PASSAGE
 C
       CALL RC36F5 ( NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +              NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +              NBSG2, NBSG3, SALTIJ)
 C
       IF ( NIV .GE. 2 ) THEN
         WRITE(IFM,*) 'MATRICE SALT INITIALE'
@@ -177,7 +176,7 @@ C
          ENDIF         
          CALL RC36F3 ( NBSIGR, NOCC, SALTIJ, NSITUP )
          CALL RC36F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +                 NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +                 NBSG2, NBSG3, SALTIJ )
       ENDIF
 C
 C --- ON VERIFIE SI LA COMBINAISON A ANNULEE DES CHEMINS DE PASSAGE

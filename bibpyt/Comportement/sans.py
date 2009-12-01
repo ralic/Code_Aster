@@ -1,4 +1,4 @@
-#@ MODIF sans Comportement  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF sans Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,12 +17,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE MICHEL S.MICHEL
 
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'SANS',
-   doc = """comportement inopérant""",
+   doc = """comportement inopérant, utile à la simulation des cables de précontrainte""",
    num_lc         = 38,
    nb_vari        = 1,
    nom_vari       = ('VIDE'), 

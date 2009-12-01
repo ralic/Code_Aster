@@ -6,7 +6,7 @@
       REAL*8              SALTIJ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,7 +44,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
       INTEGER      NBSIPS, JNPASS, I, K, IOC1, NSITUP
@@ -71,7 +70,7 @@ C
  10   CONTINUE
       NBP12 = 0
       CALL RC36F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +                      NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +                      NBSG2, NBSG3, SALTIJ )
 C
  9999 CONTINUE
       TYPASS = '2_3'
@@ -93,7 +92,7 @@ C
  20   CONTINUE
       NBP23 = 0
       CALL RC36F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +                      NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +                      NBSG2, NBSG3, SALTIJ )
 C
  9997 CONTINUE
       TYPASS = '1_3'
@@ -115,7 +114,7 @@ C
  30   CONTINUE
       NBP13 = 0
       CALL RC36F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +                      NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +                      NBSG2, NBSG3, SALTIJ )
 C
  9995 CONTINUE
 C

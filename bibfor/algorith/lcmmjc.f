@@ -5,7 +5,7 @@
         REAL*8 COEFT(NMAT),DALDGR,DGAMMS,ALPHMR,SGNR,LCINE2,R8PREM
         CHARACTER*16 NECRCI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,7 +47,7 @@ C     ----------------------------------------------------------------
 
       
       IEC=NBCOMM(IFA,2)
-      NUECIN=COEFT(IEC)
+      NUECIN=NINT(COEFT(IEC))
 
 C--------------------------------------------------------------------
 C     POUR UN NOUVEL ECROUISSAGE CINEMATIQUE, AJOUTER UN BLOC IF 

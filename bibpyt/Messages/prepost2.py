@@ -1,4 +1,4 @@
-#@ MODIF prepost2 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost2 Messages  DATE 27/04/2009   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 """),
 
 19 : _("""
- Le nombre de cmps de la grandeur du champ dépasse 500.
+ Le nombre de cmps de la grandeur du champ d?passe 500.
  Augmenter la dimension de 4 tableaux statiques
 """),
 
@@ -176,8 +176,8 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 """),
 
 55 : _("""
- L'ordre des composantes établi lorsque que vous avez renseigné le mot-clé 
- NOM_CMP est différent de celui du catalogue Aster:
+ L'ordre des composantes ?tabli lorsque que vous avez renseign? le mot-cl? 
+ NOM_CMP est diff?rent de celui du catalogue Aster:
     - ordre des composantes fournies     : %(k1)s %(k2)s %(k3)s %(k4)s %(k5)s %(k6)s
     - ordre des composantes du catalogue : %(k7)s %(k8)s %(k9)s %(k10)s %(k11)s %(k12)s
 """),
@@ -292,6 +292,13 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
 
 83 : _("""
  element pyram13 non disponible dans ideas
+"""),
+
+84 : _("""
+ Le champ %(k1)s est un champ aux noeuds par éléments
+ contenant des %(k2)s
+ Or l'impression de ce type de champ n'est pas encore possible au format MED
+ On n'imprimera donc pas ce champ dans le fichier MED
 """),
 
 93 : _("""

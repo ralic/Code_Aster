@@ -1,7 +1,7 @@
       SUBROUTINE QUADIM(UNIT,ISMED,QUADRA,NGRMA1,NGRMA2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/08/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 23/03/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER      IRET
       INTEGER      IM1,IM2
+      INTEGER IAUX, JAUX
       INTEGER      NFAM,IFAM,NCPL,ICPL,ICPLF
       INTEGER      JQDIME,JQNUME,JQTYPM,JQLIMA,JQMAMA,JQMAFA
       INTEGER      JGRMA1,JGRMA2,JLGRF
@@ -124,53 +125,47 @@ C
 C
         DO 70 ICPL = 1 , NCPL
 C
+          IAUX = ZI(JQMAMA+2*(ICPL-1))
+          JAUX = ZI(JQMAMA+2*(ICPL-1)+1)
           IF (ISMED) THEN
-            IM1  = ZI(JQMAMA+2*(ICPL-1))
-            IM2  = ZI(JQMAMA+2*(ICPL-1)+1)
+            IM1  = IAUX
+            IM2  = JAUX
           ELSE
-            IM1  = ZI(JQMAMA+2*(ICPL-1)+1)
-            IM2  = ZI(JQMAMA+2*(ICPL-1))
+            IM1  = JAUX
+            IM2  = IAUX
           ENDIF
 C
           NUMMA1 = ZI(JGRMA1+ABS(IM1)-1)
           CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUMMA1),NOMMA1)
           NUMMA2 = ZI(JGRMA2+ABS(IM2)-1)
           CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUMMA2),NOMMA2)
+          WRITE(UNIT,1000) ICPL, NOMMA1, NOMMA2
+ 1000 FORMAT('... COUPLE (',I5,' ) : ',A8,' / ',A8)
 C
 C --- TYPE D'INTEGRATION
 C
-          CALL ARLTII(IM1   ,IM2   ,
+          CALL ARLTII(IAUX ,JAUX,
      &                LINCL1,LINCL2,LINCLU,LSSMAI)
 C
           IFAM = ZI(JQMAFA+ICPL-1)
 C
+ 1001 FORMAT
+     & ('...... PAR SOUS-MAILLES SUR MAILLE',I2,' AVEC FAMILLE',I5)
+ 1002 FORMAT
+     & ('...... SUR MAILLE',I2,' AVEC FAMILLE',I5)
+C
           IF (LSSMAI) THEN
-            WRITE(UNIT,*) '<QUADRA  > ...... COUPLE (',ICPL,' ): ',
-     &                     NOMMA1,'/',NOMMA2
-
-            IF (IM1.GT.0) THEN
-              WRITE(UNIT,*) '<QUADRA  > ......... INTEGRE '//
-     &                      'PAR SOUS-MAILLES SUR MAILLE 1 '//
-     &                      'AVEC FAMILLE :',IFAM
+            IF (IAUX.GT.0) THEN
+              WRITE(UNIT,1001) 1, IFAM
             ELSE
-              WRITE(UNIT,*) '<QUADRA  > ......... INTEGRE '//
-     &                      'PAR SOUS-MAILLES SUR MAILLE 2 '//
-     &                      'AVEC FAMILLE :',IFAM
+              WRITE(UNIT,1001) 2, IFAM
             ENDIF
           ELSEIF (LINCL1) THEN
-            WRITE(UNIT,*) '<QUADRA  > ...... COUPLE (',ICPL,' ): ',
-     &                     NOMMA1,'/',NOMMA2
-            WRITE(UNIT,*) '<QUADRA  > ......... INTEGRE '//
-     &                    'SUR MAILLE 1 AVEC FAMILLE     :',IFAM
+            WRITE(UNIT,1002) 1, IFAM
           ELSEIF (LINCL2) THEN
-            WRITE(UNIT,*) '<QUADRA  > ...... COUPLE (',ICPL,' ): ',
-     &                     NOMMA1,'/',NOMMA2
-            WRITE(UNIT,*) '<QUADRA  > ......... INTEGRE '//
-     &                    'SUR MAILLE 2 AVEC FAMILLE     :',IFAM
+            WRITE(UNIT,1002) 2, IFAM
           ELSE
-            WRITE(UNIT,*) '<QUADRA  > ...... COUPLE (',ICPL,' ): ',
-     &                     NOMMA1,'/',NOMMA2,
-     &                    ' - INTEGRATION IMPOSSIBLE !'
+            WRITE(UNIT,*) 'INTEGRATION IMPOSSIBLE !'
             GOTO 999
           ENDIF
 C

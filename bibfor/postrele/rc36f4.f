@@ -1,13 +1,13 @@
       SUBROUTINE RC36F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
-     +                    NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+     +                    NBSG2, NBSG3, SALTIJ )
       IMPLICIT   NONE        
-      INTEGER             NBP12, NBP23, NBP13, NBSIGR, NOCC(*), NSITUP,
+      INTEGER             NBP12, NBP23, NBP13, NBSIGR,
      +                    NBSG1, NBSG2, NBSG3
       REAL*8              SALTIJ(*)
       CHARACTER*3         TYPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  

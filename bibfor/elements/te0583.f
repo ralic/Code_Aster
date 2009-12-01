@@ -1,6 +1,6 @@
       SUBROUTINE TE0583(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 22/12/2008   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C TOLE CRP_20
 C    - FONCTION REALISEE:  CALCUL DU SECOND MEMBRE : TRAVAIL DE LA
 C                          PRESSION ET FORCES LINEIQUES TUYAUX
 C     OPTIONS :'CHAR_MECA_PESA_R' 'CHAR_MECA_FR1D1D''CHAR_MECA_PRES_R'
+C              'CHAR_MECA_PRES_F'
 C ......................................................................
       INTEGER NBRDDM
       PARAMETER (NBRDDM=156)
@@ -145,11 +146,27 @@ C A= RMOY, H = EPAISSEUR RINT = RAYON INTERIEUR
         TK(4) = 2.D0*THETA/3.D0
       END IF
 C  LA PRESSION NE TRAVAILLE QUE SUR LE TERME WO
-      IF (OPTION.EQ.'CHAR_MECA_PRES_R') THEN
-        CALL JEVECD('PPRESSR',IPRES,0.D0)
-        DO 40 I = 1,NNO
-          PRESNO(I) = ZR(IPRES-1+I)
-   40   CONTINUE
+      IF (OPTION(1:14).EQ.'CHAR_MECA_PRES') THEN
+        IF     (OPTION(15:16).EQ.'_R') THEN
+          CALL JEVECD('PPRESSR',IPRES,0.D0)
+          DO 40 I = 1,NNO
+             PRESNO(I) = ZR(IPRES-1+I)
+   40     CONTINUE
+        ELSEIF (OPTION(15:16).EQ.'_F') THEN
+          CALL JEVECH ('PPRESSF', 'L', IPRES)
+          CALL JEVECH ('PTEMPSR', 'L', ITEMPS)
+          VALPAR(4) = ZR(ITEMPS)
+          NOMPAR(4) = 'INST'
+          NOMPAR(1) = 'X'
+          NOMPAR(2) = 'Y'
+          NOMPAR(3) = 'Z'
+          DO 45 I = 1, NNO
+            VALPAR(1) = ZR(IGEOM+3*(I-1)  )
+            VALPAR(2) = ZR(IGEOM+3*(I-1)+1)
+            VALPAR(3) = ZR(IGEOM+3*(I-1)+2)
+            CALL FOINTE('FM',ZK8(IPRES),4,NOMPAR,VALPAR,PRESNO(I),IER)
+  45      CONTINUE
+        ENDIF
         DO 60,IGAU = 1,NPG
           PRESPG(IGAU) = 0.D0
           DO 50,K = 1,NNO

@@ -1,21 +1,21 @@
-#@ MODIF fonct0 Messages  DATE 25/11/2008   AUTEUR DURAND C.DURAND 
+#@ MODIF fonct0 Messages  DATE 26/01/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -69,14 +69,14 @@ Erreur lors de l'interpolation de la fonction '%(k1)s'.
 11 : _("""
 L'interpolation de la fonction '%(k1)s' n'est pas autorisée.
 Le type d'interpolation de la fonction vaut 'NON'
-  
+
   -> Risque & Conseil :
     Voir le mot-clé INTERPOL des commandes qui créent des fonctions.
 """),
 
 12 : _("""
 Une erreur s'est produite dans la recherche de l'intervalle des abscisses contenant la valeur %(r1)s.
-  
+
   -> Risque & Conseil :
     Vérifiez que le type d'interpolation de la fonction ne vaut pas 'NON'
     (mot-clé INTERPOL des commandes qui créent des fonctions).
@@ -119,7 +119,7 @@ On est hors du domaine de définition de la fonction.
 On ne peut pas interpoler la fonction pour cette abscisse car le prolongement à gauche est exclus.
    abscisse demandée              : %(r1)f
    borne inférieure des abscisses : %(r2)f
-  
+
   -> Risque & Conseil :
     Voir le mot-clé PROL_GAUCHE des commandes qui créent des fonctions.
 """),
@@ -129,7 +129,7 @@ On est hors du domaine de définition de la fonction.
 On ne peut pas interpoler la fonction pour cette abscisse car le prolongement à droite est exclus.
    abscisse demandée              : %(r1)f
    borne supérieure des abscisses : %(r2)f
-  
+
   -> Risque & Conseil :
     Voir le mot-clé PROL_DROITE des commandes qui créent des fonctions.
 """),
@@ -144,7 +144,7 @@ Erreur de programmation : type d'extrapolation inconnu.
 22 : _("""
 La fonction n'est définie qu'en un point. On ne peut pas l'interpoler en
 plus d'un point si le prolongement n'est pas constant des deux cotés.
-  
+
   -> Risque & Conseil :
     Voir les mot-clés PROL_GAUCHE/PROL_DROITE des commandes qui créent des fonctions.
 """),
@@ -152,7 +152,7 @@ plus d'un point si le prolongement n'est pas constant des deux cotés.
 23 : _("""
 La fonction n'est définie qu'en un point. On ne peut pas l'interpoler ailleurs
 qu'en ce point si le prolongement n'est pas constant des deux cotés.
-  
+
   -> Risque & Conseil :
     Voir les mot-clés PROL_GAUCHE/PROL_DROITE des commandes qui créent des fonctions.
 """),
@@ -177,29 +177,29 @@ traitées par FOINTR.
 """),
 
 27 : _("""
-Un problème d'interpolation a été rencontré. 
+Un problème d'interpolation a été rencontré.
 %(k1)s
 
   -> Risque & Conseil :
       Vérifier les valeurs fournies derrière le mot-clé 'INTERPOL' lors
       de la création de cette(ces) fonction(s).
-   
+
   -> Debug :
       %(k2)s
 """),
 
 28 : _("""
-Un problème concernant le nom des abscisses ou ordonnées a été rencontré. 
+Un problème concernant le nom des abscisses ou ordonnées a été rencontré.
 Vous ne pouvez pas faire la transformée de fourier d'une fonction dont les abscisses sont des fréquences,
    ou si la fonction est a valeurs complexes
 Vous ne pouvez pas faire la transformée de fourier inverse d'une fonction dont les abscisses sont des instants,
    ou si la fonction est a valeur réelle.
 %(k1)s
-   
+
   -> Risque & Conseil :
       Vérifier la valeur fournie derrière les mots-clés 'NOM_PARA'/'NOM_RESU' lors
       de la création de cette(ces) fonction(s).
-   
+
   -> Debug :
       %(k2)s
 """),
@@ -207,11 +207,11 @@ Vous ne pouvez pas faire la transformée de fourier inverse d'une fonction dont l
 29 : _("""
 Un problème concernant le prolongement de la (des) fonction(s) a été rencontré.
 %(k1)s
-   
+
   -> Risque & Conseil :
       Vérifier la valeur fournie derrière les mots-clés 'PROL_GAUCHE'/'PROL_DROITE'
       lors de la création de cette(ces) fonction(s).
-   
+
   -> Debug :
       %(k2)s
 """),
@@ -219,7 +219,7 @@ Un problème concernant le prolongement de la (des) fonction(s) a été rencontré.
 30 : _("""
 Une erreur s'est produite lors de l'opération.
 %(k1)s
-   
+
   -> Debug :
       %(k2)s
 
@@ -256,7 +256,7 @@ Remontée d'erreur (pour aider à l'analyse) :
 """),
 
 37 : _("""
- calcul du MAX, la liste de fonctions n'est pas 
+ calcul du MAX, la liste de fonctions n'est pas
  homogène en type (fonctions et nappes)
 """),
 
@@ -267,12 +267,12 @@ Remontée d'erreur (pour aider à l'analyse) :
 
 39 : _("""
  Calcul du MAX, la liste de fonctions n'est pas homogène
- en label NOM_RESU :%(k1)s 
+ en label NOM_RESU :%(k1)s
 """),
 
 40 : _("""
- Intensite spectrale, avant de calculer l'intensite spectrale, 
- il est prudent de verifier la norme de la nappe sur laquelle 
+ Intensite spectrale, avant de calculer l'intensite spectrale,
+ il est prudent de verifier la norme de la nappe sur laquelle
  porte le calcul, ceci peut etre une source d erreurs.
 """),
 
@@ -333,6 +333,11 @@ Erreur lors de l'interprétation de la formule '%(k1)s'.
 
 52 : _("""
 %(k1)s
+
+Conseils :
+  Si le problème reporté ci-dessus ressemble à 'NameError: name 'XXX' is not defined.',
+  vérifiez que le paramètre 'XXX' fait bien partie des paramètres de définition de
+  la formule (mot clé FORMULE / NOM_PARA).
 """),
 
 53 : _("""sur le noeud '%(k1)s'

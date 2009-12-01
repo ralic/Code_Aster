@@ -1,4 +1,4 @@
-#@ MODIF visc_cin2_chab Comportement  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF visc_cin2_chab Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE PROIX J.M.PROIX
 
 from cata_comportement import LoiComportement
 

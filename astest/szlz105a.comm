@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/03/2009   AUTEUR ANGLES J.ANGLES 
 # TITRE FATIGUE-COMPTAGE DE CYCLES RAINFLOW-DOMMAGE-EQUIVALENTS-C_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,6 +119,10 @@ DEPL=CALC_ELEM( reuse=DEPL,
                                                'EQUI_ELNO_EPSI',  ),
                                   RESULTAT=DEPL )
 
+
+IMPR_RESU(MODELE = CPLAN,
+          RESU   = _F(RESULTAT=DEPL,),);
+
 MACR_ECLA_PG(   MODELE_INIT = CPLAN,  RESU_INIT = DEPL,
                 NOM_CHAM = ('EQUI_ELGA_EPSI',), LIST_INST=LINST  ,
                 RESULTAT = CO("U2B"), MAILLAGE = CO("MA2"),
@@ -182,11 +186,29 @@ DMG_WOHL=CALC_FATIGUE( TYPE_CALCUL = 'CUMUL_DOMMAGE',
                        INFO        = 2
                      )
 
+DMG_WOH2=CALC_FATIGUE( TYPE_CALCUL = 'CUMUL_DOMMAGE',
+                       OPTION      = 'DOMA_ELGA_SIGM',
+                       HISTOIRE    = _F( EQUI_GD  = 'VMIS_SG',
+                                         RESULTAT = DEPL),
+                       DOMMAGE     = 'WOHLER',
+                       MATER       = MATE,
+                       INFO        = 2
+                     )
+
 MAT1=DEFI_MATERIAU(
           FATIGUE=_F(   MANSON_COFFIN = F_MANSON) )
 
 DMG_MCOF=CALC_FATIGUE( TYPE_CALCUL = 'CUMUL_DOMMAGE',
                        OPTION      = 'DOMA_ELNO_EPSI',
+                       HISTOIRE    = _F( EQUI_GD  = 'INVA_2_SG',
+                                         RESULTAT = DEPL),
+                       DOMMAGE     = 'MANSON_COFFIN',
+                       MATER       = MAT1,
+                       INFO        = 2
+                     )
+
+DMG_MCO2=CALC_FATIGUE( TYPE_CALCUL = 'CUMUL_DOMMAGE',
+                       OPTION      = 'DOMA_ELGA_EPSI',
                        HISTOIRE    = _F( EQUI_GD  = 'INVA_2_SG',
                                          RESULTAT = DEPL),
                        DOMMAGE     = 'MANSON_COFFIN',
@@ -244,18 +266,21 @@ DMG_TMI=CALC_FATIGUE( TYPE_CALCUL  = 'CUMUL_DOMMAGE',
                     )
 
 TEST_RESU(CHAM_ELEM=(          _F(  CHAM_GD = DMG_WOHL,
+                                           REFERENCE='NON_REGRESSION',
                                            MAILLE = 'MA1',
                                            NOEUD = 'NO1',
                                            NOM_CMP = 'DOMA',
                                            VALE = 4.8133E-03),
                                          _F(  CHAM_GD = DMG_MCOF,
+                                           REFERENCE='NON_REGRESSION',
                                            MAILLE = 'MA1',
                                            NOEUD = 'NO1',
                                            NOM_CMP = 'DOMA',
-                                           VALE = 4.6705E-03),),RESU=(
-
-                                    _F(  RESULTAT = DEPL,
+                                           VALE = 4.6705E-03),),
+                                    RESU=(
+                                         _F(  RESULTAT = DEPL,
                                            NOM_CHAM = 'EQUI_ELNO_SIGM',
+                                           REFERENCE='ANALYTIQUE',
                                            NUME_ORDRE = 8,
                                            MAILLE = 'MA1',
                                            NOEUD = 'NO1',
@@ -263,6 +288,7 @@ TEST_RESU(CHAM_ELEM=(          _F(  CHAM_GD = DMG_WOHL,
                                            VALE = 3.),
                                          _F(  RESULTAT = DEPL,
                                            NOM_CHAM = 'EQUI_ELNO_SIGM',
+                                           REFERENCE='ANALYTIQUE',
                                            NUME_ORDRE = 8,
                                            MAILLE = 'MA1',
                                            NOEUD = 'NO1',
@@ -270,6 +296,7 @@ TEST_RESU(CHAM_ELEM=(          _F(  CHAM_GD = DMG_WOHL,
                                            VALE = 3.),
                                          _F(  RESULTAT = DEPL,
                                            NOM_CHAM = 'EQUI_ELNO_SIGM',
+                                           REFERENCE='ANALYTIQUE',
                                            NUME_ORDRE = 8,
                                            MAILLE = 'MA1',
                                            NOEUD = 'NO1',
@@ -278,6 +305,7 @@ TEST_RESU(CHAM_ELEM=(          _F(  CHAM_GD = DMG_WOHL,
 
                                     _F(  RESULTAT = DEPL,
                                            NOM_CHAM = 'EQUI_ELGA_SIGM',
+                                           REFERENCE='ANALYTIQUE',
                                            NUME_ORDRE = 8,
                                            MAILLE = 'MA1',
                                            POINT = 1,
@@ -285,6 +313,7 @@ TEST_RESU(CHAM_ELEM=(          _F(  CHAM_GD = DMG_WOHL,
                                            VALE = 3.),
                                          _F(  RESULTAT = DEPL,
                                            NOM_CHAM = 'EQUI_ELGA_SIGM',
+                                           REFERENCE='ANALYTIQUE',
                                            NUME_ORDRE = 8,
                                            MAILLE = 'MA1',
                                            POINT = 1,
@@ -292,6 +321,7 @@ TEST_RESU(CHAM_ELEM=(          _F(  CHAM_GD = DMG_WOHL,
                                            VALE = 3.),
                                          _F(  RESULTAT = DEPL,
                                            NOM_CHAM = 'EQUI_ELGA_SIGM',
+                                           REFERENCE='ANALYTIQUE',
                                            NUME_ORDRE = 8,
                                            MAILLE = 'MA1',
                                            POINT = 1,
@@ -300,6 +330,7 @@ TEST_RESU(CHAM_ELEM=(          _F(  CHAM_GD = DMG_WOHL,
 
                                     _F(  RESULTAT = DEPL,
                                            NOM_CHAM = 'EQUI_ELNO_EPSI',
+                                           REFERENCE='ANALYTIQUE',
                                            NUME_ORDRE = 8,
                                            MAILLE = 'MA1',
                                            NOEUD = 'NO1',
@@ -307,6 +338,7 @@ TEST_RESU(CHAM_ELEM=(          _F(  CHAM_GD = DMG_WOHL,
                                            VALE = 2.6),
                                          _F(  RESULTAT = DEPL,
                                            NOM_CHAM = 'EQUI_ELNO_EPSI',
+                                           REFERENCE='ANALYTIQUE',
                                            NUME_ORDRE = 8,
                                            MAILLE = 'MA1',
                                            NOEUD = 'NO1',
@@ -315,6 +347,7 @@ TEST_RESU(CHAM_ELEM=(          _F(  CHAM_GD = DMG_WOHL,
 
                                     _F(  RESULTAT = DEPL,
                                            NOM_CHAM = 'EQUI_ELGA_EPSI',
+                                           REFERENCE='ANALYTIQUE',
                                            NUME_ORDRE = 8,
                                            MAILLE = 'MA1',
                                            POINT = 1,
@@ -322,6 +355,7 @@ TEST_RESU(CHAM_ELEM=(          _F(  CHAM_GD = DMG_WOHL,
                                            VALE = 2.6),
                                          _F(  RESULTAT = DEPL,
                                            NOM_CHAM = 'EQUI_ELGA_EPSI',
+                                           REFERENCE='ANALYTIQUE',
                                            NUME_ORDRE = 8,
                                            MAILLE = 'MA1',
                                            POINT = 1,

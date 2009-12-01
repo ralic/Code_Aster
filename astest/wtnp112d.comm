@@ -1,8 +1,9 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST HMD, 2D , MODELISATION THMC=LIQU_GAZ_ATM
 #       TEST31 ALLIANCES
 # ======================================================================
+# wtnp112d.para = tps_job 70 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

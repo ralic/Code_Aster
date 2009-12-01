@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/10/2008   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 27/04/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,9 +21,9 @@
 
 from Macro.calc_modal_ops import calc_modal_ops
 
-def calc_modal_prod(self,AMORTISEMENT,**args):
-  if AMORTISEMENT=="NON": return mode_meca
-  if AMORTISEMENT=="OUI": return mode_meca_c
+def calc_modal_prod(self,AMORTISSEMENT,**args):
+  if AMORTISSEMENT=="NON": return mode_meca
+  if AMORTISSEMENT=="OUI": return mode_meca_c
   raise AsException("type de concept resultat non prevu")
 
 
@@ -32,7 +32,7 @@ CALC_MODAL=MACRO(nom="CALC_MODAL",op=calc_modal_ops,
                       sd_prod=calc_modal_prod,
                     fr="Calcul des modes propres reels ou complexes dans une seule commande",
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
-         AMORTISEMENT    =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON" ),
+         AMORTISSEMENT    =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON" ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          INST            =SIMP(statut='f',typ='R',defaut=0.),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),

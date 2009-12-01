@@ -1,7 +1,7 @@
       SUBROUTINE ORIEM2(TYPEMA,CNOEUD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 27/04/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,23 +33,22 @@ C ON REMET LES COORDONNEES DES NOEUDS (CNOEUD) DANS LE BON SENS (2D)
 C
 C ----------------------------------------------------------------------
 C
-C
-C IN  TYPEMA : TYPE DE LA MAILLE
-C I/O CNOEUD : COORDONNEES DE LA MAILLE
+C IN  TYPEMA : TYPE DE LA MAILLE ('TRIA', 'QUAD', 'TETRA', ETC.)
+C I/O CNOEUD : COORDONNEES DES NOEUDS DE LA MAILLE
 C
 C ----------------------------------------------------------------------
 C
       REAL*8      DDOT
-      INTEGER     IELEM,I,J,I1,I2,P,N,DIM
+      INTEGER     IELEM,I,J,I1,I2,P,N,DIME
       REAL*8      U(3),V(3),W(3),XN(3),R
       LOGICAL     LINEAR
 C
       INTEGER     ZELEM,ZINO
       PARAMETER   (ZELEM=6,ZINO=20)
-      INTEGER     INDEX(2,ZELEM)
+      INTEGER     INDICE(2,ZELEM)
       INTEGER     INO  (2,ZINO)
 C
-      DATA INDEX /1 ,2 ,
+      DATA INDICE /1 ,2 ,
      &            3 ,4 ,
      &            6 ,7 ,
      &            9 ,11,
@@ -71,7 +70,7 @@ C
           GOTO 999
         ELSE
           LINEAR = TYPEMA(5:5) .EQ. '3'
-          DIM    = 2
+          DIME   = 2
           IELEM  = 1
         ENDIF
       ELSEIF (TYPEMA(1:4).EQ.'QUAD') THEN
@@ -83,7 +82,7 @@ C
           GOTO 999
         ELSE
           LINEAR = TYPEMA(5:5).EQ.'4'
-          DIM    = 2
+          DIME   = 2
           IELEM  = 2
         ENDIF
       ELSEIF (TYPEMA(1:5).EQ.'TETRA') THEN
@@ -101,7 +100,7 @@ C
           GOTO 999
         ELSE
           LINEAR = TYPEMA(6:6).EQ.'4'
-          DIM    = 3
+          DIME   = 3
           IELEM  = 3
         ENDIF
       ELSEIF (TYPEMA(1:5).EQ.'PENTA') THEN
@@ -122,7 +121,7 @@ C
           GOTO 999
         ELSE
           LINEAR = TYPEMA(6:6).EQ.'6'
-          DIM    = 3
+          DIME   = 3
           IELEM  = 4
         ENDIF
       ELSEIF (TYPEMA(1:4).EQ.'HEXA') THEN
@@ -140,7 +139,7 @@ C
           GOTO 999
         ELSE
           LINEAR = TYPEMA(5:5).EQ.'8'
-          DIM    = 3
+          DIME   = 3
           IELEM  = 5
         ENDIF
       ELSE
@@ -155,19 +154,19 @@ C
 C
 C --- PERMUTATION
 C
-      P = INDEX(1,IELEM)
+      P = INDICE(1,IELEM)
 
       IF (LINEAR) THEN
-        N = INDEX(2,IELEM) - P
+        N = INDICE(2,IELEM) - P
       ELSE
-        N = INDEX(1,IELEM+1) - P
+        N = INDICE(1,IELEM+1) - P
       ENDIF
 
-      DO 10 I = 1, N
-        I1 = DIM*(INO(1,P)-1)
-        I2 = DIM*(INO(2,P)-1)
+      DO 10 , I = 1, N
+        I1 = DIME*(INO(1,P)-1)
+        I2 = DIME*(INO(2,P)-1)
         P = P + 1
-        DO 20 J = 1, DIM
+        DO 20 , J = 1, DIME
           I1 = I1 + 1
           I2 = I2 + 1
           R  = CNOEUD(I1)

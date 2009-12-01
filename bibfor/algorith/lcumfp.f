@@ -2,7 +2,7 @@
      &                    TINSTM,TINSTP,EPSM,DEPS,SIGM,
      &                    VIM,OPTION,SIGP,VIP,DSIDEP,CRIT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -470,7 +470,7 @@ C_______________________________________________________________________
      
       IF (TDT.NE.0.D0) THEN
         IF (OPTION(1)(1:9).EQ.'RIGI_MECA') THEN
-          ISPH=VIM(21)
+          ISPH=NINT(VIM(21))
         ENDIF
         CALL LCUMMD(VIM,20,CMAT,15,SIGM,NSTRS,ISPH,TDT,
      &               HYGRM,HYGRP,

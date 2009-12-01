@@ -4,7 +4,7 @@
      &                   TOL  , RESID , NCV   , V     ,
      &                   LDV  , IPARAM, IPNTR , WORKD ,
      &                   WORKL, LWORKL, RWORK , INFO  )
-C MODIF ALGELINE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -563,7 +563,7 @@ C
             RTEMP = MAX(EPS23,
      &                 DLAPY2  ( DBLE (WORKL(IRZ+NCV-J)),
      &                          DIMAG (WORKL(IRZ+NCV-J)) ))
-            JJ = WORKL(BOUNDS + NCV - J)
+            JJ = NINT(DBLE(WORKL(BOUNDS + NCV - J)))
             IF (NUMCNV .LT. NCONV .AND.
      &          DLAPY2 ( DBLE (WORKL(IBD+JJ-1)),
      &          DIMAG (WORKL(IBD+JJ-1)) )

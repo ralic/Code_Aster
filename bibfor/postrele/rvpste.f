@@ -8,7 +8,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 08/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,7 @@ C
                CALL RVECHE(SSCH19,SDLIEU,SDEVAL)
             ENDIF
          ELSE
-C           /* AUTRE LIEU DE POST-TRAITEMENT
+C           /* AUTRE LIEU DE POST-TRAITEMENT */
          ENDIF
 10    CONTINUE
       CALL JEDETR('&&RVPSTE.NB.ND.FACE.TYPE')

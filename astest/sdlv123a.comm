@@ -1,8 +1,9 @@
-# MODIF  DATE 29/01/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 
 DEBUT(CODE=_F(NOM='SDLV123A',
               NIV_PUB_WEB='INTERNET',),);
 # TITRE DYNAMIQUE D'UNE FISSURE FINIE STATIONNAIRE DANS UN MILIEU 
+# sdlv123a.para = tps_job 280 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG

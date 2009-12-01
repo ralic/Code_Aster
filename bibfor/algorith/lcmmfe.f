@@ -7,7 +7,7 @@
         REAL*8 RP,SGNS,HSR(5,24,24),DY(*),VIND(*),MATERF(NMAT),DALPHA
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ C     ----------------------------------------------------------------
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 
       IFL=NBCOMM(IFA,1)
-      NUECOU=COEFT(IFL)
+      NUECOU=NINT(COEFT(IFL))
       IRET=0
       PTIT=R8MIEM()
 C       CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET2)

@@ -8,7 +8,7 @@
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C     ----------------------------------------------------------------
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 
       IFL=NBCOMM(IFA,1)
-      NUECOU=COEFT(IFL)
+      NUECOU=NINT(COEFT(IFL))
       IRET=0
 
 C      IF (NECOUL.EQ.'ECOU_VISC1') THEN
@@ -177,7 +177,7 @@ C         DFDR=DHDAL
           KDCS      =COEFT(IFL+8)
           P         =COEFT(IFL+9)
           Q         =COEFT(IFL+10)
-          NUMHSR    =COEFT(IFL+12)
+          NUMHSR    =NINT(COEFT(IFL+12))
           TPERD     =COEFT(IFL+11)
           IF (MATERF(NMAT).EQ.0) THEN
              CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2

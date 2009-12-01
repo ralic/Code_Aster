@@ -3,7 +3,7 @@
       CHARACTER*24  CSIGM, CINST, CSNO, CSNE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 27/01/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,20 +71,8 @@ C
             SN1E(ICMP) = ZR(JSIGM-1+L1)+ZR(JSIGM-1+L2)-ZR(JSIGM-1+L3)
  102     CONTINUE
          IND = IND + 1
-C ======================================================================
-C --- CALCUL DES VALEURS PROPRES DU TENSEUR DE CONTRAINTES LINEARISEES
-C     SN1O A L'ORIGINE DU CHEMIN :
-C --- CALCUL DE LA DIFFERENCE SUP SNO DES VALEURS PROPRES (LE TRESCA) :
-C ======================================================================
-         CALL RCTRES ( SN1O, TRESCA )
-         ZR(JSNO+IND-1) = TRESCA
-C ======================================================================
-C --- CALCUL DES VALEURS PROPRES DU TENSEUR DE CONTRAINTES LINEARISEES
-C     SN1E A L'AUTRE EXTREMITE DU CHEMIN :
-C --- CALCUL DE LA DIFFERENCE SUP SNE DES VALEURS PROPRES (LE TRESCA) :
-C ======================================================================
-         CALL RCTRES ( SN1E, TRESCA )
-         ZR(JSNE+IND-1) = TRESCA
+         ZR(JSNO+IND-1) = 0.D0
+         ZR(JSNE+IND-1) = 0.D0
 C
          DO 110 I2 = I1+1, NBINST
 C

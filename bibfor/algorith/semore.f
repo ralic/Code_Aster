@@ -5,7 +5,7 @@
 
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,6 +100,8 @@ C VARIABLES LOCALES
       K19BID = ' '
       K24BID = ' '
       UNDF = R8VIDE()
+
+      IF (NEQ.GT.10000) CALL U2MESS('A','SENSIBILITE_56')
 
       CALL GETRES(NOMRES,TYPCON,NOMCMD)
       CALL GETVID(' ','MATR_A',1,1,1,RAIDE,IRET)

@@ -7,7 +7,7 @@
       CHARACTER*19 RESUC1,LIGREL
       CHARACTER*(*) OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/08/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 22/12/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -178,8 +178,6 @@ C
 
       CALL TBAJLI (NOMT19,NBPAR,NOMPAR,IORD,LISTR,CBID,KBID,0)
 
-      CALL TBIMPR (NOMT19,'        ','EXCEL',10,NBPAR,
-     &             NOMPAR,0,' ','1PE12.5',' ')
       WRITE(IFI,*) ' '
       WRITE(IFI,*) '***************************************************'
       IF(OPTION(1:14).EQ.'ERZ1_ELEM_SIGM') THEN

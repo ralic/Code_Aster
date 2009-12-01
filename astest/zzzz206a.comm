@@ -1,5 +1,6 @@
-# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE LINEARISATION DE MAILLES QUADRATIQUES
+# zzzz206a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

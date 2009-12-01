@@ -6,7 +6,7 @@
       CHARACTER*(*) LIGREL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 22/12/2008   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,7 +139,7 @@ C
         LPAOUT(1) = 'PCVOISX'
         LCHOUT(1) = CVOISX     
 C        
-        CALL CALCUL('C',OPT,LIGREL,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,BASE)
+        CALL CALCUL('C',OPT,LIGREL,2,LCHIN,LPAIN,1,LCHOUT,LPAOUT,BASE)
 C        
         CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
 C

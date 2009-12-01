@@ -6,7 +6,7 @@
       COMPLEX*16                                             VECT(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C     --- CALCUL DE LA MASSE GENERALISEE ---
             DO 110 IEQ = 1, NEQ
                RVAL = RVAL + DCONJG(VECT(IEQ,IVECT)) * ZC(LAUX+IEQ)
   110       CONTINUE
-            MASSEG(IVECT) = RVAL
+            MASSEG(IVECT) = DBLE(RVAL)
   100    CONTINUE
       ENDIF
 C
@@ -87,7 +87,7 @@ C     --- CALCUL DE L'AMORTISSEMENT GENERALISE ---
             DO 210 IEQ = 1, NEQ
                RVAL = RVAL + DCONJG(VECT(IEQ,IVECT)) * ZC(LAUX+IEQ)
   210       CONTINUE
-            AMORG(IVECT) = RVAL
+            AMORG(IVECT) = DBLE(RVAL)
   200    CONTINUE
       ELSE
          DO 250 IVECT = 1, NBVECT
@@ -107,7 +107,7 @@ C     --- CALCUL DE LA RAIDEUR GENERALISEE ---
                RVAL = RVAL +
      +                   DCONJG(VECT(IEQ,IVECT))*ZC(LAUX+IEQ)*IDDL(IEQ)
   310       CONTINUE
-            RAIDEG(IVECT) = RVAL
+            RAIDEG(IVECT) = DBLE(RVAL)
   300    CONTINUE
       ENDIF
 C

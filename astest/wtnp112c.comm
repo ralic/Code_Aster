@@ -1,8 +1,9 @@
-# MODIF  DATE 14/11/2005   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THH2D, 2D , MODELISATION THMC=LIQU_AD_GAZ_VAPE
 #       TEST31 ALLIANCES
 # ======================================================================
+# wtnp112c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,5 +1,6 @@
-# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE PERFORMANCE MODE_ITER_INV SUR UN GROS MODELE 3D
+# yyyy115a.para = tps_job 340 mem_job 900Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

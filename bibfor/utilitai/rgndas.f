@@ -4,7 +4,7 @@
       CHARACTER*(*)     TYPE,NU,NOMNO,NOMCMP,TARDIF,LIGREL,INFOBL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -191,7 +191,7 @@ C
            TARDIF = 'TARDIF'
            CALL JEVEUO(JEXNUM(NUME//'.ORIG',2),'L',JORIG)
            NULIA = ZI(JORIG+NUNO+1)
-           NOMNO(1:3)='TARD'
+           NOMNO(1:3)='TAR'
            WRITE(NOMNO(4:8),'(I5)') NUNO
            NOMCMP(1:3) = 'LAG'
            WRITE(NOMCMP(4:8),'(I5)') NUCMP

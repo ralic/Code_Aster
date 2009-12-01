@@ -1,5 +1,6 @@
-# MODIF  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
+# ssnv503g.para = tps_job 90 mem_job 64Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG

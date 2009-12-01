@@ -1,7 +1,8 @@
-# MODIF  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION AFFE_CHAR_MECA(_F)/FACE_IMPO/SANS_GROUP_MA
 #                  AFFE_CHAR_MECA(_F)/FACE_IMPO/SANS_NOEUD
 #                  AFFE_CHAR_MECA(_F)/FACE_IMPO/SANS_GROUP_NO
+# zzzz219a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG

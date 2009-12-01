@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF elements2 Messages  DATE 03/03/2009   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,10 +140,6 @@ cata_msg = {
  echec de convergence dans l'inversion du systeme par newton-raphson.
 """),
 
-60 : _("""
- mauvaise orientation de l element !
-"""),
-
 61 : _("""
  " %(k1)s "   nom d'option non reconnue
 """),
@@ -154,10 +150,6 @@ cata_msg = {
 
 63 : _("""
  ! comportement non trouve !
-"""),
-
-66 : _("""
- la matrice gyroscopique n'est pas disponible pour l'élément %(k1)s
 """),
 
 71 : _("""

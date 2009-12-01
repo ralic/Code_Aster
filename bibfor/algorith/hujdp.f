@@ -2,7 +2,7 @@
      &                  VIN, NDEC, IRET)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,7 +31,7 @@ C       ---------------------------------------------------------------
       INTEGER     NDT, NDI, I, J, NDEC, IRET
       REAL*8      DI1D, I1D, N, PREF, K0, NI
       REAL*8      DEPS(6), SIGD(6), SIGF(6)
-      REAL*8      MATER(22,2), TOLE, TOL, RI, VIN(*)
+      REAL*8      MATER(22,2), TOLE1, TOL, RI, VIN(*)
       REAL*8      ZERO, UN, D13, DEUX, DEPSV, COEF 
       REAL*8      EPSVP, BETA, D, FR, I1E 
       REAL*8      DFDS(6), E, NU, AL, LA, DEMU 
@@ -40,9 +40,12 @@ C       ---------------------------------------------------------------
       REAL*8      TAUD(3), RELA1, RELA2
       REAL*8      PISO, MAX, C11, C12, C13, C22, C23, C33
       REAL*8      E1,E2,E3,NU12,NU13,NU23,G1,G2,G3,NU21,NU31,NU32,DELTA
+      REAL*8      YF(15), SIGDC(3), PRODD, PRODF
       CHARACTER*8   MOD
+      LOGICAL     DEBUG
 
       COMMON /TDIM/ NDT, NDI
+      COMMON /MESHUJ/ DEBUG
 
       DATA ZERO, D13, UN, DEUX, TOL
      &/ 0.D0, 0.33333333333334D0, 1.D0, 2.D0, 1.D-6 /
@@ -60,11 +63,11 @@ C       ---------------------------------------------------------------
       PCO   = MATER(7,2)
       EPSVP = VIN(23)
       DEPSV = DEPS(1)+DEPS(2)+DEPS(3)       
-      TOLE = 0.05D0
+      TOLE1 = 0.05D0
 
 
 C ----------------------------------------------------
-C 1 --- CRITERE LIMITANT L EVOLUTION DE P: DP/P < TOLE
+C 1 --- CRITERE LIMITANT L EVOLUTION DE P: DP/P < TOLE1
 C ----------------------------------------------------
       I1D   = D13*(SIGD(1)+SIGD(2)+SIGD(3))
       IF (MATER(17,1).EQ.UN) THEN
@@ -112,15 +115,15 @@ C ----------------------------------------------------
       
       IF (RI.GT.UN) THEN
         RI = UN
-      ELSEIF (RI.LT.TOLE) THEN
-        RI = TOLE
+      ELSEIF (RI.LT.TOLE1) THEN
+        RI = TOLE1
       ENDIF
-      NDEC = NINT(RI/TOLE)   
+      NDEC = NINT(RI/TOLE1)   
 
 
 C ----------------------------------------------------------------      
 C 2 --- CRITERE A RESPECTER POUR L EVOLUTION DU MECANISME ISOTROPE
-C   ---         FR/(DFDS*C*DEPS)*TOLE > TETA = 1/RI             
+C   ---         FR/(DFDS*C*DEPS)*TOLE1 > TETA = 1/RI             
 C ====================================================================
 C -------------------- 2.1 CONSTRUCTION DE C -------------------------
 C ====================================================================
@@ -203,43 +206,66 @@ C ====================================================================
 
       IF (RI.GT.UN) THEN
         RI = UN
-      ELSEIF (RI.LT.TOLE) THEN
-        RI = TOLE
+      ELSEIF (RI.LT.TOLE1) THEN
+        RI = TOLE1
       ENDIF
-      NI = NINT(RI/TOLE)   
+      NI = NINT(RI/TOLE1)   
       IF (NDEC.LT.NI) NDEC = NI
 
 
 C -------------------------------------------------------
-C 3 --- CRITERE LIMITANT L EVOLUTION DE Q: DQ/PREF < TOLE
+C 3 --- CRITERE LIMITANT L EVOLUTION DE Q: DQ/PREF < TOLE1
 C -------------------------------------------------------    
       DO 45 I = 1, 3
-      
-        CALL HUJPRJ(I, SIGD, TAUD, PD, QD)
-        CALL HUJPRJ(I, SIGF, TAUF, PF, QF)
-        IF (ABS(QF-QD).LT.TOLE) THEN
-          RI =ZERO
-        ELSE  
-          RI =ABS((QF-QD)/PREF)
-        ENDIF
+        IF(VIN(27+I).EQ.UN)THEN      
+C --- INITIALISATION DES VARIABLES NECESSAIRES A PROD/Q(K)        
+C --- AVEC PROD = PRODUIT SCALAIRE (SIGDC*TH)
+          CALL LCEQVN (NDT, SIGF, YF)
+          YF(7) = EPSVP
+          YF(8) = VIN(4+I) 
+          CALL HUJPRC (1, I, SIGF, VIN, MATER, YF,
+     &                 PF, QF, SIGDC)
+          PRODF = SIGDC(1)*VIN(4*I+7)+SIGDC(3)*VIN(4*I+8)/DEUX
+          CALL LCEQVN (NDT, SIGD, YF)
+          CALL HUJPRC (1, I, SIGD, VIN, MATER, YF,
+     &                 PD, QD, SIGDC)
+          PRODD = SIGDC(1)*VIN(4*I+7)+SIGDC(3)*VIN(4*I+8)/DEUX
+          IF((QD.LT.TOL).OR.(QF.LT.TOL))THEN
+            RI = ZERO
+          ELSEIF(((UN+PRODD/QD).LT.TOL).OR.
+     &           ((UN+PRODF/QF).LT.TOL))THEN
+            RI = ZERO     
+          ELSE
+            RI = ABS((UN/(UN+PRODD/QD))-(UN/(UN+PRODF/QF)))
+     &           /(UN/(UN+PRODD/QD))
+          ENDIF   
+        ELSE 
+          CALL HUJPRJ(I, SIGD, TAUD, PD, QD)
+          CALL HUJPRJ(I, SIGF, TAUF, PF, QF)
+          IF (ABS(QF-QD).LT.TOLE1) THEN
+            RI =ZERO
+          ELSE  
+            RI =ABS((QF-QD)/PREF)
+          ENDIF
         
-        RELA1 = ZERO
-        RELA2 = ZERO
-        IF (ABS(TAUD(1)).GT.TOLE)
-     &  RELA1 = ABS((TAUF(1)-TAUD(1))/PREF)
-        IF (ABS(TAUD(3)).GT.TOLE)
-     &  RELA2 = ABS((TAUF(3)-TAUD(3))/PREF)
-        IF (RELA1.GT.RI) RI = RELA1
-        IF (RELA2.GT.RI) RI = RELA2
-        
+          RELA1 = ZERO
+          RELA2 = ZERO
+          IF (ABS(TAUD(1)).GT.TOLE1)
+     &    RELA1 = ABS((TAUF(1)-TAUD(1))/PREF)
+          IF (ABS(TAUD(3)).GT.TOLE1)
+     &    RELA2 = ABS((TAUF(3)-TAUD(3))/PREF)
+          IF (RELA1.GT.RI) RI = RELA1
+          IF (RELA2.GT.RI) RI = RELA2        
+        ENDIF 
+
         IF (RI.GT.UN) THEN
           RI = UN
-        ELSEIF (RI.LT.TOLE) THEN
-          RI = TOLE
+        ELSEIF (RI.LT.TOLE1) THEN
+          RI = TOLE1
         ENDIF
-        NI = NINT(RI/TOLE)
+        NI = NINT(RI/TOLE1)
         IF (NDEC.LT.NI) NDEC = NI
-        
+
  45   CONTINUE 
       
  500  CONTINUE

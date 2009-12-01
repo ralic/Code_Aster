@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 27/04/2009   AUTEUR BOYERE E.BOYERE 
 # TITRE SYSTEME 3 MASSES 2 RESSORTS  A 18 DDL (+AMORTISSEURS DISCRETS)
+# sdld320a.para = tps_job 360 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,289 +24,416 @@
 #
 # IRCN   DATE 9/08/96   AUTEUR G.BECHEPAY - T.QUESNEL
 
-
-DEBUT(CODE=_F(NOM='SDLD320A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-
-#
-
-RESSORT=LIRE_MAILLAGE( )
+DEBUT(CODE=_F(NOM='SDLD320A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
 #
 
-MODELE=AFFE_MODELE(   MAILLAGE=RESSORT,AFFE=(
-                        _F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
-                               MODELISATION = 'DIS_TR'),
-                             _F( GROUP_NO = 'NOEUDS',   PHENOMENE = 'MECANIQUE',
-                               MODELISATION = 'DIS_TR'))            )
-
-#
-ELEMNT=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
-                 _F(  MAILLE = 'E1',
-                           CARA = 'K_TR_D_L',
-                           VALE = (4.E9, 4.E9, 4.E9,
-                                 4.E9, 4.E9, 4.E9, )),
-
-                         _F(  MAILLE = 'E2',
-                           CARA = 'K_TR_D_L',
-                           VALE = (5.33E8, 5.33E8, 5.33E8,
-                                 5.33E8, 5.33E8, 5.33E8,)),
-
-                         _F(  MAILLE = 'E1',
-                           CARA = 'A_TR_D_L',
-                           VALE = (1.2566E6, 0., 0., 0., 0., 0.,)),
-
-                         _F(  MAILLE = 'E2',
-                           CARA = 'A_TR_D_L',
-                           VALE = (9.0478E6, 0., 0., 0., 0., 0.,)),
-
-                         _F(  NOEUD = ('P2','P3',),
-                           CARA = 'M_TR_D_N',
-                           VALE = ( 12.E6,  12.E6, 12.E6, 12.E6,
-                                   0., 0., 0.,
-                                   0., 0., 0.,)),
-
-                         _F(  NOEUD = 'P1',
-                           CARA = 'M_TR_D_N',
-                           VALE = ( 1.E6,  1.E6, 1.E6, 1.E6,
-                                   0., 0., 0.,
-                                   0., 0., 0.,)))
-                          )
+RESSORT=LIRE_MAILLAGE();
 
 #
 
-EFFORT=AFFE_CHAR_MECA(  MODELE=MODELE,
-                          FORCE_NODALE=_F(  NOEUD = 'P3',  FX = 5.E4)  )
+MODELE=AFFE_MODELE(MAILLAGE=RESSORT,
+                   AFFE=(_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),
+                         _F(GROUP_NO='NOEUDS',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),),);
 
 #
 
-RIGIELEM=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='RIGI_MECA',
-                             CARA_ELEM=ELEMNT  )
-
-MASSELEM=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='MASS_MECA',
-                             CARA_ELEM=ELEMNT  )
-
-AMORELEM=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='AMOR_MECA',
-                             CARA_ELEM=ELEMNT  )
-
-EFFOELEM=CALC_VECT_ELEM(  CHARGE=EFFORT,  OPTION='CHAR_MECA',
-                             CARA_ELEM=ELEMNT                  )
+ELEMNT=AFFE_CARA_ELEM(MODELE=MODELE,
+                      DISCRET=(_F(CARA='K_TR_D_L',
+                                  MAILLE='E1',
+                                  VALE=(4.E9,4.E9,4.E9,4.E9,4.E9,4.E9,),),
+                               _F(CARA='K_TR_D_L',
+                                  MAILLE='E2',
+                                  VALE=(5.33E8,5.33E8,5.33E8,5.33E8,5.33E8,5.33E8,),),
+                               _F(CARA='A_TR_D_L',
+                                  MAILLE='E1',
+                                  VALE=(1.2566E6,0.,0.,0.,0.,0.,),),
+                               _F(CARA='A_TR_D_L',
+                                  MAILLE='E2',
+                                  VALE=(9.0478E6,0.,0.,0.,0.,0.,),),
+                               _F(CARA='M_TR_D_N',
+                                  NOEUD=('P2','P3',),
+                                  VALE=(12.E6,12.E6,12.E6,12.E6,0.,0.,0.,0.,0.,0.,),),
+                               _F(CARA='M_TR_D_N',
+                                  NOEUD='P1',
+                                  VALE=(1.E6,1.E6,1.E6,1.E6,0.,0.,0.,0.,0.,0.,),),),);
 
 #
+
+EFFORT=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(NOEUD='P3',
+                                      FX=5.E4,),);
+
 #
 
-NUMEROTA=NUME_DDL(  MATR_RIGI=RIGIELEM  )
+RIGIELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MODELE,
+                        CARA_ELEM=ELEMNT,);
+
+MASSELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MODELE,
+                        CARA_ELEM=ELEMNT,);
+
+AMORELEM=CALC_MATR_ELEM(OPTION='AMOR_MECA',
+                        MODELE=MODELE,
+                        CARA_ELEM=ELEMNT,);
+
+EFFOELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                        CHARGE=EFFORT,
+                        CARA_ELEM=ELEMNT,);
 
 #
 
-MATRRIGI=ASSE_MATRICE(  MATR_ELEM=RIGIELEM,  NUME_DDL=NUMEROTA  )
+NUMEROTA=NUME_DDL(MATR_RIGI=RIGIELEM,);
 
-MATRMASS=ASSE_MATRICE(  MATR_ELEM=MASSELEM,  NUME_DDL=NUMEROTA  )
+#
 
-MATRAMOR=ASSE_MATRICE(  MATR_ELEM=AMORELEM,  NUME_DDL=NUMEROTA  )
+MATRRIGI=ASSE_MATRICE(MATR_ELEM=RIGIELEM,
+                      NUME_DDL=NUMEROTA,);
 
-VECTASS=ASSE_VECTEUR(  VECT_ELEM=EFFOELEM,  NUME_DDL=NUMEROTA  )
+MATRMASS=ASSE_MATRICE(MATR_ELEM=MASSELEM,
+                      NUME_DDL=NUMEROTA,);
+
+MATRAMOR=ASSE_MATRICE(MATR_ELEM=AMORELEM,
+                      NUME_DDL=NUMEROTA,);
+
+VECTASS=ASSE_VECTEUR(VECT_ELEM=EFFOELEM,
+                     NUME_DDL=NUMEROTA,);
 
 #
 #
 # CALCUL DE LA BASE MODALE COMPLETE
 # ---------------------------------
-#
-#
 
-MODES=MODE_ITER_SIMULT(  MATR_A=MATRRIGI,
-                         MATR_B=MATRMASS,
-                         METHODE='JACOBI',
-                         NMAX_ITER_BATHE = 30,
-                         OPTION='SANS',
-                         CALC_FREQ=_F(  OPTION = 'CENTRE',
-                                        FREQ = 200.,
-                                        NMAX_FREQ = 18,)
-                      )
+MODES=MODE_ITER_SIMULT(MATR_A=MATRRIGI,
+                       MATR_B=MATRMASS,
+                       METHODE='JACOBI',
+                       NMAX_ITER_BATHE=30,
+                       OPTION='SANS',
+                       CALC_FREQ=_F(OPTION='CENTRE',
+                                    FREQ=200.,
+                                    NMAX_FREQ=18,),);
 
 #
 #
 # PROJECTION DANS LA BASE MODALE
 # ------------------------------
-#
-#
-MACRO_PROJ_BASE(  BASE=MODES,
-                  PROFIL = 'PLEIN',
-                  MATR_ASSE_GENE=(
-                   _F(
-                                   MATRICE = CO("MASSEGEN"),
-                                   MATR_ASSE = MATRMASS),
-                   _F(
-                                   MATRICE = CO("RIGIDGEN"),
-                                   MATR_ASSE = MATRRIGI),
-                   _F(
-                                   MATRICE = CO("AMORTGEN"),
-                                   MATR_ASSE = MATRAMOR,)),
-                   VECT_ASSE_GENE=_F(
-                                   VECTEUR = CO("EFFOGENE"),
-                                   VECT_ASSE = VECTASS) )
+
+MACRO_PROJ_BASE(BASE=MODES,
+                PROFIL='PLEIN',
+                MATR_ASSE_GENE=(_F(MATRICE=CO('MASSEGEN'),
+                                   MATR_ASSE=MATRMASS,),
+                                _F(MATRICE=CO('RIGIDGEN'),
+                                   MATR_ASSE=MATRRIGI,),
+                                _F(MATRICE=CO('AMORTGEN'),
+                                   MATR_ASSE=MATRAMOR,),),
+                VECT_ASSE_GENE=_F(VECTEUR=CO('EFFOGENE'),
+                                  VECT_ASSE=VECTASS,),);
 
 #
 # DEFINITION DE L'EXCITATION SINUSOIDALE
 # --------------------------------------
-#
-SINOMEGT = FORMULE(NOM_PARA='INST',VALE='sin(59.69026*INST) ')
-#
-LIEXCIT=DEFI_LIST_REEL(    DEBUT=0.,
-                            INTERVALLE=_F(  JUSQU_A = 5., PAS = 0.01) )
+
+SINOMEGT = FORMULE(VALE='sin(59.69026*INST) ',
+                   NOM_PARA='INST',);
 
 #
 
-FONCMULT=CALC_FONC_INTERP(   FONCTION=SINOMEGT,
-                                LIST_PARA=LIEXCIT,
-                              NOM_PARA = 'INST',
-                               NOM_RESU='ALPHA',
-#                               INTERPOL='INT',
-                               INTERPOL='LIN',
-                               TITRE='SINUS OMEGA T'
-                            )
+LIEXCIT=DEFI_LIST_REEL(DEBUT=0.,
+                       INTERVALLE=_F(JUSQU_A=5.,
+                                     PAS=0.01,),);
 
 #
 
-DYNAMODA=DYNA_TRAN_MODAL(  METHODE='NEWMARK',
-                              MASS_GENE=MASSEGEN,  RIGI_GENE=RIGIDGEN,
-                              AMOR_GENE=AMORTGEN,
-                             EXCIT=_F(  VECT_GENE = EFFOGENE,
-#                                     FONC_MULT = FONCMULT),
-                                     FONC_MULT = SINOMEGT),
-                             INCREMENT=_F(
-                             INST_INIT = 0.,  INST_FIN = 5.,
-                             PAS = 0.0001)                    )
+FONCMULT=CALC_FONC_INTERP(FONCTION=SINOMEGT,
+                          LIST_PARA=LIEXCIT,
+                          NOM_RESU='ALPHA',
+                          NOM_PARA='INST',
+                          INTERPOL='LIN',
+                          TITRE='SINUS OMEGA T',);
+
+#
+
+DYNAMODA=DYNA_TRAN_MODAL(METHODE='NEWMARK',
+                         MASS_GENE=MASSEGEN,
+                         RIGI_GENE=RIGIDGEN,
+                         AMOR_GENE=AMORTGEN,
+                         INCREMENT=_F(INST_INIT=0.,
+                                      INST_FIN=5.,
+                                      PAS=0.0001,),
+                         EXCIT=_F(VECT_GENE=EFFOGENE,
+                                  FONC_MULT=SINOMEGT,),);
 
 #
 # DEFINITION DES INSTANTS DE CALCUL DE LA SOLUTION
 #-------------------------------------------------
-L_REELD=( 0.09, 0.32, 1.18, 4.92, )
+L_REELD = (0.089999999999999997, 0.32000000000000001, 1.1799999999999999, 4.9199999999999999);
 
-LISTRD=DEFI_LIST_REEL(  VALE=L_REELD )
 
-L_REELV=( 0.05, 0.32, 1.18, 3.55, )
+LISTRD=DEFI_LIST_REEL(VALE=L_REELD,);
+L_REELV = (0.050000000000000003, 0.32000000000000001, 1.1799999999999999, 3.5499999999999998);
 
-LISTRV=DEFI_LIST_REEL(  VALE=L_REELV )
 
-L_REELA=( 0.09, 0.18, 0.55, 1.18, 4.92, )
+LISTRV=DEFI_LIST_REEL(VALE=L_REELV,);
+L_REELA = (0.089999999999999997, 0.17999999999999999, 0.55000000000000004, 1.1799999999999999, 4.9199999999999999);
 
-LISTRA=DEFI_LIST_REEL(  VALE=L_REELA )
 
-L_RELAT=( 0.18, 0.55, 0.82, 1.18, 1.92, 3.55, 4.92, )
+LISTRA=DEFI_LIST_REEL(VALE=L_REELA,);
+L_RELAT = (0.17999999999999999, 0.55000000000000004, 0.81999999999999995, 1.1799999999999999, 1.9199999999999999, 3.5499999999999998, 4.9199999999999999);
 
-LISTREL=DEFI_LIST_REEL(  VALE=L_RELAT )
+
+LISTREL=DEFI_LIST_REEL(VALE=L_RELAT,);
+
+LISTRT=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=5.0,
+                                    PAS=.0005,),);
 
 #
 # RETOUR DANS L'ESPACE PHYSIQUE
 # -----------------------------
-#
-#
-DYNATRAN=REST_GENE_PHYS(  RESU_GENE=DYNAMODA,    NOM_CHAM='DEPL',
-                            LIST_INST=LISTRD,   INTERPOL='LIN'    )
 
-DYNATRAV=REST_GENE_PHYS(  RESU_GENE=DYNAMODA,    NOM_CHAM='VITE',
-                            LIST_INST=LISTRV,   INTERPOL='LIN'    )
+DYNATRAN=REST_GENE_PHYS(RESU_GENE=DYNAMODA,
+                        LIST_INST=LISTRD,
+                        INTERPOL='LIN',
+                        NOM_CHAM='DEPL',);
 
-DYNATRAA=REST_GENE_PHYS(  RESU_GENE=DYNAMODA,    NOM_CHAM='ACCE',
-                            LIST_INST=LISTRA,   INTERPOL='LIN'    )
+DYNATRAV=REST_GENE_PHYS(RESU_GENE=DYNAMODA,
+                        LIST_INST=LISTRV,
+                        INTERPOL='LIN',
+                        NOM_CHAM='VITE',);
 
-DYNATRAR=REST_GENE_PHYS(  RESU_GENE=DYNAMODA,    NOM_CHAM='DEPL',
-                            LIST_INST=LISTREL,   INTERPOL='LIN'    )
+DYNATRAA=REST_GENE_PHYS(RESU_GENE=DYNAMODA,
+                        LIST_INST=LISTRA,
+                        INTERPOL='LIN',
+                        NOM_CHAM='ACCE',);
+
+DYNATRAR=REST_GENE_PHYS(RESU_GENE=DYNAMODA,
+                        LIST_INST=LISTREL,
+                        INTERPOL='LIN',
+                        NOM_CHAM='DEPL',);
+
+DYNATRAT=REST_GENE_PHYS(RESU_GENE=DYNAMODA,
+                        LIST_INST=LISTRT,
+                        NOM_CHAM='DEPL',
+                        GROUP_NO='NOEUDS',);
 
 #
 # VERIFICATION DE LA SOLUTION / VALEURS REFERENCES
 # ------------------------------------------------
-#
-#
 
-P3=RECU_FONCTION(   RESULTAT=DYNATRAR,    NOM_CHAM='DEPL',
-                             LIST_INST=LISTREL,
-                              NOEUD='P3',  NOM_CMP='DX' )
+P3=RECU_FONCTION(RESULTAT=DYNATRAR,
+                 LIST_INST=LISTREL,
+                 NOM_CHAM='DEPL',
+                 NOM_CMP='DX',
+                 NOEUD='P3',);
 
-P1=RECU_FONCTION(   RESULTAT=DYNATRAR,    NOM_CHAM='DEPL',
-                             LIST_INST=LISTREL,
-                              NOEUD='P1',  NOM_CMP='DX' )
+P1=RECU_FONCTION(RESULTAT=DYNATRAR,
+                 LIST_INST=LISTREL,
+                 NOM_CHAM='DEPL',
+                 NOM_CMP='DX',
+                 NOEUD='P1',);
 
 #
 # CALCUL DE LA FONCTION DEPLX EN P3 - DEPLX EN P1
+
+P3MP1=CALC_FONCTION(COMB=(_F(FONCTION=P3,
+                             COEF=1.,),
+                          _F(FONCTION=P1,
+                             COEF=-1.,),),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAN,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=6.7395e-06,
+                  PRECISION=0.005,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAN,
+                  NUME_ORDRE=2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=1.1019e-05,
+                  PRECISION=0.007,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAN,
+                  NUME_ORDRE=3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=3.6683e-05,
+                  PRECISION=0.008,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAN,
+                  NUME_ORDRE=4,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=0.00016615,
+                  PRECISION=0.007,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAV,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='VITE',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=0.00013425,
+                  PRECISION=0.005,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAV,
+                  NUME_ORDRE=2,
+                  NOM_CHAM='VITE',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=-6.4111e-05,
+                  PRECISION=0.005,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAV,
+                  NUME_ORDRE=3,
+                  NOM_CHAM='VITE',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=1.6104e-05,
+                  PRECISION=0.012,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAV,
+                  NUME_ORDRE=4,
+                  NOM_CHAM='VITE',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=4.4262e-05,
+                  PRECISION=0.007,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAA,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='ACCE',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=-0.0035694,
+                  PRECISION=0.005,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAA,
+                  NUME_ORDRE=2,
+                  NOM_CHAM='ACCE',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=-0.0043924,
+                  PRECISION=0.005,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAA,
+                  NUME_ORDRE=3,
+                  NOM_CHAM='ACCE',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=0.0043766,
+                  PRECISION=0.005,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAA,
+                  NUME_ORDRE=4,
+                  NOM_CHAM='ACCE',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=0.0042459,
+                  PRECISION=0.005,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAA,
+                  NUME_ORDRE=5,
+                  NOM_CHAM='ACCE',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=-0.0042233,
+                  PRECISION=0.005,
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAT,
+                  INST=0.09,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=6.7395e-06,
+                  CRITERE=('RELATIF','ABSOLU',),
+                  PRECISION=(0.0001,0.0001,),
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAT,
+                  INST=0.32,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=1.1019e-05,
+                  CRITERE=('RELATIF','ABSOLU',),
+                  PRECISION=(0.0001,0.0001,),
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAT,
+                  INST=1.18,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=3.6683e-05,
+                  CRITERE=('RELATIF','ABSOLU',),
+                  PRECISION=(0.0001,0.0001,),
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DYNATRAT,
+                  INST=4.92,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='P3',
+                  VALE=0.00016615,
+                  CRITERE=('RELATIF','ABSOLU',),
+                  PRECISION=(0.0001,0.0001,),
+                  REFERENCE='SOURCE_EXTERNE',),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=P3MP1,
+                         VALE_PARA=0.18,
+                         VALE_REFE=8.0987e-06,
+                         PRECISION=0.01,),
+                      _F(FONCTION=P3MP1,
+                         VALE_PARA=0.55,
+                         VALE_REFE=-6.2246e-06,
+                         PRECISION=0.01,),
+                      _F(FONCTION=P3MP1,
+                         VALE_PARA=0.82,
+                         VALE_REFE=5.3064e-06,
+                         PRECISION=0.01,),
+                      _F(FONCTION=P3MP1,
+                         VALE_PARA=1.18,
+                         VALE_REFE=-4.5552e-06,
+                         PRECISION=0.01,),
+                      _F(FONCTION=P3MP1,
+                         VALE_PARA=1.92,
+                         VALE_REFE=-3.0416e-06,
+                         PRECISION=0.01,),
+                      _F(FONCTION=P3MP1,
+                         VALE_PARA=3.55,
+                         VALE_REFE=1.8448e-06,
+                         PRECISION=0.01,),
+                      _F(FONCTION=P3MP1,
+                         VALE_PARA=4.92,
+                         VALE_REFE=1.4832e-06,
+                         PRECISION=0.01,),),);
+
+FIN();
+
 #
 
-P3MP1=CALC_FONCTION( COMB=(  _F(  FONCTION = P3, COEF = 1.),
-                         _F(  FONCTION = P1, COEF = -1.))   )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 1,
-                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = 6.7395E-6)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 2,
-                  NOM_CHAM = 'DEPL', PRECISION = 0.007,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = 1.1019E-5)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 3,
-                  NOM_CHAM = 'DEPL', PRECISION = 0.008,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = 3.6683E-5)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAN,  NUME_ORDRE = 4,
-                  NOM_CHAM = 'DEPL', PRECISION = 0.007,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = 1.6615E-4)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAV,  NUME_ORDRE = 1,
-                  NOM_CHAM = 'VITE', PRECISION = 0.005,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = 1.3425E-4)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAV,  NUME_ORDRE = 2,
-                  NOM_CHAM = 'VITE', PRECISION = 0.005,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = -6.4111E-5)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAV,  NUME_ORDRE = 3,
-                  NOM_CHAM = 'VITE', PRECISION = 0.012,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = 1.6104E-5)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAV,  NUME_ORDRE = 4,
-                  NOM_CHAM = 'VITE', PRECISION = 0.007,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = 4.4262E-5)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAA,  NUME_ORDRE = 1,
-                  NOM_CHAM = 'ACCE', PRECISION = 0.005,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = -3.5694E-3)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAA,  NUME_ORDRE = 2,
-                  NOM_CHAM = 'ACCE', PRECISION = 0.005,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = -4.3924E-3)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAA,  NUME_ORDRE = 3,
-                  NOM_CHAM = 'ACCE', PRECISION = 0.005,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = 4.3766E-3)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAA,  NUME_ORDRE = 4,
-                  NOM_CHAM = 'ACCE', PRECISION = 0.005,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = 4.2459E-3)  )
-
-TEST_RESU( RESU=_F(  RESULTAT = DYNATRAA,  NUME_ORDRE = 5,
-                  NOM_CHAM = 'ACCE', PRECISION = 0.005,
-                  NOEUD = 'P3',NOM_CMP = 'DX', VALE = -4.2233E-3)  )
-
-TEST_FONCTION(VALEUR=(  _F( FONCTION = P3MP1, VALE_PARA = 0.18,
-                         PRECISION = 1.E-2,
-                         VALE_REFE = 8.0987E-6),
-                        _F( FONCTION = P3MP1, VALE_PARA = 0.55,
-                         PRECISION = 1.E-2,
-                         VALE_REFE = -6.2246E-6),
-                        _F( FONCTION = P3MP1, VALE_PARA = 0.82,
-                         PRECISION = 1.E-2,
-                         VALE_REFE = 5.3064E-6),
-                        _F( FONCTION = P3MP1, VALE_PARA = 1.18,
-                         PRECISION = 1.E-2,
-                         VALE_REFE = -4.5552E-6),
-                        _F( FONCTION = P3MP1, VALE_PARA = 1.92,
-                         PRECISION = 1.E-2,
-                         VALE_REFE = -3.0416E-6),
-                        _F( FONCTION = P3MP1, VALE_PARA = 3.55,
-                         PRECISION = 1.E-2,
-                         VALE_REFE = 1.8448E-6),
-                        _F( FONCTION = P3MP1, VALE_PARA = 4.92,
-                         PRECISION = 1.E-2,
-                         VALE_REFE = 1.4832E-6))  )
-
-FIN( )
-#

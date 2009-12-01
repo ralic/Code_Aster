@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_depend include  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_depend include  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2006  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -78,7 +78,7 @@ Compatibilité ascendantes :
 #define INTEGER long
 #define LONG_INTEGER_BITS 64
 #define LONG_INTEGER_MOTS 8
-#define STRING_SIZE int
+#define STRING_SIZE unsigned int
 #define DOUBLE double
 #define LONG_REAL_MOTS 8
 #define LONG_COMPLEX_MOTS 16
@@ -90,7 +90,7 @@ Compatibilité ascendantes :
 #define INTEGER long
 #define LONG_INTEGER_BITS 32
 #define LONG_INTEGER_MOTS 4
-#define STRING_SIZE size_t
+#define STRING_SIZE unsigned int
 #define DOUBLE double
 #define LONG_REAL_MOTS 8
 #define LONG_COMPLEX_MOTS 16

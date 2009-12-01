@@ -4,7 +4,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -219,9 +219,7 @@ C
             VALI (1) = IDIFF
             VALI (2) = NBMODE
             VALI (3) = IDIFF
-            VALK (1) = 'AMORTISSEMENTS REDUITS AVEC LA'
-            VALK (2) = 'VALEUR DU DERNIER MODE PROPRE'
-            CALL U2MESG('I','ALGORITH16_13',2,VALK,3,VALI,0,0.D0)
+            CALL U2MESI('I','ALGORITH16_13',3,VALI)
             IF ( N1.NE.0 ) THEN
                CALL GETVR8(' ','AMOR_REDUIT',0,1,NBAMOR,ZR(JAMOG),IB)
             ELSE

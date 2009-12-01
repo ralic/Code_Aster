@@ -1,5 +1,6 @@
-# MODIF  DATE 28/07/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE SIMULATION D'UNE PLAQUE TROUEE EN PLASTICITE AVEC LA METHODE ARLEQUIN - MODELE DE REFERENCE
+# ssnp135d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

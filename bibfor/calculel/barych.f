@@ -1,6 +1,6 @@
-      SUBROUTINE BARYCH(CH1,CH2,R1,R2,CH,BASE)
+      SUBROUTINE BARYCH(CH1Z,CH2Z,R1,R2,CHZ,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 06/04/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*19      CH1,CH2,      CH
+      CHARACTER*(*)     CH1Z,CH2Z, CHZ
+      CHARACTER*19      CH1, CH2,  CH
       CHARACTER*1                        BASE
       REAL*8                    R1,R2
 C ----------------------------------------------------------------------
@@ -56,6 +57,10 @@ C
       CHARACTER*4  DOCU,SCAL
       CHARACTER*1 K1BID
       CALL JEMARQ()
+      CH1=CH1Z
+      CH2=CH2Z
+      CH=CHZ
+
       CALL COPISD('CHAMP_GD',BASE,CH1,CH)
 
       CALL JEEXIN(CH//'.DESC',IBID)

@@ -4,7 +4,7 @@
       INTEGER                IMPR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 22/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,8 +106,10 @@ C
  20         CONTINUE
             IF (IMPR.GT.1) THEN
                WRITE(IUL,'(3X,A)')'IMPRESSION DE LA LISTE DE REELS'
-               WRITE(IUL,1000)
-     &               (5*(L-1)+1,(ZR( JVAL + 5*(L-1)+K-1),K=1,5),L=1,NL)
+               DO 21 L=1,NL
+                  WRITE(IUL,1000)
+     &               5*(L-1)+1,(ZR( JVAL + 5*(L-1)+K-1),K=1,5)
+ 21            CONTINUE
                IF (ND.NE.0) THEN
                   WRITE(IUL,1000)
      &                      5*NL+1,(ZR( JVAL +5*NL+K-1),K=1,ND)
@@ -129,8 +131,10 @@ C
  30         CONTINUE
             IF (IMPR.GT.1) THEN
                WRITE(IUL,'(3X,A)')'IMPRESSION DE LA LISTE D ENTIERS'
-               WRITE(IUL,'((I7,'' - '',5(I12,1X)))')
-     &               (5*(L-1)+1,(ZI( JVAL + 5*(L-1)+K-1),K=1,5),L=1,NL)
+               DO 31 L=1,NL
+                  WRITE(IUL,'((I7,'' - '',5(I12,1X)))')
+     &               5*(L-1)+1,(ZI( JVAL + 5*(L-1)+K-1),K=1,5)
+ 31            CONTINUE
                IF (ND.NE.0) THEN
                   WRITE(IUL,'(I7,'' - '',5(I12,1X))')
      &                      5*NL+1,(ZI( JVAL +5*NL+K-1),K=1,ND)

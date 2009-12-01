@@ -1,5 +1,6 @@
-# MODIF  DATE 24/11/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
+# sdnv105c.para = tps_job 2020 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG

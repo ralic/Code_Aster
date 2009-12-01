@@ -11,7 +11,7 @@
       INTEGER           NTCMP,IMPR
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/11/2007   AUTEUR ANGLES J.ANGLES 
+C MODIF PREPOST  DATE 04/03/2009   AUTEUR ANGLES J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C
 C
       INTEGER         IPT,IORD,ICMP
       INTEGER         IVCH,IVORD,IVPIC,IVITV,IVRTV,IVCYC,IVPT
-      INTEGER         NUMSYM
+      INTEGER         NUMSYM,IBID
       INTEGER VALI
 C
 C ---   VECTEURS DE TRAVAIL
@@ -131,7 +131,7 @@ C
           IF(IMPR.GE.2) THEN
             VALK (1) = KCMP
             VALI = IPT
-            CALL U2MESG('I+','PREPOST6_6',1,VALK,1,VALI,0,0.D0)
+            CALL U2MESG('I','PREPOST6_6',1,VALK,1,VALI,0,0.D0)
           ENDIF
 C
 C ---       CALCUL DU VECTEUR HISTOIRE DE LA EQUI_GD EN CE POINT
@@ -147,13 +147,22 @@ C
                CALL U2MESK('F','PREPOST_52', 3 ,VALK)
             ENDIF
 C
+            IF ( (ICMP .EQ. 1).AND.(IPT .EQ. 1) ) THEN
+               CALL JEVEUO(CHEQUI//'.CELV','L',IVORD)
+               CALL JELIRA(CHEQUI//'.CELV','LONMAX',IBID,K8B)
+               IF ( IBID .NE. (NBPT*NTCMP) ) THEN
+                 VALK(2) = NOMSYM
+                 VALI = NTCMP
+                 CALL U2MESG('F','FATIGUE1_78',1,VALK(2),1,VALI,0,0.D0)
+               ENDIF
+            ENDIF
+C
             CALL JEVEUO(CHEQUI//'.CELV','L',IVORD)
 C
 C -         STOCKAGE COMPOSANTE NUMCMP(ICMP)
             ZR(IVPT+IORD-1) = ZR(IVORD+(IPT-1)*NTCMP+NUMCMP(ICMP)-1)
 C
 C
-
  30       CONTINUE
 C
 C ---     POSSEDANT ENFIN LE VECTEUR HISTOIRE DE LA EQUI_GD EN CE POINT
@@ -177,20 +186,20 @@ C
             VALI = NBORD
             VALR (1) = ZR(IVPT)
             VALR (2) = ZR(IVPT+1)
-            CALL U2MESG('I+','PREPOST6_7',0,' ',1,VALI,2,VALR)
+            CALL U2MESG('I','PREPOST6_7',0,' ',1,VALI,2,VALR)
             IF(MCOMPT.EQ.'RAINFLOW') THEN
               VALI = NPIC
               VALR (1) = ZR(IVPIC)
               VALR (2) = ZR(IVPIC+1)
-              CALL U2MESG('I+','PREPOST6_8',0,' ',1,VALI,2,VALR)
+              CALL U2MESG('I','PREPOST6_8',0,' ',1,VALI,2,VALR)
             ENDIF
             VALI = NCYC
-            CALL U2MESG('I+','PREPOST6_9',0,' ',1,VALI,0,0.D0)
+            CALL U2MESG('I','PREPOST6_9',0,' ',1,VALI,0,0.D0)
             DO 223 J = 1 , NCYC
               VALI = J
               VALR (1) = ZR(IVMAX+J-1)
               VALR (2) = ZR(IVMIN+J-1)
-              CALL U2MESG('I+','PREPOST6_10',0,' ',1,VALI,2,VALR)
+              CALL U2MESG('I','PREPOST6_10',0,' ',1,VALI,2,VALR)
   223       CONTINUE
           ENDIF
 C

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------*/
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF GTNPRO utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF GTNPRO utilitai  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

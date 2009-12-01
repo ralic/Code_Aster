@@ -8,12 +8,12 @@
       REAL*8              SNMAX, SNEMAX, SPMAX, KEMAX, SAMAX, UTOT, SM,
      &                    SIGPM, RESUAS(*), RESUSS(*), RESUCA(*),
      &                    RESUCS(*), FACTUS(*), PMMAX, PBMAX, PMBMAX
-      LOGICAL             LPMPB,LSN, LSNET, LFATIG, LROCHT, SEISME
+      LOGICAL             LPMPB,LSN, LSNET,LFATIG, LROCHT, SEISME,LBID
       CHARACTER*4         LIEU
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,26 +63,28 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNOM,JEXNUM,JEXATR
+      CHARACTER*32 JEXNOM,JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER NBSIGR,NBSIG2,JNSG,IS1,IOC1,IS2,IOC2,INDS,JCOMBI,JPRESA,
-     &        JPRESB,JNBOCC,IFM,NIV,I1,I2,JMSA,JMSAS,JMSAB,NDIM,JNOC,
+     &        JPRESB,JNBOCC,IFM,NIV,I1,I2,NDIM,JNOC,
      &        NSCY,NS,JMSN,JNSITU,NSITUP,NSITUQ,INDI,JIST,I, ICAS, 
-     &        ICSS, NBSITU, I3, I4
-      INTEGER JMFU,JMFUB,JMFUS,NBTHEP,NBTHEQ
+     &        ICSS, NBSITU, I4,
+     &        JMFU,JMFUB,JMFUS,NBTHEP,NBTHEQ
       REAL*8 PPI,PPJ,PQI,PQJ,SALTIJ(2),SALIJS(2),UG,SN,SP(2),
-     &       SMM,SNS,SPS(2),
-     &       MPI(12),MPJ(12),MQI(12),MQJ(12),MSE(12),
-     &       MATPI(8),MATPJ(8),MATQI(8),MAT1(8),MAT2(8),
-     &       MATQJ(8),SALTSE(2), SNET,SNETS, R8VIDE,VALE(2),
-     &       SP12MA(2),SP1(2),SP2(2),SP3(2),SP4(2),FUIJ(2),FUSE(2)
-      REAL*8 TYPEKE,SPMECA,SPTHER,SPMECS,SPTHES,SPTHEM,SPMECM,SIMPIJ
-      REAL*8 KEMECA,KETHER,KEMECS,KETHES,PM,PB,PMPB,PMS,PBS,PMPBS
+     &     SMM,SNS,SPS(2),SPP,SQQ(2),SQQS(2),
+     &     MPI(12),MPJ(12),MQI(12),MQJ(12),MSE(12),SIJ0(12),
+     &     MATPI(8),MATPJ(8),MATQI(8),MAT1(8),MAT2(8),
+     &     MATQJ(8),SALTSE(2), SNET,SNETS, R8VIDE,VALE(2),
+     &     SP12MA(2),SP2(2),FUIJ(2),FUSE(2),SPMEPS,
+     &     SP2S(2),SPPS,TYPEKE,SPMES2(2),SPMEQS(2),
+     &     SPMECA(2),SPTHER(2),SPMECS(2),SPTHES(2),SPTHEM,SPMECM,
+     &     SIMPIJ,KEMECA,KETHER,KEMECS,KETHES,PM,PB,PMPB,PMS,PBS,PMPBS,
+     &     SPMEC2(2),SPMECP,SPMECQ(2),SPTHE2(2),SPTHEP(2),SPTHEQ(2)
       CHARACTER*8 K8B,KNUMES
 CCC
       CHARACTER*2  CODRET
-      LOGICAL     ENDUR
+      LOGICAL     ENDUR,CMAX,MECA
       INTEGER     NOCC
       REAL*8      NADM
 C DEB ------------------------------------------------------------------
@@ -104,6 +106,10 @@ C DEB ------------------------------------------------------------------
           RESUSS(10*(IS1-1)+IS2) = R8VIDE()
  12     CONTINUE
  11   CONTINUE
+      
+      DO 13 IS1 = 1,12
+          SIJ0(IS1) = 0.D0
+ 13   CONTINUE
 
       IF (IOCS.EQ.0) THEN
         NBSIG2 = NBSIGR
@@ -145,11 +151,9 @@ C
         SNET = 0.D0
         SP(1) = 0.D0
         SP(2) = 0.D0
-        SPMECA = 0.D0
-        SPTHER = 0.D0
         TYPEKE = MATPI(8)
         IF ( LPMPB ) THEN
-          CALL RC32PM(LIEU,SEISME,PPI,MSE,MSE,PM,PB,PMPB)
+          CALL RC32PM(LIEU,SEISME,PPI,SIJ0,MSE,PM,PB,PMPB)
           RESUAS(10*(IS1-1)+1) = PM
           RESUAS(10*(IS1-1)+2) = PB
           RESUAS(10*(IS1-1)+3) = PMPB
@@ -158,22 +162,22 @@ C
           PMBMAX = MAX ( PMBMAX , PMPB )
         ENDIF
         IF ( LSN ) THEN
-          CALL RC32SN('SN_SITU',LIEU,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,
+          CALL RC32SN('SN_SITU',LIEU,NSITUP,PPI,SIJ0,NSITUQ,PPI,SIJ0,
      +                                                   SEISME,MSE,SN)
           RESUAS(10*(IS1-1)+4) = SN
           SNMAX  = MAX( SNMAX , SN )
         ENDIF
         IF ( LSN .AND. LSNET ) THEN
-          CALL RC32SN('SN*_SITU',LIEU,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,
+          CALL RC32SN('SN*_SITU',LIEU,NSITUP,PPI,SIJ0,NSITUQ,PPI,SIJ0,
      +                                                 SEISME,MSE,SNET)
           RESUAS(10*(IS1-1)+5) = SNET
           SNEMAX  = MAX( SNEMAX , SNET )
         ENDIF
         IF ( LFATIG ) THEN
-          CALL RC32SP('SP_SITU',LIEU,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,
-     +                SEISME,MSE,SP,TYPEKE,SPMECA,SPTHER)
+          CALL RC32SP('SP_SITU',LIEU,NSITUP,PPI,SIJ0,NSITUQ,PPI,SIJ0,
+     +                SEISME,MSE,SP,TYPEKE,SPMECA,SPTHEP)
           CALL RC32SA('SITU',MATER,MATPI,MATPI,SN,SP,TYPEKE,SPMECA,
-     &                SPTHER,KEMECA,KETHER,SALTSE,SM,FUSE)
+     &                SPTHEP,KEMECA,KETHER,SALTSE,SM,FUSE)
           RESUAS(10*(IS1-1)+6) = SP(1)
           RESUAS(10*(IS1-1)+7) = KEMECA
           RESUAS(10*(IS1-1)+8) = KETHER
@@ -189,12 +193,13 @@ C
           IF ( LSN.AND.LSNET )  WRITE (IFM,*) '  SEISME,  SN* = ',SNET
           IF ( LFATIG ) WRITE (IFM,*) '  SEISME,   SP = ',SP(1)
           IF (TYPEKE.GT.0.D0 .AND. LFATIG ) THEN
-            WRITE (IFM,*) '            SPMECA = ',SPMECA
-            WRITE (IFM,*) '            SPTHER = ',SPTHER
+            WRITE (IFM,*) '            SPMECA = ',SPMECA(1)
+            WRITE (IFM,*) '            SPTHER = ',SPTHEP
             WRITE (IFM,*) '            KEMECA = ',KEMECA
             WRITE (IFM,*) '            KETHER = ',KETHER
           END IF
           IF ( LFATIG ) WRITE (IFM,*) '          SALT = ',SALTSE(1)
+          IF ( LFATIG ) WRITE (IFM,*) '          FU = ',FUSE
         END IF
       ELSE
         DO 30 I = 1 , 12
@@ -214,7 +219,7 @@ C --- SITUATION P :
 
         I1 = I1 + 1
         ZI(JNOC-1+I1) = ZI(JNBOCC+2*IOC1-2)
-        ZI(JIST-1+I1) = ZI(JNSITU+ZI(JNSG+IS1-1)-1)
+        ZI(JIST-1+I1) = ZI(JNSITU+IOC1-1)
 
         NSITUP = ZI(JNSITU+IOC1-1)
         NSITUQ = 0
@@ -235,14 +240,12 @@ C --- SITUATION P :
         SNETS = 0.D0
         SN    = 0.D0
         SNET  = 0.D0
-        SPS(1) = 0.D0
-        SPS(2) = 0.D0
-        SP(1)  = 0.D0
-        SP(2)  = 0.D0
-        SPMECA = 0.D0
-        SPTHER = 0.D0
-        SPMECS = 0.D0
-        SPTHES = 0.D0
+        SPMECA(1)  = 0.D0
+        SPMECS(1)  = 0.D0
+        SPTHES(1)  = 0.D0
+        SPTHER(1)  = 0.D0
+        SPS(1)  = 0.D0
+        SPS(2)  = 0.D0
         INDI = NBSIG2*(I1-1) + (I1-1)
 C
         IF ( LPMPB ) THEN
@@ -296,39 +299,36 @@ C
           ENDIF
         END IF
         IF (NIV.GE.2) THEN
-          IF ( LPMPB .AND. LSN ) THEN
-            WRITE (IFM,1010) NSITUP, SN, PM, PB, PMPB
-          ELSEIF ( LPMPB ) THEN
-            WRITE (IFM,1012) NSITUP, PM, PB, PMPB
-          ELSEIF ( LSN ) THEN
-            WRITE (IFM,1014) NSITUP, SN
-          END IF
-          IF ( LSN .AND. LSNET ) THEN
-            WRITE (IFM,1016) NSITUP, SNET
+          IF ( LPMPB )  WRITE (IFM,1012) NSITUP, PM, PB, PMPB
+          IF ( LSN ) THEN
+            IF ( LSNET ) THEN
+              IF (SEISME) THEN 
+                WRITE (IFM,1017) NSITUP, SNET, SNETS
+              ELSE
+                WRITE (IFM,1016) NSITUP, SNET
+              END IF
+            ENDIF
+            IF (SEISME) THEN 
+              WRITE (IFM,1015) NSITUP, SN, SNS
+            ELSE
+              WRITE (IFM,1014) NSITUP, SN
+            END IF
           END IF
         END IF
 C
         IF ( (LPMPB .OR. LSN .OR. LSNET) .AND. .NOT.LFATIG ) GOTO 20
 C
         NOCC = ZI(JNBOCC+2*IOC1-2)
-        SPS(1) = 0.D0
-        SPS(2) = 0.D0
-        SP(1)  = 0.D0
-        SP(2)  = 0.D0
-        SPMECA = 0.D0
-        SPTHER = 0.D0
-        SPMECS = 0.D0
-        SPTHES = 0.D0
         CALL RC32SP('SP_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
-     +              .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHER)
+     +              .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHEP)
+        SPMECP = SPMECA(1)
         CALL RC32SA ( 'SITU',MATER, MATPI, MATPJ, SN, SP, TYPEKE,
-     &                SPMECA, SPTHER,KEMECA,KETHER,SALTIJ,SMM,FUIJ )
+     &                SPMECA, SPTHEP,KEMECA,KETHER,SALTIJ,SMM,FUIJ )
         RESUSS(10*(IS1-1)+6) = SP(1)
         RESUSS(10*(IS1-1)+7) = KEMECA
         RESUSS(10*(IS1-1)+8) = KETHER
         RESUSS(10*(IS1-1)+9) = SALTIJ(1)
         KEMAX = MAX( KEMAX , KEMECA )
-        IF (NIV.GE.2)  WRITE (IFM,2050) NSITUP, SALTIJ(1)
 
         ZR(JMFU-1+INDI+1) = FUIJ(1)
         IF (SALTIJ(1).GT.SAMAX) THEN
@@ -347,16 +347,22 @@ C
           RESUAS(10*(IS1-1)+9) = SALIJS(1)
           KEMAX = MAX( KEMAX , KEMECA )
           ZR(JMFUS-1+INDI+1) = FUIJ(1)
+          SPMEPS = SPMECS(1)
         END IF
 
         SPMAX = MAX(SPMAX,SPS(1),SP(1))
-        SPMECM = MAX(SPMECM,SPMECS,SPMECA)
-        SPTHEM = MAX(SPTHEM,SPTHES,SPTHER)
-        IF (NIV.GE.2) WRITE (IFM,1032) NSITUP, SP(1)
-        IF (TYPEKE.GT.0.D0) THEN
-          IF (NIV.GE.2) THEN
-            WRITE (IFM,1132) SPMECA,SPTHER,KEMECA,KETHER
+        SPMECM = MAX(SPMECM,SPMECS(1),SPMECA(1))
+        SPTHEM = MAX(SPTHEM,SPTHES(1),SPTHER(1))
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,1018) NSITUP, SP(1)
+          IF (SEISME) WRITE (IFM,1019) NSITUP, SPS(1)
+          IF (TYPEKE.GT.0.D0) THEN
+            WRITE (IFM,1050) NSITUP,SPMECA(1),SPTHEP(1),KEMECA,KETHER
+            IF (SEISME) WRITE (IFM,1051) NSITUP,SPMECS(1),KEMECS
           END IF
+          WRITE (IFM,1060) NSITUP, SALTIJ(1),ZR(JMFU-1+INDI+1)
+          IF (SEISME) WRITE (IFM,1061) NSITUP, SALIJS(1),
+     &                                        ZR(JMFUS-1+INDI+1)
         END IF
 
         CALL LIMEND( MATER, SALTIJ(1), 'WOHLER', ENDUR )
@@ -374,7 +380,7 @@ C
         ENDIF
         RESUAS(10*(IS1-1)+10) = UG
         RESUSS(10*(IS1-1)+10) = UG
-        IF (NIV.GE.2)  WRITE (IFM,2060) NSITUP, UG
+C        IF (NIV.GE.2)  WRITE (IFM,1061) NSITUP, UG
 
 C ----- SITUATION Q :
 C       -------------
@@ -409,9 +415,7 @@ C       -------------
              SIGPM = MAX ( SIGPM, SIMPIJ )      
           ENDIF
 
-C ------- CALCUL DU SN(P,Q), ON A 4 COMBINAISONS
-          SNS = 0.D0
-          SN  = 0.D0
+C ------- CALCUL DU SN(P,Q), ON A 4 COMBINAISONS + SN(P,P) et SN(Q,Q) 
           CALL RC32SN('SN_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQI,MQI,
      +                                                  .FALSE.,MSE,SN)
           CALL RC32SN('SN_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQJ,MQJ,
@@ -419,6 +423,8 @@ C ------- CALCUL DU SN(P,Q), ON A 4 COMBINAISONS
           CALL RC32SN('SN_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQJ,MQJ,
      +                                                  .FALSE.,MSE,SN)
           CALL RC32SN('SN_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQI,MQI,
+     +                                                  .FALSE.,MSE,SN)
+          CALL RC32SN('SN_SITU',LIEU,NSITUQ,PQI,MQI,NSITUQ,PQJ,MQJ,
      +                                                  .FALSE.,MSE,SN)
           ICSS = ICSS + 1
           RESUCS(ICSS) = SN
@@ -432,24 +438,19 @@ C ------- CALCUL DU SN(P,Q), ON A 4 COMBINAISONS
      +                                                  SEISME,MSE,SNS)
             CALL RC32SN('SN_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQI,MQI,
      +                                                  SEISME,MSE,SNS)
+            CALL RC32SN('SN_SITU',LIEU,NSITUQ,PQI,MQI,NSITUQ,PQJ,MQJ,
+     +                                                  SEISME,MSE,SNS)
             ICAS = ICAS + 1
             RESUCA(ICAS) = SNS
             SNMAX = MAX(SNMAX,SNS)
           END IF
-          IF (NIV.GE.2) WRITE (IFM,1020) NSITUP,NSITUQ,SN
+          IF (NIV.GE.2) WRITE (IFM,1110) NSITUP,NSITUQ,SN
+          IF ((NIV.GE.2) .AND. SEISME) WRITE (IFM,1111) SNS
           INDS = NBSIG2*(I1-1) + (I2-1)
           INDI = NBSIG2*(I2-1) + (I1-1)
 
-C ------- 1/ CALCUL DU SALT(I,I) A PARTIR DU SN(P,Q) ET SP(I,I)
+C ------- 1/ CALCUL DU SALT(I,I) A PARTIR DU SN(P,Q) ET SP(P,Q)
 
-          SPS(1) = 0.D0
-          SPS(2) = 0.D0
-          SP(1)  = 0.D0
-          SP(2)  = 0.D0
-          SPMECA = 0.D0
-          SPTHER = 0.D0
-          SPMECS = 0.D0
-          SPTHES = 0.D0
 C NOMBRE DE PAS DE TEMPS POUR DISTINGUER LE CAS MECANIQUE PUR
           KNUMES = 'S       '
           CALL CODENT(NSITUP,'D0',KNUMES(2:8))
@@ -460,92 +461,184 @@ C NOMBRE DE PAS DE TEMPS POUR DISTINGUER LE CAS MECANIQUE PUR
           CALL JELIRA(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'LONUTI',
      &                NBTHEQ,K8B)
           
-          CALL RC32SP('SP_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQI,MQI,
-     +                .FALSE.,MSE,SP1,TYPEKE,SPMECA,SPTHER)
-     
-          CALL RC32SP('SP_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQJ,MQJ,
-     +                .FALSE.,MSE,SP2,TYPEKE,SPMECA,SPTHER)
-          IF ((NBTHEP+NBTHEQ) .EQ. 0) THEN
-           SP12MA(1) = MAX(SP1(1),SP2(2))
-           SP12MA(2) = MIN(SP1(1),SP2(2))
-              DO 120 I4=1,8
-                MAT1(I4) = MATPI(I4)
-                MAT2(I4) = MATQJ(I4)
-  120         CONTINUE
-          ELSE
-           DO 21 I3 = 1,2
-            IF (SP2(I3).GT.SP1(I3)) THEN
-              SP12MA(I3) = SP2(I3)
-              DO 121 I4=1,8
-                MAT1(I4) = MATPI(I4)
-                MAT2(I4) = MATQJ(I4)
-  121         CONTINUE
-            ELSE
-              SP12MA(I3) = SP1(I3)
-              DO 221 I4=1,8
-                MAT1(I4) = MATPI(I4)
-                MAT2(I4) = MATQI(I4)
-  221         CONTINUE
-            ENDIF
-  21      CONTINUE  
-         ENDIF
-     
-          CALL RC32SP('SP_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQI,MQI,
-     +                .FALSE.,MSE,SP3,TYPEKE,SPMECA,SPTHER)
-          IF ((NBTHEP+NBTHEQ) .EQ. 0) THEN
-           IF (SP3(1).GT.SP12MA(1)) THEN
-             SP12MA(2) = SP12MA(1)
-             SP12MA(1) = SP3(1)
-             DO 322 I4=1,8
-                MAT1(I4) = MATPJ(I4)
-                MAT2(I4) = MATQI(I4)
-  322       CONTINUE
-
-           ELSEIF (SP3(1).GT.SP12MA(2)) THEN
-             SP12MA(2) = SP3(1)
-           ENDIF
-          ELSE
-           DO 22 I3 = 1,2
-            IF (SP3(I3).GT.SP12MA(I3)) THEN
-              SP12MA(I3) = SP3(I3)
-              DO 122 I4=1,8
-                MAT1(I4) = MATPJ(I4)
-                MAT2(I4) = MATQI(I4)
-  122         CONTINUE
-            ENDIF
-  22      CONTINUE  
-         ENDIF
-
-          CALL RC32SP('SP_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQJ,MQJ,
-     +                .FALSE.,MSE,SP4,TYPEKE,SPMECA,SPTHER)
+          MECA = .FALSE.
+          IF ((NBTHEP+NBTHEQ) .EQ. 0) MECA = .TRUE.
           
-          IF ((NBTHEP+NBTHEQ) .EQ. 0) THEN
-           IF (SP4(1).GT.SP12MA(1)) THEN
-             SP12MA(2) = SP12MA(1)
-             SP12MA(1) = SP4(1)
-             DO 323 I4=1,8
-                MAT1(I4) = MATPJ(I4)
-                MAT2(I4) = MATQJ(I4)
-  323        CONTINUE
+          
+C - PREMIERE COMBINAISON : PI - QI
+          CALL RC32SP('SP_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQI,MQI,
+     +                .FALSE.,MSE,SP12MA,TYPEKE,SPMECA,SPTHER)
 
-           ELSEIF (SP4(1).GT.SP12MA(2)) THEN
-             SP12MA(2) = SP4(1)
-           ENDIF
-          ELSE
+          DO 119 I4=1,8
+             MAT1(I4) = MATPI(I4)
+             MAT2(I4) = MATQI(I4)
+  119     CONTINUE
 
-          DO 23 I3 = 1,2
-            IF (SP4(I3).GT.SP12MA(I3)) THEN
-              SP12MA(I3) = SP4(I3)
-              DO 123 I4=1,8
-                MAT1(I4) = MATPJ(I4)
-                MAT2(I4) = MATQJ(I4)
-  123         CONTINUE
+          IF (SEISME) THEN
+            CALL RC32SP('SP_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQI,MQI,
+     +                  SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
+          END IF
+
+C - DEUXIEME COMBINAISON : PI - QJ
+          CALL RC32SP('SP_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQJ,MQJ,
+     +                .FALSE.,MSE,SP2,TYPEKE,SPMEC2,SPTHE2)
+
+          IF (TYPEKE.GT.0.D0) THEN
+            CALL RC32MS(.TRUE.,SPMECA,SPMEC2,LBID)
+            CALL RC32MS(.TRUE.,SPTHER,SPTHE2,LBID)
+          ENDIF
+          
+          IF (SEISME) THEN
+            CALL RC32SP('SP_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQJ,MQJ,
+     +                  SEISME,MSE,SP2S,TYPEKE,SPMES2,SPTHES)
+            CALL RC32MS(MECA,SPS,SP2S,CMAX)
+            IF (TYPEKE.GT.0.D0) THEN
+              CALL RC32MS(.TRUE.,SPMECS,SPMES2,LBID)
             ENDIF
-  23      CONTINUE  
+          END IF
+          
+          CALL RC32MS(MECA,SP12MA,SP2,CMAX)
+          
+          IF (CMAX) THEN
+            DO 120 I4=1,8
+              MAT1(I4) = MATPI(I4)
+              MAT2(I4) = MATQJ(I4)
+  120       CONTINUE
+          ENDIF
+
+C - TROISIEME COMBINAISON : PJ - QI   
+          CALL RC32SP('SP_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQI,MQI,
+     +                .FALSE.,MSE,SP2,TYPEKE,SPMEC2,SPTHE2)
+
+          IF (TYPEKE.GT.0.D0) THEN
+            CALL RC32MS(.TRUE.,SPMECA,SPMEC2,LBID)
+            CALL RC32MS(.TRUE.,SPTHER,SPTHE2,LBID)
+          ENDIF
+
+          IF (SEISME) THEN
+            CALL RC32SP('SP_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQI,MQI,
+     +                  SEISME,MSE,SP2S,TYPEKE,SPMES2,SPTHES)
+            CALL RC32MS(MECA,SPS,SP2S,CMAX)
+            IF (TYPEKE.GT.0.D0) THEN
+              CALL RC32MS(.TRUE.,SPMECS,SPMES2,LBID)
+            ENDIF
+          END IF
+          
+          CALL RC32MS(MECA,SP12MA,SP2,CMAX)
+          
+          IF (CMAX) THEN
+            DO 121 I4=1,8
+              MAT1(I4) = MATPJ(I4)
+              MAT2(I4) = MATQI(I4)
+  121       CONTINUE
+          ENDIF
+
+C - QUATRIEME COMBINAISON : PJ - QJ
+          CALL RC32SP('SP_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQJ,MQJ,
+     +                .FALSE.,MSE,SP2,TYPEKE,SPMEC2,SPTHE2)
+
+          IF (TYPEKE.GT.0.D0) THEN
+            CALL RC32MS(.TRUE.,SPMECA,SPMEC2,LBID)
+            CALL RC32MS(.TRUE.,SPTHER,SPTHE2,LBID)
+          ENDIF
+
+          IF (SEISME) THEN
+            CALL RC32SP('SP_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQJ,MQJ,
+     +                  SEISME,MSE,SP2S,TYPEKE,SPMES2,SPTHES)
+            CALL RC32MS(MECA,SPS,SP2S,CMAX)
+            IF (TYPEKE.GT.0.D0) THEN
+              CALL RC32MS(.TRUE.,SPMECS,SPMES2,LBID)
+            ENDIF
+          END IF
+          
+          CALL RC32MS(MECA,SP12MA,SP2,CMAX)
+          
+          IF (CMAX) THEN
+            DO 122 I4=1,8
+              MAT1(I4) = MATPJ(I4)
+              MAT2(I4) = MATQI(I4)
+  122       CONTINUE
+          ENDIF
+
+C -  CINQUIEME COMBINAISON : QI - QJ
+         CALL RC32SP('SP_SITU',LIEU,NSITUQ,PQI,MQI,0,PQJ,MQJ,
+     +              .FALSE.,MSE,SQQ,TYPEKE,SPMECQ,SPTHEQ)
+         SPP = RESUSS(10*(IS1-1)+6)
+         IF (SQQ(1).GE.SP12MA(1)) THEN
+           SP12MA(1) = SQQ(1)
+           SP12MA(2) = SPP
+           DO 124 I4=1,8
+             MAT1(1) = MATQI(1)
+             MAT2(1) = MATQJ(1)
+  124      CONTINUE
+         END IF
+         
+         IF (TYPEKE.GT.0.D0) THEN
+           IF (SPMECQ(1).GE.SPMECA(1)) THEN
+             SPMECA(1) = SPMECQ(1)
+             SPMECA(2) = SPMECP
+           ENDIF
+           IF (SPTHEQ(1).GE.SPTHER(1)) THEN
+             SPTHER(1) = SPTHEQ(1)
+             SPTHER(2) = SPTHEP(1)
+           ENDIF
          ENDIF
-         
-         
-          CALL RC32SA('COMB',MATER,MAT1,MAT2,SN,SP12MA,TYPEKE,
+       
+         IF (SEISME) THEN
+           CALL RC32SP('SP_SITU',LIEU,NSITUQ,PQI,MQI,NSITUQ,PQJ,MQJ,
+     +                SEISME,MSE,SQQS,TYPEKE,SPMEQS,SPTHES)
+           IF (SQQS(1).GE.SPS(1)) THEN
+             SPS(1) = SQQS(1)
+             SPPS = RESUAS(10*(IS1-1)+6)
+             SPS(2) = SPPS
+           END IF
+           IF (TYPEKE.GT.0.D0) THEN
+             IF (SPMEQS(1).GE.SPMECS(1)) THEN
+             SPMECS(1) = SPMEQS(1)
+             SPMECS(2) = SPMEPS
+             ENDIF
+           ENDIF
+         END IF
+
+C - SIXIEME COMBINAISON : PI - PJ
+         SPP = RESUSS(10*(IS1-1)+6)
+         IF (SPP.GE.SP12MA(1)) THEN
+           SP12MA(1) = SPP
+           SP12MA(2) = SQQ(1)
+           DO 123 I4=1,8
+             MAT1(1) = MATPI(1)
+             MAT2(1) = MATPJ(1)
+  123      CONTINUE
+         ENDIF
+
+         IF (TYPEKE.GT.0.D0) THEN
+           IF (SPMECP.GE.SPMECA(1)) THEN
+             SPMECA(1) = SPMECP
+             SPMECA(2) = SPMECQ(1)
+           ENDIF
+           IF (SPTHEP(1).GE.SPTHER(1)) THEN
+             SPTHER(1) = SPTHEP(1)
+             SPTHER(2) = SPTHEQ(1)
+           ENDIF
+         ENDIF
+        
+         IF (SEISME) THEN
+           SPPS = RESUAS(10*(IS1-1)+6)
+           IF (SPPS.GE.SPS(1)) THEN
+             SPS(1) = SPPS
+             SPS(2) = SQQS(1)
+           END IF
+           IF (TYPEKE.GT.0.D0) THEN
+             IF (SPMEPS.GE.SPMECS(1)) THEN
+             SPMECS(1) = SPMEPS
+             SPMECS(2) = SPMEQS(1)
+             ENDIF
+           ENDIF
+         END IF
+
+
+C - CALCUL DE SALT ASSOCIE A SP1 ET SP2
+         CALL RC32SA('COMB',MATER,MAT1,MAT2,SN,SP12MA,TYPEKE,
      &                SPMECA,SPTHER,KEMECA,KETHER,SALTIJ,SMM,FUIJ)
           ICSS = ICSS + 1
           RESUCS(ICSS) = SP12MA(1)
@@ -568,10 +661,9 @@ C NOMBRE DE PAS DE TEMPS POUR DISTINGUER LE CAS MECANIQUE PUR
           IF (SEISME) THEN
             ZR(JMFUB-1+INDS+1) = FUIJ(1)+FUIJ(2)
             ZR(JMFUB-1+INDI+1) = FUIJ(1)+FUIJ(2)
-            CALL RC32SP('SP_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQI,MQI,
-     +                  SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
-            CALL RC32SA('COMB',MATER,MATPI,MATQI,SNS,SPS,TYPEKE,
-     &                  SPMECS,SPTHES,KEMECS,KETHES,SALIJS,SMM,FUIJ)
+C ON PREND SPTHES = SPTHER
+            CALL RC32SA('COMB',MATER,MAT1,MAT2,SNS,SPS,TYPEKE,
+     &                  SPMECS,SPTHER,KEMECS,KETHES,SALIJS,SMM,FUIJ)
             ICAS = ICAS + 1
             RESUCA(ICAS) = SPS(1)
             ICAS = ICAS + 1
@@ -585,16 +677,20 @@ C NOMBRE DE PAS DE TEMPS POUR DISTINGUER LE CAS MECANIQUE PUR
             ZR(JMFUS-1+INDI+1) = FUIJ(1)+FUIJ(2)
           END IF
           SPMAX = MAX(SPMAX,SPS(1),SP12MA(1),SPS(2),SP12MA(2))
-          SPMECM = MAX(SPMECM,SPMECS,SPMECA)
-          SPTHEM = MAX(SPTHEM,SPTHES,SPTHER)
-          IF (NIV.GE.2) WRITE (IFM,1031) SP12MA(1), SP12MA(2)
-          IF (NIV.GE.2) WRITE (IFM,1231) SALTIJ(1), SALTIJ(2)
-          IF (NIV.GE.2) WRITE (IFM,1331) FUIJ(1), FUIJ(2)
-          IF (TYPEKE.GT.0.D0) THEN
-            IF (NIV.GE.2) THEN
-              WRITE (IFM,1131) SPMECA,SPTHER,KEMECA,KETHER
+          SPMECM = MAX(SPMECM,SPMECS(1),SPMECA(1))
+          SPTHEM = MAX(SPTHEM,SPTHES(1),SPTHER(1))
+          IF (NIV.GE.2) THEN
+            WRITE (IFM,1121) SP12MA(1), SP12MA(2)
+            IF (SEISME) WRITE (IFM,1122) SPS(1), SPS(2)
+            IF (TYPEKE.GT.0.D0)  THEN
+              WRITE (IFM,1131) SPMECA(1),SPMECA(2),KEMECA
+              WRITE (IFM,1132) SPTHER(1),SPTHER(2),KETHER
+              IF (SEISME) WRITE (IFM,1133) SPMECS(1),SPMECS(2),KEMECS
             END IF
-          END IF
+            WRITE (IFM,1231) SALTIJ(1), SALTIJ(2)
+            IF (SEISME) WRITE (IFM,1232) SALIJS(1), SALIJS(2)
+            WRITE (IFM,1331) FUIJ(1), FUIJ(2)
+          ENDIF
    10   CONTINUE
    20 CONTINUE
 
@@ -603,15 +699,15 @@ C --- CALCUL DU FACTEUR D'USAGE
       IF ( LFATIG ) THEN
         IF (SEISME) THEN
           CALL RC32FS ( NBSIG2, ZI(JNOC), ZI(JIST),ZR(JMFUS),
-     &                  ZR(JMFUB), FUSE(1), NS, NSCY, MATER, UG )
+     &                  ZR(JMFUB), FUSE(1), NS, NSCY, UG )
           UTOT = UTOT + UG
         END IF
         IF ( NPASS .EQ. 0 ) THEN
            CALL RC32FU ( NBSIG2, ZI(JNOC), ZI(JIST),
-     &                   ZR(JMFU), MATER, UG, FACTUS )
+     &                   ZR(JMFU), UG, FACTUS )
         ELSE
            CALL RC32FP ( NBSIG2, ZI(JNOC), ZI(JIST), ZI(JNSG),
-     &                   ZR(JMFU), MATER, UG, FACTUS )
+     &                   ZR(JMFU), UG, FACTUS )
         ENDIF
         UTOT = UTOT + UG
       END IF
@@ -625,23 +721,37 @@ C
       CALL JEDETR('&&RC3201.NB_OCCURR')
       CALL JEDETR('&&RC3201.IMPR_SITU')
 
- 1032 FORMAT (1P,' SITUATION ',I4,' SP =',E12.5)
- 2050 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)
- 2060 FORMAT (1P,' SITUATION ',I4,' FACT_USAGE =',E12.5)
 
- 1010 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5,' PM =',E12.5,
-     +                            ' PB =',E12.5,' PMPB =',E12.5)
  1012 FORMAT (1P,' SITUATION ',I4,' PM =',E12.5,
      +                            ' PB =',E12.5,' PMPB =',E12.5)
  1014 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5 )
+ 1015 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5 ,
+     &    ' SN AVEC SEISME =',E12.5 )
  1016 FORMAT (1P,' SITUATION ',I4,' SN* =',E12.5 )
- 1020 FORMAT (1P,' COMBINAISON DES SITUATIONS ',I4,3X,I4,'  SN =',E12.5)
- 1031 FORMAT (1P,41X,'SP1 =',E12.5,2X,'SP2 =',E12.5)
- 1131 FORMAT (1P,40X,' SPMECA=',E12.5,' SPTHER=',E12.5,
+ 1017 FORMAT (1P,' SITUATION ',I4,' SN* =',E12.5,' 
+     &       SN* AVEC SEISME =',E12.5 )
+ 1018 FORMAT (1P,' SITUATION ',I4,' SP =',E12.5)
+ 1019 FORMAT (1P,' SITUATION ',I4,' AVEC SEISME : SP =',E12.5)
+ 1050 FORMAT (1P,' SITUATION ',I4,' SPMECA=',E12.5,' SPTHER=',E12.5,
      &                                ' KEMECA=',E12.5,' KETHER=',E12.5)
- 1132 FORMAT (1P,40X,' SPMECA=',E12.5,' SPTHER=',E12.5,
-     &                                ' KEMECA=',E12.5,' KETHER=',E12.5)
+ 1051 FORMAT (1P,' SITUATION ',I4,' AVEC SEISME : SPMECA =',E12.5,
+     &                                ' KEMECA=',E12.5)
+ 1060 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5,' FACT_USAGE =',E12.5)
+ 1061 FORMAT (1P,' SITUATION ',I4,' AVEC SEISME : SALT =',E12.5,
+     &                                   ' FACT_USAGE =',E12.5)
+C     
+ 1110 FORMAT (1P,' COMBINAISON DES SITUATIONS ',I4,3X,I4,'  SN =',E12.5)
+ 1111 FORMAT (1P,41X,'AVEC SEISME : SN =',E12.5)
+ 1121 FORMAT (1P,41X,'SP1 =',E12.5,2X,'SP2 =',E12.5)
+ 1122 FORMAT (1P,41X,'AVEC SEISME : SP1 =',E12.5,2X,'SP2 =',E12.5)
+ 1131 FORMAT (1P,41X,'SPMECA1=',E12.5,' SPMECA2=',E12.5,
+     &                                ' KEMECA=',E12.5)
+ 1132 FORMAT (1P,41X,'SPTHER1=',E12.5,' SPTHER2=',E12.5,
+     &                                ' KETHER=',E12.5)
+ 1133 FORMAT (1P,41X,'AVEC SEISME : SPMECA1=',E12.5,' SPMECA2=',E12.5,
+     &                                ' KEMECA=',E12.5)
  1231 FORMAT (1P,41X,'SALT1 =',E12.5,2X,'SALT2 =',E12.5)
+ 1232 FORMAT (1P,41X,'AVEC SEISME : SALT1 =',E12.5,2X,'SALT2 =',E12.5)
  1331 FORMAT (1P,41X,'FU1 =',E12.5,2X,'FU2 =',E12.5)
       CALL JEDEMA()
       END

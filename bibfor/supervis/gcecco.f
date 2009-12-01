@@ -4,7 +4,7 @@
       INTEGER                    IMPR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 07/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 04/03/2009   AUTEUR ANGLES J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,13 +103,11 @@ C            IIFIN = 1
      &           //'< A ETE CREE PAR >'
             WRITE(IMPR,*)
          ELSE
-            CALL UTSAUT()
             VALK (1) = 'NO  CMDE'
             VALK (2) = 'CONCEPT.'
             VALK (3) = 'TYPE DU CONCEPT.'
             VALK (4) = ' A ETE CREE PAR '
             CALL U2MESG(CODE2,'SUPERVIS_65',4,VALK,0,0,0,0.D0)
-            CALL UTSAUT()
          ENDIF
          DO 100 JCMD = IDEB, IFIN
             IF ( ZK80(LGRESU+JCMD)( 1: 8) .NE. '&ABSENT' ) THEN
@@ -146,7 +144,6 @@ CCCCCCCCCCCC   ENDIF
                      WRITE(IMPR,*)
                      WRITE(IMPR,*) 'PASSAGE NUMERO <',IPASS,'>'
                   ELSE
-                     CALL UTSAUT()
                      VALI = IPASS
       CALL U2MESG(CODE2,'SUPERVIS_67',0,' ',1,VALI,0,0.D0)
                   ENDIF
@@ -196,13 +193,11 @@ C             ENTETE LA PREMIERE FOIS
                   ELSE
 C                     IIFIN = 1
       CALL U2MESG(CODE2,'SUPERVIS_68',0,' ',0,0,0,0.D0)
-                     CALL UTSAUT()
                      VALK (1) = ' NO CMD '
                      VALK (2) = 'CONCEPT.'
                      VALK (3) = 'TYPE DU CONCEPT.'
                      VALK (4) = 'SERA  CREE  PAR '
       CALL U2MESG(CODE2,'SUPERVIS_65',4,VALK,0,0,0,0.D0)
-                     CALL UTSAUT()
                   ENDIF
                ENDIF
 C

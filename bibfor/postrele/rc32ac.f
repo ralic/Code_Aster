@@ -4,7 +4,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/11/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,23 +71,21 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM, JEXATR
+      CHARACTER*32     JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      IG, NBGR, NBSIGR, JNSG, IS, IS1, IOC1, NOCC, NUMGR, 
+      INTEGER      IG, NBGR, NBSIGR, JNSG, IS1, IOC1, NOCC, NUMGR, 
      +             JCOMBI, JPRESA, JPRESB, JNBOCC, IM, JNUMGR,
-     +             NPASS, NUM1, NUM2, IFM, NIV, IOCS, JSEIGR, JRESU,
+     +             NPASS, IFM, NIV, IOCS, JSEIGR, JRESU,
      +             JNSITU, NSITUP, NSITUQ, IRET, I1, JFACT, I, J,
      +             JREAS, JRESS, JRECA, JRECS, NDIM, NBP12, NBP23, NBP13
       REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ(2), 
-     +             VALRES,
-     +             UG, NADM, MPI(12), MPJ(12), SM, SN, SNET, SP(2), SMM,
-     +             MATPI(8), MATPJ(8), MSE(12),TYPEKE,SPMECA,SPTHER,
+     +             TYPEKE,UG,PMBMAX, FUIJ(2),
+     +             MPI(12), MPJ(12), SM, SN, SNET, SP(2), SMM,
+     +             MATPI(8), MATPJ(8), MSE(12),SPMECA(2),SPTHER(2),
      +             SPTHEM,SPMECM,KEMECA,KETHER, PM, PB, PMPB,
-     +             SIPMAX, SIMPIJ, SNEMAX, KEMAX, R8VIDE, PMMAX, PBMAX,
-     +             PMBMAX, VALE(2),FUIJ(2)
-      LOGICAL      SEISME, ENDUR, CFAIT
-      CHARACTER*2  CODRET
+     +             SIPMAX, SIMPIJ, SNEMAX, KEMAX, R8VIDE, PMMAX, PBMAX
+      LOGICAL      SEISME, CFAIT
       CHARACTER*4  LIEU(2)
       CHARACTER*8  K8B
       CHARACTER*24 K24AS, K24SS, K24CA, K24CS, K24FU
@@ -372,12 +370,11 @@ C ----------- CALCUL DU SP
 C
               SP(1) = 0.D0
               SP(2) = 0.D0
-              SPTHER = 0.D0
               TYPEKE=MATPI(8)
               CALL RC32SP ( 'SP_SITU', LIEU(IM), NSITUP, PPI, MPI, 
      +                      NSITUQ, PPJ, MPJ, SEISME, MSE, 
      +                      SP, TYPEKE, SPMECA, SPTHER )
-              SPTHEM = MAX ( SPTHEM , SPTHER )
+              SPTHEM = MAX ( SPTHEM , SPTHER(1) )
               SPMAX = MAX ( SPMAX , SP(1) )
               IF (NIV.GE.2) WRITE (IFM,2040) NSITUP, SP(1)
               ZR(JRESS-1+10*(IS1-1)+6) = SP(1)

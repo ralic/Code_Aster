@@ -2,7 +2,7 @@
      &                     DFF   ) 
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 22/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,7 +47,7 @@ C OUT DFF    : DERIVEES PREMIERES DES FONCTIONS DE FORME EN XI YI
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER     IBID,I
+      INTEGER     IBID,JBID,I
       REAL*8      KSI(2)
       REAL*8      D2F(3,9)
       CHARACTER*8 ELREFE
@@ -80,7 +80,7 @@ C
 C
 C --- RECUP DERIVEES PREMIERES DES FONCTIONS DE FORME 
 C      
-      CALL ELRFDF(ELREFE,KSI,NNO*NDIM     ,D2F ,IBID,IBID)
+      CALL ELRFDF(ELREFE,KSI,NNO*NDIM     ,D2F ,IBID,JBID)
 C        
 C --- CONVERSION 3D -> 2D
 C

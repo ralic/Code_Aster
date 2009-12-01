@@ -2,7 +2,7 @@
      &            NBVAL,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/01/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,15 +80,9 @@ C         PAR CONVENTION ECRO_ISOT2 A LE NUMERO 2
 
 C     DEFINITION DE LA MATRICE D'INTERACTION
       NOMRES(1)='H'
-C       NBVAL=NBVAL+1
-C       VALRES(NBVAL)=NBHSR
       
       CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',0.D0,
      &             1, NOMRES, H,CODRET,' ')
-C       IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
-C       CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
-C      &             1, NOMRES, H,CODRET,' ')
-C       ENDIF
       IF (CODRET(1).EQ.'OK') THEN
           NBCOEF=1                          
           VALH(1)=H                                        
@@ -100,13 +94,8 @@ C       ENDIF
           NOMRES(5)='H5'
           NOMRES(6)='H6'
 
-C           IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
-C        CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
-C      &               6,NOMRES, VALH,CODRET,' ')
-C           ELSE
          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',0.D0,
      &               6,NOMRES, VALH,CODRET,' ')
-C          ENDIF
           
           IF (CODRET(5).EQ.'OK') THEN
               NBCOEF=6                          
@@ -117,33 +106,13 @@ C          ENDIF
       ENDIF
       
       CALL LCMHSR (NBSYS, NBCOEF, VALH, HSRI)
-C       DO 1 I=1,24
-C       DO 2 J=1,24
-C       DO 1 I=1,NBSYS
-C       DO 2 J=1,NBSYS
-C           HSR(NBHSR,I,J)=HSRI(I,J)
-C   2   CONTINUE
-C   1   CONTINUE
-      EPSI=R8PREM()
-      IDIFF=0
-      DO 3 N=1,NBHSR
-      DO 1 I=1,NBSYS
-      DO 2 J=1,NBSYS
-          IF (ABS(HSR(NBHSR,I,J)-HSRI(I,J)).GT.EPSI)  IDIFF=1
-  2   CONTINUE
-  1   CONTINUE
-  3   CONTINUE
-  4   CONTINUE
-      IF (IDIFF.GT.0.OR.NBHSR.EQ.0) THEN
-         NBHSR=NBHSR+1
-         IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_22')
-         DO 5 I=1,NBSYS
-         DO 6 J=1,NBSYS
-             HSR(NBHSR,I,J)=HSRI(I,J)
-  6      CONTINUE
-  5      CONTINUE
-      ENDIF
-      
+      NBHSR=NBHSR+1
+      IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_22')
+      DO 7 I=1,NBSYS
+      DO 8 J=1,NBSYS
+          HSR(NBHSR,I,J)=HSRI(I,J)
+  8   CONTINUE
+  7   CONTINUE
       NBVAL=NBVAL+1
       VALRES(NBVAL)=NBHSR
  9999 CONTINUE

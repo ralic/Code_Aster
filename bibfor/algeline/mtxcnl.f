@@ -6,7 +6,7 @@
       REAL*8                         CONST(2)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,7 @@ C
                DO 110 IVAL = 0, NEQ-1
                   IF ( ZC(LMAT+IVAL) .NE. CUN ) THEN
                      ZR(LRES+IVAL) = RCUM*ZR(LRES+IVAL) +
-     +                                           CONST(1)*ZC(LMAT+IVAL)
+     +                                      CONST(1)*DBLE(ZC(LMAT+IVAL))
                   ENDIF
  110           CONTINUE
             ELSEIF ( TYPCST(1:1) .EQ. 'C') THEN
@@ -100,7 +100,7 @@ C
                DO 120 IVAL = 0, NEQ-1
                   IF ( ZC(LMAT+IVAL) .NE. CUN ) THEN
                      ZR(LRES+IVAL) = RCUM*ZR(LRES+IVAL) +
-     +                                              C8CST*ZC(LMAT+IVAL)
+     +                                      DBLE(C8CST*ZC(LMAT+IVAL))
                   ENDIF
  120           CONTINUE
             ELSE

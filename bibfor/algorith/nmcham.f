@@ -1,7 +1,7 @@
       SUBROUTINE NMCHAM (FAMI,KPG,KSP,IMATE,COMPOR,
      &                   MATEL,MAT,NBVAR,MEMO,VISC,COEF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/12/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,7 @@ C ---- VARIABLES LOCALES
       REAL*8      COEF,VALRES(10),C2INF,GAMM20
       REAL*8      E,NU,TROISK,EM,NUM,R0,RINF,B,CINF,K,W,GAMMA0
       REAL*8      TROIKM,DEUMUM,UN,MU,AINF,DT,KVI,VALDEN,UNSKVI
-      CHARACTER*2 BL2, FB2, CODRET(10)
+      CHARACTER*2 FB2, CODRET(10)
       CHARACTER*8 NOMRES(10),NOMEMO(4)
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -70,6 +70,7 @@ C
 C --- INITIALISATIONS :
 C     ===============
       UN     = 1.0D0
+      FB2    = 'FM'
 
       CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,COEF,IRET)
 C
@@ -101,7 +102,7 @@ C     ===============================================
          NOMRES(4) = 'C_I'
          NOMRES(7) = 'G_0'
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','CIN1_CHAB',0,' ',0.D0,
-     &            8,NOMRES,VALRES,CODRET,BL2)
+     &            8,NOMRES,VALRES,CODRET,FB2)
       ELSEIF (NBVAR.EQ.2) THEN
          NOMRES(4) = 'C1_I'
          NOMRES(7) = 'G1_0'
@@ -109,7 +110,7 @@ C     ===============================================
          NOMRES(10)= 'G2_0'
 
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','CIN2_CHAB',0,' ',0.D0,
-     &            10,NOMRES,VALRES,CODRET,BL2)
+     &            10,NOMRES,VALRES,CODRET,FB2)
       ENDIF
        R0     = VALRES(1)
        RINF   = VALRES(2)
@@ -150,7 +151,7 @@ C        ============================================
          NOMRES(2) = 'UN_SUR_K'
          NOMRES(3) = 'UN_SUR_M'
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','LEMAITRE',0,' ',0.D0,3
-     &                ,NOMRES,VALRES,CODRET,BL2)
+     &                ,NOMRES,VALRES,CODRET,FB2)
 C
          IF (CODRET(1).EQ.'OK') THEN
            VALDEN = VALRES(1)

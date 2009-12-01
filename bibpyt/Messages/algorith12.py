@@ -1,4 +1,4 @@
-#@ MODIF algorith12 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith12 Messages  DATE 23/03/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,6 +64,12 @@ cata_msg = {
  pour les statiques :  %(k1)s
  pour le champ      :  %(k2)s
  le type n'est pas  %(k3)s
+"""),
+
+16 : _("""
+ La base modale %(k1)s contient des modes complexes.
+ On ne peut pas projeter de matrice sur cette base.
+ Conseil : calculez si possible une base modale avec vecteurs propres réels.
 """),
 
 18 : _("""

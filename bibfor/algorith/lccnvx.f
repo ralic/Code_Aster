@@ -5,7 +5,7 @@
 C TOLE CRP_21
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 07/04/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,9 +61,6 @@ C ======================================================================
 C ======================================================================
       ELSEIF ( LOI(1:9) .EQ. 'VISCOCHAB') THEN
          CALL CVMCVX ( NMAT, MATERF, SIGF, VIND, SEUIL )
-C ======================================================================
-      ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B') THEN
-         CALL INSCVX ( NMAT, MATERF, SIGF, VIND, SEUIL )
 C ======================================================================
       ELSEIF ( LOI(1:6)  .EQ. 'LAIGLE') THEN
          CALL LGLCVX ( SIGF, VIND, NMAT, MATERF, SEUIL)

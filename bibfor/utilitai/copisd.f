@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -376,26 +376,35 @@ C       -- OBJETS QUE JE NE CONNAIS PAS !! (JP) :
      &              MAIL2//'           .FORM')
         CALL JEDUP1(MAIL1//'.ADAPTATION',BAS2,MAIL2//'.ADAPTATION')
 
+
 C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'MATR_ELEM' .OR. TYPESD.EQ.'VECT_ELEM') THEN
 C     ---------------------------------------------------------------
         K191 = SD1
         K192 = SD2
         CALL JEDUP1(K191//'.RELR',BAS2,K192//'.RELR')
-        CALL JEEXIN(K191//'.RERR',IRET)
-        IF (IRET.NE.0)THEN
-           CALL JEDUP1(K191//'.RERR',BAS2,K192//'.RERR')
-        ENDIF
-        IF(TYPESD.EQ.'VECT_ELEM')THEN
-           CALL JEEXIN(K191//'.RELC',IRET)
-           IF(IRET.NE.0)THEN
-              CALL JEDUP1(K191//'.RELC',BAS2,K192//'.RELC')
-           ENDIF
-        ENDIF
-        CALL JEEXIN(K191//'.TITR',IRET)
-        IF(IRET.NE.0)THEN
-           CALL JEDUP1(K191//'.TITR',BAS2,K192//'.TITR')
-        ENDIF
+        CALL JEDUP1(K191//'.RERR',BAS2,K192//'.RERR')
+        CALL JEDUP1(K191//'.RELC',BAS2,K192//'.RELC')
+        CALL JEDUP1(K191//'.RECC',BAS2,K192//'.RECC')
+        CALL JEDUP1(K191//'.TITR',BAS2,K192//'.TITR')
+C       JE (JP) NE SAIS PAS FAIRE UNE COPIE "PROFONDE" :
+C       QUEL NOM DONNER AUX CH2 ?
+C       A PART _00000I, JE NE VOIS PAS ...
+C
+C       CALL JEEXIN(K192//'.RELR',IEXI)
+C       IF (IEXI.GT.0) THEN
+C         CALL JEVEUO(K191//'.RELR','E',JRELR1)
+C         CALL JEVEUO(K192//'.RELR','E',JRELR2)
+C         CALL JELIRA(K191//'.RELR','LONUTI',N1,KBID)
+C         CALL JELIRA(K192//'.RELR','LONUTI',N2,KBID)
+C         CALL ASSERT(N1.EQ.N2)
+C         DO 20,K=1,N1
+C           CH1=ZK24(JRELR1-1+K)
+C           CH2=??
+C           CALL COPICH(BAS2,CH1,CH2)
+C           ZK24(JRELR2-1+K)=CH2
+C 20      CONTINUE
+C       ENDIF
 
 C ----------------------------------------------------------------------
       ELSE

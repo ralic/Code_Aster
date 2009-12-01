@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,19 +39,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM
+      CHARACTER*32     JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      IBID, N1, IOCC, NBTHER, NUME, NBINST, JINST,
      +             I, J, K, L, NDIM, NBABSC, JABSC, JORIG, JEXTR, NCMP,
      +             JCONT, IRET,KK
       PARAMETER  ( NCMP = 6 )
-      REAL*8       PREC(2), MOMEN0, MOMEN1, VALE(2), SIGMLO, SIGMLE
-      REAL*8       VALR, SIGTH(1000*NCMP),TRESC(2),TRACE,R3(2)
+      REAL*8       PREC(2), MOMEN0, MOMEN1, VALE(2)
+      REAL*8       SIGTH(1000*NCMP),TRESC(2),TRACE,R3(2)
       REAL*8       TREMIN(2),TREMAX(2),TMIN(2),TMAX(2)
       COMPLEX*16   CBID
       LOGICAL      EXIST
-      CHARACTER*8  K8B,CRIT(2),NOCMP(NCMP),TABLE,TABFLE,KNUME,TBPRES
+      CHARACTER*8  K8B,CRIT(2),NOCMP(NCMP),TABLE,KNUME,TBPRES
       CHARACTER*16 MOTCLF, VALEK(2), MOTCL2
       CHARACTER*24 INSTAN, ABSCUR, JVORIG, JVEXTR
       CHARACTER*24 VALK(7)

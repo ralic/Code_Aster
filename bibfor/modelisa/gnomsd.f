@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,12 +51,11 @@ C     -----------------------------------------------------------------
       INUM = -1
       DO 10, IESSAI=1,NESSAI
          INUM = INUM + 1
-C        CALL ASSERT(INUM.LE.9998)
          CALL CODENT( INUM , 'D0' , NOOJB1(K1:K2)  )
          CALL JEEXIN ( NOOJB1,IRET )
          IF ( IRET .EQ. 0 ) GO TO 20
  10   CONTINUE
-      CALL U2MESS('F','MODELISA4_69')
+      CALL U2MESI('F','MODELISA4_69',1,INUM)
 
  20   CONTINUE
       NOOJB=NOOJB1

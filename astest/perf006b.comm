@@ -1,4 +1,4 @@
-# MODIF  DATE 04/11/2008   AUTEUR CNGUYEN C.NGUYEN 
+# MODIF  DATE 07/04/2009   AUTEUR FOURNIER I.FOURNIER 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE SUR SES BORDS
 # perf006b.para = tps_job 2000 mem_job 1150Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,44 +26,6 @@
 DEBUT(CODE=_F(NOM='PERF006B',NIV_PUB_WEB='INTERNET'),MEMOIRE=_F(DYNAMIQUE=400,))
 
 MAILLA=LIRE_MAILLAGE(FORMAT='MED')
-
-MAILLA=DEFI_GROUP(reuse =MAILLA, MAILLAGE=MAILLA,
-                  CREA_GROUP_MA=_F(NOM='TOUT', TOUT='OUI',),);
-
-MAILLA=DEFI_GROUP(reuse =MAILLA,
-                  MAILLAGE=MAILLA,
-                  CREA_GROUP_NO=(_F(OPTION='PLAN',
-                                    NOM='APPUI_1',
-                                    POINT=(7.,7.,),
-                                    VECT_NORMALE=(1.0,0.0,),
-                                    PRECISION=1E-4,),
-                                 _F(OPTION='PLAN',
-                                    NOM='APPUI_2',
-                                    POINT=(7.,7.,),
-                                    VECT_NORMALE=(0.0,1.0,),
-                                    PRECISION=1E-4,),
-                                 _F(OPTION='PLAN',
-                                    NOM='DROITE0',
-                                    POINT=(0.0,0.0,),
-                                    VECT_NORMALE=(0.0,1.0,),
-                                    PRECISION=1E-4,),
-                                 _F(OPTION='PLAN',
-                                    NOM='GAUCHE0',
-                                    POINT=(0.0,0.0,),
-                                    VECT_NORMALE=(1.0,0.0,),
-                                    PRECISION=1E-4,),
-                                 _F(OPTION='ENV_SPHERE',
-                                    NOM='AXE',
-                                    POINT=(0.0,0.0,),
-                                    RAYON=1E-4,
-                                    PRECISION=2E-4,),),);
-
-MAILLA=DEFI_GROUP(reuse =MAILLA, MAILLAGE=MAILLA,
-                  CREA_GROUP_NO=(_F(DIFFE=('GAUCHE0','AXE',),
-                                    NOM='GAUCHE',),
-                                 _F(DIFFE=('DROITE0','AXE',),
-                                    NOM='DROITE',),),);
-
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLA,
             AFFE=_F(GROUP_MA='CALCUL', PHENOMENE='MECANIQUE', MODELISATION='DKT',),);

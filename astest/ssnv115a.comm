@@ -1,6 +1,6 @@
-# MODIF  DATE 20/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. 2D)
-# ssnv115a.para = tps_job 120 mem_job 100Mo ncpus 1 liste_test R
+# ssnv115a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

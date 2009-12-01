@@ -1,5 +1,6 @@
-# MODIF  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE)
+# sdld313c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,6 +20,7 @@
 # ======================================================================
 #       ANALYSE MODALE, PROBLEME MODAL GENERALISE A MATRICE K COMPLEXE
 #
+# sdld313c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #
 # OBJECTIF POUR LA BASE DE CAS-TESTS ASTER: MODAL GENERALISE COMPLEXE.

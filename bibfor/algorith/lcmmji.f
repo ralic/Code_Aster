@@ -5,7 +5,7 @@
         REAL*8 COEFT(NMAT),DRDPS,PS,HSR(5,24,24)
         CHARACTER*16 NECRIS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,7 +41,7 @@ C     ----------------------------------------------------------------
 C     ----------------------------------------------------------------
 
       IEI=NBCOMM(IFA,3)
-      NUEISO=COEFT(IEI)
+      NUEISO=NINT(COEFT(IEI))
 
       
 C      IF (NECRIS.EQ.'ECRO_ISOT1') THEN
@@ -49,7 +49,7 @@ C      IF (NECRIS.EQ.'ECRO_ISOT1') THEN
 
          Q=COEFT(IEI+2)
          B=COEFT(IEI+3)
-         NUMHSR=COEFT(IEI+4)
+         NUMHSR=NINT(COEFT(IEI+4))
          
 C        R(PS)=R0+Q*SOMME(HSR*(1-EXP(-B*PR))         
 C        dRs/dpr
@@ -62,7 +62,7 @@ C      ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
          B1=COEFT(IEI+3)
          Q2=COEFT(IEI+5)
          B2=COEFT(IEI+6)         
-         NUMHSR=COEFT(IEI+7)
+         NUMHSR=NINT(COEFT(IEI+7))
 C
          DRDPS=Q1*HSR(NUMHSR,IS,IR)*B1*EXP(-B1*PR)
          IF (IS.EQ.IR) THEN

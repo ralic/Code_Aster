@@ -7,7 +7,7 @@
       CHARACTER*1 TYPREZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,10 @@ C     ------------------------------------------------------------------
       CHARACTER*1   TYPE
       CHARACTER*4   CLAS,CUMUL
       CHARACTER*19  CBID(2)
+      REAL*8        TCST
+      CHARACTER*8   TPCST
 C     ------------------------------------------------------------------
+
       CALL JEMARQ()
       PGCANC = PGC
       PGC    = 'MTCONL'
@@ -101,9 +104,21 @@ C           --- REMPLISSAGE ---
 C                 --- MOULINEX ----
                   CALL JEVEUO(CBID(2)//'.CONL','L',LCONL2)
                   CALL JELIRA(CBID(2)//'.CONL','TYPE',IBID,TYPE)
-                  CALL MTXCNL(CUMUL,TYPCST(JCOMB),CONST(ICONST),
+
+C                 SI LE COEFFICIENT EST COMPLEXE : ATTENTION !
+C                 CAR LES MATRICES INITIALES ET RESULTATS .CONL SONT
+C                 FORCEMENT REELLES DU COUP ON DOIT FOURNIR UN
+C                 CONST REEL !
+                  IF (TYPCST(JCOMB).EQ.'C') THEN
+                     TCST = ABS(DCMPLX(CONST(ICONST),CONST(ICONST+1)))
+                     TPCST = 'R'
+                     CALL MTXCNL(CUMUL,TPCST,TCST,
      +                              TYPE,LCONL2,TYPREZ,LCONL1,NEQ)
-                  CUMUL = 'CUMUL'
+                  ELSE
+                     CALL MTXCNL(CUMUL,TYPCST(JCOMB),CONST(ICONST),
+     +                              TYPE,LCONL2,TYPREZ,LCONL1,NEQ)
+                  ENDIF
+                  CUMUL = 'CUMU'
                ENDIF
                ICONST = ICONST + 1
                IF ( TYPCST(JCOMB) .EQ. 'C' ) ICONST = ICONST + 1

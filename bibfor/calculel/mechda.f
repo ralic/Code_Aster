@@ -7,7 +7,7 @@
       LOGICAL                                    EXITIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
          ENDIF
  10   CONTINUE
  20   CONTINUE
-      CHEPSA = '&&MECHDA.CH_EPSA_R         '
+      CHEPSA = '&&MECHDA.CH_EPSA_R'
       CALL MEPSAN(EPSANE,EXITIM,TIME,EXITHE,CHEPSA)
 C
       CALL JEDEMA()

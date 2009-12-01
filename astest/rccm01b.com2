@@ -1,0 +1,289 @@
+# VALIDATION DES TROIS OPTIONSs AVEC TYPE_RESU='VALE_MAX'
+
+POURSUITE(CODE=_F(NOM='RCCM01B'),)
+
+DETRUIRE ( CONCEPT=_F(NOM=PMPB1 ) )
+DETRUIRE ( CONCEPT=_F(NOM=SN3 ) )
+DETRUIRE ( CONCEPT=_F(NOM=FAT13_B ) )
+DETRUIRE ( CONCEPT=_F(NOM=FAT12_MS ) )
+
+# VALIDATION DU CALCUL DE PM ET PB
+PMPB1=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='VALE_MAX',
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='PM_PB',
+                 INFO=2,
+                 CHAR_MECA=(
+                   _F(NUME_CHAR=1,
+                      NOM_CHAR='ETAT A - SITU1',
+                      MX=1.0,  MY=0.5,  MZ=0.0,),
+                   _F(NUME_CHAR=2,
+                      NOM_CHAR='ETAT B - SITU1',
+                      MX=1.0,  MY=2.0,  MZ=3.0,),),
+                 RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),),);
+
+IMPR_TABLE(    TABLE=PMPB1,)        
+
+# VALIDATION DU CALCUL DE SN ET DE SN*
+SN3=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='SN',
+                 INFO=1,
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=0.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=2.0,  MY=0.5,  MZ=-1.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION= _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 3',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     NUME_RESU_THER = 2,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),
+                  );
+
+IMPR_TABLE(    TABLE=SN3,) 
+
+# VALIDATION DU CALCUL EN FATIGUE : SITUATION 1 + SITUATION 3
+FAT13_B = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='FATIGUE',
+                 INFO=1,
+                 TYPE_KE='KE_MECA',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=0.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=2.0,  MY=0.5,  MZ=-1.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),
+                  _F(NB_OCCUR=10,
+                     NUME_SITU=3,
+                     NOM_SITU='Situation 3',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     NUME_RESU_THER = 2,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),),);
+
+IMPR_TABLE(    TABLE=FAT13_B,) 
+
+# SITUATION 1 + SITUATION 2 + SEISME
+FAT12_MS = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 TYPE_KE='KE_MIXTE',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=0.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=2.0,  MY=0.5,  MZ=-1.0,),
+                  _F(NUME_CHAR=5,
+                     NOM_CHAR='SEISME',
+                     MX=2.0,  MY=0.5,  MZ=1.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     PRES_A=0,
+                     PRES_B=0,
+                     TEMP_REF_A=20.0,
+                     TEMP_REF_B=20.0,),),
+                SEISME=( _F(NB_OCCUR=2,
+                     NB_CYCL_SEISME=10,
+                     NUME_SITU=3,
+                     NOM_SITU='Situation de seimse',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT=5,),),);
+                     
+IMPR_TABLE(    TABLE=FAT12_MS,) 
+#-------------------------------------------------------------------------------
+#   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
+#--------------------------------------------------------------------------------
+# PM_PB - SITUATION 1
+TEST_TABLE(TABLE=PMPB1,
+           REFERENCE='ANALYTIQUE',
+           TYPE_TEST = 'MAX',
+           NOM_PARA='PM_MAX',
+           VALE=200.  )
+           
+TEST_TABLE(TABLE=PMPB1,
+           REFERENCE='ANALYTIQUE',
+           TYPE_TEST = 'MAX',
+           NOM_PARA='PB_MAX',
+           VALE=100.  )
+           
+TEST_TABLE(TABLE=PMPB1,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='PMPB_MAX',
+           VALE=100.  )
+
+TEST_TABLE(TABLE=PMPB1,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='PMPB_MAX',
+           VALE=300.  )
+
+# SN - SITUATION 3
+TEST_TABLE(TABLE=SN3,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='SN_MAX',
+           VALE=250.  )
+
+TEST_TABLE(TABLE=SN3,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='SN_MAX',
+           VALE=150.  )
+           
+TEST_TABLE(TABLE=SN3,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='SN*_MAX',
+           VALE=200.  )
+           
+TEST_TABLE(TABLE=SN3,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='SN*_MAX',
+           VALE=100.  )         
+
+# FATIGUE - SITUATION 1 + SITUATION 3
+TEST_TABLE(TABLE=FAT13_B,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=2.7E-3  )
+           
+TEST_TABLE(TABLE=FAT13_B,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=2.2E-3  )
+             
+# FATIGUE - SITUATION 1 + SITUATION 2 + SEISME / KE_MIXTE
+TEST_TABLE(TABLE=FAT12_MS,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'ORIG'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=9.2E-3  )
+           
+TEST_TABLE(TABLE=FAT12_MS,
+           REFERENCE='ANALYTIQUE',
+            FILTRE=( _F(  NOM_PARA = 'LIEU',
+                         VALE_K   = 'EXTR'),),
+           NOM_PARA='FACT_USAGE_CUMU',
+           VALE=6.409E-3  )
+           
+FIN()

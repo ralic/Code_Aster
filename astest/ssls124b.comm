@@ -1,6 +1,7 @@
-# MODIF  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 03/03/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB8 MAILLAGE REGULIER
+# ssls124b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,18 +26,18 @@
 DEBUT(CODE=_F(NOM='SSLS124B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 YG=2.E11
-L=100
-b=10
-F=1
+L=100.
+b=10.
+F=1.
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=YG,
-                          NU=0.3,),);
+                          NU=0.0,),);
 
 
 
 # CAS 1 :
 
-h=10
+h=10.
 
 
 PRE_GIBI(UNITE_GIBI=21,UNITE_MAILLAGE=31);
@@ -48,7 +49,10 @@ ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
 
 MAIL31=DEFI_GROUP(reuse =MAIL31, MAILLAGE=MAIL31,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+                               _F(GROUP_MA='SUDEPIM',),
+                               _F(GROUP_MA='LI15',),
+                               _F(GROUP_MA='LI21',),
+                               _F(GROUP_MA='LI87',),),);
 
 CHMAT31=AFFE_MATERIAU(MAILLAGE=MAIL31,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
@@ -62,19 +66,13 @@ MODMEC31=AFFE_MODELE(MAILLAGE=MAIL31,
 CHARG31=AFFE_CHAR_MECA(MODELE=MODMEC31,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
                                    DX=0.0,),
-                                _F(GROUP_NO='P1',
+                                _F(GROUP_MA='LI15',
                                    DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
+                                _F(GROUP_MA='LI21',
                                    DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                      FORCE_ARETE=(_F(GROUP_MA='LI87',
+                                      FZ=F/b,),),
+                           );
 
 RESU31=MECA_STATIQUE(MODELE=MODMEC31,
                     CHAM_MATER=CHMAT31,
@@ -115,7 +113,10 @@ ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
 
 MAIL32=DEFI_GROUP(reuse =MAIL32, MAILLAGE=MAIL32,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+                               _F(GROUP_MA='SUDEPIM',),
+                               _F(GROUP_MA='LI15',),
+                               _F(GROUP_MA='LI21',),
+                               _F(GROUP_MA='LI87',),),);
 
 CHMAT32=AFFE_MATERIAU(MAILLAGE=MAIL32,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
@@ -129,19 +130,13 @@ MODMEC32=AFFE_MODELE(MAILLAGE=MAIL32,
 CHARG32=AFFE_CHAR_MECA(MODELE=MODMEC32,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
                                    DX=0.0,),
-                                _F(GROUP_NO='P1',
+                                _F(GROUP_MA='LI15',
                                    DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
+                                _F(GROUP_MA='LI21',
                                    DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                      FORCE_ARETE=(_F(GROUP_MA='LI87',
+                                      FZ=F/b,),),
+                           );
 
 RESU32=MECA_STATIQUE(MODELE=MODMEC32,
                     CHAM_MATER=CHMAT32,
@@ -176,7 +171,10 @@ ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
 
 MAIL33=DEFI_GROUP(reuse =MAIL33, MAILLAGE=MAIL33,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+                               _F(GROUP_MA='SUDEPIM',),
+                               _F(GROUP_MA='LI15',),
+                               _F(GROUP_MA='LI21',),
+                               _F(GROUP_MA='LI87',),),);
 
 CHMAT33=AFFE_MATERIAU(MAILLAGE=MAIL33,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
@@ -190,19 +188,13 @@ MODMEC33=AFFE_MODELE(MAILLAGE=MAIL33,
 CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
                                    DX=0.0,),
-                                _F(GROUP_NO='P1',
+                                _F(GROUP_MA='LI15',
                                    DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
+                                _F(GROUP_MA='LI21',
                                    DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                      FORCE_ARETE=(_F(GROUP_MA='LI87',
+                                      FZ=F/b,),),
+                           );
 
 RESU33=MECA_STATIQUE(MODELE=MODMEC33,
                     CHAM_MATER=CHMAT33,
@@ -240,7 +232,10 @@ ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
 
 MAIL34=DEFI_GROUP(reuse =MAIL34, MAILLAGE=MAIL34,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+                               _F(GROUP_MA='SUDEPIM',),
+                               _F(GROUP_MA='LI15',),
+                               _F(GROUP_MA='LI21',),
+                               _F(GROUP_MA='LI87',),),);
 
 CHMAT34=AFFE_MATERIAU(MAILLAGE=MAIL34,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
@@ -248,25 +243,19 @@ CHMAT34=AFFE_MATERIAU(MAILLAGE=MAIL34,
 MODMEC34=AFFE_MODELE(MAILLAGE=MAIL34,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
+                            MODELISATION='SHB8',),)
 
 
 CHARG34=AFFE_CHAR_MECA(MODELE=MODMEC34,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
                                    DX=0.0,),
-                                _F(GROUP_NO='P1',
+                                _F(GROUP_MA='LI15',
                                    DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
+                                _F(GROUP_MA='LI21',
                                    DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                      FORCE_ARETE=(_F(GROUP_MA='LI87',
+                                      FZ=F/b,),),
+                           );
 
 RESU34=MECA_STATIQUE(MODELE=MODMEC34,
                     CHAM_MATER=CHMAT34,
@@ -304,7 +293,10 @@ ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
 
 MAIL35=DEFI_GROUP(reuse =MAIL35, MAILLAGE=MAIL35,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
-                               _F(GROUP_MA='SUDEPIM',),),);
+                               _F(GROUP_MA='SUDEPIM',),
+                               _F(GROUP_MA='LI15',),
+                               _F(GROUP_MA='LI21',),
+                               _F(GROUP_MA='LI87',),),);
 
 CHMAT35=AFFE_MATERIAU(MAILLAGE=MAIL35,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
@@ -318,19 +310,13 @@ MODMEC35=AFFE_MODELE(MAILLAGE=MAIL35,
 CHARG35=AFFE_CHAR_MECA(MODELE=MODMEC35,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
                                    DX=0.0,),
-                                _F(GROUP_NO='P1',
+                                _F(GROUP_MA='LI15',
                                    DY=0.0,),
-                                _F(GROUP_NO='P5',
-                                   DY=0.0,),
-                                _F(GROUP_NO='P1',
-                                   DZ=0.0,),
-                                _F(GROUP_NO='P2',
+                                _F(GROUP_MA='LI21',
                                    DZ=0.0,),),
-                      FORCE_NODALE=(_F(GROUP_NO='P7',
-                                      FZ=.5,),
-                                   _F(GROUP_NO='P8',
-                                      FZ=.5,),),
-                            );
+                      FORCE_ARETE=(_F(GROUP_MA='LI87',
+                                      FZ=F/b,),),
+                           );
 
 RESU35=MECA_STATIQUE(MODELE=MODMEC35,
                     CHAM_MATER=CHMAT35,

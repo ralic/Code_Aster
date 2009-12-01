@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/11/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ C ----------------------------------------------------------------------
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -62,10 +62,10 @@ C ----------------------------------------------------------------------
       COMMON /ISTAJE/  ISTAT(4)
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      INTEGER          LDYN , LGDYN , NBDYN , NBFREE 
-      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE 
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      &               IDMARQ     , IDNOM      ,              IDLONG     ,
      &               IDLONO     , IDLUTI     , IDNUM
@@ -94,23 +94,23 @@ C DEB ------------------------------------------------------------------
       IDEC(2) = 4
       LINIT = ( CI(1:4) .EQ. 'INIT' )
       LSO = LONOI
-C     
-C     LA TAILLE DU SEGMENT DE VALEURS EST AJUSTEE POUR S'ALLIGNER 
+C
+C     LA TAILLE DU SEGMENT DE VALEURS EST AJUSTEE POUR S'ALLIGNER
 C     SUIVANT LA LONGUEUR DU TYPE (SI SUPERIEUR A L'ENTIER)
-C     
+C
 
       IF ( LTY .NE. LOIS ) THEN
         LSO = LSO + LTY
         IF ( MOD(LSO,LOIS) .NE. 0 ) LSO = (1 + LSO/LOIS) * LOIS
       ENDIF
-C     
+C
 C     LA TAILLE DU SEGMENT DE VALEURS EST AJUSTEE A LA LONGUEUR DE BLOC
 C     SI ON EST COMPRIS ENTRE LGBL-(NDE*LOIS) ET LGBL POUR DISPOSER DE
 C     LA PLACE MINIMUM NECESSAIRE POUR LES GROS OBJETS
-C     
+C
       IF ( IC .NE. 0 ) THEN
         IF ( LONGBL(IC) .GT. 1 ) THEN
-          LGBL = 1024*LONGBL(IC)*LOIS 
+          LGBL = 1024*LONGBL(IC)*LOIS
           IF (LSO .GE. LGBL-NDE*LOIS .AND. LSO .LT. LGBL) THEN
             LSO = LGBL
           ENDIF
@@ -128,17 +128,17 @@ C
         LSIC = LSI + 9
  50     CONTINUE
         ILDYNA = ILDYNA+1
-        IF ( MCDYN+LSIC*LOIS .GT. VMXDYN ) THEN 
+        IF ( MCDYN+LSIC*LOIS .GT. VMXDYN ) THEN
           IF ( ILDYNA .GT. 1 ) THEN
-            IF (LDYN .EQ. 1) THEN 
+            IF (LDYN .EQ. 1) THEN
                CALL JEIMPM ( 'MESSAGE',' LIMITE MEMOIRE DYNAMIQUE,'
      &                     //' IMPOSEE ATTEINTE')
             ENDIF
             IVAL(1)=LSIC*LOIS
-            IVAL(2)=VMXDYN
-            IVAL(3)=MCDYN
+            IVAL(2)=NINT(VMXDYN)
+            IVAL(3)=NINT(MCDYN)
             IVAL(4)=LTOT*LOIS
-            CALL U2MESI('S','JEVEUX_62',4,IVAL)
+            CALL U2MESI('F','JEVEUX_62',4,IVAL)
           ELSE
             CALL JJLDYN(LTOT)
             GOTO 50
@@ -155,19 +155,19 @@ C
           MCDYN  = MCDYN + LSIC*LOIS
           MXDYN  = MAX(MXDYN,MCDYN)
           NBDYN  = NBDYN + 1
-        ELSE 
+        ELSE
           IF ( IESSAI .GT. 1 ) THEN
-            IF (LDYN .EQ. 1) THEN 
+            IF (LDYN .EQ. 1) THEN
               CALL JEIMPM ( 'MESSAGE',' MEMOIRE INSUFFISANTE,'
      &                    //' ALLOCATION IMPOSSIBLE')
             ENDIF
             IVAL(1)=LSIC*LOIS
             IVAL(2)=LTOT*LOIS
-            CALL U2MESI('S','JEVEUX_60',2,IVAL)
+            CALL U2MESI('F','JEVEUX_60',2,IVAL)
           ELSE
             CALL JJLDYN(LTOT)
             GOTO 50
-          ENDIF  
+          ENDIF
         ENDIF
         ISZON( IDM        ) = IDM + LSI + 8 - JISZON
         ISZON( IDM     +1 ) = 0
@@ -191,7 +191,7 @@ C
       ELSEIF (ITCOL .EQ. 4) THEN
         ITRC = 2
       ELSE
-        ITRC = ITRECH 
+        ITRC = ITRECH
       ENDIF
 C
  800  CONTINUE
@@ -295,7 +295,7 @@ C --- DESTRUCTION DES SEGMENTS DE VALEURS LIBERES
                 IADM ( JIADM(ICLAI)+2*IDATCI   ) = 0
              ELSE
                 IBACOL = IADM ( JIADM(ICLAI) + 2*IDATCI-1 )
-                CALL ASSERT (IBACOL .NE. 0) 
+                CALL ASSERT (IBACOL .NE. 0)
                 IXIADM = ISZON( JISZON+IBACOL+IDIADM )
                 IBIADM = IADM( JIADM(ICLAI)+2*IXIADM-1 )
                 IF ( IBIADM .GT. 0 ) THEN
@@ -387,7 +387,7 @@ C --- DECHARGEMENT OU DESTRUCTION DES SEGMENTS DE VALEURS LIBERES
            IDATCI = ISZON( JISZON+ISI-3 )
            IF ( IDATCI .GT. 0 ) THEN
              IBACOL = IADM ( JIADM(ICLAI)+2*IDATCI-1 )
-             CALL ASSERT (IBACOL .NE. 0) 
+             CALL ASSERT (IBACOL .NE. 0)
              IXDESO = ISZON( JISZON+IBACOL+IDDESO )
              LTYPI  = LTYP ( JLTYP(ICLAI)+IXDESO )
              IXIADM = ISZON( JISZON+IBACOL+IDIADM )
@@ -501,7 +501,7 @@ C
           IDXAXD(IZ) = IDINIT(IZ)
         ENDIF
       ENDIF
-C      
+C
       IADMI = IDM + 4
  10   CONTINUE
       LDEPS = .TRUE.

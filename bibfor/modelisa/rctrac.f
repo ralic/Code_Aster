@@ -1,7 +1,7 @@
       SUBROUTINE RCTRAC(JMAT,NOMRC,NOMCL,TEMP,JPROL,JVALE,NBVALE,E)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 08/12/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -317,14 +317,33 @@ C
             E2 = ZR(JVALF2+NBVF2)/ZR(JVALF2)
             E = E1 + COEF*(E2-E1)
             LTRAC = .TRUE.
+            ZR(JVALE) = 0.D0
+            K1 = 1
+            K2 = 1
+          ELSE
+            NBVALE = NBVALE+1
+            Z1 = ZR(JVALF1)
+            Z2 = ZR(JVALF2)
+            IF (ABS(Z2-Z1).LE.(TOLE*Z1)) THEN
+               ZR(JVALE) = Z1
+               K1=1
+               K2=1
+            ELSEIF (Z2.GT.Z1) THEN
+               ZR(JVALE)=Z1
+               K1=1
+               K2=0
+            ELSE
+               ZR(JVALE)=Z2
+               K1=0
+               K2=1
+            ENDIF
           ENDIF
-          ZR(JVALE) = 0.D0
+
           ZR(JVALE+NBVALE) = ZR(JVALF1+NBVF1) +
      &                       COEF*(ZR(JVALF2+NBVF2)-ZR(JVALF1+NBVF1))
+
           PRO1 = ZK24(JPRO+6+2*I)(2:2)
           PRO2 = ZK24(JPRO+6+2*I+2)(2:2)
-          K1 = 1
-          K2 = 1
           NAR = 0
 C
 C ------- DEBUT DE LA BOUCLE D'INTERPOLATION

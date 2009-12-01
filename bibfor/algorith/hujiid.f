@@ -2,7 +2,7 @@
      &                   LOOP, DSIG, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2008   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,9 +52,9 @@ C ====================================================================
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
       INTEGER     NDT, NDI, I, J, K, KK, L, LL
       INTEGER     NBMECA, INDI(4), IRET, IADZI, IAZK24
-      INTEGER     IFM, NIV
+      INTEGER     IFM, NIV, INDM
       REAL*8      DEPS(6), DEPSE(6), HOOKNL(6,6), I1E
-      REAL*8      DSIG(6), SIGD(3), P(4), Q(3), PE(4), QE(3)
+      REAL*8      DSIG(6), SIGD(3), P(4), Q(4), PE(4), QE(4)
       REAL*8      YD(15), YE(15), DY(15), F2(4) 
       REAL*8      MATER(22,2), N, BETA, B, D, M, PCO, PC, PREF
       REAL*8      PHI, ANGDIL, MDIL, ACYC, AMON, CMON, CCYC
@@ -62,12 +62,13 @@ C ====================================================================
       REAL*8      E, NU, AL, DEMU, I1DE
       REAL*8      DFDL(4,4), DR(4), DEPSVP
       REAL*8      DEGR, ZERO, UN, D13, DEUX
-      REAL*8      DET, TOLE, COEF, VIND(*)
+      REAL*8      DET, TOLE1, COEF, VIND(*)
       REAL*8      PSI(24), DFDS(6), DPSIDS(6,6)
       REAL*8      SIGDC(12), SIGDCE(12), QXK, PROD
       REAL*8      XK(2), TH(2), LA, PS, TP, TP1
       REAL*8      PTRAC, PISO, PEK, PPL, DPSI
       REAL*8      E1,E2,E3,NU12,NU13,NU23,G1,G2,G3,NU21,NU31,NU32,DELTA
+      REAL*8      FACTOR, MAXI, COHES
       CHARACTER*8 MOD, NOMAIL
       LOGICAL     DEBUG, LOOP
 C ====================================================================
@@ -75,7 +76,7 @@ C ====================================================================
       PARAMETER   ( UN   = 1.D0 )
       PARAMETER   ( ZERO = 0.D0 )
       PARAMETER   ( DEUX = 2.D0 )
-      PARAMETER   ( TOLE = 1.D-6 )
+      PARAMETER   ( TOLE1 = 1.D-6 )
       PARAMETER   ( DEGR = 0.0174532925199D0 )
       
       
@@ -83,8 +84,11 @@ C ====================================================================
       COMMON /TDIM/     NDT, NDI
       COMMON /MESHUJ/   DEBUG
 C ====================================================================
-C        CALL JEMARQ ()
       CALL INFNIV (IFM, NIV)
+
+      DO 7 I = 1, 15
+        YE(I) = ZERO
+ 7    CONTINUE
 C ====================================================================
 C --- PROPRIETES HUJEUX MATERIAU -------------------------------------
 C ====================================================================
@@ -114,6 +118,8 @@ C ====================================================================
 
        DO 4 K = 1, 4
          IF (INDI(K).GT.0) NBMECA=NBMECA+1
+         Q(K)  = ZERO
+         QE(K) = ZERO 
  4     CONTINUE
 
 
@@ -191,14 +197,45 @@ C --- ON CALCULE DE TOUTES FACONS UNE PREDICTION ---------------------
 C --- ELASTIQUE EN TANT QUE DE BESOIN --------------------------------
 C ====================================================================
         IF(.NOT. LOOP)  CALL LCPRMV (HOOKNL, DEPS, DSIG)
-        
-        CALL LCSOVE (YD, DSIG, YE)
+
+        CALL LCSOVN (NDT, YD, DSIG, YE)
         LOOP = .FALSE.
 
-Caf 09/05/07 Debut
+        MAXI   = UN
+        INDM   = 0
+        COHES  = -1.D2+PTRAC
+        FACTOR = UN
+
+        DO 50 I = 1, NDI
+          IF(YE(I).GT.ZERO)THEN
+            IF(DSIG(I).GT.TOLE1)THEN
+              FACTOR = (-YD(I)+COHES)/DSIG(I)
+              IF((FACTOR.GT.ZERO).AND.(FACTOR.LT.MAXI)) THEN
+                MAXI = FACTOR
+                INDM = I
+              ENDIF
+            ENDIF
+          ENDIF
+  50    CONTINUE
+
+C ---> SI IL EXISTE SIG(I)>0, ALORS MODIFICATION DE LA PREDICTION      
+       IF(INDM.GT.0)THEN
+         IF(DSIG(INDM).GT.TOLE1)THEN
+           DO 60 I = 1, NDT
+             DSIG(I) = MAXI * DSIG(I)
+  60       CONTINUE
+           IF (DEBUG) THEN
+             WRITE (6,'(A,A,E12.5)')
+     &      'HUJIID DEBUT : APPLICATION DE FACTOR POUR MODIFIER ',
+     &       'LA PREDICTION -> FACTOR =',FACTOR
+             WRITE(6,*)'YE =',(YD(I)+DSIG(I),I=1,NDT)
+           ENDIF
+           CALL LCSOVN (NDT, YD, DSIG, YE)
+         ENDIF
+       ENDIF
+
         IF ((NBMECA .EQ. 1) .AND. 
      &      ((INDI(1).EQ.4) .OR. (INDI(1).EQ.8))) THEN
-Caf 09/05/07 Fin
 
           DO 31 I = NDT+1, 15
             DY(I)=ZERO
@@ -231,36 +268,45 @@ Caf 09/05/07 Fin
           
             CALL HUJPRJ (INDI(K), YD, SIGD, P(K), Q(K))
             CALL HUJPRJ (INDI(K), YE, SIGD, PE(K), QE(K))
-            IF (((P(K) -PTRAC)/PREF) .LE. TOLE .OR.
-     &          ((PE(K)-PTRAC)/PREF) .LE. TOLE) GOTO 999
+            IF (((P(K) -PTRAC)/PREF) .LE. TOLE1 .OR.
+     &          ((PE(K)-PTRAC)/PREF) .LE. TOLE1) GOTO 999
             CALL HUJKSI ('KSI   ', MATER, RC(K), KSI(K), IRET)
             IF (IRET.EQ.1) GOTO 999
             AD(K) = ACYC+KSI(K)*(AMON-ACYC)
             
-Caf 10/05/07 Debut          
           ELSEIF ((INDI(K) .GT. 4) .AND. (INDI(K) .LT. 8)) THEN
           
             CALL HUJPRC (K, INDI(K)-4, YD, VIND, MATER, YD, P(K),  
      &                   Q(K), SIGDC(3*K-2))
             CALL HUJPRC (K, INDI(K)-4, YE, VIND, MATER, YD, PE(K),  
      &                   QE(K), SIGDCE(3*K-2))
-            IF (((P(K) -PTRAC)/PREF) .LE. TOLE .OR.
-     &          ((PE(K)-PTRAC)/PREF) .LE. TOLE) GOTO 999
+            IF (((P(K) -PTRAC)/PREF) .LE. TOLE1 .OR.
+     &          ((PE(K)-PTRAC)/PREF) .LE. TOLE1) GOTO 999
             CALL HUJKSI ('KSI   ', MATER, RC(K), KSI(K), IRET)
             IF (IRET.EQ.1) GOTO 999
-            AD(K) = DEUX*(ACYC+KSI(K)*(AMON-ACYC)) 
-            
+
+            TH(1) = VIND(4*INDI(K)-9)
+            TH(2) = VIND(4*INDI(K)-8)
+            PROD  = SIGDCE(3*K-2)*TH(1) + SIGDCE(3*K)*TH(2)/DEUX
+            IF(QE(K).LT.TOLE1)THEN
+              AD(K) = (ACYC+KSI(K)*(AMON-ACYC))
+            ELSEIF((UN+PROD/QE(K)).LT.TOLE1)THEN
+              AD(K) = (ACYC+KSI(K)*(AMON-ACYC))
+            ELSE
+              AD(K) = (ACYC+KSI(K)*(AMON-ACYC))*
+     &              (UN+PROD/QE(K))
+            ENDIF
+
           ELSEIF (INDI(K) .EQ. 8) THEN
           
             CALL HUJPIC(K, INDI(K), YD, VIND, MATER, YD, P(K))
             CALL HUJPIC(K, INDI(K), YE, VIND, MATER, YD, PE(K))
                     
-            IF (((P(K) -PISO)/PREF) .LE. TOLE .OR.
-     &          ((PE(K)-PISO)/PREF) .LE. TOLE) GOTO 999
+            IF (((P(K) -PISO)/PREF) .LE. TOLE1 .OR.
+     &          ((PE(K)-PISO)/PREF) .LE. TOLE1) GOTO 999
                               
           ENDIF
           
-Caf 10/05/07 Fin
           YE(NDT+1+K) = YD(NDT+1+K)
  5        CONTINUE
  
@@ -272,7 +318,6 @@ Caf 10/05/07 Fin
         CCYC = CCYC * PC/PREF
 
         COEF = MATER(20,2)
-        
         
 C ====================================================================
 C --- CALCUL DE DLAMBI, DLAMBD ---------------------------------------
@@ -326,8 +371,10 @@ C ----  I.2.1. MECANISME DEVIATOIRE MONOTONE
               IF (LL .LT. 4) THEN
 
 Ckh --- traction
-                IF ((P(L)/PREF).GT.TOLE) THEN
-                  DPSI =MDIL+Q(L)/P(L)
+                IF ((P(L)/PREF).GT.TOLE1) THEN
+                  DPSI = MDIL+Q(L)/P(L)
+                ELSEIF(ABS(P(L)/PREF).LT.TOLE1)THEN
+                  DPSI = MDIL
                 ELSE
                   DPSI =-Q(L)/P(L)
                 ENDIF
@@ -338,19 +385,22 @@ Ckh --- traction
               
                 DFDL(K,L) = DFDL(K,L) + B*M*PEK*RC(K)*BETA
                 
-Caf 11/05/07 Debut
               ELSEIF ((LL .GT. 4) .AND. (LL .LT. 8)) THEN
               
                 CALL HUJPRJ (LL-4, YE, SIGD, TP, TP1)
                 PS = 2*SIGD(1)*SIGDCE(3*L-2)+SIGD(3)*SIGDCE(3*L)
 Ckh --- traction
-                IF ((P(L)/PREF).GT.TOLE) THEN
+                IF (((P(L)/PREF).GT.TOLE1).AND.
+     &              ((-Q(L)/PREF).GT.TOLE1)) THEN
                   DPSI =MDIL+PS/(2.D0*P(L)*Q(L))
+                ELSEIF((ABS(P(L)/PREF).LT.TOLE1).OR.
+     &                 ((-Q(L)/PREF).LT.TOLE1))THEN
+                  DPSI = MDIL
                 ELSE
                   DPSI =-PS/(2.D0*P(L)*Q(L))
                 ENDIF
               
-                IF((-Q(L)/PREF).GT.TOLE)THEN
+                IF((-Q(L)/PREF).GT.TOLE1)THEN
                   DFDL(K,L) = DFDL(K,L) + B*M*PEK*RC(K)*BETA
      &                      * KSI(L)*COEF * DPSI
                 ELSE
@@ -367,10 +417,8 @@ Ckh --- traction
                 ENDIF
                 
               ENDIF
-Caf 11/05/07 Fin
 
  12        CONTINUE
-
 
 C ---- I.2.2. MECANISME ISOTROPE MONOTONE
           ELSEIF (KK .EQ. 4) THEN
@@ -385,8 +433,10 @@ C ---- I.2.2. MECANISME ISOTROPE MONOTONE
               IF(LL.LT.4)THEN
 
 Ckh --- traction
-                IF ((P(L)/PREF).GT.TOLE) THEN
+                IF ((P(L)/PREF).GT.TOLE1) THEN
                   DPSI =MDIL+Q(L)/P(L)
+                ELSEIF(ABS(P(L)/PREF).LT.TOLE1)THEN
+                  DPSI = MDIL
                 ELSE
                   DPSI =-Q(L)/P(L)
                 ENDIF
@@ -399,13 +449,17 @@ Ckh --- traction
                 CALL HUJPRJ (LL-4, YE, SIGD, TP, TP1)
                 PS = 2*SIGD(1)*SIGDCE(3*L-2)+SIGD(3)*SIGDCE(3*L)
 Ckh --- traction
-                IF ((P(L)/PREF).GT.TOLE) THEN
+                IF (((P(L)/PREF).GT.TOLE1).AND.
+     &              ((-Q(L)/PREF).GT.TOLE1)) THEN
                   DPSI =MDIL+PS/(2.D0*P(L)*Q(L))
+                ELSEIF((ABS(P(L)/PREF).LT.TOLE1).OR.
+     &                 ((-Q(L)/PREF).LT.TOLE1))THEN
+                  DPSI = MDIL
                 ELSE
                   DPSI =-PS/(2.D0*P(L)*Q(L))
                 ENDIF
               
-                IF((-Q(L)/PREF).GT.TOLE)THEN
+                IF((-Q(L)/PREF).GT.TOLE1)THEN
                   DFDL(K,L) = DFDL(K,L) + RC(K)*D*PC*BETA
      &                      * KSI(L)*COEF*DPSI
                 ELSE
@@ -415,7 +469,6 @@ Ckh --- traction
               ENDIF
  13           CONTINUE
 
-Caf 10/05/07 Debut
 C --- I.2.3. MECANISME DEVIATOIRE CYCLIQUE
           ELSEIF ((KK .LT. 8) .AND. (KK .GT. 4)) THEN
             
@@ -435,13 +488,15 @@ C --- I.2.3. MECANISME DEVIATOIRE CYCLIQUE
               IF (LL .LT. 4) THEN
               
 Ckh --- traction
-                IF ((P(L)/PREF).GT.TOLE) THEN
+                IF ((P(L)/PREF).GT.TOLE1) THEN
                   DPSI =MDIL+Q(L)/P(L)
+                ELSEIF(ABS(P(L)/PREF).LT.TOLE1)THEN
+                  DPSI = MDIL
                 ELSE
                   DPSI =-Q(L)/P(L)
                 ENDIF
               
-                IF((-QE(K)/PREF).GT.TOLE)THEN
+                IF((-QE(K)/PREF).GT.TOLE1)THEN
                   DFDL(K,L) = DFDL(K,L) + B*M*PEK*BETA*
      &                      (-PROD/QE(K)+ RC(K))
      &                      * KSI(L)*COEF*DPSI
@@ -451,7 +506,7 @@ Ckh --- traction
                 ENDIF
                 
               ELSEIF (LL .EQ. 4) THEN
-                IF((-QE(K)/PREF).LT.TOLE)THEN
+                IF((-QE(K)/PREF).LT.TOLE1)THEN
                   DFDL(K,L) = DFDL(K,L) + B*M*PEK*BETA*RC(K)
                 ELSE
                   DFDL(K,L) = DFDL(K,L) + B*M*PEK*BETA*
@@ -463,13 +518,17 @@ Ckh --- traction
                 CALL HUJPRJ (LL-4, YE, SIGD, TP, TP1)
                 PS = 2*SIGD(1)*SIGDCE(3*L-2)+SIGD(3)*SIGDCE(3*L)
 Ckh --- traction
-                IF ((P(L)/PREF).GT.TOLE) THEN
+                IF (((P(L)/PREF).GT.TOLE1).AND.
+     &              ((-Q(L)/PREF).GT.TOLE1)) THEN
                   DPSI =MDIL+PS/(2.D0*P(L)*Q(L))
+                ELSEIF((ABS(P(L)/PREF).LT.TOLE1).OR.
+     &                 ((-Q(L)/PREF).LT.TOLE1))THEN
+                  DPSI = MDIL
                 ELSE
                   DPSI =-PS/(2.D0*P(L)*Q(L))
                 ENDIF
                 
-                IF((-Q(L)/PREF).LT.TOLE)THEN
+                IF((-Q(L)/PREF).LT.TOLE1)THEN
                   DFDL(K,L) = DFDL(K,L) + B*M*PEK*BETA*RC(K)
      &                      * KSI(L)*COEF*MDIL
                 ELSE
@@ -478,7 +537,7 @@ Ckh --- traction
      &                      * KSI(L)*COEF*DPSI
                 ENDIF
               ELSEIF (LL .EQ. 8) THEN
-                IF((-QE(K)/PREF).LT.TOLE)THEN
+                IF((-QE(K)/PREF).LT.TOLE1)THEN
                   IF(VIND(22).EQ.UN)THEN
                     DFDL(K,L) = DFDL(K,L) - B*M*PEK*BETA*RC(K)
                   ELSE
@@ -516,8 +575,10 @@ C --- I.2.4. MECANISME ISOTROPE CYCLIQUE
               IF(LL.LT.4)THEN
               
 Ckh --- traction
-                IF ((P(L)/PREF).GT.TOLE) THEN
+                IF ((P(L)/PREF).GT.TOLE1) THEN
                   DPSI =MDIL+Q(L)/P(L)
+                ELSEIF(ABS(P(L)/PREF).LT.TOLE1)THEN
+                  DPSI = MDIL
                 ELSE
                   DPSI =-Q(L)/P(L)
                 ENDIF
@@ -538,13 +599,17 @@ Ckh --- traction
                 PS = 2*SIGD(1)*SIGDCE(3*L-2)+SIGD(3)*SIGDCE(3*L)
                 
 Ckh --- traction
-                IF ((P(L)/PREF).GT.TOLE) THEN
+                IF (((P(L)/PREF).GT.TOLE1).AND.
+     &              ((-Q(L)/PREF).GT.TOLE1)) THEN
                   DPSI =MDIL+PS/(2.D0*P(L)*Q(L))
+                ELSEIF((ABS(P(L)/PREF).LT.TOLE1).OR.
+     &                 ((-Q(L)/PREF).LT.TOLE1))THEN
+                  DPSI = MDIL
                 ELSE
                   DPSI =-PS/(2.D0*P(L)*Q(L))
                 ENDIF
               
-                IF((-Q(L)/PREF).LT.TOLE)THEN
+                IF((-Q(L)/PREF).LT.TOLE1)THEN
                   IF(VIND(22).EQ.UN)THEN  
                     DFDL(K,L) = DFDL(K,L) + D*PC*BETA*
      &                         (RC(K)-VIND(21))  
@@ -571,7 +636,6 @@ Ckh --- traction
           ENDIF
  11       CONTINUE
 
-Caf 10/05/07 Fin
 C ---- FIN I.2.
 C ---> I.3. CALCUL DE DFDRE(K)*DRDLAMB-(K)     
           DO 16 K = 1, NBMECA, 1
@@ -588,14 +652,13 @@ C ---> I.3. CALCUL DE DFDRE(K)*DRDLAMB-(K)
             
               DFDL(K,K) = DFDL(K,K) + D*PC * (UN-RC(K))**DEUX /CMON
 
-Caf 11/05/07 Debut
             ELSEIF ((KK .GT. 4) .AND. (KK .LT. 8)) THEN
                 
               TH(1) = VIND(4*KK-9)
               TH(2) = VIND(4*KK-8)
                               
               PROD  = SIGDCE(3*K-2)*TH(1) + SIGDCE(3*K)*TH(2)/DEUX
-              IF((-QE(K)/PREF).LT.TOLE)THEN     
+              IF((-QE(K)/PREF).LT.TOLE1)THEN     
                 DFDL(K,K) = DFDL(K,K) + M*PEK*(UN-B*LOG(PEK/PC))
      &                      * (UN-RC(K))**DEUX /AD(K)
             
@@ -612,9 +675,7 @@ Caf 11/05/07 Debut
             ELSEIF (KK .EQ. 8) THEN 
               
               DFDL(K,K) = DFDL(K,K) + D*PC*(UN-RC(K))**DEUX /CCYC
-      
-Caf 11/05/07 Fin              
-              
+             
             ENDIF
  16       CONTINUE
        
@@ -647,6 +708,46 @@ C ====================================================================
 C --- CALCUL INCREMENT DE CONTRAINTES  DSIG = HOOKNL-.DEPSE ----------
 C ====================================================================
        IF(.NOT. LOOP)CALL LCPRMV (HOOKNL, DEPSE, DSIG)
+       CALL LCSOVN (NDT, YD, DSIG, YE)
+
+       MAXI   = UN
+       INDM   = 0
+       COHES  = -1.D2+PTRAC
+       FACTOR = UN
+
+       DO 280 I = 1, NDI
+         IF(YE(I).GT.ZERO)THEN
+           IF(DSIG(I).GT.TOLE1)THEN
+             FACTOR = (-YD(I)+COHES)/DSIG(I)
+             IF((FACTOR.GT.ZERO).AND.(FACTOR.LT.MAXI)) THEN
+               MAXI = FACTOR
+               INDM = I
+             ENDIF
+           ENDIF
+         ENDIF
+  280  CONTINUE
+
+C ---> SI IL EXISTE SIG(I)>0, ALORS MODIFICATION DE LA PREDICTION      
+       IF(INDM.GT.0)THEN
+         IF(DSIG(INDM).GT.TOLE1)THEN
+           DO 290 I = 1, NDT
+             DSIG(I) = MAXI * DSIG(I)
+  290       CONTINUE
+           IF (DEBUG) THEN
+             WRITE (6,'(A,A,E12.5)')
+     &       'HUJIID FIN:: APPLICATION DE FACTOR POUR MODIFIER ',
+     &       'LA PREDICTION -> FACTOR =',FACTOR
+             WRITE(6,*)'YE =',(YD(I)+DSIG(I),I=1,NDT)
+           ENDIF
+         ELSE
+           IRET = 1
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           IF(DEBUG)WRITE(6,'(10(A))')
+     &    'HUJIID 2 : TRACTION DANS LA PSEUDO-PREDICTION ELASTIQUE ',
+     &     'DANS LA MAILLE ',NOMAIL
+         ENDIF
+       ENDIF
 
 C ====================================================================
 C --- CALCUL INCREMENT DE LA VARIABLE INTERNE RC ---------------------
@@ -658,12 +759,14 @@ C ====================================================================
           ELSEIF(KK.EQ.4) THEN
             DR(K) =  F2(K) *(UN-RC(K))**DEUX /CMON
 
-Caf 11/05/07 Debut
           ELSEIF ((KK .LT. 8) .AND. (KK .GT. 4)) THEN
             DR(K) =  F2(K) *(UN-RC(K))**DEUX /AD(K)
+            IF((YD(NDT+1+K)+DR(K)).GT.VIND(KK-4))THEN
+              F2(K) = (VIND(KK-4)-YD(NDT+1+K))/DR(K)/
+     &                ((UN-RC(K))**DEUX /AD(K))
+            ENDIF
           ELSEIF (KK .EQ. 8) THEN
             DR(K) =  F2(K) *(UN-RC(K))**DEUX /CCYC          
-Caf 11/05/07 Fin            
             
           ENDIF
  250      CONTINUE
@@ -677,8 +780,10 @@ C ====================================================================
           IF (KK .LT. 4) THEN
           
 Ckh --- traction
-            IF ((P(K)/PREF).GT.TOLE) THEN
+            IF ((P(K)/PREF).GT.TOLE1) THEN
               DPSI =MDIL+Q(K)/P(K)
+            ELSEIF(ABS(P(K)/PREF).LT.TOLE1)THEN
+              DPSI = MDIL
             ELSE
               DPSI =-Q(K)/P(K)
             ENDIF
@@ -688,19 +793,22 @@ Ckh --- traction
           
             DEPSVP = DEPSVP - F2(K)
 
-Caf 11/05/07 Debut
           ELSEIF ((KK .LT. 8) .AND. (KK .GT. 4)) THEN
           
             CALL HUJPRJ (KK-4, YD, SIGD, TP, TP1)
             PS = 2*SIGD(1)*SIGDC(3*K-2)+SIGD(3)*SIGDC(3*K)
 Ckh --- traction
-            IF ((P(K)/PREF).GT.TOLE) THEN
+            IF (((P(K)/PREF).GT.TOLE1).AND.
+     &          ((-Q(K)/PREF).GT.TOLE1)) THEN
               DPSI =MDIL+PS/(2.D0*P(K)*Q(K))
+            ELSEIF((ABS(P(K)/PREF).LT.TOLE1).OR.
+     &             ((-Q(K)/PREF).LT.TOLE1))THEN
+              DPSI = MDIL
             ELSE
               DPSI =-PS/(2.D0*P(K)*Q(K))
             ENDIF
 
-            IF((-QE(K)/PREF).LT.TOLE)THEN           
+            IF((-QE(K)/PREF).LT.TOLE1)THEN           
               DEPSVP = DEPSVP - F2(K)*COEF*KSI(K)*MDIL      
             ELSE
               DEPSVP = DEPSVP - F2(K)*COEF*KSI(K)*DPSI
@@ -712,8 +820,8 @@ Ckh --- traction
             ELSE
               DEPSVP = DEPSVP - F2(K)       
             ENDIF
-Caf 11/05/07 Fin            
           ENDIF
+
  251      CONTINUE
 
 C ====================================================================
@@ -751,5 +859,5 @@ C ====================================================================
  300      CONTINUE
 
  9999   CONTINUE
-C         CALL JEDEMA ()
+
         END

@@ -2,7 +2,7 @@
      &                  IFLU,TDT,HINI,HFIN,
      &                  AFPD,BFPD,CFPD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2002   AUTEUR YLEPAPE Y.LEPAPE 
+C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,7 +67,7 @@ C
       RRDV = CMAT(7) 
       VRDV = CMAT(8) 
       VIDV = CMAT(9) 
-      IFPO = CMAT(13)
+      IFPO = NINT(CMAT(13))
 C
       HVINI = HINI
       HVFIN = HFIN

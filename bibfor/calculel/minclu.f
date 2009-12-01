@@ -2,7 +2,7 @@
      &                SOM1  ,M2    ,D2    ,PAN2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 27/04/2009   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,63 +55,88 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER  I,J,K,NSOM,NPAN,P1,P2,ID(3)
+      INTEGER IAUX
       REAL*8   R
 C
 C ----------------------------------------------------------------------
 C
+      MINCLU = .FALSE.
 C
-C --- PREMIER TEST: INCLUSION CONVEXE EXTERIEUR
+C====
+C 1. PREMIER TEST: INCLUSION CONVEXE
+C    . SI LES DEUX MAILLES SONT LINEAIRES, ON VA TESTER LE CONVEXE
+C      ENGLOBANT POUR CAPTER LES CAS DE SUPERPOSITION DE MAILLE.
+C    . SINON, ON SE CONTENTERA D'UNE INCLUSION STRICTE VIA LE
+C      CONVEXE INSCRIT
+C====
+C 1.1. ==> ON REGARDE SI LES NOEUDS DE LA MAILLE M1 SONT
+C          A L'INTERIEUR DE LA BOITE INSCRITE ASSOCIEE A M2.
+C          DES QUE L'UN EST AU DEHORS, ON PASSE AU TEST SUIVANT.
 C
       P1   = D1(2+2*M1)
       NSOM = D1(4+2*M1) - P1
       P2   = D2(1+2*M2)
       NPAN = D2(3+2*M2) - P2
+      IAUX = DIME + 2
 C
-      DO 10 I = 1, NSOM
-        DO 11 J = 1, NPAN
-          R = PAN2(DIME+2,P2-1+J)
-          DO 20 K = 1, DIME
+      DO 11 , I = 1, NSOM
+C
+        DO 111 , J = 1, NPAN
+          R = PAN2(IAUX,P2-1+J)
+          DO 112 , K = 1, DIME
             R = R + SOM1(K,P1-1+I)*PAN2(K,P2-1+J)
- 20       CONTINUE
-          IF (R.GT.PREC) GOTO 30
- 11     CONTINUE
- 10   CONTINUE
+  112     CONTINUE
+          IF ( R.GT.PREC ) THEN
+            GOTO 20
+          ENDIF
+  111   CONTINUE
+C
+   11 CONTINUE
+C
+C 1.2. ==> ON ARRIVE ICI SI TOUS LES SOMMETS DE M1 SONT DANS LA
+C          BOITE INSCRITE ASSOCIEE A M2 : ON DECLARE L'INCLUSION
 C
       MINCLU = .TRUE.
-      GOTO 100
 C
- 30   CONTINUE
+C====
+C 2. SECOND TEST: INCLUSION MINMAX
+C    ABSOLUMENT INCOMPREHENSIBLE !
+C====
 C
-C --- SECOND TEST: INCLUSION MINMAX
+   20 CONTINUE
 C
-      DO 40 I = 1, DIME
+      IF ( .NOT. MINCLU ) THEN
+C
+      DO 21 , I = 1, DIME
         ID(I) = 1
- 40   CONTINUE
+   21 CONTINUE
 C
-      DO 50 I = 1, 2**DIME
-        DO 60 J = 1, NPAN
-          R = PAN2(DIME+2,P2-1+J)
-          DO 70 K = 1, DIME
+      DO 22 , I = 1, 2**DIME
+        DO 221 , J = 1, NPAN
+          R = PAN2(IAUX,P2-1+J)
+          DO 222 , K = 1, DIME
             R = R + MM1(ID(K),K,M1)*PAN2(K,P2-1+J)
- 70       CONTINUE
-          IF (R.GT.PREC) GOTO 90
- 60     CONTINUE
+  222     CONTINUE
+          IF (R.GT.PREC) THEN
+            GOTO 30
+          ENDIF
+  221   CONTINUE
         K = 1
- 80     CONTINUE
+   23   CONTINUE
         J     = 3 - ID(K)
         ID(K) = J
         K     = K + 1
-        IF (J.EQ.1) GOTO 80
- 50   CONTINUE
+        IF (J.EQ.1) GOTO 23
+   22 CONTINUE
 C
       MINCLU = .TRUE.
-      GOTO 100
 C
-C --- FIN
+      ENDIF
 C
- 90   CONTINUE
-      MINCLU = .FALSE.
+C====
+C 3. FIN
+C====
 C
- 100  CONTINUE
+   30 CONTINUE
 C
       END

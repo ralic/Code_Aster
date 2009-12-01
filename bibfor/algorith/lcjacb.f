@@ -5,7 +5,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/04/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,10 +69,6 @@ C
       ELSEIF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
          CALL CVMJAC ( MOD, NMAT, MATERF, TIMED, TIMEF,
      1                  YF,  DY,   NR, EPSD,   DEPS,  DRDY )
-C
-      ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B' ) THEN
-         CALL INSJAC ( MOD, NMAT, MATERF,
-     1                  YF,  DY,   NR,  DRDY )
 C
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
          CALL LCMMJA ( MOD, NMAT, MATERF,TIMED, TIMEF,

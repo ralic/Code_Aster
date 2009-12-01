@@ -4,7 +4,7 @@
       CHARACTER*8 GRAN,NOMA,CNO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 24/03/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C     RECUP : COMPOSANTES DE LA GRANDEUR
       END IF
 C
 C
-C --- 2. VERIFICATIONS 
+C --- 2. VERIFICATIONS
 C     =================
 C
 C  -- NUME_DDL :
@@ -212,7 +212,7 @@ C
 
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8B,IRET)
       CALL DISMOI('F','TYPE_SCA',GRAN,'GRANDEUR',IBID,TSCA,IRET)
-      
+
       DO 50 IOCC = 1,NOCC
 C
 C  --    NOEUDS CONCERNES
@@ -251,7 +251,7 @@ C        -------------------------------------
 
 C   -    TYPE "R" :
          IF(NBVAR.NE.0)THEN
-            CALL ASSERT(TSCA.EQ.'R')
+            IF (TSCA.NE.'R') CALL U2MESS('F','UTILITAI6_2')
             NBVAR=-NBVAR
             CALL JEDETR('&&CNOAFF.VAL_IOCC')
             CALL WKVECT('&&CNOAFF.VAL_IOCC','V V R',NBVAR,JVAL)
@@ -269,7 +269,7 @@ C   -    TYPE "R" :
 
 C   -    TYPE "I" :
          ELSEIF(NBVAI.NE.0)THEN
-            CALL ASSERT(TSCA.EQ.'I')
+            IF (TSCA.NE.'I') CALL U2MESS('F','UTILITAI6_2')
             NBVAI=-NBVAI
             CALL JEDETR('&&CNOAFF.VAL_IOCC')
             CALL WKVECT('&&CNOAFF.VAL_IOCC','V V I',NBVAI,JVAL)
@@ -287,7 +287,7 @@ C   -    TYPE "I" :
 
 C   -    TYPE "C" :
          ELSEIF(NBVAC.NE.0)THEN
-            CALL ASSERT(TSCA.EQ.'C')
+            IF (TSCA.NE.'C') CALL U2MESS('F','UTILITAI6_2')
             NBVAC=-NBVAC
             CALL JEDETR('&&CNOAFF.VAL_IOCC')
             CALL WKVECT('&&CNOAFF.VAL_IOCC','V V C',NBVAC,JVAL)
@@ -305,7 +305,7 @@ C   -    TYPE "C" :
 
 C   -    TYPE "F" :
          ELSEIF(NBVAK.NE.0)THEN
-            CALL ASSERT(TSCA.EQ.'K')
+            IF (TSCA.NE.'K') CALL U2MESS('F','UTILITAI6_2')
             NBVAK=-NBVAK
             CALL JEDETR('&&CNOAFF.VAL_IOCC')
             CALL WKVECT('&&CNOAFF.VAL_IOCC','V V K8',NBVAK,JVAL)

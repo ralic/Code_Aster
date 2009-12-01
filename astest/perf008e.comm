@@ -1,6 +1,6 @@
-# MODIF  DATE 10/11/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
 # TITRE CALCUL ELASTIQUE D'UN DIABOLO PLEIN SOUMIS A UN CHARGEMENT THERMIQUE
-# perf008e.para = tps_job 3500 mem_job 3500Mo ncpus 4 liste_test P
+# perf008e.para = tps_job 3620 mem_job 3500Mo ncpus 4 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

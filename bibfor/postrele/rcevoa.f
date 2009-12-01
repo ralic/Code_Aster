@@ -4,7 +4,7 @@
       CHARACTER*16        TYPTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -12,7 +12,7 @@ C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
 C (AT YOUR OPTION) ANY LATER VERSION.                                   
 C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFAL, BUT   
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
 C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
@@ -30,7 +30,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
-      REAL*8 VALR
       COMMON  /RVARJE/ ZR(1)
       COMPLEX*16       ZC
       COMMON  /CVARJE/ ZC(1)
@@ -42,29 +41,24 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM
+      CHARACTER*32     JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      N1, IBID, NBTRAN, NBPAR, NBTETA, NBCYCL, NBABSC,
-     +             NBINS0, IRET, IND, INDI, INDS, I, J, K, L,  NOC1,
-     +             NOC2, JTETA, JSIGM, JNOCC, KINST, JFAIJ, JABSC,
-     +             I1, I2, I3, IFM, NIV, NDIM, IOC, IT, II, I1M, I2M,  
-     +             NOC1M, NOC2M, JNOCK, JNOCL, NBOCC1, NBOCC2, NK, NL,
-     +             IS1, IS2, JINST, JTABL, JNBCY, NBITOT
+     +             NBINS0, IRET, IND, I, K, L, JNOCK, JNOCL, NK, NL,
+     +             JTETA, KINST, JFAIJ, JABSC,I1, I2, IFM, NIV, NDIM, 
+     +             IOC, IT, IS1, IS2, JINST, JTABL, JNBCY, NBITOT
       REAL*8       R8B, PREC(2), VALE(4), VALRES(4), RIJ, RAPP,
-     +             FUT, FUKL, FUM, THETA, R8DGRD, RCAL,
-     +             SITTEF, NADM, AAMORC, BAMORC, DAMORC, RAMORC, D,
-     +             SITT1, SITT2
+     +             FATOT, FAKL, FAM, THETA, R8DGRD, RCAL,
+     +             SITTEF, AAMORC, BAMORC, DAMORC, RAMORC, D,
+     +             SITT1, SITT2,FKL,R8PREM
       COMPLEX*16   CBID
-      LOGICAL      EXIST, ENCORE
-      LOGICAL      TROUVE, COLONA, COLONB, LIGNEA, LIGNEB
-      CHARACTER*4  TYPE
+      LOGICAL      EXIST, TROUVE
       CHARACTER*2  CODRET(4)
       CHARACTER*8  K8B, NOMRES, CRIT(2), NOMPAR, NOMVAL(4)
       CHARACTER*16 MOTCLF, VALEK(4), TABLE, CONCEP, NOMCMD
       CHARACTER*19 NOMF
-      CHARACTER*24 INSTAN, KTHETA, CSIGM, CNOC, ABSCUR
-      CHARACTER*24 VALK(7)
+      CHARACTER*24 INSTAN, KTHETA, ABSCUR, VALK(7)
 C
       INTEGER      NPARM, NPARD
       PARAMETER  ( NPARM=2 , NPARD=2 )
@@ -269,44 +263,44 @@ C
 C
             DO 220 I2 = I1+1, NBITOT
 C
-               TABLE   = ZK8(JTABL-1+I2)
-               VALE(2) =  ZR(JINST-1+I2)
+              TABLE   = ZK8(JTABL-1+I2)
+              VALE(2) =  ZR(JINST-1+I2)
 C
-               CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
-     +                       CBID, K8B, CRIT, PREC, VALEK(3), 
-     +                       K8B, IBID, SITT2, CBID, K8B, IRET)
-               IF (IRET.NE.0) THEN
-                 VALK(1) = TABLE
-                 VALK(2) = VALEK(3)
-                 VALK(3) = VALEK(1)
-                 VALK(4) = VALEK(2)
-                 CALL U2MESG('F', 'POSTRCCM_2',4,VALK,0,0,2,VALE)
-               ENDIF
-               SITT2 = ABS(SITT2)
-C
-C ------------ calcul du rapport de charge
-               RIJ = MIN(SITT1,SITT2) / MAX(SITT1,SITT2)
-C ------------ calcul de DELTASIGTT efficace
-               SITTEF = ABS(SITT1-SITT2) / ( 1.D0 - ( RIJ / RAMORC ) )
-C ------------ calcul du nombre de cycles acceptable
-               NADM = ( SITTEF / AAMORC ) ** ( 1.D0 / BAMORC )
-C ------------ calcul du facteur d'amorcage elementaire
-               FUM = DBLE(NBCYCL) / NADM
-               ZR(JFAIJ-1+NBITOT*(I1-1)+I2) = FUM
-CCC               ZR(JFAIJ-1+NBITOT*(I2-1)+I1) = FUM
+              CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
+     +                      CBID, K8B, CRIT, PREC, VALEK(3), 
+     +                      K8B, IBID, SITT2, CBID, K8B, IRET)
+              IF (IRET.NE.0) THEN
+                VALK(1) = TABLE
+                VALK(2) = VALEK(3)
+                VALK(3) = VALEK(1)
+                VALK(4) = VALEK(2)
+                CALL U2MESG('F', 'POSTRCCM_2',4,VALK,0,0,2,VALE)
+              ENDIF
+              SITT2 = ABS(SITT2)
+C              
+              ZR(JFAIJ-1+NBITOT*(I1-1)+I2) = 0.D0
+              IF (MAX(SITT1,SITT2) .GT. R8PREM() ) THEN
+C ------------calcul du rapport de charge
+                RIJ = MIN(SITT1,SITT2) / MAX(SITT1,SITT2)
+C ------------calcul de DELTASIGTT efficace
+                SITTEF = ABS(SITT1-SITT2) / ( 1.D0 - ( RIJ / RAMORC ))
+C ------------calcul du facteur d'amorcage elementaire
+                FAM = ( SITTEF / AAMORC ) ** ( -1.D0 / BAMORC )
+                ZR(JFAIJ-1+NBITOT*(I1-1)+I2) = FAM
+              ENDIF
  220        CONTINUE
  210     CONTINUE
 C
-         FUT = 0.D0
+         FATOT = 0.D0
 C
          IND = 0
  100     CONTINUE
          IND = IND + 1
          IF ( NIV .EQ. 2 ) THEN
            IF ( IND .EQ. 1 ) THEN
-             WRITE(IFM,*) 'MATRICE D''AMORCAGE INITIALE'
+             WRITE(IFM,*) 'MATRICE FACTEURS D''AMORCAGE INITIALE'
            ELSE
-             WRITE(IFM,*) 'MATRICE D''AMORCAGE'
+             WRITE(IFM,*) 'MATRICE FACTEURS D''AMORCAGE MODIFIEE'
            ENDIF
            WRITE(IFM,1010) ( ZI(JNOCL-1+L),L=1,NBITOT )
            DO 700 K = 1 , NBITOT
@@ -316,18 +310,20 @@ C
  700       CONTINUE
          ENDIF
 C 
-         FUM = 0.D0
+         FAM = 0.D0
          TROUVE = .FALSE.
          DO 110 K = 1 , NBITOT
+C
+           IF ( ZI(JNOCK-1+K) .EQ. 0 ) GOTO 110
 C
            DO 112 L = 1 , NBITOT
 C
              IF ( ZI(JNOCL-1+L) .EQ. 0 ) GOTO 112
 C
-             FUKL = ZR(JFAIJ-1+NBITOT*(K-1)+L)
-             IF ( FUKL .GT. FUM ) THEN
+             FAKL = ZR(JFAIJ-1+NBITOT*(K-1)+L)
+             IF ( FAKL .GT. FAM ) THEN
                 TROUVE = .TRUE.
-                FUM  = FUKL
+                FAM  = FAKL
                 IS1 = K
                 IS2 = L
                 NL = ZI(JNOCL-1+L)
@@ -340,32 +336,23 @@ C
 C
          IF ( TROUVE ) THEN
 C
+           NBCYCL = MIN( NK , NL )
+           FKL = FAM*NBCYCL
            IF ( NIV .EQ. 2 ) THEN
-             WRITE(IFM,1020)'=> FACTEUR D''USAGE: ', FUM, IS1, IS2
-           ENDIF
-C
-           IF ( NL.EQ.0 .AND. NK.NE.0 ) THEN
-              NBCYCL = NK
-           ELSEIF ( NK.EQ.0 .AND. NL.NE.0 ) THEN
-              NBCYCL = NL
-           ELSE
-              NBCYCL = MIN( NK , NL )
+             WRITE(IFM,1020)'=> FACTEUR D''AMORCAGE MAXI: ',FAM,IS1,IS2
+             WRITE(IFM,1030) NBCYCL,FKL
            ENDIF
 C
 C -------- ON CUMULE
 C
-           FUT = FUT + FUM
+           FATOT = FATOT + FKL
 C
 C -------- ON MET A ZERO LES FACTEURS D'AMORCAGE INCRIMINES
 C
-           IF ( ZI(JNOCL-1+IS2) .NE. 0 ) 
-     +          ZI(JNOCL-1+IS2) = ZI(JNOCL-1+IS2) - NBCYCL
-           IF ( ZI(JNOCK-1+IS1) .NE. 0 ) 
-     +          ZI(JNOCK-1+IS1) = ZI(JNOCK-1+IS1) - NBCYCL
-           IF ( ZI(JNOCL-1+IS1) .NE. 0 )
-     +          ZI(JNOCL-1+IS1) = ZI(JNOCL-1+IS1) - NBCYCL
-           IF ( ZI(JNOCK-1+IS2) .NE. 0 ) 
-     +          ZI(JNOCK-1+IS2) = ZI(JNOCK-1+IS2) - NBCYCL
+           ZI(JNOCL-1+IS2) = ZI(JNOCL-1+IS2) - NBCYCL
+           ZI(JNOCK-1+IS1) = ZI(JNOCK-1+IS1) - NBCYCL
+           ZI(JNOCL-1+IS1) = ZI(JNOCL-1+IS1) - NBCYCL
+           ZI(JNOCK-1+IS2) = ZI(JNOCK-1+IS2) - NBCYCL
            DO 40 I = 1 , NBITOT
               IF ( ZI(JNOCK-1+IS1) .EQ. 0) THEN
                  ZR(JFAIJ-1+NBITOT*(IS1-1)+I) = 0.D0
@@ -380,9 +367,9 @@ C
         ENDIF
 C
         IF ( NIV .EQ. 2 )
-     +    WRITE(IFM,*)'-->> FACTEUR D''AMORCAGE CUMULEE = ', FUT
+     +    WRITE(IFM,*)'-->> FACTEUR D''AMORCAGE CUMULE = ', FATOT
 C
-        VALE(2) = FUT 
+        VALE(2) = FATOT 
 C 
         IF ( TYPTAB .EQ. 'VALE_MAX' ) THEN
            CALL TBAJLI ( NOMRES,NPARM,NOPARM,IBID,VALE,CBID,K8B,0)
@@ -394,7 +381,8 @@ C
 C
  1000 FORMAT(1P,I10,'|',40(E10.3,'|'))
  1010 FORMAT(1P,' NB_OCCUR ','|',40(I10,'|'))
- 1020 FORMAT(1P,A20,E12.5,', LIGNE:',I4,', COLONNE:',I4)
+ 1020 FORMAT(1P,A28,E12.5,', LIGNE:',I4,', COLONNE:',I4)
+ 1030 FORMAT(1P,'   NB_OCCUR = ',I8,', FA_KL = ',E9.2)
 C
  9999 CONTINUE
 C

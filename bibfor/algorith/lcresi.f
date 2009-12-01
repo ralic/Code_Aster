@@ -6,7 +6,7 @@
 C TOLE CRP_21
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/04/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,10 +69,6 @@ C
          CALL CVMRES ( TYPMOD,   NMAT, MATERD, MATERF,
      1                 TIMED, TIMEF, YD,  YF,  EPSD,  DEPS,  DY,  R )
 C
-      ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B' ) THEN
-         CALL INSRES ( TYPMOD, NMAT, MATERD, MATERF,
-     1                 YD,   YF,   DEPS,   DY,     R )
-
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
          CALL LCMMRE ( TYPMOD, NMAT, MATERD, MATERF,
      3          COMP,NBCOMM, CPMONO, PGL, TOUTMS,HSR,NR, NVI,VIND,

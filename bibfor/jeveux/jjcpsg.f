@@ -1,6 +1,6 @@
       SUBROUTINE JJCPSG ( RPART , ICODE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/11/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C DEB ------------------------------------------------------------------
           CMESS = 'LA VALEUR DU RAPPORT ENTRE PARTITIONS EST INVALIDE'
           CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
-        IADPAR = LISZON * (1.0D0 - RPART)
+        IADPAR = NINT( LISZON * (1.0D0 - RPART) )
         IADP   = ISZON(JISZON + LISZON - 4 )
         IF ( IADPAR+16 .GT. LISZON .OR. IADPAR .LT. IADP+12 ) THEN
           VALI(1) = IADP

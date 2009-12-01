@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 06/04/2009   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C    (PAR EX LINER SI RR=-1)
  45   CONTINUE
       II=0
       DO 50, ILIT=0,NLIT
-        I = NLIT+1-ILIT + 1
+        I = NLIT-ILIT+2
         XI(TRI(I)) = 1.0D0
         NN0=0.D0
         MM0=0.D0
@@ -100,8 +100,8 @@ C    (PAR EX LINER SI RR=-1)
         ELSE
           DEB=0
         ENDIF
-        NPT = INT(ABS(RHOL(TRI(I-1))-RHOL(TRI(I)))/2.D0*PTMAX)
-        NPT = MAX(NPT,3)
+        NPT = INT(ABS(RHOL(TRI(I-1))-RHOL(TRI(I)))/2.D0*PTMAX)-1
+        NPT = MAX(NPT,0)
         DO 70, K=DEB,NPT
           IF (NPT .EQ. 0) THEN
             ETA=RHOL(TRI(I))
@@ -186,15 +186,15 @@ C--- NEGATIVE BENDING
         MM0=0.D0
         DO 90, J=1,NLIT
           NN0=NN0-XI(J+1)*OM(J)*SIGA(J)
-          MM0=MM0-XI(J+1)*OM(J)*SIGA(J)*RHOL(J+1)*HH/2
+          MM0=MM0-XI(J+1)*OM(J)*SIGA(J)*RHOL(J+1)*HH/2.0D0
  90     CONTINUE
         IF (OMM(TRI(I)) .LT. 1.D-8*OMM(1)) THEN
           DEB=1
         ELSE
           DEB=0
         ENDIF
-        NPT = INT(ABS(RHOL(TRI(I+1))-RHOL(TRI(I)))/2.D0*PTMAX)
-        NPT = MAX(NPT,3)
+        NPT = INT(ABS(RHOL(TRI(I+1))-RHOL(TRI(I)))/2.D0*PTMAX)-1
+        NPT = MAX(NPT,0)
         DO 100, K=DEB,NPT
           IF (NPT .EQ. 0) THEN
             ETA=RHOL(TRI(I))
@@ -224,7 +224,7 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFINF.VALE ---
         ZR(JFON +I) = 0.0D0
         DO 103, J = 0,ORDOK
           ZR(JFON +I) = ZR(JFON +I) + POLY(J+1)*(XX**J)
- 103    CONTINUE         
+ 103    CONTINUE
  102  CONTINUE
 
       CALL WKVECT ( NUFID1//'.VALE', 'G V R', 2*NPT, JVALE )
@@ -235,7 +235,7 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFINF.VALE ---
         ZR(JFON +I) = 0.0D0
         DO 105, J = 1,ORDOK
           ZR(JFON +I) = ZR(JFON +I) + J*POLY(J+1)*(XX**(J-1))
- 105    CONTINUE         
+ 105    CONTINUE
  104  CONTINUE
 
       CALL WKVECT ( NUFID2//'.VALE', 'G V R', 2*NPT, JVALE )

@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 07/04/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,7 +116,7 @@ C       VARIABLES LOCALES
         INTEGER         NDT    , NDI   , NVI1, IBID, IBID2, IBID3, IRE2
         INTEGER         NVI2, NN, I,RETCOM, IISNAN
         CHARACTER*2     FB2, CERR(5)
-        CHARACTER*8     MOD    ,MOD3D  , MODCP,   NOMC(5), NOMPAR
+        CHARACTER*8     MOD    ,MOD3D  ,   NOMC(5), NOMPAR
         CHARACTER*16    OPTFLU, CMP1(3), CMP2(3), CMP3(3), CVERI,COMCOD
         REAL*8          RBID, NU, ANGMAS(3)
         REAL*8          EPSFL(6), EPSFLD(6), EPSFLF(6), DEPSFL(6)
@@ -146,7 +146,6 @@ C
       R8BID=R8VIDE()
 
       MOD3D   = '3D'
-      MODCP   = 'C_PLAN'
       CMP1(1) = COMP(8)
       CMP2(1) = COMP(9)
       CMP3(1) = COMP(10)
@@ -178,15 +177,12 @@ C
 C
       ELSEIF (CMP2(1)(1:8).EQ. 'ROUSS_PR' .OR.
      &        CMP2(1)(1:5) .EQ. 'LMARC'      .OR.
-     &        CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP'.OR.
-     &        CMP2(1)(1:7) .EQ. 'NADAI_B'        ) THEN
+     &        CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP') THEN
 C
               IF (CMP2(1)(1:8).EQ. 'ROUSS_PR')
      &            CALL RSLNVI ( MOD3D , IBID , IBID2 , IBID3 , NVI2 )
               IF (CMP2(1)(1:5) .EQ. 'LMARC')
      &            CALL LMANVI ( MOD3D , IBID , IBID2 , IBID3 , NVI2 )
-              IF (CMP2(1)(1:7) .EQ. 'NADAI_B')
-     &            CALL INSNVI ( MODCP , IBID , IBID2 , IBID3 , NVI2 )
               IF (CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP')
      &            CALL BETNVI ( MOD3D , IBID , IBID2 , IBID3 , NVI2 )
 C
@@ -323,8 +319,7 @@ C
 C
       ELSEIF (CMP2(1)(1:8).EQ. 'ROUSS_PR' .OR.
      &        CMP2(1)(1:5) .EQ. 'LMARC'      .OR.
-     &        CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP'.OR.
-     &        CMP2(1)(1:7) .EQ. 'NADAI_B'        ) THEN
+     &        CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP') THEN
 C
          CALL LCCREE(1, CMP2, COMCOD)
          CALL LCINFO(COMCOD, NUMLC2, NBVAR2)

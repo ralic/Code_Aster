@@ -1,6 +1,6 @@
-# MODIF  DATE 24/11/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/04/2009   AUTEUR FOURNIER I.FOURNIER 
 # TITRE CALCUL THERMO-ELASTIQUE D'UN ANNEAU CREUX SOUMIS A UN CHARGEMENT THERMIQUE
-# perf002c.para = tps_job 5000 mem_job 1800Mo ncpus 1 liste_test P
+# perf002c.para = tps_job 3520 mem_job 1800Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

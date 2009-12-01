@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C RESPONSABLE                            VABHHTS J.PELLET
 C     ARGUMENTS:
 C     ----------
       CHARACTER*(*) NMPARZ,LOUEZ
-      CHARACTER*8 NOMPAR
+      CHARACTER*8 NOMPAR,NOMMAI
       INTEGER ITAB
 C     -----------------------------------------------------------------
 C     ENTREES:
@@ -68,7 +68,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*24 VALK(3)
+      CHARACTER*24 VALK(5)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 
@@ -164,21 +164,32 @@ C     ----------------------------------------------------------
       IF (ILCHLO.NE.-1) THEN
         DO 10,K = 1,LONCHL
           IF (.NOT.ZL(ILCHLO+DEBUGR-1+DECAEL-1+K)) THEN
-
-
-            WRITE (6,*) 'ERREUR JEVECH ZL :',NOMPAR,
-     &        (ZL(ILCHLO+DEBUGR-1+DECAEL-1+KK),KK=1,LONCHL)
-
-
-             VALK(1) = NOMPAR
-             VALK(2) = OPTION
-             VALK(3) = NOMTE
-             CALL U2MESK('E','CALCULEL2_73', 3 ,VALK)
-
             CALL TECAEL(IADZI,IAZK24)
-            WRITE (6,*) 'MAILLE: ',ZK24(IAZK24-1+3)
-            WRITE (6,*) '1ERE COMPOSANTE ABSENTE: ','A FAIRE ???'
-            CALL CONTEX(OPTION,0,NOMPAR,' ',0)
+            NOMMAI=ZK24(IAZK24-1+3)
+            VALK(1) = NOMPAR
+            VALK(2) = OPTION
+            VALK(3) = NOMTE
+            VALK(4) = NOMMAI
+
+C           -- POUR CERTAINS PARAMETRES "COURANTS" ON EMET
+C              UN MESSAGE PLUS CLAIR :
+            IF (NOMPAR.EQ.'PMATERC') THEN
+              CALL U2MESK('F','CALCULEL2_74', 4 ,VALK)
+            ELSEIF (NOMPAR.EQ.'PCACOQU') THEN
+              CALL U2MESK('F','CALCULEL2_75', 4 ,VALK)
+            ELSEIF (NOMPAR.EQ.'PCAGNPO') THEN
+              CALL U2MESK('F','CALCULEL2_76', 4 ,VALK)
+            ELSEIF (NOMPAR.EQ.'PCAORIE') THEN
+              CALL U2MESK('F','CALCULEL2_77', 4 ,VALK)
+
+            ELSE
+              CALL U2MESK('E','CALCULEL2_73', 4 ,VALK)
+
+              WRITE (6,*) 'ERREUR JEVECH ZL :',NOMPAR,
+     &        (ZL(ILCHLO+DEBUGR-1+DECAEL-1+KK),KK=1,LONCHL)
+              WRITE (6,*) 'MAILLE: ',ZK24(IAZK24-1+3)
+              CALL CONTEX(OPTION,0,NOMPAR,' ',0)
+            END IF
           END IF
    10   CONTINUE
       END IF

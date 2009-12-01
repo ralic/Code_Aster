@@ -1,6 +1,6 @@
       SUBROUTINE ECLPGR()
       IMPLICIT   NONE
-C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C ---------------------------------------------------------------------
       INTEGER NUMGLM,IPG,IAMOL1,JCELV1,JCNSV2,NBSY,MXCMP,NP,NC
       INTEGER IMA,NBELGR,NBNOMA,JVAL2,NBNO,NDDL,IDDL,ADIEL,MXSY,ISY
       INTEGER IIPG,JCELD1,JCELK1,MOLOC1,NCMPMX,NBORDR,IORDR,JORDR
-      INTEGER ICH,IRET2
+      INTEGER ICH,IRET2,ICO
       PARAMETER (MXSY=5,MXCMP=100)
       INTEGER NUDDL(MXCMP),IACMP,NCMPM1,ICOEF1,IEL
       CHARACTER*8   MO1,MA1,MA2,KBID,RESU,EVO1,NOMG1,NOMG2,CRIT,
@@ -133,6 +133,7 @@ C          PRCHNO
         NOMSY1 = LICHAM(ISY)
         IF(NOMSY1(6:9).NE.'ELGA') CALL U2MESS('F','CALCULEL2_41')
 
+        ICO=0
         DO 80,I = 1,NBORDR
           IORDR = ZI(JORDR+I-1)
 
@@ -166,8 +167,8 @@ C         -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
 
 C        PROJECTION SUR LE LIGREL REDUIT
           CALL JEVEUO(CH1//'.CELK','L',JCELK1)
-          IF (ZK24(JCELK1-1+3) (1:4).NE.'ELGA') CALL U2MESS('F','CALCULE
-     &L2_41')
+          IF (ZK24(JCELK1-1+3) (1:4).NE.'ELGA') CALL U2MESS('F',
+     &       'CALCULEL2_41')
 
           OPTIO=ZK24(JCELK1-1+2)
           PARAM=ZK24(JCELK1-1+6)
@@ -190,8 +191,9 @@ C        PROJECTION SUR LE LIGREL REDUIT
 
 C       -- CREATION D'UN CHAM_NO_S : CH2S
 C       -----------------------------------------------------
+          ICO=ICO+1
 C         -- LA 1ERE FOIS, ON CREE CH2S :
-          IF (I.EQ.1) THEN
+          IF (ICO.EQ.1) THEN
             CH2S = '&&ECLPGR.CH2S'
             NCMPM1 = NCMPMX
             CALL CNSCRE(MA2,NOMG2,NCMPM1,ZK8(IACMP),'V',CH2S)
@@ -209,7 +211,7 @@ C       ---------------------------
 C         -- ON NE CALCULE NOMFPG QUE POUR LE 1ER NUME_ORDRE :
 C         -- ON VERIFIE QUE LES CHAMPS ONT TOUS LA MEME FAMILLE DE
 C            DE POINTS DE GAUSS
-          IF (I.EQ.1) THEN
+          IF (ICO.EQ.1) THEN
              DO 130 ICH=1,NBSY
                CALL CELFPG ( CH1, NOMFPG, ICH, IRET2 )
                IF (IRET2.EQ.1) THEN
@@ -328,6 +330,7 @@ C         ----------------------------------------
           CALL DETRSD('CHAMP_GD','&&ECLPGR.CH1')
           CALL DETRSD('CHAMP_GD','&&ECLPGR.CHR1')
    80   CONTINUE
+        IF (ICO.EQ.0) CALL U2MESK('A','CALCULEL2_14',1,NOMSY1)
         CALL JEDETR ( NOMFPG )
         CALL DETRSD('CHAM_NO_S',CH2S)
    90 CONTINUE

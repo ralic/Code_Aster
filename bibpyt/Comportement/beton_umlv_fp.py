@@ -1,4 +1,4 @@
-#@ MODIF beton_umlv_fp Comportement  DATE 20/10/2008   AUTEUR MICHEL S.MICHEL 
+#@ MODIF beton_umlv_fp Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE LEPAPE Y.LEPAPE
 
 from cata_comportement import LoiComportement
 
