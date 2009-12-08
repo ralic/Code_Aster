@@ -8,7 +8,7 @@
      &                    VECGRM, NBCGRM, NBGRLO )
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/11/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 07/12/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,7 +176,7 @@ C
 C
 C 1.2. ==> INFORMATION EVENTUELLE
 C
-      IF ( INFMED.GE.2 ) THEN
+      IF ( INFMED.GE.3 ) THEN
         IF ( NUMFAM.GT.0 ) THEN
           JAUX = 1
         ELSE
@@ -195,7 +195,9 @@ C====
 C
       IF ( NUMFAM.NE.0 ) THEN
 C
-        CALL U2MESG('I','MED_14',1,NOMFAM,1,NUMFAM,0,MR)
+        IF ( INFMED.GE.2 ) THEN
+           CALL U2MESG('I','MED_14',1,NOMFAM,1,NUMFAM,0,MR)
+        ENDIF
 C
 C 2.0. ==> CONTROLE DE LA LONGUEUR DES NOMS DES GROUPES
 C
@@ -216,7 +218,9 @@ C   2.0.1. --- RENOMMAGE PAR L'UTILISATEUR
                      RENOMM = .TRUE.
                      MK(1) = NOGRFA(IAUX)
                      MK(2) = KBID(1:ILNEW)
-                     CALL U2MESG('I','MED_16',2,MK,1,IAUX,0,MR)
+                     IF ( INFMED.GE.2 ) THEN
+                        CALL U2MESG('I','MED_16',2,MK,1,IAUX,0,MR)
+                     ENDIF
                      NEWGRM = KBID(1:ILNEW)
                   ENDIF
 C
@@ -232,7 +236,9 @@ C          --- VERIFIER QUE LES NOUVEAUX NOMS N'EXISTENT PAS DEJA
  910           CONTINUE
             ENDIF
             IF ( .NOT. RENOMM ) THEN
-               CALL U2MESG('I','MED_15',1,NOGRFA(IAUX),1,IAUX,0,MR)
+               IF ( INFMED.GE.2 ) THEN
+                  CALL U2MESG('I','MED_15',1,NOGRFA(IAUX),1,IAUX,0,MR)
+               ENDIF
             ELSE
                NOGRFA(IAUX) = NEWGRM
             ENDIF

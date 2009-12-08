@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C     ----------------------------------------------------------------
       INTEGER         NBCOMM(NMAT,3),IRET,KPG,KSP
       REAL*8          SIGF(6),VIN(NVI),RP,F,HSR(5,24,24)
       REAL*8          MATERF(NMAT*2),SEUIL,DT,SQ,DY(NVI),ALPHAM
-      REAL*8          VIS(3),MS(6),NG(3)
+      REAL*8          VIS(3),MS(6),NG(3),Q(3,3),LG(3)
       REAL*8          TAUS,DGAMMA,DALPHA,DP,EXPBP(24)
       REAL*8          PGL(3,3),CRIT,SGNS,TOUTMS(5,24,6),GAMMAM,DAL
       CHARACTER*(*)   FAMI
@@ -68,7 +68,7 @@ C     NSFA : debut de la famille IFA dans DY et YD, YF
          NECOUL=CPMONO(5*(IFA-1)+3)
          NECRIS=CPMONO(5*(IFA-1)+4)
 
-         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG)
+         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,0,Q)
 
          IF (NBSYS.EQ.0) CALL U2MESS('F','ALGORITH_70')
 

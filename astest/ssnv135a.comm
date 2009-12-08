@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE
 # ssnv135a.para = tps_job 210 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1122,7 +1122,7 @@ TEST_RESU(RESU=(
            )
 
 #***********************************************************************
-#    CALCUL DE LA SOLUTION FINALE OPTION GREEN ACTIVEE MATRICE SYM
+#    CALCUL DE LA SOLUTION FINALE OPTION GROT_GDEP ACTIVEE MATRICE SYM
 #***********************************************************************
 
 
@@ -1137,7 +1137,7 @@ W3=STAT_NON_LINE(
                 FONC_MULT = COEF2)),
                          COMP_INCR=_F( 
                 RELATION = 'CJS',
-                DEFORMATION='GREEN',),
+                DEFORMATION='GROT_GDEP',),
                          ETAT_INIT=_F( 
                 SIGM = SIG_IN3,
                 VARI = VAR_IN3),
@@ -1434,7 +1434,7 @@ TEST_RESU(RESU=(
            )
 
 #***********************************************************************
-#    CALCUL DE LA SOLUTION FINALE OPTION GREEN ACTIVEE MATRICE NONSYM
+#    CALCUL DE LA SOLUTION FINALE OPTION GROT_GDEP ACTIVEE MATRICE NONSYM
 #***********************************************************************
 
 
@@ -1449,7 +1449,7 @@ W4=STAT_NON_LINE(
                 FONC_MULT = COEF2)),
                          COMP_INCR=_F( 
                 RELATION = 'CJS',
-                DEFORMATION='GREEN',),
+                DEFORMATION='GROT_GDEP',),
                          ETAT_INIT=_F( 
                 SIGM = SIG_IN3,
                 VARI = VAR_IN3),

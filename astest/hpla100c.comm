@@ -1,4 +1,4 @@
-# MODIF  DATE 19/05/2009   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -506,7 +506,7 @@ V=STAT_NON_LINE(            MODELE=MO,
                          CARA_ELEM=CARE,
                              EXCIT=_F( CHARGE = CHDI3),
                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                       DEFORMATION = 'GREEN_GR', ),
+                                       DEFORMATION = 'GROT_GDEP', ),
                          INCREMENT=_F( LIST_INST = L_INST),
                             NEWTON=_F( MATRICE = 'ELASTIQUE',
                                        REAC_ITER = 1),
@@ -523,7 +523,7 @@ W=STAT_NON_LINE(           MODELE=MO,
                          CARA_ELEM=CARE,
                              EXCIT=_F( CHARGE = CHDI3),
                          COMP_INCR=_F( RELATION = 'ELAS',
-                                       DEFORMATION = 'GREEN_GR', ),
+                                       DEFORMATION = 'GROT_GDEP', ),
                          INCREMENT=_F( LIST_INST = L_INST),
                             NEWTON=_F( MATRICE = 'ELASTIQUE',
                                        REAC_ITER = 1),

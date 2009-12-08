@@ -1,4 +1,4 @@
-#@ MODIF mazars Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF mazars Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ loi = LoiComportement(
    nom_vari       = ('ENDO', 'INDICAT','TEMP_MAX','EPSEQ'),
    mc_mater       = ('ELAS', 'MAZARS', 'NON_LOCAL'),
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN','GRADEPSI',),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

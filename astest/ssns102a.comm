@@ -1,6 +1,7 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ANNEAU AVEC RAIDISSEUR SOUS PRESSION EXTERNE
+# ssns102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -169,7 +170,7 @@ NONLIN=STAT_NON_LINE(MODELE=MODMECA,
                             #  TYPE_CHARGE='SUIV',
                               FONC_MULT=D_FONC,),), 
                      COMP_INCR=_F(RELATION='ELAS',
-                                  DEFORMATION='GREEN',
+                                  DEFORMATION='GROT_GDEP',
                                   TOUT='OUI',),
 #                     INCREMENT=_F(LIST_INST=LISTPILO,
                      INCREMENT=_F(LIST_INST=L_INST,),

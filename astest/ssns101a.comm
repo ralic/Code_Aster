@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  
 # ssns101a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
@@ -94,7 +94,7 @@ NONLIN=STAT_NON_LINE(MODELE=MODMECA,
                      EXCIT=_F(CHARGE=CHARGT,
                               TYPE_CHARGE='FIXE_PILO',),
                      COMP_INCR=_F(RELATION='ELAS',
-                                  DEFORMATION='GREEN',
+                                  DEFORMATION='GROT_GDEP',
                                   TOUT='OUI',),
                      INCREMENT=_F(LIST_INST=LISTPILO,),
                      NEWTON=_F(REAC_ITER=0,),

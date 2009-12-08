@@ -1,4 +1,4 @@
-#@ MODIF visc_taheri Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF visc_taheri Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ loi = LoiComportement(
    nom_vari       = ('DEFPLCUM', 'SIGMAPIC','E_XX','E_YY','E_ZZ','E_XY','E_XZ','E_YZ','INDICAT'),
    mc_mater       = ('ELAS', 'TAHERI', 'LEMAITRE'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP',),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

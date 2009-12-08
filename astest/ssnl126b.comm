@@ -1,5 +1,6 @@
-# MODIF  DATE 22/10/2007   AUTEUR GREFFET N.GREFFET 
-# TITRE FLAMBEMENT NON LINEAIRE POUTRE 3D GREEN
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# TITRE FLAMBEMENT NON LINEAIRE POUTRE 3D GROT_GDEP
+# ssnl126b.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +65,7 @@ resuel=STAT_NON_LINE(MODELE=modele,
                           _F(CHARGE=CSEL,
                              FONC_MULT=fonc,),),
                    COMP_INCR=_F(RELATION='ELAS',
-                                DEFORMATION='GREEN',),
+                                DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=list,INST_FIN=0.5,),
                    NEWTON=_F(REAC_INCR=1,
                              MATRICE='TANGENTE',
@@ -82,7 +83,7 @@ resuel=STAT_NON_LINE(reuse=resuel,
                              FONC_MULT=fonc,),),
                    ETAT_INIT=_F(EVOL_NOLI=resuel),
                    COMP_INCR=_F(RELATION='ELAS',
-                                DEFORMATION='GREEN',),
+                                DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=list,INST_INIT=0.5,),
                    NEWTON=_F(REAC_INCR=1,
                              MATRICE='TANGENTE',
@@ -111,7 +112,7 @@ resu=STAT_NON_LINE(MODELE=modele,
                           _F(CHARGE=CS,
                              FONC_MULT=fonc,),),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
-                                DEFORMATION='GREEN',),
+                                DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=list,INST_FIN=0.5,),
                    NEWTON=_F(REAC_INCR=1,
                              MATRICE='TANGENTE',
@@ -129,7 +130,7 @@ resu=STAT_NON_LINE(reuse=resu,
                              FONC_MULT=fonc,),),
                    ETAT_INIT=_F(EVOL_NOLI=resu),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
-                                DEFORMATION='GREEN',),
+                                DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=list,INST_INIT=0.5,),
                    NEWTON=_F(REAC_INCR=1,
                              MATRICE='TANGENTE',

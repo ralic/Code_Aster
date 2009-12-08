@@ -1,6 +1,6 @@
       SUBROUTINE MUMSM(OPTMPI,IFM,NIV,ACH24,ARGI1,ARGI2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 07/12/2009   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -94,6 +94,8 @@ C---------------------------------------------- OPTION = 4
       ELSE IF (OPTMPI.EQ.4) THEN
 C---------------------------------------------- OPTION = 5  
       ELSE IF (OPTMPI.EQ.5) THEN
+C---------------------------------------------- OPTION = 6  
+      ELSE IF (OPTMPI.EQ.6) THEN
 C---------------------------------------------- MAUVAISE OPTION 
       ELSE
         VALI(1)=0

@@ -1,0 +1,240 @@
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.)
+# ssnv142d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# -----------------------------------------------------
+# CUBE 3D EN FLUAGE : FLUAGE DE GRANGER
+# -----------------------------------------------------
+
+DEBUT(CODE=_F(NOM='SSNV142D', NIV_PUB_WEB='INTERNET'),)
+
+M=LIRE_MAILLAGE(UNITE=20,
+                FORMAT='MED',);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA=('S_SUP','S_GCH','S_DRT','S_AVT','S_ARR','S_INF',),),);
+
+IMPR_RESU(UNITE=21,
+          RESU=_F(MAILLAGE=M,),);
+
+MO=AFFE_MODELE(MAILLAGE=M,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+
+E=DEFI_CONSTANTE(VALE=31000.0,);
+
+NU=DEFI_CONSTANTE(VALE=0.2,);
+
+ALPHA=DEFI_CONSTANTE(VALE=0.,);
+
+FONC1=DEFI_FONCTION(NOM_PARA='SECH',VALE=(0.0,0.0,
+                          1.,1.,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
+                               NU=NU,
+                               TEMP_DEF_ALPHA=20.0,
+                               ALPHA=ALPHA,
+                               FONC_DESORP=FONC1,),
+                    GRANGER_FP_INDT=_F(J1=3.2258e-5,
+                                       J2=6.4516e-5,
+                                       TAUX_1=432000.,
+                                       TAUX_2=4320000.,),);
+
+SECH=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=1.,),);
+
+SECH1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(CHAM_GD=SECH,
+                        INST=0.,),);
+
+TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=20.,),);
+
+TEMP1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(CHAM_GD=TEMP,
+                        INST=0.,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=BETON,),
+                 AFFE_VARC=(_F(TOUT='OUI',
+                               NOM_VARC='SECH',
+                               EVOL=SECH1,
+                               NOM_CHAM='TEMP',
+                               VALE_REF=1.0,),
+                            _F(TOUT='OUI',
+                               NOM_VARC='TEMP',
+                               EVOL=TEMP1,
+                               NOM_CHAM='TEMP',
+                               VALE_REF=20.0,),),);
+
+FORCE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          10.,-20.0,
+                          31536010.,-20.0,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+CH10=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=_F(GROUP_NO='S_INF',
+                                DZ=0.,),);
+
+CH11=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=_F(GROUP_NO='S_GCH',
+                                DX=0.0,),);
+
+CH12=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=_F(GROUP_NO='S_AVT',
+                                DY=0.0,),);
+
+CH20=AFFE_CHAR_MECA_F(MODELE=MO,
+                      LIAISON_UNIF=_F(GROUP_NO='S_DRT',
+                                      DDL='DX',),);
+
+CH21=AFFE_CHAR_MECA(MODELE=MO,
+                    LIAISON_UNIF=_F(GROUP_NO='S_ARR',
+                                    DDL='DY',),);
+
+CH22=AFFE_CHAR_MECA_F(MODELE=MO,
+                      FORCE_FACE=_F(MAILLE='M16',
+                                    FZ=FORCE,),);
+
+CH23=AFFE_CHAR_MECA_F(MODELE=MO,
+                      LIAISON_UNIF=_F(GROUP_NO='S_SUP',
+                                      DDL='DZ',),);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=10.0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=31536010.,
+                                     NOMBRE=73,),),);
+
+#DELTAT=432000=5J
+
+U=STAT_NON_LINE(MODELE=MO,
+                CHAM_MATER=CM,
+                EXCIT=(_F(CHARGE=CH10,),
+                       _F(CHARGE=CH11,),
+                       _F(CHARGE=CH12,),
+                       _F(CHARGE=CH20,),
+                       _F(CHARGE=CH21,),
+                       _F(CHARGE=CH22,),
+                       _F(CHARGE=CH23,),),
+                COMP_INCR=_F(RELATION='GRANGER_FP_INDT',
+                             ITER_INTE_MAXI=1000,),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
+                               ITER_GLOB_MAXI=25,),);
+
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION=('EPSI_ELNO_DEPL','EPFP_ELNO',),);
+
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EPFP_ELNO',
+                   NOM_CMP='EPZZ',
+                   REFERENCE='ANALYTIQUE',
+                   MAILLE='M19',
+                   NOEUD='N3',
+                   VALE=-0.001410795,
+                   PRECISION=1e-05,),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=50,
+                   NOM_CHAM='EPFP_ELNO',
+                   NOM_CMP='EPZZ',
+                   REFERENCE='ANALYTIQUE',
+                   MAILLE='M19',
+                   NOEUD='N3',
+                   VALE=-0.001925872,
+                   PRECISION=1e-05,),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=74,
+                   NOM_CHAM='EPFP_ELNO',
+                   REFERENCE='ANALYTIQUE',
+                   NOM_CMP='EPZZ',
+                   MAILLE='M19',
+                   NOEUD='N3',
+                   VALE=-0.001934608,
+                   PRECISION=1e-05,),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=10,
+                   REFERENCE='ANALYTIQUE',
+                   NOM_CHAM='EPFP_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M19',
+                   NOEUD='N3',
+                   VALE=0.00028216,
+                   PRECISION=1e-05,),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=50,
+                   NOM_CHAM='EPFP_ELNO',
+                   NOM_CMP='EPXX',
+                   REFERENCE='ANALYTIQUE',
+                   MAILLE='M19',
+                   NOEUD='N3',
+                   VALE=0.0003851743,
+                   PRECISION=1e-05,),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=74,
+                   NOM_CHAM='EPFP_ELNO',
+                   NOM_CMP='EPXX',
+                   REFERENCE='ANALYTIQUE',
+                   MAILLE='M19',
+                   NOEUD='N3',
+                   VALE=0.00038692167,
+                   PRECISION=1e-05,),),);
+
+DEFI_FICHIER(ACTION='ASSOCIER',
+             UNITE=50,
+             FICHIER='REPE_OUT/resu.pos',);
+
+IMPR_RESU(UNITE=50,
+          RESU=_F(RESULTAT=U,
+                  NOM_CHAM=('EPFP_ELNO','DEPL',),
+                  NUME_ORDRE=(10,50,74,),
+                  TOUT_CMP='OUI',
+                  GROUP_NO='NO6',),);
+
+DEFI_FICHIER(ACTION='LIBERER',
+             UNITE=50,);
+
+FIN();
+
+#
+

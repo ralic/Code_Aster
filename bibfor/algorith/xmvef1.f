@@ -1,15 +1,12 @@
       SUBROUTINE XMVEF1 (NDIM,NNE,NNES,NNC,NNM,NFAES,CFACE,
-     &                   HPG,FFPC,FFES,FFMA,JACOBI,IAINES,    
-     &                   LAMBDA,COEFFA,COEFFF,TAU1,TAU2,
-     &                   RESE,MPROJ,DEPLE,TYPMA,VTMP)
-      IMPLICIT NONE
-      INTEGER  NDIM,NNC,NNE,NNES,NNM,NFAES,IAINES,CFACE(5,3)
-      REAL*8   HPG,FFPC(9),FFES(9),FFMA(9),JACOBI  
-      REAL*8   LAMBDA,COEFFF,COEFFA 
-      REAL*8   TAU1(3),TAU2(3),RESE(3),MPROJ(3,3),DEPLE(9),VTMP(120)
-      CHARACTER*8  TYPMA  
+     &                  HPG,FFPC,FFES,FFMA,JACOBI,IAINES,    
+     &                  LAMBDA,COEFFA,COEFFF,TAU1,TAU2,
+     &                  RESE,MPROJ,LAMBD,COEFCA,JEU,TYPMA,
+     &                  SINGE,SINGM,RRE,RRM,NVIT,INADH,NDLS,
+     &                  VTMP)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,6 +24,14 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRP_21
+C
+      IMPLICIT NONE
+      INTEGER  NDIM,NNC,NNE,NNES,NNM,NFAES,IAINES,CFACE(5,3)
+      INTEGER  SINGE,SINGM,NVIT,INADH,NDLS
+      REAL*8   HPG,FFPC(9),FFES(9),FFMA(9),JACOBI
+      REAL*8   LAMBDA,COEFFF,COEFFA,RRE,RRM,COEFCA,JEU
+      REAL*8   TAU1(3),TAU2(3),RESE(3),MPROJ(3,3),LAMBD(3),VTMP(168)
+      CHARACTER*8  TYPMA
 C
 C ROUTINE APPELLEE PAR : TE0367
 C ----------------------------------------------------------------------
@@ -54,90 +59,99 @@ C IN  TAU1   : PREMIERE TANGENTE
 C IN  TAU2   : SECONDE TANGENTE
 C IN  RESE   : PROJECTION DE LA BOULE UNITE POUR LE FROTTEMENT
 C IN  MPROJ  : MATRICE DE L'OPERATEUR DE PROJECTION
-C IN  DEPLE  : DEPLACEMENTS DE LA SURFACE ESCLAVE
-C IN  TYPMA    : NOM DE LA MAILLE ESCLAVE D'ORIGINE (QUADRATIQUE)
+C IN  LAMBD  : LAGRANGE DE CONTACT AU POINT D'INTÈGRATION
+C IN  TYPMA  : NOM DE LA MAILLE ESCLAVE D'ORIGINE (QUADRATIQUE)
+C IN  SINGE  : NOMBRE DE FONCTION SINGULIERE ESCLAVE
+C IN  SINGM  : NOMBRE DE FONCTION SINGULIERE MAITRE
+C IN  RRE    : SQRT LST ESCLAVE
+C IN  RRM    : SQRT LST MAITRE
+C IN  NVIT   : POINT VITAL OU PAS
+C IN  INADH  : POINT ADHERENT OU PAS
 C I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
 C ----------------------------------------------------------------------
       INTEGER   I, J, K, II, INI, PLI, XOULA
-      REAL*8    VECTT(3), INTER(2)
+      REAL*8    VECTT(3), TT(2), VV, T
 C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
 C
-      DO 150 I = 1,3
+      DO 100 I = 1,3
         VECTT(I) = 0.D0
- 150  CONTINUE
-      INTER(1)=0.D0
-      INTER(2)=0.D0         
+ 100  CONTINUE
+      DO 110 I = 1,2
+        TT(I) = 0.D0
+ 110  CONTINUE       
 C        
 C --- CALCUL DE RESE.C(*,I)
 C
-      DO 130 I = 1,NDIM
-        DO 140 K = 1,NDIM
+      DO 120 I = 1,NDIM
+        DO 130 K = 1,NDIM
           VECTT(I) = RESE(K)*MPROJ(K,I) + VECTT(I)
-  140   CONTINUE
-  130 CONTINUE
+  130   CONTINUE
+  120 CONTINUE
 C
-C --- DDL DE DEPLACEMENT DE LA SURFACE CINEMATIQUE
-C-----A) PARTIE "CLASSIQUE"
-
-      DO 10 I = 1,NNES
-        DO 20 J = 1,NDIM
-          II = (3*NDIM)*(I-1)+J
-           VTMP(II) =-JACOBI*HPG*COEFFF*LAMBDA*VECTT(J)*FFES(I)
+C --- CALCUL DE T.(T-P)
+C
+      DO 140 I = 1,NDIM
+        T = LAMBD(1+1)*TAU1(I)+LAMBD(1+2)*TAU2(I)-RESE(I)
+        TT(1)= T*TAU1(I)+TT(1)
+        IF (NDIM.EQ.3) TT(2)= T*TAU2(I)+TT(2)
+  140 CONTINUE
+C
+C --------------------- CALCUL DE [L1_FROT]-----------------------------
+C
+      IF (NNM.NE.0) THEN
+C
+      DO 10 J = 1,NDIM
+        DO 20 I = 1,NNES
+C --- BLOCS ES,CL ; ES,EN ; (ES,SI)
+          VV = JACOBI*HPG*COEFFF*(LAMBD(1)-COEFCA*JEU)*VECTT(J)*FFES(I)
+          II = NDLS*(I-1)+J
+          VTMP(II) = -VV
+          II = II + NDIM
+          VTMP(II) = VV
+          DO 25 K = 1,SINGE
+            II = II + NDIM
+            VTMP(II) = RRE * VV
+   25     CONTINUE
    20   CONTINUE
+        DO 30 I = 1,NNM
+C --- BLOCS MA,CL ; MA,EN ; (MA,SI)
+          VV = JACOBI*HPG*COEFFF*(LAMBD(1)-COEFCA*JEU)*VECTT(J)*FFMA(I)
+          II = NDLS*NNES+NDIM*(NNE-NNES) +
+     &          (2+SINGM)*NDIM*(I-1)+J
+          VTMP(II) = VV
+          II = II + NDIM
+          VTMP(II) = VV
+          DO 35 K = 1,SINGM
+            II = II + NDIM
+            VTMP(II) = RRM * VV
+   35     CONTINUE
+   30   CONTINUE 
    10 CONTINUE
+      ELSE
 C
-C-----B) PARTIE "ENRICHIE"
-
-      DO 30 I = 1,NNES
-        DO 40 J = 1,NDIM
-          II = (3*NDIM)*(I-1)+NDIM+J
-          VTMP(II) = JACOBI*HPG*COEFFF*LAMBDA*VECTT(J)*FFES(I)
-   40   CONTINUE
-   30 CONTINUE
+      DO 60 J = 1,NDIM
+        DO 70 I = 1,NNES
+C --- BLOCS ES,SI
+          VV = JACOBI*HPG*COEFFF*(LAMBD(1)-COEFCA*JEU)*VECTT(J)*FFES(I)
+          II = NDLS*(I-1)+J
+          VTMP(II) = RRE * VV
+   70   CONTINUE
+   60 CONTINUE
+      ENDIF
 C
-C --- DDL DES DEPLACEMENTS DE LA SURFACE GEOMETRIQUE
-C-----A) PARTIE "CLASSIQUE"
-
-        DO 50 I = 1,NNM
-          DO 60 J = 1,NDIM
-            II = NNES*3*NDIM+(NNE-NNES)*NDIM+2*NDIM*(I-1)+J
-            VTMP(II) = JACOBI*HPG*COEFFF*LAMBDA*VECTT(J)*FFMA(I)
-   60     CONTINUE
-   50   CONTINUE
-  
-C-----A) PARTIE "ENRICHIE"
-
-        DO 70 I = 1,NNM
-          DO 80 J = 1,NDIM
-            II = NNES*3*NDIM+(NNE-NNES)*NDIM+2*NDIM*(I-1)+NDIM+J
-            VTMP(II) = JACOBI*HPG*COEFFF*LAMBDA*VECTT(J)*FFMA(I)
-   80     CONTINUE
-   70   CONTINUE   
+C --------------------- CALCUL DE [L3]----------------------------------
 C
-C --- DDL DES MULTIPLICATEURS DE FROTTEMENT (DE LA SURFACE CINEMATIQUE)
-C
-      IF (NDIM.EQ.2) THEN
-        DO 90 I = 1,2
-          INTER(1)=(DEPLE(2*NDIM+1+1)*TAU1(I)-RESE(I))*TAU1(I)+INTER(1)
-   90   CONTINUE
-      ELSE IF (NDIM.EQ.3)THEN
-        DO 100 I = 1,3
-          INTER(1)=(DEPLE(2*NDIM+1+1)*TAU1(I)+
-     &              DEPLE(2*NDIM+1+2)*TAU2(I)-RESE(I))*TAU1(I)+INTER(1)
-          INTER(2)=(DEPLE(2*NDIM+1+1)*TAU1(I)+
-     &              DEPLE(2*NDIM+1+2)*TAU2(I)-RESE(I))*TAU2(I)+INTER(2)
-  100   CONTINUE
-      END IF  
-      DO 110 I = 1,NNC
-        DO 120 J = 1,NDIM-1
-          INI=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
-          CALL XPLMA2(NDIM,NNE,NNES,INI,PLI)
+      IF (NVIT.EQ.1) THEN
+      DO 40 I = 1,NNC
+        INI=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
+        CALL XPLMA2(NDIM,NNE,NNES,NDLS,INI,PLI)
+        DO 50 J = 1,NDIM-1
           II = PLI+J
-            VTMP(II) =
-     &      JACOBI*HPG*COEFFF*INTER(J)*LAMBDA*FFPC(I)/COEFFA
-  120   CONTINUE
-  110 CONTINUE
+          VTMP(II) = JACOBI*HPG*TT(J)*FFPC(I)/COEFFA
+   50   CONTINUE
+   40 CONTINUE
+      ENDIF
 C
       END

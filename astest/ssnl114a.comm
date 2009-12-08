@@ -1,5 +1,6 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CABLE PESANT AVEC DILATATION THERMIQUE. MODELISATION A : CABLE
+# ssnl114a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,7 +83,7 @@ RESU1=STAT_NON_LINE(
                   'P0101010',  'P0101011',
                   'O0101010',  ),
                 RELATION = 'CABLE',
-                DEFORMATION = 'GREEN'),
+                DEFORMATION = 'GROT_GDEP'),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.00E-07,
                 ITER_GLOB_MAXI = 50),

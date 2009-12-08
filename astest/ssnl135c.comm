@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PEYRARD C.PEYRARD
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 # ssnl135c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
@@ -303,7 +303,7 @@ COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MAT0001,
                   MULTIFIBRE=_F(GROUP_FIBRE=('AE45X3','AE40X4','AE35X3.5','PL150X10'),
                                  MATER=MAT0001,
                                  RELATION='VMIS_ISOT_LINE',
-                                 DEFORMATION='REAC_GEOM',)
+                                 DEFORMATION='GROT_GDEP',)
                   )
 
 

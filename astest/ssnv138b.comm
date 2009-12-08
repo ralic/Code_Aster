@@ -1,5 +1,6 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES
+# ssnv138b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -125,7 +126,7 @@ NONLI=STAT_NON_LINE(  MODELE=MO1,
                           _F(CHARGE=CHA2,
                              FONC_MULT=D_FONC,),),
                    COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
-                                DEFORMATION='GREEN_GR',),
+                                DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=DEFLIST),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),

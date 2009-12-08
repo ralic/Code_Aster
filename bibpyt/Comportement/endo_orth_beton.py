@@ -1,4 +1,4 @@
-#@ MODIF endo_orth_beton Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF endo_orth_beton Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ loi = LoiComportement(
    nom_vari       = ('ENDO_XX','ENDO_YY','ENDO_ZZ','ENDO_XY','ENDO_XZ','ENDO_YZ','ENDOCOMP'),
    mc_mater       = ('ELAS', 'ENDO_ORTH_BETON', 'NON_LOCAL'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN','GRADEPSI'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

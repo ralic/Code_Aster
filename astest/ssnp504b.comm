@@ -1,6 +1,6 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
-# ssnp504b.para = tps_job 300 mem_job 256Mo liste_test S
+# ssnp504b.para = tps_job 100 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -195,7 +195,8 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                    RESI_GLOB_RELA=1E-06)),
                    NEWTON=_F(REAC_ITER=1,),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=250,),
+                              PCENT_PIVOT=250,
+                              NPREC=-1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 

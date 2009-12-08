@@ -1,7 +1,7 @@
       SUBROUTINE XMACON(CHAR  ,NOMA  ,NOMO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,19 +59,20 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER NDIM,JMA,ITYPMA
+      INTEGER NDIM,JTYMAI,ITYPMA,JMAIL,ITYELE
       INTEGER CFMMVD,ZMESX,ZTABF,NINTER,PINT,NZONE
       INTEGER JMAESC,JTABF,NTMAE,NBMA,NBMZ
       INTEGER JCESD2,JCESV2,JCESL2
       INTEGER JLSN,JCESD3,JCESV3,JCESL3,JCONX1,JCONX2
       INTEGER JZOFI,JDIMC,JCESD,JCESL,JCESV,JCESC
       INTEGER IZONE,IMAE,IMA,NBPC,NNO,NTPC,IRET,IAD
-      INTEGER IAD1,IAD2,IAD3,NNGL,INO,NFACE
+      INTEGER IAD1,IAD2,IAD3,NNGL,INO,NFACE,STATUT
       REAL*8  LSN 
       CHARACTER*8  NOMFIS,NOMZON,K8BID,TYPMA,ELREF
+      CHARACTER*16 TYELE
       CHARACTER*24 MAESCL,TABFIN
       CHARACTER*19 CHS1,CHS2,CHS3,FACLON,AINTER
-      CHARACTER*19 CARSD,CARTE,MAI
+      CHARACTER*19 CARSD,CARTE
       LOGICAL  PINTNO,ESCLAV,MAITRE,MALIN,ISMALI
       INTEGER  JCMCF,ZCMCF,TYPINT,NNINT
       INTEGER  ZXAIN,XXMMVD
@@ -130,8 +131,8 @@ C
       CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
 
-      MAI=NOMA//'.TYPMAIL'
-      CALL JEVEUO(MAI,'L',JMA)
+      CALL JEVEUO(NOMA//'.TYPMAIL','L',JTYMAI)
+      CALL JEVEUO(NOMO//'.MAILLE','L',JMAIL)
 C     
 C --- ON TRANSFORME LE CHAMP LSN EN CHAMP SIMPLE
 C
@@ -178,97 +179,114 @@ C
         DO 210 IMA = 1,NBMA
           CALL CESEXI('C',JCESD2,JCESL2,IMA,1,1,1,IAD)
           IF (IAD.GT.0)  THEN
-             NINTER = ZI(JCESV2-1+IAD)
-             IF (NINTER.GT.1) THEN
-               CALL CESEXI('C',JCESD,JCESL,IMA,1,1,1,IAD1)
-               IF (IAD1.GT.0) NOMFIS  = ZK8(JCESV-1+IAD1)
-               IF (NOMZON.NE.NOMFIS) GO TO 210
-               NBMZ = NBMZ+1
-               ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+1)= IMA
-               ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+2)= IZONE
-C 
-C --- ON RECUPERE LE TYPE DE LA MAILLE                  
-C --- ON VERIFIE QUE LE MAILLAGE NE CONTIENT QUE DES ELEMENTS LIN EN 3D
-C
-               ITYPMA=ZI(JMA-1+IMA)
-               CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
-               IF (NDIM.EQ.3) THEN
-                 ELREF = 'TR3'
-                 MALIN = ISMALI(TYPMA)
-                 IF (.NOT.MALIN) CALL U2MESS('F','XFEM_27')
-               ELSEIF (NDIM.EQ.2) THEN
-                  ELREF = 'SE2'
-               ENDIF
-C              
-C --- ON RECUPERE LE TYPE DE SCHEMAS D'INTEGRATION               
-               TYPINT = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+1))
-C --- ON RECUPERE LE NOMBRE DE POINTS D'INTEGRATION
-               CALL XMELIN(ELREF,TYPINT,NNINT)
+            NINTER = ZI(JCESV2-1+IAD)
+            IF (NINTER.GE.1) THEN
+              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,1,IAD1)
+              IF (IAD1.GT.0) NOMFIS  = ZK8(JCESV-1+IAD1)
+              IF (NOMZON.NE.NOMFIS) GO TO 210
 C --- ON RECUPERE LE NOMBRE DE FACETTES DE CONTACT
-               CALL CESEXI('C',JCESD2,JCESL2,IMA,1,1,2,IAD2)
-               NFACE = ZI(JCESV2-1+IAD2)
-
+              CALL CESEXI('C',JCESD2,JCESL2,IMA,1,1,2,IAD2)
+              NFACE = ZI(JCESV2-1+IAD2)
+              IF (NFACE.EQ.0.D0) GO TO 210
+C
 C --- PINTNO EST VRAI SI TOUT LES POINTS D'INTERSECTIONS DE LA MAILLE
 C --- SONT SUR DES NOEUDS, IL EST ALORS POSSIBLE QUE LA FISSURE COUPE
 C --- CONFORMEMENT LES MAILLES.
-               PINTNO=.TRUE.
-               DO 211 PINT = 1,NINTER
-                 CALL CESEXI('S',JCESD3,JCESL3,IMA,
-     &                      1,1,ZXAIN*(PINT-1)+1,IAD3)
-                 CALL ASSERT(IAD3.GT.0)
-                 IF (ZR(JCESV3-1+IAD3).GT.0) THEN
-                   PINTNO=.FALSE.
-                 ENDIF
-211            CONTINUE
-C --- SI TOUT LES PTS D'INTERS SONT SUR DES NOEUDS
-C --- ON REGARDE SI LE STATUT DE LA MAILLE EN COURS EST 
-C --- NORMAL, EXCLUSIVEMENT MAÎTRE OU EXCLUSIVEMENT ESCLAVE
-               IF (PINTNO) THEN
-                 ESCLAV = .FALSE.
-                 MAITRE = .FALSE.
+C
+              PINTNO=.TRUE.
+              DO 211 PINT = 1,NINTER
+                CALL CESEXI('S',JCESD3,JCESL3,IMA,
+     &                     1,1,ZXAIN*(PINT-1)+1,IAD3)
+                CALL ASSERT(IAD3.GT.0)
+                IF (ZR(JCESV3-1+IAD3).GT.0) THEN
+                  PINTNO=.FALSE.
+                ENDIF
+211           CONTINUE
+C --- ESCLAV ET MAITRE SONT RESPECTIVEMENT VRAI SI LA MAILLE POSSEDE
+C --- DES NOEUDS EXCLUSIVEMENT ESCLAVE OU EXCLUSIVEMENT MAITRE
+              IF (PINTNO) THEN
+                ESCLAV = .FALSE.
+                MAITRE = .FALSE.
 C --- ON RECUPERE LE NOMBRE DE NOEUDS DE LA MAILLE
-                 CALL JELIRA(JEXNUM(NOMA//'.CONNEX',IMA),
-     &                   'LONMAX',NNO,K8BID)
-                 IF ((TYPMA.EQ.'TRIA6').OR.(TYPMA.EQ.'QUAD8')) NNO=NNO/2
-                 DO 212 INO=1,NNO
+                CALL JELIRA(JEXNUM(NOMA//'.CONNEX',IMA),
+     &                  'LONMAX',NNO,K8BID)
+                IF ((TYPMA.EQ.'TRIA6').OR.(TYPMA.EQ.'QUAD8')) NNO=NNO/2
+                DO 212 INO=1,NNO
 C --- ON VERIFIE QUE LE NOEUD N'EST PAS INTERSECTÉ
-                   DO 213 PINT = 1,NINTER
-                     CALL CESEXI('S',JCESD3,JCESL3,IMA,
-     &                      1,1,ZXAIN*(PINT-1)+2,IAD3)
-                     CALL ASSERT(IAD3.GT.0)
-                     IF (ZR(JCESV3-1+IAD3).EQ.INO) GOTO 212
-213                CONTINUE
-                   NNGL=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+INO-1)
-                   LSN = ZR(JLSN-1+NNGL)
-                   IF (LSN.LT.0) THEN
+                  DO 213 PINT = 1,NINTER
+                    CALL CESEXI('S',JCESD3,JCESL3,IMA,
+     &                     1,1,ZXAIN*(PINT-1)+2,IAD3)
+                    CALL ASSERT(IAD3.GT.0)
+                    IF (ZR(JCESV3-1+IAD3).EQ.INO) GOTO 212
+213               CONTINUE
+                  NNGL=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+INO-1)
+                  LSN = ZR(JLSN-1+NNGL)
+                  IF (LSN.LT.0) THEN
 C --- AU MOINS UN NOEUD NON INTERS EST DU COTE ESCLAVE (LSN <0)
-                     ESCLAV = .TRUE.
-                   ELSEIF (LSN.GT.0) THEN
+                    ESCLAV = .TRUE.
+                  ELSEIF (LSN.GT.0) THEN
 C --- AU MOINS UN NOEUD NON INTERS EST DU COTE MAITRE (LSN >0)
-                     MAITRE = .TRUE.
-                   ENDIF
- 212             CONTINUE                  
-                 IF (ESCLAV) THEN
-                   IF (MAITRE) THEN
-C --- C'EST UNE MAILLE ESCLAVE NORMALE (DÉCOUPAGE NON CONFORME)
-                     ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+4)=0
-                   ELSE
-C --- C'EST UNE MAILLE EXCLUSIVEMENT ESCLAVE
-                     ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+4)=-1
-                   ENDIF
-                   ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+3)=NNINT
-                   NTPC = NTPC + NNINT*NFACE
-                 ELSE
-C --- C'EST UNE MAILLE EXCLUSIVEMENT MAÎTRE              
-                   ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+4)=1
-                   ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+3)=0
-                 ENDIF
-               ELSEIF (.NOT.PINTNO) THEN
-                 ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+4)=0
-                 ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+3)=NNINT
-                 NTPC = NTPC + NNINT*NFACE
-               ENDIF
-             ENDIF
+                    MAITRE = .TRUE.
+                  ENDIF
+ 212            CONTINUE
+              ELSE
+                ESCLAV = .TRUE.
+                MAITRE = .TRUE.
+              ENDIF
+C
+C --- ON RECUPERE LE TYPE DE LA MAILLE                  
+C --- ON VERIFIE QUE LE MAILLAGE NE CONTIENT QUE DES ELEMENTS LIN EN 3D
+C
+              ITYPMA=ZI(JTYMAI-1+IMA)
+              CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
+              MALIN = ISMALI(TYPMA)
+              IF (NDIM.EQ.3) THEN
+                ELREF = 'TR3'
+                IF (.NOT.MALIN) CALL U2MESS('F','XFEM_27')
+              ELSEIF (NDIM.EQ.2) THEN
+                ELREF = 'SE2'
+              ENDIF
+C --- ON RECUPERE LE TYPE DE SCHEMAS D'INTEGRATION               
+              TYPINT = NINT(ZR(JCMCF+ZCMCF*(IZONE-1)+1))
+C --- ON RECUPERE LE NOMBRE DE POINTS D'INTEGRATION
+              CALL XMELIN(ELREF,TYPINT,NNINT)
+C
+C --- CALCUL DU STATUT DE LA MAILLE UTILE POUR LA PROJECTION :
+C
+C ---  1 SI HEAVISIDE
+C --- -2 SI CRACK-TIP
+C ---  3 SI HEAVISIDE CRACK-TIP
+C --- NEGATIF SI ON NE PROJETE PAS DESSUS
+C
+              ITYELE=ZI(JMAIL-1+IMA)
+              CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYELE),TYELE)
+              IF ((TYELE(9:12).EQ.'XHTC'.AND.NDIM.EQ.2).OR.
+     &            (TYELE(6:9).EQ.'XHTC'.AND.NDIM.EQ.3)) THEN
+                STATUT = 3
+              ELSEIF ((TYELE(9:11).EQ.'XTC'.AND.NDIM.EQ.2).OR.
+     &            (TYELE(6:8).EQ.'XTC'.AND.NDIM.EQ.3)) THEN
+                STATUT = -2
+              ELSE
+                STATUT = 1
+              ENDIF
+              IF (NDIM.EQ.2.AND.(.NOT.MALIN)) THEN
+                IF (ABS(STATUT).GT.1) CALL U2MESS('F','XFEM_38')
+              ENDIF
+              IF (ESCLAV.AND.(.NOT.MAITRE)) THEN
+C --- C'EST UNE MAILLE EXCLUSIVEMENT ESCLAVE, LE STATUT EST NEGATIF
+C --- CAR ON PREVOIT DE NE PAS PROJETER SUR SES FACETTES
+                STATUT = -1*INT(ABS(STATUT))
+              ELSEIF (.NOT.ESCLAV) THEN
+C --- DU COTE EXCLUSIVEMENT MAITRE, PAS DE POINTS D'INTEGRATION
+                NNINT=0
+              ENDIF
+              NBMZ = NBMZ+1
+              ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+1) = IMA
+              ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+2) = IZONE
+              ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+3) = NNINT
+              ZI(JMAESC+ZMESX*(NTMAE+NBMZ-1)+4) = STATUT
+              NTPC = NTPC + NNINT*NFACE
+            ENDIF
           ENDIF
  210    CONTINUE
         NTMAE = NTMAE + NBMZ

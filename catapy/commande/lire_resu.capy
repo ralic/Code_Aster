@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 07/12/2009   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -128,7 +128,6 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
          ),
          b_dataset_58_b = BLOC(condition="(FORMAT=='IDEAS_DS58') and ((TYPE_RESU=='DYNA_TRANS') or\
                                         (TYPE_RESU=='DYNA_HARMO') or (TYPE_RESU=='HARM_GENE'))",
-           UNITE           =SIMP(statut='f',typ='I',defaut= 19 ),
            NOM_CHAM=SIMP(statut='o',typ='TXM',into=("DEPL","VITE","ACCE","EPSI_NOEU_DEPL","SIEF_NOEU",) ),
            REDEFI_ORIENT=FACT(statut='f',max='**',
                               regles=(PRESENT_PRESENT('CODE_DIR','DIRECTION','NOEUD',),),

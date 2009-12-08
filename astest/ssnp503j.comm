@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# ssnp503j.para = tps_job 200 mem_job 32Mo liste_test S
+# ssnp503j.para = tps_job 100 mem_job 64Mo liste_test S
 #
 # CONTACT-FROTTANT EN GRANDS GLISSEMENTS
 # AVEC XFEM POUR DES FISSURES HORIZONTALES
@@ -198,7 +198,8 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                     )),
                     NEWTON=_F(REAC_ITER=1,),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=80,),
+                               PCENT_PIVOT=80,
+                               NPREC=-1,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                     INFO=1,);
 

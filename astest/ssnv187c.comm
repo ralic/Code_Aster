@@ -1,5 +1,6 @@
-# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UN CUBE - 3D
+# ssnv187c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,7 +119,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                               MATRICE='TANGENTE',
                               REAC_ITER=1,)),                   
                    COMP_INCR=_F(RELATION='ELAS_HYPER',
-                                DEFORMATION = 'GREEN',
+                                DEFORMATION = 'GROT_GDEP',
                                 TOUT='OUI',),
                    CONVERGENCE=(_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=20)),                               
@@ -177,7 +178,7 @@ RESU2=STAT_NON_LINE(MODELE=MODELE,
                               MATRICE='TANGENTE',
                               REAC_ITER=1,)),                   
                    COMP_INCR=_F(RELATION='ELAS_HYPER',
-                                DEFORMATION = 'GREEN',
+                                DEFORMATION = 'GROT_GDEP',
                                 TOUT='OUI',),
                    CONVERGENCE=(_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=20)),                               
@@ -237,7 +238,7 @@ RESU3=STAT_NON_LINE(MODELE=MODELE,
                               MATRICE='TANGENTE',
                               REAC_ITER=1,)),                   
                    COMP_INCR=_F(RELATION='ELAS_HYPER',
-                                DEFORMATION = 'GREEN',
+                                DEFORMATION = 'GROT_GDEP',
                                 TOUT='OUI',),
                    CONVERGENCE=(_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=20)),                               

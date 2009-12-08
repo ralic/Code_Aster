@@ -1,5 +1,6 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE TRACTION THERMIQUE HYPER-ELASTICITE NON LINEAIRE 2D
+# hsnv120b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -157,7 +158,7 @@ VL=STAT_NON_LINE(
                 FONC_MULT = F_CHAR)),
                          COMP_ELAS=_F( 
                 RELATION = 'ELAS_VMIS_LINE',
-                DEFORMATION = 'GREEN'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F( 
                 LIST_INST = DEFLIST,
 #                SUBD_METHODE='UNIFORME', SUBD_PAS = 5,
@@ -185,7 +186,7 @@ VT=STAT_NON_LINE(
                 FONC_MULT = F_CHAR)),
                          COMP_ELAS=_F( 
                 RELATION = 'ELAS_VMIS_TRAC',
-                DEFORMATION = 'GREEN'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F( 
                 LIST_INST = DEFLIST,
 #                SUBD_METHODE='UNIFORME', SUBD_PAS = 5,

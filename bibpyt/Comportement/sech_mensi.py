@@ -1,4 +1,4 @@
-#@ MODIF sech_mensi Comportement  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF sech_mensi Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ loi = LoiComportement(
    nb_vari        = 0,
    nom_vari       = None,
    modelisation   = ('3D', 'AXIS', 'PLAN','3D_DIAG','PLAN_DIAG','AXIS_DIAG'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM','GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = None,
    schema         = ('IMPLICITE'),
    type_matr_tang = None,

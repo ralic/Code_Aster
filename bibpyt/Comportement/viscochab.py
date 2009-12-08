@@ -1,4 +1,4 @@
-#@ MODIF viscochab Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF viscochab Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ loi = LoiComportement(
    nom_vari       = ('VG1','VG2','VG3','VG4','VG5','VG6','VG7','VG8','VG9','VG10','VG11','VG12','VG13','VG14','VG15','VG16','VG17','VG18','VG19','VG20','VG21','VG22','VG23','VG24','VG25','VG26','VG27','VG28',),
    mc_mater       = ('ELAS','VISCOCHAB'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN','C_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
    schema         = ('IMPLICITE','RUNGE_KUTTA_2'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

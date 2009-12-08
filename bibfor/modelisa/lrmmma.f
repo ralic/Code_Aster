@@ -5,7 +5,7 @@
      &                    PREFIX,
      &                    INFMED, MODNUM, NUMNOA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF MODELISA  DATE 07/12/2009   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -180,7 +180,7 @@ C 2.0. ==> PASSAGE DU NUMERO DE TYPE MED AU NUMERO DE TYPE ASTER
 C
         ITYP = RENUMD(LETYPE)
 C
-        IF ( INFMED.GE.2 ) THEN
+        IF ( INFMED.GE.3 ) THEN
           WRITE (IFM,2001) NOMTYP(ITYP), NMATYP(ITYP)
         ENDIF
  2001 FORMAT('TYPE ',A8,' : ',I10,' MAILLES')
@@ -207,7 +207,7 @@ C
      &                  EDMAIL, TYPGEO(ITYP), CODRET )
 C
           IF ( CODRET.NE.0 ) THEN
-            IF ( INFMED.GE.2 ) THEN
+            IF ( INFMED.GE.3 ) THEN
               CALL U2MESK('I','MED_19',1,NOMTYP(ITYP))
             ENDIF
             IF (NBMAIL .GE. 10000000) THEN

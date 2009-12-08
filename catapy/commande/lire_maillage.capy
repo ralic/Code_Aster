@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 07/12/2009   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
             NOM_MED    = SIMP(statut='f',typ='TXM',
                               fr="Nom du maillage dans le fichier MED.",
                               ang="Name of the mesh into the MED file.",),
-            INFO_MED   = SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
+            INFO_MED   = SIMP(statut='f',typ='I',defaut= 1,into=(1,2,3) ),
 #
             RENOMME = FACT(statut='f', max='**',
                                  fr="Renommer un nom de groupe MED",

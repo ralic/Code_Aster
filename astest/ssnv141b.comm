@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE HEMISPHERE TROUEEE DOUBLEMENT PINCEE
 # ssnv141b.para = tps_job 1070 mem_job 250Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,7 +72,7 @@ D_FONC=DEFI_FONCTION(NOM_PARA='INST',
 
 NONLIN=STAT_NON_LINE(CHAM_MATER=CH_MAT_1,
                      MODELE=MODELE_1,
-                     COMP_ELAS=_F(DEFORMATION='GREEN_GR',
+                     COMP_ELAS=_F(DEFORMATION='GROT_GDEP',
                                   RELATION='ELAS',),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=50,
                                     RESI_GLOB_RELA=1.E-06,),

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE POUTRE CANTILEVER EN GRANDE ROTATION SOUMISE A UN MOMENT
 # ssnl103a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,7 +73,7 @@ RESU=STAT_NON_LINE(
                 CHARGE = CHA2)),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS_POUTRE_GR',
-                DEFORMATION = 'GREEN_GR'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 1),

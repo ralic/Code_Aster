@@ -1,4 +1,4 @@
-#@ MODIF vmis_pou_line Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF vmis_pou_line Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ loi = LoiComportement(
    nb_vari        = 9,
    nom_vari       = ('EPSPX','COURBPLY','COURBPLZ','COURBPLX','V6','V7','COURBEQY','COURBEQZ','VIDE'),
    modelisation   = ('POU_D_E','POU_D_T'),
-   deformation    = ('PETIT','PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM'),
+   deformation    = ('PETIT','PETIT_REAC'),
    nom_varc       = ('TEMP'),
    schema         = ('IMPLICITE','RUNGE_KUTTA_4'),
    type_matr_tang = None,

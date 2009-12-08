@@ -1,4 +1,4 @@
-#@ MODIF lema_seuil Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF lema_seuil Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ loi = LoiComportement(
    nom_vari       = ('EPSPEQ','SEUIL'),
    mc_mater       = ('LEMA_SEUIL'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'IRRA'),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

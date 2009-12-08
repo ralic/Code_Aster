@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -291,11 +291,11 @@ C
            ENDIF
         ENDIF
         IF ((ZK16(ICOMPO+2) (6:10).EQ.'_REAC') .OR. 
-     &      (ZK16(ICOMPO+2) (1:6 ).EQ.'EULER_') ) THEN
+     &      (ZK16(ICOMPO+2).EQ.'GROT_GDEP') ) THEN
+C            GROT_GDEP CORRESPOND ICI A EULER_ALMANSI   
 
           IF(ZK16(ICOMPO+2) (6:10).EQ.'_REAC') 
      &     CALL U2MESS('A','ELEMENTS2_72')
-          
           DO 40 I = 1,NNO
             I1 = 3* (I-1)
             I2 = 6* (I-1)
@@ -353,9 +353,6 @@ C
       ELSEIF ( OPTION.EQ.'SIEF_ELNO_ELGA' ) THEN
 C     ------------------------------------------
           CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
-          IF (ZK16(ICOMPO+2)(1:8).EQ.'GREEN_GR') THEN
-             CALL U2MESS('F','ELEMENTS2_75')
-          ENDIF
           CALL JEVECH ( 'PCONTRR', 'L', ICONTP )
           IND=6
           CALL DXEFFI ( NOMTE, XYZL, PGL, ZR(ICONTP), IND, EFFINT )

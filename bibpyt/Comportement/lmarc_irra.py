@@ -1,4 +1,4 @@
-#@ MODIF lmarc_irra Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF lmarc_irra Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ loi = LoiComportement(
    nom_vari       = ('X_XX','X_YY','X_ZZ','X_XY','X_XZ','X_YZ',  'X1_XX','X1_YY','X1_ZZ','X1_XY','X1_XZ','X1_YZ',  'X2_XX','X2_YY','X2_ZZ','X2_XY','X2_XZ','X2_YZ','EPSPEQ','INDIPLAS'),
    mc_mater       = ('ELAS','LMARC_IRRA'),
    modelisation   = ('POU_D_E','POU_D_T'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP','IRRA'),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)   OPTIOZ , NOMTZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C          ------------------------------------
 C
 C ------ HYPER-ELASTICITE
 C
-         IF ( ZK16 ( ICOMPO + 2 ) ( 1 : 8 ) . EQ . 'GREEN_GR' ) THEN
+         IF ( ZK16 ( ICOMPO + 2 ) . EQ . 'GROT_GDEP' ) THEN
 C
 C --------- DEFORMATION DE GREEN
 C
@@ -85,7 +85,7 @@ C
       ELSEIF ( ZK16(ICOMPO+3)(1:9) .EQ. 'COMP_INCR' ) THEN
 C              ------------------------------------
 
-         IF ( ZK16(ICOMPO+2)(1:8) .EQ. 'GREEN_GR') THEN
+         IF ( ZK16(ICOMPO+2).EQ. 'GROT_GDEP') THEN
 C
 C --------- HYPO-ELASTICITE
 C

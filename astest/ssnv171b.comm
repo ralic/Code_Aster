@@ -1,7 +1,8 @@
 
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPARAISON POLYCRISTAL ET MONOCRISTAL.
 # RESPONSABLE JMBHH01 J.M.PROIX
+# ssnv171b.para = tps_job 600 mem_job 512Mo mem_aster 10 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,7 +91,8 @@ TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                                   _F(NOEUD=('NO1','NO5',),
                                      FX=35.0,),),);
 
-COMPOR1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
+COMPOR1=DEFI_COMPOR( ROTA_RESEAU='POST',
+                     MONOCRISTAL=(_F(MATER=ACIER,
                                     ECOULEMENT='ECOU_VISC1',
                                     ECRO_ISOT='ECRO_ISOT1',
                                     ECRO_CINE='ECRO_CINE1',
@@ -131,6 +133,8 @@ MONOIMPL=CALC_ELEM(reuse =MONOIMPL,
                 RESULTAT=MONOIMPL,
                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
 
+IMPR_RESU(RESU=_F(RESULTAT=MONOIMPL))
+
 TEST_RESU(RESU=(_F(RESULTAT=MONOIMPL,
                    INST=TFIN,
                    NOM_CHAM='SIEF_ELGA',
@@ -165,7 +169,26 @@ TEST_RESU(RESU=(_F(RESULTAT=MONOIMPL,
                    POINT=1,
                    VALE=6.876676e-05,
                    PRECISION=(0.001,1e-06,),
-                   REFERENCE='NON_REGRESSION',),),);
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=MONOIMPL,
+                   INST=TFIN,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V58',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=5.02E-4, # rotation de reseau
+                   PRECISION=(0.001,1e-06,),
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=MONOIMPL,
+                   INST=TFIN,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V60',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=4.851E-4,
+                   PRECISION=(0.001,1e-06,),
+                   REFERENCE='NON_REGRESSION',),
+                   ),);
 
 
 MONOEXPL=STAT_NON_LINE(MODELE=TROISD,

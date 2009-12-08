@@ -1,4 +1,4 @@
-#@ MODIF multifibre Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF multifibre Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ loi = LoiComportement(
    nom_vari       = None,
    mc_mater       = None,
    modelisation   = ('1D','POU_D_EM','POU_D_TGM'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'REAC_GEOM'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

@@ -1,4 +1,4 @@
-#@ MODIF vmis_isot_line Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF vmis_isot_line Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,13 +26,14 @@ loi = LoiComportement(
    doc = """Loi de plasticité de Von Mises à écrouissage linéaire [R5.03.02]""",
    num_lc         = 1,
    nb_vari        = 2,
-   nom_vari       = ('DEFPLCUM', 'INDICAT'),
+   nom_vari       = ('DEFPLCUM', 'INDICAT',),
    mc_mater       = ('ELAS', 'ECRO_LINE'),
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN', '1D','GRADVARI'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR', 'SIMO_MIEHE'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP', 'SIMO_MIEHE','SIMO_HUGHES1','GDEF_HYPO_ELAS','GREEN_REAC'),
    nom_varc       = ('TEMP','SECH','HYDR'),
    schema         = 'IMPLICITE',
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )
+
 

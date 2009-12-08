@@ -1,9 +1,9 @@
       SUBROUTINE XMVEF0(NDIM,NNC,NNE,NNES,NFAES,IAINES,
-     &                  HPG,FFPC,JACOBI,DEPLE,CFACE,
-     &                  TYPMA,TAU1,TAU2,VTMP)     
+     &                  HPG,FFPC,JACOBI,COEFCA,LAMBD,CFACE,
+     &                  TYPMA,TAU1,TAU2,NDLS,VTMP)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,12 +20,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C
       IMPLICIT NONE
-      INTEGER  NDIM,NNC,NNE,NNES,NFAES,IAINES,CFACE(5,3)
-      REAL*8   HPG,FFPC(9),JACOBI  
-      REAL*8   DEPLE(6)    
+      INTEGER  NDIM,NNC,NNE,NNES,NFAES,IAINES,CFACE(5,3),NDLS
+      REAL*8   HPG,FFPC(9),JACOBI,COEFCA
+      REAL*8   LAMBD(3)   
       REAL*8   TAU1(3),TAU2(3)     
-      REAL*8   VTMP(120)
+      REAL*8   VTMP(168)
       CHARACTER*8  TYPMA  
 C
 C ----------------------------------------------------------------------
@@ -42,71 +43,39 @@ C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFPC   : FONCTIONS DE FORME DU POINT DE CONTACT
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-C IN  DEPLE  : DEPLACEMENTS DE LA SURFACE ESCLAVE
+C IN  LAMBD  : LAGRANGE DE CONTACT ET FROTTEMENT AU POINT D'INTÈGRATION
 C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : DEUXIEME VECTEUR TANGENT
+C IN  NDLS   : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
 C I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
-C
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
-C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C
-      INTEGER I,K,L,II,IN,PL,XOULA
-      REAL*8  TT(3)
-C
 C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()
+      INTEGER I,L,II,IN,PL,XOULA
+      REAL*8  TT(3), T
+C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
 C
-      DO 100 I = 1,3
+      DO 100 I = 1,2
         TT(I) = 0.D0
  100  CONTINUE           
 C
-C --- MATRICE 
+C --- CALCUL DE T.T
 C
-      IF (NDIM.EQ.2) THEN
-        DO 200 K = 1,NDIM
-          TT(1) = TAU1(K)*TAU1(K) +TT(1)
- 200    CONTINUE
-        TT(1) = DEPLE(2*NDIM+1+1)*TT(1)
-        TT(2) = 0.D0
-      ELSE IF (NDIM.EQ.3) THEN
-        DO 300 K = 1,NDIM
-          TT(1) = (DEPLE(2*NDIM+1+1)*TAU1(K)+DEPLE(2*NDIM+1+2)
-     +             *TAU2(K))*TAU1(K)+TT(1)
-     
- 300     CONTINUE
-        DO 400 K = 1,NDIM
-          TT(2) = (DEPLE(2*NDIM+1+1)*TAU1(K)+DEPLE(2*NDIM+1+2)
-     +             *TAU2(K))*TAU2(K)+TT(2)
-     
- 400     CONTINUE
-      END IF
+      DO 200 I = 1,NDIM
+        T = LAMBD(1+1)*TAU1(I)+LAMBD(1+2)*TAU2(I)
+        TT(1) = T*TAU1(I)+TT(1)
+        IF (NDIM.EQ.3) TT(2) = T*TAU2(I)+TT(2)
+ 200  CONTINUE
+C
+C --------------------- CALCUL DE [F]-----------------------------------
+C
       DO 500 I=1,NNC
+        IN=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
+        CALL XPLMA2(NDIM,NNE,NNES,NDLS,IN,PL)
         DO 600 L=1,NDIM-1
-          IN=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
-          CALL XPLMA2(NDIM,NNE,NNES,IN,PL)
           II = PL+L
-          VTMP(II)=-JACOBI*HPG*FFPC(I)*TT(L)
+          VTMP(II)= JACOBI*HPG*FFPC(I)*TT(L)/COEFCA
   600   CONTINUE
   500 CONTINUE
-C
-      CALL JEDEMA()      
+C     
       END

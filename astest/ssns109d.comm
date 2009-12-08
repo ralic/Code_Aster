@@ -1,4 +1,4 @@
-# MODIF  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE POUTRE CONSOLE SOUMISE A UN EFFORT TRANCHANT
 # ssns109d.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -62,7 +62,7 @@ NONLIN=STAT_NON_LINE(MODELE=MODMECA,
                      EXCIT=_F(CHARGE=CHARGT,
                               TYPE_CHARGE='FIXE_PILO',),
                      COMP_INCR=_F(RELATION='ELAS',
-                                  DEFORMATION='GREEN',
+                                  DEFORMATION='GROT_GDEP',
                                   TOUT='OUI',),
                      INCREMENT=_F(LIST_INST=LISTPILO,),
                      NEWTON=_F(MATRICE='TANGENTE',),

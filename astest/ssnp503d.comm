@@ -1,6 +1,6 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
-# ssnp503d.para = tps_job 75 mem_job 32Mo liste_test S
+# ssnp503d.para = tps_job 30 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -219,7 +219,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
         precision = 1.0E-10
         critere = 'ABSOLU'
       else:
-        precision = 1.0E-5 
+        precision = 1.0E-4 
         critere = 'RELATIF'
       TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',

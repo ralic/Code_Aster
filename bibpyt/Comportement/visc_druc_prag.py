@@ -1,4 +1,4 @@
-#@ MODIF visc_druc_prag Comportement  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
+#@ MODIF visc_druc_prag Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ loi = LoiComportement(
    nom_vari       = ('DPDEVCUM','INDICAT','POS','NBREIT'),
    mc_mater       = ('ELAS', 'VISC_DRUC_PRAG'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP',),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

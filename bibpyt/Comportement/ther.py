@@ -1,4 +1,4 @@
-#@ MODIF ther Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF ther Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ loi = LoiComportement(
    nb_vari        = 0,
    nom_vari       = None,
    modelisation   = None,
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM','GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = None,
    schema         = ('IMPLICITE'),
    type_matr_tang = None,

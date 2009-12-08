@@ -1,4 +1,4 @@
-#@ MODIF glrc_dm Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF glrc_dm Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ loi = LoiComportement(
    nom_vari       = ('ENDOFL+','ENDOFL-','INDIEND1','INDIEND2'),
    mc_mater       = ('GLRC_DM'),
    modelisation   = ('DKTG'),
-   deformation    = ('PETIT', 'EULER_ALMANSI'),
+   deformation    = ('PETIT', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

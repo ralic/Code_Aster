@@ -1,5 +1,6 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE PROBLEME A DEUX PORTEES AVEC CABLE POULIE
+# ssnl100a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,10 +89,10 @@ RESU=STAT_NON_LINE(     MODELE=MO1,
                                 _F( CHARGE = CHA3)),
                      COMP_ELAS=(_F( GROUP_MA = 'MCABLE',
                                     RELATION = 'CABLE',
-                                    DEFORMATION = 'GREEN'),
+                                    DEFORMATION = 'GROT_GDEP'),
                                 _F( GROUP_MA = 'MCABPOUL',
                                     RELATION = 'ELAS',
-                                    DEFORMATION = 'GREEN')),
+                                    DEFORMATION = 'GROT_GDEP')),
                      INCREMENT= _F( LIST_INST = L_INST,
                                     NUME_INST_FIN = 1),
                    CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-8,
@@ -111,10 +112,10 @@ RESU=STAT_NON_LINE( reuse=RESU,
                                     NUME_ORDRE = 1),
                      COMP_ELAS=(_F( GROUP_MA = 'MCABLE',
                                     RELATION = 'CABLE',
-                                    DEFORMATION = 'GREEN'),
+                                    DEFORMATION = 'GROT_GDEP'),
                                 _F( GROUP_MA = 'MCABPOUL',
                                     RELATION = 'ELAS',
-                                    DEFORMATION = 'GREEN')),
+                                    DEFORMATION = 'GROT_GDEP')),
                      INCREMENT= _F( LIST_INST = L_INST,
                                     NUME_INST_INIT = 1,
                                     NUME_INST_FIN  = 2),

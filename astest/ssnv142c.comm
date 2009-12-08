@@ -1,6 +1,7 @@
 
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.1D)
+# ssnv142c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,10 +78,10 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                TEMP_DEF_ALPHA=20.0,
                                ALPHA=ALPHA,
                                FONC_DESORP=FONC1,),
-                    GRANGER_FP_INDT=_F(J1=0.2,
-                                       J2=0.1,
-                                       TAUX_1=4320000.,
-                                       TAUX_2=2160000.,),);
+                   GRANGER_FP_INDT=_F(J1=3.226e-5,
+                                       J2=6.452e-5,
+                                       TAUX_1=432000.,
+                                       TAUX_2=4320000.,),);
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=BETON,
                   MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=BETON,
@@ -191,7 +192,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    GROUP_NO='B',
-                   VALE=-5.99794,
+                   VALE=-0.00257977,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=74,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/04/2009   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,12 +46,12 @@ CALCUL=OPER(nom="CALCUL",op=26,sd_prod=table_container,reentrant='f',
           RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
           ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
           ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
-          RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
-                                into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
+          RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",into=("IMPLICITE",)),
           RELATION        =SIMP(statut='o',typ='TXM',defaut="ELAS",
                                 into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC",
                                      "ELAS_POUTRE_GR","CABLE","ELAS_HYPER")),
-          DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GREEN","GREEN_GR",) ),),
+          DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GROT_GDEP",) ),
+          ),
      INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 ) ;
 

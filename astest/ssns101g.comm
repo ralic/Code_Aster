@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB15  
 # ssns101g.para = tps_job 800 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,7 +93,7 @@ NONLIN=STAT_NON_LINE(MODELE=MODMECA,
                      EXCIT=_F(CHARGE=CHARGT,
                               TYPE_CHARGE='FIXE_PILO',),
                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
-                                  DEFORMATION='GREEN',
+                                  DEFORMATION='GROT_GDEP',
                                   RESI_INTE_RELA=1.e-06,
                                   TOUT='OUI',),
                      INCREMENT=_F(LIST_INST=LISTPILO,),

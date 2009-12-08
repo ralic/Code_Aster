@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 % RESPONSABLE ABBAS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -26,7 +26,7 @@ OPTION__
         PPINTER  NEUT_R
         PLONCHA  NEUT_I
         PGESCLO  NEUT_R
-        PGMAITO  NEUT_R
+        PLST     NEUT_R
 
    OUT__
         PNEWGES  NEUT_R ELEM__

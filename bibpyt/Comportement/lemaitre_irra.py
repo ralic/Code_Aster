@@ -1,4 +1,4 @@
-#@ MODIF lemaitre_irra Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF lemaitre_irra Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ loi = LoiComportement(
    nom_vari       = ('EPSPEQ','VIDE'),
    mc_mater       = ('LEMAITRE_IRRA'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'IRRA'),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

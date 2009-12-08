@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/12/2009   AUTEUR BOITEAU O.BOITEAU 
 # ======================================================================
 # TITRE VALIDATION ARCHITECTURE PARTITIONNEMENT SCOTCH ET CALCUL FETI
 # feti007a.para = tps_job 190 mem_job 512Mo ncpus 1 liste_test S
@@ -21,7 +21,9 @@
 # ======================================================================
 # ======================================================================
 # CUBE 3D
+# PARALLELE: VALEUR CONSEILLEE 4 PROCS.
 # ======================================================================
+# RESPONSABLE BOITEAU O.BOITEAU
 
 DEBUT(CODE=_F(NOM='FETI007A',
               NIV_PUB_WEB='INTERNET',));

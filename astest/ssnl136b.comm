@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE RUINE ELASTO-PLASTIQUE DU PORTIQUE DE LEE
 # ssnl136b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,7 +85,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=FORCE,
                              FONC_MULT=F_FORCE,),),
                    COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
-                                DEFORMATION='GREEN_GR',),
+                                DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=DEFLIST,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),

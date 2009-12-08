@@ -1,0 +1,69 @@
+      SUBROUTINE VICIN0(COMPOR,NBCIN,NUMCIN) 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT NONE
+      INTEGER NDIM,NBCIN,NUMCIN(2)
+      CHARACTER*16 COMPOR(*)
+C ---------------------------------
+C   ENTREE  :
+C   NDIM    : DIMENSION DE L'ESPACE
+C   COMPOR  : COMPORTEMENT
+C   SORTIE:
+C   NBCIN   : NOMBRE DE VARIABLES CINEMATIQUES
+C   NUMCIN  : NUMEROS DES VARIABLES CINEMATIQUES
+C ----------------------------
+C
+C   LE COMPORTEMENT EST-IL CINEMATIQUE ?
+C
+C -------------------------
+      NBCIN=0
+      
+      IF (COMPOR(1).EQ.'VMIS_CINE_LINE') THEN
+         NBCIN=1
+         NUMCIN(1)=1
+      ELSEIF (COMPOR(1).EQ.'VMIS_ECMI_LINE') THEN
+         NBCIN=1
+         NUMCIN(1)=3
+      ELSEIF (COMPOR(1).EQ.'VMIS_ECMI_TRAC') THEN
+         NBCIN=1
+         NUMCIN(1)=3
+      ELSEIF (COMPOR(1).EQ.'VMIS_CIN1_CHAB') THEN
+         NBCIN=1
+         NUMCIN(1)=3
+      ELSEIF (COMPOR(1).EQ.'VMIS_CIN2_CHAB') THEN
+         NBCIN=2
+         NUMCIN(1)=3
+         NUMCIN(2)=9
+      ELSEIF (COMPOR(1).EQ.'VMIS_CIN2_MEMO') THEN
+         NBCIN=2
+         NUMCIN(1)=3
+         NUMCIN(2)=9
+      ELSEIF (COMPOR(1).EQ.'VISC_CIN1_CHAB') THEN
+         NBCIN=1
+         NUMCIN(1)=3
+      ELSEIF (COMPOR(1).EQ.'VISC_CIN2_CHAB') THEN
+         NBCIN=2
+         NUMCIN(1)=3
+         NUMCIN(2)=9
+      ELSEIF (COMPOR(1).EQ.'VISC_CIN2_MEMO') THEN
+         NBCIN=2
+         NUMCIN(1)=3
+         NUMCIN(2)=9
+      ENDIF
+      END

@@ -7,7 +7,7 @@
      &                    DFDI,PFF,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,15 +38,17 @@ C
        REAL*8        INSTAM,INSTAP
        REAL*8        GEOMI(3,NNO), CRIT(3)
        REAL*8        DEPLM(1:3,1:NNO),DEPLP(1:3,1:NNO),DFDI(NNO,3)
-       REAL*8        PFF(6,NNO,NNO),DEF(6,NNO,3)
-       REAL*8        SIGM(6,NPG),SIGP(6,NPG)
-       REAL*8        VIM(LGPG,NPG),VIP(LGPG,NPG)
+       REAL*8        PFF(6,NNO,NNO),DEF(6,NNO,3),DFDIM(NNO,3)
+       REAL*8        SIGM(6,NPG),SIGP(6,NPG),DFDIP(NNO,3)
+       REAL*8        VIM(LGPG,NPG),VIP(LGPG,NPG),POIDSM,POIDSP
        REAL*8        MATUU(*),VECTU(3,NNO)
 C
 C.......................................................................
 C
 C     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
 C           EN GRANDES DEFORMATIONS 3D COROTATIONNEL ZMAT
+C           ET AJOUT MODELE GRANDES DEFORMATIONS PHILIPPE
+C           ET ROTATION DE RÉSEAU
 C.......................................................................
 C IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
 C IN  NPG     : NOMBRE DE POINTS DE GAUSS
@@ -99,15 +101,22 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER KPG,KK,KKD,N,I,M,J,J1,KL,PQ,COD(27),IRET
 
       REAL*8 DSIDEP(6,6),F(3,3),FM(3,3),FR(3,3),EPSM(6),EPSP(6),DEPS(6)
-      REAL*8 R,SIGMA(6),SIGN(6),SIG(6),SIGG(6)
-      REAL*8 POIDS,TMP1,TMP2,R8VIDE
-      REAL*8 ELGEOM(10,27),ANGMAS(3),R8NNEM
-      REAL*8 GEOMP(3,NNO),FB(3,3)
-      REAL*8 KRON(3,3),RAC2
+      REAL*8 R,SIGMA(6),SIGN(6),SIG(6),SIGG(6),FMM(3,3)
+      REAL*8 POIDS,TMP1,TMP2,R8VIDE,R8BID
+      REAL*8 ELGEOM(10,27),ANGMAS(3),R8NNEM,DDEPL(3,NNO)
+      REAL*8 GEOMP(3,NNO),FB(3,3),DF(3,3),GEOMM(3,NNO)
+      REAL*8 KRON(3,3),RAC2,DETDF,DFTDF
+      INTEGER INDI(6),INDJ(6)
+      REAL*8  RIND(6),RIND1(6)
+      DATA    INDI / 1 , 2 , 3 , 1, 1, 2 /
+      DATA    INDJ / 1 , 2 , 3 , 2, 3, 3 /
+      DATA    RIND / 0.5D0,0.5D0,0.5D0,0.70710678118655D0,
+     &               0.70710678118655D0,0.70710678118655D0 /
+C      DATA    RIND1 / 0.5D0 , 0.5D0 , 0.5D0 , 1.D0, 1.D0, 1.D0 /
       DATA KRON/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 
 
-      IF(COMPOR(1)(1:4) .NE. 'ZMAT') THEN
+      IF(COMPOR(1)(1:4) .NE. 'ZMAT'.AND.COMPOR(3).NE.'GREEN_REAC') THEN
          CALL U2MESS('F','ALGORITH7_96')
       ENDIF
 
@@ -120,7 +129,7 @@ C 1 - INITIALISATION
 C 3 - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES AU COMPORTEMENT
 
       CALL LCEGEO(NNO,NPG,IPOIDS,IVF,IDFDE,GEOMI,TYPMOD,OPTION,
-     &            IMATE,COMPOR,LGPG,ELGEOM)
+     &            IMATE,COMPOR,LGPG,3,DFDI,DEPLM,DEPLP,ELGEOM)
 
 
 C 4 - INITIALISATION CODES RETOURS
@@ -151,21 +160,53 @@ C 5.2.2 - CALCUL DE F, EPSP, DFDI, R ET POIDS EN T+
       CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMI,KPG,IPOIDS,
      &           IVF,IDFDE,DEPLP,POIDS,DFDI,
      &           F,EPSP,R)
+        DO 63 N = 1,NNO
+        DO 63 I = 1,3
+           GEOMM(I,N) = GEOMI(I,N) + DEPLM(I,N)
+           DDEPL(I,N) = DEPLP(I,N) - DEPLM(I,N)
+ 63     CONTINUE
+
+
         DO 55 N = 1,NNO
            DO 56 I = 1,3
               GEOMP(I,N) = GEOMI(I,N) + DEPLP(I,N)
  56        CONTINUE
  55     CONTINUE
 
+C        CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMM,KPG,IPOIDS,
         CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMP,KPG,IPOIDS,
-     &           IVF,IDFDE,DEPLP,POIDS,DFDI,
+     &           IVF,IDFDE,DDEPL,POIDSP,DFDIP,
+     &           DF,DEPS,R)
+        CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMM,KPG,IPOIDS,
+     &           IVF,IDFDE,DDEPL,POIDSM,DFDIM,
+     &           DF,DEPS,R)
+        CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMP,KPG,IPOIDS,
+     &           IVF,IDFDE,DEPLP,POIDSP,DFDIP,
      &           FB,EPSP,R)
+     
+
+      IF (COMPOR(1).EQ.'ZMAT') THEN
+        DO 157 I=1,NNO
+           DO 158 J=1,3
+              DFDI(I,J) = DFDIP(I,J)
+ 158        CONTINUE
+ 157     CONTINUE
+        POIDS=POIDSP
+      ELSE
+        DO 257 I=1,NNO
+           DO 258 J=1,3
+             DFDI(I,J) = DFDIM(I,J)
+ 258        CONTINUE
+ 257     CONTINUE
+        POIDS=POIDSM
+      ENDIF
+
         DO 57 I=1,3
            DO 58 J=1,3
               FR(I,J) = KRON(I,J)
  58        CONTINUE
  57     CONTINUE
-
+ 
       DO 40 N=1,NNO
        DO 30 I=1,3
         DEF(1,N,I) =  FR(I,1)*DFDI(N,1)
@@ -175,12 +216,12 @@ C 5.2.2 - CALCUL DE F, EPSP, DFDI, R ET POIDS EN T+
         DEF(5,N,I) = (FR(I,1)*DFDI(N,3) + FR(I,3)*DFDI(N,1))/RAC2
         DEF(6,N,I) = (FR(I,2)*DFDI(N,3) + FR(I,3)*DFDI(N,2))/RAC2
  30    CONTINUE
- 40    CONTINUE
+ 40   CONTINUE
 
 
 C 5.2.6 - CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
 
-       IF (RIGI) THEN
+      IF (RIGI) THEN
         DO 125 N=1,NNO
          DO 126 M=1,N
           PFF(1,N,M) =  DFDI(N,1)*DFDI(M,1)
@@ -191,30 +232,57 @@ C 5.2.6 - CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
           PFF(6,N,M) =(DFDI(N,2)*DFDI(M,3)+DFDI(N,3)*DFDI(M,2))/RAC2
  126     CONTINUE
  125    CONTINUE
-       ENDIF
+      ENDIF
 
-C         CAUCHY
+C -    APPEL A LA LOI DE COMPORTEMENT
+
+      IF (COMPOR(1).EQ.'ZMAT') THEN
          DO 59 I=1,3
              SIGN(I)=SIGM(I,KPG)
  59      CONTINUE
          DO 60 I=1,3
              SIGN(3+I)=SIGM(3+I,KPG)*RAC2
  60      CONTINUE
-C 5.3.2 - INTEGRATION
-
-C -    APPEL A LA LOI DE COMPORTEMENT
-       CALL NMCOMP(FAMI,KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
+         CALL NMCOMP(FAMI,KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
      &            INSTAM,INSTAP,
      &            FM,F,
      &            SIGN,VIM(1,KPG),
      &            OPTION,ANGMAS,
      &            ELGEOM(1,KPG),
      &            SIGMA,VIP(1,KPG),DSIDEP,COD(KPG))
-
-
-       IF(COD(KPG).EQ.1) THEN
-         GOTO 1956
-       ENDIF
+      ELSEIF (COMPOR(3).EQ.'GREEN_REAC') THEN
+         DO 128 KL = 1,6
+            SIGN(KL) =  SIGM(KL,KPG)
+ 128     CONTINUE
+         SIGN(4) = SIGN(4)*RAC2
+         SIGN(5) = SIGN(5)*RAC2
+         SIGN(6) = SIGN(6)*RAC2
+         CALL NMCOMP(FAMI,KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
+     &      INSTAM,INSTAP,EPSM,DEPS,SIGN,VIM(1,KPG),
+     &      OPTION,ANGMAS,ELGEOM(1,KPG),
+     &      SIGMA,VIP(1,KPG),DSIDEP,COD(KPG))
+C 5.6 - CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
+         IF (RESI) THEN
+            DETDF = DF(3,3)*(DF(1,1)*DF(2,2)-DF(1,2)*DF(2,1))
+     &            - DF(2,3)*(DF(1,1)*DF(3,2)-DF(3,1)*DF(1,2))
+     &            + DF(1,3)*(DF(2,1)*DF(3,2)-DF(3,1)*DF(2,2))
+            DO 190 PQ = 1,6
+               SIGP(PQ,KPG) = 0.D0
+               DO 200 KL = 1,6
+                  DFTDF=(DF(INDI(PQ),INDI(KL))*DF(INDJ(PQ),INDJ(KL))+
+     &            DF(INDI(PQ),INDJ(KL))*DF(INDJ(PQ),INDI(KL)))*RIND(KL)
+                  SIGP(PQ,KPG) =  SIGP(PQ,KPG)+ DFTDF*SIGMA(KL)
+ 200           CONTINUE
+               SIGP(PQ,KPG) = SIGP(PQ,KPG)/DETDF
+ 190        CONTINUE
+         ENDIF
+      ELSE
+         CALL U2MESS('F','ALGORITH7_96')
+      ENDIF
+      
+      IF(COD(KPG).EQ.1) THEN
+        GOTO 1956
+      ENDIF
 
 C 5.4 - CALCUL DE LA MATRICE DE RIGIDITE
 
@@ -301,9 +369,11 @@ C 5.5 - CALCUL DE LA FORCE INTERIEURE
  230    CONTINUE
 
 C 5.6 - CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
+      IF (COMPOR(1).EQ.'ZMAT') THEN
           DO 255 PQ = 1,6
               SIGP(PQ,KPG) = SIGMA(PQ)
  255      CONTINUE
+        ENDIF
 
         ENDIF
 

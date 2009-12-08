@@ -1,4 +1,4 @@
-#@ MODIF elas_vmis_line Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF elas_vmis_line Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ loi = LoiComportement(
    nom_vari       = ('DEFPLCUM', 'INDICAT'),
    mc_mater       = ('ELAS', 'ECRO_LINE'),
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN'),
-   deformation    = ('PETIT', 'GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
    schema         = 'IMPLICITE',
    type_matr_tang = None,

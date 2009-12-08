@@ -5,7 +5,7 @@
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C
       CHARACTER*8   LPAIN(5),LPAOUT(2)
       CHARACTER*19  LCHIN(5),LCHOUT(2)
       CHARACTER*19  LIGREL,PINTER,LONCHA,NEWGES,NEWGEM
-      CHARACTER*19  GESCLO,GMAITO
+      CHARACTER*19  GESCLO,LTNO
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -67,10 +67,10 @@ C ----------------------------------------------------------------------
       NEWGEM='&&XGECFI.GEOMAIT'
 
       LIGREL = MODELE//'.MODELE'
-      PINTER=MODELE//'.TOPOFAC.PI'
-      LONCHA=MODELE//'.TOPOFAC.LO'
-      GESCLO=MODELE//'.TOPOFAC.OE'
-      GMAITO=MODELE//'.TOPOFAC.OM'
+      PINTER = MODELE//'.TOPOFAC.PI'
+      LONCHA = MODELE//'.TOPOFAC.LO'
+      GESCLO = MODELE//'.TOPOFAC.OE'
+      LTNO   = MODELE//'.LTNO'
 
       LPAIN(1) = 'PDEPLA'
       LCHIN(1) = DEPDEL
@@ -80,8 +80,8 @@ C ----------------------------------------------------------------------
       LCHIN(3) = LONCHA 
       LPAIN(4) = 'PGESCLO'
       LCHIN(4) = GESCLO
-      LPAIN(5) = 'PGMAITO'
-      LCHIN(5) = GMAITO
+      LPAIN(5) = 'PLST'
+      LCHIN(5) = LTNO
 
       LPAOUT(1) = 'PNEWGES'
       LCHOUT(1) = NEWGES

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+#& MODIF COMMANDE  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,13 +49,12 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
            ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
-           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
-                                 into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
+           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",into=("IMPLICITE",)),
            RELATION        =SIMP(statut='o',typ='TXM',defaut="ELAS",
                                  into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_VMIS_PUIS",
                                       "ELAS_POUTRE_GR","CABLE","ELAS_HYPER")),
 
-           DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GREEN","GREEN_GR",) ),
+           DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GROT_GDEP",) ),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),

@@ -1,6 +1,7 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE ORTHOTROPE EN TRACTION UNIAXIALE HORS AXES D'ORTHOTROPIE
+# sslp304d.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +19,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# MODELISATION COQUE_3D GREEN_GR
+# MODELISATION COQUE_3D GROT_GDEP
 #
 
 
@@ -113,7 +114,7 @@ DEF=STAT_NON_LINE(MODELE=MODELE,
                   CARA_ELEM=CARA,
                   EXCIT=_F(CHARGE=CHARGT,),
                   COMP_ELAS=_F(RELATION='ELAS',
-                               DEFORMATION='GREEN_GR',),
+                               DEFORMATION='GROT_GDEP',),
                   INCREMENT=_F(LIST_INST=linst,),);
 #
 # RESOLUTION

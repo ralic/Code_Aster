@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -195,7 +195,7 @@ C     --------------------------------------------------------
       CALL JEVECH('PCARCRI','L',ICARCR)
       CALL JEVECH('PCACOQU','L',ICACOQ)
       
-      LEUL = ZK16(ICOMPO+2)(1:6).EQ.'EULER_'      
+      LEUL = ZK16(ICOMPO+2).EQ.'GROT_GDEP'      
       IF(LEUL .AND. ZK16(ICOMPO)(1:4).NE.'ELAS') THEN
        WRITE(MESS,'(A16)(A7)(A16)') ZK16(ICOMPO),' avec ',ZK16(ICOMPO+2)
        CALL U2MESK('F','ELEMENTS2_73',1,MESS)      

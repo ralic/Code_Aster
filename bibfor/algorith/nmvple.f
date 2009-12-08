@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,6 +88,7 @@ C DEB ------------------------------------------------------------------
 C
       CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,EPSTHE,IRET1)
 C
+      IRET=0
       THETA = CRIT(4)
       T1 = ABS(THETA-0.5D0)
       T2 = ABS(THETA-1.D0)
@@ -229,16 +230,26 @@ C
           X = 0.D0
         ELSE
           CALL ZEROF2(VPALEM,A0,XAP,PREC,INT(NITER),X,IRET)
-          IF(IRET.EQ.1) GOTO 9999
+          IF(IRET.EQ.1) THEN
+          IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
+     &         OPTION(1:9) .EQ. 'FULL_MECA' ) THEN
+             GOTO 9999
+          ELSE
+             X=0.D0
+             IRET=0
+          ENDIF
+          ENDIF
         ENDIF
-        CALL GGPLEM(X,DPC+(SIELEQ-X)/(1.5D0*DEUXMU),VALDEN,
+        IF (X.NE.0.D0) 
+     &   CALL GGPLEM(X,DPC+(SIELEQ-X)/(1.5D0*DEUXMU),VALDEN,
      &        UNSURK,UNSURM,THETA,DEUXMU,FG,FDGDST,FDGDEV)
 C
 C-----------------------------------------
       IF (X.NE.0.D0) THEN
         COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FG/X)
       ELSE
-        COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FDGDST)
+C       COEF1 = 1.D0/(1.D0+1.5D0*DEUXMU*DELTAT*FDGDST)
+        COEF1 = 1.D0
       ENDIF
 C
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.

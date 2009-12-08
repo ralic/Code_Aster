@@ -1,6 +1,6 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
-# ssnp503f.para = tps_job 450 mem_job 256Mo liste_test S
+# ssnp503f.para = tps_job 100 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# ssnp503f.para = tps_job 450 mem_job 256Mo liste_test S
+# ssnp503f.para = tps_job 100 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #
 # CONTACT-FROTTANT EN GRANDS GLISSEMENTS
@@ -182,7 +182,8 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                     )),
                     NEWTON=_F(REAC_ITER=1,),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=80,),
+                               PCENT_PIVOT=80,
+                               NPREC=-1,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                     INFO=1,);
 

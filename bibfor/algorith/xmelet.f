@@ -1,9 +1,9 @@
       SUBROUTINE XMELET(NOMTE,TYPMA,ESC,MAIT,ELC,
-     &                 NDIM,NDDL,NNE,NNM,NNC,MALIN)
+     &                 NDIM,NDDL,NNE,NNM,NNC,MALIN,SINGE,SINGM,NDLS)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*16 NOMTE   
       CHARACTER*8  TYPMA,ESC,MAIT,ELC
-      INTEGER     NDIM,NDDL,NNE,NNM,NNC
+      INTEGER     NDIM,NDDL,NNE,NNM,NNC,SINGE,SINGM,NDLS
       LOGICAL     MALIN
 C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0366/TE0367
@@ -45,112 +45,114 @@ C OUT NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C OUT NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
 C OUT NNC    : NOMBRE DE NOEUDS DE LA MAILLE DE CONTACT
 C OUT MALIN  : INDIQUE SI LA MAILLE EST LINEAIRE
+C OUT SINGE  : NOMBRE DE FONCTIONS SINGULIERE ESCLAVES
+C OUT SINGM  : NOMBRE DE FONCTIONS SINGULIERE MAITRES
+C OUT NDLS   : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
 C
 C ----------------------------------------------------------------------
 C
-      MALIN= .TRUE.     
-      IF ((NOMTE.EQ.'MECPT6T3_XH').OR.(NOMTE.EQ.'MEDPT6T3_XH')) THEN
-        TYPMA= 'TRIA6'
-        ESC  = 'TR3'
-        MAIT = 'TR3'
-        ELC  = 'SE2'
+C --- RECUPERATION DE LA DIMENSION DU PROBLEME
+C    
+      IF (NOMTE(3:4).EQ.'CP'.OR.NOMTE(3:4).EQ.'DP') THEN
         NDIM = 2
-        NDDL = 36
-        NNE  = 6
-        NNM  = 3
         NNC  = 2
-        MALIN= .FALSE.
-C
-      ELSE IF((NOMTE.EQ.'MECPQ8Q4_XH').OR.(NOMTE.EQ.'MEDPQ8Q4_XH')) THEN
-        TYPMA= 'QUAD8'
-        ESC  = 'QU4'
-        MAIT = 'QU4'
         ELC  = 'SE2'
-        NDIM = 2
-        NDDL = 48
-        NNE  = 8
-        NNM  = 4
-        NNC  = 2
-        MALIN= .FALSE.
-C
-      ELSE IF((NOMTE.EQ.'MECPT3T3_XH').OR.(NOMTE.EQ.'MEDPT3T3_XH')) THEN
-        TYPMA= 'TRIA3'
-        ESC  = 'TR3'
-        MAIT = 'TR3'
-        ELC  = 'SE2'
-        NDIM = 2
-        NDDL = 30
-        NNE  = 3
-        NNM  = 3
-        NNC  = 2
-C
-      ELSE IF((NOMTE.EQ.'MECPQ4Q4_XH').OR.(NOMTE.EQ.'MEDPQ4Q4_XH')) THEN
-        TYPMA= 'QUAD4'
-        ESC  = 'QU4'
-        MAIT = 'QU4'
-        ELC  = 'SE2'
-        NDIM = 2
-        NDDL = 40
-        NNE  = 4
-        NNM  = 4
-        NNC  = 2
-C
-      ELSE IF((NOMTE.EQ.'MECPT3Q4_XH').OR.(NOMTE.EQ.'MEDPT3Q4_XH')) THEN
-        TYPMA= 'TRIA3'
-        ESC  = 'TR3'
-        MAIT = 'QU4'
-        ELC  = 'SE2'
-        NDIM = 2
-        NDDL = 34
-        NNE  = 3
-        NNM  = 4
-        NNC  = 2
-C
-      ELSE IF((NOMTE.EQ.'MECPQ4T3_XH').OR.(NOMTE.EQ.'MEDPQ4T3_XH')) THEN
-        TYPMA= 'QUAD4'
-        ESC  = 'QU4'
-        MAIT = 'TR3'
-        ELC  = 'SE2'
-        NDIM = 2
-        NDDL = 40
-        NNE  = 4
-        NNM  = 3
-        NNC  = 2
-C
-      ELSE IF (NOMTE.EQ.'MEH8H8_XH') THEN
-        TYPMA= 'HEXA8'
-        ESC  = 'HE8'
-        MAIT = 'HE8'
-        ELC  = 'TR3'
+      ELSEIF (NOMTE(3:4).EQ.'3D') THEN
         NDIM = 3
-        NDDL = 120
-        NNE  = 8
-        NNM  = 8
         NNC  = 3
-C
-      ELSE IF (NOMTE.EQ.'MEP6P6_XH') THEN
-        TYPMA= 'PENTA6'
-        ESC  = 'PE6'
-        MAIT = 'PE6'
-        ELC  = 'TR3'
-        NDIM = 3
-        NDDL = 90
-        NNE  = 6
-        NNM  = 6
-        NNC  = 3
-C   
-      ELSE IF (NOMTE.EQ.'MET4T4_XH') THEN
-        TYPMA= 'TETRA4'
-        ESC  = 'TE4'
-        MAIT = 'TE4'
-        ELC  = 'TR3'
-        NDIM = 3
-        NDDL = 60
-        NNE  = 4
-        NNM  = 4
-        NNC  = 3
-C  
+        ELC  = 'TR3' 
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
-      END IF
+      ENDIF
+C
+C --- RECUPERATION DE L'ELEMENT ESCLAVE
+C
+      MALIN = .TRUE.
+      IF (NOMTE(5:6).EQ.'T3') THEN
+        TYPMA= 'TRIA3'
+        ESC  = 'TR3'
+        NNE  = 3
+      ELSEIF (NOMTE(5:6).EQ.'T6') THEN
+        TYPMA= 'TRIA6'
+        ESC  = 'TR3'
+        NNE  = 6
+        MALIN= .FALSE.
+      ELSEIF (NOMTE(5:6).EQ.'Q4') THEN
+        TYPMA= 'QUAD4'
+        ESC  = 'QU4'
+        NNE  = 4
+      ELSEIF (NOMTE(5:6).EQ.'Q8') THEN
+        TYPMA= 'QUAD8'
+        ESC  = 'QU4'
+        NNE  = 8
+        MALIN= .FALSE.
+      ELSEIF (NOMTE(5:6).EQ.'T4') THEN
+        TYPMA= 'TETRA4'
+        ESC  = 'TE4'
+        NNE  = 4
+      ELSEIF (NOMTE(5:6).EQ.'P6') THEN
+        TYPMA= 'PENTA6'
+        ESC  = 'PE6'
+        NNE  = 6
+      ELSEIF (NOMTE(5:6).EQ.'H8') THEN
+        TYPMA= 'HEXA8'
+        ESC  = 'HE8'
+        NNE  = 8
+      ELSE
+        CALL U2MESK('F','DVP_4',1,NOMTE)
+      ENDIF
+      IF (NOMTE(7:7).EQ.'H') THEN
+        SINGE = 0
+      ELSEIF (NOMTE(7:7).EQ.'C') THEN
+        SINGE = 1
+      ELSEIF (NOMTE(7:7).EQ.'T') THEN
+        SINGE = 1
+        NNM = 0
+        SINGM = 0
+        NDLS = 2*NDIM
+        NDDL = NDLS*NNE
+        GOTO 999
+      ELSE
+        CALL U2MESK('F','DVP_4',1,NOMTE)
+      ENDIF
+C
+C --- RECUPERATION DE L'ELEMENT MAITRE
+C
+      IF (NOMTE(8:9).EQ.'T3') THEN
+        MAIT = 'TR3'
+        NNM  = 3
+      ELSEIF (NOMTE(8:9).EQ.'Q4') THEN
+        MAIT = 'QU4'
+        NNM  = 4
+      ELSEIF (NOMTE(8:9).EQ.'T4') THEN
+        MAIT = 'TE4'
+        NNM  = 4
+      ELSEIF (NOMTE(8:9).EQ.'P6') THEN
+        MAIT = 'PE6'
+        NNM  = 6
+      ELSEIF (NOMTE(8:9).EQ.'H8') THEN
+        MAIT  = 'HE8'
+        NNM  = 8
+      ELSE
+        CALL U2MESK('F','DVP_4',1,NOMTE)
+      ENDIF
+      IF (NOMTE(10:10).EQ.'H') THEN
+        SINGM = 0
+      ELSEIF (NOMTE(10:10).EQ.'C') THEN
+        SINGM = 1
+      ELSE
+        CALL U2MESK('F','DVP_4',1,NOMTE)
+      ENDIF
+C
+C --- CALCUL DU NOMBRE TOTAL DE DDL
+C
+      NDLS = NDIM *(3+SINGE)
+      IF (MALIN) THEN
+        NDDL = NDIM * (NNE*(3+SINGE) + NNM*(2+SINGM)) 
+      ELSE
+        NDDL = NDIM * (NNE + 4*NNM)
+      ENDIF
+C
+  999 CONTINUE
+C
       END

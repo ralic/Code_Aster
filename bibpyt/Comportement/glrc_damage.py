@@ -1,4 +1,4 @@
-#@ MODIF glrc_damage Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF glrc_damage Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ loi = LoiComportement(
    nom_vari       = ('EPSP1','EPSP2','EPSP3','KHIP1','KHIP2','KHIP3','DISSPLAS','ENDOFL+','ENDOFL-','DISSENDO','ANGL1','ANGL2','ANGL3','XMEMB1','XMEMB2','XMEMB3','XFLEX1','XFLEX2','XFLEX3'),
    mc_mater       = ('GLRC_DAMAGE','GLRC_ACIER'),
    modelisation   = ('DKTG'),
-   deformation    = ('PETIT', 'EULER_ALMANSI'),
+   deformation    = ('PETIT', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

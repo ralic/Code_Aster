@@ -1,4 +1,4 @@
-#@ MODIF beton_umlv_fp Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF beton_umlv_fp Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ loi = LoiComportement(
    nom_vari       = ('ERSP','EISP','ERD11','EID11','ERD22','EID22','ERD33','EID33','EFD11','EFD22','EFD33','ERD12','EID12','ERD23','EID23','ERD31','EID31','EFD12','EFD23','EFD31','ISPH'),
    mc_mater       = ('ELAS', 'BETON_UMLV_FP'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN','C_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE COUDE EN FLEXION PLANE
 # ssnv144a.para = tps_job 390 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -708,7 +708,7 @@ COQUE1E=STAT_NON_LINE(
                 FONC_MULT = FONCT),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS',
-                DEFORMATION = 'GREEN_GR',
+                DEFORMATION = 'GROT_GDEP',
                ),
                          INCREMENT=_F(
                 LIST_INST = LI2PAS),

@@ -2,11 +2,11 @@
      1                      NMAT, MATERD,MATERF,NR, NVI,
      2                      TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
      3                      COMP,NBCOMM, CPMONO, PGL, TOUTMS,HSR,
-     3                      SIGF, VINF, ICOMP, IRTETI,DRDY)
+     3                      SIGF, VINF, ICOMP, IRTETI,DRDY,TAMPON,CRIT)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C
         INTEGER         TYPESS, ITMAX, IRET,KPG,KSP
         INTEGER         NR,     NDT,    NDI,    NVI,  ITER, NS
 C
-        REAL*8          TOLER,  ESSAI, RBID
+        REAL*8          TOLER,  ESSAI, RBID, CRIT(*)
         REAL*8          EPSD(6),        DEPS(6)
         REAL*8          SIGD(6),        SIGF(6)
         REAL*8          VIND(*),        VINF(*)
@@ -88,7 +88,7 @@ C      DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
         REAL*8          DRDY1(NR,NR)
         REAL*8          DDY(NDT+NVI),DY(NDT+NVI),YD(NDT+NVI),YF(NDT+NVI)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2), DT
-        REAL*8          TIMED, TIMEF
+        REAL*8          TIMED, TIMEF, TAMPON(*)
 C
         CHARACTER*8     MOD
         CHARACTER*16    LOI
@@ -129,11 +129,11 @@ C
         CALL LCEQVN ( NDT  ,  SIGD , YD )
         IRTETI = 0
 
-C     CHOIX DES VALEURS DE VIND A AFFECTER A YD
-      CALL LCAFYD(MATERF,NBCOMM,NMAT,NVI,VIND,YD)
+C       CHOIX DES VALEURS DE VIND A AFFECTER A YD
+        CALL LCAFYD(MATERF,NBCOMM,NMAT,NVI,VIND,YD,CRIT)
         
-C     CHOIX DES PARAMETRES DE LANCEMENT DE MGAUSS          
-      CALL LCCAGA(LOI,CARGAU)
+C       CHOIX DES PARAMETRES DE LANCEMENT DE MGAUSS          
+        CALL LCCAGA(LOI,CARGAU)
         
         IF(MOD(1:6).EQ.'C_PLAN') YD (NR) = EPSD(3)
 C
@@ -227,7 +227,7 @@ C
 
 C       POST -TRAITEMENTS POUR DES LOIS PARTICULIERES        
         CALL LCPLNF ( LOI, VIND,NBCOMM,NMAT,CPMONO,MATERF,ITER,NVI,
-     &                ITMAX, TOLER,PGL, TOUTMS,HSR,DT,DY,YF,VINF)
+     &  ITMAX, TOLER,PGL, TOUTMS,HSR,DT,DY,YF,VINF,TAMPON)
 
 C       CONVERGENCE
         IRTETI = 0

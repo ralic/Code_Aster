@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE ADBHHPM P.MASSIN 
 # DATE   : 23/07/2001
 # AUTEUR : F. LEBOUVIER (DELTACAD) 
@@ -176,7 +176,7 @@ RESULT=STAT_NON_LINE(       MODELE=MO,
                                      _F( CHARGE = PERTUR,
                                       FONC_MULT = F_PERT)),
                            COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
-                                      DEFORMATION = 'GREEN_GR',),
+                                      DEFORMATION = 'GROT_GDEP',),
                            INCREMENT=_F( LIST_INST = LIS_INST,
                                       NUME_INST_FIN = 5),
                               NEWTON=_F( REAC_ITER = 1,
@@ -196,7 +196,7 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
                                      _F( CHARGE = CHARGE,
                                       TYPE_CHARGE = 'FIXE_PILO')),
                            COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
-                                      DEFORMATION = 'GREEN_GR',),
+                                      DEFORMATION = 'GROT_GDEP',),
                            INCREMENT=_F( LIST_INST = DEFLIST,
                                       ),
                               NEWTON=_F( REAC_ITER = 1,
@@ -224,7 +224,7 @@ RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
                                      _F( CHARGE = CHARGE,
                                       TYPE_CHARGE = 'FIXE_PILO')),
                            COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
-                                      DEFORMATION = 'GREEN_GR',),
+                                      DEFORMATION = 'GROT_GDEP',),
                            INCREMENT=_F( LIST_INST = DEFLIST,
                                       ),
                               NEWTON=_F( REAC_ITER = 1,

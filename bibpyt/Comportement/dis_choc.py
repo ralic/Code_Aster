@@ -1,4 +1,4 @@
-#@ MODIF dis_choc Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF dis_choc Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ loi = LoiComportement(
    nb_vari        = 7,
    nom_vari       = ('DIS1','DIS2','DIS3','DIS4','DIS5','DIS6','DIS7'),
    modelisation   = ('DIS_T','DIS_TR','2D_DIS_T','2D_DIS_TR'),
-   deformation    = ('PETIT','PETIT_REAC', 'EULER_ALMANSI'),
+   deformation    = ('PETIT','PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = None,
    schema         = ('IMPLICITE'),
    type_matr_tang = None,

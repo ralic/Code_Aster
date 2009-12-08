@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
       COMP_ELAS    = FACT(statut='o',
             RELATION    = SIMP(statut='f',typ='TXM',defaut="ELAS",
                             into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC"),),
-            DEFORMATION = SIMP(statut='f',typ='TXM',defaut="PETIT",into=("PETIT","GREEN"),),
+           DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GROT_GDEP",) ),
       ),
       
       EXCIT        = FACT(statut='f', max='**',

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UN CUBE
 # ssnv187a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,7 +94,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                               MATRICE='TANGENTE',
                               REAC_ITER=1,)),
                    COMP_ELAS=_F(RELATION='ELAS_HYPER',
-                                DEFORMATION = 'GREEN',
+                                DEFORMATION = 'GROT_GDEP',
                                 TOUT='OUI',),
                    CONVERGENCE=(_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=20)),
@@ -160,7 +160,7 @@ RESU2=STAT_NON_LINE(MODELE=MODELE,
                               MATRICE='TANGENTE',
                               REAC_ITER=1,)),
                    COMP_INCR=_F(RELATION='ELAS_HYPER',
-                                DEFORMATION = 'GREEN',
+                                DEFORMATION = 'GROT_GDEP',
                                 TOUT='OUI',),
                    CONVERGENCE=(_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=20)),
@@ -220,7 +220,7 @@ RESU3=STAT_NON_LINE(MODELE=MODELE,
                               MATRICE='TANGENTE',
                               REAC_ITER=1,)),
                    COMP_INCR=_F(RELATION='ELAS_HYPER',
-                                DEFORMATION = 'GREEN',
+                                DEFORMATION = 'GROT_GDEP',
                                 TOUT='OUI',),
                    CONVERGENCE=(_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=20)),

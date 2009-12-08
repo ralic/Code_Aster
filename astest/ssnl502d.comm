@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE POUTRE EN FLAMBEMENT 
 # ssnl502d.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,7 +105,7 @@ GF=DEFI_GEOM_FIBRE(
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MAT,
                   MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MAT,
-                                 RELATION='ELAS',DEFORMATION='REAC_GEOM',),
+                                 RELATION='ELAS',DEFORMATION='GROT_GDEP',),
                      )
 
 

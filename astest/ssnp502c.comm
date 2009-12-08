@@ -1,4 +1,4 @@
-# MODIF  DATE 01/09/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 # ssnp502c.para = tps_job 100 mem_job 200Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -121,7 +121,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=DEPL,
                              FONC_MULT=RAMPE,),),
                    COMP_ELAS=_F(RELATION='ELAS',
-                                DEFORMATION='GREEN',),
+                                DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=LINST,),
                    SOLVEUR=_F(METHODE='LDLT',
                               RENUM='SANS'),

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.)
 # ssnv142a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,143 +22,179 @@
 # CYLINDRE AXISYMETRIQUE EN FLUAGE : FLUAGE DE GRANGER
 # -----------------------------------------------------
 
-DEBUT( CODE=_F( NOM = 'SSNV142A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSNV142A',
+              NIV_PUB_WEB='INTERNET',),);
 
-PRE_GIBI()
+PRE_GIBI();
 
-M=LIRE_MAILLAGE( )
+M=LIRE_MAILLAGE();
 
-M=DEFI_GROUP( reuse=M,  MAILLAGE=M,
-                     CREA_GROUP_NO=_F( GROUP_MA = 'D3')
-                  )
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='D3',),);
 
-MO=AFFE_MODELE( 
-            MAILLAGE=M,
-           AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'AXIS')
-           )
-E=DEFI_CONSTANTE (VALE=  31000 )
+MO=AFFE_MODELE(MAILLAGE=M,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
 
-NU=DEFI_CONSTANTE (VALE=  0.2 )
+E=DEFI_CONSTANTE(VALE=31000.0,);
 
-ALPHA =DEFI_CONSTANTE (VALE= 0.)
+NU=DEFI_CONSTANTE(VALE=0.2,);
 
-FONC1=DEFI_FONCTION( 
-           NOM_PARA='SECH',PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',
-           VALE=(0.0, 0.0, 1.,  1.,)
-           )
+ALPHA=DEFI_CONSTANTE(VALE=0.,);
 
-BETON=DEFI_MATERIAU( 
-                ELAS_FO=_F( E = E, NU = NU, ALPHA = ALPHA,
-                            TEMP_DEF_ALPHA = 20.0,
-                            FONC_DESORP = FONC1),
-                GRANGER_FP_INDT=_F( J1 = 0.2,
-                            TAUX_1 = 4320000.,
-                            J2 = 0.1,
-                            TAUX_2 = 2160000.,)
-                         )
+FONC1=DEFI_FONCTION(NOM_PARA='SECH',VALE=(0.0,0.0,
+                          1.,1.,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
-                        AFFE=_F( TOUT = 'OUI',
-                              NOM_CMP = 'TEMP',
-                              VALE = 1.)
-                       )
+BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
+                               NU=NU,
+                               TEMP_DEF_ALPHA=20.0,
+                               ALPHA=ALPHA,
+                               FONC_DESORP=FONC1,),
+                    GRANGER_FP_INDT=_F(J1=3.2258E-5,
+                                       J2=6.4516E-5,
+                                       TAUX_1=432000.,
+                                       TAUX_2=4320000.,),);
 
-SECH1=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                    NOM_CHAM='TEMP',AFFE=(
-                     _F(  INST = 0.,   CHAM_GD = SECH),
-                                         )
-                  )
+SECH=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=1.,),);
 
-TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
-                         AFFE=_F( 
-                               TOUT = 'OUI',
-                               NOM_CMP = 'TEMP',
-                               VALE = 20.)
-                       )
-TEMP1=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                    NOM_CHAM='TEMP',AFFE=(
-                     _F(  INST = 0.,   CHAM_GD = TEMP),
-                                         )
-                  )
+SECH1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(CHAM_GD=SECH,
+                        INST=0.,),);
 
-CM=AFFE_MATERIAU( 
-            MAILLAGE=M,   
-            AFFE=_F( TOUT = 'OUI',
-                     MATER = BETON, 
-                     ),
-            AFFE_VARC=(_F(TOUT='OUI',
-                         EVOL=SECH1,
-                         NOM_VARC='SECH',
-                         NOM_CHAM='TEMP',
-                         VALE_REF=1),
-                      _F(TOUT='OUI',
-                         EVOL=TEMP1,
-                         NOM_VARC='TEMP',
-                         NOM_CHAM='TEMP',
-                         VALE_REF=20),),)
+TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=20.,),);
 
+TEMP1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(CHAM_GD=TEMP,
+                        INST=0.,),);
 
-FORCE=DEFI_FONCTION( 
-           NOM_PARA='INST',PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',
-           VALE=(0.0, 0.0, 10., -20.,31536010., -20.,)
-           )
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=BETON,),
+                 AFFE_VARC=(_F(TOUT='OUI',
+                               NOM_VARC='SECH',
+                               EVOL=SECH1,
+                               NOM_CHAM='TEMP',
+                               VALE_REF=1.0,),
+                            _F(TOUT='OUI',
+                               NOM_VARC='TEMP',
+                               EVOL=TEMP1,
+                               NOM_CHAM='TEMP',
+                               VALE_REF=20.0,),),);
 
-CH1=AFFE_CHAR_MECA( 
-            MODELE=MO,
-           FACE_IMPO=_F( GROUP_MA = 'D1',
+FORCE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          10.,20.,
+                          31536010.,20.,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-                       DY = 0.)
-           )
+CH1=AFFE_CHAR_MECA(MODELE=MO,
+                   FACE_IMPO=_F(GROUP_MA='D1',
+                                DY=0.,),);
 
-CH2=AFFE_CHAR_MECA_F( 
-            MODELE=MO,
-           PRES_REP=_F(  GROUP_MA = 'D3',
-                        PRES = FORCE)
-                          )
+CH2=AFFE_CHAR_MECA_F(MODELE=MO,
+                     PRES_REP=_F(GROUP_MA='D3',
+                                 PRES=FORCE,),);
 
-L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
-             _F( JUSQU_A = 10.0,       NOMBRE = 1),
-             _F( JUSQU_A = 31536010.,     NOMBRE = 73))
-           )
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=10.0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=31536010.,
+                                     NOMBRE=73,),),);
 
 #DELTAT=432000=5J
 
+U=STAT_NON_LINE(MODELE=MO,
+                CHAM_MATER=CM,
+                EXCIT=(_F(CHARGE=CH1,),
+                       _F(CHARGE=CH2,),),
+                COMP_INCR=_F(RELATION='GRANGER_FP_INDT',
+                             ITER_INTE_MAXI=1000,),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
+                               ITER_GLOB_MAXI=25,),);
 
-U=STAT_NON_LINE(  MODELE=MO,
-                  CHAM_MATER=CM,
-                  EXCIT=( _F(CHARGE = CH1),
-                          _F(CHARGE = CH2)),
-                  COMP_INCR=_F(RELATION = 'GRANGER_FP_INDT',
-                               ITER_INTE_MAXI = 1000),
-                  INCREMENT=_F(LIST_INST = L_INST,),
-                  NEWTON=_F(MATRICE = 'TANGENTE',
-                            REAC_ITER = 1),
-                  CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-6,
-                                 ITER_GLOB_MAXI = 25)
-              )
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
 
-U=CALC_ELEM( reuse=U,
-             OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-             RESULTAT=U,
-              )
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION=('EPSI_ELNO_DEPL','EPFP_ELNO',),);
 
-U=CALC_ELEM(reuse=U,   RESULTAT=U,
-            OPTION=('EPSI_ELNO_DEPL','EPFP_ELNO'),)
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EPFP_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M3',
+                   NOEUD='N5',
+                   REFERENCE='ANALYTIQUE',
+                   VALE=0.000282159,
+                   PRECISION=0.005,),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EPFP_ELNO',
+                   NOM_CMP='EPYY',
+                   MAILLE='M3',
+                   REFERENCE='ANALYTIQUE',
+                   NOEUD='N5',
+                   VALE=-0.001410795,
+                   PRECISION=0.005,),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=50,
+                   NOM_CHAM='EPFP_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M3',
+                   REFERENCE='ANALYTIQUE',
+                   NOEUD='N5',
+                   VALE=0.000385174,
+                   PRECISION=0.005,),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=50,
+                   NOM_CHAM='EPFP_ELNO',
+                   NOM_CMP='EPYY',
+                   REFERENCE='ANALYTIQUE',
+                   MAILLE='M3',
+                   NOEUD='N5',
+                   VALE=-0.001925872,
+                   PRECISION=0.005,),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=74,
+                   NOM_CHAM='EPFP_ELNO',
+                   NOM_CMP='EPXX',
+                   REFERENCE='ANALYTIQUE',
+                   MAILLE='M3',
+                   NOEUD='N5',
+                   VALE=0.000386922,
+                   PRECISION=0.005,),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=74,
+                   NOM_CHAM='EPFP_ELNO',
+                   NOM_CMP='EPYY',
+                   REFERENCE='ANALYTIQUE',
+                   MAILLE='M3',
+                   NOEUD='N5',
+                   VALE=-0.001934608,
+                   PRECISION=0.005,),),);
 
-TEST_RESU(RESU=(
-  _F( RESULTAT = U,NOM_CHAM = 'EPFP_ELNO',MAILLE = 'M3',NOEUD = 'N5',
-NUME_ORDRE = 10,NOM_CMP = 'EPXX',VALE = -0.80862,PRECISION = 0.005),
-  _F( RESULTAT = U,NOM_CHAM = 'EPFP_ELNO',MAILLE = 'M3',NOEUD = 'N5',
-NUME_ORDRE = 10,NOM_CMP = 'EPYY',VALE = 4.04313,PRECISION = 0.005),
-  _F( RESULTAT = U,NOM_CHAM = 'EPFP_ELNO',MAILLE = 'M3',NOEUD = 'N5',
-NUME_ORDRE = 50,NOM_CMP = 'EPXX',VALE = -1.19402,PRECISION = 0.005),
-  _F( RESULTAT = U,NOM_CHAM = 'EPFP_ELNO',MAILLE = 'M3',NOEUD = 'N5',
-NUME_ORDRE = 50,NOM_CMP = 'EPYY',VALE = 5.97010,PRECISION = 0.005),
-  _F( RESULTAT = U,NOM_CHAM = 'EPFP_ELNO',MAILLE = 'M3',NOEUD = 'N5',
-NUME_ORDRE = 74,NOM_CMP = 'EPXX',VALE = -1.19946,PRECISION = 0.005),
-  _F( RESULTAT = U,NOM_CHAM = 'EPFP_ELNO',MAILLE = 'M3',NOEUD = 'N5',
-NUME_ORDRE = 74,NOM_CMP = 'EPYY',VALE = 5.99730,PRECISION = 0.005))
-           )
+FIN();
 
-FIN()
 #
+

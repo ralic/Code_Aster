@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 22/09/2009   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 08/12/2009   AUTEUR DEBONNIERES P.DE-BONNIERES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,6 +22,7 @@ def C_RELATION() : return (             "ELAS",            # RESP. : PROIX J.M.P
                                         "ASSE_CORN",       # RESP. : PEYRARD C.PEYRARD
                                         "BARCELONE",       # RESP. : ELGHARIB J.ELGHARIB
                                         "BETON_DOUBLE_DP", # RESP. : ELGHARIB J.ELGHARIB
+                                        "BETON_RAG",       # RESP. : DEBONNIERES P.DEBONNIERES
                                         "BETON_REGLE_PR",  # RESP. : NECS
                                         "BETON_UMLV_FP",   # RESP. : LEPAPE Y.LEPAPE
                                         "CAM_CLAY",        # RESP. : ELGHARIB J.ELGHARIB

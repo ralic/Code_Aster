@@ -1,9 +1,8 @@
-      SUBROUTINE XMMJEU(NDIM,NORM,GEOME,GEOMM,DEPLE,DEPLM,
-     &                  DEPLME,DEPLMM,JEU,JEUCA)
-
+      SUBROUTINE XMMJEU(NDIM,NORM,IGEOM,IDEPM,IDEPL,SINGE,SINGM,NDLS,
+     &                RRE,RRM,NNE,NNES,NNM,FFES,FFMA,JEU)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,15 +21,12 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
       IMPLICIT NONE
-      INTEGER NDIM 
-      REAL*8  NORM(3)
-      REAL*8  GEOMM(3),GEOME(3)
-      REAL*8  DEPLE(6),DEPLME(6)
-      REAL*8  DEPLM(3),DEPLMM(3)      
-      REAL*8  JEU,JEUCA
+      INTEGER NDIM,NNE,NNES,NNM,IGEOM,IDEPL,IDEPM,SINGE,SINGM,NDLS
+      REAL*8  NORM(3),RRE,RRM
+      REAL*8  FFES(8),FFMA(8),JEU
 C
 C ----------------------------------------------------------------------
-C ROUTINE APPELLEE PAR : TE0366/TE0367
+C ROUTINE APPELLEE PAR : TE0367
 C ----------------------------------------------------------------------
 C ROUTINE SPECIFIQUE A L'APPROCHE <<GRANDS GLISSEMENTS AVEC XFEM>>,
 C TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
@@ -45,8 +41,7 @@ C IN  DEPLE  : DEPLACEMENTS DU POINT DE CONTACT
 C IN  DEPLM  : DEPLACEMENTS DU PROJETE DU POINT DE CONTACT
 C IN  DEPLME : DEPLACEMENTS PRECEDENTS DU POINT DE CONTACT
 C IN  DEPLMM : DEPLACEMENTS PRECEDENTS DU PROJETE DU POINT DE CONTACT
-C OUT JEU    : VALEUR DU JEU POUR LES SECONDS MEMBRES DE CONTACT
-C OUT JEUCA  : VALEUR DU JEU POUR LES CONTRAINTES ACTIVES
+C OUT JEU    : VALEUR DU JEU POUR LES CONTRIBUTIONS DE CONTACT
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -67,26 +62,57 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER K
+      INTEGER I,J,K,PL
+      REAL*8  POSE(NDIM),POSM(NDIM)
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      JEU    = 0.D0
-      JEUCA  = 0.D0
+C --- INNITIALISATION
 C
-      DO 10 K = 1,NDIM
-C ----CALCUL DU JEU POUR LES SECONDS MEMBRES DE CONTACT 
-        JEU   = JEU +(GEOME(K)+DEPLE(K)-DEPLE(K+NDIM)
-     &              -GEOMM(K)-DEPLM(K)-DEPLM(K+NDIM))*NORM(K)
+      CALL VECINI(NDIM,0.D0,POSE)
+      CALL VECINI(NDIM,0.D0,POSM)
+      JEU  = 0.D0
 C
-C ----CALCUL DU JEU POUR LES CONTRAINTES ACTIVES
-        JEUCA = JEUCA+
-     &  (GEOME(K)+DEPLE(K)-DEPLE(K+NDIM)-DEPLME(K)+
-     &  DEPLME(K+NDIM)-GEOMM(K)-DEPLM(K)-DEPLM(K+NDIM)+
-     &  DEPLMM(K)+DEPLMM(K+NDIM))*NORM(K)
+      DO 10 I = 1,NDIM
+C --- CALCUL DE LA POSITION COURRANTE DU POINT ESCLAVE
+        DO 20 J = 1,NNES
+          IF (NNM.NE.0) THEN
+            PL = NDLS*(J-1) + I
+            POSE(I) = POSE(I)+FFES(J)*(ZR(IGEOM-1+NDIM*(J-1)+I)
+     &                                   +ZR(IDEPM-1+PL)
+     &                                   -ZR(IDEPM-1+PL+NDIM)
+     &                                   +ZR(IDEPL-1+PL)
+     &                                   -ZR(IDEPL-1+PL+NDIM))
+          ENDIF
+          DO 25 K = 1,SINGE
+            PL = NDLS*J - 2*NDIM + I
+            POSE(I) = POSE(I) - RRE*FFES(J)*(ZR(IDEPM-1+PL)+
+     &                                          ZR(IDEPL-1+PL))
+ 25       CONTINUE
+ 20     CONTINUE
+C
+C --- CALCUL DE LA POSITION COURRANTE DU POINT MAITRE
+        DO 30 J = 1,NNM
+          PL = NDLS*NNES + NDIM*(NNE-NNES) + (2+SINGM)*NDIM*(J-1) + I
+          POSM(I) = POSM(I)+FFMA(J)*(ZR(IGEOM-1+NNE*NDIM+(J-1)*NDIM+I)
+     &                                 +ZR(IDEPM-1+PL)
+     &                                 +ZR(IDEPM-1+PL+NDIM)
+     &                                 +ZR(IDEPL-1+PL)
+     &                                 +ZR(IDEPL-1+PL+NDIM))
+          DO 40 K = 1,SINGM
+            PL = PL + 2*NDIM
+            POSM(I) = POSM(I) + RRM*FFMA(J)*(ZR(IDEPM-1+PL)+
+     &                                          ZR(IDEPL-1+PL))
+ 40       CONTINUE
+ 30     CONTINUE
  10   CONTINUE
-C  
+C
+C --- CALCUL DU JEU
+      DO 70 I = 1,NDIM
+        JEU = JEU + NORM(I)*(POSE(I)-POSM(I))
+  70  CONTINUE
+C
       CALL JEDEMA()      
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS CABLES
 # zzzz234c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,7 +64,7 @@ RE_CAB=STAT_NON_LINE(MODELE     = MO_CAB,
                      CARA_ELEM  = CA_CAB,
                      EXCIT      = (_F(CHARGE = CL_CAB),
                                    _F(CHARGE = CH_CAB),),
-                     COMP_ELAS=_F(DEFORMATION='GREEN',
+                     COMP_ELAS=_F(DEFORMATION='GROT_GDEP',
                   RELATION='CABLE',),
                      INCREMENT = _F(LIST_INST = LIS_INST,),
                      CONVERGENCE = _F(RESI_REFE_RELA=1.E-7,FORC_REFE =(CoefRef,CoefRef),),

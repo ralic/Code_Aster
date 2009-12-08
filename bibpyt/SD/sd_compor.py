@@ -1,4 +1,4 @@
-#@ MODIF sd_compor SD  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF sd_compor SD  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,8 +52,12 @@ class sd_compor(AsBase):
     #------------------------------------
         nboccm=cpri[4]
         nvi   =cpri[2]
-        nbsys=(nvi-9)/3
-        assert nvi==9+3*nbsys , (nvi, nbsys, cpri)
+        if cpri[5] > 0 : 
+            nbsys=(nvi-25)/3
+            assert nvi==25+3*nbsys , (nvi, nbsys, cpri)
+        else :
+            nbsys=(nvi-9)/3
+            assert nvi==9+3*nbsys , (nvi, nbsys, cpri)
         cprk=self.CPRK.get_stripped()
 
         # vérif existence et longueur
@@ -67,7 +71,7 @@ class sd_compor(AsBase):
         assert cpri[2] == nvi ,cpri
         assert cpri[3] == 1   ,cpri
         assert cpri[4] > 0    ,cpri
-        assert cpri[5] == 1   ,cpri
+        assert cpri[5] >= 0   ,cpri
         assert cpri[6] == nvi ,cpri
 
         # vérif CPRK :
@@ -181,7 +185,7 @@ class sd_compor(AsBase):
             sd2=sd_mater(mater1) ; sd2.check(checker)
             assert loifib1 != '' , cprk
             assert algo1d  in ('ANALYTIQUE','DEBORST') , cprk
-            assert deform  in ('PETIT','PETIT_REAC','REAC_GEOM') , cprk
+            assert deform  in ('PETIT','PETIT_REAC','GROT_GDEP') , cprk
             assert nbfib > 0      , cprk
 
 

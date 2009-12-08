@@ -1,4 +1,4 @@
-#@ MODIF labord_1d Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF labord_1d Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

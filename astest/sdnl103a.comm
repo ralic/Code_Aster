@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 #
 # TITRE DYNAMIQUE D'UN PORTIQUE FORME DE 16 ELEMENTS POU_D_T_GD.
 # sdnl103a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -116,7 +116,7 @@ RESU1=DYNA_NON_LINE(  MODELE=MO1,
 ###CDURAND###                      ARCHIVAGE=_F( LIST_ARCH = L_ARCHI),
                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT'),
                       COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
-                                    DEFORMATION = 'GREEN_GR'),
+                                    DEFORMATION = 'GROT_GDEP'),
                       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-4,
                                       ITER_GLOB_MAXI = 20),
                       NEWTON=_F( REAC_ITER = 1)

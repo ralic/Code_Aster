@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE PLAQUE BIAISE SOUS CHARGEMENT CONCENTRE
 # ssnv139a.para = tps_job 190 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,7 +99,7 @@ NONLIN=STAT_NON_LINE(
                 FONC_MULT = D_FONC),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS',
-                DEFORMATION = 'GREEN_GR'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(

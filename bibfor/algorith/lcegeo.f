@@ -1,7 +1,7 @@
        SUBROUTINE  LCEGEO(NNO,NPG,IPOIDS,IVF,IDFDE,GEOM,TYPMOD,
-     &                    OPTION,IMATE,COMPOR,LGPG,ELGEOM)
+     &      OPTION,IMATE,COMPOR,LGPG,NDIM,DFDI,DEPLM,DDEPL,ELGEOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR CANO V.CANO 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,12 +20,13 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
        IMPLICIT NONE
 C
-       INTEGER       NNO, NPG, IMATE, LGPG, IPOIDS,IVF,IDFDE
+       INTEGER       NNO, NPG, IMATE, LGPG, IPOIDS,IVF,IDFDE, NDIM
 C
        CHARACTER*8   TYPMOD(2)
        CHARACTER*16  OPTION, COMPOR(*)
 C
-       REAL*8        GEOM(3,NNO), ELGEOM(10,NPG)
+       REAL*8        GEOM(3,NNO), ELGEOM(10,NPG),DFDI(NNO,3)
+       REAL*8        DEPLM(3,NNO),DDEPL(3,NNO)
 C.......................................................................
 C
 C     BUT:  CALCUL D'ELEMENTS GEOMETRIQUES SPECIFIQUES AUX LOIS DE
@@ -64,16 +65,19 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER KPG, K, I, NDIM
-      REAL*8  RAC2, LC, DFDX(27), DFDY(27), DFDZ(27), POIDS, R
-      REAL*8  VOLUME, SURFAC
+      INTEGER KPG, K, I, N, NDDL, J
+      REAL*8  RAC2, LC, DFDX(27), DFDY(27), DFDZ(27), POIDS, R,R8BID
+      REAL*8  L(3,3),FMM(3,3),DF(3,3),F(3,3)
+      REAL*8  VOLUME, SURFAC,DEPLP(3,27),GEOMM(3,27),EPSBID(6),ID(3,3)
       LOGICAL AXI
+      DATA ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C......................................................................
 C
 C -   INITIALISATION
 C
       RAC2   = SQRT(2.D0)
       AXI    = TYPMOD(1) .EQ. 'AXIS'
+      NDDL = NDIM*NNO
 C
 C -   CALCUL DE LA LONGUEUR CARACTERISTIQUE POUR LA LOI
 C -   BETON_DOUBLE_DP
@@ -125,11 +129,6 @@ C
 C
       IF(COMPOR(1)(1:13) .EQ. 'META_LEMA_ANI') THEN
         IF (TYPMOD(1)(1:4).NE.'AXIS') THEN
-          IF (TYPMOD(1)(1:2).EQ.'3D') THEN
-            NDIM=3
-          ELSE
-            NDIM=2
-          ENDIF
           DO 100 KPG=1,NPG
             ELGEOM(1,KPG)=0.D0
             ELGEOM(2,KPG)=0.D0
@@ -148,6 +147,31 @@ C
             ELGEOM(3,KPG)=0.D0
  130      CONTINUE
         ENDIF
+      ENDIF
+      
+      IF(COMPOR(1) .EQ. 'MONOCRISTAL') THEN
+C       ROTATION RESEAU DEBUT
+C       CALCUL DE L = DF*F-1 
+        CALL DCOPY(NDDL,GEOM,1,GEOMM,1)
+        CALL DAXPY(NDDL,1.D0,DEPLM,1,GEOMM,1)
+        CALL DCOPY(NDDL,DEPLM,1,DEPLP,1)
+        CALL DAXPY(NDDL,1.D0,DDEPL,1,DEPLP,1)
+        DO 200 KPG=1,NPG
+           CALL NMGEOM(3,NNO,.FALSE.,.TRUE.,GEOM,KPG,IPOIDS,
+     &              IVF,IDFDE,DEPLP,R8BID,DFDI,F, EPSBID,R)
+           CALL NMGEOM(3,NNO,.FALSE.,.TRUE.,GEOMM,KPG,IPOIDS,
+     &              IVF,IDFDE,DDEPL,R8BID,DFDI,DF, EPSBID,R)
+           CALL DAXPY(9,-1.D0,ID,1,DF,1)
+           CALL MATINV('S',3,F,FMM,R8BID)
+           CALL PMAT(3,DF,FMM,L)
+           DO 272 I=1,3
+              DO 273 J=1,3
+                 ELGEOM(3*(I-1)+J,KPG)=L(I,J)
+273           CONTINUE
+272        CONTINUE
+200     CONTINUE
+
+C ROTATION RESEAU FIN
       ENDIF
       
       END

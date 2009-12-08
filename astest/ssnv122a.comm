@@ -1,5 +1,6 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE ROTATION ET PRESSION 3D GRANDES DEFORMATIONS (LOI LINEAIRE)
+# ssnv122a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,7 +109,7 @@ V=STAT_NON_LINE(
                 CHARGE = CHR_ROTA)),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS',
-                DEFORMATION = 'GREEN'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
                 LIST_INST = INSTANTS,
                 INST_FIN = 1.),
@@ -161,7 +162,7 @@ V=STAT_NON_LINE( reuse=V,
                 EVOL_NOLI = V),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS',
-                DEFORMATION = 'GREEN'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
                 LIST_INST = INSTANTS,
                 INST_FIN = 1.5),
@@ -193,7 +194,7 @@ V=STAT_NON_LINE( reuse=V,
                 EVOL_NOLI = V),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS',
-                DEFORMATION = 'GREEN'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
                 LIST_INST = INSTANTS),
                             NEWTON=_F(

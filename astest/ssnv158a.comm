@@ -1,6 +1,7 @@
-# MODIF  DATE 18/12/2006   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
+# ssnv158a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -427,7 +428,7 @@ TEST_RESU(RESU=(
 )
 
 #***********************************************************************
-#    CALCUL DE LA SOLUTION DEFORMATION GREEN MATRICE SYMETRIQUE
+#    CALCUL DE LA SOLUTION DEFORMATION GROT_GDEP MATRICE SYMETRIQUE
 #***********************************************************************
 
 
@@ -442,7 +443,7 @@ U3=STAT_NON_LINE(
                 FONC_MULT = COEF2)),
                          COMP_INCR=_F( 
                 RELATION = 'LAIGLE',
-                DEFORMATION='GREEN',
+                DEFORMATION='GROT_GDEP',
                 RESI_INTE_RELA = 1.E-6,
                 ITER_INTE_MAXI = 100,
                 ITER_INTE_PAS  = -10,),
@@ -686,7 +687,7 @@ TEST_RESU(RESU=(
 )
 
 #***********************************************************************
-#    CALCUL DE LA SOLUTION DEFORMATION GREEN MATRICE SYMETRIQUE
+#    CALCUL DE LA SOLUTION DEFORMATION GROT_GDEP MATRICE SYMETRIQUE
 #***********************************************************************
 
 
@@ -701,7 +702,7 @@ U4=STAT_NON_LINE(
                 FONC_MULT = COEF2)),
                          COMP_INCR=_F( 
                 RELATION = 'LAIGLE',
-                DEFORMATION='GREEN',
+                DEFORMATION='GROT_GDEP',
                 RESI_INTE_RELA = 1.E-6,
                 ITER_INTE_MAXI = 100,
                 ITER_INTE_PAS  = -10,),

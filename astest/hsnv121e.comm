@@ -1,5 +1,6 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE TRACTION ELASTIQUE COQUES 3D CALCUL DES CONTRAINTES DE CAUCHY
+# hsnv121e.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -132,7 +133,7 @@ VT=STAT_NON_LINE(
                 CHARGE = CHR_LIAI),),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS',
-                DEFORMATION = 'GREEN_GR'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 1),
@@ -160,7 +161,7 @@ VT=STAT_NON_LINE( reuse=VT,
                 TYPE_CHARGE = 'DIDI')),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS',
-                DEFORMATION = 'GREEN_GR'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(

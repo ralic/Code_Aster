@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE PORTEE DE CABLES TRI-RENUM / AFFE_CHAR_MECA / DYNOLI(LDLT)
 # yyyy103a.para = tps_job 130 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -198,7 +198,7 @@ RESU=STAT_NON_LINE(
                 GROUP_MA = (
                   'CABLE',  ),
                 RELATION = 'CABLE',
-                DEFORMATION = 'GREEN'),COMP_INCR=(
+                DEFORMATION = 'GROT_GDEP'),COMP_INCR=(
                          _F( 
                 GROUP_MA = (
                   'CHARP',  ),
@@ -260,7 +260,7 @@ RESU=DYNA_NON_LINE( reuse=RESU,
                                     EVOL_NOLI = RESU),
                     COMP_ELAS=  _F( GROUP_MA = ('CABLE',),
                                     RELATION = 'CABLE',
-                                    DEFORMATION = 'GREEN'),
+                                    DEFORMATION = 'GROT_GDEP'),
                     COMP_INCR=( _F( GROUP_MA = ('CHARP',),
                                     RELATION = 'ELAS'),
                                 _F( GROUP_MA = ('EM',),

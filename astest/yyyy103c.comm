@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE PORTEE DE CABLES TRI-RENUM MD/AFFE_CHAR_MECA/DYNOLI(MULTFRONT)
 # yyyy103c.para = tps_job 130 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -200,7 +200,7 @@ RESU=STAT_NON_LINE(
                 GROUP_MA = (
                   'CABLE',  ),
                 RELATION = 'CABLE',
-                DEFORMATION = 'GREEN'),COMP_INCR=(
+                DEFORMATION = 'GROT_GDEP'),COMP_INCR=(
                          _F( 
                 GROUP_MA = (
                   'CHARP',  ),
@@ -234,7 +234,7 @@ RESU=DYNA_NON_LINE( reuse=RESU, MODELE=MO, CHAM_MATER=CHMAT,  CARA_ELEM=CARA,EXC
                      SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                    ETAT_INIT=_F( INST = 0.,   EVOL_NOLI = RESU),
                     COMP_ELAS=_F( GROUP_MA = ('CABLE',), RELATION = 'CABLE',
-                               DEFORMATION = 'GREEN'),COMP_INCR=(
+                               DEFORMATION = 'GROT_GDEP'),COMP_INCR=(
                     _F( GROUP_MA = ('CHARP',), RELATION = 'ELAS'),
                     _F( GROUP_MA = ('EM',),    RELATION = 'ELAS')),
                    CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-4, ITER_GLOB_MAXI = 200),

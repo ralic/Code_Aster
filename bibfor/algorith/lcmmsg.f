@@ -1,7 +1,7 @@
-        SUBROUTINE LCMMSG(NOMFAM,NBSYS,NUSYS,PGL,MS,NG)
+        SUBROUTINE LCMMSG(NOMFAM,NBSYS,NUSYS,PGL,MS,NG,LG,IR,Q)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,14 +23,16 @@ C ======================================================================
 C       IN  FAMSYS  :  NOM FAMILLE SYS GLIS
 C           NUSYS   :  NUMERO SYS GLIS (FACULTATIF)
 C           PGL     :  MATRICE DE PASSAGE REPERE GLOBAL REPERE LOCAL
+C           IR      :  =0 pas de rotation de reseau ; =1 : rotation
+C           Q       :  matrice de rotation de reseau
 C     OUT:
 C           NBSYS    : NOMBRE DE SYS GLIS
 C           MS       : TENSEUR MS POUR LE SYS GLIS NUMERO NUSYS
 C
       CHARACTER*16 NOMFAM
       REAL*8 MS(6), N(24,3), L(24,3), PGL(3,3),NG(3),NL(3),LG(3),LL(3)
-      REAL*8 SQRT2,SQRT3
-      INTEGER NBSYS,NUSYS, K, J
+      REAL*8 SQRT2,SQRT3,Q(3,3),NGR(3),LGR(3)
+      INTEGER NBSYS,NUSYS, K, J, I, IR
 C     ----------------------------------------------------------------
 C TOLE CRP_20
       
@@ -554,7 +556,15 @@ C     POUR LE SYSTEME K, EXPRESSION DE N ET L DANS REPERE GLOBAL
  10   CONTINUE
       CALL UTPVLG(1,3,PGL,NL,NG)
       CALL UTPVLG(1,3,PGL,LL,LG)
-
+C     rotation de reseau      
+      IF (IR.EQ.1) THEN
+          CALL DCOPY(3,NG,1,NGR,1)
+          CALL DCOPY(3,LG,1,LGR,1)
+          CALL PMAVEC('ZERO',3,Q,NGR,NG)
+          CALL PMAVEC('ZERO',3,Q,LGR,LG)
+      ELSE
+          CALL ASSERT(IR.EQ.0)
+      ENDIF
       DO 11 J=1,3
          MS(J)=NG(J)*LG(J)
 11    CONTINUE
@@ -562,9 +572,6 @@ C     SQRT(2) PAR HOMOGENEITE AVEC NMPL3D.
       MS(4)=0.5D0*(NG(1)*LG(2)+NG(2)*LG(1))*SQRT2
       MS(5)=0.5D0*(NG(1)*LG(3)+NG(3)*LG(1))*SQRT2
       MS(6)=0.5D0*(NG(2)*LG(3)+NG(3)*LG(2))*SQRT2
-C REMARQUE : INVERSION 13 ET 23 PAR RAPPORT A DEFI_TEXTURE OP0181
-
-
 
 9999  CONTINUE
       END

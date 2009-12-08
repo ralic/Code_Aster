@@ -1,0 +1,90 @@
+      SUBROUTINE BRVP33(X33,X3,V33)
+
+C     ROUTINE ANCIENNEMENT NOMMEE VALP33
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR DEBONNIERES P.DE-BONNIERES 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+C        DIAGONALISAGION 33 A PARTIR DE JACOBI + QUELQUES CONTROLES
+
+        IMPLICIT REAL*8 (A-Z)
+      REAL*8 X33(3,3),X3(3),V33(3,3)
+      REAL*8 EPSV,Y33(3,3),Y,Z,TRAV(3,3)
+      REAL*8 XV(6),XID(6),VALAUX(3)
+      INTEGER NITER
+C      INTEGER NROT
+
+      ZZ = 0.D0
+C     EPSV*D(1) VALEUR EN DESSOUS LAQUELLE UN TERME HORS DIAGONALE
+C       EST NEGLIGE
+C     LORS DU CALCUL DES VECTEURS PROPRES
+      EPSV=1.D-7
+C      ON VERIFIE SI X33 N EST PAS DEJA DIAGONALE ( A EPSV*XMAX PRES)
+       XMAX=MAX(ABS(X33(1,1)),ABS(X33(2,2)),ABS(X33(3,3)))
+       IF((ABS(X33(1,2)).LE.(EPSV*XMAX)).AND.
+     S    (ABS(X33(1,3)).LE.(EPSV*XMAX)).AND.
+     S    (ABS(X33(1,2)).LE.(EPSV*XMAX)))THEN
+          CALL MATINI(3,3,ZZ,V33)
+C          PRINT*,'MATRICE DEJA DIAGONALE'
+          X3(1)=X33(1,1)
+          V33(1,1)=1.D0
+          X3(2)=X33(2,2)
+          V33(2,2)=1.D0
+          X3(3)=X33(3,3)
+          V33(3,3)=1.D0
+       ELSE
+C       ON VERIFIE SI ELLE N EST PAS CISAILLEMENT PUR+SPHERIQUE PUR
+        IF((ABS(X33(1,2)-X33(1,3)).LE.(EPSV*XMAX)).AND.
+     S     (ABS(X33(1,2)-X33(2,3)).LE.(EPSV*XMAX)).AND.
+     S     (ABS(X33(1,1)-X33(2,2)).LE.(EPSV*XMAX)).AND.
+     S     (ABS(X33(1,1)-X33(3,3)).LE.(EPSV*XMAX)))THEN
+          V33(1,1) = -SQRT(3.D0)*SQRT(2.D0)/6.D0
+          V33(1,2) = SQRT(3.D0)/3.D0
+          V33(1,3) = SQRT(2.D0)/2.D0
+          V33(2,1) = -SQRT(3.D0)*SQRT(2.D0)/6.D0
+          V33(2,2) = SQRT(3.D0)/3.D0
+          V33(2,3) = -SQRT(2.D0)/2.D0
+          V33(3,1) = SQRT(3.D0)*SQRT(2.D0)/3.D0
+          V33(3,2) = SQRT(3.D0)/3.D0
+          V33(3,3) = 0.D0
+          CALL UTBTAB('ZERO',3,3,X33,V33,TRAV,Y33)
+          X3(1)=Y33(1,1)
+          X3(2)=Y33(2,2)
+          X3(3)=Y33(3,3)
+        ELSE
+C         LA MATRICE X33 PARAIT DIAGONALISABLE PAR JACOBI
+          XID(1) = 1.D0
+          XID(2) = 0.D0
+          XID(3) = 0.D0
+          XID(4) = 1.D0
+          XID(5) = 0.D0
+          XID(6) = 1.D0
+          XV(1)  = X33(1,1)
+          XV(2)  = X33(1,2)
+          XV(3)  = X33(1,3)
+          XV(4)  = X33(2,2)
+          XV(5)  = X33(2,3)
+          XV(6)  = X33(3,3)
+          CALL JACOBI(3,50,0.000001D0,0.000001D0,XV,XID,V33,
+     &            X3,VALAUX,NITER,0,1)
+        END IF
+       END IF
+
+       END

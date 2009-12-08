@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE POST-FLAMBEMENT ELASTIQUE D'UNE STRUCTURE EN L
 # ssnl133a.para = tps_job 260 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,7 +92,7 @@ RESO=STAT_NON_LINE(INFO=1,
                           _F(CHARGE=FORCE,
                              FONC_MULT=FORCE_F,),),
                    COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
-                                DEFORMATION='GREEN_GR',),
+                                DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=DEFLIST,
                                 INST_FIN=tfin,),
                    NEWTON=_F(MATRICE='TANGENTE',
@@ -113,7 +113,7 @@ RESO=STAT_NON_LINE(INFO=1,
 ##          TYPE_CHARGE='FIXE_PILO',),),
 ##
 ##COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
-##             DEFORMATION='GREEN_GR',),
+##             DEFORMATION='GROT_GDEP',),
 ##ETAT_INIT=_F(
 ##EVOL_NOLI=RESO,
 ##),

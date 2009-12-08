@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CARRE CYLINDRIQUE SOUS FORCE COQUE DANS LE REPERE GLOBAL
 # ssnv140a.para = tps_job 90 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -124,7 +124,7 @@ NONLIN=STAT_NON_LINE(
                 TYPE_CHARGE = 'FIXE_CSTE'),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS',
-                DEFORMATION = 'GREEN_GR'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                        CONVERGENCE=_F(

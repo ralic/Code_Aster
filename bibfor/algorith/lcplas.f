@@ -2,11 +2,11 @@
      1                      NMAT, MATERD, MATERF,NR, NVI,
      2                      TIMED, TIMEF, DEPS,  EPSD, SIGD,VIND,
      3                 SIGF, VINF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     4        ICOMP,IRTETI,THETA,VP,VECP,SEUIL, DEVG, DEVGII,DRDY)
+     4  ICOMP,IRTETI,THETA,VP,VECP,SEUIL, DEVG, DEVGII,DRDY,TAMPON,CRIT)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,11 +54,11 @@ C       ----------------------------------------------------------------
         INTEGER         IMAT, NMAT,   NVI,    NR
 
 C
-        REAL*8          TIMED, TIMEF,DELTAT
+        REAL*8          TIMED, TIMEF,DELTAT, CRIT(*)
         REAL*8          TOLER,          THETA
         REAL*8          EPSD(6) ,       DEPS(6)
         REAL*8          SIGD(6),        SIGF(6)
-        REAL*8          VIND(*),        VINF(*)
+        REAL*8          VIND(*),        VINF(*), TAMPON(*)
         REAL*8          MATERF(NMAT,2), MATERD(NMAT,2)
         REAL*8          SEUIL, DEVG(*), DEVGII
         REAL*8          VP(3),VECP(3,3) , DRDY(NR,NR)
@@ -108,7 +108,7 @@ C       ----------------------------------------------------------------
      1                 IMAT,NMAT, MATERD,MATERF,NR, NVI,
      2                 TIMED,TIMEF,DEPS,EPSD,SIGD,VIND,COMP,
      3                 NBCOMM, CPMONO,PGL,TOUTMS,HSR,
-     4                 SIGF, VINF, ICOMP, IRTET,DRDY)
+     4                 SIGF, VINF, ICOMP, IRTET,DRDY,TAMPON,CRIT)
          IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 
       ENDIF

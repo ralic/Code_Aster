@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 #
 # TITRE CADRE DE BARRES HAUBANE.
 # ssnl105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -85,7 +85,7 @@ RESU1=STAT_NON_LINE(
                 GROUP_MA = (
                   'CABLE',  ),
                 RELATION = 'CABLE',
-                DEFORMATION = 'GREEN'),
+                DEFORMATION = 'GROT_GDEP'),
                          COMP_INCR=_F(
                 GROUP_MA = (
                   'CADRE',  ),

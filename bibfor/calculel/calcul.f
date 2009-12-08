@@ -2,7 +2,7 @@
      &                  LPAOU,BASE)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/12/2009   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -246,13 +246,13 @@ C       -- MONITORING FETI :
 
 C     0.2- CAS D'UN CALCUL "DISTRIBUE" :
 C     -- CALCUL DE LDIST :
-C          .TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES
+C          .TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES (PAS FETI)
 C          .FALSE. : SINON
 C     -- SI LDIST == .TRUE. : CALCUL DE  RANG ET JNUMSD
 C     -------------------------------------------------------------
       LDIST=.FALSE.
       CALL JEEXIN(PARTIT//'.NUPROC.MAILLE',IRET)
-      IF (IRET.NE.0) THEN
+      IF ((IRET.NE.0).AND.(.NOT.LFETI)) THEN
         LDIST=.TRUE.
         CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
         CALL MUMMPI(3,IFM,NIV,K24B,NBPROC,IBID)
@@ -264,9 +264,7 @@ C     -------------------------------------------------------------
           CALL U2MESI('F','CALCULEL_13',2,VALI)
         ENDIF
       ENDIF
-C     -- SI LE SOLVEUR EST FETI, IL NE FAUT PAS DISTRIBUER LES CALCULS:
-      IF (LFETI) LDIST=.FALSE.
-
+      
 
 C     0.4- DEBCA1  MET DES OBJETS EN MEMOIRE (ET COMMON):
 C     -----------------------------------------------------------------
@@ -374,7 +372,7 @@ C     -----------------------------------------------------------------
 
 C     4- ALLOCATION DES RESULTATS ET DES CHAMPS LOCAUX:
 C     -------------------------------------------------
-      CALL ALRSLT(OPT,LIGREL,NOU2,LCHOU2,LPAOU2,BASE2,LDIST)
+      CALL ALRSLT(OPT,LIGREL,NOU2,LCHOU2,LPAOU2,BASE2,LDIST,LFETI)
       CALL ALCHLO(OPT,LIGREL,NIN2,LPAIN2,LCHIN2,NOU2,LPAOU2)
 
 C     5- AVANT BOUCLE SUR LES GREL :
@@ -446,6 +444,7 @@ C               PARTIT//'.NUPROC.MAILLE'
 C           -- MONITORING
             IF (INFOFE(2:2).EQ.'T')  CALL UTIMSD(IFM,2,.FALSE.,
      &          .TRUE.,'&CALCUL.PARALLELE',1,' ')
+
           ENDIF
 
 C         6.1 INITIALISATION DES TYPE_ELEM :
@@ -495,6 +494,9 @@ C     QUELQUES ACTIONS HORS BOUCLE GREL DUES A CALVOI==1 :
 C     -----------------------------------------------------
       CALL MONTEE(OPT,LIGREL,NOU2,LCHOU2,LPAOU2,'FIN')
 
+C     -- POUR DEBUGGAGE, ON TRACE LE CHAMP RESULTAT      
+C      CALL IMPRSD('CHAMP',LCHOU2(1),6,'IMPRSD FIN DE CALCUL')
+      
       IF (DBG) CALL CALDBG(OPTION,'OUTF',NOU2,LCHOU2,LPAOU2)
 
 C     8- ON DETRUIT LES OBJETS VOLATILES CREES PAR CALCUL:

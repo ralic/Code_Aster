@@ -9,7 +9,7 @@
         CHARACTER*(*) FAMI
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -59,7 +59,7 @@ C     ----------------------------------------------------------------
       REAL*8 VIS(3),DT,DY(24),EXPBP(24),COEFEL(2),CRIT,SGNS
       REAL*8 EVI(6),SIGI33(3,3),SIGG(6),RP,SQ
       REAL*8 DEVI(6),MS(6),NG(3),TAUS,DGAMMA,DALPHA,DP
-      REAL*8 SIG33(3,3),WORK(3,3)
+      REAL*8 SIG33(3,3),WORK(3,3),Q(3,3),LG(3)
       INTEGER ITENS,NBFSYS,I,NUVI,IFA,ICOMPO,NBSYS,IS,IV,NUMS,NSFV
       INTEGER IEXP,IFL,NUECOU
 C     ----------------------------------------------------------------
@@ -94,7 +94,7 @@ C         NMATER=CPMONO(5*(IFA-1)+2)
          NECRIS=CPMONO(5*(IFA-1)+4)
          NECRCI=CPMONO(5*(IFA-1)+5)
 
-         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG)
+         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,0,Q)
 
          IF (NBSYS.EQ.0) CALL U2MESS('F','ALGORITH_70')
 
@@ -110,7 +110,7 @@ C           VARIABLES INTERNES DU SYST GLIS
 C           CALCUL DE LA SCISSION REDUITE =
 C           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 C           TAU      : SCISSION REDUITE TAU=SIG:MS
-            CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS,NG)
+            CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS,NG,LG,0,Q)
 
             TAUS=0.D0
             DO 10 I=1,6

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/09/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 03/12/2009   AUTEUR MESSIER J.MESSIER 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv314a.para = tps_job 230 mem_job 1024Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -60,7 +60,7 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
 #----------------------------------------------
 
 E=205000.0E6
-nu=0.
+nu=0.3
 rho=7800.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 
@@ -159,39 +159,93 @@ for i in range(nbcalc) :
                               MATER=ACIER,),
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
-                 DA_MAX=0.166666641831398,
+                 DA_MAX=0.3,
                  RAYON=RS,
                  INFO=1,);
+
+#     LEVEL SET AU PAS DE PROPAGATION COURANT
+      LSN[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                          OPERATION='EXTR',
+                          FISSURE=FISS[i+1],
+                          NOM_CHAM='LNNO',);
+      LST[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                          OPERATION='EXTR',
+                          FISSURE=FISS[i+1],
+                          NOM_CHAM='LTNO',);
+
 
 #----------------------------------------------
 #         POST TRAITEMENT
 #----------------------------------------------
 i=nbcalc-1
 
-KIatt=4.4238944306211E+06
+# *********************************************
+# VERIFICATION DE LA POSITION DU FOND DE FISSURE
+# *********************************************
 
-# TOLERANCE SUR KII. LA VALEUR ANALYTIQUE EST ZERO CAR LA FISSURE
-# PROPAGE EN MODE I. CELA N'EST PAS VERIFIER EXACTEMENT POUR LE
-# MODELE FEM. ON ASSUME QUE LA VALEUR DE KII EST ZERO SI
-# ELLE EST EGAL A 1% DE LA VALEUR DE KI.
-TOL_K2=0.01*KIatt;
+# LES COORDONNES DU FOND DE FISSURE ONT ETE CALCULEES
+# PAR LA METHODE PAR PROJECTION (SSLV314B):
 
-TEST_TABLE(TABLE=SIF[i],
+
+# ON PEUT DONC CALCULER LA VALEUR DES LEVEL SETS POUR LES NOEUDS VOISINS:
+
+TABLSN= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
+                                NOEUD=('N1130','N1028','N926',),                                
+                                CHAM_GD=LSN[i],
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+TABLST= POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
+                                NOEUD=('N1130','N1028','N926',),
+                                CHAM_GD=LST[i],
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TABLSN,);
+IMPR_TABLE(TABLE=TABLST,);
+
+# ON PEUT ENFIN VERIFIER QUE LE FOND DE FISSURE CALCULE PAR PROPA_FISS
+# EST DANS L'ELEMENT EN VERIFIENT QUE LA VALEUR DES LEVEL SETS EST
+# INFERIEURE A LA DISTANCE MAXIMALE ENTRE LES QUATRE NOEUDS (EGAL A 1/3)
+
+DISTMAX=1./3.
+
+TEST_TABLE(TABLE=TABLSN,
            REFERENCE='NON_REGRESSION',
-           NOM_PARA='K1_LOCAL',
-           PRECISION=0.05,
-           TYPE_TEST='MAX',
-           VALE= KIatt  )
-
-
-
-TEST_TABLE(TABLE=SIF[i],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='K2_LOCAL',
-           PRECISION=TOL_K2,
+           NOM_PARA='X1',
+           PRECISION=DISTMAX,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE= 0.    )
+           VALE= 0.0,
+           VALE_ABS='OUI',)
+
+TEST_TABLE(TABLE=TABLSN,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='X1',
+           PRECISION=DISTMAX,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0,
+           VALE_ABS='OUI',)
+
+TEST_TABLE(TABLE=TABLST,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='X1',
+           PRECISION=DISTMAX,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= 0.0,
+           VALE_ABS='OUI',)
+
+TEST_TABLE(TABLE=TABLST,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='X1',
+           PRECISION=DISTMAX,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0,
+           VALE_ABS='OUI',)
+
 
 MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i],
                           MAILLAGE_SAIN = MAILLAG1,);

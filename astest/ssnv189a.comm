@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UNE LANIERE - 3D
 # ssnv189a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,7 +65,7 @@ RESU=STAT_NON_LINE(MODELE=modmeca,
                    EXCIT=_F(CHARGE=encastr,
                             FONC_MULT=l,),
                    COMP_ELAS=_F(RELATION='ELAS_HYPER',
-                                DEFORMATION='GREEN',
+                                DEFORMATION='GROT_GDEP',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=2.0,),

@@ -1,5 +1,6 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES ROTATIONS SSNV138A
+# ssnv138d.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +51,7 @@ GF=DEFI_GEOM_FIBRE(
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MATE,
                   MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MATE,
-                                 RELATION='ELAS',DEFORMATION='REAC_GEOM',),
+                                 RELATION='ELAS',DEFORMATION='GROT_GDEP',),
                      )
 
 

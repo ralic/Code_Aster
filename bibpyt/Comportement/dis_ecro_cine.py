@@ -1,4 +1,4 @@
-#@ MODIF dis_ecro_cine Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF dis_ecro_cine Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ loi = LoiComportement(
    nb_vari        = 18,
    nom_vari       = ('DIS1','DIS2','DIS3','DIS4','DIS5','DIS6','DIS7','DIS8','DIS9','DIS10','DIS11','DIS12','DIS13','DIS14','DIS15','DIS16','DIS17','DIS18'),
    modelisation   = ('DIS_T','DIS_TR','2D_DIS_T','2D_DIS_TR'),
-   deformation    = ('PETIT','PETIT_REAC', 'EULER_ALMANSI'),
+   deformation    = ('PETIT','PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = None,
    schema         = ('IMPLICITE'),
    type_matr_tang = None,

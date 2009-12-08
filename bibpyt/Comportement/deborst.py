@@ -1,4 +1,4 @@
-#@ MODIF deborst Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF deborst Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ loi = LoiComportement(
    nb_vari        = 4,
    nom_vari       = ('DB1', 'DB2', 'DB3', 'DB4'),
    modelisation   = ('C_PLAN', '1D'),
-   deformation    = ('PETIT','PETIT_REAC', 'EULER_ALMANSI','GREEN','GREEN_GR','REAC_GEOM'),
+   deformation    = ('PETIT','PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = 'AUTRE',
    proprietes     = (),
 )

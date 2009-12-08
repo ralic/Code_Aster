@@ -2,7 +2,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -184,7 +184,7 @@ C
           DERFOR = .TRUE.
         ENDIF
       END IF
-      GRAND = COMPOR(3) (1:5) .EQ. 'GREEN'
+      GRAND = COMPOR(3).EQ. 'GROT_GDEP'
       INCR = COMPOR(4) (1:9) .EQ. 'COMP_INCR'
       CALL TECACH('ONN','PPESANR',1,IPESA,IRET)
       CALL TECACH('ONN','PROTATR',1,IROTA,IRET)

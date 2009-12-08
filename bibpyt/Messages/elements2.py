@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 03/03/2009   AUTEUR BOYERE E.BOYERE 
+#@ MODIF elements2 Messages  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,10 +171,6 @@ cata_msg = {
 
 74 : _("""
   %(k1)s  non implante.
-"""),
-
-75 : _("""
- option "SIEF_ELNO_ELGA" non implantée pour la déformation "GREEN_GR"
 """),
 
 76 : _("""

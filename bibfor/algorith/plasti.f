@@ -1,11 +1,11 @@
          SUBROUTINE PLASTI ( FAMI,KPG,KSP,TYPMOD,IMAT,COMP,CRIT,TIMED,
      1                       TIMEF, TEMPD, TEMPF, TREF,EPSDT,DEPST,
      2                       SIGD,VIND,OPT,ANGMAS,SIGF,VINF,DSDE,ICOMP,
-     3                       NVI,IRTETI)
+     3                       NVI,TAMPON,IRTETI)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -219,7 +219,7 @@ C
 C
         REAL*8          SEUIL, THETA, DT, DEVG(6), DEVGII
 C
-        REAL*8          VP(3),VECP(3,3)
+        REAL*8          VP(3),VECP(3,3),TAMPON(*)
 C
         REAL*8          DSDE(6,6),  PGL(3,3), ANGMAS(3)
 C
@@ -242,8 +242,6 @@ C
         ITMAX    = INT(CRIT(1))
         TOLER    =     CRIT(3)
         THETA    =     CRIT(4)
-C       EXPLICITE=1 OU IMPLICITE=0
-        NBCOMM(NMAT,1) = INT(CRIT(6))
         LOI      = COMP(1)
         MOD      = TYPMOD(1)
         DT = TIMEF - TIMED
@@ -265,8 +263,8 @@ C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
         CALL LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,0,
-     1                TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,CPMONO,
-     2                ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,NVI,VIND,TOUTMS)
+     &                TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,CPMONO,
+     &                ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,NVI,VIND,TOUTMS)
         IF (LOI(1:11).EQ.'MONOCRISTAL') THEN
            IF(MOD.NE.'3D') THEN
               SIGD(5)=0.D0
@@ -277,6 +275,7 @@ C
               DEPST(6)=0.D0
            ENDIF
         ENDIF
+
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 C
         CALL LCDEDI ( FAMI,KPG,KSP, NMAT,  MATERD, MATERF,
@@ -313,12 +312,14 @@ C
         CALL LCELAS ( LOI  ,MOD , NMAT, MATERD, MATERF, MATCST,
      1                NVI,  DEPS,
      2                SIGD ,VIND,  SIGF,  VINF, THETA )
+
 C
 C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
         CALL LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
      &      SIGF, VIND,COMP, NBCOMM, CPMONO, PGL, NR, NVI,
      &      VP,VECP, HSR, TOUTMS, SEUIL)
+
 C
           IF ( SEUIL .GE. 0.D0 ) THEN
 C
@@ -330,7 +331,9 @@ C
      1                  MATERD,MATERF, NR, NVI,
      2                  TIMED,TIMEF, DEPS,   EPSD,  SIGD ,VIND, SIGF,
      3                  VINF,COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     3          ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII,DRDY)
+     3          ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII,DRDY,
+     4          TAMPON,CRIT)
+
 C
           IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
           ELSE

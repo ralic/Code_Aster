@@ -1,4 +1,4 @@
-#@ MODIF vmis_cine_line Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF vmis_cine_line Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,10 +26,10 @@ loi = LoiComportement(
    doc = """Loi de Von Mises - Prager avec ecrouissage cinematique lineaire [R5.03.02]""",
    num_lc         = 2,
    nb_vari        = 7,
-   nom_vari       = ('X_XX', 'X_YY', 'X_ZZ', 'X_XY', 'X_XZ', 'X_YZ', 'INDICAT'),
+   nom_vari       = ('X_XX', 'X_YY', 'X_ZZ', 'X_XY', 'X_XZ', 'X_YZ', 'INDICAT',),
    mc_mater       = ('ELAS', 'ECRO_LINE'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN', '1D'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','SIMO_HUGHES1','GDEF_HYPO_ELAS'),
    nom_varc       = ('TEMP',),
    schema         = ('IMPLICITE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

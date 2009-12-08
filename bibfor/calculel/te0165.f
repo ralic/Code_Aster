@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF CALCULEL  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C
       IF (ZK16(ICOMPO)(1:4).NE.'ELAS') THEN
         CALL U2MESK('F','CALCULEL4_92',1,ZK16(ICOMPO))
       ENDIF
-      IF (ZK16(ICOMPO+1)(1:8).NE.'GREEN   ') THEN
+      IF (ZK16(ICOMPO+1).NE.'GROT_GDEP') THEN
         CALL U2MESK('F','CALCULEL4_93',1,ZK16(ICOMPO+1))
       ENDIF
       CALL JEVECH('PGEOMER','L',IGEOM)

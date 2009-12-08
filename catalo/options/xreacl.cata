@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+%& MODIF OPTIONS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 % RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -26,8 +26,6 @@ OPTION__
         PCFACE   NEUT_I
         PLONCHA  NEUT_I
         PDONCO   XCONTAC
-        PCAR_AI  NEUT_R
-        PCAR_PT  NEUT_R       
         PPINTER  NEUT_R
         PGEOMER  GEOM_R
    OUT__

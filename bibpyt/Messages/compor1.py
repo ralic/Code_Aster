@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 24/11/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 08/12/2009   AUTEUR DEBONNIERES P.DE-BONNIERES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -357,6 +357,16 @@ Les coefficients de la matrice d'anisotropie sont :
    M(6,6)  : <%(r4).15E>
 L'orthotropie est à utiliser seulement en axi, si et seulement si les 
 coefficients sont donnés dans l'ordre (R,Z,T) et non (R,T,Z).
+"""),
+
+63 : _("""
+   ATTENTION SR > 1    SR = %(r1)f
+   SECHM %(r2)f    SECHP %(r3)f    W0 %(r4)f
+"""),
+
+64 : _("""
+   ATTENTION SR < 0    SR = %(r1)f
+   SECHM %(r2)f    SECHP %(r3)f    W0 %(r4)f
 """),
 
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE PLAQUE CIRCULAIRE SOUMISE A PRESSION
 # ssna302a.para = tps_job 230 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -498,7 +498,7 @@ CALCNL=STAT_NON_LINE(
                             MODELE=MODEL,
                         CHAM_MATER=MATER,
                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                       DEFORMATION = 'GREEN'),
+                                       DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F( LIST_INST = CAT),
                             NEWTON=_F( MATRICE = 'TANGENTE',
                                        REAC_ITER = 1),

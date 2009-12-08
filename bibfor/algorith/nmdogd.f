@@ -9,7 +9,7 @@ C RESPONSABLE PROIX J-M.PROIX
       
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,6 +41,10 @@ C ----------------------------------------------------------------------
       IF (EXIST .EQ. 1) THEN     
           CALL GETVTX(MOCLEF,'DEFORMATION',K,1,1,DEFO,N1)
           IF(DEFO.EQ.'SIMO_MIEHE') THEN
+             NCOMEL=NCOMEL+1
+             LCOMEL(NCOMEL)=DEFO
+          ENDIF
+          IF(DEFO.EQ.'GDEF_HYPO_ELAS') THEN
              NCOMEL=NCOMEL+1
              LCOMEL(NCOMEL)=DEFO
           ENDIF

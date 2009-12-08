@@ -1,8 +1,8 @@
-        SUBROUTINE LCAFYD ( MATERF, NBCOMM,NMAT,NVI,VIND,YD)
+        SUBROUTINE LCAFYD ( MATERF, NBCOMM,NMAT,NVI,VIND,YD, CRIT)
 C RESPONSABLE PROIX J-M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,13 +32,14 @@ C            NVI    :  NOMBRE DE VARIABLES INTERNES
 C       OUT  YD     :  VECTEUR INITIAL
 C       ----------------------------------------------------------------
         INTEGER         NDT,NVI,NMAT,NDI,NS,I,NBCOMM(NMAT,3)
-        REAL*8          YD(*),MATERF(NMAT,2),VIND(*)
+        REAL*8          YD(*),MATERF(NMAT,2),VIND(*),CRIT(*)
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
 
 C       MONOCRISTAL
 
-        IF (NBCOMM(NMAT,1).EQ.1) THEN
+C       EXPLICITE=1 OU IMPLICITE=0
+        IF (INT(CRIT(6)).EQ.1) THEN
            NS=(NVI-8)/3
 C            KOCKS-RAUCH
            IF (MATERF(NBCOMM(1,1),2).EQ.4) THEN

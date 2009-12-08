@@ -4,7 +4,7 @@
      &                  FF    ,DFDI  ,F      ,EPS  ,GRAD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C
       INTEGER     NNO,NDERIV,IRET
       REAL*8      INVJAC(3,3)
       REAL*8      DFF(3,NBNOMX)
-      REAL*8      KRON(NDIM,NDIM),TMP,EPSTAB(3,3)
+      REAL*8      KRON(3,3),TMP,EPSTAB(3,3)
 C
 C ----------------------------------------------------------------------
 C
@@ -141,19 +141,24 @@ C
 C
 C --- MATRICE IDENTITE
 C
-      CALL MATINI(NDIM,NDIM,ZERO,KRON)
-      DO 10 P = 1,NDIM
+      CALL MATINI(3,3,ZERO,KRON)
+      DO 10 P = 1,3
         KRON(P,P) = UN
  10   CONTINUE
 C
 C --- CALCUL DES GRADIENTS : GRAD(U) ET F
 C
-      DO 400 I=1,NDIM
-        DO 401 J=1,NDIM
+      DO 400 I=1,3
+        DO 401 J=1,3
           F(I,J)    = KRON(I,J)
-          GRAD(I,J) = ZERO
  401    CONTINUE
  400  CONTINUE
+C
+      DO 399 I=1,NDIM
+        DO 398 J=1,NDIM
+           GRAD(I,J) = ZERO
+ 398    CONTINUE
+ 399  CONTINUE
 C
 C --- L'ORDRE DES DDLS DOIT ETRE 'DC' 'H1' 'E1' 'E2' 'E3' 'E4' 'LAGC'
 C

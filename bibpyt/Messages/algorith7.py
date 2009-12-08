@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 21/04/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith7 Messages  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,14 +171,6 @@ cata_msg = {
 
 69 : _("""
  loi %(k1)s  non implantee pour les elemdisc 
-"""),
-
-70 : _("""
- elements isoparamétriques 2D non disponibles en grandes rotations
-"""),
-
-71 : _("""
- elements isoparamétriques 3D non disponibles en grandes rotations
 """),
 
 73 : _("""

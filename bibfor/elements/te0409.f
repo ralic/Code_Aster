@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -227,7 +227,7 @@ C
              ENDIF
           ENDIF
           IF ((ZK16(ICOMPO+2) (6:10).EQ.'_REAC') .OR. 
-     &        (ZK16(ICOMPO+2) (1:6 ).EQ.'EULER_') ) THEN
+     &        (ZK16(ICOMPO+2).EQ.'GROT_GDEP') ) THEN
 
             IF(ZK16(ICOMPO+2) (6:10).EQ.'_REAC') 
      &        CALL U2MESS('A','ELEMENTS2_72')
@@ -310,9 +310,6 @@ C
 C     ---------------------------------------
           CALL JEVECH('PGEOMER','L',JGEOM)
           CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
-          IF (ZK16(ICOMPO+2)(1:8).EQ.'GREEN_GR') THEN
-             CALL U2MESS('F','ELEMENTS2_75')
-          ENDIF
 
           IF (NNO.EQ.3) THEN
            CALL DXTPGL(ZR(JGEOM),PGL)

@@ -1,5 +1,6 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
+# ssnp110b.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +65,7 @@ CHAMDEP=STAT_NON_LINE( MODELE=MO,
                               _F(CHARGE = CH,
                                  FONC_MULT = RAMPE)),
                        COMP_ELAS=_F(RELATION = 'ELAS_VMIS_LINE',
-                                    DEFORMATION = 'GREEN'),
+                                    DEFORMATION = 'GROT_GDEP'),
                        INCREMENT=_F(LIST_INST = L_INST,),
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),

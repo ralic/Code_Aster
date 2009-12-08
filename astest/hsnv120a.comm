@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE TRACTION THERMIQUE HYPER-ELASTICITE NON LINEAIRE 3D
 # hsnv120a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,7 +154,7 @@ VL=STAT_NON_LINE(
                 FONC_MULT = F_CHAR)),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS_VMIS_LINE',
-                DEFORMATION = 'GREEN'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(
@@ -176,7 +176,7 @@ VT=STAT_NON_LINE(
                 FONC_MULT = F_CHAR)),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS_VMIS_TRAC',
-                DEFORMATION = 'GREEN'),
+                DEFORMATION = 'GROT_GDEP'),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(

@@ -2,7 +2,8 @@
      &             INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
      &        TM,TP,TREF,TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C TOLE CRP_21
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,5 +32,5 @@ C ======================================================================
 C      Lois de comportement intégrées en IMPLICITE seulement
       CALL PLASTI(FAMI,KPG,KSP,TYPMOD,IMATE,COMPOR,CRIT,INSTAM,INSTAP,
      &           TM,TP,TREF,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,
-     &              SIGP,VIP,DSIDEP,ICOMP,NVI,CODRET)
+     &              SIGP,VIP,DSIDEP,ICOMP,NVI,TAMPON,CODRET)
       END

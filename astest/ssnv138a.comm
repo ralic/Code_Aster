@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CANTILEVER EN GRANDE ROTATION SOUMISE A UN MOMENT LINEIQUE
 # ssnv138a.para = tps_job 80 mem_job 80Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -81,7 +81,7 @@ D_FONC=DEFI_FONCTION(NOM_PARA='INST',
 
 NONLI=STAT_NON_LINE(CHAM_MATER=CHMAT1,
                     MODELE=MO1,
-                    COMP_ELAS=_F(DEFORMATION='GREEN_GR',
+                    COMP_ELAS=_F(DEFORMATION='GROT_GDEP',
                                  RELATION='ELAS',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=100,
                                    RESI_GLOB_RELA=1.E-06,),
@@ -99,7 +99,7 @@ NONLI=STAT_NON_LINE(CHAM_MATER=CHMAT1,
 NONLI=STAT_NON_LINE(reuse=NONLI,CHAM_MATER=CHMAT1,
                     MODELE=MO1,
                     ETAT_INIT=_F(EVOL_NOLI=NONLI),
-                    COMP_ELAS=_F(DEFORMATION='GREEN_GR',
+                    COMP_ELAS=_F(DEFORMATION='GROT_GDEP',
                                  RELATION='ELAS',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=100,
                                    RESI_GLOB_RELA=1.E-06,),

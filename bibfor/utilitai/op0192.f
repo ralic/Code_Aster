@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/09/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 07/12/2009   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,10 +135,10 @@ C
       IF (TYCH(1:11).EQ.'ELGA_SIEF_R') THEN
          OPTION = 'RAPH_MECA'
          PARAM  = 'PCONTPR'
-      ELSE IF (TYCH(1:9).EQ.'ELGA_EPSI_R') THEN
+      ELSE IF (TYCH(1:11).EQ.'ELGA_EPSI_R') THEN
          OPTION = 'EPSI_ELGA_DEPL'
          PARAM  = 'PDEFORR'
-      ELSE IF (TYCH(1:9).EQ.'ELGA_VARI_R') THEN
+      ELSE IF (TYCH(1:11).EQ.'ELGA_VARI_R') THEN
          OPTION = 'RAPH_MECA'
          PARAM  = 'PVARIPR'
 C       ELSE IF (TYCH(1:9).EQ.'ELGA_EQUI_R') THEN

@@ -1,6 +1,6 @@
-
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.1D)
+# ssnv142b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,9 @@
 # CYLINDRE AXISYMETRIQUE EN FLUAGE : FLUAGE DE GRANGER
 # -----------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSNV142B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV142B',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
 M=LIRE_MAILLAGE();
 
@@ -37,81 +39,70 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                              CARA='A',
                              VALE=1.,),);
 
-E=DEFI_CONSTANTE(VALE=31000,);
+E=DEFI_CONSTANTE(VALE=31000.0,);
 
 NU=DEFI_CONSTANTE(VALE=0.2,);
 
 ALPHA=DEFI_CONSTANTE(VALE=0.,);
 
-FONC1=DEFI_FONCTION(NOM_PARA='SECH',
-                    VALE=(0.0,0.0,
-1.,1.,
-),
-                    PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+FONC1=DEFI_FONCTION(NOM_PARA='SECH',VALE=(0.0,0.0,
+                          1.,1.,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                NU=NU,
                                TEMP_DEF_ALPHA=20.0,
                                ALPHA=ALPHA,
                                FONC_DESORP=FONC1,),
-                    GRANGER_FP_INDT=_F(J1=0.2,
-                                       J2=0.1,
-                                       TAUX_1=4320000.,
-                                       TAUX_2=2160000.,),);
+                    GRANGER_FP_INDT=_F(J1=3.226e-5,
+                                       J2=6.452e-5,
+                                       TAUX_1=432000.,
+                                       TAUX_2=4320000.,),);
 
 SECH=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=M,
-                AFFE=_F(
-                TOUT='OUI',
-                NOM_CMP='TEMP',
-                VALE=1.,),);
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=1.,),);
 
 SECH1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
                 NOM_CHAM='TEMP',
-                AFFE=_F(
-                CHAM_GD=SECH,
-                INST=0.,),);
+                AFFE=_F(CHAM_GD=SECH,
+                        INST=0.,),);
 
 TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=M,
-                AFFE=_F(
-                TOUT='OUI',
-                NOM_CMP='TEMP',
-                VALE=20.,),);
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=20.,),);
 
 TEMP1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
                 NOM_CHAM='TEMP',
-                AFFE=_F(
-                CHAM_GD=TEMP,
-                INST=0.,),);
+                AFFE=_F(CHAM_GD=TEMP,
+                        INST=0.,),);
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=BETON,
-                         ),
+                         MATER=BETON,),
                  AFFE_VARC=(_F(TOUT='OUI',
-                              EVOL=SECH1,
-                              NOM_VARC="SECH",
-                              NOM_CHAM='TEMP',
-                              VALE_REF=1),
-                           _F(TOUT='OUI',
-                              EVOL=TEMP1,
-                              NOM_VARC='TEMP',
-                              NOM_CHAM='TEMP',
-                              VALE_REF=20),),);
+                               NOM_VARC='SECH',
+                               EVOL=SECH1,
+                               NOM_CHAM='TEMP',
+                               VALE_REF=1.0,),
+                            _F(TOUT='OUI',
+                               NOM_VARC='TEMP',
+                               EVOL=TEMP1,
+                               NOM_CHAM='TEMP',
+                               VALE_REF=20.0,),),);
 
-FORCE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,
-10.,-20.,
-31536010.,-20.,
-),
-                    PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+FORCE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          10.,-20.,
+                          31536010.,-20.,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_NO='A',
@@ -129,6 +120,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                      NOMBRE=1,),
                                   _F(JUSQU_A=31536010.,
                                      NOMBRE=73,),),);
+
 #DELTAT=432000=5J
 
 U=STAT_NON_LINE(MODELE=MO,
@@ -159,7 +151,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    GROUP_NO='B',
-                   VALE=-5.99794,
+                   VALE=-0.00257977,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=74,
@@ -170,4 +162,6 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    REFERENCE='ANALYTIQUE',),),);
 
 FIN();
+
 #
+

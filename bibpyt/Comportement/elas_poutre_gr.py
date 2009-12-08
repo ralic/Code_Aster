@@ -1,4 +1,4 @@
-#@ MODIF elas_poutre_gr Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF elas_poutre_gr Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ loi = LoiComportement(
    nom_vari       = ('GR1','GR2','GR3'),
    mc_mater       = ('ELAS'),
    modelisation   = ('POU_D_T_GD'),
-   deformation    = ('GREEN_GR'),
+   deformation    = ('GROT_GDEP'),
    nom_varc       = ('TEMP'),
    schema         = 'IMPLICITE',
    type_matr_tang = None,

@@ -1,15 +1,11 @@
       SUBROUTINE XMMAB1 (NDIM,NNE,NNES,NNC,NNM,NFAES,CFACE,
      &                   HPG,FFPC,FFES,FFMA,JACOBI,IAINES,    
-     &                   LAMBDA,COEFFA,COEFFF,TAU1,TAU2,
-     &                   MPROJ,TYPMA,MMAT)
-      IMPLICIT NONE
-      INTEGER  NDIM,NNE,NNES,NNC,NNM,NFAES,IAINES,CFACE(5,3)
-      REAL*8   HPG,FFPC(9),FFES(9),FFMA(9),JACOBI  
-      REAL*8   LAMBDA,COEFFF,COEFFA
-      REAL*8   TAU1(3),TAU2(3),MMAT(120,120),MPROJ(3,3)
-      CHARACTER*8  TYPMA
+     &                   LAMBDA,COEFCA,JEU,COEFFA,COEFFF,TAU1,TAU2,RESE,
+     &                   MPROJ,NORM,TYPMA,SINGE,SINGM,RRE,RRM,NVIT,NDLS,
+     &                   MMAT)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,6 +24,13 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C
+      IMPLICIT NONE
+      INTEGER  NDIM,NNE,NNES,NNC,NNM,NFAES,IAINES,CFACE(5,3),SINGE,SINGM
+      INTEGER  NVIT,NDLS
+      REAL*8   HPG,FFPC(9),FFES(9),FFMA(9),JACOBI,NORM(3)
+      REAL*8   LAMBDA,COEFFF,COEFFA,RRE,RRM,COEFCA,JEU
+      REAL*8   TAU1(3),TAU2(3),RESE(3),MMAT(168,168),MPROJ(3,3)
+      CHARACTER*8  TYPMA
 C ROUTINE APPELLEE PAR : TE0366
 C ----------------------------------------------------------------------
 C
@@ -53,374 +56,265 @@ C IN  COEFFA : COEF_REGU_FROT
 C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
 C IN  TAU1   : PREMIERE TANGENTE
 C IN  TAU2   : SECONDE TANGENTE
+C IN  RESE   : PROJECTION DE LA BOULE UNITE POUR LE FROTTEMENT
 C IN  MPROJ  : MATRICE DE L'OPERATEUR DE PROJECTION
-C IN  TYPMA    : NOM DE LA MAILLE ESCLAVE D'ORIGINE (QUADRATIQUE)
+C IN  TYPMA  : NOM DE LA MAILLE ESCLAVE D'ORIGINE (QUADRATIQUE)
+C IN  SINGE  : NOMBRE DE FONCTION SINGULIERE ESCLAVE
+C IN  SINGM  : NOMBRE DE FONCTION SINGULIERE MAITRE
+C IN  RRE    : SQRT LST ESCLAVE
+C IN  RRM    : SQRT LST MAITRE
+C IN  NVIT   : POINT VITAL OU PAS
 C I/O MMAT   : MATRICE ELEMENTAIRE DE CONTACT/FROTTEMENT
 C ----------------------------------------------------------------------
-      INTEGER   I, J, K, L, II, JJ, INI, PLI, XOULA
-      REAL*8    E(3,3), A(3,3)
+      INTEGER   I, J, K, L, M, II, JJ, INI, PLI, XOULA
+      REAL*8    E(3,3), A(3,3), C(3,3),MP, MB, MBT ,MM ,MMT
 C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
 C
-      DO 300 I = 1,3
-        DO 290 J = 1,3
-          A(I,J)  = 0.D00
-          E(I,J)  = 0.D00
-  290   CONTINUE
-  300 CONTINUE         
+      DO 1 I = 1,3
+        DO 2 J = 1,3
+          A(I,J)  = 0.D0
+          E(I,J)  = 0.D0
+    2   CONTINUE
+    1 CONTINUE
 C
-C --- E : C.C
+C --- E = [P_TAU]*[P_TAU]
 C
-      DO 360 I = 1,NDIM
-        DO 350 J = 1,NDIM
-          DO 340 K = 1,NDIM
+      DO 3 I = 1,NDIM
+        DO 4 J = 1,NDIM
+          DO 5 K = 1,NDIM
             E(I,J) = MPROJ(K,I)*MPROJ(K,J) + E(I,J)
-  340     CONTINUE
-  350   CONTINUE
-  360 CONTINUE
+    5     CONTINUE
+    4   CONTINUE
+    3 CONTINUE
 C
-C --- A : T.C
+C --- A = [P_B,TAU1,TAU2]*[P_TAU]
 C
-      DO 4  I = 1,NDIM
-        DO 5  K = 1,NDIM
-          A(1,I) = TAU1(K)*MPROJ(K,I) + A(1,I)
-  5     CONTINUE
-  4   CONTINUE
-      DO 6  I = 1,NDIM
-        DO 7  K = 1,NDIM
-          A(2,I) = TAU2(K)*MPROJ(K,I) + A(2,I)
-  7     CONTINUE
-  6   CONTINUE
+      DO 6 I = 1,NDIM
+        DO 7 K = 1,NDIM
+          A(1,I) = RESE(K)*MPROJ(K,I) + A(1,I)
+          A(2,I) = TAU1(K)*MPROJ(K,I) + A(2,I)
+          A(3,I) = TAU2(K)*MPROJ(K,I) + A(3,I)
+    7   CONTINUE
+    6 CONTINUE
 C
-C --------------------- CALCUL DE B ET DE BT--------------------------
-C      
-C --- PREMIERE PARTIE DE B ET BT : PARTIE CONTACT - ESCLAVE "CLASSIQUE"
-C 
-      DO 200 I=1,NNC
-        DO 201 J=1,NNES
-          DO 202 L=1,NDIM-1
-            DO 203 K=1,NDIM
-              INI=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
-              CALL XPLMA2(NDIM,NNE,NNES,INI,PLI)
-              II = PLI+L
-              JJ = (3*NDIM)*(J-1)+K
-              MMAT(II,JJ) = 
-     &-LAMBDA*COEFFF*HPG*FFPC(I)*FFES(J)*JACOBI*A(L,K)
-              MMAT(JJ,II) = MMAT(II,JJ)
- 203        CONTINUE
- 202      CONTINUE
- 201    CONTINUE
- 200  CONTINUE
+C --- C = (P_B)[P_TAU]*(N)
 C
-C --- DEUXIEME PARTIE DE B ET BT : PARTIE CONTACT - ESCLAVE "ENRICHIE"
+      DO 8 I = 1,NDIM
+        DO 9 J = 1,NDIM
+          C(I,J) = A(1,I)*NORM(J)
+    9   CONTINUE
+    8 CONTINUE
+      MP = (LAMBDA-COEFCA*JEU)*COEFFF*HPG*JACOBI
 C
-      DO 204 I=1,NNC
-        DO 205 J=1,NNES
-          DO 206 L=1,NDIM-1
-            DO 207 K=1,NDIM
-              INI=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
-              CALL XPLMA2(NDIM,NNE,NNES,INI,PLI)
-              II = PLI+L
-              JJ = (3*NDIM)*(J-1)+NDIM+K
-              MMAT(II,JJ) = 
-     & LAMBDA*COEFFF*HPG*FFPC(I)*FFES(J)*JACOBI*A(L,K)
-              MMAT(JJ,II) = MMAT(II,JJ)     
- 207        CONTINUE
- 206      CONTINUE
- 205    CONTINUE
- 204  CONTINUE
+      IF (NNM.NE.0) THEN
 C
-C --- TROISIEME PARTIE DE B ET BT : PARTIE CONTACT - MAITRE "CLASSIQUE"
-C 
-      DO 208 I = 1,NNC
-        DO 209 J = 1,NNM
-          DO 210 L=1,NDIM-1
-            DO 211 K = 1,NDIM
-              INI=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
-              CALL XPLMA2(NDIM,NNE,NNES,INI,PLI)
-              II = PLI+L
-              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+K
-              MMAT(II,JJ) =
-     & LAMBDA*COEFFF*HPG*FFPC(I)*FFMA(J)*JACOBI*A(L,K)  
-              MMAT(JJ,II) = MMAT(II,JJ)
- 211        CONTINUE
- 210      CONTINUE
- 209    CONTINUE
- 208  CONTINUE
+C --------------------- CALCUL DE [A] ET [B] -----------------------
 C
-C --- QUATRIEME PARTIE DE B ET BT : PARTIE CONTACT - MAITRE "ENRICHIE"
+      DO 70 L = 1,NDIM
+        DO 10 K = 1,NDIM
+          IF (L.EQ.1) THEN
+            MB  = 0.D0
+            MBT = COEFFF*HPG*JACOBI*A(L,K)
+          ELSE
+            MB  = NVIT*HPG*JACOBI*A(L,K)
+            MBT = MP*A(L,K)
+          ENDIF
+          DO 20 I = 1,NNC
+            INI=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
+            CALL XPLMA2(NDIM,NNE,NNES,NDLS,INI,PLI)
+            II = PLI+L-1
+            DO 30 J = 1,NNES
+C --- BLOCS ES:CONT, CONT:ES
+              MM = MB *FFPC(I)*FFES(J)
+              MMT= MBT*FFPC(I)*FFES(J)
+              JJ = NDLS*(J-1)+K
+              MMAT(II,JJ) = -MM
+              MMAT(JJ,II) = -MMT
+              JJ = JJ + NDIM
+              MMAT(II,JJ) = MM
+              MMAT(JJ,II) = MMT
+              DO 40 M = 1,SINGE
+                JJ = JJ + NDIM
+                MMAT(II,JJ) = RRE * MM
+                MMAT(JJ,II) = RRE * MMT
+   40         CONTINUE
+   30       CONTINUE
+            DO 50 J = 1,NNM
+C --- BLOCS MA:CONT, CONT:MA
+              MM = MB *FFPC(I)*FFMA(J)
+              MMT= MBT*FFPC(I)*FFMA(J)
+              JJ = NDLS*NNES+NDIM*(NNE-NNES) + 
+     &              (2+SINGM)*NDIM*(J-1)+K
+              MMAT(II,JJ) = MM
+              MMAT(JJ,II) = MMT
+              JJ = JJ + NDIM
+              MMAT(II,JJ) = MM
+              MMAT(JJ,II) = MMT
+              DO 60 M = 1,SINGM
+                JJ = JJ + NDIM
+                MMAT(II,JJ) = RRM * MM
+                MMAT(JJ,II) = RRM * MMT
+   60         CONTINUE
+   50       CONTINUE
+   20     CONTINUE
+   10   CONTINUE
+   70 CONTINUE
 C
-      DO 212 I = 1,NNC
-        DO 213 J = 1,NNM
-          DO 214 L=1,NDIM-1
-            DO 215 K = 1,NDIM
-              INI=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
-              CALL XPLMA2(NDIM,NNE,NNES,INI,PLI)
-              II = PLI+L
-              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+NDIM+K
-              MMAT(II,JJ) =
-     & LAMBDA*COEFFF*HPG*FFPC(I)*FFMA(J)*JACOBI*A(L,K)  
-              MMAT(JJ,II) = MMAT(II,JJ)
- 215        CONTINUE
- 214      CONTINUE
- 213    CONTINUE
- 212  CONTINUE
+C --------------------- CALCUL DE [BU] ---------------------------------
 C
-C --- ON CALCULE LA MATRICE B_U
-C
-C --- PREMIER BLOC DE LA MATRICE [B_U]: PARTIE ESCLAVE ESCLAVE
-C
-C------A) ESCLAVE "CLASSIQUE" - ESCLAVE "CLASSIQUE"
-
-      DO 100 I = 1,NNES
-        DO 101 J = 1,NNES
-          DO 102 K = 1,NDIM
-            DO 103 L = 1,NDIM
-              II = (3*NDIM)*(I-1)+L
-              JJ = (3*NDIM)*(J-1)+K            
-              MMAT(II,JJ) =
-     &-COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFES(J)*JACOBI*E(L,K)
-  103       CONTINUE
-  102     CONTINUE
-  101   CONTINUE
+      DO 100 K = 1,NDIM
+        DO 110 L = 1,NDIM
+          MB  = -MP*COEFFA*E(L,K)+COEFCA*COEFFF*HPG*JACOBI*C(L,K)
+          MBT = -MP*COEFFA*E(L,K)+COEFCA*COEFFF*HPG*JACOBI*C(K,L)
+          DO 200 I = 1,NNES
+            DO 210 J = 1,NNES
+C --- BLOCS ES:ES
+              MM = MB *FFES(I)*FFES(J)
+              MMT= MBT*FFES(I)*FFES(J)
+              II = NDLS*(I-1)+L
+              JJ = NDLS*(J-1)+K
+              MMAT(II,JJ) =  MM
+              JJ = JJ + NDIM
+              MMAT(II,JJ) = -MM
+              MMAT(JJ,II) = -MMT
+              II = II + NDIM
+              MMAT(II,JJ) =  MM
+              DO 215 M = 1,SINGE
+                JJ = JJ + NDIM
+                II = II - NDIM
+                MMAT(II,JJ) = -RRE * MM
+                MMAT(JJ,II) = -RRE * MMT
+                II = II + NDIM
+                MMAT(II,JJ) =  RRE * MM
+                MMAT(JJ,II) =  RRE * MMT
+                II = II + NDIM
+                MMAT(II,JJ) =  RRE * RRE * MM
+  215         CONTINUE
+  210       CONTINUE
+            DO 220 J = 1,NNM
+C --- BLOCS ES:MA, MA:ES
+              MM = MB *FFES(I)*FFMA(J)
+              MMT= MBT*FFES(I)*FFMA(J)
+              II = NDLS*(I-1)+L
+              JJ = NDLS*NNES+NDIM*(NNE-NNES) +
+     &              (2+SINGM)*NDIM*(J-1)+K
+              MMAT(II,JJ) = -MM
+              MMAT(JJ,II) = -MMT
+              JJ = JJ + NDIM
+              MMAT(II,JJ) = -MM
+              MMAT(JJ,II) = -MMT
+              II = II + NDIM
+              JJ = JJ - NDIM
+              MMAT(II,JJ) =  MM
+              MMAT(JJ,II) =  MMT
+              JJ = JJ + NDIM
+              MMAT(II,JJ) =  MM
+              MMAT(JJ,II) =  MMT
+              DO 230 M = 1,SINGM
+                II = II - NDIM
+                JJ = JJ + NDIM
+                MMAT(II,JJ) = -RRM * MM
+                MMAT(JJ,II) = -RRM * MMT
+                II = II + NDIM
+                MMAT(II,JJ) =  RRM * MM
+                MMAT(JJ,II) =  RRM * MMT
+                JJ = JJ - NDIM
+  230         CONTINUE
+              DO 240 M = 1,SINGE
+                II = II + NDIM
+                JJ = JJ - NDIM
+                MMAT(II,JJ) =  RRE * MM
+                MMAT(JJ,II) =  RRE * MMT
+                JJ = JJ + NDIM
+                MMAT(II,JJ) =  RRE * MM
+                MMAT(JJ,II) =  RRE * MMT
+                II = II - NDIM
+  240         CONTINUE
+              DO 250 M = 1,SINGE*SINGM
+                II = II + NDIM
+                JJ = JJ + NDIM
+                MMAT(II,JJ) =  RRE * RRM * MM
+                MMAT(JJ,II) =  RRE * RRM * MMT
+  250         CONTINUE
+  220       CONTINUE
+  200     CONTINUE
+          DO 300 I = 1,NNM
+            DO 320 J = 1,NNM
+C --- BLOCS MA:MA
+              MM = MB *FFMA(I)*FFMA(J)
+              MMT= MBT*FFMA(I)*FFMA(J)
+              II = NDLS*NNES+NDIM*(NNE-NNES) +
+     &              (2+SINGM)*NDIM*(I-1)+L
+              JJ = NDLS*NNES+NDIM*(NNE-NNES) +
+     &              (2+SINGM)*NDIM*(J-1)+K
+              MMAT(II,JJ) =  MM
+              JJ = JJ + NDIM
+              MMAT(II,JJ) =  MM
+              MMAT(JJ,II) =  MMT
+              II = II + NDIM
+              MMAT(II,JJ) =  MM
+              DO 330 M = 1,SINGM
+                JJ = JJ + NDIM
+                II = II - NDIM
+                MMAT(II,JJ) =  RRM * MM
+                MMAT(JJ,II) =  RRM * MMT
+                II = II + NDIM
+                MMAT(II,JJ) =  RRM * MM
+                MMAT(JJ,II) =  RRM * MMT
+                II = II + NDIM
+                MMAT(II,JJ) =  RRM * RRM * MM
+  330         CONTINUE
+  320       CONTINUE
+  300     CONTINUE
+  110   CONTINUE
   100 CONTINUE
-
-C------B) ESCLAVE "CLASSIQUE" - ESCLAVE "ENRICHIE"
-
-      DO 104 I = 1,NNES
-        DO 105 J = 1,NNES
-          DO 106 K = 1,NDIM
-            DO 107 L = 1,NDIM
-              II = (3*NDIM)*(I-1)+L
-              JJ = (3*NDIM)*(J-1)+NDIM+K            
-              MMAT(II,JJ) =
-     & COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFES(J)*JACOBI*E(L,K)
-  107       CONTINUE
-  106     CONTINUE
-  105   CONTINUE
-  104 CONTINUE
-
-C------C) ESCLAVE "ENRICHIE" - ESCLAVE "CLASSIQUE"
-
-      DO 108 I = 1,NNES
-        DO 109 J = 1,NNES
-          DO 110 K = 1,NDIM
-            DO 111 L = 1,NDIM
-              II = (3*NDIM)*(I-1)+NDIM+L
-              JJ = (3*NDIM)*(J-1)+K            
-              MMAT(II,JJ) =
-     & COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFES(J)*JACOBI*E(L,K)
-  111       CONTINUE
-  110     CONTINUE
-  109   CONTINUE
-  108 CONTINUE
-
-C------D) ESCLAVE "ENRICHIE" - ESCLAVE "ENRICHIE"
-
-      DO 112 I = 1,NNES
-        DO 113 J = 1,NNES
-          DO 114 K = 1,NDIM
-            DO 115 L = 1,NDIM
-              II = (3*NDIM)*(I-1)+NDIM+L
-              JJ = (3*NDIM)*(J-1)+NDIM+K            
-                MMAT(II,JJ) =
-     &-COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFES(J)*JACOBI*E(L,K)
-  115       CONTINUE
-  114     CONTINUE
-  113   CONTINUE
-  112 CONTINUE     
+      ELSE
 C
-C --- DEUXIEME BLOC DE LA MATRICE [B_U] PARTIE ESCLAVE MAITRE
-C ----A) ESCLAVE "CLASSIQUE" - MAITRE "CLASSIQUE"
-
-      DO 116 I = 1,NNES
-        DO 117 J = 1,NNM
-          DO 118 K = 1,NDIM
-            DO 119 L = 1,NDIM
-              II = (3*NDIM)*(I-1)+L
-              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+K   
-              MMAT(II,JJ) =
-     & COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFMA(J)*JACOBI*E(L,K)
-  119       CONTINUE
-  118     CONTINUE
-  117   CONTINUE
-  116 CONTINUE
-
-C ----B) ESCLAVE "CLASSIQUE" - MAITRE "ENRICHIE"
-
-      DO 120 I = 1,NNES
-        DO 121 J = 1,NNM
-          DO 122 K = 1,NDIM
-            DO 123 L = 1,NDIM
-              II = (3*NDIM)*(I-1)+L
-              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
-     &              2*NDIM*(J-1)+NDIM+K   
-              MMAT(II,JJ) =
-     & COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFMA(J)*JACOBI*E(L,K)
-  123       CONTINUE
-  122     CONTINUE
-  121   CONTINUE
-  120 CONTINUE
-
-C ----C) ESCLAVE "ENRICHIE" - MAITRE "CLASSIQUE"
-
-      DO 124 I = 1,NNES
-        DO 125 J = 1,NNM
-          DO 126 K = 1,NDIM
-            DO 127 L = 1,NDIM
-              II = (3*NDIM)*(I-1)+NDIM+L
-              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+K   
-              MMAT(II,JJ) =
-     &-COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFMA(J)*JACOBI*E(L,K)
-  127       CONTINUE
-  126     CONTINUE
-  125   CONTINUE
-  124 CONTINUE
-
-C ----D) ESCLAVE "ENRICHIE" - MAITRE "ENRICHIE"
-
-      DO 128 I = 1,NNES
-        DO 129 J = 1,NNM
-          DO 130 K = 1,NDIM
-            DO 131 L = 1,NDIM
-              II = (3*NDIM)*(I-1)+NDIM+L
-              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
-     &              2*NDIM*(J-1)+NDIM+K   
-              MMAT(II,JJ) =
-     &-COEFFA*COEFFF*HPG*LAMBDA*FFES(I)*FFMA(J)*JACOBI*E(L,K)
-  131       CONTINUE
-  130     CONTINUE
-  129   CONTINUE
-  128 CONTINUE
+C --------------------- CALCUL DE [A] ET [B] -----------------------
 C
-C --- TROISIEME BLOC DE LA MATRICE [B_U] PARTIE MAITRE ESCLAVE
-C-----A) MAITRE "CLASSIQUE" - ESCLAVE "CLASSIQUE" 
-
-      DO 132 I = 1,NNM
-        DO 133 J = 1,NNES
-          DO 134 K = 1,NDIM
-            DO 135 L = 1,NDIM
-              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(I-1)+L
-              JJ = (3*NDIM)*(J-1)+K             
-              MMAT(II,JJ) =
-     & COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFES(J)*JACOBI*E(L,K)
-  135       CONTINUE
-  134     CONTINUE
-  133   CONTINUE
-  132 CONTINUE
-
-C-----B) MAITRE "CLASSIQUE" - ESCLAVE "ENRICHIE" 
-
-      DO 136 I = 1,NNM
-        DO 137 J = 1,NNES
-          DO 138 K = 1,NDIM
-            DO 139 L = 1,NDIM
-              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(I-1)+L
-              JJ = (3*NDIM)*(J-1)+NDIM+K             
-              MMAT(II,JJ) =
-     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFES(J)*JACOBI*E(L,K)
-  139       CONTINUE
-  138     CONTINUE
-  137   CONTINUE
-  136 CONTINUE
-
-C-----C) MAITRE "ENRICHIE" - ESCLAVE "CLASSIQUE" 
-
-      DO 140 I = 1,NNM
-        DO 141 J = 1,NNES
-          DO 142 K = 1,NDIM
-            DO 143 L = 1,NDIM
-              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
-     &              2*NDIM*(I-1)+NDIM+L
-              JJ = (3*NDIM)*(J-1)+K             
-              MMAT(II,JJ) =
-     & COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFES(J)*JACOBI*E(L,K)
-  143       CONTINUE
-  142     CONTINUE
-  141   CONTINUE
-  140 CONTINUE
-
-C-----D) MAITRE "ENRICHIE" - ESCLAVE "ENRICHIE" 
-
-      DO 144 I = 1,NNM
-        DO 145 J = 1,NNES
-          DO 146 K = 1,NDIM
-            DO 147 L = 1,NDIM
-              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
-     &              2*NDIM*(I-1)+NDIM+L
-              JJ = (3*NDIM)*(J-1)+NDIM+K             
-              MMAT(II,JJ) =
-     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFES(J)*JACOBI*E(L,K)
-  147       CONTINUE
-  146     CONTINUE
-  145   CONTINUE
-  144 CONTINUE
+      DO 550 L = 1,NDIM
+        DO 510 K = 1,NDIM
+          IF (L.EQ.1) THEN
+            MB  = 0.D0
+            MBT = COEFFF*HPG*JACOBI*A(L,K)
+          ELSE
+            MB  = NVIT*HPG*JACOBI*A(L,K)
+            MBT = MP*A(L,K)
+          ENDIF
+          DO 520 I = 1,NNC
+            INI=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
+            CALL XPLMA2(NDIM,NNE,NNES,NDLS,INI,PLI)
+            II = PLI+L-1
+            DO 530 J = 1,NNES
+C --- BLOCS ES:CONT, CONT:ES
+              MM = MB *FFPC(I)*FFES(J)
+              MMT= MBT*FFPC(I)*FFES(J)
+              JJ = 2*NDIM*(J-1)+K
+              MMAT(II,JJ) = RRE * MM
+              MMAT(JJ,II) = RRE * MMT
+  530       CONTINUE
+  520     CONTINUE
+  510   CONTINUE
+  550 CONTINUE
 C
-C --- QUATRIEME BLOC DE LA MATRICE [B_U] PARTIE MAITRE MAITRE
-C ----A) MAITRE "CLASSIQUE" - MAITRE "CLASSIQUE"
-
-      DO 148 I = 1,NNM
-        DO 149 J = 1,NNM
-          DO 150 K = 1,NDIM
-            DO 151 L = 1,NDIM
-              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(I-1)+L
-              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+K
-              MMAT(II,JJ) =
-     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFMA(J)*JACOBI*E(L,K)
-      
-  151       CONTINUE
-  150     CONTINUE
-  149   CONTINUE
-  148 CONTINUE
-
-C ----B) MAITRE "CLASSIQUE" - MAITRE "ENRICHIE"      
-
-      DO 152 I = 1,NNM
-        DO 153 J = 1,NNM
-          DO 154 K = 1,NDIM
-            DO 155 L = 1,NDIM
-              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(I-1)+L
-              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
-     &              2*NDIM*(J-1)+NDIM+K
-              MMAT(II,JJ) =
-     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFMA(J)*JACOBI*E(L,K)
-  155       CONTINUE
-  154     CONTINUE
-  153   CONTINUE
-  152 CONTINUE
-
-C ----C) MAITRE "ENRICHIE" - MAITRE "CLASSIQUE"
-
-      DO 156 I = 1,NNM
-        DO 157 J = 1,NNM
-          DO 158 K = 1,NDIM
-            DO 159 L = 1,NDIM
-              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
-     &              2*NDIM*(I-1)+NDIM+L
-              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+2*NDIM*(J-1)+K
-              MMAT(II,JJ) =
-     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFMA(J)*JACOBI*E(L,K)
-  159       CONTINUE
-  158     CONTINUE
-  157   CONTINUE
-  156 CONTINUE
-
-C ----D) MAITRE "ENRICHIE" - MAITRE "ENRICHIE"
-
-      DO 160 I = 1,NNM
-        DO 161 J = 1,NNM
-          DO 162 K = 1,NDIM
-            DO 163 L = 1,NDIM
-              II = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
-     &              2*NDIM*(I-1)+NDIM+L
-              JJ = (3*NDIM)*NNES+NDIM*(NNE-NNES)+
-     &              2*NDIM*(J-1)+NDIM+K
-              MMAT(II,JJ) =
-     &-COEFFA*COEFFF*HPG*LAMBDA*FFMA(I)*FFMA(J)*JACOBI*E(L,K)
-  163       CONTINUE
-  162     CONTINUE
-  161   CONTINUE
-  160 CONTINUE
+C --------------------- CALCUL DE [BU] ---------------------------------
+C
+      DO 600 K = 1,NDIM
+        DO 610 L = 1,NDIM
+          MB  = -MP*COEFFA*E(L,K)+COEFCA*COEFFF*HPG*JACOBI*C(L,K)
+          DO 620 I = 1,NNES
+            DO 630 J = 1,NNES
+C --- BLOCS ES:ES
+              MM = MB *FFES(I)*FFES(J)
+              II = NDLS*(I-1)+L
+              JJ = NDLS*(J-1)+K
+              MMAT(II,JJ) = RRE * RRE * MM
+  630       CONTINUE
+  620     CONTINUE
+  610   CONTINUE
+  600 CONTINUE
+      ENDIF
 C
       END

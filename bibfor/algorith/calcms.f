@@ -3,9 +3,10 @@
         IMPLICIT NONE
         INTEGER NMAT,NBCOMM(NMAT,3),NBFSYM,NBPHAS
         REAL*8 PGL(3,3),TOUTMS(NBPHAS,NBFSYM,24,6),COEFT(NMAT)
+        REAL*8 Q(3,3)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,11 +40,11 @@ C     ----------------------------------------------------------------
       CHARACTER*8 MOD
       CHARACTER*16 NOMFAM,NCOEFT,NECOUL,NECRIS,NECRCI,CPMONO(5*NMAT+1)
       REAL*8 ANG(3),ANGMAS(3),PGL1(3,3),PGL2(3,3)
-      REAL*8 R8DGRD,MS(6),WORK(3,3),NG(3)
-      INTEGER NBFSYS,I,IFA,NBSYS,IS,INDORI,INDCP
+      REAL*8 R8DGRD,MS(6),WORK(3,3),NG(3),LG(3)
+      INTEGER NBFSYS,I,IFA,NBSYS,IS,INDORI,INDCP,IR
       INTEGER INDPHA,IPHAS,INDFA
 C     ----------------------------------------------------------------
-
+      IR=0
 C         CALCUl DES TENSEURS MS POUR GAGNER DU TEMPS
       DO 1 IPHAS=1,NBPHAS
 C        INDPHA indice debut phase IPHAS dans NBCOMM
@@ -64,7 +65,7 @@ C         recuperer l'orientation de la phase et la proportion
 C        Nombre de variables internes de la phase (=monocristal)
          DO 2 IFA=1,NBFSYS
             NOMFAM=CPMONO(INDCP+5*(IFA-1)+1)
-            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG)
+            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,IR,Q)
             IF (NBSYS.EQ.0) CALL U2MESS('F','ALGORITH_70')
 C           indice de la famille IFA
 C            INDFA=INDPHA+IFA
@@ -73,7 +74,7 @@ C            INDFA=INDPHA+IFA
 C              CALCUL DE LA SCISSION REDUITE =
 C              PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 C              TAU      : SCISSION REDUITE TAU=SIG:MS
-               CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS,NG)
+               CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS,NG,LG,IR,Q)
                DO 4 I=1,6
                   TOUTMS(IPHAS,IFA,IS,I)=MS(I)
  4             CONTINUE

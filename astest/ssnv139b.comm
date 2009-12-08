@@ -1,6 +1,6 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE PLAQUE BIAISE SOUS CHARGEMENT CONCENTRE
-# ssnv139b.para = tps_job 270 mem_job 100Mo ncpus 1 liste_test S
+# ssnv139b.para = tps_job 300 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,8 +89,25 @@ L_INST=DEFI_LIST_REEL(   DEBUT=0.0,INTERVALLE=(
 
 #
 
-NONLIN=STAT_NON_LINE( 
-                            MODELE=MODELE_1,
+DEFLIST1=DEFI_LIST_INST(INFO=1,
+                          DEFI_LIST=_F(LIST_INST=L_INST,
+                                       METHODE='AUTO',
+                                       PAS_MINI=1.E-07),
+                          ADAPTATION=_F(EVENEMENT='SEUIL',
+                                        PCENT_AUGM=100.0,
+                                        NOM_PARA='NB_ITER_NEWTON',
+                                        CRIT_COMP='LE',
+                                        MODE_CALCUL_TPLUS='FIXE',
+                                        NB_INCR_SEUIL=2),
+                          ECHEC=_F(#SUBD_NIVEAU=10,
+                                   SUBD_METHODE='UNIFORME',
+                                   EVENEMENT='DIVERGENCE',
+                                   SUBD_PAS=8,
+                                   SUBD_COEF_PAS_1=0.5,
+                               #    SUBD_PAS_MINI=0.0
+                                   ),
+                          );
+NONLIN=STAT_NON_LINE(       MODELE=MODELE_1,
                         CHAM_MATER=CH_MAT_1,
                          CARA_ELEM=CARAC_1,
                              EXCIT=_F( 
@@ -98,15 +115,15 @@ NONLIN=STAT_NON_LINE(
                 FONC_MULT = D_FONC),
                          COMP_ELAS=_F( 
                 RELATION = 'ELAS',
-                DEFORMATION = 'GREEN_GR'),
+                DEFORMATION = 'GROT_GDEP'),
            #              SOLVEUR=_F(
            #     STOP_SINGULIER='DECOUPE'),
                          INCREMENT=_F( 
-                LIST_INST = L_INST,),
+                LIST_INST = DEFLIST1,),
                             NEWTON=_F( 
                 REAC_ITER = 1),
                        CONVERGENCE=_F( 
-                ITER_GLOB_MAXI = 50,
+                ITER_GLOB_MAXI = 12,
                 RESI_GLOB_RELA = 1.E-6)
               )
 
@@ -125,7 +142,8 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
                       GROUP_NO = 'G_10',        
                       NOM_CHAM = 'DEPL',
                       CRITERE = 'RELATIF', 
-                      PRECISION = 1.7E-2,
+                      REFERENCE = 'SOURCE_EXTERNE',
+                      PRECISION = (1.7E-2,1.E-6),
                       NOM_CMP = 'DX',  
                                 VALE = -3.8069E1)
             )
@@ -141,7 +159,8 @@ TEST_RESU(   RESU=_F(
                       GROUP_NO = 'G_10',
                       NOM_CHAM = 'DEPL',
                       CRITERE = 'RELATIF',
-                      PRECISION = 2.8E-2,
+                      REFERENCE = 'SOURCE_EXTERNE',
+                      PRECISION = (3.E-2,1.E-6),
                       NOM_CMP = 'DZ',
                                 VALE = -7.2409E1)
             )
@@ -162,7 +181,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
                       CRITERE = 'RELATIF',
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '5.02.13',
-                      PRECISION = 0.5E-2,
+                      PRECISION = (0.5E-2,1.E-6),
                       NOM_CMP = 'DX',  
                                 VALE = -3.744E1)
             )
@@ -179,9 +198,9 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
                       CRITERE = 'RELATIF',
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '5.02.13',
-                      PRECISION = 0.5E-2,
+                      PRECISION = (0.5E-2,1.E-6),
                       NOM_CMP = 'DZ',
-                                VALE = -7.044E1)
+                                VALE = -7.045E1)
             )
 
 #
@@ -201,7 +220,8 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
                       GROUP_NO = 'G_10',        
                       NOM_CHAM = 'DEPL',
                       CRITERE = 'RELATIF', 
-                      PRECISION = 0.6E-2,
+                      REFERENCE = 'SOURCE_EXTERNE',
+                      PRECISION = (0.6E-2,1.E-6),
                       NOM_CMP = 'DX',  
                                 VALE = -5.2002E1)
             )
@@ -217,7 +237,8 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
                       GROUP_NO = 'G_10',
                       NOM_CHAM = 'DEPL',
                       CRITERE = 'RELATIF',
-                      PRECISION = 2.0E-2,
+                      REFERENCE = 'SOURCE_EXTERNE',
+                      PRECISION = (2.0E-2,1.E-6),
                       NOM_CMP = 'DZ',
                                 VALE = -8.0734E1)
             )
@@ -237,7 +258,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
                       CRITERE = 'RELATIF', 
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '5.02.13',
-                      PRECISION = 0.5E-2,
+                      PRECISION = (0.5E-2,1.E-6),
                       NOM_CMP = 'DX',  
                                 VALE = -5.227E1)
             )
@@ -255,7 +276,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
                       CRITERE = 'RELATIF',
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '5.02.13',
-                      PRECISION = 0.5E-2,
+                      PRECISION = (0.5E-2,1.E-6),
                       NOM_CMP = 'DZ',
                                 VALE = -7.917E1)
             )

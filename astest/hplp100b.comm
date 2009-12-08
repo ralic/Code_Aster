@@ -1,5 +1,6 @@
-# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
+# hplp100b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -192,7 +193,7 @@ G2=CALC_G(RESULTAT=OUTMES,
                   EXCIT=_F(CHARGE=CH,),
                   SYME_CHAR='SYME',
                   COMP_ELAS=_F( RELATION = 'ELAS',
-                              DEFORMATION = 'GREEN'),
+                              DEFORMATION = 'GROT_GDEP'),
                   ETAT_INIT=_F( SIGM = SIG3))
 IMPR_TABLE(TABLE=G2)
 
@@ -203,7 +204,7 @@ G2=CALC_G( reuse=G2,
                    EXCIT=_F( CHARGE=CH,),
                    SYME_CHAR='SYME',
                    COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'GREEN'),
+                                   DEFORMATION = 'GROT_GDEP'),
                    ETAT_INIT=_F( SIGM = SIG3))
 IMPR_TABLE(TABLE=G2,SENSIBILITE=(THETAS,))
 
@@ -325,7 +326,7 @@ G4=CALC_G(         RESULTAT = OUTMES1,
                            EXCIT=_F(CHARGE=CH1,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'GREEN'),
+                                   DEFORMATION = 'GROT_GDEP'),
                            OPTION='CALC_G',
                        ETAT_INIT=_F( SIGM = SIG6))
 

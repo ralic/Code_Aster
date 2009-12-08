@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp504f.para = tps_job 500 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,11 +51,9 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN_XFEM_CONT',),),);   
 
-LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.25*X-2.0625');
-LT1=FORMULE(NOM_PARA=('X','Y'),VALE='-X-50. ');  
+LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.25*X-2.0625'); 
                     
 LN2=FORMULE(NOM_PARA=('X','Y'),VALE='-Y+0.25*X+6.0625');
-LT2=FORMULE(NOM_PARA=('X','Y'),VALE='-X-50. '); 
 
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                      TYPE_DISCONTINUITE='INTERFACE',
@@ -77,7 +75,7 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=(_F(METHODE='XFEM',
                                      INTEGRATION='NOEUD',
                                      FROTTEMENT='COULOMB',
                                      COULOMB=0.5,
-                                     COEF_REGU_FROT=100,
+                                     COEF_REGU_FROT=10,
                                      COEF_REGU_CONT=100., 
                                      ITER_CONT_MAXI=4,
                                      ITER_GEOM_MAXI=10,
@@ -92,7 +90,7 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=(_F(METHODE='XFEM',
                                      INTEGRATION='NOEUD',
                                      FROTTEMENT='COULOMB',
                                      COULOMB=0.5,
-                                     COEF_REGU_FROT=100,
+                                     COEF_REGU_FROT=10,
                                      COEF_REGU_CONT=100., 
                                      ITER_CONT_MAXI=4,
                                      ITER_GEOM_MAXI=10,
@@ -187,7 +185,8 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                    RESI_GLOB_RELA=1E-06)),
                    NEWTON=_F(REAC_ITER=1,),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=250,),
+                              PCENT_PIVOT=250,
+                              NPREC=-1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 

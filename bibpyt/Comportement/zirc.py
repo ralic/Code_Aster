@@ -1,4 +1,4 @@
-#@ MODIF zirc Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF zirc Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ loi = LoiComportement(
    nom_vari       = ('ZIRC1','ZIRC2','ZIRC3'),
    mc_mater       = ('META_ZIRC'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM', 'GREEN','GREEN_GR','SIMO_MIEHE'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','SIMO_MIEHE'),
    nom_varc       = ('TEMP'),
    schema         = 'IMPLICITE',
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

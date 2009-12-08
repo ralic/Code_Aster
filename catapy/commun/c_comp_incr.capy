@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 22/09/2009   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,8 +95,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                  ),
 
            DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",
-                             into=("PETIT","PETIT_REAC","SIMO_MIEHE","GREEN_GR","GREEN","COROTATIONNEL",
-                                   "REAC_GEOM","EULER_ALMANSI")),
+                             into=("PETIT","PETIT_REAC","GROT_GDEP","SIMO_MIEHE","GDEF_HYPO_ELAS","GREEN_REAC")),
 
            ALGO_C_PLAN     =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
            RESI_DEBO_MAXI = SIMP(statut='f',typ='R',
@@ -111,7 +110,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
 
            RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
-           b_redec_local      = BLOC(condition = "DEFORMATION in ('PETIT','PETIT_REAC','GREEN')",
+           b_redec_local      = BLOC(condition = "DEFORMATION in ('PETIT','PETIT_REAC','GROT_GDEP')",
                         fr="Nombre de redécoupages internes du pas de temps",
                ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
                    ),

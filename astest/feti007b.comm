@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/12/2009   AUTEUR BOITEAU O.BOITEAU 
 # ======================================================================
 # TITRE VALIDATION ARCHITECTURE PARTITIONNEMENT METIS ET CALCUL FETI 
 # feti007b.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test S
@@ -21,7 +21,9 @@
 # ======================================================================
 # ======================================================================
 # CUBE 3D
+# PARALLELE: VALEUR CONSEILLEE 16 PROCS.
 # ======================================================================
+# RESPONSABLE BOITEAU O.BOITEAU
 
 DEBUT(CODE=_F(NOM ='FETI007B',NIV_PUB_WEB='INTERNET'))
 
@@ -92,11 +94,10 @@ RESU=MECA_STATIQUE(MODELE=MODM,
                              INFO_FETI='FFFFFFFFF',
                                   NPREC=5,
                              RENUM='METIS',
-                            STOCKAGE_GI='CAL',
                          ),
                    EXCIT=(_F(CHARGE=CH1),
                           _F(CHARGE=CH2),),
-                   INFO=2,
+                   INFO=1,
                         )
 
 TEST_RESU(RESU=(

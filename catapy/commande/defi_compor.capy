@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/09/2009   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,8 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                                 'PYRAMIDAL2', 'CUBIQUE1', 'CUBIQUE2', 'MACLAGE', 'JOINT_GRAIN', 'RL', 'UNIAXIAL','BCC24'),),
                                 ),
 
+          ROTA_RESEAU =SIMP(statut='f', typ='TXM', max=1,into=('NON','POST','CALC'),defaut='NON',
+                   fr="rotation de reseau : NON, POST, CALC"),
 
           POLYCRISTAL    =FACT(statut='f', max='**',
            regles=(UN_PARMI('ANGL_REP','ANGL_EULER'),),
@@ -71,7 +73,7 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                                    fr="Donner le nom du materiau pour le groupe de fibres"),
              ALGO_1D         =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
              DEFORMATION      =SIMP(statut='f',typ='TXM',defaut="PETIT",
-                                     into=("PETIT","PETIT_REAC","REAC_GEOM")),
+                                     into=("PETIT","PETIT_REAC","GROT_GDEP")),
              RELATION        =SIMP(statut='f', typ='TXM', max=1,defaut="ELAS",into=C_RELATION(),
                                   fr="Donner le nom de la relation incrementale pour le groupe de fibres",
                                   ),

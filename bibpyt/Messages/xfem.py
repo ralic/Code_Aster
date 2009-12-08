@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,11 +32,11 @@ cata_msg={
 """),
 
 2: _("""
-  -> Le calcul de la distance d'un noued à l'ellipse n'a pas convergé 
+  -> Le calcul de la distance d'un noeud à l'ellipse n'a pas convergé 
      avec le nombre d'itérations maximal fixé (10). Cela est dû à une
      ellipse très allongée.
   -> Conseil:
-     Contacter les développeur.
+     Contacter les développeurs.
      Dans la mesure du possible, définissez une ellipse moins allongée.
 """),
 
@@ -197,8 +197,9 @@ cata_msg={
 
 27: _("""
      Si vous êtes en 3D pour l'approche de contact <<Grands glissements avec XFEM>>,
-     seul la formulation aux noeuds sommets est possible, les mailles doivent être de type
-     HEXA8, PENTA6, PYRAM5 ou TETRA4
+     seule la formulation aux noeuds sommets est possible.
+     Vous pouvez activer cette formulation en commentant LINE_QUAD afin que les mailles
+     soient de type HEXA8, PENTA6, PYRAM5 ou TETRA4.
 """),
 
 28: _("""
@@ -241,6 +242,14 @@ cata_msg={
 
 37: _("""
      Nombre de level-sets réajustées : %(i1)s  
+"""),
+
+38: _("""
+     Si vous êtes en 2D pour l'approche de contact <<Grands glissements avec XFEM>>,
+     seule la formulation aux noeuds sommets est possible si la fissure possède un fond. 
+     Vous pouvez activer cette formulation en commentant LINE_QUAD afin que les mailles
+     soient de type QUAD4 ou TRIA3.
+     
 """),
 
 40: _("""

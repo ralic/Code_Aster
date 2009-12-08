@@ -1,5 +1,5 @@
       SUBROUTINE  PK2CAU(NOMTE,NCMP,PK2,SIGMA)
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,11 +85,11 @@ C --- RECUPERATION DE LA CARTE DE COMPORTEMENT :
 C     ----------------------------------------
       CALL JEVECH('PCOMPOR','L',ICOMPO)
 C
-        IF (ZK16(ICOMPO+2)(1:8).EQ.'GREEN_GR') THEN
+        IF (ZK16(ICOMPO+2).EQ.'GROT_GDEP') THEN
           LGREEN = .TRUE.
         ENDIF
 C
-C --- RECUPERATION DU CHAMP DE DEPLACEMENT DANS LE CAS GREEN_GR :
+C --- RECUPERATION DU CHAMP DE DEPLACEMENT DANS LE CAS GROT_GDEP :
 C     ---------------------------------------------------------
       IF (LGREEN) THEN
         CALL TECACH('OON','PDEPLAR',1,IDEPL,IRET)

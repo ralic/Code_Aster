@@ -1,4 +1,4 @@
-#@ MODIF pinto_menegotto Comportement  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF pinto_menegotto Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ loi = LoiComportement(
    nb_vari        = 8,
    nom_vari       = ('EPSRN-1','EPSRN','SIGRN','EPSM+V5','DEPS-TH','CYCL','KHI','INDIFLAM'),
    modelisation   = ('1D'),
-   deformation    = ('PETIT','PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM'),
+   deformation    = ('PETIT','PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
    schema         = ('IMPLICITE'),
    type_matr_tang = None,

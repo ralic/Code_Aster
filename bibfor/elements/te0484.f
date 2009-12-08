@@ -1,6 +1,6 @@
       SUBROUTINE TE0484(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -109,7 +109,7 @@ C  =============================================
 C  -  ACTUALISATION : GEOM ORIG + DEPL DEBUT PAS
 C  =============================================
           CALL R8INIR(60,0.D0,XIDEPM,1)
-          IF ((ZK16(ICOMPO+2) (1:5).EQ.'GREEN')) THEN
+          IF ((ZK16(ICOMPO+2).EQ.'GROT_GDEP')) THEN
             CALL R8INIR(60,0.D0,XIDEPM,1)
             DO 150 I = 1,3*NNO
              ZR(IGEOM+I-1) = ZR(IGEOM+I-1) + ZR(IDEPLM+I-1)

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # TITRE CANTILEVER EN GRANDE ROTATION SOUMISE A UNE PRESSION SUIVEUSE
 # ssnv145c.para = tps_job 120 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,7 +125,7 @@ NONLI=STAT_NON_LINE(
                 ),
                          COMP_ELAS=_F(
                 RELATION = 'ELAS',
-                DEFORMATION = 'GREEN_GR'),
+                DEFORMATION = 'GROT_GDEP'),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 50),
                          INCREMENT=_F(

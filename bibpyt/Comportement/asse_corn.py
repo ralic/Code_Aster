@@ -1,4 +1,4 @@
-#@ MODIF asse_corn Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF asse_corn Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ loi = LoiComportement(
    nom_vari       = ('V1','V2','V3','V4','V5','V6','V7'),
    mc_mater       = ('ASSE_CORN'),
    modelisation   = ('DIS_TR','DIS_T'),
-   deformation    = ('PETIT','PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM'),
+   deformation    = ('PETIT','PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = None,
    schema         = ('IMPLICITE'),
    type_matr_tang = None,
