@@ -1,10 +1,10 @@
-      SUBROUTINE SPDFFT(NSENS,NIN,NBVIN,NOUT,NBVOUT,METHOD,SYM,BASE)
+      SUBROUTINE SPDFFT(NSENS,NOMFON,NBVIN,NOMFS,NBVOUT,METHOD,SYM,BASE)
       IMPLICIT NONE
       CHARACTER*(1)                               BASE
       INTEGER             NSENS
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/11/2009   AUTEUR GREFFET N.GREFFET 
+C MODIF UTILITAI  DATE 14/12/2009   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16  METHOD,SYM
-      CHARACTER*19  NOMFS
+      CHARACTER*19  NOMFS, NOMFON
       REAL*8        PAS,PASFRQ
       INTEGER       NBVAL,NBVA,NBPTS,NBPTS1,NBPTS2,LTRA,LRES,LRES1,IER
       INTEGER       NIN,NOUT,NBVIN,NBVOUT,LVAR,N,LFON,I,II,VALMAX
@@ -50,6 +50,7 @@ C     ----------------------------------------------------------------
 C
 C     ---  NOMBRE DE POINTS ----
       NBVAL = NBVIN
+      CALL JEVEUO(NOMFON,'L',NIN)
       LVAR = NIN
       IF (NSENS.EQ.1) THEN
          NBVA = NBVAL/2
@@ -85,7 +86,7 @@ C     --- RECOPIE DES VARIABLES ---
          IF ( SYM.EQ.'NON' ) THEN
             NBPTS2 = (NBPTS/2)
          ENDIF
-         CALL WKVECT('&&TRAVAIL','V V C',NBPTS,LTRA)
+         CALL WKVECT('&&SPDFFT.TRAVAIL','V V C',NBPTS,LTRA)
          DO 199 I = 1,NBPTS1
             ZC(LTRA+I-1) = DCMPLX(ZR(LFON+I-1),0.D0)
   199    CONTINUE
@@ -94,20 +95,16 @@ C     --- RECOPIE DES VARIABLES ---
                ZC(LTRA+NBVA+I-1) =  DCMPLX(0.D0,0.D0)
  1999       CONTINUE
          ENDIF
-
+  
          CALL FFT(ZC(LTRA),NBPTS,1)
          PAS = ZR(LVAR+1)-ZR(LVAR)
-         NOMFS = 'FCT_FFT'
+C         NOMFS = 'FCT_FFT'
          CALL JEEXIN(NOMFS,IER)
-         IF ( IER.EQ.0 ) THEN
-            CALL WKVECT(NOMFS,BASE//' V C',2*NBPTS2,LRES)
-         ELSE
-            CALL JEDETR(NOMFS)
-            CALL WKVECT(NOMFS,BASE//' V C',2*NBPTS2,LRES)
-         ENDIF
+         IF ( IER.NE.0 ) CALL JEDETR(NOMFS)
+         CALL WKVECT(NOMFS,BASE//' V C',2*NBPTS2,LRES)
          LRES1 = LRES + NBPTS2
          PASFRQ = 1.D0/((DBLE(NBPTS))*PAS)
-         NOUT = LRES
+C         NOUT = LRES
          NBVOUT = NBPTS2
          DO 198 I = 1,NBPTS2
             ZC(LRES+I-1) = DCMPLX((I-1)*PASFRQ,0.D0)
@@ -123,7 +120,7 @@ C         NBPTS=2*NBPTS
          IF ( SYM.EQ.'NON' ) THEN
             NBPTS2 = (2*NBPTS)
          ENDIF
-         CALL WKVECT('&&TRAVAIL','V V C',(NBPTS2+1),LTRA)
+         CALL WKVECT('&&SPDFFT.TRAVAIL','V V C',(NBPTS2+1),LTRA)
          VALMAX = (NBPTS2/2)
          IF ( NBVA .LT. (NBPTS2/2) ) VALMAX = NBVA
          DO 201 I = 1, VALMAX
@@ -140,15 +137,11 @@ C         NBPTS=2*NBPTS
          ENDIF
          CALL FFT(ZC(LTRA),NBPTS2,-1)
          PAS = ZR(LVAR+1)-ZR(LVAR)
-         NOMFS = 'FCT_FFT'
+C         NOMFS = 'FCT_FFT'
          CALL JEEXIN(NOMFS,IER)
-         IF ( IER.EQ.0 ) THEN
-            CALL WKVECT(NOMFS,BASE//' V R',2*NBPTS2,LRES)
-         ELSE
-            CALL JEDETR(NOMFS)
-            CALL WKVECT(NOMFS,BASE//' V R',2*NBPTS2,LRES)
-         ENDIF
-         NOUT = LRES
+         IF ( IER.NE.0 ) CALL JEDETR(NOMFS)
+         CALL WKVECT(NOMFS,BASE//' V R',2*NBPTS2,LRES)
+C         NOUT = LRES
          NBVOUT = NBPTS2
          LRES1 = LRES + NBPTS2
          DO 202 I = 1,NBPTS2
@@ -159,8 +152,9 @@ C         PAS2 = (1.D0/ZR(LVAR+NBVA-1))*(DBLE(NBVA)/DBLE(NBPTS2))
             ZR(LRES1+I-1) = DBLE(ZC(LTRA+I-1))
   203    CONTINUE
       ENDIF
-
-      CALL JEDETR('&&TRAVAIL')
-
+C
+      CALL JEDETR('&&SPDFFT.TRAVAIL')
+C      CALL JEDETC('V','&&',1)      
+C
       CALL JEDEMA()
       END

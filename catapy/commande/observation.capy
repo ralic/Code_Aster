@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 14/12/2009   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,6 +28,8 @@ def observation_prod(self, RESULTAT, **args):
         return evol_elas
     elif AsType(RESULTAT) == dyna_harmo :
         return dyna_harmo
+    elif AsType(RESULTAT) == dyna_trans :
+        return dyna_trans
     else :
         return None
 
@@ -38,12 +40,12 @@ OBSERVATION=MACRO(nom="OBSERVATION",op=observation_ops,
 #
          MODELE_1        =SIMP(statut='o',typ=modele_sdaster),
          MODELE_2        =SIMP(statut='o',typ=modele_sdaster),
-         RESULTAT        =SIMP(statut='o',typ=mode_meca ),
+         RESULTAT        =SIMP(statut='o',typ=(mode_meca,evol_elas,dyna_harmo,dyna_trans,) ),
          NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1),
 
 #        ------------------------------------------------------------------
 
-         regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','FREQ','LIST_FREQ','NUME_MODE' ),),
+         regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','FREQ','LIST_FREQ','NUME_MODE','INST','LIST_INST' ),),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
          FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
@@ -57,7 +59,7 @@ OBSERVATION=MACRO(nom="OBSERVATION",op=observation_ops,
 #        ------------------------------------------------------------------
 #        OPTIONS DE PROJ_CHAMP (SANS MC FACTEUR PARTICULIER)
 #        ------------------------------------------------------------------
-         PROJECTION     =SIMP(statut='f',max=1,typ='TXM',into=("OUI","NON"),defaut="NON"),
+         PROJECTION     =SIMP(statut='f',max=1,typ='TXM',into=("OUI","NON"),defaut="OUI"),
          CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
          DISTANCE_MAX    =SIMP(statut='f',typ='R',
                 fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
@@ -109,12 +111,12 @@ OBSERVATION=MACRO(nom="OBSERVATION",op=observation_ops,
            b_tors_3d       =BLOC(condition = "TYPE_CHAM=='TORS_3D'",
               NOM_CMP         =SIMP(statut='o',typ='TXM',min=6,max=6 ),),
            b_tens_2d       =BLOC(condition = "TYPE_CHAM=='TENS_2D'",
-              NOM_CMP         =SIMP(statut='o',typ='TXM',min=4,max=4 ),),
+              NOM_CMP         =SIMP(statut='f',typ='TXM',min=4,max=4,defaut=('EPXX','EPYY','EPZZ','EPXY',) ),),
            b_tens_3d       =BLOC(condition = "TYPE_CHAM=='TENS_3D'",
-              NOM_CMP         =SIMP(statut='o',typ='TXM',min=6,max=6 ),),
+              NOM_CMP         =SIMP(statut='f',typ='TXM',min=6,max=6,defaut=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),),),
 
            REPERE          =SIMP(statut='o',typ='TXM',
-                                 into=("UTILISATEUR","CYLINDRIQUE","NORMALE"),),
+                                 into=("UTILISATEUR","CYLINDRIQUE","NORMALE","DIR_JAUGE"),),
            b_normale       =BLOC(condition = "REPERE=='NORMALE'",
              regles=(UN_PARMI('VECT_X','VECT_Y')),
              VECT_X          =SIMP(statut='f',typ='R',min=3,max=3),
@@ -124,6 +126,22 @@ OBSERVATION=MACRO(nom="OBSERVATION",op=observation_ops,
            b_cylindrique   =BLOC(condition = "REPERE=='CYLINDRIQUE'",
              ORIGINE         =SIMP(statut='o',typ='R',min=2,max=3),
              AXE_Z           =SIMP(statut='o',typ='R',min=3,max=3)),
+           b_dir_jauge       =BLOC(condition = "REPERE=='DIR_JAUGE'",
+             VECT_X          =SIMP(statut='f',typ='R',min=3,max=3),
+             VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3), ),
+         ),
+
+#        ------------------------------------------------------------------
+#        EPSI_MOYENNE
+#        ------------------------------------------------------------------
+         EPSI_MOYENNE     =FACT(statut='f',max='**',
+                       regles=(AU_MOINS_UN('GROUP_MA','MAILLE','GROUP_NO','NOEUD'),),
+           NOEUD       = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+           GROUP_NO     = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           SEUIL_VARI      =SIMP(statut='f',typ='R',validators=NoRepeat(),defaut=0.1,),
+           MASQUE          =SIMP(statut='f',typ='TXM',max=6),
          ),
 
 #        ------------------------------------------------------------------

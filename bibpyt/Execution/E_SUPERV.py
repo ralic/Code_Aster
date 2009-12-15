@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 14/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,7 +173,7 @@ class SUPERV:
          print ">> Catalogue de commandes : FIN RAPPORT"
          return 1
 
-   def Execute(self):
+   def Execute(self, params):
       """
          Construit et execute le jeu de commandes
       """
@@ -189,8 +189,8 @@ class SUPERV:
       if self.tempsMax:args['tempsMax']=self.tempsMax
       if self.rep_mat :args['rep_mat'] =self.rep_mat
 
-      j=self.JdC(procedure=text,cata=self.cata,nom=self.nomFichierCommandes,
-             **args
+      self.jdc=j=self.JdC(procedure=text,cata=self.cata,nom=self.nomFichierCommandes,
+             context_ini=params, **args
            )
 
       # on transmet le timer au jdc
@@ -346,7 +346,7 @@ class SUPERV:
            traceback.print_exc()
            return 1
 
-   def main(self):
+   def main(self, params={}):
       """
            Programme principal. Appelle les methodes internes qui realisent les
            divers traitements
@@ -364,7 +364,7 @@ class SUPERV:
 
       #ier=self.testeCata();if ier:return ier
 
-      return self.Execute()
+      return self.Execute(params)
 
 
 def main():

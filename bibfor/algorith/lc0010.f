@@ -1,21 +1,21 @@
       SUBROUTINE LC0010(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
-     &              INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
-     &                  TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
+     &                 INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
+     &                 TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
       IMPLICIT NONE
       INTEGER            KPG,KSP,NDIM,IMATE,IRET
       CHARACTER*(*)      FAMI
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*),OPTION
       INTEGER            ICOMP,NVI
-        INTEGER         CODRET
+      INTEGER            CODRET
       REAL*8             ANGMAS(*),TAMPON(*)
       REAL*8             CRIT(1),INSTAM,INSTAP
       REAL*8             EPSM(6),DEPS(6)
-      REAL*8             SIGM(6),VIM(7),SIGP(6),VIP(7),DSIDEP(6,6)
+      REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
 C TOLE CRP_21
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 15/12/2009   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  

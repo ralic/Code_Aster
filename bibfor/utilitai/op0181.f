@@ -3,7 +3,7 @@
       INTEGER  IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 14/12/2009   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,7 +46,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*4  K4B,GRAND(3)
       CHARACTER*8  K8B
       CHARACTER*16 K16B,TYPE,CMD,SYMETR,METHOD
-      CHARACTER*19 K19B,RESIN,RESOU
+      CHARACTER*19 K19B,RESIN,RESOU,VECTOT
       CHARACTER*24 TYPRES
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -77,16 +77,18 @@ C
           GRAND(2) = 'VITE'
           GRAND(3) = 'ACCE'
       ENDIF
+      VECTOT = '&&OP0181.VECTOT'
       DO 10 I = 1,NGRAND
 C
 C  Calcul des FFT
 C
          CALL PREFFT(RESIN,METHOD,SYMETR,NSENS,GRAND(I),
-     &           NPARA,NBVA,IER)
+     &               VECTOT,NBVA,IER)
 C
 C   Ecriture du resultat
 C
-         CALL ECRESU(RESIN,NPARA,NBVA,GRAND(I),RESOU,IER)
+         CALL ECRESU(RESIN,VECTOT,NBVA,GRAND(I),RESOU,IER)
+C         CALL ECRESU(RESIN,NPARA,NBVA,GRAND(I),RESOU,IER)
   10  CONTINUE
 C
       CALL JEDEMA()

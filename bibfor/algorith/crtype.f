@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 14/12/2009   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,8 @@ C                                          "EVOL_ELAS"
 C                                          "MULT_ELAS"
 C                                          "FOURIER_ELAS"
 C                                          "FOURIER_THER"
+C                                          "DYNA_TRANS"
+C                                          "DYNA_HARMO"
 C                                          "EVOL_CHAR"
 C                                          "MODE_MECA"
 C
@@ -57,9 +59,11 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       PARAMETER (MXPARA=10)
       INTEGER RSMXNO,NBTROU,JCPT,NBR,IVMX,K
       INTEGER VALI,JREFD
+      INTEGER NFR,NBFREQ,N4
       REAL*8 VALPU(MXPARA),RBID,TPS,PREC,VALR(3),FREQ
       COMPLEX*16 CBID
       LOGICAL LNCAS,IDENSD,LFONC
+      CHARACTER*4 TYPABS
       CHARACTER*6 TYPEGD
       CHARACTER*24 VALKK(2)
       CHARACTER*8 K8B,RESU,NOMF,NOMA,TYPMOD,CRITER,MATR
@@ -136,6 +140,9 @@ C       CALCUL DE LFONC ET TYPEGD :
             TYPEGD = K24(I-5:I-2)//'_R'
 
           ELSEIF (K24(I-1:I).EQ.'_R') THEN
+            TYPEGD = K24(I-5:I)
+
+          ELSEIF (K24(I-1:I).EQ.'_C') THEN
             TYPEGD = K24(I-5:I)
 
           ELSE
@@ -229,13 +236,25 @@ C ----- MOT CLE "NOM_CAS", "NUME_MODE", "FREQ"  PRESENT :
         ENDIF
 
 
-C ----- MOT CLE INST PRESENT :
+C ----- MOT CLE INST/FREQ PRESENT :
+        NIS = 0
+        NFR = 0
+        NBINST = 0
         CALL GETVR8('AFFE','INST',IOCC,1,0,RBID,NIS)
+        CALL GETVR8('AFFE','FREQ',IOCC,1,0,RBID,NFR)
         IF (NIS.NE.0) THEN
-          NBINST = -NIS
+           TYPABS = 'INST'
+           NBINST = -NIS
+        ENDIF
+        IF (NFR.NE.0) THEN
+           TYPABS = 'FREQ'
+           NBINST = -NFR
+        ENDIF
+
+        IF ((NIS.NE.0).OR.(NFR.NE.0)) THEN
           CALL WKVECT(LCPT,'V V I',NBINST,JCPT)
           CALL WKVECT(LINST,'V V R',NBINST,JINST)
-          CALL GETVR8('AFFE','INST',IOCC,1,NBINST,ZR(JINST),N1)
+          CALL GETVR8('AFFE',TYPABS,IOCC,1,NBINST,ZR(JINST),N1)
           CALL GETVR8('AFFE','PRECISION',IOCC,1,1,PREC,IBID)
           CALL GETVTX('AFFE','CRITERE',IOCC,1,1,CRITER,IBID)
           CALL RSORAC(RESU,'LONUTI',IBID,RBID,K8B,CBID,RBID,K8B,NBV,1,
@@ -244,7 +263,7 @@ C ----- MOT CLE INST PRESENT :
           IVMX = RSMXNO(RESU)
           DO 30 K = 1,NBINST
             IF (NBV.GT.0) THEN
-              CALL RSORAC(RESU,'INST',IBID,ZR(JINST+K-1),K8B,CBID,PREC,
+              CALL RSORAC(RESU,TYPABS,IBID,ZR(JINST+K-1),K8B,CBID,PREC,
      &                    CRITER,NUME,1,NBR)
 
             ELSE
@@ -261,12 +280,20 @@ C ----- MOT CLE INST PRESENT :
               ZI(JCPT+K-1) = NUME
             ENDIF
    30     CONTINUE
-
         ELSE
 
-
-C ----- MOT CLE LIST_INST PRESENT :
+C ----- MOT CLE LIST_INST/LIST_FREQ PRESENT :
+          N1 = 0
+          N4 = 0
           CALL GETVID('AFFE','LIST_INST',IOCC,1,1,LISTR8,N1)
+          CALL GETVID('AFFE','LIST_FREQ',IOCC,1,1,LISTR8,N4)
+          IF (N1.NE.0) THEN
+             TYPABS = 'INST'
+          ENDIF
+          IF (N4.NE.0) THEN
+             TYPABS = 'FREQ'
+          ENDIF
+
           CALL GETVR8('AFFE','PRECISION',IOCC,1,1,PREC,IBID)
           CALL GETVTX('AFFE','CRITERE',IOCC,1,1,CRITER,IBID)
           CALL JELIRA(LISTR8//'.VALE','LONMAX',NBVAL,K8B)
@@ -307,7 +334,7 @@ C ----- MOT CLE LIST_INST PRESENT :
             J = J + 1
             ZR(JINST-1+J) = ZR(JVAL-1+K)
             IF (NBV.GT.0) THEN
-              CALL RSORAC(RESU,'INST',IBID,ZR(JVAL-1+K),K8B,CBID,PREC,
+              CALL RSORAC(RESU,TYPABS,IBID,ZR(JVAL-1+K),K8B,CBID,PREC,
      &                    CRITER,NUME,1,NBR)
 
             ELSE
@@ -333,9 +360,9 @@ C ----- MOT CLE LIST_INST PRESENT :
           TPS = ZR(JINST+J-1)
           CALL RSEXCH(RESU,NSYMB,ICOMPT,NOMCH,IRET)
           IF (IRET.EQ.0) THEN
-            CALL RSADPA(RESU,'L',1,'INST',ICOMPT,0,IAD,K8B)
-            VALKK(1) = NOMCH
-            VALKK(2) = ZK8(JCHAM+J-1)
+            CALL RSADPA(RESU,'L',1,TYPABS,ICOMPT,0,IAD,K8B)
+            VALKK(1) = ZK8(JCHAM+ICOMPT-1)
+            VALKK(2) = CHAMP(1:8)
             VALR(1) = ZR(IAD)
             VALR(2) = TPS
             VALR(3) = PREC
@@ -411,7 +438,7 @@ C           ----------------------------------
           ENDIF
 
           CALL RSNOCH(RESU,NSYMB,ICOMPT,' ')
-          CALL RSADPA(RESU,'E',1,'INST',ICOMPT,0,IAD,K8B)
+          CALL RSADPA(RESU,'E',1,TYPABS,ICOMPT,0,IAD,K8B)
           ZR(IAD) = TPS
           CALL RSSEPA(RESU,ICOMPT,MODELE,MATERI,CARELE,EXCIT)
           IF (J.GE.2) CALL JEDEMA()
@@ -424,8 +451,10 @@ C           ----------------------------------
    80 CONTINUE
 
 
-C     -- REMPLISSAGE DE .REFD POUR LES MODE_MECA :
-      IF ((TYPRES(1:9).EQ.'MODE_MECA')) THEN
+C     -- REMPLISSAGE DE .REFD POUR LES MODE_MECA  ET DYNA_*:
+      IF (TYPRES(1:9).EQ.'MODE_MECA'
+     &     .OR. TYPRES(1:10).EQ.'DYNA_HARMO'
+     &     .OR. TYPRES(1:10).EQ.'DYNA_TRANS') THEN
         CALL JEEXIN(RESU19//'.REFD',IER)
         IF (IER.EQ.0) THEN
           CALL WKVECT(RESU19//'.REFD','G V K24',7,JREFD)

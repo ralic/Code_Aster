@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE VALIDATION DE AFFE_CARA_ELEM ET POST_ELEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1568,15 +1568,6 @@ TEST_TABLE(      TABLE=MASS_3D,
                           NOM_PARA='ALPHA',
                               VALE=45.,
                            REFERENCE='ANALYTIQUE' )
-
-#
-# SUR CLCRAYA,  GAMMA = 180.0
-# SUR CLASTER,  GAMMA =   0.0
-#           TEST_TABLE ( TABLE    : MASS_3D
-#                        FILTRE   : ( NOM_PARA : 'LIEU'
-#                                     VALE_K  : HEX    )
-#                        NOM_PARA : 'GAMMA'
-#                        VALE     : 180.0               ) ;
 
 FIN( )
 #

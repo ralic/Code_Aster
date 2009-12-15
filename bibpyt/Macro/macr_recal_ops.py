@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_recal_ops Macro  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -189,9 +189,22 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
          self.current_context[k]= v
    self.current_context['_F']=cata.__dict__['_F']
 
-   macr_recal(UNITE_ESCL, force_list(RESU_EXP, Numeric.ArrayType), POIDS, force_list(LIST_PARA), LIST_DERIV, force_list(RESU_CALC), 
-             ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
-             GRAPHIQUE, SUIVI_ESCLAVE, METHODE, INFO, **args)
+#on verifie si on recale un modele dynamique
+
+   if args.has_key('DYNAMIQUE'): 
+       DYNAMIQUE = args['DYNAMIQUE']
+   else:
+       DYNAMIQUE = None
+        
+# les reponses experimentales ne sont pas donnees en meme format pour la dynamique et la statique
+   if (DYNAMIQUE!=None):
+       macr_recal(UNITE_ESCL, force_list(RESU_EXP), POIDS, force_list(LIST_PARA), LIST_DERIV, force_list(RESU_CALC),
+                 ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
+                 GRAPHIQUE, SUIVI_ESCLAVE, METHODE, INFO, **args)
+   else:
+       macr_recal(UNITE_ESCL, force_list(RESU_EXP, Numeric.ArrayType), POIDS, force_list(LIST_PARA), LIST_DERIV, force_list(RESU_CALC), 
+                 ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
+                 GRAPHIQUE, SUIVI_ESCLAVE, METHODE, INFO, **args) 
 
    aster.onFatalError(prev_onFatalError)
    return
@@ -236,6 +249,19 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
           except ImportError:
             GRAPHIQUE == None
             if INFO>=1: UTMESS('A','RECAL0_3')
+
+   if args.has_key('NB_PARENTS'): NB_PARENTS = args['NB_PARENTS']
+   if args.has_key('NB_FILS'): NB_FILS = args['NB_FILS']
+   if args.has_key('ECART_TYPE'): ECART_TYPE= args['ECART_TYPE']
+   if args.has_key('ITER_ALGO_GENE'): ITER_ALGO_GENE= args['ITER_ALGO_GENE']
+   if args.has_key('RESI_ALGO_GENE'): RESI_ALGO_GENE= args['RESI_ALGO_GENE']
+
+   if args.has_key('DYNAMIQUE'): DYNAMIQUE = args['DYNAMIQUE']
+
+   if args.has_key('DYNAMIQUE'): 
+        DYNAMIQUE = args['DYNAMIQUE']
+   else:
+        DYNAMIQUE = None
 
 
    #_____________________________________________
@@ -320,12 +346,12 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
    #
    # GESTION DES ERREURS DE SYNTAXE
    #_____________________________________________
+
    texte_erreur, texte_alarme = gestion(UNITE_ESCL,LIST_PARA,RESU_CALC,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE)
    if (texte_erreur != ""):
       UTMESS('F', "RECAL0_12", valk=texte_erreur)
    if (texte_alarme != ""):
       UTMESS('A', "RECAL0_12", valk=texte_alarme)
-
 
    #_____________________________________________
    #
@@ -347,6 +373,7 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
    # OBJET "PARAMETRES GLOBAUX"
    PARAMETRES = reca_calcul_aster.PARAMETRES(
                                              METHODE=METHODE,
+                                             DYNAMIQUE=DYNAMIQUE,
                                              UNITE_RESU=UNITE_RESU,
                                              INFO=INFO,
                                              fich_output='./REPE_OUT/output_esclave.txt',
@@ -367,11 +394,20 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
          type_fonctionnelle = 'vector'
 
    # On utilise le critere en erreur plutot que normalise
-   elif METHODE in ['FMIN', 'FMINBFGS', 'FMINNCG']: PARAMETRES.error_output = True
+   elif METHODE in ['FMIN', 'FMINBFGS', 'FMINNCG','GENETIQUE']: PARAMETRES.error_output = True
 
    # OBJET "CALCUL"
    CALCUL_ASTER = reca_calcul_aster.CALCUL_ASTER(PARAMETRES, UL=UNITE_ESCL, para=para, reponses=RESU_CALC, LIST_SENSI=LIST_SENSI, LIST_DERIV=LIST_DERIV)
 
+   # si on est dans le cas DYNAMIQUE='OUI', on doit recuperer les valeurs RESU_EXP en lancant un calcul esclave
+
+   if (DYNAMIQUE!=None):
+
+       #on fabrique un objet "CALCUL" special pour passer RESU_EXP comme reponses 
+       CALCUL_ASTER_DYN = reca_calcul_aster.CALCUL_ASTER(PARAMETRES, UL=UNITE_ESCL, para=para, reponses=RESU_EXP, LIST_SENSI=[], LIST_DERIV=[])
+       L_rep_exp, L_bid=CALCUL_ASTER_DYN.calcul_Aster(val)
+       RESU_EXP=copy.copy(L_rep_exp)
+   
    # Instances des classes pour le calcul de l'erreur et le dimensionnemnt/adim
    Simul = reca_interp.Sim_exp(RESU_EXP,POIDS)
    Dim = reca_algo.Dimension(copy.copy(val_init),para)
@@ -489,11 +525,45 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
       nomres = Sortie(LIST_NOM_PARA, LIST_PARA, val, CALCUL_ASTER, Mess)
       return
 
+   elif (METHODE=='GENETIQUE'):
+           
+      from Macro.reca_evol import evolutivo
+
+      nb_parents=NB_PARENTS
+      nb_fils=NB_FILS
+      nb_iter=ITER_ALGO_GENE
+      sigma=ECART_TYPE
+      err_min=RESI_ALGO_GENE
+
+      val = evolutivo(CALCUL_ASTER,val,nb_iter,err_min,nb_parents,nb_fils,sigma, borne_inf, borne_sup)
+
+      nomres = Sortie(LIST_NOM_PARA, LIST_PARA,val, CALCUL_ASTER, Mess)
+      return
+
+ 
    else:
        #-------------------------------------------------------------------------------
+       #si METHODE=='HYBRIDE', on lance d'abord l'algo genetique et ensuite celui de
+       # Levenberg-Marquardt qui demarre avec le jeu de parametres issu de genetique
+       if (METHODE=='HYBRIDE'):
+
+           from Macro.reca_evol import evolutivo
+
+           nb_parents=NB_PARENTS
+           nb_fils=NB_FILS
+           nb_iter=ITER_ALGO_GENE
+           sigma=ECART_TYPE
+           err_min=RESI_ALGO_GENE
+
+           val_gene = evolutivo(CALCUL_ASTER,val,nb_iter,err_min,nb_parents,nb_fils,sigma, borne_inf, borne_sup)
+           val=copy.copy(val_gene)
+           val_init=copy.copy(val)
+
        # Pour tous les autres methodes, on adimensionne
-    
+       
        # Calcul d'initialisation de F, ici L_deriv_sensible ne contient que les termes calculés par la sensibilité, les autres termes sont nuls
+       # Lors de cette initialisation on met graph_mac=True pour initialiser aussi l'appariement manual des MAC 
+       CALCUL_ASTER.graph_mac=True
        L_init, L_deriv_sensible = CALCUL_ASTER.calcul_Aster(val, INFO)
     
        L_J_init, erreur = Simul.multi_interpole(L_init, RESU_CALC)
@@ -563,8 +633,9 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
 
        #-------------------------------------------------------------------------------
        # Methode Levenberg-Marquardt
-       else:
-    
+#       else:
+       elif METHODE in  ['LEVENBERG', 'HYBRIDE']: 
+
              #_____________________________________________
              #
              # BOUCLE PRINCIPALE DE L'ALGORITHME
@@ -572,8 +643,13 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
              epsilon = 10.*RESI_GLOB_RELA
              while((residu > RESI_GLOB_RELA) & (iter<ITER_MAXI)):  
                 iter = iter +1
-                new_val, s, l, Act = reca_algo.Levenberg_bornes(val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,UNITE_RESU) 
+                new_val, s, l, Act = reca_algo.Levenberg_bornes(val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,UNITE_RESU)     
 
+                # dans le cas de la dynamique avec appariement manual des MAC, on passe la flag correspondant a True
+                
+                if (DYNAMIQUE!=None and DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI'):
+                    CALCUL_ASTER.graph_mac=True
+               
                 # Calcul de F, ici L_deriv_sensible ne contient que les termes calculés par la sensibilité, les autres termes sont nuls
                 L_F, L_deriv_sensible = CALCUL_ASTER.calcul_Aster(new_val, INFO)
 

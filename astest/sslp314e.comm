@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE MURAKAMI 8.20 FISSURE DEVIEE A L'INTERFACE ENTRE DEUX DEMI-PLANS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,16 +136,3 @@ TEST_TABLE(       TABLE=GK01,
 
 FIN()
 #
-##
-##  VALEURS SUPPOSEES DE REFERENCE
-##
-#         TEST_TABLE ( TABLE     : GK01
-#                      NOM_PARA  : 'K1'
-#                      VALE      : 8.707E+6
-#                      PRECISION : 0.01      )  ;
-##
-#         TEST_TABLE ( TABLE     : GK01
-#                      NOM_PARA  : 'K2'
-#                      VALE      : -6.952E+6
-#                      PRECISION : 0.01      )  ;
-##

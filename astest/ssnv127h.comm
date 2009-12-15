@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 # ssnv127h.para = tps_job 110 mem_job 1500Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -433,17 +433,6 @@ TEST_TABLE(TABLE=TPRESS,
 #
 # ADHERENT OU GLISSANT
 #
-
-#TEST_TABLE(TABLE=TCONT,
-#           FILTRE=(_F(NOM_PARA='INST',
-#                      VALE=1.,),
-#                   _F(NOM_PARA='NOEUD',
-#                      VALE_K='N296',),),
-#           NOM_PARA='CONT',
-#           VALE=1.,
-#           PRECISION=1.E-5,
-#           REFERENCE='NON_REGRESSION',
-#           VERSION='V6.3.22',);
 
 TEST_TABLE(TABLE=TCONT,
            FILTRE=(_F(NOM_PARA='INST',

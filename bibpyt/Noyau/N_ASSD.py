@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ASSD Noyau  DATE 14/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,6 +131,17 @@ class ASSD(object):
       is_accessible = CONTEXT.get_current_step().sd_accessible()
       if CONTEXT.debug: print '  `- is_accessible =', repr(is_accessible)
       return is_accessible
+
+
+   def par_lot(self):
+      """Conserver uniquement pour la compatibilite avec le catalogue v9 dans eficas.
+      """
+      #XXX eficas
+      if not hasattr(self, 'jdc') or self.jdc == None:
+         val = None
+      else:
+         val = self.jdc.par_lot
+      return val == 'OUI'
 
 
 class assd(ASSD):

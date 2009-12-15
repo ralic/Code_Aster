@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 14/12/2009   AUTEUR PROIX J-M.PROIX 
 #
 # TITRE VALIDATION DE POU_D_TGM
 # ssnv505h.para = tps_job 550 mem_job 256Mo ncpus 1 liste_test V
@@ -78,7 +78,7 @@ GF=DEFI_GEOM_FIBRE(
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MPOUTRE,
                   MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MPOUTRE,
-                                 RELATION='ELAS',DEFORMATION='REAC_GEOM',),
+                                 RELATION='ELAS',DEFORMATION='GROT_GDEP',),
                      )
 
 

@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_calcul_aster Macro  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,9 +40,11 @@ nompro = 'MACR_RECAL'
 
 class PARAMETRES:
 
-  def __init__(self, METHODE, UNITE_RESU, INFO=1, fich_output='./REPE_OUT/output_esclave.txt', mode_include=False, follow_output=False, table_sensibilite=False, memjeveux_esclave=None, PARA_DIFF_FINI=1.E-3, ITER_MAXI=10, ITER_FONC_MAXI=100):
+  def __init__(self, METHODE, DYNAMIQUE, UNITE_RESU, INFO=1, fich_output='./REPE_OUT/output_esclave.txt', mode_include=False, follow_output=False, 
+               table_sensibilite=False, memjeveux_esclave=None, PARA_DIFF_FINI=1.E-3, ITER_MAXI=10, ITER_FONC_MAXI=100):
 
     self.METHODE        = METHODE
+    self.DYNAMIQUE      = DYNAMIQUE
     self.UNITE_RESU     = UNITE_RESU
     self.INFO           = INFO
     self.fich_output    = fich_output
@@ -91,6 +93,7 @@ class CALCUL_ASTER:
     self.LIST_DERIV            = LIST_DERIV
 
     self.METHODE               = PARAMETRES.METHODE
+    self.DYNAMIQUE             = PARAMETRES.DYNAMIQUE
     self.UNITE_RESU            = PARAMETRES.UNITE_RESU
     self.INFO                  = PARAMETRES.INFO
     self.fich_output           = PARAMETRES.fich_output
@@ -117,7 +120,9 @@ class CALCUL_ASTER:
     self.val                   = None
     self.L                     = None
     self.L_deriv_sensible      = None
-
+    self.ordre_mac_num         =[]
+    self.ordre_mac_exp         =[]
+    self.graph_mac             = False
 
 
   # ------------------------------------------------------------------------------
@@ -176,6 +181,7 @@ class CALCUL_ASTER:
         UL         = self.UL
         para       = self.para
         reponses   = self.reponses
+        DYNAMIQUE  = self.DYNAMIQUE
         UNITE_RESU = self.UNITE_RESU
         LIST_SENSI = self.LIST_SENSI
         LIST_DERIV = self.LIST_DERIV
@@ -223,7 +229,7 @@ class CALCUL_ASTER:
 
         if __commandes_aster__:
           try:
-            from Cata.cata import INCLUDE, DETRUIRE, FIN, DEFI_FICHIER, IMPR_TABLE, LIRE_TABLE, INFO_EXEC_ASTER, EXTR_TABLE, CREA_TABLE
+            from Cata.cata import INCLUDE, DETRUIRE, FIN, DEFI_FICHIER, IMPR_TABLE, LIRE_TABLE, INFO_EXEC_ASTER, EXTR_TABLE, CREA_TABLE,MAC_MODES
           except: 
             message = "Erreur"
             UTMESS('F', 'DVP_1')
@@ -244,34 +250,6 @@ class CALCUL_ASTER:
         if INFO>=1: UTMESS('I','RECAL0_25',valk='\n'.join(txt))
   
   
-  # MARCHE PAS !!
-#         # Quelques verifications/modifications sur le fichier esclave, pour blindage
-#         fichiernew=[]
-#         for ligne in fichier.split('\n'):
-#            # DEBUT et FIN (on retire les espaces entre le mot-clé et la premiere parenthese)
-#            for (txt1, txt2) in [('DEBUT','('), ('FIN','(')]:
-#               if ligne.find( txt1 )!=-1 and ligne.find( txt2 )!=-1:
-#                  index_deb1 = ligne.index(txt1)
-#                  ligne1 = ligne[ index_deb1+len(txt1):]
-#                  if ligne.find( txt1 )!=-1:
-# 
-# 
-#            for (txt1, txt2) in [('DEBUT','('), ('FIN','(')]:
-#               if ligne.find( txt1 )!=-1 and ligne.find( txt2 )!=-1:
-#                  index_deb1 = ligne.index(txt1)
-#                  index_fin1 = index_deb1 + len(txt1)
-#                  index_deb2 = ligne.index(txt2)
-#                  index_fin2 = index_deb1 + len(txt2)
-#                  ligne = ligne[:index_fin1]+ligne[index_deb2:]
-#               # on retire les parametes en commentaires
-#               for txt in para:
-#                  if ligne.find(txt)!=-1:
-#                    if ligne.replace(' ', '')[0] == '#': ligne = ''
-#            fichiernew.append(ligne)
-#         fichier = '\n'.join(fichiernew)
-
-
-
         # On supprime tous les commentaires du fichier esclave
         fichiernew=[]
         for ligne in fichier.split('\n'):
@@ -279,7 +257,6 @@ class CALCUL_ASTER:
               if ligne.replace(' ', '')[0] == '#': ligne = ''
               fichiernew.append(ligne)
         fichier = '\n'.join(fichiernew)
-
 
         #Fichier_Resu est une liste ou l'on va stocker le fichier modifié
         #idée générale :on délimite des 'blocs' dans fichier
@@ -300,10 +277,6 @@ class CALCUL_ASTER:
              #on va dans l'except si on a modifié le fichier au moins une fois
              pass 
   
-#         print 60*'o'
-#         print fichier
-#         print 60*'o'
-
         # On enleve le mot-clé FIN()
         try:
            #cherche l'indice de FIN()
@@ -312,9 +285,6 @@ class CALCUL_ASTER:
            fichier = fichier[:index_fin]
         except : pass
 
-#         print 60*'o'
-#         print fichier
-#         print 60*'o'
 
         #--------------------------------------------------------------------------------
         #on cherche à délimiter le bloc des parametres dans le fichier
@@ -330,7 +300,7 @@ class CALCUL_ASTER:
         index_para = Numeric.sort(index_para)
         index_first_para = index_para[0]
         index_last_para = index_para[len(index_para)-1]
-  
+
   
         #on va délimiter les blocs intermédiaires entre chaque para "utiles" à l'optimsation
         bloc_inter ='\n'
@@ -367,8 +337,8 @@ class CALCUL_ASTER:
              Fichier_Resu.append(para[j]+'='+str(val[j]) + ';' + '\n')
            else:
              Fichier_Resu.append(para[j]+'=DEFI_PARA_SENSI(VALE='+str(val[j]) + ',);' + '\n')
-
-
+             
+             
         #On ajoute à Fichier_Resu tous ce qui est entre les parametres
         Fichier_Resu.append(bloc_inter)
         
@@ -396,7 +366,7 @@ class CALCUL_ASTER:
         del(pre_bloc)
         del(post_bloc)
         del(fichier)
-
+ 
         # ----------------------------------------------------------------------------------
         # Execution d'une deuxieme instance d'Aster
 
@@ -405,7 +375,7 @@ class CALCUL_ASTER:
           # Ajout des commandes d'impression des tables Resultats et Derivees à la fin du fichier esclave
           Fichier_Resu = []
           num_ul = '99'
-
+            
           # Tables correspondant aux Resultats
           for i in range(len(reponses)):
              _ul = str(int(100+i))
@@ -417,7 +387,7 @@ class CALCUL_ASTER:
              Fichier_Resu.append("DEFI_FICHIER(UNITE="+num_ul+", FICHIER='"+tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+_ul+"',);\n")
              Fichier_Resu.append("IMPR_TABLE(TABLE="+str(reponses[i][0])+", FORMAT='ASTER', UNITE="+num_ul+", INFO=1, FORMAT_R='E30.20',);\n")
              Fichier_Resu.append("DEFI_FICHIER(ACTION='LIBERER', UNITE="+num_ul+",);\n")
-
+ 
           # Tables correspondant aux Derivees
           if len(LIST_SENSI)>0:
               i = 0
@@ -439,18 +409,23 @@ class CALCUL_ASTER:
                        Fichier_Resu.append("IMPR_TABLE(TABLE="+_tbl+", FORMAT='ASTER', UNITE="+num_ul+", INFO=1, FORMAT_R='E30.20',);\n")
                      Fichier_Resu.append("DEFI_FICHIER(ACTION='LIBERER', UNITE="+num_ul+",);\n")
 
+          # pour la dynamique et si APPARIEMENT_MANUEL='OUI', on ajoute le calcul du MAC
+
+          if (DYNAMIQUE!=None and DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI' and self.graph_mac): self.ajout_post_mac(Fichier_Resu, num_ul, tmp_macr_recal)
+
           # Ecriture du "nouveau" fichier .comm
           x=open('fort.'+str(UL),'a')
           x.write( '\n'.join(Fichier_Resu) )
           x.write('\nFIN();\n')
           x.close()
 
+#
 #          os.system("cat %s" % self.new_export)
 
           # Lancement du calcul Aster esclave
           cmd = '%s %s' % (as_run, self.new_export)
           self.Lancement_Commande(cmd)
-
+ 
           # Recuperation du .mess et du .resu 'fils'
           if self.METHODE != 'EXTERNE':
              if self.nom_fichier_mess_fils:
@@ -467,6 +442,13 @@ class CALCUL_ASTER:
 
 
           # ------------------------------------------------------
+
+
+          #Recuperation es liste d'appariement des MAC
+          if (DYNAMIQUE!=None and DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI' and self.graph_mac):
+              _fic_table = tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+str(int(199))
+              self.get_liste_mac(_fic_table)
+
           # Recuperation des tableaux resultats
           Lrep=[]
           _TB = [None]*len(reponses)
@@ -514,18 +496,20 @@ class CALCUL_ASTER:
                    tab_lue   = table_lue.values()
                 except Exception, err:
                    UTMESS('F', 'RECAL0_28', valk=str(err))
+                #pour la dynamique on cherche la reponse qui a MAC comme parametre,
+                #il aura un traitement different pour extraire la reponse
+                if (DYNAMIQUE!=None and 'MAC' in list_para): self.get_table_mac(table_lue,Lrep)
 
-                try:
-                    nb_val = len(tab_lue[ list_para[0] ])
-                    F = Numeric.zeros((nb_val,2), Numeric.Float)
-                    for k in range(nb_val):
-#                       F[k][0] = tab_lue[ list_para[0] ][1][k]
-#                       F[k][1] = tab_lue[ list_para[1] ][1][k]
-                      F[k][0] = tab_lue[ str(reponses[i][1]) ][k]
-                      F[k][1] = tab_lue[ str(reponses[i][2]) ][k]
-                    Lrep.append(F)
-                except Exception, err:
-                    UTMESS('F', 'RECAL0_29', valk=str(err))
+                else:
+                    try:
+                        nb_val = len(tab_lue[ list_para[0] ])
+                        F = Numeric.zeros((nb_val,2), Numeric.Float)
+                        for k in range(nb_val):
+                            F[k][0] = tab_lue[ str(reponses[i][1]) ][k]
+                            F[k][1] = tab_lue[ str(reponses[i][2]) ][k]
+                        Lrep.append(F)
+                    except Exception, err:
+                        UTMESS('F', 'RECAL0_29', valk=str(err))
 
 
           # ------------------------------------------------------
@@ -584,13 +568,11 @@ class CALCUL_ASTER:
                              tab_lue   = table_lue.values()
                           except Exception, err:
                              UTMESS('F', 'RECAL0_28', valk=str(err))
-
+          
                           try:
                               nb_val = len(tab_lue[ list_para[0] ])
                               DF = Numeric.zeros((nb_val,2), Numeric.Float)
                               for k in range(nb_val):
-#                                 DF[k][0] = tab_lue[ list_para[0] ][1][k]
-#                                 DF[k][1] = tab_lue[ list_para[1] ][1][k]
                                 DF[k][0] = tab_lue[ str(LIST_DERIV[_para][j][1]) ][k]
                                 DF[k][1] = tab_lue[ str(LIST_DERIV[_para][j][2]) ][k]
                               L_deriv[_para].append(DF)
@@ -644,7 +626,6 @@ class CALCUL_ASTER:
         x.close()
 
         return Lrep, L_deriv
-
 
 
   # ------------------------------------------------------------------------------
@@ -786,7 +767,7 @@ class CALCUL_ASTER:
          # répertoires
          if dico['isrep']:
 
-           # base non prise en compte
+             # base non prise en compte
            if dico['type'] in ('base', 'bhdf'):
              l_fr.remove(dico)
 
@@ -838,7 +819,85 @@ class CALCUL_ASTER:
 
      if debug: os.system('cp ' + self.new_export + ' /tmp')
 
-  # --FIN CLASSE  ----------------------------------------------------------------------------
 
+  def get_table_mac(self,table_lue,Lrep):
+      list_para = table_lue.para
+      tab_lue   = table_lue.values()
+      data1=[]
+      data2=[]
+      data_mac=[]
+      ordre_mac_num=self.ordre_mac_num
+      ordre_mac_exp=self.ordre_mac_exp
+      
+      for j in range(len(tab_lue[ list_para[0] ])):
+          data1.append(tab_lue['NUME_MODE_1'][j])
+          data2.append(tab_lue['NUME_MODE_2'][j])
+          data_mac.append(tab_lue['MAC'][j])
+      N = int(Numeric.maximum.reduce(data1[:]))
+      M = int(Numeric.maximum.reduce(data2[:]))
+      rep_mac = Numeric.zeros( (N,M), Numeric.Float )
+     #on met les MAC dans une matrice
+      for i in range(len(data1)):
+          i1 = int(data1[i])-1
+          i2 = int(data2[i])-1
+          rep_mac[ i1, i2 ] = data_mac[i]                                   
+      nb_val = N
+      F = Numeric.zeros((nb_val,2), Numeric.Float)
+      #en dynamique, si on a fait l'appariement a la main on range les MAC suivant les 
+      #listes recuperes plus haut
+      if (self.DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI'):
+          for k in range(nb_val):
+              F[k][0]=k+1 
+              F[k][1]=rep_mac[int(self.ordre_mac_num[k])-1,int(self.ordre_mac_exp[k])-1]
+ 
+          Lrep.append(F)
+      else:
+          for k in range(nb_val):
+              F[k][0]=k+1 
+              F[k][1]=rep_mac[k,k] 
+          Lrep.append(F)
+
+  def ajout_post_mac(self,Fichier_Resu, num_ul, tmp_macr_recal):
+      _ul = str(int(199))
+      Fichier_Resu.append("_MAC_EXP=MAC_MODES(BASE_1="+self.DYNAMIQUE['MODE_CALC']+",BASE_2="+self.DYNAMIQUE['MODE_EXP']+",);\n")
+      Fichier_Resu.append("from Macro.reca_mac import extract_mac_array, get_modes, fenetre_mac\n")
+      Fichier_Resu.append("_mac = extract_mac_array(_MAC_EXP)\n")
+      Fichier_Resu.append("frame =fenetre_mac("+self.DYNAMIQUE['MODE_EXP']+","+self.DYNAMIQUE['MODE_CALC']+",_mac)\n")
+      Fichier_Resu.append("list_exp,list_num =frame.get_list()\n")
+      Fichier_Resu.append("LIST_MAC=CREA_TABLE(LISTE=(_F(PARA='NUME_ORDRE',LISTE_I=range(1,len(list_exp)+1),),_F(PARA='MAC_EXP',LISTE_I=list_exp,),_F(PARA='MAC_NUM',LISTE_I=list_num,)),)\n")        
+      Fichier_Resu.append("DEFI_FICHIER(UNITE="+num_ul+", FICHIER='"+tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+_ul+"',);\n")
+      Fichier_Resu.append("IMPR_TABLE(TABLE=LIST_MAC, FORMAT='ASTER', UNITE="+num_ul+", INFO=1, FORMAT_R='E30.20',);\n")
+      Fichier_Resu.append("DEFI_FICHIER(ACTION='LIBERER', UNITE="+num_ul+",);\n")
+
+
+  def get_liste_mac(self,_fic_table):
+      from lire_table_ops import lecture_table
+      try:
+          file=open(_fic_table,'r')
+          texte=file.read()
+          file.close()
+      except Exception, err:
+          ier=1
+          UTMESS('F', 'RECAL0_27', valk=str(err))
+
+      try:
+          table_lue = lecture_table(texte, 1, ' ')
+          list_para = table_lue.para
+          tab_lue   = table_lue.values()
+      except Exception, err:
+          UTMESS('F', 'RECAL0_28', valk=str(err))
+
+      try:
+          nb_val = len(tab_lue[ list_para[0] ])
+          self.ordre_mac_num=[]
+          self.ordre_mac_exp=[]
+          for k in range(nb_val):
+               self.ordre_mac_num.append(tab_lue['MAC_NUM'][k])
+               self.ordre_mac_exp.append(tab_lue['MAC_EXP'][k])
+
+      except Exception, err:
+          UTMESS('F', 'RECAL0_29', valk=str(err))
+
+  # --FIN CLASSE  ----------------------------------------------------------------------------
 
 

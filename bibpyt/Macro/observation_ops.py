@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF observation_ops Macro  DATE 14/12/2009   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,6 +31,7 @@ def observation_ops(self,
                     MODI_REPERE  = None,
                     NOM_CHAM     = None,
                     FILTRE       = None,
+                    EPSI_MOYENNE = None,
                     **args):
 
     """
@@ -52,29 +53,354 @@ def observation_ops(self,
     from Accas import _F
     from Utilitai.UniteAster import UniteAster
     from Utilitai.Utmess     import UTMESS
-    from Cata.cata import mode_meca, dyna_harmo, evol_elas
+    from Utilitai.Table      import Table
+    from Cata.cata import mode_meca, dyna_harmo, evol_elas,dyna_trans
     MODI_REPERE = self.get_cmd('MODI_REPERE')
     PROJ_CHAMP  = self.get_cmd('PROJ_CHAMP')
     CREA_CHAMP  = self.get_cmd('CREA_CHAMP')
     CREA_RESU   = self.get_cmd('CREA_RESU')
-    DEFI_BASE_MODALE = self.get_cmd('DEFI_BASE_MODALE')
+    POST_RELEVE_T   = self.get_cmd('POST_RELEVE_T')
     DETRUIRE = self.get_cmd('DETRUIRE')
 
     # dans **args, on range les options de PROJ_CHAMP facultatives, et dont on
     # ne sert pas par la suite
     mcfact = args
 
-    # La macro n'est pas encoire capable de traiter les resultats dyna_harmo
-    if isinstance(RESULTAT, dyna_harmo):
-        UTMESS('E','UTILITAI7_8')
+    if NOM_CHAM == 'DEPL':
+      if isinstance( RESULTAT, dyna_harmo):
+        TYPE_CHAM = 'NOEU_DEPL_C'
+      else:
+        TYPE_CHAM = 'NOEU_DEPL_R'
+    elif NOM_CHAM == 'EPSI_NOEU_DEPL':
+      if isinstance( RESULTAT, dyna_harmo):
+        TYPE_CHAM  = 'NOEU_EPSI_C'
+      else:
+        TYPE_CHAM  = 'NOEU_EPSI_R'
+    else:
+        UTMESS('F','ELEMENTS4_48',valk=[NOM_CHAM])
+
+    if isinstance( RESULTAT, evol_elas): TYPE_RESU='EVOL_ELAS'
+    if isinstance( RESULTAT, dyna_trans): TYPE_RESU='DYNA_TRANS'
+    if isinstance( RESULTAT, dyna_harmo): TYPE_RESU='DYNA_HARMO'
+    if isinstance( RESULTAT, mode_meca): TYPE_RESU='MODE_MECA'
+
+    self.DeclareOut( 'RESU', self.sd)
+    jdc = CONTEXT.get_current_step().jdc
+
+    # recuperation du maillage associe au modele numerique
+    _maillag = aster.getvectjev( MODELE_1.nom.ljust(8) + '.MODELE    .LGRF' )
+    maillage = _maillag[0].strip()
+    mayanum = self.get_concept(maillage)
+
+    # modele numerique 2D ou 3D
+    typmod= mayanum.DIME.get()
+    typmod = typmod[5]
+
+    # recuperation du maillage associe au modele experimental
+    _maillag = aster.getvectjev( MODELE_2.nom.ljust(8) + '.MODELE    .LGRF' )
+    maillage = _maillag[0].strip()
+    mayaexp = self.get_concept(maillage)
+
+    # cham_mater et cara_elem pour le resultat a projeter
+    iret,ibid,nom_cara_elem = aster.dismoi('F','CARA_ELEM',RESULTAT.nom,'RESULTAT')
+    if len(nom_cara_elem) > 0    :
+        assert nom_cara_elem.strip() != "#PLUSIEURS" , nom_cara_elem
+        if nom_cara_elem.strip() == "#AUCUN" :
+            cara_elem = None
+        else :
+            cara_elem = self.get_concept(nom_cara_elem.strip())
+    else:
+        cara_elem = None
+
+    iret,ibid,nom_cham_mater = aster.dismoi('F','CHAM_MATER',RESULTAT.nom,'RESULTAT')
+    if len(nom_cham_mater) > 0 :
+        assert nom_cham_mater.strip() != "#PLUSIEURS" , nom_cham_mater
+        if nom_cham_mater.strip() == "#AUCUN" :
+            cham_mater = None
+        else :
+            cham_mater = self.get_concept(nom_cham_mater.strip())
+    else:
+        cham_mater = None
+
+    # afreq pour les frequences propres
+    if isinstance( RESULTAT, mode_meca):
+        from Cata.cata import RECU_TABLE
+        __freq  = RECU_TABLE(CO=RESULTAT,
+                             NOM_PARA='FREQ',);
+        afreq  = __freq.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
+    else:
+        afreq = None
+
+    nume_ordr_demande = mcfact['NUME_ORDRE']
+    if type(nume_ordr_demande) != tuple :
+        nume_ordr_demande = [nume_ordr_demande]
+
+    num_max = len(RESULTAT.LIST_VARI_ACCES()['NUME_ORDRE'])
+
+#***********************************************
+#  PHASE DE CALCUL DE LA DEFORMATION MOYENNE AUX NOEUDS
+#  CHAMP CALCULE SUR LE MODELE NUMERIQUE
+#***********************************************
+
+    if EPSI_MOYENNE != None :
+
+      if NOM_CHAM != 'EPSI_NOEU_DEPL':
+            __proj= RESULTAT
+            UTMESS('F','UTILITAI8_24',valk=['NOEU_EPSI',NOM_CHAM])
+      else:
+        if nume_ordr_demande[0]:
+            num_ordr = nume_ordr_demande
+        else:
+            num_ordr = RESULTAT.LIST_VARI_ACCES()['NUME_ORDRE']
+
+        if isinstance( RESULTAT, evol_elas):
+            list_inst = RESULTAT.LIST_VARI_ACCES()['INST']
+        if isinstance( RESULTAT, dyna_trans):
+            list_inst = RESULTAT.LIST_VARI_ACCES()['INST']
+        if isinstance( RESULTAT, dyna_harmo):
+            list_freq = RESULTAT.LIST_VARI_ACCES()['FREQ']
+
+        liste = []
+
+      # il faut calculer le champ complet
+        if typmod == 2:
+            nom_cmps = ['EPXX','EPYY','EPZZ','EPXY',]
+        else:
+            nom_cmps = ['EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',]
+
+        argsi = {'ACTION' : [], }
+        lnoeuds = { }
+        nb_mcfact = 0
+        seuil = []
+        masque = []
+        for epsi_moye in EPSI_MOYENNE :
+            mcfactr = { }
+            mcfacti = { }
+            l_noeud = None
+            val_masque = []
+            seuil_lu = epsi_moye['SEUIL_VARI']
+            if type(seuil_lu) == tuple :
+                val_seuil = seuil_lu[0]
+            else:
+                val_seuil = seuil_lu
+            seuil.append(val_seuil)
+            masque_lu = epsi_moye['MASQUE']
+            if type(masque_lu) != tuple :
+                val_masque.append(masque_lu)
+            else:
+                val_masque = masque_lu
+            masque.append(val_masque)
+            for typ in ['NOEUD','GROUP_NO','MAILLE','GROUP_MA']:
+              if epsi_moye[typ] != None:
+                l_noeud = find_no(mayanum, {typ : epsi_moye[typ]})
+                nb_mcfact = nb_mcfact + 1
+                for i in range(len(l_noeud)):
+                    l_noeud[i]=l_noeud[i].strip()
+                lnoeuds[str(nb_mcfact)]=l_noeud
+
+            if l_noeud == None:
+                UTMESS('F','MODELISA3_13',valk=['EPSI_MOYENNE'])
+
+            if TYPE_CHAM[-1:] == 'C':
+              mcfactr = { 'NOM_CMP'   : nom_cmps,
+                         'OPERATION' : 'EXTRACTION',
+                         'INTITULE' : str('R'+str(nb_mcfact)),
+                         'FORMAT_C' : 'REEL',
+                         'NOEUD' : l_noeud,
+                        'NOM_CHAM'  : 'EPSI_NOEU_DEPL',
+                        'RESULTAT'  : RESULTAT,
+                        'NUME_ORDRE'  : num_ordr,
+                       }
+              argsi['ACTION'].append(mcfactr)
+              mcfacti = { 'NOM_CMP'   : nom_cmps,
+                         'OPERATION' : 'EXTRACTION',
+                         'INTITULE' : str('I'+str(nb_mcfact)),
+                         'FORMAT_C' : 'IMAG',
+                         'NOEUD' : l_noeud,
+                        'NOM_CHAM'  : 'EPSI_NOEU_DEPL',
+                        'RESULTAT'  : RESULTAT,
+                        'NUME_ORDRE'  : num_ordr,
+                       }
+              argsi['ACTION'].append(mcfacti)
+            else:
+              mcfactr = { 'NOM_CMP'   : nom_cmps,
+                         'OPERATION' : 'EXTRACTION',
+                         'INTITULE' : str(nb_mcfact),
+                         'NOEUD' : l_noeud,
+                        'NOM_CHAM'  : 'EPSI_NOEU_DEPL',
+                        'RESULTAT'  : RESULTAT,
+                        'NUME_ORDRE'  : num_ordr,
+                       }
+              argsi['ACTION'].append(mcfactr)
+
+        _tepsi=POST_RELEVE_T(
+                   **argsi)
+
+        table=_tepsi.EXTR_TABLE()
+
+        DETRUIRE( CONCEPT= _F( NOM = _tepsi ), INFO=1)
+
+        mcfact2 = { }
+        __chame = [None]*num_max
+        for ind in num_ordr:
+         argsa = {'AFFE' : [], }
+         for mcfacta in range(nb_mcfact):
+          l_noeud_mcfact = lnoeuds[str(mcfacta+1)]
+          l_vmoye=[]
+          l_cmp_vari=[]
+          seuil_mc=seuil[mcfacta]
+          masque_mc=masque[mcfacta]
+          for cmp in nom_cmps:
+           lur = 0
+           lui = 0
+           l_valr= []
+           l_vali= []
+           l_valc= []
+           l_val= []
+           for row in table.rows:
+            if TYPE_CHAM[-1:] == 'C':
+             if row['INTITULE'].strip() == str('R'+str(mcfacta+1))   \
+                      and row['NUME_ORDRE'] == ind :
+                l_valr.append(row[cmp])
+                lur = 1
+             elif row['INTITULE'].strip() == str('I'+str(mcfacta+1))   \
+                      and row['NUME_ORDRE'] == ind :
+                l_vali.append(row[cmp])
+                lui = 1
+                  
+            else:
+             if row['INTITULE'].strip() == str(mcfacta+1)   \
+                      and row['NUME_ORDRE'] == ind: 
+                  l_val.append(row[cmp])
+
+           if TYPE_CHAM[-1:] == 'C':
+             if lur and lui :
+                if len(l_valr) != len(l_vali):
+                  UTMESS('F','POSTRELE_59')
+                for i in range(len(l_valr)):
+                  l_valc.append(complex(l_valr[i],l_vali[i]))
+
+                lur = 0
+                lui = 0
+             else:
+                UTMESS('F','POSTRELE_59')
+
+          # on regarde a la fois la partie reelle et la partie imag pour les complexes
+             vmoyer = sum(l_valr)/len(l_valr)
+             vmoyei = sum(l_vali)/len(l_vali)
+             vmoye = sum(l_valc)/len(l_valc)
+             vminr = min(l_valr)  
+             vmini = min(l_vali)  
+             vmaxr = max(l_valr)
+             vmaxi = max(l_vali)
+             if vmoyer > 0:
+               if (vmaxr > vmoyer*(1.+seuil_mc)) or (vminr < vmoyer*(1-seuil_mc)):
+                 l_cmp_vari.append(cmp)
+             if vmoyei > 0:
+               if (vmaxi > vmoyei*(1.+seuil_mc)) or (vmini < vmoyei*(1-seuil_mc)):
+                 l_cmp_vari.append(cmp)
+             if vmoyer < 0:
+               if (vminr > vmoyer*(1.-seuil_mc)) or (vmaxr < vmoyer*(1+seuil_mc)):
+                 l_cmp_vari.append(cmp)
+             if vmoyei < 0:
+               if (vmini > vmoyei*(1.-seuil_mc)) or (vmaxi < vmoyei*(1+seuil_mc)):
+                 l_cmp_vari.append(cmp)
+           else:
+             vmoye = sum(l_val)/len(l_val)
+             vmin = min(l_val)
+             vmax = max(l_val)
+             if vmoye > 0:
+               if (vmax > vmoye*(1.+seuil_mc)) or (vmin < vmoye*(1-seuil_mc)):
+                 l_cmp_vari.append(cmp)
+             if vmoye < 0:
+               if (vmin > vmoye*(1.-seuil_mc)) or (vmax < vmoye*(1+seuil_mc)):
+                 l_cmp_vari.append(cmp)
+
+           l_vmoye.append(vmoye)
+
+          if len(l_cmp_vari) > 0:
+           for cmp in nom_cmps:
+            vu = 0
+            for cmp_vari in l_cmp_vari:
+             if cmp_vari not in masque_mc:
+              if cmp == cmp_vari and not vu:
+                if EPSI_MOYENNE[mcfacta]['MAILLE'] != None:
+                  entite = str('MAILLE : '+str(PSI_MOYENNE[mcfacta]['MAILLE']))
+                if EPSI_MOYENNE[mcfacta]['GROUP_MA'] != None:
+                  entite = str('GROUP_MA : '+str(EPSI_MOYENNE[mcfacta]['GROUP_MA']))
+                UTMESS('A','OBSERVATION_8',vali=[ind],valr=[seuil_mc],valk=[entite,cmp])
+                vu = 1
+
+
+          if TYPE_CHAM[-1:] == 'C':
+            mcfactc = { 'NOM_CMP'   : nom_cmps,
+                         'NOEUD' : l_noeud_mcfact,
+                        'VALE_C'  : l_vmoye,
+                       }
+          else:
+            mcfactc = { 'NOM_CMP'   : nom_cmps,
+                         'NOEUD' : l_noeud_mcfact,
+                        'VALE'  : l_vmoye,
+                       }
+
+          argsa['AFFE'].append(mcfactc)
+
+         __chame[ind-1] = CREA_CHAMP( OPERATION  = 'AFFE',
+                          MODELE = MODELE_1,
+                          PROL_ZERO = 'OUI',
+                          TYPE_CHAM  = TYPE_CHAM, 
+                          OPTION   = NOM_CHAM,
+                          **argsa
+                          );
+
+         if isinstance( RESULTAT, mode_meca):
+                  mcfact2 = {'CHAM_GD'    : __chame[ind-1],
+                       'MODELE'     : MODELE_1,
+                       'NUME_MODE'    : int(afreq[ind-1,0]),
+                       'FREQ'    : afreq[ind-1,1],
+                       }
+
+         if isinstance( RESULTAT, evol_elas):
+                    mcfact2 = {'CHAM_GD'    : __chame[ind-1],
+                       'MODELE'     : MODELE_1,
+                       'INST'    : list_inst[ind-1],
+                       }
+
+         if isinstance( RESULTAT, dyna_trans):
+                    mcfact2 = {'CHAM_GD'    : __chame[ind-1],
+                       'MODELE'     : MODELE_1,
+                       'INST'    : list_inst[ind],
+                       }
+
+         if isinstance( RESULTAT, dyna_harmo):
+                mcfact2 = {'CHAM_GD'    : __chame[ind-1],
+                       'MODELE'     : MODELE_1,
+                       'FREQ'    : list_freq[ind-1],
+                       }
+
+         if cham_mater is not None:
+                    mcfact2['CHAM_MATER'] = cham_mater
+         if cara_elem is not None:
+                    mcfact2['CARA_ELEM'] = cara_elem
+
+         liste.append(mcfact2)
+
+        __proj = CREA_RESU(
+                              OPERATION = 'AFFE',
+                              TYPE_RESU = TYPE_RESU,
+                              NOM_CHAM  = NOM_CHAM,
+                              AFFE      = liste,
+                             );
+    else:
+        __proj= RESULTAT
 
 
 #***********************************************
 #  PHASE DE PROJECTION
 #***********************************************
 
-    if PROJECTION == 'OUI' :
-        __proj=PROJ_CHAMP(RESULTAT = RESULTAT,
+    if PROJECTION == 'OUI':
+        __proj=PROJ_CHAMP(RESULTAT = __proj,
                           MODELE_1 = MODELE_1,
                           MODELE_2 = MODELE_2,
                           NUME_DDL = NUME_DDL,
@@ -82,8 +408,9 @@ def observation_ops(self,
                           **mcfact
                          );
 
-    else :
-        __proj = RESULTAT
+        modele = MODELE_2
+    else:
+        modele = MODELE_1
 
 
 #***********************************************
@@ -106,50 +433,58 @@ def observation_ops(self,
 #                    )
 
 
-    # cham_mater et cara_elem pour le resultat a projeter
-    jdc = CONTEXT.get_current_step().jdc
-    iret,ibid,nom_cara_elem = aster.dismoi('F','CARA_ELEM',RESULTAT.nom,'RESULTAT')
-    if len(nom_cara_elem) > 0    :
-        assert nom_cara_elem.strip() != "#PLUSIEURS" , nom_cara_elem
-        if nom_cara_elem.strip() == "#AUCUN" :
-            cara_elem = None
-        else :
-            cara_elem = self.get_concept(nom_cara_elem.strip())
-    else:
-        cara_elem = None
-
-    iret,ibid,nom_cham_mater = aster.dismoi('F','CHAM_MATER',RESULTAT.nom,'RESULTAT')
-    if len(nom_cham_mater) > 0 :
-        assert nom_cham_mater.strip() != "#PLUSIEURS" , nom_cham_mater
-        if nom_cham_mater.strip() == "#AUCUN" :
-            cham_mater = None
-        else :
-            cham_mater = self.get_concept(nom_cham_mater.strip())
-    else:
-        cham_mater = None
-
-    # recuperation du maillage associe au modele experimental
-    _maillag = aster.getvectjev( MODELE_2.nom.ljust(8) + '.MODELE    .LGRF' )
-    maillage = _maillag[0].strip()
-    jdc = CONTEXT.get_current_step().jdc
-    mayaexp = self.get_concept(maillage)
-
-    _maillag = aster.getvectjev( MODELE_1.nom.ljust(8) + '.MODELE    .LGRF' )
-    maillage = _maillag[0].strip()
-    jdc = CONTEXT.get_current_step().jdc
-    mayanum = self.get_concept(maillage)
-
-
     if MODIF_REPERE != None :
-        for modi_rep in MODIF_REPERE :
-            type_cham = modi_rep['TYPE_CHAM']
-            nom_cmp = modi_rep['NOM_CMP']
+        if nume_ordr_demande[0]:
+            num_ordr = nume_ordr_demande
+        else:
+            num_ordr = __proj.LIST_VARI_ACCES()['NUME_ORDRE']
+
+        for modif_rep in MODIF_REPERE :
+            type_cham = modif_rep['TYPE_CHAM']
+            if type_cham == 'TENS_2D':
+                nom_cmp = ['EPXX','EPYY','EPZZ','EPXY',]
+            elif type_cham == 'TENS_3D':
+                nom_cmp = ['EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',]
+            else:
+                nom_cmp = modif_rep['NOM_CMP']
             mcfact1 = { 'NOM_CMP'   : nom_cmp,
                         'TYPE_CHAM' : type_cham,
                         'NOM_CHAM'  : NOM_CHAM }
 
             mcfact2 = { }
-            modi_rep = modi_rep.val
+            modi_rep = modif_rep.val
+
+            if modi_rep['REPERE'] == 'DIR_JAUGE' :
+                vect_x = None
+                vect_y = None
+                if modi_rep.has_key('VECT_X'):
+                    vect_x = modi_rep['VECT_X']
+                if modi_rep.has_key('VECT_Y'):
+                    vect_y = modi_rep['VECT_Y']
+
+                # il faut des mailles pour les tenseurs d'ordre 2
+                taille = 0
+                for typ in ['MAILLE','GROUP_MA',]:
+                  if modi_rep.has_key(typ) :
+                    if PROJECTION == 'OUI':
+                      maya = mayaexp
+                    else:
+                      maya = mayanum
+                    list_ma = find_ma(maya, {typ : modi_rep[typ]})
+                taille = len(list_ma)
+
+                mcfact1.update({ 'MAILLE'    : list_ma })
+                angl_naut = crea_repere_xy(vect_x, vect_y)
+
+                mcfact2.update({ 'REPERE'    : 'UTILISATEUR',
+                                 'ANGL_NAUT' : angl_naut })
+
+                args = {'MODI_CHAM'   : mcfact1,
+                        'DEFI_REPERE' : mcfact2 }
+
+                __proj = MODI_REPERE( RESULTAT    = __proj,
+                                      NUME_ORDRE  = num_ordr, 
+                                      **args)
 
             if modi_rep['REPERE'] == 'NORMALE' :
                 # Cas ou l'utilisateur choisit de creer les reperes locaux
@@ -163,13 +498,14 @@ def observation_ops(self,
 
                 chnorm = crea_normale(self, MODELE_1, MODELE_2, NUME_DDL,
                                                       cham_mater, cara_elem)
+                modele = MODELE_2
                 chnormx = chnorm.EXTR_COMP('DX',[],1)
                 ind_noeuds = chnormx.noeud
                 nom_allno = [mayaexp.NOMNOE.get()[k-1] for k in ind_noeuds]
 
                 # on met les noeuds conernes sous forme de liste et on va
                 # chercher les noeuds des mailles pour 'MAILLE' et 'GROUP_MA'
-                for typ in ['NOEUD','GROUP_NO','MAILLE','GROUP_MA','TOUT']:
+                for typ in ['NOEUD','GROUP_NO','MAILLE','GROUP_MA']:
                     if modi_rep.has_key(typ) :
                         list_no_exp = find_no(mayaexp, {typ : modi_rep[typ]})
 
@@ -195,56 +531,71 @@ def observation_ops(self,
                 __proj = __bid[-1:][0]
 
 
-            else:
-                for typ in ['NOEUD','GROUP_NO','MAILLE','GROUP_MA','TOUT']:
+            if modi_rep['REPERE'] == 'UTILISATEUR' or modi_rep['REPERE'] == 'CYLINDRIQUE':
+
+              if type_cham == 'TENS_2D' or type_cham == 'TENS_3D' :
+                  for typ in ['MAILLE','GROUP_MA',]:
                     if modi_rep.has_key(typ) :
                         mcfact1.update({typ : modi_rep[typ]})
-                if modi_rep['REPERE'] == 'CYLINDRIQUE' :
+              else:
+                for typ in ['NOEUD','GROUP_NO','MAILLE','GROUP_MA']:
+                    if modi_rep.has_key(typ) :
+                        mcfact1.update({typ : modi_rep[typ]})
+
+              if modi_rep['REPERE'] == 'CYLINDRIQUE' :
                     origine = modi_rep['ORIGINE']
                     axe_z   = modi_rep['AXE_Z']
                     mcfact2.update({ 'REPERE'  : 'CYLINDRIQUE',
                                      'ORIGINE' : origine,
                                      'AXE_Z'   : axe_z })
 
-                elif modi_rep['REPERE'] == 'UTILISATEUR' :
+              elif modi_rep['REPERE'] == 'UTILISATEUR' :
                     angl_naut = modi_rep['ANGL_NAUT']
                     mcfact2.update({ 'REPERE'    : 'UTILISATEUR',
                                      'ANGL_NAUT' : angl_naut })
-                args = {'MODI_CHAM'   : mcfact1,
+
+              args = {'MODI_CHAM'   : mcfact1,
                         'DEFI_REPERE' : mcfact2 }
-                __bid = MODI_REPERE( RESULTAT    = __proj,
+
+              __bidon = MODI_REPERE( RESULTAT    = __proj,
                                      CRITERE     = 'RELATIF',
                                      **args)
-                __proj = __bid
-
-
-    else: # pas de modif de repere demandee
-        pass
+              DETRUIRE( CONCEPT= _F( NOM = __proj ), INFO=1)
+              __proj = __bidon
 
 
 #*************************************************
 # Phase de selection des DDL de mesure
 #*************************************************
-    # les numeros d'ordre de la sd_resu
-    num_ordr = RESULTAT.LIST_VARI_ACCES()['NUME_ORDRE']
-    __cham = [None]*len(num_ordr)
-    list_cham = []
 
     if FILTRE != None:
-        nb_fi = len(FILTRE)
+        if nume_ordr_demande[0]:
+            num_ordr = nume_ordr_demande
+        else:
+            num_ordr = __proj.LIST_VARI_ACCES()['NUME_ORDRE']
+
+        __chamf = [None]*num_max
+        if isinstance( RESULTAT, evol_elas):
+            list_inst_ini = RESULTAT.LIST_VARI_ACCES()['INST']
+        if isinstance( RESULTAT, dyna_trans):
+            list_inst_ini = RESULTAT.LIST_VARI_ACCES()['INST']
+        if isinstance( RESULTAT, dyna_harmo):
+            list_freq_ini = RESULTAT.LIST_VARI_ACCES()['FREQ']
+
         liste = []
 
         for ind in num_ordr:
+            mcfact2 = { }
             filtres = []
-            __chamex = CREA_CHAMP(TYPE_CHAM  = 'NOEU_DEPL_R',
+            __chamex = CREA_CHAMP(TYPE_CHAM  = TYPE_CHAM,
                                   OPERATION  = 'EXTR',
                                   RESULTAT   = __proj,
-                                  NOM_CHAM   = 'DEPL',
+                                  NOM_CHAM   = NOM_CHAM,
                                   NUME_ORDRE = ind,);
 
-            for filtre in FILTRE :
+            for mcfiltre in FILTRE :
                 mcfact1 = {}
-                filtre = filtre.val
+                filtre = mcfiltre.val
                 for typ in ['NOEUD','GROUP_NO','MAILLE','GROUP_MA']:
                     if filtre.has_key(typ) :
                         mcfact1.update({typ : filtre[typ]})
@@ -252,17 +603,54 @@ def observation_ops(self,
                                 'CHAM_GD' : __chamex })
                 filtres.append(mcfact1)
 
-            __cham[ind-1] = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
+            if NOM_CHAM == 'DEPL':
+                __chamf[ind-1] = CREA_CHAMP(TYPE_CHAM = TYPE_CHAM,
                                        OPERATION = 'ASSE',
-                                       MODELE    = MODELE_2,
-                                       PROL_ZERO = 'NON',
+                                       MODELE    = modele,
                                        ASSE      = filtres
                                        );
 
+            elif NOM_CHAM == 'EPSI_NOEU_DEPL':
+                __chamf[ind-1] = CREA_CHAMP(TYPE_CHAM = TYPE_CHAM,
+                                       OPERATION = 'ASSE',
+                                       PROL_ZERO = 'OUI',
+                                       MODELE    = modele,
+                                       ASSE      = filtres,
+                                       );
 
-            mcfact2 = {'CHAM_GD'    : __cham[ind-1],
+            else:
+                valk = []
+                valk.append(NOM_CHAM)
+                valk.append('DEPL')
+                valk.append('EPSI_NOEU_DEPL')
+                UTMESS('F','OBSERVATION_6',valk) 
+
+            if isinstance( RESULTAT, mode_meca):
+                mcfact2 = {'CHAM_GD'    : __chamf[ind-1],
+                       'MODELE'     : modele,
+                       'NUME_MODE'    : int(afreq[ind-1,0]),
+                       'FREQ'    : afreq[ind-1,1],
+                       }
+
+            if isinstance( RESULTAT, evol_elas):
+                mcfact2 = {'CHAM_GD'    : __chamf[ind-1],
+                       'MODELE'     : modele,
+                       'INST'    : list_inst_ini[ind-1],
+                       }
+
+            if isinstance( RESULTAT, dyna_trans):
+                mcfact2 = {'CHAM_GD'    : __chamf[ind-1],
+                       'MODELE'     : modele,
+                       'INST'    : list_inst_ini[ind-1],
+                       }
+
+            if isinstance( RESULTAT, dyna_harmo):
+                mcfact2 = {'CHAM_GD'    : __chamf[ind-1],
                        'MODELE'     : MODELE_2,
-                       'NOM_CAS'    : str(ind)}
+                       'FREQ'    : list_freq_ini[ind-1],
+                       }
+
+
             if cham_mater is not None:
                 mcfact2['CHAM_MATER'] = cham_mater
             if cara_elem is not None:
@@ -271,40 +659,108 @@ def observation_ops(self,
             liste.append(mcfact2)
             DETRUIRE( CONCEPT= _F( NOM = __chamex ), INFO=1)
 
-
-        self.DeclareOut( 'RESU', self.sd)
-        if   isinstance( RESULTAT, evol_elas):
-            # Fabrication de l'evol_elas (cas le plus simple)
-            RESU = CREA_RESU( OPERATION = 'AFFE',
-                              TYPE_RESU = 'EVOL_ELAS',
-                              NOM_CHAM  = 'DEPL',
+        __proj = CREA_RESU(
+                              OPERATION = 'AFFE',
+                              TYPE_RESU = TYPE_RESU,
+                              NOM_CHAM  = NOM_CHAM,
                               AFFE      = liste,
                              );
 
+#*************************************************
+# Recopie des resultats (__proj) dans RESU
+#*************************************************
+
+    if nume_ordr_demande[0]:
+        num_ordr = nume_ordr_demande
+    else:
+        num_ordr = __proj.LIST_VARI_ACCES()['NUME_ORDRE']
+
+    __chamf = [None]*num_max
+    if isinstance( RESULTAT, evol_elas):
+        list_inst = __proj.LIST_VARI_ACCES()['INST']
+    if isinstance( RESULTAT, dyna_trans):
+        list_inst = __proj.LIST_VARI_ACCES()['INST']
+    if isinstance( RESULTAT, dyna_harmo):
+        list_freq = __proj.LIST_VARI_ACCES()['FREQ']
+
+    liste = []
+
+    for ind in num_ordr:
+        mcfact2 = { }
+        filtres = []
+        __chamex = CREA_CHAMP(TYPE_CHAM  = TYPE_CHAM,
+                              OPERATION  = 'EXTR',
+                              RESULTAT   = __proj,
+                              NOM_CHAM   = NOM_CHAM,
+                              NUME_ORDRE = ind,);
+
+        mcfact1 = {}
+        mcfact1.update({'TOUT' : 'OUI',
+                        'CHAM_GD' : __chamex })
+        filtres.append(mcfact1)
+
+        if NOM_CHAM == 'DEPL':
+            __chamf[ind-1] = CREA_CHAMP(TYPE_CHAM = TYPE_CHAM,
+                                       OPERATION = 'ASSE',
+                                       MODELE    = modele,
+                                       ASSE      = filtres
+                                       );
+
+        elif NOM_CHAM == 'EPSI_NOEU_DEPL':
+            __chamf[ind-1] = CREA_CHAMP(TYPE_CHAM = TYPE_CHAM,
+                                       OPERATION = 'ASSE',
+                                       PROL_ZERO = 'OUI',
+                                       MODELE    = modele,
+                                       ASSE      = filtres,
+                                       );
+
+        else:
+            valk = []
+            valk.append(NOM_CHAM)
+            valk.append('DEPL')
+            valk.append('EPSI_NOEU_DEPL')
+            UTMESS('F','OBSERVATION_6',valk) 
+
         if isinstance( RESULTAT, mode_meca):
-            # Fabrication de la base modale resultat. On doit tricher un peu (encore!!), en
-            # faisant un defi_base_modale dans lequel on met zero modes du concept RESULTAT
-            # TODO : permettre la creation directement d'un resu de type mode_meca avec
-            # CREA_RESU
-            _RESBID = CREA_RESU( OPERATION = 'AFFE',
-                                TYPE_RESU = 'MULT_ELAS',
-                                NOM_CHAM  = 'DEPL',
-                                AFFE      = liste,
-                               );
+            mcfact2 = {'CHAM_GD'    : __chamf[ind-1],
+                       'MODELE'     : modele,
+                       'NUME_MODE'    : int(afreq[ind-1,0]),
+                       'FREQ'    : afreq[ind-1,1],
+                       }
 
-            RESU = DEFI_BASE_MODALE( RITZ = (
-                                             _F( MODE_MECA = RESULTAT,
-                                                 NMAX_MODE = 0,),
-                                             _F( MODE_INTF = _RESBID),
-                                            ),
-                                     NUME_REF=NUME_DDL
-                                   );
+        if isinstance( RESULTAT, evol_elas):
+            mcfact2 = {'CHAM_GD'    : __chamf[ind-1],
+                       'MODELE'     : modele,
+                       'INST'    : list_inst[ind-1],
+                       }
+
+        if isinstance( RESULTAT, dyna_trans):
+            mcfact2 = {'CHAM_GD'    : __chamf[ind-1],
+                       'MODELE'     : modele,
+                       'INST'    : list_inst[ind-1],
+                       }
+
+        if isinstance( RESULTAT, dyna_harmo):
+            mcfact2 = {'CHAM_GD'    : __chamf[ind-1],
+                       'MODELE'     : MODELE_2,
+                       'FREQ'    : list_freq[ind-1],
+                       }
 
 
-        elif isinstance( RESULTAT, dyna_harmo):
-            # TODO : a faire
-            pass
+        if cham_mater is not None:
+            mcfact2['CHAM_MATER'] = cham_mater
+        if cara_elem is not None:
+            mcfact2['CARA_ELEM'] = cara_elem
 
+        liste.append(mcfact2)
+        DETRUIRE( CONCEPT= _F( NOM = __chamex ), INFO=1)
+
+    RESU = CREA_RESU(
+                      OPERATION = 'AFFE',
+                      TYPE_RESU = TYPE_RESU,
+                      NOM_CHAM  = NOM_CHAM,
+                      AFFE      = liste,
+                     );
 
     return ier
 
@@ -319,6 +775,7 @@ def crea_normale(self, modele_1, modele_2,
                  nume_ddl, cham_mater=None, cara_elem=None):
     """Cree un champ de vecteurs normaux sur le maillage experimental, par
        projection du champ de normales cree sur le maillage numerique
+       les mailles doivent etre des elements de <peau> (facettes)
     """
     import Numeric
     PROJ_CHAMP  = self.get_cmd('PROJ_CHAMP')
@@ -397,7 +854,6 @@ def crea_normale(self, modele_1, modele_2,
 
     return __norm5
 
-
 #**********************************************************************
 # Calcul des angles nautiques pour le repere local associe a la normale
 #**********************************************************************
@@ -457,6 +913,91 @@ def crea_repere(chnorm, ind_no, vect):
 
     return angl_naut
 
+
+#**********************************************************************
+# Calcul des angles nautiques pour le repere associe a VECT_X et VECT_Y
+#**********************************************************************
+
+def crea_repere_xy(vect_x, vect_y):
+
+    """Calcul des angles nautiques a partir des directions vect_x et vect_y.
+       Si vect_x != None et vect_y != None alors on impose le premier vecteur de base
+           colineaire a vect_x et le deuxieme vecteur dans le plan (vect_x,vect_y)
+       Si vect_x != None et vect_y == None alors on impose le premier vecteur de base
+           colineaire a vect_x
+       Si vect_x == None et vect_y != None alors on impose le deuxieme vecteur de base
+           colineaire a vect_y
+       Si vect_x == None et vect_y == None alors on ne fait rien
+    """
+
+    import Numeric
+    from Utilitai.Utmess import UTMESS
+
+    if vect_x == None and vect_y == None:
+      angl_naut = (0.,0.,0.)
+    else:
+      if vect_x and vect_y:
+        vx = Numeric.array(list(vect_x))
+        vy = Numeric.array(list(vect_y))
+        vect1 = vx
+        vect3 = cross_product(vx,vy)
+        vect2 = cross_product(vect3,vx)
+
+      elif vect_x:
+        vx = Numeric.array(list(vect_x))
+        vy1 = cross_product((1.,0.,0.),vx)
+        vy2 = cross_product((0.,1.,0.),vx)
+        vy3 = cross_product((0.,0.,1.),vx)
+        n1 = norm(vy1)
+        n2 = norm(vy2)
+        n3 = norm(vy3)
+        nmax = max(n1,n2,n3)
+        if nmax == n1:
+            vy = vy1
+        elif nmax == n2:
+            vy = vy2
+        elif nmax == n3:
+            vy = vy3
+        else:
+            UTMESS('F','UTILITAI_7')
+        vect3 = cross_product(vx,vy)
+        vect1 = vx
+        vect2 = cross_product(vect3,vect1)
+
+      elif vect_y:
+        vy = Numeric.array(list(vect_y))
+        vx1 = cross_product((1.,0.,0.),vy)
+        vx2 = cross_product((0.,1.,0.),vy)
+        vx3 = cross_product((0.,0.,1.),vy)
+        n1 = norm(vx1)
+        n2 = norm(vx2)
+        n3 = norm(vx3)
+        nmax = max(n1,n2,n3)
+        if nmax == n1:
+            vx = vx1
+        elif nmax == n2:
+            vx = vx2
+        elif nmax == n3:
+            vx = vx3
+        else:
+            UTMESS('F','UTILITAI_7')
+        vect3 = cross_product(vx,vy)
+        vect2 = vy
+        vect1 = cross_product(vect2, vect3)
+
+      
+      norm12=Numeric.dot(vect1,vect1)
+      norm22=Numeric.dot(vect2,vect2)
+      norm32=Numeric.dot(vect3,vect3)
+      if norm12 == 0 or norm22 == 0 or norm32 == 0:
+          UTMESS('F','UTILITAI_7')
+      else:
+          reploc = Numeric.array([vect1.tolist(),vect2.tolist(),vect3.tolist()])
+          reploc = Numeric.transpose(reploc)
+          angl_naut = anglnaut(reploc)
+
+    return angl_naut
+
 #*****************************************************************************
 # Aller chercher une liste de noeuds pour un mot cle 'NOEUD', 'GROUP_NO'
 # 'MAILLE' ou 'GROUP_MA'
@@ -474,9 +1015,10 @@ def find_no(maya,mcsimp):
     import Numeric
 
     list_no = []
-    list_ma = []
     if mcsimp.has_key('GROUP_NO') and type(mcsimp['GROUP_NO']) != tuple :
         mcsimp['GROUP_NO'] = [mcsimp['GROUP_NO']]
+    if mcsimp.has_key('MAILLE') and type(mcsimp['MAILLE']) != tuple :
+        mcsimp['MAILLE'] = [mcsimp['MAILLE']]
     if mcsimp.has_key('GROUP_MA') and type(mcsimp['GROUP_MA']) != tuple :
         mcsimp['GROUP_MA'] = [mcsimp['GROUP_MA']]
 
@@ -491,24 +1033,54 @@ def find_no(maya,mcsimp):
                     list_no.append(nomnoe)
     elif mcsimp.has_key('MAILLE') :
         for mail in mcsimp['MAILLE'] :
-            ind_ma = maya.NOMMAI.get().index(mail.ljust(8))
-            for ind_no in mayaexp.CONNEX[ind_ma] :
-                nomnoe = mayaexp.NOMNOE.get()[ind_no]
-                if nomnoe not in list_no :
-                    list_no.append(nomnoe)
+            for index in range(len(maya.NOMMAI.get())):
+                if maya.NOMMAI.get()[index].strip() == mail:
+                    nu_ma = index
+            for ind_no in maya.CONNEX.get()[nu_ma+1]:
+                    nomnoe = maya.NOMNOE.get()[ind_no-1]
+                    if nomnoe not in list_no:
+                        list_no.append(nomnoe)
     elif mcsimp.has_key('GROUP_MA') :
         for group in mcsimp['GROUP_MA'] :
-            list_ma.append(maya.GROUPEMA.get()[group.ljust(8)])
-        for mail in list_ma :
-            tmp = list(maya.NOMMAI.get())
-            ind_ma = tmp.index(mail.ljust(8))
-            for ind_no in maya.CONNEX[ind_ma] :
-                nomnoe = maya.NOMNOE.get()[ind_no]
-                if nomnoe not in list_no :
-                    list_no.append(nomnoe)
-
+            list_nu_ma = list(Numeric.array(maya.GROUPEMA.get()
+                                            [group.ljust(8)]) - 1)
+            for nu_ma in list_nu_ma:
+                for ind_no in maya.CONNEX.get()[nu_ma+1]:
+                    nomnoe = maya.NOMNOE.get()[ind_no-1]
+                    if nomnoe not in list_no:
+                        list_no.append(nomnoe)
 
     return list_no
+
+#*****************************************************************************
+# Aller chercher une liste de mailles pour un mot cle 'MAILLE' ou 'GROUP_MA'
+#*****************************************************************************
+
+def find_ma(maya,mcsimp):
+    """ Si mot cle MAILLE, on retourne la liste des mailles
+        Si mot cle GROUP_MA, on va chercher les mailles dans ces groupes
+    """
+
+    import Numeric
+
+    list_ma = []
+    if mcsimp.has_key('GROUP_MA') and type(mcsimp['GROUP_MA']) != tuple :
+        mcsimp['GROUP_MA'] = [mcsimp['GROUP_MA']]
+    if mcsimp.has_key('MAILLE') and type(mcsimp['MAILLE']) != tuple :
+        mcsimp['MAILLE'] = [mcsimp['MAILLE']]
+
+    if mcsimp.has_key('MAILLE') :
+        for mail in mcsimp['MAILLE'] :
+            list_ma.append(mail)
+    elif mcsimp.has_key('GROUP_MA') :
+        for group in mcsimp['GROUP_MA'] :
+            list_ind_ma = list(Numeric.array(maya.GROUPEMA.get()[group.ljust(8)])-1)
+            for ind_ma in list_ind_ma :
+                nommail = maya.NOMMAI.get()[ind_ma]
+                if nommail not in list_ma :
+                    list_ma.append(nommail)
+
+    return list_ma
 
 
 #************************************************************************************
@@ -568,9 +1140,14 @@ def anglnaut(P):
     # x1 projection de xg sur la plan xy, non norme
     x1[2]=0.
     # produit scalaire X xg
-    COSA=x1[0]/norm(x1)
-    #produit vectoriel X xg
-    SINA=x1[1]/norm(x1)
+    normx = norm(x1)
+    if normx == 0.: # on impose alpha = 0 pour lever l'indetermination
+        COSA=1.
+        SINA=0.
+    else:
+        COSA=x1[0]/normx
+        #produit vectoriel X xg
+        SINA=x1[1]/normx
     ar=Numeric.arctan2(SINA,COSA)
     alpha=ar*180/Numeric.pi
 

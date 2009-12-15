@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 # sslp313e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,24 +156,14 @@ VALSM=-sin(37./180.*pi)
 # les noeuds N500 et N700 ne sont plus dans GROUP_ENRI
 # donc leur base locale n'est plus calculee
 
-# TEST_RESU( CHAM_NO=_F( CHAM_GD = BASLOC,
-#                        NOEUD = 'N500',
-#                        NOM_CMP = 'X3',
-#                        REFERENCE = 'ANALYTIQUE',
-#                        VALE = VALCM,
-#                        PRECISION = PREC) );
+
 TEST_RESU( CHAM_NO=_F( CHAM_GD = BASLOC,
                        NOEUD = 'N600',
                        NOM_CMP = 'X4',
                        REFERENCE = 'ANALYTIQUE',
                        VALE = VALSM,
                        PRECISION = PREC) );  
-# TEST_RESU( CHAM_NO=_F( CHAM_GD = BASLOC,
-#                        NOEUD = 'N700',
-#                        NOM_CMP = 'X3',
-#                        REFERENCE = 'ANALYTIQUE',
-#                        VALE = VALCM,
-#                        PRECISION = PREC) );
+
 TEST_RESU( CHAM_NO=_F( CHAM_GD = BASLOC,
                        NOEUD = 'N800',
                        NOM_CMP = 'X4',

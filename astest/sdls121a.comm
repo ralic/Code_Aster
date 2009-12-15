@@ -1,0 +1,85 @@
+# MODIF  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
+# TITRE RECALAGE DES PARAMETRES D'UN MODELE DYNAMIQUE PAR ANALYSE MODALE
+# sdls121a.para = tps_job 600 mem_job 300Mo mem_aster 64 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT(CODE=_F(NOM='SDLS121A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
+
+parametres =[['EP__',0.15,0.1,1.0],['MP__',3.0E4,2.E4,7.E4]]
+
+calcul = [['REPONSE1','NUME_ORDRE','FREQ'],['REPONSE2','NUME_ORDRE','MAC']]
+
+experience= [['REPEXP1','NUME_ORDRE','FREQ'],['REPEXP2','NUME_ORDRE','MAC_EXP']]
+
+poids =Numeric.array([3.0, 1.0])
+
+# LANCEMENT DE L'IDENTIFICATION
+
+RESU=MACR_RECAL(
+         UNITE_ESCL       =3,
+         RESU_EXP         =experience,
+         LIST_PARA        =parametres,
+         RESU_CALC        =calcul,
+         POIDS            =poids,
+         METHODE          ='HYBRIDE',
+         ITER_FONC_MAXI=500,
+
+         NB_PARENTS       =10,
+         NB_FILS          =5,
+         ECART_TYPE       =10.,
+         ITER_ALGO_GENE   =2,
+
+         SUIVI_ESCLAVE='NON',
+         DYNAMIQUE =_F(
+              MODE_EXP='MODMES',
+              MODE_CALC='MODNUM',
+              APPARIEMENT_MANUEL='NON',
+                               ),
+)  ;
+
+
+# On cree une liste bidon pour pouvoir
+# definir une fonction testable par TEST_RESU
+BIDON=DEFI_LIST_REEL(DEBUT=1.,
+                     INTERVALLE=_F(JUSQU_A = 2., NOMBRE=1));
+
+OPTIM=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE_PARA=BIDON,
+                    VALE_FONC=RESU);
+
+TEST_FONCTION ( VALEUR =(_F( FONCTION = OPTIM,
+                           PRECISION = 0.5E-1,
+                           VALE_PARA = 1.,
+                           REFERENCE = 'ANALYTIQUE',
+                           VALE_REFE = 0.5,
+                         ),
+                       _F( FONCTION = OPTIM,
+                           PRECISION = 0.5E-1,
+                           VALE_PARA = 2.,
+                           REFERENCE = 'ANALYTIQUE',
+                           VALE_REFE = 5.0E4,
+                         ),
+                      
+                         ), 
+                         
+              ) ;
+
+
+FIN()

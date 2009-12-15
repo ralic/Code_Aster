@@ -1,0 +1,207 @@
+      SUBROUTINE LCRELI(FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
+     &                  COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &                  ITMAX,TOLER,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R,
+     &                  DDY)
+      IMPLICIT NONE
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE GENIAUT
+C
+      REAL*8          DDY(*)
+C
+C     VARIABLES EN ARGUMENT DE LCRESI
+      INTEGER         IMAT, NMAT, NR, NVI, KPG, KSP, ITMAX
+      REAL*8          DEPS(6)  , EPSD(6), VIND(*), TOLER
+      REAL*8          R(*) , YD(*) ,  YF(*), DY(*)
+      REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
+      REAL*8          TIMED, TIMEF
+      CHARACTER*8     MOD
+      CHARACTER*16    LOI
+      REAL*8          TOUTMS(5,24,6), HSR(5,24,24)
+      CHARACTER*(*)   FAMI
+
+      INTEGER         NBCOMM(NMAT,3)
+      REAL*8          PGL(3,3)
+      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
+
+
+C
+C     ----------------------------------------------------------------
+C     RECHERCHE LINEAIRE POUR PLASTI
+C
+C     ON CREE UNE FONCTIONNELLE F(X) = 1/2 || R(X) ||^2
+C     ET ON CHERCHE RHO = ARGMIN (        F(DY+RHO.DDY)       )
+C     CAD           RHO = ARGMIN ( 1/2 || R(DY+RHO.DDY) ||^2  )
+C     ET ON MET A JOUR YF, R ET DY
+C
+C     ON UTILISE L'ALGORITHME AVEC REBROUSSEMENT ET LA REGLE D'ARMIJO
+C     (W EST LA PARAMETRE DE LA REGLE D'ARMIJO)
+C     AVEC RABATEMMENT SUR [RHOMIN,RHOMAX]
+C     ON COMMENCE PAR UN ESSAI AVEC UN RHO = 1
+C     PUIS UN ESSAI AVEC UNE INTERPOLATION QUADRATIQUE
+C     PUIS PLUSIEURS ESSAIS (NB ESSAIS = IMXRHO) D'INTERPOLATION CUBIQUE
+C
+C     IN  TOUS LES ARGUMENTS DE LCRESI.F
+C     IN  DDY    :  CORRECTION DE L'INCREMENT = DIRECTION DE DESCENTE
+C     OUT R      :  VECTEUR RESIDU
+C     OUT DY     :  INCREMENT DES VARIABLES
+C     OUT YF     :  VARIABLES A T+DT
+C
+C TOLE CRP_21
+C     ----------------------------------------------------------------
+      INTEGER I,IRET,ITRHO,IMXRHO
+      REAL*8  F,DF,W,RHOMIN,RHOMAX,DDOT,R8PREM
+      REAL*8  RHODDY(NR),DYP(NR),RP(NR),YFP(NR)
+      REAL*8  RHO0,FP0,RHO1,FP1,FP2,RHO2,RHO05,FSUP
+      REAL*8  M(2,2),S(2),A,B
+      PARAMETER (W = 1.D-4)
+      PARAMETER (RHOMIN = 0.1D0, RHOMAX=0.5D0)
+      PARAMETER (IMXRHO = 2)
+C     ----------------------------------------------------------------
+C
+C     REMARQUE : ON POURRAIT METTRE DANS UNE ROUTINE UTILITAIRE LES 8
+C     LIGNES CORRESPONDANTES AU CALCUL DU R ACTUALISE, MAIS CA VAUT PAS
+C     VRAIMENT LE COUP
+C
+
+C     FONCTIONNELLE EN "MOINS" : F = 1/2 || R(DY) ||^2
+      F = 0.5D0 * DDOT(NR,R,1,R,1)
+
+C     DERIVEE DE LA FONCTIONNELLE EN "MOINS" : DF=<GRAD(F).DDY>=<R.DDY>
+      DF = -DDOT(NR,R,1,R,1)
+
+C     ------------------------------------
+C     ESSAI AVEC LE PAS DE NEWTON RHO0 = 1
+C     ------------------------------------
+
+      RHO0 = 1
+C     CALCUL DE DY "PLUS" : DYP
+      CALL LCPSVN ( NR , RHO0 , DDY , RHODDY)
+      CALL LCSOVN ( NR , RHODDY , DY , DYP )
+      CALL LCSOVN ( NR , YD , DYP , YFP )
+C     CALCUL DE R "PLUS" : RP
+      CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
+     &              COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &              ITMAX, TOLER,TIMED,TIMEF,YD,YFP,DEPS,EPSD,DYP,
+     &              RP,IRET )
+      CALL ASSERT(IRET.EQ.0)
+
+C     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
+      FP0 = 0.5D0 * DDOT(NR,RP,1,RP,1)
+      IF ( FP0.LT.R8PREM() )   GOTO 9999
+      IF ( FP0.LE.F+W*RHO0*DF) GOTO 9999
+
+C     ------------------------------------
+C     TEST SUPPLEMENTAIRE AVEC RHO = 0.5
+C     ------------------------------------
+
+      RHO05 = 0.5D0
+      CALL LCPSVN ( NR , RHO05 , DDY , RHODDY)
+      CALL LCSOVN ( NR , RHODDY , DY , DYP )
+      CALL LCSOVN ( NR , YD , DYP , YFP )
+      CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
+     &              COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &              ITMAX, TOLER,TIMED,TIMEF,YD,YFP,DEPS,EPSD,DYP,
+     &              RP,IRET )
+      CALL ASSERT(IRET.EQ.0)
+
+C     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
+      FSUP = 0.5D0*DDOT(NR,RP,1,RP,1)
+      IF ( FSUP.LT.R8PREM() )    GOTO 9999
+      IF ( FSUP.LE.F+W*0.5D0*DF) GOTO 9999
+
+C     ----------------------------------------
+C     INTERPOLATION QUADRATIQUE (ENTRE 0 ET 1)
+C     ----------------------------------------
+
+      CALL ASSERT( ABS(FP0-F-DF).GT.R8PREM() )
+      RHO1 = -0.5D0 * DF /( FP0- F - DF)
+
+C     PROJECTION SUR L'INTERVALLE [RHOMIN,RHOMAX]
+      IF (RHO1 .LT. RHOMIN*RHO0) RHO1 = RHOMIN*RHO0
+      IF (RHO1 .GT. RHOMAX*RHO0) RHO1 = RHOMAX*RHO0
+
+      CALL LCPSVN ( NR , RHO1 , DDY , RHODDY)
+      CALL LCSOVN ( NR , RHODDY , DY , DYP )
+      CALL LCSOVN ( NR , YD , DYP , YFP )
+      CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
+     &              COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &              ITMAX, TOLER,TIMED,TIMEF,YD,YFP,DEPS,EPSD,DYP,
+     &              RP,IRET )
+      CALL ASSERT(IRET.EQ.0)
+
+C     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
+      FP1 = 0.5D0 * DDOT(NR,RP,1,RP,1)
+      IF ( FP1.LT.R8PREM() )   GOTO 9999
+      IF ( FP1.LE.F+W*RHO1*DF) GOTO 9999
+
+C     ------------------------------------
+C     INTERPOLATIONS CUBIQUES
+C     ------------------------------------
+
+      DO 100 ITRHO=1,IMXRHO
+        M(1,1) =  1.D0/(RHO0**2)
+        M(1,2) = -1.D0/(RHO1**2)
+        M(2,1) = -RHO1/(RHO0**2)
+        M(2,2) =  RHO0/(RHO1**2)
+        S(1) = FP0 - F - DF * RHO0
+        S(2) = FP1 - F - DF * RHO1
+        CALL ASSERT(ABS(RHO0-RHO1).GT.R8PREM())
+        A = 1.D0/(RHO0 - RHO1) * ( M(1,1)*S(1) + M(1,2)*S(2) )
+        B = 1.D0/(RHO0 - RHO1) * ( M(2,1)*S(2) + M(2,2)*S(2) )
+        IF (ABS(3.D0*A).LE.R8PREM()) GOTO 9999
+        RHO2 = (-B + SQRT(B**2-3.D0*A*DF)) / (3.D0 * A)
+
+C       PROJECTION SUR L'INTERVALLE [RHOMIN,RHOMAX]
+        IF (RHO2 .LT. RHOMIN*RHO1) RHO2 = RHOMIN*RHO1
+        IF (RHO2 .GT. RHOMAX*RHO1) RHO2 = RHOMAX*RHO1
+
+        CALL LCPSVN ( NR , RHO2 , DDY , RHODDY)
+        CALL LCSOVN ( NR , RHODDY , DY , DYP )
+        CALL LCSOVN ( NR , YD , DYP , YFP )
+        CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
+     &                COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
+     &                ITMAX, TOLER,TIMED,TIMEF,YD,YFP,DEPS,EPSD,DYP,
+     &                RP,IRET )
+        CALL ASSERT(IRET.EQ.0)
+
+C       TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
+        FP2 = 0.5D0 * DDOT(NR,RP,1,RP,1)
+        IF ( FP2.LT.R8PREM() )   GOTO 9999
+        IF ( FP2.LE.F+W*RHO2*DF) GOTO 9999
+
+C       NOUVELLE INTERPOLATION CUBIQUE AVEC LES DEUX DERNIERS RHO
+        RHO0 = RHO1
+        RHO1 = RHO2
+        FP0 = FP1
+        FP1 = FP2
+ 100  CONTINUE
+
+C     ON A FAIT TOUTES LES INTERATIONS D'INTERPOLATIONS CUBIQUES
+
+ 9999 CONTINUE
+
+C     EN ECRASE LES ENTREES AVEC LES VARIABLES RE-ACTUALISEES
+      DO 500 I=1,NR
+        R(I)  = RP(I)
+        YF(I) = YFP(I)
+        DY(I) = DYP(I)
+ 500  CONTINUE
+
+      END

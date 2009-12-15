@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF propa_fiss_ops Macro  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,51 +126,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   self.set_icmd(1)
 
 #------------------------------------------------------------------
-# Loi de propagation 
-  ##if (METHODE_PROPA != 'INITIALISATION') and (TEST_MAIL == 'NON' ) :
-  #if (METHODE_PROPA == 'SIMPLEXE') or (METHODE_PROPA == 'UPWIND') : 
-    #TEST_MAIL=args['TEST_MAIL']
-    #if (TEST_MAIL == 'NON' ) :
-      #LOI= args['LOI_PROPA']
-      #if LOI == None :
-         #print 'MESSAGE D ERREUR : IL FAUT UNE LOI DE PROPAGATION' 
-      #dLoi=LOI[0].cree_dict_valeurs(LOI[0].mc_liste)
-## Recuperation de E et de Nu
-      ##fiss =    args['FISSURE']
-      ##self.DeclareOut('nomfiss',fiss)
-      #mat = dLoi['MATER']
-      #matph = mat.NOMRC.get()  
-      #phenom=None
-      #for cmpt in matph :
-         #if cmpt[:4]=='ELAS' :
-            #phenom=cmpt
-            #break
-      #if phenom==None : UTMESS('F','RUPTURE0_5')
-      #compor = sd_compor1('%-8s.%s' % (mat.nom, phenom))
-      #valk = [s.strip() for s in compor.VALK.get()]
-      #valr = compor.VALR.get()
-      #dicmat=dict(zip(valk,valr))
-      #if dicmat.has_key('TEMP_DEF')  :
-        #nompar = ('TEMP',)
-        #valpar = (dicmat['TEMP_DEF'],)
-        #UTMESS('A','XFEM2_85',valr=valpar)
-        #nomres=['E','NU']
-        #valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,'F')
-        #e = valres[0]
-        #nu = valres[1]
-      #else :
-        #e  = dicmat['E']
-        #nu = dicmat['NU']  
-## Construction catalogue PROPA_XFEM
-      #dLoix = {}
-      #dLoix['LOI'] = 'PARIS'
-      #dLoix['E'] = e
-      #dLoix['NU'] = nu
-      #dLoix['C'] = dLoi['C']
-      #dLoix['M'] = dLoi['M']
-      #dLoix['N'] = dLoi['N']
-
-#------------------------------------------------------------------
 # CAS 1 : METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND'
 #
 
@@ -183,8 +138,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       if LOI == None :
          print 'MESSAGE D ERREUR : IL FAUT UNE LOI DE PROPAGATION' 
       dLoi=LOI[0].cree_dict_valeurs(LOI[0].mc_liste)
-      #fiss =    args['FISSURE']
-      #self.DeclareOut('nomfiss',fiss)
       mat = dLoi['MATER']
       matph = mat.NOMRC.get()  
       phenom=None
@@ -223,6 +176,10 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
     mcsimp['RAYON'] =  args['RAYON']
     mcsimp['DA_MAX'] =  args['DA_MAX']
     mcsimp['TEST_MAIL']=TEST_MAIL
+    mcsimp['ZONE_MAJ']=args['ZONE_MAJ']
+    if mcsimp['ZONE_MAJ'] == 'TORE' :
+       if args['RAYON_TORE']!=None :
+          mcsimp['RAYON_TORE']=args['RAYON_TORE']
     Fissures = args['FISSURE']
 
 #   Build the list for the PROPA_XFEM operateur
@@ -262,7 +219,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
            dcomp=COMP_LINE[0].cree_dict_valeurs(COMP_LINE[0].mc_liste)
            mcsimp  ['COMP_LINE'      ] =dcomp
 
-    if TEST_MAIL != 'CONSTANT' :
+    if TEST_MAIL == 'NON' :
 #      Ok. It's time for propagation! Let's call PROPA_XFEM for each
 #      propagating crack.
        for NumFiss in range(0,len(FissAct)) :

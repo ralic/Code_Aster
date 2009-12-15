@@ -1,4 +1,4 @@
-#@ MODIF lmarc Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF lmarc Comportement  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
-   schema         = ('IMPLICITE',),
+   schema         = ('IMPLICITE','IMPLICITE_RELI'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

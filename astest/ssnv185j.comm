@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185j.para = tps_job 100 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -186,8 +186,11 @@ for i in range(1,4) :
                             TABLE=SIF[i],
                            ),
                  RAYON=RS,
-                 DA_MAX=0.499999858,
+                 ZONE_MAJ='TOUT',
+                 DA_MAX=0.501,
                  INFO=1,
+                 COMP_LINE=_F(COEF_MULT_MINI=0.,
+                              COEF_MULT_MAXI=1.,),
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.0,
                               M=0.5,

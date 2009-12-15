@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 14/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -195,7 +195,8 @@ DF1B=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='DEPL',
                          VERIF='CROISSANT',  PROL_DROITE='LINEAIRE',
                          ABSCISSE=(0.,1.,2.),  ORDONNEE=(0.,2.,4.)   )
 TEST_FONCTION(VALEUR=_F(  FONCTION  = DF1B,  NOM_PARA  = 'INST',
-                          VALE_PARA = 1.,    VALE_REFE = 2., REFERENCE='ANALYTIQUE', ) )
+                          VALE_PARA = 1.,    VALE_REFE = DF1B(1.),
+                          REFERENCE='ANALYTIQUE', ) )
 
 
 TEST_FONCTION(ATTRIBUT=(
@@ -453,15 +454,6 @@ TEST_FONCTION(VALEUR=(
                   REFERENCE='ANALYTIQUE',))
                  )
 
-## EN COMMENTAIRE SUITE AU PASSAGE AUTOMATIQUE DES ERREURS <E> EN <F>
-##   TEST_FONCTION( TEST_NOOK: 'OUI'
-##                  VALEUR:
-##                ( FONCTION: DFN0
-##                  VALE_PARA: 3.    VALE_REFE: 1.   )
-##                 ) ;
-
-
-
 DFN1=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='DEPL',
                             PROL_DROITE='CONSTANT',
                            PROL_GAUCHE='LINEAIRE',
@@ -489,19 +481,6 @@ DFN2=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='DEPL',
                           VALE_C=( 1., 1., 1., 2., 2., 2., ),
                           INTERPOL='LIN',
                           TITRE=' TEST D''UNE FONCTION COMPLEXE'   )
-
-## EN COMMENTAIRE SUITE AU PASSAGE AUTOMATIQUE DES ERREURS <E> EN <F>
-##   TEST_FONCTION( TEST_NOOK: 'OUI'
-##                  VALEUR:
-##                ( FONCTION: DFN2
-##                  VALE_PARA: 0.    VALE_REFE_C: RI 1. 1.   )
-##                ( FONCTION: DFN2
-##                  VALE_PARA: 1.5   VALE_REFE_C: RI 1. 1.   )
-##                ( FONCTION: DFN2
-##                  VALE_PARA: 3.    VALE_REFE_C: RI 1. 1.   )
-##                 ) ;
-
-
 
 DN00=DEFI_NAPPE(  NOM_PARA='AMOR',  NOM_RESU='DEPL',
                        INTERPOL=( 'LIN', 'LIN', ),
@@ -538,16 +517,6 @@ TEST_FONCTION(VALEUR=(
                   VALE_REFE = 2.))
                  )
 
-## EN COMMENTAIRE SUITE AU PASSAGE AUTOMATIQUE DES ERREURS <E> EN <F>
-##   TEST_FONCTION( TEST_NOOK: 'OUI'
-##                  VALEUR:
-##                ( FONCTION: DN00
-##                  NOM_PARA: ( 'AMOR' , 'INST'  )
-##                  VALE_PARA:(  0.02  ,   3.    )
-##                  VALE_REFE:  2.25                 )
-##                 ) ;
-
-
 TEST_FONCTION(VALEUR=(
                 _F(  FONCTION = DN01,
                   NOM_PARA = ( 'AMOR',  'INST',  ),
@@ -558,16 +527,6 @@ TEST_FONCTION(VALEUR=(
                   VALE_PARA = (  0.02,     0.,    ),
                   VALE_REFE = 2.))
                  )
-
-## EN COMMENTAIRE SUITE AU PASSAGE AUTOMATIQUE DES ERREURS <E> EN <F>
-##   TEST_FONCTION( TEST_NOOK: 'OUI'
-##                  VALEUR:
-##                ( FONCTION: DN01
-##                  NOM_PARA: ( 'AMOR' , 'INST'  )
-##                  VALE_PARA:(  0.02  ,   3.    )
-##                  VALE_REFE:  2.25                 )
-##                 ) ;
-
 
 TEST_FONCTION(VALEUR=(
                 _F(  FONCTION = DN02,
@@ -580,16 +539,6 @@ TEST_FONCTION(VALEUR=(
                   VALE_REFE = 1.732051))
                  )
 
-## EN COMMENTAIRE SUITE AU PASSAGE AUTOMATIQUE DES ERREURS <E> EN <F>
-##   TEST_FONCTION( TEST_NOOK: 'OUI'
-##                  VALEUR:
-##                ( FONCTION: DN02
-##                  NOM_PARA: ( 'AMOR' , 'INST'  )
-##                  VALE_PARA:(  0.02  ,   3.    )
-##                  VALE_REFE:  2.25                 )
-##                 ) ;
-
-
 TEST_FONCTION(VALEUR=(
                 _F(  FONCTION = DN03,
                   NOM_PARA = ( 'AMOR',  'INST',  ),
@@ -600,15 +549,6 @@ TEST_FONCTION(VALEUR=(
                   VALE_PARA = (  0.02,     0.,    ),
                   VALE_REFE = 2.261860))
                  )
-
-## EN COMMENTAIRE SUITE AU PASSAGE AUTOMATIQUE DES ERREURS <E> EN <F>
-##   TEST_FONCTION( TEST_NOOK: 'OUI'
-##                  VALEUR:
-##                ( FONCTION: DN03
-##                  NOM_PARA: ( 'AMOR' , 'INST'  )
-##                  VALE_PARA:(  0.02  ,   3.    )
-##                  VALE_REFE:  2.25                 )
-##                 ) ;
 
 #=======================================================================
 #
@@ -1881,10 +1821,7 @@ OMEGA**2)*cos(OMEGA*INST) + 2.*AMOR*2.*pi*FREQ*
    )*sin(2.*pi*FREQ*INST))*exp(-AMOR*2.*pi*FREQ*INST) )   ''')
 #
 INCLUDE(UNITE=11)
-###FREQ1=5.
-####
-###NAP1 = FORMULE(NOM_PARA=('INST','AMOR'),VALE='''NAP(INST,FREQ1,AMOR) ''')
-###DETRUIRE(CONCEPT=_F(NOM=NAP1))
+
 NAP1 = FORMULE(NOM_PARA=('INST','AMOR'),VALE='''NAP(INST,FREQ1,AMOR) ''')
 #
 NAP2 = CALC_FONC_INTERP ( FONCTION = NAP1,

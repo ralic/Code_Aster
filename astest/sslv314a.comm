@@ -1,4 +1,4 @@
-# MODIF  DATE 03/12/2009   AUTEUR MESSIER J.MESSIER 
+# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv314a.para = tps_job 230 mem_job 1024Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -161,6 +161,7 @@ for i in range(nbcalc) :
                               COEF_MULT_MAXI=1.,),
                  DA_MAX=0.3,
                  RAYON=RS,
+                 RAYON_TORE=12.0,
                  INFO=1,);
 
 #     LEVEL SET AU PAS DE PROPAGATION COURANT

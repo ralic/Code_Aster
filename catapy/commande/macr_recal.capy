@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,8 +53,20 @@ MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,
          AFFICHAGE       =SIMP(statut='f',typ='TXM',defaut='TOUTE_ITERATION',into=("TOUTE_ITERATION","ITERATION_FINALE")),),
          SUIVI_ESCLAVE   =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON"),),
 
-         METHODE         =SIMP(statut='f',typ='TXM',defaut='LEVENBERG',into=("LEVENBERG","FMIN","FMINBFGS","FMINNCG","EXTERNE")),
+         METHODE         =SIMP(statut='f',typ='TXM',defaut='LEVENBERG',into=("LEVENBERG","FMIN","FMINBFGS","FMINNCG","EXTERNE",
+                                                                             "GENETIQUE","HYBRIDE")),
 
+
+         
+         b_genetique_options=BLOC(condition = "METHODE == 'GENETIQUE' or METHODE == 'HYBRIDE'" ,
+             NB_PARENTS       =SIMP(statut='f',typ='I',defaut=10),
+             NB_FILS          =SIMP(statut='f',typ='I',defaut=5),
+             ECART_TYPE       =SIMP(statut='f',typ='R',defaut=1.),
+             ITER_ALGO_GENE  =SIMP(statut='f',typ='I',defaut=10),
+             RESI_ALGO_GENE  =SIMP(statut='f',typ='R',defaut=1.E-3),
+         ),
+         
+         
          b_gradient =BLOC(condition = "METHODE == 'FMINBFGS' or METHODE == 'FMINNCG'" ,
             GRADIENT        =SIMP(statut='f',typ='TXM',defaut='NON_CALCULE', into=("NON_CALCULE", "NORMAL", "ADIMENSIONNE" )),
          ),
@@ -66,6 +78,12 @@ MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,
          b_type_fonctionnelle =BLOC(condition = "METHODE == 'EXTERNE'" ,
             FONCTIONNELLE   =SIMP(statut='f',typ='TXM',defaut='SCALAIRE',into=("SCALAIRE","VECTORIELLE")),
          ),
-
+         
+         DYNAMIQUE       =FACT(statut='f',
+               MODE_EXP=SIMP(statut='o',typ='TXM'),
+               MODE_CALC=SIMP(statut='o',typ='TXM'),
+               APPARIEMENT_MANUEL=SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON")),           
+                               ),
+         
          INFO            =SIMP(statut='f',typ='I',defaut=2,into=( 1, 2 ) ),
 );

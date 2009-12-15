@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,20 +31,22 @@ C                     1 : COMPOSANTE INUTILISEE
 C                     2 : RESI_INTE_RELA
 C                     3 : THETA (POUR THM)
 C                     4 : ITER_INTE_PAS
-C                     5 : RESO_INTE (0: EULER_1, 1: RK_2, 2: RK_4)
+C                     5 : RESO_INTE (0: EULER_1
+C                                    1: RK_2
+C                                    2: RK_4
+C                                    3: EULER + RECHERCHE LINEAIRE)
 C ----------------------------------------------------------------------
       IMPLICIT NONE
       CHARACTER*1  K1BID
       CHARACTER*8  NOMA,K8B,TYPMCL(2)
-      CHARACTER*16 TYMATG,COMP,RESO,MOCLES(2),MOCLEF(2)
+      CHARACTER*16 TYMATG,COMP,TXCP,RESO,MOCLES(2),MOCLEF(2)
       CHARACTER*16 TEXTE(2),COMCOD
       CHARACTER*19 CARCRI, CARCR0
       CHARACTER*24 CARCRZ
       CHARACTER*24 MESMAI,MODELE
-      INTEGER IRET,JCRIT,JVALC,NUMGD,JACMP,NBCRIT,ICMP,K,JMA,NBMA,IRETT
+      INTEGER IRET,JNCMP,JVALV,NUMGD,JACMP,NBCRIT,ICMP,K,JMA,NBMA,IRETT
       INTEGER ITEINT,ITEPAS,IMPEXP,I,ITDEBO,IBID,TYPTGT,N1,NBMO1,NBOCC
       REAL*8  RESI,R8VIDE,RESID,TSAMPL,TSRETU,TSEUIL,PERT,THETA
-      REAL*8  VALCMP(12)
       COMPLEX*16   CBID
       INTEGER EXITS,GETEXM
       
@@ -68,7 +70,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C ----------------------------------------------------------------------
       CALL JEMARQ()
      
-      CARCRI = CARCRZ(1:19)
+      CARCRI = CARCRZ
       CALL DISMOI('I','NOM_MAILLA',MODELE(1:8),'MODELE',I,NOMA,IRETT)
 
 C CARTE DES CRITERES DE CONVERGENCE LOCAUX
@@ -77,28 +79,26 @@ C CARTE DES CRITERES DE CONVERGENCE LOCAUX
           CALL ALCART('V',CARCRI,NOMA,'CARCRI')
       ENDIF
       
-      CALL JEVEUO(CARCRI(1:19)//'.NCMP','E',JCRIT)
-      CALL JEVEUO(CARCRI(1:19)//'.VALV','E',JVALC)
+      CALL JEVEUO(CARCRI(1:19)//'.NCMP','E',JNCMP)
+      CALL JEVEUO(CARCRI(1:19)//'.VALV','E',JVALV)
       CALL JENONU(JEXNOM('&CATA.GD.NOMGD' ,'CARCRI'),NUMGD)
       CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'L',JACMP)
       CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'LONMAX',
      &            NBCRIT,K1BID)
       DO 95 ICMP = 1,NBCRIT
-        ZK8(JCRIT+ICMP-1) = ZK8(JACMP+ICMP-1)
+        ZK8(JNCMP+ICMP-1) = ZK8(JACMP+ICMP-1)
    95 CONTINUE
 
 C ----------------------------------------------------------------------
 C     CARTE PAR DEFAUT SI ON OUBLIE COMP_INCR SUR DES MAILLES
-      CARCR0 = '&&NMDOCR.CARCR0'
-      VALCMP(1) = 10
-      VALCMP(2) = 0
-      VALCMP(3) = 1.D-6
-      VALCMP(4) = 1.D0
+      ZR(JVALV-1+1)  = 10
+      ZR(JVALV-1+2)  = 0
+      ZR(JVALV-1+3)  = 1.D-6
+      ZR(JVALV-1+4)  = 1.D0
       DO 96 I=5,NBCRIT
-         VALCMP(I) = 0.D0
+         ZR(JVALV-1+I)  = 0.D0
  96   CONTINUE      
-      CALL MECACT('V',CARCR0,'MAILLA',NOMA,'CARCRI',NBCRIT,ZK8(JCRIT),
-     &              IBID,VALCMP,CBID,K1BID)
+      CALL NOCART(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
 C ----------------------------------------------------------------------
 
    
@@ -135,9 +135,10 @@ C         CREATION DE L'OBJET COMPORTEMENT A PARTIR DU CATALOGUE
           CALL GETVIS('COMP_INCR','ITER_INTE_PAS' ,1,1,1,ITEPAS,
      &                 IRET)
           IMPEXP=-999
-          IF(RESO(1:9) .EQ.'IMPLICITE')     IMPEXP = 0
-          IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') IMPEXP = 1
-          IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') IMPEXP = 2
+          IF(RESO.EQ.'IMPLICITE')     IMPEXP = 0
+          IF(RESO.EQ.'RUNGE_KUTTA_2') IMPEXP = 1
+          IF(RESO.EQ.'RUNGE_KUTTA_4') IMPEXP = 2
+          IF(RESO.EQ.'IMPLICITE_RELI')IMPEXP = 3
 
 C         CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
           RESID=1.D-6
@@ -160,7 +161,7 @@ C         CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
                 ENDIF
              EXITS = GETEXM(MOCLEF(I),'TYPE_MATR_TANG')
              IF (EXITS .EQ. 1) THEN
-C            dans ZR(JVALC+1) on stocke le type de matrice tgte
+C            dans ZR(JVALV+1) on stocke le type de matrice tgte
              CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,TYMATG,IRET)
                 IF (IRET.EQ.0) THEN
                    TYPTGT = 0
@@ -204,42 +205,40 @@ C         STOCKAGE DE LA CARTE CARCRI
      &                 TYPMCL,MESMAI,NBMA)
           IF (NBMA.NE.0) THEN
              CALL JEVEUO(MESMAI,'L',JMA)
-               ZR(JVALC)    = ITEINT
-               ZR(JVALC+1)  = TYPTGT
-               ZR(JVALC+2)  = RESI
-               ZR(JVALC+3)  = THETA
-               ZR(JVALC+4)  = ITEPAS
-               ZR(JVALC+5)  = IMPEXP
-               ZR(JVALC+6)  = PERT
-               ZR(JVALC+7)  = RESID
-               ZR(JVALC+8)  = ITDEBO
-               ZR(JVALC+9)  = TSEUIL
-               ZR(JVALC+10) = TSAMPL
-               ZR(JVALC+11) = TSRETU
+               ZR(JVALV)    = ITEINT
+               ZR(JVALV+1)  = TYPTGT
+               ZR(JVALV+2)  = RESI
+               ZR(JVALV+3)  = THETA
+               ZR(JVALV+4)  = ITEPAS
+               ZR(JVALV+5)  = IMPEXP
+               ZR(JVALV+6)  = PERT
+               ZR(JVALV+7)  = RESID
+               ZR(JVALV+8)  = ITDEBO
+               ZR(JVALV+9)  = TSEUIL
+               ZR(JVALV+10) = TSAMPL
+               ZR(JVALV+11) = TSRETU
                CALL NOCART(CARCRI,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
      &                   NBCRIT)
              CALL JEDETR(MESMAI)
 
           ELSE
 C ----    PAR DEFAUT C'EST TOUT='OUI'
-               ZR(JVALC)    = ITEINT
-               ZR(JVALC+1)  = TYPTGT
-               ZR(JVALC+2)  = RESI
-               ZR(JVALC+3)  = THETA
-               ZR(JVALC+4)  = ITEPAS
-               ZR(JVALC+5)  = IMPEXP
-               ZR(JVALC+6)  = PERT
-               ZR(JVALC+7)  = RESID
-               ZR(JVALC+8)  = ITDEBO
-               ZR(JVALC+9)  = TSEUIL
-               ZR(JVALC+10) = TSAMPL
-               ZR(JVALC+11) = TSRETU
+               ZR(JVALV)    = ITEINT
+               ZR(JVALV+1)  = TYPTGT
+               ZR(JVALV+2)  = RESI
+               ZR(JVALV+3)  = THETA
+               ZR(JVALV+4)  = ITEPAS
+               ZR(JVALV+5)  = IMPEXP
+               ZR(JVALV+6)  = PERT
+               ZR(JVALV+7)  = RESID
+               ZR(JVALV+8)  = ITDEBO
+               ZR(JVALV+9)  = TSEUIL
+               ZR(JVALV+10) = TSAMPL
+               ZR(JVALV+11) = TSRETU
                CALL NOCART(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
           ENDIF
   150   CONTINUE
   160 CONTINUE
-C     SURCHARGE DE LA CARTE CARCR0 PAR CARCRI
-      CALL NMDOFU(CARCR0,CARCRI)
       
 
 C FIN ------------------------------------------------------------------

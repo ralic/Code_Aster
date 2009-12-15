@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE SENSIBILITE EFGE_ELNO_DEPL / SIPO_ELNO_DEPL
 # sensd09c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -288,15 +288,6 @@ for i in range(n):
         CRITERE   = 'ABSOLU',
         PRECISION = 1.E-4,
         REFERENCE = 'AUTRE_ASTER',)
-#  else :
-#     TEST_TABLE(
-#        TABLE     = T2[i],
-#        NOM_PARA  = 'DIFF',
-#        TYPE_TEST = 'MAX',
-#        VALE      = 0.,
-#        CRITERE   = 'ABSOLU',
-#        PRECISION = 5.E-2,
-#        REFERENCE = 'AUTRE_ASTER',)
 
 #
 #  Test_Resu non regression

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE ANNEAU DYNAMOMETRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,21 +175,6 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
                     CRITERE = 'RELATIF')
           )
 
-# LE SIGNE DE SIXX DEPEND DE CELUI DE L'EFFORT NORMAL QUI EST NUL
-# EN CE POINT. SON SIGNE DEPEND DONC DE LA MACHINE D'EXECUTION
-# ON SUPPRIME DONC CE TEST, CAR LES CONTRAINTES SONT TESTEES
-# DANS LES TEST_RESU SUIVANTS.
-#TEST_RESU ( RESU : (RESULTAT   : MEST1
-#                    NOM_CHAM   :'SIGM_ELNO_DEPL'
-#                    NUME_ORDRE : 1
-#                    NOM_CMP    :'SIXX'
-#                    MAILLE     : S11
-#                    NOEUD      : N1
-#                    VALE       : -810569.5D0
-#                    PRECISION  : 1.D-5
-#                    CRITERE    : 'RELATIF'
-#                   )
-#          );
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,
                     NOM_CHAM = 'SIGM_ELNO_DEPL',

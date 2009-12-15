@@ -1,13 +1,15 @@
       SUBROUTINE XPRREI(MODEL,NOMA,FISS,NOESOM,NORESI,CNSLN,CNSLT,
-     &                  CNSGLS,DELTAT,LCMIN,LEVSET,ISOZRO,CNXINV)
+     &                  CNSGLS,DELTAT,LCMIN,LEVSET,ISOZRO,CNXINV,NODTOR,
+     &                  ELETOR,LIGGRD)
       IMPLICIT NONE
       REAL*8         DELTAT,LCMIN
       CHARACTER*2    LEVSET
       CHARACTER*8    MODEL,NOMA,FISS
-      CHARACTER*19   CNSLN,CNSLT,CNSGLS,NOESOM,NORESI,ISOZRO,CNXINV
+      CHARACTER*19   CNSLN,CNSLT,CNSGLS,NOESOM,NORESI,ISOZRO,CNXINV,
+     &               NODTOR,ELETOR,LIGGRD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/10/2009   AUTEUR MESSIER J.MESSIER 
+C MODIF ALGORITH  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +50,9 @@ C        LCMIN   : LONGUEUR CARACTERISTIQUE MINIMALE DES ELEMENTS
 C        LEVSET  :   ='LN' SI ON REINITIALISE LN
 C                    ='LT' SI ON REINITIALISE LT
 C        CNXINV  : MATRICE DE CONNECTIVITE INVERSEE
+C        NODTOR  : LISTE DES NOEUDS DEFINISSANT LE DOMAINE DE CALCUL
+C        ELETOR  : LISTE DES ELEMENTS DEFINISSANT LE DOMAINE DE CALCUL
+C        LIGGRD  : LIGREL DU DOMAINE DE CALCUL (VOIR XPRTOR.F)
 C
 C    SORTIE
 C        CNSLS   : CHAM_NO_S LEVEL SET REINITIALISEE
@@ -75,7 +80,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNUM,JEXATR,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER        IFM,NIV,NBNO,IRET,JCONX1,JCONX2,JMAI,ADDIM,IBID,
+      INTEGER        IFM,NIV,NBNOM,IRET,JCONX1,JCONX2,JMAI,ADDIM,IBID,
      &               NDIM,JLSNO,JVI,JVIL,JWI,JWIL,JPTF,JPTFL,JGDF,JGDFL,
      &               JFEL,JFELL,JFELD,NNCP,JMEAST,JMESTL,JMESTD,ITEMP,
      &               NBNOMA,ITYPMA,IADF,IADMET,IADDFI,INO,IMA,IADALP,
@@ -91,7 +96,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19   MAI,CNOLS,CNOGLS,CELGLS,CHAMS,CELDFI,CESDFI,
      &               CELALF,CESALF,CNSVI,CNSWI,CNSPTF,CNSGDF,CESPTF,
      &               CELGDF,CELPTF,CNOPTF,CNOGDF
-      CHARACTER*24   LIGREL,LCHIN(4),LCHOUT(2)
+      CHARACTER*24   LCHIN(4),LCHOUT(2)
 
       REAL*8         RESILN,RESILT
       PARAMETER      (RESILN = 5.D-3)
@@ -101,6 +106,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C      PARAMETER      (ITERMX=1)
       REAL*8         RESIDU(ITERMX),RESIT(ITERMX),NORMOY,JMOY
 
+C     DOMAIN LOCALIZATION
+      INTEGER        JNODTO,NBNO,JELCAL,NELETO,NODE
+
 C-----------------------------------------------------------------------
 C     DEBUT
 C-----------------------------------------------------------------------
@@ -109,8 +117,7 @@ C-----------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 
 C  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
-      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8B,IRET)
-      CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8B,IRET)
+      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNOM,K8B,IRET)
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
       CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
@@ -118,8 +125,20 @@ C  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
       CALL JEVEUO(MAI,'L',JMAI)
       CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
       NDIM=ZI(ADDIM-1+6)
-      LIGREL = MODEL//'.MODELE'
       CALL JEVEUO('&CATA.TM.TMDIM','L',JTMDIM)
+
+C     RETRIEVE THE NUMBER OF THE NODES THAT MUST TO BE USED IN THE
+C     CALCULUS (SAME ORDER THAN THE ONE USED IN THE CONNECTION TABLE)
+      CALL JEVEUO(NODTOR,'L',JNODTO)
+
+C     RETRIEVE THE TOTAL NUMBER OF THE NODES THAT MUST BE ELABORATED
+      CALL JELIRA(NODTOR,'LONMAX',NBNO,K8B)
+
+C     RETRIEVE THE LIST OF THE ELEMENTS DEFINING THE TORE
+      CALL JEVEUO(ELETOR,'L',JELCAL)
+
+C     RETRIEVE THE NUMBER OF ELEMENTS DEFINING THE TORE
+      CALL JELIRA(ELETOR,'LONMAX',NBMA,K8B)
 
 C   RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
       CALL GETVTX(' ','METHODE',1,1,1,METHOD,IBID)
@@ -170,10 +189,11 @@ C----------------------------------------------------------------------
 C   CALCUL DES VRAIES DISTANCES SIGNEES SUR LES NOEUDS PROCHES DE LS=0
 C----------------------------------------------------------------------
 C  VECTEUR IDIQUANT SI LS AU NOEUD EST CALCULEE
-      CALL WKVECT(ISOZRO,'V V L',NBNO,JZERO)
+      CALL WKVECT(ISOZRO,'V V L',NBNOM,JZERO)
 
 
-      CALL XPRLS0(NOMA,FISS,NOESOM,LCMIN,CNSLN,CNSLT,ISOZRO,LEVSET)
+      CALL XPRLS0(NOMA,FISS,NOESOM,LCMIN,CNSLN,CNSLT,ISOZRO,LEVSET,
+     &            NODTOR,ELETOR)
 
 C--------------------------------------
 C   CALCUL DE PETIT F SUR LES ELEMENTS
@@ -183,11 +203,13 @@ C--------------------------------------
       CALL JEVEUO(CNSPTF//'.CNSV','E',JPTF)
       CALL JEVEUO(CNSPTF//'.CNSL','E',JPTFL)
       DO 10 I=1,NBNO
+C        RETREIVE THE NODE NUMBER
+         NODE = ZI(JNODTO-1+I)
          SIGNLS=0.D0
-         IF (ABS(ZR(JLSNO-1+I)).GT.R8PREM())
-     &      SIGNLS = ZR(JLSNO-1+I) / ABS(ZR(JLSNO-1+I))
-         ZL(JPTFL-1+I) = .TRUE.
-         ZR(JPTF-1+I) = SIGNLS
+         IF (ABS(ZR(JLSNO-1+NODE)).GT.R8PREM())
+     &      SIGNLS = ZR(JLSNO-1+NODE) / ABS(ZR(JLSNO-1+NODE))
+         ZL(JPTFL-1+NODE) = .TRUE.
+         ZR(JPTF-1+NODE) = SIGNLS
  10   CONTINUE
       CNOPTF = '&&XPRREI.CNOPTF'
       CALL CNSCNO(CNSPTF,' ','NON','V',CNOPTF,'F',IBID)
@@ -197,7 +219,7 @@ C--------------------------------------
       LPAOUT(1)='PMOYEL'
       LCHOUT(1)=CELPTF
 
-      CALL CALCUL('S','MOY_NOEU_S',LIGREL,1,LCHIN,LPAIN,1,
+      CALL CALCUL('S','MOY_NOEU_S',LIGGRD,1,LCHIN,LPAIN,1,
      &            LCHOUT,LPAOUT,'V')
 
       CALL JEDETR (CNOPTF)
@@ -238,21 +260,25 @@ C-----BOUCLE PRINCIPALE-------------------------------------------------
 
       DO 995 ITEMP=1,ITERMX
          DO 110 I=1,NBNO
-            ZL(JVIL-1+I) = .TRUE.
-            ZL(JWIL-1+I) = .TRUE.
-            ZR(JVI-1+I) = 0.D0
-            ZR(JWI-1+I) = 0.D0
+C           RETREIVE THE NODE NUMBER
+            NODE = ZI(JNODTO-1+I)
+            ZL(JVIL-1+NODE) = .TRUE.
+            ZL(JWIL-1+NODE) = .TRUE.
+            ZR(JVI-1+NODE) = 0.D0
+            ZR(JWI-1+NODE) = 0.D0
  110     CONTINUE
 
 C--------------------------------------
 C   CALCUL DE GRAND F SUR LES ELEMENTS
 C--------------------------------------
          DO 90 I=1,NBNO
+C           RETREIVE THE NODE NUMBER
+            NODE = ZI(JNODTO-1+I)
             SIGNLS=0.D0
-            IF (ABS(ZR(JLSNO-1+I)).GT.R8PREM())
-     &         SIGNLS = ZR(JLSNO-1+I) / ABS(ZR(JLSNO-1+I))
-            ZL(JGDFL-1+I) = .TRUE.
-            ZR(JGDF-1+I) = SIGNLS
+            IF (ABS(ZR(JLSNO-1+NODE)).GT.R8PREM())
+     &         SIGNLS = ZR(JLSNO-1+NODE) / ABS(ZR(JLSNO-1+NODE))
+            ZL(JGDFL-1+NODE) = .TRUE.
+            ZR(JGDF-1+NODE) = SIGNLS
 
  90      CONTINUE
          CALL CNSCNO(CNSGDF,' ','NON','V',CNOGDF,'F',IBID)
@@ -265,7 +291,7 @@ C--------------------------------------
          LPAOUT(1)='PMOYEL'
          LCHOUT(1)=CELGDF
 
-         CALL CALCUL('S','MOY_NOEU_S',LIGREL,1,LCHIN,LPAIN,1,
+         CALL CALCUL('S','MOY_NOEU_S',LIGGRD,1,LCHIN,LPAIN,1,
      &               LCHOUT,LPAOUT,'V')
 
                      
@@ -290,7 +316,7 @@ C---------------------------------------------------------
             LCHOUT(2)=CELALF
 
 
-            CALL CALCUL('S','XFEM_SMPLX_CALC',LIGREL,4,LCHIN,LPAIN,2,
+            CALL CALCUL('S','XFEM_SMPLX_CALC',LIGGRD,4,LCHIN,LPAIN,2,
      &                  LCHOUT,LPAOUT,'V')
 
 
@@ -308,7 +334,9 @@ C---------------------------------------
 C     CALCUL DES CHAMPS NODAUX VI ET WI
 C---------------------------------------
 C   BOUCLE SUR LES MAILLES DU MAILLAGE
-            DO 120 IMA = 1,NBMA
+            DO 120 I = 1,NBMA
+C              RETREIVE THE ELEMENT NUMBER
+               IMA = ZI(JELCAL-1+I)
                NBNOMA = ZI(JCONX2+IMA) - ZI(JCONX2+IMA-1)
 C   VERIFICATION DU TYPE DE MAILLE
 C              NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
@@ -347,17 +375,19 @@ C---------------------------------------
          SDIFFT = 0.D0
          SIGLST = 0.D0
          DO 200 I=1,NBNO           
-
+C           RETREIVE THE NODE NUMBER
+            NODE = ZI(JNODTO-1+I)
 C  ON ECARTE LES NOEUDS MILIEUX
-            IF (.NOT.ZL(JNOSOM-1+I)) GOTO 200
+            IF (.NOT.ZL(JNOSOM-1+NODE)) GOTO 200
 C  ON ECARTE LES NOEUDS CALCULES PLUS HAUT
-            IF (ZL(JZERO-1+I)) GOTO 200
-            LSPREC = ZR(JLSNO-1+I)
-            IF (ABS(ZR(JWI-1+I)).GT.R8PREM()) THEN
+            IF (ZL(JZERO-1+NODE)) GOTO 200
+            LSPREC = ZR(JLSNO-1+NODE)
+            IF (ABS(ZR(JWI-1+NODE)).GT.R8PREM()) THEN
 C           WRITE(*,*)'La reinit du noeud d"indice',I,' se fait a WI>0'
-               LSNOUV = ZR(JLSNO-1+I)-DELTAT*(ZR(JVI-1+I)/ZR(JWI-1+I))
-               ZR(JLSNO-1+I) = LSNOUV
-               IF (ZL(JRESDU-1+I)) THEN
+               LSNOUV = ZR(JLSNO-1+NODE)-DELTAT*(ZR(JVI-1+NODE)/
+     &                  ZR(JWI-1+NODE))
+               ZR(JLSNO-1+NODE) = LSNOUV
+               IF (ZL(JRESDU-1+NODE)) THEN
                   SDIFF = SDIFF + (LSNOUV-LSPREC)**2.0D0
                   SIGMLS = SIGMLS + LSPREC**2.0D0
                ENDIF
@@ -382,17 +412,19 @@ C     CALCUL DES NOEUDS DONT WI=0
 C---------------------------------
 
          DO 800 I=1,NBNO
+C           RETREIVE THE NODE NUMBER
+            NODE = ZI(JNODTO-1+I)
 C  ON ECARTE LES NOEUDS MILIEUX
-            IF (.NOT.ZL(JNOSOM-1+I)) GOTO 800
+            IF (.NOT.ZL(JNOSOM-1+NODE)) GOTO 800
 C  ON ECARTE LES NOEUDS CALCULES PLUS HAUT
-            IF (ZL(JZERO-1+I)) GOTO 800            
+            IF (ZL(JZERO-1+NODE)) GOTO 800            
             
-            IF (ABS(ZR(JWI-1+I)).LT.R8PREM()) THEN
-C           WRITE(*,*)'La réinit du noeud d"indice',I,' se fait à WI=0'
+            IF (ABS(ZR(JWI-1+NODE)).LT.R8PREM()) THEN
+C           WRITE(*,*)'La reinit du noeud d"indice',I,' se fait a WI=0'
                           
 C    RECUPERATION DES MAILLES CONTENANT LE NOEUD I
-               CALL JELIRA(JEXNUM(CNXINV,I),'LONMAX',NMANOI,K8B)
-               CALL JEVEUO(JEXNUM(CNXINV,I),'L',JMANOI)
+               CALL JELIRA(JEXNUM(CNXINV,NODE),'LONMAX',NMANOI,K8B)
+               CALL JEVEUO(JEXNUM(CNXINV,NODE),'L',JMANOI)
 C     BOUCLE SUR LES MAILLES CONTENANT LE NOEUD I
                DISMIN = R8MAEM()
 C    ON ECARTE LES NOEUDS APPARTENANT A LA STRUCTURE MASSIVE
@@ -410,9 +442,9 @@ C     SI MAILLE NON VOLUMIQUE (en 3D) OU SURFACIQUE (en 2D) ON LA SAUTE
 C     BOUCLE SUR LES NOEUDS DE LA MAILLE
                   NBNOMA = ZI(JCONX2+NUMAI) - ZI(JCONX2+NUMAI-1)
 
-C    Algo modifié par Julien 
-C   (On cherche à appliquer une réinitialisation aux mailles de bord
-C   et uniquement à elles!)
+C    Algo modifie par Julien 
+C   (On cherche a appliquer une reinitialisation aux mailles de bord
+C   et uniquement a elles!)
 
                   DO 170 INO=1,NBNOMA
                      NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAI-1)+INO-1)
@@ -422,12 +454,12 @@ C   et uniquement à elles!)
                      
                         DIST=0.D0
                          DO 175 J=1,NDIM                         
-                           JI(J) = ZR(JCOOR-1+3*(I-1)+J)
+                           JI(J) = ZR(JCOOR-1+3*(NODE-1)+J)
      &                           - ZR(JCOOR-1+3*(NUNO-1)+J)
                             DIST=DIST+JI(J)**2
  175                     CONTINUE
                          DIST=DIST**0.5D0
-C     On repère le noeud le plus proche                         
+C     On repere le noeud le plus proche                         
                          IF (DIST.LT.DISMIN) THEN
                            DISMIN = DIST
                            NUMIN = NUNO
@@ -436,11 +468,11 @@ C     On repère le noeud le plus proche
                                         
  170              CONTINUE
  160           CONTINUE
-C On affecte au noeud I (WI=0), la réactualisation du noeud NUMIN (WI>0)
-               LSPREC = ZR(JLSNO-1+I)
-               LSNOUV = ZR(JLSNO-1+I)
+C On affecte au noeud I (WI=0), la reactualisation du noeud NUMIN (WI>0)
+               LSPREC = ZR(JLSNO-1+NODE)
+               LSNOUV = ZR(JLSNO-1+NODE)
      &          -DELTAT*(ZR(JVI-1+NUMIN)/ZR(JWI-1+NUMIN))
-               ZR(JLSNO-1+I) = LSNOUV         
+               ZR(JLSNO-1+NODE) = LSNOUV         
             ENDIF
 
  800     CONTINUE
@@ -460,7 +492,7 @@ C---------------------------------------------------
          LPAOUT(1)='PGNEUTR'
          LCHOUT(1)=CELGLS
 
-         CALL CALCUL('S','GRAD_NEUT_R',LIGREL,2,LCHIN,LPAIN,1,LCHOUT,
+         CALL CALCUL('S','GRAD_NEUT_R',LIGGRD,2,LCHIN,LPAIN,1,LCHOUT,
      &               LPAOUT,'V')
 
 C  PASSAGE D'UN CHAM_ELNO EN UN CHAM_NO

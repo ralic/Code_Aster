@@ -1,4 +1,4 @@
-#@ MODIF co_fonction SD  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_fonction SD  DATE 14/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,18 +112,25 @@ class fonction_sdaster(fonction_class, sd_fonction_aster):
         lx = lbl[0:dim]
         ly = lbl[dim:2*dim]
       elif hasattr(self, 'etape') and self.etape.nom == 'DEFI_FONCTION' :
-         if self.etape['VALE'] != None:
+         if self.etape['VALE'] is not None:
             lbl = list(self.etape['VALE'])
             dim = len(lbl)
             lx = [lbl[i] for i in range(0,dim,2)]
             ly = [lbl[i] for i in range(1,dim,2)]
-         elif self.etape['VALE_PARA']!=None:
+         elif self.etape['VALE_PARA'] is not None:
             lx = self.etape['VALE_PARA'].Valeurs()
             ly = self.etape['VALE_FONC'].Valeurs()
+         elif self.etape['ABSCISSE'] is not None:
+            lx = self.etape['ABSCISSE']
+            ly = self.etape['ORDONNEE']
+         else:
+            raise Accas.AsException("Erreur (fonction.Valeurs) : ne fonctionne en " \
+               "PAR_LOT='OUI' que sur des fonctions produites par DEFI_FONCTION " \
+               "dans le fichier de commandes courant.")
       else:
          raise Accas.AsException("Erreur (fonction.Valeurs) : ne fonctionne en " \
                "PAR_LOT='OUI' que sur des fonctions produites par DEFI_FONCTION " \
-               "dans le jdc courant.")
+               "dans le fichier de commandes courant.")
       return [lx, ly]
    def Absc(self):
       """Retourne la liste des abscisses"""
@@ -198,7 +205,8 @@ class fonction_c(fonction_class, sd_fonction_aster):
          for i in range(dim):
             lr.append(lbl[dim+2*i])
             li.append(lbl[dim+2*i+1])
-      elif hasattr(self, 'etape') and self.etape.nom == 'DEFI_FONCTION':
+      elif hasattr(self, 'etape') and self.etape.nom == 'DEFI_FONCTION' \
+            and self.etape['VALE_C'] is not None:
          lbl=list(self.etape['VALE_C'])
          dim=len(lbl)
          lx=[lbl[i] for i in range(0,dim,3)]

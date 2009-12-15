@@ -1,4 +1,4 @@
-#@ MODIF observation Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF observation Messages  DATE 14/12/2009   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,6 +53,14 @@ cata_msg = {
 7 : _("""
  erreur dans les données d'observation
  pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s et  %(k3)s 
+"""),
+
+8 : _("""
+ Variation de la déformation supérieure au seuil fixé :
+    seuil en valeur relative : %(r1)f
+    entite : %(k1)s
+    composante : %(k2)s
+    numéro ordre : %(i1)d
 """),
 
 45 : _("""

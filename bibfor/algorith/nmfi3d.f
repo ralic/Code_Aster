@@ -1,10 +1,10 @@
       SUBROUTINE NMFI3D(NNO,NDDL,NPG,LGPG,WREF,VFF,DFDE,
      &                  MATE,OPTION,GEOM,DEPLM,DDEPL,
      &                  SIGMA,FINT,KTAN,VIM,VIP,CRIT,
-     &                  COMPOR,CODRET)
+     &                  COMPOR,MATSYM,COOPG,TM,TP,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/11/2009   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 15/12/2009   AUTEUR LAVERNE J.LAVERNE 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -27,10 +27,12 @@ C TOLE CRP_21
       IMPLICIT NONE
       INTEGER NNO,NDDL,NPG,LGPG,MATE,CODRET
       REAL*8  WREF(NPG),VFF(NNO,NPG),DFDE(2,NNO,NPG),CRIT(*)
-      REAL*8  GEOM(NDDL),DEPLM(NDDL),DDEPL(NDDL)
-      REAL*8  FINT(NDDL),KTAN(*)
+      REAL*8  GEOM(NDDL),DEPLM(NDDL),DDEPL(NDDL),TM,TP
+      REAL*8  FINT(NDDL),KTAN(*),COOPG(3,NPG)
       REAL*8  SIGMA(3,NPG),VIM(LGPG,NPG),VIP(LGPG,NPG)
       CHARACTER*16 OPTION, COMPOR(*)
+      LOGICAL MATSYM
+
 C-----------------------------------------------------------------------
 C  OPTIONS DE MECANIQUE NON LINEAIRE POUR LES JOINTS 3D (TE0206)
 C-----------------------------------------------------------------------
@@ -53,6 +55,8 @@ C IN  VIM    VARIABLES INTERNES AU DEBUT DU PAS DE TEMPS
 C OUT VIP    VARIABLES INTERNES A LA FIN DU PAS DE TEMPS
 C IN  CRIT   VALEURS DE L'UTILISATEUR POUR LES CRITERES DE CONVERGENCE
 C IN  COMPOR NOM DE LA LOI DE COMPORTEMENT
+C IN  MATSYM INFORMATION SUR LA MATRICE TANGENTE : SYMETRIQUE OU PAS
+C IN  COOPG  COORDONNEES GEOMETRIQUES DES PG
 C OUT CODRET CODE RETOUR DE L'INTEGRATION
 C-----------------------------------------------------------------------
       LOGICAL RESI,RIGI
@@ -68,13 +72,23 @@ C-----------------------------------------------------------------------
       RESI = OPTION.EQ.'RAPH_MECA'      .OR. OPTION(1:9).EQ.'FULL_MECA'
       RIGI = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RIGI_MECA'
       
-      CALL R8INIR(3,0.D0,DSU,1)
-      IF (RESI) CALL R8INIR(NDDL,0.D0,FINT,1)
-      IF (RIGI) CALL R8INIR((NDDL*(NDDL+1))/2,0.D0, KTAN,1)
-
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
       CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
+
+      CALL R8INIR(3,0.D0,SUM,1)
+      CALL R8INIR(3,0.D0,DSU,1)
+      
+      IF (RESI) CALL R8INIR(NDDL,0.D0,FINT,1)
+            
+      IF (RIGI) THEN
+        IF (MATSYM) THEN 
+          CALL R8INIR((NDDL*(NDDL+1))/2,0.D0, KTAN,1)
+        ELSE
+          CALL R8INIR(NDDL*NDDL,0.D0, KTAN,1)
+        ENDIF
+      ENDIF  
+
 
       DO 10 KPG=1,NPG
 
@@ -103,10 +117,10 @@ C -   APPEL A LA LOI DE COMPORTEMENT
         CODE(KPG) = 0
 
         CALL NMCOMP('RIGI',KPG,1,3,TYPMOD,MATE,COMPOR,CRIT,
-     &                RBID,RBID,
+     &                TM,TP,
      &                SUM,DSU,
      &                RBID,VIM(1,KPG),
-     &                OPTION,ANGMAS,RBID,
+     &                OPTION,ANGMAS,COOPG(1,KPG),
      &                SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)
 
 C FORCES INTERIEURES
@@ -120,20 +134,39 @@ C FORCES INTERIEURES
 C MATRICE TANGENTE 
 
         IF (RIGI) THEN
-C         STOCKAGE SYMETRIQUE LIGNE INFERIEUR
-          KK = 0
-          DO 50 NI=1,NDDL
-          DO 52 MJ=1,NI
-            KK = KK+1
-            DO 60 P=1,3
-            DO 62 Q=1,3
 
-              KTAN(KK) = KTAN(KK) + POIDS*B(P,NI)*DSIDEP(P,Q)*B(Q,MJ)
-
- 62         CONTINUE
- 60         CONTINUE
- 52       CONTINUE
- 50       CONTINUE
+          IF (MATSYM) THEN 
+          
+C           STOCKAGE SYMETRIQUE
+            KK = 0
+            DO 50 NI=1,NDDL
+            DO 52 MJ=1,NI
+              KK = KK+1
+              DO 60 P=1,3
+              DO 62 Q=1,3
+                KTAN(KK) = KTAN(KK) + POIDS*B(P,NI)*DSIDEP(P,Q)*B(Q,MJ)
+ 62           CONTINUE
+ 60           CONTINUE
+ 52         CONTINUE
+ 50         CONTINUE
+ 
+          ELSE
+          
+C           STOCKAGE COMPLET          
+            KK = 0
+            DO 51 NI=1,NDDL
+            DO 53 MJ=1,NDDL
+              KK = KK+1
+              DO 61 P=1,3
+              DO 63 Q=1,3
+                KTAN(KK) = KTAN(KK) + POIDS*B(P,NI)*DSIDEP(P,Q)*B(Q,MJ)
+ 63           CONTINUE
+ 61           CONTINUE
+ 53         CONTINUE
+ 51         CONTINUE
+ 
+          ENDIF
+        
         ENDIF
 
  10   CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF reca_interp Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_interp Macro  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,6 +99,7 @@ class Sim_exp :
       n = 0
       resu_num = F_calc
       n_exp = len(experience)    # nombre de points sur la courbe expérimentale num.i    
+
       stockage = Numeric.ones(n_exp, Numeric.Float)     # matrice de stockage des erreurs en chaque point
       for j in xrange(n_exp) :
          d = self.DistVertAdimPointLigneBrisee(experience[j], resu_num)
@@ -124,11 +125,10 @@ class Sim_exp :
       """
 
       L_erreur=[]
-      for i in range(len(reponses)):   
+      for i in range(len(reponses)):
          err = self._Interpole(L_F[i],self.resu_exp[i],self.poids[i])
          L_erreur.append(err)
 
-#      print "L_erreur=", L_erreur
 
       # On transforme L_erreur en tab num
       dim=[]
@@ -211,7 +211,8 @@ class Sim_exp :
       LIST_SENSI = CALCUL_ASTER.LIST_SENSI
       LIST_DERIV = CALCUL_ASTER.LIST_DERIV
       INFO       = CALCUL_ASTER.INFO
-
+      #lors du calcul de la sensibilite on n'affiche pas la fenetre MAC
+      CALCUL_ASTER.graph_mac=False
 
 
       # Erreur de l'interpolation de F_interp : valeur de F interpolée sur les valeurs experimentales
@@ -241,7 +242,8 @@ class Sim_exp :
              h = val[k]*pas
              val[k] = val[k] + h
 
-             # Calcul_Aster pour la valeur perturbée
+             # Calcul_Aster pour la valeur perturbée 
+
              F_perturbe, L_deriv = CALCUL_ASTER.calcul_Aster(val)
 
              # Erreur de l'interpolation de F_perturb : valeur de F (perturbée) interpolée sur les valeurs experimentales

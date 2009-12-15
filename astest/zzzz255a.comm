@@ -1,4 +1,4 @@
-# MODIF  DATE 08/09/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 # TITRE VALIDATION DE L'OPTION TEST_MAIL DANS PROPA_FISS
 # zzzz255a.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -62,11 +62,12 @@ PROPA_FISS(MODELE=ModX,
            FISSURE=_F(FISS_ACTUELLE=Fiss[0],
                       FISS_PROPAGEE=Fiss[1],
                      ),
-           TEST_MAIL='CONSTANT',
+           TEST_MAIL='OUI',
            ITERATIONS=3,
            DA_MAX=25.,
            METHODE_PROPA='UPWIND',
            RAYON=25*4,
+           ZONE_MAJ='TOUT',
            INFO=0,);
 
 #****************************

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102g.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -165,18 +165,4 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
 #
 FIN()
 #
-#
-#TEST_RESU ( RESU : (RESULTAT   : MEST1
-#                    NOM_CHAM   : 'SIGM_ELNO_DEPL'
-#                    NUME_ORDRE : 1
-#                    NOM_CMP    : 'SIXX'
-#                    MAILLE     : S18
-#                    NOEUD      : N8
-#                    VALE       : 1.764252D7
-#                    PRECISION  : 1.D-6
-#                    CRITERE    : 'RELATIF', REFERENCE = 'ANALYTIQUE',
-#                   )
-#          );
-##
-#FIN( ) ;
-#
+

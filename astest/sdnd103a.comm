@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE RESSORT AVEC UNE NON-LINEARITE SOUMIS A UNE ACCELERATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,55 +152,6 @@ TABLE=POST_DYNA_MODA_T(  RESU_GENE=TRAN_GED,
 #
 TT=POST_DYNA_MODA_T(  RESU_GENE=TRAN_GEE,
                  RELA_EFFO_DEPL=_F(  NOEUD = 'N01', NOM_CMP = 'DX') )
-
-#TEST_TABLE(      TABLE=TT,FILTRE=(
-#                   _F(  NOM_PARA = 'RELATION',
-#                            VALE_K = 'f_NLIN'),
-#                          _F(  NOM_PARA = 'PHASE',
-#                            VALE_I = 1)),
-#                 NOM_PARA='INST_INIT',
-#                      VALE=2.00000E-02         )
-#
-#TEST_TABLE(      TABLE=TT,FILTRE=(
-#                   _F(  NOM_PARA = 'RELATION',
-#                            VALE_K = 'f_NLIN'),
-#                          _F(  NOM_PARA = 'PHASE',
-#                            VALE_I = 1)),
-#                 NOM_PARA='INST_FIN',
-#                      VALE=3.98000E+00         )
-#
-#TEST_TABLE(      TABLE=TT,FILTRE=(
-#                   _F(  NOM_PARA = 'RELATION',
-#                            VALE_K = 'f_NLIN'),
-#                          _F(  NOM_PARA = 'PHASE',
-#                            VALE_I = 1)),
-#                 NOM_PARA='MAXI',
-#                      VALE=0.010               )
-#
-#TEST_TABLE(      TABLE=TT,FILTRE=(
-#                   _F(  NOM_PARA = 'RELATION',
-#                            VALE_K = 'f_NLIN'),
-#                          _F(  NOM_PARA = 'PHASE',
-#                            VALE_I = 1)),
-#                 NOM_PARA='INST_MAXI',
-#                     VALE=2.00000E+00          )
-#
-#TEST_TABLE(      TABLE=TT,FILTRE=(
-#                   _F(  NOM_PARA = 'RELATION',
-#                            VALE_K = 'f_NLIN'),
-#                          _F(  NOM_PARA = 'PHASE',
-#                            VALE_I = 4)),
-#                 NOM_PARA='MAXI',
-#                     VALE=-0.010               )
-#
-#TEST_TABLE(      TABLE=TT,FILTRE=(
-#                   _F(  NOM_PARA = 'RELATION',
-#                            VALE_K = 'f_NLIN'),
-#                          _F(  NOM_PARA = 'PHASE',
-#                            VALE_I = 5)),
-#                 NOM_PARA='MAXI',
-#                      VALE=0.010               )
-#
 #
 L_RECU=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
                       _F(  JUSQU_A = 2.,   PAS = 2.),

@@ -5,7 +5,7 @@
       INTEGER NUTM1D(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER NMA2,IALIM1,IALIN1,IATR3,IACNX1,ILCNX1,IATYMA,I2CONO
       INTEGER I2CONB,I2COM1,IDECA2,INO2,ITR,IMA1,NBNO,I2CONU,I2COCF
       INTEGER IDECA1, ITYPM,NUTM,INDIIS,NDIM,NNO,NNOS,NBFPG,KK,INO
-      INTEGER NUNO,I1CONO,IALIN2
+      INTEGER NUNO,I1CONO,IALIN2,I2COCO
       REAL*8       CRREFE(3*NBNOMX), KSI,  X(1), FF(NBNOMX),VOL,X1
 C --- DEB --------------------------------------------------------------
 
@@ -115,12 +115,12 @@ C       IMA1 : MAILLE DE M1 ASSOCIEE AU SEG2 ITR
 10    CONTINUE
       IF (IDECA2.EQ.0) CALL U2MESS('F','CALCULEL3_97')
 
-
-C     2.2 ALLOCATION DE .PJEF_NU ET .PJEF_CF:
-C         (ET REMPLISSAGE DE CES 2 OBJETS)
+C     2.2 ALLOCATION DE .PJEF_NU .PJEF_CF .PJEF_CO:
+C         (ET REMPLISSAGE DE CES 3 OBJETS)
 C     ------------------------------------------------------
       CALL WKVECT(CORRES//'.PJEF_NU','V V I',IDECA2,I2CONU)
       CALL WKVECT(CORRES//'.PJEF_CF','V V R',IDECA2,I2COCF)
+      CALL WKVECT(CORRES//'.PJEF_CO','V V R',3*NNO2,I2COCO)
       IDECA1=0
       IDECA2=0
       DO 20, INO2=1,NNO2
@@ -148,11 +148,13 @@ C     -----------------------------------------------------------
           KSI = KSI + ZR(I1COCF-1+IDECA1+KK)*X1
 771     CONTINUE
         X(1) = KSI
-        CALL ELRFVF(ELREFA,X,27,FF,NNO)
+        ZR(I2COCO+3*(INO2-1)+1)=X(1)
+
 
 C       2.2.2 :
 C       CALCUL DES F. DE FORME AUX NOEUDS POUR LE POINT KSI
 C       -------------------------------------------------------
+        CALL ELRFVF(ELREFA,X,27,FF,NNO)
         DO 22,INO=1,NBNO
           NUNO = ZI(IACNX1+ ZI(ILCNX1-1+IMA1)-2+INO)
           ZI(I2CONU-1+IDECA2+INO) = NUNO

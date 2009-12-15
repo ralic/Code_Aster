@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,18 +19,22 @@
 # RESPONSABLE GENIAUT S.GENIAUT
 
 PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
-                UIinfo={"groupes":("Modélisation",)},
+                UIinfo={"groupes":("Modelisation",)},
                 fr="Propagation de fissure avec X-FEM",
     
     MODELE        =SIMP(statut='o',typ=modele_sdaster),
 
     GRILLE_AUX    =SIMP(statut='f',typ=modele_sdaster),
 
-    TEST_MAIL     =SIMP(statut='f',typ='TXM',into=("NON","CONSTANT","LINEAIRE",),defaut="NON"),
+    TEST_MAIL     =SIMP(statut='f',typ='TXM',into=("NON","OUI",),defaut="NON"),
 
     DA_MAX        =SIMP(statut='o',typ='R'),
 
     FISS_PROP     =SIMP(statut='o',typ=fiss_xfem),
+
+    ZONE_MAJ      =SIMP(statut='f',typ='TXM',into=("TOUT","TORE"),defaut="TORE"),
+
+    RAYON_TORE    =SIMP(statut='f',typ='R'),
 
     LISTE_FISS    =SIMP(statut='o',typ=fiss_xfem,min=1,max='**'),
         
@@ -53,7 +57,7 @@ PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
                        ),
          ),
 
-    b_test_mail_const =BLOC( condition = "TEST_MAIL == 'CONSTANT' ",
+    b_test_mail_const =BLOC( condition = "TEST_MAIL == 'OUI' ",
                              FISS_INITIALE =SIMP(statut='o',typ=fiss_xfem,max=1),
                              DISTANCE      =SIMP(statut='o',typ='R',max=1),
                              TOLERANCE     =SIMP(statut='o',typ='R',max=1),

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 15/12/2009   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C ======================================================================
 C......................................................................
 C     FONCTION REALISEE:  CALCUL DES CHAMELEM AUX NOEUDS A PARTIR DES
 C     VALEURS AUX POINTS DE GAUSS ( SIEF_ELNO_ELGA VARI_ELNO_ELGA )
-C     ELEMENTS 2D DE JOINTS
+C     ELEMENTS DE JOINTS 2D ET 3D
 
 C IN  OPTION : OPTION DE CALCUL
 C IN  NOMTE  : NOM DU TYPE ELEMENT
@@ -46,14 +46,31 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER ICHG,ICHN,ICOM,JTAB(7),NCMP,N,C,IBID,I,IN,IG
+      INTEGER JGANO,NPG,NNOS,NNO,NDIM,NDIME,IPOIDS,IVF,IDFDE
+      INTEGER ICHG,ICHN,ICOM,JTAB(7),NCMP,N,C,IBID,I,J,IN,IG
 C     ------------------------------------------------------------------
 
+
+C     INFORMATION SUR L'ELEMENT DE REFERENCE
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+
+C RAPPEL 
+C   LE JOINT 2D (QUAD4)  EST BASE SUR LE QUAD4 A 2PG DONC NPG=2, NNO=4
+C   LE JOINT 3D (HEXA8)  EST BASE SUR LE QUAD4 A 4PG DONC NPG=4, NNO=4
+C   LE JOINT 3D (PENTA6) EST BASE SUR LE TRIA3 A 1PG DONC NPG=1, NNO=3
+      
+C     DIMENSION DE L'ESPACE
+      IF (NPG.EQ.2) THEN 
+        NDIME = 2
+      ELSE
+        NDIME = 3
+      ENDIF  
+      
       IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
       
         CALL JEVECH('PCONTRR' ,'L',ICHG)
         CALL JEVECH('PSIEFNOR','E',ICHN)
-        NCMP = 2
+        NCMP = NDIME
 
       ELSE IF (OPTION.EQ.'VARI_ELNO_ELGA') THEN
       
@@ -64,16 +81,33 @@ C     ------------------------------------------------------------------
         NCMP = MAX(JTAB(6),1)*JTAB(7)
         
       END IF
-      
+
 C    EXTRAPOLATION AUX NOEUDS
 
-      DO 10 I = 1,NCMP
-        IG = ICHG-1+I
-        IN = ICHN-1+I
-        ZR(IN)        = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1-SQRT(3.D0))/2
-        ZR(IN+3*NCMP) = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1-SQRT(3.D0))/2
-        ZR(IN+NCMP)   = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1+SQRT(3.D0))/2
-        ZR(IN+2*NCMP) = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1+SQRT(3.D0))/2
-   10 CONTINUE                
-        
+      IF (NDIME.EQ.2) THEN 
+
+        DO 10 I = 1,NCMP
+          IG = ICHG-1+I
+          IN = ICHN-1+I
+          ZR(IN)        = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1-SQRT(3.D0))/2
+          ZR(IN+3*NCMP) = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1-SQRT(3.D0))/2
+          ZR(IN+NCMP)   = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1+SQRT(3.D0))/2
+          ZR(IN+2*NCMP) = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1+SQRT(3.D0))/2
+   10   CONTINUE                
+          
+      ELSE
+
+C       ON REMPLIT LES NOEUDS DE LA PREMIERE FACE       
+        CALL PPGAN2(JGANO,NCMP,ZR(ICHG),ZR(ICHN))
+
+C       ON REMPLIT LES NOEUD DE LA DEUXIEME FACE A L'IDENTIQUE
+          DO 20 I = 1,NCMP
+            IN = ICHN-1+I
+            DO 30 J=1,NNO
+              ZR(IN+(J-1)*NCMP + NNO*NCMP) = ZR(IN+(J-1)*NCMP)
+   30       CONTINUE                         
+   20     CONTINUE                         
+       
+      ENDIF    
+           
       END

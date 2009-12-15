@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,39 +94,42 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                  into=("ACIER","ZIRC"),),
                                  ),
 
-           DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",
-                             into=("PETIT","PETIT_REAC","GROT_GDEP","SIMO_MIEHE","GDEF_HYPO_ELAS","GREEN_REAC")),
+           DEFORMATION       =SIMP(statut='f',typ='TXM',defaut="PETIT",
+                                   into=("PETIT","PETIT_REAC","GROT_GDEP","SIMO_MIEHE","GDEF_HYPO_ELAS","GREEN_REAC")),
+           ALGO_C_PLAN       =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
+           RESI_DEBO_MAXI    =SIMP(statut='f',typ='R',fr="Critère d'arret absolu pour assurer la condition de contraintes planes",),
 
-           ALGO_C_PLAN     =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
-           RESI_DEBO_MAXI = SIMP(statut='f',typ='R',
-                   fr="Critère d'arret absolu pour assurer la condition de contraintes planes",
-           ),
-           b_resideborst      = BLOC(condition = " RESI_DEBO_MAXI == None ",
-           fr="Critère d'arret relatif pour assurer la condition de contraintes planes",
-                            RESI_DEBO_RELA = SIMP(statut='f',typ='R',defaut= 1.0E-6),
-                            ),
-           ALGO_1D         =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
-           ITER_MAXI_DEBORST  =SIMP(statut='f',typ='I',defaut= 1),
+           b_resideborst     =BLOC(condition = " RESI_DEBO_MAXI == None ",
+                                      fr="Critère d'arret relatif pour assurer la condition de contraintes planes",
+               RESI_DEBO_RELA   =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+                                  ),
 
-           RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-           ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
+           ALGO_1D           =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
+           ITER_MAXI_DEBORST =SIMP(statut='f',typ='I',defaut= 1),
+           RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+           ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 10 ),
+
            b_redec_local      = BLOC(condition = "DEFORMATION in ('PETIT','PETIT_REAC','GROT_GDEP')",
-                        fr="Nombre de redécoupages internes du pas de temps",
+                                     fr="Nombre de redécoupages internes du pas de temps",
                ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
-                   ),
-           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
-                                 into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
-           TYPE_MATR_TANG  =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION","TANGENTE_SECANTE")),
-           b_perturb      = BLOC(condition = " (TYPE_MATR_TANG != None) and (TYPE_MATR_TANG != 'TANGENTE_SECANTE') ",
-                        fr="Calcul de la matrice tangente par perturbation, valeur de la perturbation",
-                 VALE_PERT_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-5),
-                                ),
-           b_tangsec      = BLOC(condition = " TYPE_MATR_TANG == 'TANGENTE_SECANTE' ",
-                        fr="Modification evolutive de la matrice tangente/secante",
+                                     ),
+
+           RESO_INTE         =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
+                                   into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE","IMPLICITE_RELI")),
+           TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION","TANGENTE_SECANTE")),
+
+           b_perturb         =BLOC(condition = " (TYPE_MATR_TANG != None) and (TYPE_MATR_TANG != 'TANGENTE_SECANTE') ",
+                                   fr="Calcul de la matrice tangente par perturbation, valeur de la perturbation",
+                VALE_PERT_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-5),
+                                  ),
+
+           b_tangsec        = BLOC(condition = " TYPE_MATR_TANG == 'TANGENTE_SECANTE' ",
+                                   fr="Modification evolutive de la matrice tangente/secante",
                  SEUIL        =SIMP(statut='f',typ='R',defaut= 3. ),
                  AMPLITUDE    =SIMP(statut='f',typ='R',defaut= 1.5 ),
                  TAUX_RETOUR  =SIMP(statut='f',typ='R',defaut= 0.05 ),
-                                ),
+                                  ),
+
            PARM_THETA      =SIMP(statut='f',typ='R',defaut= 1. ),
 
            regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),

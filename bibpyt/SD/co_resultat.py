@@ -1,4 +1,4 @@
-#@ MODIF co_resultat SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_resultat SD  DATE 14/12/2009   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,8 @@ class resultat_sdaster(ASSD, sd_resultat):
    def LIST_VARI_ACCES (self) :
       if not self.accessible():
          raise Accas.AsException("Erreur dans resultat.LIST_VARI_ACCES en PAR_LOT='OUI'")
-      return aster.GetResu(self.get_name(), "VARI_ACCES")
+#      return aster.GetResu(self.get_name(), "VARI_ACCES")
+      return aster.GetResu(self.get_name().ljust(19), "VARI_ACCES")
 
    def LIST_PARA (self) :
       if not self.accessible():

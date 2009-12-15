@@ -1,4 +1,4 @@
-# MODIF  DATE 26/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209c.para = tps_job 200 mem_job 200Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -395,21 +395,6 @@ DEP_PPE = CALC_TABLE(reuse = DEP_PPE,
 
 preci=1.e-2;
 
-# TEST_TABLE(TABLE=VC_PPR,
-#            NOM_PARA='JEU',
-#            TYPE_TEST='MAX',
-#            VALE=0.,
-#            CRITERE='ABSOLU',
-#            PRECISION=1.e-12,
-#            REFERENCE='AUTRE_ASTER',);
-
-# TEST_TABLE(TABLE=VC_PPR,
-#            NOM_PARA='RN',
-#            TYPE_TEST='MAX',
-#            VALE=1.0486376884770E+05,
-#            CRITERE='RELATIF',
-#            PRECISION=1.e-3,
-#            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=DEP_PPA,
            NOM_PARA='DX',

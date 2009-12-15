@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/10/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 14/12/2009   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,8 @@ def crea_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "EVOL_THER"    : return evol_ther
   if TYPE_RESU == "MULT_ELAS"    : return mult_elas
   if TYPE_RESU == "MODE_MECA"    : return mode_meca
+  if TYPE_RESU == "DYNA_TRANS"   : return dyna_trans
+  if TYPE_RESU == "DYNA_HARMO"   : return dyna_harmo
   if TYPE_RESU == "FOURIER_ELAS" : return fourier_elas
   if TYPE_RESU == "FOURIER_THER" : return fourier_ther
   if TYPE_RESU == "EVOL_VARC"    : return evol_varc
@@ -42,7 +44,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
          b_affe       =BLOC(condition = "OPERATION == 'AFFE'",
 
            TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=("MODE_MECA","MULT_ELAS","EVOL_ELAS","EVOL_NOLI",
-                                                        "FOURIER_ELAS","EVOL_THER","EVOL_VARC","EVOL_CHAR","FOURIER_THER") ),
+                              "DYNA_HARMO","DYNA_TRANS","FOURIER_ELAS","EVOL_THER","EVOL_VARC","EVOL_CHAR","FOURIER_THER") ),
            NOM_CHAM     =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO()),
 
            b_mode       =BLOC(condition = "TYPE_RESU == 'MODE_MECA'",
@@ -60,7 +62,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
                 NOM_CAS         =SIMP(statut='f',typ='TXM' ),
              ),
              b_evol          =BLOC(condition = "((TYPE_RESU=='EVOL_ELAS') or (TYPE_RESU=='EVOL_NOLI') or (TYPE_RESU=='EVOL_THER')\
-                                                                          or (TYPE_RESU=='EVOL_VARC') or (TYPE_RESU=='EVOL_CHAR'))",
+                                         or (TYPE_RESU=='EVOL_VARC') or (TYPE_RESU=='EVOL_CHAR') or (TYPE_RESU=='DYNA_TRANS'))",
                 regles=(UN_PARMI('INST','LIST_INST'),),
                 INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
                 LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
@@ -76,6 +78,13 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
              b_mode       =BLOC(condition = "TYPE_RESU == 'MODE_MECA'",
                 NUME_MODE       =SIMP(statut='f',typ='I'),
                 FREQ            =SIMP(statut='f',typ='R'),
+             ),
+             b_dyna_harmo       =BLOC(condition = "TYPE_RESU == 'DYNA_HARMO'",
+                regles=(UN_PARMI('FREQ','LIST_FREQ',),),
+                FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+                LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
+                CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+                PRECISION       =SIMP(statut='f',typ='R',defaut=0.0),
              ),
            ),
          ),

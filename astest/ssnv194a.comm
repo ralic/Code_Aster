@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
 # TITRE : TRACTION SUR UN AGREGAT A 10 GRAINS, ACIER BAINITIQUE
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv194a.para = tps_job 280 mem_job 70Mo ncpus 1 liste_test R
@@ -128,25 +128,21 @@ ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
                                _F(GROUP_MA='GM10',ANGL_EULER=(6.86224,41.5917,142.138,),),
                                ),);
 
-
-
-
 SOLNL=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MAT,
-                     CARA_ELEM=ORIEN,
-                     EXCIT=(_F(CHARGE=TRAC,
-                               FONC_MULT=COEF,
-                               TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                   COMPOR=MONO1,
-                                   DEFORMATION='PETIT',
-                                   ITER_INTE_MAXI=150,
-                                   TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINST),),
-                     NEWTON=(_F(PREDICTION='EXTRAPOL',
-                                REAC_ITER=1,),),
-                     CONVERGENCE=(_F(ITER_GLOB_MAXI=100,
-                                     ),),);
+                    CHAM_MATER=MAT,
+                    CARA_ELEM=ORIEN,
+                    EXCIT=_F(CHARGE=TRAC,
+                             FONC_MULT=COEF,
+                             TYPE_CHARGE='FIXE_CSTE',),
+                    COMP_INCR=_F(RELATION='MONOCRISTAL',
+                                 COMPOR=MONO1,
+                                 RESO_INTE='IMPLICITE_RELI',
+                                 DEFORMATION='PETIT',
+                                 TOUT='OUI',),
+                    INCREMENT=_F(LIST_INST=LINST),
+                    NEWTON=_F(PREDICTION='EXTRAPOL',
+                              REAC_ITER=1,)
+                    )
 
 SOLNL=CALC_ELEM(reuse =SOLNL,
                  RESULTAT=SOLNL,

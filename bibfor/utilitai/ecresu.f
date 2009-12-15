@@ -1,10 +1,11 @@
-      SUBROUTINE ECRESU(RESIN,NPARA,NBVA,GRAND,RESOU,IER)
+      SUBROUTINE ECRESU(RESIN,VECTOT,NBVA,GRAND,RESOU,IER)
       IMPLICIT NONE
       INTEGER NPARA,NBVA
       CHARACTER*(*) RESIN,RESOU,GRAND
+      CHARACTER*19 VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 14/12/2009   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,6 +71,7 @@ C
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       GRANDE = GRAND
+      CALL JEVEUO(VECTOT,'L',NPARA)
       IER = 0
 C   Recuperation type RESU
       CALL GETTCO(RESIN,TYPRES)

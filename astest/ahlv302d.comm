@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE GUIDE D'ONDE A ENTREE VIBRO-ABSORBANTE E.F. U,P,PHI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,19 +146,5 @@ TEST_RESU(RESU=(
            NOEUD = 'N716', NOM_CMP = 'PRES', VALE_C = 284.84-53.246j))
           )
 
-#&HARMO = CALC_ELEM (MODELE: MO
-#                    CHAM_MATER: CHM
-#                    TOUT_ORDRE: 'OUI'
-#                    RESULTAT: HARMO
-#                    OPTION: 'PRES_ELNO_DBEL'
-#         );
-#TEST_RESU (RESU:
-#          (RESULTAT:HARMO NOM_CHAM:'PRES_ELNO_DBEL' NUME_ORDRE:01
-#           MAILLE: MA2 NOEUD:NO50 NOM_CMP:'DBEL_R' VALE: 90.97
-#           PRECISION: 3.E-2)
-#          (RESULTAT:HARMO NOM_CHAM:'PRES_ELNO_DBEL' NUME_ORDRE:01
-#           MAILLE: MA58 NOEUD:NO716 NOM_CMP:'DBEL_R' VALE: 91.79
-#           PRECISION: 3.E-2)
-#          );
 FIN()
 #

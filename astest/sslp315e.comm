@@ -1,4 +1,4 @@
-# MODIF  DATE 08/09/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 # TITRE PROPAGATION D UNE FISSURE XFEM EN 2D DANS UNE PLAQUE TROUEE EN FLEXION 3 POINTS
 # sslp315e.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -192,6 +192,7 @@ for i in range(0,NPS) :
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  RAYON=RS,
+                 RAYON_TORE=14.0,
                  INFO=0,);
 
 #     LEVEL SET AU PAS DE PROPAGATION COURANT

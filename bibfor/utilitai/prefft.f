@@ -1,13 +1,13 @@
-      SUBROUTINE PREFFT(RESIN,METHOD,SYMETR,NSENS,GRAND,NPARA,
+      SUBROUTINE PREFFT(RESIN,METHOD,SYMETR,NSENS,GRAND,VECTOT,
      &    NBVA,IER)
       IMPLICIT NONE
       INTEGER NPARA,NSENS
       CHARACTER*4   GRAND
       CHARACTER*16  SYMETR,METHOD
-      CHARACTER*19  RESIN
+      CHARACTER*19  RESIN,VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 14/12/2009   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,10 +69,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*4  GRANDE
       CHARACTER*8  K8B,CRIT
       CHARACTER*16 K16B,NOMOP,SYM
-      CHARACTER*19 K19B,CHDEP,KNUME,CHAM19,NOMFON,SORTIE
+      CHARACTER*19 K19B,CHDEP,KNUME,CHAM19,NOMFON,SORTIE,FONOUT
       CHARACTER*24 VALE,CHDEP2
 C     ------------------------------------------------------------------
-C     CALL JEMARQ() ! pour ne pas invalider NPARA
+      CALL JEMARQ() 
+C      pour ne pas invalider NPARA
       GRANDE = GRAND
       IER = 0
 C
@@ -87,13 +88,14 @@ C
 C
 C    Creation objet fonction
 C
-      NOMFON = 'FON_PROV'
+      NOMFON = '&&PREFFT.FON_AV'
       IF ( NSENS.EQ.1 ) THEN
          CALL WKVECT(NOMFON,'V V R',2*NBORDR,LVAR)
       ELSEIF (NSENS.EQ.-1) THEN
          CALL WKVECT(NOMFON,'V V R',3*NBORDR,LVAR)
       ENDIF
       LFON = LVAR + NBORDR
+      FONOUT = '&&PREFFT.FCTFFT'
 C
       CALL RSEXCH(RESIN,GRANDE,1,CHDEP,IRET)
       CALL JEVEUO(CHDEP//'.VALE','L',LVAL)
@@ -111,21 +113,27 @@ C
             CALL RSEXCH(RESIN,GRANDE,IORDR,CHAM19,IRET)
             CALL RSADPA(RESIN,'L',1,'INST',IORDR,0,LACCE,K8B)
             CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
-            ZR(LVAR+IORDR-1) = ZR(LACCE)
+            ZR(LVAR+IORDR) = ZR(LACCE)
             ZR(LFON+II) = ZR(LVALE+IDDL-1)
             II = II + 1
             CALL JELIBE(CHAM19//'.VALE')
    5     CONTINUE
-         NIN = LVAR
+C         NIN = LVAR
          NBVIN = NBORDR*2
-         CALL SPDFFT(NSENS,NIN,NBVIN,NOUT,NBVOUT,METHOD,SYM,'V')
+C         CALL SPDFFT(NSENS,NIN,NBVIN,NOUT,NBVOUT,METHOD,SYM,'V')
+         CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,SYM,'V')
+         CALL JEVEUO(FONOUT,'L',NOUT)
 C
 C   Recup resultat FFT-1
 C
-         CALL JEEXIN( 'VECTTOT' , IRET )
-         IF ( IRET.EQ.0) THEN
-            CALL WKVECT('VECTTOT','V V C',(NEQ+1)*NBVOUT,NPARA)
-         ENDIF
+         CALL JEEXIN( VECTOT , IRET )
+C         IF ( IRET.EQ.0) THEN
+C            CALL WKVECT(VECTOT,'V V C',(NEQ+1)*NBVOUT,NPARA)
+C         ELSE
+C            CALL JEVEUO(VECTOT,'L',NPARA)
+C         ENDIF
+         IF ( IRET.NE.0) CALL JEDETR(VECTOT)
+         CALL WKVECT(VECTOT,'V V C',(NEQ+1)*NBVOUT,NPARA)
          LFON2 = NOUT + NBVOUT
          DO 15 I = 1,NBVOUT
             ZC(NPARA+(IDDL-1)*NBVOUT+I-1) = ZC(LFON2+I-1)
@@ -143,7 +151,9 @@ C
    20       CONTINUE
             SYM = SYMETR
             NBVIN = NBORDR*2
-            CALL SPDFFT(NSENS,NIN,NBVIN,NOUT,NBVOUT,METHOD,SYM,'V')
+            CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,
+     &                  SYM,'V')
+            CALL JEVEUO(FONOUT,'L',NOUT)
 C
 C   Recup resultat FFT-1
 C
@@ -172,16 +182,21 @@ C  Sens inverse
             II = II + 1
             CALL JELIBE(CHAM19//'.VALE')
    50    CONTINUE
-         NIN = LVAR
+C         NIN = LVAR
          NBVIN = NBORDR*3
-         CALL SPDFFT(NSENS,NIN,NBVIN,NOUT,NBVOUT,METHOD,SYM,'V')
+         CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,SYM,'V')
+         CALL JEVEUO(FONOUT,'L',NOUT)
 C
 C   Recup resultat FFT-1
 C
-         CALL JEEXIN( 'VECTTOT' , IRET )
-         IF ( IRET.EQ.0) THEN
-            CALL WKVECT('VECTTOT','V V R',(NEQ+1)*NBVOUT,NPARA)
-         ENDIF
+         CALL JEEXIN( VECTOT , IRET )
+C         IF ( IRET.EQ.0) THEN
+C            CALL WKVECT(VECTOT,'V V C',(NEQ+1)*NBVOUT,NPARA)
+C         ELSE
+C            CALL JEVEUO(VECTOT,'L',NPARA)
+C         ENDIF
+         IF ( IRET.NE.0) CALL JEDETR(VECTOT)
+         CALL WKVECT(VECTOT,'V V R',(NEQ+1)*NBVOUT,NPARA)
          LFON2 = NOUT + NBVOUT
          DO 55 I = 1,NBVOUT
             ZR(NPARA+(IDDL-1)*NBVA+I-1) = ZR(LFON2+I-1)
@@ -201,7 +216,10 @@ C
    70       CONTINUE
             SYM = SYMETR
             NBVIN = NBORDR*3
-            CALL SPDFFT(NSENS,NIN,NBVIN,NOUT,NBVOUT,METHOD,SYM,'V')
+            CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,
+     &                  SYM,'V')
+            CALL JEVEUO(FONOUT,'L',NOUT)
+           
 C
 C   Recup resultat FFT-1
 C
@@ -215,7 +233,6 @@ C On stocke les instants a la fin
 C
          DO 400 I = 1,NBVOUT
             ZR(NPARA+(NEQ*NBVOUT)+I-1) = ZR(NOUT+I-1)
-
   400    CONTINUE
       ENDIF
       CALL JELIBE(CHAM19//'.VALE')
@@ -223,5 +240,5 @@ C
       NBVA = NBVOUT
       CALL JEDETR( KNUME )
       CALL JEDETR( NOMFON )
-C     CALL JEDEMA()
+      CALL JEDEMA()
       END

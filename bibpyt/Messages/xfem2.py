@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem2 Messages  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -214,7 +214,6 @@ cata_msg = {
   
 60 : _("""
   -> L'opérande TEST_MAIL a été utilisée dans l'opérateur PROPA_FISS.
-  -> Type de test: VITESSE CONSTANTE
      La même vitesse d'avancée est utilisée pour tous les points du
      fond de fissure et l'angle de propagation est fixé égal à zéro.
   -> Risque & Conseil:
@@ -272,6 +271,16 @@ cata_msg = {
      fatigue.
      Dans le cas de tableau contenant un seul résultat, on se place dans
      l'hypothèse de rapport de charge égal à zéro (R=0).
+  """),
+  
+69 : _("""
+  -> Pour l'instant la restriction du domaine de calcul et la méthode
+     upwind peuvent être utilisés au même temps seulement si une grille
+     auxiliaire est donnée.
+  -> Risque & Conseil:
+     Veuillez utiliser la méthode simplexe ou utiliser la méthode upwind
+     avec une grille auxiliaire. Sinon veuillez désactiver l'option de
+     restriction du domaine de calcul (DOMAINE='MODELE').
   """),
   
 71 : _("""
@@ -422,23 +431,6 @@ cata_msg = {
    de fissure n'étant pas connue, le calcul se poursuit en prenant la température
    de référence du matériau (TEMP = %(r1)f).
 """),
-
-86 : _("""
-  -> L'opérande TEST_MAIL a été utilisée dans l'opérateur PROPA_FISS.
-  -> Type de test: VITESSE LINEAIRE
-     La même composante tangentielle de la vitesse d'avancée de la
-     fissure est utilisée pour tous les noeuds du fond de fissure.
-     L'angle de propagation change en façon linéaire. Il est fixé égal
-     à zéro pour le point moyenne du fond.  Pour les deux points
-     d'extrémité il est fixé égal à +/-5 degrees.
-  -> Risque & Conseil:
-     L'avancement de la fissure n'est pas lié à les contraintes
-     affectant la structure et donc les résultats de la propagation
-     n'ont pas de sens physique.
-     L'opérande TEST_MAIL doit être utilisé uniquement pour vérifier
-     si le maillage est suffisamment raffiné pour la représentation
-     des level sets.
-  """),
   
 87 : _("""
   -> L'opérande TEST_MAIL a été utilisé dans l'opérateur PROPA_FISS.
@@ -447,12 +439,43 @@ cata_msg = {
      Ne pas utiliser TEST_MAIL pour un modèle 2D.
   """),
   
+88 : _("""
+  -> La valeur du rayon du tore de localisation du domaine de calcul est
+     supérieure à la valeur limite. Cette dernière est déterminée par
+     la valeur du rayon du tore utilisée à la propagation précédente et
+     la valeur de l'avancée de la fissure (DA_MAX) imposé à la
+     propagation courante.
+     
+     Rayon actuel = %(r1)f
+     Rayon limite = %(r2)f
+     
+  -> Risque & Conseil:
+     Risques de résultats faux si la fissure ne propage pas en mode I.
+
+     Pour éviter ce risque, vous pouvez utiliser la même avancée de la
+     fissure (DA_MAX) et le même rayon (RAYON) que ceux qui ont été
+     utilisés à la propagation précédente.
+
+     Si vous ne pouvez pas utiliser les même valeurs, vous pouvez
+     choisir une des solutions suivantes:
+     - donner une valeur de RAYON_TORE inférieure à la valeur limite
+       pour la propagation courante
+     - utiliser une valeur de RAYON_TORE plus grande pour les
+       propagations précédentes
+     - augmenter l'avancée de la fissure (DA_MAX) à la propagation
+       courante
+       
+     Sinon, même si fortement déconseillé, vous pouvez choisir de ne pas
+     utiliser la localisation du domaine de calcul (DOMAINE='MODELE').
+  """),
+  
 89 : _("""
-  -> La fissure à propager n'existe pas dans le modèle.
-     Fissure donnée: %(k1)s
+  -> La fissure à propager n'existe pas dans le modèle:
+     FISS_ACTUELLE = %(k1)s
+     MODELE        = %(k2)s
   -> Conseil:
-     Veuillez vérifier la liste des fissures donnée dans l'opérande
-     FISS_PROP.
+     Veuillez vérifier que la fissure et le modèle sont correctement
+     définis.
   """),
   
 90 : _("""
@@ -474,5 +497,97 @@ cata_msg = {
      auxiliaire testés. Veuillez utiliser un maillage ou une grille
      auxiliaire plus raffinés.
   """),
+  
+92 : _("""
+  -> Aucune fissure n'est définie sur le modèle spécifié pour la grille
+     auxiliaire:
+     FISS_ACTUELLE = %(k1)s
+     GRILLE_AUX    = %(k2)s
+  -> Risque & Conseil:
+     Veuillez définir une fissure sur le modèle ci-dessus en utilisant
+     les opérateurs DEFI_FISS_XFEM et MODI_MODELE_XFEM avant
+     l'utilisation de PROPA_FISS.
+  """),
+  
+93 : _("""
+  -> Aucune fissure n'est définie sur le modèle spécifié:
+     MODELE = %(k1)s
+  -> Risque & Conseil:
+     Veuillez définir une fissure sur le modèle ci-dessus en utilisant
+     les opérateurs DEFI_FISS_XFEM et MODI_MODELE_XFEM avant
+     l'utilisation de PROPA_FISS.
+  """),
+  
+95 : _("""
+  -> Une grille auxiliaire a été utilisée pour la détermination des
+     fissures actuelles du modèle. Par contre, aucune grille n'a été
+     donnée pour la propagation courante.
+  -> Risque & Conseil:
+     Veuillez spécifier la même grille que celle qui a été utilisé pour
+     la propagation précédente.
+  """),
+  
+96 : _("""
+  -> La grille auxiliaire qui a été utilisée à la propagation précédente
+     pour déterminer la fissure actuelle n'est pas la même que celle qui
+     a été spécifiée pour la propagation courante:
+     FISS_ACTUELLE         = %(k1)s
+     GRILLE_AUX précédente = %(k2)s
+     GRILLE_AUX actuelle   = %(k3)s
+  -> Risque & Conseil:
+     Veuillez utiliser la même grille pour la fissure ci-dessus.
+  """),
+  
+97 : _("""
+  -> La localisation du domaine de calcul a été utilisé pour la
+     détermination de la configuration actuelle des fissures du modèle.
+     Par contre, pour la propagation courante, la localisation n'a pas
+     été activée.
+  -> Risque & Conseil:
+     Veuillez utiliser la localisation du domaine (DOMAINE='TORE') même
+     pour la propagation courante.
+  """),
+  
+98 : _("""
+  -> La localisation du domaine de calcul a été utilisé sans grille
+     auxiliaire pour la détermination de la configuration actuelle des
+     fissures du modèle. Par contre, pour la propagation courante, on
+     demande de l'utiliser avec une grille auxiliaire.
+     FISS_ACTUELLE = %(k1)s
+  -> Risque & Conseil:
+     Veuillez continuer à utiliser la localisation du domaine sans
+     grille auxiliaire. Si vous voulez utiliser une grille auxiliaire
+     pour la propagation courante, vous devez forcement l'utiliser
+     à partir de la première propagation.
+  """),
+  
+99 : _("""
+  -> La valeur du rayon du tore de localisation du domaine de calcul est
+     plus petite que celle qui est nécessaire pour la bonne mise à jour
+     des level sets.
+     Rayon à utiliser = %(r1)f
+     Rayon minimal    = %(r2)f
+  -> Risque & Conseil:
+  
+  -> Si vous avez utilisé l'opérande RAYON_TORE, veuillez augmenter la
+     valeur donné ou diminuer la valeur de DA_MAX ou RAYON.
 
+  -> Si vous n'avez pas utilisé l'opérande RAYON_TORE, cette erreur
+     signifie que l'estimation automatique faite par l'opérateur
+     PROPA_FISS ne marche pas bien pour la propagation courante. Elle
+     peut être utilisée dans les cas où les valeurs de RAYON et DA_MAX
+     ne changent pas entre deux propagations successives et la taille
+     des éléments dans la zone de propagation est presque constante.
+     Veuillez donc donner explicitement une valeur du rayon en utilisant
+     l'opérande RAYON_TORE.
+     Vous pouvez calculer une estimation de cette valeur en utilisant la
+     formule suivante:
+     
+     RAYON_TORE=RAYON_max+DA_MAX_max+2*h_max
+     
+     où RAYON_max et DA_MAX_max sont les valeurs maximales des opérandes
+     RAYON et DA_MAX qu'on va utiliser et h_max est la valeur de la plus
+     grande arête des éléments du maillage ou de la grille auxiliaire
+     dans la zone de propagation.
+  """),
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/12/2009   AUTEUR MESSIER J.MESSIER 
+# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,7 +157,6 @@ for i in range(nbcalc) :
                             FISS_PROPAGEE=FISS[i+1],
                             TABLE=SIF[i],),
                  METHODE_PROPA='UPWIND',
-#                 DA_MAX=0.166666641831398,
                  DA_MAX=0.3,                 
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
@@ -165,6 +164,7 @@ for i in range(nbcalc) :
                               N=0.,
                               MATER=ACIER),
                  RAYON=RS,
+                 ZONE_MAJ='TOUT',
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  INFO=1,);

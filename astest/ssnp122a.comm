@@ -1,5 +1,5 @@
 
-# MODIF  DATE 26/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 #
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER
 # ssnp122a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -210,45 +210,6 @@ TEST_RESU(RESU=(
      VALE = 721.687,
      REFERENCE = 'NON_REGRESSION'),),)
 
-
-# TEST_RESU(RESU=(
-#   _F(RESULTAT = U_NL,
-#      NOM_CHAM = 'SIEF_ELGA',
-#      INST = 0.93,
-#      MAILLE='M1',
-#      POINT=1,
-#      NOM_CMP = 'SIYY',
-#      PRECISION = 1.E-3,
-#      VALE = 1056.2,
-#      REFERENCE = 'AUTRE_ASTER'),
-#   _F(RESULTAT = U_NL,
-#      NOM_CHAM = 'SIEF_ELGA',
-#      INST = 0.93,
-#      MAILLE='M1',
-#      POINT=1,
-#      NOM_CMP = 'SIZZ',
-#      PRECISION = 1.E-3,
-#      VALE = 179.51,
-#      REFERENCE = 'AUTRE_ASTER'),
-#    _F(RESULTAT = U_NL,
-#       NOM_CHAM = 'VARI_ELGA',
-#       INST = 0.93,
-#       MAILLE='M1',
-#       POINT=1,
-#       NOM_CMP = 'V1',
-#       PRECISION = 1.E-3,
-#       VALE = 0.6536,
-#       REFERENCE = 'AUTRE_ASTER'),
-#    _F(RESULTAT = U_NL,
-#       NOM_CHAM = 'VARI_ELGA',
-#       INST = 0.93,
-#       MAILLE='M1',
-#       POINT=1,
-#       NOM_CMP = 'V5',
-#       PRECISION = 1.E-3,
-#       VALE = 0.2108,
-#       REFERENCE = 'AUTRE_ASTER'),),)
-#
 
 TEST_RESU(RESU=(
  _F(RESULTAT = U_NLG,

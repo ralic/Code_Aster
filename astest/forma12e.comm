@@ -1,0 +1,258 @@
+# MODIF  DATE 15/12/2009   AUTEUR BOYERE E.BOYERE 
+# TITRE 'TP DYNAMIQUE NON LINEAIRE'
+# forma12e.para = tps_job 300 mem_job 300Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEBUT(CODE=_F(NOM ='FORMA12E',NIV_PUB_WEB='INTERNET'))
+
+MAIL=LIRE_MAILLAGE(UNITE=20,
+                   FORMAT='MED',);
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+E = 20000000000.0;
+
+
+BA=DEFI_MATERIAU(ELAS=_F(E=E,
+                         NU=.2,
+                         RHO=2500.0,),);
+
+BA_EIB=DEFI_MATERIAU(ELAS=_F(E=E,
+                             NU=.2,
+                             RHO=2500.0,),
+                     BETON_ECRO_LINE=_F(D_SIGM_EPSI=-1000.E6,
+                                        SYT=3.0E6,
+                                        SYC=11.225E6,),);
+
+BA_PLAS=DEFI_MATERIAU(ELAS=_F(E=E,
+                              NU=.2,
+                              RHO=2500.0,),
+                      ECRO_LINE=_F(D_SIGM_EPSI=(E / 10000),
+                                   SY=3.0E6,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=BA,),);
+
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=BA_EIB,),);
+
+CHMAT3=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=BA_PLAS,),);
+
+BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_MA='Enca',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,),);
+
+MACRO_MATR_ASSE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CHARGE=BLOCAGE,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),),);
+freq = 25.0;
+
+omega = ((2.0 * pi) * freq);
+
+ex = 0.3;
+
+mb = 500.0;
+
+Balourd = ((mb * (omega ** 2)) * ex);
+
+r = 0.5;
+
+surf = (pi * (r ** 2));
+
+
+FOSA=AFFE_CHAR_MECA(MODELE=MODELE,
+                    PRES_REP=_F(GROUP_MA='Moteur',
+                                PRES=(Balourd / surf),),);
+
+FOEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                    CHARGE=FOSA,);
+
+FOAS=ASSE_VECTEUR(VECT_ELEM=FOEL,
+                  NUME_DDL=NUMEDDL,);
+
+sin25 = FORMULE(VALE='sin(2*pi*freq *INST)',
+                NOM_PARA='INST',);
+tfin = 0.0025;
+
+pdt = 0.00025;
+
+
+LIR=DEFI_LIST_REEL(DEBUT=0.0,
+                   INTERVALLE=_F(JUSQU_A=tfin,
+                                 PAS=pdt,),);
+
+DYNATRA=DYNA_LINE_TRAN(MATR_MASS=MASSE,
+                       MATR_RIGI=RIGIDITE,
+                       NEWMARK=_F(),
+                       EXCIT=_F(VECT_ASSE=FOAS,
+                                FONC_MULT=sin25,),
+                       INCREMENT=_F(LIST_INST=LIR,),);
+
+DEPMOM=RECU_FONCTION(RESULTAT=DYNATRA,
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DZ',
+                     GROUP_NO='Mom',);
+
+ACCMOM=RECU_FONCTION(RESULTAT=DYNATRA,
+                     NOM_CHAM='ACCE',
+                     NOM_CMP='DZ',
+                     GROUP_NO='Mom',);
+
+# Calcul avec schema NEWMARK
+
+DYNADNL=DYNA_NON_LINE(MODELE=MODELE,
+                      CHAM_MATER=CHMAT3,
+                      EXCIT=(_F(CHARGE=BLOCAGE,),
+                             _F(CHARGE=FOSA,
+                                FONC_MULT=sin25,),),
+                      COMP_INCR=_F(RELATION='VMIS_CINE_LINE',
+                                   DEFORMATION='PETIT',
+                                   TOUT='OUI',),
+                      INCREMENT=_F(LIST_INST=LIR,),
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                      FORMULATION='DEPLACEMENT',),
+                      NEWTON=_F(),
+                      SOLVEUR=_F(METHODE='MULT_FRONT',),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=30,
+                                     ITER_GLOB_ELAS=25,
+                                     TYPE='PIC',
+                                     ARRET='OUI',),
+                      ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+
+DEPMODNL=RECU_FONCTION(RESULTAT=DYNADNL,
+                       NOM_CHAM='DEPL',
+                       NOM_CMP='DZ',
+                       GROUP_NO='Mom',);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=(_F(FONCTION=DEPMOM,),
+                      _F(FONCTION=DEPMODNL,),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPMOM,
+                         VALE_PARA=.0025,
+                         VALE_REFE=-0.0001231497,
+                         REFERENCE='NON_REGRESSION',),
+                      _F(FONCTION=DEPMODNL,
+                         VALE_PARA=.0025,
+                         VALE_REFE= -0.00012315529,
+                         REFERENCE='NON_REGRESSION',),))
+
+ACCMODNL=RECU_FONCTION(RESULTAT=DYNADNL,
+                       NOM_CHAM='ACCE',
+                       NOM_CMP='DZ',
+                       GROUP_NO='Mom',);
+
+# Calcul avec schema HHT MODI_EQUI=NON
+# Acceleration lissee comparee a NEWMARK
+
+DYNADNLH=DYNA_NON_LINE(MODELE=MODELE,
+                       CHAM_MATER=CHMAT3,
+                       EXCIT=(_F(CHARGE=BLOCAGE,),
+                              _F(CHARGE=FOSA,
+                                 FONC_MULT=sin25,),),
+                       COMP_INCR=_F(RELATION='VMIS_CINE_LINE',
+                                    DEFORMATION='PETIT',
+                                    TOUT='OUI',),
+                       INCREMENT=_F(LIST_INST=LIR,),
+                       SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                                       ALPHA=-0.3,
+                                       MODI_EQUI='NON',
+                                       FORMULATION='DEPLACEMENT',),
+                       NEWTON=_F(),
+                       SOLVEUR=_F(METHODE='MULT_FRONT',),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=30,
+                                      ITER_GLOB_ELAS=25,
+                                      TYPE='PIC',
+                                      ARRET='OUI',),
+                       ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+
+ACCMODNH=RECU_FONCTION(RESULTAT=DYNADNLH,
+                       NOM_CHAM='ACCE',
+                       NOM_CMP='DZ',
+                       GROUP_NO='Mom',);
+
+# Calcul avec schema HHT MODI_EQUI=OUI
+# Pas d'amortissement BF
+
+DYNADNL2=DYNA_NON_LINE(MODELE=MODELE,
+                       CHAM_MATER=CHMAT3,
+                       EXCIT=(_F(CHARGE=BLOCAGE,),
+                              _F(CHARGE=FOSA,
+                                 FONC_MULT=sin25,),),
+                       COMP_INCR=_F(RELATION='VMIS_CINE_LINE',
+                                    DEFORMATION='PETIT',
+                                    TOUT='OUI',),
+                       INCREMENT=_F(LIST_INST=LIR,),
+                       SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                                       ALPHA=-0.3,
+                                       MODI_EQUI='OUI',
+                                       FORMULATION='DEPLACEMENT',),
+                       NEWTON=_F(),
+                       SOLVEUR=_F(METHODE='MULT_FRONT',),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=30,
+                                      ITER_GLOB_ELAS=25,
+                                      TYPE='PIC',
+                                      ARRET='OUI',),
+                       ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+
+ACCMODN2=RECU_FONCTION(RESULTAT=DYNADNL2,
+                       NOM_CHAM='ACCE',
+                       NOM_CMP='DZ',
+                       GROUP_NO='Mom',);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=30,
+              COURBE=(_F(FONCTION=ACCMOM,),
+                      _F(FONCTION=ACCMODNL,),
+                      _F(FONCTION=ACCMODNH,),
+                      _F(FONCTION=ACCMODN2,),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=ACCMOM,
+                         VALE_PARA=.0025,
+                         VALE_REFE= -53.830201,
+                         REFERENCE='NON_REGRESSION',),
+                      _F(FONCTION=ACCMODNL,
+                         VALE_PARA=.0025,
+                         VALE_REFE=-54.113083,
+                         REFERENCE='NON_REGRESSION',),
+                      _F(FONCTION=ACCMODNH,
+                         VALE_PARA=.0025,
+                         VALE_REFE= 2.033744,
+                         REFERENCE='NON_REGRESSION',),
+                      _F(FONCTION=ACCMODN2,
+                         VALE_PARA=.0025,
+                         VALE_REFE= 1.5009012,
+                         REFERENCE='NON_REGRESSION',),
+                     ))
+
+
+FIN();

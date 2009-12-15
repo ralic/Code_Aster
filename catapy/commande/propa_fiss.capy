@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,9 +43,13 @@ PROPA_FISS=MACRO(nom="PROPA_FISS",op=propa_fiss_ops,sd_prod=propa_fiss_prod,
             
         b_hamilton = BLOC(condition="(METHODE_PROPA=='SIMPLEXE') or (METHODE_PROPA=='UPWIND') ",
               MODELE        = SIMP(statut='o',typ=modele_sdaster),
-              TEST_MAIL     = SIMP(statut='f',typ='TXM',into=("NON","CONSTANT","LINEAIRE",),defaut="NON"),
+              TEST_MAIL     = SIMP(statut='f',typ='TXM',into=("NON","OUI",),defaut="NON"),
               DA_MAX        = SIMP(statut='o',typ='R',max=1),
               RAYON         = SIMP(statut='o',typ='R',),
+              ZONE_MAJ      = SIMP(statut='f',typ='TXM',into=("TOUT","TORE"),defaut="TORE"),
+              b_tore        = BLOC(condition = "ZONE_MAJ == 'TORE' ",
+                                   RAYON_TORE    = SIMP(statut='f',typ='R',max=1,val_min=0.0),
+                                  ),
               b_propagation = BLOC(condition = "TEST_MAIL == 'NON' ",
                                    FISSURE   = FACT(statut='o',min=1,max='**',
                                                     FISS_ACTUELLE  = SIMP(statut='o',typ=fiss_xfem,max=1),
@@ -68,7 +72,8 @@ PROPA_FISS=MACRO(nom="PROPA_FISS",op=propa_fiss_ops,sd_prod=propa_fiss_prod,
                                                     COEF_MULT_MAXI = SIMP(statut='o',typ='R',),
                                                    ),
                                    ),
-              b_test_const  = BLOC(condition = "TEST_MAIL == 'CONSTANT' ",
+
+              b_test_const  = BLOC(condition = "TEST_MAIL == 'OUI' ",
                                    FISSURE   = FACT(statut='o',min=1,max='**',
                                                     FISS_ACTUELLE  = SIMP(statut='o',typ=fiss_xfem,max=1),
                                                     FISS_PROPAGEE  = SIMP(statut='o',typ=CO,max=1),

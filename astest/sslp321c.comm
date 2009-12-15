@@ -1,4 +1,4 @@
-# MODIF  DATE 07/09/2009   AUTEUR MESSIER J.MESSIER 
+# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
 # sslp321c.para = tps_job 200 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -182,6 +182,7 @@ for i in range(1,NPAS+1) :
                             TABLE=SIF[i],),
                 RAYON=RP,
                 DA_MAX=DA,
+                ZONE_MAJ='TOUT',
                 LOI_PROPA =_F(LOI='PARIS',
                                 C=1.,
                                 M=1.,

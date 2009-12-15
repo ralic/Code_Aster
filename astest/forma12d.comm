@@ -1,5 +1,6 @@
-# MODIF  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
-# TITRE TP CONTACT/FROTTEMENT DE LA FORMATION ASTERDYN
+# MODIF  DATE 15/12/2009   AUTEUR BOYERE E.BOYERE 
+# TITRE TP DYNAMIQUE LINEAIRE
+# forma12d.para = tps_job 180 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,208 +19,141 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE BOYERE E.BOYERE
-# PATIN FROTTANT
-# - MODELISATION EN D_PLAN ,MAILLES QUA4
-# METHODES DE CONTACT :
-#  LAGRANGE
-
-DEBUT( CODE=_F( NOM ='FORMA12D',NIV_PUB_WEB='INTERNET'),)
-
-MAILL=LIRE_MAILLAGE()
-
-
-MAILL=DEFI_GROUP(reuse =MAILL,
-                 MAILLAGE=MAILL,
-                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
-
-MAILL=MODI_MAILLAGE(reuse =MAILL,
-                    MAILLAGE=MAILL,
-                    ORIE_PEAU_2D=_F(GROUP_MA=('LMAI','LESC','FSUP','FLAT'),),
-                    )
-
-MODE=AFFE_MODELE(MAILLAGE=MAILL,
-                 VERIF='MAILLE',
-                 AFFE=(_F(GROUP_MA=('PATIN','LESC','FSUP','FLAT','BATI','LMAI'),
-                          PHENOMENE='MECANIQUE',
-                          MODELISATION='D_PLAN',),
-                       _F(GROUP_MA='RESLAT',
-                          PHENOMENE='MECANIQUE',
-                          MODELISATION='2D_DIS_T',),
-                        ))
-
-
-
-#---------------------------------------------------------------------
-#                         CARACTERISTIQUES ELEMENTAIRES
-#---------------------------------------------------------------------
-
-CARA=AFFE_CARA_ELEM(MODELE=MODE,
-                    DISCRET_2D=_F( GROUP_MA='RESLAT',
-                                   CARA='K_T_D_L',
-                                   VALE=(12.E3,0.0), ),
-                   )
-
-#---------------------------------------------------------------------
-#                         CARACTERISTIQUES MATERIAUX
-#---------------------------------------------------------------------
-
-MPATIN=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
-                             NU=0.0,
-                             RHO=7.E3))
-
-MBATI=DEFI_MATERIAU(ELAS=_F(E=1.0E11,
-                            NU=0.0,
-                            RHO=0.0),)
-
-CM=AFFE_MATERIAU(MAILLAGE=MAILL,
-                 MODELE=MODE,
-                 AFFE=(_F(GROUP_MA='PATIN',
-                          MATER=MPATIN,),
-                       _F(GROUP_MA='BATI',
-                          MATER=MBATI,),
-                       ),)
-
-#---------------------------------------------------------------------
-#                         CHARGEMENTS
-#---------------------------------------------------------------------
-
-# CONDITIONS AUX LIMITES
-COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
-                        DDL_IMPO=(
-                                  _F(GROUP_MA='BATI',
-                                     DX=0.0,DY=0.0,),
-                                  _F(GROUP_NO=('R1','R2',),
-                                     DX=0.0,DY=0.0,),),)
-
-# CHARGEMENT 1 : APPLICATION DE LA GRAVITE
-POIDS=AFFE_CHAR_MECA(MODELE=MODE,
-                     PRES_REP=_F(GROUP_MA='FSUP',
-                                 PRES=70000.))
-
-# CHARGEMENT 2 : APPLICATION TANGENTIELLE
-PTAN=AFFE_CHAR_MECA(MODELE=MODE,
-                    PRES_REP=_F(GROUP_MA='FLAT',
-                                    PRES=200000.0))
-
-# DEFINITION DU CONTACT
-CTAC=AFFE_CHAR_MECA(MODELE=MODE,
-                    CONTACT=_F(REAC_GEOM='CONTROLE',
-                               NB_REAC_GEOM=2,
-                               METHODE='LAGRANGIEN',
-                               FROTTEMENT='COULOMB',
-                               COULOMB=0.3,
-                               COEF_MATR_FROT=0.9,
-                               GROUP_MA_MAIT='LMAI',
-                               GROUP_MA_ESCL='LESC',
-                               ),)
-
-#---------------------------------------------------------------------
-#                         RESOLUTION
-#--------------INST-------------------------------------------------------
-
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,
-                          0.07,1.0,
-                         10.0,1.0),
-                    PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='LINEAIRE',)
-
-                    
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=3.5,
-                                    NOMBRE=350,),)
-         
-DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
-                        ECHEC=_F(SUBD_METHODE = 'UNIFORME',
-                                 SUBD_PAS     = 5,
-                                 SUBD_PAS_MINI=0.0000001,
-                                ),)
-
-         
-ULM =  DYNA_NON_LINE(SOLVEUR=_F(SYME='OUI',),
-                     MODELE=MODE,
-                    CHAM_MATER=CM,
-                    CARA_ELEM=CARA,
-                    EXCIT=(_F(CHARGE=POIDS,
-                              FONC_MULT=RAMPE,),
-                           _F(
-                              CHARGE=PTAN,
-                              FONC_MULT=RAMPE,),
-                           _F(CHARGE=CTAC,),
-                           _F(CHARGE=COND_LIM,),),
-                    COMP_INCR=_F(RELATION='ELAS',
-                                 TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=DEFLIST,),
-                    SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
-                    NEWTON=_F(MATRICE='TANGENTE',
-                              REAC_ITER=1,),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
-                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI'),
-                    )
-
-
-TEST_RESU(RESU=(_F(RESULTAT   = ULM,
-                   INST       = 1.70,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 14.91,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                _F(RESULTAT   = ULM,
-                   INST       = 3.4,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 3.5,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                   ),)
-##############################
-
-ULL =  DYNA_NON_LINE(MODELE=MODE,
-                    CHAM_MATER=CM,
-                    CARA_ELEM=CARA,
-                    EXCIT=(_F(CHARGE=POIDS,
-                              FONC_MULT=RAMPE,),
-                           _F(CHARGE=PTAN,
-                              FONC_MULT=RAMPE,),
-                           _F(CHARGE=CTAC,),
-                           _F(CHARGE=COND_LIM,),),
-                    COMP_INCR=_F(RELATION='ELAS',
-                                 TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=DEFLIST,),
-                    SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
-                    NEWTON=_F(MATRICE='TANGENTE',
-                              REAC_ITER=1,),
-                    SOLVEUR =_F(SYME='OUI',
-                                METHODE='LDLT',),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
-                     ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI'),
-                     )
-                    
-TEST_RESU(RESU=(_F(RESULTAT   = ULL,
-                   INST       = 1.70,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 14.91,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                _F(RESULTAT   = ULL,
-                   INST       = 3.4,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 3.5,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                   ),)
-################################
-
-FIN()
+#-----------------------------------------------------------------------
 #
+
+DEBUT(CODE=_F(NOM ='FORMA12D',NIV_PUB_WEB='INTERNET'))
+
+MAIL=LIRE_MAILLAGE(UNITE=20,
+                   FORMAT='MED',);
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+
+BA=DEFI_MATERIAU(ELAS=_F(E=2E10,
+                         NU=.2,
+                         RHO=2500.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=BA,),);
+
+BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_MA='Enca',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,),);
+
+MACRO_MATR_ASSE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CHARGE=BLOCAGE,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),),);
+
+MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
+                       MATR_B=MASSE,
+                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                    NMAX_FREQ=20,),);
+
+omega = 25.0;
+
+ex = 0.3;
+
+mb = 500.0;
+
+Balourd = ((mb * (((2 * pi) * omega) ** 2)) * ex);
+
+r = 0.5;
+
+surf = (pi * (r ** 2));
+
+
+FOSA=AFFE_CHAR_MECA(MODELE=MODELE,
+                    PRES_REP=_F(GROUP_MA='Moteur',
+                                PRES=(Balourd / surf),),);
+
+
+FOEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                    CHARGE=FOSA,);
+
+FOAS=ASSE_VECTEUR(VECT_ELEM=FOEL,
+                  NUME_DDL=NUMEDDL,);
+
+MOSTRA=MACRO_ELAS_MULT(MODELE=MODELE,
+                       CHAM_MATER=CHMAT,
+                       CHAR_MECA_GLOBAL=BLOCAGE,
+                       CAS_CHARGE=_F(NOM_CAS='momo',
+                                     TYPE_MODE='TOUS',
+                                     CHAR_MECA=FOSA,),);
+
+MACRO_PROJ_BASE(BASE=MODES,
+                MATR_ASSE_GENE=(_F(MATRICE=CO('MAGENE'),
+                                   MATR_ASSE=MASSE,),
+                                _F(MATRICE=CO('GEGENE'),
+                                   MATR_ASSE=RIGIDITE,),),
+                VECT_ASSE_GENE=_F(VECTEUR=CO('FOGENE'),
+                                  VECT_ASSE=FOAS,),);
+
+sin25 = FORMULE(VALE='sin(2*pi*omega *INST)',
+                NOM_PARA='INST',);
+
+dsin25 = FORMULE(VALE='2*pi*omega*cos(2*pi*omega*INST)',
+                 NOM_PARA='INST',);
+
+d2sin25 = FORMULE(VALE='-(2*pi*omega)**2*sin(2*pi*omega*INST)',
+                  NOM_PARA='INST',);
+
+DYNACORR=DYNA_TRAN_MODAL(MASS_GENE=MAGENE,
+                         RIGI_GENE=GEGENE,
+                         MODE_CORR=MOSTRA,
+                         INCREMENT=_F(INST_FIN=1.0,
+                                      PAS=1.E-4,),
+                         EXCIT=_F(VECT_GENE=FOGENE,
+                                  FONC_MULT=sin25,
+                                  CORR_STAT='OUI',
+                                  D_FONC_DT=dsin25,
+                                  D_FONC_DT2=d2sin25,),);
+
+DYNASAN=DYNA_TRAN_MODAL(MASS_GENE=MAGENE,
+                        RIGI_GENE=GEGENE,
+                        MODE_CORR=MOSTRA,
+                        INCREMENT=_F(INST_FIN=1.0,
+                                     PAS=1.E-4,),
+                        EXCIT=_F(VECT_GENE=FOGENE,
+                                 FONC_MULT=sin25,),);
+
+
+DEPMOCO=RECU_FONCTION(RESU_GENE=DYNACORR,
+                      NOM_CHAM='DEPL',
+                      NOM_CMP='DZ',
+                      GROUP_NO='Mom',
+                      CORR_STAT='OUI',);
+
+DEPMOSA=RECU_FONCTION(RESU_GENE=DYNASAN,
+                      NOM_CHAM='DEPL',
+                      NOM_CMP='DZ',
+                      GROUP_NO='Mom',);
+
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=(_F(FONCTION=DEPMOCO,
+                         MARQUEUR=0,),
+                      _F(FONCTION=DEPMOSA,
+                         MARQUEUR=0,),))
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPMOCO,
+                         VALE_PARA=.91,
+                         VALE_REFE=0.0003447849,
+                         REFERENCE='NON_REGRESSION',),
+                      _F(FONCTION=DEPMOSA,
+                         VALE_PARA=.91,
+                         VALE_REFE=0.0001811803,
+                         REFERENCE='NON_REGRESSION',),))
+
+FIN();

@@ -1,7 +1,6 @@
-# MODIF  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 14/12/2009   AUTEUR MEUNIER S.MEUNIER 
 # TITRE POUTRE CONSOLE 3D/PLAQUE
 # sslv152a.para = tps_job 160 mem_job 192Mo ncpus 1 liste_test S
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,9 +19,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ARLEQUIN : RACCORD 3D/PLAQUE INCOMPATIBLE.
-#            MAILLAGES DE DENSITES DIFFERENTES
 #
-# VERSION 3D/PLAQUE DE SSLP104A
+# Loi de comportement elastique
+#
+# VERSION 3D/PLAQUE DE SSNP141A
 
 DEBUT(CODE=_F(NOM='SSLV152A',
               NIV_PUB_WEB='INTERNET',),
@@ -32,46 +32,46 @@ DEBUT(CODE=_F(NOM='SSLV152A',
 # 1. Definition de constantes
 #############################
 
-force = 1000000.0;
+p_force = -1.E6;
 
-epais = 1.0;
+p_h = 1.0;
 
-young = 200000000000.0;
+p_young = 2.E11;
 
-hauteur = 2.0;
+p_b = 2.0;
 
-long = 10.0;
+p_l = 10.0;
 
-inertie = hauteur*epais*epais*epais/12;
+inertie = p_b*p_h**3/12;
 
 ########################
 # 2. Lecture du maillage
 ########################
 
-MA1=LIRE_MAILLAGE(UNITE=20,
-                  FORMAT='MED',);
+MA_3D=LIRE_MAILLAGE(UNITE=20,
+                    FORMAT='MED',);
 
-MA2=LIRE_MAILLAGE(UNITE=21,
-                  FORMAT='MED',);
+MA_PLAQ=LIRE_MAILLAGE(UNITE=21,
+                      FORMAT='MED',);
 
-MAIL=ASSE_MAILLAGE(MAILLAGE_1=MA1,
-                   MAILLAGE_2=MA2,
+MAIL=ASSE_MAILLAGE(MAILLAGE_1=MA_3D,
+                   MAILLAGE_2=MA_PLAQ,
                    OPERATION='SUPERPOSE',);
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=(_F(GROUP_MA='GM53',),
-                               _F(GROUP_MA='GM54',),),);
+                CREA_GROUP_NO=(_F(GROUP_MA='GM_BAS',),
+                               _F(GROUP_MA='GM_HBADR',),),);
 
 MOD=AFFE_MODELE(MAILLAGE=MAIL,
-                AFFE=(_F(GROUP_MA=('GM1000','GM101','GM50',),
+                AFFE=(_F(GROUP_MA=('GM_TOUT',),
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D',),
-                      _F(GROUP_MA=('GM100','GM53','GM51',),
+                      _F(GROUP_MA=('GM_PLAQ','GM_DROIT',),
                          PHENOMENE='MECANIQUE',
                          MODELISATION='DKT',),),);
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=young,
+MATER=DEFI_MATERIAU(ELAS=_F(E=p_young,
                             NU=0.3,),);
 
 CHMATER=AFFE_MATERIAU(MAILLAGE=MAIL,
@@ -79,28 +79,28 @@ CHMATER=AFFE_MATERIAU(MAILLAGE=MAIL,
                               MATER=MATER,),);
 
 CARA=AFFE_CARA_ELEM(MODELE=MOD,
-                    COQUE=_F(GROUP_MA='GM100',
-                             EPAIS=epais,),);
+                    COQUE=_F(GROUP_MA='GM_PLAQ',
+                             EPAIS=p_h,),);
 
 EFFORT=AFFE_CHAR_MECA(MODELE=MOD,
-                      FORCE_ARETE=_F(GROUP_MA='GM51',
-                                     FZ=-force,),);
+                      FORCE_ARETE=_F(GROUP_MA='GM_DROIT',
+                                     FZ=p_force,),);
 
 ENCAST=AFFE_CHAR_MECA(MODELE=MOD,
-                      DDL_IMPO=_F(GROUP_MA='GM101',
+                      DDL_IMPO=_F(GROUP_MA='GM_ENCAS',
                                   LIAISON='ENCASTRE',),);
 
 ################################################
 # 3. Creation des relations de couplage Arlequin
 #    entre les groupes de mailles
-#    GM1000 (maillage fin) et
-#    GM100  (maillage grossier)
+#    GM_TOUT (maillage fin) et
+#    GM_PLAQ  (maillage grossier)
 #    Collage sur le modele grossier
 ################################################
 
-ARLQ=AFFE_CHAR_MECA(MODELE=MOD,INFO=1,
-                    ARLEQUIN=_F(GROUP_MA_1='GM1000',
-                                GROUP_MA_2='GM100',
+ARLQ=AFFE_CHAR_MECA(MODELE=MOD,
+                    ARLEQUIN=_F(GROUP_MA_1='GM_TOUT',
+                                GROUP_MA_2='GM_PLAQ',
                                 CARA_ELEM=CARA,
                                 COLLAGE='GROUP_MA_2',
                                 POIDS_FIN=0.9999,),);
@@ -125,26 +125,24 @@ RESU=CALC_NO(reuse =RESU,
              OPTION=('EQUI_NOEU_SIGM','SIGM_NOEU_DEPL',),);
 
 ###########################################
-# 5. Fleche maximale au point
-#    de coordonnees (X,0,0.5)
-#    Noeud 52
+# 5. Fleche au point M2
+#    Coordonnees de M2 (9.5,0,0.5)
+#    Noeud N1520 dans le maillage assemble
 #    Solution theorique
-#    Reference : Guide de validation
-#    des progiciels de calcul de structures
-#    p.52
+#    Reference : Mecanique des structures
+#    Voldoire/ Bamberger    
+#    p.205
 ###########################################
 
 X = 9.5;
-fxtheo = -1*(force*hauteur/2./young/inertie*(long*X*X-X*X*X/3))
+fxtheo = (p_force*p_b/2./p_young/inertie*(p_l*X**2-X**3/3.));
 
 DPL_2D=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='DEPL_2D',
                                RESULTAT=RESU,
                                NOM_CHAM='DEPL',
-                               GROUP_NO='GM53',
+                               GROUP_NO='GM_BAS',
                                NOM_CMP='DZ',),);
-
-IMPR_TABLE(TABLE=DPL_2D,);
 
 TEST_TABLE(TABLE=DPL_2D,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -159,35 +157,33 @@ TEST_TABLE(TABLE=DPL_2D,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=X,),
            NOM_PARA='DZ',
-           VALE=-1.8035345159409E-02,
+           VALE=-1.8035385810051E-02,
            CRITERE='RELATIF',
            PRECISION=2e-06,
            REFERENCE='NON_REGRESSION',
-           VERSION='10.0.19',);
+           VERSION='10.0.30',);
 
 ###########################################
-# 6. Contrainte de traction SIXX au point
-#    de coordonnees (X,0,Z)
-#    Noeud 119
+# 6. Contrainte de traction SIXX au point M1
+#    Coordonnees de M1 (3.,0,0.833333)
+#    Noeud N119
 #    Solution theorique
-#    Reference : Guide de validation
-#    des progiciels de calcul de structures
-#    p.52
+#    Reference : Mecanique des structures
+#    Voldoire/ Bamberger    
+#    p.205
 ###########################################
 
 X = 3.0;
 Z = 0.833333;
 
-sixxth = force*hauteur*(long-X)*(Z-epais/2.)/inertie
+sixxth = -p_force*p_b*(p_l-X)*(Z-p_h/2.)/inertie;
 
 SIXX_Z=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIXX',
                                RESULTAT=RESU,
                                NOM_CHAM='SIGM_NOEU_DEPL',
-                               GROUP_NO='GM54',
+                               GROUP_NO='GM_HBADR',
                                NOM_CMP='SIXX',),);
-
-IMPR_TABLE(TABLE=SIXX_Z,);
 
 TEST_TABLE(TABLE=SIXX_Z,
            FILTRE=_F(NOM_PARA='COOR_Z',
@@ -195,7 +191,7 @@ TEST_TABLE(TABLE=SIXX_Z,
            NOM_PARA='SIXX',
            VALE=sixxth,
            CRITERE='RELATIF',
-           PRECISION=0.14,
+           PRECISION=0.04,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=SIXX_Z,

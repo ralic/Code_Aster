@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2008   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE REPONSE TRANSITOIRE PAR INTEGRATION DIRECTE DEPLACEMENT IMPOSE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -235,48 +235,6 @@ TEST_FONCTION(VALEUR=(  _F(  FONCTION = C_X_DEP1,  PRECISION = 0.005,
                             VALE_PARA = 0.0272,   VALE_REFE = 1.0000E-3))
                )
 
-# TEST_FONCTION ( VALEUR: ( FONCTION : C_X_VIT1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0054  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_VIT1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0055  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_VIT1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0108  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_VIT1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0109  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_VIT1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0163  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_VIT1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0164  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_VIT1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0217  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_VIT1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0218  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_VIT1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0271  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_VIT1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0272  , VALE_REFE: 1.0000E-9 )
-#               ) ;
-# TEST_FONCTION ( VALEUR: ( FONCTION : C_X_ACC1 , PRECISION: 0.005
-#                           VALE_PARA: 0.0054  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_ACC1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0055  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_ACC1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0108  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_ACC1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0109  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_ACC1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0163  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_ACC1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0164  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_ACC1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0217  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_ACC1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0218  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_ACC1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0271  , VALE_REFE: 1.0000E-9 )
-#                         ( FONCTION : C_X_ACC1 , PRECISION: 0.005
-#                            VALE_PARA: 0.0272  , VALE_REFE: 1.0000E-9 )
-#               ) ;
-#-----------------------------------------------------------------------
+
 FIN()
 #

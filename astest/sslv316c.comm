@@ -1,6 +1,6 @@
-# MODIF  DATE 07/12/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
-# sslv316c.para = tps_job 250 mem_job 512Mo liste_test S
+# sslv316c.para = tps_job 700 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,11 +30,9 @@ DEBUT(CODE=_F(NOM='SSLV316C', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F
 #                 MAILLAGE
 #----------------------------------------------
 
-PRE_GIBI();
-
 nbcalc = 4
 
-MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -192,6 +190,7 @@ for i in range(nbcalc) :
                               N=0.,
                               MATER=ACIER),
                  RAYON=RS,
+                 RAYON_TORE=2.6,
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  INFO=0,);

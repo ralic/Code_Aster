@@ -1,4 +1,4 @@
-# MODIF  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 14/12/2009   AUTEUR MEUNIER S.MEUNIER 
 # TITRE POUTRE CONSOLE 3D/PLAQUE
 # sslv152b.para = tps_job 320 mem_job 284Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,99 +19,94 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ARLEQUIN : RACCORD 3D/PLAQUE INCOMPATIBLE.
-#            MAILLAGES DE DENSITES DIFFERENTES
 #
-# VERSION 3D/PLAQUE DE SSLP104A
+# Loi de comportement elastoplastique
+#
+# VERSION 3D/PLAQUE DE SSNP141B
 
 DEBUT(CODE=_F(NOM='SSLV152B',
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
+
 #############################
-
-
 # 1. Definition de constantes
 #############################
 
-force = 1000000.0;
+p_force = -1.E6;
 
-epais = 1.0;
+p_h = 1.0;
 
-young = 200000000000.0;
+p_young = 2.E11;
 
-hauteur = 2.0;
+p_b = 2.0;
 
-long = 10.0;
+p_l = 10.0;
 
-inertie = ((((hauteur * epais) * epais) * epais) / 12);
+inertie = p_b*p_h**3/12;
 
 ########################
-
-
 # 2. Lecture du maillage
 ########################
 
+MA_3D=LIRE_MAILLAGE(UNITE=20,
+                    FORMAT='MED',);
 
-MA1=LIRE_MAILLAGE(UNITE=20,
-                  FORMAT='MED',);
+MA_PLAQ=LIRE_MAILLAGE(UNITE=21,
+                      FORMAT='MED',);
 
-MA2=LIRE_MAILLAGE(UNITE=21,
-                  FORMAT='MED',);
-
-MAIL=ASSE_MAILLAGE(MAILLAGE_1=MA1,
-                   MAILLAGE_2=MA2,
+MAIL=ASSE_MAILLAGE(MAILLAGE_1=MA_3D,
+                   MAILLAGE_2=MA_PLAQ,
                    OPERATION='SUPERPOSE',);
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=(_F(GROUP_MA='GM53',),
-                               _F(GROUP_MA='GM54',),),);
+                CREA_GROUP_NO=(_F(GROUP_MA='GM_BAS',),
+                               _F(GROUP_MA='GM_HBADR',),),);
 
 MOD=AFFE_MODELE(MAILLAGE=MAIL,
-                INFO=2,
-                AFFE=(_F(GROUP_MA=('GM1000','GM101','GM50',),
+                AFFE=(_F(GROUP_MA=('GM_TOUT',),
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D',),
-                      _F(GROUP_MA=('GM51','GM53','GM100',),
+                      _F(GROUP_MA=('GM_PLAQ','GM_DROIT',),
                          PHENOMENE='MECANIQUE',
                          MODELISATION='DKT',),),);
 
 CARA=AFFE_CARA_ELEM(MODELE=MOD,
-                    COQUE=_F(GROUP_MA='GM100',
-                             EPAIS=epais,),);
+                    COQUE=_F(GROUP_MA='GM_PLAQ',
+                             EPAIS=p_h,),);
 
 EFFORT=AFFE_CHAR_MECA(MODELE=MOD,
-                      FORCE_ARETE=_F(GROUP_MA='GM51',
-                                     FZ=-(force),),);
+                      FORCE_ARETE=_F(GROUP_MA='GM_DROIT',
+                                     FZ=p_force,),);
 
 ENCAST=AFFE_CHAR_MECA(MODELE=MOD,
-                      DDL_IMPO=_F(GROUP_MA='GM101',
+                      DDL_IMPO=_F(GROUP_MA='GM_ENCAS',
                                   LIAISON='ENCASTRE',),);
+
 ################################################
-
-
 # 3. Creation des relations de couplage Arlequin
 #    entre les groupes de mailles
-#    GM1000 (maillage fin) et
-#    GM100  (maillage grossier)
+#    GM_TOUT (maillage fin) et
+#    GM_PLAQ  (maillage grossier)
 #    Collage sur le modele grossier
 ################################################
 
-
 ARLQ=AFFE_CHAR_MECA(MODELE=MOD,
-                    ARLEQUIN=_F(GROUP_MA_1='GM1000',
-                                GROUP_MA_2='GM100',
+                    ARLEQUIN=_F(GROUP_MA_1='GM_TOUT',
+                                GROUP_MA_2='GM_PLAQ',
                                 CARA_ELEM=CARA,
                                 COLLAGE='GROUP_MA_2',
-                                POIDS_FIN=0.9999,),
-                    INFO=1,);
+                                POIDS_FIN=0.9999,),);
 
+####################
 # COURBE DE TRACTION
+####################
 
 CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.0023333,480.2E+06,
                           0.01,480.35778E+06,
                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-MA=DEFI_MATERIAU(ELAS=_F(E=young,
+MA=DEFI_MATERIAU(ELAS=_F(E=p_young,
                          NU=0.3,),
                  TRACTION=_F(SIGM=CTRAC,),);
 
@@ -133,12 +128,12 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                    INCREMENT=_F(LIST_INST=LIST,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),);
-#############################
 
-
-# 4.Post-traitement du calcul
-#############################
-
+##############################
+# 4. Post-traitement du calcul
+#    Tests de non-regression
+#    uniquement
+##############################
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
@@ -147,39 +142,16 @@ RESU=CALC_ELEM(reuse =RESU,
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION='SIEF_NOEU_ELGA',);
-###########################################
-
-
-# 5. Fleche maximale au point
-#    de coordonnees (X,0,0.5)
-#    Noeud 1567
-#    Solution theorique
-#    Reference : Guide de validation
-#    des progiciels de calcul de structures
-#    p.52
-###########################################
 
 X = 9.5;
-
-fxtheo = (-1 * (((((force * hauteur) / 2.0) / young) / inertie) * (((long * X) * X) - (((X * X) * X) / 3))));
-
 
 DPL_2D=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='DEPL_2D',
                                RESULTAT=RESU,
                                NOM_CHAM='DEPL',
                                INST=3.,
-                               GROUP_NO='GM53',
+                               GROUP_NO='GM_BAS',
                                NOM_CMP='DZ',),);
-
-TEST_TABLE(TABLE=DPL_2D,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=X,),
-           NOM_PARA='DZ',
-           VALE=fxtheo,
-           CRITERE='RELATIF',
-           PRECISION=0.06,
-           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=DPL_2D,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -187,44 +159,19 @@ TEST_TABLE(TABLE=DPL_2D,
            NOM_PARA='DZ',
            VALE=-0.0175268100294,
            CRITERE='RELATIF',
-           PRECISION=2e-06,
+           PRECISION=2.5e-06,
            REFERENCE='NON_REGRESSION',
            VERSION='10.00.19',);
-###########################################
-
-
-# 6. Contrainte de traction SIXX au point
-#    de coordonnees (X,0,Z)
-#    Noeud 119
-#    Solution theorique
-#    Reference : Guide de validation
-#    des progiciels de calcul de structures
-#    p.52
-###########################################
-
-X = 3.0;
-
-Z = 0.833333;
-
-sixxth = ((((force * hauteur) * (long - X)) * (Z - (epais / 2.0))) / inertie);
-
 
 SIXX_Z=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIXX',
                                RESULTAT=RESU,
                                NOM_CHAM='SIEF_NOEU_ELGA',
                                INST=3.,
-                               GROUP_NO='GM54',
+                               GROUP_NO='GM_HBADR',
                                NOM_CMP='SIXX',),);
 
-TEST_TABLE(TABLE=SIXX_Z,
-           FILTRE=_F(NOM_PARA='COOR_Z',
-                     VALE=Z,),
-           NOM_PARA='SIXX',
-           VALE=sixxth,
-           CRITERE='RELATIF',
-           PRECISION=0.14,
-           REFERENCE='ANALYTIQUE',);
+Z = 0.833333;
 
 TEST_TABLE(TABLE=SIXX_Z,
            FILTRE=_F(NOM_PARA='COOR_Z',

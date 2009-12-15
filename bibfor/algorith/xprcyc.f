@@ -7,7 +7,7 @@
       REAL*8         DAMAX,DT,DAFISS
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -86,7 +86,7 @@ C     JEVEUX AND GENERAL PURPOSE
       CHARACTER*8  K8B,CTYPE,VALK
       CHARACTER*16 VCHAR
       CHARACTER*1  K1BID
-      CHARACTER*8  TEST
+      CHARACTER*8  TEST,MSGOUT(2)
 
 C     INPUT DATA
       INTEGER      NFISS,JNFIS,MSGINT(2),JFISS,NUMFIS
@@ -131,6 +131,10 @@ C **********************************************************************
 C     RETRIEVE THE INPUT DATA
 C **********************************************************************
 
+C     CHECK THAT A CRACK HAS BEEN DEFINED ON THE MODEL
+      CALL JEEXIN(NOMO//'.NFIS',IBID)
+      IF (IBID.EQ.0) CALL U2MESK('F','XFEM2_93',1,NOMO)
+
 C     RETRIEVE THE NUMBER OF CRACKS IN THE MODEL
       CALL JEVEUO(NOMO//'.NFIS','L',JNFIS)
       NFISS  = ZI(JNFIS)
@@ -148,7 +152,11 @@ C     SEARCH FOR THE CRACK THAT MUST BE PROPAGATED
 
 3000  CONTINUE
 
-      IF (NUMFIS.EQ.0) CALL U2MESK('F','XFEM2_89',1,NOMFIS)
+      IF (NUMFIS.EQ.0) THEN
+         MSGOUT(1) = NOMFIS
+         MSGOUT(2) = NOMO
+         CALL U2MESK('F','XFEM2_89',2,MSGOUT)
+      ENDIF
 
 C     RETRIEVE THE NUMBER OF CRACKS IN THE MODEL THAT MUST PROPAGATE
 C     IN THIS ITERATION (ONE SINGLE PROPA_FISS CALL)
@@ -161,11 +169,9 @@ C     RETRIEVE THE VALUE FOR THE "TEST_MAIL" PARAMETER
       CALL GETVTX(' ','TEST_MAIL',1,1,1,TEST,IBID)
 
 C     ISSUE AN ALARM FOR THE USER
-      IF (TEST.NE.'NON') THEN
+      IF (TEST(1:3).EQ.'OUI') THEN
 
          IF (NDIM.EQ.2) CALL U2MESS('F','XFEM2_87')
-
-         IF (TEST(1:8).EQ.'LINEAIRE') CALL U2MESS('A','XFEM2_86')
 
 C        DEACTIVATE THE FLAG FOR THE NB_POINT_FOND OPTION
          NBPTFO = .FALSE.
@@ -278,11 +284,11 @@ C     BEEN USED (VALUE -1)
 
 C     INITIALIZE THE VARIABLE WHERE THE MAXIMUM VALUE OF THE SPEED IS
 C     STORED
-      VMAX = 0
+      VMAX = 0.D0
 
 C     INITIALIZE THE VARIABLE WHERE THE MAXIMUM VALUE OF THE SPEED FOR
 C     THE SELECTED CRACK IS STORED
-      VMFISS = 0
+      VMFISS = 0.D0
 
 C     INITIALIZE THE FLAG USED TO ISSUE A WARNING IF THE PROPAGATION
 C     ANGLE CHANGES IN THE LOAD CYCLE
@@ -789,22 +795,10 @@ C                  THE CRACK FRONT USING THE PARIS LAW
 
                  ELSE
 
-                   IF (TEST.EQ.'CONSTANT') THEN
+                   IF (TEST(1:3).EQ.'OUI') THEN
                        VPNT  = DAMAX
                        BETA1 = 0
                        BETA2 = 0
-                   ELSE
-                       ABSCUR=ZR(JFFIS-1+4*(NI+I-2)+4)/
-     &                        ZR(JFFIS-1+4*(NF-1)+4)
-                       IF ((ABS(ABSCUR-0.5D0)).GT.R8PREM()) THEN
-                            BETA1=(ABSCUR-0.5D0)*2*5/180*3.1415D0
-                            BETA2=BETA1
-                            VPNT=DAMAX/COS(BETA1)
-                       ELSE
-                           VPNT=DAMAX
-                           BETA1=0
-                           BETA2=0
-                       ENDIF
                    ENDIF
 
                  ENDIF
@@ -896,7 +890,6 @@ C                   ANGLE IN THE PHYSICAL POINT BY LINEAR INTERPOLATION
                        CALL ASSERT(ACTPOI.LE.MAXACT)
                        ZR(JVIT-1+ACTPOI)  = ZR(JVITD-1+SIFVAL)
                        ZR(JBETA-1+ACTPOI) = ZR(JBETAD-1+SIFVAL)
-                       ACTPOI = ACTPOI+1
 
                     ELSE
                        CALL ASSERT(ACTPOI.LE.MAXACT)
@@ -909,12 +902,12 @@ C                   ANGLE IN THE PHYSICAL POINT BY LINEAR INTERPOLATION
      &                   (ZR(JABSC-1+JMIN+1)-ZR(JABSC-1+JMIN))*
      &                   (ABSCUR-ZR(JABSC-1+JMIN))
 
-                       ACTPOI = ACTPOI+1
-
                     ENDIF
 
                     IF (ZR(JVIT-1+ACTPOI).GT.VMFISS)
      &                                    VMFISS=ZR(JVIT-1+ACTPOI)
+
+                    ACTPOI = ACTPOI+1
 
 
 460              CONTINUE

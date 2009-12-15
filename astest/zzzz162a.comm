@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -387,43 +387,6 @@ TEST_RESU ( RESU=(
                          VALE       =  5.25001E-04 ),
 
                     ),)
-
-
-###CHSIEF=LIRE_CHAMP(MAILLAGE=MAIL,
-###                  MODELE=MOMECA,
-###                  FORMAT='MED',
-###                  UNITE=71,
-###                  NOM_MED='U_______SIEF_ELGA_______________',
-###                  NOM_CMP_IDEM='OUI',
-###                  INST= 9.00000E+01,
-###                  TYPE_CHAM='ELGA_SIEF_R')
-###IMPR_RESU(RESU=_F(CHAM_GD=CHSIEF),)
-###TEST_RESU ( CHAM_ELEM=(
-###                    _F(  CHAM_GD    = CHSIEF,
-###                         INST       = 9.00000E+01,
-###                         MAILLE     = 'M1',
-###                         REFERENCE  = 'NON_REGRESSION',
-###                         POINT      =  1,
-###                         NOM_CMP    = 'SIXX',
-###                         VALE       = 1.17084E-03  ),),)
-##CHVARI=LIRE_CHAMP(MAILLAGE=MAIL,
-###                  MODELE=MOMECA,
-###                  FORMAT='MED',
-###                  UNITE=71,
-###                  NOM_MED='U_______VARI_ELGA_______________',
-###                  NOM_CMP_IDEM='OUI',
-###                  INST= 9.00000E+01,
-###                  TYPE_CHAM='ELGA_SIEF_R')
-###
-###TEST_RESU ( CHAM_ELEM=(
-###                    _F(  CHAM_GD    = CHVARI,
-###                         INST       = 9.00000E+01,
-###                         MAILLE     = 'M1',
-###                         REFERENCE  = 'NON_REGRESSION',
-###                         POINT      =  1,
-###                         NOM_CMP    = 'V1',
-###                         VALE       = 5.25001E-04  ),),)
-
 
 # ----------------------------------------------------------------------------
 # VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR
