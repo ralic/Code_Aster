@@ -3,7 +3,7 @@
      &                  MESUIV)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/04/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,9 +26,9 @@ C
       CHARACTER*(*) MODELZ,CARELZ
       CHARACTER*(*) MATE
       REAL*8        INSTAP,INSTAM
-      CHARACTER*24  COMPOR,CARCRI,DEPMOI
+      CHARACTER*24  COMPOR,CARCRI
       CHARACTER*19  LISCHA
-      CHARACTER*19  MESUIV,DEPDEL
+      CHARACTER*19  MESUIV,DEPDEL,DEPMOI
 C 
 C ----------------------------------------------------------------------
 C
@@ -174,33 +174,33 @@ C
 C --- REMPLISSAGE DES CHAMPS
 C     
       LPAIN(2)  = 'PGEOMER'
-      LCHIN(2)  = CHGEOM
+      LCHIN(2)  = CHGEOM(1:19)
       LPAIN(3)  = 'PTEMPSR'
-      LCHIN(3)  = CHTIME
+      LCHIN(3)  = CHTIME(1:19)
       LPAIN(4)  = 'PMATERC'
-      LCHIN(4)  = MATE
+      LCHIN(4)  = MATE(1:19)
       LPAIN(5)  = 'PCACOQU'
-      LCHIN(5)  = CHCARA(7)
+      LCHIN(5)  = CHCARA(7)(1:19)
       LPAIN(6)  = 'PCAGNPO'
-      LCHIN(6)  = CHCARA(6)
+      LCHIN(6)  = CHCARA(6)(1:19)
       LPAIN(7)  = 'PCADISM'
-      LCHIN(7)  = CHCARA(3)
+      LCHIN(7)  = CHCARA(3)(1:19)
       LPAIN(8)  = 'PDEPLMR'
       LCHIN(8)  = DEPMOI
       LPAIN(9)  = 'PDEPLPR'
       LCHIN(9)  = DEPDEL
       LPAIN(10) = 'PCAORIE'
-      LCHIN(10) = CHCARA(1)
+      LCHIN(10) = CHCARA(1)(1:19)
       LPAIN(11) = 'PCACABL'
-      LCHIN(11) = CHCARA(10)
+      LCHIN(11) = CHCARA(10)(1:19)
       LPAIN(12) = 'PCARCRI'
-      LCHIN(12) = CARCRI
+      LCHIN(12) = CARCRI(1:19)
       LPAIN(13) = 'PINSTMR'
-      LCHIN(13) = CHTIM2
+      LCHIN(13) = CHTIM2(1:19)
       LPAIN(14) = 'PCOMPOR'
-      LCHIN(14) = COMPOR
+      LCHIN(14) = COMPOR(1:19)
       LPAIN(15) = 'PINSTPR'
-      LCHIN(15) = CHTIME
+      LCHIN(15) = CHTIME(1:19)
 C
 C --- CHAMP DE SORTIE
 C      
@@ -288,7 +288,7 @@ C ---- BOUCLES SUR LES TOUS LES TYPES DE CHARGE POSSIBLES SAUF LAPLACE
               IF (IRET.NE.0) THEN
                 IF ((K.NE.2) .OR. ((REPCT(1:3).EQ.'OUI').OR. (REPVR(1:
      &              3).EQ.'OUI'))) THEN
-                  LCHOUT(1) = ZK24(JLME-1+I)
+                  LCHOUT(1) = ZK24(JLME-1+I)(1:19)
                   IF (AFFCHA(5:7).EQ.'_FO') THEN
                     OPTION = 'RIGI_MECA_'//NOMOPF(K)
                     LPAIN(1) = 'P'//NOMPAF(K)

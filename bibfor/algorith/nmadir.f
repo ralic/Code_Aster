@@ -2,7 +2,7 @@
      &                  CNDIRI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE     
-      LOGICAL       FONACT(*)
+      INTEGER       FONACT(*)
       CHARACTER*24  NUMEDD
       CHARACTER*19  VEASSE(*)
       CHARACTER*19  VEDIRI,CNDIRI

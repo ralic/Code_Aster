@@ -1,7 +1,7 @@
       SUBROUTINE SURFCL(CHAR,NOMA,IFM)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/10/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,31 +60,33 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFMMVD,ZMETH,ZDIRN,ZTOLE
+      INTEGER      CFMMVD,ZDIRN
       INTEGER      NDIM,NZOCO,NSUCO,NMACO
-      INTEGER      NNOCO,NMANO,NNOMA,NMAMA,NESMAX
-      INTEGER      IZONE,INO,K
-      REAL*8       JSUP
+      INTEGER      CFDISI,NNOCO,NMANO,NNOMA,NTNOE,NTMAE,NTPC
+      INTEGER      IZONE,K,NSNO,INO,JDEC,NUMNOE
 C
       CHARACTER*24 DEFICO
 C      
-      CHARACTER*8  CHAIN1,CHAIN2,CHAIN3,NOMNOE
-      CHARACTER*24 NOEUMA
+      CHARACTER*8  CHAIN1,CHAIN2
 C
-      CHARACTER*24 METHCO,TOLECO
-      INTEGER      JMETH ,JTOLE
-C
-      CHARACTER*24 PZONE,PSURMA,PSURNO,CONTMA,CONTNO,NDIMCO
-      INTEGER      JZONE,JSUMA ,JSUNO ,JMACO ,JNOCO ,JDIM
-      CHARACTER*24 MANOCO,PMANO ,NOMACO,PNOMA ,MAMACO,PMAMA ,NOZOCO
-      INTEGER      JMANO ,JPOMA ,JNOMA ,JPONO ,JMAMA ,JPOIN ,JZOCO
+      CHARACTER*24 PZONE,PSURMA,PSURNO,CONTMA,CONTNO
+      INTEGER      JZONE,JSUMA ,JSUNO ,JMACO ,JNOCO 
+      CHARACTER*24 MANOCO,PMANO ,NOMACO,PNOMA ,NOZOCO
+      INTEGER      JMANO ,JPOMA ,JNOMA ,JPONO ,JZOCO
       CHARACTER*24 PSANS ,SANSNO      
       INTEGER      JPSANS,JSANS 
+      CHARACTER*24 NOEUMA
+      INTEGER      JNOMNO      
 C
       CHARACTER*24 DIRAPP,DIRNOR
       INTEGER      JDIRAP,JDIRNO
-      CHARACTER*24 JEUSUP,JEUFO1,JEUFO2,JEUFO3,JEUPOU,JEUCOQ
-      INTEGER      JJSUP,JJFO1,JJFO2,JJFO3,JJPOU,JJCOQ       
+      CHARACTER*24 JEUFO1,JEUFO2
+      INTEGER      JJFO1,JJFO2
+C
+      INTEGER      ILISS
+      INTEGER      MMINFI,INORM,ITYPA,IVECM,IVECE,IAPPA
+      LOGICAL      MMINFL,LCOQU,LPOUT    
+      REAL*8       MMINFR  
 C
 C ----------------------------------------------------------------------
 C
@@ -92,23 +94,14 @@ C
 C
 C --- INITIALISATIONS
 C
-      DEFICO = CHAR(1:8)//'.CONTACT'        
+      DEFICO = CHAR(1:8)//'.CONTACT'  
 C
 C --- ACCES SD DU MAILLAGE
 C
-      NOEUMA = NOMA(1:8)//'.NOMNOE'    
-C   
-C --- COMMUNS TOUTES FORMULATIONS 
-C 
-      METHCO = DEFICO(1:16)//'.METHCO'              
-      CALL JEVEUO(METHCO,'L',JMETH) 
-C      
-      ZMETH  = CFMMVD('ZMETH')                 
+      NOEUMA = NOMA(1:8)//'.NOMNOE'                             
 C   
 C --- COMMUNS AVEC FORM. MAILLEES (DISCRET ET CONTINUE MAIS PAS XFEM)
 C  
-      NDIMCO = DEFICO(1:16)//'.NDIMCO'
-      TOLECO = DEFICO(1:16)//'.TOLECO'
       PZONE  = DEFICO(1:16)//'.PZONECO'
       NOZOCO = DEFICO(1:16)//'.NOZOCO'      
       PSURMA = DEFICO(1:16)//'.PSUMACO'
@@ -119,21 +112,13 @@ C
       PMANO  = DEFICO(1:16)//'.PMANOCO'
       NOMACO = DEFICO(1:16)//'.NOMACO'
       PNOMA  = DEFICO(1:16)//'.PNOMACO'
-      MAMACO = DEFICO(1:16)//'.MAMACO'
-      PMAMA  = DEFICO(1:16)//'.PMAMACO'
       SANSNO = DEFICO(1:16)//'.SSNOCO'
       PSANS  = DEFICO(1:16)//'.PSSNOCO'  
       JEUFO1 = DEFICO(1:16)//'.JFO1CO'
-      JEUFO2 = DEFICO(1:16)//'.JFO2CO' 
-      JEUFO3 = DEFICO(1:16)//'.JFO3CO'       
-      JEUPOU = DEFICO(1:16)//'.JEUPOU'
-      JEUCOQ = DEFICO(1:16)//'.JEUCOQ' 
-      JEUSUP = DEFICO(1:16)//'.JSUPCO'       
+      JEUFO2 = DEFICO(1:16)//'.JFO2CO'             
       DIRAPP = DEFICO(1:16)//'.DIRAPP'
       DIRNOR = DEFICO(1:16)//'.DIRNOR'  
 C
-      CALL JEVEUO(NDIMCO,'L',JDIM)
-      CALL JEVEUO(TOLECO,'L',JTOLE)
       CALL JEVEUO(PZONE, 'L',JZONE) 
       CALL JEVEUO(NOZOCO,'L',JZOCO)   
       CALL JEVEUO(PSURMA,'L',JSUMA)
@@ -144,33 +129,31 @@ C
       CALL JEVEUO(PMANO, 'L',JPOMA)
       CALL JEVEUO(NOMACO,'L',JNOMA)
       CALL JEVEUO(PNOMA, 'L',JPONO)
-      CALL JEVEUO(MAMACO,'L',JMAMA)
-      CALL JEVEUO(PMAMA, 'L',JPOIN)
       CALL JEVEUO(PSANS, 'L',JPSANS)
       CALL JEVEUO(SANSNO,'L',JSANS)   
       CALL JEVEUO(JEUFO1,'L',JJFO1)
       CALL JEVEUO(JEUFO2,'L',JJFO2)
-      CALL JEVEUO(JEUFO3,'L',JJFO3)    
-      CALL JEVEUO(JEUPOU,'L',JJPOU)
-      CALL JEVEUO(JEUCOQ,'L',JJCOQ) 
-      CALL JEVEUO(JEUSUP,'L',JJSUP) 
       CALL JEVEUO(DIRAPP,'L',JDIRAP)
       CALL JEVEUO(DIRNOR,'L',JDIRNO)        
 C
-      ZDIRN  = CFMMVD('ZDIRN') 
-      ZTOLE  = CFMMVD('ZTOLE')        
+      ZDIRN  = CFMMVD('ZDIRN')        
 C
 C --- INITIALISATIONS
-C           
-      NDIM   = ZI(JDIM)
-      NZOCO  = ZI(JMETH) 
-      NSUCO  = ZI(JDIM+2)
-      NMACO  = ZI(JDIM+3)
-      NNOCO  = ZI(JDIM+4)
-      NMANO  = ZI(JDIM+5)
-      NNOMA  = ZI(JDIM+6)
-      NMAMA  = ZI(JDIM+7)
-      NESMAX = ZI(JDIM+8)
+C    
+      NDIM   = CFDISI(DEFICO,'NDIM'  )  
+      NZOCO  = CFDISI(DEFICO,'NZOCO' ) 
+      NSUCO  = CFDISI(DEFICO,'NSUCO' ) 
+      NMACO  = CFDISI(DEFICO,'NMACO' ) 
+      NNOCO  = CFDISI(DEFICO,'NNOCO' )
+      NMANO  = CFDISI(DEFICO,'NMANO' ) 
+      NNOMA  = CFDISI(DEFICO,'NNOMA' )
+      NTMAE  = CFDISI(DEFICO,'NTMAE' )      
+      NTNOE  = CFDISI(DEFICO,'NTNOE' )
+      NTPC   = CFDISI(DEFICO,'NTPC'  )  
+C
+C --- CREATION VECTEURS TEMPORAIRES
+C      
+      CALL WKVECT('&&SURFCL.TRAVNO','V V K8',NZOCO*NNOCO,JNOMNO)
 C 
 C --- IMPRESSIONS POUR L'UTILISATEUR
 C 
@@ -182,45 +165,104 @@ C
 C --- PARAMETRES GENERAUX D'APPARIEMENT
 C
       WRITE (IFM,*) '<CONTACT> ... PARAMETRES GENERAUX APPARIEMENT'
+      
+      ILISS  = CFDISI(DEFICO,'LISSAGE')
+      
+      WRITE (IFM,1070) 'LISSAGE  ',ILISS
+      
       DO 9 IZONE = 1,NZOCO 
-        WRITE (IFM,*) '<CONTACT> ...... ZONE : ',IZONE         
-        WRITE (IFM,1070) 'PROJECTION      ',ZI(JMETH+ZMETH*(IZONE-1)+4)
-        WRITE (IFM,1070) 'NORMALE         ',ZI(JMETH+ZMETH*(IZONE-1)+8)
-        WRITE (IFM,1070) 'LISSAGE         ',ZI(JMETH+ZMETH*(IZONE-1)+10)
-        WRITE (IFM,1070) 'TYPE_APPA       ',ZI(JMETH+ZMETH*(IZONE-1)+9)
-        IF (ZI(JMETH+ZMETH*(IZONE-1)+9).EQ.1) THEN
-          WRITE (IFM,1072) 'DIRE_APPA       ',ZR(JDIRAP+3*(IZONE-1)),
-     &          ZR(JDIRAP+3*(IZONE-1)+1),ZR(JDIRAP+3*(IZONE-1)+2)
+        INORM  = MMINFI(DEFICO,'NORMALE'    ,IZONE )
+        IAPPA  = MMINFI(DEFICO,'APPARIEMENT',IZONE )
+        ITYPA  = MMINFI(DEFICO,'TYPE_APPA'  ,IZONE )
+        IVECM  = MMINFI(DEFICO,'VECT_MAIT'  ,IZONE )
+        IVECE  = MMINFI(DEFICO,'VECT_ESCL'  ,IZONE )
+        LCOQU  = MMINFL(DEFICO,'DIST_COQUE' ,IZONE )
+        LPOUT  = MMINFL(DEFICO,'DIST_POUTRE',IZONE )
+        
+        
+        WRITE (IFM,*) '<CONTACT> ...... ZONE : ',IZONE  
+        WRITE (IFM,1070) 'APPARIEMENT     ',IAPPA      
+        WRITE (IFM,1070) 'NORMALE         ',INORM
+        WRITE (IFM,1070) 'TYPE_APPA       ',ITYPA
+        
+        IF (ITYPA.EQ.1) THEN
+          WRITE (IFM,1072) 'DIRE_APPA       ',
+     &          ZR(JDIRAP+3*(IZONE-1)),
+     &          ZR(JDIRAP+3*(IZONE-1)+1),
+     &          ZR(JDIRAP+3*(IZONE-1)+2)
         ENDIF
-        WRITE (IFM,1070) 'VECT_MAIT       ',ZI(JMETH+ZMETH*(IZONE-1)+11)
-        IF (ZI(JMETH+ZMETH*(IZONE-1)+11).EQ.1) THEN
+        
+        WRITE (IFM,1070) 'VECT_MAIT       ',IVECM
+        
+        IF (IVECM.EQ.1) THEN
           WRITE (IFM,1072) 'MAIT_FIXE       ',
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)),
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)+1),
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)+2)
         ENDIF        
-        IF (ZI(JMETH+ZMETH*(IZONE-1)+11).EQ.2) THEN
+        IF (IVECM.EQ.2) THEN
           WRITE (IFM,1072) 'MAIT_VECT_Y     ',
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)),
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)+1),
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)+2)
         ENDIF          
-        WRITE (IFM,1070) 'VECT_ESCL       ',ZI(JMETH+ZMETH*(IZONE-1)+12)
-        IF (ZI(JMETH+ZMETH*(IZONE-1)+12).EQ.1) THEN
+        WRITE (IFM,1070) 'VECT_ESCL       ',IVECE
+        IF (IVECE.EQ.1) THEN
           WRITE (IFM,1072) 'ESCL_FIXE       ',
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)+3),
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)+4),
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)+5)
         ENDIF        
-        IF (ZI(JMETH+ZMETH*(IZONE-1)+12).EQ.2) THEN
+        IF (IVECE.EQ.2) THEN
           WRITE (IFM,1072) 'ESCL_VECT_Y     ',
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)+3),
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)+4),
      &          ZR(JDIRNO+ZDIRN*(IZONE-1)+5)
-        ENDIF  
-        WRITE (IFM,1071) 'TOLE_PROJ_EXT   ',ZR(JTOLE+ZTOLE*(IZONE-1))
-  9   CONTINUE 
+        ENDIF 
+C
+C --- IMPRESSIONS POUR LES POUTRES
+C 
+        IF (LPOUT) THEN
+          WRITE (IFM,*) '<CONTACT> ... JEU SUPP. PAR DIST_POUT'
+        END IF
+C 
+C --- IMPRESSIONS POUR LES COQUES
+C 
+        IF (LCOQU) THEN
+          WRITE (IFM,*) '<CONTACT> ... JEU SUPP. PAR DIST_COQUE'
+        END IF
+
+        WRITE (IFM,1071) 'TOLE_PROJ_EXT   ',
+     &                    MMINFR(DEFICO,'TOLE_PROJ_EXT',IZONE )
+        WRITE (IFM,1071) 'TOLE_APPA       ',
+     &                    MMINFR(DEFICO,'TOLE_APPA'    ,IZONE )     
+C 
+C --- IMPRESSIONS SANS_GROUP_NO
+C      
+        WRITE (IFM,*) '<CONTACT> ... NOEUDS EXCLUS '
+
+        NSNO  = ZI(JPSANS+IZONE) - ZI(JPSANS+IZONE-1)
+        IF (NSNO.EQ.0) THEN
+          WRITE (IFM,*) '<CONTACT> ...... PAS DE NOEUDS DE TYPE '//
+     &                  'SANS_GROUP_NO A EXCLURE'
+        ELSE
+          WRITE (IFM,*) '<CONTACT> ...... NOMBRE DE NOEUDS DE TYPE '//
+     &                 'SANS_GROUP_NO A EXCLURE: ',NSNO
+C        
+          JDEC = ZI(JPSANS+IZONE-1)
+          DO 801 INO = 1,NSNO
+            NUMNOE = ZI(JSANS+JDEC+INO-1)
+            CALL JENUNO(JEXNUM(NOEUMA,NUMNOE),ZK8(JNOMNO+INO-1))
+  801     CONTINUE   
 C  
+          WRITE (IFM,1040) '     LISTE DES NOEUDS  : '
+          WRITE (IFM,1050) (ZK8(JNOMNO+INO-1), INO = 1,NSNO)          
+        ENDIF     
+     
+  9   CONTINUE 
+C 
+ 1040 FORMAT (' <CONTACT> ...... ',A25)       
+ 1050 FORMAT ((' <CONTACT> ...... ',17X,4(A8,1X)))   
  1070 FORMAT (' <CONTACT> ...... PARAM. : ',A16,' - VAL. : ',I5)
  1071 FORMAT (' <CONTACT> ...... PARAM. : ',A16,' - VAL. : ',E12.5)
  1072 FORMAT (' <CONTACT> ...... PARMA. : ',A16,' - VAL. : ',E12.5,
@@ -232,51 +274,20 @@ C
       DO 21 IZONE = 1,NZOCO
         CHAIN1 = ZK8(JJFO1+IZONE-1)
         CHAIN2 = ZK8(JJFO2+IZONE-1)
-        CHAIN3 = ZK8(JJFO3+IZONE-1)
-        JSUP   = ZR(JJSUP+IZONE-1)      
-        WRITE (IFM,*) '<CONTACT> ...... ZONE : ',IZONE          
-        WRITE (IFM,1030) JSUP
+
+        IF ((CHAIN1.NE.' ').OR.(CHAIN2.NE.' ')) THEN
+          WRITE (IFM,*) '<CONTACT> ... JEU SUPP. SUR ZONE ',IZONE
+        ENDIF           
         IF (CHAIN1.NE.' ') THEN
           WRITE (IFM,1031) CHAIN1
         ENDIF
         IF (CHAIN2.NE.' ') THEN
           WRITE (IFM,1032) CHAIN2
-        ENDIF 
-        IF (CHAIN3.NE.' ') THEN
-          WRITE (IFM,1033) CHAIN3
-        ENDIF               
+        ENDIF             
  21   CONTINUE      
 C          
- 1030 FORMAT (' <CONTACT> ...... TYPE REEL              : ',E12.5) 
  1031 FORMAT (' <CONTACT> ...... TYPE FONC. SUR ESCLAVE : ',A8) 
- 1032 FORMAT (' <CONTACT> ...... TYPE FONC. SUR MAITRE  : ',A8)
- 1033 FORMAT (' <CONTACT> ...... TYPE FONC. INSTANT     : ',A8)     
-C
-C --- IMPRESSIONS POUR LES POUTRES
-C 
-      IF ( (ZR(JJPOU-1+NNOCO+1).GT.0.5D0)) THEN
-        WRITE (IFM,*) '<CONTACT> ... JEU SUPP. PAR DIST_POUT'
-        DO 60 INO = 1 , NNOCO
-          IF ( ZR(JJPOU-1+INO).EQ.0.D0 ) GOTO 60
-          CALL JENUNO(JEXNUM(NOEUMA,ZI(JNOCO-1+INO)),NOMNOE)
-          WRITE (IFM,1014) NOMNOE, ZR(JJPOU-1+INO)
- 60     CONTINUE
-      END IF
-C 
-C --- IMPRESSIONS POUR LES COQUES
-C 
-      IF ( (ZR(JJCOQ-1+NNOCO+1).GT.0.5D0)) THEN
-        WRITE (IFM,*) '<CONTACT> ... JEU SUPP. PAR DIST_COQUE'
-        DO 70 INO = 1 , NNOCO
-          IF ( ZR(JJCOQ-1+INO).EQ.0.D0 ) GOTO 70
-          CALL JENUNO(JEXNUM(NOEUMA,ZI(JNOCO-1+INO)),NOMNOE)
-          WRITE (IFM,1016) NOMNOE, ZR(JJCOQ-1+INO)
- 70     CONTINUE
-      END IF
-C      
- 1014 FORMAT (' <CONTACT> ...... NOEUD: ',A8,' RAYON_POUTRE  : ',E12.5)
- 1016 FORMAT (' <CONTACT> ...... NOEUD: ',A8,' DEMI-EPAISSEUR: ',E12.5)
-       
+ 1032 FORMAT (' <CONTACT> ...... TYPE FONC. SUR MAITRE  : ',A8)     
 C 
 C --- IMPRESSIONS GLOBALES (TOUTES ZONES)
 C 
@@ -295,10 +306,12 @@ C
      &               NMACO
       WRITE (IFM,*) '<CONTACT> NBRE NOEU. DE CONTACT   : ',
      &               NNOCO
-      WRITE (IFM,*) '<CONTACT> NBRE NOEUD ESCL. TOTAL  : ', 
-     &               NESMAX
-      WRITE (IFM,*) '<CONTACT> NBRE NOEU. ESCL./ZONE   : ',
-     &      (ZI(JDIM+8+K), K = 1,ZI(JDIM+1))
+      WRITE (IFM,*) '<CONTACT> NBRE NOEU. ESCL. TOTAL  : ', 
+     &               NTNOE
+      WRITE (IFM,*) '<CONTACT> NBRE MAIL. ESCL. TOTAL  : ', 
+     &               NTMAE     
+      WRITE (IFM,*) '<CONTACT> NBRE PT. CONTACT TOTAL  : ', 
+     &               NTPC       
 C         
 C --- NOEUDS/MAILLES DES SURFACES 
 C           
@@ -340,8 +353,6 @@ C
      &               NMANO
       WRITE (IFM,*) '<CONTACT> NNOMA                   : ', 
      &               NNOMA
-      WRITE (IFM,*) '<CONTACT> NMAMA                   : ',
-     &               NMAMA    
 C
       WRITE (IFM,2080) 'MANOCO : '
       WRITE (IFM,2060) (ZI(JMANO+K-1), K = 1,NMANO)
@@ -351,17 +362,16 @@ C
       WRITE (IFM,2060) (ZI(JNOMA+K-1), K = 1,NNOMA)
       WRITE (IFM,2080) 'PNOMA  : '
       WRITE (IFM,2060) (ZI(JPONO+K), K = 0,NMACO)
-      WRITE (IFM,2080) 'MAMACO : '
-      WRITE (IFM,2060) (ZI(JMAMA+K-1), K = 1,NMAMA)
-      WRITE (IFM,2080) 'PMAMA  : '
-      WRITE (IFM,2060) (ZI(JPOIN+K), K = 0,NMACO)
       WRITE (IFM,2080) 'NOZOCO : '
       WRITE (IFM,2060) (ZI(JZOCO+K-1), K = 1,NNOCO)
       WRITE (IFM,*)
 C
  2060 FORMAT ((' <CONTACT> ',9X,6(I7,1X)))
  2080 FORMAT (' <CONTACT> ',A9)
-
- 999  CONTINUE
+C
+C --- MENAGE
+C
+      CALL JEDETR('&&SURFCL.TRAVNO') 
+C
       CALL JEDEMA
       END

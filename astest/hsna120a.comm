@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -365,8 +365,9 @@ for num_calc in range(1,nb_calc_total_plus_1) :
                      MODELE=MOD_G[num_calc],
                                  );
 #
-   CONT[num_calc]=AFFE_CHAR_MECA(MODELE=MOD_G[num_calc],
-                     CONTACT=(_F(GROUP_MA_MAIT='levt1',
+   CONT[num_calc]=DEFI_CONTACT(MODELE      = MOD_G[num_calc],
+                               FORMULATION = 'DISCRETE',
+                     ZONE=(_F(GROUP_MA_MAIT='levt1',
                                  SANS_GROUP_NO='F1',
                                  APPARIEMENT='MAIT_ESCL',
                                  GROUP_MA_ESCL='levb1',
@@ -411,8 +412,8 @@ for num_calc in range(1,nb_calc_total_plus_1) :
                    NEWTON=_F(REAC_INCR=0,
                              MATRICE='TANGENTE',),
                    EXCIT=(_F(CHARGE=CHAR1[num_calc],),
-                          _F(CHARGE=CONT[num_calc],),
                           _F(CHARGE=CHARM[num_calc],),),
+                   CONTACT = CONT[num_calc],    
                    ARCHIVAGE=_F(INST=(90,95,100)),
                            );
 #

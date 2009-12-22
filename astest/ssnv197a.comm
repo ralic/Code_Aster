@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE ETUDE:  ESSAI TRIAXIAL DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
 # ssnv197a.para = tps_job 150 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,8 +187,9 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  ETAT_INIT=_F(SIGM=SIG0,),
                  COMP_INCR=_F(RELATION = 'HUJEUX',
                               #TYPE_MATR_TANG='PERTURBATION',
-                              RESI_INTE_RELA = 1.E-6,
-                              ITER_INTE_PAS = -10),
+                              RESI_INTE_RELA = 1.E-8,
+                              ITER_INTE_PAS = -5,
+                              ITER_INTE_MAXI = 20,),
                  NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER=1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 10),

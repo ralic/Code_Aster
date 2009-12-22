@@ -1,4 +1,4 @@
-# MODIF  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE  CONTACT MAILLE TRIA7, MODELISATION COQUE_3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,19 +113,17 @@ CHA0=AFFE_CHAR_CINE(MODELE=MO,
                                  DRX=0.0,),
                                  ),);
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(SANS_GROUP_NO=(
-                                               'DR1','DR21',
-                                               'DR2','DR22',
-                                               'DR3','DR23',
-                                               'DR4','DR24',
-                                               
-                                                ),
-                               GROUP_MA_MAIT='Q1',
-                               GROUP_MA_ESCL='Q21',
-                               REAC_GEOM='AUTOMATIQUE',
-                               ),
-                    INFO=1,);
+CHA2=DEFI_CONTACT(MODELE         = MO,
+                  FORMULATION    = 'DISCRETE',
+                  REAC_GEOM      = 'AUTOMATIQUE',
+                  ZONE=_F(
+                          GROUP_MA_MAIT='Q1',
+                          GROUP_MA_ESCL='Q21',
+                          SANS_GROUP_NO=('DR1','DR2','DR3','DR4',
+                                              'DR21','DR22','DR23','DR24',),
+                        )
+                  )
+
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
@@ -146,8 +144,8 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    EXCIT=(_F(CHARGE=CHA1,
                              FONC_MULT=RAMPE,),
                           _F(CHARGE=CHA0,),
-                          _F(CHARGE=CHA2,),
                           ),
+                   CONTACT  = CHA2,       
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    INFO=1,);

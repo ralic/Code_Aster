@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 # ssnv129d.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,16 +86,20 @@ CHA0=AFFE_CHAR_CINE(MODELE=MO,
                                   DX=0.0,
                                   DZ=0.0,
                                   DRX=0.0,),),);
-CHA2=AFFE_CHAR_MECA(
-                     MODELE=MO,
-                     CONTACT=_F(
-                                  APPARIEMENT    = 'MAIT_ESCL',
-                                  METHODE        = 'CONTINUE',
-                                  GROUP_MA_MAIT     = 'Q1',
-                                  GROUP_MA_ESCL     = 'Q21',
+                                  
+CHA2 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 3,                   
+                    ZONE =(
+                           _F(
+                             GROUP_MA_MAIT = 'Q1',
+                             GROUP_MA_ESCL = 'Q21',
+                             APPARIEMENT   = 'MAIT_ESCL',
+                             ),                            
+                          ),
+                   );
 
-                                      ),
-                           )
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
                           1.0,1.0,
@@ -113,9 +117,10 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CHA1,
                              FONC_MULT=RAMPE,),
                           _F(CHARGE=CHA0,),
-                          _F(CHARGE=CHA2,),),
+                          ),
+                   CONTACT  = CHA2,  
+                   NEWTON=_F(REAC_ITER=1,),     
                    COMP_INCR=_F(RELATION='ELAS',),
-                   NEWTON=_F(REAC_ITER=1,),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    INFO=1,);
 

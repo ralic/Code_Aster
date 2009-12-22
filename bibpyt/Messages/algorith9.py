@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith9 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,15 +65,6 @@ cata_msg = {
 
 19 : _("""
  COEFF_VAR_AMOR non nul et amortissement non présent
-"""),
-
-24 : _("""
- charge de contact non traitée
-"""),
-
-25 : _("""
- votre chargement contient plus d'une charge répartie
- le calcul n'est pas possible pour les modèles de poutre
 """),
 
 26 : _("""

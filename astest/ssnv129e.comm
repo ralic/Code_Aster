@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 # ssnv129e.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
@@ -92,17 +92,21 @@ CHA0=AFFE_CHAR_CINE(MODELE=MO,
                                   DZ=0.0,
                                   DRX=0.0,),),);
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(METHODE='GCP',
-                               RESI_ABSO=1.E-8,
-                               GROUP_MA_MAIT= 'Q1',
-                               GROUP_MA_ESCL= 'Q21',
-                               REAC_GEOM='SANS',
-                               SANS_GROUP_NO=('DR1','DR2','DR3','DR4',
+CHA2=DEFI_CONTACT(MODELE         = MO,
+                  FORMULATION    = 'DISCRETE',
+                  REAC_GEOM      = 'SANS',
+                  RESI_ABSO      = 1.E-8,
+                  PRE_COND       = 'DIRICHLET',
+                  ITER_PRE_MAXI = 100,
+                  ZONE=_F(
+                          ALGO_CONT    ='GCP',
+                          GROUP_MA_MAIT='Q1',
+                          GROUP_MA_ESCL='Q21',
+                          SANS_GROUP_NO=('DR1','DR2','DR3','DR4',
                                               'DR21','DR22','DR23','DR24',),
-                               PRE_COND='DIRICHLET',
-                               ITER_PRE_MAXI=100,
-                                      ),)
+                        )
+                  )
+
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
@@ -122,7 +126,8 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', SYME='OUI',),
                    EXCIT=(_F(CHARGE=CHA1,
                              FONC_MULT=RAMPE,),
                           _F(CHARGE=CHA0,),
-                          _F(CHARGE=CHA2,),),
+                          ),
+                   CONTACT  =CHA2,       
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    INFO=1,);

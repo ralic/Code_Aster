@@ -1,4 +1,4 @@
-# MODIF  DATE 16/11/2009   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 22/12/2009   AUTEUR TORKHANI M.TORKHANI 
 # RESPONSABLE TORKHANI M.TORKHANI
 # TITRE DIAGRAMME DE CAMPBELL D'UNE LIGNE D'ARBRE SIMPLIFIEE
 # sdll125a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
@@ -182,56 +182,56 @@ for ii in range(0,nbV):
 TEST_RESU(RESU=(
           _F( RESULTAT = lmod[0], PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 1,  VALE = 2.16210E+02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 1,  VALE = 2.16210E+02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[0], PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 1,  VALE = 4.7697E-02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 1,  VALE = 4.7697E-02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[0], PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 2,  VALE = 2.63521E+02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 2,  VALE = 2.63521E+02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[0], PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 2,  VALE = 7.8851E-02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 2,  VALE = 7.8851E-02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[0], PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 3,  VALE = 3.8321E+02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 3,  VALE = 3.8321E+02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[0], PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 1.4E-2,
-                NUME_ORDRE = 3,  VALE = 5.0144E-02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 3,  VALE = 5.0144E-02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[0], PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 4,  VALE = 4.3964E+02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 4,  VALE = 4.3964E+02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[0], PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 4,  VALE = 6.0227E-02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 4,  VALE = 6.0227E-02, REFERENCE='AUTRE_ASTER',),
             ),)
 
 #VITESSE DE ROTATION OMEGA=60000
 TEST_RESU(RESU=(
           _F( RESULTAT = lmod[12], PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 1,  VALE = 1.8537E+02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 1,  VALE = 1.8537E+02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[12], PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 1.1E-3,
-                NUME_ORDRE = 1,  VALE = -5.1713E-02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 1,  VALE = -5.1713E-02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[12], PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 2,  VALE = 2.9602E+02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 2,  VALE = 2.9602E+02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[12], PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 5.E-3,
-                NUME_ORDRE = 2,  VALE = 1.5571E-01, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 2,  VALE = 1.5571E-01, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[12], PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 3,  VALE = 3.2472E+02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 3,  VALE = 3.2472E+02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[12], PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 7.E-2,
-                NUME_ORDRE = 3,  VALE = 1.5749E-03, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 3,  VALE = 1.5749E-03, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[12], PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.2E-3,
-                NUME_ORDRE = 4,  VALE = 4.7254E+02, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 4,  VALE = 4.7254E+02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[12], PARA = 'AMOR_REDUIT',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 4,  VALE = 1.5968E-01, REFERENCE='NON_REGRESSION',),
+                NUME_ORDRE = 4,  VALE = 1.5968E-01, REFERENCE='AUTRE_ASTER',),
             ),)
 
 #TYPE DE PRECESSION (1 SOMME, 2 PLUS GRANDE ORBITE)
@@ -252,8 +252,7 @@ L_S=[1.0, 1.0];
 # APPEL MACRO PERMETTANT DE TRACER LE DIAGRAMME DE CAMPBELL
 # ---------------------------------------------------
 IMPR_DIAG_CAMPBELL(MAILLAGE   =mail, 
-                 MODES      =lmod,
-                 VITE_ROTA   =L_VITROT, 
+                 MODES      =l_mod,
                  NFREQ_camp =nbF_camp,
                  TYP_PREC   =typ_prec, 
                  TYP_TRI    =typ_tri,

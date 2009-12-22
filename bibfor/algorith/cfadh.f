@@ -3,7 +3,7 @@
      &                   LLF1  ,LLF2  )
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,8 +88,9 @@ C
       CHARACTER*2  TYPEC0, TYPEF0, TYPEF1, TYPEF2, TYPLIA
       CHARACTER*19 LIAC,CONVEC,MU
       INTEGER      JLIAC,JVECC,JMU
-      CHARACTER*24 FROTE
-      INTEGER      IFRO
+      CHARACTER*24 TACFIN
+      INTEGER      JTACF
+      INTEGER      CFMMVD,ZTACF      
       INTEGER      IFM,NIV
 C
 C ----------------------------------------------------------------------
@@ -102,11 +103,12 @@ C ======================================================================
       LIAC   = RESOCO(1:14)//'.LIAC'
       CONVEC = RESOCO(1:14)//'.CONVEC'
       MU     = RESOCO(1:14)//'.MU'
-      FROTE  = DEFICO(1:16)//'.FROTE'
+      TACFIN = RESOCO(1:14)//'.TACFIN'      
       CALL JEVEUO(LIAC,  'L',JLIAC )
       CALL JEVEUO(CONVEC,'L',JVECC )
       CALL JEVEUO(MU,    'E',JMU   )
-      CALL JEVEUO(FROTE, 'L',IFRO  )
+      CALL JEVEUO(TACFIN,'L',JTACF )
+      ZTACF  = CFMMVD('ZTACF')       
 C ======================================================================
 C --- INITIALISATION DES VARIABLES
 C ======================================================================
@@ -142,7 +144,7 @@ C ======================================================================
               ENDIF
               IF ( LLIAC.EQ.LLJAC ) THEN
                  XQUOT = 0.0D0
-                 XK    = ZR(IFRO -1+LLIAC)
+                 XK    = ZR(JTACF+ZTACF*(LLIAC-1)+0)
 C ======================================================================
 C --- NORME DE MU POUR LE FROTTEMENT
 C ======================================================================
@@ -177,7 +179,7 @@ C ======================================================================
                ENDIF
                IF ( LLIAC.EQ.LLJAC ) THEN
                   XQUOT = 0.0D0
-                  XK    = ZR(IFRO -1+LLIAC)
+                  XK    = ZR(JTACF+ZTACF*(LLIAC-1)+0)
 C ======================================================================
 C --- NORME DE MU POUR LE FROTTEMENT
 C ======================================================================
@@ -209,7 +211,7 @@ C ======================================================================
                ENDIF
                IF ( LLIAC.EQ.LLJAC ) THEN
                   XQUOT = 0.0D0
-                  XK    = ZR(IFRO -1+LLIAC)
+                  XK    = ZR(JTACF+ZTACF*(LLIAC-1)+0)
 C ======================================================================
 C --- NORME DE MU POUR LE FROTTEMENT
 C ======================================================================
@@ -238,7 +240,7 @@ C ======================================================================
             II     = COMPTS + COMPTU + COMPTV - JJ + 1
             POSIT  = ZI(JSPLF0-1+II)
             LIAISO = ZI(JLIAC-1+POSIT)
-            TYPLIA = ZK8(JVECC-1+POSIT)
+            TYPLIA = ZK8(JVECC-1+POSIT)(1:2)
             CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
      &            LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
             IF (NIV.GE.2) THEN
@@ -274,7 +276,7 @@ C ======================================================================
           IF (ZK8(JVECC-1+II).EQ.TYPEF0) THEN
             COMPT0 = COMPT0 + 1
              LLIAC  = ZI(JLIAC-1+II)
-             XK     = ZR(IFRO-1+LLIAC)
+             XK     = ZR(JTACF+ZTACF*(LLIAC-1)+0)
              XCOMP  = ABS( ZR(JMU-1+NBLIAC+COMPT0) )
              DO 310 JJ = 1, II - 1
                IF (ZK8(JVECC-1+JJ).EQ.TYPEC0) THEN
@@ -285,7 +287,7 @@ C ======================================================================
                   ENDIF
                ENDIF
  310         CONTINUE
-             CALL U2MESS('F','ALGORITH_78')
+             CALL ASSERT(.FALSE.)
           ENDIF
           GOTO 300
  312      CONTINUE
@@ -308,7 +310,7 @@ C ======================================================================
           II     = COMPTS - JJ + 1
           POSIT  = ZI(JSPLF0-1+II)
           LIAISO = ZI(JLIAC-1+POSIT)
-          TYPLIA = ZK8(JVECC-1+POSIT)
+          TYPLIA = ZK8(JVECC-1+POSIT)(1:2)
           CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
      &             LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
           IF (NIV.GE.2) THEN

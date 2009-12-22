@@ -1,7 +1,7 @@
         SUBROUTINE HUJMED (K, MATER, VIN, SIG)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,8 +31,8 @@ C   --------------------------------------------------------------------
         INTEGER       NDT, NDI, K, I, J, KP
         REAL*8        DD, BETA, B, M, PCR, RC 
         REAL*8        SIG(6), PHI, PCREF, PTRAC
-        REAL*8        VIN(*), TOU(3), P, D12
-        REAL*8        MATER(22,2), DEGR, EPSVP, UN
+        REAL*8        VIN(*), TOU(3), P, D12, R8PREM
+        REAL*8        MATER(22,2), DEGR, EPSVP, UN, ZERO
         REAL*8        XK(2), TH(2), SC(2), DEUX, QSC
         LOGICAL       DEBUG
         
@@ -42,6 +42,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
         PARAMETER     (DEGR = 0.0174532925199D0)
         PARAMETER     (D12  = 0.5D0  )
+        PARAMETER     (ZERO = 0.0D0  )
         PARAMETER     (UN   = 1.0D0  )
         PARAMETER     (DEUX = 2.0D0  )
 
@@ -121,11 +122,15 @@ C --- ENREGISTREMENT DE LA SURFACE DE CHARGE CYCLIQUE PRECEDENTE
 C --- ENREGISTREMENT DU TENSEUR DIRECTION DE MEMOIRE
         SC(1) = DD-M*P*(UN-B*LOG(P/PCR))*(XK(1)-TH(1)*RC)
         SC(2) = TOU(3)-M*P*(UN-B*LOG(P/PCR))*(XK(2)-TH(2)*RC)
-        QSC   = SQRT(SC(1)**2+(SC(2)**2)/DEUX)     
+        QSC   = SQRT(SC(1)**DEUX+D12*SC(2)**DEUX)     
 
-        VIN(4*KP+7)=-SC(1)/QSC
-        VIN(4*KP+8)=-SC(2)/QSC
-
+        IF (ABS(QSC).GT.R8PREM()) THEN
+          VIN(4*KP+7)=-SC(1)/QSC
+          VIN(4*KP+8)=-SC(2)/QSC
+        ELSE
+          VIN(4*KP+7)=ZERO
+          VIN(4*KP+8)=ZERO
+        ENDIF
 C --- ENREGISTREMENT DU TENSEUR DEVIATOIRE MEMOIRE
         VIN(4*KP+5)=DD/(M*P*(UN-B*LOG(P/PCR)))
         VIN(4*KP+6)=TOU(3)/(M*P*(UN-B*LOG(P/PCR)))

@@ -1,6 +1,5 @@
-# MODIF  DATE 01/09/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
-# ssnv506a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,13 +73,22 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506A,
                              MATER=ACIER_B,),),);
 
 #CONDITIONS AUX LIMITES
-CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT='SMAI',
+                               
+                               
+CHA1 = DEFI_CONTACT(MODELE       = MO,
+                   FORMULATION  = 'DISCRETE',
+                   
+                   ZONE=(
+                        _F(
+                            GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
 ## UNIQUEMENT SI ON MET LE LIAISON_DDL PLUS BAS
 #                               SANS_GROUP_NO=('PLANX','LS','LB'),
 #                               SANS_GROUP_NO=('E','S',),
-                               ),);
+                         ),                           
+                                                                           
+                       ),  
+                  )                               
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='NDPL',
@@ -125,9 +133,10 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',#METHODE='MUMPS',
                            ),
                 MODELE=MO,
                 CHAM_MATER=CHMAT,
-                EXCIT=(_F(CHARGE=CHA1,),
+                EXCIT=(
                        _F(CHARGE=CHA2,
                           FONC_MULT=DPLY,),),
+                CONTACT  = CHA1,          
                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                              GROUP_MA='MAT2',),
                 COMP_ELAS=_F(RELATION='ELAS',

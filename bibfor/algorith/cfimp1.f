@@ -1,7 +1,7 @@
-      SUBROUTINE CFIMP1(DEFICO,RESOCO,NOMA  ,NBLIAI,IFM)
+      SUBROUTINE CFIMP1(NOMA  ,DEFICO,RESOCO,IFM   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,6 @@ C
       CHARACTER*24 DEFICO
       CHARACTER*24 RESOCO
       INTEGER      IFM
-      INTEGER      NBLIAI
 C      
 C ----------------------------------------------------------------------
 C
@@ -39,7 +38,6 @@ C
 C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN  NOMA   : NOM DU MAILLAGE
-C IN  NBLIAI : NOMBRE TOTAL DE LIAISONS 
 C IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
@@ -61,21 +59,21 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFMMVD,ZAPPA
-      INTEGER      POSNOE,POSMAI,ILIAC,ILIAI,ACTIF,IBID
+      INTEGER      CFMMVD,ZAPME
+      INTEGER      POSNOE,POSAPP,ILIAC,ILIAI,ACTIF
       CHARACTER*8  NOMNOE,NOMMAI,NOMENT
+      INTEGER      CFDISD
       INTEGER      CODRET
       CHARACTER*14 CHAIAC
       CHARACTER*4  TYPE2
       CHARACTER*2  TYPLIA
       REAL*8       JEU
       CHARACTER*10 TYPLI
-      CHARACTER*24 APPARI,APJEU
-      INTEGER      JAPPAR,JAPJEU
-      CHARACTER*19 LIAC,CONVEC,COCO
-      INTEGER      JLIAC,JVECC,JCOCO
-      INTEGER      BTOTAL,NBLIAC
-      INTEGER      LLF,LLF1,LLF2,NDIM
+      CHARACTER*24 APPARI,APJEU,APMEMO
+      INTEGER      JAPPAR,JAPJEU,JAPMEM
+      CHARACTER*19 LIAC,CONVEC
+      INTEGER      JLIAC,JVECC
+      INTEGER      BTOTAL,NDIM,NBLIAI
 C
 C ----------------------------------------------------------------------
 C
@@ -84,29 +82,24 @@ C
 C --- ACCES SD CONTACT
 C
       APPARI = RESOCO(1:14)//'.APPARI'
+      APMEMO = RESOCO(1:14)//'.APMEMO'      
       LIAC   = RESOCO(1:14)//'.LIAC'
       CONVEC = RESOCO(1:14)//'.CONVEC'
       APJEU  = RESOCO(1:14)//'.APJEU'
-      COCO   = RESOCO(1:14)//'.COCO'
 C
       CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(LIAC  ,'L',JLIAC)
-      CALL JEVEUO(APJEU ,'L',JAPJEU)    
-      CALL JEVEUO(COCO  ,'L',JCOCO)
-      CALL JEEXIN(CONVEC,IBID)
-      IF (IBID.NE.0) THEN 
-        CALL JEVEUO(CONVEC,'L',JVECC) 
-      ELSE
-        JVECC = 0
-      ENDIF
-      ZAPPA  = CFMMVD('ZAPPA')
+      CALL JEVEUO(APJEU ,'L',JAPJEU)
+      CALL JEVEUO(APMEMO,'L',JAPMEM)          
+      CALL JEVEUO(CONVEC,'L',JVECC) 
+C
+      ZAPME  = CFMMVD('ZAPME')      
 C
 C --- INFORMATIONS SUR CONTACT
-C      
-      CALL CFDISD(JCOCO ,NDIM  ,NBLIAC,LLF   ,LLF1  ,
-     &            LLF2  )
-
-      BTOTAL = NBLIAC+LLF+LLF1+LLF2   
+C  
+      NDIM   = CFDISD(RESOCO,'NDIM'  )
+      NBLIAI = CFDISD(RESOCO,'NBLIAI')
+      BTOTAL = CFDISD(RESOCO,'BTOTAL')                 
 C
 C --- BOUCLE SUR LES LIAISONS
 C
@@ -114,7 +107,7 @@ C
 C
 C --- REPERAGE DE L'ESCLAVE
 C
-        POSNOE = ZI(JAPPAR+ZAPPA*(ILIAI-1)+1)
+        POSNOE = ZI(JAPPAR+ILIAI)
 C
 C --- NOM ET TYPE DU NOEUD ESCLAVE
 C
@@ -126,9 +119,36 @@ C
           NOMNOE = NOMENT
         ENDIF
 C
-C --- REPERAGE DU MAITRE
+C --- REPERAGE DU MAITRE APPARIE
 C
-        POSMAI = ZI(JAPPAR+ZAPPA*(ILIAI-1)+2)
+        POSAPP = ZI(JAPMEM+ZAPME*(POSNOE-1)+3-1)     
+C
+C --- NOM ET TYPE (MAILLE OU NOEUD) DU MAITRE
+C
+        IF (POSAPP.LT.0) THEN
+          CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSAPP,NOMENT,
+     &                CODRET)
+          IF (CODRET.LT.0) THEN
+            TYPE2  = ' '
+            NOMMAI = 'ERREUR'          
+          ELSE   
+            TYPE2  = '/ND '
+            NOMMAI = NOMENT   
+          ENDIF         
+        ELSEIF (POSAPP.GT.0) THEN
+          CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSAPP,NOMENT,
+     &                CODRET)
+          IF (CODRET.LT.0) THEN
+            TYPE2  = ' '
+            NOMMAI = 'ERREUR'          
+          ELSE
+            TYPE2  = '/EL '
+            NOMMAI = NOMENT   
+          ENDIF    
+        ELSE  
+          TYPE2  = ' NON'
+        NOMMAI = ' APPARIE'               
+        ENDIF
 C
 C --- JEU
 C
@@ -144,55 +164,25 @@ C
 C
 C --- TYPE LIAISON
 C
-            TYPLI = 'CONT.     '
-            IF (JVECC.NE.0) THEN
-              TYPLIA = ZK8(JVECC-1+ILIAC)
-              IF (TYPLIA.EQ.'C0') THEN
-                TYPLI = 'CONT.     '
-              ELSE IF (TYPLIA.EQ.'F0') THEN
-                IF (NDIM.EQ.3) THEN
-                  TYPLI = 'FROT. 1&2 '
-                ELSE
-                  TYPLI = 'FROT.     '
-                ENDIF
-              ELSE IF (TYPLIA.EQ.'F1') THEN
-                TYPLI = 'FROT. 1   '
-              ELSE IF (TYPLIA.EQ.'F2') THEN
-                TYPLI = 'FROT. 2   '
-              ELSE IF (TYPLIA.EQ.'F3') THEN
+            TYPLI  = 'CONT.     ' 
+            TYPLIA = ZK8(JVECC-1+ILIAC)(1:2)
+            IF (TYPLIA.EQ.'C0') THEN
+              TYPLI = 'CONT.     '
+            ELSE IF (TYPLIA.EQ.'F0') THEN
+              IF (NDIM.EQ.3) THEN
+                TYPLI = 'FROT. 1&2 '
+              ELSE
                 TYPLI = 'FROT.     '
               ENDIF
-            ENDIF         
+            ELSE IF (TYPLIA.EQ.'F1') THEN
+              TYPLI = 'FROT. 1   '
+            ELSE IF (TYPLIA.EQ.'F2') THEN
+              TYPLI = 'FROT. 2   '
+            ELSE IF (TYPLIA.EQ.'F3') THEN
+              TYPLI = 'FROT.     '
+            ENDIF        
           ENDIF
   10    CONTINUE
-  20    CONTINUE
-C
-C --- NOM ET TYPE DU MAITRE
-C
-      IF (POSMAI.LT.0) THEN
-        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSMAI,NOMENT,
-     &              CODRET)
-        IF (CODRET.LT.0) THEN
-          TYPE2  = ' '
-          NOMMAI = 'ERREUR'          
-        ELSE   
-          TYPE2  = '/ND '
-          NOMMAI = NOMENT   
-        ENDIF         
-      ELSEIF (POSMAI.GT.0) THEN
-        CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSMAI,NOMENT,
-     &              CODRET)
-        IF (CODRET.LT.0) THEN
-          TYPE2  = ' '
-          NOMMAI = 'ERREUR'          
-        ELSE
-          TYPE2  = '/EL '
-          NOMMAI = NOMENT   
-        ENDIF    
-      ELSE  
-        TYPE2  = ' NON'
-        NOMMAI = ' APPARIE'               
-      ENDIF    
 C
 C --- IMPRESSION
 C

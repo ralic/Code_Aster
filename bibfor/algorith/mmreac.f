@@ -1,9 +1,8 @@
-      SUBROUTINE MMREAC ( NBDM, NDIM, NNE, NNM, IGEOM, IDEPM )
-      IMPLICIT NONE
-      INTEGER      NBDM,NDIM,NNE,NNM,IGEOM,IDEPM    
-C ----------------------------------------------------------------------
+      SUBROUTINE MMREAC(NBDM  ,NDIM  ,NNE   ,NNM   ,JGEOM ,
+     &                  JDEPM ,GEOMAE,GEOMAM)
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,60 +19,75 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ROUTINE APPELLEE PAR : TE0364/TE0365
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      INTEGER      NBDM,NDIM,NNE,NNM,JGEOM,JDEPM
+      REAL*8       GEOMAE(9,3),GEOMAM(9,3)          
+C      
 C ----------------------------------------------------------------------
 C
-C CALCULE LES NOUVEAUX CHAMPS DE DEPLACEMENT POUR LES MAILLES MAITRES
-C ET ESCLAVES
-C  DEPL = DEPL_M + DEPL
+C ROUTINE CONTACT (METHODE CONTINUE - TE)
+C
+C MISE A JOUR DE LA GEOMETRIE
+C      
+C ----------------------------------------------------------------------
+C
+C GEOM = GEOM_INIT + DEPMOI
 C
 C IN  NBDM   : NB DE DDL DE LA MAILLE ESCLAVE
 C IN  NDIM   : DIMENSION DE LA MAILLE DE CONTACT
 C IN  NNE    : NOMBRE DE NOEUDS ESCLAVES
 C IN  NNM    : NOMBRE DE NOEUDS MAITRES
-C IN  IGEOM  : POINTEUR JEVEUX SUR GEOMETRIE INITIALE
-C IN  IDEPM  : POINTEUR JEVEUX SUR CHAMP DE DEPLACEMENT A L'INSTANT
+C IN  JGEOM  : POINTEUR JEVEUX SUR GEOMETRIE INITIALE (MAILLAGE)
+C IN  JDEPM  : POINTEUR JEVEUX SUR CHAMP DE DEPLACEMENT A L'INSTANT
 C              PRECEDENT
+C OUT GEOMAE : GEOMETRIE ACTUALISEE SUR NOEUDS ESCLAVES
+C OUT GEOMAM : GEOMETRIE ACTUALISEE SUR NOEUDS MAITRES
+C
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER   INOE,INOM,IDIM
+C
 C ----------------------------------------------------------------------
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C
-      INTEGER   I, J
-C ----------------------------------------------------------------------
+
 C
 C --- NOEUDS ESCLAVES
 C
-      DO 100 I = 1,NNE
-         DO 110 J = 1,NDIM
-            ZR(IGEOM+(I-1)*NDIM+J-1) = ZR(IGEOM+(I-1)*NDIM+J-1) +
-     &                                 ZR(IDEPM+(I-1)*NBDM+J-1)
- 110     CONTINUE
+      DO 100 INOE = 1,NNE
+        DO 110 IDIM = 1,NDIM
+          GEOMAE(INOE,IDIM) = ZR(JGEOM+(INOE-1)*NDIM+IDIM-1) +
+     &                        ZR(JDEPM+(INOE-1)*NBDM+IDIM-1) 
+ 110    CONTINUE
  100  CONTINUE
 C
 C --- NOEUDS MAITRES
 C
-      DO 120 I = 1,NNM
-         DO 122 J = 1,NDIM
-            ZR(IGEOM+NNE*NDIM+(I-1)*NDIM+J-1) =
-     &      ZR(IGEOM+NNE*NDIM+(I-1)*NDIM+J-1)+
-     &                              ZR(IDEPM+NNE*NBDM+(I-1)*NDIM+J-1)
- 122     CONTINUE
+      DO 120 INOM = 1,NNM
+        DO 122 IDIM = 1,NDIM
+          GEOMAM(INOM,IDIM) = ZR(JGEOM+NNE*NDIM+(INOM-1)*NDIM+IDIM-1)+
+     &                        ZR(JDEPM+NNE*NBDM+(INOM-1)*NDIM+IDIM-1)
+ 122    CONTINUE
  120  CONTINUE
+      
 C   
       END

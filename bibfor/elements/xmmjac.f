@@ -1,8 +1,7 @@
       SUBROUTINE XMMJAC(ALIAS ,GEOM ,DFF,JAC   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,8 +20,8 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      CHARACTER*8   ALIAS
-      REAL*8       DFF(3,3),GEOM(9),JAC
+      CHARACTER*8  ALIAS
+      REAL*8       DFF(3,9),GEOM(9),JAC
 C      
 C ----------------------------------------------------------------------
 C
@@ -58,7 +57,6 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER I
-      REAL*8  XX
       REAL*8  DXDS,DYDS,DZDS
       REAL*8  DXDE,DXDK,DYDE,DYDK,DZDE,DZDK
 C

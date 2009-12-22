@@ -2,7 +2,7 @@
      &                  DDEPL1,ETA   ,PILCVG,NBEFFE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C
       INTEGER       NBEFFE,PILCVG
       REAL*8        ETA 
       CHARACTER*19  DDEPL0,DDEPL1,DEPDEL,CNFEPI
-      CHARACTER*24  DEPMOI
+      CHARACTER*19  DEPMOI
       CHARACTER*24  NUMEDD      
 C 
 C ----------------------------------------------------------------------

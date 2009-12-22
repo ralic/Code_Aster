@@ -1,7 +1,7 @@
-      SUBROUTINE QUADCO(CHAR  ,MOTFAC,NZOCO ,INDQUA)
+      SUBROUTINE QUADCO(CHAR  ,INDQUA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/11/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +22,6 @@ C RESPONSABLE MABBAS M.ABBAS
 C
       IMPLICIT     NONE
       CHARACTER*8  CHAR
-      CHARACTER*16 MOTFAC
-      INTEGER      NZOCO
       INTEGER      INDQUA
 C      
 C ----------------------------------------------------------------------
@@ -37,12 +35,10 @@ C
 C
 C INDQUA VAUT 0 SI L'ON DOIT CONSIDERER LES NOEUDS MILIEUX A PART
 C DANS CE CAS, PERMETTRA DE FAIRE LA LIAISON LINEAIRE DANS CACOEQ
-C MASI UNQIUEMENT POUR LES QUAD8 EN SOLIDE.
+C MASI UNIQUEMENT POUR LES QUAD8 EN SOLIDE.
 C 
 C
-C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
-C IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
-C IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
+C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE)
 C OUT INDQUA : VAUT 0 LORSQUE L'ON DOIT TRAITER LES NOEUDS MILIEUX
 C                     A PART
 C              VAUT 1 LORSQUE L'ON DOIT TRAITER LES NOEUDS MILIEUX
@@ -67,11 +63,9 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      IZONE,FORM,METH 
+      INTEGER      CFDISI,IFORM
       CHARACTER*24 DEFICO
-      CHARACTER*24 FORMCO,METHCO
-      INTEGER      JFORM,JMETH
-      INTEGER      CFMMVD,ZMETH          
+      LOGICAL      CFDISL,LVERIF,LPENAC,LGLISS         
 C
 C ----------------------------------------------------------------------
 C
@@ -79,62 +73,29 @@ C
 C
 C --- INITIALISATIONS
 C
-      DEFICO = CHAR(1:8)//'.CONTACT'        
-C 
-C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-C 
-      FORMCO = DEFICO(1:16)//'.FORMCO'  
-      METHCO = DEFICO(1:16)//'.METHCO'           
-      CALL JEVEUO(FORMCO,'L',JFORM) 
-      CALL JEVEUO(METHCO,'L',JMETH)
+      INDQUA = 0
+      DEFICO = CHAR(1:8)//'.CONTACT'  
+      LVERIF = CFDISL(DEFICO,'CONT_VERIF')
+      IFORM  = CFDISI(DEFICO,'FORMULATION') 
+      LPENAC = CFDISL(DEFICO,'CONT_PENA')
+      LGLISS = CFDISL(DEFICO,'CONT_DISC_GLIS')             
 C
-      ZMETH  = CFMMVD('ZMETH')            
-C
-C --- INITIALISATIONS
+C --- TRAITEMENT DU CAS DES MAILLES QUADRATIQUES
 C      
       INDQUA = 0
-C
-      DO 2 IZONE = 1,NZOCO
-        FORM   = ZI(JFORM-1+IZONE)
-        METH   = ZI(JMETH+ZMETH*(IZONE-1)+6)
-        IF (FORM.EQ.1) THEN     
-          IF (METH.EQ.-2) THEN  
-            INDQUA = 1            
-          ELSEIF (METH.EQ.-1) THEN  
-            INDQUA = 1            
-          ELSEIF (METH.EQ.0) THEN  
-            INDQUA = 0
-          ELSEIF (METH.EQ.1) THEN  
-            INDQUA = 0
-          ELSEIF (METH.EQ.2) THEN  
-            INDQUA = 0             
-          ELSEIF (METH.EQ.3) THEN  
-            INDQUA = 0 
-          ELSEIF (METH.EQ.4) THEN  
-            INDQUA = 0                        
-          ELSEIF (METH.EQ.5) THEN  
-            INDQUA = 1           
-          ELSEIF (METH.EQ.7) THEN
-            INDQUA = 1            
-          ELSEIF (METH.EQ.9) THEN  
-            INDQUA = 0  
-          ELSE
-            CALL ASSERT(.FALSE.)
-          ENDIF                                    
-        ELSEIF (FORM.EQ.2) THEN
-          IF (METH.EQ.6) THEN  
-            INDQUA = 1            
-          ELSEIF (METH.EQ.8) THEN
-            INDQUA = 1
-          ELSE
-            CALL ASSERT(.FALSE.)
-          ENDIF
-        ELSEIF (FORM.EQ.3) THEN
+      IF (IFORM.EQ.1) THEN
+        IF (LVERIF.OR.LPENAC.OR.LGLISS) THEN
           INDQUA = 1
         ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-  2   CONTINUE  
+          INDQUA = 0
+        ENDIF                                         
+      ELSEIF (IFORM.EQ.2) THEN
+        INDQUA = 1 
+      ELSEIF (IFORM.EQ.3) THEN
+        INDQUA = 1
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
 C
       CALL JEDEMA()
       END

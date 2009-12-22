@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100h.para = tps_job 60 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,12 +68,17 @@ CH=AFFE_CHAR_MECA(MODELE=MODE,
                                DY=0.0,
                                DZ=0.0,),),);
 
-CH2=AFFE_CHAR_MECA(MODELE=MODE,
-                   CONTACT=_F(METHODE='GCP',
-                              GROUP_MA_MAIT='SSOL',
-                              GROUP_MA_ESCL='FACEINF',
-                              RESI_ABSO=1e-08,
-                              PRE_COND='DIRICHLET'),);
+CH2     = DEFI_CONTACT(MODELE         = MODE,
+                       FORMULATION    = 'DISCRETE',  
+                       RESI_ABSO      = 1e-08,
+                       PRE_COND       = 'DIRICHLET',     
+                       ZONE =_F(
+                             ALGO_CONT      = 'GCP',
+                             GROUP_MA_ESCL  = 'FACEINF',
+                             GROUP_MA_MAIT  = 'SSOL',
+                               ),
+                      );
+
                               
 # ************* CHAMP DE VITESSE INITIALE ***************
 
@@ -130,7 +135,8 @@ U=DYNA_NON_LINE(MODELE=MODE,
                 CHAM_MATER=CM,
                 EXCIT=(_F(CHARGE=CH,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CH2,),),
+                       ),
+                CONTACT  = CH2,       
                 COMP_ELAS=_F(RELATION='ELAS',),
                 ETAT_INIT=_F(DEPL=CHAMP2,
                              VITE=CHAMP1,),

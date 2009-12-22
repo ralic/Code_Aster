@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 23/11/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+#@ MODIF algorith6 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,10 +34,6 @@ cata_msg = {
 3 : _("""
  -> Les valeurs des paramètres de la loi GLRC_DM entraîne un seuil d'endommagement nul.
  -> Conseil : Modifier les valeurs des paramètres matériaux
-"""),
-
-8 : _("""
- erreur point intégration (dvlp)
 """),
 
 13 : _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,23 +97,18 @@ CL=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
                           DDL = ('DX',  'DX',),
                           COEF_MULT = (1., 1.,),
                           COEF_IMPO = 0.),
-            CONTACT    =_F(
-                  NORMALE = 'MAIT_ESCL',
-                  GROUP_MA_MAIT = 'LPOP8',
-                  GROUP_MA_ESCL = 'LPOP8S')
 
                      )
 
-CL_SL=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
-            _F( GROUP_NO = ( 'L_AB',  'L_DE', ), DY = 0.),
-                     _F( GROUP_NO = 'LP9P10S',  DX = 0.),
-                     _F( GROUP_NO = 'LP9P10S',  DY = 0.)),
-            LIAISON_DDL=_F(  GROUP_NO = ('PA',  'PE',),
-                          DDL = ('DX',  'DX',),
-                          COEF_MULT = (1., 1.,),
-                          COEF_IMPO = 0.)
-
-                     )
+CHCONT = DEFI_CONTACT(MODELE      = MO,
+                      FORMULATION = 'DISCRETE',
+                      ZONE = _F(
+                        NORMALE = 'MAIT_ESCL',
+                        GROUP_MA_MAIT = 'LPOP8',
+                        GROUP_MA_ESCL = 'LPOP8S',
+                             ),
+                      )
+                      
 
 CH10=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -1.)
@@ -141,11 +136,11 @@ INSTMECA=DEFI_LIST_REEL(VALE=1.)
 
 CHAMDEPP=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=(
               _F( CHARGE = CH10),
-              _F( CHARGE = CL_SL)),
+              _F( CHARGE = CL)),
                           )
 
 CHAMDEPT=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT2,EXCIT=(
-              _F( CHARGE = CL_SL)),
+              _F( CHARGE = CL)),
               LIST_INST=INSTMECA,
                           )
 
@@ -177,6 +172,7 @@ CHAMDEP0=STAT_NON_LINE(MODELE=MO,
                        EXCIT=(_F( CHARGE = CH10,
                                  FONC_MULT=RAMPE),
                               _F( CHARGE = CL)),
+                       CONTACT  =CHCONT,       
                        COMP_ELAS=_F(RELATION = 'ELAS'),
                        NEWTON=_F(MATRICE = 'ELASTIQUE'),
                        INCREMENT=_F(LIST_INST = L_INST,),

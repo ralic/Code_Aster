@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 # sdnl111f.para = tps_job 170 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,15 +85,15 @@ VITINI=CREA_CHAMP(   OPERATION='AFFE',
                                    
 # *******************************************
 
-
-CONTACT=AFFE_CHAR_MECA(MODELE=MODELE,
-                       CONTACT=_F(METHODE='CONTINUE',
-                                    FORMULATION='VITE',
-                                    NORMALE='MAIT_ESCL',
-                                    COEF_REGU_CONT=1.0E-6,
+CONTACT = DEFI_CONTACT(MODELE      = MODELE,
+                       FORMULATION = 'CONTINUE',
+                       ZONE        =_F(
+                                    ALGO_CONT = 'STANDARD',
+                                    NORMALE   = 'MAIT_ESCL',
+                                    COEF_CONT = 1.0E-6,
                                     GROUP_MA_MAIT='CNT_POU1',
                                     GROUP_MA_ESCL='CNT_POU2',),)
-
+                                    
  
 # ************************************************************
 # 
@@ -106,9 +106,11 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 U=DYNA_NON_LINE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 EXCIT=(
-                       _F(CHARGE=CONTACT,),
                        _F(CHARGE=CONDLIM,),
                        ),
+                CONTACT = CONTACT,
+                NEWTON=_F(MATRICE='TANGENTE',
+                            REAC_ITER=1,),       
                 ETAT_INIT=_F(VITE= VITINI),       
                 COMP_INCR=_F(RELATION='ELAS',
                              DEFORMATION='PETIT',),                
@@ -116,7 +118,6 @@ U=DYNA_NON_LINE(MODELE=MODELE,
                 SCHEMA_TEMPS=_F(SCHEMA='THETA_METHODE',
                                 FORMULATION='DEPLACEMENT',
                                 THETA=0.7,),
-                NEWTON=_F(REAC_ITER=1,),
                 CONVERGENCE =_F(RESI_GLOB_MAXI = 1.E-3,),
                 SOLVEUR=_F(METHODE='MULT_FRONT',),)
 

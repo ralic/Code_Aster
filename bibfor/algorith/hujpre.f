@@ -2,7 +2,7 @@
      &                    SIGF, EPSD, VIND, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,12 +58,12 @@ C                              IRET=1 => ECHEC
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
       
-      INTEGER     NDT, NDI, IMAT, IRET, IADZI, IAZK24, INDM, I
+      INTEGER     NDT, NDI, IMAT, IRET, IADZI, IAZK24, I
       REAL*8      CRIT(*), VIND(*)
-      REAL*8      EPSD(6), DEPS(6)
-      REAL*8      SIGD(6), SIGF(6), DSIG(6), DSDE(6,6)
+      REAL*8      EPSD(6), DEPS(6), DEV(3), PF(3), Q, PD(3), DP(3)
+      REAL*8      SIGD(6), SIGF(6), DSIG(6), DSDE(6,6), RTRAC
       REAL*8      MATER(22,2), I1, D13, TOLE1, TRACE, UN, ZERO
-      REAL*8      PTRAC, PREF, PISO, MAXI, COHES, FACTOR
+      REAL*8      PTRAC, PREF, MAXI, COHES, FACTOR
       CHARACTER*7 ETAT
       CHARACTER*8 MOD, NOMAIL
       LOGICAL     DEBUG
@@ -76,7 +76,7 @@ C                              IRET=1 => ECHEC
 
       PREF  = MATER(8,2)
       PTRAC = MATER(21,2)
-      PISO  = 1.5D0*PTRAC
+      RTRAC = ABS(PREF*1.D-6)
 
       IF (ETAT .EQ. 'ELASTIC') THEN
       
@@ -92,7 +92,7 @@ C                              IRET=1 => ECHEC
           I1   =D13*TRACE(NDI,SIGF)
         ELSE
           IRET =0
-          I1   =PISO
+          I1   = -UN
           IF (DEBUG) THEN
             CALL TECAEL(IADZI,IAZK24)
             NOMAIL = ZK24(IAZK24-1+3) (1:8)
@@ -102,7 +102,7 @@ C                              IRET=1 => ECHEC
           ENDIF
         ENDIF
         
-        IF ((I1 -PISO)/PREF .LE. TOLE1) THEN
+        IF ((I1 + UN)/ABS(PREF) .GE. TOLE1) THEN
           IF (DEBUG) THEN
             CALL TECAEL(IADZI,IAZK24)
             NOMAIL = ZK24(IAZK24-1+3) (1:8)
@@ -120,44 +120,36 @@ C                              IRET=1 => ECHEC
 C ---> CONTROLE QU'AUCUNE COMPOSANTE DU VECTEUR SIGF NE SOIT POSITIVE
       DO 10 I = 1, NDT
         DSIG(I)= SIGF(I) - SIGD(I)
-  10  CONTINUE
+  10    CONTINUE
 
       MAXI  = UN
-      INDM = 0
-      COHES = -1.D2+PTRAC
+      COHES = -RTRAC+PTRAC
       FACTOR = UN
 
       DO 20 I = 1, NDI
-        IF(SIGF(I).GT.PTRAC)THEN
-          FACTOR = (-SIGD(I)+COHES)/DSIG(I)
-          IF((FACTOR.GT.ZERO).AND.(FACTOR.LT.MAXI)) THEN
+        CALL HUJPRJ(I,SIGF,DEV,PF(I),Q)
+        CALL HUJPRJ(I,SIGD,DEV,PD(I),Q)
+        CALL HUJPRJ(I,DSIG,DEV,DP(I),Q)
+        IF (PF(I).GT.COHES .AND. DP(I).GT.TOLE1) THEN
+          FACTOR = (-PD(I)+COHES)/DP(I)
+          IF ((FACTOR.GT.ZERO).AND.(FACTOR.LT.MAXI)) THEN
             MAXI = FACTOR
-            INDM = I
           ENDIF
         ENDIF
-  20  CONTINUE
+  20    CONTINUE
 
 
-C ---> SI IL EXISTE SIG(I)>0, ALORS MODIFICATION DE LA PREDICTION      
-      IF(INDM.GT.0)THEN
-        IF(DSIG(INDM).GT.TOLE1)THEN
-          DO 30 I = 1, NDT
-            DSIG(I) = MAXI * DSIG(I)
+C ---> SI IL EXISTE PF(I)>0, ALORS MODIFICATION DE LA PREDICTION      
+      IF (MAXI.LT.UN) THEN
+        DO 30 I = 1, NDT
+          DSIG(I) = MAXI * DSIG(I)
   30      CONTINUE
-          CALL LCSOVN (NDT, SIGD, DSIG, SIGF)        
-          IF (DEBUG) THEN
-            WRITE (6,'(A,A,E12.5)')
-     &      'HUJPRE :: APPLICATION DE FACTOR POUR MODIFIER ',
-     &      'LA PREDICTION -> FACTOR =',FACTOR
-            WRITE(6,'(A,6(1X,E12.5))')'SIGF =',(SIGF(I),I=1,NDT)
-          ENDIF
-        ELSE
-          IRET = 1
-          CALL TECAEL(IADZI,IAZK24)
-          NOMAIL = ZK24(IAZK24-1+3) (1:8)
-          IF(DEBUG)WRITE(6,'(10(A))')
-     &    'HUJPRE :: TRACTION DANS LA PSEUDO-PREDICTION ELASTIQUE ',
-     &    'DANS LA MAILLE ',NOMAIL
+        CALL LCSOVN (NDT, SIGD, DSIG, SIGF)        
+        IF (DEBUG) THEN
+          WRITE (6,'(A,A,E12.5)')
+     &    'HUJPRE :: APPLICATION DE FACTOR POUR MODIFIER ',
+     &    'LA PREDICTION -> FACTOR =',MAXI
+          WRITE(6,'(A,6(1X,E12.5))')'SIGF =',(SIGF(I),I=1,NDT)
         ENDIF
       ENDIF
       

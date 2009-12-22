@@ -1,7 +1,7 @@
       SUBROUTINE IMPREF(ICOD  ,SDSUIV,TITRE ,FORMA )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -215,16 +215,16 @@ C
       DATA FORCOL(27) /1/
 
 
-      DATA (TITCOL(J,28),J=1,3)/ '&&&&&&&&&&&&&&&&',
-     &'                ',
-     &'                '/
+      DATA (TITCOL(J,28),J=1,3)/ '     CONTACT    ',
+     &                           '    CONTINU     ',
+     &                           ' BCL. MAX. VAL. '/
       DATA FORCOL(28) /2/
 
 
-      DATA (TITCOL(J,29),J=1,3)/ '&&&&&&&&&&&&&&&&',
-     &'                ',
-     &'                '/
-      DATA FORCOL(29) /2/
+      DATA (TITCOL(J,29),J=1,3)/ '     CONTACT    ',
+     &                           '    CONTINU     ',
+     &                           ' BCL. MAX. LIEU '/
+      DATA FORCOL(29) /3/
 
 C
 C ----------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,13 +84,15 @@ VITINI=CREA_CHAMP(   OPERATION='AFFE',
 
                                     
 # *******************************************
-CONTACT=AFFE_CHAR_MECA(MODELE=MODELE,
-                       CONTACT=(
-                                 _F(
-                                    METHODE='CONTRAINTE',
-                                    GROUP_MA_MAIT='CNT_POU1',
-                                    GROUP_MA_ESCL='CNT_POU2',),
-                        ),)
+
+CONTACT = DEFI_CONTACT(MODELE      = MODELE,
+                       FORMULATION = 'DISCRETE',
+                       ZONE =_F(
+                             GROUP_MA_MAIT='CNT_POU1',
+                             GROUP_MA_ESCL='CNT_POU2',
+                             ),
+                      );
+
 
                         
 # ************************************************************
@@ -103,9 +105,9 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 RESU=DYNA_NON_LINE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 EXCIT=(
-                       _F(CHARGE=CONTACT,),
                        _F(CHARGE=CONDLIM,),
                        ),
+                CONTACT = CONTACT,       
                 ETAT_INIT=_F(VITE= VITINI),       
                 COMP_INCR=_F(RELATION='ELAS',
                              DEFORMATION='PETIT_REAC',),                
@@ -177,11 +179,11 @@ TEST_RESU(
                   ),)
 #
 RESU2=DYNA_NON_LINE(MODELE=MODELE,
-                CHAM_MATER=CHMAT,
+                CHAM_MATER=CHMAT,INFO=2,
                 EXCIT=(
-                       _F(CHARGE=CONTACT,),
                        _F(CHARGE=CONDLIM,),
                        ),
+                CONTACT = CONTACT,    
                 ETAT_INIT=_F(VITE= VITINI),       
                 COMP_INCR=_F(RELATION='ELAS',
                              DEFORMATION='PETIT_REAC',),                

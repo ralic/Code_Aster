@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX PLAQUES
 # ssnp121a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,17 +70,19 @@ CHA1=AFFE_CHAR_MECA(
                   _F(GROUP_NO = 'GH',  DX = 0.0, DY =  0.0,),
                  ),);
 
-CHA2=AFFE_CHAR_MECA(
-            MODELE=MO,
-            CONTACT=(_F( 
-                     GROUP_MA_ESCL = 'AB',      
-                     GROUP_MA_MAIT = 'EF',
-                     INTEGRATION = 'SIMPSON2',    
-                     COEF_REGU_CONT = 1000., 
-                     ITER_CONT_MAXI = 30,        
-                     ITER_GEOM_MAXI = 1, 
-                     METHODE = 'CONTINUE',),
-                     ),);
+CHA2 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 2,
+                    ZONE =_F(
+                             GROUP_MA_ESCL = 'AB',      
+                             GROUP_MA_MAIT = 'EF',
+                             INTEGRATION   = 'SIMPSON2',
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 1000.,
+                          ),
+                   ) 
+                    
 
 #-----------------------------------------------------------
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -100,8 +102,8 @@ RESU=STAT_NON_LINE (
                                NUME_INST_FIN=1,),
                    EXCIT      =(
                                _F(CHARGE=CHA1,
-                                FONC_MULT=FONC,),
-                               _F(CHARGE=CHA2,),),
+                                FONC_MULT=FONC,),),
+                   CONTACT    = CHA2,            
                    COMP_ELAS  =_F(
                                 RELATION='ELAS'),
                    NEWTON     =_F(MATRICE='TANGENTE',

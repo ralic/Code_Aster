@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
+%& MODIF TYPELEM  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,8 +29,8 @@ ENTETE__ ELEMENT__ COQ4Q4           MAILLE__ QUAD44
    ENS_NOEUD__  EN1     =     5  6  7  8
 ENTETE__ ELEMENT__ COT3T3           MAILLE__ TRIA33
    ELREFE__  V_TRIA33
-   ENS_NOEUD__  EN2     =     1  2  3
    ENS_NOEUD__  EN1     =     4  5  6
+   ENS_NOEUD__  EN2     =     1  2  3
 ENTETE__ ELEMENT__ COQ4T3           MAILLE__ QU4TR3
    ELREFE__  V_QU4TR3
    ENS_NOEUD__  EN2     =     1  2  3  4
@@ -129,7 +129,7 @@ MODE_LOCAL__
                                  EN1   (DX       DY       DZ       )
                                  EN2   (DX       DY       DZ       LAGS_C  )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    CCONFR   = NEUT_R   ELEM__         (X[50])
+    CCONFR   = NEUT_R   ELEM__         (X[38])
     ENEUTR   = NEUT_R   ELNO__ IDEN__  (X1    )
 
 VECTEUR__
@@ -139,9 +139,9 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    CHAR_MECA_CONT      365   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
+    CHAR_MECA_CONT      365   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PVITE_M  DDL_MECA PACCE_M
                                      ENEUTR   PUSULAR  DDL_MECA PVITE_P
                               OUT__  MVECTUR  PVECTUR
-    RIGI_CONT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
+    RIGI_CONT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PVITE_M  DDL_MECA PACCE_M
                                      ENEUTR   PUSULAR  DDL_MECA PVITE_P
                               OUT__  MMATUUR  PMATUUR

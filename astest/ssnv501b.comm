@@ -1,4 +1,4 @@
-# MODIF  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -273,22 +273,33 @@ CH1=AFFE_CHAR_MECA(MODELE=MODEL,
 #
 #
 
-
-CH2=AFFE_CHAR_MECA(MODELE=MODEL,
-                   CONTACT=(_F(METHODE='LAGRANGIEN',
-                               FROTTEMENT='COULOMB',
-                               TOLE_PROJ_EXT = 3,
-                               COULOMB=0.15,
-                               GROUP_MA_MAIT='LFC2',
-                               GROUP_MA_ESCL='LC1D',
-                               SANS_GROUP_NO=('C1','C2'),),
-                            _F(METHODE='LAGRANGIEN',
-                               FROTTEMENT='COULOMB',
-                               TOLE_PROJ_EXT = 3,
-                               COULOMB=0.15,
-                               GROUP_MA_MAIT='LEA2',
-                               GROUP_MA_ESCL='LA1B',
-                               SANS_GROUP_NO=('A1','A2'),),),);
+CH2 =DEFI_CONTACT(MODELE       = MODEL,
+                  FORMULATION  = 'DISCRETE',
+                  FROTTEMENT='COULOMB',
+                  ZONE=(
+                        _F(
+                          ALGO_CONT  = 'LAGRANGIEN',
+                          ALGO_FROT  = 'LAGRANGIEN',
+                          TOLE_PROJ_EXT = 3,
+                          COULOMB=0.15,
+                          GROUP_MA_MAIT='LFC2',
+                          GROUP_MA_ESCL='LC1D',
+                          TOLE_APPA = 60.,
+                          SANS_GROUP_NO=('C1','C2'),
+                         ),
+                        _F(
+                          ALGO_CONT  = 'LAGRANGIEN',
+                          ALGO_FROT  = 'LAGRANGIEN',
+                          TOLE_PROJ_EXT = 3,
+                          COULOMB=0.15,
+                          APPARIEMENT='MAIT_ESCL',
+                          GROUP_MA_MAIT='LEA2',
+                          GROUP_MA_ESCL='LA1B',
+                          TOLE_APPA = 60.,
+                          SANS_GROUP_NO=('A1','A2'),
+                         ),                                                   
+                       ),  
+                  )
 #
 #-----------------------------------------------------------------------
 #                      RESOLUTION
@@ -313,7 +324,8 @@ DEFOR=STAT_NON_LINE(MODELE=MODEL,
                     SOLVEUR=_F(SYME='OUI'),
                     EXCIT=(_F(CHARGE=CH1,
                               FONC_MULT=RAMPE,),
-                           _F(CHARGE=CH2,),),
+                           ),
+                    CONTACT  = CH2,       
                     COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
                                   DEFORMATION='SIMO_MIEHE',
                                   RESI_INTE_RELA=9.9999999999999995E-07,

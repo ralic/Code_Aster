@@ -3,7 +3,7 @@
      &                  NBTYMA, DEFARE )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,12 +57,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM
+      CHARACTER*32 JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER M, A, NO, MA, NBAR, NO1, NO2, TMP, I, NOMI, JTYP, TYMA
+      INTEGER M, A, NO, MA, NBAR, NO1, NO2, TMP, I, NOMI, TYMA
       INTEGER     JNOMA
-      CHARACTER*8 KBID
 C ----------------------------------------------------------------------
       CALL JEMARQ()
       CONNEX = CONNEZ

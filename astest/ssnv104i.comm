@@ -1,4 +1,4 @@
-# MODIF  DATE 29/06/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 #  CAS_TEST  : SSNV104I
 #  TITRE : CONTACT DE DEUX SPHERES
 # ssnv104i.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
@@ -132,8 +132,9 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_NO='LIM2',
                                  DZ=0.0,),),);
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT='SMAI',
+CHA2=DEFI_CONTACT(MODELE=MO,
+                  FORMULATION = 'DISCRETE',
+                    ZONE=_F(GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
                                TOLE_PROJ_EXT = 0.01,
                                ),);
@@ -164,9 +165,8 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=CHA1,
-                             FONC_MULT=RAMPE,),
-                          _F(CHARGE=CHA2,
                              FONC_MULT=RAMPE,),),
+                   CONTACT  = CHA2,          
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    NEWTON=_F(MATRICE='ELASTIQUE',

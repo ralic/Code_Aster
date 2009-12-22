@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,6 +69,7 @@ SSNV127D=DEFI_GROUP(reuse=SSNV127D,
                                    _F(GROUP_MA='BCC2',),
                                    _F(INTERSEC=('BCC1','BCC2',),
                                       NOM='BCC_SGN'),),)
+
 #
 #_____________________________________________________________________
 #
@@ -139,18 +140,24 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 #
 #
 
-
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(METHODE='PENALISATION',
-                               E_T=6.E9,
-                               E_N=1.E18,
-                               FROTTEMENT='COULOMB',
-                               COULOMB=0.4,
-                               GROUP_MA_MAIT='BCC1',
-                               GROUP_MA_ESCL='BCC2',
-                               SANS_GROUP_NO='BCC_SGN',
-                               COEF_MATR_FROT=0.3,
-                               ),);
+CHA2=DEFI_CONTACT(MODELE      = MO,
+                  FORMULATION = 'DISCRETE',
+                  FROTTEMENT  = 'COULOMB',
+                  ZONE=_F(
+                           
+                           ALGO_CONT     = 'PENALISATION',
+                           ALGO_FROT     = 'PENALISATION',
+                           E_T           = 6.E9,
+                           E_N           = 1.E18,
+                           COULOMB       = 0.4,
+                           COEF_MATR_FROT= 0.3,
+                           GROUP_MA_MAIT = 'BCC1',
+                           GROUP_MA_ESCL = 'BCC2',
+                           SANS_GROUP_NO = 'BCC_SGN',
+                         ),
+                  );
+                  
+#              
 #_____________________________________________________________________
 #
 #               DEFINITION DES FONCTIONS TEMPORELLES
@@ -179,7 +186,8 @@ U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE=CHA1,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CHA2,),),
+                       ),
+                CONTACT  =CHA2,       
                 COMP_ELAS=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',

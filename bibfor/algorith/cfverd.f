@@ -1,7 +1,7 @@
       SUBROUTINE CFVERD(NOMA  ,NUMEDD,DEFICO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,7 +59,7 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       CHARACTER*8  NOMNO
-      INTEGER      CFDISI,NNOCO,IZONE
+      INTEGER      CFDISI,NNOCO
       INTEGER      INO,CODRET,JBID,VERDIM
 C
 C ----------------------------------------------------------------------
@@ -68,8 +68,7 @@ C
 C
 C --- INITIALISATIONS
 C
-      IZONE  = 0
-      NNOCO  = CFDISI(DEFICO,'NNOCO',IZONE )
+      NNOCO  = CFDISI(DEFICO,'NNOCO')
 
       DO 10 INO = 1,NNOCO
         CALL CFNOMM(NOMA  ,DEFICO,'NOEU',INO   ,NOMNO ,

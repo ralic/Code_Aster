@@ -1,8 +1,8 @@
-      SUBROUTINE NMCHCC(FONACT,DEFICO,NBMATR,LTYPMA,LOPTME,
-     &                  LOPTMA,LASSME,LCALME)
+      SUBROUTINE NMCHCC(FONACT,NBMATR,LTYPMA,LOPTME,LOPTMA,
+     &                  LASSME,LCALME)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/11/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,8 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE 
-      CHARACTER*24 DEFICO
-      LOGICAL      FONACT(*)
+      INTEGER      FONACT(*)
       INTEGER      NBMATR
       CHARACTER*6  LTYPMA(20)
       CHARACTER*16 LOPTME(20),LOPTMA(20)
@@ -33,12 +32,11 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (CALCUL - UTILITAIRE)
 C
-C AJOUTER LES MATR_ELEM CONTACT/XFEM
+C MATR_ELEM CONTACT/XFEM
 C      
 C ----------------------------------------------------------------------
 C
 C
-C IN  DEFICO : SD DEF. CONTACT
 C IN  FONACT : FONCTIONNALITES ACTIVEES
 C I/O NBMATR : NOMBRE DE MATR_ELEM DANS LA LISTE
 C I/O LTYPMA : LISTE DES NOMS DES MATR_ELEM
@@ -49,60 +47,30 @@ C I/O LASSME : SI MATR_ELEM A ASSEMBLER
 C      
 C ----------------------------------------------------------------------
 C 
-      LOGICAL      ISFONC,LCTCC,LCTCF,LXFCM,LTFCM
-      CHARACTER*24 K24BLA,K24BID
-      REAL*8       R8BID
-      INTEGER      IBID
+      LOGICAL      ISFONC,LELTC,LELTF
 C      
 C ----------------------------------------------------------------------
-C   
-C
-C --- INITIALISATIONS
-C
-      K24BLA = ' ' 
+C    
 C
 C --- FONCTIONNALITES ACTIVEES
 C
-      LCTCC  = ISFONC(FONACT,'CONT_CONTINU')
-      LCTCF  = ISFONC(FONACT,'FROT_CONTINU')
-      LXFCM  = ISFONC(FONACT,'CONT_XFEM') 
-      LTFCM = .FALSE.
-      IF (LXFCM) THEN
-        CALL MMINFP(0    ,DEFICO,K24BLA,'XFEM_GG',
-     &              IBID ,R8BID ,K24BID,LTFCM)
-      ENDIF      
+      LELTC  = ISFONC(FONACT,'ELT_CONTACT')
+      LELTF  = ISFONC(FONACT,'ELT_FROTTEMENT')
 C
-C --- CONTACT METHODE CONTINU
+C --- ELEMENTS DE CONTACT (XFEM+CONTINU)
 C
-      IF ((LCTCC).AND.(.NOT.LXFCM)) THEN
-        CALL NMCMAT('AJOU','MECTCC',' '   ,' '   ,.TRUE.,
+      IF (LELTC) THEN
+        CALL NMCMAT('AJOU','MEELTC',' '   ,' '   ,.TRUE.,
+     &              .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
+     &               LCALME,LASSME)           
+      ENDIF 
+C
+C --- ELEMENTS DE FROTTEMENT (XFEM+CONTINU)
+C
+      IF (LELTF) THEN
+        CALL NMCMAT('AJOU','MEELTF',' '   ,' '   ,.TRUE.,
      &              .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
      &               LCALME,LASSME)       
-        IF (LCTCF) THEN
-          CALL NMCMAT('AJOU','MECTCF',' '   ,' '   ,.TRUE.,
-     &                .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
-     &                 LCALME,LASSME) 
-        ENDIF       
-      ENDIF   
-C
-C --- CONTACT XFEM
-C
-      IF (LXFCM) THEN            
-        IF (LTFCM) THEN
-          CALL NMCMAT('AJOU','MEXFTC',' '  ,' '   ,.TRUE.,
-     &                .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
-     &                 LCALME,LASSME)     
-          CALL NMCMAT('AJOU','MEXFTF',' '  ,' '   ,.TRUE.,
-     &                .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
-     &                 LCALME,LASSME)
-        ELSE
-          CALL NMCMAT('AJOU','MEXFEC',' '   ,' '   ,.TRUE.,
-     &                .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
-     &                 LCALME,LASSME)
-          CALL NMCMAT('AJOU','MEXFEF',' '   ,' '   ,.TRUE.,
-     &                .FALSE.,NBMATR    ,LTYPMA,LOPTME,LOPTMA,
-     &                 LCALME,LASSME)
-        ENDIF      
-      ENDIF       
+      ENDIF                    
 C
       END

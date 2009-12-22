@@ -1,7 +1,7 @@
       SUBROUTINE CUPREP(NEQ,DEFICU,RESOCU,DEPTOT,INST)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,17 +21,20 @@ C ======================================================================
 C
       IMPLICIT     NONE
       INTEGER      NEQ
-      CHARACTER*24 DEFICU      
-      CHARACTER*24 RESOCU
-      CHARACTER*24 DEPTOT
+      CHARACTER*24 DEFICU,RESOCU
+      CHARACTER*19 DEPTOT
       REAL*8       INST
+C     
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : NMUNIL
-C ----------------------------------------------------------------------
+C ROUTINE LIAISON_UNILATERALE (RESOLUTION)
 C
 C CETTE ROUTINE PREPARE LE CAS DES RELATIONS UNILATERALES QUI
 C NE SONT PAS DES DEPLACEMENTS
+C
+C ----------------------------------------------------------------------
+C
+C
 C - CALCUL DU "JEU" (MEMBRE DE DROITE)
 C - CALCUL DES COEFFICIENTS DE LA RELATION LINEAIRE (MEMBRE DE GAUCHE) 
 C
@@ -62,63 +65,54 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      ICMP
+      INTEGER      ICMP,IRET
       REAL*8       COEF,VAL,SIGN
-      CHARACTER*24 APCOEF,APJEU,DIMECU,COEFD,COEFG,POINOE,APDDL
-      INTEGER      JAPCOE,JAPJEU,JDIM,JCOEFD,JCOEFG,JPOI,JAPDDL,JDEPP
-      CHARACTER*24 CMPGCU
-      INTEGER      JCMPG
-      INTEGER      NBNOE,NBGAU,INOE,TYPCOE,NBDDL,JDECAL
+      CHARACTER*24 CMPGCU,COEGCU,COEDCU
+      INTEGER      JCMPG,JCOEFG,JCOEFD      
+      CHARACTER*24 APCOEF,APJEU,POINOE,APDDL
+      INTEGER      JAPCOE,JAPJEU,JPOI,JAPDDL,JDEPP
+      INTEGER      NNOCU,NCMPG,INOE,NBDDL,JDECAL,CUDISI
       INTEGER      IFM,NIV      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ
-C ----------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)      
 C
 C --- LECTURE DES SD 
 C
-      APCOEF = RESOCU(1:14) // '.APCOEF'
-      APJEU  = RESOCU(1:14) // '.APJEU'
-      DIMECU = DEFICU(1:16) // '.DIMECU'
+      APCOEF = RESOCU(1:14)//'.APCOEF'
+      APJEU  = RESOCU(1:14)//'.APJEU'
       APDDL  = RESOCU(1:14)//'.APDDL'            
-      CALL JEVEUO(APJEU, 'E',JAPJEU)
-      CALL JEVEUO(DIMECU,'L',JDIM) 
+      CALL JEVEUO(APJEU, 'E',JAPJEU) 
       CALL JEVEUO(APCOEF,'E',JAPCOE)
       CALL JEVEUO(APDDL ,'L',JAPDDL)      
 C
 C --- NOMBRE TOTAL DE DDLS ET NOMBRE TOTAL DE NOEUDS
 C    
-      NBNOE  = ZI(JDIM)
-      NBGAU  = ZI(JDIM+1)
-C      
-C --- TYPE DES COEFFICIENTS: FONCTION (2) OU CONSTANTE (1)
-C
-      TYPCOE = ZI(JDIM+2)     
+      NNOCU  = CUDISI(DEFICU,'NNOCU')
+      NCMPG  = CUDISI(DEFICU,'NCMPG')  
 C
 C --- EVALUATION DU MEMBRE DE DROITE (PSEUDO-JEU)
 C
-      COEFD  = DEFICU(1:16)//'.COEFD'      
-      CALL JEVEUO(COEFD,'L',JCOEFD) 
+      COEDCU = DEFICU(1:16)//'.COEFD'      
+      CALL JEVEUO(COEDCU,'L',JCOEFD) 
       
-      DO 10 INOE = 1,NBNOE    
-        CALL CUCOEF(JCOEFD,INOE,TYPCOE,INST,
-     &              COEF)
+      DO 10 INOE = 1,NNOCU    
+        CALL FOINTE('F',ZK8(JCOEFD-1+INOE),1,'INST',INST,COEF,IRET)
         ZR(JAPJEU+INOE-1) = COEF      
  10   CONTINUE
 C
 C --- EVALUATION DU MEMBRE DE GAUCHE (COEFFICIENTS DE LA REL. LIN.)
 C   
-      COEFG  = DEFICU(1:16)//'.COEFG'      
-      CALL JEVEUO(COEFG,'L',JCOEFG) 
+      COEGCU = DEFICU(1:16)//'.COEFG'      
+      CALL JEVEUO(COEGCU,'L',JCOEFG) 
       CMPGCU = DEFICU(1:16)//'.CMPGCU'
       CALL JEVEUO(CMPGCU,'L',JCMPG)
       
-      DO 20 ICMP = 1,NBGAU    
-        CALL CUSIGN(JCMPG,ICMP,SIGN)  
-        CALL CUCOEF(JCOEFG,ICMP,TYPCOE,INST,
-     &              COEF)       
+      DO 20 ICMP = 1,NCMPG    
+        CALL CUSIGN(JCMPG,ICMP,SIGN)         
+        CALL FOINTE('F',ZK8(JCOEFG-1+ICMP),1,'INST',INST,COEF,IRET) 
         ZR(JAPCOE+ICMP) = SIGN*COEF   
  20   CONTINUE      
 C 
@@ -128,7 +122,7 @@ C
       CALL JEVEUO(POINOE,'L',JPOI)
       CALL JEVEUO(DEPTOT(1:19)//'.VALE','E',JDEPP)
 
-      DO 30 INOE = 1,NBNOE
+      DO 30 INOE = 1,NNOCU
         JDECAL = ZI(JPOI+INOE-1)
         NBDDL  = ZI(JPOI+INOE) - ZI(JPOI+INOE-1)
         CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),

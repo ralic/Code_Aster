@@ -1,4 +1,4 @@
-# MODIF  DATE 07/12/2009   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION ARCHITECTURE D'UN CALCUL FETI + CONTACT CONTINUE
 # feti008b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -48,24 +48,26 @@ CH1=AFFE_CHAR_MECA(MODELE=MODM,
                    PRES_REP=(_F(GROUP_MA='PRES',PRES = 2.E3,),),)
 CH2=AFFE_CHAR_MECA(MODELE=MODM,
                    DDL_IMPO=(_F(GROUP_NO=('DIRI'),DX=0.0,DY=0.0,),),),
-CH3=AFFE_CHAR_MECA(MODELE=MODM,
-                       CONTACT=(
-                                 _F(GROUP_MA_MAIT='CONTACT1',
-                                    GROUP_MA_ESCL='CONTACT2',
-                                   METHODE = 'CONTINUE',
-                                   ),
-                                 _F(GROUP_MA_MAIT='CONTACT3',
-                                    GROUP_MA_ESCL='CONTACT4',
-                                   METHODE = 'CONTINUE',
-                                   ),
-                                   ),);
+
+                                   
+CH3 = DEFI_CONTACT( MODELE=MODM,
+                    FORMULATION='CONTINUE',
+                    ZONE = (
+                             _F(GROUP_MA_MAIT='CONTACT1',
+                                GROUP_MA_ESCL='CONTACT2',
+                               ),
+                             _F(GROUP_MA_MAIT='CONTACT3',
+                                GROUP_MA_ESCL='CONTACT4',
+                               )  
+                       ),
+                    );
+                                                       
 SDFETI=DEFI_PART_OPS(NOM='SD',
                      MODELE=MODM,
                      INFO=1,
                      EXCIT=(
                             _F(CHARGE=CH1),
                             _F(CHARGE=CH2),
-                            _F(CHARGE=CH3),
                          ),
                      DEFI=(
                            _F(GROUP_MA = 'FETI1', GROUP_MA_BORD = 'B1',),
@@ -83,15 +85,11 @@ INSTNL=DEFI_LIST_REEL(DEBUT=0.0,
 
 RESU=STAT_NON_LINE(MODELE=MODM,
                    CHAM_MATER=CHMAT,
-                   SOLVEUR=_F(METHODE='FETI',
-                              PARTITION=SDFETI,
-                              RESI_RELA=1.E-10,
-                              NMAX_ITER=20,
-                              NB_REORTHO_DD=20,
-                              ),
+                   SOLVEUR=_F(METHODE='MUMPS',),
+                   CONTACT=CH3,
                  EXCIT=(_F(CHARGE=CH1,FONC_MULT=RAMPE),
                         _F(CHARGE=CH2,FONC_MULT=RAMPE),
-                        _F(CHARGE=CH3,),),
+                        ),
                  NEWTON=(_F(REAC_INCR=1,
                             PREDICTION='TANGENTE',
                             MATRICE='TANGENTE',

@@ -1,6 +1,5 @@
-# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
-# ssnv209c.para = tps_job 200 mem_job 200Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -154,21 +153,29 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
 #                   CHARGEMENTS
 #----------------------------------------------
 
-CTXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      CONTACT=_F(FISS_MAIT      = FISS,
-                                 METHODE        = 'XFEM',
-                                 CONTACT_INIT   = 'OUI',
-                                 FROTTEMENT     = 'COULOMB',
-                                 COULOMB        = 1.,
-                                 ITER_FROT_MAXI = 20,
-                                 INTEGRATION    = 'SIMPSON',
-                                 ALGO_LAGR      = 'VERSION2',
-                                 COEF_REGU_CONT = 100.,
-                                 ITER_CONT_MAXI = 4,
-                                 COEF_ECHELLE   = 1.,
-                                 COEF_REGU_FROT = 100.,),
-                      INFO=2,
-                      );
+
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      FROTTEMENT     = 'COULOMB',
+                      ITER_CONT_MAXI = 4,
+                      ITER_FROT_MAXI = 20,                      
+                      REAC_GEOM      = 'SANS',
+                      ZONE=(
+                            _F(
+                               FISS_MAIT      = FISS,
+                               INTEGRATION    = 'SIMPSON',
+                               CONTACT_INIT   = 'OUI',
+                               COEF_ECHELLE   = 1.,
+                               COULOMB        = 1.0,
+                               ALGO_CONT      = 'STANDARD',
+                               COEF_CONT      = 100.,
+                               ALGO_FROT      = 'STANDARD',
+                               COEF_FROT      = 100.,                                  
+                               ALGO_LAGR      = 'VERSION2',
+                             ), 
+                         ),
+                   );
+
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
@@ -208,19 +215,20 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
+
 # LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
 # ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
 # CORRIGE LES EVENTUELLES DERIVES.
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
                     EXCIT=(_F(CHARGE=CHXFEM,),
-                           _F(CHARGE=CTXFEM,),
                            _F(CHARGE=CHCINE,),
                            _F(CHARGE=CHMECA,
                               FONC_MULT=RAMPE),
                            _F(CHARGE=CHAF,
                               FONC_MULT=RAMPE),
                            ),
+                    CONTACT  = CTXFEM,       
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='SURF',
                                  ),
@@ -233,7 +241,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                    ),
                     SOLVEUR=_F(METHODE='MUMPS',
                                PCENT_PIVOT=80,
-                               NPREC=-1,
+                               NPREC=-1.,
                                ),
                     NEWTON=_F(REAC_ITER=1,),INFO=2,
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),

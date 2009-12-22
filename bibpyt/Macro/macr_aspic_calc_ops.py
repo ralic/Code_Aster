@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,6 +40,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   AFFE_MATERIAU    =self.get_cmd('AFFE_MATERIAU'   )
   AFFE_CARA_ELEM   =self.get_cmd('AFFE_CARA_ELEM'  )
   AFFE_CHAR_THER_F =self.get_cmd('AFFE_CHAR_THER_F')
+  DEFI_CONTACT     =self.get_cmd('DEFI_CONTACT'    )  
   THER_LINEAIRE    =self.get_cmd('THER_LINEAIRE'   )
   AFFE_CHAR_MECA   =self.get_cmd('AFFE_CHAR_MECA'  )
   STAT_NON_LINE    =self.get_cmd('STAT_NON_LINE'   )
@@ -300,13 +301,13 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
        mcfond = ('FOND_SUP','FOND_INF')
     else :
        mcfond = ('FONDFISS')
-    _chcont = AFFE_CHAR_MECA( MODELE   = modele ,
-                               CONTACT =_F(GROUP_MA_MAIT = 'LEVRCORP',
-                                           GROUP_MA_ESCL = 'LEVRTUBU',
-                                           METHODE='VERIF',
-                                           TOLE_INTERP = -1.e-6,
-                                           GROUP_MA_FOND=mcfond,),)
-
+       _chcont = DEFI_CONTACT( MODELE      = modele ,
+                            FORMULATION = 'DISCRETE',
+                            TOLE_INTERP = -1.E-6,
+                            ZONE =_F(GROUP_MA_MAIT = 'LEVRCORP',
+                                     GROUP_MA_ESCL = 'LEVRTUBU',
+                                     ALGO_CONT     = 'VERIF',
+                                     GROUP_MA_FOND = mcfond,),)
 
 #
 #     --- commande STAT_NON_LINE ---
@@ -335,8 +336,13 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
        else :
           mcfex.append(_F(CHARGE=_chtrt[i],))
        i=i+1
+       
+  contact = None     
   if TYPE_MAILLAGE[:4]=='FISS' :
-     mcfex.append(_F(CHARGE=_chcont,))
+     if mcfond == 'FONDFISS' :
+       contact = _chcont
+     
+     
   motscles['EXCIT'] =mcfex
 #
   mcfci=[]  # mot clé facteur COMP_INCR :obligatoire pour les noeuds discrets
@@ -378,10 +384,22 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   motscles  ['RECH_LINEAIRE'] =dRechlin
   motscles  ['INCREMENT'    ] =dIncrem
   self.DeclareOut('nomres',self.sd)
-  nomres = STAT_NON_LINE( MODELE     = modele ,
-                          CHAM_MATER = affmth ,
-                          CARA_ELEM  = carael ,
-                          INFO       = INFO   , **motscles)
+  
+  
+  if contact==None:
+    nomres = STAT_NON_LINE( MODELE     = modele ,
+                            CHAM_MATER = affmth ,
+                            CARA_ELEM  = carael ,
+                            INFO       = INFO   , **motscles)
+  else :
+    nomres = STAT_NON_LINE( MODELE     = modele ,
+                            CHAM_MATER = affmth ,
+                            CARA_ELEM  = carael ,
+                            CONTACT    = contact,
+                            INFO       = INFO   , **motscles)                            
+                          
+                          
+                          
 #
   nomres = CALC_ELEM( reuse      = nomres,
                       RESULTAT   = nomres ,

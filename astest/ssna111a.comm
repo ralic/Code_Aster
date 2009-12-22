@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
@@ -75,12 +75,17 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                                 DY=-0.4,),
                              _F(GROUP_MA=('GM10',),
                                 DY=-0.4,),
-                                ),
-                   CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                              GROUP_MA_MAIT='GM11',
-                              GROUP_MA_ESCL='GM12',
-                              NORMALE='MAIT_ESCL',
-                              ),);
+                                ),);
+
+CONT = DEFI_CONTACT   (MODELE      = MO,
+                       FORMULATION = 'DISCRETE',
+                       ZONE =_F( 
+                                 APPARIEMENT='MAIT_ESCL',
+                                 GROUP_MA_MAIT='GM11',
+                                 GROUP_MA_ESCL='GM12',
+                                 NORMALE='MAIT_ESCL',   
+                               ),
+                      );
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
@@ -102,6 +107,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHA,
                             FONC_MULT=F,),
+                   CONTACT = CONT,         
                    COMP_INCR=(
                               _F(RELATION='VMIS_ISOT_LINE',
                                 DEFORMATION='SIMO_MIEHE',

@@ -1,6 +1,5 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
-# ssnp501b.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,16 +86,19 @@ DEPL=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_NO='PLAQUE',
                                 DY=-2.225,),);
 
+CONT   = DEFI_CONTACT(MODELE       = MO,
+                      FORMULATION  = 'DISCRETE',
+                      REAC_GEOM    = 'CONTROLE',
+                      NB_ITER_GEOM = 2,
+                      ZONE=_F(
+                               APPARIEMENT   = 'MAIT_ESCL',
+                               ALGO_CONT     = 'LAGRANGIEN',
+                               GROUP_MA_MAIT ='LMAI',
+                               GROUP_MA_ESCL ='LESC',
+                               SANS_GROUP_NO = ('A','P1'),
+                             ),
+                      );
 
-CON=AFFE_CHAR_MECA(MODELE=MO,
-                   CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                              REAC_GEOM='CONTROLE',
-                              NB_REAC_GEOM=2,
-                              METHODE='LAGRANGIEN',
-                              GROUP_MA_MAIT='LMAI',
-                              GROUP_MA_ESCL='LESC',
-                              SANS_GROUP_NO=('A','P1'),
-                              ),);
 
 #--------- DEFINITION DES FONCTIONS -----------------
 
@@ -113,10 +115,10 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CON,),
-                          _F(CHARGE=CL,),
+                   EXCIT=(_F(CHARGE=CL,),
                           _F(CHARGE=DEPL,
                              FONC_MULT=RAMPE,),),
+                   CONTACT  = CONT,          
                    COMP_ELAS=_F(RELATION='ELAS',
                                 DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=LINST,),

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 # sdnv104b.para = tps_job 870 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,19 +93,23 @@ PTAN=AFFE_CHAR_MECA(MODELE=MODE,
                     PRES_REP=_F(GROUP_MA='FLAT',
                                 PRES=200000.0,),);
 # DEFINITION DU CONTACT
-
-CTACP=AFFE_CHAR_MECA(MODELE=MODE,
-                     CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                                METHODE='PENALISATION',
-                                GROUP_MA_MAIT='LMAI',
-                                GROUP_MA_ESCL='LESC',
-                                E_N=2.1E8,
-                                FROTTEMENT='COULOMB',
-                                REAC_GEOM='CONTROLE',
-                                NB_REAC_GEOM=2,
-                                COULOMB=0.3,
-                                E_T=2.1E11,
-                                COEF_MATR_FROT=0.9,),);
+CTACP = DEFI_CONTACT(MODELE         = MODE,
+                     FORMULATION    = 'DISCRETE',
+                     REAC_GEOM      = 'CONTROLE',
+                     NB_ITER_GEOM   = 2,
+                     FROTTEMENT     = 'COULOMB',
+                     ZONE=_F(
+                             APPARIEMENT    = 'MAIT_ESCL',
+                             ALGO_CONT      = 'PENALISATION',
+                             ALGO_FROT      = 'PENALISATION',
+                             E_N            = 2.1E8,
+                             E_T            = 2.1E11,
+                             COULOMB        = 0.3,
+                             COEF_MATR_FROT = 0.9,
+                             GROUP_MA_MAIT  = 'LMAI',
+                             GROUP_MA_ESCL  = 'LESC',
+                            ),
+                     )
 #---------------------------------------------------------------------
 #                         RESOLUTION
 #--------------INST-------------------------------------------------------
@@ -133,15 +137,11 @@ UPM=DYNA_NON_LINE(MODELE=MODE,
                             FONC_MULT=RAMPE,),
                          _F(CHARGE=PTAN,
                             FONC_MULT=RAMPE,),
-                         _F(CHARGE=CTACP,),
                          _F(CHARGE=COND_LIM,),),
+                  CONTACT  = CTACP,       
                   COMP_INCR=_F(RELATION='ELAS',
                                TOUT='OUI',),
-                  INCREMENT=_F(LIST_INST=DEFLIST,
-#                               SUBD_METHODE='UNIFORME',
-#                               SUBD_PAS=5,
-#                               SUBD_PAS_MINI=0.0000001,
-                                ),
+                  INCREMENT=_F(LIST_INST=DEFLIST,),
                   SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
@@ -176,15 +176,11 @@ UPL=DYNA_NON_LINE(MODELE=MODE,
                             FONC_MULT=RAMPE,),
                          _F(CHARGE=PTAN,
                             FONC_MULT=RAMPE,),
-                         _F(CHARGE=CTACP,),
                          _F(CHARGE=COND_LIM,),),
+                  CONTACT  = CTACP,       
                   COMP_INCR=_F(RELATION='ELAS',
                                TOUT='OUI',),
-                  INCREMENT=_F(LIST_INST=DEFLIST,
-#                               SUBD_METHODE='UNIFORME',
-#                               SUBD_PAS=5,
-#                               SUBD_PAS_MINI=0.0000001,
-                               ),
+                  INCREMENT=_F(LIST_INST=DEFLIST,),
                   SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),

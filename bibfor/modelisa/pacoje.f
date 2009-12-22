@@ -7,7 +7,7 @@
       INTEGER            IOCC, NDIM
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
 C ---------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      CHARACTER*32       JEXNUM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -122,7 +122,7 @@ C
          ENDIF
          CALL JEVEUO(JEXNUM(CONR,IOCC),'E',IDRAD)
       ELSE
-         CALL U2MESK('F','MODELISA2_61',1,MOTFAC)
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
       CALL  WKVECT ( '&&PACOJE.ANGL', 'V V R', NBCOUP, IDANGL )

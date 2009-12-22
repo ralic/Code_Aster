@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 # sdnv104c.para = tps_job 890 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,19 +102,21 @@ PTAN=AFFE_CHAR_MECA(MODELE=MODE,
                                     PRES=200000.0))
 
 # DEFINITION DU CONTACT
-CTACC=AFFE_CHAR_MECA(MODELE=MODE,
-                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               METHODE='CONTINUE',
-                               ITER_FROT_MAXI=10,
-                               ITER_GEOM_MAXI = 5,
-                               FROTTEMENT='COULOMB',
-                               COULOMB=0.3,
-                               GROUP_MA_MAIT='LMAI',
-                               GROUP_MA_ESCL='LESC',
-                               ),)
-
-
-
+CTACC = DEFI_CONTACT(MODELE       = MODE,
+                     FORMULATION  = 'CONTINUE',
+                     FROTTEMENT   = 'COULOMB',
+                     REAC_GEOM    = 'CONTROLE',
+                     NB_ITER_GEOM = 5,
+                     REAC_FROT    = 'CONTROLE',
+                     NB_ITER_FROT = 10,
+                     ZONE        =_F(
+                              APPARIEMENT  = 'MAIT_ESCL',
+                              GROUP_MA_MAIT='LMAI',
+                              GROUP_MA_ESCL='LESC',
+                              COULOMB = 0.3,
+                                   ),
+                   )  
+                   
 #---------------------------------------------------------------------
 #                         RESOLUTION
 #--------------INST-------------------------------------------------------
@@ -142,8 +144,8 @@ UCM =  DYNA_NON_LINE(MODELE=MODE,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=PTAN,
                               FONC_MULT=RAMPE,),
-                           _F(CHARGE=CTACC,),
                            _F(CHARGE=COND_LIM,),),
+                    CONTACT  = CTACC,       
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -183,8 +185,8 @@ UCL =  DYNA_NON_LINE(MODELE=MODE,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=PTAN,
                               FONC_MULT=RAMPE,),
-                           _F(CHARGE=CTACC,),
                            _F(CHARGE=COND_LIM,),),
+                    CONTACT   =CTACC,       
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),

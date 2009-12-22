@@ -1,7 +1,7 @@
-      SUBROUTINE NMADAT(SDDISC,NUMINS,ITERAT,VALMOI,VALPLU,FINPAS)
+      SUBROUTINE NMADAT(SDDISC,NUMINS,ITERAT,VALINC,FINPAS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,11 +21,10 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
       IMPLICIT NONE
-      CHARACTER*24 VALMOI(8),VALPLU(8)
+      CHARACTER*19 VALINC(*)
       CHARACTER*19 SDDISC
       INTEGER      NUMINS,ITERAT
       LOGICAL      FINPAS
-
 C
 C ----------------------------------------------------------------------
 C
@@ -38,7 +37,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  SDDISC : SD DISCRETISATION TEMPORELLE
-C IN  NUMINS : 
+C IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -64,25 +63,24 @@ C
       CHARACTER*19 METLIS,MODETP,DTPLUS,LISARC
       CHARACTER*8  K8B
       REAL*8       R8B,R8MAEM,DT,MIN,PASMIN,PASMAX,DIINST,DTM,PIPO
-      REAL*8       INST,R8VIDE,TOLE,PREC,CRIT
+      REAL*8       INST,R8VIDE,TOLE
       LOGICAL      LADAP,DIADAP,UNCROK
-      INTEGER      LGINI,LGTEMP,NBINI,INSPAS,JITER,ITERM
+      INTEGER      LGINI,LGTEMP,NBINI,INSPAS,JITER
       INTEGER      JARCH,JINFO,FREARC,NBTEMP
       INTEGER      N2,N3,NLIARC,JLIARC,IRET
       LOGICAL      COMPR8
-
+C      
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)  
-
-      WRITE(IFM,*)'    '
-
+C
 C     ------------------------------------------------------------------
 C     INITIALISATIONS
 C     ------------------------------------------------------------------
 
 C     DETERMINATION DE LA PRECISION SUR LES INSTANTS
       CALL UTDIDT('L',SDDISC,'LIST',IBID,'PAS_MINI',PASMIN,IBID,K8B)
-
       CALL UTDIDT('L',SDDISC,'LIST',IBID,'METHODE',R8B,IBID,METLIS)
 C
 C     ON NE FAIT DE L'ADAPTATION DE PAS DE TEMPS QU'EN GESTION AUTO
@@ -113,7 +111,7 @@ C     PROCHAIN INSTANT DE PASSAGE OBLIGATOIRE (IPO) ?
         IF ( COMPR8(ZR(JIPO-1+I),'GT',INST,2.D0*PASMIN,0) ) THEN
           PIPO = ZR(JIPO-1+I)
           GOTO 20
-        ENDIF 
+        ENDIF  
         IF (I.EQ.NIPO) THEN
 C         ON DOIT ETRE AU DERNIER PAS DE TEMPS
 C         CAR ON NE TROUVE PLUS D'IPO
@@ -136,7 +134,7 @@ C     ------------------------------------------------------------------
 
         LADAP = DIADAP(SDDISC,IOCC,NUMINS)
         IF (LADAP) THEN
-          CALL NMCADT(SDDISC,IOCC,NUMINS,VALMOI,VALPLU,ZR(JDT-1+IOCC))
+          CALL NMCADT(SDDISC,IOCC,NUMINS,VALINC,ZR(JDT-1+IOCC))
         ENDIF           
 
 C       IMPRESSION
@@ -163,7 +161,7 @@ C     SI AUCUN CRITERE N'EST VERIFIE, ON PREND LE PAS DE TEMPS "MOINS"
       CALL JEDETR(DTPLUS) 
 
 C     VA T-ON DEPASSER LE PROCHAIN IPO ?
-        IF ( COMPR8(INST+DT ,'LT', PIPO , 2.D0*PASMIN , 0 ) ) THEN
+      IF ( COMPR8(INST+DT ,'LT', PIPO , 2.D0*PASMIN , 0 ) ) THEN
 C       ON ENREGISTRE DT
         CALL UTDIDT('E',SDDISC,'LIST',IBID,'DT-',DT,IBID,K8B)
       ELSE

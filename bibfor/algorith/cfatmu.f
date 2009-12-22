@@ -2,7 +2,7 @@
      &                   FROT,LLF,LLF1,LLF2,RESOCO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,12 +30,16 @@ C
       INTEGER      LLF2
       INTEGER      FROT
       CHARACTER*24 RESOCO
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : ALGOCL/ALGOCO/FRO2GD/FROLGD/FROPGD
+C      
 C ----------------------------------------------------------------------
 C
-C  CALCUL DE ATMU - MATRICE DES FORCES DE CONTACT
+C ROUTINE CONTACT (METHODE DISCRETE - ALGORITHME)
+C
+C CALCUL DE ATMU - VECTEUR DES FORCES DE CONTACT
+C
+C
+C ----------------------------------------------------------------------
+C  
 C
 C IN  NEQ    : NOMBRE D'EQUATIONS
 C IN  NDIM   : DIMENSION DU PROBLEME
@@ -147,7 +151,7 @@ C ======================================================================
      &         ZR(JAPCOF+JDECAL+30*NESMAX),ZI(JAPDDL+JDECAL),ZR(JATMU))
          ENDIF
          IF (FROT.EQ.0) THEN
-           CALL U2MESS('F','ALGORITH_79')
+           CALL ASSERT(.FALSE.)
          ENDIF
          GOTO 10
  3000    CONTINUE
@@ -159,7 +163,7 @@ C ======================================================================
          CALL CALATM(NEQ,NBDDL,ZR(JMU-1+COMPT1),
      &                   ZR(JAPCOF+JDECAL),ZI(JAPDDL+JDECAL),ZR(JATMU))
          IF (FROT.EQ.0) THEN
-           CALL U2MESS('F','ALGORITH_79')
+           CALL ASSERT(.FALSE.)
          ENDIF
          GOTO 10
  4000    CONTINUE
@@ -171,7 +175,7 @@ C ======================================================================
          CALL CALATM(NEQ,NBDDL,ZR(JMU-1+COMPT2),
      &          ZR(JAPCOF+JDECAL+30*NESMAX),ZI(JAPDDL+JDECAL),ZR(JATMU))
          IF (FROT.EQ.0) THEN
-           CALL U2MESS('F','ALGORITH_79')
+           CALL ASSERT(.FALSE.)
          ENDIF
  10   CONTINUE
 C ======================================================================

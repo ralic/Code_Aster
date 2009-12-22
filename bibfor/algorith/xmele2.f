@@ -2,7 +2,7 @@
      &                  CHELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,16 +71,14 @@ C
 C
       INTEGER       IFM,NIV
       INTEGER       IBID,IAD,IGRP,I,IMA,IFIS,IZONE,XXCONI
-      INTEGER       NMAENR
+      INTEGER       NMAENR,MMINFI
       CHARACTER*8   NOMFIS
       INTEGER       JCESL,JCESV,JCESD,JMOFIS
       CHARACTER*24  GRP(3),XINDIC
       INTEGER       JGRP,JINDIC
       CHARACTER*19  CHELSI
-      CHARACTER*24  K24BLA
-      LOGICAL       LBID
-      REAL*8        COCAUR,COCAUS,COCAUP,COEFRO,COFAUR,COFAUS,COFAUP
-      REAL*8        INTEGR,COECHE
+      REAL*8        MMINFR,COEFCR,COEFFF,COEFFR,INTEGR,COECHE
+      REAL*8        COCAUS,COFAUS,COCAUP,COFAUP
       CHARACTER*19  VALK(2)
       INTEGER       VALI(1)
 C
@@ -101,7 +99,6 @@ C
 C --- INITIALISATIONS
 C
       CHELSI = '&&XMELE2.CES'
-      K24BLA = ' '
 C
 C --- CREATION DU CHAM_ELEM_S
 C
@@ -138,24 +135,15 @@ C
 C
 C --- CARACTERISTIQUES DU CONTACT POUR LA FISSURE EN COURS
 C
-        CALL MMINFP(IZONE ,DEFICO,K24BLA,'COEF_REGU_CONT',
-     &              IBID  ,COCAUR,K24BLA,LBID)
-        CALL MMINFP(IZONE ,DEFICO,K24BLA,'COEF_STAB_CONT',
-     &              IBID  ,COCAUS,K24BLA,LBID)
-        CALL MMINFP(IZONE ,DEFICO,K24BLA,'COEF_PENA_CONT',
-     &              IBID  ,COCAUP,K24BLA,LBID)
-        CALL MMINFP(IZONE ,DEFICO,K24BLA,'COEF_COULOMB',
-     &              IBID  ,COEFRO,K24BLA,LBID)
-        CALL MMINFP(IZONE ,DEFICO,K24BLA,'COEF_REGU_FROT',
-     &              IBID  ,COFAUR,K24BLA,LBID)
-        CALL MMINFP(IZONE ,DEFICO,K24BLA,'COEF_STAB_FROT',
-     &              IBID  ,COFAUS,K24BLA,LBID)
-        CALL MMINFP(IZONE ,DEFICO,K24BLA,'COEF_PENA_FROT',
-     &              IBID  ,COFAUP,K24BLA,LBID)
-        CALL MMINFP(IZONE ,DEFICO,K24BLA,'INTEGRATION',
-     &              IBID  ,INTEGR,K24BLA,LBID)
-        CALL MMINFP(IZONE ,DEFICO,K24BLA,'COEF_ECHELLE',
-     &              IBID  ,COECHE,K24BLA,LBID)
+        COEFCR = MMINFR(DEFICO,'COEF_REGU_CONT',IZONE )
+        COEFFR = MMINFR(DEFICO,'COEF_REGU_FROT',IZONE ) 
+        COEFFF = MMINFR(DEFICO,'COEF_COULOMB'  ,IZONE )       
+        COECHE = MMINFR(DEFICO,'COEF_ECHELLE'  ,IZONE )
+        INTEGR = MMINFI(DEFICO,'INTEGRATION'   ,IZONE )
+        COCAUS = MMINFR(DEFICO,'COEF_STAB_CONT',IZONE )
+        COFAUS = MMINFR(DEFICO,'COEF_STAB_FROT',IZONE ) 
+        COCAUP = MMINFR(DEFICO,'COEF_PENA_CONT',IZONE )
+        COFAUP = MMINFR(DEFICO,'COEF_PENA_FROT',IZONE ) 
 C
 C --- ACCES AU CHAMP INDICATEUR
 C
@@ -180,7 +168,7 @@ C
                 CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
               ENDIF
               ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COCAUR
+              ZR(JCESV-1-IAD) = COEFCR
 C
               CALL CESEXI('C',JCESD,JCESL,IMA,1,1,2,IAD)
               IF (IAD.GE.0) THEN
@@ -190,7 +178,7 @@ C
                 CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
               ENDIF
               ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COEFRO
+              ZR(JCESV-1-IAD) = COEFFF
 C
               CALL CESEXI('C',JCESD,JCESL,IMA,1,1,3,IAD)
               IF (IAD.GE.0) THEN
@@ -200,7 +188,7 @@ C
                 CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
               ENDIF
               ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COFAUR
+              ZR(JCESV-1-IAD) = COEFFR
 C
               CALL CESEXI('C',JCESD,JCESL,IMA,1,1,4,IAD)
               IF (IAD.GE.0) THEN
@@ -221,7 +209,7 @@ C
               ENDIF
               ZL(JCESL-1-IAD) = .TRUE.
               ZR(JCESV-1-IAD) = COECHE
-
+C              
               CALL CESEXI('C',JCESD,JCESL,IMA,1,1,6,IAD)
               IF (IAD.GE.0) THEN
                 VALI(1) = 6
@@ -231,7 +219,7 @@ C
               ENDIF
               ZL(JCESL-1-IAD) = .TRUE.
               ZR(JCESV-1-IAD) = COCAUS
-
+C
               CALL CESEXI('C',JCESD,JCESL,IMA,1,1,7,IAD)
               IF (IAD.GE.0) THEN
                 VALI(1) = 6
@@ -241,7 +229,7 @@ C
               ENDIF
               ZL(JCESL-1-IAD) = .TRUE.
               ZR(JCESV-1-IAD) = COFAUS
-
+C
               CALL CESEXI('C',JCESD,JCESL,IMA,1,1,8,IAD)
               IF (IAD.GE.0) THEN
                 VALI(1) = 6
@@ -251,7 +239,7 @@ C
               ENDIF
               ZL(JCESL-1-IAD) = .TRUE.
               ZR(JCESV-1-IAD) = COCAUP
-
+C
               CALL CESEXI('C',JCESD,JCESL,IMA,1,1,9,IAD)
               IF (IAD.GE.0) THEN
                 VALI(1) = 6
@@ -260,7 +248,11 @@ C
                 CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
               ENDIF
               ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COFAUP
+              ZR(JCESV-1-IAD) = COFAUP              
+             
+              
+              
+              
  120       CONTINUE
           ENDIF
  1000    CONTINUE

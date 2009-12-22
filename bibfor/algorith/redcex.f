@@ -1,8 +1,8 @@
-      SUBROUTINE REDCEX(NEQ   ,NOMA  ,DEFICO,RESOCO,NORM  ,
-     &                  NUMNO ,POSMAE,EXNOE )
+      SUBROUTINE REDCEX(NDIMG ,RESOCO,NEQ   ,NUMNOE,NORM  ,
+     &                  EXNOE )
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,11 +22,10 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER      NUMNO ,POSMAE,NEQ
+      INTEGER      NEQ,NUMNOE,NDIMG
+      CHARACTER*24 RESOCO
       REAL*8       NORM(3)
-      CHARACTER*24 DEFICO,RESOCO
       LOGICAL      EXNOE
-      CHARACTER*8  NOMA
 C      
 C ----------------------------------------------------------------------
 C
@@ -38,19 +37,16 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  NOMA   : NOM DU MAILLAGE
 C IN  NEQ    : NOMBRE D'EQUATIONS DU SYSTEME
-C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT 
 C IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-C IN  NUMNO  : NUMERO D'ORDRE DU NOEUD
-C IN  POSMAE : POSITION DE LA MAILLE ESCLAVE
+C IN  NUMNOE : NUMERO DU NOEUD ESCLAVE
+C IN  NORM   : NORMALE AU NOEUD ESCLAVE
 C IN  NORM   : VECTEUR NORMAL AU NOEUD MAITRE APPARIE
 C OUT EXNOE  : VAUT .TRUE. SI LE NOEUD DOIT ETRE EXCLU DE 
 C              LA SURFACE DE CONTACT (PIVOT NUL)
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*32  JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ ZI(1)
       REAL*8 ZR
@@ -68,17 +64,10 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      IFM,NIV
-      CHARACTER*24 NOMACO      
-      INTEGER      JNOMA,IZONE
-      INTEGER      NBNOE,POSNOE,NUMNOE,NUMMAE
-      INTEGER      CFDISI,NDIM
-      INTEGER      I,K,JDEC,CODRET
+      INTEGER      I,K
       REAL*8       PROV(3),NPROV,VECTX(3),VECTY(3),VECTZ(3)
-      
       LOGICAL      EXNOX,EXNOY,EXNOZ
-      CHARACTER*8  VALK(2)
-      CHARACTER*24 VECNOD,VECNOX,VECNOY,VECNOZ  
+      CHARACTER*24 VECNOD,VECNOX,VECNOY,VECNOZ
       INTEGER      JVECNO,JVECNX,JVECNY,JVECNZ 
 C
       DATA VECTX    /1.D0,0.D0,0.D0/  
@@ -88,50 +77,13 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFDBG('CONTACT',IFM,NIV)
-C
-C --- AFFICHAGE
-C      
-      IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<CONTACT> DETECTION AUTO. DES REDONDANCES '//
-     &                ' CONTACT/DIRICHLET' 
-      ENDIF             
-C
-C --- ACCES OBJETS
-C      
-      NOMACO = DEFICO(1:16)//'.NOMACO'    
-      CALL JEVEUO(NOMACO,'L',JNOMA)
 C
 C --- INITIALISATIONS 
 C
       EXNOX  = .FALSE. 
       EXNOY  = .FALSE.
       EXNOZ  = .FALSE.
-      EXNOE  = .FALSE. 
-      IZONE  = 0    
-      NDIM   = CFDISI(DEFICO,'NDIM',IZONE)       
-C
-C --- ACCES A LA MAILLE ESCLAVE
-C      
-      CALL CFPOSM(NOMA  ,DEFICO,'MAIL',1     ,POSMAE,
-     &            NUMMAE,CODRET)
-      IF (CODRET.LT.0) THEN
-        CALL ASSERT(.FALSE.)
-      ENDIF
-C
-C --- ACCES AU NOEUD ESCLAVE  
-C    
-      CALL CFNBEN(NOMA  ,DEFICO,POSMAE,'MAIL',NBNOE ,
-     &            JDEC  ) 
-      IF (NUMNO.GT.NBNOE) THEN
-        CALL ASSERT(.FALSE.)
-      ENDIF
-      POSNOE = ZI(JNOMA+JDEC+NUMNO -1)
-      CALL CFPOSM(NOMA  ,DEFICO,'NOEU',1     ,POSNOE,
-     &            NUMNOE,CODRET)
-      IF (CODRET.LT.0) THEN
-        CALL ASSERT(.FALSE.)
-      ENDIF 
+      EXNOE  = .FALSE.      
 C
 C --- ACCES AUX STRUCTURES DE DONNEES POUR LA
 C --- GESTION AUTOMATIQUE DES RELATIONS REDONDANTES
@@ -140,12 +92,10 @@ C
       VECNOX = RESOCO(1:14)//'.VECNOX'
       VECNOY = RESOCO(1:14)//'.VECNOY'
       VECNOZ = RESOCO(1:14)//'.VECNOZ'
-      CALL JEVEUO(VECNOD,'E',JVECNO)
-      CALL JEVEUO(VECNOX,'E',JVECNX)
-      CALL JEVEUO(VECNOY,'E',JVECNY)
-      CALL JEVEUO(VECNOZ,'E',JVECNZ)
-C
-C 
+      CALL JEVEUO(VECNOD,'L',JVECNO)
+      CALL JEVEUO(VECNOX,'L',JVECNX)
+      CALL JEVEUO(VECNOY,'L',JVECNY)
+      CALL JEVEUO(VECNOZ,'L',JVECNZ)
 C            
       DO 11, I=(1+NEQ),(2*NEQ)
         IF (NUMNOE .EQ. ZI(JVECNO+I-1)) THEN
@@ -167,7 +117,7 @@ C
         ENDIF  
 12    CONTINUE
       
-      IF (NDIM.EQ.2) THEN     
+      IF (NDIMG.EQ.2) THEN     
         IF (EXNOX .AND. EXNOY) THEN
           EXNOE=.TRUE.
         ENDIF  
@@ -185,7 +135,7 @@ C
             EXNOE = .TRUE.              
           ENDIF            
         ENDIF
-      ELSE IF (NDIM.EQ.3) THEN
+      ELSE IF (NDIMG.EQ.3) THEN
         IF (EXNOX .AND. EXNOY .AND.  EXNOZ) THEN
           EXNOE=.TRUE.
         ENDIF  
@@ -221,20 +171,7 @@ C
         ENDIF       
       ELSE
         CALL ASSERT(.FALSE.)
-      ENDIF
-C
-C --- AFFICHAGE
-C      
-      IF (NIV.GE.2) THEN
-        IF (.NOT.EXNOE) THEN
-          WRITE (IFM,*) '<CONTACT> PAS DE REDONDANCES DETECTEES'
-        ELSE
-          WRITE (IFM,*) '<CONTACT> REDONDANCES DETECTEES'        
-          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAE),VALK(1))
-          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),VALK(2))
-          WRITE(IFM,*) VALK(1), VALK(2)
-        ENDIF
-      ENDIF      
+      ENDIF    
 C        
       CALL JEDEMA()
       END

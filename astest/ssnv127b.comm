@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,14 +61,14 @@ SSNV127B=DEFI_GROUP(reuse =SSNV127B,
                                       NOM='RELEVE',
                                       GROUP_NO_ORIG='A1',
                                       GROUP_NO_EXTR='B2',),),);
-
+                                      
 # POUR ELIMINER LES NOEUDS COMMUNS AUX SURFACES DE CONTACT
 SSNV127B=DEFI_GROUP(reuse=SSNV127B,
                     MAILLAGE=SSNV127B,
                     CREA_GROUP_NO=(_F(GROUP_MA='BCC1',),
                                    _F(GROUP_MA='BCC2',),
                                    _F(INTERSEC=('BCC1','BCC2',),
-                                      NOM='BCC_SGN'),),)
+                                      NOM='BCC_SGN'),),)                                      
 #
 #_____________________________________________________________________
 #
@@ -138,18 +138,21 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                     FY=-9.37500E5,),);
 #
 #
+CHA2=DEFI_CONTACT(MODELE      = MO,
+                  FORMULATION = 'DISCRETE',
+                  FROTTEMENT  = 'COULOMB',
+                  ZONE=_F(
+                           APPARIEMENT   = 'NODAL',
+                           NORMALE       = 'ESCL',
+                           ALGO_CONT     = 'LAGRANGIEN',
+                           ALGO_FROT     = 'LAGRANGIEN',
+                           COULOMB       = 0.4,
+                           GROUP_MA_MAIT = 'BCC1',
+                           GROUP_MA_ESCL = 'BCC2',
+                           SANS_GROUP_NO = 'BCC_SGN',
+                         ),
+                  );
 
-
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(METHODE='LAGRANGIEN',
-                               APPARIEMENT='NODAL',
-                               NORMALE = 'ESCL',
-                               FROTTEMENT='COULOMB',
-                               COULOMB=0.40000000000000002,
-                               GROUP_MA_MAIT='BCC1',
-                               GROUP_MA_ESCL='BCC2',
-                               SANS_GROUP_NO='BCC_SGN',
-                               ),);
 #_____________________________________________________________________
 #
 #               DEFINITION DES FONCTIONS TEMPORELLES
@@ -179,7 +182,8 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE=CHA1,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CHA2,),),
+                       ),
+                CONTACT  = CHA2,       
                 COMP_ELAS=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='ELASTIQUE',
@@ -415,7 +419,7 @@ TEST_TABLE(TABLE=TCONT,
                    _F(NOM_PARA='NOEUD',
                       VALE_K='N787',),),
            NOM_PARA='CONT',
-           VALE=1.,
+           VALE=2.,
            PRECISION=1.E-5,
            REFERENCE='NON_REGRESSION',
            VERSION='V6.3.22',);

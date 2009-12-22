@@ -2,7 +2,7 @@
      &                  TYPLIA,TYPOPE,TYPEOU,JEU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -89,10 +89,10 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*24 APPARI
-      INTEGER      JAPPAR
-      INTEGER      CFMMVD,ZAPPA
-      INTEGER      POSNOE,POSMAI
+      CHARACTER*24 APPARI,APMEMO
+      INTEGER      JAPPAR,JAPMEM
+      INTEGER      CFMMVD,ZAPME
+      INTEGER      POSNOE,POSAPP
       CHARACTER*8  NOMENT,NOMNOE,NOMMAI
       INTEGER      CODRET
       CHARACTER*40 CHAIAC
@@ -106,12 +106,14 @@ C
 C --- ACCES SD CONTACT
 C
       APPARI = RESOCO(1:14)//'.APPARI'
+      APMEMO = RESOCO(1:14)//'.APMEMO'       
       CALL JEVEUO(APPARI,'L',JAPPAR)
-      ZAPPA  = CFMMVD('ZAPPA')
+      CALL JEVEUO(APMEMO,'L',JAPMEM)       
+      ZAPME  = CFMMVD('ZAPME')
 C
 C --- REPERAGE DE L'ESCLAVE
 C
-      POSNOE = ZI(JAPPAR+ZAPPA*(ILIAI-1)+1)
+      POSNOE = ZI(JAPPAR+ILIAI)
 C
 C --- NOM DU NOEUD ESCLAVE
 C
@@ -122,15 +124,15 @@ C
       ELSE  
         NOMNOE = NOMENT
       ENDIF           
-C      
+C
 C --- REPERAGE DU MAITRE
 C
-      POSMAI = ZI(JAPPAR+ZAPPA*(ILIAI-1)+2)
+      POSAPP = ZI(JAPMEM+ZAPME*(POSNOE-1)+3-1)     
 C
 C --- NOM ET TYPE DU MAITRE
 C
-      IF (POSMAI.LT.0) THEN
-        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSMAI,NOMENT,
+      IF (POSAPP.LT.0) THEN
+        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSAPP,NOMENT,
      &              CODRET)
         IF (CODRET.LT.0) THEN
           TYPE2  = ' '
@@ -139,8 +141,8 @@ C
           TYPE2  = '/ND '
           NOMMAI = NOMENT   
         ENDIF         
-      ELSEIF (POSMAI.GT.0) THEN
-        CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSMAI,NOMENT,
+      ELSEIF (POSAPP.GT.0) THEN
+        CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSAPP,NOMENT,
      &              CODRET)
         IF (CODRET.LT.0) THEN
           TYPE2  = ' '
@@ -191,6 +193,11 @@ C
         WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
      &                   CHAIAC,JEU,',TYPE: ',TYPLI,
      &                   ')'
+      ELSE IF (TYPEOU.EQ.'NEG') THEN
+        CHAIAC = ' PRES. NEGATIVE (MU:'
+        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
+     &                   CHAIAC,JEU,',TYPE: ',TYPLI,
+     &                   ')'     
       ELSE IF (TYPEOU.EQ.'PIV') THEN
         CHAIAC = ' PIVOT NUL         ('
         WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',

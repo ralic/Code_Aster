@@ -1,8 +1,8 @@
-         SUBROUTINE HUJDDD (CARAC, K, MATER, IND, YF, VIN,
-     &                      VEC, MAT, IRET)
-         IMPLICIT NONE
+      SUBROUTINE HUJDDD (CARAC, K, MATER, IND, YF, VIN,
+     &                   VEC, MAT, IRET)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,12 +47,12 @@ C =====================================================================
       CHARACTER*32                                ZK32
       CHARACTER*80                                          ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      INTEGER       NDT, NDI, I, J, K, MOD, IK, KK
-      INTEGER       IND(4), NBMECA, IRET, IADZI, IAZK24
+      INTEGER       NDT, NDI, I, J, K, MOD, IK, KK, NBMECT
+      INTEGER       IND(7), NBMECA, IRET, IADZI, IAZK24
       INTEGER       IFM, NIV
-      PARAMETER     (MOD = 15)
-      REAL*8        BETA, M, PCO, PC, PREF, ALPHA
-      REAL*8        EPSVPD, TRACE, B, PHI,ANGDIL
+      PARAMETER     (MOD = 18)
+      REAL*8        BETA, M, PCO, PCOH, PC, PREF, ALPHA
+      REAL*8        EPSVPD, TRACE, B, PHI, ANGDIL
       REAL*8        DD, P, Q, SI, SI1, SIGKIJ
       REAL*8        YF(MOD), R, SIGF(6), SIGD(6)
       REAL*8        MATER(22,2), VEC(6), MAT(6,6), KSI
@@ -61,10 +61,10 @@ C =====================================================================
       REAL*8        XK(2), TH(2), SIGDC(6), QC, VIN(*), VH, D14, D40
       REAL*8        DSDDS(6,6), SXS(6,6), SXP(6,6), PXP(6,6)
       REAL*8        VP(6), PROD, SCXP(6,6), PS, PXH(6,6)
-      REAL*8        VHIST(6), SXH, SCXH, FAC, PTRAC, SIGN
+      REAL*8        VHIST(6), SXH, SCXH, FAC, PTRAC
       CHARACTER*6   CARAC
       CHARACTER*8   NOMAIL
-      LOGICAL       CONSOL, TRACT, DEBUG
+      LOGICAL       CONSOL, TRACT, DEBUG, DILA
 C =====================================================================
       PARAMETER     ( D12   = 0.5D0  )
       PARAMETER     ( D14   = 0.25D0 )
@@ -93,16 +93,20 @@ C =====================================================================
       PREF    = MATER(8,2)
       M       = SIN(DEGR*PHI)
       ALPHA   = MATER(20,2)*D12
-      PTRAC  = MATER(21,2)
+      PTRAC   = MATER(21,2)
       
       
 C =====================================================================
 C --- PREMIER INVARIANT ET AUTRES GRANDEURS UTILES --------------------
 C =====================================================================
       NBMECA = 0
-      DO 4 I = 1, 4
-        IF ( IND(I) .GT. 0 ) NBMECA = NBMECA+1
- 4      CONTINUE
+      NBMECT = 0
+      DO 4 I = 1, 7
+        IF (IND(I) .GT. 0) THEN 
+          NBMECT = NBMECT+1
+          IF (IND(I).LE.8) NBMECA = NBMECA + 1
+        ENDIF
+ 4    CONTINUE
  
       DO 5 I = 1, NBMECA
         IF (IND(I) .EQ. K) R = YF(NDT+1+I)
@@ -118,8 +122,9 @@ C =====================================================================
         IRET = 1
         GOTO 999
       ENDIF
+      
       PC = PCO*EXP(-BETA*EPSVPD)
-      IF(ABS(PC/PREF).LT.TOLE)THEN
+      IF ((PC/PREF).LT.TOLE) THEN
         IRET = 1
         GOTO 999
       ENDIF
@@ -133,7 +138,7 @@ C ---> PROJECTION DES CONTRAINTES DANS LE PLAN DEVIATEUR K
 C        CALCUL DU DEVIATIEUR SIGDK (6X1), PK ET QK
 C        CALL HUJPROJ ( K, SIGF, SIGK, SIGDK, PK, QK )
 Caf 09/05/07 Debut
-      IF (K .EQ. 4 .OR. K .EQ. 8) GOTO 100
+      IF (K.EQ.4 .OR. K.GE.8) GOTO 100
 Caf 09/05/07 Fin
 
       DO 27 I = 1, 6
@@ -161,11 +166,13 @@ Caf 09/05/07 Fin
       DD = D12*DD
       P  = D12*P
       
-Ckham --- PRISE EN COMPTE DE LA TRACTION
+Ckham --- ON ENTRE DANS LE DOMAINE "COHESIF"
       IF ((P/PREF).LT.TOLE) THEN
-        SIGN =-UN
+        DILA = .TRUE.
+        PCOH = PREF*TOLE
       ELSE
-        SIGN =UN
+        DILA = .FALSE.
+        PCOH = P
       ENDIF
 Ckh ---
       
@@ -195,10 +202,10 @@ Caf 14/05/07 Debut
       IF (K .LT. 4) THEN
         Q = DD**DEUX + (SIGKIJ**DEUX)/DEUX
         Q = SQRT(Q)
-        CONSOL = (-Q/PREF) .LE. TOLE
+        CONSOL = (-Q/PREF).LE.TOLE
       ENDIF
  
-      TRACT  = ((P -PTRAC)/PREF) .LE. TOLE
+      TRACT  = ((P -PTRAC)/PREF) .LT. TOLE
       IF (TRACT) THEN
         IF (DEBUG) THEN
           CALL TECAEL(IADZI,IAZK24)
@@ -216,10 +223,10 @@ Caf 09/05/07 Debut
 C ====================================================================
 C --- CALCUL DE SIGDC ET QC POUR MECANISME DEVIATOIRE CYCLIQUE -------
 C ====================================================================
-      IF ((K .GT. 4) .AND. (K .LT. 8)) THEN
+      IF ((K.GT.4) .AND. (K.LT.8)) THEN
         DO 29 I=1,NDT
           SIGDC(I)=ZERO
-  29    CONTINUE
+  29      CONTINUE
         
         XK(1) = VIN(4*K-11)
         XK(2) = VIN(4*K-10)
@@ -232,7 +239,8 @@ C ====================================================================
      &                (UN-B*LOG((P -PTRAC)/PC))*M
             SI = -SI
           ENDIF
-  30    CONTINUE
+  30      CONTINUE
+  
         SIGDC(NDT+5-K) = SIGD(NDT+5-K)-(XK(2)-R*TH(2))*(P -PTRAC)*
      &                   (UN-B*LOG((P -PTRAC)/PC))*M        
         QC = SQRT(D12*(SIGDC(1)**2+SIGDC(2)**2+
@@ -262,6 +270,7 @@ C --- CALCUL DE DPSIDS (6X6) POUR LE MECANISME DEVIATOIRE K (<4) -----
 C ====================================================================
 C ON NE CALCULE PAS POUR LE CAS ISOTROPE (K=4) CAR DPSIDS = [ 0 ]
       IF (CARAC(1:6) .EQ. 'DPSIDS') THEN
+      
         IF (K .EQ. 4) CALL U2MESS('F', 'COMPOR1_2')
         
         CALL LCINMA(ZERO,MAT)
@@ -283,24 +292,24 @@ Caf 15/05/07 Debut
         DO 62 I = 1, NDT
           VP(I) = ZERO
           VHIST(I) = ZERO
-  62    CONTINUE
+  62      CONTINUE
          
         DO 63 I = 1, NDI
           IF (I .NE. (KK)) THEN
             VP(I) = UN
           ENDIF  
-  63    CONTINUE
+  63      CONTINUE
         
         DO 64 I = 1, NDI
           DO 64 J = 1, NDI
-            IF ((I.NE.(KK)) .AND. (J.NE.(KK))) THEN
+            IF ((I.NE.KK) .AND. (J.NE.KK)) THEN
               IF (I .EQ. J) THEN 
                 DSDDS(I,J) = D12
               ELSE
                 DSDDS(I,J) = -D12
               ENDIF
             ENDIF
-  64    CONTINUE
+  64        CONTINUE
         DSDDS(NDT+1-KK,NDT+1-KK) = UN
 
         IF (K .LT. 4) THEN
@@ -314,14 +323,23 @@ Caf 15/05/07 Debut
               PXP(I,J) = VP(I)*VP(J)
   65          CONTINUE  
           
-          DO 66 I = 1, NDT
+          IF (.NOT. DILA) THEN
+            DO 66 I = 1, NDT
             DO 66 J = 1, NDT
               MAT(I,J) = D12*(DSDDS(I,J)/Q - D12*
-     &                   SXS(I,J)/Q**3 - ALPHA*KSI*(SXP(I,J)/
-     &                   (Q*P)-PXP(I,J)*Q/P**2)) * SIGN
+     &                   SXS(I,J)/Q**3.D0 - ALPHA*KSI*(SXP(I,J)/
+     &                   (Q*P)-PXP(I,J)*Q/P**2.D0))
   66          CONTINUE
+          ELSE
+            DO 96 I = 1, NDT
+            DO 96 J = 1, NDT
+              MAT(I,J) = D12*(DSDDS(I,J)/Q - D12*
+     &               SXS(I,J)/Q**3.D0 - ALPHA*KSI*SXP(I,J)/
+     &               (Q*PCOH))
+  96          CONTINUE
+          ENDIF
         
-        ELSEIF ((K .GT. 4) .AND. (K .LT. 8)) THEN
+        ELSEIF ((K.GT.4) .AND. (K.LT.8)) THEN
 C ---> MECANISME CYCLIQUE DEVIATOIRE
 
           CALL HUJKSI('KSI   ', MATER, R, KSI, IRET)
@@ -333,7 +351,7 @@ C ---> MECANISME CYCLIQUE DEVIATOIRE
               VHIST(I) = SI*(XK(1)-TH(1)*R)
               SI = -SI
             ENDIF  
- 670      CONTINUE
+ 670        CONTINUE
           VHIST(NDT+5-K) = XK(2)-TH(2)*R
           
           DO 67 I = 1, NDT
@@ -343,9 +361,8 @@ C ---> MECANISME CYCLIQUE DEVIATOIRE
               SCXP(I,J) = SIGDC(I)*VP(J)
               PXP(I,J)  = VP(I)*VP(J)
               PXH(I,J)  = VHIST(I)*VP(J)
-  67      CONTINUE   
+  67          CONTINUE   
 
-          PROD = ZERO
           PS   = ZERO
           SXH  = ZERO
           SCXH = ZERO
@@ -353,21 +370,23 @@ C ---> MECANISME CYCLIQUE DEVIATOIRE
             PS  = PS + SIGD(I)*SIGDC(I)
             SXH = SXH + SIGD(I)*VHIST(I) 
             SCXH = SCXH + SIGDC(I)*VHIST(I)
- 671      CONTINUE
-          IF(.NOT.CONSOL)THEN
-            PROD = PS/(2.D0*QC**2)
-          ELSE
-            PROD = ZERO
-          ENDIF
+ 671        CONTINUE
+
           FAC = D12*M*(UN-B*(UN+LOG((P -PTRAC)/PC)))
           DO 68 I = 1, NDT
             DO 68 J = 1, NDT
-              IF(.NOT.CONSOL)THEN
+              IF ((.NOT.CONSOL) .AND. (.NOT.DILA)) THEN
                 MAT(I,J) = D12/QC*(DSDDS(I,J)-FAC*PXH(I,J))-
-     &             D14/QC**3*(SXS(I,J)-FAC*SCXH*SCXP(I,J))-
-     &             ALPHA*D12*KSI/(P*QC)*(SCXP(I,J)+SXP(I,J)-
-     &             FAC*SXH*PXP(I,J)-PS*D12/QC**2*(SCXP(I,J)-
-     &             FAC*SCXH*PXP(I,J))-PS*D12/P*PXP(I,J)*SIGN)*SIGN
+     &           D14/QC**3.D0*(SXS(I,J)-FAC*SCXH*SCXP(I,J))-
+     &           ALPHA*D12*KSI/(P*QC)*(SCXP(I,J)+SXP(I,J)-
+     &           FAC*SXH*PXP(I,J)-PS*D12/QC**2.D0*(SCXP(I,J)-
+     &           FAC*SCXH*PXP(I,J))-PS*D12/P*PXP(I,J))
+              ELSEIF ((.NOT.CONSOL) .AND. DILA) THEN
+                MAT(I,J) = D12/QC*(DSDDS(I,J)-FAC*PXH(I,J))-
+     &           D14/QC**3.D0*(SXS(I,J)-FAC*SCXH*SCXP(I,J))-
+     &           ALPHA*D12*KSI/(PCOH*QC)*(SCXP(I,J)+SXP(I,J)-
+     &           FAC*SXH*PXP(I,J)-PS*D12/QC**2.D0*(SCXP(I,J)-
+     &           FAC*SCXH*PXP(I,J)))
               ELSE
                 MAT(I,J) = ZERO
               ENDIF
@@ -384,12 +403,12 @@ C --- CALCUL DE DFDS (6X1) POUR LE MECANISME DEVIATOIRE K  ---------
 C =====================================================================
       ELSEIF (CARAC(1:4) .EQ. 'DFDS') THEN
         
-        P = P -PTRAC
+        IF (K.LE.8) P = P -PTRAC
         
         DO 70 I = 1, NDT
           VEC(I)   = ZERO
           VHIST(I) = ZERO
- 70     CONTINUE
+ 70       CONTINUE
  
         IF (K .LT. 4) THEN
        
@@ -460,10 +479,10 @@ C --- MECANISMES DEVIATOIRES CYCLIQUES
      &         VEC(I) = FAC*(R-SCXH*D12/QC)+D12*SIGDC(I)/QC
             ENDIF
   74      CONTINUE
-          IF ( .NOT. CONSOL ) VEC(NDT+5-K)= D12*SIGDC(NDT+5-K)/QC
+          IF (.NOT. CONSOL) VEC(NDT+5-K)= D12*SIGDC(NDT+5-K)/QC
         ELSEIF (K .EQ. 8) THEN
           DO 77 I = 1, NDI
-            IF(VIN(22).EQ.UN)THEN 
+            IF (VIN(22).EQ.UN) THEN 
               VEC(I)=-D13*ABS(P)/P
             ELSE
               VEC(I)=D13*ABS(P)/P
@@ -472,6 +491,12 @@ C --- MECANISMES DEVIATOIRES CYCLIQUES
  
 Caf 09/05/07 Fin 
  
+        ELSEIF (K .GT. 8) THEN
+        
+          DO 78 I = 1, 3
+            IF (I .NE.(K-8)) VEC(I) = D12
+  78        CONTINUE
+
         ENDIF
         
 C =====================================================================
@@ -481,7 +506,7 @@ C =====================================================================
       ELSEIF (CARAC(1:3) .EQ. 'PSI') THEN
         DO 80 I = 1, NDT
           VEC(I) = ZERO
- 80     CONTINUE
+ 80       CONTINUE
  
         IF (K .LT. 4) THEN        
           
@@ -500,14 +525,8 @@ C =====================================================================
           IF (IRET .EQ. 1) GOTO 999
           
           DO 81 I = 1, NDI
-            IF(I.NE.K) THEN
-              IF (SIGN .EQ. UN) THEN
-                VEC(I) = -ALPHA*KSI*(SIN(DEGR*ANGDIL) + Q/P)
-              ELSEIF (SIGN .EQ. -UN) THEN
-                VEC(I) = ALPHA*KSI*Q/P
-              ELSE
-               WRITE (6,'(A)') 'HUJDDD :: PSI :: CAS NON PREVU'
-              ENDIF
+            IF (I.NE.K) THEN
+              VEC(I) = -ALPHA*KSI*(SIN(DEGR*ANGDIL) + Q/PCOH)
               IF (.NOT.CONSOL) VEC(I) = VEC(I) + SIGD(I) /Q/2.D0
             ENDIF
  81       CONTINUE
@@ -518,18 +537,26 @@ C =====================================================================
         
           DO 82 I = 1, NDI
             VEC(I) = -D13
- 82       CONTINUE
+ 82         CONTINUE
 
 Caf 09/05/07 Debut
         ELSEIF (K .EQ. 8) THEN
         
           DO 83 I = 1, NDI
-            IF(VIN(22).EQ.UN)THEN
-              VEC(I) = -D13*ABS(P)/P 
+            IF (VIN(22).EQ.UN) THEN
+              IF(P.GT.ZERO)THEN
+                VEC(I) = -D13
+              ELSE
+                VEC(I) = D13
+              ENDIF
             ELSE
-              VEC(I) = D13*ABS(P)/P
+              IF(P.GT.ZERO)THEN
+                VEC(I) = D13
+              ELSE
+                VEC(I) = -D13
+              ENDIF
             ENDIF  
-  83      CONTINUE      
+  83        CONTINUE      
           
         ELSEIF ((K .GT. 4) .AND. (K .LT. 8)) THEN
 C --- MECANISME DEVIATOIRE CYCLIQUE
@@ -541,10 +568,6 @@ C --- PREVOIR TEST POUR TRACTION ET DIVISION PAR ZERO
               WRITE (IFM,'(10(A))')
      &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ',NOMAIL  
             ENDIF
-C               WRITE (IFM,*)
-C      &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ' 
-C               WRITE(6,*)'P =',P
-C               WRITE(6,'(A,6(1X,E16.9))')'SIGF =',(SIGF(I),I=1,6)
             IRET = 1
             GOTO 999
           ENDIF
@@ -553,8 +576,8 @@ C               WRITE(6,'(A,6(1X,E16.9))')'SIGF =',(SIGF(I),I=1,6)
           PROD = ZERO
           DO 85 I = 1, NDT        
             PROD = PROD + SIGD(I)*SIGDC(I)  
-  85      CONTINUE
-          IF(.NOT.CONSOL)THEN
+  85        CONTINUE
+          IF (.NOT.CONSOL) THEN
             PROD = PROD / (2.D0*QC)
           ELSE
             PROD = ZERO
@@ -564,17 +587,8 @@ C               WRITE(6,'(A,6(1X,E16.9))')'SIGF =',(SIGF(I),I=1,6)
           
             IF (I.NE.(K-4)) THEN
               IF (.NOT.CONSOL) THEN
-              
-                IF (SIGN .EQ. UN) THEN
-                  VEC(I) = -ALPHA*KSI*(SIN(DEGR*ANGDIL) + PROD/P)
+                VEC(I) = -ALPHA*KSI*(SIN(DEGR*ANGDIL) + PROD/PCOH)
      &                     + SIGDC(I)/QC/2.D0
-                ELSEIF (SIGN .EQ. -UN) THEN
-                  VEC(I) = ALPHA*KSI*PROD/P
-     &                     + SIGDC(I)/QC/2.D0
-                ELSE
-                  WRITE (6,'(A)') 'HUJDDD :: PSI :: CAS NON PREVU'
-                ENDIF
-                
               ELSE
                 VEC(I) = -ALPHA*KSI*SIN(DEGR*ANGDIL)
               ENDIF
@@ -584,6 +598,11 @@ C               WRITE(6,'(A,6(1X,E16.9))')'SIGF =',(SIGF(I),I=1,6)
           IF (.NOT.CONSOL) VEC(NDT+5-K) = SIGDC(NDT+5-K)/QC/2.D0
 
 Caf 09/05/07 Fin
+
+        ELSEIF (K .GT. 8) THEN
+          DO 86 I = 1, 3
+            IF (I .NE. (K-8)) VEC(I) = D12
+  86        CONTINUE
         ENDIF
                 
       ENDIF

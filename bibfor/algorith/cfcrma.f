@@ -1,7 +1,7 @@
       SUBROUTINE CFCRMA(NEQ,NOMA,RESOSD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,15 +23,18 @@ C
       INTEGER      NEQ
       CHARACTER*8  NOMA
       CHARACTER*24 RESOSD
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : CFCRSD/CUCRSD
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE DISCRETE - CREATION SD)
 C
 C CREATION DE LA MATRICE DE "CONTACT"
 C VALABLE AUSSI POUR LIAISON_UNIL
 C     CETTE MATRICE EST STOCKEE EN LIGNE DE CIEL
 C     TRIANGULAIRE SYMETRIQUE PLEINE
+C
+C ----------------------------------------------------------------------
+C 
 C
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  NEQ    : NOMBRE D'EQUATIONS DE LA MATRICE

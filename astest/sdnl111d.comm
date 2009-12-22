@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,11 +70,16 @@ VITINI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                      VALE=0.0,),),);
 # *******************************************
 
-CONTACT=AFFE_CHAR_MECA(MODELE=MODELE,
-                       CONTACT=_F(METHODE='LAGRANGIEN',
-                                  MAILLE_MAIT='M101',
-                                  MAILLE_ESCL='M103',
-                                  ),);
+CONTACT = DEFI_CONTACT(MODELE      = MODELE,
+                       FORMULATION = 'DISCRETE',
+                       ZONE =_F(
+                             ALGO_CONT = 'LAGRANGIEN',
+                             MAILLE_MAIT='M101',
+                             MAILLE_ESCL='M103',
+                           ),
+                      );
+
+
 # ************************************************************
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
@@ -83,8 +88,9 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 
 RESU=DYNA_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CONTACT,),
+                   EXCIT=(
                           _F(CHARGE=CONDLIM,),),
+                   CONTACT  = CONTACT,       
                    COMP_INCR=_F(RELATION='ELAS',
                                 DEFORMATION='PETIT_REAC',),
                    ETAT_INIT=_F(

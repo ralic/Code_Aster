@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONDITION DE SUINTEMENT SUR UN BLOC SATURE
 # wtna108b.para = tps_job 70 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,32 +116,29 @@ CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
                                               ),
                       )
 
-#CHARZ=AFFE_CHAR_MECA(MODELE=MODELE,
-#                     CONTACT=_F(APPARIEMENT='NON',
-#                               GROUP_MA_ESCL=('GM14','GM16'),
-#                                SANS_GROUP_NO=('MIL_GM14','MIL_GM16',),
-#                                NOM_CHAM='PRE1',
-#                                COEF_IMPO=3.0,
-#                                COEF_MULT_ESCL=1.0,),);
-###
+F_IMPO = DEFI_CONSTANTE( VALE = 3.0 )
+F_MULT = DEFI_CONSTANTE( VALE = 1.0 )
 
-CHAR1=AFFE_CHAR_MECA(MODELE=MODELE,INFO=2,
-                     LIAISON_UNILATER=(_F(
-                               GROUP_MA=('GM14'),
-                                SANS_GROUP_NO=('MIL_GM14'),
-                                NOM_CMP='PRE1',
-                                COEF_IMPO=3.0,
-                                COEF_MULT=1.0,),
-                                       _F(
-                               GROUP_MA=('GM16'),
-                                SANS_GROUP_NO=('MIL_GM16',),
-                                NOM_CMP='PRE1',
-                                COEF_IMPO=3.0,
-                                COEF_MULT=1.0,),
-                                ),
+CHAR1 = DEFI_CONTACT(MODELE      = MODELE,
+                     FORMULATION = 'LIAISON_UNIL',
+                     ZONE        = (
+                       _F(
+                         GROUP_MA      = ('GM14',),
+                         SANS_GROUP_NO = ('MIL_GM14',),
+                         NOM_CMP       = ('PRE1',),
+                         COEF_IMPO     = F_IMPO,
+                         COEF_MULT     = F_MULT,
+                         ),
+                       _F(
+                         GROUP_MA      = ('GM16',),
+                         SANS_GROUP_NO = ('MIL_GM16',),
+                         NOM_CMP       = ('PRE1',),
+                         COEF_IMPO     = F_IMPO,
+                         COEF_MULT     = F_MULT,
+                         ),
+                     ),                            
+                     )
 
-
-                                );
 
 CHARG0=AFFE_CHAR_MECA(MODELE=MODELE,
                       PESANTEUR=(9.81,0.0,-1.0,0.0,),);
@@ -150,10 +147,10 @@ MESTAT=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=100),
                      MODELE=MODELE,
                      CHAM_MATER=CHMATO,
                      EXCIT=(_F(CHARGE=CHAR0,),
-                            _F(CHARGE=CHAR1,),
                             _F(CHARGE=CHARG0,
                                TYPE_CHARGE='SUIV',),
                          ),
+                     CONTACT  =  CHAR1,
                      COMP_INCR=_F(RELATION='KIT_HM',PARM_THETA=1.0,
                                   RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
                                   ITER_INTE_MAXI=5,),
@@ -347,5 +344,8 @@ TEST_RESU(RESU=(
                   NOEUD='N28',
                   VALE= 5.63088E+02,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '9.2.18', ),),);
+                  VERSION = '9.2.18', ),))
+
+
+
 FIN();

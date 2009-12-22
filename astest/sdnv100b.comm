@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100b.para = tps_job 60 mem_job 50Mo liste_test S
@@ -75,15 +75,15 @@ CH=AFFE_CHAR_MECA(
                                  )
            )
 
-CH2=AFFE_CHAR_MECA(
-                   MODELE=MODE,
-                   CONTACT=_F(REAC_GEOM      = 'CONTROLE',
-                              NB_REAC_GEOM   = 2,
-                              METHODE        = 'CONTRAINTE',
-                              GROUP_MA_ESCL     = 'FACEINF',
-                              GROUP_MA_MAIT     = 'SSOL',
-                             )
-                  )
+CH2     = DEFI_CONTACT(MODELE         = MODE,
+                       FORMULATION    = 'DISCRETE',
+                       REAC_GEOM      = 'CONTROLE',
+                       NB_ITER_GEOM   = 2,         
+                       ZONE =_F(
+                             GROUP_MA_ESCL  = 'FACEINF',
+                             GROUP_MA_MAIT  = 'SSOL',
+                               ),
+                      );
 
 # ************* CHAMP DE VITESSE INITIALE ***************
 
@@ -129,8 +129,8 @@ U=DYNA_NON_LINE(  SOLVEUR=_F(SYME='OUI',),
            EXCIT=(_F( CHARGE = CH,
                       FONC_MULT = RAMPE
                     ),
-                  _F( CHARGE = CH2,)
                  ),
+           CONTACT     = CH2,      
            ETAT_INIT   =_F(DEPL = CHAMP2,VITE = CHAMP1),
            COMP_ELAS   =_F( RELATION = 'ELAS',),
            INCREMENT   =_F( INST_INIT = 0.,LIST_INST = L_INST),

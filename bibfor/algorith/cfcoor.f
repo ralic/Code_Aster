@@ -2,7 +2,7 @@
      &                  KSI2  ,COORDP)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,8 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      NBNOM,IDIM,NDIM,NUMMAM
       REAL*8       COORMA(27)
-      CHARACTER*8  ALIAS,NOMMAM     
+      CHARACTER*8  ALIAS,NOMMAM
+      CHARACTER*4  TYPMAI     
 C
 C-----------------------------------------------------------------------
 C
@@ -82,8 +83,12 @@ C
 C
 C --- CARACTERISTIQUES DE LA MAILLE MAITRE
 C      
-      CALL CFCARM(NOMA  ,DEFICO,NEWGEO,POSMAM,NUMMAM,
-     &            ALIAS ,NOMMAM,NDIM  ,NBNOM ,COORMA)
+      CALL CFCARM(NOMA  ,DEFICO,NEWGEO,POSMAM,TYPMAI,
+     &            NUMMAM,ALIAS ,NOMMAM,NDIM  ,NBNOM ,
+     &            COORMA)
+      IF (TYPMAI.NE.'MAIT') THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF
 C
 C --- COORDONNEES DU PROJETE
 C

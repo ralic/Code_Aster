@@ -1,4 +1,4 @@
-# MODIF  DATE 07/12/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 # yyyy106b.para = tps_job 1040 mem_job 1900Mo ncpus 1 liste_test L
@@ -20,7 +20,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='YYYY106B', NIV_PUB_WEB='INTRANET',),);
+DEBUT(CODE=_F(NOM='YYYY106B', NIV_PUB_WEB='INTRANET',),)
 
 MA=LIRE_MAILLAGE(UNITE=21,
                  FORMAT='MED',);
@@ -213,19 +213,29 @@ CHMC1=AFFE_CHAR_MECA(VERI_NORM='OUI',
                                        DDL_2='DY',
                                        COEF_MULT_2=-1.0,
                                        COEF_IMPO=0.0,),),
-                     CONTACT=(_F(GROUP_MA_MAIT='MC11_PLA',
-                                 GROUP_MA_ESCL='MC11_COR',
-                                 TOLE_PROJ_EXT=0.1,
-                                 REAC_GEOM='SANS',),
-                              _F(GROUP_MA_MAIT='MC12_PLA',
-                                 GROUP_MA_ESCL='MC12_COR',
-                                 TOLE_PROJ_EXT=0.1,
-                                 REAC_GEOM='SANS',),
-                              _F(GROUP_MA_MAIT='MC13_PLA',
-                                 GROUP_MA_ESCL='MC13_COR',
-                                 TOLE_PROJ_EXT=0.1,
-                                 REAC_GEOM='SANS',),),
                      INFO=1,);
+
+CONT = DEFI_CONTACT(MODELE      = MODMECA,
+                   FORMULATION  = 'DISCRETE',
+                   REAC_GEOM    = 'SANS',
+                   ZONE=(
+                        _F(
+                            GROUP_MA_MAIT='MC11_PLA',
+                            GROUP_MA_ESCL='MC11_COR',
+                            TOLE_PROJ_EXT = 0.1, 
+                         ),                           
+                        _F(
+                            GROUP_MA_MAIT='MC12_PLA',
+                            GROUP_MA_ESCL='MC12_COR',
+                            TOLE_PROJ_EXT = 0.1, 
+                         ),  
+                        _F(
+                            GROUP_MA_MAIT='MC13_PLA',
+                            GROUP_MA_ESCL='MC13_COR',
+                            TOLE_PROJ_EXT = 0.1, 
+                         ),                                                                                                      
+                       ),  
+                  )  
 
 CHMS1=AFFE_CHAR_MECA(VERI_NORM='OUI',
                      MODELE=MODMECA,
@@ -344,10 +354,10 @@ DEP=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                          _F(CHARGE=CHMS1,
                             FONC_MULT=FONCS,
                             TYPE_CHARGE='FIXE_CSTE',),
-                         #_F(CHARGE=CHT286, TYPE_CHARGE='FIXE_CSTE',),
                          _F(CHARGE=CHMP1,
                             FONC_MULT=FONCP,
                             TYPE_CHARGE='FIXE_CSTE',),),
+                  CONTACT  = CONT,          
                   COMP_INCR=_F(RELATION='ELAS',
                                DEFORMATION='PETIT',
                                GROUP_MA=('E_COR','E_CHA','E_PLA','E_ECR','E_GOU','E_JOI','E_RON','E_STE',),),
@@ -388,6 +398,7 @@ DEP=STAT_NON_LINE(reuse =DEP,
                          _F(CHARGE=CHMP1,
                             FONC_MULT=FONCP,
                             TYPE_CHARGE='FIXE_CSTE',),),
+                  CONTACT  =CONT,          
                   COMP_INCR=_F(RELATION='ELAS',
                                DEFORMATION='PETIT',
                                GROUP_MA=('E_COR','E_CHA','E_PLA','E_ECR','E_GOU','E_JOI','E_RON','E_STE',),),

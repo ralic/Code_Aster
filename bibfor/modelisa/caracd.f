@@ -1,7 +1,7 @@
       SUBROUTINE CARACD(CHAR  ,NZOCO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,9 +26,10 @@ C
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE CONTACT (METHODE DISCRETE - LECTURE DONNEES)
+C ROUTINE CONTACT (METHODE DISCRETE - SD)
 C
-C CREATION DES SDS DE DEFINITION DU CONTACT
+C CREATION DES SDS DE DEFINITION DU CONTACT DEDIEES A LA 
+C FORMULATION DISCRETE
 C      
 C ----------------------------------------------------------------------
 C
@@ -55,24 +56,24 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFMMVD,ZCONV,ZCARF
-      CHARACTER*24 CARFRO,CONVCO
-      INTEGER      JCARF,JCONV    
+      CHARACTER*24 DEFICO
+      INTEGER      CFMMVD,ZCMDF
+      CHARACTER*24 CARADF
+      INTEGER      JCMDF    
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C   
-C --- NOMS SDS
-C  
-      CARFRO = CHAR(1:8)//'.CONTACT.CARFRO'
-      CONVCO = CHAR(1:8)//'.CONTACT.CONVCO'     
 C
-      ZCONV = CFMMVD('ZCONV')      
-      ZCARF = CFMMVD('ZCARF')                  
+C --- INITIALISATIONS
 C
-      CALL WKVECT(CONVCO,'G V I' ,ZCONV*NZOCO  ,JCONV )     
-      CALL WKVECT(CARFRO,'G V R' ,ZCARF*NZOCO+1,JCARF )
+      DEFICO = CHAR(1:8)//'.CONTACT'  
+C      
+C --- CREATION DES SD DE BASE
+C      
+      CARADF = DEFICO(1:16)//'.CARADF'  
+      ZCMDF  = CFMMVD('ZCMDF')                          
+      CALL WKVECT(CARADF,'G V R' ,ZCMDF*NZOCO,JCMDF )
 C
       CALL JEDEMA()
 C

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,60 +34,49 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                             MATER=MAT,),);
 #
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
+CHAR = AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='SPHSUP',
                                  DY=-2.0,),
                               _F(GROUP_NO='SPHINF',
                                  DY=2.0,),
                               _F(GROUP_NO='AXE',
-                                 DX=0.0,),),
-                    CONTACT=_F(APPARIEMENT='NODAL',
+                                 DX=0.0,),),);
+
+CHA2=DEFI_CONTACT(MODELE      = MO,
+                  FORMULATION = 'DISCRETE',
+                  ZONE=_F(APPARIEMENT='NODAL',
                                NORMALE='MAIT_ESCL',
-                               METHODE='LAGRANGIEN',
+                               ALGO_CONT='LAGRANGIEN',
                                GROUP_MA_MAIT='CON1',
                                GROUP_MA_ESCL='CON2',),
                     INFO=2,);
 #
 
-CHA3=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='SPHSUP',
-                                 DY=-2.0,),
-                              _F(GROUP_NO='SPHINF',
-                                 DY=2.0,),
-                              _F(GROUP_NO='AXE',
-                                 DX=0.0,),),
-                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
+CHA3=DEFI_CONTACT(MODELE      = MO,
+                  FORMULATION = 'DISCRETE',
+                  ZONE=_F(APPARIEMENT='MAIT_ESCL',
                                NORMALE='MAIT_ESCL',
-                               METHODE='LAGRANGIEN',
+                               ALGO_CONT='LAGRANGIEN',
                                GROUP_MA_MAIT='CON1',
                                GROUP_MA_ESCL='CON2',),
                     INFO=2,);
 #
 
-CHA4=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='SPHSUP',
-                                 DY=-2.0,),
-                              _F(GROUP_NO='SPHINF',
-                                 DY=2.0,),
-                              _F(GROUP_NO='AXE',
-                                 DX=0.0,),),
-                    CONTACT=_F(NORMALE='MAIT_ESCL',
-                               METHODE='CONTRAINTE',
+CHA4=DEFI_CONTACT(MODELE      = MO,
+                  FORMULATION = 'DISCRETE',
+                  ZONE=_F(NORMALE='MAIT_ESCL',
+                               ALGO_CONT='CONTRAINTE',
                                GROUP_MA_MAIT='CON1',
                                GROUP_MA_ESCL='CON2',),
                     INFO=2,);
 #
 
-CHA5=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='SPHSUP',
-                                 DY=-2.0,),
-                              _F(GROUP_NO='SPHINF',
-                                 DY=2.0,),
-                              _F(GROUP_NO='AXE',
-                                 DX=0.0,),),
-                    CONTACT=_F(LISSAGE='OUI',
+CHA5=DEFI_CONTACT(MODELE      = MO,
+                  FORMULATION = 'DISCRETE',
+                  LISSAGE='OUI',
+                  ZONE=_F(
                                NORMALE='MAIT_ESCL',
-                               METHODE='CONTRAINTE',
+                               ALGO_CONT='CONTRAINTE',
                                GROUP_MA_MAIT='CON1',
                                GROUP_MA_ESCL='CON2',),
                     INFO=2,);
@@ -105,8 +94,9 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 RESU2=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
-                    EXCIT=_F(CHARGE=CHA2,
+                    EXCIT=_F(CHARGE=CHAR,
                              FONC_MULT=RAMPE,),
+                    CONTACT  = CHA2,         
                     COMP_ELAS=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=L_INST,
                                  NUME_INST_FIN=10,),
@@ -206,8 +196,9 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO2,
 
 RESU3=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
-                    EXCIT=_F(CHARGE=CHA3,
+                    EXCIT=_F(CHARGE=CHAR,
                              FONC_MULT=RAMPE,),
+                             CONTACT  = CHA3,       
                     COMP_ELAS=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=L_INST,
                                  NUME_INST_FIN=10,),
@@ -304,10 +295,11 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO3,
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.3.23',),),);
 
-RESU4=STAT_NON_LINE(MODELE=MO,
+RESU4=STAT_NON_LINE(MODELE=MO,INFO=2,
                     CHAM_MATER=CHMAT,
-                    EXCIT=_F(CHARGE=CHA4,
+                    EXCIT=_F(CHARGE=CHAR,
                              FONC_MULT=RAMPE,),
+                    CONTACT  = CHA4,                
                     COMP_ELAS=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=L_INST,
                                  NUME_INST_FIN=10,),
@@ -407,8 +399,9 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO4,
 
 RESU5=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
-                    EXCIT=_F(CHARGE=CHA5,
+                    EXCIT=_F(CHARGE=CHAR,
                              FONC_MULT=RAMPE,),
+                    CONTACT  = CHA5,
                     COMP_ELAS=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=L_INST,
                                  NUME_INST_FIN=10,),

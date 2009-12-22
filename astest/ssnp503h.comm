@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# ssnp503h.para = tps_job 100 mem_job 64Mo liste_test S
+# ssnp503h.para = tps_job 300 mem_job 32Mo liste_test S
 #
 # CONTACT-FROTTANT EN GRANDS GLISSEMENTS
 # AVEC XFEM POUR DES FISSURES HORIZONTALES
@@ -68,42 +68,53 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
                          CONTACT='OUI',
                          INFO=1,);
-                         
-CTXFEM = AFFE_CHAR_MECA( CONTACT=(_F(METHODE='XFEM',
-                                     INTEGRATION='NOEUD',
-                                     FROTTEMENT='COULOMB',
-                                     COULOMB=0.5,
-                                     COEF_REGU_FROT=100,
-                                     ITER_FROT_MAXI=10,
-                                     COEF_REGU_CONT=100., 
-                                     ITER_CONT_MAXI=10,
-                                     ITER_GEOM_MAXI=10,
-                                     TOLE_PROJ_EXT =0.1,
-                                     CONTACT_INIT='OUI',
-                                     GLISSIERE='NON',   
-                                     COEF_ECHELLE=1.,
-                                     FISS_MAIT = FISS1,
-                                     ALGO_LAGR='VERSION2',
-                                     ),
-                                  _F(METHODE='XFEM',
-                                     INTEGRATION='NOEUD',
-                                     FROTTEMENT='COULOMB',
-                                     COULOMB=0.5,
-                                     COEF_REGU_FROT=100,
-                                     ITER_FROT_MAXI=10,
-                                     COEF_REGU_CONT=100., 
-                                     ITER_CONT_MAXI=10,
-                                     ITER_GEOM_MAXI=10,
-                                     TOLE_PROJ_EXT =0.1, 
-                                     CONTACT_INIT='OUI', 
-                                     GLISSIERE='NON',
-                                     COEF_ECHELLE=1.,
-                                     FISS_MAIT = FISS2,
-                                     ALGO_LAGR='VERSION2',
-                                    ),  
-                                  ),
-                                MODELE=MODELEK,
-                          ),
+
+
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      FROTTEMENT     = 'COULOMB',
+                      ITER_FROT_MAXI = 10, 
+                      ITER_CONT_MAXI = 10,
+                      ITER_GEOM_MAXI = 10,
+                      REAC_GEOM      = 'AUTOMATIQUE',
+                      ZONE=(
+                            _F(
+                               FISS_MAIT    = FISS1,
+                               INTEGRATION  = 'NOEUD',
+                               CONTACT_INIT = 'OUI',
+                               COEF_ECHELLE = 1.,
+                               COULOMB      = 0.5,
+                               ALGO_CONT    = 'AVANCE',
+                               COEF_REGU_CONT    = 100.,
+                               COEF_STAB_CONT    = 0.,
+                               COEF_PENA_CONT    = 0.,
+                               ALGO_FROT    = 'AVANCE',
+                               COEF_REGU_FROT    = 100.,
+                               COEF_STAB_FROT    = 0.,
+                               COEF_PENA_FROT    = 0.,                          
+                               ALGO_LAGR    = 'VERSION2',
+                               TOLE_PROJ_EXT =0.1, 
+                             ),
+                            _F(
+                               FISS_MAIT    = FISS2,
+                               INTEGRATION  = 'NOEUD',
+                               CONTACT_INIT = 'OUI',
+                               COEF_ECHELLE = 1.,
+                               COULOMB      = 0.5,
+                               ALGO_CONT    = 'AVANCE',
+                               COEF_REGU_CONT    = 100.,
+                               COEF_STAB_CONT    = 0.,
+                               COEF_PENA_CONT    = 0.,
+                               ALGO_FROT    = 'AVANCE',
+                               COEF_REGU_FROT    = 100.,
+                               COEF_STAB_FROT    = 0.,
+                               COEF_PENA_FROT    = 0.,                          
+                               ALGO_LAGR    = 'VERSION2',
+                               TOLE_PROJ_EXT =0.1, 
+                             ), 
+                         ),
+                   );
+
                           
 E=100.0E6
 nu=0.3
@@ -186,22 +197,22 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMAT,              
-                    EXCIT=(_F(CHARGE=CTXFEM,),
+                    EXCIT=(
                            _F(CHARGE=CHXFEM,),                                    
                            _F(CHARGE=CH1,FONC_MULT=VAR1),
-                           _F(CHARGE=CH2,FONC_MULT=VAR2),),  
+                           _F(CHARGE=CH2,FONC_MULT=VAR2),), 
+                    CONTACT  = CTXFEM,
+                    NEWTON=_F(REAC_ITER=1,),        
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='VOLU',),
                     INCREMENT=_F(LIST_INST=L_INST,),
                     CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
                                     RESI_GLOB_MAXI=1E-06
                                     )),
-                    NEWTON=_F(REAC_ITER=1,),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=80,
-                               NPREC=-1,),
+                               PCENT_PIVOT=80,NPREC=-1,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,);
+                    INFO=2,);
 
 LAG=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]

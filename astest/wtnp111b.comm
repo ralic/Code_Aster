@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE TEST ELEMENTAIRE DU SUINTEMENT : EPONGE SOUS PRESSION
 # wtnp111b.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
@@ -101,21 +101,24 @@ CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
                                   PRE1=1000.0,),
                                                          ))
 
-CHAR1=AFFE_CHAR_MECA_F(MODELE=MODELE,
-                       LIAISON_UNILATER=_F(
-                                GROUP_MA=('DROITE'),
-                                SANS_GROUP_NO=('MIL_DROITE'),
-                                NOM_CMP = ('PRE1',),
-                                COEF_IMPO=FONCT1,
-                                COEF_MULT=FONCT2,),);
-
+CHAR1 = DEFI_CONTACT(MODELE      = MODELE,
+                     FORMULATION = 'LIAISON_UNIL',
+                     ZONE        = (
+                       _F(
+                         GROUP_MA      = ('DROITE',),
+                         SANS_GROUP_NO = ('MIL_DROITE',),
+                         NOM_CMP       = ('PRE1',),
+                         COEF_IMPO     = FONCT1,
+                         COEF_MULT     = FONCT2,
+                         ),
+                     ),                            
+                     )
 
 MESTAT=STAT_NON_LINE(SOLVEUR=_F( METHODE='MUMPS', PCENT_PIVOT=80, ),
                      MODELE=MODELE,
                      CHAM_MATER=CHMATO,
-                     EXCIT=(_F(CHARGE=CHAR0,),
-                            _F(CHARGE=CHAR1,),
-                                                   ),
+                     EXCIT=(_F(CHARGE=CHAR0,),),
+                     CONTACT = CHAR1,                              
                      COMP_INCR=_F(RELATION='KIT_HM',ITER_INTE_MAXI=5,PARM_THETA=1.0,
                                   RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
                      INCREMENT=_F(LIST_INST=LI,),

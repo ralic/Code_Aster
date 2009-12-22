@@ -1,7 +1,7 @@
       SUBROUTINE MISAZL(VECINC,DEFICO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      CHARACTER*24  VECINC,DEFICO
+      CHARACTER*19  VECINC
+      CHARACTER*24  DEFICO
 C      
 C ----------------------------------------------------------------------
 C
@@ -52,11 +53,11 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFMMVD,ZNOES
-      CHARACTER*24 CONTNO,NDIMCO,NOESCL
-      INTEGER      JNOCO,JDIM,JNOESC
-      INTEGER      POSNO,NUMNO,INO,NNOCO
+      CHARACTER*24 CONTNO,TYPENO
+      INTEGER      JNOCO,JTYPNO
+      INTEGER      POSNO,NUMNO,INO
       INTEGER      IBID,NBNO,IER,JTAB
+      INTEGER      CFDISI,NNOCO
       LOGICAL      LCUMUL(4)
       REAL*8       LCOEFR(4)
       CHARACTER*19 CNS1,CNS1C
@@ -69,29 +70,25 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+C --- INITIALISATIONS
+C
+      NNOCO  = CFDISI(DEFICO,'NNOCO')
+      NBNO   = 0      
+C
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C
       CONTNO = DEFICO(1:16)//'.NOEUCO'
-      NDIMCO = DEFICO(1:16)//'.NDIMCO'
-      NOESCL = DEFICO(1:16)//'.NOESCL'
-C       
-      CALL JEVEUO(NDIMCO,'L',JDIM)
+      TYPENO = DEFICO(1:16)//'.TYPENO' 
+      CALL JEVEUO(TYPENO,'L',JTYPNO)       
       CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(NOESCL,'L',JNOESC)
-      ZNOES  = CFMMVD('ZNOES') 
-C
-C --- INITIALISATIONS
-C
-      NNOCO  = ZI(JDIM+4)
-      NBNO   = 0
 C
 C --- TABLEAU TEMPORAIRE POUR STOCKER NUMERO NOEUDS ESCLAVES
 C
-      CALL WKVECT('&&MISAZL.NNO','V V I',3*NNOCO,JTAB)
+      CALL WKVECT('&&MISAZL.NNO','V V I',NNOCO,JTAB)
 C
       DO 10 INO = 1,NNOCO
         POSNO = INO
-        IF (ZR(JNOESC+ZNOES*(POSNO-1)).LT.(0.D0)) THEN
+        IF (ZI(JTYPNO+POSNO-1).EQ.-1) THEN
           NBNO   = NBNO+1
           NUMNO  = ZI(JNOCO+POSNO-1)
           ZI(JTAB+NBNO-1) = NUMNO

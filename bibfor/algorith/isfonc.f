@@ -1,7 +1,7 @@
       LOGICAL FUNCTION ISFONC(FONACT,NOMFOZ)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE    
-      LOGICAL       FONACT(*)
+      INTEGER       FONACT(*)
       CHARACTER*(*) NOMFOZ
 C      
 C ----------------------------------------------------------------------
@@ -62,6 +62,14 @@ C       DIDI               :  FORCE DE TYPE DIFF. DIRICHLET
 C       SOUS_STRUC         :  CALCUL PAR SOUS-STRUCTURATION
 C       IMPL_EX            :  ALGORITHME IMPL_EX
 C       DIS_CHOC           :  PRESENCE D'ELEMENTS DIS_CHOC
+C       EXI_VARC           :  PRESENCE DE VARIABLES DE COMMANDES
+C       BOUCLE_EXTERNE     :  PRESENCE D'UNE BOUCLE EXTERNE
+C       BOUCLE_EXT_GEOM    :  PRESENCE D'UNE BOUCLE EXTERNE POUR
+C                             LA GEOMETRIE
+C       BOUCLE_EXT_FROT    :  PRESENCE D'UNE BOUCLE EXTERNE POUR
+C                             LE FROTTEMENT
+C       BOUCLE_EXT_CONT    :  PRESENCE D'UNE BOUCLE EXTERNE POUR
+C                             LE CONTACT
 C
 C ---------------------------------------------------------------------
 C
@@ -72,69 +80,89 @@ C
       NOMFON = NOMFOZ
 C
       IF (NOMFON.EQ.'RECH_LINE') THEN
-        ISFONC = FONACT(1)
+        ISFONC = FONACT(1).EQ.1
       ELSEIF (NOMFON.EQ.'PILOTAGE') THEN
-        ISFONC = FONACT(2)
-      ELSEIF (NOMFON.EQ.'IMPL_EX') THEN
-        ISFONC = FONACT(25)
-C
+        ISFONC = FONACT(2).EQ.1
+C        
       ELSEIF (NOMFON.EQ.'CONTACT') THEN
-        ISFONC = FONACT(4).OR.FONACT(5).OR.FONACT(9)
+        ISFONC = (FONACT(4).EQ.1) .OR.
+     &           (FONACT(5).EQ.1) .OR.
+     &           (FONACT(9).EQ.1)
+C
+      ELSEIF (NOMFON.EQ.'ELT_CONTACT') THEN
+        ISFONC = FONACT(26).EQ.1
+      ELSEIF (NOMFON.EQ.'ELT_FROTTEMENT') THEN
+        ISFONC = FONACT(27).EQ.1        
+C     
       ELSEIF (NOMFON.EQ.'CONT_DISCRET') THEN
-        ISFONC = FONACT(4)
+        ISFONC = FONACT(4).EQ.1
       ELSEIF (NOMFON.EQ.'CONT_CONTINU') THEN
-        ISFONC = FONACT(5)
+        ISFONC = FONACT(5).EQ.1
       ELSEIF (NOMFON.EQ.'CONT_XFEM') THEN
-        ISFONC = FONACT(9)        
-      ELSEIF (NOMFON.EQ.'CONT_VERIF') THEN
-        ISFONC = FONACT(17) 
-      ELSEIF (NOMFON.EQ.'CONT_GEOM') THEN
-        ISFONC = FONACT(23)
+        ISFONC = FONACT(9) .EQ.1     
       ELSEIF (NOMFON.EQ.'DIS_CHOC') THEN
-        ISFONC = FONACT(26)        
-C
-      ELSEIF (NOMFON.EQ.'FROTTEMENT') THEN
-        ISFONC = FONACT(10).OR.FONACT(3)
+        ISFONC = FONACT(29).EQ.1 
+C  
       ELSEIF (NOMFON.EQ.'FROT_DISCRET') THEN
-        ISFONC = FONACT(3)
+        ISFONC = FONACT(3).EQ.1
       ELSEIF (NOMFON.EQ.'FROT_CONTINU') THEN
-        ISFONC = FONACT(10)
+        ISFONC = FONACT(10).EQ.1
+      ELSEIF (NOMFON.EQ.'FROT_XFEM') THEN
+        ISFONC = FONACT(25).EQ.1
 C
+
+      ELSEIF (NOMFON.EQ.'CONT_GEOM') THEN
+        ISFONC = FONACT(23) .EQ.1 
+      ELSEIF (NOMFON.EQ.'BOUCLE_EXT_GEOM') THEN
+        ISFONC = FONACT(31).EQ.1  
+      ELSEIF (NOMFON.EQ.'BOUCLE_EXT_FROT') THEN
+        ISFONC = FONACT(32).EQ.1 
+      ELSEIF (NOMFON.EQ.'BOUCLE_EXT_CONT') THEN
+        ISFONC = FONACT(33).EQ.1 
+      ELSEIF (NOMFON.EQ.'BOUCLE_EXTERNE') THEN
+        ISFONC = FONACT(34).EQ.1       
+C                       
       ELSEIF (NOMFON.EQ.'XFEM') THEN
-        ISFONC = FONACT(6)
-      ELSEIF (NOMFON.EQ.'DEBORST' ) THEN
-        ISFONC = FONACT(7)
+        ISFONC = FONACT(6).EQ.1
+      ELSEIF (NOMFON.EQ.'DEBORST' ) THEN         
+        ISFONC = FONACT(7).EQ.1
       ELSEIF (NOMFON.EQ.'RESI_REFE') THEN
-        ISFONC = FONACT(8)
+        ISFONC = FONACT(8).EQ.1
 
       ELSEIF (NOMFON.EQ.'FETI') THEN
-        ISFONC = FONACT(11)
+        ISFONC = FONACT(11).EQ.1
       ELSEIF (NOMFON.EQ.'LIAISON_UNILATER') THEN
-        ISFONC = FONACT(12)
+        ISFONC = FONACT(12).EQ.1
       ELSEIF (NOMFON.EQ.'FORCE_SUIVEUSE') THEN
-        ISFONC = FONACT(13)
+        ISFONC = FONACT(13).EQ.1 
       ELSEIF (NOMFON.EQ.'MACR_ELEM_STAT') THEN
-        ISFONC = FONACT(14)
+        ISFONC = FONACT(14).EQ.1
       ELSEIF (NOMFON.EQ.'REAROT') THEN
-        ISFONC = FONACT(15)
+        ISFONC = FONACT(15) .EQ.1 
       ELSEIF (NOMFON.EQ.'SENSIBILITE') THEN
-        ISFONC = FONACT(16)
+        ISFONC = FONACT(16).EQ.1 
       ELSEIF (NOMFON.EQ.'CRIT_FLAMB') THEN
-        ISFONC = FONACT(18)
+        ISFONC = FONACT(18) .EQ.1
       ELSEIF (NOMFON.EQ.'MODE_VIBR') THEN
-        ISFONC = FONACT(19)
+        ISFONC = FONACT(19).EQ.1
       ELSEIF (NOMFON.EQ.'LAPLACE') THEN
-        ISFONC = FONACT(20)
+        ISFONC = FONACT(20).EQ.1 
       ELSEIF (NOMFON.EQ.'ERRE_TEMPS') THEN
-        ISFONC = FONACT(21)
+        ISFONC = FONACT(21).EQ.1          
       ELSEIF (NOMFON.EQ.'DIDI') THEN
-        ISFONC = FONACT(22)
+        ISFONC = FONACT(22).EQ.1
 
       ELSEIF (NOMFON.EQ.'SOUS_STRUC') THEN
-        ISFONC = FONACT(24)
+        ISFONC = FONACT(24).EQ.1
+        
+      ELSEIF (NOMFON.EQ.'IMPL_EX') THEN
+        ISFONC = FONACT(28).EQ.1
 
+      ELSEIF (NOMFON.EQ.'EXI_VARC') THEN
+        ISFONC = FONACT(30).EQ.1
+                     
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
-
+      
       END

@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,10 +148,10 @@ C        ---------------------------------
         CALL JEDUP1(CORR1//'.PJEF_NU',BAS2,CORR2//'.PJEF_NU')
         CALL JEDUP1(CORR1//'.PJEF_NB',BAS2,CORR2//'.PJEF_NB')
         CALL JEDUP1(CORR1//'.PJEF_CF',BAS2,CORR2//'.PJEF_CF')
-        CALL JEDUP1(CORR1//'.PJEF_CO',BAS2,CORR2//'.PJEF_CO')
         CALL JEDUP1(CORR1//'.PJEF_M1',BAS2,CORR2//'.PJEF_M1')
         CALL JEDUP1(CORR1//'.PJEF_TR',BAS2,CORR2//'.PJEF_TR')
         CALL JEDUP1(CORR1//'.PJEF_AM',BAS2,CORR2//'.PJEF_AM')
+        CALL JEDUP1(CORR1//'.PJEF_CO',BAS2,CORR2//'.PJEF_CO')
 
 C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'CHAM_NO_S') THEN
@@ -335,7 +335,7 @@ C
           CALL JEVEUO(K192//'.LTNS','E',JLTN2)
           K192(1:8) = K192
           DO 10 I = 1 , NBTU
-             K191 = ZK24(JLTN1+I-1)
+             K191 = ZK24(JLTN1+I-1)(1:19)
              K192(9:19) = K191(9:19)
              CALL EXISD ( 'TABLE', K191, IRET )
              IF ( IRET .NE. 0 ) THEN
@@ -406,6 +406,13 @@ C           CALL COPICH(BAS2,CH1,CH2)
 C           ZK24(JRELR2-1+K)=CH2
 C 20      CONTINUE
 C       ENDIF
+C     ------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'LISTE_CHARGES') THEN
+C     -----------------------------------
+        K191 = SD1
+        K192 = SD2
+        CALL LISCPY(K191,K192,BAS2)
+
 
 C ----------------------------------------------------------------------
       ELSE

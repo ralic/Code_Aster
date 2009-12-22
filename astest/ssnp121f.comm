@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121f.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,20 +75,22 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
    DDL_IMPO=(_F(GROUP_NO = 'SURCHA',  DX = 0.0, DY = -0.00, DZ = -.10,),
              _F(GROUP_NO = 'ENCAST',  DX = 0.0, DY = -0.00, DZ = 0.0,),),);
 
-#PRESSION=AFFE_CHAR_MECA(
-#        MODELE=MO,
-#        PRES_REP=_F(GROUP_MA='CD',PRES=10.0,),
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                      INFO=2,
-                   CONTACT=(_F(GROUP_MA_ESCL = 'SURESC',
-                               GROUP_MA_MAIT = 'SURMAI',
-                               INTEGRATION = 'NOEUD',
-                            COEF_REGU_CONT = 1000.,
-                                    LISSAGE='NON',
-                            ITER_CONT_MAXI = 30,
-                            ITER_GEOM_MAXI = 10,
-                                   METHODE = 'CONTINUE',),),);
+CHA2 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    ITER_GEOM_MAXI = 10,
+                    ITER_CONT_MAXI = 30,
+                    LISSAGE        = 'NON',
+                    INFO           = 2,
+                    ZONE =_F(
+                             GROUP_MA_ESCL = 'SURESC',
+                             GROUP_MA_MAIT = 'SURMAI',
+                             INTEGRATION   = 'NOEUD',
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 1000.,
+                          ),
+                   ); 
+
 
 #-----------------------------------------------------------
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -102,11 +104,10 @@ RESU=STAT_NON_LINE (MODELE     = MO,
                     INCREMENT  =_F(LIST_INST=L_INST,
                                NUME_INST_FIN=1,),
                     EXCIT      =(_F(CHARGE=CHA1,
-                                 FONC_MULT=FONC,),
-                                _F(CHARGE=CHA2,),),
-#                               _F(CHARGE=PRESSION),),
+                                 FONC_MULT=FONC,),),
+                    CONTACT    = CHA2,
                     COMP_ELAS  =_F(RELATION='ELAS'),
-                         NEWTON=_F(MATRICE='ELASTIQUE'),
+                         NEWTON=_F(MATRICE='ELASTIQUE',REAC_ITER=1),
                     CONVERGENCE=_F(ARRET='OUI',
                           ITER_GLOB_MAXI=30,
                           RESI_GLOB_MAXI=1.E-8,),);

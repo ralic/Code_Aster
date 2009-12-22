@@ -1,7 +1,7 @@
       SUBROUTINE CFINIG(RESOCO,ITERAT,LNOPRE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,7 +60,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       CHARACTER*24 CLREAC
       INTEGER      JCLREA 
-      LOGICAL      REAGEO,REAPRE 
+      LOGICAL      REAGEO,REAPRE
       INTEGER      MMITGO  
 C
 C ----------------------------------------------------------------------
@@ -87,7 +87,7 @@ C
         REAPRE = .TRUE.
       ELSE
         REAPRE = .FALSE.  
-      ENDIF
+      ENDIF      
 C
 C --- DOIT-ON PASSER EN PREDICTION ?
 C      
@@ -97,8 +97,8 @@ C
         LNOPRE = .FALSE.  
       ENDIF      
 C
-      ZL(JCLREA+1-1) = REAGEO
-      ZL(JCLREA+3-1) = REAPRE    
+      ZL(JCLREA+1-1) = REAGEO   
+      ZL(JCLREA+3-1) = REAPRE
 C 
       CALL JEDEMA()
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/05/2009   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                             'PRES_REP','FORCE_POUTRE','VITE_FACE','IMPE_FACE','ONDE_PLANE',
                             'LIAISON_OBLIQUE','EPSI_INIT','LIAISON_GROUP','LIAISON_UNIF',
                             'LIAISON_SOLIDE','FORCE_COQUE','LIAISON_COQUE','FORCE_TUYAU',
-                            'EFFE_FOND','FLUX_THM_REP','LIAISON_UNILATER'),),
+                            'EFFE_FOND','FLUX_THM_REP',),),
          VERI_DDL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          VERI_NORM       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
@@ -183,33 +183,6 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            ANGL_NAUT       =SIMP(statut='f',typ='R',max=3),
            CENTRE          =SIMP(statut='f',typ='R',max=3),
          ),
-#
-# LIAISON UNILATERALE
-#
-         LIAISON_UNILATER=FACT(statut='f',max='**',
-           fr="Définit les zones soumises à des conditions de liaison unilaterale (inegalite sur un DDL)",
-           regles=(UN_PARMI('GROUP_MA','MAILLE','GROUP_NO','NOEUD'),),
-
-           GROUP_MA        =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-           GROUP_NO        =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-           NOEUD           =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
-
-           SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-           SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-
-           NB_RESOL        =SIMP(statut='f',typ='I', defaut=10 ),
-
-           NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
-
-           COEF_IMPO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-           COEF_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
-
-           METHODE         =SIMP(statut='f',typ='TXM',defaut="CONTRAINTE",
-                                 into=("CONTRAINTE",) ),
-
-
-        ),
 
           LIAISON_UNIF    =FACT(statut='f',max='**',
            fr="Impose une meme valeur (inconnue) à des DDLs d'un ensemble de noeuds",

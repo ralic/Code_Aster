@@ -1,5 +1,4 @@
-
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 # ssnv505c.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,11 +76,19 @@ CH1=AFFE_CHAR_MECA(MODELE=MODE,
                                 DY=-800.,),
                              ),);
 
-CH2=AFFE_CHAR_MECA(MODELE=MODE,
-                   CONTACT=_F(GROUP_MA_MAIT='SMAI',
-                              GROUP_MA_ESCL='SESC',
-                              SANS_GROUP_NO=('B3','A'),
-                              ),);
+CH2 = DEFI_CONTACT(MODELE       = MODE,
+                   FORMULATION  = 'DISCRETE',
+                   
+                   ZONE=(
+                        _F(
+                            GROUP_MA_MAIT='SMAI',
+                            GROUP_MA_ESCL='SESC',
+                            SANS_GROUP_NO=('B3','A'),
+                         ),                           
+                                                                           
+                       ),  
+                  )
+
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0),
@@ -102,8 +109,8 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CH2,),
                        ),
+                CONTACT  = CH2,       
                 COMP_ELAS=_F(RELATION='ELAS',
                              DEFORMATION='GROT_GDEP',
                              GROUP_MA='STRUCT',),

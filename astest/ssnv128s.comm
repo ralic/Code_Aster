@@ -1,4 +1,4 @@
-# MODIF  DATE 16/11/2009   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT ET USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128s.para = tps_job 100 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,23 +70,33 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=(_F(GROUP_MA = 'LPRESH', PRES = 5.E07)));
 #
-CHA4=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_ESCL  = 'LCONTA',
-                               GROUP_MA_MAIT  = 'LBATI',
-                               SANS_GROUP_NO  = 'PPS',
-                               METHODE        = 'CONTINUE',
-                               CONTACT_INIT   = 'OUI',
-                               SEUIL_INIT     = 0.0,
-                               COEF_REGU_FROT = 1.0,
-                               COEF_REGU_CONT = 1.0,
-                               ITER_GEOM_MAXI = 1,
-                               ITER_FROT_MAXI = 4,
-                               ITER_CONT_MAXI = 4,
-                               FROTTEMENT     = 'COULOMB',
-                               USURE          = 'ARCHARD',
-                               K              = 1.0E-12,
-                               H              = 1.0,
-                               COULOMB        = 1.0));
+CHA4 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    FROTTEMENT     = 'COULOMB',
+                    REAC_FROT      = 'CONTROLE',
+                    NB_ITER_FROT   = 4,
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 2,                    
+                    ITER_GEOM_MAXI = 3,
+                    ITER_FROT_MAXI = 5,
+                    ZONE =(
+                           _F(
+                             GROUP_MA_MAIT = 'LBATI',
+                             GROUP_MA_ESCL = 'LCONTA',
+                             SANS_GROUP_NO = ('PPS',),
+                             COULOMB       = 1.0,
+                             CONTACT_INIT  = 'OUI',
+                             SEUIL_INIT    = 0.0,
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 1.0,
+                             ALGO_FROT     = 'STANDARD',
+                             COEF_FROT     = 1.0,                        
+                             USURE         = 'ARCHARD',
+                             K             = 1.0E-12,
+                             H             = 1.0,                                                             
+                             ),                            
+                          ),
+                   );
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
@@ -109,7 +119,8 @@ U4M=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE = CHA1, FONC_MULT = RAMPE),
                        _F(CHARGE = CHA2, FONC_MULT = F2),
-                       _F(CHARGE = CHA4)),
+                       ),
+                CONTACT  = CHA4,       
                 COMP_ELAS=_F(RELATION = 'ELAS'),
                 NEWTON=_F(REAC_ITER=1),
                 INCREMENT=_F(LIST_INST = L_INST,
@@ -128,10 +139,10 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N2',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -9.342E+05,
+                   VALE       = -9.358E+05,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.0.25'),
+                   VERSION    = '10.1.3'),
                 _F(RESULTAT   = U4M,
                    INST       = 0.04,
                    NOM_CHAM   = 'DEPL',
@@ -174,7 +185,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
 #                    VALE       = -6.605E+06,
 #                    PRECISION  = 1.E-3,
 #                    REFERENCE  = 'NON_REGRESSION',
-#                    VERSION    = '10.0.25')
+#                    VERSION    = '8.3.23')
                    ));
 
 PRFUS4=POST_RELEVE_T(ACTION=_F(INTITULE='USURE',

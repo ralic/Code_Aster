@@ -1,21 +1,21 @@
-#@ MODIF algorith5 Messages  DATE 12/05/2009   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF algorith5 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
 def _(x) : return x
@@ -23,124 +23,114 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
- le type de résultat DYNA_TRANS ne supporte pas les données complexes
+Le type de résultat DYNA_TRANS ne supporte pas les données complexes.
 """),
 
 2 : _("""
- le type de résultat DYNA_HARMO ne supporte pas les données reelles
+Le type de résultat DYNA_HARMO ne supporte pas les données réelles.
 """),
 
 3 : _("""
- on ne traite pas actuellement les déformations complexes
+On ne traite pas les déformations complexes.
 """),
 
 4 : _("""
- nombre de dataset 58 supérieur à NBNOEUD * NBCMP
+Le nombre de dataset de type 58 est supérieur à NBNOEUD * NBCMP 
 """),
 
 5 : _("""
- erreur dans la lecture du fichier IDEAS
+Erreur lors de la lecture du fichier IDEAS.
 """),
 
 6 : _("""
- seules les données de type déplacement, vitesse, accélération, déformation
- ou contrainte sont actuellement traitées
-"""),
-
-7 : _("""
- données : complexes, incompatibles avec DYNA_TRANS
-"""),
-
-8 : _("""
- données : réelles, incompatibles avec DYNA_HARMO ou HARM_GENE
+Seules les données de type déplacement, vitesse, accélération, déformation
+ ou contrainte sont traitées. 
 """),
 
 9 : _("""
- on ne traite pas actuellement la redéfinition des orientations
- pour les champs de contrainte
+On ne traite pas la redéfinition des orientations pour les champs de contrainte. 
 """),
 
 10 : _("""
- on ne traite pas actuellement la redéfinition des orientations
- pour les champs de déformation
+On ne traite pas la redéfinition des orientations pour les champs de déformation. 
 """),
 
 11 : _("""
- la condition GAMMA/KSI <= 1 n'est pas respectée
+La condition GAMMA/KSI <= 1 n'est pas respectée.
 """),
 
 12 : _("""
- incohérence des relations SIGMA_C SIGMA_P1 M_PIC A_PIC A_E et M_E
+Incohérence des relations SIGMA_C, SIGMA_P1, M_PIC, A_PIC, A_E et M_E.
 """),
 
 13 : _("""
- erreur d'intégration
- - essai d'intégration numéro  %(k1)s
- - divergence de l'intégration locale
- - redécoupage du pas de temps
+Erreur d'intégration :
+ - Essai d'intégration numéro  %(k1)s
+ - Divergence de l'intégration locale
+ - Redécoupage du pas de temps
 """),
 
 14 : _("""
-  incrément de deformation cumulée (dv) = - %(k1)s
+Incrément de deformation cumulée (dv) = - %(k1)s .
 """),
 
 16 : _("""
- le profil de la matrice n est surement pas plein.
- on continue mais s'il vous arrive des problèmes plus loin...
+Le profil de la matrice n'est sûrement pas plein.
+On continue pour vérifier.
 """),
 
 17 : _("""
- le profil de la matrice n'est surement pas plein.
- on continue mais attention ....
+Le profil de la matrice n'est sûrement pas plein.
+On continue pour vérifier.
 """),
 
 18 : _("""
- le profil de la matrice n'est pas plein.
- on arrete tout ....
+Le profil de la matrice n'est pas plein.
+On arrête tout.
 """),
 
 19 : _("""
- le déterminant de la matrice à inverser est nul
+Le déterminant de la matrice à inverser est nul.
 """),
 
 20 : _("""
- inversion seulement en dimension inférieure ou égale à 3
+L'inversion est posssible uniquement en dimension inférieure ou égale à 3.
 """),
 
 22 : _("""
- la matrice masse est singulière.
+La matrice masse est singulière.
 """),
 
 23 : _("""
- pas de temps minimal atteint
+Le pas de temps minimal a été atteint. Ha !
 """),
 
 24 : _("""
- données erroneés.
+Données erronées.
 """),
 
 25 : _("""
-  GAMMA = 0 : valeur par défaut
+GAMMA nul est la valeur par défaut. 
 """),
 
 26 : _("""
-  dispositif anti-sismique :  la distance des noeuds 1 et 2 est nulle
+Dispositif anti-sismique :  la distance entre les noeuds 1 et 2 est nulle.
 """),
 
 27 : _("""
- le noeud  %(k1)s  n'est pas un noeud du maillage  %(k2)s
+Le noeud  %(k1)s  n'est pas un noeud du maillage %(k2)s .
 """),
 
 28 : _("""
- on n'a pas trouvé le ddl "DX" pour le noeud  %(k1)s
+On n'a pas trouvé le ddl DX pour le noeud  %(k1)s .
 """),
 
 29 : _("""
- on n'a pas trouvé le ddl "DY" pour le noeud  %(k1)s
+On n'a pas trouvé le ddl DY pour le noeud  %(k1)s .
 """),
 
 30 : _("""
- on n'a pas trouvé le ddl "DZ" pour le noeud  %(k1)s
+On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
 """),
 
 31 : _("""
@@ -167,7 +157,7 @@ cata_msg = {
 
 36 : _("""
  calcul non-linéaire par sous-structuration :
- pas de dispositif anti-sismique ou de flambage possible
+ pas de dispositif anti-sismique ou de flambage possible 
 """),
 
 37 : _("""
@@ -190,7 +180,7 @@ cata_msg = {
 41 : _("""
  incohérence dans les données de la loi de flambage :
  les caractéristiques introduites peuvent conduire à
- un ecrasement résiduel négatif
+ un ecrasement résiduel négatif 
 """),
 
 42 : _("""
@@ -210,16 +200,16 @@ cata_msg = {
 """),
 
 46 : _("""
- on n'a pas pu trouver les déplacements initiaux
+ on n'a pas pu trouver les déplacements initiaux 
 """),
 
 47 : _("""
- on n'a pas pu trouver les vitesses initiales
+ on n'a pas pu trouver les vitesses initiales 
 """),
 
 48 : _("""
  on n'a pas pu trouver les variables internes initiales :
- reprise choc avec flambage
+ reprise choc avec flambage 
 """),
 
 49 : _("""
@@ -288,7 +278,7 @@ cata_msg = {
 
 62 : _("""
   instant initial non trouvé
-  valeur prise : 0
+  valeur prise : 0 
 """),
 
 63 : _("""
@@ -364,10 +354,6 @@ cata_msg = {
 
 79 : _("""
  KSIB non inversible
-"""),
-
-82 : _("""
- projection nulle sur la boule unité (dvlp)
 """),
 
 }

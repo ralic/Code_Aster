@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 14/10/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,6 +47,11 @@ Contact methode GCP. Nombre d'itérations maximal (%(i1)s) dépassé pour le précon
 Vous pouvez essayer d'augmenter ITER_PRE_MAXI
 """),
 
+4 : _("""
+Contact methode GCP. Le paramètre RESI_ABSO doit etre obligatoirement renseigné.
+"""),
+
+
 6 : _("""
 Contact methode GCP. On ne peut utiliser le solveur GCPC avec le contact. 
 """),
@@ -93,10 +98,6 @@ Vous devez utilisez l'option NORMALE:
 Contact méthodes discrètes. Un POI1 ne peut pas etre une maille maitre.
 """),
 
-83 : _("""
-Il y a plusieurs charges contenant des conditions de contact.
-"""),
-
 84 : _("""
 Le modèle mélangent des mailles avec des modélisations de dimensions 
 différentes (2D avec 3D ou macro-éléments).
@@ -124,6 +125,10 @@ Contact methode VERIF.
  -> Risque & Conseil :
     Vérifier si le niveau d'interpénétration des surfaces est acceptable dans
     votre problème.
+"""),
+
+95 : _("""
+Contact méthode continue. Les options RACCORD_LINE_QUAD et FOND_FISSURE sont exclusives.
 """),
 
 96 : _("""

@@ -1,6 +1,7 @@
       SUBROUTINE MMGAUS(ALIAS,TYPI,NORD,XPG,YPG,HPG)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/11/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +18,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_20
+C
       IMPLICIT NONE
       CHARACTER*8 ALIAS
       INTEGER     TYPI
@@ -25,12 +28,15 @@ C TOLE CRP_20
       REAL*8      XPG
       REAL*8      YPG
       REAL*8      HPG
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE UTILITAIRE (CONTACT METHODE CONTINUE)
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (UTILITAIRE)
 C
 C RETOURNE LES COORDONNEES ET LE POIDS DU POINT D'INTEGRATION
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
 C IN  TYPI   : TYPE D'INTEGRATION
@@ -65,7 +71,7 @@ C LES POINTS DE GAUSS
             XPG = -1.D0/SQRT(3.D0)
             YPG =  1.D0/SQRT(3.D0)
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
           HPG = 1.D0
 C LES NOEUDS
@@ -84,7 +90,7 @@ C
             XPG = -1.D0
             YPG =  1.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
           HPG = 1.D0
 C SIMPSON
@@ -126,7 +132,7 @@ C SIMPSON
             YPG =  0.D0
             HPG = 16.D0 / 9.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 16 POINTS
        ELSE IF (TYPI.EQ.6) THEN
@@ -195,7 +201,7 @@ C NEWTON COTES A 16 POINTS
             YPG =  1.D0/3.D0
             HPG =  9.D0/16.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 25 POINTS
         ELSE IF (TYPI.EQ.7) THEN
@@ -300,7 +306,7 @@ C NEWTON COTES A 25 POINTS
             YPG = -0.5D0
             HPG = 1024.D0/2025.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 100 POINTS (FORTES INCOMPATIBILITES)
         ELSE IF (TYPI.EQ.8) THEN
@@ -705,10 +711,10 @@ C NEWTON COTES A 100 POINTS (FORTES INCOMPATIBILITES)
             YPG = 1.D0
             HPG = 1.D0/144.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
         ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
         END IF
 C
       ELSEIF (ALIAS(1:3) .EQ. 'QU8') THEN
@@ -751,7 +757,7 @@ C
             YPG =  0.D0
             HPG = 16.D0 / 9.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 16 POINTS
        ELSE IF (TYPI.EQ.6) THEN
@@ -820,7 +826,7 @@ C NEWTON COTES A 16 POINTS
             YPG =  1.D0/3.D0
             HPG =  9.D0/16.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 25 POINTS
         ELSE IF (TYPI.EQ.7) THEN
@@ -925,7 +931,7 @@ C NEWTON COTES A 25 POINTS
             YPG = -0.5D0
             HPG = 1024.D0/2025.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 100 POINTS (FORTES INCOMPATIBILITES)
         ELSE IF (TYPI.EQ.8) THEN
@@ -1330,10 +1336,10 @@ C NEWTON COTES A 100 POINTS (FORTES INCOMPATIBILITES)
             YPG = 1.D0
             HPG = 1.D0/144.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
         ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
         END IF
 C_______________________________________________________________________
 C
@@ -1351,7 +1357,7 @@ C    POINTS DE GAUSS
             XPG = 1.D0/6.D0
             YPG = 2.D0/3.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
           HPG = 1.D0/6.D0
 C   NOEUDS
@@ -1366,7 +1372,7 @@ C   NOEUDS
             XPG = 0.D0
             YPG = 1.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
           HPG = 1.D0/6.D0
 C SIMPSON
@@ -1396,7 +1402,7 @@ C SIMPSON
             YPG = 1.D0 / 2.D0
             HPG = 4.D0 / 30.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C HAMMER A 4 POINTS
         ELSE IF (TYPI .EQ. 6) THEN
@@ -1417,7 +1423,7 @@ C HAMMER A 4 POINTS
             YPG = 1.D0 / 3.D0
             HPG = -27.D0/96.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C HAMMER A 6 POINTS
         ELSE IF (TYPI .EQ. 7) THEN
@@ -1451,10 +1457,10 @@ C ATHOMAS VALEURS A VERIFIER
             YPG = A
             HPG = P1
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
         ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
         END IF
 C
       ELSEIF (ALIAS(1:3) .EQ. 'TR6') THEN
@@ -1492,7 +1498,7 @@ C ATHOMAS VALEURS A VERIFIER
             YPG = A
             HPG = P1
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C HAMMER A 4 POINTS
         ELSE IF (TYPI .EQ. 6) THEN
@@ -1513,10 +1519,10 @@ C HAMMER A 4 POINTS
             YPG = 1.D0 / 3.D0
             HPG = -27.D0/96.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
         ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
         END IF
 C
       ELSEIF (ALIAS(1:3) .EQ. 'SE2') THEN
@@ -1531,7 +1537,7 @@ C
             XPG =  1.D0/SQRT(3.D0)
             YPG =  0.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
           HPG = 1.D0
         ELSEIF (TYPI .EQ. 13) THEN
@@ -1548,7 +1554,7 @@ C
             YPG =  0.D0
             HPG =  0.888888888888889D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
         ELSEIF (TYPI .EQ. 14) THEN
           IF (NORD .EQ. 1) THEN
@@ -1568,7 +1574,7 @@ C
             YPG =  0.D0
             HPG =  0.347854845137454D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C LES NOEUDS
         ELSEIF (TYPI .EQ. 1) THEN
@@ -1579,7 +1585,7 @@ C LES NOEUDS
             XPG =  1.D0
             YPG =  0.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
           HPG = 1.D0
 C SYMPSON
@@ -1597,7 +1603,7 @@ C SYMPSON
             YPG =  0.D0
             HPG =  4.D0 / 3.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C SYMPSON1
         ELSEIF (TYPI .EQ. 4) THEN
@@ -1622,7 +1628,7 @@ C SYMPSON1
             YPG =  0.D0
             HPG =  2.D0 / 3.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C    SYMPSON2
         ELSEIF (TYPI .EQ. 5) THEN
@@ -1663,7 +1669,7 @@ C    SYMPSON2
             YPG =  0.D0
             HPG =  1.D0 / 3.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 4 POINTS
         ELSE IF (TYPI.EQ.6) THEN
@@ -1684,7 +1690,7 @@ C NEWTON COTES A 4 POINTS
             YPG =  0.D0
             HPG =  3.D0/4.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 5 POINTS
         ELSE IF (TYPI.EQ.7) THEN
@@ -1709,7 +1715,7 @@ C NEWTON COTES A 5 POINTS
             YPG =  0.D0
             HPG = 32.D0/45.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 4 POINTS + SUBDIVISION --> 10 POINTS
         ELSE IF (TYPI.EQ.8) THEN
@@ -1754,10 +1760,10 @@ C NEWTON COTES A 4 POINTS + SUBDIVISION --> 10 POINTS
             YPG =  0.D0
             HPG =  1.D0/4.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
         ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
         END IF
 C
       ELSEIF (ALIAS(1:3) .EQ. 'SE3') THEN
@@ -1778,7 +1784,7 @@ C
             YPG =  0.D0
             HPG =  0.888888888888889D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C LES NOEUDS
         ELSEIF (TYPI .EQ. 1) THEN
@@ -1795,7 +1801,7 @@ C LES NOEUDS
             YPG =  0.D0
             HPG =  1.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C SYMPSON
         ELSEIF (TYPI .EQ. 3) THEN
@@ -1812,7 +1818,7 @@ C SYMPSON
             YPG =  0.D0
             HPG =  4.D0 / 3.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C SYMPSON1
         ELSEIF (TYPI .EQ. 4) THEN
@@ -1837,7 +1843,7 @@ C SYMPSON1
             YPG =  0.D0
             HPG =  2.D0 / 3.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C
 C    SYMPSON2
@@ -1879,7 +1885,7 @@ C    SYMPSON2
             YPG =  0.D0
             HPG =  1.D0 / 3.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 4 POINTS
         ELSE IF (TYPI.EQ.6) THEN
@@ -1900,7 +1906,7 @@ C NEWTON COTES A 4 POINTS
             YPG =  0.D0
             HPG =  3.D0/4.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 5 POINTS
         ELSE IF (TYPI.EQ.7) THEN
@@ -1925,7 +1931,7 @@ C NEWTON COTES A 5 POINTS
             YPG =  0.D0
             HPG = 32.D0/45.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
 C NEWTON COTES A 4 POINTS + SUBDIVISION --> 10 POINTS
         ELSE IF (TYPI.EQ.8) THEN
@@ -1970,13 +1976,13 @@ C NEWTON COTES A 4 POINTS + SUBDIVISION --> 10 POINTS
             YPG =  0.D0
             HPG =  1.D0/4.D0
           ELSE
-            CALL U2MESS('F','ALGORITH6_8')
+            CALL ASSERT(.FALSE.)
           END IF
         ELSE
-          CALL U2MESS('F','ALGORITH6_8')
+          CALL ASSERT(.FALSE.)
         END IF
       ELSE
-        CALL U2MESS('F','ALGORITH6_8')
+        CALL ASSERT(.FALSE.)
       END IF
 C
       END

@@ -2,7 +2,7 @@
      &                   ETATF, RDCTPS, IRET, AREDEC)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,11 +38,11 @@ C                    IRET=0 => PAS DE PROBLEME
 C                    IRET=1 => ECHEC 
 C   ------------------------------------------------------------------
       INTEGER     NDT, NDI, ELAS, JJ, IRET 
-      INTEGER     K, I, INDI(4), J, MONO(4),HIST(4,2) 
+      INTEGER     K, I, INDI(7), J, MONO(7),HIST(4,2) 
       REAL*8      TOLE1, SIGD(6),SIGE(6)
       REAL*8      VIND(*), CHARGE
       REAL*8      MATER(22,2), UN, ZERO, PREF 
-      REAL*8      AL, LA, DEMU, E, NU, I1E, YE(15)
+      REAL*8      AL, LA, DEMU, E, NU, I1E, YE(18), YD(18)
       REAL*8      HOOKNL(6,6), DFDS(6), DEPSH(6), DSIG(6)
       REAL*8      ACTIF, DPSIDS(6,6), N, DEUX, SEUIL 
       REAL*8      EPSVP, PCO, D, BETA, RATIO, DEPS(6)
@@ -57,20 +57,21 @@ C ----------------------------------------------------------------------
       COMMON /TDIM/   NDT, NDI
       COMMON /MESHUJ/ DEBUG
 C ----------------------------------------------------------------------
-      PARAMETER     (TOLE1 = 1.D-7)
-      PARAMETER     (UN   = 1.D0)
-      PARAMETER     (ZERO = 0.D0)
-      PARAMETER     (DEUX = 2.D0)
+      PARAMETER   (TOLE1 = 1.D-7)
+      PARAMETER   (UN   = 1.D0)
+      PARAMETER   (ZERO = 0.D0)
+      PARAMETER   (DEUX = 2.D0)
       
 C ======================================================================
 C -------------------- DETERMINATION DES CRITERES ACTIFS A T ----------
 C ======================================================================
-      IF(DEBUG)WRITE(6,*)'ENTREE DANS HUJPOT'
+      IF (DEBUG) WRITE(6,'(A)')' ==> HUJPOT'
+      IF (DEBUG) WRITE(6,*)'     INIT - VIND=',(VIND(23+I),I=1,8)
 C --- MISE A ZERO POUR CORRIGER ZERO NUMERIQUE
       DO 10 I = 1, NDT
         DEPS(I) = DEPSH(I)
-        IF(ABS(DEPS(I)).LT.R8PREM())DEPS(I)=ZERO
-  10  CONTINUE        
+        IF (ABS(DEPS(I)).LT.R8PREM()) DEPS(I)=ZERO
+  10    CONTINUE        
       ELAS = 0
       RDCTPS = .FALSE.
       
@@ -79,15 +80,15 @@ C --- CONSTRUCTION DES SURFACES CYCLIQUES PRECEDENTES -----------
 C ====================================================================
       CALL LCEQVN(50,VIND,VINM)
       DO 50 I = 1, 3
-        IF((VIND(5*I+31).NE.ZERO).OR.
-     &     (VIND(5*I+32).NE.ZERO))THEN
+        IF ((VIND(5*I+31).NE.ZERO).OR.
+     &     (VIND(5*I+32).NE.ZERO)) THEN
           VINM(4*I+5) = VIND(5*I+31)
           VINM(4*I+6) = VIND(5*I+32)
           VINM(4*I+7) = VIND(5*I+33)
           VINM(4*I+8) = VIND(5*I+34)
           VINM(I+4)   = VIND(5*I+35)
         ENDIF
-  50  CONTINUE
+  50    CONTINUE
       
 C ====================================================================
 C --- PROPRIETES MATERIAU HUJEUX -------------------------------------
@@ -95,21 +96,27 @@ C ====================================================================
       N     = MATER(1,2)
       PREF  = MATER(8,2)
       PISO  = 1.5D0*MATER(21,2)
+      PISO  = ZERO
       
 C ====================================================================
 C ------------------ INITIALISATION VARIABLES ------------------------
 C ====================================================================
 
+      DO 14 I = 1, 7
+        MONO(I) = 0
+        INDI(I) = 0
+  14    CONTINUE 
       DO 15 I = 1, 4
         HIST(I,1) = 0
         HIST(I,2) = 0
-        INDI(I)   = 0
         MONO(I)   = I
   15    CONTINUE
       DO 25 I = 1, NDT
         YE(I) = SIGE(I)
+        YD(I) = SIGD(I)
   25    CONTINUE
       YE(NDT+1) = VIND(23)
+      YD(NDT+1) = VIND(23)
       
 C ====================================================================
 C --------------------- I) CONSTRUCTION DE C -------------------------
@@ -191,20 +198,22 @@ C ====================================================================
       J = 0   
       DO 400 I = 1, 4
       
-        IF((VIND(23+I).EQ.UN).OR.(VIND(23+I).EQ.ZERO))THEN
+        IF ((VIND(23+I).EQ.UN).OR.(VIND(23+I).EQ.ZERO)) THEN
           YE(NDT+1+I) = VIND(I)
+          YD(NDT+1+I) = VIND(I)
           HIST(I,1)   = I
           INDI(I)     = I
-          IF(VIND(23+I).EQ.UN)THEN
+          IF (VIND(23+I).EQ.UN) THEN
             HIST(I,2)   = 1
           ELSE
             HIST(I,2)   = 0
           ENDIF
         ELSE
           YE(NDT+1+I) = VIND(I+4)
+          YD(NDT+1+I) = VIND(I+4)
           HIST(I,1)   = I + 4
           INDI(I)     = I + 4 
-          IF(VIND(27+I).EQ.UN)THEN
+          IF (VIND(27+I).EQ.UN) THEN
             HIST(I,2)   = 1
           ELSE
             HIST(I,2)   = 0
@@ -217,41 +226,50 @@ C --------------------- CALCUL DE DFDS*C(SIGE)*DEPS ------------------
 C ====================================================================
         CALL HUJDDD ('DFDS  ', INDI(I), MATER, INDI, YE, VIND,
      &               DFDS, DPSIDS,IRET)
-        IF(IRET.EQ.1)THEN
-          IF(.NOT.AREDEC)THEN
+        IF (IRET.EQ.1) THEN
+          IRET = 0
+          IF (.NOT.AREDEC) THEN
             RDCTPS = .TRUE.
-            IRET = 0
+            GOTO 999          
+          ELSE
+            CALL HUJDDD ('DFDS  ', INDI(I), MATER, INDI, YD, VIND,
+     &               DFDS, DPSIDS,IRET)            
+            IF (IRET.EQ.1) GOTO 999
           ENDIF
-          GOTO 999
         ENDIF
         ACTIF = ZERO
         DO 45 JJ = 1, NDT
           ACTIF = ACTIF + DSIG(JJ)*DFDS(JJ) 
- 45     CONTINUE  
+ 45       CONTINUE  
         
         ACTIF = ACTIF/MATER(1,1)
-        CHARGE = - UN
-        IF(INDI(I).GT.4)THEN
+        CHARGE = -UN
+        IF (INDI(I).GT.4) THEN
           YE(NDT+1+I) = VIND(I) 
+          YD(NDT+1+I) = VIND(I) 
           CALL HUJDDD ('DFDS  ', MONO(I), MATER, MONO, YE, VIND,
      &                  DFDS, DPSIDS,IRET)
 
-          IF(IRET.EQ.1)THEN
-            IF(.NOT.AREDEC)THEN
+          IF (IRET.EQ.1) THEN
+            IRET = 0
+            IF (.NOT.AREDEC) THEN
               RDCTPS = .TRUE.
-              IRET = 0
+              GOTO 999
+            ELSE
+              CALL HUJDDD ('DFDS  ', MONO(I), MATER, MONO, YD, VIND,
+     &                  DFDS, DPSIDS,IRET)            
+              IF (IRET.EQ.1) GOTO 999
             ENDIF
-            GOTO 999
           ENDIF
 
           CHARGE = ZERO
           DO 46 JJ = 1, NDT
             CHARGE = CHARGE + DSIG(JJ)*DFDS(JJ)             
- 46       CONTINUE  
+ 46         CONTINUE  
           CHARGE = CHARGE/MATER(1,1)
         ENDIF
 
-        IF(DEBUG)THEN
+        IF (DEBUG) THEN
           WRITE(6,*)'INDI   = ',INDI(I)
           WRITE(6,*)'ACTIF  = ',ACTIF
           WRITE(6,*)'CHARGE = ',CHARGE
@@ -261,8 +279,8 @@ C ====================================================================
 C ====================================================================
 C --------------------- CRITERE MONOTONE ACTIF ? ---------------------
 C ====================================================================
-        IF(CHARGE.GE.(-R8PREM()))THEN
-          IF(INDI(I).NE.8)THEN
+        IF (CHARGE.GE.(-R8PREM())) THEN
+          IF (INDI(I).NE.8) THEN
               CALL HUJPXD(INDI(I), MATER, SIGD ,VIND, PROX, BID)
               IF (PROX) THEN        
                 VIND(19+INDI(I))   = UN
@@ -273,10 +291,10 @@ C ====================================================================
                 VIND(INDI(I)*4-8)  = ZERO
                 VIND(INDI(I))      = MATER(18,2)
                 GOTO 400
-              ELSEIF(.NOT.AREDEC)THEN               
+C              ELSEIF(.NOT.AREDEC)THEN               
 C --> SINON ==> REDECOUPAGE DU PAS DE TEMPS 
-                RDCTPS = .TRUE.
-                GOTO 999             
+C                RDCTPS = .TRUE.
+C                GOTO 999             
               ENDIF  
           ELSE
             CALL HUJPXS(MATER, SIGD, VIND, PROX)              
@@ -286,10 +304,10 @@ C --> SINON ==> REDECOUPAGE DU PAS DE TEMPS
                 VIND(27) = UN
                 VIND(31) = ZERO      
                 GOTO 400
-              ELSEIF(.NOT.AREDEC)THEN               
+C              ELSEIF(.NOT.AREDEC)THEN               
 C --> SINON ==> REDECOUPAGE DU PAS DE TEMPS
-                RDCTPS = .TRUE.
-                GOTO 999               
+C                RDCTPS = .TRUE.
+C                GOTO 999               
               ENDIF
           ENDIF
         ENDIF  
@@ -298,28 +316,27 @@ C --> SINON ==> REDECOUPAGE DU PAS DE TEMPS
 C =====================================================================
 C -------------------------- CRITERE ACTIF ----------------------------
 C =====================================================================
-        IF(INDI(I).LT.5)THEN
-        
+        IF (INDI(I).LT.5) THEN
         
 C **************************
 C --- CRITERES MONOTONES ---
 C **************************
-          IF(HIST(I,2).EQ.1)THEN
-            IF(ACTIF.GE.(-R8PREM()))THEN
+          IF (HIST(I,2).EQ.1) THEN
+            IF (ACTIF.GE.(-R8PREM())) THEN
               VIND(23+INDI(I)) = UN
             ELSE
-              VIND(23+INDI(I)) = - UN
-              IF(INDI(I).LT.4)THEN
+              VIND(23+INDI(I)) = -UN
+              IF (INDI(I).LT.4) THEN
                 CALL HUJMED(INDI(I), MATER, VIND, SIGD)
                 VIND(I+4) = MATER(18,2)
                 CALL HUJCDC(INDI(I), MATER, SIGE, VIND, SEUIL)
-                IF(VIND(I+4).EQ.UN)SEUIL = - UN
-              ELSEIF(INDI(I).EQ.4)THEN
+                IF (VIND(I+4).EQ.UN) SEUIL = - UN
+              ELSEIF (INDI(I).EQ.4) THEN
                 CALL HUJMEI(VIND)
                 VIND(8) = MATER(19,2)
                 CALL HUJCIC(MATER, SIGE, VIND, SEUIL)
               ENDIF
-              IF(SEUIL.GT.TOLE1)THEN
+              IF (SEUIL.GT.TOLE1) THEN
                 VIND(27+INDI(I)) = UN
               ELSE
                 VIND(27+INDI(I)) = ZERO
@@ -327,13 +344,13 @@ C **************************
               ENDIF  
             ENDIF
           ELSE
-            IF(ACTIF.GE.(-R8PREM()))THEN
-              IF(INDI(I).LT.4)THEN
+            IF (ACTIF.GE.(-R8PREM())) THEN
+              IF (INDI(I).LT.4) THEN
                 CALL HUJCRD(I, MATER, SIGE, VIND, SEUIL)
               ELSE
                 CALL HUJCRI(MATER, SIGE, VIND, SEUIL)
               ENDIF
-              IF(SEUIL.GT.TOLE1)THEN
+              IF (SEUIL.GT.TOLE1) THEN
                 VIND(23+INDI(I)) = UN 
               ELSE
                 VIND(23+INDI(I)) = ZERO
@@ -350,25 +367,25 @@ C **************************
 C **************************
 C --- CRITERES CYCLIQUES ---
 C **************************
-          IF(HIST(I,2).EQ.1)THEN
-            IF(ACTIF.GE.(-R8PREM()))THEN
-              IF(VIND(I+4).LT.UN)THEN
+          IF (HIST(I,2).EQ.1) THEN
+            IF (ACTIF.GE.(-R8PREM())) THEN
+              IF (VIND(I+4).LT.UN) THEN
                 VIND(23+INDI(I)) = UN
               ELSE
                 VIND(23+INDI(I)) = ZERO
               ENDIF
             ELSE
-              IF(INDI(I).LT.8)THEN
+              IF (INDI(I).LT.8) THEN
                 CALL HUJMED(INDI(I), MATER, VIND, SIGD)
                 VIND(I+4) = MATER(18,2)
                 CALL HUJCDC(INDI(I)-4, MATER, SIGE, VIND, SEUIL)
-                IF(VIND(I+4).EQ.UN)SEUIL = - UN
+                IF (VIND(I+4).EQ.UN) SEUIL = -UN
               ELSE
                 CALL HUJMEI(VIND)
                 VIND(8) = MATER(19,2)
                 CALL HUJCIC(MATER, SIGE, VIND, SEUIL)
               ENDIF
-              IF(SEUIL.GT.TOLE1)THEN
+              IF (SEUIL.GT.TOLE1) THEN
                 VIND(23+INDI(I)) = UN
               ELSE
                 VIND(23+INDI(I)) = ZERO
@@ -376,17 +393,16 @@ C **************************
               ENDIF  
             ENDIF
           ELSE
-            IF(ACTIF.GE.(-R8PREM()))THEN
-              IF((INDI(I).GT.4).AND.(INDI(I).LT.8))THEN
+            IF (ACTIF.GE.(-R8PREM())) THEN
+              IF ((INDI(I).GT.4).AND.(INDI(I).LT.8)) THEN
                 CALL HUJCDC(INDI(I)-4, MATER, SIGE, VIND, SEUIL)
-                IF(VIND(I+4).EQ.UN)SEUIL = - UN
-                IF(SEUIL.GT.TOLE1)THEN
+                IF (VIND(I+4).EQ.UN) SEUIL = -UN
+                IF (SEUIL.GT.TOLE1) THEN
                   VIND(23+INDI(I)) = UN
-                  IF((VIND(5*I+31).NE.ZERO).OR.
-     &               (VIND(5*I+32).NE.ZERO))THEN
-                  CALL HUJCDC(INDI(I)-4, MATER, SIGE, 
-     &                        VINM, SEUILM)
-                    IF(SEUILM.GT.TOLE1)THEN
+                  IF ((VIND(5*I+31).NE.ZERO).OR.
+     &               (VIND(5*I+32).NE.ZERO)) THEN
+                  CALL HUJCDC(INDI(I)-4, MATER, SIGE, VINM, SEUILM)
+                    IF (SEUILM.GT.TOLE1) THEN
                       VIND(4*I+5) = VIND(5*I+31)
                       VIND(4*I+6) = VIND(5*I+32)
                       VIND(4*I+7) = VIND(5*I+33)
@@ -405,7 +421,7 @@ C **************************
                 ENDIF
               ELSE
                 CALL HUJCIC(MATER, SIGE, VIND, SEUIL)
-                IF(SEUIL.GT.TOLE1)THEN
+                IF (SEUIL.GT.TOLE1) THEN
                   VIND(23+INDI(I)) = UN
                 ELSE
                   VIND(23+INDI(I)) = ZERO
@@ -414,8 +430,8 @@ C **************************
               ENDIF     
             ELSE
               SEUIL = ZERO
-              IF(INDI(I).LT.8)THEN
-                IF(VIND(I+4).NE.MATER(18,2))THEN 
+              IF (INDI(I).LT.8) THEN
+                IF (VIND(I+4).NE.MATER(18,2)) THEN 
                   CALL HUJMED(INDI(I), MATER, VIND, SIGD)
                   VIND(I+4) = MATER(18,2)
                   CALL HUJCDC(INDI(I)-4, MATER, SIGE, VIND, SEUIL)
@@ -425,7 +441,7 @@ C **************************
                 VIND(8) = MATER(19,2)
                 CALL HUJCIC(MATER, SIGE, VIND, SEUIL)
               ENDIF
-              IF(SEUIL.GT.TOLE1)THEN
+              IF (SEUIL.GT.TOLE1) THEN
                 VIND(23+INDI(I)) = UN
               ELSE
                 VIND(23+INDI(I)) = ZERO
@@ -451,4 +467,5 @@ C ======================================================================
 1001  FORMAT (A,I3)    
 2000  FORMAT (A,28(1X,E12.5)) 
 2010  FORMAT (A,4(1X,I2))
+      IF (DEBUG) WRITE(6,*)'FIN - VIND=',(VIND(23+I),I=1,8)
       END

@@ -1,8 +1,8 @@
-      SUBROUTINE MMMJAC(ALIAS ,IGEOM ,FF    ,DFF   ,IAXIS ,
-     &                  NDIM  ,JAC   )
-C     
+      SUBROUTINE MMMJAC(ALIAS ,GEOMAC,FF    ,DFF   ,LAXIS ,
+     &                  NDIM  ,JACOBI)
+C   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,13 +22,13 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*8  ALIAS      
-      INTEGER      IGEOM
+      CHARACTER*8  ALIAS 
+      REAL*8       GEOMAC(9,3)     
       REAL*8       FF(9)
       REAL*8       DFF(2,9)      
       INTEGER      NDIM      
-      INTEGER      IAXIS
-      REAL*8       JAC
+      LOGICAL      LAXIS
+      REAL*8       JACOBI
 C      
 C ----------------------------------------------------------------------
 C
@@ -39,13 +39,13 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
-C IN  IGEOM  : ADRESSE JEVEUX POUR LE VECTEUR GEOMETRIE ACTUALISEE
+C IN  ALIAS  : NOM DE L'ELEMENT   
+C IN  GEOMAC : COORDONNEES ACTUALISEES DES NOEUDS DE L'ELEMENT 
 C IN  FF     : FONCTIONS DE FORMES EN XI,YI
 C IN  DFF    : DERIVEES PREMIERES DES FONCTIONS DE FORME EN XI YI
 C IN  NDIM   : DIMENSION DU PROBLEME
-C IN  IAXIS  : VAUT 1 SI PROBLEME AXISYMETRIQUE
-C OUT JAC    : VALEUR DU JACOBIEN
+C IN  LAXIS  : SI PROBLEME AXISYMETRIQUE
+C OUT JACOBI : VALEUR DU JACOBIEN
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
@@ -66,7 +66,7 @@ C
 C      
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER I
+      INTEGER INOE
       REAL*8  XX
       REAL*8  DXDS,DYDS,DZDS
       REAL*8  DXDE,DXDK,DYDE,DYDK,DZDE,DZDK
@@ -84,100 +84,105 @@ C
       DZDK = 0.D0               
 C
       IF (ALIAS(1:5).EQ.'SE2') THEN
-        DO 10 I = 1,2
+        DO 10 INOE = 1,2
           IF(NDIM.EQ.2) THEN
-            DXDS = DXDS + ZR(IGEOM-1+2*(I-1)+1)*DFF(1,I)
-            DYDS = DYDS + ZR(IGEOM-1+2*(I-1)+2)*DFF(1,I)
+            DXDS = DXDS + GEOMAC(INOE,1)*DFF(1,INOE)
+            DYDS = DYDS + GEOMAC(INOE,2)*DFF(1,INOE)
           ELSEIF(NDIM.EQ.3) THEN
-            DXDS = DXDS + ZR(IGEOM-1+3*(I-1)+1)*DFF(1,I)
-            DYDS = DYDS + ZR(IGEOM-1+3*(I-1)+2)*DFF(1,I)
-            DZDS = DZDS + ZR(IGEOM-1+3*(I-1)+3)*DFF(1,I)
+            DXDS = DXDS + GEOMAC(INOE,1)*DFF(1,INOE)
+            DYDS = DYDS + GEOMAC(INOE,2)*DFF(1,INOE)
+            DZDS = DZDS + GEOMAC(INOE,3)*DFF(1,INOE)
           ENDIF
    10   CONTINUE
-        IF (IAXIS.EQ.1) THEN
+        IF (LAXIS) THEN
           XX = 0.D0
-          DO 7 I=1,2
-            XX = XX+ ZR(IGEOM-1+2*(I-1)+1)*FF(I)
+          DO 7 INOE=1,2
+            XX = XX+ GEOMAC(INOE,1)*FF(INOE)
 7         CONTINUE
           IF (XX.EQ.0.D0) THEN
             XX=0.01D-5
           ENDIF  
-          JAC = SQRT(DXDS**2+DYDS**2)*ABS(XX)
+          JACOBI = SQRT(DXDS**2+DYDS**2)*ABS(XX)
         ELSE
-          JAC = SQRT(DXDS**2+DYDS**2+DZDS**2)
+          JACOBI = SQRT(DXDS**2+DYDS**2+DZDS**2)
         END IF
       ELSE IF (ALIAS(1:5).EQ.'SE3') THEN
-        DO 20 I = 1,3
-          DXDS = DXDS + ZR(IGEOM-1+2*(I-1)+1)*DFF(1,I)
-          DYDS = DYDS + ZR(IGEOM-1+2*(I-1)+2)*DFF(1,I)
+        DO 20 INOE = 1,3
+          DXDS = DXDS + GEOMAC(INOE,1)*DFF(1,INOE)
+          DYDS = DYDS + GEOMAC(INOE,2)*DFF(1,INOE)
    20   CONTINUE
-         IF (IAXIS.EQ.1) THEN
+         IF (LAXIS) THEN
            XX = 0.D0
-           DO 3 I=1,3
-             XX = XX+ ZR(IGEOM-1+2*(I-1)+1)*FF(I)
+           DO 3 INOE=1,3
+             XX = XX+ GEOMAC(INOE,1)*FF(INOE)
 3          CONTINUE
            IF (XX.EQ.0.D0) THEN
              XX=0.01D-5
            ENDIF
-           JAC = SQRT(DXDS**2+DYDS**2)*ABS(XX)
+           JACOBI = SQRT(DXDS**2+DYDS**2)*ABS(XX)
          ELSE
-           JAC = SQRT(DXDS**2+DYDS**2)
+           JACOBI = SQRT(DXDS**2+DYDS**2)
          END IF
       ELSE IF (ALIAS(1:5).EQ.'TR3') THEN
-        DO 30 I = 1,3
-          DXDE = DXDE + ZR(IGEOM+3*I-3)*DFF(1,I)
-          DXDK = DXDK + ZR(IGEOM+3*I-3)*DFF(2,I)
-          DYDE = DYDE + ZR(IGEOM+3*I-2)*DFF(1,I)
-          DYDK = DYDK + ZR(IGEOM+3*I-2)*DFF(2,I)
-          DZDE = DZDE + ZR(IGEOM+3*I-1)*DFF(1,I)
-          DZDK = DZDK + ZR(IGEOM+3*I-1)*DFF(2,I)
+        DO 30 INOE = 1,3
+          DXDE = DXDE + GEOMAC(INOE,1)*DFF(1,INOE)
+          DXDK = DXDK + GEOMAC(INOE,1)*DFF(2,INOE)
+          DYDE = DYDE + GEOMAC(INOE,2)*DFF(1,INOE)
+          DYDK = DYDK + GEOMAC(INOE,2)*DFF(2,INOE)
+          DZDE = DZDE + GEOMAC(INOE,3)*DFF(1,INOE)
+          DZDK = DZDK + GEOMAC(INOE,3)*DFF(2,INOE)
    30   CONTINUE
-        JAC = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ (DZDE*DXDK-DXDE*DZDK)**2+
-     &        (DXDE*DYDK-DYDE*DXDK)**2)
+        JACOBI = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ 
+     &                (DZDE*DXDK-DXDE*DZDK)**2+
+     &                (DXDE*DYDK-DYDE*DXDK)**2)
       ELSE IF (ALIAS.EQ.'TR6') THEN       
-        DO 40 I = 1,6
-          DXDE = DXDE + ZR(IGEOM+3*I-3)*DFF(1,I)
-          DXDK = DXDK + ZR(IGEOM+3*I-3)*DFF(2,I)
-          DYDE = DYDE + ZR(IGEOM+3*I-2)*DFF(1,I)
-          DYDK = DYDK + ZR(IGEOM+3*I-2)*DFF(2,I)
-          DZDE = DZDE + ZR(IGEOM+3*I-1)*DFF(1,I)
-          DZDK = DZDK + ZR(IGEOM+3*I-1)*DFF(2,I)
+        DO 40 INOE = 1,6
+          DXDE = DXDE + GEOMAC(INOE,1)*DFF(1,INOE)
+          DXDK = DXDK + GEOMAC(INOE,1)*DFF(2,INOE)
+          DYDE = DYDE + GEOMAC(INOE,2)*DFF(1,INOE)
+          DYDK = DYDK + GEOMAC(INOE,2)*DFF(2,INOE)
+          DZDE = DZDE + GEOMAC(INOE,3)*DFF(1,INOE)
+          DZDK = DZDK + GEOMAC(INOE,3)*DFF(2,INOE)
    40   CONTINUE
-        JAC = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ (DZDE*DXDK-DXDE*DZDK)**2+
-     &        (DXDE*DYDK-DYDE*DXDK)**2)
+        JACOBI = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ 
+     &                (DZDE*DXDK-DXDE*DZDK)**2+
+     &                (DXDE*DYDK-DYDE*DXDK)**2)
       ELSE IF (ALIAS(1:5).EQ.'QU4') THEN
-        DO 50 I = 1,4
-          DXDE = DXDE + ZR(IGEOM+3*I-3)*DFF(1,I)
-          DXDK = DXDK + ZR(IGEOM+3*I-3)*DFF(2,I)
-          DYDE = DYDE + ZR(IGEOM+3*I-2)*DFF(1,I)
-          DYDK = DYDK + ZR(IGEOM+3*I-2)*DFF(2,I)
-          DZDE = DZDE + ZR(IGEOM+3*I-1)*DFF(1,I)
-          DZDK = DZDK + ZR(IGEOM+3*I-1)*DFF(2,I)
+        DO 50 INOE = 1,4
+          DXDE = DXDE + GEOMAC(INOE,1)*DFF(1,INOE)
+          DXDK = DXDK + GEOMAC(INOE,1)*DFF(2,INOE)
+          DYDE = DYDE + GEOMAC(INOE,2)*DFF(1,INOE)
+          DYDK = DYDK + GEOMAC(INOE,2)*DFF(2,INOE)
+          DZDE = DZDE + GEOMAC(INOE,3)*DFF(1,INOE)
+          DZDK = DZDK + GEOMAC(INOE,3)*DFF(2,INOE)
    50   CONTINUE
-        JAC = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ (DZDE*DXDK-DXDE*DZDK)**2+
-     &        (DXDE*DYDK-DYDE*DXDK)**2)
+        JACOBI = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ 
+     &                (DZDE*DXDK-DXDE*DZDK)**2+
+     &                (DXDE*DYDK-DYDE*DXDK)**2)
       ELSE IF (ALIAS.EQ.'QU8') THEN
-        DO 60 I = 1,8
-          DXDE = DXDE + ZR(IGEOM+3*I-3)*DFF(1,I)
-          DXDK = DXDK + ZR(IGEOM+3*I-3)*DFF(2,I)
-          DYDE = DYDE + ZR(IGEOM+3*I-2)*DFF(1,I)
-          DYDK = DYDK + ZR(IGEOM+3*I-2)*DFF(2,I)
-          DZDE = DZDE + ZR(IGEOM+3*I-1)*DFF(1,I)
-          DZDK = DZDK + ZR(IGEOM+3*I-1)*DFF(2,I)
+        DO 60 INOE = 1,8
+          DXDE = DXDE + GEOMAC(INOE,1)*DFF(1,INOE)
+          DXDK = DXDK + GEOMAC(INOE,1)*DFF(2,INOE)
+          DYDE = DYDE + GEOMAC(INOE,2)*DFF(1,INOE)
+          DYDK = DYDK + GEOMAC(INOE,2)*DFF(2,INOE)
+          DZDE = DZDE + GEOMAC(INOE,3)*DFF(1,INOE)
+          DZDK = DZDK + GEOMAC(INOE,3)*DFF(2,INOE)
    60   CONTINUE
-        JAC = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ (DZDE*DXDK-DXDE*DZDK)**2+
-     &        (DXDE*DYDK-DYDE*DXDK)**2)
+        JACOBI = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ 
+     &                (DZDE*DXDK-DXDE*DZDK)**2+
+     &                (DXDE*DYDK-DYDE*DXDK)**2)
       ELSE IF (ALIAS.EQ.'QU9') THEN
-        DO 70 I = 1,9
-          DXDE = DXDE + ZR(IGEOM+3*I-3)*DFF(1,I)
-          DXDK = DXDK + ZR(IGEOM+3*I-3)*DFF(2,I)
-          DYDE = DYDE + ZR(IGEOM+3*I-2)*DFF(1,I)
-          DYDK = DYDK + ZR(IGEOM+3*I-2)*DFF(2,I)
-          DZDE = DZDE + ZR(IGEOM+3*I-1)*DFF(1,I)
-          DZDK = DZDK + ZR(IGEOM+3*I-1)*DFF(2,I)
+        DO 70 INOE = 1,9
+          DXDE = DXDE + GEOMAC(INOE,1)*DFF(1,INOE)
+          DXDK = DXDK + GEOMAC(INOE,1)*DFF(2,INOE)
+          DYDE = DYDE + GEOMAC(INOE,2)*DFF(1,INOE)
+          DYDK = DYDK + GEOMAC(INOE,2)*DFF(2,INOE)
+          DZDE = DZDE + GEOMAC(INOE,3)*DFF(1,INOE)
+          DZDK = DZDK + GEOMAC(INOE,3)*DFF(2,INOE)
    70   CONTINUE
-        JAC = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ (DZDE*DXDK-DXDE*DZDK)**2+
-     &        (DXDE*DYDK-DYDE*DXDK)**2)
+        JACOBI = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ 
+     &                (DZDE*DXDK-DXDE*DZDK)**2+
+     &                (DXDE*DYDK-DYDE*DXDK)**2)
       ELSE
         CALL ASSERT(.FALSE.)
       END IF

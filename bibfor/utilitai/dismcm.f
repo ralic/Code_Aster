@@ -1,6 +1,6 @@
       SUBROUTINE DISMCM(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,6 @@ C
 C ----------------------------------------------------------------------
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -56,7 +55,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*8   KBID, MATER, CODRET, NOMF
+      CHARACTER*8   KBID, MATER, NOMF
       CHARACTER*10  NOMRC
       CHARACTER*24  QUEST2,NOMOBJ(100)
       LOGICAL       TROUVE
@@ -336,8 +335,15 @@ C              -- CAS D'UNE FONCTION A 1 VARIABLE :
  53          CONTINUE
  55      CONTINUE
  50      CONTINUE
-
-
+      ELSE IF (QUESTI.EQ.'EXI_VARC') THEN
+C     --------------------------------------
+         REPK='NON'
+         CALL JEEXIN(NOMOB// '.CVRCVARC',IRET)
+         IF ( IRET.NE.0) THEN
+           REPK='OUI'
+         ENDIF
+         
+         
       ELSE
 C     --------------------------------------
          REPK = QUESTI
@@ -348,5 +354,6 @@ C     --------------------------------------
 C
  9999 CONTINUE
       REPKZ = REPK
+      REPI  = 0
       CALL JEDEMA()
       END

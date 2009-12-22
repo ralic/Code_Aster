@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 09/11/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF modelisa2 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,14 +34,12 @@ cata_msg={
 3: _("""
  calcul de la tension le long du cable numéro %(k1)s  :
  la longueur sur laquelle on devrait prendre en compte les pertes de tension par recul de l ancrage
- est supérieure à la longueur du cable
-"""),
+ est supérieure à la longueur du cable"""),
 
 4: _("""
- calcul de la tension le long du cable numéro %(k1)s  :
- la longueur sur laquelle on doit prendre en compte les pertes de tension par recul de l ancrage
- est égale à la longueur du cable
-"""),
+  calcul de la tension le long du cable numéro %(k1)s  :
+  la longueur sur laquelle on doit prendre en compte les pertes de tension par recul de l ancrage
+  est égale à la longueur du cable"""),
 
 5: _("""
  Formule interdite pour le calcul d'intégrale : la fonction soit etre tabulée.
@@ -56,7 +54,7 @@ cata_msg={
 """),
 
 13: _("""
- problème pour récupérer une grandeur dans la table CARA_GEOM
+ problème pour recuperer une grandeur dans la table CARA_GEOM
 """),
 
 14: _("""
@@ -76,11 +74,11 @@ cata_msg={
 """),
 
 18: _("""
- nombre de noeuds incohérent sous les 2 GROUP_MA à coller
+ nombre de noeuds incoherent sous les 2 GROUP_MA a coller
 """),
 
 19: _("""
- un noeud de GROUP_MA_2 n'est géometriquement appariable avec aucun de GROUP_MA_1
+ un noeud de group_ma_2 n est geometriquement appariable avec aucun de GROUP_MA_1
 """),
 
 20: _("""
@@ -111,10 +109,10 @@ cata_msg={
 
 25: _("""
  problème pour déterminer les rangs des composantes <ALPHA> , <BETA> , <GAMMA> de la grandeur <CAORIE>
-"""),
+ """),
 
 26: _("""
- erreur à l'appel de la routine ETENCA pour l'extension de la carte  %(k1)s .
+ erreur a l'appel de la routine ETENCA pour extension de la carte  %(k1)s .
 """),
 
 27: _("""
@@ -163,6 +161,7 @@ Risque & Conseil:
 """),
 
 
+
 43: _("""
  deux mailles POI1 interdit
 """),
@@ -185,7 +184,7 @@ Risque & Conseil:
 
 49: _("""
  les caractéristiques matérielles n'ont pas ete affectées à la maille no %(k1)s  appartenant au cable no %(k2)s
-"""),
+ """),
 
 50: _("""
  des matériaux différents ont été affectés aux mailles appartenant au cable no %(k1)s
@@ -213,11 +212,11 @@ Risque & Conseil:
 
 56: _("""
  récupération des caractéristiques du matériau ACIER associé au cable no %(k1)s , relation de comportement <BPEL_ACIER> : au moins une valeur de paramètre invalide
-"""),
+ """),
 
 57: _("""
- les caractéristiques géometriques n'ont pas été affectées à la maille no %(k1)s  appartenant au cable no %(k2)s
-"""),
+ les caractéristiques géométriques n'ont pas été affectées à la maille no %(k1)s  appartenant au cable no %(k2)s
+ """),
 
 58: _("""
  l'aire de la section droite n a pas été affectée à la maille no %(k1)s  appartenant au cable no %(k2)s
@@ -231,13 +230,10 @@ Risque & Conseil:
  des aires de section droite différentes ont été affectées aux mailles appartenant au cable no %(k1)s
 """),
 
-61: _("""
-Le mot-clef facteur < %(k1)s > est inconnu. Contactez les développeurs.
-Note DVP: erreur de cohérence fortran/catalogue.
-"""),
+
 
 62: _("""
-  numero d"occurence négatif
+  numero d'occurence négatif
 """),
 
 63: _("""
@@ -257,19 +253,21 @@ Note DVP: erreur de cohérence fortran/catalogue.
  trop de valeurs d'angles, on ne garde que les 3 premiers.
 """),
 
+
 82: _("""
  pour LIAISON_UNIF, entrer plus d'un seul noeud
 """),
 
 83: _("""
  on doit utiliser le mot cle CHAM_NO pour donner le CHAM_NO dont les composantes seront les seconds membres de la relation linéaire.
-"""),
+ 
+ """),
 
 84: _("""
  il faut que le CHAM_NO dont les termes servent de seconds membres à la relation linéaire à écrire ait été défini.
-"""),
+ """),
 
-85: _("""
+85: _(""" 
  on doit donner un CHAM_NO après le mot cle CHAM_NO derrière le mot facteur CHAMNO_IMPO .
 """),
 
@@ -317,11 +315,11 @@ Les mots-cles admissibles pour définir la seconde liste de noeuds sous le mot-fa
 96: _("""
   %(k1)s   %(k2)s ne fait pas partie du maillage :  %(k3)s
 """),
-
+ 
 97: _("""
   Assemblage de maillages : Présence de noeuds confondus dans la zone à coller GROUP_MA_1.
 """),
-
+ 
 98: _("""
  on doit utiliser le mot clé CHAM_NO pour donner le CHAM_NO dont les composantes seront les coefficients de la relation linéaire.
 """),

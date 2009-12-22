@@ -1,7 +1,7 @@
       INTEGER FUNCTION XXMMVD(VECT) 
 C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,8 +46,6 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-C
       LVECT=.FALSE.
       IF (VECT.EQ.'ZXCAR') THEN
         XXMMVD = ZXCAR
@@ -62,6 +60,5 @@ C
       ELSE
         CALL ASSERT(LVECT)
       ENDIF  
-C
-      CALL JEDEMA()
+
       END

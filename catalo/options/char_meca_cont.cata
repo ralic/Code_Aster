@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 % RESPONSABLE ABBAS
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -31,8 +31,8 @@ OPTION__
         PCAR_AI  NEUT_R
         PCAR_CF  NEUT_R
         PCONFR   NEUT_R
-        PDEPLAR  DEPL_R
-        PCHDYNR  DEPL_R
+        PVITE_M  DEPL_R
+        PACCE_M  DEPL_R
         PUSULAR  NEUT_R
         PINDCOI  NEUT_I
         PDONCO   XCONTAC     

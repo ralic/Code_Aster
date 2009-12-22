@@ -1,8 +1,7 @@
-      SUBROUTINE NBNODE(NOMA,MOTFAC,NBOCC,
-     &                  NONBNO,NOPONO,NBTOT)
+      SUBROUTINE NBNODE(NOMA  ,MOTFAC,NZOCU ,NOPONO,NNOCU )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,34 +22,24 @@ C
       IMPLICIT      NONE
       CHARACTER*8   NOMA
       CHARACTER*16  MOTFAC
-      INTEGER       NBOCC
-      CHARACTER*24  NONBNO      
+      INTEGER       NZOCU      
       CHARACTER*24  NOPONO            
-      INTEGER       NBTOT
-C
-C ----------------------------------------------------------------------
-C ROUTINE UTILITAIRE
+      INTEGER       NNOCU
+C     
 C ----------------------------------------------------------------------
 C
-C COMPTE LES NOEUDS :
-C   - D'UN GROUP_NO OU D'UNE LISTE DE GROUP_NO
-C   - D'UN GROUP_MA OU D'UNE LISTE DE GROUP_MA
-C   - D'UNE MAILLE OU D'UNE LISTE DE MAILLES
-C   - D'UN NOEUD OU D'UNE LISTE DE NOEUDS (SE CONTENTE DE TRASNFORMER
-C        NOM DU NOEUD EN NUMERO DU NOEUD)
-C EN SORTIE, ON RECUPERE UNE LISTE
-C   LA LISTE EST UN OBJET JEVEUX DE NOM <NOMOBJ> CONTENANT <NBOBJ>
-C   ENTIERS CORRESPONDANT AUX NUMEROS DES NOEUDS. 
-C /!\ LISTE NON TRIEE ET POUVANT CONTENIR DES DOUBLES /!\
+C ROUTINE CONTACT (LIAISON_UNILATERALE - LECTURE)
+C
+C DECOMPTE DES NOEUDS AFFECTES PAR ZONE
+C      
+C ----------------------------------------------------------------------
 C
 C
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  MOTFAC : MOT_CLEF FACTEUR POUR LIAISON UNILATERALE
-C IN  NBOCC  : NOMBRE D'OCCURRENCES MOT-CLEF FACTEUR
-C IN  NONBNO : NOM DE L'OBJET JEVEUX CONTENANT LE NOMBRE DE NOEUDS
-C               POUR CHAQUE OCCURRENCE
-C IN  NOPONO : NOM DE L'OBJET JEVEUX CONTENANT LE VECTEUR D'INDIRECTION
-C OUT NBTOT  : NOMBRE DE TOTAL DE NOEUDS POUR TOUTES LES OCCURRENCES
+C IN  NZOCU  : NOMBRE DE ZONES DE LIAISON_UNILATERALE
+C OUT NOPONO : NOM DE L'OBJET JEVEUX CONTENANT LE VECTEUR D'INDIRECTION
+C OUT NNOCU  : NOMBRE DE TOTAL DE NOEUDS POUR TOUTES LES OCCURRENCES
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -71,102 +60,56 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*8   K8BID
-      INTEGER       IBID,IOCC
-      INTEGER       JGRMA,JGRNO,JMA,JNN,JNP
-      INTEGER       NBGRMA,NBGRNO,NBMAIL,NBNOEU,NBNOCC
-      INTEGER       NBNOGM,NBNOMA,NBNOGN,NBNONO
+      CHARACTER*8  K8BLA
+      INTEGER      IZONE
+      INTEGER      JNP
+      INTEGER      NBMOCL
+      CHARACTER*16 LIMOCL(2),TYMOCL(2) 
+      CHARACTER*24 LISTMN,LISTNN 
+      INTEGER      NBMANO,NBNONO,NBNO     
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C ======================================================================
 C
 C --- INITIALISATIONS
 C      
-      CALL JEVEUO(NONBNO,'E',JNN)
-      CALL JEVEUO(NOPONO,'E',JNP)
+      CALL WKVECT(NOPONO,'V V I',NZOCU+1,JNP)
       
       ZI(JNP) = 1
-      NBNOCC = 0
-      NBTOT  = 0
-      NBNOGM = 0
-      NBNOGN = 0
-      NBNONO = 0
-      NBNOMA = 0
-      NBMAIL = 0
-      NBNOEU = 0
-      NBGRMA = 0
-      NBGRNO = 0
+      NNOCU   = 0
+      NBMOCL  = 2
+      K8BLA   = ' '
 C
-      DO 1000 IOCC=1,NBOCC
-        CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA',
-     &              IOCC,1,0,K8BID,NBGRMA)    
-        IF (NBGRMA.NE.0) THEN
-          CALL JEDETR('&&NBNODE.GROUPMA')
-          NBGRMA = -NBGRMA
-          CALL WKVECT('&&NBNODE.GROUPMA','V V K8',NBGRMA,JGRMA)
-          CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA',
-     &                IOCC,1,NBGRMA,ZK8(JGRMA),IBID)        
-          CALL NBNOD2(NOMA,NBGRMA,ZK8(JGRMA),'GROUP_MA',
-     &                NBNOGM)        
-          ZI(JNN-1+4*(IOCC-1)+1) = NBNOGM
-        ENDIF          
-
-        CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE',
-     &              IOCC,1,0,K8BID,NBMAIL)    
-        IF (NBMAIL.NE.0) THEN
-          CALL JEDETR('&&NBNODE.MAILLE')
-          NBMAIL = -NBMAIL
-          CALL WKVECT('&&NBNODE.MAILLE','V V K8',NBMAIL,JMA)
-          CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE',
-     &                IOCC,1,NBMAIL,ZK8(JMA),IBID)          
-          CALL NBNOD2(NOMA,NBMAIL,ZK8(JMA),'MAILLE  ',
-     &                NBNOMA)        
-          ZI(JNN-1+4*(IOCC-1)+2) = NBNOMA
-        ENDIF          
-
-        CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &              IOCC,1,0,K8BID,NBGRNO)    
-        IF (NBGRNO.NE.0) THEN
-          CALL JEDETR('&&NBNODE.GROUPNO')
-          NBGRNO = -NBGRNO
-          CALL WKVECT('&&NBNODE.GROUPNO','V V K8',NBGRNO,JGRNO)
-          CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &                IOCC,1,NBGRNO,ZK8(JGRNO),IBID)        
-          CALL NBNOD2(NOMA,NBGRNO,ZK8(JGRNO),'GROUP_NO',
-     &                NBNOGN)  
-          ZI(JNN-1+4*(IOCC-1)+3) = NBNOGN      
-        ENDIF          
-
-        CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',
-     &              IOCC,1,0,K8BID,NBNOEU)    
-        IF (NBNOEU.NE.0) THEN
-          NBNOEU = -NBNOEU
-          NBNONO = NBNOEU 
-          ZI(JNN-1+4*(IOCC-1)+4) = NBNONO
-        ENDIF          
+C --- NOM DES SD TEMPORAIRES
+C          
+      LISTMN = '&&NBNODE.MAIL.NOEU'
+      LISTNN = '&&NBNODE.NOEU.NOEU'      
+C                             
+C --- ON COMPTE LES NOEUDS DES ZONES 
+C     
+      DO 10 IZONE = 1,NZOCU
+        TYMOCL(1) = 'GROUP_MA'
+        TYMOCL(2) = 'MAILLE'
+        LIMOCL(1) = 'GROUP_MA'
+        LIMOCL(2) = 'MAILLE'
+        CALL RELIEM(K8BLA ,NOMA  ,'NU_NOEUD',MOTFAC,IZONE ,
+     &              NBMOCL,LIMOCL,TYMOCL,LISTMN,NBMANO)
+           
+        TYMOCL(1) = 'GROUP_NO'
+        TYMOCL(2) = 'NOEUD'
+        LIMOCL(1) = 'GROUP_NO'
+        LIMOCL(2) = 'NOEUD'
+        CALL RELIEM(K8BLA ,NOMA  ,'NU_NOEUD',MOTFAC,IZONE ,
+     &              NBMOCL,LIMOCL,TYMOCL,LISTNN,NBNONO)
+        NBNO   = NBMANO+NBNONO
+        NNOCU  = NNOCU+NBNO
+        ZI(JNP+IZONE) = ZI(JNP+IZONE-1)+NBNO 
+ 10   CONTINUE 
+C   
+      CALL JEDETR(LISTMN)
+      CALL JEDETR(LISTNN)  
 C
-C --- NOMBRE DE NOEUDS TOTAL POUR CETTE OCCURRENCE
-C       
-        NBNOCC = NBNONO+NBNOGN+NBNOGM+NBNOMA
-      
-        NBMAIL = 0
-        NBNOEU = 0
-        NBGRMA = 0
-        NBGRNO = 0
-
-        NBNONO = 0
-        NBNOMA = 0
-        NBNOGN = 0
-        NBNOGM = 0
-        ZI(JNP+IOCC) = ZI(JNP+IOCC-1)+NBNOCC
-C
-C --- NOMBRE DE NOEUDS TOTAL POUR TOUTES LES OCCURRENCES
-C
-        NBTOT = NBTOT + NBNOCC  
- 1000 CONTINUE      
-C ======================================================================
       CALL JEDEMA()
 C
       END

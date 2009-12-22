@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 16/11/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -228,13 +228,8 @@ Conseils :
   Mais il faut peut etre émettre une demande d'évolution pour traiter ce cas.
 """),
 
-
-
-
-
-
 50 : _("""
-  la commande a besoin d'un nom de modèle
+ La commande a besoin d'un nom de modèle.
 """),
 
 51 : _("""

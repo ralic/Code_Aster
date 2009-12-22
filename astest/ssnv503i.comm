@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 # ssnv503i.para = tps_job 80 mem_job 32Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,14 +128,24 @@ PTAN_101=AFFE_CHAR_MECA(MODELE=MO,
 
 # DEFINITION DU CONTACT
 
-CTAC=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               METHODE='CONTINUE',
-                               FROTTEMENT='COULOMB',
-                               COULOMB=0.3,
-                               GROUP_MA_MAIT='SMAI',
-                               GROUP_MA_ESCL='SESC',
-                               ),);
+CTAC = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    FROTTEMENT     = 'COULOMB',
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 3,
+                    REAC_FROT      = 'CONTROLE',
+                    NB_ITER_FROT   = 2,                     
+                    ZONE =(
+                           _F(
+                             GROUP_MA_MAIT = 'SMAI',
+                             GROUP_MA_ESCL = 'SESC',
+                             APPARIEMENT   = 'MAIT_ESCL',
+                             COULOMB       = 0.3,
+                             ),                            
+                          ),
+                   );
+
+
 
 #---------------------------------------------------------------------
 #                         RESOLUTION
@@ -165,8 +175,8 @@ U_NOR=STAT_NON_LINE(MODELE=MO,
                     CARA_ELEM=CARA,
                     EXCIT=(_F(CHARGE=PNOR,
                               FONC_MULT=RAMP1,),
-                           _F(CHARGE=CTAC,),
                            _F(CHARGE=COND_LIM,),),
+                    CONTACT  = CTAC,       
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -184,7 +194,6 @@ U_NOR=CALC_NO(reuse =U_NOR,
               OPTION='REAC_NODA',
               EXCIT=(_F(CHARGE=PNOR,
                         FONC_MULT=RAMP1,),
-                     _F(CHARGE=CTAC,),
                      _F(CHARGE=COND_LIM,),),
               );
                                                
@@ -196,8 +205,8 @@ U_99=STAT_NON_LINE(MODELE=MO,
                              FONC_MULT=RAMP1,),
                           _F(CHARGE=PTAN_99,
                              FONC_MULT=RAMP2,),
-                          _F(CHARGE=CTAC,),
                           _F(CHARGE=COND_LIM,),),
+                    CONTACT  = CTAC,                           
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,),
@@ -216,7 +225,6 @@ U_99=CALC_NO(reuse =U_99,
                        FONC_MULT=RAMP1,),
                     _F(CHARGE=PTAN_99,
                        FONC_MULT=RAMP2,),
-                    _F(CHARGE=CTAC,),
                     _F(CHARGE=COND_LIM,),),
               );
 
@@ -228,8 +236,8 @@ U_101=STAT_NON_LINE(MODELE=MO,
                               FONC_MULT=RAMP1,),
                            _F(CHARGE=PTAN_101,
                               FONC_MULT=RAMP2,),
-                           _F(CHARGE=CTAC,),
                            _F(CHARGE=COND_LIM,),),
+                    CONTACT  = CTAC,                            
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -251,7 +259,6 @@ U_101=CALC_NO(reuse =U_101,
                         FONC_MULT=RAMP1,),
                      _F(CHARGE=PTAN_101,
                         FONC_MULT=RAMP2,),
-                     _F(CHARGE=CTAC,),
                      _F(CHARGE=COND_LIM,),),
               );
 
@@ -537,9 +544,7 @@ TU_101=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                GROUP_NO='SESC',
                                RESULTAT=U_101,
                                NOM_CHAM='REAC_NODA',
-                               #RESULTANTE=('DX','DY'),
                                NOM_CMP=('DX','DY'),
-                               #REPERE='LOCAL',
                                OPERATION='EXTRACTION',
                                INST=1.),);
 

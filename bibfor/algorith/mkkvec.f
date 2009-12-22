@@ -1,7 +1,7 @@
       SUBROUTINE MKKVEC(RESE,NRESE,NDIM,VEC,RESU)
-
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/05/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,21 +18,28 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       REAL*8  RESE(3),NRESE,RESU(3),VEC(3)
       INTEGER NDIM
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
+C
+C CALCUL DE LA MATRICE DERIVEE DE LA BOULE UNITE
 C
 C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : MMMAB2
-C ----------------------------------------------------------------------
+C
 C
 C SUBROUTINE QUI CALCULE RESU = K(LAMBDA +RHO[[U]]_TAU)*VEC
 C
-C IN  RESE   : LAMBDA +RHO[[U]]_TAU
-C IN  NRESE  : RACINE DE LA NORME DE RESE
-C IN  NDIM   : DIMENSION DU PROBLEME
-C IN  VEC    : LE VECTEUR A MULTIPLIER
-C OUT RESU   : LE RESULTAT  [K]*VEC
+C IN  RESE  : LAMBDA +RHO[[U]]_TAU
+C IN  NRESE : RACINE DE LA NORME DE RESE
+C IN  NDIM  : DIMENSION DU PROBLEME
+C IN  VEC   : LE VECTEUR A MULTIPLIER
+C OUT RESU  : LE RESULTAT  [K]*VEC
 C                      K(x) = (Id-x*xt/!!x!!**)1/!!x!!
 C
 C ----------------------------------------------------------------------
@@ -57,7 +64,7 @@ C --- CALCUL DE LA NORME DE LAMBDA +RHO[[U]]_TAU
 C
       NORME = NRESE*NRESE
       IF ((NORME.EQ.0.D0).OR.(NRESE.EQ.0.D0)) THEN
-         CALL U2MESS('F','ALGORITH5_82')
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
 C --- CALCUL DU PRODUIT IK()VEC

@@ -1,4 +1,4 @@
-#@ MODIF co_char_meca SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_char_meca SD  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

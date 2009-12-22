@@ -1,9 +1,7 @@
-      SUBROUTINE EXNODE(NOMA,MOTFAC,NBOCC,
-     &                  NONBNO,NOPONO,NBTOT,
-     &                  NOLINO)
+      SUBROUTINE EXNODE(NOMA  ,MOTFAC,NZOCU ,NNOCU ,NOLINO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,40 +22,27 @@ C
       IMPLICIT      NONE
       CHARACTER*8   NOMA
       CHARACTER*16  MOTFAC
-      INTEGER       NBOCC
-      CHARACTER*24  NONBNO
-      CHARACTER*24  NOPONO            
-      INTEGER       NBTOT
-      CHARACTER*24  NOLINO      
-C
-C ----------------------------------------------------------------------
-C ROUTINE UTILITAIRE
+      INTEGER       NZOCU      
+      CHARACTER*24  NOLINO          
+      INTEGER       NNOCU          
+C     
 C ----------------------------------------------------------------------
 C
-C EXTRAIT LES NOEUDS :
-C   - D'UN GROUP_NO OU D'UNE LISTE DE GROUP_NO
-C   - D'UN GROUP_MA OU D'UNE LISTE DE GROUP_MA
-C   - D'UNE MAILLE OU D'UNE LISTE DE MAILLES
-C   - D'UN NOEUD OU D'UNE LISTE DE NOEUDS (SE CONTENTE DE TRASNFORMER
-C        NOM DU NOEUD EN NUMERO DU NOEUD)
-C EN SORTIE, ON RECUPERE UNE LISTE
-C   LA LISTE EST UN OBJET JEVEUX DE NOM <NOMOBJ> CONTENANT <NBOBJ>
-C   ENTIERS CORRESPONDANT AUX NUMEROS DES NOEUDS. 
-C /!\ LISTE NON TRIEE ET POUVANT CONTENIR DES DOUBLES /!\
+C ROUTINE CONTACT (LIAISON_UNILATERALE - LECTURE)
+C
+C AFFECTATION DES NOEUDS AFFECTES PAR ZONE
+C      
+C ----------------------------------------------------------------------
 C
 C
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  MOTFAC : MOT_CLEF FACTEUR POUR LIAISON UNILATERALE
-C IN  NBOCC  : NOMBRE D'OCCURRENCES MOT-CLEF FACTEUR
-C IN  NONBNO : NOM DE L'OBJET JEVEUX CONTENANT NOMBRE DE NOEUDS
-C               POUR CHAQUE OCCURRENCE
-C IN  NOPONO : NOM DE L'OBJET JEVEUX CONTENANT LE VECTEUR D'INDIRECTION
-C IN  NBTOT  : NOMBRE DE TOTAL DE NOEUDS POUR TOUTES LES OCCURRENCES
-C IN  NOLINO : NOM DE L'OBJET JEVEUX CONTENANT LA LISTE DES NOEUDS
+C IN  NZOCU  : NOMBRE DE ZONES DE LIAISON_UNILATERALE
+C OUT NOLINO : NOM DE L'OBJET JEVEUX CONTENANT LA LISTE DES NOEUDS
+C IN  NNOCU  : NOMBRE DE TOTAL DE NOEUDS POUR TOUTES LES OCCURRENCES
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*32 JEXNOM,JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -75,135 +60,70 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*1   K1BID
-      CHARACTER*8   ENTITE,K8BID
-      CHARACTER*24  MAILMA,NOEUMA,GRMAMA,GRNONO,CONNEX
-      INTEGER       N1,JDECAL,IBID
-      INTEGER       IMA,INO,IGR,IOCC
-      INTEGER       JGRMA,JGRNO,JCONX,JNN,JNL,NBNO,NBENT,JNP
-      INTEGER       NUMAIL,NUNOEU,NUGRMA,NBMAIL,NUGRNO
-      CHARACTER*24  NTRAV
-      INTEGER       JTRAV
+      CHARACTER*8  K8BLA
+      INTEGER      IZONE,INO,JDECAL,JLIST
+      INTEGER      JNL
+      INTEGER      NBMOCL
+      CHARACTER*16 LIMOCL(2),TYMOCL(2) 
+      CHARACTER*24 LISTMN,LISTNN 
+      INTEGER      NBMANO,NBNONO      
+      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C ======================================================================
 C
 C --- INITIALISATIONS
+C  
+      JDECAL = 1 
+      NBMOCL = 2 
+      K8BLA  = ' '
 C
-      NOEUMA = NOMA//'.NOMNOE'
-      MAILMA = NOMA//'.NOMMAI'
-      GRMAMA = NOMA//'.GROUPEMA'
-      GRNONO = NOMA//'.GROUPENO'
-      CONNEX = NOMA//'.CONNEX'
-      NTRAV  = '&&EXNODE.TRAV'
-      
-      CALL JEVEUO(NOPONO,'L',JNP)
-      CALL JEVEUO(NONBNO,'L',JNN)
-      CALL JEVEUO(NOLINO,'E',JNL)
-      JDECAL =1      
- 
-      DO 1000 IOCC=1,NBOCC
+C --- NOM DES SD TEMPORAIRES
+C          
+      LISTMN = '&&EXNODE.MAIL.NOEU'
+      LISTNN = '&&EXNODE.NOEU.NOEU'        
 C
-        NBNO = ZI(JNN-1+4*(IOCC-1)+2)
-        IF (NBNO.GT.0) THEN
-          CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE',
-     &                IOCC,1,0,K8BID,NBENT)
-          NBENT = -NBENT    
-          CALL JEDETR(NTRAV)
-          CALL WKVECT(NTRAV,'V V K8',NBENT,JTRAV)
-        
-          CALL GETVEM(NOMA,'MAILLE',MOTFAC,'MAILLE',
-     &                IOCC,1,NBENT,ZK8(JTRAV),IBID)        
-
-          DO 11 IMA = 1, NBENT
-            ENTITE = ZK8(JTRAV-1+IMA)
-            CALL JENONU(JEXNOM(MAILMA,ENTITE),NUMAIL)
-            CALL JEVEUO(JEXNUM(CONNEX,NUMAIL),'L',JCONX)
-            CALL JELIRA(JEXNUM(CONNEX,NUMAIL),'LONMAX',N1,K1BID)
-            DO 12 INO = 1,N1
-              ZI(JNL-1+JDECAL) = ZI(JCONX-1+INO)
-              JDECAL = JDECAL +1
-  12        CONTINUE      
-  11      CONTINUE
-        ENDIF     
-C       
-        NBNO = ZI(JNN-1+4*(IOCC-1)+1)
-        IF (NBNO.GT.0) THEN
-          CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA',
-     &                IOCC,1,0,K8BID,NBENT)
-          NBENT = -NBENT    
-          CALL JEDETR(NTRAV)
-          CALL WKVECT(NTRAV,'V V K8',NBENT,JTRAV)
-        
-          CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA',
-     &                IOCC,1,NBENT,ZK8(JTRAV),IBID)        
-
-          DO 30 IGR = 1, NBENT
-            ENTITE = ZK8(JTRAV-1+IGR)
-
-            CALL JENONU(JEXNOM(GRMAMA,ENTITE),NUGRMA)
-            CALL JELIRA(JEXNUM(GRMAMA,NUGRMA),'LONMAX',NBMAIL,K1BID)
-            CALL JEVEUO(JEXNOM(GRMAMA,ENTITE),'L',JGRMA)
-
-            DO 31 IMA = 1, NBMAIL
-              NUMAIL = ZI(JGRMA-1+IMA)
-              CALL JEVEUO(JEXNUM(CONNEX,NUMAIL),'L',JCONX)
-              CALL JELIRA(JEXNUM(CONNEX,NUMAIL),'LONMAX',N1,K1BID)
-              DO 32 INO = 1,N1
-                ZI(JNL-1+JDECAL) = ZI(JCONX-1+INO)
-                JDECAL = JDECAL +1
-  32          CONTINUE      
-  31        CONTINUE
-  30      CONTINUE
-        ENDIF
-C         
-        NBNO = ZI(JNN-1+4*(IOCC-1)+3)
-        IF (NBNO.GT.0) THEN
-          CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &                IOCC,1,0,K8BID,NBENT)
-          NBENT = -NBENT    
-          CALL JEDETR(NTRAV)
-          CALL WKVECT(NTRAV,'V V K8',NBENT,JTRAV)
-        
-          CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &                IOCC,1,NBENT,ZK8(JTRAV),IBID)        
-
-          DO 50 IGR = 1, NBENT
-            ENTITE = ZK8(JTRAV-1+IGR)
-            CALL JENONU(JEXNOM(GRNONO,ENTITE),NUGRNO)
-            CALL JELIRA(JEXNUM(GRNONO,NUGRNO),'LONMAX',N1,K1BID)
-            CALL JEVEUO(JEXNOM(GRNONO,ENTITE),'L',JGRNO)
-            DO 51 INO = 1,N1
-              ZI(JNL-1+JDECAL) = ZI(JGRNO-1+INO)
-              JDECAL = JDECAL +1
-  51        CONTINUE      
-  50      CONTINUE
-        ENDIF
-
-        NBNO = ZI(JNN-1+4*(IOCC-1)+4)
-         
-        IF (NBNO.GT.0) THEN      
-          NBENT = NBNO    
-          CALL JEDETR(NTRAV)
-          CALL WKVECT(NTRAV,'V V K8',NBENT,JTRAV)
-        
-          CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',
-     &                IOCC,1,NBENT,ZK8(JTRAV),IBID)        
-
-          DO 60 INO = 1, NBENT
-            ENTITE = ZK8(JTRAV-1+INO)
-            
-            CALL JENONU(JEXNOM(NOEUMA,ENTITE),NUNOEU)
-            ZI(JNL-1+JDECAL) = NUNOEU
+C --- CREATION DU VECTEUR
+C      
+      CALL WKVECT(NOLINO,'V V I',NNOCU ,JNL  )         
+C                             
+C --- ON LIT LES NOEUDS DES ZONES 
+C     
+      DO 10 IZONE = 1,NZOCU
+        TYMOCL(1) = 'GROUP_MA'
+        TYMOCL(2) = 'MAILLE'
+        LIMOCL(1) = 'GROUP_MA'
+        LIMOCL(2) = 'MAILLE'
+        CALL RELIEM(K8BLA ,NOMA  ,'NU_NOEUD',MOTFAC,IZONE ,
+     &              NBMOCL,LIMOCL,TYMOCL,LISTMN,NBMANO)
+        IF (NBMANO.NE.0) THEN        
+          CALL JEVEUO(LISTMN,'L',JLIST)
+          DO 60 INO = 1, NBMANO
+            ZI(JNL+JDECAL-1) = ZI(JLIST+INO-1)
             JDECAL = JDECAL +1
   60      CONTINUE
         ENDIF
- 1000 CONTINUE
-     
-C ======================================================================
-      CALL JEDETR(NTRAV)
+        CALL JEDETR(LISTMN)
+           
+        TYMOCL(1) = 'GROUP_NO'
+        TYMOCL(2) = 'NOEUD'
+        LIMOCL(1) = 'GROUP_NO'
+        LIMOCL(2) = 'NOEUD'
+        CALL RELIEM(K8BLA ,NOMA  ,'NU_NOEUD',MOTFAC,IZONE ,
+     &              NBMOCL,LIMOCL,TYMOCL,LISTNN,NBNONO)
+        
+        IF (NBNONO.NE.0) THEN
+          CALL JEVEUO(LISTNN,'L',JLIST)
+          DO 61 INO = 1, NBNONO
+            ZI(JNL+JDECAL-1) = ZI(JLIST+INO-1)
+            JDECAL = JDECAL +1
+  61      CONTINUE
+        ENDIF
+        CALL JEDETR(LISTNN)
+
+ 10   CONTINUE 
+C
       CALL JEDEMA()
 C
       END

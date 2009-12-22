@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN
 # ssnv504b.para = tps_job 280 mem_job 300Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,15 +127,23 @@ DDLIMP=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_NO='LOP_DDL',
                                   DY=1.0,),);
 
-CONTACT=AFFE_CHAR_MECA(MODELE=MO,
-                       CONTACT=(_F(REAC_GEOM='CONTROLE',
-                                   NB_REAC_GEOM=2,
-                                   GROUP_MA_MAIT='FIL_MAI1',
-                                   GROUP_MA_ESCL='LOP_ESC1',),
-                                _F(REAC_GEOM='CONTROLE',
-                                   NB_REAC_GEOM=2,
-                                   GROUP_MA_MAIT='FIL_MAI2',
-                                   GROUP_MA_ESCL='LOP_ESC2',),),);
+CONTACT= DEFI_CONTACT(MODELE       = MO,
+                      FORMULATION  = 'DISCRETE',
+                      REAC_GEOM    = 'CONTROLE',
+                      NB_ITER_GEOM = 2,
+                   ZONE=(
+                        _F(
+                            GROUP_MA_MAIT='FIL_MAI1',
+                            GROUP_MA_ESCL='LOP_ESC1',
+                         ), 
+                        _F(
+                            GROUP_MA_MAIT='FIL_MAI2',
+                            GROUP_MA_ESCL='LOP_ESC2',
+                         ),                          
+                                                                           
+                       ),  
+                  )
+
 #_____________________________________________________________________
 #
 #                    DEFINITIONS DES FONCTIONS TEMPORELLES 
@@ -171,7 +179,8 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=DDLIMP,
                           FONC_MULT=DPLY,),
-                       _F(CHARGE=CONTACT,),),
+                       ),
+                CONTACT  = CONTACT,       
                 COMP_INCR=_F(RELATION='ELAS',
                              TOUT='OUI',),
                 INCREMENT=_F(LIST_INST=L_INST,),

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 # ssnv505d.para = tps_job 400 mem_job 300Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,11 +73,17 @@ CH1=AFFE_CHAR_MECA(MODELE=MODE,
                                 DY=-790.,),
                              ),);
 
-CH2=AFFE_CHAR_MECA(MODELE=MODE,
-                   CONTACT=_F(GROUP_MA_MAIT='SMAI',
+CH2  = DEFI_CONTACT(MODELE         = MODE,
+                    FORMULATION    = 'CONTINUE',
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 3, 
+                    ZONE =(
+                           _F(
+                              GROUP_MA_MAIT='SMAI',
                               GROUP_MA_ESCL='SESC',
-                              METHODE='CONTINUE',
-                              ),);
+                             ),               
+                          ),
+                   );
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0),
@@ -97,8 +103,8 @@ U=STAT_NON_LINE(MODELE=MODE,
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CH2,),
                        ),
+                CONTACT  = CH2,       
                 COMP_ELAS=_F(RELATION='ELAS',
                              DEFORMATION='GROT_GDEP',
                              GROUP_MA='STRUCT',),
@@ -116,7 +122,8 @@ U=CALC_NO(reuse =U,
           RESULTAT=U,
           OPTION='FORC_NODA',
           MODELE=MODE,
-          CHAM_MATER=CM,);
+          CHAM_MATER=CM,
+          );
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  GROUP_NO=('SA','SB'),

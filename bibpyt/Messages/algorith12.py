@@ -1,4 +1,4 @@
-#@ MODIF algorith12 Messages  DATE 23/03/2009   AUTEUR NISTOR I.NISTOR 
+#@ MODIF algorith12 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,11 +95,6 @@ cata_msg = {
  il manque l'option       :  %(k2)s
 """),
 
-23 : _("""
- arret sur question illicite pour le type de base
- type de base -->  %(k1)s
- question     -->  %(k2)s
-"""),
 
 26 : _("""
  arret sur manque argument

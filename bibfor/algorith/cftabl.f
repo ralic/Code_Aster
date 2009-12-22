@@ -1,8 +1,9 @@
-      SUBROUTINE CFTABL (INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
-     &                   RESOCO,TYPOPE,POSIT,LIAISO,TYPLIA)
-C ======================================================================
+      SUBROUTINE CFTABL(INDIC ,NBLIAC,AJLIAI,SPLIAI,LLF   ,
+     &                  LLF1  ,LLF2  ,RESOCO,TYPOPE,POSIT ,
+     &                  ILIAI,TYPLIA)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,19 +30,21 @@ C
       INTEGER      LLF1
       INTEGER      LLF2
       INTEGER      POSIT
-      INTEGER      LIAISO
+      INTEGER      ILIAI
       CHARACTER*1  TYPOPE
       CHARACTER*2  TYPLIA
       CHARACTER*24 RESOCO
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : ALGOCL/ALGOCO/ALGOCP/CFADH/CFNEG/ELPIV1
-C                       ELPIV2/FRO2GD/FROLGD/FROPGD/FROGDP
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE DISCRETE - ALGORITHME)
 C
 C MISE A JOUR DES VECTEURS DE LIAISONS CONTACT ET/OU FROTTEMENT
 C LE NOMBRE DE LIAISONS EST MIS A JOUR DANS LA ROUTINE
 C
+C
+C ----------------------------------------------------------------------
+C 
 C OUT INDIC  :+1 ON A RAJOUTE UNE LIAISON
 C             -1 ON A ENLEVE UNE LIAISON
 C I/O NBLIAC : NOMBRE DE LIAISONS ACTIVES
@@ -58,14 +61,12 @@ C               PREMIERE DIRECTION (EN 3D)
 C I/O LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
 C               SECONDE DIRECTION (EN 3D)
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-C                'E': RESOCO(1:14)//'.LIAC'
-C                'E': RESOCO(1:14)//'.CONVEC'
 C IN  TYPOPE : TYPE D'OPERATION DANS LE VECTEUR DES LIAISONS
 C                'A' : AJOUTER UNE LIAISON
 C                'S' : SUPPRIMER UNE LIAISON
 C IN  POSIT  : POSITION POUR AJOUTER UNE LIAISON DANS LE
 C              VECTEUR DES LIAISONS ACTIVES
-C IN  LIAISO : INDICE DE LA LIAISON A AJOUTER OU SUPPRIMER
+C IN  ILIAI  : INDICE DE LA LIAISON A AJOUTER OU SUPPRIMER
 C IN  TYPLIA : TYPE DE LA LIAISON
 C                'C0': CONTACT
 C                'F0': FROTTEMENT (2D) OU FROTTEMENT SUIVANT LES DEUX
@@ -105,8 +106,8 @@ C --- APPEL JEVEUX POUR LA MISE A JOUR DES VECTEURS DE LIAISONS --------
 C ======================================================================
       LIAC   = RESOCO(1:14)//'.LIAC'
       CONVEC = RESOCO(1:14)//'.CONVEC'
-      CALL JEVEUO (LIAC,  'E',JLIAC )
-      CALL JEVEUO (CONVEC,'E',JVECC )
+      CALL JEVEUO(LIAC,  'E',JLIAC )
+      CALL JEVEUO(CONVEC,'E',JVECC )
 C ======================================================================
 C --- INITIALISATION DES VARIABLES TYPE DE CONTACT ---------------------
 C ======================================================================
@@ -123,7 +124,7 @@ C --- ON AJOUTE UNE LIAISON --------------------------------------------
 C ======================================================================
          INDIC  = 1
          ZK8(JVECC-1+POSIT) = TYPLIA
-         ZI (JLIAC-1+POSIT) = LIAISO
+         ZI (JLIAC-1+POSIT) = ILIAI
          IF (TYPLIA.EQ.TYPEC0) THEN
 C ======================================================================
 C --- LIAISON DE CONTACT -----------------------------------------------
@@ -135,7 +136,7 @@ C --- LIAISON DE FROTTEMENT ADHERENT (DEUX DIRECTIONS) -----------------
 C ======================================================================
             LLF    = LLF    + 1
             DO 111 II = 1, NBLIAC + LLF +LLF1 + LLF2 - 1
-               IF (ZI(JLIAC-1+II).EQ.LIAISO) GOTO 112
+               IF (ZI(JLIAC-1+II).EQ.ILIAI) GOTO 112
  111        CONTINUE
             CALL ASSERT(.FALSE.)
  112        CONTINUE
@@ -166,7 +167,7 @@ C ======================================================================
             NBLIAC = NBLIAC - 1
             AJLIAI = AJLIAI - 1
             DO 10 II = POSIT + 1, NBLIAC + LLF + LLF1 + LLF2 + 1
-               IF (ZI(JLIAC-1+II).EQ.LIAISO) THEN
+               IF (ZI(JLIAC-1+II).EQ.ILIAI) THEN
                   AJLIAI = AJLIAI - 1
                   POSIT2 = II
                   LIAISP = 1

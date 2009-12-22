@@ -1,7 +1,7 @@
       SUBROUTINE NDLECT(MODELE,MATE  ,LISCHA,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,26 +64,27 @@ C
 C      
       INTEGER       NMODAM,NREAVI,NONDP
       INTEGER       NBMODS,NBMODA,NBMODP
-      INTEGER       IRET,IBID,IRET2,I
-      INTEGER       JCHAR,JINF
-      INTEGER       N1,N2,NCHAR,NBMG,NRV
+      INTEGER       IRET,IBID
+      INTEGER       N1,N2,NBMG,NRV
       INTEGER       NBEXCI,NBGENE
       CHARACTER*24  TSCH ,PSCH ,LOSD ,NOSD ,TFOR ,MUAP    
       INTEGER       JTSCH,JPSCH,JLOSD,JNOSD,JTFOR,JMUAP
       CHARACTER*24  TCHA ,NCHA ,VEOL ,VAOL
       INTEGER       JTCHA,JNCHA,JVEOL,JVAOL       
-      CHARACTER*8   K8BID, LICMP(3),REP,NOMCHA
+      CHARACTER*8   K8BID, LICMP(3),REP
       CHARACTER*8   REP1,REP2,REP3,REP4,RIGIAM
       CHARACTER*16  SCHEMA,KFORM,K16BID,NOMCMD
-      CHARACTER*24  TEXTE,STADYN,SDAMMO
+      CHARACTER*24  TEXTE
+      CHARACTER*19  SDAMMO,STADYN
+      CHARACTER*15  SDMUAP,SDPRMO
       CHARACTER*24  CHONDP
       INTEGER       IFORM
       INTEGER       IFM,NIV
       REAL*8        ALPHA ,BETA  ,GAMMA ,THETA ,PHI, KAPPA    
-      REAL*8        RCMP(3)
+      REAL*8        RCMP(3),SHIMA,R8PREM
       COMPLEX*16    C16BID
-      LOGICAL       NDYNLO,LMUAP,LAMMO
-      LOGICAL       LAMOR,REAMOR,LONDE ,LIMPED,LDYNA,LEXPL
+      LOGICAL       NDYNLO,LMUAP,LAMMO,LSHIMA
+      LOGICAL       LAMOR,LKTAN,LONDE ,LIMPED,LDYNA,LEXPL
       CHARACTER*24  VECENT     
       INTEGER       JVECEN      
 C      
@@ -95,7 +96,7 @@ C
       CHARACTER*19  CNONDP,CNLAPL 
       CHARACTER*19  CNSSTF
 C      
-      CHARACTER*24  DEPENT,VITENT,ACCENT    
+      CHARACTER*19  DEPENT,VITENT,ACCENT    
       
 C
       DATA CNFEDO,CNFSDO    /'&&NDLECT.CNFEDO','&&NDLECT.CNFSDO'/ 
@@ -110,9 +111,14 @@ C
       DATA VEONDP,VELAPL    /'&&NDLECT.VEONDP','&&NDLECT.VELAPL'/
       DATA VESSTF           /'&&NDLECT.VESSTF'/
 C
-      DATA DEPENT           /'&&OP0070.DEPENT'/      
-      DATA VITENT           /'&&OP0070.VITENT'/      
-      DATA ACCENT           /'&&OP0070.ACCENT'/               
+      DATA DEPENT           /'&&NDLECT.DEPENT'/      
+      DATA VITENT           /'&&NDLECT.VITENT'/      
+      DATA ACCENT           /'&&NDLECT.ACCENT'/ 
+C
+      DATA STADYN           /'&&NDLECT.STADYN'/ 
+      DATA SDPRMO           /'&&NDLECT.SDPRMO'/ 
+      DATA SDMUAP           /'&&NDLECT.SDMUAP'/ 
+      DATA SDAMMO           /'&&NDLECT.SDAMMO'/                   
 C
 C ----------------------------------------------------------------------
 C
@@ -122,6 +128,14 @@ C
 C --- OPERATEUR APPELANT (STATIQUE OU DYNAMIQUE)
 C      
       CALL GETRES(K8BID ,K16BID,NOMCMD)
+C
+C --- INITIALISATIONS
+C
+      BETA   = 0.D0
+      GAMMA  = 0.D0
+      PHI    = 0.D0
+      THETA  = 0.D0         
+      KAPPA  = 0.D0     
 C
 C --- LECTURE DONNEES DYNAMIQUE
 C      
@@ -133,8 +147,6 @@ C
       ELSE
         GOTO 999  
       ENDIF
-C
-C --- INITIALISATIONS
 C           
 C --- ACCES AUX OBJETS DE LA SD SDDYNA
 C
@@ -161,8 +173,8 @@ C
 C
 C --- EXISTENCE D'AMORTISSEMENT RAYLEIGH
 C
-      LAMOR = .FALSE.
-      REAMOR = .FALSE.
+      LAMOR  = .FALSE.
+      LKTAN  = .FALSE.
       CALL DISMOI('F','EXI_AMOR_ALPHA',MATE,'CHAM_MATER',IBID,REP1,IBID)
       CALL DISMOI('F','EXI_AMOR_BETA' ,MATE,'CHAM_MATER',IBID,REP2,IBID)
       CALL DISMOI('F','EXI_AMOR_NOR'  ,MATE,'CHAM_MATER',IBID,REP3,IBID)
@@ -173,21 +185,20 @@ C
      &    (REP4(1:3).EQ.'OUI')) THEN  
         LAMOR = .TRUE.
         CALL GETVTX(' ','AMOR_RAYL_RIGI',1,1,1,RIGIAM,IRET)
-        IF ( RIGIAM .EQ. 'TANGENTE') REAMOR = .TRUE.
+        IF ( RIGIAM .EQ. 'TANGENTE') LKTAN = .TRUE.
       ENDIF
 C  
       IF ((REP1(1:3).EQ.'OUI').OR.
      &    (REP2(1:3).EQ.'OUI')) THEN
         CALL U2MESS('I','MECANONLINE5_7')       
       ENDIF
-      ZL(JLOSD+1-1) = LAMOR
-      ZL(JLOSD+13-1) = REAMOR
+      ZL(JLOSD+1-1)  = LAMOR
+      ZL(JLOSD+13-1) = LKTAN
 C
 C --- PARAMETRES DU SCHEMA TEMPS
 C
       CALL GETVTX('SCHEMA_TEMPS','SCHEMA',1,1,1,SCHEMA,IRET)
 C      
-      THETA=0.D0
       IF (SCHEMA(1:9).EQ.'DIFF_CENT')THEN
         BETA   = 0.D0
         GAMMA  = 0.5D0
@@ -225,18 +236,40 @@ C
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
+            
 C
       ZR(JPSCH+1-1) = BETA
       ZR(JPSCH+2-1) = GAMMA
       ZR(JPSCH+3-1) = PHI
       ZR(JPSCH+4-1) = THETA         
       ZR(JPSCH+5-1) = KAPPA
-      CALL GETVR8('SCHEMA_TEMPS','COEF_MASS_SHIFT',1,1,1,
-     &            ZR(JPSCH+6-1),N1)
 C
 C --- TYPE DE SCHEMA
 C
-      LEXPL =  NDYNLO(SDDYNA,'EXPLICITE')           
+      LEXPL =  NDYNLO(SDDYNA,'EXPLICITE')
+C
+C --- NOM DE QUELQUES SD
+C      
+      ZK24(JNOSD+3-1) = SDPRMO
+      ZK24(JNOSD+4-1) = STADYN
+      ZK24(JNOSD+2-1) = SDAMMO
+      ZK24(JNOSD+1-1) = SDMUAP  
+C
+C --- DECALAGE MASSE
+C
+      IF (LEXPL) THEN
+        CALL GETVR8('SCHEMA_TEMPS','COEF_MASS_SHIFT',1,1,1,
+     &             SHIMA ,N1)
+        IF (ABS(SHIMA).GT.R8PREM()) THEN
+          LSHIMA = .TRUE.
+        ELSE
+          LSHIMA = .FALSE.
+        ENDIF 
+        ZR(JPSCH+6-1) = SHIMA  
+      ELSE
+        LSHIMA = .FALSE.
+      ENDIF
+      ZL(JLOSD+14-1)   = LSHIMA 
 C
 C --- TYPE DE FORMULATION
 C
@@ -319,7 +352,6 @@ C
         CALL GETFAC('PROJ_MODAL',IRET)
         IF (IRET.GT.0)THEN
           ZL(JLOSD+5-1)   = .TRUE.
-          ZK24(JNOSD+3-1) = SDDYNA(1:15)//'.PRM'
           CALL MXMOAM(SDDYNA,NBMODP)
           CALL GETVID('PROJ_MODAL','MASS_GENE',1,1,1,K8BID,NBMG)
           ZL(JLOSD+9-1)   = NBMG.NE.0  
@@ -352,9 +384,7 @@ C
       ENDIF        
 C
 C --- CARTE STADYN POUR POUTRES
-C       
-      STADYN = '&&OP0070.STA_DYN'
-      ZK24(JNOSD+4-1) = STADYN
+C   
       LICMP(1) = 'STAOUDYN'
       LICMP(2) = 'ALFNMK'
       LICMP(3) = 'DELNMK'
@@ -378,8 +408,7 @@ C --- AMORTISSEMENT MODAL
 C
       CALL GETFAC('AMOR_MODAL',NMODAM)
       LAMMO = NMODAM.GT.0
-      IF (LAMMO) THEN
-        SDAMMO          = SDDYNA(1:15)//'.AMO'      
+      IF (LAMMO) THEN    
         CALL NMMOAM(SDAMMO,NBMODA)
         NREAVI          = 0
 C        
@@ -388,13 +417,11 @@ C
         CALL GETVTX('AMOR_MODAL','REAC_VITE',1,1,1,K8BID,NRV)
         IF (K8BID.EQ.'OUI') NREAVI = 1        
       ELSE
-        SDAMMO          = ' '
         NREAVI          = 0
         NBMODA          = 0
       END IF
       ZL(JLOSD+3-1)   = LAMMO
       ZL(JLOSD+12-1)  = NREAVI.GT.0
-      ZK24(JNOSD+2-1) = SDAMMO  
       ZI(JNCHA+4-1)   = NBMODA   
 C  
       IF (NIV.GE.2) THEN
@@ -435,7 +462,9 @@ C
         IF (NDYNLO(SDDYNA,'NREAVI')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... REAC. VITE'
         ENDIF                 
-      
+        IF (NDYNLO(SDDYNA,'COEF_MASS_SHIFT')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... COEF. MASS. SHIFT'
+        ENDIF          
                                            
       ENDIF      
 C

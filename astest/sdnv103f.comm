@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103f.para = tps_job 120 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -60,16 +60,22 @@ CH=AFFE_CHAR_MECA(
              _F( GROUP_MA = 'VOL_RIG',    DX = 0., DY = 0.),
              _F( GROUP_MA = 'AXE',        DX = 0.),
              ),
-            CONTACT=
-            _F(APPARIEMENT  = 'MAIT_ESCL',
-               GROUP_MA_MAIT='RIGID',
-               GROUP_MA_ESCL='SZZ',
-
-               FROTTEMENT = 'COULOMB',
-               COULOMB = 0.25,
-               METHODE = 'CONTINUE',
-               ),
                );
+
+CH2 = DEFI_CONTACT(MODELE      = MODE,
+                   FORMULATION = 'CONTINUE',
+                   FROTTEMENT  = 'COULOMB',
+                   REAC_FROT   = 'CONTROLE',
+                   NB_ITER_FROT = 2,
+                   REAC_GEOM   = 'CONTROLE',
+                   NB_ITER_GEOM = 2,                   
+                   ZONE        =_F(
+                              APPARIEMENT  = 'MAIT_ESCL',
+                              GROUP_MA_MAIT='RIGID',
+                              GROUP_MA_ESCL='SZZ',
+                              COULOMB = 0.25,
+                                 ),
+                   )  
 
 VIT_0=CREA_CHAMP( OPERATION='AFFE',
                   TYPE_CHAM='NOEU_DEPL_R',
@@ -103,6 +109,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,
                             ),
+                   CONTACT = CH2,         
                    ETAT_INIT=_F(VITE = VIT_0,
                                 ),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',

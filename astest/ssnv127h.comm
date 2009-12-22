@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 # ssnv127h.para = tps_job 110 mem_job 1500Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -54,6 +54,7 @@ SSNV127H=DEFI_GROUP(reuse=SSNV127H,
                                    _F(GROUP_MA='BCC2',),
                                    _F(INTERSEC=('BCC1','BCC2',),
                                       NOM='BCC_SGN'),),)
+
 #_____________________________________________________________________ 
 #
 #                    DEFINITION DU MODELE               
@@ -112,19 +113,27 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='O2',
                                     FY=-9.37500E5,),);
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(METHODE='CONTINUE',
-                               FROTTEMENT='COULOMB',
-                               COULOMB=0.4,
-                               GROUP_MA_MAIT='BCC1',
-                               GROUP_MA_ESCL='BCC2',
-                               SANS_GROUP_NO='BCC_SGN',
-                               COEF_REGU_CONT = 10.,
-                               COEF_REGU_FROT = 10.,
-                               ITER_GEOM_MAXI = 2, 
-                               ITER_CONT_MAXI=50,
-                               ITER_FROT_MAXI=20,                              
-                               ),);
+
+CHA2 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    FROTTEMENT     = 'COULOMB',
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 3,
+                    ITER_CONT_MAXI = 25, 
+                    ITER_FROT_MAXI = 6,
+                    ZONE =(
+                           _F(
+                             GROUP_MA_ESCL = 'BCC2',
+                             GROUP_MA_MAIT = 'BCC1',
+                             SANS_GROUP_NO = 'BCC_SGN',
+                             COULOMB       = 0.4,
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 10.,
+                             ALGO_FROT     = 'STANDARD',
+                             COEF_FROT     = 10.,                             
+                             ),                            
+                          ),
+                   );
                                
 #_____________________________________________________________________ 
 #                                                       
@@ -151,7 +160,8 @@ U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE=CHA1,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CHA2,),),
+                       ),
+                CONTACT  = CHA2,       
                 COMP_ELAS=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',

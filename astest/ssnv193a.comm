@@ -1,4 +1,4 @@
-# MODIF  DATE 23/03/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC MACRO-ELEMENTS STATIQUE
 # ssnv193a.para = tps_job 700 mem_job 300Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,12 +123,19 @@ CHF3_1=AFFE_CHAR_MECA(MODELE=MO,
                                   DY=0.0,
                                   DZ=0.0,),);
 
-CHF2_1=AFFE_CHAR_MECA(VERI_NORM='NON',
-                      MODELE=MO,
-                      CONTACT=_F(GROUP_MA_MAIT='Maitre',
-                                 GROUP_MA_ESCL='Esclave',
-                                 REAC_GEOM='CONTROLE',
-                                 NB_REAC_GEOM=1,),);
+
+CHF2_1 =DEFI_CONTACT(MODELE    = MO,
+                  FORMULATION  = 'DISCRETE',
+                  REAC_GEOM    = 'CONTROLE',
+                  NB_ITER_GEOM = 1,
+
+                  ZONE=(
+                        _F(
+                          GROUP_MA_MAIT='Maitre',
+                          GROUP_MA_ESCL='Esclave',
+                         ),                         
+                       ),  
+                  )
 
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MAG,
                      AFFE=_F(TOUT='OUI',
@@ -138,7 +145,8 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 MODELE=MO,
                 CHAM_MATER=CHMAT2,
                 EXCIT=(_F(CHARGE=CHF3_1,),
-                       _F(CHARGE=CHF2_1,),),
+                       ),
+                CONTACT = CHF2_1,       
                 SOUS_STRUC=_F(CAS_CHARGE='K1',
                               SUPER_MAILLE='MAILLE1',),
                 COMP_INCR=(_F(RELATION='ELAS',

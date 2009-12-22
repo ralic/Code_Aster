@@ -1,10 +1,8 @@
-      SUBROUTINE MMMJEU(NDIM,JEUSUP,ICOMPL,NORM,BETA,GAMMA,
-     &                  DELTAT,GEOME,GEOMM,DEPLE,DEPLM,
-     &                  DEPLME,DEPLMM,VITME,VITMM,ACCME, 
-     &                  ACCMM,JEU,JEUVIT,JEVITP,
-     &                  VALUSU,IFORM,VITPE,VITPM)
+      SUBROUTINE MMMJEU(NDIM  ,JEUSUP,PRFUSU,NORM  ,GEOME,
+     &                  GEOMM ,DDEPLE,DDEPLM,JEU)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,84 +19,45 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C TOLE CRP_21
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-      INTEGER NDIM,K
-      REAL*8  JEUSUP,VALUSU
+      INTEGER NDIM
+      REAL*8  JEUSUP,PRFUSU
       REAL*8  NORM(3)
-      INTEGER ICOMPL,IFORM
-      REAL*8  BETA,GAMMA,DELTAT
       REAL*8  GEOMM(3),GEOME(3)
-      REAL*8  DEPLE(6),DEPLME(6)
-      REAL*8  DEPLM(3),DEPLMM(3)      
-      REAL*8  JEU,JEUVIT,JDEPP,JDEPM,JEVITM,JEACCM,JEVITP
-      REAL*8  ACCME(6),ACCMM(6)
-      REAL*8  VITME(6),VITMM(6),VITPE(6),VITPM(3)
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELLEE PAR : TE0364/TE0365
+      REAL*8  DDEPLE(3),DDEPLM(3)  
+      REAL*8  JEU
+C      
 C ----------------------------------------------------------------------
 C
-C CALCUL DES JEUX 
+C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
 C
-C !!!! METTRE A JOUR !!!!!
+C CALCUL DU JEU ACTUALISE - SAUT DE DEPLACEMENT
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  JEUSUP : JEU SUPPLEMENTAIRE PAR DIST_ESCL/DIST_MAIT
-C IN  VALUSU : JEU SUPPLEMENTAIRE PAR PROFONDEUR D'USURE
-C IN  ICOMPL : VAUT 1 SI CALCUL DE LA COMPLIANCE
-C IN  BETA   : PARAMETRE POUR COMPLIANCE
-C IN  GAMMA  : PARAMETRE POUR COMPLIANCE
-C IN  DELTA  : INCREMENT DE TEMPS POUR COMPLIANCE
+C IN  PRFUSU : JEU SUPPLEMENTAIRE PAR PROFONDEUR D'USURE
 C IN  NORM   : VALEUR DE LA NORMALE
+C IN  GEOME  : COORDONNEES ACTUALISEES DU POINT DE CONTACT
+C IN  GEOMM  : COORDONNEES ACTUALISEES DU PROJETE DU POINT DE CONTACT
+C IN  DDEPLE : INCREMENT DEPDEL DU DEPL. DU POINT DE CONTACT
+C IN  DDEPLM : INCREMENT DEPDEL DU DEPL. DU PROJETE DU POINT DE CONTACT
+C OUT JEU    : VALEUR DUJEU (SAUT DE DEPLACEMENT NORMAL)
 C
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C ----------------------------------------------------------------------
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      INTEGER IDIM
 C
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-C
-      JEU    = JEUSUP - ABS(VALUSU)
-      JEUVIT = 0.D0
-      DO 10 K = 1,NDIM
-        JEU   = JEU + (GEOME(K)+DEPLE(K)-GEOMM(K)-DEPLM(K))*NORM(K)   
-        IF (IFORM .EQ. 2) THEN
-           JEUVIT = JEUVIT +  (VITPE(K)-VITPM(K)) * NORM(K)
-        ENDIF
+      JEU    = JEUSUP - ABS(PRFUSU)
+      DO 10 IDIM = 1,NDIM
+        JEU   = JEU + (GEOME(IDIM)+DDEPLE(IDIM)-
+     &                 GEOMM(IDIM)-DDEPLM(IDIM))*NORM(IDIM)
  10   CONTINUE
- 
-C ---- SI AVEC COMPLIANCE
-      JDEPP  = 0.D0
-      JDEPM  = 0.D0
-      JEVITM = 0.D0
-      JEACCM = 0.D0  
-      JEVITP = 0.D0
-      IF (ICOMPL .EQ. 1) THEN
-        DO 20 K = 1,NDIM
-          JDEPP  = JDEPP + (DEPLE(K)-DEPLM(K))*NORM(K)
-          JDEPM  = JDEPM + (DEPLME(K)-DEPLMM(K))*NORM(K)
-          JEVITM = JEVITM + (VITME(K)-VITMM(K))*NORM(K)
-          JEACCM = JEACCM + (ACCME(K)-ACCMM(K))*NORM(K)
- 20     CONTINUE
-        JEVITP = (JDEPP-JDEPM)*GAMMA/(BETA*DELTAT) +
-     &            JEVITM*(BETA-GAMMA)/BETA +
-     &            JEACCM*DELTAT*(2*BETA-GAMMA)/(2*BETA)   
-      ENDIF
-C
-      CALL JEDEMA()      
+     
       END

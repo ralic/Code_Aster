@@ -1,6 +1,5 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
-# ssnp502a.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# ssnp502a.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # CAS TEST  SSNP502A
 # MODELE   : METHODE LAGRANGIENNE POUR LE FROTTEMENT
@@ -89,18 +87,21 @@ DEPL=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_NO='PLAQUE',
                                 DY=-2.225,),);
 
-
-CON=AFFE_CHAR_MECA(MODELE=MO,
-                   CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                              REAC_GEOM='CONTROLE',
-                              NB_REAC_GEOM=2,
-                              METHODE='LAGRANGIEN',
-                              FROTTEMENT='COULOMB',
-                              COULOMB=0.4,
-                              GROUP_MA_MAIT='LMAI',
-                              GROUP_MA_ESCL='LESC',
-                              SANS_GROUP_NO=('A','P1'),
-                              ),);
+CON    = DEFI_CONTACT(MODELE       = MO,
+                      FORMULATION  = 'DISCRETE',
+                      REAC_GEOM    = 'CONTROLE',
+                      NB_ITER_GEOM = 2,
+                      FROTTEMENT   = 'COULOMB',
+                      ZONE=_F(
+                               APPARIEMENT   = 'MAIT_ESCL',
+                               ALGO_CONT     = 'LAGRANGIEN',
+                               ALGO_FROT     = 'LAGRANGIEN',
+                               COULOMB       = 0.4,
+                               GROUP_MA_MAIT = 'LMAI',
+                               GROUP_MA_ESCL = 'LESC',
+                               SANS_GROUP_NO = ('A','P1'),
+                             ),
+                      );
 
 #--------- DEFINITION DES FONCTIONS -----------------
 
@@ -117,10 +118,11 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CON,),
+                   EXCIT=(
                           _F(CHARGE=CL,),
                           _F(CHARGE=DEPL,
                              FONC_MULT=RAMPE,),),
+                   CONTACT  = CON,          
                    COMP_ELAS=_F(RELATION='ELAS',
                                 DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=LINST,),
@@ -143,7 +145,8 @@ RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION=('REAC_NODA','SIEF_NOEU_ELGA'),
              MODELE=MO,
-             CHAM_MATER=CHMAT,);
+             CHAM_MATER=CHMAT,
+             );
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  GROUP_NO='LRESU',

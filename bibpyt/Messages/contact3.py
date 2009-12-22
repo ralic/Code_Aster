@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 22/09/2009   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact3 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,19 +22,22 @@ def _(x) : return x
 
 cata_msg = {
 
-1 : _("""
-Le mot-clef < %(k1)s > est inconnu dans AFFE_CONTACT. Contactez les développeurs.
-Note DVP: erreur de cohérence fortran/catalogue. 
-"""),
-
 2 : _("""
-Le mot-clef < %(k1)s > n'est pas renseigné dans AFFE_CONTACT alors qu'il est obligatoire. Contactez les développeurs.
-Note DVP: erreur de cohérence fortran/catalogue. 
+  La maille de fond de fissure de type POI1, introduite par le mot-clef MAILLE_FOND ou GROUP_MA_FOND,
+ne correspond pas à une extrémité du segment toucahnt le fond de fisssure. 
+  
 """),
 
 3 : _("""
-L'option < %(k1)s > ne correspond a aucune option permise par le mot-clef < %(k2)s > dans AFFE_CONTACT. Contactez les développeurs.
-Note DVP: erreur de cohérence fortran/catalogue.            
+  Pour la formulation de contact < %(k1)s > le couple:
+  ALGO_CONT: < %(k2)s >
+  ALGO_FROT: < %(k3)s >  
+  N'est pas possible.
+"""),
+
+4 : _("""
+  Le mot-clef < %(k1)s > doit avoir la meme valeur sur toutes les zones
+  de contact
 """),
 
 
@@ -75,10 +78,6 @@ Le vecteur normal est nul au niveau du projeté du point de contact de coordonnée
   (%(r1)s,%(r2)s,%(r3)s) 
 sur la maille %(k1)s, 
 Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
-"""),
-
-25 : _("""
-L'élément porté par la maille esclave %(k1)s n'est pas du bon type pour un fond de fissure, elle est de type  %(k2)s 
 """),
 
 26 : _("""
@@ -139,6 +138,9 @@ Les vecteurs tangents sont nuls au niveau quand on projette le noeud esclave
 La maille %(k1)s est de type 'POI1', ce n'est pas autorisé sur une maille maitre. 
 """),
 
+37: _("""
+ La section de la poutre n'est pas constante sur l'élément. On prend la moyenne.
+ """),
 
 38 : _("""
 La maille %(k1)s est de type poutre et sa tangente est nulle.
@@ -150,7 +152,7 @@ Problème pour récupérer l'épaisseur de la coque pour la maille  %(k1)s
 """),
 
 40: _("""
-L'excentricité de la coque pour la maille %(k1)s n'est pas traitée
+L'excentricité de la coque pour la maille %(k1)s ne peut pas etre traitée
 """),
 
 41: _("""
@@ -193,64 +195,49 @@ NORMALE='FIXE' avec une normale non-nulle.
 """),
 
 81 : _("""
-Contact méthodes discrètes.
-  -> Il y a trop de réactualisations géométriques (plus de 99).
+Contact.
+  -> Il y a trop de réactualisations géométriques.
   -> Risque & Conseil :
+     Le paramètre ITER_GEOM_MAXI est trop faible.
      Votre maillage est incorrect ou le glissement relatif des deux
      surfaces est trop important.
-     Tentez de découper plus finement en temps votre problème.
+     Tentez de découper plus finement en temps votre problème ou augmenter ITER_GEOM_MAXI.
  
 """),
 
 85 : _("""
 Contact méthode continue. 
-  -> Il y a échec de la boucle contraintes actives lors du traitement
+  -> Il y a échec de la boucle des contraintes actives lors du traitement
      du contact
   -> Risque & Conseil :
-     Vérifier votre maillage ou augmenter ITER_CONT_MAX.
+     Vérifier votre modèle ou augmenter ITER_CONT_MAXI/ITER_CONT_MULT.
 """),
 
 86 : _("""
 Contact méthode continue. 
-  -> Il y a convergence forcée sur la boucle de contraintes actives lors du traitement du contact.
-
+  -> Il y a convergence forcée sur la boucle des contraintes actives lors du traitement
+     du contact.
   -> Risque & Conseil :
      La convergence forcée sur les statuts de contact se déclenche lorsque le problème a du mal à converger.
      Il y a des risques que le problème soit un peu moins bien traité.
      Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles.
-     S'il y a des interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
-"""),
+     S'il y a des interpénétrations intempestives, tentez de découper plus finement en temps votre problème."""),
 
 87 : _("""
 Contact méthode continue. 
-  -> Il y a convergence forcée sur la boucle seuil de frottement lors du traitement du contact.
-
+  -> Il y a trop de réactualisations pour le seuil de frottement.
   -> Risque & Conseil :
-     La convergence forcée sur le seuil de frottement se déclenche lorsque le problème a du mal à converger.
-     Il y a des risques que le problème soit un peu moins bien traité.
+     Le paramètre ITER_FROT_MAXI est trop faible.
      La condition de frottement de Coulomb est peut être mal prise en compte, il y a donc un risque de 
      résultats faux sur les forces d'adhérence.
-     Essayez de découper plus finement en temps votre problème.
-"""),
+     Essayez de découper plus finement en temps votre problème."""),
 
-88 : _("""
-Contact méthode continue. 
-  -> Il y a convergence forcée sur la boucle de géométrie lors du traitement du contact.
-
-  -> Risque & Conseil :
-     La convergence forcée sur la géométrie se déclenche lorsque le problème a du mal à converger lors
-     de grands glissements relatifs entre deux surfaces de contact.
-     Il y a des risques que le problème soit un peu moins bien traité.
-     Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles.
-     S'il y des interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
-     Si cela ne suffit pas, il faut raffiner le maillage en commençant par la surface esclave.
-"""),
 
 96 : _("""
 Contact méthodes discrètes.
     -> Les surfaces en contact relatif ont bougé de plus de 5%%.
        Or vous n'avez pas activé la réactualisation géométrique (REAC_GEOM) automatique ou
-       vous utiliser le mode "CONTROLE"
+       vous utilisez le mode "CONTROLE"
     -> Risque & Conseil : Vos résultats risquent d'etre faux, les mailles ne
        seront peut-etre pas correctement appariées et donc la condition de contact sera peut
        etre fausse.

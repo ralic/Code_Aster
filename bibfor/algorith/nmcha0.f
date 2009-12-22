@@ -1,7 +1,7 @@
       SUBROUTINE NMCHA0(TYCHAP,TYVARZ,NOVARZ,VACHAP)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,15 +41,16 @@ C                MEASSE - NOMS DES MATR_ASSE
 C                VEELEM - NOMS DES VECT_ELEM
 C                VEASSE - NOMS DES VECT_ASSE
 C                SOLALG - NOMS DES CHAM_NO SOLUTIONS
+C                VALINC - VALEURS SOLUTION INCREMENTALE
 C IN  TYVARI : TYPE DE LA VARIABLE 
-C               SI ' ' ALORS INITIALISE A BLANC
+C               SI 'ALLINI' ALORS INITIALISE A BLANC
 C IN  NOVARI : NOM DE LA VARIABLE
 C      
 C ----------------------------------------------------------------------
 C
       CHARACTER*19 K19BLA
       INTEGER      I,NBVAR
-      INTEGER      INDEX,NMCHAI
+      INTEGER      INDEX
       CHARACTER*6  TYVARI
       CHARACTER*19 NOVARI
 C      
@@ -57,30 +58,16 @@ C ----------------------------------------------------------------------
 C 
       K19BLA = ' '
       TYVARI = TYVARZ
-      NOVARI = NOVARZ
-C
-C --- NOMBRE DE NOMS DANS LA VARIABLE CHAPEAU
-C
-      IF (TYCHAP.EQ.'MEELEM') THEN
-        NBVAR = 20
-      ELSEIF (TYCHAP.EQ.'MEASSE') THEN
-        NBVAR = 8      
-      ELSEIF (TYCHAP.EQ.'VEELEM') THEN
-        NBVAR = 30       
-      ELSEIF (TYCHAP.EQ.'VEASSE') THEN
-        NBVAR = 40 
-      ELSEIF (TYCHAP.EQ.'SOLALG') THEN
-        NBVAR = 24 
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF           
+      NOVARI = NOVARZ   
+C        
+      CALL NMCHAI(TYCHAP,'LONMAX',NBVAR )
 C 
-      IF (TYVARI.EQ.' ') THEN
+      IF (TYVARI.EQ.'ALLINI') THEN
         DO 12 I = 1,NBVAR
           VACHAP(I) = K19BLA          
    12   CONTINUE        
       ELSE
-        INDEX  = NMCHAI(TYCHAP,TYVARI)
+        CALL NMCHAI(TYCHAP,TYVARI,INDEX)
         IF ((INDEX.LE.0).OR.(INDEX.GT.NBVAR)) THEN
           CALL ASSERT(.FALSE.)
         ELSE

@@ -1,22 +1,22 @@
-# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128a.para = tps_job 100 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # ssnv128a.para = tps_job 100 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,29 +72,37 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_MA = 'LPRESH', PRES = 15.E07,))
                    )
 #
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT  = 'LBATI',
-                               GROUP_MA_ESCL  = 'LCONTA',
-                               APPARIEMENT = 'NODAL',
-                               REAC_GEOM   = 'AUTOMATIQUE',
-                               METHODE     = 'LAGRANGIEN',
-                               FROTTEMENT  = 'COULOMB',
-                               COULOMB     = 1.0,)
-                    )
+CHA2=DEFI_CONTACT(MODELE      = MO,
+                  FORMULATION = 'DISCRETE',
+                  FROTTEMENT  = 'COULOMB',
+                  REAC_GEOM   = 'AUTOMATIQUE',
+                  ZONE=_F(
+                          GROUP_MA_MAIT  = 'LBATI',
+                          GROUP_MA_ESCL  = 'LCONTA',
+                          APPARIEMENT    = 'NODAL',
+                          ALGO_CONT      = 'LAGRANGIEN',
+                          ALGO_FROT      = 'LAGRANGIEN',
+                          COULOMB        = 1.0,
+                        )
+                  )
 #
-CHA3=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT     = 'LBATI',
-                               GROUP_MA_ESCL     = 'LCONTA',
-                               APPARIEMENT    = 'NODAL',
-                               NORMALE        = 'MAIT_ESCL',
-                               REAC_GEOM      = 'CONTROLE',
-                               NB_REAC_GEOM   = 2,
-                               METHODE        = 'PENALISATION',
-                               E_T            = 1.0E11,
-                               COEF_MATR_FROT = 0.8,
-                               FROTTEMENT     = 'COULOMB',
-                               COULOMB        = 1.0,)
-                    )
+CHA3=DEFI_CONTACT(MODELE        = MO,
+                  FORMULATION   = 'DISCRETE',
+                  FROTTEMENT    = 'COULOMB',
+                  REAC_GEOM     = 'CONTROLE',
+                  NB_ITER_GEOM  = 2,
+                  ZONE=_F(
+                          GROUP_MA_MAIT  = 'LBATI',
+                          GROUP_MA_ESCL  = 'LCONTA',
+                          APPARIEMENT    = 'NODAL',
+                          NORMALE        = 'MAIT_ESCL',
+                          ALGO_CONT      = 'LAGRANGIEN',
+                          COULOMB        = 1.0,
+                          ALGO_FROT      = 'PENALISATION',
+                          E_T            = 1.0E11,
+                          COEF_MATR_FROT = 0.8,
+                        )
+                  )
 #
 #
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
@@ -114,7 +122,8 @@ U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                   CHAM_MATER = CHMAT,
                   EXCIT      =(_F(CHARGE = CHA1,
                                   FONC_MULT = RAMPE,),
-                               _F(CHARGE = CHA2,)),
+                               ),
+                  CONTACT    = CHA2,             
                   COMP_ELAS  = _F(RELATION = 'ELAS',),
                   INCREMENT  = _F(LIST_INST = L_INST,),
                   CONVERGENCE= _F(ARRET = 'OUI',
@@ -151,7 +160,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    NOM_CHAM   = 'VALE_CONT',
                    GROUP_NO   = 'PPR',
                    NOM_CMP    = 'CONT',
-                   VALE       = 1.,
+                   VALE       = 2.,
                    PRECISION  = 1.E-5,
                    CRITERE    = 'RELATIF',
                    REFERENCE  = 'AUTRE_ASTER',
@@ -226,7 +235,8 @@ U2L=STAT_NON_LINE(MODELE    = MO,
                   CHAM_MATER = CHMAT,
                   EXCIT      =(_F(CHARGE = CHA1,
                                   FONC_MULT = RAMPE,),
-                               _F(CHARGE = CHA2,)),
+                               ),
+                  CONTACT    = CHA2,             
                   COMP_ELAS  = _F(RELATION = 'ELAS',),
                   SOLVEUR    = _F(SYME='OUI',
                                   METHODE = 'LDLT',),
@@ -308,7 +318,8 @@ U3M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                  CHAM_MATER  = CHMAT,
                  EXCIT       =(_F(CHARGE = CHA1,
                                   FONC_MULT = RAMPE,),
-                               _F(CHARGE = CHA3,)),
+                               ),
+                 CONTACT    = CHA3,              
                  COMP_ELAS   = _F(RELATION = 'ELAS',),
                  NEWTON      = _F(REAC_ITER = 1,),
                  INCREMENT   = _F(LIST_INST = L_INST,),
@@ -388,7 +399,8 @@ U3L=STAT_NON_LINE(MODELE      = MO,
                  CHAM_MATER  = CHMAT,
                  EXCIT       =(_F(CHARGE = CHA1,
                                   FONC_MULT = RAMPE,),
-                               _F(CHARGE = CHA3,)),
+                               ),
+                 CONTACT     = CHA3,              
                  COMP_ELAS   = _F(RELATION = 'ELAS',),
                  SOLVEUR     = _F(SYME='OUI',
                                   METHODE = 'LDLT',),

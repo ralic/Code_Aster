@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 10/11/2009   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF modelisa8 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -227,16 +227,13 @@ Dans le groupe de mailles %(k1)s, il y a %(i1)d mailles mal orientées. Utilisez 
 La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orienter la normale aux surfaces.
 """),
 
-58 : _("""
-  composante existante sur  le noeud:  %(k1)s  composante:  %(k2)s
-"""),
 
 68 : _("""
-Certaines mailles constituant le groupe de mailles %(k1)s ne sont pas 
-des mailles surfaciques.
-Risques & Conseils :
-Verifiez la constitution des groupes de mailles renseignees sous le 
-mot-cle GROUP_MA_ESCL.
+ Certaines mailles constituant le groupe de mailles %(k1)s ne sont pas 
+ des mailles surfaciques.
+ Risques & Conseils :
+ Verifiez la constitution des groupes de mailles renseignees sous le 
+ mot-cle GROUP_MA_ESCL.
 """),
 
 69 : _("""

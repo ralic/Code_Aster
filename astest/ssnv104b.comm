@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -43,48 +43,42 @@ CHMAT=AFFE_MATERIAU(
                            )
 
 #
-
-CHA2=AFFE_CHAR_MECA(
+CHAR=AFFE_CHAR_MECA(
                      MODELE=MO,DDL_IMPO=(
                      _F(  GROUP_NO = 'SPHSUP',  DY = -2.0),
                               _F(  GROUP_NO = 'SPHINF',  DY = 2.0),
                               _F(  GROUP_NO = 'AXE',     DX = 0.0)),
-                     CONTACT=_F(  APPARIEMENT = 'NODAL',
-                               NORMALE = 'ESCL',
-                               METHODE = 'LAGRANGIEN',
+                     
+                   )
+                           
+CHA2= DEFI_CONTACT(MODELE      = MO,
+                   FORMULATION = 'DISCRETE',
+                   ZONE =_F(  APPARIEMENT = 'NODAL',
+                              NORMALE    = 'ESCL',
+                               ALGO_CONT = 'LAGRANGIEN',
                                GROUP_MA_MAIT = 'CON1',
                                GROUP_MA_ESCL = 'CON2'),
-                     INFO=1
-                           )
+                  );  
+                                                        
 
 #
-
-CHA3=AFFE_CHAR_MECA(
-                     MODELE=MO,DDL_IMPO=(
-                     _F(  GROUP_NO = 'SPHSUP',  DY = -2.0),
-                              _F(  GROUP_NO = 'SPHINF',  DY = 2.0),
-                              _F(  GROUP_NO = 'AXE',     DX = 0.0)),
-                     CONTACT=_F(  APPARIEMENT = 'MAIT_ESCL',
-                               METHODE = 'LAGRANGIEN',
+CHA3= DEFI_CONTACT(MODELE      = MO,
+                   FORMULATION = 'DISCRETE',
+                   ZONE =_F(  APPARIEMENT = 'MAIT_ESCL',
+                               ALGO_CONT = 'LAGRANGIEN',
                                GROUP_MA_MAIT = 'CON1',
                                GROUP_MA_ESCL = 'CON2'),
-                     INFO=1
-                           )
+                  ); 
 
 #
-
-CHA4=AFFE_CHAR_MECA(
-                     MODELE=MO,DDL_IMPO=(
-                     _F(  GROUP_NO = 'SPHSUP',  DY = -2.0),
-                              _F(  GROUP_NO = 'SPHINF',  DY = 2.0),
-                              _F(  GROUP_NO = 'AXE',     DX = 0.0)),
-                     CONTACT=_F(  APPARIEMENT = 'MAIT_ESCL',
-                               METHODE = 'CONTRAINTE',
+CHA4= DEFI_CONTACT(MODELE      = MO,
+                   FORMULATION = 'DISCRETE',
+                   ZONE =_F(  APPARIEMENT = 'MAIT_ESCL',
+                               ALGO_CONT = 'CONTRAINTE',
                                GROUP_MA_MAIT = 'CON1',
                                GROUP_MA_ESCL = 'CON2'),
-                     INFO=1
-                           )
-
+                  );             
+                               
 #
 
 RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
@@ -104,8 +98,9 @@ SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,
                              EXCIT=_F(
-                CHARGE = CHA2,
+                CHARGE = CHAR,
                 FONC_MULT = RAMPE),
+                CONTACT = CHA2,
                          COMP_ELAS=_F(
                 RELATION = 'ELAS'),
                             NEWTON=_F(
@@ -230,8 +225,9 @@ SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,
                              EXCIT=_F(
-                CHARGE = CHA3,
+                CHARGE = CHAR,
                 FONC_MULT = RAMPE),
+                CONTACT = CHA3,
                          COMP_ELAS=_F(
                 RELATION = 'ELAS'),
                             NEWTON=_F(
@@ -352,8 +348,9 @@ SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,
                              EXCIT=_F(
-                CHARGE = CHA4,
+                CHARGE = CHAR,
                 FONC_MULT = RAMPE),
+                CONTACT = CHA4,
                          COMP_ELAS=_F(
                 RELATION = 'ELAS'),
                             NEWTON=_F(

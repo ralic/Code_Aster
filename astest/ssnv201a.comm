@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT GLISSIERE AVEC X-FEM
 # ssnv201a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,21 +95,24 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS1,
                          CONTACT='OUI',
                          INFO=1,); 
- 
-CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS1,
-                                      METHODE = 'XFEM',
-                                    INTEGRATION='GAUSS',
-                               COEF_REGU_CONT=100., 
-                               ITER_CONT_MAXI=40,   
-                               CONTACT_INIT='NON',
-                               GLISSIERE='OUI',    
-                               COEF_ECHELLE=1.e6,
-                               FROTTEMENT='SANS',
-                                    ),
-                          MODELE=MODELEK,
-                          ), 
-                                                                                          
 
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      ITER_CONT_MAXI = 40,                     
+                      REAC_GEOM      = 'SANS',
+                      ZONE=(
+                            _F(
+                               FISS_MAIT    = FISS1,
+                               INTEGRATION  = 'GAUSS',
+                               CONTACT_INIT = 'NON',
+                               GLISSIERE    = 'OUI', 
+                               COEF_ECHELLE = 1.E6,
+                               ALGO_CONT    = 'STANDARD',
+                               COEF_CONT    = 100.,      
+                             ),                              
+                         ),
+                   );
+ 
 
 E=100.0E6
 nu=0.
@@ -178,19 +181,19 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,              
                    EXCIT=(_F(CHARGE=ENCASTR,),
                           _F(CHARGE=CHZ,FONC_MULT=VARZ),
-                          _F(CHARGE=CHY,FONC_MULT=VARY),
-                          _F(CHARGE=CTXFEM,),                             
-                          _F(CHARGE=CHXFEM,),),                  
+                          _F(CHARGE=CHY,FONC_MULT=VARY),                            
+                          _F(CHARGE=CHXFEM,),), 
+                   CONTACT  = CTXFEM,                        
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   NEWTON=_F(REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=8,
                                   RESI_GLOB_MAXI=1e-04,
                                   ),               
                    SOLVEUR=_F(METHODE='MUMPS',
                                PCENT_PIVOT=250),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   NEWTON=_F(REAC_ITER=1,),
                    INFO=1,);
 
 # -------------------------------------------------------------   

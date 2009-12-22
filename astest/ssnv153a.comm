@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT/FROTTEMENT POULIE
 # ssnv153a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,18 +80,21 @@ CHA1=AFFE_CHAR_MECA(
                      _F(  GROUP_NO = 'CASTR', DX = 0.0,   DY =  0.0,))
                     )
 
-CHA2=AFFE_CHAR_MECA(
-                     MODELE=MO,
-                     CONTACT=_F(
-                     GROUP_MA_ESCL = 'SURFESCL',
-                     GROUP_MA_MAIT = 'SURFMAIT',
-                     INTEGRATION = 'NOEUD',
-                     COEF_REGU_CONT = 10.,
-                     LISSAGE ='OUI',
-                     ITER_CONT_MAXI = 20,
-                     ITER_GEOM_MAXI = 0,
-                     METHODE = 'CONTINUE',)
-                     )
+CHA2 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    ITER_CONT_MAXI = 20,
+                    REAC_GEOM      = 'SANS',
+                    LISSAGE        = 'OUI',
+                    ZONE =(
+                           _F(
+                             GROUP_MA_MAIT = 'SURFMAIT',
+                             GROUP_MA_ESCL = 'SURFESCL',
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 10.,
+                             
+                             ),                            
+                          ),
+                   );
 
 #-----------------------------------------------------------
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -111,10 +114,12 @@ RESU=STAT_NON_LINE (
                    EXCIT      =(
                                _F(CHARGE=CHA1,
                                 FONC_MULT=FONC,),
-                               _F(CHARGE=CHA2,)),
+                               ),
+                   CONTACT    = CHA2,            
                    COMP_ELAS  =_F(
                                 RELATION='ELAS'),
-                   NEWTON     =_F(MATRICE='ELASTIQUE',),
+                   NEWTON     =_F(MATRICE='ELASTIQUE',
+                                  REAC_ITER=1,),
                    CONVERGENCE=_F(
                                 ARRET='OUI',
                                 ITER_GLOB_MAXI=30,

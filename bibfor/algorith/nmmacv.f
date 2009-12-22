@@ -1,7 +1,7 @@
       SUBROUTINE NMMACV(VECDEP,SSTRU ,VECASS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C TOLE CRP_21
 C
       IMPLICIT NONE
       CHARACTER*19  SSTRU                
-      CHARACTER*24  VECDEP
+      CHARACTER*19  VECDEP
       CHARACTER*24  VECASS 
 C 
 C ----------------------------------------------------------------------

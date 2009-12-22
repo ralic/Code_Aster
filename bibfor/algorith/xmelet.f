@@ -1,9 +1,9 @@
-      SUBROUTINE XMELET(NOMTE,TYPMA,ESC,MAIT,ELC,
-     &                 NDIM,NDDL,NNE,NNM,NNC,MALIN,SINGE,SINGM,NDLS)
+      SUBROUTINE XMELET(NOMTE ,TYPMAI,TYPMAE,TYPMAM,TYPMAC,
+     &                  NDIM  ,NDDL  ,NNE   ,NNM   ,NNC   ,
+     &                  LMALIN,NNES  ,NDDLSE,NSINGE,NSINGM)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,139 +20,177 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C
       IMPLICIT NONE
       CHARACTER*16 NOMTE   
-      CHARACTER*8  TYPMA,ESC,MAIT,ELC
-      INTEGER     NDIM,NDDL,NNE,NNM,NNC,SINGE,SINGM,NDLS
-      LOGICAL     MALIN
+      CHARACTER*8  TYPMAI,TYPMAE,TYPMAM,TYPMAC
+      INTEGER      NDIM,NDDL,NDDLSE,NNE,NNM,NNC,NNES
+      INTEGER      NSINGE,NSINGM
+      LOGICAL      LMALIN
+C      
 C ----------------------------------------------------------------------
-C ROUTINE APPELLEE PAR : TE0366/TE0367
+C
+C ROUTINE CONTACT (METHODE XFEMGG - CALCUL ELEM.)
+C
+C RETOURNE QUELQUES INFOS SUR LES ELEMENTS DE CONTACT FORMES ENTRE
+C DEUX ELEMENTS  X-FEM
+C
 C ----------------------------------------------------------------------
 C ROUTINE SPECIFIQUE A L'APPROCHE <<GRANDS GLISSEMENTS AVEC XFEM>>,
 C TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 C ----------------------------------------------------------------------
-C RETOURNE QUELQUES INFOS SUR LES ELEMENTS DE CONTACT FORMES ENTRE
-C DEUX ELEMENTS  X-FEM
+C
 C
 C IN  NOMTE  : NOM DU TE DE L'ELEMENT DE CONTACT EN JEU
-C OUT TYPMA  : NOM DE LA MAILLE ESCLAVE D'ORIGINE
-C OUT ESC    : NOM DE LA MAILLE ESCLAVE
-C OUT MAIT   : NOM DE LA MAILLE MAITRE
-C OUT ELC    : NOM DE LA MAILLE DE CONTACT
+C OUT TYPMAI : NOM DE LA MAILLE ESCLAVE D'ORIGINE
+C OUT TYPMAE : NOM DE LA MAILLE ESCLAVE
+C OUT TYPMAM : NOM DE LA MAILLE MAITRE
+C OUT TYPMAC : NOM DE LA MAILLE DE CONTACT
 C OUT NDIM   : DIMENSION DE LA MAILLE DE CONTACT
 C OUT NDDL   : NOMBRE TOTAL DE DEGRES DE LIBERTE DE LA MAILLE DE CONTACT
 C OUT NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C OUT NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
 C OUT NNC    : NOMBRE DE NOEUDS DE LA MAILLE DE CONTACT
-C OUT MALIN  : INDIQUE SI LA MAILLE EST LINEAIRE
-C OUT SINGE  : NOMBRE DE FONCTIONS SINGULIERE ESCLAVES
-C OUT SINGM  : NOMBRE DE FONCTIONS SINGULIERE MAITRES
-C OUT NDLS   : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
+C OUT LMALIN : INDIQUE SI LA MAILLE EST LINEAIRE
+C OUT NNES   : NOMBRE DE NOEUDS SOMMETS DE LA MAILLE ESCLAVE
+C OUT NSINGE : NOMBRE DE FONCTIONS SINGULIERE ESCLAVES
+C OUT NSINGM : NOMBRE DE FONCTIONS SINGULIERE MAITRES
+C OUT NDDLSE : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
 C
 C ----------------------------------------------------------------------
 C
-C --- RECUPERATION DE LA DIMENSION DU PROBLEME
+C
+C --- RECUPERATION DE LA DIMENSION DU PROBLEME ET DU TYPE DE MAILLE
+C --- CONTACT
 C    
       IF (NOMTE(3:4).EQ.'CP'.OR.NOMTE(3:4).EQ.'DP') THEN
-        NDIM = 2
-        NNC  = 2
-        ELC  = 'SE2'
+        NDIM    = 2
+        NNC     = 2
+        TYPMAC  = 'SE2'
       ELSEIF (NOMTE(3:4).EQ.'3D') THEN
-        NDIM = 3
-        NNC  = 3
-        ELC  = 'TR3' 
+        NDIM    = 3
+        NNC     = 3
+        TYPMAC  = 'TR3' 
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
       ENDIF
 C
-C --- RECUPERATION DE L'ELEMENT ESCLAVE
+C --- RECUPERATION DES INFOS DE L'ELEMENT ESCLAVE
 C
-      MALIN = .TRUE.
       IF (NOMTE(5:6).EQ.'T3') THEN
-        TYPMA= 'TRIA3'
-        ESC  = 'TR3'
-        NNE  = 3
+        TYPMAI = 'TRIA3'
+        TYPMAE = 'TR3'
+        NNE    = 3
+        LMALIN = .TRUE.
       ELSEIF (NOMTE(5:6).EQ.'T6') THEN
-        TYPMA= 'TRIA6'
-        ESC  = 'TR3'
-        NNE  = 6
-        MALIN= .FALSE.
+        TYPMAI = 'TRIA6'
+        TYPMAE = 'TR3'
+        NNE    = 6
+        LMALIN = .FALSE.
       ELSEIF (NOMTE(5:6).EQ.'Q4') THEN
-        TYPMA= 'QUAD4'
-        ESC  = 'QU4'
-        NNE  = 4
+        TYPMAI = 'QUAD4'
+        TYPMAE = 'QU4'
+        NNE    = 4
+        LMALIN = .TRUE.
       ELSEIF (NOMTE(5:6).EQ.'Q8') THEN
-        TYPMA= 'QUAD8'
-        ESC  = 'QU4'
-        NNE  = 8
-        MALIN= .FALSE.
+        TYPMAI = 'QUAD8'
+        TYPMAE = 'QU4'
+        NNE    = 8
+        LMALIN = .FALSE.
       ELSEIF (NOMTE(5:6).EQ.'T4') THEN
-        TYPMA= 'TETRA4'
-        ESC  = 'TE4'
-        NNE  = 4
+        TYPMAI = 'TETRA4'
+        TYPMAE = 'TE4'
+        NNE    = 4
+        LMALIN = .TRUE.
       ELSEIF (NOMTE(5:6).EQ.'P6') THEN
-        TYPMA= 'PENTA6'
-        ESC  = 'PE6'
-        NNE  = 6
+        TYPMAI = 'PENTA6'
+        TYPMAE = 'PE6'
+        NNE    = 6
+        LMALIN = .TRUE.
       ELSEIF (NOMTE(5:6).EQ.'H8') THEN
-        TYPMA= 'HEXA8'
-        ESC  = 'HE8'
-        NNE  = 8
-      ELSE
-        CALL U2MESK('F','DVP_4',1,NOMTE)
-      ENDIF
-      IF (NOMTE(7:7).EQ.'H') THEN
-        SINGE = 0
-      ELSEIF (NOMTE(7:7).EQ.'C') THEN
-        SINGE = 1
-      ELSEIF (NOMTE(7:7).EQ.'T') THEN
-        SINGE = 1
-        NNM = 0
-        SINGM = 0
-        NDLS = 2*NDIM
-        NDDL = NDLS*NNE
-        GOTO 999
+        TYPMAI = 'HEXA8'
+        TYPMAE = 'HE8'
+        NNE    = 8
+        LMALIN = .TRUE.
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
       ENDIF
 C
-C --- RECUPERATION DE L'ELEMENT MAITRE
+C --- RECUPERATION DES INFOS DE L'ELEMENT MAITRE
 C
       IF (NOMTE(8:9).EQ.'T3') THEN
-        MAIT = 'TR3'
-        NNM  = 3
+        TYPMAM = 'TR3'
+        NNM    = 3
       ELSEIF (NOMTE(8:9).EQ.'Q4') THEN
-        MAIT = 'QU4'
-        NNM  = 4
+        TYPMAM = 'QU4'
+        NNM    = 4
       ELSEIF (NOMTE(8:9).EQ.'T4') THEN
-        MAIT = 'TE4'
-        NNM  = 4
+        TYPMAM = 'TE4'
+        NNM    = 4
       ELSEIF (NOMTE(8:9).EQ.'P6') THEN
-        MAIT = 'PE6'
-        NNM  = 6
+        TYPMAM = 'PE6'
+        NNM    = 6
       ELSEIF (NOMTE(8:9).EQ.'H8') THEN
-        MAIT  = 'HE8'
-        NNM  = 8
+        TYPMAM = 'HE8'
+        NNM    = 8
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
       ENDIF
+      IF (NOMTE(7:7).EQ.'T') THEN
+        NNM = 0
+      ENDIF
+C
+C --- NOMBRE DE FONCTIONS SINGULIERES    
+C
       IF (NOMTE(10:10).EQ.'H') THEN
-        SINGM = 0
+        NSINGM = 0
       ELSEIF (NOMTE(10:10).EQ.'C') THEN
-        SINGM = 1
+        NSINGM = 1
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
       ENDIF
+      IF (NOMTE(7:7).EQ.'T') THEN
+        NSINGM = 0
+      ENDIF
+C       
+      IF (NOMTE(7:7).EQ.'H') THEN
+        NSINGE = 0
+      ELSEIF (NOMTE(7:7).EQ.'C') THEN
+        NSINGE = 1
+      ELSEIF (NOMTE(7:7).EQ.'T') THEN
+        NSINGE = 1
+      ELSE
+        CALL U2MESK('F','DVP_4',1,NOMTE)
+      ENDIF   
+C
+C --- NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE    
+C
+      IF (NOMTE(7:7).EQ.'T') THEN
+        NDDLSE  = 2*NDIM
+      ELSE
+        NDDLSE  = NDIM *(3+NSINGE)
+      ENDIF                  
 C
 C --- CALCUL DU NOMBRE TOTAL DE DDL
 C
-      NDLS = NDIM *(3+SINGE)
-      IF (MALIN) THEN
-        NDDL = NDIM * (NNE*(3+SINGE) + NNM*(2+SINGM)) 
+      IF (NOMTE(7:7).EQ.'T') THEN
+        NDDL   = NDDLSE*NNE
       ELSE
-        NDDL = NDIM * (NNE + 4*NNM)
+        IF (LMALIN) THEN
+          NDDL = NDIM * (NNE*(3+NSINGE) + NNM*(2+NSINGM)) 
+        ELSE
+          NDDL = NDIM * (NNE + 4*NNM)
+        ENDIF
       ENDIF
 C
-  999 CONTINUE
+C --- NOMBRE DE NOEUDS ESCLAVES SOMMETS
 C
+      IF (LMALIN) THEN
+C --- ON EST EN LINEAIRE
+        NNES  = NNE
+      ELSE
+C --- ON EST EN QUADRATIQUE
+        NNES  = NNE/2
+      ENDIF        
+      
       END

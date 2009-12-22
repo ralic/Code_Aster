@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline3 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,22 @@ def _(x) : return x
 
 cata_msg = {
 
+1 : _("""
+ Il y a trop de colonnes à afficher dans le tableau de convergence.
+ La largeur maximale affichable est de 256 caractères, donc 14 colonnes maximum.
+ Or vous avez <%(i1)d> colonnes !
+ Si vous avez des colonnes SUIVI_DDL, supprimez-en.
+ Sinon, utiliser la commande AFFICHAGE pour choisir les colonnes à afficher.
+"""),
+
+2 : _("""
+ Votre modèle contient des variables de commandes (température, irradiation, etc.)
+ or on utilise une matrice élastique constante au cours du temps.
+ Si vous faites de l'amortissement de Rayleigh, il y a un risque de résultats faux
+ si l'amortissement dépend de cette variable de commande (via les coefficients élastiques).
+ 
+ """),
+
 70 : _("""
  macro_element statique et FETI incompatibles
 """),
@@ -42,20 +58,24 @@ cata_msg = {
  FETI et contact discret incompatibles !
 """),
 
+79 : _("""
+ FETI et contact continu incompatibles !
+"""),
+
 89 : _("""
  contact et recherche linéaire peuvent poser des problèmes de convergence
 """),
 
 90 : _("""
- la combinaison: contact-frottement et solveur GCPC n'est pas disponible.
+La combinaison: contact-frottement et solveur GCPC n'est pas disponible.
 """),
 
 91 : _("""
- contact méthode continue et recherche linéaire sont incompatibles
+Contact méthode continue et recherche linéaire sont incompatibles
 """),
 
 92 : _("""
- contact méthode continue et pilotage sont incompatibles
+Contact méthode continue et pilotage sont incompatibles
 """),
 
 93 : _("""

@@ -1,7 +1,7 @@
       SUBROUTINE XCONLI(NOMA  ,NOMO  ,PREMIE,DEFICO,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,45 +62,5 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      IFM,NIV   
-      INTEGER      IBID
-      REAL*8       R8BID
-      LOGICAL      LTFCM     
-      CHARACTER*24 K24BLA,K24BID
-C      
-C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()
-      CALL INFDBG('XFEM',IFM,NIV)      
-C
-C --- AFFICHAGE
-C      
-      IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<XFEM   > CREATION ET INITIALISATION'//
-     &        ' DES OBJETS *_ELEM' 
-      ENDIF 
-C
-C --- INITIALISATIONS
-C
-      K24BLA = ' '                 
-C
-C --- CREATION DES CHAM_ELEM SI PREMIER PAS DE TEMPS
-C  
-      IF (PREMIE) THEN
-        CALL XMELEM(NOMA  ,NOMO  ,DEFICO,RESOCO)
-      ENDIF
-C
-C --- GRANDS GLISSEMENTS ?
-C
-      CALL MMINFP(0    ,DEFICO,K24BLA,'XFEM_GG',
-     &            IBID ,R8BID ,K24BID,LTFCM)
-C
-C --- CREATION DU LIGREL DES ELEMENTS DE CONTACT     
-C
-      IF (LTFCM) THEN     
-        CALL XMLIGR(NOMA,NOMO,DEFICO,RESOCO)
-        CALL XMCART(NOMA,DEFICO,NOMO  ,RESOCO) 
-      ENDIF
-C
-      CALL JEDEMA()
+      CALL ASSERT(.FALSE.)
       END

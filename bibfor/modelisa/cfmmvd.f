@@ -1,7 +1,7 @@
       INTEGER FUNCTION CFMMVD(VECT) 
 C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF MODELISA  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,65 +34,81 @@ C
 C
 C IN  VECT   : NOM DU VECTEUR DONT ON VEUT LA DIMENSION
 C
-C ----------------------------------------------------------------------
-C
-      INTEGER   ZNOES,ZMETH,ZTOLE,ZTABF
-      PARAMETER (ZNOES=1,ZMETH=12,ZTOLE=7 ,ZTABF=32) 
-      INTEGER   ZCMCF,ZECPD,ZTGDE,ZDIRN
-      PARAMETER (ZCMCF=25,ZECPD=6 ,ZTGDE=6 ,ZDIRN=6 )
-      INTEGER   ZPOUD,ZDIME,ZMAES,ZPERC
-      PARAMETER (ZPOUD=3 ,ZDIME=9 ,ZMAES=3 ,ZPERC=4 )    
-      INTEGER   ZMESX,ZAPME,ZAPPA
-      PARAMETER (ZMESX=4, ZAPME=4 ,ZAPPA=3)
-      INTEGER   ZCONV,ZRESU,ZCARF,ZXFEM
-      PARAMETER (ZCONV=9 ,ZRESU=24,ZCARF=4 ,ZXFEM=27) 
-      INTEGER   ZEXCL,ZETAT
-      PARAMETER (ZEXCL=6 ,ZETAT=4)                       
+C /!\ PENSER A MODIFIE SD_CONTACT.PY (POUR SD_VERI)
 C
 C ----------------------------------------------------------------------
 C
-      IF (VECT.EQ.'ZNOES') THEN
-        CFMMVD = ZNOES
-      ELSE IF (VECT.EQ.'ZMETH') THEN
+      INTEGER   ZMETH,ZTOLE,ZTABF
+      PARAMETER (ZMETH=10,ZTOLE=2 ,ZTABF=32) 
+      INTEGER   ZCMCF,ZTGDE,ZDIRN,ZDIME
+      PARAMETER (ZCMCF=27,ZTGDE=6 ,ZDIRN=6 ,ZDIME = 12)
+      INTEGER   ZPOUD,ZTYPM,ZPERC,ZTYPN
+      PARAMETER (ZPOUD=3 ,ZTYPM=2 ,ZPERC=4 ,ZTYPN = 1)    
+      INTEGER   ZMESX,ZAPME,ZMAES
+      PARAMETER (ZMESX=5, ZAPME=3 ,ZMAES = 6)
+      INTEGER   ZRESU,ZCMDF,ZRESX,ZCMXF
+      PARAMETER (ZRESU=24,ZCMDF=6 ,ZCMXF=15,ZRESX = 27) 
+      INTEGER   ZEXCL,ZPARR,ZPARI
+      PARAMETER (ZEXCL=6 ,ZPARR=5 ,ZPARI=25) 
+      INTEGER   ZDIAG,ZBOUC
+      PARAMETER (ZDIAG=10,ZBOUC=3 )  
+      INTEGER   ZCOCO,ZTACF,ZETAT
+      PARAMETER (ZCOCO=9 ,ZTACF=4 ,ZETAT=4)
+C
+C ----------------------------------------------------------------------
+C
+      IF (VECT.EQ.'ZMETH') THEN
         CFMMVD = ZMETH
       ELSE IF (VECT.EQ.'ZTOLE') THEN
         CFMMVD = ZTOLE  
       ELSE IF (VECT.EQ.'ZTABF') THEN
-        CFMMVD = ZTABF   
+        CFMMVD = ZTABF 
+      ELSE IF (VECT.EQ.'ZTACF') THEN
+        CFMMVD = ZTACF           
       ELSE IF (VECT.EQ.'ZCMCF') THEN
-        CFMMVD = ZCMCF   
-      ELSE IF (VECT.EQ.'ZECPD') THEN
-        CFMMVD = ZECPD          
+        CFMMVD = ZCMCF     
+      ELSE IF (VECT.EQ.'ZCMXF') THEN
+        CFMMVD = ZCMXF            
       ELSE IF (VECT.EQ.'ZTGDE') THEN
         CFMMVD = ZTGDE   
       ELSE IF (VECT.EQ.'ZDIRN') THEN
         CFMMVD = ZDIRN       
       ELSE IF (VECT.EQ.'ZPOUD') THEN
         CFMMVD = ZPOUD 
-      ELSE IF (VECT.EQ.'ZDIME') THEN
-        CFMMVD = ZDIME  
-      ELSE IF (VECT.EQ.'ZMAES') THEN
-        CFMMVD = ZMAES  
+      ELSE IF (VECT.EQ.'ZTYPM') THEN
+        CFMMVD = ZTYPM  
+      ELSE IF (VECT.EQ.'ZTYPN') THEN
+        CFMMVD = ZTYPN          
       ELSE IF (VECT.EQ.'ZMESX') THEN
         CFMMVD = ZMESX        
       ELSE IF (VECT.EQ.'ZAPME') THEN
         CFMMVD = ZAPME     
-      ELSE IF (VECT.EQ.'ZAPPA') THEN
-        CFMMVD = ZAPPA
-      ELSE IF (VECT.EQ.'ZCONV') THEN
-        CFMMVD = ZCONV   
       ELSE IF (VECT.EQ.'ZRESU') THEN
         CFMMVD = ZRESU     
-      ELSE IF (VECT.EQ.'ZCARF') THEN
-        CFMMVD = ZCARF                 
+      ELSE IF (VECT.EQ.'ZCMDF') THEN
+        CFMMVD = ZCMDF                 
       ELSE IF (VECT.EQ.'ZPERC') THEN
         CFMMVD = ZPERC 
-      ELSE IF (VECT.EQ.'ZXFEM') THEN
-        CFMMVD = ZXFEM    
+      ELSE IF (VECT.EQ.'ZRESX') THEN
+        CFMMVD = ZRESX    
       ELSE IF (VECT.EQ.'ZEXCL') THEN
-        CFMMVD = ZEXCL                
+        CFMMVD = ZEXCL  
+      ELSE IF (VECT.EQ.'ZPARR') THEN
+        CFMMVD = ZPARR             
+      ELSE IF (VECT.EQ.'ZPARI') THEN
+        CFMMVD = ZPARI    
+      ELSE IF (VECT.EQ.'ZDIAG') THEN
+        CFMMVD = ZDIAG      
+      ELSE IF (VECT.EQ.'ZBOUC') THEN
+        CFMMVD = ZBOUC
+      ELSE IF (VECT.EQ.'ZCOCO') THEN
+        CFMMVD = ZCOCO
+      ELSE IF (VECT.EQ.'ZDIME') THEN
+        CFMMVD = ZDIME
+      ELSE IF (VECT.EQ.'ZMAES') THEN
+        CFMMVD = ZMAES
       ELSE IF (VECT.EQ.'ZETAT') THEN
-        CFMMVD = ZETAT                
+        CFMMVD = ZETAT            
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF  

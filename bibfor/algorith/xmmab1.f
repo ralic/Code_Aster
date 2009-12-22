@@ -1,11 +1,13 @@
-      SUBROUTINE XMMAB1 (NDIM,NNE,NNES,NNC,NNM,NFAES,CFACE,
-     &                   HPG,FFPC,FFES,FFMA,JACOBI,IAINES,    
-     &                   LAMBDA,COEFCA,JEU,COEFFA,COEFFF,TAU1,TAU2,RESE,
-     &                   MPROJ,NORM,TYPMA,SINGE,SINGM,RRE,RRM,NVIT,NDLS,
-     &                   MMAT)
+      SUBROUTINE XMMAB1(NDIM  ,NNE   ,NNES  ,NNC   ,NNM   ,
+     &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
+     &                  FFM   ,JACOBI,JPCAI ,LAMBDA,COEFCA,   
+     &                  JEU   ,COEFFA,COEFFF,TAU1  ,TAU2  ,
+     &                  RESE  ,MPROJ ,NORM  ,TYPMAI,NSINGE,
+     &                  NSINGM,RRE   ,RRM   ,NVIT  ,NDDLSE,
+     &                  MMAT  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,17 +27,25 @@ C ======================================================================
 C TOLE CRP_21
 C
       IMPLICIT NONE
-      INTEGER  NDIM,NNE,NNES,NNC,NNM,NFAES,IAINES,CFACE(5,3),SINGE,SINGM
-      INTEGER  NVIT,NDLS
-      REAL*8   HPG,FFPC(9),FFES(9),FFMA(9),JACOBI,NORM(3)
+      INTEGER  NDIM,NNE,NNES,NNC,NNM,NFAES,JPCAI,CFACE(5,3)
+      INTEGER  NSINGE,NSINGM
+      INTEGER  NVIT,NDDLSE
+      REAL*8   HPG,FFC(9),FFE(9),FFM(9),JACOBI,NORM(3)
       REAL*8   LAMBDA,COEFFF,COEFFA,RRE,RRM,COEFCA,JEU
       REAL*8   TAU1(3),TAU2(3),RESE(3),MMAT(168,168),MPROJ(3,3)
-      CHARACTER*8  TYPMA
-C ROUTINE APPELLEE PAR : TE0366
+      CHARACTER*8  TYPMAI
+C      
 C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODE XFEMGG - CALCUL ELEM.)
 C
 C CALCUL DE B ET DE BT POUR LE CONTACT METHODE CONTINUE
 C AVEC ADHERENCE
+C
+C ----------------------------------------------------------------------
+C ROUTINE SPECIFIQUE A L'APPROCHE <<GRANDS GLISSEMENTS AVEC XFEM>>,
+C TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
+C ----------------------------------------------------------------------
 C
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
@@ -45,11 +55,12 @@ C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
 C IN  NFAES  : NUMERO DE LA FACETTE DE CONTACT ESCLAVE
 C IN  CFACE  : MATRICE DE CONECTIVITE DES FACETTES DE CONTACT
 C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
-C IN  FFPC   : FONCTIONS DE FORME DU PT CONTACT DANS ELC
-C IN  FFES   : FONCTIONS DE FORME DU PT CONTACT DANS ESC
-C IN  FFMA   : FONCTIONS DE FORME DE LA PROJECTION DU PTC DANS MAIT
+C IN  FFC    : FONCTIONS DE FORME DU PT CONTACT DANS ELC
+C IN  FFE    : FONCTIONS DE FORME DU PT CONTACT DANS ESC
+C IN  FFM    : FONCTIONS DE FORME DE LA PROJECTION DU PTC DANS MAIT
+C IN  NDDLSE : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-C IN  IAINES : POINTEUR VERS LE VECTEUR DES ARRETES ESCLAVES 
+C IN  JPCAI  : POINTEUR VERS LE VECTEUR DES ARRETES ESCLAVES 
 C              INTERSECTEES
 C IN  LAMBDA : VALEUR DU SEUIL_INIT
 C IN  COEFFA : COEF_REGU_FROT
@@ -58,9 +69,9 @@ C IN  TAU1   : PREMIERE TANGENTE
 C IN  TAU2   : SECONDE TANGENTE
 C IN  RESE   : PROJECTION DE LA BOULE UNITE POUR LE FROTTEMENT
 C IN  MPROJ  : MATRICE DE L'OPERATEUR DE PROJECTION
-C IN  TYPMA  : NOM DE LA MAILLE ESCLAVE D'ORIGINE (QUADRATIQUE)
-C IN  SINGE  : NOMBRE DE FONCTION SINGULIERE ESCLAVE
-C IN  SINGM  : NOMBRE DE FONCTION SINGULIERE MAITRE
+C IN  TYPMAI : NOM DE LA MAILLE ESCLAVE D'ORIGINE (QUADRATIQUE)
+C IN  NSINGE : NOMBRE DE FONCTION SINGULIERE ESCLAVE
+C IN  NSINGM : NOMBRE DE FONCTION SINGULIERE MAITRE
 C IN  RRE    : SQRT LST ESCLAVE
 C IN  RRM    : SQRT LST MAITRE
 C IN  NVIT   : POINT VITAL OU PAS
@@ -122,20 +133,20 @@ C
             MBT = MP*A(L,K)
           ENDIF
           DO 20 I = 1,NNC
-            INI=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
-            CALL XPLMA2(NDIM,NNE,NNES,NDLS,INI,PLI)
+            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI)
+            CALL XPLMA2(NDIM,NNE,NNES,NDDLSE,INI,PLI)
             II = PLI+L-1
             DO 30 J = 1,NNES
 C --- BLOCS ES:CONT, CONT:ES
-              MM = MB *FFPC(I)*FFES(J)
-              MMT= MBT*FFPC(I)*FFES(J)
-              JJ = NDLS*(J-1)+K
+              MM = MB *FFC(I)*FFE(J)
+              MMT= MBT*FFC(I)*FFE(J)
+              JJ = NDDLSE*(J-1)+K
               MMAT(II,JJ) = -MM
               MMAT(JJ,II) = -MMT
               JJ = JJ + NDIM
               MMAT(II,JJ) = MM
               MMAT(JJ,II) = MMT
-              DO 40 M = 1,SINGE
+              DO 40 M = 1,NSINGE
                 JJ = JJ + NDIM
                 MMAT(II,JJ) = RRE * MM
                 MMAT(JJ,II) = RRE * MMT
@@ -143,16 +154,16 @@ C --- BLOCS ES:CONT, CONT:ES
    30       CONTINUE
             DO 50 J = 1,NNM
 C --- BLOCS MA:CONT, CONT:MA
-              MM = MB *FFPC(I)*FFMA(J)
-              MMT= MBT*FFPC(I)*FFMA(J)
-              JJ = NDLS*NNES+NDIM*(NNE-NNES) + 
-     &              (2+SINGM)*NDIM*(J-1)+K
+              MM = MB *FFC(I)*FFM(J)
+              MMT= MBT*FFC(I)*FFM(J)
+              JJ = NDDLSE*NNES+NDIM*(NNE-NNES) + 
+     &              (2+NSINGM)*NDIM*(J-1)+K
               MMAT(II,JJ) = MM
               MMAT(JJ,II) = MMT
               JJ = JJ + NDIM
               MMAT(II,JJ) = MM
               MMAT(JJ,II) = MMT
-              DO 60 M = 1,SINGM
+              DO 60 M = 1,NSINGM
                 JJ = JJ + NDIM
                 MMAT(II,JJ) = RRM * MM
                 MMAT(JJ,II) = RRM * MMT
@@ -171,17 +182,17 @@ C
           DO 200 I = 1,NNES
             DO 210 J = 1,NNES
 C --- BLOCS ES:ES
-              MM = MB *FFES(I)*FFES(J)
-              MMT= MBT*FFES(I)*FFES(J)
-              II = NDLS*(I-1)+L
-              JJ = NDLS*(J-1)+K
+              MM = MB *FFE(I)*FFE(J)
+              MMT= MBT*FFE(I)*FFE(J)
+              II = NDDLSE*(I-1)+L
+              JJ = NDDLSE*(J-1)+K
               MMAT(II,JJ) =  MM
               JJ = JJ + NDIM
               MMAT(II,JJ) = -MM
               MMAT(JJ,II) = -MMT
               II = II + NDIM
               MMAT(II,JJ) =  MM
-              DO 215 M = 1,SINGE
+              DO 215 M = 1,NSINGE
                 JJ = JJ + NDIM
                 II = II - NDIM
                 MMAT(II,JJ) = -RRE * MM
@@ -195,11 +206,11 @@ C --- BLOCS ES:ES
   210       CONTINUE
             DO 220 J = 1,NNM
 C --- BLOCS ES:MA, MA:ES
-              MM = MB *FFES(I)*FFMA(J)
-              MMT= MBT*FFES(I)*FFMA(J)
-              II = NDLS*(I-1)+L
-              JJ = NDLS*NNES+NDIM*(NNE-NNES) +
-     &              (2+SINGM)*NDIM*(J-1)+K
+              MM = MB *FFE(I)*FFM(J)
+              MMT= MBT*FFE(I)*FFM(J)
+              II = NDDLSE*(I-1)+L
+              JJ = NDDLSE*NNES+NDIM*(NNE-NNES) +
+     &              (2+NSINGM)*NDIM*(J-1)+K
               MMAT(II,JJ) = -MM
               MMAT(JJ,II) = -MMT
               JJ = JJ + NDIM
@@ -212,7 +223,7 @@ C --- BLOCS ES:MA, MA:ES
               JJ = JJ + NDIM
               MMAT(II,JJ) =  MM
               MMAT(JJ,II) =  MMT
-              DO 230 M = 1,SINGM
+              DO 230 M = 1,NSINGM
                 II = II - NDIM
                 JJ = JJ + NDIM
                 MMAT(II,JJ) = -RRM * MM
@@ -222,7 +233,7 @@ C --- BLOCS ES:MA, MA:ES
                 MMAT(JJ,II) =  RRM * MMT
                 JJ = JJ - NDIM
   230         CONTINUE
-              DO 240 M = 1,SINGE
+              DO 240 M = 1,NSINGE
                 II = II + NDIM
                 JJ = JJ - NDIM
                 MMAT(II,JJ) =  RRE * MM
@@ -232,7 +243,7 @@ C --- BLOCS ES:MA, MA:ES
                 MMAT(JJ,II) =  RRE * MMT
                 II = II - NDIM
   240         CONTINUE
-              DO 250 M = 1,SINGE*SINGM
+              DO 250 M = 1,NSINGE*NSINGM
                 II = II + NDIM
                 JJ = JJ + NDIM
                 MMAT(II,JJ) =  RRE * RRM * MM
@@ -243,19 +254,19 @@ C --- BLOCS ES:MA, MA:ES
           DO 300 I = 1,NNM
             DO 320 J = 1,NNM
 C --- BLOCS MA:MA
-              MM = MB *FFMA(I)*FFMA(J)
-              MMT= MBT*FFMA(I)*FFMA(J)
-              II = NDLS*NNES+NDIM*(NNE-NNES) +
-     &              (2+SINGM)*NDIM*(I-1)+L
-              JJ = NDLS*NNES+NDIM*(NNE-NNES) +
-     &              (2+SINGM)*NDIM*(J-1)+K
+              MM = MB *FFM(I)*FFM(J)
+              MMT= MBT*FFM(I)*FFM(J)
+              II = NDDLSE*NNES+NDIM*(NNE-NNES) +
+     &              (2+NSINGM)*NDIM*(I-1)+L
+              JJ = NDDLSE*NNES+NDIM*(NNE-NNES) +
+     &              (2+NSINGM)*NDIM*(J-1)+K
               MMAT(II,JJ) =  MM
               JJ = JJ + NDIM
               MMAT(II,JJ) =  MM
               MMAT(JJ,II) =  MMT
               II = II + NDIM
               MMAT(II,JJ) =  MM
-              DO 330 M = 1,SINGM
+              DO 330 M = 1,NSINGM
                 JJ = JJ + NDIM
                 II = II - NDIM
                 MMAT(II,JJ) =  RRM * MM
@@ -284,13 +295,13 @@ C
             MBT = MP*A(L,K)
           ENDIF
           DO 520 I = 1,NNC
-            INI=XOULA(CFACE,NFAES,I,IAINES,TYPMA)
-            CALL XPLMA2(NDIM,NNE,NNES,NDLS,INI,PLI)
+            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI)
+            CALL XPLMA2(NDIM,NNE,NNES,NDDLSE,INI,PLI)
             II = PLI+L-1
             DO 530 J = 1,NNES
 C --- BLOCS ES:CONT, CONT:ES
-              MM = MB *FFPC(I)*FFES(J)
-              MMT= MBT*FFPC(I)*FFES(J)
+              MM = MB *FFC(I)*FFE(J)
+              MMT= MBT*FFC(I)*FFE(J)
               JJ = 2*NDIM*(J-1)+K
               MMAT(II,JJ) = RRE * MM
               MMAT(JJ,II) = RRE * MMT
@@ -307,9 +318,9 @@ C
           DO 620 I = 1,NNES
             DO 630 J = 1,NNES
 C --- BLOCS ES:ES
-              MM = MB *FFES(I)*FFES(J)
-              II = NDLS*(I-1)+L
-              JJ = NDLS*(J-1)+K
+              MM = MB *FFE(I)*FFE(J)
+              II = NDDLSE*(I-1)+L
+              JJ = NDDLSE*(J-1)+K
               MMAT(II,JJ) = RRE * RRE * MM
   630       CONTINUE
   620     CONTINUE

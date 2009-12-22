@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 22/09/2009   AUTEUR DESOZA T.DESOZA 
+#@ MODIF modelisa4 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,9 +22,6 @@ def _(x) : return x
 
 cata_msg = {
 
-1 : _("""
- arret sur erreurs
-"""),
 
 
 
@@ -213,9 +210,7 @@ cata_msg = {
 
 
 
-48 : _("""
- aucun noeud n est affecte par liaison_unilaterale
-"""),
+
 
 
 
@@ -317,6 +312,8 @@ cata_msg = {
 72 : _("""
  maille degeneree
 """),
+
+
 
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102f.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,27 +140,24 @@ LIAI=AFFE_CHAR_MECA(
 #      CONTACT UNILATERAL : FORMULATION MAITRE-ESCLAVE (3 ZONES)
 # --------------------------------------------------------------------
 #
-
-CONT=AFFE_CHAR_MECA( 
-                           MODELE=MOD,CONTACT=(
-                               _F(  GROUP_MA_MAIT = 'LAB1S',
-                                         GROUP_MA_ESCL = 'CEP2S',
-                                         METHODE = 'CONTINUE',
-                                         ITER_GEOM_MAXI=20,),
-                               _F(  GROUP_MA_MAIT = 'CME2S',
-                                         GROUP_MA_ESCL = 'CEP3S',
-                                         METHODE = 'CONTINUE',
-                                         FROTTEMENT='COULOMB',
-                                         COULOMB=0.0,
-                                         ITER_FROT_MAXI=20,
-                                         ),
-                               _F(  GROUP_MA_MAIT = 'CME3S',
-                                         GROUP_MA_ESCL = 'LCD4S',
-                                         METHODE = 'CONTINUE',
-                                         ),
+CONT = DEFI_CONTACT(MODELE         = MOD,
+                    FORMULATION    = 'CONTINUE',
+                    ITER_GEOM_MAXI = 20,
+                    ZONE = (
+                             _F(
+                                 GROUP_MA_MAIT = 'LAB1S',
+                                 GROUP_MA_ESCL = 'CEP2S',
                                ),
-                           INFO=1
-                       )
+                             _F(
+                                 GROUP_MA_MAIT = 'CME2S',
+                                 GROUP_MA_ESCL = 'CEP3S',
+                               ),
+                             _F(
+                                 GROUP_MA_MAIT = 'CME3S',
+                                 GROUP_MA_ESCL = 'LCD4S',
+                               ),                                                              
+                           ),
+                    ) 
 
 #
 # --------------------------------------------------------------------
@@ -193,11 +190,11 @@ RESU=STAT_NON_LINE(
                           CHAM_MATER=CHMAT,EXCIT=(
                           _F(  CHARGE = BLOQ),
                                 _F(  CHARGE = DEPL,   FONC_MULT = FONC),
-                                _F(  CHARGE = LIAI),
-                                _F(  CHARGE = CONT)),
+                                _F(  CHARGE = LIAI),),
+                          CONTACT  = CONT,      
                           COMP_ELAS=_F(  RELATION = 'ELAS'),
                           INCREMENT=_F(  LIST_INST = LINST),
-                          NEWTON=_F(REAC_ITER=1,),
+                          NEWTON   =_F(REAC_ITER=1,) ,  
                           CONVERGENCE=_F( 
                                         RESI_GLOB_RELA = 1.E-6,
                                         ITER_GLOB_MAXI = 50,

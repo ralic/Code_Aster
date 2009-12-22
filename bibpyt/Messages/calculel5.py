@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 05/10/2009   AUTEUR DESOZA T.DESOZA 
+#@ MODIF calculel5 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -257,10 +257,6 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  Il faut au moins 2 numéros d'ordre pour traiter l'option %(k1)s
 """),
 
-64 : _("""
- les champs ne sont pas de la meme grandeur:  type du cham_no  %(k1)s
-   type du cham_no_affe  %(k2)s
-"""),
 
 65 : _("""
  composante non definie dans  la grandeur.  composante:  %(k1)s

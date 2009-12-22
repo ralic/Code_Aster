@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv182d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,24 +53,26 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='OUI');
 
-CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
-                                     METHODE='XFEM',
-                                    ITER_CONT_MAXI=30,
-                                 COEF_REGU_CONT=100.0,
-                                 INTEGRATION='FPG4',
-                                 FROTTEMENT='SANS',
-                                 GLISSIERE='NON',
-                                 CONTACT_INIT='OUI',
-                                 COEF_ECHELLE=1.0,
-                                 ALGO_LAGR='NON',
-                                    ),
-                          MODELE=MODELEK,
-                          ),
 
-
-                         
-                         
-                         
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      FROTTEMENT     = 'COULOMB',
+                      ITER_CONT_MAXI = 30,
+                      REAC_GEOM      = 'SANS',
+                      ZONE=(
+                            _F(
+                               FISS_MAIT    = FISS,
+                               INTEGRATION  = 'FPG4',
+                               CONTACT_INIT = 'OUI',
+                               COEF_ECHELLE = 1.,
+                               COULOMB      = 1.0,
+                               ALGO_CONT    = 'STANDARD',
+                               COEF_CONT    = 100.,    
+                               ALGO_LAGR    = 'NON',
+                             ), 
+                         ),
+                   );
+                     
 
 E=100.0E6
 nu=0.
@@ -103,15 +105,13 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CTXFEM,),                       
+                   EXCIT=(_F(CHARGE=CHXFEM,),                     
                           _F(CHARGE=CH1,),),
+                   CONTACT  = CTXFEM,       
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='SURF',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.0,),
-#                   CONVERGENCE=(_F(ARRET='OUI',
-#                                  RESI_GLOB_RELA=1E-9)),
                    SOLVEUR=_F(METHODE='MUMPS',
                               ),
                    NEWTON=_F(REAC_ITER=1,),
@@ -168,7 +168,7 @@ TEST_TABLE(TABLE=LAG,
            TYPE_TEST='MAX',
            VALE=LA1REF,
            CRITERE='ABSOLU',
-           PRECISION=1.E-12,
+           PRECISION=1.E-7,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=LAG,
@@ -176,7 +176,7 @@ TEST_TABLE(TABLE=LAG,
            TYPE_TEST='MIN',
            VALE=LA1REF,
            CRITERE='ABSOLU',
-           PRECISION=1.E-12,
+           PRECISION=1.E-7,
            REFERENCE='ANALYTIQUE',);
 
 

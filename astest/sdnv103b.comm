@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103b.para = tps_job 370 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,19 +59,26 @@ CH=AFFE_CHAR_MECA(
              _F( GROUP_MA = 'VOL_RIG',    DX = 0., DY = 0.),
              _F( GROUP_MA = 'AXE',        DX = 0.),
              ),
-            CONTACT=
-            _F(APPARIEMENT='MAIT_ESCL',
-               REAC_GEOM = 'CONTROLE',
-               NB_REAC_GEOM = 2,
-               GROUP_MA_MAIT='RIGID',
-               GROUP_MA_ESCL='SZZ',
-               FROTTEMENT = 'COULOMB',
-               COEF_MATR_FROT = 0.4,
-               COULOMB = 0.25,
-               METHODE = 'PENALISATION',
-               E_T = 1.E5,
-               ),
                );
+
+
+CHCONT  = DEFI_CONTACT(MODELE         = MODE,
+                       FORMULATION    = 'DISCRETE',
+                       REAC_GEOM      = 'CONTROLE',
+                       NB_ITER_GEOM   = 2,
+                       FROTTEMENT     = 'COULOMB',
+                       
+                       ZONE =_F(
+                             ALGO_CONT      = 'LAGRANGIEN',
+                             ALGO_FROT      = 'PENALISATION',
+                             COULOMB        = 0.25,
+                             E_T            = 1.E5,
+                             APPARIEMENT    = 'MAIT_ESCL',
+                             GROUP_MA_MAIT  = 'RIGID',
+                             GROUP_MA_ESCL  = 'SZZ',
+                             COEF_MATR_FROT = 0.4,
+                               ),
+                      );
 
 VIT_0=CREA_CHAMP( OPERATION='AFFE',
                   TYPE_CHAM='NOEU_DEPL_R',
@@ -109,6 +116,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,
                             ),
+                   CONTACT = CHCONT,         
                    ETAT_INIT=_F(VITE = VIT_0,
                                 ),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
@@ -116,9 +124,6 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=DEFLIST,
                                 INST_FIN=8.E-05,
-#                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-#                                SUBD_PAS_MINI=1.E-30,
-#                                SUBD_COEF_PAS_1=1.,
                                 ),
                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                 FORMULATION='DEPLACEMENT',

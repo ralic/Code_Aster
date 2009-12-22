@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,19 +123,27 @@ L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
 F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
 F_DIST_E=DEFI_CONSTANTE(VALE=31.75);
 
-CHLAG=AFFE_CHAR_MECA(MODELE=MODE,
-                   CONTACT=_F(GROUP_MA_MAIT='POU1',
-                              GROUP_MA_ESCL='POU2',                            
-                              METHODE='LAGRANGIEN',
-                              DIST_MAIT=F_DIST_M,
-                              DIST_ESCL=F_DIST_E,                   
-                              FROTTEMENT='COULOMB',
-                              COEF_MATR_FROT=1.,
-                              VECT_MAIT='VECT_Y',
-                              MAIT_VECT_Y=(0.,0.,1.,),
-                              COULOMB=0.,
-                              
-                              ),);
+CHLAG= DEFI_CONTACT(MODELE         = MODE,
+                    FORMULATION    = 'DISCRETE',
+                    FROTTEMENT     = 'COULOMB',
+                    REAC_GEOM      = 'AUTOMATIQUE',
+                    ZONE =(
+                           _F(
+                              GROUP_MA_MAIT  = 'POU1',
+                              GROUP_MA_ESCL  = 'POU2', 
+                              ALGO_CONT      = 'LAGRANGIEN',
+                              ALGO_FROT      = 'LAGRANGIEN',
+                              COULOMB        = 0.,
+                              COEF_MATR_FROT = 1.,
+                              VECT_MAIT      = 'VECT_Y',
+                              MAIT_VECT_Y    = (0.,0.,1.,),
+                              DIST_MAIT      = F_DIST_M,
+                              DIST_ESCL      = F_DIST_E,     
+                             ),               
+                          ),
+                   );
+
+
 
 ULAG=STAT_NON_LINE(MODELE=MODE,
                 CHAM_MATER=CM,
@@ -143,7 +151,8 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CHLAG,),),
+                       ),
+                CONTACT  = CHLAG,       
                 COMP_INCR=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=1.,),
@@ -181,18 +190,23 @@ T_DEP_LA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 #
 # ---- METHODE CONTINUE ----
 #      ________________
-CHCON=AFFE_CHAR_MECA(MODELE=MODE,
-                     CONTACT=_F(GROUP_MA_MAIT='POU1',
-                                GROUP_MA_ESCL='POU2',
-                                DIST_MAIT=F_DIST_M,
-                                DIST_ESCL=F_DIST_E,                                 
-                                METHODE='CONTINUE',
-                                ITER_GEOM_MAXI = 3,
-                                ITER_CONT_MAXI = 10,
-                                VECT_MAIT='VECT_Y',
-                                MAIT_VECT_Y=(0.,0.,1.,),
-                                ),
-                     INFO=1);
+
+CHCON= DEFI_CONTACT(MODELE         = MODE,
+                    FORMULATION    = 'CONTINUE',
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 4,
+                    ZONE =(
+                           _F(
+                              GROUP_MA_MAIT  = 'POU1',
+                              GROUP_MA_ESCL  = 'POU2', 
+                              VECT_MAIT      = 'VECT_Y',
+                              MAIT_VECT_Y    = (0.,0.,1.,),
+                              DIST_MAIT      = F_DIST_M,
+                              DIST_ESCL      = F_DIST_E,     
+                             ),               
+                          ),
+                   );
+
                               
 UCON=STAT_NON_LINE(MODELE=MODE,
                 CHAM_MATER=CM,
@@ -200,7 +214,8 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CHCON,),),
+                       ),
+                CONTACT  = CHCON,       
                 COMP_INCR=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=1.,),

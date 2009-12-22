@@ -1,7 +1,7 @@
       SUBROUTINE NMASDI(FONACT,VEASSE,CNDFDO,CNDFPI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C
       IMPLICIT NONE
       CHARACTER*19 CNDFDO,CNDFPI
       CHARACTER*19 VEASSE(*)
-      LOGICAL      FONACT(*)
+      INTEGER      FONACT(*)
 C 
 C ----------------------------------------------------------------------
 C
@@ -68,7 +68,7 @@ C
       CHARACTER*19 CNDONN(20)
       REAL*8       CODONN(20)
       CHARACTER*19 CNDIDO,CNDIPI
-      CHARACTER*19 NMCHEX,CNCINE,CNDIDI
+      CHARACTER*19 CNCINE,CNDIDI
       LOGICAL      ISFONC,LDIDI,LPILO
 C 
 C ----------------------------------------------------------------------
@@ -95,13 +95,13 @@ C
 C
 C --- DEPLACEMENTS DONNES (Y COMPRIS DIDI SI NECESSAIRE)
 C
-      CNDIDO       = NMCHEX(VEASSE,'VEASSE','CNDIDO')    
+      CALL NMCHEX(VEASSE,'VEASSE','CNDIDO',CNDIDO)    
       IFDO         = IFDO+1 
       CNDONN(IFDO) = CNDIDO
       CODONN(IFDO) = 1.D0
 
       IF (LDIDI) THEN
-        CNDIDI       = NMCHEX(VEASSE,'VEASSE','CNDIDI')
+        CALL NMCHEX(VEASSE,'VEASSE','CNDIDI',CNDIDI)
         IFDO         = IFDO+1 
         CNDONN(IFDO) = CNDIDI
         CODONN(IFDO) = 1.D0
@@ -109,7 +109,7 @@ C
 C      
 C --- CONDITIONS CINEMATIQUES IMPOSEES           
 C   
-      CNCINE       = NMCHEX(VEASSE,'VEASSE','CNCINE') 
+      CALL NMCHEX(VEASSE,'VEASSE','CNCINE',CNCINE) 
       IFDO         = IFDO+1 
       CNDONN(IFDO) = CNCINE
       CODONN(IFDO) = 1.D0        
@@ -129,7 +129,7 @@ C
 C --- VECTEUR RESULTANT DEPLACEMENTS PILOTES
 C
       IF (LPILO) THEN       
-        CNDIPI       = NMCHEX(VEASSE,'VEASSE','CNDIPI') 
+        CALL NMCHEX(VEASSE,'VEASSE','CNDIPI',CNDIPI) 
         CNDFPI       = CNDIPI     
         IF (NIV.GE.2) THEN
           WRITE (IFM,*) '<MECANONLINE> ......... DEPL. PILOTES' 

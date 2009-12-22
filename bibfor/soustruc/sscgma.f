@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 16/11/2009   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      CHARACTER*8 MA,NOMA,NOGMA,KBID,NOGMA2,KPOS,NOM1,NOM2,TOUT
+      CHARACTER*8 MA,NOMA,NOGMA,KBID,NOGMA2,KPOS,NOM1,TOUT
       CHARACTER*8 ALARM,TYMA
       CHARACTER*16 CONCEP,CMD,OPTION
       CHARACTER*24 LISMA
@@ -140,7 +140,7 @@ C       -------------------
             NBMA = NBMA + 1
             ZI(JMAIL+NBMA-1) = NUM
    20     CONTINUE
-          IF (IER.NE.0) CALL U2MESS('F','MODELISA4_1')
+          IF (IER.NE.0) CALL ASSERT(.FALSE.)
           CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
           CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',NBMA,KBID)
           CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOGMA),'E',IAGMA)
@@ -425,7 +425,7 @@ C           --------------------------------
                   CALL U2MESK('F','SOUSTRUC2_7',1,NOGMA)
                ENDIF
             ENDIF
-          ENDIF
+          ENDIF  
 C
 C        -- CREATION ET AFFECTATION DU GROUP_MA :
 C            ----------------------------------
@@ -446,8 +446,11 @@ C            ----------------------------------
   200       CONTINUE
 
             NBGNAJ = NBGNAJ + 1
+
           END IF
+
           CALL JEDETR(LISMA)
+
         END IF
 
   210 CONTINUE

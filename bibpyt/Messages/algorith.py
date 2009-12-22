@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 08/06/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -196,15 +196,6 @@ cata_msg = {
 77 : _("""
  problème à la résolution du système
 """),
-
-78 : _("""
- cas 2D impossible
-"""),
-
-79 : _("""
- liaison de frottement incongrue
-"""),
-
 
 
 96 : _("""

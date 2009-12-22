@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DU MOT-CLE LIAISON_UNILATER PAR UNE CONDITION PORTANT SUR DES DEPLACEMENTS
 # zzzz237b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,26 +71,25 @@ BLOC_DIS=AFFE_CHAR_CINE(MODELE=MO,
                                     #DZ=0,
                                     ),);
 
-# FORCE=AFFE_CHAR_MECA(MODELE=MO,
-#                      FORCE_CONTOUR=_F(GROUP_MA='AB',
-#                                       FY=-2.5,),);
-
-# DEPL=AFFE_CHAR_CINE(MODELE=MO,
-#                     MECA_IMPO=_F(GROUP_NO='CD',
-#                                 DY=-1.0,),);
-
 DEPL=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_NO='CD',
                                 DY=-1.0,),);
 
-CONT=AFFE_CHAR_MECA(MODELE=MO,
-                    INFO=1,
-                    LIAISON_UNILATER=_F(
-                               GROUP_NO  = 'AB',
-                               NOM_CMP   = 'DY',
-                               COEF_MULT = -1.0,
-                               COEF_IMPO = 0.
-                               ),);
+
+F_IMPO = DEFI_CONSTANTE( VALE = 0.0 )
+F_MULT = DEFI_CONSTANTE( VALE = -1.0 )
+                               
+CONT  = DEFI_CONTACT(MODELE      = MO,
+                     FORMULATION = 'LIAISON_UNIL',
+                     ZONE        = (
+                       _F(
+                         GROUP_NO      = ('AB',),
+                         NOM_CMP       = ('DY',),
+                         COEF_IMPO     = F_IMPO,
+                         COEF_MULT     = F_MULT,
+                         ),
+                     ),                            
+                     )                               
 
 F_FORC=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            1.0,1.0,
@@ -109,8 +108,8 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=DEPL,
                              FONC_MULT=F_FORC,),
                           _F(CHARGE=BLOC_DIS,),
-                          _F(CHARGE=CONT,),
                           ),
+                   CONTACT = CONT,       
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_TPS,),
                    #CONVERGENCE=_F(

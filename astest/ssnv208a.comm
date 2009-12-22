@@ -1,4 +1,4 @@
-# MODIF  DATE 26/10/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE ETUDE:  ESSAI BIAXIAL DRAINE SUR SABLE D'HOSTUN 
 # ssnv208a.para = tps_job 160 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,8 +146,9 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                         _F(CHARGE      = DEPL_1)),
                  ETAT_INIT=_F(SIGM=SIEF,),
                  COMP_INCR=_F(RELATION = 'HUJEUX',
-                              RESI_INTE_RELA = 1.E-6,
-                              ITER_INTE_PAS = -10),
+                              RESI_INTE_RELA = 1.E-8,
+                              ITER_INTE_MAXI = 20,
+                              ITER_INTE_PAS = -5),
                  NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER=1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 20),

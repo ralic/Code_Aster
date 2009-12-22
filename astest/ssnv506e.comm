@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 # ssnv506e.para = tps_job 220 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,13 +71,17 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506E,
                              MATER=ACIER_B,),),);
 
 #CONDITIONS AUX LIMITES
-CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(METHODE='CONTINUE',
-                               GROUP_MA_MAIT='SMAI',
-                               GROUP_MA_ESCL='SESC',
-                               TOLE_PROJ_EXT=-1.0,
-                               SANS_GROUP_NO=('E','S',),
-                               ),);
+CHA1 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    ZONE =(
+                           _F(
+                              GROUP_MA_MAIT='SMAI',
+                              GROUP_MA_ESCL='SESC',
+                              TOLE_PROJ_EXT=-1.0,
+                              SANS_GROUP_NO=('E','S',),     
+                             ),               
+                          ),
+                   );
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='NDPL',
@@ -111,15 +115,16 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
 U=STAT_NON_LINE(MODELE=MO,
                 #INFO=2,
                 CHAM_MATER=CHMAT,
-                EXCIT=(_F(CHARGE=CHA1,),
+                EXCIT=(
                        _F(CHARGE=CHA2,
                           FONC_MULT=DPLY,),),
+                CONTACT  = CHA1,          
                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                              GROUP_MA='MAT2',),
                 COMP_ELAS=_F(RELATION='ELAS',
                              GROUP_MA='MAT1',),
                 INCREMENT=_F(LIST_INST=DEFLIST,
-                             INST_FIN=1.,),
+                              INST_FIN=1.,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=15,),

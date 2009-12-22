@@ -1,8 +1,8 @@
-      SUBROUTINE CUPIVO(XJVMAX,INDIC,NBLIAC,AJLIAI,SPLIAI,SPAVAN,
-     &                  NOMA,DEFICU,RESOCU)
+      SUBROUTINE CUPIVO(XJVMAX,INDIC,NBLIAC,AJLIAI,SPLIAI,
+     &                  SPAVAN,DEFICU,RESOCU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,9 +19,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*8  NOMA
       CHARACTER*24 RESOCU
       CHARACTER*24 DEFICU
       REAL*8       XJVMAX
@@ -30,12 +30,16 @@ C
       INTEGER      AJLIAI
       INTEGER      SPLIAI
       INTEGER      SPAVAN
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : ALGOCU
+C     
 C ----------------------------------------------------------------------
 C
-C  ELIMINATION DES PIVOTS NULS DANS LA MATRICE DE CONTACT
+C ROUTINE LIAISON_UNILATERALE (RESOLUTION)
+C
+C ELIMINATION DES PIVOTS NULS DANS LA MATRICE DE CONTACT
+C
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  XJVMAX : VALEUR DU PIVOT MAX
 C OUT INDIC  : +1 ON A RAJOUTE UNE LIAISON
@@ -47,11 +51,8 @@ C              DE LA MATRICE DE CONTACT ACM1AT
 C I/O SPLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
 C              LIAISON AYANT ETE CALCULEE POUR LE VECTEUR CM1A
 C IN  SPAVAN : INDICE DE DEBUT DE TRAITEMENT DES LIAISONS
-C IN  NOMA   : NOM DU MAILLAGE
 C IN  DEFICU : SD DE DEFINITION (ISSUE D'AFFE_CHAR_MECA)
 C IN  RESOCU : SD DE TRAITEMENT 
-C                'E': RESOCU(1:14)//'.LIAC'
-C                'E': RESOCU(1:14)//'.LIOT'
 C
 C
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
@@ -77,37 +78,36 @@ C
       CHARACTER*1  TYPESP
       CHARACTER*19 LIAC, LIOT, MATR, STOC,OUVERT
       INTEGER      JLIAC,JLIOT,JVALE,JVA,JSCDE,JOUV
-      CHARACTER*24 DIMECU
-      INTEGER      NBBLOC,JDIM
+      INTEGER      NBBLOC
       REAL*8       COPMAX
       INTEGER      KK1,KK2,KK1F,KK2F
       INTEGER      NBOTE,PIVOT,NBLIAI,LLIAC, II
       INTEGER      NIV,IFM
       INTEGER      BLOC, ISCIB, JSCBL, DERCOL
+      INTEGER      CUDISI,NNOCU
 C
 C ----------------------------------------------------------------------
 C
       CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
-C ======================================================================
+C 
 C --- LECTURE DES STRUCTURES DE DONNEES
-C ======================================================================
-      DIMECU = DEFICU(1:16)//'.DIMECU'     
+C 
       LIAC   = RESOCU(1:14)//'.LIAC'
       LIOT   = RESOCU(1:14)//'.LIOT'
       MATR   = RESOCU(1:14)//'.MATR'
       STOC   = RESOCU(1:14)//'.SLCS'
-C ======================================================================
+C 
       CALL JEVEUO(LIAC,'E',JLIAC)
       CALL JEVEUO(LIOT,'E',JLIOT)
-      CALL JEVEUO(DIMECU,'L',JDIM)
       CALL JEVEUO(STOC//'.SCIB','L',ISCIB)
       CALL JEVEUO(STOC//'.SCBL','L',JSCBL)
       CALL JEVEUO(STOC//'.SCDE','L',JSCDE)
 C ======================================================================
 C --- INITIALISATION DES VARIABLES
 C ======================================================================
-      NBLIAI = ZI(JDIM)      
+      NNOCU  = CUDISI(DEFICU,'NNOCU')  
+      NBLIAI = NNOCU          
       TYPESP = 'S'
       COPMAX = XJVMAX * 1.0D-08
       PIVOT  = 0

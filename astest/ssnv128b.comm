@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128b.para = tps_job 190 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,32 +68,40 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_MA = 'LPRESH', PRES = 15.E07,))
                    )
 #
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT     = 'LBATI',
-                               GROUP_MA_ESCL     = 'LCONTA',
-                               APPARIEMENT    = 'MAIT_ESCL',
-                               NORMALE        = 'MAIT',
-                               REAC_GEOM      = 'CONTROLE',
-                               NB_REAC_GEOM   = 2,
-                               METHODE        = 'LAGRANGIEN',
-                               COEF_MATR_FROT = 0.8,
-                               FROTTEMENT     = 'COULOMB',
-                               COULOMB        = 1.0,)
-                    )
+CHA2=DEFI_CONTACT(MODELE         = MO,
+                  FORMULATION    = 'DISCRETE',
+                  FROTTEMENT     = 'COULOMB',
+                  REAC_GEOM      = 'CONTROLE',
+                  NB_ITER_GEOM   = 2,
+                  ZONE=_F(
+                          GROUP_MA_MAIT  = 'LBATI',
+                          GROUP_MA_ESCL  = 'LCONTA',
+                          APPARIEMENT    = 'MAIT_ESCL',
+                          NORMALE        = 'MAIT',
+                          ALGO_CONT      = 'LAGRANGIEN',
+                          ALGO_FROT      = 'LAGRANGIEN',
+                          COEF_MATR_FROT = 0.8,
+                          COULOMB        = 1.0,
+                        )
+                  )
+
 #
-CHA3=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT     = 'LBATI',
-                               GROUP_MA_ESCL     = 'LCONTA',
-                               APPARIEMENT    = 'MAIT_ESCL',
-                               NORMALE        = 'MAIT',
-                               REAC_GEOM      = 'SANS',
-                               METHODE        = 'PENALISATION',
-                               E_T            = 1.0E11,
-                               E_N            = 1.0E15,
-                               FROTTEMENT     = 'COULOMB',
-                               COULOMB        = 1.0,)
-                    )
-#
+CHA3=DEFI_CONTACT(MODELE         = MO,
+                  FORMULATION    = 'DISCRETE',
+                  FROTTEMENT     = 'COULOMB',
+                  REAC_GEOM      = 'SANS',
+                  ZONE=_F(
+                          GROUP_MA_MAIT  = 'LBATI',
+                          GROUP_MA_ESCL  = 'LCONTA',
+                          APPARIEMENT    = 'MAIT_ESCL',
+                          NORMALE        = 'MAIT',
+                          ALGO_CONT      = 'PENALISATION',
+                          ALGO_FROT      = 'PENALISATION',
+                          E_T            = 1.0E11,
+                          E_N            = 1.0E15,
+                          COULOMB        = 1.0,
+                        )
+                  )
 #
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
@@ -112,7 +120,8 @@ U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                   CHAM_MATER = CHMAT,
                   EXCIT      =(_F(CHARGE = CHA1,
                                   FONC_MULT = RAMPE,),
-                               _F(CHARGE = CHA2,)),
+                               ),
+                  CONTACT    = CHA2,             
                   COMP_ELAS  = _F(RELATION = 'ELAS',),
                   INCREMENT  = _F(LIST_INST = L_INST,),
                   CONVERGENCE= _F(ARRET = 'OUI',
@@ -191,7 +200,8 @@ U2L=STAT_NON_LINE(MODELE    = MO,
                   CHAM_MATER = CHMAT,
                   EXCIT      =(_F(CHARGE = CHA1,
                                   FONC_MULT = RAMPE,),
-                               _F(CHARGE = CHA2,)),
+                               ),
+                  CONTACT    = CHA2,              
                   COMP_ELAS  = _F(RELATION = 'ELAS',),
                   SOLVEUR    = _F(SYME='OUI',
                                   METHODE = 'LDLT',),
@@ -272,7 +282,8 @@ U3M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                  CHAM_MATER  = CHMAT,
                  EXCIT       =(_F(CHARGE = CHA1,
                                   FONC_MULT = RAMPE,),
-                               _F(CHARGE = CHA3,)),
+                               ),
+                 CONTACT    = CHA3, 
                  COMP_ELAS   = _F(RELATION = 'ELAS',),
                  NEWTON      = _F(REAC_ITER = 1,),
                  INCREMENT   = _F(LIST_INST = L_INST,),
@@ -351,7 +362,8 @@ U3L=STAT_NON_LINE(MODELE      = MO,
                  CHAM_MATER  = CHMAT,
                  EXCIT       =(_F(CHARGE = CHA1,
                                   FONC_MULT = RAMPE,),
-                               _F(CHARGE = CHA3,)),
+                               ),
+                 CONTACT    = CHA3,                                
                  COMP_ELAS   = _F(RELATION = 'ELAS',),
                  SOLVEUR     = _F(SYME='OUI',
                                   METHODE = 'LDLT',),

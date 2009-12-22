@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209a.para = tps_job 120 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,23 +91,31 @@ CHAF=AFFE_CHAR_MECA_F(MODELE=MO,
                               PRES=FCTPRES,),);
 
 # ==================================================
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT     = 'LBATI',
-                               GROUP_MA_ESCL     = 'LCONTA',
-                               APPARIEMENT    = 'MAIT_ESCL',
-                               METHODE        = 'CONTINUE',
-                               INTEGRATION    = 'NOEUD',
-                               CONTACT_INIT   = 'OUI',
-                               SEUIL_INIT     = 100.,
-                               COEF_REGU_FROT = 1.0,
-                               COEF_REGU_CONT = 1.0,
-                               EXCLUSION_PIV_NUL='OUI',
-                               ITER_GEOM_MAXI = 3,
-                               ITER_FROT_MAXI = 10,
-                               ITER_CONT_MAXI = 30,
-                               FROTTEMENT     = 'COULOMB',
-                               COULOMB        = 1.,)
-                    )
+
+CHA2 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    FROTTEMENT     = 'COULOMB',
+                    ITER_GEOM_MAXI = 3,
+                    ITER_CONT_MAXI = 30,
+                    ITER_FROT_MAXI = 10,
+                    
+                    ZONE =(
+                           _F(
+                             GROUP_MA_MAIT = 'LBATI',
+                             GROUP_MA_ESCL = 'LCONTA',
+                             APPARIEMENT   = 'MAIT_ESCL',
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 1.,
+                             ALGO_FROT     = 'STANDARD',
+                             COEF_FROT     = 1.,                             
+                             EXCLUSION_PIV_NUL='OUI',
+                             CONTACT_INIT  = 'OUI',
+                             SEUIL_INIT    = 100.,
+                             COULOMB       = 1.0,  
+                             ),                            
+                          ),
+                   );
+
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
@@ -129,7 +137,8 @@ U2M=STAT_NON_LINE(MODELE    = MO,
                                   FONC_MULT = RAMPE,),
                                _F(CHARGE = CHAF,
                                   FONC_MULT = RAMPE,),   
-                               _F(CHARGE = CHA2,)),
+                               ),
+                  CONTACT    = CHA2,             
                   COMP_ELAS  = _F(RELATION = 'ELAS',),
                   NEWTON=_F(REAC_ITER=1),
                   INCREMENT  = _F(LIST_INST = L_INST,),

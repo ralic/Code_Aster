@@ -1,8 +1,8 @@
       SUBROUTINE NMINMA(FONACT,LISCHA,SDDYNA,SOLVEU,NUMEDD,
-     &                  DEFICO,MEELEM,MEASSE)
+     &                  MEELEM,MEASSE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,9 +22,9 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      LOGICAL      FONACT(*)
+      INTEGER      FONACT(*)
       CHARACTER*19 LISCHA,SDDYNA,SOLVEU
-      CHARACTER*24 NUMEDD,DEFICO
+      CHARACTER*24 NUMEDD
       CHARACTER*19 MEELEM(*),MEASSE(*)
 C 
 C ----------------------------------------------------------------------
@@ -41,17 +41,16 @@ C IN  LISCHA : LISTE DES CHARGEMENTS
 C IN  SDDYNA : SD DYNAMIQUE
 C IN  SOLVEU : SOLVEUR
 C IN  NUMEDD : NUME_DDL
-C IN  DEFICO : SD DEFINITION CONTACT
 C IN  MEELEM : MATRICES ELEMENTAIRES
 C OUT MEASSE : MATRICES ASSEMBLEES
 C      
 C ----------------------------------------------------------------------
 C
-      LOGICAL      NDYNLO,LDYNA,LEXPL,LIMPL,LBID
+      LOGICAL      NDYNLO,LDYNA,LEXPL,LIMPL,LBID,LAMOR,LKTAN
       INTEGER      IFM,NIV
       INTEGER      NBMATR
       CHARACTER*6  LTYPMA(20)
-      CHARACTER*16 LOPTME(20),LOPTMA(20)
+      CHARACTER*16 LOPTMA(20),LOPTME(20)
       LOGICAL      LASSME(20),LCALME(20)       
 C
 C ----------------------------------------------------------------------
@@ -70,6 +69,8 @@ C
       LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')
       LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
       LIMPL  = NDYNLO(SDDYNA,'IMPLICITE')
+      LAMOR  = NDYNLO(SDDYNA,'MAT_AMORT')
+      LKTAN  = NDYNLO(SDDYNA,'RAYLEIGH_KTAN')
 C
       CALL NMCMAT('INIT',' '   ,' '   ,' '   ,LBID  ,
      &            LBID  ,NBMATR,LTYPMA,LOPTME,LOPTMA,
@@ -91,17 +92,27 @@ C
         ENDIF
       ENDIF
 C
-C --- ASSEMBLAGE DE LA MATRICE MASSE 
+C --- AJOUT DE LA MATRICE AMORTISSEMENT DANS LA LISTE
+C
+      IF (LAMOR.AND..NOT.LKTAN) THEN
+        CALL NMCMAT('AJOU','MEAMOR',' ',' ',.FALSE.,
+     &              .TRUE.,NBMATR,LTYPMA,LOPTME,LOPTMA,
+     &              LCALME,LASSME)   
+      ENDIF      
+C
+C --- ASSEMBLAGE DE LA MATRICE MASSE ET AMORTISSEMENT
 C
       IF (LDYNA) THEN
         IF (NIV.GE.2) THEN
           WRITE (IFM,*) '<MECANONLINE> ... MATR_ASSE DE MASSE'
+          IF (LAMOR.AND..NOT.LKTAN) THEN
+            WRITE (IFM,*) '<MECANONLINE> ... MATR_ASSE AMORTISSEMENT'
+          ENDIF
         ENDIF  
-        CALL NMXMA3(FONACT,LISCHA,DEFICO,SOLVEU,NUMEDD,
-     &              NBMATR,LTYPMA,LOPTME,LOPTMA,LCALME,
-     &              LASSME,MEELEM,MEASSE)    
-      ENDIF
-      
+        CALL NMXMA3(FONACT,LISCHA,SOLVEU,NUMEDD,NBMATR,
+     &              LTYPMA,LOPTMA,LCALME,LASSME,MEELEM,
+     &              MEASSE)    
+      ENDIF      
 C
       CALL JEDEMA()
       END

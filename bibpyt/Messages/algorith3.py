@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith3 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,10 +169,6 @@ Nombre d'itérations     : %(i2)d
 
 58 : _("""
  changement de signe de la vitesse --> on prend VITG0(I)
-"""),
-
-59 : _("""
- la matrice est triangulaire superieur-inversion indice
 """),
 
 60 : _("""

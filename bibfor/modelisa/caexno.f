@@ -5,7 +5,7 @@
       INTEGER            IOCC
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C IN  IOCC   I    : SI >0 ON TRAITE L'OCCURENCE IOCC DE MOTFAC
 C                   SI <0 OU =0 ERREUR FATALE
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      CHARACTER*32       JEXNUM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -60,11 +60,9 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
-      CHARACTER*8        KBID
       CHARACTER*16       MOTF,MCGR,MCN
       CHARACTER*24       LISTEX
-      INTEGER            LCONI,NBCPL,NBEX
-      INTEGER            IBID
+      INTEGER            NBCPL,NBEX
 C --- DEBUT
       CALL JEMARQ()
       LVAV  = LVAVZ
@@ -73,10 +71,10 @@ C --- DEBUT
       MCGR  = MCGRNO
       MCN   = MCNO
       IF (MOTF.NE.'LIAISON_GROUP') THEN
-        CALL U2MESK('F','MODELISA2_61',1,MOTF)
+        CALL ASSERT(.FALSE.)
       ENDIF
       IF (IOCC.LE.0) THEN
-        CALL U2MESS('F','MODELISA2_62')
+        CALL ASSERT(.FALSE.)
       ENDIF
       CALL GETFAC(MOTF,NLINO)
       IF ((NLINO.EQ.0).OR.(IOCC.GT.NLINO)) GOTO 999

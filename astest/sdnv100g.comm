@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100g.para = tps_job 80 mem_job 64Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,20 +73,18 @@ CH=AFFE_CHAR_MECA(
            _F(  GROUP_NO = 'VSOL',  DX = 0., DY = 0., DZ = 0.),
                                  )
            )
-
-CH2=AFFE_CHAR_MECA(
-                   MODELE=MODE,
-                   CONTACT=_F(
-                              METHODE        = 'CONTINUE',
+                  
+CH2 = DEFI_CONTACT(MODELE      = MODE,
+                   FORMULATION = 'CONTINUE',
+                   ZONE        =_F(
                               COMPLIANCE     = 'OUI',
-                              ASPERITE       =-5.E-4,
-                              E_N            =1.E12,
-                              E_V            =2.E4,
-                              FORMULATION='DEPL',
+                              ASPERITE       = -5.E-4,
+                              E_N            = 1.E12,
+                              E_V            = 2.E4,
                               GROUP_MA_ESCL  = 'FACEINF',
                               GROUP_MA_MAIT  = 'SSOL',
-                             )
-                  )
+                                 ),
+                   )                        
 
 # ************* CHAMP DE VITESSE INITIALE ***************
 
@@ -131,8 +129,8 @@ U=DYNA_NON_LINE(  MODELE=MODE,  CHAM_MATER=CM,
            EXCIT=(_F( CHARGE = CH,
                       FONC_MULT = RAMPE
                     ),
-                  _F( CHARGE = CH2,)
                  ),
+           CONTACT     = CH2,
            ETAT_INIT   =_F(DEPL = CHAMP2,VITE = CHAMP1),
            COMP_ELAS   =_F( RELATION = 'ELAS',),
            INCREMENT   =_F( INST_INIT = 0.,LIST_INST = L_INST),

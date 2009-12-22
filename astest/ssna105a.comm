@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRES CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,20 +151,23 @@ PRES = AFFE_CHAR_MECA_F (MODELE = MO,
                                     PRES = PRES_F),
                        )
                           )
-CONT = AFFE_CHAR_MECA (MODELE = MO,
-                          CONTACT =_F( GROUP_MA_MAIT = 'DDAG',
-                                       GROUP_MA_ESCL = 'DBCP',
-                                       REAC_GEOM = 'CONTROLE',
-                                       NB_REAC_GEOM = 2,
-                      ))
+CONT = DEFI_CONTACT   (MODELE      = MO,
+                       FORMULATION = 'DISCRETE',
+                       REAC_GEOM   = 'CONTROLE',
+                       NB_ITER_GEOM = 2,
+                       ZONE =_F( 
+                                 GROUP_MA_MAIT = 'DDAG',
+                                 GROUP_MA_ESCL = 'DBCP',    
+                               ),
+                      );
  
                                   
 RESU = STAT_NON_LINE (MODELE = MO,
                       CHAM_MATER = CHMAT,
                       EXCIT =(
                          _F( CHARGE = BLOC),
-                         _F( CHARGE = CONT),
                          _F( CHARGE = PRES),),
+                      CONTACT   = CONT,   
                       COMP_INCR =_F(RELATION ='LEMAITRE',PARM_THETA = 0.5,
                                     GROUP_MA = 'MAILG',
                                     ITER_INTE_MAXI = 1000),

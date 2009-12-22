@@ -1,8 +1,7 @@
-      SUBROUTINE MMFOND(NOMA  ,DEFICO,IZONE ,NBNOE ,POSMAE,
-     &                  TYPBAR,NUNOBA,NUNFBA,EXNOEB)
+      SUBROUTINE MMFOND(NOMA  ,DEFICO,IZONE ,POSMAE,TYPBAR)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/11/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,20 +22,16 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       CHARACTER*24 DEFICO
-      CHARACTER*8  NOMA
-      INTEGER      NBNOE       
+      CHARACTER*8  NOMA      
       INTEGER      POSMAE
       INTEGER      IZONE
       INTEGER      TYPBAR
-      INTEGER      NUNOBA(3),NUNFBA(2) 
-      LOGICAL      EXNOEB
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT)
+C ROUTINE CONTACT (METHODE CONTINUE - LECTURE DONNEES)
 C
-C TRAITEMENT DES MAILLES EN FOND DE FISSURE ET DU CAS DES ELEMENTS
-C BARSOUM
+C INDICATEUR QU'UNE MAILLE ESCLAVE EST DE TYPE BARSOUM
 C      
 C ----------------------------------------------------------------------
 C
@@ -45,36 +40,21 @@ C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  IZONE  : NUMERO DE LA ZONE DE CONTACT
 C IN  POSMAE : NUMERO DE LA MAILLE ESCLAVE
-C IN  NBNOE  : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
-C               /!\  CAR SCHEMA INTEGRATION AUX NOEUDS
-C OUT EXNOEB : .TRUE. SI NOEUDS DE BARSOUM A TRAITER
 C OUT TYPBAR : NOEUDS EXCLUS PAR CET ELEMENT DE BARSOUM
-C              CAS TYPBAR = 0:
-C                 EXCLUSION DIRECTE D'UN NOEUD PAR GROUP_NO_FOND
-C              CAS TYPBAR = 1:
-C                 NOEUDS EXCLUS: 1 ET 2 
-C                 ON EXCLUE LE NOEUD MILIEU 5
-C                 ON EXCLUE LES NOEUDS EN FACE: 3 ET 4
-C              CAS TYPBAR = 2: 
-C                 NOEUDS EXCLUS: 3 ET 4 
-C                 ON EXCLUE LE NOEUD MILIEU 7
-C                 ON EXCLUE LES NOEUDS EN FACE: 1 ET 2                
-C              CAS TYPBAR = 3: 
-C                 NOEUDS EXCLUS: 2 ET 3 
-C                 ON EXCLUE LE NOEUD MILIEU 6
-C                 ON EXCLUE LES NOEUDS EN FACE: 1 ET 4                
-C              CAS TYPBAR = 4: 
-C                 NOEUDS EXCLUS: 1 ET 4
-C                 ON EXCLUE LE NOEUD MILIEU 8
-C                 ON EXCLUE LES NOEUDS EN FACE: 2 ET 3 
-C OUT NUNOBA : NUMERO DES NOEUDS (1 A 8) A EXCLURE DU CONTACT 
-C                SI MAILLE_FOND: POI1
-C                  (1) NUMERO DU NOEUD A EXCLURE
-C                SI MAILLE_FOND: SEG3
-C                  (1) PREMIER NOEUD A EXCLURE
-C                  (2) SECOND NOEUD A EXCLURE
-C                  (3) NOEUD MILIEU A EXCLURE
-C OUT NONFBA : NUMERO DES NOEUDS (1 A 8) EN FACE
+C               TYPBAR = 0
+C                PAS DE FOND DE FISSURE
+C               TYPBAR = 1
+C                QUAD 8 - FOND FISSURE: 1-2
+C               TYPBAR = 2
+C                QUAD 8 - FOND FISSURE: 2-3
+C               TYPBAR = 3
+C                QUAD 8 - FOND FISSURE: 3-4
+C               TYPBAR = 4
+C                QUAD 8 - FOND FISSURE: 4-1
+C               TYPBAR = 5
+C                SEG 3  - FOND FISSURE: 1
+C               TYPBAR = 6
+C                SEG 3  - FOND FISSURE: 2
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -97,33 +77,33 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*24 NOMACO,PNOMA,CONTNO
-      INTEGER      JNOMA,JPONO,JNOCO,POSNOE,NUMNOE
-      INTEGER      IBID,IMABAR,N1,N2,INOE
-      CHARACTER*24 PBARS,BARSMA,PBARM,VALK(2)
-      CHARACTER*8  ALIAS,NOMMAI
+      CHARACTER*24 CONTNO
+      INTEGER      JNOCO
+      INTEGER      IBID,IMABAR,N1,N2,INOE,CODRET
+      CHARACTER*24 PBARS,BARSMA,PBARM
+      CHARACTER*8  ALIAS,ELTCTC,NOMMAI,NOMNOE
+      INTEGER      NBNOE,POSNOE,NUMNOE,POSNNO(9)
+      INTEGER      NUMMAE
       LOGICAL      BARSO1,BARSO2
-      INTEGER      MBARS,NBARS,ILONG,NUBAR,ARTFIS,SUPPOK,NBNOBA
+      INTEGER      NUNOBA(2)
+      INTEGER      MBARS,NBARS,ILONG,NUBAR,ARTFIS,SUPPOK
       INTEGER      JPBARS,JBARM,JPBARM,ICONEX
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C    
-C --- ACCES OBJETS JEVEUX
-C  
-      NOMACO = DEFICO(1:16)//'.NOMACO'
-      PNOMA  = DEFICO(1:16)//'.PNOMACO'
+C 
+C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+C      
       CONTNO = DEFICO(1:16)//'.NOEUCO' 
       PBARS  = DEFICO(1:16)//'.PBANOCO'
       BARSMA = DEFICO(1:16)//'.BAMACO'
       PBARM  = DEFICO(1:16)//'.PBAMACO'                       
-      CALL JEVEUO(NOMACO,'L',JNOMA)
-      CALL JEVEUO(PNOMA ,'L',JPONO)
       CALL JEVEUO(CONTNO,'L',JNOCO)           
       CALL JEVEUO(PBARS ,'L',JPBARS)
       CALL JEVEUO(BARSMA,'L',JBARM)
-      CALL JEVEUO(PBARM ,'L',JPBARM)    
+      CALL JEVEUO(PBARM ,'L',JPBARM) 
+C         
       CALL JEVEUO(JEXATR(NOMA(1:8)//'.CONNEX','LONCUM'),'L',ILONG)
       CALL JEVEUO(NOMA(1:8)       //'.CONNEX','L',ICONEX)
 C
@@ -131,38 +111,49 @@ C --- INITIALISATIONS
 C
       BARSO1 = .FALSE.
       BARSO2 = .FALSE.
-      EXNOEB = .FALSE.
       TYPBAR = 0
-      NBNOBA = 0
-      NUNOBA(1) = 0
-      NUNOBA(2) = 0
-      NUNOBA(3) = 0
-      NUNFBA(1) = 0
-      NUNFBA(2) = 0
+C
+C --- INFOS SUR LA MAILLE DE CONTACT   
+C  
+      CALL CFPOSM(NOMA  ,DEFICO,'MAIL',1     ,POSMAE,
+     &            NUMMAE,CODRET) 
+      IF (CODRET.LT.0) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF       
+      CALL MMELTY(NOMA  ,NUMMAE,ELTCTC,IBID  ,IBID  )  
+      CALL CFPOSN(NOMA  ,DEFICO,POSMAE,POSNNO,NBNOE )
+      CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAE),NOMMAI)
 C          
-      MBARS = ZI(JPBARM+IZONE) - ZI(JPBARM+IZONE-1)
-      NBARS = ZI(JPBARS+IZONE) - ZI(JPBARS+IZONE-1) 
+      MBARS  = ZI(JPBARM+IZONE) - ZI(JPBARM+IZONE-1) 
 C
 C --- ON TESTE SI LA MAILLE EST UNE MAILLE DE FISSURE
 C --- GROUP_MA_FOND OU MAILLE_FOND
 C
       DO 33 IMABAR  = 1,MBARS 
+C
+C --- MAILLE DE FOND DONNEE
+C      
         NUBAR  = ZI(JBARM+ZI(JPBARM+IZONE-1)+IMABAR-1)
-        CALL MMELTY(NOMA,NUBAR,ALIAS,IBID,IBID)
+        CALL MMELTY(NOMA  ,NUBAR ,ALIAS ,IBID  ,IBID  )
+        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUBAR),NOMMAI)
 C 
 C --- TRAITEMENT DES "POI1" EN FOND DE FISSURE (2D)
 C         
         IF (ALIAS.EQ.'PO1') THEN
-          N1 = ZI(ICONEX+ZI(ILONG-1+NUBAR)-2+1)
-          DO 53 INOE = 1,NBNOE
-            POSNOE = ZI(JNOMA+ZI(JPONO+POSMAE-1)+INOE-1)
-            NUMNOE = ZI(JNOCO+POSNOE-1)
-            IF (NUMNOE .EQ. N1) THEN
-              NBNOBA    = 1
-              NUNOBA(1) = INOE
-              GOTO 33
-            END IF
- 53       CONTINUE   
+          N1     = ZI(ICONEX+ZI(ILONG-1+NUBAR)-2+1)
+          POSNOE = POSNNO(1)
+          NUMNOE = ZI(JNOCO+POSNOE-1)
+          IF (NUMNOE .EQ. N1) THEN
+            TYPBAR    = 5
+            GOTO 33
+          END IF   
+          POSNOE = POSNNO(2)
+          NUMNOE = ZI(JNOCO+POSNOE-1)                 
+          IF (NUMNOE .EQ. N1) THEN
+            TYPBAR    = 6
+            GOTO 33
+          END IF
+          CALL U2MESS('F','CONTACT3_2')      
 C 
 C --- TRAITEMENT DES "SEG3" EN FOND DE FISSURE (3D)
 C 
@@ -172,21 +163,20 @@ C
           BARSO1 = .FALSE.
           BARSO2 = .FALSE.
           DO 55 INOE = 1,NBNOE
-            POSNOE = ZI(JNOMA+ZI(JPONO+POSMAE-1)+INOE-1)
-            NUMNOE = ZI(JNOCO+POSNOE-1)
+            POSNOE = POSNNO(INOE)
+            NUMNOE = ZI(JNOCO+POSNOE-1)          
             IF (NUMNOE .EQ. N1) THEN
               BARSO1 = .TRUE.
               NUNOBA(1) = INOE 
             ELSEIF (BARSO1 .AND. NUMNOE .EQ. N2) THEN
               BARSO2 = .TRUE.
-              NUNOBA(2) = INOE  
+              NUNOBA(2) = INOE 
             END IF
  55       CONTINUE
 C
 C --- ON TRAITE LES QUAD 8 QUI DONNENT CES SEG3 EN FOND DE FISSURE
 C
           IF (BARSO1 .AND. BARSO2) THEN
-            NBNOBA = 1
 C
 C --- REPERAGE ARETE FOND FISSURE
 C
@@ -209,99 +199,46 @@ C
 C --- NOEUD MILIEU DU FOND FISSURE            
 C                 
             IF (ARTFIS.EQ.1) THEN 
-              NUNOBA(3) = 5 
               TYPBAR = 1
-            ELSEIF (ARTFIS.EQ.2) THEN 
-              NUNOBA(3) = 6   
+            ELSEIF (ARTFIS.EQ.2) THEN   
+              TYPBAR = 2                   
+            ELSEIF (ARTFIS.EQ.3) THEN  
               TYPBAR = 3                      
-            ELSEIF (ARTFIS.EQ.3) THEN
-              NUNOBA(3) = 7   
-              TYPBAR = 2                        
             ELSEIF (ARTFIS.EQ.4) THEN
-              NUNOBA(3) = 8 
-              TYPBAR = 3             
+              TYPBAR = 4            
             ELSE
               CALL ASSERT(.FALSE.)             
-            ENDIF             
-C
-C --- NOEUDS EN FACE DU FOND DE FISSURE 
-C             
-            IF (ARTFIS.EQ.1) THEN 
-              IF (NUNOBA(1).EQ.1) THEN 
-                NUNFBA(1) = 4
-                NUNFBA(2) = 3                
-              ELSEIF (NUNOBA(1).EQ.2) THEN
-                NUNFBA(1) = 3
-                NUNFBA(2) = 4                
-              ELSE
-                CALL ASSERT(.FALSE.) 
-              ENDIF 
-            ELSEIF (ARTFIS.EQ.2) THEN 
-              IF (NUNOBA(1).EQ.2) THEN 
-                NUNFBA(1) = 1
-                NUNFBA(2) = 4                
-              ELSEIF (NUNOBA(1).EQ.3) THEN
-                NUNFBA(1) = 4
-                NUNFBA(2) = 1                
-              ELSE
-                CALL ASSERT(.FALSE.) 
-              ENDIF                        
-            ELSEIF (ARTFIS.EQ.3) THEN
-              IF (NUNOBA(1).EQ.3) THEN 
-                NUNFBA(1) = 2
-                NUNFBA(2) = 1                
-              ELSEIF (NUNOBA(1).EQ.4) THEN
-                NUNFBA(1) = 1
-                NUNFBA(2) = 2                
-              ELSE
-                CALL ASSERT(.FALSE.) 
-              ENDIF                          
-            ELSEIF (ARTFIS.EQ.4) THEN
-              IF (NUNOBA(1).EQ.4) THEN 
-                NUNFBA(1) = 3
-                NUNFBA(2) = 2                
-              ELSEIF (NUNOBA(1).EQ.1) THEN
-                NUNFBA(1) = 2
-                NUNFBA(2) = 3                
-              ELSE
-                CALL ASSERT(.FALSE.) 
-              ENDIF             
-            ELSE
-              CALL ASSERT(.FALSE.)             
-            ENDIF                        
-            GOTO 54 
-          ENDIF              
-        ELSE
-          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUBAR),NOMMAI)
-          VALK(1) = NOMMAI
-          VALK(2) = ALIAS
-          CALL U2MESK('F','CONTACT3_25', 2 ,VALK)          
+            ENDIF   
+          ENDIF         
         END IF
  33   CONTINUE
- 54   CONTINUE
 C
 C ---- ON TESTE SI LA MAILLE CONTIENT UN NOEUD DE FOND DE
 C ---- FISSURE GROUP_NO_FOND OU NOEUD_FOND
 C
-      IF (NBARS .NE. 0) THEN
-        DO 52 INOE = 1,NBNOE
-          POSNOE = ZI(JNOMA+ZI(JPONO+POSMAE-1)+INOE-1)
-          NUMNOE = ZI(JNOCO+POSNOE-1)
+       NBARS = ZI(JPBARS+IZONE) - ZI(JPBARS+IZONE-1) 
+       IF (NBARS .NE. 0) THEN  
+        IF (ELTCTC(1:2).EQ.'SE') THEN
+                
+          POSNOE = POSNNO(1)
+          NUMNOE = ZI(JNOCO+POSNOE-1)   
+          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),NOMNOE)        
           CALL CFMMEX(DEFICO,'FOND',IZONE ,NUMNOE,SUPPOK)
           IF (SUPPOK .EQ. 1) THEN
-            NBNOBA    = 1
-            TYPBAR    = 0
-            NUNOBA(1) = INOE
-            NUNOBA(2) = 0
-            NUNFBA(1) = 1
-            NUNFBA(2) = 0
+            TYPBAR    = 5         
             GOTO 56
           END IF
- 52     CONTINUE
+          POSNOE = POSNNO(2)
+          NUMNOE = ZI(JNOCO+POSNOE-1)
+          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),NOMNOE)       
+          CALL CFMMEX(DEFICO,'FOND',IZONE ,NUMNOE,SUPPOK)
+          IF (SUPPOK .EQ. 1) THEN
+            TYPBAR    = 6
+            GOTO 56
+          END IF 
+        ENDIF
       ENDIF
  56   CONTINUE  
-C
-      EXNOEB = (NBNOBA.GT.0)
 C
       CALL JEDEMA()      
       END

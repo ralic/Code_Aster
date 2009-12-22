@@ -1,4 +1,4 @@
-# MODIF  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,17 +100,21 @@ PTAN=AFFE_CHAR_MECA(MODELE=MODE,
                                     PRES=200000.0))
 
 # DEFINITION DU CONTACT
-CTAC=AFFE_CHAR_MECA(MODELE=MODE,
-                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               REAC_GEOM='CONTROLE',
-                               NB_REAC_GEOM=2,
-                               METHODE='LAGRANGIEN',
-                               FROTTEMENT='COULOMB',
-                               COULOMB=0.3,
-                               COEF_MATR_FROT=0.9,
-                               GROUP_MA_MAIT='LMAI',
-                               GROUP_MA_ESCL='LESC',
-                               ),)
+CTAC  = DEFI_CONTACT(MODELE         = MODE,
+                     FORMULATION    = 'DISCRETE',
+                     REAC_GEOM      = 'CONTROLE',
+                     NB_ITER_GEOM   = 2,
+                     FROTTEMENT     = 'COULOMB',
+                     ZONE=_F(
+                             APPARIEMENT    = 'MAIT_ESCL',
+                             ALGO_CONT      = 'LAGRANGIEN',
+                             ALGO_FROT      = 'LAGRANGIEN',
+                             COULOMB        = 0.3,
+                             COEF_MATR_FROT = 0.9,
+                             GROUP_MA_MAIT  = 'LMAI',
+                             GROUP_MA_ESCL  = 'LESC',
+                            ),
+                     )
 
 #---------------------------------------------------------------------
 #                         RESOLUTION
@@ -127,13 +131,13 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.5,
                                     NOMBRE=350,),)
-                 
+         
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
-                        ECHEC=_F(SUBD_METHODE = 'UNIFORME',
-                                 SUBD_PAS     = 5,
-                                 SUBD_PAS_MINI=0.0000001,
-                                ),)
-
+                         ECHEC=_F(SUBD_METHODE = 'UNIFORME',
+                                  SUBD_PAS     = 5,
+                                  SUBD_PAS_MINI=0.0000001,
+                                 ),)
+                                 
 ULM =  DYNA_NON_LINE(SOLVEUR=_F(SYME='OUI',),        
                      MODELE=MODE,
                     CHAM_MATER=CM,
@@ -143,8 +147,8 @@ ULM =  DYNA_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                            _F(
                               CHARGE=PTAN,
                               FONC_MULT=RAMPE,),
-                           _F(CHARGE=CTAC,),
                            _F(CHARGE=COND_LIM,),),
+                    CONTACT  =CTAC,       
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=DEFLIST,
@@ -185,8 +189,8 @@ ULL =  DYNA_NON_LINE(MODELE=MODE,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=PTAN,
                               FONC_MULT=RAMPE,),
-                           _F(CHARGE=CTAC,),
                            _F(CHARGE=COND_LIM,),),
+                    CONTACT  = CTAC,       
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=DEFLIST,),

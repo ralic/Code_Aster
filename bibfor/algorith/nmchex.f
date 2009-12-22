@@ -1,7 +1,7 @@
-      CHARACTER*19 FUNCTION NMCHEX(VACHAP,TYCHAP,TYVARI)
+      SUBROUTINE NMCHEX(VACHAP,TYCHAP,TYVARI,NOMVAR)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,8 @@ C
       IMPLICIT NONE
       CHARACTER*19  VACHAP(*)
       CHARACTER*6   TYCHAP
-      CHARACTER*6   TYVARI      
+      CHARACTER*6   TYVARI
+      CHARACTER*19  NOMVAR
 C 
 C ----------------------------------------------------------------------
 C
@@ -41,16 +42,17 @@ C                MEASSE - NOMS DES MATR_ASSE
 C                VEELEM - NOMS DES VECT_ELEM
 C                VEASSE - NOMS DES VECT_ASSE
 C                SOLALG - NOMS DES CHAM_NO SOLUTIONS
+C                VALINC - VALEURS SOLUTION INCREMENTALE
 C IN  TYVARI : TYPE DE LA VARIABLE 
-C OUT NMCHEX : NOM DE LA VARIABLE
+C OUT NOMVAR : NOM DE LA VARIABLE
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER NMCHAI,INDEX
+      INTEGER INDEX
 C
 C ----------------------------------------------------------------------
 C
-      INDEX  = NMCHAI(TYCHAP,TYVARI)
-      NMCHEX = VACHAP(INDEX)
+      CALL NMCHAI(TYCHAP,TYVARI,INDEX)
+      NOMVAR = VACHAP(INDEX)
 C
       END

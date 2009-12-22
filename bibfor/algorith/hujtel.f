@@ -1,7 +1,7 @@
       SUBROUTINE HUJTEL (MOD, MATER, SIG, HOOK)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,6 +41,7 @@ C  ---------------------------------------------------------------
       DATA   DEUX  / 2.D0 /
       
       PISO  = 1.5D0*MATER(21,2)
+      PISO  = ZERO
 
 
 C ----------------------------------------------------------------

@@ -2,7 +2,7 @@
      &                  DFF   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/11/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,7 +33,7 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
 C
-C MODIFICATION DES FONCTIONS DE FORME ET DE LEUR DERIVEES EN UN POINT 
+C MOD. DES FONCTIONS DE FORME ET DE LEUR DERIVEES EN UN POINT 
 C DE L'ELEMENT DE REFERENCE
 C
 C ----------------------------------------------------------------------
@@ -53,25 +53,21 @@ C
 C --- MODIFICATIONS DES DERIVEES PREMIERES ET SECONDES
 C
       IF (ALIAS(1:3).EQ.'SE3') THEN
-        IF (TYPBAR .EQ. 0) THEN
-          FF(1) = FF(1) - ((0.01D-5)*KSI1*(1.D0+KSI1)*(1.D0-KSI1))
-          FF(2) = FF(2) - ((0.01D-5)*KSI1*(1.D0+KSI1)*(1.D0-KSI1))
-          FF(3) = FF(3) + ((0.02D-5)*KSI1*(1.D0+KSI1)*(1.D0-KSI1))
-        END IF  
-        IF (TYPBAR .EQ. 0) THEN
-          DFF(1,1) = DFF(1,1)-((0.01D-5)*(1.D0-3*(KSI1**2)))
-          DFF(1,2) = DFF(1,2)-((0.01D-5)*(1.D0-3*(KSI1**2)))
-          DFF(1,3) = DFF(1,3)+((0.02D-5)*(1.D0-3*(KSI1**2)))
-        END IF        
+        FF(1) = FF(1) - ((0.01D-5)*KSI1*(1.D0+KSI1)*(1.D0-KSI1))
+        FF(2) = FF(2) - ((0.01D-5)*KSI1*(1.D0+KSI1)*(1.D0-KSI1))
+        FF(3) = FF(3) + ((0.02D-5)*KSI1*(1.D0+KSI1)*(1.D0-KSI1))
+        DFF(1,1) = DFF(1,1)-((0.01D-5)*(1.D0-3*(KSI1**2)))
+        DFF(1,2) = DFF(1,2)-((0.01D-5)*(1.D0-3*(KSI1**2)))
+        DFF(1,3) = DFF(1,3)+((0.02D-5)*(1.D0-3*(KSI1**2)))       
       ELSE IF (ALIAS(1:3).EQ.'QU8') THEN
-        IF (TYPBAR .EQ. 1 .OR. TYPBAR .EQ. 2) THEN
+        IF (TYPBAR .EQ. 1 .OR. TYPBAR .EQ. 3) THEN
           FF(1) = FF(1) + ((0.01D-5)*KSI2*(1.D0+KSI2)*(1.D0-KSI2))
           FF(4) = FF(4) + ((0.01D-5)*KSI2*(1.D0+KSI2)*(1.D0-KSI2))
           FF(8) = FF(8) - ((0.02D-5)*KSI2*(1.D0+KSI2)*(1.D0-KSI2))
           FF(2) = FF(2) + ((0.01D-5)*KSI2*(1.D0+KSI2)*(1.D0-KSI2))   
           FF(3) = FF(3) + ((0.01D-5)*KSI2*(1.D0+KSI2)*(1.D0-KSI2)) 
           FF(6) = FF(6) - ((0.02D-5)*KSI2*(1.D0+KSI2)*(1.D0-KSI2))
-        ELSEIF (TYPBAR .EQ. 3) THEN
+        ELSEIF (TYPBAR .EQ. 2 .OR. TYPBAR .EQ. 4) THEN
           FF(1) = FF(1) - ((0.01D-5)*KSI1*(1.D0+KSI1)*(1.D0-KSI1))  
           FF(2) = FF(2) - ((0.01D-5)*KSI1*(1.D0+KSI1)*(1.D0-KSI1))  
           FF(3) = FF(3) - ((0.01D-5)*KSI1*(1.D0+KSI1)*(1.D0-KSI1))   
@@ -79,7 +75,7 @@ C
           FF(5) = FF(5) + ((0.02D-5)*KSI1*(1.D0+KSI1)*(1.D0-KSI1)) 
           FF(7) = FF(7) + ((0.02D-5)*KSI1*(1.D0+KSI1)*(1.D0-KSI1))
         ENDIF   
-        IF (TYPBAR .EQ. 1 .OR. TYPBAR .EQ. 2) THEN
+        IF (TYPBAR .EQ. 1 .OR. TYPBAR .EQ. 3) THEN
           DFF(1,1) = DFF(1,1) - ((0.01D-5)*(1.D0-3*(KSI2**2)))    
           DFF(1,4) = DFF(1,4) - ((0.01D-5)*(1.D0-3*(KSI2**2))) 
           DFF(1,8) = DFF(1,8) + ((0.02D-5)*(1.D0-3*(KSI2**2))) 
@@ -87,7 +83,7 @@ C
           DFF(1,3) = DFF(1,3) - ((0.01D-5)*(1.D0-3*(KSI2**2)))    
           DFF(1,6) = DFF(1,6) + ((0.02D-5)*(1.D0-3*(KSI2**2))) 
         END IF        
-        IF (TYPBAR .EQ. 3) THEN
+        IF (TYPBAR .EQ. 2 .OR. TYPBAR .EQ. 4) THEN
           DFF(2,1) = DFF(2,1) - ((0.01D-5)*(1.D0-3*(KSI1**2)))    
           DFF(2,2) = DFF(2,2) - ((0.01D-5)*(1.D0-3*(KSI1**2)))     
           DFF(2,3) = DFF(2,3) - ((0.01D-5)*(1.D0-3*(KSI1**2)))    

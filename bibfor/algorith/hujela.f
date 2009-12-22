@@ -2,7 +2,7 @@
      &                     EPSD, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2008   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,15 +53,18 @@ C       ---------------------------------------------------------------
 C       ---------------------------------------------------------------
         PREF = MATER(8,2)
         PISO = 1.5D0*MATER(21,2)
+        PISO = ZERO
         N    = MATER(1,2)
         I1E  = D13*(SIGD(1)+SIGD(2)+ SIGD(3))
         EPSV = DEPS(1)+DEPS(2)+DEPS(3)
+        TRACT= .FALSE.
         
         IF (ABS(N).LT.R8PREM()) THEN
                   
           IF (MATER(17,1).EQ.UN) THEN
           
-            I1 = I1E + D13*MATER(1,1)/(UN-DEUX*MATER(2,1))*EPSV
+            I1 = I1E + D13*MATER(1,1)/(UN-DEUX*MATER(2,1))
+     &                 *((I1E-PISO)/PREF)**N * EPSV
 
           ELSEIF (MATER(17,1).EQ.DEUX) THEN
       
@@ -139,8 +142,6 @@ C      OU EXPLICITEMENT SI NIVEAU HUJEUX
           CALL U2MESS('F', 'COMPOR1_40')
         ENDIF
      
-        IF ((I1E -PISO)/PREF .LT. TOLE) I1E = I1
-        I1 = (I1+I1E) /DEUX
         IF ((I1  -PISO)/PREF .LT. TOLE) TRACT=.TRUE.
 
 C--->  EN CAS D'ENTREE EN TRACTION, LES CONTRAINTES SONT

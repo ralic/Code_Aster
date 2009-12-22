@@ -1,4 +1,4 @@
-#@ MODIF utilitai7 Messages  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai7 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,9 +49,6 @@ cata_msg={
     NUME_CMP demandé : %(i2)d
 """),
 
-8: _("""
- L'utilisation de la macro pour un concept de type DYNA_HARMO n'est pas encore prévue
- """),
 
 9: _("""
  Si on utilise l'option normale pour les changements de repère, il faut donner

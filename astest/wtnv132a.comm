@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 512Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -263,7 +263,8 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[0]),
                             _F(ITER_INTE_MAXI=50,
-                               ITER_INTE_PAS=-10,
+                               RESI_INTE_RELA=1e-8,
+                               ITER_INTE_PAS=-5,
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1])),
@@ -272,7 +273,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                               INST_FIN=2000000.0,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=20));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA = 1E-8,));
 
 DEP[0]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
@@ -534,7 +535,8 @@ for n in range(1,nbcouche-1):
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[0]),
                             _F(ITER_INTE_MAXI=50,
-                               ITER_INTE_PAS=-10,
+                               ITER_INTE_PAS=-5,
+                               RESI_INTE_RELA=1e-8,
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:n+2])),
@@ -546,7 +548,7 @@ for n in range(1,nbcouche-1):
                               INST_FIN=t_fin,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=25,RESI_GLOB_RELA=1E-5));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1E-8));
 
     DETRUIRE(CONCEPT=_F(NOM=(INIVAR)));
 

@@ -1,7 +1,7 @@
-      SUBROUTINE NMMOAM(SDAMMO,NBMODA)
+      SUBROUTINE NMMOAM(SDAMMZ,NBMODA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      CHARACTER*24 SDAMMO
-      INTEGER      NBMODA
+      CHARACTER*(*) SDAMMZ
+      INTEGER       NBMODA
 C
 C ----------------------------------------------------------------------
 C
@@ -67,6 +67,7 @@ C
       CHARACTER*14 NUMDDL
       CHARACTER*24 DEEQ
       CHARACTER*24 MATRIC,NOMCHA
+      CHARACTER*24 SDAMMO
       REAL*8       PI,R8PI,R8BID
       INTEGER      IRET,IAM,IMODE,VALI(3),IADRIF
       INTEGER      NA,NB,N,NM
@@ -84,6 +85,7 @@ C
       EXIAM  = 0
       PI     = R8PI()
       NBMODA = 0
+      SDAMMO = SDAMMZ
 C
 C --- MATRICE DES MODES MECA
 C      
@@ -124,7 +126,7 @@ C
       NB = 0
       CALL GETVR8('AMOR_MODAL','AMOR_REDUIT',1,1,0,R8BID,NA)
       EXIAM  = GETEXM('AMOR_MODAL','LIST_AMOR')
-      IF (EXIAM .EQ. 1) THEN
+      IF (EXIAM.EQ.1) THEN
         CALL GETVID('AMOR_MODAL','LIST_AMOR',1,1,0,K8BID,NB)
       ENDIF
 C  

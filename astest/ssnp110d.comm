@@ -1,6 +1,5 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
-# ssnp110d.para = tps_job 400 mem_job 192Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,19 +89,19 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          INFO=1,);
 
-CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
-                                      METHODE = 'XFEM',
-                                      INTEGRATION='GAUSS',
-                               COEF_REGU_CONT=100.,
-                               ITER_CONT_MAXI=20,
-                               CONTACT_INIT='OUI',
-                               COEF_ECHELLE=1.,
-                                    ),
-                          MODELE=MODELEK,
-                          ),  
 
-
-
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      ITER_CONT_MAXI = 20,
+                      ZONE=_F(
+                             FISS_MAIT    = FISS,
+                             INTEGRATION  = 'GAUSS',
+                             CONTACT_INIT = 'OUI',
+                             COEF_ECHELLE = 1.,
+                             ALGO_CONT    = 'STANDARD',
+                             COEF_CONT    = 100.,
+                         ),
+                   ) 
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       CONTACT_XFEM=CTXFEM,
@@ -163,13 +162,13 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    EXCIT=(_F(CHARGE=CHXFEM,),
                           _F(CHARGE=CHF,FONC_MULT = RAMPE),
                           _F(CHARGE=CH),
-                          _F(CHARGE=CTXFEM),
                           ),
+                   CONTACT = CTXFEM,       
                        COMP_INCR=_F(
                                    RELATION = relation,
                                     DEFORMATION = 'PETIT'),
-                       INCREMENT=_F(LIST_INST = L_INST,),
-                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
+                   INCREMENT=_F(LIST_INST = L_INST,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
                    SOLVEUR=_F(PCENT_PIVOT = 200,METHODE='MUMPS',),
                    NEWTON=_F(REAC_ITER=1,
                              MATRICE='TANGENTE',

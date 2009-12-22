@@ -1,4 +1,4 @@
-# MODIF  DATE 07/12/2009   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION CALCUL FETI + CONTACT CONTINU ENTRE DEUX CLOISONS
 # feti010a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -63,15 +63,19 @@ CM1=AFFE_MATERIAU(MAILLAGE=MA,
                           MATER=MACLOI,
                           ),);
 
-CHCONT=AFFE_CHAR_MECA(MODELE=MOMEQ,
-                      CONTACT=(_F(METHODE='CONTINUE',
-                                  GROUP_MA_MAIT='FAC_CO12',
+
+CHCONT = DEFI_CONTACT( MODELE=MOMEQ,
+                    FORMULATION='CONTINUE',
+                    ZONE = (
+                             _F(GROUP_MA_MAIT='FAC_CO12',
                                   GROUP_MA_ESCL='FAC_CO22',
-                                  ),
-                               _F(METHODE='CONTINUE',
-                                  GROUP_MA_MAIT='FAC_CO15',
+                               ),
+                             _F(GROUP_MA_MAIT='FAC_CO15',
                                   GROUP_MA_ESCL='FAC_CO25',
-                                  ),),);
+                               ),                                
+                       ),
+                    );
+
 
 BRIDE=AFFE_CHAR_MECA(MODELE=MOMEQ,
                      DDL_IMPO=_F(GROUP_MA=('BAS_CL_1','BAS_CL_2',),
@@ -108,7 +112,6 @@ SDFETIAC=DEFI_PART_OPS(MODELE=MOMEQ,
                      EXCIT=(
                             _F(CHARGE=BRIDE,),
                             _F(CHARGE=CHAR_PSC,),
-                            _F(CHARGE=CHCONT,),
                             ),);
 LINST=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=3.,
@@ -120,6 +123,7 @@ RESUSC=STAT_NON_LINE(MODELE=MOMEQ,
                         _F(CHARGE=BRIDE,),
                         _F(CHARGE=CHAR_PSC,),
                         ),
+     
                  COMP_INCR=_F(RELATION='ELAS',
                               GROUP_MA=
                               ('CLOIS_1B','CLOIS_1H','CLOIS_2B','CLOIS_2H','BAS_CL_1',
@@ -147,11 +151,12 @@ RESUSC=STAT_NON_LINE(MODELE=MOMEQ,
 # CALCUL AVEC CONTACT
 RESUAC=STAT_NON_LINE(MODELE=MOMEQ,
                  CHAM_MATER=CM1,
+                 CONTACT = CHCONT,                   
                  EXCIT=(
                         _F(CHARGE=BRIDE,),
                         _F(CHARGE=CHAR_PSC,),
-                        _F(CHARGE=CHCONT,),
                         ),
+                        
                  COMP_INCR=_F(RELATION='ELAS',
                               GROUP_MA=
                               ('CLOIS_1B','CLOIS_1H','CLOIS_2B','CLOIS_2H','BAS_CL_1',
@@ -166,11 +171,7 @@ RESUAC=STAT_NON_LINE(MODELE=MOMEQ,
                                 RESI_GLOB_RELA=1e-04,
                                 ITER_GLOB_MAXI=20,
                                 ARRET='OUI',),
-                 SOLVEUR=_F(METHODE='FETI',
-                            PARTITION=SDFETIAC,
-                            RESI_RELA=1.E-12,
-                            NMAX_ITER=20,
-                            NB_REORTHO_DD=20,),
+                 SOLVEUR=_F(METHODE='MUMPS',),
                  INFO=1,);
 # TEST DEPLACEMENTS
 # 2 NOEUDS DIRICHLET, 1 NOEUD AU MILIEU DE LA STRUCTURE
@@ -249,19 +250,19 @@ TEST_RESU(RESU=(
      _F(  RESULTAT = RESUAC,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N81',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
-          NOM_CMP = 'DZ',    VALE = 7.2124812585412E-03, REFERENCE = 'NON_REGRESSION' ),
+          NOM_CMP = 'DZ',    VALE = 7.2124720969976E-03, REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RESUAC,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N43',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
-          NOM_CMP = 'DX',    VALE = 5.6701751471773E-04, REFERENCE = 'NON_REGRESSION' ),
+          NOM_CMP = 'DX',    VALE = 5.6700806178104E-04, REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RESUAC,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N43',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
-          NOM_CMP = 'DY',    VALE = 5.3140022031194E-03, REFERENCE = 'NON_REGRESSION' ),
+          NOM_CMP = 'DY',    VALE = 5.3139955129224E-03, REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RESUAC,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N43',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
-          NOM_CMP = 'DZ',    VALE = 4.9769828642591E-03, REFERENCE = 'NON_REGRESSION' ),
+          NOM_CMP = 'DZ',    VALE = 4.9769949461976E-03, REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RESUAC,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N43',
           CRITERE = 'ABSOLU', PRECISION = 1.E-10,
@@ -269,19 +270,19 @@ TEST_RESU(RESU=(
      _F(  RESULTAT = RESUAC,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N48',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
-          NOM_CMP = 'DX',    VALE = 3.7069728808551E-03, REFERENCE = 'NON_REGRESSION' ),
+          NOM_CMP = 'DX',    VALE = 3.7068985502003E-03, REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RESUAC,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N48',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
-          NOM_CMP = 'DY',    VALE = 3.3683178978987E-02, REFERENCE = 'NON_REGRESSION' ),
+          NOM_CMP = 'DY',    VALE = 3.3683128945845E-02, REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RESUAC,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N48',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
-          NOM_CMP = 'DZ',    VALE = 1.0934385884742E-02, REFERENCE = 'NON_REGRESSION' ),
+          NOM_CMP = 'DZ',    VALE = 1.0934419826327E-02, REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RESUAC,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N48',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
-          NOM_CMP = 'LAGS_C', VALE = -2.6087484799863E+02, REFERENCE = 'NON_REGRESSION' ),
+          NOM_CMP = 'LAGS_C', VALE = -2.6086609685992E+02, REFERENCE = 'NON_REGRESSION' ),
           ),);
 #IMPR_RESU(UNITE=6,RESU=_F(RESULTAT=RESUSC,),);
 #IMPR_RESU(UNITE=6,RESU=_F(RESULTAT=RESUAC,),);

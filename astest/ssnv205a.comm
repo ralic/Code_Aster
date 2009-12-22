@@ -1,5 +1,6 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE ETUDE:  ESSAI DE CISAILLEMENT CYCLIQUE DRAINE (MECA PUR)
+# ssnv205a.para = tps_job 180 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,8 +96,9 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           ),PROL_DROITE='CONSTANT',);
                           
 
-U1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=10,
-                              ITER_INTE_PAS = -10),
+U1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=20,
+                              RESI_INTE_RELA=1E-8,
+                              ITER_INTE_PAS = -5),
                   MATER=MATE,
                   INCREMENT=_F(LIST_INST=DEFLIST1,
                                NUME_INST_INIT=0,
@@ -131,8 +133,9 @@ COEF4=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           30,0.0002,
                           50,-0.0002,),PROL_DROITE='CONSTANT',);
 
-U2=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=10,
-                              ITER_INTE_PAS = -10),
+U2=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=20,
+                              RESI_INTE_RELA=1E-8,
+                              ITER_INTE_PAS = -5),
                   MATER=MATE,
                   INCREMENT=_F(LIST_INST=DEFLIST1,
                                NUME_INST_INIT=0,
@@ -167,8 +170,9 @@ COEF5=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           30,2.E-5,
                           50,-2.E-5,),PROL_DROITE='CONSTANT',);
 
-U3=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=10,
-                              ITER_INTE_PAS = -10),
+U3=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=20,
+                              RESI_INTE_RELA=1E-8,
+                              ITER_INTE_PAS = -5),
                   MATER=MATE,
                   INCREMENT=_F(LIST_INST=DEFLIST2,
                                NUME_INST_INIT=0,
@@ -523,7 +527,7 @@ TEST_TABLE(TABLE=U3,
 TEST_TABLE(TABLE=U3,
            NOM_PARA='SIXY',
            VALE=-5.578E1,
-           PRECISION=0.07,
+           PRECISION=0.10,
            CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA='INST',

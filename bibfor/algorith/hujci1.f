@@ -1,7 +1,7 @@
       SUBROUTINE HUJCI1 (CRIT, MATER, DEPS, SIGD, I1F, TRACT, IRET)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,7 +48,7 @@ C -----------------------------------------------------------------
       REAL*8  ZERO, UN, DEUX, D13, C11, C12, C13, C22, C23, C33
       REAL*8  E1, E2, E3, NU12, NU13, NU23, NU21, NU31, NU32, DELTA
       LOGICAL TRACT, DEBUG
-      INTEGER I, NITER
+      INTEGER I, NITER, ICMPT
 
       COMMON /TDIM/   NDT, NDI
       COMMON /MESHUJ/ DEBUG
@@ -68,6 +68,7 @@ C       =====================
       PA      = MATER(8,2)
       N       = MATER(1,2)
       PISO    = 1.5D0*MATER(21,2)
+      PISO    = ZERO
       IRET    = 0
       THETA   = UN
 
@@ -80,7 +81,8 @@ C---> DETERMINATION DU TERME COEF = K0 x DEPS_VOLUMIQUE
           TRDEPS = TRDEPS + DEPS(I)
   5       CONTINUE
 
-        COEF = YOUNG*D13 /(UN-N)/(UN-DEUX*POISSO) * TRDEPS
+C        COEF = YOUNG*D13 /(UN-N)/(UN-DEUX*POISSO) * TRDEPS
+        COEF = YOUNG*D13 /(UN-DEUX*POISSO) * TRDEPS
         
       ELSEIF (MATER(17,1).EQ.DEUX) THEN
       
@@ -119,25 +121,25 @@ C---> DETERMINATION DU TERME COEF = K0 x DEPS_VOLUMIQUE
         I1D = 1.D-12 * PA
         CALL U2MESS('A', 'COMPOR1_18')
       ENDIF
-      IF(TRDEPS.EQ.ZERO)THEN
+      IF (TRDEPS.EQ.ZERO) THEN
         I1F = I1D
         GOTO 9999
       ENDIF
       
 C ---> COEF < 0 => ON VERIFIE UN CRITERE APPROXIMATIF
 C                  D'EXISTENCE DE LA SOLUTION AVEC P+ < P- < 0
-      IF (COEF .GE. ZERO) GOTO 35
-      
-      EXIST = DEUX*I1D - PA * (PA /COEF /N)**(UN-N)
-      
-      IF (EXIST .LE. ZERO) THEN
-        IF (DEBUG) CALL U2MESS ('A', 'COMPOR1_13')
-        X(4)  = ZERO
-        THETA = ZERO
-        GOTO 50
-      ENDIF
-
-  35  CONTINUE
+C       IF (COEF .GE. ZERO) GOTO 35
+C       
+C       EXIST = DEUX*I1D - PA * (PA /COEF /N)**(UN-N)
+C       
+C       IF (EXIST .LE. ZERO) THEN
+C         IF (DEBUG) CALL U2MESS ('A', 'COMPOR1_13')
+C         X(4)  = ZERO
+C         THETA = ZERO
+C         GOTO 50
+C       ENDIF
+C 
+C   35  CONTINUE
 
       TRACT = .FALSE.
       IF (N .EQ. ZERO) THEN
@@ -150,18 +152,21 @@ C                  D'EXISTENCE DE LA SOLUTION AVEC P+ < P- < 0
 C
 C --- DETERMINATION DES BORNES DE RECHERCHE DE LA SOLUTION
 C     ====================================================
-      ALPHA = 100.D0
+      ALPHA = 4.D0
 
       IF (COEF .LT. ZERO) THEN
       
         X(1) = I1D
         Y(1) = COEF*(X(1)/PA)**N
+        ICMPT = 1
   45    CONTINUE
-        X(2) = ALPHA*I1D
+        X(2) = ALPHA*X(1)
         Y(2) = COEF*(X(2)/PA)**N - X(2) + I1D
       
-        IF (Y(2) .LE. ZERO .AND. ALPHA .EQ. 100.D0) THEN
-          ALPHA = 100.D0*ALPHA
+        IF (Y(2) .LE. ZERO .AND. ICMPT.LE.20) THEN
+          X(1) = X(2)
+          Y(1) = COEF*(X(1)/PA)**N
+          ICMPT= ICMPT+1
           GOTO 45
         ELSEIF (Y(2) .LE. ZERO) THEN
           IF (DEBUG) CALL U2MESS ('A', 'COMPOR1_17')
@@ -196,7 +201,9 @@ C     ===========================================
       Y(4) = Y(2)
       NITER = INT(CRIT(1))
       PREC  = CRIT(3)
-
+      ICMPT = 0
+      
+  41  CONTINUE
       DO 40 I = 1, NITER
 
         IF (ABS(Y(4)/PA).LT.PREC) GOTO 50
@@ -205,14 +212,19 @@ C     ===========================================
 
   40    CONTINUE
 
+      ICMPT = ICMPT+1
+      IF (ICMPT .LT. 5) GOTO 41
+
       WRITE (IFM,*) 'MODELE DE HUJEUX : ATTENTION DANS HUJCI1'
       WRITE (IFM,*) 'PAS DE CONVERGENCE  A LA PRECISION DEMANDEE', PREC
       WRITE (IFM,*) 'AU BOUT DU NOMBRE D ITERATION DEMANDE', NITER
-      WRITE (IFM,*) 'VALEUR DE F ACTUELLE', Y(4)
+      WRITE (IFM,*) 'VALEUR DE F ACTUELLE', Y(4),' ET P=',X(4)
       WRITE (IFM,*) 'AUGMENTER ITER_INTE_MAXI'
 
-      X(4)  = ZERO
-      THETA = ZERO
+      IF ((Y(4)/(COEF*(I1D/PA)**N + I1D)) .GT. 1.D-2) THEN
+        X(4)  = ZERO
+        THETA = ZERO
+      ENDIF
 
   50  CONTINUE
 

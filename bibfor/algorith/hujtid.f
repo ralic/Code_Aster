@@ -1,7 +1,7 @@
         SUBROUTINE HUJTID (MOD, IMAT, SIGR, VIN, DSDE, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,19 +28,19 @@ C      VIN     :  VARIABLES INTERNES
 C OUT  DSDE    :  MATRICE TANGENTE
 C ======================================================================
         INTEGER   NDT, NDI, I, J, K, KK, L, LL, NVI
-        INTEGER   NBMECA, IND(4), IRET, IMAT
+        INTEGER   NBMECA, IND(7), IRET, IMAT, NBMECT
         REAL*8    N, BETA, DHUJ, M, PCO, PREF, PC
         REAL*8    PHI, ANGDIL, MDIL, DEGR, BHUJ
-        REAL*8    RC(4), YD(15), DPSIDS(6,6), P(4), Q(4) 
+        REAL*8    RC(7), YD(18), DPSIDS(6,6), P(7), Q(7) 
         REAL*8    MATER(22,2), VIN(*), SIG(6), DSDE(6,6)
         REAL*8    HOOK(6,6), I1, E, NU, AL, DEMU
         REAL*8    COEF, ZERO, D13, UN, DEUX
         REAL*8    EPSV, TRACE, DFDEVP, EVL, TP, TP1, TEMPF
-        REAL*8    PSI(24), DFDS(24), B1(4,4), B2(4,4), B(4,4)
-        REAL*8    D(4,6), TE(6,6), SIGD(12), B3(4), LA
-        REAL*8    ACYC, AMON, CMON, KSI(4), AD(4), X4, CCYC
+        REAL*8    PSI(42), DFDS(42), B1(7,7), B2(7,7), B(7,7)
+        REAL*8    D(7,6), TE(6,6), SIGD(21), B3(7), LA
+        REAL*8    ACYC, AMON, CMON, KSI(7), AD(7), X4, CCYC
         REAL*8    TOLE1, DET, XK(2), TH(2), PROD, PS, DEV(3)
-        REAL*8    SIGR(6), PTRAC, PISO, PK, DPSI
+        REAL*8    SIGR(6), PTRAC, PISO, PK, DPSI, PT, QT
         REAL*8    E1,E2,E3,NU12,NU13,NU23,G1,G2,G3,NU21,NU31,NU32,DELTA
         CHARACTER*8 MOD
 
@@ -65,6 +65,11 @@ C ======================================================================
           NDT  = 6
         ENDIF        
 
+        DO 6 I = 1, 7
+          IND(I) = 0
+   6    CONTINUE
+
+
 C ======================================================================
 C - RECUPERATION DES GRANDEURS UTILES : I1, VARIABLES INTERNES R ET X, -
 C ======================================================================
@@ -84,7 +89,8 @@ C ======================================================================
         MDIL   = SIN(DEGR*ANGDIL)
         COEF   = MATER(20,2)
         PTRAC  = MATER(21,2)
-        PISO   = 1.5D0*MATER(21,2)
+C        PISO   = 1.5D0*MATER(21,2)
+        PISO   = ZERO
 
 
 C =====================================================================
@@ -95,24 +101,29 @@ C =====================================================================
 
   
 C ---> INITIALISATION DE NBMECA, IND ET YD PAR VIN
-        DO 11 K = 1, 12
-          SIGD(K)    = ZERO
-          PSI(2*K-1) = ZERO
-          PSI(2*K)   = ZERO
-          DFDS(2*K-1)= ZERO
-          DFDS(2*K)  = ZERO 
+        DO 11 K = 1, 6
+          PSI(K)     = ZERO
+          PSI(6+K)   = ZERO
+          DFDS(12+K) = ZERO
+          DFDS(18+K) = ZERO 
+          DFDS(24+K) = ZERO 
+          DFDS(30+K) = ZERO 
+          DFDS(36+K) = ZERO 
   11      CONTINUE        
+
+        DO 9 I = 1, 21
+          SIGD(K)    = ZERO
+   9      CONTINUE
         
-        DO 12 K = 1, 4
+        DO 12 K = 1, 7
           RC(K)  = ZERO
-          IND(K) = 0
           P(K)   = ZERO
           Q(K)   = ZERO
           AD(K)  = ZERO
           KSI(K) = ZERO
   12      CONTINUE
         
-        DO 13 K = 1, 15
+        DO 13 K = 1, 18
           YD(K) = ZERO
   13      CONTINUE        
         
@@ -156,8 +167,17 @@ C --- MODIFICATION A APPORTER POUR MECANISMES CYCLIQUES
             
             IND(NBMECA) = K
           ENDIF
- 16     CONTINUE
+  16    CONTINUE
          
+        NBMECT = NBMECA
+        DO 8 I = 1, 3
+          CALL HUJPRJ(I,SIG,DEV,PT,QT)
+          IF (ABS((PT+2*50.D0-PTRAC)/PREF).LT.TOLE1) THEN
+            NBMECT = NBMECT + 1
+            IND(NBMECT) = 8+I
+          ENDIF
+   8    CONTINUE
+
         CALL LCEQVN (NDT, SIG, YD)
 
         DO 17 K = 1, NBMECA
@@ -172,7 +192,6 @@ C --- MODIFICATION A APPORTER POUR MECANISMES CYCLIQUES
         CMON = CMON * PC/PREF
         CCYC = CCYC * PC/PREF
 
-        
 C =====================================================================
 C --- OPERATEUR DE RIGIDITE CALCULE A ITERATION ----------------------
 C =====================================================================
@@ -245,8 +264,8 @@ C --- I. CALCUL DE B(K,L) (NBMECAXNBMECA) -----------------------------
 C =====================================================================
 C ---> I.1. CALCUL DE B1(K,L) = E(K)*HOOK*PSI(L)
 C             (TERME SYMETRIQUE)
-       DO 45 K = 1, NBMECA
-         DO 45 L = 1, NBMECA
+       DO 45 K = 1, NBMECT
+         DO 45 L = 1, NBMECT
            B1(K,L) = ZERO
  45        CONTINUE
  
@@ -258,7 +277,7 @@ C             (TERME SYMETRIQUE)
              DO 40 J = 1, NDT
                B1(K,L) = B1(K,L) - HOOK(I,J)*DFDS(KK+I)*PSI(LL+J)
  40            CONTINUE
-     
+
 C ------------ FIN I.1.
 C ---> I.2. CALCUL DE B2(K,L) = DFDEVP(K)*EVL(L)
 C           TERME NON SYMETRIQUE             
@@ -266,6 +285,7 @@ C           TERME NON SYMETRIQUE
        
          KK = IND(K)
          PK = P(K) -PTRAC
+         DFDEVP = ZERO
          
          IF (KK .LT. 4) THEN
          
@@ -304,22 +324,15 @@ Caf 04/06/07 Debut
          DO 41 L = 1, NBMECA
          
            LL = IND(L)
+           EVL = ZERO
            
            IF (LL .LT. 4) THEN
            
 Ckh --- traction
              IF ((P(L)/PREF).GT.TOLE1) THEN
-                IF(ABS(P(L)).LT.TOLE1)THEN
-                  DPSI = MDIL
-                ELSE
-                  DPSI = MDIL+Q(L)/P(L)
-                ENDIF
+                DPSI = MDIL+Q(L)/P(L)
               ELSE
-                IF(ABS(P(L)).LT.TOLE1)THEN
-                  DPSI = ZERO
-                ELSE
-                  DPSI = -Q(L)/P(L)
-                ENDIF
+                DPSI = MDIL+1.D+6*Q(L)/PREF
              ENDIF
              EVL = -KSI(L)*COEF*DPSI
              
@@ -333,16 +346,16 @@ Ckh --- traction
              PS = 2*SIGD(3*L-2)*DEV(1)+SIGD(3*L)*DEV(3)
 Ckh --- traction
              IF ((P(L)/PREF).GT.TOLE1) THEN
-               IF((Q(L).LT.TOLE1).OR.(ABS(P(L)).LT.TOLE1))THEN
+               IF ((-Q(L)/PREF).LT.TOLE1) THEN
                  DPSI = MDIL
                ELSE
-                 DPSI =MDIL+PS/(2.D0*P(L)*Q(L))
+                 DPSI = MDIL+PS/(2.D0*P(L)*Q(L))
                ENDIF
              ELSE
-               IF((Q(L).LT.TOLE1).OR.(ABS(P(L)).LT.TOLE1))THEN
-                 DPSI = ZERO
+               IF ((-Q(L)/PREF).LT.TOLE1) THEN
+                 DPSI = MDIL
                ELSE
-                 DPSI =-PS/(2.D0*P(L)*Q(L))
+                 DPSI =MDIL+PS/(2.D-6*PREF*Q(L))
                ENDIF
              ENDIF
               
@@ -350,7 +363,7 @@ Ckh --- traction
              
            ELSEIF (LL .EQ. 8) THEN
            
-             IF(VIN(22).EQ.UN)THEN
+             IF (VIN(22).EQ.UN) THEN
                EVL = UN
              ELSE
                EVL = - UN
@@ -367,8 +380,9 @@ C ---> I.3. CALCUL DE B3(K) = DFDR(K) * [ (1 -RK)**2 /AK ]
 C           TERME DIAGONAL             
        DO 43 K = 1, NBMECA
        
-         KK = IND(K)
-         PK = P(K) -PTRAC
+         KK    = IND(K)
+         PK    = P(K) -PTRAC
+         B3(K) = ZERO
          
          IF (KK .LT. 4) THEN
          
@@ -419,13 +433,11 @@ C =====================================================================
              D(K,I) = D(K,I) - HOOK(J,I)*DFDS(KK+J)
  50          CONTINUE
 
-
 C =====================================================================
 C --- III. CALCUL DE D = B-1*D ----------------------------------------
 C =====================================================================
-       CALL MGAUSS('NCVP', B, D, 4, NBMECA, NDT, DET, IRET)
+       CALL MGAUSS('NCVP', B, D, 7, NBMECA, NDT, DET, IRET)
        IF (IRET.EQ.1) CALL U2MESS ('F', 'COMPOR1_6')
-       
        
 C =====================================================================
 C --- IV. CALCUL DE TE = IDEN6 - E*D (6X6) ----------------------------

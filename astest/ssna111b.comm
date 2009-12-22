@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
 # ssna111b.para = tps_job 880 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,25 +76,27 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                              _F(GROUP_MA=('GM10',),
                                 DY=-0.4,),
                                 ),
-                   CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                              GROUP_MA_MAIT='GM11',
-                              GROUP_MA_ESCL='GM12',
-                              COEF_REGU_CONT = 1000.,
-                              INTEGRATION = 'NOEUD',
-                              METHODE='CONTINUE',
-                              TYPE_APPA = 'FIXE',
-                              DIRE_APPA=(0.,-1.,0.),
-                              NORMALE='MAIT_ESCL',
-                              ),);
+                              );
+
+
+CONT = DEFI_CONTACT(MODELE      = MO,
+                    FORMULATION = 'CONTINUE',
+                    ZONE=_F(
+                             APPARIEMENT   = 'MAIT_ESCL',
+                             TYPE_APPA     = 'FIXE',
+                             DIRE_APPA     = (0.,-1.,0.),
+                             NORMALE       = 'MAIT_ESCL',
+                             GROUP_MA_MAIT ='GM11',
+                             GROUP_MA_ESCL ='GM12',
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 1000.,
+                             INTEGRATION = 'NOEUD', 
+                         ),
+                   ) 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=50,),);
-
-DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
-                        ECHEC=_F(SUBD_PAS=4,
-                                 SUBD_PAS_MINI=1.E-6,
-                                 SUBD_COEF_PAS_1=1.0,),)
 
 F=DEFI_FONCTION(NOM_PARA='INST',
                 VALE=(0.0,  0.0,
@@ -102,10 +104,16 @@ F=DEFI_FONCTION(NOM_PARA='INST',
                       1.0,  0.98),
                       );
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
+                        ECHEC=_F(SUBD_PAS=4,
+                                 SUBD_PAS_MINI=1.E-6,
+                                 SUBD_COEF_PAS_1=1.0,),)
+
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHA,
                             FONC_MULT=F,),
+                   CONTACT  = CONT,         
                    COMP_INCR=(
                               _F(RELATION='VMIS_ISOT_LINE',
                                 DEFORMATION='SIMO_MIEHE',
@@ -114,7 +122,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                 GROUP_MA='GM17',),
                                   ),
                    INCREMENT=_F(LIST_INST=DEFLIST,
-                                INST_FIN=1.,),
+                                 INST_FIN=1.,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),

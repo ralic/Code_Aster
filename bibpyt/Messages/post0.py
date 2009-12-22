@@ -1,4 +1,4 @@
-#@ MODIF post0 Messages  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF post0 Messages  DATE 22/12/2009   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,6 +101,21 @@ Le calcul est effectué en repère global.
 %(k1)s est un type de champ aux éléments, non traité par PROJ_CHAMP, donc par MACR_LIGN_COUPE
 
 Conseil : pour un champ aux points de Gauss, veuillez passer par un champ ELNO
+"""),
+
+19: _("""
+La SD RESULTAT ne contient aucun champ pour le numéro d'ordre %(i1)d.
+On ne peut pas calculer les efforts.
+"""),
+
+20: _("""
+La SD RESULTAT ne contient aucun champ à l instant %(r1)f.
+On ne peut pas calculer les efforts.
+"""),
+
+21: _("""
+Le point à l occurence %(i1)d a une côte h= %(r1)f, donc non nulle.
+Les efforts étant intégrés sur la section, on n en tient pas compte.
 """),
 
 }

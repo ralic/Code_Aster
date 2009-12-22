@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRES CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,20 +152,21 @@ PRES = AFFE_CHAR_MECA_F (MODELE = MO,
                                     PRES = PRES_F),
                        )
                           )
-CONT = AFFE_CHAR_MECA (MODELE = MO,
-                          CONTACT =_F( 
-                                       METHODE='CONTINUE',
-                                       GROUP_MA_MAIT = 'DDAG',
-                                       GROUP_MA_ESCL = 'DBCP',
-                      ))
- 
+
+CONT = DEFI_CONTACT(MODELE      = MO,
+                    FORMULATION = 'CONTINUE',
+                    ZONE=_F(
+                           GROUP_MA_MAIT = 'DDAG',
+                           GROUP_MA_ESCL = 'DBCP',
+                         ),
+                   ) 
                                   
 RESU = STAT_NON_LINE (MODELE = MO,
                       CHAM_MATER = CHMAT,
                       EXCIT =(
                          _F( CHARGE = BLOC),
-                         _F( CHARGE = CONT),
                          _F( CHARGE = PRES),),
+                      CONTACT   = CONT,   
                       COMP_INCR =_F(RELATION ='LEMAITRE',PARM_THETA = 0.5,
                                     GROUP_MA = 'MAILG',
                                     ITER_INTE_MAXI = 1000),

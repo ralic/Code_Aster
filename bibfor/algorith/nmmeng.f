@@ -1,7 +1,7 @@
       SUBROUTINE NMMENG(FONACT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,8 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
-      LOGICAL       FONACT(*)
-
+      INTEGER       FONACT(*)
 C 
 C ----------------------------------------------------------------------
 C
@@ -41,20 +40,22 @@ C
        CHARACTER*19 K19BID
        INTEGER      IBID
        REAL*8       R8BID
+       LOGICAL      ISFONC,LFETI
 C      
 C ----------------------------------------------------------------------
 C
 C
 C --- MENAGE FINAL
 C
-       CALL DETMAT()
+      CALL DETMAT()
+      LFETI  = ISFONC(FONACT,'FETI')
 C
 C --- SI FETI, NETTOYAGE DES OBJETS TEMPORAIRES
 C --- NETTOYAGE DES SD FETI SI NECESSAIRE (SUCCESSION DE CALCULS
 C --- DECOUPLES)
 C --- ET INITIALISATION NUMERO D'INCREMENT
 C
-      IF (FONACT(11)) THEN
+      IF (LFETI) THEN
         OPT='NETTOYAGE_SDT'
         CALL ALFETI(OPT   ,K19BID,K19BID,K19BID,K19BID,
      &              IBID  ,R8BID ,K24BID,R8BID ,IBID  ,

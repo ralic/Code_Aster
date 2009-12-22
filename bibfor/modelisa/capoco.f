@@ -1,7 +1,7 @@
-      SUBROUTINE CAPOCO(CHAR  ,MOTFAC,NOMA  )
+      SUBROUTINE CAPOCO(CHAR  ,MOTFAC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*8  CHAR, NOMA
+      CHARACTER*8  CHAR
       CHARACTER*16 MOTFAC
 C      
 C ----------------------------------------------------------------------
@@ -36,7 +36,6 @@ C
 C
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
-C IN  NOMA   : NOM DU MAILLAGE
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -54,54 +53,54 @@ C
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      IRET,NOC,JDIM,JJPOU,NBNMA,IACNEX,NNOCO,JNOCO
-      INTEGER      ICESC,ICESD,ICESL,ICESV,NPMAX,ISEC,JMAIL,NUMMAI
-      INTEGER      INDIK8,RANGR0,RANGR1,RANGR2,IAD1,IAD2,IOC,NBMA,IMA
-      INTEGER      NZOCO,NUMNO,INDIIS,INO1,INO2
-      REAL*8       R1,R2
+      INTEGER      IRET,NOC
+      INTEGER      ICESC,ICESD,ICESL,ICESV,NPMAX,ISEC
+      INTEGER      POSMAE,NUMMAE
+      INTEGER      JDECMA
+      INTEGER      IZONE,ISURFE,IMAE
+      INTEGER      NBMAE
+      INTEGER      INDIK8,RANGR0,RANGR1,RANGR2,IAD1,IAD2
+      REAL*8       R1,R2,RAYON
       LOGICAL      YA
-      CHARACTER*8  K8BID,TYPM,CARAEL
-      CHARACTER*16 LIMOCL(2),TYMOCL(2)
-      CHARACTER*24 NDIMCO,NOEUCO,JEUPOU,MESMAI
+      INTEGER      CFDISI,NZOCO,NMACO   
+      CHARACTER*8  CARAEL
+      CHARACTER*24 DEFICO
+      CHARACTER*24 JEUPOU,CONTMA
+      INTEGER      JMACO,JJPOU
       CHARACTER*19 CARSD,CARTE
+      LOGICAL      MMINFL,LDPOU
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ
 C
 C --- INITIALISATIONS
 C
-      LIMOCL(1) = 'GROUP_MA_ESCL'
-      LIMOCL(2) = 'MAILLE_ESCL'
-      TYMOCL(1) = 'GROUP_MA'
-      TYMOCL(2) = 'MAILLE'
-      MESMAI    = '&&CAPOCO.MES_MAILLES'
-C
-      NDIMCO = CHAR(1:8)//'.CONTACT.NDIMCO'
-      NOEUCO = CHAR(1:8)//'.CONTACT.NOEUCO'
-      JEUPOU = CHAR(1:8)//'.CONTACT.JEUPOU'
-C
-      CALL JEVEUO(NOEUCO,'L',JNOCO )
-      CALL JEVEUO(NDIMCO,'L',JDIM  )
-      NZOCO  = ZI(JDIM+1)
-      NNOCO  = ZI(JDIM+4)
+      DEFICO    = CHAR(1:8)//'.CONTACT' 
+      NZOCO     = CFDISI(DEFICO,'NZOCO') 
+      NMACO     = CFDISI(DEFICO,'NMACO')            
+C 
+C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+C      
+      CONTMA = DEFICO(1:16)//'.MAILCO'
+      CALL JEVEUO(CONTMA,'L',JMACO)    
 C
 C --- CREATION VECTEUR
 C
-      CALL WKVECT(JEUPOU,'G V R',NNOCO+1,JJPOU )
+      JEUPOU = DEFICO(1:16)//'.JEUPOU'
+      CALL WKVECT(JEUPOU,'G V R',NMACO ,JJPOU )
 C
 C --- RECUPERATION DU CARA_ELEM
 C
       YA = .FALSE.
-      DO 10 IOC = 1 , NZOCO
-        TYPM = 'NON'
-        CALL GETVTX(MOTFAC,'DIST_POUTRE',IOC,1,1,TYPM  ,NOC)
-        IF (TYPM(1:3) .EQ. 'OUI') THEN
+      DO 10 IZONE = 1 , NZOCO
+        LDPOU  = MMINFL(DEFICO,'DIST_POUTRE',IZONE )
+        IF (LDPOU) THEN
           YA = .TRUE.
-          CALL GETVID(MOTFAC,'CARA_ELEM',IOC,1,1,CARAEL,NOC)
+          CALL GETVID(MOTFAC,'CARA_ELEM',IZONE,1,1,CARAEL,NOC)
           IF (NOC.EQ.0) THEN
             CALL ASSERT(.FALSE.)
           ENDIF
@@ -111,10 +110,12 @@ C
       IF ( .NOT. YA ) THEN
         GOTO 999
       ENDIF
+C      
+C --- TRANSFO. CARTE CARA_ELEM EN CHAM_ELEM_S
 C
       CARTE = CARAEL//'.CARGEOPO'
       CARSD = '&&CAPOCO.CARGEOPO'
-      CALL CARCES ( CARTE, 'ELEM', ' ', 'V', CARSD, IRET )
+      CALL CARCES(CARTE ,'ELEM',' ','V',CARSD ,IRET  )
 C
 C --- RECUPERATION DES GRANDEURS (TSEC, R1, R2) 
 C --- REFERENCEE PAR LA CARTE CARGEOPO         
@@ -131,70 +132,63 @@ C
       RANGR1 = INDIK8(ZK8(ICESC),'R1      ',1,NPMAX)
       RANGR2 = INDIK8(ZK8(ICESC),'R2      ',1,NPMAX)
 C
-      ZR(JJPOU-1+NNOCO+1) = 1.D0
+      DO 20 IZONE = 1 , NZOCO
+        LDPOU  = MMINFL(DEFICO,'DIST_POUTRE',IZONE )
+
+        
+        IF (LDPOU) THEN   
 C
-      DO 20 IOC = 1 , NZOCO
-        TYPM = 'NON'
-        CALL GETVTX(MOTFAC,'DIST_POUTRE',IOC,1,1,TYPM  ,NOC)
-        IF (TYPM(1:3) .EQ. 'NON') GOTO 20
+          CALL CFZONE(DEFICO,IZONE ,'ESCL',ISURFE) 
+          CALL CFNBSF(DEFICO,ISURFE,'MAIL',NBMAE ,JDECMA) 
 C
-        CALL RELIEM(' ',NOMA,'NU_MAILLE',MOTFAC,IOC,2,LIMOCL,TYMOCL,
-     &                                                 MESMAI,NBMA)
-        CALL JEVEUO(MESMAI,'L',JMAIL)
-C
-        DO 30 IMA = 1 ,NBMA
-          NUMMAI = ZI(JMAIL+IMA-1)
+          DO 30 IMAE = 1 ,NBMAE
+C          
+            POSMAE = JDECMA+IMAE
+            NUMMAE = ZI(JMACO+POSMAE-1)
 C
 C --- TYPE DE SECTION (UNIQUEMENT CIRCULAIRE !)
 C          
-          CALL CESEXI('C',ICESD,ICESL,NUMMAI,1,1,RANGR0,IAD1)
-          IF (IAD1.GT.0) THEN
-            ISEC   = NINT( ZR(ICESV-1+ABS(IAD1)) )
-          ELSE
-            ISEC   = 0  
-          ENDIF  
-          IF (ISEC.NE.2) THEN
-            CALL U2MESS('F','CONTACT3_32')
-          ENDIF
+            CALL CESEXI('C',ICESD,ICESL,NUMMAE,1,1,RANGR0,IAD1)
+            IF (IAD1.GT.0) THEN
+              ISEC   = NINT( ZR(ICESV-1+ABS(IAD1)) )
+            ELSE
+              ISEC   = 0  
+            ENDIF  
+            IF (ISEC.NE.2) THEN
+              CALL U2MESS('F','CONTACT3_32')
+            ENDIF
 C
 C --- RECUPERATION RAYON
 C
-          CALL CESEXI('C',ICESD,ICESL,NUMMAI,1,1,RANGR1,IAD1)
-          CALL CESEXI('C',ICESD,ICESL,NUMMAI,1,1,RANGR2,IAD2)
+            CALL CESEXI('C',ICESD,ICESL,NUMMAE,1,1,RANGR1,IAD1)
+            CALL CESEXI('C',ICESD,ICESL,NUMMAE,1,1,RANGR2,IAD2)
 C
-          IF (IAD1.GT.0) THEN
-            R1 = ZR(ICESV-1+IAD1)
-          ELSE
-            CALL ASSERT(.FALSE.)
-          ENDIF
+            IF (IAD1.GT.0) THEN
+              R1 = ZR(ICESV-1+IAD1)
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
 C
-          IF (IAD2.GT.0) THEN
-            R2 = ZR(ICESV-1+IAD2)
-          ELSE
-            CALL ASSERT(.FALSE.)
-          ENDIF
+            IF (IAD2.GT.0) THEN
+              R2 = ZR(ICESV-1+IAD2)
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          
+            IF (R1.NE.R2) THEN
+              CALL U2MESS('1','CONTACT3_37')
+            ENDIF
+          
+            RAYON  = (R1+R2)/2.D0
 C
-C --- NOEUDS DE LA MAILLE (SEGMENT, FORCEMENT)
-C
-          CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',NUMMAI),'L',IACNEX)
-          CALL JELIRA(JEXNUM(NOMA//'.CONNEX',NUMMAI),'LONMAX',
-     &                 NBNMA ,K8BID)
-          IF (NBNMA.NE.2) THEN
-            CALL ASSERT(.FALSE.)
-          ENDIF
-C
-          NUMNO  = ZI(IACNEX-1+1)
-          INO1   = INDIIS(ZI(JNOCO),NUMNO,1,NNOCO)
-          IF (INO1.GT.0)  ZR(JJPOU-1+INO1) = R1
-C
-          NUMNO  = ZI(IACNEX-1+NBNMA)
-          INO2   = INDIIS(ZI(JNOCO),NUMNO,1,NNOCO)
-          IF (INO2.GT.0)  ZR(JJPOU-1+INO2) = R2
- 30     CONTINUE
-        CALL JEDETR(MESMAI)
+C --- STOCKAGE
+C          
+            ZR(JJPOU+POSMAE-1) = RAYON
+ 30       CONTINUE
+        ENDIF
  20   CONTINUE
 C
-      CALL DETRSD ( 'CHAM_ELEM_S', CARSD )
+      CALL DETRSD('CHAM_ELEM_S',CARSD )
 C
  999  CONTINUE
 C

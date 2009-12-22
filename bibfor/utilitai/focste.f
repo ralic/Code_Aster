@@ -1,11 +1,7 @@
-      SUBROUTINE FOCSTE(NOMFON,NOMRES,RVAL,BASE)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*1                          BASE
-      CHARACTER*(*)     NOMFON,NOMRES
-      REAL*8                          RVAL
-C     ------------------------------------------------------------------
+      SUBROUTINE FOCSTE(NOMFON,NOMRES,RVAL  ,BASE  )
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,45 +18,65 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C
+      IMPLICIT NONE
+      CHARACTER*1    BASE
+      CHARACTER*(*)  NOMFON,NOMRES
+      REAL*8         RVAL
+C
+C ----------------------------------------------------------------------
+C
 C     CREATION D'UN OBJET DE TYPE FONCTION CONSTANTE
-C     ------------------------------------------------------------------
-C IN  NOMFON : K19 : NOM DE LA FONCTION CONSTANTE A CREER
-C IN  NOMRES : K8  : NOM_RESU DE LA FONCTION
-C IN  RVAL   : R   : VALEUR DE LA CONSTANTE
-C IN  BASE   : K1  : TYPE DE LA BASE 'G','V'
-C     ------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
+C
+C IN  NOMFON : NOM DE LA FONCTION CONSTANTE A CREER
+C IN  NOMRES : NOM_RESU DE LA FONCTION
+C IN  RVAL   : VALEUR DE LA CONSTANTE
+C IN  BASE   : TYPE DE LA BASE 'G','V'
+C   
 C     OBJETS SIMPLES CREES:
 C        NOMFON//'.PROL'
 C        NOMFON//'.VALE
-C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16             ZK16
-      CHARACTER*24                      ZK24
-      CHARACTER*32                               ZK32, JEXNUM, JEXNOM
-      CHARACTER*80                                        ZK80
-      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
       CHARACTER*19 NOMF
       CHARACTER*24 CHPRO, CHVAL
+      INTEGER      JPRO,LVAL
+      INTEGER      IRET,LXLGUT
 C
-C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-      NOMF  = NOMFON
-      CHPRO = NOMF//'.PROL'
-      CHVAL = NOMF//'.VALE'
-      CALL JEEXIN(CHPRO,IRET)
-      IF (IRET.EQ.0) THEN
 C
+C --- INITIALISATIONS
+C      
+      NOMF   = NOMFON
+      CHPRO  = NOMF//'.PROL'
+      CHVAL  = NOMF//'.VALE'
+      CALL JEEXIN(CHPRO,IRET)
+      
+      IF (IRET.EQ.0) THEN
          CALL ASSERT(LXLGUT(NOMF).LE.24)
+C        --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---         
          CALL WKVECT(CHPRO,BASE//' V K24',6,JPRO)
          ZK24(JPRO)   = 'CONSTANT'
          ZK24(JPRO+1) = 'LIN LIN '
@@ -68,18 +84,18 @@ C
          ZK24(JPRO+3) = NOMRES
          ZK24(JPRO+4) = 'CC      '
          ZK24(JPRO+5) = NOMF
-C
 C        --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.VALE ---
          CHVAL(1:19)  = NOMF
          CHVAL(20:24) = '.VALE'
-         CALL WKVECT(CHVAL,BASE//' V R',2,LVAL)
+         CALL WKVECT(CHVAL,BASE//' V R',3,LVAL)
          ZR(LVAL)   = 1.0D0
          ZR(LVAL+1) = RVAL
+         ZR(LVAL+2) = 0.D0
       ELSE
          CALL JEVEUO(CHVAL,'E',LVAL)
          ZR(LVAL+1) = RVAL
+         ZR(LVAL+2) = 0.D0
       ENDIF
 C
-C     --- LIBERATIONS ---
       CALL JEDEMA()
       END

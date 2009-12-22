@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -149,14 +149,15 @@ CHCAS1=AFFE_CHAR_MECA(MODELE=MO,
                                   ),);
 
 # Definition du contact au niveau de la fissure
-CHCONT=AFFE_CHAR_MECA(MODELE=MO,
-                     CONTACT=_F(GROUP_MA_MAIT='L3',
+CHCONT = DEFI_CONTACT(MODELE      = MO,
+                      FORMULATION = 'DISCRETE',
+                      ZONE = _F(
+                                GROUP_MA_MAIT='L3',
                                 GROUP_MA_ESCL='L4',
                                 SANS_GROUP_NO='F2',
                                 TOLE_PROJ_EXT = 0.75,
-                                REAC_GEOM="AUTOMATIQUE"),
-                                )
-
+                             ),
+                      );
 #=============================================================================================
 # Chargement
 #=============================================================================================
@@ -195,8 +196,8 @@ RESU=DYNA_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                   EXCIT=(_F(CHARGE=CHCAS1,
                             FONC_MULT=FMULT,),
-                         _F(CHARGE=CHCONT)
                           ),
+                   CONTACT  = CHCONT,       
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=LINST,),

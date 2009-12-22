@@ -1,7 +1,7 @@
       SUBROUTINE CARACC(CHAR  ,NZOCO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,9 +26,10 @@ C
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE CONTACT (METHODE CONTINUE - LECTURE DONNEES)
+C ROUTINE CONTACT (METHODE CONTINUE - SD)
 C
-C CREATION DES SDS DE DEFINITION DU CONTACT
+C CREATION DES SDS DE DEFINITION DU CONTACT DEDIEES A LA 
+C FORMULATION CONTINUE
 C      
 C ----------------------------------------------------------------------
 C
@@ -55,30 +56,27 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFMMVD,ZCMCF,ZECPD,ZEXCL
-      CHARACTER*24 ECPDON,CARACF,EXCLFR
-      INTEGER      JECPD,JCMCF,JEXCLF
+      CHARACTER*24 DEFICO
+      INTEGER      CFMMVD,ZCMCF,ZEXCL
+      CHARACTER*24 CARACF,EXCLFR
+      INTEGER      JCMCF,JEXCLF
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()            
-C   
-C --- COMMUNS AVEC FORM. XFEM
-C 
-      ECPDON = CHAR(1:8)//'.CONTACT.ECPDON'
-      CARACF = CHAR(1:8)//'.CONTACT.CARACF'
-      EXCLFR = CHAR(1:8)//'.CONTACT.EXCLFR'
-C     
-      ZCMCF = CFMMVD('ZCMCF')      
-      ZECPD = CFMMVD('ZECPD')
-      ZEXCL = CFMMVD('ZEXCL')     
+      CALL JEMARQ() 
 C
-      CALL WKVECT(CARACF,'G V R',ZCMCF*NZOCO+1,JCMCF)
-      CALL WKVECT(ECPDON,'G V I',ZECPD*NZOCO+1,JECPD) 
-      CALL WKVECT(EXCLFR,'G V R',ZEXCL*NZOCO  ,JEXCLF)  
+C --- INITIALISATIONS
 C
-      ZR(JCMCF) = NZOCO   
-      ZI(JECPD) = 1       
+      DEFICO = CHAR(1:8)//'.CONTACT'            
+C
+C --- SPECIFIQUE CONTINU
+C
+      CARACF = DEFICO(1:16)//'.CARACF'    
+      ZCMCF  = CFMMVD('ZCMCF')           
+      CALL WKVECT(CARACF,'G V R',ZCMCF*NZOCO ,JCMCF )
+      EXCLFR = DEFICO(1:16)//'.EXCLFR'  
+      ZEXCL  = CFMMVD('ZEXCL')          
+      CALL WKVECT(EXCLFR,'G V R',ZEXCL*NZOCO ,JEXCLF)   
 C
       CALL JEDEMA()
 C

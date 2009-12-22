@@ -2,7 +2,7 @@
      &                  AJLIAI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,17 +68,15 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      LG,IBID,IL
-      INTEGER      LLIAC,JDECAL,NBDDL,IERD
-      INTEGER      NEQ,LGBLOC,TAMPON
+      INTEGER      LG,IL
+      INTEGER      LLIAC,JDECAL,NBDDL
+      INTEGER      NEQ,LGBLOC,TAMPON,CUDISI
       INTEGER      NBSM,NPAS
       INTEGER      NREST,IPAS,KK,ILIAC,NPAST
-      CHARACTER*14 NU
       CHARACTER*19 LIAC,CM1A
       INTEGER      JLIAC,JCM1A
       CHARACTER*24 APDDL,APCOEF,POINOE,CHSECM
       INTEGER      JAPDDL,JAPCOE,JPOI
-      CHARACTER*24 NOMMAT
 C
 C ----------------------------------------------------------------------
 C
@@ -101,18 +99,13 @@ C --- NOMBRE D'EQUATIONS DU SYSTEME
 C 
       NEQ    = ZI(LMAT+2)
 C
-C --- NOM DE LA MATRICE 
-C
-      NOMMAT = ZK24(ZI(LMAT+1))
-C
 C ----------------------------------------------------------------------
 C --- PAR METHODE DIRECTE AVEC BLOCS DE SECONDS MEMBRES
 C ----------------------------------------------------------------------
 C
 C --- CALCUL DE LGBLOC
 C
-      CALL DISMOI('F','NOM_NUME_DDL',NOMMAT,'MATR_ASSE',IBID,NU,IERD)
-      LGBLOC = 10
+      LGBLOC = CUDISI(DEFICU,'NB_RESOL')
 
       NBSM   = NBLIAC - AJLIAI
       NPAS   = NBSM / LGBLOC
@@ -160,7 +153,6 @@ C
 C 
 C --- AJOUT D'UNE LIAISON DE CONTACT
 C 
- 1100       CONTINUE
             CALL JEVEUO(JEXNUM(CM1A,LLIAC),'E',JCM1A)
             DO 60 KK = 1,NEQ
                ZR(JCM1A-1+KK) = ZR(TAMPON-1+NEQ* (IL-1)+KK)

@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith11 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,245 +23,234 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
- le sup de KMOD0 est nul
- on prend le sup de KMOD
+La valeur supérieure de KMOD0 est nulle.
+On prend la valeur supérieure KMOD.
 """),
 
 2 : _("""
- le sup de KMOD est nul.
+La valeur supérieure de KMOD est nulle.
 """),
 
 3 : _("""
- la variable AMOR est nulle
-"""),
-
-4 : _("""
- erreur de dimension (dvlp)
+La variable AMOR est nulle.
 """),
 
 5 : _("""
- force normale nulle.
+La force normale est nulle.
 """),
 
 6 : _("""
- somme des "impacts-ecrouissage" < somme des "glissement"
+La somme des impacts écrouissage est inférieure à la somme des glissements.
 """),
 
 7 : _("""
- "NOM_CAS" n'est pas une variable d'accès d'un résultat de type "EVOL_THER".
+NOM_CAS n'est pas une variable d'accès d'un résultat de type EVOL_THER.
 """),
 
 8 : _("""
- "NUME_MODE" n'est pas une variable d'accès d'un résultat de type "EVOL_THER".
+NUME_MODE n'est pas une variable d'accès d'un résultat de type EVOL_THER.
 """),
 
 9 : _("""
- "NUME_MODE" n'est pas une variable d'accès d'un résultat de type "MULT_ELAS".
+NUME_MODE n'est pas une variable d'accès d'un résultat de type MULT_ELAS.
 """),
 
 10 : _("""
- "INST" n'est pas une variable d'accès d'un resultat de type "MULT_ELAS".
+INST n'est pas une variable d'accès d'un resultat de type MULT_ELAS.
 """),
 
 11 : _("""
- "NOM_CAS" n'est pas une variable d'accès d'un resultat de type "FOURIER_ELAS".
+NOM_CAS n'est pas une variable d'accès d'un resultat de type FOURIER_ELAS.
 """),
 
 12 : _("""
- "INST" n'est pas une variable d'accès d'un resultat de type "FOURIER_ELAS".
+INST n'est pas une variable d'accès d'un resultat de type FOURIER_ELAS.
 """),
 
 13 : _("""
- "NOM_CAS" n'est pas une variable d'accès d'un resultat de type "FOURIER_THER".
+NOM_CAS n'est pas une variable d'accès d'un resultat de type FOURIER_THER.
 """),
 
 14 : _("""
- "INST" n'est pas une variable d'accès d'un resultat de type "FOURIER_THER".
+INST n'est pas une variable d'accès d'un resultat de type FOURIER_THER.
 """),
 
 15 : _("""
- "RESU_INIT" est obligatoire
+Le mot-clef RESU_INIT est obligatoire.
 """),
 
 16 : _("""
- "MAILLAGE_INIT" est obligatoire
+Le mot-clef MAILLAGE_INIT est obligatoire.
 """),
 
 17 : _("""
- "resu_final" est obligatoire
+Le mot-clef RESU_FINAL est obligatoire.
 """),
 
 18 : _("""
- "maillage_final" est obligatoire
-"""),
-
-20 : _("""
- TYPCAL invalide :  %(k1)s 
+Le mot-clef MAILLAGE_FINAL est obligatoire.
 """),
 
 24 : _("""
- absence de potentiel permanent
+Absence de potentiel permanent.
 """),
 
 25 : _("""
- le modele fluide n'est pas thermique
+Le modèle fluide n'est pas thermique.
 """),
 
 26 : _("""
- le modele interface n'est pas thermique
+Le modèle interface n'est pas thermique.
 """),
 
 27 : _("""
- modèle fluide incompatible avec le calcul de masse ajoutée
- seules les modelisations PLAN ou 3D ou AXIS sont utilisées
+Le modèle fluide est incompatible avec le calcul de masse ajoutée.
+Utilisez les modélisations PLAN ou 3D ou AXIS.
 """),
 
-
-
-
 29 : _("""
- le nombre d'amortissement modaux est différent du nombre de modes dynamiques
+Le nombre d'amortissement modaux est différent du nombre de modes dynamiques.
 """),
 
 30 : _("""
- il n y a pas le meme nombre de modes retenus
- dans l'excitation modale et dans la base modale
+Il n y a pas le même nombre de modes retenus  dans l'excitation modale et 
+dans la base modale
 """),
 
 31 : _("""
- il faut autant d'indices en i et j
+Il faut autant d'indices en i et j.
 """),
 
 32 : _("""
- avec SOUR_PRESS et SOUR_FORCE, il faut deux points/ddls d'application
+Avec SOUR_PRESS et SOUR_FORCE, il faut deux points par degré de liberté d'application
 """),
 
 33 : _("""
- mauvais accord entre le nombre d'appuis et le nombre de valeur dans le mot-clé: NUME_ORDRE_I
+Mauvais accord entre le nombre d'appuis et le nombre de valeur dans le mot-clé NUME_ORDRE_I
 """),
 
 34 : _("""
- il faut autant de noms de composante que de noms de noeud
+Il faut autant de noms de composantes que de noms de noeuds.
 """),
 
 35 : _("""
-  vous avez oublié de préciser le mode statique
+Précisez le mode statique.
 """),
 
 36 : _("""
-  mode statique non- nécessaire
+Le mode statique n'est pas nécessaire.
 """),
 
 37 : _("""
- la fréquence min doit etre plus faible que la fréquence max
+La fréquence minimale doit être plus petite que la fréquence maximale.
 """),
 
 73 : _("""
- le parametre materiau taille limite d10 n'est pas defini
+Le paramètre matériau taille limite D10 n'est pas défini.
 """),
 
 74 : _("""
- échec de la recherche de zéro (NITER)
+Echec de la recherche de zéro (nombre maximum d'itérations atteint).
 """),
 
 75 : _("""
- échec de la recherche de zéro (bornes)
+Echec de la recherche de zéro (bornes atteintes).
 """),
 
 76 : _("""
- La valeur de F(XMIN) doit être négative.
+La valeur de F(XMIN) doit être négative.
 """),
 
 77 : _("""
- f=0 : augmenter ITER_INTE_MAXI
+Augmentez ITER_INTE_MAXI.
 """),
 
 79 : _("""
- pas d'interpolation possible
+Pas d'interpolation possible.
 """),
 
 81 : _("""
- STOP_SINGULIER=DECOUPE nécessite la subdivision automatique du pas de temps (SUBD_PAS).
+STOP_SINGULIER=DECOUPE nécessite la subdivision automatique du pas de temps (SUBD_PAS).
 """),
 
 82 : _("""
- NMVPIR erreur direction grandissement
- Angle ALPHA %(k1)s
- Angle BETA  %(k2)s
+Erreur de la direction de glissmeent dans NMVPIR.
+ Angle ALPHA: %(k1)s
+ Angle BETA : %(k2)s
 """),
 
 83 : _("""
- Arret par manque de temps CPU.
+Arrêt par manque de temps CPU.
 """),
 
 86 : _("""
- Perturbation trop petite, calcul impossible
+La perturbation est trop petite, calcul impossible.
 """),
 
 87 : _("""
- Champ déjà existant
- Le champ %(k1)s à l'instant %(r1)g est remplacé par le champ %(k2)s à l'instant %(r2)g avec la précision %(r3)g.
+Champ déjà existant
+Le champ %(k1)s à l'instant %(r1)g est remplacé par le champ %(k2)s à l'instant %(r2)g avec la précision %(r3)g.
 """),
 
 88 : _("""
- arret débordement assemblage : ligne 
+Arrêt débordement assemblage : ligne. 
 """),
 
 90 : _("""
- arret débordement assemblage : colonne 
+Arrêt débordement assemblage : colonne. 
 """),
 
 92 : _("""
- arret nombre de sous-structures invalide : 
- il en faut au minimum : %(i1)d 
- vous en avez défini   : %(i2)d 
+Arrêt pour nombre de sous-structures invalide : 
+ Il en faut au minimum : %(i1)d 
+ Vous en avez défini   : %(i2)d 
 """),
 
 93 : _("""
- arret nombre de nom de sous-structures invalide :
- il en faut exactement : %(i1)d 
- vous en avez défini   : %(i2)d 
+Arrêt pour nombre de noms de sous-structures invalide :
+ Il en faut exactement : %(i1)d 
+ Vous en avez défini   : %(i2)d 
 """),
 
 94 : _("""
- nombre de MACR_ELEM invalide :
- sous_structure %(k1)s
- il en faut exactement : %(i2)d 
- vous en avez défini   : %(i1)d 
+Arrêt pour nombre de MACR_ELEM invalide :
+ Sous-structure %(k1)s
+ Il en faut exactement : %(i2)d 
+ Vous en avez défini   : %(i1)d 
 """),
 
 95 : _("""
- nombre d'angles nautiques invalide
- sous_structure %(k1)s 
- il en faut exactement :  %(i2)d 
- vous en avez défini   : %(i1)d 
+Arrêt pour nombre d'angles nautiques invalide :
+ Sous-structure %(k1)s 
+ Il en faut exactement : %(i2)d 
+ Vous en avez défini   : %(i1)d 
 """),
 
 96 : _("""
- nombre de translations invalide
- sous_structure %(k1)s
- il en faut exactement :  %(i2)d 
- vous en avez defini   : %(i1)d 
+Arrêt pour nombre de translations invalide :
+ Sous-structure %(k1)s 
+ Il en faut exactement : %(i2)d 
+ Vous en avez défini   : %(i1)d  
 """),
 
 97 : _("""
- nombre de liaison definies invalide
- il en faut au minimum : %(i2)d 
- vous en avez defini   : %(i1)d 
+Arrêt pour nombre de liaisons définies invalide :
+ Il en faut exactement : %(i2)d 
+ Vous en avez défini   : %(i1)d 
 """),
 
 98 : _("""
- nombre de mot-clés invalide
- numéro liaison: %(i1)d
- mot-clé       : %(k1)s 
- il en faut exactement : %(i3)d 
- vous en avez defini   : %(i2)d 
+Arrêt pour nombre de mot-clés invalide :
+ Numéro liaison : %(i1)d
+ Mot-clé        : %(k1)s 
+ Il en faut exactement : %(i3)d 
+ Vous en avez défini   : %(i2)d
 """),
 
 99 : _("""
- sous-structure indéfinie
- numéro liaison: %(i1)d
- nom sous-structure: %(k1)s 
+Arrêt pour sous-structure indéfinie :
+ Numéro liaison    : %(i1)d
+ Nom sous-structure: %(k1)s 
 """),
 
 }

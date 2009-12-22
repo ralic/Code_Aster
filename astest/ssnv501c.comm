@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -279,18 +279,25 @@ CH1=AFFE_CHAR_MECA(MODELE=MODEL,
 #-----------------------------------------------------------------------
 #
 #
-CH2=AFFE_CHAR_MECA(MODELE=MODEL,
-                  CONTACT=(
-                   _F(APPARIEMENT='MAIT_ESCL',
-                               METHODE='CONTINUE',
-                               GROUP_MA_ESCL='LFC2S',
-                               GROUP_MA_MAIT='LC1DS',),
-                            _F(APPARIEMENT='MAIT_ESCL',
-                               METHODE='CONTINUE',
-                               GROUP_MA_MAIT='LEA2S',
-                               GROUP_MA_ESCL='LA1BS',),
-                               ),
-                   INFO=2,);
+
+CH2  = DEFI_CONTACT(MODELE         = MODEL,
+                    FORMULATION    = 'CONTINUE',
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 3,                    
+                    ZONE =(
+                           _F(
+                             GROUP_MA_ESCL='LFC2S',
+                             GROUP_MA_MAIT='LC1DS',
+                             APPARIEMENT='MAIT_ESCL',  
+                             ),
+                           _F(
+                             GROUP_MA_MAIT='LEA2S',
+                             GROUP_MA_ESCL='LA1BS',
+                             APPARIEMENT='MAIT_ESCL',  
+                             ),                             
+                                                        
+                          ),
+                   );
 
 
 #           
@@ -311,17 +318,18 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                      NOMBRE=50,),
                                   _F(JUSQU_A=1.0,
                                      NOMBRE=50,),),);
-
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
                         ECHEC=_F(SUBD_METHODE='UNIFORME',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI=9.9999999999999995E-07,),)
 
+
 U=STAT_NON_LINE(MODELE=MODEL,
                     CHAM_MATER=CM,
                     EXCIT=(_F(CHARGE=CH1,
                               FONC_MULT=RAMPE,),
-                           _F(CHARGE=CH2,),),
+                           ),
+                    CONTACT  = CH2,       
                     COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
                                   DEFORMATION='SIMO_MIEHE',
                                   GROUP_MA='FLAN',

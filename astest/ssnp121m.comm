@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121m.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,29 +101,33 @@ RACCOR=AFFE_CHAR_MECA(MODELE=MO,
                                    GROUP_NO_ESCL='RACCORD1',),
                                 _F(GROUP_MA_MAIT='V21',
                                    GROUP_NO_ESCL='RACCORD2',),),
-                  INFO=2,);
+                  INFO=1,);
 
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    INFO=2,
-                    CONTACT=(_F(GROUP_MA_ESCL = 'SURESC1',
-                                GROUP_MA_MAIT = 'SURMAI1',
-                                INTEGRATION = 'NOEUD',
-                                COEF_REGU_CONT = 1000.,
-                                LISSAGE='NON',
-                               ITER_CONT_MAXI = 30,
-                                ITER_GEOM_MAXI = 4,
-                                METHODE = 'CONTINUE',),
-                             _F(GROUP_MA_ESCL = 'SURESC2',
-                                GROUP_MA_MAIT = 'SURMAI2',
-                                INTEGRATION = 'SIMPSON',
-                                COEF_REGU_CONT = 1000.,
-                                LISSAGE='NON',
-                                ITER_CONT_MAXI = 30,
-                                ITER_GEOM_MAXI = 4,
-                                RACCORD_LINE_QUAD = 'OUI',
-                                NOEUD_RACC = 'N44',
-                                METHODE = 'CONTINUE',),),);
+CHA2 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    ITER_GEOM_MAXI = 4,
+                    ITER_CONT_MAXI = 30, 
+                    ZONE =(
+                           _F(
+                             GROUP_MA_ESCL = 'SURESC1',
+                             GROUP_MA_MAIT = 'SURMAI1',
+                             INTEGRATION   = 'NOEUD',
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 1000.,
+                             ),
+                           _F(
+                             GROUP_MA_ESCL = 'SURESC2',
+                             GROUP_MA_MAIT = 'SURMAI2',
+                             INTEGRATION   = 'NOEUD',
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 1000.,
+                             RACCORD_LINE_QUAD = 'OUI',
+                             NOEUD_RACC = 'N44',
+                             ),                             
+                          ),
+                   );
+
 #-----------------------------------------------------------
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                  INTERVALLE=_F(JUSQU_A=1., NOMBRE=1,));
@@ -138,10 +142,10 @@ RESU=STAT_NON_LINE (MODELE     = MO,
                     EXCIT      =(_F(CHARGE=CHA1,
                                  FONC_MULT=FONC,),
                                  _F(CHARGE=RACCOR,
-                                 FONC_MULT=FONC,),
-                                _F(CHARGE=CHA2,),),
+                                 FONC_MULT=FONC,),),
+                    CONTACT    = CHA2,            
                     COMP_ELAS  =_F(RELATION='ELAS'),
-                    NEWTON=_F(MATRICE='ELASTIQUE'),
+                    NEWTON=_F(MATRICE='ELASTIQUE',REAC_ITER=1,),
                     CONVERGENCE=_F(ARRET='OUI',
                     ITER_GLOB_MAXI=30,
                     RESI_GLOB_MAXI=1.E-8,),);

@@ -1,7 +1,7 @@
       SUBROUTINE CARACX(CHAR  ,NZOCO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,9 +26,10 @@ C
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE CONTACT (METHODE XFEM - LECTURE DONNEES)
+C ROUTINE CONTACT (METHODE XFEM - SD)
 C
-C CREATION DES SDS DE DEFINITION DU CONTACT
+C CREATION DES SDS DE DEFINITION DU CONTACT DEDIEES A LA 
+C FORMULATION XFEM
 C      
 C ----------------------------------------------------------------------
 C
@@ -55,58 +56,26 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFMMVD,ZCMCF,ZECPD,ZTOLE
-      CHARACTER*24 ECPDON,CARACF,MODCON,TOLECO
-      INTEGER      JECPD,JCMCF,JMOCO,JTOLE
-      CHARACTER*16 VALK(2)
-      CHARACTER*8  MODELX
-      INTEGER      IBID,IRET,JXC      
+      CHARACTER*24 DEFICO
+      INTEGER      CFMMVD,ZCMXF
+      CHARACTER*24 CARAXF,MODCON
+      INTEGER      JCMXF,JMOCO    
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-C --- ACCES MODELE
+C --- INITIALISATIONS
 C
-      CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,MODELX,IRET) 
+      DEFICO = CHAR(1:8)//'.CONTACT'       
 C
-C --- TEST MODELE CORRECT
-C
-      CALL EXIXFE(MODELX,IRET)
-C      
-      IF (IRET.EQ.0) THEN
-        VALK(1) = MODELX
-        CALL U2MESK('F','XFEM2_8',1,VALK) 
-      ELSE
-        CALL JEVEUO(MODELX(1:8)//'.XFEM_CONT','L',JXC)
-        IF (ZI(JXC).EQ.0) THEN
-          VALK(1) = MODELX
-          CALL U2MESK('F','XFEM2_9',1,VALK)         
-        ENDIF
-      ENDIF
-C   
-C --- COMMUNS AVEC FORM. XFEM
-C       
-      ECPDON = CHAR(1:8)//'.CONTACT.ECPDON'
-      CARACF = CHAR(1:8)//'.CONTACT.CARACF'
-      MODCON = CHAR(1:8)//'.CONTACT.MODELX' 
-      TOLECO = CHAR(1:8)//'.CONTACT.TOLECO'      
-C     
-      ZCMCF = CFMMVD('ZCMCF')      
-      ZECPD = CFMMVD('ZECPD')  
-      ZTOLE = CFMMVD('ZTOLE') 
-C
-      CALL WKVECT(CARACF,'G V R' ,ZCMCF*NZOCO+1,JCMCF)
-      CALL WKVECT(ECPDON,'G V I' ,ZECPD*NZOCO+1,JECPD)
-      CALL WKVECT(MODCON,'G V K8',            1,JMOCO)
-      CALL WKVECT(TOLECO,'G V R' ,ZTOLE*NZOCO  ,JTOLE)     
-C
-      ZR(JCMCF)  = NZOCO  
-      ZI(JECPD)  = 1 
-C
-C --- STOCKAGE DU NOM DU MODELE
-C      
-      ZK8(JMOCO) = MODELX       
+C --- SPECIFIQUE XFEM
+C 
+      CARAXF = DEFICO(1:16)//'.CARAXF'    
+      ZCMXF  = CFMMVD('ZCMXF')           
+      CALL WKVECT(CARAXF,'G V R',ZCMXF*NZOCO,JCMXF )                  
+      MODCON = DEFICO(1:16)//'.MODELX' 
+      CALL WKVECT(MODCON,'G V K8',1         ,JMOCO )         
 C
       CALL JEDEMA()
 C

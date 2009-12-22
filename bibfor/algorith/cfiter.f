@@ -1,7 +1,7 @@
-      SUBROUTINE CFITER(RESOCO,ACCES,TYPOPE,VALI,VALR)
+      SUBROUTINE CFITER(RESOCO,ACCES ,TYPOPE,VALI  ,VALR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,16 +45,12 @@ C                'L': LECTURE DONNEE
 C                'E': ECRITURE DONNEE
 C IN  TYPOPE  : OPERATION SUR LE VECTEUR DIAGNOSTIC
 C                'CONT' - COMPTEUR BOUCLE CONTACT
-C                  'CONC' - CUMULE SUR PAS DE TEMPS
-C                'GEOM' - COMPTEUR BOUCLE GEOMETRIE
+C                'CONC' - CUMULE SUR PAS DE TEMPS
 C                'FROT' - COMPTEUR BOUCLE FROTTEMENT
 C                'LIAC' - COMPTEUR LIAISONS DE CONTACT
 C                'LIAF' - COMPTEUR LIAISONS DE FROTTEMENT
 C                'TIMA' - TEMPS ALGORITHME DE RESOLUTION
 C                'TIMG' - TEMPS ALGORITHME D'APPARIEMENT GEOMETRIQUE
-
-
-
 C I/O  VALI   : VALEUR ENTIERE A LIRE OU ECRIRE
 C I/O  VALR   : VALEUR REELLE A LIRE OU ECRIRE
 C
@@ -77,9 +73,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-
-      INTEGER      ZDIAG
-      PARAMETER    (ZDIAG=10)
+      INTEGER      CFMMVD,ZDIAG
       CHARACTER*24 DIAGI,DIAGT
       INTEGER      JDIAGI,JDIAGT
       INTEGER      I
@@ -94,6 +88,7 @@ C
       DIAGT  = RESOCO(1:14)//'.DIAG.TIME'
       CALL JEVEUO(DIAGI,'E',JDIAGI)
       CALL JEVEUO(DIAGT,'E',JDIAGT)
+      ZDIAG  = CFMMVD('ZDIAG')
 C
 C ---
 C  
@@ -109,17 +104,14 @@ C
         ELSE IF (TYPOPE.EQ.'LIAC') THEN
           ZI(JDIAGI-1+2) = VALI
         ELSE IF (TYPOPE.EQ.'LIAF') THEN
-          ZI(JDIAGI-1+3) = VALI                  
-        ELSE IF (TYPOPE.EQ.'GEOM') THEN
-          ZI(JDIAGI-1+4) = ZI(JDIAGI-1+4)+VALI   
+          ZI(JDIAGI-1+3) = VALI                   
         ELSE IF (TYPOPE.EQ.'FROT') THEN
-          ZI(JDIAGI-1+5) = ZI(JDIAGI-1+5)+VALI    
-          
+          ZI(JDIAGI-1+5) = ZI(JDIAGI-1+5)+VALI
+C          
         ELSE IF (TYPOPE.EQ.'TIMA') THEN
           ZR(JDIAGT-1+1) = ZR(JDIAGT-1+1)+VALR
         ELSE IF (TYPOPE.EQ.'TIMG') THEN
-          ZR(JDIAGT-1+2) = ZR(JDIAGT-1+2)+VALR          
-                                
+          ZR(JDIAGT-1+2) = ZR(JDIAGT-1+2)+VALR
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
@@ -129,19 +121,16 @@ C
         ELSE IF (TYPOPE.EQ.'LIAC') THEN
           VALI = ZI(JDIAGI-1+2) 
         ELSE IF (TYPOPE.EQ.'LIAF') THEN
-          VALI = ZI(JDIAGI-1+3)          
-        ELSE IF (TYPOPE.EQ.'GEOM') THEN
-          VALI = ZI(JDIAGI-1+4)  
+          VALI = ZI(JDIAGI-1+3)
         ELSE IF (TYPOPE.EQ.'FROT') THEN
           VALI = ZI(JDIAGI-1+5)                      
         ELSE IF (TYPOPE.EQ.'CONC') THEN
           VALI = ZI(JDIAGI-1+1) 
-                                               
+C                                               
         ELSE IF (TYPOPE.EQ.'TIMA') THEN
           VALR = ZR(JDIAGT-1+1)
         ELSE IF (TYPOPE.EQ.'TIMG') THEN
-          VALR = ZR(JDIAGT-1+2)
-                   
+          VALR = ZR(JDIAGT-1+2)           
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF

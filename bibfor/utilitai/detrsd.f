@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,7 @@ C          'CHAMP' (CHAPEAU AUX CHAM_NO/CHAM_ELEM/CARTE/RESUELEM)
 C          'CHAMP_GD' (CHAPEAU DESUET AUX CHAM_NO/CHAM_ELEM/...)
 C          'RESULTAT'  'LIGREL'  'NUAGE'  'MAILLAGE' 'CRITERE'
 C          (OU ' ' QUAND ON NE CONNAIT PAS LE TYPE).
+C          'LISTE_CHARGE' LISTE DES CHARGES
 C       NOMSD   : NOM DE LA STRUCTURE DE DONNEES A DETRUIRE
 C          NUME_DDL(K14),MATR_ASSE(K19),VECT_ASSE(K19)
 C          CHAMP(K19),MATR_ELEM(K8),VECT_ELEM(K8),VARI_COM(K14)
@@ -67,7 +68,7 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER IRET,IAD,LONG,I,NBCH,JRELR,IBID,NBSD,IFETS,ILIMPI,IDD
-      INTEGER IFETM,IFETN,IFETC,ITYOBJ,INOMSD,NBLG,NBPA,NBLP,N1,K
+      INTEGER IFETM,IFETN,IFETC,ITYOBJ,INOMSD,NBLG,NBPA,NBLP,N1
       INTEGER JLTNS
       CHARACTER*1 K1BID
       CHARACTER*8 MAILLA,METRES,K8BID,PARTIT
@@ -124,9 +125,9 @@ C     -------------------------------------------
         CALL JEDETR(CORRES//'.PJEF_NB')
         CALL JEDETR(CORRES//'.PJEF_M1')
         CALL JEDETR(CORRES//'.PJEF_CF')
-        CALL JEDETR(CORRES//'.PJEF_CO')
         CALL JEDETR(CORRES//'.PJEF_TR')
         CALL JEDETR(CORRES//'.PJEF_AM')
+        CALL JEDETR(CORRES//'.PJEF_CO')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'CRITERE') THEN
@@ -588,7 +589,7 @@ C     ---------------------------------------
         CALL JELIRA(MATEL//'.RELR','LONUTI',NBCH,K1BID)
         IF(NBCH.GT.0) CALL JEVEUO(MATEL//'.RELR','L',JRELR)
         DO 60,I = 1,NBCH
-          CHAMP=ZK24(JRELR-1+I)
+          CHAMP=ZK24(JRELR-1+I)(1:19)
           CALL ASSDE1(CHAMP)
    60   CONTINUE
    61   CONTINUE
@@ -615,6 +616,14 @@ C     -----------------------------------
         CALL JEDETR(RESU//'.RS24')
         CALL JEDETR(RESU//'.RS32')
         CALL JEDETR(RESU//'.RS80')
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'LISTE_CHARGES') THEN
+C     -----------------------------------
+        RESU = NOMSD
+        CALL JEDETR(RESU//'.LCHA')
+        CALL JEDETR(RESU//'.INFC')
+        CALL JEDETR(RESU//'.FCHA')
 
 C     ------------------------------------------------------------------
       ELSE

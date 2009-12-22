@@ -1,7 +1,7 @@
       SUBROUTINE NMASCO(TYPVEC,FONACT,DEFICO,VEASSE,CNCONT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       CHARACTER*6   TYPVEC
-      LOGICAL       FONACT(*)   
+      INTEGER       FONACT(*)   
       CHARACTER*24  DEFICO
       CHARACTER*19  VEASSE(*)
       CHARACTER*19  CNCONT      
@@ -67,14 +67,11 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C 
-      LOGICAL      ISFONC,LCTCC,LCTFD,LXFCM,LTFCM,LCTFC
-      CHARACTER*24 K24BLA,K24BID
-      INTEGER      IBID,IFDO,N,TYPALC
+      LOGICAL      ISFONC,CFDISL,LELTC,LELTF,LCTFD,LPENAC
+      INTEGER      IFDO,N
       CHARACTER*19 VECT(20)
       REAL*8       COEF(20)      
-      REAL*8       R8BID
-      CHARACTER*19 NMCHEX,CNCTDF,CNCTCC,CNCTCF,CNXFEC,CNXFEF
-      CHARACTER*19 CNXFTC,CNXFTF
+      CHARACTER*19 CNCTDF,CNELTC,CNELTF
 C 
 C ----------------------------------------------------------------------
 C
@@ -82,77 +79,43 @@ C
 C
 C --- INITIALISATIONS
 C
-      K24BLA = ' '
       IFDO   = 0    
       CALL VTZERO(CNCONT)   
 C
 C --- FONCTIONNALITES ACTIVEES
 C     
-      LCTCC  = ISFONC(FONACT,'CONT_CONTINU') 
-      LCTFC  = ISFONC(FONACT,'FROT_CONTINU')
-      LCTFD  = ISFONC(FONACT,'FROT_DISCRET')    
-      LXFCM  = ISFONC(FONACT,'CONT_XFEM') 
-      LTFCM = .FALSE.
-      IF (LXFCM) THEN
-        CALL MMINFP(0    ,DEFICO,K24BLA,'XFEM_GG',
-     &              IBID ,R8BID ,K24BID,LTFCM)
-      ENDIF 
-      CALL CFDISC(DEFICO,' ',TYPALC,IBID,IBID,IBID)
+      LELTC  = ISFONC(FONACT,'ELT_CONTACT')
+      LELTF  = ISFONC(FONACT,'ELT_FROTTEMENT')
+      LCTFD  = ISFONC(FONACT,'FROT_DISCRET')
+      LPENAC = CFDISL(DEFICO,'CONT_PENA')
 C
 C --- FORCES DE FROTTEMENT DISCRET
 C
       IF (TYPVEC.EQ.'CNDIRI') THEN
-        IF ((LCTFD).OR.(ABS(TYPALC).EQ.1)) THEN
-          CNCTDF     = NMCHEX(VEASSE,'VEASSE','CNCTDF') 
+        IF ((LCTFD).OR.(LPENAC)) THEN
+          CALL NMCHEX(VEASSE,'VEASSE','CNCTDF',CNCTDF) 
           IFDO       = IFDO + 1 
           COEF(IFDO) = 1.D0   
           VECT(IFDO) = CNCTDF
         ENDIF 
       ENDIF                     
 C
-C --- FORCES DE CONTACT/FROTTEMENT METHODE CONTINUE
+C --- FORCES DES ELEMENTS DE CONTACT (XFEM+CONTINUE)
 C
       IF (TYPVEC.EQ.'CNFINT') THEN
-       IF ((LCTCC.AND.(.NOT.LXFCM))) THEN
-         CNCTCC     = NMCHEX(VEASSE,'VEASSE','CNCTCC')  
-         IFDO       = IFDO + 1 
+       IF (LELTC) THEN
+         CALL NMCHEX(VEASSE,'VEASSE','CNELTC',CNELTC)  
+         IFDO       = IFDO + 1
          COEF(IFDO) = 1.D0   
-         VECT(IFDO) = CNCTCC 
+         VECT(IFDO) = CNELTC 
        ENDIF  
-       IF ((LCTFC.AND.(.NOT.LXFCM))) THEN    
-         CNCTCF     = NMCHEX(VEASSE,'VEASSE','CNCTCF')  
+       IF (LELTF) THEN    
+         CALL NMCHEX(VEASSE,'VEASSE','CNELTF',CNELTF)  
          IFDO       = IFDO + 1 
          COEF(IFDO) = 1.D0   
-         VECT(IFDO) = CNCTCF                    
+         VECT(IFDO) = CNELTF                    
        ENDIF
-C
-C --- FORCES DE CONTACT/FROTTEMENT XFEM
-C
-       IF (LXFCM) THEN
-         CNXFEC     = NMCHEX(VEASSE,'VEASSE','CNXFEC')         
-         IFDO       = IFDO + 1 
-         COEF(IFDO) = 1.D0   
-         VECT(IFDO) = CNXFEC   
-         CNXFEF     = NMCHEX(VEASSE,'VEASSE','CNXFEF')  
-         IFDO       = IFDO + 1 
-         COEF(IFDO) = 1.D0   
-         VECT(IFDO) = CNXFEF            
-       ENDIF       
-
-C
-C --- FORCES DE CONTACT/FROTTEMENT XFEM GRANDS GLISSEMENTS
-C
-       IF (LTFCM) THEN       
-         CNXFTC     = NMCHEX(VEASSE,'VEASSE','CNXFTC')  
-         IFDO       = IFDO + 1 
-         COEF(IFDO) = 1.D0   
-         VECT(IFDO) = CNXFTC   
-         CNXFTF     = NMCHEX(VEASSE,'VEASSE','CNXFTF')  
-         IFDO       = IFDO + 1 
-         COEF(IFDO) = 1.D0   
-         VECT(IFDO) = CNXFTF 
-        ENDIF  
-      ENDIF                      
+      ENDIF                  
 C
 C --- VECTEUR RESULTANT 
 C       

@@ -1,7 +1,7 @@
       SUBROUTINE MAJUSU(NOMA  ,DEFICO,RESOCO,DEPMOI,DEPDEL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C
       IMPLICIT NONE
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO,RESOCO       
-      CHARACTER*24 DEPMOI,DEPDEL           
+      CHARACTER*19 DEPMOI,DEPDEL           
 C      
 C ----------------------------------------------------------------------
 C
@@ -67,23 +67,25 @@ C
 C      
       INTEGER      CFMMVD,ZTABF,ZMAES
       INTEGER      IFM,NIV    
-      INTEGER      IZONE,IBID 
-      INTEGER      JTABF,IACNX1,ILCNX1
-      INTEGER      JDIM,NDIM,NUNO,JUSU
-      INTEGER      I,J,K,INO,IMA
-      INTEGER      NCMPMX,JMAESC,NTMA
+      INTEGER      IBID ,CFDISI,NZOCO
+      INTEGER      IACNX1,ILCNX1
+      INTEGER      NDIM,NUNO
+      INTEGER      I,J,K,INO,IMA,IZONE
+      CHARACTER*24 MAESCL,TABFIN,JEUSUR
+      INTEGER      JMAESC,JTABF ,JUSU
+      INTEGER      NCMPMX,NTMAE
       INTEGER      JDEPDE,JDEMDE,NBPC,GD
       CHARACTER*19 USUMOI,USUPLU,USUFIX,USUINI
       INTEGER      JVALVM,JVALVP,JVALVI,JVALVX      
       INTEGER      NUMMAM,NUMMAE,NNOM,NNOE,NTPC
-      REAL*8       KWEAR,HWEAR,TAU1(3),TAU2(3),NORM(3),XPG,YPG,FF(9)
+      REAL*8       MMINFR,KWEAR,HWEAR
+      REAL*8       TAU1(3),TAU2(3),NORM(3),XPG,YPG,FF(9)
       REAL*8       DEPLPE(3),DEPLME(3),DEPLPM(3),DEPLMM(3),LAGSCP
       REAL*8       DEPPT(3),DEPMT(3),DEP(3),DISSIP,C(3,3)
-      REAL*8       R8BID,NOOR,R8PREM
+      REAL*8       NOOR,R8PREM
       CHARACTER*8  ALIAS,K8BID,NOMGD
       CHARACTER*19 DEPDES,DEPCN,DEPMOS,DEMCN
-      CHARACTER*24 K24BID,K24BLA
-      LOGICAL      LUSURE,LBID
+      LOGICAL      MMINFL,LUSURE
 C ----------------------------------------------------------------------
       DATA LICMP4
      &   / 'DX'     ,'DY'      ,
@@ -95,16 +97,23 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFNIV(IFM,NIV)
+      CALL INFDBG('CONTACT',IFM,NIV)      
 C
 C --- USURE ?      
-C      
-      K24BLA = ' '
-      CALL MMINFP(0     ,DEFICO,K24BLA,'USURE',
-     &            IBID  ,R8BID ,K24BID,LUSURE) 
+C  
+      LUSURE = .FALSE.
+      NZOCO  = CFDISI(DEFICO,'NZOCO')
+      DO 10 IZONE = 1, NZOCO
+        LUSURE = MMINFL(DEFICO,'USURE',IZONE )
+        IF (LUSURE) THEN
+          GOTO 15
+        ENDIF
+   10 CONTINUE 
+C
+  15  CONTINUE
       IF (.NOT. LUSURE) THEN
         GOTO 999
-      END IF     
+      END IF
 C
 C --- NBRE COMPOSANTES CARTE USURE
 C      
@@ -124,13 +133,15 @@ C
         WRITE (IFM,*) '<CONTACT> MISE A JOUR DE LA CARTE DES'//
      &        ' PROFILS USURE' 
       ENDIF  
-C      
-C --- RECUPERATION DE QUELQUES DONNEES      
+C    
+C --- ACCES SD CONTACT      
 C
-      CALL JEVEUO(DEFICO(1:16)//'.NDIMCO','L',JDIM)
-      CALL JEVEUO(DEFICO(1:16)//'.TABFIN','L',JTABF)
-      CALL JEVEUO(DEFICO(1:16)//'.MAESCL','L',JMAESC) 
-      CALL JEVEUO(DEFICO(1:16)//'.JEUSUR','E',JUSU) 
+      MAESCL = DEFICO(1:16)//'.MAESCL'
+      TABFIN = RESOCO(1:14)//'.TABFIN'
+      JEUSUR = RESOCO(1:14)//'.JEUSUR'
+      CALL JEVEUO(TABFIN,'L',JTABF )
+      CALL JEVEUO(MAESCL,'L',JMAESC) 
+      CALL JEVEUO(JEUSUR,'E',JUSU  ) 
       CALL JEVEUO(NOMA//'.CONNEX','L',IACNX1)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',ILCNX1)   
 C
@@ -139,9 +150,9 @@ C
 C
 C --- INITIALISATIONS
 C
-      NTMA   = ZI(JMAESC)
       NTPC   = 0
-      NDIM   = ZI(JDIM) 
+      NDIM   = CFDISI(DEFICO,'NDIM' )
+      NTMAE  = CFDISI(DEFICO,'NTMAE')      
 C      
 C --- ACCES AUX CARTES D'USURE      
 C
@@ -178,22 +189,20 @@ C
 
       
       IF (NDIM .EQ. 3) THEN  
-        DO 61 IMA = 1,NTMA  
-          NBPC  = ZI(JMAESC+ZMAES*(IMA-1)+3)
-          IZONE = ZI(JMAESC+ZMAES*(IMA-1)+2)
-          CALL MMINFP(IZONE ,DEFICO,K24BLA,'USURE_K',
-     &                IBID  ,KWEAR ,K24BID,LBID)  
-          CALL MMINFP(IZONE ,DEFICO,K24BLA,'USURE_H',
-     &                IBID  ,HWEAR ,K24BID,LBID)                 
+        DO 61 IMA = 1,NTMAE
+          NBPC  = ZI(JMAESC+ZMAES*(IMA-1)+3-1)
+          IZONE = ZI(JMAESC+ZMAES*(IMA-1)+2-1)
+          KWEAR = MMINFR(DEFICO,'USURE_K',IZONE )
+          HWEAR = MMINFR(DEFICO,'USURE_H',IZONE )
           DO 51 INO = 1,NBPC
             NUMMAE   = NINT(ZR(JTABF+ZTABF*(NTPC+INO-1)+1))
             NUMMAM   = NINT(ZR(JTABF+ZTABF*(NTPC+INO-1)+2))
-            TAU1(1)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+6)
-            TAU1(2)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+7)
-            TAU1(3)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+8)
-            TAU2(1)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+9)
-            TAU2(2)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+10)
-            TAU2(3)  = ZR(JTABF+ZTABF*(NTPC+INO-1)+11)
+            TAU1(1)  =      ZR(JTABF+ZTABF*(NTPC+INO-1)+7)
+            TAU1(2)  =      ZR(JTABF+ZTABF*(NTPC+INO-1)+8)
+            TAU1(3)  =      ZR(JTABF+ZTABF*(NTPC+INO-1)+9)
+            TAU2(1)  =      ZR(JTABF+ZTABF*(NTPC+INO-1)+10)
+            TAU2(2)  =      ZR(JTABF+ZTABF*(NTPC+INO-1)+11)
+            TAU2(3)  =      ZR(JTABF+ZTABF*(NTPC+INO-1)+12)
             CALL MMNORM(NDIM,TAU1,TAU2,NORM,NOOR)
             IF (NOOR.LT.R8PREM()) THEN
               CALL ASSERT(.FALSE.)
@@ -213,7 +222,7 @@ C --- MAILLE ESCLAVE
 C       
             CALL MMELTY(NOMA,NUMMAE,ALIAS,NNOE,IBID)
             XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
-            YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+12)
+            YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
             CALL MMNONF(NDIM,NNOE,ALIAS,XPG,YPG,FF)
             DEPLPE(1) = 0.D0
             DEPLPE(2) = 0.D0
@@ -236,8 +245,8 @@ C
 C --- MAILLE MAITRE
 C             
             CALL MMELTY(NOMA,NUMMAM,ALIAS,NNOM,IBID)
-            XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
-            YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
+            XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
+            YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+6)
             CALL MMNONF(NDIM,NNOM,ALIAS,XPG,YPG,FF)
             DEPLPM(1) = 0.D0
             DEPLPM(2) = 0.D0
@@ -291,18 +300,17 @@ C
           NTPC = NTPC + NBPC
  61     CONTINUE
       ELSE IF (NDIM.EQ.2) THEN
-        DO 62 IMA = 1,NTMA
-          NBPC  = ZI(JMAESC+ZMAES* (IMA-1)+3)
-          IZONE = ZI(JMAESC+ZMAES* (IMA-1)+2)
-          CALL MMINFP(IZONE ,DEFICO,K24BLA,'USURE_K',
-     &                IBID  ,KWEAR ,K24BID,LBID)  
-          CALL MMINFP(IZONE ,DEFICO,K24BLA,'USURE_H',
-     &                IBID  ,HWEAR ,K24BID,LBID)     
+        DO 62 IMA = 1,NTMAE
+          NBPC  = ZI(JMAESC+ZMAES*(IMA-1)+3-1)
+          IZONE = ZI(JMAESC+ZMAES*(IMA-1)+2-1)
+          KWEAR = MMINFR(DEFICO,'USURE_K',IZONE )
+          HWEAR = MMINFR(DEFICO,'USURE_H',IZONE )
+    
           DO 52 INO = 1,NBPC
             NUMMAE  = NINT(ZR(JTABF+ZTABF* (NTPC+INO-1)+1))
-            NUMMAM   = NINT(ZR(JTABF+ZTABF* (NTPC+INO-1)+2))
-            TAU1(1)  = ZR(JTABF+ZTABF* (NTPC+INO-1)+6)
-            TAU1(2)  = ZR(JTABF+ZTABF* (NTPC+INO-1)+7)
+            NUMMAM  = NINT(ZR(JTABF+ZTABF* (NTPC+INO-1)+2))
+            TAU1(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+7)
+            TAU1(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+8)
             CALL MMNORM(NDIM,TAU1,TAU2,NORM,NOOR)
             IF (NOOR.LT.R8PREM()) THEN
               CALL ASSERT(.FALSE.)
@@ -322,7 +330,7 @@ C --- MAILLE ESCLAVE
 C       
             CALL MMELTY(NOMA,NUMMAE,ALIAS,NNOE,IBID)
             XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
-            YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+12)
+            YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
             CALL MMNONF(NDIM,NNOE,ALIAS,XPG,YPG,FF)
             DEPLPE(1) = 0.D0
             DEPLPE(2) = 0.D0
@@ -341,8 +349,8 @@ C
 C --- MAILLE MAITRE
 C             
             CALL MMELTY(NOMA,NUMMAM,ALIAS,NNOM,IBID)
-            XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
-            YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
+            XPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
+            YPG = ZR(JTABF+ZTABF* (NTPC+INO-1)+6)
             CALL MMNONF(NDIM,NNOM,ALIAS,XPG,YPG,FF)
             DEPLPM(1) = 0.D0
             DEPLPM(2) = 0.D0
@@ -404,6 +412,15 @@ C
       CALL JEDETR(USUPLU//'.VALV')
       CALL JEDETR(USUFIX//'.NCMP')
       CALL JEDETR(USUFIX//'.VALV')
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<CONTACT> ... USURE MOINS'
+        CALL NMDEBG('VECT',USUMOI,6)
+        WRITE (IFM,*) '<CONTACT> ... USURE PLUS'
+        CALL NMDEBG('VECT',USUPLU,6)      
+        WRITE (IFM,*) '<CONTACT> ... USURE FIXE'
+        CALL NMDEBG('VECT',USUFIX,6)
+      ENDIF      
 C
  999  CONTINUE      
 C

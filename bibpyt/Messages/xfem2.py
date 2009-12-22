@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF xfem2 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,12 +34,6 @@ cata_msg = {
      Veuillez considérer l'une des deux modélisations dans AFFE_MODELE.
 """),
 
-4 : _("""
-  -> Le type de formulation du contact (DISCRET/CONTINUE/XFEM) doit etre le meme pour
-     toutes les zones de contact.
-  -> Risque & Conseil:
-     Veuillez revoir la mise en données de AFFE_CHAR_MECA/CONTACT.
-"""),
 
 7 : _("""
   -> Le contact a été activé dans XFEM (CONTACT_XFEM='OUI' dans MODI_MODELE_XFEM)

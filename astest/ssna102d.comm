@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102d.para = tps_job 70 mem_job 100Mo ncpus 1 liste_test S
@@ -139,20 +139,25 @@ LIAI=AFFE_CHAR_MECA(
 # --------------------------------------------------------------------
 #
 
-CONT=AFFE_CHAR_MECA( 
-                           MODELE=MOD,CONTACT=(
-                               _F(  GROUP_MA_MAIT = 'LAB1S',
-                                         GROUP_MA_ESCL = 'CEP2S',
-                                         METHODE = 'CONTINUE',),
-                               _F(  GROUP_MA_MAIT = 'CME2S',
-                                         GROUP_MA_ESCL = 'CEP3S',
-                                         METHODE = 'CONTINUE',),
-                               _F(  GROUP_MA_MAIT = 'CME3S',
-                                         GROUP_MA_ESCL = 'LCD4S',
-                                         METHODE = 'CONTINUE',),
+CONT = DEFI_CONTACT(MODELE      = MOD,
+                    FORMULATION = 'CONTINUE',
+                    REAC_GEOM   = 'CONTROLE',
+                    NB_ITER_GEOM= 3,
+                    ZONE = (
+                             _F(
+                                 GROUP_MA_MAIT = 'LAB1S',
+                                 GROUP_MA_ESCL = 'CEP2S',
                                ),
-                           INFO=1
-                       )
+                             _F(
+                                 GROUP_MA_MAIT = 'CME2S',
+                                 GROUP_MA_ESCL = 'CEP3S',
+                               ),
+                             _F(
+                                 GROUP_MA_MAIT = 'CME3S',
+                                 GROUP_MA_ESCL = 'LCD4S',
+                               ),                                                              
+                           ),
+                    )           
 
 #
 # --------------------------------------------------------------------
@@ -185,10 +190,10 @@ RESU=STAT_NON_LINE(
                           CHAM_MATER=CHMAT,EXCIT=(
                           _F(  CHARGE = BLOQ),
                                 _F(  CHARGE = DEPL,   FONC_MULT = FONC),
-                                _F(  CHARGE = LIAI),
-                                _F(  CHARGE = CONT)),
+                                _F(  CHARGE = LIAI),),
+                          CONTACT  = CONT,      
                           COMP_ELAS=_F(  RELATION = 'ELAS'),
-                          NEWTON=_F(  MATRICE = 'ELASTIQUE'),
+                          NEWTON=_F(  MATRICE = 'ELASTIQUE',REAC_ITER=1),
                           INCREMENT=_F(  LIST_INST = LINST),
                           CONVERGENCE=_F( 
                                         RESI_GLOB_RELA = 1.E-6,
@@ -224,8 +229,7 @@ RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU, MODELE=MOD, EXCIT=(
                      _F(  CHARGE = BLOQ),
                            _F(  CHARGE = DEPL,
                              FONC_MULT = FONC),
-                           _F(  CHARGE = LIAI),
-                           _F(  CHARGE = CONT)),
+                           _F(  CHARGE = LIAI)),
                      OPTION='REAC_NODA'
                   )
 

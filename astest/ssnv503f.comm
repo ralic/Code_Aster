@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 # ssnv503f.para = tps_job 70 mem_job 64Mo mem_aster 60 ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,23 +127,29 @@ PTAN_101=AFFE_CHAR_MECA(MODELE=MO,
 # DEFINITION DU CONTACT
 
 F_DIST_E=DEFI_CONSTANTE(VALE=-2.)
-
-CTAC=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               REAC_GEOM='CONTROLE',
-                               NB_REAC_GEOM=2,
-                               METHODE='PENALISATION',
-                               FROTTEMENT='COULOMB',
-                               COULOMB=0.3,
-                               E_T=1.E6,
-                               COEF_MATR_FROT=0.9,
-                               GROUP_MA_MAIT='SMAI',
-                               GROUP_MA_ESCL='SESC',
-                               NORMALE           = 'MAIT',
-                               VECT_MAIT         = 'VECT_Y',
-                               MAIT_VECT_Y       = (0.,0.,-1.,),
-                               DIST_ESCL=F_DIST_E,
-                               ),);
+CTAC =DEFI_CONTACT(MODELE       = MO,
+                   FORMULATION  = 'DISCRETE',
+                   FROTTEMENT   = 'COULOMB',
+                   REAC_GEOM    = 'CONTROLE',
+                   NB_ITER_GEOM = 2,
+                   ZONE=(
+                        _F(
+                          ALGO_CONT      = 'LAGRANGIEN',
+                          ALGO_FROT      = 'PENALISATION',
+                          COULOMB        = 0.3,
+                          COEF_MATR_FROT = 0.9,
+                          E_T            = 1.E+6,
+                          APPARIEMENT    = 'MAIT_ESCL',
+                          GROUP_MA_MAIT  = 'SMAI',
+                          GROUP_MA_ESCL  = 'SESC',
+                          NORMALE        = 'MAIT',
+                          VECT_MAIT      = 'VECT_Y',
+                          MAIT_VECT_Y    = (0.,0.,-1.,),
+                          DIST_ESCL      = F_DIST_E,
+                         ),                                                   
+                       ),  
+                  )
+                  
 
 #---------------------------------------------------------------------
 #                         RESOLUTION
@@ -173,8 +179,8 @@ U_NOR=STAT_NON_LINE(MODELE=MO,
                     CARA_ELEM=CARA,
                     EXCIT=(_F(CHARGE=PNOR,
                               FONC_MULT=RAMP1,),
-                           _F(CHARGE=CTAC,),
                            _F(CHARGE=COND_LIM,),),
+                    CONTACT  = CTAC,       
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -192,7 +198,6 @@ U_NOR=CALC_NO(reuse =U_NOR,
               OPTION='REAC_NODA',
               EXCIT=(_F(CHARGE=PNOR,
                         FONC_MULT=RAMP1,),
-                     _F(CHARGE=CTAC,),
                      _F(CHARGE=COND_LIM,),),
               );
                                                
@@ -204,8 +209,8 @@ U_99=STAT_NON_LINE(MODELE=MO,
                              FONC_MULT=RAMP1,),
                           _F(CHARGE=PTAN_99,
                              FONC_MULT=RAMP2,),
-                          _F(CHARGE=CTAC,),
                           _F(CHARGE=COND_LIM,),),
+                   CONTACT  = CTAC,       
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,),
@@ -224,7 +229,6 @@ U_99=CALC_NO(reuse =U_99,
                        FONC_MULT=RAMP1,),
                     _F(CHARGE=PTAN_99,
                        FONC_MULT=RAMP2,),
-                    _F(CHARGE=CTAC,),
                     _F(CHARGE=COND_LIM,),),
               );
 
@@ -236,8 +240,8 @@ U_101=STAT_NON_LINE(MODELE=MO,
                               FONC_MULT=RAMP1,),
                            _F(CHARGE=PTAN_101,
                               FONC_MULT=RAMP2,),
-                           _F(CHARGE=CTAC,),
                            _F(CHARGE=COND_LIM,),),
+                    CONTACT  = CTAC,       
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -259,7 +263,6 @@ U_101=CALC_NO(reuse =U_101,
                         FONC_MULT=RAMP1,),
                      _F(CHARGE=PTAN_101,
                         FONC_MULT=RAMP2,),
-                     _F(CHARGE=CTAC,),
                      _F(CHARGE=COND_LIM,),),
               );
 

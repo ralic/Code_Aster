@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100e.para = tps_job 60 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,8 +24,6 @@
 # METHODE DE CONTACT : CONTINUE EN VITESSE, TETA=0.5
 
 DEBUT( CODE=_F(  NOM = 'SDNV100E',NIV_PUB_WEB='INTERNET') )
-
-#PRE_GIBI()
 
 MAILL=LIRE_MAILLAGE( )
 
@@ -75,17 +73,16 @@ CH=AFFE_CHAR_MECA(
                                  )
            )
 
-CH2=AFFE_CHAR_MECA(
-                   MODELE=MODE,
-                   CONTACT=_F(
-                              METHODE        = 'CONTINUE',
-                              FORMULATION    = 'VITE',
-                              COEF_REGU_CONT  = 1.E-2,
-                              ITER_GEOM_MAXI  = 0,
+CH2 = DEFI_CONTACT(MODELE      = MODE,
+                   FORMULATION = 'CONTINUE',
+                   REAC_GEOM   = 'SANS',
+                   ZONE        =_F(
+                              ALGO_CONT = 'STANDARD',
+                              COEF_CONT = 1.0E-2,
                               GROUP_MA_ESCL  = 'FACEINF',
                               GROUP_MA_MAIT  = 'SSOL',
-                             )
-                  )
+                                 ),
+                   )                        
 
 # ************* CHAMP DE VITESSE INITIALE ***************
 
@@ -130,8 +127,8 @@ U=DYNA_NON_LINE(  MODELE=MODE,  CHAM_MATER=CM,
            EXCIT=(_F( CHARGE = CH,
                       FONC_MULT = RAMPE
                     ),
-                  _F( CHARGE = CH2,)
                  ),
+         CONTACT     = CH2,        
          ETAT_INIT   =_F(DEPL = CHAMP2,VITE = CHAMP1),
          COMP_ELAS   =_F( RELATION = 'ELAS',),
          INCREMENT   =_F( INST_INIT = 0.,LIST_INST = L_INST),
@@ -322,6 +319,5 @@ TEST_FONCTION(VALEUR=_F(FONCTION=MVC,
                          CRITERE='ABSOLU',
                          PRECISION=1.3,
                          ),),
-
 
 FIN();

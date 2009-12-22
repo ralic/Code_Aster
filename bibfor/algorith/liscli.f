@@ -1,0 +1,182 @@
+      SUBROUTINE LISCLI(LISCHA,ICHAR ,NOMCHA,NOMFCT,NBINFO,
+     &                  LISINZ,IVAL  )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT NONE
+      CHARACTER*19  LISCHA
+      INTEGER       ICHAR,IVAL,NBINFO
+      CHARACTER*8   NOMCHA,NOMFCT
+      CHARACTER*(*) LISINZ(*)
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE UTILITAIRE (LISTE_CHARGES)
+C
+C LIRE UNE CHARGE DE LA SD LISTE_CHARGES
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  LISCHA : NOM DE LA SD LISTE_CHARGES
+C IN  ICHAR  : INDICE DU CHARGEMENT DANS LA LISTE
+C OUT NOMCHA : NOM DE LA CHARGE
+C OUT NOMFCT : NOM DE LA FONCT. MULTIPLICATRICE
+C OUT INFOCH : INFO SUR LA CHARGE 
+C OUT IVAL   : VALEUR DE LA CHARGE POUR CERTAINS TYPES
+C
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*24 CHARGE,INFCHA,FOMULT
+      INTEGER      JALICH,JINFCH,JALIFC
+      INTEGER      NCHAR   
+      CHARACTER*24 INFOCH
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- ACCES SD
+C
+      CHARGE = LISCHA(1:19)//'.LCHA'
+      INFCHA = LISCHA(1:19)//'.INFC'
+      FOMULT = LISCHA(1:19)//'.FCHA'
+C      
+      CALL JEVEUO(CHARGE,'L',JALICH)
+      CALL JEVEUO(INFCHA,'L',JINFCH)
+      CALL JEVEUO(FOMULT,'L',JALIFC)
+      NCHAR  = ZI(JINFCH)
+      CALL ASSERT(ICHAR.GT.0)
+      CALL ASSERT(ICHAR.LE.NCHAR)
+C
+      NOMCHA = ZK24(JALICH+ICHAR-1)(1:8)
+      NOMFCT = ZK24(JALIFC+ICHAR-1)(1:8) 
+      NBINFO = 0
+C
+      IF (ZI(JINFCH+ICHAR).EQ.-1) THEN
+        NBINFO = 1
+        INFOCH = 'CINE_CSTE'
+        LISINZ(NBINFO) = INFOCH
+      
+      ELSEIF (ZI(JINFCH+ICHAR) .EQ. -2) THEN
+        NBINFO = 1
+        INFOCH = 'CINE_FO'
+        LISINZ(NBINFO) = INFOCH
+        
+      ELSEIF (ZI(JINFCH+ICHAR) .EQ. -3) THEN
+        NBINFO = 1
+        INFOCH = 'CINE_FT'
+        LISINZ(NBINFO) = INFOCH
+        
+      ELSEIF (ZI(JINFCH+ICHAR) .EQ. 5) THEN
+        NBINFO = 1
+        INFOCH = 'DIRI_PILO'
+        LISINZ(NBINFO) = INFOCH
+        
+      ELSEIF (ZI(JINFCH+ICHAR) .EQ. 1) THEN
+        NBINFO = 1
+        INFOCH = 'DIRI_CSTE'
+        IF ( ZI(JINFCH+3*NCHAR+2+ICHAR).EQ.1) THEN
+          INFOCH = INFOCH(1:9)//'_DIDI'
+        ENDIF
+        LISINZ(NBINFO) = INFOCH
+
+      ELSEIF (ZI(JINFCH+ICHAR) .EQ. 2) THEN
+        NBINFO = 1
+        INFOCH = 'DIRI_FO'
+        IF ( ZI(JINFCH+3*NCHAR+2+ICHAR).EQ.1) THEN
+          INFOCH = INFOCH(1:9)//'_DIDI'
+        ENDIF        
+        LISINZ(NBINFO) = INFOCH
+
+      ELSEIF (ZI(JINFCH+ICHAR) .EQ. 3) THEN
+        NBINFO = 1
+        INFOCH = 'DIRI_FT'
+        IF ( ZI(JINFCH+3*NCHAR+2+ICHAR).EQ.1) THEN
+          INFOCH = INFOCH(1:9)//'_DIDI'
+        ENDIF        
+        LISINZ(NBINFO) = INFOCH
+      ENDIF
+C
+      IF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 6) THEN
+        NBINFO = NBINFO + 1
+        INFOCH = 'NEUM_ONDE'
+        LISINZ(NBINFO) = INFOCH
+        
+      ELSEIF ((ZI(JINFCH+NCHAR+ICHAR) .EQ. 55) .AND.
+     &        (ZI(JINFCH+4*NCHAR+4)   .EQ. 99) ) THEN   
+        NBINFO = NBINFO + 1
+        INFOCH = 'NEUM_SIGM_INT'
+        LISINZ(NBINFO) = INFOCH
+
+      ELSEIF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 5) THEN
+        NBINFO = NBINFO + 1
+        INFOCH = 'NEUM_PILO'
+        LISINZ(NBINFO) = INFOCH
+        
+      ELSEIF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 4) THEN       
+        NBINFO = NBINFO + 1
+        INFOCH = 'NEUM_SUIV'  
+        LISINZ(NBINFO) = INFOCH    
+        
+      ELSEIF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 2) THEN
+        NBINFO = NBINFO + 1
+        INFOCH = 'NEUM_FO'
+        LISINZ(NBINFO) = INFOCH
+        
+      ELSEIF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 3) THEN
+        NBINFO = NBINFO + 1
+        INFOCH = 'NEUM_FT'
+        LISINZ(NBINFO) = INFOCH
+
+      ELSEIF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 1) THEN
+        NBINFO = NBINFO + 1
+        INFOCH = 'NEUM_CSTE'
+        LISINZ(NBINFO) = INFOCH 
+      ENDIF         
+C 
+      IF (ZI(JINFCH+2*NCHAR+2)   .NE. 0) THEN
+        INFOCH = 'NEUM_LAPL'
+        NBINFO = NBINFO + 1
+        IVAL   = ZI(JINFCH+2*NCHAR+2)
+        LISINZ(NBINFO) = INFOCH
+      ENDIF
+
+
+      CALL JEDEMA()
+      END

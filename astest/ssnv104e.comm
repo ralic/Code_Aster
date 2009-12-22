@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -48,18 +48,23 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT));
 
-CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(METHODE='CONTINUE',
-                               GROUP_MA_ESCL='CON1',
-                               GROUP_MA_MAIT='CON2',
-                               GLISSIERE='OUI',
-                               INTEGRATION='NOEUD',
-                               COEF_REGU_CONT=10000.,
-                               ITER_GEOM_MAXI=10,
-                               ITER_CONT_MAXI=20),
-                    INFO=1);
-#IMPR_CO ( CO=CHA2)
-
+CHA1 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    REAC_GEOM      = 'CONTROLE',
+                    RESI_GEOM      = 3E-4,
+                    ITER_GEOM_MAXI = 15,
+                    ITER_CONT_MAXI = 20, 
+                    ZONE =(
+                           _F(
+                             GROUP_MA_ESCL = 'CON1',
+                             GROUP_MA_MAIT = 'CON2',
+                             ALGO_CONT     = 'STANDARD',
+                             GLISSIERE     = 'OUI',
+                             COEF_CONT     = 10000.,
+                             ),                            
+                          ),
+                   );
+                    
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='SPHSUP',
                                  DY=-2.0,),
@@ -82,9 +87,10 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CHA1),
+                   EXCIT=(
                           _F(CHARGE=CHA2,
                              FONC_MULT=RAMPE)),
+                   CONTACT  = CHA1,          
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    OBSERVATION=(_F(NOM_CHAM='DEPL',
@@ -96,18 +102,18 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                    NOM_CMP='SIYY',
                                    MAILLE='M1',
                                    SUIVI_DDL='NON'),
+     #                           _F(NUME_SUIVI = 1,
+     #                              NOM_CHAM   = 'DEPL',
+     #                              NOM_CMP    = 'DX',
+     #                              GROUP_NO   = 'SUIV',
+     #                              SUIVI_DDL='OUI',),
                                 _F(NUME_SUIVI = 1,
-                                   NOM_CHAM   = 'DEPL',
-                                   NOM_CMP    = 'DX',
-                                   GROUP_NO   = 'SUIV',
-                                   SUIVI_DDL='OUI',),
-                                _F(NUME_SUIVI = 2,
                                    NOM_CHAM   = 'SIEF_ELGA',
                                    NOM_CMP    = 'SIXX',
                                    MAILLE     = 'M1',
                                    POINT      = 1,
                                    SUIVI_DDL='OUI',),      
-                                _F(NUME_SUIVI = 3,
+                                _F(NUME_SUIVI = 2,
                                    NOM_CHAM   = 'SIEF_ELGA',
                                    NOM_CMP='SIXX',
                                    VALE_MAX='OUI',
@@ -122,9 +128,10 @@ RESU=STAT_NON_LINE(MODELE=MO,
 
 RESU2=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CHA1),
+                   EXCIT=(
                           _F(CHARGE=CHA2,
                              FONC_MULT=RAMPE)),
+                   CONTACT  = CHA1, 
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    AFFICHAGE=_F(NOM_COLONNE='MINIMUM',),
@@ -134,9 +141,10 @@ RESU2=STAT_NON_LINE(MODELE=MO,
 
 RESU3=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CHA1),
+                   EXCIT=(
                           _F(CHARGE=CHA2,
                              FONC_MULT=RAMPE)),
+                   CONTACT  = CHA1, 
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    AFFICHAGE=(_F(UNITE=37,
@@ -440,7 +448,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='JEU',
                   VALE=0.,
-                  PRECISION=1.E-8,
+                  PRECISION=5.E-8,
                   CRITERE='ABSOLU',
                   REFERENCE='ANALYTIQUE'));
 

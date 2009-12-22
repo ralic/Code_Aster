@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128m.para = tps_job 210 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -69,22 +69,30 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_MA = 'LBLOCX', DX = 0.0)),
                     PRES_REP=(_F(GROUP_MA = 'LPRESV', PRES = 5.E07),
                               _F(GROUP_MA = 'LPRESH', PRES = 15.E07)));
-#
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT  = 'LBATI',
-                               GROUP_MA_ESCL  = 'LCONTA',
-                               SANS_GROUP_NO  = 'PPS',
-                               METHODE        = 'CONTINUE',
-                               CONTACT_INIT   = 'OUI',
-                               SEUIL_INIT     = 1.E-1,
-                               COEF_REGU_FROT = 1.,
-                               COEF_REGU_CONT = 1.,
-                               ITER_GEOM_MAXI = 1,
-                               ITER_FROT_MAXI = 10,
-                               ITER_CONT_MAXI = 4,
-                               FROTTEMENT     = 'COULOMB',
-                               COULOMB        = 1.0,));
-#
+
+CHA2 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    FROTTEMENT     = 'COULOMB',
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 2,
+                    ITER_CONT_MAXI = 4, 
+                    ITER_FROT_MAXI = 10,
+                    ZONE =(
+                           _F(
+                             GROUP_MA_ESCL = 'LCONTA',
+                             GROUP_MA_MAIT = 'LBATI',
+                             SANS_GROUP_NO = 'PPS',
+                             COULOMB       = 1.0,
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 1.,
+                             ALGO_FROT     = 'STANDARD',
+                             COEF_FROT     = 1., 
+                             CONTACT_INIT  = 'OUI',
+                             SEUIL_INIT    = 1.E-1,                                                         
+                             ),                            
+                          ),
+                   );
+
 #
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
@@ -99,7 +107,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 U4M=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE = CHA1, FONC_MULT = RAMPE),
-                       _F(CHARGE = CHA2)),
+                       ),
+                CONTACT  = CHA2,       
                 COMP_ELAS=_F(RELATION = 'ELAS'),
                 NEWTON=_F(REAC_ITER=1),
                 INCREMENT=_F(LIST_INST = L_INST),
@@ -223,7 +232,8 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
 U4L=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE = CHA1, FONC_MULT = RAMPE),
-                       _F(CHARGE = CHA2)),
+                       ),
+                CONTACT  = CHA2,       
                 COMP_ELAS=_F(RELATION = 'ELAS'),
                 SOLVEUR=_F(METHODE = 'LDLT', RENUM = 'SANS'),
                 NEWTON=_F(REAC_ITER=1),

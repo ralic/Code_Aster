@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE TEST DE LA LEVEE DE L'EXCEPTION ARRETCPUERROR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -78,13 +78,22 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                                 DY=-0.4,),
                              _F(GROUP_MA=('GM10',),
                                 DY=-0.4,),
-                                ),
-                   CONTACT=_F(APPARIEMENT='MAIT_ESCL',
+                                ),);
+                              
+CONT = DEFI_CONTACT(MODELE      = MO,
+                   FORMULATION  = 'DISCRETE',
+                   REAC_GEOM    = 'SANS',
+                   ZONE=(
+                        _F(
+                            APPARIEMENT='MAIT_ESCL',
                               GROUP_MA_MAIT='GM11',
                               GROUP_MA_ESCL='GM12',
                               NORMALE='MAIT_ESCL',
-                              ),);
-
+                         ),                           
+                                                                                                                             
+                       ),  
+                  )  
+                  
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=200,),);
@@ -110,6 +119,7 @@ try:
                                  _F(RELATION='ELAS',
                                  GROUP_MA='GM17',),
                                     ),
+                     CONTACT   = CONT,               
                      CONVERGENCE=(_F(ITER_GLOB_MAXI=20,)),
                      INCREMENT=_F(LIST_INST=L_INST,
                                  INST_FIN=1.,),

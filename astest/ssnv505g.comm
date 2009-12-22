@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 # ssnv505g.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,33 +101,43 @@ CH1=AFFE_CHAR_MECA(MODELE=MODE,
 F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
 F_DIST_E=DEFI_CONSTANTE(VALE=31.75);
 
-CHLAG=AFFE_CHAR_MECA(MODELE=MODE,
-                   CONTACT=_F(GROUP_MA_MAIT='POU1',
-                              GROUP_MA_ESCL='POU2',
 
-                              METHODE='LAGRANGIEN',
-                                  DIST_MAIT=F_DIST_M,
-                                  DIST_ESCL=F_DIST_E,
-                                  NORMALE = 'MAIT',
-                                  VECT_MAIT = 'VECT_Y',
-                                  MAIT_VECT_Y=(0.,0.,-1.,),
-                                 
+CHLAG = DEFI_CONTACT(MODELE       = MODE,
+                   FORMULATION  = 'DISCRETE',
+                   
+                   ZONE=(
+                        _F(
+                            GROUP_MA_MAIT='POU1',
+                            GROUP_MA_ESCL='POU2',
+                            ALGO_CONT ='LAGRANGIEN',
+                            DIST_MAIT=F_DIST_M,
+                            DIST_ESCL=F_DIST_E,
+                            NORMALE = 'MAIT',
+                            VECT_MAIT = 'VECT_Y',
+                            MAIT_VECT_Y=(0.,0.,-1.,),
+                         ),                           
+                                                                           
+                       ),  
+                  )
 
-                              ),);
-
-CHPOU=AFFE_CHAR_MECA(MODELE=MODE, INFO=2,
-                   CONTACT=_F(GROUP_MA_MAIT='POU1',
-                              GROUP_MA_ESCL='POU2',
-
-                              METHODE='LAGRANGIEN',
-                                  DIST_MAIT=F_DIST_M,
-                                  DIST_POUTRE='OUI',
-                                  CARA_ELEM=DEFI_R,
-                                   NORMALE = 'MAIT',
-                                  VECT_MAIT = 'VECT_Y',
-                                  MAIT_VECT_Y=(0.,0.,-1.,),   
-
-                              ),);
+CHPOU = DEFI_CONTACT(MODELE       = MODE,
+                   FORMULATION  = 'DISCRETE',
+                   
+                   ZONE=(
+                        _F(
+                            GROUP_MA_MAIT='POU1',
+                            GROUP_MA_ESCL='POU2',
+                            ALGO_CONT ='LAGRANGIEN',
+                            DIST_MAIT=F_DIST_M,
+                            DIST_POUTRE='OUI',
+                            CARA_ELEM=DEFI_R,
+                            NORMALE = 'MAIT',
+                            VECT_MAIT = 'VECT_Y',
+                            MAIT_VECT_Y=(0.,0.,-1.,), 
+                         ),                           
+                                                                           
+                       ),  
+                  )
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0),
@@ -153,8 +163,8 @@ ULAG=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CHLAG,),
                       ),
+                CONTACT  = CHLAG,      
                 COMP_INCR=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=0.4,
@@ -188,8 +198,8 @@ ULAG2=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
-                       _F(CHARGE=CHPOU,),
                       ),
+                CONTACT  = CHPOU,      
                 COMP_INCR=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=0.4,

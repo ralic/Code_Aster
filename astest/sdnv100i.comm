@@ -1,4 +1,4 @@
-# MODIF  DATE 09/06/2009   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100i.para = tps_job 60 mem_job 64Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,19 +73,19 @@ CH=AFFE_CHAR_MECA(
                                  )
            )
 
-CH2=AFFE_CHAR_MECA(
-                   MODELE=MODE,
-                   CONTACT=_F(
-                              METHODE        = 'CONTINUE',
-                              FORMULATION    = 'VITE',
-                              ALGO_CONT      = 'STABILISE',
-                              COEF_REGU_CONT  = 1.E-2,
-                              COEF_STAB_CONT  = 100,
-                              ITER_GEOM_MAXI  = 0,
+CH2 = DEFI_CONTACT(MODELE      = MODE,
+                   FORMULATION = 'CONTINUE',
+                   REAC_GEOM   = 'SANS',
+                   ZONE        =_F(
+                              ALGO_CONT      = 'AVANCE',
+                              COEF_REGU_CONT = 1.E-2,
+                              COEF_STAB_CONT = 100,
+                              COEF_PENA_CONT = 0,
                               GROUP_MA_ESCL  = 'FACEINF',
                               GROUP_MA_MAIT  = 'SSOL',
-                             )
-                  )
+                                 ),
+                   )    
+
 
 # ************* CHAMP DE VITESSE INITIALE ***************
 
@@ -130,8 +130,8 @@ U=DYNA_NON_LINE(  MODELE=MODE,  CHAM_MATER=CM,
            EXCIT=(_F( CHARGE = CH,
                       FONC_MULT = RAMPE
                     ),
-                  _F( CHARGE = CH2,)
                  ),
+         CONTACT     = CH2,        
          ETAT_INIT   =_F(DEPL = CHAMP2,VITE = CHAMP1),
          COMP_ELAS   =_F( RELATION = 'ELAS',),
          INCREMENT   =_F( INST_INIT = 0.,LIST_INST = L_INST),

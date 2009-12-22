@@ -1,8 +1,8 @@
-      SUBROUTINE NMUNIL(NOMA  ,DEPPLU,DDEPLA,MATASS,DEFICU,
-     &                  RESOCU,CNCINE,ITERAT,INST  )
+      SUBROUTINE NMUNIL(DEPPLU,DDEPLA,MATASS,DEFICU,RESOCU,
+     &                  CNCINE,ITERAT,INST  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*8  NOMA
-      CHARACTER*24 DEPPLU
+      CHARACTER*19 DEPPLU
       CHARACTER*19 DDEPLA,CNCINE
       CHARACTER*24 DEFICU
       CHARACTER*24 RESOCU
@@ -40,7 +39,6 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  NOMA   : NOM DU MAILLAGE
 C IN  DEPPLU : CHAMP DE DEPLACEMENTS A L'ITERATION DE NEWTON PRECEDENTE
 C IN  DEPPLA : INCREMENT DE DEPLACEMENTS CALCULE EN IGNORANT LE CONTACT
 C IN  DEFICU : SD DE DEFINITION (ISSUE D'AFFE_CHAR_MECA)
@@ -70,20 +68,12 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*19 MATR
       INTEGER      LDSCON,LMAT
-      CHARACTER*24 METHCU
-      INTEGER      JMETH
-      INTEGER      IFM,NIV,IMETH,NEQ
+      INTEGER      IFM,NIV,NEQ
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
-C
-C --- ALGORITHME
-C
-      METHCU = DEFICU(1:16)//'.METHCU'
-      CALL JEVEUO(METHCU,'L',JMETH)
-      IMETH  = ZI(JMETH)
 C
 C --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE DE LIAISON UNIL
 C
@@ -104,12 +94,8 @@ C
 C
 C --- CHOIX DE L'ALGO DE RESOLUTION
 C
-      IF (IMETH.EQ.0) THEN
-        CALL ALGOCU(DEFICU,RESOCU,LMAT  ,LDSCON,NOMA  ,
-     &              CNCINE,DDEPLA)
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
+      CALL ALGOCU(DEFICU,RESOCU,LMAT  ,LDSCON,CNCINE,
+     &            DDEPLA)
 
 C ----------------------------------------------------------------------
       CALL JEDEMA()

@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*(*)  MOTFAZ,PREFIZ,NOMAZ,LISI1Z,LISI2Z,MODZ
       INTEGER        IOCC
 C ---------------------------------------------------------------------
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C
 C     BUT : CREER LA STRUCTURE INTERMEDIAIRE PRFEIXEE PAR PREFIX
 C           DESCRIVANT LES COUPLES DE NOEUDS EN REGARD AVEC
@@ -101,7 +101,7 @@ C
       NOMA   = NOMAZ
       MOD    = MODZ
       MOTFAC = MOTFAZ
-      PREF19 = PREFIX
+      PREF19 = PREFIX(1:19)
       LISIN1 = LISI1Z
       LISIN2 = LISI2Z
       DNOR   = .FALSE.
@@ -109,7 +109,7 @@ C
       NOEUMA = NOMA//'.NOMNOE'
 C
       IF (MOTFAC.NE.'LIAISON_GROUP') THEN
-         CALL U2MESK('F','MODELISA2_61',1,MOTFAC)
+        CALL U2MESS('F','MODELISA2_62')
       ENDIF
 C
       CALL GETVEM ( NOMA, 'GROUP_NO', MOTFAC, 'GROUP_NO_1',
@@ -129,7 +129,7 @@ C
       ENDIF
 C
       IF (IOCC.LE.0) THEN
-        CALL U2MESS('F','MODELISA2_62')
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
       CALL GETFAC ( MOTFAC, NLINO )

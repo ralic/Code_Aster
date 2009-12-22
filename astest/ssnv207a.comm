@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE ETUDE: DRAINED CYCLIC STRESS-CONTROLLED SHEAR TEST WITH HUJEUX MODEL (MECA PUR)
 # ssnv207a.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,8 +84,9 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
                                  SUBD_NIVEAU=10),)
 
 U1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',
-                               ITER_INTE_MAXI=10,
-                               ITER_INTE_PAS = -10),
+                               ITER_INTE_MAXI=20,
+                               RESI_INTE_RELA=1E-8,
+                               ITER_INTE_PAS =-5),
                   MATER=MATE,
                   INCREMENT=_F(LIST_INST=DEFLIST1,
                                NUME_INST_INIT=0,
@@ -155,7 +156,7 @@ TEST_TABLE(TABLE=U1,
 TEST_TABLE(TABLE=U1,
            NOM_PARA='V23',
            VALE=-1.34613E-5,
-           PRECISION=0.01,
+           PRECISION=0.02,
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            FILTRE=_F(NOM_PARA='INST',
@@ -233,8 +234,9 @@ COEF2B=DEFI_FONCTION(NOM_PARA='INST',
 
 
 U2=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',
-                               ITER_INTE_MAXI=10,
-                               ITER_INTE_PAS = -10),
+                               ITER_INTE_MAXI=20,
+                               RESI_INTE_RELA=1E-8,
+                               ITER_INTE_PAS =-5,),
                   MATER=MATE,
                   INCREMENT=_F(LIST_INST=DEFLIST1,
                                NUME_INST_INIT=0,

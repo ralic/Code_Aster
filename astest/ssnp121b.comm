@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX PLAQUES
 # ssnp121b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,9 +67,14 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                  DX=0.0,
                                  DY=0.0,),),);
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=(_F(GROUP_MA_MAIT='AB',
-                                GROUP_MA_ESCL='EF',),),);
+
+CHA2   = DEFI_CONTACT(MODELE      = MO,
+                      FORMULATION = 'DISCRETE',
+                      ZONE=_F(
+                               GROUP_MA_MAIT = 'AB',
+                               GROUP_MA_ESCL = 'EF',
+                             ),
+                      );
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
@@ -83,8 +88,8 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=CHA1,
-                             FONC_MULT=FONC,),
-                          _F(CHARGE=CHA2,),),
+                             FONC_MULT=FONC,),),
+                   CONTACT  = CHA2,       
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST),);
 

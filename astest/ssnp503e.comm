@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503e.para = tps_job 80 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,6 +36,7 @@ MAILLAG2=MODI_MAILLAGE(reuse=MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU_2D=_F(GROUP_MA=('L21','L13','L23','L31',),));
 
+
 #IMPR_RESU(FORMAT='ASTER',
 #          RESU=_F(MAILLAGE=MAILLAG2,),),
 
@@ -53,39 +54,42 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAG2,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='D_PLAN',),),);       
 
-CONT = AFFE_CHAR_MECA(CONTACT=(_F(METHODE='CONTINUE',
-                                  INTEGRATION='NOEUD',
-                                  FROTTEMENT='COULOMB',
-                                  COULOMB=0.5,
-                                  COEF_REGU_FROT=100,
-                                  SEUIL_INIT=0.0,
-                                  ITER_FROT_MAXI=10,
-                                  COEF_REGU_CONT=100, 
-                                  ITER_CONT_MAXI=4,
-                                  ITER_GEOM_MAXI=10,
-                                  TOLE_PROJ_EXT =0.0,   
-                                  CONTACT_INIT='OUI',   
-                                  GROUP_MA_MAIT = 'L21',
-                                  GROUP_MA_ESCL = 'L13',
-                                  ),
-                               _F(METHODE='CONTINUE',
-                                  INTEGRATION='NOEUD',
-                                  FROTTEMENT='COULOMB',
-                                  COULOMB=0.5,
-                                  COEF_REGU_FROT=100,
-                                  SEUIL_INIT=0.0,
-                                  ITER_FROT_MAXI=10,
-                                  COEF_REGU_CONT=100, 
-                                  ITER_CONT_MAXI=4,
-                                  ITER_GEOM_MAXI=10,
-                                  TOLE_PROJ_EXT =0.0,   
-                                  CONTACT_INIT='OUI',
-                                  GROUP_MA_MAIT = 'L23',
-                                  GROUP_MA_ESCL = 'L31',
-                                  ),
-                               ),
-                      MODELE=MODELE,
-                      );
+CONT = DEFI_CONTACT(MODELE         = MODELE,
+                    FORMULATION    = 'CONTINUE',
+                    FROTTEMENT     = 'COULOMB',
+                    ITER_GEOM_MAXI = 10,
+                    ITER_CONT_MAXI = 4,
+                    ITER_FROT_MAXI = 10,
+                    ZONE =(
+                           _F(
+                             GROUP_MA_MAIT = 'L21',
+                             GROUP_MA_ESCL = 'L13',
+                             INTEGRATION   = 'NOEUD',
+                             SEUIL_INIT    = 0.0,
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 100.,
+                             ALGO_FROT     = 'STANDARD',
+                             COEF_FROT     = 100., 
+                             COULOMB       = 0.5, 
+                             TOLE_PROJ_EXT = 0.0,  
+                             CONTACT_INIT  = 'OUI',                         
+                             ),
+                           _F(
+                             GROUP_MA_MAIT = 'L23',
+                             GROUP_MA_ESCL = 'L31',
+                             INTEGRATION   = 'NOEUD',
+                             SEUIL_INIT    = 0.0,
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 100.,
+                             ALGO_FROT     = 'STANDARD',
+                             COEF_FROT     = 100., 
+                             COULOMB       = 0.5, 
+                             TOLE_PROJ_EXT = 0.0,  
+                             CONTACT_INIT  = 'OUI',                         
+                             ),                                                          
+                          ),
+                   );
+
 
 E=100.0E6
 E2=100.0E6
@@ -133,12 +137,12 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 UTOT1=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CONT,),
-                          _F(CHARGE=CH1,FONC_MULT=VAR1),
+                   EXCIT=(_F(CHARGE=CH1,FONC_MULT=VAR1),
                           _F(CHARGE=CH2,FONC_MULT=VAR2),),
+                   CONTACT  = CONT,   
+                   NEWTON   =_F(REAC_ITER=1,) ,      
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   NEWTON=_F(REAC_ITER=1,),
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=8,
                                   RESI_GLOB_MAXI=1E-06)),
                    INFO=1,);

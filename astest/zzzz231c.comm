@@ -1,4 +1,4 @@
-# MODIF  DATE 17/12/2007   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DU CONTACT EN GEOMETRIE INITIALE AVEC ETAT INITIAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,10 +56,17 @@ Dimpo=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='ContVis',
                                  DZ=-1,),);
 
-CONT=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT='ContVis',
-                               GROUP_MA_ESCL='ContTrou',
-                               REAC_GEOM='SANS',),);
+CONT = DEFI_CONTACT(MODELE      = MO,
+                   FORMULATION  = 'DISCRETE',
+                   REAC_GEOM    = 'SANS',
+                   ZONE=(
+                        _F(
+                            GROUP_MA_MAIT='ContVis',
+                            GROUP_MA_ESCL='ContTrou',
+                         ),                           
+                                                                                                                             
+                       ),  
+                  ) 
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           1,1,
@@ -85,7 +92,8 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=ENCAST2,),
                           _F(CHARGE=Dimpo,
                              FONC_MULT=RAMPE,),
-                          _F(CHARGE=CONT,),),
+                          ),
+                   CONTACT  = CONT,       
                    COMP_INCR=_F(RELATION='ELAS',
                                 DEFORMATION='PETIT',),
                    INCREMENT=_F(LIST_INST=TPS,),

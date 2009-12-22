@@ -1,7 +1,7 @@
-      SUBROUTINE SURFUN(CHAR,NOMA)
+      SUBROUTINE SURFUN(CHAR  ,NOMA  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,13 +22,15 @@ C
       IMPLICIT    NONE
       CHARACTER*8 CHAR
       CHARACTER*8 NOMA
-
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : CALIUN
-C ----------------------------------------------------------------------
+C ROUTINE LIAISON_UNILATERALE (AFFICHAGE DONNEES)
 C
 C AFFICHAGE DES RESULTATS DE LA LECTURE DU MOT-CLE LIAISON_UNILATERALE
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  NOMA   : NOM DU MAILLAGE
@@ -54,14 +56,13 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER        IFM,NIV
-      CHARACTER*24   LISNOE,POINOE,COEFG,COEFD,PARACU,DIMECU
-      INTEGER        JNOE,JPOI,JCOEFG,JCOEFD,JPARA,JDIM
-      INTEGER        NBNOE,NCMPG
-      INTEGER        NUMNO,JDECAL
-      CHARACTER*24   NOEUMA
-      CHARACTER*24   CMPGCU,METHCU
-      INTEGER        JCMPG,JMETH
-      INTEGER        INO,ICMP,TYPCOE
+      CHARACTER*24   CMPGCU,COEGCU,COEDCU,POINCU,NOEUCU
+      INTEGER        JCMPG,JCOEFG,JCOEFD,JPOIN,JNOEU
+      INTEGER        NNOCU,NCMPG
+      INTEGER        NUMNO,NBCMP,JDECAL
+      CHARACTER*24   NOEUMA,DEFICU
+      INTEGER        INO,ICMP
+      INTEGER        CUDISI,LGBLOC
       CHARACTER*8    NOMNO
 C
 C ----------------------------------------------------------------------
@@ -69,28 +70,27 @@ C
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
 C
-C ======================================================================
 C --- INITIALISATIONS
-C ======================================================================
+C
+      DEFICU = CHAR(1:8)//'.UNILATE' 
+      NOEUMA = NOMA // '.NOMNOE'
+      LGBLOC = CUDISI(DEFICU,'NB_RESOL')
+      NNOCU  = CUDISI(DEFICU,'NNOCU')
+      NCMPG  = CUDISI(DEFICU,'NCMPG')
+C
+C --- ACCES SD
 C
       NOEUMA = NOMA // '.NOMNOE'
-      LISNOE = CHAR(1:8)//'.UNILATE.LISNOE'
-      POINOE = CHAR(1:8)//'.UNILATE.POINOE'
-      METHCU = CHAR(1:8)//'.UNILATE.METHCU'
-      PARACU = CHAR(1:8)//'.UNILATE.PARACU'
-      DIMECU = CHAR(1:8)//'.UNILATE.DIMECU'
-      COEFG  = CHAR(1:8)//'.UNILATE.COEFG'
-      CMPGCU = CHAR(1:8)//'.UNILATE.CMPGCU'
-      COEFD  = CHAR(1:8)//'.UNILATE.COEFD'
-C
-      CALL JEVEUO(LISNOE,'L',JNOE)
-      CALL JEVEUO(POINOE,'L',JPOI)
-      CALL JEVEUO(METHCU,'L',JMETH)
-      CALL JEVEUO(PARACU,'L',JPARA)
-      CALL JEVEUO(DIMECU,'L',JDIM)
-      CALL JEVEUO(COEFG,'L',JCOEFG)
-      CALL JEVEUO(CMPGCU,'L',JCMPG)
-      CALL JEVEUO(COEFD,'L',JCOEFD)
+      NOEUCU = DEFICU(1:16)//'.LISNOE'
+      POINCU = DEFICU(1:16)//'.POINOE'
+      CMPGCU = DEFICU(1:16)//'.CMPGCU'      
+      COEGCU = DEFICU(1:16)//'.COEFG'
+      COEDCU = DEFICU(1:16)//'.COEFD'
+      CALL JEVEUO(NOEUCU,'L',JNOEU)
+      CALL JEVEUO(POINCU,'L',JPOIN)            
+      CALL JEVEUO(CMPGCU,'L',JCMPG )
+      CALL JEVEUO(COEGCU,'L',JCOEFG)
+      CALL JEVEUO(COEDCU,'L',JCOEFD)      
 
 C ======================================================================
 C                    IMPRESSIONS POUR L'UTILISATEUR
@@ -98,74 +98,56 @@ C ======================================================================
 
       IF (NIV .GE. 2) THEN
 
-        WRITE (IFM,1100) '--------------------------------------'
-        WRITE (IFM,1100) '        INFOS LIAISON UNILATERALE     '
-        WRITE (IFM,1100) '--------------------------------------'
-        WRITE (IFM,*)
-        IF (ZI(JMETH).EQ.0) THEN
-          WRITE (IFM,1102) 'CONTRAINTES ACTIVES      '
-        ELSEIF (ZI(JMETH).EQ.1) THEN
-          WRITE (IFM,1102) 'GRADIENT CONJUGUE PROJETE'
-        ELSE
-          CALL U2MESS('F','MODELISA3_40')
-        END IF
+C
+C --- IMPRESSIONS POUR L'UTILISATEUR
+C 
+        WRITE (IFM,*)      
+        WRITE (IFM,*) '<LIA_UNIL> INFOS GENERALES'
+        WRITE (IFM,*) 
+
+        WRITE (IFM,1070) 'NB_RESOL        ',LGBLOC        
 C
 C --- INFOS GENERALES
 C
-        TYPCOE = ZI(JDIM+2)
-        NBNOE  = ZI(JDIM)
         WRITE (IFM,*)
-        WRITE (IFM,1011) NBNOE
+        WRITE (IFM,1070) 'NNOCU           ',NNOCU 
+        WRITE (IFM,1070) 'NCMPG           ',NCMPG 
         WRITE (IFM,*)
 
 
-        DO 10 INO=1,NBNOE
+        DO 10 INO=1,NNOCU
 
-          NUMNO = ZI(JNOE+INO-1)
+          NUMNO = ZI(JNOEU+INO-1)
           CALL JENUNO(JEXNUM(NOEUMA,NUMNO),NOMNO)
 
 
           WRITE (IFM,1030) NOMNO
           WRITE (IFM,1031) ' --> INEGALITE ai.Ai<C : '
 
-          NCMPG  = ZI(JPOI+INO) - ZI(JPOI+INO-1)
-          JDECAL = ZI(JPOI+INO-1)
+          NBCMP  = ZI(JPOIN+INO) - ZI(JPOIN+INO-1)
+          JDECAL = ZI(JPOIN+INO-1)
 
           WRITE (IFM,1040) '     (ai,Ai)'
 
-          DO 20 ICMP = JDECAL,JDECAL+NCMPG-1
-            IF (TYPCOE.EQ.1) THEN
-              WRITE (IFM,1041) '     ( ',ZR(JCOEFG-1+ICMP),' , ',
+          DO 20 ICMP = JDECAL,JDECAL+NBCMP-1
+            WRITE (IFM,1042) '     ( ',ZK8(JCOEFG-1+ICMP),' , ',
      &                         ZK8(JCMPG-1+ICMP),' )'
-            ELSE
-              WRITE (IFM,1042) '     ( ',ZK8(JCOEFG-1+ICMP),' , ',
-     &                         ZK8(JCMPG-1+ICMP),' )'
-            ENDIF
  20       CONTINUE
-
           WRITE (IFM,1060) '     (C)'
-          IF (TYPCOE.EQ.1) THEN
-            WRITE (IFM,1061) '     ( ',ZR(JCOEFD-1+INO),' )'
-          ELSE
-            WRITE (IFM,1062) '     ( ',ZK8(JCOEFD-1+INO),' )'
-          ENDIF
-
-
+          WRITE (IFM,1062) '     ( ',ZK8(JCOEFD-1+INO),' )'
  10     CONTINUE
 
       ENDIF
 C
- 1011 FORMAT ('<LIA_UNIL> NOMBRE DE NOEUDS:',I5)
+ 1070 FORMAT (' <LIA_UNIL> ...... PARAM. : ',A16,' - VAL. : ',I5)   
+
+
  1031 FORMAT ('<LIA_UNIL> ',A25)
  1030 FORMAT ('<LIA_UNIL> NOEUD: ',A18,A8)
  1040 FORMAT ('<LIA_UNIL>',A12)
- 1041 FORMAT ('<LIA_UNIL>',A7,1PE12.5,A3,A8,A2)
  1042 FORMAT ('<LIA_UNIL>',A7,A8,A3,A8,A2)
  1060 FORMAT ('<LIA_UNIL>',A8)
- 1061 FORMAT ('<LIA_UNIL>',A7,1PE12.5,A2)
  1062 FORMAT ('<LIA_UNIL>',A7,A8,A2)
- 1100 FORMAT ('<LIA_UNIL> ',A38)
- 1102 FORMAT ('<LIA_UNIL> METHODE: ',A25)
 C
       CALL JEDETR('&&SURFUN.TRAV')
 C ======================================================================

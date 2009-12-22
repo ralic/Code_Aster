@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,23 +67,25 @@ CHA1=AFFE_CHAR_MECA(
                                                           DY = 0.0))
                            )
 
-CHA2=AFFE_CHAR_MECA(
-                     MODELE=MO,
-                     CONTACT=_F(
-                               METHODE = 'LAGRANGIEN',
+CHA2=DEFI_CONTACT(MODELE      = MO,
+                  FORMULATION = 'DISCRETE',
+                  ZONE=_F(
+                               ALGO_CONT     = 'LAGRANGIEN',
                                GROUP_MA_MAIT = 'CONTBAS',
-                               GROUP_MA_ESCL = 'CONTHAUT'),
-                           )
+                               GROUP_MA_ESCL = 'CONTHAUT',
+                        ),
+                  )
 
 #
 
-CHA3=AFFE_CHAR_MECA(
-                     MODELE=MO,
-                     CONTACT=_F(APPARIEMENT = 'NODAL',
-                                NORMALE='ESCL',
-                               METHODE = 'LAGRANGIEN',
+CHA3=DEFI_CONTACT(MODELE      = MO,
+                  FORMULATION = 'DISCRETE',
+                  ZONE=_F(     APPARIEMENT = 'NODAL',
+                               NORMALE='ESCL',
+                               ALGO_CONT     = 'LAGRANGIEN',
                                GROUP_MA_ESCL = 'CONTBAS',
-                               GROUP_MA_MAIT = 'CONTHAUT'),
+                               GROUP_MA_MAIT = 'CONTHAUT',
+                        ),
                            )
 
 #
@@ -108,8 +110,8 @@ RESU=STAT_NON_LINE(
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F(
                 CHARGE = CHA1,
-                FONC_MULT = FONC), _F(
-                CHARGE = CHA2)),
+                FONC_MULT = FONC),),
+                CONTACT = CHA2,
                          COMP_ELAS=_F(
                 RELATION = 'ELAS'),
                             NEWTON=_F(
@@ -298,8 +300,8 @@ RESUF=STAT_NON_LINE(
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F(
                 CHARGE = CHA1,
-                FONC_MULT = FONC), _F(
-                CHARGE = CHA3)),
+                FONC_MULT = FONC), ),
+                CONTACT = CHA3,
                          COMP_ELAS=_F(
                 RELATION = 'ELAS'),
                             NEWTON=_F(

@@ -1,7 +1,7 @@
-      INTEGER FUNCTION NMCHAI(TYCHAP,TYVARI)
+      SUBROUTINE NMCHAI(TYCHAP,TYVARZ,VALI  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,8 +21,9 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*6  TYCHAP
-      CHARACTER*6  TYVARI   
+      CHARACTER*6   TYCHAP
+      CHARACTER*(*) TYVARZ 
+      INTEGER       VALI  
 C 
 C ----------------------------------------------------------------------
 C
@@ -39,234 +40,105 @@ C                MEASSE - NOMS DES MATR_ASSE
 C                VEELEM - NOMS DES VECT_ELEM
 C                VEASSE - NOMS DES VECT_ASSE
 C                SOLALG - NOMS DES CHAM_NO SOLUTIONS
+C                VALINC - VALEURS SOLUTION INCREMENTALE
 C IN  TYVARI : TYPE DE LA VARIABLE
-C OUT NMCHAI : INDEX OU EST STOCKE LE NOM DE LA VARIABLE DANS UNE 
+C                OU  LONUTI - NOMBRE DE VAR. STOCKEES
+C OUT VALI   : INDEX OU EST STOCKE LE NOM DE LA VARIABLE DANS UNE 
 C              VARIABLE CHAPEAU
+C                OU NOMBRE DE VAR. STOCKEES 
 C      
 C ----------------------------------------------------------------------
 C
-
+      INTEGER      NMEELM,NMEASS
+      PARAMETER    (NMEELM=9 ,NMEASS=4 )
+      INTEGER      NVEELM,NVEASS
+      PARAMETER    (NVEELM=22,NVEASS=32) 
+      INTEGER      NSOLAL,NVALIN
+      PARAMETER    (NSOLAL=17,NVALIN=18)              
+C
+      CHARACTER*8  LMEELM(NMEELM),LMEASS(NMEASS)
+      CHARACTER*8  LVEELM(NVEELM),LVEASS(NVEASS)
+      CHARACTER*8  LSOLAL(NSOLAL)
+      CHARACTER*8  LVALIN(NVALIN)      
+C
+      INTEGER      INDIK8      
+      CHARACTER*8  TYVARI
+C
+      DATA LMEELM /'MERIGI','MEDIRI','MEMASS','MEAMOR','MESUIV',
+     &             'MESSTR','MEGEOM','MEELTC','MEELTF'/
+      DATA LMEASS /'MERIGI','MEMASS','MEAMOR','MESSTR'/
+C
+      DATA LVEELM /'CNFINT','CNDIRI','CNBUDI','CNFNOD','CNDIDO',
+     &             'CNDIPI','CNFEDO','CNFEPI','CNLAPL','CNONDP',
+     &             'CNFSDO','CNIMPP','CNMSME','CNDIDI','CNSSTF',
+     &             'CNELTC','CNELTF','CNREFE','CNVCF1','CNVCF0',
+     &             'CNIMPC','CNUSUR'/
+      DATA LVEASS /'CNFINT','CNDIRI','CNBUDI','CNFNOD','CNDIDO',
+     &             'CNDIPI','CNFEDO','CNFEPI','CNLAPL','CNONDP',
+     &             'CNFSDO','CNIMPP','CNMSME','CNDIDI','CNSSTF',
+     &             'CNELTC','CNELTF','CNREFE','CNVCF1','CNVCF0',
+     &             'CNCINE','CNSSTR','CNCTDF','CNVCPR','CNDYNA',
+     &             'CNMODP','CNMODC','CNCTDC','CNUNIL','CNFEXT',
+     &             'CNIMPC','CNUSUR'/
+C
+      DATA LSOLAL /'DDEPLA','DEPDEL','DEPOLD','DEPPR1','DEPPR2',
+     &             'DVITLA','VITDEL','VITOLD','VITPR1','VITPR2',
+     &             'DACCLA','ACCDEL','ACCOLD','ACCPR1','ACCPR2',
+     &             'DEPSO1','DEPSO2'/
+C
+      DATA LVALIN /'DEPMOI','SIGMOI','VARMOI','VITMOI','ACCMOI',
+     &             'COMMOI','DEPPLU','SIGPLU','VARPLU','VITPLU',
+     &             'ACCPLU','COMPLU','SIGEXT','DEPKM1','VITKM1',
+     &             'ACCKM1','ROMKM1','ROMK'  /
+     
 C      
 C ----------------------------------------------------------------------
-C 
-      NMCHAI = -1
+C
+      VALI   = -1
+      TYVARI = TYVARZ
 C
 C ---
 C
       IF (TYCHAP.EQ.'MEELEM') THEN
-        IF (TYVARI.EQ.'MERIGI') THEN
-          NMCHAI = 1
-        ELSEIF (TYVARI.EQ.'MEDIRI') THEN
-          NMCHAI = 2
-        ELSEIF (TYVARI.EQ.'MEMASS') THEN
-          NMCHAI = 3  
-        ELSEIF (TYVARI.EQ.'MEAMOR') THEN
-          NMCHAI = 4
-        ELSEIF (TYVARI.EQ.'MESUIV') THEN
-          NMCHAI = 5           
-        ELSEIF (TYVARI.EQ.'MESSTR') THEN
-          NMCHAI = 6
-        ELSEIF (TYVARI.EQ.'MEGEOM') THEN
-          NMCHAI = 7  
-        ELSEIF (TYVARI.EQ.'MECTCC') THEN
-          NMCHAI = 8
-        ELSEIF (TYVARI.EQ.'MECTCF') THEN
-          NMCHAI = 9 
-        ELSEIF (TYVARI.EQ.'MEXFEC') THEN
-          NMCHAI = 10
-        ELSEIF (TYVARI.EQ.'MEXFEF') THEN
-          NMCHAI = 11   
-        ELSEIF (TYVARI.EQ.'MEXFTC') THEN
-          NMCHAI = 12
-        ELSEIF (TYVARI.EQ.'MEXFTF') THEN
-          NMCHAI = 13                              
-        ELSE    
-          CALL ASSERT(.FALSE.)
-        ENDIF     
+        IF (TYVARI.EQ.'LONMAX') THEN
+          VALI = NMEELM
+        ELSE
+          VALI = INDIK8(LMEELM,TYVARI,1,NMEELM)
+        ENDIF  
       ELSEIF (TYCHAP.EQ.'MEASSE') THEN
-        IF (TYVARI.EQ.'MERIGI') THEN
-          NMCHAI = 1
-        ELSEIF (TYVARI.EQ.'MEMASS') THEN
-          NMCHAI = 2  
-        ELSEIF (TYVARI.EQ.'MEAMOR') THEN
-          NMCHAI = 3          
-        ELSEIF (TYVARI.EQ.'MESSTR') THEN
-          NMCHAI = 4           
-        ELSE    
-          CALL ASSERT(.FALSE.)
-        ENDIF          
+        IF (TYVARI.EQ.'LONMAX') THEN
+          VALI = NMEASS
+        ELSE      
+          VALI = INDIK8(LMEASS,TYVARI,1,NMEASS)
+        ENDIF  
       ELSEIF (TYCHAP.EQ.'VEELEM') THEN
-        IF (TYVARI.EQ.'CNFINT') THEN
-          NMCHAI = 1
-        ELSEIF (TYVARI.EQ.'CNDIRI') THEN
-          NMCHAI = 2
-        ELSEIF (TYVARI.EQ.'CNBUDI') THEN
-          NMCHAI = 3
-        ELSEIF (TYVARI.EQ.'CNFNOD') THEN
-          NMCHAI = 4
-        ELSEIF (TYVARI.EQ.'CNDIDO') THEN
-          NMCHAI = 5
-        ELSEIF (TYVARI.EQ.'CNDIPI') THEN
-          NMCHAI = 6
-        ELSEIF (TYVARI.EQ.'CNFEDO') THEN
-          NMCHAI = 7
-        ELSEIF (TYVARI.EQ.'CNFEPI') THEN
-          NMCHAI = 8
-        ELSEIF (TYVARI.EQ.'CNLAPL') THEN
-          NMCHAI = 9
-        ELSEIF (TYVARI.EQ.'CNONDP') THEN
-          NMCHAI = 10
-        ELSEIF (TYVARI.EQ.'CNFSDO') THEN
-          NMCHAI = 11
-        ELSEIF (TYVARI.EQ.'CNIMPP') THEN
-          NMCHAI = 12
-        ELSEIF (TYVARI.EQ.'CNMSME') THEN
-          NMCHAI = 13
-        ELSEIF (TYVARI.EQ.'CNDIDI') THEN
-          NMCHAI = 14
-        ELSEIF (TYVARI.EQ.'CNSSTF') THEN
-          NMCHAI = 15
-        ELSEIF (TYVARI.EQ.'CNCTCC') THEN
-          NMCHAI = 16
-        ELSEIF (TYVARI.EQ.'CNCTCF') THEN
-          NMCHAI = 17
-        ELSEIF (TYVARI.EQ.'CNXFEC') THEN
-          NMCHAI = 18
-        ELSEIF (TYVARI.EQ.'CNXFEF') THEN
-          NMCHAI = 19
-        ELSEIF (TYVARI.EQ.'CNXFTC') THEN
-          NMCHAI = 20
-        ELSEIF (TYVARI.EQ.'CNXFTF') THEN
-          NMCHAI = 21
-        ELSEIF (TYVARI.EQ.'CNREFE') THEN
-          NMCHAI = 22 
-        ELSEIF (TYVARI.EQ.'CNVCF1') THEN
-          NMCHAI = 23
-        ELSEIF (TYVARI.EQ.'CNVCF0') THEN
-          NMCHAI = 24
-        ELSEIF (TYVARI.EQ.'CNIMPC') THEN
-          NMCHAI = 25  
-        ELSEIF (TYVARI.EQ.'CNUSUR') THEN
-          NMCHAI = 26
-        ELSE    
-          CALL ASSERT(.FALSE.)
-        ENDIF      
+        IF (TYVARI.EQ.'LONMAX') THEN
+          VALI = NVEELM
+        ELSE      
+          VALI = INDIK8(LVEELM,TYVARI,1,NVEELM)
+        ENDIF  
       ELSEIF (TYCHAP.EQ.'VEASSE') THEN
-        IF (TYVARI.EQ.'CNFINT') THEN
-          NMCHAI = 1 
-        ELSEIF (TYVARI.EQ.'CNDIRI') THEN
-          NMCHAI = 2
-        ELSEIF (TYVARI.EQ.'CNBUDI') THEN
-          NMCHAI = 3
-        ELSEIF (TYVARI.EQ.'CNFNOD') THEN
-          NMCHAI = 4
-        ELSEIF (TYVARI.EQ.'CNDIDO') THEN
-          NMCHAI = 5
-        ELSEIF (TYVARI.EQ.'CNDIPI') THEN
-          NMCHAI = 6
-        ELSEIF (TYVARI.EQ.'CNFEDO') THEN
-          NMCHAI = 7
-        ELSEIF (TYVARI.EQ.'CNFEPI') THEN
-          NMCHAI = 8
-        ELSEIF (TYVARI.EQ.'CNLAPL') THEN
-          NMCHAI = 9
-        ELSEIF (TYVARI.EQ.'CNONDP') THEN
-          NMCHAI = 10
-        ELSEIF (TYVARI.EQ.'CNFSDO') THEN
-          NMCHAI = 11
-        ELSEIF (TYVARI.EQ.'CNIMPP') THEN
-          NMCHAI = 12
-        ELSEIF (TYVARI.EQ.'CNMSME') THEN
-          NMCHAI = 13
-        ELSEIF (TYVARI.EQ.'CNDIDI') THEN
-          NMCHAI = 14
-        ELSEIF (TYVARI.EQ.'CNSSTF') THEN
-          NMCHAI = 15
-        ELSEIF (TYVARI.EQ.'CNCTCC') THEN
-          NMCHAI = 16
-        ELSEIF (TYVARI.EQ.'CNCTCF') THEN
-          NMCHAI = 17
-        ELSEIF (TYVARI.EQ.'CNXFEC') THEN
-          NMCHAI = 18
-        ELSEIF (TYVARI.EQ.'CNXFEF') THEN
-          NMCHAI = 19
-        ELSEIF (TYVARI.EQ.'CNXFTC') THEN
-          NMCHAI = 20
-        ELSEIF (TYVARI.EQ.'CNXFTF') THEN
-          NMCHAI = 21
-        ELSEIF (TYVARI.EQ.'CNREFE') THEN
-          NMCHAI = 22 
-        ELSEIF (TYVARI.EQ.'CNVCF1') THEN
-          NMCHAI = 23
-        ELSEIF (TYVARI.EQ.'CNVCF0') THEN
-          NMCHAI = 24 
-        ELSEIF (TYVARI.EQ.'CNCINE') THEN
-          NMCHAI = 25        
-        ELSEIF (TYVARI.EQ.'CNSSTR') THEN
-          NMCHAI = 26        
-        ELSEIF (TYVARI.EQ.'CNCTDF') THEN
-          NMCHAI = 27        
-        ELSEIF (TYVARI.EQ.'CNVCPR') THEN
-          NMCHAI = 29        
-        ELSEIF (TYVARI.EQ.'CNDYNA') THEN
-          NMCHAI = 30         
-        ELSEIF (TYVARI.EQ.'CNMODP') THEN
-          NMCHAI = 32          
-        ELSEIF (TYVARI.EQ.'CNMODC') THEN
-          NMCHAI = 33    
-        ELSEIF (TYVARI.EQ.'CNCTDC') THEN
-          NMCHAI = 34 
-        ELSEIF (TYVARI.EQ.'CNUNIL') THEN
-          NMCHAI = 35    
-        ELSEIF (TYVARI.EQ.'CNFEXT') THEN
-          NMCHAI = 36  
-        ELSEIF (TYVARI.EQ.'CNIMPC') THEN
-          NMCHAI = 37 
-        ELSEIF (TYVARI.EQ.'CNUSUR') THEN
-          NMCHAI = 38                     
-        ELSE    
-          CALL ASSERT(.FALSE.)
-        ENDIF 
+        IF (TYVARI.EQ.'LONMAX') THEN
+          VALI = NVEASS
+        ELSE      
+          VALI = INDIK8(LVEASS,TYVARI,1,NVEASS)
+        ENDIF  
       ELSEIF (TYCHAP.EQ.'SOLALG') THEN
-        IF (TYVARI.EQ.'DDEPLA') THEN
-          NMCHAI = 1 
-        ELSEIF (TYVARI.EQ.'DEPDEL') THEN
-          NMCHAI = 2 
-        ELSEIF (TYVARI.EQ.'DEPOLD') THEN
-          NMCHAI = 3   
-        ELSEIF (TYVARI.EQ.'DEPPR1') THEN
-          NMCHAI = 4   
-        ELSEIF (TYVARI.EQ.'DEPPR2') THEN
-          NMCHAI = 5   
-        ELSEIF (TYVARI.EQ.'DVITLA') THEN
-          NMCHAI = 6 
-        ELSEIF (TYVARI.EQ.'VITDEL') THEN
-          NMCHAI = 7 
-        ELSEIF (TYVARI.EQ.'VITOLD') THEN
-          NMCHAI = 8   
-        ELSEIF (TYVARI.EQ.'VITPR1') THEN
-          NMCHAI = 9   
-        ELSEIF (TYVARI.EQ.'VITPR2') THEN
-          NMCHAI = 10  
-        ELSEIF (TYVARI.EQ.'DACCLA') THEN
-          NMCHAI = 11 
-        ELSEIF (TYVARI.EQ.'ACCDEL') THEN
-          NMCHAI = 12 
-        ELSEIF (TYVARI.EQ.'ACCOLD') THEN
-          NMCHAI = 13   
-        ELSEIF (TYVARI.EQ.'ACCPR1') THEN
-          NMCHAI = 14   
-        ELSEIF (TYVARI.EQ.'ACCPR2') THEN
-          NMCHAI = 15 
-        ELSEIF (TYVARI.EQ.'DEPSO1') THEN
-          NMCHAI = 16   
-        ELSEIF (TYVARI.EQ.'DEPSO2') THEN
-          NMCHAI = 17                          
-        ELSE 
-          CALL ASSERT(.FALSE.)
+        IF (TYVARI.EQ.'LONMAX') THEN
+          VALI = NSOLAL
+        ELSE      
+          VALI = INDIK8(LSOLAL,TYVARI,1,NSOLAL)
+        ENDIF  
+      ELSEIF (TYCHAP.EQ.'VALINC') THEN
+        IF (TYVARI.EQ.'LONMAX') THEN
+          VALI = NVALIN
+        ELSE      
+          VALI = INDIK8(LVALIN,TYVARI,1,NVALIN)
         ENDIF
       ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF           
+        CALL ASSERT(.FALSE.)         
+      ENDIF
+C
+      CALL ASSERT(VALI.GT.0)      
 C
       END

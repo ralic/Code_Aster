@@ -3,7 +3,7 @@
      &                  LVECHZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,7 @@ C DEB ------------------------------------------------------------------
       IF (TYPCAL(1:4).NE.'DLAG' .AND. TYPCAL(1:4).NE.'MECA' .AND.
      &    TYPCAL(1:4).NE.'MECM' .AND.
      &    TYPCAL(1:4).NE.'DYNK' .AND. TYPCAL(1:4).NE.'DYNM') THEN
-        CALL U2MESK('F','ALGORITH11_20',1,TYPCAL)
+        CALL ASSERT(.FALSE.)
       ENDIF
 
 C====

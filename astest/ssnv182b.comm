@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv182b.para = tps_job 180 mem_job 1400Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,7 @@
 
 
 DEBUT(CODE=_F(NOM='SSNV182B',
-              NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+              NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'));
 
 PRE_GIBI();
 
@@ -53,27 +53,34 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN,),
                     GROUP_MA_ENRI='VOL',);
- 
+
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='OUI',
                          INFO=1,);
 
-CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT      = FISS,
-                                     METHODE        = 'XFEM',
-                                     INTEGRATION    = 'GAUSS',
-                                     COEF_REGU_CONT = 100.,
-                                     ITER_CONT_MAXI = 4,
-                                     CONTACT_INIT   = 'OUI',
-                                     COEF_ECHELLE   = 1.,
-                                     FROTTEMENT     = 'COULOMB',
-                                     COULOMB        = 1.0,
-                                     ITER_FROT_MAXI = 6,
-                                     COEF_REGU_FROT = 1000.,
-                                     SEUIL_INIT     = -1.E11,
-                                    ),
-                          MODELE=MODELEK,
-                          ),
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      FROTTEMENT     = 'COULOMB',
+                      ITER_FROT_MAXI = 6, 
+                      ITER_CONT_MAXI = 4,
+                      REAC_GEOM      = 'SANS',
+                      ZONE=(
+                            _F(
+                               FISS_MAIT    = FISS,
+                               INTEGRATION  = 'GAUSS',
+                               CONTACT_INIT = 'OUI',
+                               COEF_ECHELLE = 1.,
+                               COULOMB      = 1.0,
+                               ALGO_CONT    = 'STANDARD',
+                               COEF_CONT    = 100.,
+                               ALGO_FROT    = 'STANDARD',
+                               COEF_FROT    = 1000.,                             
+                               SEUIL_INIT   = -1.E11,
+                             ), 
+                         ),
+                   );
+
 
 CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                 OPERATION='EXTR',
@@ -121,8 +128,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH1,),
-                          _F(CHARGE=CTXFEM,),
                           _F(CHARGE=CHXFEM,),),
+                   CONTACT  = CTXFEM,       
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),

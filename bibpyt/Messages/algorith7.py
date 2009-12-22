@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF algorith7 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

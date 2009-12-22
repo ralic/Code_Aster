@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,10 +24,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                    reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS'),
-                 CONCEPT_SENSIBLE('ENSEMBLE'),
-#                 AU_MOINS_UN('NEWTON','IMPL_EX'),
-#                 EXCLUS('NEWTON','IMPL_EX'),
-                ),
+                 CONCEPT_SENSIBLE('ENSEMBLE'),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
@@ -37,6 +34,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
                                  into=("FIXE_CSTE","FIXE_PILO","SUIV","DIDI")),
          ),
+         CONTACT         =SIMP(statut='f',typ=char_contact),
          SOUS_STRUC      =FACT(statut='f',min=01,max='**',
                 regles=(UN_PARMI('TOUT','SUPER_MAILLE'),),
                 CAS_CHARGE  =SIMP(statut='o',typ='TXM' ),
@@ -49,11 +47,12 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
            ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
-           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",into=("IMPLICITE",)),
+           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
+                                 into=("IMPLICITE",)),
            RELATION        =SIMP(statut='o',typ='TXM',defaut="ELAS",
                                  into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_VMIS_PUIS",
                                       "ELAS_POUTRE_GR","CABLE","ELAS_HYPER")),
-
+          
            DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GROT_GDEP",) ),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -102,11 +101,19 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
              NUME_DIDI       =SIMP(statut='f',typ='I'),
              INST_ETAT_INIT  =SIMP(statut='f',typ='R'),
          ),),
-
          INCREMENT       =C_INCREMENT(),
-
+ 
+#         **C_ALGO_RESOLUTION()
+         METHODE = SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPL_EX")),
+         b_meth_newton = BLOC(condition = "METHODE == 'NEWTON'",
+                           NEWTON = C_NEWTON(),
+                        ),
+         b_meth_impl_ex = BLOC(condition = "METHODE == 'IMPL_EX'",
+                           IMPL_EX = C_IMPL_EX(),
+                        ),
+ 
          RECH_LINEAIRE   =C_RECH_LINEAIRE(),
-
+         
          PILOTAGE        =FACT(statut='f',
            regles=(EXCLUS('NOEUD','GROUP_NO'),PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TYPE    =SIMP(statut='o',typ='TXM',into=("DDL_IMPO","LONG_ARC","PRED_ELAS","DEFORMATION","ANA_LIM") ),
@@ -124,11 +131,11 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            GROUP_NO        =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
            NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
                          ),
-
+                         
          CONVERGENCE     =C_CONVERGENCE(),
-
+ 
          SOLVEUR         =C_SOLVEUR(),
-
+          
          ARCHIVAGE       =FACT(statut='f',
            regles=(EXCLUS('PAS_ARCH','LIST_INST','INST'),
                    EXCLUS('ARCH_ETAT_INIT','NUME_INIT'), ),
@@ -140,10 +147,10 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            NUME_INIT       =SIMP(statut='f',typ='I'),
            DETR_NUME_SUIV  =SIMP(statut='f',typ='TXM',into=("OUI",)),
            CHAM_EXCLU      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                 into=("DEPL","SIEF_ELGA","VARI_ELGA")),
+                                 into=("DEPL","SIEF_ELGA","VARI_ELGA",)),
          ),
          OBSERVATION     =FACT(statut='f',max='**',
-           NOM_CMP         =SIMP(statut='o',typ='TXM',max='**' ),
+           NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
            SUIVI_DDL       =SIMP(statut='f',typ='TXM',defaut="NON",max=1,into=("OUI","NON")),
          b_suivi          =BLOC(condition = "SUIVI_DDL == 'OUI' ",
                                 regles=(UN_PARMI('NOEUD','MAILLE','GROUP_NO','GROUP_MA','VALE_MIN','VALE_MAX'),
@@ -220,21 +227,9 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            INST_CALCUL       =SIMP(statut='f',typ='TXM',defaut="LISTE_ARCHIVAGE",into=("LISTE_ARCHIVAGE","TOUT_PAS",) ),
          ),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
-                               fr="Liste des paramétres de sensibilité",
+                               fr="Liste des paramètres de sensibilité",
                                ang="List of sensitivity parameters"),
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
-
-#         NEWTON  = C_NEWTON(),
-#         IMPL_EX = C_IMPL_EX(),
-
-#         **C_ALGO_RESOLUTION()
-         METHODE = SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPL_EX")),
-         b_meth_newton = BLOC(condition = "METHODE == 'NEWTON'",
-                           NEWTON = C_NEWTON(),
-                        ),
-         b_meth_impl_ex = BLOC(condition = "METHODE == 'IMPL_EX'",
-                           IMPL_EX = C_IMPL_EX(),
-                        ),
  )
 

@@ -1,4 +1,4 @@
-#@ MODIF impr_diag_campbell_ops Macro  DATE 28/07/2009   AUTEUR TORKHANI M.TORKHANI 
+#@ MODIF impr_diag_campbell_ops Macro  DATE 22/12/2009   AUTEUR TORKHANI M.TORKHANI 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,6 +31,8 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_camp, L_GR_NOEUD, VITE_ROTA) :
     EXTR_MODE         =self.get_cmd('EXTR_MODE')
     NORM_MODE         =self.get_cmd('NORM_MODE')
     DETRUIRE          =self.get_cmd('DETRUIRE')
+    IMPR_TABLE        =self.get_cmd('IMPR_TABLE')
+    
 #  Classification des modes en flexion, en torsion et en traction/compression
     NFREQ_f=0;
     NFREQ_t=0;
@@ -54,23 +56,16 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_camp, L_GR_NOEUD, VITE_ROTA) :
 
     NBV=len(L_MODES);
     NOEU=len(L_GR_NOEUD);
-    MODEf=[0]*NBV ;
-    MODEt=[0]*NBV ;
-    MODEl=[0]*NBV ;
+    Mf=[0]*NBV ;
+    Mt=[0]*NBV ;
+    Ml=[0]*NBV ;
     NVT =Numeric.zeros((NFREQ, NBV),Numeric.Float);
-   
+    
+    NVT_f=0
+    NVT_l=0
+    NVT_t=0
+    
     for ii in range(NBV):
-        chaine='\n'
-        aster.affiche('RESULTAT', chaine)
-        chaine = 'Vitesse de rotation : %15.5E' %VITE_ROTA[ii]
-        aster.affiche('RESULTAT', chaine)
-        chaine='\n'
-        aster.affiche('RESULTAT', chaine)
-        #IMPR_RESU(
-        #FORMAT='RESULTAT',
-        # RESU=_F(RESULTAT=L_MODES[ii],NOM_PARA=('NUME_MODE','FREQ','OMEGA2'),FORM_TABL='OUI'),
-        # )
-
         # -------------------------------------------------------------------
         # Extraire les modes en module, definir les differents types de modes
         # -------------------------------------------------------------------
@@ -84,15 +79,7 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_camp, L_GR_NOEUD, VITE_ROTA) :
                                 FORMAT_C='MODULE',
                                 OPERATION='EXTRACTION',),);
 
-        #IMPR_TABLE(TABLE=tabmoN);
         
-        chaine='\n'
-        aster.affiche('RESULTAT', chaine)
-        chaine='Rapport de type de modes'
-        aster.affiche('RESULTAT', chaine)
-        chaine='Flexion         Torsion         Traction/compression'
-        aster.affiche('RESULTAT', chaine)
-        #for jj in range(NFREQ):
         jj =0;
       
         for jj in range(NFREQ):
@@ -108,21 +95,21 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_camp, L_GR_NOEUD, VITE_ROTA) :
                 drx = tabmoN['DRX',nmod+1]
                 dry = tabmoN['DRY',nmod+1]
                 drz = tabmoN['DRZ',nmod+1]
-            Ntot1  = dx**2+dy**2+dz**2+drx**2+dry**2+drz**2
-            Nflex1 = dy**2+dz**2+dry**2+drz**2
-            Ntors1 = drx**2            
-            Nlong1 = dx**2
-            Ntot[jj]  = Ntot[jj]  + Ntot1
-            Nflex[jj] = Nflex[jj] + Nflex1
-            Ntors[jj] = Ntors[jj] + Ntors1
-            Nlong[jj] = Nlong[jj] + Nlong1
+                Ntot1  = dx**2+dy**2+dz**2+drx**2+dry**2+drz**2
+                Nflex1 = dy**2+dz**2+dry**2+drz**2
+                Ntors1 = drx**2            
+                Nlong1 = dx**2
+                Ntot[jj]  = Ntot[jj]  + Ntot1
+                Nflex[jj] = Nflex[jj] + Nflex1
+                Ntors[jj] = Ntors[jj] + Ntors1
+                Nlong[jj] = Nlong[jj] + Nlong1
+  
             Ntot[jj]  = Numeric.sqrt(Ntot[jj])
-            Nflex[jj] = Numeric.sqrt(Nflex[jj])/ Ntot[jj]
-            Ntors[jj] = Numeric.sqrt(Ntors[jj])/ Ntot[jj]
-            Nlong[jj] = Numeric.sqrt(Nlong[jj])/ Ntot[jj]
-            #print Nflex[jj],Ntors[jj],Nlong
-            chaine = '%15.5E %15.5E %15.5E' %(Nflex[jj],Ntors[jj],Nlong[jj])
-            aster.affiche('RESULTAT', chaine)
+            if  Ntot[jj] > 0:          
+                Nflex[jj] = Numeric.sqrt(Nflex[jj])/ Ntot[jj]
+                Ntors[jj] = Numeric.sqrt(Ntors[jj])/ Ntot[jj]
+                Nlong[jj] = Numeric.sqrt(Nlong[jj])/ Ntot[jj]
+    
         
         DETRUIRE(CONCEPT=_F(NOM=(tabmoN)),INFO=1)
 
@@ -133,10 +120,7 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_camp, L_GR_NOEUD, VITE_ROTA) :
         for jj in range(NFREQ):
             NVT[jj][ii]=jj+1;  
             if (Nflex[jj]> Ntors[jj]) and (Nflex[jj]> Nlong[jj]):
-                #print "ii jf jj"
                 lflex[(ii,jf)]=jj+1;
-                #print ii, jf, jj
-                #print lflex
                 jf=jf+1; 
                  
             
@@ -188,59 +172,42 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_camp, L_GR_NOEUD, VITE_ROTA) :
         # ----------------------------------------------
         if NFREQ_f >0:
             lmodef =list(l_f[ii]);
-            #print 'lmodef'
-            #print lmodef            
-    
-            MODEf[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii], 
+            Mf[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii], 
                                                         NUME_MODE = lmodef)
                                 );      
             
-            MODEf[ii]= NORM_MODE (MODE=MODEf[ii],
-                             reuse = MODEf[ii],                       
+            Mf[ii]= NORM_MODE (MODE=Mf[ii],
+                             reuse = Mf[ii],                       
                              NORME='TRAN',
                              );
-            #IMPR_RESU(
-            #        FORMAT='RESULTAT',
-            #        RESU=_F(RESULTAT=MODEf[ii],NOM_PARA=('NUME_MODE','FREQ'),FORM_TABL='OUI'),
-            #        )
+ 
         # ----------------------------------------------
         # Extraire la base des modes en torsion
         # ----------------------------------------------
         if NFREQ_t >0:
             lmodet =list(l_t[ii]);
-            #print 'lmodet'
-            #print lmodet  
-            MODEt[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii], 
+            Mt[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii], 
                                                         NUME_MODE = lmodet)
                                 );
-            MODEt[ii]= NORM_MODE (MODE=MODEt[ii],
-                             reuse = MODEt[ii],                       
+            Mt[ii]= NORM_MODE (MODE=Mt[ii],
+                             reuse = Mt[ii],                       
                              AVEC_CMP=('DRX','DRY', 'DRZ'),
                              );    
-            #IMPR_RESU(
-            #        FORMAT='RESULTAT',
-            #         RESU=_F(RESULTAT=MODEt[ii],NOM_PARA=('NUME_MODE','FREQ'),FORM_TABL='OUI'),
-            #        )
+ 
         # ----------------------------------------------
         # Extraire la base des modes en longi
         # ----------------------------------------------
         if NFREQ_l >0:
             lmodel =list(l_l[ii]);
-            #print 'lmodel'
-            #print lmodel  
-            MODEl[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii], 
+            Ml[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii], 
                                                         NUME_MODE = lmodel)
                                 );
             
-            MODEl[ii]= NORM_MODE (MODE=MODEl[ii],
-                             reuse = MODEl[ii],                       
+            Ml[ii]= NORM_MODE (MODE=Ml[ii],
+                             reuse = Ml[ii],                       
                              NORME='TRAN',
                              );
-            #IMPR_RESU(
-            #        FORMAT='RESULTAT',
-            #         RESU=_F(RESULTAT=MODEl[ii],NOM_PARA=('NUME_MODE','FREQ'),FORM_TABL='OUI'),
-            #        )    
-        
+       
         
     # -----------------------------------------------------------
     # Nombre de frequences par type pour le diagramme de Campbell 
@@ -262,7 +229,7 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_camp, L_GR_NOEUD, VITE_ROTA) :
       
     
 
-    RESULT =[NFREQ_f,NFREQ_t,NFREQ_l,MODEf,MODEt,MODEl,NVT,NVT_f,NVT_t,NVT_l,NFREQ_fc,NFREQ_tc,NFREQ_lc]
+    RESULT =[NFREQ_f,NFREQ_t,NFREQ_l,Mf,Mt,Ml,NVT,NVT_f,NVT_t,NVT_l,NFREQ_fc,NFREQ_tc,NFREQ_lc]
     
    
     
@@ -292,7 +259,6 @@ def EXTR_FREQ(self,L_MODES, L_MODEf,L_MODEt,L_MODEl, NFREQ, NFREQ_f, NFREQ_t, NF
             
         # frequences totales
         tabfreq = RECU_TABLE(CO=L_MODES[ii],NOM_PARA=('NUME_MODE','FREQ','AMOR_REDUIT'),);
-        IMPR_TABLE(TABLE=tabfreq);
         
         for jj in range(NFREQ):
             FRQ[jj][ii]=tabfreq['FREQ',jj+1]
@@ -302,7 +268,6 @@ def EXTR_FREQ(self,L_MODES, L_MODEf,L_MODEt,L_MODEl, NFREQ, NFREQ_f, NFREQ_t, NF
         if NFREQ_f>0:
             # frequences des modes en flexion
             tabfr_f = RECU_TABLE(CO=L_MODEf[ii],NOM_PARA=('FREQ','AMOR_REDUIT'),)
-            IMPR_TABLE(TABLE=tabfr_f);
             for jj in range(NFREQ_f):
                 FRQ_f[jj][ii]=tabfr_f['FREQ',jj+1];
                 AMO_f[jj][ii]=tabfr_f['AMOR_REDUIT',jj+1];
@@ -313,7 +278,7 @@ def EXTR_FREQ(self,L_MODES, L_MODEf,L_MODEt,L_MODEl, NFREQ, NFREQ_f, NFREQ_t, NF
         if NFREQ_t>0:
             # frequences des modes en torsion
             tabfr_t = RECU_TABLE(CO=L_MODEt[ii],NOM_PARA='FREQ',)
-            #IMPR_TABLE(TABLE=tabfr_t);
+ 
             for jj in range(NFREQ_t):
                 FRQ_t[jj][ii]=tabfr_t['FREQ',jj+1]
             
@@ -322,7 +287,7 @@ def EXTR_FREQ(self,L_MODES, L_MODEf,L_MODEt,L_MODEl, NFREQ, NFREQ_f, NFREQ_t, NF
         if NFREQ_l>0:                 
             # frequences des modes en traction / compression
             tabfr_l = RECU_TABLE(CO=L_MODEl[ii],NOM_PARA='FREQ',)
-            #IMPR_TABLE(TABLE=tabfr_l);
+            
             for jj in range(NFREQ_l):
                 FRQ_l[jj][ii]=tabfr_l['FREQ',jj+1]
             
@@ -345,35 +310,24 @@ def TRI_MODE_MACf(self, MACf,NFREQ_f, NVT_f, IV) :
     
     # base mode 1
     tmacf =Numeric.zeros((NFREQ_f,NFREQ_f),Numeric.Float);
-    #chaine='MAC1111'
-    #aster.affiche('RESULTAT', chaine)
-    #chaine=str(IV);
-    #aster.affiche('RESULTAT', chaine)
-    #IMPR_TABLE(TABLE=MACf)
+
     for jj in range(NFREQ_f):
         # base mode 2
         for ll in range(NFREQ_f):
             nmac= NFREQ_f*jj+ll
-            #print nmac
             tmacf[jj][ll]=MACf['MAC',nmac+1] 
-    chaine='Modes de flexion'
+    chaine='MAC Modes de flexion'
     aster.affiche('RESULTAT', chaine)
     affiche_tab(tmacf,NFREQ_f, NFREQ_f);  
 
     for j2 in range(NFREQ_f):
         XMAX=0.0
         JREC=int(NVT_f[j2][IV+1]-1);        
-        #print "JREC"
-        #print JREC
         for j1 in range(NFREQ_f):
 
-            #print tmacf[j1][JREC] 
-            #print XMAX
             if tmacf[j1][JREC] > XMAX:
                 XMAX=tmacf[j1][JREC]
                 I1B=j1+1
-        #chaine='XMAX ' + str(XMAX)+ ' I1B ' + str(I1B);
-        #aster.affiche('RESULTAT', chaine) 
         # test d'existance de I1B dans le tableau de connexion
         I1B_exist =0;
         for jj in range(j2):
@@ -383,6 +337,7 @@ def TRI_MODE_MACf(self, MACf,NFREQ_f, NVT_f, IV) :
             NVT_f[j2][IV]= I1B;
         else:
             NVT_f[j2][IV]=0;
+    
     DETRUIRE(CONCEPT=_F(NOM=(MACf)),INFO=1);
 
     return NVT_f           
@@ -397,34 +352,24 @@ def TRI_MODE_MACt(self, MACt,NFREQ_t, NVT_t, IV) :
     
     # base mode 1
     tmact =Numeric.zeros((NFREQ_t,NFREQ_t),Numeric.Float);
-    #chaine='TRI_MODE_MACt'
-    #aster.affiche('RESULTAT', chaine)
-    #chaine=str(IV);
-    #aster.affiche('RESULTAT', chaine)
-    #IMPR_TABLE(TABLE=MACt)
+
     for jj in range(NFREQ_t):
         # base mode 2
         for ll in range(NFREQ_t):
             nmac= NFREQ_t*jj+ll
-            #print nmac
             tmact[jj][ll]=MACt['MAC',nmac+1] 
-    chaine='Modes en torsion'
+    chaine='MAC Modes en torsion'
     aster.affiche('RESULTAT', chaine)
     affiche_tab(tmact,NFREQ_t, NFREQ_t);  
 
     for j2 in range(NFREQ_t):
         XMAX=0.0
         JREC=int(NVT_t[j2][IV+1]-1);        
-        #print "JREC"
-        #print JREC
         for j1 in range(NFREQ_t):
 
-            #print tmact[j1][JREC] 
-            #print XMAX
             if tmact[j1][JREC] > XMAX:
                 XMAX=tmact[j1][JREC]
                 I1B=j1+1
-        #NVT_t[j2][IV]= I1B
         # test d'existance de I1B dans le tableau de connexion
         I1B_exist =0;
         for jj in range(j2):
@@ -449,34 +394,24 @@ def TRI_MODE_MACl(self, MACl,NFREQ_l, NVT_l, IV) :
     
     # base mode 1
     tmacl =Numeric.zeros((NFREQ_l,NFREQ_l),Numeric.Float);
-    #chaine='TRI_MODE_MACl'
-    #aster.affiche('RESULTAT', chaine)
-    #chaine=str(IV);
-    #aster.affiche('RESULTAT', chaine)
-    #IMPR_TABLE(TABLE=MACl)
+
     for jj in range(NFREQ_l):
         # base mode 2
         for ll in range(NFREQ_l):
             nmac= NFREQ_l*jj+ll
-            #print nmac
             tmacl[jj][ll]=MACl['MAC',nmac+1] 
-    chaine='Modes en traction/compression'
+    chaine='MAC Modes en traction/compression'
     aster.affiche('RESULTAT', chaine)
     affiche_tab(tmacl,NFREQ_l, NFREQ_l);  
 
     for j2 in range(NFREQ_l):
         XMAX=0.0
         JREC=int(NVT_l[j2][IV+1]-1);        
-        #print "JREC"
-        #print JREC
         for j1 in range(NFREQ_l):
 
-            #print tmacl[j1][JREC] 
-            #print XMAX
             if tmacl[j1][JREC] > XMAX:
                 XMAX=tmacl[j1][JREC]
                 I1B=j1+1
-        #NVT_l[j2][IV]= I1B
         # test d'existance de I1B dans le tableau de connexion
         I1B_exist =0;
         for jj in range(j2):
@@ -509,7 +444,7 @@ def CALC_MACf(self, L_MODEf, NFREQ_f) :
                    BASE_2=L_MODEf[ii+1],
                    INFO  =2,
                    );
-            #IMPR_TABLE(TABLE=MACf[ii])
+            
 
     return MACf
 
@@ -529,9 +464,9 @@ def CALC_MACt(self, L_MODEt, NFREQ_t) :
         if NFREQ_t>0:
              MACt[ii]=MAC_MODES(BASE_1=L_MODEt[ii],
                    BASE_2=L_MODEt[ii+1],
-                   INFO  =2,
+                   INFO  =1,
                    );
-            #IMPR_TABLE(TABLE=MACt[ii])
+            
 
     return MACt
         
@@ -550,24 +485,25 @@ def CALC_MACl(self, L_MODEl, NFREQ_l) :
         if NFREQ_l>0:
              MACl[ii]=MAC_MODES(BASE_1=L_MODEl[ii],
                    BASE_2=L_MODEl[ii+1],
-                   INFO  =2,
+                   INFO  =1,
                    );
-            #IMPR_TABLE(TABLE=MACl[ii])
+           
 
     return MACl
         
 #-----------------------------------------------------------------------------------------------
 
-def CALC_PREC(self,MODEf,NFREQ_f,L_GR_NOEUD, typ_prec) :        
+def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :        
 #Calcul le sens de precession pour un mode a une vitesse de rotation donnee
 #Type de precession, 1 somme, 2 grande orbite
     
     
     POST_RELEVE_T     =self.get_cmd('POST_RELEVE_T')  
     DETRUIRE          =self.get_cmd('DETRUIRE')
+    IMPR_TABLE        =self.get_cmd('IMPR_TABLE')
 
     XSMIN=1e-2;
-    NBV=len(MODEf);
+    NBV=len(Mf);
     NOEU=len(L_GR_NOEUD);
     SENS=Numeric.zeros((NFREQ_f, NBV),Numeric.Float); 
     for ii in range(NBV):
@@ -576,37 +512,31 @@ def CALC_PREC(self,MODEf,NFREQ_f,L_GR_NOEUD, typ_prec) :
         # -------------------------------------------------------------------------
         
         tabmoR_f=POST_RELEVE_T(ACTION=_F(INTITULE='MODES_REEL',
-                                #GROUP_NO=L_GR_NOEUD,
                                 NOEUD=L_GR_NOEUD,
-                                RESULTAT=MODEf[ii],
+                                RESULTAT=Mf[ii],
                                 NOM_CHAM='DEPL',
                                 TOUT_ORDRE='OUI',
                                 NOM_CMP=('DX','DY','DZ'),
                                 FORMAT_C='REEL',
                                 OPERATION='EXTRACTION',),);
         tabmoI_f=POST_RELEVE_T(ACTION=_F(INTITULE='MODES_IMAG',
-                                #GROUP_NO=L_GR_NOEUD,
                                 NOEUD=L_GR_NOEUD,
-                                RESULTAT=MODEf[ii],
+                                RESULTAT=Mf[ii],
                                 NOM_CHAM='DEPL',
                                 TOUT_ORDRE='OUI',
                                 NOM_CMP=('DX','DY','DZ'),
                                 FORMAT_C='IMAG',
                                 OPERATION='EXTRACTION',),);
         tabmoN_f=POST_RELEVE_T(ACTION=_F(INTITULE='MODES_MODULE',
-                                #GROUP_NO=L_GR_NOEUD,
                                 NOEUD=L_GR_NOEUD,
-                                RESULTAT=MODEf[ii],
+                                RESULTAT=Mf[ii],
                                 NOM_CHAM='DEPL',
                                 TOUT_ORDRE='OUI',
                                 NOM_CMP=('DX','DY','DZ'),
                                 FORMAT_C='MODULE',
                                 OPERATION='EXTRACTION',),);
                                 
-        #IMPR_TABLE(TABLE=tabmoR_f);
-        #IMPR_TABLE(TABLE=tabmoI_f);
-        #IMPR_TABLE(TABLE=tabmoN_f);
-         
+        
         for jj in range(NFREQ_f):
             #Sens de precesion pour un mode a une vitesse donne
             modul1  =0.0;
@@ -623,20 +553,21 @@ def CALC_PREC(self,MODEf,NFREQ_f,L_GR_NOEUD, typ_prec) :
                 if typ_prec == 1 : 
                     #Sens parcours pour un noeud
                     preces  = dy_r*dz_i-dy_i*dz_r ;
-                #Sens de precession dominant dans une mode
-                if preces >0:
-                    sens1=sens1+ dy_m + dz_m;
-                elif preces <0:
+                    #Sens de precession dominant dans une mode
+                    if preces >0:
+                        sens1=sens1+ dy_m + dz_m;
+                    elif preces <0:
                         sens1=sens1- dy_m - dz_m;
-            else:
-                #Sens de precession associe au plus grand orbite
-                if (dy_m + dz_m) >modul1:
-                    # demi diagonale
-                    modul1= Numeric.sqrt(dy_m*dy_m + dz_m*dy_m);
-                preces  = dy_r*dz_i-dy_i*dz_r ; 
-                if preces >0:
-                    sens1=modul1;
-                elif preces <0:             
+                else:
+                    #Sens de precession associe au plus grand orbite
+                    lk= Numeric.sqrt(dy_m*dy_m + dz_m*dz_m);
+                    if lk > modul1:
+                        # demi diagonale
+                        modul1=lk
+                        preces  = dy_r*dz_i-dy_i*dz_r ; 
+                        if preces >0:
+                            sens1=modul1;
+                        elif preces <0:             
                             sens1=-modul1;
             
             XS=abs(sens1);
@@ -651,71 +582,7 @@ def CALC_PREC(self,MODEf,NFREQ_f,L_GR_NOEUD, typ_prec) :
 
 #------------------------------------------------------------------------------------------------
 
-def TRI_MODE_PREC (SENS,NFREQ_f, NVT_f, NBV, OMIN) :
-#Tri des modes par une methode de proche en proche avec verification du sens de precession 
-    # base mode 1
-    chaine='TRI_MODE_PREC'
-    aster.affiche('RESULTAT', chaine)
-   
-    ND=0 
-    NI=0    
-    NBV1 = NBV-1
-    for jj in range(NFREQ_f):
-        jf=NFREQ_f-jj-1;
-        #chaine='jf ' + str(jf);
-        #aster.affiche('RESULTAT', chaine)
-        if SENS[jf][NBV-1]>0.:
-            ND=ND+1;
-            for nb in range(NBV1):
-                nbd=NBV1-nb-1;
-                #chaine='\n'
-                #aster.affiche('RESULTAT', chaine)
-                #chaine='Directe nb ' + str(nb) + ' nbd ' + str(nbd);
-                #aster.affiche('RESULTAT', chaine)
-                NID=0;
-                for ii in range(NFREQ_f):
-                     ifr=NFREQ_f-ii-1;
-                if SENS[ifr][nbd]>0.5:
-                   NID=NID+1;
-                if NID==ND:
-                        NVT_f[jf][nbd]=int(ifr+1);
-                        #chaine='ifr ' + str(ifr) + ' NID ' + str(NID)+ ' ND ' + str(ND);
-                        #aster.affiche('RESULTAT', chaine)
-                        #chaine='jf ' + str(jf) + ' nbd ' + str(nbd)+ ' NVT_f ' + str(NVT_f[jf][nbd]);
-                        #aster.affiche('RESULTAT', chaine)
-                        break;
-                        
-        else :
-            NI=NI+1
-            for nb in range(NBV1):
-                nbi=NBV1-nb-1;
-                #chaine='\n'
-                #aster.affiche('RESULTAT', chaine)
-                #chaine='Inverse nb ' + str(nb) + ' nbi ' + str(nbi);
-                #aster.affiche('RESULTAT', chaine)
-                NIV=0;
-                for ii in range(NFREQ_f):
-                    ifr=NFREQ_f-ii-1;
-                if SENS[ifr][nbi]<-0.5:
-                    NIV=NIV+1;
-                if NIV==NI:
-                        NVT_f[jf][nbi]=int(ifr+1);
-                        #chaine='ifr ' + str(ifr) + ' NIV ' + str(NIV)+ ' NI ' + str(NI);
-                        #aster.affiche('RESULTAT', chaine)
-                        #chaine='jf ' + str(jf) + ' nbi ' + str(nbi)+ ' NVT_f ' + str(NVT_f[jf][nbi]);
-                        #aster.affiche('RESULTAT', chaine)
-                        break;
-    if(OMIN==0) :
-         for ii in range(NFREQ_f):
-            NVT_f[ii][0]=NVT_f[ii][1] 
-    
-    chaine='Tableau de connexion des Modes de flexion'
-    aster.affiche('RESULTAT', chaine)
-    affiche_tabint(NVT_f,NFREQ_f,NBV); 
-    
-    return NVT_f  
 
-#----------------------------------------------------------------------------------------
 
 def TRI_MODE_PREC_DI (SENS,NFREQ_f, NVT_f, NBV, OMIN) :
 #Tri des modes par une methode de proche en proche avec verification du sens de precession 
@@ -732,7 +599,7 @@ def TRI_MODE_PREC_DI (SENS,NFREQ_f, NVT_f, NBV, OMIN) :
         jd=0;
         ji=0;  
         for jj in range(NFREQ_f):
-            if SENS[jj][nbv1]>0.:
+            if SENS[jj][nbv1]>=0.:
                 NVT_fdir[jd][nbv1]=jj+1;
                 jd=jd+1;
             elif SENS[jj][nbv1]<0.:
@@ -748,7 +615,7 @@ def TRI_MODE_PREC_DI (SENS,NFREQ_f, NVT_f, NBV, OMIN) :
             if nb_prec_inv >ji:
                 nb_prec_inv= ji; 
     
-    if(OMIN==0) :
+    if(OMIN==0.0) :
         for ii in range(NFREQ_f):
             NVT_fdir[ii][0]=NVT_fdir[ii][1] 
             NVT_finv[ii][0]=NVT_finv[ii][1]   
@@ -781,7 +648,7 @@ def TRI_MODE_PREC_DI (SENS,NFREQ_f, NVT_f, NBV, OMIN) :
             
     chaine='\n'
     aster.affiche('RESULTAT', chaine)   
-    chaine='NVTf_prec'
+    chaine='Tableau de connexion des Modes de flexion'
     aster.affiche('RESULTAT', chaine)
     affiche_tabint(NVTf_prec,NFREQ_f, NBV); 
     
@@ -871,8 +738,9 @@ def color_camp(sens, amortis) :
 #          INDIRECTE,STABLE     bleu
 #          INDIRECTE,INSTABLE   magenta
 
+
     if sens<0:   # precession inverse
-        if amortis<0:   # instable
+        if amortis<0.0:   # instable
             ICS = 10; # magenta
             IST = 4;  # tiret
             IMA = 9;  # croix
@@ -881,7 +749,7 @@ def color_camp(sens, amortis) :
             IST = 4;  # tiret
             IMA = 0; 
     else:       # precession directe
-        if amortis<0:   # instable
+        if amortis<0.0:   # instable
             ICS = 2;  # rouge
             IST = 1;  # trait continu
             IMA = 8;  # plus
@@ -897,6 +765,11 @@ def color_camp(sens, amortis) :
 def sup_redon_list(LS):
 # Supprimer la redondace dans une liste de reel
     LS.sort();
+    LS_min=min(LS);
+    LS_max=max(LS);
+    if  LS_min<0:
+        if abs(LS_min) > abs(LS_max):
+            LS.reverse();
     ii=0
     len_list=len(LS);
     while ii < len_list-1:
@@ -907,7 +780,41 @@ def sup_redon_list(LS):
         ii=ii+1
         len_list=len(LS);
 
+#----------------------------------------------------------------------------------------
+
+def sup_redon_listv(LS):
+# Supprimer la redondace dans une liste de vitesses
+    
+    LS_init=[LS[ii] for ii in range(len(LS))]; # Liste de vitesses initiale sans rangement
+    LS.sort();
+    LS_min=min(LS);
+    LS_max=max(LS);
+    if  LS_min<0:
+        if abs(LS_min) > abs(LS_max):
+            LS.reverse();
+   
+    ii=0
+    len_list=len(LS);
+    while ii < len_list-1:
+        icount = LS.count(LS[ii]);
+        if icount >1:
+            for jj in range(ii+icount-1, ii,-1):
+                LS.pop(jj);
+        ii=ii+1
+        len_list=len(LS);
+
+
+    nbV1=len_list;
+    num_vit_tri =Numeric.zeros((nbV1),Numeric.Int);
+    for ii in range(0,nbV1):
+        vit = LS[ii];
+        num_vit_tri[ii] = LS_init.index(vit);
+      
+    print 'LS', LS
+    print 'LS_init', LS_init    
+    return num_vit_tri
 #------------------------------------------------------------------------------------------
+
 def save_intersec(L_INTER, FINT):
 # Sauvegarde dans un fichier les points d'intersection des courbes du diagramme de Campbell
 # avec les droites de pente S
@@ -939,7 +846,7 @@ def save_intersec(L_INTER, FINT):
 #------------------------------------------------------------------------------------------            
         
 
-def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PREC, TYP_TRI,
+def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_camp, TYP_PREC, TYP_TRI,
                            UNIT_FLE, UNIT_TOR, UNIT_LON, UNIT_TOT, UNIT_INT,L_S, **args) :
 # Macro permettant de tracer le diagramme de Campbell suivant 
 # le type de suivi des modes et le type de calcul de la precession
@@ -956,16 +863,44 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
     MAC_MODES         =self.get_cmd('MAC_MODES')
     DEFI_LIST_REEL    =self.get_cmd('DEFI_LIST_REEL')
     DEFI_FONCTION     =self.get_cmd('DEFI_FONCTION')
+    EXTR_TABLE        =self.get_cmd('EXTR_TABLE')
     IMPR_FONCTION     =self.get_cmd('IMPR_FONCTION')
     IMPR_RESU         =self.get_cmd('IMPR_RESU')
+    IMPR_TABLE        =self.get_cmd('IMPR_TABLE')
     DEFI_FICHIER      =self.get_cmd('DEFI_FICHIER')
     DETRUIRE          =self.get_cmd('DETRUIRE')
+    
 
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
-    L_VIT1=[];
-        
+    
+    lvit=[None]
+    # Extraire les vitesses de rotation  
+    nb_temp=0
+    while 1 :
+        try:
+            print 'nb_temp', nb_temp
+            lvit[nb_temp]         = MODES['VITE_ROTA' ,nb_temp+1];     
+            nb_temp=nb_temp+1;
+            lvit.append([None]);
+        except KeyError:
+            break
+    
+    VITE_ROTA = lvit[0:nb_temp];
+    num_vit_tri=sup_redon_listv(VITE_ROTA);
+    # Recupere les modes suivant l'ordre de la liste des vitesses de rotation
+    nbV1=len(VITE_ROTA);
+    lmo=[None]*nbV1
+    for ii in range(0,nbV1):
+        itri = num_vit_tri[ii];
+        lmo[ii]=EXTR_TABLE(TYPE_RESU='MODE_MECA',
+                       TABLE=MODES,
+                       NOM_PARA='NOM_SD',
+                       FILTRE=_F(NOM_PARA='NUME_VITE',VALE_I=itri),);
+   
+    L_VIT1=[];  
+     
     if type(VITE_ROTA)==list:
         L_VIT1=VITE_ROTA;
     elif type(VITE_ROTA)==tuple:
@@ -974,12 +909,17 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
         L_VIT1.append(VITE_ROTA);
     
 
-    # Supprimer la redondance dans la liste
-    sup_redon_list(L_VIT1);
-
-
     nbV=len(L_VIT1);
 
+    chaine='\n'
+    aster.affiche('RESULTAT', chaine)
+    chaine='Liste triee des vitesses en rad/s'
+    aster.affiche('RESULTAT', chaine)
+    for ii in range(nbV):
+        chaine= '%15.5E' %L_VIT1[ii];
+        aster.affiche('RESULTAT', chaine)
+
+ 
     #-------------------------------------------------------------------------
     # Tester le nombre de frequences calculees pour chaque vitesse de rotation
     #-------------------------------------------------------------------------
@@ -987,7 +927,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
     nb_FREQ=[];
     for ii in range(nbV):
         # frequences totales
-        tabfreq = RECU_TABLE(CO= MODES[ii],NOM_PARA='FREQ',);
+        tabfreq = RECU_TABLE(CO= lmo[ii],NOM_PARA='FREQ',);
         tab2=tabfreq.EXTR_TABLE();
         tabf=tab2.FREQ;       
         nb_FREQ_prec=nb_FREQ;
@@ -1029,32 +969,29 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
 # ------------------------------------------------------------------
 # Classe les modes en flexion, en torsion , en traction/ compression
 # ------------------------------------------------------------------
-        MODEf=[];
-        MODEt=[];
-        MODEl=[];
+        Mf=[];
+        Mt=[];
+        Ml=[];
     
   
         # Recuperer les noeuds du maillage
         # construction des vecteurs jeveux
         nom_mail=MAILLAGE.nom
-        #print 'nom_mail'
-        #print nom_mail
         lenm=len(nom_mail)
         nom_mail=nom_mail+' '*(8-lenm)
         vectnoeu=nom_mail+'.NOMNOE'
-        #print vectnoeu
         L_GR_NOEUD=aster.getvectjev(vectnoeu)
     
     
         NOEU=len(L_GR_NOEUD);
-        C_MODES=CLASS_MODES(self,MODES,NFREQ,NFREQ_camp,L_GR_NOEUD,L_VIT1);
+        C_MODES=CLASS_MODES(self,lmo,NFREQ,NFREQ_camp,L_GR_NOEUD,L_VIT1);
 
         NFREQ_f=C_MODES[0];
         NFREQ_t=C_MODES[1];
         NFREQ_l=C_MODES[2];
-        MODEf=C_MODES[3];
-        MODEt=C_MODES[4];
-        MODEl=C_MODES[5];
+        Mf=C_MODES[3];
+        Mt=C_MODES[4];
+        Ml=C_MODES[5];
     
         # Initialisation des tableaux de connexion apres classement
         # en gardant la numerotation globale des modes         
@@ -1100,7 +1037,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
     #-----------------------
     #Extraire les frequences
     #-----------------------
-        FREQ=EXTR_FREQ(self,MODES,MODEf,MODEt,MODEl, NFREQ, NFREQ_f, NFREQ_t, NFREQ_l);
+        FREQ=EXTR_FREQ(self,lmo,Mf,Mt,Ml, NFREQ, NFREQ_f, NFREQ_t, NFREQ_l);
         FRQ=FREQ[0]
         FRQf=FREQ[1]
         FRQt=FREQ[2]
@@ -1183,17 +1120,23 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
             # Calcul de la matrice MAC entre les bases successives en flexion
             # ------------------------------------------------------------------
             if NFREQ_f>0:
-                LMACf=CALC_MACf(self, MODEf, NFREQ_f) ;
-
+                LMACf=CALC_MACf(self, Mf, NFREQ_f) ;
+                chaine='\n'
+                aster.affiche('RESULTAT', chaine) 
                 chaine=' Tri par forme des modes TRI_FORM_MOD'
                 aster.affiche('RESULTAT', chaine)
+                              
                 for ii in range(nbV-1):
                     chaine='\n'
-                    aster.affiche('RESULTAT', chaine) 
-                    #IMPR_TABLE(TABLE=LMACf[ii])
+                    aster.affiche('RESULTAT', chaine)                    
                     iv=nbV-ii-2
-
                     NVTf_mac=TRI_MODE_MACf(self, LMACf[iv],NFREQ_f, NVTf, iv);
+
+                OMIN = L_VIT1[0];
+                if(OMIN==0) :
+                    for ii in range(NFREQ_f):
+                        NVTf_mac[ii][0]=NVTf_mac[ii][1] ;
+
                 chaine='\n'
                 aster.affiche('RESULTAT', chaine)
                 chaine='Tableau de connexion en flexion'
@@ -1204,17 +1147,12 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
             # Calcul de la matrice MAC entre les bases successives en torsion
             # ------------------------------------------------------------------
             if NFREQ_t>0:
-                LMACt=CALC_MACt(self, MODEt, NFREQ_t) ;
+                LMACt=CALC_MACt(self, Mt, NFREQ_t) ;
 
-                #chaine='Matrices MAC'
-                #aster.affiche('RESULTAT', chaine)
                 for ii in range(nbV-1):
                     chaine='\n'
-                    aster.affiche('RESULTAT', chaine) 
-                    #IMPR_TABLE(TABLE=LMACt[ii])
-                    iv=nbV-ii-2
-                    #chaine='iv torsion' + str(iv);
-                    #aster.affiche('RESULTAT', chaine)
+                    aster.affiche('RESULTAT', chaine)                    
+                    iv=nbV-ii-2                
                     NVTt=TRI_MODE_MACt(self, LMACt[iv],NFREQ_t, NVTt, iv);
                 chaine='\n'
                 aster.affiche('RESULTAT', chaine)
@@ -1226,17 +1164,12 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
             # Calcul de la matrice MAC entre les bases successives en traction/compression
             # ----------------------------------------------------------------------------
             if NFREQ_l>0:
-                LMACl=CALC_MACl(self, MODEl, NFREQ_l) ;
+                LMACl=CALC_MACl(self, Ml, NFREQ_l) ;
 
-                #chaine='Matrices MAC'
-                #aster.affiche('RESULTAT', chaine)
                 for ii in range(nbV-1):
                     chaine='\n'
                     aster.affiche('RESULTAT', chaine) 
-                    #IMPR_TABLE(TABLE=LMACl[ii])
-                    iv=nbV-ii-2
-                    #chaine='iv  traction/compression' + str(iv);
-                    #aster.affiche('RESULTAT', chaine)
+                    iv=nbV-ii-2                   
                     NVTl=TRI_MODE_MACl(self, LMACl[iv],NFREQ_l, NVTl, iv);
                 chaine='\n'
                 aster.affiche('RESULTAT', chaine)
@@ -1249,19 +1182,14 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
         # Calcul le sens de precession pour les modes en flexion a une vitesse de rotation donnee
         #--------------------------------------------------------------------------
         if NFREQ_f>0:
-            SENS=CALC_PREC(self, MODEf,NFREQ_f,L_GR_NOEUD, TYP_PREC);        
+            SENS=CALC_PREC(self, Mf,NFREQ_f,L_GR_NOEUD, TYP_PREC);        
 
             chaine='\n'
             aster.affiche('RESULTAT', chaine)
             chaine='Sens de precession pour les modes en flexion'
             aster.affiche('RESULTAT', chaine)
             affiche_tab(SENS,NFREQ_f, nbV);
-        # ------------------------------------------------------------------------------------
-        # Remplissage de deux tableaux separes de connexion pour precession directe et inverse
-        # ------------------------------------------------------------------------------------
-        #OMIN = L_VIT1[0]
-        #PREC_DI=TRI_MODE_PREC_DI (SENS,NFREQ_f, NVTf, nbV, OMIN);
-
+ 
         # ------------------------------------------------------------------
         # Tri des modes en flexion par une methode de proche en proche 
         # avec verification du sens de precession
@@ -1269,9 +1197,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
         # ------------------------------------------------------------------
         if TYP_TRI==1 :
             if NFREQ_f>0:
-                # Vitesses de rotation rangees par ordre croissant
                 OMIN = L_VIT1[0]
-                #NVTf=TRI_MODE_PREC (SENS,NFREQ_f, NVTf, nbV, OMIN);
                 PREC_DI=TRI_MODE_PREC_DI (SENS,NFREQ_f, NVTf, nbV, OMIN);
                 nb_prec_dir=PREC_DI[0];
                 nb_prec_inv=PREC_DI[1];
@@ -1290,7 +1216,18 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
         for ii in range(nbV):
             OM[ii] = OM[ii]*30./pi;
    
-        #FX=DEFI_LIST_REEL(VALE=L_VIT1);
+        Vitesse_min = min(OM);
+        Vitesse_max = max(OM);
+
+        OM_int=[OM[ii] for ii in range(len(OM))]; # pour le calcul des points d'intersection
+
+        legende_x= 'Vitesse (tr/mn)';
+        if  Vitesse_min<0:
+            if abs(Vitesse_min) > abs(Vitesse_max):
+                legende_x= 'Vitesse negative, en abscisse la valeur absolue de la vitesse (tr/mn)';
+                for ii in range(nbV):
+                    OM[ii] = abs(OM[ii]);
+
         __FX=DEFI_LIST_REEL(VALE=OM);
     
         # Mise en page graphique
@@ -1336,6 +1273,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
         BVmax = BV[1];
         pasV  = BV[2];
     
+        print 'BVmin, BVmax, pasV', BVmin, BVmax, pasV  
         # Calcul des bornes et pas de la grille pour les frequences
         BF    = calc_pas(Fmin, Fmax);
         BFmin = BF[0];
@@ -1350,7 +1288,6 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
         TITRE1 = 'Diagramme de Campbell';
         TITRE2 = 'Modes en flexion'
     
-        #mfac ={}
         DEFI_FICHIER ( ACTION='ASSOCIER', UNITE=UNIT_FLE,)
         DEFI_FICHIER ( ACTION='ASSOCIER', UNITE=UNIT_TOR,)
         DEFI_FICHIER ( ACTION='ASSOCIER', UNITE=UNIT_LON,)
@@ -1386,8 +1323,6 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                         A2=AMOf[jf2][iv+1];
     
                         # Vitesses
-                        #OM1=L_VIT1[iv];
-                        #OM2=L_VIT1[iv+1];
                         OM1=OM[iv];
                         OM2=OM[iv+1];
                         S1=SENS[jf1][iv];
@@ -1406,9 +1341,16 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                             bb = (F2*OM1 - F1*OM2) / (OM1 -OM2)
                             F4 = aa* OM4 + bb
 
-                        if (A1 >0) and (A1 < A0):
+                        # OM4 en dehors de OM1, OM2
+                        if OM4 >=OM2:
+                            OM4=-1;                    
+
+                        if OM4 <=OM1:
+                            OM4=-1;                    
+        
+                        if (A1 <0) and (abs(A1) < A0):
                             A1 = 0.0
-                        if (A2 >0) and (A2 < A0):
+                        if (A2 <0) and (abs(A2) < A0):
                             A2 = 0.0
 
                         # Tracer le segment pour chaque intervalle avec le code de couleur et
@@ -1435,7 +1377,6 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                             DICO["LEGENDE"] ='';
                             LFONC.append(DICO);
  
-                            #DETRUIRE(CONCEPT=_F(NOM=(FX1, FY1, FONC)),INFO=1);
                             DETRUIRE(CONCEPT=_F(NOM=(FX1, FY1)),INFO=1);
                 
                         # 2 cas, Changement de sens de precession
@@ -1480,7 +1421,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                             DETRUIRE(CONCEPT=_F(NOM=(FX1, FY1, FX2, FY2)),INFO=1);
                        
                         # 3 cas, de changement de stabilite
-                    elif (OM3 == -1) and (OM4 >= 0):
+                        elif (OM3 == -1) and (OM4 >= 0):
 
                             FX1=DEFI_LIST_REEL(VALE=[OM1,OM4]); # Premiere partie
                             FY1=DEFI_LIST_REEL(VALE=[F1,F4]);
@@ -1522,15 +1463,15 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                             DETRUIRE(CONCEPT=_F(NOM=(FX1, FY1, FX2, FY2)),INFO=1);
 
                         # 4 et 5 cas de changement de sens de precession et de stabilite
-                    elif (OM3 >= 0) and (OM4 >= 0):
-                        # 4 eme cas
+                        elif (OM3 >= 0) and (OM4 >= 0):
+                            # 4 eme cas
                             if (OM4 < OM3):
                                 FX1=DEFI_LIST_REEL(VALE=[OM1,OM4]); # Premiere partie
                                 FY1=DEFI_LIST_REEL(VALE=[F1,F4]);
                                 FX2=DEFI_LIST_REEL(VALE=[OM4,OM3]); # Deuxieme partie
                                 FY2=DEFI_LIST_REEL(VALE=[F4,F3]);
-                                FX2=DEFI_LIST_REEL(VALE=[OM3,OM2]); # Troisieme partie
-                                FY2=DEFI_LIST_REEL(VALE=[F3,F2]);
+                                FX3=DEFI_LIST_REEL(VALE=[OM3,OM2]); # Troisieme partie
+                                FY3=DEFI_LIST_REEL(VALE=[F3,F2]);
                                 CS1=color_camp(S1,A1);
                                 ICS1=CS1[0];
                                 IST1=CS1[1];
@@ -1588,8 +1529,8 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                                 FY1=DEFI_LIST_REEL(VALE=[F1,F3]);
                                 FX2=DEFI_LIST_REEL(VALE=[OM3,OM4]); # Deuxieme partie
                                 FY2=DEFI_LIST_REEL(VALE=[F3,F4]);
-                                FX2=DEFI_LIST_REEL(VALE=[OM4,OM2]); # Troisieme partie
-                                FY2=DEFI_LIST_REEL(VALE=[F4,F2]);
+                                FX3=DEFI_LIST_REEL(VALE=[OM4,OM2]); # Troisieme partie
+                                FY3=DEFI_LIST_REEL(VALE=[F4,F2]);
                                 CS1=color_camp(S1,A1);
                                 ICS1=CS1[0];
                                 IST1=CS1[1];
@@ -1630,7 +1571,6 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                                 FON1.append([]);
                                 ll=len(FON1)-1;
                                 FON1[ll]= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX3,VALE_FONC=FY3);
-
                                 DICO={};
                                 DICO["FONCTION"]=FON1[ll];
                                 DICO["COULEUR"] =ICS3;
@@ -1654,7 +1594,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                         SOUS_TITRE   = TITRE2,
                         GRILLE_X = pasV,
                         GRILLE_Y = pasF, 
-                        LEGENDE_X = 'Vitesse (tr/mn)',
+                        LEGENDE_X = legende_x,
                         LEGENDE_Y = 'FREQ (Hz)',
                             **mfac1);
 
@@ -1667,7 +1607,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                         SOUS_TITRE   = TITRE2,
                         GRILLE_X = pasV,
                         GRILLE_Y = pasF, 
-                        LEGENDE_X = 'Vitesse (tr/mn)',
+                        LEGENDE_X = legende_x,
                         LEGENDE_Y = 'FREQ (Hz)',
                             **mfac1);
             nbll = len(FON1) 
@@ -1712,7 +1652,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                   SOUS_TITRE = TITRE2,
                   GRILLE_X = pasV,
                   GRILLE_Y = pasF,
-                  LEGENDE_X = 'Vitesse (tr/mn)',
+                  LEGENDE_X = legende_x,
                   LEGENDE_Y = 'FREQ (Hz)',
                   **mfac1);  
 
@@ -1724,7 +1664,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                   TITRE   = TITRE1,
                   GRILLE_X = pasV,
                   GRILLE_Y = pasF,
-                  LEGENDE_X = 'Vitesse (tr/mn)',
+                  LEGENDE_X = legende_x,
                   LEGENDE_Y = 'FREQ (Hz)',
                   **mfac1);  
                     
@@ -1769,7 +1709,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                   SOUS_TITRE = TITRE2,
                   GRILLE_X = pasV,
                   GRILLE_Y = pasF,
-                  LEGENDE_X = 'Vitesse (tr/mn)',
+                  LEGENDE_X = legende_x,
                   LEGENDE_Y = 'FREQ (Hz)',
                       **mfac1);              
             IMPR_FONCTION(
@@ -1780,7 +1720,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                   TITRE   = TITRE1,
                   GRILLE_X = pasV,
                   GRILLE_Y = pasF,
-                  LEGENDE_X = 'Vitesse (tr/mn)',
+                  LEGENDE_X = legende_x,
                   LEGENDE_Y = 'FREQ (Hz)',
                       **mfac1);
      
@@ -1793,15 +1733,14 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
 
         if NFREQ_f>0:
             for jj in range(nbV):        
-                DETRUIRE(CONCEPT=_F(NOM=(MODEf[jj])),INFO=1)
+                DETRUIRE(CONCEPT=_F(NOM=(Mf[jj])),INFO=1)
         if NFREQ_t>0:
             for jj in range(nbV):        
-                DETRUIRE(CONCEPT=_F(NOM=(MODEt[jj])),INFO=1)
+                DETRUIRE(CONCEPT=_F(NOM=(Mt[jj])),INFO=1)
         if NFREQ_l>0:
             for jj in range(nbV):        
-                DETRUIRE(CONCEPT=_F(NOM=(MODEl[jj])),INFO=1)
+                DETRUIRE(CONCEPT=_F(NOM=(Ml[jj])),INFO=1)
     
-     #DETRUIRE(CONCEPT=_F(NOM=(FX)),INFO=1)
 
 
 #------------------------------------------------------------------------------------
@@ -1861,7 +1800,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                         SOUS_TITRE   = TITRE2,
                         GRILLE_X = pasV,
                         GRILLE_Y = pasF, 
-                        LEGENDE_X = 'Vitesse (tr/mn)',
+                        LEGENDE_X = legende_x,
                         LEGENDE_Y = 'FREQ (Hz)',
                         **mfac1);
                                                 
@@ -1876,7 +1815,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                         SOUS_TITRE   = TITRE2,
                         GRILLE_X = pasV,
                         GRILLE_Y = pasF, 
-                        LEGENDE_X = 'Vitesse (tr/mn)',
+                        LEGENDE_X = legende_x,
                         LEGENDE_Y = 'FREQ (Hz)',
                             **mfac1);
         if NFREQ_lc>0: 
@@ -1890,7 +1829,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                         SOUS_TITRE   = TITRE2,
                         GRILLE_X = pasV,
                         GRILLE_Y = pasF, 
-                        LEGENDE_X = 'Vitesse (tr/mn)',
+                        LEGENDE_X = legende_x,
                         LEGENDE_Y = 'FREQ (Hz)',
                             **mfac1);
   
@@ -1902,7 +1841,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                         TITRE   = TITRE1,
                         GRILLE_X = pasV,
                         GRILLE_Y = pasF, 
-                        LEGENDE_X = 'Vitesse (tr/mn)',
+                        LEGENDE_X = legende_x,
                         LEGENDE_Y = 'FREQ (Hz)',
                             **mfac1);
         
@@ -1928,7 +1867,6 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
         # Ecrire dans un fichier texte en sortie
         DEFI_FICHIER(TYPE='ASCII', UNITE=UNIT_INT,);
         nomfic='fort.'+str(UNIT_INT);
-        #FINT1=open('fort.25', 'w')
         FINT1=open(nomfic, 'w')
 
         INTERSEC =[];
@@ -1963,6 +1901,8 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                 
                         if P1 >=X1 and P1<=X2:
                             if P2 >= Fmin and P2<=Fmax :
+                                if OM_int[iv]<=0 and  OM_int[iv+1]<0 :       # Vitesse negative
+                                    P1=-P1;
                                 XY[ll][0]=P1;
                                 XY[ll][1]=P2;
                                 # On ajoute une ligne supplementaire
@@ -1973,9 +1913,6 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
             L_XY=XY[0:ll];               
             DICO["point"]=L_XY;
             INTERSEC.append(DICO);
-        #print "INTERSEC"
-        #print dir(INTERSEC)
-        #print INTERSEC
               
         # Sauvegarde des points d'intersection
         FINT1.write('\n')  
@@ -2010,6 +1947,8 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                 
                         if P1 >=X1 and P1<=X2:
                             if P2 >= Fmin and P2<=Fmax :
+                                if OM_int[iv]<=0 and  OM_int[iv+1]<0 :       # Vitesse negative
+                                    P1=-P1;
                                 XY[ll][0]=P1;
                                 XY[ll][1]=P2;
                                 # On ajoute une ligne supplementaire
@@ -2057,6 +1996,8 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
                 
                         if P1 >=X1 and P1<=X2:
                             if P2 >= Fmin and P2<=Fmax :
+                                if OM_int[iv]<=0 and  OM_int[iv+1]<0 :       # Vitesse negative
+                                    P1=-P1;
                                 XY[ll][0]=P1;
                                 XY[ll][1]=P2;
                                 # On ajoute une ligne supplementaire
@@ -2076,7 +2017,6 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, VITE_ROTA, NFREQ_camp, TYP_PRE
 
         del(XY, L_XY)
         del(INTERSEC, DICO)
-        #print L_S1, len(L_S1)
         nbl=len(L_S1)
         for ii in range(nbl):
             il =nbl-ii-1;

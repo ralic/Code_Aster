@@ -1,5 +1,5 @@
 
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103c.para = tps_job 80 mem_job 500Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,16 +72,26 @@ CH=AFFE_CHAR_MECA(MODELE=MODE,
                                DY=0.,),
                             _F(GROUP_NO='SXX1',
                                DX=0.,),),
-                  CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                             METHODE='PENALISATION',
-                             GROUP_MA_MAIT='RIGID',
-                             GROUP_MA_ESCL='SZZ',
-                             FROTTEMENT='COULOMB',
-                             REAC_GEOM='CONTROLE',
-                             NB_REAC_GEOM=2,
-                             COULOMB=0.25,
-                             E_T=1.E5,
-                             COEF_MATR_FROT=0.4,),);
+                  );
+
+
+CHCONT  = DEFI_CONTACT(MODELE         = MODE,
+                       FORMULATION    = 'DISCRETE',
+                       REAC_GEOM      = 'CONTROLE',
+                       NB_ITER_GEOM   = 2,
+                       FROTTEMENT     = 'COULOMB',
+                       
+                       ZONE =_F(
+                             ALGO_CONT      = 'LAGRANGIEN',
+                             ALGO_FROT      = 'PENALISATION',
+                             COULOMB        = 0.25,
+                             E_T            = 1.E5,
+                             APPARIEMENT    = 'MAIT_ESCL',
+                             GROUP_MA_MAIT  = 'RIGID',
+                             GROUP_MA_ESCL  = 'SZZ',
+                             COEF_MATR_FROT = 0.4,
+                               ),
+                      );
 
 VIT_0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='AFFE',
@@ -116,6 +126,7 @@ L_SAUV=DEFI_LIST_REEL(DEBUT=-1.E-5,
 RESU=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,),
+                   CONTACT = CHCONT,
                    COMP_INCR=(_F(RELATION='VMIS_ISOT_LINE',
                                  DEFORMATION='SIMO_MIEHE',
                                  TOUT='OUI',),

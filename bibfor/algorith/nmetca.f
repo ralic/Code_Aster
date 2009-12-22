@@ -1,8 +1,8 @@
       SUBROUTINE NMETCA(MODELE,MAILLA,MATE  ,SDDISC,NUMINS,
-     &                  VALPLU,VALMOI)
+     &                  VALINC)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,38 +19,35 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C NON-LINEAIRE MECANIQUE - ERREUR EN TEMPS - CALCUL
-C *            *           *         *       **
-C ----------------------------------------------------------------------
 C
-C COMMANDE STAT_NON_LINE : CALCUL DE L'INDICATEUR D'ERREUR TEMPORELLE
-C                          POUR LES MODELISATIONS HM SATUREES AVEC
-C                          COMPORTEMENT MECANIQUE ELASTIQUE
-C
-C ----------------------------------------------------------------------
-C      IN  MODELE : NOM DU MODELE
-C      IN  MATE   : NOM DU MATERIAU
-C      IN  TBGRCA : TABLEAU GRANDEURS CARACTERISTIQUES
-C                   POUR ADIMENSIONNEMENT
-C      IN  INST   : INST(1) : INSTANT DE CALCUL ACTUEL
-C                   INST(2) : DELTAT
-C      IN  MAILLA : MAILLAGE SOUS-TENDU PAR LE MAILLAGE
-C      IN  VALPLU : ETAT EN T+ (CONTRAINTES A L'INSTANT ACTUEL)
-C      IN  VALMOI : ETAT EN T- (CONTRAINTES A L'INSTANT PRECEDENT)
-C ----------------------------------------------------------------------
       IMPLICIT NONE
-
-C 0.1. ==> ARGUMENTS
-
       CHARACTER*8  MAILLA
-      CHARACTER*24 MODELE, MATE, VALPLU(8),VALMOI(8)
+      CHARACTER*24 MODELE, MATE
+      CHARACTER*19 VALINC(*)
       INTEGER      NUMINS
       CHARACTER*19 SDDISC
-      
 
-C 0.2. ==> COMMUNS
-
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+C       
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME)
+C
+C CALCUL DE L'INDICATEUR D'ERREUR TEMPORELLE POUR LES MODELISATIONS
+C HM SATUREES AVEC COMPORTEMENT MECANIQUE ELASTIQUE
+C      
+C       
+C ----------------------------------------------------------------------
+C
+C
+C IN  MODELE : NOM DU MODELE
+C IN  MATE   : NOM DU MATERIAU
+C IN  SDDISC : SD DISCRETISATION TEMPORELLE
+C IN  NUMINS : NUMERO INSTANT COURANT
+C IN  MAILLA : MAILLAGE SOUS-TENDU PAR LE MAILLAGE
+C IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -60,15 +57,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       LOGICAL            ZL
       COMMON  / LVARJE / ZL(1)
       CHARACTER*8        ZK8
-      CHARACTER*16               ZK16
-      CHARACTER*24                        ZK24
-      CHARACTER*32                                 ZK32
-      CHARACTER*80                                          ZK80
-      COMMON  / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-
-C 0.3. ==> VARIABLES LOCALES
-
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C 
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'NMETCA' )
 
@@ -93,7 +89,7 @@ C
       CHARACTER*24 LIGRMO,CHGEOM,LCHIN(NBRIN)
       CHARACTER*24 CHTIME,LCHOUT(1)
       CHARACTER*24 CARTCA, CHELEM
-      CHARACTER*24 K24BID,SIGMAM,SIGMAP
+      CHARACTER*19 SIGMAM,SIGMAP
       COMPLEX*16   CBID,CCMP
       REAL*8       RCMP(2),SOMME(1)
       REAL*8       DIINST,INSTAP,INSTAM,DELTAT
@@ -126,11 +122,9 @@ C
       CALL CETULE(MODELE,TBGRCA,CODRET)
 C
 C --- CONTRAINTES
-C
-      CALL DESAGG(VALMOI,K24BID,SIGMAM,K24BID,K24BID,
-     &            K24BID,K24BID,K24BID,K24BID)
-      CALL DESAGG(VALPLU,K24BID,SIGMAP,K24BID,K24BID,
-     &            K24BID,K24BID,K24BID,K24BID)     
+C 
+      CALL NMCHEX(VALINC,'VALINC','SIGMOI',SIGMAM)
+      CALL NMCHEX(VALINC,'VALINC','SIGPLU',SIGMAP)    
 C
 C ===================================================
 C 1. CALCUL POUR UN INSTANT > 0

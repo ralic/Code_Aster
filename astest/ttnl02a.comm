@@ -1,4 +1,4 @@
-# MODIF  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE TRANSITOIRE THERMIQUE AVEC CHANGEMENT DE PHASE 2D - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,101 +112,10 @@ TEMPE=THER_NON_LINE(    MODELE=MOTH,
                            REAC_ITER = 2),
              CONVERGENCE=_F(  RESI_GLOB_MAXI = 1.E-1),
              PARM_THETA=0.9,
-             OBSERVATION=(_F(NOM_CHAM='TEMP',
-                             NOM_CMP='TEMP',PAS_OBSE=1,
-                             NOEUD='N11',
-                          ),
-                          _F(NOM_CHAM='TEMP',
-                             NOM_CMP='TEMP',
-                             GROUP_NO='GRNM1',
-                             ),),
+
              )
 
-# TEST DU MOT CLE OBSERVATION DANS LA COMMANDE THER_NON_LINE
 
-TAB_OBS = RECU_TABLE (CO = TEMPE,
-                      NOM_TABLE = 'OBSERVATION');
-
-
-TEST_TABLE(       TABLE=TAB_OBS,
-                    FILTRE=(_F(  NOM_PARA = 'INST',
-                             VALE = 5.E-4),
-                            _F(  NOM_PARA = 'NOEUD',
-                             VALE_K ='N11'),),
-                    NOM_PARA='VALE',REFERENCE='NON_REGRESSION',
-                    VALE=7.3082423724178E+02            );
-
-TEST_TABLE(       TABLE=TAB_OBS,
-                    FILTRE=(_F(  NOM_PARA = 'INST',
-                             VALE = 1.E-3),
-                            _F(  NOM_PARA = 'NOEUD',
-                             VALE_K ='N11'),),
-                    NOM_PARA='VALE',REFERENCE='NON_REGRESSION',
-                    VALE=7.3138020971714E+02            );
-
-TEST_TABLE(       TABLE=TAB_OBS,
-                    FILTRE=(_F(  NOM_PARA = 'INST',
-                             VALE = 1.5E-3),
-                            _F(  NOM_PARA = 'NOEUD',
-                             VALE_K ='N11'),),
-                    NOM_PARA='VALE',REFERENCE='NON_REGRESSION',
-                    VALE=7.3191343136212E+02            );
-
-TEST_TABLE(       TABLE=TAB_OBS,
-                    FILTRE=(_F(  NOM_PARA = 'INST',
-                             VALE = 2.E-3),
-                            _F(  NOM_PARA = 'NOEUD',
-                             VALE_K ='N11'),),
-                    NOM_PARA='VALE',REFERENCE='NON_REGRESSION',
-                    VALE=7.3242470513533E+02            );
-
-TEST_TABLE(       TABLE=TAB_OBS,
-                    FILTRE=(_F(  NOM_PARA = 'INST',
-                             VALE = 2.5E-3),
-                            _F(  NOM_PARA = 'NOEUD',
-                             VALE_K ='N11'),),
-                    NOM_PARA='VALE',REFERENCE='NON_REGRESSION',
-                    VALE=7.3291480662799E+02            );
-
-TEST_TABLE(       TABLE=TAB_OBS,
-                    FILTRE=(_F(  NOM_PARA = 'INST',
-                             VALE = 3.E-3),
-                            _F(  NOM_PARA = 'NOEUD',
-                             VALE_K ='N11'),),
-                    NOM_PARA='VALE',REFERENCE='NON_REGRESSION',
-                    VALE=7.3340534347895E+02            );
-
-TEST_TABLE(       TABLE=TAB_OBS,
-                    FILTRE=(_F(  NOM_PARA = 'INST',
-                             VALE = 3.5E-3),
-                            _F(  NOM_PARA = 'NOEUD',
-                             VALE_K ='N11'),),
-                    NOM_PARA='VALE',REFERENCE='NON_REGRESSION',
-                    VALE=7.3387703174848E+02            );
-
-TEST_TABLE(       TABLE=TAB_OBS,
-                    FILTRE=(_F(  NOM_PARA = 'INST',
-                             VALE = 4.E-3),
-                            _F(  NOM_PARA = 'NOEUD',
-                             VALE_K ='N11'),),
-                    NOM_PARA='VALE',REFERENCE='NON_REGRESSION',
-                    VALE=7.3432815407618E+02            );
-
-TEST_TABLE(       TABLE=TAB_OBS,
-                    FILTRE=(_F(  NOM_PARA = 'INST',
-                             VALE = 4.5E-3),
-                            _F(  NOM_PARA = 'NOEUD',
-                             VALE_K ='N11'),),
-                    NOM_PARA='VALE',REFERENCE='NON_REGRESSION',
-                    VALE=7.3475945465151E+02            );
-
-TEST_TABLE(       TABLE=TAB_OBS,
-                    FILTRE=(_F(  NOM_PARA = 'INST',
-                             VALE = 5.E-3),
-                            _F(  NOM_PARA = 'NOEUD',
-                             VALE_K ='N11'),),
-                    NOM_PARA='VALE',REFERENCE='NON_REGRESSION',
-                    VALE=7.3517165213530E+02            );
 
 DEFI_FICHIER(UNITE=37)
 IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=TEMPE,),)

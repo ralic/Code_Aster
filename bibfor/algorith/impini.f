@@ -1,7 +1,7 @@
       SUBROUTINE IMPINI(SDIMPR,SDSUIV,FONACT,PARCRI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C
       IMPLICIT NONE
       CHARACTER*24 SDIMPR
       CHARACTER*24 SDSUIV
-      LOGICAL      FONACT(*)
+      INTEGER      FONACT(*)
       REAL*8       PARCRI(*)
 C
 C ----------------------------------------------------------------------
@@ -230,7 +230,7 @@ C
 C
       ZL(JIMPCA-1+1) = (PARCRI(2) .NE. R8VIDE())
       ZL(JIMPCA-1+2) = (PARCRI(3) .NE. R8VIDE())
-      ZL(JIMPCA-1+3) = (PARCRI(6) .NE. R8VIDE())            
+      ZL(JIMPCA-1+3) = (PARCRI(6) .NE. R8VIDE())      
 C
 C --- INITIALISATIONS DES VARIABLES
 C
@@ -277,8 +277,8 @@ C
       IF (NBOCC.EQ.0) THEN
         IOCC           = 0
         ZI(JIMPIN-1+6) = 0
-        CALL IMPSTD(SDIMPR,IMPTMP,FONACT,INFCMP,NBSUIV,
-     &              ZTIT  ,ZDEF  ,MOTFAC,IOCC  )
+        CALL IMPSTD(SDIMPR,IMPTMP,FONACT,INFCMP,
+     &              NBSUIV,ZTIT  ,ZDEF  ,MOTFAC,IOCC  )
         UNIT = ZI(JIMPIN-1+8)
         CALL IMPFIH(MOTFAC,1,UNIT)
         ZI(JIMPIN-1+8) = UNIT
@@ -314,14 +314,14 @@ C
           ELSE IF (.NOT.(CMP(1:3).EQ.'NON')) THEN
             CALL ASSERT(.FALSE.)
           ENDIF
-        ENDIF
+        ENDIF     
 C
 C --- AFFICHAGE STANDARD
 C
         IF (TYPM(1:8).EQ.'STANDARD') THEN
           ZI(JIMPIN-1+6) = 0
-          CALL IMPSTD(SDIMPR,IMPTMP,FONACT,INFCMP,NBSUIV,
-     &                ZTIT  ,ZDEF  ,MOTFAC,IOCC  )
+          CALL IMPSTD(SDIMPR,IMPTMP,FONACT,INFCMP,
+     &                NBSUIV,ZTIT  ,ZDEF  ,MOTFAC,IOCC  )
 C
 C --- MINIMUM
 C
@@ -334,13 +334,12 @@ C --- PERSONNALISE
 C
         ELSE
           ZI(JIMPIN-1+6) = 1
-          CALL IMPPER(SDIMPR,IMPTMP,FONACT,INFCMP,NBSUIV,
-     &                ZTIT  ,ZDEF  ,MOTFAC,IOCC  ,TYPM(1:9))
+          CALL IMPPER(SDIMPR,IMPTMP,INFCMP,ZTIT  ,ZDEF  ,
+     &                MOTFAC,IOCC  ,TYPM(1:9))
         ENDIF
  10   CONTINUE
 
       COLUTI = ZI(JIMPIN-1+4)
-
       IF (COLUTI.GT.COLMAX) THEN
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -350,6 +349,7 @@ C
       LIGUTI = 1+COLUTI*(ZLAR+1)
 
       IF (LIGUTI.GT.LIGMAX) THEN
+        CALL U2MESI('F','MECANONLINE3_1',1,COLUTI)
         CALL ASSERT(.FALSE.)
       ENDIF
 

@@ -2,7 +2,7 @@
      &                  LISCHA,SOLVEU,NBPASE,BASENO,INPSCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      K8BLA  = '        '
+      K8BLA  = ' '
 C
 C -- NOM UTILISATEUR DU CONCEPT RESULTAT CREE PAR LA COMMANDE
 C

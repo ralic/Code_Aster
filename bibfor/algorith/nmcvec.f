@@ -2,7 +2,7 @@
      &                  NBVECT,LTYPVE,LOPTVE,LCALVE,LASSVE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,8 +54,8 @@ C I/O LASSVE : SI VECT_ELEM A ASSEMBLER
 C      
 C ----------------------------------------------------------------------
 C
-      CHARACTER*16 TYPVEC,OPTION 
-      CHARACTER*5  K6BLA
+      CHARACTER*16 OPTION 
+      CHARACTER*6  K6BLA,TYPVEC
       INTEGER      I
 C      
 C ----------------------------------------------------------------------

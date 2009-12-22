@@ -2,7 +2,7 @@
      &                  VIN, NDEC, IRET)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,7 +28,7 @@ C           MATER  :  PROPRIETES MATERIAU
 C       OUT NDEC   :  NOMBRE DE REDECOUPAGE DE DEPS
 C           IRET   :  CODE RETOUR
 C       ---------------------------------------------------------------
-      INTEGER     NDT, NDI, I, J, NDEC, IRET
+      INTEGER     NDT, NDI, I, J, NDEC, IRET, INDI(7), NBMECA 
       REAL*8      DI1D, I1D, N, PREF, K0, NI
       REAL*8      DEPS(6), SIGD(6), SIGF(6)
       REAL*8      MATER(22,2), TOLE1, TOL, RI, VIN(*)
@@ -40,12 +40,15 @@ C       ---------------------------------------------------------------
       REAL*8      TAUD(3), RELA1, RELA2
       REAL*8      PISO, MAX, C11, C12, C13, C22, C23, C33
       REAL*8      E1,E2,E3,NU12,NU13,NU23,G1,G2,G3,NU21,NU31,NU32,DELTA
-      REAL*8      YF(15), SIGDC(3), PRODD, PRODF
+      REAL*8      YF(18), SIGDC(3), PRODD, PRODF, MAT(6,6)
+      REAL*8      M, DEGR, B, PHI, PTRAC
       CHARACTER*8   MOD
       LOGICAL     DEBUG
 
       COMMON /TDIM/ NDT, NDI
       COMMON /MESHUJ/ DEBUG
+
+      PARAMETER   ( DEGR = 0.0174532925199D0 )
 
       DATA ZERO, D13, UN, DEUX, TOL
      &/ 0.D0, 0.33333333333334D0, 1.D0, 2.D0, 1.D-6 /
@@ -55,12 +58,17 @@ C       ---------------------------------------------------------------
         GOTO 500
       ENDIF
 
-      PISO  = 1.5D0*MATER(21,2)
+C      PISO  = 1.5D0*MATER(21,2)
+      PISO  = ZERO
       PREF  = MATER(8,2)
       N     = MATER(1,2)
       BETA  = MATER(2,2)
       D     = MATER(3,2)
       PCO   = MATER(7,2)
+      PHI   = MATER(5,2)
+      M     = SIN(DEGR*PHI)
+      B     = MATER(4,2)
+      PTRAC = MATER(21,2)
       EPSVP = VIN(23)
       DEPSV = DEPS(1)+DEPS(2)+DEPS(3)       
       TOLE1 = 0.05D0
@@ -110,7 +118,7 @@ C ----------------------------------------------------
         RI = DI1D /(-PISO)
       ELSE
         RI = ZERO
-        WRITE(6,'(A)')'HUJDP :: DP/P : CAS NON PREVU'
+        WRITE(6,'(A)')'HUJDP :: DP/P NON CONTROLE CAR P VOISIN DE ZERO'
       ENDIF
       
       IF (RI.GT.UN) THEN
@@ -197,6 +205,8 @@ C ====================================================================
 C ====================================================================
 C -------------- 2.2 CALCUL DE FIDSIG = DFDS*DSIG --------------------
 C ====================================================================
+
+C 1- MECANISME ISOTROPE
       FIDSIG = ZERO
       DO 40 I = 1, NDI
         FIDSIG = FIDSIG - D13*DSIG(I)
@@ -212,61 +222,157 @@ C ====================================================================
       NI = NINT(RI/TOLE1)   
       IF (NDEC.LT.NI) NDEC = NI
 
+C 2- MECANISME DEVIATOIRE
+      DO 41 I = 1, NDT
+        DFDS(I) = ZERO
+ 41     CONTINUE
 
-C -------------------------------------------------------
-C 3 --- CRITERE LIMITANT L EVOLUTION DE Q: DQ/PREF < TOLE1
-C -------------------------------------------------------    
-      DO 45 I = 1, 3
-        IF(VIN(27+I).EQ.UN)THEN      
-C --- INITIALISATION DES VARIABLES NECESSAIRES A PROD/Q(K)        
-C --- AVEC PROD = PRODUIT SCALAIRE (SIGDC*TH)
-          CALL LCEQVN (NDT, SIGF, YF)
-          YF(7) = EPSVP
-          YF(8) = VIN(4+I) 
-          CALL HUJPRC (1, I, SIGF, VIN, MATER, YF,
-     &                 PF, QF, SIGDC)
-          PRODF = SIGDC(1)*VIN(4*I+7)+SIGDC(3)*VIN(4*I+8)/DEUX
-          CALL LCEQVN (NDT, SIGD, YF)
-          CALL HUJPRC (1, I, SIGD, VIN, MATER, YF,
-     &                 PD, QD, SIGDC)
-          PRODD = SIGDC(1)*VIN(4*I+7)+SIGDC(3)*VIN(4*I+8)/DEUX
-          IF((QD.LT.TOL).OR.(QF.LT.TOL))THEN
-            RI = ZERO
-          ELSEIF(((UN+PRODD/QD).LT.TOL).OR.
-     &           ((UN+PRODF/QF).LT.TOL))THEN
-            RI = ZERO     
-          ELSE
-            RI = ABS((UN/(UN+PRODD/QD))-(UN/(UN+PRODF/QF)))
-     &           /(UN/(UN+PRODD/QD))
-          ENDIF   
-        ELSE 
-          CALL HUJPRJ(I, SIGD, TAUD, PD, QD)
-          CALL HUJPRJ(I, SIGF, TAUF, PF, QF)
-          IF (ABS(QF-QD).LT.TOLE1) THEN
-            RI =ZERO
-          ELSE  
-            RI =ABS((QF-QD)/PREF)
-          ENDIF
-        
-          RELA1 = ZERO
-          RELA2 = ZERO
-          IF (ABS(TAUD(1)).GT.TOLE1)
-     &    RELA1 = ABS((TAUF(1)-TAUD(1))/PREF)
-          IF (ABS(TAUD(3)).GT.TOLE1)
-     &    RELA2 = ABS((TAUF(3)-TAUD(3))/PREF)
-          IF (RELA1.GT.RI) RI = RELA1
-          IF (RELA2.GT.RI) RI = RELA2        
-        ENDIF 
+      DO 42 I = 1, 18
+        YF(I) = ZERO
+ 42     CONTINUE
 
+      DO 43 I = 1, 7
+        INDI(I) = 0
+ 43     CONTINUE
+
+      YF(7) = EPSVP
+      CALL LCEQVN(NDT, SIGD,YF)
+
+      NBMECA = 0
+      DO 44 I = 1, 8
+        IF (VIN(23+I).EQ.UN) THEN
+          NBMECA = NBMECA + 1
+          INDI(NBMECA) = I
+          YF(NDT+1+NBMECA) = VIN(I)
+        ELSEIF ((VIN(23+I).EQ.ZERO).AND.(I.LT.5)) THEN
+          NBMECA = NBMECA + 1
+          INDI(NBMECA) = I
+          YF(NDT+1+NBMECA) = VIN(I)
+        ENDIF          
+ 44   CONTINUE
+
+      DO 47 I = 1, 3
+
+        CALL HUJPRJ(I, SIGD, TAUD, PD, QD)
+
+        IF ((VIN(23+I).EQ.UN).OR.(VIN(23+I).EQ.ZERO)) THEN
+          CALL HUJDDD('DFDS  ',I,MATER,INDI, YF, VIN, 
+     &                 DFDS, MAT, IRET)
+          FR = -M*(PD-PTRAC)*(UN-B*LOG((PD-PTRAC)/
+     &         (PCO*EXP(-BETA*EPSVP))))*VIN(I)
+
+        ELSEIF (VIN(27+I).EQ.UN) THEN
+          CALL HUJDDD('DFDS  ',I+4,MATER,INDI, YF, VIN,
+     &                 DFDS, MAT, IRET)
+          FR = -M*(PD-PTRAC)*(UN-B*LOG((PD-PTRAC)/
+     &         (PCO*EXP(-BETA*EPSVP))))*VIN(I+4)
+
+        ENDIF
+
+        FIDSIG = 0
+        DO 46 J = 1, NDT
+          FIDSIG = FIDSIG + DFDS(J)*DSIG(J)
+ 46       CONTINUE  
+
+        RI = ABS(FIDSIG/FR)
         IF (RI.GT.UN) THEN
           RI = UN
         ELSEIF (RI.LT.TOLE1) THEN
           RI = TOLE1
         ENDIF
-        NI = NINT(RI/TOLE1)
+        NI = NINT(RI/TOLE1)   
         IF (NDEC.LT.NI) NDEC = NI
 
- 45   CONTINUE 
+ 47     CONTINUE
+
+C -------------------------------------------------------
+C 3 --- CRITERE LIMITANT L EVOLUTION DE Q: DQ/PREF < TOLE1
+C -------------------------------------------------------    
+      DO 45 I = 1, 3
+      
+C 1- CAS DEVIATOIRE CYCLIQUE
+        IF (VIN(27+I).EQ.UN) THEN      
+C --- INITIALISATION DES VARIABLES NECESSAIRES A PROD/Q(K)        
+C --- AVEC PROD = PRODUIT SCALAIRE (SIGDC*TH)
+          CALL LCEQVN (NDT, SIGF, YF)
+          YF(8) = VIN(4+I) 
+          CALL HUJPRC (1, I, SIGF, VIN, MATER, YF, PF, QF, SIGDC)
+          PRODF = SIGDC(1)*VIN(4*I+7)+SIGDC(3)*VIN(4*I+8)/DEUX
+          PRODF = QF+PRODF
+          CALL LCEQVN (NDT, SIGD, YF)
+          CALL HUJPRC (1, I, SIGD, VIN, MATER, YF, PD, QD, SIGDC)
+          PRODD = SIGDC(1)*VIN(4*I+7)+SIGDC(3)*VIN(4*I+8)/DEUX
+          PRODD = QD+PRODD
+          
+          IF ((QD.LT.TOL).OR.(PRODF.LT.TOL)) THEN
+            RI = ZERO
+          ELSE
+            RI = ABS(UN-QF*PRODD/QD/PRODF)
+          ENDIF   
+          IF (RI.GT.UN) THEN
+            RI = UN
+          ELSEIF (RI.LT.TOLE1) THEN
+            RI = TOLE1
+          ENDIF
+          NI = NINT(RI/TOLE1)
+          IF (NDEC.LT.NI) NDEC = NI
+
+C 2- CAS DEVIATOIRE MONOTONE
+        ELSE 
+          CALL HUJPRJ(I, SIGD, TAUD, PD, QD)
+          CALL HUJPRJ(I, SIGF, TAUF, PF, QF)
+          FR = M*(PD -PTRAC)*
+     &    (UN-B*LOG((PD-PTRAC)/PCO*EXP(-BETA*EPSVP)))*VIN(I)
+     
+          IF (ABS(FR/PREF).LT.TOL) THEN
+            RI =ZERO
+          ELSE  
+            RI =ABS((QF-QD)/FR)
+          ENDIF
+        
+          RELA1 = ZERO
+          RELA2 = ZERO
+          IF (ABS(FR/PREF).GT.TOL) THEN
+            RELA1 = ABS((TAUF(1)-TAUD(1))/FR)
+            RELA2 = ABS((TAUF(3)-TAUD(3))/FR)
+          ENDIF
+          IF (RELA1.GT.RI) RI = RELA1
+          IF (RELA2.GT.RI) RI = RELA2        
+
+          IF (RI.GT.UN) THEN
+            RI = UN
+          ELSEIF (RI.LT.TOLE1) THEN
+            RI = TOLE1
+          ENDIF
+          NI = NINT(RI/TOLE1)
+          IF (NDEC.LT.NI) NDEC = NI
+        ENDIF 
+
+ 45   CONTINUE
+
+CKH ----
+CKH ON CONTROLE L'INCREMENT DE CONTRAINTE: DS/S- <= 10%
+CKH
+      PRODD  = 0.D0
+      PRODF  = 0.D0
+      
+      DO 451 I = 1, NDT
+        PRODD = PRODD + SIGD(I)**DEUX
+        PRODF = PRODF + (SIGF(I)-SIGD(I))**DEUX
+451   CONTINUE
+      PRODD = SQRT(PRODD)
+      PRODF = SQRT(PRODF)
+      
+C      TOLE1 = 0.1
+      IF ((-PRODD/PREF) .GT. TOL) THEN
+        RI = PRODF/PRODD/TOLE1
+        IF (RI .GT. 1.D0) THEN
+          NI = INT(RI)
+          IF (NDEC.LT.NI) NDEC = NI
+C            WRITE (6,'(A,I6)') 'HUJDP :: NSUBD =',NI
+        ENDIF
+      ENDIF
+C      IF (NDEC.GT.1) WRITE (6,'(A,I4)') ' NDEC =',NDEC
       
  500  CONTINUE
       END

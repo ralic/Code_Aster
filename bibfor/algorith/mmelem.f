@@ -1,8 +1,9 @@
-      SUBROUTINE MMELEM(NOMTE ,NDIM  ,NDDL  ,ESC   ,NNE   ,
-     &                  MAIT  ,NNM )
+      SUBROUTINE MMELEM(NOMTE ,LFROTT,NDIM  ,NDDL  ,NOMMAE,
+     &                  NNE   ,NOMMAM,NNM   ,NNL   ,NBCPS ,
+     &                  NBDM  ,LAXIS )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/10/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,9 +23,11 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER      NDIM, NDDL, NNE, NNM
-      CHARACTER*8  ESC, MAIT
+      INTEGER      NDIM,NDDL,NNE,NNM,NNL
+      INTEGER      NBCPS,NBDM
+      CHARACTER*8  NOMMAE, NOMMAM
       CHARACTER*16 NOMTE
+      LOGICAL      LFROTT,LAXIS
 C      
 C ----------------------------------------------------------------------
 C
@@ -37,19 +40,31 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  NOMTE  : NOM DU TE DE L'ELEMENT DE CONTACT EN JEU
+C IN  LFROTT : .TRUE. SI FROTTEMENT
 C OUT NDIM   : DIMENSION DE LA MAILLE DE CONTACT
 C OUT NDDL   : NOMBRE TOTAL DE DEGRES DE LIBERTE DE LA MAILLE DE CONTACT
-C OUT ESC    : NOM DE LA MAILLE ESCLAVE
+C OUT NOMMAE : NOM DE LA MAILLE ESCLAVE
 C OUT NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
-C OUT MAIT   : NOM DE LA MAILLE MAITRE
+C OUT NOMMAM : NOM DE LA MAILLE MAITRE
 C OUT NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
+C OUT NNL    : NOMBRE DE NOEUDS PORTANT UN LAGRANGE DE CONTACT/FROTT
+C OUT NBCPS  : NOMBRE DE COMPOSANTES/NOEUD DES LAGR_C+LAGR_F
+C OUT NBDM   : NOMBRE DE COMPOSANTES/NOEUD DES DEPL+LAGR_C+LAGR_F
+C OUT LAXIS  : .TRUE. SI MODELE AXISYMETRIQUE
 C
 C ----------------------------------------------------------------------
 C
       INTEGER I2D,I3D
+      LOGICAL LTEATT
 C
 C ----------------------------------------------------------------------
 C
+
+C
+C --- MODELE AXI ?
+C
+      LAXIS    = LTEATT(' ','AXIS','OUI') 
+     
       IF (NOMTE(1:2).EQ.'CF') THEN
 C ----- COMPOSANTES 2D : LAGS_C   LAGS_F1
 C ----- COMPOSANTES 3D : LAGS_C   LAGS_F1  LAGS_F2
@@ -63,153 +78,167 @@ C ----- COMPOSANTE : LAGS_C
         CALL ASSERT(.FALSE.)
       ENDIF
 C
-C --- 2D
-C
-      IF (NOMTE.EQ.'CFS2S2' .OR. NOMTE.EQ.'COS2S2') THEN
-        NDIM = 2
-        ESC  = 'SE2'
-        NNE  = 2
-        MAIT = 'SE2'
-        NNM  = 2
-        NDDL = NNM*NDIM + NNE*(NDIM+I2D)
-      ELSE IF (NOMTE.EQ.'CFS2S3' .OR. NOMTE.EQ.'COS2S3') THEN
-        NDIM = 2
-        ESC  = 'SE2'
-        NNE  = 2
-        MAIT = 'SE3'
-        NNM  = 3
-        NDDL = NNM*NDIM + NNE*(NDIM+I2D)
-      ELSE IF (NOMTE.EQ.'CFS3S2' .OR. NOMTE.EQ.'COS3S2') THEN
-        NDIM = 2
-        ESC  = 'SE3'
-        NNE  = 3
-        MAIT = 'SE2'
-        NNM  = 2
-        NDDL = NNM*NDIM + NNE*(NDIM+I2D)
-      ELSE IF (NOMTE.EQ.'CFS3S3' .OR. NOMTE.EQ.'COS3S3') THEN
-        NDIM = 2
-        ESC  = 'SE3'
-        NNE  = 3
-        MAIT = 'SE3'
-        NNM  = 3
-        NDDL = NNM*NDIM + NNE*(NDIM+I2D)
-C
-C --- 3D
-C
+      IF (NOMTE(1:6).EQ.'CFS2S2' .OR. NOMTE(1:6).EQ.'COS2S2') THEN
+        NDIM    = 2
+        NOMMAE  = 'SE2'
+        NNE     = 2
+        NOMMAM  = 'SE2'
+        NNM     = 2
+        NDDL    = NNM*NDIM + NNE*(NDIM+I2D)
+      ELSE IF (NOMTE(1:6).EQ.'CFS2S3' .OR. NOMTE(1:6).EQ.'COS2S3') THEN
+        NDIM    = 2
+        NOMMAE  = 'SE2'
+        NNE     = 2
+        NOMMAM  = 'SE3'
+        NNM     = 3
+        NDDL    = NNM*NDIM + NNE*(NDIM+I2D)
+      ELSE IF (NOMTE(1:6).EQ.'CFS3S2' .OR. NOMTE(1:6).EQ.'COS3S2') THEN
+        NDIM    = 2
+        NOMMAE  = 'SE3'
+        NNE     = 3
+        NOMMAM  = 'SE2'
+        NNM     = 2
+        NDDL    = NNM*NDIM + NNE*(NDIM+I2D)
+      ELSE IF (NOMTE(1:6).EQ.'CFS3S3' .OR. NOMTE(1:6).EQ.'COS3S3') THEN
+        NDIM    = 2
+        NOMMAE  = 'SE3'
+        NNE     = 3
+        NOMMAM  = 'SE3'
+        NNM     = 3
+        NDDL    = NNM*NDIM + NNE*(NDIM+I2D)
       ELSE IF (NOMTE.EQ.'CFT3T3' .OR. NOMTE.EQ.'COT3T3') THEN
-        NDIM = 3
-        ESC  = 'TR3'
-        NNE  = 3
-        MAIT = 'TR3'
-        NNM  = 3
-        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+        NDIM    = 3
+        NOMMAE  = 'TR3'
+        NNE     = 3
+        NOMMAM  = 'TR3'
+        NNM     = 3
+        NDDL    = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFT3T6' .OR. NOMTE.EQ.'COT3T6') THEN
-        NDIM = 3
-        ESC  = 'TR3'
-        NNE  = 3
-        MAIT = 'TR6'
-        NNM  = 6
-        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+        NDIM    = 3
+        NOMMAE  = 'TR3'
+        NNE     = 3
+        NOMMAM  = 'TR6'
+        NNM     = 6
+        NDDL    = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFT6T3' .OR. NOMTE.EQ.'COT6T3') THEN
-        NDIM = 3
-        ESC  = 'TR6'
-        NNE  = 6
-        MAIT = 'TR3'
-        NNM  = 3
-        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+        NDIM    = 3
+        NOMMAE  = 'TR6'
+        NNE     = 6
+        NOMMAM  = 'TR3'
+        NNM     = 3
+        NDDL    = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFT6T6' .OR. NOMTE.EQ.'COT6T6') THEN
-        NDIM = 3
-        ESC  = 'TR6'
-        NNE  = 6
-        MAIT = 'TR6'
-        NNM  = 6
-        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+        NDIM    = 3
+        NOMMAE  = 'TR6'
+        NNE     = 6
+        NOMMAM  = 'TR6'
+        NNM     = 6
+        NDDL    = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFQ4Q4' .OR. NOMTE.EQ.'COQ4Q4') THEN
         NDIM = 3
-        ESC  = 'QU4'
+        NOMMAE  = 'QU4'
         NNE  = 4
-        MAIT = 'QU4'
+        NOMMAM = 'QU4'
         NNM  = 4
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFQ4Q8' .OR. NOMTE.EQ.'COQ4Q8') THEN
         NDIM = 3
-        ESC  = 'QU4'
+        NOMMAE  = 'QU4'
         NNE  = 4
-        MAIT = 'QU8'
+        NOMMAM = 'QU8'
         NNM  = 8
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFQ8Q4' .OR. NOMTE.EQ.'COQ8Q4') THEN
         NDIM = 3
-        ESC  = 'QU8'
+        NOMMAE  = 'QU8'
         NNE  = 8
-        MAIT = 'QU4'
+        NOMMAM = 'QU4'
         NNM  = 4
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFQ8Q8' .OR. NOMTE.EQ.'COQ8Q8') THEN
         NDIM = 3
-        ESC  = 'QU8'
+        NOMMAE  = 'QU8'
         NNE  = 8
-        MAIT = 'QU8'
+        NOMMAM = 'QU8'
         NNM  = 8
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFQ8T6' .OR. NOMTE.EQ.'COQ8T6') THEN
         NDIM = 3
-        ESC  = 'QU8'
+        NOMMAE  = 'QU8'
         NNE  = 8
-        MAIT = 'TR6'
+        NOMMAM = 'TR6'
         NNM  = 6
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFT6Q8' .OR. NOMTE.EQ.'COT6Q8') THEN
         NDIM = 3
-        ESC  = 'TR6'
+        NOMMAE  = 'TR6'
         NNE  = 6
-        MAIT = 'QU8'
+        NOMMAM = 'QU8'
         NNM  = 8
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFQ4T3' .OR. NOMTE.EQ.'COQ4T3') THEN
         NDIM = 3
-        ESC  = 'QU4'
+        NOMMAE  = 'QU4'
         NNE  = 4
-        MAIT = 'TR3'
+        NOMMAM = 'TR3'
         NNM  = 3
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFQ4T6' .OR. NOMTE.EQ.'COQ4T6') THEN
         NDIM = 3
-        ESC  = 'QU4'
+        NOMMAE  = 'QU4'
         NNE  = 4
-        MAIT = 'TR6'
+        NOMMAM = 'TR6'
         NNM  = 6
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFT3Q4' .OR. NOMTE.EQ.'COT3Q4') THEN
         NDIM = 3
-        ESC  = 'TR3'
+        NOMMAE  = 'TR3'
         NNE  = 3
-        MAIT = 'QU4'
+        NOMMAM = 'QU4'
         NNM  = 4
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFT3Q8' .OR. NOMTE.EQ.'COT3Q8') THEN
         NDIM = 3
-        ESC  = 'TR3'
+        NOMMAE  = 'TR3'
         NNE  = 3
-        MAIT = 'QU8'
+        NOMMAM = 'QU8'
         NNM  = 8
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFQ9Q9' .OR. NOMTE.EQ.'COQ9Q9') THEN
         NDIM = 3
-        ESC  = 'QU9'
+        NOMMAE  = 'QU9'
         NNE  = 9
-        MAIT = 'QU9'
+        NOMMAM = 'QU9'
         NNM  = 9
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSEIF (NOMTE.EQ.'CFP2P2' .OR. NOMTE.EQ.'COP2P2') THEN
         NDIM = 3
-        ESC  = 'SE2'
+        NOMMAE  = 'SE2'
         NNE  = 2
-        MAIT = 'SE2'
+        NOMMAM = 'SE2'
         NNM  = 2
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE
         CALL ASSERT(.FALSE.)
       END IF
+C      
+C --- NOMBRE DE NOEUDS PORTANT DES LAGRANGES
+C
+      NNL    = NNE
+C
+C --- NOMBRE DE COMPOSANTES LAGR_C + LAGR_F
+C
+      IF (LFROTT) THEN
+        NBCPS = NDIM
+      ELSE
+        NBCPS = 1
+      ENDIF
+C
+C --- NOMBRE DE COMPOSANTES TOTAL DEPL + LAGR_C + LAGR_F
+C
+      NBDM   = NDIM + NBCPS  
+C      
+      CALL ASSERT(NDDL.LE.81)
+      CALL ASSERT((NDIM.EQ.2).OR.(NDIM.EQ.3))           
 C
       END

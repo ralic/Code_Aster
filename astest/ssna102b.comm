@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,25 +133,25 @@ LIAI=AFFE_CHAR_MECA(
 #      CONTACT UNILATERAL : FORMULATION MAITRE-ESCLAVE (3 ZONES)
 # --------------------------------------------------------------------
 #
-
-CONT=AFFE_CHAR_MECA(
-                           MODELE=MOD,CONTACT=(
+CONT = DEFI_CONTACT(MODELE      = MOD,
+                    FORMULATION = 'DISCRETE',
+                    ZONE=(
                                _F(  GROUP_MA_MAIT = 'LAB1',
-                                         GROUP_MA_ESCL = 'CEP2',
-                                         SANS_GROUP_NO = ('PA1', 'PP2',),
-                                         APPARIEMENT = 'MAIT_ESCL',
-                                         METHODE = 'LAGRANGIEN'),
+                                    GROUP_MA_ESCL = 'CEP2',
+                                    SANS_GROUP_NO = ('PA1', 'PP2',),
+                                    APPARIEMENT = 'MAIT_ESCL',
+                                    ALGO_CONT = 'LAGRANGIEN'),
                                _F(  GROUP_MA_MAIT = 'CME2',
-                                         GROUP_MA_ESCL = 'CEP3',
-                                         APPARIEMENT = 'MAIT_ESCL',
-                                         METHODE = 'LAGRANGIEN'),
+                                    GROUP_MA_ESCL = 'CEP3',
+                                    APPARIEMENT = 'MAIT_ESCL',
+                                    ALGO_CONT = 'LAGRANGIEN'),
                                _F(  GROUP_MA_MAIT = 'CME3',
-                                         GROUP_MA_ESCL = 'LCD4',
-                                         SANS_GROUP_NO = ('PM3', 'PD4',),
-                                         APPARIEMENT = 'MAIT_ESCL',
-                                         METHODE = 'LAGRANGIEN')),
-                           INFO=1
-                       )
+                                    GROUP_MA_ESCL = 'LCD4',
+                                    SANS_GROUP_NO = ('PM3', 'PD4',),
+                                    APPARIEMENT = 'MAIT_ESCL',
+                                    ALGO_CONT = 'LAGRANGIEN')
+                          ),
+                     );
 
 #
 # --------------------------------------------------------------------
@@ -185,8 +185,8 @@ SOLVEUR=_F(SYME='OUI',),
                           CHAM_MATER=CHMAT,EXCIT=(
                           _F(  CHARGE = BLOQ),
                                 _F(  CHARGE = DEPL,   FONC_MULT = FONC),
-                                _F(  CHARGE = LIAI),
-                                _F(  CHARGE = CONT)),
+                                _F(  CHARGE = LIAI),),
+                          CONTACT  = CONT,      
                           COMP_ELAS=_F(  RELATION = 'ELAS'),
                           NEWTON=_F(  MATRICE = 'ELASTIQUE'),
                           INCREMENT=_F(  LIST_INST = LINST),
@@ -223,7 +223,7 @@ RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,    EXCIT=(
                            _F(  CHARGE = DEPL,
                              FONC_MULT = FONC),
                            _F(  CHARGE = LIAI),
-                           _F(  CHARGE = CONT)),
+                           ),
                      OPTION='REAC_NODA'
                   )
 

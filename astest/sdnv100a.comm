@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100a.para = tps_job 80 mem_job 64Mo liste_test S
@@ -65,20 +65,25 @@ CH=AFFE_CHAR_MECA(
            
 F_DIST_E=DEFI_CONSTANTE(VALE=0.)
 
-CH2=AFFE_CHAR_MECA(
-                   MODELE=MODE,
-                   CONTACT=_F(REAC_GEOM      = 'CONTROLE',
-                              NB_REAC_GEOM   = 2,
-                              METHODE        = 'PENALISATION',
-                              FROTTEMENT     = 'COULOMB',
-                              COULOMB        = 0.0,
-                              E_N            = 1.E10,
-                              E_T            = 1.E16,
-                              GROUP_MA_ESCL     = 'FACEINF',
-                              GROUP_MA_MAIT     = 'SSOL',
-                              DIST_ESCL         = F_DIST_E,
-                             )
-                  )
+
+CH2     = DEFI_CONTACT(MODELE         = MODE,
+                       FORMULATION    = 'DISCRETE',
+                       REAC_GEOM      = 'CONTROLE',
+                       NB_ITER_GEOM   = 2,
+                       FROTTEMENT     = 'COULOMB',
+                       
+                       ZONE =_F(
+                             ALGO_CONT      = 'PENALISATION',
+                             ALGO_FROT      = 'PENALISATION',
+                             COULOMB        = 0.,
+                             E_N            = 1.E10,
+                             E_T            = 1.E16,
+                             GROUP_MA_ESCL  = 'FACEINF',
+                             GROUP_MA_MAIT  = 'SSOL',
+                             DIST_ESCL      = F_DIST_E,
+                               ),
+                      );
+
 
 # ************* CHAMP DE VITESSE INITIALE ***************
 
@@ -124,8 +129,8 @@ U=DYNA_NON_LINE(  SOLVEUR=_F(SYME='OUI',),
            EXCIT=(_F( CHARGE = CH,
                       FONC_MULT = RAMPE
                     ),
-                  _F( CHARGE = CH2,)
                  ),
+           CONTACT     = CH2,      
            ETAT_INIT   =_F(DEPL = CHAMP2,VITE = CHAMP1),
            COMP_ELAS   =_F( RELATION = 'ELAS',),
            INCREMENT   =_F( INST_INIT = 0.,LIST_INST = L_INST),

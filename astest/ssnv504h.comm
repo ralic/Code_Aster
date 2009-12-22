@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN CONTACT
 # ssnv504h.para = tps_job 220 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,16 +127,22 @@ CH0=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=_F(GROUP_NO='LMN',
                                DY=1.0,),);
 
-CH2=AFFE_CHAR_MECA(MODELE=MO,
-                   CONTACT=(
-                            _F(APPARIEMENT='MAIT_ESCL',
-                               METHODE='CONTINUE',
-                               CONTACT_INIT='OUI',
-                               ITER_GEOM_MAXI=3,
-                               ITER_CONT_MAXI=50,
-                               GROUP_MA_MAIT='SMAI1',
-                               GROUP_MA_ESCL='SESC1',),),
-                  );
+
+CH2  = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 4,
+                    ITER_CONT_MAXI = 50,
+                    ZONE =(
+                           _F(
+                             GROUP_MA_MAIT = 'SMAI1',
+                             GROUP_MA_ESCL = 'SESC1',
+                             APPARIEMENT   = 'MAIT_ESCL',
+                             CONTACT_INIT  = 'OUI',
+                             ),                                                               
+                          ),
+                   );
+                   
 #_____________________________________________________________________
 #
 #                    DEFINITIONS DES FONCTIONS TEMPORELLES 
@@ -169,8 +175,8 @@ U=STAT_NON_LINE(MODELE=MO,
                 EXCIT=(_F(CHARGE=CH0,
                           FONC_MULT=DPLY,),
                        _F(CHARGE=CH1,),
-                       _F(CHARGE=CH2,),
                         ),
+                CONTACT  = CH2,        
                 COMP_INCR=_F(RELATION='ELAS',
                              TOUT='OUI',),
                 INCREMENT=_F(LIST_INST=L_INST,),

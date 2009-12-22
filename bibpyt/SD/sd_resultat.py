@@ -1,4 +1,4 @@
-#@ MODIF sd_resultat SD  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_resultat SD  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,6 @@ from SD.sd_titre import sd_titre
 from SD.sd_l_table import sd_l_table
 from SD.sd_champ import sd_champ
 from SD.sd_l_charges import sd_l_charges
-from SD.sd_char_contact import sd_char_contact
 from SD.sd_util import *
 
 

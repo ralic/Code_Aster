@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 30/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith10 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -247,10 +247,6 @@ cata_msg = {
 
 83 : _("""
  trop de lignes dans le titre
-"""),
-
-84 : _("""
- erreur dvt dans le type d'extrema
 """),
 
 87 : _("""

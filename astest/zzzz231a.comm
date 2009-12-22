@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DU CONTACT EN GEOMETRIE INITIALE AVEC ETAT INITIAL
 # zzzz231a.para = tps_job 160 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,15 +57,31 @@ Dimpo=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='ContVis',
                                  DZ=-1,),);
 
-CONT=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT='ContVis',
-                               GROUP_MA_ESCL='ContTrou',
-                               REAC_GEOM='AUTOMATIQUE',),);
 
-CONT2=AFFE_CHAR_MECA(MODELE=MO,
-                     CONTACT=_F(GROUP_MA_MAIT='ContVis',
-                                GROUP_MA_ESCL='ContTrou',
-                                METHODE='VERIF',),);
+CONT = DEFI_CONTACT(MODELE      = MO,
+                   FORMULATION  = 'DISCRETE',
+                   REAC_GEOM    = 'AUTOMATIQUE',
+                   ZONE=(
+                        _F(
+                            GROUP_MA_MAIT='ContVis',
+                            GROUP_MA_ESCL='ContTrou',
+                         ),                           
+                                                                                                                             
+                       ),  
+                  )  
+
+
+CONT2 = DEFI_CONTACT(MODELE      = MO,
+                   FORMULATION  = 'DISCRETE',
+                   ZONE=(
+                        _F(
+                            ALGO_CONT    = 'VERIF',
+                            GROUP_MA_MAIT='ContVis',
+                            GROUP_MA_ESCL='ContTrou',
+                         ),                           
+                                                                                                                             
+                       ),  
+                  ) 
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           1,1,
@@ -84,7 +100,8 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=ENCAST2,),
                           _F(CHARGE=Dimpo,
                              FONC_MULT=RAMPE,),
-                          _F(CHARGE=CONT,),),
+                          ),
+                   CONTACT  = CONT,       
                    COMP_INCR=_F(RELATION='ELAS',
                                 DEFORMATION='PETIT',),
                    INCREMENT=_F(LIST_INST=TPS,),
@@ -135,7 +152,8 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                            _F(CHARGE=ENCAST2,),
                            _F(CHARGE=Dimpo,
                               FONC_MULT=RAMPE,),
-                           _F(CHARGE=CONT2,),),
+                           ),
+                    CONTACT  = CONT2,       
                     COMP_INCR=_F(RELATION='ELAS',
                                  DEFORMATION='PETIT',),
                     INCREMENT=_F(LIST_INST=TPS,),

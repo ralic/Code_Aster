@@ -1,4 +1,4 @@
-# MODIF  DATE 22/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,17 +117,24 @@ PTAN_101=AFFE_CHAR_MECA(MODELE=MODE,
 
 F_DIST_E=DEFI_CONSTANTE(VALE=-2.)
 
-CTAC=AFFE_CHAR_MECA(MODELE=MODE,
-                    CONTACT=_F(REAC_GEOM='CONTROLE',
-                               NB_REAC_GEOM=2,
-                               METHODE='LAGRANGIEN',
-                               FROTTEMENT='COULOMB',
-                               COULOMB=0.3,
-                               COEF_MATR_FROT=0.9,
-                               GROUP_MA_MAIT='LMAI',
-                               GROUP_MA_ESCL='LESC',
-                               DIST_ESCL=F_DIST_E
-                               ),);
+CTAC =DEFI_CONTACT(MODELE       = MODE,
+                   FORMULATION  = 'DISCRETE',
+                   FROTTEMENT   = 'COULOMB',
+                   REAC_GEOM    = 'CONTROLE',
+                   NB_ITER_GEOM = 2,
+                   ZONE=(
+                        _F(
+                          ALGO_CONT  = 'LAGRANGIEN',
+                          ALGO_FROT  = 'LAGRANGIEN',
+                          COULOMB    = 0.3,
+                          COEF_MATR_FROT=0.9,
+                          GROUP_MA_MAIT='LMAI',
+                          GROUP_MA_ESCL='LESC',
+                          DIST_ESCL=F_DIST_E,
+                         ),                                                   
+                       ),  
+                  )
+
 
 #---------------------------------------------------------------------
 #                         RESOLUTION
@@ -149,8 +156,8 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
                     CARA_ELEM=CARA,
                     EXCIT=(_F(CHARGE=PNOR,
                               FONC_MULT=RAMPE,),
-                           _F(CHARGE=CTAC,),
                            _F(CHARGE=COND_LIM,),),
+                    CONTACT  = CTAC,       
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -168,7 +175,6 @@ U_NOR=CALC_NO(reuse =U_NOR,
               OPTION='REAC_NODA',
               EXCIT=(_F(CHARGE=PNOR,
                         FONC_MULT=RAMPE,),
-                     _F(CHARGE=CTAC,),
                      _F(CHARGE=COND_LIM,),),
               );
 
@@ -180,8 +186,8 @@ U_99=STAT_NON_LINE(MODELE=MODE,
                              FONC_MULT=RAMPE,),
                           _F(CHARGE=PTAN_99,
                              FONC_MULT=RAMPE,),
-                          _F(CHARGE=CTAC,),
                           _F(CHARGE=COND_LIM,),),
+                   CONTACT  = CTAC,       
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,),
@@ -200,7 +206,6 @@ U_99=CALC_NO(reuse =U_99,
                        FONC_MULT=RAMPE,),
                     _F(CHARGE=PTAN_99,
                        FONC_MULT=RAMPE,),
-                    _F(CHARGE=CTAC,),
                     _F(CHARGE=COND_LIM,),),
               );
 
@@ -212,8 +217,8 @@ U_101=STAT_NON_LINE(MODELE=MODE,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=PTAN_101,
                               FONC_MULT=RAMPE,),
-                           _F(CHARGE=CTAC,),
                            _F(CHARGE=COND_LIM,),),
+                    CONTACT  = CTAC,       
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -234,7 +239,6 @@ U_101=CALC_NO(reuse =U_101,
                         FONC_MULT=RAMPE,),
                      _F(CHARGE=PTAN_101,
                         FONC_MULT=RAMPE,),
-                     _F(CHARGE=CTAC,),
                      _F(CHARGE=COND_LIM,),),
               );
 

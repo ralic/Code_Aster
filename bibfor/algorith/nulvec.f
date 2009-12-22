@@ -1,6 +1,7 @@
-      SUBROUTINE NULVEC (NOMSD)
+      SUBROUTINE NULVEC(NOMSD )
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,16 +18,17 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*24       NOMSD
-C ----------------------------------------------------------------------
-C     MISE A ZERO D'UNE STRUCTURE DE DONNEES A VALEURS REELLES
 C
+      IMPLICIT      NONE
+      CHARACTER*19  NOMSD
+C
+C ----------------------------------------------------------------------
+C
+C  MISE A ZERO D'UN CHAM_NO
 C
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -44,19 +46,22 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-        CHARACTER*8 K8BID
-        REAL*8      ZERO
-        INTEGER     JVEC, NC
+      REAL*8      ZERO
+      PARAMETER (ZERO=0.D0)
+C
+      CHARACTER*8 K8BID
+      
+      INTEGER     JVEC, NC,N
+C
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-        ZERO = 0.D0
-        CALL JEVEUO (NOMSD(1:19)//'.VALE','E',JVEC)
-        CALL JELIRA (NOMSD(1:19)//'.VALE','LONMAX',NC,K8BID)
-        DO 1 N=1,NC
+      
+      CALL JEVEUO(NOMSD(1:19)//'.VALE','E',JVEC)
+      CALL JELIRA(NOMSD(1:19)//'.VALE','LONMAX',NC,K8BID)
+      DO 1 N=1,NC
         ZR(JVEC+N-1) = ZERO
-1       CONTINUE
-        GOTO 9999
-C FIN ------------------------------------------------------------------
- 9999 CONTINUE
+1     CONTINUE
+
       CALL JEDEMA()
       END

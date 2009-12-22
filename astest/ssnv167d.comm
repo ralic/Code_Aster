@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 
 # TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,11 +75,17 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                                   DZ=-0.5,),),);
 #
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT='Maitre',
-                               GROUP_MA_ESCL='Esclave',
-                               ),
-                    INFO=2,);
+CHA2 =DEFI_CONTACT(MODELE       = MO,
+                  FORMULATION  = 'DISCRETE',
+                  REAC_GEOM    = 'AUTOMATIQUE',
+                  
+                  ZONE=(
+                        _F(
+                          GROUP_MA_MAIT='Maitre',
+                          GROUP_MA_ESCL='Esclave',
+                         ),                         
+                       ),  
+                  )
 
 
 
@@ -100,8 +106,8 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    EXCIT=(_F(CHARGE=CHA1,
                              FONC_MULT=F,
                                    ),
-                          _F(CHARGE=CHA2,),
                                    ),
+                   CONTACT  = CHA2,                
                    COMP_ELAS=_F(RELATION='ELAS',
                                 ),
                     CONVERGENCE=_F(ARRET='OUI',

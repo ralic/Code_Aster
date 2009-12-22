@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 # ssnl107c.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,23 +89,28 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                  DRY=0.0,
                                  DRZ=0.0,),),);
 
-CHA2=AFFE_CHAR_MECA(VERI_NORM='NON',
-                      MODELE=MO,
-                      CONTACT=(_F(APPARIEMENT='NODAL',
-                                  GROUP_MA_MAIT='COQU1',
-                                  GROUP_MA_ESCL='POUT1',
-                                  NORMALE = 'ESCL',
-                                  VECT_ESCL = 'FIXE',
-                                  ESCL_FIXE=(0.0,0.0,-1.0,),    
-                                  DIST_ESCL=FONCC,),
-                               _F(APPARIEMENT='NODAL',
-                                  GROUP_MA_MAIT='COQU2',
-                                  GROUP_MA_ESCL='POUT2',
-                                  NORMALE = 'ESCL',
-                                  VECT_ESCL = 'FIXE',
-                                  ESCL_FIXE=(0.0,0.0,-1.0,),
-                                  ),),);
-#
+CHA2 = DEFI_CONTACT   (MODELE      = MO,
+                       FORMULATION = 'DISCRETE',
+                       ZONE = (
+                                _F( 
+                                   APPARIEMENT   = 'NODAL',
+                                   GROUP_MA_MAIT = 'COQU1',
+                                   GROUP_MA_ESCL = 'POUT1',
+                                   NORMALE       = 'ESCL',
+                                   VECT_ESCL     = 'FIXE',
+                                   ESCL_FIXE     = (0.0,0.0,-1.0,),
+                                   DIST_ESCL     = FONCC,   
+                                  ),
+                                _F( 
+                                   APPARIEMENT   = 'NODAL',
+                                   GROUP_MA_MAIT = 'COQU2',
+                                   GROUP_MA_ESCL = 'POUT2',
+                                   NORMALE       = 'ESCL',
+                                   VECT_ESCL     = 'FIXE',
+                                   ESCL_FIXE     = (0.0,0.0,-1.0,), 
+                                  ),                               
+                              ), 
+                      );
 #
 
 
@@ -124,8 +129,8 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARA,
                    EXCIT=(_F(CHARGE=CHA1,
-                             FONC_MULT=FONCM,),
-                          _F(CHARGE=CHA2,),),
+                             FONC_MULT=FONCM,),),
+                   CONTACT  = CHA2,       
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 NUME_INST_FIN=2,),

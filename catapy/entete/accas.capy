@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF ENTETE  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,6 +97,7 @@ from SD.co_char_cine_meca   import char_cine_meca
 from SD.co_char_cine_ther   import char_cine_ther
 from SD.co_char_meca        import char_meca
 from SD.co_char_ther        import char_ther
+from SD.co_contact          import char_contact
 from SD.co_compor           import compor_sdaster
 from SD.co_courbe           import courbe_sdaster
 from SD.co_fiss_xfem        import fiss_xfem
@@ -149,7 +150,7 @@ from SD.co_cham_elem import cham_elem
 # resultat : (evol_sdaster,mode_stat,mode_meca)
 from SD.co_resultat     import resultat_sdaster, resultat_jeveux
 from SD.co_resultat_dyn import resultat_dyn
-from SD.co_mode_meca  import mode_meca
+from SD.co_mode_meca    import mode_meca
 
 # -----------------------------------------------------------------------------
 class acou_harmo    (resultat_dyn):pass
@@ -175,7 +176,6 @@ class evol_elas(evol_sdaster):pass
 class evol_noli(evol_sdaster):pass
 class evol_ther(evol_sdaster):pass
 class evol_varc(evol_sdaster):pass
-
 
 # -----------------------------------------------------------------------------
 # resultat_sdaster/mode_meca :

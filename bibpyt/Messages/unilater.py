@@ -1,4 +1,4 @@
-#@ MODIF unilater Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF unilater Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,13 +22,30 @@ def _(x) : return x
 
 cata_msg = {
 
-51 : _("""
-Il y a plusieurs charges contenant des liaisons unilatérales.
+42: _("""
+Définition d'une LIAISON_UNILATERALE.
+Le nombre de COEF_MULT n'est pas égal au nombre de grandeurs contenus dans
+le vecteur NOM_CMP
+"""),
+
+43: _("""
+Définition d'une LIAISON_UNILATERALE.
+Il y a trop de grandeurs dans le vecteur NOM_CMP (limité à 30)
+"""),
+
+48 : _("""
+Définition d'une LIAISON_UNILATERALE.
+Aucun noeud n'est affecté par une liaison unilatérale.
+"""),
+
+58: _("""
+Définition d'une LIAISON_UNILATERALE.
+La composante %(k2)s existe sur le noeud %(k1)s
 """),
 
 
 75: _("""
-Pour le mot-clef LIAISON_UNILATER.
+Définition d'une LIAISON_UNILATERALE.
 La composante %(k2)s est inexistante sur le noeud %(k1)s
 """),
 

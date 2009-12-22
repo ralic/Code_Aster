@@ -1,9 +1,9 @@
-      SUBROUTINE MMALGO(JTABF ,IPC   ,NTPC  ,XA    ,XS    ,
-     &                  LVITES,LGLISS,LCOMPL,JEU   ,JEUVIT,
-     &                  ASPERI,LAMBDC,MMCVCA,SCOTCH)
+      SUBROUTINE MMALGO(XA    ,XS    ,LVITES,LCOMPL,LGLINI,
+     &                  JEU   ,JEUVIT,ASPERI,LAMBDC,MMCVCA,
+     &                  SCOTCH,XANEW ,XSNEW )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +23,11 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER IPC,XA,XS,NTPC,JTABF
-      LOGICAL LVITES,LGLISS,LCOMPL,MMCVCA,SCOTCH
-      REAL*8  JEU,JEUVIT,ASPERI,LAMBDC
+      INTEGER  XA,XS
+      INTEGER  XSNEW,XANEW
+      LOGICAL  LVITES,LCOMPL,MMCVCA,SCOTCH
+      REAL*8   JEU,JEUVIT,ASPERI,LAMBDC
+      LOGICAL  LGLINI
 C      
 C ----------------------------------------------------------------------
 C
@@ -36,21 +38,27 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  IPC    : NUMERO DU POINT DE CONTACT
-C IN  NTPC   : NOMBRE CUMULE DE POINTS DE CONTACT
-C IN  JTABF  : ADRESSE JEVEUX DU VECTEUR DEFICO(1:16)//'.TABFIN'
-C IN  XA     : POUR LA COMPLIANCE
-C              XA = 0 ON N'EST PAS "DANS" LES ASPERITES
-C              SI PAS DE COMPLIANCE ACTIVEE: XA VAUT TOUJOURS 1
+C IN  XS     : INDICATEUR DE CONTACT 
+C                - XS = 0: PAS DE CONTACT
+C                - XS = 1: CONTACT
+C IN  XA     : INDICATEUR POUR LA COMPLIANCE
+C                - XA = 0: ON N'EST PAS "DANS" LES ASPERITES
+C                - XA = 1: ON EST DANS LES ASPERITES
+C                SI PAS DE COMPLIANCE ACTIVEE: XA VAUT TOUJOURS 1
 C IN  XS     : INDICATEUR DE CONTACT (XS=0: PAS DE CONTACT)
 C IN  LVITES : .TRUE. SI FORMULATION EN VITESSE
-C IN  LGLISS : .TRUE. SI CONTACT GLISSIERE
+C IN  LGLINI : .TRUE. SI CONTACT GLISSIERE AVEC CONTACT_INIT AU PREMIER
+C               PAS DE TEMPS
 C IN  LCOMPL : .TRUE. SI COMPLIANCE
 C              .FALSE. => XA = 1
 C IN  JEU    : VALEUR DU JEU
 C IN  JEUVIT : VALEUR DU GAP DES VITESSES NORMALES
 C IN  ASPERI : COEFFICIENT POUR LES ASPERITES (COMPLIANCE)
 C IN  LAMBDC : MULTIPLICATEUR DE CONTACT DU POINT DE CONTACT
+C OUT XAEND  : NOUVEL INDICATEUR POUR COMPLIANCE
+C                 XA = 0 ON N'EST PAS "DANS" LES ASPERITES
+C              SI PAS DE COMPLIANCE ACTIVEE: XA VAUT TOUJOURS 1
+C OUT XSEND  : NOUVEL INDICATEUR DE CONTACT (XS=0: PAS DE CONTACT)
 C OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DES
 C              CONTRAINTES ACTIVES
 C               .TRUE. SI LA BOUCLE DES CONTRAINTES ACTIVES A CONVERGE
@@ -76,22 +84,16 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER CFMMVD,ZTABF,IGLISS
       REAL*8  R8PREM
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-
-      ZTABF = CFMMVD('ZTABF')
+C
       SCOTCH = .FALSE.
-
-      IF (LGLISS) THEN
-        IGLISS = NINT( ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+30) )
-      ELSE
-        IGLISS = 0
-      ENDIF
-          
+      XANEW  = XA
+      XSNEW  = XS
+C
       IF ((XA.EQ.0) .AND. (XS.EQ.0)) THEN
 C
 C --- LE PC N'EST PAS CONTACTANT          (XS=0)
@@ -101,23 +103,23 @@ C
 C
 C --- ON TOUCHE LES ASPERITES (-> XA = 1)
 C
-          ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+21) = 1.D0
+          XANEW = 1
           IF (JEU .LE. R8PREM()) THEN
 C
 C --- CONTACTANT SI GLISSIERE UNIQUEMENT (-> XS = 1)
 C
-            IF (IGLISS.EQ.1) THEN
-              ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 1.D0
+            IF (LGLINI) THEN
+              XSNEW = 1
               MMCVCA = .FALSE.
             ELSE
-              ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 0.D0
+              XSNEW = 0
             ENDIF
 
           ELSE
 C
 C --- CONTACTANT (-> XS = 1)
 C
-            ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 1.D0
+            XSNEW = 1
             MMCVCA = .FALSE.
           END IF
         ENDIF
@@ -134,29 +136,29 @@ C --- LE PC EST CONTACTANT
 C
           IF (LVITES) THEN
             IF (JEUVIT .GT. 0.D0) THEN
-              ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 1.D0
+              XSNEW = 1
               MMCVCA = .FALSE.
             END IF
           ELSE
 C
 C --- FORMULATION EN DEPLACEMENT: ON REBOUCLE
 C
-            ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 1.D0
-            ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+21) = 1.D0
+            XSNEW = 1
+            XANEW = 1
             MMCVCA = .FALSE.
           END IF
 
         ELSE
 
           IF (JEU.LT.ASPERI .AND. LCOMPL) THEN
-            ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 0.D0
-            ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+21) = 0.D0
+            XSNEW = 0
+            XANEW = 0
           ENDIF
 C
-C --- ON FORCE LE PC CONTACTANT SI GLISSIERE
+C --- ON FORCE LE PC CONTACTANT SI GLISSIERE EN CONTACT_INIT
 C
-          IF (IGLISS.EQ.1) THEN
-            ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 1.D0
+          IF (LGLINI) THEN
+            XSNEW = 1
             MMCVCA = .FALSE.
           ENDIF
 
@@ -168,17 +170,16 @@ C --- LE PC EST       CONTACTANT          (XS=1)
 C --- LE PC TOUCHE LES ASPERITES          (XA=1)
 C
         SCOTCH = .TRUE.
-        IF ((LAMBDC.GT.0) .AND. (IGLISS.EQ.0)) THEN
+        IF ((LAMBDC.GT.0) .AND. (.NOT.LGLINI)) THEN
 C --- LE PC SE DECOLLE (TEST UNIQUEMENT SI GLISSIERE='NON')
           MMCVCA = .FALSE.
-          ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 0.D0
+          XSNEW = 0
         END IF
 
       ELSE
         CALL ASSERT(.FALSE.)
       END IF
-
-  999 CONTINUE
+C
 
       CALL JEDEMA()
       END

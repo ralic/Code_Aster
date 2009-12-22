@@ -1,8 +1,10 @@
-      SUBROUTINE XMMJEU(NDIM,NORM,IGEOM,IDEPM,IDEPL,SINGE,SINGM,NDLS,
-     &                RRE,RRM,NNE,NNES,NNM,FFES,FFMA,JEU)
+      SUBROUTINE XMMJEU(NDIM  ,NNM   ,NNE   ,NNES  ,NDDLSE,
+     &                  NSINGE,NSINGM,FFE   ,FFM   ,NORM  ,
+     &                  JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
+     &                  JEU   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,28 +22,42 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRP_21
-      IMPLICIT NONE
-      INTEGER NDIM,NNE,NNES,NNM,IGEOM,IDEPL,IDEPM,SINGE,SINGM,NDLS
-      REAL*8  NORM(3),RRE,RRM
-      REAL*8  FFES(8),FFMA(8),JEU
 C
+      IMPLICIT NONE
+      INTEGER NDIM 
+      REAL*8  NORM(3)
+      REAL*8  FFE(9),FFM(9)
+      REAL*8  JEU
+      INTEGER JGEOM,JDEPDE,JDEPM
+      INTEGER NNM,NNE,NNES
+      INTEGER NDDLSE,NSINGE,NSINGM
+      REAL*8  RRE,RRM
+C      
 C ----------------------------------------------------------------------
-C ROUTINE APPELLEE PAR : TE0367
+C
+C ROUTINE XFEM (METHODE XFEM-GG - TE)
+C
+C CALCUL DU JEU
+C      
 C ----------------------------------------------------------------------
-C ROUTINE SPECIFIQUE A L'APPROCHE <<GRANDS GLISSEMENTS AVEC XFEM>>,
-C TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
-C ----------------------------------------------------------------------
-C CALCUL DES JEUX
+C
 C 
 C IN  NDIM   : DIMENSION DU PROBLEME
+C IN  NDDL   : NOMBRE TOTAL DE DEGRES DE LIBERTE DE LA MAILLE DE CONTACT
+C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
+C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
+C IN  NNC    : NOMBRE DE NOEUDS DE LA MAILLE DE CONTACT
+C IN  NNES   : NOMBRE DE NOEUDS SOMMETS DE LA MAILLE ESCLAVE
+C IN  NSINGE : NOMBRE DE FONCTIONS SINGULIERE ESCLAVES
+C IN  NSINGM : NOMBRE DE FONCTIONS SINGULIERE MAIT RES
+C IN  NDDLSE : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
+C IN  RRE    : SQRT LSN PT ESCLAVE
+C IN  RRM    : SQRT LSN PT MAITRE
 C IN  NORM   : VALEUR DE LA NORMALE
-C IN  GEOME  : COORDONNÉES RÉELES DU POINT DE CONTACT
-C IN  GEOMM  : COORDONNÉES RÉELES DU PROJETE DU POINT DE CONTACT
-C IN  DEPLE  : DEPLACEMENTS DU POINT DE CONTACT
-C IN  DEPLM  : DEPLACEMENTS DU PROJETE DU POINT DE CONTACT
-C IN  DEPLME : DEPLACEMENTS PRECEDENTS DU POINT DE CONTACT
-C IN  DEPLMM : DEPLACEMENTS PRECEDENTS DU PROJETE DU POINT DE CONTACT
-C OUT JEU    : VALEUR DU JEU POUR LES CONTRIBUTIONS DE CONTACT
+C IN  JGEOM  : POINTEUR JEVEUX SUR GEOMETRIE INITIALE
+C IN  JDEPDE : POINTEUR JEVEUX POUR DEPDEL
+C IN  JDEPM  : POINTEUR JEVEUX POUR DEPMOI
+C OUT JEU    : VALEUR DU JEU POUR LES SECONDS MEMBRES DE CONTACT
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -62,57 +78,70 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER I,J,K,PL
-      REAL*8  POSE(NDIM),POSM(NDIM)
+      INTEGER IDIM,INOM,ISINGE,INOES,ISINGM
+      REAL*8  POSE(3),POSM(3)
+      INTEGER PL
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
+
 C
 C --- INNITIALISATION
 C
-      CALL VECINI(NDIM,0.D0,POSE)
-      CALL VECINI(NDIM,0.D0,POSM)
       JEU  = 0.D0
+      CALL VECINI(3,0.D0,POSE)
+      CALL VECINI(3,0.D0,POSM) 
+C           
+C --- CALCUL DE LA POSITION COURANTE DU POINT ESCLAVE
 C
-      DO 10 I = 1,NDIM
-C --- CALCUL DE LA POSITION COURRANTE DU POINT ESCLAVE
-        DO 20 J = 1,NNES
+      DO 10 IDIM = 1,NDIM
+        DO 20 INOES = 1,NNES
           IF (NNM.NE.0) THEN
-            PL = NDLS*(J-1) + I
-            POSE(I) = POSE(I)+FFES(J)*(ZR(IGEOM-1+NDIM*(J-1)+I)
-     &                                   +ZR(IDEPM-1+PL)
-     &                                   -ZR(IDEPM-1+PL+NDIM)
-     &                                   +ZR(IDEPL-1+PL)
-     &                                   -ZR(IDEPL-1+PL+NDIM))
+            PL         = NDDLSE*(INOES-1) + IDIM
+            POSE(IDIM) = POSE(IDIM) +
+     &                   FFE(INOES)*(
+     &                      ZR(JGEOM+NDIM*(INOES-1)+IDIM-1) +
+     &                      ZR(JDEPDE-1+PL) -
+     &                      ZR(JDEPDE-1+PL+NDIM) +
+     &                      ZR(JDEPM-1+PL) -
+     &                      ZR(JDEPM-1+PL+NDIM)     
+     &                   )
           ENDIF
-          DO 25 K = 1,SINGE
-            PL = NDLS*J - 2*NDIM + I
-            POSE(I) = POSE(I) - RRE*FFES(J)*(ZR(IDEPM-1+PL)+
-     &                                          ZR(IDEPL-1+PL))
+          DO 25 ISINGE = 1,NSINGE
+            PL         = NDDLSE*INOES - 2*NDIM + IDIM
+            POSE(IDIM) = POSE(IDIM) - RRE*FFE(INOES)*
+     &                    (ZR(JDEPDE-1+PL)+ZR(JDEPM-1+PL))
  25       CONTINUE
  20     CONTINUE
+ 10   CONTINUE
+C           
+C --- CALCUL DE LA POSITION COURANTE DU POINT MAITRE
 C
-C --- CALCUL DE LA POSITION COURRANTE DU POINT MAITRE
-        DO 30 J = 1,NNM
-          PL = NDLS*NNES + NDIM*(NNE-NNES) + (2+SINGM)*NDIM*(J-1) + I
-          POSM(I) = POSM(I)+FFMA(J)*(ZR(IGEOM-1+NNE*NDIM+(J-1)*NDIM+I)
-     &                                 +ZR(IDEPM-1+PL)
-     &                                 +ZR(IDEPM-1+PL+NDIM)
-     &                                 +ZR(IDEPL-1+PL)
-     &                                 +ZR(IDEPL-1+PL+NDIM))
-          DO 40 K = 1,SINGM
-            PL = PL + 2*NDIM
-            POSM(I) = POSM(I) + RRM*FFMA(J)*(ZR(IDEPM-1+PL)+
-     &                                          ZR(IDEPL-1+PL))
+      DO 11 IDIM = 1,NDIM
+        DO 30 INOM = 1,NNM
+          PL         = NDDLSE*NNES + 
+     &                 NDIM*(NNE-NNES) + 
+     &                (2+NSINGM)*NDIM*(INOM-1) + IDIM
+          POSM(IDIM) = POSM(IDIM)+
+     &                 FFM(INOM)*(
+     &                   ZR(JGEOM-1+NNE*NDIM+(INOM-1)*NDIM+IDIM) +
+     &                   ZR(JDEPDE-1+PL) +
+     &                   ZR(JDEPDE-1+PL+NDIM) +
+     &                   ZR(JDEPM-1+PL) +
+     &                   ZR(JDEPM-1+PL+NDIM)      
+     &                 )
+          DO 40 ISINGM = 1,NSINGM
+            PL         = PL + 2*NDIM
+            POSM(IDIM) = POSM(IDIM) + RRM*FFM(INOM)*
+     &                    (ZR(JDEPDE-1+PL)+ZR(JDEPM-1+PL))
  40       CONTINUE
  30     CONTINUE
- 10   CONTINUE
+ 11   CONTINUE 
 C
 C --- CALCUL DU JEU
-      DO 70 I = 1,NDIM
-        JEU = JEU + NORM(I)*(POSE(I)-POSM(I))
-  70  CONTINUE
 C
-      CALL JEDEMA()      
+      DO 70 IDIM = 1,NDIM
+        JEU  = JEU  + NORM(IDIM)*(POSE(IDIM)-POSM(IDIM))
+  70  CONTINUE
+C     
       END

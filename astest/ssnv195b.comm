@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv195b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -124,32 +124,32 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
                          CONTACT='OUI',
                         );
-                    
-CTXFEM = AFFE_CHAR_MECA( CONTACT=(_F(METHODE='XFEM',
-                                     INTEGRATION='GAUSS',
-                                     COEF_REGU_CONT=100., 
-                                     ITER_CONT_MAXI=40,   
-                                     CONTACT_INIT='OUI',    
-                                     COEF_ECHELLE=1.,
-                                     FROTTEMENT='SANS',
-                                     FISS_MAIT = FISS1,
-                                    ),
-                                  _F(METHODE='XFEM',
-                                     INTEGRATION='GAUSS',
-                                     COEF_REGU_CONT=100., 
-                                     ITER_CONT_MAXI=40,   
-                                     CONTACT_INIT='OUI',    
-                                     COEF_ECHELLE=1.,
-                                     FROTTEMENT='SANS',
-                                     FISS_MAIT = FISS2,
-                                    ),  
-                                ),
-                                MODELE=MODELEK,
-                          ),
-                          
-                          
-                          
-                                                                
+
+
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      ITER_CONT_MAXI = 40,                     
+                      REAC_GEOM      = 'SANS',
+                      ZONE=(
+                            _F(
+                               FISS_MAIT    = FISS1,
+                               INTEGRATION  = 'GAUSS',
+                               CONTACT_INIT = 'OUI',
+                               COEF_ECHELLE = 1.0,
+                               ALGO_CONT    = 'STANDARD',
+                               COEF_CONT    = 100.,      
+                             ), 
+                            _F(
+                               FISS_MAIT    = FISS2,
+                               INTEGRATION  = 'GAUSS',
+                               CONTACT_INIT = 'OUI',
+                               COEF_ECHELLE = 1.0,
+                               ALGO_CONT    = 'STANDARD',
+                               COEF_CONT    = 100.,      
+                             ),                              
+                         ),
+                   );
+                                                  
 
 
 
@@ -201,14 +201,14 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,              
                    EXCIT=(_F(CHARGE=CH1,), 
-                          _F(CHARGE=CTXFEM,),
-                          _F(CHARGE=CHXFEM,),),                  
+                          _F(CHARGE=CHXFEM,),),
+                   CONTACT  = CTXFEM,                         
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   NEWTON=_F(REAC_ITER=1,),
                    SOLVEUR=_F(METHODE='MUMPS',
                                PCENT_PIVOT=250),
+                   NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    );
 

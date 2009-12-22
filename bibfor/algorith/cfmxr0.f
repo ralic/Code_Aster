@@ -1,7 +1,7 @@
       SUBROUTINE CFMXR0(DEFICO,RESOCO,NOMA  ,FONACT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C
       IMPLICIT     NONE
       CHARACTER*24 DEFICO,RESOCO
       CHARACTER*8  NOMA
-      LOGICAL      FONACT(*)
+      INTEGER      FONACT(*)
 C      
 C ----------------------------------------------------------------------
 C
@@ -57,20 +57,20 @@ C
 C
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 C 
-      INTEGER      NBCMP
-      PARAMETER    (NBCMP = 24)
-      CHARACTER*8  NOMCMP(NBCMP)
+      INTEGER      NBCMP,NBCMX
+      PARAMETER    (NBCMP = 24,NBCMX = 27)
+      CHARACTER*8  NOMCMP(NBCMP),NOMCMX(NBCMX)
       INTEGER      NBPER
       PARAMETER    (NBPER = 4)
       CHARACTER*8  NOMPER(NBPER)            
 C
-      INTEGER      CFMMVD,ZRESU,ZPERC
+      INTEGER      CFMMVD,ZRESU,ZPERC,ZRESX,CFDISD
       INTEGER      IFM,NIV
       INTEGER      IZONE,ISURF,ILIAI,ICMP,IRET,IER
-      INTEGER      NBLIAI,NESCL,NZOCO,JDECNO,NBNO,POSNOE,NUMNOE
-
-      CHARACTER*24 APPARI,NDIMCO,CONTNO
-      INTEGER      JAPPAR,JDIM  ,JNOCO
+      INTEGER      NBLIAI,JDECNO,NBNOE,POSNOE,NUMNOE,NBNO
+      INTEGER      CFDISI,NZOCO
+      CHARACTER*24 CONTNO
+      INTEGER      JNOCO
       INTEGER      JCNSVR,JCNSLR
       CHARACTER*19 CNSINR
       INTEGER      JCNSVP,JCNSLP
@@ -89,6 +89,17 @@ C ----------------------------------------------------------------------
      &     'R'   ,'HN'  ,'I'   ,
      &     'IX'  ,'IY'  ,'IZ'  /
 C ----------------------------------------------------------------------
+      DATA NOMCMX
+     &   / 'CONT','JEU' ,'RN'  ,
+     &     'RNX' ,'RNY' ,'RNZ' ,
+     &     'GLIX','GLIY','GLI' ,
+     &     'RTAX','RTAY','RTAZ',
+     &     'RTGX','RTGY','RTGZ',
+     &     'RX'  ,'RY'  ,'RZ'  ,
+     &     'R'   ,'HN'  ,'I'   ,
+     &     'IX'  ,'IY'  ,'IZ'  ,
+     &     'PT_X','PT_Y','PT_Z'/     
+C ----------------------------------------------------------------------
       DATA NOMPER
      &   / 'V1','V2','V3','V4'/     
 C
@@ -99,57 +110,62 @@ C
 C
 C --- ACCES SD CONTACT
 C    
+      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8BID,IER)
       CNSINR = RESOCO(1:14)//'.VALE'
       CNSPER = RESOCO(1:14)//'.PERC'    
       ZRESU  = CFMMVD('ZRESU')
       ZPERC  = CFMMVD('ZPERC')
+      ZRESX  = CFMMVD('ZRESX')
       IF (ZRESU.NE.NBCMP) THEN
         CALL ASSERT(.FALSE.)
       ENDIF
+      IF (ZRESX.NE.NBCMX) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF      
       IF (ZPERC.NE.NBPER) THEN
         CALL ASSERT(.FALSE.)
-      ENDIF    
+      ENDIF   
+C       
       LCTCC  = ISFONC(FONACT,'CONT_CONTINU')
-      LCTCD  = ISFONC(FONACT,'CONT_DISCRET')  
-      LXFCM  = ISFONC(FONACT,'CONT_XFEM')
-      IF (LXFCM) THEN
-        GOTO 999
-      ENDIF                   
+      LCTCD  = ISFONC(FONACT,'CONT_DISCRET')
+      LXFCM  = ISFONC(FONACT,'CONT_XFEM')               
 C
 C -- LONGUEUR DU CHAM_NO_S VALE_CONT 
 C      
       IF (LCTCD) THEN
-        APPARI = RESOCO(1:14)//'.APPARI'
-        CALL JEVEUO(APPARI,'L',JAPPAR)
-        NESCL  = ZI(JAPPAR)
-        NBLIAI = NESCL
-        NDIMCO = DEFICO(1:16)//'.NDIMCO'
-        CALL JEVEUO(NDIMCO,'L',JDIM  )
-        NZOCO = ZI(JDIM+1)
+        NBLIAI = CFDISD(RESOCO,'NBLIAI')
+        NZOCO  = CFDISI(DEFICO,'NZOCO')
         CONTNO = DEFICO(1:16)//'.NOEUCO'
         CALL JEVEUO(CONTNO,'L',JNOCO )
-      ENDIF 
-C
-      IF (LCTCC) THEN
-        CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBLIAI,K8BID,IER)
-      ENDIF                   
+      ELSEIF (LCTCC) THEN  
+        NBLIAI = NBNO
+      ENDIF                  
 C
 C --- CREATION DU CHAM_NO_S VALE_CONT
 C
-      CALL JEEXIN(CNSINR(1:19)//'.CNSV',IRET)
-      IF (IRET.EQ.0) THEN
-        CALL CNSCRE(NOMA,'INFC_R',ZRESU,NOMCMP,'V',CNSINR)
-      ENDIF  
-      CALL JEVEUO(CNSINR(1:19)//'.CNSV','E',JCNSVR)
-      CALL JEVEUO(CNSINR(1:19)//'.CNSL','E',JCNSLR)
+      IF (LXFCM) THEN
+        CALL JEEXIN(CNSINR(1:19)//'.CNSV',IRET)
+        IF (IRET.EQ.0) THEN
+          CALL CNSCRE(NOMA,'INFC_R',ZRESX,NOMCMX,'V',CNSINR)
+        ENDIF       
+      ELSEIF (LCTCC.OR.LCTCD) THEN
+        CALL JEEXIN(CNSINR(1:19)//'.CNSV',IRET)
+        IF (IRET.EQ.0) THEN
+          CALL CNSCRE(NOMA,'INFC_R',ZRESU,NOMCMP,'V',CNSINR)
+        ENDIF  
+        CALL JEVEUO(CNSINR(1:19)//'.CNSV','E',JCNSVR)
+        CALL JEVEUO(CNSINR(1:19)//'.CNSL','E',JCNSLR)
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
 C
 C --- INITIALISATION DU CHAM_NO_S VALE_CONT - CAS DISCRET
 C
       IF (LCTCD) THEN
         DO 10 IZONE = 1,NZOCO
           CALL CFZONE(DEFICO,IZONE,'ESCL',ISURF)
-          CALL CFNBSF(DEFICO,ISURF,'NOEU',NBNO,JDECNO)
-          DO 11 POSNOE = 1,NBNO
+          CALL CFNBSF(DEFICO,ISURF,'NOEU',NBNOE,JDECNO)
+          DO 11 POSNOE = 1,NBNOE
             NUMNOE = ZI(JNOCO-1+JDECNO+POSNOE)
             DO 12 ICMP = 1,ZRESU
               ZR(JCNSVR-1+ZRESU*(NUMNOE-1)+ICMP) = 0.D0
@@ -159,7 +175,7 @@ C
  10     CONTINUE
       ENDIF
 C
-C --- INITIALISATION DU CHAM_NO_S VALE_CONT - CAS CONTINUE
+C --- INITIALISATION DU CHAM_NO_S VALE_CONT - CAS CONTINU
 C
       IF (LCTCC) THEN
         DO 20 ILIAI = 1,NBLIAI
@@ -187,8 +203,8 @@ C
         IF (IRET.EQ.0) THEN    
           DO 1 IZONE = 1,NZOCO
             CALL CFZONE(DEFICO,IZONE,'ESCL',ISURF)
-            CALL CFNBSF(DEFICO,ISURF,'NOEU',NBNO,JDECNO)
-            DO 2 POSNOE = 1,NBNO
+            CALL CFNBSF(DEFICO,ISURF,'NOEU',NBNOE,JDECNO)
+            DO 2 POSNOE = 1,NBNOE
               NUMNOE = ZI(JNOCO-1+JDECNO+POSNOE)
               DO 3 ICMP = 1,ZPERC
                 ZR(JCNSVP-1+ZPERC*(NUMNOE-1)+ICMP) = 0.D0
@@ -209,8 +225,6 @@ C
  4        CONTINUE
         ENDIF
       ENDIF
-C
- 999  CONTINUE  
 C
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 # ssnv186a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -48,30 +48,34 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LN=LN),
                     GROUP_MA_ENRI='VOL',);
  
-
- 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='OUI',
                          INFO=1,); 
-                    
-CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
-                                      METHODE = 'XFEM',
-                                     INTEGRATION='FPG4',
-                               COEF_REGU_CONT=100.,
-                               ITER_CONT_MAXI=4,
-                               CONTACT_INIT='OUI',
-                               ALGO_LAGR='NON',
-                               COEF_ECHELLE=1.E11,
-                               FROTTEMENT='COULOMB',
-                               COULOMB=1.0,
-                               ITER_FROT_MAXI=6,
-                               COEF_REGU_FROT=1000.,
-                                    ),
-                          MODELE=MODELEK,
-                          ), 
-                                               
 
+
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      FROTTEMENT     = 'COULOMB',
+                      ITER_CONT_MAXI = 4,
+                      ITER_FROT_MAXI = 6,                      
+                      REAC_GEOM      = 'SANS',
+                      ZONE=(
+                            _F(
+                               FISS_MAIT    = FISS,
+                               INTEGRATION  = 'FPG4',
+                               CONTACT_INIT = 'OUI',
+                               COEF_ECHELLE = 1.E11,
+                               COULOMB      = 1.0,
+                               SEUIL_INIT   = -5,
+                               ALGO_CONT    = 'STANDARD',
+                               COEF_CONT    = 100.,
+                               ALGO_FROT    = 'STANDARD',
+                               COEF_FROT    = 1000.,                                   
+                               ALGO_LAGR    = 'NON',
+                             ), 
+                         ),
+                   );
 
 E=1.0E11
 nu=0.
@@ -107,15 +111,15 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH1,),
-                          _F(CHARGE=CHF,),
-                          _F(CHARGE=CTXFEM,),                          
+                          _F(CHARGE=CHF,),                          
                           _F(CHARGE=CHXFEM,),),
+                   CONTACT  = CTXFEM ,      
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   NEWTON=_F(REAC_ITER=1,),
                    SOLVEUR=_F(METHODE='MUMPS',
                               ),
+                              NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 

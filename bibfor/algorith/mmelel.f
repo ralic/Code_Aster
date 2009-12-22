@@ -1,8 +1,8 @@
-      SUBROUTINE MMELEL(NDIM  ,IIN   ,NTYMA1,NTYMA2,IORDR,
-     &                  NNDEL ,NUMTYP)
+      SUBROUTINE MMELEL(NDIM  ,NTYMA1,NTYMA2,IORDR,NNDEL ,
+     &                  NUMTYP)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,9 +22,8 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER      IIN,NDIM
-      CHARACTER*8  NTYMA1
-      CHARACTER*8  NTYMA2
+      INTEGER      NDIM
+      CHARACTER*8  NTYMA1,NTYMA2
       INTEGER      NNDEL
       INTEGER      IORDR
       INTEGER      NUMTYP
@@ -40,8 +39,6 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  NDIM   : DIMENSION DE L'ESPACE
-C IN  IIN    : NUMERO D'ORDRE EN ENTREE
-C               SI ZERO: ON UTILISE NTYMA1/NTYMA2
 C IN  NTYMA1 : PREMIERE MAILLE
 C IN  NTYMA2 : SECONDE  MAILLE
 C OUT IORDR  : ORDRE DANS LA LISTE DES ELEMENTS
@@ -99,21 +96,14 @@ C
       IORDR = 0
       NNDEL = 0
 C
-      IF (IIN.EQ.0) THEN
-        DO 10 K=1,NBTYP
-          IF (NTYMA1.EQ.CPL(K,1)) THEN
-            IF (NTYMA2.EQ.CPL(K,2)) THEN
-              NNDEL = MMELTN(K)
-              IORDR = K
-            ENDIF
+      DO 10 K=1,NBTYP
+        IF (NTYMA1.EQ.CPL(K,1)) THEN
+          IF (NTYMA2.EQ.CPL(K,2)) THEN
+            NNDEL = MMELTN(K)
+            IORDR = K
           ENDIF
-  10    CONTINUE
-      ELSEIF ((IIN.GT.0).AND.(IIN.LE.NBTYP)) THEN
-        IORDR = IIN
-        NNDEL = MMELTN(IIN)
-      ELSE
-        IORDR = 0
-      ENDIF
+        ENDIF
+  10  CONTINUE
 C
       IF (IORDR.EQ.0) THEN
         CALL ASSERT(.FALSE.)

@@ -1,7 +1,7 @@
         SUBROUTINE HUJPRC (KK, K, TIN, VIN, MATER, YF, P, Q, TOUD)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,7 @@ C  --------------------------------------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
       INTEGER   NDT, NDI, I, J, K, KK, NMOD
-      PARAMETER (NMOD = 15)
+      PARAMETER (NMOD = 18)
       INTEGER   IFM, NIV, IADZI, IAZK24
       REAL*8    YF(NMOD), D12, DD, DEUX, VIN(*)
       REAL*8    R, X(2), TH(2), SI, PA, PTRAC
@@ -109,10 +109,14 @@ C ==================================================================
       TOU(2)=-DD
 
       IF ((PP/PA).LE.TOLE) THEN
-        CALL TECAEL(IADZI,IAZK24)
-        NOMAIL = ZK24(IAZK24-1+3) (1:8)
-        IF (DEBUG) WRITE (IFM,'(10(A))')
-     &  'HUJPRC :: LOG(P/PA) NON DEFINI DANS LA MAILLE ',NOMAIL
+        
+        IF (DEBUG) THEN
+          CALL TECAEL(IADZI,IAZK24)
+          NOMAIL = ZK24(IAZK24-1+3) (1:8)
+          WRITE (IFM,'(10(A))')
+     &    'HUJPRC :: LOG(P/PA) NON DEFINI DANS LA MAILLE ',NOMAIL
+        ENDIF
+        
         Q = 0.D0
         TOUD(1) = 0.D0
         TOUD(2) = 0.D0

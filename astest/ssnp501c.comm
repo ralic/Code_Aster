@@ -1,6 +1,5 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
-# ssnp501c.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,14 +90,20 @@ DEPL=AFFE_CHAR_MECA(MODELE=MO,
                                 DY=-2.225,),);
 
 
-CON=AFFE_CHAR_MECA(MODELE=MO,
-                     CONTACT=_F(METHODE='CONTINUE',
-                                GROUP_MA_ESCL='LESC',
-                                GROUP_MA_MAIT='LMAI',
-                                INTEGRATION='NOEUD',
-                                ITER_GEOM_MAXI = 1,
-                                COEF_REGU_CONT = 100.,
-                              ),);
+CON  = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 2,
+                    ZONE =(
+                           _F(
+                             GROUP_MA_ESCL = 'LESC',
+                             GROUP_MA_MAIT = 'LMAI',
+                             INTEGRATION   = 'NOEUD',
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 100.,
+                             ),                             
+                          ),
+                   );
 
 #--------- DEFINITION DES FONCTIONS -----------------
 
@@ -114,13 +119,15 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CON,),
+                   EXCIT=(
                           _F(CHARGE=CL,),
                           _F(CHARGE=DEPL,
                              FONC_MULT=RAMPE,),),
+                   CONTACT  = CON,          
                    COMP_ELAS=_F(RELATION='ELAS',
                                 DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=LINST,),
+                   
                    SOLVEUR=_F(METHODE='LDLT',
                               RENUM='SANS'),
                    NEWTON=_F(MATRICE='TANGENTE',
@@ -141,7 +148,8 @@ RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION=('REAC_NODA','SIEF_NOEU_ELGA'),
              MODELE=MO,
-             CHAM_MATER=CHMAT,);
+             CHAM_MATER=CHMAT,
+             );
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  GROUP_NO='LRESU',

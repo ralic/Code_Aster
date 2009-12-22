@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX PLAQUES
 # ssnp121n.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,19 +80,26 @@ CHA1=AFFE_CHAR_MECA(
                   _F(GROUP_NO = 'GH',  DX = 0.0, DY =  0.0,),
                  ),);
 
-CHA2=AFFE_CHAR_MECA(INFO=2,
-            MODELE=MO,
-            CONTACT=(_F(
-                     GROUP_MA_ESCL = 'AB',
-                     GROUP_MA_MAIT = 'EF',
-                     INTEGRATION = 'SIMPSON',
-                     COEF_REGU_CONT = 1000.,
-                     FOND_FISSURE = 'OUI',
-                     ITER_CONT_MAXI = 30,
-                     ITER_GEOM_MAXI = 3,
-                     METHODE = 'CONTINUE',
-                     GROUP_NO_FOND='B',),
-                     ),);
+CHA2 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    ITER_GEOM_MAXI = 3,
+                    ITER_CONT_MAXI = 30,
+                    INFO           = 2,
+                    
+                    ZONE =(
+                           _F(
+                             GROUP_MA_ESCL = 'AB',
+                             GROUP_MA_MAIT = 'EF',
+                             INTEGRATION   = 'SIMPSON',
+                             ALGO_CONT     = 'STANDARD',
+                             COEF_CONT     = 1000.,
+                             FOND_FISSURE  = 'OUI',
+                             GROUP_NO_FOND = 'B',
+                             ),
+                                                        
+                          ),
+                   );
+
 
 #-----------------------------------------------------------
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -112,8 +119,8 @@ RESU=STAT_NON_LINE (
                                NUME_INST_FIN=1,),
                    EXCIT      =(
                                _F(CHARGE=CHA1,
-                                FONC_MULT=FONC,),
-                               _F(CHARGE=CHA2,),),
+                                FONC_MULT=FONC,),),
+                   CONTACT    = CHA2,            
                    COMP_ELAS  =_F(
                                 RELATION='ELAS'),
                    NEWTON     =_F(MATRICE='TANGENTE',

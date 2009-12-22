@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
+# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105c.para = tps_job 2020 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,7 +135,6 @@ VITE1=CALC_FONC_INTERP(FONCTION=VITE,
                        PROL_DROITE='LINEAIRE',
                        PROL_GAUCHE='LINEAIRE');
 
-#DEPL = FORMULE(REEL = '''(REEL:INST) = 2*SIN(OMEGA*INST)/(OMEGA**2)''');
 
 DEPL = FORMULE(VALE='2*sin(OMEGA*INST)/(OMEGA**2)',
                NOM_PARA='INST');
@@ -209,28 +208,41 @@ ini_lach=AFFE_CHAR_MECA(MODELE=MO,
                                   _F(GROUP_NO='C1',
                                      DX=-0.008)));
 
-CHA_conp=AFFE_CHAR_MECA(MODELE=MO,
-                        CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                                   NORMALE='MAIT',
-                                   METHODE='LAGRANGIEN',
-                                   GROUP_MA_MAIT='CONBAS',
-                                   GROUP_MA_ESCL='CONHAUT',
-                                   TOLE_PROJ_EXT=10000.0,
-                                   FROTTEMENT='COULOMB',
-                                   REAC_GEOM='CONTROLE',
-                                   NB_REAC_GEOM=2,
-                                   COULOMB=0.0));
-
-CHA_cont=AFFE_CHAR_MECA(MODELE=MO,
-                        CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                                   NORMALE='MAIT',
-                                   METHODE='CONTINUE',
-                                   COEF_REGU_CONT=1.0E-3,
-                                   GROUP_MA_MAIT='CONBAS',
-                                   GROUP_MA_ESCL='CONHAUT',
-                                   FROTTEMENT='COULOMB',
-                                   ITER_GEOM_MAXI=2,
-                                   COULOMB=mu_frot));
+CHA_conp=DEFI_CONTACT(MODELE       = MO,
+                      FORMULATION  = 'DISCRETE',
+                      FROTTEMENT   = 'COULOMB',
+                      REAC_GEOM    = 'CONTROLE',
+                      NB_ITER_GEOM = 2,
+                      ZONE = _F(
+                              ALGO_CONT    = 'LAGRANGIEN',
+                              ALGO_FROT    = 'LAGRANGIEN',
+                              APPARIEMENT   = 'MAIT_ESCL',
+                              NORMALE       = 'MAIT',
+                              GROUP_MA_MAIT = 'CONBAS',
+                              GROUP_MA_ESCL = 'CONHAUT',                      
+                              TOLE_PROJ_EXT = 10000.0,
+                              COULOMB       = 0.0,
+                      ),
+         )
+         
+CHA_cont=DEFI_CONTACT(MODELE       = MO,
+                      FORMULATION  = 'CONTINUE',
+                      FROTTEMENT   = 'COULOMB',
+                      REAC_GEOM    = 'CONTROLE',
+                      NB_ITER_GEOM = 2,
+                      REAC_FROT    = 'CONTROLE',
+                      NB_ITER_FROT = 2,                      
+                      ZONE = _F(
+                              ALGO_CONT     = 'STANDARD',
+                              COEF_CONT     = 1.0E-3,
+                              APPARIEMENT   = 'MAIT_ESCL',
+                              NORMALE       = 'MAIT',
+                              GROUP_MA_MAIT = 'CONBAS',
+                              GROUP_MA_ESCL = 'CONHAUT', 
+                              COULOMB       = mu_frot,
+                      ),
+         )
+         
 
 # SELF WEIGHT
 ramp_pes=DEFI_FONCTION(NOM_PARA='INST',
@@ -247,8 +259,8 @@ u_pesa=DYNA_NON_LINE(MODELE=MO,
                      EXCIT=(_F(CHARGE=CHA_pes,
                                FONC_MULT=ramp_pes),
                             _F(CHARGE=CL_fix_b),
-                            _F(CHARGE=CHA_conp),
                             _F(CHARGE=CL_fix_t)),
+                     CONTACT  = CHA_conp,       
                      COMP_INCR=_F(RELATION='ELAS',
                                   DEFORMATION='GROT_GDEP',
                                   ALGO_C_PLAN='ANALYTIQUE'),
@@ -293,9 +305,9 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO,
                        EXCIT=(_F(CHARGE=CHA_pes,
                                  FONC_MULT=ramp_pes),
                               _F(CHARGE=CL_fix_t),
-                              _F(CHARGE=CHA_conp),
                               _F(CHARGE=ini_lach,
                                  FONC_MULT=ramp_ila)),
+                       CONTACT  = CHA_conp,          
                        COMP_INCR=_F(RELATION='ELAS',
                                     DEFORMATION='GROT_GDEP',
                                     ALGO_C_PLAN='ANALYTIQUE'),
@@ -332,7 +344,8 @@ Ini_vit0 = CREA_CHAMP(MODELE=MO,
 u_lacher=DYNA_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT,
                        EXCIT=(_F(CHARGE=CHA_pes),
                               _F(CHARGE=CL_fix_t),
-                              _F(CHARGE=CHA_cont)),
+                              ),
+                       CONTACT  =CHA_cont,       
                        COMP_INCR=_F(RELATION='ELAS',
                                     DEFORMATION='GROT_GDEP',
                                     ALGO_C_PLAN='ANALYTIQUE'),
@@ -356,7 +369,8 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher, MODELE=MO,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F(CHARGE=CHA_pes),
                               _F(CHARGE=CL_fix_t),
-                              _F(CHARGE=CHA_cont)),
+                              ),
+                       CONTACT  =CHA_cont,       
                        COMP_INCR=_F(RELATION='ELAS',
                                     DEFORMATION='GROT_GDEP',
                                     ALGO_C_PLAN='ANALYTIQUE'),
@@ -382,7 +396,8 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F(CHARGE=CHA_pes),
                               _F(CHARGE=CL_fix_t),
-                              _F(CHARGE=CHA_cont)),
+                              ),
+                       CONTACT  =CHA_cont,       
                        COMP_INCR=_F(RELATION='ELAS',
                                     DEFORMATION='GROT_GDEP',
                                     ALGO_C_PLAN='ANALYTIQUE'),
@@ -417,7 +432,8 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F(CHARGE=CHA_pes),
                               _F(CHARGE=CL_fix_t),
-                              _F(CHARGE=CHA_cont)),
+                              ),
+                       CONTACT  =CHA_cont,       
                        COMP_INCR=_F(RELATION='ELAS',
                                     DEFORMATION='GROT_GDEP',
                                     ALGO_C_PLAN='ANALYTIQUE'),
@@ -447,7 +463,8 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F(CHARGE=CHA_pes),
                               _F(CHARGE=CL_fix_t),
-                              _F(CHARGE=CHA_cont)),
+                              ),
+                       CONTACT  =CHA_cont,       
                        COMP_INCR=_F(RELATION='ELAS',
                                     DEFORMATION='GROT_GDEP',
                                     ALGO_C_PLAN='ANALYTIQUE'),
@@ -467,88 +484,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                                       ITER_GLOB_MAXI=n_iter_max,
                                       ARRET='NON'));
 
-# ---- third vol libre: hht(alpha=-0.0)
-# RC sdnvxxxc22.base t=0.1425 --->
-# ---> WC sdnvxxxc2.base --->
-# ---> WC sdnvxxxc22.base
-# u_lacher=DYNA_NON_LINE(reuse =u_lacher,
-#                        MODELE=MO,
-#                        CHAM_MATER=CHMAT,
-#                        EXCIT=(_F(CHARGE=CHA_pes,),
-#                               _F(CHARGE=CL_fix_t,),
-#                               _F(CHARGE=CHA_cont,),),
-#                        COMP_INCR=_F(RELATION='ELAS',
-#                                     DEFORMATION='GROT_GDEP',
-#                                     ALGO_C_PLAN='ANALYTIQUE',),
-#                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
-#                                     INST=TC2P,
-#                                     PRECISION=1e-07,),
-#                        INCREMENT=_F(LIST_INST=L_INST,
-#                                     INST_FIN=TC3M,),
-#                        ARCHIVAGE=_F(LIST_INST=L_INST_A,),
-#                        HHT=_F(ALPHA=-0.0,),
-#                        NEWTON=_F(MATRICE='TANGENTE',
-#                                  REAC_ITER=1,),
-#                        SOLVEUR=_F(METHODE='MULT_FRONT',),
-#                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
-#                                       RESI_GLOB_RELA=pre_rel,
-#                                       ITER_GLOB_MAXI=n_iter_max,
-#                                       ARRET='NON',),);
-
-# ---- third rebond: hht (alpha = -0.2)
-# RC sdnvxxxc2.base --->
-# # ---> WC sdnvxxxc22.base
-# u_lacher=DYNA_NON_LINE(reuse =u_lacher,
-#                        MODELE=MO,
-#                        CHAM_MATER=CHMAT,
-#                        EXCIT=(_F(CHARGE=CHA_pes,),
-#                               _F(CHARGE=CL_fix_t,),
-#                               _F(CHARGE=CHA_cont,),
-#                              ),
-#                        COMP_INCR=_F(RELATION='ELAS',
-#                                     DEFORMATION='GROT_GDEP',
-#                                     ALGO_C_PLAN='ANALYTIQUE',),
-#                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
-#                                     INST=TC3M,
-#                                     PRECISION=1e-07,),
-#                        INCREMENT=_F(LIST_INST=L_INST_c,
-#                                     INST_FIN=TC3P,
-#                                     ),                                    
-#                        HHT=_F(ALPHA=a_HHT_ch,),
-#                        NEWTON=_F(MATRICE='TANGENTE',
-#                                  REAC_ITER=1,),
-#                        SOLVEUR=_F(METHODE='MULT_FRONT',),
-#                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
-#                                       RESI_GLOB_RELA=pre_rel,
-#                                       ITER_GLOB_MAXI=n_iter_max,
-#                                       ARRET='NON',),);
-
-# ---- fourth vol libre: hht (alpha = 0.0)
-# u_lacher=DYNA_NON_LINE(reuse =u_lacher,
-#                        MODELE=MO,
-#                        CHAM_MATER=CHMAT,
-#                        EXCIT=(_F(CHARGE=CHA_pes,),
-#                               _F(CHARGE=CL_fix_t,),
-#                               _F(CHARGE=CHA_cont,),),
-#                        COMP_INCR=_F(RELATION='ELAS',
-#                                     DEFORMATION='GROT_GDEP',
-#                                     ALGO_C_PLAN='ANALYTIQUE',),
-#                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
-#                                     INST=TC3P,
-#                                     PRECISION=1e-07,),
-#                        INCREMENT=_F(LIST_INST=L_INST,
-#                                     INST_FIN=TC4M,),
-#                        ARCHIVAGE=_F(LIST_INST=L_INST_A,),
-#                        HHT=_F(ALPHA=-0.0,
-#                               MODI_EQUI='OUI'),
-#                        NEWTON=_F(MATRICE='TANGENTE',
-#                                  REAC_ITER=1,),
-#                        SOLVEUR=_F(METHODE='MULT_FRONT',),
-#                        CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
-#                                       RESI_GLOB_RELA=pre_rel,
-#                                       ITER_GLOB_MAXI=n_iter_max,
-#                                       ARRET='NON',),);
-                                      
+      
 # # # # # # # # # # # #
 # POST-TREATMENT
 # # # # # # # # # # # #
@@ -740,6 +676,7 @@ TEST_TABLE(TABLE=VY_O_min, NOM_PARA='DY', TYPE_TEST = 'MIN',
 TEST_TABLE(TABLE=VY_O_min, NOM_PARA='DY', TYPE_TEST = 'MIN',
            VALE=-0.10284, PRECISION = 0.045, REFERENCE='ANALYTIQUE');
 
+
 VY_A_min = INFO_FONCTION(MAX = _F(FONCTION=VY_A_la));
 
 TEST_TABLE(TABLE=VY_A_min, NOM_PARA='DY', TYPE_TEST = 'MIN',  
@@ -882,5 +819,8 @@ TEST_TABLE(TABLE=B_en_kt2, NOM_PARA='INST', TYPE_TEST = 'MIN',
            VALE=0.13474, PRECISION = 0.055, REFERENCE='ANALYTIQUE');
 TEST_TABLE(TABLE=B_en_kt2, NOM_PARA='INST', TYPE_TEST = 'MIN',
            VALE=0.13820, PRECISION = 0.055, REFERENCE='ANALYTIQUE');
+
+# 
+
 
 FIN();

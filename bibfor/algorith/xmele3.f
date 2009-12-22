@@ -2,7 +2,7 @@
      &                  CHELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,9 +73,7 @@ C
       INTEGER       JMOFIS
       CHARACTER*24  GRP(3),XINDIC
       INTEGER       JGRP,JINDIC
-      CHARACTER*24  K24BLA
-      LOGICAL       LBID
-      REAL*8        SEUIL0
+      REAL*8        MMINFR,SEUIL0
       CHARACTER*19  CHELSI
 C
 C ----------------------------------------------------------------------
@@ -93,7 +91,6 @@ C --- INITIALISATIONS
 C
       NBSPG    = 60
       CHELSI   = '&&XMELE3.CES'
-      K24BLA   = ' '
       CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IBID)
 C
 C --- CREATION DU CHAM_ELEM VIERGE
@@ -129,8 +126,7 @@ C
 C
 C --- SEUIL POUR LA FISSURE EN COURS
 C
-        CALL MMINFP(IZONE ,DEFICO,K24BLA,'SEUIL_INIT',
-     &              IBID  ,SEUIL0,K24BLA,LBID)
+        SEUIL0 = MMINFR(DEFICO,'SEUIL_INIT'       ,IZONE )
 C
 C --- SI FROTTEMENT
 C

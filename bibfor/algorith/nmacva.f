@@ -1,7 +1,7 @@
-      SUBROUTINE NMACVA(FONACT,SDDYNA,DEFICO,VEASSE,CNVADO)
+      SUBROUTINE NMACVA(VEASSE,CNVADO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,11 +21,8 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      LOGICAL      FONACT(*)
-      CHARACTER*24 DEFICO
       CHARACTER*19 CNVADO
       CHARACTER*19 VEASSE(*)
-      CHARACTER*19 SDDYNA
 C 
 C ----------------------------------------------------------------------
 C
@@ -37,9 +34,6 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-C IN  SDDYNA : SD DYNAMIQUE 
-C IN  DEFICO : SD DE DEFINITION DU CONTACT
 C IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE  
 C OUT CNVADO : VECT_ASSE DE TOUS LES CHARGEMENTS VARIABLES DONNES
 C
@@ -67,7 +61,6 @@ C
       CHARACTER*19 CNVARI(20)
       REAL*8       COVARI(20)
       CHARACTER*19 CNFSDO
-      CHARACTER*19 NMCHEX
 C 
 C ----------------------------------------------------------------------
 C
@@ -87,7 +80,7 @@ C
 C
 C --- CALCUL DES FORCES EXTERIEURES VARIABLES
 C
-      CNFSDO       = NMCHEX(VEASSE,'VEASSE','CNFSDO') 
+      CALL NMCHEX(VEASSE,'VEASSE','CNFSDO',CNFSDO) 
       IFDO         = IFDO+1 
       CNVARI(IFDO) = CNFSDO
       COVARI(IFDO) = 1.D0          

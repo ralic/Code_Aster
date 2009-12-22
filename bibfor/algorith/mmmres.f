@@ -1,7 +1,7 @@
       SUBROUTINE MMMRES(FONACT,DEFICO,RESOCO,DEPDEL,NOMA  ,
      &                  CNSINR,CNSPER,INST  ,VEASSE)
 C 
-C MODIF ALGORITH  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,13 +23,13 @@ C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_20
 C
       IMPLICIT     NONE
-      LOGICAL      FONACT(*)
+      INTEGER      FONACT(*)
       CHARACTER*8  NOMA
       REAL*8       INST(*)
       CHARACTER*19 CNSINR,CNSPER
       CHARACTER*19 VEASSE(*)
-      CHARACTER*24 DEFICO,RESOCO
-      CHARACTER*24 DEPDEL
+      CHARACTER*24 DEFICO,RESOCO  
+      CHARACTER*19 DEPDEL
 C      
 C ----------------------------------------------------------------------
 C
@@ -42,6 +42,7 @@ C
 C
 C IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 C IN  DEFICO : SD DE DEFINITION DU CONTACT
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  INST   : PARAMETRES INTEGRATION EN TEMPS (T+, DT, THETA)
@@ -69,16 +70,16 @@ C
 C
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 C 
-      INTEGER      INO,NDD1,INOE,IN
-      INTEGER      IBID,ILONG,IMA,ICMP,I,IZONE,IPC
-      INTEGER      NBNO,NBPC,NBNOT,NNOM,NNOE
+      INTEGER      IPC,NDD1,INOE,IN
+      INTEGER      IBID,ILONG,IMA,ICMP,I,IZONE
+      INTEGER      NBNO,NBPC,NNOCO,NNOM,NNOE
       INTEGER      JCONT,JFROT,ICONEX,IATYMA
-      INTEGER      NBZONE,NBNOM,NTPC,NTMAE
+      INTEGER      NZOCO,NBNOM,NTPC,NTMAE
       INTEGER      JCONTA,JPREMI,JEUTEM,JGLIE,JGLIM
       INTEGER      JFROL,JCONL,JDEPDL,JCOOR,JDEPDE,JCOODE
-      INTEGER      DIM
-      INTEGER      CFMMVD,ZTABF,ZETAT,ZRESU,ZPERC,ZMAES,ZNOES
-      INTEGER      NUMAMA,NUMAES,NUNO,NUNOE
+      INTEGER      NDIM,MMINFI
+      INTEGER      CFMMVD,ZTABF,ZRESU,ZPERC,ZMAES,ZETAT
+      INTEGER      NUMMAM,NUMMAE,NUNO,NUNOE
       REAL*8       GLI1,GLI2,GLI
       REAL*8       RN,RNX,RNY,RNZ
       REAL*8       RTAX,RTAY,RTAZ,RTGX
@@ -89,19 +90,16 @@ C
       CHARACTER*8  ALIAS,KBID
       CHARACTER*19 FCONTS,FFROTS,DEPDES,DEPCN
       CHARACTER*19 FCTCN,FFROCN
-      CHARACTER*19 NMCHEX,FCONT,FFROT
+      CHARACTER*19 FCONT,FFROT
       CHARACTER*24 JEU,GLIE,GLIM,CONTAC,PREMIE
-      CHARACTER*24 TABFIN,ETATCT,NDIMCO,NOESCL,CONTNO,JEUCON
-      CHARACTER*24 JEUSUR,CARACF,MAESCL,NOZOCO
-      INTEGER      JTABF ,JETAT ,JDIM  ,JNOESC,JNOCO ,JJEU
-      INTEGER      JUSU  ,JCMCF ,JMAESC,JZOCO
-      INTEGER      TYCO
+      CHARACTER*24 TABFIN,ETATCT,TYPENO,CONTNO,APJEU
+      INTEGER      JTABF ,JETAT ,JTYPNO,JNOCO ,JAPJEU      
+      CHARACTER*24 JEUSUR,MAESCL
+      INTEGER      JUSU  ,JMAESC
+      INTEGER      TYCO,CFDISI
       REAL*8       DELTAT,R,RX,RY,RZ,IMP,IMPX,IMPY,IMPZ
       INTEGER      IFM,NIV
-      CHARACTER*24 K24BLA,K24BID
-      REAL*8       R8BID
-      LOGICAL      LBID
-      LOGICAL      ISFONC,LCTFC,LFROTT
+      LOGICAL      ISFONC,MMINFL,LCTFC,LFROT
       INTEGER      JCNSVR,JCNSLR,JCNSVP,JCNSLP    
       PARAMETER (EPS=1.D-6)
       
@@ -136,38 +134,32 @@ C
 C
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C 
-      TABFIN = DEFICO(1:16)//'.TABFIN'
-      ETATCT = RESOCO(1:14)//'.ETATCT'
-      NDIMCO = DEFICO(1:16)//'.NDIMCO'
-      NOESCL = DEFICO(1:16)//'.NOESCL'
+      TABFIN = RESOCO(1:14)//'.TABFIN'
+      ETATCT = RESOCO(1:14)//'.ETATCT'      
+      TYPENO = DEFICO(1:16)//'.TYPENO'
       CONTNO = DEFICO(1:16)//'.NOEUCO'
-      JEUCON = DEFICO(1:16)//'.JEUCON'
-      JEUSUR = DEFICO(1:16)//'.JEUSUR'
-      CARACF = DEFICO(1:16)//'.CARACF'
+       APJEU = RESOCO(1:14)//'.APJEU '
+      JEUSUR = RESOCO(1:14)//'.JEUSUR'
       MAESCL = DEFICO(1:16)//'.MAESCL'
-      NOZOCO = DEFICO(1:16)//'.NOZOCO'
       CALL JEVEUO(TABFIN,'L',JTABF)
-      CALL JEVEUO(ETATCT,'E',JETAT)
-      CALL JEVEUO(NDIMCO,'L',JDIM)
-      CALL JEVEUO(NOESCL,'L',JNOESC)
+      CALL JEVEUO(ETATCT,'E',JETAT)      
+      CALL JEVEUO(TYPENO,'L',JTYPNO)
       CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(JEUCON,'L',JJEU)
+      CALL JEVEUO(APJEU ,'L',JAPJEU)
       CALL JEVEUO(JEUSUR,'L',JUSU)
-      CALL JEVEUO(CARACF,'L',JCMCF)
       CALL JEVEUO(MAESCL,'L',JMAESC)        
-      CALL JEVEUO(NOZOCO,'L',JZOCO)
 C      
       ZTABF  = CFMMVD('ZTABF')
       ZETAT  = CFMMVD('ZETAT')
       ZPERC  = CFMMVD('ZPERC') 
       ZRESU  = CFMMVD('ZRESU')
       ZMAES  = CFMMVD('ZMAES')
-      ZNOES  = CFMMVD('ZNOES')
       DELTAT = INST(2)
-      NBZONE = NINT(ZR(JCMCF))
-      DIM    = ZI(JDIM)
-      NTMAE  = ZI(JMAESC)
-      K24BLA = ' '
+      NNOCO  = CFDISI(DEFICO,'NNOCO') 
+      NZOCO  = CFDISI(DEFICO,'NZOCO') 
+      NDIM   = CFDISI(DEFICO,'NDIM' )
+      NTMAE  = CFDISI(DEFICO,'NTMAE')
+      NTPC   = CFDISI(DEFICO,'NTPC')      
 C
 C --- ACCES AU MAILLAGE
 C      
@@ -180,23 +172,21 @@ C
 C
 C --- SAUVEGARDE DE L ETAT DE CONTACT EN CAS DE REDECOUPAGE
 C
-      NTPC = NINT(ZR(JTABF-1+1))
       DO 1000 IPC = 1,NTPC
 C       STATUT DE CONTACT
-        ZR(JETAT-1+ZETAT*(IPC-1)+1) = ZR(JTABF+ZTABF*(IPC-1)+13)
+        ZR(JETAT-1+ZETAT*(IPC-1)+1) = ZR(JTABF+ZTABF*(IPC-1)+22)
 C       SEUIL DE FROTTEMENT
-        ZR(JETAT-1+ZETAT*(IPC-1)+2) = ZR(JTABF+ZTABF*(IPC-1)+14)
+        ZR(JETAT-1+ZETAT*(IPC-1)+2) = ZR(JTABF+ZTABF*(IPC-1)+16)
 C       COMPLIANCE (ASPERITE)
-        ZR(JETAT-1+ZETAT*(IPC-1)+3) = ZR(JTABF+ZTABF*(IPC-1)+21)
+        ZR(JETAT-1+ZETAT*(IPC-1)+3) = ZR(JTABF+ZTABF*(IPC-1)+23)
 C       MEMOIRE DE GLISSIERE
-        ZR(JETAT-1+ZETAT*(IPC-1)+4) = ZR(JTABF+ZTABF*(IPC-1)+30)
-1000  CONTINUE
+        ZR(JETAT-1+ZETAT*(IPC-1)+4) = ZR(JTABF+ZTABF*(IPC-1)+17)
+1000  CONTINUE      
 C
 C --- RECHERCHE DE LA METHODE D INTEGRATION
 C
-      DO 10 IZONE = 1,NBZONE
-        CALL MMINFP(IZONE ,DEFICO,K24BLA,'INTEGRATION'      ,
-     &              TYCO  ,R8BID ,K24BID,LBID)      
+      DO 10 IZONE = 1,NZOCO 
+        TYCO   = MMINFI(DEFICO,'INTEGRATION'      ,IZONE )    
         IF (TYCO.NE.1) THEN
           CALL U2MESS('A','CONTACT3_16')
           GOTO 999
@@ -214,14 +204,14 @@ C
 C --- REDUCTION DU CHAM_NO_S DES DDL EN UN CHAM_NO_S DES LAGRANGES
 C --- DE CONTACT/FROTTEMENT
 C     
-      IF (DIM.EQ.3) THEN
+      IF (NDIM.EQ.3) THEN
         IF ( LCTFC ) THEN
           NDD1 = 6
         ELSE
           NDD1 = 4
         ENDIF
         CALL CNSRED(DEPDES,0,0,NDD1,LICMP6,'V',DEPCN)
-      ELSE IF (DIM.EQ.2) THEN
+      ELSE IF (NDIM.EQ.2) THEN
         IF ( LCTFC ) THEN
           NDD1 = 4
         ELSE
@@ -250,31 +240,31 @@ C
 C
 C --- INITIALISATIONS DES CHAM_NO_S
 C
-      DO 710 INO = 1,NBNOM
+      DO 710 IPC = 1,NBNOM
         DO 711 ICMP = 1,ZRESU
-          ZL(JCNSLR-1+ZRESU*(INO-1)+ICMP) = .TRUE.
-          ZR(JCNSVR-1+ZRESU*(INO-1)+ICMP) = 0.D0
+          ZL(JCNSLR-1+ZRESU*(IPC-1)+ICMP) = .TRUE.
+          ZR(JCNSVR-1+ZRESU*(IPC-1)+ICMP) = 0.D0
  711    CONTINUE    
         DO 712 ICMP = 1,ZPERC
-          ZL(JCNSLP-1+ZPERC*(INO-1)+ICMP) = .TRUE.
+          ZL(JCNSLP-1+ZPERC*(IPC-1)+ICMP) = .TRUE.
  712    CONTINUE        
  710  CONTINUE 
 C
 C --- FORCES NODALES DE CONTACT
 C
-      FCONT  = NMCHEX(VEASSE,'VEASSE','CNCTCC')
+      CALL NMCHEX(VEASSE,'VEASSE','CNELTC',FCONT)
       CALL CNOCNS(FCONT,'V',FCONTS)
       
-      CALL CNSRED(FCONTS,0,0,DIM,LICNT3,'V',FCTCN)
+      CALL CNSRED(FCONTS,0,0,NDIM,LICNT3,'V',FCTCN)
       CALL JEVEUO(FCTCN//'.CNSV','L',JCONT)
       CALL JEVEUO(FCTCN//'.CNSL','L',JCONL)
 C
 C --- FORCES NODALES DE FROTTEMENT
 C
       IF (LCTFC) THEN
-        FFROT  = NMCHEX(VEASSE,'VEASSE','CNCTCF')
+        CALL NMCHEX(VEASSE,'VEASSE','CNELTF',FFROT)
         CALL CNOCNS(FFROT,'V',FFROTS)
-        CALL CNSRED(FFROTS,0,0,DIM,LICNT3,'V',FFROCN)
+        CALL CNSRED(FFROTS,0,0,NDIM,LICNT3,'V',FFROCN)
         CALL JEVEUO(FFROCN//'.CNSV','L',JFROT)
         CALL JEVEUO(FFROCN//'.CNSL','L',JFROL) 
       ENDIF   
@@ -283,7 +273,7 @@ C --- NOMBRE DE POINTS D'INTEGRATION DE CONTACT
 C
       NBNO  = 0    
       DO 20 IMA = 1,NTMAE
-        NBPC = ZI(JMAESC+ZMAES*(IMA-1)+3)
+        NBPC = ZI(JMAESC+ZMAES*(IMA-1)+3-1)
         NBNO = NBNO + NBPC
    20 CONTINUE
 C
@@ -302,11 +292,11 @@ C
       CALL WKVECT(GLIM  ,'V V R',2*NBNO,JGLIM)
       CALL WKVECT(CONTAC,'V V R',NBNO  ,JCONTA)
       CALL WKVECT(PREMIE,'V V L',NBNOM ,JPREMI)
-      NBNOT = ZI(JDIM+4)
+      
 C
 C --- TRAITEMENT EN DIMENSION TROIS
 C
-      IF (DIM.EQ.3) THEN
+      IF (NDIM.EQ.3) THEN
 C
 C --- CALCUL DU JEU AUX NOEUDS EN PRENANT LE MIN DES JEUX AUX NOEUDS,
 C --- DU GLISSEMENT EN PRENANT LE MAX DU GLISSEMENT AUX NOEUDS
@@ -316,28 +306,28 @@ C --- DES MAILLES
 C
         NTPC  = 0
         DO 60 IMA = 1,NTMAE
-          NBPC  = ZI(JMAESC+ZMAES*(IMA-1)+3)
-          IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2)
+          NBPC   = ZI(JMAESC+ZMAES*(IMA-1)+3-1)
+          IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2-1)
 C
-          DO 50 INO = 1,NBPC
-            NUMAES = NINT(ZR(JTABF+ZTABF*(NTPC+INO-1)+1))
-            NUMAMA = NINT(ZR(JTABF+ZTABF*(NTPC+INO-1)+2))
+          DO 50 IPC = 1,NBPC
+            NUMMAE = NINT(ZR(JTABF+ZTABF*(NTPC+IPC-1)+1))
+            NUMMAM = NINT(ZR(JTABF+ZTABF*(NTPC+IPC-1)+2))
 C
 C --- VECTEURS DIRECTEURS DU PLAN DE CONTACT
 C
-            TAU1(1) = ZR(JTABF+ZTABF*(NTPC+INO-1)+6)
-            TAU1(2) = ZR(JTABF+ZTABF*(NTPC+INO-1)+7)
-            TAU1(3) = ZR(JTABF+ZTABF*(NTPC+INO-1)+8)
-            TAU2(1) = ZR(JTABF+ZTABF*(NTPC+INO-1)+9)
-            TAU2(2) = ZR(JTABF+ZTABF*(NTPC+INO-1)+10)
-            TAU2(3) = ZR(JTABF+ZTABF*(NTPC+INO-1)+11)
+            TAU1(1) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+7)
+            TAU1(2) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+8)
+            TAU1(3) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+9)
+            TAU2(1) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+10)
+            TAU2(2) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+11)
+            TAU2(3) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+12)
 C
 C --- DEPLACEMENT DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
 C
-            CALL MMELTY(NOMA,NUMAES,ALIAS,NNOE,IBID)
-            X(1) = ZR(JTABF+ZTABF*(NTPC+INO-1)+3)
-            X(2) = ZR(JTABF+ZTABF*(NTPC+INO-1)+12)
-            CALL MMNONF(DIM,NNOE,ALIAS,X(1),X(2),FF)
+            CALL MMELTY(NOMA,NUMMAE,ALIAS,NNOE,IBID)
+            X(1) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+3)
+            X(2) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+4)
+            CALL MMNONF(NDIM,NNOE,ALIAS,X(1),X(2),FF)
             DEPLPE(1) = 0.D0
             DEPLPE(2) = 0.D0
             DEPLPE(3) = 0.D0
@@ -346,10 +336,7 @@ C --- DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 C --- POUR LE CALCUL DU GLISSEMENT
 C
             DO 30 I = 1,NNOE
-              NUNO = ZI(ICONEX+ZI(ILONG-1+NUMAES)+I-2)
-              CALL ASSERT(ZL(JDEPDL-1+NDD1*(NUNO-1)+1))
-              CALL ASSERT(ZL(JDEPDL-1+NDD1*(NUNO-1)+2))
-              CALL ASSERT(ZL(JDEPDL-1+NDD1*(NUNO-1)+3))
+              NUNO = ZI(ICONEX+ZI(ILONG-1+NUMMAE)+I-2)
               DEPLPE(1) = DEPLPE(1)+ZR(JDEPDE-1+NDD1*(NUNO-1)+1)*FF(I)
               DEPLPE(2) = DEPLPE(2)+ZR(JDEPDE-1+NDD1*(NUNO-1)+2)*FF(I)
               DEPLPE(3) = DEPLPE(3)+ZR(JDEPDE-1+NDD1*(NUNO-1)+3)*FF(I)
@@ -358,10 +345,10 @@ C
 C --- DEPLACEMENT DU NOEUD MAITRE,
 C --- PROJETE DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 C
-            CALL MMELTY(NOMA,NUMAMA,ALIAS,NNOM,IBID)
-            X(1) = ZR(JTABF+ZTABF*(NTPC+INO-1)+4)
-            X(2) = ZR(JTABF+ZTABF*(NTPC+INO-1)+5)
-            CALL MMNONF(DIM,NNOM,ALIAS,X(1),X(2),FF)
+            CALL MMELTY(NOMA,NUMMAM,ALIAS,NNOM,IBID)
+            X(1) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+5)
+            X(2) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+6)
+            CALL MMNONF(NDIM,NNOM,ALIAS,X(1),X(2),FF)
             DEPLPM(1) = 0.D0
             DEPLPM(2) = 0.D0
             DEPLPM(3) = 0.D0
@@ -369,7 +356,7 @@ C
 C --- DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 C
             DO 40 I = 1,NNOM
-              NUNO = ZI(ICONEX+ZI(ILONG-1+NUMAMA)+I-2)
+              NUNO = ZI(ICONEX+ZI(ILONG-1+NUMMAM)+I-2)
               CALL ASSERT(ZL(JDEPDL-1+NDD1*(NUNO-1)+1))
               CALL ASSERT(ZL(JDEPDL-1+NDD1*(NUNO-1)+2))
               CALL ASSERT(ZL(JDEPDL-1+NDD1*(NUNO-1)+3))
@@ -381,16 +368,16 @@ C
 C --- ECRITURE SUR LES VECTEURS DE TRAVAIL DES JEUX, DU GLISSEMENT ET DE
 C --- L INDICATEUR DE CONTACT
 C
-            ZR(JGLIE+2* (NTPC+INO-1))   = DEPLPE(1)*TAU1(1) +
+            ZR(JGLIE+2* (NTPC+IPC-1))   = DEPLPE(1)*TAU1(1) +
      &                                    DEPLPE(2)*TAU1(2) +
      &                                    DEPLPE(3)*TAU1(3)
-            ZR(JGLIE+2* (NTPC+INO-1)+1) = DEPLPE(1)*TAU2(1) +
+            ZR(JGLIE+2* (NTPC+IPC-1)+1) = DEPLPE(1)*TAU2(1) +
      &                                    DEPLPE(2)*TAU2(2) + 
      &                                    DEPLPE(3)*TAU2(3)
-            ZR(JGLIM+2* (NTPC+INO-1))   = DEPLPM(1)*TAU1(1) +
+            ZR(JGLIM+2* (NTPC+IPC-1))   = DEPLPM(1)*TAU1(1) +
      &                                    DEPLPM(2)*TAU1(2) +
      &                                    DEPLPM(3)*TAU1(3)
-            ZR(JGLIM+2* (NTPC+INO-1)+1) = DEPLPM(1)*TAU2(1) +
+            ZR(JGLIM+2* (NTPC+IPC-1)+1) = DEPLPM(1)*TAU2(1) +
      &                                    DEPLPM(2)*TAU2(2) + 
      &                                    DEPLPM(3)*TAU2(3)
    50     CONTINUE
@@ -399,8 +386,8 @@ C
 C
 C --- BOUCLE SUR TOUS LES NOEUDS DE CONTACT
 C
-        DO 100 INO = 1,NBNOT
-          IF (ZR(JNOESC+ZNOES*(INO-1)).EQ.-1.D0) THEN
+        DO 100 IPC = 1,NNOCO
+          IF (ZI(JTYPNO+IPC-1).EQ.-1) THEN
             GLI1 = 0.D0
             GLI2 = 0.D0
             GLI  = 0.D0
@@ -417,7 +404,7 @@ C
 C
 C --- COORD ABSOLUES DU NOEUD TRAITE: COOR
 C
-            NUNOE   = ZI(JNOCO+INO-1)
+            NUNOE   = ZI(JNOCO+IPC-1)
             ZL(JPREMI-1+NUNOE) = .FALSE.
             COOR(1) = ZR(JCOOR-1+3*(NUNOE-1)+1)
             COOR(2) = ZR(JCOOR-1+3*(NUNOE-1)+2)
@@ -429,17 +416,17 @@ C
             NTPC = 0
             INOE = 0
             DO 90 IMA = 1,NTMAE
-              NBPC   = ZI(JMAESC+ZMAES*(IMA-1)+3)
-              IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2)
+              NBPC   = ZI(JMAESC+ZMAES*(IMA-1)+3-1)
+              IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2-1)
               DO 80 IN = 1,NBPC
-                NUMAES = NINT(ZR(JTABF+ZTABF*(NTPC+IN-1)+1))
+                NUMMAE = NINT(ZR(JTABF+ZTABF*(NTPC+IN-1)+1))
 C
 C --- COORD ABSOLUES DU POINT D INTEGRATION: COORE
 C
-                CALL MMELTY(NOMA,NUMAES,ALIAS,NNOE,IBID)
+                CALL MMELTY(NOMA,NUMMAE,ALIAS,NNOE,IBID)
                 X(1) = ZR(JTABF+ZTABF*(NTPC+IN-1)+3)
-                X(2) = ZR(JTABF+ZTABF*(NTPC+IN-1)+12)
-                CALL MMNONF(DIM,NNOE,ALIAS,X(1),X(2),FF)
+                X(2) = ZR(JTABF+ZTABF*(NTPC+IN-1)+4)
+                CALL MMNONF(NDIM,NNOE,ALIAS,X(1),X(2),FF)
                 COORE(1) = 0.D0
                 COORE(2) = 0.D0
                 COORE(3) = 0.D0
@@ -448,7 +435,7 @@ C --- DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 C --- POUR LE CALCUL DU GLISSEMENT
 C
                 DO 70 I = 1,NNOE
-                  NUNO = ZI(ICONEX+ZI(ILONG-1+NUMAES)+I-2)
+                  NUNO = ZI(ICONEX+ZI(ILONG-1+NUMMAE)+I-2)
                   COORE(1) = COORE(1)+ZR(JCOOR-1+3*(NUNO-1)+1)*FF(I)
                   COORE(2) = COORE(2)+ZR(JCOOR-1+3*(NUNO-1)+2)*FF(I)
                   COORE(3) = COORE(3)+ZR(JCOOR-1+3*(NUNO-1)+3)*FF(I)
@@ -477,10 +464,10 @@ C
      &              ERR(3).LE.EPS) THEN
                   IF (.NOT.ZL(JPREMI-1+NUNOE)) THEN
                     ZL(JPREMI-1+NUNOE) = .TRUE.
-                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2) = ZR(JJEU-1+INOE)
+                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2) = -ZR(JAPJEU-1+INOE)
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+20)= ZR(JUSU-1+INOE)
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) = ZR(JTABF+
-     &                                              ZTABF*(INOE-1)+13)
+     &                                              ZTABF*(INOE-1)+22)
                     GLI1 = ZR(JGLIE+2* (INOE-1)) -
      &                     ZR(JGLIM+2* (INOE-1))
                     GLI2 = ZR(JGLIE+2* (INOE-1)+1) -
@@ -492,10 +479,10 @@ C
                   ELSE
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2) = 
      &                MIN(ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2),
-     &                    ZR(JJEU-1+INOE))
+     &                    -ZR(JAPJEU-1+INOE))
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) = 
      &                MAX(ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1),
-     &                    ZR(JTABF+ZTABF*(INOE-1)+13))
+     &                    ZR(JTABF+ZTABF*(INOE-1)+22))
                     GLI1 = ZR(JGLIE+2* (INOE-1)) -
      &                     ZR(JGLIM+2* (INOE-1))
                     GLI2 = ZR(JGLIE+2* (INOE-1)+1) -
@@ -524,11 +511,10 @@ C
                     RN  = SQRT(RNX**2+RNY**2+RNZ**2)
 C
 C --- Y-A-T-IL DU FROTTEMENT ?
-C
-                    IZONE = ZI(JZOCO-1+INO)
-                    CALL MMINFP(IZONE ,DEFICO,K24BLA,'FROTTEMENT_ZONE',
-     &                          IBID  ,R8BID ,K24BID,LFROTT)
-                    IF (LFROTT) THEN
+C 
+                    LFROT = MMINFL(DEFICO,'FROTTEMENT_ZONE',IZONE)
+                    
+                    IF (LFROT) THEN                
 C
 C --- NORME DU MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT
 C
@@ -555,7 +541,7 @@ C
                       END IF
                     ELSE
                       LAGSF = 0.D0
-                    ENDIF
+                    ENDIF                      
                   END IF
                 END IF
    80         CONTINUE
@@ -650,7 +636,7 @@ C
 C
 C --- TRAITEMENT EN DIMENSION DEUX
 C     
-      ELSE IF (DIM.EQ.2) THEN
+      ELSE IF (NDIM.EQ.2) THEN
 C
 C --- CALCUL DU JEU AUX NOEUDS EN PRENANT LE MIN DES JEUX AUX NOEUDS,
 C --- DU GLISSEMENT EN PRENANT LE MAX DU GLISSEMENT AUX NOEUDS
@@ -660,30 +646,30 @@ C --- DES MAILLES
 C
         NTPC = 0
         DO 140 IMA = 1,NTMAE
-          IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2)
-          NBPC  = ZI(JMAESC+ZMAES* (IMA-1)+3)
-          DO 130 INO = 1,NBPC
-            NUMAES = NINT(ZR(JTABF+ZTABF*(NTPC+INO-1)+1))
-            NUMAMA = NINT(ZR(JTABF+ZTABF*(NTPC+INO-1)+2))
+          IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2-1)
+          NBPC  = ZI(JMAESC+ZMAES* (IMA-1)+3-1)
+          DO 130 IPC = 1,NBPC
+            NUMMAE = NINT(ZR(JTABF+ZTABF*(NTPC+IPC-1)+1))
+            NUMMAM = NINT(ZR(JTABF+ZTABF*(NTPC+IPC-1)+2))
 C
 C --- VECTEURS DIRECTEURS DU PLAN DE CONTACT
 C
-            TAU1(1) = ZR(JTABF+ZTABF*(NTPC+INO-1)+6)
-            TAU1(2) = ZR(JTABF+ZTABF*(NTPC+INO-1)+7)
+            TAU1(1) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+7)
+            TAU1(2) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+8)
 C
 C --- DEPLACEMENT DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
 C
-            CALL MMELTY(NOMA,NUMAES,ALIAS,NNOE,IBID)
-            X(1) = ZR(JTABF+ZTABF*(NTPC+INO-1)+3)
-            X(2) = ZR(JTABF+ZTABF*(NTPC+INO-1)+12)
-            CALL MMNONF(DIM,NNOE,ALIAS,X(1),X(2),FF)
+            CALL MMELTY(NOMA,NUMMAE,ALIAS,NNOE,IBID)
+            X(1) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+3)
+            X(2) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+4)
+            CALL MMNONF(NDIM,NNOE,ALIAS,X(1),X(2),FF)
             DEPLPE(1) = 0.D0
             DEPLPE(2) = 0.D0
 C
 C --- DEPLACEMENT TANGENTIEL DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
 C
             DO 110 I = 1,NNOE
-              NUNO = ZI(ICONEX+ZI(ILONG-1+NUMAES)+I-2)
+              NUNO = ZI(ICONEX+ZI(ILONG-1+NUMMAE)+I-2)
               CALL ASSERT(ZL(JDEPDL-1+NDD1*(NUNO-1)+1))
               CALL ASSERT(ZL(JDEPDL-1+NDD1*(NUNO-1)+2))
               DEPLPE(1) = DEPLPE(1)+ZR(JDEPDE-1+NDD1*(NUNO-1)+1)*FF(I)
@@ -693,17 +679,17 @@ C
 C --- DEPLACEMENT DU NOEUD MAITRE,
 C --- PROJETE DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 C
-            CALL MMELTY(NOMA,NUMAMA,ALIAS,NNOM,IBID)
-            X(1) = ZR(JTABF+ZTABF*(NTPC+INO-1)+4)
-            X(2) = ZR(JTABF+ZTABF*(NTPC+INO-1)+5)
-            CALL MMNONF(DIM,NNOM,ALIAS,X(1),X(2),FF)
+            CALL MMELTY(NOMA,NUMMAM,ALIAS,NNOM,IBID)
+            X(1) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+5)
+            X(2) = ZR(JTABF+ZTABF*(NTPC+IPC-1)+6)
+            CALL MMNONF(NDIM,NNOM,ALIAS,X(1),X(2),FF)
             DEPLPM(1) = 0.D0
             DEPLPM(2) = 0.D0
 C
 C --- DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 C
             DO 120 I = 1,NNOM
-              NUNO = ZI(ICONEX+ZI(ILONG-1+NUMAMA)+I-2)
+              NUNO = ZI(ICONEX+ZI(ILONG-1+NUMMAM)+I-2)
               CALL ASSERT(ZL(JDEPDL-1+NDD1*(NUNO-1)+1))
               CALL ASSERT(ZL(JDEPDL-1+NDD1*(NUNO-1)+2))
               DEPLPM(1) = DEPLPM(1)+ZR(JDEPDE-1+NDD1*(NUNO-1)+1)*FF(I)
@@ -713,9 +699,9 @@ C
 C --- ECRITURE SUR LES VECTEURS DE TRAVAIL DES JEUX, DU GLISSEMENT ET DE
 C --- L INDICATEUR DE CONTACT
 C
-            ZR(JGLIE+NTPC+INO-1) = DEPLPE(1)*TAU1(1) +
+            ZR(JGLIE+NTPC+IPC-1) = DEPLPE(1)*TAU1(1) +
      &                             DEPLPE(2)*TAU1(2)
-            ZR(JGLIM+NTPC+INO-1) = DEPLPM(1)*TAU1(1) +
+            ZR(JGLIM+NTPC+IPC-1) = DEPLPM(1)*TAU1(1) +
      &                             DEPLPM(2)*TAU1(2)
 
   130     CONTINUE
@@ -724,8 +710,8 @@ C
 C
 C --- BOUCLE SUR TOUS LES NOEUDS DE CONTACT
 C
-        DO 180 INO = 1,NBNOT
-          IF (ZR(JNOESC+ZNOES*(INO-1)).EQ.-1.D0) THEN
+        DO 180 IPC = 1,NNOCO
+          IF (ZI(JTYPNO+(IPC-1)).EQ.-1) THEN
             GLI1 = 0.D0
             GLI  = 0.D0
             RTAX = 0.D0
@@ -738,7 +724,7 @@ C
 C
 C --- NUMERO ABSOLU DU NOEUD ESCL: NUNOE ET COORD ABSOLUES: COOR
 C
-            NUNOE = ZI(JNOCO+INO-1)
+            NUNOE = ZI(JNOCO+IPC-1)
             COOR(1) = ZR(JCOOR-1+3* (NUNOE-1)+1)
             COOR(2) = ZR(JCOOR-1+3* (NUNOE-1)+2)
             COOR(3) = ZR(JCOOR-1+3* (NUNOE-1)+3)
@@ -750,17 +736,17 @@ C
             INOE = 0
             ZL(JPREMI-1+NUNOE) = .FALSE.
             DO 170 IMA = 1,NTMAE
-              NBPC  = ZI(JMAESC+ZMAES*(IMA-1)+3)
-              IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2)
+              NBPC  = ZI(JMAESC+ZMAES*(IMA-1)+3-1)
+              IZONE  = ZI(JMAESC+ZMAES*(IMA-1)+2-1)
               DO 160 IN = 1,NBPC
-                NUMAES = NINT(ZR(JTABF+ZTABF*(NTPC+IN-1)+1))
+                NUMMAE = NINT(ZR(JTABF+ZTABF*(NTPC+IN-1)+1))
 C
 C --- COORD ABSOLUES DU POINT D INTEGRATION: COORE
 C
-                CALL MMELTY(NOMA,NUMAES,ALIAS,NNOE,IBID)
+                CALL MMELTY(NOMA,NUMMAE,ALIAS,NNOE,IBID)
                 X(1) = ZR(JTABF+ZTABF*(NTPC+IN-1)+3)
-                X(2) = ZR(JTABF+ZTABF*(NTPC+IN-1)+12)
-                CALL MMNONF(DIM,NNOE,ALIAS,X(1),X(2),FF)
+                X(2) = ZR(JTABF+ZTABF*(NTPC+IN-1)+4)
+                CALL MMNONF(NDIM,NNOE,ALIAS,X(1),X(2),FF)
                 COORE(1) = 0.D0
                 COORE(2) = 0.D0
 C
@@ -768,7 +754,7 @@ C --- DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 C --- POUR LE CALCUL DU GLISSEMENT
 C                
                 DO 150 I = 1,NNOE
-                  NUNO = ZI(ICONEX+ZI(ILONG-1+NUMAES)+I-2)
+                  NUNO = ZI(ICONEX+ZI(ILONG-1+NUMMAE)+I-2)
                   COORE(1) = COORE(1)+ZR(JCOOR-1+3*(NUNO-1)+1)*FF(I)
                   COORE(2) = COORE(2)+ZR(JCOOR-1+3*(NUNO-1)+2)*FF(I)
   150           CONTINUE
@@ -790,10 +776,10 @@ C
                 IF (ERR(1).LE.EPS .AND. ERR(2).LE.EPS) THEN
                   IF (.NOT.ZL(JPREMI-1+NUNOE)) THEN
                     ZL(JPREMI-1+NUNOE) = .TRUE.
-                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2) = ZR(JJEU-1+INOE)
+                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2) = -ZR(JAPJEU-1+INOE)
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+20)= ZR(JUSU-1+INOE)
-                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) = ZR(JTABF+
-     &                                             ZTABF*(INOE-1)+13)
+                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) = 
+     &                              ZR(JTABF+ZTABF*(INOE-1)+22)
 
                     GLI1 = ZR(JGLIE+INOE-1) - ZR(JGLIM+INOE-1)
                     GLI  = SQRT(GLI1**2)
@@ -802,10 +788,10 @@ C
                   ELSE
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2) =
      &                MIN(ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2),
-     &                    ZR(JJEU-1+INOE))
+     &                    -ZR(JAPJEU-1+INOE))
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) =
      &                MAX(ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1),
-     &                    ZR(JTABF+ZTABF*(INOE-1)+13))
+     &                    ZR(JTABF+ZTABF*(INOE-1)+22))
                     GLI1 = ZR(JGLIE+INOE-1) - ZR(JGLIM+INOE-1)
                     GLI  = SQRT(GLI1**2)
                     IF (GLI.GT.ZR(JCNSVR-1+ZRESU*(NUNOE-1)+9)) THEN
@@ -829,11 +815,9 @@ C
                     RN  = SQRT(RNX**2+RNY**2)
 C
 C --- Y-A-T-IL DU FROTTEMENT ?
-C
-                    IZONE = ZI(JZOCO-1+INO)
-                    CALL MMINFP(IZONE ,DEFICO,K24BLA,'FROTTEMENT_ZONE',
-     &                          IBID  ,R8BID ,K24BID,LFROTT)
-                    IF (LFROTT) THEN
+C  
+                    LFROT = MMINFL(DEFICO,'FROTTEMENT_ZONE',IZONE)
+                    IF (LFROT) THEN                        
 C
 C --- NORME DU MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT
 C
@@ -856,7 +840,7 @@ C
                       END IF
                     ELSE
                       LAGSF = 0.D0
-                    ENDIF
+                    ENDIF                      
                   END IF
                 END IF
   160         CONTINUE

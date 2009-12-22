@@ -1,7 +1,7 @@
       SUBROUTINE MMUSUC(NOMA  ,DEFICO,RESOCO)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,7 +34,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  NOMA   : NOM DU MAILLAGE
-C IN  DEFICO : SD DE DEFINITION DU CONTACT
+C IN  DEFICO : SD DE DEFIPCTION DU CONTACT
 C IN  RESOCO : SD DE RESOLUTION DU CONTACT
 C
 C CONTENU DE LA CARTE
@@ -60,23 +60,23 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      IFM,NIV
-      INTEGER      CFMMVD,ZMAES      
+      INTEGER      CFDISI,CFMMVD,ZMAES      
       CHARACTER*24 MAESCL
       INTEGER      JMAESC
-      INTEGER      NTMA,NTPC
-      CHARACTER*24 K24BLA,K24BID
-      CHARACTER*19 USUMOI,USUPLU,USUFIX,USUINI
+      INTEGER      NTMAE,NTPC
+      CHARACTER*19 USUMOI,USUPLU,USUFIX,USUIPC
       INTEGER      JNCMPM,JNCMPP,JNCMPI,JNCMPX
       INTEGER      JVALVM,JVALVP,JVALVI,JVALVX
-      INTEGER      ICMP,IMA,INI
+      CHARACTER*24 NOSDCO
+      INTEGER      JNOSDC      
+      INTEGER      ICMP,IMAE,IPC
       CHARACTER*2  CH2
       CHARACTER*8  K8BID
       CHARACTER*19 LIGRCF
-      INTEGER      NCMPU,NBN
+      INTEGER      NCMPU,NBPC
       PARAMETER    (NCMPU=1)
-      REAL*8       R8BID
-      LOGICAL      LUSURE
-      INTEGER      IBID
+      LOGICAL      MMINFL,LUSURE
+      INTEGER      IZONE,NZOCO
 C
 C ----------------------------------------------------------------------
 C
@@ -85,8 +85,16 @@ C
 C
 C --- USURE ?      
 C      
-      CALL MMINFP(0     ,DEFICO,K24BLA,'USURE',
-     &            IBID  ,R8BID ,K24BID,LUSURE) 
+      LUSURE = .FALSE.
+      NZOCO  = CFDISI(DEFICO,'NZOCO')
+      DO 10 IZONE = 1, NZOCO
+        LUSURE = MMINFL(DEFICO,'USURE',IZONE )
+        IF (LUSURE) THEN
+          GOTO 15
+        ENDIF
+   10 CONTINUE   
+C
+  15  CONTINUE
       IF (.NOT. LUSURE) THEN
         GOTO 999
       END IF
@@ -106,18 +114,19 @@ C
 C      
 C --- LIGREL DES ELEMENTS TARDIFS DE CONTACT/FROTTEMENT    
 C
-      LIGRCF = RESOCO(1:14)//'.LIGR'
+      NOSDCO = RESOCO(1:14)//'.NOSDCO'
+      CALL JEVEUO(NOSDCO,'L',JNOSDC)
+      LIGRCF = ZK24(JNOSDC+2-1)(1:19)
 C      
 C --- RECUPERATION DE QUELQUES DONNEES      
 C
       MAESCL = DEFICO(1:16)//'.MAESCL'
       CALL JEVEUO(MAESCL,'L',JMAESC)
 C
-C --- INITIALISATIONS
+C --- IPCTIALISATIONS
 C
-      NTMA   = ZI(JMAESC)
+      NTMAE  = CFDISI(DEFICO,'NTMAE')
       NTPC   = 0
-      K24BLA = ' ' 
       ZMAES  = CFMMVD('ZMAES')          
 C      
 C --- NOM DES CARTES D'USURE      
@@ -125,13 +134,13 @@ C
       USUMOI = RESOCO(1:14)//'.USUM'
       USUPLU = RESOCO(1:14)//'.USUP'
       USUFIX = RESOCO(1:14)//'.USUF'
-      USUINI = RESOCO(1:14)//'.USUI' 
+      USUIPC = RESOCO(1:14)//'.USUI' 
 C
-C --- CREATION ET INITIALISATION DES CARTES D'USURE :
+C --- CREATION ET IPCTIALISATION DES CARTES D'USURE :
 C      
       CALL ALCART('V',USUMOI,NOMA,'NEUT_R')
       CALL ALCART('V',USUPLU,NOMA,'NEUT_R')
-      CALL ALCART('V',USUINI,NOMA,'NEUT_R')
+      CALL ALCART('V',USUIPC,NOMA,'NEUT_R')
       CALL ALCART('V',USUFIX,NOMA,'NEUT_R')
 C
 C --- ACCES CARTES
@@ -140,8 +149,8 @@ C
       CALL JEVEUO(USUMOI(1:19)//'.VALV','E',JVALVM)
       CALL JEVEUO(USUPLU(1:19)//'.NCMP','E',JNCMPP)
       CALL JEVEUO(USUPLU(1:19)//'.VALV','E',JVALVP)
-      CALL JEVEUO(USUINI(1:19)//'.NCMP','E',JNCMPI)
-      CALL JEVEUO(USUINI(1:19)//'.VALV','E',JVALVI)
+      CALL JEVEUO(USUIPC(1:19)//'.NCMP','E',JNCMPI)
+      CALL JEVEUO(USUIPC(1:19)//'.VALV','E',JVALVI)
       CALL JEVEUO(USUFIX(1:19)//'.NCMP','E',JNCMPX)
       CALL JEVEUO(USUFIX(1:19)//'.VALV','E',JVALVX)
 C
@@ -157,24 +166,33 @@ C
 C
 C --- VALEURS
 C 
-      DO 21 IMA = 1,NTMA       
-        NBN   = ZI(JMAESC+ZMAES*(IMA-1)+3)        
-        DO 11 INI = 1,NBN
+      DO 21 IMAE = 1,NTMAE       
+        NBPC  = ZI(JMAESC+ZMAES*(IMAE-1)+3-1)    
+        DO 11 IPC = 1,NBPC
           ZR(JVALVM-1+1) = 0.D0         
           CALL NOCART(USUMOI,-3         ,K8BID ,'NUM',1,
-     &                K8BID ,-(NTPC+INI),LIGRCF,NCMPU)
+     &                K8BID ,-(NTPC+IPC),LIGRCF,NCMPU)
           ZR(JVALVP-1+1) = 0.D0
           CALL NOCART(USUPLU,-3         ,K8BID ,'NUM',1,
-     &                K8BID ,-(NTPC+INI),LIGRCF,NCMPU)
+     &                K8BID ,-(NTPC+IPC),LIGRCF,NCMPU)
           ZR(JVALVI-1+1) = 0.D0
-          CALL NOCART(USUINI,-3         ,K8BID ,'NUM',1,
-     &                K8BID ,-(NTPC+INI),LIGRCF,NCMPU)
+          CALL NOCART(USUIPC,-3         ,K8BID ,'NUM',1,
+     &                K8BID ,-(NTPC+IPC),LIGRCF,NCMPU)
           ZR(JVALVX-1+1) = 0.D0
           CALL NOCART(USUFIX,-3         ,K8BID ,'NUM',1,
-     &                K8BID ,-(NTPC+INI),LIGRCF,NCMPU)
+     &                K8BID ,-(NTPC+IPC),LIGRCF,NCMPU)
  11     CONTINUE        
-        NTPC = NTPC + NBN
+        NTPC = NTPC + NBPC
  21   CONTINUE 
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<CONTACT> ... USURE MOINS'
+        CALL NMDEBG('VECT',USUMOI,6)
+        WRITE (IFM,*) '<CONTACT> ... USURE PLUS'
+        CALL NMDEBG('VECT',USUPLU,6)      
+        WRITE (IFM,*) '<CONTACT> ... USURE FIXE'
+        CALL NMDEBG('VECT',USUFIX,6)
+      ENDIF  
 C
   999 CONTINUE      
 C

@@ -1,4 +1,4 @@
-#@ MODIF dvp Messages  DATE 07/09/2009   AUTEUR DELMAS J.DELMAS 
+#@ MODIF dvp Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,9 +66,6 @@ cata_msg={
 """),
 
 
-98 : _("""
-   Erreur lors du traitement du contact.
-"""),
 
 99 : _("""
    Le calcul de l'option %(k1)s n'est pas prévue avec Arlequin.
