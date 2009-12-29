@@ -1,0 +1,323 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 29/12/2009 - 13:09:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014339 DU 2009-12-28 08:47:38
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Tests de contact en erreur de syntaxe (suite DEFI_CONTACT)
+FONCTIONNALITE
+   On corrige la syntaxe des tests suivants:
+   
+   perf005b
+   perf005c       
+   ssnl119a      
+   ssnp118j
+   ssnp118k
+   ssnp118l
+   ssnp503b
+   ssnp503d     
+   ssnp503j                     
+   ssnp503k                 
+   ssnp503m                     
+   ssnp503n                  
+   ssnp503o  
+   ssnp504b         
+   ssnp504d         
+   ssnv127c              
+   ssnv209i               
+   ssnv506c              
+   ssnv506d                  
+   zzzz159f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-tests dédiés
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014340 DU 2009-12-28 13:11:14
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   tests NOOK suite DEFI_CONTACT
+FONCTIONNALITE
+   Le passage FETI -> MUMPS a fait bouger les valeurs de test en non-régression (passage d'un
+   solveur hybride à un solveur direct).
+   On modifie les valeurs en conséquence dans feti009a et feti010a
+   
+   Le ssnl126b n'a rien à voir (ce n'est pas du contact) -> On fait une fiche à part
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   feti009a,feti010a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 28/12/2009 - 13:09:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013432 DU 2009-05-18 14:11:32
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   description et constitution du fichier de données sol pour MISS3D
+FONCTIONNALITE
+   Il s'agit de décrire le sol sous forme de couches stratifiées en 
+   décrivant d'abord les caractéristiques des matériaux constitutifs, les couches et le
+   substratum par leur matériau, leur épaisseur, etc.., le positionnement des niveaux sources.
+   
+   Cela se fait dans le cadre d'une nouvelle macro-commande DEFI_SOL_MISS ayant donc comme
+   mots clés facteurs principaux 
+   MATERIAU, COUCHE.
+   
+   DEFI_SOL_MISS produit une table attendue derrière le mot-clé TABLE_SOL de MACRO_MISS_3D.
+   On remplit alors l'unité attendue 
+   derrière le mot clé UNITE_MODELE_SOL.
+   
+   La validation de l'évolution se fait via la modification de cas tests Aster-MISS existants
+   significatifs : un en fondation superficielle MISS03 et un en fondation enterrée MISS04
+   générant un positionnement de sources différent.
+   
+   Dans miss04a, on en profite pour réduire le nombre de fréquences utilisées par
+   MACRO_MISS_3D de 69 à 3.
+   Le temps passe d'environ 2000 secondes à environ 80 secondes.
+   
+   Les valeurs de référence ne sont pas modifiées.
+   
+   
+   Remarque : Il était prévu au départ d'utiliser directement CREA_TABLE pour produire cette
+   table. Mais les cas (comme miss04a) où il y a beaucoup plus de couches que de matériaux
+   rendaient la syntaxe de CREA_TABLE beaucoup trop compliqué (table à trous) et le risque
+   d'erreur aurait été grand.
+   
+   
+   Exemple de syntaxe (miss04a, sans les valeurs) :
+   
+   TBSOL.=.DEFI_SOL_MISS(
+   ...TITRE="SOL.DU.TEST.NUPEC",
+   ...MATERIAU=(
+   ......_F(E=x.yyye33,..NU=0.xx,.RHO=x.xxx,.AMOR_HYST=aa),
+   ......_F(E=x.yyye33,..NU=0.xx,.RHO=x.xxx,.AMOR_HYST=aa),
+   ......_F(E=x.yyye33,..NU=0.xx,.RHO=x.xxx,.AMOR_HYST=aa),
+   ......_F(E=x.yyye33,..NU=0.xx,.RHO=x.xxx,.AMOR_HYST=aa),
+   ......_F(E=x.yyye33,..NU=0.xx,.RHO=x.xxx,.AMOR_HYST=aa),
+   ......_F(E=x.yyye33,..NU=0.xx,.RHO=x.xxx,.AMOR_HYST=aa),
+   ......_F(E=x.yyye33,..NU=0.xx,.RHO=x.xxx,.AMOR_HYST=aa),
+   ......_F(E=x.yyye33,..NU=0.xx,.RHO=x.xxx,.AMOR_HYST=aa),
+   ......_F(E=x.yyye33,..NU=0.xx,.RHO=x.xxx,.AMOR_HYST=aa),
+   ......_F(E=x.yyye33,..NU=0.xx,.RHO=x.xxx,.AMOR_HYST=aa),
+   ...),
+   ...COUCHE=(
+   ......_F(EPAIS=1.0,.NUME_MATE=1,.RECEPTEUR="OUI",),
+   ......_F(EPAIS=1.0,.NUME_MATE=1,.RECEPTEUR="OUI",.SOURCE="OUI"),
+   ......_F(EPAIS=1.0,.NUME_MATE=2,.RECEPTEUR="OUI",),
+   ......_F(EPAIS=1.0,.NUME_MATE=2,.RECEPTEUR="OUI",.SOURCE="OUI"),
+   ......_F(EPAIS=1.0,.NUME_MATE=3,.RECEPTEUR="OUI",),
+   ......_F(EPAIS=1.0,.NUME_MATE=3,.RECEPTEUR="OUI",.SOURCE="OUI"),
+   ......_F(EPAIS=1.0,.NUME_MATE=4,.RECEPTEUR="OUI",),
+   ......_F(EPAIS=1.0,.NUME_MATE=4,.RECEPTEUR="OUI",.SOURCE="OUI"),
+   ......_F(EPAIS=1.0,.NUME_MATE=5,.RECEPTEUR="OUI",),
+   ......_F(EPAIS=1.0,.NUME_MATE=5,.RECEPTEUR="OUI",.SOURCE="OUI"),
+   ......_F(EPAIS=1.0,.NUME_MATE=6,.RECEPTEUR="OUI",.SOURCE="OUI"),
+   ......_F(EPAIS=1.0,.NUME_MATE=7,),
+   ......_F(EPAIS=1.0,.NUME_MATE=8,),
+   ......_F(EPAIS=1.0,.NUME_MATE=9,),
+   ......_F(SUBSTRATUM="OUI",.NUME_MATE=10,),
+   ...),
+   ...INFO=2,
+   )
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u7.02.34, u7.03.11
+VALIDATION
+   miss03a, miss04a
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014338 DU 2009-12-23 15:33:09
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Tri des tables faux
+FONCTIONNALITE
+   Le tri d'une table pouvait être faux dans certains cas où la table contient des trous
+   (paramètre non défini sur certaines lignes) et où ce paramètre ne faisait pas partie des
+   clés de tri.
+   
+   Il restait dans les lignes de la table des données parasites (invisibles lors d'une
+   impression), utilisées pendant la phase de tri.
+   Il semble que ces données ne perturbaient pas le premier tri (y compris avec plusieurs
+   clés de tri) mais uniquement les tris suivants.
+   La table n'était pas triée correctement mais le contenu des lignes n'étaient pas mélangé
+   pour autant.
+   
+   
+   Le message qui dit qu'un paramètre est absent d'une table était en triple :
+    table0_2 == table0_4 == table0_5 !
+   => modif dans calc_table_ops.py
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.3.21
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.3.21
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tables issues de DEFI_SOL_MISS
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM Marc              DATE 28/12/2009 - 15:54:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014337 DU 2009-12-23 14:56:04
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Traction du modele de Hujeux
+FONCTIONNALITE
+   Mise en contexte:
+   -----------------
+   Gerer les etats de traction materiau pour le sol modelise avec 
+   Hujeux.
+   
+   Probleme rencontre:
+   -------------------
+   Suite a la fiche 13801 pour gerer la traction dans le modele de 
+   Hujeux, plusieurs anomalies sont remontees sur des etudes 
+   industrielles menees par M.Kham(digue) et A.Foucault(essai 
+   biaxial non draine):
+   *****************************************************
+   1)Critere de plasticite des mecanismes de traction mal
+   intialise:: passer la valeur de -10Pa(valeur en dur) a 2*P_ref*1e-
+   6 = -2Pa(le + souvent, puisque P_ref = 1e6 Pa)
+   
+   Impact fortran: 
+   ---------------
+   hujiid
+   
+   *******************************************************
+   2)Prediction elastique en contrainte, SIGE, bloquee a des valeurs 
+   de pression isotrope par plan, strictement inferieures a P_ref*1e-
+   6 = -1Pa (le + souvent)
+   Or l'algorithme de Hujeux etait construit intialement pour 
+   renvoyer un echec local si toute pression isotrope par plan 
+   P_k>=P_ref*1e-6 (=-1Pa).
+   Necessite de deplacer cet echec local a une valeur plus faible 
+   (en absolue), cad l'echec local interviendra si tout etat de 
+   contrainte est tel que P_k>=P_ref*1e-7(=-0.1Pa).
+   
+   Impact fortran: 
+   ---------------
+   hujcdc, hujcrd, hujddd, hujdp, hujela, hujiid, hujjid, hujmid, 
+   hujprc, hujpre, hujpxd, hujres, hujtid.
+   
+   Il s'agit pour l'ensemble de ces sources de modifier la valeur du 
+   critere de tolerance de 1e-6 a 1e-7.
+   
+   **********************************************************
+   Ces développements ont un impact sur le cas-test dynamique 
+   wdnp101b dont il faut réajuster les valeurs de non-regression.
+   
+   Impact documentaire: V7.34.101
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.34.101
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF feti009a                        abbas M.ABBAS            212      2      2
+ CASTEST MODIF feti010a                        abbas M.ABBAS            290      2      2
+ CASTEST MODIF miss03a                      courtois M.COURTOIS        1034     31      3
+ CASTEST MODIF miss04a                      courtois M.COURTOIS         357     39      3
+ CASTEST MODIF perf005b                        abbas M.ABBAS            115     10      7
+ CASTEST MODIF perf005c                        abbas M.ABBAS            132     11      6
+ CASTEST MODIF ssnl119a                        abbas M.ABBAS            224      1      1
+ CASTEST MODIF ssnp118j                        abbas M.ABBAS            271      1      1
+ CASTEST MODIF ssnp118k                        abbas M.ABBAS            274      1      1
+ CASTEST MODIF ssnp118l                        abbas M.ABBAS            271      1      1
+ CASTEST MODIF ssnp503b                        abbas M.ABBAS            236     29     34
+ CASTEST MODIF ssnp503d                        abbas M.ABBAS            235     30     31
+ CASTEST MODIF ssnp503j                        abbas M.ABBAS            273     29     33
+ CASTEST MODIF ssnp503k                        abbas M.ABBAS            180     23     28
+ CASTEST MODIF ssnp503m                        abbas M.ABBAS            222     25     29
+ CASTEST MODIF ssnp503n                        abbas M.ABBAS            226     28     33
+ CASTEST MODIF ssnp503o                        abbas M.ABBAS            269     26     29
+ CASTEST MODIF ssnp504b                        abbas M.ABBAS            256     32     32
+ CASTEST MODIF ssnp504d                        abbas M.ABBAS            252     31     31
+ CASTEST MODIF ssnv127c                        abbas M.ABBAS            450     16     12
+ CASTEST MODIF ssnv209i                        abbas M.ABBAS            193     18     12
+ CASTEST MODIF ssnv506c                        abbas M.ABBAS            286     10      9
+ CASTEST MODIF ssnv506d                        abbas M.ABBAS            265     12     11
+ CASTEST MODIF wdnp101b                         kham M.KHAM             759      5      5
+ CASTEST MODIF zzzz159f                        abbas M.ABBAS            174      1      1
+ CASTEST MODIF zzzz177a                     courtois M.COURTOIS         259      1      1
+CATALOPY AJOUT commande/defi_sol_miss       courtois M.COURTOIS          46     46      0
+CATALOPY MODIF commande/macro_miss_3d       courtois M.COURTOIS          69      2      1
+ FORTRAN MODIF algorith/hujcdc                  kham M.KHAM             120      2      2
+ FORTRAN MODIF algorith/hujcrd                  kham M.KHAM              89      2      2
+ FORTRAN MODIF algorith/hujddd                  kham M.KHAM             610      9      9
+ FORTRAN MODIF algorith/hujdp                   kham M.KHAM             378      2      2
+ FORTRAN MODIF algorith/hujdrc                  kham M.KHAM              75      2      2
+ FORTRAN MODIF algorith/hujela                  kham M.KHAM             234      2      2
+ FORTRAN MODIF algorith/hujiid                  kham M.KHAM             908      3      4
+ FORTRAN MODIF algorith/hujjid                  kham M.KHAM            1244      4      2
+ FORTRAN MODIF algorith/hujmid                  kham M.KHAM             895     10      7
+ FORTRAN MODIF algorith/hujprc                  kham M.KHAM             135      2      2
+ FORTRAN MODIF algorith/hujpre                  kham M.KHAM             156      2      2
+ FORTRAN MODIF algorith/hujpxd                  kham M.KHAM             111      4      3
+ FORTRAN MODIF algorith/hujres                  kham M.KHAM             382      2      2
+ FORTRAN MODIF algorith/hujtid                  kham M.KHAM             481      2      2
+ FORTRAN SUPPR algorith/cfdisc                 abbas M.ABBAS             86      0     86
+ FORTRAN SUPPR algorith/mmacon                 abbas M.ABBAS             59      0     59
+ FORTRAN SUPPR algorith/sauvco                 abbas M.ABBAS             62      0     62
+ FORTRAN SUPPR algorith/xconli                 abbas M.ABBAS             66      0     66
+ FORTRAN SUPPR modelisa/normco                 abbas M.ABBAS             59      0     59
+  PYTHON AJOUT Miss/defi_sol_miss_ops       courtois M.COURTOIS          93     93      0
+  PYTHON AJOUT Miss/miss_fichier_sol        courtois M.COURTOIS         101    101      0
+  PYTHON MODIF Macro/calc_table_ops         courtois M.COURTOIS         176      3      3
+  PYTHON MODIF Macro/macro_miss_3d_ops      courtois M.COURTOIS         159     15      5
+  PYTHON MODIF Messages/compor1             courtois M.COURTOIS         362      1     11
+  PYTHON MODIF Messages/dvp                 courtois M.COURTOIS          79      8      3
+  PYTHON MODIF Messages/miss0               courtois M.COURTOIS          46     15      1
+  PYTHON MODIF Messages/table0              courtois M.COURTOIS         131      1      9
+  PYTHON MODIF Miss/__init__                courtois M.COURTOIS          20      1      2
+  PYTHON MODIF Utilitai/Table               courtois M.COURTOIS        1048     28     19
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         687     10      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    3         240       240              +240
+ MODIF :   50       16310       547     456       +91
+ SUPPR :    5         332               332      -332
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   58       16882       787     788        -1 

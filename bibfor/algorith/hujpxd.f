@@ -1,7 +1,7 @@
         SUBROUTINE HUJPXD (K, MATER, SIG ,VIN, PROX, PROXC)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,12 +34,13 @@ C    ---------------------------------------------------------------
         INTEGER      K, NDT, NDI
         INTEGER      IFM, NIV
         REAL*8       MATER(22,2), SIG(6), VIN(*), SEUILD
-        REAL*8       UN, R, EPSVP, PCR, PA, TOLE1
+        REAL*8       UN, R, EPSVP, PCR, PA, TOLE1, TOLE2
         REAL*8       DEGR, BETA, B, M, PHI, PCREF, PTRAC
         REAL*8       SIGD(3), P, Q, DIST, RH
         LOGICAL      DEBUG, PROX, PROXC
         PARAMETER    (UN = 1.D0)
         PARAMETER    (TOLE1 = 1.D-6)
+        PARAMETER    (TOLE2 = 1.D-7)
         PARAMETER    (DEGR = 0.0174532925199D0)
         
         COMMON /TDIM/   NDT, NDI
@@ -72,7 +73,7 @@ C ==================================================================
 C --- PROJECTION DANS LE PLAN DEVIATEUR K ------------------------
 C ==================================================================
         CALL HUJPRJ (K-4, SIG, SIGD, P, Q)
-        IF (((P -PTRAC)/PA) .LE. TOLE1) THEN        
+        IF (((P -PTRAC)/PA) .LE. TOLE2) THEN        
           IF (DEBUG) WRITE (IFM,'(A)')
      &               'HUJPXD :: LOG(P/PA) NON DEFINI'
           PROX = .FALSE.

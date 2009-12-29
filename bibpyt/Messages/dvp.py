@@ -1,4 +1,4 @@
-#@ MODIF dvp Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF dvp Messages  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,13 +59,18 @@ cata_msg={
   L'elrefe ou la famille de points de Gauss ne sont pas définis.
 """),
 
+9 : _("""
+   Erreur de programmation dans un module Python. 
+   Condition non respectée :
+
+      %(k1)s
+"""),
+
 97 : _("""
    Erreur signalée dans la bibliothèque MED
      nom de l'utilitaire : %(k1)s
              code retour : %(i1)d
 """),
-
-
 
 99 : _("""
    Le calcul de l'option %(k1)s n'est pas prévue avec Arlequin.

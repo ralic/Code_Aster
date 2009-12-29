@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 08/12/2009   AUTEUR DEBONNIERES P.DE-BONNIERES 
+#@ MODIF compor1 Messages  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,16 +88,6 @@ Arret suite à l'échec de l'intégration de la loi de comportement.
 12: _("""
  HUJCI1 :: l'incrément de déformation est nul:
            on ne peut pas trouver le zéro de la fonction.
-"""),
-
-13: _("""
- HUJCI1 :: le critère d'existence du zéro de la fonction est violé:
-           on recommande soit de changer les données matériaux,
-           soit de raffiner le pas de temps.
-           
-           Ce critère est :
-           
-           2 x P- < P0 * (P0 /K0 /TRACE(DEPS_ELA) /N)**(1-N)
 """),
 
 14: _("""

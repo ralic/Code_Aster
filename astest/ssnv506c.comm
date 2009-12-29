@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 # ssnv506c.para = tps_job 890 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -132,15 +132,15 @@ DPLIMPO=AFFE_CHAR_MECA(MODELE=MO,
                                       COEF_MULT=(1.0,-1.0),
                                       COEF_IMPO=0.,),);
 
-CONT=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               #REAC_GEOM='CONTROLE',
-                               #NB_REAC_GEOM=2,
-                               METHODE='CONTRAINTE',
-                               GROUP_MA_MAIT='SMAI',
-                               GROUP_MA_ESCL='SESC',
-                               SANS_GROUP_NO=('E','S'),),
-                    INFO=1,);
+CONT = DEFI_CONTACT(MODELE=MO,
+                    FORMULATION='DISCRETE',
+                    ZONE=_F(
+                      GROUP_MA_MAIT='SMAI',
+                      GROUP_MA_ESCL='SESC',
+                      SANS_GROUP_NO=('E','S'),
+                    
+                    ),
+                    )
 
 #----------------------------------------------------------------------
 #                         RESOLUTION
@@ -154,9 +154,10 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
 SSNV506=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                       MODELE=MO,
                        CHAM_MATER=CHMAT,
+                       CONTACT = CONT,
                        EXCIT=(_F(CHARGE=DPLIMPO,
                                  FONC_MULT=RAMPE,),
-                              _F(CHARGE=CONT,),),
+                              ),
                        COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                                     GROUP_MA='BATI'),
                        COMP_ELAS=_F(RELATION='ELAS',

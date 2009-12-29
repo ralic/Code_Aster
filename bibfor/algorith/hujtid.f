@@ -1,7 +1,7 @@
         SUBROUTINE HUJTID (MOD, IMAT, SIGR, VIN, DSDE, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,7 +46,7 @@ C ======================================================================
 
         COMMON /TDIM/ NDT, NDI
 C ======================================================================
-        PARAMETER   ( TOLE1 = 1.D-6 )
+        PARAMETER   ( TOLE1 = 1.D-7 )
         PARAMETER   ( ZERO = 0.D0 )
         PARAMETER   ( D13  = 0.333333333334D0 )
         PARAMETER   ( UN   = 1.D0 )

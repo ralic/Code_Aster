@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/06/2008   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +34,7 @@ MACRO_MISS_3D=MACRO(nom="MACRO_MISS_3D",op=macro_miss_3d_ops,
          UNITE_IMPR_ASTER=SIMP(statut='f',typ='I',defaut=25),  
          UNITE_OPTI_MISS =SIMP(statut='f',typ='I',defaut=26),  
          UNITE_MODELE_SOL=SIMP(statut='f',typ='I',defaut=27),  
+         TABLE_SOL       =SIMP(statut='f',typ=table_sdaster, fr="Caractéristiques du sol"),  
          UNITE_RESU_IMPE =SIMP(statut='f',typ='I',defaut=30),
          UNITE_RESU_FORC =SIMP(statut='f',typ='I',defaut=0),
          PARAMETRE       =FACT(statut='f',         

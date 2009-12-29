@@ -1,4 +1,4 @@
-# MODIF  DATE 14/09/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
 # perf005b.para = tps_job 760 mem_job 165Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,12 +59,15 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_NO='LIM1',     DX=0.0,),
                               _F(GROUP_NO='LIM2',     DZ=0.0,),),);
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT='SMAI',
-                               GROUP_MA_ESCL='SESC',
+                               
+CHA2 = DEFI_CONTACT(MODELE      = MO,
+                    FORMULATION = 'DISCRETE',
+                    NB_RESOL    = 30,
+                    ZONE = _F(GROUP_MA_MAIT='SMAI',
+                              GROUP_MA_ESCL='SESC',
                                # Nombre de noeuds esclaves = 664
-                               NB_RESOL=30,
-                               ),);
+                            ),
+                    );                            
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1,),);
 
@@ -82,10 +85,10 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
+                   CONTACT = CHA2,
                    EXCIT=(_F(CHARGE=CHA1,
                              FONC_MULT=RAMPE,),
-                          _F(CHARGE=CHA2,
-                             FONC_MULT=RAMPE,),),
+                          ),
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    NEWTON=_F(MATRICE='ELASTIQUE',

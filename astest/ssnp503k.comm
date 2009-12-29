@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503k.para = tps_job 300 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -44,39 +44,33 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAG2,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D',),),);       
 
-CONT = AFFE_CHAR_MECA(CONTACT=(_F(METHODE='CONTINUE',
-                                  INTEGRATION='NOEUD',
-                                  FROTTEMENT='COULOMB',
-                                  COULOMB=0.5,
-                                  COEF_REGU_FROT=100,
-                                  SEUIL_INIT=0.0,
-                                  ITER_FROT_MAXI=10,
-                                  COEF_REGU_CONT=100, 
-                                  ITER_CONT_MAXI=4,
-                                  ITER_GEOM_MAXI=10,
-                                  TOLE_PROJ_EXT =0.1,   
-                                  CONTACT_INIT='OUI',   
-                                  GROUP_MA_MAIT = 'S21',
-                                  GROUP_MA_ESCL = 'S13',
-                                  ),
-                               _F(METHODE='CONTINUE',
-                                  INTEGRATION='NOEUD',
-                                  FROTTEMENT='COULOMB',
-                                  COULOMB=0.5,
-                                  COEF_REGU_FROT=100,
-                                  SEUIL_INIT=0.0,
-                                  ITER_FROT_MAXI=10,
-                                  COEF_REGU_CONT=100, 
-                                  ITER_CONT_MAXI=4,
-                                  ITER_GEOM_MAXI=10,
-                                  TOLE_PROJ_EXT =0.1,   
-                                  CONTACT_INIT='OUI',
-                                  GROUP_MA_MAIT = 'S23',
-                                  GROUP_MA_ESCL = 'S31',
-                                  ),
-                               ),
-                      MODELE=MODELE,
-                      );
+CONT   = DEFI_CONTACT(MODELE         = MODELE,
+                      FORMULATION    = 'CONTINUE',
+                      ITER_FROT_MAXI = 10,
+                      ITER_CONT_MAXI = 4,
+                      ITER_GEOM_MAXI = 10,
+                      FROTTEMENT     = 'COULOMB',
+                      ZONE = (_F(
+                                 GROUP_MA_MAIT = 'S21',
+                                 GROUP_MA_ESCL = 'S13',
+                                 INTEGRATION   = 'NOEUD',
+                                 SEUIL_INIT    = 0.0,
+                                 COULOMB       = 0.5,
+                                 TOLE_PROJ_EXT = 0.1,   
+                                 CONTACT_INIT  = 'OUI',
+                              ),
+                             _F(
+                                 GROUP_MA_MAIT = 'S23',
+                                 GROUP_MA_ESCL = 'S31',
+                                 INTEGRATION   = 'NOEUD',
+                                 SEUIL_INIT    = 0.0,
+                                 COULOMB       = 0.5,
+                                 TOLE_PROJ_EXT = 0.1,   
+                                 CONTACT_INIT  = 'OUI',
+                              ),
+                            )
+                    );
+
 
 E=100.0E6
 nu=0.3
@@ -117,7 +111,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 UTOT1=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CONT,),
+                   CONTACT = CONT,
+                   EXCIT=(
                           _F(CHARGE=CH1,FONC_MULT=VAR1),
                           _F(CHARGE=CH2,FONC_MULT=VAR2),),
                    COMP_ELAS=_F(RELATION='ELAS',),

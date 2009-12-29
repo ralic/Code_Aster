@@ -2,7 +2,7 @@
      &                   LOOP, DSIG, BNEWS, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,7 +77,7 @@ C ====================================================================
       PARAMETER   ( UN   = 1.D0 )
       PARAMETER   ( ZERO = 0.D0 )
       PARAMETER   ( DEUX = 2.D0 )
-      PARAMETER   ( TOLE1 = 1.D-6 )
+      PARAMETER   ( TOLE1 = 1.D-7 )
       PARAMETER   ( DEGR = 0.0174532925199D0 )
       
       
@@ -222,9 +222,8 @@ C --- FAUT-IL CONSIDERER LES MECANISMES DE TRACTION?
       IF(DEBUG)WRITE(6,*)'BNEWS =',(BNEWS(I),I=1,3)
       DO 36 I = 1, 3
         CALL HUJPRJ(I,SIGT,SIGD,PT,QT)
-        IF ((((PT+DEUX*5.D0-PTRAC)/ABS(PREF)).GE.-R8PREM())
+        IF ((((PT+DEUX*RTRAC-PTRAC)/ABS(PREF)).GE.-R8PREM())
      &      .AND.(.NOT.BNEWS(I))) THEN
-C        IF (.NOT.BNEWS(I)) THEN
           NBMECT = NBMECT + 1
           INDI(NBMECT) = 8 + I
         ENDIF

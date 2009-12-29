@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -657,6 +657,15 @@ def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None, cc=None):
          + puis exception ou abort en fonction du niveau d'erreur.
    """
    MessageLog(code, idmess, valk, vali, valr, exception=True, print_as=print_as, cc=cc)
+
+
+def ASSERT(condition):
+   """Remonter un assert dans un message.
+   """
+   if condition:
+      return
+   stack = traceback.format_stack(limit=10)
+   UTMESS('F', 'DVP_9', valk=(''.join(stack[:-1]),))
 
 
 def MasquerAlarme(idmess):

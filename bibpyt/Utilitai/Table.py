@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -843,41 +843,50 @@ def sort_table(rows, l_para, w_para, reverse=False):
    new_rows=rows
    # rename sort keys by "__" + number + para
    # ("__" to avoid conflict with existing parameters)
-   for i in w_para :
-      new_key= '__'+str(w_para.index(i))+i
+   for i, p in enumerate(w_para) :
+      new_key= '__%03d%s' % (i, p)
       for row in new_rows :
-         v = row.get(i)
+         v = row.get(p)
          row[new_key] = v     # must have a value to sort properly
-         if v is not None:
-            del row[i]
-   # rename others parameters by "___" + para
-   # ("___" to be after sort keys)
-   for i in c_para :
-      new_key= '___'+i
+         try:
+            del row[p]
+         except:
+            pass
+   # rename others parameters by "__999" + para
+   for p in c_para :
+      new_key= '__999'+p
       for row in new_rows :
-         v = row.get(i)
+         v = row.get(p)
          row[new_key] = v     # must have a value to sort properly
-         if v is not None:
-            del row[i]
+         try:
+            del row[p]
+         except:
+            pass
    # sort
    new_rows.sort()
    # reversed sort
    if reverse:
       new_rows.reverse()
-   for i in w_para :
-      old_key= '__'+str(w_para.index(i))+i
+   for i, p in enumerate(w_para) :
+      old_key= '__%03d%s' % (i, p)
       for row in new_rows:
          v = row.get(old_key)
          if v is not None:
-            row[i] = v
+            row[p] = v
+         try:
             del row[old_key]
-   for i in c_para :
-      old_key= '___'+i
+         except:
+            pass
+   for p in c_para :
+      old_key= '__999'+p
       for row in new_rows :
          v = row.get(old_key)
          if v is not None:
-            row[i] = v
+            row[p] = v
+         try:
             del row[old_key]
+         except:
+            pass
    return new_rows
 
 # ------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF table0 Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF table0 Messages  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,14 +32,6 @@ Paramètre %(k1)s inexistant dans la table %(k2)s.
 
 3 : _("""
 Opération RENOMME. Erreur : %(k1)s
-"""),
-
-4 : _("""
-Paramètre %(k1)s inexistant dans la table %(k2)s.
-"""),
-
-5 : _("""
-Paramètre %(k1)s inexistant dans la table %(k2)s.
 """),
 
 6 : _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503m.para = tps_job 60 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,38 +73,33 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
                          CONTACT='OUI',
                          INFO=1,);
-                         
-CTXFEM = AFFE_CHAR_MECA( CONTACT=(_F(METHODE='XFEM',
-                                     INTEGRATION='NOEUD',
-                                     FROTTEMENT='COULOMB',
-                                     COULOMB=0.5,
-                                     COEF_REGU_FROT=100,
-                                     ITER_FROT_MAXI=10,
-                                     COEF_REGU_CONT=100., 
-                                     ITER_CONT_MAXI=10,
-                                     CONTACT_INIT='OUI',
-                                     GLISSIERE='NON',   
-                                     COEF_ECHELLE=1.,
-                                     FISS_MAIT = FISS1,
-                                     ALGO_LAGR='VERSION1',
-                                     ),
-                                  _F(METHODE='XFEM',
-                                     INTEGRATION='NOEUD',
-                                     FROTTEMENT='COULOMB',
-                                     COULOMB=0.5,
-                                     COEF_REGU_FROT=100,
-                                     ITER_FROT_MAXI=10,
-                                     COEF_REGU_CONT=100., 
-                                     ITER_CONT_MAXI=10,
-                                     CONTACT_INIT='OUI',
-                                     GLISSIERE='NON', 
-                                     COEF_ECHELLE=1.,
-                                     FISS_MAIT = FISS2,
-                                     ALGO_LAGR='VERSION1',
-                                    ),  
-                                  ),
-                                MODELE=MODELEK,
-                          ),
+
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      ITER_FROT_MAXI = 10,
+                      ITER_CONT_MAXI = 10,
+                      ITER_GEOM_MAXI = 10,
+                      FROTTEMENT     = 'COULOMB',
+                      ZONE = (_F(
+                                 INTEGRATION   = 'NOEUD',
+                                 COULOMB       = 0.5,   
+                                 CONTACT_INIT  = 'OUI',
+                                 GLISSIERE     = 'NON',   
+                                 COEF_ECHELLE  = 1.,
+                                 FISS_MAIT     = FISS1,
+                                 ALGO_LAGR     = 'VERSION1',
+                              ),
+                             _F(
+                                 INTEGRATION   = 'NOEUD',
+                                 COULOMB       = 0.5,  
+                                 CONTACT_INIT  = 'OUI',
+                                 GLISSIERE     = 'NON',   
+                                 COEF_ECHELLE  = 1.,
+                                 FISS_MAIT     = FISS2,
+                                 ALGO_LAGR     = 'VERSION1',
+                              ),
+                            )
+                    ); 
                           
 E=100.0E6
 nu=0.3
@@ -166,8 +161,9 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=4,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                    CHAM_MATER=CHAMPMAT,              
-                    EXCIT=(_F(CHARGE=CTXFEM,),
+                    CHAM_MATER=CHAMPMAT,
+                    CONTACT = CTXFEM,              
+                    EXCIT=(
                            _F(CHARGE=CHXFEM,),                                    
                            _F(CHARGE=CH1,FONC_MULT=VAR1),
                            _F(CHARGE=CH2,FONC_MULT=VAR2),),  

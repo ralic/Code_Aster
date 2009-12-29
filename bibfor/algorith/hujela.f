@@ -2,7 +2,7 @@
      &                     EPSD, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,7 +48,7 @@ C       ---------------------------------------------------------------
         DATA      UN    / 1.D0 /
         DATA      D13   / 0.33333333333334D0 /
         DATA      DEUX  / 2.D0 /
-        DATA      TOLE  / 1.D-6 /
+        DATA      TOLE  / 1.D-7 /
 
 C       ---------------------------------------------------------------
         PREF = MATER(8,2)

@@ -1,7 +1,7 @@
         SUBROUTINE HUJDRC (K,MATER,SIG,VIN,PST)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/02/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,7 +42,7 @@ C   -------------------------------------------------------------------
        
         COMMON /TDIM/   NDT , NDI
 
-        DATA      UN, ZERO, TOLE1  /1.D0, 0.D0, 1.D-6/
+        DATA      UN, ZERO, TOLE1  /1.D0, 0.D0, 1.D-7/
 
         B      = MATER(4,2)
         PCO    = MATER(7,2)

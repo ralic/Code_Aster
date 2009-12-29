@@ -2,7 +2,7 @@
      &                    SIGF, EPSD, VIND, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -72,7 +72,7 @@ C                              IRET=1 => ECHEC
       COMMON /MESHUJ/ DEBUG
       
       DATA   UN, ZERO / 1.D0, 0.D0/
-      DATA   D13, TOLE1 /0.33333333334D0, 1.0D-6/ 
+      DATA   D13, TOLE1 /0.33333333334D0, 1.0D-7/ 
 
       PREF  = MATER(8,2)
       PTRAC = MATER(21,2)

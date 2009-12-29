@@ -3,7 +3,7 @@
      &  NEGMUL, IRET, SUBD, LOOP, NDEC0, INDI,MECTRA)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,7 @@ C   -------------------------------------------------------------------
       REAL*8    ERR, ERR1, ERR2, DSIG(6)
       REAL*8    DET, ZERO, UN, RATIO, MAXI
       REAL*8    EVOL, KSI, ACYC, AMON, AD
-      REAL*8    RDEC, PCO, BETA, CMON, CCYC
+      REAL*8    RDEC, PCO, BETA, CMON, CCYC, TOLE2
       
       REAL*8    RELAX(ESSMAX+1), ROTAGD(ESSMAX+1), NOR1(7), NOR2(7)
       REAL*8    ERIMP(NITIMP,4), PREF, DEV(3), PF, QF
@@ -88,6 +88,7 @@ C ---- PROPRIETES MATERIAU
 C -------------------------
       PREF = MATER(8,2)
       RTRAC = ABS(PREF*1.D-6)
+      TOLE2 = UN/(PREF**2)
 C ----------------------------------------------------------------
 C --- INITIALISATION VECTEUR GESTION MECANISMES TRACTION: PK-DP<=0
 C ----------------------------------------------------------------
@@ -319,7 +320,9 @@ C ------------------------------------------------------------
         IF (DEBUG) WRITE(6,'(A)')'HUJMID :: ERREUR DANS HUJJID'
         DO 255 I = 1, 3
           CALL HUJPRJ(I,YF,DEV,PF,QF)
-          IF (((RTRAC+PF-PTRAC)/ABS(PREF)).GE.TOLE1) TRACTI = .TRUE.
+          IF (((RTRAC+PF-PTRAC)/ABS(PREF)).GE.-R8PREM())THEN
+            TRACTI = .TRUE.
+          ENDIF
  255      CONTINUE          
         GOTO 9999
       ENDIF
@@ -418,7 +421,7 @@ C -----------------------------------------------------
           ELSE
             DO 44 I = 1, 3
               CALL HUJPRJ(I,YF,DEV,PF,QF)
-              IF (((PF+RTRAC-PTRAC)/ABS(PREF)).GE.TOLE1) THEN
+              IF (((PF+RTRAC-PTRAC)/ABS(PREF)).GE.-R8PREM()) THEN
                 DO 445 J = 1, NBMECA
                   IF((INDI(J).EQ.I).OR.(INDI(J).EQ.(I+4)))THEN
                     TRACTI = .TRUE.
@@ -467,7 +470,6 @@ C -------------------------------------------------
 
       DO 210 K = 1, NBMECT
         RATIO = YF(NDT+1+NBMECA+K)/MAXI
-C        IF (RATIO .LT. (-ABS(CRIT(3)))) THEN 
         IF (RATIO .LT. (-TOLE1)) THEN 
           IF (INDI(K).LE.8) THEN
             NEGMUL(INDI(K)) = .TRUE.
@@ -527,12 +529,13 @@ C ------------------------------------------------------
 C ---> CONTROLE QUE MECANISME DE TRACTION RESPECTE MEME
 C      S'IL N'ETAIT PAS ACTIVE
 C ------------------------------------------------------
-        IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.TOLE1) THEN
+        IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.TOLE2)THEN
           BNEWS(I) = .FALSE.
           TRACTI = .TRUE.
         ENDIF
   46  CONTINUE
       IF ((TRACTI).AND.(NBMECA.GT.0))THEN
+        IRET = 1
         GOTO 9999
       ELSEIF(TRACTI)THEN
 C --- SI IL N Y A QUE DES MECANISMES DE TRACTION ACTIFS
@@ -707,7 +710,7 @@ C ---> ACTIVATION MECANISMES DE TRACTION NECESSAIRES
 C ----------------------------------------------------
             IF(DEBUG)WRITE(6,*)'I=',I
             IF(DEBUG)WRITE(6,*)'PK =',PF
-            IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.TOLE1) THEN
+            IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
               BNEWS(I) = .FALSE.
             ENDIF
           ENDIF

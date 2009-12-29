@@ -1,7 +1,7 @@
         SUBROUTINE HUJPRC (KK, K, TIN, VIN, MATER, YF, P, Q, TOUD)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,7 @@ C  --------------------------------------------------------
       CHARACTER*8 NOMAIL
       
       PARAMETER (DEGR = 0.0174532925199D0)
-      PARAMETER (TOLE = 1.D-6)
+      PARAMETER (TOLE = 1.D-7)
 
       COMMON /TDIM/ NDT  , NDI
       COMMON /MESHUJ/ DEBUG

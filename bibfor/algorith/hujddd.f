@@ -2,7 +2,7 @@
      &                   VEC, MAT, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,7 +57,7 @@ C =====================================================================
       REAL*8        YF(MOD), R, SIGF(6), SIGD(6)
       REAL*8        MATER(22,2), VEC(6), MAT(6,6), KSI
       REAL*8        D12, D13, UN, ZERO, DEUX
-      REAL*8        TOLE, DEGR, AEXP, EXPTOL, R8MAEM
+      REAL*8        TOLE1, DEGR, AEXP, EXPTOL, R8MAEM
       REAL*8        XK(2), TH(2), SIGDC(6), QC, VIN(*), VH, D14, D40
       REAL*8        DSDDS(6,6), SXS(6,6), SXP(6,6), PXP(6,6)
       REAL*8        VP(6), PROD, SCXP(6,6), PS, PXH(6,6)
@@ -72,7 +72,7 @@ C =====================================================================
       PARAMETER     ( UN    = 1.D0   )
       PARAMETER     ( ZERO  = 0.D0   )
       PARAMETER     ( DEUX  = 2.D0   )
-      PARAMETER     ( TOLE  = 1.D-6  )
+      PARAMETER     ( TOLE1 = 1.D-7  )
       PARAMETER     ( DEGR  = 0.0174532925199D0 )
       PARAMETER     ( D40   = 40.0D0 )
 C =====================================================================
@@ -124,7 +124,7 @@ C =====================================================================
       ENDIF
       
       PC = PCO*EXP(-BETA*EPSVPD)
-      IF ((PC/PREF).LT.TOLE) THEN
+      IF ((PC/PREF).LT.TOLE1) THEN
         IRET = 1
         GOTO 999
       ENDIF
@@ -167,9 +167,9 @@ Caf 09/05/07 Fin
       P  = D12*P
       
 Ckham --- ON ENTRE DANS LE DOMAINE "COHESIF"
-      IF ((P/PREF).LT.TOLE) THEN
+      IF ((P/PREF).LT.TOLE1) THEN
         DILA = .TRUE.
-        PCOH = PREF*TOLE
+        PCOH = PREF*TOLE1
       ELSE
         DILA = .FALSE.
         PCOH = P
@@ -202,10 +202,10 @@ Caf 14/05/07 Debut
       IF (K .LT. 4) THEN
         Q = DD**DEUX + (SIGKIJ**DEUX)/DEUX
         Q = SQRT(Q)
-        CONSOL = (-Q/PREF).LE.TOLE
+        CONSOL = (-Q/PREF).LE.TOLE1
       ENDIF
  
-      TRACT  = ((P -PTRAC)/PREF) .LT. TOLE
+      TRACT  = ((P -PTRAC)/PREF) .LT. TOLE1
       IF (TRACT) THEN
         IF (DEBUG) THEN
           CALL TECAEL(IADZI,IAZK24)
@@ -245,7 +245,7 @@ C ====================================================================
      &                   (UN-B*LOG((P -PTRAC)/PC))*M        
         QC = SQRT(D12*(SIGDC(1)**2+SIGDC(2)**2+
      &       SIGDC(3)**2+SIGDC(4)**2+SIGDC(5)**2+SIGDC(6)**2))
-        CONSOL = (-QC/PREF).LE.TOLE
+        CONSOL = (-QC/PREF).LE.TOLE1
       ENDIF
  100  CONTINUE
  

@@ -1,7 +1,7 @@
         SUBROUTINE HUJCDC (K, MATER, SIG ,VIN, SEUIL)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,7 @@ C   ------------------------------------------------------------------
         REAL*8       D12, DD, DEUX      
         LOGICAL      DEBUG
         PARAMETER    (UN = 1.D0)
-        PARAMETER    (TOLE = 1.D-6)
+        PARAMETER    (TOLE = 1.D-7)
         PARAMETER    (DEGR = 0.0174532925199D0)
 C       ------------------------------------------------------------
         COMMON /TDIM/   NDT, NDI

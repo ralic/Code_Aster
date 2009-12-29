@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 13/05/2008   AUTEUR DEVESA G.DEVESA 
+#@ MODIF macro_miss_3d_ops Macro  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,14 +23,15 @@
 def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
                            UNITE_MODELE_SOL,UNITE_RESU_IMPE,
                            PROJET,REPERTOIRE,OPTION,VERSION,
-                           UNITE_RESU_FORC,PARAMETRE,**args):
+                           UNITE_RESU_FORC,TABLE_SOL,PARAMETRE,**args):
   """
      Ecriture de la macro MACRO_MISS_3D
   """
   import types
   from Accas import _F
-  from Utilitai.Utmess import  UTMESS
-  from types import TupleType, ListType
+  from Utilitai.Utmess        import  UTMESS
+  from Utilitai.Table         import Table
+  from Miss.miss_fichier_sol  import fichier_sol
 
   ier=0
   # On importe les definitions des commandes a utiliser dans la macro
@@ -72,6 +73,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
       MODUL2='MISS_PTAS'
   elif OPTION['MODULE']=='PRE_MISS':
       MODUL2='GTASTER'
+      
 
   ETUDE = PROJET
   BASE  = REPERTOIRE
@@ -80,6 +82,14 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   pdsol = 'fort.'+str(UNITE_MODELE_SOL)
   primp = 'fort.'+str(UNITE_RESU_IMPE)
   prfor = 'fort.'+str(UNITE_RESU_FORC)
+  
+  if TABLE_SOL != None :
+  
+    tabsol = TABLE_SOL.EXTR_TABLE()
+    texte = fichier_sol(tabsol)
+    fdsol=open(pdsol,'w')
+    fdsol.write(texte)
+    fdsol.close()
   
   l_para = ['FREQ_MIN','FREQ_MAX','FREQ_PAS','Z0','RFIC','SURF',
             'FICH_RESU_IMPE','FICH_RESU_FORC','TYPE','DREF','ALGO',
@@ -101,7 +111,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
     else:
       dpara[cle] = '0'
     if PARAMETRE != None and PARAMETRE[cle] != None:
-      if type(PARAMETRE[cle]) in (TupleType, ListType):
+      if type(PARAMETRE[cle]) in (tuple, list):
         dpara[cle] = repr(' '.join([str(s) for s in PARAMETRE[cle]]))
       else:
         dpara[cle] = str(PARAMETRE[cle])
@@ -144,6 +154,6 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
                           pndio,
                           dpara['DIRE_ONDE'],
                          ),
-                )
+                INFO=1,)
 
   return ier

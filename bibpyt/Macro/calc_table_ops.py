@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,9 +121,9 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
                lpar = [lpar]
             for p in lpar:
                if not p in tab.para:
-                  UTMESS('F','TABLE0_4',valk=[p, TABLE.nom])
+                  UTMESS('F','TABLE0_2',valk=[p, TABLE.nom])
                if not p in tab2.para:
-                  UTMESS('F','TABLE0_5',valk=[p,occ['TABLE'].nom] )
+                  UTMESS('F','TABLE0_2',valk=[p,occ['TABLE'].nom] )
          restrict = occ.get('RESTREINT') == 'OUI'
          tab = merge(tab, tab2, lpar, restrict=restrict)
    

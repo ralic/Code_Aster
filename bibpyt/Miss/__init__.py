@@ -1,8 +1,8 @@
-#@ MODIF miss0 Messages  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF __init__ Miss  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,30 +17,4 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
-def _(x) : return x
-
-cata_msg={
-1: _("""
-Longueur de LFREQ_LISTE incorrecte.
-"""),
-
-2: _("""
-Longueur de CONTR_LISTE incorrecte.
-"""),
-
-3 : _("""
-Il faut une et une seule couche avec SUBSTRATUM="OUI".
-"""),
-
-4 : _("""
-La définition de la couche numéro %(i1)d est incorrecte :
-Il y a %(i2)d matériaux, or NUME_MATE=%(i3)d.
-"""),
-
-5 : _("""
-La numérotation des couches est incorrectes.
-"""),
-
-}
 

@@ -2,7 +2,7 @@
      &                  VIN, NDEC, IRET)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,7 @@ C       ---------------------------------------------------------------
       PARAMETER   ( DEGR = 0.0174532925199D0 )
 
       DATA ZERO, D13, UN, DEUX, TOL
-     &/ 0.D0, 0.33333333333334D0, 1.D0, 2.D0, 1.D-6 /
+     &/ 0.D0, 0.33333333333334D0, 1.D0, 2.D0, 1.D-7 /
 
       IF (NDEC.GT.1) THEN
         IRET =1
