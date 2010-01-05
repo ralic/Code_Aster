@@ -1,4 +1,4 @@
-# MODIF  DATE 08/09/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 05/01/2010   AUTEUR GALENNE E.GALENNE 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv314c.para = tps_job 140 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,9 +77,9 @@ MAX[0]=CO('MAX_0')
 MA[0]=CO('MA_0')
 
 PROPA_FISS(METHODE_PROPA='INITIALISATION',
-         MA_STRUC=MAILLAG1,
-         MA_XFEM2 = MAX[0],
-         MA_TOT2 = MA[0],
+         MAIL_STRUC=MAILLAG1,
+         MAIL_FISS = MAX[0],
+         MAIL_TOTAL = MA[0],
          FORM_FISS='DEMI_PLAN',
          INFO=2,
          POINT_ORIG = (0., 2., 9.),
@@ -155,21 +155,24 @@ for i in range(nbcalc) :
    if ( i != nbcalc) :
       MAX[i+1]=CO('MAX_%d' %(i+1) )
       MA[i+1] = CO('MA_%d'%(i+1))
-      PROPA_FISS(TABLE=SIF[i],
-                        METHODE_PROPA='MAILLAGE',
-                        LOI_PROPA=_F(LOI='PARIS',
-                                     M=1.,
-                                     DA_MAX=0.3,),
-                        MA_STRUC=MAILLAG1,
-                        MA_XFEM1 = MAX[i],
-                        MA_XFEM2 = MAX[i+1],
-                        MA_TOT2 = MA[i+1],
-                        ITERATION = i+1,
-                        FISSURE1 = FF[i],
-                        METHODE_POSTK = 3,
-                        HYPOTHESE = 'NON_PLAN',
-                        INFO=2,);
-
+      PROPA_FISS(METHODE_PROPA='MAILLAGE',
+            MAIL_STRUC=MAILLAG1,
+            MAIL_TOTAL = MA[i+1],
+            ITERATION = i+1,
+            FISSURE=_F(MAIL_ACTUEL = MAX[i],
+                  MAIL_PROPAGE = MAX[i+1],
+                  FISS_ACTUELLE = FF[i],
+                  TABLE = SIF[i],
+                  METHODE_POSTK = 3,
+                  ),
+            DA_MAX=0.3,
+            LOI_PROPA = _F(LOI='PARIS',
+                           M=1,N=1,C=1,
+                           MATER=ACIER,   ),
+            COMP_LINE=_F(COEF_MULT_MINI=0.,
+                         COEF_MULT_MAXI=1.,
+                        ),
+            );
 
 #----------------------------------------------
 #   TEST DE NON-REGRESSION SUR LA POSITION FINALE DE LA FISSURE

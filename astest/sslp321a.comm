@@ -1,4 +1,4 @@
-# MODIF  DATE 07/09/2009   AUTEUR MESSIER J.MESSIER 
+# MODIF  DATE 05/01/2010   AUTEUR GALENNE E.GALENNE 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
 # sslp321a.para = tps_job 150 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,14 +75,13 @@ MAT[0]=CO('MAT_0')
 
 # Initialisation
 PROPA_FISS(METHODE_PROPA='INITIALISATION',
-         MA_STRUC=MAILLAG1,
-         MA_XFEM2 = MAX[0],
-         MA_TOT2 = MAT[0],
+         MAIL_STRUC=MAILLAG1,
+         MAIL_FISS = MAX[0],
+         MAIL_TOTAL = MAT[0],
          FORM_FISS='DEMI_DROITE',
          INFO=2,
          PFON = (xinit, yinit, 0.),
          DTAN = (0., 1., 0.),
-         NB_POINT_FOND=5,
          );
 
 #----------------------------------------------
@@ -181,18 +180,22 @@ for i in range(NPAS+1) :
         MAX[i+1]=CO('MAX_%d' %(i+1));
         MAT[i+1]=CO('MAT_%d'%(i+1));
         PROPA_FISS(METHODE_PROPA='MAILLAGE',
-                MA_STRUC = MAILLAG1,
-                MA_XFEM1 = MAX[i],
-                MA_XFEM2 = MAX[i+1],
-                MA_TOT2 = MAT[i+1] ,
-                ITERATION = i+1,
-                FISSURE1 = FISS[i],
-                TABLE=SIF[i] ,
-                LOI_PROPA =_F(LOI='PARIS',
-                              M=1.,
-                              DA_MAX=DA),
-                INFO=1,);
-
+            MAIL_STRUC=MAILLAG1,
+            MAIL_TOTAL = MAT[i+1],
+            ITERATION = i+1,
+            FISSURE=_F(MAIL_ACTUEL = MAX[i],
+                  MAIL_PROPAGE = MAX[i+1],
+                  FISS_ACTUELLE = FISS[i],
+                  TABLE = SIF[i],
+                  ),
+            DA_MAX=DA,
+            LOI_PROPA = _F(LOI='PARIS',
+                           M=1,N=1,C=1,
+                           MATER=ACIER,   ),
+            COMP_LINE=_F(COEF_MULT_MINI=0.,
+                         COEF_MULT_MAXI=1.,
+                        ),
+            );
 
 #----------------------------------------------
 #         EDITION DE FICHIERS MED

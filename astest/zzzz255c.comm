@@ -1,0 +1,195 @@
+# MODIF  DATE 05/01/2010   AUTEUR GALENNE E.GALENNE 
+# TITRE VALIDATION DE L'OPTION INITIALISATION/ELLIPSE DANS PROPA_FISS
+# zzzz255c.para = tps_job 250 mem_job 512Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ255C', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+         DEBUG=_F(SDVERI='OUI'), )
+
+MaiPlate=LIRE_MAILLAGE(FORMAT='MED',
+                       INFO_MED=1,);
+
+plate=AFFE_MODELE(MAILLAGE=MaiPlate,
+                   AFFE=(_F(GROUP_MA=('All',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),),);
+nbcalc= 2
+MAX =  [None]*(nbcalc)
+MAT =  [None]*(nbcalc)
+FF =  [None]*(nbcalc)
+MODEL =  [None]*(nbcalc)
+CHLT =  [None]*(nbcalc)
+TABLST =  [None]*(nbcalc)
+#***********************************
+# DEFINITION DE LA FISSURE INITIALE (CERCLE)
+#***********************************
+MAX[0]=CO('MAX_0')
+MAT[0]=CO('MAT_0')
+PROPA_FISS(METHODE_PROPA='INITIALISATION',
+         MAIL_STRUC=MaiPlate,
+         MAIL_FISS = MAX[0],
+         MAIL_TOTAL = MAT[0],
+         FORM_FISS='ELLIPSE',
+         INFO=2,
+         CENTRE = (0., 0., 0.),
+         DEMI_GRAND_AXE =250,
+         DEMI_PETIT_AXE =250,
+         VECT_X         =(1.,0.,0.),
+         VECT_Y         =(0.,1.,0.),
+         ANGLE_ORIG        = 0.,
+         ANGLE_EXTR        = 360.,
+         GROUP_MA_FISS='FISS',
+         GROUP_MA_FOND='FOND',
+         NB_POINT_FOND = 21,
+         );
+         
+MODEL[0]=AFFE_MODELE(MAILLAGE=MAT[0],
+                   AFFE=(_F(GROUP_MA=('All',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),),);
+                            
+FF[0]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_0',
+                              GROUP_MA_FOND='FOND_0',),
+                GROUP_MA_ENRI='All',
+                 ORIE_FOND=_F(PFON_INI  = (-500., 250., 0.),
+                              VECT_ORIE = (0. , 0. , 1. ),
+                              POINT_ORIG = (0., 0., 0.),),
+                   MODELE=MODEL[0],
+                   INFO=1
+                   );
+# TEST TABLE (VERIFICATION INFORMATIQUE)
+CHLT[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                OPERATION='EXTR',
+                NOM_CHAM='LTNO',
+                FISSURE=FF[0],);
+
+TABLST[0] = POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
+                                 NOEUD='N1',
+                                 CHAM_GD=CHLT[0],
+                                 TOUT_CMP='OUI',
+                                 OPERATION='EXTRACTION',),);
+
+# NOEUD N1 = UN DES COINS DU CUBE, 
+# DISTANCE DE LA FISSURE = DISTANCE AU CENTRE - RAYON = sqrt(500^2*2)-250
+d0 = sqrt(500*500*2) - 250.
+
+TEST_TABLE(TABLE=TABLST[0],
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='X1',
+           PRECISION=0.01,
+           TYPE_TEST='MAX',
+           CRITERE='RELATIF',
+           VALE= d0  )
+
+#***********************************
+# PROPAGATION DE LA FISSURE (K1 = CONSTANTE)
+#***********************************
+
+TABK= LIRE_TABLE(UNITE=38, NUME_TABLE = 1 )
+E=205000.0E6
+nu=0.3
+rho=7800.
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+
+
+MAX[1]=CO('MAX_1')
+MAT[1]=CO('MAT_1')
+
+PROPA_FISS( METHODE_PROPA='MAILLAGE',
+            LOI_PROPA=_F(LOI='PARIS',
+                        M=1.,
+                        C=1.,
+                        N=0.,
+                        MATER=ACIER,
+                         )  ,
+            FISSURE=_F(FISS_ACTUELLE=FF[0],
+                 MAIL_ACTUEL =  MAX[0],
+                 MAIL_PROPAGE = MAX[1] ,
+                 GROUP_MA_FISS='FISS',
+                 GROUP_MA_FOND='FOND',    
+                 TABLE=TABK,
+                  ),
+            COMP_LINE=_F(COEF_MULT_MINI=0.,                                 
+                        COEF_MULT_MAXI=1.),   
+            MAIL_STRUC=MaiPlate,
+            MAIL_TOTAL = MAT[1],
+            DA_MAX=25,
+            ITERATION = 1,
+            INFO=2,);
+
+MODEL[1]=AFFE_MODELE(MAILLAGE=MAT[1],
+                   AFFE=(_F(GROUP_MA=('All',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),),);
+                            
+FF[1]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_1',
+                              GROUP_MA_FOND='FOND_1',),
+                GROUP_MA_ENRI='All',
+                 ORIE_FOND=_F(PFON_INI  = (-500., 250., 0.),
+                              VECT_ORIE = (0. , 0. , 1. ),
+                              POINT_ORIG = (0., 0., 0.),),
+                   MODELE=MODEL[1],
+                   INFO=1
+                   );
+                   
+#****************************
+# TEST TABLE (VERIFICATION INFORMATIQUE)
+#****************************
+
+CHLT[1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                OPERATION='EXTR',
+                NOM_CHAM='LTNO',
+                FISSURE=FF[1],);
+
+TABLST[1] = POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
+                                 NOEUD='N1',
+                                 CHAM_GD=CHLT[1],
+                                 TOUT_CMP='OUI',
+                                 OPERATION='EXTRACTION',),);
+
+d1 = sqrt(500*500*2) - 250. -25.
+
+TEST_TABLE(TABLE=TABLST[1],
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='X1',
+           PRECISION=0.01,
+           TYPE_TEST='MAX',
+           CRITERE='RELATIF',
+           VALE= d1  )
+
+CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                OPERATION='EXTR',
+                NOM_CHAM='LNNO',
+                FISSURE=FF[1],);
+
+TABLSN = POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
+                                 NOEUD='N1',
+                                 CHAM_GD=CHLN,
+                                 TOUT_CMP='OUI',
+                                 OPERATION='EXTRACTION',),);
+
+TEST_TABLE(TABLE=TABLSN,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='X1',
+           PRECISION=1.,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= -50.0  )
+
+FIN();

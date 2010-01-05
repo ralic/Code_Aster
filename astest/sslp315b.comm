@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 05/01/2010   AUTEUR GALENNE E.GALENNE 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE TROUEE 2D DE LARGEUR FINIE AVEC X-FEM
 # sslp315b.para = tps_job 80 mem_job 500Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,10 +18,11 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# CALCUL DE K AVEC POST_K1_K2_K3
+# CALCUL DE K AVEC CALC_G
 
 DEBUT(CODE=_F(NOM='SSLP315B', NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'))
+      
 nb_pas = 4
 Damax = 2.
           
@@ -55,9 +56,9 @@ MAT[0]=CO('MAT_0')
 
 # Initialisation
 PROPA_FISS(METHODE_PROPA='INITIALISATION',
-         MA_STRUC=MAST,
-         MA_XFEM2 = MAX[0],
-         MA_TOT2 = MAT[0],
+         MAIL_STRUC=MAST,
+         MAIL_FISS = MAX[0],
+         MAIL_TOTAL = MAT[0],
          FORM_FISS='DEMI_DROITE',
          INFO=2,
          PFON = (40., 15., 0.),
@@ -75,7 +76,7 @@ for i in range(0,nb_pas) :
    FISS[i]=DEFI_FISS_XFEM(MODELE=MO[i],  
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                     GROUP_MA_FOND='FOND_'+str(i),),
-                       GROUP_MA_ENRI='MSURF',),;
+                       GROUP_MA_ENRI='MSURF',);
 
    MOX[i]=MODI_MODELE_XFEM(MODELE_IN=MO[i],FISSURE=FISS[i]);
 
@@ -83,7 +84,7 @@ for i in range(0,nb_pas) :
 
    CHMAT[i]=AFFE_MATERIAU(MAILLAGE=MAT[i],
                           MODELE=MOX[i],
-                          AFFE=_F(GROUP_MA='MSURF',MATER=ACIER,));
+                          AFFE=_F(TOUT='OUI',MATER=ACIER,));
 
 # chargement pour la poutre 3 trous
    CHAR[i]=AFFE_CHAR_MECA(MODELE=MOX[i],
@@ -116,19 +117,23 @@ for i in range(0,nb_pas) :
    MAT[i+1] = CO('MAT_%d'%(i+1))
 
    PROPA_FISS(METHODE_PROPA='MAILLAGE',
-         MA_STRUC=MAST,
-         MA_XFEM1 = MAX[i],
-         MA_XFEM2 = MAX[i+1],
-         MA_TOT2 = MAT[i+1],
+         MAIL_STRUC=MAST,
+         MAIL_TOTAL = MAT[i+1],
          ITERATION = i+1,
-         FISSURE1 = FISS[i],
-         HYPOTHESE = 'NON_PLAN',
-         TABLE = SIF[i],
-         METHODE_POSTK=3,
-         INFO=2,
+         FISSURE=_F(MAIL_ACTUEL = MAX[i],
+               MAIL_PROPAGE = MAX[i+1],
+               FISS_ACTUELLE = FISS[i],
+               TABLE = SIF[i],
+               METHODE_POSTK=3,
+               ),
+         INFO=1,
+         DA_MAX=Damax,
          LOI_PROPA = _F(LOI='PARIS',
-                        M=3,
-                        DA_MAX=Damax,),
+                        M=3,N=1,C=1,
+                        MATER=ACIER,   ),
+         COMP_LINE=_F(COEF_MULT_MINI=0.,
+                      COEF_MULT_MAXI=1.,
+                     ),
          );
 
 # TEST DE NON-REGRESSION SUR LA POSITION DU DERNIER FOND DE FISSURE
@@ -158,8 +163,5 @@ TEST_TABLE(TABLE=TAB,
            NOM_PARA='COOR_Y',
            PRECISION=1.E-3,
            VALE= 2.066568E+01     )
-
-
 FIN()
-
 

@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF rupture1 Messages  DATE 05/01/2010   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -313,15 +313,6 @@ Vérifier les paramètres du calcul de G (rayons des couronnes ou abscisse curvili
 maximale, type de lissage, ...). 
 """),
 
-47: _("""
-Le calcul de la propagation d'une fissure avec la méthode 'MAILLAGE' et une hypothèse 
-'NON_PLAN' n'est pas possible si plusieurs instants sont définis dans la table fournie
-en entrée. La bifurcation de la fissure n'a en effet pas été programmée dans ce cas.
--> Risque et Conseil :
-Un calcul de propagation en supposant que la fissure reste plane est possible 
-(HYPOTHESE='PLAN').
-"""),
-
 48: _("""
 Le calcul de la propagation d'une fissure avec la méthode 'MAILLAGE' n'est possible que
 si la fissure ne comporte qu'un seul fond. La fissure fournie en entrée de PROPA_FISS
@@ -336,6 +327,22 @@ de fissure : le calcul de propagation est impossible.
 -> Risque et Conseil :
 Vérifier les paramètres du calcul de K1 (rayons des couronnes ou abscisse curviligne 
 maximale, type de lissage, ...). 
+"""),
+
+50: _("""
+La définition d'une loi de propagation (mot clé facteur LOI_PROPA) est obligatoie pour
+le calcul de la propagation de la fissure.
+"""),
+
+51: _("""
+PROPA_FISS / METHODE = 'MAILLAGE' : les noeuds définissant la fissure initiale ne sont
+pas ordonnés. Vérifiez le maillage donné en entrée (MAIL_ACTUEL).
+"""),
+
+52: _("""
+PROPA_FISS / METHODE = 'INITIALISATION' : les deux vecteurs VECT_X et VECT_Y 
+définissant la fissure initiale, de forme elliptique, ne sont pas orthogonaux. Vérifiez 
+les données d'entrée.
 """),
 
 }
