@@ -1,7 +1,7 @@
       SUBROUTINE NMDOCH(LISCHA,NBPASE,IEXCIT,EXCIT ,INPSCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,7 +67,7 @@ C
       INTEGER      I0,I1,ITYCH
       INTEGER      N1,IBID,IERD,NEQ,NOCC,IEXC,INCHA1,IRET2
       INTEGER      NPILO,NEXCI,NCHAR,NCHAR1,NCHAR2,NCHAR3
-      INTEGER      INFMAX,INDIC,ICH,IRET,INFC,J
+      INTEGER      INFMAX,INDIC,ICH,IRET,INFC,J,ICHAR
       INTEGER      NRPASE,ADCHSE,IAUX,JAUX
       INTEGER      JLCHA,JINFC
       INTEGER      JLCHA2,JINFC2 
@@ -126,7 +126,8 @@ C
       INFOCH = 'RIEN'
       NPILO  = 0
       INDIC  = 0 
-      NEXCI  = 0   
+      NEXCI  = 0
+      ICHAR  = 0 
 C
 C --- NOMBRE DE CHARGES
 C     
@@ -141,13 +142,11 @@ C --- CINEMATIQUE/NEUMANN
 C            
             CALL JEEXIN(K24BID(1:8)//'.CHME.SIGIN.VALE',IRET)
             IF (IRET.NE.0) THEN
-              CALL JEEXIN(K24BID(1:8)//'.CHME.CIMPO.DESC',IRET2)
-              
+              CALL JEEXIN(K24BID(1:8)//'.CHME.CIMPO.DESC',IRET2) 
             ELSE
               IRET2 = 1
-            ENDIF  
-
-            
+            ENDIF
+C
             IF ((NOCC.EQ.1).AND.(IRET2.NE.0)) THEN
               NCHAR  = NCHAR  + 1
             ENDIF  
@@ -387,7 +386,7 @@ C
             NBINFO = NBINFO + 1
             CALL ASSERT(NBINFO.LT.NBINMX)
             LISINF(NBINFO) = INFOCH 
-          ENDIF
+          ENDIF        
 C
 C -------- CHARGE DE TYPE NEUMANN
 C
@@ -537,7 +536,8 @@ C
 C --- AJOUT DE LA CHARGE          
 C                    
           IF (NBINFO.GT.0) THEN
-             CALL LISCAD(LISCHA,ICH   ,NOMCHA,NOMFCT,NBINFO,
+             ICHAR  = ICHAR+1
+             CALL LISCAD(LISCHA,ICHAR ,NOMCHA,NOMFCT,NBINFO,
      &                   LISINF,IVAL  ) 
           ENDIF
 

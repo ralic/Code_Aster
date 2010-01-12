@@ -3,7 +3,7 @@
      &                  PARCON,CARCRI,SDDYNA,SDSENS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,7 @@ C                5 : ITER_GLOB_ELAS
 C                6 : RESI_REFE_RELA
 C               10 : PAS UTILISE
 C               11 : PAS UTILISE
+C               12 : RESI_COMP_RELA 
 C OUT CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
 C                0 : ITER_INTE_MAXI
 C                1 : TYPE_MATR_COMP (0: VIT, 1: INC)

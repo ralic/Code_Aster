@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
+#@ MODIF macr_recal_ops Macro  DATE 11/01/2010   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -255,7 +255,14 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
    if args.has_key('ECART_TYPE'): ECART_TYPE= args['ECART_TYPE']
    if args.has_key('ITER_ALGO_GENE'): ITER_ALGO_GENE= args['ITER_ALGO_GENE']
    if args.has_key('RESI_ALGO_GENE'): RESI_ALGO_GENE= args['RESI_ALGO_GENE']
-
+   
+   if args.has_key('GRAINE'):
+       UTMESS('A','RECAL0_43')
+       GRAINE = args['GRAINE']
+   else:
+       GRAINE = None
+   
+   
    if args.has_key('DYNAMIQUE'): DYNAMIQUE = args['DYNAMIQUE']
 
    if args.has_key('DYNAMIQUE'): 
@@ -534,8 +541,9 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
       nb_iter=ITER_ALGO_GENE
       sigma=ECART_TYPE
       err_min=RESI_ALGO_GENE
+      graine=GRAINE
 
-      val = evolutivo(CALCUL_ASTER,val,nb_iter,err_min,nb_parents,nb_fils,sigma, borne_inf, borne_sup)
+      val = evolutivo(CALCUL_ASTER,val,nb_iter,err_min,nb_parents,nb_fils,sigma, borne_inf, borne_sup,graine)
 
       nomres = Sortie(LIST_NOM_PARA, LIST_PARA,val, CALCUL_ASTER, Mess)
       return
@@ -554,8 +562,9 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
            nb_iter=ITER_ALGO_GENE
            sigma=ECART_TYPE
            err_min=RESI_ALGO_GENE
+           graine=GRAINE
 
-           val_gene = evolutivo(CALCUL_ASTER,val,nb_iter,err_min,nb_parents,nb_fils,sigma, borne_inf, borne_sup)
+           val_gene = evolutivo(CALCUL_ASTER,val,nb_iter,err_min,nb_parents,nb_fils,sigma, borne_inf, borne_sup,graine)
            val=copy.copy(val_gene)
            val_init=copy.copy(val)
 

@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF xfem Messages  DATE 11/01/2010   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -287,12 +287,21 @@ cata_msg={
 """),
 
 61: _("""
-  -> Une face contient a priori au moins 3 points d'intersection avec l'iso-zéro du champ
+  -> Une face contient au moins 3 points d'intersection avec l'iso-zéro du champ
      de level-set car la valeur des level-sets aux noeuds de la maille a probablement été
-     mal reactualisée lors de la phase de réinitialisation.
+     mal reactualisée lors de la phase de réinitialisation ou à la propagation précédente.
   -> Risque & Conseil:
-     Tentez de réduire le rayon d'estimation du résidu pour accélerer la convergence de la 
-     réinitialisation et limiter ce risque d'anomalie.
+     Vous pouvez utiliser un maillage plus raffiné ou bien une grille auxiliaire plus
+     raffiné du maillage actuel.
+     Vous pouvez vérifier que la zone de mise à jour des level sets est localisé autour du
+     fond de la fissure (il ne faut pas utiliser ZONE_MAJ='TOUT' dans PROPA_FISS). Dans ce
+     cas, si vous utilisez la méthode simplexe (METHODE='SIMPLEXE'), vous pouvez essayer
+     d'utiliser un rayon de localisation plus élevé (opérande RAYON_TORE).
+     Si vous utilisez la méthode simplexe, vous pouvez essayer d'utiliser la méthode upwind
+     qui est plus robuste, stable et performante (METHODE='UPWIND').
+
+     Dans tout le cas, il faut vérifier que l'angle de propagation de la fissure calculée
+     par CALC_G a sens physique pour le problème à résoudre.
 """),
 
 }

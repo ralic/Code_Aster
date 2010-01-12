@@ -1,0 +1,229 @@
+      SUBROUTINE RESCMP(CNDIRI, CNVCFO,CNFEXT,CNFINT,CNFNOD,
+     &                     JFINT,JDIRI,JFEXT,JVCFO,JVFN,
+     &                     MAXRES,NODDLM,NUMNO)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT      NONE
+      CHARACTER*3   TSCA
+      INTEGER      NDDMAX
+      PARAMETER    (NDDMAX = 6)
+      CHARACTER*8 NOMDDL(NDDMAX),NODDLM
+      REAL*8       MAXDDF(NDDMAX),MAXDDR(NDDMAX),MAXRES
+      REAL*8       CMPMAX
+      INTEGER      JFINT,JDIRI,JFEXT,JVCFO,JVFN,NUMN(NDDMAX)
+      INTEGER      NUMNO,NUMNOD(NDDMAX)
+      CHARACTER*19   CNDIRI,CNVCFO,CNFEXT,CNFINT,CNFNOD
+C 
+C ----------------------------------------------------------------------
+C
+C CALCULE LE MAX DES RESIDUS PAR CMP POUR LE RESIDU RESI_COMP_RELA 
+C
+C ----------------------------------------------------------------------
+C
+C
+C OUT MAXRES   : RESIDU RESI_NODA_RELA
+C OUT NUMNO  : NUMERO DU NOEUD PENALISANT
+C OUT NODDLM  :NOM DU MECANISME SUR LEQUEL PORTE LE RESIDU 
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+
+      
+      INTEGER      IFM,NIV,NIVMPI,NOCC,JVCFOS
+      INTEGER      NEQ
+      CHARACTER*8  K8BID
+      LOGICAL      LVCINE,LFETI,LDYNA,NDYNLO,LFETIP
+      CHARACTER*19 PROFCH,FOINER
+      CHARACTER*16 K16BID
+      CHARACTER*24 VITPLU,COMMOI
+      CHARACTER*19 NMCHEX,MASSE
+      CHARACTER*24 K24BID,CNFETI
+      CHARACTER*19 CFNOS,CFNINT,CFNDIR,CFNFEX
+      CHARACTER*24 IMPCNT,IMPCNL,IMPCNV,IMPCNA
+      INTEGER      JIMPCT,JIMPCL,JIMPCV,JIMPCA      
+      INTEGER      JDEEQ,JREFA
+      INTEGER      IBID,IER,I,IRET,K
+      LOGICAL      ISFONC,LREFE,LINIT
+      REAL*8       VAL1,VAL2,VAL3,VAL4,VAL5,R8BID,VCMAX,VALFN,VFNO,VALT
+      INTEGER      IRELA,IMAXI,IRESI,IREFE ,IFNO,IRELF
+      CHARACTER*4 KNUM
+      REAL*8       VALS,VAL6,VRESNO,RESIM,FONAM
+      REAL*8       RES
+      INTEGER      IRESNO,JCNSD,JFINTS,JDIRIS,JFEXTS,JCNSL,JCNSC
+      INTEGER      JCNSK,LICMPU(999)
+      INTEGER      NBCMP,NBNO,INC,INO,NBCMPU
+      CHARACTER*8 NOMGD,NOMNO
+
+
+      REAL*8      EPSI
+      PARAMETER    (EPSI = 1.D-50)
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+C
+C
+C
+C --- ACCES AUX CHAM_NO
+C
+
+      CALL JEVEUO(CNVCFO(1:19)//'.VALE','L',JVCFO) 
+      CALL JEVEUO(CNFINT(1:19)//'.VALE','L',JFINT)
+      CALL JEVEUO(CNDIRI(1:19)//'.VALE','L',JDIRI)
+      CALL JEVEUO(CNFEXT(1:19)//'.VALE','L',JFEXT)
+      CALL JEVEUO(CNFNOD(1:19)//'.VALE','L',JVFN) 
+C      
+      
+C
+C TRANSFO EN CHAMPS SIMPLE
+C 
+C
+      CFNOS ='&&NMRESI.CHAM_NO_S'
+      CFNINT='&&NMRESII.CHAM_NO_S'
+      CFNDIR='&&NMRESID.CHAM_NO_S'
+      CFNFEX='&&NMRESIX.CHAM_NO_S'
+
+      CALL CNOCNS(CNFNOD,'V',CFNOS)
+      CALL CNOCNS(CNFINT,'V',CFNINT)
+      CALL CNOCNS(CNDIRI,'V',CFNDIR)
+      CALL CNOCNS(CNFEXT,'V',CFNFEX)
+
+C Recuperation des tableaux de valeurs
+
+      CALL JEVEUO(CFNOS//'.CNSV','L', JVCFOS)
+      CALL JEVEUO(CFNINT//'.CNSV','L',JFINTS)
+      CALL JEVEUO(CFNDIR//'.CNSV','L',JDIRIS)
+      CALL JEVEUO(CFNFEX//'.CNSV','L',JFEXTS)
+
+      CALL JEVEUO(CFNOS//'.CNSD','L',JCNSD)
+      CALL JEVEUO(CFNOS//'.CNSL','L',JCNSL)
+      CALL JEVEUO(CFNOS//'.CNSC','L',JCNSC)
+      CALL JEVEUO(CFNOS//'.CNSK','L',JCNSK)
+
+C
+       NBCMP=ZI(JCNSD-1+2)
+       NBNO=ZI(JCNSD-1+1)
+       NOMGD=ZK8(JCNSK-1+2)
+             
+C
+C On calcule le nombre de cmp utilisés dans le champs
+C
+      NBCMPU = 0
+      DO 30 INC = 1,NBCMP
+        DO 10 INO = 1,NBNO    
+           IF(ZL(JCNSL-1+(INO-1)*NBCMP+INC))GOTO 20   
+ 10     CONTINUE
+        GOTO 30
+ 20     CONTINUE
+        NBCMPU = NBCMPU + 1
+        LICMPU(NBCMPU) = INC
+C
+ 30   CONTINUE
+
+        
+      IF(NBCMPU.GT.NDDMAX) THEN
+         CALL U2MESS('F','MECANONLINE5_51')
+      ENDIF
+      CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
+      IF(TSCA.NE.'R') THEN
+         CALL U2MESS('F','MECANONLINE5_52')
+      ENDIF
+
+C
+C 
+      DO 31 INC = 1,NBCMPU    
+           NOMDDL(INC) = ZK8(JCNSC-1+LICMPU(INC))
+           MAXDDF(INC) = 0.D0   
+           MAXDDR(INC) = 0.D0   
+           NUMNOD(INC)=0
+ 31   CONTINUE
+C 
+C
+      DO 28 INO = 1,NBNO       
+        DO 29 INC = 1,NBCMPU
+            K =  LICMPU(INC) 
+            IF(ZL(JCNSL-1+(INO-1)*NBCMP+K))THEN
+               I = NBCMP*(INO-1)+K
+               RESIM=ABS(ZR(JFINTS+I-1)+ZR(JDIRIS+I-1)-ZR(JFEXTS+I-1))  
+               FONAM =  ABS(ZR(JVCFOS+I-1))   
+               IF(RESIM.GT.MAXDDR(INC))THEN
+                  MAXDDR(INC)= RESIM
+                  NUMNOD(INC)= INO
+               ENDIF
+               MAXDDF(INC)=MAX(FONAM,MAXDDF(INC))
+            ENDIF
+ 29     CONTINUE
+ 28   CONTINUE
+      MAXRES=0.D0
+
+C
+      DO 50 INC = 1,NBCMPU
+          IF(MAXDDF(INC).GT.0.D0)THEN
+             RES = MAXDDR(INC)/MAXDDF(INC)
+          ELSE
+             RES = -1
+          ENDIF
+          IF (RES.GT.MAXRES) THEN
+            MAXRES = RES
+            CMPMAX = INC
+          ENDIF
+  50  CONTINUE
+C  POUR INFO SI BESOIN NUMDDL  : NUMERO DU DDL PENALISANT
+C    NUMDDL   = NUMN(CMPMAX)
+C   
+      IF(MAXRES.LT.EPSI)THEN
+        MAXRES = -1.D0
+        NUMNO   = 0
+        NODDLM  = '   '
+      ELSE
+        NUMNO   = NUMNOD(CMPMAX)
+        NODDLM  = NOMDDL(CMPMAX)
+      ENDIF
+      
+      CALL DETRSD('CHAM_NO_S',CFNOS)
+      CALL DETRSD('CHAM_NO_S',CFNINT)
+      CALL DETRSD('CHAM_NO_S',CFNDIR)
+      CALL DETRSD('CHAM_NO_S',CFNFEX)
+           
+      CALL JEDEMA()
+      
+
+C
+      END

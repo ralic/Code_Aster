@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 11/01/2010   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,8 +16,11 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
-DEFI_FONC_ELEC=OPER(nom="DEFI_FONC_ELEC",op=64,sd_prod=fonction_sdaster,reentrant='n',
+# RESPONSABLE PEYRARD C.PEYRARD
+
+from Macro.defi_fonc_elec_ops import defi_fonc_elec_ops
+
+DEFI_FONC_ELEC=MACRO(nom="DEFI_FONC_ELEC",op=defi_fonc_elec_ops,sd_prod=fonction_sdaster,reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
                     fr="Définir une fonction du temps intervenant dans le calcul des forces de LAPLACE",
       regles=(UN_PARMI('COUR_PRIN','COUR'),
@@ -67,4 +70,4 @@ DEFI_FONC_ELEC=OPER(nom="DEFI_FONC_ELEC",op=64,sd_prod=fonction_sdaster,reentran
            DIST            =SIMP(statut='f',typ='R',defaut=1.0E+0),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
-)  ;
+)

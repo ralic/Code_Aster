@@ -1,7 +1,7 @@
       SUBROUTINE IMPCOD(COLONN,ICOD  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,7 +41,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER       ZDEF
-      PARAMETER    (ZDEF=30)
+      PARAMETER    (ZDEF=33)
       INTEGER       I
       CHARACTER*9   MOTCLE(ZDEF)
 
@@ -74,6 +74,9 @@ C
       DATA MOTCLE(27)       / 'ITER_FETI'/
       DATA MOTCLE(28)       / 'CTCC_BOUC'/
       DATA MOTCLE(29)       / 'CTCC_NOEU'/
+      DATA MOTCLE(30)       / 'RESI_COMP'/
+      DATA MOTCLE(31)       / 'COMP_NOEU'/
+      DATA MOTCLE(32)       / '&&&&&&'/
 C
 C ----------------------------------------------------------------------
 C

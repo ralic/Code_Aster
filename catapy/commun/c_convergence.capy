@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 07/07/2009   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMUN  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE REZETTE C.REZETTE
 def C_CONVERGENCE() : return FACT(statut='d',
-           regles=(PRESENT_ABSENT('RESI_REFE_RELA','RESI_GLOB_MAXI','RESI_GLOB_RELA'),),
+           regles=(PRESENT_ABSENT('RESI_REFE_RELA','RESI_GLOB_MAXI','RESI_GLOB_RELA','RESI_COMP_RELA'),),
            b_refe_rela    =BLOC(condition = "RESI_REFE_RELA != None",
              regles=(AU_MOINS_UN('SIGM_REFE','EPSI_REFE','FLUX_THER_REFE','FORC_REFE',
                                   'FLUX_HYD1_REFE','FLUX_HYD2_REFE','VARI_REFE','DEPL_REFE'),),
@@ -35,6 +35,7 @@ def C_CONVERGENCE() : return FACT(statut='d',
            RESI_REFE_RELA  =SIMP(statut='f',typ='R'),
            RESI_GLOB_MAXI  =SIMP(statut='f',typ='R'),
            RESI_GLOB_RELA  =SIMP(statut='f',typ='R'),
+           RESI_COMP_RELA  =SIMP(statut='f',typ='R'),
            ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut=10),
            ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
            TYPE            =SIMP(statut='f',typ='TXM',defaut="PIC",into=("PIC","PLATEAU")),

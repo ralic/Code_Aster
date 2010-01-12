@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF CALCULEL  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -254,15 +254,34 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
           LPAIN(1) = 'PDEFORR'
           LCHIN(1) = CHEPS
           LPAOUT(1) = 'PDEFOEQ'
-        ELSE IF (OPTIO2.EQ.'ARCO_ELNO_SIGM') THEN
+        ELSE IF (OPTIO2.EQ.'PROJ_ELEM_SIGN') THEN
           LPAIN(1) = 'PSIG3D'
           LCHIN(1) = CHSIG
-          LPAIN(2) = 'PCAMASS'
-          LCHIN(2) = CHEPS
-          LPAIN(3) = 'PGEOMER'
-          LCHIN(3) = CHGEOM
-          NBIN = 3
-          LPAOUT(1) = 'PARCCON'
+          LPAIN(2) = 'PGEOMER'
+          LCHIN(2) = CHGEOM
+          NBIN = 2
+          LPAOUT(1) = 'PPJSIGN'
+        ELSE IF (OPTIO2.EQ.'PROJ_ELEM_SIGT') THEN
+          LPAIN(1) = 'PSIG3D'
+          LCHIN(1) = CHSIG
+          LPAIN(2) = 'PGEOMER'
+          LCHIN(2) = CHGEOM
+          NBIN = 2
+          LPAOUT(1) = 'PPJSIGT'
+        ELSE IF (OPTIO2.EQ.'PROJ_ELEM_SIT1') THEN
+          LPAIN(1) = 'PSIG3D'
+          LCHIN(1) = CHSIG
+          LPAIN(2) = 'PGEOMER'
+          LCHIN(2) = CHGEOM
+          NBIN = 2
+          LPAOUT(1) = 'PPJSIT1'
+        ELSE IF (OPTIO2.EQ.'PROJ_ELEM_SIT2') THEN
+          LPAIN(1) = 'PSIG3D'
+          LCHIN(1) = CHSIG
+          LPAIN(2) = 'PGEOMER'
+          LCHIN(2) = CHGEOM
+          NBIN = 2
+          LPAOUT(1) = 'PPJSIT2'
         ELSE
           LPAIN(1) = 'PDEPLAR'
           IF (OPTIO2.EQ.'SIGM_ELNO_COQU') THEN

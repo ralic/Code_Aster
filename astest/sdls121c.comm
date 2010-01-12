@@ -1,4 +1,4 @@
-# MODIF  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/01/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE RECALAGE DES PARAMETRES D'UN MODELE DYNAMIQUE PAR ANALYSE MODALE
 # sdls121c.para = tps_job 1000 mem_job 300Mo mem_aster 64 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SDLS121C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
+DEBUT(CODE=_F(NOM='SDLS121C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
+      IGNORE_ALARM=('RECAL0_43'),);
 
 parametres =[['EP__',0.35,0.3,0.7]]
 
@@ -43,6 +44,10 @@ RESU=MACR_RECAL(
          NB_PARENTS       =10,
          NB_FILS          =5,
          ECART_TYPE       =10.,
+#Attention: l'utilisation de la GRAINE n'est pas indiquee pour les etudes.
+#On l'utilise seulement dans les cas-tests pour assurer la repetitivite de la 
+#solution.
+         GRAINE           =0,
          ITER_ALGO_GENE   =10,
          RESI_ALGO_GENE   =1.E-2,
 
@@ -64,7 +69,7 @@ OPTIM=DEFI_FONCTION(NOM_PARA='INST',
                     VALE_FONC=RESU);
 
 TEST_FONCTION ( VALEUR =(_F( FONCTION = OPTIM,
-                           PRECISION = 0.5E-1,
+                           PRECISION = 0.1E-1,
                            VALE_PARA = 1.,
                            REFERENCE = 'ANALYTIQUE',
                            VALE_REFE = 0.5,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/11/2009   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -239,6 +239,9 @@ MACR_ECREVISSE=MACRO(nom="MACR_ECREVISSE",op=macr_ecrevisse_ops,sd_prod=macr_ecr
            TYPE_CHARGE         =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
                                      into=("FIXE_CSTE","SUIV","DIDI")),
          ),
+         
+         CONTACT            =SIMP(statut='f',typ=char_contact),
+         
          COMP_INCR          =C_COMP_INCR(),
          NEWTON             =FACT(statut='d',
            REAC_INCR           =SIMP(statut='f',typ='I',defaut= 1 ),

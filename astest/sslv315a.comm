@@ -1,6 +1,6 @@
-# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
+# MODIF  DATE 11/01/2010   AUTEUR COLOMBO D.COLOMBO 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
-# sslv315a.para = tps_job 250 mem_job 1024Mo liste_test S
+# sslv315a.para = tps_job 250 mem_job 200Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,21 +20,20 @@
 # ======================================================================
 # METHODE PAR REACTUALISATION DES LEVEL SET - FISSURE INITIALE INCLINEE
 
-DEBUT(CODE=_F(NOM='SSLV315A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NOM='SSLV315A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='XFEM2_94',);
 
-# POUR LIMITER LES TEMPS DE CALCUL, LES MAILLAGES SONT RELATIVEMENT GROSSIERS,
-# D OU LE MESSAGE XFEM2_14 QUE L ON IGNORE DANS CE TEST
+# ON IGNORE L'ALARME XFEM2_94 PARCE QUE LA VALEUR MINIMALE CONSEILLE EST
+# TRES PROCHES A L'AVANCEE UTILISEE ET ON OBTIEN DES BONNES RESULTATS
+# COMME MEME
 
 
 #----------------------------------------------
 #                 MAILLAGE
 #----------------------------------------------
 
-PRE_GIBI();
-
 nbcalc = 3
 
-MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -129,7 +128,6 @@ for i in range(nbcalc) :
                                       GROUP_MA='VOL',),
                          INCREMENT=_F(LIST_INST=L_INS1,
                                       INST_FIN=1.0,),
-#                         SOLVEUR=_F(METHODE='MUMPS',),
                          NEWTON=_F(REAC_ITER=1,),
                          SOLVEUR=_F(METHODE='MULT_FRONT',
                                     NPREC=12,),
@@ -166,7 +164,6 @@ for i in range(nbcalc) :
                               COEF_MULT_MAXI=1.,),
                  DA_MAX=0.4,
                  RAYON=RP,
-                 RAYON_TORE=12.0,
                  INFO=1,);
 
 #     LEVEL SET AU PAS DE PROPAGATION COURANT
@@ -196,21 +193,24 @@ i=nbcalc-1
 # PAR LA METHODE PAR PROJECTION (SSLV315B):
 # Y=2.8
 # Z=9.
-#LES DEUX NOEUDS LES PLUS PROCHES VOISINS SONT DONNES DANS SSLV315.MESS
-# NOEUD 1= N928
-# NOEUD 2= N1132
+#LES DEUX NOEUDS LES PLUS PROCHES VOISINS SONT DONNES DANS SSLV315B.MESS
+# NOEUD 1 = N219
+# NOEUD 2 = N1576
+# NOEUD 3 = N1577
+# NOEUD 4 = N2636
+# NOEUD 5 = N2637
 
 
 # ON PEUT DONC CALCULER LA VALEUR DES LEVEL SETS POUR CES NOEUDS:
 
 TABLSN= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
-                                NOEUD=('N1132','N928',),                                
+                                NOEUD=('N219','N1576','N1577','N2636','N2637',),
                                 CHAM_GD=LSN[i],
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 
 TABLST= POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
-                                NOEUD=('N1132','N928',),
+                                NOEUD=('N219','N1576','N1577','N2636','N2637',),
                                 CHAM_GD=LST[i],
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
@@ -220,9 +220,9 @@ IMPR_TABLE(TABLE=TABLST,);
 
 # ON PEUT ENFIN VERIFIER QUE LE FOND DE FISSURE CALCULE PAR PROPA_FISS
 # EST DANS L'ELEMENT EN VERIFIENT QUE LA VALEUR DES LEVEL SETS EST
-# INFERIEURE A LA DISTANCE MAXIMALE ENTRE LES QUATRE NOEUDS (EGAL A 1/3)
+# INFERIEURE A LA DISTANCE MAXIMALE ENTRE LES QUATRE NOEUDS (EGAL A 2/3)
 
-DISTMAX=1./3.*2
+DISTMAX=2./3.
 
 TEST_TABLE(TABLE=TABLSN,
            REFERENCE='NON_REGRESSION',

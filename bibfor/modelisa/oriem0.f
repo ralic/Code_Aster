@@ -1,14 +1,14 @@
       SUBROUTINE ORIEM0(TYPE,NOMA,COOR,LINO1,NBNO1,LINO2,NBNO2,
-     &                  LINO3,NBNO3,PREC,IE1,IE2)
+     &                  LINO3,NBNO3,PREC,IE1,IE2,IMAI)
       IMPLICIT   NONE
       INTEGER             LINO1(*),NBNO1, LINO2(*),NBNO2, LINO3(*),NBNO3
-      INTEGER             IE1, IE2
+      INTEGER             IE1, IE2, IMAI
       REAL*8              PREC, COOR(*)
       CHARACTER*8         TYPE
       CHARACTER*(*)       NOMA
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,6 +40,12 @@ C                = 1  SINON
 C OUT : IE2    : = 0  MAILLE 1 ET MAILLES 2 DU MEME COTE (PAR RAPPORT
 C                     A LA MAILLE DE PEAU)
 C                = 1  SINON
+C OUT : IMAI   : = 0, 1, 2 (FONCTION DE LA NORMALE DE LA MAILLE DE PEAU)
+C                  SI IE2 =0:  IMAI = 0
+C                  SINON:  IMAI = 1 OU 2
+C                      SI LA MAILLE I A LA MEME NORMALE QUE LA MAILLE DE
+C                      PEAU, ALORS IMAI = I  (I = 1 OU 2).
+C                
 C
 C APPELEE PAR : UTMASU
 C.========================= DEBUT DES DECLARATIONS ====================
@@ -137,6 +143,15 @@ C     VERIFICATION QUE LA MAILLE 1 ET LA MAILLE 2 SONT DU
 C     MEME COTE PAR RAPPORT A LA MAILLE DE PEAU
       IF( ( PS1.GT.0  .AND.  PS2.GT.0 ) .OR.
      &    ( PS1.LT.0  .AND.  PS2.LT.0 ) ) IE2=0
+
+      IMAI=0
+      IF(IE2.NE.0)THEN
+         IF(PS1.LT.0)THEN
+             IMAI=1
+         ELSE IF(PS2.LT.0)THEN
+             IMAI=2
+         ENDIF
+      ENDIF
 
       CALL JEDEMA()
 

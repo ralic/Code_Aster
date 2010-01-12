@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 11/01/2010   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,6 +62,7 @@ MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,
              NB_PARENTS       =SIMP(statut='f',typ='I',defaut=10),
              NB_FILS          =SIMP(statut='f',typ='I',defaut=5),
              ECART_TYPE       =SIMP(statut='f',typ='R',defaut=1.),
+             GRAINE           =SIMP(statut='f',typ='I'),
              ITER_ALGO_GENE  =SIMP(statut='f',typ='I',defaut=10),
              RESI_ALGO_GENE  =SIMP(statut='f',typ='R',defaut=1.E-3),
          ),

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/05/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 # ssnv504i.para = tps_job 190 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,24 +128,26 @@ CH0=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=_F(GROUP_NO='LMN',
                                DY=1.0,),);
 
-CH2=AFFE_CHAR_MECA(MODELE=MO,
-                   CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
-                               METHODE='CONTINUE',
-                               GLISSIERE = 'OUI',
-                               CONTACT_INIT='OUI',
-                               ITER_GEOM_MAXI=3,
-                               ITER_CONT_MAXI=40,
-                               GROUP_MA_MAIT='SMAI1',
-                               GROUP_MA_ESCL='SESC1',
-                                 ),
-                            _F(APPARIEMENT='MAIT_ESCL',
-                               METHODE='CONTINUE',
-                               ITER_GEOM_MAXI=3,
-                               ITER_CONT_MAXI=40,
-                               GROUP_MA_MAIT='SMAI2',
-                               GROUP_MA_ESCL='SESC2',
-                                 ),),
-                     );
+CH2  = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    REAC_GEOM      = 'CONTROLE',
+                    NB_ITER_GEOM   = 4,
+                    ZONE =(
+                           _F(
+                             GROUP_MA_MAIT = 'SMAI1',
+                             GROUP_MA_ESCL = 'SESC1',
+                             APPARIEMENT   = 'MAIT_ESCL',
+                             CONTACT_INIT  = 'OUI',
+                             GLISSIERE     = 'OUI',
+                             ),                                                               
+                           _F(
+                             GROUP_MA_MAIT = 'SMAI2',
+                             GROUP_MA_ESCL = 'SESC2',
+                             APPARIEMENT   = 'MAIT_ESCL',
+                             ),  
+                          ),
+                   );
+
 #_____________________________________________________________________
 #
 #                    DEFINITIONS DES FONCTIONS TEMPORELLES 
@@ -178,8 +180,8 @@ U=STAT_NON_LINE(MODELE=MO,
                 EXCIT=(_F(CHARGE=CH0,
                           FONC_MULT=DPLY,),
                        _F(CHARGE=CH1,),
-                       _F(CHARGE=CH2,),
                         ),
+                CONTACT = CH2,        
                 COMP_INCR=_F(RELATION='ELAS',
                              TOUT='OUI',),
                 INCREMENT=_F(LIST_INST=L_INST,),
@@ -202,9 +204,9 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='K',
-                   VALE=144.895,
+                   VALE=144.94801,
                    PRECISION=1.E-3,
-                   VERSION = '8.0.6',
+                   VERSION = '10.1.4',
                    REFERENCE='NON_REGRESSION',),
            ),);
 

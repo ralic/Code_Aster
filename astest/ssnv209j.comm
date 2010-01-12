@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209j.para = tps_job 450 mem_job 800Mo mem_aster 20 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,25 +128,27 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 #----------------------------------------------
 #                   CHARGEMENTS
 #----------------------------------------------
-
-CTXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      CONTACT=_F(FISS_MAIT      = FISS,
-                                 METHODE        = 'XFEM',
-                                 INTEGRATION    = 'NOEUD',
-                                 CONTACT_INIT   = 'OUI',
-                                 ALGO_LAGR      = 'VERSION2',
-                                 COEF_REGU_FROT = 100000.,
-                                 FROTTEMENT     = 'COULOMB',
-                                 COULOMB        = 1.,
-                                 ITER_FROT_MAXI = 12,
-                                 ITER_GEOM_MAXI = 3,
-                                 TOLE_PROJ_EXT  = 1,
-                                 COEF_REGU_CONT = 100000.,
-                                 ITER_CONT_MAXI = 5,
-                                 COEF_ECHELLE   = 1.,
-                                 ),
-                      INFO=1,
-                      );
+CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
+                      FORMULATION    = 'XFEM',
+                      ITER_FROT_MAXI = 12,
+                      ITER_CONT_MAXI = 5,
+                      FROTTEMENT     = 'COULOMB',
+                      REAC_GEOM      = 'CONTROLE',
+                      NB_ITER_GEOM   = 4,
+                      ZONE = (_F(
+                                 INTEGRATION   = 'NOEUD',
+                                 COULOMB       = 1.,   
+                                 CONTACT_INIT  = 'OUI',
+                                 GLISSIERE     = 'NON',   
+                                 COEF_ECHELLE  = 1.,
+                                 FISS_MAIT     = FISS,
+                                 ALGO_LAGR     = 'VERSION2',
+                                 COEF_CONT     = 100000.,
+                                 COEF_FROT     = 100000.,
+                              ),
+                             
+                            )
+                    ); 
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
@@ -209,8 +211,8 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
+                    CONTACT = CTXFEM,
                     EXCIT=(_F(CHARGE=CHXFEM,),
-                           _F(CHARGE=CTXFEM,),
                            _F(CHARGE=CHCINE,),
                            _F(CHARGE=CHMECA,
                               FONC_MULT=RAMPE),

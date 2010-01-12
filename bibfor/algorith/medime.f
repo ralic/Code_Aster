@@ -1,7 +1,7 @@
       SUBROUTINE MEDIME(BASE  ,CUMUL ,MODELE,LISCHA,MEDIRI)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,45 +129,43 @@ C
         CALL ASSERT(.FALSE.)
       ENDIF
 
-      IF (ZK24(JCHAR).NE.'        ') THEN
-        ILIRES = NLUTI-1
-        DO 10 ICHA = 1,NCHAR
-          IF (ZI(JINF+ICHA).NE.0) THEN
-            NOMCHA = ZK24(JCHAR+ICHA-1) (1:8)
-            LIGRCH = NOMCHA(1:8)//'.CHME.LIGRE'
-            CALL JEEXIN(LIGRCH(1:19)//'.LIEL',IRET)
-            IF (IRET.LE.0) GO TO 10
-            CALL EXISD('CHAMP_GD',NOMCHA(1:8)//'.CHME.CMULT',IRET)
-            IF (IRET.LE.0) GO TO 10
+      ILIRES = NLUTI-1
+      DO 10 ICHA = 1,NCHAR
+        IF (ZI(JINF+ICHA).NE.0) THEN
+          NOMCHA = ZK24(JCHAR+ICHA-1) (1:8)
+          LIGRCH = NOMCHA(1:8)//'.CHME.LIGRE'
+          CALL JEEXIN(LIGRCH(1:19)//'.LIEL',IRET)
+          IF (IRET.LE.0) GO TO 10
+          CALL EXISD('CHAMP_GD',NOMCHA(1:8)//'.CHME.CMULT',IRET)
+          IF (IRET.LE.0) GO TO 10
 C
-C ---       CHAMPS IN
-C           
-            LPAIN(1)  = 'PDDLMUR'  
-            LCHIN(1)  = NOMCHA//'.CHME.CMULT'
+C ---     CHAMPS IN
+C         
+          LPAIN(1)  = 'PDDLMUR'  
+          LCHIN(1)  = NOMCHA//'.CHME.CMULT'
 C
-C ---       CHAMPS OUT
-C            
-            LPAOUT(1) = 'PMATUUR'  
-            CALL CODENT(ILIRES+1,'D0',LCHOUT(1) (17:19))
+C ---     CHAMPS OUT
+C          
+          LPAOUT(1) = 'PMATUUR'  
+          CALL CODENT(ILIRES+1,'D0',LCHOUT(1) (17:19))
 C
-C ---       APPEL A CALCUL
+C ---     APPEL A CALCUL
 C
-            IF (DEBUG) THEN
-              CALL DBGCAL(OPTION,IFMDBG,
-     &                    NBIN  ,LPAIN ,LCHIN ,
-     &                    NBOUT ,LPAOUT,LCHOUT)
-            ENDIF 
-C            
-            CALL CALCUL('S',OPTION,LIGRCH,NBIN ,LCHIN,LPAIN,
-     &                                    NBOUT,LCHOUT,LPAOUT,BASE)
+          IF (DEBUG) THEN
+            CALL DBGCAL(OPTION,IFMDBG,
+     &                  NBIN  ,LPAIN ,LCHIN ,
+     &                  NBOUT ,LPAOUT,LCHOUT)
+          ENDIF 
+C          
+          CALL CALCUL('S',OPTION,LIGRCH,NBIN ,LCHIN,LPAIN,
+     &                                  NBOUT,LCHOUT,LPAOUT,BASE)
 C
-C ---       STOCKAGE DES RESU_ELEM
+C ---     STOCKAGE DES RESU_ELEM
 C     
-            CALL REAJRE(MEDIRI,LCHOUT(1),BASE)
-            ILIRES = ILIRES + 1
-          END IF
-   10   CONTINUE
-      END IF    
+          CALL REAJRE(MEDIRI,LCHOUT(1),BASE)
+          ILIRES = ILIRES + 1
+        END IF
+   10 CONTINUE   
    20 CONTINUE
 C
       CALL JEDEMA()

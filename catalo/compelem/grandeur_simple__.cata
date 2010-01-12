@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 06/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+%& MODIF COMPELEM  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1648,9 +1648,6 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        VECT_3_X :
        VECT_3_Y :
        VECT_3_Z
-       SI_ARC :
-       SI_CONS :
-       SI_NORM :
        PRES :
        PRES11 :
        PRES12 :
@@ -1719,14 +1716,15 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        FHTZ     SIMAX    SIMIN    QXX      QXY      QYX      QYY      QZX
        QZY      Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY     VECT_1_X
        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y VECT_3_Z
-       SI_ARC   SI_CONS  SI_NORM  PRES     PRES11   PRES12   PRES13   PRES21
+       PRES     PRES11   PRES12   PRES13   PRES21
        PRES22   PRES23   PRES31   PRES32   PRES33   SIG1     SIG2     SIG3
        SIG111   SIG112   SIG113   SIG121   SIG122   SIG123   SIG131   SIG132
        SIG133   SIG211   SIG212   SIG213   SIG221   SIG222   SIG223   SIG231
        SIG232   SIG233   SIG311   SIG312   SIG313   SIG321   SIG322   SIG323
        SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
-       CONT_Z
+       CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_TX   SIG_TY   SIG_TZ   SIG_T1X
+       SIG_T1Y  SIG_T1Z  SIG_T2X  SIG_T2Y  SIG_T2Z
 
 <<  SIEF_R Type:R Etat de contrainte (ou d'effort interne) (cf. (U .. . .. . .))
        SIXX : sigma_xx contraintes dans un milieu continu
@@ -1787,9 +1785,6 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        VECT_1_Y : Composante selon Oy du 1er vecteur principal (EQUI_XXXX_XXXX )
        ... ...
        VECT_3_Z Composante selon Oz du 3ème vecteur principal ( EQUI_XXXX_XXXX )
-       SI_ARC :
-       SI_CONS :
-       SI_NORM :
        PRES :
        PRES11 :
        PRES12 :
@@ -1858,14 +1853,15 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        FHTZ     SIMAX    SIMIN    QXX      QXY      QYX      QYY      QZX
        QZY      Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY     VECT_1_X
        VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y VECT_3_Z
-       SI_ARC   SI_CONS  SI_NORM  PRES     PRES11   PRES12   PRES13   PRES21
+       PRES     PRES11   PRES12   PRES13   PRES21
        PRES22   PRES23   PRES31   PRES32   PRES33   SIG1     SIG2     SIG3
        SIG111   SIG112   SIG113   SIG121   SIG122   SIG123   SIG131   SIG132
        SIG133   SIG211   SIG212   SIG213   SIG221   SIG222   SIG223   SIG231
        SIG232   SIG233   SIG311   SIG312   SIG313   SIG321   SIG322   SIG323
        SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
-       CONT_Z
+       CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_TX   SIG_TY   SIG_TZ   SIG_T1X
+       SIG_T1Y  SIG_T1Z  SIG_T2X  SIG_T2Y  SIG_T2Z
 
 <<  SING_R Type:R grandeurs liée au calcul de carte de taille
        DEGRE : ordre de la singularité

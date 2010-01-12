@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHD EN QUAD4
 # wtnp102b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -32,7 +32,7 @@ PRE_GIBI();
 
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(
-                      JUSQU_A=10000.,NOMBRE=1,),);
+                      JUSQU_A=10000.,NOMBRE=10,),);
 
 
 MAILIN=LIRE_MAILLAGE();
@@ -192,8 +192,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                                   PRE1=0.0,
                                   PRE2=1.E5,
                                   PORO=0.3,
-                                  PRES_VAPE=3700.0,
-                                  DEGR_SATU=0.78000000000000003,),
+                                  PRES_VAPE=3700.0,),
                       THM_DIFFU=_F(R_GAZ=8.315,
                                    RHO=2200.0,
                                    CP=1050.0,
@@ -271,14 +270,13 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),
                  INCREMENT=_F(LIST_INST=DEFLIST1,
-                              NUME_INST_FIN=1,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
                  RECH_LINEAIRE=_F(RESI_LINE_RELA=0.10000000000000001,
                                   ITER_LINE_MAXI=3,),
                  CONVERGENCE=_F(
-                                RESI_GLOB_RELA=1.E-6,
+                                RESI_COMP_RELA=1.E-6,
                                 ITER_GLOB_MAXI=20),
                  SOLVEUR=_F(METHODE='MULT_FRONT',
                             STOP_SINGULIER='NON',),
@@ -298,13 +296,13 @@ U0=CALC_NO(reuse =U0,
              RESULTAT=U0,);
 
 #################################################
-#IMPR_RESU(RESU=_F(RESULTAT=U0,
-#                  NOM_CHAM='DEPL',
-#                  GROUP_NO=('BO',),),);
-#
-#IMPR_RESU(RESU=_F(RESULTAT=U0,
-#                  NOM_CHAM='VARI_NOEU_ELGA',
-#                  GROUP_NO=('BO',),),);
+IMPR_RESU(RESU=_F(RESULTAT=U0,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO=('BO',),),);
+
+IMPR_RESU(RESU=_F(RESULTAT=U0,
+                  NOM_CHAM='VARI_NOEU_ELGA',
+                  GROUP_NO=('BO',),),);
 #################################################
 
 TEST_RESU(RESU=(
@@ -327,6 +325,15 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.3.20', ),
                 _F(RESULTAT=U0,
+                   INST=5.00000E+03,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='PRE1',
+                   NOEUD='N2',
+                   VALE=3.6479E+08,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '7.3.20', ),
+                _F(RESULTAT=U0,
                    INST=1.00000E+04,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
@@ -341,6 +348,15 @@ TEST_RESU(RESU=(
                    NOM_CMP='PRE2',
                    NOEUD='N2',
                    VALE=5.51779E+05,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '7.3.20', ),
+                _F(RESULTAT=U0,
+                   INST=5.00000E+03,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='TEMP',
+                   NOEUD='N2',
+                   VALE=1.4383E+02,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.3.20', ),

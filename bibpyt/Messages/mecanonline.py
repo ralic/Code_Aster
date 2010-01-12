@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline Messages  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,11 @@
 def _(x) : return x
 
 cata_msg = {
+
+1 : _("""
+ Echec dans le calcul des matrices elastiques pour l'amortissement.
+"""),
+
 
 10 : _("""
  Le concept dans ETAT_INIT n'est pas du type EVOL_NOLI

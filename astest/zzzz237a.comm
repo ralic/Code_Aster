@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/01/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DU MOT-CLE LIAISON_UNILATER PAR UNE CONDITION PORTANT SUR DES DEPLACEMENTS
 # zzzz237a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -275,5 +275,108 @@ U=CREA_CHAMP(reuse = U, OPERATION='COMB', INFO=1, TYPE_CHAM='NOEU_DEPL_R',
                       _F(CHAM_GD=U,COEF_R=1.),),)
 TEST_RESU(CHAM_NO=_F(CHAM_GD=U, NOM_CMP='DX', GROUP_NO='B', VALE=+8.5714281834519E+00, REFERENCE='NON_REGRESSION' )
                   );
+
+#--------------------------
+
+# Validation de TOLE_APPA en FORMULATION 'DISCRETE' et 'CONTINUE'
+
+CONT_TA = DEFI_CONTACT(MODELE      = MO,
+                   FORMULATION  = 'DISCRETE',
+                   REAC_GEOM    = 'AUTOMATIQUE',
+                   ZONE=(
+                        _F(
+                             GROUP_MA_MAIT='HE',
+                             GROUP_MA_ESCL='AB',
+                             TOLE_APPA=+1.0,
+                         ),                           
+                                                                                                                             
+                       ),  
+                  ) 
+
+CONTC_TA = DEFI_CONTACT(MODELE      = MO,
+                   FORMULATION  = 'CONTINUE',
+                   REAC_GEOM    = 'AUTOMATIQUE',
+                   ZONE=(
+                        _F(
+                             GROUP_MA_MAIT='HE',
+                             GROUP_MA_ESCL='AB',
+                             TOLE_APPA=+1.0,
+                         ),                           
+                                                                                                                             
+                       ),  
+                  ) 
+
+RESU_TA=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CAR_DIS,
+                   EXCIT=(_F(CHARGE=BLOCAGE,),
+                          _F(CHARGE=DEPL,
+                             FONC_MULT=F_FORC,),
+                          _F(CHARGE=BLOC_DIS,),
+                          ),
+                   CONTACT  = CONT_TA,       
+                   COMP_INCR=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=L_TPS,),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-6,),
+                   SOLVEUR=_F(SYME='OUI',),
+                   );
+
+RESUC_TA=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CAR_DIS,
+                   EXCIT=(_F(CHARGE=BLOCAGE,),
+                          _F(CHARGE=DEPL,
+                             FONC_MULT=F_FORC,),
+                          _F(CHARGE=BLOC_DIS,),
+                          ),
+                   CONTACT  = CONTC_TA,       
+                   COMP_INCR=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=L_TPS,),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-6,),
+                   NEWTON=_F(REAC_ITER=1),
+                   SOLVEUR=_F(SYME='OUI',),
+                   );
+
+
+# TESTS ANALTIQUES
+# ----------------
+
+TEST_RESU(RESU=_F(RESULTAT=RESU_TA,
+                  INST=20.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='A',
+                  VALE=-20.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',)
+                  );
+
+TEST_RESU(RESU=_F(RESULTAT=RESU_TA,
+                  INST=20.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE=-20.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUC_TA,
+                  INST=20.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='A',
+                  VALE=-20.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',)
+                  );
+
+TEST_RESU(RESU=_F(RESULTAT=RESUC_TA,
+                  INST=20.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='B',
+                  VALE=-20.0,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE',),);
 
 FIN();

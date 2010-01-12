@@ -7,7 +7,7 @@
      &                  FINPAS,MAXREL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C
       INTEGER      FONACT(*)
       LOGICAL      ITEMAX,CONVER,FINPAS
       LOGICAL      ERROR
-      LOGICAL      MAXREL
+      LOGICAL      MAXREL,MAXNOD
       INTEGER      ITERAT, LICCVG(*), NUMINS
       REAL*8       ETA, CONV(*), PARCRI(*), PARMET(*)
       CHARACTER*19 SDCRIT,SDDISC,MATASS,LISCHA
@@ -106,6 +106,7 @@ C               3 : RESI_GLOB_MAXI
 C               4 : ARRET
 C               5 : ITER_GLOB_ELAS
 C               6 : RESI_REFE_RELA
+C              12 : RESI_COMP_RELA
 C IN  SDDISC : SD DISCRETISATION TEMPORELLE
 C IN  SDERRO : GESTION DES ERREURS
 C IN  SDTIME : GESTION DES TIMERS ET DES STATS
@@ -152,7 +153,7 @@ C
       INTEGER      JCRI,JCRR
       CHARACTER*24 IMPCNA,CRITER
       INTEGER      JIMPCA
-      REAL*8       VRELA,VMAXI,VREFE,VRESI,VCHAR,VINIT
+      REAL*8       VRELA,VMAXI,VREFE,VRESI,VCHAR,VINIT,VNODA
       CHARACTER*24 CLREAC
       INTEGER      JCLREA
       LOGICAL      CTCFIX
@@ -161,8 +162,9 @@ C
       LOGICAL      ECHLDC,ECHEQU,ECHCON(2),ECHPIL  
       LOGICAL      LBID   
       LOGICAL      LDIRI,ISDIRI,LRESI,LELTC,LCTCG
-      INTEGER      IRELA,IMAXI,IREFE
+      INTEGER      IRELA,IMAXI,IREFE,INNODA
       INTEGER      IFM,NIV
+      CHARACTER*8   NODDLM
 C
 C ----------------------------------------------------------------------
 C
@@ -191,6 +193,7 @@ C
       VMAXI  = R8VIDE()
       VREFE  = R8VIDE()   
       IRELA  = 0
+      INNODA = 0
       IMAXI  = 0
       IREFE  = 0
       K16BLA = ' '
@@ -290,7 +293,7 @@ C
      &            SDIMPR,MATASS,NUMINS,CONV  ,RESIGR,
      &            ETA   ,COMREF,VALINC,VEASSE,MEASSE,
      &            VRELA ,VMAXI ,VCHAR ,VRESI ,VREFE ,
-     &            VINIT )
+     &            VINIT,VNODA,NODDLM,INNODA )
       LRESI  = .TRUE.
 C
 C --- AFFICHAGE DE L'INSTANT
@@ -341,8 +344,8 @@ C
 C --- VERIFICATION DES CRITERES D'ARRET SUR RESIDUS
 C       
       CALL NMCORE(SDIMPR,SDCRIT,NUMINS,PARCRI,VRESI ,
-     &            VRELA ,VMAXI ,VCHAR ,VREFE ,CVNEWT,
-     &            MAXREL)
+     &            VRELA ,VMAXI ,VCHAR ,VREFE ,VNODA,CVNEWT,
+     &            MAXREL,MAXNOD)
 C
 C --- MARQUE DE CONVERGENCE DE NEWTON
 C
@@ -517,7 +520,7 @@ C
           CALL IMPSDM(SDIMPR,'ITER_NEWT','X')
           IF (.NOT.LEXPL) THEN
             CALL NMIMRE(NUMEDD,SDIMPR,IRELA ,IMAXI ,IREFE ,
-     &                  VRELA ,VMAXI ,VREFE )  
+     &                  VRELA ,VMAXI ,VREFE,VNODA,NODDLM,INNODA )  
             CALL NMCVGI('CVG_NO')
           ENDIF  
         ENDIF

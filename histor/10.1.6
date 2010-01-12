@@ -1,0 +1,1086 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 12/01/2010 - 16:24:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014014 DU 2009-10-09 14:54:27
+TYPE aide utilisation concernant Code_Aster (VERSION 10.2)
+TITRE
+   Temps de calcul modal anormalement xc3xa9levxc3xa9 pour un modxc3xa8le relativement petit
+FONCTIONNALITE
+   Problème
+   =========
+     Problème modal généralisé (GEP) symétrique réel qui est très couteux aussi 
+   bien en GEP classique qu'en sous-structuration.
+   
+   Quelques éléments de diagnostics
+   =================================
+     Calcul avec METHODE='SORENSEN'
+     GEP de 450 000 ddls dont on cherche 400 modes --> 
+                 cas 1: MACRO_MODE_MECA sur 3 bandes: 18302 s
+     GEP issu du même pb condensé (sous-structuration dynamique) 
+         6395 ddls dont seuls 323 sont actifs (!)  -->
+                 cas 2: MACRO_MODE_MEXA sur 3 bandes: 32307 s
+                 cas 3: MODE_ITER_SIMULT basique    : 69107  s
+   
+   Ces temps trop élévés pour faire facilement des études paramétriques peuvent
+   s'expliquer par des caractéristiques particulières de cette étude:
+        - Grand nbre de Lagranges (seul 5% des ddls sont libres sur le pb condensé)
+        - Grand nbre de fréquences souhaitées (pour le pb sous-structuré traité de
+          manière basique, le cas 3): on cherche 292 fréquences pour 323 actives.
+          La méthode ne pas pouvoir se projeter sur un espace de taille idéale
+          (2*292) mais va devoir se limiter à 323. D'où un nbre itérations de redé
+          marrage (7) très coûteuses. La solution est de saucissonner via MACRO
+          MODE_MECA tel que préconisé ds la doc U.
+         ==> on peut rappeler plus clairement ce msg ds la doc U/R , 
+          voir le rappeler sous forme de UTMESS_I (fiche EL/ED a émettre).
+      - La petite taille du pb condensé ne permet pas d'utiliser à plein les noyaux
+        LAPACK/BLAS de ces méthodes. Elles sont plutôt conçues pour des grands pbs
+        creux.
+   
+   Perspectives
+   =============
+   En 2010, via le socle de collaboration EDF/INRIA, on lance un partenariat avec
+   l'équipe INRIA de Rennes sur les solveurs modaux d'Aster: pour les tester, les
+   benchmarcker et les faire évoluer. Je glisserais ce cas-test ds la corbeille des
+   cas-tests qui nous préocuppent.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   AOM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR colombo      COLOMBO Daniele        DATE 11/01/2010 - 16:46:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014310 DU 2009-12-16 13:18:38
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : enrichissement SD fiss_xfem
+FONCTIONNALITE
+   La structure de données fiss_xfem a été changée avec la restitution de la fiche 13983.
+   Trois objets ont été ajoutés (NEW10.1.2):
+   
+   * .RAYON: rayon du tore utilisé pour la localisation du domaine de calcul
+   * .TORE: liste des noeuds contenus dans le domaine de calcul (tore ou maillage)
+   * .GRIAUX: nom du modèle utilisé pour la grille auxiliaire
+   
+   Un autre objet a été ajouté avec la restitution de la fiche 11645 (NEW9.2.8):
+   
+   * .BASEFOND: coordonnées du vecteur normal au plan de la fissure et de la direction de
+   propagation
+   pour chaque point du fond
+   
+   Ces objets ne sont pas documentés dans la doc D4.10.02. On propose donc de mettre à jour
+   la documentation et de changer le nom des trois objets ajoutés en NEW10.1.2 pour le rendre
+   homogène aux noms utilisés pour les autres objets déjà dans la structure fiss_xfem:
+   
+   * .RAYON  -> .PRO.RAYON_TORE
+   * .TORE   -> .PRO.NOEUD_TORE
+   * .GRIAUX -> .PRO.MOD_GRILLE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.10.02
+VALIDATION
+   tous les cas test X-FEM PROPA_FISS existants
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014313 DU 2009-12-16 14:51:38
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : amxc3xa9lioration de la performance et robustesse de PROPA_FISS
+FONCTIONNALITE
+   Dans le cadre des méthodes upwind et simplexe de l'opérateur PROPA_FISS, on envisage une
+   amélioration de la performance et robustesse de la phase de mise à jour des level sets.
+   
+   
+   PROBLEME
+   --------
+   
+   Au présent, la performance de toutes quatre étapes d'intégration des équations d'évolution
+   des level sets a été améliorée fortement avec les développements qui ont porté à la
+   localisation du domaine d'intégration pour les méthodes upwind et simplexe (fiche 13983).
+   
+   La réduction du temps de calcul obtenue est liée à la fois à la réduction du nombre des
+   noeuds utilisés et à la réduction de la valeur maximale des composantes de la vitesse de
+   propagation, qui permet d'avoir une valeur de condition CFL plus grande et de réduire de
+   conséquence le nombre d'itérations du schéma d'intégration. Toutefois, même si fortement
+   réduit, le nombre d'itérations est toujours important dans le cas de propagation en mode
+   mixte pour grands angles de bifurcation de la fissure. 
+   
+   Il faut remarquer que même en mode I la valeur de la condition CFL peut rendre nécessaire
+   plusieurs itérations du schéma d'intégration.
+   
+   Pour ce qui concerne la robustesse des deux méthodes, la localisation du domaine de
+   localisation a permis de rendre les méthodes plus robustes. Toutefois les essais faits sur
+   le code ont montré que dans des cas de propagation 3D hors plan avec des grandes angles de
+   bifurcation de la fissure, la solution obtenue en termes de level sets présente des zones
+   où les valeurs calculées ne sont pas correctes. Ces zones vont s'élargir à chaque
+   propagation jusqu'à déterminer des erreurs fatales pendant l'intégration des équations.
+   
+   
+   ANALYSE DU PROBLEME
+   -------------------
+   
+   Après des vérifications, le problème de robustesse a été localisé dans la phase de mise à
+   jours des level sets. Cela signifie que ce problème n'est pas lié à une des deux méthodes
+   (upwind ou simplexe) parce que les équations différentielles de cette phase sont résolu en
+   utilisant un schéma de Runge-Kutta d'ordre 2. La cause du problème n'est pas encore
+   claire. De tout façon le même problème a été signalé, mais pas résolu, dans un article
+   publié par les chercheurs qui ont développé la méthode X-FEM+level set. Dans l'article une
+   nouvelle méthode est proposée pour l'intégration numérique des équations de mise à jour
+   des level sets. Cela signifie que l'erreur doit être cherchée au niveau des équations
+   différentielles du problème.
+   
+   
+   SOLUTION
+   --------
+   
+   On propose d'utiliser des équations algébriques explicites alternatives pour la seule
+   phase de mise à jours des level sets au lieu des équations différentielles actuellement
+   utilisées.
+   Cela permet de résoudre le problème de robustesse et au même temps le problème de
+   performance décrit ci-déssus parce que les équations sont algébriques, donc aucune
+   intégration n'est nécessaire, et ils sont explicites, donc aucune méthode numérique n'est
+   nécessaire pour les résoudre.
+   La réduction du temps de calcul de la seule phase de mise à jours des level sets est
+   proportionnelle au nombre d'itérations nécessaires pour intégrer les équations
+   différentielles qui ont été remplacées: si on avait besoin de n itérations, au présent on
+   a besoin d'une seule itération et le temps de calcul est un peu moins de 1/n fois le temps
+   qui était nécessaire avant.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.02.12
+VALIDATION
+   tous les cas test X-FEM PROPA_FISS et essais personnels
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014326 DU 2009-12-18 08:36:23
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.1.2, le cas-test sslv315a s'arrete en erreur_<F> sur Rocks
+FONCTIONNALITE
+   PROBLEME
+   --------
+   
+   Après la restitution de la fiche 13983 (NEW10.1.2), le cas test sslv315a s'arrête en
+   erreur fatale sur la Rocks. Aucun problème est détecté sur les autres machines.
+   
+   
+   ANALYSE DU PROBLEME
+   -------------------
+   
+   Le problème est généré par la réinitialisation de la level set tangente au pas de
+   propagation précédent. Après cette phase, la level set tangente présente des iso-surfaces
+   qui n'ont pas de sens physique (ficher 01_FISS1_Rocks_simplexe.png ci-joint). Cela est
+   causé par une mauvaise mise à jours des level sets calculée par la méthode simplexe et il
+   est lié à la faible robustesse de cette méthode (les level sets calculées par la méthode
+   upwind (sslv315d) sont correctes).
+   C'est intéressant à remarquer que le même problème affecte les level sets calculées sur
+   les autres machines (ficher 02_FISS1_Bull.png ci-joint)! C'est seulement la chance qui a
+   permis d'éviter la même erreur fatale sur les autres machines et pour les autres versions
+   de développement du code!
+   
+   
+   SOLUTION
+   --------
+   
+   Pour améliorer la solution calculée par la méthode simplexe, il suffit d'utiliser un
+   maillage régulier étendu à toute la plaque (03_FISS1_Rocks_maillage_fin.png ci-joint).
+   Tous les éléments finis ont la même taille, qui est presque égale à celle du plus petit
+   élément du maillage utilisé jusqu'à aujourd'hui.
+   
+   On change aussi les conseils donnés dans le message d'erreur (XFEM_61) parce que ceux qui
+   sont actuellement donnés ne permettent pas à l'utilisateur de résoudre le problème.
+   
+   L'étude du problème a permis de trouver une condition sur la valeur minimale de l'avancée
+   de la fissure. On a donc ajouté un message d'alarme FEM2_94 pour signaler la valeur
+   minimale conseillée de DA_MAX dans le cas où la condition trouvée n'est pas vérifiée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.04.315, R7.02.12
+VALIDATION
+   le cas test lui-mxc3xaame
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 12/01/2010 - 09:42:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014382 DU 2010-01-06 12:04:54
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Test ssnv128j cassxc3xa9 en 10.1.4 sur Rocks, Calibre4 et Calibre5
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Le cas-test SSNV128J est cassé en 10.1.4 sur Rocks, Calibre4 et Calibre5
+   
+   Correction
+   ==========
+   
+   Au changement de syntaxe, on a par erreur renseigné le paramètre COEF_MATR_FROT=0.4 pour
+   la méthode pénalisée utilisée dans ce test (la valeur par défaut est 0.0).
+   En supprimant cette déclaration, le cas-test fonctionne à nouveau sur toutes les plateformes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv128j
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014375 DU 2010-01-06 09:29:14
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   TOLE_APPA en mxc3xa9thode continue ne fonctionne pas
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Si on utilise le mot-clé TOLE_APPA=d0 en méthode 'CONTINUE' pour exclure de l'appariement
+   des noeuds esclaves dont le noeud maître le plus proche est à une distance supérieure à
+   d0, alors on plante : 
+   !----------------------------------------------------!
+   !.<F>.<JEVEUX_01>....................................!
+   !....................................................!
+   !....................................................!
+   !...REPERTOIRE.DE.....53.NOMS.NE.CONTIENT.PAS.******.!
+   !....................................................!
+   !....................................................!
+   !....................................................!
+   !.Cette.erreur.est.fatale..Le.code.s'arrete..........!
+   !----------------------------------------------------!
+   
+   Correction
+   ==========
+   
+   Actuellement si un tel noeud est exclus, alors on saute l'appariement et donc il n'existe
+   pas de maille maître pour créer l'élément de contact entre surface maître et esclave.
+   On plante donc dans la recherche du nom de la maille maître.
+   
+   En méthode 'CONTINUE', il faut toujours réaliser l'appariement et créer l'élément de
+   contact, c'est seulement ensuite dans le calcul des termes élémentaires que l'on viendra
+   annuler les termes ad-hoc dans la matrice et le second membre pour "simuler" l'éviction du
+   noeud (faute de quoi on aurait une matrice singulière).
+   
+   On modifie donc la routine MMREND pour renvoyer un logique supplémentaire qui dit le point
+   de contact courant est exclus par TOLE_APPA. Si c'est le cas on fait quand même
+   l'appariement et on attache au tableau TABFIN l'information sur le point de contact.
+   Tout se passe alors comme si le noeud était dans SANS_GROUP_NO.
+   
+   Validation
+   ==========
+   
+   On rajoute dans zzzz237a 2 calculs : 
+   * un premier avec TOLE_APPA=1.0 en formulation discrète 'CONTRAINTE'
+   * un second avec TOLE_APPA=1.0 en formulation 'CONTINUE'
+   
+   Sur ce test simplissime (2 carrés), cela revient à exclure tous les noeuds du contact. On
+   vérifie alors qu'on a bien interpénétration d'une valeur égale au déplacement imposé.
+   
+   Impact
+   ======
+   
+   F : mmrend.f, mappar.f, rechmn.f, rechno.f
+   CT : zzzz237a
+   
+   À faire en V9 aussi.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz231a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014327 DU 2009-12-18 13:39:56
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   SDNV104 : patin frottant
+FONCTIONNALITE
+   Précision documentaire
+   ======================
+   
+   On a rédigé à nouveau la solution analytique du cas-test SDNV104. Cette dernière n'était
+   pas claire et les conditions d'obtention pas précisées.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V5.03.104
+VALIDATION
+   s/o
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014224 DU 2009-11-24 13:05:47
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Logique PREMIE faux lorsque redxc3xa9coupage au premier instant
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   Si pour un calcul en méthode continue, le 1er pas de temps échoue et que l'on redécoupe,
+   alors si on a utilisé des mot-clés tels que CONTACT_INIT, SEUIL_INIT ou COMPLIANCE alors
+   le redécoupage risque de ne jamais aboutir ou bien ne pas correspondre à ce que l'on
+   attend (pas de contact initial par exemple).
+   
+   Correction
+   ==========
+   
+   Ce problème provient du fait que les initialisations pour CONTACT_INIT, SEUIL_INIT et
+   COMPLIANCE sont faites sur la base d'un logique que l'on appelle PREMIE et que l'on
+   récupère à l'aide de l'utilitaire DIBCLE.
+   Or PREMIE repère tel que dit dans DIBCLE "le vrai premier instant", après redécoupage, il
+   n'est donc plus actif.
+   
+   Afin de retrouver un comportement correct, il faut décider sur la base du numéro d'instant
+   qui vaut 1 au premier instant même après redécoupage du premier instant.
+   
+   Impact : nmible.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014209 DU 2009-11-20 09:36:06
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   U4.44.11 - Confusion adhxc3xa9rent/glissant dans description de VALE_CONT
+FONCTIONNALITE
+   Johannes Ackva (par le biais du forum du site web Aster) fait remarquer qu'il y a une
+   erreur dans la documentation de AFFE_CHAR_MECA/CONTACT sur la description de VALE_CONT.
+   
+   La variable CONT qui décrit le statut de contact vaut :
+   
+   0 pour pas de contact
+   1 pour contact adhérent (et non glissant comme décrit dans la doc)
+   2 pour contact glissant (et non adhérent comme décrit dans la doc)
+   
+   Ces remarques ont été prises en compte dans l'appli doc. On a aussi précisé que pour la
+   méthode CONTINUE le statut de CONT vaut soit 0 ou 1 (sans tenir compte de l'état de
+   frottement) en attendant l'évolution 12401.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.11
+VALIDATION
+   doc
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014143 DU 2009-11-05 17:34:46
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Contact sphere/plan
+FONCTIONNALITE
+   AOM
+   ===
+   
+   Dans cette AOM, on s'intéresse à du contact de Hertz modélisé très près de la zone de
+   contact et ce pour un faible écrasement.
+   On réalise le calcul en linéaire comme en quadratique avec la méthode 'CONTINUE'.
+   On observe pour le cas quadratique une oscillation sur l'état de contact empêchant
+   d'obtenir rapidement la convergence.
+   Par ailleurs, lorsque l'on touche les paramètres de la méthode, on obtient des résultats faux.
+   
+   Analyse
+   =======
+   
+   Tout d'abord les résultats aberrants obtenus en changeant les paramètres de la méthode
+   (ici ALGO_CONT='STABILISE') seront étudiés une fois les routines de calcul élémentaire
+   réécrites. Pour l'instant on conseille de conserver les paramètres par défaut.
+   
+   Sur les mauvais résultats obtenus en quadratique, je n'ai pas trouvé de réglages
+   permettant de passer outre. Je commence à croire que l'implémentation actuelle de la
+   méthode n'est pas adaptée au quadratique.
+   J'observe qu'en méthode 'PENALISATION' (avec une raideur égale à 10 fois le module de
+   d'Young) ou bien en méthode 'GCP' (avec une tolérance à 10-3 fois la hauteur de l'aspérité
+   et RECH_LINEAIRE='NON_ADMISSIBLE') on obtient de bons résultats. Ce sont avec la méthode
+   'CONTINUE' les 2 seules méthodes permettant de résoudre des problèmes de grande taille.
+   
+   Conclusion
+   ==========
+   
+   Je garde sous la main le calcul en quadratique pour nous permettre de retravailler sur le
+   sujet en 2010 maintenant que la thèse contact est lancée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   calcul joint
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR peyrard      PEYRARD Christophe     DATE 11/01/2010 - 13:57:20
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014226 DU 2009-11-24 13:57:46
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Temps initial dans DEFI_FONC_ELEC
+FONCTIONNALITE
+   la solution au bug constaté par Themis consiste à reprogrammer plus proprement
+   DEFI_FONC_ELEC en python. Le source d'op0064.f était illisible et, manifestement, omettait
+   de retrancher un temps initial dans l'évaluation des exponentielles de la fonction.
+   
+   Ainsi, DEFI_FONC_ELEC est maintenant une macro python. Je propose de livrer aussi en
+   version 9, puisque c'est l'unique moyen qu'on a trouver de corriger le bug. A cette
+   occasion, Christophe Peyrard a revu quelques points dans la doc U4.MK.10.
+   
+   Développement validé, outre l'étude Themis en objet, par le passage des tests employant
+   cette commande : sdll102a sdll102b sdnl101a yyyy103a yyyy103c yyyy103d.
+   De plus, je modifie sdll102b afin de décaler toutes les listes d'instants de 1 s. C'est en
+   effet la non nullité de l'instant initial qui avait déclenché la détection du bug.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 2.0.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.MK.10
+VALIDATION
+   sdll102a sdll102b sdnl101a yyyy103a yyyy103c yyyy103
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR granet       GRANET Sylvie          DATE 12/01/2010 - 09:09:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013093 DU 2009-01-27 16:17:51
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Critere de convergence en THM
+FONCTIONNALITE
+   Création du nouveau critère de convergence RESI_COMP_RELA
+   Ce critère consiste à normer le résidu par la force interne obtenue 
+   au temps -, composant par composant. Ce critère sera donc piloté par 
+   les zones à fort gradient. Il est adapté aux problèmes évolutifs 
+   (THM) comportant de forts contrastes. (E nTHM, normer de cette 
+   manière revient finalement à normer par le flux mécanisme par 
+   mmécanisme).
+   
+   On crée pour cela la routine rescmp (appelée par nmresi) qui 
+   récupère les forces internes et les sépare par composant, afin de 
+   pouvoir normaliser le résidu.
+   
+   On interdit ce critère  pour la dynamique.
+   2 cas tests sont modifiés : wtnp117a et wtnp102b
+   
+   On rajoute à cela le cas test wtnp117b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.51.03 R5.03.01
+VALIDATION
+   passage cas testwtnp102b  xe2x80x93 wtnp117a
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013173 DU 2009-03-03 14:29:29
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Calcul des forces nodales dans un calcul HM
+FONCTIONNALITE
+   La solution ci-dessous semblant satisfaisante, cette fiche peut être 
+   soldée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage d'un cas test en PJ
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 12/01/2010 - 09:09:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014341 DU 2009-12-28 13:21:05
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.3, le cas-test ssnx101a ne converge plus
+FONCTIONNALITE
+   Bug dans la routine NMCERE: on ne prenait pas le dépalcment actualisé par le pilotage pour
+   le calcul des réactions d'appuis.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnx101a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014342 DU 2009-12-28 13:21:31
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cas-test cassxc3xa9s en 10.1.3 suite aux xc3xa9volutions dans OP0070 ssnv173g sdns106e sdnv107a ssnp140a ssnp140b ssnp140c ssnp140d ssnl126b
+FONCTIONNALITE
+   ssnp104a,b,c,d: méthode IMPL-EX. On a oublié de récupérer le vecteur des contraintes
+   extrapolées dans NMPRTA.F
+   
+   sdnv107a: Les noms des vecteurs utilisés en dynamique nécessitaient 20 caractères pour se
+   différencier alors que NDYNKK retourne un nom de longueur 19. Modifications des noms dans
+   NDYNKK.F
+   
+   sdns106e: on calcule désormais la matrice de rigidité constante pour l'amortissement dans
+   NMINMC.F Cette routine utilise la routine NMXMA2 pour calculer/assmebler les matrices. Or
+   cette routine ne peut aps marcher pour une matrice de type rigidité (qui doit appeler une
+   routine dédiée NMRIGI, un ASSERT bloque). On résorbe NMXMA2 au profit de la seule routine
+   NMXMAT. Nécessité d'ajouter des paramètres dans NMINMC, NMINIT, et OP0070. 
+   
+   ssnl126b: mauvaise recopie de la glute qui consiste à utiliser les champs
+   depl/vite/acce/contraintes/variables internes en T+ et non en T-, sauf pour les variables
+   de commande, lors de l'appel du calcul des modes critiques. Impact dans NMFLMA.F et
+   création d'une nouvelle routine utilitaire qui recopie les noms de deux variables chapeaux
+   (NMCHCP.F).
+   
+   ssnv173g: Le AFFE_CHAR_MECA(LIAISON='XFEM') ne produit aucune liaison. La SD est donc vide.
+   Lors de la lecture des charges (EXCIT) dans OP0070/NMDOCH, ce cas n'était pas prévu et
+   l'on stockait une charge vide (de nom ' '). Une bizarrerie dans MEDIME explique le
+   problème: cette routine n'ajoute aucune charge si la première est de nom vide (????). On
+   en sait pas pourquoi, c'est comme ça depuis 1992. Du coup, on a beau mettre 687 EXCIT, si
+   la première ne produit rien (comme ça peut arriver avec XFEM par exemple), on ignore les
+   686 dernières conditions cinématiques -> matrice singulière.
+   On corrige MEDIME pour enlever ce test sur la charge vide et on modifie aussi la lecture
+   EXCIT dans NMDOCH pour mettre les charges sginificatives (non blanches) au début de la SD.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp104a,ssnp104b,ssnp104c,ssnp104d,sdnv107a,sdns106e,ssnl126b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014304 DU 2009-12-15 09:40:09
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cas-tests ssna111+ssnv187
+FONCTIONNALITE
+   ssna111: En faisant la doc V du cas-test SSNA111A, je me suis aperçu que des valeurs
+   tagguées en
+   "non-regression" devraient être "analytiques" puisqu'il s'agit du déplacement du poinçon,
+   supposé rigide.
+   
+   ssnv187abc: Modification des valeurs analytiques pour SIGNORINI
+   
+   A faire en v9
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssna111,ssnv187
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014346 DU 2009-12-29 16:25:50
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   zzzz218a et zzzz218b (MACR_ECREVISSE ) cassxc3xa9 en 10.1.3
+FONCTIONNALITE
+   La macro-commande macr_ecrevisse est cassée en 10.1.3 à cause de DEFI_CONTACT.
+   Le contact n'étant plus une charge classique, il est nécessaire de faire une (petite)
+   évolution à la fois dans le catalogue et dans la macro Python pour le prendre en compte.
+   
+   Evolution de la syntaxe de MACR_ECREVISSE: on ajoute le mot-clef CONTACT dans l'appel à
+   STAT_NON_LINE de la macro.
+   
+   Penser à impacter la doc U pour le nouveau mot-clef "CONTACT" dans MACR_ECREVISSE.
+   Impact doc. V: la doc. V ne dit pas que le contact influence le résultat car la fissure se
+   referme partiellement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v1.01.218,U7.03.41
+VALIDATION
+   zzzz218a/b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014348 DU 2009-12-29 16:34:04
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cas-tests cassxc3xa9s convergence forcxc3xa9e en 10.1.3 ssnp503f ssnp503l ssnp503p ssnp504f ssnv128p ssnv128q ssnv128r ssnv128u ssnv209j ssnv503h ssnv504i ssnv505a ssnv505h
+FONCTIONNALITE
+   ssnv505a: une coquille dans CACOCO faisait qu'on ne prenait pas en compte l'épaisseur de
+   la coque
+   LDCOQ  = MMINFL(DEFICO,'DIST_COQUE',IZONE )
+   et non
+   LDCOQ  = MMINFL(DEFICO,'DIST_POUTRE',IZONE )
+   
+   ssnv209j: pbm. avec la reactualisation géométrique Ce test était en convergence forcée sur
+   la géométrie- Il faut 4 réac. géom. pour retrouver la valeur de tests et non 3.
+   REAC_GEOM='CONTROLE', NB_ITER_GEOM=4. 
+   
+   ssnp503f: bug dans te0366. Pour le calcul de la matrice du cas sans contact,
+   l'encapsulation par 
+   la condition sur le fait que l'arete soit vitale a été malencontreusment otée.
+   
+   ssnp503p: bug dans xmelet - voir fiche issue14361
+   
+   ssnp503n: le test devrait etre en grands glissements. On corrige REAC_GEOM'SANS' en
+   REAC_GEOM='AUTOMATIQUE' - voir fiche issue14361
+   
+   ssnv503h: NOOK du au passage de convergence forcée sur les seuils de frottement en
+   convergence controlee. Le résultat analytique final ne bouge pas. Par contre, les tests de
+   non-régression a des instants bougent logiquement du fait du chemin de résolution
+   différent. On change les valeurs de non-regression.
+   
+   ssnv504i: très leger NOOK sur les valeurs de non-régression à cause du frottement. Le
+   nombre d'itérations de frottement est fixe et controlée d'un pas de temps à l'autre alors
+   que le test était autrefois en convergence "forcée" (le nombre de boucle de frottement
+   était pas forcément identique d'un pas à l'autre).
+   
+   ssnv505h: problème de convergence à cause de la convergence forcée sur les seuils de
+   frottement. En rétablissant les bons paramètres des boucles de convergence. Des tests de
+   non-régression bougent un peu. On corrige.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp503f ssnp503l ssnp503p ssnp504f ssnv128p ssnv128q ssnv128r ssnv128u ssnv209j ssnv503h ssnv504i ssnv505a ssnv505h
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014361 DU 2010-01-04 16:59:46
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   correction xmelet pour l'element TIP
+FONCTIONNALITE
+   Corrige ssnp503p et ssnp503n
+   
+   Dans la version 10.1.4 du fichier xmelet.f, la suppression d'un goto 
+   pour le cas de l'element TIP a entrainé des erreurs pour les cas tests 
+   avec pointe GG (ssnp503n et ssnp503p).
+   Le cas test ssnp503n  devrait normalement etre en GG. Il faut donc lui 
+   ajouter le mot clé REAC_GEOM = 'AUTOMATIQUE'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp503p/n
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR fournier     FOURNIER Isabelle      DATE 12/01/2010 - 12:17:00
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012723 DU 2008-10-24 15:07:55
+TYPE evolution concernant Salome (VERSION )
+TMA : DeltaCad
+TITRE
+   post-traitement : visualisation particulixc3xa8re des contraintes sur faces extxc3xa9rieures
+FONCTIONNALITE
+   1- Objectifs
+   ============
+   
+   Les objectifs de cette fiche sont de :
+   
+   - Résorber l'option ARCO_ELNO_SIGM
+   - Créer une nouvelle option PROJ_ELEM_SIGM qui calcule 
+   quatres champs de contraintes par élément sur les 
+   parements (surfaces) amont et aval d'un ouvrage 
+   hydraulique alors que la structure est modélisée en 
+   volumique : 
+      - Contraintes normales et tangentes aux faces des 
+   éléments, calculées aux centres des faces.
+         => PROJ_ELEM_SIG_N  : contrainte normale,
+         => PROJ_ELEM_SIG_T  : contrainte tangentielle 
+      - Rosettes des contraintes : valeurs principales des 
+   contraintes projetées sur le plan tangent à la face 
+   d'éléments, calculées aux centres des faces.
+         => PROJ_ELEM_SIG_T1 : première valeur principale des 
+   contraintes projetées dans le plan tangent de l'élément
+         => PROJ_ELEM_SIG_T2 : deuxième valeur principale des 
+   contraintes projetées dans le plan tangent de l'élément
+   
+   
+   2 - Résorber l'option ARCO_ELNO_SIGM
+   ====================================
+   Suppression
+   - de l'option des catalogues calc_elem.capy, calc_no.capy
+   - du mode local EARCON et de l'option du catalogue 
+   d'élément gener_me3d_2.cata 
+   - de l'option arco_elno_sigm.cata
+   - des grandeurs simples SIEF_C, SIEF_R, les composantes 
+   SI_ARC  SI_CONS  SI_NORM
+   
+   Modification des routines intervenant dans le calcul de 
+   l'option mearcc, mecalc, mecalm, mecalm mechc2, moco99, 
+   rscrsd
+   
+   
+   2 - Développement PROJ_ELEM_SIGM 
+   =================================
+   Les quatres champs de contraintes calculés, ainsi que 
+   leurs composantes sont les suivants:
+    => PROJ_ELEM_SIG_N : contrainte normale,
+        - SIG_NX, SIG_NY, SIG_NZ : composantes suivant X,Y,Z dans le repère 
+   global
+    => PROJ_ELEM_SIG_T  :contrainte tangentielle
+        - SIG_TX, sIG_TY, SIG_TZ : composante suivant X,Y,Z dans le repère 
+   global
+    => PROJ_ELEM_SIG_T1:première valeur principale des 
+   contraintes projetées dans le plan tangent de l'élément
+        - SIG_T1X, sIG_T1Y, SIG_T1Z : composante suivant X,Y,Z dans le repère 
+   global, 
+    => PROJ_ELEM_SIG_T2:deuxième valeur principale des 
+   contraintes projetées dans le plan tangent de l'élément
+        - SIG_T2X, sIG_T2Y, SIG_T2Z : composantes suivant X,Y,Z dans le repère 
+   global.
+   
+   
+   Ces champs sont évalués à partir d'un champ de contraintes 
+   aux noeuds par élément (option SIGM_ELNO_DEPL) dans le
+   cas-linéaire ou option SIEF_ELNO_ELGA dans le cas non-
+   linéaire) calculé sur les mailles volumiques de la facon
+   suivante:
+   
+    - Calcul des champs de contraintes aux noeuds des faces 
+   des éléments 3D.
+    - Moyennation de chacune des composantes du tenseur des 
+   contraintes au centre des faces d'éléments
+    - Projection du tenseur des contraintes suivant un 
+   vecteur normale (SIG_N) à la face et suivant un vecteur le 
+   plan tangent à la face (SIG_T).
+    - Diagonalisation du tenseur des contraintes dans le plan 
+   tangent (SIG_T1 et SIG_T2)
+         
+   Développement
+            
+   te0411:
+   -> Tenseur des contraintes par face d'élément: tenseur 
+   obtenu par moyenne des composantes,
+   -> Normale à l'élément obtenu par lisage des normales aux 
+   noeuds de l'élément
+   -> Projection du tenseur des contraintes suivant la 
+   normale et un vecteur du plantangent (SIG_N et SIG_T)
+   -> Diagonalisation du tenseur des contraintes dans le plan 
+   tangent (recherche de valeurs propres (SIG_T1 et SIG_T2)et 
+   de vecteurs propres T1 et T2) 
+   -> Ecriture des 4 champs (PROJ_ELEM_SIG_N,
+   PROJ_ELEM_SIG_T,PROJ_ELEM_SIG_T1,PROJ_ELEM_SIG_T2)      
+         
+   a) routines fortran: modification des routines suivantes : 
+   mearcc, mecalc, mecalm, mecalm,mechc2, moco99, rscrsd
+   
+   b) catalogues 
+   -> calc_elem.cata: ajout de l'option PROJ_ELEM_SIGM 
+   -> grandeur_simple__.cata: grandeurs SIEF_R et SIEF_C 
+   ajout des composantes :
+   - SIG_NX  SIG_NY  SIG_NZ  (pour le champ PROJ_ELEM_SIG_N)
+   - SIG_TX  SIG_TY  SIG_TZ  (pour le champ 
+   PROJ_ELEM_SIG_T)   
+   - SIG_T1X SIG_T1Y SIG_T1Z (pour le champ PROJ_ELEM_SIG_T1)
+   - SIG_T2X SIG_T2Y SIG_T2Z (pour le champ PROJ_ELEM_SIG_T2)
+   -> proj_elem_sigm.cata : ajout nouveau catalogue: création 
+   de 4 champs en sortie
+         OPTION__
+            IN__
+                 PSIG3D   SIEF_R
+                 PCAMASS  CAMASS
+                 PGEOMER  GEOM_R
+            OUT__
+                 PPJSIGN SIEF_R   ELEM__ (pour le champ 
+   PROJ_ELEM_SIG_N)
+                 PPJSIGT SIEF_R   ELEM__ (pour le champ 
+   PROJ_ELEM_SIG_T)
+                 PPJSIT1 SIEF_R   ELEM__ (pour le champ 
+   PROJ_ELEM_SIG_T1)
+                 PPJSIT2 SIEF_R   ELEM__ (pour le champ 
+   PROJ_ELEM_SIG_T2)
+   -> gener_me3d_2.cata: ajout
+      - des 4 modes locaux ELEM__ :
+            EPJSIGN, EPJSIGT EPJSIT1 EPJSIT2
+      - de l'option PROJ_ELEM_SIGM
+                 
+   
+   3- VALIDATION 
+   =============
+   a) Code_aster
+    -> cas-test sslv04 (modélisation a,b,c,d)
+   4 nouveaux champs, vérification par rapport a une 
+   référence analytique
+   b) Salome-Meca
+   Deux types de visualisation seront réalisées à partir des 
+   cas-tests sslv04(a,b,c,d) 
+   - la superposition d'une vue du champ PROJ_ELEM_SIG_N sous 
+   forme de points de Gauss et
+   du champ PROJ_ELEM_SIG_T sous forme de vecteur centré
+   - la superposition d'une vue du champ PROJ_ELEM_SIG_T1 
+   sous forme de vecteur centré et
+   du champ PROJ_ELEM_SIG_T2 sous forme de vecteur centré
+   
+   
+   4 - Documentation
+   =================
+   a- Utilisation
+      - mise à jour CALC_ELEM [U4.81.01]
+   b- Validation
+      - mise à jour de sslv04 : doc V3.04.004
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.01 V3.04.004
+VALIDATION
+   sslv04
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nistor       NISTOR Ionel           DATE 11/01/2010 - 14:43:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014354 DU 2010-01-04 07:48:24
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.4, le cas-test sdls121c est NOOK sur Bull
+FONCTIONNALITE
+   Resolu par la fiche 14358.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdls121c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014358 DU 2010-01-04 12:51:14
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Possibilitxc3xa9 de choisir "la graine" du tirage au sort pour l'algo evolutionnaire dans MACR_RECAL
+FONCTIONNALITE
+   Contexte:
+   -----------------------------------
+   Avec l'introduction d'un algorithme évolutionnaire pour faire du recalage, on a introduit du 
+   tirage au sort dans les sources de la macro-commande MACR_RECAL. On obtient donc des 
+   variations importantes sur les résultats du cas-test qui valide cette fonctionnalité 
+   (sdls121c), variations données par la machine, l'heure de lancement etc. 
+   
+   Evolution proposée
+   ------------------------------------
+   Pour résoudre ce problème et donc assurer des résultats stables pour ce cas-test il a été 
+   proposé d'ajouter la possibilité de fixer la graine qui initialise le générateur des nombres 
+   aléatoires. Cette options est à utiliser seulement pour les cas-tests où on souhaite la 
+   repetitivité de la solution et non pas pour les études où on a l'intérêt d'avoir du vrai 
+   aléatoire.
+   
+   Solution et impact dans les sources
+   -------------------------------------
+   Un nouveau mot-clé facultatif et sans valeur par défaut a été introduit dans le catalogue de 
+   la macro-commande afin de gérer la graine qui initialise le générateur des nombres 
+   aléatoires:
+   GRAINE=SIMP(statut='f',typ='I')
+   On renseigne une valeur pour ce mot-clé seulement pour les cas-test afin d'avoir une 
+   solution stable d'une exécution à l'autre.
+   Sa valeur est lue dans les sources Python dans macr_recal_ops.py et utilisée dans 
+   reca_evol.py.
+   Une nouvelle alarme a été introduite (RECAL0_43) afin d’avertir l’utilisateur sur le 
+   conséquences de l’utilisation de la graine :
+   « Attention, vous utilisez une valeur pour l'option GRAINE. 
+   Cette option n'est recommandée que pour les cas-tests car elle va forcer la graine pour le 
+   tirage au sort et va restreindre le caractère aléatoire de la solution » 
+   
+   Dans les fichiers de commande des deux cas-tests utilisant l’algo évolutionnaire 
+   (sdls121a,c) on introduit IGNORE_ALARME pour cette nouvelle alarme et on ajoute un 
+   commentaire à l’endroit de l’utilisation de la GRAINE pour expliquer ce qu’on dit déjà dans 
+   le texte de l’alarme (histoire de minimiser les conséquences d’un « copie-coller »)
+   
+   Par l’occasion, compte-tenu de la stabilité attendue des résultats, on resserre les 
+   tolérances imposées dans TEST_RESU sur les valeurs des paramètres testés : 
+   1% pour l’épaisseur
+   4% pour la masse
+   
+   Validation
+   -------------------------------------
+   sdls121a et sdls121c sur toutes les machines - on obtient la même solution
+   
+   Impact documentaire
+   -------------------------------------
+   U4.73.02
+   V2.03.121
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.73.02, V2.03.121
+VALIDATION
+   sdls121a,c
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014384 DU 2010-01-07 10:14:01
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.5, le cas-test sdls121a est NOOK sur Calibre 5.
+FONCTIONNALITE
+   Fiche resolue par l'évolution de MACR_RECAL traitée dans la fiche 14358.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdls121a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 12/01/2010 - 13:25:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008115 DU 2004-09-27 00:00:00
+TYPE evolution concernant agla (VERSION 7.3)
+TITRE
+   navigation dans les sources
+FONCTIONNALITE
+   Demande :
+   ---------
+   """
+   Il pourrait etre tres interessant de pouvoir consulter les sources via un navigateur
+   internet (un clic sur une subroutine ouvrant son source).
+   """
+   
+   
+   Solution :
+   ----------
+   http://aster-rex.der.edf.fr/arbres/index.html
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014307 DU 2009-12-16 08:04:14
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   IMPR_RESU format 'MED' U7.05.21
+FONCTIONNALITE
+   Problème :
+   ---------
+   """
+   Je crois qu'il y a une petite coquille dans la note U7.05.21.
+   Il manque a priori au §2 dans syntaxe le renseignement du MODELE or il est bien évoqué au
+   §8 et il est bien dans le catapy de impr_resu.
+   """
+   
+   
+   Solution :
+   ----------
+   Ajout de MODELE dans le paragraphe syntaxe et ajout d'un paragraphe de description du mot-clé.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.05.21
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014335 DU 2009-12-22 15:02:25
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   sdld04a en mode SDVERI
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   En mode VERI='OUI', lors de la restitution en V10.1.3, le cas-test sdld04a plante salement
+   dans le SD_VERI de RECU_FONCTION (sur bull)
+   """
+   
+   
+   Analyse :
+   ---------
+   Le plantage correspond à une erreur SDVERI qui indique que la taille du .VALE d'une
+   fonction constante (produite par RECU_FONCTION) ne fait pas la taille attendue (à savoir
+   2). Le .VALE fait une taille 3.
+   
+   Cela est dû au fait que dans sa restitution du 22/12/2009, Mickael a modifier FOCSTE
+   (routine qui est charger de créer des fonctions constantes) pour qu'elle alloue le .VALE à
+   la taille de 3 au lieu de 2.
+   
+   
+   Solution :
+   ----------
+   On remodifie FOCSTE.
+   
+   
+   Validation :
+   ------------
+   sdld04a avec SDVERI='OUI'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdld04a avec SDVERI
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+

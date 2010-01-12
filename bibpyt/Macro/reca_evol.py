@@ -1,4 +1,4 @@
-#@ MODIF reca_evol Macro  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
+#@ MODIF reca_evol Macro  DATE 11/01/2010   AUTEUR NISTOR I.NISTOR 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ import random
 
 
 
-def evolutivo(fonc,val,nb_iter,err_min,nb_parents,nb_fils,sigma,borne_inf,borne_sup):
+def evolutivo(fonc,val,nb_iter,err_min,nb_parents,nb_fils,sigma,borne_inf,borne_sup,graine):
 
 #initialisation du vecteur des parametres
     par_ini=[]
@@ -65,6 +65,7 @@ def evolutivo(fonc,val,nb_iter,err_min,nb_parents,nb_fils,sigma,borne_inf,borne_
     iter=1
     #ici on demarre la boucle de minimisation de la fonction erreur
     while in_ciclo:
+        if graine != None: random.seed(graine)
         F=fils(P[-1],nb_parents,nb_fils,sigma,borne_inf, borne_sup)
 
         #on fait la selection des meilleurs fils - p
@@ -140,7 +141,6 @@ def genere_fils(parent,sigma,borne_inf, borne_sup):
     """
     Creation d'un seul fils avec prise en compte des bornes
     """
-
     errate=True
     while errate:
         errate=False

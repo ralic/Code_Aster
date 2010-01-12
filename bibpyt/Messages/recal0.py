@@ -1,4 +1,4 @@
-#@ MODIF recal0 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal0 Messages  DATE 11/01/2010   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -173,6 +173,10 @@ Erreur :
    %(k1)s
 """),
 
+43 : _("""Attention, vous utilisez une valeur pour l'option GRAINE. 
+Cette option n'est recommandée que pour les cas-tests car elle va forcer la graine pour le tirage au sort
+et va restreindre le caractère aléatoire de la solution. 
+"""),
 
 
 83 : _("""Variable d'environnement ASTER_ROOT absente, on essaiera avec 'as_run' dans le $PATH.

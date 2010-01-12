@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/11/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,7 +96,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               #  contraintes
                            into=( "SIEF_ELNO_ELGA","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
                                   "SIPO_ELNO_DEPL","EFGE_ELNO_DEPL","EFGE_ELNO_CART","SIGM_ELNO_CART",
-                                  "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","SIGM_ELNO_TUYO","ARCO_ELNO_SIGM",
+                                  "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","SIGM_ELNO_TUYO","PROJ_ELEM_SIGM",
                               # déformations
                                  "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELGA_DEPL","EPSG_ELNO_DEPL",
                                  "EPME_ELNO_DEPL","EPME_ELGA_DEPL","DEGE_ELNO_DEPL","EPSI_ELNO_TUYO",

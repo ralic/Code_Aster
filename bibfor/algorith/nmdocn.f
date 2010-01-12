@@ -1,7 +1,7 @@
       SUBROUTINE NMDOCN(MODELE,PARCRI,PARCON)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C                8 : PLATEAU_ITER
 C                9 : PLATEAU_RELA
 C               10 : -- INUTILISE --
 C               11 : -- INUTILISE --
+C               12 : RESI_COMP_RELA
 C OUT PARCON : PARAMETRES DU CRITERE DE CONVERGENCE EN CONTRAINTE
 C                   SI PARCRI(6)=RESI_CONT_RELA != R8VIDE()
 C                1 : SIGM_REFE
@@ -77,10 +78,11 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      ITERAT,IRET,IRE1,IRE2,IRE3,PLATIT
+      INTEGER      ITERAT,IRET,IRE1,IRE2,IRE3,IRE4,PLATIT
       REAL*8       R8VIDE
       CHARACTER*8  REP
       INTEGER      IFM,NIV 
+      LOGICAL      LRETCV
 C      
 C ----------------------------------------------------------------------
 C      
@@ -99,7 +101,8 @@ C
       PARCRI(8)  = R8VIDE()
       PARCRI(9)  = R8VIDE()
       PARCRI(10) = R8VIDE()
-      PARCRI(11) = R8VIDE()        
+      PARCRI(11) = R8VIDE()
+      PARCRI(12) = R8VIDE()                
 C
 C --- RECUPERATION DES CRITERES DE CONVERGENCE GLOBAUX
 C
@@ -135,10 +138,18 @@ C
         CALL GETVR8('CONVERGENCE','DEPL_REFE',1,1,1,PARCON(9),IRET)
         IF (IRET.LE.0) PARCON(9)=R8VIDE()
       ENDIF
+     
+          
+      CALL GETVR8('CONVERGENCE','RESI_COMP_RELA',1,1,1,PARCRI(12),IRE4)
+      IF (IRE4.LE.0) PARCRI(12) = R8VIDE()
+      
+
+
 C
 C --- VALEURS PAR DEFAUT DES RESI_*
 C
-      IF (IRE1.LE.0 .AND. IRE2.LE.0 .AND. IRE3.LE.0) THEN
+      LRETCV=(IRE1.LE.0 .AND. IRE2.LE.0 .AND. IRE3.LE.0 .AND. IRE4.LE.0)
+      IF (LRETCV)THEN
         PARCRI(2) = 1.D-6
       ENDIF  
 

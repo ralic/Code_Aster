@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,10 @@ MODE_LOCAL__
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
-    EARCCON  = SIEF_R   ELNO__ IDEN__  (SI_ARC   SI_CONS  SI_NORM  )
+    EPJSIGN  = SIEF_R   ELEM__         (SIG_NX    SIG_NY    SIG_NZ   )
+    EPJSIGT  = SIEF_R   ELEM__         (SIG_TX    SIG_TY    SIG_TZ   )
+    EPJSIT1  = SIEF_R   ELEM__         (SIG_T1X   SIG_T1Y   SIG_T1Z  )
+    EPJSIT2  = SIEF_R   ELEM__         (SIG_T2X   SIG_T2Y   SIG_T2Z  )
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EGTHETA  = G        ELEM__         (GTHETA   )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
@@ -105,8 +108,6 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    ARCO_ELNO_SIGM      411   IN__   ECONTNO  PSIG3D   CCAMASS  PCAMASS  NGEOMER  PGEOMER
-                              OUT__  EARCCON  PARCCON
     CALC_G              280   IN__   DDL_MECA PDEPLAR  EFORCNO  PFR2D3D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                                      DDL_MECA PTHETAR  DDL_MECA PVITESS  DDL_MECA PACCELE
                               OUT__  EGTHETA  PGTHETA
@@ -198,6 +199,14 @@ OPTION__
                               OUT__  ZVARCPG  PVARCPR
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
                               OUT__  EDCEL_I  PDCEL_I
+    PROJ_ELEM_SIGN      411   IN__   ECONTNO  PSIG3D   NGEOMER  PGEOMER
+                              OUT__  EPJSIGN  PPJSIGN
+    PROJ_ELEM_SIGT      411   IN__   ECONTNO  PSIG3D   NGEOMER  PGEOMER
+                              OUT__  EPJSIGT  PPJSIGT
+    PROJ_ELEM_SIT1      411   IN__   ECONTNO  PSIG3D   NGEOMER  PGEOMER
+                              OUT__  EPJSIT1  PPJSIT1
+    PROJ_ELEM_SIT2      411   IN__   ECONTNO  PSIG3D   NGEOMER  PGEOMER
+                              OUT__  EPJSIT2  PPJSIT2
     RIGI_MECA_PRSU_F    425   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR
                               OUT__  MMATUUR  PMATUUR

@@ -1,7 +1,7 @@
        SUBROUTINE TE0366(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -209,12 +209,14 @@ C
      &                NDDLSE,MMAT  )
 C     
         ELSE IF (INDCO .EQ. 0) THEN
+          IF (NVIT.EQ.1) THEN
 C
 C --- CALCUL DE LA MATRICE C - CAS SANS CONTACT
 C
-          CALL XMMAA0(NDIM  ,NNC   ,NNE   ,NNES  ,HPG   ,
-     &                NFAES ,CFACE ,FFC   ,JACOBI,JPCAI ,
-     &                COEFCA,TYPMAI,NDDLSE,MMAT  )
+            CALL XMMAA0(NDIM  ,NNC   ,NNE   ,NNES  ,HPG   ,
+     &                  NFAES ,CFACE ,FFC   ,JACOBI,JPCAI ,
+     &                  COEFCA,TYPMAI,NDDLSE,MMAT  )
+          ENDIF
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF

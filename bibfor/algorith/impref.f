@@ -1,7 +1,7 @@
       SUBROUTINE IMPREF(ICOD  ,SDSUIV,TITRE ,FORMA )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C
       INTEGER      ICOD
       CHARACTER*24 SDSUIV
       INTEGER      ZTIT,ZDEF
-      PARAMETER    (ZTIT=3,ZDEF=30)
+      PARAMETER    (ZTIT=3,ZDEF=33)
       CHARACTER*16 TITRE(ZTIT)
       INTEGER      FORMA
 C
@@ -226,6 +226,22 @@ C
      &                           ' BCL. MAX. LIEU '/
       DATA FORCOL(29) /3/
 
+      DATA (TITCOL(J,30),J=1,3)/ '     RESIDU     ',
+     &                                     '     RELATIF    ',
+     &                                     ' RESI_COMP_RELA '/
+      DATA FORCOL(30) /2/
+
+      DATA (TITCOL(J,31),J=1,3)/ 'RESIDU RELA COMP ',
+     &                           '    MAXIMUM     ',
+     &                           '    AU POINT    '/
+
+      DATA FORCOL(31) /3/
+
+      DATA (TITCOL(J,32),J=1,3)/ '&&&&&&&&&&&&&&&&',
+     &'                ',
+     &'                '/
+      DATA FORCOL(32) /2/
+
 C
 C ----------------------------------------------------------------------
 C
@@ -233,10 +249,10 @@ C
       IF (ZTIT.NE.3) THEN
         CALL ASSERT(.FALSE.)
       ENDIF
-      IF (ZDEF.NE.30) THEN
+      IF (ZDEF.NE.33) THEN
        CALL ASSERT(.FALSE.)
       ENDIF
-      IF ((ICOD.LE.0).OR.(ICOD.GT.29)) THEN
+      IF ((ICOD.LE.0).OR.(ICOD.GT.32)) THEN
         WRITE(6,*) 'ICOD:',ICOD
         CALL ASSERT(.FALSE.)
       ENDIF

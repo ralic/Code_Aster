@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sd_xfem SD  DATE 11/01/2010   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,11 +47,8 @@ class sd_fiss_xfem(AsBase):
     BASEFOND        = Facultatif(AsVR())
     FONDMULT        = Facultatif(AsVI())
     CARAFOND        = Facultatif(AsVR(lonmax=12,))
-    RAYON           = Facultatif(AsVR(lonmax=1,))
-    TORE            = Facultatif(AsVL())
-    GRIAUX          = Facultatif(AsVK8(lonmax=1,))
-    
-# I.2) objets relatifs à l'enrichissement
+
+# I.2) objets relatifs a l'enrichissement
 
     GROUP_MA_ENRI   = AsVI()
     GROUP_NO_ENRI   = AsVI()
@@ -64,10 +61,13 @@ class sd_fiss_xfem(AsBase):
     MAILFISS_INDIC = AsVI(SDNom(nomj='.MAILFISS .INDIC'), lonmax=6, )
     LISNOH         = Facultatif(AsVI())
 
-# I.3) objets relatifs à la propagation
+# I.3) objets relatifs a la propagation
 
     PRO_MES_EL  = Facultatif(sd_cham_elem(SDNom(nomj='.PRO.MES_EL')))
     PRO_NORMAL  = Facultatif(sd_cham_elem(SDNom(nomj='.PRO.NORMAL')))
+    PRO_RAYON_TORE  = Facultatif(AsVR(SDNom(nomj='.PRO.RAYON_TORE'),lonmax=1,))
+    PRO_NOEUD_TORE  = Facultatif(AsVL(SDNom(nomj='.PRO.NOEUD_TORE')))
+    PRO_MOD_GRILLE  = Facultatif(AsVK8(SDNom(nomj='.PRO.MOD_GRILLE'),lonmax=1,))
 
 # I.4) objets relatifs au contact
 
@@ -78,13 +78,14 @@ class sd_fiss_xfem(AsBase):
     LISUP  = Facultatif(AsVI(SDNom(nomj='.LISUP')))    
 
 
-# 1.5) vérifications d'existence :
+# 1.5) verifications d'existence :
 
     def check_existence(self,checker) :
         sdu_ensemble((self.FONDFISS, self.FONDMULT))
         sdu_ensemble((self.LISRL, self.LISCO))
         sdu_ensemble((self.PRO_MES_EL.CELD, self.PRO_NORMAL.CELD))
-        sdu_ensemble((self.RAYON, self.TORE))
+        sdu_ensemble((self.PRO_RAYON_TORE, self.PRO_NOEUD_TORE))
+
 
 #-------------------------------
 #       II. sd modele
@@ -93,7 +94,7 @@ class sd_fiss_xfem(AsBase):
 class sd_modele_xfem(AsBase):
     nomj = SDNom(fin=8)
 
-# II.1) objets relatifs aux sous-éléments
+# II.1) objets relatifs aux sous-elements
 
     TOPOSE_PIN  = sd_cham_elem(SDNom(nomj='.TOPOSE.PIN'))
     TOPOSE_CNS  = sd_cham_elem(SDNom(nomj='.TOPOSE.CNS'))
@@ -115,7 +116,7 @@ class sd_modele_xfem(AsBase):
     TOPOFAC_OE  = sd_cham_elem(SDNom(nomj='.TOPOFAC.OE'))
     TOPOFAC_OM  = sd_cham_elem(SDNom(nomj='.TOPOFAC.OM'))
 
-# II.3) objets concaténés relatifs aux level sets
+# II.3) objets concatenes relatifs aux level sets
 
     LNNO   = sd_cham_no()
     LTNO   = sd_cham_no()
@@ -128,4 +129,3 @@ class sd_modele_xfem(AsBase):
     FISS   = AsVK8()             # noms des fissures
     NFIS   = AsVI(lonmax=1,)     # nombre de fissures
     XMAFIS = sd_carte()          # pour chaque maille : nom de la fissure
-

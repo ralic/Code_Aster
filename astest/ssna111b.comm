@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
 # ssna111b.para = tps_job 880 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,6 +151,15 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='GM16',
+                   VALE=-2.5E-01,
+                   PRECISION  = 0.009,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                 _F(RESULTAT=RESU,
+                   INST=0.50,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='GM16',
                    VALE=-2.4798E-01,
                    PRECISION  = (1.E-2,1.E-3),
                    REFERENCE='NON_REGRESSION',
@@ -176,6 +185,15 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    ),);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='GM16',
+                   VALE=-3.92E-01,
+                   PRECISION  = 0.007,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                 _F(RESULTAT=RESU,
                    INST=1.0,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',

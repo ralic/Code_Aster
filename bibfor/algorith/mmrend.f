@@ -1,8 +1,8 @@
       SUBROUTINE MMREND(DEFICO,NEWGEO,ISURF ,COORPT,TOLEAP,
-     &                  DIRAPP,DIR   ,POSMIN)
-C    
+     &                  DIRAPP,DIR   ,POSMIN,PRTOLE)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,17 +26,17 @@ C
       CHARACTER*24 NEWGEO
       INTEGER      ISURF
       REAL*8       COORPT(3),TOLEAP
-      LOGICAL      DIRAPP
+      LOGICAL      DIRAPP,PRTOLE
       REAL*8       DIR(3)
       INTEGER      POSMIN
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (TOUTES METHODES - APPARIEMENT)
 C
-C RECHERCHER LE NOEUD MAITRE LE PLUS PROCHE DU POINT DE CONTACT 
+C RECHERCHER LE NOEUD MAITRE LE PLUS PROCHE DU POINT DE CONTACT
 C SELON UNE DIRECTION DE RECHERCHE DONNEE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -51,7 +51,8 @@ C IN  DIRAPP : VAUT .TRUE. SI APPARIEMENT DANS UNE DIRECTION DE
 C              RECHERCHE DONNEE (PAR DIR)
 C IN  DIR    : DIRECTION DE RECHERCHE
 C OUT POSMIN : POSITION (DANS CONTNO) DU NOEUD MAITRE LE PLUS PROCHE
-C               0 SI NON APPARIE (DEPASSE TOLEAP)
+C OUT PRTOLE : .FALSE. SI NON APPARIE (DEPASSE TOLEAP)
+C              .TRUE. SINON
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -74,31 +75,32 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      NBNOM,JDEC,INOM
       INTEGER      POSNOM,NUMNOM
-      INTEGER      IFM,NIV      
+      INTEGER      IFM,NIV
       INTEGER      JCOOR
       REAL*8       COOR2(3),DMIN,DIST,NORMD,NORMV,R8GAEM
       CHARACTER*24 CONTNO
-      INTEGER      JNOCO  
+      INTEGER      JNOCO
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFDBG('CONTACT',IFM,NIV)              
-C      
-C --- RECUPERATION DE QUELQUES DONNEES      
+      CALL INFDBG('CONTACT',IFM,NIV)
+C
+C --- RECUPERATION DE QUELQUES DONNEES
 C
       CONTNO = DEFICO(1:16)//'.NOEUCO'
       CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(NEWGEO(1:19)//'.VALE','L',JCOOR)     
+      CALL JEVEUO(NEWGEO(1:19)//'.VALE','L',JCOOR)
 C
 C --- INFOS SUR LA SURFACE MAITRE
-C           
+C
       CALL CFNBSF(DEFICO,ISURF ,'NOEU',NBNOM ,JDEC  )
 C
 C --- RECHERCHE BRUTE: BOUCLE SUR LES NOEUDS
 C
       DMIN   = R8GAEM()
       POSMIN = 0
+      PRTOLE = .FALSE.
       DO 10 INOM = 1,NBNOM
         POSNOM   = JDEC + INOM
         NUMNOM   = ZI(JNOCO+POSNOM-1)
@@ -113,26 +115,26 @@ C
           IF (NORMV.EQ.0.D0) THEN
             DIST = 1.D0
           ELSE
-            DIST = ABS((COORPT(1)-COOR2(1))*DIR(1)+ 
+            DIST = ABS((COORPT(1)-COOR2(1))*DIR(1)+
      &                 (COORPT(2)-COOR2(2))*DIR(2)+
      &                 (COORPT(3)-COOR2(3))*DIR(3))/(NORMD*NORMV)
           ENDIF
         ELSE
-          DIST = SQRT((COORPT(1)-COOR2(1))**2+ 
+          DIST = SQRT((COORPT(1)-COOR2(1))**2+
      &                (COORPT(2)-COOR2(2))**2+
      &                (COORPT(3)-COOR2(3))**2)
         ENDIF
 C
         IF (DIST.LT.DMIN) THEN
+          POSMIN = POSNOM
+          DMIN   = DIST
           IF (TOLEAP.GT.0.D0) THEN
             IF (DIST.LE.TOLEAP) THEN
-              POSMIN = POSNOM
-              DMIN   = DIST
+              PRTOLE = .TRUE.
             ENDIF
           ELSE
-            POSMIN = POSNOM
-            DMIN   = DIST
-          ENDIF    
+            PRTOLE = .TRUE.
+          ENDIF
         END IF
    10 CONTINUE
 

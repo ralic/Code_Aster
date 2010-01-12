@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,8 +71,8 @@ C
       INTEGER       P1,P2,P3,P4, JM3D, INDIIS, NBMAT, IRET, IM1, IM2
       INTEGER       IMA, NUMA, NNOE, INO, NBM, I, K, INDI, NNOEM, NNOE1
       INTEGER       IFM , NIV, IPOS, ITYPMA, NUTYMA
-      INTEGER       LISNOE(27)
-      LOGICAL       FIRST,LVNOR
+      INTEGER       LISNOE(27),INDMAI
+      LOGICAL       FIRST,LVNOR,OKCOIN
       CHARACTER*1   TYPERR
       CHARACTER*8   K8B, NOMAIL, TYPE, VNOR
       CHARACTER*16  OPER,K16B
@@ -82,6 +82,7 @@ C     ------------------------------------------------------------------
 C
       CALL INFNIV ( IFM , NIV )
       FIRST = .FALSE.
+      OKCOIN= .FALSE.
       CALL GETRES(K8B,K16B,OPER)
 C
 C --- VERIFIERA T'ON LES NORMALES ?
@@ -92,6 +93,14 @@ C     -----------------------------
          IF(IRET.NE.0)THEN
             IF(VNOR(1:3).EQ.'NON')LVNOR=.FALSE.
          ENDIF
+      ENDIF
+C
+C --- AUTORISE T'ON LES MAILLES DE PEAU COINCEES ENTRE
+C     DEUX MAILLES VOLUMIQUES ?
+C     -------------------------
+      IF(OPER(1:14).EQ.'CALC_ELEM')THEN
+         LVNOR=.FALSE.
+         OKCOIN=.TRUE.
       ENDIF
 C
 C --- APPEL A LA CONNECTIVITE :
@@ -142,12 +151,16 @@ C     -----------------
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPE)
                CALL ORIEM0 ( TYPE, MAIL, COOR, ZI(P1+ZI(P2+IM1-1)-1),
      &              NNOE1, ZI(P1+ZI(P2+IM2-1)-1), NNOEM, LISNOE, NNOE,
-     &              PREC, IRET, IPOS )
-               IF ( IPOS .NE. 0 .AND. LVNOR) THEN
-                 CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',NUMA),VALK(1))
-                 CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',IM1),VALK(2))
-                 CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',IM2),VALK(3))
-                 CALL U2MESK('F','PREPOST4_97',3,VALK)
+     &              PREC, IRET, IPOS, INDMAI )
+               IF ( IPOS .NE. 0)THEN  
+                 IF(LVNOR) THEN
+                   CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',NUMA),VALK(1))
+                   CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',IM1),VALK(2))
+                   CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',IM2),VALK(3))
+                   CALL U2MESK('F','PREPOST4_97',3,VALK)
+                 ELSE IF(OKCOIN .AND. INDMAI.EQ.2)THEN
+                   ZI(JM3D+IMA-1) = IM2
+                 ENDIF
                ENDIF
             ENDIF
 C

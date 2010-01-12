@@ -2,7 +2,7 @@
      &                  LFCPLX,LACCE ,FCTCSR,NOMFCT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,7 +65,7 @@ C
       INTEGER      NFACCE   
       CHARACTER*4  KNUM
       COMPLEX*16   CCOEF
-      REAL*8       COEF     
+      REAL*8       RCOEF,ICOEF
       CHARACTER*19 NOMF19
       INTEGER      JVAL,IRET
 C
@@ -94,15 +94,13 @@ C
           
           CALL GETVC8('EXCIT','COEF_MULT_C',ICHAR,1,1,CCOEF,NCCPLX)
           IF (NCCPLX.EQ. 0 ) THEN
-            CALL GETVR8('EXCIT','COEF_MULT',ICHAR,1,1,COEF ,NCREEL)
+            CALL GETVR8('EXCIT','COEF_MULT',ICHAR,1,1,RCOEF,NCREEL)
             CALL ASSERT(NCREEL.EQ.0)
-            CALL FOCSTE(NOMFCT,'TOUTRESU',COEF  ,'V')
+            CALL FOCSTE(NOMFCT,'TOUTRESU',RCOEF  ,'V')
           ELSE
-            COEF   = DBLE( CCOEF )
-            CALL FOCSTE(NOMFCT,'TOUTRESU',COEF  ,'V')
-            NOMF19 = NOMFCT
-            CALL JEVEUO(NOMF19//'.VALE','E',JVAL)
-            ZR(JVAL+2) = DIMAG( CCOEF )
+            RCOEF   = DBLE ( CCOEF )
+            ICOEF   = DIMAG( CCOEF )
+            CALL FOCSTC(NOMFCT,'TOUTRESU',RCOEF,ICOEF,'V')
           ENDIF
         ENDIF
         
@@ -131,8 +129,8 @@ C
           NOMF19 = FCTCSR
           CALL JEEXIN(NOMF19//'.PROL',IRET)
           IF (IRET.EQ.0) THEN
-            COEF  = 1.D0
-            CALL FOCSTE(FCTCSR,'TOUTRESU',COEF  ,'V')
+            RCOEF  = 1.D0
+            CALL FOCSTE(FCTCSR,'TOUTRESU',RCOEF  ,'V')
           END IF
           NOMFCT = FCTCSR
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UN CUBE - D_PLAN
 # ssnv187b.para = tps_job 80 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -244,8 +244,8 @@ TEST_RESU(RESU=_F(RESULTAT=RESU3,
                   NOM_CMP='DY',
                   CRITERE='RELATIF',
                   REFERENCE='ANALYTIQUE',
-                  VALE = -7.8179915E-2,
-                  PRECISION  = 0.095,),)
+                  VALE = -6.62E-2,
+                  PRECISION  = 0.075,),)
 TEST_RESU(RESU=_F(RESULTAT=RESU3,
                   NUME_ORDRE=20,
                   GROUP_NO='GM5',

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
@@ -142,7 +142,18 @@ TAB_FORC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                             RESULTANTE='DY',
                             OPERATION='EXTRACTION',),);
                                  
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
+TEST_RESU(RESU=(
+                 _F(RESULTAT=RESU,
+                   INST=0.50,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='GM16',
+                   VALE=-2.5E-01,
+                   PRECISION  = 0.009,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+
+                 _F(RESULTAT=RESU,
                    INST=0.50,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
@@ -171,7 +182,17 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VERSION='7.1.07',),   
                    ),);
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU,
+TEST_RESU(RESU=( 
+                 _F(RESULTAT=RESU,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='GM16',
+                   VALE=-3.92E-01,
+                   PRECISION  = 0.007,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                 _F(RESULTAT=RESU,
                    INST=1.0,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',

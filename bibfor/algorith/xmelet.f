@@ -3,7 +3,7 @@
      &                  LMALIN,NNES  ,NDDLSE,NSINGE,NSINGM)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,24 +133,20 @@ C
       ELSEIF (NOMTE(8:9).EQ.'H8') THEN
         TYPMAM = 'HE8'
         NNM    = 8
+      ELSEIF (NOMTE(7:7).EQ.'T') THEN
+        NNM    = 0        
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
-      ENDIF
-      IF (NOMTE(7:7).EQ.'T') THEN
-        NNM = 0
       ENDIF
 C
 C --- NOMBRE DE FONCTIONS SINGULIERES    
 C
-      IF (NOMTE(10:10).EQ.'H') THEN
+      IF (NOMTE(10:10).EQ.'H'.OR.NOMTE(7:7).EQ.'T') THEN
         NSINGM = 0
       ELSEIF (NOMTE(10:10).EQ.'C') THEN
         NSINGM = 1
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
-      ENDIF
-      IF (NOMTE(7:7).EQ.'T') THEN
-        NSINGM = 0
       ENDIF
 C       
       IF (NOMTE(7:7).EQ.'H') THEN

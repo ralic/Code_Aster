@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF xfem2 Messages  DATE 11/01/2010   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,6 @@ cata_msg = {
   -> Risques et conseils:
      Veuillez considérer l'une des deux modélisations dans AFFE_MODELE.
 """),
-
 
 7 : _("""
   -> Le contact a été activé dans XFEM (CONTACT_XFEM='OUI' dans MODI_MODELE_XFEM)
@@ -268,13 +267,13 @@ cata_msg = {
   """),
   
 69 : _("""
-  -> Pour l'instant la restriction du domaine de calcul et la méthode
-     upwind peuvent être utilisés au même temps seulement si une grille
-     auxiliaire est donnée.
+  -> Pour l'instant la restriction de la zone de mise à jour et la
+     méthode upwind peuvent être utilisés au même temps seulement si une
+     grille auxiliaire est donnée.
   -> Risque & Conseil:
      Veuillez utiliser la méthode simplexe ou utiliser la méthode upwind
      avec une grille auxiliaire. Sinon veuillez désactiver l'option de
-     restriction du domaine de calcul (DOMAINE='MODELE').
+     restriction de la zone de mise à jour (ZONE_MAJ='TOUT').
   """),
   
 71 : _("""
@@ -434,11 +433,11 @@ cata_msg = {
   """),
   
 88 : _("""
-  -> La valeur du rayon du tore de localisation du domaine de calcul est
-     supérieure à la valeur limite. Cette dernière est déterminée par
-     la valeur du rayon du tore utilisée à la propagation précédente et
-     la valeur de l'avancée de la fissure (DA_MAX) imposé à la
-     propagation courante.
+  -> La valeur du rayon du tore de localisation de la zone de mise à
+     jour est supérieure à la valeur limite. Cette dernière est
+     déterminée par la valeur du rayon du tore utilisée à la propagation
+     précédente et la valeur de l'avancée de la fissure (DA_MAX) imposé
+     à la propagation courante.
      
      Rayon actuel = %(r1)f
      Rayon limite = %(r2)f
@@ -460,7 +459,8 @@ cata_msg = {
        courante
        
      Sinon, même si fortement déconseillé, vous pouvez choisir de ne pas
-     utiliser la localisation du domaine de calcul (DOMAINE='MODELE').
+     utiliser la localisation de la zone de mise à jour
+     (ZONE_MAJ='TOUT').
   """),
   
 89 : _("""
@@ -512,6 +512,21 @@ cata_msg = {
      l'utilisation de PROPA_FISS.
   """),
   
+94 : _("""
+  -> L'avancée donnée (DA_MAX) pour la propagation courante est
+     inférieure à la valeur minimale conseillée.
+ 
+     DA_MAX donnée                     = %(r1)f
+     Avancée maximale fissure courante = %(r2)f
+     DA_MAX minimal conseillé          = %(r3)f
+     
+  -> Risque & Conseil:
+     Risque de résultats faux. Dans le cas de propagation 3D en mode
+     mixte, on conseille en général d'utiliser une avancée de fissure
+     supérieure à celle minimale écrite ci-dessus, même si des bonnes
+     résultats peuvent être obtenus en utilisant une avancée inférieure.
+  """),
+  
 95 : _("""
   -> Une grille auxiliaire a été utilisée pour la détermination des
      fissures actuelles du modèle. Par contre, aucune grille n'a été
@@ -533,32 +548,32 @@ cata_msg = {
   """),
   
 97 : _("""
-  -> La localisation du domaine de calcul a été utilisé pour la
+  -> La localisation de la zone de mise à jour a été utilisé pour la
      détermination de la configuration actuelle des fissures du modèle.
      Par contre, pour la propagation courante, la localisation n'a pas
      été activée.
   -> Risque & Conseil:
-     Veuillez utiliser la localisation du domaine (DOMAINE='TORE') même
-     pour la propagation courante.
+     Veuillez utiliser la localisation de la zone de mise à jour
+     (ZONE_MAJ='TORE') pour la propagation courante aussi.
   """),
   
 98 : _("""
-  -> La localisation du domaine de calcul a été utilisé sans grille
+  -> La localisation de la zone de mise à jour a été utilisé sans grille
      auxiliaire pour la détermination de la configuration actuelle des
      fissures du modèle. Par contre, pour la propagation courante, on
      demande de l'utiliser avec une grille auxiliaire.
      FISS_ACTUELLE = %(k1)s
   -> Risque & Conseil:
-     Veuillez continuer à utiliser la localisation du domaine sans
-     grille auxiliaire. Si vous voulez utiliser une grille auxiliaire
-     pour la propagation courante, vous devez forcement l'utiliser
-     à partir de la première propagation.
+     Veuillez continuer à utiliser la localisation de la zone de mise à
+     jour sans grille auxiliaire. Si vous voulez utiliser une grille
+     auxiliaire pour la propagation courante, vous devez forcement
+     l'utiliser à partir de la première propagation.
   """),
   
 99 : _("""
-  -> La valeur du rayon du tore de localisation du domaine de calcul est
-     plus petite que celle qui est nécessaire pour la bonne mise à jour
-     des level sets.
+  -> La valeur du rayon du tore de localisation de la zone de mise à
+     jour est plus petite que celle qui est nécessaire pour la bonne
+     mise à jour des level sets.
      Rayon à utiliser = %(r1)f
      Rayon minimal    = %(r2)f
   -> Risque & Conseil:

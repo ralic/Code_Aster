@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/01/2010   AUTEUR DURAND C.DURAND 
 # TITRE PORTIQUE SOUMIS A DES EFFORTS ELECTRODYNAMIQUES
 # sdll102b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -145,18 +145,18 @@ FONC=DEFI_FONC_ELEC(COUR=(
                       TAU_CC_1 = 0.066, PHI_CC_1 = 0.,
                       INTE_CC_2 = 15600.,
                       TAU_CC_2 = 0.066, PHI_CC_2 = 180.,
-                     INST_CC_INIT = 0., INST_CC_FIN = 0.135),
+                     INST_CC_INIT = 1., INST_CC_FIN = 1.135),
           _F(  INTE_CC_1 = 15600.,
                       TAU_CC_1 = 0.062, PHI_CC_1 = 0.,
                       INTE_CC_2 = 15600.,
                       TAU_CC_2 = 0.062, PHI_CC_2 = 180.,
-                     INST_CC_INIT = 0.580, INST_CC_FIN = 0.885)))
+                     INST_CC_INIT = 1.580, INST_CC_FIN = 1.885)))
 
 #
-TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.0, NOMBRE = 2000))
+TEMPLI=DEFI_LIST_REEL(DEBUT=1., INTERVALLE=_F( JUSQU_A = 2.0, NOMBRE = 2000))
 
 #
-INTLI=DEFI_LIST_ENTI( DEBUT=20, INTERVALLE=_F( JUSQU_A = 2000, PAS = 20))
+INTLI=DEFI_LIST_ENTI( DEBUT=21, INTERVALLE=_F( JUSQU_A = 2001, PAS = 20))
 
 #
 #-----------------------------------------------------------------------
@@ -198,7 +198,7 @@ TEST_RESU(RESU=(
             REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'),
           _F(  RESULTAT = NEWNONA, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 70,
             MAILLE = 'M2',    NOEUD = 'N123',   NOM_CMP = 'MFZ',
-            VALE = -6327.,   PRECISION = 1.E-3,
+            VALE = -6327.,   PRECISION = 1.E-2,
             REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'),
           _F(  RESULTAT = NEWNONA, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 12,
             MAILLE = 'M36',   NOEUD = 'N88',    NOM_CMP = 'MFZ',
@@ -222,7 +222,7 @@ TEST_RESU(RESU=(
             REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02'),
           _F(  RESULTAT = NEWNONA, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 70,
             MAILLE = 'M104',  NOEUD = 'N2',    NOM_CMP = 'MFZ',
-            VALE = -6015.,   PRECISION = 1.E-3,
+            VALE = -6015.,   PRECISION = 1.E-2,
             REFERENCE = 'NON_REGRESSION', VERSION= '3.04.02')),
               )
 

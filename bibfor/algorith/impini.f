@@ -1,7 +1,7 @@
       SUBROUTINE IMPINI(SDIMPR,SDSUIV,FONACT,PARCRI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      ZIMP,ZTIT,ZLIG,ZCOL,ZLAR,ZDEF
-      PARAMETER    (ZIMP=9,ZTIT=3,ZLIG=255,ZCOL=16,ZLAR=16,ZDEF=30)
+      PARAMETER    (ZIMP=9,ZTIT=3,ZLIG=255,ZCOL=16,ZLAR=16,ZDEF=33)
       INTEGER      ZCNV
       PARAMETER    (ZCNV=5)
       CHARACTER*24 IMPCOL,IMPTIT,IMPFOR,IMPTYP,IMPINF,IMPCNL
@@ -151,7 +151,7 @@ C
       INTEGER      IOCC,NOC,NBOCC
       CHARACTER*16 MOTFAC,TYPM,CMP
       INTEGER      UNIT,NBSUIV
-      INTEGER      INFCMP(4)
+      INTEGER      INFCMP(5)
       REAL*8       R8VIDE
       INTEGER      IFM,NIV 
 C      
@@ -166,7 +166,7 @@ C
         WRITE (IFM,*) '<MECANONLINE> ... CREATION SD AFFICHAGE' 
       ENDIF
 C
-      IF (ZDEF.NE.30) THEN
+      IF (ZDEF.NE.33) THEN
         CALL ASSERT(.FALSE.)
       ENDIF
 C
@@ -230,7 +230,8 @@ C
 C
       ZL(JIMPCA-1+1) = (PARCRI(2) .NE. R8VIDE())
       ZL(JIMPCA-1+2) = (PARCRI(3) .NE. R8VIDE())
-      ZL(JIMPCA-1+3) = (PARCRI(6) .NE. R8VIDE())      
+      ZL(JIMPCA-1+3) = (PARCRI(6) .NE. R8VIDE())                  
+      ZL(JIMPCA-1+4) = (PARCRI(12) .NE. R8VIDE()) 
 C
 C --- INITIALISATIONS DES VARIABLES
 C
@@ -252,11 +253,13 @@ C      INFCMP(1):  RESI_RELA
 C      INFCMP(2):  RESI_MAXI
 C      INFCMP(3):  RESI_REFE
 C      INFCMP(4):  CTCD_GEOM
+C      INFCMP(5):  RESI_COMP
 C
       INFCMP(1) = 0
       INFCMP(2) = 0
       INFCMP(3) = 0
       INFCMP(4) = 0
+      INFCMP(5) = 0
 C
 C ----------------------------------------------------------------------
 C     LECTURE DES INFORMATIONS DU MOT-CLEF AFFICHAGE DE STAT_NON_LINE
@@ -305,12 +308,14 @@ C
         INFCMP(2) = 0
         INFCMP(3) = 0
         INFCMP(4) = 0
+        INFCMP(5) = 0
         IF (NOC.NE.0) THEN
           IF (CMP(1:3).EQ.'OUI') THEN
             INFCMP(1) = 1
             INFCMP(2) = 1
             INFCMP(3) = 1
             INFCMP(4) = 1
+            INFCMP(5) = 1
           ELSE IF (.NOT.(CMP(1:3).EQ.'NON')) THEN
             CALL ASSERT(.FALSE.)
           ENDIF

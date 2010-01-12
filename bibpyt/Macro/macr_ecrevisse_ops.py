@@ -1,4 +1,4 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 05/10/2009   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,6 +37,7 @@ def macr_ecrevisse_ops(self,reuse,
    IMPRESSION,
    CHAM_MATER,
    CARA_ELEM,
+   CONTACT,
    EXCIT_MECA,
    EXCIT_THER,
    COMP_INCR,
@@ -393,6 +394,7 @@ def macr_ecrevisse_ops(self,reuse,
               MODELE      = MODELE_MECA,
               CHAM_MATER  = __MATMEC,
               CARA_ELEM   = CARA_ELEM,
+              CONTACT     = CONTACT,
               EXCIT       = _dEXCIT_MECA,
               COMP_INCR   = _F(**dCOMP_INCR),
               INCREMENT   = _F(LIST_INST=LES_PAS, NUME_INST_INIT=_nume_ordre, NUME_INST_FIN=_nume_ordre+1,),
