@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv195d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,7 +140,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=8,
                                   RESI_GLOB_MAXI=1E-07)),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=250,),
+                              PCENT_PIVOT=10,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=2,);
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -211,6 +211,7 @@ TRAN_GE1=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
                       RIGI_NOR = 5.76E7,
                       AMOR_NOR = 0.,
                       RIGI_TAN = 0.,
+                      FROTTEMENT='COULOMB',
                       COULOMB = 0.0),
                 INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 1.,  PAS = 0.0002),
                ARCHIVAGE=_F(  PAS_ARCH = 8)
@@ -270,6 +271,7 @@ TRAN_GE2=DYNA_TRAN_MODAL(  MASS_GENE=MGEN_BIC,   RIGI_GENE=RGEN_BIC,
                        RIGI_NOR = 2.88E7,
                        AMOR_NOR = 0.,
                        RIGI_TAN = 0.,
+                       FROTTEMENT='COULOMB',
                        COULOMB = 0.),
                  INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 1.,  PAS = 0.00025),
                 ARCHIVAGE=_F(  PAS_ARCH = 8)

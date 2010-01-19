@@ -4,7 +4,7 @@
       CHARACTER*(*)  QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF UTILITAI  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,6 +83,7 @@ C     -----------------------------------
      &        (QUESTI.EQ.'NB_SM_MAILLA')   .OR.
      &        (QUESTI.EQ.'NB_SS_ACTI'  )   .OR.
      &        (QUESTI.EQ.'NB_NL_MAILLA')   .OR.
+     &        (QUESTI.EQ.'CALC_RIGI')      .OR.
      &        (QUESTI.EQ.'PHENOMENE'   ) ) THEN
 C     -----------------------------------
          CALL DISMLG(CODMES,QUESTI,NOLIG,REPI,REPK,IERD)

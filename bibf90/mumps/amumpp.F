@@ -2,7 +2,7 @@
      &                  IFMUMP,ELI2LG,RSOLU,CSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 20/10/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPP MUMPS  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -69,14 +69,14 @@ C============================================================
       TYPE (DMUMPS_STRUC) , POINTER :: DMPSK
       TYPE (ZMUMPS_STRUC) , POINTER :: ZMPSK
       INTEGER      N,NNBSOL,RANG,LMAT,I,IERD,IDVALC,IBID,
-     &             JDELG,K,IFM,NIV
+     &             JDELG,K,IFM,NIV,ISLVK
       INTEGER*4    N4
       CHARACTER*1  ROUCS(NMXINS),ROUC,PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
       CHARACTER*24 VCIVAL
-      LOGICAL      LTYPR
+      LOGICAL      LTYPR,LPRECO
       REAL*8       RBID,RR4MAX,RAUX,R4MAEM
       COMPLEX*16   CBID,CAUX
       COMMON /MUMPSS/ SMPS
@@ -150,6 +150,10 @@ C     ------------------------------------------------
       VCIVAL=VCINE//'.VALE'
       CALL MTDSCR(NOMAT)
       CALL JEVEUO(NOMAT//'.&INT','E',LMAT)
+      
+C     --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR?
+      CALL JEVEUO(NOSOLV//'.SLVK','L',ISLVK)
+      LPRECO=ZK24(ISLVK-1+8)(1:3).EQ.'OUI'
 
 
       IF (OPTION.EQ.0) THEN
@@ -174,7 +178,9 @@ C       ------------------------------------------------
           ENDIF
 
 C         --- PRISE EN COMPTE DU CONDITIONNEMENT DES LAGRANGES :
-          IF (RANG.EQ.0) THEN
+C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME 
+C         PRECONDITIONNEUR (DEJA FAIT DANS RESGRA.F)
+          IF ((RANG.EQ.0).AND.(.NOT.LPRECO)) THEN
              IF (LTYPR) THEN
                CALL MRCONL(LMAT,N,'R',RSOLU,NBSOL)
              ELSE
@@ -326,10 +332,15 @@ C           -- BROADCAST LA SOLUTION APRES
             ENDIF
           ENDIF
 
-          IF (LTYPR) THEN
-            CALL MRCONL(LMAT,N,'R',RSOLU,NBSOL)
-          ELSE
-            CALL MCCONL(LMAT,N,'C',CSOLU,NBSOL)
+C         --- PRISE EN COMPTE DU CONDITIONNEMENT DES LAGRANGES :
+C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME 
+C         PRECONDITIONNEUR (DEJA FAIT DANS RESGRA.F)
+          IF (.NOT.LPRECO) THEN
+            IF (LTYPR) THEN
+              CALL MRCONL(LMAT,N,'R',RSOLU,NBSOL)
+            ELSE
+              CALL MCCONL(LMAT,N,'C',CSOLU,NBSOL)
+            ENDIF
           ENDIF
         ENDIF
 

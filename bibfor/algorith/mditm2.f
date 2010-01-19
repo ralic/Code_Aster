@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +107,7 @@ C ---------
      &              FEXT(NP4,*), FEXTTS(NP4,*), TEXT(*), TEXTTS(*),
      &              FEXTTR(*), FEXTT0(*)
       CHARACTER*8   NOMCH(*)
-      REAL*8        CHOC(5,*), ORIG(6,*), RC(NP3,*), THETA(NP3,*),
+      REAL*8        CHOC(6,*), ORIG(6,*), RC(NP3,*), THETA(NP3,*),
      &              ALPHA(2,*), BETA(2,*), GAMMA(2,*), OLD(9,*)
       LOGICAL       LOCFLC(*), LOC(*)
       COMPLEX*16    S0(*), Z0(*), SR0(*), ZA1(*), ZA2(*), ZA3(*),

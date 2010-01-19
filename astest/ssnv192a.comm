@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo mem_aster 50 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -301,7 +301,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELEK,
                     INCREMENT=_F(LIST_INST=L_INS1,
                                  INST_FIN=1.0,),
                     NEWTON=_F(REAC_ITER=1,),
-                    SOLVEUR=_F(METHODE='MUMPS',
+                    SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,
 
                                RESI_RELA=-1.,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),

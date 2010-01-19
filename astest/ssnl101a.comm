@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE COMPORTEMENT NON-LINEAIRE D'UN ELEMENT D'ARMEMENT DE LIGNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,7 +59,7 @@ CH1=AFFE_CHAR_MECA(   MODELE=MO,
                                  MX = 0.,  MY = 0.,    MZ = 0.)
                       )
 
-STATNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',),
+STATNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,
                          CARA_ELEM=CAREL,

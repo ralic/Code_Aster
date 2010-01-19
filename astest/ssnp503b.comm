@@ -1,4 +1,4 @@
-# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503b.para = tps_job 60 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -179,7 +179,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,INFO=1,
                                     )),
                     NEWTON=_F(REAC_ITER=1,),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=80,
+                               PCENT_PIVOT=30,
                                NPREC=-1,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                     );

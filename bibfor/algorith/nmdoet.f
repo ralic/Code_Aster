@@ -2,7 +2,7 @@
      &                  SDSENS,SDPILO,SDDYNA,SOLALG,LACC0 ,
      &                  INSTIN)
 C
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,17 +28,17 @@ C
       CHARACTER*24 MODELE,COMPOR,SDSENS
       CHARACTER*24 NUMEDD
       CHARACTER*14 SDPILO
-      CHARACTER*19 SDDYNA   
-      CHARACTER*19 SOLALG(*)   
+      CHARACTER*19 SDDYNA
+      CHARACTER*19 SOLALG(*)
       INTEGER      FONACT(*)
-      LOGICAL      LACC0      
+      LOGICAL      LACC0
 C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (INITIALISATION)
 C
 C SAISIE DES CHAMPS A L'ETAT INITIAL
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -77,7 +77,7 @@ C
       INTEGER      NEQ,REENTR,NOCC,NUME,NCHOUT,IRET,IBID,I
       INTEGER      NRPASE,IER,JPLTK,IRETVI,IERR,IRETAC
       CHARACTER*8  LPAIN(1),LPAOUT(2),K8BID
-      CHARACTER*8  NOPASE
+      CHARACTER*8  NOPASE,CALCRI
       CHARACTER*16 OPT
       CHARACTER*24 LIGRMO,EVOL,LCHIN(1),LCHOUT(2)
       CHARACTER*24 K24BID,TYPECH
@@ -87,52 +87,56 @@ C
       CHARACTER*19 DEPMOI,SIGMOI,VARMOI,VITMOI,ACCMOI
       CHARACTER*24 CHAMP,CHAMP2,CHGEOM,RESUID,STRUCT,DEP2,DEP1
       INTEGER      JDEP1,JDEP2,JDEPOL
-      INTEGER      NBPASE 
+      INTEGER      NBPASE
       CHARACTER*24 SENSNB
-      INTEGER      JSENSN 
+      INTEGER      JSENSN
       LOGICAL      ISFONC,LPILO,LPIARC,LCTCC
       LOGICAL      NDYNLO,LDYNA,LEXGE
       INTEGER      IFM,NIV
-C      
+C
 C ----------------------------------------------------------------------
-C      
+C
       CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
 C --- INITIALISATIONS
 C
       DEP1   = '&&CNPART.CHP1'
-      DEP2   = '&&CNPART.CHP2'  
-      COMPOM = ' '       
+      DEP2   = '&&CNPART.CHP2'
+      COMPOM = ' '
       LACC0  = .FALSE.
-      LPIARC = .FALSE. 
+      LPIARC = .FALSE.
       LNOCC  = .FALSE.
       CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IBID  ,LIGRMO,IRET  )
-C      
+
+C     -- ON VERIFIE QUE LE MODELE SAIT CALCULER UNE RIGIDITE :
+      CALL DISMOI('F','CALC_RIGI',MODELE,'MODELE',IBID,CALCRI,IRET)
+      IF (CALCRI.NE.'OUI') CALL U2MESK('F','CALCULEL2_65',1,MODELE)
+C
 C --- ACCES SD SENSIBILITE
-C   
+C
       SENSNB = SDSENS(1:16)//'.NBPASE '
       CALL JEVEUO(SENSNB,'L',JSENSN)
-      NBPASE = ZI(JSENSN+1-1) 
+      NBPASE = ZI(JSENSN+1-1)
 C
 C --- FONCTIONNALITES ACTIVEES
 C
       LPILO  = ISFONC(FONACT,'PILOTAGE')
-      LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')  
+      LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')
       LCTCC  = ISFONC(FONACT,'CONT_CONTINU')
       LEXGE  = NDYNLO(SDDYNA,'EXPL_GENE')
-C   
+C
 C --- EXTRACTION VARIABLES CHAPEAUX
-C       
+C
       CALL NMCHEX(SOLALG,'SOLALG','DEPOLD',DEPOLD)
 C
 C --- NOMBRE EQUATIONS
-C     
+C
       CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
 C
 C --- PILOTAGE LONGUEUR D'ARC AVEC ANGL_NORM_DEPL: IL FAUT LES DEUX
 C --- DERNIERS DEPLACEMENTS POUR QUE CA MARCHE (CHAMP DEPOLD)
-C  
+C
       IF (LPILO) THEN
         CALL JEVEUO(SDPILO(1:14)//'.PLTK','L',JPLTK)
         TYPPIL = ZK24(JPLTK)
@@ -141,15 +145,15 @@ C
         IF (TYPPIL(1:8).EQ.'LONG_ARC') THEN
           IF (TYPSEL(1:14).EQ.'ANGL_NORM_DEPL') THEN
             LPIARC = .TRUE.
-          ENDIF 
+          ENDIF
         ENDIF
-      ENDIF                 
-C          
+      ENDIF
+C
 C --- PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
 C
       CALL GETFAC('ETAT_INIT',NOCC)
       CALL JEEXIN(RESULT//'           .DESC',REENTR)
-      IF (NOCC.EQ.0) THEN 
+      IF (NOCC.EQ.0) THEN
         IF (REENTR.NE.0) THEN
           IF (NIV.GE.2) THEN
             WRITE (IFM,*) '<MECANONLINE> LECTURE ETAT INITIAL'
@@ -159,8 +163,8 @@ C
       ELSE
         IF (NIV.GE.2) THEN
           WRITE (IFM,*) '<MECANONLINE> LECTURE ETAT INITIAL'
-        ENDIF         
-      ENDIF   
+        ENDIF
+      ENDIF
       CALL GETVID('ETAT_INIT','EVOL_NOLI',1,1,1,EVOL,NOCC)
       EVONOL = NOCC .GT. 0
 C
@@ -172,30 +176,30 @@ C
         ELSE IF (EVONOL) THEN
           CALL U2MESS('A','MECANONLINE_15')
         ENDIF
-      ENDIF       
+      ENDIF
 C
 C --- INSTANT INITIAL
 C
-      CALL NMDOIN(EVOL  ,EVONOL,INSTIN,NUME  )           
-C 
+      CALL NMDOIN(EVOL  ,EVONOL,INSTIN,NUME  )
+C
 C --- BOUCLE SUR L'INITIALISATION DES CHAMPS PRINCIPAUX ET DERIVES
-C 
+C
       DO 10 NRPASE = NBPASE,0,-1
 C
 C --- NOM DES CHAMPS
-C       
+C
         CALL NMNSLE(SDSENS,NRPASE,'DEPMOI',DEPMOI)
         CALL NMNSLE(SDSENS,NRPASE,'SIGMOI',SIGMOI)
         CALL NMNSLE(SDSENS,NRPASE,'VARMOI',VARMOI)
         IF (LDYNA) THEN
           CALL NMNSLE(SDSENS,NRPASE,'VITMOI',VITMOI)
-          CALL NMNSLE(SDSENS,NRPASE,'ACCMOI',ACCMOI)         
+          CALL NMNSLE(SDSENS,NRPASE,'ACCMOI',ACCMOI)
         ENDIF
-C        
+C
         IF (EVONOL) THEN
 C
 C --- ETAT INITIAL DEFINI PAR UN CONCEPT DE TYPE EVOL_NOLI
-C 
+C
           IF ( NRPASE.GT.0 ) THEN
             CALL NMNSLE(SDSENS,NRPASE,'NOPASE',NOPASE)
             CALL PSGENC(EVOL  ,NOPASE,RESUID  ,IRET)
@@ -212,28 +216,28 @@ C
 C --- LECTURE DES DEPLACEMENTS (OU DERIVE)
 C
           CALL RSEXCH(STRUCT,'DEPL',NUME  ,CHAMP ,IRET  )
-          IF (IRET.EQ.0) THEN  
+          IF (IRET.EQ.0) THEN
             CALL VTCOPY(CHAMP,DEPMOI,IRET)
           ELSE
             CALL U2MESK('F','MECANONLINE4_41',1,STRUCT)
-          ENDIF    
+          ENDIF
 C
 C --- VERIFICATION COMPATIBILITE PILOTAGE
 C
           IF (LPIARC) THEN
-            CALL RSEXCH(STRUCT,'DEPL',NUME-1,CHAMP2,IRET)     
+            CALL RSEXCH(STRUCT,'DEPL',NUME-1,CHAMP2,IRET)
             IF (IRET.NE.0) THEN
               CALL U2MESK('F','MECANONLINE_77',1,STRUCT)
             ENDIF
             CALL VTCOPY(CHAMP,DEP1,IRET)
-            CALL VTCOPY(CHAMP2,DEP2,IRET)   
+            CALL VTCOPY(CHAMP2,DEP2,IRET)
             CALL JEVEUO(DEP1(1:19)//'.VALE','L',JDEP1)
             CALL JEVEUO(DEP2(1:19)//'.VALE','L',JDEP2)
-            CALL JEVEUO(DEPOLD(1:19)//'.VALE','E',JDEPOL)       
+            CALL JEVEUO(DEPOLD(1:19)//'.VALE','E',JDEPOL)
             DO 156 I = 1,NEQ
               ZR(JDEPOL-1+I) = ZR(JDEP1-1+I) - ZR(JDEP2-1+I)
- 156        CONTINUE 
-          ENDIF         
+ 156        CONTINUE
+          ENDIF
 C
 C --- LECTURE DES CONTRAINTES AUX POINTS DE GAUSS (OU DERIVE)
 C
@@ -247,7 +251,7 @@ C
             CALL RSEXCH(STRUCT,'SIEF_ELNO',NUME,CHAMP,IRET)
             IF (IRET.NE.0) THEN
               CALL U2MESK('F','MECANONLINE4_42',1,STRUCT)
-            ENDIF  
+            ENDIF
             CALL COPISD('CHAM_ELEM_S','V',COMPOR,SIGMOI)
             CALL MENOGA('SIEF_ELGA_ELNO  ',LIGRMO,COMPOR,CHAMP,SIGMOI,
      &                  K24BID)
@@ -305,12 +309,12 @@ C
               END IF
             ELSE
               CALL VTCOPY(CHAMP,ACCMOI,IERR)
-            END IF 
-          ENDIF             
+            END IF
+          ENDIF
         ELSE
 C
 C --- DEFINITION CHAMP PAR CHAMP (OU PAS D'ETAT INITIAL DU TOUT)
-C 
+C
           NCHOUT = 0
 C
 C --- LECTURE DES DEPLACEMENTS
@@ -320,8 +324,8 @@ C
             CALL CHPVER('F',CHAMP(1:19),'NOEU','DEPL_R',IER)
             CALL VTCOPY(CHAMP,DEPMOI,IRET)
             IF (LPIARC) THEN
-              CALL U2MESK('F','MECANONLINE_77',1,STRUCT)          
-            ENDIF               
+              CALL U2MESK('F','MECANONLINE_77',1,STRUCT)
+            ENDIF
           ENDIF
 
           IF (NOCC.NE.0 .AND. NBPASE.GT.0) THEN
@@ -394,7 +398,7 @@ C
             CALL CALCUL('S',OPT,LIGRMO,1,LCHIN,LPAIN,NCHOUT,LCHOUT,
      &                  LPAOUT,'V')
             CALL NMSIGI(LIGRMO,COMPOR,SIGMOI)
-          END IF    
+          END IF
 C
 C --- LECTURE DES VITESSES
 C
@@ -407,8 +411,8 @@ C
             ELSE
               CALL U2MESS('I','MECANONLINE_22')
               CALL NULVEC(VITMOI)
-            END IF    
-          ENDIF      
+            END IF
+          ENDIF
 C
 C --- LECTURE DES ACCELERATIONS
 C
@@ -420,7 +424,7 @@ C
             ELSE
               LACC0 = .TRUE.
             END IF
-          ENDIF         
+          ENDIF
         END IF
    10 CONTINUE
 C
@@ -428,19 +432,19 @@ C --- AFFICHAGES
 C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<MECANONLINE> ... DEPMOI : '
-        CALL NMDEBG('VECT',DEPMOI,IFM)      
+        CALL NMDEBG('VECT',DEPMOI,IFM)
         WRITE (IFM,*) '<MECANONLINE> ... SIGMOI : '
-        CALL NMDEBG('CHEL',SIGMOI,IFM)  
+        CALL NMDEBG('CHEL',SIGMOI,IFM)
         WRITE (IFM,*) '<MECANONLINE> ... VARMOI : '
-        CALL NMDEBG('CHEL',VARMOI,IFM)   
-        IF (LDYNA) THEN  
-          WRITE (IFM,*) '<MECANONLINE> ... VITMOI : ' 
-          CALL NMDEBG('VECT',VITMOI,IFM) 
+        CALL NMDEBG('CHEL',VARMOI,IFM)
+        IF (LDYNA) THEN
+          WRITE (IFM,*) '<MECANONLINE> ... VITMOI : '
+          CALL NMDEBG('VECT',VITMOI,IFM)
           IF (.NOT.LACC0) THEN
-            WRITE (IFM,*) '<MECANONLINE> ... ACCMOI : ' 
-            CALL NMDEBG('VECT',ACCMOI,IFM)           
+            WRITE (IFM,*) '<MECANONLINE> ... ACCMOI : '
+            CALL NMDEBG('VECT',ACCMOI,IFM)
           ENDIF
-        ENDIF      
+        ENDIF
       ENDIF
 C
 C --- PROJECTION MODALE EN EXPLICITE
@@ -450,6 +454,6 @@ C
           CALL NDLOAM(SDDYNA,RESULT,EVONOL,NUME  )
         ENDIF
       ENDIF
-C    
+C
       CALL JEDEMA()
       END

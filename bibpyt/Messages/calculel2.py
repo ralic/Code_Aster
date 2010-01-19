@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 16/11/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -254,15 +254,32 @@ Erreur lors d'une transformation de cham_no_s en cham_no :
 """),
 
 64: _("""
-  -> Le modèle %(k1)s n'a pas d'éléments calculant de la rigidité.
+  -> Le modèle %(k1)s n'a pas d'éléments sachant calculer la rigidité.
 
   -> Risque & Conseil :
      Ce modèle ne poura donc pas (en général) etre utilisé pour faire des calculs.
      Vérifier la définition du modèle (AFFE_MODELE) et assurez-vous que les
      types de mailles du maillage (SEG2, TRIA3, QUAD4, ...) sont compatibles avec votre
      modélisation.
-     Exemple d'erreur : affecter une modélisation "3D" sur un maillage formé de facettes.
+     Exemples d'erreur :
+       * affecter une modélisation "3D" sur un maillage formé de facettes.
+       * affecter une modélisation qui ne sait pas traiter tous les types de mailles du maillage
+         (par exemple 'PLAN_DIAG' en thermique, 'AXIS_SI' en mécanique)
+"""),
 
+65: _("""
+Erreur d'utilisation :
+  -> Le modèle %(k1)s n'a pas d'éléments sachant calculer la rigidité.
+
+  -> Risque & Conseil :
+     Ce modèle ne peut pas etre utilisé pour faire des calculs.
+     Vérifier la définition du modèle (AFFE_MODELE) et assurez-vous que les
+     types de mailles du maillage (SEG2, TRIA3, QUAD4, ...) sont compatibles avec votre
+     modélisation.
+     Exemples d'erreur :
+       * affecter une modélisation "3D" sur un maillage formé de facettes.
+       * affecter une modélisation qui ne sait pas traiter tous les types de mailles du maillage
+         (par exemple 'PLAN_DIAG' en thermique, 'AXIS_SI' en mécanique)
 """),
 
 68: _("""

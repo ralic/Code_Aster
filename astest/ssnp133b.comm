@@ -1,5 +1,5 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
-# TITRE TEST DES ELEMENTS A DISCONTINUITE SUR UNE PLAQUE TROUE
+# MODIF  DATE 18/01/2010   AUTEUR LAVERNE J.LAVERNE 
+# TITRE TEST DES ELEMENTS A DISCONTINUITE SUR UNE PLAQUE TROUEE
 # ssnp133b.para = tps_job 100 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,101 +21,52 @@
 
 DEBUT(CODE=_F( NOM = 'SSNP133B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT = 'OUI')
 
-tfin=100
-nbpas = 100
-nbarch = 100
-cmultpilo = 10
-tenac= 0.1
-sigc=3
+# NB DE PAS DE TEMPS DE CALCUL ET NOMBRE DE PAS DE TEMPS ARCHIVE
+tfin=159
+nbpas=tfin
+nbpas_arch = tfin
+c_mult_pilo = 10
 
+# DONNEES MATERIAU
+young = 30000.E6
+poiss = 0.2
+Gc = 100.
+Sc = 2.E5
+
+#--------------------------------------------------------------
+# MAILLAGE ET MODELE
+#--------------------------------------------------------------
 PRE_GMSH()
-MA_1 = LIRE_MAILLAGE()
+MA = LIRE_MAILLAGE()
 
-MA_2 = CREA_MAILLAGE(
-  MAILLAGE = MA_1,
-  LINE_QUAD = _F(GROUP_MA = ('GM5','GM4','GM2','GM3') )
-  )
 
-MA_2 = DEFI_GROUP(reuse = MA_2,
-       MAILLAGE = MA_2,
+MA = DEFI_GROUP(reuse = MA,
+       MAILLAGE = MA,
        CREA_GROUP_MA = (
           _F(NOM = 'FACE_SUP', GROUP_MA = 'GM4'),
           _F(NOM = 'MATIERE' , GROUP_MA = 'GM5'),
-          _F(NOM = 'SYME_HG' , GROUP_MA = 'GM22'),
-          _F(NOM = 'SYME_HD' , GROUP_MA = 'GM23'),
-       ),
+          _F(NOM = 'JOINT_G' , GROUP_MA = 'GM55'),
+          _F(NOM = 'JOINT_D' , GROUP_MA = 'GM54'),
+          _F(NOM = 'JOINT',    UNION = ('JOINT_G', 'JOINT_D')),          
+      ),
        CREA_GROUP_NO = (
-          _F(NOM = 'RIG_1',    GROUP_MA = 'GM1'),
-          _F(NOM = 'FACE_SUP', GROUP_MA = 'GM4'),                          
-          _F(
-            NOM           = 'SYME_HD',
-            GROUP_MA      = 'GM23',
-            OPTION        = 'NOEUD_ORDO',
-            GROUP_NO_ORIG = 'GM26',
-            ),
-          _F(
-            NOM           = 'SYME_BD',
-            GROUP_MA      = 'GM13',
-            OPTION        = 'NOEUD_ORDO',
-            GROUP_NO_ORIG = 'GM16',
-            ),
-          _F(
-            NOM           = 'SYME_HG',
-            GROUP_MA      = 'GM22',
-            OPTION        = 'NOEUD_ORDO',
-            GROUP_NO_ORIG = 'GM28',
-            ),
-          _F(
-            NOM           = 'SYME_BG',
-            GROUP_MA      = 'GM12',
-            OPTION        = 'NOEUD_ORDO',
-            GROUP_NO_ORIG = 'GM18',
-            ),
-          _F(
-            NOM           = 'FACE_G',
-            GROUP_MA      = 'GM2',
-            ),
-          _F(
-            NOM           = 'FACE_D',
-            GROUP_MA      = 'GM3',
-            ),
+          _F(NOM = 'P_RIG',    GROUP_MA = 'GM1'),
+          _F(GROUP_MA = 'FACE_SUP'),
+          _F(GROUP_MA = 'JOINT'),          
+          _F(NOM = 'SYME_BD',GROUP_MA = 'GM56'),
+          _F(NOM = 'SYME_BG',GROUP_MA = 'GM57'),
+          _F(NOM = 'SYMETRIE',UNION   = ('SYME_BD', 'SYME_BG')),
          )
        )
 
-# ATTENTION ON CREE LES DEUX TRAJETS DE FISSURES POTENTIELS AVEC DES ELEMENTS A DISCONTINUITE
-# DE TELLE SORTE QUE CES DERNIERS AIENT UNE NUM LOCALE DANS LE SENS TRIGONOMETRIQUE.
-# LE GROUP_NO_1 PORTE LES NUM LOCALES 1 ET 2, LE GROUP_NO_2 PORTE LES NUM LOCALES 4 ET 3. 
-       
-MA = CREA_MAILLAGE(
-  MAILLAGE   = MA_2,
-  CREA_FISS = (
-    _F(NOM='JOINT_D', GROUP_NO_1='SYME_BD', GROUP_NO_2='SYME_HD', PREF_MAILLE='MJD'),
-    _F(NOM='JOINT_G', GROUP_NO_1='SYME_BG', GROUP_NO_2='SYME_HG', PREF_MAILLE='MJG'),    
-    )
-  )
-  
-MA = DEFI_GROUP(reuse = MA,
-  MAILLAGE      = MA,
-  CREA_GROUP_MA = _F(NOM = 'JOINT', UNION = ('JOINT_G', 'JOINT_D') ),
-  CREA_GROUP_NO = _F(NOM = 'JOINT', GROUP_MA = 'JOINT'),
-  )
+# RENUMEROTATION LOCALE DES ELEMENTS A DISCONTINUITE     
 
-          
-BETON = DEFI_MATERIAU(
-  ELAS      = _F (E=20000., NU=0.2),
-  RUPT_FRAG = _F(
-    GC     = tenac,
-    SIGM_C = sigc,
-    ),
-  )
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_FISSURE=_F(GROUP_MA='JOINT'),
+                   INFO=1
+                   )
 
-CHMAT = AFFE_MATERIAU(
-          MAILLAGE = MA,
-          AFFE = _F(
-          GROUP_MA = ('MATIERE','JOINT'),
-          MATER    =  BETON
-         )
-      )
   
 MO = AFFE_MODELE(
        MAILLAGE = MA,
@@ -123,59 +74,88 @@ MO = AFFE_MODELE(
          _F(
            GROUP_MA     = ('MATIERE','FACE_SUP'),
            PHENOMENE    = 'MECANIQUE',
-           MODELISATION = 'D_PLAN'
-           ),
+           MODELISATION = 'D_PLAN' ),
          _F(
            GROUP_MA     = 'JOINT',
            PHENOMENE    = 'MECANIQUE',
-           MODELISATION = 'PLAN_ELDI'
-           ),
-           ))
+           MODELISATION = 'PLAN_ELDI'),
+        ), )
 
+#--------------------------------------------------------------
+# DEFINITION DES PARAMETRES MATERIAUX
+#--------------------------------------------------------------
 
+BETON = DEFI_MATERIAU(
+                      ELAS      = _F( E              = young,
+                                      NU             = poiss,
+                                         ),
+                     RUPT_FRAG = _F(
+                                    GC             = Gc,
+                                    SIGM_C         = Sc,
+                                         ),
+                         )
+        
+CHMAT = AFFE_MATERIAU(
+          MAILLAGE = MA,
+          AFFE = _F(
+          GROUP_MA = ('MATIERE','JOINT'),
+          MATER    =  BETON
+         )
+      )
+
+#--------------------------------------------------------------
+# DEFINITION DES CHARGEMENTS 
+#--------------------------------------------------------------
+
+# ON BLOQUE LES MOUVEMENTS DE CORPS RIGIDE DS LA DIRECTION X AU POINT P_RIG
 RIGIDE = AFFE_CHAR_MECA(
   MODELE   = MO,
-  DDL_IMPO = _F(GROUP_NO='RIG_1', DX = 0)
+  DDL_IMPO = _F(GROUP_NO='P_RIG', DX = 0)
   ) 
 
-RACCORD = AFFE_CHAR_MECA(
-  MODELE = MO,
-  LIAISON_MAIL = (
-    _F(
-      GROUP_NO_ESCL = 'FACE_D',
-      GROUP_MA_MAIT = 'JOINT_D',
-      ),
-    _F(
-      GROUP_NO_ESCL = 'FACE_G',
-      GROUP_MA_MAIT = 'JOINT_G',
-      ),
-      ))
 
+# ON IMPOSE QUE LE PLAN DE SYMETRIE PASSE PAR LA FACE INFERIEURE DES ELEMENTS DE A DISCONTINUITE
 SYMETRIE = AFFE_CHAR_MECA(
   MODELE        = MO,
-  DDL_IMPO = _F(GROUP_NO=('SYME_BG','SYME_BD'), DY = 0) 
- ) 
+  DDL_IMPO = (
+    _F(
+      GROUP_NO = 'SYME_BG',
+      DY=0.0,
+      ),
+    _F(
+      GROUP_NO = 'SYME_BD',
+      DY=0.0,
+      ),
+    ),  )
     
+# EFFORT IMPOSE SUR LA SURFACE SUPERIEURE DE LA PLAQUE
 TRACTION = AFFE_CHAR_MECA(
   MODELE = MO,
   FORCE_CONTOUR = _F(GROUP_MA = 'FACE_SUP', FY =  1),
   )
 
+
+#--------------------------------------------------------------
+# REALISATION DU CALCUL
+#--------------------------------------------------------------
   
 INSTANTS = DEFI_LIST_REEL(
-  DEBUT = 0.,
-  INTERVALLE = (
-    _F(JUSQU_A =  tfin, NOMBRE = nbpas),
-    )
-  )
-
+                          DEBUT = 0.,
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas), ), 
+                          )
+ 
 INS_ARCH = DEFI_LIST_REEL(
-  DEBUT = 0.,
-  INTERVALLE = (
-    _F(JUSQU_A =  tfin, NOMBRE = nbarch),
-    )
-  )
+                          DEBUT = 0.,
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch), ), 
+                          )
 
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
+                        ECHEC=_F(
+                  SUBD_METHODE='UNIFORME',
+                  SUBD_PAS  = 10,
+                  SUBD_PAS_MINI = 1.E-8,
+                  SUBD_NIVEAU=10,
+                                 ),)
 
 EVOL = STAT_NON_LINE(
   MODELE = MO,
@@ -183,177 +163,141 @@ EVOL = STAT_NON_LINE(
   EXCIT = (
     _F(CHARGE = RIGIDE),
     _F(CHARGE = SYMETRIE),
-    _F(CHARGE = RACCORD),
-    _F(CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO')
-    ),
+    _F(CHARGE = TRACTION, 
+       TYPE_CHARGE = 'FIXE_PILO',
+      )
+       ),
   COMP_INCR = (
     _F(RELATION = 'ELAS'      , GROUP_MA = 'MATIERE'),
-    _F(RELATION = 'CZM_EXP'    , GROUP_MA = 'JOINT'  ),
+    _F(RELATION = 'CZM_EXP',    GROUP_MA = 'JOINT'  ),
     ),
-  INCREMENT  = _F(LIST_INST = INSTANTS, 
-    INST_FIN = tfin,
-                 ),    
+  INCREMENT = _F(LIST_INST = DEFLIST,),
   PILOTAGE  = _F (
     TYPE           = 'PRED_ELAS',
     GROUP_MA       = 'JOINT',
-    COEF_MULT      = cmultpilo,
-    ETA_PILO_MIN   = 0.00001,
+    COEF_MULT      = c_mult_pilo,
+    ETA_PILO_MIN   = 0.01,
     ETA_PILO_R_MIN = 0,
-    PROJ_BORNES    = 'NON'
+    PROJ_BORNES    = 'OUI'
     ),
-  RECH_LINEAIRE = _F (
-    ITER_LINE_MAXI = 0,
-    RESI_LINE_RELA = 0.8,
-    RHO_MIN        = -2,
-    RHO_MAX        = 2,
-    RHO_EXCL       = 1.E-2
-    ),    
   NEWTON  = _F(
     MATRICE   = 'TANGENTE',
     REAC_ITER = 1,
     ),
   CONVERGENCE = _F(
-    RESI_GLOB_MAXI = 1.E-4,
-    ITER_GLOB_MAXI = 50,
+    RESI_GLOB_RELA = 1.E-6,
+    ITER_GLOB_MAXI = 12,
     ),
+  SOLVEUR    = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100),
   ARCHIVAGE = _F(
     ARCH_ETAT_INIT = 'OUI',
-    LIST_INST = INS_ARCH
+    LIST_INST      = INS_ARCH
     )
   ) 
 
+#--------------------------------------------------------------
+# POST-TRAITEMENT
+#--------------------------------------------------------------
 
+CALC_NO( reuse    = EVOL,
+         OPTION   = 'FORC_NODA',
+         RESULTAT =  EVOL,
+       )
 
-EVOL = CALC_NO(reuse = EVOL,
-  MODELE = MO,
-  CHAM_MATER = CHMAT,
-  RESULTAT = EVOL,
-  OPTION = 'FORC_NODA',
-  GROUP_MA='MATIERE'
-  )
+FORCE = POST_RELEVE_T(
+                      ACTION = _F(
+                                  INTITULE   = 'FORCE',
+                                  OPERATION  = 'EXTRACTION',
+                                  RESULTANTE = 'DY',
+                                  RESULTAT   =  EVOL,
+                                  NOM_CHAM   = 'FORC_NODA',
+                                  GROUP_NO   = 'FACE_SUP',
+                                  
+                                 ),
+                     )
 
+TAB_U = POST_RELEVE_T(
+                      ACTION = _F(
+                                  INTITULE   = 'DEPL',
+                                  RESULTAT   = EVOL,
+                                  OPERATION  = 'EXTRACTION',
+                                  NOM_CHAM   = 'DEPL',
+                                  NOM_CMP    = 'DY',
+                                  NOEUD      = 'N2',
+                                 ),
+                     )
 
-# DEPLACEMENT DU NOEUD RIG_1
-U_RIG1 = POST_RELEVE_T(
- ACTION = _F(
-   INTITULE     = 'DEPL',
-   OPERATION    = 'EXTRACTION',   
-   GROUP_NO     = 'RIG_1',
-   NOM_CHAM     = 'DEPL',
-   NOM_CMP      = 'DY',
-   RESULTAT     =  EVOL,
-   TOUT_ORDRE   = 'OUI',
-    )) 
+UY = RECU_FONCTION ( TABLE  = TAB_U,
+                     PARA_X = 'INST',
+                     PARA_Y = 'DY' 
+                   )
 
-# FORCE PILOTE RESULTANTE DANS LA DIRECTION Y:
-FPILO = POST_RELEVE_T(
- ACTION = _F(
-   INTITULE     = 'F_PILOTE',
-   OPERATION    = 'EXTRACTION',   
-   GROUP_NO     = 'FACE_SUP',
-   NOM_CHAM     = 'FORC_NODA',
-   RESULTANTE   = 'DY',
-   RESULTAT     =  EVOL,
-   TOUT_ORDRE   = 'OUI',
-    )) 
+FY = RECU_FONCTION ( TABLE  = FORCE,
+                     PARA_X = 'INST',
+                     PARA_Y = 'DY'
+                   )
 
+#--------------------------------------------------------------
+# TESTS SUR LA REPONSE GLOBALE
+#--------------------------------------------------------------
 
-#-------------------------------------------------
+TEST_TABLE(TABLE=TAB_U,
+              FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
+              NOM_PARA='DY',
+              VALE=3.60789E-03,
+              REFERENCE='NON_REGRESSION')
+TEST_TABLE(TABLE=FORCE,
+              FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
+              NOM_PARA='DY',
+              VALE=5.78596E+07,
+              REFERENCE='NON_REGRESSION')
 
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'NON_REGRESSION',
-      RESULTAT  = EVOL,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DY',
-      VALE      = 1.0821857671E-01,
-      GROUP_NO  = 'RIG_1',
-      INST      = 10
-      ),
-    )
-  )
-  
-TEST_TABLE(TABLE=FPILO,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=10,),),
-           NOM_PARA='DY',
-           VALE=1.2144948829E+03,
-           REFERENCE='NON_REGRESSION')
-  
-#-------------------------------------------------
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'NON_REGRESSION',
-      RESULTAT  = EVOL,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DY',
-      VALE      = 1.219093945E-01,
-      GROUP_NO  = 'RIG_1',
-      INST      = 30
-      ),
-    )
-  )
-  
-TEST_TABLE(TABLE=FPILO,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=30,),),
-           NOM_PARA='DY',
-           VALE=1.3223690963E+03,
-           REFERENCE='NON_REGRESSION')
-  
-#-------------------------------------------------
-    
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'NON_REGRESSION',
-      RESULTAT  = EVOL,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DY',
-      VALE      = 1.308188495E-01,
-      GROUP_NO  = 'RIG_1',
-      INST      = 60
-      ),
-    )
-  )
-  
-TEST_TABLE(TABLE=FPILO,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=60,),),
-           NOM_PARA='DY',
-           VALE=1.2947406101E+03,
-           REFERENCE='NON_REGRESSION')
-#-------------------------------------------------
-    
-TEST_RESU (
-  RESU = (
-    _F(
-      REFERENCE = 'NON_REGRESSION',
-      RESULTAT  = EVOL,
-      NOM_CHAM  = 'DEPL',
-      NOM_CMP   = 'DY',
-      VALE      = 1.3685713314E-01,
-      GROUP_NO  = 'RIG_1',
-      INST      = 95
-      ),
-    )
-  )
-  
-TEST_TABLE(TABLE=FPILO,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=95,),),
-           NOM_PARA='DY',
-           VALE=1.1941073837E+03,
-           REFERENCE='NON_REGRESSION')
+TEST_TABLE(TABLE=TAB_U,
+              FILTRE=(_F(NOM_PARA='INST',VALE=75,),),
+              NOM_PARA='DY',
+              VALE=3.54768E-03,
+              REFERENCE='NON_REGRESSION')
+TEST_TABLE(TABLE=FORCE,
+              FILTRE=(_F(NOM_PARA='INST',VALE=75,),),
+              NOM_PARA='DY',
+              VALE=5.11012E+07,
+              REFERENCE='NON_REGRESSION')
+
+TEST_TABLE(TABLE=TAB_U,
+              FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
+              NOM_PARA='DY',
+              VALE=3.39614E-03,
+              REFERENCE='NON_REGRESSION')
+TEST_TABLE(TABLE=FORCE,
+              FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
+              NOM_PARA='DY',
+              VALE=4.43668E+07,
+              REFERENCE='NON_REGRESSION')
+
+TEST_TABLE(TABLE=TAB_U,
+              FILTRE=(_F(NOM_PARA='INST',VALE=159,),),
+              NOM_PARA='DY',
+              VALE=4.30701E-03,
+              REFERENCE='NON_REGRESSION')
+TEST_TABLE(TABLE=FORCE,
+              FILTRE=(_F(NOM_PARA='INST',VALE=159,),),
+              NOM_PARA='DY',
+              VALE=1.00675E+07,
+              REFERENCE='NON_REGRESSION')
 
 
 
-IMPR_TABLE(TABLE = U_RIG1)
-IMPR_TABLE(TABLE = FPILO)
+#--------------------------------------------------------------
+IMPR_FONCTION(
+              FORMAT='TABLEAU',
+              COURBE=_F(FONC_X = UY,
+                        FONC_Y = FY,
+                       )
+             )
 
-
+IMPR_TABLE(TABLE=TAB_U)             
+IMPR_TABLE(TABLE=FORCE)             
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=EVOL,NOM_CHAM='VARI_ELGA',TYPE_CHAM='SCALAIRE',NOM_CMP=('V1','V2','V3','V4','V7','V8'),GROUP_MA = ('JOINT')))) 
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=EVOL,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY'),GROUP_MA = ('MATIERE','JOINT')))) 
 
 FIN()
-

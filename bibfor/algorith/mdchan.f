@@ -9,7 +9,7 @@
       CHARACTER*24        MDGENE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,12 +40,12 @@ C IN  : XJEU   : JEU INITIAL
 C IN  : NBNLI  : DIMENSION DES TABLEAUX (NBCHOC+NBSISM+NBFLAM)
 C IN  : NOECHO : (ILIAI,9) = TYPE D'OBSTACLE
 C OUT : PARCHO : PARAMETRE DE CHOC:
-C                PARCHO(ILIAI,16)= SIN A
-C                PARCHO(ILIAI,17)= COS A
-C                PARCHO(ILIAI,18)= SIN B
-C                PARCHO(ILIAI,19)= COS B
-C                PARCHO(ILIAI,20)= SIN G
-C                PARCHO(ILIAI,21)= COS G
+C                PARCHO(ILIAI,17)= SIN A
+C                PARCHO(ILIAI,18)= COS A
+C                PARCHO(ILIAI,19)= SIN B
+C                PARCHO(ILIAI,20)= COS B
+C                PARCHO(ILIAI,21)= SIN G
+C                PARCHO(ILIAI,22)= COS G
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -78,10 +78,10 @@ C
       IF (N1.NE.0) THEN
          IF (TYPNUM.EQ.'NUME_DDL_SDASTER' .OR. REPERE.EQ.'GLOBAL') THEN
             CALL ANGVX ( TXLOC, ALPHA, BETA )
-            PARCHO(ILIAI,16) = SIN(ALPHA)
-            PARCHO(ILIAI,17) = COS(ALPHA)
-            PARCHO(ILIAI,18) = SIN(BETA)
-            PARCHO(ILIAI,19) = COS(BETA)
+            PARCHO(ILIAI,17) = SIN(ALPHA)
+            PARCHO(ILIAI,18) = COS(ALPHA)
+            PARCHO(ILIAI,19) = SIN(BETA)
+            PARCHO(ILIAI,20) = COS(BETA)
          ELSE
             CALL WKVECT('&&MDCHAN.NORM','V V R',3,JNORM)
             ZR(JNORM)   = TXLOC(1)
@@ -89,27 +89,27 @@ C
             ZR(JNORM+2) = TXLOC(3)
             CALL ORIENT ( MDGENE, REPERE, JNORM, 1, NORMX, 0 )
             CALL ANGVX ( NORMX, ALPHA, BETA )
-            PARCHO(ILIAI,16) = SIN(ALPHA)
-            PARCHO(ILIAI,17) = COS(ALPHA)
-            PARCHO(ILIAI,18) = SIN(BETA)
-            PARCHO(ILIAI,19) = COS(BETA)
+            PARCHO(ILIAI,17) = SIN(ALPHA)
+            PARCHO(ILIAI,18) = COS(ALPHA)
+            PARCHO(ILIAI,19) = SIN(BETA)
+            PARCHO(ILIAI,20) = COS(BETA)
             CALL JEDETR('&&MDCHAN.NORM')
          ENDIF
-         PARCHO(ILIAI,20) = SIN(ANGL*RAD)
-         PARCHO(ILIAI,21) = COS(ANGL*RAD)
+         PARCHO(ILIAI,21) = SIN(ANGL*RAD)
+         PARCHO(ILIAI,22) = COS(ANGL*RAD)
 C
       ELSEIF (NOECHO(ILIAI,9).EQ.'BI_PLANY') THEN
-         TYLOC(1) = (PARCHO(ILIAI,10) - PARCHO(ILIAI,7))
-         TYLOC(2) = (PARCHO(ILIAI,11) - PARCHO(ILIAI,8))
-         TYLOC(3) = (PARCHO(ILIAI,12) - PARCHO(ILIAI,9))
+         TYLOC(1) = (PARCHO(ILIAI,11) - PARCHO(ILIAI,8))
+         TYLOC(2) = (PARCHO(ILIAI,12) - PARCHO(ILIAI,9))
+         TYLOC(3) = (PARCHO(ILIAI,13) - PARCHO(ILIAI,10))
          IF (TYPNUM.EQ.'NUME_DDL_SDASTER' .OR. REPERE.EQ.'GLOBAL') THEN
             CALL ANGVXY ( TXLOC, TYLOC, ANG )
-            PARCHO(ILIAI,16) = SIN(ANG(1))
-            PARCHO(ILIAI,17) = COS(ANG(1))
-            PARCHO(ILIAI,18) = SIN(ANG(2))
-            PARCHO(ILIAI,19) = COS(ANG(2))
-            PARCHO(ILIAI,20) = SIN(ANG(3))
-            PARCHO(ILIAI,21) = COS(ANG(3))
+            PARCHO(ILIAI,17) = SIN(ANG(1))
+            PARCHO(ILIAI,18) = COS(ANG(1))
+            PARCHO(ILIAI,19) = SIN(ANG(2))
+            PARCHO(ILIAI,20) = COS(ANG(2))
+            PARCHO(ILIAI,21) = SIN(ANG(3))
+            PARCHO(ILIAI,22) = COS(ANG(3))
          ELSE
             CALL WKVECT ( '&&MDCHAN.NORM', 'V V R', 3, JNORM )
             ZR(JNORM)   = TXLOC(1)
@@ -121,28 +121,28 @@ C
             ZR(JNORM+2) = TYLOC(3)
             CALL ORIENT ( MDGENE, REPERE, JNORM, 1, NORMY, 0 )
             CALL ANGVXY ( NORMX, NORMY, ANG )
-            PARCHO(ILIAI,16) = SIN(ANG(1))
-            PARCHO(ILIAI,17) = COS(ANG(1))
-            PARCHO(ILIAI,18) = SIN(ANG(2))
-            PARCHO(ILIAI,19) = COS(ANG(2))
-            PARCHO(ILIAI,20) = SIN(ANG(3))
-            PARCHO(ILIAI,21) = COS(ANG(3))
+            PARCHO(ILIAI,17) = SIN(ANG(1))
+            PARCHO(ILIAI,18) = COS(ANG(1))
+            PARCHO(ILIAI,19) = SIN(ANG(2))
+            PARCHO(ILIAI,20) = COS(ANG(2))
+            PARCHO(ILIAI,21) = SIN(ANG(3))
+            PARCHO(ILIAI,22) = COS(ANG(3))
             CALL JEDETR ('&&MDCHAN.NORM')
          ENDIF
 C
       ELSEIF (NOECHO(ILIAI,9).EQ.'BI_PLANZ') THEN
-         TZLOC(1) = (PARCHO(ILIAI,10) - PARCHO(ILIAI,7))
-         TZLOC(2) = (PARCHO(ILIAI,11) - PARCHO(ILIAI,8))
-         TZLOC(3) = (PARCHO(ILIAI,12) - PARCHO(ILIAI,9))
+         TZLOC(1) = (PARCHO(ILIAI,11) - PARCHO(ILIAI,8))
+         TZLOC(2) = (PARCHO(ILIAI,12) - PARCHO(ILIAI,9))
+         TZLOC(3) = (PARCHO(ILIAI,13) - PARCHO(ILIAI,10))
          CALL PROVEC ( TZLOC, TXLOC, TYLOC )
          IF (TYPNUM.EQ.'NUME_DDL_SDASTER' .OR. REPERE.EQ.'GLOBAL') THEN
             CALL ANGVXY ( TXLOC, TYLOC, ANG )
-            PARCHO(ILIAI,16) = SIN(ANG(1))
-            PARCHO(ILIAI,17) = COS(ANG(1))
-            PARCHO(ILIAI,18) = SIN(ANG(2))
-            PARCHO(ILIAI,19) = COS(ANG(2))
-            PARCHO(ILIAI,20) = SIN(ANG(3))
-            PARCHO(ILIAI,21) = COS(ANG(3))
+            PARCHO(ILIAI,17) = SIN(ANG(1))
+            PARCHO(ILIAI,18) = COS(ANG(1))
+            PARCHO(ILIAI,19) = SIN(ANG(2))
+            PARCHO(ILIAI,20) = COS(ANG(2))
+            PARCHO(ILIAI,21) = SIN(ANG(3))
+            PARCHO(ILIAI,22) = COS(ANG(3))
          ELSE
             CALL WKVECT ( '&&MDCHAN.NORM', 'V V R', 3, JNORM )
             ZR(JNORM)   = TXLOC(1)
@@ -154,12 +154,12 @@ C
             ZR(JNORM+2) = TZLOC(3)
             CALL ORIENT ( MDGENE, REPERE, JNORM, 1, NORMY, 0 )
             CALL ANGVXY ( NORMX, NORMY, ANG )
-            PARCHO(ILIAI,16) = SIN(ANG(1))
-            PARCHO(ILIAI,17) = COS(ANG(1))
-            PARCHO(ILIAI,18) = SIN(ANG(2))
-            PARCHO(ILIAI,19) = COS(ANG(2))
-            PARCHO(ILIAI,20) = SIN(ANG(3))
-            PARCHO(ILIAI,21) = COS(ANG(3))
+            PARCHO(ILIAI,17) = SIN(ANG(1))
+            PARCHO(ILIAI,18) = COS(ANG(1))
+            PARCHO(ILIAI,19) = SIN(ANG(2))
+            PARCHO(ILIAI,20) = COS(ANG(2))
+            PARCHO(ILIAI,21) = SIN(ANG(3))
+            PARCHO(ILIAI,22) = COS(ANG(3))
             CALL JEDETR ( '&&MDCHAN.NORM' )
          ENDIF
 C
@@ -168,10 +168,10 @@ C
          ANGL = 0.D0
          IF (TYPNUM.EQ.'NUME_DDL_SDASTER' .OR. REPERE.EQ.'GLOBAL') THEN
             CALL ANGVX ( TXLOC, ALPHA, BETA )
-            PARCHO(ILIAI,16) = SIN(ALPHA)
-            PARCHO(ILIAI,17) = COS(ALPHA)
-            PARCHO(ILIAI,18) = SIN(BETA)
-            PARCHO(ILIAI,19) = COS(BETA)
+            PARCHO(ILIAI,17) = SIN(ALPHA)
+            PARCHO(ILIAI,18) = COS(ALPHA)
+            PARCHO(ILIAI,19) = SIN(BETA)
+            PARCHO(ILIAI,20) = COS(BETA)
          ELSE
             CALL WKVECT('&&MDCHAN.NORM','V V R',3,JNORM)
             ZR(JNORM)   = TXLOC(1)
@@ -179,26 +179,26 @@ C
             ZR(JNORM+2) = TXLOC(3)
             CALL ORIENT(MDGENE,REPERE,JNORM,1,NORMX,0)
             CALL ANGVX(NORMX,ALPHA,BETA)
-            PARCHO(ILIAI,16) = SIN(ALPHA)
-            PARCHO(ILIAI,17) = COS(ALPHA)
-            PARCHO(ILIAI,18) = SIN(BETA)
-            PARCHO(ILIAI,19) = COS(BETA)
+            PARCHO(ILIAI,17) = SIN(ALPHA)
+            PARCHO(ILIAI,18) = COS(ALPHA)
+            PARCHO(ILIAI,19) = SIN(BETA)
+            PARCHO(ILIAI,20) = COS(BETA)
             CALL JEDETR('&&MDCHAN.NORM')
          ENDIF
-         PARCHO(ILIAI,20) = SIN(ANGL*RAD)
-         PARCHO(ILIAI,21) = COS(ANGL*RAD)
+         PARCHO(ILIAI,21) = SIN(ANGL*RAD)
+         PARCHO(ILIAI,22) = COS(ANGL*RAD)
       ENDIF
 C
       ELSEIF ( MOTFAC.EQ.'ANTI_SISM' ) THEN
 C              ---------------------
 C
-      PARCHO(ILIAI,29)= SQRT(XJEU)/2.D0
       PARCHO(ILIAI,30)= SQRT(XJEU)/2.D0
+      PARCHO(ILIAI,31)= SQRT(XJEU)/2.D0
 C
 C --- VECTEUR NOEUD1 VERS NOEUD2
-      TYLOC(1) = (PARCHO(ILIAI,10) - PARCHO(ILIAI,7))
-      TYLOC(2) = (PARCHO(ILIAI,11) - PARCHO(ILIAI,8))
-      TYLOC(3) = (PARCHO(ILIAI,12) - PARCHO(ILIAI,9))
+      TYLOC(1) = (PARCHO(ILIAI,11) - PARCHO(ILIAI,8))
+      TYLOC(2) = (PARCHO(ILIAI,12) - PARCHO(ILIAI,9))
+      TYLOC(3) = (PARCHO(ILIAI,13) - PARCHO(ILIAI,10))
       CALL NORMEV ( TYLOC, RNORM )
       IF (RNORM .EQ. 0.0D0) THEN
          CALL U2MESS('F','ALGORITH5_26')
@@ -223,12 +223,12 @@ C --- DETERMINATION DES AXES LOCAUX
       CALL PROVEC ( TYLOC, TZLOC, TXLOC )
       IF (TYPNUM.EQ.'NUME_DDL_SDASTER' .OR. REPERE.EQ.'GLOBAL') THEN
          CALL ANGVXY ( TXLOC, TYLOC, ANG )
-         PARCHO(ILIAI,16) = SIN(ANG(1))
-         PARCHO(ILIAI,17) = COS(ANG(1))
-         PARCHO(ILIAI,18) = SIN(ANG(2))
-         PARCHO(ILIAI,19) = COS(ANG(2))
-         PARCHO(ILIAI,20) = SIN(ANG(3))
-         PARCHO(ILIAI,21) = COS(ANG(3))
+         PARCHO(ILIAI,17) = SIN(ANG(1))
+         PARCHO(ILIAI,18) = COS(ANG(1))
+         PARCHO(ILIAI,19) = SIN(ANG(2))
+         PARCHO(ILIAI,20) = COS(ANG(2))
+         PARCHO(ILIAI,21) = SIN(ANG(3))
+         PARCHO(ILIAI,22) = COS(ANG(3))
       ELSE
          CALL WKVECT ( '&&MDCHAN.NORM', 'V V R', 3, JNORM )
          ZR(JNORM)   = TXLOC(1)
@@ -240,12 +240,12 @@ C --- DETERMINATION DES AXES LOCAUX
          ZR(JNORM+2) = TYLOC(3)
          CALL ORIENT ( MDGENE, REPERE, JNORM, 1, NORMY, 0 )
          CALL ANGVXY ( NORMX, NORMY, ANG )
-         PARCHO(ILIAI,16) = SIN(ANG(1))
-         PARCHO(ILIAI,17) = COS(ANG(1))
-         PARCHO(ILIAI,18) = SIN(ANG(2))
-         PARCHO(ILIAI,19) = COS(ANG(2))
-         PARCHO(ILIAI,20) = SIN(ANG(3))
-         PARCHO(ILIAI,21) = COS(ANG(3))
+         PARCHO(ILIAI,17) = SIN(ANG(1))
+         PARCHO(ILIAI,18) = COS(ANG(1))
+         PARCHO(ILIAI,19) = SIN(ANG(2))
+         PARCHO(ILIAI,20) = COS(ANG(2))
+         PARCHO(ILIAI,21) = SIN(ANG(3))
+         PARCHO(ILIAI,22) = COS(ANG(3))
          CALL JEDETR ( '&&MDCHAN.NORM' )
       ENDIF
 C

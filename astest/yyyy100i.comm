@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
 # TITRE SPHERE SSPRES - 6498 DDL -  STNOLI(GCPC) - SANS RENUM
 # yyyy100i.para = tps_job 90 mem_job 80Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,76 +20,116 @@
 # ======================================================================
 # TEST DE PERFORMANCE ANCIENNEMENT NOMME SSNV110I
 
+DEBUT(CODE=_F(NOM='YYYY100I',
+              NIV_PUB_WEB='INTERNET',),);
 
-DEBUT( CODE=_F( NOM = 'YYYY100I',NIV_PUB_WEB='INTERNET')  )
+MAIL=LIRE_MAILLAGE();
 
-MAIL=LIRE_MAILLAGE( )
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
-MAIL=DEFI_GROUP( reuse=MAIL,MAILLAGE=MAIL,
-  CREA_GROUP_NO=_F( TOUT_GROUP_MA = 'OUI'))
+MOMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='AXIS',),);
 
-MOMECA=AFFE_MODELE(  MAILLAGE=MAIL,
-         AFFE=_F( TOUT = 'OUI', MODELISATION = 'AXIS', PHENOMENE = 'MECANIQUE'))
+CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
+                      DDL_IMPO=(_F(GROUP_NO='LR',
+                                   DY=0.,),
+                                _F(GROUP_NO='LZ',
+                                   DX=0.,),),
+                      PRES_REP=_F(GROUP_MA='CI',
+                                  PRES=1.E6,),);
 
-CHMECA=AFFE_CHAR_MECA(      MODELE=MOMECA,DDL_IMPO=(
-           _F( GROUP_NO = 'LR',      DY = 0.),
-           _F( GROUP_NO = 'LZ',      DX = 0.)),
-           PRES_REP=_F( GROUP_MA = 'CI',      PRES = 1.E6)               )
+CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(1.E-3,1.E8,
+                          2.E-3,1.1E8,
+                          3.E-3,1.11E8,
+                          4.E-3,1.111E8,
+                          5.E-3,1.1111E8,
+                          6.E-3,1.11111E8,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-CTRAC=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
-                                          PROL_GAUCHE='LINEAIRE',
-  VALE=(1.E-3, 1.E8,      2.E-3, 1.1E8,        3.E-3, 1.11E8,  4.E-3, 1.111E8,
-        5.E-3, 1.1111E8,  6.E-3, 1.11111E8, ))
+MAT=DEFI_MATERIAU(ELAS=_F(E=1.E11,
+                          NU=.3,
+                          ALPHA=10.0E-6,),
+                  TRACTION=_F(SIGM=CTRAC,),);
 
-MAT=DEFI_MATERIAU( 
-       ELAS=_F( E = 1.E11,  NU = .3,  ALPHA = 10.0E-6),  TRACTION=_F( SIGM = CTRAC))
+CM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=MAT,),);
 
-CM=AFFE_MATERIAU(     MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI',MATER = MAT)     )
+L_INST=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A=50.E0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=80.E0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=130.E0,
+                                     NOMBRE=5,),
+                                  _F(JUSQU_A=135.E0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=138.E0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=140.E0,
+                                     NOMBRE=1,),),);
 
-L_INST=DEFI_LIST_REEL(       DEBUT=0.,INTERVALLE=(
-           _F( JUSQU_A = 50.E0,   NOMBRE = 1),
-         _F( JUSQU_A = 80.E0,  NOMBRE = 1), _F( JUSQU_A = 130.E0,  NOMBRE = 5),
-         _F( JUSQU_A = 135.E0,  NOMBRE = 1),  _F( JUSQU_A = 138.E0,  NOMBRE = 1),
-         _F( JUSQU_A = 140.E0,   NOMBRE = 1)) )
+FOMULT=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(0.E0,0.E0,
+                           1000.E0,1000.E0,
+                           ),);
 
-FOMULT=DEFI_FONCTION(     NOM_PARA='INST',  NOM_RESU='TEMP',
-            VALE=(  0.E0,   0.E0,  1000.E0, 1000.E0,)  )
+# ----------------------------------------------------------------------
+# GCP + LDLT_INC
+U=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CM,
+                EXCIT=_F(CHARGE=CHMECA,
+                         FONC_MULT=FOMULT,),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=2,),
+                CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,
+                               ITER_GLOB_MAXI=30,),
+                SOLVEUR=_F(METHODE='GCPC',
+                           PRE_COND='LDLT_INC',
+                           RENUM='SANS',
+                           RESI_RELA=1.E-6,
+                           NMAX_ITER=0,),);
 
-U=STAT_NON_LINE( 
-                            MODELE=MOMECA,
-                        CHAM_MATER=CM,
-                             EXCIT=_F( 
-                CHARGE = CHMECA,
-                FONC_MULT = FOMULT),
-                         COMP_INCR=_F( 
-                RELATION = 'VMIS_ISOT_TRAC'),
-                            NEWTON=_F( 
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 2),
-                         INCREMENT=_F( 
-                LIST_INST = L_INST),
-                       CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.E-5,
-                ITER_GLOB_MAXI = 30),
-                           SOLVEUR=_F( 
-                METHODE = 'GCPC',
-                RENUM = 'SANS',
-                PRE_COND = 'LDLT_INC',
-                RESI_RELA = 1.E-6,
-                NMAX_ITER = 0)
-              )
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
 
-U=CALC_ELEM( reuse=U,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=U,
-              )
+TEST_RESU(RESU=_F(RESULTAT=U,
+                  INST=140.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='A',
+                  VALE=2.762e-06,
+                  PRECISION=0.001,),);
 
-TEST_RESU(
-  RESU=_F( RESULTAT = U, INST = 140.E0, NOM_CHAM = 'DEPL',
-        GROUP_NO = 'A', NOM_CMP = 'DX', VALE = 2.762E-6,        PRECISION = 1.0E-3)
-)
+# ----------------------------------------------------------------------
+# GCP + LDLT_SP
+U2=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CM,
+                EXCIT=_F(CHARGE=CHMECA,
+                         FONC_MULT=FOMULT,),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=2,),
+                CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,
+                               ITER_GLOB_MAXI=30,),
+                SOLVEUR=_F(METHODE='GCPC',
+                           PRE_COND='LDLT_SP',
+                           RESI_RELA=1.E-6,
+                           NMAX_ITER=0,),);
 
-FIN()
-#
+TEST_RESU(RESU=_F(RESULTAT=U2,
+                  INST=140.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='A',
+                  VALE=2.762e-06,
+                  PRECISION=0.001,),);
+
+FIN();

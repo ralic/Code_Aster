@@ -1,7 +1,7 @@
       SUBROUTINE TABCHS(TABIN,TYPCHS,BASE,NOMGD,MA,MO,OPTION,CHS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,18 +21,16 @@ C ======================================================================
 C
 C     TRAITEMENT DE COMMANDE:   CREA_CHAMP / OPTION: 'EXTR' / TABLE
 C
-C     " CREATION D'UN CHAMP SIMPLE A PARTIR D'UNE TABLE "
-C
-C     APPELEE PAR : U195TB
+C     CREATION D'UN CHAMP SIMPLE A PARTIR D'UNE TABLE
 C
 C
 C     IN : TABIN  : NOM DE LA TABLE
 C     IN : TYPCHS : TYPE DU CHAMP SIMPLE (NOEU/ELEM/ELNO/ELGA)
 C     IN : BASE   : BASE DE CREATION (G/V)
 C     IN : NOMGD  : NOM DE LA GRANDEUR
-C     IN : MA     : NOM DU MAILLAGE (UTILISE SI TYPCHS == 'NOEU')
-C     IN : MO     : NOM DU MODELE   (UTILISE SI TYPCHS == 'ELxx')
-C     IN : OPTION : OPTION DE CALCUL(UTILISE SI TYPCHS == 'ELxx')
+C     IN : MA     : NOM DU MAILLAGE
+C     IN : MO     : NOM DU MODELE   (UTILISE SI TYPCHS == 'EL..')
+C     IN : OPTION : OPTION DE CALCUL(UTILISE SI TYPCHS == 'EL..')
 C     IN/OUT : CHS: NOM DU CHAMP SIMPLE A CREER
 
       IMPLICIT   NONE
@@ -70,7 +68,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
 C      ==> VARIABLES LOCALES
        INTEGER JTBNP,JTBLP,NCMP,JCMP,JCNSL,JCNSV,I,NCMPMX
-       INTEGER VALI(2)
+       INTEGER VALI(2),NBLIG,ISP,JSP,NBSP1
        INTEGER K,IRET,JIND,J,JOBJ1,JOBJ2,JOBJ3,ILI,INOEU,NUNO,ICMP
        INTEGER JTMP,NBVAL,IBID,NBCOMP,IMAI,IPOI,ISPT,JPG,JREPE,IGREL
        INTEGER JMA,JPT,JTYPMA,NUMA,NBPT,JOBJ4,JSSPT,NBMA,JCESD,NBSSP
@@ -91,6 +89,7 @@ C      ==> VARIABLES LOCALES
       CALL JEMARQ()
 
       CALL JEVEUO(TABIN//'.TBNP','L',JTBNP)
+      NBLIG=ZI(JTBNP-1+2)
       CALL JEVEUO(TABIN//'.TBLP','L',JTBLP)
 
 
@@ -106,7 +105,7 @@ C        (V1) PRESENCE DU PARAMETRE NOEUD DANS LA TABLE
          TYPE='K8'
          CALL TBEXIP(TABIN,PARA,EXIST,TYPE)
          IF(.NOT.EXIST)THEN
-                   VALK (1) = PARA(1:5)
+                   VALK (1) = PARA
                    VALK (2) = TABIN(1:8)
                    VALK (3) = ' '
             CALL U2MESG('F', 'MODELISA8_98',3,VALK,0,0,0,0.D0)
@@ -117,7 +116,7 @@ C        APPARTIENNENT AU MAILLAGE
          OBJTMP='&&WORK0'
          CALL TBEXVE(TABIN,PARA,OBJTMP,BASV,NBVAL,TYPE)
          CALL JEVEUO(OBJTMP,'L',JTMP)
-         CALL VERIMA(MA,ZK8(JTMP),NBVAL,PARA(1:5))
+         CALL VERIMA(MA,ZK8(JTMP),NBVAL,PARA)
 
 
 C        (V3) ABSENCE DU PARAMETRE MAILLE DANS LA TABLE
@@ -125,7 +124,7 @@ C        (V3) ABSENCE DU PARAMETRE MAILLE DANS LA TABLE
          TYPE='K8'
          CALL TBEXIP(TABIN,PARA,EXIST,TYPE)
          IF(EXIST)THEN
-                   VALK (1) = PARA(1:6)
+                   VALK (1) = PARA
                    VALK (2) = TABIN(1:8)
                    VALK (3) = ' '
             CALL U2MESG('F', 'MODELISA8_99',3,VALK,0,0,0,0.D0)
@@ -164,7 +163,7 @@ C
             CALL JEVEUO(OBJLG,'L',JOBJ2)
             OBJR=ZK24(JTBLP+4*(ZI(JIND+ICMP-1)-1)+2)
             CALL JEVEUO(OBJR,'L',JOBJ3)
-            DO 40 ILI=1,ZI(JTBNP+1)
+            DO 40 ILI=1,NBLIG
                IF(ZI(JOBJ2+ILI-1).EQ.1)THEN
                   NONO=ZK8(JOBJ1+ILI-1)
                   CALL JENONU(JEXNOM(MA//'.NOMNOE',NONO),NUNO)
@@ -189,7 +188,7 @@ C        (V1) PRESENCE DU PARAMETRE MAILLE DANS LA TABLE
          TYPE='K8'
          CALL TBEXIP(TABIN,PARA,EXIST,TYPE)
          IF(.NOT.EXIST)THEN
-                   VALK (1) = PARA(1:6)
+                   VALK (1) = PARA
                    VALK (2) = TABIN(1:8)
                    VALK (3) = ' '
             CALL U2MESG('F', 'MODELISA9_1',3,VALK,0,0,0,0.D0)
@@ -201,31 +200,20 @@ C             ABSENCE DU PARAMETRE POINT DANS LA TABLE (ELEM)
          TYPE='I'
          CALL TBEXIP(TABIN,PARA,EXIST,TYPE)
          IF(EXIST)THEN
-            IF(TYPCHS(1:4).EQ.'ELEM')THEN
-                   VALK (1) = PARA(1:5)
+            IF(TYPCHS.EQ.'ELEM')THEN
+                   VALK (1) = PARA
                    VALK (2) = TABIN(1:8)
                    VALK (3) = ' '
                CALL U2MESG('F', 'MODELISA9_2',3,VALK,0,0,0,0.D0)
             ENDIF
          ELSE
-           IF(TYPCHS(1:4).EQ.'ELNO' .OR. TYPCHS(1:4).EQ.'ELGA')THEN
-                   VALK (1) = PARA(1:5)
+           IF(TYPCHS.EQ.'ELNO' .OR. TYPCHS.EQ.'ELGA')THEN
+                   VALK (1) = PARA
                    VALK (2) = TABIN(1:8)
-                   VALK (3) = TYPCHS(1:4)
+                   VALK (3) = TYPCHS
               CALL U2MESG('F', 'MODELISA9_3',3,VALK,0,0,0,0.D0)
            ENDIF
         ENDIF
-
-C        (V3) ABSENCE DU PARAMETRE SOUS_POINT DANS LA TABLE (ELEM,ELNO)
-         PARA='SOUS_POINT'
-         TYPE='I'
-         CALL TBEXIP(TABIN,PARA,EXIST,TYPE)
-         IF(EXIST.AND.TYPCHS(1:4).NE.'ELGA')THEN
-                   VALK (1) = PARA(1:5)
-                   VALK (2) = TABIN(1:8)
-                   VALK (3) = TYPCHS(1:4)
-            CALL U2MESG('F', 'MODELISA9_4',3,VALK,0,0,0,0.D0)
-          ENDIF
 
 C        (V4) ON VERIFIE QUE LES MAILLES FOURNIES DANS LA TABLE
 C        APPARTIENNENT AU MAILLAGE
@@ -233,11 +221,11 @@ C        APPARTIENNENT AU MAILLAGE
          PARA='MAILLE'
          CALL TBEXVE(TABIN,PARA,OBJMA,BASV,NBVAL,TYPE)
          CALL JEVEUO(OBJMA,'L',JMA)
-         CALL VERIMA(MA,ZK8(JMA),NBVAL,PARA(1:6))
+         CALL VERIMA(MA,ZK8(JMA),NBVAL,PARA)
 
 C        (V5) POUR LES CHAMPS ELNO ON VERIFIE SI LE NUMERO DE NOEUD
 C             EST POSSIBLE :
-         IF(TYPCHS(1:4).EQ.'ELNO')THEN
+         IF(TYPCHS.EQ.'ELNO')THEN
             CALL JEVEUO(MA//'.TYPMAIL','L',JTYPMA)
             OBJPT='&&WORK3'
             PARA='POINT'
@@ -259,6 +247,11 @@ C             EST POSSIBLE :
  45         CONTINUE
          ENDIF
 
+C        -- ON CALCULE LA LISTE DES NOMS DES CMPS (&&WORK1)
+C        -- ON CALCULE IMAI,IPOI,ISPT
+         IMAI=0
+         IPOI=0
+         ISPT=0
          K=1
          NCMP=ZI(JTBNP)
          CALL WKVECT('&&WORK1','V V K24',NCMP,JCMP)
@@ -285,29 +278,42 @@ C        DE LA TABLE CORRESPONDENT A LA GRANDEUR LUE
 
 C ---   CREATION DU CHAM_ELEM_S
 
+        CALL ASSERT(IMAI.GT.0)
         OBJMAI=ZK24(JTBLP+4*(IMAI-1)+2)
         CALL JEVEUO(OBJMAI,'L',JOBJ1)
-        IF(TYPCHS(1:4).NE.'ELEM')THEN
+        IF(IPOI.GT.0)THEN
            OBJPOI=ZK24(JTBLP+4*(IPOI-1)+2)
            CALL JEVEUO(OBJPOI,'L',JOBJP)
         ENDIF
-        IF(TYPCHS(1:4).EQ.'ELGA')THEN
+        IF(ISPT.GT.0)THEN
            OBJSSP=ZK24(JTBLP+4*(ISPT-1)+2)
            CALL JEVEUO(OBJSSP,'L',JOBJS)
         ENDIF
 
 
-C       DETERMINATION : NOMBRE DE POINTS DE GAUSS PAR ELEMENT
-C                       NOMBRE DE SOUS-POINTS
-        IF(TYPCHS(1:4).EQ.'ELGA')THEN
+C       CALCUL DU NOMBRE DE SOUS_POINT PAR ELEMENT (&&SP_TOT):
+        CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,K8B,IRET)
+        IF (ISPT.GT.0) THEN
+          CALL WKVECT('&&SP_TOT','V V I',NBMA,JSP)
+          NBSSP=1
+          DO 55 ILI=1,NBLIG
+             NBSP1=ZI(JOBJS+ILI-1)
+             CALL ASSERT(NBSP1.GT.0)
+             NBSSP=MAX(NBSSP,NBSP1)
+             NOMA=ZK8(JOBJ1+ILI-1)
+             CALL JENONU(JEXNOM(MA//'.NOMMAI',NOMA),NUMA)
+             CALL ASSERT(NUMA.GT.0)
+             ZI(JSP-1+NUMA)=MAX(ZI(JSP-1+NUMA),NBSP1)
+ 55       CONTINUE
+        ELSE
+          NBSSP=1
+          ISP=1
+        ENDIF
 
-           OBJSSP=ZK24(JTBLP+4*(ISPT-1)+2)
-           CALL JEVEUO(OBJSSP,'L',JOBJS)
-           NBSSP=1
-           DO 55 ILI=1,ZI(JTBNP+1)
-              IF(NBSSP.LT.ZI(JOBJS+ILI-1))NBSSP=ZI(JOBJS+ILI-1)
- 55        CONTINUE
 
+C       CALCUL DU NOMBRE DE POINTS DE GAUSS PAR ELEMENT (&&PG_TOT):
+        IF(TYPCHS.EQ.'ELGA')THEN
+           CALL WKVECT('&&PG_TOT','V V I',NBMA,JPG)
            CALL JENONU(JEXNOM('&CATA.GD.NOMGD',NOMGD),NUMGD)
            CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTION),IOPT)
            CALL JEVEUO(JEXNUM('&CATA.OP.DESCOPT',IOPT),'L',IPARA)
@@ -324,8 +330,6 @@ C                       NOMBRE DE SOUS-POINTS
            LGCO = ZI(IANBLC)
            CALL DISMOI('F','NOM_LIGREL',MO,'MODELE',IBID,LIGREL,IBID)
            CALL JEVEUO(LIGREL//'.REPE','L',JREPE)
-           CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,K8B,IRET)
-           CALL WKVECT('&&PG_TOT','V V I',NBMA,JPG)
            DO 65 IMA=1,NBMA
               ZI(JPG-1+IMA)=0
  65        CONTINUE
@@ -352,13 +356,23 @@ C                       NOMBRE DE SOUS-POINTS
         ENDIF
 
 
-C       CREATION DU CHAM_ELEM_S
-        IF(TYPCHS(1:4).EQ.'ELNO'.OR.TYPCHS(1:4).EQ.'ELEM')THEN
-           CALL CESCRE(BASE,CHS,TYPCHS(1:4),MA,NOMGD,NCMP,
-     &          ZK24(JCMP),-1,-1,-NCMP)
-        ELSEIF(TYPCHS(1:4).EQ.'ELGA')THEN
-           CALL CESCRE(BASE,CHS,TYPCHS(1:4),MA,NOMGD,NCMP,
-     &          ZK24(JCMP),ZI(JPG),-NBSSP,-NCMP)
+C       CREATION DU CHAM_ELEM_S VIERGE :
+        IF (NBSSP.EQ.1) THEN
+          IF(TYPCHS.EQ.'ELNO'.OR.TYPCHS.EQ.'ELEM')THEN
+             CALL CESCRE(BASE,CHS,TYPCHS,MA,NOMGD,NCMP,
+     &            ZK24(JCMP),-1,-1,-NCMP)
+          ELSEIF(TYPCHS.EQ.'ELGA')THEN
+             CALL CESCRE(BASE,CHS,TYPCHS,MA,NOMGD,NCMP,
+     &            ZK24(JCMP),ZI(JPG),-1,-NCMP)
+          ENDIF
+        ELSE
+          IF(TYPCHS.EQ.'ELNO'.OR.TYPCHS.EQ.'ELEM')THEN
+             CALL CESCRE(BASE,CHS,TYPCHS,MA,NOMGD,NCMP,
+     &            ZK24(JCMP),-1,ZI(JSP),-NCMP)
+          ELSEIF(TYPCHS.EQ.'ELGA')THEN
+             CALL CESCRE(BASE,CHS,TYPCHS,MA,NOMGD,NCMP,
+     &            ZK24(JCMP),ZI(JPG),ZI(JSP),-NCMP)
+          ENDIF
         ENDIF
 
 
@@ -370,24 +384,27 @@ C ---   REMPLISSAGE DU CHAM_S
         CALL JEVEUO(CHS//'.CESL','E',JCESL)
         CALL JEVEUO(CHS//'.CESC','L',JCESC)
 
-        IF(TYPCHS(1:4).EQ.'ELNO')THEN
+
+        IF(TYPCHS.EQ.'ELNO')THEN
         DO 90 ICMP=1,NCMP
           OBJLG=ZK24(JTBLP+4*(ZI(JIND+ICMP-1)-1)+3)
           CALL JEVEUO(OBJLG,'L',JOBJ2)
           OBJR=ZK24(JTBLP+4*(ZI(JIND+ICMP-1)-1)+2)
           CALL JEVEUO(OBJR,'L',JOBJ3)
 
-         DO 95 ILI=1,ZI(JTBNP+1)
+         DO 95 ILI=1,NBLIG
              IF(ZI(JOBJ2+ILI-1).EQ.1)THEN
+                IF (ISPT.GT.0) ISP=ZI(JOBJS+ILI-1)
                 NOMA=ZK8(JOBJ1+ILI-1)
                 CALL JENONU(JEXNOM(MA//'.NOMMAI',NOMA),NUMA)
-                CALL CESEXI('S',JCESD,JCESL,NUMA,ZI(JOBJP+ILI-1),1,
+                CALL CESEXI('S',JCESD,JCESL,NUMA,ZI(JOBJP+ILI-1),ISP,
      &               ICMP,IAD)
                 IF(IAD.GT.0)THEN
                    VALK (1) = TABIN(1:8)
                    VALK (2) = NOMA
                    VALI (1) = ZI(JOBJP+ILI-1)
-                   CALL U2MESG('F', 'MODELISA9_6',2,VALK,1,VALI,0,0.D0)
+                   VALI (2) = ISP
+                   CALL U2MESG('F', 'MODELISA9_6',2,VALK,2,VALI,0,0.D0)
                 ELSE
                    IAD=-IAD
                 ENDIF
@@ -397,8 +414,8 @@ C ---   REMPLISSAGE DU CHAM_S
  95       CONTINUE
  90    CONTINUE
 
-      ELSEIF(TYPCHS(1:4).EQ.'ELGA')THEN
 
+      ELSEIF(TYPCHS.EQ.'ELGA')THEN
         CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NCMPMX,KBID,IBID)
 
         DO 100 ICMP=1,NCMP
@@ -407,19 +424,20 @@ C ---   REMPLISSAGE DU CHAM_S
           OBJR=ZK24(JTBLP+4*(ZI(JIND+ICMP-1)-1)+2)
           CALL JEVEUO(OBJR,'L',JOBJ3)
 
-          DO 105 ILI=1,ZI(JTBNP+1)
+          DO 105 ILI=1,NBLIG
              IF(ZI(JOBJ2+ILI-1).EQ.1)THEN
+                IF (ISPT.GT.0) ISP=ZI(JOBJS+ILI-1)
                 NOMA=ZK8(JOBJ1+ILI-1)
                 CALL JENONU(JEXNOM(MA//'.NOMMAI',NOMA),NUMA)
                 CALL CESEXI('C',JCESD,JCESL,NUMA,ZI(JOBJP+ILI-1),
-     &              ZI(JOBJS+ILI-1),ICMP,IAD)
+     &              ISP,ICMP,IAD)
                 IF(IAD.GE.0)THEN
                   VALK (1) = TABIN(1:8)
                   VALK (2) = NOMA
                   VALI (1) = ZI(JOBJP+ILI-1)
-                  VALI (2) = ZI(JOBJS+ILI-1)
+                  VALI (2) = ISP
                   IF(IAD.GT.0)THEN
-                    CALL U2MESG('F','MODELISA9_7',2,VALK,2,VALI,0,0.D0)
+                    CALL U2MESG('F','MODELISA9_6',2,VALK,2,VALI,0,0.D0)
                   ELSE
                     CALL U2MESG('F','MODELISA9_33',2,VALK,2,VALI,0,0.D0)
                   ENDIF
@@ -430,26 +448,28 @@ C ---   REMPLISSAGE DU CHAM_S
                 ZL(JCESL+IAD-1)=.TRUE.
              ENDIF
  105       CONTINUE
-
  100    CONTINUE
 
-      ELSEIF(TYPCHS(1:4).EQ.'ELEM')THEN
+
+      ELSEIF(TYPCHS.EQ.'ELEM')THEN
          DO 110 ICMP=1,NCMP
           OBJLG=ZK24(JTBLP+4*(ZI(JIND+ICMP-1)-1)+3)
           CALL JEVEUO(OBJLG,'L',JOBJ2)
           OBJR=ZK24(JTBLP+4*(ZI(JIND+ICMP-1)-1)+2)
           CALL JEVEUO(OBJR,'L',JOBJ3)
 
-          DO 115 ILI=1,ZI(JTBNP+1)
+          DO 115 ILI=1,NBLIG
              IF(ZI(JOBJ2+ILI-1).EQ.1)THEN
+                IF (ISPT.GT.0) ISP=ZI(JOBJS+ILI-1)
                 NOMA=ZK8(JOBJ1+ILI-1)
                 CALL JENONU(JEXNOM(MA//'.NOMMAI',NOMA),NUMA)
-                CALL CESEXI('S',JCESD,JCESL,NUMA,1,1,
+                CALL CESEXI('S',JCESD,JCESL,NUMA,1,ISP,
      &               ICMP,IAD)
                 IF(IAD.GT.0)THEN
                    VALK (1) = TABIN(1:8)
                    VALK (2) = NOMA
-                   CALL U2MESG('F', 'MODELISA9_8',2,VALK,0,0,0,0.D0)
+                   VALI (1) = ISP
+                   CALL U2MESG('F', 'MODELISA9_7',2,VALK,1,VALI,0,0.D0)
                 ELSE
                    IAD=-IAD
                 ENDIF

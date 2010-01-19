@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE VABHHTS J.PELLET
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM (EN 2D ET EN FILAIRE)
 #                   + CAS_FIGURE='2D'
@@ -97,7 +97,11 @@ DETRUIRE(CONCEPT=_F(NOM=XX))
 # 2.2) projection d'un maillage 2D sur un maillage 2D  (CARRE2 -> CARRE1)
 #=================================================================================
 XX=PROJ_CHAMP(RESULTAT=T_CARRE2,METHODE='ELEM',  MODELE_1=CARRE2,MODELE_2=CARRE1,
-              VIS_A_VIS=_F(GROUP_MA_1='CARRE2',GROUP_MA_2='CARRE1', CAS_FIGURE='2D'))
+              # la 1ere occurrence de VIS_A_VIS ne sert a rien pour le resultat de la projection
+              # mais cela permet de tester le comportement de PROJ_CHAMP avec plusieurs occurrences de VIS_A_VIS
+              VIS_A_VIS=(
+                _F(TOUT_1='OUI',       GROUP_MA_2='CARRE1', CAS_FIGURE='2D'),
+                _F(GROUP_MA_1='CARRE2',GROUP_MA_2='CARRE1', CAS_FIGURE='2D')))
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    GROUP_NO='A', VALE=3.0, REFERENCE='ANALYTIQUE'),)
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 18/01/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,11 +29,20 @@ C                        CRITERE  : ( CRIT1 , CRIT2 )          L_TXM
 C     PREC1 ET CRIT1 SONT LA PRECISION ET LE CRITERE DU TEST
 C     PREC2 ET CRIT2 SONT LA PRECISION ET LE CRITERE DE L'EXTRACTION
 C ----------------------------------------------------------------------
-      INTEGER       IFIC, N1, NOCC, IUNIFI
+      REAL*8        TSTNAN, RESNAN, R8NNEM
+      INTEGER       IFIC, N1, NOCC, IUNIFI, IISNAN, N
       LOGICAL       ULEXIS
+      CHARACTER*8   REPONS
       CHARACTER*16  NOMFI
 C     ------------------------------------------------------------------
-
+C     TEST DU MECANISME DE NAN
+      CALL GETVTX(' ','TEST_NAN',1,1,1,REPONS,N)
+      IF ( REPONS .EQ. 'OUI' ) THEN
+         TSTNAN = R8NNEM ( )
+         RESNAN = TSTNAN*1.D0
+         IF ( IISNAN(RESNAN).NE.0 ) RESNAN = 0.D0
+      ENDIF
+C
       CALL INFMAJ()
 
       NOMFI = ' '

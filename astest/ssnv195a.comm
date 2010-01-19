@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv195a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,7 +172,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                   RESI_GLOB_MAXI=1e-12*E*DEPX,
                                   ),               
                   SOLVEUR=_F(METHODE='MUMPS',
-                             PCENT_PIVOT=250,
+                             PCENT_PIVOT=10,
                              ),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);

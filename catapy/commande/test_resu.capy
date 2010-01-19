@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 18/01/2010   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@
 TEST_RESU=PROC(nom="TEST_RESU",op=23,
             UIinfo={"groupes":("Impression",)},
          fr="Extraction d'une valeur d'une structure de donnée et comparaison à une valeur de référence",
-         regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','RESU','GENE','OBJET')),
+         regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','RESU','GENE','OBJET','TEST_NAN',)),
 
          CHAM_NO         =FACT(statut='f',max='**',
            regles=(UN_PARMI('NOEUD','GROUP_NO','TYPE_TEST'),
@@ -165,4 +165,6 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
                                                             "NON_REGRESSION","AUTRE_ASTER",) ),
            VERSION         =SIMP(statut='f',typ='TXM' ),
          ),
+
+         TEST_NAN        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
 )  ;

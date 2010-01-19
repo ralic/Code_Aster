@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 18/01/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,6 @@ C     ----------------------------------------------------------------
 
       CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TPERD,IRET1)
       CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TF,IRET2)
-      DTPER = TF-TPERD
       CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TPEREF,IRET3)
 
       IRET=IRET1+IRET2+IRET3
@@ -62,6 +61,7 @@ C     ----------------------------------------------------------------
 
       IF (COEL(NMAT).EQ.0) THEN
          IF (IRET.EQ.0) THEN
+           DTPER = TF-TPERD
            ETH=ALPHA*(TPERD+XSDT*DTPER-TPEREF)
          ELSE
            ETH=0.D0

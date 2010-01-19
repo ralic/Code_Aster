@@ -8,7 +8,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -277,7 +277,7 @@ C
       CALL WKVECT('&&MDITM1.NBSEG' , 'V V I' , NBNL    , JNS    )
       CALL WKVECT('&&MDITM1.OLDIA' , 'V V I' , NBNL    , JIA    )
 C
-      CALL WKVECT('&&MDITM1.CHOC'  , 'V V R8', 5*NBNL  , ICHO   )
+      CALL WKVECT('&&MDITM1.CHOC'  , 'V V R8', 6*NBNL  , ICHO   )
       CALL WKVECT('&&MDITM1.ORIG'  , 'V V R8', 6*NBNL  , IORIG  )
       CALL WKVECT('&&MDITM1.ALPHA' , 'V V R8', 2*NBNL  , IALP   )
       CALL WKVECT('&&MDITM1.BETA'  , 'V V R8', 2*NBNL  , IBET   )
@@ -285,23 +285,24 @@ C
       CALL WKVECT('&&MDITM1.OLDF'  , 'V V R8', 9*NBNL  , IOLDF  )
       CALL WKVECT('&&MDITM1.NOCH'  , 'V V K8', NBNL    , IH     )
       DO 60 IC = 1, NBNL
-         ZR(ICHO  + 5*(IC-1) + 1 - 1) = PARCHO(IC,2)
-         ZR(ICHO  + 5*(IC-1) + 2 - 1) = PARCHO(IC,3)
-         ZR(ICHO  + 5*(IC-1) + 3 - 1) = PARCHO(IC,4)
-         ZR(ICHO  + 5*(IC-1) + 4 - 1) = PARCHO(IC,5)
-         ZR(ICHO  + 5*(IC-1) + 5 - 1) = PARCHO(IC,6)
-         ZR(IORIG + 6*(IC-1) + 1 - 1) = PARCHO(IC,13)
-         ZR(IORIG + 6*(IC-1) + 2 - 1) = PARCHO(IC,14)
-         ZR(IORIG + 6*(IC-1) + 3 - 1) = PARCHO(IC,15)
-         ZR(IORIG + 6*(IC-1) + 4 - 1) = PARCHO(IC,7)
-         ZR(IORIG + 6*(IC-1) + 5 - 1) = PARCHO(IC,8)
-         ZR(IORIG + 6*(IC-1) + 6 - 1) = PARCHO(IC,9)
-         ZR(IALP  + 2*(IC-1) + 1 - 1) = PARCHO(IC,16)
-         ZR(IALP  + 2*(IC-1) + 2 - 1) = PARCHO(IC,17)
-         ZR(IBET  + 2*(IC-1) + 1 - 1) = PARCHO(IC,18)
-         ZR(IBET  + 2*(IC-1) + 2 - 1) = PARCHO(IC,19)
-         ZR(IGAM  + 2*(IC-1) + 1 - 1) = PARCHO(IC,20)
-         ZR(IGAM  + 2*(IC-1) + 2 - 1) = PARCHO(IC,21)
+         ZR(ICHO  + 6*(IC-1) + 1 - 1) = PARCHO(IC,2)
+         ZR(ICHO  + 6*(IC-1) + 2 - 1) = PARCHO(IC,3)
+         ZR(ICHO  + 6*(IC-1) + 3 - 1) = PARCHO(IC,4)
+         ZR(ICHO  + 6*(IC-1) + 4 - 1) = PARCHO(IC,5)
+         ZR(ICHO  + 6*(IC-1) + 5 - 1) = PARCHO(IC,6)
+         ZR(ICHO  + 6*(IC-1) + 6 - 1) = PARCHO(IC,7)
+         ZR(IORIG + 6*(IC-1) + 1 - 1) = PARCHO(IC,14)
+         ZR(IORIG + 6*(IC-1) + 2 - 1) = PARCHO(IC,15)
+         ZR(IORIG + 6*(IC-1) + 3 - 1) = PARCHO(IC,16)
+         ZR(IORIG + 6*(IC-1) + 4 - 1) = PARCHO(IC,8)
+         ZR(IORIG + 6*(IC-1) + 5 - 1) = PARCHO(IC,9)
+         ZR(IORIG + 6*(IC-1) + 6 - 1) = PARCHO(IC,10)
+         ZR(IALP  + 2*(IC-1) + 1 - 1) = PARCHO(IC,17)
+         ZR(IALP  + 2*(IC-1) + 2 - 1) = PARCHO(IC,18)
+         ZR(IBET  + 2*(IC-1) + 1 - 1) = PARCHO(IC,19)
+         ZR(IBET  + 2*(IC-1) + 2 - 1) = PARCHO(IC,20)
+         ZR(IGAM  + 2*(IC-1) + 1 - 1) = PARCHO(IC,21)
+         ZR(IGAM  + 2*(IC-1) + 2 - 1) = PARCHO(IC,22)
   60  CONTINUE
 C
       NBSEG0 = 1

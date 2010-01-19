@@ -1,4 +1,4 @@
-# MODIF  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL TEMPOREL POUTRE SOUS EXCITATION ALEATOIRE AVEC DSP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1763,6 +1763,7 @@ DYNAMODE=DYNA_TRAN_MODAL(
                                JEU = 0.,
                                RIGI_NOR = 1.E6,
                                RIGI_TAN = 0.,
+                               FROTTEMENT='COULOMB',
                                COULOMB = 0.3),
                       _F(    NOEUD_1 = 'N70',
                                OBSTACLE = OBST,
@@ -1770,6 +1771,7 @@ DYNAMODE=DYNA_TRAN_MODAL(
                                NORM_OBST = (1., 0., 0.,),
                                RIGI_NOR = 1.E2,
                                RIGI_TAN = 0.,
+                               FROTTEMENT='COULOMB',
                                COULOMB = 0.3))
                           )
 

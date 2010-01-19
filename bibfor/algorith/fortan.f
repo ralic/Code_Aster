@@ -1,9 +1,10 @@
-      SUBROUTINE FORTAN(FN,XLOCAL,VITLOC,CFROTT,KTANG,CTANG,IADHER,
-     &                  OLDVT,OLDFT,OLDXLO,COST,SINT,FTANGE,FLOCAL,VT)
+      SUBROUTINE FORTAN(FN,XLOCAL,VITLOC,CFROTD,CFROTS,KTANG,CTANG,
+     &                  IADHER,OLDVT,OLDFT,OLDXLO,
+     &                  COST,SINT,FTANGE,FLOCAL,VT)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2001   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +30,7 @@ C-------------------   DECLARATION DES VARIABLES   ---------------------
 C
 C ARGUMENTS
 C ---------
-      REAL*8     FN, XLOCAL(*), VITLOC(*), CFROTT, KTANG, CTANG
+      REAL*8     FN, XLOCAL(*), VITLOC(*), CFROTD, CFROTS, KTANG, CTANG
       INTEGER    IADHER
       REAL*8     OLDVT(*), OLDFT(*), OLDXLO(*), COST, SINT,
      &           FTANGE(*), FLOCAL(*), VT(*)
@@ -66,8 +67,8 @@ C     -----------------
       IF ( (XSCAL.GE.0.0D0).AND.(IADHER.EQ.0).AND.(XNORVT.GT.1.0D-06) )
      &   THEN
 C
-         FTANGE(1) = -CFROTT * FN * VT(1) / XNORVT
-         FTANGE(2) = -CFROTT * FN * VT(2) / XNORVT
+         FTANGE(1) = -CFROTD * FN * VT(1) / XNORVT
+         FTANGE(2) = -CFROTD * FN * VT(2) / XNORVT
 C
          OLDFT(1)  = FTANGE(1)
          OLDFT(2)  = FTANGE(2)
@@ -90,14 +91,14 @@ C
          FTANGE(2) = OLDFT(2) - KTANG * DXT(2) - CTANG * VT(2)
 C
          XNFTAN = SQRT(FTANGE(1)*FTANGE(1)+FTANGE(2)*FTANGE(2))
-         IF ( XNFTAN.GT.(CFROTT*FN) ) THEN
+         IF ( XNFTAN.GT.(CFROTS*FN) ) THEN
             IADHER = 0
             IF ( XNORVT.EQ.0.0D0 ) THEN
                FTANGE(1) = 0.0D0
                FTANGE(2) = 0.0D0
             ELSE
-               FTANGE(1) = -CFROTT * FN * VT(1) / XNORVT
-               FTANGE(2) = -CFROTT * FN * VT(2) / XNORVT
+               FTANGE(1) = -CFROTD * FN * VT(1) / XNORVT
+               FTANGE(2) = -CFROTD * FN * VT(2) / XNORVT
             ENDIF
           ENDIF
             OLDFT(1)  = FTANGE(1)

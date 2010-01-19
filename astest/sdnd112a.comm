@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE TEST EFFET LAME FLUIDE ENTRE DEUX STRUCTURES MOBILES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,6 +135,7 @@ TRAN_GE1=DYNA_TRAN_MODAL(  MASS_GENE=MASSEGEN,   RIGI_GENE=RIGIDGEN,
                        RIGI_NOR = 2.88E10,
                        AMOR_NOR = 0.,
                        RIGI_TAN = 0.,
+                       FROTTEMENT='COULOMB',
                        COULOMB = 0.,
                        LAME_FLUIDE = 'OUI',
                        ALPHA = -0.08325,
@@ -219,6 +220,7 @@ TRAN_GE2=DYNA_TRAN_MODAL(  MASS_GENE=MASSEGEN,   RIGI_GENE=RIGIDGEN,
                        RIGI_NOR = 2.88E10,
                        AMOR_NOR = 0.,
                        RIGI_TAN = 0.,
+                       FROTTEMENT='COULOMB',
                        COULOMB = 0.,
                        LAME_FLUIDE = 'OUI',
                        ALPHA = -0.08325,

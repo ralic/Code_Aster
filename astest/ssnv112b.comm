@@ -1,4 +1,4 @@
-# MODIF  DATE 26/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 # ssnv112b.para = tps_job 60 mem_job 200Mo mem_aster 70 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -132,7 +132,7 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                                   EPSI_REFE=3.E-4,
                                   RESI_REFE_RELA=1.E-3,),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=100,NPREC=-1,),);
+                              PCENT_PIVOT=30,NPREC=-1,),);
 
 # REMARQUE : STRICTO SENSU, LE CALCUL DE ERRE_ELEM_SIGM EST FAUX CAR
 #            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE

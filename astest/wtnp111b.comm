@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # ======================================================================
 # TITRE TEST ELEMENTAIRE DU SUINTEMENT : EPONGE SOUS PRESSION
 # wtnp111b.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
@@ -114,7 +114,7 @@ CHAR1 = DEFI_CONTACT(MODELE      = MODELE,
                      ),                            
                      )
 
-MESTAT=STAT_NON_LINE(SOLVEUR=_F( METHODE='MUMPS', PCENT_PIVOT=80, ),
+MESTAT=STAT_NON_LINE(SOLVEUR=_F( METHODE='MUMPS', PCENT_PIVOT=10, ),
                      MODELE=MODELE,
                      CHAM_MATER=CHMATO,
                      EXCIT=(_F(CHARGE=CHAR0,),),

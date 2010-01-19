@@ -13,7 +13,7 @@
       LOGICAL            LAMOR, LFLU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,52 +55,53 @@ C                PARCHO(I, 2)= RIGI NORMALE
 C                PARCHO(I, 3)= AMOR NORMAL
 C                PARCHO(I, 4)= RIGI TANGENTIELLE
 C                PARCHO(I, 5)= AMOR TANGENTIEL
-C                PARCHO(I, 6)= COULOMB
-C                PARCHO(I, 7)= COOR INIT NOEUD_1 X REP GLOBAL
-C                PARCHO(I, 8)= COOR INIT NOEUD_1 Y REP GLOBAL
-C                PARCHO(I, 9)= COOR INIT NOEUD_1 Z REP GLOBAL
-C                PARCHO(I,10)= COOR INIT NOEUD_2 X REP GLOBAL
-C                PARCHO(I,11)= COOR INIT NOEUD_2 Y REP GLOBAL
-C                PARCHO(I,12)= COOR INIT NOEUD_2 Z REP GLOBAL
-C                PARCHO(I,13)= COOR ORIGINE OBSTACLE X REP GLOBAL
-C                PARCHO(I,14)= COOR ORIGINE OBSTACLE Y REP GLOBAL
-C                PARCHO(I,15)= COOR ORIGINE OBSTACLE Z REP GLOBAL
-C                PARCHO(I,16)= SIN A
-C                PARCHO(I,17)= COS A
-C                PARCHO(I,18)= SIN B
-C                PARCHO(I,19)= COS B
-C                PARCHO(I,20)= SIN G
-C                PARCHO(I,21)= COS G
-C                PARCHO(I,22)= X AVANT ADHERENCE
-C                PARCHO(I,23)= Y AVANT ADHERENCE
-C                PARCHO(I,24)= Z AVANT ADHERENCE
-C                PARCHO(I,25)= FT1 AVANT ADHERENCE
-C                PARCHO(I,26)= FT2 AVANT ADHERENCE
-C                PARCHO(I,27)= VT1 PAS PRECEDENT
-C                PARCHO(I,28)= VT2 PAS PRECEDENT
-C                PARCHO(I,29)= DIST_1 DU NOEUD_1
-C                PARCHO(I,30)= DIST_2 DU NOEUD_2
-C                PARCHO(I,31)= COEF A FORCE FLUIDE
-C                PARCHO(I,32)= COEF B FORCE FLUIDE
-C                PARCHO(I,33)= COEF C FORCE FLUIDE
-C                PARCHO(I,34)= COEF D FORCE FLUIDE
-C                PARCHO(I,35)= COUCHE LIMITE
-C                PARCHO(I,36)= SIGNE DE Y20LOC-Y10LOC
-C                PARCHO(I,37)= SIGNE DE Z20LOC-Z10LOC
-C                PARCHO(I,38)= COEF RIGI_K1 DISPO ANTI SISMIQUE
-C                PARCHO(I,39)= COEF RIGI_K2 DISPO ANTI SISMIQUE
-C                PARCHO(I,40)= COEF SEUIL_FX DISPO ANTI SISMIQUE
-C                PARCHO(I,41)= COEF C DISPO ANTI SISMIQUE
-C                PARCHO(I,42)= COEF PUIS_ALPHA DISPO ANTI SISMIQUE
-C                PARCHO(I,43)= COEF DX_MAX DISPO ANTI SISMIQUE
-C                PARCHO(I,44)= NORMALE X
-C                PARCHO(I,45)= NORMALE Y
-C                PARCHO(I,46)= NORMALE Z
-C                PARCHO(I,47)= TAUX DE RESTITUTION (CALCULE DANS CRICHO)
+C                PARCHO(I, 6)= COULOMB_DYNA
+C                PARCHO(I, 7)= COULOMB_STAT
+C                PARCHO(I, 8)= COOR INIT NOEUD_1 X REP GLOBAL
+C                PARCHO(I, 9)= COOR INIT NOEUD_1 Y REP GLOBAL
+C                PARCHO(I,10)= COOR INIT NOEUD_1 Z REP GLOBAL
+C                PARCHO(I,11)= COOR INIT NOEUD_2 X REP GLOBAL
+C                PARCHO(I,12)= COOR INIT NOEUD_2 Y REP GLOBAL
+C                PARCHO(I,13)= COOR INIT NOEUD_2 Z REP GLOBAL
+C                PARCHO(I,14)= COOR ORIGINE OBSTACLE X REP GLOBAL
+C                PARCHO(I,15)= COOR ORIGINE OBSTACLE Y REP GLOBAL
+C                PARCHO(I,16)= COOR ORIGINE OBSTACLE Z REP GLOBAL
+C                PARCHO(I,17)= SIN A
+C                PARCHO(I,18)= COS A
+C                PARCHO(I,19)= SIN B
+C                PARCHO(I,20)= COS B
+C                PARCHO(I,21)= SIN G
+C                PARCHO(I,22)= COS G
+C                PARCHO(I,23)= X AVANT ADHERENCE
+C                PARCHO(I,24)= Y AVANT ADHERENCE
+C                PARCHO(I,25)= Z AVANT ADHERENCE
+C                PARCHO(I,26)= FT1 AVANT ADHERENCE
+C                PARCHO(I,27)= FT2 AVANT ADHERENCE
+C                PARCHO(I,28)= VT1 PAS PRECEDENT
+C                PARCHO(I,29)= VT2 PAS PRECEDENT
+C                PARCHO(I,30)= DIST_1 DU NOEUD_1
+C                PARCHO(I,31)= DIST_2 DU NOEUD_2
+C                PARCHO(I,32)= COEF A FORCE FLUIDE
+C                PARCHO(I,33)= COEF B FORCE FLUIDE
+C                PARCHO(I,34)= COEF C FORCE FLUIDE
+C                PARCHO(I,35)= COEF D FORCE FLUIDE
+C                PARCHO(I,36)= COUCHE LIMITE
+C                PARCHO(I,37)= SIGNE DE Y20LOC-Y10LOC
+C                PARCHO(I,38)= SIGNE DE Z20LOC-Z10LOC
+C                PARCHO(I,39)= COEF RIGI_K1 DISPO ANTI SISMIQUE
+C                PARCHO(I,40)= COEF RIGI_K2 DISPO ANTI SISMIQUE
+C                PARCHO(I,41)= COEF SEUIL_FX DISPO ANTI SISMIQUE
+C                PARCHO(I,42)= COEF C DISPO ANTI SISMIQUE
+C                PARCHO(I,43)= COEF PUIS_ALPHA DISPO ANTI SISMIQUE
+C                PARCHO(I,44)= COEF DX_MAX DISPO ANTI SISMIQUE
+C                PARCHO(I,45)= NORMALE X
+C                PARCHO(I,46)= NORMALE Y
+C                PARCHO(I,47)= NORMALE Z
 C                PARCHO(I,48)= TAUX DE RESTITUTION (CALCULE DANS CRICHO)
-C                PARCHO(I,49)= FORCE LIMITE DE FLAMBAGE
-C                PARCHO(I,50)= PALIER FORCE DE REACTION APRES FLAMBAGE
-C                PARCHO(I,51)= RIGIDITE APRES FLAMBAGE
+C                PARCHO(I,49)= TAUX DE RESTITUTION (CALCULE DANS CRICHO)
+C                PARCHO(I,50)= FORCE LIMITE DE FLAMBAGE
+C                PARCHO(I,51)= PALIER FORCE DE REACTION APRES FLAMBAGE
+C                PARCHO(I,52)= RIGIDITE APRES FLAMBAGE
 C OUT : NOECHO : NOEUD DE CHOC: NOECHO(I,1) = NOEUD_1
 C                               NOECHO(I,2) = SOUS_STRUC_1
 C                               NOECHO(I,3) = NUME_1
@@ -197,7 +198,7 @@ C
          DO 24 J = 1, 9
             NOECHO(I,J) = ' '
  24      CONTINUE
-         DO 26 J = 1, 51
+         DO 26 J = 1, 52
             PARCHO(I,J) = 0.D0
  26      CONTINUE
  20   CONTINUE
@@ -226,16 +227,16 @@ C
 C
         CTANG = PARCHO(I,5)
 C
-        ORIGOB(1) = PARCHO(I,13)
-        ORIGOB(2) = PARCHO(I,14)
-        ORIGOB(3) = PARCHO(I,15)
+        ORIGOB(1) = PARCHO(I,14)
+        ORIGOB(2) = PARCHO(I,15)
+        ORIGOB(3) = PARCHO(I,16)
 C
-        SINA = PARCHO(I,16)
-        COSA = PARCHO(I,17)
-        SINB = PARCHO(I,18)
-        COSB = PARCHO(I,19)
-        SING = PARCHO(I,20)
-        COSG = PARCHO(I,21)
+        SINA = PARCHO(I,17)
+        COSA = PARCHO(I,18)
+        SINB = PARCHO(I,19)
+        COSB = PARCHO(I,20)
+        SING = PARCHO(I,21)
+        COSG = PARCHO(I,22)
 C
         IF (INFO.EQ.2) THEN
           VALI = I
@@ -245,9 +246,9 @@ C
             VALK = NOECHO(I,2)
             CALL U2MESG('I+','ALGORITH16_3',1,VALK,0,0,0,0.D0)
           ENDIF
-          VALR (1) = PARCHO(I,7)
-          VALR (2) = PARCHO(I,8)
-          VALR (3) = PARCHO(I,9)
+          VALR (1) = PARCHO(I,8)
+          VALR (2) = PARCHO(I,9)
+          VALR (3) = PARCHO(I,10)
           CALL U2MESG('I+','ALGORITH16_4',0,' ',0,0,3,VALR)
           IF ( NOECHO(I,9)(1:2).EQ.'BI') THEN
             VALK = NOECHO(I,5)
@@ -256,28 +257,28 @@ C
               VALK = NOECHO(I,6)
               CALL U2MESG('I+','ALGORITH16_3',1,VALK,0,0,0,0.D0)
             ENDIF
-            VALR (1) = PARCHO(I,10)
-            VALR (2) = PARCHO(I,11)
-            VALR (3) = PARCHO(I,12)
+            VALR (1) = PARCHO(I,11)
+            VALR (2) = PARCHO(I,12)
+            VALR (3) = PARCHO(I,13)
             CALL U2MESG('I+','ALGORITH16_4',0,' ',0,0,3,VALR)
           ENDIF
           VALR (1) = CTANG
-          VALR (2) = PARCHO(I,13)
-          VALR (3) = PARCHO(I,14)
-          VALR (4) = PARCHO(I,15)
-          VALR (5) = PARCHO(I,16)
-          VALR (6) = PARCHO(I,17)
-          VALR (7) = PARCHO(I,18)
-          VALR (8) = PARCHO(I,19)
-          VALR (9) = PARCHO(I,20)
-          VALR (10)= PARCHO(I,21)
+          VALR (2) = PARCHO(I,14)
+          VALR (3) = PARCHO(I,15)
+          VALR (4) = PARCHO(I,16)
+          VALR (5) = PARCHO(I,17)
+          VALR (6) = PARCHO(I,18)
+          VALR (7) = PARCHO(I,19)
+          VALR (8) = PARCHO(I,20)
+          VALR (9) = PARCHO(I,21)
+          VALR (10)= PARCHO(I,22)
           CALL U2MESG('I+','ALGORITH16_8',0,' ',0,0,10,VALR)
           IF ( NOECHO(I,9)(1:2).EQ.'BI') THEN
-             XJEU = (PARCHO(I,10)-PARCHO(I,7))**2 +
-     &              (PARCHO(I,11)-PARCHO(I,8))**2 +
-     &              (PARCHO(I,12)-PARCHO(I,9))**2
+             XJEU = (PARCHO(I,11)-PARCHO(I,8))**2 +
+     &              (PARCHO(I,12)-PARCHO(I,9))**2 +
+     &              (PARCHO(I,13)-PARCHO(I,10))**2
              IF (I.LE.NBCHOC) THEN
-                XJEU = SQRT(XJEU) - (PARCHO(I,29)+PARCHO(I,30))
+                XJEU = SQRT(XJEU) - (PARCHO(I,30)+PARCHO(I,31))
              ELSE
                 XJEU = SQRT(XJEU)
              ENDIF
@@ -288,9 +289,9 @@ C
         ENDIF
 C
 C       POSITION INITIALE DU NOEUD 1 DANS LE REPERE GLOBAL
-        DPIGLO(1) = PARCHO(I,7)
-        DPIGLO(2) = PARCHO(I,8)
-        DPIGLO(3) = PARCHO(I,9)
+        DPIGLO(1) = PARCHO(I,8)
+        DPIGLO(2) = PARCHO(I,9)
+        DPIGLO(3) = PARCHO(I,10)
 C       --- PASSAGE DANS LE REPERE LOCAL --- POUR LE NOEUD 1
         CALL GLOLOC(DPIGLO,ORIGOB,SINA,COSA,SINB,COSB,SING,COSG,DPILOC)
 C       POSITON INITIALE DIFFERENTIELLE = DPILOC SI 1 NOEUD
@@ -300,9 +301,9 @@ C       POSITON INITIALE DIFFERENTIELLE = DPILOC SI 1 NOEUD
 C
         IF ( NOECHO(I,9)(1:2).EQ.'BI') THEN
 C          POSITION INITIALE DU NOEUD 2 DANS LE REPERE GLOBAL
-           DPIGLO(4) = PARCHO(I,10)
-           DPIGLO(5) = PARCHO(I,11)
-           DPIGLO(6) = PARCHO(I,12)
+           DPIGLO(4) = PARCHO(I,11)
+           DPIGLO(5) = PARCHO(I,12)
+           DPIGLO(6) = PARCHO(I,13)
 C          --- PASSAGE DANS LE REPERE LOCAL --- POUR LE NOEUD 2
            CALL GLOLOC(DPIGLO(4),ORIGOB,SINA,COSA,SINB,COSB,SING,COSG,
      &                 DPILOC(4))
@@ -311,8 +312,8 @@ C          POSITION INITIALE DU NOEUD1 PAR RAPPORT AU NOEUD2
            DDPILO(2) = DPILOC(2)-DPILOC(5)
            DDPILO(3) = DPILOC(3)-DPILOC(6)
         ENDIF
-        PARCHO(I,36)= -SIGN(UN,DDPILO(2))
-        PARCHO(I,37)= -SIGN(UN,DDPILO(3))
+        PARCHO(I,37)= -SIGN(UN,DDPILO(2))
+        PARCHO(I,38)= -SIGN(UN,DDPILO(3))
 
  100  CONTINUE
 C

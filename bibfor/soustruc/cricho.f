@@ -4,7 +4,7 @@
       IMPLICIT  REAL*8  (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,9 +126,9 @@ C     CREATION DE FIMPO : FORCE UNITAIRE AU NOEUD DE CHOC (N)
      &                  'DY',NUNOE,IDDLY)
             CALL POSDDL('NUME_DDL',NOECHO(I,IC+2),NOECHO(I,IC),
      &                  'DZ',NUNOE,IDDLZ)
-            FIMPO(IDDLX)=PARCHO(I,44)
-            FIMPO(IDDLY)=PARCHO(I,45)
-            FIMPO(IDDLZ)=PARCHO(I,46)
+            FIMPO(IDDLX)=PARCHO(I,45)
+            FIMPO(IDDLY)=PARCHO(I,46)
+            FIMPO(IDDLZ)=PARCHO(I,47)
 C
 C           CALCUL DE RFIMPO : K*N
             CALL MRMULT('ZERO',IRIGI,FIMPO,'R',RFIMPO,1)
@@ -168,15 +168,15 @@ C           RFIMPOX : K-1*N (SAUVEGARDE DEFORMEE STATIQUE)
    41       CONTINUE
 C
 C     CALCUL DE SOUP : TN*K-1*N
-            SOUP = PARCHO(I,44)*FIMPO(IDDLX)
-            SOUP = SOUP + PARCHO(I,45)*FIMPO(IDDLY)
-            SOUP = SOUP + PARCHO(I,46)*FIMPO(IDDLZ)
+            SOUP = PARCHO(I,45)*FIMPO(IDDLX)
+            SOUP = SOUP + PARCHO(I,46)*FIMPO(IDDLY)
+            SOUP = SOUP + PARCHO(I,47)*FIMPO(IDDLZ)
             DO 12 K=1,NEQ
               FIMPO(K)=0.D0
    12       CONTINUE
-            FIMPO(IDDLX)=PARCHO(I,44)
-            FIMPO(IDDLY)=PARCHO(I,45)
-            FIMPO(IDDLZ)=PARCHO(I,46)
+            FIMPO(IDDLX)=PARCHO(I,45)
+            FIMPO(IDDLY)=PARCHO(I,46)
+            FIMPO(IDDLZ)=PARCHO(I,47)
             DO 22 J = 1,NBMODE
                IF (RIGGEN(J).LE.0.D0) THEN
                  USR=0.D0
@@ -209,7 +209,7 @@ C     SCF : TYNU*N
                ZR(JEFLOC-1+J)=CC
                CEF = CEF + CC
  22         CONTINUE
-            PARCHO(I,47+JJ-1)=CT
+            PARCHO(I,48+JJ-1)=CT
 C            IF (CT.NE.0.D0) SEUIL=MIN(SEUIL,CT)
 C
             IF (INFO.GE.2) THEN

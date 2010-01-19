@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
 # TITRE  CTJ25 - RENUM RCMK / AFFE_CHAR_MECA / SOLVE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,70 +21,123 @@
 # MODELISATION 3D  POINTS   F'=NO2958   B5'=NO2974
 #======================================================================
 
-DEBUT(CODE=_F(NOM='YYYY108G',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='YYYY108G',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-MA=LIRE_MAILLAGE(
-                         )
+MA=LIRE_MAILLAGE();
 
-MO=AFFE_MODELE(      MAILLAGE=MA,
-                             AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
-                                                 MODELISATION = '3D')
-                         )
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
 
-MAT=DEFI_MATERIAU(    ELAS=_F(  E = 202702.7,  NU = 0.3),
-                            THER=_F(  LAMBDA = 2.7,  RHO_CP = 0.3)
-                         )
+MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,
+                          NU=.3,),
+                  THER=_F(LAMBDA=2.7,
+                          RHO_CP=.3,),);
 
-CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
-                            AFFE=_F(  TOUT = 'OUI',  MATER = MAT)
-                         )
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
 
-CHA=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
-                   _F(  GROUP_NO = 'GRNO7',     # X =-30.MM  Y=20.25MM
-                                      DX = 0.0,  DY = 0.01),
-                            _F(  GROUP_NO = 'GRNO1',  DZ = 0.0),      # Z =0.
-                            _F(  GROUP_NO = 'GRNO8',  DY = 0.0))      # Y =0.
-                         )
+CHA=AFFE_CHAR_MECA(MODELE=MO,
+                   DDL_IMPO=(_F(GROUP_NO='GRNO7',
+                                DX=0.,
+                                DY=0.01,),
+                             _F(GROUP_NO='GRNO1',
+                                DZ=0.,),
+                             _F(GROUP_NO='GRNO8',
+                                DY=0.,),),);
 
-MEL=CALC_MATR_ELEM(   MODELE=MO,       CHARGE=CHA,  CHAM_MATER=CHMAT,
-                                           OPTION='RIGI_MECA'
-                         )
+MEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                   MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CHARGE=CHA,);
 
-#
+NU=NUME_DDL(MATR_RIGI=MEL,
+            METHODE='GCPC',
+            RENUM='RCMK',);
 
-NU=NUME_DDL(         MATR_RIGI=MEL,  METHODE='GCPC', RENUM='RCMK'
-                         )
+MATAS=ASSE_MATRICE(MATR_ELEM=MEL,
+                   NUME_DDL=NU,);
 
-MATAS=ASSE_MATRICE(     MATR_ELEM=MEL,   NUME_DDL=NU
-                         )
+VEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                   CHARGE=CHA,);
 
-VEL=CALC_VECT_ELEM(   CHARGE=CHA,     OPTION='CHAR_MECA'
-                         )
-
-VECAS=ASSE_VECTEUR(     VECT_ELEM=VEL,  NUME_DDL=NU
-                         )
-
-KMATAS=FACTORISER(        MATR_ASSE=MATAS
-                         )
-
-KVECAS=RESOUDRE(          CHAM_NO=VECAS,      MATR=MATAS,
-                            MATR_PREC=KMATAS,
-                              RESI_RELA=.95E-7
-                         )
+VECAS=ASSE_VECTEUR(VECT_ELEM=VEL,
+                   NUME_DDL=NU,);
 
 # ----------------------------------------------------------------------
-TEST_RESU(CHAM_NO=(
- _F( CHAM_GD = KVECAS, NOEUD = 'NO2958', NOM_CMP = 'DY',
-                                       VALE = 0.0100000, PRECISION = 1.5E-4),
- _F( CHAM_GD = KVECAS, NOEUD = 'NO2958', NOM_CMP = 'DZ',
-                                       VALE = 1.0296E-4, PRECISION = 1.5E-4),
- _F( CHAM_GD = KVECAS, NOEUD = 'NO2974', NOM_CMP = 'DX',
-                                       VALE = 4.3006E-3, PRECISION = 1.5E-4),
- _F( CHAM_GD = KVECAS, NOEUD = 'NO2974', NOM_CMP = 'DY',
-                                       VALE = 9.2890E-3, PRECISION = 1.5E-4),
- _F( CHAM_GD = KVECAS, NOEUD = 'NO2974', NOM_CMP = 'DZ',
-                                       VALE = -2.9173E-5, PRECISION = 1.5E-4))
-             )
+# GCP + LDLT_INC
 
-FIN()
-#
+KMATAS=FACTORISER(MATR_ASSE=MATAS,);
+
+KVECAS=RESOUDRE(MATR=MATAS,
+                CHAM_NO=VECAS,
+                RESI_RELA=9.5e-08,
+                MATR_PREC=KMATAS,);
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=KVECAS,
+                      NOEUD='NO2958',
+                      NOM_CMP='DY',
+                      VALE=0.01,
+                      PRECISION=0.00015,),
+                   _F(CHAM_GD=KVECAS,
+                      NOEUD='NO2958',
+                      NOM_CMP='DZ',
+                      VALE=0.00010296,
+                      PRECISION=0.00015,),
+                   _F(CHAM_GD=KVECAS,
+                      NOEUD='NO2974',
+                      NOM_CMP='DX',
+                      VALE=0.0043006,
+                      PRECISION=0.00015,),
+                   _F(CHAM_GD=KVECAS,
+                      NOEUD='NO2974',
+                      NOM_CMP='DY',
+                      VALE=0.009289,
+                      PRECISION=0.00015,),
+                   _F(CHAM_GD=KVECAS,
+                      NOEUD='NO2974',
+                      NOM_CMP='DZ',
+                      VALE=-2.9173e-05,
+                      PRECISION=0.00015,),),);
+
+# ----------------------------------------------------------------------
+# GCP + LDLT_SP
+
+KMATAS2=FACTORISER(MATR_ASSE=MATAS,PRE_COND='LDLT_SP');
+
+KVECAS2=RESOUDRE(MATR=MATAS,
+                CHAM_NO=VECAS,
+                RESI_RELA=9.5e-08,
+                MATR_PREC=KMATAS2,);
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=KVECAS2,
+                      NOEUD='NO2958',
+                      NOM_CMP='DY',
+                      VALE=0.01,
+                      PRECISION=0.00015,),
+                   _F(CHAM_GD=KVECAS2,
+                      NOEUD='NO2958',
+                      NOM_CMP='DZ',
+                      VALE=0.00010296,
+                      PRECISION=0.00015,),
+                   _F(CHAM_GD=KVECAS2,
+                      NOEUD='NO2974',
+                      NOM_CMP='DX',
+                      VALE=0.0043006,
+                      PRECISION=0.00015,),
+                   _F(CHAM_GD=KVECAS2,
+                      NOEUD='NO2974',
+                      NOM_CMP='DY',
+                      VALE=0.009289,
+                      PRECISION=0.00015,),
+                   _F(CHAM_GD=KVECAS2,
+                      NOEUD='NO2974',
+                      NOM_CMP='DZ',
+                      VALE=-2.9173e-05,
+                      PRECISION=0.00015,),),);
+
+FIN();

@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C
 C ARGUMENTS
 C ---------
       INTEGER    NP3, IC, TYPCH(*), NBSEG(*)
-      REAL*8     CHOC(5,*), RC(NP3,*), THETA(NP3,*),
+      REAL*8     CHOC(6,*), RC(NP3,*), THETA(NP3,*),
      &           VLOC(*), XLOC(*), VLOC0(*), XLOC0(*), EXCLOC(*), TETAJ,
      &           JACOBC(3,*), JACOBK(3,*), FLOC(*), FLRES(*), OLD(9,*)
       INTEGER    OLDIA(*), IFORN
@@ -43,7 +43,7 @@ C -----------------
       INTEGER    TYPOBS, NBS, I, IADHER, IER
       REAL*8     YTEMP(3),
      &           XJEU, SINT, COST, DNORM, TOLCH,
-     &           FN, VN, CFROT, KN, CN, KT, CT,
+     &           FN, VN, CFROTD, CFROTS, KN, CN, KT, CT,
      &           OLDVT(2), OLDFT(2), OLDXLO(3), FT(2), VT(2),
      &           XLOCJ(3), ULOCJ(3), VLOCJ(3)
 C
@@ -84,14 +84,15 @@ C
 C
          KN     = CHOC(1,IC)
          CN     = CHOC(2,IC)
-         CFROT  = CHOC(5,IC)
+         CFROTD  = CHOC(5,IC)
+         CFROTS = CHOC(6,IC)
 C
          CALL FORNOR ( DNORM,VLOCJ,KN,CN,COST,SINT,FN,FLOC,VN,IFORN)
 C
          OLD(8,IC) = FN
          OLD(9,IC) = VN
 C
-         IF ( CFROT.NE.0.0D0 ) THEN
+         IF (( CFROTD.NE.0.0D0 ).OR.( CFROTS.NE.0.0D0 )) THEN
 C
             KT = CHOC(3,IC)
             CT = CHOC(4,IC)
@@ -103,7 +104,7 @@ C
             OLDXLO(1) = OLD(5,IC)
             OLDXLO(2) = OLD(6,IC)
             OLDXLO(3) = OLD(7,IC)
-            CALL FORTAN ( FN,XLOCJ,VLOCJ,CFROT,KT,CT,IADHER,
+            CALL FORTAN ( FN,XLOCJ,VLOCJ,CFROTD,CFROTS,KT,CT,IADHER,
      &                    OLDVT,OLDFT,OLDXLO,COST,SINT,FT,FLOC,VT)
             OLDIA(IC) = IADHER
             OLD(1,IC) = OLDVT(1)

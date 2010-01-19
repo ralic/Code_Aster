@@ -16,7 +16,7 @@
       REAL*8             TEMPS,PSIDEL(NBCHOC,NBEXCI,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,17 +111,17 @@ C
             VITLOC(J) = ZERO
  12      CONTINUE
 C
-         ORIGOB(1) = PARCHO(I,13)
-         ORIGOB(2) = PARCHO(I,14)
-         ORIGOB(3) = PARCHO(I,15)
-         SINA = PARCHO(I,16)
-         COSA = PARCHO(I,17)
-         SINB = PARCHO(I,18)
-         COSB = PARCHO(I,19)
-         SING = PARCHO(I,20)
-         COSG = PARCHO(I,21)
-         SIGNE(1) = PARCHO(I,36)
-         SIGNE(2) = PARCHO(I,37)
+         ORIGOB(1) = PARCHO(I,14)
+         ORIGOB(2) = PARCHO(I,15)
+         ORIGOB(3) = PARCHO(I,16)
+         SINA = PARCHO(I,17)
+         COSA = PARCHO(I,18)
+         SINB = PARCHO(I,19)
+         COSB = PARCHO(I,20)
+         SING = PARCHO(I,21)
+         COSG = PARCHO(I,22)
+         SIGNE(1) = PARCHO(I,37)
+         SIGNE(2) = PARCHO(I,38)
 C
 C        --- CONVERSION DDLS GENERALISES DDLS PHYSIQUES ---
 C        POUR LE NOEUD 1
@@ -133,9 +133,9 @@ C
      +                  NBEXCI,PSIDEL,COEDEP)
          ENDIF
 C        POSITION DU NOEUD 1 DANS LE REPERE GLOBAL
-         DEPGLO(1) = UX1 + PARCHO(I,7)
-         DEPGLO(2) = UY1 + PARCHO(I,8)
-         DEPGLO(3) = UZ1 + PARCHO(I,9)
+         DEPGLO(1) = UX1 + PARCHO(I,8)
+         DEPGLO(2) = UY1 + PARCHO(I,9)
+         DEPGLO(3) = UZ1 + PARCHO(I,10)
 C        VITESSE DU NOEUD 1 DANS LE REPERE GLOBAL
          IF (NONMOT(1:3).EQ.'NON') THEN
             CALL TOPHYS(I,0,DPLMOD,NBCHOC,NBMODE,VITGEN,VX1,VY1,VZ1)
@@ -178,9 +178,9 @@ C
      +                     NBEXCI,PSIDEL,COEDEP)
             ENDIF
 C           POSITION DU NOEUD 2 DANS LE REPERE GLOBAL
-            DEPGLO(4) = UX2 + PARCHO(I,10)
-            DEPGLO(5) = UY2 + PARCHO(I,11)
-            DEPGLO(6) = UZ2 + PARCHO(I,12)
+            DEPGLO(4) = UX2 + PARCHO(I,11)
+            DEPGLO(5) = UY2 + PARCHO(I,12)
+            DEPGLO(6) = UZ2 + PARCHO(I,13)
 C           VITESSE DU NOEUD 2 DANS LE REPERE GLOBAL
             IF (NONMOT(1:3).EQ.'NON') THEN
                CALL TOPHYS(I,3,DPLMOD,NBCHOC,NBMODE,VITGEN,VX2,VY2,VZ2)
@@ -227,24 +227,25 @@ C
          CNORM = PARCHO(I,3)
          KTANG = PARCHO(I,4)
          CTANG = PARCHO(I,5)
-         CFROT = PARCHO(I,6)
-         DIST1 = PARCHO(I,29)
-         DIST2 = PARCHO(I,30)
-         COEFA = PARCHO(I,31)
-         COEFB = PARCHO(I,32)
-         COEFC = PARCHO(I,33)
-         COEFD = PARCHO(I,34)
-         CL    = PARCHO(I,35)
-         COEFK1 = PARCHO(I,38)
-         COEFK2 = PARCHO(I,39)
-         COEFPY = PARCHO(I,40)
-         COEFCC = PARCHO(I,41)
-         COEFAD = PARCHO(I,42)
-         XMAX = PARCHO(I,43)
+         CFROTD = PARCHO(I,6)
+         CFROTS = PARCHO(I,7)
+         DIST1 = PARCHO(I,30)
+         DIST2 = PARCHO(I,31)
+         COEFA = PARCHO(I,32)
+         COEFB = PARCHO(I,33)
+         COEFC = PARCHO(I,34)
+         COEFD = PARCHO(I,35)
+         CL    = PARCHO(I,36)
+         COEFK1 = PARCHO(I,39)
+         COEFK2 = PARCHO(I,40)
+         COEFPY = PARCHO(I,41)
+         COEFCC = PARCHO(I,42)
+         COEFAD = PARCHO(I,43)
+         XMAX = PARCHO(I,44)
 C        --- PARAMETRES DE FLAMBAGE ---
-         FLIM   = PARCHO(I,49)
-         FSEUIL = PARCHO(I,50)
-         RIGIFL = PARCHO(I,51)
+         FLIM   = PARCHO(I,50)
+         FSEUIL = PARCHO(I,51)
+         RIGIFL = PARCHO(I,52)
          DEFPLA = SAUCHO(I,14)
 C
 C        ---  CALCUL DE LA DISTANCE NORMALE ---
@@ -266,14 +267,14 @@ C
                 IF (LOGCHO(I,3).EQ.1) THEN
                    IF ( DNORM .GE. CL ) THEN
                         LOGCHO(I,3) = 0
-                        PARCHO(I,35) = ZERO
+                        PARCHO(I,36) = ZERO
                         CL = ZERO
                    ENDIF
                 ELSE
                    CL = FFLUID/KNORM
                    IF ( DNORM .LE. CL) THEN
                       LOGCHO(I,3)=1
-                      PARCHO(I,35)=CL
+                      PARCHO(I,36)=CL
                    ENDIF
                 ENDIF
 
@@ -321,24 +322,25 @@ C           --- PONDERATION ---
             FN        =    FN    *(1.D0-POND)
 C
 
-            IF (( CFROT .NE. ZERO ) .AND. (DNORM .LE. ZERO )) THEN
-               OLDFT(1) = PARCHO(I,25)
-               OLDFT(2) = PARCHO(I,26)
-               OLDXL(1) = PARCHO(I,22)
-               OLDXL(2) = PARCHO(I,23)
-               OLDXL(3) = PARCHO(I,24)
-               OLDVT(1) = PARCHO(I,27)
-               OLDVT(2) = PARCHO(I,28)
-               CALL FTANG(FN,DDEPLO,VITLOC,CFROT,KTANG,CTANG,
+            IF ((( CFROTS .NE. ZERO ).OR.( CFROTD .NE. ZERO )) 
+     +             .AND. (DNORM .LE. ZERO )) THEN
+               OLDFT(1) = PARCHO(I,26)
+               OLDFT(2) = PARCHO(I,27)
+               OLDXL(1) = PARCHO(I,23)
+               OLDXL(2) = PARCHO(I,24)
+               OLDXL(3) = PARCHO(I,25)
+               OLDVT(1) = PARCHO(I,28)
+               OLDVT(2) = PARCHO(I,29)
+               CALL FTANG(FN,DDEPLO,VITLOC,CFROTD,CFROTS,KTANG,CTANG,
      +                    LOGCHO(I,1),OLDVT,OLDFT,OLDXL,
      +                    COST,SINT,FTANGE,FLOCAL,VTANG )
-               PARCHO(I,25) = OLDFT(1)
-               PARCHO(I,26) = OLDFT(2)
-               PARCHO(I,22) = OLDXL(1)
-               PARCHO(I,23) = OLDXL(2)
-               PARCHO(I,24) = OLDXL(3)
-               PARCHO(I,27) = OLDVT(1)
-               PARCHO(I,28) = OLDVT(2)
+               PARCHO(I,26) = OLDFT(1)
+               PARCHO(I,27) = OLDFT(2)
+               PARCHO(I,23) = OLDXL(1)
+               PARCHO(I,24) = OLDXL(2)
+               PARCHO(I,25) = OLDXL(3)
+               PARCHO(I,28) = OLDVT(1)
+               PARCHO(I,29) = OLDVT(2)
             ENDIF
 C
 C           --- PASSAGE DE LA FORCE DANS LE REPERE GLOBAL ---
@@ -357,11 +359,11 @@ C
             FN = ZERO
          ENDIF
 
-         PARCHO(I,22) = DDEPLO(1)
-         PARCHO(I,23) = DDEPLO(2)
-         PARCHO(I,24) = DDEPLO(3)
-         PARCHO(I,25) = ZERO
+         PARCHO(I,23) = DDEPLO(1)
+         PARCHO(I,24) = DDEPLO(2)
+         PARCHO(I,25) = DDEPLO(3)
          PARCHO(I,26) = ZERO
+         PARCHO(I,27) = ZERO
          LOGCHO(I,1) = 0
 C
 C        DE FACON PROVISOIRE ON STOCKE FFLUID DANS FN POUR VISU
@@ -393,11 +395,11 @@ C             --- LA FORCE OPPOSEE SUR NOEUD_2 ---
 C**           ELSE
 C**              FDISPO = ZERO
 C**           ENDIF
-           PARCHO(I,22) = DDEPLO(1)
-           PARCHO(I,23) = DDEPLO(2)
-           PARCHO(I,24) = DDEPLO(3)
-           PARCHO(I,25) = ZERO
+           PARCHO(I,23) = DDEPLO(1)
+           PARCHO(I,24) = DDEPLO(2)
+           PARCHO(I,25) = DDEPLO(3)
            PARCHO(I,26) = ZERO
+           PARCHO(I,27) = ZERO
 C           LOGCHO(I,1) = 0
 C
 C        DE FACON PROVISOIRE ON STOCKE FDISPO DANS FN POUR VISU
@@ -413,24 +415,24 @@ C
 C           --- CALCUL DE LA FORCE NORMALE REPERE LOCAL ---
             CALL MDFLAM(DNORM,VITLOC,KNORM,COST,SINT,FLIM,FSEUIL,
      +                  RIGIFL,DEFPLA,FN,FLOCAL,VNORM )
-            IF ( CFROT .NE. ZERO ) THEN
-               OLDFT(1) = PARCHO(I,25)
-               OLDFT(2) = PARCHO(I,26)
-               OLDXL(1) = PARCHO(I,22)
-               OLDXL(2) = PARCHO(I,23)
-               OLDXL(3) = PARCHO(I,24)
-               OLDVT(1) = PARCHO(I,27)
-               OLDVT(2) = PARCHO(I,28)
-               CALL FTANG(FN,DDEPLO,VITLOC,CFROT,KTANG,CTANG,
+            IF (( CFROTS .NE. ZERO ).OR.( CFROTD .NE. ZERO )) THEN
+               OLDFT(1) = PARCHO(I,26)
+               OLDFT(2) = PARCHO(I,27)
+               OLDXL(1) = PARCHO(I,23)
+               OLDXL(2) = PARCHO(I,24)
+               OLDXL(3) = PARCHO(I,25)
+               OLDVT(1) = PARCHO(I,28)
+               OLDVT(2) = PARCHO(I,29)
+               CALL FTANG(FN,DDEPLO,VITLOC,CFROTD,CFROTS,KTANG,CTANG,
      +                    LOGCHO(I,1),OLDVT,OLDFT,OLDXL,
      +                    COST,SINT,FTANGE,FLOCAL,VTANG )
-               PARCHO(I,25) = OLDFT(1)
-               PARCHO(I,26) = OLDFT(2)
-               PARCHO(I,22) = OLDXL(1)
-               PARCHO(I,23) = OLDXL(2)
-               PARCHO(I,24) = OLDXL(3)
-               PARCHO(I,27) = OLDVT(1)
-               PARCHO(I,28) = OLDVT(2)
+               PARCHO(I,26) = OLDFT(1)
+               PARCHO(I,27) = OLDFT(2)
+               PARCHO(I,23) = OLDXL(1)
+               PARCHO(I,24) = OLDXL(2)
+               PARCHO(I,25) = OLDXL(3)
+               PARCHO(I,28) = OLDVT(1)
+               PARCHO(I,29) = OLDVT(2)
             ENDIF
 C
 C           --- PASSAGE DE LA FORCE DANS LE REPERE GLOBAL ---
@@ -445,11 +447,11 @@ C           --- LA FORCE OPPOSEE SUR NOEUD_2 ---
      +                     -FGLOBA(1),-FGLOBA(2),-FGLOBA(3),FEXGEN)
             ENDIF
           ELSE
-            PARCHO(I,22) = DDEPLO(1)
-            PARCHO(I,23) = DDEPLO(2)
-            PARCHO(I,24) = DDEPLO(3)
-            PARCHO(I,25) = ZERO
+            PARCHO(I,23) = DDEPLO(1)
+            PARCHO(I,24) = DDEPLO(2)
+            PARCHO(I,25) = DDEPLO(3)
             PARCHO(I,26) = ZERO
+            PARCHO(I,27) = ZERO
             LOGCHO(I,1) = 0
             FTANGE(1) = ZERO
             FTANGE(2) = ZERO
@@ -465,24 +467,24 @@ C
 C           --- CALCUL DE LA FORCE NORMALE REPERE LOCAL ---
             CALL FNORM( DNORM,VITLOC,KNORM,CNORM,COST,SINT,
      +                                           FN,FLOCAL,VNORM )
-            IF ( CFROT .NE. ZERO ) THEN
-               OLDFT(1) = PARCHO(I,25)
-               OLDFT(2) = PARCHO(I,26)
-               OLDXL(1) = PARCHO(I,22)
-               OLDXL(2) = PARCHO(I,23)
-               OLDXL(3) = PARCHO(I,24)
-               OLDVT(1) = PARCHO(I,27)
-               OLDVT(2) = PARCHO(I,28)
-               CALL FTANG(FN,DDEPLO,VITLOC,CFROT,KTANG,CTANG,
+            IF (( CFROTS .NE. ZERO ).OR.( CFROTD .NE. ZERO )) THEN
+               OLDFT(1) = PARCHO(I,26)
+               OLDFT(2) = PARCHO(I,27)
+               OLDXL(1) = PARCHO(I,23)
+               OLDXL(2) = PARCHO(I,24)
+               OLDXL(3) = PARCHO(I,25)
+               OLDVT(1) = PARCHO(I,28)
+               OLDVT(2) = PARCHO(I,29)
+               CALL FTANG(FN,DDEPLO,VITLOC,CFROTD,CFROTS,KTANG,CTANG,
      +                    LOGCHO(I,1),OLDVT,OLDFT,OLDXL,
      +                    COST,SINT,FTANGE,FLOCAL,VTANG )
-               PARCHO(I,25) = OLDFT(1)
-               PARCHO(I,26) = OLDFT(2)
-               PARCHO(I,22) = OLDXL(1)
-               PARCHO(I,23) = OLDXL(2)
-               PARCHO(I,24) = OLDXL(3)
-               PARCHO(I,27) = OLDVT(1)
-               PARCHO(I,28) = OLDVT(2)
+               PARCHO(I,26) = OLDFT(1)
+               PARCHO(I,27) = OLDFT(2)
+               PARCHO(I,23) = OLDXL(1)
+               PARCHO(I,24) = OLDXL(2)
+               PARCHO(I,25) = OLDXL(3)
+               PARCHO(I,28) = OLDVT(1)
+               PARCHO(I,29) = OLDVT(2)
             ENDIF
 C
 C           --- PASSAGE DE LA FORCE DANS LE REPERE GLOBAL ---
@@ -497,11 +499,11 @@ C           --- LA FORCE OPPOSEE SUR NOEUD_2 ---
      +                     -FGLOBA(1),-FGLOBA(2),-FGLOBA(3),FEXGEN)
             ENDIF
            ELSE
-            PARCHO(I,22) = DDEPLO(1)
-            PARCHO(I,23) = DDEPLO(2)
-            PARCHO(I,24) = DDEPLO(3)
-            PARCHO(I,25) = ZERO
+            PARCHO(I,23) = DDEPLO(1)
+            PARCHO(I,24) = DDEPLO(2)
+            PARCHO(I,25) = DDEPLO(3)
             PARCHO(I,26) = ZERO
+            PARCHO(I,27) = ZERO
             LOGCHO(I,1) = 0
             FTANGE(1) = ZERO
             FTANGE(2) = ZERO

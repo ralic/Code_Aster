@@ -8,10 +8,10 @@
       LOGICAL             LFLU
       CHARACTER*8         NOECHO(NBNLI,*), INTITU(*)
       CHARACTER*14        NUMDDL
-      CHARACTER*16        TYPNUM
+      CHARACTER*16        TYPNUM, TYPFRO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,9 +125,9 @@ C
                   CALL JELIRA(JEXNUM(MAILLA//'.CONNEX',NUMAI),'LONMAX',
      &                                                       NBNMA,KBID)
                   IF (NBNMA.NE.2) THEN
-                  VALK (1) = MAMAI
-                  VALK (2) = 'SEG2'
-      CALL U2MESG('F', 'ALGORITH13_39',2,VALK,0,0,0,0.D0)
+                    VALK (1) = MAMAI
+                    VALK (2) = 'SEG2'
+                    CALL U2MESG('F', 'ALGORITH13_39',2,VALK,0,0,0,0.D0)
                   ENDIF
                   ILIAI = ILIAI + 1
                   CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA)),
@@ -163,7 +163,7 @@ C
                   CALL JENUNO(JEXNUM(MAILLA//'.NOMMAI',NUMAI),KBID)
                   VALK (1) = KBID
                   VALK (2) = 'SEG2'
-      CALL U2MESG('F', 'ALGORITH13_39',2,VALK,0,0,0,0.D0)
+                  CALL U2MESG('F', 'ALGORITH13_39',2,VALK,0,0,0,0.D0)
                      ENDIF
                      ILIAI = ILIAI + 1
                      CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA)),
@@ -197,7 +197,7 @@ C
                   ELSEIF (IRET.EQ.1) THEN
                   VALK (1) = NOMGR2
                   VALK (2) = NOMNO2
-      CALL U2MESG('A', 'ALGORITH13_41',2,VALK,0,0,0,0.D0)
+                  CALL U2MESG('A', 'ALGORITH13_41',2,VALK,0,0,0,0.D0)
                   ENDIF
                   NOECHO(ILIAI,5) = NOMNO2
                   LNOUE2 = .TRUE.
@@ -252,8 +252,8 @@ C
             CALL JENONU(JEXNOM(MAILLA//'.NOMNOE',NOECHO(ILIAI,1)),INO1)
             CALL JENONU(JEXNOM(MAILLA//'.NOMNOE',NOECHO(ILIAI,5)),INO2)
             DO 132 J = 1,3
-               PARCHO(ILIAI,6+J) = ZR(JCOOR+3*(INO1-1)+J-1)
-               PARCHO(ILIAI,9+J) = ZR(JCOOR+3*(INO2-1)+J-1)
+               PARCHO(ILIAI,7+J) = ZR(JCOOR+3*(INO1-1)+J-1)
+               PARCHO(ILIAI,10+J) = ZR(JCOOR+3*(INO2-1)+J-1)
  132        CONTINUE
 C
             KTANG = 0.D0
@@ -262,21 +262,32 @@ C
             IF (MOTFAC.EQ.'CHOC') THEN
            CALL GETVTX(MOTFAC,'INTITULE'   ,IOC,1,1,INTITU(ILIAI)   ,N1)
            CALL GETVR8(MOTFAC,'JEU'        ,IOC,1,1,PARCHO(ILIAI,1) ,N1)
-           CALL GETVR8(MOTFAC,'DIST_1'     ,IOC,1,1,PARCHO(ILIAI,29),N1)
-           CALL GETVR8(MOTFAC,'DIST_2'     ,IOC,1,1,PARCHO(ILIAI,30),N1)
+           CALL GETVR8(MOTFAC,'DIST_1'     ,IOC,1,1,PARCHO(ILIAI,30),N1)
+           CALL GETVR8(MOTFAC,'DIST_2'     ,IOC,1,1,PARCHO(ILIAI,31),N1)
            CALL GETVR8(MOTFAC,'RIGI_NOR'   ,IOC,1,1,PARCHO(ILIAI,2) ,N1)
            CALL GETVR8(MOTFAC,'AMOR_NOR'   ,IOC,1,1,PARCHO(ILIAI,3) ,N1)
            CALL GETVR8(MOTFAC,'RIGI_TAN'   ,IOC,1,1,KTANG       ,N1)
-           CALL GETVR8(MOTFAC,'COULOMB'    ,IOC,1,1,PARCHO(ILIAI,6) ,N1)
+           CALL GETVTX(MOTFAC,'FROTTEMENT'   ,IOC,1,1,TYPFRO       ,N1)
+            IF (TYPFRO .EQ. 'COULOMB         ') THEN   
+               CALL GETVR8(MOTFAC,'COULOMB'    ,IOC,1,1,
+     &          PARCHO(ILIAI,6) ,N1)
+               CALL GETVR8(MOTFAC,'COULOMB'    ,IOC,1,1,
+     &          PARCHO(ILIAI,7) ,N1)
+             ELSEIF (TYPFRO .EQ. 'COULOMB_STAT_DYN') THEN
+               CALL GETVR8(MOTFAC,'COULOMB_DYNA'    ,IOC,1,1,
+     &          PARCHO(ILIAI,6) ,N1)
+               CALL GETVR8(MOTFAC,'COULOMB_STAT'    ,IOC,1,1,
+     &          PARCHO(ILIAI,7) ,N1)
+             ENDIF
            CALL GETVR8(MOTFAC,'AMOR_TAN'   ,IOC,1,1,CTANG       ,NAMTAN)
            CALL GETVTX(MOTFAC,'LAME_FLUIDE',IOC,1,1,KBID        ,N1)
                IF (KBID(1:3).EQ.'OUI') THEN
                   LFLU=.TRUE.
                   LOGCHO(ILIAI,2)=1
-              CALL GETVR8('CHOC','ALPHA   ',IOC,1,1,PARCHO(ILIAI,31),N1)
-              CALL GETVR8('CHOC','BETA    ',IOC,1,1,PARCHO(ILIAI,32),N1)
-              CALL GETVR8('CHOC','CHI     ',IOC,1,1,PARCHO(ILIAI,33),N1)
-              CALL GETVR8('CHOC','DELTA   ',IOC,1,1,PARCHO(ILIAI,34),N1)
+              CALL GETVR8('CHOC','ALPHA   ',IOC,1,1,PARCHO(ILIAI,32),N1)
+              CALL GETVR8('CHOC','BETA    ',IOC,1,1,PARCHO(ILIAI,33),N1)
+              CALL GETVR8('CHOC','CHI     ',IOC,1,1,PARCHO(ILIAI,34),N1)
+              CALL GETVR8('CHOC','DELTA   ',IOC,1,1,PARCHO(ILIAI,35),N1)
                ENDIF
                CALL GETVID(MOTFAC,'OBSTACLE',IOC,1,1,NOECHO(ILIAI,9),N1)
                CALL TBLIVA(NOECHO(ILIAI,9),1,'LIEU',
@@ -293,26 +304,26 @@ C
                   NOECHO(ILIAI,9) = REFO(1:8)
                ENDIF
                IF ( NOECHO(ILIAI,9).EQ.'BI_CERCI' .AND.
-     &              PARCHO(ILIAI,30).LT.PARCHO(ILIAI,29)) THEN
+     &              PARCHO(ILIAI,31).LT.PARCHO(ILIAI,30)) THEN
                   CALL U2MESS('F','ALGORITH5_35')
                ENDIF
             ELSEIF (MOTFAC.EQ.'FLAMBAGE') THEN
                INTITU(I) = NOECHO(ILIAI,1)
           CALL GETVR8(MOTFAC,'JEU'         ,IOC,1,1,PARCHO(ILIAI,1) ,N1)
-          CALL GETVR8(MOTFAC,'DIST_1'      ,IOC,1,1,PARCHO(ILIAI,29),N1)
-          CALL GETVR8(MOTFAC,'DIST_2'      ,IOC,1,1,PARCHO(ILIAI,30),N1)
+          CALL GETVR8(MOTFAC,'DIST_1'      ,IOC,1,1,PARCHO(ILIAI,30),N1)
+          CALL GETVR8(MOTFAC,'DIST_2'      ,IOC,1,1,PARCHO(ILIAI,31),N1)
           CALL GETVR8(MOTFAC,'RIGI_NOR'    ,IOC,1,1,PARCHO(ILIAI,2) ,N1)
-          CALL GETVR8(MOTFAC,'FNOR_CRIT'   ,IOC,1,1,PARCHO(ILIAI,49),N1)
-          CALL GETVR8(MOTFAC,'FNOR_POST_FL',IOC,1,1,PARCHO(ILIAI,50),N1)
-         CALL GETVR8(MOTFAC,'RIGI_NOR_POST_FL',IOC,1,1,PARCHO(ILIAI,51),
-     &                                                             N1)
+          CALL GETVR8(MOTFAC,'FNOR_CRIT'   ,IOC,1,1,PARCHO(ILIAI,50),N1)
+          CALL GETVR8(MOTFAC,'FNOR_POST_FL',IOC,1,1,PARCHO(ILIAI,51),N1)
+          CALL GETVR8(MOTFAC,'RIGI_NOR_POST_FL',IOC,1,1,PARCHO(ILIAI,52)
+     &                                                           ,N1)
                LOGCHO(ILIAI,5) = 1
                IF ( PARCHO(ILIAI,2 ).LE.0.D0 .OR.
-     &              PARCHO(ILIAI,51).LE.0.D0 ) THEN
+     &              PARCHO(ILIAI,52).LE.0.D0 ) THEN
                   CALL U2MESS('F','ALGORITH5_40')
                ELSE
-                  RAP=PARCHO(ILIAI,49)/PARCHO(ILIAI,2)-PARCHO(ILIAI,50)/
-     &                                                 PARCHO(ILIAI,51)
+                  RAP=PARCHO(ILIAI,50)/PARCHO(ILIAI,2)-PARCHO(ILIAI,51)/
+     &                                                 PARCHO(ILIAI,52)
                   IF (RAP .LT. 0.D0)
      &               CALL U2MESS('F','ALGORITH5_41')
                ENDIF
@@ -331,18 +342,18 @@ C
                   NOECHO(ILIAI,9) = REFO(1:8)
                ENDIF
                IF ( NOECHO(ILIAI,9).EQ.'BI_CERCI'    .AND.
-     &              PARCHO(ILIAI,30).LT.PARCHO(ILIAI,29) ) THEN
+     &              PARCHO(ILIAI,31).LT.PARCHO(ILIAI,30) ) THEN
                   CALL U2MESS('F','ALGORITH5_35')
                ENDIF
 C
             ELSEIF (MOTFAC.EQ.'ANTI_SISM') THEN
                INTITU(ILIAI) = NOECHO(ILIAI,1)
-            CALL GETVR8(MOTFAC,'RIGI_K1   ',IOC,1,1,PARCHO(ILIAI,38),N1)
-            CALL GETVR8(MOTFAC,'RIGI_K2   ',IOC,1,1,PARCHO(ILIAI,39),N1)
-            CALL GETVR8(MOTFAC,'SEUIL_FX  ',IOC,1,1,PARCHO(ILIAI,40),N1)
-            CALL GETVR8(MOTFAC,'C         ',IOC,1,1,PARCHO(ILIAI,41),N1)
-            CALL GETVR8(MOTFAC,'PUIS_ALPHA',IOC,1,1,PARCHO(ILIAI,42),N1)
-            CALL GETVR8(MOTFAC,'DX_MAX    ',IOC,1,1,PARCHO(ILIAI,43),N1)
+            CALL GETVR8(MOTFAC,'RIGI_K1   ',IOC,1,1,PARCHO(ILIAI,39),N1)
+            CALL GETVR8(MOTFAC,'RIGI_K2   ',IOC,1,1,PARCHO(ILIAI,40),N1)
+            CALL GETVR8(MOTFAC,'SEUIL_FX  ',IOC,1,1,PARCHO(ILIAI,41),N1)
+            CALL GETVR8(MOTFAC,'C         ',IOC,1,1,PARCHO(ILIAI,42),N1)
+            CALL GETVR8(MOTFAC,'PUIS_ALPHA',IOC,1,1,PARCHO(ILIAI,43),N1)
+            CALL GETVR8(MOTFAC,'DX_MAX    ',IOC,1,1,PARCHO(ILIAI,44),N1)
                 LOGCHO(ILIAI,4)=1
                NOECHO(ILIAI,9) = 'BI_PLANY'
             ENDIF
@@ -357,9 +368,9 @@ C --------- SI AMOR_TAN NON RENSEIGNE ON LUI AFFECTE UNE VAL OPTIMISEE
             PARCHO(ILIAI,5) = CTANG
 C
             IF (NOECHO(ILIAI,9)(1:2).EQ.'BI') THEN
-               XJEU = (PARCHO(ILIAI,10)-PARCHO(ILIAI,7))**2 +
-     &                (PARCHO(ILIAI,11)-PARCHO(ILIAI,8))**2 +
-     &                (PARCHO(ILIAI,12)-PARCHO(ILIAI,9))**2
+               XJEU = (PARCHO(ILIAI,11)-PARCHO(ILIAI,8))**2 +
+     &                (PARCHO(ILIAI,12)-PARCHO(ILIAI,9))**2 +
+     &                (PARCHO(ILIAI,13)-PARCHO(ILIAI,10))**2
             ENDIF
 C
             CALL MDCHRE ( MOTFAC, IOC, ILIAI, MDGENE, TYPNUM, REPERE,

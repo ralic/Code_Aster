@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE LACHER D'UN PATIN FROTTANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,6 +153,7 @@ DYNAMODA=DYNA_TRAN_MODAL(      METHODE='DEVOGE',
                                    DIST_2 = 0.250,
                                    RIGI_NOR = 20.,
                                    RIGI_TAN = 400000.,
+                                   FROTTEMENT='COULOMB',
                                    COULOMB = COULOMB)
                           )
 

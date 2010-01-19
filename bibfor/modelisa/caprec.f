@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/11/2008   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,7 +176,7 @@ C....... DE LA GRANDEUR <SIEF_R>
    30   CONTINUE
         IF (IRANN.EQ.0) CALL U2MESS('F','MODELISA3_35')
 
-        IF (IRANN.GT.30) CALL VERI32()
+        CALL ASSERT(IRANN.LE.30)
         ICODOK = 2**IRANN
 
         LCART1 = .TRUE.

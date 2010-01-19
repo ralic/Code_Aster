@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DESROCHES X.DESROCHES
 
@@ -32,22 +32,20 @@ def macro_elas_mult_prod(self,NUME_DDL,CAS_CHARGE,**args ):
 MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro_elas_mult_prod,reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          fr="Calculer les réponses statiques linéaires pour différents cas de charges ou modes de Fourier",
-         regles=(UN_PARMI('CHAR_MECA_GLOBAL','CHAR_CINE_GLOBAL','LIAISON_DISCRET', ),),
+         regles=(UN_PARMI('CHAR_MECA_GLOBAL','LIAISON_DISCRET', ),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
          NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster,CO)),
-         CHAR_MECA_GLOBAL=SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
-         CHAR_CINE_GLOBAL=SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
+         CHAR_MECA_GLOBAL=SIMP(statut='f',typ=(char_meca),validators=NoRepeat(),max='**'),
          LIAISON_DISCRET =SIMP(statut='f',typ='TXM',into=("OUI",)),
          CAS_CHARGE      =FACT(statut='o',max='**',
            regles=(UN_PARMI('NOM_CAS','MODE_FOURIER'),
-                   UN_PARMI('CHAR_MECA','CHAR_CINE','VECT_ASSE'),),
+                   UN_PARMI('CHAR_MECA','VECT_ASSE'),),
            NOM_CAS         =SIMP(statut='f',typ='TXM' ),
            MODE_FOURIER    =SIMP(statut='f',typ='I' ),
            TYPE_MODE       =SIMP(statut='f',typ='TXM',defaut="SYME",into=("SYME","ANTI","TOUS") ),
-           CHAR_MECA       =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
-           CHAR_CINE       =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
+           CHAR_MECA       =SIMP(statut='f',typ=(char_meca),validators=NoRepeat(),max='**'),
            OPTION          =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                                  into=("EFGE_ELNO_DEPL","EPOT_ELEM_DEPL","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
                                        "SIGM_ELNO_CART","EFGE_ELNO_CART","DEGE_ELNO_DEPL","EPSI_ELNO_DEPL",

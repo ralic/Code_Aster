@@ -2,7 +2,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 18/01/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -306,14 +306,17 @@ C ======================================================================
 
 C - BOUCLE SUR LES POINTS DE GAUSS ----------------
       CALL RCVARC(' ','TEMP','REF','RIGI',1,1,TREF,IRET)
+      IF ( IRET.NE.0 ) TREF = 0.D0
 
       DO 645 KP = 1,NPG
         CALL VERIFT('RIGI',KP,1,'+',ZI(IMATE),'ELAS',1,EPSTHE(KP),IRET)
         CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TG(KP),IRET1)
+        IF ( IRET1.NE.0 ) TG(KP) = 0.D0
   645 CONTINUE
 
       DO 646 KP = 1,NNO
         CALL RCVARC(' ','TEMP','+','NOEU',KP,1,TGD(KP),IRET2)
+        IF ( IRET2.NE.0 ) TGD(KP) = 0.D0
   646 CONTINUE
 
       DO 640 KP = 1,NPG

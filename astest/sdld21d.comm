@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,7 +70,7 @@ DYNAHARM=DYNA_LINE_HARM( MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                              MATR_AMOR=MATASSC,
                              LIST_FREQ=LIFREQ,
                              TOUT_CHAM='OUI',
-                             SOLVEUR=_F( METHODE='MUMPS', ),                         
+                             SOLVEUR=_F( METHODE='MUMPS',PCENT_PIVOT=10, ),                         
                              EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = VECTASS))
 
 #----------------------------------------------------------
@@ -467,7 +467,7 @@ DYNAHAR2=DYNA_LINE_HARM(  MATR_MASS=MATASSM,  MATR_RIGI=MATASSR,
                               MATR_AMOR=MATASSC,
                               LIST_FREQ=LIFRE2,
                               NOM_CHAM=( 'VITE',  'ACCE', ),
-                             SOLVEUR=_F( METHODE='MUMPS', ),                         
+                             SOLVEUR=_F( METHODE='MUMPS',PCENT_PIVOT=10, ),                         
                              EXCIT=_F(  FONC_MULT = FONCONST,
                                      VECT_ASSE = VECTASS)  )
 

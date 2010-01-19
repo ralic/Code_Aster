@@ -1,7 +1,8 @@
       SUBROUTINE GCPC(M,IN,IP,AC,INPC,IPPC,ACPC,BF,XP,R,RR,P,IREP,
-     &                NITER,EPSI,CRITER)
+     &                NITER,EPSI,CRITER,
+     &                SOLVEU,MATAS,SMBR,VCINE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +56,9 @@ C DECLARATION PARAMETRES D'APPELS
       INTEGER M,IN(M),IP(*),INPC(M),IPPC(*),IREP,NITER
       REAL*8 AC(M),ACPC(M),BF(M),XP(M),R(M),RR(M),P(M),EPSI
       CHARACTER*19 CRITER
-
+      CHARACTER*19 VCINE,MATAS
+      CHARACTER*19   SMBR,     SOLVEU
+            
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -71,27 +74,40 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C DECLARATION VARIABLES LOCALES
       REAL*8 ZERO,BNORM,DNRM2,ANORM,EPSIX,ANORMX,RRRI,GAMA,RRRIM1,
      &       PARAAF,ANORXX,RAU,DDOT,VALR(2)
-      INTEGER IFM,NIV,I,JCRI,JCRR,JCRK,ITER,IRET
-      INTEGER VALI
-
+      INTEGER IFM,NIV,I,JCRI,JCRR,JCRK,ITER,IRET,ISLVK
+      INTEGER VALI,JSMBR
+      CHARACTER*24 PRECON,SOLVBD
+      COMPLEX*16 CBID
+      
       CALL MATFPE(-1)
 C
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
 
 C-----PARAMETRE D'AFFICHAGE DE LA DECROISSANCE DU RESIDU
-C (SI ON GAGNE PARAAF * 100%)
+C     (SI ON GAGNE PARAAF * 100%)
       PARAAF = 0.1D0
 
 C-----INITS DIVERS
       ZERO = 0.D0
       CALL ASSERT(IREP.EQ.0 .OR. IREP.EQ.1)
 
+C-----RECUPERATION DU PRECONDITIONNEUR        
+C  -- CREATION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION 
+C  -- (A DETRUIRE A LA SORTIE)
+      CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)  
+      PRECON=ZK24(ISLVK-1+2)
+      IF (PRECON.EQ.'LDLT_SP') THEN
+        SOLVBD=ZK24(ISLVK-1+3)
+        CALL CRSMSP(SOLVBD,MATAS)
+      ENDIF
+      
 C-----CALCULS PRELIMINAIRES
 
 C      ---- CALCUL DE NORME DE BF
@@ -100,7 +116,7 @@ C      ---- CALCUL DE NORME DE BF
         DO 10 I = 1,M
           XP(I) = ZERO
    10   CONTINUE
-CC        WRITE (IFM,*)'>>>>>>> SECOND MEMBRE = 0 DONC SOLUTION = 0 '
+C        WRITE (IFM,*)'>>>>>>> SECOND MEMBRE = 0 DONC SOLUTION = 0 '
         GO TO 80
       END IF
 
@@ -149,14 +165,26 @@ C       ---- PRECONDITIONNEMENT DU RESIDU:
 C                                             ZK = (LDLT)-1. RK
 C                                                   RK <--- R()
 C                                                  ZK <--- RR()
-C PREC DIAGONAL DESACTIVE, IC(N) PAR DEFAUT
-C        IF (PREC.EQ.'DIAG') THEN
+        IF (PRECON.EQ.'LDLT_INC') THEN
+          CALL GCLDM1(M,INPC,IPPC,ACPC,R,RR)
+        ELSE IF (PRECON.EQ.'LDLT_SP') THEN
+          CALL JEVEUO(SMBR//'.VALE','E',JSMBR)
+          DO 1 I=1,M
+            ZR(JSMBR-1+I)=R(I)
+    1     CONTINUE
+          SOLVBD=ZK24(ISLVK-1+3)
+          CALL AMUMPH('RESOUD',SOLVBD,MATAS,ZR(JSMBR),CBID,VCINE,1,IRET)
+          CALL JEVEUO(SMBR//'.VALE','L',JSMBR)
+          DO 2 I=1,M
+            RR(I)=ZR(JSMBR-1+I)
+    2     CONTINUE
+         ELSE 
+           CALL ASSERT(.FALSE.)
+C        ELSE IF (PRECON.EQ.'DIAG') THEN
 C          DO 40 I = 1,M
 C            RR(I) = R(I)*ACPC(I)
 C   40     CONTINUE
-C        ELSE IF (PREC.EQ.'LDLT') THEN
-          CALL GCLDM1(M,INPC,IPPC,ACPC,R,RR)
-C        END IF
+        END IF
 
 C                                             RRRI <--- (RK,ZK)
         RRRI = DDOT(M,R,1,RR,1)
@@ -212,7 +240,11 @@ C        ---  NON CONVERGENCE
       VALI = ITER
       VALR (1) = ANORM
       VALR (2) = ANORM/ANORXX
-      CALL U2MESG('F', 'ALGELINE4_3',0,' ',1,VALI,2,VALR)
+      IF (PRECON.EQ.'LDLT_INC') THEN
+        CALL U2MESG('F', 'ALGELINE4_3',0,' ',1,VALI,2,VALR)
+      ELSE IF (PRECON.EQ.'LDLT_SP') THEN
+        CALL U2MESG('F', 'ALGELINE4_6',0,' ',1,VALI,2,VALR)
+      END IF
 C    -----------
  1010 FORMAT (/'   * GCPC   NORME DU RESIDU =',D11.4,
      &       '  (INITIALISATION PAR X = ZERO)',/,
@@ -230,6 +262,12 @@ C    -----------
      &       ' ITERATIONS'/2X,32 ('*'),/)
 C    -----------
    80 CONTINUE
+   
+C --  DESTRUCTION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
+      IF (PRECON.EQ.'LDLT_SP') THEN
+        CALL DETRSD('SOLVEUR',SOLVBD)
+      ENDIF
+      
       CALL MATFPE(1)
 C
       END

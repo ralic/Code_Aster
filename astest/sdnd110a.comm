@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE LACHER D'UNE MASSE AVEC FORCE LAME FLUIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,6 +168,7 @@ DYNAMOD1=DYNA_TRAN_MODAL(
                                DIST_2 = 0.497,
                                RIGI_NOR = 2.E10,
                                RIGI_TAN = 2.E10,
+                               FROTTEMENT='COULOMB',
                                COULOMB = 0.,
                                LAME_FLUIDE = 'OUI',
                                ALPHA = -0.0833,
@@ -257,6 +258,7 @@ DYNAMOD2=DYNA_TRAN_MODAL(
                                DIST_2 = 0.497,
                                RIGI_NOR = 2.E10,
                                RIGI_TAN = 2.E10,
+                               FROTTEMENT='COULOMB',
                                COULOMB = 0.,
                                LAME_FLUIDE = 'OUI',
                                ALPHA = -0.0833,

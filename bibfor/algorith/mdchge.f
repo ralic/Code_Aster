@@ -11,7 +11,7 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,29 +167,32 @@ C
          CALL ORIENT(MDGENE,NOECHO(I,2),JCOOR1,INO1,COOR1,1)
          CALL ORIENT(MDGENE,NOECHO(I,6),JCOOR2,INO2,COOR2,1)
          DO 110 J = 1,3
-            PARCHO(I,6+J) = COOR1(J)
-            PARCHO(I,9+J) = COOR2(J)
+            PARCHO(I,7+J) = COOR1(J)
+            PARCHO(I,10+J) = COOR2(J)
  110     CONTINUE
 C
          KTANG = 0.D0
          CTANG = 0.D0
          CALL GETVTX(MOTFAC,'INTITULE'   ,I,1,1,INTITU(I)   ,N1)
          CALL GETVR8(MOTFAC,'JEU'        ,I,1,1,PARCHO(I,1) ,N1)
-         CALL GETVR8(MOTFAC,'DIST_1'     ,I,1,1,PARCHO(I,29),N1)
-         CALL GETVR8(MOTFAC,'DIST_2'     ,I,1,1,PARCHO(I,30),N1)
+         CALL GETVR8(MOTFAC,'DIST_1'     ,I,1,1,PARCHO(I,30),N1)
+         CALL GETVR8(MOTFAC,'DIST_2'     ,I,1,1,PARCHO(I,31),N1)
          CALL GETVR8(MOTFAC,'RIGI_NOR'   ,I,1,1,PARCHO(I,2) ,N1)
          CALL GETVR8(MOTFAC,'AMOR_NOR'   ,I,1,1,PARCHO(I,3) ,N1)
-         CALL GETVR8(MOTFAC,'RIGI_TAN'   ,I,1,1,KTANG       ,N1)
+         CALL GETVR8(MOTFAC,'RIGI_TAN'   ,I,1,1,KTANG       ,N1)      
          CALL GETVR8(MOTFAC,'COULOMB'    ,I,1,1,PARCHO(I,6) ,N1)
+         PARCHO(I,7) = PARCHO(I,6)
+         CALL GETVR8(MOTFAC,'COULOMB_DYNA'    ,I,1,1,PARCHO(I,6) ,N1)
+         CALL GETVR8(MOTFAC,'COULOMB_STAT'    ,I,1,1,PARCHO(I,7) ,N1)
          CALL GETVR8(MOTFAC,'AMOR_TAN'   ,I,1,1,CTANG       ,N1)
          CALL GETVTX(MOTFAC,'LAME_FLUIDE',I,1,1,KBID        ,N1)
          IF (KBID(1:3).EQ.'OUI') THEN
             LFLU = .TRUE.
             LOGCHO(I,2) = 1
-            CALL GETVR8(MOTFAC,'ALPHA   ',I,1,1,PARCHO(I,31),N1)
-            CALL GETVR8(MOTFAC,'BETA    ',I,1,1,PARCHO(I,32),N1)
-            CALL GETVR8(MOTFAC,'CHI     ',I,1,1,PARCHO(I,33),N1)
-            CALL GETVR8(MOTFAC,'DELTA   ',I,1,1,PARCHO(I,34),N1)
+            CALL GETVR8(MOTFAC,'ALPHA   ',I,1,1,PARCHO(I,32),N1)
+            CALL GETVR8(MOTFAC,'BETA    ',I,1,1,PARCHO(I,33),N1)
+            CALL GETVR8(MOTFAC,'CHI     ',I,1,1,PARCHO(I,34),N1)
+            CALL GETVR8(MOTFAC,'DELTA   ',I,1,1,PARCHO(I,35),N1)
          ENDIF
 C
          CALL GETVID(MOTFAC,'OBSTACLE',I,1,1,NOECHO(I,9),N1)
@@ -208,7 +211,7 @@ C
            NOECHO(I,9) = REFO(1:8)
          ENDIF
          IF (NOECHO(I,9).EQ.'BI_CERCI' .AND.
-     &           PARCHO(I,30).LT.PARCHO(I,29)) THEN
+     &           PARCHO(I,31).LT.PARCHO(I,30)) THEN
            CALL U2MESS('F','ALGORITH5_35')
          ENDIF
 C ------ SI CTANG NON PRECISE ON CALCULE UN AMORTISSEMENT CRITIQUE
@@ -221,9 +224,9 @@ C ------ SI CTANG NON PRECISE ON CALCULE UN AMORTISSEMENT CRITIQUE
          PARCHO(I,5) = CTANG
 C
          IF (NOECHO(I,9)(1:2).EQ.'BI') THEN
-            XJEU = (PARCHO(I,10)-PARCHO(I,7))**2 +
-     &           (PARCHO(I,11)-PARCHO(I,8))**2 +
-     &           (PARCHO(I,12)-PARCHO(I,9))**2
+            XJEU = (PARCHO(I,11)-PARCHO(I,8))**2 +
+     &           (PARCHO(I,12)-PARCHO(I,9))**2 +
+     &           (PARCHO(I,13)-PARCHO(I,10))**2
          ENDIF
 C
          CALL MDCHRE ( MOTFAC, I, I, MDGENE, TYPNUM, REPERE,

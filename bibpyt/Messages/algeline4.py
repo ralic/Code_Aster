@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline4 Messages  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,6 +53,21 @@ cata_msg = {
 
 5 : _("""
  Erreur données : noeud déjà existant :  %(k1)s
+"""),
+
+6 : _("""
+ Erreur lors de la résolution d'un système linéaire (GCPC) :
+ Non convergence  avec le nombre d'iterations autorisé :  %(i1)d
+   norme du residu (absolu)  :  %(r1)f
+   norme du residu (relatif) :  %(r2)f
+
+ Conseils :
+  * Vous pouvez augmenter le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
+  * Vous pouvez aussi augmenter la fréquence de réactualisation du préconditionneur
+   (SOLVEUR/REAC_PRECOND).
+  * Dans une commande non-linéaire (STAT_NON_LINE par exemple) vous pouvez aussi essayer de
+    diminuer la précision demandée pour la convergence (SOLVEUR/RESI_RELA), mais c'est plus
+    risqué car cela peut empecher la convergence de l'algorithme non-linéaire.
 """),
 
 7 : _("""

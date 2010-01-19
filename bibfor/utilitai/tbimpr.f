@@ -3,7 +3,7 @@
      &                    NPARPG, LIPAPG, FORMAR, FORMAC )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,11 +131,6 @@ C
      &        FORMAT .EQ. 'ASTER' ) THEN
             CALL TBIMEX ( TABLE, IFR, NPARIM, LIPAIM, FORMAT,
      &                                                FORMAR)
-C
-C        --- FORMAT "MOT_CLE" ---
-C
-         ELSEIF ( FORMAT .EQ. 'MOT_CLE' ) THEN
-            CALL TBIMMC ( TABLE, IFR, NPARIM, LIPAIM, FORMAR)
 C
 C        --- FORMAT "TABLEAU" ---
 C

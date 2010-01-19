@@ -10,7 +10,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C ---------
       INTEGER   NP1, NP2, NP3, NP4, NBM, NBMCD, NPFTS
       REAL*8    TC
       INTEGER   NBNL, TYPCH(*), NBSEG(*)
-      REAL*8    PHII(NP2,NP1,*), CHOC(5,*), ALPHA(2,*), BETA(2,*),
+      REAL*8    PHII(NP2,NP1,*), CHOC(6,*), ALPHA(2,*), BETA(2,*),
      &          GAMMA(2,*), ORIG(6,*), RC(NP3,*), THETA(NP3,*),
      &          MASGI(*), AMORI(*), PULSI(*),
      &          VITG(*), DEPG(*), VITG0(*), DEPG0(*),

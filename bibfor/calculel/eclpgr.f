@@ -1,6 +1,6 @@
       SUBROUTINE ECLPGR()
       IMPLICIT   NONE
-C MODIF CALCULEL  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -307,11 +307,6 @@ C               DANS MA2.
                     ADIEL = ZI(JCELD1-1+ZI(JCELD1-1+4+IGR)+4+4* (IEL-1)+
      &                      4)
                     ZR(JVAL2) = ZR(JCELV1-1+ADIEL-1+NDDL* (IIPG-1)+IDDL)
-
-
-C                -- POUR FACILITER LE TRAVAIL DE GIBI, ON PERTURBE UN
-C                   PEU LES VALEURS :
-                    ZR(JVAL2) = (1.D0+DBLE(INO)/5000.D0)*ZR(JVAL2)
    30             CONTINUE
    40           CONTINUE
    50         CONTINUE

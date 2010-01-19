@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR
 # ssnv185k.para = tps_job 100 mem_job 1024Mo mem_aster 70 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,7 +172,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    INCREMENT=_F(LIST_INST=L_INS1,
                                 INST_FIN=1.0,),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=20,),
+                              PCENT_PIVOT=10,),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);

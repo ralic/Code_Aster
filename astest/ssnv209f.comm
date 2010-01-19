@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209f.para = tps_job 320 mem_job 1000Mo mem_aster 100 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -168,7 +168,7 @@ U2M=STAT_NON_LINE(MODELE    = MO,
                                  ITER_GLOB_MAXI = 30,
                                  RESI_GLOB_RELA = 1.0E-6,),
                   SOLVEUR=_F(METHODE='MUMPS',
-                             PCENT_PIVOT=80,NPREC=-1),
+                             PCENT_PIVOT=30,NPREC=-1),
                   INFO=1,)
 
 #----------------------------------------------

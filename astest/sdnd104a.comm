@@ -1,4 +1,4 @@
-# MODIF  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DE LA PUISSANCE D'USURE D'UN PATIN FROTTANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,6 +169,7 @@ DYNAMOA1=DYNA_TRAN_MODAL(       METHODE='ADAPT',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 
@@ -188,6 +189,7 @@ DYNAMOD1=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 
@@ -207,6 +209,7 @@ DYNAMOE1=DYNA_TRAN_MODAL(       METHODE='EULER',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 
@@ -226,6 +229,7 @@ DYNAMOA2=DYNA_TRAN_MODAL(       METHODE='ADAPT',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 
@@ -245,6 +249,7 @@ DYNAMOD2=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 
@@ -264,6 +269,7 @@ DYNAMOE2=DYNA_TRAN_MODAL(       METHODE='EULER',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 
@@ -283,6 +289,7 @@ DYNAMOA3=DYNA_TRAN_MODAL(       METHODE='ADAPT',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 
@@ -302,6 +309,7 @@ DYNAMOD3=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 
@@ -321,6 +329,7 @@ DYNAMOE3=DYNA_TRAN_MODAL(       METHODE='EULER',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 
@@ -340,6 +349,7 @@ DYNAMOA4=DYNA_TRAN_MODAL(       METHODE='ADAPT',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 
@@ -359,6 +369,7 @@ DYNAMOD4=DYNA_TRAN_MODAL(       METHODE='DEVOGE',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 
@@ -378,6 +389,7 @@ DYNAMOE4=DYNA_TRAN_MODAL(       METHODE='EULER',
                                     JEU = 0.50,
                                     RIGI_NOR = 20.,
                                     RIGI_TAN = 9000000.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = COULOMB)
                            )
 

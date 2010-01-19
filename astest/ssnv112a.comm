@@ -1,4 +1,4 @@
-# MODIF  DATE 26/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (HEXA20) 3D
 # ssnv112a.para = tps_job 60 mem_job 128Mo mem_aster 95 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,7 +95,7 @@ EVOL=STAT_NON_LINE(MODELE=MO,INFO=2,
                                   EPSI_REFE=3.E-4,
                                   RESI_REFE_RELA=1.E-3,),
                    SOLVEUR=_F(METHODE='MUMPS',NPREC=-1,
-                              PCENT_PIVOT=100,),);
+                              PCENT_PIVOT=30,),);
 
 # REMARQUE : STRICTO SENSU, LE CALCUL DE ERRE_ELEM_SIGM EST FAUX CAR
 #            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE

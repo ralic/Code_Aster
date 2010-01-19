@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE IMPACT D'UNE POUTRE ARTICULEE SUR APPUI ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,7 +127,7 @@ TRANGEN=DYNA_TRAN_MODAL(  MASS_GENE=MASSEGEN,   RIGI_GENE=RIGIDGEN,
                                     NORM_OBST = ( 1.,     0.,   0., ),
                                     JEU = 0.1,
                                     RIGI_NOR = 18000.,  AMOR_NOR = 0.,
-                                    RIGI_TAN = 0.,      COULOMB = 0.)
+                                    RIGI_TAN = 0.,      FROTTEMENT='COULOMB', COULOMB = 0.)
                              )
 
 DYNATRAN=REST_GENE_PHYS(  RESU_GENE=TRANGEN,   NOM_CHAM='DEPL',
@@ -193,7 +193,7 @@ TRANGEN2=DYNA_TRAN_MODAL(  MASS_GENE=MASSEGEN,   RIGI_GENE=RIGIDGEN,
                                     NORM_OBST = ( 1.,     0.,   0., ),
                                     JEU = 0.1,
                                     RIGI_NOR = 45000.,  AMOR_NOR = 0.,
-                                    RIGI_TAN = 0.,      COULOMB = 0.)
+                                    RIGI_TAN = 0.,      FROTTEMENT='COULOMB',    COULOMB = 0.)
                              )
 
 DYNATRA2=REST_GENE_PHYS(  RESU_GENE=TRANGEN2,   NOM_CHAM='DEPL',

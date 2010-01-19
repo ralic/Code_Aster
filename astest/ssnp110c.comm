@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 # ssnp110c.para = tps_job 150 mem_job 192Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,7 +180,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     NEWTON=_F(REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=200,),
+                               PCENT_PIVOT=10,),
                     ARCHIVAGE=_F(LIST_INST=L_INST,
                                  CHAM_EXCLU='VARI_ELGA',),
                     INFO=1,);

@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements4 Messages  DATE 18/01/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -178,18 +178,8 @@ cata_msg = {
   l'option %(k1)s n'est pas disponible pour le comportement %(k2)s
 """),
 
-64 : _("""
-  Il est impossible de calculer la normale au noeud %(k1)s de la maille %(k2)s.
-  Des aretes doivent etre confondues.
-"""),
-
 65 : _("""
   Comportement inattendu : %(k1)s.
-"""),
-
-66 : _("""
-  Il est impossible de calculer la contrainte d'arc.
-  La normale à l'élément et le vecteur obtenu à partir du mot-clé ANGL_REP sont colinéaires.
 """),
 
 67: _("""

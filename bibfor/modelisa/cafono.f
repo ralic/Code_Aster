@@ -6,7 +6,7 @@
       CHARACTER*(*)            LIGRCZ,                 LIGRMZ
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -278,7 +278,6 @@ C     -----------------------------------------------
             IDGEX = JPRNM - 1 + (IN-1)*NBEC + 1
 
             DO 120 I = 1,6
-               IF ((I-1).GT.30) CALL VERI32()
                IF (EXISDG(ZI(IDGEX),I)) THEN
                   NUMEL = NTYPEL(I)
                END IF

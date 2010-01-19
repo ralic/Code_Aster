@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 18/01/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE POU_D_TGM
 # ssnv505h.para = tps_job 550 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,6 +158,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                           FONC_MULT=RAMPE,),
                       ),
                 CONTACT  = CHLAG,      
+                SOLVEUR=_F(RENUM='MDA'),
                 COMP_INCR=_F(RELATION='MULTIFIBRE'),
                 INCREMENT=_F(LIST_INST=L_INST,
                              ),
@@ -378,6 +379,7 @@ USIG=STAT_NON_LINE(MODELE=MODE,
                           FONC_MULT=RAMPE,),
                       ),
                 CONTACT  = CHSIG,      
+                SOLVEUR=_F(RENUM='MDA'),
                 COMP_INCR=_F(RELATION='MULTIFIBRE'),
                 INCREMENT=_F(LIST_INST=L_INST,
                              ),

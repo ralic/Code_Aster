@@ -1,4 +1,4 @@
-# MODIF  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE OSCILLATEUR SIMPLE SOUMIS A UNE EXCITATION ALEATOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,7 +94,7 @@ FREQ1=MODE_ITER_INV(   MATR_A=MATASSR1,      MATR_B=MATASSM1,
 #*********************************************************************#
 # *****CALCUL DE MODES STATIQUES; IMPRESSION FORMAT IDEAS*************#
 #*********************************************************************#
-MODESTA1=MODE_STATIQUE( MATR_RIGI=MATASSR1,SOLVEUR=_F(METHODE='MUMPS'),
+MODESTA1=MODE_STATIQUE( MATR_RIGI=MATASSR1,SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
                         MATR_MASS=MATASSM1,
                         MODE_STAT=_F(  NOEUD = 'P1',
                                     AVEC_CMP = 'DX')

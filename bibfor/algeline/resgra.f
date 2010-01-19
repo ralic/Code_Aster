@@ -1,6 +1,7 @@
-      SUBROUTINE RESGRA(MAT,MATF,VCINE,NITER,EPSI,CRITER,NSECM,RSOLU)
+      SUBROUTINE RESGRA(MAT,MATF,VCINE,NITER,EPSI,CRITER,NSECM,RSOLU,
+     &                  SOLVEU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +23,7 @@ C ======================================================================
       INTEGER NITER
       REAL*8 EPSI,RSOLU(*)
       CHARACTER*19 CRITER
+      CHARACTER*19 SOLVEU
 C----------------------------------------------------------------------
 C     ROUTINE DE HAUT NIVEAU DE RESOLUTION PAR UNE METHODE DE GRADIENT
 C     CONJUGUE (GCPC)
@@ -55,11 +57,12 @@ C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
       CHARACTER*19 KSTOC,KSTOCF
-      CHARACTER*19 VCIN19,MATAS,MATFAC
-      CHARACTER*4 PREC,TYPE
-      INTEGER IFM,NIV,IRET,IDVALC,IDIN,IDIP,JSMDE,NEQ,NBLC
+      CHARACTER*19 VCIN19,MATAS,MATFAC,SMBR
+      CHARACTER*4 TYPE
+      CHARACTER*24 PRECON
+      INTEGER IFM,NIV,IRET,IDVALC,IDIN,IDIP,JSMDE,NEQ,NBLC,ISLVK
       INTEGER IBID,IDAC,IDINPC,IDIPPC,IDACPC,IDW1,IDW2,IDW3
-      INTEGER JREFA,JREFAF,K,NSECM,LMAT,KDEB,IEQ,IDW4
+      INTEGER JREFA,JREFAF,K,NSECM,LMAT,KDEB,IEQ,IDW4,ISMBR
 
 C----------------------------------------------------------------------
 C     DEBUT
@@ -67,8 +70,13 @@ C     DEBUT
 
       CALL INFNIV(IFM,NIV)
 
+C     0- INITIALISATIONS :
+C     -----------------------------------
       MATAS=MAT
       MATFAC=MATF
+
+      CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
+      PRECON=ZK24(ISLVK-1+2)
 
 
 C     1- MATRICE :
@@ -117,16 +125,12 @@ C     ------------------------------------------------
 
 
 C     6- RECUPERATION DE LA MATRICE DE PRECONDITIONNEMENT:
-C     -----------------------------------------------------
-      CALL JEEXIN(MATFAC//'.REFA',IRET)
-      IF (IRET.EQ.0) CALL U2MESS('F','ALGELINE3_38')
+C     -----------------------------------------------------      
+      IF (PRECON(1:8).EQ.'LDLT_INC') THEN
+        CALL JEEXIN(MATFAC//'.REFA',IRET)
+        IF (IRET.EQ.0) CALL U2MESS('F','ALGELINE3_38')
 
-      CALL JEVEUO(MATFAC//'.REFA','L',JREFAF)
-
-C     LE SEUL PRECONDITIONNEMENT UTILISABLE EST LDLT :
-      PREC='LDLT'
-
-      IF (PREC.EQ.'LDLT') THEN
+        CALL JEVEUO(MATFAC//'.REFA','L',JREFAF)
         KSTOCF=ZK24(JREFAF-1+2)(1:14)//'.SMOS'
         CALL JEVEUO(KSTOCF//'.SMDI','L',IDINPC)
         CALL JEVEUO(KSTOCF//'.SMHC','L',IDIPPC)
@@ -146,14 +150,21 @@ C     9- RESOLUTION EFFECTIVE ---
 C     ---------------------------------
       DO 20,K=1,NSECM
         CALL WKVECT('&&RESGRA.W4','V V R',NEQ,IDW4)
+        
+C        ---- SOLUTION POUR MUMPS
+        SMBR='&&RESGRA.SMBR      '
+        CALL WKVECT(SMBR//'.VALE','V V R',NEQ,ISMBR)
+      
         KDEB=(K-1)*NEQ+1
         CALL GCPC(NEQ,ZI(IDIN),ZI(IDIP),ZR(IDAC),ZI(IDINPC),ZI(IDIPPC),
      &            ZR(IDACPC),RSOLU(KDEB),ZR(IDW4),ZR(IDW1),ZR(IDW2),
-     &            ZR(IDW3),0,NITER,EPSI,CRITER)
+     &            ZR(IDW3),0,NITER,EPSI,CRITER,
+     &            SOLVEU,MATAS,SMBR,VCIN19)
         DO 21,IEQ=1,NEQ
           RSOLU(KDEB-1+IEQ)=ZR(IDW4-1+IEQ)
    21   CONTINUE
         CALL JEDETR('&&RESGRA.W4')
+        CALL JEDETR(SMBR//'.VALE')
    20 CONTINUE
 
 

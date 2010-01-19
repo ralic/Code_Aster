@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,10 +61,15 @@ CALC_FORC_AJOU=OPER(nom="CALC_FORC_AJOU",op=199,sd_prod=vect_asse_gene,
              NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
-           b_gcpc          =BLOC (condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
-             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),
-             NIVE_REMPLISSAGE=SIMP(statut='f',typ='I',defaut=0),
-             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
+           b_gcpc         =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","LDLT_SP",),defaut="LDLT_INC" ),
+             b_ldltinc       =BLOC(condition = "PRE_COND == 'LDLT_INC' ", fr="Paramètres de la factorisation incomplète",
+               NIVE_REMPLISSAGE    =SIMP(statut='f',typ='I',defaut= 0 ),
+               RENUM               =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
+               ),
+             b_simple        =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr="Paramètres de la factorisation simple précision",
+               REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=5, ),
+               ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
            ),

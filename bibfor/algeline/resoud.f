@@ -2,7 +2,7 @@
      &                  CRITER,NSECM,RSOLU,CSOLU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2009   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER IBID,IFM,NIV
-      REAL*8 TEMPS(6)
       CHARACTER*24 METRES
       CHARACTER*3 KMPIC,TYPE,TYP1,KBID
       CHARACTER*19 MATR19,MPRE19,CSOL19
@@ -237,10 +236,10 @@ C     ----------------------------------
         CALL ASSERT(TYPE.EQ.'R')
         IF (NSECM.GT.0) THEN
           CALL RESGRA(MATR19,MPRE19,CINE19,NITER,EPSI,CRIT19,NSECM,
-     &                RSOLU)
+     &                RSOLU,SOLV19 )
         ELSE
           CALL RESGRA(MATR19,MPRE19,CINE19,NITER,EPSI,CRIT19,1,
-     &                ZR(JTRAV))
+     &                ZR(JTRAV),SOLV19 )
         ENDIF
 
 

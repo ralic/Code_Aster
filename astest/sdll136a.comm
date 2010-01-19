@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL D USURE SUR UN TUBE GV SOUMIS A UNE EXCITATION ALEATOIRE MULTIDIRECTIONNELLE
 # sdll136a.para = tps_job 500 mem_job 600Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -607,6 +607,7 @@ TRANGENE = DYNA_TRAN_MODAL (
                        AMOR_TAN=2.000000e+02,
                        JEU=2.400000e-04,
                        ANGL_VRIL=0.000000e+00,
+                       FROTTEMENT='COULOMB',
                        COULOMB=4.000000e-01,
                      ),
                    ),

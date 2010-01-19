@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF ENVIMA UTILITAI  DATE 18/01/2010   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -33,12 +33,19 @@
 /* undef entier et réel */
 #ifdef _USE_64_BITS
 static long   ISUND    = 0x7FFFFFFFFFFFFFFF ;
-static int    R8UND[2] = { 0x00000000 , 0x7ff80000 };
 #else
 static long   ISUND    = LONG_MAX ;
-static long   R8UND[2] = { 0x00000000 , 0x7ff80000 };
 #endif
 
+#ifdef _NAN_BULL
+static unsigned short R8UND[4] = {0, 65535, 65535, 65527};
+#else
+#ifdef _USE_64_BITS
+static int    R8UND[2] = { 0x00000000 , 0x7ff80000 };
+#else
+static long   R8UND[2] = { 0x00000000 , 0x7ff80000 };
+#endif
+#endif
 
 /* entier max, réel max, réel min, précision en réel simple et double */
 static long   ISMAX    = LONG_MAX ;

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 3D
 # ssnp131b.para = tps_job 500 mem_job 1400Mo mem_aster 30 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -278,7 +278,7 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                   ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=50),);
+                              PCENT_PIVOT=30),);
                               
 nbcop = 40;
 

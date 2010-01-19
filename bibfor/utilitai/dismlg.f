@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,CODMES,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER DIMGE(3)
       LOGICAL MELANG,LTEATT
       CHARACTER*1  K1BID
-      CHARACTER*8  KBID
+      CHARACTER*8  KBID,CALCRI
       CHARACTER*16 NOMTE,PHENOM,NOMODL
       CHARACTER*19 NOMOB
       CHARACTER*32 REPK
@@ -108,7 +108,8 @@ C     -----------------------------------------------------------------
      &        (QUESTI(1:7).EQ.'EXI_THM') .OR.
      &        (QUESTI.EQ.'EXI_TUYAU')  .OR. (QUESTI.EQ.'EXI_COQ3D') .OR.
      &        (QUESTI.EQ.'EXI_COQ1D')  .OR. (QUESTI.EQ.'EXI_GRILLE').OR.
-     &        (QUESTI.EQ.'EXI_PLAQUE') .OR. (QUESTI.EQ.'EXI_COQUE')
+     &        (QUESTI.EQ.'EXI_PLAQUE') .OR. (QUESTI.EQ.'EXI_COQUE') .OR.
+     &        (QUESTI.EQ.'CALC_RIGI')
      &        ) THEN
 C     -----------------------------------------------------------------
         CALL JEEXIN(NOMOB//'.LIEL',IRET)
@@ -135,6 +136,14 @@ C     -----------------------------------------------------------------
                 GO TO 40
               END IF
 
+            ELSEIF (QUESTI.EQ.'CALC_RIGI') THEN
+              REPK='NON'
+              CALL DISMTE(CODMES,QUESTI,NOMTE,REPI,CALCRI,IERD)
+              IF ( CALCRI.EQ.'OUI' ) THEN
+                REPK = 'OUI'
+                GO TO 40
+              END IF
+
             ELSEIF (QUESTI.EQ.'EXI_COQUE') THEN
               CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
               IF ( NOMODL(1:5).EQ.'COQUE' ) THEN
@@ -149,14 +158,6 @@ C     -----------------------------------------------------------------
                 REPK = 'OUI'
                 GO TO 40
               END IF
-
-C            ELSE IF (QUESTI.EQ.'EXI_GRAD_VARI')THEN
-C              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
-C              I7 = INDEX(NOMODL,'GRAD_VARI')
-C              IF (I7.NE.0) THEN
-C                REPK = 'OUI'
-C                GO TO 40
-C              END IF
 
             ELSE IF ((QUESTI.EQ.'EXI_COQ3D') .OR.
      &               (QUESTI.EQ.'EXI_COQ1D')) THEN

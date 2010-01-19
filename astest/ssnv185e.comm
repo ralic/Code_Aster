@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185e.para = tps_job 70 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,7 +160,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INS1,
                                 INST_FIN=1.0,),
-                   SOLVEUR=_F(METHODE='MUMPS',
+                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,
                               ),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),

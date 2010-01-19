@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE LACHER D'UN PATIN FROTTANT
 # sdnd101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,6 +148,7 @@ DYNAMODA=DYNA_TRAN_MODAL(       METHODE='EULER',
                                     JEU = 1.00,
                                     RIGI_NOR = 1000000.,
                                     RIGI_TAN = 0.,
+                                    FROTTEMENT='COULOMB',
                                     COULOMB = 0.)
                            )
 

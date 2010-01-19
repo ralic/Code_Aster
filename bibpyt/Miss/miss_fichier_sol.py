@@ -1,4 +1,4 @@
-#@ MODIF miss_fichier_sol Miss  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_fichier_sol Miss  DATE 18/01/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ def fichier_sol(tab):
          assert p in tab.para, p
    except AssertionError, err:
       valk = list(err.args) + ['de sol']
-      UTMESS('F', 'TABLE0_4', valk=valk)
+      UTMESS('F', 'TABLE0_2', valk=valk)
    nb_couche = len(tab)
    if max(tab.NUME_COUCHE.values()) != nb_couche:
       UTMESS('F', 'MISS0_5')

@@ -1,6 +1,6 @@
       SUBROUTINE DFDM1D ( NNO,POIDS,DFRDK,COOR,DFDX,COUR,JACP,COSA,SINA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +22,11 @@ C ======================================================================
       REAL*8                  DFRDK(1),COOR(*),DFDX(1)
       REAL*8                  DXDK,DYDK,COUR,JAC,JACP,POIDS,SINA,COSA
 C ......................................................................
-C    - FONCTION REALISEE:  CALCUL DES DERIVEES DE LA FONCTION DE FORME
-C  PAR RAPPORT A UN ELEMENT COURANT EN 1 DIMENSION EN UN POINT DE GAUSS
+C    - BUTS:  CALCULER LA VALEUR DU POIDS D'INTEGRATION EN 1 POINT DE
+C             GAUSS POUR UN SEGMENT PLAN  A 3 NOEUDS.
+C      + CALCULE LE SINUS ET LE COSIMUS DE L'ANGLE ENTRE LA TANGENTE
+C        ET L'AXE OX
+C      + CALCULE LES DERIVEES DES FONCTIONS DE FORME DANS L'ELEMENT REEL
 C
 C    - ARGUMENTS:
 C        DONNEES:     NNO           -->  NOMBRE DE NOEUDS
@@ -38,7 +41,9 @@ C                     COSA          <--  COS DE L'ANGLE ALPHA:
 C                                        TANGENTE / HORIZONTALE
 C                     SINA          <--  SIN DE L'ANGLE ALPHA
 C                     JACP          <--  PRODUIT DU JACOBIEN ET DU POIDS
-C ......................................................................
+C
+C  REMARQUE :
+C    - LES SEGMENTS DOIVENT ETRE "PLANS" (DANS OXY)
 C
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)

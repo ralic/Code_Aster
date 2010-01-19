@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURATION JOINT 2D LOI CZM_LIN_REG
 # ssnp118d.para = tps_job 30 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,7 +120,7 @@ FCT = DEFI_FONCTION(
 #-----------------------------------------------------------------------------------
 
 U_1=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS',),
+  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
@@ -139,7 +139,7 @@ U_1=STAT_NON_LINE(
   )
 
 STAT_NON_LINE(reuse = U_1,
-  SOLVEUR=_F(METHODE='MUMPS',),
+  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
   ETAT_INIT  = _F(EVOL_NOLI = U_1),
   MODELE     = MO,
   CHAM_MATER = CM,
@@ -171,7 +171,7 @@ STAT_NON_LINE(reuse = U_1,
 #-----------------------------------------------------------------------------------
 
 U_2=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS',),
+  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
@@ -190,7 +190,7 @@ U_2=STAT_NON_LINE(
   )
 
 STAT_NON_LINE(reuse = U_2,
-  SOLVEUR=_F(METHODE='MUMPS',),
+  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
   ETAT_INIT  = _F(EVOL_NOLI = U_2),
   MODELE     = MO,
   CHAM_MATER = CM,

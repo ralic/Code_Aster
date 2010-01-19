@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE VALIDATION DU CONTACT EN GEOMETRIE INITIALE AVEC ETAT INITIAL
 # zzzz231a.para = tps_job 160 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,7 +109,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    SOLVEUR=_F(SYME='OUI',
-                              METHODE='MUMPS',),
+                              METHODE='MUMPS',PCENT_PIVOT=10,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=10,),);
 
@@ -161,7 +161,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                               MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     SOLVEUR=_F(SYME='OUI',
-                               METHODE='MUMPS',),
+                               METHODE='MUMPS',PCENT_PIVOT=10,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                    ITER_GLOB_MAXI=10,),);
 

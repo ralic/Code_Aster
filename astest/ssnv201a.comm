@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE BLOC AVEC INTERFACE EN CONTACT GLISSIERE AVEC X-FEM
 # ssnv201a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -191,7 +191,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                   RESI_GLOB_MAXI=1e-04,
                                   ),               
                    SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=250),
+                               PCENT_PIVOT=10),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    NEWTON=_F(REAC_ITER=1,),
                    INFO=1,);

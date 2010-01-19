@@ -1,0 +1,405 @@
+# MODIF  DATE 18/01/2010   AUTEUR LAVERNE J.LAVERNE 
+# TITRE FISSURATION INTERFACE 3D (HEXA20) SUR DCB AVEC FISSURE INITIALE MAILLEE, LOI CZM_OUV_MIX
+# ssnv199g.para = tps_job 150 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSNV199G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI')
+
+from Numeric import *
+
+tfin = 4
+nbpas = 10*tfin
+nbarch = nbpas/2
+c_mult_pilo=1
+
+young = 100
+nu=0.0
+tenac = 0.9
+sigc  = 3
+
+dc=2*tenac/sigc
+
+ri_gli=10
+pen_lag=100
+
+deply = 1.0
+deplx = 0.0
+deplz = 0.0
+
+PRE_GMSH()
+
+MA0  =  LIRE_MAILLAGE()
+
+MA=CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
+
+MA  =  DEFI_GROUP(
+  reuse  = MA, 
+  MAILLAGE = MA, 
+  
+  CREA_GROUP_MA = (
+
+# VOLUME DCB GAUCHE
+    _F(NOM = 'DCB_1',   GROUP_MA = 'GM1015'),
+# VOLUME DCB DROITE
+    _F(NOM = 'DCB_2',   GROUP_MA = 'GM1016'),
+# VOLUME JOINT FISSURE POTENTIELLE
+    _F(NOM = 'JOINT_P',   GROUP_MA = 'GM1020'),
+# VOLUME JOINT FISSURE INITIALE
+    _F(NOM = 'JOINT_I',   GROUP_MA = 'GM1056'),
+    
+# SURFACES
+    _F(NOM = 'DCB_G',   GROUP_MA = 'GM1012'),
+    
+# FACE BAS DES JOINT DE LA FISSURE POTENTIELLE      
+    _F(NOM = 'JOINT_BP', GROUP_MA = 'GM1019'),       
+# FACE BAS DES JOINT DE LA FISSURE INITIALE      
+    _F(NOM = 'JOINT_BI', GROUP_MA = 'GM1057'), 
+      
+    _F(NOM = 'JOINT_H', GROUP_MA = 'GM1014'),    
+       
+# LIGNE BAS DE LA FACE DCB GAUCHE BAS    
+    _F(NOM = 'DCB_GB'  ,   GROUP_MA = 'GM1018'),
+   ), 
+     
+   CREA_GROUP_NO = (
+    _F(NOM = 'JOINT_BP', GROUP_MA = 'GM1019'),       
+    _F(NOM = 'JOINT_BI', GROUP_MA = 'GM1057'),       
+    _F(NOM = 'JOINT_H', GROUP_MA = 'GM1014'),    
+    _F(NOM = 'NO7',     GROUP_MA = 'GM954'),      
+    _F(NOM = 'DCB_GB',  GROUP_MA = 'GM1018'),
+    
+  )
+)
+
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_FISSURE=_F(GROUP_MA=('JOINT_P','JOINT_I')),
+                   INFO=1
+                   )
+
+MO=AFFE_MODELE(
+              
+                MAILLAGE=MA,                  
+                AFFE= (
+                _F( 
+                        GROUP_MA = ('DCB_1','DCB_2','DCB_G','DCB_GB'),
+                        PHENOMENE = 'MECANIQUE',
+                        MODELISATION = '3D'
+                     ),
+                _F( 
+                        GROUP_MA = ('JOINT_P','JOINT_I'),
+                        PHENOMENE = 'MECANIQUE',
+                        MODELISATION = '3D_INTERFACE'                        
+                       ),
+                 
+                 )
+              )
+
+
+# AFFECTATION DES ANGLES D'EULER : POSITION DE LA FISSURE DANS LE REPERE GLOBAL
+
+ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
+                     MASSIF=(
+                             _F(GROUP_MA=('JOINT_P','JOINT_I'),ANGL_EULER=(-90, 0 ,-90)), 
+                                 ));
+
+
+MAT=DEFI_MATERIAU(
+              
+     ELAS=_F( 
+              E  =  young,
+              NU =  nu),
+     RUPT_FRAG = _F(
+                     GC        = tenac,
+                     SIGM_C    = sigc,                     
+                     PENA_LAGR = pen_lag,
+                     RIGI_GLIS = ri_gli,                     
+                    )
+            )
+
+
+CM=AFFE_MATERIAU(
+              
+               MAILLAGE=MA,
+               AFFE=_F( 
+                       GROUP_MA = ('DCB_1','DCB_2','JOINT_P','JOINT_I'),
+                       MATER = MAT),
+              )
+
+
+SYMETRIE = AFFE_CHAR_MECA(
+  MODELE = MO,
+  DDL_IMPO = ( 
+               _F(GROUP_NO='JOINT_BP',DY=0),
+               _F(GROUP_NO='JOINT_BI',DY=0),
+               
+             ),)
+
+
+TRACTION = AFFE_CHAR_MECA(
+ MODELE = MO,
+  
+  FACE_IMPO= (
+      _F(GROUP_MA  = 'DCB_GB' , DY = deply , 
+                                DX = deplx ,
+                                DZ = deplz 
+                                           ),                 
+         ))
+
+
+# CREATION D'UN CHAMP DE VARIABLE INTERNE SUR TOUTE LA STRUCTURE.
+# ON INITIALISE LA FISSURE INITIALE JOINT_I AVEC DES VI QUI CORRESPONDENT 
+# A DES ELEMENTS TOTALEMENT ROMPUS. LE BUT EST DE REPRODUIRE EXACTEMENT LE CAS
+# OU LA FISSURE INITIALE N'EST PAS MAILLEE (VOIR MODELISATION E)
+
+CH_X=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='CART_NEUT_R',
+                   MODELE=MO,
+                   AFFE=(
+           _F( GROUP_MA = ('DCB_1','DCB_2'),   NOM_CMP = ('X1'),
+                                     VALE = ( 0 )),
+           _F( GROUP_MA = 'JOINT_I',   NOM_CMP = ('X1',     'X2',  'X3','X4',  'X5', 'X6', 'X7','X8','X9'),
+                                     VALE = (  2*tenac/sigc,  2,     2,   1,   tenac,  0,    0,   0,   0 )),
+           _F( GROUP_MA = 'JOINT_P',   NOM_CMP = ('X1', 'X2',  'X3','X4', 'X5', 'X6', 'X7','X8','X9'),
+                                     VALE = (       0,    0,     0,   0,    0,    0,    0,   0,    0 )),
+                    ))
+
+CH_VARI=CREA_CHAMP( OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
+                   MODELE=MO,
+                   ASSE=(
+           _F( CHAM_GD = CH_X,
+               GROUP_MA = ('DCB_1','DCB_2'), NOM_CMP = 'X1',NOM_CMP_RESU  = 'V1'),
+           _F( CHAM_GD = CH_X,
+               GROUP_MA = 'JOINT_I',
+               NOM_CMP      = ('X1',  'X2',  'X3','X4',  'X5', 'X6', 'X7','X8','X9'),
+               NOM_CMP_RESU = ('V1',  'V2',  'V3','V4',  'V5', 'V6', 'V7','V8','V9'),),
+
+           _F( CHAM_GD = CH_X,
+               GROUP_MA = 'JOINT_P',
+               NOM_CMP      = ('X1', 'X2',  'X3','X4',  'X5', 'X6', 'X7','X8','X9'),
+               NOM_CMP_RESU = ('V1',  'V2',  'V3','V4',  'V5', 'V6', 'V7','V8','V9'),)
+                    ))
+
+
+L_INST=DEFI_LIST_REEL(
+              
+                     DEBUT   = -1,
+     INTERVALLE=(
+      _F( JUSQU_A = 0,        NOMBRE = 1 ),
+      _F( JUSQU_A = tfin  ,   NOMBRE = nbpas ),
+      
+      )
+     )
+
+INS_ARCH=DEFI_LIST_REEL(
+              
+                     DEBUT   = -1,
+     INTERVALLE=(
+      _F( JUSQU_A = 0,        NOMBRE = 1 ),
+      _F( JUSQU_A = tfin  ,   NOMBRE = nbarch),
+      
+      )
+     )
+  
+FCT = DEFI_FONCTION(
+  NOM_PARA = 'INST',
+  VALE     = (-1,0 ,  0,0.0001,tfin,tfin  ),
+                )
+
+
+# LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
+# ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
+# CORRIGE LES EVENTUELLES DERIVES.
+U=STAT_NON_LINE( 
+  ETAT_INIT   =_F(VARI = CH_VARI),
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  CARA_ELEM  = ORIEN_FI,
+  EXCIT      = (
+                 _F(CHARGE = SYMETRIE),
+                 _F(CHARGE = TRACTION , FONC_MULT = FCT),                 
+               ),
+  COMP_INCR  = (
+                _F(RELATION = 'ELAS'      ,  GROUP_MA = ('DCB_1','DCB_2')),
+                _F(RELATION = 'CZM_OUV_MIX', GROUP_MA = ('JOINT_P','JOINT_I'), ),
+                ),               
+  INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
+  CONVERGENCE = _F(
+                   RESI_REFE_RELA = 1.E-6,
+                   SIGM_REFE      = sigc,
+                   DEPL_REFE      = dc,
+                   ITER_GLOB_MAXI = 12,
+                  ),
+  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100, NPREC=-1),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  )
+
+
+# LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
+# ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
+# CORRIGE LES EVENTUELLES DERIVES.  
+U=STAT_NON_LINE(reuse=U, 
+  ETAT_INIT  = _F(EVOL_NOLI = U), 
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  CARA_ELEM  = ORIEN_FI,
+  EXCIT      = (
+                 _F(CHARGE = SYMETRIE),
+                 _F(CHARGE = TRACTION , 
+                    TYPE_CHARGE = 'FIXE_PILO'),                 
+               ),
+  COMP_INCR  = (
+                _F(RELATION = 'ELAS'      ,  GROUP_MA = ('DCB_1','DCB_2')),
+                _F(RELATION = 'CZM_OUV_MIX', GROUP_MA = ('JOINT_P','JOINT_I'), ),
+                ),               
+  INCREMENT  = _F(LIST_INST = L_INST, 
+                  INST_FIN = tfin,
+                 ),
+  NEWTON     = _F(MATRICE    = 'TANGENTE'  , REAC_ITER=1 ,
+                   ),
+
+  PILOTAGE   = _F(
+                  SELECTION = 'RESIDU',
+                  TYPE = 'PRED_ELAS',
+                  GROUP_MA = ('JOINT_P','JOINT_I'),
+                  COEF_MULT = c_mult_pilo,
+                  ETA_PILO_R_MIN = 0.),
+
+  CONVERGENCE = _F(
+                   RESI_REFE_RELA = 1.E-6,
+                   SIGM_REFE      = sigc,
+                   DEPL_REFE      = dc,
+                   ITER_GLOB_MAXI = 12,
+                  ),
+  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100,NPREC=-1), 
+  ARCHIVAGE = _F(
+    LIST_INST     = INS_ARCH
+  ))
+
+
+
+U = CALC_NO(reuse = U,
+  MODELE = MO,
+  CHAM_MATER = CM,
+  RESULTAT = U,
+  OPTION = 'FORC_NODA',
+  GROUP_MA='DCB_1'
+  )
+
+
+# DEPLACEMENT PILOTE
+UPILO = POST_RELEVE_T(
+ ACTION = _F(
+   INTITULE     = 'U_PILOTE',
+   OPERATION    = 'EXTRACTION',   
+   GROUP_NO     = 'NO7',
+   NOM_CHAM     = 'DEPL',
+   NOM_CMP      = 'DY',
+   RESULTAT     =  U,
+   TOUT_ORDRE   = 'OUI',
+    )) 
+
+# FORCE RESULTANTE DANS LA DIRECTION Y:
+FRES = POST_RELEVE_T(
+ ACTION = _F(
+   INTITULE     = 'F_RESULTANTE',
+   OPERATION    = 'EXTRACTION',   
+   GROUP_NO     = 'DCB_GB',
+   NOM_CHAM     = 'FORC_NODA',
+   RESULTANTE   = 'DY',
+   RESULTAT     =  U,
+   TOUT_ORDRE   = 'OUI',
+    )) 
+
+
+# LE TEST DOIT FOURNIR LES MEMES RESULTATS QUE LA MODELISATION SSNV199E 
+# (FISSURE INITIALE NON MAILLEE)
+# ON REALISE EXACTEMENT LES MEMES TEST_RESU AVEC LES MEMES VALEURS TESTS
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U,
+      NOM_CHAM  = 'DEPL',
+      NOM_CMP   = 'DY',
+      VALE      = 5.16307,
+      GROUP_NO  = 'NO7',
+      INST      = 2.0
+      ),
+    )
+  )
+  
+TEST_TABLE(TABLE=FRES,
+           FILTRE=(_F(NOM_PARA='INST',VALE=2.0)),
+           NOM_PARA='DY',
+           VALE=6.73227,
+           REFERENCE='ANALYTIQUE')
+  
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U,
+      NOM_CHAM  = 'DEPL',
+      NOM_CMP   = 'DY',
+      VALE      = 7.15297,
+      GROUP_NO  = 'NO7',
+      INST      = 3.0
+      ),
+    )
+  )
+  
+TEST_TABLE(TABLE=FRES,
+           FILTRE=(_F(NOM_PARA='INST',VALE=3.0)),
+           NOM_PARA  = 'DY',
+           VALE      = 5.68393,
+           REFERENCE = 'ANALYTIQUE')
+  
+    
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U,
+      NOM_CHAM  = 'DEPL',
+      NOM_CMP   = 'DY',
+      VALE      = 9.50315,
+      GROUP_NO  = 'NO7',
+      INST      = 4.0
+      ),
+    )
+  )
+  
+TEST_TABLE(TABLE=FRES,
+           FILTRE=(_F(NOM_PARA='INST',VALE=4.0,),),
+           NOM_PARA  = 'DY',
+           VALE      = 4.95222,
+           REFERENCE = 'ANALYTIQUE')
+    
+           
+IMPR_TABLE(TABLE = UPILO)
+IMPR_TABLE(TABLE = FRES)
+
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U,NOM_CHAM='VARI_ELGA',TYPE_CHAM='SCALAIRE',NOM_CMP=('V1','V2','V3','V4','V7'),GROUP_MA = ('JOINT_I','JOINT_P')))),
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ',),GROUP_MA = ('DCB_1','DCB_2')))),
+           
+FIN(FORMAT_HDF='OUI') 
+
+

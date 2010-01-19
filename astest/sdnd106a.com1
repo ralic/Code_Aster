@@ -1,0 +1,56 @@
+POURSUITE(CODE=_F(NOM = 'SDND106A',),);
+
+from Numeric import array, zeros, nonzero
+
+############################################################
+################  Transitions Phasis    ####################
+############################################################
+tmpd = aster.getvectjev('FT_FRICT           .VALE        ');
+t = array(tmpd[0:len(tmpd)/2])
+# Euler:
+force_tangentielle = array(tmpd[len(tmpd)/2:len(tmpd)])
+del tmpd
+# Definition de la force tangentielle de transition
+force_tangentielle_transition = -2e3
+############################################################
+# Time transition search 
+############################################################
+N=len(t)
+dd=[]
+for i in range(N):
+    dd.append(abs((force_tangentielle[i]-force_tangentielle_transition)/force_tangentielle_transition) - 1E-6)
+d_force = array(dd)<=0
+diff_force = zeros(N)
+diff_force[1:len(diff_force)] = d_force[1:N]-d_force[0:N-1]
+transition_1 = nonzero(diff_force>=1)
+transition_2 = nonzero(diff_force<=-1)
+
+indice_transition=[transition_1[0],transition_2[0]]
+instants_transition=[t[i] for i in indice_transition]
+instants_transition.sort()
+
+
+############################################################
+# Analitical time transition
+############################################################
+instants_transition_analytique=[0.03512, 0.31492]
+
+
+############################################################
+# Time transition tests :
+############################################################
+tio_inst = DEFI_LIST_REEL(VALE=instants_transition,);
+tio_fonc= DEFI_FONCTION(NOM_PARA='INST',
+                        VALE_PARA=tio_inst,
+                        VALE_FONC=tio_inst,);
+
+for i in range(0,len(instants_transition)):
+   TEST_FONCTION ( VALEUR =(_F(FONCTION = tio_fonc,
+                               PRECISION = 1.E-4,
+                               VALE_PARA = instants_transition[i],
+                               REFERENCE = 'ANALYTIQUE',
+                               VALE_REFE = instants_transition_analytique[i],
+                               CRITERE='ABSOLU',
+                               ),),);
+
+FIN();

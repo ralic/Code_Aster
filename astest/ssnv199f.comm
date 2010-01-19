@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURATION INTERFACE 3D (PENTA15) SUR DCB, LOI CZM_OUV_MIX
 # ssnv199f.para = tps_job 860 mem_job 512Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -203,7 +203,7 @@ U=STAT_NON_LINE(
                    DEPL_REFE      = dc,
                    ITER_GLOB_MAXI = 12,
                   ),
-  SOLVEUR    = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100, NPREC=-1),
+  SOLVEUR    = _F(METHODE = 'MUMPS', PCENT_PIVOT = 10, NPREC=-1),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
@@ -241,7 +241,7 @@ U=STAT_NON_LINE(reuse=U,
                    DEPL_REFE      = dc,
                    ITER_GLOB_MAXI = 12,
                   ),
-  SOLVEUR      = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100, NPREC=-1),                  
+  SOLVEUR      = _F(METHODE = 'MUMPS', PCENT_PIVOT = 10, NPREC=-1),                  
   ARCHIVAGE    = _F(LIST_INST  = INS_ARCH)
   )
 

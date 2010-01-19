@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -365,7 +365,7 @@ F_GENE=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 #
 TRANGENE=DYNA_TRAN_MODAL( MASS_GENE=M_GENE, RIGI_GENE=K_GENE,
                           EXCIT=_F( VECT_GENE = F_GENE, COEF_MULT = 1.),
-                          SOLVEUR=_F(METHODE='MUMPS',),
+                          SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
                           INCREMENT=_F(  INST_INIT = 0.,
                                        INST_FIN = 0.0195,
                                        PAS = 1.E-6),

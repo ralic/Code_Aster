@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES AVEC BI_CERC_INT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,6 +138,7 @@ DYNAMOD4=DYNA_TRAN_MODAL(
                                AMOR_NOR = 2.E4,
                                RIGI_TAN = 0.,
                                AMOR_TAN = 0.,
+                               FROTTEMENT='COULOMB',
                                COULOMB = 0.)
                        )
 
