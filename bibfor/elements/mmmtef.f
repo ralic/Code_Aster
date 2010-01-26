@@ -4,7 +4,7 @@
      &                  NDEXFR,COEFFF,MATREF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -70,7 +70,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER   INOF,INOE,ICMP,IDIM,I,J,K,II,JJ,NBCPF
-      INTEGER   IEXCL,NDEXCL(9),CMP        
+      INTEGER   NDEXCL(9),CMP        
       REAL*8    A(2,3),B(2,3),H(3,2)
       REAL*8    H1(3),H2(3)
 C
@@ -110,7 +110,7 @@ C
                 MATREF(II,JJ) = MATREF(II,JJ)-
      &                          HPG*FFL(INOF)*FFE(INOE)*JACOBI*
      &                          LAMBDA*COEFFF*A(ICMP,IDIM)
-     &
+
  281          CONTINUE
  282        CONTINUE
  283      CONTINUE
@@ -144,7 +144,7 @@ C
                 MATREF(II,JJ) = MATREF(II,JJ)-
      &                          HPG*FFL(INOF)*FFE(INOE)*JACOBI*
      &                          LAMBDA*COEFFF*B(ICMP,IDIM)
-     &
+
  181          CONTINUE
  182        CONTINUE
  183      CONTINUE
@@ -156,20 +156,19 @@ C
         DO 9 IDIM = 1,NDIM
           IF (TAU1(IDIM).NE.0.D0) CMP = IDIM
  9      CONTINUE
-        DO 111 IEXCL = 1,9
-          DO 124 INOF = 1,NNL
-            DO 123 INOE = 1,NNE
-              DO 121 IDIM = 1,NDIM            
-                ICMP   = 1
-                JJ     = NBCPF*(INOF-1)+ICMP
-                II     = NDIM*(INOE-1)+IDIM              
-                IF ((IDIM.EQ.CMP).AND.(INOE.EQ.NDEXCL(IEXCL))) THEN 
-                  MATREF(II,JJ) = 0.D0
-                ENDIF
- 121          CONTINUE
- 123        CONTINUE
- 124      CONTINUE         
- 111    CONTINUE 
+        DO 122 INOF = 1,NNL
+          IF (NDEXCL(INOF).EQ.1) THEN
+            DO 121 INOE = 1,NNE
+C               ON ANNULE QUE LE PREMIER LAGRANGE DE FROTTEMENT
+C               DEVELOPPEMENT NON GENERIQUE ENCORE EN 3D
+              JJ     = NBCPF*(INOF-1)+1
+C               ON ANNULE QUE LA DIRECTION DE FROTTEMENT
+C               // AUX AXES CAR DEVELOPPEMENT NON GENERIQUE
+              II     = NDIM*(INOE-1)+CMP              
+              MATREF(II,JJ) = 0.D0
+ 121        CONTINUE
+          ENDIF
+ 122    CONTINUE 
  
       ELSE
         CALL ASSERT(.FALSE.)

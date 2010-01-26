@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
 # RESPONSABLE ADBHHPM P.MASSIN
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -51,8 +51,6 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 CHA1 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     REAC_GEOM      = 'CONTROLE',
-                    RESI_GEOM      = 3E-4,
-                    ITER_GEOM_MAXI = 15,
                     ITER_CONT_MAXI = 20, 
                     ZONE =(
                            _F(

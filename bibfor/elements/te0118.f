@@ -1,6 +1,6 @@
       SUBROUTINE TE0118(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -291,6 +291,13 @@ C       Volume elementaire
                NORM14=NORM14**.5D0
 C       Surface elementaire
                MEAST = NORM12 * NORM14
+           ELSEIF (TYPMA(1:3).EQ.'TRI') THEN           
+               CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,
+     &                  IDFDE,JGANO)
+C               CALL ASSERT(NPG.EQ.1)
+               CALL DFDM2D(NNO,1,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,MEAST)
+               CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,
+     &                  IDFDE,JGANO)
            ENDIF
          ENDIF
 C  -----------------------
@@ -317,12 +324,15 @@ C  -----------------------
                ZR(INI-1+(INO-1)*3+3) = NDIM * MEAST * DFDZ(INO)/4.D0
 
             ELSEIF (TYPMA(1:3).EQ.'QUA') THEN
-C   Rq : en 2D La derivee des FF en 0 vaut la moitie de celle au 
-C   Noeud considere. Il faudra penser a s'occuper des autres elem 2D
-C   et des FF d'ordre 2!
+C   Rq : Pur les QUAD la derivee des FF en 0 vaut la moitie de celle au 
+C   Noeud considere. Il faudra penser a s'occuper des FF d'ordre 2!
                ZR(INI-1+(INO-1)*2+1) = NDIM * MEAST * DFDX(INO)/2.D0
                ZR(INI-1+(INO-1)*2+2) = NDIM * MEAST * DFDY(INO)/2.D0
 
+            ELSEIF (TYPMA(1:3).EQ.'TRI') THEN 
+               ZR(INI-1+(INO-1)*2+1) = NDIM * MEAST * DFDX(INO)
+               ZR(INI-1+(INO-1)*2+2) = NDIM * MEAST * DFDY(INO)      
+                     
             ENDIF
  100     CONTINUE
 

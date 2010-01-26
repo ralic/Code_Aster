@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline3 Messages  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,7 +67,12 @@ cata_msg = {
 """),
 
 90 : _("""
-La combinaison: contact-frottement et solveur GCPC n'est pas disponible.
+  -> Vous utilisez une formulation 'DISCRETE' de contact conjointement avec le solveur linéaire 'GCPC'.
+     Le solveur 'GCPC' n'est actuellement autorisé qu'avec les algorithmes de contact 'VERIF' et 'PENALISATION'.
+
+  -> Conseil :
+     Changez d'algorithme de contact en utilisant le mot-clé ALGO_CONT de DEFI_CONTACT ou bien changez de solveur linéaire
+     en utilisant le mot-clé METHODE de SOLVEUR.
 """),
 
 91 : _("""
@@ -79,7 +84,11 @@ Contact méthode continue et pilotage sont incompatibles
 """),
 
 93 : _("""
- la combinaison: méthode continue en contact et solveur GCPC n'est pas disponible.
+  -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec le solveur linéaire 'GCPC' et le renuméroteur 'RCMK'.
+     Le renuméroteur 'RCMK' n'est actuellement pas autorisé avec la formulation 'CONTINUE'.
+
+  -> Conseil :
+     Il ne faut pas utiliser de renuméroteur (renseignez RENUM='SANS' sous le mot-clé facteur SOLVEUR).
 """),
 
 94 : _("""

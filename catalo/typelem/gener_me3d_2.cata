@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+%& MODIF TYPELEM  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -168,8 +168,8 @@ OPTION__
                                      CGEOMER  PORIGIN
                               OUT__  MVECTUR  PVECTU1  MVECTUR  PVECTU2  MVECTUR  PVECTU3  MVECTUR  PVECTU4
                                      MVECTUR  PVECTU5  MVECTUR  PVECTU6
-    CFL_XFEM            118   IN__   NGEOMER  PGEOMER  N1NEUT_R  PVTNO
-                              OUT__  E1NEUTR  PLONCAR  E1NEUTR  PCFLVT
+    CFL_XFEM            118   IN__   NGEOMER  PGEOMER 
+                              OUT__  E1NEUTR  PLONCAR
     CHAR_MECA_FF2D3D    29    IN__   CFORCEF  PFF2D3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR2D3D    28    IN__   EFORCNO  PFR2D3D  NGEOMER  PGEOMER  NFORCER  PNFORCER

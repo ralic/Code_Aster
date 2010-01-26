@@ -8,7 +8,7 @@
      &               CNXINV,NODTOR,ELETOR,LIGGRD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &               R8PREM,SIGLST,SDIFFT,GRAD(3),JI(3),PROSCA,SIGLSI,
      &               DIST,DISMIN,SIGNLS,R8MAEM
       CHARACTER*3    ITERK3,ITRPK3
-      CHARACTER*8    K8B,LPAIN(4),LPAOUT(2),TYPMA,LICMP(3),NOMNO,METHOD
+      CHARACTER*8    K8B,LPAIN(4),LPAOUT(2),TYPMA,LICMP(3),NOMNO
       CHARACTER*10   RESK10,REMK10,RETK10
       CHARACTER*19   CNOLT,CNOGLT,CELGLT,CHAMS,CELDFI,CESDFI,CELALF,
      &               CESALF,CNSVI,CNSWI,CNSVF,CNSGDF,CNOGDF,CELGDF,MAI
@@ -109,6 +109,8 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
+
+      WRITE(IFM,*) '   UTILISATION DE LA METHODE SIMPLEXE'
 
 C  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNOM,K8B,IRET)
@@ -133,11 +135,6 @@ C     RETRIEVE THE LIST OF THE ELEMENTS DEFINING THE TORE
 
 C     RETRIEVE THE NUMBER OF ELEMENTS DEFINING THE TORE
       CALL JELIRA(ELETOR,'LONMAX',NBMA,K8B)
-
-C   RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
-      CALL GETVTX(' ','METHODE',1,1,1,METHOD,IBID)
-      WRITE(IFM,*) '   UTILISATION DE LA METHODE '//METHOD
-      IF (METHOD.EQ.'UPWIND')  CALL U2MESS('F','XFEM2_24')
 
 C   RECUPERATION DE L'ADRESSE DES VALEURS DE LS ET DU GRADIENT DE LS
       CALL JEVEUO(CNSLN//'.CNSV','L',JLNNO)
@@ -175,14 +172,12 @@ C   W AU NOEUDS
       CALL JEVEUO(CNSWI//'.CNSV','E',JWI)
       CALL JEVEUO(CNSWI//'.CNSL','E',JWIL)
 
-      IF (METHOD.EQ.'SIMPLEXE') THEN
 C   DELTA_PHI
-         CELDFI = '&&XPRREO.CELDFI'
-         CESDFI = '&&XPRREO.CESDFI'
+      CELDFI = '&&XPRREO.CELDFI'
+      CESDFI = '&&XPRREO.CESDFI'
 C   ALPHA
-         CELALF = '&&XPRREO.CELALF'
-         CESALF = '&&XPRREO.CESALF'
-      ENDIF
+      CELALF = '&&XPRREO.CELALF'
+      CESALF = '&&XPRREO.CESALF'
 
 C-------------------------------------------------------------
 C   CALCUL DU CHAM_NO_S VECT_F = SIGN(LN)*GRAD(LN)/|GRAD(LN)|
@@ -231,14 +226,14 @@ C        RETREIVE THE NODE NUMBER
  10   CONTINUE
 
 C-----------------------------------------------------------------------
-      IF (METHOD.EQ.'SIMPLEXE') THEN
+
 C----------------------------------------
 C   RECUPERATION DE |T| SUR LES ELEMENTS
 C----------------------------------------
-         CALL JEVEUO (FISS//'.PRO.MES_EL'//'.CESV','L',JMEAST)
-         CALL JEVEUO (FISS//'.PRO.MES_EL'//'.CESL','L',JMESTL)
-         CALL JEVEUO (FISS//'.PRO.MES_EL'//'.CESD','L',JMESTD)
-      ENDIF
+      CALL JEVEUO (FISS//'.PRO.MES_EL'//'.CESV','L',JMEAST)
+      CALL JEVEUO (FISS//'.PRO.MES_EL'//'.CESL','L',JMESTL)
+      CALL JEVEUO (FISS//'.PRO.MES_EL'//'.CESD','L',JMESTD)
+
 C-----------------------------------------------------------------------
       CNSGDF =  '&&XPRREO.CNSGDF'
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSGDF)
@@ -311,36 +306,35 @@ C  Modif Julien
 
 
 C-----------------------------------------------------------------------
-         IF (METHOD.EQ.'SIMPLEXE') THEN
 
 C---------------------------------------------------------
 C     CALCUL DU CHAM_ELEM DELTA_PHI ET DU CHAM_ELNO ALPHA
 C---------------------------------------------------------
-            CALL CNSCNO(CNSGLT,' ','NON','V',CNOGLT,'F',IBID)
-            LPAIN(1)='PLSNO'
-            LCHIN(1)=CNOLT
-            LPAIN(2)='PGRLS'
-            LCHIN(2)=CNOGLT
-            LPAIN(3)='PGRANDF'
-            LCHIN(3)=CELGDF
-            LPAIN(4)='PNIELNO'
-            LCHIN(4)=FISS//'.PRO.NORMAL'
-            LPAOUT(1)='PDPHI'
-            LCHOUT(1)=CELDFI
-            LPAOUT(2)='PALPHA'
-            LCHOUT(2)=CELALF
+         CALL CNSCNO(CNSGLT,' ','NON','V',CNOGLT,'F',IBID)
+         LPAIN(1)='PLSNO'
+         LCHIN(1)=CNOLT
+         LPAIN(2)='PGRLS'
+         LCHIN(2)=CNOGLT
+         LPAIN(3)='PGRANDF'
+         LCHIN(3)=CELGDF
+         LPAIN(4)='PNIELNO'
+         LCHIN(4)=FISS//'.PRO.NORMAL'
+         LPAOUT(1)='PDPHI'
+         LCHOUT(1)=CELDFI
+         LPAOUT(2)='PALPHA'
+         LCHOUT(2)=CELALF
 
-            CALL CALCUL('S','XFEM_SMPLX_CALC',LIGGRD,4,LCHIN,LPAIN,2,
-     &                  LCHOUT,LPAOUT,'V')
+         CALL CALCUL('S','XFEM_SMPLX_CALC',LIGGRD,4,LCHIN,LPAIN,2,
+     &               LCHOUT,LPAOUT,'V')
                                    
-            CALL CELCES (CELDFI,'V',CESDFI)
-            CALL JEVEUO (CESDFI//'.CESV','L',JDELFI)
-            CALL JEVEUO (CESDFI//'.CESL','L',JDEFIL)
-            CALL JEVEUO (CESDFI//'.CESD','L',JDEFID)
-            CALL CELCES (CELALF,'V',CESALF)
-            CALL JEVEUO (CESALF//'.CESV','L',JALPHA)
-            CALL JEVEUO (CESALF//'.CESL','L',JALPHL)
-            CALL JEVEUO (CESALF//'.CESD','L',JALPHD)
+         CALL CELCES (CELDFI,'V',CESDFI)
+         CALL JEVEUO (CESDFI//'.CESV','L',JDELFI)
+         CALL JEVEUO (CESDFI//'.CESL','L',JDEFIL)
+         CALL JEVEUO (CESDFI//'.CESD','L',JDEFID)
+         CALL CELCES (CELALF,'V',CESALF)
+         CALL JEVEUO (CESALF//'.CESV','L',JALPHA)
+         CALL JEVEUO (CESALF//'.CESL','L',JALPHL)
+         CALL JEVEUO (CESALF//'.CESD','L',JALPHD)
 
 
 
@@ -349,34 +343,29 @@ C     CALCUL DES CHAMPS NODAUX VI ET WI
 C---------------------------------------
 C   BOUCLE SUR LES MAILLES DU MAILLAGE
 
-            DO 120 I = 1,NBMA
-C              RETREIVE THE ELEMENT NUMBER
-               IMA = ZI(JELCAL-1+I)
-               NBNOMA = ZI(JCONX2+IMA) - ZI(JCONX2+IMA-1)
+         DO 120 I = 1,NBMA
+C           RETREIVE THE ELEMENT NUMBER
+            IMA = ZI(JELCAL-1+I)
+            NBNOMA = ZI(JCONX2+IMA) - ZI(JCONX2+IMA-1)
 C   VERIFICATION DU TYPE DE MAILLE
-C              NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-               NDIME = ZI(JTMDIM-1+ZI(JMAI-1+IMA))
-               IF (NDIME.NE.NDIM) GOTO 120
+C           NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
+            NDIME = ZI(JTMDIM-1+ZI(JMAI-1+IMA))
+            IF (NDIME.NE.NDIM) GOTO 120
                
 C   BOUCLE SUR LES NOEUDS DE LA MAILLE
-               CALL CESEXI('S',JMESTD,JMESTL,IMA,1,1,1,IADMET)
-               CALL CESEXI('S',JDEFID,JDEFIL,IMA,1,1,1,IADDFI)
-               DO 130 INO = 1,NBNOMA
-                  CALL CESEXI('S',JALPHD,JALPHL,IMA,INO,1,1,IADALP)
-                  NUNO = ZI(JCONX1-1+ZI(JCONX2+IMA-1)+INO-1)
-                  ZR(JVI-1+NUNO) = ZR(JVI-1+NUNO) + ZR(JALPHA-1+IADALP)
-     &                                        * ZR(JDELFI-1+IADDFI)
-                  ZR(JWI-1+NUNO) = ZR(JWI-1+NUNO) + ZR(JALPHA-1+IADALP)
-     &                                         * ZR(JMEAST-1+IADMET)
- 130           CONTINUE
+            CALL CESEXI('S',JMESTD,JMESTL,IMA,1,1,1,IADMET)
+            CALL CESEXI('S',JDEFID,JDEFIL,IMA,1,1,1,IADDFI)
+            DO 130 INO = 1,NBNOMA
+               CALL CESEXI('S',JALPHD,JALPHL,IMA,INO,1,1,IADALP)
+               NUNO = ZI(JCONX1-1+ZI(JCONX2+IMA-1)+INO-1)
+               ZR(JVI-1+NUNO) = ZR(JVI-1+NUNO) + ZR(JALPHA-1+IADALP)
+     &                                     * ZR(JDELFI-1+IADDFI)
+               ZR(JWI-1+NUNO) = ZR(JWI-1+NUNO) + ZR(JALPHA-1+IADALP)
+     &                                      * ZR(JMEAST-1+IADMET)
+ 130        CONTINUE
 
- 120        CONTINUE
+ 120     CONTINUE
 
-
-C-----------------------------------------------------------------------
-         ELSEIF (METHOD.EQ.'UPWIND') THEN
-
-         ENDIF
 C-----------------------------------------------------------------------
 
 C---------------------------------------
@@ -450,7 +439,8 @@ C    ON ECARTE LES NOEUDS APPARTENANT A LA STRUCTURE MASSIVE
 C     SI MAILLE NON VOLUMIQUE (en 3D) OU SURFACIQUE (en 2D) ON LA SAUTE
                IF ((((TYPMA(1:5).NE.'TETRA').AND.
      &             (TYPMA(1:4).NE.'HEXA')).AND.(NDIM.EQ.3)).OR.
-     &             ((TYPMA(1:4).NE.'QUAD').AND.(NDIM.EQ.2))) GOTO 160
+     &             (((TYPMA(1:4).NE.'QUAD').AND.(TYPMA(1:4).NE.'TRIA'))
+     &             .AND.(NDIM.EQ.2))) GOTO 160
 C     BOUCLE SUR LES NOEUDS DE LA MAILLE
                   NBNOMA = ZI(JCONX2+NUMAI) - ZI(JCONX2+NUMAI-1)
 
@@ -575,16 +565,14 @@ C   DESTRUCTION DES OBJETS VOLATILES
       CALL JEDETR(CNSVI)
       CALL JEDETR(CNSWI)
       CALL JEDETR(CNSVF)
+      CALL JEDETR(CELDFI)
+      CALL JEDETR(CESDFI)
+      CALL JEDETR(CELALF)
+      CALL JEDETR(CESALF)
+      CALL JEDETR(CELGDF)
+      CALL JEDETR(CNSGDF)
+      CALL JEDETR(CNOGDF)
 
-      IF (METHOD.EQ.'SIMPLEXE') THEN
-         CALL JEDETR(CELDFI)
-         CALL JEDETR(CESDFI)
-         CALL JEDETR(CELALF)
-         CALL JEDETR(CESALF)
-         CALL JEDETR(CELGDF)
-         CALL JEDETR(CNSGDF)
-         CALL JEDETR(CNOGDF)
-      ENDIF
  900  FORMAT(3X,'+',11('-'),'+',12('-'),'+',12('-'),'+')
  901  FORMAT('   | ITERATION |   RESIDU   |   RESIDU   |')
  902  FORMAT('   |           |   LOCAL    |   GLOBAL   |')

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/11/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 25/01/2010   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "EPSA_NOEU",
                                      "EPSG_NOEU_DEPL",
                                      "EPSI_NOEU_DEPL",
-                                     "EPSP_NOEU"     ,"EPSP_NOEU_ZAC",
+                                     "EPSP_NOEU"     ,
                                      "EPVC_NOEU","EPFD_NOEU","EPFP_NOEU","EPFP_NOEU",
                                      "EQUI_NOEU_EPME","EQUI_NOEU_EPSI","EQUI_NOEU_SIGM",
                                      "ERRE_NOEU_ELEM","QIRE_NOEU_ELEM",
@@ -77,7 +77,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "RADI_NOEU_SIGM",
                                      "SIEF_NOEU"     ,"SIEF_NOEU_ELGA",
                                      "SIGM_NOEU_CART","SIGM_NOEU_COQU","SIGM_NOEU_DEPL",
-                                     "SIGM_NOEU_SIEF","SIGM_NOEU_ZAC",
+                                     "SIGM_NOEU_SIEF",
                                      "SIPO_NOEU_DEPL","SIPO_NOEU_SIEF",
                                      "SIRE_NOEU_DEPL",
                                      "VARI_NOEU","EXTR_NOEU_VARI","VARI_NOEU_ELGA",

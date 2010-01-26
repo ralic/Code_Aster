@@ -4,7 +4,7 @@
      &                  MATRFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,7 +65,7 @@ C OUT MATRFF : MATRICE ELEMENTAIRE LAGR_F/LAGR_F
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER   I, J, K , L,II,JJ,IDIM,NBCPF,IEXCL,NDEXCL(9)
+      INTEGER   I, J, K , L,II,JJ,IDIM,NBCPF,NDEXCL(9)
       REAL*8    TT(3,3)  
       REAL*8    H1(3),H2(3)
       REAL*8    R(2,2)         
@@ -136,20 +136,14 @@ C
 C   
       ELSEIF (PHASE.EQ.'EXFR') THEN
         CALL ISDECO(NDEXFR,NDEXCL,9)
-        DO 111 IEXCL = 1,9
-          DO 124 I = 1,NNL
-            DO 123 J = 1,NNL
-              DO 122 L = 1,NBCPF
-                II = (NDIM-1)*(I-1)+L
-                JJ = (NDIM-1)*(J-1)+1
-                IF ((I.EQ.J).AND.(I.EQ.NDEXCL(IEXCL))) THEN 
-                  MATRFF(II,JJ) = 1.D0
-                ENDIF
- 122          CONTINUE
- 123        CONTINUE
- 124      CONTINUE         
- 111    CONTINUE
-          
+        DO 121 I = 1,NNL
+          IF (NDEXCL(I).EQ.1) THEN
+C           ON ANNULE QUE LE PREMIER LAGRANGE DE FROTTEMENT
+C           DEVELOPPEMENT NON GENERIQUE ENCORE EN 3D
+            II = NBCPF*(I-1)+1
+            MATRFF(II,II) = 1.D0
+          ENDIF
+ 121    CONTINUE                   
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

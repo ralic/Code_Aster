@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 24/08/2009   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements3 Messages  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,7 +57,8 @@ cata_msg = {
 """),
 
 19 : _("""
- L'option  %(k1)s  n'est disponible qu'avec des éléments TETRA ou HEXA
+ L'option  %(k1)s  n'est disponible qu'avec des éléments TETRA ou HEXA en 3D et
+ des éléments TRIA ou QUAD en 2D.
  Or, la maille  %(k2)s  est de type  %(k3)s .
 """),
 

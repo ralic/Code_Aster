@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 25/01/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCMEC1=51)
+      PARAMETER (NCMEC1=46)
 C      PARAMETER (NCMEC2=54)
       PARAMETER (NCMEC2=56)
       PARAMETER (NCMEC3=36)
@@ -90,11 +90,9 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'SIRE_ELNO_DEPL',  'SIRE_NOEU_DEPL',  'SIPO_ELNO_DEPL',
      & 'SIPO_NOEU_DEPL',  'EQUI_ELGA_SIGM',  'EQUI_ELNO_SIGM',
      & 'EQUI_NOEU_SIGM',  'EQUI_ELGA_EPSI',  'EQUI_ELNO_EPSI',
-     & 'EQUI_NOEU_EPSI',  'SIGM_ELNO_ZAC',   'EPSP_ELNO_ZAC',
-     & 'VARI_ELGA_ZAC',   'SIGM_NOEU_ZAC',   'EPSP_NOEU_ZAC',
-     & 'ALPH0_ELGA_EPSP', 'ALPHP_ELGA_ALPH0','VARI_NON_LOCAL',
-     & 'LANL_ELGA',       'PROJ_ELEM_SIGN',  'PROJ_ELEM_SIGT',
-     & 'PROJ_ELEM_SIT1',  'PROJ_ELEM_SIT2'/
+     & 'EQUI_NOEU_EPSI',  'ALPH0_ELGA_EPSP', 'ALPHP_ELGA_ALPH0',
+     & 'VARI_NON_LOCAL',  'LANL_ELGA',       'PROJ_ELEM_SIGN',
+     & 'PROJ_ELEM_SIGT',  'PROJ_ELEM_SIT1',  'PROJ_ELEM_SIT2'/
 C
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMEC2/

@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact Messages  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,11 +49,6 @@ Vous pouvez essayer d'augmenter ITER_PRE_MAXI
 
 4 : _("""
 Contact methode GCP. Le paramètre RESI_ABSO doit etre obligatoirement renseigné.
-"""),
-
-
-6 : _("""
-Contact methode GCP. On ne peut utiliser le solveur GCPC avec le contact. 
 """),
 
 7 : _("""
@@ -120,7 +115,6 @@ Ne pas utiliser REAC_INCR=0 avec le frottement.
 93 : _("""
 Contact methode VERIF.
  -> Interpénétrations des surfaces.
-    Attention : si les mailles en contact sont quadratiques, le jeu aux noeuds milieux risque d'etre imprécis (oscillations entre noeuds sommets et milieux).
  
  -> Risque & Conseil :
     Vérifier si le niveau d'interpénétration des surfaces est acceptable dans

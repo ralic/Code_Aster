@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/07/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 26/01/2010   AUTEUR FERNANDES R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,7 +109,8 @@ C ======================================================================
          ALPHA0 = ELAS(3)
       ENDIF
       IF (( MECA.EQ.'DRUCK_PRAGER' ).OR.(MECA.EQ.'VISC_DRUC_PRAG').OR.
-     &    (MECA.EQ.'LETK').OR.(MECA.EQ.'ELAS_GONF')) THEN
+     &    (MECA.EQ.'LETK').OR.(MECA.EQ.'ELAS_GONF').OR.
+     &    (MECA.EQ.'DRUCK_PRAG_N_A')) THEN
          CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,
      &                                           NCRA1,ELAS,CODRET,'FM')
          YOUNG  = ELAS(1)

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+#& MODIF COMMUN  DATE 25/01/2010   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,9 +81,7 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "EPSI_NOEU_DEPL",
                         "EPSP_ELGA",
                         "EPSP_ELNO",
-                        "EPSP_ELNO_ZAC",
                         "EPSP_NOEU",
-                        "EPSP_NOEU_ZAC",
                         "EQUI_ELGA_EPME",
                         "EQUI_ELGA_EPSI",
                         "EQUI_ELGA_SIGM",
@@ -166,12 +164,10 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "SIGM_ELNO_DEPL",
                         "SIGM_ELNO_SIEF",
                         "SIGM_ELNO_TUYO",
-                        "SIGM_ELNO_ZAC",
                         "SIGM_NOEU_CART",
                         "SIGM_NOEU_COQU",
                         "SIGM_NOEU_DEPL",
                         "SIGM_NOEU_SIEF",
-                        "SIGM_NOEU_ZAC",
                         "SIGM_NOZ1_ELGA",
                         "SIGM_NOZ2_ELGA",
                         "SIPO_ELNO_DEPL",
@@ -186,7 +182,6 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "VALE_CONT",
                         "VALE_NCOU_MAXI",
                         "VARI_ELGA",
-                        "VARI_ELGA_ZAC",
                         "VARI_ELNO",
                         "VARI_ELNO_COQU",
                         "VARI_ELNO_ELGA",

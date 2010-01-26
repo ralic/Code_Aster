@@ -3,7 +3,7 @@
      &                  MMCVGO)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,6 +153,8 @@ C
       IF (CFDISL(DEFICO,'REAC_FROT_MANU')) THEN
         IF (MMITFR.EQ.NBREAF) THEN
           MMCVFR = .TRUE.
+        ELSE
+          MMCVFR = .FALSE.
         ENDIF        
       ENDIF
 C     
@@ -184,6 +186,8 @@ C
       IF (CFDISL(DEFICO,'REAC_GEOM_MANU')) THEN
         IF (MMITGO.EQ.NBREAG) THEN
           MMCVGO = .TRUE.
+        ELSE
+          MMCVGO = .FALSE.
         ENDIF        
       ENDIF
 C     

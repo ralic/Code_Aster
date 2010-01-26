@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 26/01/2010   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C =====================================================================
       INTEGER       NBMA, IERD, IBID, JNOMA, JMESM, NUMLC
       PARAMETER   ( DMTHMC = 7  )
       PARAMETER   ( DMHYDR = 4  )
-      PARAMETER   ( DMMECA = 14 )
+      PARAMETER   ( DMMECA = 15 )
       CHARACTER*16  POTHMC(DMTHMC), MODELI, NOMTE,KBID
       CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA)
       CHARACTER*16  COMCOD
@@ -108,7 +108,8 @@ C =====================================================================
      &              'MAZARS'          ,
      &              'ENDO_ISOT_BETON' ,
      &              'ELAS_GONF'       ,
-     &              'DRUCK_PRAGER'  /
+     &              'DRUCK_PRAGER'    ,
+     &              'DRUCK_PRAG_N_A'  /
 C *********************************************************************
 C --- FIN INITIALISATION -------------------------------------------- *
 C *********************************************************************

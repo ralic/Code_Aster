@@ -1,4 +1,4 @@
-# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503o.para = tps_job 300 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,7 +91,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       ITER_FROT_MAXI = 10,
                       ITER_CONT_MAXI = 10,
-                      ITER_GEOM_MAXI = 10,
                       FROTTEMENT     = 'COULOMB',
                       ZONE = (_F(
                                  INTEGRATION   = 'NOEUD',

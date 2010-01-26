@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT AVEC FROTTEMENT ET USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128s.para = tps_job 100 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,9 +76,7 @@ CHA4 = DEFI_CONTACT(MODELE         = MO,
                     REAC_FROT      = 'CONTROLE',
                     NB_ITER_FROT   = 4,
                     REAC_GEOM      = 'CONTROLE',
-                    NB_ITER_GEOM   = 2,                    
-                    ITER_GEOM_MAXI = 3,
-                    ITER_FROT_MAXI = 5,
+                    NB_ITER_GEOM   = 2,
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT = 'LBATI',

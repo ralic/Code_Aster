@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -162,8 +162,8 @@ OPTION__
                               OUT__  EGTHETA  PGTHETA
     CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    CFL_XFEM            118   IN__   NGEOMER  PGEOMER  N1NEUT_R  PVTNO
-                              OUT__  E1NEUTR  PLONCAR  E1NEUTR  PCFLVT
+    CFL_XFEM            118   IN__   NGEOMER  PGEOMER
+                              OUT__  E1NEUTR  PLONCAR
     CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_MECA_FF3D3D    440   IN__   CFORCEF  PFF3D3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  STANO_I  PSTANO

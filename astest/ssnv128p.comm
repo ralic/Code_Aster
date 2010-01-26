@@ -1,4 +1,4 @@
-# MODIF  DATE 17/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT AVEC FROTTEMENT D UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128p.para = tps_job 280 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,17 +67,17 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=(_F(GROUP_MA = 'LPRESV', PRES = 5.E07),
                               _F(GROUP_MA = 'LPRESH', PRES = 15.E07)));
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_MAIT  = 'LBATI',
-                               GROUP_MA_ESCL  = 'LCONTA',
-                               SANS_GROUP_NO  = 'PPS',
-                               METHODE        = 'CONTINUE',
-                               SEUIL_INIT     = 100.,
-                               ITER_GEOM_MAXI = 3,
-                               ITER_FROT_MAXI = 10,
-                               ITER_CONT_MAXI = 1,
-                               FROTTEMENT     = 'COULOMB',
-                               COULOMB        = 1.0,));
+CHA2=DEFI_CONTACT(MODELE=MO,
+                  FORMULATION='CONTINUE',
+                  FROTTEMENT='COULOMB',
+                  ITER_GEOM_MAXI=3,
+                  ITER_CONT_MAXI=30,
+                  ITER_FROT_MAXI=15,
+                  ZONE=_F(SANS_GROUP_NO='PPS',
+                          GROUP_MA_MAIT='LBATI',
+                          GROUP_MA_ESCL='LCONTA',
+                          COULOMB=1.0,
+                          SEUIL_INIT=100,),);
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
@@ -91,8 +91,9 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 
 U2M=STAT_NON_LINE(MODELE     = MO,
                   CHAM_MATER = CHMAT,
-                  EXCIT      =(_F(CHARGE = CHA1, FONC_MULT = RAMPE),
-                               _F(CHARGE = CHA2)),
+                  EXCIT=_F(CHARGE=CHA1,
+                           FONC_MULT=RAMPE,),
+                  CONTACT=CHA2,
                   COMP_ELAS  = _F(RELATION = 'ELAS'),
                   INCREMENT  = _F(LIST_INST = L_INST),
                   NEWTON=_F(REAC_ITER=1,),

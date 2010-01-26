@@ -3,7 +3,7 @@
       CHARACTER*16         OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,9 +137,9 @@ C
       TAU2(3)  =      ZR(JPCF-1+10)
       HPG      =      ZR(JPCF-1+11)
       LAMBDA   =      ZR(JPCF-1+12)
-      NDEXFR   =      ZR(JPCF-1+13)
-      TYPBAR   =      ZR(JPCF-1+14)
-      TYPRAC   =      ZR(JPCF-1+15)
+      NDEXFR   = NINT(ZR(JPCF-1+13))
+      TYPBAR   = NINT(ZR(JPCF-1+14))
+      TYPRAC   = NINT(ZR(JPCF-1+15))
       IFORM    = NINT(ZR(JPCF-1+16))
       COEFCR   =      ZR(JPCF-1+17)
       COEFCS   =      ZR(JPCF-1+18)
@@ -263,6 +263,7 @@ C --- CALCUL DES MATRICES DE CONTACT
 C
       IF (OPTION.EQ.'RIGI_CONT') THEN
         LFROTT = .FALSE.
+        NDEXFR = 0
         IF ((TYPBAR.NE.0).OR.(TYPRAC.NE.0)) THEN
           CALL MMMMAT('CONT',
      &                  LUSURE,LSTABC,LCOMPL,LFROTT,LSTABF,
@@ -335,7 +336,6 @@ C
         IF (.NOT.LFROTT)    INDCO = 0
         TYPBAR = 0
         TYPRAC = 0
-        NDEXFR = 0
         IF (INDCO.EQ.0) THEN
           CALL MMMMAT('SANS',
      &                  LUSURE,LSTABC,LCOMPL,LFROTT,LSTABF,

@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 11/01/2010   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF xfem2 Messages  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,12 +102,6 @@ cata_msg = {
 
 23 : _("""
   -> PFON_INI semble etre un point mal choisi, on le modifie automatiquement.
-"""),
-
-24 : _("""
-  -> La méthode "UPWIND" est en cours d'implémentation.
-  -> Risque & Conseil :
-     Veuillez choisir une autre méthode.
 """),
 
 25 : _("""

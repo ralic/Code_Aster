@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 11/01/2010   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF xfem Messages  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,9 +96,23 @@ cata_msg={
 """),
 
 11: _("""
-  -> On a trouvé plus de 2 points de fond de fissure, ce qui est impossible en 2d.
+  -> On a trouvé plus de 2 points de fond de fissure, ce qui est impossible en 2D.
   -> Risque & Conseil:
-     Veuillez revoir la définition des level sets.
+     Cela est normalement causé par une mauvaise définition des level sets.
+
+     Si les level set ont été définies par DEFI_FISS_XFEM, veuillez revoir leur
+     définition.
+
+     Si les level sets ont été calculées par PROPA_FISS, vous pouvez essayer
+     d'utiliser un maillage plus raffiné dans toute la zone de propagation ou bien
+     une grille auxiliaire.
+     Si vous avez utilisé la méthode simplexe avec restriction de la zone de mise à
+     jour des level sets (ZONA_MAJ='TORE'), vous pouvez spécifier un rayon plus élevé
+     de celui qui a été utilisé (écrit dans le fichier .mess) en utilisant l'opérande
+     RAYON_TORE ou vous pouvez déactiver la restriction de la zone de mise à jour
+     (ZONE_MAJ='TOUT').
+     Sinon vous pouvez changer la méthode utilisée par PROPA_FISS (opérande
+     METHODE_PROPA).
 """),
 
 12: _("""

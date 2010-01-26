@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
 % RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -21,8 +21,6 @@ CFL_XFEM
 OPTION__
    IN__
          PGEOMER  GEOM_R 
-         PVTNO    NEUT_R         
    OUT__
          PLONCAR  NEUT_R   ELEM__ 
-         PCFLVT   NEUT_R   ELEM__ 
    
