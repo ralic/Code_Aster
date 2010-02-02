@@ -1,5 +1,5 @@
 
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS - ELEMENT TUYAU 4 NOEUDS AVEC MECA_STATIQUE
 #
@@ -146,7 +146,8 @@ CHAR8=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_NODALE=_F(GROUP_NO='B',
                                      FX=400.0,
                                      FY=300.0,),
-                     PESANTEUR=(10.0,0.0,0.0,-1.0,),);
+                     PESANTEUR=_F(GRAVITE=10.0,
+                                  DIRECTION=(0.0,0.0,-1.0,),),);
 # FORCE LINEIQUE
 #
 

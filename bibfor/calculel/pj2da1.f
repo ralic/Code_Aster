@@ -6,7 +6,7 @@
       LOGICAL OK
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C DEB ------------------------------------------------------------------
       V3(2)=Y3-Y1
       S=V2(1)*V3(2)-V2(2)*V3(1)
       IF (S.EQ.0) THEN
-        OK=.TRUE.
+        OK=.FALSE.
         GO TO 9999
       END IF
 

@@ -1,21 +1,21 @@
-#@ MODIF algorith9 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith9 Messages  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -44,7 +44,7 @@ cata_msg = {
 
 10 : _("""
  nombre de vecteurs demandé trop grand
- on prend tous les modes du concept MODE_MECA 
+ on prend tous les modes du concept MODE_MECA
 """),
 
 12 : _("""
@@ -88,7 +88,7 @@ cata_msg = {
 """),
 
 34 : _("""
- les matrices ne possèdent pas toutes la meme numérotation 
+ les matrices ne possèdent pas toutes la meme numérotation
 """),
 
 35 : _("""
@@ -100,7 +100,7 @@ cata_msg = {
 """),
 
 40 : _("""
-  type de matrice inconnu:  %(k1)s 
+  type de matrice inconnu:  %(k1)s
 """),
 
 41 : _("""
@@ -108,7 +108,7 @@ cata_msg = {
 """),
 
 42 : _("""
- la base constituée ne forme pas une famille libre 
+ la base constituée ne forme pas une famille libre
 """),
 
 43 : _("""
@@ -184,17 +184,12 @@ cata_msg = {
  option symétrie : la dimension de POINT et AXE_2 doit etre identique.
 """),
 
-65 : _("""
- méthode: ELEM autorisée seulement pour les résultats EVOL_XXX.
-"""),
 
-66 : _("""
- methode: NUAGE_DEG__* autorisée seulement pour les champs.
-"""),
+
 
 69 : _("""
  on ne sait pas traiter le champ de type:  %(k1)s
- champ :  %(k2)s 
+ champ :  %(k2)s
 """),
 
 74 : _("""
@@ -269,15 +264,15 @@ cata_msg = {
 """),
 
 95 : _("""
- non convergence à la maille:  %(k1)s 
+ non convergence à la maille:  %(k1)s
 """),
 
 96 : _("""
- la saturation n'est pas une variable interne pour la loi de couplage  %(k1)s 
+ la saturation n'est pas une variable interne pour la loi de couplage  %(k1)s
 """),
 
 97 : _("""
- la pression de vapeur n'est pas une variable interne pour la loi de couplage  %(k1)s 
+ la pression de vapeur n'est pas une variable interne pour la loi de couplage  %(k1)s
 """),
 
 99 : _("""

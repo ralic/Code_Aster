@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -322,6 +322,10 @@ C         ------------------------------------
           ELSE IF (OPTION(1:6).EQ.'TUNNEL') THEN
             CALL CGNOFU(MOTFAC,IOCC,MA,LISNO,NBNO)
 
+C         -- TRAITEMENT DE L'OPTION INCLUSION :
+          ELSE IF (OPTION.EQ.'INCLUSION') THEN
+            CALL CGNOIN(MOTFAC,IOCC,MA,LISNO,NBNO)
+
 C         -- TRAITEMENT DE L'OPTION "NOEUD_ORDO" :
 C         ----------------------------------------
           ELSE IF (OPTION(1:10).EQ.'NOEUD_ORDO') THEN
@@ -507,7 +511,7 @@ C     --------------------
               CALL JENUNO(JEXNUM(NOMNOE,ZI(IAGNO-1+KKK)),NONO)
               CARD((III-1)*10+1:) = ' '//NONO//' '
  304        CONTINUE
-            WRITE (IFM,'(A))') CARD(:10*NBCOL)
+            WRITE (IFM,'(A)') CARD(:10*NBCOL)
  302      CONTINUE
  300    CONTINUE
         WRITE (IFM,'(/,/)')

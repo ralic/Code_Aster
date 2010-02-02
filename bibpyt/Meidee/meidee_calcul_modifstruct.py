@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_modifstruct Meidee  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_calcul_modifstruct Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+# RESPONSABLE BODEL C.BODEL
+
 ## \package meidee_mac Module de gestion des calculs %Meidee avec Aster
 #
 # La classe ModifStruct permet de gerer les calculs de modification structurale
@@ -25,6 +27,7 @@
 import aster
 from Accas import _F, ASSD
 
+# XXX import done only for mode_meca, should it be removed?
 import Cata.cata
 from Cata.cata import MAC_MODES, MODE_ITER_INV, DEPL_INTERNE, AFFE_CHAR_MECA
 from Cata.cata import MODE_STATIQUE, DEFI_BASE_MODALE, PROJ_MESU_MODAL
@@ -34,7 +37,7 @@ from Cata.cata import EXTR_MODE, DEFI_MAILLAGE, ASSE_MAILLAGE, AFFE_MODELE
 from Cata.cata import NUME_DDL, CALC_MATR_ELEM, AFFE_CARA_ELEM, CREA_MAILLAGE
 from Cata.cata import PROJ_CHAMP, ASSE_MATRICE, CO
 
-from Meidee.meidee_cata import Resultat
+from Meidee.meidee_cata import Resultat, ModeMeca
 from Meidee.meidee_calcul_correlation import extract_mac_array
 
 
@@ -55,7 +58,7 @@ class ModifStruct:
         :param outputs: concepts Aster de l'utilisateur a afficher en sortie.
         """
         self.macro = macro
-        self.meidee_objects = meidee_objects
+        self.objects = meidee_objects
         self.mess = mess
 
         self.modes_exp = {}
@@ -87,7 +90,7 @@ class ModifStruct:
 
         self.param_condens = None
 
-        self.cpl = CreateModeleCouple()
+        self.cpl = CreateModeleCouple(meidee_objects)
         self.x_modst = None  # pour ES
         self.x_bsmo = None   # pour ES
         self.x_numgen = None # pour LMME
@@ -163,24 +166,20 @@ class ModifStruct:
                 step.DeclareOut( "__MODST", outputs['MODE_STA'] )
             if outputs['BASE_LMME']:
                 step.DeclareOut( "__MEXP", outputs['BASE_LMME'] )
-    #        if outputs['CH_MAT']:
-    #            step.DeclareOut( "__CHMAT", outputs['CH_MAT'] )
-    #        if outputs['CH_CAR']:
-    #            step.DeclareOut( "__CHCAR", outputs['CH_CAR'] )
 
     def find_experimental_result_from(self, modes_exp_name):
         """Trouve le modele experimental dans la memoire JEVEUX."""
-        self.resu_exp = self.meidee_objects.get_resu(modes_exp_name)
+        self.resu_exp = self.objects.get_mode_meca(modes_exp_name)
 
     def find_support_modele_from(self, supmodl_name):
         """Trouve le modele du support dans la memoire JEVEUX"""
-        self.support_modele = self.meidee_objects.get_model(supmodl_name)
+        self.support_modele = self.objects.get_model(supmodl_name)
 
     def set_stiffness_matrix(self, stiffness_matrix):
         """Place la matrice de raideur et trouve celle correspondant
         au module Meidee dans la memoire JEVEUX."""
         self.matr_rig = stiffness_matrix
-        self.kassup = self.meidee_objects.get_matr(stiffness_matrix.nom)
+        self.kassup = self.objects.get_matr(stiffness_matrix.nom)
 
     def set_method_name(self, method_name):
         """Place le nom de methode pour calculer la base: 'ES' ou 'LMME'"""
@@ -209,21 +208,21 @@ class ModifStruct:
     
     def find_maillage_modif_from(self, modc_name):
         """Trouve le maillage modif dans la memoire JEVEUX"""
-        for modele_name, modele in self.meidee_objects.modeles.items():
+        for modele_name, modele in self.objects.modeles.items():
             if modele_name == modc_name :
                 mailx_name = modele.maya_name
-                self.mailx = self.meidee_objects.maillages[mailx_name]
+                self.mailx = self.objects.maillages[mailx_name]
 
     def find_maillage_support_from(self, modc_name):
         """Trouve le maillage modif dans la memoire JEVEUX"""
-        for modele_name, modele in self.meidee_objects.modeles.items():
+        for modele_name, modele in self.objects.modeles.items():
             if modele_name == modc_name :
                 mailx_name = modele.maya_name
-                self.support_maillage = self.meidee_objects.maillages[mailx_name]
+                self.support_maillage = self.objects.maillages[mailx_name]
 
     def find_modele_couple_from(self, modc_name):
         """Trouve le modele du couplage dans la memoire JEVEUX"""
-        self.modlx = self.meidee_objects.modeles[modc_name]
+        self.modlx = self.objects.modeles[modc_name]
 
     def set_param_condens(self, param):
         """ parametres de PROJ_MESU_MODAL pour la condensation :
@@ -239,10 +238,15 @@ class ModifStruct:
         """Place le nom de de la super maille """
         self.sumail = sumail_name
 
-    def clear_concept(self, cpt):
-        """!Detruit un concept silencieusement"""
-        if cpt is None:
+    def clear_concept(self, objet):
+        """!Detruit un concept aster directement, ou encapsule
+            une classe Meidee"""
+        if objet is None:
             return
+        try:
+            cpt = objet.obj
+        except AttributeError:
+            cpt = objet
         DETRUIRE(CONCEPT=_F(NOM=cpt),ALARME='NON',INFO=1)
 
     def get_modes_exp(self):
@@ -267,7 +271,7 @@ class ModifStruct:
         la caracteristique des elements et le champ de materiaux sont
         conserves en references.
         """
-        for name, resu in self.meidee_objects.resultats.items():
+        for name, resu in self.objects.resultats.items():
             if aster.jeveux_exists(name.ljust(19)+'.NOVA'):
                 iret,ibid,modele_name = aster.dismoi('F','MODELE',name,'RESULTAT')
                 modele_name=modele_name.rstrip()
@@ -284,10 +288,10 @@ class ModifStruct:
 
                 if nom_raideur == self.matr_rig.nom:
                     nom_masse = refd[1].strip()
-                    matr_masse = self.meidee_objects.get_matr(nom_masse)
+                    matr_masse = self.objects.get_matr(nom_masse)
 
                     nume_name = refd[3].strip()
-                    numesup = self.meidee_objects.nume_ddl[nume_name]
+                    numesup = self.objects.nume_ddl[nume_name]
 
                     iret,ibid,var_carelem = aster.dismoi('F','CARA_ELEM',name,'RESULTAT')
                     var_carelem=var_carelem.strip()
@@ -307,8 +311,8 @@ class ModifStruct:
 
         # Caracteristique de l'element et champ de materiaux
         # Utiliser pendant la condensation avec MACR_ELEM_STAT
-        self.cara_elem = self.meidee_objects.get_cara_elem_obj(var_carelem)
-        self.cham_mater = self.meidee_objects.get_cham_mater_obj(var_chmat)
+        self.cara_elem = self.objects.get_cara_elem(var_carelem)
+        self.cham_mater = self.objects.get_cham_mater(var_chmat)
 
     def _get_grp_captors_tot(self):
         """Retourne un groupe de capteurs en fonction de la methode.
@@ -325,6 +329,7 @@ class ModifStruct:
             grno.append( _F(GROUP_NO=grp["NOM"], AVEC_CMP=grp["NOM_CMP"]) )
         return grno
 
+
     def calc_base_es(self, opt_grnocapt=None):
         """!Calcul de la base de projection : par expansion statique
         grnocapt : le mot-clef facteur passe a FORCE_NODALE.
@@ -332,53 +337,46 @@ class ModifStruct:
 
         grnocapt = opt_grnocapt or self._get_grp_captors_tot()
 
-        self.clear_concept(self.x_modst)
+        self.clear_concept(self.x_bsmo)
+        self.x_bsmo = None
         __MODST = MODE_STATIQUE( MATR_RIGI = self.matr_rig,
                                 FORCE_NODALE = grnocapt,)
-        self.x_modst = __MODST
 
-        r = Resultat(None, __MODST.nom, __MODST, self.mess, owned=False)
-        nume_modes,base_proj = r.get_modes_stat()
+        self.x_bsmo = ModeMeca(None, __MODST.nom, __MODST, self.mess)
+        self.base_expansion = self.x_bsmo
 
-        self.clear_concept(self.x_bsmo)
-        __BSMO = DEFI_BASE_MODALE( RITZ = (
-                _F(MODE_MECA = self.support_modele_res, NMAX_MODE = 0,),
-                _F(MODE_INTF = __MODST, NMAX_MODE = len(nume_modes),),
-                                        ),
-                                  NUME_REF = self.nume_support_modele,)
+        return self.x_bsmo
 
-        self.x_bsmo = __BSMO
-        base_mod_es = Resultat(None, __BSMO.nom, __BSMO, self.mess, owned=False)
-        nume_modes_sup,base_proj = base_mod_es.get_modes_stat()
-        self.base_expansion = __BSMO
 
-        return nume_modes_sup, base_proj, __BSMO
-
-    def calc_base_lmme(self, basemo, calc_freq=None):
+    def calc_base_lmme(self, base_mod_es, calc_freq=None):
         """!Calcul de la base de projection type Mathieu Corus
         """
 
         self.clear_concept(self.x_numgen)
-        __NUMGEN = NUME_DDL_GENE( BASE = basemo,
-                                 STOCKAGE = 'PLEIN',)
+        self.x_numgen = None
+        __NUMGEN = NUME_DDL_GENE( BASE = base_mod_es.obj,
+                                  STOCKAGE = 'PLEIN',)
         self.x_numgen = __NUMGEN
 
         self.clear_concept(self.x_kproj)
-        __KPROJ = PROJ_MATR_BASE( BASE = basemo,
+        self.x_kproj = None
+        __KPROJ = PROJ_MATR_BASE( BASE = base_mod_es.obj,
                                  NUME_DDL_GENE = __NUMGEN,
                                  MATR_ASSE = self.matr_rig,);
         self.x_kproj = __KPROJ
 
         self.clear_concept(self.x_mproj)
-        __MPROJ = PROJ_MATR_BASE( BASE = basemo,
+        self.x_mproj = None
+        __MPROJ = PROJ_MATR_BASE( BASE = base_mod_es.obj,
                                  NUME_DDL_GENE = __NUMGEN,
                                  MATR_ASSE = self.matr_masse,)
         self.x_mproj = __MPROJ
 
         self.clear_concept(self.x_modgen)
+        self.x_modgen = None
 
-        base_mod_es = Resultat(None, basemo.nom, basemo, self.mess, owned=False)
-        nume_modes_sup,base_proj=base_mod_es.get_modes_stat()
+        nom_cmp = base_mod_es.get_modes_data()['NOM_CMP']
+        nume_modes_sup = base_mod_es.get_modes_data()['NUME_ORDRE']
 
         if calc_freq is None:
             calc_freq = { 'OPTION':'PLUS_PETITE',
@@ -390,30 +388,23 @@ class ModifStruct:
             if calc_freq['NMAX_FREQ']==-1:
                 calc_freq['NMAX_FREQ'] = len(nume_modes_sup)
 
-            
         __MODGEN = MODE_ITER_SIMULT( MATR_A = __KPROJ,
-                                    MATR_B = __MPROJ,
-                                    VERI_MODE = _F(SEUIL = 1.E-05,
-                                                   STOP_ERREUR = 'OUI',),
-                                    CALC_FREQ = calc_freq)
+                                     MATR_B = __MPROJ,
+                                     VERI_MODE = _F(SEUIL = 1.E-05,
+                                                    STOP_ERREUR = 'OUI',),
+                                     CALC_FREQ = calc_freq)
         self.x_modgen=__MODGEN
 
         self.clear_concept(self.x_resgen)
+        self.x_resgen = None
         __RESGEN = REST_GENE_PHYS( RESU_GENE = __MODGEN,
-                                  TOUT_ORDRE = 'OUI',
-                                  NOM_CHAM ='DEPL')
-        self.x_resgen = __RESGEN
+                                   TOUT_ORDRE = 'OUI',
+                                   NOM_CHAM ='DEPL')
 
-
-        self.base_mod_lmme = Resultat(None, __RESGEN.nom, __RESGEN,
-                                      self.mess, owned=False)
-
-        modes = self.base_mod_lmme.get_modes()
-        self.nume_modes_sup, bid1, bid2, self.base_proj, bid3, bid4 = modes 
-
-        self.base_expansion = __RESGEN
+        self.x_resgen = ModeMeca(None, __RESGEN.nom, __RESGEN, self.mess)
+        self.base_expansion = self.x_resgen
         
-        return self.nume_modes_sup,self.base_proj,__RESGEN
+        return self.x_resgen
 
 
     def condensation(self, resolution = None, nomcham = 'DEPL'):
@@ -429,20 +420,20 @@ class ModifStruct:
 
         # Reduction des modes mesures
         self.clear_concept( self.x_mide )
+        self.x_mide = None
         __MIDE = EXTR_MODE( FILTRE_MODE = _F( MODE = modmesu.obj,
                                              NUME_MODE = modes_mesure_retenus,
                                         ),)
         self.x_mide = __MIDE
         name = obj_get_name(self.x_mide)
-        self.meidee_objects.update(name, self.x_mide )
+        self.objects.update(name, self.x_mide )
 
         self.clear_concept( self.x_mexp )
+        self.x_mexp = None
         # cas LMME, une fonction existe pour calculer la base d'expansion
-        refd_base=self.base_expansion.REFD.get()
-
         if self.method_name == "LMME":
-            __MEXP = EXTR_MODE( FILTRE_MODE = _F( MODE = self.base_expansion,
-                                                 NUME_MODE = modes_expansion_retenus))
+            __MEXP = EXTR_MODE( FILTRE_MODE = _F( MODE = self.base_expansion.obj,
+                                                  NUME_MODE = modes_expansion_retenus))
             self.x_mexp = __MEXP
 
         # cas ES, il faut re-calculer la base a partir des noeuds choisis
@@ -450,38 +441,40 @@ class ModifStruct:
             # self.mess.disp_mess("Recalcul de la base modale par ES")
             nodes = {}
             for num in modes_expansion_retenus:
-                node,comp = self.base_proj[num-1].split()
+                node,comp = self.base_proj.get_modes_data()['NOM_CMP'][num-1].split()
                 nodes.setdefault( node, [] ).append( comp )
             grno = []
             for node, comps in nodes.items():
                 grno.append( _F( NOEUD = node, AVEC_CMP = comps) )
             self.calc_base_es(grno)
-            __MEXP = self.base_expansion
+            __MEXP = self.base_expansion.obj
         self.x_mexp = __MEXP
+        
         self.clear_concept( self.x_proj )
+        self.x_proj = None
         try:
             __PROJ = PROJ_MESU_MODAL( MODELE_CALCUL = _F( MODELE = modlsup.obj,
-                                                         BASE = __MEXP,),
-                                     MODELE_MESURE = _F( MODELE = modlexp.obj,
-                                                         MESURE = self.x_mide,
-                                                         NOM_CHAM = nomcham,),
-                                     RESOLUTION = self.param_condens
-                                   );
-        except aster.error:
+                                                          BASE = __MEXP,),
+                                      MODELE_MESURE = _F( MODELE = modlexp.obj,
+                                                          MESURE = self.x_mide,
+                                                          NOM_CHAM = nomcham,),
+                                      RESOLUTION = self.param_condens
+                                    );
+        except Exception,err:
             self.mess.disp_mess("Condensation de la mesure: " \
                                 "Erreur dans PROJ_MESU_MODAL")
-            self.mess.disp_mess(str(err))
             return
         self.x_proj = __PROJ
         
         # Condensation de la mesure sur les DDL INTERFACES
         self.clear_concept( self.x_ssexp )
+        self.x_ssexp = None
         try:
             __SSEXP = MACR_ELEM_STAT( DEFINITION = _F( MODELE = modlsup.obj,
-                                                      PROJ_MESU = __PROJ,
-                                                      MODE_MESURE = __MIDE,
-                                                      CARA_ELEM = self.cara_elem,
-                                                      CHAM_MATER = self.cham_mater,
+                                                       PROJ_MESU = __PROJ,
+                                                       MODE_MESURE = __MIDE,
+                                                       CARA_ELEM = self.cara_elem,
+                                                       CHAM_MATER = self.cham_mater,
                                                     ),
                                       EXTERIEUR = _F(GROUP_NO = noeuds_interface,),
                                       RIGI_MECA = _F(),
@@ -490,23 +483,25 @@ class ModifStruct:
                                      )
         except Exception, err:
             self.mess.disp_mess("Condensation de la mesure: " \
-                                "Erreur dans MACR_ELEM_STAT")
-            self.mess.disp_mess(str(err))
-            self.mess.disp_mess("OK")
+                                "Erreur dans MACR_ELEM_STAT"\
+                                "Voir le message d'erreur dans le shell")
             return
         self.x_ssexp = __SSEXP
 
         self.clear_concept( self.x_mailcond )
+        self.x_mailcond = None
         __MAILCD = DEFI_MAILLAGE( DEFI_SUPER_MAILLE = _F( MACR_ELEM = __SSEXP,
-                                                         SUPER_MAILLE = self.sumail,),
-                                 DEFI_NOEUD = _F( TOUT = 'OUI',
+                                                          SUPER_MAILLE = self.sumail,),
+                                  DEFI_NOEUD = _F( TOUT = 'OUI',
                                                   INDEX = (1,0,1,8,)) # XXX
                                   )
 
         self.x_mailcond = __MAILCD
+        print "self.x_mailcond1 = ", self.x_mailcond, type(self.x_mailcond), self.x_mailcond.nom
 
     def modele_couple(self):
         """Creation du modele couple"""
+        print "self.x_mailcond2 = ", self.x_mailcond, type(self.x_mailcond), self.x_mailcond.nom
         self.cpl.reinit(self.modlx, self.mailx, self.x_mailcond, self.sumail )
         
         try:
@@ -533,6 +528,7 @@ class ModifStruct:
     def maillage_iface(self):
         """Construit le maillage de l'interface."""
         self.clear_concept(self.x_mailint)
+        self.x_mailint = None
         self.group_ma_int = ['IFACE']
 
         group_no_ext = []
@@ -549,12 +545,15 @@ class ModifStruct:
                                                 NOM_GROUP_MA = self.group_ma_int, ))
         self.x_mailint = __MAIL
         self.clear_concept(self.x_mailsstr)
+        self.x_mailsstr = None
         __MAILM=ASSE_MAILLAGE(MAILLAGE_1=self.x_mailcond,
                              MAILLAGE_2=self.x_mailint,
                              OPERATION='SOUS_STR',)
         self.x_mailsstr = __MAILM
+        self.objects.update(__MAILM.nom,__MAILM)
 
         self.clear_concept( self.x_modlint )
+        self.x_modlint
 
         __MODL=AFFE_MODELE(MAILLAGE=self.x_mailsstr,
                            AFFE=_F(GROUP_MA=self.group_ma_int,
@@ -566,6 +565,7 @@ class ModifStruct:
         self.x_modlint = __MODL
 
         self.clear_concept( self.x_caraint )
+        self.x_caraint = None
         __CARA=AFFE_CARA_ELEM(MODELE=self.x_modlint,
                               DISCRET=_F(GROUP_MA=self.group_ma_int,
                                          REPERE='GLOBAL',
@@ -574,27 +574,38 @@ class ModifStruct:
                                          ),);
         self.x_caraint = __CARA
         self.clear_concept( self.x_kelint )
+        self.x_kelint = None
         __KEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                              MODELE=self.x_modlint,
                              CARA_ELEM=self.x_caraint,
                              );
         self.x_kelint = __KEL
         self.clear_concept( self.x_melint )
+        self.x_melint = None
         __MEL=CALC_MATR_ELEM(OPTION='MASS_MECA',
                              MODELE=self.x_modlint,
                              CARA_ELEM=self.x_caraint,
                              );
         self.x_melint = __MEL
         self.clear_concept( self.x_numint )
+        self.x_numint = None
+        
         __NUM=NUME_DDL( MATR_RIGI=self.x_kelint,);
         self.x_numint = __NUM
+        
         self.clear_concept( self.x_kas )
+        self.x_kas = None
         __KAS=ASSE_MATRICE( MATR_ELEM=self.x_kelint,NUME_DDL=self.x_numint,);
         self.x_kas = __KAS
+        
         self.clear_concept( self.x_mas )
+        self.x_mas = None
         __MAS=ASSE_MATRICE( MATR_ELEM=self.x_melint,NUME_DDL=self.x_numint,);
         self.x_mas = __MAS
+        
         self.clear_concept( self.x_ponder )
+        self.x_ponder = None
+        
         if self.mac_ponder == 'RIGIDITE' :
             self.x_ponder = self.x_kas
         elif self.mac_ponder == 'MASSE' :
@@ -605,47 +616,38 @@ class ModifStruct:
 
     def indicateur_choix_base_projection(self):
         """Expansion statique du champ de deplacements aux interfaces"""
+
         self.clear_concept( self.x_modstint )
+        self.x_modstint
         __MODSTI=MODE_STATIQUE(MATR_RIGI=self.kassup,
                               FORCE_NODALE=self._get_force_nodale())
         self.x_modstint = __MODSTI
 
-        r=Resultat(None, __MODSTI.nom, __MODSTI, self.mess, owned=False)
-        nume_modes,base_proj=r.get_modes_stat()
-
-
-        self.clear_concept( self.x_baseint )
-        __BASINT=DEFI_BASE_MODALE(RITZ=( _F(MODE_MECA=self.support_modele_res,
-                                            NMAX_MODE=0,),
-                                         _F(MODE_INTF=self.x_modstint,
-                                            NMAX_MODE=len(nume_modes),),
-                                         ),
-                                  NUME_REF=self.nume_support_modele,);
-        self.x_baseint = __BASINT
 
         self.clear_concept( self.x_projmsint )
+        self.x_projmsint = None
         try:
-            __PROJMS=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=self.support_modele.obj,
-                                                    BASE=__BASINT,),
-                                   MODELE_MESURE=_F(MODELE=self.resu_exp.modele.obj,
-                                                    MESURE=self.modes_retr,
-                                                    NOM_CHAM='DEPL',),
+            __PROJMS=PROJ_MESU_MODAL(MODELE_CALCUL=_F( MODELE = self.support_modele.obj,
+                                                       BASE = __MODSTI,),
+                                   MODELE_MESURE=_F( MODELE = self.resu_exp.modele.obj,
+                                                     MESURE = self.modes_retr,
+                                                     NOM_CHAM = 'DEPL',),
                                    RESOLUTION=self.param_condens
                                    );
             self.x_projmsint = __PROJMS
-        except aster.error:
+        except Exception,err:
             self.mess.disp_mess("Condensation de la mesure: " \
                                 "Erreur dans PROJ_MESU_MODAL")
-            self.mess.disp_mess(str(err))
             return            
 
         self.clear_concept( self.x_deplpr )
-        __DEPLPR=REST_GENE_PHYS(RESU_GENE=__PROJMS,
-                              TOUT_ORDRE='OUI',
-                              NOM_CHAM   ='DEPL');
+        __DEPLPR=REST_GENE_PHYS( RESU_GENE = __PROJMS,
+                                 TOUT_ORDRE = 'OUI',
+                                 NOM_CHAM ='DEPL');
         self.x_deplpr = __DEPLPR
 
         self.clear_concept( self.x_deplint )
+        self.x_deplint = None
         __DEPINT=PROJ_CHAMP(METHODE='ELEM',
                             RESULTAT=self.x_deplpr,
                             MODELE_1=self.support_modele.obj,
@@ -654,9 +656,10 @@ class ModifStruct:
                             TOUT_ORDRE='OUI',
                             NUME_DDL=self.x_numint,
                             );
-        self.x_deplint = __DEPINT
+        self.x_deplint = ModeMeca(None,__DEPINT.nom,__DEPINT)
 
         self.clear_concept( self.x_deplxint )
+        self.x_deplxint = None
         # CHAMP DE DEPL AUX INTERFACES SUR LE MODELE COUPLE
         __DPXINT=PROJ_CHAMP(METHODE='ELEM',
                             RESULTAT=self.modes_couple,
@@ -666,11 +669,13 @@ class ModifStruct:
                             TOUT_ORDRE='OUI',
                             NUME_DDL=self.x_numint,
                             );
-        self.x_deplxint = __DPXINT
+        self.x_deplxint = ModeMeca(None,__DPXINT.nom,__DPXINT)
+
         # INDICATEUR DE PROXIMITE DES MODES
         # LA BASE DE PROJECTION EST CORRECT SI DEPLINT = DEPLXINT
         # LES MODES SONT PROCHES SI LES TERMES DIAG DU MAC PROCHE DE 1
         self.clear_concept( self.mac_int )
+        self.mac_int = None
         if self.mac_method == 'MAC' :
             if self.mac_ponder == 'SANS' :
                 __MACINT=MAC_MODES(BASE_1=__DEPINT,
@@ -712,12 +717,13 @@ class ModifStruct:
 ##        acouple = cpl.mat_amor[0]
 
         self.clear_concept( self.modes_couple )
+        self.modes_couple = None
         if mode_simult :
             __MODCPL = MODE_ITER_SIMULT( MATR_A = kcouple,
-                                        MATR_B = mcouple,
-                                        VERI_MODE = _F( SEUIL = 1.E-05,
-                                                        STOP_ERREUR = 'OUI',),
-                                        CALC_FREQ = calc_freq,);
+                                         MATR_B = mcouple,
+                                         VERI_MODE = _F( SEUIL = 1.E-05,
+                                                         STOP_ERREUR = 'OUI',),
+                                         CALC_FREQ = calc_freq,);
         else :
             __MODCPL = MODE_ITER_INV( MATR_A = kcouple,
                                      MATR_B = mcouple,
@@ -725,33 +731,30 @@ class ModifStruct:
                                     );
         self.modes_couple = __MODCPL
         name = obj_get_name(self.modes_couple)
-        self.meidee_objects.update(name, self.modes_couple)
+        self.objects.update(name, self.modes_couple)
 
         # RETROPROJECTION SUR LE MODELE EXPERIMENTAL (INTERFACE -> DDL MESURE)
         self.clear_concept( self.modes_retr )
+        self.modes_retr = None
         # XXX Should not we return the DEPL_INTERNE in the DeclareOut?
         __MDRETR=DEPL_INTERNE(DEPL_GLOBAL=__MODCPL,SUPER_MAILLE=self.sumail)
         self.modes_retr = __MDRETR
         name = obj_get_name(self.modes_retr)
-        self.meidee_objects.update(name, self.modes_retr)
+        self.objects.update(name, self.modes_retr)
 
 
     def calc_base_proj(self, calc_freq=None):
         """Calcule la base d'expansion en fonction de la methode, ES ou LMME"""
-        num_sup, base_proj, x_bsmo = self.calc_base_es()
+        x_bsmo = self.calc_base_es()
 
         # Conserve la base initiale (pour retrouver les noeuds a filter)
-        self.base_proj = base_proj
+        self.base_proj = x_bsmo
 
         # Expansion statique projetee
         if self.method_name == "LMME":
-            nume_modes_sup, base_proj, x_resgen = self.calc_base_lmme(x_bsmo,
-                                                                      calc_freq)
-            self.calculated_modes = [ ('%3i' %n , '%8.2f Hz' %f)
-                                      for n,f in nume_modes_sup ]
-        else:
-            self.calculated_modes = [ ( '%3i' %n, '%12s' % t) 
-                                      for n, t in zip(num_sup, base_proj) ]
+            x_bsmo = self.calc_base_lmme(x_bsmo, calc_freq)
+        return x_bsmo 
+
 
     def calcul_mesure_support_corresp(self):
         """Demarre le calcul Meidee sur la structure modifiee."""
@@ -766,9 +769,8 @@ class ModifStruct:
 
         numesup = None
         if not self.nume_support_modele :
-          numesup = Resultat(None, self.support_modele_res.nom,
-                           self.support_modele_res,
-                           self.mess, owned=False).nume
+          numesup = ModeMeca(None, self.support_modele_res.nom,
+                             self.support_modele_res,self.mess).nume
           if not numesup:
             self.mess.disp_mess("Impossible de retrouver la numerotation " \
                                 "utilisee pour le modele support")
@@ -814,11 +816,12 @@ class CopyModelMeca:
     caracteristique a partir d'un 'modele'.
     on peut surcharger chaque etape pour adapter cette creation
     """
-    def __init__(self):
+    def __init__(self, objects):
         # concepts produits par l'objet qui doivent etre detruits
         # avant reutilisation
         self.modele = None
         self.maillage = None
+        self.objects = objects
         self.nume_lst = []
         self.mat_rigi = []
         self.mat_mass = []
@@ -868,6 +871,7 @@ class CopyModelMeca:
         __MDLCPL = AFFE_MODELE( MAILLAGE=self.maillage,
                                 AFFE=affe )
         self.modele = __MDLCPL
+        self.objects.update(__MDLCPL.nom,__MDLCPL)
 
     def affe_cara_elem(self, cara):
         # replication des AFFE_CARA_ELEM
@@ -910,6 +914,7 @@ class CopyModelMeca:
             _TMP = NUME_DDL(**args)
             self.concepts[sd.nom] = _TMP
             self.nume_lst.append( _TMP )
+            self.objects.update(__NUMCPL.nom,__NUMCPL)
 
     def asse_matrice(self, args_lst):
         for args, sd in args_lst:
@@ -1017,10 +1022,15 @@ class CopyModelMeca:
                 asse_matrices.append( (args.copy(), etape.sd) )
         return asse_matrices
 
-    def clear_concept(self, cpt):
-        """!Detruit un concept silencieusement"""
-        if cpt is None:
+    def clear_concept(self, objet):
+        """!Detruit un concept aster directement, ou encapsule
+            une classe Meidee"""
+        if objet is None:
             return
+        try:
+            cpt = objet.obj
+        except AttributeError:
+            cpt = objet
         DETRUIRE(CONCEPT=_F(NOM=cpt),ALARME='NON',INFO=1)
 
 
@@ -1035,17 +1045,20 @@ class CreateModeleCouple(CopyModelMeca):
     def create_maillage(self):
         """Creation du maillage"""
         self.clear_concept( self.maillage )
+        self.maillage = None
         # Concept de sortie, ne pas changer de nom sans changer le DeclareOut
         __MLCPL = ASSE_MAILLAGE( MAILLAGE_1=self.mail1,
                                  MAILLAGE_2=self.mail2,
                                  OPERATION='SOUS_STR' )
         self.maillage = __MLCPL
         self.concepts[self.mail1.nom] = __MLCPL
+        self.objects.update(__MLCPL.nom, __MLCPL)
 
 
     def create_modele(self, affe):
         """Creation du modele"""
         self.clear_concept( self.modele )
+        self.modele = None
         # Concept de sortie, ne pas changer de nom sans changer le DeclareOut
         __MDLCPL = AFFE_MODELE( MAILLAGE=self.maillage,
                                 AFFE=affe,
@@ -1053,6 +1066,8 @@ class CreateModeleCouple(CopyModelMeca):
                                                     PHENOMENE='MECANIQUE',),
                                 )
         self.modele = __MDLCPL
+        print "type(__MDLCPL) = ", type(__MDLCPL), __MDLCPL, __MDLCPL.nom
+        self.objects.update(__MDLCPL.nom,__MDLCPL)
 
 
     def nume_ddl(self, args_lst):
@@ -1067,6 +1082,7 @@ class CreateModeleCouple(CopyModelMeca):
         __NUMCPL = NUME_DDL(**args)
         self.concepts[sd.nom] = __NUMCPL
         self.nume_lst.append( __NUMCPL )
+        self.objects.update(__NUMCPL.nom,__NUMCPL)
 
     def asse_matrice(self, args_lst):
         # cleanup:

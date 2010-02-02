@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE CONSOLE EN FLEXION TRIA3 GRILLE_MEMBRANE POIDS_PROPRE
 # ssls132d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,7 +131,8 @@ ZCHM=AFFE_CHAR_MECA(
                    _F( GROUP_MA  = ('B0X','B1X'),
                        DX = 0., DY=0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0. ),
                 ),
-            PESANTEUR = (9.81,0.,0.,-1.)
+            PESANTEUR = _F(GRAVITE=9.81,
+                           DIRECTION=(0.,0.,-1.),),
             )
 #
 # ----------------------------------------------

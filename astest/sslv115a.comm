@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
 # sslv115a.para = tps_job 60 mem_job 400Mo mem_aster 20 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,10 +106,12 @@ CHARMECA=AFFE_CHAR_MECA(MODELE=MODELE,
                                      GROUP_NO='VINF',),),)
 
 CHARMEZ=AFFE_CHAR_MECA(MODELE=MODELE,
-                       PESANTEUR=(10.0,0.0,0.0,-1.0),);
+                       PESANTEUR=_F(GRAVITE=10.0,
+                                    DIRECTION=(0.0,0.0,-1.0),),);
 
 CHARMEX=AFFE_CHAR_MECA(MODELE=MODELE,
-                       PESANTEUR=(10.0,-1.0,0.0,0.0),);
+                       PESANTEUR=_F(GRAVITE=10.0,
+                                    DIRECTION=(-1.0,0.0,0.0),),);
 
 LINST=DEFI_LIST_REEL(VALE=(0.0,1.0),);
 

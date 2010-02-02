@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PORTEE DE CABLES TRI-RENUM MD/AFFE_CHAR_MECA/DYNOLI(MULTFRONT)
 # yyyy103d.para = tps_job 130 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -174,7 +174,8 @@ CHA1=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
                                                                     )
 
 CHA2=AFFE_CHAR_MECA(   MODELE=MO,
-                          PESANTEUR=(9.81,   0.,0.,-1.,) )
+                          PESANTEUR=_F(GRAVITE=9.81,
+                                       DIRECTION=(0.,0.,-1.,), ),)
 
 #CHA3  = AFFE_CHAR_MECA ( MODELE: MO ,
 #                        TEMP_CALCULEE: EVOTH        );

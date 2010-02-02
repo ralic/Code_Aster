@@ -1,6 +1,6 @@
       FUNCTION JJPREM ( NOMBRE , IRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/02/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
       INTEGER  JJPREM , NOMBRE , IRET
 C     ==================================================================
       INTEGER          NPRE
-      PARAMETER      ( NPRE = 78 )
+      PARAMETER      ( NPRE = 83 )
       INTEGER          JPREM
       COMMON /JPREJE/  JPREM(NPRE)
 C     ==================================================================
@@ -31,8 +31,7 @@ C     ==================================================================
       INTEGER          IPAS , IPR(NPRE), I, IPREM, J, VALI(2)
 C
       DATA IPAS /   0 /
-      DATA IPR/
-     &             11,         17,         23,         37,         53,
+      DATA IPR/    11,         17,         23,         37,         53,
      &             71,         97,        127,        167,        223,
      &            293,        383,        499,        547,        647,
      &            757,        853,        941,       1031,       1109,
@@ -47,7 +46,8 @@ C
      &        5800139,   10000019,   12500003,   15000017,   17500013,
      &       20000003,   22500011,   25000009,   27500003,   30000001,
      &       32500001,   35000011,   37500007,   40000003,   42500023,
-     &       45000017,   47500001,   50000017/
+     &       45000017,   47500001,   50000017,  100000007,  500000003,
+     &     1000000007, 1300000003, 2147483647/
 
 C    Nom du site www.prime-numbers.org
 

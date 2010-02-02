@@ -3,7 +3,7 @@
       INTEGER  NDIM
       REAL*8   ANGMAS(7),COOR(3)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 01/02/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER  ICAMAS, IRET, I
+      INTEGER  ICAMAS, IRET, I, IADZI, IAZK24
       REAL*8   R8NNEM, R8DGRD, R8VIDE,P(3,3),XG(3),YG(3),ORIG(3),DIRE(3)
       REAL*8   ALPHA,BETA
 C     ------------------------------------------------------------------
@@ -62,11 +62,16 @@ C     ------------------------------------------------------------------
             ENDIF
 C           ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
             IF (ABS(ZR(ICAMAS)-2.D0).LT.1.D-3) THEN
-               ANGMAS(5) = ZR(ICAMAS+4)*R8DGRD()
-               ANGMAS(6) = ZR(ICAMAS+5)*R8DGRD()
-               ANGMAS(7) = ZR(ICAMAS+6)*R8DGRD()
+               IF ( NDIM .EQ. 3 ) THEN
+                  ANGMAS(5) = ZR(ICAMAS+4)*R8DGRD()
+                  ANGMAS(6) = ZR(ICAMAS+5)*R8DGRD()
+                  ANGMAS(7) = ZR(ICAMAS+6)*R8DGRD()
+               ELSE
+                  ANGMAS(5) = ZR(ICAMAS+1)*R8DGRD()
+               ENDIF
                ANGMAS(4) = 2.D0
             ENDIF
+
          ELSE IF ( ABS(ZR(ICAMAS)+1.D0).LT.1.D-3) THEN
 
 C ON TRANSFORME LA DONNEE DU REPERE CYLINDRIQUE EN ANGLE NAUTIQUE

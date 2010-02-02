@@ -2,7 +2,7 @@
      &                   DEPS, VIM, TM,TP,TREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,7 +141,7 @@ C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
         IF ( IRET.NE.0) SECH=0.D0
         IF (IISNAN(TP).GT.0) THEN
           TMAX = R8NNEM()
-          VIP(IDC+3) = R8NNEM()
+          VIP(IDC+3) = 0.D0
         ELSE
           TMAX = MAX(TMAXM, TP)
           IF (TMAX.GT.TMAXM) VIP(IDC+3) = TMAX

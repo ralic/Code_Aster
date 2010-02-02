@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
 # hplp100b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,7 +146,8 @@ SIG3=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R',
 # CHARGEMENTS SURFACIQUES ET DEFORMATIONS INITIALES
 
 F1=AFFE_CHAR_MECA(       MODELE=MO,
-                        PESANTEUR=(10., 0., -1., 0.,))
+                         PESANTEUR=_F(GRAVITE=10.,
+                                       DIRECTION=(0.,-1.,0.,),),)
 
 F2=AFFE_CHAR_MECA_F(           MODELE=MO,
                           FORCE_INTERNE=_F( TOUT = 'OUI',
@@ -300,7 +301,8 @@ SIG6=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R',
 # CHARGEMENTS SURFACIQUES ET DEFORMATIONS INITIALES
 
 F11=AFFE_CHAR_MECA(       MODELE=MO1,
-                             PESANTEUR=(10., 0., -1., 0.,))
+                             PESANTEUR=_F(GRAVITE=10.,
+                                          DIRECTION=(0., -1., 0.,),),)
 
 F21=AFFE_CHAR_MECA_F(           MODELE=MO1,
                                FORCE_INTERNE=_F( TOUT = 'OUI',

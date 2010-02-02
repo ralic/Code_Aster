@@ -4,7 +4,7 @@
       CHARACTER*(*)      MODES,MASSE, AMOR, RAIDE, NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGELINE  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,8 @@ C
       CHARACTER*1   TYPE
       CHARACTER*8   CBID
       CHARACTER*16  NOMCMD
-      CHARACTER*19  NUMDDL,CHAMNO,NUMAT(3), NOMAT(3)
+      CHARACTER*14  NUME2, NUMAT(3)
+      CHARACTER*19  NUMDDL,CHAMNO,NUMTMP, NOMAT(3)
       CHARACTER*24  VALE, REFD
       CHARACTER*24 VALK(4)
 C     ------------------------------------------------------------------
@@ -66,19 +67,21 @@ C     VERIFICATION DE L'EXISTENCE DES MATRICES ET DE LA NUMEROTATION
       CALL EXISD('MATR_ASSE',AMOR,IMAT(3))
       NOMAT(3)=AMOR
       CALL EXISD('NUME_DDL',NUME,I4)
+      NUME2=NUME(1:14)
 
 C     VERIFICATION DE LA COHERENCE DES MATRICES ET DE LA NUMEROTATION
       DO 1 I = 1, 3
         IF (IMAT(I).NE.0) THEN
         CALL DISMOI('F','NOM_NUME_DDL',NOMAT(I),'MATR_ASSE',IBID,
-     &              NUMAT(I),IRET)
+     &              NUMTMP,IRET)
+        NUMAT(I)=NUMTMP(1:14)
         ELSE
           NUMAT(I)=' '
         ENDIF
    1  CONTINUE
       IF (I4.NE.0) THEN
         DO 10 I = 1, 3
-          IF ((NUMAT(I).NE.NUME).AND.(NUMAT(I).NE.' ')) THEN
+          IF ((NUMAT(I).NE.NUME2).AND.(NUMAT(I).NE.' ')) THEN
             CALL U2MESK('F','ALGELINE3_60',1,NOMAT(I))
           ENDIF
    10   CONTINUE

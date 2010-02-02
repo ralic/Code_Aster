@@ -1,4 +1,4 @@
-#@ MODIF __init__ Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF __init__ Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

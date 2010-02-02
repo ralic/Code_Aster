@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE TEST DE FONDATION FILANTE AVEC LA LOI DE CAMCLAY EN MECANIQUE DRAINE
 # ssnp136a.para = tps_job 370 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,7 +139,8 @@ DDLIMP2=AFFE_CHAR_MECA(MODELE=MODMEC1,
                                    DY=-0.05));
 
 PESE=AFFE_CHAR_MECA(MODELE=MODMEC1,
-                    PESANTEUR=(G,0.0,-1.0,0.0));
+                    PESANTEUR=_F(GRAVITE=G,
+                                 DIRECTION=(0.0,-1.0,0.0),),);
 
 fevol = FORMULE(VALE='INST/T1', NOM_PARA='INST');
 

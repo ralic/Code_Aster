@@ -1,6 +1,6 @@
       SUBROUTINE JEECRA ( NOMLU , CATR , IVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -143,8 +143,6 @@ C
         DATE ( JDATE(IC) + ID ) = IVAL
       ELSE IF ( CATRLU .EQ. 'DOCU    ' ) THEN
         DOCU ( JDOCU(IC) + ID ) = CVAL
-      ELSE IF ( CATRLU .EQ. 'ORIG    ' ) THEN
-        ORIG ( JORIG(IC) + ID ) = CVAL
       ELSE IF ( LCONST ) THEN
         IF ( LLONG ) THEN
           LONOI = LONO ( JLONO(IC) + ID )
@@ -254,7 +252,7 @@ C
             CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ELSE
             IF ( LCONTI ) THEN
-              LONT=LONO( JLONO(IC) + ID ) 
+              LONT=LONO( JLONO(IC) + ID )
               IF ( LONT .NE. 0 .AND. LONTI -1 + LONOJ .GT. LONT ) THEN
                 CMESS = 'ATTRIBUT '//CATRLU//' INCOMPATIBLE AVEC VALEUR'
      &                  //' INITIALE DE LONT'

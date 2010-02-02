@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PILOTAGE DU CHARGEMENT EN NON LINEAIRE
 # ssnx101a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -58,7 +58,8 @@ LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                                    DY=0.,),);
 
 POIDS=AFFE_CHAR_MECA(MODELE=MO,
-                     PESANTEUR=(9810.,0.,-1.,0.,),);
+                     PESANTEUR=_F(GRAVITE=9810.,
+                                  DIRECTION=(0.,-1.,0.,),),);
 
 COMPRESS=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_CONTOUR=_F(GROUP_MA='LIBRE',

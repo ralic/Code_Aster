@@ -1,4 +1,4 @@
-# MODIF  DATE 19/01/2010   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL APRES CONSTRUCTION 
 # wdnp101b.para = tps_job 4500 mem_job 1000Mo mem_aster 90 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -182,7 +182,8 @@ AFFMAT1=AFFE_MATERIAU(MAILLAGE=MA,
                      );
 
 PES=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
-                   PESANTEUR=(1.0,0.0,-1.0,0.0));
+                   PESANTEUR=_F(GRAVITE=1.0,
+                                DIRECTION=(0.0,-1.0,0.0),),);
 
 CHPAR=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
                      DDL_IMPO=_F(GROUP_MA='BAS',
@@ -614,7 +615,8 @@ U9B=STAT_NON_LINE(MODELE=MOD[9],
                  CONVERGENCE=_F(ITER_GLOB_MAXI=6,RESI_GLOB_RELA=1E-8));
                  
 MONOX=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
-                   PESANTEUR=(1.0,-1.0,0.0,0.0));
+                   PESANTEUR=_F(GRAVITE=1.0,
+                                DIRECTION=(-1.0,0.0,0.0),),);
                            
 
 # SEISMIC SIGNAL Friuli_GEFDYN : FONC_MULT=ACCELE

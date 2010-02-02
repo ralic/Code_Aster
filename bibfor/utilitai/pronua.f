@@ -1,7 +1,7 @@
       SUBROUTINE PRONUA(METHOD,NUAG1,NUAG2)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -174,21 +174,6 @@ C       ----------------------
             END IF
    10     CONTINUE
 
-        ELSE IF (TYSCA.EQ.'C') THEN
-C       ----------------------
-         CALL U2MESS('F','UTILITAI3_92')
-
-          DO 11,IP2 = 1,NP2
-            IF (ZL(INUAL2-1+ (IP2-1)*NC2+IC2)) THEN
-C             CALL NUAINC(METHOD,NP1,NX1,NC1,IC1,ZR(INUAX1),
-C    +        ZL(INUAL1), ZC(INUAV1), ZR(INUAX2-1+ (IP2-1)*NX2+1),
-C    +                  ZR(IADREF-1+IP2),VAL2C)
-              VAL2C = DCMPLX(0.D0,0.D0)
-              ZC(INUAV2-1+ (IP2-1)*NC2+IC2) = VAL2C
-            ELSE
-              ZC(INUAV2-1+ (IP2-1)*NC2+IC2) = DCMPLX(0.D0,0.D0)
-            END IF
-   11     CONTINUE
         ELSE
           CALL U2MESS('F','UTILITAI3_93')
         END IF

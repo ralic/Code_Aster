@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,14 +120,16 @@ C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CORRESP_2_MAILLA') THEN
 C     -------------------------------------------
         CORRES = NOMSD
-        CALL JEDETR(CORRES//'.PJEF_NO')
-        CALL JEDETR(CORRES//'.PJEF_NU')
+        CALL JEDETR(CORRES//'.PJXX_K1')
         CALL JEDETR(CORRES//'.PJEF_NB')
+        CALL JEDETR(CORRES//'.PJEF_NU')
         CALL JEDETR(CORRES//'.PJEF_M1')
         CALL JEDETR(CORRES//'.PJEF_CF')
         CALL JEDETR(CORRES//'.PJEF_TR')
         CALL JEDETR(CORRES//'.PJEF_AM')
         CALL JEDETR(CORRES//'.PJEF_CO')
+        CALL JEDETR(CORRES//'.PJNG_I1')
+        CALL JEDETR(CORRES//'.PJNG_I2')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'CRITERE') THEN

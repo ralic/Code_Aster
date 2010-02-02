@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/01/2010   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            REFERENCE       =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE","SOURCE_EXTERNE",
                                                             "NON_REGRESSION","AUTRE_ASTER")),
            VERSION         =SIMP(statut='f',typ='TXM'),
+           LEGENDE         =SIMP(statut='f',typ='TXM'),
          ),
 
          CHAM_ELEM       =FACT(statut='f',max='**',
@@ -70,6 +71,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            REFERENCE       =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE","SOURCE_EXTERNE",
                                                             "NON_REGRESSION","AUTRE_ASTER") ),
            VERSION         =SIMP(statut='f',typ='TXM' ),
+           LEGENDE         =SIMP(statut='f',typ='TXM'),
          ),
 
          RESU            =FACT(statut='f',max='**',
@@ -112,6 +114,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            REFERENCE       =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE","SOURCE_EXTERNE",
                                                             "NON_REGRESSION","AUTRE_ASTER",) ),
            VERSION         =SIMP(statut='f',typ='TXM' ),
+           LEGENDE         =SIMP(statut='f',typ='TXM'),
          ),
 
          GENE            =FACT(statut='f',max='**',
@@ -147,6 +150,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            REFERENCE       =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE","SOURCE_EXTERNE",
                                                             "NON_REGRESSION","AUTRE_ASTER",) ),
            VERSION         =SIMP(statut='f',typ='TXM' ),
+           LEGENDE         =SIMP(statut='f',typ='TXM'),
          ),
 
          OBJET           =FACT(statut='f',max='**',
@@ -164,6 +168,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            REFERENCE       =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE","SOURCE_EXTERNE",
                                                             "NON_REGRESSION","AUTRE_ASTER",) ),
            VERSION         =SIMP(statut='f',typ='TXM' ),
+           LEGENDE         =SIMP(statut='f',typ='TXM'),
          ),
 
          TEST_NAN        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),

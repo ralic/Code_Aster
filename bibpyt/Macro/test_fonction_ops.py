@@ -1,4 +1,4 @@
-#@ MODIF test_fonction_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fonction_ops Macro  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,20 +24,30 @@ import os
 epsi = 1e-15
 
 # Format
+ligne_fct_1 = """ ---- FONCTION         %(nom_para)s"""
+ligne_fct_11= """ ---- FONCTION         %(nom_para)s TITRE """
+ligne_fct_2 = """      %(nom_fct)s %(val_para)s """
+ligne_fct_22= """      %(nom_fct)s %(val_para)s %(titre)s """
+ligne_fct_3 = """      %(refe)s %(legende)s %(valref)s %(valcal)s %(erreur)s %(tole)s """ 
+ligne_fct_4 = """ %(testOk)s %(refe)s %(legende)s %(valref)s %(valcal)s %(erreur)s %(tole)s """ 
+
+ligne_nap_1 = """ ---- NAPPE            %(nom_para_0)s %(nom_para)s """
+ligne_nap_2 = """      %(nom_nap)s %(val_para_0)s %(val_para)s"""
+
+ligne_att_1 = """ ---- %(nom)s %(nom_attr)s %(nom_para)s %(vale)s """
+ligne_att_2 = """ ---- %(nom)s %(nom_attr)s %(vale)s """
+ligne_att_11= """      %(nom)s %(nom_attr)s %(nom_para)s %(vale)s """
+ligne_att_22= """      %(nom)s %(nom_attr)s %(vale)s """
+ligne_att_3 = """ %(testOk)s TEST_ATTRIBUTS """
+
 ligne_separatrice = 80*'-'
-ligne_nappe = """ ---- NAPPE: %(nom_nappe)s, NOM_PARA: %(nom_para)s, PARA: %(vale_para)16.14f """
-ligne_fct   = """ ---- FONCTION: %(nom_fct)s %(titre)s """
-ligne_ref   = """REFERENCE: %(typ_ref)s %(version)s """
-ligne_res1  = """%(testOk)s %(nomPara)s %(critere)s %(erreur)9.3f %(pourcent)s VALE:%(valeur)20.13E"""
-ligne_res2  = """      %(para)7.5E TOLE %(epsilon)9.3f %(pourcent)s REFE:%(refere)20.13E"""
 
-ligne_res1C = """%(testOk)s %(nomPara)s %(critere)s %(erreur)9.3f %(pourcent)s VALE:%(valR)20.13E %(valI)20.13E"""
-ligne_res2C  = """      %(para)7.5E TOLE %(epsilon)9.3f %(pourcent)s REFE:%(refR)20.13E %(refI)20.13E"""
+ligne_intspc   = """ ---- INTERSPECTRE        %(nom_para)s"""
+ligne_intspc_1 = """      %(nom)s %(val_para)s"""
 
-ligne_res_attr  = """%(testOk)s %(nomPara)s VALE:%(valPara)s"""
-ligne_res_att2  = """                                 REFE:%(valeRefe)s"""
-
-ligne_intspc   = """ ---- INTERSPECTRE: %(nom_intspc)s"""
+list_fct  = ['REFERENCE','LEGENDE','VALE_REF','VALE_CAL','ERREUR','TOLE']  
+list_attr = ['ATTR','PARA','VALE']  
+ 
 
 def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
    """
@@ -115,7 +125,125 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
    
    return {'testOk' : testOk, 'erreur' : err, 'epsilon' : curEps, 'valeurRef' :vtc}
 
-def AfficherResultat(dicoValeur, nomPara, crit, res, valPu, txt):
+
+def RoundValues(type,res,vtc,err,curEps):
+   """
+      Effectue des troncatures en fonctions des valeurs réelles fournies
+      et retourne eventuellement des valeurs sans exposant
+   """
+   #valeur calculee, valeur de reference:
+   #------------------------------------
+   if type=='R':
+     res2 = """%20.15E """%res
+     vtc2 = """%20.15E """%vtc
+     
+     # détermination du nombre de décimales à considérer : ndec
+     ndec=0
+     ii=res2.find('E')
+     sgExpoRes=res2[ii+1:ii+2]
+     expoRes=int(res2[ii+2:ii+4])
+     ii=vtc2.find('E')
+     sgExpoVtc=vtc2[ii+1:ii+2]
+     expoVtc=nexpo=int(res2[ii+2:ii+4])
+     # si les signes des exposants diffèrent : ndec = 6
+     if sgExpoRes != sgExpoVtc : ndec = 6
+     # si les signes des valeurs diffèrent : ndec = 6
+     if res*vtc<0 : ndec = 6
+     #si les exposants diffèrent : ndec = 6
+     if expoRes!=expoVtc : ndec = 6
+     #position de la première décimale différente : posD
+     if ndec == 0 :
+       kk=0
+       for k in range(len(res2)):
+          if res2[k]==' ':continue
+          if res2[k]==vtc2[k]: 
+             kk=kk+1
+             continue;
+          break;
+       if  kk==0: 
+          ndec=6
+       else: 
+          posD=kk-1
+          ndec=min(14,posD+2)
+       #on supprime les zéros inutiles
+       if ndec==14:
+          i1=res2.find('E');i2=res2.find('.');
+          kk=0
+          for k in range(i1-1,i2,-1):
+              if res2[k]=='0' and res2[k]==vtc2[k]:
+                 kk=kk+1
+                 continue       
+              break       
+          if kk>0:  ndec=min(14,i1-kk-i2)   
+     #troncatures
+     chndec="""%20."""+str(ndec)+"""E"""
+     rest=chndec%res
+     rest=rest.strip()
+     vtct=chndec%vtc
+     vtct=vtct.strip()
+     
+     #écriture éventuelle sans exposant
+#     if(sgExpoRes=='+'):
+#        if(ndec>=expoRes):
+#          chdiff="""%20."""+str(min(1,ndec-expoRes))+"""f"""
+#          resr=chdiff%res
+#          resr=resr.strip()
+#          vtcr=chdiff%vtc
+#          vtcr=vtcr.strip()
+#        else:
+#          resr=rest
+#          vtcr=vtct
+#     else:
+#        if(ndec+expoRes)<=12:     
+#          chadd="""%20."""+str(ndec+expoRes-1)+"""f"""
+#          resr=chadd%res
+#          resr=resr.strip()
+#          vtcr=chadd%vtc
+#          vtcr=vtcr.strip()
+#        else:
+#          resr=rest
+#          vtcr=vtct
+   if(abs(res)>=0.01 and abs(res)<100000):
+      chdiff="""%20."""+str(ndec)+"""f"""
+      resr=chdiff%res
+      resr=resr.strip()
+   else:
+      resr=rest.strip()
+
+   if(abs(vtc)>=0.01 and abs(vtc)<100000):
+      chdiff="""%20."""+str(ndec)+"""f"""
+      vtcr=chdiff%vtc
+      vtcr=vtcr.strip()
+   else:
+      vtcr=vtct.strip()
+
+
+
+
+   # erreur et tolerance:
+   #--------------------
+   listEpsiOut=[];
+   listEpsiIn=[err,curEps];
+   for erin in listEpsiIn:
+     err2 = ("""%5.1E """%(abs(erin))).strip()
+     chdiff="""%5.1f"""
+     ii=err2.find('E')
+     expo=err2[ii+2:ii+4]
+     sg=err2[ii+1:ii+2]
+     nexpo=int(expo)
+     if(abs(erin)>0.01 and abs(erin)<100000):
+        #listEpsiOut.append((str(abs(erin)).strip())[:nexpo+2])
+        listEpsiOut.append((chdiff%abs(erin)).strip())
+     else:
+        listEpsiOut.append(err2)
+
+   errr=listEpsiOut[0]
+   curEpsr=listEpsiOut[1]
+   
+   return (resr,vtcr,errr,curEpsr)
+   
+
+def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt):
    """
       Gestion de l'affichage par ajout de texte au tableau txt
       passe en parametre
@@ -128,33 +256,72 @@ def AfficherResultat(dicoValeur, nomPara, crit, res, valPu, txt):
    pourcent = ' '
    if crit[0:4] == 'RELA':
       pourcent = '%'
-   
-   # Ajout du texte en fonction du resultat
-   espace = (12 - len(nomPara))*' '
-   current = { 'testOk'  : testOk,
-               'nomPara' : nomPara+espace,
-               'critere' : crit[0:4],
-               'erreur'  : err,
-               'pourcent': pourcent}
-   if type(res) != complex:
-      current['valeur'] = res
-      txt.append(ligne_res1 % current)
-   else:
-      current['valR'] = res.real
-      current['valI'] = res.imag
-      txt.append(ligne_res1C % current)
-   
-   current = { 'para'    : valPu,
-               'epsilon' : curEps,
-               'pourcent': pourcent}
-   if type(vtc) != complex:
-      current['refere'] = vtc
-      txt.append(ligne_res2 % current)
-   else:
-      current['refR'] = vtc.real
-      current['refI'] = vtc.imag
-      txt.append(ligne_res2C % current)
 
+   if type(res) == complex:
+     if type(vtc)!=complex:
+        vtc0=complex(vtc,0)
+     else:
+        vtc0=vtc
+     resr,vtcr,errr,curEpsr=RoundValues('R',res.real,vtc0.real,err,curEps)
+     resc,vtcc,errr,curEpsr=RoundValues('R',res.imag,vtc0.imag,err,curEps)
+   else:
+     vtc0=vtc
+     res2,vtc2,errr,curEpsr=RoundValues('R',res,vtc0,err,curEps)
+
+   if type(res) == complex:
+      if(res.imag<0):
+         val_cal=resr.upper()+resc.upper()+'j'
+      else:
+         val_cal=resr.upper()+'+'+resc.upper()+'j'
+   else:
+      val_cal=res2.upper()
+      
+  
+   if type(vtc0) == complex:
+      if(vtc0.imag<0):
+         val_ref=vtcr.upper()+vtcc.upper()+'j'
+      else:
+         val_ref=vtcr.upper()+'+'+vtcc.upper()+'j'
+   else:
+       val_ref=vtc2.upper()
+   
+   espace = (len(val_ref)-8)*' '
+   chvalref='VALE_REF'+espace
+   espace = (len(val_cal)-8)*' '
+   chvalcal='VALE_CAL'+espace
+
+   if(len(val_ref)<=16):nvref=16
+   elif(len(val_ref)<=24):nvref=24
+   elif(len(val_ref)<=36):nvref=36
+   else: nvref=48
+   
+   if(len(val_cal)<=16):nvcal=16
+   elif(len(val_cal)<=24):nvcal=24
+   elif(len(val_cal)<=36):nvcal=36
+   else: nvcal=48
+
+   # Ajout du texte en fonction du resultat: ligne 3
+   current = { 'refe'    : list_fct[0]+(16 - len(list_fct[0]))*' ',
+               'legende' : list_fct[1]+(16 - len(list_fct[1]))*' ',
+               'valref'  : list_fct[2]+(nvref - len(list_fct[2]))*' ',
+               'valcal'  : list_fct[3]+(nvcal - len(list_fct[3]))*' ',
+               'erreur'  : list_fct[4]+(16 - len(list_fct[4]))*' ',
+               'tole'    : list_fct[5]+(16 - len(list_fct[5]))*' ',
+             }
+   txt.append(ligne_fct_3 % current)
+    
+   # Ajout du texte en fonction du resultat : ligne 4
+   current = {  'testOk'  : testOk,
+                'refe'    : ref+(16 - len(ref))*' ',
+                'legende' : legende+(16 - len(legende))*' ',
+                'valref'  : val_ref+(nvref - len(val_ref))*' ',
+                'valcal'  : val_cal+(nvcal - len(val_cal))*' ', 
+                'erreur'  : str(errr)+pourcent+(16 - len(str(errr)+pourcent))*' ',
+                'tole'    : str(curEpsr)+pourcent+(16 - len(str(curEpsr)+pourcent))*' ',
+            }
+   txt.append(ligne_fct_4 % current)
+   txt.append(' ')
+    
 # -----------------------------------------------------------------------------
 def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
    """
@@ -201,6 +368,9 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
          ver = None
          if ref == 'NON_REGRESSION':
             ver = dres['VERSION']
+         legende = dres['LEGENDE']
+         if legende == None:
+            legende='XXXX'
          nomfct = fct.nomj.nomj
          
          # Transformation de nompara en liste
@@ -227,7 +397,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
             if pres_sensi == 1:
                ncomp = self.jdc.memo_sensi.get_nocomp(fct.nom, ps.nom)
                lafonc = self.jdc.memo_sensi.d_sd[ncomp]
-               titre = ' ... SENSIBILITE AU PARAMETRE '+ps.nomj.nomj
+               titre = 'SENSIBILITE AU PARAMETRE '+ps.nomj.nomj
             else:
                lafonc = ps
             
@@ -394,33 +564,61 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
             
             # Construction de l'affiche du resultat
             current = {}
-            if (typeFct == 'nappe'):
-               current['nom_nappe'] = nomfct
-               current['nom_para']  = nompu
-               current['vale_para'] = valpu[0]
-               txt.append(ligne_nappe % current)
-            else:
-               nb_espace = 19-len(nomfct)
-               espace = nb_espace*' '
-               current['nom_fct'] = nomfct+espace
-               current['titre']   = titre
-               txt.append(ligne_fct % current)
-            
-            current = {}
-            if ref != None:
-               current['typ_ref'] = ref
-               if ver != None:
-                  current['version'] = 'VERSION: '+ver
-               else:
-                  current['version'] = ''
-            else:
-               a_ecrire = 'REFERENCE: NON_DEFINI'
-               current['typ_ref'] = 'NON_DEFINI'
-               current['version'] = ''
-            txt.append(ligne_ref % current)
-            
+
             nomLastPara = nompara[len(nompara)-1]
             valLastPara = valpu[len(valpu)-1]
+            if (typeFct == 'nappe'):
+
+               #ligne 1
+               nb_espace = 16-len(str(nompu))
+               espace = nb_espace*' '
+               current['nom_para_0'] = str(nompu)+espace
+               nb_espace = 16-len(str(nomLastPara))
+               espace = nb_espace*' '
+               current['nom_para'] = str(nomLastPara)+espace
+               txt.append(ligne_nap_1 % current)
+
+               #ligne 2
+               current = {}
+               nb_espace = 16-len(nomfct)
+               espace = nb_espace*' '
+               current['nom_nap'] = nomfct+espace
+               nb_espace = 16-len(str(valpu[0]))
+               espace = nb_espace*' '
+               current['val_para_0'] = str(valpu[0])+espace
+               nb_espace = 16-len(str(valLastPara))
+               espace = nb_espace*' '
+               current['val_para'] = str(valLastPara)+espace
+               txt.append(ligne_nap_2 % current)
+
+
+            else:
+
+               #ligne 1
+               nb_espace = 16-len(str(nomLastPara))
+               espace = nb_espace*' '
+               current['nom_para'] = str(nomLastPara)+espace
+               if(len(titre)>1):txt.append(ligne_fct_11% current)
+               else:txt.append(ligne_fct_1% current) 
+
+               #ligne 2
+               current = {}
+               nb_espace = 16-len(nomfct)
+               espace = nb_espace*' '
+               current['nom_fct'] = nomfct+espace
+               nb_espace = 16-len(str(valLastPara))
+               espace = nb_espace*' '
+               current['val_para'] = str(valLastPara)+espace
+               if(len(titre)>1):
+                  nb_espace = 33-len(titre)
+                  espace = nb_espace*' '
+                  current['titre'] = titre
+                  txt.append(ligne_fct_22 % current)
+               else:
+                  txt.append(ligne_fct_2 % current)
+
+            if ref == None: ref = 'NON_DEFINI'
+            
             # Test des valeurs calculees
             curDict=TesterValeur(nomLastPara,valLastPara,valref,res,epsi,crit,ssigne)
             
@@ -430,7 +628,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
                   if testOk == ' OK ':
                      txt.append('NOOK PAS DE CHANCE LE TEST EST CORRECT !!!')
                   else:
-                     AfficherResultat(curDict, nomLastPara, crit, res, valLastPara, txt)
+                     AfficherResultat(curDict, nomLastPara, ref, legende, crit, res, valLastPara, txt)
                elif ier == 120:
                   txt.append(' OK  PARAMETRE EN DOUBLE')
                elif ier == 130:
@@ -443,9 +641,11 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
                if ier != 0:
                   txt.append('NOOK PB INTERPOLATION. VOIR MESSAGE CI-DESSUS')
                else:
-                  AfficherResultat(curDict,nomLastPara,crit,res,valLastPara,txt)
+                  AfficherResultat(curDict,nomLastPara,ref,legende,crit,res,valLastPara,txt)
    
    if ATTRIBUT != None:
+      first_affiche_ligne1=True;
+      resu_test_attr=' OK '
       # Boucle sur le mot-cle ATTRIBUT
       for attr in ATTRIBUT:
          dres = attr.cree_dict_valeurs(attr.mc_liste)
@@ -542,47 +742,62 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
          if TEST_NOOK == 'OUI':
             if testOk == ' OK ': testOk = 'NOOK'
             else: testOk = ' OK '
-         
+         if testOk=='NOOK':resu_test_attr='NOOK'
+
          # Construction de l'affichage
          nomFct = fonction.nomj.nomj
+
+         # ligne 1 (affichée qu'à la première occurrence)
          current = {}
-         if typeFct == 'NAPPE':
-            current['nom_nappe'] = nomFct
-            current['nom_para']  = nompu
-            current['vale_para'] = para
-            txt.append(ligne_nappe % current)
-         else:
-            nb_espace = 19-len(nomFct)
-            espace = nb_espace*' '
-            current['nom_fct'] = nomFct+espace
-            current['titre']   = ''
-            txt.append(ligne_fct % current)
+         if first_affiche_ligne1 : 
+             first_affiche_ligne1=False
+             if typeFct == 'NAPPE':
+                nb_espace = 16-len('NAPPE')
+                espace = nb_espace*' '
+                current['nom']  = 'NAPPE'+espace
+             else:
+                nb_espace = 16-len('FONCTION')
+                espace = nb_espace*' '
+                current['nom']  = 'FONCTION'+espace
+
+             nb_espace = 16-len(list_attr[0])
+             espace = nb_espace*' '
+             current['nom_attr']  = list_attr[0]+espace
+             if typeFct == 'NAPPE':
+                nb_espace = 16-len(list_attr[1])
+                espace = nb_espace*' '
+                current['nom_para']  = list_attr[1]+espace
+             nb_espace = 16-len(list_attr[2])
+             espace = nb_espace*' '
+             current['vale']  = list_attr[2]+espace
+             if typeFct == 'NAPPE':
+                txt.append(ligne_att_1 % current)
+             else:
+                txt.append(ligne_att_2 % current)
          
+         # ligne 2
          current = {}
-         if ref != None:
-            current['typ_ref'] = ref
-            if ver != None:
-               current['version'] = 'VERSION: '+ver
-            else:
-               current['version'] = ''
-         else:
-            a_ecrire = 'REFERENCE: NON_DEFINI'
-            current['typ_ref'] = 'NON_DEFINI'
-            current['version'] = ''
-         txt.append(ligne_ref % current)
-         
-         current = {}
-         nb_espace = 27-len(nomAttr)
+         nb_espace = 16-len(nomFct)
          espace = nb_espace*' '
-         current['testOk']  = testOk
-         current['nomPara'] = nomAttr+espace
-         current['valPara'] = nompu
-         txt.append(ligne_res_attr % current)
-         
-         current = {}
-         current['valeRefe'] = valAttrRef
-         txt.append(ligne_res_att2 % current)
-   
+         current['nom']  = nomFct+espace
+         nb_espace = 16-len(nomAttr)
+         espace = nb_espace*' '
+         current['nom_attr'] = nomAttr+espace
+         if typeFct == 'NAPPE':
+            nb_espace = 16-len(str(para))
+            espace = nb_espace*' '
+            current['nom_para'] = str(para)+espace
+         nb_espace = 16-len(nompu)
+         espace = nb_espace*' '
+         current['vale']  = nompu+espace
+         if typeFct == 'NAPPE':
+            txt.append(ligne_att_11 % current)
+         else:
+            txt.append(ligne_att_22 % current)
+      current = {}
+      current['testOk']  = resu_test_attr
+      txt.append(ligne_att_3 % current)
+  
    if TABL_INTSP != None:
       # Boucle sur interspectres
       for intSpec in TABL_INTSP:
@@ -593,7 +808,9 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
             ver = dres['VERSION']
          crit = dres['CRITERE']
          epsi = dres['PRECISION']
-         
+         legende = dres['LEGENDE']
+         if legende == None:
+            legende='XXXX'
          table = dres['INTE_SPEC']
          
          dataTable = table.EXTR_TABLE().values()
@@ -689,22 +906,25 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
          fctIntSp = t_fonction_c(lx, map(complex,lr,li),dico,nomFctC)
          
          # Affichage
+
+         # ligne 1
          current = {}
-         current['nom_intspc'] = nomFctC
+         nb_espace = 16-len(fctProl[2].strip())
+         espace = nb_espace*' '
+         current['nom_para'] = fctProl[2].strip()+espace
          txt.append(ligne_intspc % current)
          
+         # ligne 2
          current = {}
-         if ref != None:
-            current['typ_ref'] = ref
-            if ver != None:
-               current['version'] = 'VERSION: '+ver
-            else:
-               current['version'] = ''
-         else:
-            a_ecrire = 'REFERENCE: NON_DEFINI'
-            current['typ_ref'] = 'NON_DEFINI'
-            current['version'] = ''
-         txt.append(ligne_ref % current)
+         nb_espace = 19-len(nomFctC.strip())
+         espace = nb_espace*' '
+         current['nom'] = nomFctC.strip()+espace
+         nb_espace = 16-len(str(valePara))
+         espace = nb_espace*' '
+         current['val_para'] = str(valePara)+espace
+         txt.append(ligne_intspc_1 % current)
+ 
+         if ref == None : ref = 'NON_DEFINI'
          
          # Calcul de la valeur de l'interspectre
          x = valePara
@@ -715,10 +935,9 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
          else:
             # Test et affichage de la valeur
             curDict=TesterValeur(fctProl[2],valePara,[valeRef,],res,epsi,crit,'NON')
-            AfficherResultat(curDict,fctProl[2].strip(),crit,res,valePara,txt)
+            AfficherResultat(curDict,fctProl[2].strip(),ref,legende,crit,res,valePara,txt)
    
    # On affiche txt dans le fichier RESULTAT
    aster.affiche('RESULTAT', os.linesep.join(txt))
    
    return ier
-

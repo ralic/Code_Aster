@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,10 @@ DEBUT( CODE=_F( NOM = 'SDLL137A',
 # CREATION DU MODELE EXPERIMENTAL
 #**********************************
 
+PRE_IDEAS( UNITE_IDEAS = 21, UNITE_MAILLAGE = 22)
+
 MAILEXP=LIRE_MAILLAGE(UNITE=22);
+
 
 MODLEXP=AFFE_MODELE(MAILLAGE=MAILEXP,
                    AFFE=_F(TOUT='OUI',
@@ -38,7 +41,7 @@ CHCAREXP=AFFE_CARA_ELEM(MODELE=MODLEXP,
                      DISCRET=_F(GROUP_MA='POUTRE',
                                  REPERE='GLOBAL',
                                  CARA='K_TR_D_L',
-                                 VALE=(1.e+12,1.e+12,1.e+12,1.e+12,1.e+12,1.e+12,),
+                                 VALE=(1.0,1.0,1.0,1.0,1.0,1.0,),
                                 ),);
 
 KELEXP=CALC_MATR_ELEM(OPTION='RIGI_MECA',

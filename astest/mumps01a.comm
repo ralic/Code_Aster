@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE validation du solveur MUMPS
 # mumps01a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,8 +49,10 @@ CHAM_MAT=AFFE_MATERIAU(   MAILLAGE=MA,  AFFE=_F( TOUT = 'OUI', MATER = MAT) )
 #
 CHAR=AFFE_CHAR_MECA( MODELE=MO,
        DDL_IMPO=  _F( GROUP_MA = 'BASE1',  DZ = 0., DY = 0.),
-       PESANTEUR=(9.81, 0., 0., -1.,) )
-CHARP=AFFE_CHAR_MECA( MODELE=MO, PESANTEUR=(9.81, 0., 0., -1.,) )
+       PESANTEUR=_F(GRAVITE=9.81,
+                    DIRECTION=(0., 0., -1.,),),)
+CHARP=AFFE_CHAR_MECA( MODELE=MO, PESANTEUR=_F(GRAVITE=9.81,
+                                              DIRECTION=(0., 0., -1.,),),)
 CHARCI=AFFE_CHAR_CINE( MODELE=MO, MECA_IMPO=  _F( GROUP_NO = 'BASE1',  DX = 10.),  )
 CHARCI3=AFFE_CHAR_CINE( MODELE=MO, MECA_IMPO=  _F( GROUP_NO = 'BASE1',  DX = 10., DY=0., DZ=0.),  )
 

@@ -1,5 +1,6 @@
-# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
+# zzzz121b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,7 +120,8 @@ FORCE_Z=78480.;
 PRES_0 = 0.0;
 PRES_0 = 1.E-14;
 CHARZERO=AFFE_CHAR_MECA(MODELE=MODEZERO,
-                        PESANTEUR=(9.81,0.,0.,-1.,),
+                        PESANTEUR=_F(GRAVITE=9.81,
+                                     DIRECTION=(0.,0.,-1.,),),
                         DDL_IMPO=(_F(GROUP_NO='J',
                                     DZ=0.,),
                                   _F(GROUP_MA='O_I',
@@ -168,7 +170,8 @@ MATEUN=AFFE_MATERIAU(MAILLAGE=MUN,
 # 5.4. CHARGEMENTS
 
 CHARUN=AFFE_CHAR_MECA(MODELE=MODEUN,
-                      PESANTEUR=(9.81,0.,0.,-1.,),
+                      PESANTEUR=_F(GRAVITE=9.81,
+                                   DIRECTION=(0.,0.,-1.,),),
                       DDL_IMPO=(_F(GROUP_NO='J',
                                   DZ=0.,),
                                 _F(GROUP_MA='O_I',
@@ -280,7 +283,8 @@ MATEDEUX=AFFE_MATERIAU(MAILLAGE=MDEUX,
 # 8.3. CHARGEMENTS
 
 CHARDEUX=AFFE_CHAR_MECA(MODELE=MODEDEUX,
-                        PESANTEUR=(9.81,0.,0.,-1.,),
+                        PESANTEUR=_F(GRAVITE=9.81,
+                                     DIRECTION=(0.,0.,-1.,),),
                         DDL_IMPO=(_F(GROUP_NO='J',
                                     DZ=0.,),
                                   _F(GROUP_MA='O_I',
@@ -374,7 +378,8 @@ MATETROI=AFFE_MATERIAU(MAILLAGE=MTROI,
 # 11.4. CHARGEMENTS
 
 CHA_TROI=AFFE_CHAR_MECA(MODELE=MODETROI,
-                        PESANTEUR=(9.81,0.,0.,-1.,),
+                        PESANTEUR=_F(GRAVITE=9.81,
+                                     DIRECTION=(0.,0.,-1.,),),
                         DDL_IMPO=(_F(GROUP_NO='J',
                                     DZ=0.,),
                                   _F(GROUP_MA='O_I',
@@ -487,7 +492,8 @@ MATEQUAT=AFFE_MATERIAU(MAILLAGE=MQUAT,
 # 14.3. CHARGEMENTS
 
 CHARQUAT=AFFE_CHAR_MECA(MODELE=MODEQUAT,
-                        PESANTEUR=(9.81,0.,0.,-1.,),
+                        PESANTEUR=_F(GRAVITE=9.81,
+                                     DIRECTION=(0.,0.,-1.,),),
                         DDL_IMPO=(_F(GROUP_NO='J',
                                     DZ=0.,),
                                   _F(GROUP_MA='O_I',
@@ -566,7 +572,8 @@ MATECINQ=AFFE_MATERIAU(MAILLAGE=MCINQ,
 # 17.3. CHARGEMENTS
 
 CHARCINQ=AFFE_CHAR_MECA(MODELE=MODECINQ,
-                        PESANTEUR=(9.81,0.,0.,-1.,),
+                        PESANTEUR=_F(GRAVITE=9.81,
+                                     DIRECTION=(0.,0.,-1.,),),
                         DDL_IMPO=(_F(GROUP_NO='J',
                                     DZ=0.,),
                                   _F(GROUP_MA='O_I',

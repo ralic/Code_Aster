@@ -3,7 +3,7 @@ C TOLE CRS_505
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C ----------------------------------------------------------------------
 
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER      IRET,JPARAL,NUMAIL,NUMC2,NUMC3
+      INTEGER      IRET,JPARAL,NUMC2,NUMC3
       LOGICAL      LPARAL
       CHARACTER*16 NOMTE,NOMOPT
       CHARACTER*8 K8BID
@@ -67,10 +67,6 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
-C
-C     -- FONCTIONS FORMULES :
-C     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-      NUMAIL(IGR,IEL) = ZI(IALIEL-1+ZI(ILLIEL-1+IGR)-1+IEL)
 C DEB-------------------------------------------------------------------
       CALL UTTCPU('CPU.CALC.3','DEBUT',' ')
 C

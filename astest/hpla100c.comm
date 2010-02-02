@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,7 +129,8 @@ CHMATHE=AFFE_MATERIAU(  MAILLAGE=MA,
 # ------------------------------------------------------------------
 
 CHPES=AFFE_CHAR_MECA(  MODELE=MO,
-           PESANTEUR=( 10.0,  0.,  0.,  -1., ),
+           PESANTEUR= _F(GRAVITE=10.,
+                         DIRECTION=(0.,0.,-1.,),),
          FORCE_ARETE=_F(  GROUP_MA = 'HAUT',        FZ = 8.E-4),
          DDL_IMPO=(_F(  GROUP_NO = 'LM',              DZ = 0.),
                    _F(  GROUP_NO = 'KL',          DY = 0.,  DRX = 0.,        DRZ = 0.),

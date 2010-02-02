@@ -1,5 +1,6 @@
-# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE TUYAUTERIE SOUMISE A UNE EXCITATION EN DEPLACEMENT,
+# sdlx300a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -483,7 +484,8 @@ TEST_RESU(  RESU=_F( RESULTAT = MODE1,
 # CONDITIONS AUX LIMITES
 #
 CH2A=AFFE_CHAR_MECA(       MODELE=MO,
-                              PESANTEUR=(981.,1.,0.,0.,)
+                              PESANTEUR=_F(GRAVITE=981.,
+                                         DIRECTION=(1.,0.,0.,),),
                           )
 
 #

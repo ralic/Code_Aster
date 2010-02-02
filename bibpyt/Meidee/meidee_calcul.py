@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_calcul Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+# RESPONSABLE BODEL C.BODEL
 
 ## \package meidee_calcul outils de calcul pour meidee
 #

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +51,7 @@ TEST_TABLE=PROC(nom="TEST_TABLE",op= 177,
          VALE_ABS        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
          PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
+         LEGENDE         =SIMP(statut='f',typ='TXM'),
          REFERENCE       =SIMP(statut='f',typ='TXM',
                                into=("ANALYTIQUE","SOURCE_EXTERNE","NON_REGRESSION","AUTRE_ASTER") ),
          b_version       =BLOC(condition = "REFERENCE == 'NON_REGRESSION'",

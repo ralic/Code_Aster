@@ -1,6 +1,7 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 3 NOEUDS) MACRO_ELAS_MULT
+# ssll106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -141,7 +142,8 @@ CHAR7=AFFE_CHAR_MECA(   MODELE=MO,
 # GRAVITE
 
 CHAR8=AFFE_CHAR_MECA(   MODELE=MO,
-           PESANTEUR=( 10.0,  0.,  0.,  -1., ),
+           PESANTEUR=_F(GRAVITE=10.0,
+                        DIRECTION=( 0.,  0.,  -1., ),),
           FORCE_NODALE=_F( GROUP_NO = 'B', FX = 4.E2, FY = 3.E2)
             )
 

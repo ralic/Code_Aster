@@ -1,4 +1,4 @@
-#@ MODIF modes Meidee  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modes Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,6 +40,10 @@ from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, CO, MACRO_EXPANS
 from Cata.cata import AFFE_CARA_ELEM, AFFE_MATERIAU, AFFE_CHAR_MECA
 from Cata.cata import CALC_MATR_ELEM, NUME_DDL, ASSE_MATRICE, DEPL_INTERNE
 
+#try:
+#    set
+#except NameError:
+#    from sets import Set as set
 
 def txtfield( root, title, var, row ):
     Label(root,text=title).grid(row=row,column=0)
@@ -101,17 +105,28 @@ class ModeList(Frame): # pure Tk -> testable hors aster
 
 class ModeFreqList(ModeList):
     """!Permet de créer une liste de modes contenues dans un sd_resultat.
-        Valable pour mode_meca, base_modale (a verifier ??) et dyna_harmo"""
+        indexes par leur frequence (modes dynamiques ou leur nom_cmp
+        (modes statiques"""
     def __init__(self, root, title=None):
         if title is None:
             title="Choisissez les modes"
         ModeList.__init__(self, root, title)
 
     def set_resu(self, resu):
-        para = resu.LIST_PARA()
-        modes = para['NUME_ORDRE']
-        freq = para['FREQ']
-        self.fill_modes( [ ('%3i' % n, '%8.2f Hz' % f) for n,f in zip(modes,freq) ] )
+        cara_mod = resu.get_modes_data()
+        print "resu.nom = ", resu.nom
+        print "cara_mod= ", cara_mod
+        freq = cara_mod['FREQ']
+        nume_ordr = cara_mod['NUME_ORDRE']
+        nom_cmp = cara_mod['NOM_CMP']
+        for ind_ordr in range(len(freq)):
+            if not freq[ind_ordr]: freq[ind_ordr] = nom_cmp[ind_ordr]
+        self.fill_modes( [ ('%3i' % n, self.set_display(f)) for n,f in zip(nume_ordr,freq) ] )
+
+    def set_display(self,data):
+        """ determine l'affichage des caras selon que l'on ait des modes stat ou dyn"""
+        if isinstance(data,str): return data
+        elif isinstance(data,float): return '%8.2f Hz' % data
 
 
 class ModeHarmoList(ModeList):
@@ -150,9 +165,9 @@ class OptionFrame(Frame):
             Label(self, text=title).grid(row=r,column=0,columnspan=2)
             r+=1
         for label, typ, extra in desc:
-            Label(self, text=label).grid(row=r, column=0)
+            Label(self, text=label).grid(row=r,column=0,sticky='w')
             w=typ(self, **extra)
-            w.grid(row=r, column=1)
+            w.grid(row=r, column=1,sticky='ew')
             self.widgets.append(w)
             r+=1
             
@@ -347,25 +362,23 @@ class ParamProjMesuModal(Frame):
 
 
         self.methode = StringVar()
+        self.regul_meth = StringVar()
         self.eps = DoubleVar()
         self.regul = DoubleVar()
-        self.regul_meth = StringVar()
-        self.regul_meth.set("NON")
-        self.regul.set(1.0e-5)
-        self.regul.set(0.0)        
 
         Label(self,text="Option").grid(row=2,column=0)
-        self.opt_option = StringVar()
 
         self.option = MyMenu(self, ("SVD","LU"),
-                             self.opt_option, self.select_option )
+                             self.methode, self.select_option )
+        self.set_option({'METHODE':'SVD','REGUL':'NON',
+                            'EPS':0.0,'COEF_PONDER':0.0})
         self.option.grid(row=2,column=1)
-        self.opt_option.set("SVD")
         self.opt_panel = None
+        print "self.methode.get() = ",self.methode.get()
         self.select_option()
 
     def select_option(self, *args):
-        opt = self.opt_option.get()
+        opt = self.methode.get()
         if self.opt_panel:
             self.opt_panel.destroy()
         if opt == "SVD":
@@ -383,14 +396,26 @@ class ParamProjMesuModal(Frame):
             raise RuntimeError("Unknown option '%s'" % opt)
         self.opt_panel = panel
         panel.grid(row=3,column=0,columnspan=2,sticky="WE")
+        
+    def get_option(self):
+        return {'METHODE':self.methode.get(),'REGUL':self.regul_meth.get(),
+                'COEF_PONDER':self.regul.get(),'EPS':self.eps.get()}
 
+    def set_option(self,options):
+        self.methode.set(options['METHODE'])
+        self.regul_meth.set(options['REGUL'])
+        self.regul.set(options['COEF_PONDER'])
+        self.eps.set(options['EPS'])
+
+        
     def get_resolution(self):
         mc = {}
-        opt = self.opt_option.get()
+        opt = self.methode.get()
         if opt == 'LU':
             mc['METHODE'] = 'LU'
         elif opt == 'SVD':
             mc['METHODE'] = 'SVD'
+            mc['EPS'] = self.eps.get()
             mc['REGUL'] = self.regul_meth.get()
             if mc['REGUL'] != 'NON':
                 mc['COEF_PONDER'] = self.regul.get()
@@ -422,9 +447,9 @@ class InitParamRecalS0(Frame):
         self.p1 = DoubleVar()
         self.p2 = DoubleVar()
 
-        self.A.set(1.0e+11)
-        self.Amin.set(1.0e+8)
-        self.Amax.set(1.0e+14)
+        self.A.set(3.0e+14)
+        self.Amin.set(1.0e+11)
+        self.Amax.set(1.0e+17)
         self.PULSC.set(100.0)
         self.PULSCmin.set(50.0)
         self.PULSCmax.set(150.0)
@@ -485,7 +510,43 @@ class InitParamRecalS0(Frame):
         mc['poids2'] = self.p2.get()
         return mc
 
+class DefParamProjSpec(Frame):
+    """Un panneau pour specifier les donnees frequences initiale, finale
+       et nombre de points pour la projection du spectre d'excitation.
+       Donnees attendues par PROJ_SPEC_BASE
+    """
+    def __init__(self, root, title, **kwargs):
+        Frame.__init__(self, root, **kwargs)
+        Label(self, text=title).grid(row=0, column=0, columnspan=1)
 
+
+        self.finit = DoubleVar()
+        self.ffin = DoubleVar()
+        self.nb_pt_spec = IntVar()
+        
+        self.finit.set(0.0)
+        self.ffin.set(60.0)
+        self.nb_pt_spec.set(1024)
+        
+        self.opt_panel = None
+                 
+        panel = OptionFrame(self, None, [
+                ("Frequence Mini",Entry,{'textvariable':self.finit}),
+                ("Frequence Maxi" ,Entry,{'textvariable':self.ffin}),
+                ("Nb. de points du spectre",Entry,{'textvariable':self.nb_pt_spec}),
+                ])
+
+        self.opt_panel = panel
+        panel.grid(row=1,column=0,columnspan=2,sticky="WE")
+
+    def get_resolution(self):
+        mc = {}
+        mc['Finit'] = self.finit.get()
+        mc['Ffin'] = self.ffin.get()
+        mc['Nb_pts'] = self.nb_pt_spec.get()
+        return mc
+        
+        
 class RowDict(dict):
     """Un dictionaire utilisé pour décrire
     chaque group de DDL.
@@ -882,13 +943,13 @@ class DispFRFDialogue(Toplevel):
         Label(f1, text="Choix des concepts a visualiser").grid(row=0,column=0,columnspan = 2,pady=5)        
         self.var_resu1 = StringVar()
         Label(f1, text="Resultat 1").grid(row=1,column=0)
-        MyMenu( f1, options = mdo.get_all_resus_name(),
+        MyMenu( f1, options = mdo.get_resultats_name(),
                 var = self.var_resu1, cmd = self.update).grid(row=1,column=1,sticky='ew')
         if self.resu1 != None: self.var_resu1.set(self.resu1.nom)
         
         self.var_resu2 = StringVar()
         Label(f1, text="Resultat 2").grid(row=2,column=0)
-        MyMenu( f1, options = mdo.get_all_resus_name(),
+        MyMenu( f1, options = mdo.get_resultats_name(),
                 var = self.var_resu2, cmd = self.update).grid(row=2,column=1,sticky='ew')
         if self.resu2 != None: self.var_resu2.set(self.resu2.nom)
         f1.grid(row=0,column=0, sticky='ew')
@@ -1268,34 +1329,37 @@ class MacWindowFrame(Frame):
          - `diplayvar2`: variable liée à un label pour permettre l'affichage de la valeur sous le curseur
         """
         Frame.__init__(self, root)
-        self.rowconfigure(1, weight=1)
-        self.columnconfigure(0, weight=1)
 
         # Titre
         titre = Label( self, text=label )
-        titre.grid(row=0, column=0, columnspan=4, sticky='n' )
+        titre.grid(row=1, column=0, columnspan=4, sticky='n' )
 
         # Graphique
         if size == None:
-            size = (100,100)
-        self.mac = MacMode( self, height=size[0], width=size[1] )
-        self.mac.grid( row=2, column=0, sticky="nsew" )
+            size = (10,100)
+        self.mac = MacMode(self, height=size[0], width=size[1] )
+        self.mac.grid( row=0, column=0, sticky="news" )
         self.modes1 = None
         self.modes2 = None
 
         # Label abcisse/ordonnée
-        if not name1:
-            name1 = "1"
-        if not name2:
-            name2 = "2"
-        Label(self,text=name1).grid(row=1, column=1, sticky='e')
-        Label(self,text=name2).grid(row=1, column=2)
 
         # Tableau de modes
-        self.text_modes1 = Text(self, width=8, height=10)
-        self.text_modes1.grid( row=2, column=1 )
-        self.text_modes2 = Text(self, width=8, height=10)
-        self.text_modes2.grid( row=2, column=2 )
+        tab = Frame( self )
+        if not name1: name1 = "BASE 1"
+        if not name2: name2 = "BASE 2"
+        Label(tab,text="  lignes  ").grid(row=0, column=0, sticky='ew')
+        Label(tab,text=" colonnes ").grid(row=0, column=1, sticky='ew')
+        Label(tab,text=name1).grid(row=1, column=0)
+        Label(tab,text=name2).grid(row=1, column=1)
+        self.text_modes1 = Text(tab, width=20,height=size[0])
+        self.text_modes1.grid( row=2, column=0,sticky='news' )
+        self.text_modes2 = Text(tab, width=20,height=size[0])
+        self.text_modes2.grid( row=2, column=1,sticky='news' )
+        tab.grid(row=0,column=1,sticky="news")
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
 
         # Switch log/lin
         self.logvar = IntVar()
@@ -1334,8 +1398,8 @@ class MacWindowFrame(Frame):
         text.insert('end', "\n".join( modes[1] ) )
 
     def set_modes(self, modes1, modes2, mat ):
-        modes1 = (modes1[:,1], ["%8.2f Hz" % f for f in modes1[:,1] ])
-        modes2 = (modes2[:,1], ["%8.2f Hz" % f for f in modes2[:,1] ])
+        modes1 = (modes1, [self.display_modes(data) for data in modes1])
+        modes2 = (modes2, [self.display_modes(data) for data in modes2])
         self.modes1 = modes1
         self.modes2 = modes2
         self.build_modes(self.text_modes1, modes1 )
@@ -1349,3 +1413,12 @@ class MacWindowFrame(Frame):
         self.text_modes1.delete( '0.0', 'end' )
         self.text_modes2.delete( '0.0', 'end' )
         self.mac.clear()
+
+    def display_modes(self,mode_data):
+        if isinstance(mode_data,str):
+            return mode_data
+        elif isinstance(mode_data,float):
+            return "%8.2f Hz" % mode_data
+
+
+        

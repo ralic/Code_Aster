@@ -6,7 +6,7 @@
         IMPLICIT REAL*8(A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     ----------------------------------------------------------------
       CHARACTER*8     NOMCOE,NOMPAR(2)
       REAL*8 E, NU, ALPHA
       REAL*8 X, DTIME, HSDT
-      REAL*8 TPERD, DTPERD, TPEREF, TEMP,TF
+      REAL*8 TPERD, DTPERD, TEMP,TF
       REAL*8 COEFT(NMAT),COEL(NMAT)
       REAL*8 VINI(NVI)
       REAL*8 DVIN(NVI)
@@ -62,13 +62,6 @@ C     ----------------------------------------------------------------
 C
       COMMON /TDIM/   NDT,    NDI
 C     ----------------------------------------------------------------
-
-C -- TEMPERATURE
-C
-      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TPERD,IRET)
-      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TF,IRET)
-      DTPERD = TF-TPERD
-      CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TPEREF,IRET)
 
 C
 C --    COEFFICIENTS MATERIAU INELASTIQUES
@@ -137,6 +130,14 @@ C
         NOMPAR(1) = 'TEMP    '
         NOMPAR(2) = 'X       '
 C
+C -- TEMPERATURE
+C
+        CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TPERD,IRET1)
+        IF ( IRET1.NE.0 ) TPERD = 0.D0
+        CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TF,IRET2)
+        IF ( IRET2.NE.0 ) TF = 0.D0
+        DTPERD = TF-TPERD
+        
         HSDT=X/DTIME
         TEMP=TPERD+HSDT*DTPERD
 C

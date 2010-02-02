@@ -2,7 +2,7 @@
      &           X2,DREF,VAL2)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,6 @@ C     ------------------------
         IF (NX1.EQ.1) THEN
           DO 1,IP1 = 1,NP1
             IF (.NOT.NUAL1((IP1-1)*NC1+IC1)) GO TO 1
-C           W = NUAPOI(NX1,IP1,NUAX1,X2,DREF)
             D=(NUAX1((IP1-1)*1+1)-X2(1))**2
             W=EXP(-(D/DREF2)**BETA)
             V1 = NUAV1((IP1-1)*NC1+IC1)
@@ -98,7 +97,6 @@ C           W = NUAPOI(NX1,IP1,NUAX1,X2,DREF)
         ELSE IF (NX1.EQ.2) THEN
           DO 2,IP1 = 1,NP1
             IF (.NOT.NUAL1((IP1-1)*NC1+IC1)) GO TO 2
-C           W = NUAPOI(NX1,IP1,NUAX1,X2,DREF)
             D=(NUAX1((IP1-1)*2+1)-X2(1))**2
      &       +(NUAX1((IP1-1)*2+2)-X2(2))**2
             W=EXP(-(D/DREF2)**BETA)
@@ -110,7 +108,6 @@ C           W = NUAPOI(NX1,IP1,NUAX1,X2,DREF)
         ELSE IF (NX1.EQ.3) THEN
           DO 3,IP1 = 1,NP1
             IF (.NOT.NUAL1((IP1-1)*NC1+IC1)) GO TO 3
-C           W = NUAPOI(NX1,IP1,NUAX1,X2,DREF)
             D=(NUAX1((IP1-1)*3+1)-X2(1))**2
      &       +(NUAX1((IP1-1)*3+2)-X2(2))**2
      &       +(NUAX1((IP1-1)*3+3)-X2(3))**2
@@ -131,7 +128,6 @@ C     -----------------------------
 C       --------------
           DO 11,IP1 = 1,NP1
             IF (.NOT.NUAL1((IP1-1)*NC1+IC1)) GO TO 11
-C           W = NUAPOI(NX1,IP1,NUAX1,X2,DREF)
             D=(NUAX1((IP1-1)*1+1)-X2(1))**2
             W=EXP(-(D/DREF2)**BETA)
 
@@ -149,7 +145,6 @@ C           W = NUAPOI(NX1,IP1,NUAX1,X2,DREF)
 C       ------------------
           DO 21,IP1 = 1,NP1
             IF (.NOT.NUAL1((IP1-1)*NC1+IC1)) GO TO 21
-C           W = NUAPOI(NX1,IP1,NUAX1,X2,DREF)
             D=(NUAX1((IP1-1)*2+1)-X2(1))**2
      &       +(NUAX1((IP1-1)*2+2)-X2(2))**2
             W=EXP(-(D/DREF2)**BETA)
@@ -175,7 +170,6 @@ C           W = NUAPOI(NX1,IP1,NUAX1,X2,DREF)
 C       ------------------
           DO 31,IP1 = 1,NP1
             IF (.NOT.NUAL1((IP1-1)*NC1+IC1)) GO TO 31
-C           W = NUAPOI(NX1,IP1,NUAX1,X2,DREF)
             D=(NUAX1((IP1-1)*3+1)-X2(1))**2
      &       +(NUAX1((IP1-1)*3+2)-X2(2))**2
      &       +(NUAX1((IP1-1)*3+3)-X2(3))**2

@@ -2,11 +2,11 @@
      +                   HYDR, IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1,
      +                   ADDEP2, ADDETE, NDIM, T0, P10, P20, PHI0, PVP0,
      +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
-     +                   GRAT, GRAP1, GRAP2, NVITH, RETCOM)
+     +                   GRAT, GRAP1, GRAP2, NVITH, RETCOM, RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ C ======================================================================
       INTEGER       ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM, RETCOM
       REAL*8        T0, P10, P20, PHI0, PVP0, DEPSV, EPSV, DEPS(6), T
       REAL*8        P1, P2, GRAT(3), GRAP1(3), GRAP2(3), DP1, DP2, DT
-      REAL*8        DEFGEM(*), DEFGEP(*) 
+      REAL*8        DEFGEM(*), DEFGEP(*), RINSTP 
       CHARACTER*16  MECA, THMC, THER, HYDR
 C ======================================================================
 C --- RECUPERATION DES DONNEES INITIALES -------------------------------
@@ -60,7 +60,7 @@ C ======================================================================
      +           RBID33, RBID34, RBID35,RBID36, RBID37, RBID38,
      +           RBID39, RBID40, RBID41,RBID42, RBID43, RBID44,RBID45,
      +           RBID46,RBID47,RBID48,RBID49,RBID50,RBID51,RBID5,
-     +           RBID52)
+     +           RBID52,RINSTP)
 C ======================================================================
 C --- CALCUL DES VARIABLES ---------------------------------------------
 C ======================================================================

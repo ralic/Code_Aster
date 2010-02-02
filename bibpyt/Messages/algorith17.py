@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 26/10/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+#@ MODIF algorith17 Messages  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,5 +41,14 @@ cata_msg={
 """), 
 6 : _("""
   Le calcul de la racine numero %(i1)d par la méthode de la matrice compagnon a échoué.
+"""), 
+7 : _("""
+  Il n'y a qu'un seul mode_meca en entree de DEFI_BASE_MODALE. La numerotation
+  de reference prise est celle associee a celui-ci. Le mot-cle NUME_REF
+  n'est pas pris en compte
+"""), 
+8 : _("""
+  Il manque le nume_ddl pour le resultat. Le mot-cle NUME_REF doit etre
+  renseigne.
 """), 
 }

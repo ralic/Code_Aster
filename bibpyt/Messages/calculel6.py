@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF calculel6 Messages  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,6 +37,33 @@ Solution :
   (AFFE/TEMP_REF ou AFFE_VARC/NOM_VARC='TEMP',VALE_REF).
 """),
 
+2: _("""
+  Problème d'extraction : Résultat généralisé %(k1)s
+"""),
+
+3: _("""
+  Le paramètre n'existe pas.
+"""),
+
+4: _("""
+  0 ligne trouvée pour les NOM_PARA.
+"""),
+
+5: _("""
+  Plusieurs lignes trouvées.
+"""),
+
+6: _("""
+  Erreur de Programmation: code retour de 'TBLIVA' inconnu.
+"""),
+
+7: _("""
+  Filtre non valide.
+"""),
+
+8: _("""
+  Les types ne correspondent pas.
+"""),
 
 
 10: _("""
@@ -365,6 +392,69 @@ Solution :
 
 84: _("""
   Le mot-clé MODELE est obligatoire quand RESULTAT est absent
+"""),
+
+85: _("""
+  Parametre %(k1)s inexistant dans la table.
+"""),
+
+86: _("""
+  Objet %(k1)s inexistant.
+"""),
+
+87: _("""
+  Objet %(k1)s non testable.
+"""),
+
+88: _("""
+  La composante %(k1)s n'existe pas pour ce champ.
+"""),
+
+89: _("""
+  Le champ %(k1)s est à valeurs de type %(k2)s et la valeur de réference de
+  type %(k3)s.
+"""),
+
+90: _("""
+  Le champ de type %(k1)s sont interdits.
+"""),
+
+91: _("""
+  Le ddl %(k1)s n'existe pas dans la grandeur %(k2)s.
+"""),
+
+92: _("""
+  On ne trouve pas le noeud %(k1)s.
+"""),
+
+93: _("""
+  On ne trouve pas le ddl.
+"""),
+
+94: _("""
+  Pas d'accès au résultat.
+"""),
+
+95: _("""
+  Type de la valeur de réference incompatible avec le type des valeurs du champ.
+"""),
+
+96: _("""
+  Champ absent au numéro d'ordre %(i1)s dans le résultat %(k1)s:
+    -> champ : %(k2)s %(k3)s
+"""),
+
+97: _("""
+  Mot-clé POINT interdit pour le champ au noeud issu de %(k1)s à l'ordre %(i1)s:
+    -> champ : %(k2)s %(k3)s
+"""),
+
+98: _("""
+  Composante généralisée non trouvée.
+"""),
+
+99: _("""
+  Pas d'accès au résultat généralisé %(k1)s
 """),
 
 }

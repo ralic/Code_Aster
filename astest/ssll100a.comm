@@ -1,6 +1,7 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE STRUCTURE SYMETRIQUE DE POUTRES AVEC UN COUDE
+# ssll100a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -159,7 +160,8 @@ DILA_THE=RESOUDRE(reuse=DILA_THE,  MATR=MATASSR,  CHAM_NO=DILA_THE )
 # CAS 4:         EFFET DE LA PESANTEUR
 #-----------------------------------------------------------------------
 
-CH4=AFFE_CHAR_MECA(  MODELE=MOD, PESANTEUR=( 9.81,    0.,  0.,  -1.,  ) )
+CH4=AFFE_CHAR_MECA(  MODELE=MOD, PESANTEUR=_F(GRAVITE= 9.81,
+                                              DIRECTION=(0.,  0.,  -1.,  ), ),)
 
 VEL4=CALC_VECT_ELEM(  CHARGE=( COND_LIM,  CH4, ),    CARA_ELEM=CARLEM,
                          CHAM_MATER=CHMAT,     OPTION='CHAR_MECA' )

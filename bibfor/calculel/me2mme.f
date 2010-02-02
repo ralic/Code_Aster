@@ -1,7 +1,7 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF CALCULEL  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -481,35 +481,6 @@ C         -- LA BOUCLE 30 SERT A TRAITER LES FORCES ELECTRIQUES LAPLACE
    30     CONTINUE
    40     CONTINUE
 C ====================================================================
-          CALL JEEXIN(LIGRCH(1:13)//'.TEMPE.TEMP',IRET)
-          CALL NMVCD2('TEMP',MATE,LTEMP,LTREF)
-          LTEMP=LTEMP.OR.(IRET.GT.0)
-          IF (LTEMP) THEN
-            CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
-            OPTION = 'CHAR_MECA_TEMP_R'
-            LPAIN(2) = 'PMATERC'
-            LCHIN(2) = MATE
-            LPAIN(4) = 'PVARCRR'
-            LCHIN(4) = CHVREF
-            LPAIN(12) = 'PCAMASS'
-            LCHIN(12) = CHCARA(12)
-            CALL MEHARM(MODELE,NH,CHHARM)
-            LPAIN(13) = 'PHARMON'
-            LCHIN(13) = CHHARM
-            LPAIN(14) = 'PCAGEPO'
-            LCHIN(14) = CHCARA(5)
-            LPAIN(15) = 'PCAGNBA'
-            LCHIN(15) = CHCARA(11)
-            LPAIN(16) = ' '
-            LCHIN(16) = ' '
-            ILIRES = ILIRES + 1
-            CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
-            CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
-            CALL REAJRE(MATEL,LCHOUT(1),BASE)
-            CALL DETRSD('CHAMP_GD',CHVARC)
-          END IF
-C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.PRESS',IRET)
           IF (IRET.NE.0) THEN
             IF (LFONC) THEN
@@ -601,6 +572,39 @@ C CHARGE DE TYPE EVOL_CHAR
 
 C ====================================================================
    50   CONTINUE
+
+
+C ====================================================================
+C       -- CHARGEMENT DE DILATATION THERMIQUE :
+        CALL NMVCD2('TEMP',MATE,LTEMP,LTREF)
+        IF (LTEMP) THEN
+          CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
+          OPTION = 'CHAR_MECA_TEMP_R'
+          LPAIN(2) = 'PMATERC'
+          LCHIN(2) = MATE
+          LPAIN(4) = 'PVARCRR'
+          LCHIN(4) = CHVREF
+          LPAIN(12) = 'PCAMASS'
+          LCHIN(12) = CHCARA(12)
+          CALL MEHARM(MODELE,NH,CHHARM)
+          LPAIN(13) = 'PHARMON'
+          LCHIN(13) = CHHARM
+          LPAIN(14) = 'PCAGEPO'
+          LCHIN(14) = CHCARA(5)
+          LPAIN(15) = 'PCAGNBA'
+          LCHIN(15) = CHCARA(11)
+          LPAIN(16) = ' '
+          LCHIN(16) = ' '
+          ILIRES = ILIRES + 1
+          CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
+          CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
+     &                LPAOUT,BASE)
+          CALL REAJRE(MATEL,LCHOUT(1),BASE)
+          CALL DETRSD('CHAMP_GD',CHVARC)
+        END IF
+
+
+
 
    60 CONTINUE
       CALL DETRSD('CHAMP_GD',CHVARC)

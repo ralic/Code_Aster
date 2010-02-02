@@ -6,11 +6,11 @@
      +                    VINTP,DSDE,DEPS,EPSV,DEPSV,P1,P2,DP1,DP2,
      +                    T,DT,PHI,PVP,PAD,H11,H12,H21,H22,KH,RHO11,
      +                    PHI0,PVP0,SAT,RETCOM,CRIT,BIOT,
-     +                    VIHRHO,VICPHI,VICPVP,VICSAT)
+     +                    VIHRHO,VICPHI,VICPVP,VICSAT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +52,7 @@ C ======================================================================
       REAL*8        VINTM(NBVARI),VINTP(NBVARI)
       REAL*8        DSDE(DIMCON,DIMDEF),EPSV,DEPSV,P1,DP1,P2,DP2,T,DT
       REAL*8        PHI,PVP,PAD,H11,H12,H21,H22,KH,RHO11,PHI0
-      REAL*8        PVP0,SAT
+      REAL*8        PVP0,SAT,RINSTP
       CHARACTER*16  OPTION,MECA,THMC,THER,HYDR
       LOGICAL PERMAN
 C ======================================================================
@@ -74,7 +74,8 @@ C ======================================================================
      &                DIMDEF,DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,
      &                ADVIHY,ADVICO,VIHRHO,VICPHI,ADDEP1,BDCP11,ADDETE,
      &                ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,
-     &                DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,BIOT)
+     &                DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,BIOT,
+     &                RINSTP)
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE GAZ ----------------------------
 C ======================================================================
@@ -83,7 +84,7 @@ C ======================================================================
      +                  DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,
      +                  ADVICO,VICPHI,ADDEP1,BDCP11,ADDETE,ADCOTE,
      +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,
-     +                  DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,BIOT)
+     +                  DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,BIOT,RINSTP)
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_VAPE ----------------------
 C ======================================================================
@@ -93,7 +94,7 @@ C ======================================================================
      +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,BDCP11,
      +                  ADCP12,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,
      +                  DSDE,EPSV,DEPSV,P1,DP1,T,DT,PHI,PVP,H11,H12,
-     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC,BIOT)
+     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC,BIOT,RINSTP)
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ------------------
 C ======================================================================
@@ -104,7 +105,7 @@ C ======================================================================
      +                  ADCP12,ADDEP2,ADCP21,ADDETE,ADCOTE,CONGEM,
      +                  CONGEP,VINTM,VINTP,DSDE,DEPS,EPSV,DEPSV,P1,P2,
      +                  DP1,DP2,T,DT,PHI,PVP,H11,H12,H21,RHO11,PHI0,
-     +                  PVP0,SAT,RETCOM,THMC,CRIT,BIOT)
+     +                  PVP0,SAT,RETCOM,THMC,CRIT,BIOT,RINSTP)
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_GAZ -----------------------
 C ======================================================================
@@ -114,19 +115,17 @@ C ======================================================================
      +                  VIHRHO,VICPHI,VICSAT,ADDEP1,BDCP11,ADDEP2,
      +                  ADCP21,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,
      +                  DSDE,DEPS,EPSV,DEPSV,P1,P2,DP1,DP2,T,DT,PHI,
-     +                  RHO11,PHI0,SAT,RETCOM,THMC,CRIT,BIOT)
+     +                  RHO11,PHI0,SAT,RETCOM,THMC,CRIT,BIOT,RINSTP)
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_GAZ_ATM -------------------
 C ======================================================================
       ELSE IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
-C          write (6,*) 'CALCCO_1 - BIOT = ',BIOT
           CALL HMLGAT(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
      +                  NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
      +                  VIHRHO,VICPHI,VICSAT,ADDEP1,BDCP11,ADDETE,
      +                  ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,
      +                 DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,THMC,
-     +                 BIOT)
-C          write (6,*) 'CALCCO_2 - BIOT = ',BIOT
+     +                 BIOT,RINSTP)
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE ---------------
 C ======================================================================
@@ -137,7 +136,7 @@ C ======================================================================
      +                  ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
      +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,P2,
      +                  DP1,DP2,T,DT,PHI,PAD,PVP,H11,H12,H21,H22,KH,
-     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC,BIOT)
+     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC,BIOT,RINSTP)
 C ======================================================================
       ENDIF
 C ======================================================================

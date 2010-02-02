@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,7 @@ C ======================================================================
 C
 C      OPERATEURS :     AFFE_CHAR_MECA ET AFFE_CHAR_MECA_C
 C                                      ET AFFE_CHAR_MECA_F
+C                       DEFI_CONTACT
 C
 C     VERIFICATION DES NORMALES AUX MAILLES SURFACIQUES EN 3D
 C     ET LINEIQUES EN 2D
@@ -70,7 +71,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24  VALK(2)
 C
       DATA MCFT / 'FACE_IMPO'  , 'PRES_REP' , 'FORCE_COQUE'  ,
-     &            'EFFE_FOND'  , 'CONTACT'  /
+     &            'EFFE_FOND'  , 'ZONE'  /
 C
 C     LA NORMALE DOIT ETRE SORTANTE:
       DATA MCFL / .TRUE.       , .TRUE.     , .FALSE.        ,
@@ -156,7 +157,7 @@ C         POUR CERTAINS CHARGEMENTS
      &                    .AND.IMF1.EQ.0.AND.IMF2.EQ.0) GOTO 200
           ENDIF
 C
-          IF ( MOTFAC .EQ. 'CONTACT' ) THEN
+          IF ( MOTFAC .EQ. 'ZONE' ) THEN
             NBMC = 4
             VALMC(1) = 'GROUP_MA_ESCL'
             VALMC(2) = 'GROUP_MA_MAIT'
@@ -187,7 +188,7 @@ C
             IF ( TYPMC(IC) .EQ. 'GROUP_MA' ) THEN
               DO 212  IOBJ = 1 , NBOBJ
                 NOGR = ZK8(JGROUP-1+IOBJ)
-                IF (MOTFAC .EQ. 'CONTACT') THEN
+                IF (MOTFAC .EQ. 'ZONE') THEN
 C
 C ---             RECUPERATION DU NOMBRE DE MAILLES DU GROUP_MA :
 C                 ---------------------------------------------
@@ -294,7 +295,7 @@ C           ---------------
                 NOMAIL = ZK8(JGROUP-1+IOBJ)
                 CALL JENONU(JEXNOM(NOMMA//'.NOMMAI',NOMAIL),NUMA)
                 ZI(JNMA+IOBJ-1) = NUMA
-                IF (MOTFAC .EQ. 'CONTACT') THEN
+                IF (MOTFAC .EQ. 'ZONE') THEN
                   CALL JEVEUO(NOMMA//'.TYPMAIL','L',IDTYMA)
                   NUTYMA = ZI(IDTYMA+NUMA-1)
                   CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPEL)

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # TITRE VALIDATION DE PROJ_MESU_MODAL: CAS DISCRET, BASE (MODE_MECA)
 # sdld104a.para = tps_job 90 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,11 +96,15 @@ MODES=MODE_ITER_SIMULT(      MATR_A=RIGIASSE,
 # DEFINITION DU MAILLAGE DE MESURE
 # ================================
 #
+PRE_IDEAS( UNITE_IDEAS=33, UNITE_MAILLAGE = 21 )
+
+#
 MAILMESU=LIRE_MAILLAGE(UNITE=21)
+
 
 #
 MODLMESU=AFFE_MODELE(   MAILLAGE=MAILMESU,AFFE=(
-                              _F( MAILLE = ('P1','P2',),
+                              _F( MAILLE = ('M1','M2',),
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'DIS_T'),
                               _F( NOEUD = ('N2','N3',),

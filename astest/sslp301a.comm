@@ -1,5 +1,6 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE TRAPEZOIDALE SOUS POIDS PROPRE (PESANTEUR)
+# sslp301a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +52,8 @@ CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
 CHARGT=AFFE_CHAR_MECA(    MODELE=MODELE,
                            DDL_IMPO=_F(  GROUP_NO = 'ENCAST',
                                       DX = 0.,   DY = 0.),
-                          PESANTEUR=( 9.81,  0.,  -1.,  0., )
+                          PESANTEUR=_F(GRAVITE=9.81,
+                                       DIRECTION=( 0.,  -1.,  0., ),),
                         )
 
 #

@@ -1,6 +1,7 @@
 
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION Q4G  169 N - 147 QUAD4
+# ssls100h.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,7 +84,8 @@ CHF3=AFFE_CHAR_MECA(MODELE=MODEL,
                                    F3=-1.0,),);
 
 CHPE=AFFE_CHAR_MECA(MODELE=MODEL,
-                    PESANTEUR=(10.0,0.0,0.0,-1.0,),);
+                    PESANTEUR=_F(GRAVITE=10.0,
+                                 DIRECTION=(0.0,0.0,-1.0,),),);
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MODEL,
                        COQUE=_F(GROUP_MA='TOUT',

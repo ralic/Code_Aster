@@ -1,5 +1,6 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE MODES DE BALLOTTEMENT D UNE CUVE REMPLIE D EAU
+# adlv101d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +52,8 @@ CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAYA,
 #
 
 CHARGE=AFFE_CHAR_MECA(   MODELE=CUVE,
-                               PESANTEUR=(9.81,0.,0.,-1.,))
+                               PESANTEUR=_F(GRAVITE=9.81,
+                                            DIRECTION=(0.,0.,-1.,),),)
 
 #
 

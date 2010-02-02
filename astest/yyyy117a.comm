@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE  SUIVI PERFORMANCE : FLUAGE SAS FLAMANVILLE
 # yyyy117a.para = tps_job 1450 mem_job 1900Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -550,7 +550,8 @@ LIST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
            )
 
 CHARGE0=AFFE_CHAR_MECA(   MODELE=MODELE,
-                            PESANTEUR=(9.8,0.,0.,-1.,)
+                            PESANTEUR=_F(GRAVITE=9.8,
+                                         DIRECTION=(0.,0.,-1.,),)
                          )
 
 CHARGE1=AFFE_CHAR_MECA(   MODELE=MODELE,FACE_IMPO=(

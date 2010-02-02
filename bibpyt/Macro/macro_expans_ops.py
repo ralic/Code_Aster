@@ -1,4 +1,4 @@
-#@ MODIF macro_expans_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macro_expans_ops Macro  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,17 +19,14 @@
 # ======================================================================
 
 
-# MODIF : 24/07/2007. BODEL : suppression du mc NUME_DDL. Le nume_ddl par
-# defaut pour PROJ_CHAMP est celui du modèle expérimental.
-
 def macro_expans_ops( self,
                       MODELE_CALCUL,
                       MODELE_MESURE,
-                      NUME_DDL=None,
-                      RESU_NX=None,
-                      RESU_EX=None,
-                      RESU_ET=None,
-                      RESU_RD=None,
+                      NUME_DDL,
+                      RESU_NX,
+                      RESU_EX,
+                      RESU_ET,
+                      RESU_RD,
                       MODES_NUM=None,
                       MODES_EXP=None,
                       RESOLUTION=None,
@@ -58,7 +55,8 @@ def macro_expans_ops( self,
         # on cree un resultat RESU_NX par extraction de NUME_ORDREs
         is_nume_num = 1
     else:
-        if RESU_NX: UTMESS('A','MEIDEE0_6',valk=['MODELE_MESURE','RESU_EX'])
+        if RESU_NX:
+            UTMESS('A','MEIDEE0_6',valk=['MODELE_MESURE','RESU_EX'])
     if MODELE_MESURE['NUME_MODE'] or  MODELE_MESURE['NUME_ORDRE']:
         # On cree un RESU_EX par extraction de NUME_ORDREs
         is_nume_exp = 1
@@ -76,9 +74,10 @@ def macro_expans_ops( self,
     # Extraction des modes numériques
     # -------------------------------
     if not is_nume_num:
-        RESU_NX = RESU_NUM
+        resu_nx = RESU_NUM
     else:
-        self.DeclareOut( "RESU_NX", RESU_NX )
+        if RESU_NX:
+            self.DeclareOut( "RESU_NX", RESU_NX )
         mfact = {'MODE':RESU_NUM}
         if MODELE_CALCUL['NUME_MODE']:
             mfact.update({'NUME_MODE':MODELE_CALCUL['NUME_MODE']})
@@ -86,14 +85,16 @@ def macro_expans_ops( self,
             mfact.update({'NUME_ORDRE':MODELE_CALCUL['NUME_ORDRE']})
 
         RESU_NX = EXTR_MODE( FILTRE_MODE = mfact )
+        resu_nx = RESU_NX
 
 
     # Extraction des modes expérimentaux
     # ----------------------------------
     if not is_nume_exp:
-        RESU_EX = RESU_EXP
+        resu_ex = RESU_EXP
     else:
-        self.DeclareOut( "RESU_EX", RESU_EX )
+        if RESU_EX:
+            self.DeclareOut( "RESU_EX", RESU_EX )
         mfact = {'MODE':RESU_EXP}
         if MODELE_MESURE['NUME_MODE']:
             mfact.update({'NUME_MODE':MODELE_MESURE['NUME_MODE']})
@@ -101,25 +102,26 @@ def macro_expans_ops( self,
             mfact.update({'NUME_ORDRE':MODELE_MESURE['NUME_ORDRE']})
 
         RESU_EX = EXTR_MODE( FILTRE_MODE = mfact )
+        resu_ex = RESU_EX
 
 
 
-    # Projection des modes experimentaux - on passe le mot-clef
+    # Projection des modes experimentaux - on passe le mot-cle
     # RESOLUTION directement à PROJ_MESU_MODAL
-    # ---------------------------------------------------------
+    # --------------------------------------------------------
 
     # Mot-clé facteur de résolution
-    mfact = []
     for m in RESOLUTION:
         if m['METHODE'] == 'SVD':
-            mfact.append({'METHODE':'SVD','EPS':m['EPS']})
-        if m['METHODE'] == 'LU':
-            mfact.append({'METHODE':'LU'})
-        if m['REGUL'] != 'NON':
-            if m['COEF_PONDER']:
-                mfact.append({'COEF_PONDER':m['COEF_PONDER']})
-            if m['COEF_PONDER_F']:
-                mfact.append({'COEF_PONDER_F':m['COEF_PONDER_F']})
+            mfact={'METHODE':'SVD','EPS':m['EPS']}
+            if m['REGUL'] != 'NON':
+                mfact.update({'REGUL':m['REGUL']})
+                if m['COEF_PONDER']:
+                    mfact.update({'COEF_PONDER':m['COEF_PONDER']})
+                if m['COEF_PONDER_F']:
+                    mfact.update({'COEF_PONDER_F':m['COEF_PONDER_F']})
+        elif m['METHODE'] == 'LU':
+            mfact = {'METHODE':'LU'}
 
     # Paramètres à garder : si on étend des mode_meca, on conserve les
     # freq propres, amortissements réduits, et masses généralisées. Pour
@@ -135,10 +137,10 @@ def macro_expans_ops( self,
 
 
     try:
-        __PROJ = PROJ_MESU_MODAL(MODELE_CALCUL = _F( BASE=RESU_NX,
+        __PROJ = PROJ_MESU_MODAL(MODELE_CALCUL = _F( BASE=resu_nx,
                                                      MODELE=MOD_CALCUL,
                                                    ),
-                                 MODELE_MESURE = _F( MESURE=RESU_EX,
+                                 MODELE_MESURE = _F( MESURE=resu_ex,
                                                      MODELE=MOD_MESURE,
                                                      NOM_CHAM=NOM_CHAM,
                                                    ),
@@ -151,9 +153,9 @@ def macro_expans_ops( self,
     # Phase de reconstruction des donnees mesurees sur le maillage
     # numerique
     # ------------------------------------------------------------
-    self.DeclareOut( "RESU_ET", RESU_ET )
+    if RESU_ET:
+        self.DeclareOut( "RESU_ET", RESU_ET )
     RESU_ET = REST_GENE_PHYS( RESU_GENE  = __PROJ,
-                              MODE_MECA   = RESU_NX,
                               TOUT_ORDRE  = 'OUI',
                               NOM_CHAM    = NOM_CHAM);
 
@@ -161,13 +163,12 @@ def macro_expans_ops( self,
 
     # Restriction des modes mesures etendus sur le maillage capteur
     # -------------------------------------------------------------
-    self.DeclareOut( "RESU_RD", RESU_RD )
-    refd1 = aster.getvectjev(RESU_EXP.nom.ljust(19)+".REFD")
-    refd2 = aster.getvectjev(RESU_EX.nom.ljust(19)+".REFD")
+    if RESU_RD:
+        self.DeclareOut( "RESU_RD", RESU_RD )
 
     nume=None
-    if RESU_EX.REFD.get():
-        tmp = RESU_EX.REFD.get()[3]
+    if resu_ex.REFD.get():
+        tmp = resu_ex.REFD.get()[3]
         if tmp.strip() :
             nume = self.get_concept(tmp)
     elif NUME_DDL:

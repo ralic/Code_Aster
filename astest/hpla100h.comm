@@ -1,5 +1,6 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
+# hpla100h.para = tps_job 60 mem_job 120Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,7 +127,8 @@ CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,
 # ------------------------------------------------------------------
 
 CHPES=AFFE_CHAR_MECA(  MODELE=MO,
-           PESANTEUR=( 10.0,  0.,  0.,  -1., ),
+           PESANTEUR= _F(GRAVITE=10.,
+                         DIRECTION=(0.,0.,-1.,),),
          FORCE_ARETE=_F(  GROUP_MA = 'HAUT',        FZ = 8.E-4),DDL_IMPO=(
             _F(  GROUP_NO = 'LM',              DZ = 0.),
                 _F(  GROUP_NO = 'KL',          DY = 0.,  DRX = 0.,        DRZ = 0.),

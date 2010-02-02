@@ -1,4 +1,4 @@
-# MODIF  DATE 14/09/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 # sslp200b.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -357,7 +357,8 @@ CHMAT2=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
 
 CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                VERI_NORM='NON',
-                               PESANTEUR=(9.8,  0.3,  0.1, -0.4,),
+                               PESANTEUR=_F(GRAVITE=9.8,
+                                            DIRECTION=(0.3,  0.1, -0.4,),),
                                 ROTATION=(0.2,  0.5, -0.2,  0.2,),
 #  ----  MAILLES 2D
                            FORCE_INTERNE=_F(  MAILLE = ('M42', 'M77',),

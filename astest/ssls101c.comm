@@ -1,5 +1,6 @@
-# MODIF  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION  147 SHB8
+# ssls101c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,7 +135,8 @@ CHFC=AFFE_CHAR_MECA_F(MODELE=MODEL,
 
 
 CHPE=AFFE_CHAR_MECA(MODELE=MODEL,
-                    PESANTEUR=(10.0,0.0,0.0,-10.0,),);
+                      PESANTEUR=_F(GRAVITE= 10.,
+                                   DIRECTION=(0., 0., -10., ), ),) 
 
 MATELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                        MODELE=MODEL,

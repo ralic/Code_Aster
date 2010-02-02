@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION  147 SHB20
 # ssls101d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,7 +133,8 @@ CHFC=AFFE_CHAR_MECA_F(MODELE=MODEL,
                                        FZ=FZC,),);
 
 CHPE=AFFE_CHAR_MECA(MODELE=MODEL,
-                    PESANTEUR=(10.0,0.0,0.0,-10.0,),);
+                      PESANTEUR=_F(GRAVITE= 10.,
+                                   DIRECTION=(0., 0., -10., ), ),) 
 
 MATELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                        MODELE=MODEL,

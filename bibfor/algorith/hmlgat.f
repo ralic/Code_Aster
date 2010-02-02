@@ -3,11 +3,11 @@
      +                  VIHRHO,VICPHI,VICSAT,ADDEP1,ADCP11,ADDETE,
      +                  ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,
      +                 DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,THMC,
-     +                 BIOT)
+     +                 BIOT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ C ======================================================================
       INTEGER       ADVIHY,ADVICO,VIHRHO,VICPHI,VICSAT
       REAL*8        CONGEM(DIMCON),CONGEP(DIMCON),VINTM(NBVARI)
       REAL*8        VINTP(NBVARI),DSDE(DIMCON,DIMDEF),EPSV,DEPSV
-      REAL*8        P1,DP1,T,DT,PHI,RHO11,PHI0
+      REAL*8        P1,DP1,T,DT,PHI,RHO11,PHI0,RINSTP
       CHARACTER*16  OPTION,MECA,THER,HYDR,THMC
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
@@ -85,7 +85,7 @@ C      write (6,*) 'HMLGAT_1 - BIOT = ',BIOT
      +             RHO110, CLIQ, ALPLIQ, CP11,RBID26, RBID27, RBID28, 
      +             RBID29, RBID30, RBID31,RBID32, RBID33, RBID34, 
      +             RBID35, RBID36, RBID37,RBID38, RBID39,RBID45,RBID46,
-     +             RBID47,RBID48,RBID49,EM,RBID50,RBID51)
+     +             RBID47,RBID48,RBID49,EM,RBID50,RBID51,RINSTP)
 C      write (6,*) 'HMLGAT_2 - BIOT = ',BIOT
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/10/2008   AUTEUR CORUS M.CORUS 
+#& MODIF COMMANDE  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ CALC_SPEC=MACRO(nom="CALC_SPEC",op= calc_spec_ops,sd_prod=table_fonction,
          INTERSPE        =FACT(statut='f',
            FENETRE         =SIMP(statut='f',typ='TXM',defaut="RECT",into=("RECT","HAMM","HANN","EXPO","PART",)),
            BLOC_DEFI_FENE  =BLOC(condition = "FENETRE == 'EXPO' or FENETRE == 'PART' ", 
-#             DEFI_FENE       =SIMP(statut='f',typ='R',max='**'),
+             DEFI_FENE       =SIMP(statut='f',typ='R',max='**'),
                                  ),
                               ),
 #-- Cas des transferts - estimateurs H1 / H2 / Hv + Coherence --#
@@ -55,8 +55,10 @@ CALC_SPEC=MACRO(nom="CALC_SPEC",op= calc_spec_ops,sd_prod=table_fonction,
            ESTIM           =SIMP(statut='f',typ='TXM',defaut="H1",into=("H1","H2","CO",)),
            REFER           =SIMP(statut='o',typ='I',max='**'),
            FENETRE         =SIMP(statut='f',typ='TXM',defaut="RECT",into=("RECT","HAMM","HANN","EXPO","PART",)),
-           DEFI_FENE       =SIMP(statut='f',typ='R',max='**'),
-
+#           DEFI_FENE       =SIMP(statut='f',typ='R',max='**'),
+           BLOC_DEFI_FENE  =BLOC(condition = "FENETRE == 'EXPO' or FENETRE == 'PART' ", 
+             DEFI_FENE       =SIMP(statut='f',typ='R',max='**'),
+                                 ),
                               ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),

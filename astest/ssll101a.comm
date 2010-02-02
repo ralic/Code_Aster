@@ -1,5 +1,6 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE TUYAUTERIE (PROBLEME DE HOVGAARD) POU_D_T
+# ssll101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +72,8 @@ CARA_ELE=AFFE_CARA_ELEM( MODELE=MODELE,
 # ----------------------------------------------------------------------
 # POIDS PROPRE
 
-GRAVITE=AFFE_CHAR_MECA(MODELE=MODELE,PESANTEUR=(-9.81, 0.,0.,1.,))
+GRAVITE=AFFE_CHAR_MECA(MODELE=MODELE,PESANTEUR=_F(GRAVITE=-9.81,
+                                                  DIRECTION=(0.,0.,1.,),),)
 
 STAT1=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,

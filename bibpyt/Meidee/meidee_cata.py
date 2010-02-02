@@ -1,4 +1,4 @@
-#@ MODIF meidee_cata Meidee  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_cata Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+# RESPONSABLE BODEL C.BODEL
 
 ##On definit dans ce module python des classes associées à des objets aster,
 ##permettant leur manipulation en python (pour le calcul numérique).
@@ -35,7 +36,7 @@ import aster
 from Utilitai.Utmess import UTMESS
 from Cata.cata import modele_sdaster , mode_meca, matr_asse_depl_r, maillage_sdaster
 from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
-from Cata.cata import nume_ddl_sdaster, dyna_harmo
+from Cata.cata import nume_ddl_sdaster, dyna_harmo, matr_asse_gene_r
 import Numeric
 from Numeric import array, transpose
 from Numeric import zeros
@@ -48,6 +49,19 @@ aster.onFatalError("EXCEPTION")
 #---------------------------------------------------------------------------------
 
 class Resultat:
+    """ Classe chapeau a toutes les sd_resultat traitees dans CALC_ESSAI"""
+    ##TODO : mettre ici les attributs et procedures communs a tous les resus
+    def __init__(self,objects,nom,obj_ast,mess):
+        self.objects = objects
+        self.nom = nom.strip()
+        self.obj = obj_ast
+        self.mess = mess
+        self.cara_mod = None
+
+
+
+
+class ModeMeca(Resultat):
     """!Gestion des sd_resultat d'aster
 
     Permet de conserver une référence sur un objet aster sd_resultat
@@ -59,13 +73,9 @@ class Resultat:
                  nom       = None,    # nom du concept aster
                  obj_ast   = None,    # concept Aster
                  mess      = None,    # fenetre de messages
-                 owned     = None
                  ):
         """Constructeur"""
-        self.objects = objects
-        self.nom = nom.strip()
-        self.obj = obj_ast
-        self.cara_mod = None
+        Resultat.__init__(self,objects,nom,obj_ast,mess)
         self.modele_name = ""
         self.modele = None
         self.maya_name = ""
@@ -78,8 +88,6 @@ class Resultat:
         self.kass = None
         self.cass_name = ""
         self.cass = None
-        self.owned = owned
-        self.mess = mess
         self.nom_cham = None
 
         try:
@@ -87,18 +95,7 @@ class Resultat:
         except AttributeError:
             pass
 
-        #self.show()
-
-    def __del__(self):
-        from Cata.cata import DETRUIRE
-        if not self.owned:
-            return
-        if isinstance(self.owned, Meidee):
-            self.owned.unregister_result( self )
-        else:
-            self.mess.disp_mess( ( "Destruction de " + self.nom ) )
-            self.mess.disp_mess( ( " " ) )
-            DETRUIRE(CONCEPT=_F(NOM=(self.obj,)), INFO=1)
+        #self.show_linked_concepts()
 
 
     def get_matrices(self):
@@ -126,27 +123,11 @@ class Resultat:
             self.nume = self.objects.nume_ddl[self.nume_name]
 
 
-#    def get_nume_2(self):
-#        """2e methode pour la recuperation"""
-#        resu = self.nom
-#        liste_ordre=aster.getvectjev(resu.ljust(19)+'.ORDR')
-#        if not liste_ordre:
-#            return
-#        for j in liste_ordre:
-#            if j==0:
-#                continue
-#            ordr = "%s.001.%06d" % (resu.ljust(8),j)
-#            info = aster.getvectjev(ordr.ljust(19)+".REFE")
-#            #print ".ORDR.REFE", info
-#            if info is not None:
-#                if info[1].strip():
-#                    nom = info[1][0:8].strip()
-#                    self.maya_name = info[0].strip()
-#                    self.maya = self.objects.maillages[self.maya_name]
-
 
     def get_maillage(self):
         """Recherche du maillage associe au resultat"""
+        if not self.nume_name:
+            self.get_nume()
         if self.nume_name: # methode 1
             maillage = aster.getvectjev( self.nume_name[0:8].ljust(14)+".NUME.REFN")
             self.maya_name = maillage[0].strip()
@@ -182,6 +163,7 @@ class Resultat:
 
         # Si cela ne marche pas, on passe par le maillage
         if not self.modele:
+            self.get_maillage()
             for m, _mod in self.objects.modeles.items():
                 if not _mod.maya_name:
                     _mod.get_maillage()
@@ -189,7 +171,10 @@ class Resultat:
                     self.modele_name = m
                     self.modele = _mod
 
-    def show(self):
+        if not self.modele:
+            UTMESS('A','MEIDEE0_8',valk=(self.nom))
+
+    def show_linked_concepts(self):
         """!Affichage du concept résultats et des concepts liés"""
         self.mess.disp_mess( ( self.nom + " : " ) )
         self.mess.disp_mess( ( ".modele" + self.modele_name ) )
@@ -199,91 +184,44 @@ class Resultat:
         self.mess.disp_mess( ( ".kass" + self.kass_name ) )
         self.mess.disp_mess( ( " " ) )
 
-    def get_modes(self):
-        """!récupère les numéros et fréquences des modes
-        d'un concept mode_meca"""
-        from Cata.cata import RECU_TABLE
-        __freq  = RECU_TABLE(CO=self.obj,
-                             NOM_PARA='FREQ',);
-        afreq  = __freq.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
+    def get_modes_data(self):
+        """ retourne pour tout type de mode_meca les caras
+            dynamiques (frequences, amor...) et les nom_cmp pour
+            les modes statiques quand ils le sont"""
+        cara_mod = {'NUME_ORDRE':[],
+                    'FREQ':[],
+                    'AMOR_REDUIT':[],
+                    'AMOR_GENE':[],
+                    'RIGI_GENE':[],
+                    'MASS_GENE':[],
+                    'NUME_MODE':[], #VOIR SI ON A VRAIMENT BESOIN DE CELUI-LA. SIMPLIFIER AU MAX
+                    'NOM_CMP':[]
+                    }
+        # Si il existe des modes statiques:
+        nomno = self.nom.ljust(19)+".NOEU"
+        resu_stat = aster.getvectjev( nomno.ljust(32) )
+        nume_ordr = self.obj.LIST_PARA()['NUME_ORDRE']
+        if not resu_stat:
+            resu_stat=['        ']*len(nume_ordr)
+        for ind_ordr in range(len(nume_ordr)):
+            # Pour chaque numero d'ordre, remplissage des donnees selon que l'on ait des modes statiques ou dynamiques
+            cara_mod['NUME_MODE'].append(self.obj.LIST_PARA()['NUME_MODE'][ind_ordr])
+            cara_mod['NUME_ORDRE'].append(self.obj.LIST_PARA()['NUME_ORDRE'][ind_ordr])
+            liste = ['FREQ','AMOR_REDUIT','AMOR_GENE','RIGI_GENE','MASS_GENE']
+            if resu_stat[ind_ordr].strip():
+                for ind_list in liste:
+                    cara_mod[ind_list].append(None)
+                cara_mod['NOM_CMP'].append(resu_stat[ind_ordr])
+            else:
+                for ind_list in liste:
+                    cara_mod[ind_list].append(self.obj.LIST_PARA()[ind_list][ind_ordr])
+                cara_mod['NOM_CMP'].append(None)
 
-        resu = [afreq]
+        self.cara_mod = cara_mod
+        return cara_mod
 
-        return self._get_modes_data(resu)
-
-    def _get_modes_data(self, resu):
-        """!récupère les données définissant un mode de vibration"""
-        from Cata.cata import RECU_TABLE
-        __axsi  = RECU_TABLE(CO=self.obj,
-                             NOM_PARA='AMOR_REDUIT',);
-
-        __amge  = RECU_TABLE(CO=self.obj,
-                             NOM_PARA='AMOR_GENE',);
-
-        __mass  = RECU_TABLE(CO=self.obj,
-                             NOM_PARA='MASS_GENE',);
-
-        __modes = RECU_TABLE(CO=self.obj,
-                             NOM_PARA='NUME_MODE',);
-
-        __raid  = RECU_TABLE(CO=self.obj,
-                             NOM_PARA='RIGI_GENE',);
-
-        tables_data = [
-            ('AMOR_REDUIT', __axsi),
-            ('MASS_GENE', __mass),
-            ('NUME_MODE', __modes),
-            ('AMOR_GENE', __amge),
-            ('RIGI_GENE', __raid)
-            ]
-
-        for nom, table in tables_data:
-            try:
-                resu_array = table.EXTR_TABLE().Array('NUME_ORDRE', nom)
-
-            except TypeError:
-                pass
-                resu_array = Numeric.ones(resu[0].shape, Numeric.Float)
-##                self.mess.disp_mess("!! il manque " \
-##                                    "le paramètre modal %s !!" % nom)
-##                self.mess.disp_mess("!! pour le résultat %s !!" % self.nom)
-##                self.mess.disp_mess("!! les calculs risquent d'être faux " \
-##                                    "ou incomplets !!")
-##                self.mess.disp_mess(" ")
-
-            resu.append(resu_array)
-
-        return resu
-
-    def get_modes_stat(self):
-        """!récupère les numeros et directions des modes d'un concept mode_stat"""
-
-        nomno = self.nom.ljust(19)+".ORDR        "
-        numemo = aster.getvectjev( nomno.ljust(32) )
-
-        # après l'EL 12583 : on pourra basculer :
-        if 0 :
-           resu=self.obj.LIST_VARI_ACCES()['NOEUD_CMP']
-        else :
-           nomno = self.nom.ljust(19)+".NOEU"
-           resu = aster.getvectjev( nomno.ljust(32) )
-
-        return numemo,resu
-
-    def get_cara_mod(self):
-        """!Retourne une matrice avec toutes les cara modales d'une instance de Resultat
-            Attention : comme toutes les caras sont dans un array, elles sont toutes du
-            meme type, donc les entiers sont transformes en reels"""
-        afreq, axsi, amass, amodes, bid1, bid2 = self.get_modes()
-        self.cara_mod = Numeric.concatenate((Numeric.transpose(Numeric.array([afreq[:,0]])),
-                                             Numeric.transpose(Numeric.array([afreq[:,1]])),
-                                             Numeric.transpose(Numeric.array([axsi[:,1]])),
-                                             Numeric.transpose(Numeric.array([amass[:,1]])),
-                                             Numeric.transpose(Numeric.array([amodes[:,1]]))),
-                                             axis=1
-                                            )
-        return self.cara_mod
-
+            
+            
 
     def extr_matr(self, extract_ddl):
         """ Extrait les champs de deformees contenus dans le resultat"""
@@ -291,8 +229,8 @@ class Resultat:
         self.nume_phy, self.nume_mat, all_ddls = nume_ddl_phy(self, extract_ddl)
 
         if not self.cara_mod:
-            self.cara_mod = self.get_cara_mod()
-        nb_mod = self.cara_mod.shape[0] # nb de modes
+            self.cara_mod = self.get_modes_data()
+        nb_mod = len(self.cara_mod['NUME_MODE']) # nb de modes
 
         matrice = []
         for ind_mod in range(1, nb_mod +1):
@@ -334,21 +272,16 @@ class Resultat:
 
 #-----------------------------------------------------------------------------------------
 
-class DynaHarmo:
+class DynaHarmo(Resultat):
     """ pour les resultats de type dyna_harmo"""
 
-    def __init__(self,
-                 objects   = None,    # macro MeideeObjects parente
-                 nom       = None,    # nom du concept aster
-                 obj_ast   = None,    # concept Aster
-                 mess      = None,    # fenetre de messages
-                 owned     = None
+    def __init__(self,                objects = None,    # macro MeideeObjects parente
+                 nom     = None,    # nom du concept aster
+                 obj_ast = None,    # concept Aster
+                 mess    = None,    # fenetre de messages
                  ):
-##        Resultat.__init__(self,objects,nom,obj_ast,mess,owned)
+        Resultat.__init__(self,objects,nom,obj_ast,mess)
         """Constructeur"""
-        self.objects = objects
-        self.nom = nom.strip()
-        self.obj = obj_ast
         self.cara_mod = None
         self.modele_name = ""
         self.modele = None
@@ -360,7 +293,6 @@ class DynaHarmo:
         self.mass = None
         self.kass_name = ""
         self.kass = None
-        self.owned = owned
         self.mess = mess
         self.nom_cham = None
         self.nume_ddl = None
@@ -453,11 +385,10 @@ class CaraElem:
         "CARPOUFL",
         ]
 
-    def __init__(self, nom, obj, mess, owned=False):
+    def __init__(self, nom, obj, mess ):
         self.nom = nom
         self.obj = obj
         self.mess = mess
-        self.owned = owned
 
     def maillages(self):
         maillages = []
@@ -475,11 +406,10 @@ class CaraElem:
 
 class ChampMateriau:
     """!Gestion d'un concept champ_mater"""
-    def __init__(self, nom, obj, mess, owned=False):
+    def __init__(self, nom, obj, mess):
         self.nom = nom
         self.obj = obj
         self.mess = mess
-        self.owned = owned
 
     def maillage(self):
         ncham = self.nom.ljust(8)+".CHAMP_MAT .NOMA        "
@@ -510,8 +440,8 @@ class InterSpectre:
                  mat        = None,
                  frequences = [],
                  mess       = None,
-                 var_opt    = None,
-                 owned      = None):
+                 var_opt    = None
+                 ):
         self.nom = nom.strip()                # nom aster de la sd
         self.obj = obj_ast                    # objet aster (à remplir ou à fabriquer)
         self.matr_inte_spec = mat             # matrice inter-spectrale format python
@@ -533,16 +463,21 @@ class InterSpectre:
                              "Efforts et moments discrets"]
         self.mess = mess
 
+        #-- genere une erreur si pas OK -> on passe par Tempo
 
-        try:
-            if len(self.f) == 0:
-                self.extr_freq()
-            self.intsp = 1
+        if len(self.f) == 0:
+            self.extr_freq()
+        self.intsp = 1
 
-        except KeyError:
-            # Cas où la table_sdaster n'est pas une tabl_intsp
-            pass # TODO : faire en sorte que cette table ne soit pas visible
-
+#        try:
+#            if len(self.f) == 0:
+#                self.extr_freq()
+#            self.intsp = 1
+#
+#        except KeyError:
+#            print "test NOOK"
+#            # Cas où la table_sdaster n'est pas une tabl_intsp
+#            #pass # TODO : faire en sorte que cette table ne soit pas visible
 
     def make_inte_spec(self, titre, paras_out):
         """
@@ -734,6 +669,126 @@ class InterSpectre:
         self.f = freq
         self.intsp = 1
 
+#--------------------------------------------------------------------------------------
+
+class Tempo:
+    """!Gestion des concepts de type table_fonction contenant des temporels
+
+    Regroupe les concepts aster de type table_fonction :
+    - Différencie les tabl_fonc des autres tables tabl_sdaster,
+    - Extrait les tabl_fonc sous forme d'une matrice python de temporels
+    - Crée un lien entre les numérotations des ddl de cette matrice
+      avec les numérotations d'un modèle EF. ex : la ligne/colonne 3 de la
+      matrice interspectrale correspond au noeud 1DZ du modèle
+#    - Crée une table inter-spectrale sd_aster à partir d'une matrice python
+#         - Crée une table inter-spectrale sd_aster à partir d'une matrice python
+#        On peut créer une table avec le nom, la table format aster (obj_ast) ou la matrice
+#        format python (mat)
+    """
+    def __init__(self,
+                 nom        = None,
+                 obj_ast    = None,
+                 tempo      = None,
+                 nume_ordr  = None,
+                 nume_mes   = None,
+                 temps      = [],
+                 mess       = None,
+                 var_opt    = None
+                 ):
+        self.nom = nom.strip()                # nom aster de la sd
+        self.obj = obj_ast                    # objet aster (à remplir ou à fabriquer)
+        self.list_tempo = tempo               # liste de liste de liste format python contenant les temporels
+        self.nume_ordr  = nume_ordr           # liste contenant les numeros d'ordre auxquels sont rataches les tempo
+        self.nume_mes   = nume_mes            # liste contenant les numeros de mesures pour chaque numero d'ordre
+        self.tempo = 0                        # vaut 1 si la table est un tempo, 0 sinon
+        self.var_opt(var_opt)                 # definit self.opt : vaut 1 si les modeles sont définis
+        self.t = temps
+        self.resu_name = ""
+        self.resu = None
+        self.maya_name = ""
+        self.maya = None
+        self.nume_name = ""
+        self.nume_phy = None
+        self.nume_gene = None
+        self.mass_name = ""
+        self.mass = None
+        self.kass_name = ""
+        self.kass = None
+        self.options_meth = ["Efforts discrets localises",
+                             "Efforts et moments discrets"]
+        self.mess = mess
+
+
+        try:
+            if len(self.t) == 0:
+                self.extr_temps()
+            self.ech_t = 1  # self.intsp = 1
+            
+        except KeyError:
+            # Cas où la table_sdaster n'est pas un Tempo
+            pass # TODO : faire en sorte que cette table ne soit pas visible
+
+
+
+    def def_tempo(self, tempo):
+        """ Associe une table intsp aster à l'instance de InterSpectre"""
+        self.obj = tempo
+
+    def def_nom(self, nom):
+        """ Associe un nom (self.nom) à l'InterSpectre"""
+        self.nom = nom
+
+    def var_opt(self, opt):
+        if opt =='Efforts discrets localises':
+            self.opt = 0
+        elif opt =='Efforts et moments discrets':
+            self.opt = 1
+        else:
+            self.opt = 0
+
+
+
+    def set_model(self, resu):
+        """Lie le temporel au concept mode_meca OBS. Permet de lier les
+        catalogues de temporels aux DDL des deformees modales
+        et de tout ranger dans le bon ordre. Si les temporels sont definis
+        avec des numeros d'ordre, alors on suppose qu'ils sont rangés dans le bon
+        ordre.
+        """
+        self.resu = resu
+
+
+    def extr_tempo(self):
+    
+        """!Recuperation d'une table_fonction pour creer un catalogue de temporels"""
+        from Cata.cata import RECU_FONCTION
+        from Cata.cata import DETRUIRE
+        self.mess.disp_mess("Recuperation des informations sur les temporels " + self.nom)
+        self.mess.disp_mess(" ")
+        tabl_py = self.obj.EXTR_TABLE()
+        self.nom_fonc   = tabl_py['FONCTION'].values()['FONCTION']
+        self.nume_ordr  = tabl_py['NUME_ORDRE_I'].values()['NUME_ORDRE_I']
+        self.nume_mes   = tabl_py['NUME_MES'].values()['NUME_MES']
+
+
+
+    def extr_temps(self):
+        """Extraction des instants d'étude dans la Tempo qui contient
+        les temporels mesurés"""
+        from Cata.cata import RECU_FONCTION
+        from Cata.cata import DETRUIRE
+        tabl_py=self.obj.EXTR_TABLE()
+        toto=tabl_py['FONCTION']
+        nom_fonc = toto.values()['FONCTION'][0]
+        __FONC = RECU_FONCTION(TABLE = self.obj,
+                               NOM_PARA_TABL = 'FONCTION',
+                               FILTRE = _F(NOM_PARA='FONCTION',VALE_K=nom_fonc)
+                               )
+        temps=__FONC.Absc()
+        DETRUIRE(CONCEPT=_F(NOM=__FONC),INFO=1)
+        self.t = temps
+        self.tempo = 1
+
 
 #---------------------------------------------------------------------------------------------
 
@@ -748,7 +803,7 @@ class Modele:
                  obj_ast    = None,
                  mess       = None,
                  nume_ddl   = None,
-                 owned      = None):
+                 ):
         self.objects = objects                # les concepts existants dans le jdc
         self.nom = nom.strip()                # nom aster de la sd
         self.obj = obj_ast                    # objet aster
@@ -814,12 +869,14 @@ class MeideeObjects:
         self.groupno = {}
         self.resultats = {}
         self.dyna_harmo = {}
+        self.mode_meca = {}
         self.matrices = {}
         self.maillage_modeles = {}
         self.groupno_maillage = {}
         self.cara_elem = {}
         self.cham_mater = {}
         self.inter_spec = {}
+        self.list_tempo = {}
         self.nume_ddl = {}
         self.macro = macro
         self.weakref = []
@@ -827,30 +884,18 @@ class MeideeObjects:
         self.grno = {}
 
 
-    def recup_objects( self, update_only=False ):
-        """Stocke les concepts existants par type.
-        Si update_only, on ne crée l'objet que s'il est nouveau."""
+    def recup_objects( self ):
         self.del_weakref()
         ctx = CONTEXT.get_current_step().get_contexte_courant()
 
         for i, v in ctx.items():
-            # nouveau ?
-            if update_only:
-               is_new = True
-               for attr in ('modeles', 'resultats', 'dyna_harmo', 'matrices', 'maillages', 'cara_elem', 'cham_mater', 'inter_spec', 'nume_ddl'):
-                  if getattr(self, attr, {}).get(i):
-                     is_new = False
-                     break
-               if not is_new:
-                  continue
-
             if isinstance( v, modele_sdaster ):
-                self.modeles[i] = Modele(objects = self, nom = i,obj_ast = v,mess = self.mess)
+                self.modeles[i] = Modele(objects=self,nom=i,obj_ast=v,mess=self.mess)
             elif isinstance( v, mode_meca ):
-                self.resultats[i] = Resultat(objects = self, nom = i,obj_ast = v,mess = self.mess)
+                self.mode_meca[i] = ModeMeca(objects=self,nom=i,obj_ast=v,mess=self.mess)
             elif isinstance( v, dyna_harmo ):
-                self.dyna_harmo[i] = DynaHarmo(objects = self, nom = i,obj_ast = v,mess = self.mess)
-            elif isinstance( v, matr_asse_depl_r ):
+                self.dyna_harmo[i] = DynaHarmo(objects=self,nom=i,obj_ast=v,mess=self.mess)
+            elif isinstance( v, matr_asse_depl_r ) or isinstance( v, matr_asse_gene_r ):
                 self.matrices[i] = v
             elif isinstance( v, maillage_sdaster ):
                 self.maillages[i] = v
@@ -859,21 +904,23 @@ class MeideeObjects:
             elif isinstance( v, cham_mater ):
                 self.cham_mater[i] = v
             elif isinstance( v, table_sdaster ):
-                self.inter_spec[i] = InterSpectre(nom = i, obj_ast = v, mess = self.mess)
+                try : # cas d'une table frequentielle (inter-spectre)
+                    self.inter_spec[i] = InterSpectre(nom = i, obj_ast = v, mess = self.mess)
+                except KeyError : # cas d'une table temporelle
+                    self.list_tempo[i] = Tempo(nom = i, obj_ast = v, mess = self.mess)
             elif isinstance( v, nume_ddl_sdaster ):
                 self.nume_ddl[i] = v
 
-        self.all_resus = self.resultats.copy()
-        self.all_resus.update(self.dyna_harmo) # dict ou on met toutes les sd resu
+        self.resultats = self.mode_meca.copy()
+        self.resultats.update(self.dyna_harmo)
 
         #self.debug()
         ## Liaison des concepts entre eux (resu <=> maillage <=> modele)
-        for resu_name, resu in self.resultats.items():
-            resu.get_modele()
-            resu.get_matrices()
-            resu.get_nume()
-            resu.get_maillage()
-##            print resu.nom," a pour modele ",resu.modele, " pour matrices ", resu.kass, resu.mass
+        for modes_name, modes in self.mode_meca.items():
+            modes.get_nume()
+            modes.get_modele()
+            modes.get_matrices()
+            modes.get_maillage()
 
         for modele_name, modele in self.modeles.items():
             modele.get_maillage()
@@ -888,25 +935,30 @@ class MeideeObjects:
 
     def update( self, name, obj ):
         """ Ajout d'un nouvel objet dans self"""
-        # Lors de l'init de MeideeObjects, les concepts calculés
-        # par CALC_ESSAI ne sont pas encore connus, il faut donc raffraichir cette liste.
-        self.recup_objects(update_only=True)
-        self.del_weakref()
+        if isinstance( obj, modele_sdaster):
+            self.modeles[name] = Modele(self,name,obj,self.mess)
+        if isinstance( obj, nume_ddl_sdaster):
+            self.nume_ddl[name] = obj
+        if isinstance( obj, maillage_sdaster):
+            self.maillages[name] = obj
         if isinstance( obj, mode_meca ):
-            self.resultats[name] = Resultat(self,name,obj,self.mess)
-            self.resultats[name].get_modele()
-            self.resultats[name].get_matrices()
-            self.resultats[name].get_nume()
-            self.resultats[name].get_maillage()
+            self.mode_meca[name] = ModeMeca(self,name,obj,self.mess)
+            self.mode_meca[name].get_modele()
+            self.mode_meca[name].get_matrices()
+            self.mode_meca[name].get_nume()
+            self.mode_meca[name].get_maillage()
         if isinstance( obj, dyna_harmo ):
             self.dyna_harmo[name] = DynaHarmo(self,name,obj,self.mess)
             self.dyna_harmo[name].get_modele()
             self.dyna_harmo[name].get_nume()
             self.dyna_harmo[name].get_maillage()
         if isinstance( obj, table_sdaster ):
-            self.inter_spec[name] = InterSpectre(nom = name, obj_ast = obj, mess = self.mess)
-        self.all_resus = self.resultats.copy()
-        self.all_resus.update(self.dyna_harmo) # dict ou on met toutes les sd resu
+            try :
+                self.inter_spec[name] = InterSpectre(nom = name, obj_ast = obj, mess = self.mess)
+            except KeyError :
+                self.list_tempo[name] = Tempo(nom = name, obj_ast = obj, mess = self.mess)
+        self.resultats = self.mode_meca.copy()
+        self.resultats.update(self.dyna_harmo) # dict ou on met toutes les sd resu
 
 
     def debug(self):
@@ -916,7 +968,7 @@ class MeideeObjects:
         self.mess.disp_mess( ("Resultats" ) )
         self.mess.disp_mess( ( " " ) )
         for v in self.resultats.values():
-            v.show()
+            v.show_linked_concepts()
 
 
 
@@ -932,14 +984,18 @@ class MeideeObjects:
                 self.groupno_maillage[elem] = m
             return dic_gpno.keys()
 
-    def get_resu(self, name):
-        """!Renvoie un objet resultat identifie par son nom"""
-        return self.resultats[name]
+    def get_mode_meca_name(self):
+        """!Liste des objets resultat"""
+        return self.mode_meca.keys()
 
-    def get_cara_elem_obj(self, name):
+    def get_mode_meca(self, name):
+        """!Renvoie un objet resultat identifie par son nom"""
+        return self.mode_meca[name]
+
+    def get_cara_elem(self, name):
         return self.cara_elem[name]
 
-    def get_cham_mater_obj(self, name):
+    def get_cham_mater(self, name):
         return self.cham_mater[name]
 
     def get_model_name(self):
@@ -970,25 +1026,13 @@ class MeideeObjects:
         """!Renvoie une matrice de masse ou raideur ou None"""
         return self.matrices.get(name)
 
-    def get_resultats(self):
-        """!Liste des objets resultat"""
+    def get_resultats_name(self):
+        """recup des noms de toutes les sd resus : mode_meca, base_modale, dyna_harmo"""
         return self.resultats.keys()
 
-    def get_resultats_num(self):
-        """!Pas de difference avec get_resultats pour l'instant"""
-        return self.get_resultats()
-
-    def get_resultats_exp(self):
-        """!Pas de difference avec get_resultats pour l'instant"""
-        return self.get_resultats()
-
-    def get_all_resus_name(self):
-        """recup des noms de toutes les sd resus : mode_meca, base_modale, dyna_harmo"""
-        return self.all_resus.keys()
-
-    def get_all_resus(self, name):
+    def get_resultats(self, name):
         """recup d'une sd resu dans la liste ci-dessus"""
-        return self.all_resus[name]
+        return self.resultats[name]
 
     def get_matr_norme(self):
         normes = self.matrices.keys()
@@ -998,33 +1042,19 @@ class MeideeObjects:
     def get_matr_name(self):
         return self.matrices.keys()
 
-    def get_cara_elem(self, resultat=None):
-        if resultat is None:
-            return self.cara_elem.keys()
-        l = []
-        if resultat not in self.resultats:
-            return []
-        maya = self.resultats[resultat].maya_name
-        for k, v in self.cara_elem.items():
-            elem = CaraElem( k, v, self.mess )
-            maillages = elem.maillages()
-            if maya in maillages:
-                l.append(k)
-        return l
+    def get_cara_elem_name(self):
+        return self.cara_elem.keys()
 
-    def get_cham_mater(self, resultat=None):
-        if resultat is None:
-            return self.cham_mater.keys()
-        l = []
-        if resultat not in self.resultats:
-            return []
-        maya = self.resultats[resultat].maya_name
-        for k, v in self.cham_mater.items():
-            elem = ChampMateriau( k, v, self.mess )
-            maillage = elem.maillage()
-            if maya == maillage:
-                l.append(k)
-        return l
+    def get_cara_elem(self, name):
+        """recup d'une sd resu dans la liste ci-dessus"""
+        return self.cara_elem[name]
+
+    def get_cham_mater_name(self):
+        return self.cara_elem.keys()
+
+    def get_cham_mater(self, name):
+        """recup d'une sd resu dans la liste ci-dessus"""
+        return self.cham_mater[name]
 
     def register_weakref(self,name):
         """ garde les NOMS des concepts destinés à être supprimés à chaque
@@ -1038,7 +1068,7 @@ class MeideeObjects:
         if len(self.weakref) != 0:
             for obj in self.weakref:
                 DETRUIRE(CONCEPT = _F(NOM = obj), INFO=1)
-                liste = liste + ", " + obj
+                liste = liste + ", " + obj.nom
             self.weakref = []
             self.mess.disp_mess("Destruction des objects temporaires " + liste)
 
@@ -1159,9 +1189,9 @@ def nume_ddl_gene(resu, extract_mode = None):
     Retourne "MO"+#mode
     """
     modes = []
-    afreq, axsi, amass, amodes, amor, arigi = resu.get_modes() # recup des cara modales du resultat associé à l'interspectre
-    nb_mod = amodes.shape[0]
-    for mod in amodes[:,1]:
+    nume_mode = resu.get_modes_data()['NUME_MODE']
+    nb_mod = len(nume_mode)
+    for mod in nume_mode:
         modes.append('MO'+str(int(mod)))
     return modes
 

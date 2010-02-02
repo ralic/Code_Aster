@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105b.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -263,7 +263,8 @@ ramp_pes=DEFI_FONCTION(NOM_PARA='INST',
                        PROL_GAUCHE='CONSTANT',);
 
 CHA_pes=AFFE_CHAR_MECA(MODELE=MO,
-                       PESANTEUR=(-9.81,0.0,1.0,0.0,),);
+                       PESANTEUR=_F(GRAVITE=-9.81,
+                                    DIRECTION=(0.0,1.0,0.0,),),);
 # SELF WEIGHT CALCULATION
 
 u_pesa=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=cara_dis,

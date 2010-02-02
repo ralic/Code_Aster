@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -242,24 +242,6 @@ C REDUISENT A UNE SEULE : SI R_D=K_D ET ALPHA=BETA=0
       GK   = MATE(9,2)
       GR   = MATE(7,2)
       ISIMP=0
-      IF (OPTION(1:9).EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA') THEN
-      IF (ABS(GR-GK).LE.TOLER*GR) THEN
-       IF (.NOT.CPLAN) THEN
-         CALL NMVEND(FAMI,KPG,KSP,MATM,MATE,NMAT,DT,EPSM,DEPS,SIGM,VIM,
-     &               NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,ITER,IER)
-         ISIMP=1
-         IF (IER.GT.0) THEN
-            GOTO 801
-         ELSE
-            CALL NMVECD ( IMATE, MATE, NMAT, MATCST, HOOK, DT, TP,
-     &                  P, NP, BETA, NB, EP, RM, DM,
-     &                  DSGDE, DSGDB, DSGDP, DRBDE, DRPDE,
-     &                  RB, RP, DRBDB, DRBDP, DRPDB, DRPDP, ETATF, IER)
-            GOTO 230
-         ENDIF
-       ENDIF
-      ENDIF
-      ENDIF
 C
 C-- 2. CALCULS:
 C---------------
@@ -269,6 +251,22 @@ C              - DES CONTRAINTES ET DES DERIVEES
 C              - ARCHIVAGE DES VARIABLES
 C-----------------------------------------------------------------------
       IF (OPTION(1:9).EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA') THEN
+        IF (ABS(GR-GK).LE.TOLER*GR) THEN
+         IF (.NOT.CPLAN) THEN
+           CALL NMVEND(FAMI,KPG,KSP,MATM,MATE,NMAT,DT,EPSM,DEPS,SIGM,
+     &                 VIM,NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,ITER,IER)
+           ISIMP=1
+           IF (IER.GT.0) THEN
+             GOTO 801
+           ELSE
+             CALL NMVECD ( IMATE, MATE, NMAT, MATCST, HOOK, DT, TP,
+     &                   P, NP, BETA, NB, EP, RM, DM,
+     &                   DSGDE, DSGDB, DSGDP, DRBDE, DRPDE,
+     &                   RB, RP, DRBDB, DRBDP, DRPDB, DRPDP, ETATF, IER)
+             GOTO 230
+           ENDIF
+         ENDIF
+        ENDIF
         DO 00200 ITER= 1,ITMAX
 C
           CALL NMVECD ( IMATE, MATE, NMAT, MATCST, HOOK, DT, TP,

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE MISE EN TENSION DE CABLES DE PRECONTRAINTES DANS UNE POUTRE 3D
 # ssnv164a.para = tps_job 140 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,7 +84,8 @@ CLIM =AFFE_CHAR_MECA(MODELE=MO,
                                DX=0.0,),
                             _F(GROUP_NO='SU3', 
                                DZ=0.0,), ),
-                  PESANTEUR=(9.8100000000000005,0.0,0.0,-1.0,), )
+                  PESANTEUR=_F(GRAVITE=9.8100000000000005,
+                               DIRECTION=(0.0,0.0,-1.0,), ),)
 
 CAB_BP1=DEFI_CABLE_BP(MODELE=MO,
                       CHAM_MATER=CMAT,

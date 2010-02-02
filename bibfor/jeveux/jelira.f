@@ -1,6 +1,6 @@
       SUBROUTINE JELIRA ( NOMLU , CATR , IVAL , CVAL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,10 +61,10 @@ C
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,             IDLONG     ,
+     &                            IDNOM      ,             IDLONG     ,
      &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
+     &                            IDNOM  = 5 ,             IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
       CHARACTER*75     CMESS
@@ -217,9 +217,6 @@ C
          LCV = LEN(DOCU(1))
       ELSE IF ( CATRLU .EQ. 'DATE    ' ) THEN
          IVA  = DATE ( JDATE(IC) + ID )
-      ELSE IF ( CATRLU .EQ. 'ORIG    ' ) THEN
-         CVA = ORIG ( JORIG(IC) + ID )
-         LCV = LEN(ORIG(1))
       ELSE IF ( CATRLU .EQ. 'XOUS    ' ) THEN
          IF ( IRET .EQ. 1 ) THEN
             CVA = 'S'

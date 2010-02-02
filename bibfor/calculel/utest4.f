@@ -1,14 +1,15 @@
-      SUBROUTINE UTEST4 ( CHAMGD, TYPTES, TYPRES, NBREF, REFI, REFR, 
-     +                    REFC, EPSI, CRIT, IFIC, NBCMP, NOCMP, SSIGNE )
+      SUBROUTINE UTEST4 ( CHAMGD, TYPTES, TYPRES, NBREF, TBTXT, REFI,
+     +              REFR, REFC, EPSI, CRIT, IFIC, NBCMP, NOCMP, SSIGNE )
       IMPLICIT   NONE
       INTEGER              NBREF, REFI(NBREF), IFIC, NBCMP
       REAL*8               REFR(NBREF), EPSI
       CHARACTER*8          TYPTES, NOCMP(*)
+      CHARACTER*16         TBTXT(2)
       CHARACTER*(*)        CHAMGD, TYPRES, CRIT, SSIGNE
       COMPLEX*16           REFC(NBREF)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +35,7 @@ C IN  : REFC   : VALEUR COMPLEXE ATTENDUE
 C IN  : CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
 C IN  : EPSI   : PRECISION ESPEREE
 C IN  : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
+C IN  : TBTXT  : (1)=REFERENCE, (2)=LEGENDE
 C IN  : NODDL  : NOM DU DDL A TRAITER
 C OUT : IMPRESSION SUR LISTING
 C ----------------------------------------------------------------------
@@ -62,13 +64,10 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*4   TYPE
       CHARACTER*8   TYCH, NODDL
       CHARACTER*19  CHAM19, CNSINR
-      CHARACTER*17  LABEL1, LABEL2
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      LABEL1 = ' '
-      LABEL2 = ' '
       CHAM19 = CHAMGD
       TYPREZ = TYPRES(1:1)
 C
@@ -95,10 +94,7 @@ C         -------------------
                   GOTO 10
                ENDIF
  12         CONTINUE
-            WRITE(IFIC,*) 'NOOK '
-            WRITE(IFIC,*) 'LA COMPOSANTE '//NODDL//
-     +                                  ' N''EXISTE PAS POUR CE CHAMP.'
-            GOTO 9999
+            CALL U2MESK('F','CALCULEL6_88', 1 ,NODDL)
  10      CONTINUE
          CALL JELIRA ( CNSINR//'.CNSV','TYPE', IBID, TYPE )
          CALL JELIRA ( CNSINR//'.CNSV','LONMAX', NEQ, TYPE )
@@ -129,10 +125,7 @@ C              -----------------
                   GOTO 20
                ENDIF
  22         CONTINUE
-            WRITE(IFIC,*) 'NOOK '
-            WRITE(IFIC,*) 'LA COMPOSANTE '//NODDL//
-     +                                  ' N''EXISTE PAS POUR CE CHAMP.'
-            GOTO 9999
+            CALL U2MESK('F','CALCULEL6_88', 1 ,NODDL)
  20      CONTINUE
          CALL JELIRA ( CNSINR//'.CESV','TYPE', IBID, TYPE )
          CALL JELIRA ( CNSINR//'.CESV','LONMAX', NEQ, TYPE )
@@ -152,7 +145,6 @@ C              -----------------
 C
       IF ( TYPE .EQ. 'I' ) THEN
          IF ( TYPTES .EQ. 'SOMM_ABS' ) THEN
-            LABEL2 = ' SOMM_ABS '
             VALI = 0
             DO 102 I = 1 , NBCMP
                VNOCMP = ZI(JCMP+I-1)
@@ -164,7 +156,6 @@ C
  100           CONTINUE
  102        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
-            LABEL2 = ' SOMM '
             VALI = 0
             DO 112 I = 1 , NBCMP
                VNOCMP = ZI(JCMP+I-1)
@@ -176,7 +167,6 @@ C
  110           CONTINUE
  112        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MAX' ) THEN
-            LABEL2 = ' MAX '
             DO 122 I = 1 , NBCMP
                VNOCMP = ZI(JCMP+I-1)
                DO 120 J = 1,NEQ
@@ -195,7 +185,6 @@ C
  126           CONTINUE
  122        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MIN' ) THEN
-            LABEL2 = ' MIN '
             DO 132 I = 1 , NBCMP
                VNOCMP = ZI(JCMP+I-1)
                DO 130 J = 1,NEQ
@@ -221,7 +210,6 @@ C
 C
       ELSEIF ( TYPE .EQ. 'R' ) THEN
          IF ( TYPTES .EQ. 'SOMM_ABS' ) THEN
-            LABEL2 = ' SOMM_ABS '
             VALR = 0.D0
             DO 202 I = 1 , NBCMP
                VNOCMP = ZI(JCMP+I-1)
@@ -233,7 +221,6 @@ C
  200           CONTINUE
  202        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
-            LABEL2 = ' SOMM '
             VALR = 0.D0
             DO 212 I = 1 , NBCMP
                VNOCMP = ZI(JCMP+I-1)
@@ -245,7 +232,6 @@ C
  210           CONTINUE
  212        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MAX' ) THEN
-            LABEL2 = ' MAX '
             DO 222 I = 1 , NBCMP
                VNOCMP = ZI(JCMP+I-1)
                DO 220 J = 1 , NEQ
@@ -264,7 +250,6 @@ C
  226           CONTINUE
  222        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MIN' ) THEN
-            LABEL2 = ' MIN '
             DO 232 I = 1 , NBCMP
                VNOCMP = ZI(JCMP+I-1)
                DO 230 J = 1 , NEQ
@@ -290,7 +275,6 @@ C
 C
       ELSEIF ( TYPE .EQ. 'C' ) THEN
          IF ( TYPTES .EQ. 'SOMM_ABS' ) THEN
-            LABEL2 = ' SOMM_ABS '
             VALR = 0.D0
             DO 302 I = 1 , NBCMP
                VNOCMP = ZI(JCMP+I-1)
@@ -302,7 +286,6 @@ C
  300           CONTINUE
  302        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
-            LABEL2 = ' SOMM '
             VALC = DCMPLX(0.D0,0.D0)
             DO 312 I = 1 , NBCMP
                VNOCMP = ZI(JCMP+I-1)
@@ -320,7 +303,7 @@ C
          ENDIF
       ENDIF
 C
-      CALL UTITES ( LABEL1, LABEL2, TYPRES, NBREF, REFI, REFR, REFC,
+      CALL UTITES ( TBTXT(1), TBTXT(2), TYPRES, NBREF, REFI, REFR, REFC,
      +              VALI, VALR, VALC, EPSI, CRIT, IFIC, SSIGNE )
 C
       CALL DETRSD('CHAM_NO_S',CNSINR)

@@ -1,7 +1,7 @@
       SUBROUTINE RITZ99(NOMRES)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,6 +122,9 @@ C
           IF (NBTOT.GT.NBOLD) CALL RSAGSD(NOMRES,NBTOT)
           CALL JEVEUO(NOMRES//'           .REFD','E',LDREF)
           CALL GETVID('    ','NUME_REF',1,1,1,NUMREF,IBID)
+          IF (IBID.EQ.0) THEN
+            CALL U2MESG('E', 'ALGORITH17_8',0,' ',0,0,0,0.D0)
+          ENDIF
           NUMREF(15:19)='.NUME'
           CALL GETVID('  ','INTERF_DYNA',1,1,0,INTF,IOCI)
           IF(IOCI.LT.0) THEN
@@ -319,7 +322,12 @@ C     CONCEPT SORTANT
         CALL JEVEUO(RESUL1//'           .REFD','L',JRFO)
         ZK24(JRFN) = ZK24(JRFO)
         ZK24(JRFN+1) = ZK24(JRFO+1)
-        ZK24(JRFN+2) = ZK24(JRFO+2)        
+        ZK24(JRFN+2) = ZK24(JRFO+2)
+        CALL GETVID('    ','NUME_REF',1,1,1,NUMREF,IBID)
+        IF (IBID.GT.0) THEN
+          CALL U2MESG('A', 'ALGORITH17_7',0,' ',0,0,0,0.D0)
+        ENDIF
+        ZK24(JRFN+3) = ZK24(JRFO+3)        
       ENDIF
 
 

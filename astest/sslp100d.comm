@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (AVEC SOUS-STRUCTURATION)
 # sslp100d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,7 +65,8 @@ CHF2_1=AFFE_CHAR_MECA(MODELE=MO_1,
           FORCE_NODALE=_F( NOEUD = ('N11',), FY = -20.0))
 
 CHF3_1=AFFE_CHAR_MECA(MODELE=MO_1,
-                    PESANTEUR=(-9.81,1.0,0.0,0.0,),);
+                    PESANTEUR=_F(GRAVITE=-9.81,
+                                 DIRECTION=(1.0,0.0,0.0,),),);
 
 #=======================================================================
 #
@@ -203,7 +204,8 @@ CHAGF2=AFFE_CHAR_MECA(MODELE=MOG,
            FORCE_NODALE=_F( NOEUD = ('N15','N17',), FY = -20.0) )
 
 CHAGF3=AFFE_CHAR_MECA(MODELE=MOG,
-                    PESANTEUR=(-9.81,1.0,0.0,0.0,),);
+                    PESANTEUR=_F(GRAVITE=-9.81,
+                                 DIRECTION=(1.0,0.0,0.0,),),);
 
 #  RIGIDITE:
 #  ---------

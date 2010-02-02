@@ -11,7 +11,7 @@ C
       LOGICAL       LRESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/08/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -464,7 +464,7 @@ C
              ELSEIF(NIVE.EQ.10) THEN
               WRITE(IFI,'(10I8)')    (ZI(JBID-1+I),I=1,4)
              ENDIF
-             WRITE(IFI,'(1P,3E22.13E3))') (ZR(JVALE-1+I),
+             WRITE(IFI,'(1P,3E22.13E3)') (ZR(JVALE-1+I),
      &                  I=JV*ISP,NBELT*NPCALC*NBVAR*ICOMAX,NBVAR*ICOMAX)
  224       CONTINUE
  222     CONTINUE

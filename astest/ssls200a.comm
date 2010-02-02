@@ -1,4 +1,4 @@
-# MODIF  DATE 12/10/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE VABHHTS J.PELLET
 # ssls200a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -125,7 +125,8 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 # ------------------------------------------------------------------
 
 CHPES=AFFE_CHAR_MECA(MODELE=MO,
-                     PESANTEUR=(9.8,0.3,0.1,-0.4,),
+                     PESANTEUR=_F(GRAVITE=9.8,
+                                  DIRECTION=(0.3,0.1,-0.4,),),
                      DDL_IMPO=(_F(NOEUD='N1',
                                   DX=1.,
                                   DY=2.,

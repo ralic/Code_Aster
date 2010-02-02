@@ -1,5 +1,6 @@
-# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS) - ANCIEN SSLP09b
+# ssls09b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -165,7 +166,8 @@ TEST_RESU(RESU=(   _F(  RESULTAT = DEF,
 #--------------------------------------------------------------
 #
 CH_PESA=AFFE_CHAR_MECA  (  MODELE=MODELE,
-                           PESANTEUR=(  9.8125, 0., -1., 0.,),
+                           PESANTEUR=_F(GRAVITE=9.8125,
+                                        DIRECTION=(0., -1., 0.,),),
                           )
 INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=1.0,

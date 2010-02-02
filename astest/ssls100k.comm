@@ -1,5 +1,6 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
+# ssls100k.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +57,8 @@ CHF3=AFFE_CHAR_MECA(MODELE=MODELE_1,
                    FORCE_COQUE=_F(  TOUT = 'OUI',   F3 = -1.) )
 
 CHPE=AFFE_CHAR_MECA(MODELE=MODELE_1,
-                      PESANTEUR=( 10., 0., 0., -1.,                ) )
+                      PESANTEUR=_F(GRAVITE= 10.,
+                                   DIRECTION=( 0., 0., -1., ), ),)
 
 CARAC__1=AFFE_CARA_ELEM(   MODELE=MODELE_1,
                                COQUE=_F(

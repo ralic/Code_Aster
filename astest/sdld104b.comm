@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # TITRE VALIDATION DE PROJ_MESU_MODAL: CAS DISCRET, BASE (BASE_MODALE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,11 +107,15 @@ BASE=DEFI_BASE_MODALE(   CLASSIQUE=_F( INTERF_DYNA = INTERF,
 # DEFINITION DU MAILLAGE DE MESURE
 # ================================
 #
+PRE_IDEAS( UNITE_IDEAS=33, UNITE_MAILLAGE = 21 )
+
+#
 MAILMESU=LIRE_MAILLAGE(UNITE=21)
+
 
 #
 MODLMESU=AFFE_MODELE(   MAILLAGE=MAILMESU,AFFE=(
-                              _F( MAILLE = ('P1','P2',),
+                              _F( MAILLE = ('M1','M2',),
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'DIS_T'),
                               _F( NOEUD = ('N2','N3',),

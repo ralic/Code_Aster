@@ -1,4 +1,4 @@
-# MODIF  DATE 05/01/2010   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 01/02/2010   AUTEUR MESSIER J.MESSIER 
 # TITRE VALIDATION DE L'OPTION INITIALISATION/ELLIPSE DANS PROPA_FISS
 # zzzz255c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,14 +85,14 @@ TABLST[0] = POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
                                  TOUT_CMP='OUI',
                                  OPERATION='EXTRACTION',),);
 
-# NOEUD N1 = UN DES COINS DU CUBE, 
-# DISTANCE DE LA FISSURE = DISTANCE AU CENTRE - RAYON = sqrt(500^2*2)-250
-d0 = sqrt(500*500*2) - 250.
+# NOEUD N1 = UN DES COINS DE LA PLAQUE, 
+# DISTANCE A LA FISSURE = DEMI-DIAGONALE - RAYON 
+d0 = 500.*sqrt(2.)-250.
 
 TEST_TABLE(TABLE=TABLST[0],
            REFERENCE='NON_REGRESSION',
            NOM_PARA='X1',
-           PRECISION=0.01,
+           PRECISION=0.02,
            TYPE_TEST='MAX',
            CRITERE='RELATIF',
            VALE= d0  )
@@ -163,12 +163,13 @@ TABLST[1] = POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
                                  TOUT_CMP='OUI',
                                  OPERATION='EXTRACTION',),);
 
-d1 = sqrt(500*500*2) - 250. -25.
+#d1 = sqrt(500*500*2) - 250. -25.
+d1 = 500.*sqrt(2.)-250.-25.
 
 TEST_TABLE(TABLE=TABLST[1],
            REFERENCE='NON_REGRESSION',
            NOM_PARA='X1',
-           PRECISION=0.01,
+           PRECISION=0.02,
            TYPE_TEST='MAX',
            CRITERE='RELATIF',
            VALE= d1  )

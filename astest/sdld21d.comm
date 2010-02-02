@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,10 +90,10 @@ F1=RECU_FONCTION(  RESULTAT=DYNAHARM,    NOM_CHAM='DEPL',
                      LIST_FREQ=LIFREQ,     NOEUD='N5',   NOM_CMP='DX'  )
 
 TEST_FONCTION(VALEUR=( _F(  FONCTION = F1,   VALE_PARA = 5.,
-                          REFERENCE = 'AUTRE_ASTER',
+                          REFERENCE = 'AUTRE_ASTER',LEGENDE='VPARA=5',
                           VALE_REFE_C = 1.0237E-04-8.5187E-06j),
                         _F(  FONCTION = F1,   VALE_PARA = 40.,
-                          REFERENCE = 'AUTRE_ASTER',
+                          REFERENCE = 'AUTRE_ASTER',LEGENDE='VPARA=40',
                           VALE_REFE_C = -2.5696E-06-2.7554E-07j))
                )
 

@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/07/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,7 +88,7 @@ C ======================================================================
 C VARIABLES IN / OUT
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER       RETCOM,KPI,NPG
+      INTEGER       RETCOM,KPI,NPG,I
       INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC,YAP1
       INTEGER       YAP2,YATE,ADDEME,ADDEP1,ADDEP2,ADDETE
       INTEGER       ADCOME,ADCP11,ADCP12,ADCP21,ADCP22,ADCOTE
@@ -132,7 +132,7 @@ C ======================================================================
      +                   IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1, ADDEP2,
      +                   ADDETE, NDIM, T0, P10, P20, PHI0, PVP0,
      +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
-     +                   GRAT, GRAP1, GRAP2, NVITH, RETCOM)
+     +                   GRAT, GRAP1, GRAP2, NVITH, RETCOM, INSTAP)
       IF (RETCOM.NE.0) THEN
          GOTO 9000
       ENDIF
@@ -148,7 +148,7 @@ C ======================================================================
      +                    T,DT,PHI,
      +                    PVP,PAD,H11,H12,H21,H22,KH,RHO11,PHI0,PVP0,
      +                    SAT,RETCOM,CRIT,BIOT,
-     +                    VIHRHO,VICPHI,VICPVP,VICSAT)
+     +                    VIHRHO,VICPHI,VICPVP,VICSAT,INSTAP)
 
       IF (RETCOM.NE.0) THEN
          GOTO 9000
@@ -178,7 +178,7 @@ C ======================================================================
      +               DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBP,
      +               DLAMBP, UNSURK, ALPHA, LAMBS, DLAMBS, VISCL,
      +               DVISCL, MAMOLG, LAMBT, DLAMBT, VISCG, DVISCG,
-     +               MAMOVG, FICKAD, DFADT, LAMBCT,ISOT)
+     +               MAMOVG, FICKAD, DFADT, LAMBCT,ISOT,INSTAP)
 C ======================================================================
 C --- CALCUL DES FLUX HYDRAULIQUES UNIQUEMENT SI YAP1 = 1 --------------
 C ======================================================================

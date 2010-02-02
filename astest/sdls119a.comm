@@ -1,4 +1,4 @@
-# MODIF  DATE 09/11/2009   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE) 
 # sdls119a.para = tps_job 300 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,8 @@ MACRO_MATR_ASSE( MODELE = mode ,
 #
 
 chpesa = AFFE_CHAR_MECA(  MODELE = mode ,
-                          PESANTEUR = ( 9.81 , 0.0 , -1.0 , 0. ,  ) , );
+                          PESANTEUR = _F(GRAVITE=9.81 , 
+                                       DIRECTION=(0.0 , -1.0 , 0. ,  ) , ),);
 #
 mono_x = CALC_CHAR_SEISME( MATR_MASS = masse , 
                            DIRECTION=( 1. , 0. , 0. ,) ,

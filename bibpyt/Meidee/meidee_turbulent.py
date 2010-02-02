@@ -1,4 +1,4 @@
-#@ MODIF meidee_turbulent Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_turbulent Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+# RESPONSABLE BODEL C.BODEL
+
 from Numeric import array, zeros, conjugate, identity
 from Numeric import transpose, ones, arctan, pi, log
 
@@ -25,10 +27,11 @@ from Tkinter import Frame, Menubutton, Checkbutton, Menu, StringVar, IntVar
 from Tkinter import Scrollbar, Label, Radiobutton, Button, Entry
 from Tkinter import Checkbutton, Listbox
 
+import tkFont
 
 from Accas import _F
 from Cata.cata import OBSERVATION, DETRUIRE, CO, IMPR_RESU
-from Meidee.meidee_cata import Resultat, InterSpectre, CreaTable
+from Meidee.meidee_cata import Resultat, ModeMeca, InterSpectre, CreaTable
 from Meidee.meidee_cata import nume_ddl_phy, nume_ddl_gene, CreaTable
 from Meidee.meidee_iface import Compteur, MyMenu
 from Meidee.meidee_iface import MultiList
@@ -60,7 +63,7 @@ class InterfaceTurbulent(Frame):
 
     
     def __init__(self, root, aster_objects, mess, out, param_visu):
-        Frame.__init__(self, root, relief='raised', borderwidth=4)
+        Frame.__init__(self, root, borderwidth=4)
 
         # Classe de calculs
         self.calcturb = CalculTurbulent(aster_objects, mess)
@@ -74,7 +77,10 @@ class InterfaceTurbulent(Frame):
         self.opt_data = {}
         self.opt_noms = []
         self._create_opt_data()
-        
+
+        self.font1 = tkFont.Font( family="Helvetica", size=16 )
+        self.font2 = tkFont.Font( family="Helvetica", size=14 )
+
         # Parametres de calcul et de visualisation
         nb_freq = nb_mod = nb_mes = nb_act = 0
         self.Syy = zeros((nb_freq, nb_mes, nb_mes))
@@ -89,28 +95,44 @@ class InterfaceTurbulent(Frame):
         self.mcoeff = StringVar()
 
         self.chgt_rep = ChgtRepereDialogue(mess)
-        self.obs_co = Resultat(self.objects,"__OBS",CO("__OBS"))
+        self.obs_co = None # Concept initialise lors de sa creation
         self.obs_extraction_ddls = []
-        self.com_co = Resultat(self.objects,"__COM",CO("__COM"))
+        self.com_co = None # idem
         self.com_extraction_ddls = []
 
         self.inter_spec = None
 
         self.base = None
 
-        lab = Label(self,text="Identification d'un chargement aléatoire",
-                  pady=5, font=("Helvetica", "16", "bold") )
+        lab = Label(self,text="Identification de chargement",
+                  pady=5, font=self.font1 )
         lab.grid(row=0, columnspan = 8)
 
         colonne_1 = self._construit_colonne_1()
-        colonne_2 = Frame(self)
-        box_vr = self.visu_resu(colonne_2)
-        box_vr.grid(row=1, sticky='w'+'e'+'n'+'s')
+        colonne_2 = self._construit_colonne_2()
         
-        colonne_1.grid(row=1, column=0, rowspan=3)
-        colonne_2.grid(row=1, column=1, rowspan=1, sticky='n'+'s')
+        colonne_1.grid(row=1, column=0, rowspan=1, sticky='ew')
+        colonne_2.grid(row=1, column=1, rowspan=1, sticky='new')
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
+
+    def setup(self):
+        "Utilisé par meidee_iface.TabbedWindow"
+        mdo = self.objects
+        self.menu_resu_fonc.update(mdo.get_inter_spec_name(),
+                                   self.var_resu_fonc,self._get_inter_spec)
+        self.menu_resu_mod.update(mdo.get_mode_meca_name(),
+                                  self.var_resu_mod,self._get_base)
+        self.menu_obs_resu.update(mdo.get_mode_meca_name(),
+                                 self.nom_obs_resu,self._observabilite_changed)
+        self.menu_com_resu.update(mdo.get_mode_meca_name(),
+                                 self.nom_com_resu,self._commandabilite_changed)
+        self.menu_com_modele.update(mdo.get_model_name(),
+                                    self.nom_com_modele,
+                                    self._commandabilite_changed)
+        self.menu_obs_modele.update(mdo.get_model_name(),
+                                    self.nom_obs_modele,
+                                    self._observabilite_changed)
 
     def _create_opt_data(self):
         opt_res_definitions = [
@@ -131,10 +153,10 @@ class InterfaceTurbulent(Frame):
             self.opt_noms.append(nom)
         
     def _construit_colonne_1(self):
-        col = Frame(self, relief="groove", borderwidth=4)
+        col = Frame(self, relief = 'sunken', borderwidth=1)
         # Menu de choix des donnes de calcul en entree
         Label(col, text="Choix des données de calcul",
-              font=("Arial", "16")).grid(row=0, padx=4, pady=2)
+              font=self.font2).grid(row=0, padx=50, pady=2)
         
         box_cd = self._choix_base_modale(col) 
         
@@ -148,7 +170,6 @@ class InterfaceTurbulent(Frame):
         
         for idx, box in enumerate([box_cd, box_obs, box_cmd, box_int, box_cm]):
             box.grid(row=idx + 1, sticky='w'+'e'+'n', padx=4, pady=2) 
-
         Button(col, text="Calculer",
                command=self.calculs).grid(row=6, sticky='s'+'e',
                                           padx=4, pady=2)
@@ -157,44 +178,44 @@ class InterfaceTurbulent(Frame):
 
     def _choix_base_modale(self, root):
         """Choix des données d'entrée"""
-        fra = Frame(root, relief='ridge', borderwidth=4)
+        fra = Frame(root, relief='sunken', borderwidth=1)
 
         # Menu choix de la base modale
         Label(fra, text="Base modale").grid(row=1, column=0, sticky='w')
         
-        options = self.objects.get_resultats_num()
+        options = self.objects.get_mode_meca_name()
         self.var_resu_mod = StringVar()
-        menu_resu_mod = MyMenu(fra, options, self.var_resu_mod,
-                               self._get_base)
-        menu_resu_mod.grid(row=1, column=1)
+        self.menu_resu_mod = MyMenu(fra, options, self.var_resu_mod,
+                                    self._get_base)
+        self.menu_resu_mod.grid(row=1, column=1)
 
         return fra
    
     def _definit_observabilite(self, root):
         """Définition du concept d'observabilité."""
-        fra = Frame(root, relief='ridge', borderwidth=4)
+        fra = Frame(root, relief='sunken', borderwidth=1)
 
         Label(fra,
               text="Définition du concept d'observabilité",
-              font=("Arial","16")).grid(row=0, column=0, columnspan=3)   
+              font=self.font2).grid(row=0, column=0, columnspan=3)   
         
         # Menu choix du modele experimental associé
         # aux donnees en fonctionnement
         Label(fra, text="Modèle expérimental").grid(row=1,column=0, sticky='ew')
         self.nom_obs_modele = StringVar()
-        menu_obs_modele = MyMenu(fra,
-                                 self.objects.get_model_name(),
-                                 self.nom_obs_modele,
-                                 self._observabilite_changed)
-        menu_obs_modele.grid(row=2, column=0, sticky='we')
+        self.menu_obs_modele = MyMenu(fra,
+                                      self.objects.get_model_name(),
+                                      self.nom_obs_modele,
+                                      self._observabilite_changed)
+        self.menu_obs_modele.grid(row=2, column=0, sticky='we')
 
         Label(fra, text="Base de déformées").grid(row=1,column=1, sticky='ew')
         self.nom_obs_resu = StringVar()
-        menu_obs_resu = MyMenu(fra,
-                               self.objects.get_resultats(),
-                               self.nom_obs_resu,
-                               self._observabilite_changed)
-        menu_obs_resu.grid(row=2, column=1, sticky='we')
+        self.menu_obs_resu = MyMenu(fra,
+                                    self.objects.get_mode_meca_name(),
+                                    self.nom_obs_resu,
+                                    self._observabilite_changed)
+        self.menu_obs_resu.grid(row=2, column=1, sticky='we')
         
         no_title = "Groupe de noeuds et DDL des capteurs"
         self.obs_noeuds = SelectionNoeuds(fra, no_title, bg='#90a090',
@@ -219,27 +240,27 @@ class InterfaceTurbulent(Frame):
 
     def _definit_commandabilite(self, root):
         """Définition du concept de commandabilité."""
-        fra = Frame(root, relief='ridge', borderwidth=4)
+        fra = Frame(root, relief='sunken', borderwidth=1)
         
         Label(fra, text="Définition du concept de commandabilité",
-              font=("Arial","16")).grid(row=0, column=0, columnspan=3)
+              font=self.font2).grid(row=0, column=0, columnspan=3)
         
         Label(fra, text="Modèle de controlabilite"
               ).grid(row=1, column=0, sticky='ew')
         self.nom_com_modele = StringVar()
-        menu_com_modele = MyMenu(fra,
-                                 self.objects.get_model_name(),
-                                 self.nom_com_modele,
-                                 self._commandabilite_changed)
-        menu_com_modele.grid(row=2, column=0, sticky='ew')
+        self.menu_com_modele = MyMenu(fra,
+                                      self.objects.get_model_name(),
+                                      self.nom_com_modele,
+                                      self._commandabilite_changed)
+        self.menu_com_modele.grid(row=2, column=0, sticky='ew')
 
         Label(fra, text="Base de déformées").grid(row=1,column=1, sticky='ew')
         self.nom_com_resu = StringVar()
-        menu_com_resu = MyMenu(fra,
-                               self.objects.get_resultats(),
-                               self.nom_com_resu,
-                               self._commandabilite_changed)
-        menu_com_resu.grid(row=2, column=1, sticky='we')
+        self.menu_com_resu = MyMenu(fra,
+                                    self.objects.get_mode_meca_name(),
+                                    self.nom_com_resu,
+                                    self._commandabilite_changed)
+        self.menu_com_resu.grid(row=2, column=1, sticky='we')
         
         no_title = "Groupe de noeuds et DDL des capteurs"
         self.com_noeuds = SelectionNoeuds(fra, no_title, bg='#90a090',
@@ -267,14 +288,14 @@ class InterfaceTurbulent(Frame):
 
         self.var_resu_fonc = StringVar() # le nom de l'interspectre
         self.typ_resu_fonc = StringVar() # le type de 'interspectre
-        fra = Frame(root, relief='ridge', borderwidth=4)
+        fra = Frame(root, relief='sunken', borderwidth=1)
         desc = "Interspectre en fonctionnement"
         Label(fra, text=desc).grid(row=1, column=0, sticky='w')
        
         options = self.objects.get_inter_spec_name()
-        menu_resu_fonc = MyMenu(fra, options, self.var_resu_fonc,
-                                self._get_inter_spec)
-        menu_resu_fonc.grid(row=1, column=1)
+        self.menu_resu_fonc = MyMenu(fra, options, self.var_resu_fonc,
+                                     self._get_inter_spec)
+        self.menu_resu_fonc.grid(row=1, column=1)
         Label(fra, text = "Type champ",).grid(row=1,column=2)
         opt_cham = ['DEPL','VITE','ACCE'] 
         typ_cham = MyMenu(fra,opt_cham,self.typ_resu_fonc)
@@ -285,11 +306,11 @@ class InterfaceTurbulent(Frame):
 
     def _choix_methode(self, root):
         """Choix de la méthode de résolution (techniques de régularisation)"""
-        fra = Frame(root, relief='ridge', borderwidth=4 )
+        fra = Frame(root, relief='sunken', borderwidth=1 )
 
         # Menu de choix de la methode de calcul des efforts
         Label(fra, text="Définition du calcul",
-              font=("Times","16")).grid(row=0, column=0, columnspan=3)
+              font=self.font2).grid(row=0, column=0, columnspan=3)
                
         Label(fra, text="Tikhonov")
         Label(fra, text="Alpha =").grid(row=1,column=1)
@@ -311,10 +332,10 @@ class InterfaceTurbulent(Frame):
         
         return fra
 
-    def visu_resu(self, root):
+    def _construit_colonne_2(self):
         """ Affichage dans une fenetre des voies à afficher, possibilité
         de visualiser les autospectres et les interspectres"""
-        fra = Frame(root, relief='ridge', borderwidth=4)
+        fra = Frame(self, relief='sunken', borderwidth=1)
         self.curve_color = StringVar()
         self.var_abs = StringVar()
         self.var_ord = StringVar()
@@ -322,7 +343,7 @@ class InterfaceTurbulent(Frame):
         self.born_freq = StringVar()
 
         Label(fra, text="Visualisation des résultats",
-              font=("Arial","16")).grid(row=0, column=0,columnspan=3)
+              font=self.font2).grid(row=0, column=0,columnspan=3)
  
         Label(fra, text="Choix des données à visualiser").grid(row=1,
                                                                column=0,
@@ -339,11 +360,9 @@ class InterfaceTurbulent(Frame):
             self.menu_visu_resu[ind_tab].grid(row=2, column=ind_tab,
                                               columnspan=5, sticky='w')
             self.menu_list[ind_tab] = MultiList(fra, ["indice mode/position"])
-            self.menu_list[ind_tab].grid(row=3,
-                                         column=ind_tab, sticky='w'+'e'+'n'+'s')
-            Entry(fra, textvariable=self.var_export[ind_tab]).grid(row=4,
-                                                                 column=ind_tab,
-                                                                 sticky='w'+'e')
+            self.menu_list[ind_tab].grid(row=3,column=ind_tab, sticky='wens')
+            exportvar = Entry(fra, textvariable=self.var_export[ind_tab])
+            exportvar.grid(row=4, column=ind_tab, sticky='we')
             fonc = "export_inte_spec" + str(ind_tab + 1)
             Button(fra, text="Exporter Inter-spectre",
                         command=getattr(self, fonc)).grid(row=5, column=ind_tab)
@@ -396,7 +415,7 @@ class InterfaceTurbulent(Frame):
 
 
     def _get_base(self):
-        """ Va chercher l'instance de la classe Resultat correspondant
+        """ Va chercher l'instance de la classe ModeMeca correspondant
         au nom de base choisi
         """
         nom_base = self.var_resu_mod.get()
@@ -414,13 +433,14 @@ class InterfaceTurbulent(Frame):
     def _calculate_observabilite(self):
         if self.obs_co:
             DETRUIRE(CONCEPT=_F(NOM=self.obs_co.obj), ALARME='NON',INFO=1)
+        self.obs_co = ModeMeca(self.objects,"__OBS",CO("__OBS"))
         
         nom_resu = self.nom_obs_resu.get()
         if nom_resu == 'Choisir':
             self.mess.disp_mess("Il faut choisir une base de deformees " \
                                 "pour définir l'observabilité.")
             return
-        resu = self.objects.get_resu(nom_resu)
+        resu = self.objects.get_mode_meca(nom_resu)
 
         nom_modele = self.nom_obs_modele.get()
         if nom_modele == 'Choisir':
@@ -460,7 +480,7 @@ class InterfaceTurbulent(Frame):
 
         self.mess.disp_mess("Le concept d'observabilité " \
                             "a été calculé.")
-        self.obs_co = Resultat(self.objects,__OBS.nom,__OBS,self.mess)
+        self.obs_co = ModeMeca(self.objects,__OBS.nom,__OBS,self.mess)
         self.obs_co.get_modele()
         self.obs_co.get_matrices()
         self.obs_co.get_nume()
@@ -471,13 +491,14 @@ class InterfaceTurbulent(Frame):
     def _calculate_commandabilite(self):
         if self.com_co:
             DETRUIRE(CONCEPT=_F(NOM=self.com_co.obj), ALARME='NON',INFO=1)
+        self.com_co = ModeMeca(self.objects,"__COM",CO("__COM"))
         
         nom_resu = self.nom_com_resu.get()
         if nom_resu == 'Choisir':
             self.mess.disp_mess("Il faut choisir une base de deformees " \
                                 "pour définir l'observabilité.")
             return
-        resu = self.objects.get_resu(nom_resu)
+        resu = self.objects.get_mode_meca(nom_resu)
 
         nom_modele = self.nom_com_modele.get()        
         if nom_modele == 'Choisir':
@@ -517,7 +538,7 @@ class InterfaceTurbulent(Frame):
 
         self.mess.disp_mess("Le concept de commandabilité " \
                             "a été calculé.")
-        self.com_co = Resultat(self.objects,__COM.nom,__COM,self.mess)
+        self.com_co = ModeMeca(self.objects,__COM.nom,__COM,self.mess)
         self.com_co.get_modele()
         self.com_co.get_matrices()
         self.com_co.get_nume()
@@ -751,9 +772,6 @@ class InterfaceTurbulent(Frame):
                                 "d'exporter ces données !!")
             self.mess.disp_mess("  ")
     
-    def setup(self):
-        "Utilisé par meidee_iface.TabbedWindow"
-        pass
 
     def teardown(self):
         "Utilisé par meidee_iface.TabbedWindow"

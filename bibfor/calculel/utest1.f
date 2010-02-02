@@ -1,14 +1,15 @@
-      SUBROUTINE UTEST1 ( CHAMGD, TYPTES, TYPRES, NBREF, REFI, REFR,
-     +                    REFC, EPSI, CRIT, IFIC, SSIGNE )
+      SUBROUTINE UTEST1 ( CHAMGD, TYPTES, TYPRES, NBREF, TBTXT,
+     &                    REFI, REFR, REFC, EPSI, CRIT, IFIC, SSIGNE )
       IMPLICIT   NONE
       INTEGER              NBREF,REFI(NBREF), IFIC
       REAL*8               REFR(NBREF), EPSI
       CHARACTER*8          TYPTES
+      CHARACTER*16         TBTXT(2)
       CHARACTER*(*)        CHAMGD, TYPRES, CRIT, SSIGNE
       COMPLEX*16           REFC(NBREF)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +30,7 @@ C ----------------------------------------------------------------------
 C IN  : CHAMGD : NOM DU CHAM_GD
 C IN  : TYPTES : TYPE DE TEST A EFFECTUER SUR LE CHAMP
 C IN  : NBREF  : NOMBRE DE VALEURS DE REFERENCE
+C IN  : TBTXT  : (1)=REFERENCE, (2)=LEGENDE
 C IN  : REFI   : VALEUR REELLE ENTIERE ATTENDUE
 C IN  : REFR   : VALEUR REELLE ATTENDUE
 C IN  : REFC   : VALEUR COMPLEXE ATTENDUE
@@ -61,13 +63,10 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*4   TYPE
       CHARACTER*5   SUFV
       CHARACTER*19  CHAM19
-      CHARACTER*17  LABEL1, LABEL2
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      LABEL1 = ' '
-      LABEL2 = ' '
       CHAM19 = CHAMGD
       TYPREZ = TYPRES(1:1)
 
@@ -104,25 +103,21 @@ C
   
       IF ( TYPE .EQ. 'I' ) THEN
          IF ( TYPTES .EQ. 'SOMM_ABS' ) THEN
-            LABEL2 = ' SOMM_ABS '
             VALI = 0
             DO 100 I = 1 , NEQ
                VALI = VALI + ABS( ZI(JVALE+I-1) )
  100        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
-            LABEL2 = ' SOMM '
             VALI = 0
             DO 102 I = 1 , NEQ
                VALI = VALI + ZI(JVALE+I-1)
  102        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MAX' ) THEN
-            LABEL2 = ' MAX '
             VALI = ZI(JVALE-1+1)
             DO 104 I = 2 , NEQ
                VALI = MAX( VALI , ZI(JVALE+I-1) )
  104        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MIN' ) THEN
-            LABEL2 = ' MIN '
             VALI = ZI(JVALE-1+1)
             DO 106 I = 2 , NEQ
                VALI = MIN( VALI , ZI(JVALE+I-1) )
@@ -136,26 +131,22 @@ C
 
       ELSEIF ( TYPE .EQ. 'R' ) THEN
          IF ( TYPTES .EQ. 'SOMM_ABS' ) THEN
-            LABEL2 = ' SOMM_ABS '
             VALR = 0.D0
             DO 200 I = 1 , NEQ
                VALR = VALR + ABS( ZR(JVALE+I-1) )
  200        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
-            LABEL2 = ' SOMM '
             VALR = 0.D0
             DO 202 I = 1 , NEQ
                VALR = VALR + ZR(JVALE+I-1)
  202        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MAX' ) THEN
             VALR = ZR(JVALE)
-            LABEL2 = ' MAX '
             DO 204 I = 2 , NEQ
                VALR = MAX( VALR , ZR(JVALE+I-1) )
  204        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MIN' ) THEN
             VALR = ZR(JVALE)
-            LABEL2 = ' MIN '
             DO 206 I = 2 , NEQ
                VALR = MIN( VALR , ZR(JVALE+I-1) )
  206        CONTINUE
@@ -168,13 +159,11 @@ C
 
       ELSEIF ( TYPE .EQ. 'C' ) THEN
          IF ( TYPTES .EQ. 'SOMM_ABS' ) THEN
-            LABEL2 = ' SOMM_ABS '
             VALR = 0.D0
             DO 300 I = 1 , NEQ
                VALR = VALR + ABS( ZC(JVALE+I-1) )
  300        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
-            LABEL2 = ' SOMM '
             VALC = DCMPLX(0.D0,0.D0)
             DO 302 I = 1 , NEQ
                VALC = VALC + ZC(JVALE+I-1)
@@ -186,7 +175,7 @@ C
          ENDIF
       ENDIF
 C
-      CALL UTITES ( LABEL1, LABEL2, TYPRES, NBREF, REFI, REFR, REFC,
+      CALL UTITES ( TBTXT(1),TBTXT(2), TYPRES, NBREF, REFI, REFR, REFC,
      +                      VALI, VALR, VALC, EPSI, CRIT, IFIC, SSIGNE )
 C
  9999 CONTINUE

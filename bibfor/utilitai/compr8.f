@@ -7,7 +7,7 @@
       CHARACTER*2  COMP
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF UTILITAI  DATE 01/02/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,49 +31,41 @@ C FONCTION COMPARANT 2 REELS (REAL*8) ENTRE EUX
 C     =.TRUE. SI    A.COMP.B A LA PRECISION PREC DONNEE
 C
 C     A = B EN ABSOLU   <=> |A-B| <= EPS
-C     A = B EN RELATIF  <=> |A-B| <= EPS.MAX(|A|,|B|)
+C     A = B EN RELATIF  <=> |A-B| <= EPS.MIN(|A|,|B|)
 
 C     A <= B EN ABSOLU  <=> A <= B + EPS
-C     A <= B EN RELATIF <=> A <= B + EPS.MAX(|A|,|B|)
+C     A <= B EN RELATIF <=> A <= B + EPS.MIN(|A|,|B|)
 C
 C     A < B EN ABSOLU   <=> A <= B - EPS
-C     A < B EN RELATIF  <=> A <= B - EPS.MAX(|A|,|B|)
+C     A < B EN RELATIF  <=> A <= B - EPS.MIN(|A|,|B|)
 C
 C     A >= B EN ABSOLU  <=> A >= B - EPS
-C     A >= B EN RELATIF <=> A >= A - EPS.MAX(|A|,|B|)
+C     A >= B EN RELATIF <=> A >= B - EPS.MIN(|A|,|B|)
 C
 C     A > B EN ABSOLU   <=> A >= B + EPS
-C     A > B EN RELATIF  <=> A >= A + EPS.MAX(|A|,|B|)
+C     A > B EN RELATIF  <=> A >= B + EPS.MIN(|A|,|B|)
 C
 C ----------------------------------------------------------------------
 C
-C IN   A     : REEL A GAUCHE DU SIGNE
-C IN   B     : REEL A DROITE DU SIGNE
+C IN   A      : REEL A GAUCHE DU SIGNE
+C IN   B      : REEL A DROITE DU SIGNE
 C IN   EPS    : PRECISION
 C IN   CRIT   : CRITERE (=0 si ABSOLU ou 1 si RELATIF)
 C IN   COMP   : TYPE DE COMPARAISON ENTRE REELS : =, <, >, >=, <=
 C OUT  COMPR8 : TRUE SI LA RELATION EST VERIFIEE
 
-      REAL*8       R8MAEM,R8PREM,MAXAB,MAX,TOLE
+      REAL*8       R8MAEM,R8PREM,MINAB,MIN,TOLE
 
       COMPR8=.FALSE.
-      MAXAB = MAX(ABS(A),ABS(B))
+      MINAB = MIN(ABS(A),ABS(B))
 
 C     --------------------
 C     TESTS PRELIMINAIRES
 C     --------------------
 
-C     SI LES 2 REELS SONT TROP PETITS, ON NE PEUT PAS FAIRE DE 
-C     COMPARAISON EN RELATIF
-      IF (ABS(A).LT.R8PREM().AND.
-     &    ABS(B).LT.R8PREM()) CALL ASSERT(CRIT.EQ.0)
-
-C     TEST DE LA PRECISION ABSOLUE
-      IF (CRIT.EQ.0) CALL ASSERT(EPS.GE.1.D0/R8MAEM())
+C     TEST DE LA PRECISION (POSITIVE OU NULLE)
+      CALL ASSERT(EPS.GE.0.D0)
    
-C     TEST DE LA PRECISION RELATIVE
-      IF (CRIT.EQ.1) CALL ASSERT(EPS.GE.R8PREM())
-
       CALL ASSERT(CRIT.EQ.0.OR.CRIT.EQ.1)
 
 C     --------------------
@@ -81,7 +73,7 @@ C     COMPARAISONS
 C     --------------------
 
       IF (CRIT.EQ.0) TOLE=EPS      
-      IF (CRIT.EQ.1) TOLE=EPS*MAXAB
+      IF (CRIT.EQ.1) TOLE=EPS*MINAB
 
       IF (COMP.EQ.'EQ') THEN
       

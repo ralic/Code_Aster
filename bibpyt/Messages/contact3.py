@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -234,14 +234,14 @@ Contact méthode continue.
 
 
 96 : _("""
-Contact méthodes discrètes.
-    -> Les surfaces en contact relatif ont bougé de plus de 5%%.
+Contact.
+    -> Les surfaces en contact ont bougé de plus de 1%% depuis la dernière réactualisation.
        Or vous n'avez pas activé la réactualisation géométrique (REAC_GEOM) automatique ou
-       vous utilisez le mode "CONTROLE"
+       vous utilisez le mode 'CONTROLE'
     -> Risque & Conseil : Vos résultats risquent d'etre faux, les mailles ne
        seront peut-etre pas correctement appariées et donc la condition de contact sera peut
        etre fausse.
-       Si vous avez volontairement négligé la non-linéarité géoémtrique de contact (pour des raisons
+       Si vous avez volontairement négligé la non-linéarité géométrique de contact (pour des raisons
        de performance), nous vous invitons à vérifier visuellement qu'il n'y a effectivement
        pas interpénétration.
 """),

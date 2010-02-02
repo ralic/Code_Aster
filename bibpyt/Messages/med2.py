@@ -1,4 +1,4 @@
-#@ MODIF med2 Messages  DATE 16/11/2009   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med2 Messages  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,6 +33,10 @@ cata_msg = {
      Dans le cas où certains des noms de groupes de votre maillage
      sont trop longs, modifiez les pour qu'ils ne dépassent pas
      les 8 caractères.
+"""),
+
+2 : _("""
+     '%(k1)s'
 """),
 
 }

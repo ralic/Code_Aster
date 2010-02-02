@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE (MODE_MECA)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,11 +134,15 @@ MODES=CALC_NO( reuse=MODES,    RESULTAT=MODES,
 # DEFINITION DU MAILLAGE DE MESURE
 # ================================
 #
+PRE_IDEAS( UNITE_IDEAS=33, UNITE_MAILLAGE=21)
+
+#
 MAILMESU=LIRE_MAILLAGE(UNITE=21)
+
 
 #
 MODLMESU=AFFE_MODELE(   MAILLAGE=MAILMESU,AFFE=(
-                              _F( MAILLE = ('P3','P4','P5',),
+                              _F( MAILLE = ('M3','M4','M5',),
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'DIS_T'),
                               _F( NOEUD = ('N3','N4','N5',),

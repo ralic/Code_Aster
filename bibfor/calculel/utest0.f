@@ -1,14 +1,15 @@
-      SUBROUTINE UTEST0 ( NOMTA, PARA, TYPTES, TYPRES, REFI, REFR, REFC,
-     +                                        EPSI, CRIT, IFIC, SSIGNE )
+      SUBROUTINE UTEST0 ( NOMTA, PARA, TYPTES, TYPRES, TBTXT, REFI,
+     +                    REFR, REFC,  EPSI, CRIT, IFIC, SSIGNE )
       IMPLICIT   NONE
       INTEGER              REFI, IFIC
       REAL*8               REFR, EPSI
       CHARACTER*8          TYPTES
+      CHARACTER*16         TBTXT(2)
       CHARACTER*(*)        NOMTA, PARA, TYPRES, CRIT, SSIGNE
       COMPLEX*16           REFC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +30,7 @@ C ----------------------------------------------------------------------
 C IN  : NOMTA  : NOM DE LA STRUCTURE "TABLE".
 C IN  : PARA   : PARAMETRE A CHERCHER
 C IN  : TYPTES : TYPE DE TEST A EFFECTUER SUR LE CHAMP
+C IN  : TBTXT  : (1)=REFERENCE, (2)=LEGENDE
 C IN  : REFI   : VALEUR REELLE ENTIERE ATTENDUE
 C IN  : REFR   : VALEUR REELLE ATTENDUE
 C IN  : REFC   : VALEUR COMPLEXE ATTENDUE
@@ -61,15 +63,12 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*1   TYPREZ
       CHARACTER*4   TYPE
       CHARACTER*19  NOMTAB
-      CHARACTER*17  LABEL1, LABEL2
       CHARACTER*24  INPAR
       CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      LABEL1 = ' '
-      LABEL2 = ' '
       NOMTAB = NOMTA
       INPAR  = PARA
       TYPREZ = TYPRES(1:1)
@@ -77,8 +76,8 @@ C
       CALL TBEXIP ( NOMTA, PARA, EXIST, TYPE )
 C
       IF ( .NOT. EXIST ) THEN
-         WRITE(IFIC,*) 'NOOK  PARAMETRE INEXISTANT DANS LA TABLE'
-         GOTO 9999
+         VALK(1) = PARA
+         CALL U2MESK('F','CALCULEL6_85', 1 ,VALK)
       ENDIF
 C
       IF ( TYPE(1:1) .NE. TYPREZ ) THEN
@@ -103,25 +102,21 @@ C
 C
       IF ( TYPE .EQ. 'I' ) THEN
          IF ( TYPTES .EQ. 'SOMM_ABS' ) THEN
-            LABEL2 = ' SOMM_ABS '
             VALI = 0
             DO 100 I = 1 , NBLIGN
                IF (ZI(JVALL+I-1).EQ.1) VALI = VALI+ABS( ZI(JVALE+I-1) )
  100        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
-            LABEL2 = ' SOMM '
             VALI = 0
             DO 102 I = 1 , NBLIGN
                IF (ZI(JVALL+I-1).EQ.1) VALI = VALI + ZI(JVALE+I-1)
  102        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MAX' ) THEN
-            LABEL2 = ' MAX '
             VALI = -ISMAEM()
             DO 104 I = 1 , NBLIGN
                IF (ZI(JVALL+I-1).EQ.1) VALI = MAX( VALI,ZI(JVALE+I-1) )
  104        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MIN' ) THEN
-            LABEL2 = ' MIN '
             VALI = ISMAEM()
             DO 106 I = 1 , NBLIGN
                IF (ZI(JVALL+I-1).EQ.1) VALI = MIN( VALI,ZI(JVALE+I-1) )
@@ -134,25 +129,21 @@ C
       ELSEIF ( TYPE .EQ. 'R' ) THEN
          IF ( TYPTES .EQ. 'SOMM_ABS' ) THEN
             VALR = 0.D0
-            LABEL2 = ' SOMM_ABS '
             DO 200 I = 1 , NBLIGN
                IF (ZI(JVALL+I-1).EQ.1) VALR = VALR+ABS( ZR(JVALE+I-1) )
  200        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
             VALR = 0.D0
-            LABEL2 = ' SOMM '
             DO 202 I = 1 , NBLIGN
                IF (ZI(JVALL+I-1).EQ.1) VALR = VALR + ZR(JVALE+I-1)
  202        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MAX' ) THEN
             VALR = -R8MAEM()
-            LABEL2 = ' MAX '
             DO 204 I = 1 , NBLIGN
                IF (ZI(JVALL+I-1).EQ.1) VALR = MAX( VALR,ZR(JVALE+I-1) )
  204        CONTINUE
          ELSEIF ( TYPTES .EQ. 'MIN' ) THEN
             VALR = R8MAEM()
-            LABEL2 = ' MIN '
             DO 206 I = 1 , NBLIGN
                IF (ZI(JVALL+I-1).EQ.1) VALR = MIN( VALR,ZR(JVALE+I-1) )
  206        CONTINUE
@@ -164,12 +155,10 @@ C
       ELSEIF ( TYPE .EQ. 'C' ) THEN
          VALC = ( 0.D0 , 0.D0 )
          IF ( TYPTES .EQ. 'SOMM_ABS' ) THEN
-            LABEL2 = ' SOMM_ABS '
             DO 300 I = 1 , NBLIGN
                IF (ZI(JVALL+I-1).EQ.1) VALC = VALC+ABS( ZC(JVALE+I-1) )
  300        CONTINUE
          ELSEIF ( TYPTES .EQ. 'SOMM' ) THEN
-            LABEL2 = ' SOMM '
             DO 302 I = 1 , NBLIGN
                IF (ZI(JVALL+I-1).EQ.1) VALC = VALC + ZC(JVALE+I-1)
  302        CONTINUE
@@ -180,7 +169,7 @@ C
          ENDIF
       ENDIF
 C
-      CALL UTITES ( LABEL1, LABEL2, TYPRES, 1, REFI, REFR, REFC,
+      CALL UTITES ( TBTXT(1), TBTXT(2), TYPRES, 1, REFI, REFR, REFC,
      +                      VALI, VALR, VALC, EPSI, CRIT, IFIC, SSIGNE )
 C
  9999 CONTINUE

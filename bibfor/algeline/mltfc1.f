@@ -1,10 +1,10 @@
       SUBROUTINE MLTFC1(NBLOC,NCBLOC,DECAL,SUPND,FILS,FRERE,
      +                  SEQ,LGSN,LFRONT,ADRESS,LOCAL,ADPILE,NBASS,
      +                  PILE,LGPILE,ADPER,T1,T2,FACTOL,FACTOU,TYPSYM,
-     +                  AD,EPS,IER,NBB,CL,CU)
+     +                  AD,EPS,IER,NBB,CL,CU,DIAG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ C
       INTEGER*4 LOCAL(*)
       INTEGER NBASS(*),ADPILE(*),FILS(*),SUPND(*)
       INTEGER ADRESS(*),FRERE(*),SEQ(*),AD(*),IER
-      REAL*8 PILE(*),EPS,CL(NBB,NBB,*),CU(NBB,NBB,*)
+      REAL*8 PILE(*),EPS,CL(NBB,NBB,*),CU(NBB,NBB,*),DIAG(*)
       CHARACTER*32 JEXNUM
       CHARACTER*24 FACTOL,FACTOU
 C
@@ -58,7 +58,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ITEMP,I,J,ISND,SNI,SN,N,M,P,NL,NC,MEM,ADFACL,IB,NB,LN,L
-      INTEGER LM1,LM2,ADFACU
+      INTEGER LM1,LM2,ADFACU,LONG,IAD,ADFAC0,ADFAC
+
       CALL JEMARQ()
       ITEMP = 1
       MEM = 0
@@ -66,18 +67,25 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       DO 10 I = 1,LGPILE
         PILE(I) = 0.D0
    10 CONTINUE
+
       DO 70 IB = 1,NBLOC
         CALL JEVEUO(JEXNUM(FACTOL,IB),'E',IFACL)
         IF (TYPSYM.EQ.0) THEN
           CALL JEVEUO(JEXNUM(FACTOU,IB),'E',IFACU)
         END IF
+        ADFAC0=IFACL-1
         DO 60 NC = 1,NCBLOC(IB)
           ISND = ISND + 1
           SNI = SEQ(ISND)
+          LONG=ADRESS(SNI+1)-ADRESS(SNI)
+          IAD = SUPND(SNI)
           P = LGSN(SNI)
+
+
           M = LFRONT(SNI)
           N = M + P
           LMATF = (M* (M+1))/2
+
           LM1 = LMATF
           IF (TYPSYM.EQ.0) LMATF = 2*LMATF
 C         CHANGTPOUR L' APPEL A DGEMV
@@ -142,7 +150,14 @@ CRAY   DIR$ IVDEP
             ITEMP = ITEMP + LMATF
            END IF
           MEM = MAX(MEM,ITEMP)
+
+        DO 51,I=1,P
+          ADFAC=ADFAC0+LONG*(I-1)+I
+          DIAG(IAD+I-1) = ZR(ADFAC)
+   51   CONTINUE
+       ADFAC0=ADFAC0+LONG*LGSN(SNI)
    60   CONTINUE
+
        CALL JELIBE(JEXNUM(FACTOL,IB))
         IF (TYPSYM.EQ.0) CALL JELIBE(JEXNUM(FACTOU,IB))
    70 CONTINUE

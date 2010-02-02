@@ -1,4 +1,4 @@
-#@ MODIF meidee_parametres Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_parametres Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+# RESPONSABLE BODEL C.BODEL
 
 ## \package meidee_parametres Module de gestion de la visualisation %Meidee
 # 
@@ -100,7 +101,7 @@ class InterfaceParametres(Frame):
          - `mac_windows`: liste des fenetres d'affichage de MAC modes
         """
         
-        Frame.__init__(self, root, relief='raised', borderwidth=4) # Première frame
+        Frame.__init__(self, root, relief='sunken', borderwidth=1) # Première frame
         
         self.mess = mess
         self.root = root
@@ -124,9 +125,9 @@ class InterfaceParametres(Frame):
         pass
 
     def teardown(self):
-        """!Appelée par le gestionnaire de tab lors du masquage (passage à un autre tab)"""
+        """!Appelée par le gestionnaire de tab lors
+           du masquage (passage à un autre tab)"""
         return
-
 
 
     def interface_meidee(self):
@@ -175,9 +176,9 @@ class InterfaceParametres(Frame):
         main_param.rowconfigure(1,weight=1)
         main_param.columnconfigure(0,weight=1)
         
-        f = Frame(main_param, relief='ridge', borderwidth=4 )
+        f = Frame(main_param, relief='sunken', borderwidth=1 )
         # les parametres vont dans 'f'
-        logiciels_frame = Frame(f,relief='ridge', borderwidth=4)
+        logiciels_frame = Frame(f, borderwidth=4)
         
         label_parametres_salome = Label(logiciels_frame, text="Paramètres Salome")
         label_parametres_salome.grid(row=2, column=1, columnspan=2)
@@ -386,9 +387,9 @@ class InterfaceParametres(Frame):
         pass
     
     # fonction proxy vers le bon logiciel
-    def visu_resu(self, modele, resultat, nume_mode=None):
+    def visu_resu(self,resultat, nume_mode=None):
         logiciel = self.get_logiciel()
-        term = logiciel.visu_resu(modele, resultat, nume_mode)
+        term = logiciel.visu_resu(resultat, nume_mode)
         return term
     
     def visu_courbe(self, l_x, ll_y, couleur=None, l_legende=None, titre_x="Abscisses", titre_y="Ordonnées"):
@@ -450,7 +451,7 @@ class MeideeLogiciel(object):
     
     # @param resultat (multitype): on peut imprimer un ou plusieurs resultats dans le meme fichier:
     # resultat est soit une sd resultat soit une liste ou un tuple de sd resultat
-    def impr_resu(self, modele, resultat, nume_mode = None):
+    def impr_resu(self,resultat, nume_mode = None):
         
         d_resu = self.get_impr_resu_params()
         
@@ -469,39 +470,30 @@ class MeideeLogiciel(object):
         
         IMPR_RESU( UNITE   = self.unite_logique,
                    FORMAT  = self.impr_resu_format,
-                   MODELE  = modele,
                    RESU    = l_resultat
                    )
         pass
     
-    # @param modele (multitype): on peut imprimer un ou plusieurs modele dans le meme fichier:
-    # modele est soit une sd modele soit une liste ou un tuple de sd modele
-    #
     # @param resultat (multitype): on peut imprimer un ou plusieurs resultats dans le meme fichier:
     # resultat est soit une sd resultat soit une liste ou un tuple de sd resultat.
     # 
     # @warning Si une liste de modeles est fournie, il faut une liste de resultats.
     # On peut avoir plusieurs resultats sur la meme modele
-    def visu_resu(self, modele, resultat, nume_mode = None):
+
+    def visu_resu(self,
+                  resultat, nume_mode = None):
         ok = None
         self.defi_fichier()
-        if isinstance(modele, tuple) or isinstance(modele, list):
-            if isinstance(resultat, tuple) or isinstance(resultat, list):
-                if len(modele)==len(resultat):
-                    # On imprime dans le meme fichier les resultats sur chaque modele
-                    for i in range(len(modele)):
-                        self.impr_resu(modele[i], resultat[i], nume_mode)
-                else:
-                    self.mess.disp_mess("Le nombre de resultats est different du nombre de modeles")
-                    return ok
-            else:
-                self.mess.disp_mess("On demande une liste de modeles, mais le resultat n'est pas une liste")
-                return ok
+        if isinstance(resultat, tuple) or isinstance(resultat, list):
+            for i in range(len(resultat)):
+                    self.impr_resu(resultat[i], nume_mode)
         else:
             self.impr_resu(modele, resultat, nume_mode)
         self.libere_fichier()
         term = self.affiche()
+        
         return term
+
     
 # Classe specifique pour la gestion de la visu GSMH
 class MeideeGmsh(MeideeLogiciel):

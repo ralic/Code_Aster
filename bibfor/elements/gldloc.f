@@ -3,7 +3,7 @@
      &                   DA1,DA2,KDMAX,TOLD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/10/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 01/02/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,97 +60,7 @@ C ----------------------------------------------------------------------
       REAL*8  RD1,RD2,DR1D,DR2D,DD1,DD2,DAREF
       INTEGER I,IER
       LOGICAL LCONV1,LCONV2
-
-C      INTEGER DEG
-C      REAL*8  POLY(4),XX2(8),R8PREM
 C ----------------------------------------------------------------------
-      QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
-      QM2 = QM1
-
-C----METHODE EXACTE MAIS TROP CONSOMMATRICE EN CPU
-C      DEG = 4
-C
-C      POLY(1)= (- QM1*ALF**2 + SEUIL*ALF**2 - QFF(1))/SEUIL
-C      POLY(2)= (-2.D0*(QM1*ALF+QFF(1)-SEUIL*(ALF+ALF**2)))/SEUIL
-C      POLY(3)= (-QM1 - QFF(1) + SEUIL*(1.D0+4.D0*ALF+ALF**2))/SEUIL
-C      POLY(4)= 2.D0+2.D0*ALF
-C
-C      DA1 = VIM(1)
-C      CALL ZEROPN(' ', DEG, POLY, XX2, IER)
-C      IF (IER .NE. 0) GOTO 30
-C      DO 20 I=1,DEG
-C        IF (ABS(XX2((I-1)*2+2)).LT.R8PREM()) THEN
-C          DA1 = MAX(DA1,XX2((I-1)*2+1))
-C        ENDIF
-C 20   CONTINUE
-C
-C      POLY(1)= (- QM2*ALF**2 + SEUIL*ALF**2 - QFF(2))/SEUIL
-C      POLY(2)= (-2.D0*(QM2*ALF+QFF(2)-SEUIL*(ALF+ALF**2)))/SEUIL
-C      POLY(3)= (-QM2 - QFF(2) + SEUIL*(1.D0+4.D0*ALF+ALF**2))/SEUIL
-C      POLY(4)= 2.D0+2.D0*ALF
-C
-C      DA2 = VIM(2)
-C      CALL ZEROPN(' ',DEG, POLY, XX2, IER )
-C      IF (IER .NE. 0) GOTO 30
-C      DO 21 I=1,DEG
-C        IF (ABS(XX2((I-1)*2+2)).LT.R8PREM()) THEN
-C          DA2 = MAX(DA2,XX2((I-1)*2+1))
-C        ENDIF
-C 21   CONTINUE
-C
-C      GOTO 40
-C
-C 30   CONTINUE
-C----SOLUTION EXACTE SI QFF = 0
-      IF(QM1.GT.0.0D0) THEN
-        DM1 = SQRT(QM1/SEUIL) - 1.0D0
-      ELSE
-        DM1 = 0.0D0
-      ENDIF
-
-      IF(QM2.GT.0.0D0) THEN
-        DM2 = SQRT(QM2/SEUIL) - 1.0D0
-      ELSE
-        DM2 = 0.0D0
-      ENDIF
-
-      IF(DM1.LT.VIM(1)) DM1 = VIM(1)
-      IF(DM2.LT.VIM(2)) DM2 = VIM(2)
-
-C----SOLUTION EXACTE SI QM = 0
-      IF(QFF(1).GT.0.0D0) THEN
-        DF1 = SQRT(QFF(1)/SEUIL) - ALF
-      ELSE
-        DF1 = 0.0D0
-      ENDIF
-
-      IF(QFF(2).GT.0.0D0) THEN
-        DF2 = SQRT(QFF(2)/SEUIL) - ALF
-      ELSE
-        DF2 = 0.0D0
-      ENDIF
-
-      IF(DF1.LT.VIM(1)) DF1 = VIM(1)
-      IF(DF2.LT.VIM(2)) DF2 = VIM(2)
-
-C----VAL. INITIALES POUR D1,D2,CONSTRUITES A PARTIR DE DM1,DM2,DF1,DF2
-      IF(DF1.GT.DM1) THEN
-        DA1 = DF1
-      ELSE
-        DA1 = DM1
-      ENDIF
-
-      IF(DF2.GT.DM2) THEN
-        DA2 = DF2
-      ELSE
-        DA2 = DM2
-      ENDIF
-
-C 40   CONTINUE
-
-      CALL CEPS33 (LAMBDA,DEUXMU,TR2D,DA1,DA2,GMT,GMC
-     &            ,EPS33,DE33D1,DE33D2,KSI2D,DKSI1,DKSI2)
-
       QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
       QM2 = QM1
 
@@ -165,8 +75,6 @@ C----CONTRIBUTION DES COURBURES---------
       DAREF = MAX(DAREF,1.0D-6)
 
 C-----VERIFIER SI SEUIL EST ATTEINT
-C      LCONV1 = (ABS(RD1*DA1) .LT. TOLD) .OR. (RD1 .LT. 0.0D0)
-C      LCONV2 = (ABS(RD2*DA2) .LT. TOLD) .OR. (RD2 .LT. 0.0D0)
       LCONV1 = (ABS(RD1*DAREF) .LT. TOLD) .OR. (RD1 .LT. 0.0D0)
       LCONV2 = (ABS(RD2*DAREF) .LT. TOLD) .OR. (RD2 .LT. 0.0D0)
 

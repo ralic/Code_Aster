@@ -1,4 +1,4 @@
-# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE FISSURE 2D EN MODE 1 AVEC METHODE ARLEQUIN - MODELE DE REFERENCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,7 +141,7 @@ GK02=CALC_G(THETA=_F(THETA=THETA01,
 TEST_TABLE(TABLE=DEPL_H,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.00229,),
-           NOM_PARA='DY',
+           NOM_PARA='DY',LEGENDE='VALEUR(DY)',
            VALE=-8.66201682739e-07,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',
@@ -186,6 +186,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   PARA='ERREUR_ERRE',
                   VALE=8.8172094614644E-02,
                   PRECISION=1E-10,
+                  LEGENDE='ERRE(NUMORD=1)',
                   REFERENCE='NON_REGRESSION',
                   VERSION='9.0.4',),);
 

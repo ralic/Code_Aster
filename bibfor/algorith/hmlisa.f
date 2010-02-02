@@ -3,11 +3,11 @@
      &                  ADVIHY,ADVICO,VIHRHO,VICPHI,ADDEP1,ADCP11,
      &                  ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,
      &                  EPSV,DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,
-     &                  RETCOM,BIOT)
+     &                  RETCOM,BIOT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +45,7 @@ C ======================================================================
       REAL*8        CONGEM(DIMCON),CONGEP(DIMCON)
       REAL*8        VINTM(NBVARI),VINTP(NBVARI)
       REAL*8        DSDE(DIMCON,DIMDEF),EPSV,DEPSV,P1,DP1,T,DT
-      REAL*8        PHI,RHO11,PHI0
+      REAL*8        PHI,RHO11,PHI0,RINSTP
       CHARACTER*16  OPTION,MECA,THER,THMC,HYDR
       LOGICAL       PERMAN
 C ======================================================================
@@ -90,7 +90,7 @@ C =====================================================================
      &            RBID27, RBID28, RBID29, RBID30, RBID31,RBID32,
      &            RBID33, RBID34, RBID35, RBID36, RBID37, RBID38,
      &            RBID39, RBID45, RBID46, RBID47, RBID48, RBID49,
-     &            EM, RBID50, RBID51)
+     &            EM, RBID50, RBID51, RINSTP)
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================

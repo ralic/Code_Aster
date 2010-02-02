@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 # sdnv104c.para = tps_job 890 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,10 +105,8 @@ PTAN=AFFE_CHAR_MECA(MODELE=MODE,
 CTACC = DEFI_CONTACT(MODELE       = MODE,
                      FORMULATION  = 'CONTINUE',
                      FROTTEMENT   = 'COULOMB',
-                     REAC_GEOM    = 'CONTROLE',
-                     NB_ITER_GEOM = 5,
-                     REAC_FROT    = 'CONTROLE',
-                     NB_ITER_FROT = 10,
+                     ITER_GEOM_MAXI = 5,
+                     ITER_FROT_MAXI = 10,
                      ZONE        =_F(
                               APPARIEMENT  = 'MAIT_ESCL',
                               GROUP_MA_MAIT='LMAI',

@@ -1,9 +1,10 @@
 
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 25/09/2000
 # AUTEUR : F. LEBOUVIER
 # TITRE  : TUYAUTERIE: PROBLEME DE HOVGAARD
+# ssll101e.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -162,7 +163,8 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
 
 
 POI_PROP=AFFE_CHAR_MECA(MODELE=MODELE,
-                        PESANTEUR=(9.8100000000000005,0.0,0.0,-1.0),);
+                        PESANTEUR=_F(GRAVITE=9.8100000000000005,
+                                     DIRECTION=(0.0,0.0,-1.0),),);
 #
 #
 #

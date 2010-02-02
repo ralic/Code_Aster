@@ -1,5 +1,6 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION Q4G  169 N - 147 QUAD4
+# ssls101h.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,7 +69,8 @@ CHF3=AFFE_CHAR_MECA(   MODELE=MODEL,
                     FORCE_COQUE=_F(  TOUT = 'OUI', F3 = -1.)   )
 
 CHPE=AFFE_CHAR_MECA(   MODELE=MODEL,
-                      PESANTEUR=( 10., 0., 0., -1.,                 )   )
+                      PESANTEUR=_F(GRAVITE= 10.,
+                                   DIRECTION=(0., 0., -1., ), ),)
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
                                COQUE=_F(

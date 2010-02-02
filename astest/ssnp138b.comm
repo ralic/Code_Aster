@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM, CHARGEMENTS VOLUMIQUES
 # ssnp138b.para = tps_job 120 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -177,7 +177,8 @@ for i in range(nbcalc) :
   CH2[i]=AFFE_CHAR_MECA(MODELE=MODELK[i],
                        LIAISON_XFEM='OUI',
                        FACE_IMPO=(_F(GROUP_MA=('LIG3'),DX=0.0,DY=0.0,),),
-                       PESANTEUR=(10,0.,-1.,0.)
+                       PESANTEUR=_F(GRAVITE=10,
+                                    DIRECTION=(0.,-1.,0.),),
                        );
 
 #

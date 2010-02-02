@@ -1,21 +1,21 @@
-#@ MODIF utilitai3 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai3 Messages  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -48,7 +48,7 @@ cata_msg = {
 """),
 
 9 : _("""
- maillage autre que seg2                                ou poi1 
+ maillage autre que seg2                                ou poi1
 """),
 
 10 : _("""
@@ -80,7 +80,7 @@ cata_msg = {
 """),
 
 18 : _("""
- nom_cmp_idem est curieux :  %(k1)s 
+ nom_cmp_idem est curieux :  %(k1)s
 """),
 
 19 : _("""
@@ -104,19 +104,19 @@ cata_msg = {
 """),
 
 24 : _("""
- option=  %(k1)s  incompatible avec type_cham=  %(k2)s 
+ option=  %(k1)s  incompatible avec type_cham=  %(k2)s
 """),
 
 25 : _("""
- operation=  %(k1)s  seulement type_cham= 'noeu_geom_r' 
+ operation=  %(k1)s  seulement type_cham= 'noeu_geom_r'
 """),
 
 26 : _("""
- operation=  %(k1)s  incompatible avec type_cham=  %(k2)s 
+ operation=  %(k1)s  incompatible avec type_cham=  %(k2)s
 """),
 
 27 : _("""
- grandeurs differentes pour : %(k1)s et : %(k2)s 
+ grandeurs differentes pour : %(k1)s et : %(k2)s
 """),
 
 28 : _("""
@@ -140,15 +140,15 @@ cata_msg = {
 """),
 
 33 : _("""
- aucun numero d'unite logique n'est associe a  %(k1)s 
+ aucun numero d'unite logique n'est associe a  %(k1)s
 """),
 
 34 : _("""
- aucun numero d'unite logique n'est disponible 
+ aucun numero d'unite logique n'est disponible
 """),
 
 35 : _("""
- action inconnue:  %(k1)s 
+ action inconnue:  %(k1)s
 """),
 
 36 : _("""
@@ -169,7 +169,7 @@ cata_msg = {
 
 40 : _("""
  impossibilité : la maille  %(k1)s  doit etre de type "SEG2" ou "SEG3"
- et elle est de type :  %(k2)s 
+ et elle est de type :  %(k2)s
 """),
 
 42 : _("""
@@ -205,7 +205,7 @@ cata_msg = {
 """),
 
 52 : _("""
- on n'arrive pas a recuperer le champ de temperatures du resultat  %(k1)s 
+ on n'arrive pas a recuperer le champ de temperatures du resultat  %(k1)s
 """),
 
 53 : _("""
@@ -304,15 +304,15 @@ cata_msg = {
 """),
 
 80 : _("""
- impossibilite : le volume du modele traite est nul. 
+ impossibilite : le volume du modele traite est nul.
 """),
 
 81 : _("""
- impossibilite : le volume du group_ma  %(k1)s  est nul. 
+ impossibilite : le volume du group_ma  %(k1)s  est nul.
 """),
 
 82 : _("""
- impossibilite : le volume de la maille  %(k1)s  est nul. 
+ impossibilite : le volume de la maille  %(k1)s  est nul.
 """),
 
 83 : _("""
@@ -348,12 +348,10 @@ cata_msg = {
 """),
 
 91 : _("""
- il manque des cmps sur :  %(k1)s 
+ il manque des cmps sur :  %(k1)s
 """),
 
-92 : _("""
- l'interpolation n'est pas encore faite en complexe.
-"""),
+
 
 93 : _("""
  seuls les types "reel" et "complexe" sont autorises.

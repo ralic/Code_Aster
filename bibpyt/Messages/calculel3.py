@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel3 Messages  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -374,9 +374,9 @@ Conseils :
 
 97 : _("""
   Erreur d'utilisation :
-    Fonctionnalité : PROJ_CHAMP
+    Fonctionnalité : projection de maillage
     On cherche à projeter des mailles sur certains noeuds.
-    Mais la la liste de noeuds est vide.
+    Mais la liste des noeuds que l'on arrive à projeter dans les mailles est vide.
 
   Conseil :
     Cette erreur peut venir d'une mauvaise utilisation du mot clé

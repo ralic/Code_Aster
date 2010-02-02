@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,7 +45,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       PARAMETER (NOMPRO='TRCHNO')
 
       INTEGER      VALI, IOCC, IBID, IRET, NBCMP,JCMP,N1,N2,N3,N4
-      INTEGER      IREFR, IREFI,IREFC,NREF
+      INTEGER      IREFR, IREFI,IREFC,NREF, NL1, LXLGUT, NL2
       REAL*8       VALR, EPSI, PREC, R8B
       COMPLEX*16   VALC, C16B
       CHARACTER*1  TYPRES
@@ -54,26 +54,50 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8  CRIT, NODDL, NOGRNO, NOMMA, NOCMP, TYPTES, K8B
       CHARACTER*11 MOTCLE
       CHARACTER*19 CHAM19
+      CHARACTER*16 TBTXT(2)
       CHARACTER*17 NONOEU, LABEL
       CHARACTER*24 TRAVR,TRAVI,TRAVC
+      CHARACTER*200 LIGN1,LIGN2
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
-      MOTCLE = 'CHAM_NO:'
+      MOTCLE = 'CHAM_NO'
       TRAVR  = '&&'//NOMPRO//'_TRAVR          '
       TRAVI  = '&&'//NOMPRO//'_TRAVI          '
       TRAVC  = '&&'//NOMPRO//'_TRAVC          '
 
       DO 100 IOCC = 1,NOCC
+        LIGN1  = ' '
+        LIGN2  = ' '
         TESTOK = 'NOOK'
         NONOEU = ' '
         NODDL = ' '
         CALL GETVID('CHAM_NO','CHAM_GD',IOCC,1,1,CHAM19,N1)
-        WRITE (IFIC,*) '---- ',MOTCLE,CHAM19(1:8)
-        CALL UTEST3(IFIC,'CHAM_NO',IOCC)
+        LIGN1(1:21)='---- '//MOTCLE(1:8)
+        LIGN1(22:22)='.'
+        LIGN2(1:21)='     '//CHAM19(1:8)
+        LIGN2(22:22)='.'
+
+        CALL UTEST3('CHAM_NO',IOCC,TBTXT)
 
         CALL GETVTX ( 'CHAM_NO', 'NOM_CMP',   IOCC,1,1, NODDL, N1 )
+        IF( N1 .NE. 0) THEN
+           NL1 = LXLGUT(LIGN1)
+           NL2 = LXLGUT(LIGN2)
+           LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' NOM_CMP'
+           LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NODDL
+           LIGN1(NL1+17:NL1+17)='.'
+           LIGN2(NL2+17:NL2+17)='.'
+        ENDIF
         CALL GETVTX ( 'CHAM_NO', 'VALE_ABS',  IOCC,1,1, SSIGNE,N1 )
+        IF(SSIGNE.EQ.'OUI')THEN
+            NL1 = LXLGUT(LIGN1)
+            NL2 = LXLGUT(LIGN2)
+            LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' VALE_ABS'
+            LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//SSIGNE
+            LIGN1(NL1+17:NL1+17)='.'
+            LIGN2(NL2+17:NL2+17)='.'
+        ENDIF
         CALL GETVR8 ( 'CHAM_NO', 'PRECISION', IOCC,1,1, EPSI,  N1 )
         CALL GETVTX ( 'CHAM_NO', 'CRITERE',   IOCC,1,1, CRIT,  N1 )
 
@@ -102,17 +126,30 @@ C     ------------------------------------------------------------------
 
 
         CALL GETVTX('CHAM_NO','TYPE_TEST',IOCC,1,1,TYPTES,N1)
+
         IF (N1.NE.0) THEN
+
+          NL1 = LXLGUT(LIGN1)
+          NL2 = LXLGUT(LIGN2)
+          LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TYPE_TEST'
+          LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//TYPTES
+
+          NL1 = LXLGUT(LIGN1)
+          NL2 = LXLGUT(LIGN2)
+          WRITE (IFIC,*) LIGN1(1:NL1)
+          WRITE (IFIC,*) LIGN2(1:NL2)
+
           CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,1,0,NODDL,N4)
           IF (N4.EQ.0) THEN
-            CALL UTEST1(CHAM19,TYPTES,TYPRES,NREF,ZI(IREFI),ZR(IREFR),
-     &                  ZC(IREFC),EPSI,CRIT,IFIC,SSIGNE)
+            CALL UTEST1(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
+     &                  ZR(IREFR),ZC(IREFC),EPSI,CRIT,IFIC,SSIGNE)
           ELSE
             NBCMP = -N4
             CALL WKVECT('&&TRCHNO.NOM_CMP','V V K8',NBCMP,JCMP)
             CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),N4)
-            CALL UTEST4(CHAM19,TYPTES,TYPRES,NREF,ZI(IREFI),ZR(IREFR),
-     &                  ZC(IREFC),EPSI,CRIT,IFIC,NBCMP,ZK8(JCMP),SSIGNE)
+            CALL UTEST4(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
+     &                  ZR(IREFR),ZC(IREFC),EPSI,CRIT,IFIC,NBCMP,
+     &                  ZK8(JCMP),SSIGNE)
             CALL JEDETR('&&TRCHNO.NOM_CMP')
           END IF
 
@@ -122,8 +159,28 @@ C     ------------------------------------------------------------------
           CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMMA,IRET)
           CALL GETVEM(NOMMA,'NOEUD','CHAM_NO','NOEUD',IOCC,1,1,
      &                NONOEU(1:8),N1)
+          IF (N1.NE.0) THEN
+            NL1 = LXLGUT(LIGN1)
+            NL2 = LXLGUT(LIGN2)
+            LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' NOEUD'
+            LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NONOEU(1:8)
+          ENDIF
+
           CALL GETVEM(NOMMA,'GROUP_NO','CHAM_NO','GROUP_NO',IOCC,1,1,
      &                NOGRNO,N2)
+          IF (N2.NE.0) THEN
+            NL1 = LXLGUT(LIGN1)
+            NL2 = LXLGUT(LIGN2)
+            LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' GROUP_NO'
+            LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NOGRNO
+          ENDIF
+
+          NL1 = LXLGUT(LIGN1)
+          NL2 = LXLGUT(LIGN2)
+          WRITE (IFIC,*) LIGN1(1:NL1)
+          WRITE (IFIC,*) LIGN2(1:NL2)
+
+
           IF (N1.EQ.1) THEN
 C            RIEN A FAIRE.
           ELSE
@@ -134,9 +191,10 @@ C            RIEN A FAIRE.
             END IF
             NONOEU(10:17) = NOGRNO
           END IF
-          CALL UTESTR(CHAM19,NONOEU,NODDL,NREF,ZI(IREFI),ZR(IREFR),
-     &                ZC(IREFC),TYPRES,EPSI,CRIT,IFIC,SSIGNE)
+          CALL UTESTR(CHAM19,NONOEU,NODDL,NREF,TBTXT,ZI(IREFI),
+     &                ZR(IREFR),ZC(IREFC),TYPRES,EPSI,CRIT,IFIC,SSIGNE)
         END IF
+        WRITE (IFIC,*)' '
  100  CONTINUE
 
       CALL JEDETR(TRAVR)

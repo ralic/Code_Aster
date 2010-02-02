@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 27/10/2009   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med Messages  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -327,8 +327,11 @@ cata_msg = {
 
 57 : _("""
   -> Le champ  %(k1)s n'existe pas dans le fichier med.
-  -> Risque & Conseil :
+  -> Conseils :
+     Vérifier la présence du champ demandé dans le fichier.
      Vérifier l'intégrité du fichier MED avec medconforme/mdump.
+
+  Remarque : Les champs disponibles dans ce fichier sont listés ci-dessous :
 """),
 
 58 : _("""
@@ -514,12 +517,6 @@ cata_msg = {
 
 93 : _("""
      Fin de l'écriture MED de  %(k1)s 
-"""),
-
-94 : _("""
-  -> Le nom du champ med est introuvable.
-  -> Risque & Conseil:
-     Veuillez vérifier la mise en données du mot-clé NOM_CHAM_MED.
 """),
 
 95 : _("""

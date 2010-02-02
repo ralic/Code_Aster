@@ -1,4 +1,4 @@
-#@ MODIF meidee_test Meidee  DATE 03/11/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_test Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,27 +18,30 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+# RESPONSABLE BODEL C.BODEL
+
 # Fichier comprenant une procédure de test de Meidee avec les différentes
 # options de calcul.
 
 import aster
 from Accas import _F, ASSD
 
-from meidee_calcul_fludela import MeideeFludela, MeideeTurbMonomod
+## SUPRESSION (PROVISOIRE ?) DES ONGLETS IFS
+#from meidee_calcul_fludela import MeideeFludela, MeideeTurbMonomod
 from meidee_calcul_correlation import MeideeCorrelation
 from meidee_calcul_turbulent import CalculTurbulent, CalculInverse
 from Numeric import take
 
 def TestMeidee(macro,
                mess,
-               out_fludela,
-               out_meideeturb,
+               #out_fludela,
+               #out_meideeturb,
                out_identification,
                out_modifstru,
                objects,
                EXPANSION,
-               MEIDEE_FLUDELA,
-               MEIDEE_TURBULENT,
+               #MEIDEE_FLUDELA,
+               #MEIDEE_TURBULENT,
                IDENTIFICATION,
                MODIFSTRUCT,
                GROUP_NO_CAPTEURS,
@@ -70,20 +73,27 @@ def TestMeidee(macro,
        
         # Set default indices for the modes
         if EXPANSION['NUME_MODE_CALCUL'] != 0:
-            nume_mode_calcul = [ind-1 for ind in
-                                list(EXPANSION['NUME_MODE_CALCUL'])]
+            nume_mode_calcul = list(EXPANSION['NUME_MODE_CALCUL'])
         else:
             nume_mode_calcul = None
         if EXPANSION['NUME_MODE_MESURE'] != 0:
-            nume_mode_mesure = [ind-1 for ind in
-                                list(EXPANSION['NUME_MODE_MESURE'])]
+            nume_mode_mesure = list(EXPANSION['NUME_MODE_MESURE'])
         else:
             nume_mode_mesure = None
 
-        meidee.setup(resu_num, nume_mode_calcul, resu_exp, nume_mode_mesure)
+        parametres = {}
+        if EXPANSION['RESOLUTION'] == 'LU':
+            parametres['METHODE'] = 'LU'
+        elif EXPANSION['RESOLUTION'] == 'SVD':
+            parametres['METHODE'] = 'SVD'
+            parametres['EPS'] = EXPANSION['EPS']
+                
+        meidee.setup(resu_num, nume_mode_calcul, resu_exp,
+                     nume_mode_mesure,parametres)
         # Lancement de la macro MACRO_MEIDEE_PROJ
         # Les concepts resultats sont srockes sous le nom RESU_+type de resu
-        meidee.calc_proj_resu("RESU")
+        suffix = ['_NX','_EX','_ET','_RD']
+        meidee.calc_proj_resu(suffix,"RESU")
 
         resu_et = objects.resultats["RESU_ET"]
         resu_nx = objects.resultats["RESU_NX"]
@@ -95,107 +105,6 @@ def TestMeidee(macro,
         #meidee.prep_fichier(resu_et, resu_rd)
 
 
-    #############################################
-    # 2) Test des fonctions de l'onglet fludela #
-    #############################################
-    if MEIDEE_FLUDELA:
-        fludela = MeideeFludela(mess, out_fludela)
-
-        # Transformation des objets Aster en classes Python
-        resu_exp1 = objects.resultats[MEIDEE_FLUDELA['MESURE1'].nom]
-        resu_exp2 = objects.resultats[MEIDEE_FLUDELA['MESURE2'].nom]
-        resu_exp3 = objects.resultats[MEIDEE_FLUDELA['MESURE3'].nom] 
-
-        fludela.set_results(resu_exp1, resu_exp2, resu_exp3)
-        fludela.set_param_phy(rho_int=0, rho_ext=1000, diam_int=0.018, diam_ext=0.02)
-        fludela.methode_globale = 'Granger'
-        fludela.res_longeq = objects.resultats[MEIDEE_FLUDELA['BASE'].nom]
-        fludela.pairs =  [([0], [0], [0]), ([1], [1], [1]), ([2], [2], [2])]
-        list_vit = ['10']
-        for vit in list_vit:
-            fludela.set_speed(vit) # on fait le test pour une seule vitesse pour l'instant
-            fludela.compute()
-
-        # Ecriture des fichiers dans une table de resultats
-        name = fludela.calc['U']
-        #fabrique une copie du tableau de resultats correspondant a 1 vitesse (fludela.calc)
-        data_tmp = fludela.save_data()
-        data = {}
-        keys1 = ["Ma rep dim  mod","Ma rep adim lin","Ka vit dim  mod","Ka vit adim lin"]
-        keys2 = ['mass_ajou_dim_mod','mass_ajou_adim_lin','raid_ajou_dim_mod','raid_ajou_adim_lin']
-        for col in range(4):
-            key = keys1[col]
-            obj = keys2[col]
-            data[key] = data_tmp[obj]
-        fludela.saved_data[name] = data
-        fludela.save_to_file(name, data)
-        fludela.save_to_table(fludela.saved_data,"Résultats Meidee fluide-elastique")
-
-
-    #############################################
-    # 3) Test des fonctions de l'onglet fludela #
-    #############################################
-    if MEIDEE_TURBULENT:
-        # utiliser les out_meideeturb
-        turbmonomod = MeideeTurbMonomod(objects,mess,out_meideeturb)
-        
-        inter_spec_name = MEIDEE_TURBULENT['INTE_SPEC'].nom
-        resu_num_name = MEIDEE_TURBULENT['BASE'].nom
-        resu_exp_name = MEIDEE_TURBULENT['MESURE'].nom
-        
-                
-        # Set default indices for the modes
-        if MEIDEE_TURBULENT['NUME_MODE_DECONV'] != 0:
-            nume_mode_deconv = [ind for ind in
-                                list(MEIDEE_TURBULENT['NUME_MODE_DECONV'])]
-        else:
-            nume_mode_calcul = None
-        if MEIDEE_TURBULENT['NUME_MODE_LOCAL'] != 0:
-            nume_mode_EML = [ind for ind in
-                                list(MEIDEE_TURBULENT['NUME_MODE_LOCAL'])]
-        else:
-            nume_mode_EML = None
-                
-        turbmonomod.set_res_longcorr(objects.get_resu(resu_num_name))
-        turbmonomod.set_resultat_exp(objects.get_resu(resu_exp_name))
-        turbmonomod.set_nume_deconv(nume_mode_deconv)
-        turbmonomod.set_nume_EML(nume_mode_EML)
-
-        param_corr = {}
-        param_corr['ld']=3.0
-        param_corr['lambdac']=3.5
-        param_corr['gammac']=70
-
-                
-        turbmonomod.set_param_gamma(param_corr)
-        
-        turbmonomod.set_param_phy(rho_int=0, rho_ext=1000, diam_int=0.018, diam_ext=0.02)
-        turbmonomod.set_interspectre(objects.get_inter_spec(inter_spec_name))
-        turbmonomod.set_type_intsp('DEPL')
-        
-        list_vit = ['10']
-        param0={}
-        param0['A']=5e+15
-        param0['Amin']=1e+11
-        param0['Amax']=1e+18
-        param0['PULSC']=100.
-        param0['PULSCmin']=50.
-        param0['PULSCmax']=150.
-        param0['BETA']=10.
-        param0['BETAmin']=5.
-        param0['BETAmax']=15.
-        param0['MU']=0.025
-        param0['MUmin']=0.01
-        param0['MUmax']=0.05
-        param0['poids1']=1.
-        param0['poids2']=0.1
-
-        for vit in list_vit:
-            turbmonomod.set_speed(vit) # on fait le test pour une seule vitesse pour l'instant
-            turbmonomod.compute()
-            turbmonomod.set_param_init_recal(param0)
-            turbmonomod.compute_interpolation()
-        
 
 
 
@@ -211,15 +120,15 @@ def TestMeidee(macro,
         res_base = IDENTIFICATION['BASE'].nom
 
         calcturb.set_interspectre(objects.get_inter_spec(inter_spec_name))
-        calcturb.set_observabilite(objects.get_resu(obs_name))
-        calcturb.set_commandabilite(objects.get_resu(com_name))
+        calcturb.set_observabilite(objects.get_mode_meca(obs_name))
+        calcturb.set_commandabilite(objects.get_mode_meca(com_name))
         
-        ddl_actifs_obs = get_ddl_extract(calcturb.res_obs.nom)
         ddl_actifs_com = get_ddl_extract(calcturb.res_com.nom)
+        ddl_actifs_obs = get_ddl_extract(calcturb.res_obs.nom)
         calcturb.set_extraction_ddl_obs(ddl_actifs_obs)
         calcturb.set_extraction_ddl_com(ddl_actifs_com)
         
-        calcturb.set_base(objects.get_resu(res_base))
+        calcturb.set_base(objects.get_mode_meca(res_base))
         
         calcturb.set_alpha(IDENTIFICATION['ALPHA'])
         calcturb.set_epsilon(IDENTIFICATION['EPS'])
@@ -320,7 +229,11 @@ def get_ddl_extract(nom_resu):
     jdc = CONTEXT.get_current_step().jdc
 
     for etape in jdc.etapes:
-        if etape.sdnom == nom_resu:
+        try:
+            nom_etape = etape.sdnom
+        except AttributeError:
+            pass
+        if nom_etape == nom_resu:
             grp_no_ma = etape.valeur['FILTRE']
             if type(grp_no_ma) != list and type(grp_no_ma) != tuple:
                 grp_no_ma =  [grp_no_ma]
@@ -332,20 +245,109 @@ def get_ddl_extract(nom_resu):
                         dico[ind1] = [ind2]
                         
             return grp_no_ma
+
+
+
+
+## SUPRESSION (PROVISOIRE ?) DES ONGLETS IFS
+##    #############################################
+##    # 2) Test des fonctions de l'onglet fludela #
+##    #############################################
+##    if MEIDEE_FLUDELA:
+##        fludela = MeideeFludela(mess, out_fludela)
+##
+##        # Transformation des objets Aster en classes Python
+##        resu_exp1 = objects.resultats[MEIDEE_FLUDELA['MESURE1'].nom]
+##        resu_exp2 = objects.resultats[MEIDEE_FLUDELA['MESURE2'].nom]
+##        resu_exp3 = objects.resultats[MEIDEE_FLUDELA['MESURE3'].nom] 
+##
+##        fludela.set_results(resu_exp1, resu_exp2, resu_exp3)
+##        fludela.set_param_phy(rho_int=0, rho_ext=1000, diam_int=0.018, diam_ext=0.02)
+##        fludela.methode_globale = 'Granger'
+##        fludela.res_longeq = objects.resultats[MEIDEE_FLUDELA['BASE'].nom]
+##        fludela.pairs =  [([0], [0], [0]), ([1], [1], [1]), ([2], [2], [2])]
+##        list_vit = ['10']
+##        for vit in list_vit:
+##            fludela.set_speed(vit) # on fait le test pour une seule vitesse pour l'instant
+##            fludela.compute()
+##
+##        # Ecriture des fichiers dans une table de resultats
+##        name = fludela.calc['U']
+##        #fabrique une copie du tableau de resultats correspondant a 1 vitesse (fludela.calc)
+##        data_tmp = fludela.save_data()
+##        data = {}
+##        keys1 = ["Ma rep dim  mod","Ma rep adim lin","Ka vit dim  mod","Ka vit adim lin"]
+##        keys2 = ['mass_ajou_dim_mod','mass_ajou_adim_lin','raid_ajou_dim_mod','raid_ajou_adim_lin']
+##        for col in range(4):
+##            key = keys1[col]
+##            obj = keys2[col]
+##            data[key] = data_tmp[obj]
+##        fludela.saved_data[name] = data
+##        fludela.save_to_file(name, data)
+##        fludela.save_to_table(fludela.saved_data,"Résultats Meidee fluide-elastique")
+##
+##
+##    #############################################
+##    # 3) Test des fonctions de l'onglet fludela #
+##    #############################################
+##    if MEIDEE_TURBULENT:
+##        # utiliser les out_meideeturb
+##        turbmonomod = MeideeTurbMonomod(objects,mess,out_meideeturb)
+##        
+##        inter_spec_name = MEIDEE_TURBULENT['INTE_SPEC'].nom
+##        resu_num_name = MEIDEE_TURBULENT['BASE'].nom
+##        resu_exp_name = MEIDEE_TURBULENT['MESURE'].nom
+##        
+##                
+##        # Set default indices for the modes
+##        if MEIDEE_TURBULENT['NUME_MODE_DECONV'] != 0:
+##            nume_mode_deconv = [ind for ind in
+##                                list(MEIDEE_TURBULENT['NUME_MODE_DECONV'])]
+##        else:
+##            nume_mode_calcul = None
+##        if MEIDEE_TURBULENT['NUME_MODE_LOCAL'] != 0:
+##            nume_mode_EML = [ind for ind in
+##                                list(MEIDEE_TURBULENT['NUME_MODE_LOCAL'])]
+##        else:
+##            nume_mode_EML = None
+##                
+##        turbmonomod.set_res_longcorr(objects.get_resultats(resu_num_name))
+##        turbmonomod.set_resultat_exp(objects.get_resultats(resu_exp_name))
+##        turbmonomod.set_nume_deconv(nume_mode_deconv)
+##        turbmonomod.set_nume_EML(nume_mode_EML)
+##
+##        param_corr = {}
+##        param_corr['ld']=3.0
+##        param_corr['lambdac']=3.5
+##        param_corr['gammac']=70
+##
+##                
+##        turbmonomod.set_param_gamma(param_corr)
+##        
+##        turbmonomod.set_param_phy(rho_int=1.3, rho_ext=1000, diam_int=0.009538, diam_ext=0.015878)
+##        turbmonomod.set_interspectre(objects.get_inter_spec(inter_spec_name))
+##        turbmonomod.set_type_intsp('DEPL')
+##        
+##        list_vit = ['10']
+##        param0={}
+##        param0['A']=5e+15
+##        param0['Amin']=1e+11
+##        param0['Amax']=1e+18
+##        param0['PULSC']=100.
+##        param0['PULSCmin']=50.
+##        param0['PULSCmax']=150.
+##        param0['BETA']=10.
+##        param0['BETAmin']=5.
+##        param0['BETAmax']=15.
+##        param0['MU']=0.025
+##        param0['MUmin']=0.01
+##        param0['MUmax']=0.05
+##        param0['poids1']=1.
+##        param0['poids2']=0.1
+##
+##        for vit in list_vit:
+##            turbmonomod.set_speed(vit) # on fait le test pour une seule vitesse pour l'instant
+##            turbmonomod.compute()
+##            turbmonomod.set_param_init_recal(param0)
+##            turbmonomod.compute_interpolation()
             
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    

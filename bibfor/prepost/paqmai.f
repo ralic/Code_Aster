@@ -1,7 +1,7 @@
       SUBROUTINE PAQMAI(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,
      &                  TYPCHA, PROAXE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF PREPOST  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C-----------------------------------------------------------------------
       INTEGER       NMAINI, NBMAP, TSPAQ, IORDR, LOR8EM, LOISEM, JAD
       INTEGER       JSIGV, JSIGD, JSIGL, K, IMAP, NBPG, IPG, ICMP, IRET1
       INTEGER       JEPSV, JEPSD, JEPSL
-      INTEGER       I, KWORK, SOMPGW, KCMP, SOMPGS, SOMPGI, JMAIL, JGRMA
+      INTEGER       I, KWORK, SOMPGW, SOMPGS, SOMPGI, JMAIL, JGRMA
       INTEGER       N, NINIT, NBPGGM, NBMAGM, NMEMO,NNCP
       INTEGER VALI(2)
 C
@@ -356,10 +356,8 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                CALL JEVEUO(CES2(1:19)//'.CESV', 'L', JSIGV)
 
                IF ( NUMPAQ .EQ. 1 ) THEN
-                  KCMP = 0
                   SOMPGS = 0
                ELSEIF ( NUMPAQ .GT. 1 ) THEN
-                  KCMP = 1
                   SOMPGS = SOMPGI
                ENDIF
                SOMPGW = 0
@@ -367,7 +365,6 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
 
                DO 240 IMAP=NMAINI, NMAINI+(NBMAP-1)
                   IF ( (IMAP .GT. NMAINI) .AND. (NUMPAQ .EQ. 1) ) THEN
-                     KCMP = 1
                      SOMPGS = SOMPGS + ZI(JNBPG + IMAP-2)
                      KWORK = 1
                      SOMPGW = SOMPGW + ZI(JNBPG + IMAP-2)
@@ -379,7 +376,6 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                   ENDIF
 
                   IF ( NUMPAQ .GT. 1 ) THEN
-                     KCMP = 1
                      SOMPGS = SOMPGS + ZI(JNBPG + IMAP-2)
                   ENDIF
                   NBPG = ZI(JNBPG + IMAP-1)
@@ -401,8 +397,7 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                            ELSE
                              ZR( JRWORK + (ICMP-1) + (IPG-1)*6 +
      &                             KWORK*SOMPGW*6 + (IORDR-1)*TSPAQ ) =
-     &                       ZR( JSIGV + (ICMP-1) + (IPG-1)*6 +
-     &                             KCMP*SOMPGS*6 )
+     &                       ZR( JSIGV -1 +JAD )
                            ENDIF
  280                    CONTINUE
  260                 CONTINUE
@@ -465,10 +460,8 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                CALL JEVEUO(CES4(1:19)//'.CESV', 'L', JEPSV)
 
                IF ( NUMPAQ .EQ. 1 ) THEN
-                  KCMP = 0
                   SOMPGS = 0
                ELSEIF ( NUMPAQ .GT. 1 ) THEN
-                  KCMP = 1
                   SOMPGS = SOMPGI
                ENDIF
                SOMPGW = 0
@@ -476,7 +469,6 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
 
                DO 320 IMAP=NMAINI, NMAINI+(NBMAP-1)
                   IF ( (IMAP .GT. NMAINI) .AND. (NUMPAQ .EQ. 1) ) THEN
-                     KCMP = 1
                      SOMPGS = SOMPGS + ZI(JNBPG + IMAP-2)
                      KWORK = 1
                      SOMPGW = SOMPGW + ZI(JNBPG + IMAP-2)
@@ -488,7 +480,6 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                   ENDIF
 
                   IF ( NUMPAQ .GT. 1 ) THEN
-                     KCMP = 1
                      SOMPGS = SOMPGS + ZI(JNBPG + IMAP-2)
                   ENDIF
                   NBPG = ZI(JNBPG + IMAP-1)
@@ -512,8 +503,7 @@ C BOUCLE SUR LES CONTRAINTES (6 COMPOSANTES)
                            ELSE
                              ZR( JRWORK + (ICMP-1) + (IPG-1)*12 +
      &                           KWORK*SOMPGW*12 + (IORDR-1)*TSPAQ ) =
-     &                       ZR( JSIGV + (ICMP-1) + (IPG-1)*6 +
-     &                           KCMP*SOMPGS*6 )
+     &                       ZR( JSIGV -1 +JAD)
                            ENDIF
  360                    CONTINUE
 
@@ -530,8 +520,7 @@ C BOUCLE SUR LES DEFORMATIONS (6 COMPOSANTES)
                            ELSE
                              ZR( JRWORK + (ICMP+6-1) + (IPG-1)*12 +
      &                           KWORK*SOMPGW*12 + (IORDR-1)*TSPAQ ) =
-     &                       ZR( JEPSV + (ICMP-1) + (IPG-1)*6 +
-     &                           KCMP*SOMPGS*6 )
+     &                       ZR( JEPSV -1+JAD)
                            ENDIF
  380                    CONTINUE
 

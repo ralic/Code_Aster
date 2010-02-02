@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 02/02/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CYLINDRE EN 3D (PENTA6 HEXA8)
 # sslv04a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -764,4 +764,310 @@ TEST_RESU(RESU=(
          GROUP_NO = 'A', MAILLE='M901',    NOM_CMP = 'SIYZ',VALE = 2.79098E-3))
            )
 #
+# Test de l'option PROJ_ELEM_SIGM en non-lineaire
+#
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=1.,
+                                     NOMBRE=1,),),);
+
+
+RESUNL=STAT_NON_LINE(MODELE=MO,
+                     CHAM_MATER=CM,
+                     EXCIT=_F(CHARGE=CH,),
+                     COMP_ELAS=_F(RELATION='ELAS',),
+                     INCREMENT=_F(LIST_INST=L_INST),);
+
+#----------------------------------------------------------------
+# VALIDATION DE L'OPTION PROJ_ELNO_SIGM
+# 
+
+CALC_ELEM(reuse= RESUNL , RESULTAT= RESUNL,
+                        OPTION=('SIEF_ELNO_ELGA'));
+                        
+CALC_ELEM(reuse= RESUNL ,
+          RESULTAT= RESUNL ,
+          GROUP_MA='PRES',OPTION='PROJ_ELEM_SIGM')
+
+# TEST DU CHAMP 'PROJ_ELEM_SIG_N'
+# MAILLE M1380 PRES DU POINT A
+
+TEST_RESU(RESU=(
+           _F(CRITERE   = 'RELATIF',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 2.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = 60.,
+              NOM_CMP = 'SIG_NX'),
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = 0.,
+              NOM_CMP = 'SIG_NY'),
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = 0.,
+              NOM_CMP = 'SIG_NZ'),
+           ),)
+
+# TEST DU CHAMP 'PROJ_ELEM_SIG_T'
+
+TEST_RESU(RESU=(
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 2.,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = 0.,
+              NOM_CMP = 'SIG_TX'),
+           _F(CRITERE   = 'RELATIF',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = -100.,
+              NOM_CMP = 'SIG_TY'),
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = 0.,
+              NOM_CMP = 'SIG_TZ'),
+           ),)
+
+# TEST DU CHAMP 'PROJ_ELEM_SIG_T1'
+
+TEST_RESU(RESU=(
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = 0.,
+              NOM_CMP = 'SIG_T1X'),
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = 0.,
+              NOM_CMP = 'SIG_T1Y'),
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = 0.,
+              NOM_CMP = 'SIG_T1Z'),
+           ),)
+
+# TEST DU CHAMP 'PROJ_ELEM_SIG_T2'
+
+TEST_RESU(RESU=(
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 2.,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = 0.,
+              NOM_CMP = 'SIG_T2X'),
+           _F(CRITERE   = 'RELATIF',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = -100.,
+              NOM_CMP = 'SIG_T2Y'),
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1380',
+              VALE = 0.,
+              NOM_CMP = 'SIG_T2Z'),
+           ),)
+
+# VALIDATION DE L'OPTION PROJ_ELNO_SIGN
+# MAILLE M1351 PRES DU POINT E
+
+TEST_RESU(RESU=(
+           _F(CRITERE   = 'RELATIF',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.5E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = 42.426,
+              NOM_CMP = 'SIG_NX'),
+           _F(CRITERE   = 'RELATIF',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 2.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = 42.426,
+              NOM_CMP = 'SIG_NY'),
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = 0.,
+              NOM_CMP = 'SIG_NZ'),
+           ),)
+
+# TEST DU CHAMP 'PROJ_ELEM_SIG_T'
+
+TEST_RESU(RESU=(
+           _F(CRITERE   = 'RELATIF',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.8E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = 70.7108,
+              NOM_CMP = 'SIG_TX'),
+           _F(CRITERE   = 'RELATIF',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.8E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = -70.7108,
+              NOM_CMP = 'SIG_TY'),
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.5E-1,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = 0.,
+              NOM_CMP = 'SIG_TZ'),
+           ),)
+
+# TEST DU CHAMP 'PROJ_ELEM_SIG_T1'
+
+TEST_RESU(RESU=(
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = 0.,
+              NOM_CMP = 'SIG_T1X'),
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = 0.,
+              NOM_CMP = 'SIG_T1Y'),
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.E-1,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = 0.,
+              NOM_CMP = 'SIG_T1Z'),
+           ),)
+
+# TEST DU CHAMP 'PROJ_ELEM_SIG_T2'
+
+TEST_RESU(RESU=(
+           _F(CRITERE   = 'RELATIF',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.5E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = 70.7108,
+              NOM_CMP = 'SIG_T2X'),
+           _F(CRITERE   = 'RELATIF',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.5E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = -70.7108,
+              NOM_CMP = 'SIG_T2Y'),
+           _F(CRITERE   = 'ABSOLU',
+              REFERENCE ='ANALYTIQUE',
+              PRECISION = 1.E-2,
+              RESULTAT  = RESUNL, 
+              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NUME_ORDRE = 1,
+              POINT  = 1, 
+              MAILLE='M1351',
+              VALE = 0.,
+              NOM_CMP = 'SIG_T2Z'),
+           ),)
+
 FIN()

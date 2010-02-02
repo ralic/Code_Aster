@@ -1,5 +1,6 @@
-# MODIF  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
+# shll100b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +68,8 @@ GUIDAGED=AFFE_CHAR_MECA(   MODELE=BARRED,DDL_IMPO=(
                              _F( GROUP_NO = 'NOEUDDL',
                                        DY = 0., ),
                              _F( NOEUD = 'N1', DX = 0.)),
-                             PESANTEUR =(9.81,0.,-1.,0.))
+                             PESANTEUR =_F(GRAVITE=9.81,
+                                           DIRECTION=(0.,-1.,0.),),)
 
 
 #

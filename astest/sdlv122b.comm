@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE : BASE_MODALE
 # sdlv122b.para = tps_job 100 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,11 +149,14 @@ BASE=CALC_NO( reuse=BASE,    RESULTAT=BASE,
 # DEFINITION DU MAILLAGE DE MESURE
 # ================================
 #
+PRE_IDEAS( UNITE_IDEAS = 33, UNITE_MAILLAGE = 21)
+
+#
 MAILMESU=LIRE_MAILLAGE(UNITE=21)
 
 #
 MODLMESU=AFFE_MODELE(   MAILLAGE=MAILMESU,AFFE=(
-                              _F( MAILLE = ('P3','P4','P5',),
+                              _F( MAILLE = ('M3','M4','M5',),
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'DIS_T'),
                               _F( NOEUD = ('N3','N4','N5',),

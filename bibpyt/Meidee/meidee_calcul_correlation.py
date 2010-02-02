@@ -1,5 +1,4 @@
-#@ MODIF meidee_calcul_correlation Meidee  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
-
+#@ MODIF meidee_calcul_correlation Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+# RESPONSABLE BODEL C.BODEL
 
 import Numeric
 import aster
@@ -29,7 +29,6 @@ from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
 from Cata.cata import IMPR_RESU, RECU_TABLE, MAC_MODES, DETRUIRE
 from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER
 from Cata.cata import DEFI_FICHIER, CO, MACRO_EXPANS
-
 from Meidee.meidee_cata import Resultat, DynaHarmo
 
 
@@ -65,7 +64,7 @@ class MeideeCorrelation:
     tester plus rapidement l'interface graphique en cours de developpement.
     
     """
-    def __init__(self, macro, mess, objects, param_visu=None):
+    def __init__(self, macro, mess, objects):
         """!Constructeur
 
         \param macro le self de l'objet macro provenant de calc_essai_ops
@@ -74,18 +73,6 @@ class MeideeCorrelation:
         self.resu_exp = None
         self.norme_num = None
         self.norme_exp = None
-##        self.Calc_Modes = {
-##            ("phi_et", ) : self.mac_et,
-##            ("phi_et", "phi_num" ) : self.mac_et_num,
-##            ("phi_exp", ) : self.mac_exp,
-##            ("phi_exp", "phi_num_red") : self.mac_exp_red,
-##            ("phi_num",) : self.mac_num,
-##            ("phi_num_red",) : self.mac_numred,
-##            }
-##        self.resu_et = None
-##        self.resu_num_extr = None
-##        self.resu_red = None
-##        self.resu_exp_extr = None
         self.meidee_objects = objects
         self.proj_meth = "SVD"
         self.proj_param = (1.e-2,)
@@ -93,7 +80,6 @@ class MeideeCorrelation:
         self.concepts_names = {} # mapping name -> number
         self.macro = macro
         self.mess = mess
-        self.param_visu = param_visu
 
     def __setitem__(self, n, val):
         """!Emulation d'un dictionnaire
@@ -111,132 +97,95 @@ class MeideeCorrelation:
         on se comporte comme une liste"""
         return self.concepts[n]
 
-##    def is_valid( self ):
-##        """!Indique si on a specifie un resultat numerique et un resultat experimental
-##
-##        Valide si on a precise un resultat numerique et un resultat
-##        experimental"""
-##        bool = (self.resu_num is not None and self.resu_exp is not None)
-##        return bool
 
 
-
-    def setup( self, resu_num, mode_num_list, resu_exp, mode_exp_list ):
+    def setup( self, resu_num, mode_num_list,
+               resu_exp, mode_exp_list,
+               param ):
         """  on donne a Aster les donnees numerique spour le calcul d'expansion
         """
         self.resu_num = resu_num
         self.mode_num_list = mode_num_list
         self.resu_exp = resu_exp
         self.mode_exp_list = mode_exp_list
+        self.param = param
+        
 
-
-    def get_modes_num(self):
-        return self.resu_num.get_modes()
-
-    def get_modes_exp(self):
-        return self.resu_exp.get_modes()
-
-    def calc_proj_resu(self, basename='tmp', reso=None):
-        """!Projection des modes experimentaux sur la base modale numerique
-            reso est different de None en mode non interactif. En mode
-            interactif, on va chercher les parametres de resolution dans
-            l'IHM.
-            MODIF 24/07/2007:utiliser le concept de register result pour les
-            concepts temporaires"""
+    def calc_proj_resu(self,suffix,basename):
+        """!Mancement de MACRO_EPXANS et export des resultats si demande
+            4 resultats sont crees, nommes basename + suffix, ou
+            suffix = ['_NX','_EX','_ET','_RD']"""
         self.mess.disp_mess( "Debut de MACRO_EXPANS")
         mdo = self.meidee_objects
-        name_nx = basename+"_NX"
-        name_ex = basename+"_EX"
-        name_et = basename+"_ET"
-        name_rd = basename+"_RD"
-        res_et = CO(name_et)
-        res_rd = CO(name_rd)
-        res_nx = res_ex = None
 
-        # Parametres de resolution
-        if reso == None:
-            reso = []
-            if self.proj_meth == "SVD":
-                reso.append({"METHODE":"SVD", "EPS":self.proj_param[0] })
-            else:
-                reso.append({"METHODE":"LU"})
+        if not basename:
+            basename = 'tmp'
+        for suf in suffix:
+            if mdo.resultats.has_key(basename+suf):
+                # Destruction des concepts existants si ils existent deja
+                self.mess.disp_mess("destruction de "+basename+suf)
+                DETRUIRE( CONCEPT=_F(NOM=mdo.resultats[basename+suf].obj))
 
+        # res_ET et res_RD sont initialises automatiquement
+        res_ET = CO(basename+suffix[2])
+        res_RD = CO(basename+suffix[3])
 
         # Preparation des donnees de mesure
         nume = None
         mcfact_mesure = { 'MODELE': self.resu_exp.modele.obj,
                           'MESURE': self.resu_exp.obj,
                           'NOM_CHAM':self.resu_exp.nom_cham}
-        if isinstance( self.resu_exp.obj, mode_meca):
-            if self.mode_exp_list : 
-                res_ex = CO(name_ex)
-                mcfact_mesure.update({ 'NUME_ORDRE': tuple(self.mode_exp_list)})
-        if isinstance( self.resu_exp.obj, dyna_harmo):
-            nume = self.resu_exp.nume_ddl # aller chercher a la main le nume_ddl
+        args = {}
+
+        # modif : la partie commentee ci-dessus devrait marcher bien comme ca
+        if self.mode_exp_list :
+            # res_EX est genere que si on a selectionne une partie des modes
+            res_EX = CO(basename+suffix[1])
+            args.update({'RESU_EX':res_EX})
+            mcfact_mesure.update({ 'NUME_ORDRE': tuple(self.mode_exp_list)})
+            if isinstance( self.resu_exp.obj, dyna_harmo):
+                nume = self.resu_exp.nume_ddl # aller chercher a la main le nume_ddl
 
         # Preparation des donnees numeriques pour la base d'expansion
         mcfact_calcul = { 'MODELE': self.resu_num.modele.obj,
-                          'BASE': self.resu_num.obj}
+                          'BASE'  : self.resu_num.obj}
         if self.mode_num_list :
+            # res_NX est genere que si on a selectionne une partie des modes
+            res_NX = CO(basename+suffix[0])
+            args.update({'RESU_NX':res_NX})
             mcfact_calcul.update({ 'NUME_ORDRE': tuple(self.mode_num_list)})
-            res_nx = CO(name_nx)
+
+        # Parametres de resolution
+        parametres = self.param
 
         try:
             MACRO_EXPANS(
                           MODELE_CALCUL = mcfact_calcul,
                           MODELE_MESURE = mcfact_mesure,
                           NUME_DDL = nume,
-                          RESU_NX = res_nx,
-                          RESU_EX = res_ex,
-                          RESU_ET = res_et,
-                          RESU_RD = res_rd,                           
-                          RESOLUTION = reso)
-        except aster.error :
+                          RESU_ET = res_ET,
+                          RESU_RD = res_RD,                           
+                          RESOLUTION = parametres,
+                          **args
+                          )
+
+
+        except Exception,err :
             self.mess.disp_mess( "Erreur dans MACRO_EXPANS")
             UTMESS('A','MEIDEE0_7')
             return
 
-        if basename == "":
-            if res_nx : 
-                mdo.register_weakref(res_nx.nom)
-            if res_ex : 
-                mdo.register_weakref(res_ex.nom)
-            mdo.register_weakref(res_et.nom)
-            mdo.register_weakref(res_rd.nom)
-
-        # Si des resultats RESU_NX et RESU_EX ont ete crees, on en fait des instances de la classe Resultat
-        if res_ex:
-            mdo.update( name_ex, res_ex )
-        else:
-            self.resu_exp_extr = self.resu_exp
-        if res_nx:
-            mdo.update( name_nx, res_nx )
-        else:
-            self.resu_num_extr = self.resu_num
-        mdo.update( name_et, res_et )
-        mdo.update( name_rd, res_rd )
+        if self.mode_num_list :
+            mdo.update( res_NX.nom, res_NX )
+        if self.mode_exp_list :
+            mdo.update( res_EX.nom, res_EX )
+        mdo.update( res_ET.nom, res_ET )
+        mdo.update( res_RD.nom, res_RD )
         
         self.mess.disp_mess( "Fin de MACRO_EXPANS")
         self.mess.disp_mess( " ")
 
 
-##    def mac_et_num(self, num_modes, exp_modes, num_norme, exp_norme):
-##        return self.resu_num_extr, self.resu_et, num_modes, exp_modes, num_norme
-##
-##    def mac_exp_red(self, num_modes, exp_modes, num_norme, exp_norme):
-##        return self.resu_exp_extr, self.resu_red, num_modes, exp_modes, exp_norme
-##
-##    def mac_numred(self, num_modes, exp_modes, num_norme, exp_norme):
-##        return self.resu_red, self.resu_red, num_modes, exp_modes, exp_norme
-##
-##    def mac_et(self, num_modes, exp_modes, num_norme, exp_norme):
-##        return self.resu_et, self.resu_et, num_modes, exp_modes, num_norme
-##    
-##    def mac_num(self, num_modes, exp_modes, num_norme, exp_norme):
-##        return self.resu_num_extr, self.resu_num_extr, num_modes, num_modes, num_norme
-##        
-##    def mac_exp(self, num_modes, exp_modes, num_norme, exp_norme):
-##        return self.resu_exp_extr, self.resu_exp_extr, exp_modes, exp_modes, exp_norme
 
     def calc_mac_mode( self, resu1, resu2, norme):
         """!Calcul de MAC entre deux bases modales compatibles"""
@@ -249,30 +198,12 @@ class MeideeCorrelation:
                                INFO = 1)
         except aster.FatalError:
             self.mess.disp_mess( "Calcul de MAC impossible : bases incompatibles")
-            UTMESS('A','MEIDEE0_7')
+            UTMESS('A','MEIDEE0_3')
             return
         self.mess.disp_mess( (  "      " ) )
         mac = extract_mac_array( __MAC, 'MAC')
         DETRUIRE( CONCEPT = _F( NOM = (__MAC,)), INFO = 1)
         return mac
-
-##    def get_mac(self, modeles, num_modes, exp_modes, num_norme, exp_norme ):
-##        """!Calculer le MAC entre deux analyses modales
-##
-##        On commence par extraire les modes selectionnes pour le calcul et calculer
-##        les projections (modes etendus, modes etendus reduits) avant d'utiliser
-##        \see calc_mac_mode
-##        """
-##        oper = self.Calc_Modes[ modeles ]
-##        resu1, resu2, modes1, modes2, norme = oper(num_modes, exp_modes, num_norme, exp_norme)
-##        res = self.calc_mac_mode(resu1,resu2,modes1,modes2,norme, modeles)
-##        return res
-##
-##    def get_res_mac(self, modeles, num_modes, exp_modes, num_norme, exp_norme ):
-##        """renvoie juste les resus qui ont servi a calculer le MAC"""
-##        oper = self.Calc_Modes[ modeles ]
-##        resu1, resu2, modes1, modes2, norme = oper(num_modes, exp_modes, num_norme, exp_norme)
-##    return resu1, resu2
 
 
 

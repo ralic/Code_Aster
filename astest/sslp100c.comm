@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (SANS SOUS-STRUCTURATION)
 # sslp100c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,7 +76,8 @@ CHF2=AFFE_CHAR_MECA(MODELE=MO,
                        );
 
 CHF3=AFFE_CHAR_MECA(MODELE=MO,
-                    PESANTEUR=(-9.81,1.0,0.0,0.0,),);
+                    PESANTEUR=_F(GRAVITE=-9.81,
+                                 DIRECTION=(1.0,0.0,0.0,),),);
 
 LISTIN1=DEFI_LIST_REEL(DEBUT=0.,
               INTERVALLE=_F( JUSQU_A = .1,NOMBRE = 3))

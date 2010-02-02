@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,27 +45,28 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      VALI,IBID,IE,IOCC,IRET,IVARI,JLUE,JORDR,
      &             N1,N2,N3,N4,NBORDR,NC,NP,NUMORD,NUPO,NBCMP,JCMP
       INTEGER      NRPASS,NBPASS,ADRECG,NUSP,IAUX,IREFR,
-     &             IREFI,IREFC,NREF
+     &             IREFI,IREFC,NREF, NL1,NL2,LXLGUT,NL11,NL22
       REAL*8       VALR,EPSI,PREC,EPSIR(2),R8B
       COMPLEX*16   VALC,C16B
       CHARACTER*1  TYPRES
       CHARACTER*3  SSIGNE
-      CHARACTER*4  TYPCH,TESTOK
+      CHARACTER*4  TYPCH,TESTOK,CHPT
       CHARACTER*8  CRIT,CRIT2,NOMAIL,NODDL,NOGRNO,NOMMA
-      CHARACTER*8  NORESU,NOCMP,CRITR(2),TYPTES,NOMGD
+      CHARACTER*8  NORESU,CRITR(2),TYPTES,NOMGD
       CHARACTER*8  LERESU,NOPASE,K8B
       CHARACTER*11 MOTCLE
-      CHARACTER*16 NOPARA,K16B
+      CHARACTER*16 NOPARA,K16B,TBTXT(2)
       CHARACTER*19 CHAM19,KNUM
       CHARACTER*17 NONOEU,LABEL
       CHARACTER*24 NOMOBJ,NORECG,TRAVR,TRAVI,TRAVC
-      CHARACTER*37 TITRES
+      CHARACTER*33 TITRES,VALK(3)
+      CHARACTER*200 LIGN1,LIGN2
 C     NONOEU= NOM_NOEUD (K8) SUIVI EVENTUELLEMENT DU NOM DU GROUP_NO
 C             A PARTIR DUQUEL ON TROUVE LE NOM DU NOEUD.
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
-      MOTCLE = 'RESULTAT: '
+      MOTCLE = 'RESULTAT'
       NORECG = '&&TRRESU_RESULTA_GD'
       TRAVR  = '&&TRRESU_TRAVR'
       TRAVI  = '&&TRRESU_TRAVI'
@@ -74,6 +75,7 @@ C     ------------------------------------------------------------------
       DO 70 IOCC = 1,NOCC
         NODDL = ' '
         TESTOK = 'NOOK'
+
         CALL GETVTX('RESU','NOM_CMP',IOCC,1,1,NODDL,N1)
         CALL GETVID('RESU','RESULTAT',IOCC,1,1,NORESU,N1)
         IAUX = IOCC
@@ -111,35 +113,61 @@ C     ------------------------------------------------------------------
 C        POUR LE PASSAGE NUMERO NRPASS :
 C        . NOM DU CHAMP DE RESULTAT OU DE GRANDEUR
 C        . NOM DU PARAMETRE DE SENSIBILITE
-
+          LIGN1  = ' '
+          LIGN2  = ' '
           LERESU = ZK24(ADRECG+2*NRPASS-2) (1:8)
           NOPASE = ZK24(ADRECG+2*NRPASS-1) (1:8)
           IF (NOPASE.EQ.' ') THEN
-C                    1234567890123456789012345678901234567
-            TITRES = '                                     '
+C                    123456789012345678901234567890123
+            TITRES = ' '
           ELSE
-            TITRES = '... SENSIBILITE AU PARAMETRE '//NOPASE
+            TITRES = 'SENSIBILITE AU PARAMETRE '//NOPASE
           END IF
 
           KNUM = '&&TRRESU.NUME_ORDRE'
           CALL RSUTNU(LERESU,'RESU',IOCC,KNUM,NBORDR,PREC,CRIT2,IRET)
-          IF (IRET.NE.0) THEN
-            WRITE (IFIC,*) TESTOK,' PAS D''ACCES AU RESULTAT '
-            GO TO 50
-          END IF
+          IF (IRET.NE.0) CALL U2MESS('F','CALCULEL6_94')
+
           CALL JEVEUO(KNUM,'L',JORDR)
           NUMORD = ZI(JORDR)
 
+          LIGN1(1:21)='---- '//MOTCLE(1:8)
+          LIGN1(22:22)='.'
+          LIGN2(1:21)='     '//NORESU
+          LIGN2(22:22)='.'
+          NL1 = LXLGUT(LIGN1)
+          NL2 = LXLGUT(LIGN2)
+          LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' NUME_ORDRE'
+          CALL CODENT(NUMORD,'G',CHPT)
+          LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//CHPT
+          LIGN1(NL1+17:NL1+17)='.'
+          LIGN2(NL2+17:NL2+17)='.'
+
           CALL GETVTX('RESU','PARA',IOCC,1,1,NOPARA,N1)
+
           IF (N1.NE.0) THEN
-            WRITE (IFIC,'(1X,4A,I4,A)') '---- ',MOTCLE,NORESU,
-     &        ' NUME_ORDRE:',NUMORD,TITRES
-            CALL UTEST3(IFIC,'RESU',IOCC)
+
+            NL1 = LXLGUT(LIGN1)
+            NL2 = LXLGUT(LIGN2)
+            LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' PARA'
+            LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NOPARA
+            LIGN1(NL1+17:NL1+17)='.'
+            LIGN2(NL2+17:NL2+17)='.'
+
+            IF(NOPASE.NE.' ')THEN
+               NL1 = LXLGUT(LIGN1)
+               NL2 = LXLGUT(LIGN2)
+               LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TITRE'
+               LIGN2(1:NL2+33)=LIGN2(1:NL2-1)//' '//TITRES
+               LIGN1(NL1+17:NL1+17)='.'
+               LIGN2(NL2+34:NL2+34)='.'
+            ENDIF
+
+            CALL UTEST3('RESU',IOCC,TBTXT)
+
             CALL RSADPA(LERESU,'L',1,NOPARA,NUMORD,1,JLUE,K16B)
             IF (K16B(1:1).NE.TYPRES) THEN
-              WRITE (IFIC,*) TESTOK,' TYPE DE LA VALEUR DE REFER'//
-     &          'ENCE INCOMPATIBLE AVEC LE TYPE DES VALEURS DU CHAMP'
-              GO TO 50
+              CALL U2MESS('F','CALCULEL6_95')
             ELSE IF (TYPRES.EQ.'R') THEN
               VALR = ZR(JLUE)
             ELSE IF (TYPRES.EQ.'I') THEN
@@ -147,49 +175,155 @@ C                    1234567890123456789012345678901234567
             ELSE IF (TYPRES.EQ.'C') THEN
               VALC = ZC(JLUE)
             END IF
-            NOCMP = ' '
-            LABEL = NOPARA(1:16)
-            CALL UTITES(NOCMP,LABEL,TYPRES,NREF,ZI(IREFI),ZR(IREFR),
-     &                 ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+
+            NL1 = LXLGUT(LIGN1)
+            NL11 = LXLGUT(LIGN1(1:NL1-1))
+            NL2 = LXLGUT(LIGN2)
+            NL22 = LXLGUT(LIGN2(1:NL2-1))
+            IF(NL11.LT.80)THEN
+               WRITE (IFIC,*) LIGN1(1:NL11)
+            ELSEIF(NL11.LT.160)THEN
+               WRITE (IFIC,1160) LIGN1(1:80),
+     &                           LIGN1(81:NL11)
+            ELSE
+               WRITE (IFIC,1200) LIGN1(1:80),
+     &                           LIGN1(81:160),
+     &                           LIGN1(161:NL11)
+            ENDIF
+            IF(NL22.LT.80)THEN
+               WRITE (IFIC,*) LIGN2(1:NL22)
+            ELSEIF(NL22.LT.160)THEN
+               WRITE (IFIC,1160) LIGN2(1:80),
+     &                           LIGN2(81:NL22)
+            ELSE
+               WRITE (IFIC,1200) LIGN2(1:80),
+     &                           LIGN2(81:160),
+     &                           LIGN2(161:NL22)
+            ENDIF
+
+            CALL UTITES(TBTXT(1),TBTXT(2),TYPRES,NREF,ZI(IREFI),
+     &                  ZR(IREFR),ZC(IREFC),VALI,VALR,VALC,EPSI,
+     &                  CRIT,IFIC,SSIGNE)
           END IF
 
           CALL GETVTX('RESU','NOM_CHAM',IOCC,1,1,NOPARA,N1)
+
           IF (N1.NE.0) THEN
+
             CALL RSEXCH(LERESU,NOPARA,NUMORD,CHAM19,IRET)
             IF (IRET.NE.0) THEN
-              WRITE (IFIC,*) TESTOK,' PAS DE CHAMP POUR ',NORESU,
-     &          'A L''ORDRE ',NUMORD,' ET AU NOM_CHAM ',NOPARA,TITRES
-              GO TO 50
+              VALK(1) = NORESU
+              VALK(2) = NOPARA
+              VALK(3) = TITRES
+              CALL U2MESG('F','CALCULEL6_96',3,VALK,1,NUMORD,0,0.D0)
             END IF
 
-            WRITE (IFIC,'(1X,4A,I4,3A)') '---- ',MOTCLE,NORESU,
-     &        ' NUME_ORDRE:',NUMORD,' NOM_CHAM: ',NOPARA,TITRES
-            CALL UTEST3(IFIC,'RESU',IOCC)
+            NL1 = LXLGUT(LIGN1)
+            NL2 = LXLGUT(LIGN2)
+            LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' NOM_CHAM'
+            LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NOPARA
+            LIGN1(NL1+17:NL1+17)='.'
+            LIGN2(NL2+17:NL2+17)='.'
+ 
+            CALL UTEST3('RESU',IOCC,TBTXT)
 
             CALL GETVTX('RESU','TYPE_TEST',IOCC,1,1,TYPTES,N1)
+
             IF (N1.NE.0) THEN
+
+              NL1 = LXLGUT(LIGN1)
+              NL2 = LXLGUT(LIGN2)
+              LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TYPE_TEST'
+              LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//TYPTES
+              LIGN1(NL1+17:NL1+17)='.'
+              LIGN2(NL2+17:NL2+17)='.'
+
+              IF(NOPASE.NE.' ')THEN
+                 NL1 = LXLGUT(LIGN1)
+                 NL2 = LXLGUT(LIGN2)
+                 LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TITRE'
+                 LIGN2(1:NL2+33)=LIGN2(1:NL2-1)//' '//TITRES
+                 LIGN1(NL1+17:NL1+17)='.'
+                 LIGN2(NL2+34:NL2+34)='.'
+              ENDIF
+
+              NL1 = LXLGUT(LIGN1)
+              NL11 = LXLGUT(LIGN1(1:NL1-1))
+              NL2 = LXLGUT(LIGN2)
+              NL22 = LXLGUT(LIGN2(1:NL2-1))
+                IF(NL11.LT.80)THEN
+                   WRITE (IFIC,*) LIGN1(1:NL11)
+                ELSEIF(NL11.LT.160)THEN
+                   WRITE (IFIC,1160) LIGN1(1:80),
+     &                               LIGN1(81:NL11)
+                ELSE
+                   WRITE (IFIC,1200) LIGN1(1:80),
+     &                               LIGN1(81:160),
+     &                               LIGN1(161:NL11)
+                ENDIF
+                IF(NL22.LT.80)THEN
+                   WRITE (IFIC,*) LIGN2(1:NL22)
+                ELSEIF(NL22.LT.160)THEN
+                   WRITE (IFIC,1160) LIGN2(1:80),
+     &                               LIGN2(81:NL22)
+                ELSE
+                   WRITE (IFIC,1200) LIGN2(1:80),
+     &                               LIGN2(81:160),
+     &                               LIGN2(161:NL22)
+                ENDIF
+
+
               CALL GETVTX('RESU','NOM_CMP',IOCC,1,0,NODDL,N4)
+
               IF (N4.EQ.0) THEN
-                CALL UTEST1(CHAM19,TYPTES,TYPRES,NREF,ZI(IREFI),
+                CALL UTEST1(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
      &                      ZR(IREFR),ZC(IREFC),EPSI,
      &                      CRIT,IFIC,SSIGNE)
               ELSE
                 NBCMP = -N4
                 CALL WKVECT('&&TRRESU.NOM_CMP','V V K8',NBCMP,JCMP)
                 CALL GETVTX('RESU','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),N4)
-                CALL UTEST4(CHAM19,TYPTES,TYPRES,NREF,ZI(IREFI),
+                CALL UTEST4(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
      &                      ZR(IREFR),ZC(IREFC),EPSI,
      &                      CRIT,IFIC,NBCMP,ZK8(JCMP),SSIGNE)
                 CALL JEDETR('&&TRRESU.NOM_CMP')
               END IF
+
             ELSE
               CALL GETVTX('RESU','NOM_CMP',IOCC,1,1,NODDL,N1)
+
+              NL1 = LXLGUT(LIGN1)
+              NL2 = LXLGUT(LIGN2)
+              LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' NOM_CMP'
+              LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NODDL
+              LIGN1(NL1+17:NL1+17)='.'
+              LIGN2(NL2+17:NL2+17)='.'
+
+
               NONOEU = ' '
               CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMMA,IE)
               CALL GETVEM(NOMMA,'NOEUD','RESU','NOEUD',IOCC,1,1,
      &                    NONOEU(1:8),N1)
+              IF (N1.NE.0) THEN
+                NL1 = LXLGUT(LIGN1)
+                NL2 = LXLGUT(LIGN2)
+                LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' NOEUD'
+                LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NONOEU(1:8)
+                LIGN1(NL1+17:NL1+17)='.'
+                LIGN2(NL2+17:NL2+17)='.'
+              ENDIF
+
               CALL GETVEM(NOMMA,'GROUP_NO','RESU','GROUP_NO',IOCC,1,1,
      &                    NOGRNO,N2)
+              IF (N2.NE.0) THEN
+                NL1 = LXLGUT(LIGN1)
+                NL2 = LXLGUT(LIGN2)
+                LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' GROUP_NO'
+                LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NOGRNO
+                LIGN1(NL1+17:NL1+17)='.'
+                LIGN2(NL2+17:NL2+17)='.'
+              ENDIF
+
               IF (N1.NE.0) THEN
 C              RIEN A FAIRE.
               ELSE IF (N2.NE.0) THEN
@@ -209,12 +343,47 @@ C              RIEN A FAIRE.
               CALL GETVIS('RESU','POINT',IOCC,1,1,NUPO,N2)
               IF (TYPCH.EQ.'NOEU') THEN
                 IF (N2.NE.0) THEN
-                  WRITE (IFIC,*) TESTOK,' "POINT"  INTERDIT POUR ',
-     &              ' LE CHAMP AU NOEUD ISSU DE ',NORESU,'A L''ORDRE ',
-     &              NUMORD,' ET AU NOM_CHAM ',NOPARA,TITRES
-                  GO TO 50
-                END IF
-                CALL UTESTR(CHAM19,NONOEU,NODDL,NREF,ZI(IREFI),
+                  VALK(1) = NORESU
+                  VALK(2) = NOPARA
+                  VALK(3) = TITRES
+                  CALL U2MESG('F','CALCULEL6_97',3,VALK,1,NUMORD,0,0.D0)
+                END IF 
+                IF(NOPASE.NE.' ')THEN
+                    NL1 = LXLGUT(LIGN1)
+                    NL2 = LXLGUT(LIGN2)
+                    LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TITRE'
+                    LIGN2(1:NL2+33)=LIGN2(1:NL2-1)//' '//TITRES
+                    LIGN1(NL1+17:NL1+17)='.'
+                    LIGN2(NL2+34:NL2+34)='.'
+                ENDIF
+
+                NL1 = LXLGUT(LIGN1)
+                NL11 = LXLGUT(LIGN1(1:NL1-1))
+                NL2 = LXLGUT(LIGN2)
+                NL22 = LXLGUT(LIGN2(1:NL2-1))
+
+                IF(NL11.LT.80)THEN
+                   WRITE (IFIC,*) LIGN1(1:NL11)
+                ELSEIF(NL11.LT.160)THEN
+                   WRITE (IFIC,1160) LIGN1(1:80),
+     &                               LIGN1(81:NL11)
+                ELSE
+                   WRITE (IFIC,1200) LIGN1(1:80),
+     &                               LIGN1(81:160),
+     &                               LIGN1(161:NL11)
+                ENDIF
+                IF(NL22.LT.80)THEN
+                   WRITE (IFIC,*) LIGN2(1:NL22)
+                ELSEIF(NL22.LT.160)THEN
+                   WRITE (IFIC,1160) LIGN2(1:80),
+     &                               LIGN2(81:NL22)
+                ELSE
+                   WRITE (IFIC,1200) LIGN2(1:80),
+     &                               LIGN2(81:160),
+     &                               LIGN2(161:NL22)
+                ENDIF
+
+                CALL UTESTR(CHAM19,NONOEU,NODDL,NREF,TBTXT,ZI(IREFI),
      &                      ZR(IREFR),ZC(IREFC),TYPRES,
      &                      EPSI,CRIT,IFIC,SSIGNE)
               ELSE IF (TYPCH(1:2).EQ.'EL') THEN
@@ -223,9 +392,74 @@ C              RIEN A FAIRE.
                 IF (N1.EQ.0) THEN
                   CALL U2MESS('F','CALCULEL5_8')
                 END IF
+
+                NL1 = LXLGUT(LIGN1)
+                NL2 = LXLGUT(LIGN2)
+                LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' MAILLE'
+                LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NOMAIL
+                LIGN1(NL1+17:NL1+17)='.'
+                LIGN2(NL2+17:NL2+17)='.'
+
+                IF(TYPCH(1:4).EQ.'ELGA') THEN
+
+                   NL1 = LXLGUT(LIGN1)
+                   NL2 = LXLGUT(LIGN2)
+                   LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' POINT'
+                   CALL CODENT(NUPO,'G',CHPT)
+                   LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//CHPT
+                   LIGN1(NL1+17:NL1+17)='.'
+                   LIGN2(NL2+17:NL2+17)='.'
+
+                   IF(NUSP.NE.0)THEN
+                     NL1 = LXLGUT(LIGN1)
+                     NL2 = LXLGUT(LIGN2)
+                     LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' SOUS_POINT'
+                     CALL CODENT(NUSP,'G',CHPT)
+                     LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//CHPT
+                     LIGN1(NL1+17:NL1+17)='.'
+                     LIGN2(NL2+17:NL2+17)='.'
+                   ENDIF
+
+                ENDIF
+
+                IF(NOPASE.NE.' ')THEN
+                    NL1 = LXLGUT(LIGN1)
+                    NL2 = LXLGUT(LIGN2)
+                    LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TITRE'
+                    LIGN2(1:NL2+37)=LIGN2(1:NL2-1)//' '//TITRES
+                    LIGN1(NL1+17:NL1+17)='.'
+                    LIGN2(NL2+38:NL2+38)='.'
+                ENDIF
+
+                NL1 = LXLGUT(LIGN1)
+                NL11 = LXLGUT(LIGN1(1:NL1-1))
+                NL2 = LXLGUT(LIGN2)
+                NL22 = LXLGUT(LIGN2(1:NL2-1))
+                IF(NL11.LT.80)THEN
+                   WRITE (IFIC,*) LIGN1(1:NL11)
+                ELSEIF(NL11.LT.160)THEN
+                   WRITE (IFIC,1160) LIGN1(1:80),
+     &                               LIGN1(81:NL11)
+                ELSE
+                   WRITE (IFIC,1200) LIGN1(1:80),
+     &                               LIGN1(81:160),
+     &                               LIGN1(161:NL11)
+                ENDIF
+                IF(NL22.LT.80)THEN
+                   WRITE (IFIC,*) LIGN2(1:NL22)
+                ELSEIF(NL22.LT.160)THEN
+                   WRITE (IFIC,1160) LIGN2(1:80),
+     &                               LIGN2(81:NL22)
+                ELSE
+                   WRITE (IFIC,1200) LIGN2(1:80),
+     &                               LIGN2(81:160),
+     &                               LIGN2(161:NL22)
+                ENDIF
+
+
                 CALL UTEST2(CHAM19,NOMAIL,NONOEU,NUPO,NUSP,IVARI,NODDL,
-     &                      NREF,ZI(IREFI),ZR(IREFR),ZC(IREFC),TYPRES,
-     &                      EPSI,CRIT,IFIC,SSIGNE)
+     &                      NREF,TBTXT,ZI(IREFI),ZR(IREFR),ZC(IREFC),
+     &                      TYPRES,EPSI,CRIT,IFIC,SSIGNE)
               END IF
             END IF
           END IF
@@ -233,7 +467,12 @@ C              RIEN A FAIRE.
           CALL JEDETR(NORECG)
           CALL JEDETR(KNUM)
    60   CONTINUE
+        WRITE (IFIC,*)' '
    70 CONTINUE
+
+1080  FORMAT(A80)
+1160  FORMAT(1X,A80,A)
+1200  FORMAT(1X,2(A80),A)
 
       CALL JEDETR(TRAVR)
       CALL JEDETR(TRAVC)

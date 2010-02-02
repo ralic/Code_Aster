@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/12/2009   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMANDE  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1524,6 +1524,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PESA_Y        = SIMP(statut='o',typ='R'),
                                            PESA_Z        = SIMP(statut='o',typ='R'),
 # ---------------------------------------------------------------------------------
+# -------------------   DONNEES FACULTATIVES   ------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PESA_MULT     = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
                                            CP            = SIMP(statut='f',typ='R'),
@@ -1665,6 +1669,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            VG_PR   = SIMP(statut='f',typ='R'),
                                            VG_SMAX = SIMP(statut='f',typ='R'),
                                            VG_SATUR = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES FACULTATIVES   ------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PESA_MULT     = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
 #
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
@@ -1797,6 +1805,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PESA_Y           = SIMP(statut='o',typ='R'),
                                            PESA_Z           = SIMP(statut='o',typ='R'),
 # ---------------------------------------------------------------------------------
+# -------------------   DONNEES FACULTATIVES   ------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PESA_MULT     = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
                                            CP               = SIMP(statut='f',typ='R'),
@@ -1927,6 +1939,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            D_SATU_PRES      = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            PERM_LIQU        = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_PERM_LIQU_SATU = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES FACULTATIVES   ------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PESA_MULT     = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
@@ -2067,6 +2083,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            VG_SATUR = SIMP(statut='f',typ='R'),
 #
                                            FICKV_T          = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES FACULTATIVES   ------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PESA_MULT     = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
@@ -2220,6 +2240,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 #
                                            FICKV_T          = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKA_T          = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES FACULTATIVES   ------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PESA_MULT     = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
@@ -2383,6 +2407,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            VG_PR   = SIMP(statut='f',typ='R'),
                                            VG_SMAX = SIMP(statut='f',typ='R'),
                                            VG_SATUR = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES FACULTATIVES   ------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PESA_MULT     = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------

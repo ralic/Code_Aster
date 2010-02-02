@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/01/2010   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 02/02/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,8 +80,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "SIGM_NOEU_SIEF",
                                      "SIPO_NOEU_DEPL","SIPO_NOEU_SIEF",
                                      "SIRE_NOEU_DEPL",
-                                     "VARI_NOEU","EXTR_NOEU_VARI","VARI_NOEU_ELGA",
-                                     "ARCO_NOEU_SIGM",) ),
+                                     "VARI_NOEU","EXTR_NOEU_VARI","VARI_NOEU_ELGA",) ),
 
          b_forc_reac     =BLOC(condition = """(OPTION == 'FORC_NODA') or (type(OPTION) == type(()) and 'FORC_NODA' in OPTION) or\
  (OPTION == 'REAC_NODA') or (type(OPTION) == type(()) and 'REAC_NODA' in OPTION)""",

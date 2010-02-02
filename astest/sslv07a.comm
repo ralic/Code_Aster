@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 # sslv07a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -56,7 +56,6 @@ MA=ASSE_MAILLAGE(MAILLAGE_1=MA1,
                  COLLAGE=_F(GROUP_MA_1='SURF1',
                             GROUP_MA_2='SURF2'))
 
-
 DEFI_GROUP( reuse=MA, MAILLAGE=MA,
             CREA_GROUP_MA=_F( NOM = 'VOLUM',OPTION='APPUI', 
                               TYPE_APPUI='AU_MOINS_UN',
@@ -65,6 +64,13 @@ DEFI_GROUP( reuse=MA, MAILLAGE=MA,
 DEFI_GROUP( reuse=MA, MAILLAGE=MA,
             CREA_GROUP_NO=_F( NOM = 'ABSANSA',UNION=('BX','AXSANSA')))
 
+DEFI_GROUP( reuse=MA, MAILLAGE=MA,
+            CREA_GROUP_MA=_F( NOM = 'BAS', 
+                              MAILLE =('M1','M2','M3','M4')))
+
+DEFI_GROUP( reuse=MA, MAILLAGE=MA,
+            CREA_GROUP_MA=_F( NOM = 'HAUT', 
+                              MAILLE =('M9','M10','M11','M12')))
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
@@ -118,8 +124,17 @@ BLOQU=AFFE_CHAR_MECA(MODELE=MO,
                                   DX=0.0,
                                   DY=0.0,),),);
 
+# APPLICATION DU CHARGEMENT DE PESANTEUR A TOUT LE MAILLAGE.
+# LE MAILLAGE (12 MAILLES) EST PARTITIONNE EN DEUX GROUPES DE
+# MAILLES 'HAUT' ET 'BAS', ET UNE LISTE DE 4 MAILLES. L'OBJECTIF
+# EST DE VERIFIER LA BONNE PRISE EN COMPTE DES MOTS-CLES 
+# GROUP_MA ET MAILLE. 
 CH=AFFE_CHAR_MECA(MODELE=MO,
-                  PESANTEUR=(9.81,0.0,0.0,-1.0,),
+                  PESANTEUR=_F(GRAVITE=9.81,
+                               DIRECTION=(0.0,0.0,-1.0,),
+                               GROUP_MA=('BAS','HAUT'),
+                               MAILLE=('M5','M6','M7','M8'),
+                              ),
                   FORCE_FACE=_F(GROUP_MA='FACESUP',
                                 FZ=229553.0,),);
 # ------------------------------------------------------------------
@@ -892,9 +907,6 @@ TEST_TABLE(    TABLE=TAB5,
                VALE= 3.82591E+03,
                REFERENCE = 'NON_REGRESSION',
           )
-
-
-
 
 FIN();
 #

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/01/2010   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -177,9 +177,10 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
          b_med           =BLOC(condition = "FORMAT == 'MED'",fr="Nom du champ dans le fichier MED",
            UNITE           =SIMP(statut='f',typ='I',defaut= 81, fr="Le fichier est : fort.n.",),
            FORMAT_MED      =FACT(statut='f',max='**',
-             regles=(ENSEMBLE('NOM_CMP','NOM_CMP_MED'),),
+             regles=(ENSEMBLE('NOM_CMP','NOM_CMP_MED'),UN_PARMI('NOM_CHAM_MED','NOM_RESU'),),
              NOM_CHAM        =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO(),),
-             NOM_CHAM_MED    =SIMP(statut='o',typ='TXM',               fr="Nom du champ dans le fichier MED.",  ),
+             NOM_CHAM_MED    =SIMP(statut='f',typ='TXM',               fr="Nom du champ dans le fichier MED.",  ),
+             NOM_RESU        =SIMP(statut='f',typ='TXM',               fr="Prefixe du nom de champ dans le fichier MED.",  ),
              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**',      fr="Nom des composantes dans ASTER.", ),
              NOM_CMP_MED     =SIMP(statut='f',typ='TXM',max='**',      fr="Nom des composantes dans MED.", ),
            ),

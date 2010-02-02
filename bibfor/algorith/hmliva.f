@@ -3,11 +3,11 @@
      +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,ADCP11,
      +                  ADCP12,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,
      +                  DSDE,EPSV,DEPSV,P1,DP1,T,DT,PHI,PVP,H11,H12,
-     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC,BIOT)
+     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC,BIOT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ C ======================================================================
       REAL*8        EPSV,DEPSV,P1,DP1,T,DT
       REAL*8        PHI,PVP,H11,H12,RHO11
       REAL*8        PHI0,PVP0
-      REAL*8        BMPH,UMS,SAT2,PHIDS
+      REAL*8        BMPH,UMS,SAT2,PHIDS,RINSTP
       CHARACTER*16  OPTION,MECA,THER,HYDR,THMC
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
@@ -97,7 +97,8 @@ C =====================================================================
      +             RBID25, RHO110, CLIQ, ALPLIQ, CP11,RBID26,
      +             RBID27, RBID28, RBID29, RBID30, RBID31,RBID32,
      +             RBID33, RBID34, RBID35, MAMOLV, CP12,RBID38,RBID39,
-     +             RBID45,RBID46,RBID47,RBID48,RBID49,EM,RBID57,RBID58)
+     +             RBID45,RBID46,RBID47,RBID48,RBID49,EM,RBID57,RBID58,
+     +             RINSTP)
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
@@ -169,7 +170,7 @@ C =====================================================================
      +             RBID51,RBID26,RBID27, RBID28, RBID29, RBID30, 
      +             RBID31,RBID32,RBID33, RBID34, RBID35, RBID54, 
      +             RBID55,RBID38, RBID39,RBID45,RBID46,RBID47,RBID48,
-     +             RBID49,RBID56,RBID57,RBID58)
+     +             RBID49,RBID56,RBID57,RBID58,RINSTP)
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================

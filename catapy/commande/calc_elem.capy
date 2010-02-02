@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 02/02/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -292,8 +292,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                           ),
           b_toutes =BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol elas",
                OPTION      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                           into=( "SIEF_ELNO_ELGA",
-                                  "SIGM_ELNO_TUYO","SIGM_ELNO_COQU","ARCO_ELNO_SIGM",
+                           into=( "SIEF_ELNO_ELGA","PROJ_ELEM_SIGM",
+                                  "SIGM_ELNO_TUYO","SIGM_ELNO_COQU","PROJ_ELNO_SIGM",
                                   "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","EFGE_ELNO_CART",
                                   # EPSI
                                   "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL",

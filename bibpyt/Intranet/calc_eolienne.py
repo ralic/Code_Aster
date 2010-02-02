@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Intranet  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_eolienne Intranet  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1270,7 +1270,8 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                                         ),)
 
     POIDS=AFFE_CHAR_MECA( MODELE=__MO[j],
-                          PESANTEUR=(9.81,0.0,0.0,-1.0,),)
+                          PESANTEUR=_F(GRAVITE=9.81,
+                                       DIRECTION=(0.0,0.0,-1.0,),),)
 
 # 2.12 ==> Realisation du calcul
 

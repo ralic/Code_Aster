@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 03/08/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai Messages  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,11 +126,11 @@ cata_msg = {
 """),
 
 28 : _("""
- champ non-assemblable en CHAM_NO:  %(k1)s
+ champ non-assemblable en CHAM_NO :  %(k1)s
 """),
 
 29 : _("""
- champ non-assemblable en CHAM_ELEM (ELGA):  %(k1)s
+ champ non-assemblable en CHAM_ELEM (ELGA) :  %(k1)s
 """),
 
 31 : _("""
@@ -164,7 +164,7 @@ cata_msg = {
 """),
 
 41 : _("""
- duplcation "maillage" du .ltnt, objet inconnu:  %(k1)s
+ duplication "maillage" du .ltnt, objet inconnu:  %(k1)s
 """),
 
 42 : _("""
@@ -176,7 +176,7 @@ cata_msg = {
 """),
 
 44 : _("""
-  erreur dans la  recuperation  du nombre de noeuds !
+  erreur dans la recuperation du nombre de noeuds !
 """),
 
 45 : _("""
@@ -184,7 +184,7 @@ cata_msg = {
 """),
 
 46 : _("""
- la fonction doit s appuyee sur un maillage pour lequel une abscisse curviligne a ete definie.
+ la fonction doit s appuyer sur un maillage pour lequel une abscisse curviligne a ete definie.
 """),
 
 47 : _("""
@@ -208,9 +208,9 @@ cata_msg = {
  type de charge inconnu
 """),
 
-53 : _("""
- suffixe inconu:  %(k1)s
-"""),
+
+
+
 
 54 : _("""
  trop d objets
@@ -252,7 +252,7 @@ cata_msg = {
 """),
 
 68 : _("""
- type de resultat inconnu:  %(k1)s  pour l'objet :  %(k2)s
+ type de resultat inconnu :  %(k1)s  pour l'objet :  %(k2)s
 """),
 
 69 : _("""
@@ -292,7 +292,7 @@ cata_msg = {
 """),
 
 78 : _("""
-  erreur dans la  recuperation  du maillage
+  erreur dans la recuperation du maillage
 """),
 
 79 : _("""

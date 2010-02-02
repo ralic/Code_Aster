@@ -1,7 +1,7 @@
       SUBROUTINE  REFE99 (NOMRES)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,8 @@ C
       CHARACTER*19 NUMDDL,NUMBIS
       CHARACTER*24 RAID,MASS,INTF,AMOR
       CHARACTER*24 VALK(4)
+      LOGICAL      NOSEUL
+      INTEGER      NBGL, IBID
 C
 C-----------------------------------------------------------------------
 C
@@ -106,7 +108,19 @@ C
 C --- CAS RITZ
 C
       IF(IOC3.GT.0) THEN
+        NOSEUL=.FALSE.
+        CALL GETVID('RITZ','MODE_MECA',1,1,999,K8BID,NBG)
+        CALL GETVID('RITZ','MODE_INTF',2,1,0,K8BID,IBID)
+        WRITE(6,*) 'IBID = ', IBID,' NBG = ', NBG
+        IF ((IBID.GT.0).OR.(NBG.GT.1)) THEN 
+          NOSEUL=.TRUE.
+        ENDIF
+        WRITE(6,*) 'NOSEUL = ', NOSEUL
         CALL GETVID('    ','NUME_REF',1,1,1,NUMDDL,IBID)
+        IF ((IBID.EQ.0).AND.(NOSEUL)) THEN
+C         si on a plus d'un mode_meca en entree, preciser NUME_REF
+          CALL U2MESG('E', 'ALGORITH17_8',0,' ',0,0,0,0.D0)
+        ENDIF
         NUMDDL(15:19)='.NUME'
         CALL GETVID('  ','INTERF_DYNA',1,1,0,INTF,IOCI)
         IF(IOCI.LT.0) THEN

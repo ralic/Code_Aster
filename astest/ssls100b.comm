@@ -1,5 +1,6 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION DKT  170 N - 296 TRIA3
+# ssls100b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +68,8 @@ CHF3=AFFE_CHAR_MECA_F(   MODELE=MODEL,
                     FORCE_COQUE=_F(  TOUT = 'OUI',   F3 = VAL_CHF3)   )
 
 CHPE=AFFE_CHAR_MECA(   MODELE=MODEL,
-                      PESANTEUR=( 10., 0., 0., -1.,                 )   )
+                      PESANTEUR=_F(GRAVITE= 10.,
+                                   DIRECTION=( 0., 0., -1.,), ),)
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
                                COQUE=_F(

@@ -1,6 +1,6 @@
       SUBROUTINE DISMCH(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,81 +116,7 @@ C     -- CHARGE OU CHAR_CINE ?
          ELSE
             REPK = ' '
          END IF
-C
-      ELSE IF (QUESTI.EQ.'EXI_TEMPER') THEN
-         IF((SUF(3:4).EQ.'TH').OR.(SUF(3:4).EQ.'AC').OR.
-     &      (SUF.EQ.'CIME')) THEN
-            REPK = 'NON'
-            GO TO 9999
-         ELSE IF (SUF.EQ.'CHME') THEN
-            CALL JEEXIN(NOMOB//'.CHME.TEMPE.TEMP',IRET)
-            IF (IRET.EQ.0) THEN
-               REPK = 'NON'
-               GO TO 9999
-            END IF
-            CALL JEVEUO(NOMOB//'.CHME.TEMPE.TEMP','L',IATEMP)
-            TEMPE = ZK8(IATEMP)
-            CALL GETTCO(TEMPE,TYPECO)
-            IF (TYPECO.EQ.'EVOL_THER') THEN
-               REPK = 'EVOL'
-               GO TO 9999
-            ELSE
-               REPK = 'CHGD'
-               GO TO 9999
-            END IF
-         ELSE
-            CALL U2MESK('F','UTILITAI_53',1,SUF)
-         END IF
-C
-      ELSE IF (QUESTI.EQ.'EXI_HYDRAT') THEN
-         IF((SUF(3:4).EQ.'TH').OR.(SUF(3:4).EQ.'AC').OR.
-     &      (SUF.EQ.'CIME')) THEN
-            REPK = 'NON'
-            GO TO 9999
-         ELSE IF (SUF.EQ.'CHME') THEN
-            CALL JEEXIN(NOMOB//'.CHME.EVOL.HYDR',IRET)
-            IF (IRET.EQ.0) THEN
-               REPK = 'NON'
-               GO TO 9999
-            END IF
-            CALL JEVEUO(NOMOB//'.CHME.EVOL.HYDR','L',IATEMP)
-            HYDRAT = ZK8(IATEMP)
-            CALL GETTCO(HYDRAT,TYPECO)
-            IF (TYPECO.EQ.'EVOL_THER') THEN
-               REPK = 'EVOL'
-               GO TO 9999
-            ELSE
-               REPK = 'CHGD'
-               GO TO 9999
-            END IF
-         ELSE
-            CALL U2MESK('F','UTILITAI_53',1,SUF)
-         END IF
-C
-      ELSE IF (QUESTI.EQ.'EXI_SECHAG') THEN
-         IF((SUF(3:4).EQ.'TH').OR.(SUF(3:4).EQ.'AC').OR.
-     &      (SUF.EQ.'CIME')) THEN
-            REPK = 'NON'
-            GO TO 9999
-         ELSE IF (SUF.EQ.'CHME') THEN
-            CALL JEEXIN(NOMOB//'.CHME.EVOL.SECH',IRET)
-            IF (IRET.EQ.0) THEN
-               REPK = 'NON'
-               GO TO 9999
-            END IF
-            CALL JEVEUO(NOMOB//'.CHME.EVOL.SECH','L',IATEMP)
-            SECHAG = ZK8(IATEMP)
-            CALL GETTCO(SECHAG,TYPECO)
-            IF (TYPECO.EQ.'EVOL_THER') THEN
-               REPK = 'EVOL'
-               GO TO 9999
-            ELSE
-               REPK = 'CHGD'
-               GO TO 9999
-            END IF
-         ELSE
-            CALL U2MESK('F','UTILITAI_53',1,SUF)
-         END IF
+
 
       ELSE IF (QUESTI.EQ.'NOM_MODELE') THEN
          REPK = MODELE

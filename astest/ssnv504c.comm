@@ -1,5 +1,5 @@
 
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,8 +132,7 @@ CH0=AFFE_CHAR_MECA(MODELE=MO,
 
 CONTACT= DEFI_CONTACT(MODELE       = MO,
                       FORMULATION  = 'DISCRETE',
-                      
-                      
+                      ITER_GEOM_MAXI = 6,
                    ZONE=(
                         _F(
                             GLISSIERE     = 'OUI',

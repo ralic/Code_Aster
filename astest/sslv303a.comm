@@ -1,6 +1,7 @@
-# MODIF  DATE 16/02/2009   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # RESPONSABLE G8BHHXD X.DESROCHES
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE ET PRESSION
+# sslv303a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +63,8 @@ CLIM=AFFE_CHAR_MECA(    MODELE=MODELE,
 
 #   GRAVITE
 CHAR_GR=AFFE_CHAR_MECA(     MODELE=MODELE,
-                              PESANTEUR=(13.873,   1.,  0.,  1.,)
+                              PESANTEUR=_F(GRAVITE=13.873,
+                                           DIRECTION=(1.,  0.,  1.,),),
                           )
 
 #   PRESSION

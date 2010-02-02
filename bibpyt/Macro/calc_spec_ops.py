@@ -1,4 +1,4 @@
-#@ MODIF calc_spec_ops Macro  DATE 21/10/2008   AUTEUR CORUS M.CORUS 
+#@ MODIF calc_spec_ops Macro  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,6 +102,7 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
       vale_sig=l_f[0][1]['FONCTION'].Valeurs(); 
       l_ech=len(vale_sig[0])
       dt=vale_sig[0][1]-vale_sig[0][0]
+      print "test : l_ech = ", l_ech
    else :
       #tab_ast=l_t[0][1]['NOM_TAB'];
       tab_ast=l_t['NOM_TAB']  #MC
@@ -114,8 +115,10 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
       
       l_ech_temp=l_t['LONGUEUR_ECH'];
       recouvr_temp=l_t['RECOUVREMENT'];
+      
       l_ech_t=[l_ech_temp[0]['DUREE'] , l_ech_temp[0]['POURCENT'],l_ech_temp[0]['NB_PTS'] ];
       recouvr_t=[recouvr_temp[0]['DUREE'] , recouvr_temp[0]['POURCENT'],recouvr_temp[0]['NB_PTS'] ];
+            
       if l_ech_t.count(None)==3 : l_ech=len(temp)/2;
       if recouvr_t.count(None)==3 : recouvr=0;
       if l_ech_t.count(None)<2 : 
@@ -142,8 +145,10 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
                 recouvr=int(Numeric.floor(recouvr_t[i1]))
       if recouvr > l_ech :
          raise FonctionError, 'La longueur de recouvrement ne peut exceder la longueur '
+      print "test2 : l_ech = ", l_ech
 
 #-- Recuperation des fenetres
+
 
    for occ in l_G+l_H :
       if occ[1]['FENETRE'] == 'RECT' :
@@ -156,12 +161,15 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
          para=occ[1]['DEFI_FENE']
          if len(para) != 2 :
             raise FonctionError, 'Erreur de taille dans DEFI_FENE : ' + 'la fenetre exponentielle est definie par exactement deux valeurs'
-         fene=[1.]*int(para[0]-1)+[Numeric.exp(para[1]*(i1-int(para[0]-1))*dt) for i1 in range(int(para[0]-1),l_ech)]
+         fene=[1.]*int(para[0])+[Numeric.exp(para[1]*(i1-int(para[0]-1))*dt) for i1 in range(int(para[0]),l_ech)]
       elif occ[1]['FENETRE'] == 'PART' :
          fene=occ[1]['DEFI_FENE']
          if len(fene) != l_ech :
             raise FonctionError, 'Erreur de taille dans DEFI_FENE : ' + 'La fenetre doit etre definie avec le meme nombre de points que les echantillons'
-   
+      
+      # normalisation de la fenetre
+      fene=Numeric.divide(fene,Numeric.sqrt(Numeric.sum(Numeric.multiply(fene,fene)))).tolist()
+      
    if len(TRANSFERT)+len(INTERSPE) == 0 : #-- on ne rentre rien : interspectre par defaut - fenetre rectangulaire
       fene=[1.]*l_ech
       INTERSPE=1.;
@@ -208,11 +216,12 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
             num_mes.append(num_mes_temp[i1]+max_mes*j1);
             num_ord.append(num_ord_temp[i1]); 
 
-      test_df=Numeric.subtract(df[1:],df[0:-1])
-      test_df=test_df.tolist();
-      test_df.sort();
-      if abs(test_df[-1]) > 1.e-5 :
-         raise FonctionError, 'Toutes les fonctions doivent etre definies ' + 'avec la meme frequence d'+"'"+'echantillonage'
+      if len(df)>1 :
+         test_df=Numeric.subtract(df[1:],df[0:-1])
+         test_df=test_df.tolist();
+         test_df.sort();
+         if abs(test_df[-1]) > 1.e-5 :
+            raise FonctionError, 'Toutes les fonctions doivent etre definies ' + 'avec la meme frequence d'+"'"+'echantillonage'
        
       frq = [df[-1]*i1 for i1 in range(l_ech)]
 
@@ -237,6 +246,8 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
          crit.sort();
          if abs((crit[-1]-crit[0])/crit[-1]) > 1.e-5 :
             raise FonctionError, 'L'+"'"+'echantillonage doit etre fait a pas constant'
+         print "vale_sig[1]= ", len(vale_sig[1]), vale_sig[1]
+         print "  fene = ",len(fene), fene
          fft.append(FFT.fft(Numeric.multiply(vale_sig[1],fene)))
          df.append(1./(crit[-1])/len(vale_sig[0]));
       
@@ -249,12 +260,12 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
       if (test_long[-1]-test_long[0]) != 0 :
          raise FonctionError, 'Toutes les fonctions doivent etre definies avec le meme nombre de points'
    
-   
-      test_df=Numeric.subtract(df[1:],df[0:-1])
-      test_df=test_df.tolist();
-      test_df.sort();
-      if abs(test_df[-1]) > 1.e-5 :
-         raise FonctionError, 'Toutes les fonctions doivent etre definies '+'avec la meme frequence d'+"'"+'echantillonage'
+      if len(df) > 1 :
+         test_df=Numeric.subtract(df[1:],df[0:-1])
+         test_df=test_df.tolist();
+         test_df.sort();
+         if abs(test_df[-1]) > 1.e-5 :
+             raise FonctionError, 'Toutes les fonctions doivent etre definies '+'avec la meme frequence d'+"'"+'echantillonage'
        
       frq = [df[-1]*i1 for i1 in range(lt[-1])]
    
@@ -280,13 +291,14 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
 #-- Calcul de la matrice inter spectrale
 
    if len(INTERSPE) != 0 :
-      dimh   = (len(list_ord)*(len(list_ord)+1))/2
+      nb_ord = len(list_ord)
+      dimh   = (nb_ord*(nb_ord+1))/2
       l_fc=[];
       nume_i1=[]
       nume_j1=[]
       
-      for i1 in range(len(list_ord)) :
-         for j1 in range(i1,len(list_ord)) :
+      for i1 in range(nb_ord) :
+         for j1 in range(i1,nb_ord) :
             #-- on ne calcule les spectres que pour des numeros de mesures correspondants
             #-- Ca n'a a priori pas de sens de calculer l'interspectre entre deux signaux acquis a des instants differents
             #-- Par contre, on peut moyenner deux interspectres obtenus a des instants differents, sous reserve
@@ -297,7 +309,8 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
             #-- recuperation des indices des fft a prendre en compte pour l'interspectre
             for k1 in range(len(mes_i1)) :
                if mes_i1[k1] in mes_j1 :
-                  ind_mes.append([ind_ord[i1][k1],ind_ord[j1][mes_j1.index(mes_i1[k1])]])
+                  ind_mes.append([ind_ord[i1][k1],
+                                  ind_ord[j1][mes_j1.index(mes_i1[k1])]])
 
             #-- Calcul des interspectres   
             dsp=[0.j]*l_ech;
@@ -318,17 +331,19 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
                nume_j1.append(list_ord[j1])
    
       mcfact=[]
-      mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K='DSP'  ))
-      mcfact.append(_F(PARA='OPTION'      ,LISTE_K='TOUT' ))
-      mcfact.append(_F(PARA='DIMENSION'   ,LISTE_I=(dimh,) ))
-      mcfact.append(_F(PARA='NUME_ORDRE_I',LISTE_I=nume_i1 ))
-      mcfact.append(_F(PARA='NUME_ORDRE_J',LISTE_I=nume_j1 ))
-      mcfact.append(_F(PARA='FONCTION_C'  ,LISTE_K=l_fc  ))
+      mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K='DSP'   ,NUME_LIGN=(1,) ))
+      mcfact.append(_F(PARA='OPTION'      ,LISTE_K='TOUT'  ,NUME_LIGN=(1,) ))
+      mcfact.append(_F(PARA='DIMENSION'   ,LISTE_I=(dimh,) ,NUME_LIGN=(1,) ))
+      mcfact.append(_F(PARA='NUME_ORDRE_I',LISTE_I=nume_i1 ,NUME_LIGN=range(2,dimh+2) ))
+      mcfact.append(_F(PARA='NUME_ORDRE_J',LISTE_I=nume_j1 ,NUME_LIGN=range(2,dimh+2) ))
+      mcfact.append(_F(PARA='FONCTION_C'  ,LISTE_K=l_fc    ,NUME_LIGN=range(2,dimh+2)))
       self.DeclareOut('tab_inte',self.sd)
       tab_inte=CREA_TABLE(LISTE=mcfact,
                           TITRE='',
                           TYPE_TABLE='TABLE_FONCTION')
-
+      
+            
+      
 
 #-- Calcul des transferts
 
@@ -361,11 +376,13 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
                if refer[i1] != list_ord[j1] :
                   mes_i1=[num_mes[k1] for k1 in ind_ord[ind_refer[i1]]]  #-- mesures des efforts 
                   mes_j1=[num_mes[k1] for k1 in ind_ord[j1]]  #-- mesures des reponses
+
                   ind_mes=[];
                   #-- recuperation des indices des mesures a predre en compte pour les spectres
                   for k1 in range(len(mes_i1)) :
                      if mes_i1[k1] in mes_j1 :
-                        ind_mes.append([ind_ord[i1][k1],ind_ord[j1][mes_j1.index(mes_i1[k1])]])
+                        ind_ord[j1][mes_j1.index(mes_i1[k1])]
+                        ind_mes.append([ind_ord[ind_refer[i1]][k1],ind_ord[j1][mes_j1.index(mes_i1[k1])]])
 
                   #-- Calcul des FRF
                   Guu=[0.j]*l_ech;

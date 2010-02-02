@@ -1,5 +1,6 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE FLAMBEMENT D'UNE POUTRE VERTICALE SOUS POIDS PROPRE
+# ssll403a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,7 +101,8 @@ MATASSR=ASSE_MATRICE(    MATR_ELEM=MELR,
 # ------ RESOLUTION STATIQUE , CHARGEMENT = PESANTEUR-------------------
 #
 PESANT=AFFE_CHAR_MECA(       MODELE=MO,
-                           PESANTEUR=(9.81, 0., 0., -1.,)
+                           PESANTEUR=_F(GRAVITE=9.81,
+                                        DIRECTION=( 0., 0., -1.,),)
                         )
 
 STAT=MECA_STATIQUE(MODELE=MO,

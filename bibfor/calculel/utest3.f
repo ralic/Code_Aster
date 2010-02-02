@@ -1,11 +1,11 @@
-      SUBROUTINE UTEST3 ( IFIC, MCLFAC, IOCC )
+      SUBROUTINE UTEST3 ( MCLFAC, IOCC, TBREF )
       IMPLICIT   NONE
-      INTEGER             IFIC, IOCC
-      REAL*8                          REFR,            EPSI
+      INTEGER             IOCC
+      CHARACTER*16        TBREF(2)
       CHARACTER*(*)       MCLFAC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/06/99   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,30 +22,40 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+  
 C ----------------------------------------------------------------------
-C IN  : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
+C UTILISEE POUR TEST_RESU,TEST_TABLE,TEST_FONCTION
+C
 C IN  : MCLFAC : MOT CLE FACTEUR
 C IN  : IOCC   : NUMERO D'OCCURRENCE
-C OUT : IMPRESSION SUR LISTING
+C OUT : TBREF  : (1) = REFERENCE
+C                (2) = LEGENDE
 C ----------------------------------------------------------------------
-      INTEGER       N1, N2
-      CHARACTER*16  REFE, VERS
+      INTEGER N0,N2
+      CHARACTER*16 LEGEND,REFER
 C     ------------------------------------------------------------------
 C
-      CALL GETVTX ( MCLFAC, 'REFERENCE', IOCC,1,1, REFE, N1 )
-      CALL GETVTX ( MCLFAC, 'VERSION'  , IOCC,1,1, VERS, N2 )
-C
-      IF ( N1 .NE. 0 ) THEN
-         IF ( N2 .NE. 0 ) THEN
-            WRITE(IFIC,1010) REFE, VERS
-         ELSE
-            WRITE(IFIC,1000) REFE
-         ENDIF
+      CALL JEMARQ()
+
+      CALL GETVTX(MCLFAC,'LEGENDE',   IOCC,1,0, LEGEND, N0 )
+      CALL GETVTX(MCLFAC,'REFERENCE', IOCC,1,0, REFER,  N2 )
+
+      IF(N0.LT.0)THEN
+         CALL GETVTX(MCLFAC,'LEGENDE', IOCC,1,1, LEGEND, N0 )
+         CALL LXNOAC(LEGEND,LEGEND)
       ELSE
-         WRITE(IFIC,1000) 'NON_DEFINI'
+         LEGEND='XXXX'
       ENDIF
+
+      IF(N2.LT.0)THEN
+         CALL GETVTX(MCLFAC,'REFERENCE', IOCC,1,1, REFER, N2 )
+      ELSE
+         REFER='NON_DEFINI'
+      ENDIF
+
+      TBREF(1)=REFER
+      TBREF(2)=LEGEND
 C
- 1000 FORMAT ( 'REFERENCE: ', A )
- 1010 FORMAT ( 'REFERENCE: ', A, ' VERSION: ', A )
+      CALL JEDEMA()
 C
       END

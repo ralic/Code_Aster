@@ -1,4 +1,4 @@
-#@ MODIF meidee_salome_visu Meidee  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+#@ MODIF meidee_salome_visu Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # ======================================================================
+
+# RESPONSABLE BODEL C.BODEL
 
 # Ce module est une surcharge de pylotage 2.0.2
 # Il faudra reporter les methodes modifiees dans la prochaine version

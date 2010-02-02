@@ -4,7 +4,7 @@
       CHARACTER*1 BASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,20 +65,20 @@ C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 
 
-C     1- OBJET '.PJEF_NO' :
+C     1- OBJET '.PJXX_K1' :
 C     ----------------------
-      CALL JEVEUO(C1//'.PJEF_NO','L',I1)
-      CALL JEVEUO(C2//'.PJEF_NO','L',I2)
+      CALL JEVEUO(C1//'.PJXX_K1','L',I1)
+      CALL JEVEUO(C2//'.PJXX_K1','L',I2)
       DO 10,K = 1,2
-        MA1 = ZK8(I1-1+K)
-        MA2 = ZK8(I2-1+K)
+        MA1 = ZK24(I1-1+K)
+        MA2 = ZK24(I2-1+K)
         IF (MA1.NE.MA2) THEN
            VALK(1) = MA1
            VALK(2) = MA2
            CALL U2MESK('F','CALCULEL4_65', 2 ,VALK)
         ENDIF
    10 CONTINUE
-      CALL JEDUPO(C1//'.PJEF_NO',BASE,C3//'.PJEF_NO',.FALSE.)
+      CALL JEDUPO(C1//'.PJXX_K1',BASE,C3//'.PJXX_K1',.FALSE.)
 
 
 C     2- OBJETS  .PJEF_NB et .PJEF_M1 :

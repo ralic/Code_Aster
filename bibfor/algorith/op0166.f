@@ -1,7 +1,7 @@
-      SUBROUTINE OP0166 ( IER )
+      SUBROUTINE OP0166(IER)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      INTEGER            IER
+      INTEGER IER
 C
 C 0.2. ==> COMMUNS
 C ----------------------------------------------------------------------
@@ -33,83 +33,134 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8             ZR,R8B
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC,C16B
-      COMMON  / CVARJE / ZC(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      REAL*8 ZR,R8B
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC,C16B
+      COMMON /CVARJE/ZC(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'OP0166' )
 C
-      INTEGER IAUX, JAUX, IRET
-      INTEGER IE, N1, N2, N3, NX, I
-      INTEGER IOC, NBOCC, NB, JMODL
-      INTEGER IEQ, NBEQUA
-      INTEGER IBID, KVALE,NBORDR
-      INTEGER NRPASS, NBPASS
+      INTEGER IAUX,JAUX,IRET
+      INTEGER IE,N1,N2,N3,I
+      INTEGER IBID,NBORDR
+      INTEGER NRPASS,NBPASS
       INTEGER ADRECG,JORDR,JPARA
 C
-      CHARACTER*4   TYPE
-      CHARACTER*8   K8,K8B,NOMA1,NOMA2,RESUIN
-      CHARACTER*8   LERES0, NOPASE, MODEL2
-      CHARACTER*16  TYPRES, NOMCMD
-      CHARACTER*19  RESUOU, CHAM1, CHAM2, NUAGE1, NUAGE2,METHOD
-      CHARACTER*19  LNO, LNO1, LNO2
-      CHARACTER*19  LERES1
+      CHARACTER*8 K8,K8B,NOMA1,NOMA2,NOMA3,RESUIN
+      CHARACTER*8 LERES0,NOPASE,NOMO1,NOMO2,MOA1,MOA2,CNREF
+      CHARACTER*16 TYPRES,NOMCMD,CORRES
+      CHARACTER*19 RESUOU,CHAM1,METHOD
+      CHARACTER*19 LERES1
       CHARACTER*24 NORECG
       CHARACTER*24 VALK(2)
-C
-      LOGICAL ELTF
+      LOGICAL ISOLE
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
-      IER = 0
-C
-C               12   345678   9012345678901234
-      NORECG = '&&'//NOMPRO//'_PARA_SENSI     '
-C
-      CALL GETRES( RESUOU , TYPRES , NOMCMD )
+      IER=0
       CALL TITRE
-      CALL GETVTX(' ','METHODE' ,1,1,1, METHOD, N3 )
-C
-C     --- SENSIBILITE : NOMBRE DE PASSAGES ---
-      IAUX = 1
-      JAUX = 1
-      IBID = 1
-      CALL PSRESE ( ' ', IBID, IAUX, RESUOU, JAUX,
-     &              NBPASS, NORECG, IRET )
-      CALL JEVEUO ( NORECG, 'L', ADRECG )
-C
-C     -- QUELQUES VERIFS. :
-C     ----------------------
-      IF (METHOD.EQ.'ELEM') THEN
-        ELTF=.TRUE.
-C       -- POUR L'INSTANT 'ELTFXX' N'EST PERMIS QUE POUR LES EVOL_XXX
-        CALL GETVID(' ','RESULTAT'       ,1,1,1, RESUIN, N1 )
-        IF (N1.EQ.0) CALL U2MESS('F','ALGORITH9_65')
 
-      ELSE IF (METHOD(1:6).EQ.'NUAGE_') THEN
-        ELTF=.FALSE.
-C       -- POUR L'INSTANT 'NUAGE_DEG_*' N'EST PERMIS QUE POUR LES CHAMPS
-        CALL GETVID(' ','CHAM_NO'       ,1,1,1, CHAM1, N1 )
-        IF (N1.EQ.0) CALL U2MESS('F','ALGORITH9_66')
+
+C     1- CALCUL DE RESUOU, TYPRES, METHOD, ISOLE, CHAM1, RESUIN :
+C     ------------------------------------------------------------
+C        RESUOU : NOM DU CONCEPT RESULTAT
+C        TYPRES : TYPE DU RESULTAT (CHAM_NO OU SD_RESULTAT)
+C        METHOD : METHODE CHOISIE POUR LA PROJECTION
+C        ISOLE  : .TRUE.  : ON NE PROJETTE QU'UN CHAMP ISOLE
+C                 .FALSE. : ON PROJETTE UNE SD_RESULTAT
+C        CHAM1  : NOM DU CHAMP A PROJETER (SI ISOLE)
+C        RESUIN : NOM DE LA SD_RESULTAT A PROJETER (SI .NOT.ISOLE)
+      CALL GETRES(RESUOU,TYPRES,NOMCMD)
+      CALL GETVTX(' ','METHODE',1,1,1,METHOD,N1)
+      CALL GETVID(' ','RESULTAT',1,1,1,RESUIN,N2)
+      IF (N2.EQ.1) THEN
+        ISOLE=.FALSE.
+        CHAM1=' '
+      ELSE
+        ISOLE=.TRUE.
+        CALL GETVID(' ','CHAM_NO',1,1,1,CHAM1,N3)
+        CALL ASSERT(N3.EQ.1)
+        RESUIN=' '
+      ENDIF
+
+
+C     2- CALCUL DE NOMA1, NOMA2, MOA1, MOA2, CNREF:
+C     ---------------------------------------------
+C        NOMA1 : NOM DU MAILLAGE "1"
+C        NOMA2 : NOM DU MAILLAGE "2"
+C        NOMO1 : NOM DU MODELE "1"  (OU ' ')
+C        NOMO2 : NOM DU MODELE "2"  (OU ' ')
+C        MOA1  : NOMO1 SI NON ' '. SINON : NOMA1
+C        MOA2  : NOMO2 SI NON ' '. SINON : NOMA2
+C        CNREF : NOM DU CHAM_NO "MODELE" "2" (SI NUAGE_DEG_0/1)
+      CALL GETVID(' ','MODELE_1',1,1,1,NOMO1,N1)
+      IF (N1.EQ.1) THEN
+        CALL DISMOI('F','NOM_MAILLA',NOMO1,'MODELE',IBID,NOMA1,IE)
+        MOA1=NOMO1
+      ELSE
+        NOMO1=' '
+        CALL GETVID(' ','MAILLAGE_1',1,1,1,NOMA1,N2)
+        CALL ASSERT(N2.EQ.1)
+        MOA1=NOMA1
+      ENDIF
+
+      CALL GETVID(' ','MODELE_2',1,1,1,NOMO2,N1)
+      IF (N1.EQ.1) THEN
+        CALL DISMOI('F','NOM_MAILLA',NOMO2,'MODELE',IBID,NOMA2,IE)
+        MOA2=NOMO2
+      ELSE
+        NOMO2=' '
+        CALL GETVID(' ','MAILLAGE_2',1,1,1,NOMA2,N2)
+        CALL ASSERT(N2.EQ.1)
+        MOA2=NOMA2
+      ENDIF
+
+      CALL GETVID(' ','CHAM_NO_REFE',1,1,1,CNREF,N1)
+      IF (N1.EQ.1) THEN
+        CALL DISMOI('F','NOM_MAILLA',CNREF,'CHAMP',IBID,NOMA3,IE)
+        CALL ASSERT(NOMA3.EQ.NOMA2)
+      ELSE
+        CNREF=' '
+      ENDIF
+
+
+C     3- CALCUL DE LA SD_CORRESP_2_MAILLA :
+C     ------------------------------------
+      CORRES='&&OP0166.CORRES'
+      IF (METHOD.EQ.'ELEM') THEN
+        CALL PJEFCO(MOA1,MOA2,CORRES,'V')
+      ELSEIF (METHOD(1:10).EQ.'NUAGE_DEG_') THEN
+        CALL PJNGCO(CORRES,NOMA1,NOMA2,METHOD,CNREF,'V')
       ELSE
         CALL ASSERT(.FALSE.)
-      END IF
-C
-C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES =============
-      DO 30 , NRPASS = 1 , NBPASS
-C
+      ENDIF
+
+
+
+
+C     4- PROJECTION DES CHAMPS :
+C     ------------------------------------
+
+C     --- SENSIBILITE : NOMBRE DE PASSAGES ---
+      NORECG='&&OP0166_PARA_SENSI     '
+      IAUX=1
+      JAUX=1
+      IBID=1
+      CALL PSRESE(' ',IBID,IAUX,RESUOU,JAUX,NBPASS,NORECG,IRET)
+      CALL JEVEUO(NORECG,'L',ADRECG)
+
+
+C======== DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES (SENSIBILITE)
+      DO 20,NRPASS=1,NBPASS
 C        POUR LE PASSAGE NUMERO NRPASS :
 C        . NOPASE : NOM DU PARAMETRE DE SENSIBILITE EVENTUELLEMENT
 C        . LERES1 : NOM DU CHAMP DE RESULTAT A COMPLETER
@@ -118,142 +169,48 @@ C                   COMPOSE A PARTIR DE RESUOU ET NOPASE POUR UN CALCUL
 C                   DE SENSIBILITE
 C        . LERES0 : IDEM POUR RESUIN
 C
-        NOPASE = ZK24(ADRECG+2*NRPASS-1)(1:8)
-        LERES1 = ZK24(ADRECG+2*NRPASS-2)(1:19)
+        NOPASE=ZK24(ADRECG+2*NRPASS-1)(1:8)
+        LERES1=ZK24(ADRECG+2*NRPASS-2)(1:19)
 C
-C DANS LE CAS D'UN CALCUL STANDARD :
 C
-        IF ( NOPASE.EQ.' ' ) THEN
-C
-          LERES0 = RESUIN
-C
-C DANS LE CAS D'UN CALCUL DE DERIVE :
-C
+        IF (NOPASE.EQ.' ') THEN
+C       -- DANS LE CAS D'UN CALCUL STANDARD :
+          LERES0=RESUIN
         ELSE
-C
-          CALL PSGENC ( RESUIN, NOPASE, LERES0, IRET )
-          IF ( IRET.NE.0 ) THEN
-             VALK(1) = RESUIN
-             VALK(2) = NOPASE
-             CALL U2MESK('A','SENSIBILITE_3', 2 ,VALK)
-            GOTO 30
+C       --DANS LE CAS D'UN CALCUL DE DERIVE :
+          CALL PSGENC(RESUIN,NOPASE,LERES0,IRET)
+          IF (IRET.NE.0) THEN
+            VALK(1)=LERES0
+            VALK(2)=NOPASE
+            CALL U2MESK('A','SENSIBILITE_3',2,VALK)
+            GOTO 20
+
           ENDIF
-C
         ENDIF
-C
-C     1.-- CAS METHODE: 'ELEM' :
-C     ----------------------------
-      IF (ELTF) THEN
-        CALL PJEFTE (LERES0, LERES1 )
-C
-C     2. -- CAS METHODE: 'NUAGE_DEG_0/1' :
-C     ---------------------------------
-      ELSE
-         CALL GETVID(' ','CHAM_NO'     ,1,1,1, CHAM1, N1 )
-         CALL CHPVER('F',CHAM1,'NOEU','*',IE)
-         CALL DISMOI('F', 'NOM_MAILLA', CHAM1, 'CHAMP', IBID, NOMA1, IE)
 
-C        C'EST LE MAILLAGE MAILLA1 QUI IMPOSE LA DIMENSION D'ESPACE DES
-C        DEUX NUAGES :
-         NX=3
-         CALL DISMOI('F','Z_CST' ,NOMA1,'MAILLAGE',IBID,K8,IE)
-         IF (K8.EQ.'OUI') NX=2
 
-         CALL GETVID(' ','CHAM_NO_REFE',1,1,1, CHAM2, N2 )
-         CALL CHPVER('F',CHAM2,'NOEU','*',IE)
-         CALL DISMOI('F', 'NOM_MAILLA', CHAM2, 'CHAMP', IBID, NOMA2, IE)
-C
-C
-         CALL GETFAC ( 'VIS_A_VIS' , NBOCC )
-         IF ( NBOCC .NE. 0 ) THEN
-C
-            CALL COPISD('CHAMP_GD','G',CHAM2,LERES1)
-            CALL JELIRA(LERES1//'.VALE','LONMAX',NBEQUA,K8B)
-            CALL JELIRA(LERES1//'.VALE', 'TYPE' ,IBID  ,TYPE )
-            CALL JEVEUO(LERES1//'.VALE','E',KVALE)
-            IF ( TYPE(1:1) .EQ. 'R' ) THEN
-               DO 10 IEQ = 0 , NBEQUA-1
-                  ZR(KVALE+IEQ) = 0.D0
- 10            CONTINUE
-            ELSEIF ( TYPE(1:1) .EQ. 'C' ) THEN
-               DO 12 IEQ = 0 , NBEQUA-1
-                  ZC(KVALE+IEQ) = 0.D0
- 12            CONTINUE
-            ENDIF
-C
-            DO 100 IOC = 1 , NBOCC
-C
-              LNO1 = '&&OP0166.LNO1'
-              CALL UTNUAV ( NOMA1, 1, IOC, LNO1 )
-C
-              LNO2 = '&&OP0166.LNO2'
-              CALL UTNUAV ( NOMA2, 2, IOC, LNO2 )
-C
-              NUAGE1 = '&&NUAGE1'
-              NUAGE2 = '&&NUAGE2'
-              CALL CHPNUA ( NX,CHAM1, LNO1 , NUAGE1 )
-              CALL CHPNUA ( NX,LERES1, LNO2 , NUAGE2 )
-C
-              CALL PRONUA ( METHOD , NUAGE1 , NUAGE2 )
-C
-              CALL NUACHP ( NUAGE2 , LNO2 , LERES1 )
-C
-              CALL DETRSD ( 'NUAGE', NUAGE1 )
-              CALL DETRSD ( 'NUAGE', NUAGE2 )
-              CALL JEDETR('&&OP0166.LNO1')
-              CALL JEDETR('&&OP0166.LNO2')
- 100       CONTINUE
-C
-         ELSE
-C
-            CALL COPISD('CHAMP_GD','G',CHAM2,LERES1)
-            CALL JELIRA(LERES1//'.VALE','LONMAX',NBEQUA,K8B)
-            CALL JELIRA(LERES1//'.VALE', 'TYPE' ,IBID  ,TYPE )
-            CALL JEVEUO(LERES1//'.VALE','E',KVALE)
-            IF ( TYPE(1:1) .EQ. 'R' ) THEN
-               DO 20 IEQ = 0 , NBEQUA-1
-                  ZR(KVALE+IEQ) = 0.D0
- 20            CONTINUE
-            ELSEIF ( TYPE(1:1) .EQ. 'C' ) THEN
-               DO 22 IEQ = 0 , NBEQUA-1
-                  ZC(KVALE+IEQ) = 0.D0
- 22            CONTINUE
-            ENDIF
-C
-            LNO = ' '
-            NUAGE1 = '&&NUAGE1'
-            NUAGE2 = '&&NUAGE2'
-            CALL CHPNUA ( NX,CHAM1, LNO , NUAGE1 )
-            CALL CHPNUA ( NX,LERES1, LNO , NUAGE2 )
-C
-            CALL PRONUA ( METHOD , NUAGE1 , NUAGE2 )
-C
-            CALL NUACHP ( NUAGE2 , LNO , LERES1 )
-C
-            CALL DETRSD ( 'NUAGE', NUAGE1 )
-            CALL DETRSD ( 'NUAGE', NUAGE2 )
-C
-         ENDIF
-      ENDIF
-C
-   30 CONTINUE
-C
-C --- STOCKAGE
-C
-      IF (ELTF .AND. TYPRES(1:9).NE.'EVOL_CHAR' ) THEN
-        CALL GETVID(' ','MODELE_2',0,1,1,MODEL2,N1)
-        CALL JEVEUO(LERES1//'.ORDR','L',JORDR)
-        CALL JELIRA(LERES1//'.ORDR','LONUTI',NBORDR,K8B)
-        DO 70 I=1,NBORDR
-          CALL RSADPA(LERES1,'E',1,'MODELE',ZI(JORDR-1+I),0,JPARA,K8B)
-          ZK8(JPARA)=MODEL2
- 70     CONTINUE
-      ENDIF
-C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
+C       -- LA SENSIBILITE NE CONCERNE PAS LE CAS ISOLE:
+        IF (ISOLE) CALL ASSERT(NBPASS.EQ.1)
+        IF (ISOLE) CALL ASSERT(NOPASE.EQ.' ')
 
-C     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
-C     -------------------------------------------
-      CALL AJREFD(RESUIN,RESUOU,'ZERO')
 
+C       1- CAS CHAMP ISOLE :
+C       =====================
+        IF (ISOLE) THEN
+          CALL PJXXCH(CORRES,CHAM1,LERES1,' ','NON',' ','G',IRET)
+          CALL ASSERT(IRET.EQ.0)
+
+
+
+C       2- CAS SD_RESULTAT :
+C       =====================
+        ELSE
+          CALL PJXXPR(LERES0,LERES1(1:8),MOA1,MOA2,CORRES,'G')
+        ENDIF
+
+   20 CONTINUE
+C     ============= FIN DE LA BOUCLE SENSIBILITE
+
+      CALL DETRSD('CORRESP_2_MAILLA',CORRES)
       CALL JEDEMA()
       END

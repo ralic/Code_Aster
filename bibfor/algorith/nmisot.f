@@ -3,7 +3,7 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 01/02/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(3),OPTION
       REAL*8             CRIT(3),INSTAM,INSTAP,LINE
-      REAL*8             DEPS(6),PREC,DX,DEUXMU,DEMU,CINCO
+      REAL*8             DEPS(6),DX,DEUXMU,DEMU,CINCO
       REAL*8             SIGM(6),VIM(2),SIGP(6),VIP(2),DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     REALISE LA LOI DE VON MISES ISOTROPE ET ELASTIQUE POUR LES
@@ -73,36 +73,16 @@ C      COMMONS COMMUNS A NMCRI2 ET NMISOT
       REAL*8   NMCRI2
       EXTERNAL NMCRI2
 C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C
       LOGICAL     CPLAN,PLASTI,INCO,DECH
       REAL*8      DEPSTH(6),VALRES(3),EPSTHE,PM,CO,VAL0
       REAL*8      DEPSMO,SIGMMO,E,NU,TROISK,RPRIM,RP,AIRERP
       REAL*8      SIELEQ,SIGEPS,SEUIL,DP,COEF,DSDE,SIGY,HYDRM,HYDRP
       REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),SIGDV(6),DUM
       REAL*8      EM,NUM,TROIKM,DEUMUM,RBID,SIGMP(6),SIGEL(6),A,RBID2
-      REAL*8      SECHM,SECHP,SREF,TREF,TP,DEFAM(6),DEFAP(6)
+      REAL*8      SECHM,SECHP,SREF,TP,DEFAM(6),DEFAP(6)
       INTEGER     NDIMSI,JPROLM,JVALEM,NBVALM,JPROL2,JVALE2,NBVAL2
       INTEGER     IMATE2,JPROLP,JVALEP,NBVALP,K,L,NITER,IBID
-      INTEGER     IRET1, IRET2, IRET3, IRET4, IRET0,IRET5
+      INTEGER     IRET2, IRET3, IRET4, IRET0,IRET5
       CHARACTER*2 BL2, FB2, CODRET(3)
       CHARACTER*6       EPSA(6)
       CHARACTER*8 NOMRES(3)
@@ -142,7 +122,6 @@ C     ---------------------------------------
       NOMRES(2)='NU'
 C
       NOMPAR(1) = 'TEMP'
-      CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET1)
       CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET3)
       CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET4)
       VALPAM(1) = TM
@@ -161,9 +140,9 @@ C
 C
       DO 19 K=1,6
          DEFAM(K) = 0.D0
-         DEFAP(K) = 0.D0         
+         DEFAP(K) = 0.D0
  19   CONTINUE
- 
+
       DO 20 K=1,NDIMSI
         CALL RCVARC(' ',EPSA(K),'-',FAMI,KPG,KSP,DEFAM(K),IRET5)
         IF (IRET5.NE.0) DEFAM(K)=0.D0
@@ -279,8 +258,8 @@ C     ---------------------------------------
           NOMPAR(3)='HYDR'
           VALPAM(3)=HYDRM
           CALL RCTYPE(IMATE,3,NOMPAR,VALPAM,RESU,TYPE)
-          
-          IF ((TYPE.EQ.'TEMP').AND.(IRET3.EQ.1)) 
+
+          IF ((TYPE.EQ.'TEMP').AND.(IRET3.EQ.1))
      &        CALL U2MESS('F','CALCULEL_31')
           CALL RCTRAC(IMATE,'TRACTION','SIGM',TM,JPROLM,JVALEM,
      &                NBVALM,EM)
@@ -295,7 +274,7 @@ C     ---------------------------------------
           NOMPAR(3)='HYDR'
           VALPAP(3)=HYDRP
           CALL RCTYPE(IMATE,3,NOMPAR,VALPAP,RESU,TYPE)
-          IF ((TYPE.EQ.'TEMP').AND.(IRET4.EQ.1)) 
+          IF ((TYPE.EQ.'TEMP').AND.(IRET4.EQ.1))
      &        CALL U2MESS('F','CALCULEL_31')
           CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,JPROLP,JVALEP,
      &                NBVALP,E)
@@ -537,7 +516,7 @@ C       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
  136      CONTINUE
         ENDIF
       ENDIF
-      
+
 C
  9999 CONTINUE
 C FIN ------------------------------------------------------------------

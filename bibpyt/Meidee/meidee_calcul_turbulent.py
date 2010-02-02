@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_turbulent Meidee  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_calcul_turbulent Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+# RESPONSABLE BODEL C.BODEL
 
 from Utilitai.Utmess import UTMESS
 from Numeric import array, zeros, conjugate, identity
@@ -28,6 +29,7 @@ import MLab
 import aster
 from Matrix import Matrix
 from Accas import _F
+from Cata.cata import CREA_CHAMP, PROJ_CHAMP, DETRUIRE, OBSERVATION
 
 
 class CalculTurbulent:
@@ -222,11 +224,11 @@ class CalculInverse:
         elif type_intsp == 'VITE':exp = 1
         elif type_intsp == 'ACCE':exp = 2
         else: exp = 0
-        freq_i, xsi_i, mass_i, modes_i, amor_i, rigi_i = self.modele_mod.get_modes()
-        l_freq_i = array([i for i in freq_i[:,1]])       # frequences propres
-        l_omega_i = 2*pi*l_freq_i                        # pulsations propres equivalentes
-        l_xsi_i  = array([j for j in  xsi_i[:,1]])       # amorstissements reduits propres
-        l_mass_i  = array([j for j in  mass_i[:,1]])     # masses modales
+        cara_mod = self.modele_mod.get_modes_data()
+        l_freq_i = array(cara_mod['FREQ'])        # frequences propres
+        l_omega_i = 2*pi*l_freq_i                 # pulsations propres equivalentes
+        l_xsi_i  = array(cara_mod['AMOR_REDUIT']) # amorstissements reduits propres
+        l_mass_i  = array(cara_mod['MASS_GENE'])  # masses modales
         for ind_freq in range(self.nb_freq):
             omega = 2*pi*self.f[ind_freq]
             for ind_mod in range(self.nb_mod):
@@ -296,10 +298,12 @@ class CalculInverse:
         """ Recalcule l'inter-spectre Syy a partir de SQQ pour verification"""
 
         CPhi = Matrix(self.CPhi)
-        CPhi_H = conjugate(transpose(Matrix(CPhi)))
+        CPhi_H = Matrix(conjugate(transpose(CPhi)))
         for ind_freq in range(self.nb_freq):
+            Zm1 = Matrix(self.Zm1[ind_freq,:,:])
+            Zm1_H = Matrix(conjugate(transpose(Zm1)))
             SQQ_f = Matrix(self.SQQ[ind_freq,:,:])
-            Syy_R_f = CPhi*SQQ_f*CPhi_H
+            Syy_R_f = CPhi*Zm1*SQQ_f*Zm1_H*CPhi_H
             self.Syy_R[ind_freq,:,:] = Syy_R_f
             
         Syy_R = InterSpectre(nom        = 'SQQ_R',

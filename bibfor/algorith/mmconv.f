@@ -3,7 +3,7 @@
      &                  MMCVGO)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -185,6 +185,9 @@ C
 C     
       IF (CFDISL(DEFICO,'REAC_GEOM_MANU')) THEN
         IF (MMITGO.EQ.NBREAG) THEN
+          IF (.NOT.MMCVGO) THEN
+            CALL U2MESS('A','CONTACT3_96')
+          ENDIF
           MMCVGO = .TRUE.
         ELSE
           MMCVGO = .FALSE.

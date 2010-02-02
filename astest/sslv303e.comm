@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE
 # sslv303e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -63,7 +63,8 @@ CLIM=AFFE_CHAR_MECA(    MODELE=MODELE,
 
 #   GRAVITE SUIVANT X : AVEC LES 2 MOTS-CLES
 CHARG1=AFFE_CHAR_MECA(      MODELE=MODELE,
-                         PESANTEUR= ( 4.905,  1.,  0.,  0. ),
+                         PESANTEUR= _F(GRAVITE=4.905,
+                                       DIRECTION=(1.,  0.,  0. ),),
                       )
 CHARG2=AFFE_CHAR_MECA(      MODELE=MODELE,
                      FORCE_INTERNE=_F( TOUT = 'OUI',  FX = 38259.)

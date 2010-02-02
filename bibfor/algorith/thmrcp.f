@@ -8,10 +8,10 @@
      &                   DLAMBS, VISCL, DVISCL, MAMOLG, CPG, LAMBT,
      &                   DLAMBT, VISCG, DVISCG, MAMOLV, CPVG, VISCVG,
      &                   DVISVG, FICKAD, DFADT, CPAD, KH, PAD,
-     &                   EM, LAMBCT, ISOT)
+     &                   EM, LAMBCT, ISOT, INSTAP)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C =====================================================================
       REAL*8        ALPHA, CPL, LAMBS, DLAMBS, VISCL, DVISCL, CPG,PAD
       REAL*8        LAMBT, DLAMBT, VISCG, DVISCG, MAMOLG, CPVG, VISCVG
       REAL*8        DVISVG, FICKAD,DFADT,ENDO, MAMOLV, P1M,CPAD,KH,EM
-      REAL*8        LAMBCT, UNSURK, ISOT(3)
+      REAL*8        LAMBCT, UNSURK, ISOT(3), INSTAP
       CHARACTER*8   ETAPE
       CHARACTER*16  MECA,THMC,THER,HYDR
 C =====================================================================
@@ -125,7 +125,7 @@ C
       REAL*8      VAL35(DIM35+1),VAL36(DIM36),VAL37(DIM37),VAL38(DIM38)
       REAL*8      VAL40(DIM40),VAL41(DIM41),VAL42(DIM42),VAL43(DIM43)
       REAL*8      VAL39(DIM39),VALPAR(DIMPAR), COND(NCON), R8VIDE
-      REAL*8      VG(DIMVG)
+      REAL*8      VG(DIMVG),FPESA
 C
       CHARACTER*2   CODRET(NRESMA)
       CHARACTER*4   NOMPAR(DIMPAR)
@@ -936,9 +936,19 @@ C
      &                       3, NCRA18(11), VAL18(11), CODRET, ' ')
 
 C
-            PESA(1) = VAL18(1)
-            PESA(2) = VAL18(2)
-            PESA(3) = VAL18(3)
+           CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
+     &                 1, 'PESA_MUL', FPESA, CODRET, ' ')
+C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
+C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
+C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
+C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
+C DEFINIE DANS LE FICHIER DE COMMANDE 
+            IF (CODRET(1).EQ.'NO') THEN                  
+                FPESA=1.D0
+            ENDIF
+            PESA(1) = FPESA*VAL18(1)
+            PESA(2) = FPESA*VAL18(2)
+            PESA(3) = FPESA*VAL18(3)
             PERMFH  = VAL18(4)
             LAMBT   = VAL18(6)
             DLAMBT  = VAL18(7)
@@ -1008,10 +1018,20 @@ C =====================================================================
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
      &                            3, NCRA20(12), VAL20(12), CODRET, ' ')
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
+     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
+C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
+C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
+C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
+C DEFINIE DANS LE FICHIER DE COMMANDE            
+            IF (CODRET(1).EQ.'NO') THEN
+                FPESA=1.D0
+            ENDIF
             RGAZ    = VAL20( 1)
-            PESA(1) = VAL20( 2)
-            PESA(2) = VAL20( 3)
-            PESA(3) = VAL20( 4)
+            PESA(1) = VAL20( 2)*FPESA
+            PESA(2) = VAL20( 3)*FPESA
+            PESA(3) = VAL20( 4)*FPESA
             PERMFH  = VAL20( 5)
             LAMBT   = VAL20( 7)
             DLAMBT  = VAL20( 8)
@@ -1116,10 +1136,20 @@ C =====================================================================
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
      &                            3, NCRA22(21), VAL22(21), CODRET, ' ')
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
+     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
+C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
+C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
+C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
+C DEFINIE DANS LE FICHIER DE COMMANDE            
+            IF (CODRET(1).EQ.'NO') THEN
+                FPESA=1.D0
+            ENDIF
             RGAZ    = VAL22( 1)
-            PESA(1) = VAL22( 2)
-            PESA(2) = VAL22( 3)
-            PESA(3) = VAL22( 4)
+            PESA(1) = VAL22( 2)*FPESA
+            PESA(2) = VAL22( 3)*FPESA
+            PESA(3) = VAL22( 4)*FPESA
             PERMFH  = VAL22( 5)
             LAMBT   = VAL22( 7)
             DLAMBT  = VAL22( 8)
@@ -1272,10 +1302,20 @@ C
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
      &                            3, NCRA25(27), VAL25(27), CODRET, ' ')
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
+     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
+C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
+C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
+C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
+C DEFINIE DANS LE FICHIER DE COMMANDE            
+            IF (CODRET(1).EQ.'NO') THEN
+                FPESA=1.D0
+            ENDIF
             RGAZ    = VAL25( 1)
-            PESA(1) = VAL25( 2)
-            PESA(2) = VAL25( 3)
-            PESA(3) = VAL25( 4)
+            PESA(1) = VAL25( 2)*FPESA
+            PESA(2) = VAL25( 3)*FPESA
+            PESA(3) = VAL25( 4)*FPESA
             PERMFH  = VAL25( 5)
             LAMBT   = VAL25( 7)
             DLAMBT  = VAL25( 8)
@@ -1455,11 +1495,20 @@ C
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
      &                            3, NCRA40(32), VAL40(32), CODRET, ' ')
-
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
+     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
+C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
+C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
+C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
+C DEFINIE DANS LE FICHIER DE COMMANDE            
+            IF (CODRET(1).EQ.'NO') THEN
+                FPESA=1.D0
+            ENDIF 
             RGAZ    = VAL40( 1)
-            PESA(1) = VAL40( 2)
-            PESA(2) = VAL40( 3)
-            PESA(3) = VAL40( 4)
+            PESA(1) = VAL40( 2)*FPESA
+            PESA(2) = VAL40( 3)*FPESA
+            PESA(3) = VAL40( 4)*FPESA
             PERMFH  = VAL40( 5)
             LAMBT   = VAL40( 7)
             DLAMBT  = VAL40( 8)
@@ -1583,10 +1632,20 @@ C =====================================================================
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
      &                            3, NCRA29(21), VAL29(21), CODRET, ' ')
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
+     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
+C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
+C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
+C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
+C DEFINIE DANS LE FICHIER DE COMMANDE            
+            IF (CODRET(1).EQ.'NO') THEN
+                FPESA=1.D0
+            ENDIF
             RGAZ    = VAL29( 1)
-            PESA(1) = VAL29( 2)
-            PESA(2) = VAL29( 3)
-            PESA(3) = VAL29( 4)
+            PESA(1) = VAL29( 2)*FPESA
+            PESA(2) = VAL29( 3)*FPESA
+            PESA(3) = VAL29( 4)*FPESA
             PERMFH  = VAL29( 5)
             LAMBT   = VAL29( 7)
             DLAMBT  = VAL29( 8)
@@ -1687,9 +1746,19 @@ C =====================================================================
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
      &                            3, NCRA32(17), VAL32(17), CODRET, ' ')
-            PESA(1) = VAL32( 1)
-            PESA(2) = VAL32( 2)
-            PESA(3) = VAL32( 3)
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
+     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
+C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
+C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
+C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
+C DEFINIE DANS LE FICHIER DE COMMANDE            
+            IF (CODRET(1).EQ.'NO') THEN
+                FPESA=1.D0
+            ENDIF
+            PESA(1) = VAL32( 1)*FPESA
+            PESA(2) = VAL32( 2)*FPESA
+            PESA(3) = VAL32( 3)*FPESA
             PERMFH  = VAL32( 4)
             LAMBT   = VAL32( 6)
             DLAMBT  = VAL32( 7)

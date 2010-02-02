@@ -1,6 +1,6 @@
       SUBROUTINE TE0492 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 01/02/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,11 +17,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
-C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES EN 2D
+C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 C                          OPTION : 'CHAR_MECA_HYDR_R'
+C                                   'CHAR_MECA_SECH_R'
 C
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -30,8 +31,9 @@ C ......................................................................
 C
       CHARACTER*4        FAMI
       REAL*8             BSIGMA(81), SIGTH(162), REPERE(7), INSTAN
-      REAL*8             NHARM, XYZ(3)
-      INTEGER            NBSIGM,IDIM
+      REAL*8             NHARM, XYZ(3),ZERO
+      INTEGER            NBSIGM,IDIM,I,IDFDE,IGEOM,IMATE,IPOIDS,IRET
+      INTEGER            ITEMPS,IVECTU,IVF,JGANO,NBSIG,NDIM,NNO,NNOS,NPG
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 # ssnv128r.para = tps_job 170 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,136 +28,146 @@
 # VECT_Y ET VECT_Z PARCEQUE LES DIRECTIONS
 # DE GLISSEMENT SONT CONSTRUITES AUTOMATIQUEMENT
 
-DEBUT(CODE=_F(NOM = 'SSNV128R',NIV_PUB_WEB='INTERNET'),
-      IGNORE_ALARM=('CALCULEL2_63'))
+DEBUT(CODE=_F(NOM='SSNV128R',
+              NIV_PUB_WEB='INTERNET',),
+      IGNORE_ALARM='CALCULEL2_63',);
 
 # <CALCULEL2_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
 #  LE MODELE PROVOQUANT CES ALARMES CONTIENT UNE SURFACE RIGIDE POUR LE CONTACT
-
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 3D HEXA8
 #  PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 
 PRE_GIBI();
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'));
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
 
-MA=DEFI_GROUP(reuse=MA,
+MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(NOM='NCONTA',
-                                GROUP_MA='SCONTA'),
-                             _F(NOM='PP',
-                                UNION=('PPSZ','PPS')),
-                             _F(NOM='NPLAQ',
-                                GROUP_MA='VPLAQ',),
-                             _F(NOM='NBLOCZ',
-                                DIFFE=('NPLAQ','NCONTA')),
-                             _F(NOM='NENCA',
-                                GROUP_MA='SBATI',
-                                CRIT_NOEUD='SOMMET')));
+              CREA_GROUP_NO=(_F(GROUP_MA='SCONTA',
+                                NOM='NCONTA',),
+                             _F(UNION=('PPSZ','PPS',),
+                                NOM='PP',),
+                             _F(GROUP_MA='VPLAQ',
+                                NOM='NPLAQ',),
+                             _F(DIFFE=('NPLAQ','NCONTA',),
+                                NOM='NBLOCZ',),
+                             _F(GROUP_MA='SBATI',
+                                NOM='NENCA',
+                                CRIT_NOEUD='SOMMET',),),);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT = 'OUI',
-                       PHENOMENE = 'MECANIQUE',
-                       MODELISATION = '3D'));
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
 
-MA=MODI_MAILLAGE(reuse=MA,
+MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_3D=(_F(GROUP_MA = 'SPRESV'),
-                               _F(GROUP_MA = 'SPRESH')));
+                 ORIE_PEAU_3D=(_F(GROUP_MA='SPRESV',),
+                               _F(GROUP_MA='SPRESH',),),);
 
-MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11, NU = 0.2));
+MATPLA=DEFI_MATERIAU(ELAS=_F(E=1.3E11,
+                             NU=0.2,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT = 'OUI',
-                            MATER = MATPLA));
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATPLA,),);
 
-CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=(_F(GROUP_MA_MAIT = 'SBATI',
-                               GROUP_MA_ESCL  = 'SCONTA',
-                               METHODE        = 'CONTINUE',
-                               CONTACT_INIT   = 'OUI',
-                               SEUIL_INIT     = 0.,
-                               SANS_GROUP_NO_FR= 'PP',
-                               ITER_GEOM_MAXI = 2,
-                               ITER_FROT_MAXI = 12,
-                               ITER_CONT_MAXI = 10,
-                               FROTTEMENT     = 'COULOMB',
-                               COULOMB        = 1.0)),
-                    INFO=1);
+CHA1=DEFI_CONTACT(MODELE=MO,
+                  FORMULATION='CONTINUE',
+                  FROTTEMENT='COULOMB',
+                  ITER_GEOM_MAXI=2,
+                  ITER_CONT_MAXI=10,
+                  ITER_FROT_MAXI=12,
+                  ZONE=_F(GROUP_MA_MAIT='SBATI',
+                          GROUP_MA_ESCL='SCONTA',
+                          CONTACT_INIT='OUI',
+                          COULOMB=1.0,
+                          SANS_GROUP_NO_FR='PP',
+                          SEUIL_INIT=0.,),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO = 'NENCA',  DX = 0., DY = 0., DZ=0.),
-                              _F(GROUP_MA = 'SBLOCX', DX = 0.),
-                              _F(GROUP_NO = 'NBLOCZ', DZ = 0.)),
-                    PRES_REP=(_F(GROUP_MA = 'SPRESV', PRES = 5.E07),
-                              _F(GROUP_MA = 'SPRESH', PRES = 15.E07)));
+                    DDL_IMPO=(_F(GROUP_NO='NENCA',
+                                 DX=0.,
+                                 DY=0.,
+                                 DZ=0.,),
+                              _F(GROUP_MA='SBLOCX',
+                                 DX=0.,),
+                              _F(GROUP_NO='NBLOCZ',
+                                 DZ=0.,),),
+                    PRES_REP=(_F(GROUP_MA='SPRESV',
+                                 PRES=5.E07,),
+                              _F(GROUP_MA='SPRESH',
+                                 PRES=15.E07,),),);
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    PROL_GAUCHE='LINEAIRE',
-                    PROL_DROITE='LINEAIRE',
-                    VALE=(0.0,0.0,1.0,1.0));
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          1.0,1.0,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1));
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
 
 #-----------------------------------------------------------
 
-U2M=STAT_NON_LINE(MODELE   = MO,
-                CHAM_MATER = CHMAT,
-                EXCIT      =(_F(CHARGE = CHA2, FONC_MULT = RAMPE),
-                             _F(CHARGE = CHA1)),
-                COMP_ELAS  = _F(RELATION = 'ELAS'),
-                NEWTON     = _F(REAC_ITER = 1),
-                INCREMENT  = _F(LIST_INST = L_INST),
-                CONVERGENCE= _F(ARRET = 'OUI',
-                               ITER_GLOB_MAXI = 20,
-                               RESI_GLOB_RELA = 1.0E-5));
+U2M=STAT_NON_LINE(MODELE=MO,
+                  CHAM_MATER=CHMAT,
+                  EXCIT=_F(CHARGE=CHA2,
+                           FONC_MULT=RAMPE,),
+                  CONTACT=CHA1,
+                  COMP_ELAS=_F(RELATION='ELAS',),
+                  INCREMENT=_F(LIST_INST=L_INST,),
+                  NEWTON=_F(REAC_ITER=1,),
+                  CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-5,
+                                 ITER_GLOB_MAXI=20,
+                                 ARRET='OUI',),);
 
-TEST_RESU(RESU=(_F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPA',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.86E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11'),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPB',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.72E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11'),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPC',
-                   NOM_CMP    = 'DX',
-                   VALE       = 2.28E-5,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                   PRECISION  = 5.E-2),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPD',
-                   NOM_CMP    = 'DX',
-                   VALE       = 1.98E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11'),
-                _F(RESULTAT   = U2M,
-                   INST       = 1.0,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'PPE',
-                   NOM_CMP    = 'DX',
-                   VALE       = 1.50E-5,
-                   PRECISION  = 5.E-2,
-                   REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11')));
+TEST_RESU(RESU=(_F(RESULTAT=U2M,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PPA',
+                   VALE=2.86e-05,
+                   PRECISION=0.05,
+                   REFERENCE='AUTRE_ASTER',
+                   VERSION='7.1.11',),
+                _F(RESULTAT=U2M,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PPB',
+                   VALE=2.72e-05,
+                   PRECISION=0.05,
+                   REFERENCE='AUTRE_ASTER',
+                   VERSION='7.1.11',),
+                _F(RESULTAT=U2M,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PPC',
+                   VALE=2.28e-05,
+                   PRECISION=0.05,
+                   REFERENCE='AUTRE_ASTER',
+                   VERSION='7.1.11',),
+                _F(RESULTAT=U2M,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PPD',
+                   VALE=1.98e-05,
+                   PRECISION=0.05,
+                   REFERENCE='AUTRE_ASTER',
+                   VERSION='7.1.11',),
+                _F(RESULTAT=U2M,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PPE',
+                   VALE=1.5e-05,
+                   PRECISION=0.05,
+                   REFERENCE='AUTRE_ASTER',
+                   VERSION='7.1.11',),),);
 
 FIN();
+
 #
+

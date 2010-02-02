@@ -1,5 +1,6 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
+# sdld04a.para = tps_job 60 mem_job 164Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -243,7 +244,8 @@ TEST_FONCTION(VALEUR=(
 # -----------------------------------------
 
 CHAM_NO=AFFE_CHAR_MECA(  MODELE=MODELE,
-                PESANTEUR=( 1., -1., 0., 0.,)
+                PESANTEUR=_F(GRAVITE=1.,
+                             DIRECTION=(-1., 0., 0.,),),
                         )
 
 #CHANNO = AFFE_CHAR_MECA( MODELE: MODELE

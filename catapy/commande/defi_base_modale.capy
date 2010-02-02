@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=mode_meca,
          ),
          b_ritz          =BLOC(condition = "RITZ != None",
            INTERF_DYNA     =SIMP(statut='f',typ=interf_dyna_clas ),
-           NUME_REF        =SIMP(statut='o',typ=nume_ddl_sdaster ),
+           NUME_REF        =SIMP(statut='f',typ=nume_ddl_sdaster ),
            ORTHO           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                                fr="Reorthonormalisation de la base de Ritz" ),
            LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),

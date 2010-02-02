@@ -1,5 +1,6 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE TAUX DE RESTITUTION AVEC ETAT INITIAL
+# sslp102b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -182,7 +183,8 @@ G14=CALC_G(        RESULTAT=RESU,
 DIX = FORMULE(NOM_PARA=('X','Y'),VALE='10.')
 
 CHPESA1=AFFE_CHAR_MECA(       MODELE=MO,
-                             PESANTEUR=(10., 0., -1., 0.,) )
+                             PESANTEUR=_F(GRAVITE=10.,
+                                          DIRECTION=( 0., -1., 0.,), ),)
 
 CHPESA2=AFFE_CHAR_MECA_F(           MODELE=MO,
                                FORCE_INTERNE=_F( TOUT = 'OUI', FY = DIX))

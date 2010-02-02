@@ -1,5 +1,5 @@
-      SUBROUTINE UTESTR(CHAM19,NONOEU,NOCMP,NBREF,REFI,REFR,REFC,TYPRES,
-     +                                           EPSI,CRIT,IFIC,SSIGNE)
+      SUBROUTINE UTESTR(CHAM19,NONOEU,NOCMP,NBREF,TBTXT,REFI,REFR,REFC,
+     +                                     TYPRES,EPSI,CRIT,IFIC,SSIGNE)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*19      CHAM19
       CHARACTER*17             NONOEU
@@ -9,11 +9,12 @@
       COMPLEX*16                                      REFC(NBREF)
       CHARACTER*1                                          TYPRES
       REAL*8                                          EPSI
+      CHARACTER*16                                 TBTXT(2)
       CHARACTER*(*)                                        CRIT, SSIGNE
       INTEGER                               REFI(NBREF),           IFIC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +35,7 @@ C     ENTREES:
 C        CHAM19 : NOM DU CHAM_NO DONT ON DESIRE VERIFIER 1 COMPOSANTE
 C        NONOEU : NOM DU NOEUD A TESTER
 C        NOCMP  : NOM DU DDL A TESTER SUR LE NOEUD NONOEU
+C        TBTXT  : (1)=REFERENCE, (2)=LEGENDE
 C        NBREF  : NOMBRE DE VALEURS DE REFERENCE
 C        REFR   : VALEUR REELLE ATTENDUE SUR LE DDL DU NOEUD
 C        REFC   : VALEUR COMPLEXE ATTENDUE SUR LE DDL DU NOEUD
@@ -71,7 +73,7 @@ C     VARIABLES LOCALES:
       COMPLEX*16   VALC
       CHARACTER*4  TESTOK
       CHARACTER*8  NOMMA
-      CHARACTER*19 PRCHNO
+      CHARACTER*19 PRCHNO,VALK(3)
       CHARACTER*24 NOLILI
       CHARACTER*1 K1BID
 C
@@ -87,14 +89,13 @@ C
 C
       CALL JELIRA(CHAM19//'.VALE','TYPE',IBID,TYPE)
       IF ( TYPE.NE.TYPRES ) THEN
-         WRITE(IFIC,*) TESTOK,' LE CHAMP '//CHAM19// ' EST A ',
-     +                  'VALEURS DE TYPE  "'//TYPE//'"  ET LA VALEUR DE'
-     +                 , ' REFERENCE DE TYPE  "'//TYPRES//'".'
-          GO TO 9999
+         VALK(1) = CHAM19
+         VALK(2) = TYPE
+         VALK(3) = TYPRES
+         CALL U2MESK('F','CALCULEL6_89', 3 ,VALK)
       ELSEIF (TYPE.NE.'R' .AND. TYPE.NE.'C') THEN
-          WRITE(IFIC,*) TESTOK,' LES CHAMPS DE  '//
-     +                  'TYPE  "'//TYPE//'"   SONT INTERDITS'
-          GO TO 9999
+         VALK(1) = TYPE
+         CALL U2MESK('F','CALCULEL6_90', 1 ,VALK)
       END IF
       CALL JEVEUO(CHAM19//'.VALE','L',IAVALE)
 C
@@ -108,17 +109,16 @@ C     -- ON RECHERCHE LE NUMERO CORRESPONDANT A NOCMP:
       CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',IANCMP)
       ICMP = INDIK8(ZK8(IANCMP),NOCMP,1,NCMPMX)
       IF (ICMP.EQ.0) THEN
-          WRITE (IFIC,*) TESTOK,' LE DDL :',NOCMP,
-     +                   'N EXISTE PAS DANS LA GRANDEUR:',NOGD
-          GO TO 9999
+         VALK(1) = NOCMP
+         VALK(2) = NOGD
+         CALL U2MESK('F','CALCULEL6_91', 2 ,VALK)
       END IF
 C
 C        -- RECUPERATION DU NUMERO DU NOEUD:
           CALL JENONU(JEXNOM(NOMMA//'.NOMNOE',NONOEU(1:8)),INO)
           IF (INO.EQ.0) THEN
-              WRITE (IFIC,*) TESTOK,' ON NE TROUVE PAS LE NOEUD',
-     +          ' : ',NONOEU(1:8)
-              GO TO 9999
+              VALK(1) =NONOEU(1:8)
+              CALL U2MESK('F','CALCULEL6_92', 1 ,VALK)
           END IF
 C
 C     --SI LE CHAMP EST A REPRESENTATION CONSTANTE:
@@ -140,10 +140,10 @@ C
               ELSEIF (TYPE .EQ. 'C' ) THEN
                   VALC = ZC(IAVALE-1+(INO-1)*NCMP+IDECAL)
               ENDIF
-              CALL UTITES(NOCMP,'         '//NONOEU(1:8),TYPE,NBREF,
+              CALL UTITES(TBTXT(1),TBTXT(2),TYPE,NBREF,
      +             REFI,REFR,REFC,VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
           ELSE
-              WRITE (IFIC,*) TESTOK,' ON NE TROUVE PAS LE DDL'
+              CALL U2MESS('F','CALCULEL6_93')
           END IF
       ELSE
 C        --SI LE CHAMP EST DECRIT PAR 1 "PRNO":
@@ -183,10 +183,10 @@ C
               ELSEIF (TYPE .EQ. 'C' ) THEN
                   VALC = ZC(IAVALE-1+ZI(IANUEQ-1+IVAL-1+IDECAL))
               ENDIF
-              CALL UTITES(NOCMP,'         '//NONOEU(1:8),TYPE,NBREF,
+              CALL UTITES(TBTXT(1),TBTXT(2),TYPE,NBREF,
      +             REFI,REFR,REFC,VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
           ELSE
-              WRITE (IFIC,*) TESTOK,' ON NE TROUVE PAS LE DDL'
+              CALL U2MESS('F','CALCULEL6_93')
           END IF
       END IF
  9999 CONTINUE

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2008   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,6 @@ MODES=DEFI_BASE_MODALE(RITZ=(
                            _F(MODE_MECA=MODET,
                               NMAX_MODE=5,),
                            ),
-                          NUME_REF=NUME,
                           );
 
 #CALCUL DE LA BASE DE MODES STATIQUES

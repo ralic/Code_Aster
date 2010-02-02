@@ -3,7 +3,7 @@
       INTEGER             IOCC, NBMA
       CHARACTER*(*)       MOFAZ, NOMAZ, LISMAZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/11/2009   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,15 +36,14 @@ C  NBMA          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 C -------------------------------------------------------
 C
 C    TYPE D'APPUI:
-C      - 'AU_MOINS_UN': LES MAILLES DU GROUPE PRODUIT PAR CET OPERATEUR
-C              ONT LA PARTICULARITÉ D'AVOIR AU MOINS UN DE LEURS NOEUDS
-C              DANS LA LISTE DES NOEUDS FOURNIS PAR CET OPÉRATEUR.
-C      - 'TOUT' : lES MAILLES DU GROUPE PRODUIT PAR CET OPERATEUR ONT LA
-C              PARTICULARITÉ D'AVOIR TOUS LEURS NOEUDS DANS LA LISTE DES
-C              NOEUDS FOURNIS PAR CET OPÉRATEUR.
-C      - 'SOMMET' : LES MAILLES DU GROUPE PRODUIT PAR CET OPERATEUR
-C              ONT LA PARTICULARITE D'AVOIR TOUS LEURS NOEUDS SOMMETS
-C              DANS LA LISTE DES NOEUDS FOURNIS PAR CET OPÉRATEUR.
+C      - 'AU_MOINS_UN': UNE MAILLE EST RETENUE SI L'UN DE SES NOEUDS
+C              EST DANS LA LISTE DES NOEUDS FOURNIS.
+C      - 'TOUT': UNE MAILLE EST RETENUE SI TOUS SES NOEUDS
+C              SONT DANS LA LISTE DES NOEUDS FOURNIS.
+C      - 'SOMMET': UNE MAILLE EST RETENUE SI TOUS SES NOEUDS SOMMETS
+C              SONT DANS LA LISTE DES NOEUDS FOURNIS.
+C      - 'MAJORITE': UNE MAILLE EST RETENUE SI PLUS DE LA MOITIE DE
+C             SES NOEUDS SONT DANS LA LISTE DES NOEUDS FOURNIS.
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -65,8 +64,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER        NBMALA, I, J, JMALA, JCO, IACNX, ILCNX, II, NBMC
-      INTEGER        JNOEU,NBNO,NNO, JJ, INDIIS, JLMAS, IDLIST, IMA, N1
-      INTEGER        ITYP, JNNMA, DIME, IBID, IRET
+      INTEGER        JNOEU,NBNO,NNO, JLMAS, IDLIST, IMA, N1
+      INTEGER        ITYP, JNNMA, NUNO,J1,K,NBNOT,IER
       CHARACTER*8    NOMA, K8BID, MOTCLE(2), TYMOCL(2),TYPMA
       CHARACTER*16   MOTFAC,TYPAPP
       CHARACTER*24   LISTRV,LISMAI,MESNOE,LISMAS,LNNMA
@@ -87,7 +86,7 @@ C     ================
       LNNMA     = '&&CGMAAL.NBNO_MA'
 
 C --  ON RECUPERE LES MAILLES DU TYPE D'APPUI 'AU_MOINS_UN'
-C     (COMMMUN A TOUT TYPE D'APPUION)
+C     (COMMMUN A TOUT TYPE D'APPUI)
       CALL CGMAAL(MOTFAC, IOCC, NOMA, LISTRV, NBMALA)
 C
 C --  RECUPERATION DU TYPE D'APPUI :
@@ -96,7 +95,7 @@ C --  RECUPERATION DU TYPE D'APPUI :
 C
 C --- TYPE D'APPUI = 'AU_MOINS_UN'
 C     ============================
-      IF(TYPAPP(1:11).EQ.'AU_MOINS_UN')THEN
+      IF(TYPAPP.EQ.'AU_MOINS_UN')THEN
          NBMA=NBMALA
          JLMAS=JMALA
          GOTO 333
@@ -116,70 +115,81 @@ C     --------------------------------------------------
       TYMOCL(2) = 'GROUP_NO'
       CALL RELIEM ( ' ', NOMA, 'NU_NOEUD', MOTFAC, IOCC, NBMC, MOTCLE,
      &                                          TYMOCL, MESNOE, NBNO )
-      CALL JEVEUO ( MESNOE, 'L', JNOEU )
-C
-C --  ON DETERMINE LE NOMBRE DE NOEUDS 'SOMMET' POUR CHAQUE MAILLE
-C     A CONSIDERER (CELLES DU TYPE D'APPUI 'AU_MOINS_UN')
-C     ---------------------------------------------------
+      CALL JEVEUO ( MESNOE, 'L', J1 )
+      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNOT,K8BID,IER)
+      CALL WKVECT('&&CGMAAP.NOEUDS','V V I',NBNOT,JNOEU)
+      DO 1, K=1,NBNO
+        NUNO=ZI(J1-1+K)
+        ZI(JNOEU-1+NUNO)=1
+1     CONTINUE
+
       CALL JEVEUO(NOMA//'.CONNEX','L',IACNX)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',ILCNX)
       CALL WKVECT(LNNMA,'V V I',NBMALA,JNNMA)
 
-C  -  SI LE TYPE D'APPUI EST 'SOMMET' :
-      IF(TYPAPP(1:6).EQ.'SOMMET')THEN
+
+      IF(TYPAPP.EQ.'SOMMET')THEN
+C     --  ON DETERMINE LE NOMBRE DE NOEUDS 'SOMMET' POUR CHAQUE MAILLE
         CALL JEVEUO ( NOMA//'.TYPMAIL', 'L', ITYP )
-        DIME = 3
-        CALL DISMOI('F','Z_CST',NOMA,'MAILLAGE',IBID,K8BID,IRET)
-        IF ( K8BID(1:3) .EQ. 'OUI' )  DIME = 2
 
         DO 10 I=1,NBMALA
           IMA=ZI(JMALA+I-1)
           CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP+IMA-1)),TYPMA)
 
-           IF ( DIME .EQ. 2 ) THEN
-               IF (TYPMA(1:4).EQ.'QUAD' )THEN
-                  ZI(JNNMA+I-1)=4
-               ELSE IF (TYPMA(1:4).EQ.'TRIA' )THEN
-                  ZI(JNNMA+I-1)=3
-               ENDIF
-            ELSE
-               IF (TYPMA(1:5).EQ.'TETRA')THEN
-                   ZI(JNNMA+I-1)=4
-               ELSE IF(TYPMA(1:5).EQ.'PENTA')THEN
-                   ZI(JNNMA+I-1)=6
-               ELSE IF(TYPMA(1:5).EQ.'PYRAM')THEN
-                   ZI(JNNMA+I-1)=5
-               ELSE IF(TYPMA(1:4).EQ.'HEXA' )THEN
-                   ZI(JNNMA+I-1)=8
-               ENDIF
-           ENDIF
+          IF (TYPMA(1:3).EQ.'POI' )THEN
+             ZI(JNNMA+I-1)=1
+          ELSE IF (TYPMA(1:3).EQ.'SEG' )THEN
+             ZI(JNNMA+I-1)=2
+          ELSE IF (TYPMA(1:4).EQ.'QUAD' )THEN
+             ZI(JNNMA+I-1)=4
+          ELSE IF (TYPMA(1:4).EQ.'TRIA' )THEN
+             ZI(JNNMA+I-1)=3
+          ELSE IF (TYPMA(1:5).EQ.'TETRA')THEN
+              ZI(JNNMA+I-1)=4
+          ELSE IF(TYPMA(1:5).EQ.'PENTA')THEN
+              ZI(JNNMA+I-1)=6
+          ELSE IF(TYPMA(1:5).EQ.'PYRAM')THEN
+              ZI(JNNMA+I-1)=5
+          ELSE IF(TYPMA(1:4).EQ.'HEXA' )THEN
+              ZI(JNNMA+I-1)=8
+          ENDIF
  10     CONTINUE
 
-C  -  SI LE TYPE D'APPUI EST 'TOUT' :
-      ELSEIF(TYPAPP(1:4).EQ.'TOUT')THEN
+      ELSEIF(TYPAPP.EQ.'TOUT'.OR.TYPAPP.EQ.'MAJORITE')THEN
         DO 20 I=1,NBMALA
           IMA=ZI(JMALA+I-1)
           ZI(JNNMA+I-1)=ZI(ILCNX+IMA)-ZI(ILCNX+IMA-1)
  20     CONTINUE
+      ELSE
+        CALL ASSERT(.FALSE.)
       ENDIF
-C
+
 C --  ON FILTRE LES MAILLES SUIVANT LES CRITERES RELATIFS
 C     A CHAQUE TYPE D'APPUI:
-C     -------------------
+C     ---------------------------------------------------
       NBMA=0
       DO 30 I=1,NBMALA
+         NNO=ZI(JNNMA+I-1)
+         IF (NNO.EQ.0) GOTO 30
+
          IMA=ZI(JMALA+I-1)
          JCO=IACNX+ZI(ILCNX+IMA-1)-1
-         NNO=ZI(JNNMA+I-1)
          II=0
          DO 40 J=1,NNO
-           JJ=INDIIS(ZI(JNOEU),ZI(JCO+J-1),1,NBNO)
-           IF(JJ.GT.0) II=II+1
+           NUNO=ZI(JCO+J-1)
+           IF (ZI(JNOEU-1+NUNO).EQ.1)  II=II+1
  40      CONTINUE
 
-         IF(II.EQ.NNO)THEN
-           NBMA=NBMA+1
-           ZI(JLMAS+NBMA-1)=IMA
+         IF(TYPAPP.EQ.'TOUT'.OR.TYPAPP.EQ.'SOMMET')THEN
+           IF(II.EQ.NNO)THEN
+             NBMA=NBMA+1
+             ZI(JLMAS+NBMA-1)=IMA
+           ENDIF
+         ELSE IF(TYPAPP.EQ.'MAJORITE')THEN
+           IF(II.GE.(NNO+1)/2)THEN
+             NBMA=NBMA+1
+             ZI(JLMAS+NBMA-1)=IMA
+           ENDIF
          ENDIF
  30    CONTINUE
 C
@@ -199,6 +209,7 @@ C     ===
       CALL JEDETR ( LISMAS )
       CALL JEDETR ( MESNOE )
       CALL JEDETR ( LNNMA  )
+      CALL JEDETR('&&CGMAAP.NOEUDS')
 C
       CALL JEDEMA()
 C

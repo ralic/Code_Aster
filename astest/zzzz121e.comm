@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE COUPLAGE ASTER_HOMARD - CAS 3D EN HEXAEDRES
 # zzzz121e.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,7 +135,8 @@ PRES_0 = 1e-14;
 #
 
 CHAR00=AFFE_CHAR_MECA(MODELE=MODE00,
-                      PESANTEUR=(G,4.,6.,-1.,),
+                      PESANTEUR=_F(GRAVITE=G,
+                                   DIRECTION=(4.,6.,-1.,),),
                       FACE_IMPO=_F(GROUP_MA='X_0',
                                    DX=0.,
                                    DY=0.,
@@ -202,7 +203,8 @@ MATE01=AFFE_MATERIAU(MAILLAGE=M01,
 # 5.3. CHARGEMENTS
 
 CHAR01=AFFE_CHAR_MECA(MODELE=MODE01,
-                      PESANTEUR=(G,4.,6.,-1.,),
+                      PESANTEUR=_F(GRAVITE=G,
+                                   DIRECTION=(4.,6.,-1.,),),
                       FACE_IMPO=_F(GROUP_MA='X_0',
                                    DX=0.,
                                    DY=0.,
@@ -263,7 +265,8 @@ MATE02=AFFE_MATERIAU(MAILLAGE=M02,
 # 8.3. CHARGEMENTS
 
 CHAR02=AFFE_CHAR_MECA(MODELE=MODE02,
-                      PESANTEUR=(G,4.,6.,-1.,),
+                      PESANTEUR=_F(GRAVITE=G,
+                                   DIRECTION=(4.,6.,-1.,),),
                       FACE_IMPO=_F(GROUP_MA='X_0',
                                    DX=0.,
                                    DY=0.,

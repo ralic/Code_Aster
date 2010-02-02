@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 27/06/2000
 # AUTEUR : F. LEBOUVIER (DELATCAD)
@@ -111,7 +111,8 @@ COND_LIM=AFFE_CHAR_MECA(     MODELE=MODELE,
 
 #
 POI_PROP=AFFE_CHAR_MECA(      MODELE=MODELE,
-                             PESANTEUR=(9.81,0.,0.,-1.,)
+                             PESANTEUR=_F(GRAVITE=9.81,
+                                          DIRECTION=(0.,0.,-1.,),),
                            )
 
 #

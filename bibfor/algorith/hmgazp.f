@@ -2,11 +2,11 @@
      +                  DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,
      +                  ADVICO,VICPHI,ADDEP1,ADCP11,ADDETE,ADCOTE,
      +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,
-     +                  DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,BIOT)
+     +                  DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,BIOT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ C ======================================================================
       REAL*8       EPSVM,PHIM,RHO11M,UMPRHS
       REAL*8       YOUNG,NU,BIOT,K0,CS,ALPHA0,ALPLIQ,CP12,SAT,N,MAMOLG
       REAL*8       R,RHO0,C0EPS,CSIGM,VARIA,ALP11,VARBIO,VARLQ,VARVP,EM
-      REAL*8       EPS
+      REAL*8       EPS,RINSTP
       PARAMETER  ( EPS = 1.D-21 ) 
       LOGICAL      EMMAG
 C ======================================================================
@@ -93,7 +93,7 @@ C =====================================================================
      +             RBID42,RBID26, RBID27, RBID28, RBID29,
      +             MAMOLG, CP21,RBID32, RBID33, RBID34, RBID35, 
      +             RBID36, RBID37,RBID38, RBID39,RBID45,RBID46,
-     +             RBID47,RBID48,RBID49,EM,RBID50,RBID51)
+     +             RBID47,RBID48,RBID49,EM,RBID50,RBID51,RINSTP)
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----

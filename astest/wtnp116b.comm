@@ -1,6 +1,7 @@
 
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
+# wtnp116b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -194,7 +195,8 @@ FLUH_00=AFFE_CHAR_MECA_F(MODELE=MODE_00,
 # 3.3.5. Gravite : selon la droite x=y
 
 PESA_00=AFFE_CHAR_MECA(MODELE=MODE_00,
-                       PESANTEUR=(10.,-.707107,-.707107,0.,),);
+                       PESANTEUR=_F(GRAVITE=10.,
+                                    DIRECTION=(-.707107,-.707107,0.,),),);
 #
 # 3.4. Calcul de la solution
 
@@ -395,7 +397,8 @@ FLUH_01=AFFE_CHAR_MECA_F(MODELE=MODE_01,
 # 7.3.5. Gravite : selon la droite x=y
 
 PESA_01=AFFE_CHAR_MECA(MODELE=MODE_01,
-                       PESANTEUR=(10.,-.707107,-.707107,0.,),);
+                       PESANTEUR=_F(GRAVITE=10.,
+                                    DIRECTION=(-.707107,-.707107,0.,),),);
 #
 # 7.4. Calcul de la solution
 

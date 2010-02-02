@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel5 Messages  DATE 02/02/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -221,9 +221,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  car on est en 3D et elle est de type %(k2)s.
 """),
 
-55 : _("""
- L'un des mots-cles ANGL_REP ou VECTEUR est à fournir pour l'option ARCO_ELNO_SIGM.
-"""),
+
 
 56 : _("""
  La combinaison 'fonction multiplicatrice' et 'chargement de type fonction' n'est pas autorisée car

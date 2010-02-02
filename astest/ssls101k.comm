@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
+# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION  
 # ssls101k.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -132,7 +132,8 @@ CHFC=AFFE_CHAR_MECA_F(MODELE=MODEL,
                                        FZ=FZC,),);
 
 CHPE=AFFE_CHAR_MECA(MODELE=MODEL,
-                    PESANTEUR=(10.0,0.0,0.0,-10.0,),);
+                      PESANTEUR=_F(GRAVITE= 10.,
+                                   DIRECTION=(0., 0., -10., ), ),)  
 
 MATELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                        MODELE=MODEL,
