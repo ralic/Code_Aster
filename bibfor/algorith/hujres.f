@@ -2,7 +2,7 @@
      &           SIGD, VIND, SIGF, VINF, IRET, ETATF)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 09/02/2010   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -128,7 +128,7 @@ C  APRES UNE NON CONVERGENCE, POUR  INT(CRIT(5)) < -1
 
   500 CONTINUE
       IF (NOCONV) THEN
-        NDEC   = 4
+        NDEC   = 3
         IRET   = 0
         AREDEC = .TRUE.
         NOCONV = .FALSE.
@@ -142,7 +142,7 @@ C  APRES UNE NON CONVERGENCE, POUR  INT(CRIT(5)) < -1
       ENDIF
       
       IF (RDCTPS) THEN
-        NDEC = 4
+        NDEC = 3
         IRET = 0
         AREDEC = .TRUE.         
       ENDIF
@@ -345,32 +345,27 @@ C --- PREDICTEUR MIS A JOUR TENANT COMPTE DE L'ETAT PRECEDEMMENT OBTENU
               GOTO 100
             ELSE      
               IF (DEBUG) WRITE(6,'(A)') 'HUJRES :: SOLUTION EXPLICITE'
-              GOTO 45
             ENDIF            
           ENDIF
-                
-C --- S'IL N'Y A PAS DE CHANGEMENT DE MECANISME, ON POURSUIT
-        ELSE
-        
- 45       CONTINUE
-          MAJ = 0
-          IF (IDEC .LT. NDEC) THEN
-            CALL LCEQVE (SIGF, SIGD)
-            DO 50 I = 1, NVI
-              VIND(I) = VINF(I)
- 50           CONTINUE
-            DO 60 I = 1, NDT
-              DEPS(I) = DEPS0(I)/NDEC
- 60         CONTINUE
-C --- APPLICATION DE L'INCREMENT DE DÉFORMATIONS, SUPPOSE ELASTIQUE  
-C            CALL HUJELA(MOD,CRIT,MATER,DEPS,SIGD,SIGF,EPSD,IRET)
-            CALL HUJPRE('ELASTIC', MOD, CRIT, IMAT, MATER, DEPS,
-     &              SIGD, SIGF, EPSD, VIND, IRET)         
-          ENDIF
-          
-        ENDIF
+        ENDIF        
 C End - CHGMEC
-
+C --- S'IL N'Y A PAS DE CHANGEMENT DE MECANISME, ON POURSUIT
+        
+        MAJ = 0
+        IF (IDEC .LT. NDEC) THEN
+          CALL LCEQVE (SIGF, SIGD)
+          DO 50 I = 1, NVI
+            VIND(I) = VINF(I)
+ 50         CONTINUE
+          DO 60 I = 1, NDT
+            DEPS(I) = DEPS0(I)/NDEC
+ 60       CONTINUE
+C --- APPLICATION DE L'INCREMENT DE DÉFORMATIONS, SUPPOSE ELASTIQUE  
+C          CALL HUJELA(MOD,CRIT,MATER,DEPS,SIGD,SIGF,EPSD,IRET)
+          CALL HUJPRE('ELASTIC', MOD, CRIT, IMAT, MATER, DEPS,
+     &            SIGD, SIGF, EPSD, VIND, IRET)         
+        ENDIF
+        
  400    CONTINUE
 C End - Boucle sur les redecoupages
 

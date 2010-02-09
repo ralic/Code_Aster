@@ -1,6 +1,6 @@
       SUBROUTINE TE0279(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,17 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER JGANO,NNO,KP,NPG,I,J,IJ,L,IMATTT,ITEMPS,IFON(3)
       INTEGER ISECHI,ISECHF
       INTEGER ICOMP,ITEMPI,NNOS,NDIM
+      INTEGER NPG2,IPOID2,IVF2,IDFDE2
+      LOGICAL LTEATT
 C DEB ------------------------------------------------------------------
+      IF ( (LTEATT(' ','LUMPE','OUI')).AND.
+     &    (NOMTE(6:10).NE.'PYRAM')) THEN
+         CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &            IDFDE2,JGANO)
+      ELSE
+         CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &            IDFDE2,JGANO)
+      ENDIF
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -67,10 +77,6 @@ C DEB ------------------------------------------------------------------
       CALL JEVECH('PTEMPEI','L',ITEMPI)
       CALL JEVECH('PCOMPOR','L',ICOMP)
       CALL JEVECH('PMATTTR','E',IMATTT)
-
-      IF ((ZK16(ICOMP) (1:9).EQ.'THER_HYDR')) THEN
-        CALL U2MESS('F','ELEMENTS3_57')
-      END IF
 
       DELTAT = ZR(ITEMPS+1)
       THETA = ZR(ITEMPS+2)
@@ -101,11 +107,13 @@ CCDIR$ IVDEP
    30     CONTINUE
    40   CONTINUE
 
-        DO 80 KP = 1,NPG
+        DO 80 KP = 1,NPG2
           L = (KP-1)*NNO
+          CALL DFDM3D ( NNO, KP, IPOID2, IDFDE2,
+     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
           TPGI = 0.D0
           DO 50 I = 1,NNO
-            TPGI = TPGI + ZR(ITEMPI+I-1)*ZR(IVF+L+I-1)
+            TPGI = TPGI + ZR(ITEMPI+I-1)*ZR(IVF2+L+I-1)
    50     CONTINUE
           CALL RCFODE(IFON(1),TPGI,R8BID,RHOCP)
 
@@ -114,8 +122,8 @@ CCDIR$ IVDEP
             DO 60 J = 1,I
               IJ = (I-1)*I/2 + J
               ZR(IMATTT+IJ-1) = ZR(IMATTT+IJ-1) +
-     &                        POIDS*KHI*RHOCP*ZR(IVF+L+I-1)*
-     &                        ZR(IVF+L+J-1)/DELTAT
+     &                        POIDS*KHI*RHOCP*ZR(IVF2+L+I-1)*
+     &                        ZR(IVF2+L+J-1)/DELTAT
    60       CONTINUE
    70     CONTINUE
    80   CONTINUE
@@ -151,11 +159,24 @@ C
               IJ = (I-1)*I/2 + J
               ZR(IMATTT+IJ-1) = ZR(IMATTT+IJ-1) +
      &                          POIDS* (THETA*DIFF* (DFDX(I)*DFDX(J)+
-     &                          DFDY(I)*DFDY(J)+DFDZ(I)*DFDZ(J))+
-     &                          KHI*ZR(IVF+L+I-1)*ZR(IVF+L+J-1)/DELTAT)
+     &                          DFDY(I)*DFDY(J)+DFDZ(I)*DFDZ(J)))
   120       CONTINUE
   110     CONTINUE
    90   CONTINUE
+        DO 91 KP = 1,NPG2
+          L = (KP-1)*NNO
+          CALL DFDM3D ( NNO, KP, IPOID2, IDFDE2,
+     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
+          DO 111 I = 1,NNO
+C
+            DO 121 J = 1,I
+              IJ = (I-1)*I/2 + J
+              ZR(IMATTT+IJ-1) = ZR(IMATTT+IJ-1) +
+     &                          POIDS*
+     &                     (KHI*ZR(IVF2+L+I-1)*ZR(IVF2+L+J-1)/DELTAT)
+  121       CONTINUE
+  111     CONTINUE
+   91   CONTINUE
 C
       ENDIF
 

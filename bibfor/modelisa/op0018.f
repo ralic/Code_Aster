@@ -3,7 +3,7 @@
 C RESPONSABLE PELLET J.PELLET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 08/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,37 +34,37 @@ C       - L AFFECTATION D ELEMENTS FINIS A TOUS LES NOEUDS DEMANDES
 C       - L AFFECTATION D ELEMENTS FINIS SUR UNE MAILLE AU MOINS
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER        ZI
+      INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8         ZR
+      REAL*8 ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16     ZC
+      COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL        ZL
+      LOGICAL ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8    ZK8
-      CHARACTER*16          ZK16
-      CHARACTER*24                  ZK24
-      CHARACTER*32                          ZK32
-      CHARACTER*80                                  ZK80
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNOM,JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER     VALI(4),D1,D2
+      INTEGER VALI(4),D1,D2
       CHARACTER*4 KIOC,CDIM
       CHARACTER*8 NOMA,NOMU,K8B,VERIF(2),EXIVF
-      CHARACTER*8 TYPEMA,NOMAIL,TABMAI(8)
+      CHARACTER*8 TYPEMA
       CHARACTER*16 K16BID
-      CHARACTER*16 CONCEP,CMD,PHENOM,TYPELE,MODELI,LMODEL(10),TYPEMO
+      CHARACTER*16 CONCEP,CMD,PHENOM,MODELI,LMODEL(10)
       CHARACTER*19 LIGREL
       CHARACTER*24 NOMMAI,NOMNOE,TYPMAI,GRPNOE,GRPMAI,TMPDEF
       CHARACTER*24 CPTNEM,CPTNBN,CPTLIE,CPTMAI,CPTNOE
       CHARACTER*32 PHEMOD
       LOGICAL LMAIL,LNOEU,LAXIS
       INTEGER I,I2D,I3D,IBID,ICO,IDIM,IDIM2,IER,IFM,II,IMODEL,IMODL
-      INTEGER IMPVER,IOC,J,JC,JDEF,JDGM,JDGN,JDLI,JDMA,JDMA2,JDNB
-      INTEGER JLGRF,JDNO,JDNW,JDPM,JDTM,JMUT,JMUT2,JNUT,JTMDIM,K
+      INTEGER IOC,J,JDEF,JDGM,JDGN,JDLI,JDMA,JDMA2,JDNB
+      INTEGER JLGRF,JDNO,JDNW,JDPM,JDTM,JMUT,JMUT2,JNUT,JTMDIM
       INTEGER LONLIE,LONNEM,NBGREL,NBGRMA,NBGRNO,NBMAAF,NBMAIL
       INTEGER NBMPAF,NBMPCF,NBNOAF,NBNOEU,NBNPAF,NBNPCF,NBOC
       INTEGER NBOC2,NBV,NDGM,NDGN,NDMA,NDMAX,NDMAX1,NDMAX2,NDNO
@@ -81,9 +81,9 @@ C     ------------------------------------------------------------------
 
       CALL JEMARQ()
 
-      LMAIL = .FALSE.
-      LNOEU = .FALSE.
-      LAXIS = .FALSE.
+      LMAIL=.FALSE.
+      LNOEU=.FALSE.
+      LAXIS=.FALSE.
 
 C     RECUPERATION DU NIVEAU D'IMPRESSION
 C     -----------------------------------
@@ -96,7 +96,7 @@ C ---   INITIALISATION DU NB D'ERREUR
 C ---   RECUPERATION DES ARGUMENTS  DE LA COMMANDE
 
       CALL GETRES(NOMU,CONCEP,CMD)
-      LIGREL = NOMU//'.MODELE'
+      LIGREL=NOMU//'.MODELE'
 
 C - MAILLAGE
 
@@ -105,28 +105,26 @@ C - MAILLAGE
 C - VERIF
 
       CALL GETVTX(' ','VERIF',1,1,2,VERIF,NBV)
-      IMPVER = 0
-      IF (NIV.EQ.2) IMPVER = 1
 
 C - GRANDEURS CARACTERISTIQUES
 
-      K16BID = 'GRANDEUR_CARA'
-      CALL GETFAC ( K16BID, NBOC )
-      IF ( NBOC.GT.0 ) THEN
-        CALL CETUCR ( K16BID, NOMU )
+      K16BID='GRANDEUR_CARA'
+      CALL GETFAC(K16BID,NBOC)
+      IF (NBOC.GT.0) THEN
+        CALL CETUCR(K16BID,NOMU)
       ENDIF
 
 C - AFFE
 
-      NDGM = 0
-      NDGN = 0
-      NDMA = 0
-      NDNO = 0
+      NDGM=0
+      NDGN=0
+      NDMA=0
+      NDNO=0
 
       CALL GETFAC('AFFE',NBOC)
       CALL GETFAC('AFFE_SOUS_STRUC',NBOC2)
 
-      DO 10 IOC = 1,NBOC
+      DO 10 IOC=1,NBOC
         CALL CODENT(IOC,'G',KIOC)
 
         CALL GETVTX('AFFE','TOUT',IOC,1,0,K8B,NTO)
@@ -136,16 +134,16 @@ C - AFFE
         CALL GETVEM(NOMA,'NOEUD','AFFE','NOEUD',IOC,1,0,K8B,NNO)
 
 
-        NDGM = MAX(NDGM,-NGM)
-        NDGN = MAX(NDGN,-NGN)
-        NDMA = MAX(NDMA,-NMA)
-        NDNO = MAX(NDNO,-NNO)
+        NDGM=MAX(NDGM,-NGM)
+        NDGN=MAX(NDGN,-NGN)
+        NDMA=MAX(NDMA,-NMA)
+        NDNO=MAX(NDNO,-NNO)
    10 CONTINUE
 
-      NDMAX1 = MAX(NDGM,NDGN)
-      NDMAX2 = MAX(NDMA,NDNO)
-      NDMAX = MAX(NDMAX1,NDMAX2)
-      IF (NDMAX.LE.0) NDMAX = 1
+      NDMAX1=MAX(NDGM,NDGN)
+      NDMAX2=MAX(NDMA,NDNO)
+      NDMAX=MAX(NDMAX1,NDMAX2)
+      IF (NDMAX.LE.0)NDMAX=1
 
 
 
@@ -153,41 +151,41 @@ C - AFFE
 C       -- ON TRAITE CE QUI EST COMMUN AUX MODELES AVEC ELEMENTS
 C                           ET AUX MODELES AVEC SOUS-STRUCTURES
 C       ---------------------------------------------------------------
-      CPTNBN = NOMU//'.MODELE    .NBNO'
+      CPTNBN=NOMU//'.MODELE    .NBNO'
       CALL WKVECT(NOMU//'.MODELE    .LGRF','G V K8',2,JLGRF)
       CALL WKVECT(CPTNBN,'G V I',1,JDNB)
-      ZK8(JLGRF) = NOMA
-      ZI(JDNB) = 0
+      ZK8(JLGRF)=NOMA
+      ZI(JDNB)=0
 
 C       -- RECHERCHE DU PHENOMENE :
       IF (NBOC.GT.0) THEN
         CALL GETVTX('AFFE','PHENOMENE',1,1,1,PHENOM,IBID)
-      ELSE IF (NBOC2.GT.0) THEN
+      ELSEIF (NBOC2.GT.0) THEN
         CALL GETVTX('AFFE_SOUS_STRUC','PHENOMENE',1,1,1,PHENOM,IBID)
-      END IF
+      ENDIF
       CALL JEECRA(NOMU//'.MODELE    .LGRF','DOCU',IBID,PHENOM(1:4))
 
 C       -- S'IL N'Y A PAS D'ELEMENTS ON SAUTE QUELQUES ETAPES:
-      IF (NBOC.EQ.0) GO TO 260
+      IF (NBOC.EQ.0)GOTO 190
 
 C       MODELE AVEC ELEMENTS:
 C ---   RECUPERATION DES NOMS JEVEUX DU CONCEPT MAILLAGE
 
-      NOMMAI = NOMA//'.NOMMAI'
-      NOMNOE = NOMA//'.NOMNOE'
-      TYPMAI = NOMA//'.TYPMAIL'
-      GRPNOE = NOMA//'.GROUPENO'
-      GRPMAI = NOMA//'.GROUPEMA'
+      NOMMAI=NOMA//'.NOMMAI'
+      NOMNOE=NOMA//'.NOMNOE'
+      TYPMAI=NOMA//'.TYPMAIL'
+      GRPNOE=NOMA//'.GROUPENO'
+      GRPMAI=NOMA//'.GROUPEMA'
 
 C ---   CONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
 
-      TMPDEF = NOMU//'.DEF'
+      TMPDEF=NOMU//'.DEF'
       CALL WKVECT(TMPDEF,'V V K8',NDMAX,JDEF)
 
-      CPTMAI = NOMU//'.MAILLE'
-      CPTNOE = NOMU//'.NOEUD'
-      CPTLIE = NOMU//'.MODELE    .LIEL'
-      CPTNEM = NOMU//'.MODELE    .NEMA'
+      CPTMAI=NOMU//'.MAILLE'
+      CPTNOE=NOMU//'.NOEUD'
+      CPTLIE=NOMU//'.MODELE    .LIEL'
+      CPTNEM=NOMU//'.MODELE    .NEMA'
 
 C     --  CREATION DES VECTEURS TAMPONS MAILLES ET NOEUDS
       CALL JELIRA(NOMMAI,'NOMMAX',NBMAIL,K8B)
@@ -205,11 +203,11 @@ C     --  CREATION DES VECTEURS TAMPONS MAILLES ET NOEUDS
 
 
 
-      DO 160 IOC = 1,NBOC
+      DO 110 IOC=1,NBOC
         CALL GETVTX('AFFE','PHENOMENE',IOC,1,1,PHENOM,NPH)
         CALL GETVTX('AFFE','MODELISATION',IOC,1,10,LMODEL,NMO)
         CALL ASSERT(NMO.GT.0)
-        D2 = -99
+        D2=-99
         CALL JERAZO(TMPDEF,NDMAX,1)
         CALL JERAZO('&&OP0018.MAILLE2',NBMAIL,1)
         CALL JERAZO('&&OP0018.MAILLE3',NBMAIL,1)
@@ -225,198 +223,198 @@ C       -- RAPPEL : LES MOTS CLES TOUT,GROUP_MA,... S'EXCLUENT
         CALL GETVEM(NOMA,'NOEUD','AFFE','NOEUD',IOC,1,NDMAX,ZK8(JDEF),
      &              NNO)
 
-        DO 140 IMODEL = 1,NMO
-          MODELI = LMODEL(IMODEL)
+        DO 90 IMODEL=1,NMO
+          MODELI=LMODEL(IMODEL)
           CALL JENONU(JEXNOM('&CATA.'//PHENOM(1:13)//'.MODL',MODELI),
      &                IMODL)
           CALL JEVEUO(JEXNUM('&CATA.'//PHENOM,IMODL),'L',JDPM)
 
-          PHEMOD = PHENOM//MODELI
+          PHEMOD=PHENOM//MODELI
           CALL DISMOI('F','DIM_TOPO',PHEMOD,'PHEN_MODE',D1,K8B,IBID)
           IF (D2.EQ.-99) THEN
-            D2 = D1
+            D2=D1
           ELSE
             IF (D2.NE.D1) CALL U2MESS('F','MODELISA5_51')
-          END IF
+          ENDIF
 
           IF (MODELI(1:4).EQ.'AXIS' .OR.
-     &        MODELI.EQ.'COQUE_AXIS') LAXIS = .TRUE.
+     &        MODELI.EQ.'COQUE_AXIS')LAXIS=.TRUE.
 
           IF (NTO.NE.0) THEN
-            LMAIL = .TRUE.
-            DO 70 NUMAIL = 1,NBMAIL
-              NUTYPM = ZI(JDTM+NUMAIL-1)
+            LMAIL=.TRUE.
+            DO 20 NUMAIL=1,NBMAIL
+              NUTYPM=ZI(JDTM+NUMAIL-1)
               IF (ZI(JDPM+NUTYPM-1).GT.0) THEN
-                ZI(JDMA+NUMAIL-1) = ZI(JDPM+NUTYPM-1)
-                ZI(JDMA2+NUMAIL-1) = ZI(JDPM+NUTYPM-1)
-              END IF
-              ZI(JMUT+NUMAIL-1) = 1
-              IF (ZI(JTMDIM-1+NUTYPM).EQ.D2) ZI(JMUT2+NUMAIL-1) = 1
-   70       CONTINUE
-          END IF
+                ZI(JDMA+NUMAIL-1)=ZI(JDPM+NUTYPM-1)
+                ZI(JDMA2+NUMAIL-1)=ZI(JDPM+NUTYPM-1)
+              ENDIF
+              ZI(JMUT+NUMAIL-1)=1
+              IF (ZI(JTMDIM-1+NUTYPM).EQ.D2)ZI(JMUT2+NUMAIL-1)=1
+   20       CONTINUE
+          ENDIF
 
           IF (NGM.NE.0) THEN
-            LMAIL = .TRUE.
-            DO 90 I = 1,NGM
+            LMAIL=.TRUE.
+            DO 40 I=1,NGM
               CALL JEVEUO(JEXNOM(GRPMAI,ZK8(JDEF+I-1)),'L',JDGM)
               CALL JELIRA(JEXNOM(GRPMAI,ZK8(JDEF+I-1)),'LONMAX',NBGRMA,
      &                    K8B)
-              DO 80 J = 1,NBGRMA
-                NUMAIL = ZI(JDGM+J-1)
-                NUTYPM = ZI(JDTM+NUMAIL-1)
+              DO 30 J=1,NBGRMA
+                NUMAIL=ZI(JDGM+J-1)
+                NUTYPM=ZI(JDTM+NUMAIL-1)
                 IF (ZI(JDPM+NUTYPM-1).GT.0) THEN
-                  ZI(JDMA+NUMAIL-1) = ZI(JDPM+NUTYPM-1)
-                  ZI(JDMA2+NUMAIL-1) = ZI(JDPM+NUTYPM-1)
-                END IF
-                ZI(JMUT+NUMAIL-1) = 1
-                IF (ZI(JTMDIM-1+NUTYPM).EQ.D2) ZI(JMUT2+NUMAIL-1) = 1
-   80         CONTINUE
-   90       CONTINUE
-          END IF
+                  ZI(JDMA+NUMAIL-1)=ZI(JDPM+NUTYPM-1)
+                  ZI(JDMA2+NUMAIL-1)=ZI(JDPM+NUTYPM-1)
+                ENDIF
+                ZI(JMUT+NUMAIL-1)=1
+                IF (ZI(JTMDIM-1+NUTYPM).EQ.D2)ZI(JMUT2+NUMAIL-1)=1
+   30         CONTINUE
+   40       CONTINUE
+          ENDIF
 
           IF (NMA.NE.0) THEN
-            LMAIL = .TRUE.
-            DO 100 I = 1,NMA
+            LMAIL=.TRUE.
+            DO 50 I=1,NMA
               CALL JENONU(JEXNOM(NOMMAI,ZK8(JDEF+I-1)),NUMAIL)
-              NUTYPM = ZI(JDTM+NUMAIL-1)
+              NUTYPM=ZI(JDTM+NUMAIL-1)
               IF (ZI(JDPM+NUTYPM-1).GT.0) THEN
-                ZI(JDMA+NUMAIL-1) = ZI(JDPM+NUTYPM-1)
-                ZI(JDMA2+NUMAIL-1) = ZI(JDPM+NUTYPM-1)
-              END IF
-              ZI(JMUT+NUMAIL-1) = 1
-              IF (ZI(JTMDIM-1+NUTYPM).EQ.D2) ZI(JMUT2+NUMAIL-1) = 1
-  100       CONTINUE
-          END IF
+                ZI(JDMA+NUMAIL-1)=ZI(JDPM+NUTYPM-1)
+                ZI(JDMA2+NUMAIL-1)=ZI(JDPM+NUTYPM-1)
+              ENDIF
+              ZI(JMUT+NUMAIL-1)=1
+              IF (ZI(JTMDIM-1+NUTYPM).EQ.D2)ZI(JMUT2+NUMAIL-1)=1
+   50       CONTINUE
+          ENDIF
 
           IF (NGN.NE.0) THEN
-            LNOEU = .TRUE.
-            DO 120 I = 1,NGN
+            LNOEU=.TRUE.
+            DO 70 I=1,NGN
               CALL JEVEUO(JEXNOM(GRPNOE,ZK8(JDEF+I-1)),'L',JDGN)
               CALL JELIRA(JEXNOM(GRPNOE,ZK8(JDEF+I-1)),'LONMAX',NBGRNO,
      &                    K8B)
-              DO 110 J = 1,NBGRNO
-                NUMNOE = ZI(JDGN+J-1)
-                IF (ZI(JDPM+NTYPOI-1).GT.0) ZI(JDNO+NUMNOE-1) = ZI(JDPM+
+              DO 60 J=1,NBGRNO
+                NUMNOE=ZI(JDGN+J-1)
+                IF (ZI(JDPM+NTYPOI-1).GT.0)ZI(JDNO+NUMNOE-1)=ZI(JDPM+
      &              NTYPOI-1)
-                ZI(JNUT+NUMNOE-1) = 1
-  110         CONTINUE
-  120       CONTINUE
-          END IF
+                ZI(JNUT+NUMNOE-1)=1
+   60         CONTINUE
+   70       CONTINUE
+          ENDIF
 
           IF (NNO.NE.0) THEN
-            LNOEU = .TRUE.
-            DO 130 I = 1,NNO
+            LNOEU=.TRUE.
+            DO 80 I=1,NNO
               CALL JENONU(JEXNOM(NOMNOE,ZK8(JDEF+I-1)),NUMNOE)
-              IF (ZI(JDPM+NTYPOI-1).GT.0) ZI(JDNO+NUMNOE-1) = ZI(JDPM+
+              IF (ZI(JDPM+NTYPOI-1).GT.0)ZI(JDNO+NUMNOE-1)=ZI(JDPM+
      &            NTYPOI-1)
-              ZI(JNUT+NUMNOE-1) = 1
-  130       CONTINUE
-          END IF
+              ZI(JNUT+NUMNOE-1)=1
+   80       CONTINUE
+          ENDIF
 
-  140   CONTINUE
+   90   CONTINUE
 
 C       -- ON VERIFIE QU'A CHAQUE OCCURENCE DE AFFE, LES MAILLES
 C          "PRINCIPALES" ONT BIEN ETE AFFECTEES PAR DES ELEMENTS
 C          (PB DES MODELISATIONS A "TROUS") :
 C          ------------------------------------------------------
-        ICO = 0
-        DO 150 NUMAIL = 1,NBMAIL
+        ICO=0
+        DO 100 NUMAIL=1,NBMAIL
           IF ((ZI(JMUT2+NUMAIL-1).EQ.1) .AND.
-     &        ZI(JDMA2+NUMAIL-1).EQ.0) ICO = ICO + 1
-  150   CONTINUE
+     &        ZI(JDMA2+NUMAIL-1).EQ.0)ICO=ICO+1
+  100   CONTINUE
         IF (ICO.GT.0) THEN
-          VALI (1) = IOC
-          VALI (2) = ICO
-          VALI (3) = D2
-          CALL U2MESG('A', 'MODELISA8_70',0,' ',3,VALI,0,0.D0)
-        END IF
-  160 CONTINUE
+          VALI(1)=IOC
+          VALI(2)=ICO
+          VALI(3)=D2
+          CALL U2MESG('A','MODELISA8_70',0,' ',3,VALI,0,0.D0)
+        ENDIF
+  110 CONTINUE
 
 
 C --- VERIFICATION QUE LES MAILLES "UTILISATEUR" ONT ETE AFFECTEES
-      NBMPCF = 0
-      NBMPAF = 0
-      DO 170 I = 1,NBMAIL
+      NBMPCF=0
+      NBMPAF=0
+      DO 120 I=1,NBMAIL
         IF (ZI(JMUT+I-1).EQ.1) THEN
           IF (ZI(JDMA+I-1).EQ.0) THEN
-            NBMPAF = NBMPAF + 1
+            NBMPAF=NBMPAF+1
             CALL JENUNO(JEXNUM(NOMMAI,I),K8B)
-            NUTYPM = ZI(JDTM+I-1)
+            NUTYPM=ZI(JDTM+I-1)
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYPM),TYPEMA)
             IF (NIV.EQ.2) THEN
-              WRITE (IFM,*) '  MAILLE QUE L''ON N''A PAS PU AFFEC',
+              WRITE (IFM,*)'  MAILLE QUE L''ON N''A PAS PU AFFEC',
      &          'TER: ',K8B,' DE TYPE: ',TYPEMA
-            END IF
-          END IF
+            ENDIF
+          ENDIF
         ELSE
-          NBMPCF = NBMPCF + 1
-        END IF
-  170 CONTINUE
+          NBMPCF=NBMPCF+1
+        ENDIF
+  120 CONTINUE
 
 C --- VERIFICATION QUE LES NOEUDS "UTILISATEUR" ONT ETE AFFECTES
-      NBNPCF = 0
-      NBNPAF = 0
-      DO 180 I = 1,NBNOEU
+      NBNPCF=0
+      NBNPAF=0
+      DO 130 I=1,NBNOEU
         IF (ZI(JNUT+I-1).EQ.1) THEN
           IF (ZI(JDNO+I-1).EQ.0) THEN
-            NBNPAF = NBNPAF + 1
+            NBNPAF=NBNPAF+1
             CALL JENUNO(JEXNUM(NOMNOE,I),K8B)
             IF (NIV.EQ.2) THEN
-              WRITE (IFM,*) '  NOEUD QUE L''ON N''A PAS PU AFFEC',
+              WRITE (IFM,*)'  NOEUD QUE L''ON N''A PAS PU AFFEC',
      &          'TER: ',K8B
-            END IF
-          END IF
+            ENDIF
+          ENDIF
         ELSE
-          NBNPCF = NBNPCF + 1
-        END IF
-  180 CONTINUE
+          NBNPCF=NBNPCF+1
+        ENDIF
+  130 CONTINUE
 
 C ---   DIMENSIONNEMENT DES OBJETS LIEL ET NEMA
-      NBMAAF = 0
-      NBNOAF = 0
-      NUTYPE = 0
-      NBGREL = 0
+      NBMAAF=0
+      NBNOAF=0
+      NUTYPE=0
+      NBGREL=0
 
-      DO 190 I = 1,NBMAIL
+      DO 140 I=1,NBMAIL
         IF (ZI(JDMA+I-1).NE.0) THEN
-          NBMAAF = NBMAAF + 1
+          NBMAAF=NBMAAF+1
           IF (ZI(JDMA+I-1).NE.NUTYPE) THEN
-            NUTYPE = ZI(JDMA+I-1)
-            NBGREL = NBGREL + 1
-          END IF
-        END IF
-  190 CONTINUE
+            NUTYPE=ZI(JDMA+I-1)
+            NBGREL=NBGREL+1
+          ENDIF
+        ENDIF
+  140 CONTINUE
 
 
       IF (LMAIL) THEN
-        II = NBMAAF + NBMPAF
-        WRITE (IFM,1000) NBMAIL,NOMA,II,NBMAAF
-      END IF
+        II=NBMAAF+NBMPAF
+        WRITE (IFM,9000)NBMAIL,NOMA,II,NBMAAF
+      ENDIF
 
       IF (NBMAAF.EQ.0) THEN
         CALL U2MESK('F','MODELISA5_52',1,NOMA)
-      END IF
+      ENDIF
 
-      NUTYPE = 0
+      NUTYPE=0
 
-      DO 200 I = 1,NBNOEU
+      DO 150 I=1,NBNOEU
         IF (ZI(JDNO+I-1).NE.0) THEN
-          NBNOAF = NBNOAF + 1
+          NBNOAF=NBNOAF+1
           IF (ZI(JDNO+I-1).NE.NUTYPE) THEN
-            NUTYPE = ZI(JDNO+I-1)
-            NBGREL = NBGREL + 1
-          END IF
-        END IF
-  200 CONTINUE
+            NUTYPE=ZI(JDNO+I-1)
+            NBGREL=NBGREL+1
+          ENDIF
+        ENDIF
+  150 CONTINUE
 
 
       IF (LNOEU) THEN
-        II = NBNOAF + NBNPAF
-        WRITE (IFM,1100) NBNOEU,NOMA,II,NBNOAF
-      END IF
+        II=NBNOAF+NBNPAF
+        WRITE (IFM,9010)NBNOEU,NOMA,II,NBNOAF
+      ENDIF
 
-      LONLIE = NBGREL + NBMAAF + NBNOAF
-      LONNEM = NBNOAF*2
+      LONLIE=NBGREL+NBMAAF+NBNOAF
+      LONNEM=NBNOAF*2
 
 
 C ---   CREATION DES OBJETS DU CONCEPT MODELE
@@ -431,148 +429,91 @@ C -     OBJET NEMA
         CALL JECREC(CPTNEM,'G V I','NU','CONTIG','VARIABLE',NBNOAF)
         CALL JEECRA(CPTNEM,'LONT',LONNEM,' ')
         CALL JEVEUO(CPTNEM,'E',JDNW)
-      END IF
+      ENDIF
 
 C ---   STOCKAGE DES GROUPES ELEMENTS DANS LIEL
-      NUTYPE = 0
-      NUGREL = 0
-      NMGREL = 0
-      NUMVEC = 0
+      NUTYPE=0
+      NUGREL=0
+      NMGREL=0
+      NUMVEC=0
 
-      DO 210 NUMAIL = 1,NBMAIL
+      DO 160 NUMAIL=1,NBMAIL
         IF (ZI(JDMA+NUMAIL-1).NE.0) THEN
           IF (ZI(JDMA+NUMAIL-1).NE.NUTYPE .AND. NUTYPE.NE.0) THEN
-            NUGREL = NUGREL + 1
-            NMGREL = NMGREL + 1
-            NUMVEC = NUMVEC + 1
-            ZI(JDLI+NUMVEC-1) = NUTYPE
+            NUGREL=NUGREL+1
+            NMGREL=NMGREL+1
+            NUMVEC=NUMVEC+1
+            ZI(JDLI+NUMVEC-1)=NUTYPE
             CALL JECROC(JEXNUM(CPTLIE,NUGREL))
             CALL JEECRA(JEXNUM(CPTLIE,NUGREL),'LONMAX',NMGREL,' ')
-            NMGREL = 0
-          END IF
-          NMGREL = NMGREL + 1
-          NUMVEC = NUMVEC + 1
-          ZI(JDLI+NUMVEC-1) = NUMAIL
-          NUTYPE = ZI(JDMA+NUMAIL-1)
-        END IF
+            NMGREL=0
+          ENDIF
+          NMGREL=NMGREL+1
+          NUMVEC=NUMVEC+1
+          ZI(JDLI+NUMVEC-1)=NUMAIL
+          NUTYPE=ZI(JDMA+NUMAIL-1)
+        ENDIF
         IF (NUMAIL.EQ.NBMAIL .AND. NMGREL.NE.0) THEN
-          NUGREL = NUGREL + 1
-          NMGREL = NMGREL + 1
-          NUMVEC = NUMVEC + 1
-          ZI(JDLI+NUMVEC-1) = NUTYPE
+          NUGREL=NUGREL+1
+          NMGREL=NMGREL+1
+          NUMVEC=NUMVEC+1
+          ZI(JDLI+NUMVEC-1)=NUTYPE
           CALL JECROC(JEXNUM(CPTLIE,NUGREL))
           CALL JEECRA(JEXNUM(CPTLIE,NUGREL),'LONMAX',NMGREL,' ')
-        END IF
-  210 CONTINUE
+        ENDIF
+  160 CONTINUE
 
-      NUTYPE = 0
-      NUMSUP = 0
-      NMGREL = 0
+      NUTYPE=0
+      NUMSUP=0
+      NMGREL=0
 
-      DO 220 NUMNOE = 1,NBNOEU
+      DO 170 NUMNOE=1,NBNOEU
         IF (ZI(JDNO+NUMNOE-1).NE.0) THEN
           IF (ZI(JDNO+NUMNOE-1).NE.NUTYPE .AND. NUTYPE.NE.0) THEN
-            NUGREL = NUGREL + 1
-            NMGREL = NMGREL + 1
-            NUMVEC = NUMVEC + 1
-            ZI(JDLI+NUMVEC-1) = NUTYPE
+            NUGREL=NUGREL+1
+            NMGREL=NMGREL+1
+            NUMVEC=NUMVEC+1
+            ZI(JDLI+NUMVEC-1)=NUTYPE
             CALL JECROC(JEXNUM(CPTLIE,NUGREL))
             CALL JEECRA(JEXNUM(CPTLIE,NUGREL),'LONMAX',NMGREL,' ')
-            NMGREL = 0
-          END IF
-          NMGREL = NMGREL + 1
-          NUMVEC = NUMVEC + 1
-          NUMSUP = NUMSUP + 1
-          ZI(JDLI+NUMVEC-1) = -NUMSUP
-          NUTYPE = ZI(JDNO+NUMNOE-1)
-        END IF
+            NMGREL=0
+          ENDIF
+          NMGREL=NMGREL+1
+          NUMVEC=NUMVEC+1
+          NUMSUP=NUMSUP+1
+          ZI(JDLI+NUMVEC-1)=-NUMSUP
+          NUTYPE=ZI(JDNO+NUMNOE-1)
+        ENDIF
         IF (NUMNOE.EQ.NBNOEU .AND. NMGREL.NE.0) THEN
-          NUGREL = NUGREL + 1
-          NMGREL = NMGREL + 1
-          NUMVEC = NUMVEC + 1
-          ZI(JDLI+NUMVEC-1) = NUTYPE
+          NUGREL=NUGREL+1
+          NMGREL=NMGREL+1
+          NUMVEC=NUMVEC+1
+          ZI(JDLI+NUMVEC-1)=NUTYPE
           CALL JECROC(JEXNUM(CPTLIE,NUGREL))
           CALL JEECRA(JEXNUM(CPTLIE,NUGREL),'LONMAX',NMGREL,' ')
-        END IF
-  220 CONTINUE
+        ENDIF
+  170 CONTINUE
 
 C ---   STOCKAGE DES NOUVELLES MAILLES DANS NEMA
 
       IF (NBNOAF.NE.0) THEN
-        NUMVEC = 0
-        NUMSUP = 0
-        DO 230 NUMNOE = 1,NBNOEU
+        NUMVEC=0
+        NUMSUP=0
+        DO 180 NUMNOE=1,NBNOEU
           IF (ZI(JDNO+NUMNOE-1).NE.0) THEN
-            ZI(JDNW+NUMVEC) = NUMNOE
-            ZI(JDNW+NUMVEC+1) = NTYPOI
-            NUMVEC = NUMVEC + 2
-            NUMSUP = NUMSUP + 1
+            ZI(JDNW+NUMVEC)=NUMNOE
+            ZI(JDNW+NUMVEC+1)=NTYPOI
+            NUMVEC=NUMVEC+2
+            NUMSUP=NUMSUP+1
             CALL JECROC(JEXNUM(CPTNEM,NUMSUP))
             CALL JEECRA(JEXNUM(CPTNEM,NUMSUP),'LONMAX',2,' ')
-          END IF
-  230   CONTINUE
-      END IF
+          ENDIF
+  180   CONTINUE
+      ENDIF
 
-C ---   IMPRESSIONS DE VERIFICATION
+  190 CONTINUE
 
-      WRITE (IFM,1300)
-      NUMVEC = 1
-      TYPEMO = ' '
-      DO 300 I = 1,NUGREL
-         CALL JELIRA(JEXNUM(CPTLIE,I),'LONMAX',NMGREL,K8B)
-         NUMAIL = ZI(JDLI+NUMVEC-1)
-         IF (NUMAIL.LT.0) THEN
-            NUTYPM = NTYPOI
-         ELSE
-            NUTYPM = ZI(JDTM+NUMAIL-1)
-         END IF
-         NUTYPE = ZI(JDLI+NUMVEC+NMGREL-2)
-         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYPM),TYPEMA)
-         CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYPE),TYPELE)
-         IF ( TYPELE.EQ.'MECA_HEXS8' ) CALL U2MESS('A','ELEMENTS4_74')
-
-         CALL DISMOI('F','PHEN_MODE',TYPELE,'TYPE_ELEM',IBID,
-     &                PHEMOD,IBID)
-         TYPEMO=PHEMOD(17:32)
-         IF(PHEMOD(1:10).EQ.'#PLUSIEURS') TYPEMO =' '
-         WRITE (IFM,1310) TYPEMO, TYPELE, TYPEMA, NMGREL-1
-         IF (IMPVER.EQ.1) THEN
-            IF (NUMAIL.LT.0) THEN
-               WRITE (IFM,1321)
-            ELSE
-               WRITE (IFM,1322)
-            ENDIF
-            JC = 0
-            DO 240 J = JDLI + NUMVEC - 1,JDLI + NUMVEC + NMGREL - 3
-               JC = JC + 1
-               NUMAIL = ZI(J)
-               IF (NUMAIL.LT.0) THEN
-                  NUMNOE = ZI(JDNW+ (-NUMAIL*2-1)-1)
-                  CALL JENUNO(JEXNUM(NOMNOE,NUMNOE),NOMAIL)
-               ELSE
-                  CALL JENUNO(JEXNUM(NOMMAI,NUMAIL),NOMAIL)
-               END IF
-               IF (JC.EQ.8 .OR. J.EQ.JDLI+NUMVEC+NMGREL-3) THEN
-                  TABMAI(JC) = NOMAIL
-                  WRITE (IFM,1330) (TABMAI(K),K=1,JC)
-                  JC = 0
-               ELSE
-                  TABMAI(JC) = NOMAIL
-               END IF
-  240       CONTINUE
-         ENDIF
-         NUMVEC = NUMVEC + NMGREL
- 300  CONTINUE
-
-
-C ---   SAUVEGARDES / LIBERATIONS / DESTRUCTIONS
-
-
-  260 CONTINUE
-
-C     MODELE AVEC SOUS-STRUCTURES:
 C --- PRISE EN COMPTE DES SOUS-STRUCTURES (MOT CLEF AFFE_SOUS_STRUC):
-
       CALL SSAFMO(NOMU)
 
 
@@ -588,22 +529,26 @@ C     ---   INITIALISATION DES ELEMENTS POUR CE LIGREL
 C     -------------------------------------------------
       CALL INITEL(LIGREL)
 
+C     ---   impression des elements finis affectes :
+C     -------------------------------------------------
+      CALL W18IMP(LIGREL,NOMA,NOMU)
+
 
 C     --- VERIFICATION DE LA DIMENSION DES TYPE_ELEM DU MODELE
 C     ----------------------------------------------------------
       CALL DISMOI('F','DIM_GEOM',NOMU,'MODELE',IDIM,K8B,IBID)
       IF (IDIM.GT.3) THEN
-        IDIM2 = 0
+        IDIM2=0
         CALL U2MESS('A','MODELISA4_4')
       ELSE
-        IDIM2 = 3
+        IDIM2=3
         CALL DISMOI('F','Z_CST',NOMU,'MODELE',IBID,CDIM,IBID)
-        IF (CDIM.EQ.'OUI') IDIM2 = 2
+        IF (CDIM.EQ.'OUI')IDIM2=2
         IF ((IDIM.EQ.3) .AND. (IDIM2.EQ.2)) THEN
-        ELSE IF ((IDIM.EQ.2) .AND. (IDIM2.EQ.3)) THEN
+        ELSEIF ((IDIM.EQ.2) .AND. (IDIM2.EQ.3)) THEN
           CALL U2MESS('A','MODELISA5_53')
-        END IF
-      END IF
+        ENDIF
+      ENDIF
 
 
 C     --- VERIFICATION DU FAIT QUE POUR UN MAILLAGE 2D ON NE PEUT
@@ -613,14 +558,14 @@ C     ---------------------------------------------------
       CALL MODEXI(NOMU,'2D_DIS_',I2D)
       IF (IDIM2.EQ.2 .AND. I3D.EQ.1 .AND. I2D.EQ.1) THEN
         CALL U2MESS('F','MODELISA5_54')
-      END IF
+      ENDIF
 
 
 C     ---   VERIFICATION DES X > 0 POUR L'AXIS
 C     -------------------------------------------------
       IF (LAXIS) THEN
         CALL TAXIS(NOMA,ZI(JDMA),NBMAIL)
-      END IF
+      ENDIF
 
 
 C     -- AJOUT EVENTUEL DE LA SD_PARTITION  :
@@ -639,22 +584,17 @@ C        N'EST PAS TROP CHAHUTEE :
 C     ---------------------------------------------------
       CALL GETVTX(' ','VERI_JACOBIEN',1,1,1,VERIF,NBV)
       IF (VERIF(1).EQ.'OUI') CALL CALCUL('C','VERI_JACOBIEN',LIGREL,1,
-     &     NOMA//'.COORDO','PGEOMER',1,'&&OP0018.CODRET','PCODRET','V')
+     &                            NOMA//'.COORDO','PGEOMER',1,
+     &                            '&&OP0018.CODRET','PCODRET','V')
 
 
 
       CALL JEDEMA()
 
- 1300 FORMAT (/,'    MODELISATION      ELEMENT FINI      TYPE MAILLE',
-     &          '          NOMBRE')
- 1310 FORMAT (4X,A16,2X,A16,2X,A8,7X,I12)
- 1321 FORMAT (6X,'LISTE DES NOEUDS AFFECTES:' )
- 1322 FORMAT (6X,'LISTE DES MAILLES AFFECTEES:' )
- 1330 FORMAT (4X,8(2X,A8))
- 1000 FORMAT (/,' SUR LES ',I12,' MAILLES DU MAILLAGE ',A8,/,
-     &          '    ON A DEMANDE L''AFFECTATION DE ',I12,/,
-     &          '    ON A PU EN AFFECTER           ',I12)
- 1100 FORMAT (/,' SUR LES ',I12,' NOEUDS  DU MAILLAGE ',A8,/,
-     &          '    ON A DEMANDE L''AFFECTATION DE ',I12,/,
-     &          '    ON A PU EN AFFECTER           ',I12)
+ 9000 FORMAT (/,' SUR LES ',I12,' MAILLES DU MAILLAGE ',A8,/,'    ON A',
+     &       ' DEMANDE L''AFFECTATION DE ',I12,/,'    ON A PU EN AFFEC',
+     &       'TER           ',I12)
+ 9010 FORMAT (/,' SUR LES ',I12,' NOEUDS  DU MAILLAGE ',A8,/,'    ON A',
+     &       ' DEMANDE L''AFFECTATION DE ',I12,/,'    ON A PU EN AFFEC',
+     &       'TER           ',I12)
       END

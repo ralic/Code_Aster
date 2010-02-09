@@ -3,7 +3,7 @@
      &  NEGMUL, IRET, SUBD, LOOP, NDEC0, INDI,MECTRA)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 09/02/2010   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -103,7 +103,7 @@ C ----  SAUVEGARDE DES GRANDEURS D ENTREE INITIALES
 C --------------------------------------------------
 C --- LIMITATION DU REDECOUPAGE DU A UNE EVOLUTION TROP RAPIDE 
 C     DES VARIABLES INTERNES RDEV, RISO OU EPSVP
-      NMAX = 5
+      NMAX = 3
 
       CALL LCEQVE(SIGF,PREDI0)
       CALL LCEQVE(SIGD,SIGD0)
@@ -120,6 +120,7 @@ C     DES VARIABLES INTERNES RDEV, RISO OU EPSVP
  12     CONTINUE
 
  1    CONTINUE
+      IF(COMPT.GT.5)GOTO 9999
       COMPT = COMPT + 1 
       IF (DEBUG) WRITE(6,*)'DEBUT --- VINF =',(VINF(I),I=24,31)
 
@@ -542,7 +543,7 @@ C --- SI IL N Y A QUE DES MECANISMES DE TRACTION ACTIFS
 C --- ALORS ON DEMANDE DIRECTEMENT SON ACTIVATION SANS 
 C --- REPASSER PAR L'ETAT INITIAL STANDARD
         CALL LCEQVE(DEPS0, DEPS)
-        CALL LCEQVE(PREDI0, SIGF)
+C        CALL LCEQVE(PREDI0, SIGF)
         AREDEC = AREDE0
         STOPNC = STOPN0
         LOOP   = LOOP0
@@ -674,8 +675,8 @@ C --- AUX 3 SEUILS PLASTIQUES DE TRACTION
         PROBT = .FALSE.
         CALL LCEQVN(NVI,VIND,VINF)
         GOTO 1
-
-      ELSEIF (TRACTI) THEN
+      ENDIF
+      IF (TRACTI) THEN
         IF (DEBUG) WRITE(6,'(A)') 'HUJMID :: 9999 TRACTI'
         CALL LCEQVE(DEPS0,DEPS)
         CALL LCEQVN(NVI,VIND0,VIND)
@@ -724,56 +725,35 @@ C ----------------------------------------------------
         IRET   = 0
         PROBT  = .FALSE.
         GOTO 1
-      ELSE
-        MAXI = ZERO
-        RESI = 0
-        DO 256 I = 1, NR
-          IF (ABS(R(I)).GT.MAXI) THEN
-            MAXI = ABS(R(I))
-            RESI = I
-          ENDIF
- 256    CONTINUE
-        CYCL = .FALSE.
-        DO 260 I = 1, NBMECA
-          IF ((INDI(I).GT.4) .AND. (INDI(I).LT.8)
-     &         .AND. (VIND(INDI(I)).EQ.MATER(18,2))) THEN
-            CYCL = .TRUE.
-          ENDIF
-  260   CONTINUE
-        IF (DEBUG) WRITE(6,*) '9999 RESI:',RESI
-        IF ((RESI.GT.7).AND.(RESI.LE.7+NBMECA)) THEN
-          RESI = RESI - 7
-          IF ((INDI(RESI).GT.4).AND.(INDI(RESI).LT.8)) THEN
-            CALL LCEQVE(PREDI0,SIGF)
-            CALL LCEQVE(SIGD0,SIGD)
-            CALL LCEQVE(DEPS0,DEPS)
-            CALL LCEQVN(NVI,VIND0,VIND)
-            AREDEC = AREDE0
-            STOPNC = STOPN0
-            LOOP   = LOOP0
-            VIND(23+INDI(RESI)) = ZERO
+      ENDIF
 
-C --- EXISTE-T-IL UN MECANISME DEVIATOIRE AYANT LE MEME COMPORTEMENT 
-C     QUE CELUI IDENTIFIE PRECEDEMMENT COMME POSANT PROBLEME ? 
-            DO 257 I = 1, NBMECA
-              IF ((INDI(I).GT.4).AND.(INDI(I).LT.8).AND.
-     &           (((MAXI-ABS(R(7+I)))/TOLE1).LT.TOLE1).AND.
-     &           (I.NE.RESI)) THEN
-                VIND(23+INDI(I)) = ZERO
-              ENDIF
- 257        CONTINUE
-            IRET = 0
-            PROBT = .FALSE.
-            CALL LCEQVN(NVI,VIND,VINF)
-            GOTO 1
-          ELSE
-            NOCONV = .TRUE.
-            IF(DEBUG)WRITE(6,*)'NOCONV2 =',NOCONV
-            IF(DEBUG)WRITE(6,*)'MECTRA2 =',MECTRA
-            GOTO 265
-          ENDIF
-        ELSEIF (CYCL) THEN
-          IF (DEBUG) WRITE(6,'(A)')'HUJMID :: 9999 CYCL'
+C-----------------------------------------------------------
+C --- ESSAIS HEURISTIQUES POUR RELANCER LA RESOLUTION LOCALE
+C-----------------------------------------------------------
+      MAXI = ZERO
+      RESI = 0
+      DO 256 I = 1, NR
+        IF (ABS(R(I)).GT.MAXI) THEN
+          MAXI = ABS(R(I))
+          RESI = I
+        ENDIF
+ 256  CONTINUE
+      CYCL = .FALSE.
+      DO 260 I = 1, NBMECA
+        IF ((INDI(I).GT.4) .AND. (INDI(I).LT.8)
+     &       .AND. (VIND(INDI(I)).EQ.MATER(18,2))) THEN
+          CYCL = .TRUE.
+        ENDIF
+  260 CONTINUE
+      IF (DEBUG) WRITE(6,*) '9999 RESI:',RESI
+
+C ---------------------------------------------------------------
+C --- SI RESIDU LOCAL MAXI PORTE PAR RDEV_CYC => MECANISME RETIRE
+C ---------------------------------------------------------------
+
+      IF ((RESI.GT.7).AND.(RESI.LE.7+NBMECA)) THEN
+        RESI = RESI - 7
+        IF ((INDI(RESI).GT.4).AND.(INDI(RESI).LT.8)) THEN
           CALL LCEQVE(PREDI0,SIGF)
           CALL LCEQVE(SIGD0,SIGD)
           CALL LCEQVE(DEPS0,DEPS)
@@ -781,111 +761,156 @@ C     QUE CELUI IDENTIFIE PRECEDEMMENT COMME POSANT PROBLEME ?
           AREDEC = AREDE0
           STOPNC = STOPN0
           LOOP   = LOOP0
-          DO 261 I = 1, NBMECA
-            IF ((INDI(I).GT.4) .AND. (INDI(I).LT.8)
-     &         .AND. (VIND(INDI(I)).EQ.MATER(18,2))) THEN
+          VIND(23+INDI(RESI)) = ZERO
+
+C --- EXISTE-T-IL UN MECANISME DEVIATOIRE AYANT LE MEME COMPORTEMENT 
+C     QUE CELUI IDENTIFIE PRECEDEMMENT COMME POSANT PROBLEME ? 
+          DO 257 I = 1, NBMECA
+            IF ((INDI(I).GT.4).AND.(INDI(I).LT.8).AND.
+     &         (((MAXI-ABS(R(7+I)))/TOLE1).LT.TOLE1).AND.
+     &         (I.NE.RESI)) THEN
               VIND(23+INDI(I)) = ZERO
             ENDIF
- 261      CONTINUE
+ 257      CONTINUE
           IRET = 0
           PROBT = .FALSE.
           CALL LCEQVN(NVI,VIND,VINF)
           GOTO 1
         ELSE
- 265      CONTINUE
-          IF (NBMECT.NE.NBMECA) THEN
-            IF (DEBUG) WRITE(6,'(A)') '9999 FTRAC'
-            CALL LCEQVE(PREDI0,SIGF)
-            CALL LCEQVE(SIGD0,SIGD)
-            CALL LCEQVE(DEPS0,DEPS)
-            CALL LCEQVN(NVI,VIND0,VIND)
-            AREDEC = AREDE0
-            STOPNC = STOPN0
-            LOOP   = LOOP0
-            IRET   = 0
-            DO 262 I = NBMECA+1, NBMECT
-              IF (YE(NDT+1+NBMECA+I).EQ.ZERO) THEN
-                BNEWS(INDI(I)-8) = .TRUE.              
-              ENDIF
- 262        CONTINUE 
-            PROBT = .FALSE.
-            CALL LCEQVN(NVI,VIND,VINF)
-            GOTO 1
-          ELSE
-            CALL LCEQVE(PREDI0,SIGF)
-            CALL LCEQVE(SIGD0,SIGD)
-            CALL LCEQVE(DEPS0,DEPS)
-            CALL LCEQVN(NVI,VIND0,VIND)
-            AREDEC = AREDE0
-            STOPNC = STOPN0
-            LOOP   = LOOP0
-            PROBT = .FALSE.
-            EULER = .TRUE.
-            DO 263 I = 1, NBMECA
-              IF (YE(NDT+1+NBMECA+I).EQ.ZERO) THEN
-                IF ((INDI(I).GT.4).AND.(INDI(I).LT.9)) THEN
-                  VIND(INDI(I)+23) = 0
-                  EULER = .FALSE.
-                ELSEIF (INDI(I).LT.5) THEN
-                  IF ((ABS(VIND(4*INDI(I)+5)).GT.R8PREM()).OR.
-     &             (ABS(VIND(4*INDI(I)+6)).GT.R8PREM())) THEN
-                    VIND(23+INDI(I)) = -UN
-                  ELSE
-                    VIND(23+INDI(I)) = ZERO
-                  ENDIF
-                  EULER = .FALSE.
-                ENDIF
-              ENDIF
- 263        CONTINUE
-            IF (.NOT.EULER) THEN
-              CALL LCEQVN(NVI,VIND,VINF)              
-              IRET = 0
-              GOTO 1
-            ENDIF
-            LTRY = .FALSE.
-            DO 264 I = 1, NDI
-              CALL HUJPRJ(I, SIGD0, DEV, PF, QF)
-              IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
-                NOCONV=.FALSE.
-                IRET = 0     
-                BNEWS(I) = .FALSE.       
-                LTRY = .TRUE.
-              ENDIF
-              CALL HUJPRJ(I, YE, DEV, PF, QF)
-              IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
-                NOCONV=.FALSE.
-                IRET = 0     
-                BNEWS(I) = .FALSE.       
-                LTRY = .TRUE.
-              ENDIF
-              CALL HUJPRJ(I, YF, DEV, PF, QF)
-              IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
-                NOCONV=.FALSE.
-                IRET = 0     
-                BNEWS(I) = .FALSE.       
-                LTRY = .TRUE.
-              ENDIF
-              CALL HUJPRJ(I, PREDI0, DEV, PF, QF)
-              IF (((PF+RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
-                NOCONV=.FALSE.
-                IRET = 0     
-                BNEWS(I) = .FALSE.       
-                LTRY = .TRUE.
-              ENDIF
- 264        CONTINUE
-            IF(LTRY)THEN
-              CALL LCEQVN(NVI,VIND,VINF)              
-              IRET = 0
-              GOTO 1              
-            ELSE
-              NOCONV = .TRUE.
-            ENDIF
-            IF(DEBUG)WRITE(6,*)'NOCONV3 =',NOCONV
-            IF(DEBUG)WRITE(6,*)'MECTRA3 =',MECTRA
-          ENDIF
+          NOCONV = .TRUE.
+          IF(DEBUG)WRITE(6,*)'NOCONV2 =',NOCONV
+          IF(DEBUG)WRITE(6,*)'MECTRA2 =',MECTRA
         ENDIF
       ENDIF
- 
+
+C ---------------------------------------------------------------
+C --- SI MECA CYCLIQUE ALORS ILS SONT RETIRES
+C ---------------------------------------------------------------
+
+      IF (CYCL) THEN
+        IF (DEBUG) WRITE(6,'(A)')'HUJMID :: 9999 CYCL'
+        CALL LCEQVE(PREDI0,SIGF)
+        CALL LCEQVE(SIGD0,SIGD)
+        CALL LCEQVE(DEPS0,DEPS)
+        CALL LCEQVN(NVI,VIND0,VIND)
+        AREDEC = AREDE0
+        STOPNC = STOPN0
+        LOOP   = LOOP0
+        DO 261 I = 1, NBMECA
+          IF ((INDI(I).GT.4) .AND. (INDI(I).LT.8)
+     &       .AND. (VIND(INDI(I)).EQ.MATER(18,2))) THEN
+            VIND(23+INDI(I)) = ZERO
+          ENDIF
+ 261    CONTINUE
+        IRET = 0
+        PROBT = .FALSE.
+        CALL LCEQVN(NVI,VIND,VINF)
+        GOTO 1
+      ENDIF
+      
+C ---------------------------------------------------------------
+C --- SI MECANISME TRACTION ACTIF => RETIRE DE MPOT
+C ---------------------------------------------------------------
+
+      IF (NBMECT.NE.NBMECA) THEN
+        IF (DEBUG) WRITE(6,'(A)') '9999 FTRAC'
+        CALL LCEQVE(PREDI0,SIGF)
+        CALL LCEQVE(SIGD0,SIGD)
+        CALL LCEQVE(DEPS0,DEPS)
+        CALL LCEQVN(NVI,VIND0,VIND)
+        AREDEC = AREDE0
+        STOPNC = STOPN0
+        LOOP   = LOOP0
+        IRET   = 0
+        DO 262 I = NBMECA+1, NBMECT
+          IF (YE(NDT+1+NBMECA+I).EQ.ZERO) THEN
+            BNEWS(INDI(I)-8) = .TRUE.              
+          ENDIF
+ 262    CONTINUE 
+        PROBT = .FALSE.
+        CALL LCEQVN(NVI,VIND,VINF)
+        GOTO 1
+      ENDIF
+
+C ---------------------------------------------------------------
+C --- CONTROLE DU PREDICTEUR ELASTIQUE: YE(LAMBDA)
+C ---------------------------------------------------------------
+
+      CALL LCEQVE(PREDI0,SIGF)
+      CALL LCEQVE(SIGD0,SIGD)
+      CALL LCEQVE(DEPS0,DEPS)
+      CALL LCEQVN(NVI,VIND0,VIND)
+      AREDEC = AREDE0
+      STOPNC = STOPN0
+      LOOP   = LOOP0
+      PROBT = .FALSE.
+      EULER = .TRUE.
+      DO 263 I = 1, NBMECA
+        IF (YE(NDT+1+NBMECA+I).EQ.ZERO) THEN
+          IF ((INDI(I).GT.4).AND.(INDI(I).LT.9)) THEN
+            VIND(INDI(I)+23) = 0
+            EULER = .FALSE.
+          ELSEIF (INDI(I).LT.5) THEN
+            IF ((ABS(VIND(4*INDI(I)+5)).GT.R8PREM()).OR.
+     &       (ABS(VIND(4*INDI(I)+6)).GT.R8PREM())) THEN
+              VIND(23+INDI(I)) = -UN
+            ELSE
+              VIND(23+INDI(I)) = ZERO
+            ENDIF
+            EULER = .FALSE.
+          ENDIF
+        ENDIF
+ 263  CONTINUE
+      IF (.NOT.EULER) THEN
+        CALL LCEQVN(NVI,VIND,VINF)              
+        IRET = 0
+        GOTO 1
+      ENDIF
+
+C ---------------------------------------------------------------
+C --- DERNIER ESSAI: VALEUR DES CONTRAINTES PRE, DURANT ET POST
+C ---------------------------------------------------------------
+      LTRY = .FALSE.
+      DO 264 I = 1, NDI
+        CALL HUJPRJ(I, SIGD0, DEV, PF, QF)
+        IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
+          NOCONV=.FALSE.
+          IRET = 0     
+          BNEWS(I) = .FALSE.       
+          LTRY = .TRUE.
+        ENDIF
+        CALL HUJPRJ(I, YE, DEV, PF, QF)
+        IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
+          NOCONV=.FALSE.
+          IRET = 0     
+          BNEWS(I) = .FALSE.       
+          LTRY = .TRUE.
+        ENDIF
+        CALL HUJPRJ(I, YF, DEV, PF, QF)
+        IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
+          NOCONV=.FALSE.
+          IRET = 0     
+          BNEWS(I) = .FALSE.       
+          LTRY = .TRUE.
+        ENDIF
+        CALL HUJPRJ(I, PREDI0, DEV, PF, QF)
+        IF (((PF+RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
+          NOCONV=.FALSE.
+          IRET = 0     
+          BNEWS(I) = .FALSE.       
+          LTRY = .TRUE.
+        ENDIF
+ 264  CONTINUE
+
+      IF(LTRY)THEN
+        CALL LCEQVN(NVI,VIND,VINF)              
+        IRET = 0
+        GOTO 1              
+      ELSE
+        NOCONV = .TRUE.
+      ENDIF
+      
+       
  1000 FORMAT(A,15(1X,E12.5))
  1001 FORMAT(A,2(I3))
 

@@ -1,6 +1,6 @@
       SUBROUTINE TE0598 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,11 +125,14 @@ C
          CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
          IF(ALIAS8(6:8).EQ.'QU9')  ELREFE='QU4'
          IF(ALIAS8(6:8).EQ.'TR6')  ELREFE='TR3'
+         CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &            IDFDE2,JGANO)
+      ELSE
+         CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &           IDFDE2, JGANO)
       ENDIF
 C
-      CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
-     &            JGANO)
-      CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
+      CALL ELREF4(ELREFE,'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &            JGANO)
 C====
 C 1. INITIALISATIONS
@@ -244,227 +247,6 @@ C
       ENDIF
 C
 C 2.4. ==> CALCUL NON LUMPE
-C          ----------------
-      IF(.NOT.LTEATT(' ','LUMPE','OUI'))THEN
-C
-C 2.4.1. ==> TEMPERATURES AUX NOEUDS
-C            EN TRANSITOIRE  : THTIMP.(T+) + (1-THTIMP).(T-)
-C            EN STATIONNAIRE : T
-C
-        IF ( TRANSI ) THEN
-          DO 2411 , I = 1 , NNO
-            TEMPNO(I) = THTIMP*ZR(ITEMPP+I-1) + UNMTHE*ZR(ITEMPM+I-1)
- 2411     CONTINUE
-        ELSE
-          DO 2412 , I = 1 , NNO
-            TEMPNO(I) = ZR(ITEMPM+I-1)
- 2412     CONTINUE
-        ENDIF
-C
-C 2.4.2. ==> BOUCLE SUR LES POINTS DE GAUSS
-C
-        DO 242 , KP = 1 , NPG
-C
-          K = (KP-1)*NNO
-          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
-C
-C 2.4.2.1. ==> EN TRANSITOIRE, CALCUL DE LA DERIVEE DE T ET DE SON
-C              GRADIENT A L'INSTANT PRECEDENT.
-C              SI LE CHAMP THETA N'EST PAS NUL, CALCUL DES TEMPERATURES
-C              AUX DEUX INSTANTS
-C              SI LE CHAMP THETA EST NUL, IL EST INUTILE DE CALCULER
-C              LES TEMPERATURES + ET -.
-C
-          IF ( TRANSI ) THEN
-C
-            GRADDT(1) = 0.D0
-            GRADDT(2) = 0.D0
-            DLAGTG = 0.D0
-            IF ( THTNUL ) THEN
-              DO 2431 , I = 1 , NNO
-                R8AUX = ZR(IVF+K+I-1)
-                DLAGTG    = DLAGTG    + ZR(IDLAGT+I-1)*R8AUX
-                GRADDT(1) = GRADDT(1) + ZR(IDLAGT+I-1)*DFDX(I)
-                GRADDT(2) = GRADDT(2) + ZR(IDLAGT+I-1)*DFDY(I)
- 2431         CONTINUE
-            ELSE
-              TMO = 0.D0
-              TPL = 0.D0
-              DO 2432 , I = 1 , NNO
-                R8AUX = ZR(IVF+K+I-1)
-                DLAGTG    = DLAGTG    + ZR(IDLAGT+I-1)*R8AUX
-                GRADDT(1) = GRADDT(1) + ZR(IDLAGT+I-1)*DFDX(I)
-                GRADDT(2) = GRADDT(2) + ZR(IDLAGT+I-1)*DFDY(I)
-                TMO       = TMO       + ZR(ITEMPM+I-1)*R8AUX
-                TPL       = TPL       + ZR(ITEMPP+I-1)*R8AUX
- 2432         CONTINUE
-            ENDIF
-C
-          ENDIF
-C
-C 2.4.2.2. ==> CALCUL DES GRADIENTS DE TEMPERATURE,
-C             DU GRADIENT ET DE LA DIVERGENCE DE THETA AU POINT DE GAUSS
-C   GRADTH(I,K) = D THETA I / D X K
-C   DIVTHT = D THETA X / DX  +  D THETA Y / DY
-C          = D THETA R / DR  +  D THETA Z / DZ  +  THETA R / R
-C              SI LE CHAMP THETA EST NUL, IL EST INUTILE DE CALCULER
-C              LES GRADIENTS DE THETA
-C
-          GRADT(1) = 0.D0
-          GRADT(2) = 0.D0
-          IF ( THTNUL ) THEN
-            DO 2441 , I = 1 , NNO
-              GRADT(1)    = GRADT(1)    + TEMPNO(I)*DFDX(I)
-              GRADT(2)    = GRADT(2)    + TEMPNO(I)*DFDY(I)
- 2441       CONTINUE
-          ELSE
-            GRADTH(1,1) = 0.D0
-            GRADTH(1,2) = 0.D0
-            GRADTH(2,1) = 0.D0
-            GRADTH(2,2) = 0.D0
-            DO 2442 , I = 1 , NNO
-              GRADT(1)    = GRADT(1)    + TEMPNO(I)*DFDX(I)
-              GRADT(2)    = GRADT(2)    + TEMPNO(I)*DFDY(I)
-              GRADTH(1,1) = GRADTH(1,1) + ZR(ITHETA+2*I-2)*DFDX(I)
-              GRADTH(1,2) = GRADTH(1,2) + ZR(ITHETA+2*I-2)*DFDY(I)
-              GRADTH(2,1) = GRADTH(2,1) + ZR(ITHETA+2*I-1)*DFDX(I)
-              GRADTH(2,2) = GRADTH(2,2) + ZR(ITHETA+2*I-1)*DFDY(I)
- 2442       CONTINUE
-            DIVTHT = GRADTH(1,1) + GRADTH(2,2)
-          ENDIF
-C
-C 2.4.2.3. ==>
-C EN 2D-AXI, MODIFICATION DU POIDS ET TERME
-C COMPLEMENTAIRE SUR LA DIVERGENCE EN THETAR/R
-C LES POINTS DE GAUSS ETANT TOUJOURS STRICTEMENT INTERIEURS
-C A L'ELEMENT, R NE PEUT PAS ETRE NUL, DONC ON PEUT DIVISER PAR R.
-C
-          IF ( AXI ) THEN
-            R = 0.D0
-            IF ( THTNUL ) THEN
-              DO 2451 , I = 1 , NNO
-                R      = R      +  ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
- 2451         CONTINUE
-            ELSE
-              THETAR = 0.D0
-              DO 2452 , I = 1 , NNO
-                R      = R      +  ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
-                THETAR = THETAR + ZR(ITHETA+2*I-2)*ZR(IVF+K+I-1)
- 2452         CONTINUE
-              DIVTHT = DIVTHT + THETAR / R
-            ENDIF
-            POIDS = POIDS*R
-          ENDIF
-C
-C 2.4.2.4. ==> CALCUL DES TERMES DE FLUX DE TEMPERATURE, FLUGLO, OU DE
-C              DERIVEE DE TEMPERATURE, FLUGLD.
-C
-C FLUX GLOBAL : LAMBDA.GRAD(T) --> FLUGLO
-C               LAMBDA.GRAD(DLAGT) --> FLUGLD
-C
-          IF ( .NOT.GLOBAL .AND. ANISO ) THEN
-C
-            POINT(1)=0.D0
-            POINT(2)=0.D0
-            DO 246 , NUNO = 1 , NNO
-              POINT(1) = POINT(1) + ZR(IVF+K+NUNO-1)*ZR(IGEOM+2*NUNO-2)
-              POINT(2) = POINT(2) + ZR(IVF+K+NUNO-1)*ZR(IGEOM+2*NUNO-1)
- 246        CONTINUE
-C
-            XU = ORIG(1) - POINT(1)
-            YU = ORIG(2) - POINT(2)
-            XNORM = SQRT( XU**2 + YU**2 )
-            XU = XU / XNORM
-            YU = YU / XNORM
-            P(1,1) =  XU
-            P(2,1) =  YU
-            P(1,2) = -YU
-            P(2,2) =  XU
-C
-          ENDIF
-C
-          IF ( .NOT.ANISO ) THEN
-            IF ( .NOT.THTNUL ) THEN
-              FLUGLO(1) = LAMBDA*GRADT(1)
-              FLUGLO(2) = LAMBDA*GRADT(2)
-            ENDIF
-            IF ( TRANSI ) THEN
-              FLUGLD(1) = LAMBDA*GRADDT(1)
-              FLUGLD(2) = LAMBDA*GRADDT(2)
-            ENDIF
-          ELSE
-            IF ( .NOT.THTNUL ) THEN
-              FLULOC(1) = P(1,1)*GRADT(1) + P(2,1)*GRADT(2)
-              FLULOC(2) = P(1,2)*GRADT(1) + P(2,2)*GRADT(2)
-              FLULOC(1) = LAMBOR(1)*FLULOC(1)
-              FLULOC(2) = LAMBOR(2)*FLULOC(2)
-              FLUGLO(1) = P(1,1)*FLULOC(1) + P(1,2)*FLULOC(2)
-              FLUGLO(2) = P(2,1)*FLULOC(1) + P(2,2)*FLULOC(2)
-            ENDIF
-            IF ( TRANSI ) THEN
-              FLULOC(1) = P(1,1)*GRADDT(1) + P(2,1)*GRADDT(2)
-              FLULOC(2) = P(1,2)*GRADDT(1) + P(2,2)*GRADDT(2)
-              FLULOC(1) = LAMBOR(1)*FLULOC(1)
-              FLULOC(2) = LAMBOR(2)*FLULOC(2)
-              FLUGLD(1) = P(1,1)*FLULOC(1) + P(1,2)*FLULOC(2)
-              FLUGLD(2) = P(2,1)*FLULOC(1) + P(2,2)*FLULOC(2)
-            ENDIF
-          ENDIF
-C
-C PRODUIT CONTRACTE : FLUX.GRADIENT(THETA)
-C
-          IF ( .NOT.THTNUL ) THEN
-            FLUGRM(1) = FLUGLO(1)*GRADTH(1,1) + FLUGLO(2)*GRADTH(2,1)
-            FLUGRM(2) = FLUGLO(1)*GRADTH(1,2) + FLUGLO(2)*GRADTH(2,2)
-          ENDIF
-C
-C 2.4.2.5. ==> CONTRIBUTION AU SECOND MEMBRE :
-C        ( RHO . CP / DELTAT ) (DLAGTE-) . T*
-C      - (1-THTIMP) LAMBDA ( GRAD(DLAGTE-) . GRAD(T*) )
-C      - RHO . CP . DIVTHT . ((T+)-(T-))/DELTAT . T*
-C      + LAMBDA ( GRAD(T).GRAD(THETA) ) . GRAD(T*)
-C      + LAMBDA(GRAD(T)) . ( GRAD(T*).GRAD(THETA) )
-C      - DIV(THETA) . ( LAMBDA(GRAD(T)).GRAD(T*) )
-C
-C         . TERMES SPECIFIQUES DU TRANSITOIRE :
-C
-          IF ( TRANSI ) THEN
-C
-          DO 2471 , I = 1 , NNO
-             ZR(IVECTT+I-1) = ZR(IVECTT+I-1) + POIDS * (
-     &              CP/DELTAT*DLAGTG*ZR(IVF+K+I-1)
-     &            - UNMTHE*(FLUGLD(1)*DFDX(I) + FLUGLD(2)*DFDY(I))
-     &            )
- 2471     CONTINUE
-C
-          ENDIF
-C
-C         . TERMES APPARAISSANT SI THETA N'EST PAS NUL
-C
-          IF ( .NOT.THTNUL ) THEN
-C
-          IF ( TRANSI ) THEN
-            R8AUX = - DIVTHT*CP/DELTAT*(TPL-TMO)
-          ELSE
-            R8AUX = 0.D0
-          ENDIF
-C
-          DO 2472 , I = 1 , NNO
-             ZR(IVECTT+I-1) = ZR(IVECTT+I-1) + POIDS * (
-     &              R8AUX*ZR(IVF+K+I-1)
-     &            + FLUGRM(1)*DFDX(I) + FLUGRM(2)*DFDY(I)
-     &            + FLUGLO(1)*(DFDX(I)*GRADTH(1,1)+DFDY(I)*GRADTH(1,2))
-     &            + FLUGLO(2)*(DFDX(I)*GRADTH(2,1)+DFDY(I)*GRADTH(2,2))
-     &            - DIVTHT*(FLUGLO(1)*DFDX(I) + FLUGLO(2)*DFDY(I))
-     &            )
- 2472     CONTINUE
-C
-          ENDIF
-C
-  242   CONTINUE
-C
-      ELSE
-C
 C 2.5. ==> CALCUL LUMPE
 C          ------------
 C  CALCUL ISO-P2 : ELTS P2 DECOMPOSES EN SOUS-ELTS LINEAIRES
@@ -745,7 +527,7 @@ C         . TERMES APPARAISSANT SI THETA N'EST PAS NUL
 C
           IF ( .NOT.THTNUL ) THEN
 C
-            R8AUX = DIVTHT*CP/DELTAT*(TPL-TMO)*POIDS
+            R8AUX = - DIVTHT*CP/DELTAT*(TPL-TMO)*POIDS
 C
 CCDIR$ IVDEP
             DO 25332 , I = 1 , NNO
@@ -765,8 +547,6 @@ C
         DO 253 , I = 1 , NNOP2
           ZR(IVECTT-1+I) = VECTT(I)
   253   CONTINUE
-C
-      ENDIF
 C
       ENDIF
 C

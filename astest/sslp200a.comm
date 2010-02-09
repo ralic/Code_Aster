@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 # sslp200a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
@@ -303,17 +303,17 @@ TEST_RESU(RESU=( _F(  RESULTAT = THLIN,   NUME_ORDRE = 0,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.1641329766713E+02),
+                  VALE = 5.1652282996734E+02),
                    _F(  RESULTAT = THLIN,   NUME_ORDRE = 1,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.4581384228580E+02),
+                  VALE = 5.4588432586839E+02),
                    _F(  RESULTAT = THLIN, NUME_ORDRE = 2,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.9073538825513E+02)))
+                  VALE = 5.9081392200917E+02)))
 
 CHMAT2=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
                           _F(  TOUT = 'OUI',
@@ -1464,4 +1464,5 @@ TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DY',
 
 FIN( )
 #
+
 

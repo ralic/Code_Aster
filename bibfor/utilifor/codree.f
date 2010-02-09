@@ -4,7 +4,7 @@
       CHARACTER*(*)             MODE , CHAINE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 04/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF UTILIFOR  DATE 08/02/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C     ------------------------------------------------------------------
       CHARACTER*10 FORMAT
       INTEGER      LONG, NBCHIF
       REAL*8       VALEUR
+      LOGICAL      MARKTR
 C     ------------------------------------------------------------------
       LONG = LEN(CHAINE)
       IF ( LONG .LT. 2 ) GO TO 900
@@ -82,6 +83,20 @@ C        NOMBRE DE CHIFFRE DE LA PARTIE ENTIERE
       WRITE( FORMAT, '( ''('',A2,A1,I2,''.'',I2,'')'' )' ) P,MODE,
      +      NBCHIF,NDEC
       WRITE( CHAINE, FORMAT ) REEL
+      IF ( MODE .EQ. 'E' ) THEN
+         IM = 0
+         MARKTR = .FALSE.
+         DO 50, IL = 1,LONG
+            II = LONG-IL+1
+            IF ( ((CHAINE(II:II).EQ.'+').OR.(CHAINE(II:II).EQ.'-'))
+     &            .AND.(.NOT.MARKTR) ) THEN
+               IM = II
+               MARKTR = .TRUE.
+            ENDIF
+            IF ( CHAINE(II:II).EQ.'E' ) GOTO 999
+   50    CONTINUE
+         IF ( IM.GT.1 ) CHAINE(IM-1:IM-1) = 'E'
+      ENDIF
       GOTO 999
 C     ------------------------------------------------------------------
  900  CONTINUE

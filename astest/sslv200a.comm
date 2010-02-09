@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 # TITRE TEST DE NON-REGRESSION D'ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 # sslv200a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
@@ -326,12 +326,12 @@ TEST_RESU(RESU=( _F(  RESULTAT = THLIN,   NUME_ORDRE = 0,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
-                                     VALE= 8.9516767676603E+02  ),
+                                     VALE= 8.9519813433789E+02  ),
                    _F(  RESULTAT = THLIN, NUME_ORDRE = 2,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
-                                     VALE= 9.3469661751454E+02  )   )   )
+                                     VALE= 9.3472707508638E+02  )   )   )
 
 
 CMT=AFFE_MATERIAU(    MAILLAGE=MA,
@@ -1096,3 +1096,4 @@ MATELEM2=CALC_MATR_ELEM(        OPTION='MASS_MECA',
                                      INST=2.9 )
 
 FIN( )
+

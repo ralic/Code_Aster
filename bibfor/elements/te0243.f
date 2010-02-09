@@ -1,6 +1,6 @@
       SUBROUTINE TE0243 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,14 +48,17 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8             BETA,LAMBDA,THETA,DELTAT,KHI,TPG,TPSEC
       REAL*8             DFDX(9),DFDY(9),POIDS,R,R8BID,DIFF
-      REAL*8             DTPGDX,DTPGDY
-      REAL*8             COORSE(18),VECTT(9)
+      REAL*8             DTPGDX,DTPGDY,HYDRGM(9),HYDRGP(9)
+      REAL*8             COORSE(18),VECTT(9),R8T0
+      REAL*8             CHAL,AFFINI,ARR,TZ0,TPGM
+      CHARACTER*2        CODRET
       CHARACTER*8        ELREFE,ALIAS8
       INTEGER            NDIM,NNO,NNOS,KP,NPG,I,J,K,ITEMPS,IFON(3)
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            ICOMP,ITEMPI,IVERES,JGANO,IPOID2,NPG2
       INTEGER            C(6,9),ISE,NSE,NNOP2,IVF2,IDFDE2
-      INTEGER            ISECHI,ISECHF, IBID
+      INTEGER            ISECHI,ISECHF, IBID, JGANO2
+      INTEGER            IHYDR, IHYDRP, ITEMPR
       LOGICAL            LTEATT
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
@@ -67,15 +70,19 @@ C
 C DEB ------------------------------------------------------------------
 C
       CALL ELREF1(ELREFE)
+      TZ0 = R8T0()
 C
       IF ( LTEATT(' ','LUMPE','OUI')) THEN
          CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
          IF(ALIAS8(6:8).EQ.'QU9')  ELREFE='QU4'
          IF(ALIAS8(6:8).EQ.'TR6')  ELREFE='TR3'
+         CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &            IDFDE2,JGANO2)
+      ELSE
+         CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &            IDFDE2,JGANO2)
       ENDIF
 C
-      CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
-     &            JGANO)
       CALL ELREF4(ELREFE,'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &            JGANO)
 C
@@ -87,9 +94,6 @@ C
       CALL JEVECH('PRESIDU','E',IVERES)
 C
 
-      IF ( (ZK16(ICOMP)(1:9).EQ.'THER_HYDR'))THEN
-        CALL U2MESS('F','ELEMENTS3_57')
-      ENDIF
 C
       IF ( (ZK16(ICOMP)(1:5).EQ.'SECH_')) THEN
         IF(ZK16(ICOMP)(1:12).EQ.'SECH_GRANGER'.OR.
@@ -103,12 +107,35 @@ C          ISECHI ET ISECHF SONT FICTIFS
            ISECHF = ITEMPI
         ENDIF
       ENDIF
-
 C
       DELTAT = ZR(ITEMPS+1)
       THETA  = ZR(ITEMPS+2)
       KHI    = ZR(ITEMPS+3)
+C
+      IF(ZK16(ICOMP)(1:5).NE.'SECH_') THEN
+         CALL NTFCMA (ZI(IMATE),IFON)
+      ENDIF
 
+C
+C --  -RECUPERATION DES PARAMETRES POUR L HYDRATATION
+C
+        IF(ZK16(ICOMP)(1:9).EQ.'THER_HYDR') THEN
+          CALL JEVECH('PHYDRPM','L',IHYDR )
+          CALL JEVECH('PHYDRPP','E',IHYDRP )
+          CALL JEVECH('PTEMPER','L',ITEMPR)
+          CALL RCVALA(ZI(IMATE),' ','THER_HYDR',0,' ',R8BID,1,
+     &     'CHALHYDR',CHAL,CODRET,'FM')
+          CALL RCVALA(ZI(IMATE),' ','THER_HYDR',0,' ',R8BID,1,'QSR_K',
+     &     ARR,CODRET,'FM')
+          DO 150 KP = 1,NPG2
+             K = NNO*(KP-1)
+             HYDRGM(KP)=0.D0
+             DO 160 I = 1,NNO
+                HYDRGM(KP)=HYDRGM(KP)+ZR(IHYDR)*ZR(IVF2+K+I-1)
+ 160         CONTINUE
+ 150      CONTINUE
+        ENDIF
+C
 C     CALCUL LUMPE
 C     ------------
 C  CALCUL ISO-P2 : ELTS P2 DECOMPOSES EN SOUS-ELTS LINEAIRES
@@ -129,7 +156,6 @@ C BOUCLE SUR LES SOUS-ELEMENTS
 C
         IF (ZK16(ICOMP)(1:5).EQ.'THER_') THEN
 C
-        CALL NTFCMA (ZI(IMATE),IFON)
 
 C ----- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
 
@@ -176,13 +202,36 @@ C ------- TERME DE MASSE : 3EME FAMILLE DE PTS DE GAUSS -----------
             R      = R    + COORSE(2*(I-1)+1)     * ZR(IVF2+K+I-1)
             TPG    = TPG  + ZR(ITEMPI-1+C(ISE,I)) * ZR(IVF2+K+I-1)
 402       CONTINUE
+C
+C ---  RESOLUTION DE L EQUATION D HYDRATATION
+C
+          IF(ZK16(ICOMP)(1:9).EQ.'THER_HYDR') THEN
+            TPGM   = 0.D0
+            DO 103 I=1,NNO
+              TPGM = TPGM + ZR(ITEMPR+I-1)*ZR(IVF2+K+I-1)
+103         CONTINUE
+            CALL RCFODE (IFON(3),HYDRGM(KP),AFFINI,R8BID)
+            HYDRGP(KP) = HYDRGM(KP) +
+     &        DELTAT*AFFINI*THETA*EXP(-ARR/(TZ0+TPG))+
+     &        DELTAT*AFFINI* (1.D0-THETA)*EXP(-ARR/(TZ0+TPGM))
+          ENDIF
+C
           CALL RCFODE (IFON(1),TPG,BETA,  R8BID)
           IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
-C
-          DO 404 I=1,NNO
+          IF(ZK16(ICOMP)(1:9).EQ.'THER_HYDR') THEN
+C --- THERMIQUE NON LINEAIRE AVEC HYDRATATION
+            DO 104 I=1,NNO
+               K=(KP-1)*NNO
+               VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS *
+     &      (BETA-CHAL*HYDRGP(KP))/DELTAT*KHI*ZR(IVF2+K+I-1)
+104         CONTINUE
+          ELSE
+C --- THERMIQUE NON LINEAIRE SEULE
+           DO 404 I=1,NNO
              VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS *
      &                         BETA/DELTAT*KHI*ZR(IVF2+K+I-1)
-404       CONTINUE
+404        CONTINUE
+          ENDIF
 401     CONTINUE
 
         ELSE IF (ZK16(ICOMP)(1:5).EQ.'SECH_') THEN
@@ -240,6 +289,7 @@ C MISE SOUS FORME DE VECTEUR
       DO 306 I=1,NNOP2
         ZR(IVERES-1+I)=VECTT(I)
 306   CONTINUE
-
+      IF (ZK16(ICOMP) (1:9).EQ.'THER_HYDR')
+     &  CALL PPGAN2(JGANO2,1,HYDRGP,ZR(IHYDRP))
 C FIN ------------------------------------------------------------------
       END

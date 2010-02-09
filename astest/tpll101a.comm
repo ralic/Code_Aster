@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/02/2010   AUTEUR SELLENET N.SELLENET 
 # TITRE CALCUL ELECTRIQUE ET THERMIQUE D'UN CYLINDRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,112 +18,102 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+DEBUT(CODE=_F(NOM='TPLL101A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-DEBUT(CODE=_F(NOM='TPLL101A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
-MAIL=LIRE_MAILLAGE( )
-
-MAIL=DEFI_GROUP( reuse=MAIL,
-                     MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F( TOUT_GROUP_MA = 'OUI')
-               )
-
-MO=AFFE_MODELE(
+MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                AFFE=_F(
-                 TOUT = 'OUI',
-                 MODELISATION = 'AXIS',
-                 PHENOMENE = 'THERMIQUE')
-               )
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+MO=AFFE_MODELE(MAILLAGE=MAIL,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='THERMIQUE',
+                       MODELISATION='AXIS',),);
 
 # CALCUL ELECTRIQUE
 
+ACIER_EL=DEFI_MATERIAU(THER=_F(LAMBDA=1.,
+                               RHO_CP=0.,),);
 
-ACIER_EL=DEFI_MATERIAU(
-                THER=_F( LAMBDA = 1., RHO_CP = 0.)
-               )
+CHMAT_EL=AFFE_MATERIAU(MAILLAGE=MAIL,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER_EL,),);
 
-CHMAT_EL=AFFE_MATERIAU(
-                MAILLAGE=MAIL,
-                    AFFE=_F( TOUT = 'OUI', MATER = ACIER_EL)
-               )
+CHAR_EL=AFFE_CHAR_THER(MODELE=MO,
+                       TEMP_IMPO=_F(GROUP_NO='LBC',
+                                    TEMP=10.,),
+                       FLUX_REP=(_F(GROUP_MA='LAB',
+                                    FLUN=0.,),
+                                 _F(GROUP_MA='LDC',
+                                    FLUN=0.,),
+                                 _F(GROUP_MA='LAD',
+                                    FLUN=-10.,),),);
 
-CHAR_EL=AFFE_CHAR_THER(
-                    MODELE=MO,
-               TEMP_IMPO=_F( GROUP_NO = 'LBC', TEMP = 10.),FLUX_REP=(
+POT_ELRE=THER_LINEAIRE(MODELE=MO,
+                       CHAM_MATER=CHMAT_EL,
+                       EXCIT=_F(CHARGE=CHAR_EL,),);
 
-                 _F( GROUP_MA = 'LAB',  FLUN = 0.),
-                 _F( GROUP_MA = 'LCD',  FLUN = 0.),
-                 _F( GROUP_MA = 'LDA',  FLUN = -10.))
+POT_ELRE=CALC_ELEM(reuse =POT_ELRE,
+                   RESULTAT=POT_ELRE,
+                   INST=0.0,
+                   OPTION='SOUR_ELGA_ELEC',);
 
-
-               )
-
-POT_ELRE=THER_LINEAIRE(
-                    MODELE=MO,
-                CHAM_MATER=CHMAT_EL,
-                     EXCIT=_F( CHARGE = CHAR_EL)
-               )
-
-CALC_ELEM(reuse=POT_ELRE,
-          RESULTAT=POT_ELRE,
-          OPTION='SOUR_ELGA_ELEC',
-          INST=0.)
-
-SOURCE=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SOUR_R',
-                    NOM_CHAM='SOUR_ELGA_ELEC',RESULTAT=POT_ELRE,
-                    NUME_ORDRE=0)
+SOURCE=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
+                  OPERATION='EXTR',
+                  RESULTAT=POT_ELRE,
+                  NOM_CHAM='SOUR_ELGA_ELEC',
+                  NUME_ORDRE=0,);
 
 # CALCUL THERMIQUE
 
+CHAR_TH=AFFE_CHAR_THER(MODELE=MO,
+                       TEMP_IMPO=(_F(GROUP_NO='LAD',
+                                     TEMP=0.,),
+                                  _F(GROUP_NO='LBC',
+                                     TEMP=0.,),),
+                       FLUX_REP=(_F(GROUP_MA='LAB',
+                                    FLUN=0.,),
+                                 _F(GROUP_MA='LDC',
+                                    FLUN=0.,),),);
 
-CHAR_TH=AFFE_CHAR_THER(
-                 MODELE=MO,TEMP_IMPO=(
-                    _F( GROUP_NO = 'LDA',  TEMP = 0.),
-                    _F( GROUP_NO = 'LBC',  TEMP = 0.)),FLUX_REP=(
-                     _F( GROUP_MA = 'LAB',  FLUN = 0.),
-                     _F( GROUP_MA = 'LCD',  FLUN = 0.))
-               )
+CHAR_SO=AFFE_CHAR_THER(MODELE=MO,
+                       SOURCE=_F(SOUR_CALCULEE=SOURCE,),);
 
-CHAR_SO=AFFE_CHAR_THER(
-                 MODELE=MO,
-                       SOURCE=_F( SOUR_CALCULEE = SOURCE)
-               )
+ACIER_TH=DEFI_MATERIAU(THER=_F(LAMBDA=2.E-2,
+                               RHO_CP=0.,),);
 
-ACIER_TH=DEFI_MATERIAU(
-                THER=_F( LAMBDA = 2.E-2, RHO_CP = 0.)
-               )
+CHMAT_TH=AFFE_MATERIAU(MAILLAGE=MAIL,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER_TH,),);
 
-CHMAT_TH=AFFE_MATERIAU(
-                MAILLAGE=MAIL,
-               AFFE=_F(
-                 TOUT = 'OUI',
-                 MATER = ACIER_TH)
-               )
+TEMPRESU=THER_LINEAIRE(MODELE=MO,
+                       CHAM_MATER=CHMAT_TH,
+                       EXCIT=(_F(CHARGE=CHAR_TH,),
+                              _F(CHARGE=CHAR_SO,),),);
 
-TEMPRESU=THER_LINEAIRE(
-                    MODELE=MO,
-                CHAM_MATER=CHMAT_TH,EXCIT=(
-                    _F( CHARGE = CHAR_TH),
-                    _F( CHARGE = CHAR_SO))
-               )
+TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='EXTR',
+                RESULTAT=TEMPRESU,
+                NOM_CHAM='TEMP',
+                NUME_ORDRE=0,);
 
-TEMP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
-NOM_CHAM='TEMP',
-               RESULTAT=TEMPRESU,
-               NUME_ORDRE=0
-               )
+LIGN=MACR_LIGN_COUPE(RESULTAT=TEMPRESU,
+                     LIGN_COUPE=_F(TYPE='SEGMENT',
+                                   NB_POINTS=5,
+                                   COOR_ORIG=(1.8591,0.,),
+                                   COOR_EXTR=(1.8591,0.1,),),);
 
-TEST_RESU(
-             CHAM_NO=_F(
-              CHAM_GD = TEMP,
 
-             NOEUD = 'N200',
+TEST_TABLE(TABLE=LIGN,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.025,),
+           NOM_PARA='TEMP',
+           VALE=588.9313,);
 
-              NOM_CMP = 'TEMP',
-              VALE = 588.9313)
-            )
+FIN();
 
-FIN()
 #
-#
+

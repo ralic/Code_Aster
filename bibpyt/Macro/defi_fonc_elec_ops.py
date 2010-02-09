@@ -1,4 +1,4 @@
-#@ MODIF defi_fonc_elec_ops Macro  DATE 11/01/2010   AUTEUR DURAND C.DURAND 
+#@ MODIF defi_fonc_elec_ops Macro  DATE 09/02/2010   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,7 +106,11 @@ def defi_fonc_elec_ops(self,FREQ,SIGNAL,COUR,COUR_PRIN,COUR_SECO,**args):
                                 fff.append(0.)
                                 T2moins=T2
                         premier=0
-                        t_k_cour=Numeric.arange(T1,T2,1./(40.*FREQ)).tolist()
+                        t_k_cour=Numeric.arange((T2-T1)/pas_t)
+                        t_k_cour=t_k_cour*pas_t
+                        t_k_cour=t_k_cour+T1
+                        t_k_cour=t_k_cour.tolist()
+                        print T1,T2,FREQ
                         temps=temps+t_k_cour
                         if   SIGNAL=='CONTINU' :
                                 for t in t_k_cour :
@@ -129,19 +133,22 @@ def defi_fonc_elec_ops(self,FREQ,SIGNAL,COUR,COUR_PRIN,COUR_SECO,**args):
                 T2moins = max(TFIN,TFINR)
                 TR      = COUR_PRIN[0]['INST_CC_INIT']
                 TRR     = COUR_PRIN[0]['INST_RENC_INIT']
-                I1    = COUR_PRIN[0]['INTE_CC_1']
-                I1R   = COUR_PRIN[0]['INTE_RENC_1']
-                PHI1  = COUR_PRIN[0]['PHI_CC_1']
-                PHI1R  = COUR_PRIN[0]['PHI_RENC_1']
-                TAU1 = COUR_PRIN[0]['TAU_CC_1']
-                TAU1R = COUR_PRIN[0]['TAU_RENC_1']
+                I1      = COUR_PRIN[0]['INTE_CC_1']
+                I1R     = COUR_PRIN[0]['INTE_RENC_1']
+                PHI1    = COUR_PRIN[0]['PHI_CC_1']
+                PHI1R   = COUR_PRIN[0]['PHI_RENC_1']
+                TAU1    = COUR_PRIN[0]['TAU_CC_1']
+                TAU1R   = COUR_PRIN[0]['TAU_RENC_1']
 #
                 fff.append(0.)
 #
                 if (abs(TR-T2moins)<1.E-7) : pass
                 else :
                         temps.append(0)
-                        t_k_cour=Numeric.arange(TR,T2moins,1./(40.*FREQ)).tolist()
+                        t_k_cour=Numeric.arange((T2moins-TR)/pas_t)
+                        t_k_cour=t_k_cour*pas_t
+                        t_k_cour=t_k_cour+TR
+                        t_k_cour=t_k_cour.tolist()
                         temps=temps+t_k_cour
 #
                 for k_cour in COUR_SECO :
@@ -182,5 +189,4 @@ def defi_fonc_elec_ops(self,FREQ,SIGNAL,COUR,COUR_PRIN,COUR_SECO,**args):
                             VALE=vale,
                             PROL_DROITE='CONSTANT',
                             PROL_GAUCHE='CONSTANT',)
-#
         return ier

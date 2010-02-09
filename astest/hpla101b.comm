@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE DERIVEES PAR RAPPORT A UNE VARIATION DE DOMAINE.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,291 +19,392 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # 1. PREALABLES
-#
-DEBUT(CODE=_F(NOM='HPLA101B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
+
+DEBUT(CODE=_F(NOM='HPLA101B',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='NON',),);
 
 #
 
-MAILLAGE=LIRE_MAILLAGE( )
+MAILLAGE=LIRE_MAILLAGE();
 
 #
 # LA LISTE DES INSTANTS
-#
-LIST_INS=DEFI_LIST_REEL(    DEBUT=0.,
-                              INTERVALLE=_F(  JUSQU_A = 5., PAS = 5.) )
+
+LIST_INS=DEFI_LIST_REEL(DEBUT=0.,
+                        INTERVALLE=_F(JUSQU_A=5.,
+                                      PAS=5.,),);
 
 #
 # 2. MODELES : MECANIQUE ET THERMIQUE
-#
-MOD_MECA=AFFE_MODELE(  MAILLAGE=MAILLAGE,
-                       AFFE=_F(  TOUT = 'OUI',
-                                 PHENOMENE = 'MECANIQUE',
-                                 MODELISATION = 'AXIS'))
 
-MOD_THER=AFFE_MODELE(  MAILLAGE=MAILLAGE,
-                       AFFE=_F(  TOUT = 'OUI',
-                                 PHENOMENE = 'THERMIQUE',
-                                 MODELISATION = 'AXIS'))
+MOD_MECA=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='AXIS',),);
 
+MOD_THER=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='THERMIQUE',
+                             MODELISATION='AXIS',),);
 
-MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,  MAILLAGE=MAILLAGE,
-                        ORIE_PEAU_2D=_F( GROUP_MA = ('BORD_GAU','BORD_SUP',))
-                        )
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_2D=_F(GROUP_MA=('BORD_GAU','BORD_SUP',),),);
 
 #
 # 3. DEFINITION DU CHAMP THETA ET DE SON GRADIENT AUX NOEUDS
-#
-THETA=CALC_THETA(  MODELE=MOD_MECA,
-                   OPTION='BANDE',
-                   GRAD_NOEU_THETA='OUI',
-                   THETA_BANDE=_F(  MODULE = 1.0,
-                                    R_INF = 2.0,    R_SUP = 6.0) )
+
+THETA=CALC_THETA(OPTION='BANDE',
+                 MODELE=MOD_MECA,
+                 THETA_BANDE=_F(MODULE=1.0,
+                                R_INF=2.0,
+                                R_SUP=6.0,),
+                 GRAD_NOEU_THETA='OUI',);
 
 #
 # 4. DEFINITION ET MISE EN PLACE DES MATERIAUX
-#
-ACIER=DEFI_MATERIAU(  THER=_F(  LAMBDA = 500.,  RHO_CP = 1.),
-                      ELAS=_F(  E = 200000.,  NU = 0.30, ALPHA = 15.E-6)
-                      )
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.,
+                            NU=0.30,
+                            ALPHA=15.E-6,),
+                    THER=_F(LAMBDA=500.,
+                            RHO_CP=1.,),);
 
 #
-CH_MATE=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
-                        AFFE=_F(  TOUT = 'OUI', MATER = ACIER) )
+
+CH_MATE=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=ACIER,),);
 
 #
 # 5. LA THERMIQUE
 #
 # 5.1. LES CHARGEMENTS
 # 5.1.1. FLUX PARALLELE A THETA
-#
-CH_THE_1=AFFE_CHAR_THER( MODELE=MOD_THER,
-                         TEMP_IMPO=_F( GROUP_MA = 'BORD_SUP',  TEMP = 200.0),
-                         SOURCE   =_F( GROUP_MA = 'SOURCE',    SOUR = 20000.),
-                         FLUX_REP =_F( GROUP_MA = 'BORD_GAU',  FLUN = 100000.0000)
-                         )
+
+CH_THE_1=AFFE_CHAR_THER(MODELE=MOD_THER,
+                        TEMP_IMPO=_F(GROUP_MA='BORD_SUP',
+                                     TEMP=200.0,),
+                        FLUX_REP=_F(GROUP_MA='BORD_GAU',
+                                    FLUN=100000.0000,),
+                        SOURCE=_F(GROUP_MA='SOURCE',
+                                  SOUR=20000.,),);
 
 #
 # 5.1.2. FLUX PERPENDICULAIRE A THETA
-#
-CH_THE_2=AFFE_CHAR_THER(  MODELE=MOD_THER,
-                          TEMP_IMPO=_F( GROUP_MA = 'BORD_SUP',  TEMP = 200.0),
-                          FLUX_REP =_F( GROUP_MA = 'BORD_INF',  FLUN = 100000.0000)
-                          )
+
+CH_THE_2=AFFE_CHAR_THER(MODELE=MOD_THER,
+                        TEMP_IMPO=_F(GROUP_MA='BORD_SUP',
+                                     TEMP=200.0,),
+                        FLUX_REP=_F(GROUP_MA='BORD_INF',
+                                    FLUN=100000.0000,),);
 
 #
 # 5.2. LES RESOLUTIONS
 # 5.2.1. EN TRANSITOIRE
-#
-RE_THE_1=THER_LINEAIRE(  MODELE=MOD_THER,
-                         CHAM_MATER=CH_MATE,
-                         EXCIT=_F(  CHARGE = CH_THE_1),
-                         ETAT_INIT=_F(  STATIONNAIRE = 'OUI'),
-                         INCREMENT=_F(  LIST_INST = LIST_INS),
-                         SENSIBILITE=(THETA)
-                         )
+
+RE_THE_1=THER_LINEAIRE(MODELE=MOD_THER,
+                       CHAM_MATER=CH_MATE,
+                       EXCIT=_F(CHARGE=CH_THE_1,),
+                       INCREMENT=_F(LIST_INST=LIST_INS,),
+                       ETAT_INIT=_F(STATIONNAIRE='OUI',),
+                       SENSIBILITE=THETA,);
 
 #
 
-RE_THE_1=CALC_ELEM( reuse=RE_THE_1,
-                              RESULTAT=RE_THE_1,
-                          SENSIBILITE=(THETA),
-                               OPTION=( 'DETE_ELNO_DLTE', )
-                       )
+RE_THE_1=CALC_ELEM(reuse =RE_THE_1,
+                   RESULTAT=RE_THE_1,
+                   OPTION='DETE_ELNO_DLTE',
+                   SENSIBILITE=THETA,);
 
 #
 
-RE_THE_1=CALC_NO( reuse=RE_THE_1,    RESULTAT=RE_THE_1,
-                          SENSIBILITE=(THETA),
-                           OPTION=( 'DETE_NOEU_DLTE', )
-                     )
+RE_THE_1=CALC_NO(reuse =RE_THE_1,
+                 RESULTAT=RE_THE_1,
+                 SENSIBILITE=THETA,
+                 OPTION='DETE_NOEU_DLTE',);
 
 #
 # 5.2.2. EN STATIONNAIRE
-#
-RE_THE_2=THER_LINEAIRE(    MODELE=MOD_THER,
-                             CHAM_MATER=CH_MATE,
-                             EXCIT=_F(  CHARGE = CH_THE_2),
-                             SENSIBILITE=(THETA)
-                         )
+
+RE_THE_2=THER_LINEAIRE(MODELE=MOD_THER,
+                       CHAM_MATER=CH_MATE,
+                       EXCIT=_F(CHARGE=CH_THE_2,),
+                       SENSIBILITE=THETA,);
 
 #
-RE_THE_2=CALC_ELEM( reuse=RE_THE_2,
-                             RESULTAT=RE_THE_2,
-                         SENSIBILITE=(THETA),
-                              OPTION=( 'DETE_ELNO_DLTE', )
-                      )
+
+RE_THE_2=CALC_ELEM(reuse =RE_THE_2,
+                   RESULTAT=RE_THE_2,
+                   OPTION='DETE_ELNO_DLTE',
+                   SENSIBILITE=THETA,);
 
 #
-RE_THE_2=CALC_NO( reuse=RE_THE_2,    RESULTAT=RE_THE_2,
-                          SENSIBILITE=(THETA),
-                          OPTION=( 'DETE_NOEU_DLTE', )
-                    )
+
+RE_THE_2=CALC_NO(reuse =RE_THE_2,
+                 RESULTAT=RE_THE_2,
+                 SENSIBILITE=THETA,
+                 OPTION='DETE_NOEU_DLTE',);
 
 #
 # 5.3. TESTS DES RESULTATS SUR LES DERIVEES EULERIENNES
-#
-TEST_RESU(RESU=(
-    _F(  RESULTAT = RE_THE_1, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-         SENSIBILITE=(THETA),
-         NUME_ORDRE = 1,     NOM_CHAM = 'TEMP',  NOM_CMP = 'TEMP',
-         GROUP_NO = 'TEST', VALE = 2.03479E+01, REFERENCE='NON_REGRESSION'),
-    _F(  RESULTAT = RE_THE_1, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-         SENSIBILITE=(THETA,),
-         NUME_ORDRE = 1,     NOM_CHAM = 'DETE_NOEU_DLTE',NOM_CMP = 'TEMP',
-         GROUP_NO = 'TEST', VALE = 3.13358E+01, REFERENCE='NON_REGRESSION'),
-    _F(  RESULTAT = RE_THE_2, CRITERE = 'ABSOLU',   PRECISION = 1.E-5,
-         SENSIBILITE=(THETA),
-         NUME_ORDRE = 0,     NOM_CHAM = 'TEMP',NOM_CMP = 'TEMP',
-         GROUP_NO = 'TEST', VALE = 0., REFERENCE='NON_REGRESSION'),
-    _F(  RESULTAT = RE_THE_2, CRITERE = 'ABSOLU',   PRECISION = 1.E-5,
-         SENSIBILITE=(THETA,),
-         NUME_ORDRE = 0,     NOM_CHAM = 'DETE_NOEU_DLTE', NOM_CMP = 'TEMP',
-         GROUP_NO = 'TEST',  VALE = 0., REFERENCE='NON_REGRESSION'),
-      ),);
+
+TEST_RESU(RESU=(_F(RESULTAT=RE_THE_1,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   GROUP_NO='TEST',
+                   VALE = 2.03484E+01,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_THE_1,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DETE_NOEU_DLTE',
+                   NOM_CMP='TEMP',
+                   GROUP_NO='TEST',
+                   VALE = 3.13361E+01,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_THE_2,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=0,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   GROUP_NO='TEST',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_THE_2,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=0,
+                   NOM_CHAM='DETE_NOEU_DLTE',
+                   NOM_CMP='TEMP',
+                   GROUP_NO='TEST',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),),);
 
 #
 # 6. LA MECANIQUE
 # 6.1. LES CHARGEMENTS
 # 6.1.1. PRESSION PARALLELE A THETA
-#
-CH_MEC_1=AFFE_CHAR_MECA(  MODELE=MOD_MECA,
-                          #TEMP_CALCULEE=RE_THE_1,
-                          PRES_REP  =_F( GROUP_MA = 'BORD_GAU',  PRES = 10000.),
-                          FACE_IMPO =_F( GROUP_MA = 'BORD_DRO',  DNOR = 0.),
-                          DDL_IMPO  =_F( GROUP_NO = 'ORIGINE',   DY = 0.)
-                          )
+
+CH_MEC_1=AFFE_CHAR_MECA(MODELE=MOD_MECA,
+                        DDL_IMPO=_F(GROUP_NO='ORIGINE',
+                                    DY=0.,),
+                        FACE_IMPO=_F(GROUP_MA='BORD_DRO',
+                                     DNOR=0.,),
+                        PRES_REP=_F(GROUP_MA='BORD_GAU',
+                                    PRES=10000.,),);
 
 #
 # 6.1.2. PRESSION PERPENDICULAIRE A THETA
-#
-CH_MEC_2=AFFE_CHAR_MECA(  MODELE=MOD_MECA,
-                          #TEMP_CALCULEE=RE_THE_2,
-                          PRES_REP  =_F( GROUP_MA = 'BORD_SUP',  PRES = 10000.),
-                          FACE_IMPO =_F( GROUP_MA = 'BORD_INF',  DNOR = 0.),
-                          DDL_IMPO  =_F( GROUP_NO = 'ORIGINE',   DX = 0.)
- )
+
+CH_MEC_2=AFFE_CHAR_MECA(MODELE=MOD_MECA,
+                        DDL_IMPO=_F(GROUP_NO='ORIGINE',
+                                    DX=0.,),
+                        FACE_IMPO=_F(GROUP_MA='BORD_INF',
+                                     DNOR=0.,),
+                        PRES_REP=_F(GROUP_MA='BORD_SUP',
+                                    PRES=10000.,),);
 
 #
 # 6.2. LES RESOLUTIONS
 # 6.2.1. EN TRANSITOIRE
-#
-CH_MATM1=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
-                        AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
-                        AFFE_VARC=_F(NOM_VARC='TEMP', TOUT='OUI', EVOL=RE_THE_1, VALE_REF=20.),
-                        )
 
-RE_MEC_1=MECA_STATIQUE(  MODELE=MOD_MECA,
-                         CHAM_MATER=CH_MATM1,
-                         EXCIT=_F(  CHARGE = CH_MEC_1),
-                         LIST_INST=LIST_INS,
-                         SENSIBILITE=(THETA)
-                         )
+CH_MATM1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER,),
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    NOM_VARC='TEMP',
+                                    EVOL=RE_THE_1,
+                                    VALE_REF=20.,),);
 
-#
-RE_MEC_1=CALC_ELEM( reuse=RE_MEC_1,
-                             RESULTAT=RE_MEC_1,
-
-                         SENSIBILITE=(THETA),
-                              OPTION=( 'DEDE_ELNO_DLDE',
-                                       'SIEF_ELGA_DEPL',
-                                       'DESI_ELNO_DLSI', )
-                      )
+RE_MEC_1=MECA_STATIQUE(MODELE=MOD_MECA,
+                       CHAM_MATER=CH_MATM1,
+                       EXCIT=_F(CHARGE=CH_MEC_1,),
+                       LIST_INST=LIST_INS,
+                       SENSIBILITE=THETA,);
 
 #
-RE_MEC_1=CALC_NO( reuse=RE_MEC_1,    RESULTAT=RE_MEC_1,
-                      SENSIBILITE=(THETA),
-                          OPTION=( 'DEDE_NOEU_DLDE',
-                                   'DESI_NOEU_DLSI', )
-                    )
+
+RE_MEC_1=CALC_ELEM(reuse =RE_MEC_1,
+                   RESULTAT=RE_MEC_1,
+                   OPTION=('DEDE_ELNO_DLDE','SIEF_ELGA_DEPL','DESI_ELNO_DLSI',),
+                   SENSIBILITE=THETA,);
+
+#
+
+RE_MEC_1=CALC_NO(reuse =RE_MEC_1,
+                 RESULTAT=RE_MEC_1,
+                 SENSIBILITE=THETA,
+                 OPTION=('DEDE_NOEU_DLDE','DESI_NOEU_DLSI',),);
 
 #
 # 6.2.2. EN STATIONNAIRE
-#
-CH_MATM2=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
-                        AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
-                        AFFE_VARC=_F(NOM_VARC='TEMP', TOUT='OUI', EVOL=RE_THE_2, VALE_REF=20.),
-                        )
 
-RE_MEC_2=MECA_STATIQUE(      MODELE=MOD_MECA,
-                             CHAM_MATER=CH_MATM2,
-                             EXCIT=_F(  CHARGE = CH_MEC_2),
-                             SENSIBILITE=(THETA)
-                         )
+CH_MATM2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER,),
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    NOM_VARC='TEMP',
+                                    EVOL=RE_THE_2,
+                                    VALE_REF=20.,),);
 
-#
-RE_MEC_2=CALC_ELEM( reuse=RE_MEC_2,
-                             RESULTAT=RE_MEC_2,
-
-                         SENSIBILITE=(THETA),
-                              OPTION=( 'DEDE_ELNO_DLDE',
-                                       'SIEF_ELGA_DEPL',
-                                       'DESI_ELNO_DLSI', )
-                      )
+RE_MEC_2=MECA_STATIQUE(MODELE=MOD_MECA,
+                       CHAM_MATER=CH_MATM2,
+                       EXCIT=_F(CHARGE=CH_MEC_2,),
+                       SENSIBILITE=THETA,);
 
 #
-RE_MEC_2=CALC_NO( reuse=RE_MEC_2,    RESULTAT=RE_MEC_2,
-                         SENSIBILITE=(THETA),
-                          OPTION=( 'DEDE_NOEU_DLDE',
-                                   'DESI_NOEU_DLSI', )
-                    )
+
+RE_MEC_2=CALC_ELEM(reuse =RE_MEC_2,
+                   RESULTAT=RE_MEC_2,
+                   OPTION=('DEDE_ELNO_DLDE','SIEF_ELGA_DEPL','DESI_ELNO_DLSI',),
+                   SENSIBILITE=THETA,);
+
+#
+
+RE_MEC_2=CALC_NO(reuse =RE_MEC_2,
+                 RESULTAT=RE_MEC_2,
+                 SENSIBILITE=THETA,
+                 OPTION=('DEDE_NOEU_DLDE','DESI_NOEU_DLSI',),);
 
 #
 # 6.3. TESTS DES RESULTATS SUR LES DERIVEES EULERIENNES
-#
-TEST_RESU(RESU=(
 
-          _F(  RESULTAT = RE_MEC_1, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 2,     NOM_CHAM = 'DEDE_NOEU_DLDE',
-            GROUP_NO = 'TEST',  NOM_CMP = 'DX',   VALE = 4.639904E-02),
-          _F(  RESULTAT = RE_MEC_1, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 2,     NOM_CHAM = 'DEDE_NOEU_DLDE',
-            GROUP_NO = 'TEST',  NOM_CMP = 'DY',   VALE = 2.842913E-03),
-          _F(  RESULTAT = RE_MEC_1, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 2,     NOM_CHAM = 'DESI_NOEU_DLSI',
-            GROUP_NO = 'TEST',  NOM_CMP = 'SIXX', VALE = -2.562515E+03),
-          _F(  RESULTAT = RE_MEC_1, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 2,     NOM_CHAM = 'DESI_NOEU_DLSI',
-            GROUP_NO = 'TEST',  NOM_CMP = 'SIYY', VALE = -7.887283E+00),
-          _F(  RESULTAT = RE_MEC_1, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 2,     NOM_CHAM = 'DESI_NOEU_DLSI',
-            GROUP_NO = 'TEST',  NOM_CMP = 'SIXY', VALE = 3.000417E+00),
-          _F(  RESULTAT = RE_MEC_1, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 2,     NOM_CHAM = 'DESI_NOEU_DLSI',
-            GROUP_NO = 'TEST',  NOM_CMP = 'SIZZ', VALE = 1.568869E+03),
-          _F(  RESULTAT = RE_MEC_2, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 1,     NOM_CHAM = 'DEDE_NOEU_DLDE',
-            GROUP_NO = 'TEST',  NOM_CMP = 'DX',   VALE = -3.390620E-03),
-          _F(  RESULTAT = RE_MEC_2, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 1,     NOM_CHAM = 'DEDE_NOEU_DLDE',
-            GROUP_NO = 'TEST',  NOM_CMP = 'DY',   VALE = 1.881595E-04),
-          _F(  RESULTAT = RE_MEC_2, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 1,     NOM_CHAM = 'DESI_NOEU_DLSI',
-            GROUP_NO = 'TEST',  NOM_CMP = 'SIXX', VALE = -2.407831E+02),
-          _F(  RESULTAT = RE_MEC_2, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 1,     NOM_CHAM = 'DESI_NOEU_DLSI',
-            GROUP_NO = 'TEST',  NOM_CMP = 'SIYY', VALE = 6.070897E+01),
-          _F(  RESULTAT = RE_MEC_2, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 1,     NOM_CHAM = 'DESI_NOEU_DLSI',
-            GROUP_NO = 'TEST',  NOM_CMP = 'SIXY', VALE = 1.029897E+02),
-          _F(  RESULTAT = RE_MEC_2, CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-           SENSIBILITE=(THETA,),
-           NUME_ORDRE = 1,     NOM_CHAM = 'DESI_NOEU_DLSI',
-            GROUP_NO = 'TEST',  NOM_CMP = 'SIZZ', VALE = -2.223308E+02))
-      )
+TEST_RESU(RESU=(_F(RESULTAT=RE_MEC_1,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEDE_NOEU_DLDE',
+                   NOM_CMP='DX',
+                   GROUP_NO='TEST',
+                   VALE=0.04639904,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_MEC_1,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEDE_NOEU_DLDE',
+                   NOM_CMP='DY',
+                   GROUP_NO='TEST',
+                   VALE=0.002842913,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_MEC_1,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='TEST',
+                   VALE=-2562.515,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_MEC_1,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='TEST',
+                   VALE = -7.896569E+00,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_MEC_1,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CMP='SIXY',
+                   GROUP_NO='TEST',
+                   VALE = 2.999038E+00,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_MEC_1,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CMP='SIZZ',
+                   GROUP_NO='TEST',
+                   VALE=1568.869,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_MEC_2,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEDE_NOEU_DLDE',
+                   NOM_CMP='DX',
+                   GROUP_NO='TEST',
+                   VALE=-0.00339062,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_MEC_2,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEDE_NOEU_DLDE',
+                   NOM_CMP='DY',
+                   GROUP_NO='TEST',
+                   VALE=0.0001881595,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_MEC_2,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='TEST',
+                   VALE=-240.7831,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_MEC_2,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='TEST',
+                   VALE=60.70897,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_MEC_2,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CMP='SIXY',
+                   GROUP_NO='TEST',
+                   VALE=102.9897,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RE_MEC_2,
+                   SENSIBILITE=THETA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CMP='SIZZ',
+                   GROUP_NO='TEST',
+                   VALE=-222.3308,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',),),);
 
 #
 # 7. FIN
+
+FIN();
+
 #
-FIN( )
-#
+

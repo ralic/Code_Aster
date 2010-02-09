@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 # TITRE CYLINDRE CREUX ORTHOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,60 +19,78 @@
 # ======================================================================
 #
 # MAILLES : TRIA3 (ET SEG2)
-#
-#
 
-DEBUT(  CODE=_F( NOM = 'TPLA07A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='TPLA07A',
+              NIV_PUB_WEB='INTERNET',),);
 
 #
 # LECTURE DU MAILLAGE --------------------------------------------------
-#
 
-PRE_GMSH()
+PRE_GMSH();
 
-MAIL2=LIRE_MAILLAGE( )
+MAIL2=LIRE_MAILLAGE();
 
-MAIL2=DEFI_GROUP(reuse=MAIL2,MAILLAGE=MAIL2,
-           CREA_GROUP_MA=(_F(NOM='MATIERE',GROUP_MA=('GM6')),
-                          _F(NOM='MAI_AB' ,GROUP_MA=('GM1')),
-                          _F(NOM='MAI_BC' ,GROUP_MA=('GM2')),
-                          _F(NOM='MAI_CD' ,GROUP_MA=('GM3')),
-                          _F(NOM='MAI_DA' ,GROUP_MA=('GM4')),),)
+MAIL2=DEFI_GROUP(reuse =MAIL2,
+                 MAILLAGE=MAIL2,
+                 CREA_GROUP_MA=(_F(NOM='MATIERE',
+                                   GROUP_MA='GM6',),
+                                _F(NOM='MAI_AB',
+                                   GROUP_MA='GM1',),
+                                _F(NOM='MAI_BC',
+                                   GROUP_MA='GM2',),
+                                _F(NOM='MAI_CD',
+                                   GROUP_MA='GM3',),
+                                _F(NOM='MAI_DA',
+                                   GROUP_MA='GM4',),),);
 
+MAIL2=DEFI_GROUP(reuse =MAIL2,
+                 MAILLAGE=MAIL2,
+                 CREA_GROUP_NO=(_F(OPTION='NOEUD_ORDO',
+                                   NOM='AB',
+                                   GROUP_MA='MAI_AB',),
+                                _F(OPTION='NOEUD_ORDO',
+                                   NOM='BC',
+                                   GROUP_MA='MAI_BC',),
+                                _F(OPTION='NOEUD_ORDO',
+                                   NOM='CD',
+                                   GROUP_MA='MAI_CD',),
+                                _F(OPTION='NOEUD_ORDO',
+                                   NOM='DA',
+                                   GROUP_MA='MAI_DA',),
+                                _F(OPTION='PLAN',
+                                   NOM='COUP02',
+                                   POINT=(0.0,0.2,),
+                                   VECT_NORMALE=(0.0,1.0,),
+                                   PRECISION=0.005,),),);
 
-MAIL=CREA_MAILLAGE(MAILLAGE=MAIL2,LINE_QUAD=_F(TOUT='OUI'))
-
+MAIL=CREA_MAILLAGE(MAILLAGE=MAIL2,
+                   LINE_QUAD=_F(TOUT='OUI',),);
 
 #
 # DEFINITION DES CHARGEMENTS ET DU MATERIAU ----------------------------
 #
-
 # ----- MATERIAU
 
-
-MATER=DEFI_MATERIAU(   THER_ORTH=_F(  LAMBDA_L = 2.89, LAMBDA_T = 40.00,
-                                        LAMBDA_N = 2.89,   RHO_CP = 1.)
-                         )
+MATER=DEFI_MATERIAU(THER_ORTH=_F(LAMBDA_L=2.89,
+                                 LAMBDA_T=40.00,
+                                 LAMBDA_N=2.89,
+                                 RHO_CP=1.,),);
 
 #
 # AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ---------------------------
-#
 
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATER,),);
 
-CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
-                           AFFE=_F(  TOUT = 'OUI',  MATER = MATER)
-                        )
+MOTH=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='THERMIQUE',
+                         MODELISATION='AXIS',),);
 
-MOTH=AFFE_MODELE(   MAILLAGE=MAIL,
-                        AFFE=_F(  TOUT = 'OUI',
-                               PHENOMENE = 'THERMIQUE',
-                               MODELISATION = 'AXIS')
-                      )
-
-ORIEN=AFFE_CARA_ELEM(   MODELE=MOTH,
-                            MASSIF=_F(  GROUP_MA = 'MATIERE',
-                                     ANGL_REP = (0.,0.,0.,))
-                         )
+ORIEN=AFFE_CARA_ELEM(MODELE=MOTH,
+                     MASSIF=_F(GROUP_MA='MATIERE',
+                               ANGL_REP=(0.,0.,0.,),),);
 
 #  FLU_IMP = DEFI_FONCTION ( NOM_PARA:'Y'
 #                            VALE: ( 0.0D0 ,-500.D0
@@ -80,267 +98,160 @@ ORIEN=AFFE_CARA_ELEM(   MODELE=MOTH,
 #                            INTERPOL:'NON'
 #                          );
 
+FLU_AB=DEFI_CONSTANTE(VALE=-500.E0,);
 
-FLU_AB=DEFI_CONSTANTE(   VALE=-500.E0 )
+FLU_CD=DEFI_CONSTANTE(VALE=500.E0,);
 
-FLU_CD=DEFI_CONSTANTE(   VALE=+500.E0 )
+HCV_INT=DEFI_CONSTANTE(VALE=377.E0,);
 
-HCV_INT=DEFI_CONSTANTE(   VALE=377.E0 )
+TEX_INT=DEFI_FONCTION(NOM_PARA='Y',VALE=(0.0E0,130.E0,
+                            0.4E0,135.E0,
+                            ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-TEX_INT=DEFI_FONCTION(  NOM_PARA='Y',
-                             VALE=( 0.0E0,  130.E0,
-                                    0.4E0,  135.E0, ),
-                             PROL_DROITE='LINEAIRE',
-                            PROL_GAUCHE='LINEAIRE'
-                          )
+HCV_EXT=DEFI_CONSTANTE(VALE=339.3E0,);
 
-HCV_EXT=DEFI_CONSTANTE(   VALE=339.3E0 )
+TEX_EXT=DEFI_FONCTION(NOM_PARA='Y',VALE=(0.0E0,20.E0,
+                            0.4E0,25.E0,
+                            ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-TEX_EXT=DEFI_FONCTION(  NOM_PARA='Y',
-                             VALE=( 0.0E0,   20.E0,
-                                    0.4E0,   25.E0, ),
-                             PROL_DROITE='LINEAIRE',
-                            PROL_GAUCHE='LINEAIRE'
-                          )
+CHTH=AFFE_CHAR_THER_F(MODELE=MOTH,
+                      FLUX_REP=(_F(GROUP_MA='MAI_AB',
+                                   FLUN=FLU_AB,),
+                                _F(GROUP_MA='MAI_CD',
+                                   FLUN=FLU_CD,),),);
 
-CHTH=AFFE_CHAR_THER_F(   MODELE=MOTH,FLUX_REP=(
-                            _F(  GROUP_MA = 'MAI_AB',   FLUN = FLU_AB),
-                            _F(  GROUP_MA = 'MAI_CD',   FLUN = FLU_CD))
-                        )
-
-CHTH1=AFFE_CHAR_THER_F(   MODELE=MOTH,ECHANGE=(
-                             _F(  GROUP_MA = 'MAI_DA', COEF_H = HCV_INT,
-                                                     TEMP_EXT = TEX_INT),
-                             _F(  GROUP_MA = 'MAI_BC', COEF_H = HCV_EXT,
-                                                     TEMP_EXT = TEX_EXT))
-                        )
+CHTH1=AFFE_CHAR_THER_F(MODELE=MOTH,
+                       ECHANGE=(_F(GROUP_MA='MAI_DA',
+                                   COEF_H=HCV_INT,
+                                   TEMP_EXT=TEX_INT,),
+                                _F(GROUP_MA='MAI_BC',
+                                   COEF_H=HCV_EXT,
+                                   TEMP_EXT=TEX_EXT,),),);
 
 #
 # DEFINITION DE LA STRATEGIE DE CALCUL ---------------------------------
 #
-
 #
 # RESOLUTION -----------------------------------------------------------
-#
 
-TEMPE=THER_LINEAIRE(   MODELE=MOTH,
-                           CHAM_MATER=CHMAT,EXCIT=(
-                            _F(  CHARGE = CHTH),
-                            _F(  CHARGE = CHTH1)),
-                            CARA_ELEM=ORIEN
-                         )
+TEMPE=THER_LINEAIRE(MODELE=MOTH,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=ORIEN,
+                    EXCIT=(_F(CHARGE=CHTH,),
+                           _F(CHARGE=CHTH1,),),);
 
 #
 # ANALYSE DES RESULTATS ------------------------------------------------
-#
 
-
-TEMPE=CALC_ELEM(reuse=TEMPE, RESULTAT=TEMPE,
+TEMPE=CALC_ELEM(reuse =TEMPE,
                 MODELE=MOTH,
-                CARA_ELEM=ORIEN,
-                EXCIT=(_F(  CHARGE = CHTH),
-                       _F(  CHARGE = CHTH1)),
                 CHAM_MATER=CHMAT,
+                CARA_ELEM=ORIEN,
+                RESULTAT=TEMPE,
                 NUME_ORDRE=0,
-                OPTION='FLUX_ELNO_TEMP'
-                          )
+                OPTION='FLUX_ELNO_TEMP',
+                EXCIT=(
+                _F(CHARGE=CHTH,),
+                _F(CHARGE=CHTH1,),),);
 
+TEMPE=CALC_NO(reuse =TEMPE,
+              RESULTAT=TEMPE,
+              OPTION='FLUX_NOEU_TEMP',);
 
+FLUYAB=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='FLUYAB',
+                               RESULTAT=TEMPE,
+                               NOM_CHAM='FLUX_NOEU_TEMP',
+                               NUME_ORDRE=0,
+                               GROUP_NO=('AB','CD','COUP02',),
+                               NOM_CMP=('FLUY','FLUX',),),);
 
-MAIL=DEFI_GROUP(reuse=MAIL,MAILLAGE=MAIL,
-                CREA_GROUP_NO=(_F(GROUP_MA='MAI_AB'),
-                               _F(GROUP_MA='MAI_BC'),
-                               _F(GROUP_MA='MAI_CD'),
-                               _F(GROUP_MA='MAI_DA'),),)
+TEMP_CD=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='TEMP_CD',
+                                RESULTAT=TEMPE,
+                                NOM_CHAM='TEMP',
+                                NUME_ORDRE=0,
+                                GROUP_NO=('CD','AB','COUP02',),
+                                NOM_CMP='TEMP',),);
 
+flux_res = FORMULE(VALE='-2.89*(-117.46/COOR_X)',
+                   NOM_PARA='COOR_X',);
 
-TEST_RESU(RESU=(
+DIFF1 = FORMULE(VALE='(FLUX-FLX_ref)/FLX_ref',
+                NOM_PARA=('FLUX','FLX_ref',),);
 
+TEMP_res = FORMULE(VALE='-117.46*log(COOR_X)+12.5*COOR_Y-311.87',
+                   NOM_PARA=('COOR_X','COOR_Y',),);
 
-_F( RESULTAT = TEMPE, NOEUD = 'N1', NUME_ORDRE=0, NOM_CHAM='TEMP',   NOM_CMP = 'TEMP',
-VALE = 100.01,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N5', NUME_ORDRE=0, NOM_CHAM='TEMP',   NOM_CMP = 'TEMP',
-VALE = 85.31,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N6', NUME_ORDRE=0, NOM_CHAM='TEMP',   NOM_CMP = 'TEMP',
-VALE = 72.25,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N7', NUME_ORDRE=0, NOM_CHAM='TEMP',   NOM_CMP = 'TEMP',
-VALE = 60.49,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N8', NUME_ORDRE=0, NOM_CHAM='TEMP',   NOM_CMP = 'TEMP',
-VALE = 49.80,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N2', NUME_ORDRE=0, NOM_CHAM='TEMP',   NOM_CMP = 'TEMP',
-VALE = 40.01,  PRECISION = 1.E-2),
+DIFF2 = FORMULE(VALE='(TEMP-T_ref)/T_ref',
+                NOM_PARA=('TEMP','T_ref',),);
 
-_F( RESULTAT = TEMPE, NOEUD = 'N83', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 102.66,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N135', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 87.96,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N183', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 74.90,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N231', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 63.25,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N279', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 52.56,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N35', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 42.77,  PRECISION = 1.E-2),
+FLUYAB=CALC_TABLE(reuse =FLUYAB,
+                  TABLE=FLUYAB,
+                  ACTION=(_F(OPERATION='OPER',
+                             FORMULE=flux_res,
+                             NOM_PARA='FLX_ref',),
+                          _F(OPERATION='OPER',
+                             FORMULE=DIFF1,
+                             NOM_PARA='Diff',),),);
 
-_F( RESULTAT = TEMPE, NOEUD = 'N4', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 105.01,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N60', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 90.31,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N59', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 77.25,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N58', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 65.49,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N57', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 54.80,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, NOEUD = 'N3', NUME_ORDRE=0, NOM_CHAM='TEMP', NOM_CMP = 'TEMP',
-VALE = 45.22,  PRECISION = 1.E-2),
+TEMP_CD=CALC_TABLE(reuse =TEMP_CD,
+                   TABLE=TEMP_CD,
+                   ACTION=(_F(OPERATION='OPER',
+                              FORMULE=TEMP_res,
+                              NOM_PARA='T_ref',),
+                           _F(OPERATION='OPER',
+                              FORMULE=DIFF2,
+                              NOM_PARA='Diff',),),);
 
+IMPR_TABLE(TABLE=FLUYAB,);
 
-#
-# PARTIE INFERIEURE Z=0
-#
-# FLUY SUR AB
+IMPR_TABLE(TABLE=TEMP_CD,);
 
-_F( RESULTAT = TEMPE, MAILLE = 'M109', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N1',    NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M109', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N5',    NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 4.5E-2),
+TEST_TABLE(TABLE=FLUYAB,
+           TYPE_TEST='MAX',
+           NOM_PARA='FLUY',
+           VALE=-500.0,
+           PRECISION=0.015,);
 
+TEST_TABLE(TABLE=FLUYAB,
+           TYPE_TEST='MIN',
+           NOM_PARA='FLUY',
+           VALE=-500.0,
+           PRECISION=0.01,);
 
-_F( RESULTAT = TEMPE, MAILLE = 'M305', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N6',    NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 2.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M305',NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N7',    NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 2.5E-2),
+TEST_TABLE(TABLE=FLUYAB,
+           TYPE_TEST='MAX',
+           NOM_PARA='Diff',
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           PRECISION=0.01,);
 
-_F( RESULTAT = TEMPE, MAILLE = 'M501', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N8',    NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M501', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N2',    NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.5E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M502', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N2',    NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.5E-2),
+TEST_TABLE(TABLE=FLUYAB,
+           TYPE_TEST='MIN',
+           NOM_PARA='Diff',
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           PRECISION=0.01,);
 
+TEST_TABLE(TABLE=TEMP_CD,
+           TYPE_TEST='MAX',
+           NOM_PARA='Diff',
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           PRECISION=0.01,);
 
-# FLUX RAYON INTERIEUR
-
-_F( RESULTAT = TEMPE, MAILLE = 'M109', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N1',    NOM_CMP = 'FLUX',  VALE = 11310.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M109', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N108',    NOM_CMP = 'FLUX',  VALE = 11310.,  PRECISION = 1.E-2),
-
-# FLUX EN RAYON EXTERIEUR
-
-_F( RESULTAT = TEMPE, MAILLE = 'M501', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N2',    NOM_CMP = 'FLUX',  VALE = 6786.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M502', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N2',   NOM_CMP = 'FLUX',  VALE = 6786.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M502', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N9',   NOM_CMP = 'FLUX',  VALE = 6786.,  PRECISION = 1.E-2),
-
-
-# PARTIE MOYENNE Z=0.2
-#
-_F( RESULTAT = TEMPE, MAILLE = 'M159', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N83',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 2.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M160', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N83',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M161', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N83',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 2.E-2),
-
-_F( RESULTAT = TEMPE, MAILLE = 'M160', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N134',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M161', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N134',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M162', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N134',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M257', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N134',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M258', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N134',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M259', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N134',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-
-_F( RESULTAT = TEMPE, MAILLE = 'M454', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N278',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M455', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N278',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M456', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N278',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M551', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N278',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M552', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N278',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M553', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N278',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-
-_F( RESULTAT = TEMPE, MAILLE = 'M552', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N34',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M553', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N34',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M554', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N34',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-
-# FLUX RAYON INTERIEUR
-
-_F( RESULTAT = TEMPE, MAILLE = 'M159', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-           NOEUD = 'N83',    NOM_CMP = 'FLUX',  VALE = 11310.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M160', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-           NOEUD = 'N83',    NOM_CMP = 'FLUX',  VALE = 11310.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M161', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-           NOEUD = 'N83',    NOM_CMP = 'FLUX',  VALE = 11310.,  PRECISION = 1.E-2),
-
-# FLUX EN RAYON EXTERIEUR
-
-_F( RESULTAT = TEMPE, MAILLE = 'M552', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N34',    NOM_CMP = 'FLUX',  VALE = 6786.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M553', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N34',    NOM_CMP = 'FLUX',  VALE = 6786.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M554', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N34',    NOM_CMP = 'FLUX',  VALE = 6786.,  PRECISION = 1.E-2),
-#
-# PARTIE SUPERIEURE Z=0.4
-#
-_F( RESULTAT = TEMPE, MAILLE = 'M205', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N4',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 4.5E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M206', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N4',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 4.E-2),
-
-
-_F( RESULTAT = TEMPE, MAILLE = 'M206', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N60',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 2.5E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M303', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N60', NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 2.5E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M304', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N60',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 3.E-2),
-
-_F( RESULTAT = TEMPE, MAILLE = 'M500', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N57',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M597', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N57',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M598', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N57',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.5E-2),
-
-_F( RESULTAT = TEMPE, MAILLE = 'M598', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N3',  NOM_CMP = 'FLUY',  VALE = -500.,  PRECISION = 1.E-2),
-
-# FLUX RAYON INTERIEUR
-
-_F( RESULTAT = TEMPE, MAILLE = 'M205', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-           NOEUD = 'N4',    NOM_CMP = 'FLUX',  VALE = 11310.,  PRECISION = 1.E-2),
-_F( RESULTAT = TEMPE, MAILLE = 'M206', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-           NOEUD = 'N4',    NOM_CMP = 'FLUX',  VALE = 11310.,  PRECISION = 1.E-2),
-
-# FLUX EN RAYON EXTERIEUR
-
-_F( RESULTAT = TEMPE, MAILLE = 'M598', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
-             NOEUD = 'N3',    NOM_CMP = 'FLUX',  VALE = 6786.,  PRECISION = 1.E-2))
-
-          )
+TEST_TABLE(TABLE=TEMP_CD,
+           TYPE_TEST='MIN',
+           NOM_PARA='Diff',
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           PRECISION=0.01,);
 
 #
 # FIN ------------------------------------------------------------------
+
+FIN();
+
 #
 
-FIN()
-#
-#

@@ -1,6 +1,6 @@
       SUBROUTINE TE0281(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,22 +59,30 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-
+      CHARACTER*2 CODRET
       REAL*8 BETA,DBETA,LAMBDA,THETA,DELTAT,TPG,R8BID,DFDX(27),DFDY(27),
      &       DFDZ(27),POIDS,DTPGDX,DTPGDY,DTPGDZ,LAMBS,CPS,DTPGMX,
      &       DTPGMY,DTPGMZ,DTPGPX,DTPGPY,DTPGPZ,TEMS,DLAMBD,FLUXS(3),
-     &       PREC,R8PREM,TPGM,TPGBUF,TPSEC,DIFF
+     &       PREC,R8PREM,TPGM,TPGBUF,TPSEC,DIFF,CHAL,HYDRPG(27)
       INTEGER JGANO,IPOIDS,IVF,IDFDE,IGEOM,IMATE,ITEMP,NNO,KP,NNOS
       INTEGER NPG,I,L,IFON(3),NDIM,ICOMP,IVECTT,IVECTI
       INTEGER ITEMPS,IMATSE,IVAPRI,IVAPRM,IFONS(3),TETYPS,IFM,NIV,IRET
-      INTEGER ISECHI,ISECHF
-      LOGICAL LSENS,LSTAT
+      INTEGER ISECHI,ISECHF,IHYDR
+      INTEGER NPG2,IPOID2,IVF2,IDFDE2
+      LOGICAL LSENS,LSTAT,LTEATT,LHYD
 
 C====
 C 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 C====
       PREC = R8PREM()*10.D0
-
+      IF ( (LTEATT(' ','LUMPE','OUI')).AND.
+     &    (NOMTE(6:10).NE.'PYRAM')) THEN
+         CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &            IDFDE2,JGANO)
+      ELSE
+         CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &            IDFDE2,JGANO)
+      ENDIF
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
       IF (OPTION(6:9).EQ.'SENS') THEN
@@ -124,13 +132,30 @@ C====
       DELTAT = ZR(ITEMPS+1)
       THETA = ZR(ITEMPS+2)
 
-      IF ((ZK16(ICOMP) (1:9).EQ.'THER_HYDR')) THEN
-        CALL U2MESS('F','ELEMENTS3_57')
+      IF(ZK16(ICOMP)(1:5).NE.'SECH_') THEN
+         CALL NTFCMA (ZI(IMATE),IFON)
+      ENDIF
+C====
+C 1.4 PREALABLES LIES A L'HYDRATATION
+C====
+      IF (ZK16(ICOMP) (1:9).EQ.'THER_HYDR') THEN
+          LHYD = .TRUE.
+          IF (LSENS) CALL U2MESS('F','SENSIBILITE_32')
+          CALL JEVECH('PHYDRPM','L',IHYDR)
+          DO 152 KP = 1,NPG2
+             L = NNO*(KP-1)
+             HYDRPG(KP)=0.D0
+             DO 162 I = 1,NNO
+                HYDRPG(KP)=HYDRPG(KP)+ZR(IHYDR)*ZR(IVF2+L+I-1)
+ 162         CONTINUE
+ 152      CONTINUE
+
+          CALL RCVALA(ZI(IMATE),' ','THER_HYDR',0,' ',R8BID,1,
+     &               'CHALHYDR', CHAL,CODRET,'FM')
+      ELSE
+          LHYD = .FALSE.
       END IF
-
-      IF ((ZK16(ICOMP) (1:5).EQ.'THER_')) THEN
-      CALL NTFCMA(ZI(IMATE),IFON)
-
+      IF(ZK16(ICOMP)(1:5).EQ.'THER_') THEN
 C====
 C 1.5 PREALABLES LIES AUX CALCULS DE SENSIBILITE PART II
 C     (NE CONCERNE QUE LES DERIVES MATERIAU AVEC UN IMATSE NON NUL)
@@ -276,17 +301,19 @@ C FIN BOUCLE SUR LES PTS DE GAUSS
    70 CONTINUE
 
 C====
-C 3. CALCULS DU TERME DE RIGIDITE DE L'OPTION (PB STD OU SENSIBLE)
+C 3. CALCULS DU TERME DE MASSE DE L'OPTION (PB STD OU SENSIBLE)
 C====
 
 
-      DO 140 KP = 1,NPG
+      DO 140 KP = 1,NPG2
         L = (KP-1)*NNO
+        CALL DFDM3D ( NNO, KP, IPOID2, IDFDE2,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
         TPG = 0.D0
         IF (.NOT.LSTAT) THEN
           DO 80 I = 1,NNO
 C CALCUL DE T- (OU (DT/DS)- EN SENSI) ET DE SON GRADIENT
-            TPG = TPG + ZR(ITEMP+I-1)*ZR(IVF+L+I-1)
+            TPG = TPG + ZR(ITEMP+I-1)*ZR(IVF2+L+I-1)
    80     CONTINUE
         END IF
 
@@ -295,13 +322,13 @@ C CALCUL DE SENSIBILITE PART VI
         IF ((TETYPS.EQ.2) .AND. (.NOT.LSTAT)) THEN
           DO 90 I = 1,NNO
 C CALCUL DE (T- - T+) POUR TERME DE MASSE
-            TEMS = TEMS + (ZR(IVAPRM+I-1)-ZR(IVAPRI+I-1))*ZR(IVF+L+I-1)
+            TEMS = TEMS + (ZR(IVAPRM+I-1)-ZR(IVAPRI+I-1))*ZR(IVF2+L+I-1)
    90     CONTINUE
         END IF
         IF (LSENS .AND. (.NOT.LSTAT)) THEN
           DO 100 I = 1,NNO
 C CALCUL DE T- EN SENSIBILITE
-            TPGM = TPGM + ZR(IVAPRM+I-1)*ZR(IVF+L+I-1)
+            TPGM = TPGM + ZR(IVAPRM+I-1)*ZR(IVF2+L+I-1)
   100     CONTINUE
         END IF
 
@@ -319,25 +346,36 @@ C POUR LE PB DERIVE, ON UTILISE TPGM=T-
           BETA = 0.D0
           DBETA = 0.D0
         END IF
-
+        IF (LHYD) THEN
+C THER_HYDR
+          DO 81 I = 1,NNO
+              ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
+     &                         POIDS* ((BETA-CHAL*HYDRPG(KP))*
+     &                         ZR(IVF2+L+I-1)/DELTAT)
+              ZR(IVECTI+I-1) = ZR(IVECTI+I-1) +
+     &                         POIDS* ((DBETA*TPG-CHAL*HYDRPG(KP))*
+     &                         ZR(IVF2+L+I-1)/DELTAT)
+   81      CONTINUE
+        ELSE
+C THER_NL
 CCDIR$ IVDEP
-        IF (.NOT.LSENS) THEN
+         IF (.NOT.LSENS) THEN
 C CALCUL STD A 2 OUTPUTS (LE DEUXIEME NE SERT QUE POUR LA PREDICTION)
 
           DO 110 I = 1,NNO
             ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
-     &                       POIDS*BETA/DELTAT*ZR(IVF+L+I-1)
+     &                       POIDS*BETA/DELTAT*ZR(IVF2+L+I-1)
             ZR(IVECTI+I-1) = ZR(IVECTI+I-1) +
-     &                       POIDS*DBETA*TPG/DELTAT*ZR(IVF+L+I-1)
+     &                       POIDS*DBETA*TPG/DELTAT*ZR(IVF2+L+I-1)
   110     CONTINUE
 
-        ELSE
+         ELSE
 
 C CALCUL DE SENSIBILITE PART VII: TRONC COMMUN TRANSITOIRE
           IF (.NOT.LSTAT) THEN
             DO 120 I = 1,NNO
               ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
-     &                         POIDS*DBETA*TPG*ZR(IVF+L+I-1)/DELTAT
+     &                         POIDS*DBETA*TPG*ZR(IVF2+L+I-1)/DELTAT
   120       CONTINUE
           END IF
 
@@ -345,11 +383,13 @@ C CALCUL DE SENSIBILITE PART VIII: TERME PARTICULIER
           IF ((TETYPS.EQ.2) .AND. (.NOT.LSTAT)) THEN
             DO 130 I = 1,NNO
               ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
-     &                         POIDS*CPS/DELTAT*ZR(IVF+L+I-1)*TEMS
+     &                         POIDS*CPS/DELTAT*ZR(IVF2+L+I-1)*TEMS
   130       CONTINUE
           END IF
-        END IF
-
+C ENDIF LSENS
+         END IF
+C ENDIF THER_HYDR
+        ENDIF
 C FIN BOUCLE SUR LES PTS DE GAUSS
   140 CONTINUE
 
@@ -386,13 +426,37 @@ C          ISECHI ET ISECHF SONT FICTIFS
           CALL RCDIFF(ZI(IMATE),ZK16(ICOMP),TPSEC,TPG,DIFF)
 CCDIR$ IVDEP
           DO 170 I = 1,NNO
-            ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
-     &                       POIDS* (TPG/DELTAT*ZR(IVF+L+I-1)-
+            ZR(IVECTT+I-1) = ZR(IVECTT+I-1) -
+     &                       POIDS* (
      &                       (1.0D0-THETA)*DIFF* (DFDX(I)*DTPGDX+
      &                       DFDY(I)*DTPGDY+DFDZ(I)*DTPGDZ))
             ZR(IVECTI+I-1) = ZR(IVECTT+I-1)
   170     CONTINUE
   150   CONTINUE
+        DO 151 KP = 1,NPG2
+          L = NNO*(KP-1)
+          CALL DFDM3D ( NNO, KP, IPOID2, IDFDE2,
+     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
+          TPG = 0.D0
+          DTPGDX = 0.D0
+          DTPGDY = 0.D0
+          DTPGDZ = 0.D0
+          TPSEC = 0.D0
+          DO 161 I = 1,NNO
+            TPG   = TPG   + ZR( ITEMP+I-1)*ZR(IVF2+L+I-1)
+            TPSEC = TPSEC + ZR(ISECHI+I-1)*ZR(IVF2+L+I-1)
+            DTPGDX = DTPGDX + ZR(ITEMP+I-1)*DFDX(I)
+            DTPGDY = DTPGDY + ZR(ITEMP+I-1)*DFDY(I)
+            DTPGDZ = DTPGDZ + ZR(ITEMP+I-1)*DFDZ(I)
+  161     CONTINUE
+          CALL RCDIFF(ZI(IMATE),ZK16(ICOMP),TPSEC,TPG,DIFF)
+CCDIR$ IVDEP
+          DO 171 I = 1,NNO
+            ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
+     &                     POIDS* (TPG/DELTAT*ZR(IVF2+L+I-1))
+            ZR(IVECTI+I-1) = ZR(IVECTT+I-1)
+  171     CONTINUE
+  151   CONTINUE
 
       ENDIF
 C FIN ------------------------------------------------------------------

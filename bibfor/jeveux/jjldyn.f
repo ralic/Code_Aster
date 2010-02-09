@@ -1,24 +1,24 @@
       SUBROUTINE JJLDYN ( LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/11/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 08/02/2010   AUTEUR PELLET J.PELLET 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRS_505 CRS_508 CRS_512 
+C TOLE CRP_18 CRS_505 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C LIBERE LES SEGMENTS DE VALEURS ALLOUES DYNAMIQUEMENT
@@ -34,7 +34,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -59,8 +59,8 @@ C
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
 C ----------------------------------------------------------------------
@@ -74,16 +74,19 @@ C ----------------------------------------------------------------------
       CHARACTER*1    CGENR
       CHARACTER*32   NOM32
       INTEGER        IADDI(2),ICOUNT,LMEMT,LGS
+
+      CALL UTTCPU('CPU.MEMD.1','DEBUT',' ')
+
 C
 C     ON LISTE LES OBJETS ALLOUES DYNAMIQUEMENT EN BALAYANT
 C     L'ENSEMBLE DES OBJETS, EN COMMENCANT PAR LA BASE VOLATILE
-C  
+C
       ICDYN = ICDYN+1
       LTOT = 0
       NCLA1 = 1
       NCLA2 = INDEX ( CLASSE , '$' ) - 1
       IF (NCLA2 .LT. 0) NCLA2 = N
-      DO 200  IC = NCLA2 , NCLA1, - 1 
+      DO 200  IC = NCLA2 , NCLA1, - 1
         DO 205 J = 1 , NREMAX(IC)
           IADMI = IADM(JIADM(IC)+2*J-1)
           IF ( IADMI .EQ. 0 ) GOTO 205
@@ -91,12 +94,12 @@ C
           CGENR = GENR(JGENR(IC)+J)
           NOM32 = RNOM(JRNOM(IC)+J)
 C
-C    ISD DESIGNE LE STATUT DE LA COLLECTION 
+C    ISD DESIGNE LE STATUT DE LA COLLECTION
 C        =U ON PASSE PAR LES ROUTINES HABITUELLES (JJALLC, JJLIDE)
-C        =X ON TRAITE DIRECTEMENT 
+C        =X ON TRAITE DIRECTEMENT
 C
           ISDC  = ISZON(JISZON + IADMI - 1) / ISSTAT
-          IF (CGENR .EQ. 'X' .AND. ISDC .EQ. 2) THEN  
+          IF (CGENR .EQ. 'X' .AND. ISDC .EQ. 2) THEN
             IBACOL = IADMI
             IXIADM = ISZON ( JISZON + IBACOL + IDIADM )
             IXIADD = ISZON ( JISZON + IBACOL + IDIADD )
@@ -110,10 +113,10 @@ C
                 IADMOC = ISZON(JISZON + IBIADM - 1 +2*K-1)
                 IADYOC = ISZON(JISZON + IBIADM - 1 +2*K  )
                 IF (IADYOC .NE. 0) THEN
-                  IDM  = IADMOC - 4 
+                  IDM  = IADMOC - 4
                   ISD  = ISZON(JISZON + IDM + 3) / ISSTAT
                   ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4) / ISSTAT
-                  IL = ISZON(JISZON+IDM) - 8 - IDM 
+                  IL = ISZON(JISZON+IDM) - 8 - IDM
                   IF ( ISD .EQ. 1 ) THEN
 C
 C     LE SEGMENT DE VALEURS EST MARQUE X A OU X D, ON PEUT LE LIBERER
@@ -136,8 +139,8 @@ C
                       ISZON(JISZON + IBIADD -1 + 2*K-1) = IADDI(1)
                       ISZON(JISZON + IBIADD -1 + 2*K  ) = IADDI(2)
                     ENDIF
-                    LGS = ISZON(JISZON+IADMOC-4) - IADMOC + 5 
-                    MCDYN = MCDYN - LGS*LOIS 
+                    LGS = ISZON(JISZON+IADMOC-4) - IADMOC + 5
+                    MCDYN = MCDYN - LGS*LOIS
                     MLDYN = MLDYN + LGS*LOIS
                     CALL HPDEALLC ( IADYOC , NBFREE , IBID )
 C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL,LSV
@@ -145,17 +148,17 @@ C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL,LSV
                     ISZON(JISZON + IBIADM - 1 +2*K-1) = 0
                     ISZON(JISZON + IBIADM - 1 +2*K  ) = 0
                   ENDIF
-                ENDIF  
- 210          CONTINUE  
+                ENDIF
+ 210          CONTINUE
             ENDIF
             GOTO 205
-C          ELSE IF ( NOM32(25:32) .EQ. ' ' ) THEN 
-          ELSE 
+C          ELSE IF ( NOM32(25:32) .EQ. ' ' ) THEN
+          ELSE
             IF (IADYN .NE. 0) THEN
-              IDM   = IADMI - 4 
+              IDM   = IADMI - 4
               ISD  = ISZON(JISZON + IDM + 3) / ISSTAT
               ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4) / ISSTAT
-              IL = ISZON(JISZON+IDM) - 8 - IDM 
+              IL = ISZON(JISZON+IDM) - 8 - IDM
               IF ( ISD .EQ. 1 ) THEN
 C
 C     LE SEGMENT DE VALEURS EST MARQUE X A OU X D, ON PEUT LE LIBERER
@@ -172,19 +175,21 @@ C
                   IADD( JIADD(IC)+2*J-1 ) = IADDI(1)
                   IADD( JIADD(IC)+2*J   ) = IADDI(2)
                 ENDIF
-                LGS = ISZON(JISZON+IADMI-4) - IADMI + 5 
+                LGS = ISZON(JISZON+IADMI-4) - IADMI + 5
                 MCDYN = MCDYN - LGS*LOIS
                 MLDYN = MLDYN + LGS*LOIS
                 CALL HPDEALLC ( IADYN , NBFREE , IBID )
 C               write(6,*) ' OS ',NOM32,' lg =',IL,LSV
                 LTOT = LTOT + IL
-                IADM(JIADM(IC)+2*J-1) = 0 
+                IADM(JIADM(IC)+2*J-1) = 0
                 IADM(JIADM(IC)+2*J  ) = 0
               ENDIF
             ENDIF
-          ENDIF 
+          ENDIF
  205    CONTINUE
  200  CONTINUE
       MXLTOT=MXLTOT+(LTOT*LOIS)/(1024*1024)
-C
+
+
+      CALL UTTCPU('CPU.MEMD.1','FIN',' ')
       END

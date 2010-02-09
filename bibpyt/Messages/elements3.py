@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF elements3 Messages  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,10 +158,6 @@ cata_msg = {
 
 56 : _("""
  valeurs utilisateurs de rho ou de rof nulles
-"""),
-
-57 : _("""
- pas d elements lumpes pourhydratation 
 """),
 
 58 : _("""

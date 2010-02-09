@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXISYMETRIQUE
 # RESPONSABLE VABHHTS J.PELLET
 # ssla200a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -310,17 +310,17 @@ TEST_RESU(RESU=( _F(  RESULTAT = THLIN,   NUME_ORDRE = 0,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-              VALE= 1.2365022775219E+03 ),
+              VALE= 1.2364868353258E+03 ),
                    _F(  RESULTAT = THLIN,   NUME_ORDRE = 1,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-              VALE= 1.3197140441034E+03 ),
+              VALE= 1.3197041071140E+03 ),
                    _F(  RESULTAT = THLIN, NUME_ORDRE = 2,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-              VALE= 1.4574770197303E+03 )))
+              VALE= 1.4574659478033E+03 )))
 
 CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                VERI_NORM='NON',
@@ -1325,3 +1325,5 @@ TEST_TABLE(      TABLE=TABLE3,       NOM_PARA='DX',
 
 
 FIN( )
+
+

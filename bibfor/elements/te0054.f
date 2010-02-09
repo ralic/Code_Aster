@@ -1,6 +1,6 @@
       SUBROUTINE TE0054(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.......................................................................
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C     BUT: CALCUL DES MATRICES DE MASSE ELEMENTAIRE EN THERMIQUE
 C          ELEMENTS ISOPARAMETRIQUES 3D
@@ -50,10 +50,19 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       CHARACTER*16  NOMTE,OPTION,PHENOM
       REAL*8        VALPAR,DFDX(27),DFDY(27),DFDZ(27),POIDS
-      INTEGER       IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      REAL*8        CP, DELTAT
+      INTEGER       IPOIDS,IVF,IDFDE,IGEOM,IMATE,LL,NDIM
       INTEGER       JGANO,NNO,KP,NPG2,IJ,I,J,IMATTT,ITEMPS
+      INTEGER       NNOS
+      LOGICAL       LTEATT
 
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,IDFDE,JGANO)
+      IF ( LTEATT(' ','LUMPE','OUI')) THEN
+         CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,
+     &            IDFDE,JGANO)
+      ELSE
+         CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,
+     &           IDFDE, JGANO)
+      ENDIF
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -72,7 +81,7 @@ C    BOUCLE SUR LES POINTS DE GAUSS
 
       DO 40 KP = 1,NPG2
 
-        L = (KP-1)*NNO
+        LL = (KP-1)*NNO
         CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
 
@@ -81,8 +90,8 @@ C    BOUCLE SUR LES POINTS DE GAUSS
           DO 20 J = 1,I
             IJ = (I-1)*I/2 + J
             ZR(IMATTT+IJ-1) = ZR(IMATTT+IJ-1) +
-     &                        CP/DELTAT*POIDS*ZR(IVF+L+I-1)*
-     &                        ZR(IVF+L+J-1)
+     &                        CP/DELTAT*POIDS*ZR(IVF+LL+I-1)*
+     &                        ZR(IVF+LL+J-1)
 
    20     CONTINUE
    30   CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 18/01/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements4 Messages  DATE 08/02/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -262,7 +262,13 @@ Le module d'Young est nul.
 """),
 
 92 : _("""
- la pression doit être nulle pour la maille  %(k1)s
+Erreur utilisateur :
+ Vous essayez d'appliquer une pression (comme fonction) non nulle sur un élément de coque.
+ (AFFE_CHAR_MECA_F/PRES_REP/PRES) pour la maille  %(k1)s
+ La programmation ne le permet pas.
+
+Conseil :
+ Pour appliquer une telle presssion, il faut utiliser AFFE_CHAR_MECA_F/FORCE_COQUE/PRES
 """),
 
 98 : _("""

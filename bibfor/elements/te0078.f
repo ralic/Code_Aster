@@ -1,6 +1,6 @@
       SUBROUTINE TE0078 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,11 +82,14 @@ C
          CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
          IF(ALIAS8(6:8).EQ.'QU9')  ELREFE='QU4'
          IF(ALIAS8(6:8).EQ.'TR6')  ELREFE='TR3'
+         CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &            IDFDE2,JGANO)
+      ELSE
+         CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &           IDFDE2, JGANO)
       ENDIF
 C
-      CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
-     &            JGANO)
-      CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
+      CALL ELREF4(ELREFE,'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &            JGANO)
 
 C====
@@ -247,126 +250,10 @@ C====
           ORIG(2) = ZR(ICAMAS+5)
         ENDIF
        ENDIF
-C====
-C 2. CALCULS TERMES DE RIGIDITE ET DE MASSE (STD ET/OU SENSIBLE)
-C    POUR LES ELEMENTS NON LUMPES
-C====
-
-      IF(.NOT.LTEATT(' ','LUMPE','OUI'))THEN
-
-        DO 101 KP=1,NPG
-          K=(KP-1)*NNO
-          CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
-          R      = 0.D0
-          TPG    = 0.D0
-          DTPGDX = 0.D0
-          DTPGDY = 0.D0
-          DO 102 I=1,NNO
-C CALCUL DE T- (OU (DT/DS)- EN SENSI) ET DE SON GRADIENT
-            R      = R      + ZR(IGEOM+2*(I-1))*ZR(IVF+K+I-1)
-            TPG    = TPG    + ZR(ITEMP+I-1)    *ZR(IVF+K+I-1)
-            DTPGDX = DTPGDX + ZR(ITEMP+I-1)    *DFDX(I)
-            DTPGDY = DTPGDY + ZR(ITEMP+I-1)    *DFDY(I)
-102       CONTINUE
-          IF ( LTEATT(' ','AXIS','OUI') ) POIDS = POIDS*R
-
-C CALCUL DE SENSIBILITE PART IV
-          IF (TETYPS.EQ.1) THEN
-            DTEMPX = 0.D0
-            DTEMPY = 0.D0
-            DTEMMX = 0.D0
-            DTEMMY = 0.D0
-            DO 41 I=1,NNO
-C CALCUL DE GRAD(T+) ET DE GRAD(T-) POUR TERME DE RIGIDITE
-              DTEMPX = DTEMPX + ZR(IVAPRI+I-1) * DFDX(I)
-              DTEMPY = DTEMPY + ZR(IVAPRI+I-1) * DFDY(I)
-              DTEMMX = DTEMMX + ZR(IVAPRM+I-1) * DFDX(I)
-              DTEMMY = DTEMMY + ZR(IVAPRM+I-1) * DFDY(I)
-41          CONTINUE
-          ELSE IF (TETYPS.EQ.2) THEN
-            TEMS = 0.D0
-            DO 42 I=1,NNO
-C CALCUL DE (T- - T+) POUR TERME DE MASSE
-              TEMS=TEMS+(ZR(IVAPRM+I-1)-ZR(IVAPRI+I-1))*ZR(IVF+K+I-1)
-42          CONTINUE
-          ENDIF
-
-          IF (.NOT.ANISO) THEN
-            FLUGLO(1) = LAMBDA*DTPGDX
-            FLUGLO(2) = LAMBDA*DTPGDY
-C CALCUL DE SENSIBILITE PART V (SENSIBILITE / LAMBDA EN ISOTROPE)
-            IF (TETYPS.EQ.1) THEN
-              FLUGLS(1)=LAMBS*(THETA*DTEMPX+(1.D0-THETA)*DTEMMX)
-              FLUGLS(2)=LAMBS*(THETA*DTEMPY+(1.D0-THETA)*DTEMMY)
-            ENDIF
-          ELSE
-            IF (.NOT.GLOBAL) THEN
-              POINT(1)=0.D0
-              POINT(2)=0.D0
-              DO 104 NUNO=1,NNO
-                POINT(1) = POINT(1) +
-     &                     ZR(IVF+K+NUNO-1)*ZR(IGEOM+2*NUNO-2)
-                POINT(2) = POINT(2) +
-     &                     ZR(IVF+K+NUNO-1)*ZR(IGEOM+2*NUNO-1)
- 104          CONTINUE
-              XU = ORIG(1) - POINT(1)
-              YU = ORIG(2) - POINT(2)
-              XNORM = SQRT( XU**2 + YU**2 )
-              XU = XU / XNORM
-              YU = YU / XNORM
-              P(1,1) =  XU
-              P(2,1) =  YU
-              P(1,2) = -YU
-              P(2,2) =  XU
-            ENDIF
-            FLUGLO(1) = DTPGDX
-            FLUGLO(2) = DTPGDY
-            FLULOC(1) = P(1,1)*DTPGDX + P(2,1)*DTPGDY
-            FLULOC(2) = P(1,2)*DTPGDX + P(2,2)*DTPGDY
-            FLULOC(1) = LAMBOR(1)*FLULOC(1)
-            FLULOC(2) = LAMBOR(2)*FLULOC(2)
-            FLUGLO(1) = P(1,1)*FLULOC(1) + P(1,2)*FLULOC(2)
-            FLUGLO(2) = P(2,1)*FLULOC(1) + P(2,2)*FLULOC(2)
-
-C CALCUL DE SENSIBILITE PART V BIS(SENSIBILITE / LAMBDA EN ANISOTROPE)
-            IF (TETYPS.EQ.1) THEN
-              FLUGLS(1) = THETA*DTEMPX+(1.D0-THETA)*DTEMMX
-              FLUGLS(2) = THETA*DTEMPY+(1.D0-THETA)*DTEMMY
-              FLULOS(1) = P(1,1)*FLUGLS(1) + P(2,1)*FLUGLS(2)
-              FLULOS(2) = P(1,2)*FLUGLS(1) + P(2,2)*FLUGLS(2)
-              FLULOS(1) = LAMBOS(1)*FLULOS(1)
-              FLULOS(2) = LAMBOS(2)*FLULOS(2)
-              FLUGLS(1) = P(1,1)*FLULOS(1) + P(1,2)*FLULOS(2)
-              FLUGLS(2) = P(2,1)*FLULOS(1) + P(2,2)*FLULOS(2)
-            ENDIF
-          ENDIF
-          DO 103 I=1,NNO
-            K=(KP-1)*NNO
-            ZR(IVECTT+I-1) = ZR(IVECTT+I-1) + POIDS *
-     &            ( CP/DELTAT*ZR(IVF+K+I-1)*TPG - (1.0D0-THETA)*
-     &            ( FLUGLO(1)*DFDX(I) + FLUGLO(2)*DFDY(I) ) )
-103       CONTINUE
-C CALCUL DE SENSIBILITE PART VI (SENSIBILITE / LAMBDA).
-          IF (TETYPS.EQ.1) THEN
-            DO 51 I=1,NNO
-              ZR(IVECTT+I-1) = ZR(IVECTT+I-1) - POIDS*(DFDX(I)*
-     &                         FLUGLS(1)+DFDY(I)*FLUGLS(2))
-51          CONTINUE
-C SENSIBILITE / CP
-          ELSE IF (TETYPS.EQ.2) THEN
-            DO 52 I=1,NNO
-              K=(KP-1)*NNO
-              ZR(IVECTT+I-1) = ZR(IVECTT+I-1) + POIDS*CPS/DELTAT*
-     &                         ZR(IVF+K+I-1)*TEMS
-52          CONTINUE
-          ENDIF
-101     CONTINUE
-
-      ELSE
 
 C====
 C 3.1 CALCULS TERMES DE RIGIDITE (STD ET/OU SENSIBLE)
-C    POUR LES ELEMENTS LUMPES
+C    POUR LES ELEMENTS LUMPES ET NON LUMPES
 C====
 
 C  CALCUL ISO-P2 : ELTS P2 DECOMPOSES EN SOUS-ELTS LINEAIRES
@@ -530,5 +417,4 @@ C MISE SOUS FORME DE VECTEUR
           ZR(IVECTT-1+I)=VECTT(I)
 306     CONTINUE
 
-      ENDIF
       END

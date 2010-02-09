@@ -1,42 +1,55 @@
 # MODIF  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
-# TITRE THERMO-HYDRATATION EN ADIABATIQUE 3D  3D_DIAG - HEXA8 PENTA6 TETRA4
-# ttnl03a.para = tps_job 200 mem_job 250Mo ncpus 1 liste_test S
+# TITRE THERMO-HYDRATATION EN ADIABATIQUE 2D AXIS AXIS_DIAG QUAD9 TRIA6
+# ttnl03d.para = tps_job 100 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='TTNL03A',
+DEBUT(CODE=_F(NOM='TTNL03D',
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
+###############################################################################################
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',
-                   INFO=2,);
 
-MODTHER=AFFE_MODELE(MAILLAGE=MAIL,
+#                                         CALCUL THERMIQUE                                    #
+###############################################################################################
+
+
+MAILTH=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAIL2=CREA_MAILLAGE(MAILLAGE=MAILTH,
+                    LINE_QUAD=_F(TOUT='OUI',),
+                    INFO=2,);
+
+MAIL3=CREA_MAILLAGE(MAILLAGE=MAIL2,
+                    MODI_MAILLE=_F(TOUT='OUI',
+                                   OPTION='QUAD8_9',
+                                   PREF_NOEUD='NSS',),);
+
+MODTHER=AFFE_MODELE(MAILLAGE=MAIL3,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='THERMIQUE',
-                            MODELISATION='3D',),);
+                            MODELISATION='AXIS',),);
 
-MODTHERD=AFFE_MODELE(MAILLAGE=MAIL,
+MODTHERD=AFFE_MODELE(MAILLAGE=MAIL3,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='THERMIQUE',
-                             MODELISATION='3D_DIAG',),);
+                             MODELISATION='AXIS_DIAG',),);
 
-#
 # DEFINITION DE L'AFFINITE FONCTION DU DEGRE D'HYDRATATION
 
 AFF=DEFI_FONCTION(NOM_PARA='HYDR',VALE=(0.,6510.,
@@ -78,14 +91,14 @@ AFF=DEFI_FONCTION(NOM_PARA='HYDR',VALE=(0.,6510.,
                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='EXCLU',);
 
 #
-#CONDUCTION EN KJ/H/M/K
+#CONDUCTION
 
 COND=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,6.,
                          300.,6.,
                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 #
-# ENTHALPIE EN KJ/H/M
+# ENTHALPIE
 
 ENTH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,6.55E05,
                          20.,7.03E05,
@@ -102,29 +115,29 @@ MATHYDR=DEFI_MATERIAU(THER_HYDR=_F(LAMBDA=COND,
                                    CHALHYDR=1.4904E05,
                                    QSR_K=4000.,),);
 
-CHMATNL=AFFE_MATERIAU(MAILLAGE=MAIL,
+CHMATNL=AFFE_MATERIAU(MAILLAGE=MAIL3,
                       AFFE=_F(TOUT='OUI',
                               MATER=MATHYDR,),);
 
 #
 # CHARGEMENT
 # ----------
-TEMPEXT = 50.0;
+TEMPEXT = 25.0;
 
 TEMPINI = 20.9;
 
 
-#COEFF D'ECHANGE EN KJ/H/M**2/K NUL EN ADIABATIQUE
+#COEFF D'ECHANGE NUL EN ADIABATIQUE
 COEFH = 0.0;
 
 
 CHATHER=AFFE_CHAR_THER(MODELE=MODTHER,
-                       ECHANGE=_F(GROUP_MA='FACEINF',
+                       ECHANGE=_F(GROUP_MA='DC',
                                   COEF_H=COEFH,
                                   TEMP_EXT=TEMPEXT,),);
 
 CHATHERD=AFFE_CHAR_THER(MODELE=MODTHERD,
-                        ECHANGE=_F(GROUP_MA='FACEINF',
+                        ECHANGE=_F(GROUP_MA='DC',
                                    COEF_H=COEFH,
                                    TEMP_EXT=TEMPEXT,),);
 
@@ -151,12 +164,10 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 
 TEMPINIT=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                     OPERATION='AFFE',
-                    MAILLAGE=MAIL,
+                    MAILLAGE=MAIL3,
                     AFFE=_F(TOUT='OUI',
                             NOM_CMP='TEMP',
                             VALE=TEMPINI,),);
-
-#
 
 RESUTHYD=THER_NON_LINE(MODELE=MODTHER,
                        CHAM_MATER=CHMATNL,
@@ -175,12 +186,6 @@ RESUDIAG=THER_NON_LINE(MODELE=MODTHERD,
                        ETAT_INIT=_F(CHAM_NO=TEMPINIT,),
                        CONVERGENCE=_F(RESI_GLOB_MAXI=1e-05,),
                        PARM_THETA=0.57,);
-##IMPR_RESU(
-##FORMAT='MED',
-##UNITE=81,
-##
-##RESU=_F(RESULTAT=RESUTHYD,),
-##);
 ##############################
 
 
@@ -266,31 +271,43 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=T05,
 
 # NON REGRESSION
 # VALEURS DE REFERENCE ASTER DE LA VERSION 5.01.10
-##TEST_RESU(
-##
-##CHAM_NO=(_F(CHAM_GD=T05,
-##GROUP_NO='A',
-##NOM_CMP='TEMP',
-##VALE=22.5,
-##PRECISION=0.01,
-##REFERENCE='NON_REGRESSION',
-##VERSION='5.01.10',),
-##_F(CHAM_GD=T15,
-##GROUP_NO='A',
-##NOM_CMP='TEMP',
-##VALE=57.8,
-##PRECISION=0.02,
-##REFERENCE='NON_REGRESSION',
-##VERSION='5.01.10',),
-##_F(CHAM_GD=T60,
-##GROUP_NO='A',
-##NOM_CMP='TEMP',
-##VALE=79.1,
-##PRECISION=0.04,
-##REFERENCE='NON_REGRESSION',
-##VERSION='5.01.10',),),
-##);
 
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=T05,
+                      GROUP_NO='A',
+                      NOM_CMP='TEMP',
+                      VALE=22.5,
+                      PRECISION=0.01,
+                      REFERENCE='NON_REGRESSION',),
+                   _F(CHAM_GD=T05D,
+                      GROUP_NO='A',
+                      NOM_CMP='TEMP',
+                      VALE=22.5,
+                      PRECISION=0.01,
+                      REFERENCE='NON_REGRESSION',),
+                   _F(CHAM_GD=T15,
+                      GROUP_NO='A',
+                      NOM_CMP='TEMP',
+                      VALE=57.8,
+                      PRECISION=0.02,
+                      REFERENCE='NON_REGRESSION',),
+                   _F(CHAM_GD=T15D,
+                      GROUP_NO='A',
+                      NOM_CMP='TEMP',
+                      VALE=57.8,
+                      PRECISION=0.02,
+                      REFERENCE='NON_REGRESSION',),
+                   _F(CHAM_GD=T60,
+                      GROUP_NO='A',
+                      NOM_CMP='TEMP',
+                      VALE=79.1,
+                      PRECISION=0.04,
+                      REFERENCE='NON_REGRESSION',),
+                   _F(CHAM_GD=T60D,
+                      GROUP_NO='A',
+                      NOM_CMP='TEMP',
+                      VALE=79.1,
+                      PRECISION=0.04,
+                      REFERENCE='NON_REGRESSION',),),);
 
 # TESTS DE HYDR_ELNO_ELGA ET HYDR_NOEU_ELGA
 
@@ -320,14 +337,14 @@ HYDRNOEU=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                     NOM_CHAM='HYDR_NOEU_ELGA',
                     NUME_ORDRE=120,);
 
-HYDRNOED=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+HYDNOEUD=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUDIAG,
                     NOM_CHAM='HYDR_NOEU_ELGA',
                     NUME_ORDRE=120,);
 
 TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=HYDRELNO,
-                        MAILLE='M143',
+                        MAILLE='M15',
                         POINT=1,
                         NOM_CMP='HYDR',
                         VALE=0.594,
@@ -335,7 +352,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=HYDRELNO,
                         REFERENCE='NON_REGRESSION',
                         VERSION='6.0.28',),
                      _F(CHAM_GD=HYDELNOD,
-                        MAILLE='M143',
+                        MAILLE='M15',
                         POINT=1,
                         NOM_CMP='HYDR',
                         VALE=0.594,
@@ -350,27 +367,28 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=HYDRNOEU,
                       PRECISION=0.02,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.0.28',),
-                   _F(CHAM_GD=HYDRNOED,
+                   _F(CHAM_GD=HYDNOEUD,
                       GROUP_NO='A',
                       NOM_CMP='HYDR',
                       VALE=0.594,
                       PRECISION=0.02,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.0.28',),),);
-###################
+###############################################################################################
 
 
-# CALCUL MECANIQUE
-###################
+#                                         CALCUL MECANIQUE                                    #
+###############################################################################################
 
 
-#
-# DONNEES DE MODELISATION
+#MAILME=LIRE_MAILLAGE( )
 
-MOMECA=AFFE_MODELE(MAILLAGE=MAIL,
+MOMECA=AFFE_MODELE(MAILLAGE=MAIL3,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='AXIS',),);
+
+#
 
 FCT1=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.200E-2,400.,
                          0.400E-2,500.,
@@ -415,31 +433,40 @@ MAT=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                              RHO=2400.,
                              TEMP_DEF_ALPHA=0.0E-3,
                              ALPHA=ALPHA,
-                             B_ENDOGE=0.0015,),
+                             B_ENDOGE=1.5e-06,),
                   TRACTION=_F(SIGM=CTRACB,),
                   THER=_F(LAMBDA=1.0E-3,
                           RHO_CP=0.0E-3,),);
 
 #
 
-CM=AFFE_MATERIAU(MAILLAGE=MAIL,
+MODTHE2=AFFE_MODELE(MAILLAGE=MAIL3,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='THERMIQUE',
+                            MODELISATION='AXIS',),);
+
+#
+
+RESUTHY2=PROJ_CHAMP(RESULTAT=RESUTHYD,
+                    MODELE_1=MODTHER,
+                    MODELE_2=MODTHE2,);
+
+#
+
+CM=AFFE_MATERIAU(MAILLAGE=MAIL3,
                  AFFE=_F(TOUT='OUI',
                          MATER=MAT,),
                  AFFE_VARC=(_F(NOM_VARC='HYDR',
-                               EVOL=RESUTHYD,),
+                               EVOL=RESUTHY2,),
                             _F(NOM_VARC='TEMP',
-                               EVOL=RESUTHYD,
+                               EVOL=RESUTHY2,
                                VALE_REF=20.9,),),);
 
+#
+
 CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
-                      DDL_IMPO=(_F(GROUP_NO='NFACEINF',
-                                   DZ=0.,),
-                                _F(GROUP_NO='A',
-                                   DX=0.,
-                                   DY=0.,),
-                                _F(GROUP_NO='B',
-                                   DX=0.,
-                                   DY=0.,),),);
+                      DDL_IMPO=_F(GROUP_NO='A',
+                                  DY=0.,),);
 
 #
 
@@ -467,14 +494,26 @@ RESUMECA=STAT_NON_LINE(MODELE=MOMECA,
                        SOLVEUR=_F(METHODE='LDLT',
                                   RENUM='RCMK',),);
 
+RESUMECA=CALC_ELEM(reuse =RESUMECA,
+                   RESULTAT=RESUMECA,
+                   OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+
 #
 
-TEST_RESU(RESU=_F(RESULTAT=RESUMECA,
-                  NUME_ORDRE=20,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
-                  GROUP_NO='PSUP',
-                  VALE=-0.0007665,),);
+CHU1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RESUMECA,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=21,);
+
+#
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=CHU1,
+                     GROUP_NO='B',
+                     NOM_CMP='DX',
+                     VALE=0.000579,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='7.3.24',),);
 
 #
 
@@ -487,35 +526,21 @@ RESUSTAT=MECA_STATIQUE(MODELE=MOMECA,
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=RESUSTAT,
-                  NUME_ORDRE=21,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
-                  GROUP_NO='PSUP',
-                  VALE=-0.0007665,),);
-
-#
-# --------------------------------------------------------------------
-
-EVOL_1=CREA_RESU(OPERATION='AFFE',
-                 TYPE_RESU='EVOL_THER',
-                 NOM_CHAM='TEMP',
-                 AFFE=_F(CHAM_GD=T05,
-                         INST=5.00000E+00,),);
+CHV1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RESUSTAT,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=21,);
 
 #
 
-TEST_RESU(RESU=_F(RESULTAT=EVOL_1,
-                  INST=5.0,
-                  NOM_CHAM='TEMP',
-                  NOM_CMP='TEMP',
-                  GROUP_NO='A',
-                  VALE=22.5,
-                  PRECISION=0.01,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='5.01.10',),);
+TEST_RESU(CHAM_NO=_F(CHAM_GD=CHV1,
+                     GROUP_NO='B',
+                     NOM_CMP='DX',
+                     VALE=0.000573,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='7.3.24',),);
+
+#
 
 FIN();
-
-#
-

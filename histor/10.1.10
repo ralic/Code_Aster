@@ -1,0 +1,935 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 08/02/2010 - 15:47:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013426 DU 2009-05-15 15:09:47
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   DKTG : Extraire la dxc3xa9formation xc3xa0 une altitude qcq de la coque
+FONCTIONNALITE
+   Calcul des déformations sur les éléments DKTG et
+   Introduction du post-traitement sur les déformations 
+   dans la macro POST_COQUE :
+   
+   on extrait d'un résultat les déformations aux points de 
+   coordonnées x,y,z et de position h dans l'épaisseur (h 
+   est normé par e/2, où e est l'épaisseur, donc h varie 
+   entre -1 (peau inférieure) et 1 (peau supérieure).
+   
+   table [tabl_sdaster]	=	POST_COQUE(	
+   
+   
+   	¨RESULTAT = resu ,	/[evol_elas]
+   				/[evol_noli]		
+   					
+   	COOR_POINT = _F ( COOR = ( x, y, z, h), ),
+   
+   	CHAM =	/’EFFORT’,
+   		/’DEFORMATION’,
+   
+           / INST = inst,
+           / NUME_ORDRE = nume,
+   
+   		)
+   
+   Validation : ssls126b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.23 V3.01.126
+VALIDATION
+   ssls126b
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 09/02/2010 - 13:10:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014422 DU 2010-01-14 13:07:07
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.6, les cas-tests sdll102a et sdll102b s'arretent en erreur_<F> sur Calibre4
+FONCTIONNALITE
+   Erreur
+   ======
+   On a ce message concernant la fonction issue de DEFI_FONC_ELEC :
+   
+   Les abscisses de la fonction FONC ne sont pas strictement croissantes
+   
+   
+   Correction
+   ==========
+   
+   On utilisait Numeric.arange(debut, fin, pas).
+   Sur certaines machines, sans doute à cause des erreurs d'arrondi, la dernière valeur "fin"
+   n'est pas dans la liste.
+   
+   On modifie le mode de génération de la liste d'instants dans DEFI_FONC_ELEC pour être
+   insensible aux arrondis suivant les différentes versions de python.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdll102a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR foucault     FOUCAULT Alexandre     DATE 09/02/2010 - 11:17:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014510 DU 2010-01-27 08:48:11
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Correction Warning dans les sources Hujeux
+FONCTIONNALITE
+   3 corrections sont apportees dans cette fiche:
+   ***************************************************
+   1)Warning des sources hujeux lors de la compilation
+   
+   Suite aux tests de N.Sellenet, 2 warning sont 
+   apparus dans la programmation des sources Hujeux.
+   Cette fiche a pour but de corriger ces problemes.
+   Sources fortran impactees: hujmid, hujres
+   
+   Ces modifications portent sur les versions NEW9 et NEW10
+   
+   ***************************************************
+   2)Limitation des tentatives d'integration locale si 
+   echec de la resolution du systeme non lineaire local 
+   
+   Ajout d'un critere limitant a 5 tentatives. Besoin 
+   releve suite aux etudes sur digue zonee de L.Idoux 
+   qui a releve une boucle sans fin lorsque des etats 
+   de traction apparaissent dans le modele
+   
+   Impact fortran: hujmid 
+   
+   Ces modifications portent uniquement sur la version NEW10
+   
+   ***************************************************
+   3)Empecher une division par zero pour le calcul de 
+   DF/DSIGMA pour les modeles cycliques isotropes
+   
+   DFDS = 1/3*ABS(P)/P (programmation actuelle)
+   Le modele ipose necessairement P <0
+   Modification: DFDS = -1/3.
+   
+   Impact fortran: hujddd
+   
+   Ces modifications portent sur les versions NEW9 et NEW10
+   
+   ****************************************************
+   VALIDATION:
+   ----------------------------------------------------
+   VERSION NEW10:
+   Le redecoupage local reduit modifie legerement les valeurs de non regression du cas-test
+   WDNP101B --> j'ajuste les valeurs.
+   
+   Le redecoupage local reduit conduit a une variation mineure des tests resu portes dans le
+   cas-test WTNV132 --> j'elargie les tolerances pour les valeurs testees.
+   
+   
+   ----------------------------------------------------
+   VERSION NEW9:
+   Aucune modification a apporter sur les cas-tests relatifs au modele de Hujeux
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V7.31.132, V7.34.101, R7.01.23
+VALIDATION
+   CAS-TESTS WDNP101B et WTNV132A
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 09/02/2010 - 17:45:01
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014490 DU 2010-01-25 06:59:07
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.1.7, les cas-tests sslp108c, sslp313f et ssnp102b s'arretent en erreur_<F> sur Bull
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   En NEW10.1.7, les cas-tests sslp108c, sslp313f et ssnp102b s'arretent en erreur_<F> sur Bull.
+   
+   
+   
+   Solution :
+   ----------
+   
+   les lignes étranges ci-dessus ont été rajoutés en 10.1.7  
+       IF ((IRET1+IRET2).EQ.0) THEN
+           TEMP = 0.D0
+           TREF = 0.D0
+         ENDIF
+   
+   ce qui signifie que si les 2 codes retour sont OK, IRET1+iRET2  vaut 0 et on met TEMP et
+   TREF à 0....
+   
+   
+   Je mettrais plutot 
+         IF (IRET1.EQ.1) TEMP = 0.D0
+         IF (IRET2.EQ.1) TREF = 0.D0
+   
+   Cela corrige les 3 tests sur Bull
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les 3 tests en question
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR haelewyn     HAELEWYN Jessica       DATE 08/02/2010 - 13:07:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014270 DU 2009-12-08 14:36:39
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Developpement THER_HYDR pour elements thermiques lumpes
+FONCTIONNALITE
+   PROBLEME :
+   1) Il apparait que l'option THER_HYDR n'est pas développée pour les éléments lumpés.
+   2) Pendant les recherches sur THER_HYDR, plusieurs problèmes liés aux calculs des matrices 
+   de masse, rigidité et du vecteur second membre sont apparus (intégrations sur les mauvaises 
+   familles de pts de Gauss).
+   
+   CORRECTIONS:
+   -Mise à jour de l'utilisation des familles de points de Gauss (MASS, RIGI, NOEU) dans 
+   THER_LINEAIRE et THER_NON_LINE.
+   -Mise à jours des familles de points de Gauss dans les catalogues d'éléments thermiques.
+   -L’utilisation des PYRAM5 en modélisation 3D_DIAG impossible. PYRAM5 retiré de 
+   phenomene_modelisation__.cata.
+   -Conséquences: plusieurs routines peuvent être concaténer (suppression de 6 routines), ainsi 
+   que des catalogues (1 pour le 2D et 1 pour le 3D).
+   -Ajout des modélisations diagonalisées pour l’option THER_HYDR.
+   
+   Routines modifiées :
+   te0054.f, te0061.f, te0069.f, te0078.f, te0079.f, te0242.f, te0243.f, te0244.f
+   te0279.f, te0281.f, te0283.f, te0318.f, te0598.f,te0599.f, 
+   Routines supprimées :
+   te0125.f, te0126.f, te0134.f, te0135.f, te0235.f, te0236.f
+   Catalogues modifiés:
+   phenomene_modelisation__.cata , gener_th3d_3.cata, gener_pl_2.cata
+   Catalogues supprimés:
+   gener_th3dd3.cata, gener_thaxd2.cata, gener_thpld2.cata
+   
+   VALIDATION : 
+   ttlv100 : Ajout de modélisations 3D_DIAG pour le cas test représentatif de l'intérêt de la 
+   diagonalisation (ttlv100c).
+   tpla07a : Modification du cas test pour tester le FLUX_NOEU_TEMP plutôt que le 
+   FLUX_ELNO_TEMP.
+   ttnl03 : Modification (a,b) et ajouts (c,d) de modélisations (plusieurs éléments 3D et AXIS) 
+   pour le cas test de thermo-hydratation.
+   tpnl301a,b,c,d : Création d'un cas test de thermo-hydratation avec une évolution de 
+   l'hydratation dans 
+   l'épaisseur. Solution semi-analytique. Test différents éléments 3D et AXIS, linéaires et 
+   quadratiques, modélisations 3D, 3D_DIAG, AXIS et AXIS_DIAG.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R3.06.07, v4.25.100, v4.22.003, v4.01.007, v4.42.301
+VALIDATION
+   tests de thermique
+NB_JOURS_TRAV  : 40.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014546 DU 2010-02-02 13:30:21
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   Rxc3xa9sultats NOOK pour les cas test hpla101,hpla100, ssla200,sslp200 et sslv200
+FONCTIONNALITE
+   Les cas tests hpla101b, hpla100b, ssla200a/b, sslp200a/b et sslv200a/b ont des résultats NOOK 
+   avec les modifications effectuées dans la fiche 14270.
+   
+   Les résultats concernant des températures sont très peu modifiés, par exemple :
+   
+   REFERENCE: NON_REGRESSION  
+   NOOK TEMP         RELA     0.003 % VALE: 2.0348423331357D+01
+            NO19     TOLE  1.00E-03 % REFE: 2.0347900000000D+01
+    ---- RESULTAT:  RE_THE_1 NUME_ORDRE:   1 NOM_CHAM: DETE_NOEU_DLTE  ... SENSIBILITE AU
+   PARAMETRE 
+   THETA   
+   REFERENCE: NON_REGRESSION  
+   NOOK TEMP         RELA     0.001 % VALE: 3.1336195131760D+01
+            NO19     TOLE  1.00E-03 % REFE: 3.1335800000000D+01
+   
+   Ces résultats sont en accord avec les changements effectués dans les routines de
+   thermique. Les résultats des calculs mécaniques suivant le calcul thermiques sont inchangés.
+   
+   Les valeurs de référence de ces cas tests de non-regressions sont modifiées.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v7.02.100
+VALIDATION
+   hpla101b, hpla100b, ssla200a/b, sslp200a/b et sslv200a/b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014549 DU 2010-02-02 14:03:22
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Problxc3xa8me avec le cas test hsna100
+FONCTIONNALITE
+   Suite aux modifications faites dans la fiche 14270, le cas test hsna100(b,d) ont des
+   résultats NOOK et le cas hsna100e ne converge plus.
+   
+   A priori, ce sont les 3 seuls cas qui traitent sechage + 3D. 
+   
+   Il y avait donc une erreur dans la routine te0281.f dans le traitement du séchage. C'est
+   corrigé.
+   
+   Les résultats du test hsna100 sont ok.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   hsna100b,d,e
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 08/02/2010 - 18:45:43
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014012 DU 2009-10-09 14:32:38
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   AFFE_MODELE fait des petits GREL
+FONCTIONNALITE
+   Problème:
+   ---------
+   Dans cette étude de Nicolas, les affichages produits par AFFE_MODELE :
+                                                                                            
+                           
+                                                                                            
+                           
+    SUR LES        41224 MAILLES DU MAILLAGE MAILLAGE
+       ON A DEMANDE L'AFFECTATION DE        37761
+       ON A PU EN AFFECTER                  37761
+                                                                                            
+                           
+       MODELISATION      ELEMENT FINI      TYPE MAILLE          NOMBRE
+       DIS_T             MECA_DIS_T_L      SEG2                     12
+                         MECA_FACE3        TRIA3                     9
+       DKT               MEDKTR3           TRIA3                     1
+                         MECA_FACE3        TRIA3                    17
+       DKT               MEDKTR3           TRIA3                     1
+                         MECA_FACE3        TRIA3                    21
+       DKT               MEDKTR3           TRIA3                     1
+                         MECA_FACE3        TRIA3                     4
+       DKT               MEDKTR3           TRIA3                     1
+                         MECA_FACE3        TRIA3                    10
+       ...
+                                                                                            
+                           
+    nous ont fait croire qu'à cause de la numérotation des mailles du fichier de maillage,
+   les éléments finis du modèle (essentiellement des MEDKTR3 et MECA_FACE3 ) étaient rangés
+   dans de petits GRELS. Ce qui laissait présager de moindres performances dans la suite du
+   calcul.
+                                                                                            
+                           
+    Solution :
+    ----------
+    Nous avons eu tort de nous inquiéter.
+    Les éléments du LIGREL sont bien rangés dans 3 GRELS (1 pour les MECA_DIS_T_L, 1 pour les
+   MEDKTR3 et 1 pour les MECA_FACE3).
+    L'incompréhension venait de la programmation de op0018.f : on imprimait les infos avant
+   d'appeler la routine adalig.f qui optimise les GRELS du LIGREL.
+                                                                                            
+                           
+    J'ai donc retiré la programmation des impressions d'op0018.f pour créer une nouvelle
+   routine w18imp.f et j'appelle cette nouvelle routine dans op0018 après l'appel à adalig.
+                                                                                            
+                           
+    On obtient maintenant des impressions cohérentes avec la structure réelle du LIGREL :
+                                                                                            
+                           
+       MODELISATION      ELEMENT FINI      TYPE MAILLE          NOMBRE
+       DIS_T             MECA_DIS_T_L      SEG2                     12
+                         MECA_FACE3        TRIA3                 35372
+       DKT               MEDKTR3           TRIA3                  2377
+                                                                                            
+                           
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  14012
+     op0018.f  w18imp.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude jointe
+NB_JOURS_TRAV  : 0.4
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014061 DU 2009-10-19 08:16:28
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   message d'erreur en cas d'option non calculable
+FONCTIONNALITE
+   Problème :
+   ----------
+   Cette erreur a été détectée par Christophe Mansoulie, stagiaire LAMSID/Manchester dans le
+   cadre
+   de ses travaux avec MACR_ECREVISSE. Toutefois le problème est lié à STAT_NON_LINE et pas à
+   MACR_ECREVISSE, comme le montre l'étude jointe.
+   Le problème est le suivant. On a un modèle contenant à la fois du 3D et des COQUE_3D. On
+   applique
+   une pression à l'aide de AFFE_CHAR_MECA_F sur les éléments 3D. Problème le calcul s'arrête en
+   Erreur fatale parce qu'on ne sait pas calculer l'option CHAR_MECA_PRES_F sur les coques
+   (elements
+   MEC3TR7H).
+                                                                                            
+                         
+   Voici le message obtenu :
+   !-------------------------------------------------------------------------------------------!
+      ! <F> <CALCULEL_30>                                                                   
+        !
+      !                                                                                     
+        !
+      !                                                                                     
+        !
+      !   -> Le TYPE_ELEMENT MEC3TR7H  ne sait pas encore calculer l'OPTION: 
+   CHAR_MECA_PRES_F.   !
+      !      On ne calcule donc rien sur les éléments de ce type.                           
+        !
+      !                                                                                     
+        !
+      !   -> Risque & Conseil :                                                             
+        !
+      !      Vérifiez que l'option incomplètement calculée est bien une option de
+   post-traitement !
+      !      et que le déficit de calcul n'entraine pas de résultats faux.                  
+        !
+      !                                                                                     
+        !
+      !                                                                                     
+        !
+      !                                                                                     
+        !
+      ! Cette erreur est fatale. Le code s'arrete.                                          
+        !
+     
+   !-------------------------------------------------------------------------------------------!
+                                                                                            
+                         
+                                                                                            
+                         
+   Le message dit qu'il faut vérifier que cela n'entraîne pas de résultats faux, mais cela
+   s'arrête
+   en erreur fatale. J'imagine qu'il suffit donc de transformer l'erreur fatale en alarme. Ou
+   alors il
+   ne faut calcul l'option CHAR_MECA_PRES_F que pour les éléments concernés ce chargement.
+                                                                                            
+                         
+                                                                                            
+                         
+   Analyse :
+   ------------
+   Effectivement, le message imprimé n'est pas très bon : c'est le meme en cas d'alarme ou
+   d'erreur fatale !
+   Le conseil est idiot en cas d'erreur fatale !!
+                                                                                            
+                         
+   Ce problème (de mavais conseil) a été résolu dans le cadre de la fiche 14225 : maintenant,
+   il n'y a plus que des erreurs Fatales !
+                                                                                            
+                         
+   En ce qui concerne la question du calcul de CHAR_MECA_PRES_F par les élements de coque_3D,
+   le problème vient d'une mauvaise correction de la fiche 13104 : il ne fallait pas mettre
+   des "-1" dans le catalogue des éléments de coque pour l'option CHAR_MECA_PRES_F.
+                                                                                            
+                         
+   La "bizarrerie" de la programmation (qui n'accepte que les fonctions nulles) vient du fait
+   que si le modèle est "mixte" (3D + coque) et que l'utilisateur veut mettre de la pression
+   sur le bord du 3D et sur les coques, il doit utiliser les 2 mots clés PRES_REP et FORCE_COQUE.
+                                                                                            
+                         
+   Sur les coques, la carte PRES_REP contient une fonction nulle, et le te00ij bizarre permet
+   de continuer. Avec le "-1", on est arrêté.
+                                                                                            
+                         
+                                                                                            
+                         
+   Correction :
+   ------------
+   Je "défais" la correction de la fiche 13104 en retirant les "-1" des 2 catalogues
+   (coques3D et DKT).
+   Mais pour que l'utilisateur soit moins désorienté par le message element_92, je le modifie :
+                                                                                            
+                         
+   Avant :
+      la pression doit être nulle pour la maille  %(k1)s
+                                                                                            
+                         
+   Après :
+      Erreur utilisateur :
+        Vous essayez d'appliquer une pression (comme fonction) non nulle sur un élément de coque.
+        (AFFE_CHAR_MECA_F/PRES_REP/PRES) pour la maille  %(k1)s
+        La programmation ne le permet pas.
+                                                                                            
+                         
+      Conseil :
+         Pour appliquer une telle presssion, il faut utiliser AFFE_CHAR_MECA_F/FORCE_COQUE/PRES
+                                                                                            
+                         
+                                                                                            
+                         
+   Validation :
+   ------------
+   L'étude jointe peut maintenant calculer le chargement extérieur, mais elle se plante en
+   erreur numérique quelque part dans nmresi.f
+   Je n'ai pas cherché à en savoir plus ...
+                                                                                            
+                         
+   NEW9 :
+   ------
+   Je pense qu'il faut reporter cette correction en NEW9
+                                                                                            
+                         
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  14061
+     te0032.f  te0403.f
+     elements4.py
+     gener_mecq32.cata  gener_medkt2.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude jointe
+NB_JOURS_TRAV  : 0.4
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014556 DU 2010-02-03 14:15:43
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   mesure du temps lié au déchargement de la mémoire JEVEUX
+FONCTIONNALITE
+   Problème :
+   ----------
+   Cela fait quelques temps que l'on suspecte le mécanisme de  déchargement de la mémoire
+   JEVEUX (routine jjldyn.f) d'etre responsable de certains mauvais temps "elapsed".
+                                                                                            
+                                               
+   Je propose que l'on mesure systématiquement le temps passé dans la routine jjldyn.f et
+   qu'on l'affiche avec le mécanisme général d'impression des temps consommés par les commandes.
+                                                                                            
+                                               
+                                                                                            
+                                               
+   Solution :
+   ----------
+   J'ajoute la mesure de temps dans la routine jjldyn.f, ce qui provoque une nouvelle
+   impression à la fin de chaque commande :
+                                                                                            
+                                               
+     #1 Resolution des systemes lineaires              CPU (USER+SYST/SYST/ELAPS):      0.00
+        0.00      0.01
+     #2 Calculs elementaires et assemblages            CPU (USER+SYST/SYST/ELAPS):      0.03
+        0.00      0.03
+     #4 Dechargement de la memoire sur disque          CPU (USER+SYST/SYST/ELAPS):      0.04
+        0.04      0.04
+                                                                                            
+                                               
+   Validation :
+   ------------
+   Essai perso
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  14456
+     jjldyn.f  uttcpl.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essai perso
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 08/02/2010 - 14:05:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014564 DU 2010-02-04 16:40:01
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.9, les cas-tests sdll135a, sdll135b, sdll135c, sdll135d et ssnp118o s'arretent en <F>_ERROR sur Bull, Rocks, Calibre5 et 4
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   En NEW10.1.9, les cas-tests sdll135a, sdll135b, sdll135c, sdll135d et ssnp118o s'arretent
+   en <F>_ERROR sur Bull, Rocks, Calibre5 et 4.
+   """
+   
+   
+   Analyse :
+   ---------
+   Le plantage est la conséquence d'une imprécision de la routine CODREE.
+   
+   La routine CODREE transforme un réel en une chaine de caractère. Le problème vient du fait
+   que lorsque l'exposant est à 3 chiffres, le WRITE fortran enlève le "E" (exposant), exemple :
+   8.45037406992977e-192
+   donne en chaine de caractère K24 :
+   "8.45037406992976616-192 " (Notez que le 'E' de l'exposant n'est pas là)
+   
+   Bref, dans la suite de TEST_RESU, on recherche ce 'E' dans la chaine de caractère produite
+   par CODREE or il n'est pas là.
+   
+   Cela ne se produit que lorsque la valeur absolue de l'exposant d'un nombre réel est
+   supérieur ou égale à 100 (rare).
+   
+   
+   Solution :
+   ----------
+   La correction que je propose consiste à rajouter ce 'E' dans CODREE lorsqu'il est absent
+   de la chaine.
+   
+   
+   Impact :
+   --------
+   codree.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdll135a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014569 DU 2010-02-05 14:18:17
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Amxc3xa9lioration couverture de code de certains TE
+FONCTIONNALITE
+   Problème :
+   ----------
+   Le TE suivant ne sont validés par aucun cas test :
+   TE    | Option
+   ------+------------------
+   TE276 | RESI_THER_PARO_R
+   TE278 | RESI_THER_PARO_F
+   TE305 | RESI_THER_COEH_R
+   TE306 | RESI_THER_COEH_R
+   TE319 | SOUR_ELGA_ELEC  
+   TE388 | MTAN_THER_PARO_R
+   TE389 | MTAN_THER_PARO_F
+   TE503 | RIGI_THER_COET_R
+   TE523 | RIGI_THER_COET_R
+   
+   
+   Solution :
+   ----------
+   Christophe m'a fournit des cas tests modifiés pour corriger ce défaut de couverture.
+   
+   Il a aussi découvert un bug dans le TE0523 qu'il a corrigé. Cette correction est à
+   reporter en 9.
+   
+   
+   Résultats faux :
+   ----------------
+   Depuis l'introduction de TE0523, celle-ci est fausse. TE0523 correspond à l'option
+   RIGI_THER_COET_R. Elle sert à calculer un terme d'échange (condition de Fourier linéaire).
+   
+   
+   Impact :
+   --------
+   te0523.f
+   tpll101a.comm
+   tpll101a.mmed
+   tpll101b.comm
+   tpll101b.med
+   tplv101c.comm
+   tplv105a.comm
+   tpna01c.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 4.0.2
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 4.0.2
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V4.02.101 V4.04.101
+VALIDATION
+   cas tests modifixc3xa9s
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014574 DU 2010-02-08 06:50:05
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.9, le cas-test ssnv209i s'arrete par manque de temps CPU sur la machine Bull
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   En NEW10.1.9, le cas-test ssnv209i s'arrete par manque de temps CPU sur la machine Bull
+   """
+   
+   
+   Solution :
+   ----------
+   Passer le .para à 60 secondes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 08/02/2010 - 14:08:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014568 DU 2010-02-05 13:02:03
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   table de hachage grossixc3xa8re (jjprem)
+FONCTIONNALITE
+   Analyse :
+   ========
+   On fait un LIRE_MAILLAGE au format MED d'un fichier de 4 Go comprenant 18017801 noeuds et
+   104698528 d'éléments. La lecture réclame un pic de 23 Go en version 10.01.09.En affichant
+   la segmentation mémoire, on s'aperçoit que l'objet .NOMMAI occupe une place anormalement
+   importante.
+   Cela est dû à la définition de la table de nombres premiers de la table de hachage du
+   répertoire de noms des groupes de mailles : quand on arrive à des nombres très élevés, les
+   sauts entre les nombres premiers sont très importants. De fait, le nombre premier de la
+   liste directement supérieur à l'entier en entier est très grands. Avec 104698528 en
+   entrée, JJPREM renvoyait 500000003. Du coup, la taille de l'objet .NOMMAI occupait
+   1104698542 mots!
+   
+   Solution :
+   ==========
+   On enrichit la table des nombres premiers.De 83, on passe à 281.
+   Je corrige aussi un bug dans la recherche par dichotomie qui faisait que l'on ne trouvait
+   pas forcément le nombre premier directement supérieur.
+   
+   Au final, avec les modifications, la lecture du maillage passe avec un minimum de mémoire
+   16 Go contre 23 avant, et la SD maillage passe de 15.4 Go à 9.4 Go. A noter que *sans* les
+   objets .NOMMAI et .NOMNOE, la SD maillage prendrait 6,8 Go.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test perso
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 08/02/2010 - 14:08:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014571 DU 2010-02-05 17:39:44
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Contact 'GCP' avec recherche linxc3xa9aire 'NON_ADMISSIBLE'
+FONCTIONNALITE
+   Express
+   =======
+   
+   Il s'agit d'une erreur découverte par une étude postée sur le forum de Code_Aster. 
+   Il y a une petite erreur dans l'algo de contact 'GCP', qui conduit la recherche linéaire
+   'NON_ADMISSIBLE' à ne plus marcher en NEW10.
+   
+   Détails
+   =======
+   
+   On sauvegardait mal le déplacement initial (à l'entrée de l'algorithme, qui viole donc les
+   conditions de contact), en effet, on utilisait les forces nodales de contact à la place.
+   Ainsi lorsque l'on évaluait le nouveau déplacement après correction, on partait dans les
+   choux.
+   Ceci n'a pas été détecté tout de suite car la recherche linéaire 'NON_ADMISSIBLE' n'est
+   pas couverte par les cas-tests. On peut le voir en allant dans l'outil de navigation des
+   sources Aster de Nicolas.
+   
+   Correction
+   ==========
+   
+   La correction consiste à sauvegarder dans CFJEIN, le déplacement initial puis à le
+   récupérer dans ALGOCG.
+   
+   Validation
+   ==========
+   
+   La validation est effectuée en modifiant le cas-test SSNV104J (contact de Hertz) pour
+   qu'il utilise la recherche linéaire non-admissible.
+   Avant correction, on ne converge pas. Après le test est à nouveau OK, de plus il prend
+   moins d'itérations qu'auparavant (3/6 au lieu de 3/25).
+   À noter que ce test est extrêmement lent sur Bull par rapport aux autres machines.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv104j
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT tplv101c                     sellenet N.SELLENET         158    158      0
+ CASTEST AJOUT tpnl301a                     haelewyn J.HAELEWYN         432    432      0
+ CASTEST AJOUT tpnl301b                     haelewyn J.HAELEWYN         303    303      0
+ CASTEST AJOUT tpnl301c                     haelewyn J.HAELEWYN         553    553      0
+ CASTEST AJOUT tpnl301d                     haelewyn J.HAELEWYN         452    452      0
+ CASTEST AJOUT ttlv100c                     haelewyn J.HAELEWYN         203    203      0
+ CASTEST AJOUT ttnl03c                      haelewyn J.HAELEWYN         420    420      0
+ CASTEST AJOUT ttnl03d                      haelewyn J.HAELEWYN         546    546      0
+ CASTEST MODIF hpla101b                     haelewyn J.HAELEWYN         410    301    200
+ CASTEST MODIF hplp100b                     haelewyn J.HAELEWYN         395      3      3
+ CASTEST MODIF hsna100b                     haelewyn J.HAELEWYN         531      1      1
+ CASTEST MODIF hsna100d                     haelewyn J.HAELEWYN         560      1      1
+ CASTEST MODIF hsna100e                     haelewyn J.HAELEWYN         561      1      1
+ CASTEST MODIF ssla200a                     haelewyn J.HAELEWYN        1329      6      4
+ CASTEST MODIF ssla200b                     haelewyn J.HAELEWYN        1360      5      4
+ CASTEST MODIF sslp200a                     haelewyn J.HAELEWYN        1468      5      4
+ CASTEST MODIF sslp200b                     haelewyn J.HAELEWYN        1289      5      4
+ CASTEST MODIF ssls126b                    desroches X.DESROCHES        261     17      1
+ CASTEST MODIF sslv200a                     haelewyn J.HAELEWYN        1099      4      3
+ CASTEST MODIF sslv200b                     haelewyn J.HAELEWYN        1060      4      3
+ CASTEST MODIF ssnv104j                      tardieu N.TARDIEU          366      9     18
+ CASTEST MODIF tpla07a                      haelewyn J.HAELEWYN         257    186    275
+ CASTEST MODIF tpll101a                     sellenet N.SELLENET         119     78     88
+ CASTEST MODIF tpll101b                     sellenet N.SELLENET         123     80     81
+ CASTEST MODIF tplv105a                     sellenet N.SELLENET         231    202    155
+ CASTEST MODIF tpna01c                      sellenet N.SELLENET         342    310    215
+ CASTEST MODIF ttnl03a                      haelewyn J.HAELEWYN         521    396    294
+ CASTEST MODIF ttnl03b                      haelewyn J.HAELEWYN         528    408    238
+ CASTEST MODIF wdnp101b                     foucault A.FOUCAULT         761      7      7
+ CASTEST MODIF wtnv132a                     foucault A.FOUCAULT         677      1      1
+CATALOGU MODIF compelem/phenomene_modelisation__   haelewyn J.HAELEWYN        1498      1      2
+CATALOGU MODIF typelem/gener_mecq32           pellet J.PELLET           310      2      2
+CATALOGU MODIF typelem/gener_medkg1        desroches X.DESROCHES        256      9      3
+CATALOGU MODIF typelem/gener_medkt2           pellet J.PELLET           377      2      2
+CATALOGU MODIF typelem/gener_th3d_3         haelewyn J.HAELEWYN         264     25      7
+CATALOGU MODIF typelem/gener_thpl_2         haelewyn J.HAELEWYN         340     98     14
+CATALOGU SUPPR typelem/gener_th3dd3         haelewyn J.HAELEWYN         219      0    219
+CATALOGU SUPPR typelem/gener_thaxd2         haelewyn J.HAELEWYN         229      0    229
+CATALOGU SUPPR typelem/gener_thpld2         haelewyn J.HAELEWYN         230      0    230
+CATALOPY MODIF commande/post_coque         desroches X.DESROCHES         38      3      3
+ FORTRAN AJOUT elements/dkqgco             desroches X.DESROCHES        150    150      0
+ FORTRAN AJOUT elements/dktgco             desroches X.DESROCHES        157    157      0
+ FORTRAN AJOUT modelisa/w18imp                pellet J.PELLET           133    133      0
+ FORTRAN MODIF algeline/cmcovo              sellenet N.SELLENET         599      1      1
+ FORTRAN MODIF algeline/fluimp              sellenet N.SELLENET         606      1      1
+ FORTRAN MODIF algorith/algocg               tardieu N.TARDIEU          605      3      3
+ FORTRAN MODIF algorith/cfjein               tardieu N.TARDIEU          464      2      2
+ FORTRAN MODIF algorith/cvmcvg              sellenet N.SELLENET         293      1      1
+ FORTRAN MODIF algorith/hujddd              foucault A.FOUCAULT         610      3      3
+ FORTRAN MODIF algorith/hujmid              foucault A.FOUCAULT         920     41     16
+ FORTRAN MODIF algorith/hujres              foucault A.FOUCAULT         377      5     10
+ FORTRAN MODIF algorith/lmacvg              sellenet N.SELLENET         300      1      1
+ FORTRAN MODIF algorith/nmplru               geniaut S.GENIAUT          195      3      5
+ FORTRAN MODIF calculel/te0523              sellenet N.SELLENET         129      2      2
+ FORTRAN MODIF elements/te0032                pellet J.PELLET           270      2      1
+ FORTRAN MODIF elements/te0033             desroches X.DESROCHES        321      8      6
+ FORTRAN MODIF elements/te0054              haelewyn J.HAELEWYN         101     16      7
+ FORTRAN MODIF elements/te0061              haelewyn J.HAELEWYN         422     26    154
+ FORTRAN MODIF elements/te0069              haelewyn J.HAELEWYN         292      1     15
+ FORTRAN MODIF elements/te0078              haelewyn J.HAELEWYN         420      8    122
+ FORTRAN MODIF elements/te0079              haelewyn J.HAELEWYN         111      2      2
+ FORTRAN MODIF elements/te0242              haelewyn J.HAELEWYN         251      6      6
+ FORTRAN MODIF elements/te0243              haelewyn J.HAELEWYN         295     63     13
+ FORTRAN MODIF elements/te0244              haelewyn J.HAELEWYN         520     47     17
+ FORTRAN MODIF elements/te0279              haelewyn J.HAELEWYN         184     32     11
+ FORTRAN MODIF elements/te0281              haelewyn J.HAELEWYN         463     89     25
+ FORTRAN MODIF elements/te0283              haelewyn J.HAELEWYN         239     85     18
+ FORTRAN MODIF elements/te0318              haelewyn J.HAELEWYN         163      2      2
+ FORTRAN MODIF elements/te0403                pellet J.PELLET           117      2      1
+ FORTRAN MODIF elements/te0598              haelewyn J.HAELEWYN         553      8    228
+ FORTRAN MODIF elements/te0599              haelewyn J.HAELEWYN         194      2      2
+ FORTRAN MODIF jeveux/jjldyn                  pellet J.PELLET           195      7      2
+ FORTRAN MODIF jeveux/jjprem                 tardieu N.TARDIEU          154     76     13
+ FORTRAN MODIF modelisa/canort              sellenet N.SELLENET         632      1      1
+ FORTRAN MODIF modelisa/op0018                pellet J.PELLET           600    232    292
+ FORTRAN MODIF utilifor/codree              sellenet N.SELLENET         108     16      1
+ FORTRAN MODIF utilitai/uttcp0                pellet J.PELLET           149      2      2
+ FORTRAN MODIF utilitai/uttcpg                pellet J.PELLET           104     13      9
+ FORTRAN MODIF utilitai/uttcpi                pellet J.PELLET           188     59      6
+ FORTRAN MODIF utilitai/uttcpl                pellet J.PELLET            96     15      4
+ FORTRAN MODIF utilitai/uttcpr                pellet J.PELLET           107     38      5
+ FORTRAN MODIF utilitai/uttcpu                pellet J.PELLET           121     31      9
+ FORTRAN SUPPR elements/te0125              haelewyn J.HAELEWYN         141      0    141
+ FORTRAN SUPPR elements/te0126              haelewyn J.HAELEWYN         213      0    213
+ FORTRAN SUPPR elements/te0134              haelewyn J.HAELEWYN         142      0    142
+ FORTRAN SUPPR elements/te0135              haelewyn J.HAELEWYN         208      0    208
+ FORTRAN SUPPR elements/te0235              haelewyn J.HAELEWYN         365      0    365
+ FORTRAN SUPPR elements/te0236              haelewyn J.HAELEWYN         379      0    379
+  PYTHON MODIF Macro/defi_fonc_elec_ops       durand C.DURAND           192     10      4
+  PYTHON MODIF Macro/post_coque_ops        desroches X.DESROCHES        172     80      7
+  PYTHON MODIF Messages/elements3           haelewyn J.HAELEWYN         280      1      5
+  PYTHON MODIF Messages/elements4             pellet J.PELLET           278      8      2
+  PYTHON MODIF Messages/post0              desroches X.DESROCHES        131     11      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   11        3507      3507             +3507
+ MODIF :   73       30852      3232    2672      +560
+ SUPPR :    9        2126              2126     -2126
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   93       36485      6739    4798     +1941 

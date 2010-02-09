@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 08/02/2010   AUTEUR TARDIEU N.TARDIEU 
 
 #  TITRE : CONTACT DE DEUX SPHERES
 # ssnv104j.para = tps_job 120 mem_job 100Mo ncpus 1 liste_test S
@@ -134,16 +134,15 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                  DZ=0.0,),),);
 
 CHA2=DEFI_CONTACT(MODELE=MO,
-                  FORMULATION = 'DISCRETE',
-                  RESI_ABSO   = 1.E-8,
-                  PRE_COND    = 'DIRICHLET',
-                    ZONE=_F(ALGO_CONT='GCP',
-                               
-                               TOLE_PROJ_EXT = 0.1,
-                               GROUP_MA_MAIT='SMAI',
-                               GROUP_MA_ESCL='SESC',
-                               
-                               ),);
+                  FORMULATION='DISCRETE',
+                  RESI_ABSO=1.E-8,
+                  PRE_COND='DIRICHLET',
+                  RECH_LINEAIRE='NON_ADMISSIBLE',
+                  ZONE=_F(ALGO_CONT='GCP',
+                          TOLE_PROJ_EXT = 0.1,
+                          GROUP_MA_MAIT='SMAI',
+                          GROUP_MA_ESCL='SESC',),
+                    );
 #_____________________________________________________________________
 #
 #                    DEFINITIONS DES FONCTIONS TEMPORELLES 
@@ -170,10 +169,9 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CHA1,
-                             FONC_MULT=RAMPE,),
-                          ),
-                   CONTACT  = CHA2,          
+                   EXCIT=_F(CHARGE=CHA1,
+                            FONC_MULT=RAMPE,),
+                   CONTACT=CHA2,          
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    NEWTON=_F(MATRICE='ELASTIQUE',
@@ -183,18 +181,12 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 RESU=CALC_ELEM(reuse =RESU,
                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                RESULTAT=RESU,);
-#
-#
-
 
 SIELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
                   NOM_CHAM='SIEF_ELGA',
                   INST=1.,);
-#
-#
-
 
 SIELNO=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
@@ -372,4 +364,3 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=SIELNO,
 
 
 FIN();
-#

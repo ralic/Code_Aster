@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
 # hplp100b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -350,7 +350,7 @@ TEST_TABLE(       TABLE=G1,
 TEST_TABLE(       TABLE=G1,
              SENSIBILITE=(THETAS,),
                 NOM_PARA='G',
-                     VALE=-4.4228284090894E-01,
+                     VALE=-4.4234328022520E-01,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
                  )
@@ -367,7 +367,7 @@ TEST_TABLE(       TABLE=G2,
 TEST_TABLE(       TABLE=G2,
              SENSIBILITE=(THETAS,),
                 NOM_PARA='G',
-                     VALE= 1.1025531678666E-02,
+                     VALE= 1.1026363779576E-02,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
                  )

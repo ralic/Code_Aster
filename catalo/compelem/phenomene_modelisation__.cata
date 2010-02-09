@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF COMPELEM  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1411,7 +1411,6 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA8     ELEMENT__ THER_HEXA8_D
               MAILLE__ PENTA6    ELEMENT__ THER_PENTA6_D
               MAILLE__ TETRA4    ELEMENT__ THER_TETRA4_D
-              MAILLE__ PYRAM5    ELEMENT__ THER_PYRAM5_D
               MAILLE__ QUAD4     ELEMENT__ THER_FACE4_D
               MAILLE__ TRIA3     ELEMENT__ THER_FACE3_D
 

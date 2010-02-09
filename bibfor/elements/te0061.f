@@ -1,6 +1,6 @@
       SUBROUTINE TE0061(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &       ALPHA,BETA,DTEMDX,DTEMDY,DTEMDZ
       INTEGER JGANO,IPOIDS,IVF,IDFDE,IGEOM,IMATE,IMATSE,NNO,
      &        KP,NPG1,I,ITEMP,ITPS,IVAPRI,IVAPRM,TETYPS,N1,N2,NDIM,
-     &        IVECTT,ICAMAS,L,NUNO,INO,IRET,NNOS
+     &        IVECTT,ICAMAS,L,NUNO,INO,IRET,NNOS,NPG2,IPOID2,IVF2,
+     &        IDFDE2
       LOGICAL ANISO,GLOBAL,LSENS,LSTAT,LTEATT
 
 C====
@@ -77,7 +78,18 @@ C 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 C====
       ZERO = 0.0D0
       PREC = R8PREM()
+
+      IF ( (LTEATT(' ','LUMPE','OUI')).AND.
+     &    (NOMTE(6:10).NE.'PYRAM')) THEN
+         CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &            IDFDE2,JGANO)
+      ELSE
+         CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,
+     &           IDFDE2, JGANO)
+      ENDIF
+
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
+
 
 C====
 C 1.2 PREALABLES LIES AUX CALCULS DE SENSIBILITE
@@ -252,145 +264,8 @@ C====
       END IF
 
 C====
-C 2. CALCULS TERMES DE RIGIDITE ET DE MASSE (STD ET/OU SENSIBLE)
-C    POUR LES ELEMENTS NON LUMPES
-C====
-
-      IF (.NOT.LTEATT(' ','LUMPE','OUI').OR.
-     &    NOMTE(6:10).EQ.'PYRAM') THEN
-
-C ---  BOUCLE SUR LES POINTS DE GAUSS :
-C      ------------------------------
-        DO 90 KP = 1,NPG1
-
-          L = (KP-1)*NNO
-          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
-     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
-
-          TEM = ZERO
-          DTEMDX = ZERO
-          DTEMDY = ZERO
-          DTEMDZ = ZERO
-
-          DO 20 I = 1,NNO
-C CALCUL DE T- (OU (DT/DS)- EN SENSI) ET DE SON GRADIENT
-            TEM = TEM + ZR(ITEMP+I-1)*ZR(IVF+L+I-1)
-            DTEMDX = DTEMDX + ZR(ITEMP+I-1)*DFDX(I)
-            DTEMDY = DTEMDY + ZR(ITEMP+I-1)*DFDY(I)
-            DTEMDZ = DTEMDZ + ZR(ITEMP+I-1)*DFDZ(I)
-   20     CONTINUE
-
-C CALCUL DE SENSIBILITE PART IV
-          IF (TETYPS.EQ.1) THEN
-            DTEMPX = ZERO
-            DTEMPY = ZERO
-            DTEMPZ = ZERO
-            DTEMMX = ZERO
-            DTEMMY = ZERO
-            DTEMMZ = ZERO
-            DO 30 I = 1,NNO
-C CALCUL DE GRAD(T+) ET DE GRAD(T-) POUR TERME DE RIGIDITE
-              DTEMPX = DTEMPX + ZR(IVAPRI+I-1)*DFDX(I)
-              DTEMPY = DTEMPY + ZR(IVAPRI+I-1)*DFDY(I)
-              DTEMPZ = DTEMPZ + ZR(IVAPRI+I-1)*DFDZ(I)
-              DTEMMX = DTEMMX + ZR(IVAPRM+I-1)*DFDX(I)
-              DTEMMY = DTEMMY + ZR(IVAPRM+I-1)*DFDY(I)
-              DTEMMZ = DTEMMZ + ZR(IVAPRM+I-1)*DFDZ(I)
-   30       CONTINUE
-          ELSE IF (TETYPS.EQ.2) THEN
-            TEMS = ZERO
-            DO 40 I = 1,NNO
-C CALCUL DE (T- - T+) POUR TERME DE MASSE
-              TEMS = TEMS + (ZR(IVAPRM+I-1)-ZR(IVAPRI+I-1))*
-     &               ZR(IVF+L+I-1)
-   40       CONTINUE
-          END IF
-
-          IF (.NOT.ANISO) THEN
-            FLUGLO(1) = LAMBDA*DTEMDX
-            FLUGLO(2) = LAMBDA*DTEMDY
-            FLUGLO(3) = LAMBDA*DTEMDZ
-C CALCUL DE SENSIBILITE PART V (SENSIBILITE / LAMBDA EN ISOTROPE)
-            IF (TETYPS.EQ.1) THEN
-              FLUGLS(1) = LAMBS* (THETA*DTEMPX+ (1.D0-THETA)*DTEMMX)
-              FLUGLS(2) = LAMBS* (THETA*DTEMPY+ (1.D0-THETA)*DTEMMY)
-              FLUGLS(3) = LAMBS* (THETA*DTEMPZ+ (1.D0-THETA)*DTEMMZ)
-            END IF
-          ELSE
-            IF (.NOT.GLOBAL) THEN
-              POINT(1) = ZERO
-              POINT(2) = ZERO
-              POINT(3) = ZERO
-              DO 50 NUNO = 1,NNO
-                POINT(1) = POINT(1) + ZR(IVF+L+NUNO-1)*
-     &                     ZR(IGEOM+3*NUNO-3)
-                POINT(2) = POINT(2) + ZR(IVF+L+NUNO-1)*
-     &                     ZR(IGEOM+3*NUNO-2)
-                POINT(3) = POINT(3) + ZR(IVF+L+NUNO-1)*
-     &                     ZR(IGEOM+3*NUNO-1)
-   50         CONTINUE
-              CALL UTRCYL(POINT,DIRE,ORIG,P)
-            END IF
-            FLUGLO(1) = DTEMDX
-            FLUGLO(2) = DTEMDY
-            FLUGLO(3) = DTEMDZ
-            N1 = 1
-            N2 = 3
-            CALL UTPVGL(N1,N2,P,FLUGLO,FLULOC)
-            FLULOC(1) = LAMBOR(1)*FLULOC(1)
-            FLULOC(2) = LAMBOR(2)*FLULOC(2)
-            FLULOC(3) = LAMBOR(3)*FLULOC(3)
-            N1 = 1
-            N2 = 3
-            CALL UTPVLG(N1,N2,P,FLULOC,FLUGLO)
-C CALCUL DE SENSIBILITE PART V BIS (SENSIBILITE / LAMBDA EN ANISOTROPE)
-            IF (TETYPS.EQ.1) THEN
-              FLUGLS(1) = THETA*DTEMPX + (1.D0-THETA)*DTEMMX
-              FLUGLS(2) = THETA*DTEMPY + (1.D0-THETA)*DTEMMY
-              FLUGLS(3) = THETA*DTEMPZ + (1.D0-THETA)*DTEMMZ
-              N1 = 1
-              N2 = 3
-              CALL UTPVGL(N1,N2,P,FLUGLS,FLULOS)
-              FLULOS(1) = LAMBOS(1)*FLULOS(1)
-              FLULOS(2) = LAMBOS(2)*FLULOS(2)
-              FLULOS(3) = LAMBOS(3)*FLULOS(3)
-              N1 = 1
-              N2 = 3
-              CALL UTPVLG(N1,N2,P,FLULOS,FLUGLS)
-            END IF
-          END IF
-
-          DO 60 I = 1,NNO
-            ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
-     &                       POIDS* (CP/DELTAT*ZR(IVF+L+I-1)*TEM-
-     &                       (1.0D0-THETA)* (DFDX(I)*FLUGLO(1)+
-     &                       DFDY(I)*FLUGLO(2)+DFDZ(I)*FLUGLO(3)))
-   60     CONTINUE
-C CALCUL DE SENSIBILITE PART VI (SENSIBILITE / LAMBDA).
-          IF (TETYPS.EQ.1) THEN
-            DO 70 I = 1,NNO
-              ZR(IVECTT+I-1) = ZR(IVECTT+I-1) -
-     &                         POIDS* (DFDX(I)*FLUGLS(1)+
-     &                         DFDY(I)*FLUGLS(2)+DFDZ(I)*FLUGLS(3))
-   70       CONTINUE
-C SENSIBILITE / CP
-          ELSE IF (TETYPS.EQ.2) THEN
-            DO 80 I = 1,NNO
-              ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
-     &                         POIDS*CPS/DELTAT*ZR(IVF+L+I-1)*TEMS
-   80       CONTINUE
-          END IF
-   90   CONTINUE
-
-      ELSE
-
-        DO 100 INO = 1,NBPT
-          VECTT(INO) = ZERO
-  100   CONTINUE
-
-C====
 C 3.1 CALCULS TERMES DE RIGIDITE (STD ET/OU SENSIBLE)
-C    POUR LES ELEMENTS LUMPES
+C    POUR LES ELEMENTS LUMPES ET NON LUMPES
 C====
 
 C ---   BOUCLE SUR LES POINTS DE GAUSS :
@@ -486,14 +361,15 @@ C CALCUL DE SENSIBILITE PART VIII BIS (SENSIBILITE/LAMBDA EN ANISOTROPE)
 C --- AFFECTATION DES TERMES DE RIGIDITE :
 C     ----------------------------------
           DO 140 I = 1,NNO
-            VECTT(I) = VECTT(I) - POIDS* ((1.0D0-THETA)*
+            ZR(IVECTT+I-1) = ZR(IVECTT+I-1)
+     &                  - POIDS* ((1.0D0-THETA)*
      &                 (DFDX(I)*FLUGLO(1)+DFDY(I)*FLUGLO(2)+
      &                 DFDZ(I)*FLUGLO(3)))
   140     CONTINUE
 C CALCUL DE SENSIBILITE PART IX (SENSIBILITE / LAMBDA).
           IF (TETYPS.EQ.1) THEN
             DO 150 I = 1,NNO
-              VECTT(I) = VECTT(I) - POIDS*
+              ZR(IVECTT+I-1) = ZR(IVECTT+I-1) - POIDS*
      &                   (DFDX(I)*FLUGLS(1)+DFDY(I)*FLUGLS(2)+
      &                   DFDZ(I)*FLUGLS(3))
   150       CONTINUE
@@ -507,15 +383,15 @@ C====
 
 C ---   BOUCLE SUR LES POINTS DE GAUSS :
 C       ------------------------------
-        DO 210 KP = 1,NPG1
+        DO 210 KP = 1,NPG2
 
           L = (KP-1)*NNO
-          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+          CALL DFDM3D ( NNO, KP, IPOID2, IDFDE2,
      &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
           TEM = ZERO
           DO 170 I = 1,NNO
 C CALCUL DE T- (OU (DT/DS)- EN SENSI)
-            TEM = TEM + ZR(ITEMP+I-1)*ZR(IVF+L+I-1)
+            TEM = TEM + ZR(ITEMP+I-1)*ZR(IVF2+L+I-1)
   170     CONTINUE
 C CALCUL DE SENSIBILITE PART X (SENSIBILITE / CP).
           IF (TETYPS.EQ.2) THEN
@@ -523,28 +399,24 @@ C CALCUL DE SENSIBILITE PART X (SENSIBILITE / CP).
             DO 180 I = 1,NNO
 C CALCUL DE (T- - T+)
               TEMS = TEMS + (ZR(IVAPRM+I-1)-ZR(IVAPRI+I-1))*
-     &               ZR(IVF+L+I-1)
+     &               ZR(IVF2+L+I-1)
   180       CONTINUE
           END IF
 
 C --- AFFECTATION DU TERME DE MASSE :
 C     -----------------------------
           DO 190 I = 1,NNO
-            VECTT(I) = VECTT(I) + POIDS*CP/DELTAT*ZR(IVF+L+I-1)*TEM
+            ZR(IVECTT+I-1) = ZR(IVECTT+I-1)
+     &             + POIDS*CP/DELTAT*ZR(IVF2+L+I-1)*TEM
   190     CONTINUE
 C CALCUL DE SENSIBILITE PART XI (SENSIBILITE / CP)
           IF (TETYPS.EQ.2) THEN
             DO 200 I = 1,NNO
-              VECTT(I) = VECTT(I) + POIDS*CPS/DELTAT*ZR(IVF+L+I-1)*TEMS
+              ZR(IVECTT+I-1) = ZR(IVECTT+I-1)
+     &              + POIDS*CPS/DELTAT*ZR(IVF2+L+I-1)*TEMS
   200       CONTINUE
           END IF
   210   CONTINUE
 
-C --- AFFECTATION DU VECTEUR EN SORTIE :
-C     --------------------------------
-        DO 220 I = 1,NNO
-          ZR(IVECTT+I-1) = VECTT(I)
-  220   CONTINUE
-      END IF
 
       END

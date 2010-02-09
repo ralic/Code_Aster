@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 08/02/2010   AUTEUR DESROCHES X.DESROCHES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,6 +38,8 @@ MODE_LOCAL__
                                         XXXX2    KIT[9])
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
+    ENBSP_I  = NBSP_I   ELEM__         (COQ_NCOU )
+    CNUMCOR  = NUMC_I   ELEM__         (NUMC     ORDO     )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
@@ -53,6 +55,8 @@ MODE_LOCAL__
                                         GAX      GAY      )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MX       MY       MZ
                                         REP      PLAN     )
+    EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ
                                         REP      PLAN     )
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
@@ -163,8 +167,10 @@ OPTION__
     EPOT_ELEM_DEPL      409   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENEDNO  PENERDR      
-    EPSI_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    EPSI_ELNO_DEPL      33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     CNUMCOR  PNUMCOR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
+                              OUT__  EDEFONO  PDEFORR
+                                     EDEFONC  PDEFORC
     EQUI_ELNO_SIGM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     FORC_NODA           409   IN__   CCACOQU  PCACOQU  ECONTPG  PCONTMR  NGEOMER  PGEOMER  CMATERC  PMATERC
