@@ -1,9 +1,10 @@
-      SUBROUTINE MDCHOC (NBNLI,NBCHOC,NBFLAM,NBSISM,LOGCHO,DPLMOD,
-     &                   PARCHO,NOECHO,INTITU,PS1DEL,PS2DEL,NUMDDL,
-     &                   NBMODE,PULSAT,MASGEN,LAMOR,AMOGEN,BMODAL,NEQ,
-     &                   NEXCIT,INFO,LFLU,MONMOT,IER)
+      SUBROUTINE MDCHOC (NBNLI,NBCHOC,NBFLAM,NBSISM,NBPAL,LOGCHO,
+     &                   DPLMOD,PARCHO,NOECHO,INTITU,PS1DEL,PS2DEL,
+     &                   NUMDDL,NBMODE,PULSAT,MASGEN,LAMOR,AMOGEN,
+     &                   BMODAL,NEQ,NEXCIT,INFO,LFLU,MONMOT,IER)
       IMPLICIT  NONE
       INTEGER            NBNLI, NBCHOC,NBFLAM, NBSISM, NBMODE, NEQ
+      INTEGER            NBPAL
       INTEGER            LOGCHO(NBNLI,*), IER, NEXCIT, INFO
       REAL*8             PARCHO(NBNLI,*),PULSAT(*),MASGEN(*),AMOGEN(*)
       REAL*8             DPLMOD(NBNLI,NBMODE,*),BMODAL(NEQ,*)
@@ -13,7 +14,7 @@
       LOGICAL            LAMOR, LFLU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +38,7 @@ C     ------------------------------------------------------------------
 C IN  : NBNLI  : DIMENSION DES TABLEAUX (NBCHOC+NBSISM+NBFLAM)
 C IN  : NBCHOC : NOMBRE DE POINTS DE CHOC
 C IN  : NBFLAM : NOMBRE DE CHOCS AVEC FLAMBEMENT
+C IN  : NBPAL : NOMBRE DE PALIERS (COUPLAGE EDYOS)
 C OUT : LOGCHO : LOGIQUE CHOC: LOGCHO(I,1) = SI ADHERENCE OU NON
 C                              LOGCHO(I,2) = SI FORCE FLUIDE OU NON
 C                              LOGCHO(I,3) = SI CHOC SEC + LAME FLUIDE
@@ -159,7 +161,7 @@ C
       CHARACTER*8   NOEUD(3)
       CHARACTER*16  TYPNUM
       CHARACTER*24  MDGENE, NUMERO
-      CHARACTER*24 VALK
+      CHARACTER*24  VALK
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -210,8 +212,8 @@ C
       IF (TYPNUM.EQ.'NUME_DDL_SDASTER') THEN
 C         ----------------------------
          CALL MDCHST ( NUMDDL, TYPNUM, IMODE, IAMOR, PULSAT, MASGEN,
-     &                 AMOGEN, LFLU, NBNLI, NOECHO, LOGCHO, PARCHO,
-     &                 INTITU, ZI(JDDL), IER )
+     &                 AMOGEN, LFLU, NBNLI, NBPAL, NOECHO, LOGCHO, 
+     &                PARCHO, INTITU, ZI(JDDL), IER )
 C
 C --- CALCUL PAR SOUS-STRUCTURATION
 C
@@ -223,6 +225,7 @@ C             ------------------------------
 C
       ENDIF
 C
+      NBNLI = NBNLI - NBPAL
       DO 100 I = 1,NBNLI
 C
         CTANG = PARCHO(I,5)
@@ -337,6 +340,26 @@ C         ----------------------------
                ENDIF
  210        CONTINUE
  200     CONTINUE
+C  COUPLAGE AVEC EDYOS
+        IF ( NBPAL .GT. 0 ) THEN
+            DO 500 I=NBNLI+1,NBNLI+NBPAL
+               DO 510 J=1,NBMODE
+                  DPLMOD(I,J,1) = BMODAL(ZI(JDDL-1+6*(I-1)+1),J)
+                  DPLMOD(I,J,2) = BMODAL(ZI(JDDL-1+6*(I-1)+2),J)
+                  DPLMOD(I,J,3) = BMODAL(ZI(JDDL-1+6*(I-1)+3),J)
+                  IF (NOECHO(I,9)(1:2).EQ.'BI') THEN
+                     DPLMOD(I,J,4) = BMODAL(ZI(JDDL-1+6*(I-1)+4),J)
+                     DPLMOD(I,J,5) = BMODAL(ZI(JDDL-1+6*(I-1)+5),J)
+                     DPLMOD(I,J,6) = BMODAL(ZI(JDDL-1+6*(I-1)+6),J)
+                  ELSE
+                     DPLMOD(I,J,4) = 0.D0
+                     DPLMOD(I,J,5) = 0.D0
+                     DPLMOD(I,J,6) = 0.D0
+                  ENDIF
+ 510           CONTINUE
+ 500        CONTINUE
+        ENDIF
+C  FIN COUPLAGE AVEC EDYOS
 C
       ELSEIF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
 C             -------------------------------
@@ -417,6 +440,7 @@ C
             ENDIF
  140     CONTINUE
       ENDIF
+      NBNLI = NBNLI + NBPAL
 C
       CALL JEDETR('&&MDCHOC.DDLCHO')
 C

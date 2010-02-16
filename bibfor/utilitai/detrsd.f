@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -306,7 +306,7 @@ C     -----------------------------------
 
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD(1:5).EQ.'TABLE') THEN
+      ELSE IF (TYP2SD.EQ.'TABLE') THEN
 C     --------------------------------
         TABLE = NOMSD
         CALL JEEXIN(TABLE//'.TBLP',IRET)
@@ -384,7 +384,7 @@ C FETI OR NOT ?
         END IF
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD(1:7).EQ.'CHAM_NO') THEN
+      ELSE IF (TYP2SD.EQ.'CHAM_NO') THEN
 C     ----------------------------------
         CNO = NOMSD
 
@@ -445,12 +445,21 @@ C     ------------------------------------
         CALL JEDETR(CNO//'.DELG')
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD(1:9).EQ.'CHAM_ELEM') THEN
+      ELSE IF (TYP2SD.EQ.'CHAM_ELEM') THEN
 C     ------------------------------------
         CEL = NOMSD
         CALL JEDETR(CEL//'.CELD')
         CALL JEDETR(CEL//'.CELK')
         CALL JEDETR(CEL//'.CELV')
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'RESUELEM') THEN
+C     ------------------------------------
+        CEL = NOMSD
+        CALL JEDETR(CEL//'.DESC')
+        CALL JEDETR(CEL//'.NOLI')
+        CALL JEDETR(CEL//'.RESL')
+        CALL JEDETR(CEL//'.RSVI')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'MLTF') THEN
@@ -582,8 +591,8 @@ C       POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
         CALL ASSDE1(CHAMP)
 
 C     ------------------------------------------------------------------
-      ELSE IF ((TYP2SD(1:9).EQ.'MATR_ELEM') .OR.
-     &         (TYP2SD(1:9).EQ.'VECT_ELEM')) THEN
+      ELSE IF ((TYP2SD.EQ.'MATR_ELEM') .OR.
+     &         (TYP2SD.EQ.'VECT_ELEM')) THEN
 C     ---------------------------------------
         MATEL = NOMSD
         CALL JEEXIN(MATEL//'.RELR',IRET)

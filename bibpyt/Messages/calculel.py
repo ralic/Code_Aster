@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,23 +166,37 @@ Conseil :
 
 24 : _("""
  les champs à assembler n'ont pas la même longueur
+
+
+
+
+
 """),
 
 27 : _("""
  CHAM_ELEM à combiner incompatible
 """),
 
+
+
+
 29 : _("""
- option inconnue au catalogue :  %(k1)s
+Erreur de programmation :
+ Option de calcul élémentaire inconnue au catalogue :  %(k1)s
 """),
 
 30 : _("""
+Erreur utilisateur :
   -> Le TYPE_ELEMENT %(k1)s  ne sait pas encore calculer l'OPTION:  %(k2)s.
-     On ne calcule donc rien sur les éléments de ce type.
 
-  -> Risque & Conseil :
-     Vérifiez que l'option incomplètement calculée est bien une option de post-traitement
-     et que le déficit de calcul n'entraine pas de résultats faux.
+  -> Risques & Conseils :
+   * Si vous utilisez une commande de "calcul" (THER_LINEAIRE, STAT_NON_LINE, ...), il n'y a pas
+     moyen de contourner ce problème.Il faut changer de modélisation ou  émettre une demande d'évolution.
+
+   * Si c'est un calcul de post-traitement, vous pouvez sans doute "éviter" le problème
+     en ne faisant le post-traitement que sur les mailles qui savent le faire.
+     Pour cela, il faut sans doute utiliser un mot clé de type "GROUP_MA".
+     S'il n'y en a pas, il faut faire une demande d'évolution.
 """),
 
 31 : _("""
@@ -198,6 +212,8 @@ Conseils :
   Si le problème concerne TEMP_REF, vérifiez que vous avez bien affecté une température
   de référence (AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP', VALE_REF=...)
 """),
+
+
 
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE EN ROTATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,9 +47,8 @@ CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAILET,
 #
 #
 CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,
-                         DDL_IMPO=_F( GROUP_NO = 'PIED', DX = 0.0, DY = 0.0,
-                         DZ = 0.0),
-                         ROTATION=(3000.,1.,0.,-1.,))
+                         DDL_IMPO=_F( GROUP_NO = 'PIED', DX = 0.0, DY = 0.0, DZ = 0.0),
+                         ROTATION=(3000.,1.,0.,-1.,), CENTRE=(10.,10.,10.),)
 
 #
 #
@@ -88,9 +87,9 @@ DEP1=RESOUDRE(   MATR=ELAS,
 #
 #
 TEST_RESU(CHAM_NO=(
- _F( CHAM_GD = DEP1,GROUP_NO = 'TEST',PRECISION = 1.E-3,NOM_CMP = 'DX',VALE = 0.00844),
- _F( CHAM_GD = DEP1,GROUP_NO = 'TEST',PRECISION = 1.E-3,NOM_CMP = 'DY',VALE = 0.00844),
- _F( CHAM_GD = DEP1,GROUP_NO = 'TEST',PRECISION = 1.E-3,NOM_CMP = 'DZ',VALE = 0.00844))
+ _F( CHAM_GD = DEP1,GROUP_NO = 'TEST',REFERENCE='ANALYTIQUE', PRECISION = 1.E-3,NOM_CMP = 'DX',VALE = 0.00844),
+ _F( CHAM_GD = DEP1,GROUP_NO = 'TEST',REFERENCE='ANALYTIQUE', PRECISION = 1.E-3,NOM_CMP = 'DY',VALE = 0.00844),
+ _F( CHAM_GD = DEP1,GROUP_NO = 'TEST',REFERENCE='ANALYTIQUE', PRECISION = 1.E-3,NOM_CMP = 'DZ',VALE = 0.00844))
                         )
 
 #

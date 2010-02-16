@@ -1,6 +1,6 @@
       FUNCTION TYPMAT(NBMAT,TLIMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C ----------------------------------------------------------------------
       REAL*8 RBID
       COMPLEX*16 CBID
 C----------------------------------------------------------------------
-      CHARACTER*8 SYM,PARTIT
+      CHARACTER*8 SYM,PARTIT,ZERO
       CHARACTER*19 MATEL
       INTEGER I,ITYMAT
       INTEGER IBID, IERD
@@ -54,12 +54,14 @@ C     --  PAR DEFAUT LE TYPE DE MATRICE EST SYMETRIQUE
         IF (IRET.EQ.0) GOTO 10
         CALL DISMOI('F','TYPE_MATRICE',MATEL,'MATR_ELEM',IBID,SYM,IERD)
         IF (SYM.EQ.'NON_SYM') THEN
-          ITYMAT = 1
-          GOTO 11
+          CALL DISMOI('F','ZERO',MATEL,'MATR_ELEM',IBID,ZERO,IERD)
+          IF (ZERO.EQ.'NON') THEN
+            ITYMAT = 1
+            GOTO 11
+          ENDIF
         ENDIF
    10 CONTINUE
    11 CONTINUE
-      CALL ASSERT(ITYMAT.GE.0)
 
 
 C     -- SI CALCULS DISTRIBUES, IL FAUT COMMUNIQUER :

@@ -6,7 +6,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 15/02/2010   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ C TOLE CRP_21
 C ======================================================================
 C ROUTINE HMGAZP : CETTE ROUTINE CALCULE LES CONTRAINTES GENERALISEES
 C   ET LA MATRICE TANGENTE DES GRANDEURS COUPLEES, A SAVOIR CELLES QUI
-C   NE SONT PAS DES GRANDEURS DE MECANIQUE PURE OU DES FLUX PURS 
+C   NE SONT PAS DES GRANDEURS DE MECANIQUE PURE OU DES FLUX PURS
 C   DANS LE CAS OU THMC = 'GAZ'
 C ======================================================================
 C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
@@ -50,20 +50,20 @@ C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER      I
-      REAL*8       EPSVM,PHIM,RHO11M,UMPRHS
-      REAL*8       YOUNG,NU,BIOT,K0,CS,ALPHA0,ALPLIQ,CP12,SAT,N,MAMOLG
-      REAL*8       R,RHO0,C0EPS,CSIGM,VARIA,ALP11,VARBIO,VARLQ,VARVP,EM
+      REAL*8       EPSVM,PHIM
+      REAL*8       BIOT,K0,CS,ALPHA0,CP12,SAT,MAMOLG
+      REAL*8       R,RHO0,CSIGM,ALP11,EM
       REAL*8       EPS,RINSTP
-      PARAMETER  ( EPS = 1.D-21 ) 
+      PARAMETER  ( EPS = 1.D-21 )
       LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
       REAL*8       RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
-      REAL*8       RBID8, RBID9, RBID10, RBID11, RBID12, RBID13, RBID14
+      REAL*8       RBID8, RBID10, RBID12, RBID13, RBID14
       REAL*8       RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
       REAL*8       RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
-      REAL*8       RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
+      REAL*8       RBID27, RBID28, RBID29, RBID32
       REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
       REAL*8       RBID39, RBID40, RBID41, RBID42, RBID43, RBID44
       REAL*8       RBID45,RBID46,RBID47,RBID48,RBID49,RBID50,RBID51
@@ -91,7 +91,7 @@ C =====================================================================
      +             RBID17, RBID18, RBID19, RBID20, RBID21, RBID22,
      +             RBID23, RBID24, RBID25, RBID43, RBID40, RBID41,
      +             RBID42,RBID26, RBID27, RBID28, RBID29,
-     +             MAMOLG, CP21,RBID32, RBID33, RBID34, RBID35, 
+     +             MAMOLG, CP21,RBID32, RBID33, RBID34, RBID35,
      +             RBID36, RBID37,RBID38, RBID39,RBID45,RBID46,
      +             RBID47,RBID48,RBID49,EM,RBID50,RBID51,RINSTP)
 C ======================================================================
@@ -122,10 +122,10 @@ C =====================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN 
+      IF(EM.GT.EPS)THEN
         EMMAG = .TRUE.
       ENDIF
-        
+
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
      +                                       EPSV,DEPSV,EPSVM,MECA)
 

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,14 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 NUMG24,LISINS
       CHARACTER*24 VALK(2)
       LOGICAL LAMOR,LFLU,LPSTO
+      
+C  COUPLAGE EDYOS
+C =>
+      INTEGER       NBPAL
+      REAL*8        VROTAT,DTSTO,TCF
+      CHARACTER*14  NUMDDL
+      LOGICAL       PRDEFF       
+C =<      
 
 C-----------------------------------------------------------------------
       DATA K8B/'        '/
@@ -316,6 +324,15 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
         CALL U2MESG('I','VIDE_1',0,' ',0,0,0,0.D0)
       END IF
 
+C  COUPLAGE EDYOS NOn PRIS EN COMPTE (Il FAUt UTILISEr MDTR74)
+C =>
+      NBPAL = 0
+      VROTAT = 0.D0
+      DTSTO = 0.D0
+      TCF = TFIN
+      NUMDDL = '       '
+      PRDEFF = .FALSE.
+C <=
       IF (METHOD.EQ.'EULER') THEN
         CALL MDEUL1(NBPAS,DT,NEQGEN,ZR(JPULS),ZR(JPUL2),ZR(JMASG),DESCM,
      &              ZR(JRAIG),DESCR,LAMOR,ZR(JAMOG),DESCA,TYPBAS,K8B,
@@ -327,7 +344,8 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
      &              ZI(JADCHO),ZI(JREDC),ZR(JREDD),ZR(JCOEFM),
      &              ZI(JIADVE),ZI(JINUMO),ZI(JIDESC),ZK8(JNODEP),
      &              ZK8(JNOVIT),ZK8(JNOACC),ZK8(JNOMFO),ZR(JPSID),
-     &              MONMOT,NOMRES)
+     &              MONMOT,
+     &              NBPAL,NUMDDL,DTSTO,TCF,TFIN,VROTAT,PRDEFF,NOMRES)
 
       ELSE IF (METHOD.EQ.'ADAPT') THEN
         CALL MDADAP(DT,NEQGEN,ZR(JPULS),ZR(JPUL2),ZR(JMASG),DESCM,
@@ -340,7 +358,8 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
      &              ZR(JVCHO),ZI(JADCHO),ZI(JREDC),ZR(JREDD),ZR(JCOEFM),
      &              ZI(JIADVE),ZI(JINUMO),ZI(JIDESC),ZK8(JNODEP),
      &              ZK8(JNOVIT),ZK8(JNOACC),ZK8(JNOMFO),ZR(JPSID),
-     &              MONMOT,NOMRES)
+     &              MONMOT,
+     &              NBPAL,NUMDDL,DTSTO,TCF,VROTAT,PRDEFF,NOMRES)
 
       END IF
 

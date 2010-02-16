@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,6 +33,12 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
          LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
          MODE_STAT       =SIMP(statut='f',typ=mode_meca ),
          MODE_CORR       =SIMP(statut='f',typ=(mult_elas,mode_meca),),
+
+         COUPLAGE_EDYOS     =FACT(statut='f',max=1,         
+                             VITE_ROTA          = SIMP(statut='o',typ='R' ),
+                             PAS_TPS_EDYOS      = SIMP(statut='o',typ='R' ),
+                             UNITE              = SIMP(statut='f',typ='I',defaut=45),
+         ),
 
          ETAT_INIT       =FACT(statut='f',
            regles=(EXCLUS('RESU_GENE','DEPL_INIT_GENE'),

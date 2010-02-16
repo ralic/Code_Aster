@@ -4,7 +4,7 @@
       CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C
       CHARACTER*19  NOMOB
       CHARACTER*24 QUESTL,K24
       CHARACTER*32  REPK
+      LOGICAL ZEROSD
 C DEB-------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -127,6 +128,14 @@ C
          ELSE
             REPK='NON'
          ENDIF
+C
+      ELSEIF ( QUESTI .EQ. 'ZERO' ) THEN
+         IF (ZEROSD('RESUELEM',NOMOB))  THEN
+            REPK='OUI'
+         ELSE
+            REPK='NON'
+         ENDIF
+
       ELSE
          REPK = QUESTI
          CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)

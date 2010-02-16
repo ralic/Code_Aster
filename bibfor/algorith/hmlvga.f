@@ -3,12 +3,12 @@
      +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,ADCP11,
      +                  ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
      +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,P2,
-     +                  DP1,DP2,T,DT,PHI,PADP,PVP,H11,H12,H21,H22,KH,
+     +                  DP1,DP2,T,DT,PHI,PADP,PVP,H11,H12,KH,
      +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC,BIOT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 15/02/2010   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ C ======================================================================
       INTEGER       ADCP21,ADCP22,ADCOTE,ADDEME,ADDEP1,ADDEP2,ADDETE
       REAL*8        CONGEM(DIMCON),CONGEP(DIMCON),VINTM(NBVARI)
       REAL*8        VINTP(NBVARI),DSDE(DIMCON,DIMDEF),EPSV,DEPSV
-      REAL*8        P1,DP1,P2,DP2,T,DT,PHI,PADP,PVP,H11,H12,H21,H22
+      REAL*8        P1,DP1,P2,DP2,T,DT,PHI,PADP,PVP,H11,H12
       REAL*8        RHO11,PHI0,PVP0,KH,RINSTP
       CHARACTER*16  OPTION,MECA,THER,HYDR,THMC
 C ======================================================================
@@ -57,25 +57,25 @@ C ======================================================================
       REAL*8       SATM,EPSVM,PHIM,RHO11M,RHO12M,RHO21M,PVPM,RHO22M
       REAL*8       BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ,RHO110
       REAL*8       CP11,CP12,CP21,SAT,DSATP1,MAMOLV,MAMOLG
-      REAL*8       R,RHO0,COEPS,CSIGM,VARIA,ALP11,ALP12,ALP21
+      REAL*8       R,RHO0,COEPS,CSIGM,ALP11,ALP12,ALP21
       REAL*8       DP11T, DP11P1, DP11P2, DP12T, DP12P1, DP12P2
-      REAL*8       DP21T, DP21P1, DP21P2, DP22T, DP22P1, DP22P2
-      REAL*8       UMPRHS, BIDON,RHO12,RHO21,CP22
-      REAL*8       PADM,RHO22,VARPAD,VARBIO,VARLQ,EM
+      REAL*8       DP21T, DP21P1, DP21P2
+      REAL*8       RHO12,RHO21,CP22
+      REAL*8       PADM,RHO22,EM
       REAL*8       EPS
-      PARAMETER  ( EPS = 1.D-21 ) 
+      PARAMETER  ( EPS = 1.D-21 )
       LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
       REAL*8       RBID1,  RBID2,  RBID3,  RBID4,  RBID5,  RBID6, RBID7
-      REAL*8       RBID8,  RBID9,  RBID10, RBID11, RBID12, RBID13,RBID14
+      REAL*8       RBID8,  RBID10,RBID14
       REAL*8       RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
       REAL*8       RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
-      REAL*8       RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
-      REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
-      REAL*8       RBID39, RBID40, RBID45, RBID46, RBID49, RBID50,RBID51
-      REAL*8       SIGNE, PVP1, PVP1M, DPAD, QPRIME, PAS
+      REAL*8       RBID27, RBID28, RBID29, RBID32
+      REAL*8       RBID33, RBID34, RBID35, RBID38
+      REAL*8       RBID39, RBID45, RBID46, RBID49, RBID50,RBID51
+      REAL*8       SIGNE, PVP1, PVP1M, DPAD, PAS
       REAL*8       M11M,M12M,M21M,M22M,DMASP1,DMASP2,DMVDP1,DMVDP2
       REAL*8       DMADP1,DMADP2,DMWDP1,DMWDP2,DQDEPS,DQDP,DQDT,DMASDT
       REAL*8       DMVPDT,DMADT,DMWDT,DMDEPV,DSPDP1,DSPDP2,APPMAS,SIGMAP
@@ -123,7 +123,7 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN 
+      IF(EM.GT.EPS)THEN
         EMMAG = .TRUE.
       ENDIF
 
@@ -305,7 +305,7 @@ C ======================================================================
      +       DSDE(ADCP12,ADDEME+NDIM-1+I) + DMDEPV(RHO12,1.0D0-SAT,BIOT)
                DSDE(ADCP21,ADDEME+NDIM-1+I) =
      +       DSDE(ADCP21,ADDEME+NDIM-1+I) + DMDEPV(RHO21,1.0D0-SAT,BIOT)
-               DSDE(ADCP22,ADDEME+NDIM-1+I) = 
+               DSDE(ADCP22,ADDEME+NDIM-1+I) =
      +             DSDE(ADCP22,ADDEME+NDIM-1+I) + DMDEPV(RHO22,SAT,BIOT)
  10         CONTINUE
          ENDIF

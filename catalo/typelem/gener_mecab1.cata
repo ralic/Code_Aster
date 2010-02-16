@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF TYPELEM  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,9 +65,9 @@ OPTION__
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
                                      ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
-    CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
+    CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
+    CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_MECA_EPSI_R    -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -95,15 +95,15 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           478   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EFGE_ELNO_CART      380   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ECONTNO  PSIEFNOR
                               OUT__  EEFFONO  PEFFORR
-    ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
+    ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
+    ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     FORC_NODA           164   IN__   ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -114,13 +114,13 @@ OPTION__
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    INDIC_ENER          -2    IN__   XXXXXX   XXXXXX
+    INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
+    INDIC_SEUIL         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MASS_FLUI_STRU      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    MASS_INER           -2    IN__   XXXXXX   XXXXXX
+    MASS_INER           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MASS_MECA           168   IN__   CCACABL  PCACABL  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
@@ -142,7 +142,7 @@ OPTION__
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      164   IN__   EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
-    RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
+    RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_FLUI_STRU      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -167,5 +167,5 @@ OPTION__
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
     VARI_ELNO_ELGA      159   IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
-    WEIBULL             -2    IN__   XXXXXX   XXXXXX
+    WEIBULL             -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

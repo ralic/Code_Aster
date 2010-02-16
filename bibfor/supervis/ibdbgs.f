@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,9 +47,9 @@ C     ----- DEBUT COMMON DE DEBUG JEVEUX
       REAL*8           TBLOC
       COMMON /RTBLJE/  TBLOC
 
-C     -- COMMON MESTPS POUR MESURE_TEMPS
+C     -- COMMON MESTP1 POUR MESURE_TEMPS
       INTEGER          MTPNIV
-      COMMON /MESTPS/  MTPNIV
+      COMMON /MESTP1/  MTPNIV
 
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS

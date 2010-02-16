@@ -1,6 +1,6 @@
       SUBROUTINE DISMME(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C
 C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      CHARACTER*7  TYPMAT,KMPIC
+      CHARACTER*7  TYPMAT,KMPIC,ZERO
       INTEGER      IRET,I,I1,IALIRE,IAREFE,NBRESU,IEXI
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
@@ -82,12 +82,27 @@ C
              IF (IEXI.EQ.0) GOTO 1
              CALL DISMRE(CODMES,QUESTI,ZK24(IALIRE-1+I),REPI,TYPMAT,I1)
              IF ((I1.EQ.0).AND.(TYPMAT.EQ.'NON_SYM')) THEN
-                IF (.NOT.ZEROSD('RESUELEM',ZK24(IALIRE-1+I)))  THEN
-                   REPK='NON_SYM'
-                   GO TO 9999
-                END IF
+                REPK='NON_SYM'
+                GO TO 9999
              END IF
  1         CONTINUE
+         ENDIF
+
+      ELSE IF (QUESTI.EQ.'ZERO') THEN
+         REPK='OUI'
+         CALL JEEXIN(NOMOB//'.RELR', IRET)
+         IF (IRET.GT.0) THEN
+           CALL JELIRA(NOMOB//'.RELR','LONUTI',NBRESU,KBID)
+           IF(NBRESU.GT.0)CALL JEVEUO(NOMOB//'.RELR','L',IALIRE)
+           DO 4, I=1,NBRESU
+             CALL JEEXIN(ZK24(IALIRE-1+I)(1:19)//'.NOLI',IEXI)
+             IF (IEXI.EQ.0) GOTO 4
+             CALL DISMRE(CODMES,QUESTI,ZK24(IALIRE-1+I),REPI,ZERO,I1)
+             IF ((I1.EQ.0).AND.(ZERO.EQ.'NON')) THEN
+                REPK='NON'
+                GOTO 9999
+             END IF
+ 4         CONTINUE
          ENDIF
 
       ELSE IF (QUESTI.EQ.'PARTITION') THEN

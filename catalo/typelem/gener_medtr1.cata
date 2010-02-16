@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF TYPELEM  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,14 +78,14 @@ OPTION__
     AMOR_MECA           41    IN__   CCADISA  PCADISA  CCAORIE  PCAORIE  CMATERC  PMATERC  MMATUUR  PRIGIEL
                                      CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
-    CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
+    CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
+    CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_MECA_PESA_R    43    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  CPESANR  PPESANR
                                      CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_ROTA_R    -2    IN__   XXXXXX   XXXXXX
+    CHAR_MECA_ROTA_R    -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_MECA_TEMP_R    99    IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -99,9 +99,9 @@ OPTION__
     EFGE_ELNO_DEPL      42    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                      CCINFDI  PCINFDI
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
-    ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
+    ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
+    ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EPOT_ELEM_DEPL      44    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                      CCINFDI  PCINFDI
@@ -125,9 +125,9 @@ OPTION__
                                      DDL_MECA PVITPLU  CINSTPR  PINSTMR  CCINFDI  PCINFDI
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  MMATUNS  PMATUNS
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    INDIC_ENER          -2    IN__   XXXXXX   XXXXXX
+    INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
+    INDIC_SEUIL         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MASS_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISM  PCADISM  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR
@@ -163,7 +163,7 @@ OPTION__
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      39    IN__   EREFCO   PREFCO   CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
-    RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
+    RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR
@@ -206,5 +206,5 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     VARI_ELNO_ELGA      159   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
-    WEIBULL             -2    IN__   XXXXXX   XXXXXX
+    WEIBULL             -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

@@ -1,0 +1,1058 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 16/02/2010 - 17:29:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014626 DU 2010-02-15 08:20:14
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Refonte du chainage Miss3D-Aster : premiere version de CALC_MISS
+FONCTIONNALITE
+   Il s'agit d'un livrable du projet OMARISI.
+   
+   Le chantier est prévu par étape :
+    - première version limitée de CALC_MISS : février 2010
+    - extension de son domaine d'application : fin 2010
+   
+   La première étape de cette refonte consiste donc à 
+   reproduire le cas-test miss07 : calcul des impédances et 
+   forces sismiques par Miss et résolution harmonique dans 
+   Code_Aster.
+   
+   CALC_MISS est une nouvelle macro-commande.
+   Dans cette première version, sa syntaxe est quasi-identique 
+   à MACRO_MISS_3D mais à terme, elle devrait être assez différente. Par exemple, aujourd'hui, elle prend le numéro d'unité logique du fichier produit par IMPR_MACR_ELEM. A 
+   terme, elle pourrait appelé directement IMPR_MACR_ELEM elle-
+   même.
+   
+   CALC_MISS réalise les tâches auparavant réalisées par 
+   gtaster et ptaster (objets de cette refonte), l'appel à 
+   Miss.
+   
+   On restitue une nouvelle version de miss07 (modélisation c) 
+   qui reproduit exactement miss07a (mêmes valeurs testées).
+   On réduit le calcul à 2 fréquences pour que le test soit 
+   rapide (moins de 500 secondes).
+   
+   La documentation d'utilisation ne sera produite que quand la 
+   syntaxe sera à peu près figée (fin du 1er semestre).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.10.126, U7.03.12
+VALIDATION
+   miss07c
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014126 DU 2009-10-30 08:26:39
+TYPE anomalie concernant astk (VERSION 1.2)
+TITRE
+   getop de as_run
+FONCTIONNALITE
+   Problème
+   ========
+   
+   "getop post_k1_k2_k3.capy" ne fonctionne pas
+   
+   
+   Solution
+   ========
+   Le nom de l'"op" python est bien récupéré. Ensuite, il y avait une maladresse sur le test
+   "est-ce un op fortran (un nombre) ou un op python ?".
+   
+   corrigé dans astk 1.8.0
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   getop
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013632 DU 2009-07-21 08:01:47
+TYPE anomalie concernant astk (VERSION 1.2)
+TITRE
+   astk : rcmd: socket: All ports in use
+FONCTIONNALITE
+   L'origine du problème est un mauvais fonctionnement du rsh (client et/ou server) sur la
+   machine considérée.
+   
+   Deux solutions possibles :
+   - faire en sorte que le rsh fonctionne correctement sur cette machine (3 ans que la
+   distribution existe, il y a surement eu des paquets correctifs si ce n'était pas un
+   problème de configuration !),
+   - utiliser ssh.
+   
+   Je propose la 2ème solution puisque cela n'implique aucune modification sur la machine.
+   
+   Dans astk, menu Configuration/Préférences/Réseau, sélectionner SSH et SCP.
+   
+   Mettre les clés SSH pour que la connexion se fasse sans mot de passe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013724 DU 2009-08-17 09:36:04
+TYPE anomalie concernant astk (VERSION 1.2)
+TITRE
+   pb de lancement calculs distribues
+FONCTIONNALITE
+   Message quand on soumet depuis un autre noeud que 2 ou 3 :
+   prun: stdio server running
+   loader[aster7]: can't cd to /tmp/876908: No such file or directory: use -D <dir> prun option
+   prun: Error: loader 0 failed to start its processes
+   
+   
+   Sauf erreur de ma part, le pb corrigé dans issue13462 est réapparu juste avant noël et on
+   l'a corrigé avec Jean-Pierre en décembre.
+   C'est le fameux "cd", je ne sais plus trop où, soit dans un script LSF, soit un script de
+   l'agla.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   lancement batch
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014504 DU 2010-01-26 12:42:55
+TYPE anomalie concernant astk (VERSION 1.2)
+TITRE
+   Erreur dans astk avec un profil produit avec une autre configuration
+FONCTIONNALITE
+   Le profil (fichier .astk) contient une référence vers le serveur 1 : il a donc été créé
+   avec un astk qui connaissait au moins 2 serveurs (le numéro 0 et le numéro 1).
+   
+   Cette référence est stockée avec le chemin de base.
+   
+   Le profil est ensuite ouvert avec un astk (sur une autre machine ou non) qui ne connait
+   qu'un serveur (le numéro 0).
+   Quand on ajoute un nouveau fichier dans le profil, il essaie de sélectionner ce serveur :
+   erreur.
+   
+   Ce sera corrigé dans la prochaine version (1.8.1).
+   Contournement : cliquer sur l'icone pour modifier le chemin de base.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ihm
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 16/02/2010 - 10:01:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013291 DU 2009-04-07 14:49:54
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Couplage par Yacs de Code_Aster et Edyos
+FONCTIONNALITE
+   Restitution de la première version du coupleur Aster-EDYOS (C. Carémoli, N. Greffet, J.-P.
+   Lefèbvre, X. Raud & P. Vaugrante, projet ODYMAT)
+   
+   On propose une stratégie de couplage basée sur YACS (superviseur de Salomé) pour les
+   communications entre Code_Aster (calcul de la ligne d'arbre en éléments type poutre) et
+   EDYOS (calcul des paliers pouvant être non linéaires).
+   Pour des raisons de performance (temps CPU), après plusieurs tests d'implantation, on
+   s'aperçoit qu'il faut choisir une solution où les appels sont au coeur du fortran. La
+   solution plus modulaire avec boucle en temps en 
+   python ne convient pas à ce type de couplage car le problème structure à résoudre est très
+   petit (modèle linéaire poutre traité en modal) et car on doit pouvoir traiter des cas avec
+   plus d'un million de pas de temps (le pas de temps peut devenir très petit car il est
+   piloté par EDYOS).
+   La solution technique de la macro de couplage avec opérateurs d'échanges spécifiques et
+   boucle en temps en python, préconisée pour le coupleur IFS avec Saturne car elle est plus
+   évolutive, ne peut être reprise ici.
+   Nous avons fait une RTA sur ce sujet le 9 avril 2009.
+   
+   Stratégie de couplage : les appels YACS sont dans le fortran de DYNA_TRAN_MODAL. C'est un
+   couplage Neumann-Dirichlet (comme l'IFS) : à chaque pas on reçoit d'EDYOS les efforts aux
+   paliers (ponctuels) et on envoit les 
+   déplacements et vitesses calculés à EDYOS. Les données à échanger sont ponctuelles : un
+   noeud par palier.
+   
+   Afin de minimiser l'impact dans le code, on se base sur la programmation des noeuds de
+   chocs. En effet on retrouve certains points communs : nécessité de faire un passage base
+   physique / base modale à chaque pas en certains noeuds.
+   
+   
+   Au niveau de l'architecture informatique, il s'agit d'une version provisoire pour
+   restituer les sources. L'utilisation se fera encore en surcharge.
+   Plusieurs points devront être corrigés avant la version définitive :
+    - utiliser le mode "exécutable" (plutot que d'avoir à générer une bibliothèque dynamique)
+   disponible dans YACS (les tests sont déjà en cours) pour limiter les dépendances
+   d'environnement entre Salomé et Aster, et les autres codes couplés.
+    - définir le mode de lancement définitif des tests.
+   
+    
+   
+   Impact sur la syntaxe :
+   
+   Nouvel opérateur INIT_COMPO : obligatoire pour récupérer le numéro de component attribué
+   par YACS.
+   INIT_COMPO=PROC(    nom="INIT_COMPO", op=  117,
+                       fr="Initialiser adresse component YACS",
+                            COMPO = SIMP(statut='o',typ='I',),);
+   
+   dans op0117 on place le numéro de component (venant de l'argument COMPO) dans un common
+   integer JEVEU '&ADR_YACS'. Cette valeur doit être mise en argument de tous les appels YACS.
+   
+   Exemple d'utilisation :
+   
+   INIT_COMPO(COMPO=component)
+   YACS fournit la valeur de component.
+   
+   Modification de DYNA_TRAN_MODAL :
+   on rajoute un mot-clé facteur (non répétable) :
+   COUPLAGE_EDYOS=FACT(statut='f',max=1,         
+            VITE_ROTA     = SIMP(statut='o',typ='R' ),
+            PAS_TPS_EDYOS = SIMP(statut='o',typ='R' ),
+            UNITE         = SIMP(statut='f',typ='I',defaut=45),),
+            
+   L'utilisateur doit donc fournir la vitesse de rotation de l'arbre, une estimation initiale
+   du pas de temps (permettant à EDYOS de converger) et une unité logique pour aller lire le
+   fichier qui contient les données de 
+   modélisation des paliers (données EDYOS).
+   Ce fichier est du type :
+   3
+   1  1   PAFINL
+   2  11   PAFINL
+   3  5    PAFINL
+   La première ligne : nombre de paliers
+   Ensuite chaque ligne décrit le palier : numéro, numéro de noeud et modèle EDYOS associé.
+   Les données spécifiques aux modèles de paliers et qui sont nécesaires à EDYOS ne sont pas
+   présentées ici et elles ne transitent pas par le .comm.
+   
+   Le coupleur fonctionne avec deux types de schémas en temps, en respectant la logique de
+   fonctionnement Aster existante :
+   - EULER (pas de temps constant),
+   - ADAPT (pas de temps adaptatif, tenant compte éventuellement de la divergence d'EDYOS).
+   Donc, avec EULER si EDYOS diverge, le calcul d'arrête avec un message.
+   Avec ADAPT, on va tenter de diminuer le pas de temps (suivant les paramètres déjà
+   existants du schéma).
+   
+   
+   Aspects informatiques :
+   
+   Au niveau des typages des données à échanger, YACS impose que certains paramètres soient
+   des INTEGER*4 et d'autre des INTEGER*8 par exemple.
+   
+   
+   Impacts :
+   
+   - init_compo.capy : nouvel opérateur
+   - dyna_tran_modal.capy
+   fermetur.py (ajout message 12 en cas d'utilisation sans YACS)
+   edyos.py (tous les messages du coupleur, dont les messages YACS)
+   
+   Nouvelles routines fortran :
+   - envdep.f : pour envoyer les champs cinématiques aux paliers (échanges YACS)
+   - errcou.f : pour récupérer les codes retours YACS
+   - inicou.f : initialisation couplage (échanges YACS)
+   - lecdon.f : lecture des données paliers
+   - op0117.f : pour init_compo (récupération numéro de component YACS)
+   - recfor.f : routine pour récupérer les efforts aux paliers (échanges YACS)
+   - mdfedy.f : recombinaison des efforts pour le modal et inverse pour cinématique
+   
+   Routines fortran modifiées :
+   - mdadap.f
+   - mdchoc.f
+   - mdchst.f
+   - mddevo.f
+   - mdeul1.f
+   - mdfnli.f
+   - mdtr74.f
+   - op0074.f
+   
+   
+   On ne livre pas de cas-test pour l'instant car pour lancer un cas-test utilisant YACS, il
+   faut un mode de lancement particulier car c'est YACS qui pilote alors tous les codes.
+   Les cas-tests existants du coupleur peuvent être lancés "à la main" via des scripts
+   spécifiques .
+   
+   
+   Le nombre de jours de travail regroupe le travail de tous les intervenants dans le cadre
+   ODYMAT.
+   
+   
+   Perspectives :
+   - résorber INIT_COMPO dans DEBUT,
+   - stratégie d'adaptation du pas de temps,
+   - mise en donnée et IHM.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.53.21
+VALIDATION
+   cas-tests CADYAC
+NB_JOURS_TRAV  : 100.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014618 DU 2010-02-12 10:34:35
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   PROMISS3D : livraison version V1.5 (V1_5)
+FONCTIONNALITE
+   Bonjour,
+   je propose de livrer la nouvelle version de PROMISS3D V1.5 basée sur MISS3D 
+   V6.6.
+   Le portage est effectué sur Bull et Calibre 5, pas de portage sur Calibre 4 
+   ou Rocks.
+   On livrera le ou les cas-tests testant les nouvelles fonctionnalités un peu 
+   plus tard.
+   
+   Impact :
+   macro_miss_3d.capy: on introduit une nouvelle version : V1_5 (le défaut à V1_4 
+   est inchangé).        
+   VERSION         =SIMP(statut='f',typ='TXM',into=
+   ("V1_3","V1_4","V1_5"),defaut="V1_4"),
+   
+   miss3d.csh : complété (gestion des chemins MKL et Intel imde V1_4)
+   
+   Arborescence des sources : idem V1_4.
+   Le choix de formattage des réels court ou long n'est pas reporté (fiche 
+   11051) : on sera toujours en format long (plus de précision).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.03.11
+VALIDATION
+   cas-tests promiss3d existants et cas-tests perso
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien     DATE 15/02/2010 - 15:08:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014623 DU 2010-02-12 18:44:02
+TYPE express concernant Code_Aster (VERSION 10.1)
+TITRE
+   ARLEQUIN - amxc3xa9lioration routine ARLAST
+FONCTIONNALITE
+   En travaillant avec Alexandre sur la projection de champs nodaux (fiche 13890), on a
+   regardé en particulier la routine arlast qui assemble la matrice mortier.
+   
+   Dans arlast, on appelle 2 fois la routine arlgrc qui calcule beaucoup de choses qui sont
+   inutilisées au sein de la routine arlast (noms, types géométrique, dimensions des boites,
+   coordonnées des mailles parents).
+   
+   On remonte donc au niveau d'arlast les informations strictement nécessaires dans arlast
+   (numéro et nombre de noeuds des mailles parents)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Tests Arlequin de la base
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 16/02/2010 - 15:03:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014062 DU 2009-10-19 11:06:56
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   SV00 - RESU_ELEM pour les cas symxc3xa9triques
+FONCTIONNALITE
+   Problème :
+   ----------
+   Dans STAT_NON_LINE, on ne peut pas savoir à l'avance si les matrices de rigidité tangentes
+   seront symétriques ou non. Cela dépend du comportement affecté sur chaque maille.
+   Du coup, on "trimbale" en permanence 2 RESUELEM dont l'un (le non-symétrique) est très
+   souvent nul.
+   Ces resuelem nuls peuvent etre déchargés et rechargés (inutilement) sur disque (routine
+   jjldyn), ce qui est assez bete !
+                                                                                            
+                           
+   Correction :
+   ------------
+   Dans la routine reajre.f, avant d'ajouter un resuelem dans un matr_elem, on regarde s'il
+   est nul. S'il l'est, on le détruit.
+                                                                                            
+                           
+   Effet :
+   -------
+   Je suis un peu déçu du faible gain observé sur le volume de données déchargé sur disque
+   par jjldyn.f.
+   Par exemple, pour le test perf004d (20% de gain seulement) :
+   avant : 380 appels au mécanisme de libération
+           376838 Mo libérés
+   après : 307 appels au mécanisme de libération
+           305274 Mo libérés
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perf004d
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014225 DU 2009-11-24 13:15:04
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Que faire si un calcul elementaire n'est pas programme ?
+FONCTIONNALITE
+   Problème :
+   ----------
+   Jusqu'à présent, les calculs élémentaires non encore programmés dans Code_Aster étaient
+   séparés en deux paquets par les programmeurs :
+     * ceux dont on pensait qu'ils étaient indispensables pour les études (rigidité,
+   chargements,...). On émettait alors une erreur Fatale quand on essayait de les utiliser.
+     * ceux dont on pensait qu'ils n'étaient pas indispensables pour les études
+   (post_traitement par exemple). On émettait alors une Alarme quand on essayait de les utiliser.
+                                                                                            
+                                                         
+   Cette séparation n'est pas si évidente à faire. En effet, on peut imaginer qu'un
+   utilisateur pressé ne visualise pas tous les champs qu'il a calculés et qu'il soit induit
+   en erreur par des post-traitements incomplets.
+   Par exemple :
+    * afficher l'énergie totale d'un calcul sur son modèle
+    * ne pas raffiner son maillage suite à un calcul d'erreur incomplet
+    * ...
+                                                                                            
+                                                         
+    Evolution proposée :
+    ---------------------
+    Nous proposons que tout calcul non-programmé donne lieu à une erreur fatale.
+                                                                                            
+                                                         
+    Le message d'erreur fatale est le suivant :
+   30 : _("""
+   Erreur utilisateur :
+     -> Le TYPE_ELEMENT %(k1)s  ne sait pas encore calculer l'OPTION:  %(k2)s.
+                                                                                            
+                                                         
+     -> Risques & Conseils :
+      * Si vous utilisez une commande de "calcul" (THER_LINEAIRE, STAT_NON_LINE, ...), il n'y
+   a pas
+        moyen de contourner ce problème.Il faut changer de modélisation ou  émettre une
+   demande d'évolution.
+                                                                                            
+                                                         
+      * Si c'est un calcul de post-traitement, vous pouvez sans doute "éviter" le problème
+        en ne faisant le post-traitement que sur les mailles qui savent le faire.
+        Pour cela, il faut sans doute utiliser un mot clé de type "GROUP_MA".
+        S'il n'y en a pas, il faut faire une demande d'évolution.
+   """),
+                                                                                            
+                                                         
+   Validation :
+   ------------
+   Il y avait 4 tests qui émettaient l'alarme "calcul non programmé " :
+    adlv312a  fdnv100a  wdnp101a  yyyy117a
+                                                                                            
+                                                         
+   Pour yyyy117a :
+   Le manque était CHAR_MECA_SECH_R pour les éléments DKQ.
+   J'ai écrit une nouvelle routine te0312 pour traiter cette option "a minima" : on regarde
+   si l'utilisateur a fourni
+   dans le matériau le coefficient K_DESSIC, s'il ne l'a pas fait, on continue avec un
+   chargement vide.
+   Par ailleurs, je modifie le test pour ne plus affecter de "séchage" sur les groupes de
+   mailles qui ne sont pas du béton.
+                                                                                            
+                                                         
+   Pour wdnp101a :
+   Le manque était MASS_INER pour les éléments MEPASE3 (D_PLAN_ABSO).
+   La correction a été de retirer du catalogue des ces éléments l'option MASS_INER.
+   G. Devesa m'a expliqué que cette option n'avait pas de sens pour ces éléments.
+                                                                                            
+                                                         
+   Pour fdnv100a et adlv312a :
+   Le manque était MASS_INER pour les éléments MEFP_FACE3 (2D_FLUI_PESA).
+   La correction a été de restreindre le POST_ELEM / MASS_INER sur les éléments qui savent
+   calculer MASS_INER.
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   Besoin d'Olivier Nicolas :
+   --------------------------
+   Par ailleurs, l'utilisateur à l'origine de cette fiche (O. Nicolas via la fiche 13679)
+   sera toujours arreté s'il souhaite faire un calcul avec chargement de rotation et s'il y a
+   des poutres dans son modèle.
+                                                                                            
+                                                         
+   Pour répondre à son besoin (et avec l'accord de J.L. Fléjou), je propose de réaliser le
+   calcul de CHAR_MECA_ROTA_R pour les éléments de poutres suivants (te0150.f) :
+        MECA_POU_C_T
+        MECA_POU_D_E
+        MECA_POU_D_TG
+        MECA_POU_D_T
+        MECA_POU_D_EM
+        MECA_POU_D_TGM
+                                                                                            
+                                                         
+   Validation :
+   ------------
+   J'ajoute une nouvelle modélisation (d) au test sslv104 qui permet de valider
+   CHAR_MECA_ROTA_R pour les éléments POU_D_E et POU_D_T.
+   Mais comme je ne teste pas les autres éléments, je mets "-1" dans leur catalogue bien que
+   la programmation soit a priori réalisée.
+   
+   Impact documentaire :
+   ---------------------
+   V3.04.104 : sslv104  
+                                                                                            
+                                                         
+    
+   Liste des fichiers impactés par la correction de la fiche:  14225
+     cbrota.f  ptforp.f  te0150.f  te0312.f
+     calculel.py  elements.py
+     char_meca_rota_r.cata     gener_2d2g.cata           gener_2dilp0.cata        
+   gener_2dilsl.cata         gener_ac3d_3.cata
+     gener_acpla2.cata         gener_ctecp1.cata         gener_ctecp2.cata        
+   gener_me2db1.cata         gener_me2dg_1.cata
+     gener_me2dg_2.cata        gener_me2dt1.cata         gener_me2fa1.cata        
+   gener_me2fl2.cata         gener_me2fp2.cata
+     gener_me2fs1.cata         gener_me2tr1.cata         gener_me3a13.cata        
+   gener_me3a33.cata         gener_me3a43.cata
+     gener_me3a62.cata         gener_me3a64.cata         gener_me3d_3.cata        
+   gener_me3da2.cata         gener_me3df3.cata
+     gener_me3dg_1.cata        gener_me3dg_3.cata        gener_me3di3.cata        
+   gener_me3fa2.cata         gener_me3fl3.cata
+     gener_me3g33.cata         gener_me3gi3.cata         gener_me3h13.cata        
+   gener_me3h23.cata         gener_me3h33.cata
+     gener_me3h43.cata         gener_me3h53.cata         gener_meaa12.cata        
+   gener_meaa22.cata         gener_meaa32.cata
+     gener_meaa62.cata         gener_meaa64.cata         gener_meafo2.cata        
+   gener_meafs1.cata         gener_meag32.cata
+     gener_meagi2.cata         gener_meah12.cata         gener_meah22.cata        
+   gener_meah32.cata         gener_meah42.cata
+     gener_meah52.cata         gener_meax_2.cata         gener_meaxf2.cata        
+   gener_meaxs2.cata         gener_mebar1.cata
+     gener_mecab1.cata         gener_mecap1.cata         gener_mecf21.cata        
+   gener_mecf32.cata         gener_mecpg2.cata
+     gener_mecpl2.cata         gener_mecpl2_xh.cata      gener_mecpl2_xhc.cata    
+   gener_mecpl2_xhc_xh.cata  gener_mecpl2_xht.cata
+     gener_mecpl2_xhtc.cata    gener_mecpl2_xt.cata      gener_mecpl2_xtc.cata    
+   gener_mecq32.cata         gener_mecqd1.cata
+     gener_mect21.cata         gener_meda12.cata         gener_meda22.cata        
+   gener_meda32.cata         gener_meda62.cata
+     gener_meda64.cata         gener_medg32.cata         gener_medh12.cata        
+   gener_medh22.cata         gener_medh32.cata
+     gener_medh42.cata         gener_medh52.cata         gener_medhb2.cata        
+   gener_medit0.cata         gener_medit1.cata
+     gener_medkg1.cata         gener_medkt2.cata         gener_medpa1.cata        
+   gener_medpg2.cata         gener_medpl2.cata
+     gener_medpl2_xh.cata      gener_medpl2_xhc.cata     gener_medpl2_xhc_xh.cata 
+   gener_medpl2_xht.cata     gener_medpl2_xhtc.cata
+     gener_medpl2_xt.cata      gener_medpl2_xtc.cata     gener_medtr0.cata        
+   gener_medtr1.cata         gener_mefls1.cata
+     gener_mefls2.cata         gener_megrc2.cata         gener_megrm2.cata        
+   gener_mepct1.cata         gener_mepde1.cata
+     gener_mepdg1.cata         gener_mepdt1.cata         gener_mepgd1.cata        
+   gener_mepgi2.cata         gener_mepli2.cata
+     gener_mepmf1.cata         gener_mepmf2.cata         gener_meshb3.cata        
+   gener_metu61.cata         gener_me_xh.cata
+     gener_me_xhc.cata         gener_me_xhc_xh.cata      gener_me_xht.cata        
+   gener_me_xhtc.cata        gener_me_xt.cata
+     gener_me_xtc.cata         gener_mf2fi2.cata         gener_mf3d_3.cata        
+   gener_mv2d_2.cata         gener_mv3d_3.cata
+     gener_th3d_3.cata         gener_th3dd3.cata         gener_thaxd2.cata        
+   gener_thaxf2.cata         gener_thcq_2.cata
+     gener_thcqa1.cata         gener_thcqp1.cata         gener_thpl_2.cata        
+   gener_thpld2.cata         grandeur_simple__.cata
+     meca_hexs8.cata           mecpqs4.cata              medpqs4.cata             
+   medpqs8.cata              met3seg3.cata
+     met3seg4.cata
+     adlv312a.comm  fdnv100a.comm  yyyy117a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.04.104
+VALIDATION
+   adlv312a sslv104d
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014582 DU 2010-02-09 09:26:25
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Un petit de mxc3xa9nage du cotxc3xa9 des routines d'encapsulation de MPI
+FONCTIONNALITE
+   Problèmes :
+   ----------
+   Les routines encapsulant les échanges MPI sont aujourd'hui disparates.
+                                                                                            
+                           
+   Il y en a 4 :
+     ismpi : pour savoir si on est en parallèle MPI
+     mpicm1 : pour faires des échanges MPI (BCAT, ALL_REDUCE, ...) sur des vecteurs fortran
+     fetmpi : pour faires des échanges MPI (BCAT, ALL_REDUCE, ...) sur des objets JEVEUX
+   (pour feti)
+     mummpi : pour faires des échanges MPI (BCAT, ALL_REDUCE, ...) sur des objets JEVEUX
+   (pour mumps à l'origine mais réutilisé un peu partout)
+                                                                                            
+                           
+   Les 3 dernières routines sont des chapeaux en "C" pour pouvoir bénéficier de la
+   précompilation ("#ifdef"), ce qui ne facilite pas le passage des arguments de type
+   CHARACTER et COMPLEX. Depuis que l'on a décidé que le compilateur fortran90 est un
+   pré-requis d'Aster, on peut programmer ces routines directement en fortran90.
+   fetmpi
+                                                                                            
+                           
+   Enfin, le mécanisme des "#ifdef" repose sur 3 variables différentes :    _USE_MPI,
+   _USE_MPI_FETI et _USE_MPI_MUMPS
+                                                                                            
+                           
+                                                                                            
+                           
+   Corrections :
+   -------------
+   1) On n'utilise plus que la variable _USE_MPI
+   2) On écrit les nouvelles routines en fortran90 pour pouvoir bénéficier des "#ifdef". On
+   détruit les routines C de memes noms et on supprimes les anciennens routines : fetam,
+   fetsm, mumam, mumsm, mpicm1a.
+   3) Au bout du compte, on propose les nouvelles routines générales suivantes :
+      * ismpi  : renvoie 1 si la compilation a eu lieu avec _USE_MPI (0 sinon)
+      * mpicm0 : renvoie le nombre de processeurs et le rang du processeur courant
+      * mpicm1 : pour faire un échange MPI sur un vecteur fortran (I/R)
+      * mpicm2 : pour faire un échange MPI sur un objet JEVEUX (I/R)
+                                                                                            
+                           
+   4) J'ai modifié la forme de fetmpi (en fortran90) mais pas le fond. Olivier verra, si les
+   routines mpicmx.f peuvent lui rendre service.
+   5) Pour la routine mummpi, je n'ai gardé que l'option "0" (traitement de la SD_PARTITION
+   feti). Elle n'est plus appelée que dans la routine ajlipa.f. Là encore, Olivier verra s'il
+   y a lieu de renommer cette routine.
+                                                                                            
+                           
+   Impact documentaire :
+   ---------------------
+   D6.00.01 : liste des utilitaires
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D6.00.01
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.6
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014584 DU 2010-02-09 11:58:41
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   affe_char_meca + ROTATION + CENTRE => resultats faux
+FONCTIONNALITE
+   Problème :
+   ----------
+   Si on prend le test sslv104a (CHAR_MECA_ROTA_R) et qu'on lui ajoute le mot clé CENTRE qui
+   permet de choisir un point par lequel passe l'axe de rotation (CENTRE vaut 0,0,0 par
+   défaut), le test reste OK ce qui est complètement faux !
+                                                                                            
+                           
+   Il n'y a rien d'étonnant à cela, car dans le fortran de la routine cbrota.f, on ne fait
+   jamais le GETVR8 sur le mot clé CENTRE !!
+                                                                                            
+                           
+   Resultats FAUX :
+   ----------------
+   Tous les chargements de rotations sont faux si l'axe de rotation ne passe pas par le point
+   (0,0,0)
+   Le bug semble exister depuis toujours (version 3) : le mot clé CENTRE n'a jamais été récupéré.
+                                                                                            
+                           
+   Correction :
+   ------------
+   Je modifie cbrota.f pour récupérer les valeurs du mot clé CENTRE.
+                                                                                            
+                           
+   Validation :
+   ------------
+   Je modifie le test sslv104 pour tester le mot clé CENTRE :
+   Le maillage est translaté du vecteur (10.,10., 10.)
+   et on déplace l'axe de rotation en le forcant à passer par le point (10., 10., 10.)
+   La solution de référence (analytique) est ainsi préservée.
+                                                                                            
+                           
+   La modélisation "A" (3D) reste OK.
+   Mais les modélisations B et C (coque_3D) restent NOOK. En effet, la routine qui traite ce
+   chargement pour les coque_3D (forcen.f) n'a pas prévu que l'axe de rotation puisse passer
+   par autre chose que l'origine de l'espace.
+   => Je corrige forcen.f et les tests redeviennent OK.
+                                                                                            
+                           
+   Impact documentaire :
+   ---------------------
+   V3.04.104 : sslv104
+                                                                                            
+                           
+   NEW9 :
+   ------
+   Les bugs doivent etre corrigés en version 9 :
+     cbrota.f  fcent.f   forcen.f
+                                                                                            
+                           
+   Remarque :
+   ----------
+   En traitant cette fiche, je me suis aperçu d'autres problèmes concernant l'option
+   CHAR_MECA_ROTA_R.
+   Comme je ne souhaite pas corriger tous ces problèmes, j'émets une nouvelle fiche (14594)
+   qui sera traitée par qui de droit.
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+   Liste des fichiers impactés par la correction de la fiche:  14584
+     cbrota.f  fcent.f   forcen.f
+     sslv104a.comm  sslv104b.comm  sslv104c.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.04.104
+VALIDATION
+   sslv104
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014593 DU 2010-02-10 08:30:49
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Mais oxc3xb9 sont donc passxc3xa9es les mesures de temps ?
+FONCTIONNALITE
+   Problème:
+   ---------
+   La réalisation de la fiche 14556 est un peu bugguée : il n'y a plus aucun message de temps
+   consommé !
+                                                                                            
+                           
+   Correction :
+   ------------
+   Lors de la restitution de la fiche 1456, j'ai renommé un common MESTPS en MESTP1 mais j'ai
+   oublié de le faire dans la routine ibdbgs.f. Je corrige cet oubli.
+                                                                                            
+                           
+   Par ailleurs, j'avais aussi oublié de remettre les commons à "zéro" entre les différentes
+   commandes.
+                                                                                            
+                           
+   NEW9 :
+   ------
+   Sans objet.
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  14593
+     ibdbgs.f  uttcpu.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essai perso
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 15/02/2010 - 16:54:37
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014614 DU 2010-02-11 13:53:55
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   YYYY100 : des modxc3xa9lisations en double
+FONCTIONNALITE
+   Je supprime les tests en double.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V1.10.100
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT miss07c                      courtois M.COURTOIS         146    146      0
+ CASTEST MODIF adlv312a                       pellet J.PELLET           194      2      2
+ CASTEST MODIF fdnv100a                       pellet J.PELLET           329      3      5
+ CASTEST MODIF sslv104a                       pellet J.PELLET            97      6      7
+ CASTEST MODIF sslv104b                       pellet J.PELLET           109      5      5
+ CASTEST MODIF sslv104c                       pellet J.PELLET           110      5      5
+ CASTEST MODIF yyyy117a                       pellet J.PELLET           648     10     23
+ CASTEST SUPPR yyyy100j.comm                 tardieu N.TARDIEU          135      0    135
+ CASTEST SUPPR yyyy100k.comm                 tardieu N.TARDIEU           77      0     77
+CATALOGU MODIF compelem/grandeur_simple__     pellet J.PELLET          2032      4      4
+CATALOGU MODIF options/char_meca_rota_r       pellet J.PELLET            48      9      1
+CATALOGU MODIF typelem/gener_2d2g             pellet J.PELLET           168     12     12
+CATALOGU MODIF typelem/gener_2dilp0           pellet J.PELLET           153     12     12
+CATALOGU MODIF typelem/gener_2dilsl           pellet J.PELLET           148     12     12
+CATALOGU MODIF typelem/gener_ac3d_3           pellet J.PELLET           100     12     12
+CATALOGU MODIF typelem/gener_acpla2           pellet J.PELLET            92     12     12
+CATALOGU MODIF typelem/gener_ctecp1           pellet J.PELLET            82      2      2
+CATALOGU MODIF typelem/gener_ctecp2           pellet J.PELLET            80      2      2
+CATALOGU MODIF typelem/gener_me2db1           pellet J.PELLET           227      9      9
+CATALOGU MODIF typelem/gener_me2dg_1          pellet J.PELLET           350      5      5
+CATALOGU MODIF typelem/gener_me2dg_2          pellet J.PELLET           367      5      5
+CATALOGU MODIF typelem/gener_me2dt1           pellet J.PELLET           189      9      9
+CATALOGU MODIF typelem/gener_me2fa1           pellet J.PELLET            68     12     12
+CATALOGU MODIF typelem/gener_me2fl2           pellet J.PELLET           121     11     11
+CATALOGU MODIF typelem/gener_me2fp2           pellet J.PELLET           110     12     12
+CATALOGU MODIF typelem/gener_me2fs1           pellet J.PELLET            65     11     11
+CATALOGU MODIF typelem/gener_me2tr1           pellet J.PELLET           189      9      9
+CATALOGU MODIF typelem/gener_me3a13           pellet J.PELLET           249     11     11
+CATALOGU MODIF typelem/gener_me3a33           pellet J.PELLET           202     12     12
+CATALOGU MODIF typelem/gener_me3a43           pellet J.PELLET           253     11     11
+CATALOGU MODIF typelem/gener_me3a62           pellet J.PELLET           177     12     12
+CATALOGU MODIF typelem/gener_me3a64           pellet J.PELLET           180     12     12
+CATALOGU MODIF typelem/gener_me3d_3           pellet J.PELLET           647      3      3
+CATALOGU MODIF typelem/gener_me3da2           pellet J.PELLET            77     12     12
+CATALOGU MODIF typelem/gener_me3df3           pellet J.PELLET            89     11     11
+CATALOGU MODIF typelem/gener_me3dg_1          pellet J.PELLET           326      5      5
+CATALOGU MODIF typelem/gener_me3dg_3          pellet J.PELLET           359      5      5
+CATALOGU MODIF typelem/gener_me3di3           pellet J.PELLET           232     10     10
+CATALOGU MODIF typelem/gener_me3fa2           pellet J.PELLET            74     12     12
+CATALOGU MODIF typelem/gener_me3fl3           pellet J.PELLET           129     11     11
+CATALOGU MODIF typelem/gener_me3g33           pellet J.PELLET           190     12     12
+CATALOGU MODIF typelem/gener_me3gi3           pellet J.PELLET           204     11     11
+CATALOGU MODIF typelem/gener_me3h13           pellet J.PELLET           249     12     12
+CATALOGU MODIF typelem/gener_me3h23           pellet J.PELLET           243     12     12
+CATALOGU MODIF typelem/gener_me3h33           pellet J.PELLET           199     12     12
+CATALOGU MODIF typelem/gener_me3h43           pellet J.PELLET           252     12     12
+CATALOGU MODIF typelem/gener_me3h53           pellet J.PELLET           246     12     12
+CATALOGU MODIF typelem/gener_meaa12           pellet J.PELLET           165     12     12
+CATALOGU MODIF typelem/gener_meaa22           pellet J.PELLET           214     11     11
+CATALOGU MODIF typelem/gener_meaa32           pellet J.PELLET           214     11     11
+CATALOGU MODIF typelem/gener_meaa62           pellet J.PELLET           163     12     12
+CATALOGU MODIF typelem/gener_meaa64           pellet J.PELLET           166     12     12
+CATALOGU MODIF typelem/gener_meafo2           pellet J.PELLET           199     11     11
+CATALOGU MODIF typelem/gener_meafs1           pellet J.PELLET            65     11     11
+CATALOGU MODIF typelem/gener_meag32           pellet J.PELLET           154     12     12
+CATALOGU MODIF typelem/gener_meagi2           pellet J.PELLET           195     11     11
+CATALOGU MODIF typelem/gener_meah12           pellet J.PELLET           224     12     12
+CATALOGU MODIF typelem/gener_meah22           pellet J.PELLET           221     12     12
+CATALOGU MODIF typelem/gener_meah32           pellet J.PELLET           175     12     12
+CATALOGU MODIF typelem/gener_meah42           pellet J.PELLET           230     12     12
+CATALOGU MODIF typelem/gener_meah52           pellet J.PELLET           224     12     12
+CATALOGU MODIF typelem/gener_meax_2           pellet J.PELLET           561      3      3
+CATALOGU MODIF typelem/gener_meaxf2           pellet J.PELLET            91     11     11
+CATALOGU MODIF typelem/gener_meaxs2           pellet J.PELLET           494      3      3
+CATALOGU MODIF typelem/gener_mebar1           pellet J.PELLET           226      9      9
+CATALOGU MODIF typelem/gener_mecab1           pellet J.PELLET           171     12     12
+CATALOGU MODIF typelem/gener_mecap1           pellet J.PELLET           164     12     12
+CATALOGU MODIF typelem/gener_mecf21           pellet J.PELLET            56     12     12
+CATALOGU MODIF typelem/gener_mecf32           pellet J.PELLET            64     12     12
+CATALOGU MODIF typelem/gener_mecpg2           pellet J.PELLET           336      6      6
+CATALOGU MODIF typelem/gener_mecpl2           pellet J.PELLET           603      3      3
+CATALOGU MODIF typelem/gener_mecpl2_xhc       pellet J.PELLET           288     12     12
+CATALOGU MODIF typelem/gener_mecpl2_xhc_xh     pellet J.PELLET           186     12     12
+CATALOGU MODIF typelem/gener_mecpl2_xh        pellet J.PELLET           284     12     12
+CATALOGU MODIF typelem/gener_mecpl2_xhtc      pellet J.PELLET           294     12     12
+CATALOGU MODIF typelem/gener_mecpl2_xht       pellet J.PELLET           279     12     12
+CATALOGU MODIF typelem/gener_mecpl2_xtc       pellet J.PELLET           289     12     12
+CATALOGU MODIF typelem/gener_mecpl2_xt        pellet J.PELLET           275     12     12
+CATALOGU MODIF typelem/gener_mecq32           pellet J.PELLET           310      9      9
+CATALOGU MODIF typelem/gener_mecqd1           pellet J.PELLET           213     11     11
+CATALOGU MODIF typelem/gener_mect21           pellet J.PELLET            56     12     12
+CATALOGU MODIF typelem/gener_meda12           pellet J.PELLET           165     12     12
+CATALOGU MODIF typelem/gener_meda22           pellet J.PELLET           216     10     10
+CATALOGU MODIF typelem/gener_meda32           pellet J.PELLET           216     10     10
+CATALOGU MODIF typelem/gener_meda62           pellet J.PELLET           163     12     12
+CATALOGU MODIF typelem/gener_meda64           pellet J.PELLET           166     12     12
+CATALOGU MODIF typelem/gener_medg32           pellet J.PELLET           154     12     12
+CATALOGU MODIF typelem/gener_medh12           pellet J.PELLET           226     11     11
+CATALOGU MODIF typelem/gener_medh22           pellet J.PELLET           250     11     11
+CATALOGU MODIF typelem/gener_medh32           pellet J.PELLET           175     12     12
+CATALOGU MODIF typelem/gener_medh42           pellet J.PELLET           229     11     11
+CATALOGU MODIF typelem/gener_medh52           pellet J.PELLET           226     11     11
+CATALOGU MODIF typelem/gener_medhb2           pellet J.PELLET           217     11     11
+CATALOGU MODIF typelem/gener_medit0           pellet J.PELLET           184      2      2
+CATALOGU MODIF typelem/gener_medit1           pellet J.PELLET           196     10     10
+CATALOGU MODIF typelem/gener_medkg1           pellet J.PELLET           255      9     10
+CATALOGU MODIF typelem/gener_medkt2           pellet J.PELLET           376      9     10
+CATALOGU MODIF typelem/gener_medpa1           pellet J.PELLET            70     12     13
+CATALOGU MODIF typelem/gener_medpg2           pellet J.PELLET           336      5      5
+CATALOGU MODIF typelem/gener_medpl2           pellet J.PELLET           605      2      2
+CATALOGU MODIF typelem/gener_medpl2_xhc       pellet J.PELLET           292     12     12
+CATALOGU MODIF typelem/gener_medpl2_xhc_xh     pellet J.PELLET           187     12     12
+CATALOGU MODIF typelem/gener_medpl2_xh        pellet J.PELLET           282     13     13
+CATALOGU MODIF typelem/gener_medpl2_xhtc      pellet J.PELLET           291     12     12
+CATALOGU MODIF typelem/gener_medpl2_xht       pellet J.PELLET           274     13     13
+CATALOGU MODIF typelem/gener_medpl2_xtc       pellet J.PELLET           288     12     12
+CATALOGU MODIF typelem/gener_medpl2_xt        pellet J.PELLET           273     13     13
+CATALOGU MODIF typelem/gener_medtr0           pellet J.PELLET           196      2      2
+CATALOGU MODIF typelem/gener_medtr1           pellet J.PELLET           210     10     10
+CATALOGU MODIF typelem/gener_mefls1           pellet J.PELLET            54      2      2
+CATALOGU MODIF typelem/gener_mefls2           pellet J.PELLET            71     11     11
+CATALOGU MODIF typelem/gener_megrc2           pellet J.PELLET           204      9      9
+CATALOGU MODIF typelem/gener_megrm2           pellet J.PELLET           209      9      9
+CATALOGU MODIF typelem/gener_mepct1           pellet J.PELLET           265     20     17
+CATALOGU MODIF typelem/gener_mepde1           pellet J.PELLET           317     16     12
+CATALOGU MODIF typelem/gener_mepdg1           pellet J.PELLET           286     19     16
+CATALOGU MODIF typelem/gener_mepdt1           pellet J.PELLET           297     15     13
+CATALOGU MODIF typelem/gener_mepgd1           pellet J.PELLET           214     22     21
+CATALOGU MODIF typelem/gener_mepgi2           pellet J.PELLET           195     12     12
+CATALOGU MODIF typelem/gener_mepli2           pellet J.PELLET           219     10     10
+CATALOGU MODIF typelem/gener_mepmf1           pellet J.PELLET           276     24     21
+CATALOGU MODIF typelem/gener_mepmf2           pellet J.PELLET           276     24     21
+CATALOGU MODIF typelem/gener_meshb3           pellet J.PELLET           322      4      5
+CATALOGU MODIF typelem/gener_metu61           pellet J.PELLET           282      9      9
+CATALOGU MODIF typelem/gener_me_xhc           pellet J.PELLET           332     12     12
+CATALOGU MODIF typelem/gener_me_xhc_xh        pellet J.PELLET           175     12     12
+CATALOGU MODIF typelem/gener_me_xh            pellet J.PELLET           288     12     12
+CATALOGU MODIF typelem/gener_me_xhtc          pellet J.PELLET           338     12     12
+CATALOGU MODIF typelem/gener_me_xht           pellet J.PELLET           286     12     12
+CATALOGU MODIF typelem/gener_me_xtc           pellet J.PELLET           337     12     12
+CATALOGU MODIF typelem/gener_me_xt            pellet J.PELLET           288     12     12
+CATALOGU MODIF typelem/gener_mf2fi2           pellet J.PELLET           142     12     12
+CATALOGU MODIF typelem/gener_mf3d_3           pellet J.PELLET           142     12     12
+CATALOGU MODIF typelem/gener_mv2d_2           pellet J.PELLET           282      9      9
+CATALOGU MODIF typelem/gener_mv3d_3           pellet J.PELLET           321      3      3
+CATALOGU MODIF typelem/gener_th3d_3           pellet J.PELLET           264     22     22
+CATALOGU MODIF typelem/gener_thaxf2           pellet J.PELLET           145     16     16
+CATALOGU MODIF typelem/gener_thcq_2           pellet J.PELLET           147     15     15
+CATALOGU MODIF typelem/gener_thcqa1           pellet J.PELLET           113     15     15
+CATALOGU MODIF typelem/gener_thcqp1           pellet J.PELLET           113     15     15
+CATALOGU MODIF typelem/gener_thpl_2           pellet J.PELLET           340     51     51
+CATALOGU MODIF typelem/meca_hexs8             pellet J.PELLET           514      3      3
+CATALOGU MODIF typelem/mecpqs4                pellet J.PELLET           484      4      4
+CATALOGU MODIF typelem/medpqs4                pellet J.PELLET           493      3      3
+CATALOGU MODIF typelem/medpqs8                pellet J.PELLET           496      4      5
+CATALOGU MODIF typelem/met3seg3               pellet J.PELLET           276      9      9
+CATALOGU MODIF typelem/met3seg4               pellet J.PELLET           273      9      9
+CATALOPY AJOUT commande/calc_miss           courtois M.COURTOIS          78     78      0
+CATALOPY AJOUT commande/init_compo           greffet N.GREFFET           23     23      0
+CATALOPY MODIF commande/dyna_tran_modal      greffet N.GREFFET          255      7      1
+CATALOPY MODIF commande/macro_miss_3d        greffet N.GREFFET           69      2      2
+CATALOPY MODIF commande/poursuite             pellet J.PELLET           106      2      2
+       C SUPPR utilitai/fetmpi                pellet J.PELLET           484      0    484
+       C SUPPR utilitai/fetmpi                pellet J.PELLET            61      0     61
+       C SUPPR utilitai/mpicm1                pellet J.PELLET           221      0    221
+       C SUPPR utilitai/mpicm1                pellet J.PELLET            46      0     46
+       C SUPPR utilitai/mummpi                pellet J.PELLET           219      0    219
+       C SUPPR utilitai/mummpi                pellet J.PELLET            50      0     50
+FORTRAN90 AJOUT utilitai/fetmpi                pellet J.PELLET           484    484      0
+FORTRAN90 AJOUT utilitai/fetmpi                pellet J.PELLET            61     61      0
+FORTRAN90 AJOUT utilitai/mpicm0                pellet J.PELLET            48     48      0
+FORTRAN90 AJOUT utilitai/mpicm1                pellet J.PELLET           221    221      0
+FORTRAN90 AJOUT utilitai/mpicm1                pellet J.PELLET            46     46      0
+FORTRAN90 AJOUT utilitai/mpicm2                pellet J.PELLET           200    200      0
+FORTRAN90 AJOUT utilitai/mummpi                pellet J.PELLET           219    219      0
+FORTRAN90 AJOUT utilitai/mummpi                pellet J.PELLET            50     50      0
+FORTRAN90 SUPPR mumps/mumam                    pellet J.PELLET           354      0    354
+FORTRAN90 SUPPR utilitai/fetam                 pellet J.PELLET           436      0    436
+ FORTRAN AJOUT algorith/lecdon               greffet N.GREFFET          268    268      0
+ FORTRAN AJOUT algorith/mdfedy               greffet N.GREFFET          106    106      0
+ FORTRAN AJOUT echange/envdep                greffet N.GREFFET          441    441      0
+ FORTRAN AJOUT echange/errcou                greffet N.GREFFET          331    331      0
+ FORTRAN AJOUT echange/inicou                greffet N.GREFFET          450    450      0
+ FORTRAN AJOUT echange/op0117                greffet N.GREFFET           68     68      0
+ FORTRAN AJOUT echange/recfor                greffet N.GREFFET          392    392      0
+ FORTRAN AJOUT elements/te0312                pellet J.PELLET            57     57      0
+ FORTRAN MODIF algeline/typmat                pellet J.PELLET            77      5      3
+ FORTRAN MODIF algorith/ajlipa                pellet J.PELLET           250      2      3
+ FORTRAN MODIF algorith/calcco               meunier S.MEUNIER          143      4      4
+ FORTRAN MODIF algorith/comthm               meunier S.MEUNIER          218      4      4
+ FORTRAN MODIF algorith/cresol                pellet J.PELLET           179      3      4
+ FORTRAN MODIF algorith/crsvmu                pellet J.PELLET           183      3      4
+ FORTRAN MODIF algorith/exfonc                pellet J.PELLET           254      3      4
+ FORTRAN MODIF algorith/hmgazp               meunier S.MEUNIER          276      6      6
+ FORTRAN MODIF algorith/hmlgat               meunier S.MEUNIER          271      7     19
+ FORTRAN MODIF algorith/hmliga               meunier S.MEUNIER          344     10     10
+ FORTRAN MODIF algorith/hmliva               meunier S.MEUNIER          380      8      8
+ FORTRAN MODIF algorith/hmlvga               meunier S.MEUNIER          384     12     12
+ FORTRAN MODIF algorith/mdadap               greffet N.GREFFET          712     99     17
+ FORTRAN MODIF algorith/mdchoc               greffet N.GREFFET          448     31      7
+ FORTRAN MODIF algorith/mdchst               greffet N.GREFFET          436     54      4
+ FORTRAN MODIF algorith/mddevo               greffet N.GREFFET          382     24      7
+ FORTRAN MODIF algorith/mdeul1               greffet N.GREFFET          521     85     12
+ FORTRAN MODIF algorith/mdfnli               greffet N.GREFFET          113     25      3
+ FORTRAN MODIF algorith/mdtr74               greffet N.GREFFET          794     59      4
+ FORTRAN MODIF algorith/op0074               greffet N.GREFFET          104      1      1
+ FORTRAN MODIF algorith/ssdt74               greffet N.GREFFET          387     22      3
+ FORTRAN MODIF assembla/assmam                pellet J.PELLET           830      3      4
+ FORTRAN MODIF assembla/assmiv                pellet J.PELLET           381      5      9
+ FORTRAN MODIF assembla/assvec                pellet J.PELLET          1028      7      9
+ FORTRAN MODIF assembla/nugllo                pellet J.PELLET           357      9     11
+ FORTRAN MODIF assembla/promor                pellet J.PELLET           480      4      5
+ FORTRAN MODIF calculel/calcul                pellet J.PELLET           528      4      7
+ FORTRAN MODIF calculel/nbelem               meunier S.MEUNIER           65      3     18
+ FORTRAN MODIF calculel/nbgrel               meunier S.MEUNIER           38      2     18
+ FORTRAN MODIF elements/fcent                 pellet J.PELLET            76      8      4
+ FORTRAN MODIF elements/forcen                pellet J.PELLET            75     38     37
+ FORTRAN MODIF elements/ptforp                pellet J.PELLET           413     38      7
+ FORTRAN MODIF elements/te0150                pellet J.PELLET           471     15     10
+ FORTRAN MODIF modelisa/arlast               meunier S.MEUNIER          289     49     18
+ FORTRAN MODIF modelisa/cbrota                pellet J.PELLET            49      9      7
+ FORTRAN MODIF supervis/ibdbgs                pellet J.PELLET           164      3      3
+ FORTRAN MODIF utilitai/detrsd                pellet J.PELLET           646     15      6
+ FORTRAN MODIF utilitai/dismme                pellet J.PELLET           172     19      4
+ FORTRAN MODIF utilitai/dismre                pellet J.PELLET           150     10      1
+ FORTRAN MODIF utilitai/reajre                pellet J.PELLET           112     28      5
+ FORTRAN MODIF utilitai/sdmpic                pellet J.PELLET            94      6      8
+ FORTRAN MODIF utilitai/uttcpi                pellet J.PELLET           185      2      5
+ FORTRAN MODIF utilitai/uttcpu                pellet J.PELLET           130     12      3
+ FORTRAN SUPPR algeline/fetsm                 pellet J.PELLET           106      0    106
+ FORTRAN SUPPR algeline/mumsm                 pellet J.PELLET           106      0    106
+  PYTHON AJOUT Messages/edyos                greffet N.GREFFET          245    245      0
+  PYTHON AJOUT Miss/calc_miss_ops           courtois M.COURTOIS          52     52      0
+  PYTHON AJOUT Miss/miss_calcul             courtois M.COURTOIS         284    284      0
+  PYTHON AJOUT Miss/miss_fichier_interf     courtois M.COURTOIS         222    222      0
+  PYTHON AJOUT Miss/miss_fichier_option     courtois M.COURTOIS          65     65      0
+  PYTHON AJOUT Miss/miss_resu_aster         courtois M.COURTOIS         158    158      0
+  PYTHON AJOUT Miss/miss_utils              courtois M.COURTOIS         154    154      0
+  PYTHON MODIF Macro/macro_miss_3d_ops      courtois M.COURTOIS         162      5      2
+  PYTHON MODIF Messages/calculel              pellet J.PELLET           356     22      6
+  PYTHON MODIF Messages/elements              pellet J.PELLET           345     11      1
+  PYTHON MODIF Messages/fermetur             greffet N.GREFFET           92      6      1
+  PYTHON MODIF Messages/miss0               courtois M.COURTOIS          68     23      1
+  PYTHON MODIF Miss/miss_fichier_sol        courtois M.COURTOIS         124     38     15
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         706     38     19
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   26        4869      4869             +4869
+ MODIF :  197       51168      2448    1920      +528
+ SUPPR :   12        2295              2295     -2295
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  235       58332      7317    4215     +3102 

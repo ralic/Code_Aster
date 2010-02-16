@@ -5,7 +5,7 @@
       CHARACTER*(*) KBID
 C ----------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,13 +48,12 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
 
       INTEGER      ISTOP,NSOLVE,IBID,NPREC,IFM,NIV,NBPROC,
-     &             JLIR,ISLVK,ISLVR,ISLVI
+     &             JLIR,ISLVK,ISLVR,ISLVI,RANG
       REAL*8       EPSMAT
       CHARACTER*3  SYME,MIXPRE,KMD
       CHARACTER*8  KSTOP
       CHARACTER*8  METHOD,LISINS
       CHARACTER*16 NOMSOL,TYPECO
-      CHARACTER*24 K24B
       INTEGER      EXIMC,GETEXM
 C------------------------------------------------------------------
       CALL JEMARQ()
@@ -68,7 +67,7 @@ C --- INITS. GLOBALES (CAR MOT-CLES OPTIONNELS)
       EPSMAT=-1.D0
       MIXPRE='NON'
       KMD='NON'
-      
+
       CALL GETFAC(NOMSOL,NSOLVE)
       IF (NSOLVE.EQ.0) GOTO 10
       CALL GETVTX(NOMSOL,'METHODE',1,1,1,METHOD,IBID)
@@ -124,7 +123,7 @@ C ------ MATR_DISTRIBUEE
         CALL GETVTX(NOMSOL,'MATR_DISTRIBUEE',1,1,1,KMD,IBID)
         CALL INFNIV(IFM,NIV)
         NBPROC=1
-        CALL MUMMPI(3,IFM,NIV,K24B,NBPROC,IBID)
+        CALL MPICM0(RANG,NBPROC)
         IF ( (NBPROC.EQ.1).AND.(KMD.EQ.'OUI') ) THEN
           KMD='NON'
           CALL U2MESS('A','ASSEMBLA_3')
@@ -141,12 +140,12 @@ C ------------------------------------------------------
         CALL WKVECT(SOLVEU//'.SLVR','V V R',4,ISLVR)
         CALL WKVECT(SOLVEU//'.SLVI','V V I',7,ISLVI)
       ENDIF
-           
+
 C ------------------------------------------------------
 C --- LECTURE MOT-CLE ET REMPLISSAGE DE LA SD_SOLVEUR PROPRE A CHAQUE
 C     SOLVEUR LINEAIRE
 C ------------------------------------------------------
-      
+
       IF (METHOD.EQ.'MUMPS') THEN
 C     -----------------------------
         CALL CRSVMU(NOMSOL,SOLVEU,ISTOP,NPREC,SYME,EPSMAT,MIXPRE,KMD)
@@ -169,7 +168,7 @@ C     -----------------------------
 
       ELSE IF (METHOD.EQ.'MULT_FRO') THEN
 C     -----------------------------
-        CALL CRSVMF(NOMSOL,SOLVEU,ISTOP,NPREC,SYME,EPSMAT,MIXPRE,KMD)   
+        CALL CRSVMF(NOMSOL,SOLVEU,ISTOP,NPREC,SYME,EPSMAT,MIXPRE,KMD)
 
       ENDIF
 

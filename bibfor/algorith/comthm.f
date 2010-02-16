@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 15/02/2010   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,7 +88,7 @@ C ======================================================================
 C VARIABLES IN / OUT
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER       RETCOM,KPI,NPG,I
+      INTEGER       RETCOM,KPI,NPG
       INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC,YAP1
       INTEGER       YAP2,YATE,ADDEME,ADDEP1,ADDEP2,ADDETE
       INTEGER       ADCOME,ADCP11,ADCP12,ADCP21,ADCP22,ADCOTE
@@ -104,7 +104,7 @@ C ======================================================================
       INTEGER       NVIM,NVITH,ADVIME,ADVITH,ADVIHY,ADVICO
       INTEGER       VIHRHO,VICPHI,VICPVP,VICSAT,NVIH,NVIC,NVIT
       REAL*8        P1,DP1,GRAP1(3),P2,DP2,GRAP2(3),T,DT,GRAT(3)
-      REAL*8        PHI,PVP,PAD,H11,H12,H21,H22,RHO11,EPSV,DEPS(6),DEPSV
+      REAL*8        PHI,PVP,PAD,H11,H12,H21,RHO11,EPSV,DEPS(6),DEPSV
       REAL*8        T0,P10,P20,PHI0,PVP0,SAT,MAMOVG
       REAL*8        RGAZ, BIOT, SATUR,DSATUR, PESA(3)
       REAL*8        PERMFH, PERMLI, DPERML, PERMGZ,DPERMS, DPERMP, FICK
@@ -146,7 +146,7 @@ C ======================================================================
      +                    ADCP22,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,
      +                    VINTP,DSDE,DEPS,EPSV,DEPSV,P1,P2,DP1,DP2,
      +                    T,DT,PHI,
-     +                    PVP,PAD,H11,H12,H21,H22,KH,RHO11,PHI0,PVP0,
+     +                    PVP,PAD,H11,H12,H21,KH,RHO11,PHI0,PVP0,
      +                    SAT,RETCOM,CRIT,BIOT,
      +                    VIHRHO,VICPHI,VICPVP,VICSAT,INSTAP)
 

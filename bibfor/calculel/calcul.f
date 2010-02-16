@@ -2,7 +2,7 @@
      &                  LPAOU,BASE)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 07/12/2009   AUTEUR BOITEAU O.BOITEAU 
+C MODIF CALCULEL  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       REAL*8 ZR
       COMPLEX*16 ZC
-      LOGICAL ZL,DBG
+      LOGICAL ZL
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
@@ -82,7 +82,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
       COMMON /CAII19/EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
 C-----------------------------------------------------------------------
-      LOGICAL LFETMO,LFETTS,LFETTD,LDIST,LFETI,LFETIC
+      LOGICAL LFETMO,LFETTS,LFETTD,LDIST,LFETI,LFETIC,DBG
       REAL*8 RBID,TEMP1(6),TEMP2(6)
       CHARACTER*8  LPAIN2(NIN),LPAOU2(NOU)
       CHARACTER*19 LCHIN2(NIN),LCHOU2(NOU)
@@ -254,8 +254,7 @@ C     -------------------------------------------------------------
       CALL JEEXIN(PARTIT//'.NUPROC.MAILLE',IRET)
       IF ((IRET.NE.0).AND.(.NOT.LFETI)) THEN
         LDIST=.TRUE.
-        CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
-        CALL MUMMPI(3,IFM,NIV,K24B,NBPROC,IBID)
+        CALL MPICM0(RANG,NBPROC)
         CALL JEVEUO(PARTIT//'.NUPROC.MAILLE','L',JNUMSD)
         CALL JELIRA(PARTIT//'.NUPROC.MAILLE','LONMAX',N1,KBID)
         IF (ZI(JNUMSD-1+N1).NE.NBPROC) THEN
@@ -264,7 +263,7 @@ C     -------------------------------------------------------------
           CALL U2MESI('F','CALCULEL_13',2,VALI)
         ENDIF
       ENDIF
-      
+
 
 C     0.4- DEBCA1  MET DES OBJETS EN MEMOIRE (ET COMMON):
 C     -----------------------------------------------------------------
@@ -288,8 +287,6 @@ C        -- SI LE NUMERO DU TEOOIJ EST NEGATIF :
           VALK(2)=OPTION
           IF (NUMC.EQ.-1) THEN
             CALL U2MESK('F','CALCULEL_30',2,VALK)
-          ELSEIF (NUMC.EQ.-2) THEN
-            CALL U2MESK('A','CALCULEL_30',2,VALK)
           ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
@@ -494,9 +491,9 @@ C     QUELQUES ACTIONS HORS BOUCLE GREL DUES A CALVOI==1 :
 C     -----------------------------------------------------
       CALL MONTEE(OPT,LIGREL,NOU2,LCHOU2,LPAOU2,'FIN')
 
-C     -- POUR DEBUGGAGE, ON TRACE LE CHAMP RESULTAT      
+C     -- POUR DEBUGGAGE, ON TRACE LE CHAMP RESULTAT
 C      CALL IMPRSD('CHAMP',LCHOU2(1),6,'IMPRSD FIN DE CALCUL')
-      
+
       IF (DBG) CALL CALDBG(OPTION,'OUTF',NOU2,LCHOU2,LPAOU2)
 
 C     8- ON DETRUIT LES OBJETS VOLATILES CREES PAR CALCUL:

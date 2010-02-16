@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,24 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       REAL*8       R8B,XLAMBD,ACRIT,AGENE,TOTO
       REAL*8 VALR(3)
 
+C  COUPLAGE EDYOS
+C =>
+      REAL*8        VROTAT,DTSTO,TCF     
+
+      INTEGER       NBEDYO,UNITPA 
+      INTEGER       INFO
+C
+C     COMMON
+C     ======
+      INTEGER       NBPAL
+C
+      INTEGER       IADR,IADRI
+      CHARACTER*24  NPAL   
+C
+      LOGICAL       PRDEFF       
+
+C =<
+
 C-----------------------------------------------------------------------
       DATA K14B/'              '/
       CALL JEMARQ()
@@ -92,12 +110,13 @@ C-----------------------------------------------------------------------
       JPSID = 1
       MONMOT = 'NON'
       LISINS = ' '
+      PRDEFF = .TRUE.
       CALL INFNIV(IFM,INFO)
 
       LAMOR = .FALSE.
       LFLU = .FALSE.
       LPSTO = .FALSE.
-
+      
 C     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 
       CALL GETVTX(' ','METHODE',0,1,1,METHOD,N1)
@@ -455,6 +474,26 @@ C
 C
       NBNLI = NBCHOC + NBSISM + NBFLAM
 C
+C     --- COUPLAGE EDYOS ---
+C =>
+      NBEDYO = 0
+      CALL GETFAC ( 'COUPLAGE_EDYOS', NBEDYO )
+      NBPAL = 0
+      DTSTO = 0.D0
+      TCF = 0.D0
+      VROTAT = 0.D0
+      IF ( NBEDYO .NE. 0 ) THEN
+C Lecture des donnees paliers
+        CALL GETVIS('COUPLAGE_EDYOS','UNITE',1,1,1,UNITPA,N1)
+        CALL GETVR8('COUPLAGE_EDYOS','VITE_ROTA',1,1,1,VROTAT,N1)
+        CALL LECDON(UNITPA,PRDEFF)
+C  Recuperation du nombre de paliers
+        NPAL='N_PAL'
+        CALL JEVEUO(NPAL,'L',IADRI)
+        NBPAL=ZI(IADRI) 
+        NBNLI = NBNLI + NBPAL
+      ENDIF
+C =<
       IF (NBNLI.NE.0) THEN
         CALL WKVECT('&&MDTR74.RANG_CHOC','V V I ',NBNLI*5,JRANC)
         CALL WKVECT('&&MDTR74.DEPL','V V R8',NBNLI*6*NBMODE,JDEPL)
@@ -467,7 +506,8 @@ C
         ELSE
           NBEXIT = 1
         END IF
-        CALL MDCHOC(NBNLI,NBCHOC,NBFLAM,NBSISM,ZI(JRANC),ZR(JDEPL),
+      CALL MDCHOC(NBNLI,NBCHOC,NBFLAM,NBSISM,
+     &              NBPAL,ZI(JRANC),ZR(JDEPL),
      &              ZR(JPARC),ZK8(JNOEC),ZK8(JINTI),ZR(JPSDEL),
      &              ZR(JPSID),NUMDDL,
      &              NBMODE,ZR(JPULS),ZR(JMASG),LAMOR,ZR(JAMOG),
@@ -487,10 +527,12 @@ C
             ISOUPL = 1
             IINDIC = 1
           END IF
+          NBNLI = NBNLI - NBPAL
           CALL CRICHO(NBMODE,ZR(JRAIG),NBNLI,ZR(JPARC),
      &                ZK8(JNOEC),INFO,ZR(IFIMP),ZR(IRFIMP),
      &                ZR(ITRLOC),ZR(ISOUPL),ZI(IINDIC),NEQ,ZR(JBASE),
      &                SEUIL,MARIG,NBNLI)
+          NBNLI = NBNLI + NBPAL
           CALL GETVR8('VERI_CHOC','SEUIL',1,1,1,CRIT,N1)
           IF (SEUIL.GT.CRIT) THEN
             NIV = 'A'
@@ -549,6 +591,16 @@ C     --- VERIFICATION DU PAS DE TEMPS ---
 
       CALL MDPTEM(NBMODE,ZR(JMASG),ZR(JRAIG),ZR(JPULS),NBNLI,ZR(JDEPL),
      &            ZR(JPARC),ZK8(JNOEC),DT,TINIT,TFIN,NBPAS,INFO,IRET)
+      
+C
+C     --- COUPLAGE EDYOS ---
+C =>
+      IF ( NBEDYO .NE. 0 ) THEN
+        DTSTO = DT
+        CALL INICOU(NBPAS,TINIT,TFIN,DT,DTSTO,VROTAT)
+        TCF = TINIT + DT
+      ENDIF
+C <=      
       IF (METHOD.EQ.'ITMI') THEN
         TFEXM = TFIN - TINIT
         IF (NTS.EQ.0) TS = TFEXM
@@ -660,7 +712,8 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
      &              ZI(JORDR),ZR(JINST),ZR(JFCHO),ZR(JDCHO),ZR(JVCHO),
      &              ZI(JICHO),ZI(JREDC),ZR(JREDD),ZR(JCOEFM),ZI(JIADVE),
      &              ZI(JINUMO),ZI(JIDESC),ZK8(JNODEP),ZK8(JNOVIT),
-     &              ZK8(JNOACC),ZK8(JNOMFO),ZR(JPSID),MONMOT,NOMRES)
+     &              ZK8(JNOACC),ZK8(JNOMFO),ZR(JPSID),MONMOT,
+     &              NBPAL,NUMDDL,DTSTO,TCF,TFIN,VROTAT,PRDEFF,NOMRES)
 
       ELSE IF (METHOD.EQ.'ADAPT') THEN
         CALL MDADAP(DT,NBMODE,ZR(JPULS),ZR(JPUL2),ZR(JMASG),IBID,
@@ -673,7 +726,8 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
      &              ZR(JVCHO),ZI(JICHO),ZI(JREDC),ZR(JREDD),ZR(JCOEFM),
      &              ZI(JIADVE),ZI(JINUMO),ZI(JIDESC),ZK8(JNODEP),
      &              ZK8(JNOVIT),ZK8(JNOACC),ZK8(JNOMFO),ZR(JPSID),
-     &              MONMOT,NOMRES)
+     &              MONMOT,
+     &              NBPAL,NUMDDL,DTSTO,TCF,VROTAT,PRDEFF,NOMRES)
 
       ELSE IF (METHOD.EQ.'NEWMARK') THEN
         CALL MDNEWM(NBPAS,DT,NBMODE,ZR(JPULS),ZR(JPUL2),ZR(JMASG),
@@ -733,6 +787,7 @@ C
       END IF
 
   120 CONTINUE
+C      CALL JEDETC('V','&&',1)
       IF (IRET.NE.0) CALL U2MESS('F','ALGORITH5_24')
 
       CALL JEDEMA()

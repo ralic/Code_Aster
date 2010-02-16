@@ -1,0 +1,65 @@
+#@ MODIF miss_fichier_option Miss  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
+
+"""Module permettant de produire le fichier des options pour Miss3D (OPTMIS).
+"""
+
+import os
+
+import aster
+from Miss.miss_utils import _print, dict_format
+
+sfmt = dict_format['sR']
+
+
+def fichier_option(param):
+    """Produit le contenu du fichier OPTMIS à partir des paramètres du calcul."""
+    content = []
+    # fréquences
+    if param['LFREQ_NB']:
+        content.append("LFREQ %d" % param['LFREQ_NB'])
+        fmt = (sfmt * param['LFREQ_NB']).strip()
+        content.append(fmt % tuple(param['LFREQ_LISTE']))
+    else:
+        fmt = "FREQ" + 3*sfmt
+        content.append(fmt % (param['FREQ_MIN'], param['FREQ_MAX'], param['FREQ_PAS']))
+    # Z0
+    content.append(("Z0" + sfmt) % param['Z0'])
+    # SURF / ISSF
+    if param['SURF'] == "OUI":
+        content.append("SURF")
+    if param['ISSF'] == "OUI":
+        content.append("ISSF")
+    # type binaire/ascii
+    if param['TYPE'] == "BINAIRE":
+        content.append("BINA")
+    # RFIC
+    if param['RFIC'] != 0.:
+        content.append(("RFIC" + sfmt) % param['RFIC'])
+    # DIRE_ONDE
+    if param['DIRE_ONDE']:
+        content.append("DIRE ONDE")
+        fmt = (sfmt * len(param['DIRE_ONDE'])).strip()
+        content.append(fmt % tuple(param['DIRE_ONDE']))
+    # terminer le fichier par un retour chariot
+    content.append("")
+    return os.linesep.join(content)
+

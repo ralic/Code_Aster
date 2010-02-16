@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
+%& MODIF TYPELEM  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,39 +40,39 @@ ENTETE__ ELEMENT__ THAXQU4          MAILLE__ QUAD4
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
    % les elements axisymetriques ne devraient jamais etre utilises pour CARA_XXXX
    % Ce serait mieux d'inventer un autre "code" (-3 par exemple).
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THAXQU8          MAILLE__ QUAD8
    ELREFE__  QU8     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG4    NOEU=NOEU
    ELREFE__  SE3     GAUSS__  RIGI=FPG4
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THAXQU9          MAILLE__ QUAD9
    ELREFE__  QU9     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG4    NOEU=NOEU
    ELREFE__  SE3     GAUSS__  RIGI=FPG4
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THAXTR3          MAILLE__ TRIA3
    ELREFE__  TR3     GAUSS__  RIGI=FPG3   MASS=FPG3  GANO=FPG3    NOEU=NOEU
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THAXTR6          MAILLE__ TRIA6
    ELREFE__  TR6     GAUSS__  RIGI=FPG6   MASS=FPG6  GANO=FPG6    NOEU=NOEU
    ELREFE__  SE3     GAUSS__  RIGI=FPG4
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THAXQL4          MAILLE__ QUAD4
    ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THAXQL9          MAILLE__ QUAD9
    ELREFE__  QU9     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4                 NOEU=NOEU
@@ -85,15 +85,15 @@ ENTETE__ ELEMENT__ THAXQL9          MAILLE__ QUAD9
    OPTION__   RIGI_THER_CONV_T        -1
    OPTION__   RIGI_THER_TRANS         -1
    OPTION__   SOUR_ELGA_ELEC          -1
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THAXTL3          MAILLE__ TRIA3
    ELREFE__  TR3     GAUSS__  RIGI=FPG3   MASS=FPG3  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THAXTL6          MAILLE__ TRIA6
    ELREFE__  TR6     GAUSS__  RIGI=FPG3   MASS=FPG3  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  TR3     GAUSS__  RIGI=FPG3   MASS=FPG3                 NOEU=NOEU
@@ -106,15 +106,15 @@ ENTETE__ ELEMENT__ THAXTL6          MAILLE__ TRIA6
    OPTION__   RIGI_THER_CONV_T        -1
    OPTION__   RIGI_THER_TRANS         -1
    OPTION__   SOUR_ELGA_ELEC          -1
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THPLQL4          MAILLE__ QUAD4
    ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THPLQL9          MAILLE__ QUAD9
    ELREFE__  QU9     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4  GANO=NOEU_S    NOEU=NOEU
@@ -127,15 +127,15 @@ ENTETE__ ELEMENT__ THPLQL9          MAILLE__ QUAD9
    OPTION__   RIGI_THER_CONV_T        -1
    OPTION__   RIGI_THER_TRANS         -1
    OPTION__   SOUR_ELGA_ELEC          -1
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THPLTL3          MAILLE__ TRIA3
    ELREFE__  TR3     GAUSS__  RIGI=FPG3   MASS=FPG3  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 ENTETE__ ELEMENT__ THPLTL6          MAILLE__ TRIA6
    ELREFE__  TR6     GAUSS__  RIGI=FPG3   MASS=FPG3  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  TR3     GAUSS__  RIGI=FPG3   MASS=FPG3  GANO=NOEU_S    NOEU=NOEU
@@ -148,9 +148,9 @@ ENTETE__ ELEMENT__ THPLTL6          MAILLE__ TRIA6
    OPTION__   RIGI_THER_CONV_T        -1
    OPTION__   RIGI_THER_TRANS         -1
    OPTION__   SOUR_ELGA_ELEC          -1
-   OPTION__   CARA_CISA               -2
-   OPTION__   CARA_GAUCHI             -2
-   OPTION__   CARA_TORSION            -2
+   OPTION__   CARA_CISA               -1
+   OPTION__   CARA_GAUCHI             -1
+   OPTION__   CARA_TORSION            -1
 
 MODE_LOCAL__
     ECODRET  = CODE_I   ELEM__         (IRET     )
@@ -208,7 +208,7 @@ MATRICE__
 
 OPTION__
     VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
-    CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
+    CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CARA_CISA           509   IN__   NGEOMER  PGEOMER  DDL_THER PTEMPE1  DDL_THER PTEMPE2
                               OUT__  ECASECT  PCASECT
@@ -226,7 +226,7 @@ OPTION__
                               OUT__  MVECTTR  PVECTTR
     CHAR_DLAG_SOUR_R    599   IN__   NGEOMER  PGEOMER  ESOURCR  PSOURCR  NDEPLAR  PVECTTH
                               OUT__  MVECTTR  PVECTTR
-    CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
+    CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_SENS_EVOL      78    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PVAPRIN  DDL_THER PVAPRMO
@@ -260,13 +260,13 @@ OPTION__
                               OUT__  DDL_THER PDLAGTE
     DURT_ELNO_META      551   IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
                               OUT__  EDURTNO  PDURT_R
-    ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
+    ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
+    ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EPOT_ELEM_TEMP      220   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EENEDNO  PENERDR
@@ -292,13 +292,13 @@ OPTION__
     FLUX_ELNO_TEMP      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  EFLUXNO  PFLUX_R
-    INDIC_ENER          -2    IN__   XXXXXX   XXXXXX
+    INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
+    INDIC_SEUIL         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
    INIT_MAIL_VOIS      99     IN__   NGEOMER  PGEOMER
                               OUT__  EVOISIN  PVOISIN
-    MASS_INER           -2    IN__   XXXXXX   XXXXXX
+    MASS_INER           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MASS_THER           77    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
@@ -316,7 +316,7 @@ OPTION__
                                      DDL_THER PTEMPEI  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTMPCHF
                                      DDL_THER PTMPCHI
                               OUT__  EHYDRNO  PHYDRPP  MVECTTR  PRESIDU
-    RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
+    RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_THER           76    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
@@ -336,5 +336,5 @@ OPTION__
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
                                      EPHASNO_ PVARI_R
-    WEIBULL             -2    IN__   XXXXXX   XXXXXX
+    WEIBULL             -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

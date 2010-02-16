@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 15/02/2010   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,34 +51,34 @@ C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER      I
-      REAL*8       SATM,EPSVM,PHIM,RHO11M,RHO21M,BIDON,RHO110,VARBIO
-      REAL*8       VARLQ,VARVP,YOUNG,NU,BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ
-      REAL*8       CP11,CP21,SAT,DSATP1,MAMOLG,UMPRHS,RHO21,EM
-      REAL*8       R,RHO0,C0EPS,CSIGM,VARIA,ALP11,ALP12,ALP21
+      REAL*8       SATM,EPSVM,PHIM,RHO11M,RHO21M,RHO110
+      REAL*8       BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ
+      REAL*8       CP11,CP21,SAT,DSATP1,MAMOLG,RHO21,EM
+      REAL*8       R,RHO0,CSIGM,ALP11,ALP12,ALP21
       REAL*8       EPS
-      PARAMETER  ( EPS = 1.D-21 ) 
+      PARAMETER  ( EPS = 1.D-21 )
       LOGICAL      EMMAG
 C ======================================================================
 C --- VARIABLES LOCALES POUR BARCELONE-------------------------------
 C ======================================================================
       REAL*8       TINI,CRIT(*)
-      REAL*8       DSIDP1(6),DSIDEP(6,6),DEPS(6)    
+      REAL*8       DSIDP1(6),DEPS(6)
       REAL*8       DSDEME(6,6)
 CCCC    SIP NECESSAIRE POUR CALCULER LES CONTRAINTES TOTALES
 CCCC    ET ENSUITE CONTRAINTES NETTES POUR BARCELONE
-      REAL*8  SIPM,SIPP         
+      REAL*8  SIPM,SIPP
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
       REAL*8       RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
-      REAL*8       RBID8, RBID9, RBID10, RBID11, RBID12, RBID13, RBID14
+      REAL*8       RBID8, RBID10, RBID14
       REAL*8       RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
       REAL*8       RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
-      REAL*8       RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
+      REAL*8       RBID27, RBID28, RBID29, RBID32
       REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
-      REAL*8       RBID39, RBID40,RBID45,RBID46,RBID47,RBID48,RBID49
+      REAL*8       RBID39,RBID45,RBID46,RBID47,RBID48,RBID49
       REAL*8       RBID50,RBID51
-      REAL*8       SIGNE,M11M,M21M,COEPS,CP,RHO12,RHO22,DPAD,CP12,CP22
+      REAL*8       SIGNE,M11M,M21M,COEPS,RHO12,RHO22,DPAD,CP12,CP22
       REAL*8       DMASP1,DMASP2,DMWDP1,DMWDP2,DQDEPS,DQDP,DQDT,DMWDT
       REAL*8       DHDT,DHWDP1,DHWDP2,DSPDP1,DSPDP2,APPMAS,SIGMAP,CALOR
       REAL*8       DMDEPV,ENTEAU,ENTGAZ,DILEAU,DILGAZ,MASVOL
@@ -126,10 +126,10 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN 
+      IF(EM.GT.EPS)THEN
         EMMAG = .TRUE.
       ENDIF
-        
+
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
      +                                           EPSV,DEPSV,EPSVM,MECA)
 C *********************************************************************
@@ -312,7 +312,7 @@ C ======================================================================
          DSDE(ADCP21,ADDEP2) = DSDE(ADCP21,ADDEP2) +
      +                      DMASP2(RHO11,0.0D0,RHO21,SAT,BIOT,PHI,CS,P2)
       ENDIF
-      
+
 C =====================================================================
 C --- TERMES SPECIAL BARCELONE --------------------------------------
 C =====================================================================
@@ -337,7 +337,7 @@ C --- DSIGM/DEPP1
      &                               DSIDP1(I)
    50       CONTINUE
          ENDIF
-      ENDIF      
+      ENDIF
 C =====================================================================
  30   CONTINUE
 C =====================================================================

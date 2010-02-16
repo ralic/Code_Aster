@@ -3,7 +3,7 @@
       IMPLICIT REAL*8(A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF ASSEMBLA  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,8 +61,7 @@ C ----------------------------------------------------------------------
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      CHARACTER*8 ZK8,NOMACR,EXIELE
-      CHARACTER*14 NUM2
+      CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
       CHARACTER*24 VALK(5)
@@ -76,9 +75,7 @@ C ----------------------------------------------------------------------
 C ---------------------------------------------------------------------
 C     VARIABLES LOCALES
 C ---------------------------------------------------------------------
-      PARAMETER(NBECMX=10)
-      INTEGER ICODLA(NBECMX),ICODGE(NBECMX),RANG,NBPROC,IRET,IFM,NIV,
-     &        IBID,IMUMPS,IFCPU
+      INTEGER RANG,NBPROC,IRET,IFM,NIV,IBID
       CHARACTER*1 BAS
       CHARACTER*8 MA,MO,MO2,NOGDSI,NOGDCO,NOMCAS
       CHARACTER*8 KBID,PARTIT
@@ -94,7 +91,7 @@ C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
 C ----------------------------------------------------------------------
       INTEGER VALI(4)
-      REAL*8 R8MAEM,TEMPS(6)
+      REAL*8 R8MAEM
 
 C --- DEBUT ------------------------------------------------------------
       CALL JEMARQ()
@@ -128,7 +125,7 @@ C           * JNUMSD : ADRESSE DE PARTIT//'.NUPROC.MAILLE'
 C
 C     -- IL EXISTE TROIS FORMES DE CALCUL DISTRIBUE BASES SUR UNE PARTI
 C        TION:
-C        * FETI: LE FLAG A ACTIVER EST LE LOGICAL LFETI 
+C        * FETI: LE FLAG A ACTIVER EST LE LOGICAL LFETI
 C              (PAS CONCERNE ICI, HORS PERIMETRE FETI)
 C        * DISTRIBUE (AVEC OU SANS MUMPS) EN STD: FLAG LDIST
 C        * DISTRIBUE AVEC MUMPS + OPTION MATR_DISTIBUEE: LDIST (PAS CON
@@ -139,8 +136,8 @@ C        QUES. POUR PLUS D'INFO CF. COMMENTAIRES DS ASSMAM.
 C
 C         EN BREF ON A 4 CAS DE FIGURES DE CALCUL ASTER ET ILS SE DECLI
 C         NENT COMME SUIT VIS-A-VIS DES VARIABLES DE ASSVEC:
-C        1/ CALCUL STD SEQ PAS FETI: 
-C            LFETI='F',LDIST='F' 
+C        1/ CALCUL STD SEQ PAS FETI:
+C            LFETI='F',LDIST='F'
 C        2/ CALCUL FETI SEQ OU PARALLELE (MATRICES MERE ET FILLES)
 C            LFETI='T',LDIST='F'  (PAS CONCERNE ICI)
 C        3/ CALCUL PARALLELE (AVEC OU SANS MUMPS) DISTRIBUE STD:
@@ -148,7 +145,7 @@ C            LFETI='F',LDIST='T'
 C        4/ CAS PARTICULIER DU PRECEDENT: SOLVEUR=MUMPS + OPTION MATR
 C          DISTRIBUEE ACTIVEE      (PAS CONCERNE ICI)
 C            LFETI='F',LDIST='T'
-C         
+C
 C ------------------------------------------------------------------
       LDIST=.FALSE.
       RANG=0
@@ -157,8 +154,7 @@ C ------------------------------------------------------------------
       CALL PARTI0(NBVEC,TLIVEC,PARTIT)
       IF (PARTIT.NE.' ') THEN
         LDIST=.TRUE.
-        CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
-        CALL MUMMPI(3,IFM,NIV,K24B,NBPROC,IBID)
+        CALL MPICM0(RANG,NBPROC)
         CALL JEVEUO(PARTIT//'.NUPROC.MAILLE','L',JNUMSD)
       ENDIF
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,7 +68,7 @@ POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',
          ),
 
          MESURE_TEMPS     =FACT(fr="Pour choisir les mesures de temps consommé dans les commandes",
-                               statut='f',min=1,max=1,
+                               statut='d',min=1,max=1,
            NIVE_DETAIL      =SIMP(fr="niveau de détail des impressions",
                                  statut='f',typ='I',into=(0,1,2,3),defaut=1),
                                  # 0 : rien

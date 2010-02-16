@@ -1,4 +1,4 @@
-#@ MODIF fermetur Messages  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF fermetur Messages  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,6 +82,11 @@ cata_msg={
       qui n'est pas encore programmée.
 """),
 
+12: _("""
+  Erreur :
+      On essaye d'utiliser des routines d'échanges YACS 
+      alors que Code_Aster n'est pas linké sur YACS.
+"""),
 
 
 }

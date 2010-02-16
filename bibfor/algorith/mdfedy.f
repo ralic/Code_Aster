@@ -1,0 +1,106 @@
+      SUBROUTINE MDFEDY (NBPAL,NBMODE,NUMPAS,DT,DTSTO,TCF,TFIN,VROTAT,
+     &                   NUMDDL,NEQ,DPLMOD,DEPGEN,VITGEN, FEXGEN,
+     &                   NOPAL,TYPAL,FINPAL,CNPAL,PRDEFF,CONV)
+      IMPLICIT  REAL*8  (A-H,O-Z)
+      REAL*8             DEPGEN(*),VITGEN(*),FEXGEN(*)
+      REAL*8             DPLMOD(NBPAL,NBMODE,*),DT,DTSTO,TCF,TFIN
+      REAL*8             VROTAT,CONV
+      INTEGER            NUMPAS, NEQ
+      CHARACTER*14       NUMDDL
+      LOGICAL            PRDEFF
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE GREFFET N.GREFFET
+C ======================================================================
+C TOLE CRP_4 CRP_20 CRP_21 CRS_512
+C
+C              RECUPERATION DES FORCES VENANT D'EDYOS 
+C                 ET ENVOI DES CHAMPS CINEMATIQUES
+C     ------------------------------------------------------------------
+C IN  : NBMODE : NOMBRE DE MODES
+C IN  : DEPGEN : DEPLACEMENTS GENERALISES
+C IN  : VITGEN : VITESSES GENERALISEES
+C VAR : FEXGEN : FORCES GENERALISEES
+C IN  : NBPAL  : NOMBRE DE PALIERS
+C IN  : DPLMOD : TABLEAU DES DEPL MODAUX AUX NOEUDS DE CHOC
+C
+C IN  : TCF    : INSTANT DE CALCUL
+C IN  : DT     : PAS DE TEMPS
+C IN  : DTSTO  : INSTANT DE STOCKAGE
+C IN  : VROTAT : VITESSE DE ROTATION
+C IN  : NUMDDL : NUMEROTATION DDL
+C
+C OUT  : CONV   : INDICATEUR DE CONVERGENCE EDYOS
+C ----------------------------------------------------------------------
+      REAL*8      KNORM, KTANG, DEPLOC(6), DEPGLO(6), FLOCAL(3),
+     +            FGLOBA(3), VITGLO(6), VITLOC(6), ORIG(3), ORIGOB(3),
+     +            ACCGLO(6), ACCLOC(6),
+     +            FTANGE(2), VTANG(2), DDEPLO(3),
+     +            OLDFT(2), OLDXL(3), OLDVT(2), POND,
+     +            SIGNE(2), FDISPO
+C     ------------------------------------------------------------------
+      INTEGER       IEX, I, J, K, L, JDDL,IPAL, IPAT, NNO
+      CHARACTER*8   NOMPAR
+      REAL*8        DEP(NBPAL,6),VIT(NBPAL,6),FORCE(NBPAL,3)
+      INTEGER       IERR
+
+      INTEGER     ICOMPO
+   
+      INTEGER       PALMAX 
+      PARAMETER (PALMAX=20)
+      CHARACTER*6   TYPAL(PALMAX)
+      CHARACTER*3   FINPAL(PALMAX)
+      
+      INTEGER       DIMNAS
+      PARAMETER (DIMNAS=6)  
+      INTEGER       NOPAL(PALMAX) 
+      CHARACTER*6  CNPAL(PALMAX)    
+
+C
+      DO 30 J = 1,NBPAL
+        DO 5 L=1,6
+          DEP(J,L)= 0.D0
+          VIT(J,L)= 0.D0
+ 5      CONTINUE
+        DO 20 I=1,NBMODE
+          DO 15 K=1,6
+            DEP(J,K)= DEP(J,K)+ DPLMOD(J,I,K)*DEPGEN(I)
+            VIT(J,K)= VIT(J,K)+ DPLMOD(J,I,K)*VITGEN(I)
+15        CONTINUE
+20      CONTINUE
+30    CONTINUE
+C   ENVOI DES CHAMPS CINEMTATIQUES A EDYOS
+      CALL ENVDEP(NUMPAS,NBPAL,DT,DTSTO,NEQ,TCF,
+     &       DEP,VIT,NUMDDL,VROTAT,NOPAL,TYPAL,FINPAL,PRDEFF,CNPAL)
+C   RECEPTION DES EFFORTS VENANT D'EDYOS
+C   ON NE RECUPERE RIEN AU DERNIER PAS
+      IF(TCF .LT. (TFIN-DT/10.D0))THEN
+        CALL RECFOR(NUMPAS,NBPAL,NUMDDL,FORCE,
+     &            NOPAL,TYPAL,FINPAL,CNPAL,PRDEFF,CONV )
+C   COMBINAISON DES EFFORTS GENERALISES
+        DO 200 J = 1,NBPAL
+          DO 100 I=1,NBMODE
+            FEXGEN(I)=FEXGEN(I)+DPLMOD(J,I,1)*FORCE(J,1)
+     &                     +DPLMOD(J,I,2)*FORCE(J,2)
+     &                     +DPLMOD(J,I,3)*FORCE(J,3)
+100       CONTINUE
+200     CONTINUE
+      ENDIF
+C
+      END

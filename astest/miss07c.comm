@@ -1,0 +1,146 @@
+# MODIF  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
+# TITRE RESOLUTION HARMONIQUE CYLINDRE DE SOL EN PARTIE MODELISE MISS3D
+# miss07c.para = tps_job 600 mem_job 1524Mo mem_aster 30 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# TEST EQUIVALENT A MISS07A
+# RESPONSABLE COURTOIS M.COURTOIS
+
+DEBUT( CODE=_F(  NOM = 'MISS07C',NIV_PUB_WEB='INTRANET',VISU_EFICAS='NON'))
+ 
+MAILLAGE = LIRE_MAILLAGE( ) ;
+ 
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                MAILLAGE=MAILLAGE,
+                CREA_GROUP_NO=_F(GROUP_MA=('SBASE',),
+                                ),
+               );
+               
+MODELE = AFFE_MODELE( MAILLAGE= MAILLAGE,
+          AFFE=(
+          _F( GROUP_MA=('VOLUM'),PHENOMENE= 'MECANIQUE',
+                         MODELISATION= '3D' ),
+                ),
+                        ) ;
+#
+
+mat1      = DEFI_MATERIAU( ELAS=_F( E= 5.419008E+8 , RHO= 2000.,
+                                    AMOR_HYST = 0.1, 
+                                    NU= 0.2  )    ) ;
+                                    
+ 
+champmat = AFFE_MATERIAU( MAILLAGE= MAILLAGE,
+              AFFE=(
+              _F( GROUP_MA= 'VOLUM' , MATER= mat1 ),
+              )    
+                           ) ;
+#
+# La structure est encastree a l interface 
+#-----------------------------------------
+cond_lim = AFFE_CHAR_MECA( MODELE= MODELE,
+                       DDL_IMPO=_F( GROUP_NO = ('SBASE'),
+                                  DX = 0., DY= 0., DZ= 0., 
+                                  ),
+                                             ) ;
+#
+# Calcul des matrices et vecteurs elementaires=
+#---------------------------------------------- 
+rigi_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'RIGI_MECA',
+                             CHAM_MATER= champmat ,
+                             CHARGE= cond_lim                      ) ;
+righ_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'RIGI_MECA_HYST',
+                             CHAM_MATER= champmat ,
+                             RIGI_MECA= rigi_ele,
+                             CHARGE= cond_lim                      ) ;
+mass_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'MASS_MECA',
+                             CHAM_MATER= champmat ,
+                             CHARGE= cond_lim                      ) ;
+
+nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele, );
+#
+# Assemblage des matrices et vecteurs=
+#-------------------------------------
+rigidite = ASSE_MATRICE( MATR_ELEM= rigi_ele , NUME_DDL= nume_ddl ) ;
+rigihyst = ASSE_MATRICE( MATR_ELEM= righ_ele , NUME_DDL= nume_ddl ) ;
+masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl ) ;
+
+#
+# CALCUL DES MODES =
+#---------------------------------------------
+
+MASSTOT=POST_ELEM(MODELE=MODELE,
+                  CHAM_MATER= champmat ,
+                  TITRE='MASSES',
+                  MASS_INER=_F(TOUT='OUI',
+                               GROUP_MA=('VOLUM',),
+                               ),
+                  );
+
+IMPR_TABLE(TABLE=MASSTOT,);
+
+
+mode =MACRO_MODE_MECA(MATR_A=rigidite,
+                      MATR_B=masse,
+                      CALC_FREQ=_F(FREQ=(0.1,70.,
+                      100.,125.,150., 170., 185., 200.,
+                                          ), 
+                                  ),
+                      VERI_MODE=_F(STOP_ERREUR='NON',),
+                      FILTRE_MODE=_F(SEUIL=0.0003,),
+                      IMPRESSION=_F(),);
+                         
+
+#
+FO1 = DEFI_FONCTION ( NOM_PARA= 'FREQ', 
+         VALE= ( 0., 1., 100., 1., ) );
+
+
+           
+MODESTA1=MODE_STATIQUE(  MATR_RIGI=rigidite,
+                     MODE_STAT=_F(
+                     GROUP_NO = 'SBASE', 
+                     AVEC_CMP = ('DX','DY','DZ'),
+                                 ))
+                                 
+bamo=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = mode,NMAX_MODE = 1999),
+                              _F( MODE_INTF = MODESTA1,
+                                     NMAX_MODE = 1999)),
+                         NUME_REF=nume_ddl) 
+                                                                    
+                         
+mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,
+                    MATR_RIGI=rigidite,
+                    MATR_MASS=masse,);
+                                                                           
+
+nddlgen = NUME_DDL_GENE( BASE= bamo,
+                          STOCKAGE= 'PLEIN',);
+                          
+rigigen=PROJ_MATR_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            MATR_ASSE=rigidite );
+
+massgen=PROJ_MATR_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            MATR_ASSE=masse );
+                            
+RIGIGENC=PROJ_MATR_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
+                            MATR_ASSE=rigihyst );
+                                                                    
+                  
+FIN( );
+

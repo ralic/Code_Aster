@@ -1,21 +1,21 @@
-#@ MODIF elements Messages  DATE 14/09/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF elements Messages  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -28,6 +28,16 @@ cata_msg = {
  omega  = %(r1)f
  omega2 = %(r2)f
 """),
+
+2 : _("""
+Erreur :
+   Le calcul du chargement du au séchage n'est pas programmé par le type d'élément : %(k1)s
+
+Conseil :
+  Emettre une demande d'évolution.
+"""),
+
+
 
 5 : _("""
  problème de maillage TUYAU :
@@ -136,7 +146,7 @@ cata_msg = {
 """),
 
 33 : _("""
- la convergence d'un processus itératif local de la loi GLRC_DAMAGE 
+ la convergence d'un processus itératif local de la loi GLRC_DAMAGE
  n'a pas été atteinte en 1000 itérations :
  XM1 vaut %(r1)f
  XM2 vaut %(r2)f
@@ -167,7 +177,7 @@ cata_msg = {
 """),
 
 38 : _("""
- Le phénomène sensible %(k1)s choisi ne correspond pas au phénomène %(k2)s dont il est issu 
+ Le phénomène sensible %(k1)s choisi ne correspond pas au phénomène %(k2)s dont il est issu
 """),
 
 39 : _("""

@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 15/02/2010   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,28 +48,28 @@ C ======================================================================
       REAL*8        EPSV,DEPSV,P1,DP1,T,DT
       REAL*8        PHI,PVP,H11,H12,RHO11
       REAL*8        PHI0,PVP0
-      REAL*8        BMPH,UMS,SAT2,PHIDS,RINSTP
+      REAL*8        BMPH,UMS,PHIDS,RINSTP
       CHARACTER*16  OPTION,MECA,THER,HYDR,THMC
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER      I
-      REAL*8       SATM,EPSVM,PHIM,RHO11M,RHO12M,PVPM,BIDON,RHO110,DPVP
-      REAL*8       DPVPT,DPVPL,YOUNG,NU,BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ
-      REAL*8       CP11,CP12,SAT,DSATP1,MAMOLV,VARBIO,VARLQ,VARVP,EM
-      REAL*8       R,RHO0,CSIGM,VARIA,ALP11,ALP12,UMPRHS,RHO12
+      REAL*8       SATM,EPSVM,PHIM,RHO11M,RHO12M,PVPM,RHO110,DPVP
+      REAL*8       DPVPT,DPVPL,BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ
+      REAL*8       CP11,CP12,SAT,DSATP1,MAMOLV,EM
+      REAL*8       R,RHO0,CSIGM,ALP11,ALP12,RHO12
       REAL*8       EPS
-      PARAMETER  ( EPS = 1.D-21 ) 
+      PARAMETER  ( EPS = 1.D-21 )
       LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
       REAL*8       RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
-      REAL*8       RBID8, RBID9, RBID10, RBID11, RBID12, RBID13, RBID14
+      REAL*8       RBID8, RBID10, RBID14
       REAL*8       RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
       REAL*8       RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
       REAL*8       RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
-      REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
+      REAL*8       RBID33, RBID34, RBID35, RBID38
       REAL*8       RBID39, RBID40, RBID41, RBID42, RBID43
       REAL*8       RBID50, RBID51, RBID52, RBID53, RBID54, RBID55
       REAL*8       RBID45,RBID46,RBID47,RBID48,RBID49,RBID56,RBID57
@@ -127,7 +127,7 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN 
+      IF(EM.GT.EPS)THEN
         EMMAG = .TRUE.
       ENDIF
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
@@ -167,8 +167,8 @@ C =====================================================================
      +             SAT, DSATP1, RBID14, RBID15,RBID16,
      +             RBID17, RBID18,RBID19, RBID20, RBID21, RBID22,
      +             RBID23, RBID24,RBID25, RHO110, RBID53, RBID52,
-     +             RBID51,RBID26,RBID27, RBID28, RBID29, RBID30, 
-     +             RBID31,RBID32,RBID33, RBID34, RBID35, RBID54, 
+     +             RBID51,RBID26,RBID27, RBID28, RBID29, RBID30,
+     +             RBID31,RBID32,RBID33, RBID34, RBID35, RBID54,
      +             RBID55,RBID38, RBID39,RBID45,RBID46,RBID47,RBID48,
      +             RBID49,RBID56,RBID57,RBID58,RINSTP)
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.

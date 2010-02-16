@@ -1,6 +1,6 @@
       SUBROUTINE MDCHST ( NUMDDL, TYPNUM, IMODE, IAMOR, PULSAT,
-     &                    MASGEN, AMOGEN, LFLU, NBNLI, NOECHO, LOGCHO,
-     &                    PARCHO, INTITU, DDLCHO, IER )
+     &                    MASGEN, AMOGEN, LFLU, NBNLI, NBPAL, NOECHO, 
+     &                    LOGCHO, PARCHO, INTITU, DDLCHO, IER )
       IMPLICIT  NONE
       INTEGER             NBNLI, IAMOR, IMODE, IER, LOGCHO(NBNLI,*),
      &                    DDLCHO(*)
@@ -11,7 +11,7 @@
       CHARACTER*16        TYPNUM, TYPFRO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C OUT : INTITU : INTITULE DE CHOC
 C OUT : DDLCHO : TABLEAU DES NUMEROTATIONS DES NOEUDS DE CHOC
 C OUT : IER    : NIVEAU D'ERREUR
 C     ------------------------------------------------------------------
+C TOLE CRP_4 CRS_512
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -77,9 +78,34 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      &              NOMGR1, NOMGR2, K8TYP
       CHARACTER*10  MOTFAC
       CHARACTER*24  MDGENE, REFO
-      CHARACTER*24 VALK(2)
+      CHARACTER*24  VALK(2)
 C     ------------------------------------------------------------------
-C
+C  COUPLAGE EDYOS
+C  =>
+      INTEGER       IPAT,IPAL,INFO,IDIM,ICOMP,NLU,NNO,NDDL,IERR
+C     ANCIENS INCLUDE (CALCIUM.H)
+C     ===========================
+      INTEGER       LENVAR
+      PARAMETER (LENVAR = 144)
+      CHARACTER*(LENVAR) NOMVAR
+      CHARACTER*3   COMP(6)
+C     DECLARATIONS POUR "COMMON" JEVEUX
+C     =================================
+      INTEGER     ICOMPO
+      INTEGER       NBPAL,IFR
+   
+      INTEGER       PALMAX 
+      PARAMETER (PALMAX=20)
+      
+      INTEGER       DIMNAS
+      PARAMETER (DIMNAS=6)  
+      INTEGER       NOPAL(PALMAX) 
+      CHARACTER*6  CNPAL(PALMAX)    
+
+      INTEGER       IADR,IADRI,IADRK,IAPP
+      CHARACTER*24  CPAL, NPAL,AYACS   
+C      
+      CALL JEMARQ()
       CALL GETFAC ( 'CHOC'     , NBCHOC )
       CALL GETFAC ( 'ANTI_SISM', NBSISM )
       CALL GETFAC ( 'FLAMBAGE' , NBFLAM )
@@ -382,5 +408,29 @@ C
  130     CONTINUE
 C
  100  CONTINUE
-C
+C    COUPLAGE EDYOS
+      IF (NBPAL .GT. 0 ) THEN
+        CPAL = 'C_PAL'
+        COMP(1)='DX'
+        COMP(2)='DY'
+        COMP(3)='DZ'
+        COMP(4)='DRX'
+        COMP(5)='DRY'
+        COMP(6)='DRZ'
+        CALL JEVEUO(CPAL,'L',IADRK)
+        DO 21 IPAL = 1, NBPAL
+          NOECHO(IPAL,1)=ZK8(IADRK+(IPAL-1)+2*PALMAX)(1:DIMNAS)
+          NOECHO(IPAL,5)=NOECHO(IPAL,1)
+          CNPAL(IPAL)=ZK8(IADRK+(IPAL-1)+2*PALMAX)(1:DIMNAS)
+ 21     CONTINUE
+        DO 22 IPAL = 1, NBPAL
+          DO 23 IPAT = 1, 6
+            CALL POSDDL('NUME_DDL',NUMDDL,CNPAL(IPAL),
+     &                   COMP(IPAT),NNO,NDDL)
+            DDLCHO(6*(IPAL-1)+IPAT) = NDDL
+ 23      CONTINUE
+ 22    CONTINUE
+      ENDIF
+C FIN PALIERS EDYOS
+      CALL JEDEMA()
       END

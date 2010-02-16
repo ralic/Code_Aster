@@ -28,7 +28,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,9 +99,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
 C
-      INTEGER VALI(2)
-      REAL*8 R8BID2,R8BID3,R8BID4,R8BID5,R8B,TPS1(4),VALR(3)
+      INTEGER VALI(2),IBID
+      REAL*8 R8BID2,R8BID3,R8BID4,R8BID5,R8B,R8B2,TPS1(4),VALR(3)
+      REAL*8 RINT1, RINT2
       CHARACTER*8  TRAN
+      INTEGER       PALMAX
+      PARAMETER (PALMAX=20)
+      CHARACTER*6   TYPAL(PALMAX)
+      CHARACTER*3   FINPAL(PALMAX)
+      CHARACTER*6  CNPAL(PALMAX)
+      CHARACTER*14 NUMDDL  
 C
       CALL JEMARQ()
       ZERO = 0.D0
@@ -177,12 +184,15 @@ C     --- FORCES EXTERIEURES ---
       ENDIF
 C
 C     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
+      NUMDDL = '    '
       CALL MDFNLI(NBMODE,ZR(JDEP2),ZR(JVIT2),ZR(JBID1),
      &            ZR(JFEX2),R8BID2,R8BID3,R8BID4,R8BID5,
      &            NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
      &            NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),ZI(JREDI),
      &            NBREVI,DPLREV,FONREV,
-     &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT)
+     &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &            0,0,0,NUMDDL,0.D0,0.D0,0.D0,0.D0,0.D0,
+     &            0, TYPAL,FINPAL,CNPAL,.FALSE.,R8B2)
 C
 C     --- INITIALISATION DE L'ALGORITHME ---
       DO 100 IM = 0,NBMOD1
@@ -246,7 +256,9 @@ C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
      &               NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
      &               NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),
      &               ZI(JREDI),NBREVI,DPLREV,FONREV,
-     &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT)
+     &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &               0,0,0,NUMDDL,0.D0,0.D0,0.D0,0.D0,0.D0,
+     &               0, TYPAL,FINPAL,CNPAL,.FALSE.,R8B2)
 C
          DO 34 IM = 0,NBMOD1
             IM1 = IM + 1
@@ -280,7 +292,10 @@ C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
      &               NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
      &               NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),
      &               ZI(JREDI),NBREVI,DPLREV,FONREV,
-     &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT)
+     &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &               0,0,0,NUMDDL,0.D0,0.D0,0.D0,0.D0,0.D0,
+     &               0, TYPAL,FINPAL,CNPAL,.FALSE.,R8B2)
+
 C
          DO 36 IM = 0,NBMOD1
             IM1 = IM + 1
@@ -328,7 +343,9 @@ C
          IF (I.EQ.1 .OR. MOD(I,N100).EQ.0) THEN
           CALL UTTCPU('CPU.MDDEVO','FIN',' ')
           CALL UTTCPR('CPU.MDDEVO',4,TPS1)
-          IF (MAX(5.D0,N100*TPS1(4)).GT.0.90D0*TPS1(1)) THEN
+          RINT1 = 5.D0
+          RINT2 = 0.90D0
+          IF (MAX(RINT1,N100*TPS1(4)).GT.(RINT2*TPS1(1))) THEN
            CALL MDSIZE (NOMRES,ISTO1,NBMODE,LPSTO,NBCHOC,NBREDE)
            IF (NOMRES.EQ.'&&OP0074') THEN
 C          --- CAS D'UNE POURSUITE ---

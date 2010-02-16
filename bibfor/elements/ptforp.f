@@ -8,7 +8,7 @@
       REAL*8            A,A2,XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,9 +46,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
 C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
 C
       REAL*8       RHO,  COEF1,  COEF2, S, S2 , S4 , S3 , S5
-      REAL*8       ZERO, UN, XXX, R8MIN, R8BID
+      REAL*8       ZERO, UN, XXX, R8MIN, R8BID,G
       REAL*8       U(3), V(3), W(8), W2(3),DW(12),TET1,TET2
-      REAL*8       Q(12), QQ(12), QQR(12), QQI(12)
+      REAL*8       Q(12), QQ(12), QQR(12), QQI(12),PTA(3),DIR(3)
+      REAL*8       DIR1(3),DIR2(3),D1,D2,OMEG2,X1(3),X2(3),V1(3),V2(3)
       CHARACTER*2  BL2, CODRET
       CHARACTER*8  NOMPAR(4)
       CHARACTER*16 CH16
@@ -56,6 +57,7 @@ C
 
       INTEGER      IFCX,I,J,NNOC,NCC,LX,IORIEN,IDEPLA,IDEPLP,LMATE,LPESA
       INTEGER      LFORC,ITEMPS,NBPAR,IER,IRET,ICOER,ICOEC,IRETR,IRETC
+      INTEGER      LROTA
       CHARACTER*8  NOMPAV(1)
       REAL*8       VALPAV(1),FCX,VITE2,VP(3),ANGLE(3),CASECT(6)
       LOGICAL      OKVENT
@@ -121,10 +123,34 @@ C
 C
 C *********************************************************************
 C
-      IF ( OPTION.EQ.'CHAR_MECA_PESA_R') THEN
+      IF ( OPTION.EQ.'CHAR_MECA_PESA_R'
+     &     .OR.OPTION.EQ.'CHAR_MECA_ROTA_R') THEN
 C
+         IF ( OPTION.EQ.'CHAR_MECA_PESA_R') THEN
+           CALL JEVECH('PPESANR','L',LPESA)
+           G=ZR(LPESA-1+1)
+C          -- DIR EST NORME :
+           DIR(1)=ZR(LPESA-1+2)
+           DIR(2)=ZR(LPESA-1+3)
+           DIR(3)=ZR(LPESA-1+4)
+         ELSE IF ( OPTION.EQ.'CHAR_MECA_ROTA_R')  THEN
+           CALL JEVECH('PROTATR','L',LROTA)
+           OMEG2=ZR(LROTA-1+1)**2
+           DO 778, K=1,3
+             DIR(K)=ZR(LROTA-1+1+K)
+             PTA(K)=ZR(LROTA-1+4+K)
+             X1(K)=ZR(LX+K) - PTA(K)
+             X2(K)=ZR(LX+3+K) - PTA(K)
+778        CONTINUE
+           CALL PROVEC(DIR,X1,V1)
+           CALL PROVEC(DIR,X2,V2)
+           CALL NORMEV(V1,D1)
+           CALL NORMEV(V2,D2)
+           CALL PROVEC(V1,DIR,DIR1)
+           CALL PROVEC(V2,DIR,DIR2)
+         ENDIF
+
          CALL JEVECH('PMATERC','L',LMATE)
-         CALL JEVECH('PPESANR','L',LPESA)
          IF(NOMTE(1:13).EQ.'MECA_POU_D_EM')THEN
             IF (IST.EQ.1)THEN
               CALL PMFITX(ZI(LMATE),2,CASECT,R8BID)
@@ -149,8 +175,13 @@ C          ---A CAUSE DES CHARGEMENTS VARIABLE ---
          ENDIF
 C
          DO 20 I=1,3
-           Q(I)   = RHO *  ZR(LPESA) * ZR(LPESA+I)
-           Q(I+6) = RHO *  ZR(LPESA) * ZR(LPESA+I)
+           IF ( OPTION.EQ.'CHAR_MECA_PESA_R') THEN
+             Q(I)   = RHO *  G * DIR(I)
+             Q(I+6) = RHO *  G * DIR(I)
+           ELSEIF ( OPTION.EQ.'CHAR_MECA_ROTA_R') THEN
+             Q(I)   = RHO *  OMEG2 * D1 * DIR1(I)
+             Q(I+6) = RHO *  OMEG2 * D2 * DIR2(I)
+           ENDIF
 20       CONTINUE
 C
 C        ---UN CAS DE CHARGE DE PESANTEUR SE PASSE EN REPERE GLOBAL ---

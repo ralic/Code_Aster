@@ -1,10 +1,9 @@
       SUBROUTINE SDMPIC(TYPESD,NOMSD)
       IMPLICIT NONE
-      INTEGER IORDR
       CHARACTER*(*) NOMSD,TYPESD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +34,6 @@ C IN TYPESD (K*) :  TYPE DE LA SD A COMPLETER
 C IN NOMSD  (K*) :  NOM DE LA SD A COMPLETER
 C ----------------------------------------------------------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -53,8 +51,8 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*24 NOMS2, TYPES2
       CHARACTER*19 K19
-      CHARACTER*8  KBID,KMPIC
-      INTEGER JAD,IFM,NIV,IBID,JCELK,IEXI,JREFA
+      CHARACTER*8  KMPIC
+      INTEGER IFM,NIV,IBID,JCELK,IEXI,JREFA
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -69,7 +67,7 @@ C     ----------------------------------
         K19=NOMS2
         CALL DISMOI('F','MPI_COMPLET',K19,'CHAM_ELEM',IBID,KMPIC,IBID)
         IF (KMPIC.EQ.'OUI') GOTO 9999
-        CALL MUMMPI(6,IFM,NIV,K19//'.CELV',IBID,IBID)
+        CALL MPICM2('MPI_SUM',K19//'.CELV')
         CALL JEVEUO(K19//'.CELK','E',JCELK)
         ZK24(JCELK-1+7)='MPI_COMPLET'
 
@@ -79,10 +77,10 @@ C     ----------------------------------
         K19=NOMS2
         CALL DISMOI('F','MPI_COMPLET',K19,'MATR_ASSE',IBID,KMPIC,IBID)
         IF (KMPIC.EQ.'OUI') GOTO 9999
-        CALL MUMMPI(6,IFM,NIV,K19//'.VALM',IBID,IBID)
+        CALL MPICM2('MPI_SUM',K19//'.VALM')
 
         CALL JEEXIN(K19//'.CCVA',IEXI)
-        IF (IEXI.GT.0) CALL MUMMPI(6,IFM,NIV,K19//'.CCVA',IBID,IBID)
+        IF (IEXI.GT.0) CALL MPICM2('MPI_SUM',K19//'.CCVA')
 
         CALL JEVEUO(K19//'.REFA','E',JREFA)
         ZK24(JREFA-1+11)='MPI_COMPLET'

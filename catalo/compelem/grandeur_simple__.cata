@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+%& MODIF COMPELEM  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -45,8 +45,8 @@ GRANDEUR_SIMPLE__
        RCOURB : rayon de courbure
        ORIE_ARC : orientation de l'arc
        C_FLEX : coefficient de flexibilité, les moments d'inerties Iy et Iz
-       sont divisés par le coefficient de flexibilité Cf : Iy = Iy/Cf et 
-       Iz = Iz/Cf  
+       sont divisés par le coefficient de flexibilité Cf : Iy = Iy/Cf et
+       Iz = Iz/Cf
        I_SIGM : coefficient d'intensification des contraintes
        (Ci) SIGMAZ* Mf/(I/v) avec I/v = I/v*1/Ci
        C_FLEX_Y : coefficient de flexibilité anisotrope dans le plan (X,Y)
@@ -137,7 +137,7 @@ GRANDEUR_SIMPLE__
        R :
        XG :
        YG :
-       AIRE : 
+       AIRE :
 >>
     CAFI_R   = R    XG       YG       AIRE
 
@@ -159,8 +159,8 @@ GRANDEUR_SIMPLE__
     CADISA   = R    A[144]
 
 <<  CADISK Type:R  Matrice de rigidité des éléments discrets (U4.24.01)
-                   (Modélisation='DIS_XXXX')    
-       K[144] : coefficients de la matrice de rigidité 
+                   (Modélisation='DIS_XXXX')
+       K[144] : coefficients de la matrice de rigidité
 >>
     CADISK   = R    K[144]
 
@@ -178,7 +178,7 @@ GRANDEUR_SIMPLE__
               uniquement sur les matrices de raideurs
 >>
     CINFDI   = R   REPK  REPM  REPA  SYMK  SYMM  SYMA  ETAK
-    
+
 %
 %   POUR LES DISCRETS : FIN
 %
@@ -221,7 +221,7 @@ GRANDEUR_SIMPLE__
     CAGEPO   = R    HY1      HZ1      EPY1     EPZ1     HY2      HZ2      EPY2     EPZ2
                     R1       EP1      R2       EP2      TSEC
 
-<<  CAGNBA Type:R Caractéristiques géométriques d'une section de 
+<<  CAGNBA Type:R Caractéristiques géométriques d'une section de
     barre (cf. (U4.24.01))
        A1 : aire de la section transversale
 >>
@@ -492,7 +492,7 @@ GRANDEUR_SIMPLE__
        DH : diamètre hydraulique
        Pour X-FEM: DCX, DCY, DCZ : DDLS classiques X-FEM
        Pour X-FEM: H1X, H1Y, H1Z : DDLS HEAVYSIDE X-FEM
-       LAGR : paramètre de lagrange du a la dualisation des conditions aux 
+       LAGR : paramètre de lagrange du a la dualisation des conditions aux
        limites
        Pour X-FEM: E1X, E1Y, E1Z : DDLS enrichis (CRACKTIP1) X-FEM
                    E2X, E2Y, E2Z : DDLS enrichis (CRACKTIP2) X-FEM
@@ -501,8 +501,8 @@ GRANDEUR_SIMPLE__
        LAGS_C :
        LAGS_F1, LAGS_F2 :
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
-       GONF : 
-       EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :     
+       GONF :
+       EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
        D1 : projection du champ suivant le vecteur directeur (D1X,D1Y,D1Z)
        D1X, D1Y, D1Z :
        D2 : projection du champ suivant le vecteur directeur (D2X,D2Y,D2Z)
@@ -510,7 +510,7 @@ GRANDEUR_SIMPLE__
        D3 : projection du champ suivant le vecteur directeur (D3X,D3Y,D3Z)
        D3X, D3Y, D3Z :
        VARI :
-       LAG_GV :  
+       LAG_GV :
        V11     : composante DU1/DX1 de la modélisation mixte second gradient
        V12     : composante DU1/DX2 de la modélisation mixte second gradient
        V13     : composante DU1/DX3 de la modélisation mixte second gradient
@@ -532,7 +532,7 @@ GRANDEUR_SIMPLE__
        SIGN    : effort de contact normal
        SITX    : effort de contact normal
        SITY    : effort de contact tangent direction 2
->>    
+>>
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
                     H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X
@@ -557,7 +557,7 @@ GRANDEUR_SIMPLE__
        DH : diamètre hydraulique
        Pour X-FEM: DCX, DCY, DCZ : DDLS classiques X-FEM
        Pour X-FEM: H1X, H1Y, H1Z : DDLS HEAVYSIDE X-FEM
-       LAGR : paramètre de lagrange du a la dualisation des conditions aux 
+       LAGR : paramètre de lagrange du a la dualisation des conditions aux
        limites
        Pour X-FEM: E1X, E1Y, E1Z : DDLS enrichis (CRACKTIP1) X-FEM
                    E2X, E2Y, E2Z : DDLS enrichis (CRACKTIP2) X-FEM
@@ -566,8 +566,8 @@ GRANDEUR_SIMPLE__
        LAGS_C :
        LAGS_F1, LAGS_F2 :
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
-       GONF : 
-       EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :     
+       GONF :
+       EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
        D1 : projection du champ suivant le vecteur directeur (D1X,D1Y,D1Z)
        D1X, D1Y, D1Z :
        D2 : projection du champ suivant le vecteur directeur (D2X,D2Y,D2Z)
@@ -575,7 +575,7 @@ GRANDEUR_SIMPLE__
        D3 : projection du champ suivant le vecteur directeur (D3X,D3Y,D3Z)
        D3X, D3Y, D3Z :
        VARI :
-       LAG_GV :  
+       LAG_GV :
        V11     : composante DU1/DX1 de la modélisation mixte second gradient
        V12     : composante DU1/DX2 de la modélisation mixte second gradient
        V13     : composante DU1/DX3 de la modélisation mixte second gradient
@@ -597,7 +597,7 @@ GRANDEUR_SIMPLE__
        SIGN    : effort de contact normal
        SITX    : effort de contact normal
        SITY    : effort de contact tangent direction 2
->>    
+>>
 
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
@@ -623,7 +623,7 @@ GRANDEUR_SIMPLE__
        DH : diamètre hydraulique
        Pour X-FEM: DCX, DCY, DCZ : DDLS classiques X-FEM
        Pour X-FEM: H1X, H1Y, H1Z : DDLS HEAVYSIDE X-FEM
-       LAGR : paramètre de lagrange du a la dualisation des conditions aux 
+       LAGR : paramètre de lagrange du a la dualisation des conditions aux
        limites
        Pour X-FEM: E1X, E1Y, E1Z : DDLS enrichis (CRACKTIP1) X-FEM
                    E2X, E2Y, E2Z : DDLS enrichis (CRACKTIP2) X-FEM
@@ -632,15 +632,15 @@ GRANDEUR_SIMPLE__
        LAGS_C :
        LAGS_F1, LAGS_F2 :
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
-       GONF : 
-       EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :     
+       GONF :
+       EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
        D1 : projection du champ suivant le vecteur directeur (D1X,D1Y,D1Z)
        D1X, D1Y, D1Z :
        D2 : projection du champ suivant le vecteur directeur (D2X,D2Y,D2Z)
        D2X, D2Y, D2Z :
        D3 : projection du champ suivant le vecteur directeur (D3X,D3Y,D3Z)
        D3X, D3Y, D3Z :
-       VARI : 
+       VARI :
        LAG_GV :
        V11     : composante DU1/DX1 de la modélisation mixte second gradient
        V12     : composante DU1/DX2 de la modélisation mixte second gradient
@@ -772,7 +772,7 @@ GRANDEUR_SIMPLE__
        DEPV13 :
        DEPV21 :
        DEPV22 :
-       DEPV23 : 
+       DEPV23 :
        DEPV31 :
        DEPV32 :
        DEPV33 :
@@ -788,7 +788,7 @@ GRANDEUR_SIMPLE__
        DV21X1 :
        DV21X2 :
        DV21X3 :
-       DV22X1 :   
+       DV22X1 :
        DV22X2 :
        DV22X3 :
        DV23X1 :
@@ -796,7 +796,7 @@ GRANDEUR_SIMPLE__
        DV23X3 :
        DV31X1 :
        DV31X2 :
-       DV31X3 :    
+       DV31X3 :
        DV32X1 :
        DV32X2 :
        DV32X3 :
@@ -804,7 +804,7 @@ GRANDEUR_SIMPLE__
        DV33X2 :
        DV33X3 :
        PRES :
-       PRES11 :      
+       PRES11 :
        PRES12 :
        PRES13 :
        PRES21 :
@@ -1105,7 +1105,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        X : coordonnée suivant OX
        Y : coordonnée suivant OY
        Z : coordonnée suivant OZ (0. Si le modèle est 2D)
-       W : 
+       W :
 >>
     GEOM_R   = R    X        Y        Z        W
 
@@ -1284,7 +1284,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
                     NUG2     NUG3     NUG4     NUG5     NUG6     NUG7     NUG8    NUG9
                     NUG10
 
-<<  NEUT_F Type:K8 Grandeur ''neutre'' de type K8 
+<<  NEUT_F Type:K8 Grandeur ''neutre'' de type K8
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
        nombreuses grandeurs sans grand intéret.
@@ -1295,7 +1295,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     NEUT_F   = K8   X[30]
 
-<<  NEUT_I Type:I Grandeur ''neutre'' de type I 
+<<  NEUT_I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
        nombreuses grandeurs sans grand intéret.
@@ -1304,9 +1304,9 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        ...
        X(128) : composante 128
 >>
-    NEUT_I   = I    X[128] 
+    NEUT_I   = I    X[128]
 
-<<  NEUT_K8 Type:K8 Grandeur ''neutre'' de type K8 
+<<  NEUT_K8 Type:K8 Grandeur ''neutre'' de type K8
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
        nombreuses grandeurs sans grand intéret.
@@ -1318,7 +1318,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 
     NEUT_K8 = K8    Z[24]
 
-<<  NEUT_K16 Type:K16 Grandeur ''neutre'' de type K16 
+<<  NEUT_K16 Type:K16 Grandeur ''neutre'' de type K16
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a éviter l'introduction de
        nombreuses grandeurs sans grand intéret.
@@ -1328,7 +1328,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        Z(24) : composante 24
 >>
     NEUT_K16 = K16  Z[24]
-    
+
 <<  NEUT_K24 Type:K24 Grandeur ''neutre'' de type K24. Cette grandeur
     est utilisée en général pour transmettre des noms d'objets JEVEUX.
     La signification des composantes varie d'une option a l'autre. Cette
@@ -1359,7 +1359,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     NUMC_I   = I    NUMC     ORDO     ANGL
 
-<<  NUMMOD Type:I    
+<<  NUMMOD Type:I
        NUM : numéro du mode
 >>
     NUMMOD   = I    NUM
@@ -1376,14 +1376,14 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     ONDE_R   = R    PRES
 
-<<  PESA_R Type:R Caractéristiques d'un chargement de pesanteur : intensité et 
+<<  PESA_R Type:R Caractéristiques d'un chargement de pesanteur : intensité et
     direction
        G : valeur de l'accélération de la pesanteur
-       AG : composante suivant OX du vecteur donnant la direction de la
+       AG : composante suivant OX du vecteur unitaire donnant la direction de la
        pesanteur
-       BG : composante suivant OY du vecteur donnant la direction de la
+       BG : composante suivant OY du vecteur unitaire donnant la direction de la
        pesanteur
-       CG : composante suivant OZ du vecteur donnant la direction de la
+       CG : composante suivant OZ du vecteur unitaire donnant la direction de la
        pesanteur
 >>
     PESA_R   = R    G        AG       BG       CG
@@ -1438,7 +1438,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 
 <<  PRES_F Type:K8 Chargement surfacique appliqué a un modèle mécanique
     (PRES,CISA)
-     inconnue d'un problème d'acoustique : (pression, vitesse du fluide) 
+     inconnue d'un problème d'acoustique : (pression, vitesse du fluide)
        PRES : valeur de la pression
        CISA : cisaillement appliqué sur le bord d'un modèle 2D
 >>
@@ -1669,7 +1669,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        SIG123 :
        SIG131 :
        SIG132 :
-       SIG133 : 
+       SIG133 :
        SIG211 :
        SIG212 :
        SIG213 :
@@ -1866,7 +1866,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 <<  SING_R Type:R grandeurs liée au calcul de carte de taille
        DEGRE : ordre de la singularité
        RAPPORT : rapport de modification de taille
-       TAILLE : nouvelle taille des éléments 
+       TAILLE : nouvelle taille des éléments
 >>
     SING_R   = R    DEGRE    RAPPORT  TAILLE
 

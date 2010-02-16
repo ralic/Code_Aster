@@ -1,4 +1,4 @@
-#@ MODIF miss0 Messages  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss0 Messages  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,6 +40,28 @@ Il y a %(i2)d matériaux, or NUME_MATE=%(i3)d.
 
 5 : _("""
 La numérotation des couches est incorrectes.
+"""),
+
+6 : _("""
+Erreur lors de la copie de fichier pour MISS :
+  source      : %(k1)s
+  destination : %(k2)s
+"""),
+
+7 : _("""
+Erreur lors de la lecture du fichier de résultat Aster
+à la ligne numéro %(i1)d.
+
+Message d'erreur :
+%(k1)s
+"""),
+
+8 : _("""
+Les données lues dans le fichier de résultat Aster ne sont pas cohérentes.
+La trace ci-dessous doit montrer l'incohérence relevée.
+
+Message d'erreur :
+%(k1)s
 """),
 
 }

@@ -10,6 +10,7 @@
      &                   IREDST,DREDST,
      &                   COEFM,LIAD,INUMOR,IDESCF,
      &                   NOFDEP,NOFVIT,NOFACC,NOMFON,PSIDEL,MONMOT,
+     &                   NBPAL,NUMDDL,DTSTO,TCF,VROTAT,PRDEFF,
      &                   NOMRES)
 C
       IMPLICIT     REAL*8 (A-H,O-Z)
@@ -21,18 +22,22 @@ C
      &             PASSTO(*),TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),
      &             DREDST(*),PREC,EPSI,DPLMOD(NBCHOC,NEQGEN,*),
      &             DPLREV(*),DPLRED(*)
+      REAL*8        DT,DTSTO,TCF,VROTAT
       CHARACTER*8  BASEMO,NOECHO(NBCHOC,*),FONRED(*),FONREV(*),VVAR
       CHARACTER*8  NOMRES,MONMOT
       CHARACTER*16 TYPBAS
-      LOGICAL      LAMOR,LFLU,LPSTO
+      LOGICAL      LAMOR,LFLU,LPSTO,PRDEFF
 C
       REAL*8       COEFM(*),PSIDEL(*)
       INTEGER      LIAD(*),INUMOR(*),IDESCF(*)
+      INTEGER      NBPAL
+      INTEGER      NBPAL3
       CHARACTER*8  NOFDEP(*),NOFVIT(*),NOFACC(*),NOMFON(*)
+      CHARACTER*14 NUMDDL
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +54,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_20 CRP_21
+C TOLE CRP_4 CRP_20 CRP_21 CRS_512
 C
 C     DIFFERENCES CENTREES AVEC PAS ADAPTATIF
 C     ------------------------------------------------------------------
@@ -115,11 +120,31 @@ C
 C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      REAL*8      TPS1(4)
-      REAL*8 VALR(3)
-      INTEGER VALI(2)
-      CHARACTER*8 TRAN
-      CHARACTER*19 MAMASS,SOLVEU,MATPRE
+      REAL*8        TPS1(4)
+      REAL*8        VALR(3), CONV,RINT1,RINT2
+      INTEGER       VALI(2)
+      CHARACTER*8   TRAN
+      CHARACTER*19  MAMASS,SOLVEU,MATPRE
+C
+      INTEGER       LENVAR, II
+      PARAMETER (LENVAR = 144)
+      CHARACTER*(LENVAR) NOMVAR
+C     COMMON
+C     ======
+      INTEGER     ICOMPO
+   
+      INTEGER       PALMAX 
+      PARAMETER (PALMAX=20)
+      CHARACTER*6   TYPAL(PALMAX)
+      CHARACTER*3   FINPAL(PALMAX)
+      
+      INTEGER       DIMNAS
+      PARAMETER (DIMNAS=6)  
+      INTEGER       NOPAL(PALMAX) 
+      CHARACTER*6  CNPAL(PALMAX)    
+
+      INTEGER       IADR,IADRI,IADRK,IAPP
+      CHARACTER*24  CPAL, NPAL   
 C
       CALL JEMARQ()
       ZERO = 0.D0
@@ -134,10 +159,17 @@ C
       ISTO3 = 0
       NPAS  = 0
       NBACC = 0
+      CONV = 1.D0
+      II = 1
       LPSTO = .TRUE.
       NBMOD1 = NEQGEN - 1
       NBSCHO = NBSAUV * 3 * NBCHOC
       EPSI = R8PREM()
+      DO 111 IAPP = 1,PALMAX
+        TYPAL(IAPP)='      '
+        FINPAL(IAPP)='   '
+        CNPAL(IAPP)=' '
+ 111  CONTINUE
 C
       IF ( LAMOR ) THEN
         DO 100 IM = 1,NEQGEN
@@ -233,7 +265,7 @@ C
         CALL DCOPY(NEQGEN,PULSA2,1,ZR(JPULS),1)
         CALL DCOPY(NEQGEN,AMOGEN,1,ZR(JAMOGI),1)
       ENDIF
-      IF (NBCHOC.NE.0) THEN
+      IF (NBCHOC.NE.0 .AND. NBPAL.EQ.0 ) THEN
          CALL WKVECT('&&MDADAP.SCHOR','V V R8',NBCHOC*14,JCHOR)
          CALL WKVECT('&&MDADAP.SCHO2','V V R8',NBCHOC*14,JCHO2)
 C        INITIALISATION POUR LE FLAMBAGE
@@ -253,7 +285,7 @@ C
       CALL DCOPY(NEQGEN,ZR(JVITE),1,ZR(JVIP1),1)
       DT2 = DTI
       DT1 = ZERO
-      IF (NBCHOC.GT.0) THEN
+      IF (NBCHOC.GT.0.AND.NBPAL.EQ.0) THEN
          CALL DCOPY(NBCHOC,ZR(JVINT),1,ZR(JCHOR+13*NBCHOC),1)
       ENDIF
 C
@@ -275,7 +307,10 @@ C
      &            NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
      &            NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),ZI(JREDI),
      &            NBREVI,DPLREV,FONREV,
-     &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT)
+     &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &            1,0,0,NUMDDL,DT,DTSTO,TCF,TFIN,VROTAT,
+     &            NOPAL, TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+        IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
 C
 C     --- ACCELERATIONS GENERALISEES INITIALES ---
 C
@@ -284,15 +319,44 @@ C
      &              ZR(JTRA1),ZR(JDEPL),ZR(JVITE),ZR(JACCE))
       ELSE
 C
+C    COUPLAGE AVEC EDYOS
+C
+        IF (NBPAL .GT. 0 ) THEN
+          CPAL='C_PAL'
+          NPAL='N_PAL'
+C     RECUPERATION DES DONNEES ENTIERES SUR LES PALIERS 
+C     -------------------------------------------------     
+          CALL JEVEUO(NPAL,'L',IADRI)
+          DO 11 IAPP=1,NBPAL
+            NOPAL(IAPP)=ZI(IADRI+1+(IAPP-1))
+  11      CONTINUE
+C     RECUPERATION DES DONNEES ENTIERES SUR LES PALIERS            
+          CALL JEVEUO(CPAL,'L',IADRK)
+          DO 21 IAPP=1,NBPAL
+            TYPAL(IAPP)=ZK8(IADRK+(IAPP-1))(1:6)
+            FINPAL(IAPP)=ZK8(IADRK+(IAPP-1)+PALMAX)(1:3)
+            CNPAL(IAPP)=ZK8(IADRK+(IAPP-1)+2*PALMAX)(1:DIMNAS)
+  21      CONTINUE
+        ENDIF
+C
+C    FIN COUPLAGE AVEC EDYOS
+C
+C
+C
 C       CAS CLASSIQUE
 C
+        IF (NBPAL.NE.0) NBCHOC = 0
         CALL MDFNLI(NEQGEN,ZR(JDEPL),ZR(JVITE),
      &            ZR(JACCE),ZR(JFEXT),MASGEN,R8BID1,
      &            PULSA2,AMOGEN,
      &            NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
      &            NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),ZI(JREDI),
      &            NBREVI,DPLREV,FONREV,
-     &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT)
+     &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &            1,NBPAL,NEQGEN,NUMDDL,DT2,DTSTO,TCF,TFIN,VROTAT,
+     &            NOPAL, TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+        IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
+    
 C
 C     --- ACCELERATIONS GENERALISEES INITIALES ---
 C
@@ -313,6 +377,7 @@ C
      &            ZR(JVINT),IREDST,DREDST )
 C
       TEMPS = TINIT
+      TCF = TEMPS + DT2
       TARCH = TINIT+ DTARCH
       CALL UTTCPU('CPU.MDADAP','INIT',' ')
       IVERI = 0
@@ -386,13 +451,18 @@ C
 C
 C           --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 C
+              II = II + 1
               CALL MDFNLI(NEQGEN,ZR(JDEP2),ZR(JVIP2),
      &                  ZR(JACGI1),ZR(JFEXTI),ZR(JMASS),ZR(JPHI2),
      &                  ZR(JPULS),ZR(JAMOGI),
      &                  NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,
      &                  ZR(JCHO2), NBREDE,DPLRED,PARRED,FONRED,
      &                  ZR(JREDR),ZI(JREDI), NBREVI,DPLREV,FONREV,
-     &                  R8VAL,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT)
+     &                  R8VAL,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &                  II,NBPAL,NEQGEN,NUMDDL,DT2,DTSTO,TCF,TFIN,
+     &                  VROTAT,NOPAL, TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+              IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
+     
 C
 C           --- ACCELERATIONS GENERALISEES ---
 C
@@ -429,12 +499,17 @@ C
 C             --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 C
               R8VAL = TEMPS + DT2
+              II = II + 1
               CALL MDFNLI(NEQGEN,ZR(JDEP2),ZR(JVIP2),
      &                  ZR(JACCE),ZR(JFEXT),R8BID2,R8BID3,R8BID4,
      &                  R8BID5,NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,
      &                  ZR(JCHO2), NBREDE,DPLRED,PARRED,FONRED,
      &                  ZR(JREDR),ZI(JREDI), NBREVI,DPLREV,FONREV,
-     &                  R8VAL,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT)
+     &                  R8VAL,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
+     &                  II,NBPAL,NEQGEN,NUMDDL,DT2,DTSTO,TCF,TFIN,
+     &                  VROTAT,NOPAL, TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+              IF(CONV.LE.0.D0) CALL U2MESS('I','EDYOS_47')
+     
 C
 C             --- ACCELERATIONS GENERALISEES ---
 C
@@ -454,7 +529,7 @@ C
 C
 C           --- REDUCTION DU PAS DE TEMPS ---
 C
-            IF(ERR .GT. 1.D0) DT2 = DT2/CDP
+            IF((ERR .GT. 1.D0).OR.(CONV .LE. 0.D0)) DT2 = DT2/CDP
             IF (DT2.LE.DTMIN .AND. ABS(TFIN-(TEMPS+DT2)).GT.EPSI) THEN
               CALL U2MESS('F','ALGORITH5_23')
             ENDIF
@@ -467,10 +542,11 @@ C           LES DEUX LIGNES SUIVANTES SIMULENT LE WHILE - CONTINUE
 C
             DT1 = DT2
             TEMP2 = TEMPS + DT2
+            TCF = TEMP2 + DT2
 C
 C           --- AUGMENTATION DU PAS SI ERREUR TROP FAIBLE ---
 C
-            IF(ERR .LT. 0.75D0) THEN
+            IF((ERR .LT. 0.75D0) .AND. (CONV .GT. 0.D0)) THEN
               IF(NPAS .EQ. 5) THEN
                 DT2 = CMP*DT2
                 DT2 = MIN(DT2,DTI)
@@ -522,7 +598,10 @@ C
  27           CONTINUE
             ELSEIF(VVAR(1:4) .EQ. 'MAXI') THEN
               DO 26 IV = 0,NBMOD1
-              ZR(JVMIN+IV) = MAX(ZR(JVMIN+IV),ABS(ZR(JVIT2+IV)*0.01D0))
+              RINT1 = ZR(JVIT2+IV)*0.01D0
+              RINT2 = ABS(RINT1)
+              RINT1 = ZR(JVMIN+IV)
+              ZR(JVMIN+IV) = MAX(RINT1,RINT2)
  26           CONTINUE
             ENDIF
 C
@@ -539,20 +618,23 @@ C        --- TEST SI LE TEMPS RESTANT EST SUFFISANT POUR CONTINUER ---
 C       ON FIXE UN TEMPS MOYEN PAR PAS A UN MINIMUM DE 0.001 S
 C       ACTIF POUR LA VERSION SOLARIS
 C
+          TINF = 1.D9
+          RINT1 = 1.D-3
           IF (IVERI.EQ.0) THEN
             CALL UTTCPU('CPU.MDADAP', 'FIN',' ')
             CALL UTTCPR('CPU.MDADAP',4, TPS1)
-            TJOB = TPS1(1)
-            TMOY = MAX(TPS1(4),1.D-3)
-            NBPASC = INT(1.D-02 * (TPS1(1)/TMOY)) + 1
+            TJOB = MIN(TINF,TPS1(1))
+            TMOY = MAX(TPS1(4),RINT1)
+            NBPASC = INT(1.D-02 * (TJOB/TMOY)) + 1
           ELSE
             IF (MOD(IVERI,NBPASC).EQ.0) THEN
               CALL UTTCPU('CPU.MDADAP', 'FIN',' ')
               CALL UTTCPR('CPU.MDADAP',4, TPS1)
+              TJOB = MIN(TINF,TPS1(1))
               IF (TPS1(1).LE.MAX(TJOB/100.D0,15.D0)) THEN
                GOTO 31
               ENDIF
-              TMOY = MAX(TPS1(4),1.D-3)
+              TMOY = MAX(TPS1(4),RINT1)
               NBPASC = INT(1.D-02 * (TJOB/TMOY)) + 1
             ENDIF
           ENDIF

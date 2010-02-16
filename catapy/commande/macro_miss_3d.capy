@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,7 @@ MACRO_MISS_3D=MACRO(nom="MACRO_MISS_3D",op=macro_miss_3d_ops,
          ),
          PROJET          =SIMP(statut='o',typ='TXM'),  
          REPERTOIRE      =SIMP(statut='f',typ='TXM'),
-         VERSION         =SIMP(statut='f',typ='TXM',into=("V1_3","V1_4",),defaut="V1_4"),
+         VERSION         =SIMP(statut='f',typ='TXM',into=("V1_3","V1_4","V1_5",),defaut="V1_4"),
          UNITE_IMPR_ASTER=SIMP(statut='f',typ='I',defaut=25),  
          UNITE_OPTI_MISS =SIMP(statut='f',typ='I',defaut=26),  
          UNITE_MODELE_SOL=SIMP(statut='f',typ='I',defaut=27),  
