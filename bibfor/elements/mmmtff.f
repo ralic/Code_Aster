@@ -1,10 +1,10 @@
       SUBROUTINE MMMTFF(PHASE ,NDIM  ,NBCPS ,NNL   ,HPG   ,
      &                  FFL   ,JACOBI,TAU1  ,TAU2  ,RESE  ,
      &                  NRESE ,LAMBDA,NDEXFR,COEFFS,COEFFF,
-     &                  MATRFF)
+     &                  COEFFP,MATRFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,7 +30,7 @@ C
       REAL*8       TAU1(3),TAU2(3)
       REAL*8       RESE(3),NRESE  
       REAL*8       LAMBDA
-      REAL*8       COEFFS,COEFFF      
+      REAL*8       COEFFS,COEFFF,COEFFP     
       REAL*8       MATRFF(18,18)
 C      
 C ----------------------------------------------------------------------
@@ -46,6 +46,8 @@ C IN  PHASE  : PHASE DE CALCUL
 C              'SANS' - PAS DE CONTACT
 C              'GLIS' - CONTACT GLISSANT
 C              'EXFR' - EXCLUSION D'UNE DIRECTION DE FROTTEMENT
+C              'PADH' - PENALISATION - FROTTEMENT ADHERENT
+C              'PGLI' - PENALISATION - FROTTEMENT GLISSANT
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNL    : NOMBRE DE NOEUDS LAGRANGE 
 C IN  NBCPS  : NB DE DDL DE LAGRANGE
@@ -83,12 +85,12 @@ C
 C
 C --- MATRICE DE CHANGEMENT DE REPERE [T]. [TT] = [T]t*[T]
 C
-      DO 301 K = 1,NDIM                        
-        TT(1,1) = TAU1(K)*TAU1(K) + TT(1,1)    
-        TT(1,2) = TAU1(K)*TAU2(K) + TT(1,2)    
-        TT(2,1) = TAU2(K)*TAU1(K) + TT(2,1)    
-        TT(2,2) = TAU2(K)*TAU2(K) + TT(2,2)    
- 301  CONTINUE                                 
+      DO 301 K = 1,NDIM
+        TT(1,1) = TAU1(K)*TAU1(K) + TT(1,1)
+        TT(1,2) = TAU1(K)*TAU2(K) + TT(1,2)
+        TT(2,1) = TAU2(K)*TAU1(K) + TT(2,1)
+        TT(2,2) = TAU2(K)*TAU2(K) + TT(2,2)
+ 301  CONTINUE
 C
       IF (PHASE.EQ.'SANS') THEN
         DO 284 I = 1,NNL
@@ -139,7 +141,21 @@ C           DEVELOPPEMENT NON GENERIQUE ENCORE EN 3D
             II = NBCPF*(I-1)+1
             MATRFF(II,II) = 1.D0
           ENDIF
- 121    CONTINUE                   
+ 121    CONTINUE
+      ELSEIF ((PHASE.EQ.'PADH').OR.(PHASE.EQ.'PGLI')) THEN
+        DO 384 I = 1,NNL
+          DO 383 J = 1,NNL
+            DO 382 L = 1,NBCPF
+              DO 381 K = 1,NBCPF
+                II = (NDIM-1)*(I-1)+L
+                JJ = (NDIM-1)*(J-1)+K
+                MATRFF(II,JJ) = MATRFF(II,JJ)+
+     &                          HPG*FFL(I)*FFL(J)*JACOBI*TT(L,K)
+     &                          *COEFFF*LAMBDA/COEFFP
+ 381          CONTINUE
+ 382        CONTINUE
+ 383      CONTINUE
+ 384    CONTINUE
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

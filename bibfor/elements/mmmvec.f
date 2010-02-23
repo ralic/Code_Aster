@@ -1,16 +1,17 @@
       SUBROUTINE MMMVEC(PHASE ,
-     &                LSTABC,LCOMPL,LFROTT,LSTABF,LADHER,
-     &                LGLISS,NDIM  ,NNE   ,NNM   ,NNL   ,
-     &                NBCPS ,NORM  ,TAU1  ,TAU2  ,MPROJT,
-     &                HPG   ,FFE   ,FFM   ,FFL   ,JACOBI,
-     &                COEFCP,COEFCS,COEFFS,COEFFF,JEU   ,
+     &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,
+     &                LPENAF,LADHER,LGLISS,NDIM  ,NNE   ,
+     &                NNM   ,NNL   ,NBCPS ,NORM  ,TAU1  ,
+     &                TAU2  ,MPROJT,HPG   ,FFE   ,FFM   ,
+     &                FFL   ,JACOBI,COEFCP,COEFCR,COEFCS,
+     &                COEFFP,COEFFR,COEFFS,COEFFF,JEU   ,
      &                LAMBDA,RESE  ,NRESE ,TYPBAR,TYPRAC,
      &                NDEXFR,ASPERI,KAPPAN,KAPPAV,DLAGRC,
      &                DLAGRF,DDEPLE,DDEPLM,JEVITP,VECTEE,
      &                VECTMM,VECTCC,VECTFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,14 +36,14 @@ C
       INTEGER      NDIM,NNE,NNM,NNL,NBCPS
       INTEGER      TYPRAC,TYPBAR,NDEXFR
       LOGICAL      LSTABC,LCOMPL,LFROTT,LSTABF
-      LOGICAL      LADHER,LGLISS
+      LOGICAL      LADHER,LGLISS,LPENAF,LPENAC
       REAL*8       NORM(3),TAU1(3),TAU2(3)
       REAL*8       MPROJT(3,3)       
       REAL*8       FFE(9),FFM(9),FFL(9)
       REAL*8       HPG,JACOBI
       REAL*8       RESE(3),NRESE      
-      REAL*8       COEFCP,COEFCS
-      REAL*8       COEFFS
+      REAL*8       COEFCP,COEFCR,COEFCS
+      REAL*8       COEFFP,COEFFR,COEFFS
       REAL*8       LAMBDA,COEFFF
       REAL*8       JEU
       REAL*8       KAPPAN,KAPPAV,ASPERI,JEVITP 
@@ -51,7 +52,7 @@ C
       REAL*8       VECTCC(9)
       REAL*8       VECTFF(18)    
       REAL*8       VECTEE(27),VECTMM(27)     
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
@@ -96,80 +97,131 @@ C ----------------------------------------------------------------------
 C
       IF (PHASE.EQ.'SANS') THEN     
         IF (LFROTT) THEN
-          CALL MMMVFF('SANS',NDIM  ,NNL   ,NBCPS ,HPG   ,
-     &                FFL   ,TAU1  ,TAU2  ,JACOBI,NDEXFR,
-     &                COEFFS,DLAGRF,RESE  ,LAMBDA,COEFFF,
-     &                VECTFF)
+          IF(LPENAF) THEN
+            CALL MMMVFF('PSAN',NDIM  ,NNL   ,NBCPS ,HPG   ,
+     &                  FFL   ,TAU1  ,TAU2  ,JACOBI,NDEXFR,
+     &                  COEFFS,COEFFP,DLAGRF,RESE  ,LAMBDA,
+     &                  COEFFF,DDEPLE,DDEPLM,MPROJT,VECTFF)
+          ELSE
+            CALL MMMVFF('SANS',NDIM  ,NNL   ,NBCPS ,HPG   ,
+     &                  FFL   ,TAU1  ,TAU2  ,JACOBI,NDEXFR,
+     &                  COEFFS,COEFFP,DLAGRF,RESE  ,LAMBDA,
+     &                  COEFFF,DDEPLE,DDEPLM,MPROJT,VECTFF)
+          ENDIF
         ELSE
-          CALL MMMVCC('SANS',NNL   ,HPG   ,FFL   ,JACOBI,
-     &                JEU   ,TYPBAR,TYPRAC,COEFCS,DLAGRC,
-     &                VECTCC)         
+          IF(LPENAC) THEN
+            CALL MMMVCC('PSAN',NNL   ,HPG   ,FFL   ,JACOBI,
+     &                  JEU   ,TYPBAR,TYPRAC,COEFCP,COEFCS,
+     &                  DLAGRC,VECTCC)
+          ELSE
+            CALL MMMVCC('SANS',NNL   ,HPG   ,FFL   ,JACOBI,
+     &                  JEU   ,TYPBAR,TYPRAC,COEFCP,COEFCS,
+     &                  DLAGRC,VECTCC)
+          ENDIF
         ENDIF 
         IF (LCOMPL) THEN
           CALL MMMVUU('ASPE',NDIM  ,NNE   ,NNM   ,NORM  ,
      &                TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
-     &                FFM   ,JACOBI,JEU   ,COEFCP,DLAGRC,
-     &                KAPPAN,KAPPAV,ASPERI,JEVITP,LAMBDA,
-     &                COEFFF,DLAGRF,DDEPLE,DDEPLM,RESE  ,
-     &                NRESE ,VECTEE,VECTMM)
-        ENDIF        
+     &                FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &                LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &                RESE  ,NRESE ,VECTEE,VECTMM)
+        ENDIF
       ELSEIF (PHASE.EQ.'CONT') THEN
-        CALL MMMVUU('CONT',NDIM  ,NNE   ,NNM   ,NORM  ,
-     &              TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
-     &              FFM   ,JACOBI,JEU   ,COEFCP,DLAGRC,
-     &              KAPPAN,KAPPAV,ASPERI,JEVITP,LAMBDA,
-     &              COEFFF,DLAGRF,DDEPLE,DDEPLM,RESE  ,
-     &              NRESE ,VECTEE,VECTMM)
-        CALL MMMVCC('CONT',NNL   ,HPG   ,FFL   ,JACOBI,
-     &                JEU   ,TYPBAR,TYPRAC,COEFCS,DLAGRC,
-     &                VECTCC) 
-        IF (LSTABC) THEN
-          CALL MMMVUU('STAC',NDIM  ,NNE   ,NNM   ,NORM  ,
+        IF (LPENAC) THEN
+          CALL MMMVUU('PCON',NDIM  ,NNE   ,NNM   ,NORM  ,
      &                TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
-     &                FFM   ,JACOBI,JEU   ,COEFCP,DLAGRC,
-     &                KAPPAN,KAPPAV,ASPERI,JEVITP,LAMBDA,
-     &                COEFFF,DLAGRF,DDEPLE,DDEPLM,RESE  ,
-     &                NRESE ,VECTEE,VECTMM)
-        ENDIF                 
-        IF (LCOMPL) THEN
-          CALL MMMVUU('COMP',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &                LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &                RESE  ,NRESE ,VECTEE,VECTMM)
+          CALL MMMVCC('PCON',NNL   ,HPG   ,FFL   ,JACOBI,
+     &                JEU   ,TYPBAR,TYPRAC,COEFCP,COEFCS,
+     &                DLAGRC,VECTCC)
+        ELSE
+          CALL MMMVCC('CONT',NNL   ,HPG   ,FFL   ,JACOBI,
+     &                JEU   ,TYPBAR,TYPRAC,COEFCP,COEFCS,
+     &                DLAGRC,VECTCC)
+          CALL MMMVUU('CONT',NDIM  ,NNE   ,NNM   ,NORM  ,
      &                TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
-     &                FFM   ,JACOBI,JEU   ,COEFCP,DLAGRC,
-     &                KAPPAN,KAPPAV,ASPERI,JEVITP,LAMBDA,
-     &                COEFFF,DLAGRF,DDEPLE,DDEPLM,RESE  ,
-     &                NRESE ,VECTEE,VECTMM)
+     &                FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &                LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &                RESE  ,NRESE ,VECTEE,VECTMM)
+          IF (LSTABC) THEN
+            CALL MMMVUU('STAC',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                 TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
+     &                 FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                 DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &                 LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &                 RESE  ,NRESE ,VECTEE,VECTMM)
+          ENDIF
+          IF (LCOMPL) THEN
+            CALL MMMVUU('COMP',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                 TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
+     &                 FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                 DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &                 LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &                 RESE  ,NRESE ,VECTEE,VECTMM)
+          ENDIF 
         ENDIF
       ELSEIF (PHASE.EQ.'FROT') THEN
           IF (LADHER) THEN
-            CALL MMMVUU('ADHE',NDIM  ,NNE   ,NNM   ,NORM  ,
-     &                  TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
-     &                  FFM   ,JACOBI,JEU   ,COEFCP,DLAGRC,
-     &                  KAPPAN,KAPPAV,ASPERI,JEVITP,LAMBDA,
-     &                  COEFFF,DLAGRF,DDEPLE,DDEPLM,RESE  ,
-     &                  NRESE ,VECTEE,VECTMM)
-            CALL MMMVFF('ADHE',NDIM  ,NNL   ,NBCPS ,HPG   ,
-     &                  FFL   ,TAU1  ,TAU2  ,JACOBI,NDEXFR,
-     &                  COEFFS,DLAGRF,RESE  ,LAMBDA,COEFFF,
-     &                  VECTFF)          
-            IF (LSTABF) THEN
-              CALL MMMVUU('STAF',NDIM  ,NNE   ,NNM   ,NORM  ,
-     &                    TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
-     &                    FFM   ,JACOBI,JEU   ,COEFCP,DLAGRC,
-     &                    KAPPAN,KAPPAV,ASPERI,JEVITP,LAMBDA,
-     &                    COEFFF,DLAGRF,DDEPLE,DDEPLM,RESE  ,
-     &                    NRESE ,VECTEE,VECTMM)
+            IF ( LPENAF) THEN
+              CALL MMMVUU('PADH',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                   TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
+     &                   FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                   DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &                   LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &                   RESE  ,NRESE ,VECTEE,VECTMM)
+              CALL MMMVFF('PADH',NDIM  ,NNL   ,NBCPS ,HPG   ,
+     &                    FFL   ,TAU1  ,TAU2  ,JACOBI,NDEXFR,
+     &                    COEFFS,COEFFP,DLAGRF,RESE  ,LAMBDA,
+     &                    COEFFF,DDEPLE,DDEPLM,MPROJT,VECTFF)
+            ELSE
+              CALL MMMVUU('ADHE',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                   TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
+     &                   FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                   DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &                   LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &                   RESE  ,NRESE ,VECTEE,VECTMM)
+              CALL MMMVFF('ADHE',NDIM  ,NNL   ,NBCPS ,HPG   ,
+     &                    FFL   ,TAU1  ,TAU2  ,JACOBI,NDEXFR,
+     &                    COEFFS,COEFFP,DLAGRF,RESE  ,LAMBDA,
+     &                    COEFFF,DDEPLE,DDEPLM,MPROJT,VECTFF)
+              IF (LSTABF) THEN
+                CALL MMMVUU('STAF',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                   TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
+     &                   FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                   DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &                   LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &                   RESE  ,NRESE ,VECTEE,VECTMM)
+              ENDIF
             ENDIF
           ELSE IF (LGLISS) THEN
-            CALL MMMVUU('GLIS',NDIM  ,NNE   ,NNM   ,NORM  ,
-     &                  TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
-     &                  FFM   ,JACOBI,JEU   ,COEFCP,DLAGRC,
-     &                  KAPPAN,KAPPAV,ASPERI,JEVITP,LAMBDA,
-     &                  COEFFF,DLAGRF,DDEPLE,DDEPLM,RESE  ,
-     &                  NRESE ,VECTEE,VECTMM)
-            CALL MMMVFF('GLIS',NDIM  ,NNL   ,NBCPS ,HPG   ,
-     &                  FFL   ,TAU1  ,TAU2  ,JACOBI,NDEXFR,
-     &                  COEFFS,DLAGRF,RESE  ,LAMBDA,COEFFF,
-     &                  VECTFF)
+            IF (LPENAF) THEN
+              CALL MMMVUU('PGLI',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                   TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
+     &                   FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                   DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &                   LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &                   RESE  ,NRESE ,VECTEE,VECTMM)
+              CALL MMMVFF('PGLI',NDIM  ,NNL   ,NBCPS ,HPG   ,
+     &                    FFL   ,TAU1  ,TAU2  ,JACOBI,NDEXFR,
+     &                    COEFFS,COEFFP,DLAGRF,RESE  ,LAMBDA,
+     &                    COEFFF,DDEPLE,DDEPLM,MPROJT,VECTFF)
+            ELSE
+              CALL MMMVUU('GLIS',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                   TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
+     &                   FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                   DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &                   LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &                   RESE  ,NRESE ,VECTEE,VECTMM)
+              CALL MMMVFF('GLIS',NDIM  ,NNL   ,NBCPS ,HPG   ,
+     &                    FFL   ,TAU1  ,TAU2  ,JACOBI,NDEXFR,
+     &                    COEFFS,COEFFP,DLAGRF,RESE  ,LAMBDA,
+     &                    COEFFF,DDEPLE,DDEPLM,MPROJT,VECTFF)
+            ENDIF
           ELSE
             CALL ASSERT(.FALSE.) 
           END IF        
@@ -185,28 +237,28 @@ C --- MODIFICATION DES TERMES SI BARSOUM
 C
       IF (TYPBAR.NE.0) THEN
         CALL MMMVCC('EXCL',NNL   ,HPG   ,FFL   ,JACOBI,
-     &              JEU   ,TYPBAR,TYPRAC,COEFCS,DLAGRC,
-     &              VECTCC) 
+     &              JEU   ,TYPBAR,TYPRAC,COEFCP,COEFCS,
+     &              DLAGRC,VECTCC) 
         CALL MMMVUU('EXCL',NDIM  ,NNE   ,NNM   ,NORM  ,
      &              TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
-     &              FFM   ,JACOBI,JEU   ,COEFCP,DLAGRC,
-     &              KAPPAN,KAPPAV,ASPERI,JEVITP,LAMBDA,
-     &              COEFFF,DLAGRF,DDEPLE,DDEPLM,RESE  ,
-     &              NRESE ,VECTEE,VECTMM)
+     &              FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &              DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &              LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &              RESE  ,NRESE ,VECTEE,VECTMM)
       ENDIF
 C
 C --- MODIFICATION DES TERMES SI RACCORD_LINE_QUAD
 C
       IF (TYPRAC.NE.0) THEN
         CALL MMMVCC('EXCL',NNL   ,HPG   ,FFL   ,JACOBI,
-     &              JEU   ,TYPBAR,TYPRAC,COEFCS,DLAGRC,
-     &              VECTCC) 
+     &              JEU   ,TYPBAR,TYPRAC,COEFCP,COEFCS,
+     &              DLAGRC,VECTCC) 
         CALL MMMVUU('EXCL',NDIM  ,NNE   ,NNM   ,NORM  ,
      &              TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
-     &              FFM   ,JACOBI,JEU   ,COEFCP,DLAGRC,
-     &              KAPPAN,KAPPAV,ASPERI,JEVITP,LAMBDA,
-     &              COEFFF,DLAGRF,DDEPLE,DDEPLM,RESE  ,
-     &              NRESE ,VECTEE,VECTMM)
+     &              FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &              DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &              LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &              RESE  ,NRESE ,VECTEE,VECTMM)
       ENDIF               
 C
 C --- MODIFICATION DES TERMES SI EXCLUSION DIRECTION FROTT. SANS_NO_FR  
@@ -214,8 +266,8 @@ C
       IF (NDEXFR.NE.0) THEN
         CALL MMMVFF('EXFR',NDIM  ,NNL   ,NBCPS ,HPG   ,
      &              FFL   ,TAU1  ,TAU2  ,JACOBI,NDEXFR,
-     &              COEFFS,DLAGRF,RESE  ,LAMBDA,COEFFF,
-     &              VECTFF)
+     &              COEFFS,COEFFP,DLAGRF,RESE  ,LAMBDA,
+     &              COEFFF,DDEPLE,DDEPLM,MPROJT,VECTFF)
       ENDIF 
 C
   999 CONTINUE       

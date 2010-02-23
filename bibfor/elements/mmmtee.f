@@ -6,7 +6,7 @@
      &                  DISSIP,DLAGRC,DELUSU,MATREE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,6 +57,9 @@ C              'STAC' - TERME DE STABILISATION DU CONTACT
 C              'STAF' - TERME DE STABILISATION DU FROTTEMENT
 C              'COMP' - COMPLIANCE
 C              'USUR' - USURE
+C              'PCON' - PENALISATION - CONTACT
+C              'PADH' - PENALISATION - FROTTEMENT ADHERENT
+C              'PGLI' - PENALISATION - FROTTEMENT GLISSANT
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C IN  NORM   : NORMALE AU POINT DE CONTACT
@@ -112,9 +115,9 @@ C
         C3(K) = MPROJT(K,3)
 3     CONTINUE
 C
-C --- PARTIE STABILISATION DU CONTACT
+C --- PARTIE STABILISATION ET PENALISATION DU CONTACT
 C       
-      IF (PHASE.EQ.'STAC') THEN    
+      IF ((PHASE.EQ.'STAC').OR.(PHASE.EQ.'PCON')) THEN    
         DO 160 INOE1 = 1,NNE
           DO 150 INOE2 = 1,NNE
             DO 140 IDIM2 = 1,NDIM
@@ -124,15 +127,15 @@ C
                 MATREE(II,JJ) = MATREE(II,JJ) + 
      &            COEFCP*
      &            HPG*JACOBI*  
-     &            FFE(INOE1)*MPROJN(IDIM1,IDIM2)*FFE(INOE2)   
+     &            FFE(INOE1)*MPROJN(IDIM1,IDIM2)*FFE(INOE2)
   130         CONTINUE
   140       CONTINUE
   150     CONTINUE
   160   CONTINUE
 C
-C --- PARTIE STABILISATION DU FROTTEMENT
+C --- PARTIE STABILISATION ET PENALISATION DU FROTTEMENT
 C       
-      ELSEIF (PHASE.EQ.'STAF') THEN   
+      ELSEIF ((PHASE.EQ.'STAF').OR.(PHASE.EQ.'PADH')) THEN   
 C       --- PRODUIT MATR_PROJ_TANG PAR MATR_PROJ_TANG      
         DO 360 I = 1,NDIM
           DO 350 J = 1,NDIM
@@ -190,7 +193,43 @@ C       --- MATRICE [D] = [P]*[G]t
   332         CONTINUE
   342       CONTINUE
   352     CONTINUE
-  362   CONTINUE     
+  362   CONTINUE
+C
+C --- PENALISATION - PARTIE GLISSANT
+C      
+      ELSEIF (PHASE.EQ.'PGLI') THEN
+C       --- VECTEUR PROJ. BOULE SUR PLAN TGT1
+        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C1  ,D1    )    
+        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C2  ,D2    )
+        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C3  ,D3    )
+C       --- MATRICE [G] = [{D1}{D2}{D3}]        
+        DO 416 IDIM = 1,3
+          G(IDIM,1) = D1(IDIM)
+          G(IDIM,2) = D2(IDIM)
+          G(IDIM,3) = D3(IDIM)
+  416    CONTINUE                        
+C       --- MATRICE [D] = [P]*[G]t
+        DO 423 I = 1,NDIM
+          DO 424 J = 1,NDIM
+            DO 425 K = 1,NDIM
+              D(I,J) = G(K,I)*MPROJT(K,J) + D(I,J) 
+ 425        CONTINUE
+ 424      CONTINUE
+ 423    CONTINUE
+        DO 462 INOE1 = 1,NNE
+          DO 452 INOE2 = 1,NNE
+            DO 442 IDIM2 = 1,NDIM
+              DO 432 IDIM1 = 1,NDIM
+                II = NDIM*(INOE1-1)+IDIM1
+                JJ = NDIM*(INOE2-1)+IDIM2            
+                MATREE(II,JJ) = MATREE(II,JJ) - 
+     &            COEFFP*COEFFF*LAMBDA*
+     &            HPG*JACOBI*
+     &            FFE(INOE1)*D(IDIM1,IDIM2)*FFE(INOE2)
+  432         CONTINUE
+  442       CONTINUE
+  452     CONTINUE
+  462   CONTINUE
 C
 C --- PARTIE COMPLIANCE
 C      
@@ -229,7 +268,7 @@ C
   142       CONTINUE
   152     CONTINUE
   162   CONTINUE   
-C     
+C
       ELSE
         CALL ASSERT(.FALSE.)     
       ENDIF

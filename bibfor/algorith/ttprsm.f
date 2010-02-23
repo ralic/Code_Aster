@@ -1,9 +1,9 @@
       SUBROUTINE TTPRSM(NDIM  ,DDEPLE,DDEPLM,DLAGRF,COEFFR,
      &                  TAU1  ,TAU2  ,MPROJT,INADH ,RESE  ,
-     &                  NRESE )
+     &                  NRESE ,COEFFP,LPENAF)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,10 +25,11 @@ C
       IMPLICIT NONE
       INTEGER      NDIM
       REAL*8       DDEPLE(3),DDEPLM(3),DLAGRF(2)
-      REAL*8       COEFFR
+      REAL*8       COEFFR,COEFFP
       REAL*8       TAU1(3),TAU2(3),MPROJT(3,3) 
       INTEGER      INADH
-      REAL*8       RESE(3),NRESE       
+      REAL*8       RESE(3),NRESE    
+      LOGICAL      LPENAF   
 C      
 C ----------------------------------------------------------------------
 C
@@ -87,19 +88,25 @@ C
 C
 C --- SEMI-MULTIPLICATEUR DE FROTTEMENT RESE
 C
-      IF (NDIM.EQ.2) THEN
-        DO 30 I = 1,2
-          RESE(I) = DLAGRF(1)*TAU1(I)+COEFFR*DVITET(I)
-   30   CONTINUE
-      ELSE IF (NDIM.EQ.3) THEN
-        DO 31 I = 1,3
-          RESE(I) = DLAGRF(1)*TAU1(I)+
-     &              DLAGRF(2)*TAU2(I)+
-     &              COEFFR*DVITET(I)
-   31   CONTINUE
+      IF(LPENAF) THEN
+       DO 32 I = 1,3
+          RESE(I) = COEFFP*DVITET(I)
+   32   CONTINUE        
       ELSE
-         CALL ASSERT(.FALSE.)
-      END IF
+        IF (NDIM.EQ.2) THEN
+          DO 30 I = 1,2
+            RESE(I) = DLAGRF(1)*TAU1(I)+COEFFR*DVITET(I)
+   30     CONTINUE
+        ELSE IF (NDIM.EQ.3) THEN
+          DO 31 I = 1,3
+            RESE(I) = DLAGRF(1)*TAU1(I)+
+     &                DLAGRF(2)*TAU2(I)+
+     &                COEFFR*DVITET(I)
+   31     CONTINUE
+        ELSE
+          CALL ASSERT(.FALSE.)
+        END IF
+      ENDIF
 C
 C -- CALCUL DU COEF D'ADHERENCE
 C

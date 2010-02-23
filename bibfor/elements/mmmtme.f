@@ -7,7 +7,7 @@
      &                  MATRME)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,6 +59,9 @@ C              'STAC' - TERME DE STABILISATION DU CONTACT
 C              'STAF' - TERME DE STABILISATION DU FROTTEMENT
 C              'COMP' - COMPLIANCE
 C              'USUR' - USURE
+C              'PCON' - PENALISATION - CONTACT
+C              'PADH' - PENALISATION - FROTTEMENT ADHERENT
+C              'PGLI' - PENALISATION - FROTTEMENT GLISSANT
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
@@ -118,9 +121,9 @@ C
         C3(IDIM) = MPROJT(IDIM,3)
 3     CONTINUE
 C
-C --- PARTIE STABILISATION DU CONTACT
+C --- PARTIE STABILISATION ET PENALISATION DU CONTACT
 C       
-      IF (PHASE.EQ.'STAC') THEN    
+      IF ((PHASE.EQ.'STAC').OR.(PHASE.EQ.'PCON')) THEN    
         DO 200 I = 1,NNM
           DO 190 J = 1,NNE
             DO 180 K = 1,NDIM
@@ -134,9 +137,10 @@ C
   190     CONTINUE
   200   CONTINUE
 C
-C --- PARTIE STABILISATION DU FROTTEMENT
-C       
-      ELSEIF (PHASE.EQ.'STAF') THEN   
+C --- PARTIE STABILISATION DU FROTTEMENT ET
+C --- PARTIE PENALISATION DU FROTTEMENT ADHERENT
+C
+      ELSEIF ((PHASE.EQ.'STAF').OR.(PHASE.EQ.'PADH')) THEN   
 C       --- PRODUIT MATR_PROJ_TANG PAR MATR_PROJ_TANG      
         DO 360 I = 1,NDIM
           DO 350 J = 1,NDIM
@@ -192,6 +196,40 @@ C       --- MATRICE [D] = [P]*[G]t
   797     CONTINUE
   707   CONTINUE    
 C
+C --- PENALISATION - PARTIE GLISSANT
+C      
+      ELSEIF (PHASE.EQ.'PGLI') THEN
+C       --- VECTEUR PROJ. BOULE SUR PLAN TGT1
+        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C1  ,D1    )    
+        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C2  ,D2    )
+        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C3  ,D3    )
+C       --- MATRICE [G] = [{D1}{D2}{D3}]        
+        DO 416 IDIM = 1,3
+          G(IDIM,1) = D1(IDIM)
+          G(IDIM,2) = D2(IDIM)
+          G(IDIM,3) = D3(IDIM)
+ 416    CONTINUE      
+C       --- MATRICE [D] = [P]*[G]t
+        DO 423 I = 1,NDIM
+          DO 424 J = 1,NDIM
+            DO 425  K = 1,NDIM
+              D(I,J) = G(K,I)*MPROJT(K,J) + D(I,J)
+ 425        CONTINUE
+ 424      CONTINUE
+ 423    CONTINUE
+        DO 407 I = 1,NNM
+          DO 497 J = 1,NNE
+            DO 487 K = 1,NDIM
+              DO 477 L = 1,NDIM
+                II = NDIM*(I-1)+L
+                JJ = NDIM*(J-1)+K            
+                MATRME(II,JJ) = MATRME(II,JJ) + COEFFP*COEFFF*LAMBDA*
+     &                          HPG*JACOBI*FFM(I)*D(L,K)*FFE(J)
+  477         CONTINUE
+  487       CONTINUE
+  497     CONTINUE
+  407   CONTINUE    
+C
 C --- PARTIE COMPLIANCE
 C    
       ELSEIF (PHASE.EQ.'COMP') THEN
@@ -225,7 +263,8 @@ C
   132         CONTINUE
   142       CONTINUE
   152     CONTINUE
-  162   CONTINUE       
+  162   CONTINUE
+C
       ELSE
         CALL ASSERT(.FALSE.)
       

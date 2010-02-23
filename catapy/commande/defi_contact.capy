@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -409,7 +409,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                             GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
 
                                             ALGO_CONT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",
-                                                                  into=("STANDARD","AVANCE"),),
+                                                                  into=("STANDARD","AVANCE","PENALISATION"),),
 
                                             b_cont_std=BLOC(condition = "ALGO_CONT == 'STANDARD' ",
                                                             fr="Parametres de la formulation Lagrangienne",
@@ -421,6 +421,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                               COEF_STAB_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),
                                               COEF_PENA_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),
                                               ),
+                                            b_cont_pena =BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
+                                                            fr="Paramètres de la méthode pénalisée",
+                                              COEF_PENA_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
 
                                             COMPLIANCE      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
                                             b_compliance=BLOC(condition = "COMPLIANCE == 'OUI' ",fr="Parametres de la compliance",
@@ -443,7 +446,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                 ),
 
                                               ALGO_FROT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",
-                                                                    into=("STANDARD","AVANCE"),),
+                                                                    into=("STANDARD","AVANCE","PENALISATION"),),
                                               b_frot_std      =BLOC(condition = "ALGO_FROT == 'STANDARD' ",
                                                                     fr="Parametres de la formulation Lagrangienne",
                                                                    COEF_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
@@ -452,6 +455,10 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                                     fr="Parametres du Lagrangien augmenté",
                                                                    COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
                                                                    COEF_STAB_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                                                   COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                                ),
+                                              b_frot_pena =BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
+                                                                    fr="Paramètres de la méthode pénalisée",
                                                                    COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
                                                 ),
 

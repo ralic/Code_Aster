@@ -1,6 +1,6 @@
-# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
+# MODIF  DATE 22/02/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE L'OPTION TEST_MAIL DANS PROPA_FISS
-# zzzz255a.para = tps_job 250 mem_job 512Mo liste_test S
+# zzzz255b.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,28 +26,32 @@ DEBUT(CODE=_F(NOM='ZZZZ255A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F
 # ON IGNORE LE MESSAGE D'ALARME XFEM2_60 QUI DIT QUE L'OPTION TEST_MAIL A ETE
 # UTILISEE PAR L'UTILISATEUR.
 
-MaiPlate=LIRE_MAILLAGE(FORMAT='MED',
-                       INFO_MED=1,);
+PRE_GIBI() ;
+
+MaiPlate=LIRE_MAILLAGE(INFO=1,);
 
 plate=AFFE_MODELE(MAILLAGE=MaiPlate,
-                   AFFE=(_F(GROUP_MA=('All',),
+                   AFFE=(_F(GROUP_MA=('ALL',),
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),),);
 
 #***********************************
 # DEFINITION DE LA FISSURE (CERCLE)
 #***********************************
+nbcalc = 3
+rayon = 250.
+avance = 25.
 
 Fiss = [None]*2
 
 Fiss[0] = DEFI_FISS_XFEM(MODELE=plate,
                          DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
-                                      DEMI_GRAND_AXE = 250.,
-                                      DEMI_PETIT_AXE = 250.,
+                                      DEMI_GRAND_AXE = rayon,
+                                      DEMI_PETIT_AXE = rayon,
                                       CENTRE         = (0., 0., 0.),
                                       VECT_X         = (1. , 0. , 0. ),
                                       VECT_Y         = (0., 1. , 0. ),),
-                         GROUP_MA_ENRI='All',);
+                         GROUP_MA_ENRI='ALL',);
 
 
 #****************************
@@ -63,10 +67,10 @@ PROPA_FISS(MODELE=ModX,
                       FISS_PROPAGEE=Fiss[1],
                      ),
            TEST_MAIL='OUI',
-           ITERATIONS=3,
-           DA_MAX=25.,
+           ITERATIONS=nbcalc,
+           DA_MAX=avance,
            METHODE_PROPA='UPWIND',
-           RAYON=25*4,
+           RAYON=avance*4,
            ZONE_MAJ='TOUT',
            INFO=0,);
 
@@ -76,34 +80,40 @@ PROPA_FISS(MODELE=ModX,
 
 # LA PART SUIVANTE N'EST PAS UTILISEE POUR LA VERIFICATION
 # DU BON FONCTIONNEMENT DE L'OPTION TEST_MAIL.
-# ON FAIT LE TEST SUR LA VALEUR DE LA LEVEL SET NORMALE
-# AU NODE 'N1' DU MAILLAGE EN UTILISANT TEST_TABLE. CELA
-# EST OBLIGATOIRE POUR LA VALIDATION INFORMATIQUE.
-# SI L'OPTION TEST_MAIL NE MARCHE PAS, UN MESSAGE D'ALERTE
-# EST ISSU PAR PROPA_FISS LUI-MEME ET DONC LA VALIDATION
-# INFORMATIQUE S'ARRETE.
+# ON PROPOSE DE FAIRE UN TEST UN TEST UN PEU EQUIVALENT A
+# TEST_MAIL POUR VERIFIER LA PROPAGATION HOMOTHETIQUE DU FRONT
 
-CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+
+
+CHLT=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                 OPERATION='EXTR',
-                NOM_CHAM='LNNO',
+                NOM_CHAM='LTNO',
                 FISSURE=Fiss[1],);
 
-TABLSN = POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
-                                 NOEUD='N1',
-                                 CHAM_GD=CHLN,
+TABLST = POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
+                                 GROUP_NO=('A','B','C','D','E','F','G','H',),
+                                 CHAM_GD=CHLT,
                                  TOUT_CMP='OUI',
                                  OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=TABLSN,);
+IMPR_TABLE(TABLE=TABLST,);
 
-TEST_TABLE(TABLE=TABLSN,
+dist = 500.*sqrt(2.) - (rayon+nbcalc*avance)
+
+TEST_TABLE(TABLE=TABLST,
            REFERENCE='NON_REGRESSION',
            NOM_PARA='X1',
-           PRECISION=10.,
+           PRECISION=0.05,
            TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE= 50.0  )
+           CRITERE='RELATIF',
+           VALE= dist  )
 
-
+TEST_TABLE(TABLE=TABLST,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='X1',
+           PRECISION=0.05,
+           TYPE_TEST='MIN',
+           CRITERE='RELATIF',
+           VALE= dist  )
 
 FIN();

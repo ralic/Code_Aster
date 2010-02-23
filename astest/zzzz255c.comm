@@ -1,4 +1,4 @@
-# MODIF  DATE 01/02/2010   AUTEUR MESSIER J.MESSIER 
+# MODIF  DATE 22/02/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE L'OPTION INITIALISATION/ELLIPSE DANS PROPA_FISS
 # zzzz255c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,14 +22,19 @@
 DEBUT(CODE=_F(NOM='ZZZZ255C', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
          DEBUG=_F(SDVERI='OUI'), )
 
-MaiPlate=LIRE_MAILLAGE(FORMAT='MED',
-                       INFO_MED=1,);
+PRE_GIBI() ;
+
+MaiPlate=LIRE_MAILLAGE(INFO=1,);
 
 plate=AFFE_MODELE(MAILLAGE=MaiPlate,
-                   AFFE=(_F(GROUP_MA=('All',),
+                   AFFE=(_F(GROUP_MA=('ALL',),
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),),);
-nbcalc= 2
+nbcalc= 3
+nbcalc= nbcalc +2
+rayon = 250.
+avance = 25.
+
 MAX =  [None]*(nbcalc)
 MAT =  [None]*(nbcalc)
 FF =  [None]*(nbcalc)
@@ -48,8 +53,8 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
          FORM_FISS='ELLIPSE',
          INFO=2,
          CENTRE = (0., 0., 0.),
-         DEMI_GRAND_AXE =250,
-         DEMI_PETIT_AXE =250,
+         DEMI_GRAND_AXE =rayon,
+         DEMI_PETIT_AXE =rayon,
          VECT_X         =(1.,0.,0.),
          VECT_Y         =(0.,1.,0.),
          ANGLE_ORIG        = 0.,
@@ -58,44 +63,7 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
          GROUP_MA_FOND='FOND',
          NB_POINT_FOND = 21,
          );
-         
-MODEL[0]=AFFE_MODELE(MAILLAGE=MAT[0],
-                   AFFE=(_F(GROUP_MA=('All',),
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),),);
-                            
-FF[0]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_0',
-                              GROUP_MA_FOND='FOND_0',),
-                GROUP_MA_ENRI='All',
-                 ORIE_FOND=_F(PFON_INI  = (-500., 250., 0.),
-                              VECT_ORIE = (0. , 0. , 1. ),
-                              POINT_ORIG = (0., 0., 0.),),
-                   MODELE=MODEL[0],
-                   INFO=1
-                   );
-# TEST TABLE (VERIFICATION INFORMATIQUE)
-CHLT[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                OPERATION='EXTR',
-                NOM_CHAM='LTNO',
-                FISSURE=FF[0],);
 
-TABLST[0] = POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
-                                 NOEUD='N1',
-                                 CHAM_GD=CHLT[0],
-                                 TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
-
-# NOEUD N1 = UN DES COINS DE LA PLAQUE, 
-# DISTANCE A LA FISSURE = DEMI-DIAGONALE - RAYON 
-d0 = 500.*sqrt(2.)-250.
-
-TEST_TABLE(TABLE=TABLST[0],
-           REFERENCE='NON_REGRESSION',
-           NOM_PARA='X1',
-           PRECISION=0.02,
-           TYPE_TEST='MAX',
-           CRITERE='RELATIF',
-           VALE= d0  )
 
 #***********************************
 # PROPAGATION DE LA FISSURE (K1 = CONSTANTE)
@@ -107,90 +75,82 @@ nu=0.3
 rho=7800.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 
+for i in range(0,(nbcalc-1)) :
 
-MAX[1]=CO('MAX_1')
-MAT[1]=CO('MAT_1')
 
-PROPA_FISS( METHODE_PROPA='MAILLAGE',
+ MODEL[i]=AFFE_MODELE(MAILLAGE=MAT[i],
+                   AFFE=(_F(GROUP_MA=('ALL',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),),);
+                            
+ FF[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
+                              GROUP_MA_FOND='FOND_'+str(i),),
+                 GROUP_MA_ENRI='ALL',
+                 ORIE_FOND=_F(PFON_INI  = (-500., rayon, 0.),
+                              VECT_ORIE = (0. , 0. , 1. ),
+                              POINT_ORIG = (0., 0., 0.),),
+                   MODELE=MODEL[i],
+                   INFO=1
+                   );
+                   
+ if ( i != nbcalc ) :
+   MAX[i+1]=CO('MAX_%d'%(i+1))
+   MAT[i+1]=CO('MAT_%d'%(i+1))
+   PROPA_FISS( METHODE_PROPA='MAILLAGE',
             LOI_PROPA=_F(LOI='PARIS',
                         M=1.,
                         C=1.,
                         N=0.,
                         MATER=ACIER,
                          )  ,
-            FISSURE=_F(FISS_ACTUELLE=FF[0],
-                 MAIL_ACTUEL =  MAX[0],
-                 MAIL_PROPAGE = MAX[1] ,
+            FISSURE=_F(FISS_ACTUELLE=FF[i],
+                 MAIL_ACTUEL =  MAX[i],
+                 MAIL_PROPAGE = MAX[i+1] ,
                  GROUP_MA_FISS='FISS',
                  GROUP_MA_FOND='FOND',    
                  TABLE=TABK,
                   ),
             COMP_LINE=_F(COEF_MULT_MINI=0.,                                 
-                        COEF_MULT_MAXI=1.),   
+                         COEF_MULT_MAXI=1.),   
             MAIL_STRUC=MaiPlate,
-            MAIL_TOTAL = MAT[1],
+            MAIL_TOTAL = MAT[i+1],
             DA_MAX=25,
-            ITERATION = 1,
+            ITERATION = i+1,
             INFO=2,);
 
-MODEL[1]=AFFE_MODELE(MAILLAGE=MAT[1],
-                   AFFE=(_F(GROUP_MA=('All',),
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),),);
-                            
-FF[1]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_1',
-                              GROUP_MA_FOND='FOND_1',),
-                GROUP_MA_ENRI='All',
-                 ORIE_FOND=_F(PFON_INI  = (-500., 250., 0.),
-                              VECT_ORIE = (0. , 0. , 1. ),
-                              POINT_ORIG = (0., 0., 0.),),
-                   MODELE=MODEL[1],
-                   INFO=1
-                   );
                    
 #****************************
 # TEST TABLE (VERIFICATION INFORMATIQUE)
 #****************************
 
-CHLT[1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+CHLT[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                 OPERATION='EXTR',
                 NOM_CHAM='LTNO',
-                FISSURE=FF[1],);
+                FISSURE=FF[i],);
 
-TABLST[1] = POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
-                                 NOEUD='N1',
-                                 CHAM_GD=CHLT[1],
+TABLST[i] = POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
+                                 GROUP_NO=('A','B','C','D','E','F','G','H',),
+                                 CHAM_GD=CHLT[i],
                                  TOUT_CMP='OUI',
                                  OPERATION='EXTRACTION',),);
 
-#d1 = sqrt(500*500*2) - 250. -25.
-d1 = 500.*sqrt(2.)-250.-25.
 
-TEST_TABLE(TABLE=TABLST[1],
+d1 = 500.*sqrt(2.)- rayon - (nbcalc-2)*avance
+
+TEST_TABLE(TABLE=TABLST[i],
            REFERENCE='NON_REGRESSION',
            NOM_PARA='X1',
-           PRECISION=0.02,
+           PRECISION=0.05,
            TYPE_TEST='MAX',
            CRITERE='RELATIF',
            VALE= d1  )
 
-CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                OPERATION='EXTR',
-                NOM_CHAM='LNNO',
-                FISSURE=FF[1],);
-
-TABLSN = POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
-                                 NOEUD='N1',
-                                 CHAM_GD=CHLN,
-                                 TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
-
-TEST_TABLE(TABLE=TABLSN,
+TEST_TABLE(TABLE=TABLST[i],
            REFERENCE='NON_REGRESSION',
            NOM_PARA='X1',
-           PRECISION=1.,
-           TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE= -50.0  )
+           PRECISION=0.05,
+           TYPE_TEST='MIN',
+           CRITERE='RELATIF',
+           VALE= d1  )
 
 FIN();

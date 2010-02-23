@@ -1,0 +1,2064 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 22/02/2010 - 16:56:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014022 DU 2009-10-12 11:19:21
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   CTC2 - Mxc3xa9thodes pxc3xa9nalisxc3xa9es pour le contact et le frottement
+FONCTIONNALITE
+   [Restitution des travaux des stages de Anh Dung Khuong et Tanguy Mathieu]
+   
+   Présentation
+   ============
+   Développement de la méthode pénalisée pour traiter des problèmes de contact/frottement en
+   méthode continue.
+   
+   Utilisation
+   ===========
+   Dans le fichier de commande, si la formulation du contact est 'CONTINUE', on peut
+   maintenant préciser que ALGO_CONT et/ou  ALGO_FROT valent 'PENALISATION'. On précise alors
+   les valeurs des coefficients de pénalisation COEF_PENA_CONT et  COEF_PENA_FROT
+   
+   Implémentation
+   ==============
+   Deux booléen sont créés dans les  te0364.f et te0365.f détectant l'activation de la
+   pénalisation. La méthode pénalisée pour le contact (respectivement de frottement) est
+   activée si COEF_REGU_CONT et COEF_STAB_CONT (respectivement COEF_REGU_FROT et
+   COEF_STAB_FROT) sont nuls et si  COEF_PENA_CONT (respectivement COEF_PENA_FROT) est non
+   nul (ainsi, le choix de l'algorithme 'PENALISATION' apparaît comme un cas particulier de
+   l'algorithme 'AVANCE'). 
+   Ces booléens sont ensuite transmis aux routines d'aiguillage mmmmat.f et mmmvec.f. Ces
+   routines permettent, suivant que l'on est dans une phase de contact, de frottement
+   adhérent, glissant, etc, d'écrire dans les blocs de matrices et de second membres appropriés.
+   
+   Validation
+   ==========
+   Deux cas tests ont été réalisés: un en contact pur, basé sur le cas test ssnp121g et un
+   autre en contact-frottant, basé sur le ssnv128r.
+   
+   Impacts
+   =======
+   CAPY :
+   defi_contact.capy
+   
+   FORTRAN :
+   cazocc.f mmmmat.f mmmtcc.f mmmtee.f mmmtem.f mmmtff.f mmmtme.f mmmtmm.f mmmtuu.f mmmvcc.f
+   mmmvec.f mmmvee.f mmmvff.f mmmvmm.f mmmvuu.f te0364.f te0365.f te0366.f te0367.f ttprsm.f
+   
+   Les routines X-FEM  te0366.f et te0367.f ne sont impactées que parce que la liste des
+   arguments de ttprsm.f a été modifiée
+   
+   Cas tests :
+   ssnp121p
+   ssnv128w
+   
+   Perspectives
+   ============
+   Le même travail sera effectué sous X-FEM
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.52,V6.03.121,V6.04.128
+VALIDATION
+   astout contact continu + ssnp121p,ssnv128w
+NB_JOURS_TRAV  : 50.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012376 DU 2008-08-08 08:15:23
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   SV04 - MUMPS dans les cas-tests de suivi de performances
+FONCTIONNALITE
+   Cas-tests de performances
+   =========================
+   
+   On ajoute à la base des tests de perfs 4 modélisations d'un calcul linéaire sur la pompe RIS.
+   
+   Détails
+   =======
+   
+   Les 4 modélisations (E,F,G,H) viennent en complément de celles restituées par N. Sellenet
+   dans la fiche 12620.
+   Il s'agit ici d'utiliser le solveur linéaire MUMPS et d'activer les fonctionnalités :
+   * partitionnement par sous-domaines (SD)
+   * matrice distribuée
+   * out-of-core (OOC)
+   
+   Ce qui différencie les 4 modélisations est le nombre de processeurs utilisés pour le
+   calcul : de 2 à 16.
+   Pour le cas à 16 processeurs, on désactive l'OOC car le gain en mémoire par processeur ne
+   justifie alors plus la perte en temps (cf. CR-I23-2009-057 de O. Boiteau).
+   
+   Remarque
+   ========
+   
+   Le calcul passe plus de temps dans le découpage en SD et la distribution des mailles que
+   dans le calcul parallèle lui-même. Le speed-up doit donc être mesuré sur la commande
+   MECA_STATIQUE essentiellement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.253
+VALIDATION
+   perf009
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR fournier     FOURNIER Isabelle      DATE 22/02/2010 - 13:26:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013988 DU 2009-10-07 08:58:53
+TYPE aide utilisation concernant Salome (VERSION 2008.1)
+TITRE
+   creation d'un volume avec une fissure debouchante
+FONCTIONNALITE
+   Pour l'étude concernée, l'utilisateur effectuera un maillage de la structure 
+   sans fissure et utilisera le script joint sur Salome5.1.2 pour dédoubler les 
+   noeuds sur les lèvres de la fissure ainsi que les faces sur la levre de la 
+   fissure.
+   Ce script prend un fichier maillage MED avec les groupes suivants : 
+   A_DOUBLER_N : noeuds à dédoubler
+   LEVRE_SUP : faces sur la lèvre de la fissure
+   SUR_FISS_V : volumes au dessus de la fissure qui auront les nouveaux noeuds
+   SUR_FISS_F : faces sur les volumes de SUR_FISS_V
+   SUR_FISS_E : edges sur les volumes de SUR_FISS_V
+   
+   Il a en sortie un fichier maillage MED où les noeuds et les faces ont été 
+   dédoublés : on a donc un groupe NEW_NODE qui a été créé avec les nouveaux 
+   noeuds et un groupe LEVRE_INF qui a été créé avec les nouvelles faces.
+   
+   On peut voir fonctionner le script fissure_ailette.py sur le fichier MED 
+   joint pour test.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014147 DU 2009-11-06 09:51:30
+TYPE aide utilisation concernant Salome (VERSION 2008.1)
+TITRE
+   Creation de groupes de mailles aprxc3xa8s extrusion
+FONCTIONNALITE
+   Problème : Récupération dans un groupes des faces de la surface terminale dans 
+   un maillage créé par extrusion d'une surface initiale rugueuse.
+   
+   Analyse : Il faut privilégier dans le cas général l'extrusion dans GEOM mais 
+   dans ce cas la surface était maillée par BLSURF qui n'accepte pas d'être en sous-
+   maillage. Il faut donc bien dans ce cas générer l'extrusion dans SMESH.
+   
+   Deux solutions possibles avec une préférence pour la première plus générale : 
+   - soit on génère par translation la surface terminale dans GEOM et on utilise le 
+   filtre (BelongToGEom) pour récupérer les mailles mais attention à la tolérance 
+   donnée qui doit être plus petite que la hauteur des mailles notamment
+   - soit on groupe toutes les "free faces" et on enlève les faces des deux groupes 
+   générés automatiquement lors de l'extrusion qui sont les faces de la surface 
+   initiale les faces latérales.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012933 DU 2008-12-03 10:10:13
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 896 : Advanced mesh infos sur un groupe de mailles ne donne pas des informations avancxc3xa9es
+FONCTIONNALITE
+   Salome-Meca 2010.1 : La fonction 'Advanced Mesh Info' sur un groupe de mailles 
+   donne les informations nombre d'élements par types et non plus seulement le 
+   nombre d'entités.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013044 DU 2009-01-12 10:29:31
+TYPE evolution concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 972 : SALOME : "Scalar Map" + "Shrink" + "Surface Frame"
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Possibilité de modifier le coefficient du shrink dans VISU.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013045 DU 2009-01-12 10:37:43
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 957 : vue "Gauss Points" + Shrink
+FONCTIONNALITE
+   Salome-Meca 2010.1 : La transparence des points de Gauss est opérationelle.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013111 DU 2009-01-30 16:33:51
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   Crxc3xa9ation d'une tuyauterie xc3xa0 partir d'une ligne brisxc3xa9e
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Une ligne de tuyauterie est modélisable dans Salome via le 
+   Sketcher 3D qui permet de définir les tronçons droits puis le Fillet 1D qui 
+   permet de réaliser les coudes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013129 DU 2009-02-09 17:44:45
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   Edition de groupes dans le maillage
+FONCTIONNALITE
+   Salome-Meca 2010.1 : On peut via 'Edition as Standalone' modifier un groupe créé 
+   à partir d'un groupe géométrique.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013180 DU 2009-03-04 13:39:12
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 981 : couleurs des arxc3xaates VISU surfaceframe
+FONCTIONNALITE
+   Salome-Meca 2010.1 : La couleur des arêtes dans une visu surface-frame est 
+   modifiable par l'utilisateur. Il peut aussi la définir au niveau des Préférences.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013243 DU 2009-03-24 10:20:05
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 997 : imposer des points de passage au maillage sans partitionnement
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Dans SMESH, une nouvelle hypothèse 1D est implémentée qui 
+   permet de définir une liste de points de passage en donnant leur abscisse 
+   curviligne et le nombre de subdivisions entre chacune de ces abscisses.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013359 DU 2009-04-30 08:45:23
+TYPE evolution concernant Salome (VERSION 2009.2)
+TITRE
+   PAL 1020 : Maillage rayonnant
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Dans SMESH, un nouvel algorithme Radial Quadrangle 1D-2D 
+   permet de mailler un disque ou une portion de disque avec une première couronne 
+   de triangles et ensuite des quadrangles. On obtient donc un maillage rayonnant.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013360 DU 2009-04-30 08:55:03
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 1021 : Passage par une liste de points d'un edge dans un maillage hexaxc3xa9drique
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Dans SMESH, une nouvelle hypothèse 1D est implémentée qui 
+   permet de définir une liste de points de passage en donnant leur abscisse 
+   curviligne et le nombre de subdivisions entre chacune de ces abscisses.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011310 DU 2007-10-02 10:39:30
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   Creation des groupes du maillage au moment de lancer le calcul
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Sur un cas d'étude, on peut créer les groupes du maillage à partir 
+   des noms des groupes géométriques présents dans le fichier de commandes Aster.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011408 DU 2007-10-26 14:37:46
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 609 : hide scalar bar
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Nouvelle fonctionalité 'hide scalar bar' depuis Salome5.1.1
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011542 DU 2007-12-10 10:41:11
+TYPE evolution concernant Salome (VERSION 2.x)
+TITRE
+   PAL 627 : Evolution menu pop-up SMESH
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Sous menu 'create sub mesh' disponible sur un objet 
+   maillage (depuis Salome 5.1.1)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011663 DU 2008-01-22 14:08:44
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 657 : Pouvoir dxc3xa9finir "start point" et "end point" pour l'ellipse
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Constructeur d'un arc d'ellipse par definition du centre et 
+   de deux extrémités (disponible depuis Salome 5.1.1)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011810 DU 2008-02-27 18:26:58
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 564 : GEOM : conge 2D
+FONCTIONNALITE
+   Salome-Meca 2010.1: Nouvelles Fonctionalités Fillet 1D et Fillet 2D
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011913 DU 2008-04-03 14:25:16
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 703 : Afficher les noms des groupes de mailles et la couleur associxc3xa9e
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Affichage en légende de la liste des noms de groupes de 
+   mailles et de noeuds avec la couleur associée dans SMESH et sans couleur 
+   associée dans VISU.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012145 DU 2008-06-02 08:15:08
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 1078 : couleur point / mxc3xa9moire du shading et des couleurs
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Les paramètres Couleur et shading/wireframe sont sauvegardés
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012199 DU 2008-06-17 12:21:43
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 778 : Scalar Bar - Augmentation de la taille par dxc3xa9faut (ratio > 100%)
+FONCTIONNALITE
+   Salome-Meca 2010.1 : En jouant sur les différents paramètres
+   height qui donne la taille de l'emplacement de la scalarbar et les pourcentages 
+   répartis entre le titre, les labels et la barre, on arrive à dimensionner 
+   l'affichage de la scalarbar. Les valeurs par défaut ont été mises de façon 
+   qu'elle soit lisible.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012202 DU 2008-06-17 13:28:49
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 760 : Modification d'un groupe lorsqu'il a xc3xa9txc3xa9 crxc3xa9xc3xa9 xc3xa0 partir d'un groupe GEOM
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Une fonction Edit Group As Standalone permet de modifier un 
+   groupe de maille initialement créé sur un groupe géométrique.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012203 DU 2008-06-17 13:30:11
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 761: Filtres de crxc3xa9ation de groupes de mailles
+FONCTIONNALITE
+   Salome-Meca 2010.1 : On peut créer des groupes de mailles en utilisant les 
+   nouveaux filtres par type de maille (linéaire/quadratique), par forme de mailles 
+   (triangles, quadrangles,tétraèdres, pyramides, ...), par couleur, par bord libre.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012204 DU 2008-06-17 13:31:25
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 762 : Dxc3xa9finition de groupes xc3xa0 partir d'autres groupes existants
+FONCTIONNALITE
+   Salome-Meca 2010.1 : On peut créer un groupe de mailles 
+   - à partir d'un ou plusieurs groupes de mailles existants
+   - à partir d'un groupe de mailles de dimension supérieure (groupe de noeuds à 
+   partir d'un groupe de volume)
+   On peut ensuite le modifier en ajoutant des entités par filtrage.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012207 DU 2008-06-17 13:35:13
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 765 : Valeurs par dxc3xa9faut des hypothxc3xa8ses
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Les hypothèses des algorithmes de maillage ont des valeurs 
+   par défaut compatibles avec les dimensions de l'objet à mailler, soit une 
+   longueur d'éléments définie par la dimension maximale divisée par 10, soit un 
+   nombre de segments de 15. ces valeurs sont modifibales dans les préférences.
+   De plus, les hypothèses automatiques pour un maillage hexaédriques sont basées 
+   sur le nombre de segments et non sur une longueur d'élément comme auparavant, ce 
+   qui permet d'aboutir dans un plus grand nombre de cas.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014060 DU 2009-10-19 07:36:16
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 1141 : Creation piece 3D raccordxc3xa9e xc3xa0 du 2D
+FONCTIONNALITE
+   Besoin : 
+   ========
+   Dans l'étude jointe représentative d'un besoin sur des structures très 
+   complexes, on a un objet 3D sur lequel on raccorde un objet 2D. 
+   Pour raccorder deux objets, on a trois possibilités dans GEOM : 
+   - Fuse : ne marche que sur des objets de même dimension 
+   - Partition : on a des extra-edges non supprimables
+   - Compound + Glue : le glue edge n'existe pas
+   
+   Salome-Meca 2010.1 :
+   ==================
+   La partition du cube et de la face translatée est correctement réparée avec 
+   l'outil "Remove Extra Edge" et l'option "Union Faces ..." cochée.
+   La démarche est donc d'effectuer une partition avec l'option "keep shape of 
+   lower type" puis de passer par un remove extra_edge avec l'option "union faces"
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012208 DU 2008-06-17 13:37:12
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 766 : Hypothxc3xa8ses Longueur maximale
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Une hypothèse 1D  MaxSize a été introduite et les 
+   hypothèses automatiques pour un maillage tetrahedrique sont maintenant basées 
+   sur une MaxSize préestimée à partir de la taille de l'objet à mailler.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012210 DU 2008-06-17 13:39:27
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 768 : Validation par prxc3xa9-visualisation 1D/2D
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Une prévisualisation 1D/2D est disponible avant le calcul 
+   du maillage.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012212 DU 2008-06-17 13:42:28
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 770 : Analyse de la qualitxc3xa9 d'un maillage (noeuds orphelins)
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Une analyse des noeuds orphelins est disponible (intégrée 
+   dans Salome 5.1.1).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012213 DU 2008-06-17 13:43:53
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 771 : Extrusion (Rxc3xa9volution) suivant norma
+FONCTIONNALITE
+   Salome-Meca 2010.1 : on peut extruder (ou faire une révolution) selon la normale 
+   à une face.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012214 DU 2008-06-17 13:45:56
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 772 : Lisibilitxc3xa9 du script SMESH
+FONCTIONNALITE
+   Salome-Meca 2010.1 : La lisibilité du dump python SMESH d'une étude a été 
+   fortement remanié pour être plus lisible :
+   - ne pas créer d'objets non utilisés 
+   - ne pas repreciser les comportements qui sont les comportements par défaut 
+   - opter pour une écriture plus synthétique dans la mesure ou cela est possible.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validat-ion IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014187 DU 2009-11-16 14:24:33
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   : Pas de "Use only groups" sur animations
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Le filtrage groupe est possible pour les animations.
+   Le besoin pour l'exportation des images lors d'une animation est portée par la 
+   fiche issue12825.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012219 DU 2008-06-19 13:22:29
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 779 : Il faudrait pouvoir filtrer par les groupes tous les types de vues.
+FONCTIONNALITE
+   Salome-MEca 2010.1 : Le filtrage par groupes est possibles pour tous les types 
+   de vues dans VISU.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012332 DU 2008-07-23 09:27:21
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 799 : Construction d'une tuyauterie filaire par succession de lignes droites
+FONCTIONNALITE
+   Salome-Meca 2010.1 : un sketcher 3D est disponible et permet de créer une ligne 
+   de tuyauterie par succession de tronçons droits. Le fillet 1D permet ensuite de 
+   créer les coudes sur cette ligne.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012484 DU 2008-09-16 15:16:02
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 813 : Argument de rxc3xa9cupxc3xa9ration des sous-objets
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Une fonction RestoreSubshapes permet à partir d'un objet de 
+   récupérer par GetInPlace une liste d'objets. Cela correspond au cochage de la 
+   case 'Set presentation parameters and subshapes' qui permet lors d'une partition 
+   par exemple de récupérer les groupes sur l'objet partitionné.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012556 DU 2008-09-29 15:13:01
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 827 : Indiquer le nombre d'objets prxc3xa9sents dans un solide
+FONCTIONNALITE
+   Salome-Meca 2010.1 : deux fonctions python sont disponibles NumberOfSolids et 
+   NumberOfSubShapes(theShape, theShapeType).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012751 DU 2008-10-30 11:35:34
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 862 : SMESH : generation des elements de peau
+FONCTIONNALITE
+   Salome-Meca 2010.1 : On dispose d'une fonction 'Create 2D Mesh from 3D ' de 
+   modification du maillage qui permet de générer les éléments 2D d'un maillage qui 
+   ne comporte que des éléments volumiques.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012762 DU 2008-11-03 07:19:45
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 861 : Affichage renseignements sur les noeuds des xc3xa9lxc3xa9ments (Mesh Element Info)
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Lorsqu'on active Mesh Element Info sur une maille, on a le 
+   type de la maille ainsi que les numéros et coordonnées des différents noeudsla 
+   liste des noeuds associés à la maille et la connectivité avec les autres mailles.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012838 DU 2008-11-18 12:29:16
+TYPE evolution concernant Salome (VERSION 7.0)
+TITRE
+   PAL 874 : Courbe d'xc3xa9volution temporelle d'une variable pour une localisation
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Une fonction Evolution on Point est disponible en post-
+   traitement et permet de tracer la courbe temporelle d'une composante d'un champ 
+   aux noeuds en un point du maillage
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012829 DU 2008-11-18 08:30:29
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 869 : Orientation des edges
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Dans GEOM, on peut voir l'orientation des edges par une 
+   flèche et ainsi les grouper. 
+   Dans SMESH, pour les hypothèses 1D concernées comme l'hypothèse 'Start and End 
+   Length', on peut donner des groupes géométriques d'edges où l'hypothèse est à 
+   inverser.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012836 DU 2008-11-18 09:11:32
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 899 : Redxc3xa9finition de gxc3xa9omxc3xa9tries (points) xc3xa0 partir de gxc3xa9omxc3xa9tries existantes
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Creation d'un point sur une face à partir des coordonnées 
+   X, Y, Z.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012869 DU 2008-11-20 12:46:21
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   PAL 887 : Introduction des mailles OD (POI1) dans Salome
+FONCTIONNALITE
+   Salome-Meca 2010.1 : La notion de maille OD a été introduite dans SMESH. On peut 
+   en créer, les importer/exporter au format MED.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012931 DU 2008-12-03 10:04:11
+TYPE anomalie concernant Salome (VERSION 2008.2)
+TITRE
+   PAL 928 : Store/Restore Gui state ne remet pas le nom de la scalar bar d'une deformed shape on scalar bar
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Le titre de la Scalar Bar est bien sauvegardé pour une 
+   vue 'Deformed Shape and Scalar Map'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013009 DU 2008-12-22 12:21:19
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 922 : Sxc3xa9lection des entitxc3xa9s avec CTRL et SHIFT conduit xc3xa0 un popup diffxc3xa9rent
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Etant en QT4, le bug QT3 de sélection multiple par shift 
+   des groupes qui ne permettait pas la visualisation est résolu.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013038 DU 2009-01-08 15:29:36
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 919 : create group/diffxc3xa9rents numxc3xa9ros pour une mxc3xaame shape
+FONCTIONNALITE
+   Fiche sans suite : 
+   Le numéro d'une entité dans un groupe varie selon si c'est un groupe ou 
+   un sous-groupe. Pour garder le même ID, il faut utiliser la restriction de 
+   sélection lors de la création du groupe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013042 DU 2009-01-09 08:58:49
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 921 : Alignement  xc3xa0 modifier pour l'entrxc3xa9e des noms dans SMESH.
+FONCTIONNALITE
+   Classement sans suite : La présentation des noms de groupes présentant un grand 
+   nombre de blancs en fin de nom qui conduit a ne pas voir le nom du groupe sans 
+   deplacement dans la case est très particulier.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.001
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013109 DU 2009-01-30 13:23:08
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 954 : Reprxc3xa9sentation des points de Gauss d'un champ constant
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Une valeur de précision (associée aux propriétés de la 
+   Scalar bar) est modifiable par l'utilisateur. Avec les valeurs de précision à 
+   défaut (=6) pour la scalar bar, les points de Gauss du champ de l'utilisateur 
+   ont la même taille et la même couleur. Si cette précision est à 16, elle 
+   diffèrent en taille et couleur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013161 DU 2009-02-24 16:20:59
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   MESH clipping 2 (idem 13160)
+FONCTIONNALITE
+   Fiche sans suite car reprise dans la fiche issue13160
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.005
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013194 DU 2009-03-09 18:29:45
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   "Create Groups from geometry" fait des choses bizarres
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Etant en QT4, le bug QT3 de sélection multiple par shift 
+   des groupes est résolu.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013228 DU 2009-03-17 09:39:15
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 992 : Maillage hexaedrique quadratique : interpolation des noeuds milieux
+FONCTIONNALITE
+   Salome-Meca 2010.1 : lorsqu'on génère un maillage hexaédrique et quadratique sur 
+   des mailles courbées en demandant à ce que les noeuds milieux suivent
+   la géométrie, les noeuds milieux sont maintenant générés au bon endroit à 
+   l'intérieur du volume.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013253 DU 2009-03-27 11:47:00
+TYPE anomalie concernant Salome (VERSION 2009.1)
+TITRE
+   PAL 1022 : Crash avec FindNodeClosestTo dans une nouvelle xc3xa9tude
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Correction de l'anomalie lors de l'appel de la fonction 
+   FindNodeClosestTo dans l'interpréteur python embarqué.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013254 DU 2009-03-27 11:58:59
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 999 : VISU : Transparence des points de Gauss
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Dans VISU, la transparence des points de Gauss est active.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013313 DU 2009-04-15 09:53:15
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   La relecture d'un script Salome ne fonctionne pas avec un "explode" en "solid"
+FONCTIONNALITE
+   Fiche fermée : erreur d'utilisation : la fonction SubShapeAllSorted n'a en 
+   sortie que deux arguments et non quatre car il n'y a que deux solides 
+   présents.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013414 DU 2009-05-14 12:02:38
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1032 : caractere accentue dans un chemin salome
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Lors du dump study d'une étude, le chemin doit comporter 
+   uniquement des lettres (non accentuées), des chiffres et des underscores et doit 
+   commencer par une lettre ou un underscore. Cela permet d'effectuer le chargement 
+   du script ensuite qui est informatiquement parlant l'import d'un module python.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013421 DU 2009-05-15 09:09:21
+TYPE anomalie concernant Salome (VERSION 2009.1)
+TITRE
+   Taille mxc3xa9moire non respectxc3xa9e dans module Aster
+FONCTIONNALITE
+   Salome-Meca 2010.1 : La gestion de la mémoire a été corrigée suite à la réécriture du 
+   module ASTER.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013442 DU 2009-05-20 14:26:04
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1035 : Affichage scalar bar incohxc3xa9rent
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Dans VISU, pour la vue aux points de Gauss, l'échelle 
+   locale et globale sont maintenant basées toutes les deux sur les valeurs minimum 
+   et maximum des points de Gauss de tous les éléments. Dans le cas particulier où 
+   on n'a qu'un seul instant, elles sont donc identiques.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013484 DU 2009-06-08 11:00:26
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1046 : Pb revolution maillage quadratique
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Dans SMESH, la révolution d'un maillage quadratique est 
+   corrigée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013485 DU 2009-06-08 11:35:47
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1047 : Impossible de sxc3xa9lectionner un pentaxc3xa8dre pour creation de groupe de maille
+FONCTIONNALITE
+   Salome-Meca 2010.1 : La sélection graphique de pentaèdre pour créer un groupe de 
+   mailles est corrigée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013506 DU 2009-06-15 11:43:36
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1058 : GEOM/Repair/supressFaces
+FONCTIONNALITE
+   En fait, il n'y a pas d'anomalie. En effet, lorsqu'on obtient un compound en résultat, c'est qu'il 
+   contient un shell + une/des faces non connectées. On le voit de la manière suivante : 
+   - On effectue un "explode" en shell du résultat --> une seule Shell_1
+   - On effectue sur Shell_1 un "Measure"/"What Is" --> On a une face de moins que sur le résultat
+   La face concernée est minuscule et ne se voit pas sauf à zoomer fortement dans la zone.
+   Fiche classée résolue sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013508 DU 2009-06-15 12:32:52
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1060 : Supress faces+MakeShell
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Le problème de compatibilité de maillage avec BLSURF a été 
+   résolu par la correction de l'objet qui présentait, sans doute suite à des 
+   suppressions de faces, des faces non correctes. BLSURF aboutit alors sur le 
+   shell ainsi corrigé à un maillage compatible.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013539 DU 2009-06-18 15:24:52
+TYPE anomalie concernant Salome (VERSION 2009.2)
+TITRE
+   PAL 1057 : Point coordinates : donne toujours 0
+FONCTIONNALITE
+   Salome-Meca 2010.1 : L'anomalie sur l'affichage des coordonnées d'un point 
+   n'apparaissait que pour la version Salome 4.1.5.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013577 DU 2009-06-30 07:57:19
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL1066 / PAL 1067 : probleme creation chanfrein
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Correction des anomalies sur l'opérateur de chamfrein. 
+   Les cas d'applications sont le Té et un quartier sain du Zoom_alternateur.
+   NB1 : Pour les deux objets, il faut appliquer auparavant un RemoveExtraEdges 
+   avec l'option "Union faces lying on common surface" pour éliminer les doubles 
+   faces.
+   NB2 : L'objet Zomm-alternateur a été sans doute corrompu lors d'une opération de 
+   construction et ne passe pas en globalité la fonction RemoveExtraEdges sur trois 
+   des quartiers.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013579 DU 2009-06-30 11:21:58
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1112 : problxc3xa8me opxc3xa9ration multi trou avec gxc3xa9om
+FONCTIONNALITE
+   La fiche est classée sans suite : l'exemple joint ne présente pas d'anomalie, 
+   l'opération multi-trou est possible. Si on retrouve le cas, une fiche sera 
+   réouverte.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013582 DU 2009-06-30 11:33:54
+TYPE anomalie concernant Salome (VERSION 2009.1)
+TITRE
+   probleme creation piece 3D raccordxc3xa9e xc3xa0 du 2D
+FONCTIONNALITE
+   L'objet contenant des objets 3D et un objet 2D, il faut avoir un algorithme 
+   2D. En effet, l'algorithme utilisé NET1D-2D-3D est un algo global 3D. Il 
+   faut donc créer un submesh sur l'objet 2D associé à l'algorithme NETGEN2D-1D.
+   
+   De plus, pour avoir un maillage compatible du compound, il faut que le 
+   tube2D partage son coutour avec le 3D. Il faut donc le créer par extrusion 
+   d'une ligne du 3D.
+   
+   Le maillage a été effectué sous SALOME 5.1.2.
+   Une image du maillage est jointe ainsi que de l'objet CAO avec partage de 
+   contour.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.005
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013584 DU 2009-07-01 11:53:25
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1068 : gxc3xa9nxc3xa9ration d'une excroissance inattendue BLSURF
+FONCTIONNALITE
+   Salome-Meca 2010.1 : L'excroissance BLSURF sur le maillage de la volute ne 
+   présente plus d'excroissance (cf. figure jointe).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013607 DU 2009-07-09 13:14:39
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1074 : SALOME 5.1.1 erreur dans dump/load script
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Le dump study d'une étude qui comportait un GetGlueFaces 
+   n'était pas rechargeable alors qu'elle était OK dans l'IHM. L'anomalie a été 
+   corrigée par contre l'étude jointe ne prenant pas en compte cette correction, il 
+   faut partir d'une nouvelle étude.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012183 DU 2008-06-11 12:15:01
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 794 : Pb d'xc3xa9criture UNV par SMESH
+FONCTIONNALITE
+   Salome-Meca 2010.1 : lors de l'export UNV depuis Salome, numérotation des 
+   groupes commence par 1 et la couleur des points est bleu (disponible depuis 
+   Salome 5.1.2)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013685 DU 2009-08-06 11:25:46
+TYPE anomalie concernant Salome (VERSION 2009.2)
+TITRE
+   PAL 1097 : impossible de charger un script dont le nom commence par un chiffre
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Lors du dump study d'une étude, le nom doit comporter 
+   uniquzement des lettres, des chiffres et des underscores et doit commencer par 
+   une lettre ou un underscore. Cela permet d'effectuer le chargement du script 
+   ensuite qui est informatiquement parlant l'import d'un module python.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013700 DU 2009-08-10 07:29:28
+TYPE anomalie concernant Salome (VERSION 2009.2)
+TITRE
+   PAL 1098 : Impossible de sxc3xa9lectionner correctement une face dans un "Edit group"
+FONCTIONNALITE
+   Salome-Meca 2010.1 :  Dans SMESH, il est possible maintenant dans le cadre de 
+   modification de groupes de mailles de sélectionner des éléments d'un autre 
+   groupe affiché sans avoir à visualiser le maillage entier.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013733 DU 2009-08-20 12:50:39
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1100 Sous_epaisseur - bug performances de la fonction MoveNode de Smesh
+FONCTIONNALITE
+   Salome-Meca 2010.1 : La performance de la fonction MoveNode a été fortement 
+   améliorée en mémoire et en temps et rend opérationelle cette fonction python, 
+   inutilisable auparavant.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013917 DU 2009-09-22 07:20:36
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1116 : Bouton add non actif si selection face entixc3xa8re en creation groupe
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Lors de la creation d'un groupe, la sélection de l'objet 
+   total est devenu possible.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014072 DU 2009-10-20 14:25:42
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1145 : Dump QuadranglePreference NOOK
+FONCTIONNALITE
+   Salome-Meca 2010.1 : L'anomalie lors du dump d'une étude comprenant un maillage 
+   avec une hypothèse NetGen_2D.QuadranglePréférence a été corrigée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014121 DU 2009-10-29 16:31:11
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 1163 : Perte de groupes dans DEFI_GROUP + MODI_MAILLAGE
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Dans SMESH, l'import d'un maillage comprenant un groupe de 
+   mailles hétérogènes a été corrigé.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012468 DU 2008-09-11 09:15:17
+TYPE anomalie concernant Salome (VERSION 2009.1)
+TITRE
+   PAL 811 : ordonner des objects dans le compound
+FONCTIONNALITE
+   Sans suite : L'ordre dans le filling est celui de la création des objets. Pour 
+   imposer l'ordre dans le filling, il faut s'imposer un ordre de création des 
+   objets. Via l'IHM, l'ordre de création des objets est représenté par l'ordre 
+   dans l'arbre d'objets. Depuis un script, c'est l'ordre des "addToStudy" qui 
+   estreprésenté dans l'arbre,et non l'ordre de création.Pour l'ordre de création, 
+   il faut se reporter au script.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012563 DU 2008-09-30 11:57:14
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   Bug dans Makepartition si fissure elliptique
+FONCTIONNALITE
+   La fiche est classée sans suite, l'anomalie du partitionnement étant lié à un 
+   aspect tolérance.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012833 DU 2008-11-18 09:02:14
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 873 : Pb visualisation VISU des rxc3xa9sultats de robinetterie
+FONCTIONNALITE
+   Salome 5.1.3 : une option permet d'améliorer la fluidité de VISU et permet ainsi 
+   l'affichage des résultats volumineux. Il faut désactiver l'option "Use advanced 
+   Selection algorithm" dans les préférences de Salome (File Preferences, Rubrique 
+   Salome, onglet Viewers, Vtk Viewer).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation utilisateur
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012827 DU 2008-11-18 08:08:10
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 867 Fusion de vomumes crxc3xa9e des extra-edges non corrigeables par remove extra-edge
+FONCTIONNALITE
+   Salome-Meca 2010.1 : La fonction RemoveExtraEdges permet de surrpimer les extra 
+   edges de faces (planes ou cylindriques) s'appuyant sur des surfaces communes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012840 DU 2008-11-18 13:22:27
+TYPE anomalie concernant Salome (VERSION 2008.1)
+TITRE
+   PAL 875 : Installation Salome sur la Bull en vue d'une utilisation Aster
+FONCTIONNALITE
+   La machine Bull est une machine cible de Salome.
+   La version Salome 5.1.3 est disponible sous le compte salome.
+   Le CR I2A-2009-003 donne la notice d'installation et 
+   d'utilisation d'une version Salome installée sur la Bull.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012929 DU 2008-12-03 09:52:50
+TYPE anomalie concernant Salome (VERSION 2008.2)
+TITRE
+   PAL 970 : Si on active le module GEOM ou SMESH, toutes les vues aux points de Gauss disparaissent
+FONCTIONNALITE
+   Salome-Meca 2010.1 : Il n'y a plus de fenêtre spécifique pour la vue aux points 
+   de Gauss qui se fait maintenant dans la vue VTK générale. La fiche concernant la 
+   gestion de cette vue spécifique est donc sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012308 DU 2008-07-17 12:48:04
+TYPE evolution concernant Eficas (VERSION )
+TITRE
+   Version QT : Suppression du bouton 'Supprimer'
+FONCTIONNALITE
+   Eficas 1.17 QT4 : Suppression du bouton "Supprimer" de la partie droite de 
+   l'écran pour le mettre en menu contextuel et dans le menu "Edition"
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012714 DU 2008-10-24 06:58:20
+TYPE evolution concernant Eficas (VERSION )
+TITRE
+   Modification des fonctions de mise xc3xa0 jour du maillage dans Salome-Mxc3xa9ca
+FONCTIONNALITE
+   Plateforme Salome-Meca2010.1 : Une fonction Update Mesh est 
+   disponible. A partir de la liste des GROUP_MA et GRUP_NO 
+   présents dans le fichier de commande que lui renvoie eficas, 
+   le module Aster crée les groupes de mailles/noeuds 
+   correspondants si ils n'existent pas dans le maillage.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013622 DU 2009-07-16 07:20:35
+TYPE anomalie concernant Eficas (VERSION 1.7)
+TITRE
+   Bouton "supprimer" inactif pour les commentaires
+FONCTIONNALITE
+   Eficas 1.17 QT : La fonction "supprimer" est accessible en menu contextuel et en 
+   menu principal. Elle est activable pour les commentaires.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012516 DU 2008-09-23 11:11:50
+TYPE anomalie concernant Eficas (VERSION 1.7)
+TITRE
+   Visulaisation des groupes dans VTK
+FONCTIONNALITE
+   Salome-Meca 2010.1 : La visualisation des groupes depuis 
+   Eficas dans la fenêtre VTK est opérationelle.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012657 DU 2008-10-17 12:36:36
+TYPE anomalie concernant Eficas (VERSION 1.7)
+TITRE
+   PB Visualisation elxc3xa9ments de structure dans SALOME (gxc3xa9omxc3xa9trie et trixc3xa8dre)
+FONCTIONNALITE
+   Salome-Meca 2010.1 : La visualisation dans Salome-Méca des éléments de 
+   structures 1D et 2D est opérationnelle aussi bien dans la visualisation de la 
+   géométrie que celle des repères locaux.
+   Ci-joint les images sur un pylone et sur une tuyauterie poutre.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Validation IHM
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 22/02/2010 - 18:05:11
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014581 DU 2010-02-09 08:36:04
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   XFEM - le cas-test zzzz255b sort en ALARME <XFEM2_91> en NEW10.01.9
+FONCTIONNALITE
+   Le zzzz255b est un cas-test validant le mot-clé TEST_MAIL avec la méthode 'SIMPLEXE' de
+   l'opérateur PROPA_FISS.
+   L'émission de l'alarme XFEM2_91 par TEST_MAIL, traduit le fait que le maillage n'est pas
+   suffisamment raffiné pour garantir une propagation régulière et homothétique du front de
+   fissure.
+   
+   L'erreur sur TEST_MAIL est, pour ce cas, exactement égale à la tolérance intégrée dans la
+   commande (5%).
+   En rafinant le maillage de 20% dans toutes les directions, on fait passer cette erreur
+   (égale à la distance calculée entre 2 fronts propagés par rapport à la distance théorique)
+   à 4%. L'alarme disparaît alors.
+   
+   On propose de profiter de cette fiche pour réaliser 2 choses supplémentaires sur ce test :
+    - rendre cohérente la doc (explicitant le test réalisé par TEST_MAIL) et le test_resu (on
+   choisira un  test qui réalise "l'équivalent" de TEST_MAIL plutôt qu'un test tjs OK).
+    - d'harmoniser toutes les modélisations (a, b et c) en leur appliquant la modif ci-dessus
+   (les 3 modélisations auront le même test_resu).
+   
+   Ce test consiste à calculer la distance des 8 coins du maillage au front de fissure à la
+   dernière itération. (On préfère en effet les coins au centre qui correspond à un
+   point-selle autour duquel le 
+   gradient des level-sets n'est pas correctement estimé par la méthode simplexe, ni, de
+   fait, les level-sets correctement mises à jour...)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V1.01.255
+VALIDATION
+   le cas-test lui-meme
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR haelewyn     HAELEWYN Jessica       DATE 23/02/2010 - 09:07:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014606 DU 2010-02-11 11:52:21
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.1.10, le cas-test hplv102a est NOOK sur Bull, Rocks et Calibre 5.
+FONCTIONNALITE
+   En NEW10.1.10, le cas-test hplv102a est NOOK sur Bull, Rocks et Calibre 5.
+   Les tests NOOK sont les suivants sur Bull:
+   "--------------------------------------------------------------------------------
+    ---- TABLE            NOM_PARA
+         G1               G
+         REFERENCE        LEGENDE          VALE_REF         VALE_CAL         ERREUR         
+    TOLE            
+   NOOK  NON_REGRESSION   XXXX             1.458722E-06     1.458742E-06     1.4E-03%       
+    1.0E-07%        
+     
+   
+   --------------------------------------------------------------------------------
+    ---- TABLE            NOM_PARA
+         G2               G
+         REFERENCE        LEGENDE          VALE_REF         VALE_CAL         ERREUR         
+    TOLE            
+   NOOK  NON_REGRESSION   XXXX             1.4590634E-06    1.4590788E-06    1.1E-03%       
+    1.0E-07%        
+     
+   
+   --------------------------------------------------------------------------------
+    ---- TABLE            NOM_PARA
+         G3               G
+         REFERENCE        LEGENDE          VALE_REF         VALE_CAL         ERREUR         
+    TOLE            
+   NOOK  NON_REGRESSION   XXXX             1.458689E-06     1.45871E-06      1.4E-03%       
+    1.0E-07%        
+     
+   
+   --------------------------------------------------------------------------------
+    ---- TABLE            NOM_PARA
+         G4               G
+         REFERENCE        LEGENDE          VALE_REF         VALE_CAL         ERREUR         
+    TOLE            
+   NOOK  NON_REGRESSION   XXXX             1.4591157E-06    1.4591301E-06    9.9E-04%       
+    1.0E-07%        
+     
+   
+   "
+   Très faibles différences dues aux corrections des calculs thermiques (familles de points de 
+   Gauss).
+   Les valeurs de référence sont modifiées pour prendre en compte les modifications effectuées sur 
+   les calculs thermiques.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   hplv102a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014610 DU 2010-02-11 12:12:58
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.10, les cas-tests tpll101a et ttnl03a s'arretent en erreur_<F> sur Calibre 5.
+FONCTIONNALITE
+   En NEW10.1.10, les cas-tests tpll101a et ttnl03a s'arretent en erreur_<F> sur Calibre 5.
+   A titre d'exemple, le message d'erreur obtenu pour tpll101a est le suivant :
+   "    # 
+   ------------------------------------------------------------------------------------------ 
+       #  COMMANDE NO :  0002            CONCEPT DE TYPE : maillage_sdaster
+       #  -------------                  ----------------- 
+      MAIL=LIRE_MAILLAGE(INFO=1,
+                        INFO_MED=1,
+                        VERI_MAIL=_F(APLAT=1.E-3,
+                                     VERIF='OUI'),
+                        UNITE=20,
+                        FORMAT='MED',
+                        );
+   
+      
+      !----------------------------------------------------------------!
+      ! <A> <MODELISA9_44>                                             !
+      !                                                                !
+      !                                                                !
+      !  fichier med :  fort.20 maillage :   erreur effoco numero  -1  !
+      !                                                                !
+      !                                                                !
+      !                                                                !
+      ! Ceci est une alarme. Si vous ne comprenez pas le sens de cette !
+      ! alarme, vous pouvez obtenir des résultats inattendus !         !
+      !----------------------------------------------------------------!
+      
+      
+     
+   !------------------------------------------------------------------------------------------!
+      ! <F> <PREPOST3_10>                                                                   
+       !
+      !                                                                                     
+       !
+      !                                                                                     
+       !
+      !  soit le fichier n'existe pas, soit c'est une mauvaise version de hdf (utilise par
+   med). !
+      !                                                                                     
+       !
+      !                                                                                     
+       !
+      !                                                                                     
+       !
+      ! Cette erreur est fatale. Le code s'arrete.                                          
+       !
+     
+   !------------------------------------------------------------------------------------------!
+   "
+   Pour ces deux cas-tests, on utilise maintenant un fichier .med (unité 20 par défaut) à la place 
+   de .mail (unite 20 par défaut aussi).
+   Les fichiers .mail  n'ont pas été supprimmés.
+   
+   Or le .mail est chargé en dernier après le .mmed dans ce cas d'où le problème dans 
+   lire_maillage.
+   
+   Solution: supprimer les fichiers .mail maintenant inutiles: ttnl03a.mail et tpll101a.mail 
+   
+   Des fichiers .mail inutiles existent aussi pour ttnl03b et tpll101b mais là le .mmed est chargé 
+   en dernier donc aucun problème. Les fichiers ttnl03b.mail et tpll101b.mail sont aussi supprimés.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tpll101a,b, ttnl03a,b
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien     DATE 22/02/2010 - 13:20:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014601 DU 2010-02-10 15:48:48
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   Arlequin - erreur d'appariement
+FONCTIONNALITE
+   J'ai découvert des choses bizarres encore dans la procédure d'appariement.
+   Pour illustrer, le maillage 1 est représenté par * et le maillage 2 par +
+   
+   1er cas: (maillage1.med et maillage2.med)
+   --------
+   
+   *
+   * *
+   *  *
+   *   *
+   ******
+        +
+        + +
+        +  +
+        +   +
+        ++++++
+   
+   Ici, les 2 maillages ne se touchent donc que par un sommet.
+   
+   2ème cas : (maillage1.med et maillage4.med)
+   ----------
+   
+   *
+   * *
+   *  *
+   *   *
+   ******
+   ++++++
+   +   +
+   +  +
+   + +
+   + 
+   
+   Ici, les 2 maillages ne se touchent que par une arête commune.
+   
+   Dans les 2 cas, on n'a aucune intersection géométrique volumique. On ne devrait donc rien
+   calculer. Pourtant Arlequin détecte à chaque fois que les 2 mailles sont appariées, ce qui
+   est faux.
+   Par contre, lorsqu'il cherche à mailler l'intersection, il se rend compte que c'est dur de
+   mailler le vide et on est arrêté par le message d'erreur fatale :
+   
+      !----------------------------------------!
+      ! <EXCEPTION> <JEVEUX_01>                !
+      !                                        !
+      !                                        !
+      !   NOMBRE D'OBJETS DE LA COLLECTION < 1 !
+      !                                        !
+      !                                        !
+      !                                        !
+      !                                        !
+      !----------------------------------------!
+   
+   Il n'a en fait créé aucun maillage pour l'intersection.
+   
+   Solution :
+   ---------
+   
+   A l'aide de l'info que le maillage ne contient aucune maille, j'arrête l'utilisateur par
+   le message d'erreur ARLEQUIN_9 :
+   
+   Les deux domaines ne se recouvrent pas. Vérifiez vos groupes.
+   
+   Il suffit de rajouter les lignes
+   
+   IF (NMATOT.EQ.0) THEN
+     CALL U2MESS('F','ARLEQUIN_9')
+   ENDIF
+   
+   à la ligne 348 de arlmai.f
+   
+   Validation:
+   -----------
+   
+   Les 2 tests joints s'arrêtent sur le message d'erreur Arlequin_9
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   2 tests joints
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014663 DU 2010-02-18 12:05:00
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   THM - argument inutile comthm
+FONCTIONNALITE
+   Dans la routine comthm.f, l'argument H21 est inutile. Je le supprime de comthm.f, calcco.f
+   et hmlvag.f.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 22/02/2010 - 13:28:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014553 DU 2010-02-03 12:47:52
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   te0564.f inutile
+FONCTIONNALITE
+   Problème :
+   ----------
+   Oubli de suppression de te0564.
+   
+   
+   Solution :
+   ----------
+   Je le supprime.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013098 DU 2009-01-29 07:58:48
+TYPE evolution concernant Code_Aster (VERSION 9.4)
+TITRE
+   Complement de validation avant stabilisation
+FONCTIONNALITE
+   Question :
+   ----------
+   Jacques a dit dans la fiche 8268 : "Mais si un jour, une telle situation était introduite
+   par mégarde dans le code, un passage des tests en "mémoire statique" + "debug jeveux"
+   permettrait de détecter cette situation. Cette action de "prévention" pourrait etre menée
+   avant chaque stabilisation (qu'en pense Nicolas Sellenet ?)."
+   
+   
+   Réponse :
+   ---------
+   On rajoute un complément de validation avant chaque stabilisation :
+   - Debug JEVEUX avec jxveri en mémoire dynamique sur liste restreinte sur la machine Bull,
+   - Valgrind sur liste restreinte sur Calibre 5,
+   - Couverture de code.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012620 DU 2008-10-13 08:03:33
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   SV04 - Cas tests de performance en OpenMP
+FONCTIONNALITE
+   Demande :
+   ---------
+   Ajouter un cas test de performance en OpenMP.
+   
+   
+   Réponse :
+   ---------
+   On ajoute le cas test perf009 a, b, c et d qui correspond au calcul de pompe RIS
+   respectivement sur 1, 2, 4 et 8 processeurs.
+   
+   Dans un deuxième temps, Thomas ajoutera les modélisations e, f, g et h avec MUMPS parallèle.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012554 DU 2008-09-29 13:51:25
+TYPE evolution concernant Site web (VERSION )
+TMA : DeltaCad
+TITRE
+   Page Web pour les tests de performance
+FONCTIONNALITE
+   emande :
+   ---------
+   Ajout d'une page de performance à la page web de Code_Aster.
+   
+   
+   Restitution :
+   -------------
+   http://www.code-aster.org/V2/spip.php?article180
+   
+   Cette page est remise à jour tous les 6 mois.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 22/02/2010 - 13:28:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014646 DU 2010-02-17 07:06:21
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Arret par manque de temps CPU de certains tests mpi sur BULL
+FONCTIONNALITE
+   Problème :
+   ----------
+   Suite à l'évolution 14062, les tests suivants sont cassés sur bull avec la version MPI :
+   ssnv173i ssnl101a ssna117b wtnv100c ssll106f ssnp124b ssnv126a wtna101a
+                                                                                            
+                           
+   Analyse :
+   ---------
+   Le problème vient du fait qu'un RESUELEM peut etre nul sur un processeur sans qu'il soit
+   nul sur les autres.
+   La destruction des resuelem nuls pouvait alors conduire à une situation où les différents
+   processeurs n'avaient pas le meme nombre de resuelem. Ce qui n'est pas bon du tout car les
+   échanges MPI ne doivent pas etre les memes.
+                                                                                            
+                           
+   Correction :
+   ------------
+   dans la routine reajre.f, avant de détruire un resuelem, si on est en parralèle, je
+   vérifie que le resuelem est nul sur tous les processeurs.
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  14646
+     reajre.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste des tests cassxc3xa9s en //
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT perf009a                     sellenet N.SELLENET          97     97      0
+ CASTEST AJOUT perf009b                     sellenet N.SELLENET          97     97      0
+ CASTEST AJOUT perf009c                     sellenet N.SELLENET          97     97      0
+ CASTEST AJOUT perf009d                       desoza T.DESOZA           120    120      0
+ CASTEST AJOUT perf009e                       desoza T.DESOZA           120    120      0
+ CASTEST AJOUT perf009f                       desoza T.DESOZA           120    120      0
+ CASTEST AJOUT perf009g                       desoza T.DESOZA           120    120      0
+ CASTEST AJOUT ssnp121p                       desoza T.DESOZA           218    218      0
+ CASTEST AJOUT ssnv128w                       desoza T.DESOZA           232    232      0
+ CASTEST MODIF hplv102a                     haelewyn J.HAELEWYN         250      9      9
+ CASTEST MODIF zzzz255a                      geniaut S.GENIAUT          119     38     28
+ CASTEST MODIF zzzz255b                      geniaut S.GENIAUT          119     37     27
+ CASTEST MODIF zzzz255c                      geniaut S.GENIAUT          156     51     91
+CATALOPY MODIF commande/defi_contact          desoza T.DESOZA           533     10      3
+ FORTRAN MODIF algeline/trir                 meunier S.MEUNIER          115      2      2
+ FORTRAN MODIF algeline/trrapr               meunier S.MEUNIER          121      2      2
+ FORTRAN MODIF algorith/calcco               meunier S.MEUNIER          143      4      4
+ FORTRAN MODIF algorith/comthm               meunier S.MEUNIER          218      3      3
+ FORTRAN MODIF algorith/hmlvag               meunier S.MEUNIER          365     14     17
+ FORTRAN MODIF algorith/nmdome               meunier S.MEUNIER          180      2     20
+ FORTRAN MODIF algorith/ttprsm                desoza T.DESOZA           127     10      3
+ FORTRAN MODIF elements/mmmmat                desoza T.DESOZA           301     76     30
+ FORTRAN MODIF elements/mmmtcc                desoza T.DESOZA           109     16      5
+ FORTRAN MODIF elements/mmmtee                desoza T.DESOZA           276     44      5
+ FORTRAN MODIF elements/mmmtem                desoza T.DESOZA           272     43      5
+ FORTRAN MODIF elements/mmmtff                desoza T.DESOZA           163     19      3
+ FORTRAN MODIF elements/mmmtme                desoza T.DESOZA           276     44      5
+ FORTRAN MODIF elements/mmmtmm                desoza T.DESOZA           266     44      5
+ FORTRAN MODIF elements/mmmtuu                desoza T.DESOZA           142      4      1
+ FORTRAN MODIF elements/mmmvcc                desoza T.DESOZA           107     19      5
+ FORTRAN MODIF elements/mmmvec                desoza T.DESOZA           275    114     62
+ FORTRAN MODIF elements/mmmvee                desoza T.DESOZA           234     22      9
+ FORTRAN MODIF elements/mmmvff                desoza T.DESOZA           225     74      6
+ FORTRAN MODIF elements/mmmvmm                desoza T.DESOZA           233     23      8
+ FORTRAN MODIF elements/mmmvuu                desoza T.DESOZA           114     11      8
+ FORTRAN MODIF elements/te0364                desoza T.DESOZA           418     89     75
+ FORTRAN MODIF elements/te0365                desoza T.DESOZA           396     48     34
+ FORTRAN MODIF elements/te0366                desoza T.DESOZA           340      9      4
+ FORTRAN MODIF elements/te0367                desoza T.DESOZA           315      9      4
+ FORTRAN MODIF modelisa/arlmai               meunier S.MEUNIER          440      5      2
+ FORTRAN MODIF modelisa/cazocc                desoza T.DESOZA           354     10      1
+ FORTRAN MODIF utilitai/reajre              sellenet N.SELLENET         135     41     18
+ FORTRAN SUPPR elements/te0564              sellenet N.SELLENET         311      0    311
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    9        1221      1221             +1221
+ MODIF :   33        7837       946     504      +442
+ SUPPR :    1         311               311      -311
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   43        9369      2167     815     +1352 

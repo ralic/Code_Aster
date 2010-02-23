@@ -1,5 +1,5 @@
 
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -220,31 +220,31 @@ TEST_TABLE(TABLE=G4,
 
 TEST_TABLE(TABLE=G1,
            NOM_PARA='G',
-           VALE=1.45872200784e-06,
+           VALE=1.4587420275E-06,
            PRECISION=1e-09,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.39',);
+           VERSION='10.1.10',);
 
 TEST_TABLE(TABLE=G2,
            NOM_PARA='G',
-           VALE=1.45906342396e-06,
+           VALE=1.4590787635E-06,
            PRECISION=1e-09,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.39',);
+           VERSION='10.1.10',);
 
 TEST_TABLE(TABLE=G3,
            NOM_PARA='G',
-           VALE=1.45868894774e-06,
+           VALE=1.45870999368E-06,
            PRECISION=1e-09,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.39',);
+           VERSION='10.1.10',);
 
 TEST_TABLE(TABLE=G4,
            NOM_PARA='G',
-           VALE=1.45911565609e-06,
+           VALE=1.4591301104E-06,
            PRECISION=1e-09,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.0.39',);
+           VERSION='10.1.10',);
 
 FIN();
 #

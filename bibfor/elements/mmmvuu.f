@@ -1,12 +1,12 @@
       SUBROUTINE MMMVUU(PHASE ,NDIM  ,NNE   ,NNM   ,NORM  ,
      &                  TAU1  ,TAU2  ,MPROJT,HPG   ,FFE   ,
-     &                  FFM   ,JACOBI,JEU   ,COEFCP,DLAGRC,
-     &                  KAPPAN,KAPPAV,ASPERI,JEVITP,LAMBDA,
-     &                  COEFFF,DLAGRF,DDEPLE,DDEPLM,RESE  ,
-     &                  NRESE ,VECTEE,VECTMM)
+     &                  FFM   ,JACOBI,JEU   ,COEFCP,COEFFP,
+     &                  DLAGRC,KAPPAN,KAPPAV,ASPERI,JEVITP,
+     &                  LAMBDA,COEFFF,DLAGRF,DDEPLE,DDEPLM,
+     &                  RESE  ,NRESE ,VECTEE,VECTMM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,7 +35,7 @@ C
       REAL*8       RESE(3),NRESE  
       REAL*8       NORM(3)
       REAL*8       TAU1(3),TAU2(3),MPROJT(3,3)       
-      REAL*8       COEFCP,JEU
+      REAL*8       COEFCP,COEFFP,JEU
       REAL*8       KAPPAN,ASPERI,KAPPAV,JEVITP
       REAL*8       LAMBDA,COEFFF
       REAL*8       VECTEE(27),VECTMM(27)
@@ -57,6 +57,9 @@ C              'STAC' - TERME DE STABILISATION DU CONTACT
 C              'ADHE' - CONTACT ADHERENT
 C              'GLIS' - CONTACT GLISSANT
 C              'EXCL' - EXCLUSION D'UN NOEUD
+C              'PCON' - PENALISATION - CONTACT
+C              'PADH' - PENALISATION - CONTACT ADHERENT
+C              'PGLI' - PENALISATION - CONTACT GLISSANT
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNE    : NOMBRE DE NOEUDS ESCLAVE
 C IN  NNM    : NOMBRE DE NOEUDS MAITRES
@@ -95,7 +98,7 @@ C --- DEPL_ESCL
 C
       CALL MMMVEE(PHASE ,NDIM  ,NNE   ,NORM  ,TAU1  ,
      &            TAU2  ,MPROJT,HPG   ,FFE   ,JACOBI,
-     &            JEU   ,COEFCP,DLAGRC,KAPPAN,KAPPAV,
+     &            JEU   ,COEFCP,COEFFP,DLAGRC,KAPPAN,KAPPAV,
      &            ASPERI,JEVITP,LAMBDA,COEFFF,DLAGRF,
      &            DDEPLE,DDEPLM,RESE  ,NRESE ,VECTEE)
 C
@@ -103,7 +106,7 @@ C --- DEPL_MAIT
 C
       CALL MMMVMM(PHASE ,NDIM  ,NNM   ,NORM  ,TAU1  ,
      &            TAU2  ,MPROJT,HPG   ,FFM   ,JACOBI,
-     &            JEU   ,COEFCP,DLAGRC,KAPPAN,KAPPAV,
+     &            JEU   ,COEFCP,COEFFP,DLAGRC,KAPPAN,KAPPAV,
      &            ASPERI,JEVITP,LAMBDA,COEFFF,DLAGRF,
      &            DDEPLE,DDEPLM,RESE  ,NRESE ,VECTMM)
       

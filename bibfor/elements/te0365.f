@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C
       REAL*8       XPR,YPR,XPC,YPC,HPG,JACOBI   
       REAL*8       VTMP(81)  
       REAL*8       COEFFF,LAMBDA
-      REAL*8       COEFCS,COEFCP
+      REAL*8       COEFCS,COEFCP,COEFCR
       REAL*8       COEFFR,COEFFS,COEFFP
       REAL*8       JEU,JEUSUP
       REAL*8       DELTAT,BETA,GAMMA 
@@ -79,7 +79,7 @@ C
       REAL*8       PRFUSU
       CHARACTER*8  NOMMAE,NOMMAM
       LOGICAL      LFROTT,LAXIS,LCOMPL
-      LOGICAL      LSTABC,LSTABF
+      LOGICAL      LSTABC,LSTABF,LPENAC,LPENAF
       LOGICAL      LADHER,LGLISS
       LOGICAL      DEBUG
       REAL*8       FFE(9),DFFE(2,9),DDFFE(3,9)       
@@ -102,7 +102,7 @@ C
       CALL VECINI(27,0.D0,VECTEE)
       CALL VECINI(27,0.D0,VECTMM)
       LADHER = .FALSE.
-      LGLISS = .FALSE.      
+      LGLISS = .FALSE.
       INDASP = 0
       INDCO  = 0
       DEBUG  = .FALSE.
@@ -126,6 +126,7 @@ C
       TYPBAR   = NINT(ZR(JPCF-1+14))
       TYPRAC   = NINT(ZR(JPCF-1+15))
       IFORM    = NINT(ZR(JPCF-1+16))
+      COEFCR   =      ZR(JPCF-1+17)
       COEFCS   =      ZR(JPCF-1+18)
       COEFCP   =      ZR(JPCF-1+19)
       IFROTT   = NINT(ZR(JPCF-1+20))
@@ -144,12 +145,19 @@ C
       GAMMA    =      ZR(JPCF-1+35)   
       INDCO    = NINT(ZR(JPCF-1+37))
       INDASP   = NINT(ZR(JPCF-1+38))
-      LCOMPL   = ICOMPL.EQ.1   
+      LCOMPL   = ICOMPL.EQ.1
 C
 C --- TERMES DE STABILISATION
 C
       LSTABC = COEFCP.NE.0D0
-      LSTABF = COEFFP.NE.0D0      
+      LSTABF = COEFFP.NE.0D0
+C
+C --- TERMES DE PENALISATION
+C
+      LPENAF=((COEFFR.EQ.0.D0).AND.(COEFFS.EQ.0.D0)
+     &       .AND.(COEFFP.NE.0.D0))
+      LPENAC=((COEFCR.EQ.0.D0).AND.(COEFCS.EQ.0.D0)
+     &       .AND.(COEFCP.NE.0.D0))
 C
 C --- RECUPERATION DE LA GEOMETRIE ET DES CHAMPS DE DEPLACEMENT
 C
@@ -264,11 +272,12 @@ C
         LFROTT = .FALSE.
         IF ((TYPBAR.NE.0).OR.(TYPRAC.NE.0)) THEN
           CALL MMMVEC('CONT',
-     &                LSTABC,LCOMPL,LFROTT,LSTABF,LADHER,
-     &                LGLISS,NDIM  ,NNE   ,NNM   ,NNL   ,
-     &                NBCPS ,NORM  ,TAU1  ,TAU2  ,MPROJT,
-     &                HPG   ,FFE   ,FFM   ,FFL   ,JACOBI,
-     &                COEFCP,COEFCS,COEFFS,COEFFF,JEU   ,
+     &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,
+     &                LPENAF,LADHER,LGLISS,NDIM  ,NNE   ,
+     &                NNM   ,NNL   ,NBCPS ,NORM  ,TAU1  ,
+     &                TAU2  ,MPROJT,HPG   ,FFE   ,FFM   ,
+     &                FFL   ,JACOBI,COEFCP,COEFCR,COEFCS,
+     &                COEFFP,COEFFR,COEFFS,COEFFF,JEU   ,
      &                LAMBDA,RESE  ,NRESE ,TYPBAR,TYPRAC,
      &                NDEXFR,ASPERI,KAPPAN,KAPPAV,DLAGRC,
      &                DLAGRF,DDEPLE,DDEPLM,JEVITP,VECTEE,
@@ -276,11 +285,12 @@ C
         ELSE
           IF (INDASP.EQ.0) THEN
             CALL MMMVEC('SANS',
-     &                LSTABC,LCOMPL,LFROTT,LSTABF,LADHER,
-     &                LGLISS,NDIM  ,NNE   ,NNM   ,NNL   ,
-     &                NBCPS ,NORM  ,TAU1  ,TAU2  ,MPROJT,
-     &                HPG   ,FFE   ,FFM   ,FFL   ,JACOBI,
-     &                COEFCP,COEFCS,COEFFS,COEFFF,JEU   ,
+     &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,
+     &                LPENAF,LADHER,LGLISS,NDIM  ,NNE   ,
+     &                NNM   ,NNL   ,NBCPS ,NORM  ,TAU1  ,
+     &                TAU2  ,MPROJT,HPG   ,FFE   ,FFM   ,
+     &                FFL   ,JACOBI,COEFCP,COEFCR,COEFCS,
+     &                COEFFP,COEFFR,COEFFS,COEFFF,JEU   ,
      &                LAMBDA,RESE  ,NRESE ,TYPBAR,TYPRAC,
      &                NDEXFR,ASPERI,KAPPAN,KAPPAV,DLAGRC,
      &                DLAGRF,DDEPLE,DDEPLM,JEVITP,VECTEE,
@@ -288,22 +298,24 @@ C
           ELSE IF (INDASP.EQ.1) THEN
             IF (INDCO.EQ.0) THEN
               CALL MMMVEC('SANS',
-     &                LSTABC,LCOMPL,LFROTT,LSTABF,LADHER,
-     &                LGLISS,NDIM  ,NNE   ,NNM   ,NNL   ,
-     &                NBCPS ,NORM  ,TAU1  ,TAU2  ,MPROJT,
-     &                HPG   ,FFE   ,FFM   ,FFL   ,JACOBI,
-     &                COEFCP,COEFCS,COEFFS,COEFFF,JEU   ,
+     &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,
+     &                LPENAF,LADHER,LGLISS,NDIM  ,NNE   ,
+     &                NNM   ,NNL   ,NBCPS ,NORM  ,TAU1  ,
+     &                TAU2  ,MPROJT,HPG   ,FFE   ,FFM   ,
+     &                FFL   ,JACOBI,COEFCP,COEFCR,COEFCS,
+     &                COEFFP,COEFFR,COEFFS,COEFFF,JEU   ,
      &                LAMBDA,RESE  ,NRESE ,TYPBAR,TYPRAC,
      &                NDEXFR,ASPERI,KAPPAN,KAPPAV,DLAGRC,
      &                DLAGRF,DDEPLE,DDEPLM,JEVITP,VECTEE,
      &                VECTMM,VECTCC,VECTFF)          
             ELSEIF (INDCO.EQ.1) THEN
               CALL MMMVEC('CONT',
-     &                LSTABC,LCOMPL,LFROTT,LSTABF,LADHER,
-     &                LGLISS,NDIM  ,NNE   ,NNM   ,NNL   ,
-     &                NBCPS ,NORM  ,TAU1  ,TAU2  ,MPROJT,
-     &                HPG   ,FFE   ,FFM   ,FFL   ,JACOBI,
-     &                COEFCP,COEFCS,COEFFS,COEFFF,JEU   ,
+     &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,
+     &                LPENAF,LADHER,LGLISS,NDIM  ,NNE   ,
+     &                NNM   ,NNL   ,NBCPS ,NORM  ,TAU1  ,
+     &                TAU2  ,MPROJT,HPG   ,FFE   ,FFM   ,
+     &                FFL   ,JACOBI,COEFCP,COEFCR,COEFCS,
+     &                COEFFP,COEFFR,COEFFS,COEFFF,JEU   ,
      &                LAMBDA,RESE  ,NRESE ,TYPBAR,TYPRAC,
      &                NDEXFR,ASPERI,KAPPAN,KAPPAV,DLAGRC,
      &                DLAGRF,DDEPLE,DDEPLM,JEVITP,VECTEE,
@@ -325,11 +337,12 @@ C
         NDEXFR = 0    
         IF (INDCO.EQ.0) THEN
           CALL MMMVEC('SANS',
-     &                LSTABC,LCOMPL,LFROTT,LSTABF,LADHER,
-     &                LGLISS,NDIM  ,NNE   ,NNM   ,NNL   ,
-     &                NBCPS ,NORM  ,TAU1  ,TAU2  ,MPROJT,
-     &                HPG   ,FFE   ,FFM   ,FFL   ,JACOBI,
-     &                COEFCP,COEFCS,COEFFS,COEFFF,JEU   ,
+     &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,
+     &                LPENAF,LADHER,LGLISS,NDIM  ,NNE   ,
+     &                NNM   ,NNL   ,NBCPS ,NORM  ,TAU1  ,
+     &                TAU2  ,MPROJT,HPG   ,FFE   ,FFM   ,
+     &                FFL   ,JACOBI,COEFCP,COEFCR,COEFCS,
+     &                COEFFP,COEFFR,COEFFS,COEFFF,JEU   ,
      &                LAMBDA,RESE  ,NRESE ,TYPBAR,TYPRAC,
      &                NDEXFR,ASPERI,KAPPAN,KAPPAV,DLAGRC,
      &                DLAGRF,DDEPLE,DDEPLM,JEVITP,VECTEE,
@@ -337,15 +350,16 @@ C
         ELSE IF (INDCO.EQ.1) THEN
           CALL TTPRSM(NDIM  ,DDEPLE,DDEPLM,DLAGRF,COEFFR,
      &                TAU1  ,TAU2  ,MPROJT,INADH ,RESE  ,
-     &                NRESE )
+     &                NRESE ,COEFFP,LPENAF)
           LADHER = INADH.EQ.1
           LGLISS = INADH.EQ.0       
           CALL MMMVEC('FROT',
-     &                LSTABC,LCOMPL,LFROTT,LSTABF,LADHER,
-     &                LGLISS,NDIM  ,NNE   ,NNM   ,NNL   ,
-     &                NBCPS ,NORM  ,TAU1  ,TAU2  ,MPROJT,
-     &                HPG   ,FFE   ,FFM   ,FFL   ,JACOBI,
-     &                COEFCP,COEFCS,COEFFS,COEFFF,JEU   ,
+     &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,
+     &                LPENAF,LADHER,LGLISS,NDIM  ,NNE   ,
+     &                NNM   ,NNL   ,NBCPS ,NORM  ,TAU1  ,
+     &                TAU2  ,MPROJT,HPG   ,FFE   ,FFM   ,
+     &                FFL   ,JACOBI,COEFCP,COEFCR,COEFCS,
+     &                COEFFP,COEFFR,COEFFS,COEFFF,JEU   ,
      &                LAMBDA,RESE  ,NRESE ,TYPBAR,TYPRAC,
      &                NDEXFR,ASPERI,KAPPAN,KAPPAV,DLAGRC,
      &                DLAGRF,DDEPLE,DDEPLM,JEVITP,VECTEE,
@@ -355,7 +369,7 @@ C
         END IF
       ELSE
         CALL ASSERT(.FALSE.) 
-      END IF    
+      END IF
 C
 C --- ASSEMBLAGE FINAL
 C

@@ -1,19 +1,20 @@
       SUBROUTINE MMMMAT(PHASE ,
-     &                  LUSURE,LSTABC,LCOMPL,LFROTT,LSTABF,
-     &                  LADHER,LGLISS,NDIM  ,NNE   ,NNM   ,
-     &                  NNL   ,NBCPS ,NORM  ,TAU1  ,TAU2  ,
-     &                  MPROJN,MPROJT,HPG   ,FFE   ,FFM   ,
-     &                  FFL   ,JACOBI,COEFCP,COEFCR,COEFCS,
-     &                  COEFFP,COEFFR,COEFFS,COEFFF,JEU   ,
-     &                  LAMBDA,RESE  ,NRESE ,TYPBAR,TYPRAC,
-     &                  NDEXFR,ASPERI,KAPPAN,KAPPAV,DELTAT,
-     &                  BETA  ,GAMMA ,CWEAR ,DISSIP,DLAGRC,
-     &                  DELUSU,MATREE,MATRMM,MATREM,MATRME,
-     &                  MATRCE,MATRCM,MATRMC,MATREC,MATRCC,
-     &                  MATRFE,MATRFM,MATREF,MATRMF,MATRFF)
+     &                  LUSURE,LSTABC,LPENAC,LCOMPL,LFROTT,
+     &                  LSTABF,LPENAF,LADHER,LGLISS,NDIM  ,
+     &                  NNE   ,NNM   ,NNL   ,NBCPS ,NORM  ,
+     &                  TAU1  ,TAU2  ,MPROJN,MPROJT,HPG   ,
+     &                  FFE   ,FFM   ,FFL   ,JACOBI,COEFCP,
+     &                  COEFCR,COEFCS,COEFFP,COEFFR,COEFFS,
+     &                  COEFFF,JEU   ,LAMBDA,RESE  ,NRESE ,
+     &                  TYPBAR,TYPRAC,NDEXFR,ASPERI,KAPPAN,
+     &                  KAPPAV,DELTAT,BETA  ,GAMMA ,CWEAR ,
+     &                  DISSIP,DLAGRC,DELUSU,MATREE,MATRMM,
+     &                  MATREM,MATRME,MATRCE,MATRCM,MATRMC,
+     &                  MATREC,MATRCC,MATRFE,MATRFM,MATREF,
+     &                  MATRMF,MATRFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,7 +39,7 @@ C
       INTEGER      NDIM,NNE,NNM,NNL,NBCPS
       INTEGER      TYPBAR,TYPRAC,NDEXFR
       LOGICAL      LUSURE,LSTABC,LCOMPL,LFROTT,LSTABF
-      LOGICAL      LADHER,LGLISS
+      LOGICAL      LADHER,LGLISS,LPENAF,LPENAC
       REAL*8       NORM(3),TAU1(3),TAU2(3)
       REAL*8       MPROJN(3,3),MPROJT(3,3)       
       REAL*8       FFE(9),FFM(9),FFL(9)
@@ -57,8 +58,8 @@ C
       REAL*8       MATREC(27,9) ,MATRMC(27,9)
       REAL*8       MATRCC(9,9)
       REAL*8       MATRFF(18,18)   
-      REAL*8       MATRFE(18,27),MATRFM(18,27)  
-      REAL*8       MATRMF(27,18),MATREF(27,18)      
+      REAL*8       MATRFE(18,27),MATRFM(18,27)
+      REAL*8       MATRMF(27,18),MATREF(27,18)
 C      
 C ----------------------------------------------------------------------
 C
@@ -116,14 +117,20 @@ C ----------------------------------------------------------------------
 C
       IF (PHASE.EQ.'SANS') THEN
         IF (LFROTT) THEN
-          CALL MMMTFF('SANS',NDIM  ,NBCPS ,NNL   ,HPG   ,
-     &                FFL   ,JACOBI,TAU1  ,TAU2  ,RESE  ,
-     &                NRESE ,LAMBDA,NDEXFR,COEFFS,COEFFF,
-     &                MATRFF)  
+            CALL MMMTFF('SANS',NDIM  ,NBCPS ,NNL   ,HPG   ,
+     &                  FFL   ,JACOBI,TAU1  ,TAU2  ,RESE  ,
+     &                  NRESE ,LAMBDA,NDEXFR,COEFFS,COEFFF,
+     &                  COEFFP,MATRFF)
         ELSE
-          CALL MMMTCC('SANS',NNL   ,HPG   ,FFL   ,JACOBI,
-     &                TYPBAR,TYPRAC,COEFCS,CWEAR ,DISSIP,
-     &                MATRCC)        
+          IF (LPENAC) THEN
+            CALL MMMTCC('PSAN',NNL   ,HPG   ,FFL   ,JACOBI,
+     &                TYPBAR,TYPRAC,COEFCP,COEFCS,CWEAR ,
+     &                DISSIP,MATRCC)        
+          ELSE
+            CALL MMMTCC('SANS',NNL   ,HPG   ,FFL   ,JACOBI,
+     &                TYPBAR,TYPRAC,COEFCP,COEFCS,CWEAR ,
+     &                DISSIP,MATRCC)
+          ENDIF
         ENDIF     
       ELSEIF (PHASE.EQ.'CONT') THEN
         CALL MMMTCU('CONT',NDIM  ,NNL   ,NNE   ,NNM   ,
@@ -133,8 +140,8 @@ C
      &              MATREC,MATRMC)  
         IF (LUSURE) THEN
           CALL MMMTCC('USUR',NNL   ,HPG   ,FFL   ,JACOBI,
-     &                TYPBAR,TYPRAC,COEFCS,CWEAR ,DISSIP,
-     &                MATRCC)   
+     &                TYPBAR,TYPRAC,COEFCP,COEFCS,CWEAR ,
+     &                DISSIP,MATRCC)   
           CALL MMMTUU('USUR',NDIM  ,NNE   ,NNM   ,NORM  ,
      &                MPROJN,MPROJT,HPG   ,FFE   ,FFM   ,
      &                JACOBI,COEFCP,COEFCR,COEFFP,COEFFF,
@@ -147,8 +154,19 @@ C
      &              JACOBI,TYPBAR,TYPRAC,COEFCR,CWEAR ,
      &              DISSIP,DLAGRC,DELUSU,MATRCE,MATRCM,
      &              MATREC,MATRMC)     
-        ENDIF  
-        IF (LSTABC) THEN
+        ENDIF
+        IF (LPENAC) THEN
+          CALL MMMTUU('PCON',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                MPROJN,MPROJT,HPG   ,FFE   ,FFM   ,
+     &                JACOBI,COEFCP,COEFCR,COEFFP,COEFFF,
+     &                RESE  ,NRESE ,LAMBDA,COEFFR,JEU   ,
+     &                ASPERI,KAPPAN,KAPPAV,DELTAT,BETA  ,
+     &                GAMMA ,CWEAR ,DISSIP,DLAGRC,DELUSU,
+     &                MATREE,MATRMM,MATREM,MATRME)
+          CALL MMMTCC('PCON',NNL   ,HPG   ,FFL   ,JACOBI,
+     &                TYPBAR,TYPRAC,COEFCP,COEFCS,CWEAR ,
+     &                DISSIP,MATRCC)
+        ELSEIF (LSTABC) THEN
           CALL MMMTUU('STAC',NDIM  ,NNE   ,NNM   ,NORM  ,
      &                MPROJN,MPROJT,HPG   ,FFE   ,FFM   ,
      &                JACOBI,COEFCP,COEFCR,COEFFP,COEFFF,
@@ -156,7 +174,7 @@ C
      &                ASPERI,KAPPAN,KAPPAV,DELTAT,BETA  ,
      &                GAMMA ,CWEAR ,DISSIP,DLAGRC,DELUSU,
      &                MATREE,MATRMM,MATREM,MATRME)            
-        ENDIF                 
+        ENDIF                
         IF (LCOMPL) THEN
           CALL MMMTUU('COMP',NDIM  ,NNE   ,NNM   ,NORM  ,
      &                MPROJN,MPROJT,HPG   ,FFE   ,FFM   ,
@@ -168,53 +186,81 @@ C
         ENDIF
       ELSEIF (PHASE.EQ.'FROT') THEN
           IF (LADHER) THEN
-            CALL MMMTFU('ADHE',NDIM  ,NNL   ,NNE   ,NNM   ,
-     &                  NBCPS ,HPG   ,JACOBI,FFL   ,FFE   ,
-     &                  FFM   ,TAU1  ,TAU2  ,MPROJT,RESE  ,
-     &                  NRESE ,LAMBDA,NDEXFR,COEFFF,COEFFS,
-     &                  COEFFR,MATRFE,MATRFM,MATREF,MATRMF)
-            IF (LSTABF) THEN
-              CALL MMMTUU('STAF',NDIM  ,NNE   ,NNM   ,NORM  ,
+            IF (LPENAF) THEN
+              CALL MMMTUU('PADH',NDIM  ,NNE   ,NNM   ,NORM  ,
      &                    MPROJN,MPROJT,HPG   ,FFE   ,FFM   ,
      &                    JACOBI,COEFCP,COEFCR,COEFFP,COEFFF,
      &                    RESE  ,NRESE ,LAMBDA,COEFFR,JEU   ,
      &                    ASPERI,KAPPAN,KAPPAV,DELTAT,BETA  ,
      &                    GAMMA ,CWEAR ,DISSIP,DLAGRC,DELUSU,
-     &                    MATREE,MATRMM,MATREM,MATRME)             
+     &                    MATREE,MATRMM,MATREM,MATRME)
+              CALL MMMTFF('PADH',NDIM  ,NBCPS ,NNL   ,HPG   ,
+     &                    FFL   ,JACOBI,TAU1  ,TAU2  ,RESE  ,
+     &                    NRESE ,LAMBDA,NDEXFR,COEFFS,COEFFF,
+     &                    COEFFP,MATRFF)
+            ELSE
+              CALL MMMTFU('ADHE',NDIM  ,NNL   ,NNE   ,NNM   ,
+     &                    NBCPS ,HPG   ,JACOBI,FFL   ,FFE   ,
+     &                    FFM   ,TAU1  ,TAU2  ,MPROJT,RESE  ,
+     &                    NRESE ,LAMBDA,NDEXFR,COEFFF,COEFFS,
+     &                    COEFFR,MATRFE,MATRFM,MATREF,MATRMF)
+              IF (LSTABF) THEN
+                CALL MMMTUU('STAF',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                      MPROJN,MPROJT,HPG   ,FFE   ,FFM   ,
+     &                      JACOBI,COEFCP,COEFCR,COEFFP,COEFFF,
+     &                      RESE  ,NRESE ,LAMBDA,COEFFR,JEU   ,
+     &                      ASPERI,KAPPAN,KAPPAV,DELTAT,BETA  ,
+     &                      GAMMA ,CWEAR ,DISSIP,DLAGRC,DELUSU,
+     &                      MATREE,MATRMM,MATREM,MATRME)             
+              ENDIF
             ENDIF
           ELSE IF (LGLISS) THEN
-            CALL MMMTFF('GLIS',NDIM  ,NBCPS ,NNL   ,HPG   ,
-     &                  FFL   ,JACOBI,TAU1  ,TAU2  ,RESE  ,
-     &                  NRESE ,LAMBDA,NDEXFR,COEFFS,COEFFF,
-     &                  MATRFF)
-            CALL MMMTFU('GLIS',NDIM  ,NNL   ,NNE   ,NNM   ,
-     &                  NBCPS ,HPG   ,JACOBI,FFL   ,FFE   ,
-     &                  FFM   ,TAU1  ,TAU2  ,MPROJT,RESE  ,
-     &                  NRESE ,LAMBDA,NDEXFR,COEFFF,COEFFS,
-     &                  COEFFR,MATRFE,MATRFM,MATREF,MATRMF)  
-            CALL MMMTUU('GLIS',NDIM  ,NNE   ,NNM   ,NORM  ,
-     &                  MPROJN,MPROJT,HPG   ,FFE   ,FFM   ,
-     &                  JACOBI,COEFCP,COEFCR,COEFFP,COEFFF,
-     &                  RESE  ,NRESE ,LAMBDA,COEFFR,JEU   ,
-     &                  ASPERI,KAPPAN,KAPPAV,DELTAT,BETA  ,
-     &                  GAMMA ,CWEAR ,DISSIP,DLAGRC,DELUSU,
-     &                  MATREE,MATRMM,MATREM,MATRME)
+            IF (LPENAF) THEN
+              CALL MMMTFF('PGLI',NDIM  ,NBCPS ,NNL   ,HPG   ,
+     &                    FFL   ,JACOBI,TAU1  ,TAU2  ,RESE  ,
+     &                    NRESE ,LAMBDA,NDEXFR,COEFFS,COEFFF,
+     &                    COEFFP,MATRFF) 
+              CALL MMMTUU('PGLI',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                    MPROJN,MPROJT,HPG   ,FFE   ,FFM   ,
+     &                    JACOBI,COEFCP,COEFCR,COEFFP,COEFFF,
+     &                    RESE  ,NRESE ,LAMBDA,COEFFR,JEU   ,
+     &                    ASPERI,KAPPAN,KAPPAV,DELTAT,BETA  ,
+     &                    GAMMA ,CWEAR ,DISSIP,DLAGRC,DELUSU,
+     &                    MATREE,MATRMM,MATREM,MATRME)
+            ELSE
+              CALL MMMTFF('GLIS',NDIM  ,NBCPS ,NNL   ,HPG   ,
+     &                    FFL   ,JACOBI,TAU1  ,TAU2  ,RESE  ,
+     &                    NRESE ,LAMBDA,NDEXFR,COEFFS,COEFFF,
+     &                    COEFFP,MATRFF)
+              CALL MMMTFU('GLIS',NDIM  ,NNL   ,NNE   ,NNM   ,
+     &                    NBCPS ,HPG   ,JACOBI,FFL   ,FFE   ,
+     &                    FFM   ,TAU1  ,TAU2  ,MPROJT,RESE  ,
+     &                    NRESE ,LAMBDA,NDEXFR,COEFFF,COEFFS,
+     &                    COEFFR,MATRFE,MATRFM,MATREF,MATRMF)  
+              CALL MMMTUU('GLIS',NDIM  ,NNE   ,NNM   ,NORM  ,
+     &                    MPROJN,MPROJT,HPG   ,FFE   ,FFM   ,
+     &                    JACOBI,COEFCP,COEFCR,COEFFP,COEFFF,
+     &                    RESE  ,NRESE ,LAMBDA,COEFFR,JEU   ,
+     &                    ASPERI,KAPPAN,KAPPAV,DELTAT,BETA  ,
+     &                    GAMMA ,CWEAR ,DISSIP,DLAGRC,DELUSU,
+     &                    MATREE,MATRMM,MATREM,MATRME)
+            ENDIF
           ELSE
             CALL ASSERT(.FALSE.) 
-          END IF        
+          END IF
       ELSE
         CALL ASSERT(.FALSE.)
-      ENDIF
+      ENDIF  
 C
 C --- MODIFICATION DES TERMES SI FOND_FISSURE
 C
       IF (TYPBAR.NE.0) THEN
         CALL MMMTCC('SANS',NNL   ,HPG   ,FFL   ,JACOBI,
-     &                TYPBAR,TYPRAC,COEFCS,CWEAR ,DISSIP,
-     &                MATRCC)
+     &              TYPBAR,TYPRAC,COEFCP,COEFCS,CWEAR ,
+     &              DISSIP,MATRCC)
         CALL MMMTCC('EXCL',NNL   ,HPG   ,FFL   ,JACOBI,
-     &                TYPBAR,TYPRAC,COEFCS,CWEAR ,DISSIP,
-     &                MATRCC)
+     &              TYPBAR,TYPRAC,COEFCP,COEFCS,CWEAR ,
+     &              DISSIP,MATRCC)
         CALL MMMTCU('EXCL',NDIM  ,NNL   ,NNE   ,NNM   ,
      &              NORM  ,HPG   ,FFL   ,FFE   ,FFM   ,
      &              JACOBI,TYPBAR,TYPRAC,COEFCR,CWEAR ,
@@ -226,11 +272,11 @@ C --- MODIFICATION DES TERMES SI LINE_QUAD
 C
       IF (TYPRAC.NE.0) THEN
         CALL MMMTCC('SANS',NNL   ,HPG   ,FFL   ,JACOBI,
-     &                TYPBAR,TYPRAC,COEFCS,CWEAR ,DISSIP,
-     &                MATRCC)
+     &              TYPBAR,TYPRAC,COEFCP,COEFCS,CWEAR ,
+     &              DISSIP,MATRCC)
         CALL MMMTCC('EXCL',NNL   ,HPG   ,FFL   ,JACOBI,
-     &                TYPBAR,TYPRAC,COEFCS,CWEAR ,DISSIP,
-     &                MATRCC)
+     &              TYPBAR,TYPRAC,COEFCP,COEFCS,CWEAR ,
+     &              DISSIP,MATRCC)
         CALL MMMTCU('EXCL',NDIM  ,NNL   ,NNE   ,NNM   ,
      &              NORM  ,HPG   ,FFL   ,FFE   ,FFM   ,
      &              JACOBI,TYPBAR,TYPRAC,COEFCR,CWEAR ,
@@ -244,7 +290,7 @@ C
         CALL MMMTFF('EXFR',NDIM  ,NBCPS ,NNL   ,HPG   ,
      &              FFL   ,JACOBI,TAU1  ,TAU2  ,RESE  ,
      &              NRESE ,LAMBDA,NDEXFR,COEFFS,COEFFF,
-     &              MATRFF)      
+     &              COEFFP,MATRFF)      
         CALL MMMTFU('EXFR',NDIM  ,NNL   ,NNE   ,NNM   ,
      &              NBCPS ,HPG   ,JACOBI,FFL   ,FFE   ,
      &              FFM   ,TAU1  ,TAU2  ,MPROJT,RESE  ,

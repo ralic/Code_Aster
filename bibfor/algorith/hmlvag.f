@@ -3,12 +3,12 @@
      +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,ADCP11,
      +                  ADCP12,ADDEP2,ADCP21,ADDETE,ADCOTE,CONGEM,
      +                  CONGEP,VINTM,VINTP,DSDE,DEPS,EPSV,DEPSV,P1,P2,
-     +                  DP1,DP2,T,DT,PHI,PVP,H11,H12,H21,RHO11,PHI0,
+     +                  DP1,DP2,T,DT,PHI,PVP,H11,H12,RHO11,PHI0,
      +                  PVP0,SAT,RETCOM,THMC,CRIT,BIOT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 22/02/2010   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,40 +47,38 @@ C ======================================================================
       INTEGER       ADCP21,ADCOTE,ADDEME,ADDEP1,ADDEP2,ADDETE
       REAL*8        CONGEM(DIMCON),CONGEP(DIMCON),VINTM(NBVARI),PVP0
       REAL*8        VINTP(NBVARI),DSDE(DIMCON,DIMDEF),EPSV,DEPSV
-      REAL*8        P1,DP1,P2,DP2,T,DT,PHI,PVP,H11,H12,H21,RHO11,PHI0
+      REAL*8        P1,DP1,P2,DP2,T,DT,PHI,PVP,H11,H12,RHO11,PHI0
       REAL*8        RINSTP
       CHARACTER*16  OPTION,MECA,THER,HYDR,THMC
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER      I
-      REAL*8       SATM,EPSVM,PHIM,RHO11M,RHO12M,RHO21M,PVPM,BIDON
-      REAL*8       RHO110,YOUNG,NU,BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ,RHO12
-      REAL*8       RHO21,MASRT,CP11,CP12,CP21,SAT,DSATP1,MAMOLV,MAMOLG
-      REAL*8       UMPRHS,R,RHO0,C0EPS,CSIGM,VARIA,ALP11,ALP12,ALP21
-      REAL*8       VARBIO,VARLQ,VARVP,EM
-      REAL*8       EPS
-      PARAMETER  ( EPS = 1.D-21 ) 
+      REAL*8       SATM,EPSVM,PHIM,RHO11M,RHO12M,RHO21M,PVPM
+      REAL*8       RHO110,BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ,RHO12
+      REAL*8       RHO21,CP11,CP12,CP21,SAT,DSATP1,MAMOLV,MAMOLG
+      REAL*8       R,RHO0,CSIGM,ALP11,ALP12,ALP21,EM,EPS
+      PARAMETER  ( EPS = 1.D-21 )
       LOGICAL      EMMAG
 C ======================================================================
 C --- VARIABLES LOCALES POUR BARCELONE----------------------------------
 C ======================================================================
       REAL*8       TINI,CRIT(*)
-      REAL*8       DSIDP1(6),DSIDEP(6,6),DEPS(6) 
+      REAL*8       DSIDP1(6),DEPS(6)
       REAL*8       DSDEME(6,6)
 CCCC    SIP NECESSAIRE POUR CALCULER LES CONTRAINTES TOTALES
 CCCC    ET ENSUITE CONTRAINTES NETTES POUR BARCELONE
-      REAL*8  SIPM,SIPP         
+      REAL*8  SIPM,SIPP
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
       REAL*8       RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
-      REAL*8       RBID8, RBID9, RBID10, RBID11, RBID12, RBID13, RBID14
+      REAL*8       RBID8, RBID10, RBID14
       REAL*8       RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
       REAL*8       RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
-      REAL*8       RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
-      REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
-      REAL*8       RBID39, RBID40,RBID45,RBID46,RBID47,RBID48,RBID49
+      REAL*8       RBID27, RBID28, RBID29, RBID32
+      REAL*8       RBID33, RBID34, RBID35, RBID38
+      REAL*8       RBID39,RBID45,RBID46,RBID47,RBID48,RBID49
       REAL*8       RBID50,RBID51
       REAL*8       SIGNE,DPAD,COEPS,CP22,PAS,RHO22,M11M,M12M,M21M
       REAL*8       DMASP1,DMASP2,DMVDP1,DMVDP2,DMWDP1,DMWDP2,DQDEPS
@@ -100,10 +98,10 @@ C =====================================================================
      +             RBID6,
      +             RBID7, RBID8, RBID10, R, RHO0, CSIGM,
      +             BIOT, SATM, SAT, DSATP1, RBID14, RBID15,
-     +             RBID16,RBID17, RBID18, RBID19, 
+     +             RBID16,RBID17, RBID18, RBID19,
      +             RBID20, RBID21, RBID22,RBID23, RBID24, RBID25,
      +             RHO110, CLIQ, ALPLIQ, CP11,RBID26, RBID27, RBID28,
-     +             RBID29, MAMOLG, CP21,RBID32, RBID33, RBID34, 
+     +             RBID29, MAMOLG, CP21,RBID32, RBID33, RBID34,
      +             RBID35, MAMOLV, CP12,RBID38,RBID39,RBID45,RBID46,
      +             RBID47,RBID48,RBID49,EM,RBID50,RBID51,RINSTP)
 C ======================================================================
@@ -128,7 +126,7 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN 
+      IF(EM.GT.EPS)THEN
         EMMAG = .TRUE.
       ENDIF
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
@@ -179,8 +177,8 @@ C **********************************************************************
       RHO21M = MASVOL(MAMOLG,P2-DP2-PVPM,R,T-DT)
       PAS    = MAJPAS(P2,PVP)
 C =====================================================================
-C --- CALCUL DES AUTRES COEFFICIENTS DEDUITS : DILATATIONS ALPHA ------
-C --- ET C0EPS DANS LE CAS D'UN SEUL FLUIDE ---------------------------
+C --- CALCUL DES AUTRES COEFFICIENTS DEDUITS :  -----------------------
+C --- DILATATIONS ALPHA DANS LE CAS D'UN SEUL FLUIDE ------------------
 C =====================================================================
       IF (YATE.EQ.1) THEN
          ALP11 = DILEAU(SAT,BIOT,PHI,ALPHA0,ALPLIQ)
@@ -188,7 +186,6 @@ C =====================================================================
          ALP21 = DILGAZ(SAT,BIOT,PHI,ALPHA0,T     )
          H11   = CONGEM(ADCP11+NDIM+1)
          H12   = CONGEM(ADCP12+NDIM+1)
-         H21   = CONGEM(ADCP21+NDIM+1)
 C ======================================================================
 C --- CALCUL DE LA CAPACITE CALORIFIQUE SELON FORMULE DOCR -------------
 C ======================================================================
@@ -361,7 +358,7 @@ C --- DSIGM/DEPP1
      &                               DSIDP1(I)
    50       CONTINUE
          ENDIF
-      ENDIF      
+      ENDIF
 C =====================================================================
  30   CONTINUE
 C =====================================================================

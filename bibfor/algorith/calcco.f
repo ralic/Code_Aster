@@ -4,13 +4,13 @@
      +                    ADVICO,ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,
      +                    ADCP22,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,
      +                    VINTP,DSDE,DEPS,EPSV,DEPSV,P1,P2,DP1,DP2,
-     +                    T,DT,PHI,PVP,PAD,H11,H12,H21,KH,RHO11,
+     +                    T,DT,PHI,PVP,PAD,H11,H12,KH,RHO11,
      +                    PHI0,PVP0,SAT,RETCOM,CRIT,BIOT,
      +                    VIHRHO,VICPHI,VICPVP,VICSAT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 15/02/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 22/02/2010   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,7 @@ C ======================================================================
       REAL*8        CONGEM(DIMCON),CONGEP(DIMCON)
       REAL*8        VINTM(NBVARI),VINTP(NBVARI)
       REAL*8        DSDE(DIMCON,DIMDEF),EPSV,DEPSV,P1,DP1,P2,DP2,T,DT
-      REAL*8        PHI,PVP,PAD,H11,H12,H21,KH,RHO11,PHI0
+      REAL*8        PHI,PVP,PAD,H11,H12,KH,RHO11,PHI0
       REAL*8        PVP0,SAT,RINSTP
       CHARACTER*16  OPTION,MECA,THMC,THER,HYDR
       LOGICAL PERMAN
@@ -104,7 +104,7 @@ C ======================================================================
      +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,BDCP11,
      +                  ADCP12,ADDEP2,ADCP21,ADDETE,ADCOTE,CONGEM,
      +                  CONGEP,VINTM,VINTP,DSDE,DEPS,EPSV,DEPSV,P1,P2,
-     +                  DP1,DP2,T,DT,PHI,PVP,H11,H12,H21,RHO11,PHI0,
+     +                  DP1,DP2,T,DT,PHI,PVP,H11,H12,RHO11,PHI0,
      +                  PVP0,SAT,RETCOM,THMC,CRIT,BIOT,RINSTP)
 C ======================================================================
 C --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_GAZ -----------------------
