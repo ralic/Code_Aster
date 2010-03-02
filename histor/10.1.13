@@ -1,0 +1,469 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 24/02/2010 - 09:20:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014464 DU 2010-01-21 15:21:48
+TYPE evolution concernant Documentation (VERSION )
+TITRE
+   informations concernant les fichiers de message
+FONCTIONNALITE
+   1/ Tous les éléments décrivants:
+    - les caractéristiques dimensionnantes du calcul (nbre de noeuds , de 
+   Lagranges, nnz...),
+    - les diagnostics sur les consommations en temps/mémoire
+   qui sont tracés/traçables dans les fichiers .mess/.resu sont désormais décrits 
+   et explicités dans une doc. U1: "Indicateur de performance d'un calcul 
+   (temps/mémoire)".
+   
+   2/ De même une nouvelle doc. U2 "Notice d'utilisation du parallélisme" a vu le 
+   jour. Elle décrit:
+       - l'organisation du parallélisme dans le code (7 scénarios),
+       - liste des conseils/rappels des fondamentaux pour tirer parti du //,
+       - détaille la mise en oeuvre des 7 stratégies,
+   Sans oublier, d'aborder les questions délicates:
+       - cumuls/chaînage de différents scénarios,
+       - construction/mise en oeuvre d'un calcul // hors Bull et/ou hors Astk.
+   
+   3/ De même, la documentation SOLVEUR a été complètement refondue:
+       - préconisations sur les produits externes,
+       - liens avec les deux docs précédentes,
+       - liste de conseils,
+       - mise en commun de nombreux paragraphes redondants entre solveur,
+       - mise à jour (MUMPS, GCPC, FETI).
+   
+   Ces docs tiennent compte des dernières restit de Jacques (JJLDYN) et de 
+   Nicolas (GCPC+LDLT_SP).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.50.01
+VALIDATION
+   doc
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 01/03/2010 - 14:05:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014359 DU 2010-01-04 14:05:48
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cas-test sdld34a montre des variables non initialisxc3xa9es dans DYNA_LINE_TRAN
+FONCTIONNALITE
+   Thomas a découvert une variable non initialisée dans la définition de l'instant initial de
+   calcul de certains schémas en temps de DYNA_LINE_TRAN.
+   Dans DYNA_LINE_TRAN, si le schéma en temps choisi par l'utilisateur est implicite (WILSON,
+   NEWMARK), la liste des instants de calcul est déterminée par une LIST_REEL dont la
+   première valeur est l'instant initial (à la STAT/DYNA_LINE_NON_LINE). Jusqu'ici il n'y pas
+   de problème.
+   Si le schéma en temps est explicite (DIFF_CENTRE, ADAPT), le mode d'entrée des instants de
+   calcul est comme celui de DYNA_TRAN_MODAL et l'utilisateur donne un instant final
+   (INST_FIN), un pas de temps (PAS) et un instant initial (INST_INIT). INST_INIT est
+   facultatif et s'il est absent, on suppose qu'il est nul.
+   Malheureusement l'initialisation dans ce dernier cas n'était pas faite et on pouvait se
+   retrouver avec une valeur quelconque, généralement proche de zéro mais pas toujours.
+   Je rétablis l'initialisation telle qu'elle se doit d'être.
+   J'ajoute aussi un message d'information à l'égard de l'utilisateur.
+   
+   Risque de résultats faux :
+   depuis au moins la version 7, dans DYNA_LINE_TRAN avec les méthodes en temps explicites
+   (DIFF_CENTRE et ADAPT), lorsque l'utilisateur a laissé à la commande le soin d'initialiser
+   à zéro l'instant initial, les conditions initiales peuvent être mal prises en compte. Si
+   le calcul est sensible à ces conditions initiales, les résultats sont susceptibles d'être
+   faussés sur tout le calcul transitoire.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 7.0.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 7.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.53.02
+VALIDATION
+   sdld34a, astout
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR haelewyn     HAELEWYN Jessica       DATE 01/03/2010 - 13:35:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014613 DU 2010-02-11 12:23:24
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NE10.1.10, le cas-test tpnl301b s'arrete en <S>_CPU_LIMIT sur Bull et Rocks.
+FONCTIONNALITE
+   En NEW10.1.10, le cas-test tpnl301b s'arrete en <S>_CPU_LIMIT sur Bull et Rocks.
+   
+   Cas-test ajouté en 10.1.10 en demandant 600s de TCPU, c'est un peu juste.
+   
+   On passe de 600s à 700s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tpnl301b
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014638 DU 2010-02-16 10:15:57
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.1.10, le cas-test mtlp103a s'arrete <S>_CPU_LIMIT sur Bull.
+FONCTIONNALITE
+   En NEW10.1.10, le cas-test mtlp103a s'arrete <S>_CPU_LIMIT sur Bull.
+   
+   Suite à la restitution en 10.1.10, l'option CHAR_THER_EVOL a été modifiée en séparant l'intégration des termes de masse et 
+   rigidité pour ne pas employer la même famille de points de Gauss.
+   Là où il n'y avait qu'une boucle sur les points de Gauss, il y en a maintenant deux.
+   
+   Ca explique de plus faibles performances sur tous les éléments non-lumpés (pour les lumpés les deux boucles existaient 
+   déjà).
+   
+   On peut aussi voir que les tests utilisant des TRIA et TETRA sont encore moins performants car leur famille de points de 
+   Gauss en 'RIGI' n'est plus 'sous-intégrée'.
+   Pour mtlp103a, on passe de FPG3 à FPG6 et on a deux boucles sur les points de Gauss dans CHAR_THER_EVOL.
+   
+   Solution : Augmenter le temps CPU pour ce cas (on passe de 250s à 350s).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   mtlp103a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014499 DU 2010-01-26 08:18:52
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.1.7, les cas-tests mtlp103a, ssnp102a et wtna101a (MPI) s'arretent par manque de temps sur Bull.
+FONCTIONNALITE
+   Problème: 
+   En NEW10.1.7, les cas-tests mtlp103a, ssnp102a et wtna101a (MPI) s'arretent par manque de
+   temps sur Bull.
+   
+   En NEW10.1.8, seul le cas-test wtna101a s'arrete par manque de temps.
+    
+   => mtlp103a s'arretent par manque de temps en 10.1.10 (fiche 14638 corrigée)
+      wtna101a corrigé en 10.1.12 (fiche 14646:Arret par manque de temps CPU de certains tests mpi sur BULL)
+      ssnp102a plus de problème depuis 10.1.8
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 02/03/2010 - 11:43:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013858 DU 2009-09-10 16:40:21
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   mode de definition du repere utilisateur dans MODI_REPERE
+FONCTIONNALITE
+   Objectif:
+   ---------
+   Développer dans la commande MODI_REPERE la possibilité  
+   d'introduire le repere en donnant les coordonnees des vecteurs 
+   de base par les mot-clés VECT_X et VECT_Y.
+   
+   Realisation:
+   -----------
+   Utilisation de la routine angvxy.f pour calculer les angles 
+   nautiques
+   a partir des coordonnees des vecteurs de base.
+   
+   Validation:
+   ----------
+   Le cas-test sslv04a a été compléter pour tester le 
+   developpement.
+   
+   Impact fortran:
+   chrpel.f et chrpno.f
+   
+   Impact test:
+   sslv04a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.74.01
+VALIDATION
+   sslv04a
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 02/03/2010 - 11:43:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012133 DU 2008-05-28 08:05:55
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   MN01 - Recherche linxc3xa9aire MIXTE
+FONCTIONNALITE
+   Objectif:
+   --------
+   Il s'agit de faire un bilan de l'utilisation de la méthode 'MIXTE' en remplacement de la
+   méthode 'CORDE' dans le mot-clé RECH_LINEAIRE de STAT_NON_LINE. 
+   
+   Realisation:
+   ------------
+   Point 1: Etablissement d'un tableau comparant les deux méthodes et suivant le critère
+   "nombres d'iterations de Newton" lors de chaque appel à stat_non_line pour 187 cas-tests.
+   
+   Point 2: Modification de 8 cas-tests dans les cas ou la méthode mixte est meilleure. Il
+   s'agit des tests suivants
+   ssnp142b, wtnp113d, ssna302b.mess, ssnl106h.mess,
+   wtnp113c, hsnv120b.mess, ssnl127a.mess et wtnv134a.mess.
+   Il est à noter que le nombre d'iteration dans le dernier stat_non_line du cas wtnv134a est
+   passé de 306 à 311.
+   
+   Point 3: Correction de la routine zbinit.fIl faut modifier 
+         IF (F0.GE.0) THEN 
+           CALL ASSERT(.FALSE.)
+         ENDIF
+   Par
+         IF (F0.GT.0) THEN 
+           CALL ASSERT(.FALSE.)
+         ENDIF
+   Car la fonctionnelle initiale peut être égale à zéro quand on est en élasticité. A faire en v9
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.01
+VALIDATION
+   liste complxc3xa8te
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nistor       NISTOR Ionel           DATE 01/03/2010 - 13:25:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014410 DU 2010-01-12 10:48:34
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Anomalie dans la construction d'une base modale de RITZ xc3xa0 partir d'une liste de collections de modes dynamiques
+FONCTIONNALITE
+   Problème:
+   --------------------------------
+   Lors du travail sur la modélisation du rotor fissuré avec Code_Aster je me suis rendu compte que la création 
+   d'une base modale de RITZ par l'addition de plusieurs collections de modes dynamiques ne fonctionne pas 
+   correctement.
+   En effet, sous le mot-clé facteur RITZ de l'opérateur DEFI_BASE_MODALE on peut renseigner pour le mot-clé 
+   simple MODE_MECA une liste de concepts mode_meca afin de les "additionner" dans une base modale (création 
+   d'un noveau concept mode_meca). Mais en faissant ça on obtient à la sortie un concept mode_meca incomplet par 
+   rapport aux attentes: il ne contient que les modes du dernier concept renseigné dans la liste mentionnée ci-
+   dessus. 
+   Après une discussion avec Georges une explication a été trouvée: il s'agisait d'une fonctionalité ancienne 
+   qu'il  a introduit pour assembles les modes propres des différentes morceaux d'une structure. Cette technique 
+   n'est plus d'actualité, la condensation dynamique l'a remplacée.
+   
+   Solution:
+   ---------------------------------
+   Un developpement a été fait pour créer correctement une base modale à partir d'une liste de concepts 
+   mode_meca donnée sous le mot-clé MODE_MECA du RITZ dans DEFI_BASE_MODALE.
+   Il a fallu également transformer le type de mot-clé  NMAX_MODE dans une liste d'entiers. Ainsi si 
+   l'utilisateur renseigne NMAX_MODE avec le nb. de modes à prendre en compte dans la création de la nouvelle 
+   sd_mode_meca, il faut qu'il donne une liste des entiers et de la même longuer que la liste de mode_meca.
+   Sinon on arrête en erreur fatale avec le conseil de dimmensionner les deux listes à la même taille.
+   Ce developpement permet donc maintenant de créer une base modale à partir de plusieurs collections de 
+   mode_meca considérés comme de modes dynamique (avant il fallait passer par MODE_INTF à plusieurs reprises 
+   avec altération des paramètres)
+   
+   Impact dans les sources:
+   --------------------------------
+   ritz99.f
+   defi_base_modale.capy
+   algorith14.py
+   
+   Validation
+   -------------------------------
+   Dans sdls08a on ajout un appel au DEFI_BASE_MODALE pour concatener deux morceaux d'un spectre. On verifie 
+   après que dans le nouveau concept on trouve bien tous les modes "parents" avec leurs fréquences
+   
+   Impact documentaire
+   ------------------------------
+   
+   V2.03.008
+   U4.64.02
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.03.008, U4.64.02
+VALIDATION
+   sdls08a
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014652 DU 2010-02-17 14:59:44
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   macro_mode_meca + DST (V9.4)
+FONCTIONNALITE
+   Problème :
+   ---------------------------------------
+   Lors d’un calcul modal avec MACRO_MODE_MECA on calcule bien des modes, mais la commande 
+   termine en erreur avec le message suivant. 
+   
+   !----------------------------!
+   ! <EXCEPTION> <ALGELINE3_11> !
+   !                            !
+   !                            !
+   !  structure résultat vide   !
+   !                            !
+   !                            !
+   !                            !
+   !                            !
+   !----------------------------!
+   
+   
+   Diagnostique :
+   ----------------------------------------
+   L’arrêt en erreur se produit au niveau de l’extraction des modes propres dans l’opérateur 
+   EXTR_MODE qui est 
+   appelé par la macro-commande MACRO_MODE_MECA. En effet l’utilisateur renseigne dans la 
+   syntaxe de cette macro-
+   commande le mot-clé factor FILTRE_MODE qui active l’extraction des modes suivant un filtre 
+   (MASS_EFFE_UN 
+   ici ) et en respectant un critère (1.E-3 ici). Or il se trouve qu’aucun mode calculé ne 
+   rempli pas ce critère 
+   d’extraction (tous ont une masse effective unitaire inférieure à 1.E-3 quelque soit la 
+   direction).
+   
+   Solution :
+   -----------------------------------------
+   L’utilisateur doit changer son filtre et/ou le critère d’extraction ou renoncer tout 
+   simplement au filtre (le 
+   mot clé facteur est facultatif), comme il l’a fait lors de l’essais avec MODE_ITER_SIMULT, 
+   s’il veut obtenir 
+   tous les modes demandés. 
+   Par contre le message d’erreur (ALGELINE3_11) n’est pas clair donc je propose un nouveau 
+   texte plus parlant 
+   avec un conseil :
+   
+   « L’extraction des modes a échoué.
+   La structure de données mode_meca est vide ou aucun mode ne remplit le critère d’extraction.
+   Conseils & solution :
+     Vérifiez le résultat de votre calcul modal et/ou modifiez votre filtre d’extraction. »
+   
+   Impact dans les sources :
+   -------------------------------------------
+   Algeline3.py
+   
+   
+   Validation :
+   -------------------------------------------
+   L’étude fournie
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude de l'utilisateur
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014693 DU 2010-02-25 10:05:56
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   routine doublon pour copier les modes dans une base modale
+FONCTIONNALITE
+   Problème:
+   ----------------------
+   Lors d'un travail sur la prise en compte d'une liste de concepts mode_meca lors de la constitution d'une base 
+   de Ritz je me suis rendu compte que deux routines font la copie des modes dans une base: mgco99.f et moco99.f.
+   La première n'est jamais appelée par les cas-tests et donc non-couverte. 
+   
+   Diagnostique:
+   ----------------------
+   L'explication est simple: elle a servi dans le passé dans une maquette de Georges pour assembler des 
+   mode_meca de différentes morceaux d'une structure. 
+   Aujourd'hui cette technique (qui n'est pas validée dans le code par un cas-test) est abandonnée en 
+   faveur de la condensation dynamique. On n'a plus besoin donc de cette routine et on peut utiliser à la place 
+   moco99.f pour le travail de la fiche 14410. En plus moco99.f a l'avantage de pointer seulement les champs 
+   DEPL des modes déjà contenus dans les sd_mode_meca d'origine et de ne pas les copier dans la nouvelle 
+   sd_mode_meca résultat.
+   
+   Solution:
+   ----------------------
+   Pour faciliter la lisibilité des sources et la maintenance résorbe mgco99.f dans la version NEW sans toucher 
+   en STA
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les cas-tests appelant RITZ dans la crxc3xa9ation d'une base modale
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF hsnv120b                      macocco K.MACOCCO          353      3      3
+ CASTEST MODIF mtlp103a                     haelewyn J.HAELEWYN         862      2      2
+ CASTEST MODIF sdls08a                        nistor I.NISTOR           365     83      1
+ CASTEST MODIF sslv04a                       macocco K.MACOCCO         1430    358      1
+ CASTEST MODIF ssna302b                      macocco K.MACOCCO          588      2      2
+ CASTEST MODIF ssnl106h                      macocco K.MACOCCO          253      2      2
+ CASTEST MODIF ssnl127a                      macocco K.MACOCCO          439      3      2
+ CASTEST MODIF ssnp142b                      macocco K.MACOCCO          401      2      2
+ CASTEST MODIF tpnl301b                     haelewyn J.HAELEWYN         303      2      2
+ CASTEST MODIF wtnp113c                      macocco K.MACOCCO          492      3      2
+ CASTEST MODIF wtnp113d                      macocco K.MACOCCO          501      3      2
+ CASTEST MODIF wtnv134a                      macocco K.MACOCCO          875      2      2
+CATALOPY MODIF commande/defi_base_modale      nistor I.NISTOR            89      2      2
+CATALOPY MODIF commande/modi_repere          macocco K.MACOCCO           79      5      2
+ FORTRAN MODIF algorith/chrpel               macocco K.MACOCCO          730     10      2
+ FORTRAN MODIF algorith/chrpno               macocco K.MACOCCO          622     10      3
+ FORTRAN MODIF algorith/dltp0                 boyere E.BOYERE           134      5      1
+ FORTRAN MODIF algorith/ritz99                nistor I.NISTOR           376     45     15
+ FORTRAN MODIF algorith/zbinit               macocco K.MACOCCO           66      2      2
+ FORTRAN SUPPR algorith/mgco99                nistor I.NISTOR           172      0    172
+  PYTHON MODIF Messages/algeline3             nistor I.NISTOR           439      5      2
+  PYTHON MODIF Messages/algorith14            nistor I.NISTOR           344     11      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   21        9741       560      54      +506
+ SUPPR :    1         172               172      -172
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   22        9913       560     226      +334 

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE BARRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl127a.para = tps_job 60 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,7 +126,8 @@ REST=STAT_NON_LINE(MODELE=MO,
                              PREDICTION='ELASTIQUE',
                              MATRICE='TANGENTE',
                              REAC_ITER=3,),
-                   RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,
+                   RECH_LINEAIRE=_F(METHODE='MIXTE',
+                                    ITER_LINE_MAXI=3,
                                     RHO_MIN=1e-06,
                                     RHO_MAX=10.0,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,

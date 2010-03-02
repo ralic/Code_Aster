@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,12 +64,15 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='n'
               NOM_CMP         =SIMP(statut='o',typ='TXM',min=6,max=6 ),),
          ),
          DEFI_REPERE     =FACT(statut='o',
-         regles=(UN_PARMI('ANGL_NAUT','ORIGINE'),),
+         regles=(UN_PARMI('ANGL_NAUT','ORIGINE','VECT_X'),),
            REPERE          =SIMP(statut='f',typ='TXM',defaut="UTILISATEUR",
                                  into=("UTILISATEUR","CYLINDRIQUE"),),
            ANGL_NAUT       =SIMP(statut='f',typ='R',max=3),
            ORIGINE         =SIMP(statut='f',typ='R',min=2,max=3),
            AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3),
+           VECT_X          =SIMP(statut='f',typ='R',min=3,max=3 ),
+           b_vecteurs      =BLOC(condition = "VECT_X != None",             
+              VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3 ),),
          ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),

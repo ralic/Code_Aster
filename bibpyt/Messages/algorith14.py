@@ -1,4 +1,4 @@
-#@ MODIF algorith14 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF algorith14 Messages  DATE 01/03/2010   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,6 +123,15 @@ cata_msg = {
  objet non trouvé :  %(k1)s 
 """),
 
+31 : _("""
+ problème de cohérence entre le nombre de concepts mode_meca et 
+ la liste des NMAX_MODE:
+ nombre de concepts mode_meca dans la liste MODE_MECA     : %(i1)d 
+ nombre de valeurs de la liste NMAX_MODE                  : %(i2)d 
+ Conseils & solution:
+  Les deux listes doivent avoir la même taille.
+"""),
+
 32 : _("""
  sd resultat  %(k1)s, le champ %(k2)s n'existe pas   
  pour le nume_ordre  %(i1)d 
@@ -148,7 +157,7 @@ cata_msg = {
 """),
 
 51 : _("""
- il faut un mode_meca a la 1ere occurence de ritz
+ il faut au moins un mode_meca a la 1ere occurence de ritz
 """),
 
 55 : _("""

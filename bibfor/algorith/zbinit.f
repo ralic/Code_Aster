@@ -1,7 +1,7 @@
       SUBROUTINE ZBINIT(F0,COEF,DIMMEM,MEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,7 +50,7 @@ C
 C       
 C ----------------------------------------------------------------------
 C 
-      IF (F0.GE.0) THEN 
+      IF (F0.GT.0) THEN 
         CALL ASSERT(.FALSE.)
       ENDIF
       PARMUL   = COEF

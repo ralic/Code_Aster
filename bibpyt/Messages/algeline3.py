@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline3 Messages  DATE 01/03/2010   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,7 +64,10 @@ cata_msg={
 """),
 
 11: _("""
- structure résultat vide
+ L'extraction des modes a échoué. 
+ La structure de données mode_meca est vide ou aucun mode ne remplit le critère d'extraction.
+ Conseils & solution :
+   Vérifiez le résultat de votre calcul modal et/ou modifiez votre filtre d'extraction"
 """),
 
 12: _("""

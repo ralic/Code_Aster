@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 01/03/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,89 @@ MODES=DEFI_BASE_MODALE(RITZ=(
                            _F(MODE_MECA=MODET,
                               NMAX_MODE=5,),
                            ),
-                          );
+                           );
+
+# TEST DE CREATION D'UNE BASE MODALE PAR ASSEMBLAGE DE DEUX
+#CONCEPTS "MODE_MECA" DONNES DANS UNE LISTE SOUS LE MOT-CLE "RITZ"
+
+MODE_A=MODE_ITER_SIMULT(MATR_A=KASS,
+                       MATR_B=MASS,
+                       CALC_FREQ=_F(
+                       NMAX_FREQ=4,),
+                       VERI_MODE=_F(STOP_ERREUR='OUI',
+                                    STURM='OUI',SEUIL=3.E-5,),);
+
+MODE_B=MODE_ITER_SIMULT(MATR_A=KASS,
+                       MATR_B=MASS,
+                       METHODE='JACOBI',
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                    FREQ=(1000.,5100.),),
+                       VERI_MODE=_F(STOP_ERREUR='OUI',
+                                    STURM='OUI',SEUIL=3.E-5,),);
+
+MODE_T=DEFI_BASE_MODALE(RITZ=(
+                           _F(MODE_MECA=(MODE_A,MODE_B),
+                             NMAX_MODE=(4,2,),),
+                           ),
+                         NUME_REF=NUME,
+                           );
+
+#VERIFICATION DES FREQUENCES PRESENTES DANS MODE_T
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE=2.90604E+01,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   VALE=7.62281E+01,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
+                   NUME_ORDRE=3,
+                   PARA='FREQ',
+                   VALE=7.62281E+01,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
+                   NUME_ORDRE=4,
+                   PARA='FREQ',
+                   VALE=7.62281E+01,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
+                   NUME_ORDRE=5,
+                   PARA='FREQ',
+                   VALE=5.05851E+03,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE_T,
+                   NUME_ORDRE=6,
+                   PARA='FREQ',
+                   VALE=5.05851E+03,
+                   PRECISION=1E-06,
+                   REFERENCE='NON_REGRESSION',
+                   CRITERE='RELATIF',
+                   ),),);
+
 
 #CALCUL DE LA BASE DE MODES STATIQUES
 #

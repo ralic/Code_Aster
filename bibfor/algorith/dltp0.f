@@ -3,7 +3,7 @@
       REAL*8    T0
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 01/03/2010   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,8 @@ C     -----------------------------------------------------------------
 C
 C     --- EST-ON EN REPRISE ? ---
 C
+C     INITIALISATION DE T0 PAR DEFAUT 
+
       CALL GETVID('ETAT_INIT','DYNA_TRANS',1,1,1,DYNA,NDY)
       IF ( NDY .NE. 0 ) THEN
          CALL GETVIS('ETAT_INIT','NUME_INIT' ,1,1,1,NUME,NNI)
@@ -121,7 +123,9 @@ C
 C
 C     --- DEFINITION DE L'INSTANT INITIAL AVEC "INST_INIT" ---
 C
+              T0 = 0.D0
               CALL GETVR8('INCREMENT','INST_INIT',1,1,1,T0,NP)
+              IF (NP.EQ.0) CALL U2MESS('I','ALGORITH5_62')
             ENDIF
          ENDIF
       ENDIF

@@ -1,6 +1,6 @@
-# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 01/03/2010   AUTEUR HAELEWYN J.HAELEWYN 
 # TITRE TREMPE D'UN BARREAU CYLINDRIQUE EN 16MND5
-# mtlp103a.para = tps_job 250 mem_job 32Mo ncpus 1 liste_test S
+# mtlp103a.para = tps_job 350 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

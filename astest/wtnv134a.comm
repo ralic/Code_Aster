@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI  
 # wtnv134a.para = tps_job 250 mem_job 391Mo ncpus 1 liste_test S
@@ -619,7 +619,7 @@ U2=STAT_NON_LINE(MODELE=MODELE,
                  INCREMENT=_F(LIST_INST    = DEFLIST,
                               INST_INIT    = inst_init_1,
                               INST_FIN     = inst_fin_1),
-                 RECH_LINEAIRE=_F(ITER_LINE_MAXI = 3),);
+                 RECH_LINEAIRE=_F(METHODE='MIXTE',ITER_LINE_MAXI = 3),);
                  
 
 #-------------------------

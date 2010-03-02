@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE CIRCULAIRE SOUMISE A PRESSION
 # ssna302b.para = tps_job 430 mem_job 200Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -482,7 +482,7 @@ CALCNL=STAT_NON_LINE(
                 CHARGE = PRES,
                 TYPE_CHARGE = 'SUIV'), _F( 
                 CHARGE = CONDLIM)),
-                     RECH_LINEAIRE=_F( 
+                     RECH_LINEAIRE=_F( METHODE='MIXTE',
                 ITER_LINE_MAXI = 3)
               )
 

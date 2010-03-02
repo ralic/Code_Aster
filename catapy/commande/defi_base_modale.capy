@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#& MODIF COMMANDE  DATE 01/03/2010   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,7 @@ DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=mode_meca,
          RITZ            =FACT(statut='f',max='**',
            regles=(UN_PARMI('MODE_MECA','BASE_MODALE','MODE_INTF'),),
            MODE_MECA       =SIMP(statut='f',typ=mode_meca,max='**'  ),
-           NMAX_MODE       =SIMP(statut='f',typ='I'),
+           NMAX_MODE       =SIMP(statut='f',typ='I',max='**'),
            BASE_MODALE     =SIMP(statut='f',typ=mode_meca ),
            MODE_INTF       =SIMP(statut='f',typ=(mode_meca,mult_elas), ),
          ),

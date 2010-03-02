@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
 # ======================================================================
 # TITRE : RESATURATION D UNE ALVEOLE TEST THH2D, 2D ,
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -273,7 +273,8 @@ RESU0=STAT_NON_LINE(
                 COMP_INCR=_F( 
                 RELATION = 'KIT_THH',
                 RELATION_KIT = ('LIQU_AD_GAZ_VAPE','HYDR_UTIL')),
-                RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  , 
+                RECH_LINEAIRE =_F(METHODE='MIXTE',
+                                  RESI_LINE_RELA = 1.E-3  , 
                                   RHO_MIN = 0.3,
                                   RHO_MAX = 1.1,
                                   ITER_LINE_MAXI = 3,),

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 3D A L'AIDE DES ELEMENT DE JOINT ET DE LA LOI JOINT_MECA_RUPT
 # ssnp142b.para = tps_job 400 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,7 +184,7 @@ U_M=STAT_NON_LINE(MODELE=MO,
                                 GROUP_MA=('TERRE','BARRAGE')),),
                   INCREMENT=_F(LIST_INST=L_INST,INST_FIN=tfin),
                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
-                  RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),         
+                  RECH_LINEAIRE=_F(METHODE='MIXTE',ITER_LINE_MAXI=5,),         
                   CONVERGENCE=_F(ITER_GLOB_MAXI=12,
                                  RESI_GLOB_RELA=1E-5),
                   SOLVEUR=_F(METHODE='MUMPS',),

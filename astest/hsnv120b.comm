@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE TRACTION THERMIQUE HYPER-ELASTICITE NON LINEAIRE 2D
 # hsnv120b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,7 +173,7 @@ VL=STAT_NON_LINE(
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-3,
                 ITER_GLOB_MAXI = 10),
-                     RECH_LINEAIRE=_F( 
+                     RECH_LINEAIRE=_F( METHODE='MIXTE',
                 ITER_LINE_MAXI = 2)
               )
 
@@ -201,7 +201,7 @@ VT=STAT_NON_LINE(
                        CONVERGENCE=_F( 
                 RESI_GLOB_MAXI = 1.E-3,
                 ITER_GLOB_MAXI = 10),
-                     RECH_LINEAIRE=_F( 
+                     RECH_LINEAIRE=_F( METHODE='MIXTE',
                 ITER_LINE_MAXI = 2)
               )
 
