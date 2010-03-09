@@ -1,5 +1,5 @@
-# MODIF  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
-# RESPONSABLE ADBHHPM P.MASSIN
+# MODIF  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
+# RESPONSABLE ABBAS M.ABBAS
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
 # TITRE CONTACT DE DEUX SPHERES
@@ -100,11 +100,6 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                    NOM_CMP='SIYY',
                                    MAILLE='M1',
                                    SUIVI_DDL='NON'),
-     #                           _F(NUME_SUIVI = 1,
-     #                              NOM_CHAM   = 'DEPL',
-     #                              NOM_CMP    = 'DX',
-     #                              GROUP_NO   = 'SUIV',
-     #                              SUIVI_DDL='OUI',),
                                 _F(NUME_SUIVI = 1,
                                    NOM_CHAM   = 'SIEF_ELGA',
                                    NOM_CMP    = 'SIXX',
@@ -148,8 +143,7 @@ RESU3=STAT_NON_LINE(MODELE=MO,
                    AFFICHAGE=(_F(UNITE=37,
                                  NOM_COLONNE='ITER_NEWT',
                                  LONG_I = 2),
-                              _F(NOM_COLONNE='INCR_TPS',
-                                 LONG_R = 5,PREC_R=2)),
+                              _F(NOM_COLONNE='INCR_TPS')),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.));

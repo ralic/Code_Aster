@@ -7,7 +7,7 @@
      &                    DFDI,PFF,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER KPG,KK,KKD,N,I,M,J,J1,KL,PQ,COD(27),IRET
 
-      REAL*8 DSIDEP(6,6),F(3,3),FM(3,3),FR(3,3),EPSM(6),EPSP(6),DEPS(6)
+      REAL*8 DSIDEP(6,6),F(3,3),FM(3,3),FR(3,3),EPSM(6),DEPS(6)
       REAL*8 R,SIGMA(6),SIGN(6),SIG(6),SIGG(6),FMM(3,3)
       REAL*8 POIDS,TMP1,TMP2,R8VIDE,R8BID
       REAL*8 ELGEOM(10,27),ANGMAS(3),R8NNEM,DDEPL(3,NNO)
@@ -149,58 +149,28 @@ C 5.2.1 - CALCUL DE EPSM EN T- POUR LDC
 
        DO 20 J = 1,6
         EPSM (J)=0.D0
-        EPSP (J)=0.D0
 20    CONTINUE
       CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMI,KPG,IPOIDS,
      &            IVF,IDFDE,DEPLM,POIDS,DFDI,
      &            FM,EPSM,R)
 
-C 5.2.2 - CALCUL DE F, EPSP, DFDI, R ET POIDS EN T+
-
-      CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMI,KPG,IPOIDS,
-     &           IVF,IDFDE,DEPLP,POIDS,DFDI,
-     &           F,EPSP,R)
         DO 63 N = 1,NNO
         DO 63 I = 1,3
            GEOMM(I,N) = GEOMI(I,N) + DEPLM(I,N)
            DDEPL(I,N) = DEPLP(I,N) - DEPLM(I,N)
  63     CONTINUE
 
-
-        DO 55 N = 1,NNO
-           DO 56 I = 1,3
-              GEOMP(I,N) = GEOMI(I,N) + DEPLP(I,N)
- 56        CONTINUE
- 55     CONTINUE
-
-C        CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMM,KPG,IPOIDS,
-        CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMP,KPG,IPOIDS,
-     &           IVF,IDFDE,DDEPL,POIDSP,DFDIP,
-     &           DF,DEPS,R)
         CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMM,KPG,IPOIDS,
      &           IVF,IDFDE,DDEPL,POIDSM,DFDIM,
      &           DF,DEPS,R)
-        CALL NMGEOM(3,NNO,.FALSE.,GRAND,GEOMP,KPG,IPOIDS,
-     &           IVF,IDFDE,DEPLP,POIDSP,DFDIP,
-     &           FB,EPSP,R)
      
-
-      IF (COMPOR(1).EQ.'ZMAT') THEN
-        DO 157 I=1,NNO
-           DO 158 J=1,3
-              DFDI(I,J) = DFDIP(I,J)
- 158        CONTINUE
- 157     CONTINUE
-        POIDS=POIDSP
-      ELSE
         DO 257 I=1,NNO
            DO 258 J=1,3
              DFDI(I,J) = DFDIM(I,J)
  258        CONTINUE
  257     CONTINUE
         POIDS=POIDSM
-      ENDIF
-
+        
         DO 57 I=1,3
            DO 58 J=1,3
               FR(I,J) = KRON(I,J)
@@ -235,49 +205,31 @@ C 5.2.6 - CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
       ENDIF
 
 C -    APPEL A LA LOI DE COMPORTEMENT
-
-      IF (COMPOR(1).EQ.'ZMAT') THEN
-         DO 59 I=1,3
-             SIGN(I)=SIGM(I,KPG)
- 59      CONTINUE
-         DO 60 I=1,3
-             SIGN(3+I)=SIGM(3+I,KPG)*RAC2
- 60      CONTINUE
-         CALL NMCOMP(FAMI,KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
-     &            INSTAM,INSTAP,
-     &            FM,F,
-     &            SIGN,VIM(1,KPG),
-     &            OPTION,ANGMAS,
-     &            ELGEOM(1,KPG),
-     &            SIGMA,VIP(1,KPG),DSIDEP,COD(KPG))
-      ELSEIF (COMPOR(3).EQ.'GREEN_REAC') THEN
-         DO 128 KL = 1,6
-            SIGN(KL) =  SIGM(KL,KPG)
- 128     CONTINUE
-         SIGN(4) = SIGN(4)*RAC2
-         SIGN(5) = SIGN(5)*RAC2
-         SIGN(6) = SIGN(6)*RAC2
-         CALL NMCOMP(FAMI,KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
-     &      INSTAM,INSTAP,EPSM,DEPS,SIGN,VIM(1,KPG),
-     &      OPTION,ANGMAS,ELGEOM(1,KPG),
-     &      SIGMA,VIP(1,KPG),DSIDEP,COD(KPG))
+      DO 128 KL = 1,6
+         SIGN(KL) =  SIGM(KL,KPG)
+ 128  CONTINUE
+      SIGN(4) = SIGN(4)*RAC2
+      SIGN(5) = SIGN(5)*RAC2
+      SIGN(6) = SIGN(6)*RAC2
+      
+      CALL NMCOMP(FAMI,KPG,1,3,TYPMOD,IMATE,COMPOR,CRIT,
+     &   INSTAM,INSTAP,EPSM,DEPS,SIGN,VIM(1,KPG),
+     &   OPTION,ANGMAS,ELGEOM(1,KPG),
+     &   SIGMA,VIP(1,KPG),DSIDEP,COD(KPG))
 C 5.6 - CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
-         IF (RESI) THEN
-            DETDF = DF(3,3)*(DF(1,1)*DF(2,2)-DF(1,2)*DF(2,1))
-     &            - DF(2,3)*(DF(1,1)*DF(3,2)-DF(3,1)*DF(1,2))
-     &            + DF(1,3)*(DF(2,1)*DF(3,2)-DF(3,1)*DF(2,2))
-            DO 190 PQ = 1,6
-               SIGP(PQ,KPG) = 0.D0
-               DO 200 KL = 1,6
-                  DFTDF=(DF(INDI(PQ),INDI(KL))*DF(INDJ(PQ),INDJ(KL))+
-     &            DF(INDI(PQ),INDJ(KL))*DF(INDJ(PQ),INDI(KL)))*RIND(KL)
-                  SIGP(PQ,KPG) =  SIGP(PQ,KPG)+ DFTDF*SIGMA(KL)
- 200           CONTINUE
-               SIGP(PQ,KPG) = SIGP(PQ,KPG)/DETDF
- 190        CONTINUE
-         ENDIF
-      ELSE
-         CALL U2MESS('F','ALGORITH7_96')
+      IF (RESI) THEN
+         DETDF = DF(3,3)*(DF(1,1)*DF(2,2)-DF(1,2)*DF(2,1))
+     &         - DF(2,3)*(DF(1,1)*DF(3,2)-DF(3,1)*DF(1,2))
+     &         + DF(1,3)*(DF(2,1)*DF(3,2)-DF(3,1)*DF(2,2))
+         DO 190 PQ = 1,6
+            SIGP(PQ,KPG) = 0.D0
+            DO 200 KL = 1,6
+               DFTDF=(DF(INDI(PQ),INDI(KL))*DF(INDJ(PQ),INDJ(KL))+
+     &         DF(INDI(PQ),INDJ(KL))*DF(INDJ(PQ),INDI(KL)))*RIND(KL)
+               SIGP(PQ,KPG) =  SIGP(PQ,KPG)+ DFTDF*SIGMA(KL)
+ 200        CONTINUE
+            SIGP(PQ,KPG) = SIGP(PQ,KPG)/DETDF
+ 190     CONTINUE
       ENDIF
       
       IF(COD(KPG).EQ.1) THEN
@@ -367,13 +319,6 @@ C 5.5 - CALCUL DE LA FORCE INTERIEURE
  210      CONTINUE
  220     CONTINUE
  230    CONTINUE
-
-C 5.6 - CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
-      IF (COMPOR(1).EQ.'ZMAT') THEN
-          DO 255 PQ = 1,6
-              SIGP(PQ,KPG) = SIGMA(PQ)
- 255      CONTINUE
-        ENDIF
 
         ENDIF
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 09/03/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CALCUL DE PERFORMANCE : POMPE RIS
 # perf009e.para = tps_job 1200 mem_job 2200Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -79,6 +79,7 @@ DEP=MECA_STATIQUE(MODELE=MODE,
                   OPTION='SANS',
                   SOLVEUR=_F(METHODE='MUMPS',
                              OUT_OF_CORE='OUI',
+                             RESI_RELA=-1.0,
                              MATR_DISTRIBUEE='OUI',),);
 
 DEPLM=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',

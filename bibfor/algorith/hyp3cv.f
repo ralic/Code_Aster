@@ -1,8 +1,8 @@
-      SUBROUTINE HYP3CV(C11,C22,C33,C12,C13,C23,
-     &                  K,
-     &                  SV)
+      SUBROUTINE HYP3CV(C11   ,C22   ,C33   ,C12   ,C13   ,
+     &                  C23   ,K     ,SV    ,CODRET)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,31 +19,36 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-
-      REAL*8 C11
-      REAL*8 C22
-      REAL*8 C33
-      REAL*8 C12
-      REAL*8 C13
-      REAL*8 C23
-      REAL*8 K
-      REAL*8 SV(6)
-C-----------------------------------------------------------------------
+      REAL*8   C11,C22,C33
+      REAL*8   C12,C13,C23
+      REAL*8   K
+      REAL*8   SV(6)
+      INTEGER  CODRET
 C
-C     LOI DE COMPORTEMENT HYPERELASTIQUE - 3D
-C     CALCUL DES CONTRAINTES - PARTIE VOLUMIQUE
+C ----------------------------------------------------------------------
 C
-C IN  C11,C22,C33,C12,C13,C23: ELONGATIONS
-C IN  K     : MODULE DE COMPRESSIBILITE
-C OUT SV    : CONTRAINTES VOLUMIQUES
-C-----------------------------------------------------------------------
+C LOI DE COMPORTEMENT HYPERELASTIQUE DE SIGNORINI    
+C 
+C 3D - CALCUL DES CONTRAINTES - PARTIE VOLUMIQUE
 C
+C ----------------------------------------------------------------------
+C
+C
+C IN  C11,C22,C33,C12,C13,C23 : ELONGATIONS
+C IN  K      : MODULE DE COMPRESSIBILITE
+C OUT SV     : CONTRAINTES VOLUMIQUES
+C OUT CODRET : CODE RETOUR ERREUR INTEGRATION (1 SI PROBLEME, 0 SINON)
+C
+C ----------------------------------------------------------------------
+C   
       REAL*8 GRD(6)
       REAL*8 T1,T3,T5,T7,TEMP
       REAL*8 T10,T13,T15,T16
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
       T1   = C11*C22
       T3   = C23**2
@@ -52,12 +57,18 @@ C
       T10  = C13**2
       TEMP =  T1*C33-C11*T3-T5*C33+2.D0*T7*C23-T10*C22
 
-      IF ((TEMP.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+      IF (TEMP.LE.0.D0) THEN
+        CODRET=1
+        GOTO 99
       ENDIF
 
       T13  = SQRT(TEMP)
       T15  = K*(T13-1.D0)
+      
+      IF (T13.EQ.0.D0) THEN
+        CODRET=1
+        GOTO 99
+      ENDIF      
       T16  = 1.D0/T13
 
       GRD(1) = T15*T16*(C22*C33-T3)/2.D0
@@ -73,5 +84,5 @@ C
       SV(4) = 2.D0*GRD(4)
       SV(5) = 2.D0*GRD(5)
       SV(6) = 2.D0*GRD(6)
-
+ 99   CONTINUE
       END

@@ -1,8 +1,8 @@
-      SUBROUTINE HYPDPC(C11,C22,C12,
-     &                  K,C10,C01,C20,
-     &                  SIG)
+      SUBROUTINE HYPDPC(C11   ,C22   ,C12   ,K     ,C10   ,
+     &                  C01   ,C20   ,SIG   ,CODRET) 
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,41 +19,48 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-      REAL*8 C11
-      REAL*8 C22
-      REAL*8 C12
-      REAL*8 K
-      REAL*8 C10
-      REAL*8 C01
-      REAL*8 C20
-      REAL*8 SIG(6)
+      REAL*8      C11,C22,C12
+      REAL*8      K
+      REAL*8      C10,C01,C20
+      REAL*8      SIG(6)
+      INTEGER     CODRET
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
-C     LOI DE COMPORTEMENT HYPERELASTIQUE - CONTRAINTES PLANES
-C     CALCUL DES CONTRAINTES
+C LOI DE COMPORTEMENT HYPERELASTIQUE DE SIGNORINI    
+C 
+C D_PLAN - CALCUL DES CONTRAINTES
 C
-C IN  C11,C22,C33,C12: ELONGATIONS
-C IN  C10,C01,C20:     CARACTERISTIQUES MATERIAUX
-C IN  K     :          MODULE DE COMPRESSIBILITE
-C OUT SIG   :          CONTRAINTES
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
+C
+C
+C IN  C11,C22,C12: ELONGATIONS
+C IN  C10,C01,C20: CARACTERISTIQUES MATERIAUX
+C IN  K      : MODULE DE COMPRESSIBILITE
+C OUT SIG    : CONTRAINTES
+C OUT CODRET : CODE RETOUR ERREUR INTEGRATION (1 SI PROBLEME, 0 SINON)
+C
+C ----------------------------------------------------------------------
 C
       REAL*8 T1,T2,T3,T4,T5,T6,T8
       REAL*8 T12,T16,T33
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
       T1  = C11*C22
       T2  = C12**2
       T3  = T1-T2
       IF (T3.LT.0.D0) THEN
-        CALL U2MESS('F','ALGORITH3_95')
+        CODRET = 1
+        GOTO 99
       ENDIF
       T4  = T3**(1.D0/3.D0)
       IF (T4.EQ.0.D0) THEN
-        CALL U2MESS('F','ALGORITH3_95')
+        CODRET = 1
+        GOTO 99
       ENDIF
       T5  = 1.D0/T4
       T6  = C11+C22+1.D0
@@ -70,7 +77,8 @@ C
       T3  = T1-T2
       T4  = T3**(1.D0/3.D0)
       IF ((T4.EQ.0.D0).OR.(T3.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET = 1
+        GOTO 99
       ENDIF
       T5  = 1.D0/T4
       T6  = C11+C22+1.D0
@@ -87,7 +95,8 @@ C
       T5 = T3-T4
       T6 = T5**(1.D0/3.D0)
       IF ((T6.EQ.0.D0).OR.(T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET = 1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T12 = T6**2
@@ -100,5 +109,5 @@ C
       SIG(3) = 0.D0
       SIG(5) = 0.D0
       SIG(6) = 0.D0
-
+ 99   CONTINUE
       END

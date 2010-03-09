@@ -1,8 +1,8 @@
-      SUBROUTINE HYPDPD(C11,C22,C12,
-     &                  K,C10,C01,C20,
-     &                  DSIDEP)
+      SUBROUTINE HYPDPD(C11   ,C22   ,C12   ,K     ,C10   ,
+     &                  C01   ,C20   ,DSIDEP,CODRET)
+C   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,26 +19,30 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-      REAL*8  C11
-      REAL*8  C22
-      REAL*8  C12
-      REAL*8  K
-      REAL*8  C10
-      REAL*8  C01
-      REAL*8  C20
-      REAL*8  DSIDEP(6,6)
+      REAL*8      C11,C22,C12
+      REAL*8      K
+      REAL*8      C10,C01,C20
+      REAL*8      DSIDEP(6,6)
+      INTEGER     CODRET
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
-C     LOI DE COMPORTEMENT HYPERELASTIQUE - DEFORMATIONS PLANES
-C     CALCUL DE LA MATRICE TANGENTE
+C LOI DE COMPORTEMENT HYPERELASTIQUE DE SIGNORINI    
+C 
+C D_PLAN - CALCUL DE LA MATRICE TANGENTE
 C
-C IN  C11,C22,C33,C12: ELONGATIONS
-C IN  C10,C01,C20:     CARACTERISTIQUES MATERIAUX
-C IN  K      :         MODULE DE COMPRESSIBILITE
-C OUT DSIDEP :         MATRICE TANGENTE
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
+C
+C IN  C11,C22,C12: ELONGATIONS
+C IN  C10,C01,C20: CARACTERISTIQUES MATERIAUX
+C IN  K      : MODULE DE COMPRESSIBILITE
+C OUT DSIDEP : MATRICE TANGENTE
+C OUT CODRET : CODE RETOUR ERREUR INTEGRATION (1 SI PROBLEME, 0 SINON)
+C
+C ----------------------------------------------------------------------
 C
       REAL*8  T1,T2,T3,T5,T6,T8
       REAL*8  T12,T13,T15,T16,T22,T28
@@ -47,7 +51,7 @@ C
       REAL*8  T10,T17,T31,T36,T47,T50,T20,T24,T42,T60,T62,T63,T18
       REAL*8  T35,T52,T55,T45,T56,T59,T11,T14,T39,T53,T54
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
 C
 C --- INVARIANTS
@@ -56,7 +60,8 @@ C
       II2 = C11*C22+C11+C22-C12**2
       II3 = C11*C22-C12**2
       IF ((II3.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T1  = II3**(1.D0/3.D0)
       T3  = 1.D0/T1/II3
@@ -227,5 +232,5 @@ C
      &D0/3.D0*T6*T18+40.D0/9.D0*II2*T22*T6+4.D0/3.D0*II2*T18)+32.D0/9.D0
      &*C20*T31*T22*T6+128.D0/9.D0*T39*II1*T5*T6+16.D0/3.D0*T39*II1*T11+4
      &.D0*K/II3*T6-4.D0*T53/T54/T51*T6-4.D0*T53/T51
-
+ 99   CONTINUE
       END

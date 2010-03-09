@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
+# MODIF  DATE 08/03/2010   AUTEUR COLOMBO D.COLOMBO 
 # TITRE PROPAGATION D UNE FISSURE XFEM NON DEBOUCHANTE SOLLICITE EN MODE I
 # sslp318a.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -193,7 +193,6 @@ for i in range(1,NPS-1) :
                               COEF_MULT_MAXI=1.,
                              ),
                  RAYON=RS,
-                 ZONE_MAJ='TOUT',
                  INFO=0,);
 
 #----------------------------------------------

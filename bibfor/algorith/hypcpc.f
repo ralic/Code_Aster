@@ -1,8 +1,9 @@
-      SUBROUTINE HYPCPC(C11,C22,C33,C12,
-     &                  K,C10,C01,C20,NITMAX,EPSI,
-     &                  SIG,CODRET)
+      SUBROUTINE HYPCPC(C11   ,C22   ,C33   ,C12   ,K     ,
+     &                  C10   ,C01   ,C20   ,NITMAX,EPSI  ,
+     &                  SIG   ,CODRET) 
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,33 +20,35 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-      REAL*8      C11
-      REAL*8      C22
-      REAL*8      C33
-      REAL*8      C12
+      REAL*8      C11,C22,C33,C12
       REAL*8      K
-      REAL*8      C10
-      REAL*8      C01
-      REAL*8      C20
+      REAL*8      C10,C01,C20
       INTEGER     NITMAX
       REAL*8      EPSI
       REAL*8      SIG(6)
       INTEGER     CODRET
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
-C     LOI DE COMPORTEMENT HYPERELASTIQUE - CONTRAINTES PLANES
-C     CALCUL DES CONTRAINTES
+C LOI DE COMPORTEMENT HYPERELASTIQUE DE SIGNORINI    
+C 
+C C_PLAN - CALCUL DES CONTRAINTES
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  C11,C22,C33,C12: ELONGATIONS
 C IN  C10,C01,C20:     CARACTERISTIQUES MATERIAUX
-C IN  K     :          MODULE DE COMPRESSIBILITE
-C IN  NITMAX:          NOMBRE MAXI D'ITERATIONS
-C IN  EPSI  :          CRITERE DE CONVERGENCE
-C OUT SIG   :          CONTRAINTES
-C OUT CODRET:          CODE RETOUR CONVERGENCE COMPORTEMENT
-C-----------------------------------------------------------------------
+C IN  K      : MODULE DE COMPRESSIBILITE
+C IN  NITMAX : NOMBRE MAXI D'ITERATIONS
+C IN  EPSI   : CRITERE DE CONVERGENCE
+C OUT SIG    : CONTRAINTES
+C OUT CODRET : CODE RETOUR ERREUR INTEGRATION (1 SI PROBLEME, 0 SINON)
+C
+C ----------------------------------------------------------------------
 C
       REAL*8      T1,T3,T5,T6,T8,T12,T13
       REAL*8      T17,T20,T15,T24,T61
@@ -64,15 +67,24 @@ C
       T1  = C11*C22
       T3  = C12**2
       T5  = T1*C33-T3*C33
-      IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_94')
+      IF (T5.LE.0.D0) THEN
+        CODRET = 1
+        GOTO 99
       ENDIF
       T6  = T5**(1.D0/3.D0)
+      IF (T6.EQ.0.D0) THEN
+        CODRET = 1
+        GOTO 99
+      ENDIF      
       T7  = 1.D0/T6
       T8  = C11+C22+C33
       T12 = T1-T3
       T15 = T7-T8/T6/T5*T12/3.D0
       T19 = T6**2
+      IF (T19.EQ.0.D0) THEN
+        CODRET = 1
+        GOTO 99
+      ENDIF       
       T38 = SQRT(T5)
       SN  = 2.D0*C10*T15+
      &     2.D0*C01*((C11+C22)/T19
@@ -85,7 +97,7 @@ C
       T8  = 1.D0/T6/T5
       T9  = T1-T3
       T12 = C11+C22+C33
-      T13 = T5**2
+      T13 = T5**2    
       T17 = T9**2
       T20 = -2.D0/3.D0*T8*T9+4.D0/9.D0*T12/T6/T13*T17
       T24 = T6**2
@@ -101,7 +113,7 @@ C
      &      K/T5*T17/2.D0-K*(T58-1.D0)/T61/T58*T17/2.D0
       IF (DSN.EQ.0.D0) THEN
         CODRET = 1
-        GOTO 999
+        GOTO 99
       ELSE
         DC33 = -SN/DSN
       ENDIF
@@ -119,7 +131,7 @@ C
         ENDIF
       ELSE
         CODRET = 1
-        GOTO 999
+        GOTO 99
       ENDIF
 C
 C --- FIN DE BOUCLE
@@ -132,7 +144,8 @@ C
       T6  = T5**(1.D0/3.D0)
 
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
 
       T7  = 1.D0/T6
@@ -181,5 +194,5 @@ C
       SIG(5) = 0.D0
       SIG(6) = 0.D0
 
-  999 CONTINUE
+  99  CONTINUE
       END

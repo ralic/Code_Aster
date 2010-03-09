@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF xfem2 Messages  DATE 08/03/2010   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -260,16 +260,6 @@ cata_msg = {
      l'hypothèse de rapport de charge égal à zéro (R=0).
   """),
   
-69 : _("""
-  -> Pour l'instant la restriction de la zone de mise à jour et la
-     méthode upwind peuvent être utilisés au même temps seulement si une
-     grille auxiliaire est donnée.
-  -> Risque & Conseil:
-     Veuillez utiliser la méthode simplexe ou utiliser la méthode upwind
-     avec une grille auxiliaire. Sinon veuillez désactiver l'option de
-     restriction de la zone de mise à jour (ZONE_MAJ='TOUT').
-  """),
-  
 71 : _("""
      Un tableau doit être donné pour chaque fissure du modèle.
      
@@ -519,6 +509,14 @@ cata_msg = {
      mixte, on conseille en général d'utiliser une avancée de fissure
      supérieure à celle minimale écrite ci-dessus, même si des bonnes
      résultats peuvent être obtenus en utilisant une avancée inférieure.
+     
+     La valeur minimale de DA_MAX dépende de la valeur de l'opérande
+     RAYON et de l'angle de propagation de la fissure. Dans le cas où la
+     valeur DA_MAX donnée ne peut pas être changée, sa valeur minimale
+     conseillée peut être diminuée en agissant sur la valeur de RAYON,
+     c'est-à-dire en utilisant une valeur de RAYON plus petite. Cela
+     influence l'opérateur CALC_G aussi et normalement est faisable en
+     utilisant un maillage plus raffiné.
   """),
   
 95 : _("""

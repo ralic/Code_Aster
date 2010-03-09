@@ -1,7 +1,8 @@
-      SUBROUTINE MMUSUR(RESOCO,IMA   ,IPC   ,NBPC  ,JEUUSU)
+      SUBROUTINE MMUSUR(RESOCO,NCMPMX,IMA   ,IPC   ,NBPC  ,
+     &                  JEUUSU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 09/03/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +23,7 @@ C RESPONSABLE ABBAS M.ABBAS
 C     
       IMPLICIT NONE     
       CHARACTER*24  RESOCO
-      INTEGER       IPC, NBPC, IMA
+      INTEGER       NCMPMX,IPC   ,NBPC  ,IMA
       REAL*8        JEUUSU
 C      
 C ----------------------------------------------------------------------
@@ -38,6 +39,7 @@ C IN  IPC    : NUMERO DU POINT DE CONTACT
 C IN  NBPC   : NOMBRE DE POINTS DE CONTACT
 C IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
 C IN  IMA    : NUMERO DE LA MAILLE ESCLAVE
+C IN  NCMPMX : NOMBRE MAXI DE GRANDEURS DANS NEUT_R
 C OUT JEUUSU : JEU DU A L'USURE
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
@@ -63,16 +65,11 @@ C
       PARAMETER    (NCMPU=1)
 C      
       CHARACTER*19 USUFIX
-      INTEGER      JVALEX,NCMPMX      
+      INTEGER      JVALEX      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ() 
-C
-C --- INTITIALISATIONS
-C       
-      JEUUSU = 0.D0
-      NCMPMX = 1       
 C
 C --- CALCUL DE L'USURE      
 C      

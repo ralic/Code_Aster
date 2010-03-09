@@ -1,4 +1,4 @@
-# MODIF  DATE 11/01/2010   AUTEUR COLOMBO D.COLOMBO 
+# MODIF  DATE 08/03/2010   AUTEUR COLOMBO D.COLOMBO 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv315d.para = tps_job 300 mem_job 200Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -157,7 +157,6 @@ for i in range(nbcalc) :
                             TABLE=SIF[i],
                            ),
                  METHODE_PROPA='UPWIND',
-                 ZONE_MAJ='TOUT',
                  DA_MAX=0.4,
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,

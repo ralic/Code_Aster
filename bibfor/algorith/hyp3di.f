@@ -1,8 +1,9 @@
-      SUBROUTINE HYP3DI(C11,C22,C33,C12,C13,C23,
-     &                  C10,C01,C20,
-     &                  CISO)
+      SUBROUTINE HYP3DI(C11   ,C22   ,C33   ,C12   ,C13   ,
+     &                  C23   ,C10   ,C01   ,C20   ,CISO  ,
+     &                  CODRET)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,27 +20,30 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-      REAL*8 C11
-      REAL*8 C22
-      REAL*8 C33
-      REAL*8 C12
-      REAL*8 C13
-      REAL*8 C23
-      REAL*8 C10
-      REAL*8 C01
-      REAL*8 C20
-      REAL*8 CISO(6,6)
+      REAL*8  C11,C22,C33
+      REAL*8  C12,C13,C23
+      REAL*8  C10,C01,C20
+      REAL*8  CISO(6,6)
+      INTEGER CODRET
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
-C     LOI DE COMPORTEMENT HYPERELASTIQUE - 3D
-C     CALCUL DE LA MATRICE TANGENTE - PARTIE ISOTROPIQUE
+C LOI DE COMPORTEMENT HYPERELASTIQUE DE SIGNORINI    
+C 
+C 3D - MATRICE TANGENTE - PARTIE ISOTROPIQUE
 C
-C IN  C11,C22,C33,C12,C13,C23: ELONGATIONS
-C IN  C10,C01,C20:             CARACTERISTIQUES MATERIAUX
+C ----------------------------------------------------------------------
+C
+C
+C IN  C11,C22,C33,C12,C13,C23 : ELONGATIONS
+C IN  C10,C01,C20             : CARACTERISTIQUES MATERIAUX
 C OUT CISO : MATRICE TANGENTE ISOTROPIQUE
-C-----------------------------------------------------------------------
+C OUT CODRET : CODE RETOUR ERREUR INTEGRATION (1 SI PROBLEME, 0 SINON)
+C
+C ----------------------------------------------------------------------
 C
       REAL*8 DF(33)
       REAL*8 DFR0(33)
@@ -68,7 +72,7 @@ C
       REAL*8 T460,T462,T471,T474,T491,T493,T497
       REAL*8 T506,T525,T527,T529,T536
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
       T1  = C11*C22
       T3  = C23**2
@@ -78,7 +82,8 @@ C
       T12 = T1*C33-C11*T3-T5*C33+2*T7*C23-T10*C22
       T13 = T12**(1.D0/3.D0)
       IF ((T13.EQ.0.D0).OR.(T12.EQ.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T14 = 1.D0/T13
       T15 = C11+C22+C33
@@ -377,4 +382,6 @@ C
       CISO(6,4) = 4.D0*GRD(6,4)
       CISO(6,5) = 4.D0*GRD(6,5)
       CISO(6,6) = 4.D0*GRD(6,6)
+
+ 99   CONTINUE
       END

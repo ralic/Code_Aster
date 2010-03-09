@@ -1,8 +1,9 @@
-      SUBROUTINE HYP3CI(C11,C22,C33,C12,C13,C23,
-     &                  C10,C01,C20,
-     &                  SISO)
+      SUBROUTINE HYP3CI(C11   ,C22   ,C33   ,C12   ,C13   ,
+     &                  C23   ,C10   ,C01   ,C20   ,SISO  ,
+     &                  CODRET)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,28 +20,30 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-
-      REAL*8 C11
-      REAL*8 C22
-      REAL*8 C33
-      REAL*8 C12
-      REAL*8 C13
-      REAL*8 C23
-      REAL*8 C10
-      REAL*8 C01
-      REAL*8 C20
-      REAL*8 SISO(6)
-C-----------------------------------------------------------------------
+      REAL*8  C11,C22,C33
+      REAL*8  C12,C13,C23
+      REAL*8  C10,C01,C20
+      REAL*8  SISO(6)
+      INTEGER CODRET
 C
-C     LOI DE COMPORTEMENT HYPERELASTIQUE - 3D
-C     CALCUL DES CONTRAINTES - PARTIE ISOTROPIQUE
+C ----------------------------------------------------------------------
 C
-C IN  C11,C22,C33,C12,C13,C23: ELONGATIONS
-C IN  C10,C01,C20:             CARACTERISTIQUES MATERIAUX
-C OUT SISO    :                CONTRAINTES ISOTROPIQUES
-C-----------------------------------------------------------------------
+C LOI DE COMPORTEMENT HYPERELASTIQUE DE SIGNORINI    
+C 
+C 3D - CALCUL DES CONTRAINTES - PARTIE ISOTROPIQUE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  C11,C22,C33,C12,C13,C23 : ELONGATIONS
+C IN  C10,C01,C20             : CARACTERISTIQUES MATERIAUX
+C OUT SISO   : CONTRAINTES ISOTROPIQUES
+C OUT CODRET : CODE RETOUR ERREUR INTEGRATION (1 SI PROBLEME, 0 SINON)
+C
+C ----------------------------------------------------------------------
 C
       REAL*8 GRD(6)
       REAL*8 T1,T3,T5,T7
@@ -49,7 +52,7 @@ C
       REAL*8 T33,T40,T43,T46
       REAL*8 T56,T59,T69,T73,T89,T104
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
       T1   = C11*C22
       T3   = C23**2
@@ -59,8 +62,9 @@ C
       T12  = T1*C33-C11*T3-T5*C33+2*T7*C23-T10*C22
       T13  = T12**(1.D0/3.D0)
 
-      IF (T12.EQ.0.D0) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+      IF ((T12.EQ.0.D0).OR.(T13.EQ.0.D0)) THEN
+        CODRET = 1
+        GOTO 99
       ENDIF
 
       T14  = 1.D0/T13
@@ -72,8 +76,9 @@ C
       T23  = T14-T18*T20/3.D0
       T26  = T13**2
 
-      IF (T15.EQ.0.D0) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+      IF ((T15.EQ.0.D0).OR.(T26.EQ.0.D0)) THEN
+        CODRET=1
+        GOTO 99
       ENDIF
 
       T27  = 1.D0/T26
@@ -113,5 +118,5 @@ C
       SISO(4) = 2.D0*GRD(4)
       SISO(5) = 2.D0*GRD(5)
       SISO(6) = 2.D0*GRD(6)
-
+ 99   CONTINUE
       END

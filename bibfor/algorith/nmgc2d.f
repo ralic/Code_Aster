@@ -8,7 +8,7 @@
      &                    PFF,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C TOLE CRP_21
 C.......................................................................
 C
 C     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
-C           EN GRANDES DEFORMATIONS 3D COROTATIONNEL ZMAT
+C           EN GRANDES DEFORMATIONS 3D GREEN_REAC
 C.......................................................................
 C IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
 C IN  NPG     : NOMBRE DE POINTS DE GAUSS
@@ -107,11 +107,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8  ELGEOM(10,9),FP(3,3)
       REAL*8  KRON(3,3),GEOMP(2,NNO),RAC2
       DATA KRON/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
-
-      IF(COMPOR(1)(1:4) .NE. 'ZMAT') THEN
-         CALL U2MESS('F','ALGORITH7_96')
-      ENDIF
-
 
 C 1 - INITIALISATION
       RAC2   = SQRT(2.D0)

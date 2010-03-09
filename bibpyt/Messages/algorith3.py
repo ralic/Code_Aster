@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith3 Messages  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -262,28 +262,11 @@ Nombre d'itérations     : %(i2)d
  modelisations C_PLAN et 1D pas autorisées
 """),
 
-93 : _("""
- zero elongation for hyperelastic material
-"""),
 
-94 : _("""
- T1*C33-T3*C33 is zero for hyperelastic material
-"""),
 
-95 : _("""
- error of elongation for hyperelastic material
-"""),
 
-96 : _("""
- no material data for hyperelastic
-"""),
 
-97 : _("""
- model not supported for hyperelastic material
-"""),
 
-98 : _("""
- check your poisson ratio
-"""),
+
 
 }

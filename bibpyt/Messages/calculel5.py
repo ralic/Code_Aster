@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 02/02/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF calculel5 Messages  DATE 08/03/2010   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ Erreur Utilisateur :
   matrices élémentaires ne puisse pas dépasser la taille des blocs définis dans :
   DEBUT / MEMOIRE / TAILLE_BLOC
 
-  Malheureusement, la taille indiquée ne permet pas de mettre 1 seul élément dans le paquet.
+  Malheureusement, la taille indiquée ne permet même pas de mettre un élément dans le paquet.
 
 Conseil :
   Il faut augmenter la valeur du paramètre  DEBUT / MEMOIRE / TAILLE_BLOC

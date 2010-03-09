@@ -2,7 +2,7 @@
      &                  RESU  ,RESIGR,DEPDEL,CTCCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -470,38 +470,38 @@ C ======================================================================
          END IF
 C -  ON NE PREND PAS EN COMPTE UNE LIAISON A PIVOT NUL
 
-         IF (REAPRE) then
-         POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
-         CALL CFELPV(NUMIN,TYPEF0,RESOCO,NBLIAI,LELPIV)
-         IF (.NOT.LELPIV) THEN
-            CALL CFELPV(NUMIN, TYPEF1, RESOCO, NBLIAI, LELPI1)
-            IF (LELPI1) THEN
-               CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
-     &                     RESOCO,TYPEAJ,POSIT,NUMIN,TYPEF2)
-               IF (NIV.GE.2) THEN
-                 CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,NUMIN ,
-     &                       TYPEF2,TYPEAJ,'ALG' ,ZR(JAPJEU-1+NUMIN))
-               END IF
-            ELSE
-               CALL CFELPV(NUMIN, TYPEF2, RESOCO, NBLIAI, LELPI2)
-               IF (LELPI2) THEN
-                  CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,
-     &              LLF1,LLF2,RESOCO,TYPEAJ,POSIT,NUMIN,TYPEF1)
-                  IF (NIV.GE.2) THEN
-                    CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,NUMIN ,
-     &                       TYPEF1,TYPEAJ,'ALG' ,ZR(JAPJEU-1+NUMIN))
-                  END IF
-               ELSE
-                  CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,
-     &              LLF1,LLF2,RESOCO,TYPEAJ,POSIT,NUMIN,TYPEF0)
-                  IF (NIV.GE.2) THEN
-                    CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,NUMIN ,
-     &                       TYPEF0,TYPEAJ,'ALG' ,ZR(JAPJEU-1+NUMIN))
-                  END IF
-               ENDIF
-            ENDIF
-         ENDIF
-         endif 
+         IF (REAPRE) THEN
+           POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
+           CALL CFELPV(NUMIN,TYPEF0,RESOCO,NBLIAI,LELPIV)
+           IF (.NOT.LELPIV) THEN
+              CALL CFELPV(NUMIN, TYPEF1, RESOCO, NBLIAI, LELPI1)
+              IF (LELPI1) THEN
+                 CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     &                       RESOCO,TYPEAJ,POSIT,NUMIN,TYPEF2)
+                 IF (NIV.GE.2) THEN
+                   CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,NUMIN ,
+     &                         TYPEF2,TYPEAJ,'ALG' ,ZR(JAPJEU-1+NUMIN))
+                 END IF
+              ELSE
+                 CALL CFELPV(NUMIN, TYPEF2, RESOCO, NBLIAI, LELPI2)
+                 IF (LELPI2) THEN
+                    CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,
+     &                LLF1,LLF2,RESOCO,TYPEAJ,POSIT,NUMIN,TYPEF1)
+                    IF (NIV.GE.2) THEN
+                      CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,NUMIN ,
+     &                         TYPEF1,TYPEAJ,'ALG' ,ZR(JAPJEU-1+NUMIN))
+                    END IF
+                 ELSE
+                    CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,
+     &                LLF1,LLF2,RESOCO,TYPEAJ,POSIT,NUMIN,TYPEF0)
+                    IF (NIV.GE.2) THEN
+                      CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,NUMIN ,
+     &                         TYPEF0,TYPEAJ,'ALG' ,ZR(JAPJEU-1+NUMIN))
+                    END IF
+                 ENDIF
+              ENDIF
+           ENDIF
+         ENDIF 
 C ======================================================================
 C --- LA LIAISON EST SUPPOSEE GLISSANTE
 C ======================================================================
@@ -693,7 +693,7 @@ C ======================================================================
             IF (XVAL.LT.(1.0D0/R8PREM())) THEN
                XMUL = XMUL*SQRT(10.D0)
             ENDIF
-            ZR(JMU+6*NBLIAI-1) = XMUL
+            ZR(JMU+6*NTNOE-1) = XMUL
             GOTO 100
          ENDIF
          CALL JEDETR(NMGLI1)

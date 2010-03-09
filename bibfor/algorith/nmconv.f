@@ -7,7 +7,7 @@
      &                  FINPAS,MAXREL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C
       INTEGER      FONACT(*)
       LOGICAL      ITEMAX,CONVER,FINPAS
       LOGICAL      ERROR
-      LOGICAL      MAXREL,MAXNOD
+      LOGICAL      MAXREL
       INTEGER      ITERAT, LICCVG(*), NUMINS
       REAL*8       ETA, CONV(*), PARCRI(*), PARMET(*)
       CHARACTER*19 SDCRIT,SDDISC,MATASS,LISCHA
@@ -161,10 +161,10 @@ C
       LOGICAL      CBORST,BORCVG,CTCGEO,CVNEWT,CTCCVG
       LOGICAL      ECHLDC,ECHEQU,ECHCON(2),ECHPIL  
       LOGICAL      LBID   
-      LOGICAL      LDIRI,ISDIRI,LRESI,LELTC,LCTCG
+      LOGICAL      LDIRI,ISDIRI,LRESI,LELTC,MAXNOD
       INTEGER      IRELA,IMAXI,IREFE,INNODA
       INTEGER      IFM,NIV
-      CHARACTER*8   NODDLM
+      CHARACTER*8  NODDLM
 C
 C ----------------------------------------------------------------------
 C
@@ -188,6 +188,7 @@ C
       CTCFIX = .FALSE.
       CTCCVG = .TRUE.
       LRESI  = .TRUE.
+      MAXNOD = .FALSE.
       RESIGR = PARCRI(2) 
       VRELA  = R8VIDE()
       VMAXI  = R8VIDE()
@@ -203,7 +204,6 @@ C
       LCTCD  = ISFONC(FONACT,'CONT_DISCRET') 
       LELTC  = ISFONC(FONACT,'ELT_CONTACT')            
       LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
-      LCTCG  = ISFONC(FONACT,'CONT_GEOM')
 C
 C --- ACCES SDIMPR
 C
@@ -346,6 +346,7 @@ C
       CALL NMCORE(SDIMPR,SDCRIT,NUMINS,PARCRI,VRESI ,
      &            VRELA ,VMAXI ,VCHAR ,VREFE ,VNODA,CVNEWT,
      &            MAXREL,MAXNOD)
+      MAXREL = MAXREL.OR.MAXNOD
 C
 C --- MARQUE DE CONVERGENCE DE NEWTON
 C
@@ -447,10 +448,7 @@ C
             LTABL = .FALSE.
           ELSE
             LTABL = .TRUE.  
-          ENDIF 
-          IF (.NOT.LCTCG) THEN
-            LTABL = .TRUE.
-          ENDIF           
+          ENDIF         
         ENDIF
       ELSE
         LTABL = .TRUE.
@@ -459,16 +457,20 @@ C
 C --- AFFICHAGE LIGNE DU TABLEAU DE CONVERGENCE
 C
       IF (LTABL) THEN     
+        CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)     
+      ENDIF 
+C
+C --- AFFICHAGE CONVERGENCE
+C
+      IF (LTABL) THEN     
         IF (CONVER) THEN
           IF (MAXREL) THEN
-            CALL NMCVGI('CVG_MX') 
+            CALL NMCVGI('CVG_MX')            
           ELSE
             CALL NMCVGI('CVG_OK') 
-          ENDIF
-        ELSE
-          CALL NMIMPR('IMPR','LIGN_TABL',' ',0.D0,0)     
+          ENDIF    
         ENDIF
-      ENDIF 
+      ENDIF    
 C      
       IF (LCTCD) THEN
         LCTCV  = CFDISL(DEFICO,'CONT_VERIF')
@@ -484,7 +486,7 @@ C
 C
 C --- DEPASSEMENT ITERATIONS
 C      
-      IF (ITEMAX) THEN
+      IF (ITEMAX.AND.(.NOT.CONVER)) THEN     
         CALL NMIMPR('IMPR','ERREUR','ITER_MAXI',0.D0,0)
       ENDIF
 C

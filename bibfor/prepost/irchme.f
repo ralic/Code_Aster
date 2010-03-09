@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 08/03/2010   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -177,11 +177,19 @@ C           ON PREFERE INST :
            INSTAN = ZR(IAUX)
          ELSE
            CALL JENONU(JEXNOM(NORESU//'           .NOVA','FREQ'),IRET)
-         IF ( IRET.NE.0 ) THEN
-           CALL RSADPA ( NORESU, 'L', 1, 'FREQ', NUMORD, 0, IAUX,
+           IF ( IRET.NE.0 ) THEN
+              CALL RSADPA ( NORESU, 'L', 1, 'FREQ', NUMORD, 0, IAUX,
      &                   SAUX08 )
-           INSTAN = ZR(IAUX)
-         ENDIF
+              INSTAN = ZR(IAUX)
+           ELSE
+              CALL JENONU(JEXNOM(NORESU//'           .NOVA',
+     &                    'CHAR_CRIT'),IRET)
+              IF ( IRET.NE.0 ) THEN
+                  CALL RSADPA ( NORESU, 'L', 1, 'CHAR_CRIT', NUMORD, 0,
+     &                     IAUX,SAUX08 )
+                  INSTAN = ZR(IAUX)
+              ENDIF
+           ENDIF
         ENDIF
         NUMPT = NUMORD
         UNIINS = '_'

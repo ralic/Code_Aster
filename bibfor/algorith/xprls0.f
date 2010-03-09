@@ -1,12 +1,13 @@
       SUBROUTINE XPRLS0(NOMA,FISS,NOESOM,ARMIN,CNSLN,CNSLT,ISOZRO,
-     &                  LEVSET,NODTOR,ELETOR)
+     &                  LEVSET,NODTOR,ELETOR,POIFIS,TRIFIS)
       IMPLICIT NONE
       CHARACTER*2    LEVSET
       CHARACTER*8    NOMA,FISS
-      CHARACTER*19   CNSLN,CNSLT,ISOZRO,NOESOM,NODTOR,ELETOR
+      CHARACTER*19   CNSLN,CNSLT,ISOZRO,NOESOM,NODTOR,ELETOR,POIFIS,
+     &               TRIFIS
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 08/03/2010   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,12 +47,22 @@ C        LEVSET  :   ='LN' SI ON REINITIALISE LN
 C                    ='LT' SI ON REINITIALISE LT
 C        NODTOR  :   LISTE DES NOEUDS DEFINISSANT LE DOMAINE DE CALCUL
 C        ELETOR  :   LISTE DES ELEMENTS DEFINISSANT LE DOMAINE DE CALCUL
+C        POIFIS  :   POUR LA METHODE UPWIND: NOM DE L'OBJET JEVEUX OU
+C                    LES POINTS DEFINISSANTS LA SURFACE LSN=0 DOIVENT
+C                    ETRE STOCKES
+C                    POUR LES AUTRES METHODES: ' '
+C        TRIFIS  :   POUR LA METHODE UPWIND: NOM DE L'OBJET JEVEUX OU
+C                    LES POINTS D'INTERSECTION ENTRE CHAQUE ELEMENT ET
+C                    LSN=0 SONT STOCKES
+C                    POUR LES AUTRES METHODES: ' '
 C    SORTIE
 C        CNSLN   :   CHAM_NO_S LEVEL SET NORMALE
 C                    (CALCULEE SEULEMENT SI LEVSET = 'LN')
 C        CNSLT   :   CHAM_NO_S LEVEL SET NORMALE CALCULEE
 C        ISOZRO  :   VECTEUR LOGIQUE IDIQUANT SI LA "VRAIE" LEVEL SET
 C                    (DISTANCE SIGNEE) A ETE CALCULEE
+C        POIFIS  :   OBJET JEVEUX REMPLI
+C        TRIFIS  :   OBJET JEVEUX REMPLI
 C
 C     ------------------------------------------------------------------
 
@@ -84,7 +95,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &               ZB,S,A(3),B(3),C(3),EPS(3),M(3),D,VN(3),NORMGR,
      &               LSNA,LSNB,LSTA,LSTB,LSTC,LST(6),BESTD,BESTDI,LSN,
      &               BESTLT,BESTLI,DIST,ARMIN,LONGAR,LONGMX,PADIST,
-     &               LSNC,LSND,AB(3),AP(3),NORMAB,NORMAP,NORMVN,DDOT
+     &               LSNC,LSND,AB(3),AP(3),NORMAB,NORMAP,NORMVN,DDOT,
+     &               MP(3)
       COMPLEX*16     C16B
       CHARACTER*2    NPTIK2
       CHARACTER*8    K8B,TYPMA,NOMAIL,K8BID
@@ -95,6 +107,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C     DOMAIN RESTRICTION
       INTEGER        JNODTO,JELETO,NODE,ELEM,NBNO,NBMA
+
+C     UPWIND INTEGRATION
+      INTEGER        JPOI,JTRI,NBPFIS,POS
+      LOGICAL        INTABL,UPWIND
 
 C  TRIANGLES ABC QUE L'ON PEUT FORMER A PARTIR DE N POINTS (N=3 A 6)
       INTEGER        IATRI(20),IBTRI(20),ICTRI(20)
@@ -136,11 +152,18 @@ C-----------------------------------------------------------------------
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
 
+C     CHECK IF THE UPWIND SCHEME WILL BE USED
+      IF ((POIFIS(1:1).NE.' ').AND.(TRIFIS(1:1).NE.' ')) THEN
+         UPWIND = .TRUE.
+      ELSE
+         UPWIND = .FALSE.
+      ENDIF
+
 C     EVALUATION OF THE TOLERANCE USED TO ASSESS IF THE VALUE OF THE
 C     NORMAL LEVELSET IN ONE NODE IS ZERO OR NOT
 C     THIS IS FIXED TO 1% OF THE LENGTH OF THE SMALLEST ELEMENT EDGE
 C     IN THE MESH
-      TOLL = 1.D-2*ARMIN
+      TOLL = 1.0D-2*ARMIN
 
 C      IF (NIV.GT.1)
       WRITE(IFM,*)'   CALCUL DES LEVEL SETS A PROXIMITE '
@@ -177,8 +200,8 @@ C   RECUPERATION DE L'ADRESSE DES VALEURS DES LS
          CALL JEVEUO(CNSLT//'.CNSV','E',JLTNO)
       ELSEIF (LEVSET.EQ.'LT') THEN
          CALL JEVEUO(CNSLT//'.CNSV','E',JLSNO)
+         CALL JEVEUO(CNSLN//'.CNSV','L',JLTNO)
       ENDIF
-
 
 C  RECUPERATION DE L'ADRESSE DE L'INFORMATION 'NOEUD SOMMET'
       CALL JEVEUO(NOESOM,'L',JNOSOM)
@@ -273,6 +296,29 @@ C     CUT BY THE ISOZERO OF LSN. IT'S BETTER TO CHECK IT BEFORE
 C     CONTINUING.
       CALL ASSERT(NBMACO.GT.0)
 
+C     CREATE THE STRUCTURE WHERE THE TRIANGLES FORMING THE LSN=0 ARE
+C     STORED. THESE INFORMATIONS WILL BE USED BY THE UPWIND SCHEME.
+      IF (UPWIND) THEN
+
+C        NUMBER OF INTERSECTION POINTS BETWEEN THE LSN=0 AND EACH
+C        ELEMENT (MAX=6) AND LIST OF THEIR POSITION IN THE COORDINATE 
+C        TABLE BELOW (JTRI)
+C        EACH ROW:   NUMBER OF POINTS,P1,...,P6
+         CALL WKVECT(TRIFIS,'V V I',NBMACO*7,JTRI)
+         DO 147 IMA=1,NBMACO
+            ZI(JTRI-1+7*(IMA-1)+1) = 0
+147      CONTINUE
+
+C        COORDINATES OF THE POINTS OF INTERSECTION BETWEEN EACH ELEMENT
+C        AND THE LSN=0. THE THREE COORDINATES AND THE LSN ARE STORED.
+C        EACH ROW:   X,Y,Z,LSN
+         CALL WKVECT('&&XPRLS0.POIFIS','V V R',NBMACO*24,JPOI)
+
+C        INITIALISE THE COUNTER FOR JTRI TABLE
+         NBPFIS = 0
+
+      ENDIF
+
 C-----------------------------------------------------
 C     ON REPERE LES NOEUDS SOMMETS DES MAILLES COUPEES
 C-----------------------------------------------------
@@ -310,10 +356,8 @@ C  VECTEURS CONTENANT LES NOUVELLES LS POUR LES NOEUDS DE NOMCOU
       VNOULS = '&&XPRLS0.VNOULS'
       CALL WKVECT(VNOULS,'V V R',NBNOCO,JNOULS)
 
-      IF (LEVSET.EQ.'LN') THEN
-         VNOULT = '&&XPRLS0.VNOULT'
-         CALL WKVECT(VNOULT,'V V R',NBNOCO,JNOULT)
-      ENDIF
+      VNOULT = '&&XPRLS0.VNOULT'
+      CALL WKVECT(VNOULT,'V V R',NBNOCO,JNOULT)
 
 C  BOUCLE SUR LES NOEUDS DES MAILLES COUPEES
 C  -----------------------------------------
@@ -324,7 +368,7 @@ C  -----------------------------------------
 C  SI LE NOEUD EST SUR L'ISOZERO, ON L'A DEJA REPERE
          IF (ZL(JZERO-1+NUNO)) THEN
             ZR(JNOULS-1+INO) = 0.D0
-            IF (LEVSET.EQ.'LN') ZR(JNOULT-1+INO) = ZR(JLTNO-1+NUNO)
+            ZR(JNOULT-1+INO) = ZR(JLTNO-1+NUNO)
             GOTO 300
          ENDIF
 
@@ -380,7 +424,7 @@ C  ON RECHERCHE D'ABORD LES NOEUDS QUI SONT DES POINTS D'INTERSECTIONS
                      ELSEIF (NDIM.EQ.2) THEN 
                         Z(NPTINT) = 0.D0
                      ENDIF  
-                     IF (LEVSET.EQ.'LN') LST(NPTINT)=ZR(JLTNO-1+NUNOA)
+                     LST(NPTINT)=ZR(JLTNO-1+NUNOA)
 
                   ENDIF
  340           CONTINUE
@@ -519,11 +563,9 @@ C  ON VERIFIE LA VALIDITE DU POINT
                     
                      IF (.NOT.DEJA) THEN
                        NPTINT = NPTINT+1
-                       IF (LEVSET.EQ.'LN') THEN
-                            LSTA = ZR(JLTNO-1+NUNOA)
-                            LSTB = ZR(JLTNO-1+NUNOB)
-                            LST(NPTINT) = LSTA + S*(LSTB-LSTA)
-                       ENDIF
+                       LSTA = ZR(JLTNO-1+NUNOA)
+                       LSTB = ZR(JLTNO-1+NUNOB)
+                       LST(NPTINT) = LSTA + S*(LSTB-LSTA)
                      ENDIF
                   ENDIF
 
@@ -564,6 +606,48 @@ C              POINTS
                   LST(NPTINT) = LST(1)
                ENDIF
 
+C              STORE THE INTERSECTION POINTS FOR THE UPWIND INTEGRATION
+               IF (UPWIND) THEN
+
+C                 STORE THE NUMBER OF POINTS FOR THE ELEMENT
+                  ZI(JTRI-1+7*(IMA-1)+1) = NPTINT
+
+C                 STORE EACH POINT IN THE COORDINATE TABLE
+                  DO 425 IPT=1,NPTINT
+
+C                    CHECK IF THE INTERSECTION POINT HAS BEEN ALREADY
+C                    INCLUDED IN THE COORDINATE TABLE
+                     INTABL = .FALSE.
+                     DO 423 POS=1,NBPFIS
+                        DIST = SQRT((X(IPT)-ZR(JPOI-1+4*(POS-1)+1))**2+
+     &                              (Y(IPT)-ZR(JPOI-1+4*(POS-1)+2))**2+
+     &                              (Z(IPT)-ZR(JPOI-1+4*(POS-1)+3))**2)
+                        IF (DIST.LT.R8PREM()) THEN
+                           INTABL=.TRUE.
+                           GOTO 424
+                        ENDIF
+423                  CONTINUE
+
+424                  CONTINUE
+
+                     IF (.NOT.INTABL) THEN
+C                       THE COORDINATES OF THE POINT MUST BE STORED...
+                        NBPFIS = NBPFIS+1
+                        ZR(JPOI-1+4*(NBPFIS-1)+1) = X(IPT)
+                        ZR(JPOI-1+4*(NBPFIS-1)+2) = Y(IPT)
+                        ZR(JPOI-1+4*(NBPFIS-1)+3) = Z(IPT)
+                        ZR(JPOI-1+4*(NBPFIS-1)+4) = LST(IPT)
+C                       ...THE NUMBER OF THE POINT AS WELL
+                        ZI(JTRI-1+7*(IMA-1)+IPT+1) = NBPFIS
+                     ELSE
+C                       ONLY THE NUMBER OF THE POINT MUST BE STORED
+                        ZI(JTRI-1+7*(IMA-1)+IPT+1) = POS
+                     ENDIF
+
+425               CONTINUE
+
+               ENDIF
+
 C  CALCUL DE DISTANCE DU NOEUD (INO) A L'ISOZERO SUR LA MAILLE (NMAABS)
 C  --------------------------------------------------------------------
 C  ON PARCOURT TOUS LES TRIANGLES QUE L'ON PEUT FORMER AVEC LES POINTS
@@ -593,7 +677,7 @@ C  D'INTERSECTION ISOZERO-ARETES :
                      LSTC=LST(IC)
                   ENDIF
 
-                  CALL XPROJ(P,A,B,C,M,D,VN,EPS,IN)
+                  CALL XPROJ(P,A,B,C,M,MP,D,VN,EPS,IN)
 
 C  ON RECHERCHE LA DISTANCE MINIMALE TELLE QUE EPS1>0 & EPS2>0 & EPS3>0
 C  --------------------------------------------------------------------
@@ -663,12 +747,23 @@ C  ------------------------------------------------
 C      IF (NIV.GT.1)
       WRITE(IFM,*)'   NOMBRE DE LEVEL SETS CALCULEES :',NBNOCO+NBNOZO
 
+C     RESIZE THE TABLE CONTAINING THE INTERSECTION POINTS BETWEEN EACH
+C     ELEMENT AND LSN=0 (ONLY FOR THE UPWIND SCHEME)
+      IF (UPWIND) THEN
+         CALL WKVECT(POIFIS,'V V R',NBPFIS*4,POS)
+
+         DO 500 I=1,NBPFIS*4
+            ZR(POS-1+I) = ZR(JPOI-1+I)
+500      CONTINUE
+         CALL JEDETR('&&XPRLS0.POIFIS')
+      ENDIF
+
 
 C   DESTRUCTION DES OBJETS VOLATILES
       CALL JEDETR(MAICOU)
       CALL JEDETR(NOMCOU)
       CALL JEDETR(VNOULS)
-      IF (LEVSET.EQ.'LN') CALL JEDETR(VNOULT)
+      CALL JEDETR(VNOULT)
 
 C-----------------------------------------------------------------------
 C     FIN

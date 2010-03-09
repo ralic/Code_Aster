@@ -7,7 +7,7 @@
      &                  DEFICU,RESOCU,RESOCO,VALINC,SOLALG,
      &                  MEASSE,VEELEM,MEELEM,VEASSE,CODERE)
 C
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -222,8 +222,8 @@ C
      &              SDSENS,SDDYNA)
         CALL ACCEL0(MODELE,NUMEDD,FONACT,LISCHA,DEFICO,
      &              RESOCO,MAPREC,SOLVEU,VALINC,SDDYNA,
-     &              SDTIME,MEELEM,MEASSE,VEELEM,VEASSE,
-     &              SOLALG)
+     &              SDTIME,SDDISC,MEELEM,MEASSE,VEELEM,
+     &              VEASSE,SOLALG)
       ENDIF
 C
 C --- CREATION DE LA SD AFFICHAGE

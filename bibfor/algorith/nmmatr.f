@@ -1,9 +1,10 @@
       SUBROUTINE NMMATR(PHASEZ,
      &                  FONACT,LISCHA,SOLVEU,NUMEDD,SDDYNA,
-     &                  DEFICO,RESOCO,MEELEM,MEASSE,MATASS)
+     &                  SDDISC,DEFICO,RESOCO,MEELEM,MEASSE,
+     &                  MATASS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +27,7 @@ C
       IMPLICIT NONE
       CHARACTER*(*) PHASEZ
       CHARACTER*19  MATASS      
-      CHARACTER*19  SDDYNA
+      CHARACTER*19  SDDYNA,SDDISC
       CHARACTER*24  DEFICO,RESOCO
       INTEGER       FONACT(*)
       CHARACTER*19  MEELEM(*),MEASSE(*)
@@ -48,7 +49,8 @@ C                'CORRECTION'
 C                'ACCEL_INIT'  
 C IN  RESOCO : SD RESOLUTION CONTACT
 C IN  DEFICO : SD DEF. CONTACT
-C IN  SDDYNA : SD POUR LA DYNAMIQUE
+C IN  SDDYNA : SD DYNAMIQUE
+C IN  SDDISC : SD DISC_INST
 C IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
 C IN  LISCHA : SD L_CHARGE
 C IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
@@ -76,12 +78,17 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       LOGICAL      ISFONC,NDYNLO
-      LOGICAL      LDYNA,LCTCD,LEXPL,LAMOR,LSUIV,LSHIMA
-      REAL*8       NDYNRE,COEMAT(3),COERIG,COEAMO,COEMAS,COESHI
+      LOGICAL      LDYNA,LCTCD,LEXPL,LAMOR,LSUIV,LSHIMA,LPREM
+      REAL*8       NDYNRE,COERIG,COEAMO,COEMAS,COESHI
       CHARACTER*8  NOMDDL
+      REAL*8       COEMAT(3)
       CHARACTER*24 LIMAT(3)
       CHARACTER*4  TYPCST(3)
-      INTEGER      NBMAT 
+      
+      REAL*8       COEMAM(3)
+      CHARACTER*24 LIMAM(3)
+      CHARACTER*4  TYPCSM(3)
+      INTEGER      NBMAT,IRET
       CHARACTER*10 PHASE      
       CHARACTER*19 RIGID,MASSE,AMORT
       INTEGER      IFM,NIV
@@ -115,7 +122,12 @@ C
       LAMOR  = NDYNLO(SDDYNA,'MAT_AMORT')    
       LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')  
       LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
-      LSHIMA = NDYNLO(SDDYNA,'COEF_MASS_SHIFT')  
+      LSHIMA = NDYNLO(SDDYNA,'COEF_MASS_SHIFT') 
+C
+C --- PREMIER PAS DE TEMPS ?
+C
+      CALL DIBCLE(SDDISC,'PREMIE','L',IRET  )
+      LPREM  = IRET.EQ.0  
 C
 C --- SUPPRESSION ANCIENNE MATRICE ASSEMBLEE
 C
@@ -137,6 +149,22 @@ C
       TYPCST(2) = 'R'
       TYPCST(3) = 'R'
 C
+C --- DECALAGE DE LA MATRICE MASSE (COEF_MASS_SHIFT)
+C
+      IF (LSHIMA.AND.LPREM.AND.(PHASE.EQ.'PREDICTION')) THEN  
+         TYPCSM(1) = 'R'
+         TYPCSM(2) = 'R' 
+         COEMAM(1) = 1.D0
+         COEMAM(2) = COESHI       
+         LIMAM(1)  = MASSE
+         LIMAM(2)  = RIGID      
+         IF (LEXPL) THEN
+           CALL MTCMBL(2,TYPCSM,COEMAM,LIMAM,MASSE,' ',' ','ELIM=')
+         ELSE
+           CALL MTCMBL(2,TYPCSM,COEMAM,LIMAM,MASSE,'LAGR',' ','ELIM=')
+         ENDIF      
+      ENDIF    
+C
 C --- MATRICES ET COEFFICIENTS
 C 
       IF (LDYNA) THEN
@@ -144,25 +172,18 @@ C
           LIMAT(1)  = MASSE
           NBMAT     = 1 
           COEMAT(1) = 1.D0          
-        ELSE
+        ELSE  
           IF (LEXPL) THEN                    
             LIMAT(1)  = MASSE
-            NBMAT     = 1 
+            NBMAT     = 1
             COEMAT(1) = COEMAS
-            IF (LSHIMA) THEN
-              NBMAT     = 2 
-              LIMAT(1)  = MASSE
-              COEMAT(1) = 1.D0           
-              LIMAT(2)  = RIGID
-              COEMAT(2) = COESHI          
-            ENDIF
-          ELSE
-            LIMAT(1)  = RIGID
-            LIMAT(2)  = MASSE
-            LIMAT(3)  = AMORT
+          ELSE 
             COEMAT(1) = COERIG
             COEMAT(2) = COEMAS
             COEMAT(3) = COEAMO   
+            LIMAT(1)  = RIGID
+            LIMAT(2)  = MASSE
+            LIMAT(3)  = AMORT
             IF (LAMOR) THEN
               NBMAT = 3
             ELSE

@@ -4,7 +4,7 @@
      &                  STITE ,ECHEC)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,7 +81,7 @@ C
         LDCOPT = LDCCVG
         OPT    = ACT
         ACT    = 3 - ACT
-        IF (FOPT .LT. FCVG) THEN
+        IF (ABS(FOPT) .LT. FCVG) THEN
           STITE = .TRUE.
         ENDIF
       ENDIF

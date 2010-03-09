@@ -1,0 +1,214 @@
+      SUBROUTINE XPRALI(P1,P2,VNELE,NELCOU,POIFIS,TRIFIS,LIBRE,VIN)
+      IMPLICIT NONE
+      REAL*8         VNELE(3),VIN(3)
+      CHARACTER*19   POIFIS,TRIFIS
+      LOGICAL        LIBRE
+      INTEGER        P1,P2,NELCOU
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 08/03/2010   AUTEUR COLOMBO D.COLOMBO 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE COLOMBO D.COLOMBO
+
+C     ------------------------------------------------------------------
+C
+C       XPRALI   : X-FEM PROPAGATION : ARETE LIBRE
+C       ------     -     --            -     --
+C
+C    DANS LE CADRE DE LA PROPAGATION X-FEM, LA SURFACE DE LA FISSURE
+C    EST DECRITE PAR TRIANGLES. CET SUBROUTINE DETERMINE SI UNE ARETE
+C    DE UN DE CES TRIANGLES EST SUR LA SURFACE LIBRE DU DOMAIN.
+C
+C    ENTREE
+C        P1     = COORDONNEES DU PREMIER POINT DEFINISSANT L'ARETE
+C        P2     = COORDONNEES DU DEUXIEME POINT DEFINISSANT L'ARETE
+C        VNELE  = VECTEUR NORMAL AU PLAN DU TRIANGLE DUQUEL L'ARETE FAIT
+C                 PARTIE
+C        NELCOU = NUMERO DE L'ELEMENT COUPE PAR LSN=0 DUQUEL LE TRIANGLE
+C                 FAIT PARTIE
+C        POIFIS = NOM DE L'OBJET JEVEUX OU LA LISTE DES COORDONNEES DES
+C                 POINTS D'INTERSECTION ENTRE LES ELEMENTS ET LSN=0
+C                 EST STOCKEE (VOIR XPRLS0.F)
+C        TRIFIS = NOM DE L'OBJET JEVEUX OU LE NUMERO ET LA LISTE DES
+C                 POINTS D'INTERSECTION ENTRE LES ELEMENTS ET LSN=0 SONT
+C                 STOCKES (VOIR XPRLS0.F)
+C    SORTIE
+C        LIBRE  = .TRUE. SI L'ARETE EST SUR LA SURFACE LIBRE DU DOMAIN
+C                 .FALSE. SINON
+C        VIN    = DANS LE CAS OU LIBRE=.TRUE., VECTEUR UNITAIRE NORMAL A
+C                 LA SURFACE LIBRE DU DOMAIN. SA DIRECTION EST TELLE QUE
+C                 LE VECTEUR ENTRE DANS LE DOMAIN.
+C
+C     ------------------------------------------------------------------
+
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32    JEXNUM,JEXATR
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+
+      INTEGER        JPOI,JTRI,ELCUT,ELSHAR,I,J,NPTINT,OCCUR,NP
+      CHARACTER*1    K1BID
+      REAL*8         A(3),B(3),V1(3),VNP(3),PDIR
+
+C-----------------------------------------------------------------------
+C     DEBUT
+C-----------------------------------------------------------------------
+      CALL JEMARQ()
+
+      LIBRE = .FALSE.
+
+C     RETRIEVE THE VECTORS CONTAINING THE TRIANGULATION OF LSN=0
+      CALL JEVEUO(POIFIS,'L',JPOI)
+      CALL JEVEUO(TRIFIS,'L',JTRI)
+
+C     RETRIEVE THE NUMBER OF ELEMENTS CUT BY THE LSN=0
+      CALL JELIRA(TRIFIS,'LONMAX',ELCUT,K1BID)
+      ELCUT = ELCUT/7
+
+C     ******************************************************************
+C     CALCULATE HOW MANY ELEMENTS SHARE THE EDGE P1-P2
+C     ******************************************************************
+
+C     INITIALISE THE VARIABLE WHERE THE NUMBER OF ELEMENTS SHARING THE
+C     EDGE P1-P2 IS STORED
+      ELSHAR = 0
+
+C     LOOP ON THE ELEMENTS CUT BY THE LSN=0
+      DO 2000 I=1,ELCUT
+
+C        RETREIVE THE NUMBER OF INTERSECTION POINTS BETWEEN THE LSN=0
+C        AND THE ELEMENT
+         NPTINT = ZI(JTRI-1+7*(I-1)+1)
+
+C        NUMBER OF OCCURRENCES OF P1 AND P2 FOUND IN THE INTERSECTION
+C        POINT LIST OF THE ELEMENT
+         OCCUR=0
+
+         DO 2500 J=1,NPTINT
+
+C           RETREIVE THE NPTINT-TH INTERSECTION POINT OF THE ELEMENT
+            NP = ZI(JTRI-1+7*(I-1)+J+1)
+
+C           ONE OCCURRENCE FOUND
+            IF ((NP.EQ.P1).OR.(NP.EQ.P2)) OCCUR=OCCUR+1
+
+2500     CONTINUE
+
+C        ELEMENT "I" SHARES THE EDGE
+         IF (OCCUR.EQ.2) THEN
+            ELSHAR=ELSHAR+1
+C           THE EDGE ISN' FREE IF AT LEAST TWO ELEMENTS SHARE IT
+            IF (ELSHAR.GT.1) GOTO 1000
+         ENDIF
+
+2000  CONTINUE
+
+1000  CONTINUE
+
+C     ******************************************************************
+C     IF THE EDGE BELONGS ONLY TO ONE ELEMENT, WE SHOULD CHECK IF IT
+C     IS ON THE FREE SURFACE OF THE DOMAIN OR INSIDE THE ELEMENT
+C     ******************************************************************
+
+C     NO OTHER TRIANGLES OF OTHER ELEMENTS SHEARING THE EDGE. IT
+C     COULD BE INSIDE THE SELECTED ELEMENT. LET'S CHECK IT.
+      IF (ELSHAR.EQ.1) THEN
+
+C        RETREIVE THE COORDINATES OF P1
+         A(1) = ZR(JPOI-1+4*(P1-1)+1)
+         A(2) = ZR(JPOI-1+4*(P1-1)+2)
+         A(3) = ZR(JPOI-1+4*(P1-1)+3)
+
+C        RETREIVE THE COORDINATES OF P2
+         B(1) = ZR(JPOI-1+4*(P2-1)+1)
+         B(2) = ZR(JPOI-1+4*(P2-1)+2)
+         B(3) = ZR(JPOI-1+4*(P2-1)+3)
+
+C        CALCULATE THE VECTOR CONNECTIN P1 AND P2
+         V1(1) = B(1)-A(1)
+         V1(2) = B(2)-A(2)
+         V1(3) = B(3)-A(3)
+
+C        CALCULATE THE NORMAL TO THE EDGE
+         CALL PROVEC(V1,VNELE,VNP)
+
+C        RETREIVE THE NUMBER OF INTERSECTION POINTS FOR THE ELEMENT
+         NPTINT = ZI(JTRI-1+7*(NELCOU-1)+1)
+
+C        NUMBER OF POINTS LYING INSIDE THE DOMAIN
+         OCCUR = 2
+
+C        CHECK IF THE INTERSECTION POINTS OF THE ELEMENT ARE ALL
+C        INCLUDED IN THE SAME SEMISPACE DEFINED BY THE PLANE ABOVE
+         DO 3000 I=1,NPTINT
+C           RETREIVE THE POINT
+            NP=ZI(JTRI-1+7*(NELCOU-1)+I+1)
+
+C           IF IT IS NOT ONE OF THE ENDS OF THE EDGE, CALCULATE
+C           THE SCALAR PRODUCT BETWEEN NP-P1 VECTOR AND THE NORMAL TO
+C           THE PLANE
+            IF (.NOT.((NP.EQ.P1).OR.(NP.EQ.P2))) THEN
+               V1(1) = ZR(JPOI-1+4*(NP-1)+1)-A(1)
+               V1(2) = ZR(JPOI-1+4*(NP-1)+2)-A(2)
+               V1(3) = ZR(JPOI-1+4*(NP-1)+3)-A(3)
+               PDIR = V1(1)*VNP(1)+V1(2)*VNP(2)+V1(3)*VNP(3)
+C              IF THE SCALAR PRODUCT IS POSITIVE, THE POINT BELONGS TO 
+C              THE SAME SEMISPACE OF THE NORMAL
+               IF (PDIR.GE.0.D0) OCCUR=OCCUR+1
+            ENDIF
+3000     CONTINUE
+
+C        YES, THE EDGE IS A FREE EDGE. THE NORMAL DISTANCE MUST BE
+C        CALCULATED
+         IF (OCCUR.EQ.2) THEN
+            LIBRE = .TRUE.
+            CALL NORMEV(VNP,PDIR)
+C           THE VNP VECTOR POINTS OUTWARD TO THE DOMAIN AND MUST BE
+C           INVERSED.
+            VIN(1) = -1.D0*VNP(1)
+            VIN(2) = -1.D0*VNP(2)
+            VIN(3) = -1.D0*VNP(3)
+         ELSE IF (OCCUR.EQ.NPTINT) THEN
+            LIBRE = .TRUE.
+            CALL NORMEV(VNP,PDIR)
+C           THE VNP VECTOR POINTS INWARD TO THE DOMAIN.
+            VIN(1) = VNP(1)
+            VIN(2) = VNP(2)
+            VIN(3) = VNP(3)
+         ENDIF
+
+      ENDIF
+
+C-----------------------------------------------------------------------
+C     FIN
+C-----------------------------------------------------------------------
+      CALL JEDEMA()
+      END

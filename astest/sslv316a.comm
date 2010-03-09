@@ -1,4 +1,4 @@
-# MODIF  DATE 11/01/2010   AUTEUR COLOMBO D.COLOMBO 
+# MODIF  DATE 08/03/2010   AUTEUR COLOMBO D.COLOMBO 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316a.para = tps_job 300 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,7 +180,6 @@ for i in range(nbcalc) :
                            ),
                  METHODE_PROPA='UPWIND',
                  DA_MAX=da,
-                 ZONE_MAJ='TOUT',
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,

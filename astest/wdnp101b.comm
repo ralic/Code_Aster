@@ -1,4 +1,4 @@
-# MODIF  DATE 09/02/2010   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL APRES CONSTRUCTION 
 # wdnp101b.para = tps_job 4500 mem_job 1000Mo mem_aster 90 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -33,8 +33,9 @@ NU    = 0.3   ;
 RHO   = 2105  ;          # Valeur homogeneisee
 
 K_EAU     = 2000.E+6 ;   # coefficient de compressibilite de l eau
-#INV_K_EAU = 1./K_EAU ;
-INV_K_EAU = 1.E-7 ;
+INV_K_EAU = 1./K_EAU ;
+#INV_K_EAU = 1.E-7 ;
+#INV_K_EAU = 1.E-7 ;
 
 # Parametres Hujeux
 
@@ -684,7 +685,7 @@ U9B=DYNA_NON_LINE(reuse=U9B,
                                       ),                              
                  SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                  FORMULATION='DEPLACEMENT',
-                                 COEF_MASS_SHIFT=1.E-6,
+                                 COEF_MASS_SHIFT=2.E-6,
                                  ALPHA=-0.17,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
@@ -722,21 +723,24 @@ ACC_A47X=CALC_FONCTION( LIST_PARA=L_COMB,
                       );
                       
 
-TAB_INF1 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=2.77,
+TAB_INF1 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=2.80,
                                     INST_FIN = 2.88, ))                                                   
-TAB_INF2 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.03,
-                                    INST_FIN = 3.09, ))                                                   
-TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.44,
-                                    INST_FIN = 3.47, ))                                                   
+TAB_INF2 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.06,
+                                    INST_FIN = 3.14, ))                                                   
+TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.47,
+                                    INST_FIN = 3.55, ))                                                   
+
+
+# ECART DE 10 A 30 PAR RAPPORT A LA MODELISATION A
 
 TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
-           VALE = 1.661,PRECISION = 0.05,
+           VALE = 1.825,PRECISION = 0.05,
            REFERENCE = 'NON_REGRESSION')
 TEST_TABLE(TABLE=TAB_INF2,NOM_PARA='RMS',
-           VALE = 1.892,PRECISION = 0.05,
+           VALE = 1.297,PRECISION = 0.05,
            REFERENCE = 'NON_REGRESSION')
 TEST_TABLE(TABLE=TAB_INF3,NOM_PARA='RMS',
-           VALE = 2.698,PRECISION = 0.05,
+           VALE = 2.316,PRECISION = 0.05,
            REFERENCE = 'NON_REGRESSION')
 
 

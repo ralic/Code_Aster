@@ -1,16 +1,16 @@
-      SUBROUTINE XPRUPW(CMND,MODEL,NOMA,FISS,VCN,VCND,
+      SUBROUTINE XPRUPW(CMND,MODEL,NOMA,FISS,FISPRE,VCN,VCND,
      &    REFLOC,NOESOM,LCMIN,CNSLN,GRLN,CNSLT,GRLT,DELTAT,NORESI,
      &    ISOZRO,NODTOR,ELETOR,LIGGRD)
       IMPLICIT NONE
 
-      CHARACTER*8    CMND,MODEL,NOMA,FISS
+      CHARACTER*8    CMND,MODEL,NOMA,FISS,FISPRE
       CHARACTER*19   CNSLN,GRLN,CNSLT,GRLT,NORESI,NOESOM,ISOZRO,
      &               VCN,VCND,REFLOC,NODTOR,ELETOR,LIGGRD
       REAL*8         DELTAT,LCMIN
       LOGICAL        TORE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 08/03/2010   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,7 +52,8 @@ C               'REORTHOG' POUR LA REORTHOGONALISATION DE LA LEVEL SET
 C                          TANGENTE PAR RAPPORT A LA LEVEL SET NORMALE
 C      MODEL  = NOM DU MODELE SUR LEQUEL LES LEVEL SETS SONT DEFINIES
 C      NOMA   = NOM DU MAILLAGE DU MODELE
-C      FISS   = NOM DU CONCEPT FISSURE X-FEM
+C      FISS   = NOM DU CONCEPT FISSURE X-FEM DE LA NOUVELLE FISSURE
+C      FISPRE = NOM DU CONCEPT FISSURE X-FEM DE LA FISSURE ACTUELLE
 C      VCN    = VOIR XPRCNU.F POUR LA DESCRIPTION DE CETTE OBJET.
 C      VCND   = VOIR XPRCNU.F POUR LA DESCRIPTION DE CETTE OBJET.
 C      REFLOC = VOIR XPRCNU.F POUR LA DESCRIPTION DE CETTE OBJET 
@@ -139,12 +140,22 @@ C     EVALUATION OF THE RESIDUAL
       PARAMETER        (RESORT = 1.D-7)
       PARAMETER        (RESIGL = 1.D-9)
 
+C     UPWIND PROBLEMATIC POINTS
+      CHARACTER*19   POIFIS,TRIFIS,FORCED
+      INTEGER        JFORCE
+      REAL*8         P(3),LVSP,LSNPC,LSTPC
+      LOGICAL        GRAD0
+
 C-----------------------------------------------------------------------
 C     DEBUT
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
+
+C     JEVEUX OBJECTS WHERE THE POINTS FORMING THE LSN=0 WILL BE STORED
+      POIFIS = '&&XPRUPW.POIFIS'
+      TRIFIS = '&&XPRUPW.TRIFIS'
 
 C     RETRIEVE THE DIMENSION OF THE PROBLEM
       CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
@@ -230,6 +241,13 @@ C     RETRIEVE THE LIST OF THE ELEMENTS DEFINING THE TORE
 C     RETRIEVE THE NUMBER OF ELEMENTS DEFINING THE TORE
       CALL JELIRA(ELETOR,'LONMAX',NELETO,K8B)
 
+C     CHECK IF THE LOCALISATION OF THE DOMAIN HAS BEEN REQUESTED
+      IF (NBNOMA.EQ.NBNO) THEN
+         GRAD0 = .TRUE.
+      ELSE
+         GRAD0 = .FALSE.
+      ENDIF
+
 C     RETRIEVE THE LOCAL REFERENCE SYSTEM TO BE USED WITH THE LEVELSET
 C     MESH
       CALL JEVEUO(REFLOC,'L',JREF)
@@ -254,8 +272,12 @@ C     RETRIEVED
       IF (REINIT) THEN
 C        VECTEUR IDIQUANT SI LS AU NOEUD EST CALCULEE
          CALL WKVECT(ISOZRO,'V V L',NBNOMA,JZERO)      
+         IF(LEVSET.EQ.'LT') THEN
+            CALL JEDETR(POIFIS)
+            CALL JEDETR(TRIFIS)
+         ENDIF
          CALL XPRLS0(NOMA,FISS,NOESOM,LCMIN,CNSLN,CNSLT,ISOZRO,LEVSET,
-     &               NODTOR,ELETOR)
+     &               NODTOR,ELETOR,POIFIS,TRIFIS)
       ELSE
          CALL JEVEUO(ISOZRO,'L',JZERO)
       ENDIF
@@ -280,6 +302,13 @@ C     PRINT INFORMATIONS ABOUT RESIDUALS AT EACH ITERATION
 C     CREATE A TEMPORARY VECTOR
       TEMPV = '&&XPRUPW.TEMPV'
       CALL WKVECT(TEMPV,'V V R',NBNO,JTEMPV)
+
+C     CREATE A TEMPORARY FLAG VECTOR IN ORDER TO MARK THE PROBLEMATIC 
+C     NODES
+      FORCED= '&&XPRUPW.FORCED'
+      CALL WKVECT(FORCED,'V V L',NBNO,JFORCE)
+      CALL JEUNDF(FORCED)
+      CALL JEVEUO(FORCED,'E',JFORCE)
       
 C     MINIMIZATION LOOP
 C     THIS LOOP IS RUN ITRMAX TIMES. IF THE CONVERGENCE IS ACHIEVED
@@ -357,30 +386,94 @@ C           (ALONG X, Y AND Z)
             
                 IF (VXYZ(J).GE.0) THEN
 
+C                  NODE POSITION OF THE NEIGHBORING NODE IN THE
+C                  CONNECTION TABLE
                    NODEPS = 6*(K-1)+2*(J-1)+2
 
-C                  IF THE NODE IS ON THE FREE BOUNDARY, I USE A ZERO
-C                  GRADIENT.
                    IF (ZI(JVCN-1+NODEPS).GT.0) THEN
-C                    THE NODE IS NOT ON THE FREE BOUNDARY. I USE THE
-C                    REAL GRADIENT.
+
+C                    THERE IS ONE NEIGHBORING NODE AND THEREFORE THE
+C                    GRADIENT CAN BE CALCULATED
                      VTMP = VTMP + VXYZ(J)*
      &               (ZR(JCNSLS-1+NODE)-ZR(JCNSLS-1+ZI(JVCN-1+NODEPS)))/
      &               ZR(JVCND-1+NODEPS)
+
+                   ELSE
+
+C                    NO NEIGHBORING NODES! THE ESTIMATION OF THE FINAL
+C                    VALUE OF THE LEVELSET IS IMPOSED IF THE DOMAIN
+C                    LOCALISATION HAS BEEN REQUESTED
+                     IF ((.NOT.GRAD0).AND.(.NOT.ZL(JZERO-1+NODE)).AND.
+     &                   (.NOT.ZL(JFORCE-1+K))) THEN
+C                       THE VALUE OF THE LEVEL SET WILL BE FORCED FOR
+C                       THIS NODE AND NOT UPDATED USING UPWIND
+                        ZL(JFORCE-1+K) = .TRUE.
+C                       RETREIVE THE COORDINATES OF THE PROBLEMATIC NODE
+                        P(1) = ZR(JCOOR-1+3*(NODE-1)+1)
+                        P(2) = ZR(JCOOR-1+3*(NODE-1)+2)
+                        P(3) = ZR(JCOOR-1+3*(NODE-1)+3)
+C                       RETREIVE THE VALUE OF THE LEVEL SET THAT IS
+C                       BEING UPDATED
+                        LVSP = ZR(JCNSLS-1+NODE)
+C                       CALCULATE THE LEVEL SET (USING THE SIGNED 
+C                       DISTANCE PROPERTY)
+                        CALL XPRPFI(P,LVSP,LCMIN,POIFIS,TRIFIS,FISPRE,
+     &                              NDIM,LSNPC,LSTPC)
+                        IF (REINIT) THEN
+C                          IN THIS CASE THE NORMAL LEVEL SET IS BEING
+C                          UPDATED
+                           ZR(JCNSLS-1+NODE) = LSNPC
+                        ELSE
+C                          IN THIS CASE THE TANGENTIAL ONE
+                           ZR(JCNSLS-1+NODE) = LSTPC
+                        ENDIF
+                     ENDIF
                    ENDIF
                    
                 ELSE
-                
+
+C                  NODE POSITION OF THE NEIGHBORING NODE IN THE
+C                  CONNECTION TABLE
                    NODEPS = 6*(K-1)+2*(J-1)+1
 
-C                  IF THE NODE IS ON THE FREE BOUNDARY, I USE A ZERO
-C                  GRADIENT.
                    IF (ZI(JVCN-1+NODEPS).GT.0) THEN
-C                    THE NODE IS NOT ON THE FREE BOUNDARY. I USE THE
-C                    REAL GRADIENT.
+
+C                    THERE IS ONE NEIGHBORING NODE AND THEREFORE THE
+C                    GRADIENT CAN BE CALCULATED
                      VTMP = VTMP + VXYZ(J)*
      &               (ZR(JCNSLS-1+ZI(JVCN-1+NODEPS))-ZR(JCNSLS-1+NODE))/
      &               ZR(JVCND-1+NODEPS)
+
+                   ELSE
+
+C                    NO NEIGHBORING NODES! THE ESTIMATION OF THE FINAL
+C                    VALUE OF THE LEVELSET IS IMPOSED IF THE DOMAIN
+C                    LOCALISATION HAS BEEN REQUESTED
+                     IF ((.NOT.GRAD0).AND.(.NOT.ZL(JZERO-1+NODE)).AND.
+     &                   (.NOT.ZL(JFORCE-1+K))) THEN
+C                       THE VALUE OF THE LEVEL SET WILL BE FORCED FOR
+C                       THIS NODE AND NOT UPDATED USING UPWIND
+                        ZL(JFORCE-1+K) = .TRUE.
+C                       RETREIVE THE COORDINATES OF THE PROBLEMATIC NODE
+                        P(1) = ZR(JCOOR-1+3*(NODE-1)+1)
+                        P(2) = ZR(JCOOR-1+3*(NODE-1)+2)
+                        P(3) = ZR(JCOOR-1+3*(NODE-1)+3)
+C                       RETREIVE THE VALUE OF THE LEVEL SET THAT IS
+C                       BEING UPDATED
+                        LVSP = ZR(JCNSLS-1+NODE)
+C                       CALCULATE THE LEVEL SET (USING THE SIGNED 
+C                       DISTANCE PROPERTY)
+                        CALL XPRPFI(P,LVSP,LCMIN,POIFIS,TRIFIS,FISPRE,
+     &                              NDIM,LSNPC,LSTPC)
+                        IF (REINIT) THEN
+C                          IN THIS CASE THE NORMAL LEVEL SET IS BEING
+C                          UPDATED
+                           ZR(JCNSLS-1+NODE) = LSNPC
+                        ELSE
+C                          IN THIS CASE THE TANGENTIAL ONE
+                           ZR(JCNSLS-1+NODE) = LSTPC
+                        ENDIF
+                     ENDIF
                    ENDIF
 
                 ENDIF
@@ -409,8 +502,9 @@ C           RETREIVE THE NODE NUMBER
             NODE = ZI(JNODTO-1+K)
          
 C           IF THE LEVEL SET HAS BEEN UPDATED PREVIOUSLY (ACROSS THE
-C           CRACK FRONT), IT IS NOT CALCULATED HERE AGAIN
-            IF (.NOT.ZL(JZERO-1+NODE)) THEN
+C           CRACK FRONT OR CALCULATING THE SIGNED DISTANCE), IT IS NOT
+C           CALCULATED HERE AGAIN USING UPWIND
+            IF ((.NOT.ZL(JZERO-1+NODE)).AND.(.NOT.ZL(JFORCE-1+K))) THEN
               
               PREVLS = ZR(JCNSLS-1+NODE)
               ZR(JCNSLS-1+NODE) = PREVLS - DELTAT*ZR(JTEMPV-1+K)
@@ -514,6 +608,13 @@ C     DESTROY THE TEMPORARY JEVEUX OBJECTS
       CALL JEDETR(CNOLS)
       CALL JEDETR(CELGLS)
       CALL JEDETR(CHAMS)
+
+      IF(REINIT.AND.(LEVSET.EQ.'LT')) THEN
+         CALL JEDETR(POIFIS)
+         CALL JEDETR(TRIFIS)
+      ENDIF
+
+      CALL JEDETR(FORCED)
 
 910   FORMAT(4X,'+',11('-'),'+',12('-'),'+',12('-'),'+')
 911   FORMAT('    | ITERATION |   RESIDU   |   RESIDU   |')

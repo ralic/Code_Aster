@@ -1,8 +1,8 @@
-      SUBROUTINE HYPCPD(C11,C22,C33,C12,
-     &                  K,C10,C01,C20,
-     &                  DSIDEP)
+      SUBROUTINE HYPCPD(C11   ,C22   ,C33   ,C12   ,K     ,
+     &                  C10   ,C01   ,C20   ,DSIDEP,CODRET)
+C   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,28 +19,31 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_20
+C
       IMPLICIT NONE
-      REAL*8      C11
-      REAL*8      C22
-      REAL*8      C33
-      REAL*8      C12
+      REAL*8      C11,C22,C33,C12
       REAL*8      K
-      REAL*8      C10
-      REAL*8      C01
-      REAL*8      C20
+      REAL*8      C10,C01,C20
       REAL*8      DSIDEP(6,6)
+      INTEGER     CODRET
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
-C     LOI DE COMPORTEMENT HYPERELASTIQUE - CONTRAINTES PLANES
-C     CALCUL DE LA MATRICE TANGENTE
+C LOI DE COMPORTEMENT HYPERELASTIQUE DE SIGNORINI    
+C 
+C C_PLAN - CALCUL DE LA MATRICE TANGENTE
+C
+C ----------------------------------------------------------------------
 C
 C IN  C11,C22,C33,C12: ELONGATIONS
 C IN  C10,C01,C20:     CARACTERISTIQUES MATERIAUX
 C IN  K      : MODULE DE COMPRESSIBILITE
-C OUT DSIDEP    : MATRICE TANGENTE
-C-----------------------------------------------------------------------
+C OUT DSIDEP : MATRICE TANGENTE
+C OUT CODRET : CODE RETOUR ERREUR INTEGRATION (1 SI PROBLEME, 0 SINON)
+C
+C ----------------------------------------------------------------------
 C
       REAL*8      T1,T2,T3,T5,T6,T8,T10,T12,T13,T28,T45
       REAL*8      T17,T31,T36,T20,T15,T24,T42,T16,T18,T34,T35
@@ -51,7 +54,7 @@ C
       REAL*8      T41,T46,T76,T44,T23
       REAL*8      T79,T81,T82,T73
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
 
       T1  = C11*C22
@@ -59,7 +62,8 @@ C
       T5  = T1*C33-T3*C33
       T6  = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8  = 1.D0/T6/T5
       T12 = C11+C22+C33
@@ -84,7 +88,8 @@ C
       T5   = T1*C33-T3*C33
       T6  = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8  = 1.D0/T6/T5
       T15 = C11+C22+C33
@@ -114,7 +119,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T9 = T1-T3
@@ -145,7 +151,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T12 = C11+C22+C33
@@ -171,7 +178,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T15 = C11+C22+C33
@@ -201,7 +209,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T12 = C11+C22+C33
@@ -226,7 +235,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T9 = T1-T3
@@ -257,7 +267,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T12 = C11+C22+C33
@@ -282,7 +293,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T12 = T1-T3
@@ -311,7 +323,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T12 = T1-T3
@@ -340,7 +353,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T9 = T1-T3
@@ -363,7 +377,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T12 = C11+C22+C33
@@ -392,7 +407,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T10 = C12*C33
@@ -421,7 +437,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T10 = C12*C33
@@ -449,7 +466,8 @@ C
       T5 = T1*C33-T3*C33
       T6 = T5**(1.D0/3.D0)
       IF ((T5.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8 = 1.D0/T6/T5
       T10 = C12*C33
@@ -483,7 +501,8 @@ C
       T5  = C12**2
       T7  = T3*C33-T5*C33
       IF ((T7.LE.0.D0)) THEN
-        CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T8  = T7**2
       T9  = T7**(1.D0/3.D0)
@@ -506,5 +525,5 @@ C
      &+32.D0/9.D0*C20*T45*T34*T5*T13+128.D0/9.D0*T54*T1*T14+16.D0/3.D0*T
      &54*T1*T18*C33+4.D0*K/T7*T36-4.D0*T68/T69/T66*T5*T13-4.D0*T68/T66*C
      &33
-
+ 99   CONTINUE
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/11/2009   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 09/03/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128u.para = tps_job 390 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,204 +23,227 @@
 # MODELE
 # MAILLAGE : ELEMENT 3D HEXAEDRE A 8 NOEUDS
 # UNITES   : NEWTON , METRE , SECONDE (N,M,S)
-#
 
-DEBUT( CODE=_F(  NOM = 'SSNV128U',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNV128U',
+              NIV_PUB_WEB='INTERNET',),);
 
 #......................................................................
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 3D HEXA8
 #  PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 #......................................................................
 
-PRE_GIBI()
+PRE_GIBI();
+
 #
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'), )
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
+
 #
-MA=DEFI_GROUP(reuse=MA,
+
+MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(NOM='NCONTAR',
-                                GROUP_MA='SCONTAR',),
-                             _F(NOM='NPLAQ',
-                                GROUP_MA='VPLAQ',),
-                             _F(NOM='NPLAQZ',
-                                DIFFE=('NPLAQ','NCONTAR',),))
-              )
+              CREA_GROUP_NO=(_F(GROUP_MA='SCONTAR',
+                                NOM='NCONTAR',),
+                             _F(GROUP_MA='VPLAQ',
+                                NOM='NPLAQ',),
+                             _F(DIFFE=('NPLAQ','NCONTAR',),
+                                NOM='NPLAQZ',),),);
+
 #
+
 MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT = 'OUI',
-                       PHENOMENE = 'MECANIQUE',
-                       MODELISATION = '3D',)
-              )
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+
 #
-MA=MODI_MAILLAGE(reuse=MA,
+
+MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_3D=(_F(GROUP_MA = 'SPRESV',),
-                               _F(GROUP_MA = 'SPRESH',))
-                )
+                 ORIE_PEAU_3D=(_F(GROUP_MA='SPRESV',),
+                               _F(GROUP_MA='SPRESH',),),);
+
 #
-MATPLA=DEFI_MATERIAU(ELAS=_F(E = 2.1E11,
-                             NU = 0.2,)
-                    )
+
+MATPLA=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
+                             NU=0.2,),);
+
 #
-MATBAT=DEFI_MATERIAU(ELAS=_F(E = 1.0E16,
-                             NU = 0.0,)
-                    )
+
+MATBAT=DEFI_MATERIAU(ELAS=_F(E=1.0E16,
+                             NU=0.0,),);
+
 #
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=(_F(GROUP_MA = 'VPLAQ',
-                             MATER = MATPLA,),
-                          _F(GROUP_MA = 'VBATI',
-                             MATER = MATBAT,))
-                    )
+                    AFFE=(_F(GROUP_MA='VPLAQ',
+                             MATER=MATPLA,),
+                          _F(GROUP_MA='VBATI',
+                             MATER=MATBAT,),),);
+
 #
+
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_MA = 'SENCA',  DX = 0.0, DY = 0.0, DZ=0.0,),
-                              _F(GROUP_MA = 'SBLBAX', DX = 0.0, DY = 0.0, DZ=0.0,),
-                              _F(GROUP_MA = 'SBLOCX', DX = 0.0,),
-                              _F(GROUP_MA = 'LBLOCY', DY = 0.0,),
-                              _F(GROUP_NO = 'NPLAQZ', DZ = 0.0,)),
-                    PRES_REP=(_F(GROUP_MA = 'SPRESV', PRES = 5.E07,),),
-                   );
+                    DDL_IMPO=(_F(GROUP_MA='SENCA',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),
+                              _F(GROUP_MA='SBLBAX',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),
+                              _F(GROUP_MA='SBLOCX',
+                                 DX=0.0,),
+                              _F(GROUP_MA='LBLOCY',
+                                 DY=0.0,),
+                              _F(GROUP_NO='NPLAQZ',
+                                 DZ=0.0,),),
+                    PRES_REP=_F(GROUP_MA='SPRESV',
+                                PRES=5.E07,),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    PRES_REP=(_F(GROUP_MA = 'SPRESH', PRES = 5.E07,),),
-                   );
+                    PRES_REP=_F(GROUP_MA='SPRESH',
+                                PRES=5.E07,),);
+
 #
-CHA4=AFFE_CHAR_MECA(MODELE=MO,
-                    CONTACT=_F(GROUP_MA_ESCL  = 'SCONTAR',
-                               GROUP_MA_MAIT  = 'SBATIR',
-                               APPARIEMENT    = 'MAIT_ESCL',
-                               NORMALE        = 'MAIT',
-                               METHODE        = 'CONTINUE',
-                               INTEGRATION    = 'NOEUD',
-                               SEUIL_INIT     = 0.0,
-                               COEF_REGU_FROT = 1.0,
-                               COEF_REGU_CONT = 1.0,
-                               ITER_GEOM_MAXI = 1,
-                               ITER_FROT_MAXI = 4,
-                               ITER_CONT_MAXI = 4,
-                               FROTTEMENT     = 'COULOMB',
-                               USURE          = 'ARCHARD',
-                               K              = 1.0E-12,
-                               H              = 1.0,
-                               COULOMB        = 1.0,)
-                    )
+
+CHA4=DEFI_CONTACT(MODELE=MO,
+                  FORMULATION='CONTINUE',
+                  FROTTEMENT='COULOMB',
+                  REAC_GEOM='CONTROLE',
+                  NB_ITER_GEOM=2,
+                  REAC_FROT='CONTROLE',
+                  NB_ITER_FROT=4,
+                  ITER_CONT_MAXI=4,
+                  ZONE=_F(GROUP_MA_ESCL='SCONTAR',
+                          GROUP_MA_MAIT='SBATIR',
+                          APPARIEMENT='MAIT_ESCL',
+                          NORMALE='MAIT',
+                          INTEGRATION='NOEUD',
+                          SEUIL_INIT=0.0,
+                          COEF_FROT=1.0,
+                          COEF_CONT=1.0,
+                          USURE='ARCHARD',
+                          K=1.0E-12,
+                          H=1.0,
+                          COULOMB=1.0,),);
+
 #
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          1.0,1.0,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
 #
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    PROL_GAUCHE='LINEAIRE',
-                    PROL_DROITE='LINEAIRE',
-                    VALE=(0.0,0.0,1.0,1.0,)
-                    )
-#
+
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 100,)
-                      )
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=100,),);
+
 #
-F2=DEFI_FONCTION(NOM_PARA='INST',
-                VALE=(0.0,  0.0,
-                      0.01, 1,
-                      0.02, 0.0,
-                      0.03, -1,
-                      0.04, 0.0,),
-                      );
+
+F2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                       0.01,1.0,
+                       0.02,0.0,
+                       0.03,-1.0,
+                       0.04,0.0,
+                       ),);
+
 #
 #-----------------------------------------------------------
-#
-U4M=STAT_NON_LINE(MODELE      = MO,
-                 CHAM_MATER  = CHMAT,
-                 EXCIT       =(_F(CHARGE = CHA1,
-                                  FONC_MULT = RAMPE,),
-                               _F(CHARGE=CHA2,
-                                  FONC_MULT=F2,),
-                               _F(CHARGE = CHA4,),),
-                 COMP_ELAS   = _F(RELATION = 'ELAS',),
-                 NEWTON      = _F(REAC_ITER = 1,),
-                 INCREMENT  = _F(LIST_INST = L_INST,
-                                INST_FIN = 0.04,),
-                 CONVERGENCE = _F(ARRET = 'OUI',
-                                  ITER_GLOB_MAXI = 20,
-                                  RESI_GLOB_RELA = 1.0E-5,),
-#                INFO=2,
-                )
+
+U4M=STAT_NON_LINE(MODELE=MO,
+                  INFO=1,
+                  CHAM_MATER=CHMAT,
+                  EXCIT=(_F(CHARGE=CHA1,
+                            FONC_MULT=RAMPE,),
+                         _F(CHARGE=CHA2,
+                            FONC_MULT=F2,),),
+                  CONTACT=CHA4,
+                  COMP_ELAS=_F(RELATION='ELAS',),
+                  INCREMENT=_F(LIST_INST=L_INST,
+                               INST_FIN=0.04,),
+                  NEWTON=_F(REAC_ITER=1,),
+                  CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-5,
+                                 ITER_GLOB_MAXI=20,
+                                 ARRET='OUI',),);
+
 #
 #               
 # TEST DE NON REGRESSION
-#
-TEST_RESU(RESU=(_F(RESULTAT   = U4M,
-                   INST       = 0.04,
-                   NOM_CHAM   = 'DEPL',
-                   NOEUD      = 'N2',
-                   NOM_CMP    = 'LAGS_C',
-                   VALE       = -9.509E+05,
-                   PRECISION  = 1.E-3,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.0.25',
-                   ),
-                _F(RESULTAT   = U4M,
-                   INST       = 0.04,
-                   NOM_CHAM   = 'DEPL',
-                   NOEUD      = 'N4',
-                   NOM_CMP    = 'LAGS_C',
-                   VALE       = -1.736E+06,
-                   PRECISION  = 1.E-3,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.0.25',
-                   ),
-                _F(RESULTAT   = U4M,
-                   INST       = 0.04,
-                   NOM_CHAM   = 'DEPL',
-                   NOEUD      = 'N10',
-                   NOM_CMP    = 'LAGS_C',
-                   VALE       = -1.981E+06,
-                   PRECISION  = 1.E-3,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.0.25',
-                   ),
-                _F(RESULTAT   = U4M,
-                   INST       = 0.04,
-                   NOM_CHAM   = 'DEPL',
-                   NOEUD      = 'N30',
-                   NOM_CMP    = 'LAGS_C',
-                   VALE       = -2.250E+06,
-                   PRECISION  = 1.E-3,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.0.25',
-                   ),
-                _F(RESULTAT   = U4M,
-                   INST       = 0.04,
-                   NOM_CHAM   = 'DEPL',
-                   NOEUD      = 'N32',
-                   NOM_CMP    = 'LAGS_C',
-                   VALE       = -6.842E+06,
-                   PRECISION  = 1.E-3,
-                   REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.0.25',
-                ))
-       );
 
-PRFUS4=POST_RELEVE_T(ACTION=_F(INTITULE='USURE',
-                             GROUP_NO='NCONTAR',
-                             RESULTAT=U4M,
-                             NOM_CHAM='VALE_CONT',
-                             NUME_ORDRE=4,
-                             NOM_CMP=('HN',),
-                             OPERATION='EXTRACTION',),);
+TEST_RESU(RESU=(_F(RESULTAT=U4M,
+                   INST=0.04,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='LAGS_C',
+                   NOEUD='N2',
+                   VALE=-950900.0,
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.0.25',),
+                _F(RESULTAT=U4M,
+                   INST=0.04,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='LAGS_C',
+                   NOEUD='N4',
+                   VALE=-1736000.0,
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.0.25',),
+                _F(RESULTAT=U4M,
+                   INST=0.04,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='LAGS_C',
+                   NOEUD='N10',
+                   VALE=-1981000.0,
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.0.25',),
+                _F(RESULTAT=U4M,
+                   INST=0.04,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='LAGS_C',
+                   NOEUD='N30',
+                   VALE=-2250000.0,
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.0.25',),
+                _F(RESULTAT=U4M,
+                   INST=0.04,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='LAGS_C',
+                   NOEUD='N32',
+                   VALE=-6842000.0,
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.0.25',),),);
 
-LAGSC4=POST_RELEVE_T(ACTION=_F(INTITULE='LAMBDA',
-                             GROUP_NO='NCONTAR',
-                             RESULTAT=U4M,
-                             NOM_CHAM='DEPL',
-                             NUME_ORDRE=4,
-                             NOM_CMP=('LAGS_C',),
-                             OPERATION='EXTRACTION',),);
+PRFUS4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='USURE',
+                               RESULTAT=U4M,
+                               NOM_CHAM='VALE_CONT',
+                               NUME_ORDRE=4,
+                               GROUP_NO='NCONTAR',
+                               NOM_CMP='HN',),);
+
+LAGSC4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='LAMBDA',
+                               RESULTAT=U4M,
+                               NOM_CHAM='DEPL',
+                               NUME_ORDRE=4,
+                               GROUP_NO='NCONTAR',
+                               NOM_CMP='LAGS_C',),);
 
 IMPR_TABLE(TABLE=PRFUS4,);
+
 IMPR_TABLE(TABLE=LAGSC4,);
+
 #
 #-----------------------------------------------------------
 #
 #
+
+FIN();
+
 #
-FIN()
-#
+

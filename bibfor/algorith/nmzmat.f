@@ -3,7 +3,7 @@
      &                   DEPS,   SIGM,   VIM,    OPTION, ANGMAS,
      &                   SIGP,   VIP,    DSIDEP, CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -115,7 +115,7 @@ C     MODELE=1 EN 3D,2 EN AXIS, 3 EN D_PLAN, 4 EN C_PLAN
       ELSE
          NDEF=1
       ENDIF
-
+      
       IF(OPTION.EQ.'RIGI_MECA_TANG') THEN
          NOPT=1
       ELSE IF(OPTION.EQ.'FULL_MECA') THEN
@@ -170,17 +170,23 @@ C     sechage
       IF ( IRET2.NE.0) VARREF(5)=0.D0
 
       CALL TECAEL(IZI,IZK)
-
-      IF (ANGMAS(4).LT.1.D0) THEN
-          CALL NAUEUL(ANGMAS,ANGEUL)
+      IF (NDIM.EQ.3) THEN
+         IF (ANGMAS(4).EQ.1.D0) THEN
+             CALL NAUEUL(ANGMAS,ANGEUL)
+         ELSE
+            DO 1 I=1,3
+               ANGEUL(I)=ANGMAS(4+I)
+   1        CONTINUE
+         ENDIF
       ELSE
-         DO 1 I=1,3
-            ANGEUL(I)=ANGMAS(4+I)
-   1     CONTINUE
+         ANGEUL(1)=ANGMAS(5)
+         ANGEUL(2)=0.D0
+         ANGEUL(3)=0.D0
       ENDIF
 
       CALL ZASTER(ZI(IZI),MODELE,NVAR,NDEF,NUNIT,INSTAM,INSTAP,
      &       NVARCM,NOMVAR,VARPLU,VARMOI,VARREF,
      &       EPSM,DEPS,SIGM,VIM,NOPT,ANGEUL,SIGP,VIP,
      &       DSIDEP,CODRET)
+
       END

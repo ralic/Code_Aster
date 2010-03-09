@@ -1,6 +1,6 @@
       SUBROUTINE TE0100(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 09/03/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -226,6 +226,45 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &      ZR(IDEPLM),ZR(IDEPLP),ZR(ICONTM),ZR(IVARIM),
      &      ZR(ICONTP),ZR(IVARIP),ZR(IVECTU),ZR(IMATUU),CODRET)
 
+C 7.3 - CO-ROTATIONNELLE ZMAT 
+
+        ELSE IF (((ZK16(ICOMPO).EQ.'ZMAT').AND.
+     &             ZK16(ICOMPO+2).EQ.'GDEF_HYPO_ELAS') ) THEN
+        
+          DO 46 LI = 1,2*NNO
+            ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
+   46     CONTINUE
+
+          CALL NMGZ2D(FAMI,NNO,NPG1,IPOIDS,IVF,IDFDE,
+     &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+     &                LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(IDEPLM),ZR(IDEPLP),
+     &                ANGMAS,
+     &                ZR(ICONTM),ZR(IVARIM),
+     &                VECT1,VECT2,VECT3,
+     &                ZR(ICONTP),ZR(IVARIP),
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
+
+C 7.3 - CO-ROTATIONNELLE ZMAT SUPPRIME  ATTENTE CORRECTION FICHE 14063
+
+        ELSE IF (ZK16(ICOMPO+2).EQ.'GREEN_REAC')  THEN
+        
+          DO 47 LI = 1,2*NNO
+            ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
+   47     CONTINUE
+
+          CALL NMGC2D(FAMI,NNO,NPG1,IPOIDS,IVF,IDFDE,
+     &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+     &                LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(IDEPLM),ZR(IDEPLP),
+     &                ANGMAS,
+     &                ZR(ICONTM),ZR(IVARIM),
+     &                VECT1,VECT2,VECT3,
+     &                ZR(ICONTP),ZR(IVARIP),
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
+
 
 C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         ELSE IF (ZK16(ICOMPO+2) .EQ.'GROT_GDEP') THEN
@@ -244,28 +283,7 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                VECT1,VECT2,VECT3,
      &                ZR(ICONTP),ZR(IVARIP),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
-C 7.3 - CO-ROTATIONNELLE ZMAT SUPPRIME  ATTENTE CORRECTION FICHE 14063
-
-C        ELSE IF (((ZK16(ICOMPO).EQ.'ZMAT').AND.
-C     &             ZK16(ICOMPO+2).EQ.'GDEF_HYPO_ELAS')
-C     &        .OR.(ZK16(ICOMPO+2).EQ.'GREEN_REAC') ) THEN
-        ELSE IF (ZK16(ICOMPO+2).EQ.'GREEN_REAC' ) THEN
-        
-          DO 46 LI = 1,2*NNO
-            ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
-   46     CONTINUE
-
-          CALL NMGC2D(FAMI,NNO,NPG1,IPOIDS,IVF,IDFDE,
-     &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                LGPG,ZR(ICARCR),
-     &                ZR(IINSTM),ZR(IINSTP),
-     &                ZR(IDEPLM),ZR(IDEPLP),
-     &                ANGMAS,
-     &                ZR(ICONTM),ZR(IVARIM),
-     &                VECT1,VECT2,VECT3,
-     &                ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET)
-
+     
         ELSE IF ((ZK16(ICOMPO+2).EQ.'GDEF_HYPO_ELAS') .OR.
      &           (ZK16(ICOMPO+2).EQ.'SIMO_HUGHES1')) THEN
 

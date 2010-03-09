@@ -1,8 +1,8 @@
-      SUBROUTINE HYP3DV(C11,C22,C33,C12,C13,C23,
-     &                  K,
-     &                  CVOL)
+      SUBROUTINE HYP3DV(C11   ,C22   ,C33   ,C12   ,C13   ,
+     &                  C23   ,K     ,CVOL  ,CODRET)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,25 +19,30 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-      REAL*8 C11
-      REAL*8 C22
-      REAL*8 C33
-      REAL*8 C12
-      REAL*8 C13
-      REAL*8 C23
-      REAL*8 K
-      REAL*8 CVOL(6,6)
+      REAL*8  C11,C22,C33
+      REAL*8  C12,C13,C23
+      REAL*8  K
+      REAL*8  CVOL(6,6)
+      INTEGER CODRET
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
-C     LOI DE COMPORTEMENT HYPERELASTIQUE - 3D
-C     CALCUL DE LA MATRICE TANGENTE - PARTIE VOLUMIQUE
+C LOI DE COMPORTEMENT HYPERELASTIQUE DE SIGNORINI    
+C 
+C 3D - MATRICE TANGENTE - PARTIE VOLUMIQUE
 C
-C IN  C11,C22,C33,C12,C13,C23: ELONGATIONS
-C IN  K     : MODULE DE COMPRESSIBILITE
-C OUT CVOL  : MATRICE TANGENTE VOLUMIQUE
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
+C
+C
+C IN  C11,C22,C33,C12,C13,C23 : ELONGATIONS
+C IN  K      : MODULE DE COMPRESSIBILITE
+C OUT CVOL   : MATRICE TANGENTE VOLUMIQUE
+C OUT CODRET : CODE RETOUR ERREUR INTEGRATION (1 SI PROBLEME, 0 SINON)
+C
+C ----------------------------------------------------------------------
 C
       REAL*8 DF(14)
       REAL*8 DFF0(14)
@@ -64,7 +69,8 @@ C
       T10 = C13**2
       T13 = SQRT(T1*C33-C11*T3-T5*C33+2*T7*C23-T10*C22)
       IF ((T13.EQ.0.D0)) THEN
-      CALL U2MESS('F','ALGORITH3_93')
+        CODRET=1
+        GOTO 99
       ENDIF
       T15 = K*(-1+T13)
       T16 = 1/T13
@@ -229,4 +235,6 @@ C
       CVOL(6,4) = 4.D0*GRD(6,4)
       CVOL(6,5) = 4.D0*GRD(6,5)
       CVOL(6,6) = 4.D0*GRD(6,6)
+
+ 99   CONTINUE
       END

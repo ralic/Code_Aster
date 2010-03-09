@@ -3,7 +3,7 @@
       INTEGER  NDIM
       REAL*8   ANGMAS(7),COOR(3)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/02/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 09/03/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C     ------------------------------------------------------------------
             IF ( NDIM .EQ. 3 ) THEN
                ANGMAS(2) = ZR(ICAMAS+2)*R8DGRD()
                ANGMAS(3) = ZR(ICAMAS+3)*R8DGRD()
+               ANGMAS(4) = 1.D0
             ENDIF
 C           ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
             IF (ABS(ZR(ICAMAS)-2.D0).LT.1.D-3) THEN
