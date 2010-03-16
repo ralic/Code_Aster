@@ -1,6 +1,6 @@
       SUBROUTINE JEDUPC ( CLAIN, SCHIN, IPOS, CLAOUT, SCHOUT, DUPCOL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C ----------------------------------------------------------------------
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
       INTEGER          L1,L2,J,ICIN
       CHARACTER*75     CMESS
-      CHARACTER*32     NOMIN,NOMOUT,SCHOU2
+      CHARACTER*32     NOMIN,NOMOUT,SCHIN2,SCHOU2
       CHARACTER*1      KCLAS
 
 C DEB ------------------------------------------------------------------
@@ -61,27 +61,21 @@ C DEB ------------------------------------------------------------------
 C
       L1 = LEN ( SCHIN )
       IF ( IPOS + L1 .GT. 25 .OR. IPOS .LT. 0 .OR. L1 .EQ. 0 ) THEN
-        CMESS = ' LONGUEUR OU POSITION DE LA SOUS-CHAINE '//SCHIN//
-     &          ' INVALIDE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_92',1,SCHIN)
       ENDIF
+      SCHIN2=SCHIN
       L2 = LEN ( SCHOUT)
       SCHOU2=SCHOUT
 C
       IF ( L1 .NE. L2 ) THEN
-        CMESS = ' LONGUEUR DE LA SOUS-CHAINE '//SCHOUT//
-     &          ' DIFFERENTE DE LA SOUS-CHAINE '//SCHIN
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_93',1,SCHOU2//' '//SCHIN2)
       ENDIF
 C
       IF ( IPOS + L2 .GT. 25 .OR. IPOS .LT. 0 .OR. L2 .EQ. 0 ) THEN
-        CMESS = ' LONGUEUR OU POSITION DE LA SOUS-CHAINE '//SCHIN//
-     &          ' INVALIDE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_92',1,SCHOUT)
       ENDIF
       IF ( SCHIN(1:L1) .EQ. SCHOUT(1:L2) ) THEN
-        CMESS = ' SOUS-CHAINES IDENTIQUES :'//SCHIN//' : '//SCHOUT
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_94',1,SCHIN2//' : '//SCHOU2)
       ENDIF
 C
       KCLAS = CLAIN (1:MIN(1,LEN(CLAIN)))

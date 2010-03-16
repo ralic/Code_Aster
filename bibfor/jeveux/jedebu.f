@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, LZON, MXZON, IADZON, LMO, CMES, CVIG,IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,8 +116,8 @@ C ----------------------------------------------------------------------
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO 
       REAL *8          SVUSE,SMXUSE   
       COMMON /STATJE/  SVUSE,SMXUSE  
 C --------------------------------- ------------------------------------
@@ -152,12 +152,14 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       LDYN   = 0
       LGDYN  = LUNDEF
       MXDYN  = 0
+      LGIO   = 0
       MCDYN  = 0
       MLDYN  = 0
       NBDYN  = 0
       NBFREE = 0
       ICDYN  = 0
       MXLTOT = 0
+      LGIO   = 0
       SVUSE  = 16
       SMXUSE = SVUSE
 C -----------------  NOMBRE DE BASES -----------------------------------

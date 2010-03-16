@@ -1,4 +1,4 @@
-# MODIF  DATE 14/12/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,10 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='ZZZZ100A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='ZZZZ100A', NIV_PUB_WEB='INTERNET'),
+      IGNORE_ALARM=('UTILITAI6_58',    # test VERIF='NON' pour DFR1
+                    'UTILITAI6_59'),   # test VERIF='NON' pour DFC1
+      DEBUG=_F(SDVERI='NON'))
 
 #=======================================================================
 #
@@ -28,9 +31,13 @@ DEBUT(CODE=_F(NOM='ZZZZ100A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #
 #=======================================================================
 
+# abscisses inversees pour tester le tri avec VERIF='NON'
 DFC1=DEFI_FONCTION( NOM_PARA='INST',
                     NOM_RESU='FREQ',
-                    VALE_C=(0., 1., 2., 1., 3., 4., 5., 2., 4., ) )
+                    VALE_C=(5., 2., 4.,
+                            1., 3., 4., 
+                            0., 1., 2.,),
+                    VERIF='NON')
 
 DFC2=DEFI_FONCTION( NOM_PARA='INST',
                     NOM_RESU='FREQ',
@@ -56,9 +63,13 @@ TEST_FONCTION(VALEUR=(
   _F(   FONCTION = DFC3, VALE_PARA = 5., VALE_REFE_C = -10.+14.j, REFERENCE='ANALYTIQUE',)
   ) )
 
+# abscisses inversees pour tester le tri avec VERIF='NON'
 DFR1=DEFI_FONCTION( NOM_PARA='INST',
                     NOM_RESU='FREQ',
-                    VALE=(0., 1., 1., 3., 5., 2.,) )
+                    VALE=(5., 2.,
+                          1., 3.,
+                          0., 1.,),
+                    VERIF='NON' )
 
 DFR2=DEFI_FONCTION( NOM_PARA='INST',
                     NOM_RESU='FREQ',

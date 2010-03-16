@@ -1,5 +1,5 @@
       SUBROUTINE JELIBF ( COND , CLAS , INFO )
-C MODIF JEVEUX  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR PERMETTANT DE LIBERER TOUS LES OBJETS D'UNE BASE
 C         ET DE FERMER LES FICHIERS ASSOCIES
@@ -89,6 +89,8 @@ C
       COMMON /JIACCE/  JIACCE(N)
       COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
+      COMMON /KINDIR/  INDIR(1)
+      COMMON /JINDIR/  JINDIR(N)
       INTEGER          LUNDEF,IDEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
 C ----------------------------------------------------------------------
@@ -147,6 +149,8 @@ C     ----------- DECHARGER TOUS LES OBJETS SYSTEME ----------------
       IADACY = IADM(JIADM(IC) + 2*LIDEFF  )
       K2  = IADM(JIADM(IC) + 2*2 )
       K16 = IADM(JIADM(IC) + 2*16)
+      K17 = IADM(JIADM(IC) + 2*17)
+      K17I = IADM(JIADM(IC) + 2*17-1)
       K18 = IADM(JIADM(IC) + 2*18)
       K18I = IADM(JIADM(IC) + 2*18-1)
       K19 = IADM(JIADM(IC) + 2*19)
@@ -341,6 +345,11 @@ C       ----------- LIBERER PLACE
         ELSE IF ( KMARQ(IC) .NE. 0 ) THEN
           CALL JJLIBP ( KMARQ(IC) )
         ENDIF
+        IF (K17 .NE. 0) THEN
+          CALL JJLIDY ( K17 , K17I )
+        ELSEIF ( K17I .NE. 0 ) THEN
+          CALL JJLIBP ( K17I )
+        ENDIF
         IF (K20 .NE. 0) THEN
           CALL JJLIDY ( K20 , KIADM(IC) )
         ELSE IF ( KIADM(IC) .NE. 0 ) THEN
@@ -373,6 +382,7 @@ C
         IITLEC(IC)    = 0
         IITECR(IC)    = 0
         NITECR(IC)    = 0
+        JINDIR(IC)    = 0
       ENDIF
 C FIN ------------------------------------------------------------------
       END

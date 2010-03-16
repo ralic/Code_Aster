@@ -5,7 +5,7 @@
       CHARACTER*(*) TYPFON
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 15/03/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,19 +90,19 @@ C            --- REMONTEE DES BULLES ---
                 L = J-INCRS
 131             CONTINUE
                 IF ( L.GT.0) THEN
-                   IF (VALE(3*(L-1)+1) .GT. VALE(3*(L+INCRS-1)+1)) THEN
+                   IF ( VALE(L) .GT. VALE(L+INCRS) ) THEN
 C                     --- PERMUTATION DES ABSCISSES ---
-                      XT                    = VALE(3*(L-1)+1)
-                      VALE(3*(L-1)+1)       = VALE(3*(L+INCRS-1)+1)
-                      VALE(3*(L+INCRS-1)+1) = XT
+                      XT            = VALE(L)
+                      VALE(L)       = VALE(L+INCRS)
+                      VALE(L+INCRS) = XT
 C                     --- PERMUTATION DES PARTIES REELLES ---
-                      XT                       = VALE(3*(L+NB-1)+2)
-                      VALE(3*(L+NB-1)+2)      = VALE(3*(L+NB+INCRS-1)+2)
-                      VALE(3*(L+NB+INCRS-1)+2) = XT
+                      XT                       = VALE(NB+2*(L-1)+1)
+                      VALE(NB+2*(L-1)+1)      = VALE(NB+2*(L+INCRS-1)+1)
+                      VALE(NB+2*(L+INCRS-1)+1) = XT
 C                     --- PERMUTATION DES PARTIES IMAGINAIRES ---
-                      XT                       = VALE(3*(L+NB-1)+3)
-                      VALE(3*(L+NB-1)+3)      = VALE(3*(L+NB+INCRS-1)+3)
-                      VALE(3*(L+NB+INCRS-1)+3) = XT
+                      XT                       = VALE(NB+2*(L-1)+2)
+                      VALE(NB+2*(L-1)+2)      = VALE(NB+2*(L+INCRS-1)+2)
+                      VALE(NB+2*(L+INCRS-1)+2) = XT
                       L = L - INCRS
                       GOTO 131
                   ENDIF

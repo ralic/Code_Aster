@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith7 Messages  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,37 +88,13 @@ cata_msg = {
  le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s 
 """),
 
-48 : _("""
- ETA_PILO_MAX doit etre inférieur a ETA_PILO_R_MAX
-"""),
 
-49 : _("""
- ETA_PILO_MIN doit etre supérieur à ETA_PILO_R_MIN
-"""),
 
-50 : _("""
- il faut au plus 1 noeud pour le pilotage DDL_IMPO
-"""),
 
-51 : _("""
- il faut au plus 1 groupe de noeud pour le pilotage DDL_IMPO
-"""),
 
-52 : _("""
- il faut au plus un noeud dans le groupe pour le pilotage DDL_IMPO
-"""),
 
-53 : _("""
- il faut préciser un groupe de noeuds dans la méthode LONG_ARC
-"""),
 
-54 : _("""
- groupe de noeud  %(k1)s  vide
-"""),
 
-55 : _("""
- liste de composantes vide pour la methode LONG_ARC
-"""),
 
 56 : _("""
  liste RELATION_KIT vide

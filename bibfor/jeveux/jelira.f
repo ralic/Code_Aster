@@ -1,6 +1,6 @@
       SUBROUTINE JELIRA ( NOMLU , CATR , IVAL , CVAL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,6 @@ C     ------------------------------------------------------------------
      &                            IDNOM  = 5 ,             IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
-      CHARACTER*75     CMESS
       CHARACTER*32     NOM32 , NOML32
       CHARACTER*33     CVA
       CHARACTER*1      GENRI
@@ -96,9 +95,7 @@ C
         LCONST = .TRUE.
         LCONTI = .TRUE.
         IF ( NOML32(25:32) .NE. '        ' ) THEN
-          CMESS = 'APPEL INVALIDE POUR L''OBJET SIMPLE >'//NOML32(1:24)
-     &            //'<'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX1_09',1,NOML32(1:24))
         ENDIF
       ELSE
         LCOL = .TRUE.
@@ -190,9 +187,7 @@ C
      &    (GENRI .NE. 'R'          .AND. CATRLU(1:3).EQ. 'NOC')  .OR.
      &    (INDEX('EV' ,GENRI).EQ.0 .AND. CATRLU(1:4).EQ. 'LONM') .OR.
      &    (INDEX('EV' ,GENRI).EQ.0 .AND. CATRLU(1:4).EQ. 'LONU') ) THEN
-        CMESS= 'NOM D''ATTRIBUT >'//CATRLU//
-     &         '< INCOMPATIBLE AVEC LE GENRE '//GENRI
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX1_10',1,GENRI)
       ENDIF
 C
       IF      ( CATRLU .EQ. 'CLAS    ' ) THEN
@@ -298,8 +293,7 @@ C
             ENDIF
           ENDIF
         ELSE
-          CMESS=' ATTRIBUT >'//CATRLU//'< ERRONE OU NON ACCESSIBLE'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX1_04',1,CATRLU)
         ENDIF
       ENDIF
  100  CONTINUE

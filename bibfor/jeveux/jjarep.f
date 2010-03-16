@@ -1,6 +1,6 @@
       SUBROUTINE JJAREP ( ICLAS , NRMAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,8 @@ C ----------------------------------------------------------------------
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       CHARACTER*8      NOMBAS
       COMMON /KBASJE/  NOMBAS(N)
+      COMMON /KINDIR/  INDIR(1)
+      COMMON /JINDIR/  JINDIR(N)
 C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
@@ -73,17 +75,15 @@ C ----------------------------------------------------------------------
       CHARACTER *4     Z
       INTEGER          JCOD,KADHC,JNOM,KADNO,LOREP,IADRS(20),KAT(20)
       INTEGER          LGNOM,NUTI,LSO(20),IMQ(2),IADDI(2),KDY(20),IBID
-      PARAMETER       (NBATT=12,NBTOT=NBATT+2,LGNOM=32)
+      PARAMETER       (NBATT=12,NBTOT=NBATT+3,LGNOM=32)
       INTEGER          NUMATT(NBTOT),IDM(NBTOT),IDY(NBTOT),IRT
-      DATA NUMATT,Z   /2,3,4,5,6,8,9,10,11,12,16,7,13,20,'INIT'/
+      DATA NUMATT,Z   /2,3,4,5,6,8,9,10,11,12,16,7,13,20,17,'INIT'/
 C DEB ------------------------------------------------------------------
       IPGCA = IPGC
       IPGC  = -2
       IRT = 0
       IC = ICLAS
-      KAT (17)= 0
-      KDY (17)= 0
-      CALL JJLDYN (LTOT) 
+      CALL JJLDYN (0,-1,LTOT) 
 C
 C --- ON INTERDIT L'APPEL A JJLDYN AVEC LE PARAMETRE MODE=1 LORS DE 
 C --- L'ALLOCATION DYNAMIQUE  (ET LES APPELS RECURSIFS)
@@ -220,6 +220,9 @@ C
       CALL JJALLS (2*LON,IC,'V','I',LOIS,Z,IADM,IADRS(20),KAT(20),
      &             KDY(20))
       CALL JJECRS (KAT(20),KAT(20),IC,20,0,'E',IMQ)
+      CALL JJALLS (LON,IC,'V','I',LOIS,Z,INDIR,IADRS(17),KAT(17),
+     &             KDY(17))
+      CALL JJECRS (KAT(17),KAT(17),IC,17,0,'E',IMQ)
       DO 300 K=1,NREUTI(IC)
         GENR(IADRS( 3)-1+K) =  GENR(JGENR(IC)+K)
         TYPE(IADRS( 4)-1+K) =  TYPE(JTYPE(IC)+K)
@@ -265,6 +268,7 @@ C
       KIADM(IC) = KAT(20)
       JHCOD(IC) = JCOD - 1
       JRNOM(IC) = JNOM - 1
+      JINDIR(IC)= IADRS(17) - 1
 C
       DO 325 I = 1,NBTOT
         IL = NUMATT(I)
@@ -297,6 +301,9 @@ C
  330  CONTINUE
       CARA(JCARA(IC)+6) = IADD(JIADD(IC) + 2*2-1  )
       CARA(JCARA(IC)+7) = IADD(JIADD(IC) + 2*2    )
+      DO 345 IND = 1 , NREMAX(IC)
+        INDIR(JINDIR(IC)+IND) = IND
+ 345  CONTINUE        
       LDYN = LDYNOL
       IPGC = IPGCA
 C FIN ------------------------------------------------------------------

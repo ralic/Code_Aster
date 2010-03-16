@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS 3D EN HEXAEDRES
 # zzzz121e.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,12 +96,14 @@ M00=LIRE_MAILLAGE(FORMAT='MED',
 
 #
 
+# Attention : le test d'interpenetration peut etre long (voir la documentation).
 MACR_INFO_MAIL(MAILLAGE=M00,
                NOMBRE='OUI',
                QUALITE='OUI',
                CONNEXITE='OUI',
                TAILLE='OUI',
-               INTERPENETRATION='OUI',);
+               INTERPENETRATION='OUI',
+               PROP_CALCUL='OUI',);
 
 #
 # 3. CALCUL SUR LE MAILLAGE 00
@@ -232,12 +234,13 @@ RESU01=MECA_STATIQUE(MODELE=MODE01,
 
 #
 # 7. ADAPTATION DU MAILLAGE DE 01 VERS 02
-#    . RAFFINEMENT SELON UNE ZONE
+#    . RAFFINEMENT SELON UNE BOITE PARALLELEPIPEDIQUE
 
 MACR_ADAP_MAIL(MAILLAGE_N=M01,
                MAILLAGE_NP1=CO('M02'),
                ADAPTATION='RAFFINEMENT_ZONE',
-               ZONE=_F(X_MINI=-0.01,
+               ZONE=_F(TYPE='BOITE',
+                       X_MINI=-0.01,
                        X_MAXI=2.01,
                        Y_MINI=-0.01,
                        Y_MAXI=4.01,

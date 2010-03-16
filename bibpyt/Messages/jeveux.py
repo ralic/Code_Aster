@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -308,7 +308,7 @@ cata_msg = {
 
 63 : _("""
 
- Critère de destruction du fichier associé à la base %(k1)s atteint (%(r1)g %% ) 
+ Critère de destruction du fichier associé à la base %(k1)s atteint (%(r1)g%% ) 
  Nombre d'enregistrements utilisés : %(i1)d 
  Nombre maximum d'enregistrements  : %(i2)d  
 
@@ -334,4 +334,211 @@ cata_msg = {
      erreur dans la programmation de la commande.     
 
 """), 
+
+66 : _("""
+
+ La base au format HDF de nom %(k1)s ne peut être créée.
+ La fonction HDFCRF renvoie un code retour : %(i1)d 
+
+"""), 
+ 
+
+67 : _("""
+
+ Le nombre d'objets de la collection %(k1)s est inférieur ou égal à 0  
+
+"""), 
+
+
+68 : _("""
+
+ Le fichier associé à la base demandée %(k1)s n'est pas ouvert.  
+
+"""), 
+
+69 : _("""
+
+ Le nom %(k1)s est deja utilise pour un objet simple.
+
+"""), 
+
+70 : _("""
+
+ Le type de stockage %(k1)s de la collection est erroné.
+
+"""), 
+
+71 : _("""
+
+ La longueur variable pour la collection %(k1)s est incompatible avec le genre E.
+
+"""), 
+
+72 : _("""
+
+ La longueur du type caractère n'est pas valide pour la collection %(k1)s 
+
+"""), 
+
+73 : _("""
+
+ Le nom %(k1)s du pointeur de longueurs est invalide.
+
+"""), 
+
+74 : _("""
+
+ Le pointeur de longueurs %(k1)s n'a pas été créé dans la bonne base.
+
+"""), 
+
+75 : _("""
+
+ Le pointeur de longueurs %(k1)s n'est pas de la bonne taille.
+
+"""), 
+
+76 : _("""
+
+ Le type du pointeur de longueurs %(k1)s n'est pas correct (différent de I).
+
+"""), 
+
+77 : _("""
+
+ Le nom du répertoire de noms %(k1)s est invalide.
+
+"""), 
+
+78 : _("""
+
+ Le répertoire de noms %(k1)s n'a pas été créé dans la bonne base.
+
+"""), 
+
+79 : _("""
+
+ Le répertoire de noms %(k1)s n'est pas de la bonne taille.
+
+"""), 
+
+80 : _("""
+
+ L'objet %(k1)s n'est pas un répertoire de noms.
+
+"""), 
+
+81 : _("""
+
+ Le type d'accès %(k1)s est inconnu.
+
+"""), 
+
+82 : _("""
+
+ Le type d'accès %(k1)s de la collection est erroné.
+
+"""), 
+
+83 : _("""
+
+ Le nom du pointeur d'accès %(k1)s est invalide.
+
+"""), 
+
+84 : _("""
+ La longueur du nom %(k1)s est invalide (> 24 caractères).
+
+"""),
+
+85 : _("""
+
+ Le nom %(k1)s est deja utilise pour une collection.
+
+"""), 
+
+86 : _("""
+
+ La longueur du type caractère n'est pas définie pour l'objet %(k1)s 
+
+"""), 
+
+87 : _("""
+
+ Un objet de genre répertoire (N) doit être de type caractère (K) %(k1)s 
+
+"""), 
+
+88 : _("""
+
+ La longueur du type caractère %(k1)s n'est pas valide. 
+
+"""), 
+
+89 : _("""
+
+ Un objet de genre répertoire doit être de type K de longueur multiple de 8 %(k1)s. 
+
+"""), 
+
+90 : _("""
+
+ Un objet de genre répertoire doit être de type K de longueur inférieure ou égale à 24 %(k1)s. 
+
+"""), 
+
+91 : _("""
+
+ Le type %(k1)s est invalide.
+
+"""), 
+
+92 : _("""
+
+ La longueur ou la position de la sous-chaîne %(k1)s est invalide.
+
+"""), 
+
+93 : _("""
+
+ Les longueurs des sous-chaînes %(k1)s sont différentes.
+
+"""), 
+
+94 : _("""
+
+ Les sous-chaînes %(k1)s sont identiques.
+
+"""), 
+
+95 : _("""
+
+ L'appel de JECROC par JEXNOM ou JEXNUM est obligatoire.
+
+"""), 
+
+96 : _("""
+
+ L'accès par JEXNUM est interdit %(k1)s.
+
+"""), 
+
+97 : _("""
+
+ Erreur lors de l'appel à JECROC %(k1)s.
+
+"""), 
+
+98 : _("""
+
+ L'attribut %(k1)s. est uniquement destiné aux collections contigues.
+
+"""), 
+
+99 : _("""
+
+ L'attribut est incompatible avec le genre %(k1)s.
+
+"""), 
+
 }

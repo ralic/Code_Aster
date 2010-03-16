@@ -1,6 +1,6 @@
       SUBROUTINE JELIBE ( NOMLU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,14 +23,12 @@ C     ==================================================================
       CHARACTER *6     PGMA
       COMMON /KAPPJE/  PGMA
 C     ==================================================================
-      CHARACTER*75     CMESS
       CHARACTER*32     NOML32
       INTEGER          ICRE , IRET
 C     ==================================================================
       PGMA = 'JELIBE'
       IF ( LEN(NOMLU) .LE. 0 ) THEN
-         CMESS = 'LE 1ER ARGUMENT ==> NOM N''EST PAS DE TYPE CHARACTER'
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
+         CALL U2MESK('F','JEVEUX1_08',1,NOMLU)
       ENDIF
       NOML32 = NOMLU(1:MIN(32,LEN(NOMLU)))
 C

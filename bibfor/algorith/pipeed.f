@@ -1,11 +1,10 @@
-      SUBROUTINE PIPEED( MATE     , GEOM     , SIGM     , VIM  ,TYPMOD,
-     &                   DDEPL    , DEPLM    , DDEPL0   ,
-     &                   DDEPL1   , DTAU     , COPILO   , DFDI ,IPOIDS,
-     &                   LGPG     ,NPG       , NNO      , IVF  ,IDFDE,
-     &                   COMPOR)
-
+      SUBROUTINE PIPEED(NNO   ,NPG   ,IPOIDS,IVF   ,IDFDE,
+     &                  GEOM  ,TYPMOD,MATE  ,LGPG  ,DEPLM ,
+     &                  VIM   ,DDEPL ,DDEPL0,DDEPL1,DFDI  ,
+     &                  DTAU  ,COPILO)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,15 +22,27 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-
+C
       IMPLICIT NONE
-      CHARACTER*8 TYPMOD(*)
-      CHARACTER*16 COMPOR(4)
-      INTEGER MATE,NNO,LGPG,NPG,  IPOIDS, IVF, IDFDE
-      REAL*8 GEOM(2,4),VIM(LGPG,NPG),SIGM(4,NPG),DDEPL(2,4),DEPLM(2,4)
-      REAL*8 DDEPL0(2,4), DDEPL1(2,4), DTAU, COPILO(5,NPG),DFDI(NNO,2)
-
-C-----------------------------------------------------------------------
+      CHARACTER*8  TYPMOD(*)
+      INTEGER      NNO,NPG
+      INTEGER      MATE
+      INTEGER      LGPG,IPOIDS, IVF, IDFDE
+      REAL*8       GEOM(2,4),DDEPL(2,4),DEPLM(2,4)
+      REAL*8       VIM(LGPG,NPG)
+      REAL*8       DDEPL0(2,4),DDEPL1(2,4)
+      REAL*8       DTAU, COPILO(5,NPG),DFDI(NNO,2)
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (PILOTAGE)
+C
+C CALCUL  DES COEFFICIENTS DE PILOTAGE POUR PRED_ELAS/DEFORMATION
+C
+C ELEMENTS A DISCONTINUITES INTERNES
+C
+C ----------------------------------------------------------------------
+C
 C
 C BUT : CALCULER LA SOLUTION DE L'EQUATION SUPLEMENTAIRE INTRODUITE POUR
 C       LE PILOTAGE DE L'ELEMENT A DISONTINUITE INTERNE.
@@ -45,13 +56,27 @@ C
 C       LE CHARGEMENT N'EST PLUS MONOTONE, IL DEPEND DU SAUT DE
 C       L'ELEMENT.
 C
-C IN  : GEOM, MATER, VIM, DDEPL, DEPLM, DDEPL0, DDELP1, DTAU,
-C OUT : COPILO
-C I/O :
+C IN  TYPMOD : TYPE DE MODELISATION
+C IN  MATE   : MATERIAU CODE
+C IN  NNO    : NOMBRE DE NOEUDS DE L'ELEMENT
+C IN  NPG    : NOMBRE DE POINTS DE GAUSS
+C IN  IPOIDS : POIDS DES POINTS DE GAUSS
+C IN  IVF    : VALEUR DES FONCTIONS DE FORME
+C IN  IDFDE  : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
+C IN  DFDI   : DERIVEE DES FONCTIONS DE FORME
+C IN  LGPG   : "LONGUEUR" DES VARIABLES INTERNES POUR 1 POINT DE GAUSS
+C             CETTE LONGUEUR EST UN MAJORANT DU NBRE REEL DE VAR. INT.
+C IN  GEOM   : COORDONNEES DES NOEUDS
+C IN  DEPLM  : DEPLACEMENT EN T-
+C IN  DDEPL  : INCREMENT DE DEPLACEMENT A L'ITERATION NEWTON COURANTE
+C IN  VIM    : VARIABLES INTERNES EN T-
+C IN  DEPL0  : CORRECTION DE DEPLACEMENT POUR FORCES FIXES
+C IN  DEPL1  : CORRECTION DE DEPLACEMENT POUR FORCES PILOTEES
+C IN  DTAU   : PARAMETRE DE PILOTAGE
+C OUT COPILO : COEFFICIENTS POUR CHAQUE POINT DE GAUSS
 C
-C-----------------------------------------------------------------------
-
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -66,8 +91,17 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER    NBRES
+      PARAMETER (NBRES=2)
+C
+      REAL*8      VALRES(NBRES)
+      CHARACTER*2 CODRET(NBRES)
+      CHARACTER*8 NOMRES(NBRES)
 
+C      
       INTEGER I,J,K,KONT,N,KPG
       REAL*8  UP(8),UD(8),SM,RCK,R,SIGMC,GC,RAC2,KAPPAM,PKM,DET
       REAL*8  ETA(2),POIDS,F(3,3)
@@ -77,26 +111,29 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8  A0,A1,A2,A3,A4,R8VIDE,SOL(4),MAT(2,2),MATINV(2,2)
       REAL*8  SPG(2),SDG(2),QG(2,2),SP(2),SD(2),Q(2,2),SIGP(2),SIGD(2)
       REAL*8  COTMP,SITMP,CO,SI,ROT(2,2),DROT,XA,XB,YA,YB
-      REAL*8  DEF(4,4,2),BUP(6),BUD(6),D(4,2),RTEMP(4,2),VALRES(2)
-
-      CHARACTER*2 CODRET(2)
-      CHARACTER*8 NOMRES(2)
-
+      REAL*8  DEF(4,4,2),BUP(6),BUD(6),D(4,2),RTEMP(4,2)
       LOGICAL GRAND,AXI
+C
+C ----------------------------------------------------------------------
+C
 
-      AXI    = TYPMOD(1) .EQ. 'AXIS'
-      GRAND  = .FALSE.
-
-C RECUPERATION DES PARAMETRES PHYSIQUES :
+C
+C --- INITIALISATIONS
+C
+      AXI       = TYPMOD(1) .EQ. 'AXIS'
+      GRAND     = .FALSE.
+      RAC2      = SQRT(2.D0)
+C
+C --- RECUPERATION DES PARAMETRES PHYSIQUES :
+C
       NOMRES(1) = 'GC'
       NOMRES(2) = 'SIGM_C'
 
-      CALL RCVALA ( MATE,' ','RUPT_FRAG',0,' ',0.D0,2,
-     &                 NOMRES,VALRES,CODRET, 'F ' )
-
+      CALL RCVALA(MATE  ,' '   ,'RUPT_FRAG',0     ,' '   ,
+     &            0.D0  ,NBRES ,NOMRES     ,VALRES,CODRET,
+     &            'F ' )
       GC     = VALRES(1)
-      SIGMC  = VALRES(2)
-      RAC2 = SQRT(2.D0)
+      SIGMC  = VALRES(2)      
       KAPPAM = VIM(3,1)
 
 C INITIALISATION DES VARIABLES  :
@@ -340,7 +377,7 @@ C ON TEST SI POUR LES SOL TROUVEES SI ON A BIEN SIGP(1) + ETA*SIGD(1)>0
         ENDIF
 
         IF (KONT.GE.3)
-     &  CALL U2MESS('F','ALGORITH9_85')
+     &  CALL U2MESS('F','PILOTAGE_85')
 
 C****************************************************************
 C CALCUL DES COPILO DANS LE CAS OU LE SEUIL EN SAUT EST NON NUL :
@@ -364,7 +401,7 @@ C ***************************************************************
         DET  =  MAT(1,1)*MAT(2,2) -  MAT(1,2)**2
 
         IF ( ABS(DET) .LE. 1.D-12 )
-     &  CALL U2MESS('F','ALGORITH9_86')
+     &  CALL U2MESS('F','PILOTAGE_86')
 
         MATINV(1,1) =  MAT(2,2)/DET
         MATINV(2,2) =  MAT(1,1)/DET
@@ -446,7 +483,7 @@ C     CAS OU LA DROITE EST TANG AU CERCLE MAIS A GAUCHE DE L'AXE  X=DIST
         ELSE
 C       -----
           IF (KONT.NE.0)
-     &    CALL U2MESS('F','ALGORITH9_87')
+     &    CALL U2MESS('F','PILOTAGE_87')
 
           A4 = - BETA/ALPHA
           A0 = SQRT( ALPHA*A4*A4 + 2*BETA*A4 + GAMMA + SM**2 ) - KAPPAM
@@ -458,7 +495,7 @@ C       -----
 C       -----
 
         IF (KONT.GE.3)
-     &  CALL U2MESS('F','ALGORITH9_85')
+     &  CALL U2MESS('F','PILOTAGE_85')
 
       ENDIF
 

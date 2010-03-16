@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 16/03/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -319,6 +319,25 @@ Conseils :
 
 79 : _("""
  la matrice A est singulière
+"""),
+
+80 : _("""
+ Problème lors de l'utilisation de LIAISON_ELEM / OPTION='3D_POU' :
+    Le noeud "poutre" (GROUP_NO_2) n'est pas situé géométriquement au meme endroit
+    que le centre de gravité de la section 3D (GROUP_MA_1).
+    Position du centre de gravité :
+       %(r1)g
+       %(r2)g
+       %(r3)g
+    Position du noeud "poutre" :
+       %(r4)g
+       %(r5)g
+       %(r6)g
+
+ Risque et conseils :
+    Vérifiez la position du noeud "poutre".
+    Rappel : on ne peut pas utiliser ce type de liaison pour relier une poutre avec
+    une section 3D qui ne serait que partiellement maillée (symétrie du maillage).
 """),
 
 81 : _("""

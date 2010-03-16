@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF compor1 Messages  DATE 15/03/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,6 +75,9 @@ cata_msg={
 
 9 : _("""
 Arret suite à l'échec de l'intégration de la loi de comportement.
+Verifiez vos paramètres, la cohérence des unités.
+Essayez d'augmenter ITER_INTE_MAXI, ou de subdiviser le pas de temps 
+localement via ITER_INTE_PAS.
 """),
 
 10: _("""

@@ -2,7 +2,7 @@
      &                  EPSPC, EPSDC, ETAMIN,ETAMAX,A0, A1,A2,A3,ETAS)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/07/2008   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -344,7 +344,7 @@ C        WRITE(6,*) 'cas 3'
      &             Y(3),Z(3))
 
 200     CONTINUE
-          CALL U2MESS('F','ALGORITH9_87')
+          CALL U2MESS('F','PILOTAGE_87')
 201     CONTINUE
 
         A1 =Z(3)/EPSNOR
@@ -381,7 +381,7 @@ C        WRITE(6,*) 'cas 4'
           CALL CRITEV(EPSP,EPSD,X(3),LAMBDA,DEUXMU,FPD,SEUIL,R*D,
      &             Y(3),Z(3))
 202     CONTINUE
-          CALL U2MESS('F','ALGORITH9_87')
+          CALL U2MESS('F','PILOTAGE_87')
 203     CONTINUE
 
         A1 =Z(3)/EPSNOR
@@ -487,7 +487,7 @@ C Calcul de la solution sur [XS,ETASUP]
      &             Y(3),Z(3))
 
 204     CONTINUE
-          CALL U2MESS('F','ALGORITH9_87')
+          CALL U2MESS('F','PILOTAGE_87')
 205     CONTINUE
 
         A1 =Z(3)/EPSNOR
@@ -519,7 +519,7 @@ C Calcul de la solution sur [-ETASUP,XS]
      &             Y(3),Z(3))
 
 206     CONTINUE
-          CALL U2MESS('F','ALGORITH9_87')
+          CALL U2MESS('F','PILOTAGE_87')
 207     CONTINUE
 
         A3 =Z(3)/EPSNOR

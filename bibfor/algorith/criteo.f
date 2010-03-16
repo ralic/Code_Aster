@@ -1,8 +1,9 @@
-      SUBROUTINE CRITEO(EPSP,EPSD,ETA,BA,D,LAMBDA,MU,ALPHA,ECROB,
-     &                   ECROD,SEUIL,CRIT,CRITP)
-
+      SUBROUTINE CRITEO(EPSP  ,EPSD  ,ETA   ,BA    ,D     ,
+     &                  LAMBDA,MU    ,ALPHA ,ECROB ,ECROD ,
+     &                  SEUIL ,CRIT  ,CRITP )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,35 +20,39 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-
+C
       IMPLICIT NONE
       REAL*8             EPSP(6), EPSD(6),ETA
       REAL*8             BA(6),D
       REAL*8             LAMBDA,MU,ALPHA,SEUIL,ECROB,ECROD
       REAL*8             CRIT,CRITP
-
-C----------------------------------------------------------------
-C----------------------------------------------------------------
-C----------------------------------------------------------------
+C       
 C ----------------------------------------------------------------------
-C     CALCUL DU CRITERE DE ENDO_ORTH_BETON F(ETA) ET DE SA DERIVEE
 C
-C IN EPSP    : DEFORMATIONS DUES AUX CHARGEMENTS ANTERIEURS ET FIXES
-C IN EPSD    : DEFORMATIONS PROPORTIONNELLES A ETA
-C IN ETA     : INTENSITE DU PILOTAGE
-C IN LAMBDA  : |
-C IN DEUXMU  : | COEFFICIENTS DE LAME
-C IN ALPHA   : /
-C IN ECROB   : /
-C IN ECROD   : /PARAMETRES DE LA LOI
-C IN SEUIL   : SEUIL DU CRITERE
+C ROUTINE MECA_NON_LINE (PILOTAGE - PRED_ELAS - ENDO_ORTH_BETON)
+C
+C CALCUL DU CRITERE DE F(ETA) ET DE SA DERIVEE
+C
+C ----------------------------------------------------------------------
+C    
+C 
+C IN  EPSP   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES FIXES
+C IN  EPSD   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES PILOTEES
+C IN  ETA    : PARAMETRE DE PILOTAGE
+C IN  LAMBDA : COEFFICIENT DE LAME
+C IN  DEUXMU : COEFFICIENT DE LAME
+C IN  ALPHA  : PARAMETRE DE LA LOI
+C IN  ECROB  : PARAMETRE DE LA LOI
+C IN  ECROD  : PARAMETRE DE LA LOI
+C IN  D      : VARIABLE D'ENDOMMAGEMENT
+C IN  BA     : TENSEUR D'ENDOMMAGEMENT
+C IN  SEUIL  : SEUIL DU CRITERE
 C OUT CRIT   : VALEUR DU CRITERE POUR ETA DONNEE EN ENTREE
 C OUT CRITP  : VALEUR DE LA DERIVEE DU CRITERE POUR ETA DONNEE EN ENTREE
+C
 C ----------------------------------------------------------------------
-
-
-      INTEGER     K,I,J,L,T(3,3)
-      
+C
+      INTEGER     K,I,J,L,T(3,3)    
       REAL*8      EPSA(6),EPS(6),EPSDR(6),B(6)
       REAL*8      FB(6),FBR(6),FBM(6),FD,REC(6)
       REAL*8      CC(6),VECC(3,3),VALCC(3),CCP(6),CPE(6),VALB(3)
@@ -56,15 +61,15 @@ C ----------------------------------------------------------------------
       REAL*8      TDFBDE(6,6),TDFDDE(6),DFDE(6)
       REAL*8      RTEMP,TREB,TREPS,TREM,DCOEFD,ENE,COUPL
       REAL*8      TOLE,RAC2,KRON(6)
-
       REAL*8      DDOT
-
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-
+C
+C ----------------------------------------------------------------------
+C
 C TOLE: TOLERANCE POUR ARRET EVOLUTION DE L ENDOMMAGEMENT
-      TOLE=1.D-2
+      TOLE   = 1.D-2
 
-      RAC2=SQRT(2.D0)
+      RAC2   = SQRT(2.D0)
 
       T(1,1)=1
       T(1,2)=4
@@ -118,16 +123,16 @@ C--ON TRAVAILLE DANS ESPACE PROPRE ENDO
 
 
 
-        DO 202 I=1,3
-          DO 203 J=I,3
-            DO 204 K=1,3
-              DO 205 L=1,3
-            EPS(T(I,J))=EPS(T(I,J))+VECB(K,I)*EPSA(T(K,L))*VECB(L,J)
-            EPSDR(T(I,J))=EPSDR(T(I,J))+VECB(K,I)*EPSD(T(K,L))*VECB(L,J)
- 205        CONTINUE
- 204        CONTINUE
- 203      CONTINUE
- 202    CONTINUE
+      DO 202 I=1,3
+        DO 203 J=I,3
+          DO 204 K=1,3
+            DO 205 L=1,3
+          EPS(T(I,J))=EPS(T(I,J))+VECB(K,I)*EPSA(T(K,L))*VECB(L,J)
+          EPSDR(T(I,J))=EPSDR(T(I,J))+VECB(K,I)*EPSD(T(K,L))*VECB(L,J)
+ 205      CONTINUE
+ 204      CONTINUE
+ 203    CONTINUE
+ 202  CONTINUE
 
 
 

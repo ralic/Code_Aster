@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPC MUMPS  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF AMUMPC MUMPS  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -177,7 +177,7 @@ C       ------------------------------------------------
         CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE,LMD,
      &              EPSMAT)
 
-        CALL JJLDYN(IBID)
+         CALL JJLDYN(0,-1,IBID)
 
 C       ------------------------------------------------
 C        ANALYSE MUMPS:

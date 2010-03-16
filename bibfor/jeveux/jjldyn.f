@@ -1,6 +1,6 @@
-      SUBROUTINE JJLDYN ( LTOT )
+      SUBROUTINE JJLDYN ( IMODE , LMIN , LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,9 +20,17 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_505 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER             IMODE , LMIN , LTOT  
 C ----------------------------------------------------------------------
 C LIBERE LES SEGMENTS DE VALEURS ALLOUES DYNAMIQUEMENT
 C
+C IN   IMODE : 
+C              =1 ON NE TRAITE QUE LA BASE VOLATILEC
+C              =2 ON NE TRAITE QUE LES OBJETS XA
+C              =3 ON NE TRAITE QUE LES OBJETS XA DE LA BASE VOLATILE
+C              SINON ON EXAMINE TOUTE LA MEMOIRE
+C IN   LMIN  : TAILLE MINIMUM EN ENTIERS REQUISE
+C              =< 0 ON LIBERE TOUT 
 C OUT  LTOT  : LONGUEUR CUMULEE EN ENTIERS DES SEGMENTS DESALLOUES
 C
 C ----------------------------------------------------------------------
@@ -39,6 +47,12 @@ C ----------------------------------------------------------------------
      +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+      INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
+     &                 KITLEC    , KITECR    ,             KIADM    ,
+     &                 IITLEC    , IITECR    , NITECR    , KMARQ
+      COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
+     &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
+     &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
@@ -53,16 +67,22 @@ C ----------------------------------------------------------------------
 C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
+      COMMON /IACCED/  IACCE(1)
+      COMMON /JIACCE/  JIACCE(N)
+      COMMON /KINDIR/  INDIR(1)
+      COMMON /JINDIR/  JINDIR(N)
       INTEGER          ISSTAT
       COMMON /ICONJE/  ISSTAT
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      INTEGER          DATEI
+      COMMON /IHEUJE/  DATEI
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
      +               IDMARQ     , IDNOM      ,             IDLONG     ,
@@ -73,10 +93,11 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       CHARACTER*1    CGENR
       CHARACTER*32   NOM32
-      INTEGER        IADDI(2),ICOUNT,LMEMT,LGS
+      INTEGER        IADDI(2),ICOUNT,LMEMT,LGS,NBIOAV,NBIOAP,KI
+      INTEGER        NUMP,GTNPRO
+      REAL*8         GRAINE
 
       CALL UTTCPU('CPU.MEMD.1','DEBUT',' ')
-
 C
 C     ON LISTE LES OBJETS ALLOUES DYNAMIQUEMENT EN BALAYANT
 C     L'ENSEMBLE DES OBJETS, EN COMMENCANT PAR LA BASE VOLATILE
@@ -86,8 +107,30 @@ C
       NCLA1 = 1
       NCLA2 = INDEX ( CLASSE , '$' ) - 1
       IF (NCLA2 .LT. 0) NCLA2 = N
+      IF (IMODE .EQ. 1 .OR. IMODE .EQ. 3) THEN
+        NCLA2 = INDEX ( CLASSE , 'V' )  
+        NCLA1 = NCLA2  
+      ENDIF 
       DO 200  IC = NCLA2 , NCLA1, - 1
-        DO 205 J = 1 , NREMAX(IC)
+        IF (NREUTI(IC) .EQ. 0) GOTO 200 
+        NUMP = GTNPRO() 
+        IF ( NUMP .NE. 0 ) THEN 
+          GRAINE = (NUMP+1)*DATEI*1.5D0
+          DO 202 I= 2,NREUTI(IC)
+            CALL RANDOM(GRAINE)
+            K = INT(GRAINE*I)+1
+            J = INDIR(JINDIR(IC)+I)
+            INDIR(JINDIR(IC)+I) = INDIR(JINDIR(IC)+K)
+            INDIR(JINDIR(IC)+K) = J       
+ 202      CONTINUE
+        ENDIF 
+C
+        NBIOAV = 0
+        DO 500 KI=1,NBLMAX(IC)
+          NBIOAV = NBIOAV + IACCE(JIACCE(IC)+KI)
+ 500    CONTINUE
+        DO 205 JJ = 1,NREUTI(IC)
+          J = INDIR(JINDIR(IC)+JJ)
           IADMI = IADM(JIADM(IC)+2*J-1)
           IF ( IADMI .EQ. 0 ) GOTO 205
           IADYN = IADM(JIADM(IC)+2*J  )
@@ -130,6 +173,12 @@ C
                     LTYPI = LTYP( JLTYP(IC)+IXDESO )
                     LSV   = LONOI * LTYPI
                     IF ( ISF .EQ. 4 ) THEN
+                      IF ( IMODE .EQ. 2 .OR. IMODE .EQ. 3 ) THEN
+C
+C     ON NE TRAITE PAS LE SEGMENT DE VALEURS MARQUE X D
+C                   
+                        GOTO 210
+                      ENDIF
 C
 C     LE SEGMENT DE VALEURS EST MARQUE X D, IL FAUT D'ABORD L'ECRIRE
 C
@@ -147,6 +196,9 @@ C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL,LSV
                     LTOT = LTOT + IL
                     ISZON(JISZON + IBIADM - 1 +2*K-1) = 0
                     ISZON(JISZON + IBIADM - 1 +2*K  ) = 0
+                    IF ( LMIN .GT. 0 ) THEN
+                      IF ( LTOT .GE. LMIN ) GOTO 300
+                    ENDIF
                   ENDIF
                 ENDIF
  210          CONTINUE
@@ -166,6 +218,12 @@ C
                 LTYPI = LTYP( JLTYP(IC)+J )
                 LSV   = LONO( JLONO(IC)+J ) * LTYPI
                 IF ( ISF .EQ. 4 ) THEN
+                  IF ( IMODE .EQ. 2 .OR. IMODE .EQ. 3 ) THEN
+C
+C     ON NE TRAITE PAS LE SEGMENT DE VALEURS MARQUE X D
+C                   
+                    GOTO 205
+                  ENDIF
 C
 C     LE SEGMENT DE VALEURS EST MARQUE X D, IL FAUT D'ABORD L'ECRIRE
 C
@@ -183,13 +241,22 @@ C               write(6,*) ' OS ',NOM32,' lg =',IL,LSV
                 LTOT = LTOT + IL
                 IADM(JIADM(IC)+2*J-1) = 0
                 IADM(JIADM(IC)+2*J  ) = 0
+                IF ( LMIN .GT. 0 ) THEN
+                  IF ( LTOT .GE. LMIN ) GOTO 300
+                ENDIF
               ENDIF
             ENDIF
           ENDIF
  205    CONTINUE
+C
+        NBIOAP = 0
+        DO 501 KI=1,NBLMAX(IC)
+          NBIOAP = NBIOAP + IACCE (JIACCE(IC)+KI)
+ 501    CONTINUE
+        LGIO=LGIO+1024*LONGBL(IC)*LOIS*(NBIOAP-NBIOAV) 
  200  CONTINUE
+ 300  CONTINUE
       MXLTOT=MXLTOT+(LTOT*LOIS)/(1024*1024)
-
-
+C
       CALL UTTCPU('CPU.MEMD.1','FIN',' ')
       END

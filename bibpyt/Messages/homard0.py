@@ -1,4 +1,4 @@
-#@ MODIF homard0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF homard0 Messages  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,6 +39,21 @@ Impossible de créer le répertoire de travail pour HOMARD : %(k1)s
 
 5: _("""
 Impossible de détruire le fichier :%(k1)s
+"""),
+
+6: _("""
+La vérification de l'interpénétration peut etre très longue.
+Il ne faut l'utiliser que volontairement. Voir la documentation.
+"""),
+
+7: _("""
+Dès que le nombre de mailles est important, la vérification de l'interpénétration peut etre très longue.
+En principe, on ne devrait l'utiliser que dans les cas suivants :
+  . Informations sur un maillage avec MACR_INFO_MAIL
+  . Debogage sur une adaptation avec MACR_ADAP_MAIL
+Conseil :
+Pour un usage courant de l'adaptation, il est recommandé de passer à NON toutes les
+options de controle ; autrement dit, laisser les options par défaut.
 """),
 
 }

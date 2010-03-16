@@ -1,4 +1,4 @@
-# MODIF  DATE 07/12/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 # hsnv132b.para = tps_job 50 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,23 +25,18 @@ PRE_GIBI();
 
 MAILLAGE=LIRE_MAILLAGE(INFO=1,);
 
-MACR_ADAP_MAIL(
-                  ADAPTATION='RAFFINEMENT_ZONE',
-                  ZONE=_F(X_CENTRE = 0.5,
+MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT_ZONE',
+                  ZONE=_F(TYPE='DISQUE',
+                        X_CENTRE = 0.5,
                         Y_CENTRE = 0.5,
-                        Z_CENTRE = 0.,
                         RAYON = 0.1, ),
                   MAILLAGE_N = MAILLAGE,
                   MAILLAGE_NP1 = CO('MAILLAG1'),
                   QUALITE='OUI',
                   TAILLE='OUI',
                   )
-
-MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                    MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=(_F(GROUP_MA='LIGINF',),
-                                   _F(GROUP_MA='SURF',),
-                                   ),);  
+#
+###IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=MAILLAG1,),);
 
 #--------------------------------------------------------------------
 #               DEBUT DU THERMIQUE                                  #
@@ -121,7 +116,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 #*********************************************************************
 
 CHARBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
-                       DDL_IMPO=_F(GROUP_NO='LIGINF',
+                       DDL_IMPO=_F(GROUP_MA='LIGINF',
                                    DX=0.0,
                                    DY=0.0,),
                        INFO=1,);

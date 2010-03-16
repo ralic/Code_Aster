@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 08/03/2010   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 15/03/2010   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,100 @@
 
 ########################################################################
 # script PYTHON de creation du résultat local
+########################################################################
+
+########################################################################
+# verification que les points de la ligne de coupe sont dans la matiere
+def crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__macou):
+
+  import aster
+  import os,string,types
+  from Accas import _F
+  from Noyau.N_utils import AsType
+  from Utilitai.Utmess import  UTMESS
+  import os
+  POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
+  DEFI_GROUP    = self.get_cmd('DEFI_GROUP')
+
+  motscles={}
+  if m['NOM_CMP']!=None:
+     motscles['NOM_CMP']=m['NOM_CMP']
+  else:
+     motscles['TOUT_CMP']='OUI'
+  motscles['OPERATION']='EXTRACTION'
+
+  __tab=POST_RELEVE_T(ACTION=_F(  INTITULE=newgrp,
+                           RESULTAT  = __remodr,
+                           NOM_CHAM=NOM_CHAM,
+                           GROUP_NO  = groupe,**motscles ))
+
+  # dictb=table initiale (contenant éventuellement des noeuds hors matière)
+  dictb=__tab.EXTR_TABLE()
+  # listenoe_b=liste ordonnee des noeuds de la ligne de coupe (avec doublons)
+  listenoe_b = dictb.NOEUD.values()
+  # lno_b2=liste des noeuds de la ligne de coupe après élimination des doublons
+  # (attention, on perd l'ordre des noeuds)
+  lno_b2 = set(listenoe_b)
+
+  # dictc=table (extraite de dictb) contenant uniquement des noeuds dans la matière
+  if m['NOM_CMP']!=None:
+     dictc=getattr(dictb,m['NOM_CMP'][0]).NON_VIDE()
+     lno_c2 = set(dictc.NOEUD.values())
+  else:# TOUT_CMP='OUI'
+     # on garde uniquement les composantes pour conserver les noeuds où il y a des valeurs
+     a_suppr = set(['INTITULE', 'RESU', 'NOM_CHAM', 'NUME_ORDRE', 'INST', 'ABSC_CURV', 'COOR_X', 'COOR_Y', 'COOR_Z'])
+     new_para = set(dictb.para)
+     new_para.difference_update(a_suppr)
+
+     lno_c2 = set()
+     for comp in new_para.difference(['NOEUD']):
+        dictc = getattr(dictb, comp).NON_VIDE()
+        lno_c2.update(dictc.NOEUD.values())
+
+  # on réordonne la liste des noeuds de lno_c2 (selon leur position dans listenoe_b) => l_matiere
+  # l_horsmat=liste des noeuds hors matière
+  l_matiere = [j for j in listenoe_b if j in lno_c2]
+  nderm=l_matiere.index(l_matiere[len(l_matiere)-1])
+  l_horsmat = [j for j in listenoe_b if j not in lno_c2]
+
+  # si on est en présence de noeuds hors matière,
+  # on emet une alarme pour informer l'utilisateur
+  nbpoin=m['NB_POINTS']
+  reste=nbpoin-len(l_matiere)
+  if len(l_horsmat) > 0:
+
+       nderh=l_horsmat.index(l_horsmat[len(l_horsmat)-1])
+       cnom = list(__macou.NOMNOE.get())
+       l_coor = __macou.COORDO.VALE.get()
+       indent=os.linesep+' '*12
+       l_surlig = []
+       l_horslig = []
+       for j in l_matiere[:nderm+1]:
+          nuno=cnom.index(j.ljust(8))
+          text_coordo = '(%f, %f, %f)' % tuple(l_coor[3*nuno:3*nuno+3])
+          l_surlig.append(text_coordo)
+       for j in l_horsmat[:nderh+1]:
+          nuno=cnom.index(j.ljust(8))
+          text_coordo = '(%f, %f, %f)' % tuple(l_coor[3*nuno:3*nuno+3])
+          l_horslig.append(text_coordo)
+       UTMESS('A','POST0_8',valk=[indent.join(l_surlig),indent.join(l_horslig)])
+
+  elif reste > 0:
+
+       cnom = list(__macou.NOMNOE.get())
+       l_coor = __macou.COORDO.VALE.get()
+       indent=os.linesep+' '*12
+       l_surlig = []
+       for j in l_matiere[:nderm+1]:
+          nuno=cnom.index(j.ljust(8))
+          text_coordo = '(%f, %f, %f)' % tuple(l_coor[3*nuno:3*nuno+3])
+          l_surlig.append(text_coordo)
+       UTMESS('A','POST0_24',vali=[iocc,reste],valk=[indent.join(l_surlig)])
+
+  __macou=DEFI_GROUP( reuse =__macou , MAILLAGE=__macou ,
+                   CREA_GROUP_NO=_F(NOM=newgrp,NOEUD=l_matiere[:nderm+1]),)
+
+  return
 
 def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
 
@@ -363,82 +457,6 @@ def dist_min_deux_points(mail):
     else      : dist=min(d,dist)
   return dist
 
-########################################################################
-# verification que les points de la ligne de coupe sont dans la matiere
-def crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou):
-
-  import aster
-  from Accas import _F
-  from Utilitai.Utmess import  UTMESS
-  import os
-  POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
-  DEFI_GROUP    = self.get_cmd('DEFI_GROUP')
-
-  motscles={}
-  if m['NOM_CMP']!=None:
-     motscles['NOM_CMP']=m['NOM_CMP']
-  else:
-     motscles['TOUT_CMP']='OUI'
-  motscles['OPERATION']='EXTRACTION'
-
-  __tab=POST_RELEVE_T(ACTION=_F(  INTITULE=newgrp,
-                           RESULTAT  = __remodr,
-                           NOM_CHAM=NOM_CHAM,
-                           GROUP_NO  = groupe,**motscles ))
-
-  # dictb=table initiale (contenant éventuellement des noeuds hors matière)
-  dictb=__tab.EXTR_TABLE()
-  # listenoe_b=liste ordonnee des noeuds de la ligne de coupe (avec doublons)
-  listenoe_b = dictb.NOEUD.values()
-  # lno_b2=liste des noeuds de la ligne de coupe après élimination des doublons
-  # (attention, on perd l'ordre des noeuds)
-  lno_b2 = set(listenoe_b)
-
-  # dictc=table (extraite de dictb) contenant uniquement des noeuds dans la matière
-  if m['NOM_CMP']!=None:
-     dictc=getattr(dictb,m['NOM_CMP'][0]).NON_VIDE()
-     lno_c2 = set(dictc.NOEUD.values())
-  else:# TOUT_CMP='OUI'
-     # on garde uniquement les composantes pour conserver les noeuds où il y a des valeurs
-     a_suppr = set(['INTITULE', 'RESU', 'NOM_CHAM', 'NUME_ORDRE', 'INST', 'ABSC_CURV', 'COOR_X', 'COOR_Y', 'COOR_Z'])
-     new_para = set(dictb.para)
-     new_para.difference_update(a_suppr)
-
-     lno_c2 = set()
-     for comp in new_para.difference(['NOEUD']):
-        dictc = getattr(dictb, comp).NON_VIDE()
-        lno_c2.update(dictc.NOEUD.values())
-
-  # on réordonne la liste des noeuds de lno_c2 (selon leur position dans listenoe_b) => l_matiere
-  # l_horsmat=liste des noeuds hors matière
-  l_matiere = [j for j in listenoe_b if j in lno_c2]
-  nderm=l_matiere.index(l_matiere[len(l_matiere)-1])
-  l_horsmat = [j for j in listenoe_b if j not in lno_c2]
-
-  # si on est en présence de noeuds hors matière,
-  # on emet une alarme pour informer l'utilisateur
-  if len(l_horsmat) > 0:
-
-       nderh=l_horsmat.index(l_horsmat[len(l_horsmat)-1])
-       cnom = list(__macou.NOMNOE.get())
-       l_coor = __macou.COORDO.VALE.get()
-       indent=os.linesep+' '*12
-       l_surlig = []
-       l_horslig = []
-       for j in l_matiere[:nderm+1]:
-          nuno=cnom.index(j.ljust(8))
-          text_coordo = '(%f, %f, %f)' % tuple(l_coor[3*nuno:3*nuno+3])
-          l_surlig.append(text_coordo)
-       for j in l_horsmat[:nderh+1]:
-          nuno=cnom.index(j.ljust(8))
-          text_coordo = '(%f, %f, %f)' % tuple(l_coor[3*nuno:3*nuno+3])
-          l_horslig.append(text_coordo)
-       UTMESS('A','POST0_8',valk=[indent.join(l_surlig),indent.join(l_horslig)])
-
-  __macou=DEFI_GROUP( reuse =__macou , MAILLAGE=__macou ,
-                   CREA_GROUP_NO=_F(NOM=newgrp,NOEUD=l_matiere[:nderm+1]),)
-
-  return
 ########################################################################
 # script PYTHON de creation d un maillage de ligne de coupe
 
@@ -811,9 +829,10 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   if AsType(RESULTAT).__name__ in ('evol_elas','evol_noli') :
 
    if  NOM_CHAM in ('DEPL','SIEF_ELNO_ELGA','SIGM_NOEU_DEPL','SIGM_NOEU_SIEF','SIGM_NOEU_ELGA','SIGM_NOEU_COQU','SIGM_ELNO_DEPL'):icham=1
-
+   iocc=0
    for m in LIGN_COUPE :
 
+     iocc=iocc+1
      motscles={}
      motscles['OPERATION']=m['OPERATION']
      if m['NOM_CMP']!=None:
@@ -841,7 +860,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
          groupe='LICOU'+str(ioc2)
          nomgrma=' '
          newgrp='LICOF'+str(ioc2)
-         crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou)
+         crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__macou)
          groupe=newgrp
 
      # on definit l'intitulé
@@ -885,9 +904,10 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
 
   elif AsType(RESULTAT).__name__ in ('evol_ther',) :
-
+     iocc=0
      for m in LIGN_COUPE :
 
+        iocc=iocc+1
         motscles={}
         motscles['OPERATION']=m['OPERATION']
         if m['NOM_CMP']!=None:
@@ -910,7 +930,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
           ioc2=ioc2+1
           groupe='LICOU'+str(ioc2)
           newgrp='LICOF'+str(ioc2)
-          crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou)
+          crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__macou)
           groupe=newgrp
           if m['INTITULE'] !=None : intitl=m['INTITULE']
           else                    : intitl='l.coupe'+str(ioc2)
@@ -930,7 +950,6 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   self.DeclareOut('nomres',self.sd)
   dictab=__tabitm.EXTR_TABLE()
-
 ### Ajout de la colonne theta
   if len(arcgma)>0:
     coltab=[]

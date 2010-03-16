@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 # zzzz121b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,20 +40,20 @@
 #         --------------------
 #         1                  2
 # NOMBRE DE NOEUDS  : 27
-# 
+#
 # NOMBRE DE MAILLES : 20
 #                   POI1    :  2
 #                   SEG3    :  1
 #                   TRIA6   : 12
 #                   TETRA10 :  6
-# 
+#
 # NOMBRE DE GROUPES DE NOEUDS : 5
 #                   ORIGINE : 1    NO1(0.,0.,0.)
 #                   I       : 1    NO2(1.,0.,0.)
 #                   J       : 1    NO5(0.,1.,0.)
 #                   K       : 1    NO3(0.,0.,1.)
 #                   OPPOSE  : 1    NO8(1.,1.,1.)
-# 
+#
 # NOMBRE DE GROUPES DE MAILLES : 7
 #                   MOITIE1   :  3  cote ORIGINE par rapport au plan (2,4,5,7)
 #                   MOITIE2   :  3  cote OPPOSE par rapport au plan (2,4,5,7)
@@ -88,12 +88,14 @@ MATER2=DEFI_MATERIAU(ELAS=_F(E=220000.,
 MZERO=LIRE_MAILLAGE();
 #
 
+# Attention : le test d'interpenetration peut etre long (voir la documentation).
 MACR_INFO_MAIL(MAILLAGE=MZERO,
                NOMBRE='OUI',
                QUALITE='OUI',
                CONNEXITE='OUI',
                TAILLE='OUI',
-               INTERPENETRATION='OUI',);
+               INTERPENETRATION='OUI',
+               PROP_CALCUL='OUI',);
 #
 # 3. CALCUL SUR LE MAILLAGE ZERO
 # 3.1. MODELE MECANIQUE
@@ -149,7 +151,8 @@ MACR_ADAP_MAIL(MAILLAGE_N=MZERO,
                MAILLAGE_NP1=CO('MUN'),
                ADAPTATION='RAFFINEMENT_UNIFORME',
                GROUP_MA = ('MP_K', 'MP_O',),
-               QUALITE='OUI');
+               NOMBRE='OUI',
+               QUALITE='OUI',);
 #
 # 5. CALCUL SUR LE MAILLAGE UN
 # 5.1. MODELE MECANIQUE
@@ -262,6 +265,7 @@ MACR_ADAP_MAIL(LANGUE='ANGLAIS',
                MAJ_CHAM=_F(CHAM_MAJ=CO('DEPLDEUX'),
                            TYPE_CHAM='NOEU_DEPL_R',
                            CHAM_GD=DEPLUN,),
+               NOMBRE='OUI',
                QUALITE='OUI',);
 #
 # 8. CALCUL SUR LE MAILLAGE DEUX
@@ -357,6 +361,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=MDEUX,
                            RESULTAT=RESUDEUX,
                            NOM_CHAM='DEPL',
                            NUME_ORDRE=1,),
+               NOMBRE='OUI',
                QUALITE='OUI',);
 #
 # 11. CALCUL SUR LE MAILLAGE TROIS
@@ -471,7 +476,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=MTROI,
                             TYPE_CHAM='NOEU_DEPL_R',
                             RESULTAT=RESUTROI,
                             NOM_CHAM='DEPL',
-                            NUME_ORDRE=1,),),);
+                            NUME_ORDRE=1,),),
+               NOMBRE='OUI',
+               PROP_CALCUL='OUI',);
 #
 # 14. CALCUL SUR LE MAILLAGE QUAT
 # 14.1. MODELE MECANIQUE
@@ -551,7 +558,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=MQUAT,
                INDICATEUR='ERRE_ELEM_SIGM',
                NOM_CMP_INDICA='ERREST',
                GROUP_MA='MOITIE2',
-               CRIT_RAFF_PE=0.20,);
+               CRIT_RAFF_PE=0.20,
+               NOMBRE='OUI',
+               PROP_CALCUL='OUI',);
 #
 # 17. CALCUL SUR LE MAILLAGE CINQ
 # 17.1. MODELE MECANIQUE
@@ -600,7 +609,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESUCINQ,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
                   GROUP_NO='OPPOSE',
-                  VALE=2.26799862E-03,
+                  VALE=-5.46210778E-02,
                   CRITERE='RELATIF',
                   PRECISION=1E-06,
                   REFERENCE='NON_REGRESSION',
@@ -691,5 +700,7 @@ TEST_TABLE(TABLE=MCGCINQ,
 ###                  SENSIBILITE=FZ,),);
 ###IMPR_RESU(FORMAT='MED',
 ###          RESU=_F(RESULTAT=RESUQUAT,),);
+###IMPR_RESU(FORMAT='MED',
+###          RESU=_F(RESULTAT=RESUCINQ,),);
 
 FIN();

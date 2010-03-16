@@ -1,6 +1,6 @@
        SUBROUTINE JEIMHD ( FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 12/11/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,7 @@ C DEB ------------------------------------------------------------------
       NHDF  = FICHDF
       IDFIC = HDFCRF (NHDF)
       IF ( IDFIC .LT. 0 ) THEN
-        CALL U2MESG('F','JEVEUX_01',1,NHDF,1,IDFIC,0,RBID)
+        CALL U2MESG('F','JEVEUX_66',1,NHDF,1,IDFIC,0,RBID)
       ENDIF
       NGRP ='/'
       IDG  = HDFOPG (IDFIC,NGRP)
@@ -144,7 +144,6 @@ C
              KATTR(K)=' '
  1        CONTINUE
           KATTR(3)(1:1)=KCLAS
-          IF ( J .EQ. 17 ) GOTO 5
           IF ( J .GT. LIDBAS .AND.
      &        (CRNOM(25:26) .EQ. '$$' .OR. CRNOM(1:1) .EQ. '?') ) GOTO 5
           GENRI = GENR(JGENR(IC)+J)

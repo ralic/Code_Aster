@@ -2,7 +2,7 @@
      &                  DDEPL1,ETA   ,PILCVG,NBEFFE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C
       INTEGER       NBEFFE
       INTEGER       PILCVG
       REAL*8        ETA ,DTAU
-      CHARACTER*14  SDPILO
+      CHARACTER*19  SDPILO
       CHARACTER*19  DDEPL0,DDEPL1,DEPDEL
       CHARACTER*24  NUMEDD      
 C 
@@ -72,9 +72,10 @@ C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
 C
       REAL*8       DU, RN, RD
       REAL*8       DDOT
-      INTEGER      JLINE,JDEPDE,JDEP0,JDEP1
+      INTEGER      JCOEF,JDEPDE,JDEP0,JDEP1
       INTEGER      NEQ,IRET
       CHARACTER*8  K8BID
+      CHARACTER*19 CHAPIL
       INTEGER      IFM,NIV      
 C
 C ----------------------------------------------------------------------
@@ -98,13 +99,14 @@ C
       CALL JEVEUO(DDEPL0(1:19)//'.VALE','L',JDEP0)
       CALL JEVEUO(DDEPL1(1:19)//'.VALE','L',JDEP1)
       CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
-      CALL JEVEUO(SDPILO(1:14)//'.PLCR.VALE','L',JLINE)
+      CHAPIL = SDPILO(1:14)//'.PLCR'
+      CALL JEVEUO(CHAPIL(1:19)//'.VALE','L',JCOEF)
 C
 C --- RESOLUTION DE L'EQUATION
 C      
-      RN = DDOT(NEQ,ZR(JDEP0) ,1,ZR(JLINE),1)
-      RD = DDOT(NEQ,ZR(JDEP1) ,1,ZR(JLINE),1)
-      DU = DDOT(NEQ,ZR(JDEPDE),1,ZR(JLINE),1)
+      RN = DDOT(NEQ,ZR(JDEP0) ,1,ZR(JCOEF),1)
+      RD = DDOT(NEQ,ZR(JDEP1) ,1,ZR(JCOEF),1)
+      DU = DDOT(NEQ,ZR(JDEPDE),1,ZR(JCOEF),1)
       IF (RD.EQ.0.D0) THEN
         PILCVG = 1
       ELSE  

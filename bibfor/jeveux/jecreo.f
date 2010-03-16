@@ -1,6 +1,6 @@
       SUBROUTINE JECREO ( NOMLU , LISTAT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,6 @@ C     ------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
 C     ------------------------------------------------------------------
-      CHARACTER *75    CMESS
       CHARACTER *1     TYPEI , GENRI
       INTEGER          NV , ICRE , IRET
       PARAMETER      ( NV = 3 )
@@ -57,54 +56,44 @@ C     ------------------------------------------------------------------
       CHARACTER *4     IFMT
 C     ------------------------------------------------------------------
       IF ( LEN(NOMLU) .GT. 24 ) THEN
-         CMESS = 'NOM D''OBJET SIMPLE > 24 CARACTERES'
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
+         CALL U2MESK('F','JEVEUX_84',1,NOMLU)
       ENDIF
       NOML32 = NOMLU(1:MIN(24,LEN(NOMLU)))
 C
       CALL JJANAL (  LISTAT  , NV , NV , LVAL , CVAL )
       ICLAS  = INDEX ( CLASSE , CVAL(1)(1:1) )
       IF ( ICLAS .EQ. 0 ) THEN
-        CMESS  = ' LA BASE DEMANDEE '//CVAL(1)(1:1)//
-     &           ' N''EST PAS OUVERTE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_68',1,CVAL(1))
       END IF
 C
       ICRE = 1
       CALL JJVERN ( NOML32 , ICRE , IRET )
 C
       IF ( IRET .EQ. 2 ) THEN
-         CMESS = 'NOM DEJA UTILISE POUR UNE COLLECTION'
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
+         CALL U2MESK('F','JEVEUX_85',1,NOML32)
       ELSE
          GENR(JGENR(ICLAOS)+IDATOS) = CVAL(2)(1:1)
          TYPE(JTYPE(ICLAOS)+IDATOS) = CVAL(3)(1:1)
          IF ( CVAL(3)(1:1) .EQ. 'K' .AND. LVAL(3) .EQ. 1 ) THEN
-           CMESS  = ' LTYP D''UN OBJET DE TYPE K NON DEFINI'
-           CALL U2MESK('F','JEVEUX_01',1,CMESS)
+           CALL U2MESK('F','JEVEUX_86',1,NOML32)
          ELSE
            GENRI = GENR ( JGENR(ICLAOS) + IDATOS )
            TYPEI = TYPE ( JTYPE(ICLAOS) + IDATOS )
            IF ( GENRI .EQ. 'N' .AND. TYPEI .NE. 'K' ) THEN
-             CMESS = 'UN OBJET REPERTOIRE DOIT ETRE DE TYPE K'
-             CALL U2MESK('F','JEVEUX_01',1,CMESS)
+             CALL U2MESK('F','JEVEUX_87',1,NOML32)
            ENDIF
            IF      ( TYPEI .EQ. 'K' ) THEN
              WRITE(IFMT,'(''(I'',I1,'')'')') LVAL(3) - 1
              READ ( CVAL(3)(2:LVAL(3)) , IFMT ) IV
              IF ( IV .LE. 0 .OR. IV .GT. 512 ) THEN
-               CMESS = 'LTYP D'' OBJET DE TYPE K INVALIDE >'//
-     &                  CVAL(3)(1:LVAL(3)-1)
-               CALL U2MESK('F','JEVEUX_01',1,CMESS)
+               CALL U2MESK('F','JEVEUX_88',1,CVAL(3))
              ENDIF
              IF ( GENRI .EQ. 'N' ) THEN
                IF ( MOD ( IV , LOIS ) .NE. 0 ) THEN
-                 CMESS = 'LTYP D'' OBJET REPERTOIRE NON MULTIPLE DE K8'
-                 CALL U2MESK('F','JEVEUX_01',1,CMESS)
+                 CALL U2MESK('F','JEVEUX_89',1,NOML32)
                ENDIF
                IF ( IV .GT. 24 ) THEN
-                 CMESS = 'LTYP D''OBJET REPERTOIRE > 24'
-                 CALL U2MESK('F','JEVEUX_01',1,CMESS)
+                 CALL U2MESK('F','JEVEUX_90',1,NOML32)
                ENDIF
              ENDIF
            ELSE IF ( TYPEI .EQ. 'I' ) THEN
@@ -118,8 +107,7 @@ C
            ELSE IF ( TYPEI .EQ. 'S' ) THEN
              IV = LOR8/2
            ELSE
-             CMESS = 'TYPE INVALIDE '//CVAL(3)(1:LVAL(3))
-             CALL U2MESK('F','JEVEUX_01',1,CMESS)
+             CALL U2MESK('F','JEVEUX_91',1,CVAL(3))
            ENDIF
            LTYP ( JLTYP(ICLAOS) + IDATOS ) = IV
          ENDIF

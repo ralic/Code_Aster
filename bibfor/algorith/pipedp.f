@@ -1,7 +1,9 @@
-      SUBROUTINE PIPEDP(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,EPSM,SIGM,VIM,
-     &                  EPSP, EPSD, ELGEOM, A0, A1)
+      SUBROUTINE PIPEDP(KPG   ,KSP   ,NDIM  ,TYPMOD ,MATE  ,
+     &                  EPSM  ,SIGM  ,VIM   ,EPSP   ,EPSD  ,
+     &                  ELGEOM,A0    ,A1    )
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,28 +20,40 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
+C
       IMPLICIT NONE      
-      CHARACTER*8        TYPMOD(2)
-      CHARACTER*(*)      FAMI
-      INTEGER            NDIM, IMATE,KPG,KSP
+      CHARACTER*8        TYPMOD(*)
+      INTEGER            NDIM,MATE,KPG,KSP
       REAL*8             EPSP(6), EPSD(6)
       REAL*8             EPSM(6), VIM(2), SIGM(6), A0, A1
       REAL*8             ELGEOM(*)
+C       
 C ----------------------------------------------------------------------
-C     LOI DE COMPORTEMENT BETON_DOUBLE_DP
 C
-C IN  NDIM    : DIMENSION DE L'ESPACE
-C IN  TYPMOD  : TYPE DE MODELISATION
-C IN  IMATE   : NATURE DU MATERIAU
-C IN  EPSM    : DEFORMATION EN T-
-C IN  SIGM    : CONTRAINTE EN T-
-C IN  VIM     : VARIABLES INTERNES EN T-
-C IN  ELGEOM  : TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES AUX
-C               LOIS DE COMPORTEMENT (DIMENSION MAXIMALE FIXEE EN DUR)
-C OUT A0      : LINEARISATION DU CRITERE : FEL = A0 + A1*ETA
-C OUT A1      : IDEM A0
+C ROUTINE MECA_NON_LINE (PILOTAGE - PRED_ELAS)
+C
+C LOI DE COMPORTEMENT BETON_DOUBLE_DP
+C
 C ----------------------------------------------------------------------
+C    
+C
+C IN  NDIM   : DIMENSION DE L'ESPACE
+C IN  TYPMOD : TYPE DE MODELISATION
+C IN  MATE   : MATERIAU CODE
+C IN  VIM    : VARIABLES INTERNES EN T-
+C IN  EPSM   : DEFORMATIONS EN T-
+C IN  SIGM   : CONTRAINTES EN T-
+C IN  EPSP   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES FIXES
+C IN  EPSD   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES PILOTEES
+C IN  KPG    : NUMERO DU POINT DE GAUSS
+C IN  KPG    : NUMERO DU SOUS-POINT DE GAUSS
+C IN  ELGEOM : TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES AUX
+C               LOIS DE COMPORTEMENT (DIMENSION MAXIMALE FIXEE EN DUR)
+C OUT A0     : LINEARISATION DU CRITERE : FEL = A0 + A1*ETA
+C OUT A1     : IDEM A0
+C
+C ----------------------------------------------------------------------
+C
       INTEGER     NDIMSI, K, NRAC1, NRAC2
       LOGICAL     TRAC, COMP, NOTRAC, NOCOMP
       REAL*8      TRSIGP, TRSIGD, SIGELP(6), SIGELD(6)
@@ -48,7 +62,7 @@ C ----------------------------------------------------------------------
       REAL*8      KRON(6)
       REAL*8      P0, P1, P2, Q0, Q1, Q2, ETA, ETA1, ETA2
       REAL*8      RAC1(2), RAC2(2)
-      REAL*8      E, NU, LAMBDA, DEUXMU, GAMMA
+      REAL*8      E, NU, LAMBDA, DEUXMU
       REAL*8      FC , FT , BETA
       REAL*8      A, B, C, D
       REAL*8      DNRM2
@@ -60,21 +74,18 @@ C ----------------------------------------------------------------------
       PARAMETER   ( D23  =  .66666666666666D0 )
       PARAMETER   ( D13  =  .33333333333333D0 )
 
-      CHARACTER*2 CODRET(3)
-      CHARACTER*8 NOMRES(3)
-      REAL*8      VALRES(3)
-
       REAL*8      DDOT
 
       INTEGER     NDT, NDI, NR, NVI, NMAT
       PARAMETER   ( NMAT = 90     )
       REAL*8      MATERD(NMAT,2), MATERF(NMAT,2)
       REAL*8      PC, PT, KUC, KUT, KE, TBID, RBID, FCP , FTP
-      CHARACTER*8 MOD   
-      CHARACTER*3 MATCST
-   
+      CHARACTER*8 MOD   ,FAMI
+      CHARACTER*3 MATCST 
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-
+C
+C ----------------------------------------------------------------------
+C 
       CALL MATFPE(-1)
 C
 C --  OPTION ET MODELISATION
@@ -85,8 +96,9 @@ C --  RECUPERATION MATERIAU
       RACI2   = SQRT (DEUX)
 C
       TBID = 0.D0
+      FAMI = 'RIGI'
       MOD  = TYPMOD(1)
-      CALL BETMAT ( FAMI,KPG,KSP,MOD,IMATE,NMAT,TBID,TBID,
+      CALL BETMAT ( FAMI,KPG,KSP,MOD,MATE,NMAT,TBID,TBID,
      1              MATERD, MATERF, MATCST, NDT, NDI, NR, NVI)
 C
       E      = MATERD(1,1)

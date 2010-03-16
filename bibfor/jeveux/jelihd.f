@@ -1,6 +1,6 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,11 +60,13 @@ C
       COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       INTEGER          JGENR   , JTYPE   , JDOCU   , JORIG   , JRNOM
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
-      INTEGER          IACCE, JIACCE, IUSADI, JUSADI
+      INTEGER          IACCE, JIACCE, IUSADI, JUSADI, INDIR, JINDIR
       COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N)
       COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
+      COMMON /KINDIR/  INDIR(1)
+      COMMON /JINDIR/  JINDIR(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
      &                 KITLEC    , KITECR    ,             KIADM    ,
@@ -151,14 +153,14 @@ C ----------------------------------------------------------------------
       CHARACTER*24     VALK(3)
       CHARACTER*32     NOMSYS,D32
       INTEGER          KAT(LIDBAS),LSO(LIDBAS),KDY(LIDBAS),LGBL,IADYN
-      INTEGER          IRT
+      INTEGER          IRT,IND
       REAL*8           VALR
       LOGICAL          LEXP
       DATA CIDBAS  / '$$CARA  ' , '$$IADD  ' , '$$GENR  ' , '$$TYPE  ' ,
      &               '$$DOCU  ' , '$$ORIG  ' , '$$RNOM  ' , '$$LTYP  ' ,
      &               '$$LONG  ' , '$$LONO  ' , '$$DATE  ' , '$$LUTI  ' ,
      &               '$$HCOD  ' , '$$USADI ' , '$$ACCE  ' , '$$MARQ  ' ,
-     &               '$$XXXX  ' , '$$TLEC  ' , '$$TECR  ' , '$$IADM  ' /
+     &               '$$INDI  ' , '$$TLEC  ' , '$$TECR  ' , '$$IADM  ' /
 C     ------------------------------------------------------------------
       DATA NOMSYS  / '________XXXXXXXX________$$CARA' /
       DATA             NREP / 'T_HCOD' , 'T_NOM' /
@@ -259,9 +261,6 @@ C
 C
       NBLMAX(IC)= NBLMA2
 C
-      KAT(17) = 0      
-      KDY(17) = 0      
-C
       LMARQ = 2 * NREMAX(IC) * LOIS
       CALL JJALLS(LMARQ,IC,'V','I',LOIS,Z,IMARQ,IADRS,KMARQ(IC),KDY(16))
       KAT(16) = KMARQ(IC)
@@ -300,6 +299,14 @@ C
       KAT(20) = KIADM(IC)
       JIADM(IC) = IADRS - 1
       CALL JJECRS (KAT(20),KDY(20),IC,20,0,'E',IMARQ(JMARQ(IC)+2*20-1))
+C
+      CALL JJALLS (LON,IC,'V','I',LOIS,Z,INDIR,IADRS,KAT(17),KDY(17))
+      JINDIR(IC) = IADRS - 1
+      CALL JJECRS(KAT(17),KDY(17),IC,17,0,'E',IMARQ(JMARQ(IC)+2*17-1))
+      DO 345 IND = 1 , NREMAX(IC)
+        INDIR(JINDIR(IC)+IND) = IND
+ 345  CONTINUE        
+C
 C
 C     CES DEUX OBJETS SYSTEME NE DOIVENT PAS ETRE RELUS SUR FICHIER HDF
 C

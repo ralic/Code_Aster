@@ -1,6 +1,6 @@
       SUBROUTINE JECROC ( NOMLU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,6 @@ C     ------------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C     ------------------------------------------------------------------
-      CHARACTER *75    CMESS
       CHARACTER *32    NOML32
       INTEGER          ICRE , IRET , JCTAB, ITAB
       CHARACTER *8     NUME
@@ -31,8 +30,7 @@ C     ------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
       L =  LEN(NOMLU)
       IF ( L .NE. 32 ) THEN
-         CMESS = 'APPEL DE JECROC PAR JEXNOM/JEXNUM OBLIGATOIRE '
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
+         CALL U2MESK('F','JEVEUX_95',0,NOMLU)
       ENDIF
 C
       ICRE = 3
@@ -45,8 +43,7 @@ C
         IF ( IRET .EQ. 1 ) THEN
 C         ----- OBJET DE TYPE REPERTOIRE
           IF ( NOMLU(25:32) .EQ. NUME  ) THEN
-            CMESS = 'ACCES PAR JEXNUM INTERDIT'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_96',1,NOML32)
           ENDIF
           CALL JXVEUO ( 'E' , ITAB , 1 , JCTAB )
           CALL JJCROC ( '        ' , ICRE )
@@ -55,8 +52,7 @@ C         ----- REPERTOIRE DE COLLECTION --
           CALL JJALLC ( ICLACO , IDATCO , 'E' , IBACOL )
           CALL JJCROC ( NOMLU(25:32) , ICRE )
         ELSE
-          CMESS = 'ERREUR DE PROGRAMMATION'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_97',1,NOML32)
         ENDIF
       ENDIF
 C FIN ------------------------------------------------------------------

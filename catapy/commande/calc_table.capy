@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 15/03/2010   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
    ACTION = FACT(statut='o', max='**',
                     fr = "Suite des opérations à effectuer sur la table",
       OPERATION = SIMP(statut='o', typ='TXM',
-                  into=('FILTRE', 'EXTR', 'RENOMME', 'TRI', 'COMB', 'AJOUT', 'OPER',)),
+                  into=('FILTRE', 'EXTR', 'RENOMME', 'TRI', 'COMB', 'AJOUT', 'OPER', 'SUPPRIME')),
       
       b_filtre = BLOC(condition="OPERATION == 'FILTRE'",
                       fr="Sélectionne les lignes de la table vérifiant un critère",
@@ -72,6 +72,12 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
                     fr="Extrait une ou plusieurs colonnes de la table",
          NOM_PARA = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                          fr="Noms des colonnes à extraire"),
+      ),
+   
+      b_suppr = BLOC(condition="OPERATION ==  'SUPPRIME'",
+                    fr="Supprime une ou plusieurs colonnes de la table",
+         NOM_PARA = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
+                         fr="Noms des colonnes à supprimer"),
       ),
    
       b_renomme = BLOC(condition="OPERATION == 'RENOMME'",

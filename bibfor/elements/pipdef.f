@@ -1,0 +1,157 @@
+       SUBROUTINE  PIPDEF(NDIM  ,NNO   ,KPG   ,IPOIDS,IVF   ,
+     &                    IDFDE ,GEOM  ,TYPMOD,COMPOR,DEPLM ,
+     &                    DDEPL ,DEPL0 ,DEPL1 ,DFDI  ,FM    ,
+     &                    EPSM  ,EPSP  ,EPSD  )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+       IMPLICIT NONE
+
+       INTEGER       NDIM, NNO,KPG
+       INTEGER       IPOIDS, IVF, IDFDE
+       CHARACTER*8   TYPMOD(*)
+       CHARACTER*16  COMPOR(*)
+       REAL*8        GEOM(NDIM,*),DEPLM(*)
+       REAL*8        DDEPL(*),DEPL0(*), DEPL1(*)
+       REAL*8        DFDI(*)
+       REAL*8        EPSM(6),EPSP(6),EPSD(6)     
+       REAL*8        FM(3,3)
+C       
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (PILOTAGE - PRED_ELAS/DEFORMATION)
+C
+C CALCUL DES DEFORMATIONS
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NDIM   : DIMENSION DE L'ESPACE
+C IN  NNO    : NOMBRE DE NOEUDS DE L'ELEMENT
+C IN  KPG    : NUMERO DU POINT DE GAUSS
+C IN  IPOIDS : POIDS DES POINTS DE GAUSS
+C IN  IVF    : VALEUR DES FONCTIONS DE FORME
+C IN  IDFDE  : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
+C IN  GEOM   : COORDONEES DES NOEUDS
+C IN  TYPMOD : TYPE DE MODELISATION
+C IN  COMPOR : COMPORTEMENT
+C IN  DEPLM  : DEPLACEMENT EN T-
+C IN  DDEPL  : INCREMENT DE DEPLACEMENT A L'ITERATION NEWTON COURANTE
+C IN  DEPL0  : CORRECTION DE DEPLACEMENT POUR FORCES FIXES
+C IN  DEPL1  : CORRECTION DE DEPLACEMENT POUR FORCES PILOTEES
+C OUT DFDI   : DERIVEE DES FONCTIONS DE FORME
+C OUT FM     : GRADIENT DE LA TRANSFORMATION AU TEMPS MOINS
+C OUT EPSM   : DEFORMATIONS AU TEMPS MOINS
+C OUT EPSP   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES FIXES
+C OUT EPSD   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES PILOTEES
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER  IFFG
+      LOGICAL  AXI,GRAND
+      INTEGER  NDIMSI
+      REAL*8   R,DEPS(6)
+      REAL*8   T9BID(3,3),T18BID(6,3)
+      REAL*8   POIDS
+C
+C ----------------------------------------------------------------------
+C
+
+C
+C --- INITIALISATIONS
+C
+      AXI    = TYPMOD(1) .EQ. 'AXIS'
+      GRAND  = COMPOR(3) .NE. 'PETIT'
+      NDIMSI = 2*NDIM
+C
+      IF (TYPMOD(2).EQ.'DEPLA') THEN
+
+C ----- CALCUL DE EPSM (LINEAIRE) OU EM (GREEN)  = EPS(UM)
+        CALL NMGEOM(NDIM  ,NNO   ,AXI   ,GRAND ,GEOM  ,
+     &              KPG   ,IPOIDS,IVF   ,IDFDE ,DEPLM ,
+     &              POIDS ,DFDI  ,FM    ,EPSM  ,R     )
+
+C ----- REACTUALISATION DE LA GEOMETRIE SI GRANDES DEFS
+        IF (GRAND) THEN
+          CALL DAXPY(NDIM*NNO, 1.D0, DEPLM,1, GEOM,1)
+        ENDIF
+
+C ----- CALCUL DE DEPS = EPS(DU)
+        CALL NMGEOM(NDIM  ,NNO   ,AXI   ,.FALSE.,GEOM  ,
+     &              KPG   ,IPOIDS,IVF   ,IDFDE  ,DDEPL ,
+     &              POIDS ,DFDI  ,T9BID ,DEPS   ,R     )
+
+C ----- CALCUL DE EPSP (= DEPS + EPS(DU0) )
+        CALL NMGEOM(NDIM  ,NNO   ,AXI   ,.FALSE.,GEOM  ,
+     &              KPG   ,IPOIDS,IVF   ,IDFDE  ,DEPL0 ,
+     &              POIDS ,DFDI  ,T9BID ,EPSP   ,R     )
+        CALL DAXPY(NDIMSI,1.D0,DEPS,1,EPSP,1)
+
+C ----- CALCUL DE EPSD (DEPS = EPSP + ETA EPSD)
+        CALL NMGEOM(NDIM  ,NNO   ,AXI   ,.FALSE.,GEOM  ,
+     &              KPG   ,IPOIDS,IVF   ,IDFDE  ,DEPL1 ,
+     &              POIDS ,DFDI  ,T9BID ,EPSD   ,R     )
+
+        ELSEIF (TYPMOD(2).EQ.'GRADEPSI') THEN
+          IFFG = IVF+(KPG-1)*NNO
+        CALL DFDMIP(NDIM  ,NNO     ,AXI  ,GEOM  ,KPG   ,
+     &              IPOIDS,ZR(IFFG),IDFDE,R     ,POIDS ,
+     &              DFDI  )
+C ----- CALCUL DE EPSM      
+        CALL NMEPSB(NDIM  ,NNO   ,AXI   ,ZR(IFFG),DFDI  ,
+     &              DEPLM ,EPSM  ,T18BID)
+     
+C ----- CALCUL DE DEPS = EPS(DU)     
+        CALL NMEPSB(NDIM  ,NNO   ,AXI   ,ZR(IFFG),DFDI  ,
+     &              DDEPL ,DEPS  ,T18BID)
+     
+C ----- CALCUL DE EPSP (= DEPS + EPS(DU0) )     
+        CALL NMEPSB(NDIM  ,NNO   ,AXI   ,ZR(IFFG),DFDI  ,
+     &              DEPL0 ,EPSP  ,T18BID)
+     
+C ----- CALCUL DE EPSD (DEPS = EPSP + ETA EPSD)     
+        CALL NMEPSB(NDIM  ,NNO   ,AXI   ,ZR(IFFG),DFDI  ,
+     &              DEPL1 ,EPSD  ,T18BID)
+        CALL DAXPY(NDIMSI,1.D0,DEPS,1,EPSP,1)
+      ELSE  
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+
+ 
+
+      END

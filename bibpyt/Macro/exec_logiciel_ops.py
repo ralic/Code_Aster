@@ -1,4 +1,4 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 16/11/2009   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF exec_logiciel_ops Macro  DATE 15/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,8 @@
 
 # RESPONSABLE COURTOIS M.COURTOIS
 
-import os.path
+import os
+import os.path as osp
 import traceback
 import shutil
 from types import ListType, TupleType
@@ -76,17 +77,19 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
       dMCF = mcf.cree_dict_valeurs(mcf.mc_liste)
       d_para['fichIN']  = 'fort.%d' % dMCF['UNITE_GEOM']
       d_para['fichOUT'] = 'fort.%d' % dMCF['UNITE']
+      if osp.exists(d_para['fichOUT']):
+         os.remove(d_para['fichOUT'])
       
       if dMCF['FORMAT'] == 'GMSH':
          mode_lancement = CMD_EXTERNE
          cmd = '%(prog)s %(options)s -o %(fichOUT)s %(fichIN)s'
-         d_para['prog'] = os.path.join(aster.repout(), 'gmsh')
+         d_para['prog'] = osp.join(aster.repout(), 'gmsh')
          d_para['options'] = ('-3',)
       
       elif dMCF['FORMAT'] == 'GIBI':
          mode_lancement = CMD_EXTERNE
          cmd = '%(prog)s %(options)s %(fichIN)s %(fichOUT)s'
-         d_para['prog'] = os.path.join(aster.repout(), 'gibi')
+         d_para['prog'] = osp.join(aster.repout(), 'gibi')
       
       elif dMCF['FORMAT'] == 'SALOME':
          mode_lancement = EXECFILE
@@ -144,7 +147,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
          txt = open(d_para['fichIN'], 'r').read()
          UTMESS('F', 'EXECLOGICIEL0_5', valk=txt)
       
-      if not os.path.exists(d_para['fichMED']):
+      if not osp.exists(d_para['fichMED']):
          UTMESS('F', 'EXECLOGICIEL0_6', valk=d_para['fichMED'])
       else:
          # copie fichMED vers fichOUT pour pouvoir le récupérer
@@ -159,6 +162,9 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
       UL = UniteAster()
       umail = UL.Libre(action='ASSOCIER',
                        nom='exec_logiciel.%s2mail' % dMCF['FORMAT'].lower())
+      
+      if not osp.exists(d_para['fichOUT']):
+        UTMESS('F', 'EXECLOGICIEL0_13', valk=dMCF['FORMAT'])
       
       # déclaration du concept maillage en sortie
       self.DeclareOut('mail', dMCF['MAILLAGE'])

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -285,11 +285,13 @@ MACR_ADAP_MAIL(INFO=1,
                MAILLAGE_N = MUN_2,
                MAILLAGE_NP1 = CO("MDEUX_2"),
                MAILLAGE_NP1_ANNEXE = CO("MDEUX_1"),
-               ZONE=(_F(X_MINI = -0.01,
+               ZONE=(_F(TYPE = 'RECTANGLE',
+                        X_MINI = -0.01,
                         X_MAXI =  0.26,
                         Y_MINI =  0.24,
                         Y_MAXI =  0.51,),
-                     _F(X_CENTRE = 0.55,
+                     _F(TYPE = 'DISQUE',
+                        X_CENTRE = 0.55,
                         Y_CENTRE = 0.75,
                         RAYON   =  0.30,),),
                MAJ_CHAM=(_F(

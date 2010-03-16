@@ -1,4 +1,4 @@
-#@ MODIF contact2 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact2 Messages  DATE 15/03/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,8 +32,11 @@ cata_msg={
 
 12 : _("""
 Contact avec formulation continue. 
-Une zone de contact contient à la fois des éléments axisymétriques et non axisymétriques.
-Vérifier votre AFFE_MODELE et le type de vos mailles dans la définition des surfaces de contact. 
+Votre modèle contient des surfaces de contact qui s'appuient sur un mélange d'éléments axisymétriques et non axisymétriques.
+Cela n'a pas de sens. Toute la modélisation doit être axisymétrique.
+
+Conseil :
+Vérifiez votre AFFE_MODELE et le type de vos mailles dans la définition des surfaces de contact. 
 """),
 
 13 : _("""

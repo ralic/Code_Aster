@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (TETRA4)
 # tpll01h.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,11 +87,13 @@ TEST_RESU(RESU=(
    MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
       ),);
 
+# Attention : le test d'interpenetration peut etre long (voir la documentation).
 MACR_INFO_MAIL( MAILLAGE=MAIL,
                 QUALITE='OUI',
                 INTERPENETRATION='OUI',
                 CONNEXITE='OUI',
-                TAILLE='OUI'
+                TAILLE='OUI',
+                PROP_CALCUL='OUI'
                )
 
 FIN()

@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith9 Messages  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -209,39 +209,19 @@ cata_msg = {
  le vecteur directeur est nul.
 """),
 
-83 : _("""
- nombre maximum d'itérations atteint
-"""),
-
 84 : _("""
  précision machine depassée
 """),
 
-85 : _("""
- problème pilo : 3 solutions ou plus
-"""),
 
-86 : _("""
- matrice mat non inversible
-"""),
 
-87 : _("""
- problème pilo
-"""),
 
-88 : _("""
- loi de comportement non disponible pour le pilotage
-"""),
 
-89 : _("""
- le pilotage PRED_ELAS nécessite ETA_PILO_MIN et ETA_PILO_MAX
- pour la loi ENDO_ISOT_BETON
-"""),
 
-90 : _("""
- le pilotage PRED_ELAS nécessite ETA_PILO_MIN et ETA_PILO_MAX
- pour la loi ENDO_ORTH_BETON
-"""),
+
+
+
+
 
 91 : _("""
  le nombre de noeuds mesuré doit etre inférieur au nombre de noeuds du modèle

@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,10 +43,10 @@ C
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
 C     ==================================================================
-      INTEGER          VALI(5) , INFO        
+      INTEGER          VALI(6) , INFO        
       CHARACTER*8      KCOND , STAOU
       CHARACTER*24     LADATE
 C     ------------------------------------------------------------------
@@ -113,19 +113,24 @@ C
             VALI(3) = NBDYN
             VALI(4) = NBFREE
             VALI(5) = NINT(MLDYN/(1024*1024))
+            VALI(6) = NINT(LGIO/(1024*1024))
             WRITE(IFM,*) ' '
             WRITE(IFM,*) '  STATISTIQUES CONCERNANT L'''
      &                 //'ALLOCATION DYNAMIQUE :' 
-            WRITE(IFM,*) '    TAILLE CUMULEE MAXIMUM ',VALI(1),' Mo,' 
-            WRITE(IFM,*) '    TAILLE CUMULEE LIBEREE ',VALI(5),' Mo.' 
-            WRITE(IFM,*) '    NOMBRE TOTAL D''ALLOCATIONS  :',    
-     &                 VALI(3),'.' 
-            WRITE(IFM,*) '    NOMBRE TOTAL DE LIBERATIONS :',    
-     &                 VALI(4),'.' 
-            WRITE(IFM,*) '    ',ICDYN,' APPELS AU MECANISME DE ',
-     &                 'LIBERATION.' 
-            WRITE(IFM,*) '    TAILLE MEMOIRE CUMULEE RECUPEREE :',    
+            WRITE(IFM,*) '    TAILLE CUMULEE MAXIMUM            :',
+     &                 VALI(1),' Mo.' 
+            WRITE(IFM,*) '    TAILLE CUMULEE LIBEREE            :', 
+     &                 VALI(5),' Mo.' 
+            WRITE(IFM,*) '    NOMBRE TOTAL D''ALLOCATIONS        :',    
+     &                 VALI(3) 
+            WRITE(IFM,*) '    NOMBRE TOTAL DE LIBERATIONS       :',    
+     &                 VALI(4) 
+            WRITE(IFM,*) '    APPELS AU MECANISME DE LIBERATION :',
+     &                 ICDYN 
+            WRITE(IFM,*) '    TAILLE MEMOIRE CUMULEE RECUPEREE  :',    
      &                 MXLTOT,' Mo.' 
+            WRITE(IFM,*) '    VOLUME DES ENTREES/SORTIES        :',
+     &                  VALI(6),' Mo.'    
             WRITE(IFM,*) ' '
           ENDIF         
           CALL ENLIRD(LADATE)

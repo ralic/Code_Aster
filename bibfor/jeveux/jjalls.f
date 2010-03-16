@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,8 +64,8 @@ C ----------------------------------------------------------------------
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      &               IDMARQ     , IDNOM      ,              IDLONG     ,
      &               IDLONO     , IDLUTI     , IDNUM
@@ -140,7 +140,8 @@ C
             IVAL(4)=LTOT*LOIS
             CALL U2MESI('F','JEVEUX_62',4,IVAL)
           ELSE
-            CALL JJLDYN(LTOT)
+            CALL JJLDYN(2,-1,LTOT)
+            IF ( LTOT .LT. LSIC ) CALL JJLDYN(0,-1,LTOT)
             GOTO 50
           ENDIF
         ENDIF
@@ -165,7 +166,8 @@ C
             IVAL(2)=LTOT*LOIS
             CALL U2MESI('F','JEVEUX_60',2,IVAL)
           ELSE
-            CALL JJLDYN(LTOT)
+            CALL JJLDYN(2,-1,LTOT)
+            IF ( LTOT .LT. LSIC ) CALL JJLDYN(0,-1,LTOT)
             GOTO 50
           ENDIF
         ENDIF

@@ -1,0 +1,117 @@
+       SUBROUTINE  PIDEFO(NDIM  ,NPG   ,KPG   ,COMPOR,FM    ,
+     &                    EPSM  ,EPSP  ,EPSD  ,COPILO)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+       IMPLICIT NONE
+
+       INTEGER       NDIM, KPG,NPG
+       CHARACTER*16  COMPOR(*)
+       REAL*8        EPSM(6),EPSP(6),EPSD(6)     
+       REAL*8        FM(3,3)
+       REAL*8        COPILO(5,NPG)
+C       
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (PILOTAGE - PRED_ELAS/DEFORMATION)
+C
+C PILOTAGE PAR DEFORMATION
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NDIM   : DIMENSION DE L'ESPACE
+C IN  NPG    : NOMBRE DE POINTS DE GAUSS
+C IN  KPG    : NUMERO DU POINT DE GAUSS
+C IN  COMPOR : COMPORTEMENT
+C IN  FM     : GRADIENT DE LA TRANSFORMATION AU TEMPS MOINS
+C IN  EPSM   : DEFORMATIONS AU TEMPS MOINS
+C IN  EPSP   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES FIXES
+C IN  EPSD   : CORRECTION DE DEFORMATIONS DUES AUX CHARGES PILOTEES
+C OUT COPILO : COEFFICIENTS A0 ET A1 POUR CHAQUE POINT DE GAUSS
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      LOGICAL  GRAND
+      INTEGER  NDIMSI
+      INTEGER  INDI(6), INDJ(6), PRAC(6)
+      REAL*8   FF
+      REAL*8   RAC2,DNRM2,DDOT
+      REAL*8   EM(6),EPSMNO
+      INTEGER  IJ,KL,I,J,K,L
+C      
+      DATA INDI /1,2,3,2,3,3/
+      DATA INDJ /1,2,3,1,1,2/
+      DATA PRAC /0,0,0,1,1,1/    
+C
+C ----------------------------------------------------------------------
+C
+
+C
+C --- INITIALISATIONS
+C
+      RAC2   = SQRT(2.D0)
+      GRAND  = COMPOR(3) .NE. 'PETIT'
+      NDIMSI = 2*NDIM
+C      
+C --- TRANSPORT DU TENSEUR DES DEFORMATIONS E := F E FT
+C
+      IF (GRAND) THEN
+        CALL DCOPY (NDIMSI,EPSM  ,1     ,EM    ,1     )
+        CALL R8INIR(NDIMSI,0.D0  ,EPSM  ,1     )
+
+        DO 50 IJ = 1, NDIMSI
+          DO 55 KL = 1, NDIMSI
+            I = INDI(IJ)
+            J = INDJ(IJ)
+            K = INDI(KL)
+            L = INDJ(KL)
+            FF       = (FM(I,K)*FM(J,L) + FM(I,L)*FM(J,K)) / 2
+            FF       = FF * RAC2**PRAC(IJ) * RAC2**PRAC(KL)
+            EPSM(IJ) = EPSM(IJ) + FF*EM(KL)
+  55      CONTINUE
+  50    CONTINUE
+      END IF
+C
+C --- INCREMENT DE DEFORMATION PROJETE
+C
+      EPSMNO = DNRM2(NDIMSI,EPSM  ,1)
+      COPILO(1,KPG) = DDOT(NDIMSI, EPSM,1, EPSP,1)/EPSMNO
+      COPILO(2,KPG) = DDOT(NDIMSI, EPSM,1, EPSD,1)/EPSMNO
+ 
+
+      END

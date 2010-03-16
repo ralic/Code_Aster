@@ -1,6 +1,6 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,8 @@ C
       COMMON /JIACCE/  JIACCE(N)
       COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
+      COMMON /KINDIR/  INDIR(1)
+      COMMON /JINDIR/  JINDIR(N)
       COMMON /INBDET/  NBLIM(N),NBGROS(N),NBPETI(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
@@ -106,12 +108,12 @@ C ----------------------------------------------------------------------
       CHARACTER*16     K16BID
       CHARACTER*24     VALK(3)
       INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2), LGBL
-      INTEGER          VALI(7),IRT
+      INTEGER          VALI(7),IRT,IND
       REAL*8           VALR(1)
       PARAMETER      ( NCAR = 11 )
 C ----------------------------------------------------------------------
       LOGICAL          LENRG
-      INTEGER          LIDBAS      , LIDEFF
+      INTEGER          LIDBAS      , LIDEFF 
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
       CHARACTER*8      CIDBAS(LIDBAS)
       INTEGER          KAT(LIDBAS) , LSO(LIDBAS) , KDY(LIDBAS)
@@ -119,14 +121,12 @@ C ----------------------------------------------------------------------
      &               '$$DOCU  ' , '$$ORIG  ' , '$$RNOM  ' , '$$LTYP  ' ,
      &               '$$LONG  ' , '$$LONO  ' , '$$DATE  ' , '$$LUTI  ' ,
      &               '$$HCOD  ' , '$$USADI ' , '$$ACCE  ' , '$$MARQ  ' ,
-     &               '$$XXXX  ' , '$$TLEC  ' , '$$TECR  ' , '$$IADM  ' /
+     &               '$$INDI  ' , '$$TLEC  ' , '$$TECR  ' , '$$IADM  ' /
 C DEB ------------------------------------------------------------------
       IPGCA = IPGC
       IPGC  = -2
       IRT = 0
 C
-      KAT(17) = 0
-      KDY(17) = 0
       KCLAS = CLAS
       KSTIN = STI
       KSTOU = STO
@@ -212,6 +212,14 @@ C
      &               KDY(15))
         JIACCE(IC) = IADRS - 1
         CALL JJECRS(KAT(15),KDY(15),IC,15,0,'E',IMARQ(JMARQ(IC)+2*15-1))
+C
+        LGBL = NREMAX(IC)*LOIS
+        CALL JJALLS (LGBL,IC,'V','I',LOIS,Z,INDIR,IADRS,KAT(17),KDY(17))
+        JINDIR(IC) = IADRS - 1 
+        CALL JJECRS(KAT(17),KDY(17),IC,17,0,'E',IMARQ(JMARQ(IC)+2*17-1))
+        DO 345 IND = 1 , NREMAX(IC)
+          INDIR(JINDIR(IC)+IND) = IND
+ 345    CONTINUE                     
 C
         LGBL = 1024*LONGBL(IC)*LOIS
         CALL JJALLS (LGBL,IC,'V','I',LOIS,Z,ITLEC,IADRS ,KITLEC(IC),
@@ -353,7 +361,7 @@ C
             LONG(JLONG(IC)+I) = NBLMAX(IC)
             LONO(JLONO(IC)+I) = NBLMAX(IC)
             LSO(I)            = NBLMAX(IC) * LTYP(JLTYP(IC)+I)
-         ELSE IF ( I.EQ.18 .OR. I.EQ.19 ) THEN
+          ELSE IF ( I.EQ.18 .OR. I.EQ.19 ) THEN
             LONG(JLONG(IC)+I) = LBLOC
             LONO(JLONO(IC)+I) = LBLOC
             LSO(I)            = LBLOC * LTYP(JLTYP(IC)+I)
@@ -385,6 +393,12 @@ C
         LCARAO = NCAR * LOIS
         CALL JJALLS (LCARAO,IC,'V','I',LOIS,Z,CARA,IADRS,KAT(1),KDY(1))
         JCARA(IC) = IADRS
+C
+C  ---- L'ECRITURE DU STATUT ET DE L'ETAT SERA DE NOUVEAU EFFECTUEE 
+C ----- LORSQUE LES DIMENSIONS AURONT ETE RELUES
+C
+        CALL JJECRS (KAT(1),KDY(1),IC,1,0,'E',VALI)
+
         CALL JXLIR1 ( IC , CARA(JCARA(IC)) )
         CVERSB = '  .  .  '
         CALL CODENT(CARA(JCARA(IC) + 8 ),'D ',CVERSB(1:2) )
@@ -460,6 +474,14 @@ C ----- NOUVEL OPEN DE LA BASE
           CALL JXOUVR (IC , K+1)
  100    CONTINUE
         IEXT(IC) = NBEXT
+C
+        LGBL = NREMAX(IC)*LOIS
+        CALL JJALLS (LGBL,IC,'V','I',LOIS,Z,INDIR,IADRS,KAT(17),KDY(17))
+        JINDIR(IC) = IADRS - 1
+        CALL JJECRS(KAT(17),KDY(17),IC,17,0,'E',IMARQ(JMARQ(IC)+2*17-1))
+        DO 567 IND = 1 , NREMAX(IC)
+          INDIR(JINDIR(IC)+IND) = IND
+ 567    CONTINUE        
 C
         LGBL = 1024*LONGBL(IC)*LOIS
         CALL JJALLS (LGBL,IC,'V','I',LOIS,Z,ITLEC,IADRS ,KITLEC(IC),

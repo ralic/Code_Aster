@@ -4,7 +4,7 @@
       REAL*8 TMAX,PREC
 C TOLE CRS_505 CRP_4
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+C MODIF DEBUG  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,7 +62,7 @@ C-------------------------------------------------------------
       CALL ASSERT(PREC.GT.0.D0)
 
       TMAX=-99.D0
-      IF (LDYN.EQ.'OUI') CALL JJLDYN(LTOT)
+      IF (LDYN.EQ.'OUI') CALL JJLDYN(0,-1,LTOT)
 
       NBFREE=0
       IBID=0

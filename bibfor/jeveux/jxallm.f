@@ -1,6 +1,6 @@
       SUBROUTINE JXALLM ( IADZON, ISZON , LISZON , JISZON )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,17 +38,17 @@ C     ------------------------------------------------------------------
       IERR = 0
       IF (IADZON .EQ. 0 ) THEN
          CALL  HPALLOC ( IADA , LISZON , IERR , 0 )
-         NBDYN = NBDYN+1
       ELSE
          IADA = IADZON
       ENDIF
+      NBDYN = NBDYN+1
       IF ( IERR .EQ. 0 ) THEN
          VALLOC = LOC(ISZON)
          JISZON = (IADA - VALLOC)/LOISEM()
          IMAX = ISMAEM()
          DO 10 I = 1 , LISZON
             ISZON(JISZON+I) = IMAX
-   10        CONTINUE
+   10    CONTINUE
       ELSE
          IF ( IERR .EQ. -1 ) THEN
             CALL U2MESI('F','JEVEUX_49',1,LISZON)

@@ -1,4 +1,4 @@
-#@ MODIF execlogiciel0 Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF execlogiciel0 Messages  DATE 15/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,6 +78,14 @@ Mode de lancement inconnu : %(k1)s
 
 12 : _("""
  Fin de la commande : %(k1)s
+"""),
+
+13 : _("""
+ -> Le maillage n'a pas été produit par le logiciel externe (format "%(k1)s")
+ 
+ -> Conseil :
+    Vous devriez trouver ci-dessus des messages du logiciel en question
+    expliquant les raisons de cet échec.
 """),
 
 }

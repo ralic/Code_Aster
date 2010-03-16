@@ -1,4 +1,4 @@
-#@ MODIF post0 Messages  DATE 08/02/2010   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF post0 Messages  DATE 15/03/2010   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,4 +128,12 @@ La position dans l'épaisseur du point à l occurence %(i1)d est %(r1)f.
 Elle doit être comprise entre -1. et 1. (on divise par la demi-épaisseur)
 """),
 
+
+24: _("""
+Attention la ligne de coupe %(i1)d traverse des zones sans matière :
+ - Les coordonnées des points sur la ligne de coupe sont :
+            %(k1)s
+ - Le nombre de points éliminés (car hors de la matière) est:
+            %(i2)d
+"""),
 }

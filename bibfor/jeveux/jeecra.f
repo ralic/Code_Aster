@@ -1,6 +1,6 @@
       SUBROUTINE JEECRA ( NOMLU , CATR , IVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,6 @@ C
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
 C     ------------------------------------------------------------------
-      CHARACTER *75   CMESS
       CHARACTER *32   NOML32
       CHARACTER *1    GENRI , TYPEI
       CHARACTER *8    CATRLU
@@ -116,9 +115,7 @@ C
       TYPEI = TYPE ( JTYPE(IC) + ID )
       IF ( CATRLU .EQ. 'LONT    ' ) THEN
          IF ( .NOT. LCONTI ) THEN
-           CMESS= 'ATTRIBUT '//CATRLU//
-     &            ' UNIQUEMENT POUR COLLECTION CONTIGUE'
-           CALL U2MESK('F','JEVEUX_01',1,CMESS)
+           CALL U2MESK('F','JEVEUX_98',1,CATRLU)
          ELSE
            LLONG = .FALSE.
            LLUTI = .FALSE.
@@ -130,9 +127,7 @@ C
      &      (GENRI .EQ. 'N'          .AND. CATRLU(1:4).EQ. 'NOMU')  .OR.
      &      (GENRI .NE. 'V'          .AND. CATRLU(1:4).EQ. 'LONM') .OR.
      &      (GENRI .NE. 'V'          .AND. CATRLU(1:4).EQ. 'LONU')) THEN
-             CMESS= 'NOM D''ATTRIBUT '//CATRLU//
-     &             ' INCOMPATIBLE AVEC LE GENRE '//GENRI
-             CALL U2MESK('F','JEVEUX_01',1,CMESS)
+             CALL U2MESK('F','JEVEUX_99',1,GENRI)
          ENDIF
       ENDIF
 C
@@ -151,15 +146,11 @@ C
             LONGJ = IVAL
           ENDIF
           IF ( LONGI .NE. 0 ) THEN
-            CMESS = 'ATTRIBUT '//CATRLU//
-     &              ' NON MODIFIABLE OU DEJA DEFINI'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX1_01',1,CATRLU)
           ELSE
             LONG ( JLONG(IC) + ID ) = LONGJ
             IF ( LONOI .NE. 0 .AND. IRET .EQ. 1 ) THEN
-              CMESS = 'ATTRIBUT '//CATRLU//
-     &                ' NON MODIFIABLE OU DEJA DEFINI POUR UN O.S.'
-              CALL U2MESK('F','JEVEUX_01',1,CMESS)
+              CALL U2MESK('F','JEVEUX1_02',1,CATRLU)
             ELSE
               IF ( GENRI .EQ. 'V' ) THEN
                 LONO ( JLONO(IC) + ID ) = LONGJ
@@ -193,9 +184,7 @@ C
               ENDIF
               IF ( LCONTI ) THEN
                 IF(LONOI.NE.0.AND.LONOI.LT.NMAXI*LONO(JLONO(IC)+ID))THEN
-                  CMESS = 'ATTRIBUT '//CATRLU//
-     &                    ' NON COMPATIBLE AVEC VALEUR DE LONT'
-                  CALL U2MESK('F','JEVEUX_01',1,CMESS)
+                  CALL U2MESK('F','JEVEUX1_03',1,CATRLU)
                 ELSE
                   LONO (JLONO(IC)+ID) = NMAXI * LONO ( JLONO(IC) + ID )
                 ENDIF
@@ -207,8 +196,7 @@ C
             LUTI ( JLUTI(IC) + ID ) = IVAL
           ENDIF
         ELSE
-          CMESS = 'NOM D''ATTRIBUT '//CATRLU//' NON ACCESSIBLE'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX1_04',1,CATRLU)
         ENDIF
       ELSE IF ( IRET .EQ. 3 ) THEN
         IF ( LLONG .AND. .NOT. LCONST ) THEN
@@ -223,9 +211,7 @@ C
             IL1 = JISZON + IBLONO - 1 + IDATOC + 1
             IL0 = JISZON + IBLONO - 1 + IDATOC
             IF ( ISZON(IL0) .EQ. 0 ) THEN
-               CMESS = 'COLLECTION CONTIG: DEFINIR '//CATRLU//
-     &                 ' DANS L''ORDRE D''INSERTION DES OBJETS'
-               CALL U2MESK('F','JEVEUX_01',1,CMESS)
+               CALL U2MESK('F','JEVEUX1_05',1,CATRLU)
             ELSE
               LONTI = ISZON(IL0)
               LONOI = 0
@@ -238,9 +224,7 @@ C
             LONOI  = ISZON ( JISZON + IBLONO - 1 + IDATOC )
           ENDIF
           IF ( LONOI .NE. 0 ) THEN
-            CMESS = 'ATTRIBUT '//CATRLU//
-     &              ' NON MODIFIABLE OU DEJA DEFINI LONO NON NUL'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX1_06',1,CATRLU)
           ENDIF
           IF ( CATRLU.EQ.'LONMAX  ' ) THEN
             LONGI = ISZON ( JISZON + IBLONG - 1 + IDATOC )
@@ -248,15 +232,12 @@ C
             LONOJ = LONGJ
           ENDIF
           IF ( LONGI .NE. 0 ) THEN
-            CMESS ='ATTRIBUT '//CATRLU//' NON MODIFIABLE OU DEJA DEFINI'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX1_01',1,CATRLU)
           ELSE
             IF ( LCONTI ) THEN
               LONT=LONO( JLONO(IC) + ID )
               IF ( LONT .NE. 0 .AND. LONTI -1 + LONOJ .GT. LONT ) THEN
-                CMESS = 'ATTRIBUT '//CATRLU//' INCOMPATIBLE AVEC VALEUR'
-     &                  //' INITIALE DE LONT'
-                CALL U2MESK('F','JEVEUX_01',1,CMESS)
+                CALL U2MESK('F','JEVEUX1_07',1,CATRLU)
               ELSE
                 ISZON(JISZON+IBLONO-1+IDATOC+1) = LONTI + LONOJ
               ENDIF
@@ -273,8 +254,7 @@ C
           ENDIF
         ENDIF
       ELSE
-        CMESS = 'NOM D''ATTRIBUT '//CATRLU//' NON ACCESSIBLE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX1_04',1,CATRLU)
       ENDIF
 C FIN ------------------------------------------------------------------
       END

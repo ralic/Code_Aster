@@ -1,7 +1,7 @@
       SUBROUTINE RAPO3D(NUMDLZ,IOCC,FONREZ,LISREZ,CHARGZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 16/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C --------- VARIABLES LOCALES ---------------------------
       INTEGER VALI(2)
       REAL*8 IG(6),COORIG(3),ANGT,BETA,EPS,UN,R8PREM
       REAL*8 XPOU,YPOU,ZPOU,S,S1,XG,YG,ZG,D
-      REAL*8 AX,AY,AZ,AXX,AYY,AZZ,AXY,AXZ,AYZ
+      REAL*8 AX,AY,AZ,AXX,AYY,AZZ,AXY,AXZ,AYZ,VALR(6)
       LOGICAL EXISDG
       CHARACTER*1 K1BID
       INTEGER IOP,NLIAI,I,NARL,NRL,IBID,JNOMA,JCOOR,INOM
@@ -401,12 +401,13 @@ C     ---------------------------------------------------
       D = SQRT((XPOU-XG)* (XPOU-XG)+ (YPOU-YG)* (YPOU-YG)+
      &    (ZPOU-ZG)* (ZPOU-ZG))
       IF (D.GT.EPS) THEN
-        WRITE (IFM,*) 'ATTENTION, IL N''Y A PAS IDENTITE '//
-     &    'GEOMETRIQUE ENTRE LE CENTRE GEOMETRIQUE DE LA TRACE DE'
-        WRITE (IFM,*) 'LA SECTION DE LA POUTRE SUR LE 3D ET LE'//
-     &    ' NOEUD POUTRE A RACCORDER'
-        WRITE (IFM,1000) XG,YG,ZG
-        WRITE (IFM,1010) XPOU,YPOU,ZPOU
+        VALR(1)=XG
+        VALR(2)=YG
+        VALR(3)=ZG
+        VALR(4)=XPOU
+        VALR(5)=YPOU
+        VALR(6)=ZPOU
+        CALL U2MESR('A','CALCULEL3_80',6,VALR)
       END IF
 
 C --- CALCUL DU TENSEUR D'INERTIE EN G, CE TENSEUR EST SYMETRIQUE :
@@ -468,7 +469,7 @@ C     ------------------------------------------------------------
 
 C --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
 C     --------------------------------------------------------
-      CALL MEMARE('V','&&RAPO3D',MOD,' ',' ','CHAR_MECA')      
+      CALL MEMARE('V','&&RAPO3D',MOD,' ',' ','CHAR_MECA')
 
 C --- ASSEMBLAGE DE LCHOUT(1) DANS LE CHAMNO DE NOM 'CH_DEPL_1'
 C     ---------------------------------------------------------

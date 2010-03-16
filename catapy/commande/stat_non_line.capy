@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+#& MODIF COMMANDE  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,6 +118,9 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            regles=(EXCLUS('NOEUD','GROUP_NO'),PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TYPE    =SIMP(statut='o',typ='TXM',into=("DDL_IMPO","LONG_ARC","PRED_ELAS","DEFORMATION","ANA_LIM") ),
            COEF_MULT       =SIMP(statut='f',typ='R',defaut= 1.0E+0),
+           EVOL_PARA       =SIMP(statut='f',typ='TXM',defaut="SANS", into=("SANS","CROISSANT","DECROISSANT") ),
+           
+           
            ETA_PILO_MAX    =SIMP(statut='f',typ='R'),
            ETA_PILO_MIN    =SIMP(statut='f',typ='R'),
            ETA_PILO_R_MAX  =SIMP(statut='f',typ='R'),

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/03/2010   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE FLUX THERMIQUE (3D_DIAG)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 #
 # ----------------------------------------------------------------------
 # CALCUL DE FLUX THERMIQUE
-# MODELISATION : ELEMENTS THERMIQUES 3D_DIAG(HEXA8,PENTA6,TETRA4,PYRAM5)
+# MODELISATION : ELEMENTS THERMIQUES 3D_DIAG(HEXA8,PENTA6,TETRA4)
 # ----------------------------------------------------------------------
 #
 DEBUT(CODE=_F(NOM='ZZZZ166F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -30,7 +30,7 @@ PRE_GIBI()
 MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),)
 #
 MO=AFFE_MODELE(MAILLAGE=MAIL,
-               AFFE=_F(TOUT = 'OUI',
+               AFFE=_F(GROUP_MA=('VHE8','VPE6','VTE4'),
                        PHENOMENE = 'THERMIQUE',
                        MODELISATION = '3D_DIAG'))
 #
@@ -116,19 +116,6 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
 #
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
                    NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUX',
-                   MAILLE='M1795', POINT=1,
-                   PRECISION=1.0E-3, VALE=-2.),
-                _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUY',
-                   MAILLE='M1795', POINT=1,
-                   PRECISION=1.0E-3, VALE=-3.),
-                _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUZ',
-                   MAILLE='M1795', POINT=1,
-                   PRECISION=1.0E-3, VALE=-4.),
-#
-                _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUX',
                    MAILLE='M1838', POINT=1,
                    PRECISION=1.0E-3, VALE=-2.),
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
@@ -166,19 +153,6 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
                    NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUZ',
                    MAILLE='M1200', GROUP_NO='D2',
-                   PRECISION=1.0E-3, VALE=-4.),
-#
-                _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUX',
-                   MAILLE='M1795', GROUP_NO='D3',
-                   PRECISION=1.0E-3, VALE=-2.),
-                _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUY',
-                   MAILLE='M1795', GROUP_NO='D3',
-                   PRECISION=1.0E-3, VALE=-3.),
-                _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUZ',
-                   MAILLE='M1795', GROUP_NO='D3',
                    PRECISION=1.0E-3, VALE=-4.),
 #
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
@@ -267,19 +241,6 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
                    NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUZ',
                    MAILLE='M1200', GROUP_NO='D2',
                    PRECISION=5.5E-2, VALE=-8.),
-#
-                _F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUX',
-                   MAILLE='M1795', GROUP_NO='D3',
-                   PRECISION=4.5E-2, VALE=-10.),
-                _F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUY',
-                   MAILLE='M1795', GROUP_NO='D3',
-                   PRECISION=2.5E-2, VALE=-30.),
-                _F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUZ',
-                   MAILLE='M1795', GROUP_NO='D3',
-                   PRECISION=10.5E-2, VALE=-8.),
 #
                 _F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
                    NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUX',

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/10/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,8 +31,8 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=macr_adap_mail_ops,
 #
 # 2. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V9_5",
-                        into=("V9_5", "V9_N", "V9_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V9_6",
+                        into=("V9_6", "V9_N", "V9_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #
@@ -66,23 +66,23 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=macr_adap_mail_ops,
                     ) ,
 #
 # 6. Les options ; par defaut, on controle tout
-# 6.1. Nombre de noeuds et elements
+# 6.1. Nombre de noeuds et mailles
 #
   NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
-                        fr="Nombre de noeuds et éléments du maillage",
-                        ang="Number of nodes and elements in the mesh" ),
+                        fr="Nombre de noeuds et de mailles du maillage",
+                        ang="Number of nodes and meshes in the mesh" ),
 #
-# 6.2. Determination de la qualite des elements du maillage
+# 6.2. Determination de la qualite des mailles du maillage
 #
   QUALITE        = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                         fr="Qualité du maillage",
-                        ang="Mesh quality" ),
+                        ang="Quality of the mesh" ),
 #
 # 6.3. Connexite du maillage
 #
   CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                         fr="Connexité du maillage.",
-                        ang="Mesh connexity." ),
+                        ang="Connexity of the mesh." ),
 #
 # 6.4. Taille des sous-domaines du maillage
 #
@@ -96,11 +96,30 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=macr_adap_mail_ops,
                         fr="Controle de la non interpénétration des éléments.",
                         ang="Overlapping checking." ),
 #
-# 7. Gestion des éléments autres que ceux compatibles avec HOMARD
-#       "REFUSER" : ils sont refuses (defaut)
-#       "IGNORER" : ils sont ignorés
+# 6.6. Propriétés du maillage de calcul
+#
+  PROP_CALCUL    = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
+                        fr="Propriétés du maillage de calcul.",
+                        ang="Properties of the calculation mesh." ),
+#
+# 7. Unite logique d'un fichier a ajouter a HOMARD.Configuration
+#
+  b_unite = BLOC( condition = " (VERSION_HOMARD == 'V9_N') or \
+                                (VERSION_HOMARD == 'V9_N_PERSO') " ,
+                                fr="Fichier supplementaire.",
+                                ang="Additional file.",
+#
+  UNITE = SIMP(statut='f',typ='I',
+               fr="Unite logique a ajouter a HOMARD.Configuration",
+               ang="Additional file to HOMARD.Configuration" ),
+#
+  ) ,
+#
+# 8. Gestion des mailles autres que celles compatibles avec HOMARD
+#       "REFUSER" : elles sont refusées (defaut)
+#       "IGNORER" : elles sont ignorées
 #
   ELEMENTS_NON_HOMARD = SIMP(statut='f',typ='TXM',defaut="REFUSER",into=("REFUSER","IGNORER"),
-                             fr="Acceptation d'éléments incompatibles avec HOMARD",
-                             ang="Incompatible elements for HOMARD" ),
+                             fr="Acceptation de mailles incompatibles avec HOMARD",
+                             ang="Incompatible meshes for HOMARD" ),
 )  ;

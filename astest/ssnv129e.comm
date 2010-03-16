@@ -1,4 +1,4 @@
-# MODIF  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ABBAS M.ABBAS
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 # ssnv129e.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
@@ -106,17 +106,6 @@ CHA2=DEFI_CONTACT(MODELE         = MO,
                                               'DR21','DR22','DR23','DR24',),
                         )
                   )
-CHA7=DEFI_CONTACT(MODELE         = MO,
-                  FORMULATION    = 'CONTINUE',
-                  REAC_GEOM      = 'SANS',
-                  
-                  ZONE=_F(
-                          GROUP_MA_MAIT='Q1',
-                          GROUP_MA_ESCL='Q21',
-                          SANS_GROUP_NO=('DR1','DR2','DR3','DR4',
-                                              'DR21','DR22','DR23','DR24',),
-                        )
-                  )
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
@@ -139,9 +128,6 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10, SYME='OUI',),
                           ),
                    CONTACT  =CHA2,       
                    COMP_INCR=_F(RELATION='ELAS',),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=3E-5,
-                   ITER_GLOB_MAXI=2,
-                   ),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    INFO=1,);
 

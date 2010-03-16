@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 15/03/2010   AUTEUR IDOUX L.IDOUX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -142,7 +142,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            INST_ETAT_INIT  =SIMP(statut='f',typ='R'),
          ),),
 #-------------------------------------------------------------------
-         INCREMENT       =FACT(statut='f',
+         INCREMENT       =FACT(statut='o',
            regles=(EXCLUS('NUME_INST_FIN','INST_FIN'),),
            LIST_INST       =SIMP(statut='o',typ=(listr8_sdaster,list_inst)),
            INST_INIT       =SIMP(statut='f',typ='R'),

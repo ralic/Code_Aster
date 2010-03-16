@@ -1,7 +1,7 @@
-      SUBROUTINE PIPERE(NPG, A, TAU, NSOL, DETA)
-
+      SUBROUTINE PIPERE(NPG   ,A     ,TAU   ,NSOL  ,ETA   )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,34 +18,43 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-
       INTEGER  NPG, NSOL
       REAL*8   A(0:1,NPG), TAU
-      REAL*8   DETA(2)
-
+      REAL*8   ETA(2)
+C
 C ----------------------------------------------------------------------
-C   RESOLUTION P(DETA) = TAU POUR LE PILOTAGE PAR PREDICTION ELASTIQUE
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
+C
+C RESOLUTION P(ETA) = TAU POUR LE PILOTAGE PAR PREDICTION ELASTIQUE OU
+C DEFORMATION
+C
 C ----------------------------------------------------------------------
-C IN       NPG     I   NOMBRE DE POINTS DE GAUSS CONSIDERES
-C IN       A      R8   COEFFICIENTS DROITES : TAU = A(1,G)*DETA + A(0,G)
-C IN       TAU    R8   SECOND MEMBRE DE L'EQUATION SCALAIRE
-C OUT      NSOL    I   NOMBRE DE SOLUTIONS (0, 1 OU 2)
-C OUT      DETA   R8   SOLUTIONS OU ESTIMATION SI NSOL=0
+C
+C
+C IN  NPG    : NOMBRE DE POINTS DE GAUSS CONSIDERES
+C IN  A      : COEFFICIENT DE LA DROITE TAU = A(1,G)*ETA + A(0,G)
+C IN  TAU    : SECOND MEMBRE DE L'EQUATION SCALAIRE
+C OUT NSOL   : NOMBRE DE SOLUTIONS (0, 1 OU 2)
+C OUT ETA    : SOLUTIONS OU ESTIMATION SI NSOL=0
+C
 C ----------------------------------------------------------------------
-
+C
       INTEGER  G
       REAL*8   X, INFINI
       REAL*8   R8MAEM
+C
 C ----------------------------------------------------------------------
-
+C
 
 C -- INITIALISATION DE I0
 
       INFINI  =  R8MAEM()
-      DETA(1) = -INFINI
-      DETA(2) =  INFINI
+      ETA(1) = -INFINI
+      ETA(2) =  INFINI
 
 
 C -- CONSTRUCTION DES INTERVALLES IG PAR RECURRENCE
@@ -62,22 +71,22 @@ C      SON ORDONNEE EST SUPERIEURE AU SECOND MEMBRE -> PAS DE SOL.
 C      LA PENTE DE LA DROITE CONSIDEREE EST NEGATIVE
         ELSE IF (A(1,G) .LT. 0) THEN
           X = (TAU - A(0,G)) / A(1,G)
-          IF (X .GT. DETA(2)) THEN
-            DETA(1) = DETA(2)
+          IF (X .GT. ETA(2)) THEN
+            ETA(1) = ETA(2)
             GOTO 1000
-          ELSE IF (X .GT. DETA(1)) THEN
-            DETA(1) = X
+          ELSE IF (X .GT. ETA(1)) THEN
+            ETA(1) = X
           END IF
 
 
 C      LA PENTE DE LA DROITE CONSIDEREE EST POSITIVE
         ELSE
           X = (TAU - A(0,G)) / A(1,G)
-          IF (X .LT. DETA(1)) THEN
-            DETA(2) = DETA(1)
+          IF (X .LT. ETA(1)) THEN
+            ETA(2) = ETA(1)
             GOTO 1000
-          ELSE IF (X .LT. DETA(2)) THEN
-            DETA(2) = X
+          ELSE IF (X .LT. ETA(2)) THEN
+            ETA(2) = X
           END IF
 
         END IF
@@ -86,14 +95,14 @@ C      LA PENTE DE LA DROITE CONSIDEREE EST POSITIVE
 
 C -- TRAITEMENT DU NOMBRE DE SOLUTION
 
-      IF (DETA(1).EQ. -INFINI  .AND. DETA(2).EQ.INFINI) THEN
+      IF (ETA(1).EQ. -INFINI  .AND. ETA(2).EQ.INFINI) THEN
         GOTO 1000
-      ELSE IF (DETA(1).EQ.-INFINI) THEN
+      ELSE IF (ETA(1).EQ.-INFINI) THEN
         NSOL = 1
-        DETA(1) = DETA(2)
-      ELSE IF (DETA(2).EQ.INFINI) THEN
+        ETA(1) = ETA(2)
+      ELSE IF (ETA(2).EQ.INFINI) THEN
         NSOL = 1
-        DETA(2) = DETA(1)
+        ETA(2) = ETA(1)
       ELSE
         NSOL = 2
       END IF
@@ -104,8 +113,8 @@ C -- CONSTRUCTION D'UNE ESTIMATION QUAND L'INTERVALLE EST VIDE
 
  1000 CONTINUE
       NSOL = 0
-      IF (DETA(1).EQ.-INFINI) DETA(1) = DETA(2)
-      IF (DETA(1).EQ. INFINI) DETA(1) = 0.D0
+      IF (ETA(1).EQ.-INFINI) ETA(1) = ETA(2)
+      IF (ETA(1).EQ. INFINI) ETA(1) = 0.D0
 
 
  9999 CONTINUE

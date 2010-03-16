@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith8 Messages  DATE 15/03/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -181,7 +181,9 @@ cata_msg = {
 """),
 
 65 : _("""
- echec loi de comportement dans ZEROFO
+Arret suite à l'échec de l'intégration de la loi de comportement. 
+   Verifiez vos paramètres, la cohérence des unités.
+   Essayez d'augmenter ITER_INTE_MAXI. 
 """),
 
 66 : _("""

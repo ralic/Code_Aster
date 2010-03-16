@@ -1,7 +1,7 @@
       SUBROUTINE NMDOPI(MODELZ,NUMEDD,SDPILO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C
       IMPLICIT NONE
       CHARACTER*(*)      MODELZ
       CHARACTER*24       NUMEDD
-      CHARACTER*14       SDPILO
+      CHARACTER*19       SDPILO
 C
 C ----------------------------------------------------------------------
 C
@@ -37,7 +37,7 @@ C
 C IN  MODELE : MODELE
 C IN  NUMEDD : NUME_DDL
 C OUT SDPILO : SD PILOTAGE
-C               .PLTK K24
+C               .PLTK
 C                (1) = TYPE DE PILOTAGE
 C                (2) = LIGREL POUR LES PILOTAGES PAR ELEMENTS
 C                (3) = NOM DE LA CARTE DU TYPE (PILO_K)
@@ -45,8 +45,10 @@ C                (4) = NOM DE LA CARTE DU TYPE (PILO_R) MIN/MAX
 C                (5) = PROJECTION 'OUI' OU 'NON' SUR LES BORNES
 C                (6) = TYPE DE SELECTION : 'RESIDU',
 C                        'NORM_INCR_DEPL' OU 'ANGL_INCR_DEPL'
-C               .PLCR K19 COEFFICIENTS DU PILOTAGE
-C               .PLIR R8  PARAMETRES DU PILOTAGE
+C                (7) = EVOLUTION DES BORNES 
+C                        'CROISSANT', 'DECROISSANT' OU 'SANS'
+C               .PLCR  COEFFICIENTS DU PILOTAGE
+C               .PLIR  PARAMETRES DU PILOTAGE
 C                (1) = COEF_PILO
 C                (2) = ETA_PILO_MAX
 C                (3) = ETA_PILO_MIN
@@ -76,12 +78,16 @@ C
       INTEGER       NOCC, NBG,JVALE,NBNO,NUMNOE, NUMEQU, NDDL, I, N
       INTEGER       JGRO, JLICMP, JDDL, JEQU, JPLIR, JPLTK
       INTEGER       IBID, IER, N1, N2, NEQ
-      REAL*8        COEF, MX, MI, R8VIDE, R8BID, LM(2), R8GAEM
-      COMPLEX*16    CBID
+      REAL*8        COEF, R8BID, LM(2)
+      REAL*8        R8VIDE,R8GAEM,R8PREM
+      COMPLEX*16    C16BID
       CHARACTER*8   K8BID,NOMA,NOMNOE,NOMDDL,NOMGRP,LBORN(2)
       CHARACTER*8   MODELE
-      CHARACTER*24  GRNO, LISCMP, LISDDL, LISEQU, TYPE,PROJ
-      CHARACTER*19  CHAPIL, LIGREL, LIGRMO, CARTE, CARTE2
+      CHARACTER*24  GRNO  ,LISCMP,LISDDL,LISEQU
+      CHARACTER*24  TYPPIL,PROJBO,TYPSEL,EVOLPA
+      CHARACTER*19  CHAPIL,LIGRMO,LIGRPI
+      CHARACTER*19  CARETA,CARTYP
+      REAL*8        ETRMAX,ETRMIN,ETAMIN,ETAMAX
       INTEGER       IFM,NIV
 C
 C ----------------------------------------------------------------------
@@ -92,9 +98,9 @@ C
 C --- INITIALISATIONS
 C
       MODELE = MODELZ
-
-C -- PAS DE PILOTAGE
-
+C
+C --- PAS DE PILOTAGE
+C
       CALL GETFAC('PILOTAGE',NOCC)
       IF (NOCC .EQ. 0) THEN
         GOTO 9999
@@ -103,73 +109,81 @@ C -- PAS DE PILOTAGE
           WRITE (IFM,*) '<MECANONLINE> ... CREATION SD PILOTAGE'
         ENDIF
       ENDIF
+C
+C --- LECTURE DU TYPE ET DE LA ZONE
+C
+      CALL WKVECT(SDPILO(1:19)// '.PLTK','V V K24',7,JPLTK)
+      CALL GETVTX('PILOTAGE','TYPE'           ,1,1,1,TYPPIL,N1)
+      ZK24(JPLTK)   = TYPPIL
+      CALL GETVTX('PILOTAGE','PROJ_BORNES'    ,1,1,1,PROJBO,N1)
+      ZK24(JPLTK+4) = PROJBO
+      CALL GETVTX('PILOTAGE','SELECTION'      ,1,1,1,TYPSEL,N1)
+      ZK24(JPLTK+5) = TYPSEL
+      CALL GETVTX('PILOTAGE','EVOL_PARA'      ,1,1,1,EVOLPA,N1)
+      ZK24(JPLTK+6) = EVOLPA    
+C
+C --- PARAMETRES COEF_MULT ET ETA_PILO_MAX
+C
+      CALL WKVECT(SDPILO(1:19)// '.PLIR','V V R8',5,JPLIR)
+      CALL GETVR8('PILOTAGE','COEF_MULT',1,1,1,COEF  , N1)
+      ZR(JPLIR)   = COEF
+      
+      IF (ABS(COEF).LE.R8PREM()) THEN
+        CALL U2MESS('F','PILOTAGE_3')
+      ENDIF
 
-C -- LECTURE DU TYPE ET DE LA ZONE
+      CALL GETVR8('PILOTAGE','ETA_PILO_R_MAX',1,1,1,ETRMAX,N1)
+      IF (N1.NE.1)  ETRMAX = R8GAEM()
+      ZR(JPLIR+3) = ETRMAX
 
-      CALL WKVECT (SDPILO // '.PLTK','V V K24',6,JPLTK)
-      CALL GETVTX('PILOTAGE','TYPE',1,1,1,TYPE,N1)
-      ZK24(JPLTK) = TYPE
-      CALL GETVTX('PILOTAGE','PROJ_BORNES',1,1,1,PROJ,N1)
-      ZK24(JPLTK+4) = PROJ
-      CALL GETVTX('PILOTAGE','SELECTION',1,1,1,PROJ,N1)
-      ZK24(JPLTK+5) = PROJ
+      CALL GETVR8('PILOTAGE','ETA_PILO_R_MIN',1,1,1,ETRMIN,N2)
+      IF (N2.NE.1)  ETRMIN = -R8GAEM()
+      ZR(JPLIR+4) = ETRMIN
 
-
-C -- PARAMETRES COEF_MULT ET ETA_PILO_MAX
-
-      CALL WKVECT(SDPILO // '.PLIR','V V R8',5,JPLIR)
-      CALL GETVR8 ('PILOTAGE','COEF_MULT',1,1,1,COEF  , N1)
-      ZR(JPLIR) = COEF
-
-      CALL GETVR8('PILOTAGE','ETA_PILO_R_MAX',1,1,1,MX,N1)
-      IF (N1.NE.1)  MX = R8GAEM()
-      ZR(JPLIR+3) = MX
-
-      CALL GETVR8('PILOTAGE','ETA_PILO_R_MIN',1,1,1,MI,N2)
-      IF (N2.NE.1)  MI = -R8GAEM()
-      ZR(JPLIR+4) = MI
-
-      CALL GETVR8('PILOTAGE','ETA_PILO_MAX',1,1,1,MX,N1)
+      CALL GETVR8('PILOTAGE','ETA_PILO_MAX',1,1,1,ETAMAX,N1)
       IF (N1.NE.1)  THEN
-        MX = R8VIDE()
+        ETAMAX = R8VIDE()
       ELSE
-        IF (MX.GT.ZR(JPLIR+3)) CALL U2MESS('F','ALGORITH7_48')
+        IF (ETAMAX.GT.ZR(JPLIR+3)) CALL U2MESS('F','PILOTAGE_48')
       END IF
-      ZR(JPLIR+1) = MX
+      ZR(JPLIR+1) = ETAMAX
 
-      CALL GETVR8('PILOTAGE','ETA_PILO_MIN',1,1,1,MI,N2)
+      CALL GETVR8('PILOTAGE','ETA_PILO_MIN',1,1,1,ETAMIN,N2)
       IF (N2.NE.1) THEN
-        MI = R8VIDE()
+        ETAMIN = R8VIDE()
       ELSE
-        IF (MI.LT.ZR(JPLIR+4)) CALL U2MESS('F','ALGORITH7_49')
+        IF (ETAMIN.LT.ZR(JPLIR+4)) CALL U2MESS('F','PILOTAGE_49')
       END IF
-      ZR(JPLIR+2) = MI
+      ZR(JPLIR+2) = ETAMIN
 
 
 C ======================================================================
 C             PILOTAGE PAR PREDICTION ELASTIQUE : PRED_ELAS
 C ======================================================================
 
-      IF (TYPE .EQ. 'PRED_ELAS' .OR.
-     &    TYPE .EQ. 'DEFORMATION') THEN
+      IF (TYPPIL .EQ. 'PRED_ELAS' .OR.
+     &    TYPPIL .EQ. 'DEFORMATION') THEN
 
-        CALL EXLIMA('PILOTAGE','V',MODELE,LIGREL)
-        ZK24(JPLTK+1) = LIGREL
+        CALL EXLIMA('PILOTAGE','V',MODELE,LIGRPI)
+        ZK24(JPLTK+1) = LIGRPI
 
-        CARTE  = '&&NMDOPI.TYPEPILO'
+
+        CARTYP = '&&NMDOPI.TYPEPILO'
         LIGRMO = MODELE // '.MODELE'
-        CALL MECACT('V', CARTE, 'MODELE', LIGRMO, 'PILO_K', 1, 'TYPE',
-     &              IBID, R8BID, CBID, TYPE)
-        ZK24(JPLTK+2) = CARTE
+        CALL MECACT('V'   ,CARTYP,'MODELE',LIGRMO,'PILO_K',
+     &              1     ,'TYPE',IBID    ,R8BID ,C16BID  ,
+     &              TYPPIL)
+        ZK24(JPLTK+2) = CARTYP
 
-        LM(1)=MX
-        LM(2)=MI
-        CARTE2 = '&&NMDOPI.BORNEPILO'
-        LBORN(1)='A0'
-        LBORN(2)='A1'
-        CALL MECACT('V',CARTE2,'MODELE',LIGRMO,'PILO_R', 2, LBORN,
-     &                  IBID, LM, CBID, K8BID)
-        ZK24(JPLTK+3) = CARTE2
+        LM(1)    = ETAMAX
+        LM(2)    = ETAMIN
+        CARETA   = '&&NMDOPI.BORNEPILO'
+        LBORN(1) = 'A0'
+        LBORN(2) = 'A1'
+        CALL MECACT('V'   ,CARETA,'MODELE',LIGRMO,'PILO_R', 
+     &              2     ,LBORN ,IBID    ,LM    ,C16BID  ,
+     &              K8BID)
+        ZK24(JPLTK+3) = CARETA
 
         GOTO 9999
 
@@ -179,17 +193,17 @@ C ======================================================================
 C              PILOTAGE PAR UN DEGRE DE LIBERTE : DDL_IMPO
 C ======================================================================
 
-      ELSE IF (TYPE .EQ. 'DDL_IMPO') THEN
-        CHAPIL = SDPILO // '.PLCR'
+      ELSE IF (TYPPIL .EQ. 'DDL_IMPO') THEN
+        CHAPIL = SDPILO(1:14)//'.PLCR'
         CALL VTCREB(CHAPIL,NUMEDD,'V','R',NEQ)
-        CALL JEVEUO(CHAPIL//'.VALE','E',JVALE)
+        CALL JEVEUO(CHAPIL(1:19)//'.VALE','E',JVALE)
 
         CALL DISMOI('F','NOM_MAILLA',CHAPIL,'CHAM_NO',IBID,NOMA,IER)
         CALL GETVEM(NOMA,'NOEUD','PILOTAGE','NOEUD',1,1,0,K8BID,NBNO)
         NBNO = -NBNO
         IF (NBNO .NE. 0 ) THEN
           IF ( NBNO .GT. 1 ) THEN
-            CALL U2MESS('F','ALGORITH7_50')
+            CALL U2MESS('F','PILOTAGE_50')
           ENDIF
           CALL GETVEM(NOMA,'NOEUD','PILOTAGE','NOEUD',
      &            1,1,NBNO,NOMNOE,N1)
@@ -205,7 +219,7 @@ C ======================================================================
         NBG = -NBG
         IF (NBG .NE. 0 ) THEN
           IF ( NBG .GT. 1 ) THEN
-            CALL U2MESS('F','ALGORITH7_51')
+            CALL U2MESS('F','PILOTAGE_51')
           ENDIF
           CALL GETVEM(NOMA,'GROUP_NO','PILOTAGE','GROUP_NO',
      &               1,1,1,NOMGRP,N1)
@@ -213,7 +227,7 @@ C ======================================================================
           GRNO=NOMA//'.GROUPENO'
           CALL JELIRA (JEXNOM(GRNO,NOMGRP),'LONMAX',NBNO,K8BID)
           IF ( NBNO .GT. 1 ) THEN
-            CALL U2MESS('F','ALGORITH7_52')
+            CALL U2MESS('F','PILOTAGE_52')
           ENDIF
           CALL JEVEUO (JEXNOM(GRNO,NOMGRP),'L',JGRO)
           NUMNOE = ZI(JGRO)
@@ -227,18 +241,18 @@ C ======================================================================
 C      PILOTAGE PAR UNE METHODE DE TYPE LONGUEUR D'ARC : LONG_ARC
 C ======================================================================
 
-      ELSE IF (TYPE .EQ. 'LONG_ARC' ) THEN
-
-        CHAPIL = SDPILO // '.PLCR'
+      ELSE IF (TYPPIL .EQ. 'LONG_ARC' ) THEN
+        CHAPIL = SDPILO(1:14)//'.PLCR'
         CALL VTCREB(CHAPIL,NUMEDD,'V','R',NEQ)
-        CALL JEVEUO(CHAPIL//'.VALE','E',JVALE)
+        CALL JEVEUO(CHAPIL(1:19)//'.VALE','E',JVALE)
+
 
         CALL DISMOI('F','NOM_MAILLA',CHAPIL,'CHAM_NO',IBID,NOMA,IER)
 
         CALL GETVEM(NOMA,'GROUP_NO','PILOTAGE','GROUP_NO',
      &             1,1,0,K8BID,NBG)
         NBG = -NBG
-        IF (NBG.NE.1) CALL U2MESS('F','ALGORITH7_53')
+        IF (NBG.NE.1) CALL U2MESS('F','PILOTAGE_53')
 
         CALL GETVEM(NOMA,'GROUP_NO','PILOTAGE','GROUP_NO',
      &             1,1,1,NOMGRP,N1)
@@ -246,12 +260,12 @@ C ======================================================================
         GRNO=NOMA//'.GROUPENO'
         CALL JELIRA (JEXNOM(GRNO,NOMGRP),'LONMAX',NBNO,K8BID)
         CALL JEVEUO (JEXNOM(GRNO,NOMGRP),'L',JGRO)
-        IF (NBNO.EQ.0) CALL U2MESK('F','ALGORITH7_54',1,NOMGRP)
+        IF (NBNO.EQ.0) CALL U2MESK('F','PILOTAGE_54',1,NOMGRP)
         COEF = 1.D0 / NBNO
 
         CALL GETVTX ('PILOTAGE','NOM_CMP',  1,1,0,K8BID, NDDL)
         NDDL = -NDDL
-        IF (NDDL.EQ.0) CALL U2MESS('F','ALGORITH7_55')
+        IF (NDDL.EQ.0) CALL U2MESS('F','PILOTAGE_55')
         LISCMP = '&&NMDOPI.LISCMP'
         CALL WKVECT(LISCMP,'V V K8',NDDL,JLICMP)
         CALL GETVTX ('PILOTAGE','NOM_CMP',  1,1,NDDL,

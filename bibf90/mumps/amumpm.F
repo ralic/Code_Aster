@@ -2,7 +2,7 @@
      &                  TYPE,LMD,EPSMAT)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 20/10/2009   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPM MUMPS  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -271,7 +271,7 @@ C  -- POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A MUMPS.
 C  -- MAIS CELA PEUT ETRE COUTEUX EN // AVEC DES ACCES DISQUES
 C  -- LENTS.
 
-      CALL JJLDYN(IBID)       
+      CALL JJLDYN(0,-1,IBID)       
 
 C       ------------------------------------------------
 C       ALLOCATION DES OBJETS MUMPS F90

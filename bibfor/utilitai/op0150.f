@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 15/03/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -716,9 +716,11 @@ C       LA SD RESULTAT
           ELSE IF (NOCH.EQ.'EQUI_ELNO_SIGM') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'ELNO'
+            OPTION = 'EQUI_ELNO_SIGM'
           ELSE IF (NOCH.EQ.'EQUI_NOEU_SIGM') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'NOEU'
+            OPTION = 'EQUI_NOEU_SIGM'
           ELSE IF (NOCH.EQ.'EQUI_ELGA_SIGM') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'ELGA'

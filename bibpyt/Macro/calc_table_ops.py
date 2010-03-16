@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 15/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,7 +98,19 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
          tab = tab[occ['NOM_PARA']]
 
       #----------------------------------------------
-      # 3. Traitement de RENOMME
+      # 3. Traitement de SUPPRIME
+      if occ['OPERATION'] == 'SUPPRIME':
+         lpar = occ['NOM_PARA']
+         if type(lpar) not in (list, tuple):
+            lpar = [lpar]
+         keep = []
+         for p in tab.para:
+            if not p in lpar:
+              keep.append(p)
+         tab = tab[keep]
+
+      #----------------------------------------------
+      # 4. Traitement de RENOMME
       if occ['OPERATION'] == 'RENOMME':
          try:
             tab.Renomme(*occ['NOM_PARA'])
@@ -106,12 +118,12 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
             UTMESS('F','TABLE0_3',valk=msg)
 
       #----------------------------------------------
-      # 4. Traitement du TRI
+      # 5. Traitement du TRI
       if occ['OPERATION'] == 'TRI':
          tab.sort(CLES=occ['NOM_PARA'], ORDRE=occ['ORDRE'])
    
       #----------------------------------------------
-      # 5. Traitement de COMB
+      # 6. Traitement de COMB
       if occ['OPERATION'] == 'COMB':
          tab2 = occ['TABLE'].EXTR_TABLE()
          lpar = []
@@ -128,7 +140,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
          tab = merge(tab, tab2, lpar, restrict=restrict)
    
       #----------------------------------------------
-      # 6. Traitement de OPER
+      # 7. Traitement de OPER
       if occ['OPERATION'] == 'OPER':
          # ajout de la colonne dans la table
          tab.fromfunction(occ['NOM_PARA'], occ['FORMULE'])
@@ -137,7 +149,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
             aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s' % (occ['NOM_PARA']+repr(vectval))+'\n')
 
       #----------------------------------------------
-      # 6. Traitement de AJOUT
+      # 8. Traitement de AJOUT
       if occ['OPERATION'] == 'AJOUT':
          if len(occ['NOM_PARA']) != len(occ['VALE']):
             UTMESS('F', 'TABLE0_14')

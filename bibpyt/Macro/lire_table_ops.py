@@ -1,4 +1,4 @@
-#@ MODIF lire_table_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF lire_table_ops Macro  DATE 15/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,7 +127,7 @@ def lire_table_ops(self, **args):
    UL = UniteAster()
    nomfich=UL.Nom(UNITE)
    if not os.path.isfile(nomfich):
-      UTMESS('F', nompro, "le fichier '%s' est introuvable" % nomfich)
+      UTMESS('F', 'FONCT0_41', valk=nomfich)
    
    texte = open(nomfich,'r').read()
    # remet UNITE dans son état initial
