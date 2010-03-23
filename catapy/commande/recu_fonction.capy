@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 23/03/2010   AUTEUR BOYERE E.BOYERE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -142,9 +142,11 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
              NOEUD_CHOC      =SIMP(statut='f',typ=no),
              GROUP_NO_CHOC   =SIMP(statut='f',typ=grno),
            b_cham = BLOC ( condition = "(NOM_CHAM=='DEPL') or (NOM_CHAM=='VITE') or (NOM_CHAM=='ACCE')",
-                           regles=(UN_PARMI('GROUP_NO','NOEUD'),
+                           regles=(UN_PARMI('GROUP_NO','NOEUD','NUME_CMP_GENE',),
+                                   UN_PARMI('NOM_CMP','NUME_CMP_GENE',),
                                    EXCLUS('MULT_APPUI','CORR_STAT'),),
-             NOM_CMP         =SIMP(statut='o',typ='TXM' ),
+             NOM_CMP         =SIMP(statut='f',typ='TXM' ),
+             NUME_CMP_GENE   =SIMP(statut='f',typ='I' ),
              NOEUD           =SIMP(statut='f',typ=no),
              GROUP_NO        =SIMP(statut='f',typ=grno),
              MULT_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),

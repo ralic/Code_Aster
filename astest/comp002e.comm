@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_TAHERI
 # comp002e.para = tps_job 180 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
@@ -140,19 +140,19 @@ for i in range(Ncal):
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
 #Resout le pb a deformation imposee
-        RESU[i]=SIMU_POINT_MAT(
-                   COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100),
+        RESU[i]=SIMU_POINT_MAT(INFO=1,
+                   COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100,
+                   ),
                    NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=3,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                             REAC_ITER=1,),
                    MATER      = ACIER[imat],  
-                   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
+                   ARCHIVAGE = _F(LIST_INST = temps_ar),
                    INCREMENT=_F(LIST_INST=temps,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
                         );
+        IMPR_TABLE(TABLE=RESU[i])
         R_SI=RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI)
-
         DETRUIRE ( CONCEPT = _F (NOM = temps,),)
         
 # TEST_RESU sur les erreurs relatives 
@@ -209,5 +209,21 @@ TEST_TABLE(TABLE=DIFF_MAT,
            CRITERE='ABSOLU',
            PRECISION=prec_tgt,
            REFERENCE='ANALYTIQUE',);     
+
+# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
+TEST_TABLE(TABLE=R_SI[0],
+           NOM_PARA='V1_Pa_1',VALE=2.97015E-02,PRECISION=0.005,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[1],
+           NOM_PARA='VMIS_Pa_1',VALE=9.27917E+08,PRECISION=0.005,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[3],
+           NOM_PARA='SIXX_Pa_1',VALE=2.29261E+08,PRECISION=0.005,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
 
 FIN()

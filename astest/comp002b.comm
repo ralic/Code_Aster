@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_CIN1_CHAB
 # comp002b.para = tps_job 690 mem_job 256Mo mem_aster 25 ncpus 1 liste_test S
@@ -135,13 +135,13 @@ for i in range(Ncal):
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
 #Resout le pb a deformation imposee
-        RESU[i]=SIMU_POINT_MAT(
+        RESU[i]=SIMU_POINT_MAT(INFO=1,
                    COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=3,PAS_MINI_ELAS=0),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[imat],  
-                   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
+                   ARCHIVAGE = _F(LIST_INST = temps_ar),
                    INCREMENT=_F(LIST_INST=temps),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
@@ -204,5 +204,22 @@ TEST_TABLE(TABLE=DIFF_MAT,
            CRITERE='ABSOLU',
            PRECISION=prec_tgt,
            REFERENCE='ANALYTIQUE',);     
+
+# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
+TEST_TABLE(TABLE=R_SI[0],
+           NOM_PARA='V1_Pa_10',VALE=1.11047E-02,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[1],
+           NOM_PARA='VMIS_Pa_10',VALE= 6.88794E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[3],
+           NOM_PARA='SIXX_Pa_10',VALE=1.35773E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
 
 FIN()

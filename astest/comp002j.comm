@@ -1,5 +1,5 @@
-# MODIF  DATE 14/12/2009   AUTEUR PROIX J-M.PROIX 
-# TITRE TEST MONOCRISTAL 2D DEBORST ET 3D UTILISANT SIMU_PONT_MAT
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+# TITRE TEST MONOCRISTAL  3D UTILISANT SIMU_PONT_MAT
 # comp002j.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,8 @@
 
 from Utilitai.veri_matr_tang import VERI_MATR_TANG
 
-DEBUT(CODE=_F(NOM='COMP002J',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),IGNORE_ALARM=('ELEMENTS3_11',));
+DEBUT(CODE=_F(NOM='COMP002J',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+);
 
 # donnee materiau et fonction
 
@@ -124,7 +125,7 @@ P_imat = [0] + [1] + (Ncal-2)*[1]
 #parametres vitesse de sollicitation
 vitesse = 1.e-2
 t_0 = 5.e-2/(8.0*vitesse)
-# calibrage des deformations maximum (dans .92 et .93)
+# calibrage des deformations maximum (dans  .93)
 calibrage = 3.5;
 CALIB_E=EL
 CALIB_NU=NULT
@@ -149,78 +150,11 @@ coef_para=[1.,C_Pa,C_Pa]
 
 # utilitaires divers : calcul de l'erreur, renommage
 INCLUDE(UNITE=91)
-
-
-##################################################################################
-#  TEST 2D C_PLAN
-##################################################################################
-
-# les quantites extraites du calcul 
-ch_param=['V44','VMIS','TRACE','SIXX','SIYY','SIXY']
-                                 
-# resultats 
-RESU =[None]*Ncal
-R_SI=[None]*len(ch_param)
-TMP_S=[None]
-
 # definition du chargement 2D
-INCLUDE(UNITE=92)
+# INCLUDE(UNITE=92)
+# definition du chargement 3D
+INCLUDE(UNITE=93)
 
-#Boucle sur l'ensemble des calculs
-for i in range(Ncal):
-        imat = P_imat[i]
-        temps=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=t_0,    NOMBRE=N_pas[i],),
-                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N_pas[i],),
-                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N_pas[i],),
-                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N_pas[i],),
-                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N_pas[i],),
-                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N_pas[i],),
-                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N_pas[i],),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N_pas[i],),),);
-
-        DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
-                                ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                         SUBD_PAS=10,
-                                         SUBD_NIVEAU=2,),)
-
-#       Resout le pb a deformation imposee
-        RESU[i]=SIMU_POINT_MAT(
-                   COMP_INCR=_F(RELATION=compor,
-                                COMPOR=COMP1[imat],
-                                ITER_INTE_MAXI=150,RESI_INTE_RELA=1.E-9,
-                              #  RESI_DEBO_RELA=1.E-9,
-                                ALGO_C_PLAN='DEBORST'),
-                   MODELISATION='C_PLAN',
-                   ANGLE=angles[i],
-                   MASSIF=_F(ANGL_REP=(angles[i])),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=1,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                   MATER      = ACIER[imat],  
-                   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
-                   INCREMENT=_F(LIST_INST=DEFLIST,
-#                   SUBD_METHODE='UNIFORME',SUBD_PAS=10,SUBD_NIVEAU=2
-                                ),
-                   EPSI_IMPOSE=_F(EPXX=eps_def[0],EPYY=eps_def[1],EPXY=eps_def[2],),
-                        );
-        # On renomme les composantes en fonction de  l'ordre de discretisation
-        R_SI=RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI)
-        DETRUIRE(CONCEPT=_F(NOM=temps))
-        DETRUIRE(CONCEPT=_F(NOM=DEFLIST))
-        
-# TEST_RESU sur les erreurs relatives 
-TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,prec_zero,coef_para)
-
-###############################################################################                                 
-# impressions                
-for i in range(len(ch_param)):
-        IMPR_TABLE(TABLE=R_SI[i])
-
-for i in range(Ncal):
-    DETRUIRE ( CONCEPT = _F (NOM = RESU[i]))
-for i in range(len(ch_param)):
-    DETRUIRE ( CONCEPT = _F (NOM = R_SI[i]))
     
 ##################################################################################
 #  TEST 3D
@@ -234,8 +168,6 @@ RESU=[None]*Ncal
 R_SI=[None]*len(ch_param)
 TMP_S=[None]
 
-# definition du chargement 3D
-INCLUDE(UNITE=93)
 
 #Boucle sur l'ensemble des calculs
 for i in range(Ncal):
@@ -260,27 +192,61 @@ for i in range(Ncal):
         RESU[i]=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,
                                 COMPOR=COMP1[imat],
-                                ITER_INTE_MAXI=100,
-                                RESI_INTE_RELA=1.E-9),
+                                ITER_INTE_MAXI=200,
+                                RESI_INTE_RELA=1.E-10
+                                ),
                    ANGLE=angles[i],
                    MASSIF=_F(ANGL_REP=(angles[i])),
-                   NEWTON=_F(MATRICE='TANGENTE',
+                   NEWTON=_F(MATRICE='TANGENTE',#PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1.E-8),
                    MATER      = ACIER[imat],  
-                   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
-                   INCREMENT=_F(LIST_INST=DEFLIST),
+                   ARCHIVAGE = _F(LIST_INST = temps_ar),
+#                   INCREMENT=_F(LIST_INST=DEFLIST),
+                   INCREMENT=_F(LIST_INST=temps),
                    EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
                                   EPXY=eps_def[3], EPXZ=eps_def[4], EPYZ=eps_def[5]),
-                        );                        
+                        ); 
+        #IMPR_TABLE(TABLE=RESU[i])                       
         DETRUIRE(CONCEPT=_F(NOM=temps))
         DETRUIRE(CONCEPT=_F(NOM=DEFLIST))
 
 # On renomme les composantes en fonction de  l'ordre de discretisation
         R_SI=RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI)
         
+# impressions                
+for i in range(len(ch_param)):
+        IMPR_TABLE(TABLE=R_SI[i])
+        
 # TEST_RESU sur les erreurs relatives 
 TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,prec_zero,coef_para)
+
+
+# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
+TEST_TABLE(TABLE=R_SI[0],
+           NOM_PARA='V44_Pa_1',VALE=3.29182E-02,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[1],
+           NOM_PARA='VMIS_Pa_1',VALE=3.31336E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[3],
+           NOM_PARA='SIXX_Pa_1',VALE=2.07949E+07,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+for i in range(Ncal):
+    DETRUIRE ( CONCEPT = _F (NOM = RESU[i]))
+for i in range(len(ch_param)):
+    DETRUIRE ( CONCEPT = _F (NOM = R_SI[i]))
+
+
+
+###############################################################################                                 
+
 
 # Test de la matrice tangente sur le calcul le plus fin
 
@@ -309,17 +275,24 @@ RESU_TGT=SIMU_POINT_MAT(
                                 RESI_INTE_RELA=1.E-9,
                                 ),
                    ANGLE=angles[0],
-                   MASSIF=_F(ANGL_EULER=(angles[i],0.,0.)),
+                   MASSIF=_F(ANGL_REP=(angles[0])),
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[1],  
-                   INCREMENT=_F(LIST_INST=DEFLIST,),
+                 #  INCREMENT=_F(LIST_INST=DEFLIST,),
+                   INCREMENT=_F(LIST_INST=Linst,),
                    EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
                                   EPXY=eps_def[3], EPXZ=eps_def[4], EPYZ=eps_def[5]),
                         );
 
 
 DIFF_MAT=VERI_MATR_TANG()
+
+###############################################################################                                 
+# impressions                
+
+IMPR_TABLE(TABLE=DIFF_MAT)
+
 
 TEST_TABLE(TABLE=DIFF_MAT,
            NOM_PARA='MAT_DIFF',
@@ -329,11 +302,7 @@ TEST_TABLE(TABLE=DIFF_MAT,
            PRECISION=prec_tgt,
            REFERENCE='ANALYTIQUE',);     
 
-###############################################################################                                 
-# impressions                
-for i in range(len(ch_param)):
-        IMPR_TABLE(TABLE=R_SI[i])
-IMPR_TABLE(TABLE=DIFF_MAT)
+
 
 FIN();
 #

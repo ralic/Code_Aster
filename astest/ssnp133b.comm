@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 23/03/2010   AUTEUR LAVERNE J.LAVERNE 
 # TITRE TEST DES ELEMENTS A DISCONTINUITE SUR UNE PLAQUE TROUEE
 # ssnp133b.para = tps_job 100 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,25 +36,24 @@ Sc = 2.E5
 #--------------------------------------------------------------
 # MAILLAGE ET MODELE
 #--------------------------------------------------------------
-PRE_GMSH()
-MA = LIRE_MAILLAGE()
 
+MA = LIRE_MAILLAGE(FORMAT='MED')
 
 MA = DEFI_GROUP(reuse = MA,
        MAILLAGE = MA,
        CREA_GROUP_MA = (
-          _F(NOM = 'FACE_SUP', GROUP_MA = 'GM4'),
-          _F(NOM = 'MATIERE' , GROUP_MA = 'GM5'),
-          _F(NOM = 'JOINT_G' , GROUP_MA = 'GM55'),
-          _F(NOM = 'JOINT_D' , GROUP_MA = 'GM54'),
+          _F(NOM = 'FACE_SUP', GROUP_MA = 'G_1D_4'),
+          _F(NOM = 'MATIERE' , GROUP_MA = 'G_2D_5'),
+          _F(NOM = 'JOINT_G' , GROUP_MA = 'G_2D_55'),
+          _F(NOM = 'JOINT_D' , GROUP_MA = 'G_2D_54'),
           _F(NOM = 'JOINT',    UNION = ('JOINT_G', 'JOINT_D')),          
-      ),
+       ),
        CREA_GROUP_NO = (
-          _F(NOM = 'P_RIG',    GROUP_MA = 'GM1'),
+          _F(NOM = 'P_RIG',    GROUP_MA = 'G_0D_1'),
           _F(GROUP_MA = 'FACE_SUP'),
           _F(GROUP_MA = 'JOINT'),          
-          _F(NOM = 'SYME_BD',GROUP_MA = 'GM56'),
-          _F(NOM = 'SYME_BG',GROUP_MA = 'GM57'),
+          _F(NOM = 'SYME_BD',GROUP_MA = 'G_1D_56'),
+          _F(NOM = 'SYME_BG',GROUP_MA = 'G_1D_57'),
           _F(NOM = 'SYMETRIE',UNION   = ('SYME_BD', 'SYME_BG')),
          )
        )
@@ -244,45 +243,45 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
               NOM_PARA='DY',
-              VALE=3.60789E-03,
+              VALE=3.60651E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
               NOM_PARA='DY',
-              VALE=5.78596E+07,
+              VALE=5.78832E+07,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=75,),),
               NOM_PARA='DY',
-              VALE=3.54768E-03,
+              VALE=3.54604E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=75,),),
               NOM_PARA='DY',
-              VALE=5.11012E+07,
+              VALE=5.11117E+07,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
               NOM_PARA='DY',
-              VALE=3.39614E-03,
+              VALE=3.39435E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
               NOM_PARA='DY',
-              VALE=4.43668E+07,
+              VALE=4.43684E+07,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=159,),),
               NOM_PARA='DY',
-              VALE=4.30701E-03,
+              VALE=4.32977E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=159,),),
               NOM_PARA='DY',
-              VALE=1.00675E+07,
+              VALE=1.01265E+07,
               REFERENCE='NON_REGRESSION')
 
 

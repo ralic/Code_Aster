@@ -1,0 +1,33 @@
+POURSUITE(CODE=_F(NOM = 'SSNP15A',), PAR_LOT='NON')
+
+# TEST de l'utilisation des methodes LIST_xxx sur les concepts resultat
+
+import Numeric as Num
+
+para = U.LIST_PARA()
+var = U.LIST_VARI_ACCES()
+ch = U.LIST_CHAMPS()
+ncmp = U.LIST_NOM_CMP()
+
+# test des numeros d'ordre
+nbord = len(var['NUME_ORDRE'])
+assert var['NUME_ORDRE'] == range(1, nbord+1), var['NUME_ORDRE']
+
+# test parametre de type K8
+smo = set(para['MODELE'])
+assert len(smo) == 1, smo                 # modele unique
+mo = list(smo)[0]
+assert mo.strip() == 'MO', "valeur inattendue : %s" % mo
+assert len(mo) == 8, "longueur inattendue : %d" % len(mo)
+
+# test parametre de type I
+iter_line = para['ITER_LINE']
+assert sum(iter_line) < nbord, iter_line  # pas a tous les pas de temps
+
+# test parametre de type R
+val_inst = Num.array(para['INST'])
+dt = val_inst[1:len(val_inst)] - val_inst[0:-1]
+assert min(dt) > 0., dt                   # croissance des pas de temps
+
+FIN()
+

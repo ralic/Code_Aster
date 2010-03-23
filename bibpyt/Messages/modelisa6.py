@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 23/11/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF modelisa6 Messages  DATE 23/03/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -215,6 +215,10 @@ cata_msg = {
 
 56 : _("""
  plusieurs comportements de type  %(k1)s  ont ete trouvés
+
+  -> Conseil:
+     Vous avez sans doute enrichi votre matériau. Vous ne pouvez pas
+     avoir en meme temps les mots clés 'ELAS', 'ELAS_FO', 'ELAS_xxx',...
 """),
 
 57 : _("""

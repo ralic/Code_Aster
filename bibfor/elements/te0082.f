@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/06/2009   AUTEUR DEVESA G.DEVESA 
+C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C
       PRESS1(1) = 0
       PRESS2(1) = 0
       TEMPE(1) = 0
-      CALL GRDTHM(NOMTE,.FALSE.,2,MECANI,PRESS1,PRESS2,TEMPE,
+      CALL GRDTHM(NOMTE,.FALSE.,.FALSE.,2,MECANI,PRESS1,PRESS2,TEMPE,
      &            IBI,IBI,IBI,IBI,IBI,IBI)
       IDEC = PRESS1(1) + PRESS2(1) + TEMPE(1)
 C

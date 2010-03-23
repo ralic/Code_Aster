@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 26/01/2010   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,14 +24,14 @@ C TOLE CRP_20
 C =====================================================================
 C --- BUT : DETERMINER LA COHERENCE DE LA RELATION DE COUPLAGE THM ----
 C =====================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       NCOMEL, K
       INTEGER NBNVI(4)
       CHARACTER*16  COMP, MOCLEF, COMEL(*)
       CHARACTER*(*)  MODELZ
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-
+C
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -55,7 +55,7 @@ C =====================================================================
       LOGICAL       LTHMC, LHYDR, LMECA, EXIST, GETEXM, TOUT
       INTEGER       DMTHMC, DMHYDR, DMMECA, N1, JMAIL, ITYPEL, I
       INTEGER       NBMA, IERD, IBID, JNOMA, JMESM, NUMLC
-      PARAMETER   ( DMTHMC = 7  )
+      PARAMETER   ( DMTHMC = 8  )
       PARAMETER   ( DMHYDR = 4  )
       PARAMETER   ( DMMECA = 15 )
       CHARACTER*16  POTHMC(DMTHMC), MODELI, NOMTE,KBID
@@ -84,7 +84,8 @@ C =====================================================================
      &              'LIQU_GAZ_ATM'  ,
      &              'LIQU_VAPE_GAZ' ,
      &              'LIQU_VAPE'     ,
-     &              'LIQU_AD_GAZ_VAPE' /
+     &              'LIQU_AD_GAZ_VAPE',
+     &              'LIQU_AD_GAZ' /
 C =====================================================================
 C --- PARTIE HYDR -----------------------------------------------------
 C =====================================================================
@@ -182,13 +183,11 @@ C =====================================================================
      &                (MODELI(1:10).NE.'D_PLAN_HHM').AND.
      &                (MODELI(1:9) .NE.'D_PLAN_HH').AND.
      &                (MODELI.NE.' ')) THEN
-
+C
                       VALK(1) = COMEL(JJ)
                       VALK(2) = MODELI
                       CALL U2MESK('F','ALGORITH8_35', 2 ,VALK)
-
                   ENDIF
-
                ELSEIF   (COMEL(JJ)(1:9).EQ.'LIQU_VAPE') THEN
 
                   IF ((MODELI(1:6).NE.'3D_THV').AND.
@@ -200,7 +199,6 @@ C =====================================================================
                        VALK(2) = MODELI
                        CALL U2MESK('F','ALGORITH8_35', 2 ,VALK)
                   ENDIF
-
                ELSEIF  (COMEL(JJ)(1:16).EQ.'LIQU_AD_GAZ_VAPE') THEN
 
                   IF ((MODELI(1:9).NE.'AXIS_HH2M').AND.
@@ -214,19 +212,14 @@ C =====================================================================
      &                (MODELI(1:7).NE.'3D_THH2').AND.
      &                (MODELI(1:6).NE.'3D_HH2').AND.
      &                (MODELI.NE.' ')) THEN
-
-
                       VALK(1) = COMEL(JJ)
                       VALK(2) = MODELI
                       CALL U2MESK('F','ALGORITH8_35', 2 ,VALK)
                   ENDIF
-
                ENDIF
-
    5        CONTINUE
          ENDIF
    1  CONTINUE
-
       DO 10 JJ=1, NCOMEL
 C =====================================================================
 C --- DEFINITION DE LA LOI DE COUPLAGE --------------------------------
@@ -445,7 +438,6 @@ C ======================================================================
 C ======================================================================
 C --- LOI DE THERMIQUE -------------------------------------------------
 C ======================================================================
-
       IF (COMEL(2).NE.' ') THEN
          CALL LCCREE(1, COMEL(2), COMCOD)
          CALL LCINFO(COMCOD, NUMLC, NBNVI(2))
@@ -471,5 +463,4 @@ C ======================================================================
          NBNVI(4)=0
       ENDIF
 C =====================================================================
-
       END

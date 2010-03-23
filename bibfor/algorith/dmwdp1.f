@@ -1,10 +1,8 @@
-      FUNCTION DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,DP11P1)
-      IMPLICIT      NONE
-      REAL*8        RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,DP11P1
-      REAL*8        DMWDP1
+      FUNCTION DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,DP11P1,
+     &               EMMAG,EM)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,8 +23,20 @@ C ======================================================================
 C --- CALCUL DE LA DERIVEE DE L APPORT MASSIQUE DE L EAU PAR RAPPORT ---
 C --- A LA PRESSION CAPILLAIRE -----------------------------------------
 C ======================================================================
-      DMWDP1 = RHO11 * SIGNE * (DSATP1*PHI
+      IMPLICIT NONE
+      REAL*8        RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,DP11P1
+      REAL*8        DMWDP1,EM
+      REAL*8        DPHIP1
+      LOGICAL       EMMAG        
+
+      IF(EMMAG) THEN    
+       DPHIP1 = - SAT*SIGNE*EM
+       DMWDP1 = RHO11 *(SAT*DPHIP1+SIGNE*DSATP1*PHI-
+     +                   SIGNE *SAT*PHI*CLIQ*DP11P1)
+      ELSE
+       DMWDP1 = RHO11 * SIGNE * (DSATP1*PHI
      +               -  SAT*PHI*CLIQ*DP11P1
      +               -  SAT*SAT*(BIOT-PHI)*CS)
+      ENDIF
 C ======================================================================
       END

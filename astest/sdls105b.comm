@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE SOUMISE A UNE TURBULENCE HOMOGENE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,7 +49,7 @@ ACIER=DEFI_MATERIAU( ELAS=_F( RHO = 2.34E5,  NU = 0.3, E = 2.E11))
 
 CHAMMAT1=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
                        _F( GROUP_MA = 'FLUIDE', MATER = EAU),
-                       _F( GROUP_MA = 'INTERFACE', MATER = EAU))
+                       _F( GROUP_MA = 'INTERFAC', MATER = EAU))
                             )
 
 CHAMMAT2=AFFE_MATERIAU(  MAILLAGE=MAYA,

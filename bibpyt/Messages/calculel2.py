@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,14 +89,8 @@ Erreur lors d'une transformation de cham_no_s en cham_no :
  Il manque la composante: %(k1)s  sur le noeud: %(k2)s pour le CHAM_NO: %(k3)s
 """),
 
-14: _("""
- Erreur Utilisateur :
-   Commande MACR_ECLA_PG :
-   On n'a pu "éclater" aucun champ pour NOM_CHAM = %(k1)s
- Conseils :
-   1) Vérifiez l'orthographe
-   2) Est-ce bien un champ ELGA ?
-"""),
+
+
 
 21: _("""
  grandeur :  %(k1)s  inexistante au catalogue
@@ -151,16 +145,18 @@ Erreur lors d'une transformation de cham_no_s en cham_no :
 """),
 
 33: _("""
- pour le modele  %(k1)s  on ne peut pas visualiser les champs ensemble  %(k2)s  ...
- car les familles de pg sont differentes
+Erreur Utilisateur :
+ Pour le modele  %(k1)s  on ne peut pas visualiser ensemble plusieurs champs ELGA (%(k2)s,  ...)
+ car les familles de points de Gauss sont differentes
 """),
 
 35: _("""
- aucun élément du modèle n'est visualisable avec ECLA_PG
+Erreur Utilisateur :
+ Aucun élément du modèle n'est visualisable avec ECLA_PG
 """),
 
 36: _("""
- on ne trouve aucun point de Gauss
+ On ne trouve aucun point de Gauss
 """),
 
 37: _("""
@@ -175,18 +171,17 @@ Erreur lors d'une transformation de cham_no_s en cham_no :
  les seuls champs autorisés pour ECLA_PG sont les champs réels.
 """),
 
-40: _("""
- le champ:  %(k1)s  a des éléments ayant des sous-points
- ces elements ne seront pas traités
-"""),
+
+
+
+
 
 41: _("""
  les seuls champs autorises sont elga.
 """),
 
 42: _("""
- le TYPE_ELEM:  %(k1)s  n'a pas le nombre de points de Gauss déclaré dans la routine ECLAU1
- nom_cham= %(k2)s
+ le TYPE_ELEM:  %(k1)s  n'a pas le nombre de points de Gauss déclaré dans la routine ECLAU1.
 """),
 
 43: _("""
@@ -300,14 +295,29 @@ Erreur d'utilisation :
   - type_element: %(k3)s
 """),
 
+72: _("""
+Erreur utilisateur dans un calcul élémentaire de forces réparties :
+  On n'a pas trouvé toutes les composantes voulues du champ pour le paramètre : %(k1)s
+   - option        : %(k2)s
+   - type_element  : %(k3)s
+   - maille        : %(k4)s
+  On a trouvé un noeud sur lequel il existe des composantes mais pas toutes.
+  On ne peut pas continuer
 
+Risques et conseils :
+  Si le champ provient de CREA_CHAMP/AFFE, vérifier que vous avez bien affecté FX,FY [FZ]
+"""),
 
 73: _("""
-Erreur utilisateur dans un calcul élémentaire :
-  On n'a pas pu extraire toutes les CMPS voulues du champ associé au paramètre : %(k1)s
+Erreur dans un calcul élémentaire :
+  On n'a pas trouvé toutes les composantes voulues du champ pour le paramètre : %(k1)s
    - option        : %(k2)s
-   - type_element  : %(k3)s )
-   - maille        : %(k4)s )
+   - type_element  : %(k3)s
+   - maille        : %(k4)s
+
+Risques et conseils :
+  Certaines informations sur le contexte de cette erreur sont imprimées ci-dessous.
+  Elles peuvent aider à comprendre une éventuelle erreur d'utilisation.
 """),
 
 74: _("""
@@ -353,9 +363,13 @@ Erreur utilisateur dans un calcul élémentaire :
 
 Conseils :
   * Peut-etre avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
-  * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques d'"oreination"
+  * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques d'"orientation"
     sur la maille incriminée ?
 """),
+
+
+
+
 
 81: _("""
  pas de chgeom

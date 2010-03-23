@@ -1,9 +1,12 @@
-      FUNCTION DMVDP1(RHO11,RHO12,SAT,DSATP1,BIOT,PHI,CS,PVP)
-      IMPLICIT      NONE
+      FUNCTION DMVDP1(RHO11,RHO12,SAT,DSATP1,BIOT,PHI,CS,PVP,
+     &               EMMAG,EM)
+      IMPLICIT NONE
       REAL*8        RHO11,RHO12,SAT,DSATP1,BIOT,PHI,CS,PVP,DMVDP1
+      REAL*8        EM,DPHIP1
+      LOGICAL       EMMAG        
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,8 +27,15 @@ C ======================================================================
 C --- CALCUL DE L APPORT MASSIQUE DE VAPEUR PAR RAPPORT A LA PRESSION --
 C --- CAPILLAIRE -------------------------------------------------------
 C ======================================================================
-      DMVDP1 = RHO12 * (-DSATP1*PHI
+      IF(EMMAG) THEN    
+        DPHIP1 = - SAT*EM
+        DMVDP1 = RHO12 * (-DSATP1*PHI
+     +               +  (1.D0-SAT)*DPHIP1
+     +               -  PHI*(1.D0-SAT)/PVP*RHO12/RHO11)
+      ELSE
+        DMVDP1 = RHO12 * (-DSATP1*PHI
      +               -  (1.D0-SAT)*SAT*(BIOT-PHI)*CS 
      +               -  PHI*(1.D0-SAT)/PVP*RHO12/RHO11)
 C ======================================================================
+      ENDIF
       END

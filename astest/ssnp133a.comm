@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 23/03/2010   AUTEUR LAVERNE J.LAVERNE 
 # TITRE TEST DES ELEMENTS DE JOINT 2D SUR UNE PLAQUE TROUEE
 # ssnp133a.para = tps_job 150 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,6 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+
 DEBUT(CODE=_F( NOM = 'SSNP133A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT = 'OUI')
 
 # NB DE PAS DE TEMPS DE CALCUL ET NOMBRE DE PAS DE TEMPS ARCHIVE
@@ -37,25 +38,24 @@ Pa = 0.0001
 #--------------------------------------------------------------
 # MAILLAGE ET MODELE
 #--------------------------------------------------------------
-PRE_GMSH()
-MA = LIRE_MAILLAGE()
 
+MA = LIRE_MAILLAGE(FORMAT='MED')
 
 MA = DEFI_GROUP(reuse = MA,
        MAILLAGE = MA,
        CREA_GROUP_MA = (
-          _F(NOM = 'FACE_SUP', GROUP_MA = 'GM4'),
-          _F(NOM = 'MATIERE' , GROUP_MA = 'GM5'),
-          _F(NOM = 'JOINT_G' , GROUP_MA = 'GM55'),
-          _F(NOM = 'JOINT_D' , GROUP_MA = 'GM54'),
+          _F(NOM = 'FACE_SUP', GROUP_MA = 'G_1D_4'),
+          _F(NOM = 'MATIERE' , GROUP_MA = 'G_2D_5'),
+          _F(NOM = 'JOINT_G' , GROUP_MA = 'G_2D_55'),
+          _F(NOM = 'JOINT_D' , GROUP_MA = 'G_2D_54'),
           _F(NOM = 'JOINT',    UNION = ('JOINT_G', 'JOINT_D')),          
        ),
        CREA_GROUP_NO = (
-          _F(NOM = 'P_RIG',    GROUP_MA = 'GM1'),
+          _F(NOM = 'P_RIG',    GROUP_MA = 'G_0D_1'),
           _F(GROUP_MA = 'FACE_SUP'),
           _F(GROUP_MA = 'JOINT'),          
-          _F(NOM = 'SYME_BD',GROUP_MA = 'GM56'),
-          _F(NOM = 'SYME_BG',GROUP_MA = 'GM57'),
+          _F(NOM = 'SYME_BD',GROUP_MA = 'G_1D_56'),
+          _F(NOM = 'SYME_BG',GROUP_MA = 'G_1D_57'),
           _F(NOM = 'SYMETRIE',UNION   = ('SYME_BD', 'SYME_BG')),
          )
        )
@@ -245,45 +245,45 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
               NOM_PARA='DY',
-              VALE=3.31817E-03,
+              VALE=3.31660E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
               NOM_PARA='DY',
-              VALE=4.26190E+07,
+              VALE=4.26153E+07,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
               NOM_PARA='DY',
-              VALE=1.29421E-03,
+              VALE=1.29488E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
               NOM_PARA='DY',
-              VALE=2.73409E+06,
+              VALE=2.73873E+06,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=150,),),
               NOM_PARA='DY',
-              VALE=6.45971E-03,
+              VALE=6.45752E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=150,),),
               NOM_PARA='DY',
-              VALE=7.86467E+06,
+              VALE=7.87206E+06,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=200,),),
               NOM_PARA='DY',
-              VALE=1.04769E-02,
+              VALE=1.04754E-02,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=200,),),
               NOM_PARA='DY',
-              VALE=2.16177E+06,
+              VALE=2.16189E+06,
               REFERENCE='NON_REGRESSION')
 
 

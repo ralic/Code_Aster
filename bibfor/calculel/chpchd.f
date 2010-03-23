@@ -3,7 +3,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -171,7 +171,7 @@ C     ----------------------------------------------------------------
 
         ELSEIF (CAS(1:4).EQ.'ELGA') THEN
           CALL CELCES(CHIN,'V',CES1)
-          CALL CELFPG(CHIN,'&&CHPCHD.CELFPG',1,IRET)
+          CALL CELFPG(CHIN,'&&CHPCHD.CELFPG',IRET)
 
         ELSEIF (CAS(1:4).EQ.'CART') THEN
           CALL CARCES(CHIN,'ELNO',' ','V',CES1,IRET)
@@ -214,7 +214,7 @@ C     ----------------------------------------------------------------
         CES2 = '&&CHPCHD.CES2'
 
         CALL CELCES(CHIN,'V',CES1)
-        CALL CELFPG(CHIN,'&&CHPCHD.CELFPG',1,IRET)
+        CALL CELFPG(CHIN,'&&CHPCHD.CELFPG',IRET)
         CALL ASSERT(IRET.EQ.0)
         CALL CESCES(CES1,'ELNO',CESMOD,' ','&&CHPCHD.CELFPG','V',CES2)
         CALL CESCEL(CES2,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU,'F',

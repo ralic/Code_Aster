@@ -1,4 +1,4 @@
-# MODIF  DATE 01/02/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 23/03/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106e.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test R
@@ -331,6 +331,9 @@ TMY_B_G=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 GROUP_NO='B',
                                 NOM_CMP=('DRY',),),);
 
+FORM_A = FORMULE(VALE='abs(DX+DY)',
+                 NOM_PARA=('DX','DY',),);
+
 FORM_V = FORMULE(VALE='(DX*DX+DY*DY)**0.5*(DX+DY)/abs(DX+DY)',
                  NOM_PARA=('DX','DY',),);
 
@@ -345,11 +348,22 @@ TFN_B_R=CALC_TABLE(reuse =TFN_B_R,
                    ACTION=(_F(OPERATION='EXTR',
                               NOM_PARA=('INST','DX','DY',),),),);
 
+TFN_B_R=CALC_TABLE(reuse=TFN_B_R,
+                   TABLE=TFN_B_R,
+                   ACTION=_F(OPERATION='OPER',
+                             FORMULE=FORM_A,
+                             NOM_PARA='DI',),);
+
 TFN_B_R=CALC_TABLE(TABLE=TFN_B_R, reuse = TFN_B_R,
                     ACTION=(_F(OPERATION='FILTRE',
-                               NOM_PARA='DX',
+                               NOM_PARA='DI',
                                CRIT_COMP='NE',
                                VALE=0.0,),),);
+
+TFN_B_R=CALC_TABLE(reuse=TFN_B_R,
+                   TABLE=TFN_B_R,
+                   ACTION=_F(OPERATION='SUPPRIME',
+                             NOM_PARA='DI'),);
 
 TFN_B_R=CALC_TABLE(TABLE=TFN_B_R, reuse = TFN_B_R,
                     ACTION=(_F(OPERATION='OPER',
@@ -365,11 +379,22 @@ TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
                    ACTION=(_F(OPERATION='EXTR',
                               NOM_PARA=('INST','DX','DY',),),),);
 
+TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
+                   TABLE=TFN_B_G,
+                   ACTION=_F(OPERATION='OPER',
+                             FORMULE=FORM_A,
+                             NOM_PARA='DI',),);
+
 TFN_B_G=CALC_TABLE(TABLE=TFN_B_G, reuse = TFN_B_G,
                     ACTION=(_F(OPERATION='FILTRE',
-                               NOM_PARA='DX',
+                               NOM_PARA='DI',
                                CRIT_COMP='NE',
                                VALE=0.0,),),);
+
+TFN_B_G=CALC_TABLE(reuse=TFN_B_G,
+                   TABLE=TFN_B_G,
+                   ACTION=_F(OPERATION='SUPPRIME',
+                             NOM_PARA='DI'),);
 
 TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
                    TABLE=TFN_B_G,
@@ -485,7 +510,7 @@ TEST_RESU(RESU=(
                   INST=1.0,
                   NOM_CHAM='VARI_ELNO_ELGA',
                   NOM_CMP='V2',
-                  VALE =1.1781512546301,
+                  VALE =1.178108,
                   PRECISION = 1.0E-6,
                   REFERENCE='NON_REGRESSION',
                   ),
@@ -503,7 +528,7 @@ TEST_RESU(RESU=(
                   INST=2.8,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE =1.9504442872799e-03,
+                  VALE =1.9504378E-03,
                   PRECISION = 1.0E-6,
                   REFERENCE='NON_REGRESSION',
                   ),
@@ -522,7 +547,7 @@ TEST_RESU(RESU=(
                   INST=2.8,
                   NOM_CHAM='VARI_ELNO_ELGA',
                   NOM_CMP='V1',
-                  VALE =7.5204804401425e-01,
+                  VALE =0.7519636,
                   PRECISION = 1.0E-6,
                   REFERENCE='NON_REGRESSION',
                   ),
@@ -532,7 +557,7 @@ TEST_RESU(RESU=(
                   INST=2.8,
                   NOM_CHAM='VARI_ELNO_ELGA',
                   NOM_CMP='V2',
-                  VALE =1.1781512546301,
+                  VALE =1.178108,
                   PRECISION = 1.0E-6,
                   REFERENCE='NON_REGRESSION',
                   ),
@@ -542,7 +567,7 @@ TEST_RESU(RESU=(
                   INST=3.0,
                   NOM_CHAM='VARI_ELNO_ELGA',
                   NOM_CMP='V1',
-                  VALE =1.1626141655931,
+                  VALE =1.162571,
                   PRECISION = 1.0E-6,
                   REFERENCE='NON_REGRESSION',
                   ),
@@ -552,7 +577,7 @@ TEST_RESU(RESU=(
                   INST=3.0,
                   NOM_CHAM='VARI_ELNO_ELGA',
                   NOM_CMP='V2',
-                  VALE =1.1781512546301,
+                  VALE =1.178108,
                   PRECISION = 1.0E-6,
                   REFERENCE='NON_REGRESSION',
                   ),

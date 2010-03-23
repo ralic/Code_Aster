@@ -1,5 +1,5 @@
       SUBROUTINE NMDEPR(MODELE,LIGREL,CARELE,CHARGE,ICHA,INSTAN,RESUFV)
-C MODIF ALGORITH  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,7 +135,8 @@ C     ---------------------------------------------------------
 
         LPAIN(1) = 'PGEOMER'
         LCHIN(1) = CHGEOM
-        LPAIN(2) = 'PNFORCER'
+        IF (OPTION.EQ.'CHAR_MECA_FR3D3D') LPAIN(2)='PFR3D3D'
+        IF (OPTION.EQ.'CHAR_MECA_FR2D2D') LPAIN(2)='PFR2D2D'
         LCHIN(2) = CHFNOE
         PAOUT = 'PVECTUR'
 
@@ -190,7 +191,8 @@ C     ---------------------------------------------------------
 
         LPAIN(1) = 'PGEOMER'
         LCHIN(1) = CHGEOM
-        LPAIN(2) = 'PNFORCER'
+        IF (OPTION.EQ.'CHAR_MECA_FR2D3D') LPAIN(2) = 'PFR2D3D'
+        IF (OPTION.EQ.'CHAR_MECA_FR1D2D') LPAIN(2) = 'PFR1D2D'
         LCHIN(2) = CHFNOE
         PAOUT = 'PVECTUR'
 

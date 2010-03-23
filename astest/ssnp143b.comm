@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 23/03/2010   AUTEUR LAVERNE J.LAVERNE 
 # TITRE VALIDATION DU CLAVAGE EN 3D POUR LA LOI DE JOINT DE PLOT DES BARRAGES
 # ssnp143b.para = tps_job 700 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -142,6 +142,7 @@ U_1=STAT_NON_LINE(MODELE=MO,
                   CONVERGENCE=_F(ITER_GLOB_MAXI=900,
                                  RESI_GLOB_RELA=1E-6),
                   SOLVEUR=_F(METHODE='MUMPS',),
+                  RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),         
                   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',
                                  LIST_INST = L_ARCH,), 
                   );

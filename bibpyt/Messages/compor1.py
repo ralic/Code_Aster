@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 15/03/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -362,4 +362,8 @@ coefficients sont donnés dans l'ordre (R,Z,T) et non (R,T,Z).
    SECHM %(r2)f    SECHP %(r3)f    W0 %(r4)f
 """),
 
+65 : _("""
+   Attention dans la routine majpad la pression d'air dissous devient 
+   negative a la maille %(k1)f
+"""),
 }

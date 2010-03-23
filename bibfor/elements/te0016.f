@@ -2,7 +2,7 @@
       IMPLICIT     NONE
       CHARACTER*16        OPTION, NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,66 +56,38 @@ C     ------------------------------------------------------------------
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PVECTUR','E',IVECTU)
+      CALL TEFREP(OPTION,NOMTE,'PFR3D3D',IFORC)
 
       NDL = 3*NNO
       DO 20 I = 1,NDL
         ZR(IVECTU+I-1) = 0.0D0
    20 CONTINUE
 
-C     POUR LE CAS DES FORCES VOLUMIQUES
-      CALL TECACH('ONN','PNFORCER',1,IFORC,IRET)
-      IF (IFORC.NE.0) THEN
-        CALL JEVECH('PNFORCER','L',IFORC)
 
-C       BOUCLE SUR LES POINTS DE GAUSS
-        DO 50 KP = 1,NPG
-          L = (KP-1)*NNO
-          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
-     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
+C     BOUCLE SUR LES POINTS DE GAUSS
+      DO 50 KP = 1,NPG
+        L = (KP-1)*NNO
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
 
-C         CALCUL DE LA FORCE AUX PG (A PARTIR DES NOEUDS) ---
-          FX = 0.0D0
-          FY = 0.0D0
-          FZ = 0.0D0
-          DO 30 I = 1,NNO
-            II = 3*(I-1)
-            FX = FX + ZR(IVF-1+L+I)*ZR(IFORC+II  )
-            FY = FY + ZR(IVF-1+L+I)*ZR(IFORC+II+1)
-            FZ = FZ + ZR(IVF-1+L+I)*ZR(IFORC+II+2)
-   30     CONTINUE
+C       CALCUL DE LA FORCE AUX PG (A PARTIR DES NOEUDS) ---
+        FX = 0.0D0
+        FY = 0.0D0
+        FZ = 0.0D0
+        DO 30 I = 1,NNO
+          II = 3*(I-1)
+          FX = FX + ZR(IVF-1+L+I)*ZR(IFORC+II  )
+          FY = FY + ZR(IVF-1+L+I)*ZR(IFORC+II+1)
+          FZ = FZ + ZR(IVF-1+L+I)*ZR(IFORC+II+2)
+   30   CONTINUE
 
-          DO 40 I = 1,NNO
-            II = 3* (I-1)
-            ZR(IVECTU+II  ) = ZR(IVECTU+II  ) + POIDS*ZR(IVF+L+I-1)*FX
-            ZR(IVECTU+II+1) = ZR(IVECTU+II+1) + POIDS*ZR(IVF+L+I-1)*FY
-            ZR(IVECTU+II+2) = ZR(IVECTU+II+2) + POIDS*ZR(IVF+L+I-1)*FZ
-   40     CONTINUE
-   50   CONTINUE
+        DO 40 I = 1,NNO
+          II = 3* (I-1)
+          ZR(IVECTU+II  ) = ZR(IVECTU+II  ) + POIDS*ZR(IVF+L+I-1)*FX
+          ZR(IVECTU+II+1) = ZR(IVECTU+II+1) + POIDS*ZR(IVF+L+I-1)*FY
+          ZR(IVECTU+II+2) = ZR(IVECTU+II+2) + POIDS*ZR(IVF+L+I-1)*FZ
+   40   CONTINUE
+   50 CONTINUE
 
-      ELSE
-
-        CALL JEVECH('PFR3D3D','L',IFORC)
-
-C    BOUCLE SUR LES POINTS DE GAUSS
-
-        DO 80 KP = 1,NPG
-
-          L = (KP-1)*NNO
-          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
-     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
-
-          DO 70 I = 1,NNO
-            II = 3* (I-1)
-
-            DO 60 J = 1,3
-              ZR(IVECTU+II+J-1) = ZR(IVECTU+II+J-1) +
-     &                            POIDS*ZR(IVF+L+I-1)*ZR(IFORC+J-1)
-   60       CONTINUE
-
-   70     CONTINUE
-
-   80   CONTINUE
-
-      END IF
 
       END

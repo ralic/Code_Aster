@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -190,7 +190,7 @@ U1=CALC_NO( reuse=U1,
             )
 
 NCOU_M=CREA_CHAMP( OPERATION='EXTR',
-                   TYPE_CHAM='ELEM_SPMA_R',
+                   TYPE_CHAM='ELGA_SPMA_R',
                    RESULTAT=U1,
                    NOM_CHAM='VALE_NCOU_MAXI',
                    TYPE_MAXI='MAXI',
@@ -198,7 +198,7 @@ NCOU_M=CREA_CHAMP( OPERATION='EXTR',
                  ) ;
 
 NCOU_I=CREA_CHAMP( OPERATION='EXTR',
-                   TYPE_CHAM='ELEM_SPMA_R',
+                   TYPE_CHAM='ELGA_SPMA_R',
                    RESULTAT=U1,
                    NOM_CHAM='VALE_NCOU_MAXI',
                    TYPE_MAXI='MAXI',

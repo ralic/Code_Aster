@@ -1,6 +1,6 @@
       SUBROUTINE TE0084 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 22/03/2010   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C ......................................................................
 C
       CHARACTER*16       PHENOM
       CHARACTER*2        CODRET
-      REAL*8             DFDX(9),DFDY(9),POIDS,RX,RY
+      REAL*8             DFDX(9),DFDY(9),POIDS,RX,RY,R8MIEM
       INTEGER            NNO,KP,K,NPG1,I,IVECTU,IROTA,JGANO,NDIM,NNOS
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       LOGICAL            LTEATT
@@ -58,6 +58,27 @@ C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PROTATR','L',IROTA)
+C
+C VERIFICATIONS SUR LE CHARGEMENT ROTATION 
+C
+      IF(NOMTE(3:4).EQ.'DP'.OR.NOMTE(3:4).EQ.'CP') THEN
+C AXE=direction Oz 
+         IF(ZR(IROTA+3).LE.R8MIEM()) THEN
+            CALL U2MESS('F','MODELISA9_99')
+         END IF
+         IF(ZR(IROTA+1).GT.R8MIEM().OR.ZR(IROTA+2).GT.R8MIEM()) THEN
+            CALL U2MESS('F','MODELISA10_3')
+         END IF
+      ELSEIF(NOMTE(3:4).EQ.'AX') THEN
+C AXE=Oy et CENTRE=ORIGINE
+         IF(ZR(IROTA+1).GT.R8MIEM().OR.ZR(IROTA+3).GT.R8MIEM()) THEN
+            CALL U2MESS('F','MODELISA10_1')
+         END IF
+         IF(ZR(IROTA+4).GT.R8MIEM().OR.ZR(IROTA+5).GT.R8MIEM() 
+     &     .OR.ZR(IROTA+6).GT.R8MIEM()) THEN
+            CALL U2MESS('F','MODELISA10_2')
+         END IF
+      ENDIF
       CALL JEVECH('PVECTUR','E',IVECTU)
 C
       CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
@@ -76,7 +97,6 @@ C
 102      CONTINUE
          IF ( LTEATT(' ','AXIS','OUI') ) THEN
            POIDS = POIDS*RX
-           RX = RX - ZR(IROTA+4)
            DO 103 I=1,NNO
              K=(KP-1)*NNO
              ZR(IVECTU+2*I-2) = ZR(IVECTU+2*I-2) +

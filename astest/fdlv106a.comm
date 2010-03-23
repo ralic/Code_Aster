@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL D AMORTISSEMENT AJOUTE EN ECOULEMENT ANNULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -260,7 +260,7 @@ TEST_RESU(OBJET=(_F(NOM='MASS               .VALM',
 
 MACRO_MATR_AJOU(MAILLAGE=MAYA,
                 GROUP_MA_FLUIDE='FLUIDE',
-                GROUP_MA_INTERF='INTERFACE',
+                GROUP_MA_INTERF='INTERFAC',
                 MODELISATION='3D',
                 FLUIDE=_F(RHO=1000.0,),
                 DDL_IMPO=(_F(GROUP_NO='TEMPIMPO',

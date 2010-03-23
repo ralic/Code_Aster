@@ -8,7 +8,7 @@
      &             CRIT,RINSTM,RINSTP,
      &             R,DRDS,DSDE,RETCOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/07/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C     FONCTIONS INTRINSEQUES :
 C       SQRT.
 C   -------------------------------------------------------------------
 
-      INTEGER      IMATE,NDIM,NBVARI,KPI,NPG,DIMDEF,DIMCON,RETCOM
+      INTEGER      IMATE,NDIM,NBVARI,KPI,NPG,DIMDEF,DIMCON,RETCOM,IBID
       INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
       INTEGER      YAMEC,ADDEME,ADCOME,YATE,ADDETE,ADCOTE,I,J
       INTEGER      YAP1,NBPHA1,ADDEP1,ADCP11,ADCP12
@@ -150,7 +150,7 @@ C   -------------------------------------------------------------------
       REAL*8       DEFGEM(1:DIMDEF),DEFGEP(1:DIMDEF),CONGEM(1:DIMCON)
       REAL*8       CONGEP(1:DIMCON),VINTM(1:NBVARI),VINTP(1:NBVARI)
       REAL*8       R(1:DIMDEF+1),DRDS(1:DIMDEF+1,1:DIMCON),PESA(3)
-      REAL*8       DSDE(1:DIMCON,1:DIMDEF),CRIT(*),RINSTP,RINSTM
+      REAL*8       DSDE(1:DIMCON,1:DIMDEF),CRIT(*),RINSTP,RINSTM,RBID
       REAL*8       DEUX,RAC2
       PARAMETER   (DEUX = 2.D0)
       LOGICAL PERMAN
@@ -177,6 +177,9 @@ C ======================================================================
       YATE   = TEMPE(1)
       ADDETE = TEMPE(2)
       ADCOTE = TEMPE(3)
+C
+      IBID = 0
+      RBID = 0.D0  
 C ============================================================
 C --- COMME CONGEM CONTIENT LES VRAIES CONTRAINTES ET --------
 C --- COMME PAR LA SUITE ON TRAVAILLE AVEC SQRT(2)*SXY -------
@@ -219,16 +222,19 @@ C ======================================================================
          DRDS(DIMDEF+1,J)=0.D0
  800  CONTINUE
 
-             CALL COMTHM(OPTION,PERMAN,IMATE,TYPMOD,COMPOR,
+             
+      CALL COMTHM(OPTION,PERMAN,.FALSE.,IBID,RBID,RBID,
+     &             IMATE,TYPMOD,COMPOR,
      &             CRIT,RINSTM,RINSTP,
      &             NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,
      &             YAP2,YATE,ADDEME,ADCOME,ADDEP1,ADCP11,
      &             ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
      &             DEFGEM,DEFGEP,CONGEM,CONGEP,VINTM,VINTP,
-     &             DSDE,PESA,RETCOM,KPI,NPG)
-           IF (RETCOM.NE.0) THEN
+     &             DSDE,PESA,RETCOM,KPI,NPG,
+     &             RBID,RBID)
+      IF (RETCOM.NE.0) THEN
             GOTO 9000
-           ENDIF
+      ENDIF
 C ======================================================================
 C --- CALCUL DE LA CONTRAINTE VIRTUELLE R ------------------------------
 C ======================================================================

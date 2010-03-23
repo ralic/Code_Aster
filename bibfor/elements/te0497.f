@@ -1,7 +1,7 @@
       SUBROUTINE TE0497(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES
 C
-      INTEGER IFM,NIV
+      INTEGER IFM,NIV,TYPVF
       INTEGER IBID,IAUX,IRET,ITAB(7)
       INTEGER IGEOM,JTIME
       INTEGER IERR, IVOIS
@@ -76,10 +76,10 @@ C
       INTEGER NBCMP
       INTEGER IPG
       INTEGER TYMVOL,NDEGRE,IFA,TYV
-      INTEGER NBS   ,
-     &        ISIENP ,ISIENM,IDEPLP,IDEPLM,JKP   ,NBNA ,
-     &        IAGD  ,IATYMA,TYP  ,
-     &        TYPV   ,IACMP
+      INTEGER NBS 
+      INTEGER ISIENP ,ISIENM,IDEPLP,IDEPLM,JKP,NBNA
+      INTEGER IAGD  ,IATYMA,TYP
+      INTEGER TYPV   ,IACMP
       INTEGER IADE2,IAVA2,IAPTM2,IGD2,NCMPM2
       INTEGER IADE3,IAVA3,IAPTM3,IGD3,NCMPM3
       INTEGER IGRDCA
@@ -108,7 +108,7 @@ C
      &       TSISAM,TDESAM,TSISSH,TSISBH,DENOMI
       REAL*8 LONGC,PRESC,ADMEC,ADHY0,ADHY1,ADV1H,ADHYMD
 C
-      LOGICAL      LAXI,PERMAN
+      LOGICAL      LAXI,PERMAN,VF
 C
       CHARACTER*2  FORM,NOEU
       CHARACTER*3  MODINT
@@ -152,11 +152,15 @@ C
 C =====================================================================
 C A. --- RECUPERATION D'INFORMATIONS SUR L'ELEMENT THM ----------------
 C =====================================================================
-      CALL CAETHM(NOMTE ,LAXI  ,PERMAN,
+      IBID = 0
+      TYPVF = 0
+      VF = .FALSE.
+      CALL CAETHM(NOMTE ,LAXI  ,PERMAN,VF,TYPVF,
      &            TYPMOD,MODINT,MECANI,PRESS1,PRESS2,TEMPE ,
      &            DIMDEP,DIMDEF,DIMCON,NMEC  ,NP1   ,NP2   ,NDIM  ,NNO,
-     &            NNOS  ,NNOM  ,NPI   ,NPG   ,NDDLS ,NDDLM ,DIMUEL,
-     &            IPOIDS,IVF   ,IDFDE ,IPOID2,IVF2  ,IDFDE2,JGANO)
+     &            NNOS  ,NNOM  ,IBID, NPI   ,NPG   ,NDDLS ,NDDLM ,
+     &            IBID ,IBID,DIMUEL,
+     &            IPOIDS,IVF   ,IDFDE ,IPOID2,IVF2  ,IDFDE2,IBID,JGANO)
 C
 C =====================================================================
 C B. --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU ----------

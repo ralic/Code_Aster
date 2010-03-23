@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 16/11/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -244,6 +244,23 @@ Erreur utilisateur dans PROJ_CHAMP :
     renseigner une variable de commande (AFFE_MATERIAU/AFFE_VARC/EVOL), il faut faire attention
     à utiliser éventuellement les mots clés PROL_GAUCHE et PROL_DROIT.
 """),
+
+70 : _("""
+Erreur utilisateur dans CREA_CHAMP :
+  Vous avez demandé la création d'un champ '%(k1)s' (mot clé TYPE_CHAM)
+  Mais le code a créé un champ '%(k2)s'.
+Conseil :
+  Il faut sans doute modifier la valeur de TYPE_CHAM
+"""),
+
+71 : _("""
+Erreur utilisateur dans CREA_CHAMP :
+  Vous avez demandé la création d'un champ de %(k1)s (mot clé TYPE_CHAM)
+  Mais le code a créé un champ de %(k2)s.
+Conseil :
+  Il faut sans doute modifier la valeur de TYPE_CHAM
+"""),
+
 
 
 

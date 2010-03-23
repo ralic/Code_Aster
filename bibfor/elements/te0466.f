@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,10 +67,11 @@ C
       REAL*8             PRES,PRESF
 C
       INTEGER NNOS,NPI2
-C     ------------------------------------------------------------------
+      INTEGER NFLUX
+C------------------------------------------------------------------
 C  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH ,THM,
 C                           THH2M, HH2M,  THH2, HH, HH2
-C     ------------------------------------------------------------------
+C------------------------------------------------------------------
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
@@ -80,10 +81,12 @@ C ======================================================================
             ELREF2 = 'TR3'
          ELSEIF ( ELREFE.EQ.'QU8') THEN
             ELREF2 = 'QU4'
+         ELSEIF ( ELREFE.EQ.'QU9') THEN
+            ELREF2 = 'QU4'
+C            WRITE(6,*)'ELREFE2',ELREF2
          ELSE
            CALL U2MESK('F','DVP_4',1,ELREFE)
          ENDIF
-
 C FONCTIONS DE FORMES QUADRATIQUES
       CALL ELREF4(ELREFE,'RIGI',NDIM,NNO,NNOS,NPI,
      &                          IPOIDS,IVF,IDFDX,JGANO)
@@ -93,17 +96,21 @@ C FONCTIONS DE FORMES LINEAIRES
 C
 C NB DE DDL A CHAQUE NOEUD
       CALL DIMTHM(NOMTE,NDLNO,NDLNM,NDIM2)
-
+C      WRITE(6,*)'NDLNO',NDLNO
+C      WRITE(6,*)'NDLNM',NDLNM
+C      WRITE(6,*)'NDIM2',NDIM2
       CALL JEVECH ( 'PGEOMER', 'L', IGEOM )
       CALL JEVECH ( 'PVECTUR', 'E', IRES  )
 C
       IF (OPTION.EQ.'CHAR_MECA_FLUX_R') THEN
+C         WRITE(6,*)'OPTION',OPTION
          IOPT = 1
          CALL JEVECH ( 'PFLUXR' , 'L', IFLUX  )
          CALL JEVECH ( 'PTEMPSR', 'L', ITEMPS )
          DELTAT = ZR(ITEMPS+1)
 C
       ELSE IF (OPTION.EQ.'CHAR_MECA_FLUX_F') THEN
+C         WRITE(6,*)'OPTION',OPTION
          IOPT = 2
          CALL JEVECH ( 'PFLUXF' , 'L', IFLUXF )
          CALL JEVECH ( 'PTEMPSR', 'L', ITEMPS )
@@ -114,10 +121,12 @@ C
          NOMPAR(4) = 'INST'
          VALPAR(4) = ZR(ITEMPS)
       ELSE IF (OPTION.EQ.'CHAR_MECA_PRES_R') THEN
+C         WRITE(6,*)'OPTION',OPTION
          IOPT = 3
          CALL JEVECH ( 'PPRESSR', 'L', IPRES )
 C
       ELSE IF (OPTION.EQ.'CHAR_MECA_PRES_F') THEN
+C         WRITE(6,*)'OPTION',OPTION
          IOPT = 4
          CALL JEVECH ( 'PPRESSF', 'L', IPRESF )
          CALL JEVECH ( 'PTEMPSR', 'L', ITEMPS )
@@ -127,6 +136,7 @@ C
          NOMPAR(4) = 'INST'
          VALPAR(4) = ZR(ITEMPS)
       ELSE IF (OPTION.EQ.'CHAR_MECA_FR2D3D') THEN
+C         WRITE(6,*)'OPTION',OPTION
          IOPT = 5
          CALL JEVECH ( 'PFR2D3D', 'L', IFORC )
       END IF
@@ -176,6 +186,64 @@ C OPTIONS CHAR_MECA_FLUX_R ET CHAR_MECA_FLUX_F (INTERPOLATION LINEAIRE)
 C ======================================================================
 
          IF(IOPT.EQ.1.OR.IOPT.EQ.2) THEN
+C
+C ======================================================================
+C --- SI MODELISATION = SUSHI HH2 AVEC OU SANS VOISINAGE
+C
+           IF (NOMTE(1:10).EQ.'ZHH2_FACE9')THEN
+           
+C
+C --- NAPRE1,NAPRE2,NATEMP SONT MIS EN PLACE
+C --- POUR UNE EVENTUELLE MODIFICATION DE L'ORDRE DES DDL :
+C     PRE1, PRE2, TEMP DANS LES CATALOGUES D'ELEMENTS
+C
+             NAPRE1=0
+             NAPRE2=1
+             NFLUX =2
+C
+             IF (IOPT.EQ.1) THEN
+C
+C ---   FLU1 REPRESENTE LE FLUX ASSOCIE A PRE1
+C ---   FLU2 REPRESENTE LE FLUX ASSOCIE A PRE2
+C ---   ET FLUTH LE FLUX THERMIQUE
+C
+               FLU1  = ZR((IFLUX)+(IPG-1)*NFLUX+NAPRE1 )
+               FLU2  = ZR((IFLUX)+(IPG-1)*NFLUX+NAPRE2 )
+C
+             ELSE IF (IOPT.EQ.2) THEN
+               X = 0.D0
+               Y = 0.D0
+               Z = 0.D0
+               DO 300 I=1,NNO2
+                 X = X + ZR(IGEOM+3*I-3) * ZR(IVF2+LDEC+I-1)
+                 Y = Y + ZR(IGEOM+3*I-2) * ZR(IVF2+LDEC+I-1)
+                 Z = Z + ZR(IGEOM+3*I-1) * ZR(IVF2+LDEC+I-1)
+ 300           CONTINUE
+               VALPAR(1) = X
+               VALPAR(2) = Y
+               VALPAR(3) = Z
+C
+               CALL FOINTE('FM',ZK8(IFLUXF+NAPRE1),4,NOMPAR,VALPAR,
+     &                     FLU1,IRET)
+               CALL FOINTE('FM',ZK8(IFLUXF+NAPRE2),4,NOMPAR,VALPAR,
+     &                     FLU2,IRET)
+C
+             ENDIF
+C          
+           
+
+               DO 301 I=1,NNO2
+C                                
+                 ZR(IRES) = ZR(IRES) - ZR(IPOIDS+IPG-1) *
+     &                  FLU1 * ZR(IVF2+LDEC2+I-1) * JAC
+C                 
+                 ZR(IRES+1) = ZR(IRES+1) - ZR(IPOIDS+IPG-1) *
+     &                  FLU2 * ZR(IVF2+LDEC2+I-1) * JAC
+C                 
+ 301           CONTINUE
+C
+C             WRITE(6,*)' ICI4'
+           ENDIF
 C
 C ======================================================================
 C --- SI MODELISATION = THHM OU THH

@@ -1,0 +1,98 @@
+      SUBROUTINE TEFREP(OPTION,NOMTE,PARAM,IFORC)
+      IMPLICIT   NONE
+      CHARACTER*16 OPTION,NOMTE
+      CHARACTER*(*) PARAM
+
+C ......................................................................
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE PELLET J.PELLET
+C    - BUT:
+C     RECUPERER L'ADRESSE DU CHAMP LOCAL CORRESPONDANT AUX EFFORTS
+C     REPARTIS (CHAR_MECA_FR.D.D)
+C ......................................................................
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
+      INTEGER IFORC,ITAB(8),K,IRET,INO,ICO
+      INTEGER IADZI,IAZK24,NBVAL,JAD,NBNO,NBCMP
+      CHARACTER*24 VALK(4)
+      CHARACTER*8 NOMMAI
+C     ------------------------------------------------------------------
+
+      CALL TECACH('OON',PARAM,8,ITAB,IRET)
+      CALL ASSERT(IRET.EQ.0.OR.IRET.EQ.3)
+
+      IF(IRET.EQ.0) THEN
+        IFORC=ITAB(1)
+
+      ELSEIF(IRET.EQ.3) THEN
+        IFORC=ITAB(1)
+C       -- APRES CONCERTATION (JP+JLF) ON DECIDE :
+C       1) SI UN NOEUD NE PORTE PAS TOUTES LES CMPS => <F>
+C       2) SI UN NOEUD NE PORTE AUCUNE COMPOSANTE, ON LE MET
+C          A ZERO.
+        NBVAL=ITAB(2)
+        NBNO=ITAB(3)
+        JAD=ITAB(8)
+        NBCMP=NBVAL/NBNO
+        CALL ASSERT(NBVAL.EQ.NBNO*NBCMP)
+
+        DO 3,INO=1,NBNO
+          ICO=0
+          DO 1, K=1,NBCMP
+            IF (ZL(JAD-1+(INO-1)*NBCMP+K)) ICO=ICO+1
+ 1        CONTINUE
+          IF (ICO.NE.0.AND.ICO.NE.NBCMP) GOTO 12
+          CALL ASSERT(IFORC.NE.0)
+          IF (ICO.EQ.0) THEN
+            DO 2, K=1,NBCMP
+              ZR(IFORC-1+(INO-1)*NBCMP+K)=0.D0
+ 2          CONTINUE
+          ENDIF
+ 3      CONTINUE
+        GOTO 9999
+
+
+12      CONTINUE
+        CALL TECAEL(IADZI,IAZK24)
+        NOMMAI=ZK24(IAZK24-1+3)
+        VALK(1) = PARAM
+        VALK(2) = OPTION
+        VALK(3) = NOMTE
+        VALK(4) = NOMMAI
+        CALL U2MESK('F','CALCULEL2_72', 4 ,VALK)
+      ENDIF
+
+9999  CONTINUE
+      END

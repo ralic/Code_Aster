@@ -1,7 +1,7 @@
       SUBROUTINE MGAUSS(CARA,A,B,DIM,NORDRE,NB,DET,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/10/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF CALCULEL  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C TOLE CRP_4
       IMPLICIT NONE
 
       CHARACTER*(*) CARA
-      INTEGER DIM,NB,NORDRE,IRET
+      INTEGER DIM,NB,NORDRE,IRET,IDB
       REAL*8 A(DIM,DIM),B(DIM,NB),DET
 
 C ----------------------------------------------------------------------
@@ -247,7 +247,9 @@ C     -- 5. IMPRESSIONS (SI LE MOT CLE 'INFO' = 2): RCOND, BERR, FERR
 C     ---------------------------------------------------------------
       IF (CARA2(3:3).EQ.'S') THEN
         CALL INFNIV(IFM,NIV)
-        IF (IRET.NE.0 .OR. NIV.LE.1) GO TO 110
+C       JMP : TROP D'IMPRESSIONS EN INFO=2
+        IDB=0
+        IF (IRET.NE.0 .OR. NIV.LE.1. OR. IDB.EQ.0) GO TO 110
         WRITE (IFM,1001) 'DEBUT DE MGAUSS'
         IF (EQUED.EQ.'N') THEN
           WRITE (IFM,*) 'L''EQUILIBRAGE DE LA MATRICE ''A'' '//

@@ -2,11 +2,11 @@
      +                   HYDR, IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1,
      +                   ADDEP2, ADDETE, NDIM, T0, P10, P20, PHI0, PVP0,
      +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
-     +                   GRAT, GRAP1, GRAP2, NVITH, RETCOM, RINSTP)
+     +                   GRAT, GRAP1, GRAP2, NVITH, RETCOM,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,12 +26,12 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C ======================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       YAMEC, YATE, YAP1, YAP2, IMATE, NVITH
       INTEGER       ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM, RETCOM
       REAL*8        T0, P10, P20, PHI0, PVP0, DEPSV, EPSV, DEPS(6), T
       REAL*8        P1, P2, GRAT(3), GRAP1(3), GRAP2(3), DP1, DP2, DT
-      REAL*8        DEFGEM(*), DEFGEP(*), RINSTP 
+      REAL*8        DEFGEM(*), DEFGEP(*) ,RINSTP
       CHARACTER*16  MECA, THMC, THER, HYDR
 C ======================================================================
 C --- RECUPERATION DES DONNEES INITIALES -------------------------------
@@ -45,22 +45,22 @@ C ======================================================================
       REAL*8        RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
       REAL*8        RBID39, RBID40, RBID41, RBID42, RBID43, RBID44
       REAL*8        RBID45,RBID46,RBID47,RBID48,RBID49,RBID50,RBID51
-      REAL*8        RBID52
+      REAL*8        RBID52 , RBID53,R3BID(6)
 C ======================================================================
 C --- INITIALISATION DE VARIABLES --------------------------------------
 C ======================================================================
       CALL THMRCP( 'INITIALI', IMATE, THMC, MECA, HYDR, THER,
-     +           T0, P10, P20, PHI0, PVP0, RBID1, RBID2, 
+     +           T0, P10, P20, PHI0, PVP0, RBID1, RBID2,
      +           RBID3, RBID4, RBID5, RBID6,
-     +           RBID8, RBID9, RBID10, RBID11,RBID12, 
-     +           RBID13, RBID14,
+     +           RBID8, RBID9, RBID10,  RBID11,RBID12,
+     +           RBID13,RBID53,RBID14,
      +           RBID15, RBID16, RBID17,RBID18, RBID19, RBID20,
      +           RBID21, RBID22, RBID23,RBID24, RBID25, RBID26,
      +           RBID27, RBID28, RBID29,RBID30, RBID31, RBID32,
      +           RBID33, RBID34, RBID35,RBID36, RBID37, RBID38,
-     +           RBID39, RBID40, RBID41,RBID42, RBID43, RBID44,RBID45,
-     +           RBID46,RBID47,RBID48,RBID49,RBID50,RBID51,RBID5,
-     +           RBID52,RINSTP)
+     +           RBID39, RBID40, RBID41,RBID42, RBID43, RBID44, RBID45,
+     +           RBID46, RBID47,RBID48, RBID49, RBID50,RBID51,
+     +           R3BID,  RBID52,RINSTP)     
 C ======================================================================
 C --- CALCUL DES VARIABLES ---------------------------------------------
 C ======================================================================

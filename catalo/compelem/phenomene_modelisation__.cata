@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
+%& MODIF COMPELEM  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -136,6 +136,39 @@ PHENOMENE_MODELISATION__
 
 
    PHENOMENE__  MECANIQUE       CODE__  'ME'
+
+        MODELISATION__ '3D_HH2SUDM'        DIM__ 3 3   CODE__ '3DM'
+              ATTRIBUT__  VOLU_FINI=OUI THM=OUI TYPE_VOISIN=F3
+              MAILLE__ HEXA27    ELEMENT__ ZHH2_HEXA27_SUDM
+              MAILLE__ QUAD9     ELEMENT__ ZHH2_FACE9_SUDM
+
+        MODELISATION__ '3D_HH2SUDA'        DIM__ 3 3   CODE__ '3AD'
+              ATTRIBUT__   THM=OUI
+              MAILLE__ HEXA27    ELEMENT__ ZHH2_HEXA27_SUDA
+              MAILLE__ QUAD9     ELEMENT__ ZHH2_FACE9_SUDA
+
+        MODELISATION__ '3D_HH2SUC'        DIM__ 3 3   CODE__ '3SC'
+              ATTRIBUT__   THM=OUI
+              MAILLE__ HEXA27    ELEMENT__ ZHH2_HEXA27_SUC
+              MAILLE__ QUAD9     ELEMENT__ ZHH2_FACE9_SUC
+
+        MODELISATION__ 'D_PLAN_HH2SUDM'    DIM__ 2 2  CODE__ '2DM'
+               ATTRIBUT__  VOLU_FINI=OUI  THM=OUI TYPE_VOISIN=A2
+               MAILLE__ TRIA7     ELEMENT__ DHH2T7_SUDM
+               MAILLE__ QUAD9     ELEMENT__ DHH2Q9_SUDM
+               MAILLE__ SEG3      ELEMENT__ DHH2S3_SUDM
+ 
+        MODELISATION__ 'D_PLAN_HH2SUDA'    DIM__ 2 2  CODE__ '2DA'
+               ATTRIBUT__    THM=OUI
+               MAILLE__ TRIA7     ELEMENT__ DHH2T7_SUDA
+               MAILLE__ QUAD9     ELEMENT__ DHH2Q9_SUDA
+               MAILLE__ SEG3      ELEMENT__ DHH2S3_SUDA
+
+        MODELISATION__ 'D_PLAN_HH2SUC'    DIM__ 2 2  CODE__ '2SC'
+               ATTRIBUT__    THM=OUI
+               MAILLE__ TRIA7     ELEMENT__ DHH2T7_SUC
+               MAILLE__ QUAD9     ELEMENT__ DHH2Q9_SUC
+               MAILLE__ SEG3      ELEMENT__ DHH2S3_SUC
 
        MODELISATION__ 'VF1'      DIM__ 2 2  CODE__ 'VF1'
               ATTRIBUT__  VOLU_FINI=OUI  TYPE_VOISIN=A2

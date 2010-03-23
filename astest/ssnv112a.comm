@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (HEXA20) 3D
 # ssnv112a.para = tps_job 60 mem_job 128Mo mem_aster 95 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -296,7 +296,7 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   POINT=1,
                   VALE=0.14871391,
                   CRITERE='RELATIF',
-                  PRECISION=1.e-06,
+                  PRECISION=1.1e-06,
                   REFERENCE='NON_REGRESSION',
                   VERSION='9.05.04',),);
 

@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 08/03/2010   AUTEUR BERARD A.BERARD 
+#@ MODIF calculel5 Messages  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -319,9 +319,6 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
     elrefa :  %(k3)s
 """),
 
-83 : _("""
- ecla_pg : champ vide nom_cham:  %(k1)s  nume_ordre :  %(i1)d
-"""),
 
 
 

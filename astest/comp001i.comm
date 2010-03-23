@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE TEST EN 3D VMIS_ISOT_PUIS, UTILISANT SIMU_POINT_MAT
 # comp001i.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -44,12 +44,12 @@ EPSE=SY/YOUNG
 ECROU = FORMULE(VALE='SY+SY*(YOUNG/(APUI*SY)*(EPSI-EPSE))**(1./NPUI)',
                NOM_PARA='EPSI',);
 
-LISTE=DEFI_LIST_REEL(DEBUT=EPSE,INFO=2,
+LISTE=DEFI_LIST_REEL(DEBUT=EPSE,INFO=1,
                         INTERVALLE=_F(JUSQU_A=2,
                                       NOMBRE=500,),);
 
 ECROUI=CALC_FONC_INTERP(FONCTION=ECROU,
-                       INFO=2,
+                       INFO=1,
                        LIST_PARA=LISTE,
                        NOM_PARA='EPSI',
                        PROL_DROITE='EXCLU',

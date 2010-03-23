@@ -1,4 +1,4 @@
-# MODIF  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 23/03/2010   AUTEUR BOYERE E.BOYERE 
 # TITRE LACHER D'UN SIMPLE MASSE-RESSORT
 # sdld34a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -145,6 +145,10 @@ DXGEDIS2=RECU_FONCTION(RESU_GENE=TRANSMO,
                        NOM_CMP='DX',
                        GROUP_NO='N',);
 
+DXGEMO=RECU_FONCTION(RESU_GENE=TRANSMO,
+                     NOM_CHAM='DEPL',
+                     NUME_CMP_GENE=1,)
+
 TEST_FONCTION(VALEUR=(_F(FONCTION=DX_DIS2,
                          VALE_PARA=2,
                          VALE_REFE=1,
@@ -159,6 +163,11 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=DX_DIS2,
                          VALE_PARA=2,
                          VALE_REFE=1,
                          PRECISION=1E-4,
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=DXGEMO,
+                         VALE_PARA=2,
+                         VALE_REFE=1,
+                         PRECISION=1E-4,
                          REFERENCE='ANALYTIQUE',),),);
 
 IMPR_FONCTION(FORMAT='XMGRACE',
@@ -168,6 +177,8 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                       _F(FONCTION=DXXDIS2,
                          MARQUEUR=0,),
                       _F(FONCTION=DXGEDIS2,
+                         MARQUEUR=0,),
+                      _F(FONCTION=DXGEMO,
                          MARQUEUR=0,),),);
 
 FIN();

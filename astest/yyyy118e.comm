@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE   SUIVI PERFORMANCE :
 # yyyy118e.para = tps_job 520 mem_job 1200Mo mem_aster 50 memjeveux_stat 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -170,7 +170,8 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                                ITER_GLOB_MAXI=1,
                                ARRET='OUI',),
                 SOLVEUR=_F(METHODE='GCPC',
-                           PRE_COND='LDLT_SP',),
+                           PRE_COND='LDLT_SP',
+                           RESI_RELA=1.E-7,),
                 INFO=1,);
 
 TEST_RESU(RESU=(_F(RESULTAT=U,

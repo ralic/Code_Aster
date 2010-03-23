@@ -1,9 +1,12 @@
-      FUNCTION DMADP2(RHO22,SAT,BIOT,PHI,CS,MAMOLG,KH,DP21P2)
-      IMPLICIT      NONE
+      FUNCTION DMADP2(RHO22,SAT,BIOT,PHI,CS,MAMOLG,KH,DP21P2,
+     &               EMMAG,EM)
+      IMPLICIT NONE
       REAL*8        RHO22,SAT,BIOT,PHI,CS,MAMOLG,KH,DP21P2,DMADP2
+      REAL*8        DPHIP2,EM
+      LOGICAL       EMMAG        
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,6 +27,11 @@ C ======================================================================
 C --- CALCUL DE LA DERIVEE DE L AIR DISSOUS PAR RAPPORT A LA PRESSION --
 C --- DE GAZ -----------------------------------------------------------
 C ======================================================================
-      DMADP2 = RHO22*SAT*(PHI*MAMOLG*DP21P2/RHO22/KH+(BIOT-PHI)*CS)
+      IF(EMMAG) THEN    
+       DPHIP2 = EM
+       DMADP2 = RHO22*SAT*(PHI*MAMOLG*DP21P2/RHO22/KH+DPHIP2)
+      ELSE
+       DMADP2 = RHO22*SAT*(PHI*MAMOLG*DP21P2/RHO22/KH+(BIOT-PHI)*CS)
+      ENDIF
 C ======================================================================
       END

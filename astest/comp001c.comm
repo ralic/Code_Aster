@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D CINE_LINE
 # comp001c.para = tps_job 230 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
@@ -119,7 +119,7 @@ for i in range(Ncal):
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[imat],  
-                   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
+                   ARCHIVAGE = _F(LIST_INST = temps_ar),
                    INCREMENT=_F(LIST_INST=temps,),
                  #  THER=_F(INST_IMP= inst_th, TEMP_IMP= temp_th, OPTION = opt_ther,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
@@ -172,7 +172,7 @@ RESU_TGT=SIMU_POINT_MAT(
                    INCREMENT=_F(LIST_INST=Linst,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
-                        );
+                    INFO=1,    );
 
 DIFF_MAT=VERI_MATR_TANG()
 
@@ -184,7 +184,20 @@ TEST_TABLE(TABLE=DIFF_MAT,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=prec_tgt,
-           REFERENCE='ANALYTIQUE',);     
+           REFERENCE='ANALYTIQUE',);    
+            
+# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
+
+TEST_TABLE(TABLE=R_SI[0],
+           NOM_PARA='VMIS_Pa_1',VALE=4.33161E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[2],
+           NOM_PARA='SIXX_Pa_1',VALE=8.82462E+07,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
 
 FIN();
 #

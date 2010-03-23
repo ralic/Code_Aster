@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 15/02/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,7 @@ C                       = 0 OK
 C                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
 C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C ======================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,RETCOM,YAMEC
       INTEGER       YATE,ADCOME,ADCP11,ADCOTE,ADDEME,ADDEP1,ADDETE
       INTEGER       ADVIHY,ADVICO,VIHRHO,VICPHI,VICSAT
@@ -54,17 +54,20 @@ C ======================================================================
       REAL*8       ALPHA0,ALPLIQ,CLIQ,CP11,SAT,DSATP1,RHO0,CSIGM
       REAL*8       ALP11,RHO12,RHO21
       REAL*8       EM
+      REAL*8       EPS
+      PARAMETER  ( EPS = 1.D-21 ) 
+      LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
       REAL*8       RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
-      REAL*8       RBID8, RBID10, RBID11, RBID14
+      REAL*8       RBID8, RBID10, RBID11,  RBID14
       REAL*8       RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
       REAL*8       RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
       REAL*8       RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
       REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
-      REAL*8       RBID39,RBID45,RBID46,RBID47,RBID48,RBID49
-      REAL*8       RBID50,RBID51
+      REAL*8       RBID39, RBID45,RBID46,RBID47,RBID48,RBID49
+      REAL*8       RBID50,RBID51,R3BID(6)
       REAL*8       DP2,SIGNE,DPAD,COEPS,CP21,M11M,RHO22,ALP12,CP12
       REAL*8       DMWDP1,DQDEPS,DQDP,DQDT,DMWDT,DHDT,DHWDP1,DMDEPV
       REAL*8       DSPDP1,APPMAS,SIGMAP,CALOR,ENTEAU,DILEAU,CP22
@@ -74,24 +77,25 @@ C
 C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
-C      write (6,*) 'HMLGAT_1 - BIOT = ',BIOT
       CALL NETBIS(MECA,NET,BISHOP)
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
-     +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,P1-DP1,
-     +             RBID6,RBID7, RBID8, RBID10, RBID11, RHO0,
-     +             CSIGM,BIOT, SATM, SAT, DSATP1, RBID14,
-     +             RBID15, RBID16,RBID17, RBID18, RBID19,
-     +             RBID20, RBID21, RBID22,RBID23, RBID24, RBID25,
-     +             RHO110, CLIQ, ALPLIQ, CP11,RBID26, RBID27, RBID28,
-     +             RBID29, RBID30, RBID31,RBID32, RBID33, RBID34,
-     +             RBID35, RBID36, RBID37,RBID38, RBID39,RBID45,RBID46,
-     +             RBID47,RBID48,RBID49,EM,RBID50,RBID51,RINSTP)
-C      write (6,*) 'HMLGAT_2 - BIOT = ',BIOT
+     +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, 
+     +             P1-DP1,RBID6,RBID7, RBID8,
+     +             RBID10, RBID11, RHO0,CSIGM,BIOT, SATM, SAT,
+     +             DSATP1, RBID14, RBID15, RBID16,RBID17, RBID18,
+     +             RBID19, RBID20, RBID21, RBID22,RBID23, RBID24,
+     +             RBID25, RHO110, CLIQ, ALPLIQ, CP11,RBID26,
+     +             RBID27, RBID28, RBID29, RBID30, RBID31,RBID32,
+     +             RBID33, RBID34, RBID35, RBID36, RBID37,RBID38,
+     +             RBID39, RBID45, RBID46, RBID47, RBID48,RBID49,
+     >             EM,RBID50,R3BID,RBID51,RINSTP)    
+
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
 C --- ELLES NE SONT THEOTIQUEMENT PAS UTILISEES ------------------------
 C ======================================================================
+      EMMAG = .FALSE.
       CP12   = 0.0D0
       CP21   = 0.0D0
       CP22   = 0.0D0
@@ -112,20 +116,30 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
+      IF(EM.GT.EPS)THEN 
+        EMMAG = .TRUE.
+      ENDIF
+
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
      +                                           EPSV,DEPSV,EPSVM,MECA)
+
 
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
+     &    (OPTION(1:9).EQ.'FULL_MECA').OR.
+     &    (OPTION(1:9).EQ.'FORC_NODA')) THEN
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
 C =====================================================================
-         IF (YAMEC.EQ.1) THEN
+         IF (YAMEC.EQ.1)THEN
             CALL VIPORO(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
      +       DEPSV,ALPHA0,DT,DP1,DP2,SIGNE,SAT,CS,BIOT,PHI,PHIM,RETCOM)
+         ENDIF
+         IF (EMMAG )THEN
+            CALL VIEMMA(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
+     +       DP1,DP2,SIGNE,SAT,EM,PHI,PHIM,RETCOM)
          ENDIF
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE MASSE VOLUMIQUE DU FLUIDE ------
@@ -133,6 +147,7 @@ C --- SELON FORMULE DOCR ----------------------------------------------
 C =====================================================================
          CALL VIRHOL(NBVARI,VINTM,VINTP,ADVIHY,VIHRHO,RHO110,
      +           DP1,DP2,DPAD,CLIQ,DT,ALPLIQ,SIGNE,RHO11,RHO11M,RETCOM)
+
 C =====================================================================
 C --- RECUPERATION DE LA VARIABLE INTERNE DE SATURATION ---------------
 C =====================================================================
@@ -251,6 +266,7 @@ C ======================================================================
 C --- CALCUL DE LA DERIVEE DE LA CHALEUR REDUITE Q' --------------------
 C --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
 C ======================================================================
+
             IF (YAMEC.EQ.1) THEN
                DO 20 I = 1,3
                   DSDE(ADCOTE,ADDEME+NDIM-1+I) =
@@ -263,9 +279,11 @@ C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- POUR LES AUTRES CAS ----------------------------------------------
 C ======================================================================
          DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1)
-     +           + DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,1.0D0)
+     +           + DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,1.0D0,
+     >                  EMMAG,EM)
       ENDIF
 C =====================================================================
  30   CONTINUE
 C =====================================================================
+
       END

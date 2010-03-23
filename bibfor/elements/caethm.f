@@ -1,12 +1,13 @@
-      SUBROUTINE CAETHM(NOMTE,AXI,PERMAN,
-     >                  TYPMOD,MODINT,MECANI,PRESS1,PRESS2,TEMPE,
-     >                  DIMDEP,DIMDEF,DIMCON,NMEC,NP1,NP2,NDIM,NNO,
-     >                  NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
-     >                  IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
+      SUBROUTINE CAETHM(NOMTE,AXI,PERMAN,VF,TYPVF,
+     &                  TYPMOD,MODINT,MECANI,PRESS1,PRESS2,TEMPE,
+     &                  DIMDEP,DIMDEF,DIMCON,NMEC,NP1,NP2,NDIM,NNO,
+     &                  NNOS,NNOM,NFACE,
+     &                  NPI,NPG,NDDLS,NDDLM,NDDLFA,NDDLK,DIMUEL,
+     &                  IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,13 +49,16 @@ C OUT NP2    : 1 SI IL Y A UNE EQUATION POUR P2, 0 SINON
 C OUT NDIM   : DIMENSION DU PROBLEME (2 OU 3)
 C OUT NNO    : NOMBRE DE NOEUDS DE L'ELEMENT
 C OUT NNOS   : NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT
-C OUT NNOM   : NOMBRE DE NOEUDS MILIEUX DE L'ELEMENT
+C OUT NFACE  : NB FACES AU SENS BORD DE DIMENSION DIM-1 NE SERT QU EN VF
+C OUT NNOM   : NB NOEUDS MILIEUX DE FACE OU D ARRETE NE SERT QU EN EF
 C OUT NPI    : NOMBRE DE POINTS D'INTEGRATION DE L'ELEMENT
 C OUT NPG    : NOMBRE DE POINTS DE GAUSS     POUR CLASSIQUE(=NPI)
 C                        SOMMETS             POUR LUMPEE   (=NPI=NNOS)
 C                        POINTS DE GAUSS     POUR REDUITE  (<NPI)
 C OUT NDDLS  : NOMBRE DE DDL SUR LES SOMMETS
-C OUT NDDLM  : NOMBRE DE DDL SUR LES MILIEUX
+C OUT NDDLM  : NB DDL SUR LES MILIEUX FACE OU D ARRETE NE SERT QU EN EF
+C OUT NDDLFA    NB DE DDL SUR LES FACES DE DIM DIM-1 NE SERT QU EN VF
+C OUT NDDLK  : NOMBRE DE DDL SUR LA MAILLE (BULL OU VF)
 C OUT DIMUEL : NOMBRE DE DDL TOTAL DE L'ELEMENT
 C OUT IPOIDS : ADRESSE DU TABLEAU POIDS POUR FONCTION DE FORME P2
 C OUT IVF    : ADRESSE DU TABLEAU DES FONCTIONS DE FORME P2
@@ -64,20 +68,25 @@ C OUT IVF2   : ADRESSE DU TABLEAU DES FONCTIONS DE FORME P1
 C OUT IDFDE2 : ADRESSE DU TABLEAU DES DERIVESS DES FONCTIONS DE FORME P1
 C OUT JGANO  : ADRESSE DANS ZR DE LA MATRICE DE PASSAGE
 C              GAUSS -> NOEUDS
-
+C OUT TYPVF   TYPE DE VF : 1  = TPFA (FLUX A DEUX POINTS)
+C                          2  = SUSHI AVEC VOISIN DECENTRE MAILLE (SUDM)
+C                          3  = SUSHI AVEC VOISIN DECENTRE ARETE (SUDA)
+C                          4  = SUSHI AVEC VOISIN CENTRE  (SUC)
 C CORPS DU PROGRAMME
-      IMPLICIT      NONE
+      IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      LOGICAL       AXI, PERMAN
+      LOGICAL       AXI, PERMAN,VF
+      INTEGER       TYPVF 
       INTEGER       MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),DIMUEL
       INTEGER       NDIM,NNO,NNOS,NNOM
       INTEGER       DIMDEP,DIMDEF,DIMCON,NMEC,NP1,NP2
-      INTEGER       NPG,NPI,NDDLS,NDDLM,IPOIDS,IVF,IDFDE
-      INTEGER       IPOID2,IVF2,IDFDE2,JGANO
+      INTEGER       NPG,NPI,NDDLS,NDDLM,NDDLK,IPOIDS,IVF,IDFDE
+      INTEGER       IPOID2,IVF2,IDFDE2,NPI2,JGANO,NFACE,NDDLFA
       CHARACTER*3   MODINT
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  NOMTE
+    
 
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
@@ -85,22 +94,28 @@ C ======================================================================
 C ======================================================================
 C --- TYPE DE MODELISATION? AXI/DPLAN/3D ET HM TRANSI/PERM -------------
 C ======================================================================
-      CALL TYPTHM(NOMTE,AXI,PERMAN,TYPMOD,NDIM)
+      CALL TYPTHM(NOMTE,AXI,PERMAN,VF,TYPVF,TYPMOD,NDIM)
 C ======================================================================
 C --- SELECTION DU TYPE D'INTEGRATION ----------------------------------
 C ======================================================================
-      CALL MODTHM(NOMTE,MODINT)
+      IF(.NOT.VF) THEN
+       CALL MODTHM(NOMTE,MODINT)
+      ELSE
+       MODINT = 'CLA'
+      ENDIF
 C ======================================================================
 C --- INITIALISATION DES GRANDEURS GENERALISEES SELON MODELISATION -----
 C ======================================================================
-      CALL GRDTHM(NOMTE,PERMAN,NDIM,MECANI,PRESS1,PRESS2,TEMPE,
-     >            DIMDEP,DIMDEF,DIMCON,NMEC,NP1,NP2)
+      CALL GRDTHM(NOMTE,PERMAN,VF,NDIM,MECANI,PRESS1,PRESS2,TEMPE,
+     >            DIMDEP,DIMDEF,DIMCON,NMEC,NP1,NP2)      
+C     &           JGANO)
 C ======================================================================
 C --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 C --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 C ======================================================================
-      CALL ITGTHM(MODINT,MECANI,PRESS1,PRESS2,TEMPE,NDIM,NNO,
-     >            NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
-     >            IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
+      CALL ITGTHM(VF,TYPVF,MODINT,MECANI,PRESS1,PRESS2,TEMPE,NDIM,NNO,
+     >                  NNOS,NNOM,NFACE,NPI,NPG,
+     >                  NDDLS,NDDLK,NDDLM,NDDLFA,DIMUEL,
+     >                  IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO)
 C ======================================================================
       END

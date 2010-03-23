@@ -1,6 +1,7 @@
-# MODIF  DATE 14/01/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_ISOT_LINE
+# comp002f.para = tps_job 180 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -132,11 +133,13 @@ for i in range(Ncal):
 #Resout le pb a deformation imposee
         RESU[i]=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,DEFORMATION='SIMO_MIEHE'),
+                   SUPPORT='ELEMENT',
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                   RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
                    MATER      = ACIER[imat],  
-                   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
+                   ARCHIVAGE = _F(LIST_INST = temps_ar),
                    INCREMENT=_F(LIST_INST=temps,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
@@ -180,6 +183,7 @@ RESU_TGT=SIMU_POINT_MAT(
                                 TYPE_MATR_TANG='VERIFICATION',
                                 VALE_PERT_RELA=1.E-5,
                                ),
+                   SUPPORT='ELEMENT',
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[1],  

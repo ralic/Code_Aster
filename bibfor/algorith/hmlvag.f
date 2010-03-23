@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/02/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,7 @@ C                       = 0 OK
 C                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
 C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C ======================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC
       INTEGER       YATE,RETCOM,ADCOME,ADCP11,ADCP12,ADVIHY,ADVICO
       INTEGER       VIHRHO,VICPHI,VICPVP,VICSAT
@@ -58,13 +58,13 @@ C ======================================================================
       REAL*8       RHO110,BIOT,K0,CS,ALPHA0,ALPLIQ,CLIQ,RHO12
       REAL*8       RHO21,CP11,CP12,CP21,SAT,DSATP1,MAMOLV,MAMOLG
       REAL*8       R,RHO0,CSIGM,ALP11,ALP12,ALP21,EM,EPS
-      PARAMETER  ( EPS = 1.D-21 )
+      PARAMETER  ( EPS = 1.D-21 ) 
       LOGICAL      EMMAG
 C ======================================================================
 C --- VARIABLES LOCALES POUR BARCELONE----------------------------------
 C ======================================================================
       REAL*8       TINI,CRIT(*)
-      REAL*8       DSIDP1(6),DEPS(6)
+      REAL*8       DSIDP1(6),DEPS(6) 
       REAL*8       DSDEME(6,6)
 CCCC    SIP NECESSAIRE POUR CALCULER LES CONTRAINTES TOTALES
 CCCC    ET ENSUITE CONTRAINTES NETTES POUR BARCELONE
@@ -80,6 +80,7 @@ C ======================================================================
       REAL*8       RBID33, RBID34, RBID35, RBID38
       REAL*8       RBID39,RBID45,RBID46,RBID47,RBID48,RBID49
       REAL*8       RBID50,RBID51
+      REAL*8       R3BID(6)
       REAL*8       SIGNE,DPAD,COEPS,CP22,PAS,RHO22,M11M,M12M,M21M
       REAL*8       DMASP1,DMASP2,DMVDP1,DMVDP2,DMWDP1,DMWDP2,DQDEPS
       REAL*8       DQDP,DQDT,DMASDT,DMVPDT,DMWDT,DHDT,DHWDP1,DHWDP2
@@ -94,16 +95,15 @@ C =====================================================================
       CALL NETBIS(MECA,NET,BISHOP)
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
      +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
-     +             P1-DP1,
-     +             RBID6,
-     +             RBID7, RBID8, RBID10, R, RHO0, CSIGM,
-     +             BIOT, SATM, SAT, DSATP1, RBID14, RBID15,
-     +             RBID16,RBID17, RBID18, RBID19,
-     +             RBID20, RBID21, RBID22,RBID23, RBID24, RBID25,
-     +             RHO110, CLIQ, ALPLIQ, CP11,RBID26, RBID27, RBID28,
-     +             RBID29, MAMOLG, CP21,RBID32, RBID33, RBID34,
-     +             RBID35, MAMOLV, CP12,RBID38,RBID39,RBID45,RBID46,
-     +             RBID47,RBID48,RBID49,EM,RBID50,RBID51,RINSTP)
+     +             P1-DP1,RBID6, RBID7, RBID8,
+     +             RBID10, R, RHO0, CSIGM,BIOT, SATM, SAT,
+     +             DSATP1, RBID14, RBID15, RBID16, RBID17, RBID18,
+     +             RBID19, RBID20, RBID21, RBID22, RBID23, RBID24,
+     +             RBID25, RHO110, CLIQ,   ALPLIQ, CP11,   RBID26,
+     +             RBID27, RBID28, RBID29, MAMOLG, CP21,   RBID32,
+     +             RBID33, RBID34, RBID35, MAMOLV, CP12,   RBID38,
+     +             RBID39,RBID45,RBID46,   RBID47, RBID48, RBID49,
+     +             EM,RBID50,R3BID,RBID51,RINSTP)
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
@@ -126,7 +126,7 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN
+      IF(EM.GT.EPS)THEN 
         EMMAG = .TRUE.
       ENDIF
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
@@ -135,13 +135,18 @@ C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+     &    (OPTION(1:9).EQ.'FORC_NODA').OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
 C =====================================================================
-         IF ((YAMEC.EQ.1).OR.EMMAG )THEN
+         IF ((YAMEC.EQ.1))THEN
             CALL VIPORO(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
      +       DEPSV,ALPHA0,DT,DP1,DP2,SIGNE,SAT,CS,BIOT,PHI,PHIM,RETCOM)
+         ENDIF
+         IF (EMMAG )THEN
+            CALL VIEMMA(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
+     +       DP1,DP2,SIGNE,SAT,EM,PHI,PHIM,RETCOM)
          ENDIF
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE MASSE VOLUMIQUE DU FLUIDE ------
@@ -177,8 +182,8 @@ C **********************************************************************
       RHO21M = MASVOL(MAMOLG,P2-DP2-PVPM,R,T-DT)
       PAS    = MAJPAS(P2,PVP)
 C =====================================================================
-C --- CALCUL DES AUTRES COEFFICIENTS DEDUITS :  -----------------------
-C --- DILATATIONS ALPHA DANS LE CAS D'UN SEUL FLUIDE ------------------
+C --- CALCUL DES AUTRES COEFFICIENTS DEDUITS : DILATATIONS ALPHA ------
+C ---  DANS LE CAS D'UN SEUL FLUIDE ---------------------------
 C =====================================================================
       IF (YATE.EQ.1) THEN
          ALP11 = DILEAU(SAT,BIOT,PHI,ALPHA0,ALPLIQ)
@@ -321,17 +326,23 @@ C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- POUR LES AUTRES CAS ----------------------------------------------
 C ======================================================================
          DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1)
-     +           + DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,1.0D0)
+     +           + DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,1.0D0,
+     >                  EMMAG,EM)
          DSDE(ADCP11,ADDEP2) = DSDE(ADCP11,ADDEP2)
-     +                        + DMWDP2(RHO11,SAT,BIOT,PHI,CS,CLIQ,1.0D0)
+     +                        + DMWDP2(RHO11,SAT,BIOT,PHI,CS,CLIQ,1.0D0,
+     >                  EMMAG,EM)
          DSDE(ADCP12,ADDEP1) = DSDE(ADCP12,ADDEP1) +
-     +                    DMVDP1(RHO11,RHO12,SAT,DSATP1,BIOT,PHI,CS,PVP)
+     +                    DMVDP1(RHO11,RHO12,SAT,DSATP1,BIOT,PHI,CS,PVP,
+     &                          EMMAG,EM)
          DSDE(ADCP12,ADDEP2) = DSDE(ADCP12,ADDEP2) +
-     +                           DMVDP2(RHO11,RHO12,SAT,BIOT,PHI,CS,PVP)
+     +                           DMVDP2(RHO11,RHO12,SAT,BIOT,PHI,CS,PVP,
+     &                                 EMMAG,EM)
          DSDE(ADCP21,ADDEP1) = DSDE(ADCP21,ADDEP1) +
-     +              DMASP1(RHO11,RHO12,RHO21,SAT,DSATP1,BIOT,PHI,CS,PAS)
+     +              DMASP1(RHO11,RHO12,RHO21,SAT,DSATP1,BIOT,PHI,CS,PAS,
+     +                     EMMAG,EM)
          DSDE(ADCP21,ADDEP2) = DSDE(ADCP21,ADDEP2) +
-     +                     DMASP2(RHO11,RHO12,RHO21,SAT,BIOT,PHI,CS,PAS)
+     +                     DMASP2(RHO11,RHO12,RHO21,SAT,BIOT,PHI,CS,PAS,
+     +                             EMMAG,EM)
       ENDIF
 
 C =====================================================================
@@ -358,7 +369,7 @@ C --- DSIGM/DEPP1
      &                               DSIDP1(I)
    50       CONTINUE
          ENDIF
-      ENDIF
+      ENDIF      
 C =====================================================================
  30   CONTINUE
 C =====================================================================

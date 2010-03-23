@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF COMPELEM  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -136,6 +136,7 @@ MAILLE__ TRIA7      7       DIM__  2   CODE__  'TR7'
          FAMILLE__ NOEU_S      3
          FAMILLE__ FPG1        1
          FAMILLE__ FPG3        3
+         FAMILLE__ FPG4        4
          FAMILLE__ FPG6        6
          FAMILLE__ FPG7        7
          FAMILLE__ FPG13       13
@@ -177,6 +178,7 @@ MAILLE__ QUAD9      9       DIM__  2   CODE__  'QU9'
          FAMILLE__ NOEU_S      4
          FAMILLE__ FPG1        1
          FAMILLE__ FPG4        4
+         FAMILLE__ FPG5        5
          FAMILLE__ FPG9        9
    ELREFE__ MEC3QU9H
          FAMILLE__ FPG1        9
@@ -286,6 +288,7 @@ MAILLE__ HEXA27     27      DIM__  3   CODE__  'H27'
          FAMILLE__ NOEU_S      8
          FAMILLE__ FPG1        1
          FAMILLE__ FPG8        8
+         FAMILLE__ FPG7        7
          FAMILLE__ FPG27       27
          FAMILLE__ FPG64       64
 

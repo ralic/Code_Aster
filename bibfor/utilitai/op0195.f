@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 14/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,9 +25,9 @@ C     COMMANDE CREA_CHAMP
 C     -----------------------------------------------------------------
       INTEGER N1,IB,IFM,NIV,IRET,I11,I12,TEST,IBID
       CHARACTER*3 PROL0
-      CHARACTER*4 TYCHR
+      CHARACTER*4 TYCHR,TYCH
       CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,NOMGD2,NOMPAR,MA2,NOPAR2,TA
-      CHARACTER*8 TSCA
+      CHARACTER*8 TSCA,NOGD
       CHARACTER*16 TYCHR1,OPERA,OPTIO2,TYPCO,OPTION
       CHARACTER*19 LIGREL,CARTEM,CELMOD,PRCHN1,CNS1,CH1,PRCHN2,CHIN
       CHARACTER*8 NU1
@@ -133,7 +133,7 @@ C              OPTION A CHOISIR PAR DEFAUT QUE TOU_INI_ELXX
           ELSE
             OPTIO2 = OPTION
           ENDIF
-          NOMPAR = NOPAR2(OPTIO2,NOMGD,'OUT')
+          NOMPAR = NOPAR2(OPTIO2,NOMGD,'INOUT')
           CELMOD = '&&OP0195.CELMOD'
           CALL ALCHML(LIGREL,OPTIO2,NOMPAR,'V',CELMOD,IB,' ')
           IF (IB.NE.0) CALL U2MESK('F','UTILITAI3_23',1,OPTIO2)
@@ -292,6 +292,23 @@ C ---------------------------------------------------------
         VALK(1)=MA2
         VALK(2)=MA
         IF (MA.NE.MA2) CALL U2MESK('F','CALCULEL4_78',2,VALK)
+      ENDIF
+
+
+C 9.  VERIFICATION DE LA COHERENCE DU CHAMP CREE AVEC TYPE_CHAM :
+C ---------------------------------------------------------------
+      CALL DISMOI('F','TYPE_CHAMP',CHOU,'CHAMP',IB,TYCH,IB)
+      IF (TYCH.NE.TYCHR) THEN
+        VALK(1)=TYCHR
+        VALK(2)=TYCH
+        CALL U2MESK('F','CALCULEL4_70',2,VALK)
+      ENDIF
+
+      CALL DISMOI('F','NOM_GD',CHOU,'CHAMP',IB,NOGD,IB)
+      IF (NOGD.NE.NOMGD) THEN
+        VALK(1)=NOMGD
+        VALK(2)=NOGD
+        CALL U2MESK('F','CALCULEL4_71',2,VALK)
       ENDIF
 
 

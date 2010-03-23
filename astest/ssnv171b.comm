@@ -1,5 +1,5 @@
 
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPARAISON POLYCRISTAL ET MONOCRISTAL.
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv171b.para = tps_job 600 mem_job 512Mo mem_aster 10 ncpus 1 liste_test S
@@ -23,20 +23,13 @@
 
 DEBUT(CODE=_F(NOM='SSNV171B',  NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-CUBE=LIRE_MAILLAGE();
-
-TROISD=AFFE_MODELE(MAILLAGE=CUBE,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
 TFIN = 1.5;
-
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.87,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=TFIN,
-                                    NOMBRE=100,),),);
+                                    NOMBRE=300,),),);
 LINST2=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.87,
                                     NOMBRE=1,),
@@ -45,17 +38,6 @@ LINST2=DEFI_LIST_REEL(DEBUT=0.0,
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.3,),
-                    ECOU_VISC2=_F(N=10.0,
-                                  K=40.0,
-                                  C=1.0,
-                                  D=36.68,
-                                  A=10.0,),
-                    ECRO_ISOT2=_F(R_0=75.5,
-                                  Q1=9.77,
-                                  B1=19.34,
-                                  H=0.5,
-                                  Q2=-33.27,
-                                  B2=5.345,),
                     ECOU_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=1.0,),
@@ -65,31 +47,12 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   H=0.0,),
                     ECRO_CINE1=_F(D=36.68,),);
 
-COEF=DEFI_FONCTION(NOM_PARA='INST',
-                   VALE=(0.0,0.0,1.0,1.0,),
+CHARGE=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,1.0,-140.0,),
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',);
 
-MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
-                  AFFE=_F(TOUT='OUI',
-                          MATER=ACIER,),);
-
-TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
-                    DDL_IMPO=(_F(NOEUD='NO4',
-                                 DX=0.0,
-                                 DY=0.0,),
-                              _F(NOEUD='NO8',
-                                 DX=0.0,
-                                 DY=0.0,
-                                 DZ=0.0,),
-                              _F(NOEUD='NO2',
-                                 DX=0.0,),
-                              _F(NOEUD='NO6',
-                                 DX=0.0,),),
-                    FORCE_NODALE=(_F(NOEUD=('NO3','NO7',),
-                                     FX=35.0,),
-                                  _F(NOEUD=('NO1','NO5',),
-                                     FX=35.0,),),);
+    
 
 COMPOR1=DEFI_COMPOR( ROTA_RESEAU='POST',
                      MONOCRISTAL=(_F(MATER=ACIER,
@@ -99,156 +62,114 @@ COMPOR1=DEFI_COMPOR( ROTA_RESEAU='POST',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='OCTAEDRIQUE',),),);
 
-COMPOR2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
-                                    ECOULEMENT='ECOU_VISC2',
-                                    ECRO_ISOT='ECRO_ISOT2',
-                                    ECRO_CINE='ECRO_CINE1',
-                                    ELAS='ELAS',
-                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),);
+
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=10,
+                                 SUBD_NIVEAU=10),)
+MONOIMPL=SIMU_POINT_MAT(INFO=2,
+                   COMP_INCR=_F(RELATION='MONOCRISTAL',
+                                COMPOR=COMPOR1,
+                                ),
+                   MASSIF=_F(ANGL_REP=30.0),
+                   ANGLE=0.,
+                   SUPPORT='POINT',
+                   NEWTON=_F(
+                             REAC_ITER=1,),
+                   MATER      = ACIER,  
+                   INCREMENT=_F(LIST_INST=DEFLIST1),
+                   ARCHIVAGE=_F(LIST_INST=LINST),
+                   SIGM_IMPOSE=_F(SIXX=CHARGE),
+                        );  
+                                              
+IMPR_TABLE(TABLE=MONOIMPL)
 
 
-ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
-                     MASSIF=_F(GROUP_MA='TOUT',
-                               ANGL_REP=(30.0,0.0,0.0,),),);
-
-MONOIMPL=STAT_NON_LINE(MODELE=TROISD,
-                    CHAM_MATER=MAT,
-                    CARA_ELEM=ORIEN,
-                    EXCIT=(_F(CHARGE=TRAC,
-                              FONC_MULT=COEF,
-                              TYPE_CHARGE='FIXE_CSTE',),),
-                    COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                  COMPOR=COMPOR1,
-                                  DEFORMATION='PETIT',
-                                  ITER_INTE_MAXI=100,
-                                  ITER_INTE_PAS=10,
-                                  RESO_INTE='IMPLICITE',
-                                  TOUT='OUI',),),
-                    INCREMENT=(_F(LIST_INST=LINST, ),),
-                    ARCHIVAGE=_F(LIST_INST=LINST),
-                    NEWTON=(_F(REAC_ITER=1,),),
-                    CONVERGENCE=(_F(ITER_GLOB_MAXI=100,),),);
-
-MONOIMPL=CALC_ELEM(reuse =MONOIMPL,
-                RESULTAT=MONOIMPL,
-                OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
-
-IMPR_RESU(RESU=_F(RESULTAT=MONOIMPL))
-
-TEST_RESU(RESU=(_F(RESULTAT=MONOIMPL,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-210.0,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MONOIMPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
+TEST_TABLE(TABLE=MONOIMPL,
+           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+           NOM_PARA='SIXX',
+           VALE=-210.0,
+           REFERENCE='ANALYTIQUE',)
+           
+TEST_TABLE(TABLE=MONOIMPL,
+           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+                   NOM_PARA='EPXX',
                    VALE=-0.0018908,
-                   PRECISION=(0.001,1e-06,),
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MONOIMPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPYY',
-                   MAILLE='MA1',
-                   POINT=1,
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',)
+                   
+TEST_TABLE(TABLE=MONOIMPL,
+           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+                   NOM_PARA='EPYY',
                    VALE=0.00050265,
-                   PRECISION=(0.001,1e-06,),
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MONOIMPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPYY',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=6.876676e-05,
-                   PRECISION=(0.001,1e-06,),
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MONOIMPL,
-                   INST=TFIN,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V58',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=5.02E-4, # rotation de reseau
-                   PRECISION=(0.001,1e-06,),
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MONOIMPL,
-                   INST=TFIN,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V60',
-                   MAILLE='MA1',
-                   POINT=1,
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',)
+                   
+TEST_TABLE(TABLE=MONOIMPL,
+           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+                   NOM_PARA='V58',
+                   VALE=1.88E-4, # rotation de reseau
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',)
+                   
+TEST_TABLE(TABLE=MONOIMPL,
+           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+                   NOM_PARA='V60',
                    VALE=4.851E-4,
-                   PRECISION=(0.001,1e-06,),
-                   REFERENCE='NON_REGRESSION',),
-                   ),);
+                   PRECISION=0.002,
+                   REFERENCE='NON_REGRESSION',)
 
 
-MONOEXPL=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MAT,
-                     CARA_ELEM=ORIEN,
-                     EXCIT=(_F(CHARGE=TRAC,
-                               FONC_MULT=COEF,
-                               TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                   COMPOR=COMPOR1,
-                                   DEFORMATION='PETIT',
+
+MONOEXPL=SIMU_POINT_MAT(INFO=1,
+                   COMP_INCR=_F(RELATION='MONOCRISTAL',
+                                COMPOR=COMPOR1,
                                    RESO_INTE='RUNGE_KUTTA_2',
-                                   TOUT='OUI',),),
-                     ARCHIVAGE=_F(LIST_INST=LINST),
-                     INCREMENT=(_F(LIST_INST=LINST2, ),),
-                     NEWTON=(_F(PREDICTION='EXTRAPOL',
-                                MATRICE='ELASTIQUE',
-                                REAC_ITER=0,),),
-                     CONVERGENCE=(_F(ITER_GLOB_MAXI=10,
-                                     ),),);
+                                   RESI_INTE_RELA=1.E-6,
+                                  # ITER_INTE_PAS=2,
+                                ),
+                   MASSIF=_F(ANGL_REP=30.0),
+                   ANGLE=0.,
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                 #  NEWTON=_F(MATRICE='ELASTIQUE',PREDICTION='ELASTIQUE',
+                 #            REAC_ITER=1,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=20,RESI_GLOB_RELA=1.E-6),
+                   MATER      = ACIER,  
+                   INCREMENT=_F(LIST_INST=LINST2),
+                   SIGM_IMPOSE=_F(SIXX=CHARGE),
+                        );  
+                                              
+IMPR_TABLE(TABLE=MONOEXPL)
 
-MONOEXPL=CALC_ELEM(reuse =MONOEXPL,
-                 RESULTAT=MONOEXPL,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+TEST_TABLE(TABLE=MONOEXPL,
+           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+            NOM_PARA='SIXX',
+            VALE=-210.0,
+            PRECISION=1.E-6,
+            REFERENCE='ANALYTIQUE',)
+                   
+TEST_TABLE(TABLE=MONOEXPL,
+           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+           NOM_PARA='EPXX',
+           VALE=-0.0018908,
+           PRECISION=0.007,
+           REFERENCE='AUTRE_ASTER',)
+           
+TEST_TABLE(TABLE=MONOEXPL,
+           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+           NOM_PARA='EPYY',
+           VALE=0.00050265,
+           PRECISION=0.005,                       
+           REFERENCE='AUTRE_ASTER',)
 
-TEST_RESU(RESU=(_F(RESULTAT=MONOEXPL,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-210.0,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MONOEXPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-0.0018908,
-                   PRECISION=(0.007,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MONOEXPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPYY',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=0.00050265,
-                   PRECISION=(0.004,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MONOEXPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPYY',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=6.876676e-05,
-                   PRECISION=(0.03,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),),);
+                   
+TEST_TABLE(TABLE=MONOEXPL,
+           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+                   NOM_PARA='V60',
+                   VALE=4.851E-4,
+                   PRECISION=0.03,
+                   REFERENCE='AUTRE_ASTER',)
 
 COMPORP=DEFI_COMPOR(POLYCRISTAL=(
                                _F(MONOCRISTAL=COMPOR1,
@@ -257,65 +178,7 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=(
                     LOCALISATION='BETA',DA=0.,DL=0.,
                     );
 
-
-POLYEXPL=STAT_NON_LINE(MODELE=TROISD,
-                    CHAM_MATER=MAT,
-                    EXCIT=(_F(CHARGE=TRAC,
-                              FONC_MULT=COEF,
-                              TYPE_CHARGE='FIXE_CSTE',),),
-                    COMP_INCR=(_F(RELATION='POLYCRISTAL',
-                                  COMPOR=COMPORP,
-                                  DEFORMATION='PETIT',
-                               #   RESI_INTE_RELA=1.E-4,
-                                  RESO_INTE='RUNGE_KUTTA_2',
-                                  TOUT='OUI',),),
-                     ARCHIVAGE=_F(LIST_INST=LINST),
-                     INCREMENT=(_F(LIST_INST=LINST2,  ),),
-                     NEWTON=(_F(PREDICTION='EXTRAPOL',
-                                MATRICE='ELASTIQUE',
-                                REAC_ITER=0,),),
-                    CONVERGENCE=(_F(ITER_GLOB_MAXI=10),),);
-
-POLYEXPL=CALC_ELEM(reuse =POLYEXPL,
-                 RESULTAT=POLYEXPL,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
-
-TEST_RESU(RESU=(_F(RESULTAT=POLYEXPL,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-210.0,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=POLYEXPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-0.0018908,
-                   PRECISION=(0.007,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=POLYEXPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPYY',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=0.00050265,
-                   PRECISION=(0.004,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=POLYEXPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPYY',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=6.876676e-05,
-                   PRECISION=(0.03,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),),);
-
-
 FIN()
+
+
 

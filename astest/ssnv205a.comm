@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE ETUDE:  ESSAI DE CISAILLEMENT CYCLIQUE DRAINE (MECA PUR)
 # ssnv205a.para = tps_job 180 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,7 +106,7 @@ U1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=20,
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
 #                 RECH_LINEAIRE = _F(ITER_LINE_MAXI = 3),                           
-                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                  CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-6,
                                  ITER_GLOB_MAXI = 10),
                   ARCHIVAGE=_F(LIST_INST=TEMPS1,),
                   SIGM_IMPOSE=_F(SIXX=COEF2,

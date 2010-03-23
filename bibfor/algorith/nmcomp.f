@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/12/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -169,7 +169,9 @@ C       SORTIR DE LA BOUCLE SI NECESSAIRE
 
 C     CONTRAINTES PLANES METHODE DE BORST
       IF (CP) THEN
-         IF (CODRET.NE.1) THEN
+C        CORRECTION JMP : CODRET PEUT AUSSI ETRE EGAL A 2.      
+C         IF (CODRET.NE.1) THEN
+         IF (CODRET.EQ.0) THEN
             CALL NMCPL2(COMPOR,TYPMOD,OPTION,OPTIO2,CPL,NVV,CRIT,
      &                    DEPS,DSIDEP,NDIM,SIGP,VIP,CODRET)
          ELSE

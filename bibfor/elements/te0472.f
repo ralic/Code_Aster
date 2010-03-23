@@ -4,7 +4,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ELEMENTS  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,7 +58,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C ======================================================================
-      LOGICAL     AXI,PERMAN
+      LOGICAL     AXI,PERMAN,VF
       INTEGER     NNO,NNO2,NNOS,KP,NPG,NDIM,JGANO,JGANO2,NAPRE1,NAPRE2
       INTEGER     IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,IGEOM,NATEMP
       INTEGER     IPRES,K,KK,I,L,IRES,IFLUX,ITEMPS,IOPT,IPRESF,NDLNM
@@ -66,10 +66,11 @@ C ======================================================================
       REAL*8      POIDS,R,Z,TX,TY,NX,NY,VALPAR(3),DELTAT,TPLUS
       REAL*8      PRES,PRESF,POIDS2,NX2,NY2,FLU1,FLU2,FLUTH
       CHARACTER*8 NOMPAR(3),TYPMOD(2)
+      INTEGER     TYPVF 
 C ======================================================================
 C --- CARACTERISTIQUES DE LA MODELISATION ------------------------------
 C ======================================================================
-      CALL BORTHM(NOMTE,AXI,PERMAN,TYPMOD,NDIM,NDLNO,NDLNM)
+      CALL BORTHM(NOMTE,AXI,VF,PERMAN,TYPVF,TYPMOD,NDIM,NDLNO,NDLNM)
 C ======================================================================
 C --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 C ======================================================================
@@ -83,7 +84,7 @@ C ======================================================================
 C --- INTERPOLATION (LINEAIRE) POUR LA THERMO-HYDRAULIQUE --------------
 C ======================================================================
       CALL ELREF4('SE2','RIGI',NDIM,NNO2,NNOS,NPG,IPOID2,IVF2,IDFDE2,
-     +                                                           JGANO2)
+     +               JGANO2)
 C ======================================================================
 C --- RECUPERATION DES CHAMPS IN ET DES CHAMPS OUT ---------------------
 C ======================================================================
@@ -128,7 +129,7 @@ C --- CONSTRUIT EN SIMPLIFIANT PAR LE PAS DE TEMPS. ON DOIT DONC -------
 C --- LE PRENDRE EGAL A 1 DANS LE CALCUL DU SECOND MEMBRE --------------
 C ======================================================================
 C ======================================================================
-C --- BOUCLE SUR LES POINTS DE GAUSS DE l'ELEMENT DE BORD --------------
+C --- BOUCLE SUR LES POINTS DE GAUSS DE L'ELEMENT DE BORD --------------
 C ======================================================================
       DO 190 KP = 1,NPG
          K = (KP-1)*NNO
@@ -196,7 +197,7 @@ C ======================================================================
      +                                                       FLUTH,IRET)
               END IF
 C ======================================================================
-C --- SI MODELISATION = THHM, THH OU THH2 ------------------------------
+C --- SI MODELISATION = THHM, OU THH2M ---------------------------------
 C ======================================================================
               IF (NOMTE(1:4).EQ.'THHM' .OR.
      +            NOMTE(1:5).EQ.'THH2M'     ) THEN
@@ -220,9 +221,14 @@ C ======================================================================
      +                                POIDS*DELTAT*FLUTH*ZR(IVF2+KK+I-1)
  40              CONTINUE
               END IF
-           END IF  
-           IF (NOMTE(1:3).EQ.'HH_' .OR. 
-     +         NOMTE(1:4).EQ.'HH2_' ) THEN
+           END IF
+C ======================================================================
+C --- SI MODELISATION = HH, OU HH2 -------------------------------------
+C ======================================================================
+           IF ((NOMTE(1:3).EQ.'HH_' ).OR. 
+     >         (NOMTE(1:4).EQ.'HH2_').OR.
+     >         (NOMTE(1:9).EQ.'DHH2S3_SU').OR.
+     >         (NOMTE(1:9).EQ.'DHH2S3_VF')) THEN
               NAPRE1 = 0
               NAPRE2 = 1
               IF (IOPT.EQ.1) THEN
@@ -243,16 +249,31 @@ C ======================================================================
                  CALL FOINTE('FM',ZK8(IFLUXF+NAPRE2),2,NOMPAR,VALPAR,
      +                                                        FLU2,IRET)
               END IF
+
+              IF(
+     >         (NOMTE(1:9).EQ.'DHH2S3_SU').OR.
+     >         (NOMTE(1:9).EQ.'DHH2S3_VF') ) THEN
 C ======================================================================
-C --- SI MODELISATION = THHM, THH OU THH2 ------------------------------
+C --- SI TE = DHH2S3_SU ------------------------------------------------
 C ======================================================================
-                 DO 401 I = 1,NNO2
+                DO 401 I = 1,NNO2
+                    ZR(IRES) = ZR(IRES) -
+     +                                 POIDS*FLU1*ZR(IVF2+KK+I-1)
+                    ZR(IRES+1) = ZR(IRES+1) -
+     +                                 POIDS*FLU2*ZR(IVF2+KK+I-1)
+ 401            CONTINUE
+              ELSE
+C ======================================================================
+C --- SI MODELISATION = HH*, OU HH2*------------------------------------
+C ======================================================================
+                DO 402 I = 1,NNO2
                     L = 2* (I-1) - 1
                     ZR(IRES+L+1) = ZR(IRES+L+1) -
      +                                 POIDS*DELTAT*FLU1*ZR(IVF2+KK+I-1)
                     ZR(IRES+L+2) = ZR(IRES+L+2) -
      +                                 POIDS*DELTAT*FLU2*ZR(IVF2+KK+I-1)
- 401             CONTINUE
+ 402            CONTINUE
+              END IF
            END IF  
 C ======================================================================
 C --- SI MODELISATION = THV --------------------------------------------

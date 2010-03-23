@@ -1,4 +1,4 @@
-# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : TUNNEL CIRCULAIRE REVETU EN CHAMP DE CONTRAINTES INITIAL ISOTROPE
 # sslp105a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -63,10 +63,10 @@ MAIL = DEFI_GROUP(reuse=MAIL,
                                  _F(GROUP_MA='BORD'),
                                  _F(NOM='NOEUD1',
                                     NOEUD='NO1'),
-                                 _F(NOM='NOEUD8359',
+                                 _F(NOM='NOEU8359',
                                    NOEUD='NO8359'),
                                  _F(NOM='BORD_SOL',
-                                  DIFFE=('BORD','NOEUD1','NOEUD8359'),),),),
+                                  DIFFE=('BORD','NOEUD1','NOEU8359'),),),),
 
 
 ##################################################

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE FORMATION THERMO-PLASTICITE TRAJET DE CHARGEMENT 100 INCREMENTS
 # forma02b.para = tps_job 80 mem_job 64Mo ncpus 1 liste_test S
@@ -71,8 +71,9 @@ U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                  NEWTON=_F(PREDICTION='ELASTIQUE',
                            MATRICE='TANGENTE',
                            REAC_ITER=1,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8),          
                  SIGM_IMPOSE=_F(SIXX=Sig,
-                                SIXY=Tau,),);
+                                SIXY=Tau,),INFO=1);
 
 IMPR_TABLE(TABLE=U,);
 

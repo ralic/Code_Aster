@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DE RIGIDITE AJOUTEE EN ECOULEMENT ANNULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,15 +53,15 @@ MAYA=LIRE_MAILLAGE( UNITE=23)
 ACIER=DEFI_MATERIAU( ELAS=_F( RHO = 7800.,  NU = 0.3, E = 2.E11))
 
 DOMSTRUC=AFFE_MATERIAU(  MAILLAGE=MAYA,
-                            AFFE=_F( GROUP_MA = 'INTERFACE', MATER = ACIER)
+                            AFFE=_F( GROUP_MA = 'INTERFAC', MATER = ACIER)
                             )
 
 STRUCTUR=AFFE_MODELE( MAILLAGE=MAYA,
-                         AFFE=_F( GROUP_MA = 'INTERFACE',
+                         AFFE=_F( GROUP_MA = 'INTERFAC',
                   MODELISATION = 'DKT', PHENOMENE = 'MECANIQUE')  )
 
 CARA=AFFE_CARA_ELEM( MODELE=STRUCTUR,
-                      COQUE=_F( GROUP_MA = 'INTERFACE', EPAIS = 1.E-3))
+                      COQUE=_F( GROUP_MA = 'INTERFAC', EPAIS = 1.E-3))
 
 CHARGS=AFFE_CHAR_MECA( MODELE=STRUCTUR,
             DDL_IMPO=_F( GROUP_NO = 'NOINT',  DX = 0., DY = 0., DZ = 0.,
@@ -96,11 +96,11 @@ DOMFLUI=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
                        _F( GROUP_MA = 'FLUIDE', MATER = EAU),
                        _F( GROUP_MA = 'ENTREE', MATER = EAU),
                             _F( GROUP_MA = 'SORTIE', MATER = EAU),
-                        _F( GROUP_MA = 'INTERFACE', MATER = EAU))
+                        _F( GROUP_MA = 'INTERFAC', MATER = EAU))
                             )
 
 DOMINTER=AFFE_MATERIAU(  MAILLAGE=MAYA,
-                            AFFE=_F( GROUP_MA = 'INTERFACE', MATER = EAU)
+                            AFFE=_F( GROUP_MA = 'INTERFAC', MATER = EAU)
                            )
 
 # MODELES FLUIDES ET INTERFACE
@@ -119,11 +119,11 @@ FLUIDE=AFFE_MODELE( MAILLAGE=MAYA,AFFE=(
 FLUIDE2=AFFE_MODELE( MAILLAGE=MAYA,AFFE=(
                      _F( GROUP_MA = 'FLUIDE',
                 MODELISATION = '3D',  PHENOMENE = 'THERMIQUE'),
-                     _F( GROUP_MA = 'INTERFACE',
+                     _F( GROUP_MA = 'INTERFAC',
                 MODELISATION = '3D',  PHENOMENE = 'THERMIQUE')))
 
 INTERFAC=AFFE_MODELE( MAILLAGE=MAYA,
-                      AFFE=_F( GROUP_MA = 'INTERFACE',
+                      AFFE=_F( GROUP_MA = 'INTERFAC',
                    MODELISATION = '3D', PHENOMENE = 'THERMIQUE')
                            )
 

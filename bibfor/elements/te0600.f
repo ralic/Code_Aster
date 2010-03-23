@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,7 @@ C     REMARQUE : CES DIMENSIONS DOIVENT ETRE LES MEMES QUE DANS TE0492
       CHARACTER*8 TYPMOD(2)
       CHARACTER*16 PHENOM
 C =====================================================================
-      INTEGER     ISMAEM,LI,KP,J,L,K
+      INTEGER     ISMAEM,LI,KP,J,L,K,IBID,TYPVF
       REAL*8      R8BID,RHO,COEF,RX
       CHARACTER*2 CODRET(1)
       LOGICAL     AXI, PERMAN
@@ -130,7 +130,7 @@ C DIMDEF    DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES
 C IVF       FONCTIONS DE FORMES QUADRATIQUES
 C IVF2      FONCTIONS DE FORMES LINEAIRES
 C =====================================================================
-      LOGICAL FNOEVO
+      LOGICAL FNOEVO,VF
       REAL*8  DT
 C =====================================================================
 C --- 1. INITIALISATIONS ----------------------------------------------
@@ -139,11 +139,13 @@ C --- CHOIX DU TYPE D'INTEGRATION -------------------------------------
 C --- RECUPERATION DE LA GEOMETRIE ET POIDS DES POINTS D'INTEGRATION --
 C --- RECUPERATION DES FONCTIONS DE FORME -----------------------------
 C =====================================================================
-      CALL CAETHM(NOMTE,AXI,PERMAN,
+      IBID = 0
+      CALL CAETHM(NOMTE,AXI,PERMAN,VF,TYPVF,
      >            TYPMOD,MODINT,MECANI,PRESS1,PRESS2,TEMPE,
      >            DIMDEP,DIMDEF,DIMCON,NMEC,NP1,NP2,NDIM,NNO,
-     >            NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
-     >            IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
+     >            NNOS,NNOM,IBID,
+     >            NPI,NPG,NDDLS,NDDLM,IBID,IBID,DIMUEL,
+     >            IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,IBID,JGANO)
 C =====================================================================
 C --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 C =====================================================================
@@ -165,10 +167,6 @@ C =====================================================================
          CALL JEVECH('PCARCRI','L',ICARCR)
          CALL JEVECH('PVARIMR','L',IVARIM)
          CALL JEVECH('PCONTMR','L',ICONTM)
-
-
-
-
          READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
 C =====================================================================
 C --- PARAMETRES EN SORTIE ISMAEM? ------------------------------------
@@ -179,7 +177,6 @@ C =====================================================================
          ELSE
             IMATUU = ISMAEM()
          END IF
-
          IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
      +       OPTION(1:9).EQ.'FULL_MECA') THEN
             CALL JEVECH('PVECTUR','E',IVECTU)
@@ -192,11 +189,8 @@ C =====================================================================
             ICONTP = ISMAEM()
             IVARIP = ISMAEM()
          END IF
-
          RETLOI = 0
-
          IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
-
             CALL ASSTHM(NNO,NNOS,NNOM,NPG,NPI,IPOIDS,IPOID2,
      +                IVF,IVF2,IDFDE, IDFDE2,
      +                ZR(IGEOM),ZR(ICARCR),
@@ -214,7 +208,6 @@ C =====================================================================
             DO 30 LI = 1,DIMUEL
                ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
  30         CONTINUE
-
             CALL ASSTHM(NNO,NNOS,NNOM,NPG,NPI,IPOIDS,IPOID2,
      +                IVF,IVF2,IDFDE, IDFDE2,
      +                ZR(IGEOM),ZR(ICARCR),
@@ -239,7 +232,6 @@ C =====================================================================
          CALL JEVECH('PMATERC','L',IMATE)
          CALL JEVECH('PPESANR','L',IPESA)
          CALL JEVECH('PVECTUR','E',IVECTU)
-
          CALL RCCOMA(ZI(IMATE),'THM_DIFFU',PHENOM,CODRET)
          CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',R8BID,1,'RHO',RHO,
      +                                                    CODRET,'FM')
@@ -328,7 +320,6 @@ C =====================================================================
          CALL JEVECH('PGEOMER','L',IGEOM)
          CALL JEVECH('PVECTUR','E',IVECTU)
          CALL JEVECH('PFR3D3D','L',IFORC)
-
          DO 120 I = 1,DIMUEL
             ZR(IVECTU+I-1) = 0.0D0
  120     CONTINUE
@@ -339,7 +330,6 @@ C ======================================================================
             L = (KP-1)*NNO
             CALL DFDM3D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,DFDZ,
      +                                                            POIDS)
-
             DO 140 I = 1,NNOS
                II = NDDLS* (I-1)
                DO 130 J = 1,3
@@ -422,7 +412,6 @@ C ======================================================================
 C --- PARAMETRES EN SORTIE ---------------------------------------------
 C ======================================================================
         CALL JEVECH('PVECTUR','E',IVECTU)
-
         CALL FNOTHM(FNOEVO,DT,PERMAN,NNO,NNOS,NNOM,NPI,
      +              NPG,IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,
      +              ZR(IGEOM),ZR(ICONTM),B,DFDI,DFDI2,
@@ -472,7 +461,6 @@ C ======================================================================
          NCMP = DIMCON
          CALL JEVECH('PCONTRR', 'L',ICHG)
          CALL JEVECH('PSIEFNOR','E',ICHN)
-
          NVIM = MECANI(5)
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       ENDIF
@@ -499,7 +487,6 @@ C ======================================================================
          CALL JEVECH('PGEOMER','L',IGEOM)
          CALL JEVECH('PDEPLAR','L',IDEPLA)
          CALL JEVECH('PDEFORR','E',IDEFO)
-
          CALL EPSTHM ( NDDLS, NDDLM, NNO, NNOS, NNOM,NMEC,
      &                 DIMDEF, DIMUEL, NDIM, NPI,
      &                 IPOIDS, IPOID2, IVF, IVF2,

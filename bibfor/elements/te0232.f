@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 22/03/2010   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,27 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PROTATR','L',IROTA)
+C
+C VERIFICATIONS SUR LE CHARGEMENT ROTATION 
+C
+      IF(NOMTE(3:4).EQ.'TD'.OR.NOMTE(3:4).EQ.'TC') THEN
+C AXE=direction Oz 
+         IF(ZR(IROTA+3).LE.R8MIEM()) THEN
+            CALL U2MESS('F','MODELISA9_99')
+         END IF
+         IF(ZR(IROTA+1).GT.R8MIEM().OR.ZR(IROTA+2).GT.R8MIEM()) THEN
+            CALL U2MESS('F','MODELISA10_3')
+         END IF
+      ELSEIF(NOMTE(3:4).EQ.'CX') THEN
+C AXE=Oy et CENTRE=ORIGINE
+         IF(ZR(IROTA+1).GT.R8MIEM().OR.ZR(IROTA+3).GT.R8MIEM()) THEN
+            CALL U2MESS('F','MODELISA10_1')
+         END IF
+         IF(ZR(IROTA+4).GT.R8MIEM().OR.ZR(IROTA+5).GT.R8MIEM() 
+     &     .OR.ZR(IROTA+6).GT.R8MIEM()) THEN
+            CALL U2MESS('F','MODELISA10_2')
+         END IF
+      ENDIF
       CALL JEVECH('PCACOQU','L',ICACO)
       CALL JEVECH('PVECTUR','E',IVECTU)
       ZERO = 0.D0
@@ -85,6 +106,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &                         POIDS*ZR(IROTA+2)**2*RX*ZR(IVF+K+I-1)
    20     CONTINUE
         ELSE
+          RX = RX - ZR(IROTA+4)
+          RY = RY - ZR(IROTA+5)
           DO 30 I = 1,NNO
             ZR(IVECTU+3*I-3) = ZR(IVECTU+3*I-3) +
      &                         POIDS*ZR(IROTA+3)**2*RX*ZR(IVF+K+I-1)

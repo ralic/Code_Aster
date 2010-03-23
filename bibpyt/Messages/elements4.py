@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 08/02/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF elements4 Messages  DATE 23/03/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -184,10 +184,6 @@ cata_msg = {
 
 67: _("""
 Le module d'Young est nul.
-"""),
-
-68 : _("""
- Nombre d'itérations internes insuffisant.
 """),
 
 69 : _("""

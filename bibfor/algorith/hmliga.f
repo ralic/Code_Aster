@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 15/02/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ C                       = 0 OK
 C                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
 C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C ======================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC,YATE,RETCOM
       INTEGER       ADCOME,ADCP11,ADCP21,ADCOTE,ADDEME,ADDEP1,ADDEP2
       INTEGER       ADDETE,ADVIHY,ADVICO,VIHRHO,VICPHI,VICSAT
@@ -56,17 +56,17 @@ C ======================================================================
       REAL*8       CP11,CP21,SAT,DSATP1,MAMOLG,RHO21,EM
       REAL*8       R,RHO0,CSIGM,ALP11,ALP12,ALP21
       REAL*8       EPS
-      PARAMETER  ( EPS = 1.D-21 )
+      PARAMETER  ( EPS = 1.D-21 ) 
       LOGICAL      EMMAG
 C ======================================================================
 C --- VARIABLES LOCALES POUR BARCELONE-------------------------------
 C ======================================================================
       REAL*8       TINI,CRIT(*)
-      REAL*8       DSIDP1(6),DEPS(6)
+      REAL*8       DSIDP1(6),DEPS(6)    
       REAL*8       DSDEME(6,6)
 CCCC    SIP NECESSAIRE POUR CALCULER LES CONTRAINTES TOTALES
 CCCC    ET ENSUITE CONTRAINTES NETTES POUR BARCELONE
-      REAL*8  SIPM,SIPP
+      REAL*8  SIPM,SIPP         
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
@@ -77,7 +77,7 @@ C ======================================================================
       REAL*8       RBID27, RBID28, RBID29, RBID32
       REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
       REAL*8       RBID39,RBID45,RBID46,RBID47,RBID48,RBID49
-      REAL*8       RBID50,RBID51
+      REAL*8       RBID50,RBID51,R3BID(6)
       REAL*8       SIGNE,M11M,M21M,COEPS,RHO12,RHO22,DPAD,CP12,CP22
       REAL*8       DMASP1,DMASP2,DMWDP1,DMWDP2,DQDEPS,DQDP,DQDT,DMWDT
       REAL*8       DHDT,DHWDP1,DHWDP2,DSPDP1,DSPDP2,APPMAS,SIGMAP,CALOR
@@ -97,8 +97,8 @@ C =====================================================================
      +           RBID23, RBID24, RBID25, RHO110, CLIQ, ALPLIQ, CP11,
      +           RBID26, RBID27, RBID28, RBID29, MAMOLG, CP21,RBID32,
      +           RBID33, RBID34, RBID35, RBID36, RBID37,RBID38,RBID39,
-     +           RBID45,RBID46,RBID47,RBID48,RBID49,EM,RBID50,RBID51,
-     +           RINSTP)
+     +           RBID45,RBID46,RBID47,RBID48,RBID49,
+     +           EM,RBID50,R3BID,RBID51,RINSTP)
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
@@ -126,24 +126,29 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN
+      IF(EM.GT.EPS)THEN 
         EMMAG = .TRUE.
       ENDIF
-
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
      +                                           EPSV,DEPSV,EPSVM,MECA)
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+     >    (OPTION(1:9).EQ.'FORC_NODA') .OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
 C =====================================================================
-         IF ((YAMEC.EQ.1).OR.EMMAG )THEN
+         IF ((YAMEC.EQ.1) )THEN
             CALL VIPORO(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
      +       DEPSV,ALPHA0,DT,DP1,DP2,SIGNE,SAT,CS,BIOT,PHI,PHIM,RETCOM)
          ENDIF
+         IF (EMMAG )THEN
+            CALL VIEMMA(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
+     +       DP1,DP2,SIGNE,SAT,EM,PHI,PHIM,RETCOM)
+         ENDIF
+
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE MASSE VOLUMIQUE DU FLUIDE ------
 C --- SELON FORMULE DOCR ----------------------------------------------
@@ -304,15 +309,18 @@ C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- POUR LES AUTRES CAS ----------------------------------------------
 C ======================================================================
          DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1)
-     +           + DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,1.0D0)
+     +           + DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,1.0D0,
+     >                  EMMAG,EM)
          DSDE(ADCP11,ADDEP2) = DSDE(ADCP11,ADDEP2)
-     +                        + DMWDP2(RHO11,SAT,BIOT,PHI,CS,CLIQ,1.0D0)
+     +                        + DMWDP2(RHO11,SAT,BIOT,PHI,CS,CLIQ,1.0D0,
+     >                  EMMAG,EM)
          DSDE(ADCP21,ADDEP1) = DSDE(ADCP21,ADDEP1) +
-     +            DMASP1(RHO11,0.0D0,RHO21,SAT,DSATP1,BIOT,PHI,CS,1.0D0)
+     +            DMASP1(RHO11,0.0D0,RHO21,SAT,DSATP1,BIOT,PHI,CS,1.0D0,
+     +                   EMMAG,EM)
          DSDE(ADCP21,ADDEP2) = DSDE(ADCP21,ADDEP2) +
-     +                      DMASP2(RHO11,0.0D0,RHO21,SAT,BIOT,PHI,CS,P2)
+     +                      DMASP2(RHO11,0.0D0,RHO21,SAT,BIOT,PHI,CS,P2,
+     +                             EMMAG,EM)
       ENDIF
-
 C =====================================================================
 C --- TERMES SPECIAL BARCELONE --------------------------------------
 C =====================================================================
@@ -337,7 +345,7 @@ C --- DSIGM/DEPP1
      &                               DSIDP1(I)
    50       CONTINUE
          ENDIF
-      ENDIF
+      ENDIF      
 C =====================================================================
  30   CONTINUE
 C =====================================================================

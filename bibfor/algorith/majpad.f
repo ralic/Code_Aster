@@ -1,10 +1,9 @@
-      SUBROUTINE MAJPAD(P2,PVP,R,T,KH,DP2,PVPM,DT,PADP,PADM,DPAD,RETCOM)
-      IMPLICIT      NONE
-      INTEGER       RETCOM
+      SUBROUTINE MAJPAD(P2,PVP,R,T,KH,DP2,PVPM,DT,PADP,PADM,DPAD)
+      IMPLICIT NONE
       REAL*8        P2,PVP,R,T,KH,DP2,PVPM,DT,PADP,PADM,DPAD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +23,7 @@ C ======================================================================
 C ======================================================================
 C --- MISE A JOUR DE PRESSION D AIR DISSOUS ----------------------------
 C ======================================================================
-      INTEGER       IADZI,IAZK24,UMESS,IUNIFI
+      INTEGER       IADZI,IAZK24,IUNIFI,NIV,IFM
       REAL*8        UMPHRS
       CHARACTER*8   NOMAIL
 C ======================================================================
@@ -52,16 +51,11 @@ C ======================================================================
       PADM   = ((P2-DP2) - PVPM)*R*(T-DT)/KH
       DPAD   = PADP - PADM
       IF (PADP .LT.0.D0) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'CAPACA',' PAD <=0 A LA MAILLE: ', NOMAIL
-         RETCOM = 1
-         GO TO 30
+         CALL INFNIV(IFM,NIV)
+         IF (NIV .EQ. 2)THEN
+            CALL TECAEL(IADZI,IAZK24)
+            NOMAIL = ZK24(IAZK24-1+3) (1:8)
+            CALL U2MESK('I','COMPOR1_65',1,NOMAIL)
+         END IF
       END IF
-C ======================================================================
- 30   CONTINUE
-C ======================================================================
- 9001 FORMAT (A8,2X,A30,2X,A8)
-C ======================================================================
       END

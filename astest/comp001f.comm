@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VMIS_CIN1_CHAB
 # comp001f.para = tps_job 270 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
@@ -131,7 +131,7 @@ for i in range(Ncal):
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[imat],  
-                   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
+                   ARCHIVAGE = _F(LIST_INST = temps_ar),
                    INCREMENT=_F(LIST_INST=temps,),
                  #  THER=_F(INST_IMP= inst_th, TEMP_IMP= temp_th, OPTION = opt_ther,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
@@ -192,6 +192,25 @@ TEST_TABLE(TABLE=DIFF_MAT,
            CRITERE='ABSOLU',
            PRECISION=prec_tgt,
            REFERENCE='ANALYTIQUE',);     
+
+        
+                
+# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
+TEST_TABLE(TABLE=R_SI[0],
+           NOM_PARA='V1_Pa_1',VALE=4.48687E-02,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[1],
+           NOM_PARA='VMIS_Pa_1',VALE=5.42624E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[3],
+           NOM_PARA='SIXX_Pa_1',VALE=1.21370E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
 
 FIN();
 #

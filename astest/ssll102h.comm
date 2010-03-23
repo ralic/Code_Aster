@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 22/03/2010   AUTEUR DESROCHES X.DESROCHES 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 26/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -25,30 +25,31 @@
 #    DES STRUCTURES STATIQUES LINEAIRE
 #  - MODELISATION AVEC DES ELEMENTS 'COQUE_C_PLAN'
 #---------------------------------------------------------------------
-#
-DEBUT(CODE=_F(NOM='SSLL102H', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+DEBUT(CODE=_F(NOM='SSLL102H',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
 #
 #PRE_IDEAS ();
-#
-POUTMAIL=LIRE_MAILLAGE( )
+
+POUTMAIL=LIRE_MAILLAGE();
 
 #
-POUTMODE=AFFE_MODELE(   MAILLAGE=POUTMAIL,
-                              AFFE=_F( TOUT = 'OUI',
-                                    PHENOMENE = 'MECANIQUE',
-                                    MODELISATION = 'COQUE_C_PLAN')
-                        )
+
+POUTMODE=AFFE_MODELE(MAILLAGE=POUTMAIL,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='COQUE_C_PLAN',),);
 
 #
 #---------------------------------------------------------------------
 #                       CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
-#
-CARELEM=AFFE_CARA_ELEM(   MODELE=POUTMODE,
-                             COQUE=_F( GROUP_MA = 'TOUT_ELT',
-                                    EPAIS = 0.2)
-                          )
+
+CARELEM=AFFE_CARA_ELEM(MODELE=POUTMODE,
+                       COQUE=_F(GROUP_MA='TOUT_ELT',
+                                EPAIS=0.2,),);
 
 #
 #---------------------------------------------------------------------
@@ -57,128 +58,220 @@ CARELEM=AFFE_CARA_ELEM(   MODELE=POUTMODE,
 #
 #PUISQU'IL S'AGIT D'UNE MODELISATION DE TYPE 'COQUE_C_PLAN', LE MODULE
 #D'YOUNG EST MULTIPLIE PAR LA LARGEUR QUI EST DE 0.1
-#
-POUTMATE=DEFI_MATERIAU(   ELAS=_F( E = 2.E+10,
-                                  NU = 0.3)
-                          )
+
+POUTMATE=DEFI_MATERIAU(ELAS=_F(E=2.E+10,
+                               NU=0.3,
+                               RHO=7800.,),);
 
 #
-POUTAF_M=AFFE_MATERIAU(   MAILLAGE=POUTMAIL,
-                                AFFE=_F( TOUT = 'OUI',
-                                      MATER = POUTMATE)
-                          )
+
+POUTAF_M=AFFE_MATERIAU(MAILLAGE=POUTMAIL,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=POUTMATE,),);
 
 #
 #---------------------------------------------------------------------
 #                       CHARGEMENTS
 #---------------------------------------------------------------------
-#
-COND_LIM=AFFE_CHAR_MECA(     MODELE=POUTMODE,
-                             DDL_IMPO=_F( GROUP_NO = 'O',
-                                       DX = 0., DY = 0., DRZ = 0.)
-                           )
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=POUTMODE,
+                        DDL_IMPO=_F(GROUP_NO='O',
+                                    DX=0.,
+                                    DY=0.,
+                                    DRZ=0.,),);
 
 #
-CHARGE1=AFFE_CHAR_MECA(         MODELE=POUTMODE,
-                            FORCE_NODALE=_F( GROUP_NO = 'B',
-                                          FX = 1.)
-                          )
+
+CHARGE1=AFFE_CHAR_MECA(MODELE=POUTMODE,
+                       FORCE_NODALE=_F(GROUP_NO='B',
+                                       FX=1.,),);
 
 #
-CHARGE2=AFFE_CHAR_MECA(         MODELE=POUTMODE,
-                            FORCE_NODALE=_F( GROUP_NO = 'B',
-                                          FY = 1.)
-                          )
+
+CHARGE2=AFFE_CHAR_MECA(MODELE=POUTMODE,
+                       FORCE_NODALE=_F(GROUP_NO='B',
+                                       FY=1.,),);
 
 #
-CHARGE3=AFFE_CHAR_MECA(         MODELE=POUTMODE,
-                            FORCE_NODALE=_F( GROUP_NO = 'B',
-                                          MZ = 1.)
-                          )
+
+CHARGE3=AFFE_CHAR_MECA(MODELE=POUTMODE,
+                       FORCE_NODALE=_F(GROUP_NO='B',
+                                       MZ=1.,),);
+
+#
+
+CHARGE4=AFFE_CHAR_MECA(MODELE=POUTMODE,
+                       ROTATION=(100.,0.,0.,1.,),);
 
 #
 #---------------------------------------------------------------------
 #                       RESOLUTION
 #---------------------------------------------------------------------
-#
-RESU=MACRO_ELAS_MULT(             MODELE=POUTMODE,
-                                CHAM_MATER=POUTAF_M,
-                                 CARA_ELEM=CARELEM,
-                          CHAR_MECA_GLOBAL=COND_LIM,
-                          CAS_CHARGE=(_F( NOM_CAS = 'CHARGE NUMERO 1',
-                                          CHAR_MECA = CHARGE1,
-                                          OPTION = 'DEGE_ELNO_DEPL'),
-                                      _F( NOM_CAS = 'CHARGE NUMERO 2',
-                                          CHAR_MECA = CHARGE2,
-                                          OPTION = 'DEGE_ELNO_DEPL',
-                                          NIVE_COUCHE = 'SUP',),
-                                      _F( NOM_CAS = 'CHARGE NUMERO 3',
-                                          CHAR_MECA = CHARGE3,
-                                          OPTION = 'DEGE_ELNO_DEPL'),),
-                        )
+
+RESU=MACRO_ELAS_MULT(MODELE=POUTMODE,
+                     CHAM_MATER=POUTAF_M,
+                     CARA_ELEM=CARELEM,
+                     CHAR_MECA_GLOBAL=COND_LIM,
+                     CAS_CHARGE=(_F(NOM_CAS='CHARGE NUMERO 1',
+                                    CHAR_MECA=CHARGE1,
+                                    OPTION='DEGE_ELNO_DEPL',),
+                                 _F(NOM_CAS='CHARGE NUMERO 2',
+                                    CHAR_MECA=CHARGE2,
+                                    OPTION='DEGE_ELNO_DEPL',
+                                    NIVE_COUCHE='SUP',),
+                                 _F(NOM_CAS='CHARGE NUMERO 3',
+                                    CHAR_MECA=CHARGE3,
+                                    OPTION='DEGE_ELNO_DEPL',),
+                                 _F(NOM_CAS='CHARGE NUMERO 4',
+                                    CHAR_MECA=CHARGE4,
+                                    OPTION='DEGE_ELNO_DEPL',),),);
 
 #
-RESU=CALC_ELEM( reuse=RESU,       MODELE=POUTMODE,
-                      CHAM_MATER=POUTAF_M,
-                       CARA_ELEM=CARELEM,
-                     REPE_COQUE=_F(NIVE_COUCHE='SUP',),
-                          OPTION=('EFGE_ELNO_DEPL',
-                                  'SIGM_ELNO_DEPL',
-                                  ),
-                        RESULTAT=RESU
-                   )
 
+RESU=CALC_ELEM(reuse =RESU,
+               MODELE=POUTMODE,
+               CHAM_MATER=POUTAF_M,
+               CARA_ELEM=CARELEM,
+               RESULTAT=RESU,
+               REPE_COQUE=_F(NIVE_COUCHE='SUP',),
+               OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),);
+
+#IMPR_RESU(RESU=_F(RESULTAT=RESU,),);
 #
 #---------------------------------------------------------------------
 #                       VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 1',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='B',
+                   VALE=5e-10,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 1',
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   GROUP_NO='O',
+                   VALE=5.0,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 2',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='B',
+                   VALE=2e-07,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 2',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   GROUP_NO='B',
+                   VALE=1.5e-07,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 2',
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   GROUP_NO='O',
+                   VALE=300.0,
+                   PRECISION=0.036,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 3',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='B',
+                   VALE=1.5e-07,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 3',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   GROUP_NO='B',
+                   VALE=1.5e-07,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 3',
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   GROUP_NO='O',
+                   VALE=150.0,
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 4',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='B',
+                   VALE=0.0104,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RESU,
+                   NOM_CAS='CHARGE NUMERO 4',
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   GROUP_NO='O',
+                   VALE=157625000.0,
+                   REFERENCE='NON_REGRESSION',),),);
+
+POUTMAIL=MODI_MAILLAGE(reuse =POUTMAIL,
+                       MAILLAGE=POUTMAIL,
+                       TRANSLATION=(10.,10.,),);
+
+
+CHARGE5=AFFE_CHAR_MECA(MODELE=POUTMODE,
+                       ROTATION=(100.,0.,0.,1.,),
+                       CENTRE=(10.,10.,0.,),
+                       );
 #
+
+RESU5=MACRO_ELAS_MULT(MODELE=POUTMODE,
+                     CHAM_MATER=POUTAF_M,
+                     CARA_ELEM=CARELEM,
+                     CHAR_MECA_GLOBAL=COND_LIM,
+                     CAS_CHARGE=(_F(NOM_CAS='CHARGE NUMERO 5',
+                                    CHAR_MECA=CHARGE5,
+                                    OPTION='DEGE_ELNO_DEPL',),))
+
+#
+
+RESU5=CALC_ELEM(reuse =RESU5,
+               MODELE=POUTMODE,
+               CHAM_MATER=POUTAF_M,
+               CARA_ELEM=CARELEM,
+               RESULTAT=RESU5,
+               REPE_COQUE=_F(NIVE_COUCHE='SUP',),
+               OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),);
+
 TEST_RESU(RESU=(
-     _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 1',
-           NOM_CHAM = 'DEPL',              GROUP_NO = 'B',
-           NOM_CMP = 'DX',                VALE = 5.E-10,
-           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
+                _F(RESULTAT=RESU5,
+                   NOM_CAS='CHARGE NUMERO 5',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='B',
+                   VALE=0.0104,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=RESU5,
+                   NOM_CAS='CHARGE NUMERO 5',
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   GROUP_NO='O',
+                   VALE=157625000.0,
+                   REFERENCE='NON_REGRESSION',),),);
 
-     _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 1',
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    MAILLE = 'MA1',
-           GROUP_NO = 'O',
-           NOM_CMP = 'SIXX',              VALE = 5.,
-           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
-
-     _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 2',
-           NOM_CHAM = 'DEPL',              GROUP_NO = 'B',
-           NOM_CMP = 'DY',                VALE = 2.E-07,
-           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
-
-     _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 2',
-           NOM_CHAM = 'DEPL',              GROUP_NO = 'B',
-           NOM_CMP = 'DRZ',               VALE = 1.5E-07,
-           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
-
-     _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 2',
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    MAILLE = 'MA1',
-           GROUP_NO = 'O',
-           NOM_CMP = 'SIXX',              VALE = 300.,
-           PRECISION = 0.036, REFERENCE = 'ANALYTIQUE'),
-
-     _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 3',
-           NOM_CHAM = 'DEPL',              GROUP_NO = 'B',
-           NOM_CMP = 'DY',                VALE = 1.5E-07,
-           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
-
-     _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 3',
-           NOM_CHAM = 'DEPL',              GROUP_NO = 'B',
-           NOM_CMP = 'DRZ',               VALE = 1.5E-07,
-           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE'),
-
-     _F( RESULTAT = RESU,                NOM_CAS = 'CHARGE NUMERO 3',
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    MAILLE = 'MA1',
-           GROUP_NO = 'O',
-           NOM_CMP = 'SIXX',              VALE = 150.,
-           PRECISION = 0.01, REFERENCE = 'ANALYTIQUE')
-           ))
+FIN();
 
 #
-FIN()
-#
-#
+

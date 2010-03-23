@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,6 +156,8 @@ C       -- POUR LES VARIABLES DE COMMANDE :
         IPAL  =  INT(CRIT(5))
         RETCOM=0
         IRTET=0
+C       CORRECTION JMP : POURQUOI REDECOUPER POUR RIGI_MECA_TANG ?
+        IF (OPT.EQ.'RIGI_MECA_TANG') IPAL=0
         
         READ (COMPOR(2),'(I16)') NVI
 C

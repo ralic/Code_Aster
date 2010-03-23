@@ -1,4 +1,4 @@
-#@ MODIF utilitai4 Messages  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai4 Messages  DATE 23/03/2010   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,8 @@ cata_msg={
 """),
 
 14: _("""
- composante generalisee non trouvee
+ composante generalisee NUME_CMP_GENE non trouvee
+ Conseil : verifiez que la composante generalisee demandee est bien presente dans la base modale.
 """),
 
 15: _("""

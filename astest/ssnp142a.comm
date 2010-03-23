@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 2D A L'AIDE DES ELEMENT DE JOINT ET DE LA LOI JOINT_MECA_RUPT
 # ssnp142a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,12 +65,12 @@ MA=DEFI_GROUP(reuse =MA,
     _F(NOM = 'JOINT'  ,    GROUP_MA = 'G_2D_28'),
 
 # LINES
-    _F(NOM = 'TERRE_BORD', UNION = ('G_1D_33','G_1D_35','G_1D_36')), 
-    _F(NOM = 'BAR_AMONT',  GROUP_MA = 'G_1D_38'),       
-    _F(NOM = 'BAR_AVAL',   GROUP_MA = 'G_1D_40'), 
-    _F(NOM = 'BAR_HAUT',   GROUP_MA = 'G_1D_41'), 
-    _F(NOM = 'JOINT_H'  ,  GROUP_MA = 'G_1D_42'),
-    _F(NOM = 'JOINT_B'  ,  GROUP_MA = 'G_1D_43'),
+    _F(NOM = 'TERRE_BO', UNION = ('G_1D_33','G_1D_35','G_1D_36')), 
+    _F(NOM = 'BAR_AMON', GROUP_MA = 'G_1D_38'),       
+    _F(NOM = 'BAR_AVAL',  GROUP_MA = 'G_1D_40'), 
+    _F(NOM = 'BAR_HAUT',  GROUP_MA = 'G_1D_41'), 
+    _F(NOM = 'JOINT_H' ,  GROUP_MA = 'G_1D_42'),
+    _F(NOM = 'JOINT_B' ,  GROUP_MA = 'G_1D_43'),
           ), 
      
    CREA_GROUP_NO = (
@@ -83,7 +83,7 @@ MA=DEFI_GROUP(reuse =MA,
                                
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
-                   ORIE_PEAU_2D=_F(GROUP_MA=('BAR_AMONT','BAR_AVAL')),
+                   ORIE_PEAU_2D=_F(GROUP_MA=('BAR_AMON','BAR_AVAL')),
                    INFO=1)
 
 MA=MODI_MAILLAGE(reuse =MA,
@@ -93,7 +93,7 @@ MA=MODI_MAILLAGE(reuse =MA,
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                VERIF='MAILLE',
-               AFFE=(_F(GROUP_MA=('BARRAGE','TERRE','BAR_AMONT','BAR_AVAL'),
+               AFFE=(_F(GROUP_MA=('BARRAGE','TERRE','BAR_AMON','BAR_AVAL'),
                         PHENOMENE='MECANIQUE',
                         MODELISATION='D_PLAN',),
                      _F(GROUP_MA='JOINT',
@@ -143,7 +143,7 @@ CM_F=AFFE_MATERIAU(MAILLAGE=MA,
                  );
 
 # CONDITION AUX LIMITES SUR LA TERRE
-TERRE=AFFE_CHAR_MECA(MODELE=MO,FACE_IMPO=_F(GROUP_MA='TERRE_BORD',DX=0.0,DY=0.0,),);
+TERRE=AFFE_CHAR_MECA(MODELE=MO,FACE_IMPO=_F(GROUP_MA='TERRE_BO',DX=0.0,DY=0.0,),);
 
 # POIDS                                   
 PESBAR = AFFE_CHAR_MECA(
@@ -159,7 +159,7 @@ PESTER = AFFE_CHAR_MECA(
 p_am = FORMULE(VALE='max(rho_e*ap*(niv_am(INST)-Y),0)',NOM_PARA=('Y','INST',),);                
 p_av = FORMULE(VALE='max(rho_e*ap*(niv_av(INST)-Y),0)',NOM_PARA=('Y','INST',),);
 
-PAMONT=AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AMONT',),PRES=p_am,),);
+PAMONT=AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AMON',),PRES=p_am,),);
 PAVAL =AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AVAL', ),PRES=p_av,),);
 
 # LISTE D'INSTANTS

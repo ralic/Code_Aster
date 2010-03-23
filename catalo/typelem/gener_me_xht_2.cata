@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
+%& MODIF TYPELEM  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,6 @@ MODE_LOCAL__
                                         E3X     E3Y      E3Z      E4X     E4Y      E4Z      )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
-    EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -72,7 +71,7 @@ OPTION__
                                      E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N1NEUT_R PLSN
                                      N1NEUT_R PLST     STANO_I  PSTANO
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FR2D3D    36    IN__   EFORCNO  PFR2D3D  NGEOMER  PGEOMER  NFORCER  PNFORCER E9NEUTR  PPINTTO
+    CHAR_MECA_FR2D3D    36    IN__   NFORCER  PFR2D3D  NGEOMER  PGEOMER  E9NEUTR  PPINTTO
                                      E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N1NEUT_R PLSN
                                      N1NEUT_R PLST     STANO_I  PSTANO
                               OUT__  MVECTUR  PVECTUR

@@ -1,9 +1,9 @@
        SUBROUTINE NVITHM(COMPOR, MECA, THMC, THER, HYDR, NVIM, NVIT,
      +                   NVIH, NVIC, ADVIME, ADVITH, ADVIHY, ADVICO,
-     +                   VIHRHO, VICPHI, VICPVP, VICSAT)
+     +                   VIHRHO, VICPHI, VICPVP, VICSAT,VICPR1,VICPR2)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,10 +27,10 @@ C --- NOMBRE DE VARIABLES INTERNES ASSOCIEES A CHAQUE RELATION ---------
 C --- ON FAIT LE CHOIX DE STOCKES LES VARIABLES INTERNES DANS L'ORDRE --
 C --- SUIVANT : MECANIQUE - THERMIQUE - HYDRAULIQUE - COUPLAGE ---------
 C ======================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       NVIM, NVIT, NVIH, NVIC
       INTEGER       ADVIME, ADVITH, ADVIHY, ADVICO
-      INTEGER       VIHRHO, VICPHI, VICPVP, VICSAT
+      INTEGER       VIHRHO, VICPHI, VICPVP, VICSAT,VICPR1,VICPR2
       CHARACTER*16  COMPOR(*), MECA, THMC, THER, HYDR
 C ======================================================================
       INTEGER       NBCOMP
@@ -87,6 +87,7 @@ C --- POUR L'HYDRAULIQUE : VAR. INT. 1 : RHO_LIQUIDE - RHO_0 -----------
 C --- POUR LE COUPLAGE   : VAR. INT. 1 : PHI - PHI_0 -------------------
 C ---                    : VAR. INT. 2 : PVP - PVP_0 SI VAPEUR ---------
 C ---                    : VAR. INT. 3 : SATURATION SI LOI NON SATUREE -
+C         EN CAS DE LIQU_AD_GAZ VARINT2 VAUT TOUJOURS ZERO
 C ======================================================================
 C --- HYDRAULIQUE ------------------------------------------------------
 C ======================================================================
@@ -99,6 +100,7 @@ C ======================================================================
      +     ( THMC .EQ. 'LIQU_GAZ_ATM' )    .OR.
      +     ( THMC .EQ. 'LIQU_VAPE')        .OR.
      +     ( THMC .EQ. 'LIQU_VAPE_GAZ')    .OR.
+     +     ( THMC .EQ. 'LIQU_AD_GAZ')      .OR.
      +     ( THMC .EQ. 'LIQU_AD_GAZ_VAPE') ) THEN
          IF ( ( THMC .EQ. 'LIQU_GAZ' )        .OR.
      +        ( THMC .EQ. 'LIQU_GAZ_ATM' ) )  THEN
@@ -106,6 +108,10 @@ C ======================================================================
          ELSE
             VICPVP = VICPHI + 1
             VICSAT = VICPVP + 1
+         ENDIF
+         IF(THMC .EQ. 'LIQU_AD_GAZ') THEN
+          VICPR1=VICSAT+1
+          VICPR2=VICPR1+1
          ENDIF
       ENDIF
 C ======================================================================

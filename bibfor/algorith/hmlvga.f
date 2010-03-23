@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 15/02/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,7 @@ C                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
 C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C  VARIABLES IN / OUT
 C ======================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC
       INTEGER       YATE,RETCOM,ADCOME,ADCP11,ADCP12,ADVIHY,ADVICO
       INTEGER       VIHRHO,VICPHI,VICPVP,VICSAT
@@ -63,7 +63,7 @@ C ======================================================================
       REAL*8       RHO12,RHO21,CP22
       REAL*8       PADM,RHO22,EM
       REAL*8       EPS
-      PARAMETER  ( EPS = 1.D-21 )
+      PARAMETER  ( EPS = 1.D-21 ) 
       LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
@@ -75,6 +75,7 @@ C ======================================================================
       REAL*8       RBID27, RBID28, RBID29, RBID32
       REAL*8       RBID33, RBID34, RBID35, RBID38
       REAL*8       RBID39, RBID45, RBID46, RBID49, RBID50,RBID51
+      REAL*8       R3BID(6)
       REAL*8       SIGNE, PVP1, PVP1M, DPAD, PAS
       REAL*8       M11M,M12M,M21M,M22M,DMASP1,DMASP2,DMVDP1,DMVDP2
       REAL*8       DMADP1,DMADP2,DMWDP1,DMWDP2,DQDEPS,DQDP,DQDT,DMASDT
@@ -90,17 +91,15 @@ C =====================================================================
       CALL NETBIS(MECA,NET,BISHOP)
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
      +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
-     +             P1-DP1,
-     +             RBID6,
-     +             RBID7, RBID8, RBID10, R, RHO0, CSIGM,
-     +             BIOT, SATM, SAT, DSATP1, RBID14, RBID15,
-     +             RBID16,
-     +             RBID17, RBID18, RBID19, RBID20, RBID21, RBID22,
-     +             RBID23, RBID24, RBID25, RHO110, CLIQ, ALPLIQ, CP11,
-     +             RBID26, RBID27, RBID28, RBID29, MAMOLG, CP21,
-     +             RBID32, RBID33, RBID34, RBID35, MAMOLV, CP12,RBID38,
-     +             RBID39,RBID45,RBID46,CP22,KH,RBID49,EM,RBID50,RBID51,
-     +             RINSTP)
+     +             P1-DP1,RBID6, RBID7, RBID8,
+     +             RBID10, R,      RHO0,   CSIGM,  BIOT,   SATM, SAT,
+     +             DSATP1, RBID14, RBID15, RBID16, RBID17, RBID18,
+     +             RBID19, RBID20, RBID21, RBID22, RBID23, RBID24,
+     +             RBID25, RHO110, CLIQ, ALPLIQ,   CP11, RBID26,
+     +             RBID27, RBID28, RBID29, MAMOLG, CP21, RBID32,
+     +             RBID33, RBID34, RBID35, MAMOLV, CP12, RBID38,
+     +             RBID39, RBID45, RBID46, CP22,   KH,   RBID49,
+     >             EM,RBID50,R3BID,RBID51,RINSTP) 
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
@@ -133,13 +132,18 @@ C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+     &    (OPTION(1:9).EQ.'FORC_NODA').OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
 C =====================================================================
-         IF ((YAMEC.EQ.1).OR.EMMAG )THEN
+         IF ((YAMEC.EQ.1))THEN
             CALL VIPORO(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
      +       DEPSV,ALPHA0,DT,DP1,DP2,SIGNE,SAT,CS,BIOT,PHI,PHIM,RETCOM)
+         ENDIF
+         IF (EMMAG )THEN
+            CALL VIEMMA(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
+     +       DP1,DP2,SIGNE,SAT,EM,PHI,PHIM,RETCOM)
          ENDIF
 C =====================================================================
 C --- CALCUL DE LA PRESSION DE VAPEUR TILDE SELON FORMULE DOCR --------
@@ -148,7 +152,7 @@ C --- NB : CE CALCUL SE FAIT AVEC LA MASSE VOLUMIQUE DU FLUIDE --------
 C ---    : A L INSTANT MOINS ------------------------------------------
 C =====================================================================
          PINF = R8MAEM()
-         CALL VIPVPT(NBVARI,VINTM,VINTP,ADVICO,VICPVP,DIMCON,PINF,
+          CALL VIPVPT(NBVARI,VINTM,VINTP,ADVICO,VICPVP,DIMCON,PINF,
      +     CONGEM,ADCP11,ADCP12,NDIM,PVP0,DP1,DP2,T,DT,MAMOLV,R,RHO11M,
      +                        KH,SIGNE,CP11,CP12,YATE,PVP1,PVP1M,RETCOM)
       IF (RETCOM.NE.0) THEN
@@ -158,12 +162,13 @@ C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE PRESSION DE VAPEUR -------------
 C --- SELON FORMULE DOCR ----------------------------------------------
 C =====================================================================
+
          CALL VIPVP2(NBVARI,VINTM,VINTP,ADVICO,VICPVP,PVP0,
      +        PVP1,P2,DP2,T,DT,KH,MAMOLV,R,RHO11M,YATE,PVP,PVPM,RETCOM)
 C =====================================================================
 C --- MISE A JOUR DE LA PRESSION D AIR DISSOUS SELON FORMULE DOCR -----
 C =====================================================================
-         CALL MAJPAD(P2,PVP,R,T,KH,DP2,PVPM,DT,PADP,PADM,DPAD,RETCOM)
+         CALL MAJPAD(P2,PVP,R,T,KH,DP2,PVPM,DT,PADP,PADM,DPAD)
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE MASSE VOLUMIQUE DU FLUIDE ------
 C --- SELON FORMULE DOCR ----------------------------------------------
@@ -178,7 +183,7 @@ C =====================================================================
 C =====================================================================
 C --- MISE A JOUR DE LA PRESSION D AIR DISSOUS SELON FORMULE DOCR -----
 C =====================================================================
-         CALL MAJPAD(P2,PVP,R,T,KH,DP2,PVPM,DT,PADP,PADM,DPAD,RETCOM)
+         CALL MAJPAD(P2,PVP,R,T,KH,DP2,PVPM,DT,PADP,PADM,DPAD)
       ENDIF
 C =====================================================================
 C --- PROBLEME DANS LE CALCUL DES VARIABLES INTERNES ? ----------------
@@ -262,8 +267,10 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
 C ======================================================================
+         
          CONGEP(ADCP11) = APPMAS(M11M,PHI,PHIM,SAT,SATM,RHO11,
      +                                                RHO11M,EPSV,EPSVM)
+        
          CONGEP(ADCP12) = APPMAS(M12M,PHI,PHIM,1.0D0-SAT,
      +                               1.0D0-SATM,RHO12,RHO12M,EPSV,EPSVM)
          CONGEP(ADCP21) = APPMAS(M21M,PHI,PHIM,1.0D0-SAT,
@@ -305,7 +312,7 @@ C ======================================================================
      +       DSDE(ADCP12,ADDEME+NDIM-1+I) + DMDEPV(RHO12,1.0D0-SAT,BIOT)
                DSDE(ADCP21,ADDEME+NDIM-1+I) =
      +       DSDE(ADCP21,ADDEME+NDIM-1+I) + DMDEPV(RHO21,1.0D0-SAT,BIOT)
-               DSDE(ADCP22,ADDEME+NDIM-1+I) =
+               DSDE(ADCP22,ADDEME+NDIM-1+I) = 
      +             DSDE(ADCP22,ADDEME+NDIM-1+I) + DMDEPV(RHO22,SAT,BIOT)
  10         CONTINUE
          ENDIF
@@ -362,21 +369,29 @@ C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- POUR LES AUTRES CAS ----------------------------------------------
 C ======================================================================
          DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1) +
-     +           DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,-DP11P1)
+     +           DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,-DP11P1,
+     >                  EMMAG,EM)
          DSDE(ADCP11,ADDEP2) = DSDE(ADCP11,ADDEP2) +
-     +                         DMWDP2(RHO11,SAT,BIOT,PHI,CS,CLIQ,DP11P2)
+     +                         DMWDP2(RHO11,SAT,BIOT,PHI,CS,CLIQ,DP11P2,
+     >                  EMMAG,EM)
          DSDE(ADCP22,ADDEP1) = DSDE(ADCP22,ADDEP1) +
-     +             DMADP1(RHO22,SAT,DSATP1,BIOT,PHI,CS,MAMOLG,KH,DP21P1)
+     +             DMADP1(RHO22,SAT,DSATP1,BIOT,PHI,CS,MAMOLG,KH,DP21P1,
+     >                  EMMAG,EM)
          DSDE(ADCP22,ADDEP2) = DSDE(ADCP22,ADDEP2) +
-     +                    DMADP2(RHO22,SAT,BIOT,PHI,CS,MAMOLG,KH,DP21P2)
+     +                    DMADP2(RHO22,SAT,BIOT,PHI,CS,MAMOLG,KH,DP21P2,
+     >                  EMMAG,EM)
          DSDE(ADCP12,ADDEP1) = DSDE(ADCP12,ADDEP1) +
-     +                    DMVDP1(RHO11,RHO12,SAT,DSATP1,BIOT,PHI,CS,PVP)
+     +                    DMVDP1(RHO11,RHO12,SAT,DSATP1,BIOT,PHI,CS,PVP,
+     &                           EMMAG,EM)
          DSDE(ADCP12,ADDEP2) = DSDE(ADCP12,ADDEP2) +
-     +                           DMVDP2(RHO11,RHO12,SAT,BIOT,PHI,CS,PVP)
+     +                           DMVDP2(RHO11,RHO12,SAT,BIOT,PHI,CS,PVP,
+     +                                  EMMAG,EM)
          DSDE(ADCP21,ADDEP1) = DSDE(ADCP21,ADDEP1) +
-     +           DMASP1(RHO11,RHO12,RHO21,SAT,DSATP1,BIOT,PHI,CS,P2-PVP)
+     +           DMASP1(RHO11,RHO12,RHO21,SAT,DSATP1,BIOT,PHI,CS,P2-PVP,
+     +                             EMMAG,EM)
          DSDE(ADCP21,ADDEP2) = DSDE(ADCP21,ADDEP2) +
-     +                     DMASP2(RHO11,RHO12,RHO21,SAT,BIOT,PHI,CS,PAS)
+     +                     DMASP2(RHO11,RHO12,RHO21,SAT,BIOT,PHI,CS,PAS,
+     +                             EMMAG,EM)
       ENDIF
 C ======================================================================
    30 CONTINUE

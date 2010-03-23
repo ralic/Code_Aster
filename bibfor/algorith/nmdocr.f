@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,6 +35,8 @@ C                     5 : RESO_INTE (0: EULER_1
 C                                    1: RK_2
 C                                    2: RK_4
 C                                    3: EULER + RECHERCHE LINEAIRE)
+C                     .............
+C                     13 PARM_ALPHA  -> ALPHA DE SUSHI (DÉFAUT 1)
 C ----------------------------------------------------------------------
       IMPLICIT NONE
       CHARACTER*1  K1BID
@@ -47,9 +49,9 @@ C ----------------------------------------------------------------------
       INTEGER IRET,JNCMP,JVALV,NUMGD,JACMP,NBCRIT,ICMP,K,JMA,NBMA,IRETT
       INTEGER ITEINT,ITEPAS,IMPEXP,I,ITDEBO,IBID,TYPTGT,N1,NBMO1,NBOCC
       REAL*8  RESI,R8VIDE,RESID,TSAMPL,TSRETU,TSEUIL,PERT,THETA
+      REAL*8  ALPHA
       COMPLEX*16   CBID
-      INTEGER EXITS,GETEXM
-      
+      INTEGER EXITS,GETEXM    
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER        ZI
       COMMON /IVARJE/ZI(1)
@@ -68,17 +70,15 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C ----------------------------------------------------------------------
-      CALL JEMARQ()
-     
+      CALL JEMARQ()     
       CARCRI = CARCRZ
       CALL DISMOI('I','NOM_MAILLA',MODELE(1:8),'MODELE',I,NOMA,IRETT)
-
+C      
 C CARTE DES CRITERES DE CONVERGENCE LOCAUX
       CALL JEEXIN(CARCRI(1:19)//'.VALV',IRET)
       IF (IRET.EQ.0) THEN
           CALL ALCART('V',CARCRI,NOMA,'CARCRI')
-      ENDIF
-      
+      ENDIF      
       CALL JEVEUO(CARCRI(1:19)//'.NCMP','E',JNCMP)
       CALL JEVEUO(CARCRI(1:19)//'.VALV','E',JVALV)
       CALL JENONU(JEXNOM('&CATA.GD.NOMGD' ,'CARCRI'),NUMGD)
@@ -88,7 +88,6 @@ C CARTE DES CRITERES DE CONVERGENCE LOCAUX
       DO 95 ICMP = 1,NBCRIT
         ZK8(JNCMP+ICMP-1) = ZK8(JACMP+ICMP-1)
    95 CONTINUE
-
 C ----------------------------------------------------------------------
 C     CARTE PAR DEFAUT SI ON OUBLIE COMP_INCR SUR DES MAILLES
       ZR(JVALV-1+1)  = 10
@@ -100,22 +99,19 @@ C     CARTE PAR DEFAUT SI ON OUBLIE COMP_INCR SUR DES MAILLES
  96   CONTINUE      
       CALL NOCART(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
 C ----------------------------------------------------------------------
-
-   
       MOCLES(1) = 'GROUP_MA'
       MOCLES(2) = 'MAILLE'
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
       MESMAI = '&&NMDOCR'//'.LISTE_MAILLES'
 C  LECTURE DES PARAMETRES DE CONVERGENCE A STOCKER DANS CARCRI
-
-C     MOTS CLES FACTEUR
+C  MOTS CLES FACTEUR
       DO 160 I = 1,NBMO1
         CALL GETFAC(MOCLEF(I),NBOCC)
 C       NOMBRE D'OCCURRENCES
         DO 150 K = 1,NBOCC
           CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO,IRET) 
-C         Verif que SCHEMA est possible pour COMP
+C         VERIF QUE SCHEMA EST POSSIBLE POUR COMP
           CALL GETVTX(MOCLEF(I),'RELATION',K,1,1,COMP,N1)
 C         CREATION DE L'OBJET COMPORTEMENT A PARTIR DU CATALOGUE
           CALL LCCREE(1, COMP, COMCOD) 
@@ -124,8 +120,7 @@ C         CREATION DE L'OBJET COMPORTEMENT A PARTIR DU CATALOGUE
               TEXTE(1)=RESO
               TEXTE(2)=COMP
               CALL U2MESG('F','COMPOR1_45',2,TEXTE,0,0,0,0.D0)
-          ENDIF
- 
+          ENDIF 
           CALL GETVR8(MOCLEF(I),'RESI_INTE_RELA',K,1,1,RESI,IRET)
           CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,1,1,ITEINT,
      &              IRET)
@@ -139,7 +134,7 @@ C         CREATION DE L'OBJET COMPORTEMENT A PARTIR DU CATALOGUE
           IF(RESO.EQ.'RUNGE_KUTTA_2') IMPEXP = 1
           IF(RESO.EQ.'RUNGE_KUTTA_4') IMPEXP = 2
           IF(RESO.EQ.'IMPLICITE_RELI')IMPEXP = 3
-
+C
 C         CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
           RESID=1.D-6
           PERT=0.D0
@@ -161,7 +156,7 @@ C         CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
                 ENDIF
              EXITS = GETEXM(MOCLEF(I),'TYPE_MATR_TANG')
              IF (EXITS .EQ. 1) THEN
-C            dans ZR(JVALV+1) on stocke le type de matrice tgte
+C            DANS ZR(JVALV+1) ON STOCKE LE TYPE DE MATRICE TGTE
              CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,TYMATG,IRET)
                 IF (IRET.EQ.0) THEN
                    TYPTGT = 0
@@ -182,7 +177,7 @@ C                     MATRICE EVOLUTIVE TANGENTE/SECANTE
                       CALL GETVR8(MOCLEF(I),'TAUX_RETOUR',K,1,1,TSRETU,
      &                            IRET)
                    ENDIF
-C                  Verif que TYMATG est possible pour COMP
+C                  VERIF QUE TYMATG EST POSSIBLE POUR COMP
                    CALL LCTEST(COMCOD,'TYPE_MATR_TANG',TYMATG,IRETT)
                    IF (IRETT.EQ.0) THEN
                       TEXTE(1)=TYMATG
@@ -192,15 +187,15 @@ C                  Verif que TYMATG est possible pour COMP
                 ENDIF
              ENDIF
           ENDIF
-
+C
           IF (MOCLEF(I) .EQ. 'COMP_INCR') THEN
               CALL GETVR8(MOCLEF(I),'PARM_THETA',K,1,1,THETA,IRET)
+              CALL GETVR8(MOCLEF(I),'PARM_ALPHA',K,1,1,ALPHA ,IRET)
           ELSE
               THETA=1.D0
+              ALPHA=1.D0
           ENDIF
-
 C         STOCKAGE DE LA CARTE CARCRI
-
           CALL RELIEM(MODELE,NOMA,'NU_MAILLE',MOCLEF(I),K,2,MOCLES,
      &                 TYPMCL,MESMAI,NBMA)
           IF (NBMA.NE.0) THEN
@@ -217,10 +212,10 @@ C         STOCKAGE DE LA CARTE CARCRI
                ZR(JVALV+9)  = TSEUIL
                ZR(JVALV+10) = TSAMPL
                ZR(JVALV+11) = TSRETU
+               ZR(JVALV+12) = ALPHA
                CALL NOCART(CARCRI,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
      &                   NBCRIT)
              CALL JEDETR(MESMAI)
-
           ELSE
 C ----    PAR DEFAUT C'EST TOUT='OUI'
                ZR(JVALV)    = ITEINT
@@ -235,12 +230,11 @@ C ----    PAR DEFAUT C'EST TOUT='OUI'
                ZR(JVALV+9)  = TSEUIL
                ZR(JVALV+10) = TSAMPL
                ZR(JVALV+11) = TSRETU
+               ZR(JVALV+12) = ALPHA
                CALL NOCART(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
           ENDIF
   150   CONTINUE
-  160 CONTINUE
-      
-
+  160 CONTINUE    
 C FIN ------------------------------------------------------------------
       CALL JEDEMA()
       END

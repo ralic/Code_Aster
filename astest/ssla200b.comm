@@ -1,4 +1,4 @@
-# MODIF  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
+# MODIF  DATE 22/03/2010   AUTEUR DESROCHES X.DESROCHES 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXIS_SI
 # RESPONSABLE VABHHTS J.PELLET
 # ssla200b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -380,7 +380,8 @@ CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                VERI_NORM='NON',
                                PESANTEUR=_F(GRAVITE=9.8,
                                             DIRECTION=( 0.3,  0.1, -0.4,),),
-                                ROTATION=(0.2,  0.5, -0.2,  0.2,),
+                               ROTATION=(0.069631062,  0., -1.,   0.,),
+#                                ROTATION=(0.2,  0.5, -0.2,  0.2,),
 #  ----  MAILLES 2D
                            FORCE_INTERNE=_F(  MAILLE = ('M42', 'M77',),
                                            FX = 0.84),

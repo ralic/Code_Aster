@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 06/07/2009   AUTEUR CAO B.CAO 
+%& MODIF TYPELEM  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,7 +55,6 @@ MODE_LOCAL__
     CFISSR   = FISS_R   ELEM__         (XA       YA       XNORM    YNORM    )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
-    EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     EGTHETA  = G        ELEM__         (GTHETA   )
     EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
@@ -86,32 +85,32 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    CALC_DG              282  IN__   DDL_MECA PDEPLAR  DDL_MECA PDEPLSE  EFORCNO  PFR1D2D  NGEOMER  PGEOMER
+    CALC_DG              282  IN__   DDL_MECA PDEPLAR  DDL_MECA PDEPLSE  NFORCER  PFR1D2D  NGEOMER  PGEOMER
                                      EPRESNO  PPRESSR  DDL_MECA PTHETAR  DDL_MECA PVECTTH
                               OUT__  EGTHETA  PGTHETA
     CALC_DG_F            282  IN__   DDL_MECA PDEPLAR  DDL_MECA PDEPLSE  CFORCEF  PFF1D2D  NGEOMER  PGEOMER
                                      CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PVECTTH
                               OUT__  EGTHETA  PGTHETA
-    CALC_G               282  IN__   DDL_MECA PDEPLAR  EFORCNO  PFR1D2D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
+    CALC_G               282  IN__   DDL_MECA PDEPLAR  NFORCER  PFR1D2D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                                      DDL_MECA PTHETAR  DDL_MECA PVITESS  DDL_MECA PACCELE
                               OUT__  EGTHETA  PGTHETA
     CALC_G_F             282  IN__   DDL_MECA PDEPLAR  CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PVITESS  DDL_MECA PACCELE
                               OUT__  EGTHETA  PGTHETA
-    CALC_DG_E            282  IN__   DDL_MECA PDEPLAR  EFORCNO  PFR1D2D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
+    CALC_DG_E            282  IN__   DDL_MECA PDEPLAR  NFORCER  PFR1D2D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                                      DDL_MECA PTHETAR  DDL_MECA PDEPLSE
                               OUT__  EGTHETA  PGTHETA
     CALC_DG_E_F          282  IN__   DDL_MECA PDEPLAR  CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PDEPLSE
                               OUT__  EGTHETA  PGTHETA
-    CALC_DG_FORC         282  IN__   DDL_MECA PDEPLAR  EFORCNO  PFR1D2D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                                     DDL_MECA PTHETAR  DDL_MECA PDEPLSE  EFORCNO  PFR12SS  EPRESNO  PPRESSSR
+    CALC_DG_FORC         282  IN__   DDL_MECA PDEPLAR  NFORCER  PFR1D2D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
+                                     DDL_MECA PTHETAR  DDL_MECA PDEPLSE  NFORCER  PFR12SS  EPRESNO  PPRESSSR
                               OUT__  EGTHETA  PGTHETA
     CALC_DG_FORC_F       282  IN__   DDL_MECA PDEPLAR  CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PDEPLSE  CFORCEF  PFF12SS
                                      CPRESSF  PPRESSSF
                               OUT__  EGTHETA  PGTHETA
-    CALC_K_G             300  IN__   DDL_MECA PDEPLAR  CFISSR   PFISSR   EFORCNO  PFR1D2D  NGEOMER  PGEOMER
+    CALC_K_G             300  IN__   DDL_MECA PDEPLAR  CFISSR   PFISSR   NFORCER  PFR1D2D  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  EPRESNO  PPRESSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      DDL_MECA PTHETAR
                               OUT__  EKTHETA  PGTHETA
@@ -125,7 +124,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FF1D2D      91  IN__   CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FR1D2D      90  IN__   EFORCNO  PFR1D2D  NGEOMER  PGEOMER  NFORCER  PNFORCER
+    CHAR_MECA_FR1D2D    90    IN__   NFORCER  PFR1D2D  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F      89  IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
@@ -148,4 +147,4 @@ OPTION__
     TOU_INI_ELNO          99  IN__   NGEOMER  PGEOMER
                               OUT__  EPRESNO  PPRES_R
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PGEOM_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R 
+                              OUT__  EGGEOP_R PGEOM_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R

@@ -1,9 +1,9 @@
       SUBROUTINE GLDLOC (LAMBDA,DEUXMU,SEUIL,ALF,GMT,GMC,COF1,COF2,VIM,
      &                   Q2D,QFF,TR2D,EPS33,DE33D1,DE33D2,KSI2D,
-     &                   DA1,DA2,KDMAX,TOLD)
+     &                   DA1,DA2,KDMAX,TOLD,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/02/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,11 +20,14 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE SFAYOLLE S.FAYOLLE
+C TOLE CRP_21
       IMPLICIT NONE
+
+      INTEGER KDMAX,CODRET
       REAL*8  VIM(*),GMT,GMC,QFF(2),TR2D,EPS33,COF1
       REAL*8  LAMBDA,DEUXMU,SEUIL,ALF,Q2D,TOLD
       REAL*8  DE33D1,DE33D2,KSI2D,DA1,DA2,COF2
-      INTEGER KDMAX
 
 C ----------------------------------------------------------------------
 C
@@ -53,14 +56,19 @@ C       DE33D2  : DERIVEE DE EPS33 PAR RAPPORT A DA2
 C       ELAS    : .TRUE. SI ELASTIQUE
 C       ELAS1   : .TRUE. SI DA1 == VIM(1)
 C       ELAS2   : .TRUE. SI DA2 == VIM(2)
+C       CODRET  : CODE RETOUR DE L'INTEGRATION INTEGRATION DU
+C                 0 => PAS DE PROBLEME
+C                 1 => ABSENCE DE CONVERGENCE
 C ----------------------------------------------------------------------
 
-      REAL*8  DKSI1,DKSI2,QM1,QM2
-      REAL*8  DM1,DM2,DF1,DF2
-      REAL*8  RD1,RD2,DR1D,DR2D,DD1,DD2,DAREF
-      INTEGER I,IER
       LOGICAL LCONV1,LCONV2
-C ----------------------------------------------------------------------
+
+      INTEGER I
+
+      REAL*8  DKSI1,DKSI2,QM1,QM2
+      REAL*8  RD1,RD2,DR1D,DR2D,DD1,DD2,SEUILR
+
+
       QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
       QM2 = QM1
 
@@ -71,12 +79,11 @@ C----CONTRIBUTION DES COURBURES---------
       RD1 = RD1 + QFF(1)/(ALF + DA1)**2
       RD2 = RD2 + QFF(2)/(ALF + DA2)**2
 
-      DAREF = MAX(DA1,DA2)
-      DAREF = MAX(DAREF,1.0D-6)
+      SEUILR = MAX(SEUIL,1.0D-6)
 
-C-----VERIFIER SI SEUIL EST ATTEINT
-      LCONV1 = (ABS(RD1*DAREF) .LT. TOLD) .OR. (RD1 .LT. 0.0D0)
-      LCONV2 = (ABS(RD2*DAREF) .LT. TOLD) .OR. (RD2 .LT. 0.0D0)
+C-----VERIFIER SI LE SEUIL EST ATTEINT
+      LCONV1 = RD1 .LT. 0.0D0
+      LCONV2 = RD2 .LT. 0.0D0
 
       IF((.NOT. LCONV1 .AND. DA1.GE.VIM(1))
      &    .OR. (.NOT. LCONV2 .AND. DA2.GE.VIM(2))) THEN
@@ -101,9 +108,9 @@ C-----VERIFIER SI SEUIL EST ATTEINT
             DD2 = - RD2/DR2D
           ENDIF
 
-          IF(((ABS(DD1*RD1) .LT. TOLD) .OR.
+          IF(((ABS(DD1*RD1) .LT. TOLD*SEUILR) .OR.
      &       ((RD1 .LT. 0.0D0 .AND. DA1 .LE. VIM(1))))
-     &        .AND. ((ABS(DD2*RD2) .LT. TOLD) .OR.
+     &        .AND. ((ABS(DD2*RD2) .LT. TOLD*SEUILR) .OR.
      &        ((RD2 .LT. 0.0D0 .AND. DA2 .LE. VIM(2)))))
      &        GOTO 61
 
@@ -127,10 +134,10 @@ C----CONTRIBUTION DES COURBURES---------
           RD2 = RD2 + QFF(2)/(ALF + DA2)**2
 
 60      CONTINUE
+
+C    NON CONVERGENCE POUR LE NOMBRE MAXIMAL D ITERATION PRESCRIT
+        CODRET = 1
+
 61      CONTINUE
-C----FIN BOUCLE NEWTON SUR D1,D2,EPS33
-        IF(I .GT. KDMAX) THEN
-          CALL U2MESS('F','ELEMENTS4_68')
-        ENDIF
       ENDIF
       END

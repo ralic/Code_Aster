@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  - COUPLE TH ANALYTIQUE
 # wtnl102a.para = tps_job 140 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,10 +36,10 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='GAUCHE',),
                                _F(GROUP_MA='DROIT',),
                                _F(GROUP_MA='BO',),
-                               _F(NOM='SOM_GAUCHE',
+                               _F(NOM='SOM_GAUC',
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA='GAUCHE'),
-                               _F(NOM='SOM_DROIT',
+                               _F(NOM='SOM_DROI',
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA='DROIT',),
                                ),);
@@ -148,10 +148,10 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                     DDL_IMPO=(_F(TOUT='OUI',
                                  DX=0.0,
                                  DY=0.0,),
-                              _F(GROUP_NO='SOM_GAUCHE',
+                              _F(GROUP_NO='SOM_GAUC',
                                  TEMP=0.0,
                                  PRE1=1.0,),
-                              _F(GROUP_NO='SOM_DROIT',
+                              _F(GROUP_NO='SOM_DROI',
                                  TEMP=1.0,
                                  PRE1=0.0,),),);
 

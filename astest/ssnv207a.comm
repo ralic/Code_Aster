@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE ETUDE: DRAINED CYCLIC STRESS-CONTROLLED SHEAR TEST WITH HUJEUX MODEL (MECA PUR)
 # ssnv207a.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,6 +57,7 @@ MATE=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
 
 TEMPS1=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(_F(JUSQU_A=40, NOMBRE=80,),),);
+                      
 
 ################################################################
 #     ESSAI DE CISAILLEMENT CYCLIQUE AVEC MICRO-DECHARGES      #
@@ -76,7 +77,6 @@ COEF2=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0 ,P0,
                           40,P0,),
                     PROL_DROITE='CONSTANT',);
-
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
                         ECHEC=_F(SUBD_METHODE='UNIFORME',

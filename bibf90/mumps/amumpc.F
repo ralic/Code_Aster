@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPC MUMPS  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPC MUMPS  DATE 23/03/2010   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -177,7 +177,7 @@ C       ------------------------------------------------
         CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE,LMD,
      &              EPSMAT)
 
-         CALL JJLDYN(0,-1,IBID)
+        CALL JJLDYN(0,-1,IBID)
 
 C       ------------------------------------------------
 C        ANALYSE MUMPS:
@@ -197,8 +197,8 @@ C              -- C'EST OK
         ELSE IF ((CMPSK%INFOG(1).EQ.-5).OR.(CMPSK%INFOG(1).EQ.-7)) THEN
           CALL U2MESS('F','FACTOR_64')
         ELSE IF (CMPSK%INFOG(1).EQ.-6) THEN
-	  IRET=2
-	  GOTO 99
+          IRET=2
+          GOTO 99
         ELSE
           IF (CMPSK%INFOG(1).LT.0) THEN
             CALL U2MESI('F','FACTOR_55',1,CMPSK%INFOG(1))
@@ -235,7 +235,7 @@ C              -- C'EST OK
           CALL U2MESS('F','FACTOR_53')
         ELSE IF (CMPSK%INFOG(1).EQ.-10) THEN
           IRET=2
-	  GOTO 99
+          GOTO 99
         ELSE IF (CMPSK%INFOG(1).EQ.-13) THEN
           CALL U2MESS('F','FACTOR_54')
         ELSE IF (CMPSK%INFOG(1).EQ.-37) THEN
@@ -259,18 +259,22 @@ C       ------------------------------------------------
           IF (IBID.NE.0) THEN
             CALL ASSERT(.FALSE.)
           ELSE
-	    N=CMPSK%N
+            N=CMPSK%N
             CALL WKVECT(KPIV,'V V I',N+2,IPIV)
-C --- KPIV(1)= NOMBRE DE PIVOTS QUASI NULS
+C --- KPIV(1)= NOMBRE DE PIVOTS QUASI NULS  (TOUS LE PROCS)
             IF (CMPSK%INFOG(28).GT.N) CALL ASSERT(.FALSE.)
             ZI(IPIV)=CMPSK%INFOG(28)
-C --- KPIV(2)= NOMBRE DE PIVOTS NEGATIFS
-            IF (CMPSK%INFO(12).GT.N) CALL ASSERT(.FALSE.)
+C --- KPIV(2)= NOMBRE DE PIVOTS NEGATIFS  (TOUS LE PROCS)
+            IF (CMPSK%INFOG(12).GT.N) CALL ASSERT(.FALSE.)
             ZI(IPIV+1)=CMPSK%INFO(12)
-C --- KPIV(3..) LES PIVOTS QUASI NULS
-            DO I=1,CMPSK%INFOG(28)
-              ZI(IPIV+1+I)=CMPSK%PIVNUL_LIST(I)
-            ENDDO
+C --- KPIV(3..) LES PIVOTS QUASI NULS (ONLY PROC 0)
+            IF (RANG.EQ.0) THEN
+              DO I=1,CMPSK%INFOG(28)
+                ZI(IPIV+1+I)=CMPSK%PIVNUL_LIST(I)
+              ENDDO
+            ENDIF
+C --- BCAST POUR COMMUNIQUER L'INFO AUX AUTRES PROCS
+            CALL MPICM2('BCAST',KPIV)
           ENDIF
         ENDIF
         

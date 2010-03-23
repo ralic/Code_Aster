@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa9 Messages  DATE 22/03/2010   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -360,4 +360,10 @@ ERREUR EUROPLEXUS
    pour le mot clef facteur RIGI_PARASOL, la valeur du mot clef EUROPLEXUS soit 'OUI' dans
    toutes les occurrences.
 """),
+
+99 : _("""
+Le vecteur définissant l'axe de rotation a une composante nulle suivant Oz.
+Avec une modélisation C_PLAN ou D_PLAN, l'axe de rotation doit être dirigé suivant Oz.
+"""),
+
 }

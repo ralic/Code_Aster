@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 15/02/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,7 @@ C                       = 0 OK
 C                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
 C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C ======================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC,YATE,RETCOM
       INTEGER       ADCOME,ADCP11,ADCP12,ADCOTE,ADDEME,ADDEP1,ADDETE
       INTEGER       ADVIHY,ADVICO,VIHRHO,VICPHI,VICPVP,VICSAT
@@ -64,16 +64,18 @@ C ======================================================================
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
-      REAL*8       RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
-      REAL*8       RBID8, RBID10, RBID14
+      REAL*8       RBID1,  RBID2,  RBID3, RBID4, RBID5, RBID6, RBID7
+      REAL*8       RBID8,  RBID10, RBID14
       REAL*8       RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
       REAL*8       RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
       REAL*8       RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
       REAL*8       RBID33, RBID34, RBID35, RBID38
       REAL*8       RBID39, RBID40, RBID41, RBID42, RBID43
       REAL*8       RBID50, RBID51, RBID52, RBID53, RBID54, RBID55
-      REAL*8       RBID45,RBID46,RBID47,RBID48,RBID49,RBID56,RBID57
-      REAL*8       RBID58,M11M,M12M,COEPS,PINF,DP2,CP21,CP22,RHO21
+      REAL*8       RBID45, RBID46, RBID47, RBID48, RBID49, RBID56
+      REAL*8       RBID57, RBID58
+      REAL*8       R3BID(6)
+      REAL*8       M11M,M12M,COEPS,PINF,DP2,CP21,CP22,RHO21
       REAL*8       RHO22,DPAD,SIGNE
       REAL*8       DMVPP1,DMWP1V,DQDEPS,DQVPDP,DQVPDT,DMVPD2,DMWDT2
       REAL*8       DHDT,DHWDP1,DMDEPV,DSIPDT,DSPDLQ,APPMAS,SIGMAP
@@ -96,9 +98,9 @@ C =====================================================================
      +             RBID19, RBID20, RBID21, RBID22,RBID23, RBID24,
      +             RBID25, RHO110, CLIQ, ALPLIQ, CP11,RBID26,
      +             RBID27, RBID28, RBID29, RBID30, RBID31,RBID32,
-     +             RBID33, RBID34, RBID35, MAMOLV, CP12,RBID38,RBID39,
-     +             RBID45,RBID46,RBID47,RBID48,RBID49,EM,RBID57,RBID58,
-     +             RINSTP)
+     +             RBID33, RBID34, RBID35, MAMOLV, CP12,RBID38,
+     +             RBID39, RBID45, RBID46, RBID47, RBID48,RBID49,
+     >             EM,RBID57,R3BID,RBID58,RINSTP) 
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
@@ -127,7 +129,7 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN
+      IF(EM.GT.EPS)THEN 
         EMMAG = .TRUE.
       ENDIF
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
@@ -163,26 +165,31 @@ C =====================================================================
       CALL THMRCP( 'SATURATI', IMATE, THMC, MECA, HYDR, THER,
      +             RBID1, RBID2, RBID3, RBID4, RBID5, RBID50,PVP-P1,
      +             RBID41,RBID6,RBID7, RBID8,
-     +             RBID10, RBID51, RBID52,RBID53,RBID54, RBID41,
-     +             SAT, DSATP1, RBID14, RBID15,RBID16,
-     +             RBID17, RBID18,RBID19, RBID20, RBID21, RBID22,
-     +             RBID23, RBID24,RBID25, RHO110, RBID53, RBID52,
-     +             RBID51,RBID26,RBID27, RBID28, RBID29, RBID30,
-     +             RBID31,RBID32,RBID33, RBID34, RBID35, RBID54,
-     +             RBID55,RBID38, RBID39,RBID45,RBID46,RBID47,RBID48,
-     +             RBID49,RBID56,RBID57,RBID58,RINSTP)
+     +             RBID10, RBID51, RBID52, RBID53, RBID54, RBID41,SAT,
+     +             DSATP1, RBID14, RBID15, RBID16, RBID17, RBID18,
+     +             RBID19, RBID20, RBID21, RBID22, RBID23, RBID24,
+     +             RBID25, RHO110, RBID53, RBID52, RBID51, RBID26,
+     +             RBID27, RBID28, RBID29, RBID30, RBID31, RBID32,
+     +             RBID33, RBID34, RBID35, RBID54, RBID55, RBID38, 
+     +             RBID39, RBID45, RBID46, RBID47, RBID48, RBID49,
+     +             RBID56, RBID57, R3BID,  RBID58, RINSTP)    
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+     &    (OPTION(1:9).EQ.'FORC_NODA').OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
 C =====================================================================
-         IF ((YAMEC.EQ.1).OR.EMMAG )THEN
+         IF ((YAMEC.EQ.1) )THEN
 C =====================================================================
 C --- ON POSE ICI P2 = PVP ET P1 = - (PVP - PW) (ON CHANGE LE SIGNE ---
 C --- CAR ON MULTIPLIE DANS VIPORO PAR -1) ----------------------------
 C =====================================================================
             CALL VIPORO(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,DEPSV,
      +       ALPHA0,DT,DP1-DPVP,DPVP,SIGNE,SAT,CS,BIOT,PHI,PHIM,RETCOM)
+         ENDIF
+         IF (EMMAG )THEN
+            CALL VIEMMA(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
+     +       DP1-DPVP,DPVP,SIGNE,SAT,EM,PHI,PHIM,RETCOM)
          ENDIF
 C =====================================================================
 C --- RECUPERATION DE LA VARIABLE INTERNE DE SATURATION ---------------

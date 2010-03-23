@@ -1,9 +1,12 @@
-      FUNCTION DMASP1(RHO11,RHO12,RHO21,SAT,DSATP1,BIOT,PHI,CS,PAS)
-      IMPLICIT      NONE
+      FUNCTION DMASP1(RHO11,RHO12,RHO21,SAT,DSATP1,BIOT,PHI,CS,PAS,
+     &               EMMAG,EM)
+      IMPLICIT NONE
       REAL*8        RHO11,RHO12,RHO21,SAT,DSATP1,BIOT,PHI,CS,PAS,DMASP1
+      REAL*8        EM,DPHIP1
+      LOGICAL       EMMAG        
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,8 +27,15 @@ C ======================================================================
 C --- CALCUL DE LA DERIVEE DE L APPORT MASSIQUE DE L AIR SEC PAR -------
 C --- RAPPORT A LA PRESSION CAPILLAIRE ---------------------------------
 C ======================================================================
-      DMASP1 = RHO21 * (-DSATP1*PHI
+      IF(EMMAG) THEN    
+        DPHIP1 = - SAT*EM
+        DMASP1 = RHO21 * (-DSATP1*PHI
+     +               +  (1.D0-SAT)*DPHIP1
+     +               +  PHI*(1.D0-SAT)/PAS*RHO12/RHO11)
+      ELSE
+        DMASP1 = RHO21 * (-DSATP1*PHI
      +               -  (1.D0-SAT)*SAT*(BIOT-PHI)*CS
      +               +  PHI*(1.D0-SAT)/PAS*RHO12/RHO11)
+      ENDIF
 C ======================================================================
       END

@@ -1,0 +1,71 @@
+      SUBROUTINE PMDRDY(DSIDEP,COEF,CIMPO,VALIMP,Y,SIGP,R,DRDY)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE PROIX J-M.PROIX
+C-----------------------------------------------------------------------
+C     OPERATEUR CALC_POINT_MAT : CONSTRUCTION RESIDU ET JACOBIENNE
+C-----------------------------------------------------------------------
+C      IDEM NMDORC MAIS SANS MODELE
+C ----------------------------------------------------------------------
+C IN  DSIDEP  : MATRICE TANGENTE 
+C IN   COEF   : COEF POUR ADIMENSIONNALISER LE PB
+C IN  CIMPO   : = 1 POUR LA CMP DE EPSI OU SIGM IMPOSEE
+C IN  VALIMP  : VALEUR DE LA CMP DE EPSI OU SIGM IMPOSEE
+C IN  Y       : VECTEUR INCONNUE Y(1 A 6) = SIG/COEF, Y(7 A 12) = EPSI
+C IN   SIGP   : CONTRAINTES ACTUELLES 
+C OUT R       : VECTEUR RESIDU ADIMENSIONNALISE
+C OUT DRDY    : MATRICE JACOBIENNE ADIMENSIONNALISEE
+      IMPLICIT NONE
+      REAL*8  Y(12),ID(6,6),SIGP(6),DSIDEP(6,6),CIMPO(6,12),VALIMP(6)
+      REAL*8  R(12),DRDY(12,12),COEF
+      INTEGER I,J,IDBG,IFM,NIV
+      
+      CALL INFMAJ
+      CALL INFNIV(IFM,NIV)
+      IDBG=0
+      
+      CALL R8INIR(6*6 ,0.D0, ID, 1)
+      DO 44  I=1,6
+         ID(I,I)=1.D0
+  44  CONTINUE
+
+      DO 6 I=1,6
+      DO 6 J=1,6
+         DRDY(I,J)=ID(I,J)
+         DRDY(I,6+J)=-DSIDEP(I,J)/COEF
+ 6    CONTINUE
+      DO 7 I=1,6
+      DO 7 J=1,12
+         DRDY(6+I,J)=CIMPO(I,J)
+ 7    CONTINUE
+      DO 4 I=1,6
+         R(I)=-Y(I)+SIGP(I)/COEF
+ 4    CONTINUE
+      DO 5 I=1,6
+         R(6+I)= VALIMP(I)
+         DO 5 J=1,12
+            R(6+I)=R(6+I)-CIMPO(I,J)*Y(J)
+ 5    CONTINUE
+      IF (IDBG.EQ.1) THEN
+         WRITE(IFM,*) 'DRDY'
+         DO 45 I=1,12
+            WRITE(IFM,'(12(1X,E12.5))')(DRDY(I,J),J=1,12)
+ 45      CONTINUE
+      ENDIF
+      END

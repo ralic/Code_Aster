@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRES CONCENTRIQUES SEPARES PAR UN FLUIDE INCOMPRESSIBLE
 # fdlv101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -55,7 +55,7 @@ ACIER=DEFI_MATERIAU( ELAS=_F( RHO = 7800.,  NU = 0.3, E = 2.E11))
 
 CHAMMAT1=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
                        _F( GROUP_MA = 'FLUIDE', MATER = EAU),
-                       _F( GROUP_MA = 'INTERFACE', MATER = EAU))   )
+                       _F( GROUP_MA = 'INTERFAC', MATER = EAU))   )
 
 CHAMMAT2=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
                        _F( GROUP_MA = 'CYLINDRE', MATER = ACIER),
@@ -64,11 +64,11 @@ CHAMMAT2=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
 FLUIDE1=AFFE_MODELE( MAILLAGE=MAYA,AFFE=(
                      _F( GROUP_MA = 'FLUIDE',
                 MODELISATION = 'PLAN',  PHENOMENE = 'THERMIQUE'),
-                     _F( GROUP_MA = 'INTERFACE',
+                     _F( GROUP_MA = 'INTERFAC',
                 MODELISATION = 'PLAN',  PHENOMENE = 'THERMIQUE'))   )
 
 INTERF1=AFFE_MODELE( MAILLAGE=MAYA,
-                     AFFE=_F( GROUP_MA = 'INTERFACE',
+                     AFFE=_F( GROUP_MA = 'INTERFAC',
                 MODELISATION = 'PLAN',  PHENOMENE = 'THERMIQUE')   )
 
 STRUCT=AFFE_MODELE( MAILLAGE=MAYA,AFFE=(
@@ -122,7 +122,7 @@ NUMGEN=NUME_DDL_GENE(       BASE=MODES,
 
 MACRO_MATR_AJOU(MAILLAGE=MAYA,
                   GROUP_MA_FLUIDE='FLUIDE',
-                  GROUP_MA_INTERF='INTERFACE',
+                  GROUP_MA_INTERF='INTERFAC',
                   FLUIDE=_F( RHO = 1000.),
                   INFO=2,
                   MODELISATION='PLAN',

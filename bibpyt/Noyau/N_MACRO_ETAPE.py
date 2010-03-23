@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -469,6 +469,11 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
          # La propriete du concept est transferee a l'etape avec le type attendu par l'étape
          etape.sd=sd
          sd.etape=etape
+         if self.reuse == sd and etape.reuse != sd \
+                and getattr(sd, "executed", 0) == 1: # n'a pas été pas détruit
+            raise AsException("Le concept '%s' est réentrant dans la macro-commande %s. " \
+                              "Il devrait donc l'être dans %s (produit sous le nom '%s')." \
+                                % (sd.nom, self.nom, etape.nom, nomsd))
          # On donne au concept le type produit par la sous commande.
          # Le principe est le suivant : apres avoir verifie que le type deduit par la sous commande
          # est bien coherent avec celui initialement affecte par la macro (voir ci dessus)

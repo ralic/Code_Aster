@@ -1,9 +1,10 @@
-# MODIF  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/03/2010   AUTEUR BERARD A.BERARD 
 # RESPONSABLE VABHHTS J.PELLET
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM (EN 2D ET EN FILAIRE)
 #                   + CAS_FIGURE='2D'
 #                   + CAS_FIGURE='1.5D'
 #                   + TRANSF_GEOM_2
+# zzzz110a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #======================================================================
 # COPYRIGHT (C)1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

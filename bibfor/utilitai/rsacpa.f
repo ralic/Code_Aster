@@ -1,7 +1,7 @@
-      SUBROUTINE RSACPA(NOMSDZ, NUMVA, NOMVA, CTYPE, IVAL, RVAL, IER)
+      SUBROUTINE RSACPA(NOMSDZ, NUMVA, ICODE, NOMVA, CTYPE,
+     &                  IVAL, RVAL, KVAL, IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,9 +19,9 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
       IMPLICIT NONE
-      INTEGER NUMVA, IVAL(*), IER
+      INTEGER NUMVA, ICODE, CTYPE, IVAL(*), IER
       REAL*8  RVAL(*)
-      CHARACTER*1   CTYPE
+      CHARACTER*80  KVAL(*)
       CHARACTER*16  NOMVA
       CHARACTER*(*) NOMSDZ
 C ---------------------------------------------------------------------
@@ -29,13 +29,14 @@ C  DETERMINE LE NOM D'UNE VARIABLE D'ACCES ET SES VALEURS
 C  CONNAISSANT SON NUMERO D'ACCES DANS LA COLLECTION
 C ---------------------------------------------------------------------
 C IN  NOMSDZ K*  NOM DE LA SD
-C IN  NUMVA   I  NUMERO DE LA VARIABLE D'ACCES A RECHERCHER
+C IN  NUMVA  I   NUMERO DE LA VARIABLE D'ACCES A RECHERCHER
 C                OU 0 POUR LES NUMEROS D'ORDRE  (NUME_ORDRE)
+C IN  ICODE  I   CODE POUR FILTRER LES PARAMETRES (VOIR RSEXPA)
 C OUT NOMVA  K16 NOM DE LA VARIABLE D'ACCES
-C OUT CTYPE  K1  TYPE DE LA VARIABLE D'ACCES (I OU R)
-C OUT IVAL    I  LISTE DES VALEURS DU PARAMETRE (CAS ENTIER)
-C OUT RVAL    R  LISTE DES VALEURS DU PARAMETRE (CAS REEL)
-C OUT IER     I  1 SI CE N'EST PAS UNE VAR. ACCES DE TYPE I OU R
+C OUT CTYPE  I   LE TYPE : CTYPE (CF. GETCON)
+C OUT IVAL   I   LISTE DES VALEURS DU PARAMETRE (CAS ENTIER)
+C OUT RVAL   R   LISTE DES VALEURS DU PARAMETRE (CAS REEL)
+C OUT IER    I   1 EN CAS D'ERREUR
 C                0 SI OK
 C ---------------------------------------------------------------------
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
@@ -65,35 +66,66 @@ C ---------------------------------------------------------------------
       NOMSD  = NOMSDZ
       IER    = 0
       NOMVA  = ' '
-      CTYPE  = ' '
-C    TRAITEMENT DE LA DEMANDE PROPRE A NUME_ORDRE
+      CTYPE  = -1
+C     TRAITEMENT DE LA DEMANDE PROPRE A NUME_ORDRE
       IF (NUMVA .EQ. 0) THEN
         NOMVA = 'NUME_ORDRE'
-        CTYPE = 'I'
+        CTYPE = 2
         CALL JEVEUO(NOMSD // '.ORDR', 'L', IORD)
         CALL JELIRA(NOMSD // '.ORDR', 'LONUTI', NBORD, K8BID)
         DO 5 I = 1, NBORD
           IVAL(I) = ZI(IORD-1 + I)
  5      CONTINUE
         GOTO 9999
-      END IF
-C    ACCES AU NOM DU CHAMP
+      ENDIF
+C     ACCES AU NOM DU CHAMP
       CALL JENUNO(JEXNUM(NOMSD//'.NOVA',NUMVA), NOMVA)
-C    ACCES AUX VALEURS DE LA VARIABLE
+C     S'AGIT-IL D'UNE VARIABLE D'ACCES
+      CALL RSEXPA(NOMSD, ICODE, NOMVA, IRET)
+      IF (IRET.EQ.0) THEN
+        IER = 1
+        GOTO 9999
+      ENDIF
+C     ACCES AUX VALEURS DE LA VARIABLE
       CALL JEVEUO(NOMSD // '.ORDR', 'L', IORD)
       CALL JELIRA(NOMSD // '.ORDR', 'LONUTI', NBORD, K8BID)
       DO 10 I = 1, NBORD
-        NUMORD = ZI(IORD-1 + I)
-        CALL RSADPA(NOMSD, 'L', 1, NOMVA, NUMORD, 1, IAD, KTYPE)
-        CTYPE = KTYPE
-        IF (CTYPE .EQ. 'I') THEN
-          IVAL(I) = ZI(IAD)
-        ELSE IF (CTYPE .EQ. 'R') THEN
-          RVAL(I) = ZR(IAD)
-        ELSE
-          IER = 1
-          GOTO 9999
-        END IF
+         NUMORD = ZI(IORD-1 + I)
+         CALL RSADPA(NOMSD, 'L', 1, NOMVA, NUMORD, 1, IAD, KTYPE)
+C                  123456789.123456789.1234
+         KVAL(I) = '                        '
+         IF (KTYPE .EQ. 'R') THEN
+C        LES VALEURS SONT REELLES
+            CTYPE = 1
+            RVAL(I) = ZR(IAD)
+         ELSEIF (KTYPE .EQ. 'I') THEN
+C        LES VALEURS SONT ENTIERES
+            CTYPE = 2
+            IVAL(I) = ZI(IAD)
+         ELSE IF(KTYPE.EQ.'K8')THEN
+C        LES VALEURS SONT DES CHAINES DE K8
+            CTYPE = 4
+            KVAL(I) = ZK8(IAD)
+         ELSE IF(KTYPE.EQ.'K16')THEN
+C        LES VALEURS SONT DES CHAINES DE K16
+            CTYPE = 5
+            KVAL(I) = ZK16(IAD)
+         ELSE IF(KTYPE.EQ.'K24')THEN
+C        LES VALEURS SONT DES CHAINES DE K24
+            CTYPE = 6
+            KVAL(I) = ZK24(IAD)
+         ELSE IF(KTYPE.EQ.'K32')THEN
+C        LES VALEURS SONT DES CHAINES DE K32
+            CTYPE = 7
+            KVAL(I) = ZK32(IAD)
+         ELSE IF(KTYPE.EQ.'K80')THEN
+C        LES VALEURS SONT DES CHAINES DE K80
+            CTYPE = 8
+            KVAL(I) = ZK80(IAD)
+         ELSE
+            IER = 1
+            GOTO 9999
+         ENDIF
  10   CONTINUE
  9999 CONTINUE
       CALL JEDEMA()

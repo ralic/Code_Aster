@@ -1,6 +1,6 @@
       SUBROUTINE TE0500(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,7 +77,7 @@ C
       INTEGER NDIM,NNO
 C
       INTEGER IPI,KPI,IAUX,NPG,IGEOM,JGANO,IMATE,IERRE,IGRDCA,
-     &        IRET,ISIGAP,ISIGAM,ITAB(7),NBCMP
+     &        IRET,ISIGAP,ISIGAM,ITAB(7),NBCMP,TYPVF,IBID
       INTEGER DIMDEP,DIMDEF,DIMCON
       INTEGER IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2
       INTEGER NMEC,NPI,NP1,NP2,NNOS,NNOM,NDDLS,NDDLM
@@ -92,7 +92,7 @@ C
       REAL*8 FLUHPX,FLUHMX,FLUHPY,FLUHMY,RBID81(9)
       REAL*8 TERTPS
 C
-      LOGICAL     LAXI,PERMAN
+      LOGICAL     LAXI,PERMAN,VF
 C
       CHARACTER*2  CODME1(NBRE1),CODME2(NBRE2),CODME3(NBRE3)
       CHARACTER*3  MODINT
@@ -113,13 +113,16 @@ C
 C =====================================================================
 C 1. RECUPERATION D'INFORMATIONS SUR L'ELEMENT THM
 C =====================================================================
-      CALL CAETHM( NOMTE , LAXI  , PERMAN,
+      IBID = 0
+      TYPVF = 0
+      VF = .FALSE.
+      CALL CAETHM( NOMTE , LAXI  , PERMAN,VF,TYPVF,
      &             TYPMOD, MODINT, MECANI, PRESS1, PRESS2, TEMPE,
      &             DIMDEP, DIMDEF, DIMCON, NMEC  ,
      &             NP1   , NP2   , NDIM  , NNO   ,
-     &             NNOS  , NNOM  , NPI   , NPG   ,
-     &             NDDLS , NDDLM , DIMUEL, IPOIDS,
-     &             IVF   , IDFDE , IPOID2, IVF2  , IDFDE2, JGANO )
+     &             NNOS  , NNOM  , IBID, NPI   , NPG   ,
+     &             NDDLS , NDDLM ,IBID ,IBID, DIMUEL, IPOIDS,
+     &             IVF   , IDFDE , IPOID2, IVF2  , IDFDE2, IBID,JGANO )
 C =====================================================================
 C 2. RECUPERATION DES PARAMETRES TEMPORELS
 C =====================================================================

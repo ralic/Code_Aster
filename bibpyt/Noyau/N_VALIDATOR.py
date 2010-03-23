@@ -1,4 +1,4 @@
-#@ MODIF N_VALIDATOR Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_VALIDATOR Noyau  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,6 +114,7 @@ class TypeProtocol(PProtocol):
         self.typ=typ
 
     def default(self,obj,typ):
+        help = ""
         for type_permis in typ:
             if type_permis == 'R':
                 if type(obj) in (types.IntType,types.FloatType,types.LongType):return obj
@@ -126,16 +127,18 @@ class TypeProtocol(PProtocol):
             elif type_permis == 'shell':
                 if type(obj)==types.StringType:return obj
             elif type(type_permis) == types.ClassType or isinstance(type_permis,type):
-                if self.is_object_from(obj,type_permis):return obj
+                try:
+                    if self.is_object_from(obj,type_permis):return obj
+                except Exception, err:
+                    help = str(err)
             elif type(type_permis) == types.InstanceType or isinstance(type_permis,object):
                 try:
                     if type_permis.__convert__(obj) : return obj
-                except:
-                    pass
+                except Exception, err:
+                    help = str(err)
             else:
                 print "Type non encore géré %s" %`type_permis`
-
-        raise ValError("%s (de type %s) n'est pas d'un type autorisé: %s" % (repr(obj),type(obj),typ))
+        raise ValError("%s (de type %s) n'est pas d'un type autorisé: %s %s" % (repr(obj),type(obj),typ, help))
 
     def is_complexe(self,valeur):
         """ Retourne 1 si valeur est un complexe, 0 sinon """
@@ -169,6 +172,8 @@ class TypeProtocol(PProtocol):
             try:
                 v=  convert(objet)
                 return v is not None
+            except ValueError, err:
+                raise
             except:
                 return 0
         # On accepte les instances de la classe et des classes derivees

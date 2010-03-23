@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv195a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,14 +57,14 @@ MAILLAGE=DEFI_GROUP(reuse = MAILLAGE,
                   MAILLAGE = MAILLAGE,
             CREA_GROUP_NO =(
                              _F(
-                                NOM = 'face_haut',
+                                NOM = 'face_hau',
                                 OPTION = 'PLAN',
                                 GROUP_NO_CENTRE  = 'H',
                                 VECT_NORMALE = (0.0,0.0,1.0),
                                 PRECISION = 1E-3,
                                 ),
                              _F(
-                                NOM = 'face_millieu',
+                                NOM = 'face_mil',
                                 OPTION = 'PLAN',
                                 GROUP_NO_CENTRE  = 'M',
                                 VECT_NORMALE = (0.0,0.0,1.0),
@@ -136,12 +136,12 @@ DEPZ=3.E-3
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                        DDL_IMPO=(
-                                 _F(GROUP_NO='face_millieu',
+                                 _F(GROUP_NO='face_mil',
                                     DX=ZERO,
                                     DY=ZERO,
                                     DZ=ZERO,
                                     ),
-                                 _F(GROUP_NO='face_haut',
+                                 _F(GROUP_NO='face_hau',
                                     DX=ZERO,
                                     DY=ZERO,   
                                     DZ=DEPZ,),

@@ -1,7 +1,8 @@
       SUBROUTINE LCGLDM (EPSM,DEPS,VIM,OPTION,SIG,VIP,DSIDEP,
-     &             T,LAMBDA,DEUXMU,LAMF,DEUMUF,GMT,GMC,GF,SEUIL,ALF)
+     &                   T,LAMBDA,DEUXMU,LAMF,DEUMUF,GMT,GMC,GF,
+     &                   SEUIL,ALF,CRIT,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,11 +19,14 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE SFAYOLLE S.FAYOLLE
 C TOLE CRP_20
+
       IMPLICIT NONE
 
-      REAL*8       EPSM(6), DEPS(6), VIM(*), GF,GF1,GF2
-      REAL*8       SIG(6), VIP(*), DSIDEP(6,6),LAMF,DEUMUF
+      INTEGER      CODRET
+      REAL*8       EPSM(6), DEPS(6), VIM(*), GF, GF1, GF2, CRIT(*)
+      REAL*8       SIG(6), VIP(*), DSIDEP(6,6), LAMF, DEUMUF
       CHARACTER*16 OPTION
 C ----------------------------------------------------------------------
 C
@@ -40,11 +44,33 @@ C       SEUIL   : INITIAL MEMBRANE
 C       ALF     : PARAMETRE DE SEUIL FLEXION
 C       VIM     : VARIABLES INTERNES EN T-
 C       OPTION  : TOUTE
+C       CRIT : CRITERES DE CONVERGENCE LOCAUX
+C              (1) = NB ITERATIONS MAXI A CONVERGENCE
+C                    (ITER_INTE_MAXI == ITECREL)
+C              (2) = TYPE DE JACOBIEN A T+DT
+C                    (TYPE_MATR_COMP == MACOMP)
+C                     0 = EN VITESSE     >SYMETRIQUE
+C                     1 = EN INCREMENTAL >NON-SYMETRIQUE
+C              (3) = VALEUR TOLERANCE DE CONVERGENCE
+C                    (RESI_INTE_RELA == RESCREL)
+C              (5) = NOMBRE D'INCREMENTS POUR LE
+C                    REDECOUPAGE LOCAL DU PAS DE TEMPS
+C                    (ITER_INTE_PAS  == ITEDEC)
+C                    -1,0,1 = PAS DE REDECOUPAGE
+C                     N = NOMBRE DE PALIERS
+C              (6) = TYPE D INTEGRATION LOCAL POUR
+C                    LA LOI DE COMPORTEMENT
+C                    (RESO_INTE == INTLOC)
+C                    0 = IMPLICITE
+C                    1 = RUNGE_KUTTA
 C OUT:
 C       SIG     : CONTRAINTE
 C       VIP     : VARIABLES INTERNES EN T+
 C       DSIDEP  : MATRICE TANGENTE
 C       D2      : ET DE L AUTRE
+C       CODRET  : CODE RETOUR DE L'INTEGRATION INTEGRATION DU
+C                 0 => PAS DE PROBLEME
+C                 1 => ABSENCE DE CONVERGENCE
 C ----------------------------------------------------------------------
 C
 C       QM1 ET QM2 = Tm DANS R7.01.32
@@ -174,17 +200,12 @@ C   CALCULER LES CONSTANTES INDEPENDANT DE D1,D2,EPS33
 
 C--------CALCUL DE DA1,DA2,EPS33
       IF (RESI) THEN
-C        CONSTRUCTION DU TOLD :
-C        LE CRITERE DE CONV. EST BASE SUR LE PRODUIT 
-C        D(RESIDU)*D(ENDOM.)<TOLD
-C        DONC SI L'ORDRE DE EPS = 1.0D-3, L'ORDRE DE R = EPS*MU*EPS,
-C        L'ORDRE DE D1,2 = 1 ET LA PRECISION 1D-8*1D-8 ON A
-        TOLD  = MU*1.0D-06 * 1.0D-16
-        KDMAX = 30
+        TOLD = CRIT(3)
+        KDMAX = NINT(CRIT(1))
 
         CALL GLDLOC(LAMBDA,DEUXMU,SEUIL,ALF,GMT,GMC,COF1,COF2,VIM,
      &                      Q2D,QFF,TR2D,EPS33,DE33D1,DE33D2,
-     &                      KSI2D,DA1,DA2,KDMAX,TOLD)
+     &                      KSI2D,DA1,DA2,KDMAX,TOLD,CODRET)
 
         IF (DA1.LT.VIM(1)) THEN
           DA1 = VIM(1)
@@ -245,30 +266,21 @@ C        L'ORDRE DE D1,2 = 1 ET LA PRECISION 1D-8*1D-8 ON A
         DLMD2 = -0.5D0*LAMBDA*(1.D0-GMC)/(1.D0+DA2)**2
       ENDIF
 
-C -- CALCUL DES CONTRAINTES
-C      IF(LELAS) THEN
-C        LAMBDD = LAMBDA
-C      ELSE
-        LAMBDD = LAMBDA *0.5D0 *(FD1 + FD2)
-C      ENDIF
+      LAMBDD = LAMBDA *0.5D0 *(FD1 + FD2)
 
       DO 80, K=1,2
-C        IF(LELAS) THEN
-C          DEUMUD(K) = DEUXMU
-C        ELSE
-          IF (EMP(K).GT.0.D0) THEN
-            FDI1(K) = (1.0D0 + GMT*DA1) / (1.0D0 + DA1)
-            FDI2(K) = (1.0D0 + GMT*DA2) / (1.0D0 + DA2)
-            D2MUD(K) = -MU*(1.D0-GMT)/(1.D0+DA2)**2
-            D1MUD(K) = -MU*(1.D0-GMT)/(1.D0+DA1)**2
-          ELSE
-            FDI1(K) = (1.0D0 + GMC*DA1) / (1.0D0 + DA1)
-            FDI2(K) = (1.0D0 + GMC*DA2) / (1.0D0 + DA2)
-            D2MUD(K) = -MU*(1.D0-GMC)/(1.D0+DA2)**2
-            D1MUD(K) = -MU*(1.D0-GMC)/(1.D0+DA1)**2
-          ENDIF
-          DEUMUD(K) = DEUXMU* 0.5D0*(FDI1(K) + FDI2(K))
-C        ENDIF
+        IF (EMP(K).GT.0.D0) THEN
+          FDI1(K) = (1.0D0 + GMT*DA1) / (1.0D0 + DA1)
+          FDI2(K) = (1.0D0 + GMT*DA2) / (1.0D0 + DA2)
+          D2MUD(K) = -MU*(1.D0-GMT)/(1.D0+DA2)**2
+          D1MUD(K) = -MU*(1.D0-GMT)/(1.D0+DA1)**2
+        ELSE
+          FDI1(K) = (1.0D0 + GMC*DA1) / (1.0D0 + DA1)
+          FDI2(K) = (1.0D0 + GMC*DA2) / (1.0D0 + DA2)
+          D2MUD(K) = -MU*(1.D0-GMC)/(1.D0+DA2)**2
+          D1MUD(K) = -MU*(1.D0-GMC)/(1.D0+DA1)**2
+        ENDIF
+        DEUMUD(K) = DEUXMU* 0.5D0*(FDI1(K) + FDI2(K))
         SIGP(K)=LAMBDD*TREPS + DEUMUD(K)*EMP(K)
  80   CONTINUE
 
@@ -384,16 +396,6 @@ C -- CALCUL DE LA MATRICE TANGENTE
           DEUMUD(K) = DEUXMU* 0.5D0*(FDI1(K) + FDI2(K))
  1030   CONTINUE
 
-C        IF(LELAS) THEN
-C          KSI2D = 1.0D0
-C          LAMBDD = LAMBDA
-C          DEUMUD(1) = DEUXMU
-C          DEUMUD(2) = DEUXMU
-C          LAMFD  =  LAMF
-C          DEMUDF(1) =  DEUMUF
-C          DEMUDF(2) =  DEUMUF
-C        ENDIF
-
         DE33I = -LAMBDA*KSI2D/(DEUXMU  + LAMBDA*KSI2D)
 
         DO 100 K = 1,2
@@ -426,10 +428,6 @@ C -- CONTRIBUTION DISSIPATIVE
         IF ((.NOT. ELAS).AND.((EN0.GT.0.D0) .OR.
      &     ((QFF(1) + QFF(2)).GT.0.0D0))) THEN
 
-C          DO 700, K=1,2
-C            SIGEL(K) = LAMBDA*TREPS + DEUXMU*EMP(K)
-C 700      CONTINUE
-
           CALL R8INIR(3, 0.D0, SIGHP, 1)
           CALL R8INIR(3, 0.D0, SIGHM, 1)
 
@@ -440,10 +438,6 @@ C 700      CONTINUE
             FD2  = GM / ((1.0D0+DA2)*(1.0D0+DA2)) *0.5D0*LAMBDA
             KSIM = 0.5D0*((1.0D0+GMT*DA1)/(1.0D0+DA1)
      &                 + (1.0D0+GMT*DA2)/(1.0D0+DA2))
-
-C            DO 710, K=1,2
-C              SIGHP(K) = LAMBDA*TREPS
-C 710        CONTINUE
           ELSE
 
             GM   = 1.0D0 - GMC
@@ -451,29 +445,21 @@ C 710        CONTINUE
             FD2  = GM / ((1.0D0+DA2)*(1.0D0+DA2)) *0.5D0*LAMBDA
             KSIM = 0.5D0*((1.0D0+GMC*DA1)/(1.0D0+DA1)
      &                 + (1.0D0+GMC*DA2)/(1.0D0+DA2))
-
-C            DO 720, K=1,2
-C              SIGHM(K) = LAMBDA*TREPS
-C 720        CONTINUE
           ENDIF
 
           DO 800, K=1,2
             IF (EMP(K).GT.0.D0) THEN
               FDI1(K)  = (1.0D0-GMT) / ((1.0D0+DA1)*(1.0D0+DA1)) *MU
               FDI2(K)  = (1.0D0-GMT) / ((1.0D0+DA2)*(1.0D0+DA2)) *MU
-C              SIGHP(K) = SIGHP(K) + DEUXMU*EMP(K)
             ELSE
               FDI1(K)  = (1.0D0-GMC) / ((1.0D0+DA1)*(1.0D0+DA1)) *MU
               FDI2(K)  = (1.0D0-GMC) / ((1.0D0+DA2)*(1.0D0+DA2)) *MU
-C              SIGHM(K) = SIGHM(K) + DEUXMU*EMP(K)
             ENDIF
 
             TREPS = TR2D + EPS33
             QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
-C            QM2 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
             QM2 = QM1
             QME33 = 0.5D0*LAMBDA*TREPS*GM + MU*EPS33
-C            QDE(K) = 0.5D0 * (SIGEL(K) - GMT*SIGHP(K) - GMC*SIGHM(K))
             QDE(K) = COF1 * EPS33 + 0.5D0*LAMBDA*TR2D*GTR2
      &             + MU * EMP(K) * GI(K)
 

@@ -1,16 +1,15 @@
-       SUBROUTINE EQUTHM(
-     &             IMATE,OPTION,TA,TA1,NDIM,COMPOR,TYPMOD,
-     &             KPI,NPG,
-     &             DIMDEF,DIMCON,NBVARI,
-     &             DEFGEM,CONGEM,VINTM,
-     &             DEFGEP,CONGEP,VINTP,
-     &             MECANI,PRESS1,PRESS2,TEMPE,
-     &             CRIT,RINSTM,RINSTP,DT,
-     &             R,DRDS,DSDE,RETCOM)
+       SUBROUTINE EQUTHM( IMATE,OPTION,TA,TA1,NDIM,COMPOR,TYPMOD,
+     &                    KPI,NPG,
+     &                    DIMDEF,DIMCON,NBVARI,
+     &                    DEFGEM,CONGEM,VINTM,
+     &                    DEFGEP,CONGEP,VINTP,
+     &                    MECANI,PRESS1,PRESS2,TEMPE,
+     &                    CRIT,RINSTM,RINSTP,DT,
+     &                    R,DRDS,DSDE,RETCOM)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/07/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,9 +133,8 @@ C               AU POINT DE GAUSS AU TEMPS PLUS
 C OUT R       : TABLEAU DES RESIDUS
 C OUT DRDE    : TABLEAU DE LA MATRICE TANGENTE AU POINT DE GAUSS
 C OUT         : RETCOM RETOUR DES LOIS DE COMPORTEMENT
-C FIN MODIF 06/05/99
 C ======================================================================
-      INTEGER      IMATE,NDIM,NBVARI,KPI,NPG,DIMDEF,DIMCON,RETCOM
+      INTEGER      IMATE,NDIM,NBVARI,KPI,NPG,DIMDEF,DIMCON,RETCOM,IBID
       INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
       INTEGER      YAMEC,ADDEME,ADCOME,YATE,ADDETE,ADCOTE,I,J
       INTEGER      YAP1,NBPHA1,ADDEP1,ADCP11,ADCP12
@@ -145,7 +143,7 @@ C ======================================================================
       REAL*8       CONGEP(1:DIMCON),VINTM(1:NBVARI),VINTP(1:NBVARI)
       REAL*8       R(1:DIMDEF+1),DRDS(1:DIMDEF+1,1:DIMCON),PESA(3)
       REAL*8       DSDE(1:DIMCON,1:DIMDEF),DT,CRIT(*),RINSTP,RINSTM
-      REAL*8       DEUX,RAC2,TA,TA1
+      REAL*8       DEUX,RAC2,TA,TA1,RBID,P10,P20
       PARAMETER    (DEUX = 2.D0)
       LOGICAL      PERMAN
       CHARACTER*8  TYPMOD(2)
@@ -171,6 +169,11 @@ C ======================================================================
       YATE   = TEMPE(1)
       ADDETE = TEMPE(2)
       ADCOTE = TEMPE(3)
+C
+      IBID = 0
+      RBID = 0.D0
+      P10 = 0.D0 
+      P20 = 0.D0       
 C ============================================================
 C --- COMME CONGEM CONTIENT LES VRAIES CONTRAINTES ET --------
 C --- COMME PAR LA SUITE ON TRAVAILLE AVEC SQRT(2)*SXY -------
@@ -188,16 +191,16 @@ C ============================================================
       IF ((OPTION     .EQ.'RAPH_MECA') .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA')) THEN
          DO 1 I=1,DIMCON
-           CONGEP(I)=CONGEM(I)
+            CONGEP(I)=CONGEM(I)
  1       CONTINUE
       ENDIF
 C
       DO 2 I=1,DIMDEF
-        DO 3 J=1,DIMCON
-          DRDS(I,J)=0.D0
-          DSDE(J,I)=0.D0
-   3    CONTINUE
-        R(I)=0.D0
+         DO 3 J=1,DIMCON
+            DRDS(I,J)=0.D0
+            DSDE(J,I)=0.D0
+   3     CONTINUE
+         R(I)=0.D0
    2  CONTINUE
 C ======================================================================
 C --- INITIALISATION DE LA COMPOSANTE ADDITIONNELLE DE R ET DF ---------
@@ -213,16 +216,18 @@ C ======================================================================
          DRDS(DIMDEF+1,J)=0.D0
  800  CONTINUE
 
-             CALL COMTHM(OPTION,PERMAN,IMATE,TYPMOD,COMPOR,
-     &             CRIT,RINSTM,RINSTP,
-     &             NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,
-     &             YAP2,YATE,ADDEME,ADCOME,ADDEP1,ADCP11,
-     &             ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
-     &             DEFGEM,DEFGEP,CONGEM,CONGEP,VINTM,VINTP,
-     &             DSDE,PESA,RETCOM,KPI,NPG)
-           IF (RETCOM.NE.0) THEN
-            GOTO 9000
-           ENDIF
+      CALL COMTHM(OPTION,PERMAN,.FALSE.,IBID,RBID,RBID,
+     &            IMATE,TYPMOD,COMPOR,
+     &            CRIT,RINSTM,RINSTP,
+     &            NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,
+     &            YAP2,YATE,ADDEME,ADCOME,ADDEP1,ADCP11,
+     &            ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
+     &            DEFGEM,DEFGEP,CONGEM,CONGEP,VINTM,VINTP,
+     &            DSDE,PESA,RETCOM,KPI,NPG,
+     &            P10,P20)
+      IF (RETCOM.NE.0) THEN
+         GOTO 9000
+      ENDIF
 C ======================================================================
 C --- CALCUL DE LA CONTRAINTE VIRTUELLE R ------------------------------
 C ======================================================================
@@ -231,212 +236,213 @@ C ======================================================================
 C ======================================================================
 C --- SI PRESENCE DE MECANIQUE -----------------------------------------
 C ======================================================================
-        IF(YAMEC.EQ.1) THEN
+         IF(YAMEC.EQ.1) THEN
 C
 C  CONTRIBUTIONS A R2 INDEPENDANTE DE YAP1 , YAP2 ET YATE
 C  CONTRAINTES SIGPRIMPLUS PAGE 33
 C
-          DO 6 I=1,6
-            R(ADDEME+NDIM+I-1)= R(ADDEME+NDIM+I-1)
-     &      +CONGEP(ADCOME-1+I)
-  6       CONTINUE
+            DO 6 I=1,6
+               R(ADDEME+NDIM+I-1)= R(ADDEME+NDIM+I-1)
+     &                             +CONGEP(ADCOME-1+I)
+  6         CONTINUE
 C  SCALAIRE SIGPPLUS MULTIPLIE PAR LE TENSEUR UNITE PAGE 33
-          DO 7 I=1,3
-            R(ADDEME+NDIM-1+I)=R(ADDEME+NDIM-1+I)+CONGEP(ADCOME+6)
-  7       CONTINUE
+            DO 7 I=1,3
+               R(ADDEME+NDIM-1+I)=R(ADDEME+NDIM-1+I)+CONGEP(ADCOME+6)
+  7         CONTINUE
 
 C  CONTRIBUTIONS A R1 DEPENDANTES DE YAP1
-          IF(YAP1.EQ.1) THEN
+            IF(YAP1.EQ.1) THEN
 C  CONTRIBUTION A R1 DEPENDANTE DE YAP1
-            DO 8 I=1,NDIM
-              R(ADDEME+I-1)=R(ADDEME+I-1)
-     &        - PESA(I)*CONGEP(ADCP11)
-  8         CONTINUE
-            IF(NBPHA1.GT.1) THEN
+               DO 8 I=1,NDIM
+                  R(ADDEME+I-1)=R(ADDEME+I-1)
+     &                - PESA(I)*CONGEP(ADCP11)
+  8            CONTINUE
+               IF(NBPHA1.GT.1) THEN
 C  CONTRIBUTION A R1 DEPENDANTE DE YAP1 ET NBPHA1
-              DO 9 I=1,NDIM
-                R(ADDEME+I-1)=R(ADDEME+I-1)
-     &          - PESA(I)*CONGEP(ADCP12)
-   9          CONTINUE
+                  DO 9 I=1,NDIM
+                     R(ADDEME+I-1)=R(ADDEME+I-1)
+     &                  - PESA(I)*CONGEP(ADCP12)
+   9              CONTINUE
+               ENDIF
             ENDIF
-          ENDIF
 
 C  CONTRIBUTIONS A R1 DEPENDANTES DE YAP2
-          IF(YAP2.EQ.1) THEN
+            IF(YAP2.EQ.1) THEN
 C            CONTRIBUTION A R1 DEPENDANTE DE YAP1
-            DO 10 I=1,NDIM
-              R(ADDEME+I-1)=R(ADDEME+I-1)
-     &        - PESA(I)*CONGEP(ADCP21)
-   10        CONTINUE
-            IF(NBPHA2.GT.1) THEN
+               DO 10 I=1,NDIM
+                  R(ADDEME+I-1)=R(ADDEME+I-1)
+     &            - PESA(I)*CONGEP(ADCP21)
+   10          CONTINUE
+               IF(NBPHA2.GT.1) THEN
 C   CONTRIBUTION A R1 DEPENDANTE DE YAP2 ET NBPHA2
-              DO 11 I=1,NDIM
-                R(ADDEME+I-1)=R(ADDEME+I-1)
-     &          - PESA(I)*CONGEP(ADCP22)
-  11          CONTINUE
+                  DO 11 I=1,NDIM
+                     R(ADDEME+I-1)=R(ADDEME+I-1)
+     &                - PESA(I)*CONGEP(ADCP22)
+  11              CONTINUE
+               ENDIF
             ENDIF
-          ENDIF
-        ENDIF
+         ENDIF
 C ======================================================================
 C --- SI PRESENCE DE PRESS1 --------------------------------------------
 C ======================================================================
-        IF(YAP1.EQ.1) THEN
+         IF(YAP1.EQ.1) THEN
 
 C  CONTRIBUTIONS A R3 DEPENDANTES DE YAP1
-          R(ADDEP1)=R(ADDEP1)-CONGEP(ADCP11)+CONGEM(ADCP11)
-          IF(NBPHA1.GT.1) THEN
-            R(ADDEP1)=R(ADDEP1)-CONGEP(ADCP12)+CONGEM(ADCP12)
-          ENDIF
+            R(ADDEP1)=R(ADDEP1)-CONGEP(ADCP11)+CONGEM(ADCP11)
+            IF(NBPHA1.GT.1) THEN
+               R(ADDEP1)=R(ADDEP1)-CONGEP(ADCP12)+CONGEM(ADCP12)
+            ENDIF
 
 C  CONTRIBUTIONS A R4 DEPENDANTES DE YAP1
-          DO 12 I=1,NDIM
-            R(ADDEP1+I)=R(ADDEP1+I)
-     &   +DT*(TA*CONGEP(ADCP11+I)+TA1*CONGEM(ADCP11+I))
-  12      CONTINUE
-          IF(NBPHA1.GT.1) THEN
-            DO 13 I=1,NDIM
-              R(ADDEP1+I)=R(ADDEP1+I)
-     &    +DT*(TA*CONGEP(ADCP12+I)+TA1*CONGEM(ADCP12+I))
-  13        CONTINUE
-          ENDIF
+            DO 12 I=1,NDIM
+               R(ADDEP1+I)=R(ADDEP1+I)
+     &          +DT*(TA*CONGEP(ADCP11+I)+TA1*CONGEM(ADCP11+I))
+  12        CONTINUE
+            IF(NBPHA1.GT.1) THEN
+               DO 13 I=1,NDIM
+                   R(ADDEP1+I)=R(ADDEP1+I)
+     &          +DT*(TA*CONGEP(ADCP12+I)+TA1*CONGEM(ADCP12+I))
+  13           CONTINUE
+            ENDIF
 C
-          IF(YATE.EQ.1) THEN
+            IF(YATE.EQ.1) THEN
 
 C   CONTRIBUTIONS A R7 !!SOMMET!! DEPENDANTES DE YAP1
 C   PRODUITS ENTHALPIE MASSIQUE - APPORTS MASSE FLUIDE
-            R(DIMDEF+1)=R(DIMDEF+1)-(CONGEP(ADCP11)-CONGEM(ADCP11))
-     &        *(TA*CONGEP(ADCP11+NDIM+1)+TA1*CONGEM(ADCP11+NDIM+1))
+               R(DIMDEF+1)=R(DIMDEF+1)-(CONGEP(ADCP11)-CONGEM(ADCP11))
+     &           *(TA*CONGEP(ADCP11+NDIM+1)+TA1*CONGEM(ADCP11+NDIM+1))
 
 C        PRODUITS ENTHALPIE MASSIQUE - APPORTS MASSE FLUIDE
 C        CONTRIBUTION SECONDE PHASE DU FLUIDE 1
-            IF(NBPHA1.GT.1) THEN
-              R(DIMDEF+1)=R(DIMDEF+1)-(CONGEP(ADCP12)-CONGEM(ADCP12))
+               IF(NBPHA1.GT.1) THEN
+                  R(DIMDEF+1)=R(DIMDEF+1)-
+     >                              (CONGEP(ADCP12)-CONGEM(ADCP12))
      &   *(TA*CONGEP(ADCP12+NDIM+1)+TA1*CONGEM(ADCP12+NDIM+1))
-            ENDIF
+               ENDIF
 
 C    CONTRIBUTION A R7 !!GAUSS!!
 C    PRODUIT SCALAIRE GRAVITE VECTEURS COURANTS DE MASSE FLUIDE
 C        PESA . MFL11
-            DO 14 I=1,NDIM
-              R(ADDETE)=R(ADDETE)
-     &   +DT*(TA*CONGEP(ADCP11+I)+TA1*CONGEM(ADCP11+I))*PESA(I)
-  14        CONTINUE
+               DO 14 I=1,NDIM
+                  R(ADDETE)=R(ADDETE)
+     &      +DT*(TA*CONGEP(ADCP11+I)+TA1*CONGEM(ADCP11+I))*PESA(I)
+  14           CONTINUE
 C        PESA . MFL12
-            IF(NBPHA1.GT.1) THEN
-              DO 15 I=1,NDIM
-                R(ADDETE)=R(ADDETE)
+               IF(NBPHA1.GT.1) THEN
+                  DO 15 I=1,NDIM
+                     R(ADDETE)=R(ADDETE)
      &   +DT*(TA*CONGEP(ADCP12+I)+TA1*CONGEM(ADCP12+I))*PESA(I)
-  15          CONTINUE
-            ENDIF
+  15              CONTINUE
+               ENDIF
 
 C    CONTRIBUTIONS A R8 DEPENDANTES DE YAP1
 C    PRODUITS ENTHALPIE MASSIQUE - VECTEURS COURANT DE MASSE FLUIDE
-            DO 16 I=1,NDIM
-              R(ADDETE+I)=R(ADDETE+I)
+               DO 16 I=1,NDIM
+                  R(ADDETE+I)=R(ADDETE+I)
      &      +DT*(TA*CONGEP(ADCP11+NDIM+1)*CONGEP(ADCP11+I)
      &             +TA1*CONGEM(ADCP11+NDIM+1)*CONGEM(ADCP11+I))
-  16        CONTINUE
-            IF(NBPHA1.GT.1) THEN
+  16           CONTINUE
+               IF(NBPHA1.GT.1) THEN
 C        PRODUITS ENTHALPIE MASSIQUE - VECTEURS COURANT DE MASSE FLUID
 C        CONTRIBUTION SECONDE PHASE DU FLUIDE 1
-              DO 17 I=1,NDIM
-                R(ADDETE+I)=R(ADDETE+I)
+                  DO 17 I=1,NDIM
+                     R(ADDETE+I)=R(ADDETE+I)
      &      +DT*(TA*CONGEP(ADCP12+NDIM+1)*CONGEP(ADCP12+I)
      &             +TA1*CONGEM(ADCP12+NDIM+1)*CONGEM(ADCP12+I))
-  17          CONTINUE
+  17              CONTINUE
+               ENDIF
             ENDIF
-          ENDIF
-        ENDIF
+         ENDIF
 C ======================================================================
 C --- SI PRESENCE DE PRESS2 --------------------------------------------
 C ======================================================================
-        IF(YAP2.EQ.1) THEN
+         IF(YAP2.EQ.1) THEN
 
 C    CONTRIBUTIONS A R5 DEPENDANTES DE YAP2
-          R(ADDEP2)=R(ADDEP2)-CONGEP(ADCP21)+CONGEM(ADCP21)
-          IF(NBPHA2.GT.1) THEN
-            R(ADDEP2)=R(ADDEP2)-CONGEP(ADCP22)+CONGEM(ADCP22)
-          ENDIF
+            R(ADDEP2)=R(ADDEP2)-CONGEP(ADCP21)+CONGEM(ADCP21)
+            IF(NBPHA2.GT.1) THEN
+               R(ADDEP2)=R(ADDEP2)-CONGEP(ADCP22)+CONGEM(ADCP22)
+            ENDIF
 
 C    CONTRIBUTIONS A R6 DEPENDANTES DE YAP2
-          DO 18 I=1,NDIM
-            R(ADDEP2+I)=R(ADDEP2+I)
+            DO 18 I=1,NDIM
+               R(ADDEP2+I)=R(ADDEP2+I)
      &    +DT*(TA*CONGEP(ADCP21+I)+TA1*CONGEM(ADCP21+I))
-  18      CONTINUE
-          IF(NBPHA2.GT.1) THEN
-            DO 19 I=1,NDIM
-              R(ADDEP2+I)=R(ADDEP2+I)
+  18        CONTINUE
+            IF(NBPHA2.GT.1) THEN
+               DO 19 I=1,NDIM
+                  R(ADDEP2+I)=R(ADDEP2+I)
      &      +DT*(TA*CONGEP(ADCP22+I)+TA1*CONGEM(ADCP22+I))
-  19        CONTINUE
-          ENDIF
+  19           CONTINUE
+            ENDIF
 C
-          IF(YATE.EQ.1) THEN
+            IF(YATE.EQ.1) THEN
 
 C    CONTRIBUTIONS A R7SOMMET DEPENDANTES DE YAP2
 C    PRODUITS ENTHALPIE MASSIQUE - APPORTS MASSE FLUIDE
 C
-            R(DIMDEF+1)=R(DIMDEF+1)-(CONGEP(ADCP21)-CONGEM(ADCP21))
+               R(DIMDEF+1)=R(DIMDEF+1)-(CONGEP(ADCP21)-CONGEM(ADCP21))
      &      *(TA*CONGEP(ADCP21+NDIM+1)+TA1*CONGEM(ADCP21+NDIM+1))
 
 C         PRODUITS ENTHALPIE MASSIQUE - APPORTS MASSE FLUIDE
 C         CONTRIBUTION SECONDE PHASE DU FLUIDE 2
-            IF(NBPHA2.GT.1) THEN
-              R(DIMDEF+1)=R(DIMDEF+1)-(CONGEP(ADCP22)-CONGEM(ADCP22))
+               IF(NBPHA2.GT.1) THEN
+                 R(DIMDEF+1)=R(DIMDEF+1)-(CONGEP(ADCP22)-CONGEM(ADCP22))
      &        *(TA*CONGEP(ADCP22+NDIM+1)+TA1*CONGEM(ADCP22+NDIM+1))
-            ENDIF
+               ENDIF
 
 C    CONTRIBUTIONS A R7GAUSS
 C    PRODUIT SCALAIRE GRAVITE VECTEURS COURANTS DE MASSE FLUIDE
 C         PESA . MFL21
-            DO 20 I=1,NDIM
-              R(ADDETE)=R(ADDETE)
+               DO 20 I=1,NDIM
+                  R(ADDETE)=R(ADDETE)
      &        +DT*(TA*CONGEP(ADCP21+I)+TA1*CONGEM(ADCP21+I))*PESA(I)
-  20        CONTINUE
+  20           CONTINUE
 
 C         PESA . MFL22
-            IF(NBPHA2.GT.1) THEN
-              DO 21 I=1,NDIM
-                R(ADDETE)=R(ADDETE)
+               IF(NBPHA2.GT.1) THEN
+                  DO 21 I=1,NDIM
+                     R(ADDETE)=R(ADDETE)
      &          +DT*(TA*CONGEP(ADCP22+I)+TA1*CONGEM(ADCP22+I))*PESA(I)
-  21          CONTINUE
-            ENDIF
+  21              CONTINUE
+               ENDIF
 
 C    CONTRIBUTIONS A R8 DEPENDANTES DE YAP2
 C    PRODUITS ENTHALPIE MASSIQUE - VECTEURS COURANT DE MASSE FLUIDE
-            DO 22 I=1,NDIM
-              R(ADDETE+I)=R(ADDETE+I)
+               DO 22 I=1,NDIM
+                  R(ADDETE+I)=R(ADDETE+I)
      &        +DT*(TA*CONGEP(ADCP21+NDIM+1)*CONGEP(ADCP21+I)
      &             +TA1*CONGEM(ADCP21+NDIM+1)*CONGEM(ADCP21+I))
-  22        CONTINUE
+  22           CONTINUE
 
 
 C          PRODUITS ENTHALPIE MASSIQUE - VECTEURS COURANTDE MASSE FLUID
 C          CONTRIBUTION SECONDE PHASE DU FLUIDE 1
-            IF(NBPHA2.GT.1) THEN
-              DO 23 I=1,NDIM
-                R(ADDETE+I)=R(ADDETE+I)
+               IF(NBPHA2.GT.1) THEN
+                  DO 23 I=1,NDIM
+                     R(ADDETE+I)=R(ADDETE+I)
      &        +DT*(TA*CONGEP(ADCP22+NDIM+1)*CONGEP(ADCP22+I)
      &           +TA1*CONGEM(ADCP22+NDIM+1)*CONGEM(ADCP22+I))
-  23          CONTINUE
+  23              CONTINUE
+               ENDIF
             ENDIF
-          ENDIF
-        ENDIF
+         ENDIF
 C ======================================================================
 C --- SI PRESENCE DE THERMIQUE -----------------------------------------
 C ======================================================================
-        IF(YATE.EQ.1) THEN
+         IF(YATE.EQ.1) THEN
 
 C   CONTRIBUTIONS A R7 SOMMET INDEPENDANTE DE YAMEC , YAP1 , YAP2
 C       DIFFERENCES DES  QUANTITES DE CHALEUR REDUITES   QPRIM
-          R(DIMDEF+1)=R(DIMDEF+1)-(CONGEP(ADCOTE)-CONGEM(ADCOTE))
+            R(DIMDEF+1)=R(DIMDEF+1)-(CONGEP(ADCOTE)-CONGEM(ADCOTE))
 
 C   CONTRIBUTION A R8 INDEPENDANTE DE YAMEC , YAP1 , YAP2
 C         >>>>   VECTEUR COURANT DE CHALEUR
-          DO 24 I=1,NDIM
-            R(ADDETE+I)=R(ADDETE+I)
+            DO 24 I=1,NDIM
+               R(ADDETE+I)=R(ADDETE+I)
      &      +DT*(TA*CONGEP(ADCOTE+I)+TA1*CONGEM(ADCOTE+I))
-  24      CONTINUE
-        ENDIF
+  24        CONTINUE
+         ENDIF
       ENDIF
 C ======================================================================
 C --- CALCUL DES MATRICES DERIVEES CONSTITUTIVES DE DF -----------------
@@ -446,7 +452,7 @@ C ======================================================================
 C ======================================================================
 C --- SI PRESENCE DE MECANIQUE -----------------------------------------
 C ======================================================================
-        IF(YAMEC.EQ.1) THEN
+         IF(YAMEC.EQ.1) THEN
 
 C    CONTRIBUTIONS A DR/DS INDEPENDANTES DE YAP1 ET YATE
 C    CALCUL DE DR2/DS :
@@ -454,20 +460,20 @@ C    DR2DS:DERIVEES PAR RAPPORT AUX CONTRAINTES SIGPRIMPLUSIJ
 C    TABLEAU 6 - 6 : ON N'ECRIT QUE LES TERMES NON NULS
 C    (1 SUR DIAGONALE)
 
-          DO 25 I=1,6
-            DRDS(ADDEME+NDIM-1+I,ADCOME+I-1)=
-     &      DRDS(ADDEME+NDIM-1+I,ADCOME+I-1)+1.D0
-  25      CONTINUE
+            DO 25 I=1,6
+               DRDS(ADDEME+NDIM-1+I,ADCOME+I-1)=
+     &         DRDS(ADDEME+NDIM-1+I,ADCOME+I-1)+1.D0
+  25        CONTINUE
 
 C    DR2DS:DERIVEES PAR RAPPORT AU SCALAIRE SIGPPLUS
 C    >> TENSEUR ISOTROPE : ON N'ECRIT QUE LES
 C    TROIS PREMIERS TERMES = 1
 
-          DO 26 I=1,3
-            DRDS(ADDEME+NDIM-1+I,ADCOME+6)=
-     &      DRDS(ADDEME+NDIM-1+I,ADCOME+6)+1.D0
-  26      CONTINUE
-        ENDIF
+            DO 26 I=1,3
+               DRDS(ADDEME+NDIM-1+I,ADCOME+6)=
+     &         DRDS(ADDEME+NDIM-1+I,ADCOME+6)+1.D0
+  26        CONTINUE
+         ENDIF
 C ======================================================================
 C --- SI PRESENCE DE PRESS1 --------------------------------------------
 C ======================================================================
@@ -644,36 +650,37 @@ C     DR8P21:DERIVEE/COURANTM21PLUS : VECTEUR COURANT MASSE FLUIDE 2
      &        +TA*DT*CONGEP(ADCP21+NDIM+1)
   41        CONTINUE
 C
-            IF(NBPHA2.GT.1) THEN
+               IF(NBPHA2.GT.1) THEN
 
 C     DR7SOMMET/P22:DERIVEE/M22PLUS (APPORT MASSE FLUIDE 2 PHASE 2)
-             DRDS(DIMDEF+1,ADCP22)=DRDS(DIMDEF+1,ADCP22)
+                  DRDS(DIMDEF+1,ADCP22)=DRDS(DIMDEF+1,ADCP22)
      &        -(TA*CONGEP(ADCP22+NDIM+1)+TA1*CONGEM(ADCP22+NDIM+1))
 
 C DR7SOM/P22:DERIVEE/HM22PLUS (ENTHALPIE MASS DU FLUIDE 2 PHASE 2)
-             DRDS(DIMDEF+1,ADCP22+NDIM+1)=DRDS(DIMDEF+1,ADCP22+NDIM+1)
-     &        -TA*(CONGEP(ADCP22)-CONGEM(ADCP22))
+                  DRDS(DIMDEF+1,ADCP22+NDIM+1)=
+     >                         DRDS(DIMDEF+1,ADCP22+NDIM+1)
+     &             -TA*(CONGEP(ADCP22)-CONGEM(ADCP22))
 
 C DR7GAUSS/P22:DERIVEE/COURANTM12PLUS:VECTEUR COURANT MASSE FL 2 PH 2
-              DO 411 I=1,NDIM
-                DRDS(ADDETE,ADCP22+I)=DRDS(ADDETE,ADCP22+I)
+                  DO 411 I=1,NDIM
+                     DRDS(ADDETE,ADCP22+I)=DRDS(ADDETE,ADCP22+I)
      &          +TA*DT*PESA(I)
- 411          CONTINUE
+ 411              CONTINUE
 C     DR8P22:DERIVEE/HM22PLUS (ENTHALPIE MASSIQUE DU FLUIDE 2 PHASE 2)
-              DO 42 I=1,NDIM
-                DRDS(ADDETE+I,ADCP22+NDIM+1)=
-     &          DRDS(ADDETE+I,ADCP22+NDIM+1)+TA*DT*CONGEP(ADCP22+I)
-  42          CONTINUE
+                  DO 42 I=1,NDIM
+                     DRDS(ADDETE+I,ADCP22+NDIM+1)=
+     &               DRDS(ADDETE+I,ADCP22+NDIM+1)+TA*DT*CONGEP(ADCP22+I)
+  42              CONTINUE
 
 C     DR8P22:DERIVEE/COURANTM22PLUS : VECTEUR COURANT MASSE FL 2 PHASE 2
-              DO 43 I=1,NDIM
-                DRDS(ADDETE+I,ADCP22+I)=DRDS(ADDETE+I,ADCP22+I)
+                  DO 43 I=1,NDIM
+                     DRDS(ADDETE+I,ADCP22+I)=DRDS(ADDETE+I,ADCP22+I)
      &         +TA*DT*CONGEP(ADCP22+NDIM+1)
-  43          CONTINUE
+  43              CONTINUE
+               ENDIF
             ENDIF
-          ENDIF
 C
-        ENDIF
+         ENDIF
 
       ENDIF
 C ======================================================================
@@ -686,9 +693,9 @@ C ======================================================================
       IF ((YAMEC.EQ.1).AND.
      +   ((OPTION     .EQ.'RAPH_MECA') .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA'))) THEN
-          DO 110 I = 4 , 6
+         DO 110 I = 4 , 6
              CONGEP(ADCOME+I-1)= CONGEP(ADCOME+I-1)/RAC2
- 110    CONTINUE
+ 110     CONTINUE
       ENDIF
 C ======================================================================
  9000 CONTINUE

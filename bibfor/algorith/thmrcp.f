@@ -1,17 +1,18 @@
       SUBROUTINE THMRCP( ETAPE, IMATE, THMC, MECA, HYDR, THER,
-     &                   T0, P10, P20, PHI0, PVP0, T, P1,
-     &                   P1M, P2, PHI,ENDO,
-     &                   PVP, RGAZ, RHOD, CPD, BIOT, SATM, SATUR,
-     &                   DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
-     &                   DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBP,
-     &                   DLAMBP, RHOL, UNSURK, ALPHA, CPL, LAMBS,
-     &                   DLAMBS, VISCL, DVISCL, MAMOLG, CPG, LAMBT,
-     &                   DLAMBT, VISCG, DVISCG, MAMOLV, CPVG, VISCVG,
-     &                   DVISVG, FICKAD, DFADT, CPAD, KH, PAD,
-     &                   EM, LAMBCT, ISOT, INSTAP)
+     &                 T0,P10,P20, PHI0, PVP0, T, P1,
+     &                 P1M, P2, PHI,ENDO,
+     &                 PVP, RGAZ, RHOD, CPD, BIOT,
+     &                 SATM, SATUR,DSATUR,
+     &                 PESA, PERMFH, PERMLI, DPERML, PERMGZ,DPERMS,
+     &                 DPERMP, FICK, DFICKT, DFICKG, LAMBP,DLAMBP,
+     &                 RHOL, UNSURK, ALPHA, CPL, LAMBS,DLAMBS,
+     &                 VISCL, DVISCL, MAMOLG, CPG, LAMBT,DLAMBT,
+     &                 VISCG, DVISCG,MAMOLV,CPVG,VISCVG,DVISVG,FICKAD,
+     &                 DFADT, CPAD, KH, PAD,EM, LAMBCT,
+     &                 ISOT,DFICKS,INSTAP)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,16 +36,16 @@ C TOLE CRP_21
 C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       IMATE
       REAL*8        T0, P10, P20, PHI0, PVP0, T, P1, P2, PHI, PVP
       REAL*8        RGAZ, RHOD, CPD, BIOT, SATM, SATUR, DSATUR, PESA(3)
       REAL*8        PERMFH, PERMLI, DPERML, PERMGZ, DPERMS, DPERMP
-      REAL*8        FICK, DFICKT, DFICKG, LAMBP, DLAMBP, RHOL
+      REAL*8        FICK, DFICKT,DFICKS, DFICKG, LAMBP, DLAMBP, RHOL
       REAL*8        ALPHA, CPL, LAMBS, DLAMBS, VISCL, DVISCL, CPG,PAD
       REAL*8        LAMBT, DLAMBT, VISCG, DVISCG, MAMOLG, CPVG, VISCVG
       REAL*8        DVISVG, FICKAD,DFADT,ENDO, MAMOLV, P1M,CPAD,KH,EM
-      REAL*8        LAMBCT, UNSURK, ISOT(3), INSTAP
+      REAL*8        LAMBCT, UNSURK, ISOT(6),INSTAP
       CHARACTER*8   ETAPE
       CHARACTER*16  MECA,THMC,THER,HYDR
 C =====================================================================
@@ -78,21 +79,21 @@ C =====================================================================
       PARAMETER   ( DIM15  =  2 )
       PARAMETER   ( DIM16  =  6 )
       PARAMETER   ( DIM17  =  4 )
-      PARAMETER   ( DIM18  = 13 )
+      PARAMETER   ( DIM18  = 16 )
       PARAMETER   ( DIM19  =  4 )
-      PARAMETER   ( DIM20  = 14 )
+      PARAMETER   ( DIM20  = 17 )
       PARAMETER   ( DIM21  =  3 )
-      PARAMETER   ( DIM22  = 23 )
+      PARAMETER   ( DIM22  = 26 )
       PARAMETER   ( DIM23  =  4 )
       PARAMETER   ( DIM24  =  3 )
-      PARAMETER   ( DIM25  = 29 )
+      PARAMETER   ( DIM25  = 33 )
       PARAMETER   ( DIM26  =  4 )
       PARAMETER   ( DIM27  =  3 )
       PARAMETER   ( DIM28  =  1 )
-      PARAMETER   ( DIM29  = 23 )
+      PARAMETER   ( DIM29  = 26 )
       PARAMETER   ( DIM30  =  4 )
       PARAMETER   ( DIM31  =  3 )
-      PARAMETER   ( DIM32  = 19 )
+      PARAMETER   ( DIM32  = 22 )
       PARAMETER   ( DIM33  =  4 )
 C
       PARAMETER   ( DIM35  =  7 )
@@ -100,7 +101,7 @@ C
       PARAMETER   ( DIM37  =  2 )
       PARAMETER   ( DIM38  =  2 )
       PARAMETER   ( DIM39  =  2 )
-      PARAMETER   ( DIM40  = 34 )
+      PARAMETER   ( DIM40  = 38 )
       PARAMETER   ( DIM41  =  4 )
       PARAMETER   ( DIM42  =  3 )
       PARAMETER   ( DIM43  =  1 )
@@ -141,8 +142,11 @@ C
       CHARACTER*8   NCRA30(DIM30), NCRA31(DIM31), NCRA32(DIM32)
       CHARACTER*8   NCRA33(DIM33)
       CHARACTER*8   NCRA35(DIM35), NCRA36(DIM36), NCRA37(DIM37)
-      CHARACTER*8   NCRA38(DIM38), NCRA40(DIM40), NCRA41(DIM41)
-      CHARACTER*8   NCRA42(DIM42), NCRA43(DIM43),NCRA39(DIM39)
+      CHARACTER*8   NCRA38(DIM38), NCRA39(DIM39), NCRA40(DIM40)
+      CHARACTER*8   NCRA41(DIM41), NCRA42(DIM42), NCRA43(DIM43)
+      CHARACTER*8   CRAD35(DIM35), CRAD36(DIM36), CRAD37(DIM37)
+      CHARACTER*8   CRAD39(DIM39), CRAD40(DIM40)
+      CHARACTER*8   CRAD41(DIM41), CRAD42(DIM42)
       CHARACTER*8   NSAT(DIMSAT) ,NVG(DIMVG)
 C =====================================================================
 C --- DEFINITION DES DONNEES INITIALES --------------------------------
@@ -248,9 +252,10 @@ C =====================================================================
      &              'LAMB_P'   ,
      &              'D_LB_P',
      &              'LAMB_CT',
-     &              'PERMIN_X',
-     &              'PERMIN_Y',
-     &              'PERMIN_Z'/
+     &              'PERMIN_X','PERMIN_Y',
+     &              'PERMIN_Z','PERMINXY',
+     &              'PERMINYZ','PERMINZX'/
+     
        DATA NCRA19 / 'UN_SUR_K' ,
      &              'VISC'     ,
      &              'D_VISC_T' ,
@@ -269,9 +274,9 @@ C =====================================================================
      &              'LAMB_P'   ,
      &              'D_LB_P',
      &              'LAMB_CT',
-     &              'PERMIN_X',
-     &              'PERMIN_Y',
-     &              'PERMIN_Z'/
+     &              'PERMIN_X','PERMIN_Y',
+     &              'PERMIN_Z','PERMINXY',
+     &              'PERMINYZ','PERMINZX'/
        DATA NCRA21 / 'MASS_MOL' ,
      &              'VISC'     ,
      &              'D_VISC_T' /
@@ -291,8 +296,10 @@ C =====================================================================
      &              'SATU_PRE' ,'D_SATU_P'  ,
      &              'PERM_LIQ' , 'D_PERM_L' ,
      &              'PERM_GAZ' , 'D_PERM_S' ,
-     &              'D_PERM_P','PERMIN_X',
-     &              'PERMIN_Y','PERMIN_Z'/
+     &              'D_PERM_P',
+     &              'PERMIN_X','PERMIN_Y',
+     &              'PERMIN_Z','PERMINXY',
+     &              'PERMINYZ','PERMINZX'/
        DATA NCRA23 / 'UN_SUR_K' ,
      &              'VISC'     ,
      &              'D_VISC_T' ,
@@ -317,9 +324,10 @@ C =====================================================================
      &              'FICKV_PV' ,'FICKV_PG' ,
      &              'FICKV_S'  ,'D_FV_T'   ,
      &              'D_FV_PG',
-     &              'PERMIN_X',
-     &              'PERMIN_Y',
-     &              'PERMIN_Z'/
+     &              'PERMIN_X','PERMIN_Y',
+     &              'PERMIN_Z','PERMINXY',
+     &              'PERMINYZ','PERMINZX',
+     &              'D_FV_S'/
        DATA NCRA26 / 'UN_SUR_K' ,
      &              'VISC'     ,
      &              'D_VISC_T' ,
@@ -343,8 +351,12 @@ C =====================================================================
      &              'D_SATU_P' ,'PERM_LIQ' ,
      &              'D_PERM_L' ,'PERM_GAZ' ,
      &              'D_PERM_S' ,'D_PERM_P',
-     &              'PERMIN_X'  ,'PERMIN_Y',
-     &              'PERMIN_Z'/
+     &              'PERMIN_X',
+     &              'PERMIN_Y',
+     &              'PERMIN_Z',
+     &              'PERMINXY',
+     &              'PERMINYZ',
+     &              'PERMINZX'/
        DATA NCRA30 / 'UN_SUR_K' ,
      &              'VISC'     ,
      &              'D_VISC_T' ,
@@ -361,19 +373,17 @@ C =====================================================================
      &              'PERM_IN'  ,
      &              'PERM_END' ,
      &              'LAMB_T'   ,
-     &              'D_LB_T' ,
-     &              'LAMB_P'   ,
+     &              'D_LB_T',
+     &              'LAMB_P',
      &              'D_LB_P' ,
      &              'LAMB_S'   ,
      &              'D_LB_S' ,
      &              'LAMB_CT'   ,
-     &              'SATU_PRE' ,
-     &              'D_SATU_P' ,
-     &              'PERM_LIQ' ,
-     &              'D_PERM_L' ,
-     &              'PERMIN_X',
-     &              'PERMIN_Y',
-     &              'PERMIN_Z'/
+     &              'SATU_PRE','D_SATU_P' ,
+     &              'PERM_LIQ','D_PERM_L' ,
+     &              'PERMIN_X','PERMIN_Y',
+     &              'PERMIN_Z','PERMINXY',
+     &              'PERMINYZ','PERMINZX'/
        DATA NCRA33 / 'UN_SUR_K' ,
      &              'VISC'     ,
      &              'D_VISC_T' ,
@@ -416,11 +426,11 @@ C =====================================================================
      &              'FICKV_S'  ,'D_FV_T',
      &              'D_FV_PG','FICKA_T'  ,
      &              'FICKA_PA' , 'FICKA_PL' ,
-     &              'FICKA_S'  ,
-     &              'D_FA_T' ,
-     &              'PERMIN_X',
-     &              'PERMIN_Y',
-     &              'PERMIN_Z'/
+     &              'FICKA_S'  ,'D_FA_T' ,
+     &              'PERMIN_X','PERMIN_Y',
+     &              'PERMIN_Z','PERMINXY',
+     &              'PERMINYZ','PERMINZX',
+     &              'D_FV_S'/
        DATA NCRA41 / 'UN_SUR_K' ,
      &              'VISC'     ,
      &              'D_VISC_T' ,
@@ -429,6 +439,54 @@ C =====================================================================
      &              'VISC'     ,
      &              'D_VISC_T' /
        DATA NCRA43 / 'MASS_MOL' /
+C =====================================================================
+C -- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_AD_GAZ
+C =====================================================================
+       DATA CRAD35  / 'R_GAZ'    ,
+     &              'RHO'      ,
+     &              'BIOT_COE' ,
+     &              'CP'       ,
+     &              'SATU_PRE' ,
+     &              'D_SATU_P' ,
+     &              'EMMAG' /
+       DATA CRAD36 / 'RHO'      ,
+     &              'UN_SUR_K' ,
+     &              'ALPHA'    ,
+     &              'CP'       /
+       DATA CRAD37 / 'MASS_MOL' ,
+     &              'CP'       /
+       DATA CRAD39 / 'CP'        ,
+     &              'COEF_HENRY' /
+C =====================================================================
+C --- DEFINITION DES DONNEES FINALES DANS LE CAS LIQU_AD_GAZ -----
+C =====================================================================
+C     DANS CRAD40 ON NE LIT PAS DE 21 A 26 INCLUS ET 38
+        DATA CRAD40 / 'R_GAZ'    ,'PESA_X'   ,
+     &                'PESA_Y'    , 'PESA_Z'  ,
+     &                'PERM_IN'   ,'PERM_END' ,
+     &                'LAMB_T'    ,'D_LB_T' ,
+     &                'LAMB_P'    ,'D_LB_P' ,
+     &                'LAMB_S'    ,'D_LB_S' ,
+     &                'LAMB_CT'    ,
+     &                'SATU_PRE' ,'D_SATU_P' ,
+     &                'PERM_LIQ' ,'D_PERM_L' ,
+     &                'PERM_GAZ' ,'D_PERM_S' ,
+     &                'D_PERM_P' ,'FICKV_T'  ,
+     &                'FICKV_PV' ,'FICKV_PG' ,
+     &                'FICKV_S'  ,'D_FV_T',
+     &                'D_FV_PG','FICKA_T'  ,
+     &                'FICKA_PA' , 'FICKA_PL' ,
+     &                'FICKA_S'  ,'D_FA_T' ,
+     &                'PERMIN_X','PERMIN_Y','PERMIN_Z','PERMINXY',
+     &                'PERMINYZ','PERMINZX',
+     &                'D_FV_S'/
+       DATA CRAD41 / 'UN_SUR_K' ,
+     &              'VISC'     ,
+     &              'D_VISC_T' ,
+     &              'ALPHA'  /
+       DATA CRAD42 / 'MASS_MOL' ,
+     &              'VISC'     ,
+     &              'D_VISC_T' /
 C =====================================================================
 C --- DEFINITION SATURATION -------------------------------------------
 C =====================================================================
@@ -457,10 +515,11 @@ C =====================================================================
          P20  = VAL1(3)
          PHI0 = VAL1(4)
          PVP0 = VAL1(5)
-         IF ( (THMC.EQ.'GAZ')           .OR.
+        IF ( (THMC.EQ.'GAZ')           .OR.
      &        (THMC.EQ.'LIQU_VAPE')     .OR.
      &        (THMC.EQ.'LIQU_VAPE_GAZ') .OR.
      &        (THMC.EQ.'LIQU_AD_GAZ_VAPE') .OR.
+     &        (THMC.EQ.'LIQU_AD_GAZ') .OR.
      &        (THMC.EQ.'LIQU_GAZ')           ) THEN
             IF ( T0.EQ.R8VIDE() ) THEN
                CALL U2MESK('F','ALGORITH10_90',1,THMC)
@@ -682,14 +741,18 @@ C =====================================================================
  131         CONTINUE
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                                   3, NCRA35, VAL35, CODRET, ' ')
+                    
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 0, ' ', 0.0D0,
      &                                   2, NCRA36, VAL36, CODRET, ' ')
+                        
             CALL RCVALA(IMATE,' ', 'THM_GAZ', 0, ' ', 0.0D0,
      &                                   1, NCRA37, VAL37, CODRET, ' ')
+                
             CALL RCVALA(IMATE,' ', 'THM_VAPE_GAZ', 0, ' ', 0.0D0,
      &                                   2, NCRA38, VAL38, CODRET, ' ')
+           
             IF (THER.NE.' ') THEN
-               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
+                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
      &                            1, NCRA35(4), VAL35(4), CODRET, 'FM')
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
      &                           2, NCRA36(3), VAL36(3), CODRET, 'FM')
@@ -743,6 +806,92 @@ C =====================================================================
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL U2MESS('F','ALGORITH10_91')
             ENDIF
+            
+
+
+         ELSE IF (THMC.EQ.'LIQU_AD_GAZ') THEN
+C =====================================================================
+C --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE   -----------
+C =====================================================================
+            DO 991 II = 1, DIM35+1
+               VAL35(II) = 0.0D0
+ 991         CONTINUE
+            DO 9101 II = 1, DIM36
+               VAL36(II) = 0.0D0
+ 9101         CONTINUE
+            DO 9111 II = 1, DIM37
+               VAL37(II) = 0.0D0
+ 9111         CONTINUE
+            DO 9131 II = 1, DIM39
+               VAL39(II) = 0.0D0
+ 9131         CONTINUE
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
+     &                                   3, CRAD35, VAL35, CODRET, ' ')
+                    
+            CALL RCVALA(IMATE,' ', 'THM_LIQU', 0, ' ', 0.0D0,
+     &                                   2, CRAD36, VAL36, CODRET, ' ')
+                        
+            CALL RCVALA(IMATE,' ', 'THM_GAZ', 0, ' ', 0.0D0,
+     &                                   1, CRAD37, VAL37, CODRET, ' ')
+           
+            IF (THER.NE.' ') THEN
+                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
+     &                            1, CRAD35(4), VAL35(4), CODRET, 'FM')
+               CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
+     &                           2, CRAD36(3), VAL36(3), CODRET, 'FM')
+               CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
+     &                            1, CRAD37(2), VAL37(2), CODRET, 'FM')
+            ENDIF
+            IF (HYDR.EQ.'HYDR_VGM') THEN
+               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
+     &                     5, NVG(1), VG(1), CODRET, 'FM')
+               IF (CODRET(1).EQ.'NO') THEN
+                      CALL U2MESS('F','ALGORITH16_94')
+               ENDIF
+               CALL SATUVG(VG,P1M,VAL35(5),RBID1  )
+               CALL SATUVG(VG,P1,VAL35(6),VAL35(7)  )
+            ELSE IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
+               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1M,
+     &                            1, CRAD35(5), VAL35(5), CODRET, 'FM')
+               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
+     &                            2, CRAD35(5), VAL35(6), CODRET, 'FM')
+            ELSE
+               CALL SATURA(HYDR,P1M,VAL35(5),RBID1  )
+               CALL SATURA(HYDR,P1 ,VAL35(6),VAL35(7))
+            ENDIF
+            CALL RCVALA(IMATE, ' ','THM_AIR_DISSOUS', 0, ' ', 0.0D0,
+     &                           1, CRAD39(1), VAL39(1), CODRET, 'FM ')
+            CALL RCVALA(IMATE,' ', 'THM_AIR_DISSOUS',  1, 'TEMP', T,
+     &                           1, CRAD39(2), VAL39(2), CODRET, 'FM ')
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
+     &                          1, CRAD35(7), VAL35(8), CODRET, ' ')
+            RGAZ    = VAL35(1)
+            RHOD    = VAL35(2)
+            BIOT    = VAL35(3)
+            CPD     = VAL35(4)
+            SATM    = VAL35(5)
+            SATUR   = VAL35(6)
+            DSATUR  = VAL35(7)
+            EM      = VAL35(8)
+            RHOL    = VAL36(1)
+            UNSURK  = VAL36(2)
+            ALPHA   = VAL36(3)
+            CPL     = VAL36(4)
+            MAMOLG  = VAL37(1)
+            CPG     = VAL37(2)
+            MAMOLV  = VAL38(1)
+            CPVG    = VAL38(2)
+            CPAD    = VAL39(1)
+            KH      = VAL39(2)
+            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
+               CALL U2MESS('F','ALGORITH10_91')
+            ENDIF
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL U2MESS('F','ALGORITH10_91')
+            ENDIF            
+ 
+            
+            
          ELSE IF (THMC.EQ.'LIQU_GAZ') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_GAZ --------------------------------
@@ -899,6 +1048,9 @@ C
             VAL18(11) = 1.0D0
             VAL18(12) = 1.0D0
             VAL18(13) = 1.0D0
+            VAL18(14) = 0.D0
+            VAL18(15) = 0.D0
+            VAL18(16) = 0.D0
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                       3, NCRA18(1), VAL18(1), CODRET, ' ')
@@ -933,7 +1085,7 @@ C
 C--- TENSEUR ISOTOPE LE CAS ECHEANT
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                       3, NCRA18(11), VAL18(11), CODRET, ' ')
+     &                       6, NCRA18(11), VAL18(11), CODRET, ' ')
 
 C
            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
@@ -946,6 +1098,7 @@ C DEFINIE DANS LE FICHIER DE COMMANDE
             IF (CODRET(1).EQ.'NO') THEN                  
                 FPESA=1.D0
             ENDIF
+C            
             PESA(1) = FPESA*VAL18(1)
             PESA(2) = FPESA*VAL18(2)
             PESA(3) = FPESA*VAL18(3)
@@ -966,6 +1119,9 @@ C DEFINIE DANS LE FICHIER DE COMMANDE
             ISOT(1) = VAL18(11)
             ISOT(2) = VAL18(12)
             ISOT(3) = VAL18(13)
+            ISOT(4) = VAL18(14)
+            ISOT(5) = VAL18(15)
+            ISOT(6) = VAL18(16)
          ELSE IF (THMC.EQ.'GAZ') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE GAZ -------------------------------------
@@ -987,6 +1143,9 @@ C
             VAL20(12) = 1.0D0
             VAL20(13) = 1.0D0
             VAL20(14) = 1.0D0
+            VAL20(15) = 0.D0
+            VAL20(16) = 0.D0
+            VAL20(17) = 0.D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                       DIM20-7, NCRA20(1), VAL20(1), CODRET, ' ')
@@ -1017,7 +1176,7 @@ C =====================================================================
             ENDIF
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            3, NCRA20(12), VAL20(12), CODRET, ' ')
+     &                            6, NCRA20(12), VAL20(12), CODRET, ' ')
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
      &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
@@ -1050,6 +1209,9 @@ C DEFINIE DANS LE FICHIER DE COMMANDE
             ISOT(1) = VAL20(12)
             ISOT(2) = VAL20(13)
             ISOT(3) = VAL20(14)
+            ISOT(4) = VAL20(15)
+            ISOT(5) = VAL20(16)
+            ISOT(6) = VAL20(17)
          ELSE IF (THMC.EQ.'LIQU_VAPE') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_VAPE -------------------------------
@@ -1070,11 +1232,13 @@ C
             VAL22(11) = 1.0D0
 C
 C       INITIALISATION POUR L'ANISOTROPIE
-C
             VAL22(5) = 1.0D0
             VAL22(21) = 1.0D0
             VAL22(22) = 1.0D0
             VAL22(23) = 1.0D0
+            VAL22(24) = 0.D0
+            VAL22(25) = 0.D0
+            VAL22(26) = 0.D0
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                                   4, NCRA22, VAL22, CODRET, ' ')
             IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')) THEN
@@ -1135,7 +1299,7 @@ C =====================================================================
      &                           2, NCRA22(11), VAL22(11), CODRET, ' ')
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            3, NCRA22(21), VAL22(21), CODRET, ' ')
+     &                            6, NCRA22(21), VAL22(21), CODRET, ' ')
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
      &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
@@ -1175,6 +1339,9 @@ C DEFINIE DANS LE FICHIER DE COMMANDE
             ISOT(1) = VAL22(21)
             ISOT(2) = VAL22(22)
             ISOT(3) = VAL22(23)
+            ISOT(4) = VAL22(24)
+            ISOT(5) = VAL22(25)
+            ISOT(6) = VAL22(26)
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL U2MESS('F','ALGORITH10_91')
             ENDIF
@@ -1206,6 +1373,9 @@ C
             VAL25(27) = 1.0D0
             VAL25(28) = 1.0D0
             VAL25(29) = 1.0D0
+            VAL25(30) = 0.0D0
+            VAL25(31) = 0.0D0
+            VAL25(32) = 0.0D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                                   4, NCRA25, VAL25, CODRET, ' ')
@@ -1285,6 +1455,12 @@ C
             VALPAR(2) =  P2
             VALPAR(3) =  VAL25(14)
 C
+C           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT
+C
+            VAL25(30) = 0.D0
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, NOMPAR(3), VALPAR(3),
+     &                          1, NCRA25(33), VAL25(33), CODRET, ' ')
+C
 C INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
 C
             VAL25(22) = 1.0D0
@@ -1301,7 +1477,7 @@ C
 
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            3, NCRA25(27), VAL25(27), CODRET, ' ')
+     &                            6, NCRA25(27), VAL25(27), CODRET, ' ')
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
      &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
@@ -1335,6 +1511,7 @@ C
             FICK    = VAL25(21)*VAL25(22)*VAL25(23)*VAL25(24)
             DFICKT  = VAL25(25)*VAL25(22)*VAL25(23)*VAL25(24)
             DFICKG  = VAL25(26)*VAL25(21)*VAL25(22)*VAL25(24)
+            DFICKS  = VAL25(21)*VAL25(22)*VAL25(23)*VAL25(33)
             UNSURK  = VAL26( 1)
             VISCL   = VAL26( 2)
             DVISCL  = VAL26( 3)
@@ -1346,12 +1523,16 @@ C
             ISOT(1) = VAL25(27)
             ISOT(2) = VAL25(28)
             ISOT(3) = VAL25(29)
+            ISOT(4) = VAL25(30)
+            ISOT(5) = VAL25(31)
+            ISOT(6) = VAL25(32)
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL U2MESS('F','ALGORITH10_91')
             ENDIF
+            
          ELSE IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
 C =====================================================================
-C --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE provisoire--------------
+C --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE PROVISOIRE--------------
 C =====================================================================
             DO 251 II = 1, DIM40
                VAL40(II) = 0.0D0
@@ -1377,6 +1558,11 @@ C
             VAL40(32) = 1.0D0
             VAL40(33) = 1.0D0
             VAL40(34) = 1.0D0
+
+            VAL40(35) = 0.0D0
+            VAL40(36) = 0.0D0
+            VAL40(37) = 0.0D0
+            
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                                   4, NCRA40, VAL40, CODRET, ' ')
             IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_VGM') THEN
@@ -1462,6 +1648,15 @@ C
             VALPAR(1) =  PVP
             VALPAR(2) =  P2
             VALPAR(3) =  VAL40(14)
+            
+
+C
+C           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT
+C
+            VAL40(35) = 0.D0            
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, NOMPAR(3), VALPAR(3),
+     &                          1, NCRA40(38), VAL40(38), CODRET, ' ')
+     
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 3, NOMPAR, VALPAR,
      &                          3, NCRA40(22), VAL40(22), CODRET, ' ')
             NOMPAR(1) = 'TEMP'
@@ -1494,7 +1689,8 @@ C
      &                          1, NCRA40(31), VAL40(31), CODRET, ' ')
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            3, NCRA40(32), VAL40(32), CODRET, ' ')
+     &                            6, NCRA40(32), VAL40(32), CODRET, ' ')
+
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
      &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
@@ -1528,6 +1724,7 @@ C
             FICK = VAL40(21)*VAL40(22)*VAL40(23)*VAL40(24)
             DFICKT= VAL40(25) * VAL40(22)*VAL40(23)*VAL40(24)
             DFICKG = VAL40(26)* VAL40(21)*VAL40(22)*VAL40(24)
+            DFICKS = VAL40(21)*VAL40(22)*VAL40(23)*VAL40(38)
             FICKAD = VAL40(27)*VAL40(28)*VAL40(29)*VAL40(30)
             DFADT= VAL40(31)*VAL40(28)*VAL40(29)*VAL40(30)
 C
@@ -1542,9 +1739,200 @@ C
             ISOT(1) = VAL40(32)
             ISOT(2) = VAL40(33)
             ISOT(3) = VAL40(34)
+            ISOT(4) = VAL40(35)
+            ISOT(5) = VAL40(36)
+            ISOT(6) = VAL40(37)
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL U2MESS('F','ALGORITH10_91')
             ENDIF
+
+         ELSE IF (THMC.EQ.'LIQU_AD_GAZ') THEN
+C =====================================================================
+C --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ--------------
+C =====================================================================
+            DO 9251 II = 1, DIM40
+               VAL40(II) = 0.0D0
+ 9251        CONTINUE
+            DO 9261 II = 1, DIM41
+               VAL41(II) = 0.0D0
+ 9261        CONTINUE
+            DO 9271 II = 1, DIM42
+               VAL42(II) = 0.0D0
+ 9271        CONTINUE
+C
+C       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
+C
+            VAL40(9)  = 1.0D0
+            VAL40(11) = 1.0D0
+C
+C       INITIALISATION POUR L'ANISOTROPIE
+C
+            VAL40(5)  = 1.0D0
+            VAL40(32) = 1.0D0
+            VAL40(33) = 1.0D0
+            VAL40(34) = 1.0D0
+
+            VAL40(35) = 0.0D0
+            VAL40(36) = 0.0D0
+            VAL40(37) = 0.0D0
+            
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
+     &                                   4, CRAD40, VAL40, CODRET, ' ')
+            IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_VGM') THEN
+               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
+     &                               1, CRAD40(5), VAL40(5),CODRET,' ')
+            ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
+               IF ( (MECA.EQ.'MAZARS')          .OR.
+     &              (MECA.EQ.'ENDO_ISOT_BETON')      ) THEN
+C =====================================================================
+C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
+C =====================================================================
+                  CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
+     &                            1, CRAD40(6), VAL40(5), CODRET, 'FM')
+               ENDIF
+            ENDIF
+            CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
+     &                                   3, CRAD41, VAL41, CODRET, ' ')
+            CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
+     &                                   3, CRAD42, VAL42, CODRET, ' ')
+            IF (THER.NE.' ') THEN
+               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
+     &                           1, CRAD40(7), VAL40(7), CODRET, 'FM')
+               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
+     &                           1, CRAD40(8), VAL40(8), CODRET, ' ')
+               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
+     &                           2, CRAD40(9), VAL40(9), CODRET, ' ')
+               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
+     &                           1, CRAD40(13), VAL40(13), CODRET, ' ')
+               CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
+     &                     DIM41-3, CRAD41(4), VAL41(4), CODRET, 'FM')
+            ENDIF
+            IF (HYDR.EQ.'HYDR_VGM') THEN
+               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
+     &                     5, NVG(1), VG(1), CODRET, 'FM')
+               IF (CODRET(1).EQ.'NO') THEN
+                  CALL U2MESS('F','ALGORITH16_94')
+               ENDIF
+               CALL SATUVG(VG,P1,VAL40(14),VAL40(15))
+               CALL PERMVG(VG,VAL40(14),VAL40(16),VAL40(17),
+     &             VAL40(18), VAL40(19))
+               VAL40(20) = 0.D0
+
+C
+            ELSEIF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
+               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
+     &                          2, CRAD40(14), VAL40(14), CODRET, 'FM')
+            ELSE
+               CALL SATURA(HYDR,P1,VAL40(14),VAL40(15))
+            ENDIF
+            NOMPAR(1) = 'SAT'
+            NOMPAR(2) = 'PGAZ'
+            NOMPAR(3) = 'TEMP'
+            VALPAR(1) =  VAL40(14)
+            VALPAR(2) =  P2
+            VALPAR(3) =  T
+            IF(HYDR.NE.'HYDR_VGM')THEN
+              CALL RCVALA(IMATE,' ', 'THM_DIFFU', 3, NOMPAR, VALPAR,
+     &                          5, CRAD40(16), VAL40(16), CODRET, 'FM')
+            ENDIF
+            IF (THER.NE.' ') THEN
+                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'SAT', VALPAR(1),
+     &                           2, CRAD40(11), VAL40(11), CODRET, ' ')
+            ENDIF
+C
+            NOMPAR(1) = 'PVAP'
+            NOMPAR(2) = 'PGAZ'
+            NOMPAR(3) = 'SAT'
+            VALPAR(1) =  PVP
+            VALPAR(2) =  P2
+            VALPAR(3) =  VAL40(14)
+            
+
+C
+C           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT
+C
+            VAL40(35) = 0.D0 
+C
+C    RECUPERATION DES FONCTIONS FICK AIR DISSOUS ET LEURS DERIVEES
+C
+            NOMPAR(1) = 'TEMP'
+            NOMPAR(2) = 'PAD'
+            NOMPAR(3) = 'PLIQ'
+            NOMPAR(4) = 'SAT'
+            VALPAR(1) =  T
+            VALPAR(2) =  PAD
+            VALPAR(3) =  P2-P1
+            VALPAR(4) =  VAL40(14)
+C
+C INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
+C
+            VAL40(28) = 1.0D0
+            VAL40(29) = 1.0D0
+            VAL40(30) = 1.0D0
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 4, NOMPAR, VALPAR,
+     &                          4, CRAD40(27), VAL40(27), CODRET, ' ')
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
+     &                          1, CRAD40(31), VAL40(31), CODRET, ' ')
+C
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
+     &                            6, CRAD40(32), VAL40(32), CODRET, ' ')
+
+            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
+     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
+C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
+C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
+C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
+C DEFINIE DANS LE FICHIER DE COMMANDE            
+            IF (CODRET(1).EQ.'NO') THEN
+                FPESA=1.D0
+            ENDIF 
+            RGAZ    = VAL40( 1)
+            PESA(1) = VAL40( 2)*FPESA
+            PESA(2) = VAL40( 3)*FPESA
+            PESA(3) = VAL40( 4)*FPESA
+            PERMFH  = VAL40( 5)
+            LAMBT   = VAL40( 7)
+            DLAMBT  = VAL40( 8)
+            LAMBP   = VAL40( 9)
+            DLAMBP  = VAL40(10)
+            LAMBS   = VAL40(11)
+            DLAMBS  = VAL40(12)
+            LAMBCT  = VAL40(13)
+            SATUR   = VAL40(14)
+            DSATUR  = VAL40(15)
+            PERMLI  = VAL40(16)
+            DPERML  = VAL40(17)
+            PERMGZ  = VAL40(18)
+            DPERMS  = VAL40(19)
+            DPERMP  = VAL40(20)
+C
+            FICK = VAL40(21)*VAL40(22)*VAL40(23)*VAL40(24)
+            DFICKT= VAL40(25) * VAL40(22)*VAL40(23)*VAL40(24)
+            DFICKG = VAL40(26)* VAL40(21)*VAL40(22)*VAL40(24)
+            DFICKS = VAL40(21)*VAL40(22)*VAL40(23)*VAL40(38)
+            FICKAD = VAL40(27)*VAL40(28)*VAL40(29)*VAL40(30)
+            DFADT= VAL40(31)*VAL40(28)*VAL40(29)*VAL40(30)
+C
+            UNSURK  = VAL41( 1)
+            VISCL   = VAL41( 2)
+            DVISCL  = VAL41( 3)
+            ALPHA   = VAL41( 4)
+            MAMOLG  = VAL42( 1)
+            VISCG   = VAL42( 2)
+            DVISCG  = VAL42( 3)
+            MAMOLV  = VAL43( 1)
+            ISOT(1) = VAL40(32)
+            ISOT(2) = VAL40(33)
+            ISOT(3) = VAL40(34)
+            ISOT(4) = VAL40(35)
+            ISOT(5) = VAL40(36)
+            ISOT(6) = VAL40(37)
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL U2MESS('F','ALGORITH10_91')
+            ENDIF
+            
+            
          ELSE IF (THMC.EQ.'LIQU_GAZ') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_GAZ --------------------------------
@@ -1570,6 +1958,9 @@ C
             VAL29(21) = 1.0D0
             VAL29(22) = 1.0D0
             VAL29(23) = 1.0D0
+            VAL29(24) = 0.0D0
+            VAL29(25) = 0.0D0
+            VAL29(26) = 0.0D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                                   4, NCRA29, VAL29, CODRET, ' ')
@@ -1631,7 +2022,7 @@ C =====================================================================
      &                           2, NCRA29(11), VAL29(11), CODRET, ' ')
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            3, NCRA29(21), VAL29(21), CODRET, ' ')
+     &                            6, NCRA29(21), VAL29(21), CODRET, ' ')
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
      &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
@@ -1671,6 +2062,9 @@ C DEFINIE DANS LE FICHIER DE COMMANDE
             ISOT(1) = VAL29(21)
             ISOT(2) = VAL29(22)
             ISOT(3) = VAL29(23)
+            ISOT(4) = VAL29(24)
+            ISOT(5) = VAL29(25)
+            ISOT(6) = VAL29(26)
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL U2MESS('F','ALGORITH10_91')
             ENDIF
@@ -1696,6 +2090,9 @@ C
             VAL32(17) = 1.0D0
             VAL32(18) = 1.0D0
             VAL32(19) = 1.0D0
+            VAL32(20) = 0.0D0
+            VAL32(21) = 0.0D0
+            VAL32(22) = 0.0D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      &                                   3, NCRA32, VAL32, CODRET, ' ')
@@ -1745,7 +2142,7 @@ C =====================================================================
      &                           2, NCRA32(11), VAL32(11), CODRET, ' ')
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            3, NCRA32(17), VAL32(17), CODRET, ' ')
+     &                            6, NCRA32(17), VAL32(17), CODRET, ' ')
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
      &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
@@ -1778,6 +2175,9 @@ C DEFINIE DANS LE FICHIER DE COMMANDE
             ISOT(1) = VAL32(17)
             ISOT(2) = VAL32(18)
             ISOT(3) = VAL32(19)
+            ISOT(4) = VAL32(20)
+            ISOT(5) = VAL32(21)
+            ISOT(6) = VAL32(22)
             IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
                CALL U2MESS('F','ALGORITH10_91')
             ENDIF

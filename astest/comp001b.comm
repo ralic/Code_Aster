@@ -1,6 +1,7 @@
-# MODIF  DATE 14/01/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D ISOT_TRAC
+# comp001b.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +42,7 @@ YOUNG_Pa = YOUNG * C_Pa
 #
 A7=DEFI_FONCTION( 
              NOM_PARA='EPSI',
-         PROL_DROITE='EXCLU',
+         PROL_DROITE='CONSTANT',
          PROL_GAUCHE='EXCLU',
                  VALE=(
           2.185E-3       ,437.E+6       ,
@@ -151,6 +152,7 @@ for i in range(Ncal):
         RES2[i]=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-8,),
                    MODELISATION='C_PLAN',
+                   SUPPORT='ELEMENT',
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
@@ -255,7 +257,7 @@ for i in range(Ncal):
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[imat],  
-                   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
+                   ARCHIVAGE = _F(LIST_INST = temps_ar),
                    INCREMENT=_F(LIST_INST=temps,),
                  #  THER=_F(INST_IMP= inst_th, TEMP_IMP= temp_th, OPTION = opt_ther,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
@@ -305,6 +307,24 @@ prec_zero=[1.E-10, 0.01, 0.01]
 ch_param2=['V1','VMIS','TRACE']
 TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
 
+# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
+TEST_TABLE(TABLE=R_SI[0],
+           NOM_PARA='V1_Pa_1',VALE=4.73178E-02,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[1],
+           NOM_PARA='VMIS_Pa_1',VALE=5.66318E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[3],
+           NOM_PARA='SIXX_Pa_1',VALE=1.24288E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+
+
 # Test de la matrice tangente sur le calcul le plus fin
 
 N = N_pas[Ncal-1]
@@ -318,7 +338,7 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
-RESU_TGT=SIMU_POINT_MAT(
+RESU_TGT=SIMU_POINT_MAT( INFO=1,
                    COMP_INCR=_F(RELATION=compor,                
                                 TYPE_MATR_TANG='VERIFICATION',
                                 VALE_PERT_RELA=1.E-5,
@@ -354,11 +374,10 @@ TEST_TABLE(TABLE=DIFF_MAT,
 for i in range(len(ch_param)):
         IMPR_TABLE(TABLE=R_SI[i])
         
-for i in range(len(ch_param2D)):
-        IMPR_TABLE(TABLE=R_SI2[i])
-        
 
 IMPR_TABLE(TABLE=DIFF_MAT)
+
+
 
 FIN();
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE GENIAUT S.GENIAUT
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISCOCHAB
 # comp002i.para = tps_job 250 mem_job 512Mo mem_aster 20 ncpus 1 liste_test R
@@ -248,12 +248,9 @@ for i in range(Ncal):
                           NEWTON      =_F(MATRICE='TANGENTE',REAC_ITER=1),
                           CONVERGENCE =_F(ITER_GLOB_MAXI=10,),
                           MATER       = ACIER[imat],  
-                          ARCHIVAGE   =_F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
-                          INCREMENT   =_F(LIST_INST=DEFLIST,
-#                                          SUBD_METHODE='EXTRAPOLE',
-#                                          SUBD_NIVEAU=10,
-#                                          SUBD_PAS=10,
-                                          ),
+                          ARCHIVAGE   =_F(LIST_INST = temps_ar),
+                        #  INCREMENT   =_F(LIST_INST=temps),
+                          INCREMENT   =_F(LIST_INST=DEFLIST,),
                           EPSI_IMPOSE =_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                           EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
                          INFO=1);
@@ -273,6 +270,7 @@ for i in range(Ncal):
    IMPR_TABLE(TABLE=R_SI[i])
         
 
+IMPR_TABLE(TABLE=RESU[0])
 
 # Test de la matrice tangente sur le calcul le plus fin
 
@@ -317,5 +315,28 @@ TEST_TABLE(TABLE=DIFF_MAT,
            CRITERE='ABSOLU',
            PRECISION=prec_tgt,
            REFERENCE='ANALYTIQUE',);     
+
+                
+# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
+TEST_TABLE(TABLE=R_SI[0],
+           NOM_PARA='V13_Pa_1',VALE=1.26418E-02,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[1],
+           NOM_PARA='VMIS_Pa_1',VALE=7.19733E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[3],
+           NOM_PARA='V16_Pa_1',VALE=-3.516423E-03,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+           
+TEST_TABLE(TABLE=R_SI[4],
+           NOM_PARA='SIXX_Pa_1',VALE=1.54275E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
 
 FIN()

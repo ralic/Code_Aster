@@ -1,4 +1,4 @@
-# MODIF  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UN CUBE - 3D
 # ssnv187c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,7 +41,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MAIL=DEFI_GROUP(reuse =MAIL,
                     MAILLAGE=MAIL,
                     CREA_GROUP_MA=_F(GROUP_MA='GM22',
-                                     NOM='SURF_HAUT'),                
+                                     NOM='SURF_HAU'),                
                     );
 
 MAIL=DEFI_GROUP(reuse =MAIL,
@@ -64,10 +64,10 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
 
                     
 MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
-                   ORIE_PEAU_3D=_F(GROUP_MA='SURF_HAUT',),)
+                   ORIE_PEAU_3D=_F(GROUP_MA='SURF_HAU',),)
                     
 FORCE=AFFE_CHAR_MECA(MODELE=MODELE,
-                     PRES_REP=_F(GROUP_MA='SURF_HAUT',
+                     PRES_REP=_F(GROUP_MA='SURF_HAU',
                                  PRES=0.876,),);
 
 DEPL=AFFE_CHAR_MECA(MODELE=MODELE,

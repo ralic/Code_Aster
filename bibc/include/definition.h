@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF definition include  DATE 03/11/2008   AUTEUR PELLET J.PELLET */
+/* MODIF definition include  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2006  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -154,10 +154,14 @@
 #define CALLSPPPPPPS(UN,LN,a,b,c,d,e,f,g,h)                    F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,strlen(a),strlen(h))
 #define DEFSPPPPPSS(UN,LN,a,la,b,c,d,e,f,g,lg,h,lh)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,la,lg,lh)
 #define CALLSPPPPPSS(UN,LN,a,b,c,d,e,f,g,h)                       F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,strlen(a),strlen(g),strlen(h))
+#define DEFSPPSPPPP(UN,LN,a,la,b,c,d,ld,e,f,g,h)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,la,ld)
+#define CALLSPPSPPPP(UN,LN,a,b,c,d,e,f,g,h)                    F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,strlen(a),strlen(d))
 #define DEFSSPSPPPP(UN,LN,a,la,b,lb,c,d,ld,e,f,g,h)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,la,lb,ld)
 #define CALLSSPSPPPP(UN,LN,a,b,c,d,e,f,g,h)                       F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,strlen(a),strlen(b),strlen(d))
 #define DEFPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i)
 #define CALLPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i)
+#define DEFSPPSPPPSP(UN,LN,a,la,b,c,d,ld,e,f,g,h,lh,i)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,la,ld,lh)
+#define CALLSPPSPPPSP(UN,LN,a,b,c,d,e,f,g,h,i)                       F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,strlen(a),strlen(d),strlen(h))
 #define DEFSSSPSPPPP(UN,LN,a,la,b,lb,c,lc,d,e,le,f,g,h,i)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,la,lb,lc,le)
 #define CALLSSSPSPPPP(UN,LN,a,b,c,d,e,f,g,h,i)                          F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,strlen(a),strlen(b),strlen(c),strlen(e))
 #define DEFPPPPPPSSSP(UN,LN,a,b,c,d,e,f,g,lg,h,lh,i,li,j)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,lg,lh,li)
@@ -261,10 +265,14 @@
 #define CALLSPPPPPPS(UN,LN,a,b,c,d,e,f,g,h)                    F_FUNC(UN,LN)(a,strlen(a),b,c,d,e,f,g,h,strlen(h))
 #define DEFSPPPPPSS(UN,LN,a,la,b,c,d,e,f,g,lg,h,lh)               STDCALL(UN,LN)(a,la,b,c,d,e,f,g,lg,h,lh)
 #define CALLSPPPPPSS(UN,LN,a,b,c,d,e,f,g,h)                       F_FUNC(UN,LN)(a,strlen(a),b,c,d,e,f,g,strlen(g),h,strlen(h))
+#define DEFSPPSPPPP(UN,LN,a,la,b,c,d,ld,e,f,g,h)               STDCALL(UN,LN)(a,la,b,c,d,ld,e,f,g,h)
+#define CALLSPPSPPPP(UN,LN,a,b,c,d,e,f,g,h)                    F_FUNC(UN,LN)(a,strlen(a),b,c,d,strlen(d),e,f,g,h)
 #define DEFSSPSPPPP(UN,LN,a,la,b,lb,c,d,ld,e,f,g,h)               STDCALL(UN,LN)(a,la,b,lb,c,d,ld,e,f,g,h)
 #define CALLSSPSPPPP(UN,LN,a,b,c,d,e,f,g,h)                       F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,strlen(d),e,f,g,h)
 #define DEFPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i)
 #define CALLPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i)
+#define DEFSPPSPPPSP(UN,LN,a,la,b,c,d,ld,e,f,g,h,lh,i)               STDCALL(UN,LN)(a,la,b,c,d,ld,e,f,g,h,lh,i)
+#define CALLSPPSPPPSP(UN,LN,a,b,c,d,e,f,g,h,i)                       F_FUNC(UN,LN)(a,strlen(a),b,c,d,strlen(d),e,f,g,h,strlen(h),i)
 #define DEFSSSPSPPPP(UN,LN,a,la,b,lb,c,lc,d,e,le,f,g,h,i)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,e,le,f,g,h,i)
 #define CALLSSSPSPPPP(UN,LN,a,b,c,d,e,f,g,h,i)                          F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,e,strlen(e),f,g,h,i)
 #define DEFPPPPPPSSSP(UN,LN,a,b,c,d,e,f,g,lg,h,lh,i,li,j)               STDCALL(UN,LN)(a,b,c,d,e,f,g,lg,h,lh,i,li,j)

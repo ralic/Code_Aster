@@ -1,15 +1,20 @@
-      SUBROUTINE ITGTHM(MODINT,MECANI,PRESS1,PRESS2,TEMPE,NDIM,NNO,
-     &                  NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
-     &                  IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
+      SUBROUTINE ITGTHM(VF,TYPVF,MODINT,MECANI,
+     >                  PRESS1,PRESS2,TEMPE,NDIM,NNO,
+     >                  NNOS,NNOM,NFACE,NPI,NPG,
+     >                  NDDLS,NDDLK,NDDLM,NDDLFA,DIMUEL,
+     >                  IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO)
       IMPLICIT     NONE
+      LOGICAL      VF
+      INTEGER      TYPVF
       INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
-      INTEGER      NDIM,NNO,NNO2,NNOS,NNOM,NPI,NPG,NDDLS,NDDLM
+      INTEGER      NDIM,NNO,NNO2,NNOS,NNOM,NFACE
+      INTEGER      NPI,NPG,NDDLS,NDDLFA,NDDLM,NDDLK
       INTEGER      DIMUEL,IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO
       CHARACTER*3  MODINT
       CHARACTER*8  ELREFE,ELREF2
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,14 +37,19 @@ C ======================================================================
 C --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 C --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 C ======================================================================
-C AXI       AXISYMETRIQUE?
-C TYPMOD    MODELISATION (D_PLAN, AXI, 3D ?)
+C VF        .TRUE. SI VF
+C TYPVF  TYPE DE VF : 1  = TPFA (FLUX A DEUX POINTS)
+C        	      2  = SUSHI AVEC VOISIN DECENTRE MAILLE (SUDM)
+C        	      3  = SUSHI AVEC VOISIN DECENTRE ARETE (SUDA)
+C        	      4  = SUSHI AVEC VOISIN CENTRE  (SUC)
 C MODINT    METHODE D'INTEGRATION (CLASSIQUE,LUMPEE(D),REDUITE(R) ?)
 C NNO       NB DE NOEUDS DE L'ELEMENT
 C NNOS      NB DE NOEUDS SOMMETS DE L'ELEMENT
-C NNOM      NB DE NOEUDS MILIEUX DE L'ELEMENT
+C NFACE     NB DE FACES AU SENS BRD DE DIM DIM-1 NE SERT QU EN VF
+C NNOM      NB DE NOEUDS MILIEUX DE FACE OU D ARRETE NE SERT QU EN EF 
 C NDDLS     NB DE DDL SUR LES SOMMETS
-C NDDLM     NB DE DDL SUR LES MILIEUX
+C NDDLM     NB DE DDL SUR LES MILIEUX DE FACE OU D ARETE - QU EN EF
+C NDDLFA    NB DE DDL SUR LES FACE DE DIMENSION DIM-1 NE SERT QU EN VF
 C NPI       NB DE POINTS D'INTEGRATION DE L'ELEMENT
 C NPG       NB DE POINTS DE GAUSS     POUR CLASSIQUE(=NPI)
 C                 SOMMETS             POUR LUMPEE   (=NPI=NNOS)
@@ -50,23 +60,35 @@ C DIMCON    DIMENSION DES CONTRAINTES GENERALISEES ELEMENTAIRES
 C DIMDEF    DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES
 C IVF       FONCTIONS DE FORMES QUADRATIQUES
 C IVF2      FONCTIONS DE FORMES LINEAIRES
-C ======================================================================
+C =====================================================================
       INTEGER      NNOS2,NPI2,IBID
-C ======================================================================
+C =====================================================================
       CALL ELREF1(ELREFE)
-      IF ( ELREFE.EQ.'TR6') THEN
+      IF ( .NOT.VF) THEN
+       IF ( ELREFE.EQ.'TR6') THEN
          ELREF2 = 'TR3'
-      ELSEIF ( ELREFE.EQ.'QU8') THEN
+       ELSEIF ( ELREFE.EQ.'QU8') THEN
          ELREF2 = 'QU4'
-      ELSEIF ( ELREFE.EQ.'H20') THEN
+       ELSEIF ( ELREFE.EQ.'H20') THEN
          ELREF2 = 'HE8'
-      ELSEIF ( ELREFE.EQ.'P15') THEN
+       ELSEIF ( ELREFE.EQ.'P15') THEN
          ELREF2 = 'PE6'
-      ELSEIF ( ELREFE.EQ.'T10') THEN
+       ELSEIF ( ELREFE.EQ.'T10') THEN
          ELREF2 = 'TE4'
+       ELSE
+         CALL U2MESK('F','DVP_9',1,ELREFE)
+       ENDIF
       ELSE
-         CALL U2MESK('F','DVP_4',1,ELREFE)
-      ENDIF
+       IF ( ELREFE.EQ.'TR7') THEN
+         ELREF2 = 'TR3'
+       ELSEIF ( ELREFE.EQ.'QU9') THEN
+         ELREF2 = 'QU4'
+       ELSEIF ( ELREFE.EQ.'H27') THEN
+         ELREF2 = 'HE8'
+       ELSE
+         CALL U2MESK('F','DVP_9',1,ELREFE)
+       ENDIF
+      ENDIF 
 C ======================================================================
 C --- FONCTIONS DE FORME P2 POUR L'INTEGRATION MECANIQUE ---------------
 C ======================================================================
@@ -75,23 +97,54 @@ C ======================================================================
 C ======================================================================
 C --- FONCTIONS DE FORME P1 POUR L'HYDRAULIQUE - THERMIQUE -------------
 C ======================================================================
-      CALL ELREF4(ELREF2,'RIGI',NDIM,NNO2,NNOS2,NPI2,IPOID2,IVF2,
+       CALL ELREF4(ELREF2,'RIGI',NDIM,NNO2,NNOS2,NPI2,IPOID2,IVF2,
      &                                                      IDFDE2,IBID)
+       CALL ASSERT(NNOS.EQ.NNO2)
+C ======================================================================
+C --- NFACE EN VF -------------
+C ======================================================================
+      IF ( VF) THEN
+       IF(NDIM.EQ.2) THEN
+         NFACE=NNOS
+       ELSE
+        IF(ELREFE.EQ.'H27') THEN
+         NFACE = 6
+        ELSE IF(ELREFE.EQ.'T9') THEN
+         NFACE = 4
+        ELSE
+          CALL U2MESK('F','VOLUFINI_12', 1 ,ELREFE)
+        ENDIF
+       ENDIF
+      ENDIF        
 C ======================================================================
 C --- POUR METHODES CLASSIQUE ET LUMPEE NPG=NPI
 C ======================================================================
-      NPG    = NPI
-      NDDLS  = MECANI(1)*NDIM + PRESS1(1) + PRESS2(1) + TEMPE(1)
-      NDDLM  = MECANI(1)*NDIM
-      NNOM   = NNO - NNOS
-      DIMUEL = NNOS*NDDLS + NNOM*NDDLM
+      IF (.NOT.VF) THEN
+       NPG    = NPI
+       NDDLS  = MECANI(1)*NDIM + PRESS1(1) + PRESS2(1) + TEMPE(1)
+       NDDLM  = MECANI(1)*NDIM
+       NDDLK  = 0
+       NNOM   = NNO - NNOS
+       DIMUEL = NNOS*NDDLS + NNOM*NDDLM + NDDLK
+      ELSE
+       IF ( TYPVF.EQ.1) THEN
+        NPG    = NPI
+        NDDLS  = 0
+        NDDLFA = 0
+        NDDLK  = PRESS1(1) + PRESS2(1) + TEMPE(1)
+       ELSE IF (( TYPVF.EQ.2).OR.( TYPVF.EQ.3) 
+     >          .OR.( TYPVF.EQ.4)) THEN
+        NPG    = NPI
+        NDDLS  = 0
+        NDDLFA = PRESS1(1) + PRESS2(1) + TEMPE(1)
+        NDDLK  = PRESS1(1) + PRESS2(1) + TEMPE(1)
+       ELSE
+        CALL U2MESG('F','VOLUFINI_9',0,' ',1,TYPVF,0,0.D0)
+       ENDIF
+       DIMUEL = NNOS*NDDLS + NFACE*NDDLFA + NDDLK
+      ENDIF 
 C ======================================================================
 C --- POUR METHODE REDUITE NPI = NPG+NNOS ------------------------------
 C ======================================================================
       IF (MODINT .EQ. 'RED') NPG= NPI-NNOS
-C ======================================================================
-C --- ON VERIFIE LA COHERENCE ENTRE NNOS ET NNO2 -----------------------
-C ======================================================================
-       CALL ASSERT(NNOS.EQ.NNO2)
-C ======================================================================
       END

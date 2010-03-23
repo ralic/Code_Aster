@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 31/03/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF calc_precont_ops Macro  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,12 +85,6 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
       __EVINIT = dEtatInit['EVOL_NOLI']
   else :
       dEtatInit=None
-
-  # Test de la presence de reuse=
-  if self.reuse == None:
-      dReuse=None
-  else :
-      dReuse='RES'
 
   # Teste si INST_INIT est donné ou bien recalcule __TMIN
   if dIncrement['INST_INIT'] == None:
@@ -401,9 +395,8 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                     FONC_MULT=__FCT ),)
 
   motscle4={}
-  if dReuse: motscle4['reuse']=[]
-  else:      motscle4['reuse']=dReuse
-
+  if self.reuse:
+    motscle4['reuse'] = self.reuse
 
   RES=STAT_NON_LINE(
                      MODELE      =MODELE,

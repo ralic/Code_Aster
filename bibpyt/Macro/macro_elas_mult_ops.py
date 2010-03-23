@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF macro_elas_mult_ops Macro  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -197,7 +197,8 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
                                       **motscle2) )
         iocc=iocc+1
 
-
+  if self.reuse:
+    motscles['reuse'] = self.reuse
   nomres=CREA_RESU(OPERATION='AFFE',TYPE_RESU=tyresu,NOM_CHAM='DEPL',**motscles)
 
 #####################################################################

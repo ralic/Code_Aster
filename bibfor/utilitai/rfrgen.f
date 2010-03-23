@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 23/03/2010   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,7 +132,7 @@ C----------------------------------------------------------------------
 C                            P T E M
 C----------------------------------------------------------------------
 C
-      IF ( NOMCHA(1:4) .EQ. 'PTEM') THEN
+      IF ( NOMCHA(1:4) .EQ. 'PTEM' ) THEN
          CALL JEVEUO(RESU//'.PTEM','L',IPAS)
          CALL JELIRA(RESU//'.PTEM','LONMAX',NBPAS,K8B)
          IF (NBPAS.LE.1) THEN
@@ -168,69 +168,92 @@ C                 D E P L   ---   V I T E   ---   A C C E
 C----------------------------------------------------------------------
 C
       ELSE
-         CALL JEVEUO(RESU//'.REFD','L',LREFE1)
-         BASEMO = ZK24(LREFE1+5)(1:8)
-         CALL JEVEUO(BASEMO//'           .REFD','L',LREFE2)
-         MATRAS = ZK24(LREFE2)
          CALL JEVEUO(RESU//'.DESC','L',LDESC)
          NBMODE = ZI(LDESC+1)
-         NOMSY = 'DEPL'
-         IF (MATRAS.NE.' ') THEN
-           CALL VPRECU ( BASEMO, NOMSY,-1,IBID, '&&RFRGEN.VECT.PROPRE',
+         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,1,1, NUMCMP, N1 )
+         IF (NUMCMP.GT.NBMODE) CALL U2MESS('F','UTILITAI4_14')
+         IF ( N1 .NE. 0 ) THEN
+           CALL WKVECT(NOMFON//'.VALE','G V R',2*NBORDR,LVAR)
+           LFON = LVAR + NBORDR
+           IF ( INTRES(1:3) .NE. 'NON' ) THEN
+            CALL JEVEUO(RESU//'.INST','L',IDINSG)
+            CALL JELIRA(RESU//'.INST','LONMAX',NBINSG,K8B)
+            DO 40 IORDR = 0, NBORDR-1
+               CALL EXTRAC ( INTRES,EPSI,CRIT,NBINSG,ZR(IDINSG),
+     &               ZR(JINST+IORDR),ZR(ITRESU),NBMODE,REP,IERD)
+               ZR(LVAR+IORDR) = ZR(JINST+IORDR)
+               ZR(LFON+IORDR) = REP
+ 40         CONTINUE
+           ELSE
+            DO 42 IORDR = 0, NBORDR-1
+               II = ZI(LORDR+IORDR)
+               ZR(LVAR+IORDR) = ZR(JINST+IORDR)
+               ZR(LFON+IORDR) = ZR(ITRESU+NBMODE*(II-1)+NUMCMP-1)
+ 42         CONTINUE
+           ENDIF
+         ELSE
+           CALL JEVEUO(RESU//'.REFD','L',LREFE1)
+           BASEMO = ZK24(LREFE1+5)(1:8)
+           CALL JEVEUO(BASEMO//'           .REFD','L',LREFE2)
+           MATRAS = ZK24(LREFE2)
+           NOMSY = 'DEPL'
+           IF (MATRAS.NE.' ') THEN
+             CALL VPRECU( BASEMO, NOMSY,-1,IBID, '&&RFRGEN.VECT.PROPRE',
      &                   0, K8B, K8B,  K8B, K8B,
      &                   NEQ, MXMODE, TYPE, NBPARI, NBPARR, NBPARK )
-           CALL JEVEUO('&&RFRGEN.VECT.PROPRE','L',IDBASE)
-           IF ( TYPE .NE. 'R' ) THEN
+             CALL JEVEUO('&&RFRGEN.VECT.PROPRE','L',IDBASE)
+             IF ( TYPE .NE. 'R' ) THEN
               CALL U2MESK('F','UTILITAI4_16',1,TYPE)
-           ENDIF
+             ENDIF
 C
-           CALL DISMOI('F','NOM_NUME_DDL',MATRAS,'MATR_ASSE',IBID,NUME,
-     &                 IE)
-           CALL DISMOI('F','NOM_MAILLA'  ,MATRAS,'MATR_ASSE',IBID,NOMA,
-     &                 IE)
-         ELSE
-           NUME = ZK24(LREFE2+3)(1:14)
-           CALL DISMOI('F','NOM_MAILLA',NUME,'NUME_DDL',IBID,NOMA,IE)
-           CALL DISMOI('F','NB_EQUA'   ,NUME,'NUME_DDL',NEQ,K8B,IE)
-           CALL WKVECT('&&RFRGEN.VECT.PROPRE','V V R',NEQ*NBMODE,IDBASE)
-           CALL COPMO2(BASEMO,NEQ,NUME,NBMODE,ZR(IDBASE))
-         ENDIF
-         CALL GETVTX(' ','GROUP_NO',0,1,1,NOGNO,NGN)
-         IF (NGN.NE.0) THEN
-           CALL JENONU(JEXNOM(NOMA//'.GROUPENO',NOGNO),IGN2)
-           IF (IGN2.LE.0)  CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
-           CALL JEVEUO(JEXNUM(NOMA//'.GROUPENO',IGN2),'L',IAGNO)
+             CALL DISMOI('F','NOM_NUME_DDL',MATRAS,'MATR_ASSE',IBID,
+     &                   NUME,IE)
+             CALL DISMOI('F','NOM_MAILLA'  ,MATRAS,'MATR_ASSE',IBID,
+     &                   NOMA,IE)
+           ELSE
+             NUME = ZK24(LREFE2+3)(1:14)
+             CALL DISMOI('F','NOM_MAILLA',NUME,'NUME_DDL',IBID,NOMA,IE)
+             CALL DISMOI('F','NB_EQUA'   ,NUME,'NUME_DDL',NEQ,K8B,IE)
+             CALL WKVECT('&&RFRGEN.VECT.PROPRE','V V R',
+     &                   NEQ*NBMODE,IDBASE)
+             CALL COPMO2(BASEMO,NEQ,NUME,NBMODE,ZR(IDBASE))
+           ENDIF
+           CALL GETVTX(' ','GROUP_NO',0,1,1,NOGNO,NGN)
+           IF (NGN.NE.0) THEN
+             CALL JENONU(JEXNOM(NOMA//'.GROUPENO',NOGNO),IGN2)
+             IF (IGN2.LE.0)  CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
+             CALL JEVEUO(JEXNUM(NOMA//'.GROUPENO',IGN2),'L',IAGNO)
 
-           INO = ZI(IAGNO)
-           CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO),NOEUD)
-         ENDIF
-         CALL POSDDL('NUME_DDL',NUME,NOEUD,CMP,INOEUD,IDDL)
-         IF ( INOEUD .EQ. 0 ) THEN
-            LG1 = LXLGUT(NOEUD)
-            CALL U2MESK('F','UTILITAI_92',1,NOEUD(1:LG1))
-         ELSEIF ( IDDL .EQ. 0 ) THEN
+             INO = ZI(IAGNO)
+             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO),NOEUD)
+           ENDIF
+           CALL POSDDL('NUME_DDL',NUME,NOEUD,CMP,INOEUD,IDDL)
+           IF ( INOEUD .EQ. 0 ) THEN
+              LG1 = LXLGUT(NOEUD)
+              CALL U2MESK('F','UTILITAI_92',1,NOEUD(1:LG1))
+           ELSEIF ( IDDL .EQ. 0 ) THEN
             LG1 = LXLGUT(NOEUD)
             LG2 = LXLGUT(CMP)
-           VALK(1) = CMP(1:LG2)
-           VALK(2) = NOEUD(1:LG1)
-           CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
-         ENDIF
+             VALK(1) = CMP(1:LG2)
+             VALK(2) = NOEUD(1:LG1)
+             CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
+           ENDIF
 C
 C        --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
-         NFONCT = 0
-         CALL GETVID(' ','ACCE_MONO_APPUI',1,1,1,FONCT,NFONCT)
-         IF (NFONCT.NE.0) THEN
+           NFONCT = 0
+           CALL GETVID(' ','ACCE_MONO_APPUI',1,1,1,FONCT,NFONCT)
+           IF (NFONCT.NE.0) THEN
             IF (NOMCHA(1:4).NE.'ACCE') THEN
 C           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
             CALL U2MESS('F','UTILITAI4_26')
                GOTO 9999
             ENDIF
             ZK24(LPRO+3)(5:8) = '_ABS'
-         ENDIF
+           ENDIF
 C        --------------------------------------------------------------
-         CALL WKVECT(NOMFON//'.VALE','G V R',2*NBORDR,LVAR)
-         LFON = LVAR + NBORDR
-         IF ( INTRES(1:3) .NE. 'NON' ) THEN
+           CALL WKVECT(NOMFON//'.VALE','G V R',2*NBORDR,LVAR)
+           LFON = LVAR + NBORDR
+           IF ( INTRES(1:3) .NE. 'NON' ) THEN
             CALL JEVEUO(RESU//'.INST','L',IDINSG)
             CALL JELIRA(RESU//'.INST','LONMAX',NBINSG,K8B)
             CALL WKVECT('&&RFRGEN.VECTGENE','V V R',NBMODE,IDVECG)
@@ -243,7 +266,7 @@ C        --------------------------------------------------------------
  50         CONTINUE
             CALL JEDETR('&&RFRGEN.VECTGENE')
 C
-         ELSE
+           ELSE
             DO 52 IORDR = 0, NBORDR-1
                II = ZI(LORDR+IORDR)
                CALL MDGEP2(NEQ,NBMODE,ZR(IDBASE),
@@ -251,34 +274,35 @@ C
                ZR(LVAR+IORDR) = ZR(JINST+IORDR)
                ZR(LFON+IORDR) = REP
  52         CONTINUE
-         ENDIF
-         MONMOT(1) = 'NON'
-         MONMOT(2) = 'NON'
-         NONMOT   = 'NON'
-         CALL GETVTX(' ','MULT_APPUI',1,1,1,MONMOT(1),N1)
-         CALL GETVTX(' ','CORR_STAT',1,1,1,MONMOT(2),N2)
-         IF ( MONMOT(1).EQ.'OUI' .OR. MONMOT(2).EQ.'OUI' ) NONMOT='OUI'
-         IF ( NONMOT(1:3) .EQ. 'OUI' ) THEN
-            CALL JEVEUO(RESU//'.F'//NOMCHA(1:3),'L',JFON)
-            CALL JEVEUO(RESU//'.IPSD','L',IPSDEL)
-            CALL JELIRA(RESU//'.F'//NOMCHA(1:3),'LONMAX',NBEXCI,K8B)
-            NBEXCI = NBEXCI / 2
-            DO 100 IORDR = 0, NBORDR-1
+           ENDIF
+           MONMOT(1) = 'NON'
+           MONMOT(2) = 'NON'
+           NONMOT   = 'NON'
+           CALL GETVTX(' ','MULT_APPUI',1,1,1,MONMOT(1),N1)
+           CALL GETVTX(' ','CORR_STAT',1,1,1,MONMOT(2),N2)
+           IF (MONMOT(1).EQ.'OUI'.OR.MONMOT(2).EQ.'OUI') NONMOT='OUI'
+           IF (NONMOT(1:3) .EQ. 'OUI') THEN
+              CALL JEVEUO(RESU//'.F'//NOMCHA(1:3),'L',JFON)
+              CALL JEVEUO(RESU//'.IPSD','L',IPSDEL)
+              CALL JELIRA(RESU//'.F'//NOMCHA(1:3),'LONMAX',NBEXCI,K8B)
+              NBEXCI = NBEXCI / 2
+              DO 100 IORDR = 0, NBORDR-1
                CALL MDGEP4 (NEQ, NBEXCI, ZR(IPSDEL), ZR(LVAR+IORDR),
      &                                   ZK8(JFON), IDDL, REP)
                ZR(LFON+IORDR) = ZR(LFON+IORDR) + REP
- 100        CONTINUE
-         ENDIF
-         CALL JEDETR( '&&RFRGEN.VECT.PROPRE' )
+ 100          CONTINUE
+           ENDIF
+           CALL JEDETR( '&&RFRGEN.VECT.PROPRE' )
 C
 C        --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT ---
-         IF (NFONCT.NE.0) THEN
+           IF (NFONCT.NE.0) THEN
             DO 110 I = 0, NBORDR-1
                IRET = 0
                CALL FOINTE('F',FONCT,1,'INST',ZR(JINST+I),ALPHA,IER)
 C              --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT ---
                ZR(LFON+I) = ZR(LFON+I) + ALPHA
  110        CONTINUE
+           ENDIF
          ENDIF
 C     ---------------------------------------------------------------
       ENDIF
@@ -288,7 +312,7 @@ C     ---------------------------------------------------------------
 C
       CALL FOATTR(' ',1,NOMFON)
 C
-C     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
+C     --- VERIFICATION QU'ON A BIEN CREE UNE FONCTION ---
 C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
       CALL ORDONN(NOMFON,NOMCMD,0)
 C

@@ -1,13 +1,8 @@
-      SUBROUTINE POSVAR (COMPOR,NDIM,VARI,NUME)
-      IMPLICIT NONE
-      CHARACTER*16 COMPOR(*)
-      CHARACTER*24 VARI
-      CHARACTER*24 VALK(2)
-      INTEGER NDIM, NUME
+      SUBROUTINE POSVAR(COMPOR,NDIM,VARI,NUME)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,19 +24,23 @@ C   COMPOR  IN   K16 : COMPORTEMENT
 C   NDIM    IN    I  : DIMENSION DU PROBLEME
 C   VARI    IN   K16 : NOM DE LA VARIABLE INTERNE CHERCHE
 C   NUME   OUT    I  : ADRESSE DE LA VARIABLE INTERNE
-
+C ======================================================================
+      IMPLICIT NONE
+C
+      CHARACTER*16 COMPOR(*)
+      CHARACTER*24 VARI
+      CHARACTER*24 VALK(2)
+      INTEGER NDIM, NUME
       INTEGER NVIM,NVIT,NVIH,NVIC,DECAL
       INTEGER ADVIME,ADVITH,ADVIHY,ADVICO
-      INTEGER VIHRHO,VICPHI,VICPVP,VICSAT
+      INTEGER VIHRHO,VICPHI,VICPVP,VICSAT,VICPR1,VICPR2
       CHARACTER*16 MECA,THMC,THER,HYDR
-
       CALL NVITHM(COMPOR, MECA, THMC, THER, HYDR, NVIM, NVIT,
      &            NVIH, NVIC, ADVIME, ADVITH, ADVIHY, ADVICO,
-     &            VIHRHO, VICPHI, VICPVP, VICSAT)
+     &            VIHRHO, VICPHI, VICPVP, VICSAT,VICPR1,VICPR2)
 
       IF ( ( THMC .EQ. 'LIQU_GAZ' )           .OR.
      &     ( THMC .EQ. 'LIQU_GAZ_ATM' ) )  THEN
-
          IF (VARI(1:6).EQ.'DPORO') THEN
             NUME=ADVICO
             GOTO 9999
@@ -73,8 +72,31 @@ C   NUME   OUT    I  : ADRESSE DE LA VARIABLE INTERNE
             NUME=ADVICO+2
             GOTO 9999
          ENDIF
+      ELSE IF ( THMC .EQ. 'LIQU_AD_GAZ' )  THEN
+C
+C  DEUX VARIABLES INTERNES PRE1 ET PRE2 DE PLUS AJOUTEES
+C  POUR VF ET UNIQUEMENT EN LIQU_AD_GAZ
+C
+         IF (VARI(1:6).EQ.'DPORO') THEN
+            NUME=ADVICO
+            GOTO 9999
+         ELSE IF (VARI(1:6).EQ.'DRHOLQ') THEN
+            NUME=ADVIHY
+            GOTO 9999
+         ELSE IF (VARI(1:6).EQ.'DPVP') THEN
+            NUME=ADVICO+1
+            GOTO 9999
+         ELSE IF (VARI(1:6).EQ.'SATLIQ') THEN
+            NUME=ADVICO+2
+            GOTO 9999
+         ELSE IF (VARI(1:6).EQ.'PRE1  ') THEN
+            NUME=ADVICO+3
+            GOTO 9999
+         ELSE IF (VARI(1:6).EQ.'PRE2  ') THEN
+            NUME=ADVICO+4
+            GOTO 9999
+         ENDIF
       ELSE
-
          IF (VARI(1:6).EQ.'DPORO') THEN
             NUME=ADVICO
             GOTO 9999
@@ -91,9 +113,7 @@ C   NUME   OUT    I  : ADRESSE DE LA VARIABLE INTERNE
             GOTO 9999
          ENDIF
       ENDIF
-
 C-----LA LOI MECANIQUE EST CAM_CLAY
-
       IF (MECA(1:8).EQ.'CAM_CLAY') THEN
 C----- DEFORMATION VOLUMIQUE PLASTIQUE CUMULEE
          IF (VARI(1:3).EQ.'PCR') THEN
@@ -103,23 +123,23 @@ C----- INDICATEUR D ETAT
          ELSE IF (VARI(1:7).EQ.'IND_ETA') THEN
             NUME=ADVIME+1
             GOTO 9999
-C----- contrainte volumique
+C----- CONTRAINTE VOLUMIQUE
          ELSE IF (VARI(1:5).EQ.'SIGMO') THEN
             NUME=ADVIME+2
             GOTO 9999
-C----- contrainte deviatorique
+C----- CONTRAINTE DEVIATORIQUE
          ELSE IF (VARI(1:5).EQ.'SIGDV') THEN
             NUME=ADVIME+3
             GOTO 9999
-C----- deformation plastique volumique
+C----- DEFORMATION PLASTIQUE VOLUMIQUE
          ELSE IF (VARI(1:5).EQ.'EPSVO') THEN
             NUME=ADVIME+4
             GOTO 9999
-C----- deformation plastique equivalente
+C----- DEFORMATION PLASTIQUE EQUIVALENTE
          ELSE IF (VARI(1:5).EQ.'EPSEQ') THEN
             NUME=ADVIME+5
             GOTO 9999
-C----- indice des vides
+C----- INDICE DES VIDES
          ELSE IF (VARI(1:7).EQ.'IND_VID') THEN
             NUME=ADVIME+6
             GOTO 9999
@@ -127,9 +147,7 @@ C----- indice des vides
             NUME=-1
             GOTO 9999
          ENDIF
-
 C-----LA LOI MECANIQUE EST MAZARS
-
       ELSE IF (MECA(1:6).EQ.'MAZARS') THEN
 C----- ENDOMMAGEMENT
          IF (VARI(1:1).EQ.'D') THEN
@@ -167,11 +185,8 @@ C----- INDICATEUR D ETAT
             NUME=-1
             GOTO 9999
          ENDIF
-
 C----- LOI MECANIQUE VISCOPLASTIQUE : VISC_DRUC_PRAG
-
       ELSE IF (MECA(1:14).EQ.'VISC_DRUC_PRAG') THEN
-
 C----- VARIABLE D ECROUISSAGE VISCOPLASTIQUE
          IF (VARI(1:1).EQ.'P') THEN
             NUME=ADVIME
@@ -192,9 +207,7 @@ C----- NOMBRE D ITERATIONS LOCALES
             NUME=-1
             GOTO 9999
          ENDIF
-
 C-----LA LOI MECANIQUE EST ENDO_ISOT_BETON
-
       ELSE IF (MECA(1:10).EQ.'ENDO_ISOT_') THEN
 C----- ENDOMMAGEMENT
          IF (VARI(1:1).EQ.'D') THEN
@@ -208,9 +221,7 @@ C----- INDICATEUR D ENDOMMAGEMENT
             NUME=-1
             GOTO 9999
          ENDIF
-
 C-----LA LOI MECANIQUE EST BARCELONE
-
       ELSE IF (MECA(1:9).EQ.'BARCELONE') THEN
 C----- PRESSION CRITIQUE
          IF (VARI(1:3).EQ.'PCR') THEN
@@ -236,11 +247,8 @@ C----- PRESSION DE COHESION
             NUME=-1
             GOTO 9999
          ENDIF
-
 C-----LA LOI MECANIQUE EST LAIGLE
-
       ELSE IF (MECA(1:6).EQ.'LAIGLE') THEN
-
 C----- DEFORMATION DEVIATOIRE PLASTIQUE CUMULEE
          IF (VARI(1:4).EQ.'GAMP') THEN
             NUME=ADVIME
@@ -261,11 +269,8 @@ C----- INDICATEUR D ETAT
             NUME=-1
             GOTO 9999
          ENDIF
-
 C-----LA LOI MECANIQUE VISCOPLASTIQUE DU CIH : LETK
-
       ELSE IF (MECA(1:6).EQ.'LETK') THEN
-
 C----- VARIABLE D ECROUISSAGE ELASTOPLASTIQUE
          IF (VARI(1:3).EQ.'XIP') THEN
             NUME=ADVIME
@@ -298,17 +303,13 @@ C----- INDICATEUR DE LA PLASTICITE
             NUME=-1
             GOTO 9999
          ENDIF
-
 C-----LA LOI MECANIQUE EST CJS
-
       ELSE IF (MECA(1:3).EQ.'CJS') THEN
-
          IF (NDIM.EQ.3) THEN
             DECAL=2
          ELSE
             DECAL=0
          ENDIF
-
 C----- SEUIL ISOTROPE
          IF (VARI(1:9).EQ.'SEUIL_ISO') THEN
             NUME=ADVIME
@@ -384,13 +385,10 @@ C----- INDICATEUR D ETAT
             NUME=-1
             GOTO 9999
          ENDIF
-
       ELSE
          NUME=0
-      ENDIF
-      
+      ENDIF    
 C-----LA LOI MECANIQUE EST HUJEUX
-
       IF (MECA(1:6).EQ.'HUJEUX') THEN
 C----- ECROUISSAGE DEVIATOIRE MECANISME 1
          IF (VARI(1:6).EQ.'RDEV_1') THEN
@@ -431,14 +429,11 @@ C----- INDICATEUR D'ETAT MECANISME 4
          ELSE
             NUME=-1
             GOTO 9999
-         ENDIF
-         
+         ENDIF        
       ELSE
          NUME=0
-      ENDIF
-      
+      ENDIF      
 9999  CONTINUE
-
       IF (NUME.EQ.-1) THEN
           VALK(1) = VARI
           VALK(2) = MECA

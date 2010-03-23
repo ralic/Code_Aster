@@ -1,7 +1,8 @@
-      SUBROUTINE BORTHM(NOMTE,AXI,PERMAN,TYPMOD,NDIM,NDLNO,NDLNM)
+      SUBROUTINE BORTHM(NOMTE,AXI,VF,PERMAN,TYPVF,TYPMOD,NDIM,
+     >                  NDLNO,NDLNM)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,11 +20,12 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C ======================================================================
-      IMPLICIT      NONE
-      LOGICAL       AXI, PERMAN
+      IMPLICIT NONE
+      LOGICAL       AXI, PERMAN,VF
       INTEGER       NDIM,NDLNO,NDLNM
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  NOMTE
+      INTEGER       TYPVF 
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
@@ -31,7 +33,7 @@ C ======================================================================
 C ======================================================================
 C --- TYPE DE MODELISATION ? AXI/DPLAN/3D ET HM INSTAT/PERM ------------
 C ======================================================================
-      CALL TYPTHM(NOMTE,AXI,PERMAN,TYPMOD,NDIM)
+      CALL TYPTHM(NOMTE,AXI,PERMAN,VF,TYPVF,TYPMOD,NDIM)
 C ======================================================================
 C --- MISE A JOUR DES DIMENSIONS POUR ELEMENTS DE BORD -----------------
 C ======================================================================

@@ -1,9 +1,12 @@
-      FUNCTION DMADP1(RHO22,SAT,DSATP1,BIOT,PHI,CS,MAMOLG,KH,DP21P1)
-      IMPLICIT      NONE
+      FUNCTION DMADP1(RHO22,SAT,DSATP1,BIOT,PHI,CS,MAMOLG,KH,DP21P1,
+     &               EMMAG,EM)
+      IMPLICIT NONE
       REAL*8        RHO22,SAT,DSATP1,BIOT,PHI,CS,MAMOLG,KH,DP21P1,DMADP1
+      REAL*8        DPHIP1,EM
+      LOGICAL       EMMAG        
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,8 +27,15 @@ C ======================================================================
 C --- CALCUL DE LA DERIVEE DE L APPORT MASSIQUE DE L AIR DISSOUS PAR ---
 C --- RAPPORT A LA PRESSION CAPILLAIRE ---------------------------------
 C ======================================================================
-      DMADP1 = RHO22 * (DSATP1*PHI 
+      IF(EMMAG) THEN    
+       DPHIP1 = - SAT*EM
+       DMADP1 = RHO22 * (DSATP1*PHI 
+     +               +  SAT*PHI*MAMOLG*DP21P1/RHO22/KH
+     +               +  SAT*DPHIP1)
+      ELSE
+       DMADP1 = RHO22 * (DSATP1*PHI 
      +               +  SAT*PHI*MAMOLG*DP21P1/RHO22/KH
      +               -  SAT*SAT*(BIOT-PHI)*CS)
+      ENDIF
 C ======================================================================
       END

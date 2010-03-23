@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/03/2010   AUTEUR DESROCHES X.DESROCHES 
 # TITRE CYLINDRE EN C.P. (TRIA6 QUAD8) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,7 @@ MO=AFFE_MODELE(            MAILLAGE=M,
                                          MODELISATION = 'AXIS'))
 
 MA=DEFI_MATERIAU(            ELAS=_F(  E = 200000.,
-                                         NU = 0.3,
+                                         NU = 0.3,RHO=7800.,
                                          ALPHA = 0.) )
 
 CM=AFFE_MATERIAU(        MAILLAGE=M,
@@ -324,6 +324,138 @@ TEST_RESU(RESU=(
            )
 
 #-----------------------------------------------------------------
+#  TEST DU CHARGEMENT ROTATION EN AXIS
+#
+CHROT=AFFE_CHAR_MECA(MODELE=MO,
+                  ROTATION=(100.,0.,1.,0.,),
+                  DDL_IMPO=_F(GROUP_NO='F',
+                              DY=0.,),);
+
+RESU2=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CM,
+                   EXCIT=_F(CHARGE=CHROT,),);
+
+
+RESU2=CALC_ELEM(reuse =RESU2,
+               RESULTAT=RESU2,
+               NUME_ORDRE=1,
+               OPTION='SIGM_ELNO_DEPL',);
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='A',
+                   VALE=1.35511E+00,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=1.35532E+00,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='E',
+                   VALE=1.35511E+00,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,),
+                   ),)
+
+#-----------------------------------------------------------------
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',
+                   MAILLE='M2',
+                   GROUP_NO='A',
+                   VALE=1.78344E+03,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIYY',
+                   MAILLE='M2',
+                   GROUP_NO='A',
+                   VALE=-6.72439E+01,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.1,),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIZZ',
+                   MAILLE='M2',
+                   GROUP_NO='A',
+                   VALE=2.70891E+06,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXY',
+                   MAILLE='M2',
+                   GROUP_NO='A',
+                   VALE=-1.86191E+02,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.1,),),);
+
+#  TEST DU CHARGEMENT ROTATION EN AXIS_FOURIER
+#
+
+MO2=AFFE_MODELE(MAILLAGE=M,
+               VERIF='MAILLE',
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS_FOURIER',),);
+
+CH2=AFFE_CHAR_MECA(MODELE=MO2,
+                  ROTATION=(100.,0.,1.,0.,),);
+
+CHDIR=AFFE_CHAR_MECA(MODELE=MO2,
+                     DDL_IMPO=_F(GROUP_NO='F',
+                                 DY=0.,DZ=0.,),);
+
+RESU3=MACRO_ELAS_MULT(MODELE=MO2,
+                      CHAM_MATER=CM,
+                      CHAR_MECA_GLOBAL=CHDIR,
+                      CAS_CHARGE=_F(MODE_FOURIER=0,
+                                    CHAR_MECA=CH2,),);
+
+RESUFOUR=COMB_FOURIER(RESULTAT=RESU3,
+                  ANGL=0.,
+                  NOM_CHAM='DEPL',);
+
+TEST_RESU(RESU=(_F(RESULTAT=RESUFOUR,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='A',
+                   VALE=1.35511,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,),
+                _F(RESULTAT=RESUFOUR,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='C',
+                   VALE=1.35532,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,),
+                _F(RESULTAT=RESUFOUR,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='E',
+                   VALE=1.35511,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,),),);
 
 FIN()
 #

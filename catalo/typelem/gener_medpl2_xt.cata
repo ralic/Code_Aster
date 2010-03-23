@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -154,7 +154,7 @@ OPTION__
                                      E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
                                      N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_FR2D2D    440   IN__   EFORCER  PFR2D2D  NGEOMER  PGEOMER  NFORCER  PNFORCER STANO_I  PSTANO
+    CHAR_MECA_FR2D2D    440   IN__   NFORCER  PFR2D2D  NGEOMER  PGEOMER  STANO_I  PSTANO
                                      E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
                                      N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  MVECTUR  PVECTUR

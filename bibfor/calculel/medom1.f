@@ -10,7 +10,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 23/03/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -194,13 +194,13 @@ C
         CTYP=PHENOM(1:4)
         IN=0
         DO 50 I=1,NCHA
-C       ON STOCKE LES CHARGES DONT LE TYPE CORRESPOND A CTYP
-          CALL DISMOI('F','TYPE_CHARGE',ZK24(JLCHA+I-1),
+C         ON STOCKE LES CHARGES DONT LE TYPE CORRESPOND A CTYP
+          CALL DISMOI('E','TYPE_CHARGE',ZK24(JLCHA+I-1),
      &                'CHARGE',IBID,K8B,IE)
-          IF(CTYP.EQ.K8B(1:4))THEN
-             ZK8(ICHA+IN)= ZK24(JLCHA+I-1)(1:8)
-             ZK8(IKF+IN) = ZK24(JFCHA+I-1)(1:8)
-             IN=IN+1
+          IF(IE.EQ.0.AND.CTYP.EQ.K8B(1:4))THEN
+            ZK8(ICHA+IN)= ZK24(JLCHA+I-1)(1:8)
+            ZK8(IKF+IN) = ZK24(JFCHA+I-1)(1:8)
+            IN=IN+1
           ENDIF
  50     CONTINUE
         NCHA=IN

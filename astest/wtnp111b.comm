@@ -1,4 +1,4 @@
-# MODIF  DATE 26/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE TEST ELEMENTAIRE DU SUINTEMENT : EPONGE SOUS PRESSION
 # wtnp111b.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
@@ -41,10 +41,10 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                 _F(NOM = 'SOM_HAUT',
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA = 'HAUT'),
-                                _F(NOM = 'SOM_GAUCHE',
+                                _F(NOM = 'SOM_GAUC',
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA = 'GAUCHE'),
-                                _F(NOM = 'MIL_DROITE',
+                                _F(NOM = 'MIL_DROI',
                                  CRIT_NOEUD='MILIEU',
                                  GROUP_MA = 'DROITE'),
                                                        ))
@@ -97,7 +97,7 @@ CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
                      DDL_IMPO=(
                                _F(GROUP_MA=('GAUCHE','DROITE','BAS','HAUT'),
                                   DX=0.0,DY=0.0,),
-                               _F(GROUP_NO=('SOM_GAUCHE','SOM_BAS','SOM_HAUT'),
+                               _F(GROUP_NO=('SOM_GAUC','SOM_BAS','SOM_HAUT'),
                                   PRE1=1000.0,),
                                                          ))
 
@@ -106,7 +106,7 @@ CHAR1 = DEFI_CONTACT(MODELE      = MODELE,
                      ZONE        = (
                        _F(
                          GROUP_MA      = ('DROITE',),
-                         SANS_GROUP_NO = ('MIL_DROITE',),
+                         SANS_GROUP_NO = ('MIL_DROI',),
                          NOM_CMP       = ('PRE1',),
                          COEF_IMPO     = FONCT1,
                          COEF_MULT     = FONCT2,

@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,14 +38,15 @@ C                       = 0 OK
 C                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTAT
 C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C ======================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC,YATE
       INTEGER       ADCOME,ADCP11,ADCOTE,VIHRHO,VICPHI
       INTEGER       ADDEME,ADDEP1,ADDETE,ADVIHY,ADVICO,RETCOM
       REAL*8        CONGEM(DIMCON),CONGEP(DIMCON)
       REAL*8        VINTM(NBVARI),VINTP(NBVARI)
       REAL*8        DSDE(DIMCON,DIMDEF),EPSV,DEPSV,P1,DP1,T,DT
-      REAL*8        PHI,RHO11,PHI0,RINSTP
+      REAL*8        PHI,RHO11,PHI0
+      REAL*8        RINSTP
       CHARACTER*16  OPTION,MECA,THER,THMC,HYDR
       LOGICAL       PERMAN
 C ======================================================================
@@ -70,7 +71,7 @@ C ======================================================================
       REAL*8       RBID27, RBID28, RBID29, RBID30, RBID31, RBID32
       REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
       REAL*8       RBID39, RBID40,RBID45,RBID46,RBID47,RBID48,RBID49
-      REAL*8       RBID50,RBID51
+      REAL*8       RBID50,RBID51,R3BID(6)
       REAL*8       DP2,SIGNE,DMWDP1,DQDEPS,DQDP,DQDT,DMWDT,DHDT,DHWDP1
       REAL*8       DMDEPV,DSPDP1,APPMAS,SIGMAP,CALOR,ENTEAU,DILEAU
 C
@@ -81,7 +82,7 @@ C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
       CALL NETBIS(MECA,NET,BISHOP)
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
-     &            RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, 
+     &            RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      &            RBID40,RBID6, RBID7, RBID8,
      &            RBID10, RBID11, RHO0, CSIGM, BIOT, RBID12, SAT,
      &            RBID13, RBID14, RBID15, RBID16, RBID17,RBID18,
@@ -90,7 +91,7 @@ C =====================================================================
      &            RBID27, RBID28, RBID29, RBID30, RBID31,RBID32,
      &            RBID33, RBID34, RBID35, RBID36, RBID37, RBID38,
      &            RBID39, RBID45, RBID46, RBID47, RBID48, RBID49,
-     &            EM, RBID50, RBID51, RINSTP)
+     &            EM, RBID50,R3BID, RBID51,RINSTP)
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
@@ -128,13 +129,18 @@ C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+     >    (OPTION(1:9).EQ.'FORC_NODA') .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
 C =====================================================================
-         IF ((YAMEC.EQ.1).OR.EMMAG )THEN
+         IF ((YAMEC.EQ.1))THEN
             CALL VIPORO(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
      +       DEPSV,ALPHA0,DT,DP1,DP2,SIGNE,SAT,CS,BIOT,PHI,PHIM,RETCOM)
+         ENDIF
+         IF (EMMAG )THEN
+            CALL VIEMMA(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
+     +       DP1,DP2,SIGNE,SAT,EM,PHI,PHIM,RETCOM)
          ENDIF
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE MASSE VOLUMIQUE DU FLUIDE ------
@@ -275,7 +281,8 @@ C --- POUR LES AUTRES CAS ----------------------------------------------
 C ======================================================================
          IF (.NOT.PERMAN) THEN
           DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1) +
-     +             DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,1.0D0)
+     +             DMWDP1(RHO11,SIGNE,SAT,DSATP1,BIOT,PHI,CS,CLIQ,1.0D0,
+     >                  EMMAG,EM)
          ENDIF
       ENDIF
 C ======================================================================

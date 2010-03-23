@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
+#& MODIF COMMUN  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,6 +76,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "LIQU_GAZ_ATM",
                                        "LIQU_VAPE_GAZ",
                                        "LIQU_AD_GAZ_VAPE",
+                                       "LIQU_AD_GAZ",
                                        "LIQU_VAPE",
                                        "LIQU_GAZ",
 # HYDR
@@ -131,6 +132,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                   ),
 
            PARM_THETA      =SIMP(statut='f',typ='R',defaut= 1. ),
+           PARM_ALPHA      =SIMP(statut='f',typ='R',defaut= 1. ),
 
            regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

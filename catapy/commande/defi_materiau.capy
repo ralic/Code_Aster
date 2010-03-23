@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+#& MODIF COMMANDE  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1468,6 +1468,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # 5 -->  LIQU_GAZ
 # 6 -->  LIQU_GAZ_ATM
 # 9 -->  LIQU_AD_GAZ_VAPE
+# 10 -->  LIQU_AD_GAZ
 # =================================================================================
            COMP_THM        = SIMP(statut='f', typ='TXM',
                                   into = ( "LIQU_SATU"     ,
@@ -1477,6 +1478,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            "LIQU_VAPE_GAZ" ,
                                            "LIQU_VAPE"     ,
                                            "LIQU_AD_GAZ_VAPE" ,
+                                           "LIQU_AD_GAZ" ,
                                           ) ),
 # =================================================================================
 # --- LOI DE COUPLAGE DE TYPE LIQU_SATU -------------------------------------------
@@ -1538,6 +1540,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PERMIN_X      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            PERMIN_Y      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            PERMIN_Z      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINXY      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINYZ      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINZX      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            LAMB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_LB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            LAMB_T      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -1683,6 +1688,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PERMIN_X      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            PERMIN_Y      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            PERMIN_Z      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINXY      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINYZ      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINZX      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            LAMB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_LB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            LAMB_T      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -2021,6 +2029,192 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              D_VISC_TEMP     =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            ),
                                  ),
+
+# =================================================================================
+# --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ -------------------------------------
+# =================================================================================
+# --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
+# --- THM_INIT, THM_DIFFU, THM_LIQU, THM_GAZ,  THM_AIR_DISSOUS---------
+# =================================================================================
+           b_liquadgaz  = BLOC(condition = "COMP_THM == 'LIQU_AD_GAZ' ",
+                                 fr="Paramètres nécessaires pour une loi de couplage de type LIQU_AD_GAZ",
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_INIT   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PRE1             = SIMP(statut='o',typ='R'),
+                                           PRE2             = SIMP(statut='o',typ='R'),
+                                           PORO             = SIMP(statut='o',typ='R'),
+                                           PRES_VAPE        = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           TEMP             = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES INUTILES   ----------------------------------------
+# ---------------------------------------------------------------------------------
+                                           DEGR_SATU        = SIMP(statut='f',typ='R'),
+                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEE CACHEE ---------------------------------------------
+# ---------------------------------------------------------------------------------
+                                           COMP_THM         = SIMP(statut='c',typ='R',defaut= 10.0,),
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_DIFFU  = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           R_GAZ            = SIMP(statut='o',typ='R'),
+                                           RHO              = SIMP(statut='o',typ='R'),
+                                           BIOT_COEF        = SIMP(statut='o',typ='R'),
+                                           PESA_X           = SIMP(statut='o',typ='R'),
+                                           PESA_Y           = SIMP(statut='o',typ='R'),
+                                           PESA_Z           = SIMP(statut='o',typ='R'),
+                                           SATU_PRES        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_SATU_PRES      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERM_LIQU        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_PERM_LIQU_SATU = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERM_GAZ         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_PERM_SATU_GAZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_PERM_PRES_GAZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---Van Genhuchten et Muallen-----------------------------------------------------------------------------
+                                           VG_N     = SIMP(statut='f',typ='R'),
+                                           VG_SR    = SIMP(statut='f',typ='R'),
+                                           VG_PR    = SIMP(statut='f',typ='R'),
+                                           VG_SMAX  = SIMP(statut='f',typ='R'),
+                                           VG_SATUR = SIMP(statut='f',typ='R'),
+#
+                                           FICKV_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           FICKA_T          = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES FACULTATIVES   ------------------------------------
+# ---------------------------------------------------------------------------------
+                                           PESA_MULT     = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           PERM_IN          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERM_END         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMIN_X      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMIN_Y      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMIN_Z      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINXY      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINYZ      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINZX      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           LAMB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_LB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           LAMB_T      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_LB_T      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           LAMB_S      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_LB_S      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           LAMB_CT   = SIMP(statut='f',typ='R'),
+#
+                                  regles = (EXCLUS('PERM_IN','PERM_END','PERMIN_X',),
+                                            PRESENT_PRESENT('PERMIN_X','PERMIN_Y','PERMIN_Z',),
+                                            ENSEMBLE('SATU_PRES','D_SATU_PRES','PERM_LIQU','D_PERM_LIQU_SATU',
+                                                            'PERM_GAZ','D_PERM_SATU_GAZ','D_PERM_PRES_GAZ',),
+                                            ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),
+                                            UN_PARMI('VG_N','SATU_PRES'),
+                                           ),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES FACULTATIVES   ------------------------------------
+# ---------------------------------------------------------------------------------
+                                           EMMAG            = SIMP(statut='f',typ='R'),
+                                           SIGMA_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_SIGMA_T        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERM_G_INTR      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           CHAL_VAPO        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           FICKV_PV         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           FICKV_PG         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           FICKV_S          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_FV_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_FV_PG          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+#
+                                           FICKA_PA         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           FICKA_PL         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           FICKA_S          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_FA_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                             ) ,
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_LIQU   = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           RHO              = SIMP(statut='o',typ='R'),
+                                           UN_SUR_K         = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           ALPHA            = SIMP(statut='f',typ='R'),
+                                           CP               = SIMP(statut='f',typ='R'),
+                                           LAMB_PHI = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_LB_PHI = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           LAMB_T    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_LB_T = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           LAMB_CT        = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_GAZ    = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           MASS_MOL         = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
+# ---------------------------------------------------------------------------------
+                                           CP               = SIMP(statut='f',typ='R'),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                             ),
+# =================================================================================
+# --- MOT-CLE FACULTATIF ---------------------------------------------------------
+# =================================================================================
+                             THM_VAPE_GAZ = FACT(statut='f',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           MASS_MOL         = SIMP(statut='o',typ='R'),
+                                           CP               = SIMP(statut='o',typ='R'),
+                                           VISC             = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           D_VISC_TEMP      = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES CACHEES -------------------------------------------
+# ---------------------------------------------------------------------------------
+                                             ),
+# =================================================================================
+# --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
+# =================================================================================
+                             THM_AIR_DISS = FACT(statut='o',
+# ---------------------------------------------------------------------------------
+# -------------------   DONNEES OBLIGATOIRE   -------------------------------------
+# ---------------------------------------------------------------------------------
+                                           CP               = SIMP(statut='o',typ='R'),
+                                           COEF_HENRY       = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                             ),
+                                 ),
+
 # =================================================================================
 # --- LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ---------------------------------------
 # =================================================================================
@@ -2096,6 +2290,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PERMIN_X      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            PERMIN_Y      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            PERMIN_Z      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINXY      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINYZ      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINZX      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            LAMB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_LB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            LAMB_T      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -2253,6 +2450,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PERMIN_X      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            PERMIN_Y      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            PERMIN_Z      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINXY      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINYZ      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINZX      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            LAMB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_LB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            LAMB_T      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -2303,7 +2503,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
                                            ALPHA            = SIMP(statut='f',typ='R'),
                                            CP               = SIMP(statut='f',typ='R'),
-                                           LAMB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           LAMB_PHI = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_LB_PHI = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            LAMB_T    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_LB_T = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -2420,6 +2620,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PERMIN_X      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            PERMIN_Y      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            PERMIN_Z      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINXY      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINYZ      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           PERMINZX      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            LAMB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_LB_PHI    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            LAMB_T      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),

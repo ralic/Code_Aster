@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 # TITRE RESATURATION D UNE ALVEOLE TEST THH2D, 2D , MODELISATION THMC=LIQU_AD_GAZ_VAPE
 # wtnp113b.para = tps_job 2410 mem_job 128Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -473,7 +473,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NO823',
-                  VALE=4.3405E6,
+                  VALE=4.3113E+06,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,
                   REFERENCE='NON_REGRESSION',),);   

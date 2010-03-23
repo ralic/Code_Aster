@@ -12,7 +12,7 @@
      &                   CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C ======================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
 C
 C
       INTEGER       DIMMAT,NPG,IPOID2,IVF2,IDFDE2,DIMUEL,NNOM
@@ -286,6 +286,8 @@ C ======================================================================
          LOI = 'LIQU_GAZ_ATM'
       ELSE IF ( (RTHMC-9.0D0).LT.R8PREM() ) THEN
          LOI = 'LIQU_AD_GAZ_VAPE'
+      ELSE IF ( (RTHMC-10.0D0).LT.R8PREM() ) THEN
+         LOI = 'LIQU_AD_GAZ'  
       ENDIF
       IF (THMC.NE.LOI) THEN
           VALK(1) = LOI

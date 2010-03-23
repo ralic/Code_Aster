@@ -1,9 +1,12 @@
-      FUNCTION DMVDP2(RHO11,RHO12,SAT,BIOT,PHI,CS,PVP)
-      IMPLICIT      NONE
+      FUNCTION DMVDP2(RHO11,RHO12,SAT,BIOT,PHI,CS,PVP,
+     &               EMMAG,EM)
+      IMPLICIT NONE
       REAL*8        RHO11,RHO12,SAT,BIOT,PHI,CS,PVP,DMVDP2
+      REAL*8        EM,DPHIP2
+      LOGICAL       EMMAG        
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +27,13 @@ C ======================================================================
 C --- CALCUL DE LA DERIVEE DE L APPORT MASSIQUE DE LA VAPEUR PAR -------
 C --- RAPPORT A LA PRESSION DE GAZ -------------------------------------
 C ======================================================================
-      DMVDP2 = RHO12 * ((BIOT-PHI)*(1.D0-SAT)*CS
+      IF(EMMAG) THEN    
+        DPHIP2 =  EM
+        DMVDP2 = RHO12 * ((1.D0-SAT)*DPHIP2
      +               +   PHI*(1.D0-SAT)/PVP*RHO12/RHO11)
+      ELSE
+        DMVDP2 = RHO12 * ((BIOT-PHI)*(1.D0-SAT)*CS
+     +               +   PHI*(1.D0-SAT)/PVP*RHO12/RHO11)
+      ENDIF
 C ======================================================================
       END

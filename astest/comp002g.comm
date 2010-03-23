@@ -1,4 +1,4 @@
-# MODIF  DATE 28/09/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_ISOT_TRAC
 # comp002g.para = tps_job 240 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
@@ -164,9 +164,10 @@ for i in range(Ncal):
                    COMP_INCR=_F(RELATION=compor,DEFORMATION='SIMO_MIEHE'),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
+                   SUPPORT='ELEMENT',
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[imat],  
-                   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
+                   ARCHIVAGE = _F(LIST_INST = temps_ar),
                    INCREMENT=_F(LIST_INST=temps,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
@@ -210,6 +211,7 @@ RESU_TGT=SIMU_POINT_MAT(
                                 TYPE_MATR_TANG='VERIFICATION',
                                 VALE_PERT_RELA=1.E-5,
                                ),
+                   SUPPORT='ELEMENT',
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[1],  

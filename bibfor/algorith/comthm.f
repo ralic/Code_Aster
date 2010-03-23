@@ -1,14 +1,15 @@
-        SUBROUTINE COMTHM(OPTION,PERMAN,IMATE,TYPMOD,COMPOR,
+        SUBROUTINE COMTHM(OPTION,PERMAN,VF,IFA,VALFAC,VALCEN,
+     &                    IMATE,TYPMOD,COMPOR,
      &                    CRIT,INSTAM,INSTAP,
      &                    NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,
      &                    YAP2,YATE,ADDEME,ADCOME,ADDEP1,ADCP11,
      &                    ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
-     +                    DEFGEM,DEFGEP,CONGEM,CONGEP,VINTM,VINTP,
-     +                    DSDE,PESA,RETCOM,KPI,NPG)
+     &                    DEFGEM,DEFGEP,CONGEM,CONGEP,VINTM,VINTP,
+     &                    DSDE,PESA,RETCOM,KPI,NPG,P10,P20)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/02/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +52,13 @@ C                                 0 = PAS DE REDECOUPAGE
 C                                 N = NOMBRE DE PALIERS
 C ======================================================================
 C IN OPTION : OPTION DE CALCUL
+C IN PERMAN : TRUE SI PERMANENT
+C IN VF : TRUE SI VOLUMES FINIS
+C IN IFA : UTILISE EN VF ET POUR LES VALEURS AUX ARETES
+C      -> NUMERO DE LA FACE. LES INFORMATIONS SONT STOCKES
+C       DS VALFAC(1:6,1:4,1:NBFACE)
+C VALFAC : SOCKAGE DES VALEURS CALSULEES AUX ARETES EN VF IFA!=0
+C DES VALEURS AU CENTRE
 C IN COMPOR : COMPORTEMENT
 C IN IMATE  : MATERIAU CODE
 C IN NDIM   : DIMENSION DE L'ESPACE
@@ -87,7 +95,24 @@ C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
 C ======================================================================
 C VARIABLES IN / OUT
 C ======================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
+
+      REAL*8        VALCEN(14,6),VALCEV(14,6)
+      INTEGER       MAXFA
+      PARAMETER     (MAXFA=6)
+      REAL*8        VALFAC(MAXFA,14,6)
+      REAL*8        VALFAV(MAXFA,14,6)
+      INTEGER       MASSE,DMASP1,DMASP2
+      INTEGER       EAU,AIR
+      INTEGER       VKINT,KXX,KYY,KZZ,KXY,KYZ,KZX
+C      PARAMETER(CON=1,DCONP1=2,DCONP2=3,DIFFU=4,DDIFP1=5,DDIFP2=6)
+C      PARAMETER(MOB=7,DMOBP1=8,DMOBP2=9,MASSE=10,DMASP1=11,DMASP2=12)
+C      PARAMETER(RHOGA=1,RHOLQ=2,RHOGA1=3,RHOGA2=4,RHOLQ1=5,RHOLQ2=6)
+      PARAMETER     (MASSE=10,DMASP1=11,DMASP2=12)
+      PARAMETER     (VKINT=13)
+C      PARAMETER(DENSIT=14)
+      PARAMETER     (KXX=1,KYY=2,KZZ=3,KXY=4,KYZ=5,KZX=6)
+      PARAMETER     (EAU=1,AIR=2)
       INTEGER       RETCOM,KPI,NPG
       INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC,YAP1
       INTEGER       YAP2,YATE,ADDEME,ADDEP1,ADDEP2,ADDETE
@@ -97,7 +122,9 @@ C ======================================================================
       REAL*8        DSDE(1:DIMCON,1:DIMDEF),CRIT(*),INSTAM,INSTAP
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  COMPOR(*),OPTION
-      LOGICAL       PERMAN
+      LOGICAL       PERMAN,VF
+      INTEGER       IFA
+      INTEGER       VICPR1,VICPR2
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
@@ -111,7 +138,9 @@ C ======================================================================
       REAL*8        DFICKT, DFICKG, LAMBP,DLAMBP, UNSURK
       REAL*8        LAMBS,DLAMBS, VISCL, DVISCL, LAMBT
       REAL*8        DLAMBT,VISCG, DVISCG, MAMOLG
-      REAL*8        FICKAD,DFADT,KH,LAMBCT, ALPHA,ISOT(3)
+      REAL*8        FICKAD,DFADT,KH,LAMBCT, ALPHA,ISOT(6)
+      REAL*8        DFICKS
+      REAL*8        DELTAT
       CHARACTER*16  MECA,THMC,THER,HYDR
 C ======================================================================
 C --- INITIALISATION ---------------------------------------------------
@@ -123,36 +152,65 @@ C --- DEFINITION DES POINTEURS POUR LES DIFFERENTES RELATIONS DE -------
 C --- COMPORTEMENTS ET POUR LES DIFFERENTES COMPOSANTES ----------------
 C ======================================================================
       CALL NVITHM(COMPOR, MECA, THMC, THER, HYDR, NVIM, NVIT,
-     +                   NVIH, NVIC, ADVIME, ADVITH, ADVIHY, ADVICO,
-     +                   VIHRHO, VICPHI, VICPVP, VICSAT)
+     +            NVIH, NVIC, ADVIME, ADVITH, ADVIHY, ADVICO,
+     +            VIHRHO, VICPHI, VICPVP, VICSAT,VICPR1,VICPR2)
 C ======================================================================
 C --- RECUPERATION DES DONNEES INITIALES -------------------------------
 C ======================================================================
       CALL KITDEC(YAMEC, YATE, YAP1, YAP2, MECA, THMC, THER, HYDR,
-     +                   IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1, ADDEP2,
-     +                   ADDETE, NDIM, T0, P10, P20, PHI0, PVP0,
-     +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
-     +                   GRAT, GRAP1, GRAP2, NVITH, RETCOM, INSTAP)
+     +            IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1, ADDEP2,
+     +            ADDETE, NDIM, T0, P10, P20, PHI0, PVP0,
+     +            DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
+     +            GRAT, GRAP1, GRAP2, NVITH, RETCOM,INSTAP)
       IF (RETCOM.NE.0) THEN
          GOTO 9000
       ENDIF
 C ======================================================================
 C --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
 C ======================================================================
+
       CALL CALCCO(OPTION,PERMAN,MECA,THMC,THER,HYDR,IMATE,
-     +                    NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,
-     +                    YATE,ADDEME,ADCOME,ADVIHY,
-     +                    ADVICO,ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,
-     +                    ADCP22,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,
-     +                    VINTP,DSDE,DEPS,EPSV,DEPSV,P1,P2,DP1,DP2,
-     +                    T,DT,PHI,
-     +                    PVP,PAD,H11,H12,KH,RHO11,PHI0,PVP0,
-     +                    SAT,RETCOM,CRIT,BIOT,
-     +                    VIHRHO,VICPHI,VICPVP,VICSAT,INSTAP)
+     +            NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,
+     +            YATE,ADDEME,ADCOME,ADVIHY,
+     +            ADVICO,ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,
+     +            ADCP22,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,
+     +            VINTP,DSDE,DEPS,EPSV,DEPSV,P1,P2,DP1,DP2,
+     +            T,DT,PHI,
+     +            PVP,PAD,H11,H12,KH,RHO11,PHI0,PVP0,
+     +            SAT,RETCOM,CRIT,BIOT,
+     +            VIHRHO,VICPHI,VICPVP,VICSAT,INSTAP)
 
       IF (RETCOM.NE.0) THEN
          GOTO 9000
       ENDIF
+C
+C VOLUMES FINIS
+C
+      IF(VF.AND.(IFA.EQ.0)) THEN
+       DELTAT=INSTAP-INSTAM
+       IF((OPTION(1:9).EQ.'FULL_MECA').OR.
+     & (OPTION(1:9).EQ.'RAPH_MECA')) THEN
+
+        VALCEN(MASSE ,EAU)=( CONGEP(ADCP11)+CONGEP(ADCP12)
+     >              -CONGEM(ADCP11)-CONGEM(ADCP12))/DELTAT
+        VALCEN(MASSE ,AIR)=( CONGEP(ADCP21)+CONGEP(ADCP22)
+     >              -CONGEM(ADCP21)-CONGEM(ADCP22))/DELTAT
+C
+       ENDIF
+       IF ( (OPTION(1:9) .EQ. 'RIGI_MECA') .OR.
+     & (OPTION(1:9) .EQ. 'FULL_MECA') ) THEN
+                   VALCEN(DMASP1,EAU)=
+     > (DSDE(ADCP11,ADDEP1)+ DSDE(ADCP12,ADDEP1))/DELTAT
+                   VALCEN(DMASP2,EAU)=
+     > (DSDE(ADCP11,ADDEP2)+ DSDE(ADCP12,ADDEP2))/DELTAT
+                   VALCEN(DMASP1,AIR)=
+     > (DSDE(ADCP22,ADDEP1)+ DSDE(ADCP21,ADDEP1))/DELTAT
+                   VALCEN(DMASP2,AIR)=
+     > (DSDE(ADCP22,ADDEP2)+ DSDE(ADCP21,ADDEP2))/DELTAT
+       ENDIF
+
+      ENDIF
+      
 C ======================================================================
 C --- CALCUL DES GRANDEURS MECANIQUES PURES UNIQUEMENT SI YAMEC = 1 -
 C ET SI ON EST SUR UN POINT DE GAUSS (POUR L'INTEGRATION REDUITE)
@@ -173,12 +231,25 @@ C ======================================================================
 C --- RECUPERATION DES DONNEES MATERIAU FINALES ------------------------
 C ======================================================================
       CALL THMLEC(IMATE, THMC, MECA, HYDR, THER, T, P1, P2,
-     +               PHI, VINTP(1), PVP, PAD, RGAZ, BIOT, SATUR,
-     +               DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
-     +               DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBP,
-     +               DLAMBP, UNSURK, ALPHA, LAMBS, DLAMBS, VISCL,
-     +               DVISCL, MAMOLG, LAMBT, DLAMBT, VISCG, DVISCG,
-     +               MAMOVG, FICKAD, DFADT, LAMBCT,ISOT,INSTAP)
+     +            PHI, VINTP(1), PVP, PAD, RGAZ, BIOT, SATUR,
+     +            DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
+     +            DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBP,
+     +            DLAMBP, UNSURK, ALPHA, LAMBS, DLAMBS, VISCL,
+     +            DVISCL, MAMOLG, LAMBT, DLAMBT, VISCG, DVISCG,
+     +            MAMOVG, FICKAD, DFADT, LAMBCT,ISOT,
+     >            DFICKS,INSTAP)
+
+
+C CONDUCTIVITES EN VF
+C
+      IF(VF.AND.(IFA.EQ.0)) THEN
+       VALCEN(VKINT ,KXX)=PERMFH*ISOT(1)
+       VALCEN(VKINT ,KYY)=PERMFH*ISOT(2)
+       VALCEN(VKINT ,KZZ)=PERMFH*ISOT(3)
+       VALCEN(VKINT ,KXY)=PERMFH*ISOT(4)
+       VALCEN(VKINT ,KYZ)=PERMFH*ISOT(5)
+       VALCEN(VKINT ,KZX)=PERMFH*ISOT(6)
+      ENDIF
 C ======================================================================
 C --- CALCUL DES FLUX HYDRAULIQUES UNIQUEMENT SI YAP1 = 1 --------------
 C ======================================================================
@@ -190,7 +261,8 @@ C ======================================================================
      &                PESA,PERMFH,PERMLI,DPERML,PERMGZ,DPERMS,DPERMP,
      &                FICK,DFICKT,DFICKG,FICKAD,DFADT,KH,UNSURK,
      &                ALPHA,VISCL,DVISCL,MAMOLG,VISCG,DVISCG,
-     &                MAMOVG,ISOT)
+     &                MAMOVG,ISOT,
+     &                VINTP,ADVICO,DFICKS,VF,IFA,VALFAC,VALCEN)
           IF ( RETCOM.NE.0) THEN
              GOTO 9000
           ENDIF

@@ -1,9 +1,12 @@
-      FUNCTION DMASP2(RHO11,RHO12,RHO21,SAT,BIOT,PHI,CS,PAS)
-      IMPLICIT      NONE
+      FUNCTION DMASP2(RHO11,RHO12,RHO21,SAT,BIOT,PHI,CS,PAS,
+     &               EMMAG,EM)
+      IMPLICIT NONE
       REAL*8        RHO11,RHO12,RHO21,SAT,BIOT,PHI,CS,PAS,DMASP2
+      REAL*8        EM,DPHIP2
+      LOGICAL       EMMAG        
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +27,13 @@ C ======================================================================
 C --- CALCUL DE LA DERIVEE DE L APPORT MASSIQUE D AIR SEC PAR RAPPORT --
 C --- A LA PRESSION DE GAZ ---------------------------------------------
 C ======================================================================
-      DMASP2 = RHO21*((BIOT-PHI)*(1.D0-SAT)*CS
+      IF(EMMAG) THEN    
+        DPHIP2 =  EM
+        DMASP2 = RHO21*((1.D0-SAT)*DPHIP2
      +              +  PHI*(1.D0-SAT)*(RHO11-RHO12)/RHO11/PAS)
+      ELSE
+        DMASP2 = RHO21*((BIOT-PHI)*(1.D0-SAT)*CS
+     +              +  PHI*(1.D0-SAT)*(RHO11-RHO12)/RHO11/PAS)
+      ENDIF
 C ======================================================================
       END

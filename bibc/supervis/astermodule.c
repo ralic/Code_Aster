@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2482,8 +2482,7 @@ PyObject *args;
 
 /* ------------------------------------------------------------------ */
 void DEFSPSPPPS(RSACCH,rsacch,char *, STRING_SIZE, INTEGER *, char *,STRING_SIZE,INTEGER *, INTEGER *, INTEGER *, char *,STRING_SIZE);
-void DEFSPSSPPP(RSACVA,rsacva,char *, STRING_SIZE,INTEGER *, char *,STRING_SIZE,char *,STRING_SIZE,INTEGER *, DOUBLE *,INTEGER *);
-void DEFSPSSPPP(RSACPA,rsacpa,char *, STRING_SIZE,INTEGER *, char *,STRING_SIZE,char *,STRING_SIZE,INTEGER *, DOUBLE *,INTEGER *);
+void DEFSPPSPPPSP(RSACPA,rsacpa,char *, STRING_SIZE, INTEGER *, INTEGER *, char *, STRING_SIZE, INTEGER *, INTEGER *, DOUBLE *, char *, STRING_SIZE, INTEGER *);
 
 /* particulier car on passe les longueurs des chaines en dur */
 #ifdef _POSIX
@@ -2494,10 +2493,8 @@ void DEFSPSSPPP(RSACPA,rsacpa,char *, STRING_SIZE,INTEGER *, char *,STRING_SIZE,
                   F_FUNC(RSACCH,rsacch)(nomsd,strlen(nomsd),numch, nomch,16,nbord, liord, nbcmp, liscmp,8)
 #endif
 
-#define CALL_RSACVA(nomsd, numva, nomva, ctype, ival, rval, ier) \
-                  CALLSPSSPPP(RSACVA,rsacva,nomsd, numva, nomva, ctype, ival, rval, ier)
-#define CALL_RSACPA(nomsd, numva, nomva, ctype, ival, rval, ier) \
-                  CALLSPSSPPP(RSACPA,rsacpa,nomsd, numva, nomva, ctype, ival, rval, ier)
+#define CALL_RSACPA(nomsd, numva, icode, nomva, ctype, ival, rval, kval, ier) \
+                  CALLSPPSPPPSP(RSACPA,rsacpa, nomsd, numva, icode, nomva, ctype, ival, rval, kval, ier)
 
 /* ------------------------------------------------------------------ */
 static PyObject* aster_GetResu(self, args)
@@ -2536,9 +2533,10 @@ PyObject *args;
    INTEGER *liord, *ival;
    INTEGER *val, nbval ;
    DOUBLE *rval;
-   char *nomsd, *mode, *liscmp, *nom, nomsd32[33], *cmp ;
-   char nomch[16], ctype, nomva[16];
-   int i, lo;
+   char *nomsd, *mode, *liscmp, *nom, nomsd32[33], *cmp;
+   char *kval, *kvar;
+   char nomch[16], nomva[16];
+   int i, lo, icode, ctype, ksize, ksizemax=80;
    PyObject *dico, *liste, *key;
    void *malloc(size_t size);
 
@@ -2565,7 +2563,7 @@ PyObject *args;
      liscmp = (char *)malloc(500*8*sizeof(char));
      dico = PyDict_New();
      for (numch=1; numch<=nbchmx; numch++) {
-       CALL_RSACCH(nomsd, &numch, nomch, &nbord, liord, &nbcmp, liscmp);
+       CALL_RSACCH(nomsd32, &numch, nomch, &nbord, liord, &nbcmp, liscmp);
        lo = 16;
        while (nomch[lo-1] == ' ')  lo--;
        key = PyString_FromStringAndSize(nomch,lo);
@@ -2590,16 +2588,20 @@ PyObject *args;
      free(liscmp);
    }
 
-
-   else if (strcmp(mode,"VARI_ACCES") == 0 ) {
-/* Extraction des variables d'acces */
+   else if (strcmp(mode,"VARI_ACCES") == 0 || strcmp(mode,"PARAMETRES") == 0) {
+        icode = 2;
+        if (strcmp(mode,"VARI_ACCES") == 0) {
+            icode = 0;
+        }
+/* Extraction des paramètres ou variables d'accès */
           ival  = (INTEGER *)malloc(nbord*sizeof(INTEGER));
-          rval  = (DOUBLE * )malloc(nbord*sizeof(DOUBLE) );
+          rval  = (DOUBLE *)malloc(nbord*sizeof(DOUBLE) );
+          kval  = (char *)malloc(nbord*ksizemax*sizeof(char));
 
           dico = PyDict_New();
           for (numva=0; numva<=nbpamx; numva++)
             {
-            CALL_RSACVA(nomsd, &numva, nomva, &ctype, ival, rval, &ier);
+            CALL_RSACPA(nomsd32, &numva, &icode, nomva, &ctype, ival, rval, kval, &ier);
             if (ier != 0) continue;
 
             lo = 16;
@@ -2607,43 +2609,34 @@ PyObject *args;
             key = PyString_FromStringAndSize(nomva,lo);
 
             liste = PyList_New(0);
-            if (ctype == 'I')
-              for (i=0; i<nbord; i++)
-                PyList_Append(liste,PyInt_FromLong(ival[i]));
-            else
-              for (i=0; i<nbord; i++)
-                PyList_Append(liste,PyFloat_FromDouble(rval[i]));
-
+            if(ctype < 0){
+                /* Erreur */
+                PyErr_SetString(PyExc_KeyError, "Type incorrect");
+                return NULL;
+            }
+            else if (ctype == 1) {
+                for (i=0; i<nbord; i++)
+                    PyList_Append(liste,PyFloat_FromDouble(rval[i]));
+            }
+            else if (ctype == 2) {
+                for (i=0; i<nbord; i++)
+                    PyList_Append(liste,PyInt_FromLong(ival[i]));
+            }
+            else if (ctype == 4 || ctype == 5 || ctype == 6 || ctype == 7 || ctype == 8) {
+                switch ( ctype ) {
+                    case 4 : ksize = 8;  break;
+                    case 5 : ksize = 16; break;
+                    case 6 : ksize = 24; break;
+                    case 7 : ksize = 32; break;
+                    case 8 : ksize = 80; break;
+                }
+                for (i=0; i<nbord; i++) {
+                    kvar = kval + i*ksizemax;
+                    PyList_Append(liste, PyString_FromStringAndSize(kvar, ksize));
+                }
+            }
             PyDict_SetItem(dico,key,liste);
           };
-
-          free(ival);
-          free(rval);
-   }
-   else if (strcmp(mode,"PARAMETRES") == 0 ) {
-/* Extraction des parametres */
-          ival  = (INTEGER *)malloc(nbord*sizeof(INTEGER));
-          rval  = (DOUBLE * )malloc(nbord*sizeof(DOUBLE) );
-
-          dico = PyDict_New();
-          for (numva=0; numva<=nbpamx; numva++) {
-            CALL_RSACPA(nomsd, &numva, nomva, &ctype, ival, rval, &ier);
-            if (ier != 0) continue;
-
-            lo = 16;
-            while (nomva[lo-1] == ' ') lo--;
-            key = PyString_FromStringAndSize(nomva,lo);
-
-            liste = PyList_New(0);
-            if (ctype == 'I')
-              for (i=0; i<nbord; i++)
-                PyList_Append(liste,PyInt_FromLong(ival[i]));
-            else
-              for (i=0; i<nbord; i++)
-                PyList_Append(liste,PyFloat_FromDouble(rval[i]));
-
-            PyDict_SetItem(dico,key,liste);
-          }
 
           free(ival);
           free(rval);

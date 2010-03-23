@@ -6,7 +6,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 15/02/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ C TOLE CRP_21
 C ======================================================================
 C ROUTINE HMGAZP : CETTE ROUTINE CALCULE LES CONTRAINTES GENERALISEES
 C   ET LA MATRICE TANGENTE DES GRANDEURS COUPLEES, A SAVOIR CELLES QUI
-C   NE SONT PAS DES GRANDEURS DE MECANIQUE PURE OU DES FLUX PURS
+C   NE SONT PAS DES GRANDEURS DE MECANIQUE PURE OU DES FLUX PURS 
 C   DANS LE CAS OU THMC = 'GAZ'
 C ======================================================================
 C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
@@ -37,7 +37,7 @@ C                       = 0 OK
 C                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
 C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C ======================================================================
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC,YATE
       INTEGER       ADCOME,ADCP11,ADCOTE
       INTEGER       ADDEME,ADDEP1,ADDETE,ADVICO,VICPHI,RETCOM
@@ -50,23 +50,24 @@ C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER      I
-      REAL*8       EPSVM,PHIM
+      REAL*8       EPSVM,PHIM,RHO11M,UMPRHS
       REAL*8       BIOT,K0,CS,ALPHA0,CP12,SAT,MAMOLG
       REAL*8       R,RHO0,CSIGM,ALP11,EM
       REAL*8       EPS,RINSTP
-      PARAMETER  ( EPS = 1.D-21 )
+      PARAMETER  ( EPS = 1.D-21 ) 
       LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
       REAL*8       RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
-      REAL*8       RBID8, RBID10, RBID12, RBID13, RBID14
+      REAL*8       RBID8,  RBID10, RBID12, RBID13, RBID14
       REAL*8       RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
       REAL*8       RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
       REAL*8       RBID27, RBID28, RBID29, RBID32
       REAL*8       RBID33, RBID34, RBID35, RBID36, RBID37, RBID38
       REAL*8       RBID39, RBID40, RBID41, RBID42, RBID43, RBID44
       REAL*8       RBID45,RBID46,RBID47,RBID48,RBID49,RBID50,RBID51
+      REAL*8       R3BID(6)
       REAL*8       SIGNE,DP2,CLIQ,COEPS,RHO12,ALP21,RHO21,RHO21M
       REAL*8       CP21,P2,SATM,RHO22,CP11,CP22,M11M
       REAL*8       DMASP2,DQDEPS,DQDP,DQDT,DMWDT,DHDT,DMDEPV,DSPDP2
@@ -84,16 +85,16 @@ C =====================================================================
       EMMAG = .FALSE.
       CALL NETBIS(MECA,NET,BISHOP)
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
-     +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, RBID6,
-     +             RBID44,
-     +             RBID7, RBID8, RBID10, R, RHO0, CSIGM,
-     +             BIOT, RBID12, SAT, RBID13, RBID14, RBID15, RBID16,
-     +             RBID17, RBID18, RBID19, RBID20, RBID21, RBID22,
-     +             RBID23, RBID24, RBID25, RBID43, RBID40, RBID41,
-     +             RBID42,RBID26, RBID27, RBID28, RBID29,
-     +             MAMOLG, CP21,RBID32, RBID33, RBID34, RBID35,
-     +             RBID36, RBID37,RBID38, RBID39,RBID45,RBID46,
-     +             RBID47,RBID48,RBID49,EM,RBID50,RBID51,RINSTP)
+     +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
+     +             RBID6,RBID44,RBID7, RBID8,     
+     +             RBID10, R, RHO0, CSIGM,  BIOT, RBID12, SAT,
+     +             RBID13, RBID14, RBID15, RBID16, RBID17, RBID18,
+     +             RBID19, RBID20, RBID21, RBID22,RBID23, RBID24,
+     +             RBID25, RBID43, RBID40, RBID41,RBID42,RBID26,
+     +             RBID27, RBID28, RBID29,MAMOLG, CP21,RBID32,
+     +             RBID33, RBID34, RBID35,RBID36, RBID37,RBID38,
+     +             RBID39,RBID45,RBID46,RBID47,RBID48,RBID49,
+     +             EM,RBID50,R3BID,RBID51,RINSTP)
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
@@ -122,10 +123,10 @@ C =====================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN
+      IF(EM.GT.EPS)THEN 
         EMMAG = .TRUE.
       ENDIF
-
+        
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
      +                                       EPSV,DEPSV,EPSVM,MECA)
 
@@ -262,7 +263,8 @@ C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- POUR LES AUTRES CAS ----------------------------------------------
 C ======================================================================
          DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1)
-     +                    + DMASP2(1.0D0,0.0D0,RHO21,SAT,BIOT,PHI,CS,P2)
+     +                    + DMASP2(1.0D0,0.0D0,RHO21,SAT,BIOT,PHI,CS,P2,
+     +                             EMMAG,EM)
       ENDIF
 C =====================================================================
 C --- MISE A JOUR DES VARIABLES P1 ET DP1 POUR CONFOMITE AUX FORMULES -

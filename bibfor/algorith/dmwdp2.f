@@ -1,9 +1,12 @@
-      FUNCTION DMWDP2(RHO11,SAT,BIOT,PHI,CS,CLIQ,DP11P2)
-      IMPLICIT      NONE
+      FUNCTION DMWDP2(RHO11,SAT,BIOT,PHI,CS,CLIQ,DP11P2,EMMAG,EM)
+      IMPLICIT NONE
       REAL*8        RHO11,SAT,BIOT,PHI,CS,CLIQ,DP11P2,DMWDP2
+      REAL*8        EM
+      REAL*8        DPHIP2
+      LOGICAL       EMMAG        
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,6 +27,11 @@ C ======================================================================
 C --- CALCUL DE LA DERIVEE DE L APPORT MASSIQUE DE L EAU PAR RAPPORT ---
 C --- A LA PRESSION DE GAZ ---------------------------------------------
 C ======================================================================
-      DMWDP2 = RHO11*SAT*(PHI*CLIQ*DP11P2+(BIOT-PHI)*CS)
+      IF(EMMAG) THEN   
+       DPHIP2 = EM
+       DMWDP2 = RHO11 *(PHI*DPHIP2+PHI*CLIQ*DP11P2)
+      ELSE
+       DMWDP2 = RHO11*SAT*(PHI*CLIQ*DP11P2+(BIOT-PHI)*CS)
+      ENDIF
 C ======================================================================
       END

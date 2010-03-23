@@ -1,6 +1,7 @@
-# MODIF  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
 # ======================================================================
 # TITRE RESATURATION D UNE ALVEOLE TEST THHD, 2D ,
+# wtnp113c.para = tps_job 3200 mem_job 128Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -485,7 +486,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NO823',
-                  VALE=3.0158E6,
+                  VALE=2.930608E+06,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,
                   REFERENCE='NON_REGRESSION',),);   

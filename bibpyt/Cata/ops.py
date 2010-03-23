@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -351,6 +351,8 @@ def detruire(self,d):
          del self.jdc.sds_dict[nom]
       # On signale au parent que le concept s n'existe plus apres l'étape self 
       self.parent.delete_concept_after_etape(self, co)
+      # marque comme détruit == non executé
+      co.executed = 0
 
 
 def subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR):

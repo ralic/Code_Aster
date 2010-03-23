@@ -3,7 +3,7 @@
      &          TAMPON)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -140,7 +140,6 @@ C         TAMPON CONTIENT L(3,3)
           DO 21 I = 1, 3
           DO 21 J=1,3
              L(I,J)=TAMPON(3*(I-1)+J)
-             print *,'I,J,L',I,J,L(I,J)
  21       CONTINUE
           DO 22 I = 1, 3
           DO 22 J=1,3

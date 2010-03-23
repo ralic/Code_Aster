@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 
 # TITRE FORMATION THERMO-PLASTICITE TRAJET DE CHARGEMENT
@@ -72,11 +72,13 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                  MATER=ACIER,
                  INCREMENT=_F(LIST_INST=L_INST,),
-                 NEWTON=_F(PREDICTION='ELASTIQUE',
+                 NEWTON=_F(#PREDICTION='ELASTIQUE',
                            MATRICE='TANGENTE',
                            REAC_ITER=1,),
                  SIGM_IMPOSE=_F(SIXX=Sig,
-                                SIXY=Tau,),);
+                                SIXY=Tau,
+                                ),
+                 INFO=1,);
 
 IMPR_TABLE(TABLE=U,);
 

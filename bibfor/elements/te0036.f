@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,6 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       DATA          ELRESE /'SE2','TR3'/
       DATA          NSEMAX /2,3,6/
 C
-      CALL JEMARQ()
 C-----------------------------------------------------------------------
 C     INITIALISATIONS
 C-----------------------------------------------------------------------
@@ -98,8 +97,8 @@ C     NDIME EST DIMENSION DE L'ELEMENT FINI
 C     SUR UN ELET DE BORD, ON A :  NDIM = NDIME + 1
 
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-C     IL NE FAUT PAS APPELER XTEINI CAR IL NE GERE PAS LES ELEMENTS 
-C     DE BORD   
+C     IL NE FAUT PAS APPELER XTEINI CAR IL NE GERE PAS LES ELEMENTS
+C     DE BORD
 C      CALL XTEINI(NOMTE,DDLH,NFE,IBID,IBID,IBID,IBID,IBID)
       IF (NOMTE(1:12).EQ.'MECA_XH_FACE'.OR.
      &    NOMTE.EQ.'MEPLSE2_XH'.OR.
@@ -139,14 +138,8 @@ C       SI LA PRESSION N'EST CONNUE SUR AUCUN NOEUD, ON LA PREND=0.
 
       ELSEIF (OPTION.EQ.'CHAR_MECA_FR2D3D'.OR.
      &        OPTION.EQ.'CHAR_MECA_FR1D2D') THEN
-
-        CALL TECACH('ONN','PNFORCER',1,IFORC,IRET)
-        IF ( IFORC .NE. 0 ) THEN
-          CALL JEVECH('PNFORCER','L',IFORC)
-        ELSE
-          IF (NDIM.EQ.3) CALL JEVECH('PFR2D3D', 'L',IFORC)
-          IF (NDIM.EQ.2) CALL JEVECH('PFR1D2D', 'L',IFORC)
-        ENDIF
+        IF (NDIM.EQ.3)  CALL TEFREP(OPTION,NOMTE,'PFR2D3D',IFORC)
+        IF (NDIM.EQ.2)  CALL TEFREP(OPTION,NOMTE,'PFR1D2D',IFORC)
 
       ELSEIF (OPTION.EQ.'CHAR_MECA_FF2D3D'.OR.
      &        OPTION.EQ.'CHAR_MECA_FF1D2D') THEN
@@ -190,7 +183,7 @@ C         COORD DU SOUS-ELT EN QUESTION
 C         BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
           DO 111 IN=1,NNO
             INO=ZI(JCNSET-1+(NDIME+1)*(CPT-1)+IN)
-            DO 112 J=1,NDIM 
+            DO 112 J=1,NDIM
               IF (INO.LT.1000) THEN
                 ZR(JCOORS-1+NDIM*(IN-1)+J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
               ELSE
@@ -210,7 +203,7 @@ C         ON RENOMME LES SOMMETS DU SOUS-ELEMENT
             AB(J)=B(J)-A(J)
             IF (NDIM.EQ.3) C(J)=ZR(JCOORS-1+NDIM*(3-1)+J)
             IF (NDIM.EQ.3) AC(J)=C(J)-A(J)
- 113      CONTINUE 
+ 113      CONTINUE
 
           IF (NDIME.EQ.2) THEN
 C           CREATION DU REPERE LOCAL 2D : (AB,Y)
@@ -221,7 +214,7 @@ C           CREATION DU REPERE LOCAL 2D : (AB,Y)
           ELSEIF (NDIME.EQ.1) THEN
 C           CREATION DU REPERE LOCAL 1D : AB/NAB
             CALL NORMEV(AB,NAB)
-            CALL VECINI(3,0.D0,ND) 
+            CALL VECINI(3,0.D0,ND)
             ND(1) = AB(2)
             ND(2) = -AB(1)
           ENDIF
@@ -241,7 +234,7 @@ C         COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL
             ZR(JCORLO-1+2)=NAB
           ENDIF
 
-C         COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL 
+C         COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL
           GEOMLO='&&TE0036.GEOMLO'
           CALL WKVECT(GEOMLO,'V V R',NNOP*NDIME,IGEOLO)
           DO 114 INO=1,NNOP
@@ -250,7 +243,7 @@ C         COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL
               AN(J)=N(J)-A(J)
  115        CONTINUE
             ZR(IGEOLO-1+NDIME*(INO-1)+1)=DDOT(NDIM,AN,1,AB,1)
-            IF (NDIME.EQ.2) 
+            IF (NDIME.EQ.2)
      &        ZR(IGEOLO-1+NDIME*(INO-1)+2)=DDOT(NDIM,AN,1,Y ,1)
  114      CONTINUE
 
@@ -278,12 +271,12 @@ C           COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
                 GLOC(K)=GLOC(K)+VF*ZR(JCORLO-1+NDIME*(J-1)+K)
  211          CONTINUE
  210        CONTINUE
-                         
+
 C           JUSTE POUR CALCULER LES FF AUX NOEUDS DE L'ELREFP
             CALL REEREF(ELREFP,NNOP,IGEOLO,GLOC,RBID,.FALSE.,NDIME,RBID,
      &         IBID,IBID,IBID,RBID,RBID,'NON',XE,FF,RBID,RBID,RBID,RBID)
 
-C           COORDONNES REELLES DU POINT DE GAUSS              
+C           COORDONNES REELLES DU POINT DE GAUSS
             CALL VECINI(4,0.D0,XG)
             DO 220 I=1,NDIM
               DO 221 IN=1,NNO
@@ -292,7 +285,7 @@ C           COORDONNES REELLES DU POINT DE GAUSS
  221          CONTINUE
  220        CONTINUE
 
-C           2EME METHODE POUR CALCULER LES COORDONNÉES RÉELLES 
+C           2EME METHODE POUR CALCULER LES COORDONNÉES RÉELLES
 C           DU POINT DE GAUSS
 C            G(1)=A(1)+AB(1)*GLOC(1)+Y(1)*GLOC(2)
 C            G(2)=A(2)+AB(2)*GLOC(1)+Y(2)*GLOC(2)
@@ -359,7 +352,7 @@ C             CAR LE SECOND MEMBRE SERA ECRIT AVEC UN + (VOIR PLUS BAS)
 C             VALEUR DE LA PRESSION
               XG(NDIM+1) = ZR(ITEMPS)
               CALL FOINTE('FM',ZK8(IPRES),NDIM+1,NOMPAR,XG,PRES,IER)
-              IF(NDIM.EQ.2) 
+              IF(NDIM.EQ.2)
      &          CALL FOINTE('FM',ZK8(IPRES+1),NDIM+1,NOMPAR,XG,CISA,IER)
               DO 260 J=1,NDIM
                 FORREP(J) = -PRES * ND(J)
@@ -406,18 +399,18 @@ C             TERME HEAVISIDE
               DO 292 J=1,DDLH
                 POS=POS+1
                 ZR(IRES-1+POS) = ZR(IRES-1+POS)
-     &                           + HE * FORREP(J) * POIDS * FF(INO)  
+     &                           + HE * FORREP(J) * POIDS * FF(INO)
  292          CONTINUE
 
-C             TERME SINGULIER   
+C             TERME SINGULIER
               DO 293 IG=1,NFE
                 DO 294 J=1,NDIM
                   POS=POS+1
                   ZR(IRES-1+POS) = ZR(IRES-1+POS) +
      &                             FE(IG) * FORREP(J) * POIDS * FF(INO)
  294            CONTINUE
- 293          CONTINUE 
- 290        CONTINUE 
+ 293          CONTINUE
+ 290        CONTINUE
  200      CONTINUE
 
 C-----------------------------------------------------------------------
@@ -438,7 +431,7 @@ C     SUPPRESSION DES DDLS SUPERFLUS
          NNOM=3*(NNOP/2)
       ELSE
          NNOM=NNOP
-      ENDIF  
+      ENDIF
       NDDL = (NNOP*DDLS)+(NNOM*DDLC)
       CALL XTEDDL(NDIM,DDLH,NFE,DDLC,DDLS,NDDL,NNOP,NNOS,ZI(JSTNO),
      &                  LBID,OPTION,NOMTE,
@@ -448,5 +441,4 @@ C-----------------------------------------------------------------------
 C     FIN
 C-----------------------------------------------------------------------
 
-      CALL JEDEMA()
       END

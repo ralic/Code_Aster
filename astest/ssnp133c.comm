@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 23/03/2010   AUTEUR LAVERNE J.LAVERNE 
 # TITRE TEST DES ELEMENTS D'INTERFACE SUR UNE PLAQUE TROUEE
 # ssnp133c.para = tps_job 150 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,29 +36,30 @@ Sc = 2.E5
 #--------------------------------------------------------------
 # MAILLAGE ET MODELE
 #--------------------------------------------------------------
-PRE_GMSH()
-MA_0 = LIRE_MAILLAGE()
+
+MA_0 = LIRE_MAILLAGE(FORMAT='MED')
 
 MA = CREA_MAILLAGE(MAILLAGE  = MA_0, LINE_QUAD = _F(TOUT='OUI')) 
 
 MA = DEFI_GROUP(reuse = MA,
        MAILLAGE = MA,
        CREA_GROUP_MA = (
-          _F(NOM = 'FACE_SUP', GROUP_MA = 'GM4'),
-          _F(NOM = 'MATIERE' , GROUP_MA = 'GM5'),
-          _F(NOM = 'JOINT_G' , GROUP_MA = 'GM55'),
-          _F(NOM = 'JOINT_D' , GROUP_MA = 'GM54'),
+          _F(NOM = 'FACE_SUP', GROUP_MA = 'G_1D_4'),
+          _F(NOM = 'MATIERE' , GROUP_MA = 'G_2D_5'),
+          _F(NOM = 'JOINT_G' , GROUP_MA = 'G_2D_55'),
+          _F(NOM = 'JOINT_D' , GROUP_MA = 'G_2D_54'),
           _F(NOM = 'JOINT',    UNION = ('JOINT_G', 'JOINT_D')),
        ),
        CREA_GROUP_NO = (
-          _F(NOM = 'P_RIG',    GROUP_MA = 'GM1'),
+          _F(NOM = 'P_RIG',    GROUP_MA = 'G_0D_1'),
           _F(GROUP_MA = 'FACE_SUP'),
           _F(GROUP_MA = 'JOINT'),          
-          _F(NOM = 'SYME_BD',GROUP_MA = 'GM56'),
-          _F(NOM = 'SYME_BG',GROUP_MA = 'GM57'),
+          _F(NOM = 'SYME_BD',GROUP_MA = 'G_1D_56'),
+          _F(NOM = 'SYME_BG',GROUP_MA = 'G_1D_57'),
           _F(NOM = 'SYMETRIE',UNION   = ('SYME_BD', 'SYME_BG')),
          )
        )
+
 
 # RENUMEROTATION LOCALE DES ELEMENTS D'INTERFACE       
 MA=MODI_MAILLAGE(reuse =MA,
@@ -123,9 +124,9 @@ RIGIDE = AFFE_CHAR_MECA(
 
 
 # ON IMPOSE QUE LE PLAN DE SYMETRIE PASSE PAR LA FACE INFERIEURE DES ELEMENTS D'INTERFACE
-SYMETRIE = AFFE_CHAR_MECA(
+SYMETRIE = AFFE_CHAR_CINE(
   MODELE        = MO,
-  DDL_IMPO = (
+  MECA_IMPO = (
     _F(
       GROUP_NO = 'SYME_BG',
       DY=0.0,
@@ -255,46 +256,50 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
               NOM_PARA='DY',
-              VALE=2.88538E-03,
+              VALE=2.88585E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
               NOM_PARA='DY',
-              VALE=2.85426E+07,
+              VALE= 2.85422E+07,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=75,),),
               NOM_PARA='DY',
-              VALE=6.42712E-03,
+              VALE=6.42676E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=75,),),
               NOM_PARA='DY',
-              VALE=9.80686E+06,
-              REFERENCE='NON_REGRESSION')
+              VALE=9.80658E+06,
+              REFERENCE='NON_REGRESSION',
+              )
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
               NOM_PARA='DY',
-              VALE=7.81875E-03,
+              VALE=7.81861E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
               NOM_PARA='DY',
-              VALE=4.65552E+06,
-              REFERENCE='NON_REGRESSION')
+              VALE=4.65534E+06,
+              REFERENCE='NON_REGRESSION',
+              )
 
 TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=149,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=140,),),
               NOM_PARA='DY',
-              VALE=2.42573E-02,
-              REFERENCE='NON_REGRESSION')
+              VALE=2.20198E-02,
+              REFERENCE='NON_REGRESSION',
+              )
 TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=149,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=140,),),
               NOM_PARA='DY',
-              VALE=6.49815E+04,
-              REFERENCE='NON_REGRESSION')
+              VALE=6.03485E+05,
+              REFERENCE='NON_REGRESSION',
+              )
 
 
 #--------------------------------------------------------------
