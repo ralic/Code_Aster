@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPC MUMPS  DATE 23/03/2010   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPC MUMPS  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -253,7 +253,7 @@ C              -- C'EST OK
 C       ------------------------------------------------
 C        DETECTION DE SINGULARITE:
 C       ------------------------------------------------
-        IF ((NPREC.GE.0).AND.(LRESOL)) THEN
+        IF (NPREC.GE.0) THEN
           KPIV='&&AMUMP.PIVNUL'
           CALL JEEXIN(KPIV,IBID)
           IF (IBID.NE.0) THEN
@@ -261,20 +261,22 @@ C       ------------------------------------------------
           ELSE
             N=CMPSK%N
             CALL WKVECT(KPIV,'V V I',N+2,IPIV)
+	    IF (LRESOL) THEN
 C --- KPIV(1)= NOMBRE DE PIVOTS QUASI NULS  (TOUS LE PROCS)
-            IF (CMPSK%INFOG(28).GT.N) CALL ASSERT(.FALSE.)
-            ZI(IPIV)=CMPSK%INFOG(28)
+              IF (CMPSK%INFOG(28).GT.N) CALL ASSERT(.FALSE.)
+              ZI(IPIV)=CMPSK%INFOG(28)
 C --- KPIV(2)= NOMBRE DE PIVOTS NEGATIFS  (TOUS LE PROCS)
-            IF (CMPSK%INFOG(12).GT.N) CALL ASSERT(.FALSE.)
-            ZI(IPIV+1)=CMPSK%INFO(12)
+              IF (CMPSK%INFOG(12).GT.N) CALL ASSERT(.FALSE.)
+              ZI(IPIV+1)=CMPSK%INFO(12)
 C --- KPIV(3..) LES PIVOTS QUASI NULS (ONLY PROC 0)
-            IF (RANG.EQ.0) THEN
-              DO I=1,CMPSK%INFOG(28)
-                ZI(IPIV+1+I)=CMPSK%PIVNUL_LIST(I)
-              ENDDO
-            ENDIF
+              IF (RANG.EQ.0) THEN
+                DO I=1,CMPSK%INFOG(28)
+                  ZI(IPIV+1+I)=CMPSK%PIVNUL_LIST(I)
+                ENDDO
+              ENDIF
 C --- BCAST POUR COMMUNIQUER L'INFO AUX AUTRES PROCS
-            CALL MPICM2('BCAST',KPIV)
+              CALL MPICM2('BCAST',KPIV)
+	    ENDIF
           ENDIF
         ENDIF
         

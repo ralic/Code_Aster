@@ -18,7 +18,7 @@ C
       LOGICAL                                   LRESU,LCOR
       LOGICAL           LSUP,LINF,              LMAX,LMIN,LMOD,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -145,7 +145,7 @@ C         (UNIQUEMENT FORMAT 'CASTEM')
           DO 51 IORD = 1,NBORDR
             CALL RSEXCH (NOMCO,CHAM(ICHA),ORDR(IORD),NOCH19,IRET)
             IF (IRET.EQ.0) THEN
-              CALL DISMOI('A','TYPE_CHAMP',NOCH19,'CHAMP',IBIB,
+              CALL DISMOI('C','TYPE_CHAMP',NOCH19,'CHAMP',IBIB,
      &                TYCH,IERD)
               IF(TYCH(1:4).EQ.'NOEU'.OR.TYCH(1:4).EQ.'ELNO') THEN
                 NBCHCA = NBCHCA + 1

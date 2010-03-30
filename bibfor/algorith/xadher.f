@@ -1,8 +1,8 @@
-      SUBROUTINE XADHER(P,SAUT,LAMB1,RHOTK,CSTAFR,CPENFR,VITANG,
-     &                            PBOUL,KN,PTKNP,IK,ADHER)
+      SUBROUTINE XADHER(P,SAUT,LAMB1,RHOTK,CSTAFR,CPENFR,LPENAF,
+     &                     VITANG,PBOUL,KN,PTKNP,IK,ADHER)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 30/03/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C RESPONSABLE GENIAUT S.GENIAUT
       IMPLICIT NONE
       REAL*8    P(3,3),SAUT(3),LAMB1(3),RHOTK,CSTAFR,CPENFR,PBOUL(3)
       REAL*8    VITANG(3),PTKNP(3,3),IK(3,3),KN(3,3)
-      LOGICAL   ADHER
+      LOGICAL   ADHER,LPENAF
           
 C ----------------------------------------------------------------------
 C                      TEST DE L'ADHÉRENCE AVEC X-FEM 
@@ -39,6 +39,9 @@ C IN    RHOTK       : COEFFICIENT DE REGULARISATION DE FROTTEMENT
 C                       DIVISÉ PAR L'INCRÉMENT DE TEMPS 
 C IN    CSTAFR      : COEFFICIENT DE STABILISTAION DE FROTTEMENT 
 C                       DIVISÉ PAR L'INCRÉMENT DE TEMPS 
+C IN    CPENFR      : COEFFICIENT DE PENALISATION DU FROTTEMENT 
+C                       DIVISÉ PAR L'INCRÉMENT DE TEMPS
+C IN    LPENAF      : =.TRUE. SI ON EST EN PENALISATION SEULE
 
 C OUT   VITANG      : PROJECTION TANGENTE DU SAUT
 C OUT   PBOUL       : PROJECTION SUR LA BOULE B(0,1)
@@ -78,31 +81,34 @@ C-----------------------------------------------------------------------
 C     CALCUL DE GT = LAMDBA + RHO [[DX]]/DELTAT ET DE SA PROJECTION
 
       CALL ELREF4(' ','RIGI',NDIM,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
-
       DO 10 I=1,NDIM
         VITANG(I)=0.D0
 C       "VITESSE TANGENTE" : PROJECTION DU SAUT
         DO 20  K=1,NDIM
           VITANG(I)=VITANG(I)+P(I,K)*SAUT(K)
  20     CONTINUE
-        GT(I)=LAMB1(I)+RHOTK*VITANG(I)
+        IF(LPENAF) THEN
+C         PENALISATION SEULE
+          GT(I)=CPENFR * VITANG(I)
+        ELSE
+          GT(I)=LAMB1(I)+RHOTK*VITANG(I)
+        ENDIF
  10   CONTINUE
-
       IF (NDIM.EQ.3) THEN
         NORME=SQRT(GT(1)*GT(1)+GT(2)*GT(2)+GT(3)*GT(3))
       ELSE
         NORME=SQRT(GT(1)*GT(1)+GT(2)*GT(2))
       ENDIF
 
-      IF (CSTAFR.NE.0.D0.AND.RHOTK.NE.0.D0) THEN
-        DO 23 I=1,NDIM
-          GT2(I)=LAMB1(I)+CSTAFR * VITANG(I)
- 23     CONTINUE
-      ELSE
+      IF (LPENAF) THEN
 C       PENALISATION SEULE
         DO 24 I=1,NDIM
           GT2(I)=CPENFR * VITANG(I)
  24     CONTINUE
+      ELSE
+        DO 23 I=1,NDIM
+          GT2(I)=LAMB1(I)+CSTAFR * VITANG(I)
+ 23     CONTINUE
       ENDIF
       IF (NDIM.EQ.3) THEN
         NORME2=SQRT(GT2(1)*GT2(1)+GT2(2)*GT2(2)+GT2(3)*GT2(3))
@@ -189,5 +195,4 @@ C     CALCUL DE Id-KN
  52   CONTINUE
       
 C-----------------------------------------------------------------------
-
       END

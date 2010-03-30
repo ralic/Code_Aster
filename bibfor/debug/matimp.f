@@ -1,6 +1,6 @@
       SUBROUTINE MATIMP(MATZ,IFIC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG DATE 07/09/2009 AUTEUR PELLET J.PELLET
+C MODIF DEBUG  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_4
 C RESPONSABLE PELLET J.PELLET
       IMPLICIT NONE
       CHARACTER*(*) MATZ
@@ -31,6 +32,8 @@ C ---------------------------------------------------------------------
 
 
 C---- COMMUNS NORMALISES  JEVEUX
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -123,7 +126,7 @@ C     ------------------------------------------------
 
 C       --- PARTIE TRIANGULAIRE SUPERIEURE
         IF (ZI(JSMDI-1+JCOL).LT.KTERM) JCOL=JCOL+1
-        ILIG=ZI(JSMHC-1+KTERM)
+        ILIG=ZI4(JSMHC-1+KTERM)
         IF (LTYPR) THEN
           WRITE(IFIC,1001) ILIG,JCOL,ZR(JVALE-1+KTERM)
         ELSE

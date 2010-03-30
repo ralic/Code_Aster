@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 25/03/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -810,13 +810,22 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
             tabsup=TlibS[ino].EXTR_TABLE()
             DETRUIRE(CONCEPT=_F(NOM=TlibS[ino]),INFO=1)
          elif RESULTAT :
-            __TSUP=POST_RELEVE_T(ACTION=_F(INTITULE='Deplacement SUP',
-                                          NOEUD=Lnosup[ino],
-                                          RESULTAT=RESULTAT,
-                                          NOM_CHAM='DEPL',
-                                          TOUT_ORDRE='OUI',
-                                          NOM_CMP=('DX','DY','DZ',),
-                                          OPERATION='EXTRACTION',),);
+            if MODELISATION=='AXIS' or MODELISATION=='C_PLAN' or MODELISATION=='D_PLAN':
+                __TSUP=POST_RELEVE_T(ACTION=_F(INTITULE='Deplacement SUP',
+                                              NOEUD=Lnosup[ino],
+                                              RESULTAT=RESULTAT,
+                                              NOM_CHAM='DEPL',
+                                              TOUT_ORDRE='OUI',
+                                              NOM_CMP=('DX','DY',),
+                                              OPERATION='EXTRACTION',),);
+            else :
+                __TSUP=POST_RELEVE_T(ACTION=_F(INTITULE='Deplacement SUP',
+                                              NOEUD=Lnosup[ino],
+                                              RESULTAT=RESULTAT,
+                                              NOM_CHAM='DEPL',
+                                              TOUT_ORDRE='OUI',
+                                              NOM_CMP=('DX','DY','DZ',),
+                                              OPERATION='EXTRACTION',),);
             tabsup=__TSUP.EXTR_TABLE()
             DETRUIRE(CONCEPT=_F(NOM=__TSUP),INFO=1)      
          else :
@@ -839,13 +848,22 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
                tabinf=TlibI[ino].EXTR_TABLE()
                DETRUIRE(CONCEPT=_F(NOM=TlibI[ino]),INFO=1)
             elif RESULTAT :
-               __TINF=POST_RELEVE_T(ACTION=_F(INTITULE='Deplacement INF',
-                                          NOEUD=Lnoinf[ino],
-                                          RESULTAT=RESULTAT,
-                                          NOM_CHAM='DEPL',
-                                          TOUT_ORDRE='OUI',
-                                          NOM_CMP=('DX','DY','DZ',),
-                                          OPERATION='EXTRACTION',),);
+               if MODELISATION=='AXIS' or MODELISATION=='C_PLAN' or MODELISATION=='D_PLAN':
+                  __TINF=POST_RELEVE_T(ACTION=_F(INTITULE='Deplacement INF',
+                                             NOEUD=Lnoinf[ino],
+                                             RESULTAT=RESULTAT,
+                                             NOM_CHAM='DEPL',
+                                             TOUT_ORDRE='OUI',
+                                             NOM_CMP=('DX','DY'),
+                                             OPERATION='EXTRACTION',),);
+               else :
+                  __TINF=POST_RELEVE_T(ACTION=_F(INTITULE='Deplacement INF',
+                                             NOEUD=Lnoinf[ino],
+                                             RESULTAT=RESULTAT,
+                                             NOM_CHAM='DEPL',
+                                             TOUT_ORDRE='OUI',
+                                             NOM_CMP=('DX','DY','DZ',),
+                                             OPERATION='EXTRACTION',),);
                tabinf=__TINF.EXTR_TABLE()   
                DETRUIRE(CONCEPT=_F(NOM=__TINF),INFO=1)                 
             else :

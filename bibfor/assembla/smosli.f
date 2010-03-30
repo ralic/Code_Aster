@@ -4,7 +4,7 @@
       REAL*8 RTBLOC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,6 +21,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_4
 C     CALCUL D'UN STOC_LCIEL A PARTIR D'UN STOC_MORSE (POUR CONTENIR
 C     LA MEME MATRICE)
 C     ------------------------------------------------------------------
@@ -31,6 +32,8 @@ C IN        R   RTBLOC     : TAILLE DES BLOCS DE STOLCI
 C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -104,8 +107,8 @@ C     1.3  EQUATIONS 2, ..., NEQ :
 C        -- CALCUL DE HC : HAUTEUR DE LA COLONNE IEQ :
          IDIAG=ZI(JSMDI-1+IEQ)
          IDIAG1=ZI(JSMDI-1+IEQ-1)
-         IMIN=ZI(JSMHC-1+ IDIAG1+1)
-         IMAX=ZI(JSMHC-1+ IDIAG)
+         IMIN=ZI4(JSMHC-1+ IDIAG1+1)
+         IMAX=ZI4(JSMHC-1+ IDIAG)
          HC=IMAX-IMIN+1
 
 C        -- PEUT-ON ENCORE STOCKER CETTE COLONNE DANS LE BLOC COURANT ?

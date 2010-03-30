@@ -1,6 +1,6 @@
       SUBROUTINE JJALLT (LONOI, IC, GI, TYPEI, LTYPI, CI, JCTAB, JCDYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18  CRS_508
+C TOLE CRP_4
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             LONOI,IC,LTYPI,JCTAB
       CHARACTER*(*)       GI,TYPEI,CI
@@ -51,14 +52,19 @@ C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      INTEGER*4          ZI4
+      COMMON  / I4VAJE / ZI4(1)
 C---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
-      INTEGER         IZR,IZC,IZL,IZK8,IZK16,IZK24,IZK32,IZK80,JBID
+      INTEGER        IZR,IZC,IZL,IZK8,IZK16,IZK24,IZK32,IZK80,JBID,IZI4,
+     &               JCDYN
       EQUIVALENCE    (IZR,ZR),(IZC,ZC),(IZL,ZL),(IZK8,ZK8),(IZK16,ZK16),
-     &               (IZK24,ZK24),(IZK32,ZK32),(IZK80,ZK80)
+     &               (IZK24,ZK24),(IZK32,ZK32),(IZK80,ZK80),(IZI4,ZI4)
 C DEB ------------------------------------------------------------------
       JCTAB = 0
       IF ( TYPEI(1:1) .EQ. 'I' ) THEN
         CALL JJALLS (LONOI,IC,GI,TYPEI,LTYPI,CI,ZI ,JBID,JCTAB,JCDYN)
+      ELSE IF ( TYPEI .EQ. 'S' ) THEN
+        CALL JJALLS (LONOI,IC,GI,TYPEI,LTYPI,CI,IZI4,JBID,JCTAB,JCDYN)
       ELSE IF ( TYPEI(1:1) .EQ. 'R' ) THEN
         CALL JJALLS (LONOI,IC,GI,TYPEI,LTYPI,CI,IZR,JBID,JCTAB,JCDYN)
       ELSE IF ( TYPEI(1:1) .EQ. 'C' ) THEN

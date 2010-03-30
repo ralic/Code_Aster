@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 13/10/2009   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF postrele Messages  DATE 25/03/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -391,6 +391,11 @@ cata_msg = {
 64 : _("""
 On cherche à faire une extraction sur des noeuds qui ne font 
 pas partie du maillage, peut-etre créés par PROPA_FISS 
+"""),
+
+65 : _("""
+La composante %(k1)s n'existe pas pour le champ de type %(k2)s 
+du résultat %(k3)s 
 """),
 
 }

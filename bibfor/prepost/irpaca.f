@@ -6,7 +6,7 @@
       INTEGER           NBK16,              NIVE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C
          CALL RSEXCH (NOMCO,CHAMCA(I),ORDR(IOCC),NOCH19,IRET)
          IF (IRET.EQ.0) THEN
             J=J+1
-            CALL DISMOI('A','TYPE_CHAMP',NOCH19,'CHAMP',IBID,TYCH,IERD)
+            CALL DISMOI('C','TYPE_CHAMP',NOCH19,'CHAMP',IBID,TYCH,IERD)
             IF(TYCH(1:4).EQ.'NOEU') THEN
                ZI(JTABL-1+(NBACC+1)*4+(J-1)*4+1) = 27
                ZI(JTABL-1+(NBACC+1)*4+(J-1)*4+2)=ZI(JLAST-1+8)+I+NBACC+1

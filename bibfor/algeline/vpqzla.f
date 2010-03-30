@@ -5,7 +5,7 @@
      &   DDLEXC, NFREQ, LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA,
      &   ICSCAL, IVSCAL, IISCAL, IBSCAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/01/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -87,6 +87,8 @@ C-----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER*4 ZI4
+      COMMON /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -240,7 +242,7 @@ C ---- MATRICES K ET M REELLES SYMETRIQUES
             IFIN = ZI(IADIA+JM1)
             DO 30 I = IDEB,IFIN
               IM1=I-1
-              IAUXH=ZI(IHCOL+IM1)
+              IAUXH=ZI4(IHCOL+IM1)
               IAUXH1=IAUXH-1
               RAUXR=ZR(IVALR+IM1)
               RAUXM=ZR(IVALM+IM1)
@@ -262,7 +264,7 @@ C ---- MATRICES K COMPLEXE ET M REELLE OU K/M NON SYMETRIQUES
             IFIN = ZI(IADIA-1+J)
             DO 32 I = IDEB,IFIN
               IM1=I-1
-              IAUXH=ZI(IHCOL+IM1)
+              IAUXH=ZI4(IHCOL+IM1)
               IAUXH1=IAUXH-1
 C ------ MATRICE A ET B TRIANGULAIRE SUP
               IF (LKR) THEN
@@ -307,7 +309,7 @@ C ---   J: NUMERO DE COLONNE, IAUXH: DE LIGNE
           JM1=J-1
           DO 38 I = IDEB,IFIN
             IM1=I-1
-            IAUXH=ZI(IHCOL+IM1)
+            IAUXH=ZI4(IHCOL+IM1)
             IAUXH1=IAUXH-1
 C ---       PARTIE TRIANGULAIRE SUP
             IF (LKR) THEN
@@ -382,7 +384,7 @@ C       J NUMERO DE COLONNE
           DO 36 I = IDEB,IFIN
             IM1=I-1
 C           IAUXH NUMERO DE LIGNE
-            IAUXH=ZI(IHCOL+IM1)
+            IAUXH=ZI4(IHCOL+IM1)
             IAUXH1=IAUXH-1
             IAUXH2=IAUXH+QRNS2
             IAUX21=IAUXH2-1

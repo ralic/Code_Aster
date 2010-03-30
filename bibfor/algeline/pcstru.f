@@ -1,7 +1,7 @@
       SUBROUTINE PCSTRU(N,IN,IP,ICPL,ICPC,ICPD,ICPCX,ICPLX,NIVEAU,
      &                  COMPLT,LCA,IMP,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_4
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C----------------------------------------------------------------------
@@ -51,9 +52,9 @@ C     COMMUNS JEVEUX
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C----------------------------------------------------------------------
-      INTEGER IN(N),IP(*)
-
-      INTEGER ICPL(0:N),ICPD(N),ICPC(*)
+      INTEGER IN(N)
+      INTEGER*4 IP(*),ICPC(*)
+      INTEGER ICPL(0:N),ICPD(N)
       INTEGER ICPLX(0:N),ICPCX(*)
 
       LOGICAL COMPLT

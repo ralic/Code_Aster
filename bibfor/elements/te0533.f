@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 30/03/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,11 +69,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       REAL*8       NDN(3,6),TAU1(3,6),TAU2(3,6),LAMB1(3)
       REAL*8       ND(3),METR(2,2),P(3,3),KN(3,3),R3(3),SEUIL(60),DDOT
       REAL*8       PTKNP(3,3),TAUKNP(2,3),TAIKTA(2,2),IK(3,3),NBARY(3)
-      REAL*8       LSN,LST,R,RR,E,G(3),RBID
+      REAL*8       LSN,LST,R,RR,E,G(3),RBID,ID(3,3)
       LOGICAL      ADHER
       REAL *8      CSTACO,CSTAFR,CPENCO,CPENFR,VITANG(3),GT(3),X(4)
       INTEGER      ZXAIN,XXMMVD
-      LOGICAL      PEFRSE,MALIN
+      LOGICAL      LPENAF,MALIN,LPENAC
 C......................................................................
 
       CALL JEMARQ()
@@ -118,7 +118,6 @@ C     DEPDEL
       CALL JEVECH('PBASECO','L',JBASEC)
 
       CALL JEVECH('PMATUUR','E',IMATT)
-
 C     RECUPERATIONS DES DONNEES SUR LE CONTACT ET
 C     SUR LA TOPOLOGIE DES FACETTES
       NINTER=ZI(JLONCH-1+1)
@@ -140,7 +139,6 @@ C     COEFFICIENTS DE STABILISATION
 C     COEFFICIENTS DE PENALISATION
       CPENCO=ZR(JDONCO-1+8)
       CPENFR=ZR(JDONCO-1+9)
-
       IF (CSTACO.EQ.0.D0) CSTACO=RHON
       IF (CSTAFR.EQ.0.D0) CSTAFR=RHOTK
 
@@ -148,10 +146,16 @@ C     COEFFICIENTS DE PENALISATION
       IF (CPENFR.EQ.0.D0) CPENFR=RHOTK
 
 C     PENALISATION PURE
-      IF (CSTACO.EQ.0.D0) CSTACO=CPENCO
-      PEFRSE=.FALSE.
+C     PENALISATION DU CONTACT
+      LPENAC=.FALSE.
+      IF (CSTACO.EQ.0.D0) THEN
+        CSTACO=CPENCO
+        LPENAC=.TRUE.
+      ENDIF
+C     PENALISATION DU FROTTEMENT
+      LPENAF=.FALSE.
       IF (CSTAFR.EQ.0.D0) THEN
-        PEFRSE=.TRUE.
+        LPENAF=.TRUE.
       ENDIF
 
 C     SCHEMA D'INTEGRATION NUMERIQUE ET ELEMENT DE REFERENCE DE CONTACT
@@ -358,7 +362,6 @@ C           LSN NON NUL SUR LA SURFACE.
             R=SQRT(LSN*LSN+LST*LST)
             RR=SQRT(R)
           ENDIF
-
 C         I) CALCUL DES MATRICES DE CONTACT
 C         ..............................
 
@@ -390,7 +393,6 @@ C
 C
                     MMAT(PLI,PLJ) = MMAT(PLI,PLJ)
      &                       - FFJ * FFI * JAC * MULT / CSTACO * E * E
-
  121              CONTINUE
  120            CONTINUE
 
@@ -408,7 +410,6 @@ C             I.1. CALCUL DE A ET DE At
                 ELSE
                   FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 ENDIF
-
                 DO 131 J = 1,NNO
                   DO 132 L = 1,DDLH
 C
@@ -477,6 +478,32 @@ C
 
  141            CONTINUE
  140          CONTINUE
+C             I.3. SI PENALISATION PURE CALCUL DE C
+              IF (LPENAC) THEN
+                DO 220 I = 1,NNOL
+
+                  PLI=PLA(I)
+                  IF (MALIN) THEN
+                    FFI=FFP(NOLA(I))
+                  ELSE
+                    FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+                  ENDIF
+
+                  DO 221 J = 1,NNOL
+
+                    PLJ=PLA(J)
+                    IF (MALIN) THEN
+                      FFJ=FFP(NOLA(J))
+                    ELSE
+                      FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
+                    ENDIF
+C
+                    MMAT(PLI,PLJ) = MMAT(PLI,PLJ)
+     &                       - FFJ * FFI * JAC * MULT / CSTACO * E * E
+
+ 221              CONTINUE
+ 220            CONTINUE
+              ENDIF
 C
             ELSE
 C             SI INDCO N'EST NI EGAL A 0 NI EGAL A 1
@@ -584,17 +611,15 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
      &                                    )*TAU2(J,NLI)
  159            CONTINUE
  158          CONTINUE
-
-              CALL XADHER(P,SAUT,LAMB1,RHOTK,CSTAFR,CPENFR,VITANG,R3,KN,
-     &                 PTKNP,IK,ADHER)
+              CALL XADHER(P,SAUT,LAMB1,RHOTK,CSTAFR,CPENFR,LPENAF,
+     &                     VITANG,R3,KN,PTKNP,IK,ADHER)
 
               CALL PROMAT(KN,3,NDIM,NDIM,P,3,NDIM,NDIM,KNP)
 
 C             II.1. CALCUL DE B ET DE Bt
 
 C             B ET Bt SONT NULLES EN PENALISATION SEULE
-              IF (PEFRSE) GOTO 190
-
+              IF (LPENAF) GOTO 190
               DO 160 I = 1,NNOL
 
                 PLI=PLA(I)
@@ -656,14 +681,13 @@ C             II.2. CALCUL DE B_U
 
  190          CONTINUE
               IF (ADHER) THEN
-
 C               CAS ADHERENT, TERME DE PENALISATION:
 C               ON A ALORS PTKNP=PT.ID.P
                 COEFBU=CPENFR
 
               ELSE
 
-                IF (PEFRSE) THEN
+                IF (LPENAF) THEN
 C                 CAS GLISSANT, PENALISATION SEULE
                   COEFBU=CPENFR
                 ELSE
@@ -722,13 +746,12 @@ C             II.3. CALCUL DE F
 
 C             F EST NULLE SI LE POINT EST ADHERENT, ET
 C             SI ON N'EST PAS EN PENALISATION SEULE
-              IF (.NOT.ADHER.OR.PEFRSE) THEN
+              IF ((.NOT.ADHER).OR.LPENAF) THEN
 
 C               LE COEFFICIENT DE F_R EST CELUI DE STABILISATION
                 COEFFR=CSTAFR
 C               SAUF EN CAS DE PENALISATION SEULE
-                IF (PEFRSE) COEFFR=CPENFR
-
+                IF (LPENAF) COEFFR=CPENFR
                 DO 180 I = 1,NNOL
                   PLI=PLA(I)
                   IF (MALIN) THEN
@@ -748,21 +771,22 @@ C               SAUF EN CAS DE PENALISATION SEULE
                       NLJ=CFACE(IFA,J)
                     ENDIF
 
-                    IF (PEFRSE) THEN
+                    IF (LPENAF) THEN
 C                     PENALISATION SEULE, TAIKTA=TAUt.Id.TAU
-                      CALL XMAFR2(NLI,NLJ,TAU1,TAU2,KN,TAIKTA)
+                      CALL MATINI(3,3,0.D0,ID)
+                      ID(1,1)=1.0D0
+                      ID(2,2)=1.0D0
+                      ID(3,3)=1.0D0
+                      CALL XMAFR2(NLI,NLJ,TAU1,TAU2,ID,TAIKTA)      
                     ELSE
 C                     CALCUL DE TAIKTA = TAUT.(ID-KN).TAU
                       CALL XMAFR2(NLI,NLJ,TAU1,TAU2,IK,TAIKTA)
                     ENDIF
-
                     DO 182 K = 1,NDIM-1
                       DO 183 L = 1,NDIM-1
-                        
                         MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
-     &                           + MU*SEUIL(ISSPG)/COEFFR*
-     &                           FFI*FFJ*TAIKTA(K,L)*JAC*MULT
-
+     &                         + (MU*SEUIL(ISSPG)/COEFFR)*
+     &                         FFI*FFJ*TAIKTA(K,L)*JAC*MULT
  183                  CONTINUE
  182                CONTINUE
  181              CONTINUE
@@ -790,7 +814,7 @@ C
 C-----------------------------------------------------------------------
 C     COPIE DES CHAMPS DE SORTIES ET FIN
 C-----------------------------------------------------------------------
-C
+C    
       DO 200 J = 1,NDDL
         DO 210 I = 1,J
           IJ = (J-1)*J/2 + I

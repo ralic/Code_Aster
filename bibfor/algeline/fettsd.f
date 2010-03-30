@@ -2,7 +2,7 @@
      &                  IFETI,IFM,LPARA,ITPS,NIVMPI,RANG,CHSOL,OPTION,
      &                  LTEST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_4
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  TEST VALIDITE DE SD_FETI OU SORTIES FICHIER
 C                          POUR SOULAGER ALFETI.F
@@ -71,6 +72,8 @@ C DECLARATION PARAMETRES D'APPELS
       LOGICAL      LPARA,LTEST
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -338,7 +341,7 @@ C-----------------------------
         NBMR=0
         DO 60 KTERM = 1, NZ
           IF (ZI(JSMDI-1+JCOL).LT.KTERM) JCOL=JCOL+1      
-          ILIG=ZI(JSMHC-1+KTERM)
+          ILIG=ZI4(JSMHC-1+KTERM)
           IF (ILIG.EQ.JCOL) THEN
             INO=ZI(IDEEQ+2*(ILIG-1))
 C            DII=1.D0*INO
@@ -457,7 +460,7 @@ C-----------------------------
         WRITE(IFM18,*)'TAILLE DU PB/NOMBRE DE TERMES ',NSMDI,NZ
         DO 80 KTERM = 1, NZ
           IF (ZI(JSMDI-1+JCOL).LT.KTERM) JCOL=JCOL+1      
-          ILIG=ZI(JSMHC-1+KTERM)
+          ILIG=ZI4(JSMHC-1+KTERM)
           WRITE(IFM18,*)ILIG,JCOL,ZR(IADVAL-1+KTERM)
    80   CONTINUE
 C-----------------------------      

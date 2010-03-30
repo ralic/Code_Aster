@@ -1,6 +1,6 @@
-      SUBROUTINE DISMIC(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
+      SUBROUTINE DISMIC(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,12 +23,11 @@ C     ARGUMENTS:
 C     ----------
       INTEGER REPI,IERD
       CHARACTER*19 NOMOB
-      CHARACTER*(*) QUESTI,CODMES
+      CHARACTER*(*) QUESTI
       CHARACTER*32  REPK
       CHARACTER*(*) NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C    IN:
-C       CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C       NOMOBZ : NOM D'UN OBJET DE TYPE "INCONNU"(K19)
 C    OUT:
@@ -61,8 +60,8 @@ C
 C
       CALL JEMARQ()
       NOMOB = NOMOBZ
-      REPK  = 'INCONNU'
 C
+      REPK  = 'INCONNU'
       IF ( QUESTI(1:8) .EQ. 'RESULTAT' ) THEN
          CALL JEEXIN(NOMOB//'.NOVA',IRE3)
          CALL JEEXIN(NOMOB//'.DESC',IRE4)
@@ -118,11 +117,7 @@ C
                GO TO 9999
              ELSE
                CALL RSDOCU ( DOCU, REPK, IRET )
-               IF ( IRET .NE. 0 ) THEN
-                  REPK = QUESTI
-                  CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
-                  IERD=1
-               ENDIF
+               IF ( IRET .NE. 0 ) IERD=1
                GO TO 9999
              ENDIF
          ENDIF
@@ -144,10 +139,7 @@ C
          ENDIF
 
       ELSE
-         REPK = QUESTI
-         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD=1
-         GO TO 9999
       END IF
 C
  9999 CONTINUE

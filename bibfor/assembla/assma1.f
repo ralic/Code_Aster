@@ -1,7 +1,7 @@
       SUBROUTINE ASSMA1(MATAS,LDIST)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 07/12/2009   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C RESPONSABLE PELLET J.PELLET
 C--------------------------------------------------------------
 C BUT : METTRE A L'ECHELLE LES LIGNES ET COLONNES D'UNE MATR_ASSE
@@ -31,6 +32,8 @@ C                     DONNEE INCOMPLETE PAR PROC
 C---------------------------------------------------------------
       CHARACTER*(*) MATAS
 C --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
+      INTEGER*4 ZI4
+      COMMON  / I4VAJE / ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -175,7 +178,7 @@ C ---------------------------------------------------------------
       JCOL=1
       DO 30,KTERM=1,NZ
         IF (ZI(JSMDI-1+JCOL).LT.KTERM)JCOL=JCOL+1
-        ILIG=ZI(JSMHC-1+KTERM)
+        ILIG=ZI4(JSMHC-1+KTERM)
         IF (ZI(JDELGL-1+JCOL)+ZI(JDELGL-1+ILIG).LT.0) THEN
           IF (KTYP.EQ.'R') THEN
             ZR(JVALM1-1+KTERM)=RCOEF*ZR(JVALM1-1+KTERM)

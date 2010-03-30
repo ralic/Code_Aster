@@ -1,7 +1,7 @@
       SUBROUTINE OP0090(IER)
       IMPLICIT NONE
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ C                      --- CAS D'UN CHAM_GD ---
 C     -----------------------------------------------------------------
       CALL GETVID(' ','CHAM_GD',0,1,1,CHAM19,NCH)
       IF (NCH.NE.0) THEN
-        CALL CHPVE2('F',CHAM19,8,TABTYP,IER)
+        CALL CHPVE2(CHAM19,8,TABTYP,IER)
         CALL RFRCHA(IER)
         GO TO 10
       END IF

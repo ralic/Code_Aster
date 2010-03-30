@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/03/2010   AUTEUR BOYERE E.BOYERE 
+C MODIF UTILITAI  DATE 30/03/2010   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -171,8 +171,8 @@ C
          CALL JEVEUO(RESU//'.DESC','L',LDESC)
          NBMODE = ZI(LDESC+1)
          CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,1,1, NUMCMP, N1 )
-         IF (NUMCMP.GT.NBMODE) CALL U2MESS('F','UTILITAI4_14')
          IF ( N1 .NE. 0 ) THEN
+           IF (NUMCMP.GT.NBMODE) CALL U2MESS('F','UTILITAI4_14')
            CALL WKVECT(NOMFON//'.VALE','G V R',2*NBORDR,LVAR)
            LFON = LVAR + NBORDR
            IF ( INTRES(1:3) .NE. 'NON' ) THEN

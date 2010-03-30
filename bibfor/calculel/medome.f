@@ -7,7 +7,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF CALCULEL  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -181,7 +181,7 @@ C
         CALL JEVEUO(EXCIT//'.LCHA','L',JLCHA)
         CALL JEDETR(KCHA)
         CALL WKVECT(KCHA,'V V K8',NCHA,ICHA)
-        CALL DISMOI('A','PHENOMENE',MODELE,
+        CALL DISMOI('C','PHENOMENE',MODELE,
      &        'MODELE',IBID,PHENOM,IERD)
         CTYP=PHENOM(1:4)
         IN=0

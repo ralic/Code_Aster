@@ -2,7 +2,7 @@
      &                  NOMCMP,NCMPMA,MECA)
 C RESPONSABLE PROIX J-M.PROIX
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C ----------------------------------------------------------------------
       EXIPMF=.FALSE.
       COMPOR = '&&NMDOCC.COMPOR'
 
-      CALL DISMOI('I','NOM_MAILLA',MODELE(1:8),'MODELE',I,NOMA,IRET)
+      CALL DISMOI('F','NOM_MAILLA',MODELE(1:8),'MODELE',I,NOMA,IRET)
 
 C ======================================================================
       IF (MECA) THEN

@@ -1,6 +1,6 @@
       SUBROUTINE COPMA2(MATR,MAT1,MAT2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG DATE 29/09/2006 AUTEUR VABHHTS J.PELLET
+C MODIF DEBUG  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C-----------------------------------------------------------------------
 C
 C     FONCTION : COPIE MATR_ASSE VERSION MULT_FRONT DANS MATRICE PLEINE
@@ -35,6 +36,8 @@ C DECLARATION PARAMETRES D'APPELS
       REAL*8       MAT1(*),MAT2(*)
 
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
@@ -83,7 +86,7 @@ C-----------------------------------------------------------------------
           IAUX=ZI(ISMDI+J-1)
           DO 40 K=IAUXO+1,IAUX
             L=L+1
-            I=ZI(ISMHC+K-1)
+            I=ZI4(ISMHC+K-1)
             PIJ=ZR(L)
             MAT1(I+(J-1)*NEQ) = PIJ
             MAT1(J+(I-1)*NEQ) = PIJ

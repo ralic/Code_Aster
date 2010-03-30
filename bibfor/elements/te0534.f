@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 30/03/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8      LST,R,RR,E,G(3),TT(3),RBID
       LOGICAL     LBID,ADHER
       REAL *8     CSTACO,CSTAFR,CPENCO,CPENFR,VITANG(3),X(4)
+      REAL *8     VTANG2(3),NVTNG2
       INTEGER     ZXAIN,XXMMVD
-      LOGICAL     PEFRSE,MALIN
+      LOGICAL     LPENAF,MALIN,LPENAC
 C.......................................................................
 
       CALL JEMARQ()
@@ -116,7 +117,6 @@ C     INCREMENT DE DEP DEPUIS L'EQUILIBRE PRECEDENT (DEPDEL) : 'PDEPL_P'
       CALL JEVECH('PBASECO','L',JBASEC)
 
       CALL JEVECH('PVECTUR','E',IVECT)
-
 C     RÉCUPÉRATIONS DES DONNÉES SUR LE CONTACT ET
 C     SUR LA TOPOLOGIE DES FACETTES
 
@@ -183,12 +183,17 @@ C     COEFFICIENTS DE PENALISATION
 
       IF (CPENCO.EQ.0.D0) CPENCO=RHON
       IF (CPENFR.EQ.0.D0) CPENFR=RHOTK
-
 C     PENALISATION PURE
-      IF (CSTACO.EQ.0.D0) CSTACO=CPENCO
-      PEFRSE=.FALSE.
+C     PENALISATION DU CONTACT
+      LPENAC=.FALSE.
+      IF (CSTACO.EQ.0.D0) THEN
+      CSTACO=CPENCO
+      LPENAC=.TRUE.
+      ENDIF
+C     PENALISATION DU FROTTEMENT
+      LPENAF=.FALSE.
       IF (CSTAFR.EQ.0.D0) THEN
-        PEFRSE=.TRUE.
+        LPENAF=.TRUE.
       ENDIF
 
 C     RÉCUPÉRATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
@@ -370,7 +375,6 @@ C        (DEPDEL+DEPMOI)
               ENDIF
  121        CONTINUE
  120      CONTINUE
-
 C         NORMALE AU CENTRE DE LA FACETTE
           CALL VECINI(NDIM,0.D0,NBARY)
           DO 122 I=1,NNOF
@@ -389,12 +393,10 @@ C         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
             R=ABS(LST)
             RR=SQRT(R)
           ENDIF
-
 C         I) CALCUL DES SECONDS MEMBRES DE CONTACT
 C         ..............................
 
           IF (OPTION.EQ.'CHAR_MECA_CONT') THEN
-
 
 C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT LE VECTEUR LN2
             IF (INDCO(ISSPG).EQ.0) THEN
@@ -412,7 +414,6 @@ C
 
                   VTMP(PLI) = VTMP(PLI) - REAC*FFI*JAC*MULT/CSTACO*E
  130            CONTINUE
-
               ENDIF
 C
 C           SI CONTACT POUR CE PG : ON REMPLIT LES VECTEURS LN1 ET LN2
@@ -440,18 +441,34 @@ C             CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
 
 C
 C             TERME LN1
-              DO 150 I = 1,NNO
-                DO 151 J = 1,DDLH
-                  VTMP(DDLS*(I-1)+NDIM+J) =
-     &            VTMP(DDLS*(I-1)+NDIM+J) +
-     &            (REAC-CPENCO*DN)*2.D0*FFP(I)*ND(J)*JAC*MULT
- 151            CONTINUE
-                DO 152 J = 1,SINGU*NDIM
-                  VTMP(DDLS*(I-1)+NDIM+DDLH+J) =
-     &            VTMP(DDLS*(I-1)+NDIM+DDLH+J) +
-     &            (REAC-CPENCO*DN)*2.D0*FFP(I)*RR*ND(J)*JAC*MULT
- 152            CONTINUE
- 150          CONTINUE
+              IF (LPENAC) THEN
+C               PENALISATION DU CONTACT
+                DO 153 I = 1,NNO
+                  DO 154 J = 1,DDLH
+                    VTMP(DDLS*(I-1)+NDIM+J) =
+     &              VTMP(DDLS*(I-1)+NDIM+J) -
+     &              (CPENCO*DN)*2.D0*FFP(I)*ND(J)*JAC*MULT
+ 154              CONTINUE
+                  DO 155 J = 1,SINGU*NDIM
+                    VTMP(DDLS*(I-1)+NDIM+DDLH+J) =
+     &              VTMP(DDLS*(I-1)+NDIM+DDLH+J) -
+     &              (CPENCO*DN)*2.D0*FFP(I)*RR*ND(J)*JAC*MULT
+ 155              CONTINUE
+ 153            CONTINUE
+              ELSE
+                DO 150 I = 1,NNO
+                  DO 151 J = 1,DDLH
+                    VTMP(DDLS*(I-1)+NDIM+J) =
+     &              VTMP(DDLS*(I-1)+NDIM+J) +
+     &              (REAC-CPENCO*DN)*2.D0*FFP(I)*ND(J)*JAC*MULT
+ 151              CONTINUE
+                  DO 152 J = 1,SINGU*NDIM
+                    VTMP(DDLS*(I-1)+NDIM+DDLH+J) =
+     &              VTMP(DDLS*(I-1)+NDIM+DDLH+J) +
+     &              (REAC-CPENCO*DN)*2.D0*FFP(I)*RR*ND(J)*JAC*MULT
+ 152              CONTINUE
+ 150            CONTINUE
+              ENDIF
 C
 C             TERME LN2
               DO 160 I = 1,NNOL
@@ -464,6 +481,9 @@ C             TERME LN2
                 ENDIF
 
                 VTMP(PLI) = VTMP(PLI) - DN * FFI * JAC * MULT * E
+                IF (LPENAC) THEN
+                  VTMP(PLI) = VTMP(PLI) - REAC*FFI*JAC*MULT/CPENCO*E
+                ENDIF
 
  160          CONTINUE
 
@@ -478,7 +498,6 @@ C         II) CALCUL DES SECONDS MEMBRES DE FROTTEMENT
 C         ..............................
 
           ELSEIF (OPTION.EQ.'CHAR_MECA_FROT') THEN
-
             IF (MU.EQ.0.D0.OR.SEUIL(ISSPG).EQ.0.D0) INDCO(ISSPG) = 0
 
 C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
@@ -535,25 +554,25 @@ C             PBOUL SELON L'ÉTAT D'ADHERENCE DU PG (AVEC DEPDEL)
               DO 175 INO=1,NNO
                 DO 176 J=1,DDLH
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) *
-     &                                ZR(IDEPL-1+DDLS*(INO-1)+NDIM+J)
+     &                               ZR(IDEPL-1+DDLS*(INO-1)+NDIM+J)
+
  176            CONTINUE
                 DO 177 J = 1,SINGU*NDIM
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) * RR *
-     &                              ZR(IDEPL-1+DDLS*(INO-1)+NDIM+DDLH+J)
+     &                           ZR(IDEPL-1+DDLS*(INO-1)+NDIM+DDLH+J)
 
  177            CONTINUE
  175          CONTINUE
 
-              CALL XADHER(P,SAUT,REAC12,RHOTK,CSTAFR,CPENFR,VITANG,PB,
-     &                 RBID1,RBID2,RBID3,ADHER)
+              CALL XADHER(P,SAUT,REAC12,RHOTK,CSTAFR,CPENFR,LPENAF,
+     &                 VITANG,PB,RBID1,RBID2,RBID3,ADHER)
 
 C             TERME LN1
-
               IF (ADHER) THEN
 C               CALCUL DE Pt.REAC12
                 DO 188 I=1,NDIM
                   PTPB(I)=0.D0
-                  IF (PEFRSE) THEN
+                  IF (LPENAF) THEN
                     DO 190 K=1,NDIM
                       PTPB(I)=PTPB(I)+P(K,I)*CPENFR*VITANG(K)
  190                CONTINUE
@@ -590,17 +609,11 @@ C               CALCUL DE Pt.PBOUL
 C             TERME LN3
 
 C             CALCUL DE REAC12-PBOUL
-              IF (PEFRSE) THEN
-                DO 181 I=1,NDIM
-                  RPB(I)=REAC12(I)
-                  CSTAFR=CPENFR
- 181            CONTINUE
-              ELSE
-                DO 180 I=1,NDIM
-                  RPB(I)=REAC12(I)-PB(I)
- 180            CONTINUE
-              ENDIF
-  
+              IF (LPENAF) CSTAFR=CPENFR
+              DO 180 I=1,NDIM
+                RPB(I)=REAC12(I)-PB(I)
+ 180          CONTINUE
+
               DO 194 I = 1,NNOL
                 PLI=PLA(I)
                 IF (MALIN) THEN
@@ -632,7 +645,6 @@ C           SI OPTION NI 'CHAR_MECA_CONT' NI 'CHAR_MECA_FROT'
             CALL ASSERT(OPTION.EQ.'CHAR_MECA_FROT' .OR.
      &                  OPTION.EQ.'CHAR_MECA_CONT')
           ENDIF
-
 
 C         FIN DE BOUCLE SUR LES POINTS DE GAUSS
  110    CONTINUE

@@ -1,10 +1,10 @@
-      SUBROUTINE DISMZC ( CODMES, QUESTI, NOMOBZ ,REPI, REPKZ, IERD )
+      SUBROUTINE DISMZC(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             REPI, IERD
-      CHARACTER*(*)       CODMES, QUESTI, NOMOBZ, REPKZ
+      CHARACTER*(*) QUESTI,NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,6 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     --     DISMOI( 'Z_CST', MODELE, ... )
 C    IN:
-C       CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C       QUESTI : 'Z_CST'
 C       NOMOBZ : NOM D'UN OBJET DE TYPE LIGREL
 C    OUT:
@@ -62,7 +61,7 @@ C                     IMA ETANT UNE MAILLE DU MAILLAGE.
 C --------------------------------------------------------------------
       CALL JEMARQ()
       NOLIG = NOMOBZ
-      REPK = REPKZ
+      REPK = ' '
       REPI = 0
       IERD = 0
 C
@@ -85,7 +84,7 @@ C
 C --- ON CREE UN TABLEAU DONT LA COMPOSANTE I VAUDRA 1 SI LE NOEUD I
 C     APPARTIENT AU MODELE
 C
-      CALL WKVECT('&&DISMMO.TRAV.NOEUDS','V V I',NBNOMA,JNBNO)
+      CALL WKVECT('&&DISMZC.TRAV.NOEUDS','V V I',NBNOMA,JNBNO)
 C
       CALL JEVEUO ('&CATA.TE.TYPEMA','L', IATYPM )
       CALL JEVEUO ('&CATA.TM.NBNO'  ,'L', IANBNO )
@@ -154,6 +153,6 @@ C
 C
  9999 CONTINUE
       REPKZ=REPK
-      CALL JEDETR('&&DISMMO.TRAV.NOEUDS')
+      CALL JEDETR('&&DISMZC.TRAV.NOEUDS')
       CALL JEDEMA()
       END

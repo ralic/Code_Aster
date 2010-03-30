@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 29/03/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL D USURE SUR UN TUBE GV SOUMIS A UNE EXCITATION ALEATOIRE MULTIDIRECTIONNELLE
 # sdll136a.para = tps_job 500 mem_job 600Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,12 +28,12 @@ TUBE = LIRE_MAILLAGE (
 );
 
 TUBE=DEFI_GROUP (reuse=TUBE, MAILLAGE=TUBE,
-                    CREA_GROUP_MA=_F( NOM='POUTRE_MAIL',
+                    CREA_GROUP_MA=_F( NOM='POUTRE_M',
                                        TOUT='OUI'));
 
 MODELE=AFFE_MODELE (
                    MAILLAGE=TUBE,
-                   AFFE=_F( GROUP_MA='POUTRE_MAIL',
+                   AFFE=_F( GROUP_MA='POUTRE_M',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='POU_D_T'
                           )
@@ -41,7 +41,7 @@ MODELE=AFFE_MODELE (
 
 CARA = AFFE_CARA_ELEM (
                      MODELE=MODELE,
-                    POUTRE=_F( GROUP_MA='POUTRE_MAIL',
+                    POUTRE=_F( GROUP_MA='POUTRE_M',
                                 SECTION='CERCLE',
                                 CARA=( 'R','EP'),
                                 VALE=( 9.525000e-03,
@@ -236,7 +236,7 @@ MAT = DEFI_MATERIAU (
 
 CHMAT = AFFE_MATERIAU (
                     MAILLAGE=TUBE,
-                   AFFE=_F( GROUP_MA='POUTRE_MAIL',
+                   AFFE=_F( GROUP_MA='POUTRE_M',
                               MATER=MAT
                             )
 );

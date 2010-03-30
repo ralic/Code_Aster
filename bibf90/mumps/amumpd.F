@@ -3,7 +3,7 @@
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
 !&           CONFIGURATION MANAGEMENT OF EDF VERSION                   
-!& MODIF AMUMPD MUMPS  DATE 23/03/2010   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPD MUMPS  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -254,32 +254,33 @@ C              -- C'EST OK
 C       ------------------------------------------------
 C        DETECTION DE SINGULARITE:
 C       ------------------------------------------------        
-        IF ((NPREC.GE.0).AND.(LRESOL)) THEN
+        IF (NPREC.GE.0) THEN
           KPIV='&&AMUMP.PIVNUL'
           CALL JEEXIN(KPIV,IBID)
           IF (IBID.NE.0) THEN
             CALL ASSERT(.FALSE.)
           ELSE
-
             N=DMPSK%N
             CALL WKVECT(KPIV,'V V I',N+2,IPIV)
+	    IF (LRESOL) THEN
 C --- KPIV(1)= NOMBRE DE PIVOTS QUASI NULS (TOUS LE PROCS)
-            IF (DMPSK%INFOG(28).GT.N) CALL ASSERT(.FALSE.)
-            ZI(IPIV)=DMPSK%INFOG(28)
+              IF (DMPSK%INFOG(28).GT.N) CALL ASSERT(.FALSE.)
+              ZI(IPIV)=DMPSK%INFOG(28)
 C --- KPIV(2)= NOMBRE DE PIVOTS NEGATIFS (TOUS LE PROCS)
-            IF (DMPSK%INFOG(12).GT.N) CALL ASSERT(.FALSE.)
-            ZI(IPIV+1)=DMPSK%INFOG(12)
-            IF (RANG.EQ.0) THEN
+              IF (DMPSK%INFOG(12).GT.N) CALL ASSERT(.FALSE.)
+              ZI(IPIV+1)=DMPSK%INFOG(12)
+              IF (RANG.EQ.0) THEN
 C --- KPIV(3..) LES PIVOTS QUASI NULS (ONLY PROC 0)
-              DO I=1,DMPSK%INFOG(28)
-                ZI(IPIV+1+I)=DMPSK%PIVNUL_LIST(I)
-              ENDDO
-            ENDIF
+                DO I=1,DMPSK%INFOG(28)
+                  ZI(IPIV+1+I)=DMPSK%PIVNUL_LIST(I)
+                ENDDO
+              ENDIF
 C --- BCAST POUR COMMUNIQUER L'INFO AUX AUTRES PROCS
-            CALL MPICM2('BCAST',KPIV)
-          ENDIF   
+              CALL MPICM2('BCAST',KPIV)
+	    ENDIF
+          ENDIF
+          WRITE(6,*)'TEST KPIV',ZI(IPIV),ZI(IPIV+1),ZI(IPIV+2)   
         ENDIF
-C       WRITE(6,*)'TEST KPIV',ZI(IPIV),ZI(IPIV+1),ZI(IPIV+2)
         
         IF ((( RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
           IF (.NOT.LQUALI) THEN

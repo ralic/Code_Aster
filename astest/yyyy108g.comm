@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 # TITRE  CTJ25 - RENUM RCMK / AFFE_CHAR_MECA / SOLVE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,7 +71,8 @@ VECAS=ASSE_VECTEUR(VECT_ELEM=VEL,
 # ----------------------------------------------------------------------
 # GCP + LDLT_INC
 
-KMATAS=FACTORISER(MATR_ASSE=MATAS,);
+#  pour tester NIVE_REMPLISSAGE=2 (mais c'est plus long qu'avec NIVE_REMPLISSAGE=1 !)
+KMATAS=FACTORISER(MATR_ASSE=MATAS ,NIVE_REMPLISSAGE=2)
 
 KVECAS=RESOUDRE(MATR=MATAS,
                 CHAM_NO=VECAS,

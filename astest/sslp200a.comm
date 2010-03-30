@@ -1,4 +1,4 @@
-# MODIF  DATE 22/03/2010   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 # sslp200a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
@@ -303,17 +303,17 @@ TEST_RESU(RESU=( _F(  RESULTAT = THLIN,   NUME_ORDRE = 0,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.1652282996734E+02),
+                                                 VALE= 5.16522829967345E+02      ),
                    _F(  RESULTAT = THLIN,   NUME_ORDRE = 1,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.4588432586839E+02),
+                                                 VALE= 5.45884325868386E+02      ),
                    _F(  RESULTAT = THLIN, NUME_ORDRE = 2,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.9081392200917E+02)))
+                                                 VALE= 5.9081392200917E+02       )))
 
 CHMAT2=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
                           _F(  TOUT = 'OUI',
@@ -484,182 +484,182 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.7953748408647E+09),
+                                                 VALE= 1.79537519378696E+09      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.8205069456891E+09),
+                                                 VALE= 1.82050730364573E+09      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.8456417285405E+09),
+                                                 VALE= 1.84564209153262E+09      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'SIEF_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.4405785457981E+08),
+                                                 VALE= 4.44057723904317E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'SIEF_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.5027379301260E+08),
+                                                 VALE= 4.5027366050782E+08       ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'SIEF_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.5649001799144E+08),
+                                                 VALE= 4.56489883656191E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'SIGM_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.3237908695176E+08),
+                                                 VALE= 5.32378947706322E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'SIGM_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.3982165369702E+08),
+                                                 VALE= 5.39821512492927E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'SIGM_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.4726026130419E+08),
+                                                 VALE= 5.47260118136498E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPME_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.8049034641189E+08),
+                                                 VALE= 2.80490351559856E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPME_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.8441397356598E+08),
+                                                 VALE= 2.84413978797808E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPME_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.8833795217251E+08),
+                                                 VALE= 2.88337957488205E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPME_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.1539668758952E+08),
+                                                 VALE= 2.15396659571967E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPME_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.1841282319241E+08),
+                                                 VALE= 2.18412794795644E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPME_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.2142929365057E+08),
+                                                 VALE= 2.21429264874678E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPOT_ELEM_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.0096655759915E+13),
+                                                 VALE= 1.00966557593369E+13      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPOT_ELEM_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.0380884449505E+13),
+                                                 VALE= 1.03808844489275E+13      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPOT_ELEM_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.0669075983454E+13),
+                                                 VALE= 1.06690759828502E+13      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPSI_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.1539633327864E+08),
+                                                 VALE= 2.15396305261086E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPSI_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.1841247070327E+08),
+                                                 VALE= 2.18412442306503E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPSI_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.2142894296862E+08),
+                                                 VALE= 2.21428914192731E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPSI_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.8048989222496E+08),
+                                                 VALE= 2.80489897372935E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPSI_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.8441351999855E+08),
+                                                 VALE= 2.84413525230378E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPSI_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.8833749922255E+08),
+                                                 VALE= 2.88337504538246E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELNO_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.864437226791E+09),
+                                                 VALE= 1.86443668792122E+09      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EQUI_ELNO_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.8905753472176E+09),
+                                                 VALE= 1.89057480083475E+09      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EQUI_ELNO_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.9167172998667E+09),
+                                                 VALE= 1.91671674603751E+09      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.5739571943694E+09),
+                                                 VALE= 1.57395649182381E+09      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.5960231930198E+09),
+                                                 VALE= 1.59602248077088E+09      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.6180917831188E+09),
+                                                 VALE= 1.61809106116777E+09      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELNO_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.0361063831252E+08),
+                                                 VALE= 6.03610674057844E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EQUI_ELNO_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.1204337705804E+08),
+                                                 VALE= 6.12043413288522E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EQUI_ELNO_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.2047655841108E+08),
+                                                 VALE= 6.20476595125462E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELGA_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.6493875092068E+08),
+                                                 VALE= 4.64938690464958E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EQUI_ELGA_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.7143948260838E+08),
+                                                 VALE= 4.71439421316437E+08      ),
                    _F(  RESULTAT = MSLIN,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EQUI_ELGA_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.7794066238657E+08))
+                                                 VALE= 4.7794060025795E+08       ))
             )
 
 MSLI2=MECA_STATIQUE(        MODELE=MO,
@@ -703,236 +703,236 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 7.8795906155630E+03),
+                                                 VALE= 7.87959061556538E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 8.0654032779949E+03),
+                                                 VALE= 8.06540327799552E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 8.2547743464330E+03))
+                                                 VALE= 8.25477434643462E+03      ))
             )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'SIEF_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.5785028664916E+04),
+                                                 VALE= 1.5785028664917E+04       ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'SIEF_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.5857001123512E+04),
+                                                 VALE= 1.58570011235119E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'SIEF_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.5951926675281E+04),
+                                                 VALE= 1.5951926675282E+04       ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'SIGM_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.0763681348867E+04),
+                                                 VALE= 2.07636813488687E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'SIGM_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.0849266221484E+04),
+                                                 VALE= 2.08492662214839E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'SIGM_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.0989441241953E+04),
+                                                 VALE= 2.09894412419536E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPME_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.5627874059201E+03),
+                                                 VALE= 4.56278740592067E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPME_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.5928777833833E+03),
+                                                 VALE= 4.59287778338343E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPME_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 4.6411824555607E+03),
+                                                 VALE= 4.64118245556106E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPME_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.3868521262886E+03),
+                                                 VALE= 6.38685212628925E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPME_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.4250086559684E+03),
+                                                 VALE= 6.42500865596849E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPME_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.4899461283459E+03),
+                                                 VALE= 6.48994612834635E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPOT_ELEM_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 7.7425472150769E+03),
+                                                 VALE= 7.74254721507769E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPOT_ELEM_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 7.8159081948135E+03),
+                                                 VALE= 7.8159081948137E+03       ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPOT_ELEM_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 7.9193798224864E+03),
+                                                 VALE= 7.91937982248681E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPSG_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 3.3353352542767E+05),
+                                                 VALE= 3.3353352542791E+05       ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPSG_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 3.4946715639051E+05),
+                                                 VALE= 3.49467156390563E+05      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPSG_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 3.6575542159957E+05),
+                                                 VALE= 3.65755421599715E+05      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPSG_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 3.5465703397748E+05),
+                                                 VALE= 3.54657033977731E+05      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPSG_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 3.7109641231149E+05),
+                                                 VALE= 3.71096412311554E+05      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPSG_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 3.8806570052165E+05),
+                                                 VALE= 3.88065700521801E+05      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPSI_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.8659215713445E+03),
+                                                 VALE= 6.86592157134497E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPSI_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.8857145727577E+03),
+                                                 VALE= 6.8857145727578E+03       ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPSI_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.9191619152032E+03),
+                                                 VALE= 6.91916191520352E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPSI_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 9.0462337668683E+03),
+                                                 VALE= 9.04623376686895E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EPSI_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 9.0741040933461E+03),
+                                                 VALE= 9.0741040933462E+03       ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EPSI_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 9.1156341822847E+03),
+                                                 VALE= 9.11563418228507E+03      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELNO_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.8558371656800E+04),
+                                                 VALE= 6.85583716567992E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EQUI_ELNO_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.8985827073337E+04),
+                                                 VALE= 6.89858270733333E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EQUI_ELNO_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.9562645411496E+04),
+                                                 VALE= 6.95626454114961E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.5379302297985E+04),
+                                                 VALE= 5.53793022979839E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.5739785109567E+04),
+                                                 VALE= 5.57397851095637E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EQUI_ELGA_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.6160378009916E+04),
+                                                 VALE= 5.61603780099158E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELNO_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.6631324967624E+04),
+                                                 VALE= 1.66313249676257E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EQUI_ELNO_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.6731116834903E+04),
+                                                 VALE= 1.67311168349031E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EQUI_ELNO_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.6860486654119E+04),
+                                                 VALE= 1.68604866541201E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EQUI_ELGA_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.3739281374683E+04),
+                                                 VALE= 1.3739281374684E+04       ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 2,
                      NOM_CHAM = 'EQUI_ELGA_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.3817994673232E+04),
+                                                 VALE= 1.38179946732324E+04      ),
                    _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'EQUI_ELGA_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.3925273798258E+04))
+                                                 VALE= 1.3925273798259E+04       ))
             )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    INST = 11.5,
                      NOM_CHAM = 'EPSI_NOEU_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 3.3264082896619E+03),
+                                                 VALE= 3.32640828966208E+03      ),
                    _F(  RESULTAT = MSLI2,    INST = 11.5,
                      NOM_CHAM = 'EQUI_NOEU_SIGM',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.2111873689617E+04),
+                                                 VALE= 2.21118736896167E+04      ),
                    _F(  RESULTAT = MSLI2,    INST = 11.5,
                      NOM_CHAM = 'EQUI_NOEU_EPSI',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.5628561296354E+03),
+                                                 VALE= 6.56285612963572E+03      ),
                    _F(  RESULTAT = MSLI2,    INST = 11.5,
                      NOM_CHAM = 'SIGM_NOEU_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 5.7125737146411E+03))
+                                                 VALE= 5.71257371464142E+03      ))
             )
 
 # --------------------------------------------------------------------
@@ -996,56 +996,56 @@ CHAMEL7=CALC_CHAM_ELEM(        MODELE=MO,
 TEST_RESU( CHAM_NO=_F(  CHAM_GD = CHAMNO1,
                         TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 7.9160468645256E+03))
+                                                 VALE= 7.91604686452761E+03      ))
 
 TEST_RESU( CHAM_NO=_F(  CHAM_GD = CHAMNO2,
                         TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 3.0363080368595E+03))
+                                                 VALE= 3.03630803685949E+03      ))
 
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL1,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.5807595806382E+04))
+                                                 VALE= 1.58075958063828E+04      ))
 
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL2,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.8713119959379E+03))
+                                                 VALE= 6.8713119959382E+03       ))
 
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL3,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 2.0790286148644E+04))
+                                                 VALE= 2.0790286148645E+04       ))
 
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL4,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 9.0827994305848E+03))
+                                                 VALE= 9.08279943058504E+03      ))
 
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL5,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.9036667125260E+04))
+                                                 VALE= 6.90366671252565E+04      ))
 
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL6,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 6.9386239603676E+03))
+                                                 VALE= 6.93862396036801E+03      ))
 
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL7,
                           MAILLE = 'M71',
                           POINT = 2,
                           NOM_CMP = 'Y',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 1.7298888888889E+00))
+                                                 VALE= 1.72988888888889E+00      ))
 
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL7,
                           MAILLE = 'M88',
                           POINT = 9,
                           NOM_CMP = 'X',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE = 3.2263000000000E+00))
+                                                 VALE= 3.2263E+00                ))
 
 # --------------------------------------------------------------------
 
@@ -1068,86 +1068,86 @@ TABLE2=POST_ELEM(       RESULTAT=MSLI2,
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='MASSE',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=4.9864193751426E+05      )
+                                                 VALE= 4.9864193751426E+05       )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='CDG_X',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=9.7157727248731E+00      )
+                                                 VALE= 9.71577272487306E+00      )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='CDG_Y',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=8.4771084242619E+00      )
+                                                 VALE= 8.47710842426191E+00      )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='CDG_Z',
                 TYPE_TEST='SOMM_ABS',
                   CRITERE='ABSOLU',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=0.0000000000000E+00      )
+                                                 VALE= 0.0E+00                   )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='IX_G',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=3.9970200816899E+06      )
+                                                 VALE= 3.99702008168987E+06      )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='IY_G',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=1.5461545423028E+06      )
+                                                 VALE= 1.54615454230281E+06      )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='IZ_G',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=5.5431746239927E+06      )
+                                                 VALE= 5.54317462399268E+06      )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='IXY_G',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=2.1213984797414E+04      )
+                                                 VALE= 2.12139847974129E+04      )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='IXZ_G',
                   CRITERE='ABSOLU',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=0.0000000000000E+00      )
+                                                 VALE= 0.0E+00                   )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='IYZ_G',
                   CRITERE='ABSOLU',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=0.0000000000000E+00      )
+                                                 VALE= 0.0E+00                   )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='IX_PRIN_G',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=1.5442590526860E+06      )
+                                                 VALE= 1.54425905268604E+06      )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='IY_PRIN_G',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=3.9989155713066E+06      )
+                                                 VALE= 3.99891557130663E+06      )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='IZ_PRIN_G',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=5.5431746239927E+06      )
+                                                 VALE= 5.54317462399268E+06      )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='ALPHA',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=2.0545875956585E+02      )
+                                                 VALE= 2.05458759565853E+02      )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='BETA',
                 TYPE_TEST='SOMM_ABS',
                   CRITERE='ABSOLU',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=0.0000000000000E+00      )
+                                                 VALE= 0.0E+00                   )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='GAMMA',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=3.6000000000000E+02      )
+                                                 VALE= 3.6E+02                   )
 
 TEST_TABLE(      TABLE=TABLE2,       NOM_PARA='NUME_ORDRE',
                 TYPE_TEST='SOMM',
@@ -1157,12 +1157,12 @@ TEST_TABLE(      TABLE=TABLE2,       NOM_PARA='NUME_ORDRE',
 TEST_TABLE(      TABLE=TABLE2,       NOM_PARA='TOTALE',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=9.2646763757847E+03      )
+                                                 VALE= 9.26467637578483E+03      )
 
 TEST_TABLE(      TABLE=TABLE2,       NOM_PARA='POUR_CENT',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=1.1853614634231E+02      )
+                                                 VALE= 1.18536146342308E+02      )
 
 LR3=DEFI_LIST_REEL(         DEBUT=0.,
                          INTERVALLE=_F(  JUSQU_A = 10.,
@@ -1249,38 +1249,38 @@ TABLE3=POST_RELEVE_T( ACTION=(   _F(  NOEUD = ( 'N109', 'N110', 'N111',
 TEST_TABLE(      TABLE=TABLE3,       NOM_PARA='DX',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=2.8652381679476E+01      )
+                                                 VALE= 2.86523816795226E+01      )
 
 TEST_TABLE(      TABLE=TABLE3,       NOM_PARA='DY',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=2.4873591614141E+02      )
+                                                 VALE= 2.48735916141495E+02      )
 
 TEST_TABLE(      TABLE=TABLE3,       NOM_PARA='TR_DIR_1',
                 TYPE_TEST='SOMM',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE=-3.1077412299282E+01      )
+                                                 VALE= -3.10774122992819E+01     )
 
 TEST_TABLE(      TABLE=TABLE3,       NOM_PARA='TR_DIR_2',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=3.1003579767575E+01      )
+                                                 VALE= 3.10035797675747E+01      )
 
 TEST_TABLE(      TABLE=TABLE3,       NOM_PARA='TR_DIR_2',
                 TYPE_TEST='MAX',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=1.7186197842769E+00      )
+                                                 VALE= 1.71861978427733E+00      )
 
 TEST_TABLE(      TABLE=TABLE3,       NOM_PARA='TR_DIR_2',
                 TYPE_TEST='MIN',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                  VALE=-1.1373654666195E+01      )
+                                                 VALE= -1.13736546661954E+01     )
 
 TEST_TABLE(      TABLE=TABLE3,       NOM_PARA='TR_DIR_3',
                 TYPE_TEST='SOMM',
                   CRITERE='ABSOLU',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=0.0000000000000E+00      )
+                                                 VALE= 0.0E+00                   )
 
 # ---------------------------------------------------------
 # VALIDATION: MACR_LIGN_COUPE/OPERATION='MOYENNE',RESULTANTE
@@ -1310,38 +1310,38 @@ IMPR_TABLE(TABLE=TABLE4)
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='DX',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=3.E-10,
-                   VALE=2.8652381679085E+01    )
+                                                 VALE= 2.86523816790798E+01      )
 
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='DY',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE= 2.4873591614204E+02    )
+                                                 VALE= 2.48735916142042E+02      )
 
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='TR_DIR_1',
                 TYPE_TEST='SOMM',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-                  VALE=-3.1077412299096E+01      )
+                                                 VALE= -3.10774122991859E+01     )
 
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='TR_DIR_2',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE= 3.1003579766817E+01   )
+                                                 VALE= 3.10035797675098E+01      )
 
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='TR_DIR_2',
                 TYPE_TEST='MAX',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE= 1.7186197842776E+00    )
+                                                 VALE= 1.71861978427729E+00      )
 
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='TR_DIR_2',
                 TYPE_TEST='MIN',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                  VALE= -1.1373654666196E+01    )
+                                                 VALE= -1.13736546661954E+01     )
 
 TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='TR_DIR_3',
                 TYPE_TEST='SOMM',
                   CRITERE='ABSOLU',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
-                   VALE=0.0000000000000E+00      )
+                                                 VALE= 0.0E+00                   )
 
 # ---------------------------------------------------------
 # VALIDATION: MACR_LIGN_COUPE/OPERATION='MOYENNE'
@@ -1365,22 +1365,22 @@ T_M1=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_1',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE=-3.9602432470596E+00  )
+                REFERENCE='NON_REGRESSION',      VALE= -3.96024324705982E+00     )
 
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_1',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE= -3.0001415848995E+00   )
+                REFERENCE='NON_REGRESSION',      VALE= -3.00014158489955E+00     )
 
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_2',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE= -6.0129745069205E+00    )
+                REFERENCE='NON_REGRESSION',      VALE= -6.01297450692068E+00     )
 
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_2',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE= -3.8143210178959E+00   )
+                REFERENCE='NON_REGRESSION',      VALE= -3.81432101789589E+00     )
 
 
 #IMPR_TABLE(TABLE=T_E1);
@@ -1404,22 +1404,22 @@ T_M2=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_1',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE= 3.12463E+00     )
+                REFERENCE='NON_REGRESSION',      VALE= 3.12462551686911E+00      )
 
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_1',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE= 3.7553670887973E+00   )
+                REFERENCE='NON_REGRESSION',      VALE= 3.75536708879729E+00      )
 
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_2',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE= -8.4954070494514E+00  )
+                REFERENCE='NON_REGRESSION',      VALE= -8.49540704945147E+00     )
 
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_2',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE= -5.60024E+00     )
+                REFERENCE='NON_REGRESSION',      VALE= -5.60024446298272E+00     )
 
 #IMPR_TABLE(TABLE=T_E2);
 
@@ -1442,22 +1442,22 @@ T_M3=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='DEPL',NUME_ORDRE = 2,
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DX',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE= -2.59157E+01    )
+                REFERENCE='NON_REGRESSION',      VALE= -2.59157326871962E+01     )
 
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DX',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE= -1.8525195609618E+01 )
+                REFERENCE='NON_REGRESSION',      VALE= -1.85251956096191E+01     )
 
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DY',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE=  3.2902937682769E+01  )
+                REFERENCE='NON_REGRESSION',      VALE= 3.29029376827705E+01      )
 
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DY',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION', VALE= 6.06629E+01     )
+                REFERENCE='NON_REGRESSION',      VALE= 6.06629157677694E+01      )
 
 #IMPR_TABLE(TABLE=T_E3);
 

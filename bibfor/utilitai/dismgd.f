@@ -1,6 +1,6 @@
-      SUBROUTINE DISMGD(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
+      SUBROUTINE DISMGD(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,14 +22,13 @@ C     --     DISMOI(GRANDEUR)
 C     ARGUMENTS:
 C     ----------
       INTEGER REPI,IERD
-      CHARACTER*(*) QUESTI,CODMES
+      CHARACTER*(*) QUESTI
       CHARACTER*24 QUESTL
       CHARACTER*32  REPK
       CHARACTER*8   NOMOB
       CHARACTER*(*) REPKZ, NOMOBZ
 C ----------------------------------------------------------------------
 C    IN:
-C       CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C       NOMOBZ : NOM D'UNE GRANDEUR
 C    OUT:
@@ -60,7 +59,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CALL JEMARQ()
       NOMOB = NOMOBZ
-      REPK  = REPKZ
+      REPK  = ' '
       QUESTL = QUESTI
 C
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
@@ -96,7 +95,7 @@ C
             IGDLI=ZI(IADGD-1+4)
             IGDCO=ZI(IADGD-1+5)
             IF (IGDLI.NE.IGDCO) THEN
-              CALL U2MESS(CODMES,'UTILITAI_57')
+              CALL U2MESS('F','UTILITAI_57')
               IERD=1
               GO TO 9999
             ELSE
@@ -111,7 +110,7 @@ C
             IGDLI=ZI(IADGD-1+4)
             IGDCO=ZI(IADGD-1+5)
             IF (IGDLI.NE.IGDCO) THEN
-              CALL U2MESS(CODMES,'UTILITAI_59')
+              CALL U2MESS('F','UTILITAI_59')
              IERD=1
              GO TO 9999
             ELSE
@@ -127,7 +126,7 @@ C
 C
       ELSE IF (QUESTI.EQ.'NB_EC') THEN
          IF (ICODE.GE.3) THEN
-           CALL U2MESS(CODMES,'UTILITAI_60')
+           CALL U2MESS('F','UTILITAI_60')
            IERD=1
            GO TO 9999
          END IF
@@ -136,7 +135,7 @@ C
       ELSE IF    ((QUESTI.EQ.'NB_CMP_MAX')
      &        .OR.(QUESTI.EQ.'NU_CMP_LAGR')) THEN
          IF (ICODE.GE.3) THEN
-           CALL U2MESS(CODMES,'UTILITAI_60')
+           CALL U2MESS('F','UTILITAI_60')
            IERD=1
            GO TO 9999
          END IF
@@ -155,10 +154,7 @@ C
          CALL JENONU(JEXNOM('&CATA.GD.NOMGD',NOMOB),NUMGD)
          REPK= ZK8(IATYPE-1+NUMGD)
       ELSE
-         REPK = QUESTI
-         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD=1
-         GO TO 9999
       END IF
 C
  9999 CONTINUE

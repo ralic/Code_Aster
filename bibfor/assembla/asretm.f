@@ -4,7 +4,7 @@
       INTEGER           JTMP2,LGTMP2,NBTERM,JSMHC,JSMDI,I1,I2
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,16 +21,19 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C     ROUTINE SERVANT A RETENIR OU S'ACCUMULENT LES TERMES ELEMENTAIRES:
 C     DANS LE CAS D'UN STOCKAGE MORSE SYMETRIQUE
 C -----------------------------------------------------------------
 C IN/OUT I JTMP2   : ADRESSE JEVEUX DE L'OBJET ".TMP2"
-C IN     I JSMHC   : ADRESSE DE ".SMHC".
+C IN    I4 JSMHC   : ADRESSE DE ".SMHC".
 C IN     I JSMDI   : ADRESSE DE ".SMDI".
 C IN     I I1,I2   : NUMEROS GLOBAUX (LIGNE ET COLONNE)
 C IN/OUT I NBTERM   : INDICE DU TERME (R/C) A RECOPIER
 C                     (ISSU DE LA MATRICE ELEMENTAIRE)
 C -----------------------------------------------------------------
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       INTEGER ILI,JCO,ICOEFC,ICOEFL,I,NCOEFC,NUBLOC
@@ -55,7 +58,7 @@ C -----------------------------------------------------------------
 
       ICOEFL = 0
       DO 10 I = 1,NCOEFC
-         IF (ZI(JSMHC-1+ICOEFC+I).EQ.ILI) THEN
+         IF (ZI4(JSMHC-1+ICOEFC+I).EQ.ILI) THEN
             ICOEFL = I
             GOTO 20
          END IF

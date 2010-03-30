@@ -9,7 +9,7 @@ C
       LOGICAL           LCMP
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +112,7 @@ C   --- CHOIX DU TYPE DE MODELE--------
       ENDIF
 C
 C   --- A-T-ON UN CHAMP OU UN RESULTAT --------
-      CALL DISMOI('E','TYPE',NOMSD,'INCONNU',IBID,TYPINC,IER)
+      CALL DISMOI('F','TYPE',NOMSD,'INCONNU',IBID,TYPINC,IER)
 C
 C   --- CHOIX DU TYPE D'ANALYSE--------
       ANATYP = 0

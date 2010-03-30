@@ -1,6 +1,6 @@
       SUBROUTINE PCCOEF(N,IN,IP,AC,ICPL,ICPC,ACPC,CX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
+C TOLE CRP_4
 
 C   ENTREE
 C   N          : TAILLE DE A
@@ -31,10 +31,10 @@ C   ACPC       : COEFS DE LA MATRICE DE PRECOND.
 C--------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8 AC(*)
-      INTEGER IN(N),IP(*)
-
+      INTEGER IN(N)
+      INTEGER*4 IP(*),ICPC(*)
       REAL*8 ACPC(*),CX(N)
-      INTEGER ICPL(0:N),ICPC(*)
+      INTEGER ICPL(0:N)
 C----------------------------------------------------------------------
 C     COMMUNS JEVEUX
       INTEGER ZI

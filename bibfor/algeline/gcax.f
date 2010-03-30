@@ -1,6 +1,6 @@
       SUBROUTINE GCAX ( M , IN , IP , AC , X , Y )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/10/2007   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,8 +17,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_4
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           M,  IN(M),IP(*)
+      INTEGER*4         IP(*)
+      INTEGER           M,  IN(M)
       REAL*8                           AC(*),X(M),Y(M)
       REAL*8 DTEMP
 C     ------------------------------------------------------------------

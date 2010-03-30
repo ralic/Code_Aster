@@ -1,12 +1,12 @@
-      SUBROUTINE DISMRC(CODMES,QUESTI,NOMOBZ,REPI,REPK,IERD)
+      SUBROUTINE DISMRC(QUESTI,NOMOBZ,REPI,REPK,IERD)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER                               REPI,     IERD
-      CHARACTER*(*)     CODMES,QUESTI,REPK
+      CHARACTER*(*) QUESTI,REPK
       CHARACTER*19 NOMOB
       CHARACTER*(*) NOMOBZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
-C IN  : CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C IN  : QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C IN  : NOMOBZ : NOM D'UN OBJET DE TYPE RESU_COMPO (K19)
 C OUT : REPI   : REPONSE ( SI ENTIERE )
@@ -59,9 +58,8 @@ C
       ELSE IF (QUESTI.EQ.'NB_CHAMP_UTI') THEN
          CALL JELIRA(NOMOB//'.ORDR','LONUTI',REPI,KBID)
       ELSE
-         QUES2 = QUESTI
-         CALL U2MESK(CODMES,'UTILITAI_49',1,QUES2)
          IERD = 1
       ENDIF
 C
+      REPK=' '
       END

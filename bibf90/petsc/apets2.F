@@ -1,7 +1,7 @@
       SUBROUTINE APETS2(KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS2 PETSC  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETS2 PETSC  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -162,7 +162,7 @@ C on commence par s'occuper du nombres de NZ par ligne dans le bloc diagonal
          NZDEB = ZI(JSMDI+JCOL-1) + 1
          NZFIN = ZI(JSMDI+JCOL)
          DO K = NZDEB, NZFIN
-            ILIG = ZI(JSMHC-1+K)
+            ILIG = ZI4(JSMHC-1+K)
             JTERM=JTERM+1
             LTERM=LTERM+1
             IF (LMNSY) THEN
@@ -197,7 +197,7 @@ C ensuite on complete le tableau du bloc hors diagonal
          NZDEB = ZI(JSMDI+JCOL-1) + 1
          NZFIN = ZI(JSMDI+JCOL)
          DO K = NZDEB, NZFIN
-            ILIG = ZI(JSMHC-1+K)
+            ILIG = ZI4(JSMHC-1+K)
             IF (ILIG.LT.(low+1)) THEN
                CONTINUE
             ELSE IF (ILIG.LE.high) THEN

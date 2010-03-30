@@ -3,7 +3,7 @@
       CHARACTER*(*) STOMOZ,STOLCZ,BASZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_4
 C     CALCUL D'UN STOC_MORSE A PARTIR D'UN STOC_LCIEL (POUR CONTENIR
 C     LA MEME MATRICE)
 C
@@ -33,6 +34,8 @@ C IN        K1  BASZ       : BASE DE CREATION POUR STOLCZ
 C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -94,14 +97,14 @@ C     -- OBJET .SMDI :
 
 
 C     -- OBJET .SMHC :
-      CALL WKVECT(STOMOR//'.SMHC',BASE//' V I',NTERM,JSMHC)
+      CALL WKVECT(STOMOR//'.SMHC',BASE//' V S',NTERM,JSMHC)
       KTERM=0
       DO 3, IEQ=1,NEQ
          HCOL=ZI(JSCHC-1+IEQ)
          CALL ASSERT(HCOL.LE.IEQ)
          DO 4, ILIG=IEQ-HCOL+1,IEQ
             KTERM=KTERM+1
-            ZI(JSMHC-1+KTERM)=ILIG
+            ZI4(JSMHC-1+KTERM)=ILIG
  4       CONTINUE
  3    CONTINUE
 

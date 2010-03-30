@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai Messages  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -220,9 +220,9 @@ cata_msg = {
  champ inexistant: %(k1)s
 """),
 
-56 : _("""
- le champ : " %(k1)s " n est pas un champ
-"""),
+
+
+
 
 57 : _("""
   DISMOI :

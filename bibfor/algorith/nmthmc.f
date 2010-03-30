@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ALGORITH  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,7 +151,8 @@ C =====================================================================
          ITYPEL = ZI(JMAIL-1+IMA)
          IF (ITYPEL.NE.0) THEN
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
-            CALL DISMTE('F','MODELISATION',NOMTE,IBID,MODELI,IERD)
+            CALL DISMOI('F','MODELISATION',NOMTE,'TYPE_ELEM',IBID,
+     &                   MODELI,IERD)
             DO 5 JJ = 1, NCOMEL
               IF ((COMEL(JJ)(1:3).EQ.'GAZ').OR.
      &            (COMEL(JJ)(1:9).EQ.'LIQU_SATU').OR.
@@ -163,7 +164,7 @@ C =====================================================================
      &                (MODELI(1:7).NE.'AXIS_HM').AND.
      &                (MODELI(1:10).NE.'D_PLAN_THM').AND.
      &                (MODELI(1:9).NE.'D_PLAN_HM').AND.
-     &                (MODELI.NE.' ')) THEN
+     &                (MODELI.NE.'#PLUSIEURS')) THEN
 
                           VALK(1) = COMEL(JJ)
                           VALK(2) = MODELI
@@ -182,7 +183,7 @@ C =====================================================================
      &                (MODELI(1:10).NE.'D_PLAN_THH').AND.
      &                (MODELI(1:10).NE.'D_PLAN_HHM').AND.
      &                (MODELI(1:9) .NE.'D_PLAN_HH').AND.
-     &                (MODELI.NE.' ')) THEN
+     &                (MODELI.NE.'#PLUSIEURS')) THEN
 C
                       VALK(1) = COMEL(JJ)
                       VALK(2) = MODELI
@@ -193,7 +194,7 @@ C
                   IF ((MODELI(1:6).NE.'3D_THV').AND.
      &                (MODELI(1:8).NE.'AXIS_THV').AND.
      &                (MODELI(1:10).NE.'D_PLAN_THV').AND.
-     &                (MODELI.NE.' ')) THEN
+     &                (MODELI.NE.'#PLUSIEURS')) THEN
 
                        VALK(1) = COMEL(JJ)
                        VALK(2) = MODELI
@@ -211,7 +212,7 @@ C
      &                (MODELI(1:7).NE.'3D_HH2M').AND.
      &                (MODELI(1:7).NE.'3D_THH2').AND.
      &                (MODELI(1:6).NE.'3D_HH2').AND.
-     &                (MODELI.NE.' ')) THEN
+     &                (MODELI.NE.'#PLUSIEURS')) THEN
                       VALK(1) = COMEL(JJ)
                       VALK(2) = MODELI
                       CALL U2MESK('F','ALGORITH8_35', 2 ,VALK)

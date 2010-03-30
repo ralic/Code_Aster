@@ -1,12 +1,13 @@
       SUBROUTINE MCMMVR ( CUMUL,NOMMAT,ADIA,HCOL,NEQ,VECT,XSOL,NBVECT)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       CUMUL
-      INTEGER                          ADIA(*),HCOL(*),NEQ,NBVECT
+      INTEGER*4 HCOL(*)
+      INTEGER                          ADIA(*),NEQ,NBVECT
       CHARACTER*(*)             NOMMAT
       COMPLEX*16               VECT(NEQ,NBVECT), XSOL(NEQ,NBVECT)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +24,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C     ------------------------------------------------------------------
 C                   MULTIPLICATION MATRICE PAR N VECTEURS
 C         XSOL(1..NEQ,1..NBVECT) = MATRICE  * VECT(1..NEQ,1..NBVECT)

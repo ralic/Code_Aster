@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,7 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
       CHTEMP=K24B
       CALL GETVID(' ','CHAM_GD',1,1,1,DEPLA,ND)
       IF(ND.NE.0)THEN
-         CALL CHPVE2('F',DEPLA,3,TABTYP,IER)
+         CALL CHPVE2(DEPLA,3,TABTYP,IER)
       ENDIF
       CALL GETVR8(' ','FREQ',1,1,1,XFREQ,NF)
       CALL GETVID(' ','RESULTAT',1,1,1,RESUL,NR)
@@ -148,7 +148,7 @@ C        --- ON RECUPERE L'OPTION DE CALCUL DE LA MATRICE DE MASSE ---
           CALL JEVEUO(RESUL//'           .REFD','L',JREF)
           NOMMAS = ZK24(JREF+1)(1:8)
           IF (NOMMAS.EQ.' ') GOTO 5
-          CALL DISMOI('A','SUR_OPTION',NOMMAS,'MATR_ASSE',IBID,OPT,IE)
+          CALL DISMOI('C','SUR_OPTION',NOMMAS,'MATR_ASSE',IBID,OPT,IE)
           IF (IE.NE.0) THEN
             CALL U2MESS('A','UTILITAI3_71')
           ELSE

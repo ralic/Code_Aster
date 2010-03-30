@@ -3,7 +3,7 @@
       CHARACTER*(*) MATAS,ACTION
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ASSEMBLA  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C-----------------------------------------------------------------------
 C OBJET :
 C        TRAITEMENT DES CHARGES CINEMATIQUES DANS UNE MATRICE ASSEMBLEE
@@ -36,6 +37,8 @@ C VAR  MATAS   K*19    : NOM DE LA MATR_ASSE
 C IN   ACTION  K*5     : /'ELIMF' /'ELIML'
 C-----------------------------------------------------------------------
       CHARACTER*32 JEXNUM
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)      
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -149,7 +152,7 @@ C     -----------------------------------------
         IF (JELIM.NE.0) THEN
           DECIEL=ZI(JCCLL-1+3*(JELIM-1)+3)
           DO 111, K=KDEB, KFIN - 1
-            ILIG = ZI(JSMHC-1+K)
+            ILIG = ZI4(JSMHC-1+K)
             IELIM = ZI(KKELI-1+ILIG)
             IF (IELIM.EQ.0) THEN
                ZI(JREMP-1+JELIM)=ZI(JREMP-1+JELIM)+1
@@ -164,7 +167,7 @@ C     -----------------------------------------
 
         ELSE
           DO 112 K = KDEB,KFIN - 1
-            ILIG = ZI(JSMHC-1+K)
+            ILIG = ZI4(JSMHC-1+K)
             IELIM = ZI(KKELI-1+ILIG)
             DECJEL=ZI(JCCLL-1+3*(IELIM-1)+3)
             IF (IELIM.NE.0) THEN

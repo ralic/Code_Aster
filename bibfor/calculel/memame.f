@@ -3,7 +3,7 @@
      &                  BASE  )
 
 C
-C MODIF CALCULEL  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF CALCULEL  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,7 +167,7 @@ C
         LPAIN(9) = 'PLST'
         LCHIN(9) = LST
         LPAIN(10) = 'PSTANO'
-        LCHIN(10) = STANO  
+        LCHIN(10) = STANO
 C
 C --- CHAMPS DE SORTIE
 C
@@ -251,6 +251,10 @@ C
       ENDIF
 
    10 CONTINUE
+
+C     -- DESTRUCTION DES RESUELEM NULS :
+      CALL REDETR(MATELZ)
+
       CALL DETRSD('CHAMP_GD',CHVARC)
 
       CALL JEDEMA()

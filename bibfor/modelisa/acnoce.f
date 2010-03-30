@@ -6,7 +6,7 @@
       INTEGER NB, ISPV
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C     ------------------------------------------------------------------
       MLGCNX = NOMA//'.CONNEX'
       ISPV = 0
       IF (TYPE.EQ.'TOUT') THEN
-         CALL DISMOI('I','NB_MA_MAILLA',NOMA,'MAILLAGE',NBM,C24,IR)
+         CALL DISMOI('C','NB_MA_MAILLA',NOMA,'MAILLAGE',NBM,C24,IR)
          DO 52 IM = 1,NBM
             CALL JEVEUO(JEXNUM(MLGCNX,IM),'L',JDNO)
             NN1 = ZI(JDNO)

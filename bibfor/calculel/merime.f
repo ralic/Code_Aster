@@ -10,7 +10,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF CALCULEL  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -154,7 +154,7 @@ C
         LPAIN(9) = 'PLST'
         LCHIN(9) = LST
         LPAIN(10) = 'PSTANO'
-        LCHIN(10) = STANO  
+        LCHIN(10) = STANO
 
         CALL CALCUL('S',OPTION,LIGRMO,10,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &              BASE)
@@ -233,7 +233,10 @@ C----- CAS DU MODELE FEM CLASSIQUE---------------
      &              BASE)
         CALL REAJRE(MATEL,LCHOUT(1),BASE)
    10 CONTINUE
-      CALL JEDETC('V','&&MECHTE',1)
+
+C     -- DESTRUCTION DES RESUELEM NULS :
+      CALL REDETR(MATEL)
+
       CALL DETRSD('CHAMP_GD',CHTIME)
 
       CALL JEDEMA()

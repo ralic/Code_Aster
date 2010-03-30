@@ -1,10 +1,10 @@
-      SUBROUTINE DISMRE ( CODMES, QUESTI, NOMOBZ, REPI, REPKZ, IERD )
+      SUBROUTINE DISMRE(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
       IMPLICIT   NONE
       INTEGER             REPI, IERD
-      CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
+      CHARACTER*(*) QUESTI,NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C ======================================================================
 C
 C     --     DISMOI(RESUELEM)
 C
-C IN  : CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C       NOMOBZ : NOM D'UN OBJET DE TYPE LIGREL
 C
@@ -63,12 +62,12 @@ C
 C
       IERD   = 0
       NOMOB  = NOMOBZ
-      REPK   = REPKZ
+      REPK   = ' '
       QUESTL = QUESTI
 
       CALL JEEXIN ( NOMOB//'.DESC', IRET )
       IF ( IRET .EQ. 0 ) THEN
-          IERD = -1
+          IERD = 1
           GOTO 9999
       END IF
 C
@@ -87,7 +86,7 @@ C
          REPK = '????'
 C
       ELSEIF ( QUESTI .EQ. 'TYPE_MATRICE' ) THEN
-         CALL DISMGD ( CODMES, QUESTI, NOGD, REPI, REPK, IERD )
+         CALL DISMGD (  QUESTI, NOGD, REPI, REPK, IERD )
 C
       ELSEIF ( QUESTI .EQ. 'NOM_OPTION' ) THEN
          CALL JEVEUO ( NOMOB//'.NOLI', 'L', JNOLI )
@@ -95,7 +94,7 @@ C
 C
       ELSEIF ( QUESTI .EQ. 'NOM_MAILLA') THEN
          CALL JEVEUO ( NOMOB//'.NOLI', 'L', JNOLI )
-         CALL DISMLG ( CODMES, QUESTI, ZK24(JNOLI), REPI, REPK, IERD )
+         CALL DISMLG (  QUESTI, ZK24(JNOLI), REPI, REPK, IERD )
 C
       ELSEIF ( QUESTL(1:6) .EQ. 'NUM_GD' ) THEN
          REPI = GD
@@ -109,11 +108,11 @@ C
 C
       ELSEIF ( QUESTI .EQ. 'PARTITION' ) THEN
          CALL JEVEUO ( NOMOB//'.NOLI', 'L', JNOLI )
-         CALL DISMLG ( CODMES, QUESTI, ZK24(JNOLI), REPI, REPK, IERD )
+         CALL DISMLG (  QUESTI, ZK24(JNOLI), REPI, REPK, IERD )
 C
       ELSEIF ( QUESTI .EQ. 'NOM_MODELE' ) THEN
          CALL JEVEUO ( NOMOB//'.NOLI','L', JNOLI )
-         CALL DISMLG ( CODMES, QUESTI, ZK24(JNOLI), REPI, REPK, IERD )
+         CALL DISMLG (  QUESTI, ZK24(JNOLI), REPI, REPK, IERD )
 C
       ELSEIF ( QUESTI .EQ. 'TYPE_SCA' ) THEN
           L    = LXLGUT(NOGD)
@@ -137,10 +136,7 @@ C
          ENDIF
 
       ELSE
-         REPK = QUESTI
-         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD = 1
-         GOTO 9999
       ENDIF
 C
  9999 CONTINUE

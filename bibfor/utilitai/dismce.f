@@ -1,10 +1,10 @@
-      SUBROUTINE DISMCE ( CODMES, QUESTI, NOMOBZ, REPI, REPKZ, IERD )
+      SUBROUTINE DISMCE(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
       IMPLICIT   NONE
       INTEGER             REPI, IERD
-      CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
+      CHARACTER*(*) QUESTI,NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C ======================================================================
 C
 C     --     DISMOI(CHAM_ELEM)
 C
-C IN  : CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C       NOMOBZ : NOM D'UN OBJET DE TYPE LIGREL
 C
@@ -62,11 +61,12 @@ C DEB-------------------------------------------------------------------
 
       IERD   = 0
       NOMOB  = NOMOBZ
-      REPK   = REPKZ
+      REPK   = ' '
       QUESTL = QUESTI
+
       CALL JEEXIN ( NOMOB//'.CELD', IRET )
       IF ( IRET .EQ. 0 ) THEN
-          CALL U2MESK(CODMES,'UTILITAI_50',1,NOMOB)
+          CALL U2MESK('F','UTILITAI_50',1,NOMOB)
           IERD = 1
           GOTO 9999
       END IF
@@ -94,7 +94,7 @@ C DEB-------------------------------------------------------------------
 
       ELSEIF ( QUESTI .EQ. 'NOM_MAILLA') THEN
          CALL JEVEUO ( NOMOB//'.CELK', 'L', JCELK )
-         CALL DISMLG ( CODMES, QUESTI, ZK24(JCELK), REPI, REPK, IERD )
+         CALL DISMLG (  QUESTI, ZK24(JCELK), REPI, REPK, IERD )
 
       ELSEIF ( QUESTL(1:6) .EQ. 'NUM_GD' ) THEN
          REPI = GD
@@ -118,7 +118,7 @@ C DEB-------------------------------------------------------------------
 
       ELSEIF ( QUESTI .EQ. 'NOM_MODELE' ) THEN
          CALL JEVEUO ( NOMOB//'.CELK','L', JCELK )
-         CALL DISMLG ( CODMES, QUESTI, ZK24(JCELK), REPI, REPK, IERD )
+         CALL DISMLG (  QUESTI, ZK24(JCELK), REPI, REPK, IERD )
 
       ELSEIF ( QUESTI .EQ. 'MXVARI' ) THEN
         REPI=MAX(1,ZI(JCELD-1+4))
@@ -128,10 +128,7 @@ C DEB-------------------------------------------------------------------
           REPK = NOGD(L:L)
 
       ELSE
-         REPK = QUESTI
-         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD = 1
-         GOTO 9999
       ENDIF
 
  9999 CONTINUE

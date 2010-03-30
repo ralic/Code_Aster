@@ -1,6 +1,6 @@
-      SUBROUTINE DISMRS(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
+      SUBROUTINE DISMRS(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,13 +22,12 @@ C     --     DISMOI(RESULTAT)
 C     ARGUMENTS:
 C     ----------
       INTEGER REPI,IERD
-      CHARACTER*(*) QUESTI,CODMES
+      CHARACTER*(*) QUESTI
       CHARACTER*32 REPK
       CHARACTER*19 NOMOB
       CHARACTER*(*) NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C     IN:
-C       CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C       NOMOBZ : NOM D'UN OBJET DE TYPE RESULTAT
 C     OUT:
@@ -86,7 +85,7 @@ C
             IF ( IRET .NE. 0 ) THEN
                 VALK(1) = DOCU
                 VALK(2) = NOMOB
-                CALL U2MESK(CODMES,'UTILITAI_68', 2 ,VALK)
+                CALL U2MESK('F','UTILITAI_68', 2 ,VALK)
                IERD=1
                GO TO 9999
             ENDIF
@@ -145,7 +144,7 @@ C     ------------------------------------------
          DO 1, I=1,NBCH
            NOMCH=ZK24(IATACH-1+I)(1:19)
            IF(NOMCH(1:1).NE.' ') THEN
-             CALL DISMCP(CODMES,QUESTI,NOMCH,REPI,REPK,IERD)
+             CALL DISMCP(QUESTI,NOMCH,REPI,REPK,IERD)
              GO TO 9999
            END IF
  1       CONTINUE
@@ -159,12 +158,12 @@ C        -- SINON ON PARCOURT TOUS LES CHAMPS DU RESULTAT :
            DO 3, I=1,NBCH
              NOMCH=ZK24(IATACH-1+I)(1:19)
              IF(NOMCH(1:1).NE.' ') THEN
-               CALL DISMCP(CODMES,QUESTI,NOMCH,REPI,REPK,IERD)
+               CALL DISMCP(QUESTI,NOMCH,REPI,REPK,IERD)
                GO TO 9999
              END IF
  3         CONTINUE
  2       CONTINUE
-         CALL U2MESS(CODMES,'UTILITAI_69')
+         CALL U2MESS('F','UTILITAI_69')
          IERD=1
 
 
@@ -195,7 +194,7 @@ C     ------------------------------------------
 C     ------------------------------------------
          CALL JELIRA(NOMOB//'.DESC','GENR',IBID,K8BID)
          IF (K8BID(1:1).EQ.'N') THEN
-            CALL DISMRC(CODMES,QUESTI,NOMOB,REPI,REPK,IERD)
+            CALL DISMRC(QUESTI,NOMOB,REPI,REPK,IERD)
          ELSE
             REPI = 1
          END IF
@@ -207,9 +206,9 @@ C     ------------------------------------------
      &              K8BID, NBMOD, 1, IBID )
          REPI = NBMOD
          REPK='NON'
-  
-      ELSE IF  (QUESTI.EQ.'NB_MODES_STA') THEN    
-C     ------------------------------------------ 
+
+      ELSE IF  (QUESTI.EQ.'NB_MODES_STA') THEN
+C     ------------------------------------------
          NBSTAT=0
          CALL RSORAC ( NOMOB, 'LONUTI', IBID, RBID, K8BID, CBID, RBID,
      &              K8BID, NBMOD, 1, IBID )
@@ -224,8 +223,8 @@ C
          REPI = NBSTAT
          REPK='NON'
 C
-      ELSE IF  (QUESTI.EQ.'NB_MODES_DYN') THEN    
-C     ------------------------------------------ 
+      ELSE IF  (QUESTI.EQ.'NB_MODES_DYN') THEN
+C     ------------------------------------------
          NBDYN=0
          CALL RSORAC ( NOMOB, 'LONUTI', IBID, RBID, K8BID, CBID, RBID,
      &              K8BID, NBMOD, 1, IBID )
@@ -241,10 +240,7 @@ C     ------------------------------------------
          REPK='NON'
 C
       ELSE
-         REPK = QUESTI
-         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD=1
-         GO TO 9999
       END IF
 C
  9999 CONTINUE

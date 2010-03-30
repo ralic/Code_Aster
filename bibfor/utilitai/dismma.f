@@ -1,6 +1,6 @@
-      SUBROUTINE DISMMA(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
+      SUBROUTINE DISMMA(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,13 +22,12 @@ C     --     DISMOI(MAILLAGE)
 C     ARGUMENTS:
 C     ----------
       INTEGER REPI,IERD
-      CHARACTER*(*) QUESTI,CODMES
+      CHARACTER*(*) QUESTI
       CHARACTER*32 REPK
       CHARACTER*8 NOMOB
       CHARACTER*(*) NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C    IN:
-C       CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C       NOMOB  : NOM D'UN OBJET DE TYPE LIGREL
 C    OUT:
@@ -60,6 +59,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
 
       CALL JEMARQ()
+      REPK=' '
       NOMOB = NOMOBZ
       CALL JEVEUO(NOMOB//'.DIME','L',IADIME)
 
@@ -108,11 +108,10 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
    40   CONTINUE
 
       ELSE
-        REPK = QUESTI
-        CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
         IERD = 1
-        GO TO 50
       END IF
+
+
 
    50 CONTINUE
       REPKZ = REPK

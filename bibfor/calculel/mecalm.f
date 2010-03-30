@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -242,7 +242,7 @@ C     &      CONCEP.EQ.'MODE_ACOU' .OR. CONCEP.EQ.'DYNA_HARMO') THEN
           CALL JEVEUO(REFE//'.REFD','L',LREFE)
           MASSE = ZK24(LREFE+1)(1:19)
           IF(MASSE(1:8).NE.'        ') THEN
-            CALL DISMOI('I','SUR_OPTION',MASSE,'MATR_ASSE',IBID,SOP,IE)
+            CALL DISMOI('C','SUR_OPTION',MASSE,'MATR_ASSE',IBID,SOP,IE)
             IF(SOP(1:14).EQ.'MASS_MECA_DIAG')INUME=0
           ENDIF
           CHDYNR = '&&'//NOMPRO//'.M.GAMMA'

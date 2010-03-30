@@ -1,6 +1,6 @@
       SUBROUTINE PCFULL(N,ICPL,ICPC,ICPD,ICPLP,ICPCP,IND,LCA,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 C                    S.P. PCFULL
 C                    -----------
@@ -60,7 +61,8 @@ C   NZA        : NOMBRE DE COEFFICIENTS DE LA MATRICE FACTORISEE
 
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
       IMPLICIT REAL*8(A-H,O-Z)
-      INTEGER ICPL(0:N),ICPD(N),ICPC(*)
+      INTEGER*4 ICPC(*)
+      INTEGER ICPL(0:N),ICPD(N)
       INTEGER ICPLP(0:N),ICPCP(*),IND(N)
 
 C=======================================================================

@@ -4,7 +4,7 @@
       CHARACTER*(*)     MCF,     NCHPT
       INTEGER               IOCC,                            IRET
 C**********************************************************************
-C MODIF POSTRELE  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF POSTRELE  DATE 25/03/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,14 +70,15 @@ C  -----------------
       INTEGER      ADR,ALISTE,ACNCIN,ALSMAC,ALSNAC,ACMP,ADRVLC,AREPE
       INTEGER      NBTMA,NBM,NBMAC,NBNAC,NBCRB,INDMOT,NBMALU
       INTEGER      I,IN,N,M,LIBRE,N1,IBID,IGREL,JNUMA,ILISMA,J
-      INTEGER      IBIB,IE,IMOLO,JCELD,N2,KK
-      INTEGER      II,JMMAIL,NBTROU,NBCMP,NC,JCMP,NTC
+      INTEGER      IBIB,IE,IMOLO,JCELD,N2,KK,IER,NBVARI,NBR
+      INTEGER      II,JMMAIL,NBTROU,NBCMP,NBCMP1,NC,JCMP,JCMP1,NTC
       CHARACTER*4  DOCU
-      CHARACTER*8  NMAILA,COURBE,K8B,NOMGD
+      CHARACTER*8  NMAILA,COURBE,K8B,NOMGD,RESUCO,NOMVAR,NUM
       CHARACTER*15 NCONEC
-      CHARACTER*16 MOTCLE(2),TYPMCL(2)
+      CHARACTER*16 MOTCLE(2),TYPMCL(2),NCHSYM
       CHARACTER*19 NCHP19
-      CHARACTER*24 NCNCIN,NREPE,LISMAI,MALIST,NOMOBJ
+      CHARACTER*24 NCNCIN,NREPE,LISMAI,MALIST,NOMOBJ,VALK(3)
+      DATA NBVARI /100/
 C**********************************************************************
 C
       CALL JEMARQ()
@@ -129,8 +130,39 @@ C
             NBCMP = -NC
             CALL WKVECT ('&&RVOUEX.NOM_CMP','V V K8', NBCMP, JCMP )
             CALL GETVTX ( MCF,'NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),NC)
+C
+C VERIFICATION QUE LES COMPOSANTES DEMANDEES
+C APPARTIENNENT BIEN AU CHAMP
+C
+            CALL GETVID ( MCF, 'RESULTAT', IOCC,1,1,RESUCO,IBIB )
+            IF(IBIB.NE.0) THEN
+              NOMOBJ = '&&RVOUEX.NOM_CMP1'
+              CALL JEEXIN(NOMOBJ,IER)
+              IF(IER.NE.0) CALL JEDETR (NOMOBJ)
+              CALL UTNCMP ( NCHP19, NBCMP1, NOMOBJ )
+              CALL JEVEUO ( NOMOBJ, 'L', JCMP1 )
+              CALL GETVTX ( MCF, 'NOM_CHAM' , IOCC,1,1, NCHSYM, N1 )
+              NBR=NBCMP1
+              IF(ZK8(JCMP1).EQ.'VARI') NBR=NBVARI
+              DO 102 I=1,NBCMP
+                DO 103 J=1,NBR
+                  IF(ZK8(JCMP1).EQ.'VARI') THEN
+                    CALL CODENT(J,'G',NUM)
+                    NOMVAR = 'V'//NUM
+                    IF (ZK8(JCMP-1+I) .EQ. NOMVAR) GOTO 102
+                  ELSE
+                    IF (ZK8(JCMP-1+I) .EQ. ZK8(JCMP1-1+J)) GOTO 102
+                  ENDIF
+103             CONTINUE
+                VALK(1) = ZK8(JCMP-1+I)
+                VALK(2) = NCHSYM
+                VALK(3) = RESUCO               
+                CALL U2MESK('F','POSTRELE_65',3,VALK)
+102          CONTINUE
+            ENDIF
+C
             CALL UTMACH ( NCHP19, NBCMP, ZK8(JCMP), 'NU',
-     &                                                 MALIST, NBTROU )
+     &                                                 MALIST, NBTROU)
             IF ( NBTROU .NE. 0 ) CALL JEVEUO ( MALIST, 'L', JMMAIL )
             CALL JEDETR ( '&&RVOUEX.NOM_CMP' )
          ENDIF

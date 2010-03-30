@@ -3,7 +3,7 @@
       CHARACTER*(*)  NOMSTO,TYPROZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_4
 C-----------------------------------------------------------------------
 C    BUT: CREER UN STOCKAGE_MORSE POUR UNE MATRICE PLEINE OU DIAGONALE
 C
@@ -33,6 +34,8 @@ C IN        I   NEQ     : DIMENSION DE LA MATRICE
 C-----------------------------------------------------------------------
 C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
@@ -67,7 +70,7 @@ C     ------------------------------------------------------------------
          NTERM=NEQ*(NEQ+1)/2
       ENDIF
 
-      CALL WKVECT ( STO19//'.SMHC', 'G V I', NTERM, JSMHC )
+      CALL WKVECT ( STO19//'.SMHC', 'G V S', NTERM, JSMHC )
       CALL WKVECT ( STO19//'.SMDI', 'G V I', NEQ , JSMDI )
       CALL WKVECT ( STO19//'.SMDE', 'G V I', 6, JSMDE )
 
@@ -80,7 +83,7 @@ C     ------------------------------------------------------------------
       IF (TYPROF.EQ.'DIAG') THEN
          DO 201 I = 1 , NEQ
             ZI(JSMDI+I-1) = I
-            ZI(JSMHC+I-1) = I
+            ZI4(JSMHC+I-1) = I
 201      CONTINUE
       ELSEIF (TYPROF.EQ.'PLEIN') THEN
          ICO=0
@@ -88,7 +91,7 @@ C     ------------------------------------------------------------------
             ZI(JSMDI+I-1) = I*(I+1)/2
             DO 203 J=1,I
                ICO=ICO+1
-               ZI(JSMHC-1+ICO) = J
+               ZI4(JSMHC-1+ICO) = J
 203         CONTINUE
 202      CONTINUE
       ENDIF

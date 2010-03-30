@@ -1,6 +1,6 @@
-      SUBROUTINE DISMCM(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
+      SUBROUTINE DISMCM(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,13 +22,12 @@ C     --     DISMOI(CHAM_MATER)
 C     ARGUMENTS:
 C     ----------
       INTEGER REPI,IERD
-      CHARACTER*(*) QUESTI,CODMES
+      CHARACTER*(*) QUESTI
       CHARACTER*(*) NOMOBZ, REPKZ
       CHARACTER*32 REPK
       CHARACTER*8  NOMOB
 C ----------------------------------------------------------------------
 C     IN:
-C       CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C       NOMOBZ : NOM D'UN OBJET DE TYPE NUM_DDL
 C     OUT:
@@ -64,6 +63,7 @@ C
 C
       CALL JEMARQ()
       NOMOB  = NOMOBZ
+      REPK=' '
 
 
       IF (QUESTI.EQ.'EXI_AMOR_ALPHA'.OR.QUESTI.EQ.'EXI_AMOR_NOR'.OR.
@@ -342,18 +342,14 @@ C     --------------------------------------
          IF ( IRET.NE.0) THEN
            REPK='OUI'
          ENDIF
-         
-         
+
+
       ELSE
 C     --------------------------------------
-         REPK = QUESTI
-         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD=1
-         GO TO 9999
       END IF
 C
  9999 CONTINUE
       REPKZ = REPK
-      REPI  = 0
       CALL JEDEMA()
       END

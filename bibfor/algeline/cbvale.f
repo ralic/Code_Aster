@@ -5,7 +5,7 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C     COMBINAISON LINEAIRE DES .VALM DES MATRICES
 C       *  LES MATRICES SONT SUPPOSEES ETRE DE MEME STOCKAGE
 C          MAIS PEUVENT ETRE A ELEMENTS REELS OU COMPLEXES
@@ -38,6 +39,8 @@ C                                         DES LAGRANGE)
 C     -----------------------------------------------------------------
 
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -160,29 +163,29 @@ C     ----------------------------------------
 C       --------------------------
           IF (TYPMAT.EQ.'R') THEN
 C         --------------------------
-            CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+            CALL CBVALR(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
      &                  C8CST,ZR(JVAMI1),ZR(JVAMR1),CBID)
             IF (.NOT.SYMR) THEN
               IF (SYMI) THEN
-                CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
-     &                      C8CST,ZR(JVAMI1),ZR(JVAMR2),CBID)
+                CALL CBVALR(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),
+     &                      R8CST,C8CST,ZR(JVAMI1),ZR(JVAMR2),CBID)
               ELSE
-                CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
-     &                      C8CST,ZR(JVAMI2),ZR(JVAMR2),CBID)
+                CALL CBVALR(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),
+     &                      R8CST,C8CST,ZR(JVAMI2),ZR(JVAMR2),CBID)
               END IF
             END IF
 
           ELSE IF (TYPMAT.EQ.'C') THEN
 C         --------------------------
-            CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+            CALL CBVALC(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
      &                  C8CST,ZC(JVAMI1),ZR(JVAMR1),CBID)
             IF (.NOT.SYMR) THEN
               IF (SYMI) THEN
-                CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
-     &                      C8CST,ZC(JVAMI1),ZR(JVAMR2),CBID)
+                CALL CBVALC(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),
+     &                      R8CST,C8CST,ZC(JVAMI1),ZR(JVAMR2),CBID)
               ELSE
-                CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
-     &                      C8CST,ZC(JVAMI2),ZR(JVAMR2),CBID)
+                CALL CBVALC(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),
+     &                      R8CST,C8CST,ZC(JVAMI2),ZR(JVAMR2),CBID)
               END IF
             END IF
           END IF
@@ -192,29 +195,29 @@ C         --------------------------
 C       --------------------------
           IF (TYPMAT.EQ.'R') THEN
 C         --------------------------
-            CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
+            CALL CBVALR(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
      &                  C8CST,ZR(JVAMI1),RBID,ZC(JVAMR1))
             IF (.NOT.SYMR) THEN
               IF (SYMI) THEN
-                CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
-     &                      C8CST,ZR(JVAMI1),RBID,ZC(JVAMR2))
+                CALL CBVALR(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),
+     &                      R8CST,C8CST,ZR(JVAMI1),RBID,ZC(JVAMR2))
               ELSE
-                CALL CBVALR(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
-     &                      C8CST,ZR(JVAMI2),RBID,ZC(JVAMR2))
+                CALL CBVALR(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),
+     &                      R8CST,C8CST,ZR(JVAMI2),RBID,ZC(JVAMR2))
               END IF
             END IF
 
           ELSE IF (TYPMAT.EQ.'C') THEN
 C         --------------------------
-            CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
-     &                  C8CST,ZC(JVAMI1),RBID,ZC(JVAMR1))
+            CALL CBVALC(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),
+     &                  R8CST,C8CST,ZC(JVAMI1),RBID,ZC(JVAMR1))
             IF (.NOT.SYMR) THEN
               IF (SYMI) THEN
-                CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
-     &                      C8CST,ZC(JVAMI1),RBID,ZC(JVAMR2))
+                CALL CBVALC(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),
+     &                      R8CST,C8CST,ZC(JVAMI1),RBID,ZC(JVAMR2))
               ELSE
-                CALL CBVALC(ROUC,NEQ,ZI(JSMHC),ZI(JSMDI),ZI(LDDL),R8CST,
-     &                      C8CST,ZC(JVAMI2),RBID,ZC(JVAMR2))
+                CALL CBVALC(ROUC,NEQ,ZI4(JSMHC),ZI(JSMDI),ZI(LDDL),
+     &                      R8CST,C8CST,ZC(JVAMI2),RBID,ZC(JVAMR2))
               END IF
             END IF
           END IF

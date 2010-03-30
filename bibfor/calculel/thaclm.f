@@ -6,7 +6,7 @@
 C TOLE CRP_20
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 27/10/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,7 +167,7 @@ C=======================================================================
           MASSE = ZK24(LREFE+1) (1:19)
           CALL MTDSCR(MASSE)
           CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMAT)
-          CALL DISMOI('I','SUR_OPTION',MASSE,'MATR_ASSE',IBID,SOP,IE)
+          CALL DISMOI('C','SUR_OPTION',MASSE,'MATR_ASSE',IBID,SOP,IE)
           CHDYNR = '&&'//NOMPRO//'.M.GAMMA'
           CALL VTCREM(CHDYNR,MASSE,'V','R')
           CALL JEVEUO(CHDYNR//'.VALE','E',LVALE)

@@ -6,7 +6,7 @@
       REAL*8 VECT(*),XSOL(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C     ------------------------------------------------------------------
 C    EFFECTUE LE PRODUIT D'UNE MATRICE PAR N VECTEURS REELS. LE RESULTAT
 C    EST STOCKE DANS N VECTEURS REELS (PARAMETRE TYPVEC INUTILE)
@@ -43,6 +44,8 @@ C             MAIS SI CUMUL = 'ZERO' ALORS XSOL EST EN MODE OUT
 C IN  NBVECT: I : NOMBRE DE VECTEURS A MULTIPLIER (ET DONC DE SOLUTIONS)
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -86,7 +89,7 @@ C     SELON REEL OU COMPLEXE :
    70 CONTINUE
 C     MATRICE REELLE
       CALL MTDSC2(ZK24(ZI(LMAT+1)),'SMDI','L',JSMDI)
-      CALL MRMMVR(CUMUL,ZK24(ZI(LMAT+1)),ZI(JSMDI),ZI(JSMHC),
+      CALL MRMMVR(CUMUL,ZK24(ZI(LMAT+1)),ZI(JSMDI),ZI4(JSMHC),
      &            ZI(LMAT+2),VECT,XSOL,NBVECT)
       GO TO 110
 

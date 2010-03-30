@@ -4,7 +4,7 @@
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,7 +143,7 @@ C     -----------------------------
 C     4. ON VERIFIE LE NOEUD : CALCUL DE NUPO2
 C     ------------------------------------------
       IF (NONOEU(1:1).NE.' ') THEN
-        CALL DISMOI(AOF,'TYPE_CHAMP',CHM19Z,'CHAMP',IBID,K8B,IBID)
+        CALL DISMOI('C','TYPE_CHAMP',CHM19Z,'CHAMP',IBID,K8B,IBID)
         IF (K8B(1:4).NE.'ELNO') THEN
           CALL U2MESK(AOF,'UTILITAI5_32',1,CHM19Z)
         END IF

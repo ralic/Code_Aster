@@ -4,7 +4,7 @@
       INTEGER                             NBTITR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -160,11 +160,11 @@ C     --- CHOIX D'UN TITRE ---
       IF ( NIV .EQ. 'T' ) THEN
          ICHOIX = 1
       ELSE
-         CALL DISMOI('I','TYPE_RESU',NOMCON,'RESULTAT',IBID,TYPESD,IERD)
+         CALL DISMOI('C','TYPE_RESU',NOMCON,'RESULTAT',IBID,TYPESD,IERD)
          IF (IERD .NE.0 ) THEN
             CALL U2MESK('F','UTILITAI4_99',1,TYPESD)
          ELSEIF ( TYPESD  .EQ. 'CHAMP' ) THEN
-            CALL DISMOI('I','TYPE_CHAMP',NOMCON,'CHAMP',IBID,TYPESD,
+            CALL DISMOI('C','TYPE_CHAMP',NOMCON,'CHAMP',IBID,TYPESD,
      &                                                             IERD)
             IF ( TYPESD(1:4) .EQ. 'NOEU') THEN
                ICHOIX = 2
@@ -179,7 +179,7 @@ C     --- CHOIX D'UN TITRE ---
                CALL U2MESK('F','UTILITAI4_99',1,TYPESD)
             ENDIF
          ELSE
-            CALL DISMOI('I','TYPE_CHAMP',NOMCHA,'CHAMP',IBID,TYPESD,
+            CALL DISMOI('C','TYPE_CHAMP',NOMCHA,'CHAMP',IBID,TYPESD,
      &                                                             IERD)
 CCCC +                                                             IERD)
             IF ( TYPESD(1:4) .EQ. 'NOEU') THEN

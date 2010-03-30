@@ -10,7 +10,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/03/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF CALCULEL  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C ======================================================================
 C     SAISIE ET VERIFICATION DE LA COHERENCE DES DONNEES MECANIQUES
 C     DU PROBLEME
 C     COPIE DE MEDOME POUR LES COMMANDES CALC_ELEM, CALC_CHAM_ELEM,
-C                                        CALC_G 
+C                                        CALC_G
 C ----------------------------------------------------------------------
 C OUT : MODELE : NOM DU MODELE
 C OUT : MATE   : CHAMP MATERIAU
@@ -59,7 +59,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C     ------------------------------------------------------------------
       INTEGER     NBORDR, IRET, NP, NC, JORDR
-      INTEGER     IEXCIT, IERD,I, IBID, ICHA, IE, IKF, IN 
+      INTEGER     IEXCIT, IERD,I, IBID, ICHA, IE, IKF, IN
       INTEGER     JFCHA, JINFC, JLCHA, N, N1, N2, N3, N5
       REAL*8      PREC
       CHARACTER*6 NOMPRO
@@ -190,12 +190,12 @@ C
         CALL JEDETR(KFON)
         CALL WKVECT(KFON,'V V K8',NCHA,IKF)
         CALL JEVEUO(EXCIT//'.FCHA','L',JFCHA)
-        CALL DISMOI('A','PHENOMENE',MODELE,'MODELE',IBID,PHENOM,IERD)
+        CALL DISMOI('F','PHENOMENE',MODELE,'MODELE',IBID,PHENOM,IERD)
         CTYP=PHENOM(1:4)
         IN=0
         DO 50 I=1,NCHA
 C         ON STOCKE LES CHARGES DONT LE TYPE CORRESPOND A CTYP
-          CALL DISMOI('E','TYPE_CHARGE',ZK24(JLCHA+I-1),
+          CALL DISMOI('F','TYPE_CHARGE',ZK24(JLCHA+I-1),
      &                'CHARGE',IBID,K8B,IE)
           IF(IE.EQ.0.AND.CTYP.EQ.K8B(1:4))THEN
             ZK8(ICHA+IN)= ZK24(JLCHA+I-1)(1:8)

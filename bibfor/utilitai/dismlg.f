@@ -1,9 +1,9 @@
-      SUBROUTINE DISMLG(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
+      SUBROUTINE DISMLG(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER REPI,IERD
-      CHARACTER*(*) QUESTI,CODMES,REPKZ,NOMOBZ
+      CHARACTER*(*) QUESTI,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,6 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     --     DISMOI(LIGREL)
 C    IN:
-C       CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C       NOMOBZ : NOM D'UN OBJET DE TYPE LIGREL
 C    OUT:
@@ -61,7 +60,7 @@ C DEB ------------------------------------------------------------------
 
       CALL JEMARQ()
       NOMOB = NOMOBZ
-      REPK = REPKZ
+      REPK = ' '
 
 C     --------------------------------
       IF (QUESTI.EQ.'NOM_MAILLA') THEN
@@ -123,7 +122,7 @@ C     -----------------------------------------------------------------
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
 
             IF (QUESTI.EQ.'EXI_RDM') THEN
-              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
+              CALL DISMTE('MODELISATION',NOMTE,REPI,NOMODL,IERD)
               IF ((NOMODL(1:3).EQ.'DKT').OR.(NOMODL(1:3).EQ.'DST') .OR.
      &            (NOMODL(1:3).EQ.'Q4G').OR.(NOMODL(1:5).EQ.'CABLE').OR.
      &            (NOMODL(1:4).EQ.'POU_').OR.(NOMODL(1:5).EQ.'BARRE')
@@ -138,21 +137,21 @@ C     -----------------------------------------------------------------
 
             ELSEIF (QUESTI.EQ.'CALC_RIGI') THEN
               REPK='NON'
-              CALL DISMTE(CODMES,QUESTI,NOMTE,REPI,CALCRI,IERD)
+              CALL DISMTE(QUESTI,NOMTE,REPI,CALCRI,IERD)
               IF ( CALCRI.EQ.'OUI' ) THEN
                 REPK = 'OUI'
                 GO TO 40
               END IF
 
             ELSEIF (QUESTI.EQ.'EXI_COQUE') THEN
-              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
+              CALL DISMTE('MODELISATION',NOMTE,REPI,NOMODL,IERD)
               IF ( NOMODL(1:5).EQ.'COQUE' ) THEN
                 REPK = 'OUI'
                 GO TO 40
               END IF
 
             ELSEIF (QUESTI.EQ.'EXI_GRILLE') THEN
-              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
+              CALL DISMTE('MODELISATION',NOMTE,REPI,NOMODL,IERD)
               REPK = 'NON'
               IF ( NOMODL(1:6).EQ.'GRILLE' ) THEN
                 REPK = 'OUI'
@@ -161,14 +160,14 @@ C     -----------------------------------------------------------------
 
             ELSE IF ((QUESTI.EQ.'EXI_COQ3D') .OR.
      &               (QUESTI.EQ.'EXI_COQ1D')) THEN
-              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
+              CALL DISMTE('MODELISATION',NOMTE,REPI,NOMODL,IERD)
               IF (NOMODL(1:8).EQ.'COQUE_3D') THEN
                 REPK = 'OUI'
                 GO TO 40
               END IF
 
             ELSE IF (QUESTI.EQ.'EXI_PLAQUE') THEN
-              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
+              CALL DISMTE('MODELISATION',NOMTE,REPI,NOMODL,IERD)
               IF ((NOMODL(1:3).EQ.'DKT') .OR. (NOMODL(1:3).EQ.'DST')
      &             .OR.(NOMODL(1:3).EQ.'Q4G')) THEN
                 REPK = 'OUI'
@@ -255,13 +254,13 @@ C     ---------------------------------------
       ELSE IF (QUESTI.EQ.'NB_NO_MAILLA') THEN
 C     ---------------------------------------
         CALL JEVEUO(NOMOB//'.LGRF','L',JLGRF)
-        CALL DISMMA(CODMES,QUESTI,ZK8(JLGRF),REPI,REPK,IERD)
+        CALL DISMMA(QUESTI,ZK8(JLGRF),REPI,REPK,IERD)
 
 C     ---------------------------------------
       ELSE IF (QUESTI.EQ.'NB_MA_MAILLA') THEN
 C     ---------------------------------------
         CALL JEVEUO(NOMOB//'.LGRF','L',JLGRF)
-        CALL DISMMA(CODMES,QUESTI,ZK8(JLGRF),REPI,REPK,IERD)
+        CALL DISMMA(QUESTI,ZK8(JLGRF),REPI,REPK,IERD)
 
 C     -----------------------------------
       ELSE IF (QUESTI.EQ.'DIM_GEOM') THEN
@@ -280,7 +279,7 @@ C     -----------------------------------
             CALL JELIRA(JEXNUM(NOMOB//'.LIEL',IGR),'LONMAX',N1,K1BID)
             ITE = ZI(IAGREL-1+N1)
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITE),NOMTE)
-            CALL DISMTE(CODMES,QUESTI,NOMTE,IGE1,REPK,IERD)
+            CALL DISMTE(QUESTI,NOMTE,IGE1,REPK,IERD)
             CALL ASSERT((IGE1.GE.0) .AND. (IGE1.LE.3))
             IF ((IGE2.EQ.0) .AND. (IGE1.NE.0)) IGE2 = IGE1
             IF ((IGE1*IGE2.GT.0) .AND. (IGE1.NE.IGE2)) MELANG = .TRUE.
@@ -354,16 +353,13 @@ C     ------------------------------------
         ELSE IF (PHENOM(1:4).EQ.'ACOU') THEN
           REPK = 'ACOUSTIQUE'
         ELSE
-          CALL U2MESK(CODMES,'UTILITAI_63',1,PHENOM)
+          CALL U2MESK('F','UTILITAI_63',1,PHENOM)
         END IF
 
 C     ----
       ELSE
 C     ----
-        REPK = QUESTI
-        CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
         IERD = 1
-        GO TO 40
       END IF
 
    40 CONTINUE

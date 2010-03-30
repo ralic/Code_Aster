@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/05/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +112,7 @@ C                   -----------
                TABTYP(1)='NOEU#DEPL_R'
                TABTYP(2)='NOEU#TEMP_R'
                TABTYP(3)='ELEM#ENER_R'
-               CALL CHPVE2('F',CHDEF,3,TABTYP,IER)
+               CALL CHPVE2(CHDEF,3,TABTYP,IER)
                KNUM = '&&OP0107.NUME_ORDRE'
                CALL GETVID ( ' ', 'RESULTAT' , 1,1,1, RESUCO, NR )
                CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC  , NP )

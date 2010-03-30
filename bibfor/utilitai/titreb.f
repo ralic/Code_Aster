@@ -4,7 +4,7 @@
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -166,7 +166,7 @@ C        --- TITRE_MAILLAGE ---
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
                CBID = PARA(1)
             ELSE
-               CALL DISMOI('A','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
+               CALL DISMOI('C','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
                IF ( IERD .NE. 0 ) GOTO 9000
             ENDIF
             CALL JEVEUO(CBID(1:8)//'           .TITR','L',LTIT)
@@ -210,10 +210,10 @@ C        --- NB_ELEM  ---
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
                CBID = PARA(1)
             ELSE
-               CALL DISMOI('A','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
+               CALL DISMOI('C','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
                IF ( IERD .NE. 0 ) GOTO 9000
             ENDIF
-            CALL DISMOI('A','NB_MA_MAILLA',CBID,'MAILLAGE',
+            CALL DISMOI('C','NB_MA_MAILLA',CBID,'MAILLAGE',
      &                                                   IBID,CBID,IERD)
             IF ( IERD .NE. 0 ) GOTO 9000
             CGEN = '  '
@@ -230,10 +230,10 @@ C        --- NB_NOEUD ---
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
                CBID = PARA(1)
             ELSE
-               CALL DISMOI('A','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
+               CALL DISMOI('C','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
                IF ( IERD .NE. 0 ) GOTO 9000
             ENDIF
-            CALL DISMOI('A','NB_NO_MAILLA',CBID,'MAILLAGE',
+            CALL DISMOI('C','NB_NO_MAILLA',CBID,'MAILLAGE',
      &                                                   IBID,CBID,IERD)
             IF ( IERD .NE. 0 ) GOTO 9000
             CGEN = '  '
@@ -250,11 +250,11 @@ C        --- PHENOMENE ---
             IF ( CGEN(1:16) .EQ. 'MODELE' ) THEN
                CBID = PARA(1)
             ELSE
-               CALL DISMOI('A','NOM_MODELE',PARA(1),CGEN,IBID,CBID,IERD)
+               CALL DISMOI('C','NOM_MODELE',PARA(1),CGEN,IBID,CBID,IERD)
                IF ( IERD .NE. 0 ) GOTO 9000
             ENDIF
             CGEN = '  '
-            CALL DISMOI('A','PHENOMENE',CBID,'MODELE',
+            CALL DISMOI('C','PHENOMENE',CBID,'MODELE',
      &                                             IBID,CGEN(1:16),IERD)
             IF ( IERD .NE. 0 ) GOTO 9000
             IGEN = LXLGUT(CGEN(1:16))
@@ -269,10 +269,10 @@ C        --- DIMENSION GEOMETRIE ---
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
                CBID = PARA(1)
             ELSE
-               CALL DISMOI('A','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
+               CALL DISMOI('C','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
                IF ( IERD .NE. 0 ) GOTO 9000
             ENDIF
-            CALL DISMOI('A','DIM_GEOM',CBID,'MAILLAGE',IBID,CBID,IERD)
+            CALL DISMOI('C','DIM_GEOM',CBID,'MAILLAGE',IBID,CBID,IERD)
             IF ( IERD .NE. 0 ) GOTO 9000
             CGEN = '.D'
             CALL CODENT(IBID,'G',CGEN(1:1))
@@ -285,7 +285,7 @@ C        --- NOMBRE D'EQUATIONS ---
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
-            CALL DISMOI('A','NB_EQUA',PARA(1),CGEN,IBID,CBID,IERD)
+            CALL DISMOI('C','NB_EQUA',PARA(1),CGEN,IBID,CBID,IERD)
             IF ( IERD .NE. 0 ) GOTO 9000
             CGEN = '  '
             CALL CODENT(IBID,'G',CGEN(1:16))
@@ -296,7 +296,7 @@ C        --- LOCALISATION POUR UN CHAM_ELEM ---
   160    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
-            CALL DISMOI('A','TYPE_CHAMP',PARA(1),'CHAMP',IBID,
+            CALL DISMOI('C','TYPE_CHAMP',PARA(1),'CHAMP',IBID,
      &                  CBID,IERD)
             IF (CBID(1:4) .EQ. 'ELNO') THEN
                CGEN = 'AUX NOEUDS'

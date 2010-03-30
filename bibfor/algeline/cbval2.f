@@ -5,7 +5,7 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C     COMBINAISON LINEAIRE DES .VALM DES MATRICES
 C       *  LES MATRICES SONT SUPPOSEES AVOIR LE MEME TYPE DE STOCKAGE
 C          (MORSE) MAIS ELLES ONT DES PROFILS DIFFERENTS
@@ -40,6 +41,8 @@ C                                         DES LAGRANGE)
 C     -----------------------------------------------------------------
 
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -128,16 +131,16 @@ C     ----------------------------------
 
         IF (TYPRES(1:1).EQ.'R') THEN
           IF (TYPMAT.EQ.'R') THEN
-            CALL RRSSM2(NEQ,ZI(JSMHCR),ZI(JSMHCI),ZI(JSMDIR),ZI(JSMDII),
-     &                  ZI(LDDL),CONST(ICONST),ZR(JVLMI1),ZR(JVLMR1))
+            CALL RRSSM2(NEQ,ZI4(JSMHCR),ZI4(JSMHCI),ZI(JSMDIR),
+     &         ZI(JSMDII),ZI(LDDL),CONST(ICONST),ZR(JVLMI1),ZR(JVLMR1))
             IF (.NOT.SYMR) THEN
               IF (.NOT.SYMI) THEN
-                CALL RRSSM2(NEQ,ZI(JSMHCR),ZI(JSMHCI),ZI(JSMDIR),
+                CALL RRSSM2(NEQ,ZI4(JSMHCR),ZI4(JSMHCI),ZI(JSMDIR),
      &                      ZI(JSMDII),ZI(LDDL),CONST(ICONST),
      &                      ZR(JVLMI2),ZR(JVLMR2))
 
               ELSE
-                CALL RRSSM2(NEQ,ZI(JSMHCR),ZI(JSMHCI),ZI(JSMDIR),
+                CALL RRSSM2(NEQ,ZI4(JSMHCR),ZI4(JSMHCI),ZI(JSMDIR),
      &                      ZI(JSMDII),ZI(LDDL),CONST(ICONST),
      &                      ZR(JVLMI1),ZR(JVLMR2))
               END IF

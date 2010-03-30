@@ -2,7 +2,7 @@
      &                  TYPE,LMD,EPSMAT)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPM MUMPS  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -81,6 +81,8 @@ C============================================================
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
       
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -213,7 +215,7 @@ C       ------------------------------------------------
         JCOLL=1
         DO KTERM = 1, NZ
           IF (ZI(JSMDI-1+JCOLL).LT.KTERM) JCOLL=JCOLL+1
-          ILIGL=ZI(JSMHC-1+KTERM)
+          ILIGL=ZI4(JSMHC-1+KTERM)
 	  IF (LFILTR) THEN
 	    RFILTR=ZR(IFILTR-1+ILIGL)+ZR(IFILTR-1+JCOLL)
 	  ELSE
@@ -353,7 +355,7 @@ C       ------------------------------------------------
 
 C --- PARTIE TRIANGULAIRE SUPERIEURE
           IF (ZI(JSMDI-1+JCOLL).LT.KTERM) JCOLL=JCOLL+1
-          ILIGL=ZI(JSMHC-1+KTERM)
+          ILIGL=ZI4(JSMHC-1+KTERM)
 	  IF (LFILTR) THEN
 	    RFILTR=ZR(IFILTR-1+ILIGL)+ZR(IFILTR-1+JCOLL)
 	  ELSE

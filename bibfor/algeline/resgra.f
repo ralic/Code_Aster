@@ -1,7 +1,7 @@
       SUBROUTINE RESGRA(MAT,MATF,VCINE,NITER,EPSI,CRITER,NSECM,RSOLU,
      &                  SOLVEU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
       IMPLICIT NONE
       CHARACTER*(*) MAT,VCINE,MATF
       INTEGER NITER
@@ -41,6 +42,8 @@ C        EN SORTIE : VECTEUR DE REELS CONTENANT LES SOLUTIONS
 C----------------------------------------------------------------------
 C     COMMUNS JEVEUX
 C----------------------------------------------------------------------
+      INTEGER*4 ZI4
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -156,9 +159,9 @@ C        ---- SOLUTION POUR MUMPS
         CALL WKVECT(SMBR//'.VALE','V V R',NEQ,ISMBR)
       
         KDEB=(K-1)*NEQ+1
-        CALL GCPC(NEQ,ZI(IDIN),ZI(IDIP),ZR(IDAC),ZI(IDINPC),ZI(IDIPPC),
-     &            ZR(IDACPC),RSOLU(KDEB),ZR(IDW4),ZR(IDW1),ZR(IDW2),
-     &            ZR(IDW3),0,NITER,EPSI,CRITER,
+        CALL GCPC(NEQ,ZI(IDIN),ZI4(IDIP),ZR(IDAC),ZI(IDINPC),
+     &            ZI4(IDIPPC),ZR(IDACPC),RSOLU(KDEB),ZR(IDW4),
+     &            ZR(IDW1),ZR(IDW2),ZR(IDW3),0,NITER,EPSI,CRITER,
      &            SOLVEU,MATAS,SMBR,VCIN19)
         DO 21,IEQ=1,NEQ
           RSOLU(KDEB-1+IEQ)=ZR(IDW4-1+IEQ)

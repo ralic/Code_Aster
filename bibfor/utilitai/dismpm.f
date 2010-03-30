@@ -1,6 +1,6 @@
-      SUBROUTINE DISMPM(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
+      SUBROUTINE DISMPM(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,13 +22,12 @@ C     --     DISMOI(PHEN_MODE)
 C     ARGUMENTS:
 C     ----------
       INTEGER REPI,IERD
-      CHARACTER*(*) QUESTI,CODMES
+      CHARACTER*(*) QUESTI
       CHARACTER*24 REPK
       CHARACTER*32 NOMOB
       CHARACTER*(*) NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C    IN:
-C       CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C       NOMOBZ : NOM D'UN PHENMODE : (1:16)  : PHENOMENE
 C                                    (17:32) : MODELISATION
@@ -59,6 +58,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 C DEB-------------------------------------------------------------------
+      REPK=' '
       NOMOB = NOMOBZ
       PHEN=NOMOB(1:16)
       MODE=NOMOB(17:32)
@@ -73,10 +73,7 @@ C DEB-------------------------------------------------------------------
       ELSE IF (QUESTI.EQ.'DIM_TOPO') THEN
           REPI=ZI(JPHEN-1+NBTM+1)
       ELSE
-        REPK = QUESTI
-        CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
         IERD = 1
-        GO TO 10
       END IF
 
    10 CONTINUE

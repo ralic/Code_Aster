@@ -1,6 +1,6 @@
-      SUBROUTINE DISMPH(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
+      SUBROUTINE DISMPH(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,13 +22,12 @@ C     --     DISMOI(PHENOMENE)
 C     ARGUMENTS:
 C     ----------
       INTEGER REPI,IERD
-      CHARACTER*(*) QUESTI,CODMES
+      CHARACTER*(*) QUESTI
       CHARACTER*32 REPK
       CHARACTER*16 NOMOB
       CHARACTER*(*) NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C    IN:
-C       CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C       NOMOBZ : NOM D'UN PHENOMENE
 C    OUT:
@@ -60,6 +59,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
 C DEB-------------------------------------------------------------------
 
+      REPK=' '
       NOMOB = NOMOBZ
       IF (NOMOB(1:9).EQ.'THERMIQUE') THEN
         REPK = 'TEMP_R'
@@ -70,7 +70,7 @@ C DEB-------------------------------------------------------------------
       ELSE IF (NOMOB(1:9).EQ.'NON_LOCAL') THEN
         REPK = 'VANL_R'
       ELSE
-        CALL U2MESK(CODMES,'UTILITAI_66',1,NOMOB)
+        CALL U2MESK('F','UTILITAI_66',1,NOMOB)
         IERD = 1
         GO TO 10
       END IF
@@ -79,7 +79,7 @@ C DEB-------------------------------------------------------------------
       IF (QUESTI.EQ.'NOM_GD') THEN
 C        C'EST DEJA FAIT !
       ELSE IF (QUESTI.EQ.'NUM_GD') THEN
-        CALL DISMGD(CODMES,'NUM_GD',REPK(1:8),REPI,K8BID,IERD)
+        CALL DISMGD('NUM_GD',REPK(1:8),REPI,K8BID,IERD)
       ELSE IF (QUESTI.EQ.'NOM_MOLOC') THEN
         IF (NOMOB(1:9).EQ.'THERMIQUE') THEN
           REPK = 'DDL_THER'
@@ -91,10 +91,7 @@ C        C'EST DEJA FAIT !
           CALL ASSERT(.FALSE.)
         END IF
       ELSE
-        REPK = QUESTI
-        CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
         IERD = 1
-        GO TO 10
       END IF
 
    10 CONTINUE

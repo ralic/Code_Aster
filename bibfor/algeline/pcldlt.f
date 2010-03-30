@@ -1,6 +1,6 @@
       SUBROUTINE PCLDLT(MATF,MAT,NIREMP,BAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
       IMPLICIT NONE
       CHARACTER*(*) MATF,MAT,BAS
 C-----------------------------------------------------------------------
@@ -41,6 +42,8 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     COMMUNS   JEVEUX
 C-----------------------------------------------------------------------
+      INTEGER*4 ZI4
+      COMMON /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -153,10 +156,10 @@ C     ------------------------------------------------
         CALL WKVECT('&&PCLDLT.ICPD','V V I',NEQU,JICPD)
         CALL WKVECT('&&PCLDLT.ICPLX','V V I',NEQU+1,JICPLX)
         CALL JEDETR('&&PCLDLT.SMHCF')
-        CALL WKVECT('&&PCLDLT.SMHCF','V V I',2*NZMAX,JSMHC1)
+        CALL WKVECT('&&PCLDLT.SMHCF','V V S',2*NZMAX,JSMHC1)
         CALL WKVECT('&&PCLDLT.ICPCX','V V I',NZMAX,JICPCX)
 
-        CALL PCSTRU(NEQU,ZI(JSMDI),ZI(JSMHC),ZI(JSMDI1),ZI(JSMHC1),
+        CALL PCSTRU(NEQU,ZI(JSMDI),ZI4(JSMHC),ZI(JSMDI1),ZI4(JSMHC1),
      &      ZI(JICPD),ZI(JICPCX),ZI(JICPLX),NIREMP,COMPLT,NZMAX,0,
      &            IER)
 
@@ -179,9 +182,9 @@ C     ------------------------------------------------
       CALL JEDETR('&&PCLDLT.SMDIF')
 
       CALL JEDETR(NUF//'.SMOS.SMHC')
-      CALL WKVECT(NUF//'.SMOS.SMHC',BASE//' V I',NZMAX,JSMHCF)
+      CALL WKVECT(NUF//'.SMOS.SMHC',BASE//' V S',NZMAX,JSMHCF)
       DO 30,K = 1,NZMAX
-        ZI(JSMHCF-1+K) = ZI(JSMHC1-1+K)
+        ZI4(JSMHCF-1+K) = ZI4(JSMHC1-1+K)
    30 CONTINUE
       CALL JEDETR('&&PCLDLT.SMHCF')
 
@@ -200,15 +203,15 @@ C     -- ON INJECTE MATAS.VALM DANS MATFAC.VALM :
 C     ------------------------------------------------
       CALL JEVEUO(JEXNUM(MATAS//'.VALM',1),'L',JVALM)
       CALL JEVEUO(JEXNUM(MATFAC//'.VALM',1),'E',JVALF)
-      CALL PCCOEF(NEQU,ZI(JSMDI),ZI(JSMHC),ZR(JVALM),ZI(JSMDIF),
-     &            ZI(JSMHCF),ZR(JVALF),ZR(IDV))
+      CALL PCCOEF(NEQU,ZI(JSMDI),ZI4(JSMHC),ZR(JVALM),ZI(JSMDIF),
+     &            ZI4(JSMHCF),ZR(JVALF),ZR(IDV))
       CALL JELIBE(JEXNUM(MATAS//'.VALM',1))
 
 
 C     -- ON FACTORISE MATFAC.VALM :
 C     ------------------------------------------------
       CALL WKVECT('&&PCLDLT.VECT','V V R',NEQU,JVECT)
-      CALL PCFACT(MATAS,NEQU,ZI(JSMDIF),ZI(JSMHCF),ZR(JVALF),ZR(JVALF),
+      CALL PCFACT(MATAS,NEQU,ZI(JSMDIF),ZI4(JSMHCF),ZR(JVALF),ZR(JVALF),
      &            ZR(JVECT),EPSI)
       CALL JEDETR('&&PCLDLT.VECT')
 

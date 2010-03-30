@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF CALCULEL  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
 C     COMMANDE:  CALC_MATR_ELEM
 
 C ----------------------------------------------------------------------
@@ -167,21 +167,24 @@ C     ------------------------------
         CALL GETVID(' ','CHARGE',0,1,NCHAR,ZK8(JRECC),N1)
       ENDIF
 
+C     -- DESTRUCTION DES RESUELEM NULS :
+      CALL REDETR(MATEL)
 
-      CALL JEDETC(' ','&MEAMAC2           .RELR',1)
-      CALL JEDETC(' ','&MEAMAC2           .RERR',1)
 
-      CALL JEDETC(' ','&MERIAC1           .RELR',1)
-      CALL JEDETC(' ','&MERIAC1           .RERR',1)
-      CALL JEDETC(' ','&MERIAC2           .RELR',1)
-      CALL JEDETC(' ','&MERIAC2           .RERR',1)
+      CALL JEDETR('&MEAMAC2           .RELR')
+      CALL JEDETR('&MEAMAC2           .RERR')
 
-      CALL JEDETC(' ','&MERITH1           .RELR',1)
-      CALL JEDETC(' ','&MERITH2           .RELR',1)
-      CALL JEDETC(' ','&MERITH3           .RELR',1)
-      CALL JEDETC(' ','&MERITH1           .RERR',1)
-      CALL JEDETC(' ','&MERITH2           .RERR',1)
-      CALL JEDETC(' ','&MERITH3           .RERR',1)
+      CALL JEDETR('&MERIAC1           .RELR')
+      CALL JEDETR('&MERIAC1           .RERR')
+      CALL JEDETR('&MERIAC2           .RELR')
+      CALL JEDETR('&MERIAC2           .RERR')
+
+      CALL JEDETR('&MERITH1           .RELR')
+      CALL JEDETR('&MERITH2           .RELR')
+      CALL JEDETR('&MERITH3           .RELR')
+      CALL JEDETR('&MERITH1           .RERR')
+      CALL JEDETR('&MERITH2           .RERR')
+      CALL JEDETR('&MERITH3           .RERR')
 
       CALL JEDEMA()
       END

@@ -4,7 +4,7 @@
       CHARACTER*1 BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,6 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C     CALCUL DE LA STRUCTURE COMPACTE D'UNE MATRICE
 C     ------------------------------------------------------------------
 C IN  K*14 NU     : NOM DE LA SD_UME_DDL A COMPLETER.
@@ -31,6 +32,8 @@ C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
       CHARACTER*32 JEXNUM,JEXATR
+      INTEGER*4 ZI4
+      COMMON  / I4VAJE / ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -52,7 +55,7 @@ C----------------------------------------------------------------------
       INTEGER IDDL,JDDL,IAMAIL,JSMHC,NCOEF,JSMDE,IGD,NBSS
       INTEGER IASSSA,IERD,IADEQU,NLILI,NEQU,IIMAX,JNOIP,JSUIV,MXDDLT
       INTEGER IMA,NDDLT,JALM,JSMDI,NEL,NEC,NBSMA,ITYPEL
-      INTEGER NNOV,NUMAV,KVOIS,RANG,JNUMSD,IMD,NUMPRO
+      INTEGER NNOV,NUMAV,KVOIS,RANG,JNUMSD,IMD,NUMPRO,JSMH1
 
       CHARACTER*8 PARTIT
       CHARACTER*16 CODVOI,NOMTE
@@ -447,8 +450,13 @@ C       ---------------------------------------------
 
 C     DESIMBRIQUATION DE CHAINES POUR OBTENIR LA STRUCTURE COMPACTE
 C     (SMDI,SMHC) DE LA MATRICE
-      CALL WKVECT(NU//'.SMOS.SMHC',BASE//' V I',IIMAX,JSMHC)
-      CALL MOINIP(NEQX,NCOEF,ZI(JSMDI),ZI(JSUIV),ZI(JNOIP),ZI(JSMHC))
+      CALL WKVECT(NU//'.SMOS.SMH1',BASE//' V S',IIMAX,JSMH1)
+      CALL MOINIP(NEQX,NCOEF,ZI(JSMDI),ZI(JSUIV),ZI(JNOIP),ZI4(JSMH1))
+      CALL WKVECT(NU//'.SMOS.SMHC',BASE//' V S',NCOEF,JSMHC)
+      DO 150 IDDL=1,NCOEF
+        ZI4(JSMHC+IDDL-1)=ZI4(JSMH1+IDDL-1)
+  150 CONTINUE
+      CALL JEDETR(NU//'.SMOS.SMH1')
 
 
 C     -- CREATION ET REMPLISSAGE DE .SMDE

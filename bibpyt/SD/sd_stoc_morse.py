@@ -1,4 +1,4 @@
-#@ MODIF sd_stoc_morse SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_stoc_morse SD  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ from SD import *
 class sd_stoc_morse(AsBase):
     nomj = SDNom(fin=19)
     SMDE = AsVI(lonmax=6)
-    SMHC = AsVI()
+    SMHC = AsVS()
     SMDI = AsVI()
 
 

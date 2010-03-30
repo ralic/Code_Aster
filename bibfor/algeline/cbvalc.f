@@ -2,7 +2,7 @@
      &                  VALMR,VALMC)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C-------------------------------------------------------------------
 C     BUT : ACCUMULTATION DANS VALMR (OU VALMC) DE COEF*VALMI
 C     ROUC=
@@ -28,7 +29,8 @@ C        /'CR' : ON UTILISE VALMC ET COEFR
 C        /'CC' : ON UTILISE VALMC ET COEFC
 C-------------------------------------------------------------------
       CHARACTER*2 ROUC
-      INTEGER NEQ,SMHC(*),SMDI(*),IDLEXC(*)
+      INTEGER*4 SMHC(*)
+      INTEGER NEQ,SMDI(*),IDLEXC(*)
       INTEGER KIN,IDEBLI,ILIG,IFINLI,IND,JCOL
       REAL*8 COEFR,VALMR(*)
       COMPLEX*16 COEFC,VALMC(*),VALMI(*)
