@@ -1,6 +1,6 @@
       SUBROUTINE JXLIRB ( IC , IADDI , IADMO , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C
       INTEGER          IDN    , IEXT    , NBENRG
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
       COMMON /IACCED/  IACCE(1)
-      COMMON /JIACCE/  JIACCE(N)
+      COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
 C     ------------------------------------------------------------------
       LOGICAL          LRAB
       CHARACTER*8      NOM
@@ -83,6 +83,7 @@ C
             VALI(3) = IERR
             CALL U2MESG('F','JEVEUX_41',1,NOMBAS(IC),3,VALI,0,R8BID)
           ENDIF
+          NBACCE(2*IC-1) = NBACCE(2*IC-1) + 1
    10   CONTINUE
         IACCE (JIACCE(IC)+IADDI)=IACCE(JIACCE(IC)+IADDI) + 1
         IF ( LRAB ) THEN
@@ -101,6 +102,7 @@ C
             VALI(3) = IERR
             CALL U2MESG('F','JEVEUX_41',1,NOMBAS(IC),3,VALI,0,R8BID)
           ENDIF
+          NBACCE(2*IC-1) = NBACCE(2*IC-1) + 1
         ENDIF
       ENDIF
 C FIN ------------------------------------------------------------------

@@ -1,7 +1,7 @@
       SUBROUTINE JJIMPO (UNIT , IADMI , IDECI , IDATOC , GENRI , TYPEI,
      &                   LT    , LONOI , MESS , PARM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,8 +83,6 @@ C
       ICLS = ISZON(JISZON+IES+2)
       IDCO = ISZON(JISZON+IES+1)
 C
-      JI4ZON = JISZON * LOIS*2/LOR8
-C
       IF ( IDOS .EQ. 0 ) THEN
          CMESS = 'ECRASEMENT DE L''ADRESSE REPERTOIRE DU SEGMENT '
      &            //'DE VALEURS'
@@ -116,7 +114,8 @@ C
       WRITE (UNIT,'(A,A)' ) ' >>>>> ',MESS(1:MIN(50,LEN(MESS)))
       IF ( GENRI .NE. 'N') THEN
          IF ( TYPEI .EQ. 'S' ) THEN
-            JI = 1 + ((JISZON +KADM-1)*LOIS+IDECI)*2/LOR8 + LADM*2/LOR8
+            JI = 1 + ((JISZON +KADM-1)/LOR8)*2*LOIS+ IDECI/LOR8*2 + 
+     &               LADM/LOR8*2
             NL = LONOI / (5*LOR8/2)
             ND = MOD( LONOI , (5*LOR8/2) ) / (LOR8/2)
             WRITE ( UNIT , '((I7,'' - '',5(I12,1X)))')

@@ -1,6 +1,6 @@
       SUBROUTINE JEREOU (CLAS, PCENT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,10 +47,13 @@ C
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
       CHARACTER*8      NOMBAS
       COMMON /KBASJE/  NOMBAS(N)
+      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
 C DEB ------------------------------------------------------------------
       CHARACTER*1      KLAS
       CHARACTER*8      KSTIN,KSTOU,NOM,NOMB
-      INTEGER          IC, NREP, LBLOC, NBLOC, INFO, VALI(2)
+      INTEGER          IC, NREP, LBLOC, NBLOC, INFO, VALI(3)
+      REAL*8           VALR(2)
 C     
       KLAS = CLAS
       CALL ASSERT (KLAS .NE. ' ' ) 
@@ -65,9 +68,12 @@ C
       KSTOU = KSTOUT(IC)      
 C     
       IF ( NBLUTI(IC) .GT. PCENT*NBLMAX(IC) ) THEN
+        VALR (1) = 100.D0*NBLUTI(IC)/NBLMAX(IC)
+        VALR (2) = 100.D0*PCENT
         VALI (1) = NBLUTI(IC)
-        VALI (2) = NBLMAX(IC)
-        CALL U2MESG ('I','JEVEUX_63',1,NOMBAS(IC),2,VALI,1,PCENT*100)
+        VALI (2) = NBLUTI(IC)*LONGBL(IC)*LOIS/1024.D0
+        VALI (3) = NBLMAX(IC)
+        CALL U2MESG ('I','JEVEUX_63',1,NOMBAS(IC),3,VALI,2,VALR)
         INFO = 0
         CALL JELIBF ('DETRUIT' , KLAS , INFO) 
         CALL LXMINS (NOM)

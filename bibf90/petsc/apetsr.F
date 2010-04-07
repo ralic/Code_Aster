@@ -1,7 +1,7 @@
       SUBROUTINE APETSR(ACTION,KPTSC,RSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETSR PETSC  DATE 25/08/2008   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETSR PETSC  DATE 06/04/2010   AUTEUR TARDIEU N.TARDIEU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -226,6 +226,9 @@
 !        --------------
 
          call KSPSolve(ksp,b,b,ierr)
+         IF (ierr.GT.0) then
+               CALL U2MESS('F','PETSC_13')
+         ENDIF
          call KSPGetConvergedReason(ksp, indic, ierr)
          IF (indic.LT.0) THEN
             call KSPGetTolerances(ksp,rtol,atol,dtol,maxits,ierr)

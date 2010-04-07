@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,10 +117,13 @@ cata_msg = {
      NOMBRE D'ENREGISTREMENTS UTILISES       :  %(i1)d
      NOMBRE D'ENREGISTREMENTS MAXIMUM        :  %(i2)d
      LONGUEUR D'ENREGISTREMENT (OCTETS)      :  %(i3)d
-     NOMBRE TOTAL D'ENTREES/SORTIES          :  %(i4)d
-     NOMBRE D'IDENTIFICATEURS UTILISES       :  %(i5)d
-     TAILLE MAXIMUM DU REPERTOIRE            :  %(i6)d
-     POURCENTAGE D'UTILISATION DU REPERTOIRE :  %(i7)d %%
+     NOMBRE TOTAL D'ACCES EN LECTURE         :  %(i4)d
+     VOLUME DES ACCES EN LECTURE             :  %(r1).2f Mo.
+     NOMBRE TOTAL D'ACCES EN ECRITURE        :  %(i5)d
+     VOLUME DES ACCES EN ECRITURE            :  %(r2).2f Mo.
+     NOMBRE D'IDENTIFICATEURS UTILISES       :  %(i6)d
+     TAILLE MAXIMUM DU REPERTOIRE            :  %(i7)d
+     POURCENTAGE D'UTILISATION DU REPERTOIRE :  %(i8)d %%
 """),
 
 23 : _("""
@@ -308,9 +311,10 @@ cata_msg = {
 
 63 : _("""
 
- Critère de destruction du fichier associé à la base %(k1)s atteint (%(r1)g%% ) 
+ Critère de destruction du fichier (%(r2).2f %%) associé à la base %(k1)s dépassé %(r1).2f %%  
  Nombre d'enregistrements utilisés : %(i1)d 
- Nombre maximum d'enregistrements  : %(i2)d  
+ Volume disque occupé              : %(i2)d Mo.
+ Nombre maximum d'enregistrements  : %(i3)d  
 
 """), 
  

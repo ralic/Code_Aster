@@ -1,5 +1,5 @@
       SUBROUTINE JELIBF ( COND , CLAS , INFO )
-C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR PERMETTANT DE LIBERER TOUS LES OBJETS D'UNE BASE
 C         ET DE FERMER LES FICHIERS ASSOCIES
@@ -86,7 +86,7 @@ C
       COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
 C
       COMMON /IACCED/  IACCE(1)
-      COMMON /JIACCE/  JIACCE(N)
+      COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
       COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
       COMMON /KINDIR/  INDIR(1)
@@ -102,9 +102,9 @@ C ----------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*8      KCOND,VALK(1),NOM
       CHARACTER*32     NOMCAR
-      INTEGER          IADCAR,IADDAC(2),LGBL,VALI(7),IADCDY,IBID,
+      INTEGER          IADCAR,IADDAC(2),LGBL,VALI(8),IADCDY,IBID,
      &                 IADDAD(2),KLEC,KECR
-      REAL*8           VALR(1)
+      REAL*8           VALR(2)
 C DEB ------------------------------------------------------------------
       KCOND = COND
       KCLAS = CLAS
@@ -194,11 +194,6 @@ C
         IDEBUG = IDB
       ENDIF
 C
-      NBIO = 0
-      DO 50 K=1,NBLMAX(IC)
-        NBIO = NBIO + IACCE (JIACCE(IC)+K)
- 50   CONTINUE
-C
       IF ( KCOND .EQ. 'SAUVE   '  ) THEN
 C       ----------- STATISTIQUES DU FICHIER
 C       ----------- ACTUALISER CARA
@@ -246,7 +241,6 @@ C       ----------- DECHARGER TAMPON D'ECRITURE ( PETITS OBJETS )
 C       ---- ON DECHARGE MAINTENANT LES STATISTIQUES SUR LES ACCES
         IDATOS = LIDEFF
         IACCE (JIACCE(IC)+IADDAC(1)) = IACCE (JIACCE(IC)+IADDAC(1))+1
-        NBIO = NBIO + 1
         CALL JXECRO (IC,IADACC,IADDAC,LACC,0,LIDEFF)
         IITECR(IC) = 0
         IF ( LITLEC(IC) ) THEN
@@ -270,7 +264,6 @@ C
 C       ---- ON DECHARGE MAINTENANT LA DESCRIPTION DES ENREGISTREMENTS
         LGBL = 1024*LONGBL(IC)*LOIS
         IDATOS = LIDEFF-1
-        NBIO = NBIO + 1
         CALL JXECRO (IC,IADADI,IADDAD,LADI,0,LIDEFF-1)
         IITECR(IC) = 0
         IF ( LITLEC(IC) ) THEN
@@ -297,13 +290,16 @@ C
       VALI(1)= NBLUTI(IC)
       VALI(2)= NBLMAX(IC)
       VALI(3)= 1024*LONGBL(IC)*LOIS
-      VALI(4)= NBIO
-      VALI(5)= NREUTI(IC)
-      VALI(6)= NREMAX(IC)
-      VALI(7)= (NREUTI(IC)*100)/NREMAX(IC)
+      VALI(4)= NBACCE(2*IC-1)
+      VALR(1)= NBACCE(2*IC-1)*LONGBL(IC)*LOIS/1024.D0
+      VALI(5)= NBACCE(2*IC  )
+      VALR(2)= NBACCE(2*IC  )*LONGBL(IC)*LOIS/1024.D0
+      VALI(6)= NREUTI(IC)
+      VALI(7)= NREMAX(IC)
+      VALI(8)= (NREUTI(IC)*100)/NREMAX(IC)
 C
       IF ( INFO .GE. 1 ) THEN
-        CALL U2MESG ('I','JEVEUX_22',1,VALK,7,VALI,0,VALR)
+        CALL U2MESG ('I','JEVEUX_22',1,VALK,8,VALI,2,VALR)
       ENDIF 
 C
       IF ( KCOND .NE. 'LIBERE  ' ) THEN

@@ -1,4 +1,4 @@
-#@ MODIF petsc Messages  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF petsc Messages  DATE 06/04/2010   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,6 +97,13 @@ Solveur PETSc :
 Solveur PETSc :
   L'algorithme itératif a rencontré un erreur dont le code retourné par PETSC est : %(i1)d.
   Consulter le manuel de PETSc pour plus d'informations et prévenez l'assistance.
+"""),
+
+13 : _("""
+Solveur PETSc :
+  La résolution a échoué ; consultez le message ci-dessus.
+  Cela peut être dû à une propriété particulière de la matrice du système non supportée par l'algorithme choisi.
+  Par exemple, une matrice avec des zéros sur la diagonale et l'algorithme SOR, qui utilise ces entrées pour réaliser des divisions.
 """),
 
 }

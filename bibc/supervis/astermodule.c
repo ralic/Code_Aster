@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 06/04/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2088,13 +2088,14 @@ PyObject *args;
         char nomob[9] = "         ";
         DOUBLE *f;
         INTEGER *l;
+        INTEGER4 *i4;
         char *kvar;
         PyObject *tup;
         INTEGER lcon, iob;
         INTEGER ishf=0;
         INTEGER ilng=0;
         INTEGER ctype=0;
-        int i;
+        int i, ksize;
         char *iaddr;
 
         if (!PyArg_ParseTuple(args, "s|ll:getvectjev",&nomsd,&ishf,&ilng)) return NULL;
@@ -2136,6 +2137,14 @@ PyObject *args;
                PyTuple_SetItem( tup, i, PyInt_FromLong(l[i]) ) ;
             }
           }
+          else if(ctype == 9){
+            /* ENTIER COURT */
+            i4 = (INTEGER4*)iaddr;
+            tup = PyTuple_New( lcon ) ;
+            for(i=0; i<lcon; i++){
+               PyTuple_SetItem( tup, i, PyInt_FromLong(i4[i]) ) ;
+            }
+          }
           else if(ctype == 3){
             /* COMPLEXE */
             f = (DOUBLE *)iaddr;
@@ -2144,46 +2153,22 @@ PyObject *args;
                PyTuple_SetItem( tup, i, PyComplex_FromDoubles(f[2*i],f[2*i+1]) ) ;
             }
           }
-          else if(ctype == 4){
-            /* CHAINE K8 */
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               kvar = iaddr + i*8;
-               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,8) ) ;
-            }
+          else if (ctype == 4 || ctype == 5 || ctype == 6 || ctype == 7 || ctype == 8) {
+                switch ( ctype ) {
+                    case 4 : ksize = 8;  break;
+                    case 5 : ksize = 16; break;
+                    case 6 : ksize = 24; break;
+                    case 7 : ksize = 32; break;
+                    case 8 : ksize = 80; break;
+                }
+                /* CHAINE DE CARACTERES */
+                tup = PyTuple_New( lcon ) ;
+                for(i=0; i<lcon; i++){
+                   kvar = iaddr + i*ksize;
+                   PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar, ksize) ) ;
+                }
           }
-          else if(ctype == 5){
-            /* CHAINE K16 */
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               kvar = iaddr + i*16;
-               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,16) ) ;
-            }
-          }
-          else if(ctype == 6){
-            /* CHAINE K24 */
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               kvar = iaddr + i*24;
-               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,24) ) ;
-            }
-          }
-          else if(ctype == 7){
-            /* CHAINE K32 */
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               kvar = iaddr + i*32;
-               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,32) ) ;
-            }
-          }
-          else if(ctype == 8){
-            /* CHAINE K80 */
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               kvar = iaddr + i*80;
-               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,80) ) ;
-            }
-          }
+
           CALL_JEDETR("&&GETCON.PTEUR_NOM");
           CALL_JEDEMA();
           return tup;
@@ -2215,13 +2200,14 @@ PyObject *args;
         char nomob[9] = "         ";
         DOUBLE *f;
         INTEGER *l;
+        INTEGER4 *i4;
         char *kvar;
         PyObject *tup, *dico, *key;
         INTEGER iob,j,ishf,ilng;
         INTEGER lcon;
         INTEGER ctype=0;
         INTEGER *val, nbval;
-        int i;
+        int i, ksize;
         char *iaddr;
         void *malloc(size_t size);
 
@@ -2242,96 +2228,76 @@ PyObject *args;
         dico = PyDict_New();
         try(1){
           for(j=1;j<iob+1;j++){
-          ishf=0 ;
-          ilng=0 ;
-          CALL_GETCON(nomsd32,&j,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
-          if(nomob[0] == ' '){
-             key=PyInt_FromLong(j);
-          }
-          else {
-             key=PyString_FromStringAndSize(nomob,8);
-          }
-          if(ctype < 0){
-            /* Erreur */
-            PyErr_SetString(PyExc_KeyError, "Concept inexistant");
-            return NULL;
-          }
-          else if(ctype == 0){
-            Py_INCREF( Py_None );
-            PyDict_SetItem(dico,key,Py_None);
-          }
-          else if(ctype == 1){
-            /* REEL */
-            f = (DOUBLE *)iaddr;
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               PyTuple_SetItem( tup, i, PyFloat_FromDouble(f[i]) ) ;
-            }
-            PyDict_SetItem(dico,key,tup);
-          }
-          else if(ctype == 2){
-            /* ENTIER */
-            l = (INTEGER*)iaddr;
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               PyTuple_SetItem( tup, i, PyInt_FromLong(l[i]) ) ;
-            }
-            PyDict_SetItem(dico,key,tup);
-          }
-          else if(ctype == 3){
-            /* COMPLEXE */
-            f = (DOUBLE *)iaddr;
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               PyTuple_SetItem( tup, i, PyComplex_FromDoubles(f[2*i],f[2*i+1]) ) ;
-            }
-            PyDict_SetItem(dico,key,tup);
-          }
-          else if(ctype == 4){
-            /* CHAINE K8 */
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               kvar = iaddr + i*8;
-               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,8) ) ;
-            }
-            PyDict_SetItem(dico,key,tup);
-          }
-          else if(ctype == 5){
-            /* CHAINE K16 */
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               kvar = iaddr + i*16;
-               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,16) ) ;
-            }
-            PyDict_SetItem(dico,key,tup);
-          }
-          else if(ctype == 6){
-            /* CHAINE K24 */
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               kvar = iaddr + i*24;
-               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,24) ) ;
-            }
-            PyDict_SetItem(dico,key,tup);
-          }
-          else if(ctype == 7){
-            /* CHAINE K32 */
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               kvar = iaddr + i*32;
-               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,32) ) ;
-            }
-            PyDict_SetItem(dico,key,tup);
-          }
-          else if(ctype == 8){
-            /* CHAINE K80 */
-            tup = PyTuple_New( lcon ) ;
-            for(i=0;i<lcon;i++){
-               kvar = iaddr + i*80;
-               PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar,80) ) ;
-            }
-            PyDict_SetItem(dico,key,tup);
-          }
+                ishf=0 ;
+                ilng=0 ;
+                CALL_GETCON(nomsd32,&j,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
+                if(nomob[0] == ' '){
+                    key=PyInt_FromLong(j);
+                }
+                else {
+                    key=PyString_FromStringAndSize(nomob,8);
+                }
+                if(ctype < 0){
+                    /* Erreur */
+                    PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+                    return NULL;
+                }
+                else if(ctype == 0){
+                    Py_INCREF( Py_None );
+                    PyDict_SetItem(dico,key,Py_None);
+                }
+                else if(ctype == 1){
+                    /* REEL */
+                    f = (DOUBLE *)iaddr;
+                    tup = PyTuple_New( lcon ) ;
+                    for(i=0;i<lcon;i++){
+                       PyTuple_SetItem( tup, i, PyFloat_FromDouble(f[i]) ) ;
+                    }
+                    PyDict_SetItem(dico,key,tup);
+                }
+                else if(ctype == 2){
+                    /* ENTIER */
+                    l = (INTEGER*)iaddr;
+                    tup = PyTuple_New( lcon ) ;
+                    for(i=0;i<lcon;i++){
+                       PyTuple_SetItem( tup, i, PyInt_FromLong(l[i]) ) ;
+                    }
+                    PyDict_SetItem(dico,key,tup);
+                }
+                else if(ctype == 9){
+                    /* ENTIER COURT */
+                    i4 = (INTEGER4*)iaddr;
+                    tup = PyTuple_New( lcon ) ;
+                    for(i=0; i<lcon; i++){
+                       PyTuple_SetItem( tup, i, PyInt_FromLong(i4[i]) ) ;
+                    }
+                    PyDict_SetItem(dico,key,tup);
+                }
+                else if(ctype == 3){
+                    /* COMPLEXE */
+                    f = (DOUBLE *)iaddr;
+                    tup = PyTuple_New( lcon ) ;
+                    for(i=0;i<lcon;i++){
+                       PyTuple_SetItem( tup, i, PyComplex_FromDoubles(f[2*i],f[2*i+1]) ) ;
+                    }
+                    PyDict_SetItem(dico,key,tup);
+                }
+                else if (ctype == 4 || ctype == 5 || ctype == 6 || ctype == 7 || ctype == 8) {
+                    switch ( ctype ) {
+                        case 4 : ksize = 8;  break;
+                        case 5 : ksize = 16; break;
+                        case 6 : ksize = 24; break;
+                        case 7 : ksize = 32; break;
+                        case 8 : ksize = 80; break;
+                    }
+                    /* CHAINE DE CARACTERES */
+                    tup = PyTuple_New( lcon ) ;
+                    for(i=0; i<lcon; i++){
+                       kvar = iaddr + i*ksize;
+                       PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar, ksize) ) ;
+                    }
+                    PyDict_SetItem(dico,key,tup);
+                }
          }
          CALL_JEDETR("&&GETCON.PTEUR_NOM");
          CALL_JEDEMA();
@@ -2640,6 +2606,7 @@ PyObject *args;
 
           free(ival);
           free(rval);
+          free(kval);
    }
 
    CALL_JEDEMA();

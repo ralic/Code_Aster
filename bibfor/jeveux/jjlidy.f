@@ -1,6 +1,6 @@
       SUBROUTINE JJLIDY ( IADYN , IADMI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +34,8 @@ C ----------------------------------------------------------------------
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C ----------------------------------------------------------------------
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO 
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2)
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ISTAT

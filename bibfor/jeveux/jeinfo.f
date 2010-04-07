@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8           RVAL(7)      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C TOLE CRS_512
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,8 +29,8 @@ C     RVAL(5) = LIMITE MAXIMALE POUR L'ALLOCATION DYNAMIQUE
 C DEB ------------------------------------------------------------------
       REAL *8          SVUSE,SMXUSE   
       COMMON /STATJE/  SVUSE,SMXUSE  
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO   
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2) 
 C FIN ------------------------------------------------------------------
       INTEGER LOISEM,IV(2),IVAL
       IV(1) = 0

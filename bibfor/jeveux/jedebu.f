@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, LZON, MXZON, IADZON, LMO, CMES, CVIG,IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -117,9 +117,11 @@ C ----------------------------------------------------------------------
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
       REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO 
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2) 
       REAL *8          SVUSE,SMXUSE   
       COMMON /STATJE/  SVUSE,SMXUSE  
+      COMMON /IACCED/  IACCE(1)
+      COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
 C --------------------------------- ------------------------------------
       INTEGER          MXLICI , IPREM  , INIT
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM, LOUAEM
@@ -152,14 +154,14 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       LDYN   = 0
       LGDYN  = LUNDEF
       MXDYN  = 0
-      LGIO   = 0
+      LGIO(1) = 0
+      LGIO(2) = 0
       MCDYN  = 0
       MLDYN  = 0
       NBDYN  = 0
       NBFREE = 0
       ICDYN  = 0
       MXLTOT = 0
-      LGIO   = 0
       SVUSE  = 16
       SMXUSE = SVUSE
 C -----------------  NOMBRE DE BASES -----------------------------------
@@ -252,6 +254,8 @@ C -------------------  POINTEURS D'ATTRIBUTS  --------------------------
         KSTINI(I)   = '        '
         CLASSE(I:I) = ' '
         DN2(I)      = ' '
+        NBACCE(2*I-1) = 0
+        NBACCE(2*I  ) = 0
    10 CONTINUE
 C -------------------  CONSTANTES DE GESTION  --------------------------
       LSSTAT = LBIS-4

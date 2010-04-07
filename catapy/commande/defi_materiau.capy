@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+#& MODIF COMMANDE  DATE 07/04/2010   AUTEUR HAELEWYN J.HAELEWYN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1232,7 +1232,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              BETA            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              AFFINITE        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              CHALHYDR        =SIMP(statut='o',typ='R'),
-             QSR_K           =SIMP(statut='o',typ='R'),
            ),
            THER            =FACT(statut='f',
              LAMBDA          =SIMP(statut='o',typ='R'),

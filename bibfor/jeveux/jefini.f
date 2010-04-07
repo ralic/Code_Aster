@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,9 +44,9 @@ C
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
       REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO  
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2)
 C     ==================================================================
-      INTEGER          VALI(6) , INFO        
+      INTEGER          VALI(7) , INFO        
       CHARACTER*8      KCOND , STAOU
       CHARACTER*24     LADATE
 C     ------------------------------------------------------------------
@@ -113,7 +113,8 @@ C
             VALI(3) = NBDYN
             VALI(4) = NBFREE
             VALI(5) = NINT(MLDYN/(1024*1024))
-            VALI(6) = NINT(LGIO/(1024*1024))
+            VALI(6) = NINT(LGIO(1)/(1024*1024))
+            VALI(7) = NINT(LGIO(2)/(1024*1024))
             WRITE(IFM,*) ' '
             WRITE(IFM,*) '  STATISTIQUES CONCERNANT L'''
      &                 //'ALLOCATION DYNAMIQUE :' 
@@ -129,8 +130,10 @@ C
      &                 ICDYN 
             WRITE(IFM,*) '    TAILLE MEMOIRE CUMULEE RECUPEREE  :',    
      &                 MXLTOT,' Mo.' 
-            WRITE(IFM,*) '    VOLUME DES ENTREES/SORTIES        :',
+            WRITE(IFM,*) '    VOLUME DES LECTURES               :',
      &                  VALI(6),' Mo.'    
+            WRITE(IFM,*) '    VOLUME DES ECRITURES              :',
+     &                  VALI(7),' Mo.'    
             WRITE(IFM,*) ' '
           ENDIF         
           CALL ENLIRD(LADATE)

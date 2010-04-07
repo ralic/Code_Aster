@@ -1,6 +1,6 @@
       SUBROUTINE TE0243 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
+C MODIF ELEMENTS  DATE 07/04/2010   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,12 +49,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8             BETA,LAMBDA,THETA,DELTAT,KHI,TPG,TPSEC
       REAL*8             DFDX(9),DFDY(9),POIDS,R,R8BID,DIFF
       REAL*8             DTPGDX,DTPGDY,HYDRGM(9),HYDRGP(9)
-      REAL*8             COORSE(18),VECTT(9),R8T0
-      REAL*8             CHAL,AFFINI,ARR,TZ0,TPGM
+      REAL*8             COORSE(18),VECTT(9),ERR
+      REAL*8             CHAL,TPGM,VALPA(2)
       CHARACTER*2        CODRET
-      CHARACTER*8        ELREFE,ALIAS8
+      CHARACTER*8        ELREFE,ALIAS8,NOMPA(2)
       INTEGER            NDIM,NNO,NNOS,KP,NPG,I,J,K,ITEMPS,IFON(3)
-      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE,IER
       INTEGER            ICOMP,ITEMPI,IVERES,JGANO,IPOID2,NPG2
       INTEGER            C(6,9),ISE,NSE,NNOP2,IVF2,IDFDE2
       INTEGER            ISECHI,ISECHF, IBID, JGANO2
@@ -70,7 +70,6 @@ C
 C DEB ------------------------------------------------------------------
 C
       CALL ELREF1(ELREFE)
-      TZ0 = R8T0()
 C
       IF ( LTEATT(' ','LUMPE','OUI')) THEN
          CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
@@ -125,8 +124,6 @@ C
           CALL JEVECH('PTEMPER','L',ITEMPR)
           CALL RCVALA(ZI(IMATE),' ','THER_HYDR',0,' ',R8BID,1,
      &     'CHALHYDR',CHAL,CODRET,'FM')
-          CALL RCVALA(ZI(IMATE),' ','THER_HYDR',0,' ',R8BID,1,'QSR_K',
-     &     ARR,CODRET,'FM')
           DO 150 KP = 1,NPG2
              K = NNO*(KP-1)
              HYDRGM(KP)=0.D0
@@ -210,10 +207,8 @@ C
             DO 103 I=1,NNO
               TPGM = TPGM + ZR(ITEMPR+I-1)*ZR(IVF2+K+I-1)
 103         CONTINUE
-            CALL RCFODE (IFON(3),HYDRGM(KP),AFFINI,R8BID)
-            HYDRGP(KP) = HYDRGM(KP) +
-     &        DELTAT*AFFINI*THETA*EXP(-ARR/(TZ0+TPG))+
-     &        DELTAT*AFFINI* (1.D0-THETA)*EXP(-ARR/(TZ0+TPGM))
+            CALL RUNGE6(IFON(3),DELTAT,TPG,TPGM,HYDRGM(KP),
+     &                  HYDRGP(KP),ERR)
           ENDIF
 C
           CALL RCFODE (IFON(1),TPG,BETA,  R8BID)

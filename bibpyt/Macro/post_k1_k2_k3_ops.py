@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 25/03/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 06/04/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,10 +58,10 @@ def InterpolFondFiss(s0, Coorfo) :
 # en sortie : xyza = Coordonnees du point et abscisse
    n = len(Coorfo) / 4
    if ( s0 < Coorfo[3] )  :
-     xyz =  [Coorfo[0],Coorfo[1],Coorfo[2]]
+     xyz =  [Coorfo[0],Coorfo[1],Coorfo[2],s0]
      return xyz
    if ( s0 > Coorfo[-1]  ) :
-     xyz =  [Coorfo[-4],Coorfo[-3],Coorfo[-2]]
+     xyz =  [Coorfo[-4],Coorfo[-3],Coorfo[-2],s0]
      return xyz
    i = 1
    while s0 > Coorfo[4*i+3]:

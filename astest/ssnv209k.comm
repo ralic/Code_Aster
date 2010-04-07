@@ -1,6 +1,6 @@
-# MODIF  DATE 30/03/2010   AUTEUR JAUBERT A.JAUBERT 
+# MODIF  DATE 06/04/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
-# ssnv209k.para = tps_job 600 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
+# ssnv209k.para = tps_job 660 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# ssnv209k.para = tps_job 600 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
+# ssnv209k.para = tps_job 660 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

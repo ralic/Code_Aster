@@ -1,6 +1,6 @@
       SUBROUTINE JJLDYN ( IMODE , LMIN , LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,7 +68,7 @@ C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
       COMMON /IACCED/  IACCE(1)
-      COMMON /JIACCE/  JIACCE(N)
+      COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
       COMMON /KINDIR/  INDIR(1)
       COMMON /JINDIR/  JINDIR(N)
       INTEGER          ISSTAT
@@ -77,8 +77,8 @@ C
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO 
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2)
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          DATEI
@@ -93,7 +93,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       CHARACTER*1    CGENR
       CHARACTER*32   NOM32
-      INTEGER        IADDI(2),ICOUNT,LMEMT,LGS,NBIOAV,NBIOAP,KI
+      INTEGER        IADDI(2),ICOUNT,LMEMT,LGS,NBIOAV(2),KI
       INTEGER        NUMP,GTNPRO
       REAL*8         GRAINE
 
@@ -125,10 +125,8 @@ C
  202      CONTINUE
         ENDIF 
 C
-        NBIOAV = 0
-        DO 500 KI=1,NBLMAX(IC)
-          NBIOAV = NBIOAV + IACCE(JIACCE(IC)+KI)
- 500    CONTINUE
+        NBIOAV(1) = NBACCE(2*IC-1)
+        NBIOAV(2) = NBACCE(2*IC  )
         DO 205 JJ = 1,NREUTI(IC)
           J = INDIR(JINDIR(IC)+JJ)
           IADMI = IADM(JIADM(IC)+2*J-1)
@@ -197,7 +195,13 @@ C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL,LSV
                     ISZON(JISZON + IBIADM - 1 +2*K-1) = 0
                     ISZON(JISZON + IBIADM - 1 +2*K  ) = 0
                     IF ( LMIN .GT. 0 ) THEN
-                      IF ( LTOT .GE. LMIN ) GOTO 300
+                      IF ( LTOT .GE. LMIN ) THEN
+                        LGIO(1) = LGIO(1)+1024*LONGBL(IC)*LOIS*
+     &                           (NBACCE(2*IC-1)-NBIOAV(1)) 
+                        LGIO(2) = LGIO(2)+1024*LONGBL(IC)*LOIS*
+     &                           (NBACCE(2*IC  )-NBIOAV(2)) 
+                        GOTO 300
+                      ENDIF  
                     ENDIF
                   ENDIF
                 ENDIF
@@ -242,18 +246,21 @@ C               write(6,*) ' OS ',NOM32,' lg =',IL,LSV
                 IADM(JIADM(IC)+2*J-1) = 0
                 IADM(JIADM(IC)+2*J  ) = 0
                 IF ( LMIN .GT. 0 ) THEN
-                  IF ( LTOT .GE. LMIN ) GOTO 300
+                  IF ( LTOT .GE. LMIN ) THEN
+                        LGIO(1) = LGIO(1)+1024*LONGBL(IC)*LOIS*
+     &                           (NBACCE(2*IC-1)-NBIOAV(1)) 
+                        LGIO(2) = LGIO(2)+1024*LONGBL(IC)*LOIS*
+     &                           (NBACCE(2*IC  )-NBIOAV(2)) 
+                    GOTO 300
+                  ENDIF  
                 ENDIF
               ENDIF
             ENDIF
           ENDIF
  205    CONTINUE
 C
-        NBIOAP = 0
-        DO 501 KI=1,NBLMAX(IC)
-          NBIOAP = NBIOAP + IACCE (JIACCE(IC)+KI)
- 501    CONTINUE
-        LGIO=LGIO+1024*LONGBL(IC)*LOIS*(NBIOAP-NBIOAV) 
+        LGIO(1)=LGIO(1)+1024*LONGBL(IC)*LOIS*(NBACCE(2*IC-1)-NBIOAV(1)) 
+        LGIO(2)=LGIO(2)+1024*LONGBL(IC)*LOIS*(NBACCE(2*IC  )-NBIOAV(2)) 
  200  CONTINUE
  300  CONTINUE
       MXLTOT=MXLTOT+(LTOT*LOIS)/(1024*1024)

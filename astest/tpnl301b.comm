@@ -1,6 +1,6 @@
-# MODIF  DATE 01/03/2010   AUTEUR HAELEWYN J.HAELEWYN 
+# MODIF  DATE 07/04/2010   AUTEUR HAELEWYN J.HAELEWYN 
 # TITRE THERMO-HYDRATATION D'UN CYLINDRE DE BETON 3D HEXA20 PENTA15 TETRA10
-# tpnl301b.para = tps_job 700 mem_job 100Mo ncpus 1 liste_test S
+# tpnl301b.para = tps_job 1000 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,22 +48,34 @@ COND=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,6.,
                          300.,6.,
                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-# DEFINITION DE L'AFFINITE FONCTION DU DEGRE D'HYDRATATION
 
-AA = FORMULE(VALE=
-         '1586000*HYDR*HYDR*HYDR*HYDR*HYDR-5224000*HYDR*HYDR*HYDR*HYDR+6432000*HYDR*HYDR*HYDR-3530500*HYDR*HYDR+730000*HYDR+6510',
-             NOM_PARA='HYDR',);
+# DEFINITION DE L'AFFINITE FONCTION DU DEGRE D'HYDRATATION
+Ar = 4700;
+
+TZ0 = 273.15;
+
+
+AA = FORMULE(VALE='exp(-Ar/(TZ0+TEMP))*(1586000*HYDR*HYDR*HYDR*HYDR*HYDR-5224000*HYDR*HYDR*HYDR*HYDR+6432000*HYDR*HYDR*HYDR-3530500*HYDR*HYDR+730000*HYDR+6510)',
+             NOM_PARA=('HYDR','TEMP',),);
 
 LL=DEFI_LIST_REEL(DEBUT=0.0,
                   INTERVALLE=_F(JUSQU_A=1.0,
-                                PAS=0.01,),);
+                                PAS=0.002,),);
+
+LT=DEFI_LIST_REEL(DEBUT=0.0,
+                  INTERVALLE=_F(JUSQU_A=100.0,
+                                PAS=0.1,),);
 
 AFF=CALC_FONC_INTERP(FONCTION=AA,
                      LIST_PARA=LL,
                      NOM_RESU='AFF',
                      NOM_PARA='HYDR',
                      PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='EXCLU',);
+                     PROL_GAUCHE='EXCLU',
+                     NOM_PARA_FONC='TEMP',
+                     LIST_PARA_FONC=LT,
+                     PROL_DROITE_FONC='LINEAIRE',
+                     PROL_GAUCHE_FONC='LINEAIRE',);
 
 # ENTHALPIE EN KJ/H/M
 
@@ -74,8 +86,7 @@ ENTH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,0.,
 BETON=DEFI_MATERIAU(THER_HYDR=_F(LAMBDA=COND,
                                  BETA=ENTH,
                                  AFFINITE=AFF,
-                                 CHALHYDR=1.4904e5,
-                                 QSR_K=4700.0,),);
+                                 CHALHYDR=1.4904e5,),);
 
 # -------------------------------------------------
 #   Definition des temps caracteristiques
@@ -101,7 +112,7 @@ tps_1m = (tps_1an / 12.0);
 #temps 10 mois
 tps_10m = (10.0 * tps_1m);
 
-t49h = 49;
+t50h = 50;
 
 t730h = 730;
 
@@ -117,11 +128,10 @@ LINIT=DEFI_LIST_REEL(DEBUT=-10.0,
 LINST=DEFI_LIST_REEL(DEBUT=-1.0,
                      INTERVALLE=(_F(JUSQU_A=0.0,
                                     NOMBRE=1,),
-                                 _F(JUSQU_A=t49h,
-                                    NOMBRE=49,),
+                                 _F(JUSQU_A=300,
+                                    PAS=2,),
                                  _F(JUSQU_A=t730h,
-                                    NOMBRE=681,),),);
-
+                                    PAS=10,),),);
 # ---------------------------------------------------------------------------------
 #   Calcul Hydrique / Sechage
 # ---------------------------------------------------------------------------------
@@ -186,16 +196,16 @@ TT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 TEST_TABLE(TABLE=TT,
            TYPE_TEST='MAX',
            NOM_PARA='TEMP',
-           VALE=48.7557,
+           VALE=48.8675,
            PRECISION=0.09,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=TT,
            TYPE_TEST='MAX',
            NOM_PARA='TEMP',
-           VALE=53.1237909497,
-           REFERENCE='NON_REGRESSION',
-           VERSION='10.1.6',);
+           VALE=52.84199766428418,
+           PRECISION=1e-9,REFERENCE='NON_REGRESSION',
+           );
 
 TM1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                OPERATION='EXTR',
@@ -207,7 +217,7 @@ T5j=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                OPERATION='EXTR',
                RESULTAT=RESUTHER,
                NOM_CHAM='TEMP',
-               INST=t49h,);
+               INST=t50h,);
 
 T1m=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                OPERATION='EXTR',
@@ -224,36 +234,36 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=TM1,
                    _F(CHAM_GD=T5j,
                       GROUP_NO='X205',
                       NOM_CMP='TEMP',
-                      VALE=48.5973,
+                      VALE=48.7091,
                       PRECISION=0.07,
                       REFERENCE='ANALYTIQUE',),
                    _F(CHAM_GD=T1m,
                       GROUP_NO='X205',
                       NOM_CMP='TEMP',
-                      VALE=27.7087,
+                      VALE=27.7116,
                       PRECISION=0.01,
                       REFERENCE='ANALYTIQUE',),),);
 
-#Tests de non-regression (version 10.1.6)
+#Tests de non-regression (version 10.1)
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=TM1,
                       GROUP_NO='X205',
                       NOM_CMP='TEMP',
-                      VALE=27.5494628365,
+                      VALE=27.54946283652023,PRECISION=1e-9,
                       REFERENCE='NON_REGRESSION',
-                      VERSION='10.1.6',),
+                      ),
                    _F(CHAM_GD=T5j,
                       GROUP_NO='X205',
                       NOM_CMP='TEMP',
-                      VALE=51.8811625841,
+                      VALE=52.00743013728701,PRECISION=1e-9,
                       REFERENCE='NON_REGRESSION',
-                      VERSION='10.1.6',),
+                      ),
                    _F(CHAM_GD=T1m,
                       GROUP_NO='X205',
                       NOM_CMP='TEMP',
-                      VALE=27.9582925154,
+                      VALE=27.96242404402024,PRECISION=1e-9,
                       REFERENCE='NON_REGRESSION',
-                      VERSION='10.1.6',),),);
+                      ),),);
 
 RESUTHER=CALC_NO(reuse =RESUTHER,
                  RESULTAT=RESUTHER,
@@ -263,7 +273,7 @@ H49h=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                 OPERATION='EXTR',
                 RESULTAT=RESUTHER,
                 NOM_CHAM='HYDR_NOEU_ELGA',
-                INST=t49h,);
+                INST=t50h,);
 
 H730h=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                  OPERATION='EXTR',
@@ -274,30 +284,30 @@ H730h=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=H49h,
                       GROUP_NO='X205',
                       NOM_CMP='HYDR',
-                      VALE=0.4738,
-                      PRECISION=0.01,
+                      VALE=0.4778,
+                      PRECISION=0.02,
                       REFERENCE='ANALYTIQUE',),
                    _F(CHAM_GD=H730h,
                       GROUP_NO='X205',
                       NOM_CMP='HYDR',
-                      VALE=0.956,
+                      VALE=0.9558,
                       PRECISION=0.01,
                       REFERENCE='ANALYTIQUE',),),);
 
-#Tests de non-regression (version 10.1.6)
+#Tests de non-regression (version 10.1)
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=H49h,
                       GROUP_NO='X205',
                       NOM_CMP='HYDR',
-                      VALE=0.473188552815,
+                      VALE=0.4868267064736512,PRECISION=1e-9,
                       REFERENCE='NON_REGRESSION',
-                      VERSION='10.1.6',),
+                      ),
                    _F(CHAM_GD=H730h,
                       GROUP_NO='X205',
                       NOM_CMP='HYDR',
-                      VALE=0.961302119754,
-                      PRECISION=0.001,
+                      VALE=0.9609330736350078,
+                      PRECISION=1e-9,
                       REFERENCE='NON_REGRESSION',
-                      VERSION='10.1.6',),),);
+                      ),),);
 
 FIN();

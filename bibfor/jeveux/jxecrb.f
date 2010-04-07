@@ -1,6 +1,6 @@
       SUBROUTINE JXECRB ( IC , IADDI , IADMO , LSO , IDCO , IDOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C
       INTEGER          IDN    , IEXT    , NBENRG
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
       COMMON /IACCED/  IACCE(1)
-      COMMON /JIACCE/  JIACCE(N)
+      COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
       COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
 C     ------------------------------------------------------------------
@@ -90,6 +90,7 @@ C     ------------------------------------------------------------------
             VALI(3) = IERR
             CALL U2MESG('F','JEVEUX_40',1,NOMBAS(IC),3,VALI,0,R8BID)
           ENDIF
+          NBACCE(2*IC) = NBACCE(2*IC) + 1
           IUSADI(JUSADI(IC)+3*(IADDI+I-1)-2) = IDCO
           IUSADI(JUSADI(IC)+3*(IADDI+I-1)-1) = IDOS
    10   CONTINUE
@@ -110,6 +111,7 @@ C     ------------------------------------------------------------------
             VALI(3) = IERR
             CALL U2MESG('F','JEVEUX_40',1,NOMBAS(IC),3,VALI,0,R8BID)
           ENDIF
+          NBACCE(2*IC) = NBACCE(2*IC) + 1
           IUSADI(JUSADI(IC)+3*(IADDI+NBLENT)-2) = IDCO
           IUSADI(JUSADI(IC)+3*(IADDI+NBLENT)-1) = IDOS
         ENDIF
