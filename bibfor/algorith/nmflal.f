@@ -1,8 +1,8 @@
-      SUBROUTINE NMFLAL(COMPOR,METHOD,OPTFLA,MOD45 ,DEFO  ,
-     &                  NFREQ ,TYPMAT,OPTMOD,BANDE)
+      SUBROUTINE NMFLAL(COMPOR,METHOD,MAXDDL,OPTFLA,MOD45 ,DEFO ,NFREQ ,
+     &                  TYPMAT,OPTMOD,BANDE,DDL,NDDLE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,6 +30,8 @@ C
       INTEGER      NFREQ,DEFO      
       CHARACTER*16 TYPMAT
       REAL*8       BANDE(2)
+      INTEGER      MAXDDL,NDDLE
+      CHARACTER*8  DDL(MAXDDL)           
 C 
 C ----------------------------------------------------------------------
 C
@@ -46,6 +48,7 @@ C              'FLAMBDYN' MODES DE FLAMBEMENT EN DYNAMIQUE
 C              'VIBRDYNA' MODES VIBRATOIRES
 C IN  COMPOR : CARTE COMPORTEMENT
 C IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
+C IN  MAXDDL : NOMBRE MAX DE DDLS QUE L'ON PEUT EXCLURE (20)
 C OUT MOD45  : TYPE DE CALCUL DE MODES PROPRES
 C              'VIBR'     MODES VIBRATOIRES
 C              'FLAM'     MODES DE FLAMBEMENT  
@@ -59,7 +62,9 @@ C OUT DEFO   : TYPE DE DEFORMATIONS
 C                0            PETITES DEFORMATIONS (MATR. GEOM.)
 C                1            GRANDES DEFORMATIONS (PAS DE MATR. GEOM.)
 C OUT BANDE  : BANDE DE FREQUENCES SI OPTMOD='BANDE'
-C 
+C OUT DDL    : TABLEAU REGROUPANT LES NOMS DES DDLS QUE L'ON EXCLUS 
+C OUT NDDLE  : LONGUEUR NON VIDE DU TABLEAU DDL
+C
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -82,12 +87,16 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      IRET,NBV,I
       REAL*8       R8BID,OMEGA2
-      INTEGER      INIT,IDES
-      CHARACTER*8  MRIG     
+      INTEGER      INIT,IDES,IFM,NIV
+      CHARACTER*8  MRIG,NGEO,K8B     
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+      
+C     ---RECUPERATION DU NIVEAU D'IMPRESSION---
+      CALL INFNIV(IFM,NIV)
+C     -----------------------------------------                  
 C
 C --- INITIALISATIONS
 C
@@ -97,6 +106,10 @@ C
       MOD45  = ' '
       MRIG   = ' '
       OPTMOD = 'PLUS_PETITE'
+      DO 5 I = 1,MAXDDL     
+        DDL(I) = ' '
+    5 CONTINUE
+      NDDLE  = 0                  
 C
 C --- TYPE DE DEFORMATIONS
 C
@@ -137,6 +150,24 @@ C
       ELSEIF ( OPTFLA(1:5) .EQ. 'FLAMB' ) THEN
         CALL GETVIS('CRIT_FLAMB','NB_FREQ'  ,1,1,1,NFREQ ,IRET)
         CALL GETVR8('CRIT_FLAMB','CHAR_CRIT',1,1,2,BANDE ,IRET)
+        CALL GETVTX('CRIT_FLAMB','RIGI_GEOM',1,1,1,NGEO,IRET)        
+        CALL GETVTX('CRIT_FLAMB','DDL_EXCLUS',1,1,0,K8B ,NDDLE)     
+C        
+C --- SI LA LISTE DES DDLS A EXCLURE EST NON VIDE, ON LA RECUPERE
+C               
+        IF (NDDLE.NE.0) THEN    
+          IF (NDDLE.LE.MAXDDL) THEN                
+            NDDLE = ABS(NDDLE)                    
+            CALL GETVTX('CRIT_FLAMB','DDL_EXCLUS',1,1,NDDLE,DDL ,IRET)
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF    
+        ENDIF
+C          
+        IF (NGEO.EQ.'NON') THEN
+          WRITE (IFM,9000)
+          DEFO = 1
+        ENDIF                   
         MOD45  = 'FLAM'
         MRIG   = '    '
         IF (DEFO.EQ.0) THEN
@@ -153,4 +184,7 @@ C
 C         
      
       CALL JEDEMA()
+      
+ 9000 FORMAT (/,72 ('-'),//,'CALCUL VP EN GRANDE DEFORMATION')      
+      
       END

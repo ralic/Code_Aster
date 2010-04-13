@@ -1,4 +1,4 @@
-# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT GLISSIERE AVEC X-FEM
 # ssnv201a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,18 +73,15 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(GROUP_MA='VOL',),   
                     );
-
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAGE,
-                       LINE_QUAD=_F(GROUP_MA='VOL',),);
                        
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(GROUP_MA=('VOL',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D_XFEM_CONT',),
+                            MODELISATION='3D',),
                      );        
 
 
-LN1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-5.');
+LN1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-5');
 
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                     TYPE_DISCONTINUITE='INTERFACE',
@@ -98,22 +95,13 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
-                      ITER_CONT_MAXI = 40,                     
-                      REAC_GEOM      = 'SANS',
-                      ZONE=(
-                            _F(
-                               FISS_MAIT    = FISS1,
-                               INTEGRATION  = 'GAUSS',
+                      ZONE=(_F(INTEGRATION  = 'NOEUD',
                                CONTACT_INIT = 'NON',
-                               GLISSIERE    = 'OUI', 
-                               COEF_ECHELLE = 1.E6,
-                               ALGO_CONT    = 'STANDARD',
-                               COEF_CONT    = 100.,      
-                             ),                              
-                         ),
-                   );
+                               GLISSIERE    = 'OUI',
+                               COEF_ECHELLE  = 1.,
+                               COEF_CONT    = 100.,
+                               FISS_MAIT    = FISS1,),),);
  
-
 E=100.0E6
 nu=0.
 
@@ -121,7 +109,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
                             RHO=7800.0,),);
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOL',),
                                 MATER=ACIER,
@@ -160,7 +148,7 @@ CHY=AFFE_CHAR_MECA(MODELE=MODELEK,
                        INFO=1,);
 
 VARZ=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.,0.,1.,1.,2.,-1.0001,3.,1.0001),
+                    VALE=(0,0,1,1,2,-1,3,1),
                     PROL_DROITE='CONSTANT',
                     PROL_GAUCHE='CONSTANT',);
 
@@ -217,177 +205,52 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAGE,
                         NOM_CHAM      = ('DEPL','SIEF_ELGA'),
                         INFO          = 2)
 
-DEP_H1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                NOEUD=('N33','N34','N38','N37',
-                                       'N41','N42','N46', 'N45',),
-                                RESULTAT=UTOT1,
-                                NOM_CHAM='DEPL',
-                                NUME_ORDRE=1,
-                                NOM_CMP=('H1Z',),
-                                OPERATION='EXTRACTION',),);
 
-DEP_H2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                              NOEUD=('N33','N34','N38','N37',
-                                     'N41','N42','N46', 'N45',),
-                                RESULTAT=UTOT1,
-                                NOM_CHAM='DEPL',
-                                NUME_ORDRE=2,
-                                NOM_CMP=('H1Z',),
-                                OPERATION='EXTRACTION',),);
+# -------------------------------------------------------------   
+#            TEST_TABLE
+# -------------------------------------------------------------   
 
-DEP_H3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                              NOEUD=('N33','N34','N38','N37',
-                                     'N41','N42','N46', 'N45',),
-                                RESULTAT=UTOT1,
-                                NOM_CHAM='DEPL',
-                                NUME_ORDRE=3,
-                                NOM_CMP=('H1Z',),
-                                OPERATION='EXTRACTION',),);
+DEP=[None]*4
+vale = [0,-DEPZ/2,DEPZ/2]
+critere = ['ABSOLU','RELATIF','RELATIF']
+precision = [1.0E-16,1.0E-11,1.0E-11]
 
-DEP_Y3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                              NOEUD=('N41','N42','N43','N44','N83',),
-                                RESULTAT=UTOT1,
-                                NOM_CHAM='DEPL',
-                                NUME_ORDRE=3,
-                                NOM_CMP=('DCY','H1Y',),
-                                OPERATION='EXTRACTION',),);
+for i in [1,2,3]: #Boucle sur les increments
+  DEP[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                 GROUP_NO=('NFISSU'),
+                                 RESULTAT=RES_XFEM,
+                                 NOM_CHAM='DEPL',
+                                 NUME_ORDRE=i,
+                                 TOUT_CMP='OUI',
+                                 OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=DEP_H1,
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.5',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
+  DEP[i] = CALC_TABLE(reuse = DEP[i],
+                      TABLE = DEP[i],
+                      ACTION = (_F(OPERATION = 'FILTRE',
+                                   NOM_PARA  = 'NOEUD',
+                                   CRIT_COMP = 'REGEXP',
+                                   VALE_K    = 'N[^P]',),),);
 
-IMPR_TABLE(TABLE=DEP_H2,
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.5',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
+  IMPR_TABLE(TABLE=DEP[i],
+             FORMAT='AGRAF',
+             FORMAT_R='1PE12.9',
+             FORMAT_C='MODULE_PHASE',
+             IMPR_FONCTION='NON',);
 
-IMPR_TABLE(TABLE=DEP_H3,
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.5',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
+  TEST_TABLE(TABLE=DEP[i],
+             NOM_PARA='DZ',
+             TYPE_TEST='MIN',
+             VALE=vale[i-1],
+             CRITERE=critere[i-1],
+             PRECISION=precision[i-1],
+             REFERENCE='ANALYTIQUE',);
 
-IMPR_TABLE(TABLE=DEP_Y3,
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.5',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
+  TEST_TABLE(TABLE=DEP[i],
+             NOM_PARA='DZ',
+             TYPE_TEST='MAX',
+             VALE=vale[i-1],
+             CRITERE=critere[i-1],
+             PRECISION=precision[i-1],
+             REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP_H1,
-           NOM_PARA='H1Z',
-           TYPE_TEST='SOMM',
-           VALE=4.0*DEPZ,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_H2,
-           NOM_PARA='H1Z',
-           TYPE_TEST='SOMM',
-           VALE=ZERO,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_H3,
-           NOM_PARA='H1Z',
-           TYPE_TEST='SOMM',
-           VALE=ZERO,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_Y3,
-           NOM_PARA='DCY',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N41',),
-           VALE=0.5E-3,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_Y3,
-           NOM_PARA='DCY',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N42',),
-           VALE=0.5E-3,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_Y3,
-           NOM_PARA='DCY',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N43',),
-           VALE=0.5E-3,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_Y3,
-           NOM_PARA='DCY',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N44',),
-           VALE=0.5E-3,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_Y3,
-           NOM_PARA='DCY',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N83',),
-           VALE=0.5E-3,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_Y3,
-           NOM_PARA='H1Y',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N41',),
-           VALE=0.5E-3,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_Y3,
-           NOM_PARA='H1Y',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N42',),
-           VALE=0.5E-3,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_Y3,
-           NOM_PARA='H1Y',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N43',),
-           VALE=0.5E-3,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_Y3,
-           NOM_PARA='H1Y',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N44',),
-           VALE=0.5E-3,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_Y3,
-           NOM_PARA='H1Y',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N83',),
-           VALE=0.5E-3,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-           
 FIN();

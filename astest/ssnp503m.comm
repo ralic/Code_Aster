@@ -1,4 +1,4 @@
-# MODIF  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503m.para = tps_job 60 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -50,7 +50,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_XFEM_CONT',),),);       
+                              MODELISATION='D_PLAN',),),);       
 
 LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-2.5');
 LT1=FORMULE(NOM_PARA=('X','Y'),VALE='X-2.5');
@@ -132,16 +132,16 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    # CONDITIONS IMPOSEES A LA MAIN
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
-                   LIAISON_DDL=(_F(NOEUD=('N20','N20','N21','N21',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,-0.5,.5,-0.5),
+                   LIAISON_DDL=(_F(NOEUD=('N20','N20',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,-1,),
                                    COEF_IMPO=DEPX,),
-                                _F(NOEUD=('N24','N24','N25','N25',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                                _F(NOEUD=('N25','N25',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPX,),
                                 ),
-                    INFO=1,);               
+                    INFO=1,); 
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,1.,1.),
@@ -181,10 +181,10 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 LAG=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]
 
-vale = [[-2.1285803197164E+05,-6.6645436452751E+04,-2.8138419026723E+04,-2.8138419026723E+04],
-           [-4.2571785666887E+05,-1.3329045824943E+05,-5.6276612406346E+04,-5.6276612406346E+04],
-           [-6.3857768137259E+05,-1.9993548004459E+05,-8.4414805785151E+04,-8.4414805785151E+04],
-           [-8.5143750607631E+05,-2.6658050183975E+05,-1.1255299916396E+05,-1.1255299916396E+05]]
+vale = [[-2.1285803197164E+05,-6.6645436452751E+04,-2.8138419026723E+04],
+           [-4.2571785666887E+05,-1.3329045824943E+05,-5.6276612406346E+04],
+           [-6.3857768137259E+05,-1.9993548004459E+05,-8.4414805785151E+04],
+           [-8.5143750607631E+05,-2.6658050183975E+05,-1.1255299916396E+05]]
 
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -203,7 +203,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
               TRI=_F(NOM_PARA=('COOR_X',),
                      ORDRE='CROISSANT',),);
   
-   for j in [0,1,2,3]: #Boucle sur les positions testees
+   for j in [0,1,2]: #Boucle sur les positions testees
       precision = 5E-2
       critere = 'RELATIF'
       TEST_TABLE(TABLE=LAG[i],

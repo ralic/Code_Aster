@@ -3,7 +3,7 @@
       CHARACTER*(*)       LITAB , NOMTAB , NOMSD
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,8 +86,8 @@ C     ---------------------------------
 
       CALL JEVEUO ( LISTAB//'.LTNT', 'E', JLTNT )
       ZK16(JLTNT+NBTU-1) = NOMSYM
-      NOOJB='12345678.TB000000  .TBBA'
-      CALL GNOMSD ( NOOJB,12,17 )
+      NOOJB=LISTAB(1:8)//'.TB000000  .TBBA'
+      CALL GNOMS2 ( NOOJB,12,17 )
       CALL JEVEUO ( LISTAB//'.LTNS', 'E', JLTNS )
       ZK24(JLTNS+NBTU-1) = NOOJB(1:17)
       NOMSD = ZK24(JLTNS+NBTU-1)

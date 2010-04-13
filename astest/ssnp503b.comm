@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503b.para = tps_job 60 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -50,7 +50,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_XFEM_CONT',),),);       
+                              MODELISATION='D_PLAN',),),);
 
 LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-2.5');
 LT1=FORMULE(NOM_PARA=('X','Y'),VALE='-X-10.');  
@@ -135,16 +135,16 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    # CONDITIONS IMPOSEES A LA MAIN
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
-                   LIAISON_DDL=(_F(NOEUD=('N20','N20','N21','N21',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                   LIAISON_DDL=(_F(NOEUD=('N20','N20',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPX,),
-                                _F(NOEUD=('N24','N24','N25','N25',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                                _F(NOEUD=('N25','N25',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPX,),
                                 ),
-                    INFO=1,);               
+                    INFO=1,);
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,1.,1.),
@@ -196,7 +196,7 @@ vale = [[0.0,-8.1059677419895E+03,-6.4501079962162E+03,-6.4542488547963E+03,-4.1
 #        [0.0,-1.0605073124532E+04,-1.3046818405580E+04,-1.1796897408502E+04,-8.5688582786312E+03],
 #        [0.0,0.0,-2.2167189670823E+04,-1.8735268291927E+04,-1.1431030978517E+04],
 #        [0.0,0.0,-1.9530883294731E+04,-2.3604277746617E+04,-1.7514909721815E+04]]
-        
+
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                          GROUP_NO=('NFISSU'),

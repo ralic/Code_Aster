@@ -4,7 +4,7 @@
      &  DDLM,DDLD,ANGMAS,SIGM,VIM,SIGP,VIP,MATR,VECT,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,28 +75,23 @@ C OUT CODRET  : CODE RETOUR
 C MEM DFDI2   :
 C ----------------------------------------------------------------------
       
-      CHARACTER*2 K2(3)
-      CHARACTER*8 NOM(3)
+      CHARACTER*2 K2(2)
+      CHARACTER*8 NOM(2)
       
       
-      LOGICAL RESI,RIGI,GRAND,AXI,ELAS,NAX
+      LOGICAL RESI,RIGI,GRAND,AXI
       INTEGER IBID,NDDL,NDIMSI,G,COD(27),N,I,M,J,KL,PQ,OS,OSA,OSL,KK
-      INTEGER IU(3*27),IA(8),IL(8)
-      REAL*8  RAC2,C,RAUG,LEF,VAL(3)
+      INTEGER IU(3,27),IA(8),IL(8)
+      REAL*8  RAC2,C,RAUG,VAL(2)
       REAL*8  DEPLM(3*27),DEPLD(3*27),TM,TP,DFDI1(27,3)
       REAL*8  AVM,AVD,AVP,MUM,MUD,MUP,AGM(3),AGD(3),AGP(3),BP
       REAL*8  R,WG,EPSM(6),EPSD(6),F(3,3),B(6,3,27),P
-      REAL*8  NONLOC(3),SIGMAM(6),SIGMA(6),DSIDEP(6,6,4),T1,T2,T3
-      REAL*8  ETA,D,RBID,PHI
-      REAL*8  DDOT,NMTAEF
+      REAL*8  NONLOC(2),SIGMAM(6),SIGMA(6),DSIDEP(6,6,4),T1,T2,T3
+      REAL*8  PHI
+      REAL*8  DDOT
       REAL*8  DFDI2(8*3)
 
-
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      
-C      REAL*8  PARCVG
-C      COMMON /CVGREF/ PARCVG
+      DATA  NOM /'C_GRAD_VARI','PENA_LAGR'/
 C ----------------------------------------------------------------------
 
 
@@ -104,56 +99,29 @@ C ----------------------------------------------------------------------
 
 C - INITIALISATION
 
-      RESI = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RAPH_MECA'
-      RIGI = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RIGI_MECA'
-      ELAS = OPTION.EQ.'FULL_MECA_ELAS' .OR. OPTION.EQ.'RIGI_MECA_ELAS'
-      RAC2   = SQRT(2.D0)
-      GRAND  = .FALSE.
-      AXI    = TYPMOD(1) .EQ. 'AXIS'
-      NDDL   = NNO1*NDIM + NNO2*2
-      NDIMSI = 2*NDIM
+      RESI  = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RAPH_MECA'
+      RIGI  = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RIGI_MECA'
+      RAC2  = SQRT(2.D0)
+      GRAND = .FALSE.
+      AXI   = TYPMOD(1) .EQ. 'AXIS'
+      NDDL  = NNO1*NDIM + NNO2 + NNO3
+      NDIMSI= 2*NDIM
 
-      CALL R8INIR(3,0.D0,NONLOC,1)
-
-C on met un parametre en dur pour eviter le 0 de la matrice
-C tangente sur le lagrange
-C il faudra changer ça
-      ETA=0.D0
-      
-C - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES AU COMPORTEMENT
-
-C      CALL LCEGEO(NNO,NPG,IPOIDS,IVF,IDFDE,GEOM,TYPMOD,OPTION,
-C     &            IMATE,COMPOR,LGPG,ELGEOM)
-      
-      
-      NOM(1) = 'LONG_CARA'
-      NOM(2) = 'PENA_LAGR'
-C      NOM(3) = 'ETA'
-
-      CALL RCVALA(MAT,' ','NON_LOCAL',0,' ',0.D0,2,NOM,VAL,K2,'F ')
-
-C    LECTURE DU PARAMETRE ETA FONCTION DE LA CONVERGENCE ACTUELLE
-C      CALL RCVALA(MAT,' ','NON_LOCAL',1,'NORM',PARCVG,1,NOM(3),
-C     &            VAL(3),K2(3),'  ')
-C      IF (K2(3).NE.'OK') VAL(3)=0
-C      IF (ELAS) VAL(3)=VAL(3)
-C      ETA  = VAL(3)
-      IF (ELAS) ETA=0.D0
-      
-      C    = VAL(1)**2
-      RAUG = VAL(2)
-      CALL NMGVRE(COMPOR(1), MAT, D, RBID)
-
+      IF (RIGI) CALL R8INIR((NDDL*(NDDL+1))/2,0.D0,MATR,1)
+      IF (RESI) CALL R8INIR(NDDL,0.D0,VECT,1)
 
       DO 5 G=1,NPG
         COD(G)=0
  5    CONTINUE
 
-
-      IF (RIGI) CALL R8INIR((NDDL*(NDDL+1))/2,0.D0,MATR,1)
-      IF (RESI) CALL R8INIR(NDDL,0.D0,VECT,1)
-
       CALL NMGVDD(NDIM,NNO1,NNO2,IU,IA,IL)
+
+      
+C - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES AU COMPORTEMENT
+
+      CALL RCVALA(MAT,' ','NON_LOCAL',0,' ',0.D0,2,NOM,VAL,K2,'F ')
+      C    = VAL(1)
+      RAUG = VAL(2)
 
  
 C    EXTRACTION DES DEPLACEMENTS
@@ -161,8 +129,8 @@ C    EXTRACTION DES DEPLACEMENTS
 
       DO 100 N = 1,NNO1
         DO 110 I = 1,NDIM
-          DEPLM(I+(N-1)*NDIM) = DDLM(IU(NNO1*(I-1)+N))
-          DEPLD(I+(N-1)*NDIM) = DDLD(IU(NNO1*(I-1)+N))
+          DEPLM(I+(N-1)*NDIM) = DDLM(IU(I,N))
+          DEPLD(I+(N-1)*NDIM) = DDLD(IU(I,N))
  110    CONTINUE
  100  CONTINUE
 
@@ -202,7 +170,7 @@ C      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR A ET L
           AGP(I) = AGM(I) + AGD(I)
  200    CONTINUE  
 
-        PHI= (MUP + RAUG*AVP)*D
+        PHI= MUP + RAUG*AVP
 
 
         
@@ -214,8 +182,7 @@ C      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
 
         CALL NMEPSI(NDIM,NNO1,AXI,GRAND,VFF1(1,G),R,DFDI1,DEPLM,F,EPSM)
         CALL NMEPSI(NDIM,NNO1,AXI,GRAND,VFF1(1,G),R,DFDI1,DEPLD,F,EPSD)
-        NAX=.FALSE.
-        CALL NMMABU(NDIM,NNO1,NAX,GRAND,DFDI1,B)
+        CALL NMMABU(NDIM,NNO1,.FALSE.,GRAND,DFDI1,B)
         IF (AXI) THEN
           DO 50 N=1,NNO1
             B(3,1,N) = VFF1(N,G)/R
@@ -227,14 +194,14 @@ C      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
 C      LOI DE COMPORTEMENT
 
 C      CONVENTIONS :
-C       1. PHI   EST PASSE DANS NONLOC
+C       1. PHI   EST PASSE DANS NONLOC(1)
 C       2. B     EST RANGE DANS VI(1)
 C       3. LA MATRICE TANGENTE EST RANGEE DE LA MANIERE SUIVANTE
 C            DSIG/DEPS(IJ,KL) = DSIDEP(IJ,KL,1)
 C            DSIG/DPHI(IJ)    = DSIDEP(IJ,1,2)   (INUTILE SYMETRIE)
 C            DB/DEPS(IJ)      = DSIDEP(IJ,1,3)
 C            DB/DPHI          = DSIDEP(1,1,4)
-C       4. LE COEFFICIENT DE PENALISATION RAUG EST PASSE DANS ELGEOM
+C       4. LE COEFFICIENT DE PENALISATION RAUG EST PASSE DANS NONLOC(2)
 
         DO 210 KL = 1,3
           SIGMAM(KL) = SIGM(KL,G)
@@ -244,12 +211,10 @@ C       4. LE COEFFICIENT DE PENALISATION RAUG EST PASSE DANS ELGEOM
  220    CONTINUE          
 
 
-       NONLOC(1)=1.D0
-       NONLOC(2)=RAUG*D
-       NONLOC(3)=PHI
+        NONLOC(1)=PHI
+        NONLOC(2)=RAUG
 
-
-       CALL NMCOMP(FAMI,G,1,NDIM,TYPMOD,MAT,COMPOR,CRIT,
+        CALL NMCOMP(FAMI,G,1,NDIM,TYPMOD,MAT,COMPOR,CRIT,
      &             INSTAM,INSTAP,
      &             EPSM,EPSD,
      &             SIGMAM,VIM(1,G),
@@ -258,14 +223,13 @@ C       4. LE COEFFICIENT DE PENALISATION RAUG EST PASSE DANS ELGEOM
      &             NONLOC,
      &             SIGMA,VIP(1,G),DSIDEP,COD(G))
 
-C
         IF(COD(G).EQ.1) GOTO 9000
 
         
 C      FORCE INTERIEURE ET CONTRAINTES DE CAUCHY
 
         IF (RESI) THEN
-
+        
           BP = VIP(1,G)
 
 C        CONTRAINTES
@@ -281,7 +245,7 @@ C        CONTRAINTES
 C        VECTEUR FINT:U
           DO 300 N=1,NNO1
             DO 310 I=1,NDIM
-              KK = IU(NNO1*(I-1)+N)
+              KK = IU(I,N)
               T1 = 0
               DO 320 KL = 1,NDIMSI
                 T1 = T1 + SIGMA(KL)*B(KL,I,N)
@@ -299,7 +263,7 @@ C        VECTEUR FINT:A
               T3 = T3 + C*DFDI2(NNO2*(I-1)+N)*AGP(I)
  360        CONTINUE
             KK = IA(N)
-            VECT(KK) = VECT(KK) + WG*D*(T3+T2+T1)
+            VECT(KK) = VECT(KK) + WG*(T3+T2+T1)
  350      CONTINUE
 
 
@@ -307,7 +271,7 @@ C        VECTEUR FINT:L
           DO 370 N=1,NNO3
             T1 = VFF3(N,G)*(AVP-BP)
             KK = IL(N)
-            VECT(KK) = VECT(KK) + WG*D*T1
+            VECT(KK) = VECT(KK) + WG*T1
  370      CONTINUE
 
         END IF
@@ -323,11 +287,11 @@ C        MATRICE K:U(I,N),U(J,M)
 
           DO 500 N = 1,NNO1
             DO 510 I = 1,NDIM
-              OS = ((IU(NNO1*(I-1)+N)-1)*IU(NNO1*(I-1)+N))/2
+              OS = ((IU(I,N)-1)*IU(I,N))/2
               DO 520 M = 1,NNO1
                 DO 530 J = 1,NDIM
-                  IF (IU(NNO1*(J-1)+M).GT.IU(NNO1*(I-1)+N)) GOTO 521
-                  KK = OS+IU(NNO1*(J-1)+M)
+                  IF (IU(J,M).GT.IU(I,N)) GOTO 521
+                  KK = OS+IU(J,M)
                   T1 = 0
                   DO 540 KL = 1,NDIMSI
                     DO 550 PQ = 1,NDIMSI
@@ -354,12 +318,12 @@ C        MATRICES K:A(N),U(J,M)
  640            CONTINUE
                 T1 = - RAUG*VFF2(N,G)*T1
 
-                IF (IA(N).GE.IU(NNO1*(J-1)+M)) THEN
-                  KK = ((IA(N)-1)*IA(N))/2 + IU(NNO1*(J-1)+M)
+                IF (IA(N).GE.IU(J,M)) THEN
+                  KK = ((IA(N)-1)*IA(N))/2 + IU(J,M)
                 ELSE
-                  KK = ((IU(NNO1*(J-1)+M)-1)*IU(NNO1*(J-1)+M))/2 +IA(N)
+                  KK = ((IU(J,M)-1)*IU(J,M))/2 +IA(N)
                 END IF
-                MATR(KK) = MATR(KK) + WG*D*T1
+                MATR(KK) = MATR(KK) + WG*T1
  630          CONTINUE
  620        CONTINUE
  600      CONTINUE
@@ -375,12 +339,12 @@ C        MATRICES K:L(N),U(J,M)
  680            CONTINUE
                 T1 = - VFF3(N,G)*T1
 
-                IF (IL(N).GE.IU(NNO1*(J-1)+M)) THEN
-                  KK = ((IL(N)-1)*IL(N))/2 + IU(NNO1*(J-1)+M)
+                IF (IL(N).GE.IU(J,M)) THEN
+                  KK = ((IL(N)-1)*IL(N))/2 + IU(J,M)
                 ELSE
-                  KK = ((IU(NNO1*(J-1)+M)-1)*IU(NNO1*(J-1)+M))/2 + IL(N)
+                  KK = ((IU(J,M)-1)*IU(J,M))/2 + IL(N)
                 END IF
-                MATR(KK) = MATR(KK) + WG*D*T1
+                MATR(KK) = MATR(KK) + WG*T1
  670          CONTINUE
  660        CONTINUE
  650      CONTINUE
@@ -391,15 +355,15 @@ C        MATRICES K:A(N),A(M)
           DO 700 N = 1,NNO2
             OSA = ((IA(N)-1)*IA(N))/2
             DO 710 M = 1,NNO2
-              T1 = VFF2(N,G)*VFF2(M,G)*(1-RAUG*D*DSIDEP(1,1,4))
+              T1 = RAUG*VFF2(N,G)*VFF2(M,G)*(1-RAUG*DSIDEP(1,1,4))
               T2 = 0
               DO 720 I = 1,NDIM
                 T2 = T2 + DFDI2(NNO2*(I-1)+N)*DFDI2(NNO2*(I-1)+M)
  720          CONTINUE
-               T2 = C*T2
+              T2 = C*T2
               IF (IA(M).LE.IA(N)) THEN
                 KK = OSA+IA(M)
-                MATR(KK) = MATR(KK) + WG*D*(T2+RAUG*T1)
+                MATR(KK) = MATR(KK) + WG*(T2+T1)
               END IF
 
  710        CONTINUE
@@ -409,13 +373,13 @@ C        MATRICES K:A(N),A(M)
 C        MATRICES K:L(N),A(M)  
           DO 750 N = 1,NNO3
             DO 760 M = 1,NNO2
-              T1 = VFF3(N,G)*VFF2(M,G)*(1-RAUG*D*DSIDEP(1,1,4))
+              T1 = VFF3(N,G)*VFF2(M,G)*(1-RAUG*DSIDEP(1,1,4))
               IF (IL(N).GE.IA(M)) THEN
                 KK = ((IL(N)-1)*IL(N))/2 + IA(M)
               ELSE
                 KK = ((IA(M)-1)*IA(M))/2 + IL(N)
               END IF
-              MATR(KK) = MATR(KK) + WG*D*T1
+              MATR(KK) = MATR(KK) + WG*T1
  760        CONTINUE
  750      CONTINUE
  
@@ -425,11 +389,11 @@ C        MATRICES K:L(N),L(M)
           DO 800 N = 1,NNO2
             OSL = ((IL(N)-1)*IL(N))/2
             DO 810 M = 1,NNO2
-              T1 = - VFF3(N,G)*VFF3(M,G)*(D*DSIDEP(1,1,4)+ETA)
+              T1 = - VFF3(N,G)*VFF3(M,G)*DSIDEP(1,1,4)
 
               IF (IL(M).LE.IL(N)) THEN
                 KK = OSL+IL(M)
-                MATR(KK) = MATR(KK) + WG*D*T1
+                MATR(KK) = MATR(KK) + WG*T1
               END IF
 
  810        CONTINUE
@@ -439,40 +403,6 @@ C        MATRICES K:L(N),L(M)
         END IF
 
  1000 CONTINUE
-
-
-
-C - SYNTHESE DES CODES RETOUR
-
-C       IF (RESI .AND. RIGI) THEN
-C        write (6,*) 'VIP(1,2) = ', VIP(1,1),VIP(1,2)
-C        write (6,*) 'VIP(3,4) = ', VIP(1,3),VIP(1,4)
-C 
-C       IF (RESI) THEN
-C        write (6,*)
-C       DO N = 1,NNO1
-C        write (6,*) 'U  = ',N,DDLD(IU(N))+DDLM(IU(N)),
-C     &                        DDLD(IU(N+NNO1))+DDLM(IU(N+NNO1))
-C       END DO
-C       DO N = 1,NNO2
-C      write (6,*) 'A  = ',N,DDLD(IA(N))
-C       END DO
-C       DO N = 1,NNO2
-C      write (6,*) 'L  = ',N,DDLD(IL(N))
-C       END DO
-C       write (6,*)
-C       write (6,*)
-C       DO N = 1,NNO1
-C      write (6,*) 'FU  = ',N,VECT(IU(N)),VECT(IU(N+NNO1))
-C       END DO
-C       DO N = 1,NNO2
-C      write (6,*) 'FA = ',N,VECT(IA(N))
-C      END DO
-C       DO N = 1,NNO2
-C        write (6,*) 'FL = ',N,VECT(IL(N))
-C       END DO
-C       write (6,*)
-C          END IF
 
  9000 CONTINUE
       CALL CODERE(COD,NPG,CODRET)

@@ -5,7 +5,7 @@
      &                  MEASSE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -128,7 +128,7 @@ C
      &              LISCHA,COMREF,DEFICO,RESOCO,RESOCU,
      &              NUMEDD,PARCON,SDSENS,LSENS ,NRPASE,
      &              VEELEM,VEASSE,MEASSE,NBVECT,LTYPVE,
-     &              LCALVE,LASSVE)     
+     &              LCALVE,LOPTVE,LASSVE)     
       ENDIF          
 C
       CALL JEDEMA()

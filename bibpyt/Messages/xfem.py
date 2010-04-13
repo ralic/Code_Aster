@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF xfem Messages  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -264,11 +264,6 @@ cata_msg={
      Vous pouvez activer cette formulation en commentant LINE_QUAD afin que les mailles
      soient de type QUAD4 ou TRIA3.
      
-"""),
-
-40: _("""
-     Trop d'aretes traversées par la fissure sont connectées au noeud %(i1)d.
-     Nombre maximum d'aretes toléré: %(i2)d. 
 """),
 
 57: _("""

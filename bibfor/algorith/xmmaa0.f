@@ -3,7 +3,7 @@
      &                  COEFCA,TYPMAI,NDDLSE,MMAT  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C
       INTEGER      NDIM,NNC,NNE,NNES,NFAES,NDDLSE
       INTEGER      CFACE(5,3),JPCAI
       REAL*8       MMAT(168,168)
-      REAL*8       HPG,FFC(9),JACOBI,COEFCA
+      REAL*8       HPG,FFC(8),JACOBI,COEFCA
       CHARACTER*8  TYPMAI
 C      
 C ----------------------------------------------------------------------

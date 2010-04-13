@@ -5,7 +5,7 @@
       INTEGER NUTM1D(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -149,7 +149,7 @@ C     -----------------------------------------------------------
           KSI = KSI + ZR(I1COCF-1+IDECA1+KK)*X1
 771     CONTINUE
         X(1) = KSI
-        ZR(I2COCO+3*(INO2-1)+1)=X(1)
+        ZR(I2COCO-1+3*(INO2-1)+1)=X(1)
 
 
 C       2.2.2 :

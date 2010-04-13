@@ -1,8 +1,8 @@
       SUBROUTINE NMFOGV(NDIM,NNO1,NNO2,NNO3,NPG,IW,VFF1,VFF2,VFF3,
-     &  IDFDE1,IDFDE2,COMPOR,GEOM,TYPMOD,MAT,DDL,SIGM,VECT)
+     &  IDFDE1,IDFDE2,GEOM,TYPMOD,MAT,DDL,SIGM,VECT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,6 @@ C ======================================================================
        IMPLICIT NONE
 
        CHARACTER*8   TYPMOD(*)
-       CHARACTER*16  COMPOR
 
        INTEGER NDIM,NNO1,NNO2,NNO3,NPG,IDFDE1,IDFDE2,IW,MAT
        REAL*8  VFF1(NNO1,NPG),VFF2(NNO2,NPG),VFF3(NNO3,NPG)
@@ -54,14 +53,16 @@ C ----------------------------------------------------------------------
       
       LOGICAL GRAND,AXI,NAX
       INTEGER NDDL,NDIMSI,G,N,I,M,J,KL,PQ,KK,OS
-      INTEGER IU(3*27),IA(8),IL(8)
-      REAL*8  RAC2,C,RAUG,LEF,P,VAL(2),D
+      INTEGER IU(3,27),IA(8),IL(8)
+      REAL*8  RAC2,C,RAUG,LEF,P,VAL(2)
       REAL*8  DFDI1(27,3)
       REAL*8  AV,MU,AG(3),BP
       REAL*8  R,WG,B(6,3,27)
       REAL*8  SIGMA(6),T1,T2,T3
       REAL*8  R8DOT,NMTAEF,RBID
       REAL*8  DFDI2(8*3)
+
+      DATA  NOM /'C_GRAD_VARI','PENA_LAGR'/
 C ----------------------------------------------------------------------
 
 
@@ -76,12 +77,8 @@ C - INITIALISATION
 
       CALL R8INIR(NDDL,0.D0,VECT,1)
 
-      CALL NMGVRE (COMPOR, MAT, D, RBID)
-      NOM(1) = 'LONG_CARA'
-      NOM(2) = 'PENA_LAGR'
-
       CALL RCVALA(MAT,' ','NON_LOCAL',0,' ',0.D0,2,NOM,VAL,K2,'F ')
-      C = VAL(1)**2
+      C    = VAL(1)
       RAUG = VAL(2)
       
 
@@ -134,7 +131,7 @@ C      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR A ET L
 C      VECTEUR FINT:U
         DO 300 N=1,NNO1
           DO 310 I=1,NDIM
-            KK = IU(NNO1*(I-1)+N)
+            KK = IU(I,N)
             T1 = 0
             DO 320 KL = 1,NDIMSI
               T1 = T1 + SIGMA(KL)*B(KL,I,N)
@@ -152,14 +149,14 @@ C      VECTEUR FINT:A
             T3 = T3 + C*DFDI2(NNO2*(I-1)+N)*AG(I)
  370      CONTINUE
           KK = IA(N)
-          VECT(KK) = VECT(KK) + WG*D*(T3+T2+T1)
+          VECT(KK) = VECT(KK) + WG*(T3+T2+T1)
  350    CONTINUE
 
 C      VECTEUR FINT:L
         DO 400 N=1,NNO3
           T1 = VFF3(N,G)*(AV-BP)
           KK = IL(N)
-          VECT(KK) = VECT(KK) + WG*D*T1
+          VECT(KK) = VECT(KK) + WG*T1
  400    CONTINUE
 
  1000 CONTINUE

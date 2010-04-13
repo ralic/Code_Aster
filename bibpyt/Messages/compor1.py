@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+#@ MODIF compor1 Messages  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -365,5 +365,13 @@ coefficients sont donnés dans l'ordre (R,Z,T) et non (R,T,Z).
 65 : _("""
    Attention dans la routine majpad la pression d'air dissous devient 
    negative a la maille %(k1)f
+"""),
+
+66 : _("""
+La loi de comportement ENDO_SCALAIRE n'est disponible que pour la formulation 
+non locale GRAD_VARI, assurez vous que votre modelisation soit l'une des trois 
+suivantes : - D_PLAN_GRAD_VARI
+            - AXIS_GRAD_VARI
+            - 3D_GRAD_VARI
 """),
 }

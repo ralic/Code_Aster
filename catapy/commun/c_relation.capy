@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 15/12/2009   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMUN  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +47,7 @@ def C_RELATION() : return (             "ELAS",            # RESP. : PROIX J.M.P
                                         "ELAS_GONF",       # RESP. : GRANET S.GRANET
                                         "ELAS_HYPER",      # RESP. : ABBAS M.ABBAS
                                         "ENDO_FRAGILE",    # RESP. : MICHEL S.MICHEL
+                                        "ENDO_SCALAIRE",   # RESP. : MICHEL S.MICHEL
                                         "ENDO_ISOT_BETON", # RESP. : MICHEL S.MICHEL
                                         "ENDO_ORTH_BETON", # RESP. : MICHEL S.MICHEL
                                         "GATT_MONERIE",    # RESP. : DEBONNIERES P.DEBONNIERES

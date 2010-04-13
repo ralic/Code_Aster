@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE : VALIDATION DES CONDITIONS DE DIRICHLET AVEC X-FEM EN 3D
 # ssnv198a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,7 +112,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INS1,
                                 INST_FIN=1.0,),
-                   SOLVEUR=_F(PCENT_PIVOT=10,METHODE='MUMPS',),
+                   SOLVEUR=_F(PCENT_PIVOT=30,METHODE='MUMPS',),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 # TITRE VALIDATION DE LA MODELISATION D_PLAN_GRAD_VARI
 # comp005b.para = tps_job 140 mem_job 128Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,9 +75,8 @@ METAL = DEFI_MATERIAU(
                   ALPHA=1.E-5
                   ),
   ECRO_LINE  = _F(SY= 100., D_SIGM_EPSI = -1.E4),
-  BETON_ECRO_LINE  = _F(SYT= 100., D_SIGM_EPSI = -1.E4),
   TRACTION   = _F(SIGM = COU_TRAC),
-  NON_LOCAL  = _F(LONG_CARA = 1.,PENA_LAGR=1000.)
+  NON_LOCAL  = _F(C_GRAD_VARI = 2800.,PENA_LAGR=1000.*2800.)
   )
 
 
@@ -113,7 +112,7 @@ MA=[MA_Q,MA_L];
 
 
 modelisation=['D_PLAN_GRAD_VARI','D_PLAN'];
-comportement=['VMIS_ISOT_LINE','VMIS_ISOT_TRAC','ENDO_FRAGILE','ENDO_ISOT_BETON'];
+comportement=['VMIS_ISOT_LINE','VMIS_ISOT_TRAC'];
 
 
 for i in range(0,len(modelisation)):
@@ -286,5 +285,186 @@ for j in range(0,len(comportement)):
 
 
 
-FIN();
 
+########################### POUR ENDO_ISOT_BETON ###########################
+### ON REFAIT LA MEME OPERATION CAR LES PARAMAETRES NON LOCAUX CHANGENT  ###
+
+# menage dans les concepts
+
+for i in range(0,len(modelisation)):
+  DETRUIRE ( CONCEPT = _F (NOM = CHP_T[i],),)
+  DETRUIRE ( CONCEPT = _F (NOM = TEMP[i],),)
+  DETRUIRE ( CONCEPT = _F (NOM = CHP_M[i],),)
+  DETRUIRE ( CONCEPT = _F (NOM = MO[i],),)
+  DETRUIRE ( CONCEPT = _F (NOM = C_RIG[i],),)  
+  DETRUIRE ( CONCEPT = _F (NOM = CHR_C[i],),)
+  DETRUIRE ( CONCEPT = _F (NOM = DIFF[i],),)
+  
+METAL2 = DEFI_MATERIAU(
+  ELAS       = _F(E = 1.E5,
+                  NU = 0.3,
+                  ALPHA=1.E-5
+                  ),
+  BETON_ECRO_LINE  = _F(SYT= 100., D_SIGM_EPSI = -1.E4),
+  NON_LOCAL  = _F(C_GRAD_VARI = 2.8e-02,PENA_LAGR=1000.*2.8e-02)
+  )
+
+for i in range(0,len(modelisation)):
+
+
+
+  CHP_T[i]=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
+               MAILLAGE=MA[i],
+                   AFFE=_F(
+               TOUT = 'OUI',
+               NOM_CMP = 'TEMP',
+               VALE_F = F_TEMP)
+             )
+
+
+  TEMP[i]=CREA_RESU(
+               OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                 AFFE=_F(
+               LIST_INST = L_INST,
+               CHAM_GD = CHP_T[i])
+             )
+
+
+  CHP_M[i]=AFFE_MATERIAU(MAILLAGE=MA[i],
+                    AFFE_VARC = (_F(TOUT='OUI',
+                                  EVOL =TEMP[i],
+                                  NOM_VARC='TEMP',
+                                  VALE_REF=20.0),),
+                     AFFE=_F(TOUT='OUI',
+                             MATER=METAL2),);
+
+  MO[i]=AFFE_MODELE(MAILLAGE=MA[i],
+              AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION=modelisation[i],
+                       ),
+                       );
+
+  C_RIG[i] = AFFE_CHAR_MECA(
+                               MODELE = MO[i],
+                               DDL_IMPO = (
+               _F(GROUP_MA = 'BLOX',DX = 0),
+               _F(GROUP_MA = 'BLOY',DY = 0),
+               ),
+           );
+
+  CHR_C[i] = AFFE_CHAR_MECA( MODELE = MO[i],
+                        DDL_IMPO = _F(GROUP_MA='TIRX', DX= 1.),
+                       );
+
+U=[None]*2
+SIG=[None]*2
+TAB_E=[None]*2
+TAB_S=[None]*2
+TG_E=[None]*2
+
+for i in range(0,len(modelisation)):
+
+
+  U[i]=STAT_NON_LINE(MODELE=MO[i],
+            CHAM_MATER=CHP_M[i],
+            EXCIT=(_F(CHARGE=CHR_C[i],
+                     FONC_MULT=U_COMP,),
+                   _F(CHARGE=C_RIG[i],),
+                   ),
+            COMP_INCR=_F(RELATION='ENDO_ISOT_BETON',
+                         DEFORMATION='PETIT',
+                         RESI_INTE_RELA=1.E-10,
+                         ITER_INTE_MAXI=20,),
+            INCREMENT=_F(LIST_INST=L_INST,
+                         INST_FIN=2.,
+                         ),
+            NEWTON=_F(MATRICE='TANGENTE',
+                      REAC_ITER=1,
+                      ),
+            CONVERGENCE=_F(ITER_GLOB_MAXI=50,
+                           RESI_GLOB_RELA=1.e-7,
+                          ),
+       );
+
+
+
+  U[i] = CALC_ELEM(
+                reuse = U[i],
+                MODELE    =MO[i],
+                CHAM_MATER=CHP_M[i],
+                RESULTAT  =U[i],
+                OPTION    =('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+                 );
+
+
+
+  U[i] = CALC_NO(
+              reuse = U[i],
+              CHAM_MATER=CHP_M[i],
+              RESULTAT  =U[i],
+              OPTION    =('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','FORC_NODA'),
+              );
+
+
+
+  SIG[i]=RECU_FONCTION(RESULTAT=U[i],
+                                 MAILLE='MJ',
+                                 NOM_CHAM='SIEF_ELGA',
+                                 NOM_CMP='SIXX',
+                              POINT=1,
+                       );
+
+
+  TAB_E[i]=POST_RELEVE_T(
+           ACTION=
+                _F(INTITULE='DEFO',
+                 GROUP_NO='NO_POST',
+                 RESULTAT=U[i],
+                 NOM_CHAM='DEPL',
+                 NOM_CMP=('DX'),
+                 OPERATION='EXTRACTION',),);
+
+  TAB_S[i]=POST_RELEVE_T(
+           ACTION=
+                _F(INTITULE='DEFO',
+                 GROUP_NO='NO_POST',
+                 RESULTAT=U[i],
+                 NOM_CHAM='SIEF_NOEU_ELGA',
+                 NOM_CMP=('SIXX'),
+                 OPERATION='EXTRACTION',),);
+
+  TG_E[i]=RECU_FONCTION(TABLE=TAB_E[i],
+                  PARA_X='INST',
+                  PARA_Y='DX',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',);
+
+  if i==1 :
+  
+    DIFF=CALC_TABLE(TABLE=TAB_S[i],
+                    TITRE = ' ',
+                    ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('SIXX','SIXX_L'),),
+                            _F(OPERATION='COMB',TABLE=TAB_S[i-1],NOM_PARA='INST'),
+                            _F(OPERATION='OPER',FORMULE=F_DIFF,NOM_PARA='DIFF'),
+                            ),
+                    );
+
+
+
+
+IMPR_TABLE(TABLE=DIFF);
+
+TEST_TABLE(TABLE=DIFF,
+         FILTRE=_F(NOM_PARA='DIFF',
+                   CRIT_COMP='ABS_MAXI',
+                   ),
+         NOM_PARA='DIFF',
+         VALE=0.0,
+         CRITERE='ABSOLU',
+         PRECISION=1e-03,
+         REFERENCE='NON_REGRESSION',);
+
+
+FIN();

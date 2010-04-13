@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+#@ MODIF mecanonline5 Messages  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -233,6 +233,11 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
 53: _("""
         Critere RESI_COMP_RELA interdit en dynamique. Utiliser un autre critere de convergence 
 """),  
+
+54 : _("""
+  Vous voulez utiliser l'indicateur de convergence RESI_REFE_RELA et une modélisation 
+  GRAD_VARI mais vous n'avez pas renseigné le mot-clé %(k1)s .  
+"""),
 
 
 }

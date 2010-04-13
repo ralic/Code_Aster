@@ -1,4 +1,4 @@
-# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv195c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,7 +91,8 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     );
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAGE,
-                       LINE_QUAD=_F(GROUP_MA='VOL',),);
+                       LINE_QUAD=_F(GROUP_MA='VOL',),
+);
                        
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                    AFFE=_F(GROUP_MA=('VOL',),
@@ -132,7 +133,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       FROTTEMENT     = 'COULOMB',
-                      ITER_CONT_MAXI = 1, 
+                      ITER_CONT_MAXI = 2, 
                       ITER_FROT_MAXI = 6,                    
                       REAC_GEOM      = 'SANS',
                       ZONE=(
@@ -220,222 +221,6 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=2,);
 
-                                
-LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                            NOEUD=( 'N22','N24','N131','NS97','NS100',
-                                    'NS111','NS126','NS127','NS136',),
-                                RESULTAT=UTOT1,
-                                NOM_CHAM='DEPL',
-                                NUME_ORDRE=1,
-                                NOM_CMP=('LAGS_C','LAGS_F1','LAGS_F2',),
-                                OPERATION='EXTRACTION',),);
-
-IMPR_TABLE(TABLE=LAG,
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.5',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
-
-DEP_C=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                              NOEUD=('N45','N49','N53','N57','N61',
-                                     'N65','N69', 'N73','N77','N181',),
-                                RESULTAT=UTOT1,
-                                NOM_CHAM='DEPL',
-                                NUME_ORDRE=1,
-                                TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
-
-IMPR_TABLE(TABLE=DEP_C,
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.5',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
-
-LAREF=-9.E3
-LA1REF=0.
-LA2REF=0.57735
-
-           
-IMPR_RESU(
-          MODELE = MODELEK,
-          FORMAT = 'RESULTAT',
-          RESU = (_F(
-                     MAILLAGE = MAILLAG2,
-                     RESULTAT = UTOT1, 
-                     NOM_CHAM = ('DEPL',
-                                 ) ,
-           ),),);   
-           
-
-DEPMILX=DEPX/2
-DEPMILY=DEPY/2
-DEPMILZ=DEPZ/2
-
-
-TEST_TABLE(TABLE=LAG,
-           NOM_PARA='LAGS_C',
-           TYPE_TEST='MIN',
-           VALE=LAREF,
-           CRITERE='RELATIF',
-           PRECISION=1.E-6,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=LAG,
-           NOM_PARA='LAGS_C',
-           TYPE_TEST='MIN',
-           VALE=LAREF,
-           CRITERE='RELATIF',
-           PRECISION=1.E-6,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=LAG,
-           NOM_PARA='LAGS_F1',
-           TYPE_TEST='MAX',
-           VALE=LA1REF,
-           CRITERE='ABSOLU',
-           PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=LAG,
-           NOM_PARA='LAGS_F1',
-           TYPE_TEST='MIN',
-           VALE=LA1REF,
-           CRITERE='ABSOLU',
-           PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=LAG,
-           NOM_PARA='LAGS_F2',
-           TYPE_TEST='MAX',
-           VALE=LA2REF,
-           CRITERE='RELATIF',
-           PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=LAG,
-           NOM_PARA='LAGS_F2',
-           TYPE_TEST='MAX',
-           VALE=LA2REF,
-           CRITERE='RELATIF',
-           PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',); 
-
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='DZ',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N45',),
-           VALE=ZERO,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='DZ',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N49',),
-           VALE=ZERO,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='DZ',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N53',),
-           VALE=ZERO,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
-           
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='DCZ',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N57',),
-           VALE=DEPMILZ,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',); 
-
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='H1Z',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N57',),
-           VALE=DEPMILZ,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-           
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='DCZ',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N61',),
-           VALE=DEPMILZ,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',); 
-
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='H1Z',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N61',),
-           VALE=DEPMILZ,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='DCZ',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N65',),
-           VALE=DEPZ,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',); 
-
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='H1Z',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N65',),
-           VALE=ZERO,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-           
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='DZ',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N69',),
-           VALE=DEPZ,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='DZ',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N73',),
-           VALE=DEPZ,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='DZ',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N77',),
-           VALE=DEPZ,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP_C,
-           NOM_PARA='DZ',
-           FILTRE=_F(NOM_PARA='NOEUD',
-                      VALE_K='N181',),
-           VALE=DEPZ,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
 
 # -------------------------------------------------------------   
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
@@ -459,4 +244,175 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAGE,
                         INFO          = 2)
  
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
+
+
+# -------------------------------------------------------------   
+#            TEST_TABLE
+# -------------------------------------------------------------   
+
+
+DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                GROUP_NO=('NFISSU',),
+                                RESULTAT=RES_XFEM,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=DEP,
+           FORMAT='AGRAF',
+           FORMAT_R='1PE12.5',
+           FORMAT_C='MODULE_PHASE',
+           IMPR_FONCTION='NON',);
+
+# POUR LES DEUX FISSURES
+
+TEST_TABLE(TABLE=DEP,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP,
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+
+# POUR LA PREMIERE FISSURE
+
+LAREF=-9.E3
+LA1REF=0.
+LA2REF=0.57735
+
+LAG = CALC_TABLE(TABLE = DEP,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'COOR_Z',
+                               CRIT_COMP = 'LT',
+                               VALE      = 25,),),);
+
+TEST_TABLE(TABLE=LAG,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           VALE=LAREF,
+           CRITERE='RELATIF',
+           PRECISION=1.E-6,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=LAG,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           VALE=LAREF,
+           CRITERE='RELATIF',
+           PRECISION=1.E-6,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=LAG,
+           NOM_PARA='LAGS_F1',
+           TYPE_TEST='MAX',
+           VALE=LA1REF,
+           CRITERE='ABSOLU',
+           PRECISION=1.E-12,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=LAG,
+           NOM_PARA='LAGS_F1',
+           TYPE_TEST='MIN',
+           VALE=LA1REF,
+           CRITERE='ABSOLU',
+           PRECISION=1.E-12,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=LAG,
+           NOM_PARA='LAGS_F2',
+           TYPE_TEST='MAX',
+           VALE=LA2REF,
+           CRITERE='RELATIF',
+           PRECISION=1.E-12,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=LAG,
+           NOM_PARA='LAGS_F2',
+           TYPE_TEST='MAX',
+           VALE=LA2REF,
+           CRITERE='RELATIF',
+           PRECISION=1.E-12,
+           REFERENCE='ANALYTIQUE',); 
+
+
+# POUR LA DEUXIEME FISSURE
+
+DEP2P = CALC_TABLE(TABLE = DEP,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]',),
+                            _F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'COOR_Z',
+                               CRIT_COMP = 'GT',
+                               VALE      = 25,),),);
+
+TEST_TABLE(TABLE=DEP2P,
+           NOM_PARA='DZ',
+           TYPE_TEST='MIN',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2P,
+           NOM_PARA='DZ',
+           TYPE_TEST='MAX',
+           VALE=ZERO,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+DEP2M = CALC_TABLE(TABLE = DEP,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]',),
+                            _F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'COOR_Z',
+                               CRIT_COMP = 'GT',
+                               VALE      = 25,),),);
+
+TEST_TABLE(TABLE=DEP2M,
+           NOM_PARA='DZ',
+           TYPE_TEST='MIN',
+           VALE=DEPZ,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2M,
+           NOM_PARA='DZ',
+           TYPE_TEST='MAX',
+           VALE=DEPZ,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
+
 FIN();

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/04/2010   AUTEUR HAELEWYN J.HAELEWYN 
+#& MODIF COMMANDE  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -779,6 +779,12 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              DIST_1          =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              DIST_2          =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              JEU             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+           ),
+           ENDO_SCALAIRE   =FACT(statut='f',
+             GAMMA           =SIMP(statut='o',typ='R',),
+             SY              =SIMP(statut='o',typ='R',),
+             COEF_RIGI_MINI  =SIMP(statut='f',typ='R',defaut=1.E-5),
+             DD_MAXI         =SIMP(statut='f',typ='R',defaut= 1.),
            ),
            DIS_GRICRA    =FACT(statut='f',
              KN_AX       =SIMP(statut='o',typ='R' ),
@@ -2769,8 +2775,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              SEUIL_EPSP_CUMU =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ),
            NON_LOCAL       =FACT(statut='f',
-             regles=(AU_MOINS_UN('LONG_CARA','C_GONF','PENA_LAGR',),),
+             regles=(AU_MOINS_UN('LONG_CARA','C_GONF','C_GRAD_VARI','PENA_LAGR',),),
              LONG_CARA       =SIMP(statut='f',typ='R'),
+             C_GRAD_VARI     =SIMP(statut='f',typ='R'),             
              PENA_LAGR       =SIMP(statut='f',typ='R',defaut= 1.0E3),
              C_GONF          =SIMP(statut='f',typ='R'),
              COEF_RIGI_MINI  =SIMP(statut='f',typ='R'),

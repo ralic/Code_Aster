@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/10/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C     ENTREES :
 C       IFI    : UNITE LOGIQUE D'IMPRESSION DU CHAMP
 C       NOCHMD : NOM MED DU CHAMP A ECRIRE
 C       PARTIE: IMPRESSION DE LA PARTIE IMAGINAIRE OU REELLE POUR
-C               UN CHAMP COMPLEXE 
+C               UN CHAMP COMPLEXE
 C       CHANOM : NOM ASTER DU CHAM A ECRIRE
 C       TYPECH : TYPE DU CHAMP ('NOEU', 'ELNO', 'ELGA')
 C       MODELE : MODELE ASSOCIE AU CHAMP
@@ -183,7 +183,7 @@ C
 C 2.1. ==> NOM ET DIMENSION DU MAILLAGE ASTER
 C
       NOMAAS = ZK8(ADSK-1+1)
-      CALL DISMOI ( 'F', 'DIM_GEOM', NOMAAS, 'MAILLAGE', NDIM,
+      CALL DISMOI ( 'F', 'DIM_GEOM_B', NOMAAS, 'MAILLAGE', NDIM,
      &              SAUX32, CODRET )
       IF ( CODRET.NE.0 ) THEN
         CALL U2MESS('F','MED_43')
@@ -273,7 +273,7 @@ C
         ELSE
             IF(TYPECH.EQ.'ELNO')THEN
                TYPENT = EDNOMA
-            ELSE          
+            ELSE
                TYPENT = EDMAIL
             ENDIF
         ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE TSTVEC(PERM,IAD,NLONG,TYPE,SOMMI,SOMMR,NBIGN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 12/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C TOLE CRP_4
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,6 +49,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /CVARJE/ZC(1)
       COMMON /LVARJE/ZL(1)
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      COMMON /I4VAJE/ZI4(1)
       INTEGER ZI
       REAL*8 ZR
       COMPLEX*16 ZC
@@ -58,6 +59,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 ZK24,K24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
+      INTEGER*4 ZI4
 C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       LOGICAL L
       CHARACTER*(*) PERM
@@ -124,6 +126,11 @@ C     --------------------
           I8= ZI(IAD-1+K)
           SOMMI2 = SOMMI2 + (C1*MOD(K,3)+1)*I8
    30   CONTINUE
+      ELSE IF (TYPE.EQ.'S') THEN
+        DO 31,K = 1,NLONG
+          I8= ZI4(IAD-1+K)
+          SOMMI2 = SOMMI2 + (C1*MOD(K,3)+1)*I8
+   31   CONTINUE
       ELSE IF (TYPE.EQ.'L') THEN
         DO 40,K = 1,NLONG
           L = ZL(IAD-1+K)

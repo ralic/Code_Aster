@@ -1,7 +1,7 @@
       LOGICAL FUNCTION ISFONC(FONACT,NOMFOZ)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,6 +71,8 @@ C       BOUCLE_EXT_FROT    :  PRESENCE D'UNE BOUCLE EXTERNE POUR
 C                             LE FROTTEMENT
 C       BOUCLE_EXT_CONT    :  PRESENCE D'UNE BOUCLE EXTERNE POUR
 C                             LE CONTACT
+C       DIRI_CINE          :  PRESENCE DE CHARGEMENTS DE DIRICHLET
+C                             DE TYPE ELIMINATION (AFFE_CHAR_CINE)
 C
 C ---------------------------------------------------------------------
 C
@@ -163,6 +165,9 @@ C
         ISFONC = FONACT(30).EQ.1
       ELSEIF (NOMFON.EQ.'RESI_COMP') THEN
         ISFONC = FONACT(35).EQ.1
+
+      ELSEIF (NOMFON.EQ.'DIRI_CINE') THEN
+        ISFONC = FONACT(36).EQ.1
                      
       ELSE
         CALL ASSERT(.FALSE.)

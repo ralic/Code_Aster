@@ -1,5 +1,6 @@
-# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 # TITRE VALIDATION DE LA LOI D ENDOMMAGEMENT FRAGILE
+# ssnl125a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,247 +20,232 @@
 # ======================================================================
 # A GRADIENT
 #
-DEBUT(CODE=_F(NOM='SSNL125A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
+E       = 30000.
+NU      = 0.0
+Sy      = 3.
+Gf      = 0.1
+D       = 50.
+
+wy      = 0.5*Sy**2/E
+p       = 0.75*Gf/(D*wy)
+m       = 2.
+gamma   = p/m - 1
+C       = 0.375*Gf*D
+pena    = 1.E3 * p * wy
+
+DEBUT(CODE=_F(NOM='SSNL125A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 # -----------------------------------------------------
 #                 MAILLAGE ET MODELE
 # -----------------------------------------------------
 
-PRE_GMSH()
-MA_L  =  LIRE_MAILLAGE()
+MA =  LIRE_MAILLAGE()
 
-MA = CREA_MAILLAGE(
-  MAILLAGE = MA_L,
-  LINE_QUAD = _F(TOUT = 'OUI')
-  )
+# ytest1 et ytest2 : ordonnees des points auxquels on releve les grandeurs testees
 
-DEFI_GROUP(reuse  = MA,
-  MAILLAGE = MA,
-  CREA_GROUP_MA = (
-    _F(NOM = 'S_H',    GROUP_MA = 'GM1'),
-    _F(NOM = 'S_B',    GROUP_MA = 'GM2'),
-    _F(NOM = 'P_B',    GROUP_MA = 'GM3'),
-    _F(NOM = 'AXE',    GROUP_MA = 'GM4'),
-    _F(NOM = 'MATIERE',UNION = ('S_H','S_B')),
-    ),
-  CREA_GROUP_NO = (
-    _F(GROUP_MA = 'MATIERE'),
-    )
-  )
+ytest1 = -7.5
+ytest2 =  7.5
 
-MO = AFFE_MODELE(
-  MAILLAGE = MA,
-  AFFE     = _F(
-    GROUP_MA     = 'MATIERE',
-    PHENOMENE    = 'MECANIQUE',
-    MODELISATION = 'AXIS_GRAD_VARI'
-    )
-  )
+DEFI_GROUP(reuse         = MA,
+           MAILLAGE      = MA,
+           CREA_GROUP_NO = (_F(GROUP_MA = 'MATIERE',),
+                            _F(OPTION = 'ENV_SPHERE',
+                               NOM = 'NO1',
+                               POINT = (0.,ytest1,),
+                               RAYON = (1.e-5),
+                               PRECISION = (1.e-5),),    
+                            _F(OPTION = 'ENV_SPHERE',
+                               NOM = 'NO2',
+                               POINT = (0.,ytest2,),
+                               RAYON = (1.e-5),
+                               PRECISION = (1.e-5),),    
+                            _F(NOM = 'NOTEST',
+                               UNION = ('NO1','NO2'),),
 
+                            ),)
 
+DEFI_GROUP(reuse         = MA,
+           MAILLAGE      = MA,
+           DETR_GROUP_NO = (_F(NOM = 'NO1'),
+                            _F(NOM = 'NO2'),),)
 
+MO = AFFE_MODELE(MAILLAGE = MA,
+                 AFFE     = _F(GROUP_MA     = 'MATIERE',
+                               PHENOMENE    = 'MECANIQUE',
+                               MODELISATION = 'AXIS_GRAD_VARI',),)
+                               
 # -----------------------------------------------------
 #                  PARAMETRES MATERIAU
 # -----------------------------------------------------
 
-FRAG = DEFI_MATERIAU(
-  ELAS       = _F(E = 2.E4,  NU = 0.),
-  ECRO_LINE  = _F(SY= 2, D_SIGM_EPSI = -2.E4),
-  NON_LOCAL  = _F(LONG_CARA = 26**0.5 )
-  )
+FRAG = DEFI_MATERIAU(ELAS          = _F(E=E, NU=NU,),
+                     ENDO_SCALAIRE = _F(SY=Sy, GAMMA=gamma),
+                     NON_LOCAL     = _F(C_GRAD_VARI = C, PENA_LAGR = pena),)
 
-
-CHMAT = AFFE_MATERIAU(
-  MAILLAGE = MA,
-  AFFE = (
-    _F(GROUP_MA = 'MATIERE', MATER = FRAG),
-    )
-  )
-
-
-
+CHMAT = AFFE_MATERIAU(MAILLAGE = MA,
+                      AFFE     = (_F(GROUP_MA = 'MATIERE', MATER = FRAG),),)
 
 # -----------------------------------------------------
-#                DISCRETISATION EN TEMPS
+#                DISCRETISATION EN "TEMPS"
 # -----------------------------------------------------
 
-INSTANTS = DEFI_LIST_REEL(
-  DEBUT      = 0,
-  INTERVALLE = (
-    _F(JUSQU_A = 1.414E-4, NOMBRE =1),
-    _F(JUSQU_A = 1.732E-4, NOMBRE =1),
-    _F(JUSQU_A = 2.000E-4, NOMBRE =1),
-    )
-  )
+# -- eps1 t.q. endommagement a l'infini = 0.20 :
+eps1 = 2.70000000000000e-04
 
-RAMPE = DEFI_FONCTION(
-  NOM_PARA = 'INST',
-  VALE = (0,0, 1,1)
-  )
+# -- eps2 t.q. endommagement a l'infini = 0.50 :
+eps2 = 7.34846922834953e-04
+
+# -- eps3 t.q. endommagement a l'infini = 0.99 :
+eps3 = 1.10464444958548e-02
+
+INSTANTS = DEFI_LIST_REEL(DEBUT      = 0.,
+                          INTERVALLE = (_F(JUSQU_A = eps1, NOMBRE =1),
+                                        _F(JUSQU_A = eps2, NOMBRE =1),
+                                        _F(JUSQU_A = eps3, NOMBRE =1),),)
+
+RAMPE = DEFI_FONCTION(NOM_PARA = 'INST',
+                      VALE     = (0.,0., 1.,1.),)
 
 # -----------------------------------------------------
 #                    CHARGEMENT
 # -----------------------------------------------------
 
-ZERO = DEFI_CONSTANTE(
-  VALE = 0
-  )
+ZERO = DEFI_CONSTANTE(VALE = 0)
 
-PROFIL = DEFI_FONCTION(
-  NOM_PARA = 'Y',
-  VALE     = (-5,0, 0,0, 10,10),
-  PROL_GAUCHE = 'CONSTANT',
-  PROL_DROITE = 'LINEAIRE'
-  )
+PROFIL = DEFI_FONCTION(NOM_PARA    = 'Y',
+                       VALE        = (-125.,0.,0.,0.,250.,250.),
+                       PROL_GAUCHE = 'CONSTANT',
+                       PROL_DROITE = 'LINEAIRE')
 
-CINE = AFFE_CHAR_MECA_F(
-  MODELE = MO,
-  DDL_IMPO = _F(GROUP_NO = 'MATIERE', DX = ZERO, DY = PROFIL)
-  )
-
-
+CINE = AFFE_CHAR_MECA_F(MODELE   = MO,
+                        DDL_IMPO = _F(GROUP_NO = 'MATIERE', 
+                                      DX = ZERO, 
+                                      DY = PROFIL),)
 
 # -----------------------------------------------------
 #                CALCUL NON LINEAIRE
 # -----------------------------------------------------
 
-
-EVOL = STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=300),
-  MODELE = MO,
-  CHAM_MATER = CHMAT,
-  EXCIT = (
-    _F(CHARGE = CINE, FONC_MULT = RAMPE),
-    ),
-  COMP_INCR = _F(
-    RELATION    = 'ENDO_FRAGILE',
-    DEFORMATION = 'PETIT'
-    ),
-  INCREMENT = _F(
-    LIST_INST = INSTANTS,
-    ),
-  NEWTON = _F(
-    MATRICE = 'TANGENTE',
-    REAC_INCR = 1,
-    REAC_ITER = 1
-    ),
-  CONVERGENCE = _F(
-    ITER_GLOB_MAXI = 20,
-    RESI_REFE_RELA=1.e-6,
-    SIGM_REFE=1.,
-    VARI_REFE=1.,
-    ),
-  )
-
-
+EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS',
+                                      PCENT_PIVOT = 300),
+                     MODELE      = MO,
+                     CHAM_MATER  = CHMAT,
+                     EXCIT       = (_F(CHARGE = CINE, 
+                                      FONC_MULT = RAMPE),),
+                     COMP_INCR   = _F(RELATION = 'ENDO_SCALAIRE',
+                                     DEFORMATION = 'PETIT'),
+                     INCREMENT   = _F(LIST_INST = INSTANTS,),
+                     NEWTON      = _F(MATRICE = 'TANGENTE',
+                                     REAC_INCR = 1,
+                                     REAC_ITER = 1),
+                     CONVERGENCE = _F(ITER_GLOB_MAXI = 20,
+                                      RESI_REFE_RELA = 1.e-6,
+                                      SIGM_REFE = Sy,
+                                      LAGR_REFE = p*wy,
+                                      VARI_REFE = 1.,),)
 
 # -----------------------------------------------------
 #    EXTRAPOLATION DES VARIABLES INTERNES AUX NOEUDS
 # -----------------------------------------------------
 
-
-EVOL = CALC_ELEM (reuse = EVOL,
-  RESULTAT   = EVOL,
-  OPTION     = 'VARI_ELNO_ELGA'
-  )
+EVOL = CALC_ELEM(reuse    = EVOL,
+                 RESULTAT = EVOL,
+                 OPTION   = 'VARI_ELNO_ELGA',)
 
 
-EVOL = CALC_NO (reuse = EVOL,
-  RESULTAT = EVOL,
-  OPTION   = 'VARI_NOEU_ELGA'
-   )
-
+EVOL = CALC_NO(reuse    = EVOL,
+               RESULTAT = EVOL,
+               OPTION   = 'VARI_NOEU_ELGA',)
 
 # -----------------------------------------------------
-#     EXTRACTION DES RESULTATS EN Y = -1 ET Y = 1
+#     EXTRACTION EN Y = ytest1 ET Y = ytest2
 # -----------------------------------------------------
 
-
-
-RESU=MACR_LIGN_COUPE( RESULTAT   = EVOL,
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
-                      LIGN_COUPE = _F( NB_POINTS = 2,
-                                       COOR_ORIG = (0,-1),
-                                       COOR_EXTR = (0, 1), )
-                    )
-
+RESU = MACR_LIGN_COUPE(RESULTAT   = EVOL,
+                       NOM_CHAM   = 'VARI_NOEU_ELGA',
+                       LIGN_COUPE = _F(TYPE = 'GROUP_NO',
+                                       GROUP_NO = 'NOTEST',),)
 
 # -----------------------------------------------------
 #      COMPARAISON AVEC LES VALEURS DE REFERENCE
 # -----------------------------------------------------
 
+# -- references en ytest1 et ytest2 a l'instant eps1 :
+valref11 = 1.93274688119012e-02
+valref12 = 1.41846675324338e-01
 
-TEST_TABLE(
-  REFERENCE = 'ANALYTIQUE',
-  VALE      = 0.0251,
-  PRECISION = 0.01,
-  TABLE     = RESU,
-  NOM_PARA  = 'V1',
-  FILTRE = (
-    _F(NOM_PARA = 'INST'  , VALE = 1.414E-4),
-    _F(NOM_PARA = 'COOR_Y', VALE = -1),
-    ),
-  )
+# -- references en ytest1 et ytest2 a l'instant eps2 :
+valref21 = 1.39107889370765e-01
+valref22 = 3.80008828951670e-01
 
-TEST_TABLE(
-  REFERENCE = 'ANALYTIQUE',
-  VALE      = 0.3437,
-  PRECISION = 0.01,
-  TABLE     = RESU,
-  NOM_PARA  = 'V1',
-  FILTRE = (
-    _F(NOM_PARA = 'INST'  , VALE = 1.414E-4),
-    _F(NOM_PARA = 'COOR_Y', VALE = 1),
-    ),
-  )
+# -- references en ytest1 et ytest2 a l'instant eps3 :
+valref31 = 6.14240950943351e-01
+valref32 = 9.77312427816067e-01
 
-TEST_TABLE(
-  REFERENCE = 'ANALYTIQUE',
-  VALE      = 0.1106,
-  PRECISION = 0.01,
-  TABLE     = RESU,
-  NOM_PARA  = 'V1',
-  FILTRE = (
-    _F(NOM_PARA = 'INST'  , VALE = 1.732E-4),
-    _F(NOM_PARA = 'COOR_Y', VALE = -1),
-    ),
-  )
+prec     = 2.e-03
 
-TEST_TABLE(
-  REFERENCE = 'ANALYTIQUE',
-  VALE      = 0.6045,
-  PRECISION = 0.01,
-  TABLE     = RESU,
-  NOM_PARA  = 'V1',
-  FILTRE = (
-    _F(NOM_PARA = 'INST'  , VALE = 1.732E-4),
-    _F(NOM_PARA = 'COOR_Y', VALE = 1),
-    ),
-  )
+TEST_TABLE(REFERENCE = 'ANALYTIQUE',
+           VALE      = valref11,
+           PRECISION = prec,
+           TABLE     = RESU,
+           NOM_PARA  = 'V1',
+           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+                           VALE = eps1),
+                        _F(NOM_PARA = 'COOR_Y', 
+                           VALE = ytest1),),)
 
-TEST_TABLE(
-  REFERENCE = 'ANALYTIQUE',
-  VALE      = 0.1877,
-  PRECISION = 0.01,
-  TABLE     = RESU,
-  NOM_PARA  = 'V1',
-  FILTRE = (
-    _F(NOM_PARA = 'INST'  , VALE = 2.E-4),
-    _F(NOM_PARA = 'COOR_Y', VALE = -1),
-    ),
-  )
+TEST_TABLE(REFERENCE = 'ANALYTIQUE',
+           VALE      = valref12,
+           PRECISION = prec,
+           TABLE     = RESU,
+           NOM_PARA  = 'V1',
+           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+                           VALE = eps1),
+                        _F(NOM_PARA = 'COOR_Y', 
+                           VALE = ytest2),),)
 
-TEST_TABLE(
-  REFERENCE = 'ANALYTIQUE',
-  VALE      = 0.7897,
-  PRECISION = 0.01,
-  TABLE     = RESU,
-  NOM_PARA  = 'V1',
-  FILTRE = (
-    _F(NOM_PARA = 'INST'  , VALE = 2.E-4),
-    _F(NOM_PARA = 'COOR_Y', VALE = 1),
-    ),
-  )
+TEST_TABLE(REFERENCE = 'ANALYTIQUE',
+           VALE      = valref21,
+           PRECISION = prec,
+           TABLE     = RESU,
+           NOM_PARA  = 'V1',
+           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+                           VALE = eps2),
+                        _F(NOM_PARA = 'COOR_Y', 
+                           VALE = ytest1),),)
 
+TEST_TABLE(REFERENCE = 'ANALYTIQUE',
+           VALE      = valref22,
+           PRECISION = prec,
+           TABLE     = RESU,
+           NOM_PARA  = 'V1',
+           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+                           VALE = eps2),
+                        _F(NOM_PARA = 'COOR_Y', 
+                           VALE = ytest2),),)
+
+TEST_TABLE(REFERENCE = 'ANALYTIQUE',
+           VALE      = valref31,
+           PRECISION = prec,
+           TABLE     = RESU,
+           NOM_PARA  = 'V1',
+           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+                           VALE = eps3),
+                        _F(NOM_PARA = 'COOR_Y', 
+                           VALE = ytest1),),)
+
+TEST_TABLE(REFERENCE = 'ANALYTIQUE',
+           VALE      = valref32,
+           PRECISION = prec,
+           TABLE     = RESU,
+           NOM_PARA  = 'V1',
+           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+                           VALE = eps3),
+                        _F(NOM_PARA = 'COOR_Y', 
+                           VALE = ytest2),),)
+
+IMPR_TABLE(TABLE = RESU,
+           FORMAT_R='E12.14',)
 
 FIN()

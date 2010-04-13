@@ -1,6 +1,6 @@
       SUBROUTINE JELIRA ( NOMLU , CATR , IVAL , CVAL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -200,8 +200,8 @@ C
          CVA = TYPE ( JTYPE(IC) + ID )
          LCV = LEN(TYPE(1))
          IF ( CVA .EQ. 'K' ) THEN
-           CALL CODENT(LTYPI,'G',CVA(2:4))
            IF ( CATRLU .EQ. 'TYPELONG' ) THEN
+             CALL CODENT(LTYPI,'G',CVA(2:4))
              LCV = LEN(TYPE(1))+2
            ENDIF
          ENDIF
@@ -298,7 +298,7 @@ C
       ENDIF
  100  CONTINUE
       IF ( LCV .NE. 0 ) THEN
-        CVAL = CVA(1:MIN(LEN(CVAL),LCV))
+        CVAL = CVA(1:LCV)
       ELSE
         IVAL = IVA
       ENDIF

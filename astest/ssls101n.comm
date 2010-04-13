@@ -1,0 +1,93 @@
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+# TITRE PLAQUE CIRCULAIRE POSEE  SOUS PRESSION
+# ssls101n.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+#--------------------------------------------------------------------
+# Validation de LIAISON_MAIL / TYPE_RACCORD='COQUE'  (Coque / Coque)
+# On maille 1/4 de la plaque. La modelisation est DKT.
+# La zone interieure est maillee en triangles (rayon R2=0.3)
+# La couronne exterieure est maillee en quadrangles
+# Les maillages des 2 zones sont incompatibles
+# on teste la valeur de la fleche au centre de la plaque.
+# la valeur est analytique. La solution est tres bonne.
+#--------------------------------------------------------------------
+
+DEBUT(CODE=_F(NOM='SSLS101N',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+T=0.1
+R=1.
+P=1.
+
+
+PRE_GIBI()
+MAILL=LIRE_MAILLAGE()
+
+# remarque importante :
+# Le point D existe en double dans le maillage (D1 dans ABC et D2 dans DBCE).
+# D1 va etre "attache" a DBCE (LIAISON_MAIL). Il sera quasiment elimine.
+# il ne faut pas lui ajouter les conditions de symetrie (sinon : pivot nul)
+# C'est pour cela que l'on cree le group_no AB1 = AB - D1
+# On fait la meme chose pour CA1 = CA - E1
+DEFI_GROUP(reuse=MAILL, MAILLAGE=MAILL,
+          CREA_GROUP_NO=(  _F(TOUT_GROUP_MA='OUI',),
+                           _F(NOM='AB1',DIFFE=('AB','D1',)),
+                           _F(NOM='CA1',DIFFE=('CA','E1',)),
+          ))
+MAILL=MODI_MAILLAGE(reuse =MAILL, MAILLAGE=MAILL,
+                   ORIE_NORM_COQUE=(_F(GROUP_MA='ADE',  GROUP_NO='A', VECT_NORM=(0., 0., 1.)),
+                                    _F(GROUP_MA='DBCE', GROUP_NO='B', VECT_NORM=(0., 0., 1.)),
+                   ))
+
+MATER=DEFI_MATERIAU(  ELAS=_F(  E = 1.,      NU = 0.3) )
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL, AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
+
+MODEL=AFFE_MODELE(  MAILLAGE=MAILL,
+                    AFFE=(_F(GROUP_MA='ADE',  MODELISATION = 'DKT', PHENOMENE = 'MECANIQUE'),
+                          _F(GROUP_MA='DBCE', MODELISATION = 'DKT', PHENOMENE = 'MECANIQUE')))
+
+CARELEM=AFFE_CARA_ELEM(  MODELE=MODEL,
+                         COQUE=_F(  GROUP_MA = 'ABC', COQUE_NCOU=9,
+                                    EPAIS = T,  ANGL_REP = (0., 0.,)))
+
+CHARGE=AFFE_CHAR_MECA(  MODELE=MODEL, INFO=1,
+            DDL_IMPO=(_F( GROUP_MA = 'BC',     DX = 0.,  DY = 0.,   DZ =  0.),
+                      _F( GROUP_NO = 'AB1',    DY = 0.,  DRX = 0.,  DRZ = 0.),
+                      _F( GROUP_NO = 'CA1',    DX = 0.,  DRY = 0.,  DRZ = 0.),
+                     ),
+               PRES_REP=(_F(GROUP_MA='ADE',    PRES =  P),
+                         _F(GROUP_MA='DBCE',   PRES =  P),)
+               )
+
+
+RACCORD=AFFE_CHAR_MECA(MODELE=MODEL, INFO=1,
+      LIAISON_MAIL =_F(TYPE_RACCORD='COQUE', GROUP_NO_ESCL='DE', GROUP_MA_MAIT='DBCE' ))
+
+
+RESU=MECA_STATIQUE( MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=CARELEM,
+          EXCIT=(_F(CHARGE = CHARGE),_F(CHARGE = RACCORD)))
+
+
+TEST_RESU( RESU=_F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL', PRECISION = 0.1E-2,
+                     GROUP_NO = 'A',NOM_CMP = 'DZ', VALE = -695.6256, REFERENCE='ANALYTIQUE'))
+
+IMPR_RESU(UNITE=43, FORMAT='MED', RESU=_F(RESULTAT=RESU))
+
+
+FIN()

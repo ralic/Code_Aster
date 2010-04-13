@@ -3,10 +3,10 @@
      &                  LISCHA,COMREF,DEFICO,RESOCO,RESOCU,
      &                  NUMEDD,PARCON,SDSENS,LSENS ,NRPASE,
      &                  VEELEM,VEASSE,MEASSE,NBVECT,LTYPVE,
-     &                  LCALVE,LASSVE)
+     &                  LCALVE,LOPTVE,LASSVE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,7 +29,8 @@ C
       IMPLICIT NONE
       INTEGER       NBVECT    
       CHARACTER*6   LTYPVE(20)
-      LOGICAL       LCALVE(20),LASSVE(20)       
+      LOGICAL       LCALVE(20),LASSVE(20)    
+      CHARACTER*16  LOPTVE(20)   
       CHARACTER*(*) MODELZ
       LOGICAL       LSENS      
       CHARACTER*24  MATE,CARELE
@@ -85,15 +86,17 @@ C IN  NBVECT : NOMBRE DE VECT_ELEM DANS LA LISTE
 C IN  LTYPVE : LISTE DES NOMS DES VECT_ELEM
 C IN  LASSVE : SI VECT_ELEM A ASSEMBLER
 C IN  LCALVE : SI VECT_ELEM A CALCULER
+C IN  LOPTVE : OPTION DE CALCUL DES VECT_ELEM
 C      
 C ----------------------------------------------------------------------
 C
       CHARACTER*6  TYPVEC 
-      INTEGER      IMATR
+      INTEGER      IVECT
       CHARACTER*19 VECELE,VECASS           
       REAL*8       DIINST,INSTAM,INSTAP 
       CHARACTER*24 MODELE 
       LOGICAL      LCALC,LASSE
+      CHARACTER*16 OPTION
 C      
 C ----------------------------------------------------------------------
 C
@@ -112,13 +115,14 @@ C
 C
 C --- CALCUL ET ASSEMBLAGE DES VECT_ELEM
 C      
-      DO 10 IMATR = 1,NBVECT
+      DO 10 IVECT = 1,NBVECT
 C
 C --- VECT_ELEM COURANT
 C      
-        TYPVEC = LTYPVE(IMATR)   
-        LCALC  = LCALVE(IMATR)
-        LASSE  = LASSVE(IMATR)
+        TYPVEC = LTYPVE(IVECT)   
+        LCALC  = LCALVE(IVECT)
+        LASSE  = LASSVE(IVECT)
+        OPTION = LOPTVE(IVECT) 
 C
 C --- UTILISER NMFINT
 C        
@@ -146,7 +150,8 @@ C
      &                MODELE,LISCHA,MATE  ,CARELE,COMPOR,
      &                CARCRI,NUMEDD,COMREF,DEFICO,RESOCO,
      &                PARCON,INSTAM,INSTAP,VALINC,SOLALG,
-     &                SDDYNA,SDSENS,LSENS ,NRPASE,VECELE)
+     &                SDDYNA,SDSENS,LSENS ,NRPASE,OPTION,
+     &                VECELE)
         ENDIF 
 C
 C --- ASSEMBLER VECT_ELEM 

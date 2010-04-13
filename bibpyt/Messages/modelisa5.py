@@ -1,4 +1,4 @@
-#@ MODIF modelisa5 Messages  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa5 Messages  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,7 +171,8 @@ cata_msg = {
 """),
 
 53 : _("""
-  -> Le maillage est 3D mais les éléments du modèle sont 2D.
+  -> Le maillage est 3D (tous les noeuds ne sont pas dans le meme plan Z = cste),
+     mais les éléments du modèle sont de dimension 2.
 
   -> Risque & Conseil :
      Si les facettes supportant les éléments ne sont pas dans un plan Z = cste,
@@ -194,6 +195,15 @@ cata_msg = {
 
 57 : _("""
  erreur(s) rencontree(s) lors de la verification des affectations.
+"""),
+
+58 : _("""
+ -> Bizarre :
+     Les éléments du modèle sont de dimension 2.
+     Mais les noeuds du maillage sont un meme plan Z = a avec a != 0.,
+
+ -> Risque & Conseil :
+     Il est d'usage d'utiliser un maillage Z=0. pour les modélisations planes ou Axis.
 """),
 
 59 : _("""

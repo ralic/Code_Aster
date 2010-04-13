@@ -7,7 +7,7 @@
      &               TRIFIS
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2010   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER        INO,INOA,INOB,IMA,IFM,NIV,NBNOG,NBMAG,IRET,JCONX1,
-     &               JCONX2,ADDIM,NDIM,JZERO,JMACO,NBMACO,NBNOMA,JMAI,
+     &               JCONX2,NDIM,JZERO,JMACO,NBMACO,NBNOMA,JMAI,
      &               NUNOA,NUNOB,JNOMCO,NBNOCO,NUNO,NMAABS,NPTINT,NTRI,
      &               ITYPMA,ITRI,JCOOR,JNOSOM,NBNOZO,IA,IB,IC,CPTZO,
      &               JLSNO,JLTNO,JNOULS,JNOULT,AR(12,2),NBAR,IAR,NA,NB,
@@ -190,10 +190,9 @@ C     RETRIEVE THE NUMBER OF ELEMENTS DEFINING THE TORE
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
       MAI = NOMA//'.TYPMAIL'
       CALL JEVEUO(MAI,'L',JMAI)
-      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-      NDIM=ZI(ADDIM-1+6)
+      CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIM,K8B,IRET)
       CALL JEVEUO('&CATA.TM.TMDIM','L',JTMDIM)
-      
+
 C   RECUPERATION DE L'ADRESSE DES VALEURS DES LS
       IF (LEVSET.EQ.'LN') THEN
          CALL JEVEUO(CNSLN//'.CNSV','E',JLSNO)
@@ -211,11 +210,11 @@ C  RECUPERATION DE L'ADRESSE DES VALEURS DE ISOZRO
       DO 10 INO=1,NBNOG
          ZL(JZERO-1+INO)=.FALSE.
  10   CONTINUE
- 
+
 C INITIALISATION DU VECTEUR LST
       DO 20 I=1,6
         LST(I)=0.D0
- 20   CONTINUE  
+ 20   CONTINUE
 
 
 C-----------------------------------------------------------------------
@@ -270,7 +269,7 @@ C  SI AU - TROIS NOEUDS S'ANNULENT (en 3D),ON A UN PLAN D'INTERSECTION
 
 C  ON PARCOURT LES ARETES DE L'ELEMENT
          ITYPMA=ZI(JMAI-1+ELEM)
-         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA) 
+         CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
          CALL CONARE(TYPMA,AR,NBAR)
          DO 110 IAR = 1,NBAR
             NA=AR(IAR,1)
@@ -301,7 +300,7 @@ C     STORED. THESE INFORMATIONS WILL BE USED BY THE UPWIND SCHEME.
       IF (UPWIND) THEN
 
 C        NUMBER OF INTERSECTION POINTS BETWEEN THE LSN=0 AND EACH
-C        ELEMENT (MAX=6) AND LIST OF THEIR POSITION IN THE COORDINATE 
+C        ELEMENT (MAX=6) AND LIST OF THEIR POSITION IN THE COORDINATE
 C        TABLE BELOW (JTRI)
 C        EACH ROW:   NUMBER OF POINTS,P1,...,P6
          CALL WKVECT(TRIFIS,'V V I',NBMACO*7,JTRI)
@@ -364,7 +363,7 @@ C  -----------------------------------------
       DO 300 INO=1,NBNOCO
          NUNO = ZI(JNOMCO-1+INO)
          LSN = ZR(JLSNO-1+NUNO)
- 
+
 C  SI LE NOEUD EST SUR L'ISOZERO, ON L'A DEJA REPERE
          IF (ZL(JZERO-1+NUNO)) THEN
             ZR(JNOULS-1+INO) = 0.D0
@@ -398,7 +397,7 @@ C  SI LE NOEUD APPARTIENT A LA MAILLE
                IF (NDIM.EQ.3) P(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
                IF (NDIM.EQ.2) P(3)=0.D0
 
-                                          
+
 C  ON RECUPERE LES POINTS D'INTERSECTION ISOZERO-ARETES
                NPTINT = 0
 
@@ -409,7 +408,7 @@ C On initialise les coordonnes des points d'intersection
                Z(I)=0.D0
  321        CONTINUE
 
-               
+
 C  ON RECHERCHE D'ABORD LES NOEUDS QUI SONT DES POINTS D'INTERSECTIONS
                DO 340 INOA=1,NBNOMA
                   NUNOA = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOA-1)
@@ -421,9 +420,9 @@ C  ON RECHERCHE D'ABORD LES NOEUDS QUI SONT DES POINTS D'INTERSECTIONS
                      Y(NPTINT) = ZR(JCOOR-1+3*(NUNOA-1)+2)
                      IF (NDIM.EQ.3) THEN
                         Z(NPTINT) = ZR(JCOOR-1+3*(NUNOA-1)+3)
-                     ELSEIF (NDIM.EQ.2) THEN 
+                     ELSEIF (NDIM.EQ.2) THEN
                         Z(NPTINT) = 0.D0
-                     ENDIF  
+                     ENDIF
                      LST(NPTINT)=ZR(JLTNO-1+NUNOA)
 
                   ENDIF
@@ -438,23 +437,23 @@ C plus de 2 aretes coupees par LSN0
 
                NBSOM = 0400
 
-               IF ((TYPMA(1:4).EQ.'HEXA').OR.(TYPMA(1:4).EQ.'QUAD')) 
+               IF ((TYPMA(1:4).EQ.'HEXA').OR.(TYPMA(1:4).EQ.'QUAD'))
      &           NBSOM = 4
-               IF ((TYPMA(1:5).EQ.'TETRA').OR.(TYPMA(1:4).EQ.'TRIA')) 
+               IF ((TYPMA(1:5).EQ.'TETRA').OR.(TYPMA(1:4).EQ.'TRIA'))
      &           NBSOM = 3
-                
+
                IF (NDIM.EQ.3) CALL CONFAC(TYPMA,IBID2,IBID,FA,NBF)
                IF (NDIM.EQ.2) THEN
                  NBF=1
                  DO 341 I=1,NBSOM
                    FA(1,I)=I
- 341             CONTINUE                                       
+ 341             CONTINUE
                ENDIF
-                  
+
                DO 610 IFQ=1,NBF
-                  NBLSN0 = 0               
+                  NBLSN0 = 0
                   NA=FA(IFQ,1)
-                  NUNOA=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NA-1)      
+                  NUNOA=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NA-1)
                   LSNA=ZR(JLSNO-1+(NUNOA-1)+1)
                   DO 411 I=2,NBSOM
                     NUNOB=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+FA(IFQ,I)-1)
@@ -468,18 +467,18 @@ C plus de 2 aretes coupees par LSN0
  411              CONTINUE
 C  On affecte a B le point A initial pour comparer D et A
                     NUNOB=NUNOA
-                    LSNB=ZR(JLSNO-1+(NUNOB-1)+1) 
+                    LSNB=ZR(JLSNO-1+(NUNOB-1)+1)
                     IF ((LSNA*LSNB.LT.0.D0).AND.
      &                (ABS(LSNA).GT.R8PREM()).AND.
      &                (ABS(LSNB).GT.R8PREM())) THEN
                          NBLSN0 = NBLSN0 + 1
                     ENDIF
 C  Arret fatal si on trouve au moins 3 points d'intersection sur
-C une meme face 
+C une meme face
                     IF (NBLSN0.GE.3) CALL U2MESS('F','XFEM_61')
- 610           CONTINUE                 
+ 610           CONTINUE
 
-                              
+
                CALL CONARE(TYPMA,AR,NBAR)
 C  On cherche la plus grande ar�te de l'�l�ment
                LONGMX=0
@@ -491,7 +490,7 @@ C  On cherche la plus grande ar�te de l'�l�ment
                   DO 444 I = 1,NDIM
                     A(I)= ZR(JCOOR-1+3*(NUNOA-1)+I)
                     B(I)= ZR(JCOOR-1+3*(NUNOB-1)+I)
- 444              CONTINUE                    
+ 444              CONTINUE
                   LONGAR=PADIST(NDIM,A,B)
                   IF (LONGAR.GT.LONGMX) LONGMX = LONGAR
  333           CONTINUE
@@ -523,7 +522,7 @@ C                     NPTINT = NPTINT+1
                      Y(NPTINT+1) = YA + S*(YB-YA)
                      Z(NPTINT+1) = ZA + S*(ZB-ZA)
 
-C  ON VERIFIE LA VALIDITE DU POINT		     
+C  ON VERIFIE LA VALIDITE DU POINT		
                      DEJA=.FALSE.
                      IF (NDIM.EQ.3) THEN
                        DIST = (((X(NPTINT+1)-XA)**2)+
@@ -531,13 +530,13 @@ C  ON VERIFIE LA VALIDITE DU POINT
      &                        ((Z(NPTINT+1)-ZA)**2))**0.5D0
                      ELSEIF (NDIM.EQ.2) THEN
                        DIST = (((X(NPTINT+1)-XA)**2)+
-     &                        ((Y(NPTINT+1)-YA)**2))**0.5D0 
-                     ENDIF         
+     &                        ((Y(NPTINT+1)-YA)**2))**0.5D0
+                     ENDIF
 
-                                
+
                      IF (NPTINT.GT.0) THEN
                       DO 380 IPT = 1,NPTINT
-                      
+
                        IF (NDIM.EQ.3) THEN
                         DIST = (((X(NPTINT+1)-X(NPTINT+1-IPT))**2)+
      &                        ((Y(NPTINT+1)-Y(NPTINT+1-IPT))**2)+
@@ -545,7 +544,7 @@ C  ON VERIFIE LA VALIDITE DU POINT
                        ELSEIF (NDIM.EQ.2) THEN
                         DIST = (((X(NPTINT+1)-X(NPTINT+1-IPT))**2)+
      &                        ((Y(NPTINT+1)-Y(NPTINT+1-IPT))**2))**0.5D0
-                       ENDIF                      
+                       ENDIF
                        IF (DIST.GT.(LONGMX*NDIM**0.5D0)) THEN
                         DEJA=.TRUE.
                         GOTO 330
@@ -556,11 +555,11 @@ C  ON VERIFIE LA VALIDITE DU POINT
                         GOTO 330
                        ENDIF
 
-                       
+
  380                  CONTINUE
-                    
+
                      ENDIF
-                    
+
                      IF (.NOT.DEJA) THEN
                        NPTINT = NPTINT+1
                        LSTA = ZR(JLTNO-1+NUNOA)
@@ -578,7 +577,7 @@ C  VERIFICATION SUR LE NOMBRE DE POINTS D'INTERSECTION TROUVES
 C              LES ARETES DE LA MAILLE 'NOMMA' DE TYPE 'TYPMA' ONT  N
 C              POINTS D'INTERSECTION AVEC L'ISO-ZERO DE 'LEVSET'
 
-                
+
                CALL ASSERT(.NOT.(
      &             (TYPMA(1:5).EQ.'TETRA'.AND.NPTINT.GT.4).OR.
      &             (TYPMA(1:5).EQ.'PENTA'.AND.NPTINT.GT.5).OR.
@@ -710,7 +709,7 @@ C  ON STOCKE LA DISTANCE MINIMALE AVEC PROJECTION DANS LE TRIANGLE ABC
      &                     EPS(1)*LSTB + EPS(2)*LSTC + EPS(3)*LSTA
                      ENDIF
                   ENDIF
- 350           CONTINUE         
+ 350           CONTINUE
 
           ENDIF
  310     CONTINUE
@@ -737,11 +736,11 @@ C  ------------------------------------------------
 
 
          ZR(JLSNO-1+NUNO) = ZR(JNOULS-1+INO)
-         
+
          IF (LEVSET.EQ.'LN') THEN
             ZR(JLTNO-1+NUNO) = ZR(JNOULT-1+INO)
          ENDIF
- 
+
  400  CONTINUE
 
 C      IF (NIV.GT.1)

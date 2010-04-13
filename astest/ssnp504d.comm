@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp504d.para = tps_job 150 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -43,18 +43,13 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                     POINT  = (0.0,9.0),
                                     RAYON = 1E-3,
                                     PRECISION = 2E-3,),),);
-                     
+
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                   MAILLAGE=MAILLAG2,
-                  CREA_GROUP_NO =(_F(NOM = 'LIGSUP',
-                                     OPTION = 'PLAN',
-                                     GROUP_NO_CENTRE  = 'PHAU',
-                                     VECT_NORMALE = (0.0,1.0),
-                                     PRECISION = 1E-3,),
-                                  _F(NOM = 'COTEG',
-                                     NOEUD = ('N45','N46','N47','N48','N49','N50',
-                                              'N51','N52','N53','N54','N55',
-                                              'N56','N57','N58','N59','N60',),),),); 
+                  CREA_GROUP_NO =(_F(NOM = 'COTEG',
+                                     NOEUD = ('N43','N44','N45','N46','N47','N48',
+                                              'N49','N50','N51','N52','N53','N54',
+                                              'N55','N56','N57','N58',),),),);
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -138,8 +133,8 @@ ZERO=0.0
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='LIGINF',DY=DEPY,),
-                             _F(GROUP_NO='LIGSUP',DY=-DEPY,),
-                             _F(NOEUD=('N1','N2','N36','N20',),DX=0.0,),),
+                             _F(GROUP_MA='LIGSUP',DY=-DEPY,),
+                             _F(NOEUD=('N1','N2','N3','N4',),DX=0.0,),),
                    INFO=1,);
                     
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
@@ -148,15 +143,15 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    # CONDITIONS IMPOSEES A LA MAIN
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
-                   LIAISON_DDL=(_F(NOEUD=('N44','N44','N45','N45',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                    LIAISON_DDL=(_F(NOEUD=('N42','N42',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1),
                                    COEF_IMPO=DEPX,),
-                                _F(NOEUD=('N60','N60','N61','N61',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                                _F(NOEUD=('N59','N59',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1),
                                    COEF_IMPO=DEPX,),),
-                   INFO=1,);
+                   INFO=1,);  
                             
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,1.,1.),

@@ -9,7 +9,7 @@
      &               NODTOR,ELETOR,LIGGRD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2010   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNUM,JEXATR,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER        IFM,NIV,NBNOM,IRET,JCONX1,JCONX2,JMAI,ADDIM,IBID,
+      INTEGER        IFM,NIV,NBNOM,IRET,JCONX1,JCONX2,JMAI,IBID,
      &               NDIM,JLSNO,JVI,JVIL,JWI,JWIL,JPTF,JPTFL,JGDF,JGDFL,
      &               JFEL,JFELL,JFELD,NNCP,JMEAST,JMESTL,JMESTD,ITEMP,
      &               NBNOMA,ITYPMA,IADF,IADMET,IADDFI,INO,IMA,IADALP,
@@ -125,8 +125,7 @@ C  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
       MAI = NOMA//'.TYPMAIL'
       CALL JEVEUO(MAI,'L',JMAI)
-      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-      NDIM=ZI(ADDIM-1+6)
+      CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIM,K8B,IRET)
       CALL JEVEUO('&CATA.TM.TMDIM','L',JTMDIM)
 
 C     RETRIEVE THE NUMBER OF THE NODES THAT MUST TO BE USED IN THE
@@ -239,7 +238,7 @@ C-----------------------------------------------------------------------
       CNSGDF =  '&&XPRREI.CNSGDF'
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSGDF)
       CALL JEVEUO(CNSGDF//'.CNSV','E',JGDF)
-     
+
       CALL JEVEUO(CNSGDF//'.CNSL','E',JGDFL)
 
       CNOGDF = '&&XPRREI.CNOGDF'
@@ -279,8 +278,8 @@ C           RETREIVE THE NODE NUMBER
          CALL CNSCNO(CNSGDF,' ','NON','V',CNOGDF,'F',IBID)
 
 
-91       CONTINUE 
-         
+91       CONTINUE
+
          LPAIN(1)='PNEUTR'
          LCHIN(1)=CNOGDF
          LPAOUT(1)='PMOYEL'
@@ -289,7 +288,7 @@ C           RETREIVE THE NODE NUMBER
          CALL CALCUL('S','MOY_NOEU_S',LIGGRD,1,LCHIN,LPAIN,1,
      &               LCHOUT,LPAOUT,'V')
 
-                     
+
 C-----------------------------------------------------------------------
 
 C---------------------------------------------------------
@@ -363,7 +362,7 @@ C---------------------------------------
          SDIFF = 0.D0
          SDIFFT = 0.D0
          SIGLST = 0.D0
-         DO 200 I=1,NBNO           
+         DO 200 I=1,NBNO
 C           RETREIVE THE NODE NUMBER
             NODE = ZI(JNODTO-1+I)
 C  ON ECARTE LES NOEUDS MILIEUX
@@ -406,11 +405,11 @@ C           RETREIVE THE NODE NUMBER
 C  ON ECARTE LES NOEUDS MILIEUX
             IF (.NOT.ZL(JNOSOM-1+NODE)) GOTO 800
 C  ON ECARTE LES NOEUDS CALCULES PLUS HAUT
-            IF (ZL(JZERO-1+NODE)) GOTO 800            
-            
+            IF (ZL(JZERO-1+NODE)) GOTO 800
+
             IF (ABS(ZR(JWI-1+NODE)).LT.R8PREM()) THEN
 C           WRITE(*,*)'La reinit du noeud d"indice',I,' se fait a WI=0'
-                          
+
 C    RECUPERATION DES MAILLES CONTENANT LE NOEUD I
                CALL JELIRA(JEXNUM(CNXINV,NODE),'LONMAX',NMANOI,K8B)
                CALL JEVEUO(JEXNUM(CNXINV,NODE),'L',JMANOI)
@@ -418,8 +417,8 @@ C     BOUCLE SUR LES MAILLES CONTENANT LE NOEUD I
                DISMIN = R8MAEM()
 C    ON ECARTE LES NOEUDS APPARTENANT A LA STRUCTURE MASSIVE
                IF (((NMANOI.GT.2).AND.(NDIM.EQ.2)).OR.
-     &          ((NMANOI.GT.4).AND.(NDIM.EQ.3))) GOTO 800               
-               NUMIN = 0               
+     &          ((NMANOI.GT.4).AND.(NDIM.EQ.3))) GOTO 800
+               NUMIN = 0
                DO 160 IMAI=1,NMANOI
                   NUMAI = ZI(JMANOI-1+IMAI)
                   ITYPMA = ZI(JMAI-1+NUMAI)
@@ -432,37 +431,37 @@ C     SI MAILLE NON VOLUMIQUE (en 3D) OU SURFACIQUE (en 2D) ON LA SAUTE
 C     BOUCLE SUR LES NOEUDS DE LA MAILLE
                   NBNOMA = ZI(JCONX2+NUMAI) - ZI(JCONX2+NUMAI-1)
 
-C    Algo modifie par Julien 
+C    Algo modifie par Julien
 C   (On cherche a appliquer une reinitialisation aux mailles de bord
 C   et uniquement a elles!)
 
                   DO 170 INO=1,NBNOMA
                      NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAI-1)+INO-1)
                      IF (.NOT.ZL(JNOSOM-1+NUNO)) GOTO 170
-                     
+
                      IF (ABS(ZR(JWI-1+NUNO)).GT.R8PREM()) THEN
-                     
+
                         DIST=0.D0
-                         DO 175 J=1,NDIM                         
+                         DO 175 J=1,NDIM
                            JI(J) = ZR(JCOOR-1+3*(NODE-1)+J)
      &                           - ZR(JCOOR-1+3*(NUNO-1)+J)
                             DIST=DIST+JI(J)**2
  175                     CONTINUE
                          DIST=DIST**0.5D0
-C     On repere le noeud le plus proche                         
+C     On repere le noeud le plus proche
                          IF (DIST.LT.DISMIN) THEN
                            DISMIN = DIST
                            NUMIN = NUNO
                          ENDIF
-                     ENDIF 
-                                        
+                     ENDIF
+
  170              CONTINUE
  160           CONTINUE
 C On affecte au noeud I (WI=0), la reactualisation du noeud NUMIN (WI>0)
                LSPREC = ZR(JLSNO-1+NODE)
                LSNOUV = ZR(JLSNO-1+NODE)
      &          -DELTAT*(ZR(JVI-1+NUMIN)/ZR(JWI-1+NUMIN))
-               ZR(JLSNO-1+NODE) = LSNOUV         
+               ZR(JLSNO-1+NODE) = LSNOUV
             ENDIF
 
  800     CONTINUE

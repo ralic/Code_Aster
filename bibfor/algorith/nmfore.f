@@ -1,8 +1,8 @@
       SUBROUTINE NMFORE(NDIM,NNO1,NNO2,NNO3,NPG,IW,VFF1,VFF2,VFF3,
-     &  IDFDE1,MAT,COMPOR,IDFDE2,GEOM,TYPMOD,REFE,VECT)
+     &  IDFDE1,MAT,IDFDE2,GEOM,TYPMOD,REFE,VECT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,12 +23,11 @@ C ======================================================================
        IMPLICIT NONE
 
        CHARACTER*8   TYPMOD(*)
-       CHARACTER*16  COMPOR
 
        INTEGER NDIM,NNO1,NNO2,NNO3,NPG,IDFDE1,IDFDE2,IW,MAT
        REAL*8  VFF1(NNO1,NPG),VFF2(NNO2,NPG),VFF3(NNO3,NPG)
        REAL*8  GEOM(NDIM,NNO1)
-       REAL*8  REFE(2)
+       REAL*8  REFE(3)
        REAL*8  VECT(*)
 C ----------------------------------------------------------------------
 C
@@ -51,11 +50,12 @@ C ----------------------------------------------------------------------
       
       LOGICAL GRAND,AXI
       INTEGER IBID,NDDL,NDIMSI,G,COD(27),N,I,M,J,KL,PQ,KK,OS
-      INTEGER IU(3*27),IA(8),IL(8)
-      REAL*8  DFDI1(27,3),D
+C      INTEGER IU(3*27),IA(8),IL(8)
+      INTEGER IU(3,27),IA(8),IL(8)
+      REAL*8  DFDI1(27,3)
       REAL*8  AV,MU,AG,BP
       REAL*8  R,WG,B(6,3,27)
-      REAL*8  SIGMA(6),T1,T2,T3,SIGREF,VARREF,DBDPHI
+      REAL*8  SIGMA(6),T1,T2,T3,SIGREF,VARREF,LAGREF,DBDPHI
       REAL*8  R8DOT,R8VIDE,NMTAEF
 C ----------------------------------------------------------------------
 
@@ -73,10 +73,14 @@ C - INITIALISATION
         VARREF = 1.D0
       ELSE
         VARREF = REFE(2)
+      END IF      
+      IF (REFE(3).EQ.R8VIDE()) THEN
+        CALL U2MESK('F','MECANONLINE5_54',1,'LAGR_REFE')
+      ELSE
+        LAGREF = REFE(3)
       END IF
 
       CALL R8INIR(NDDL,0.D0,VECT,1)
-      CALL NMGVRE (COMPOR, MAT, D, DBDPHI)
       CALL NMGVDD(NDIM,NNO1,NNO2,IU,IA,IL)
       
 
@@ -90,7 +94,7 @@ C      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
         CALL NMMABU(NDIM,NNO1,AXI,GRAND,DFDI1,B)
         DO 300 N=1,NNO1
           DO 310 I=1,NDIM
-            KK = IU(NNO1*(I-1)+N)
+            KK = IU(I,N)
             T1 = 0
             DO 320 KL = 1,NDIMSI
               T1 = T1 + ABS(B(KL,I,N))
@@ -101,12 +105,12 @@ C      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
 
         DO 400 N = 1,NNO2
           KK = IA(N)
-          VECT(KK) = VECT(KK) + WG*VFF2(N,G)*D*VARREF
+          VECT(KK) = VECT(KK) + WG*VFF2(N,G)*LAGREF
  400    CONTINUE
 
         DO 500 N = 1,NNO3
           KK = IL(N)
-          VECT(KK) = VECT(KK) + WG*VFF3(N,G)*D*VARREF
+          VECT(KK) = VECT(KK) + WG*VFF3(N,G)*VARREF
  500    CONTINUE
 
  1000 CONTINUE

@@ -8,7 +8,7 @@
       REAL*8  GEOM1(*),GEOM2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -222,8 +222,8 @@ C           -- ON RETABLIT L'ESTIMATION GROSSIERE :
             CALL U2MESK('A','CALCULEL_1',1,NOMMAI)
           ENDIF
         ENDIF
-        ZR(I2COCO+3*(INO2-1)+1)=X(1)
-        ZR(I2COCO+3*(INO2-1)+2)=X(2)
+        ZR(I2COCO-1+3*(INO2-1)+1)=X(1)
+        ZR(I2COCO-1+3*(INO2-1)+2)=X(2)
 
 
 C       2.2.2 :

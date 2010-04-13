@@ -1,5 +1,6 @@
-# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 # TITRE COLONNE PLASTIQUE A GRADIENT SOUS CHARGE VOLUMIQUE (AXIS)
+# ssnv156c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,11 +45,15 @@ COURBE = DEFI_FONCTION(
   PROL_DROITE = 'LINEAIRE'
   )
 
+prefact = 3.41880341880342e03
+Lb      = 0.982707629824
+
 METAL = DEFI_MATERIAU(
   ELAS       = _F(E = 1.E5,  NU = 0.3),
   ECRO_LINE  = _F(SY= 100, D_SIGM_EPSI = 1.E4),
   TRACTION   = _F(SIGM = COURBE),
-  NON_LOCAL  = _F(LONG_CARA = 0.982707629824)
+  NON_LOCAL  = _F(C_GRAD_VARI = prefact*Lb**2.,
+                  PENA_LAGR   = prefact * 1.e03),
   )
 
 CHMAT = AFFE_MATERIAU(

@@ -1,6 +1,6 @@
       SUBROUTINE DISMMA(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     --     DISMOI(MAILLAGE)
 C     ARGUMENTS:
 C     ----------
@@ -38,6 +38,11 @@ C       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
 C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
+      COMPLEX*16 C16B
+      CHARACTER*19 TABLE
+      CHARACTER*1 K1BID
+      REAL*8  ZMAX,ZMIN
+      INTEGER JDIME,IBID,IER,ILMACO,ISM,K,NBMA,NBNO,NBSM,NNO
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /IVARJE/ZI(1)
@@ -61,45 +66,73 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CALL JEMARQ()
       REPK=' '
       NOMOB = NOMOBZ
-      CALL JEVEUO(NOMOB//'.DIME','L',IADIME)
+      CALL JEVEUO(NOMOB//'.DIME','L',JDIME)
 
       IF (QUESTI.EQ.'NB_MA_MAILLA') THEN
-        REPI = ZI(IADIME-1+3)
+        REPI = ZI(JDIME-1+3)
 
       ELSE IF (QUESTI.EQ.'NB_SM_MAILLA') THEN
-        REPI = ZI(IADIME-1+4)
+        REPI = ZI(JDIME-1+4)
 
       ELSE IF (QUESTI.EQ.'NB_NO_MAILLA') THEN
-        REPI = ZI(IADIME-1+1)
+        REPI = ZI(JDIME-1+1)
 
       ELSE IF (QUESTI.EQ.'NB_NL_MAILLA') THEN
-        REPI = ZI(IADIME-1+2)
+        REPI = ZI(JDIME-1+2)
 
       ELSE IF (QUESTI.EQ.'NB_NO_SS_MAX') THEN
-        NBSM = ZI(IADIME-1+4)
+        NBSM = ZI(JDIME-1+4)
         REPI = 0
         DO 10,ISM = 1,NBSM
           CALL JELIRA(JEXNUM(NOMOB//'.SUPMAIL',ISM),'LONMAX',NNO,KBID)
           REPI = MAX(REPI,NNO)
    10   CONTINUE
 
-      ELSE IF (QUESTI.EQ.'DIM_GEOM') THEN
-        REPI = ZI(IADIME-1+6)
 
       ELSE IF (QUESTI.EQ.'Z_CST') THEN
-        NBNO = ZI(IADIME-1+1)
-        CALL JEVEUO(NOMOB//'.COORDO    .VALE','L',IAGEOM)
-        Z1 = ZR(IAGEOM-1+3)
-        DO 20,INO = 2,NBNO
-          IF (ZR(IAGEOM-1+3* (INO-1)+3).NE.Z1) GO TO 30
-   20   CONTINUE
-        REPK = 'OUI'
-        GO TO 50
-   30   CONTINUE
-        REPK = 'NON'
+        CALL LTNOTB ( NOMOB, 'CARA_GEOM' , TABLE )
+        CALL TBLIVA(TABLE,0,' ',IBID,0.D0,C16B,K1BID,'ABSO',
+     &          0.D0,'Z_MIN',K1BID,IBID,ZMIN,C16B,K1BID,IER )
+        CALL TBLIVA(TABLE,0,' ',IBID,0.D0,C16B,K1BID,'ABSO',
+     &          0.D0,'Z_MAX',K1BID,IBID,ZMAX,C16B,K1BID,IER )
+
+        IF (ZMIN.EQ.ZMAX) THEN
+          REPK = 'OUI'
+        ELSE
+          REPK = 'NON'
+        ENDIF
+
+
+      ELSE IF (QUESTI.EQ.'Z_ZERO'.OR.QUESTI.EQ.'DIM_GEOM') THEN
+        CALL LTNOTB( NOMOB, 'CARA_GEOM' , TABLE )
+        CALL TBLIVA(TABLE,0,' ',IBID,0.D0,C16B,K1BID,'ABSO',
+     &          0.D0,'Z_MIN',K1BID,IBID,ZMIN,C16B,K1BID,IER )
+        CALL TBLIVA(TABLE,0,' ',IBID,0.D0,C16B,K1BID,'ABSO',
+     &          0.D0,'Z_MAX',K1BID,IBID,ZMAX,C16B,K1BID,IER )
+
+        IF (ZMIN.EQ.ZMAX.AND. ZMIN.EQ.0.D0) THEN
+          REPK = 'OUI'
+        ELSE
+          REPK = 'NON'
+        ENDIF
+
+        IF (QUESTI.EQ.'DIM_GEOM') THEN
+           REPI = ZI(JDIME-1+6)
+C          -- ON RETOURNE 2 SI Z=0. PARTOUT :
+           IF ((REPI.EQ.3).AND.(REPK.EQ.'OUI')) THEN
+             REPI=2
+           ENDIF
+           REPK='???'
+        ENDIF
+
+
+      ELSE IF (QUESTI.EQ.'DIM_GEOM_B') THEN
+        REPI = ZI(JDIME-1+6)
+        REPK='???'
+
 
       ELSE IF (QUESTI.EQ.'NB_NO_MA_MAX') THEN
-        NBMA = ZI(IADIME-1+3)
+        NBMA = ZI(JDIME-1+3)
         CALL JEVEUO(JEXATR(NOMOB//'.CONNEX','LONCUM'),'L',ILMACO)
         REPI = 0
         DO 40,K = 1,NBMA

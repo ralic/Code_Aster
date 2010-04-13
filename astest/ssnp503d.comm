@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503d.para = tps_job 60 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -137,16 +137,16 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    # CONDITIONS IMPOSEES A LA MAIN
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
-                   LIAISON_DDL=(_F(NOEUD=('N20','N20','N21','N21',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                   LIAISON_DDL=(_F(NOEUD=('N20','N20',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPX,),
-                                _F(NOEUD=('N24','N24','N25','N25',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                                _F(NOEUD=('N25','N25',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPX,),
                                 ),
-                    INFO=1,);               
+                    INFO=1,);
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,1.,1.),

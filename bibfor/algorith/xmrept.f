@@ -2,7 +2,7 @@
      &                  GEOM  ,STATUE,MMAIT ,AMAIT ,NMAIT )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX ---------------
 C
-      INTEGER      NUMMAI,STATUT,NTMAE,IMA,IAD,NBPT
+      INTEGER      NUMMAI,NTMAE,IMA,IAD,NBPT
       INTEGER      CFDISI,CFMMVD,ZMESX
       INTEGER      JCSD1,JCSV1,JCSL1
       INTEGER      JCSD2,JCSV2,JCSL2
@@ -130,9 +130,6 @@ C --- BOUCLE SUR LES MAILLES FISSURÉES
 C
       DO 100 IMA=1,NTMAE
         NUMMAI = ZI(JMAESX+ZMESX*(IMA-1)+1-1)
-        STATUT = ZI(JMAESX+ZMESX*(IMA-1)+4-1)
-
-        IF (STATUT.LT.0) GO TO 100
 
 C ----- RECUPERATION DU NOMBRE DE POINTS D'INTERSECTION DE LA MAILLE
 
@@ -142,7 +139,7 @@ C ----- RECUPERATION DU NOMBRE DE POINTS D'INTERSECTION DE LA MAILLE
 C ----- BOUCLE SUR LES POINTS D'INTERSECTION
 
         DO 110 INI=1,NBPT
-C ------- COORDONNEES DE GEOMETRIQUES DU POINT D'INTERSECTION   
+C ------- COORDONNEES GEOMETRIQUES DU POINT D'INTERSECTION   
           DO 120 J=1,NDIM
             CALL CESEXI('S',JCSD1,JCSL1,NUMMAI,1,1,
      &              NDIM*(INI-1)+J,IAD)
@@ -153,19 +150,24 @@ C ------- CALCUL DE LA DISTANCE
           DIST = SQRT((COORD(1)-GEOM(1))**2+ (COORD(2)-GEOM(2))**2+
      &           (COORD(3)-GEOM(3))**2)
           IF (DIST.LT.DMIN) THEN
-            DMIN   = DIST
-            MMAIT  = NUMMAI
             CALL CESEXI('S',JCSD2,JCSL2,NUMMAI,1,
      &                  1,ZXAIN*(INI-1)+1,IAD)
             CALL ASSERT(IAD.GT.0)
-            AMAIT = NINT(ZR(JCSV2-1+IAD))
-            IF (AMAIT.EQ.0) THEN
+            IF (NINT(ZR(JCSV2-1+IAD)).GT.0) THEN
+              AMAIT  = NINT(ZR(JCSV2-1+IAD))
+              NMAIT  = 0
+              DMIN   = DIST
+              MMAIT  = NUMMAI
+            ELSE
               CALL CESEXI('S',JCSD2,JCSL2,NUMMAI,1,
      &                     1,ZXAIN*(INI-1)+2,IAD)
               CALL ASSERT(IAD.GT.0)
-              NMAIT  = NINT(ZR(JCSV2-1+IAD))
-            ELSE
-              NMAIT  = 0
+              IF (NINT(ZR(JCSV2-1+IAD)).GT.0) THEN
+                AMAIT  = 0
+                NMAIT  = NINT(ZR(JCSV2-1+IAD))
+                DMIN   = DIST
+                MMAIT  = NUMMAI
+              ENDIF
             ENDIF
           ENDIF
   110   CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
+#@ MODIF macro_matr_asse_ops Macro  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,7 +88,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
     if CHARGE     != None:
        if option[0:9] not in ('MASS_THER','RIGI_GEOM'):
                            motscles['CHARGE']      =CHARGE
-    if CHAM_MATER != None: motscles['CHAM_MATER']  =CHAM_MATER
+    if CHAM_MATER != None and option != 'RIGI_GEOM' : motscles['CHAM_MATER']  =CHAM_MATER
     if CARA_ELEM  != None: motscles['CARA_ELEM']   =CARA_ELEM
     if INST       != None: motscles['INST']        =INST
 
@@ -121,7 +121,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
 
     self.DeclareOut('mm',m['MATRICE'])
     motscles={'OPTION':option}
-    if CHAR_CINE != None: 
+    if CHAR_CINE != None:
       mm=ASSE_MATRICE(MATR_ELEM=_a,NUME_DDL=num,CHAR_CINE=CHAR_CINE)
     else:
       mm=ASSE_MATRICE(MATR_ELEM=_a,NUME_DDL=num)

@@ -3,7 +3,7 @@
 C RESPONSABLE PELLET J.PELLET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,13 +69,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER NBMPAF,NBMPCF,NBNOAF,NBNOEU,NBNPAF,NBNPCF,NBOC
       INTEGER NBOC2,NBV,NDGM,NDGN,NDMA,NDMAX,NDMAX1,NDMAX2,NDNO
       INTEGER NGM,NGN,NIV,NMA,NMGREL,NMO,NNO,NPH,NTO,NTYPOI,NUGREL
-      INTEGER NUMAIL,NUMNOE,NUMSUP,NUMVEC,NUTYPE,NUTYPM
-C     ------------------------------------------------------------------
-
-C     FONCTIONS "FORMULES" POUR ACCEDER RAPIDEMENT A LA CONNECTIVITE :
-C      INTEGER ICONX1,ICONX2,ZZCONX,ZZNBNE,IMODEL
-C      ZZCONX(IMAIL,J) = ZI(ICONX1-1+ZI(ICONX2+IMAIL-1)+J-1)
-C      ZZNBNE(IMAIL) = ZI(ICONX2+IMAIL) - ZI(ICONX2+IMAIL-1)
+      INTEGER NUMAIL,NUMNOE,NUMSUP,NUMVEC,NUTYPE,NUTYPM,IDIM3
 C     ------------------------------------------------------------------
 
 
@@ -529,7 +523,7 @@ C     ---   INITIALISATION DES ELEMENTS POUR CE LIGREL
 C     -------------------------------------------------
       CALL INITEL(LIGREL)
 
-C     ---   impression des elements finis affectes :
+C     ---   IMPRESSION DES ELEMENTS FINIS AFFECTES :
 C     -------------------------------------------------
       CALL W18IMP(LIGREL,NOMA,NOMU)
 
@@ -542,11 +536,22 @@ C     ----------------------------------------------------------
         CALL U2MESS('A','MODELISA4_4')
       ELSE
         IDIM2=3
-        CALL DISMOI('F','Z_CST',NOMU,'MODELE',IBID,CDIM,IBID)
-        IF (CDIM.EQ.'OUI')IDIM2=2
+        IDIM3=3
+        CALL DISMOI('F','Z_CST',NOMA,'MAILLAGE',IBID,CDIM,IBID)
+        IF (CDIM.EQ.'OUI') THEN
+          IDIM2=2
+          CALL DISMOI('F','Z_ZERO',NOMA,'MAILLAGE',IBID,CDIM,IBID)
+          IF (CDIM.EQ.'OUI') IDIM3=2
+        ENDIF
+
         IF ((IDIM.EQ.3) .AND. (IDIM2.EQ.2)) THEN
+C         -- LES ELEMENTS DE COQUE PEUVENT EXISTER DAS LE PLAN Z=CSTE :
         ELSEIF ((IDIM.EQ.2) .AND. (IDIM2.EQ.3)) THEN
+C         -- DANGER : MODELE 2D SUR UN MAILLAGE COOR_3D
           CALL U2MESS('A','MODELISA5_53')
+        ELSEIF ((IDIM.EQ.2) .AND. (IDIM2.EQ.2).AND. (IDIM3.EQ.3)) THEN
+C         -- BIZARRE : MODELE 2D SUR UN MAILLAGE Z=CSTE /= 0.
+          CALL U2MESS('A','MODELISA5_58')
         ENDIF
       ENDIF
 

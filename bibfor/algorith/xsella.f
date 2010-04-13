@@ -1,8 +1,8 @@
-      SUBROUTINE XSELLA(LSN   ,NBNO  ,NARZ  ,TABNOZ,
+      SUBROUTINE XSELLA(FISS   ,NBNO  ,NARZ  ,TABNOZ,
      &                  PICKNO,NBPINO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C
 
       INTEGER    NBNO,NARZ
       INTEGER    TABNOZ(3,NARZ),PICKNO(NARZ),NBPINO
-      REAL*8     LSN(*)
+      CHARACTER*8 FISS
 C      
 C ----------------------------------------------------------------------
 C
@@ -37,25 +37,48 @@ C    - SELECTION DES NOEUDS POUR LES LAGRANGES
 C
 C ----------------------------------------------------------------------
 C
-C
-C IN  LSN    : CHAM_NO DE LA LEVEL SET NORMALE
+C IN  FISS   : NOM DE LA FISSURE
 C IN  NBNO   : NOMBRE DE NOEUDS DU MAILLAGE
 C IN  NARZ   : NOMBRE D'ARETES COUPEES
 C IN  TABNOZ : TABLEAU DES NOEUDS EXTREMITES ET NOEUD MILIEU
 C OUT PICKNO : NUMEROS DES NOEUDS SELECTIONNES
 C OUT NBPINO : NOMBRE DE NOEUDS SELECTIONNES
 C
-C ----------------------------------------------------------------------
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*32 JEXNUM,JEXATR
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER     I,J,K,IK,CPTNO,DEJA,NOEUD(NBNO),TABDIR(NARZ,2)
       INTEGER     SCORNO(2*NARZ),SCORAR(NARZ),IA,MAX,BESTAR,NO1,NO2
       INTEGER     BESTNO,NOCONN,NARCAS,LIARCA(NARZ),NAR,NI,NJ
       INTEGER     TABNO(NARZ,3),II,CPT
       REAL*8      SCORN2(2*NARZ),SCORA2(NARZ),LI,LJ,MAXR
+      CHARACTER*19 CNSLN
+      INTEGER     JLNSV
 C
 C ----------------------------------------------------------------------
 C
-
+C --- TRANSFO. CHAM_NO -> CHAM_NO_S DE LA LEVEL SET NORMALE
+C
+      CNSLN = '&&XSELLA.CNSLN'
+      CALL CNOCNS(FISS(1:8)//'.LNNO','V',CNSLN)
+      CALL JEVEUO(CNSLN(1:19)//'.CNSV','L',JLNSV)
 C
 C --- INITIALISATIONS
 C
@@ -87,7 +110,7 @@ C
              CPT         = CPT+1
              NOEUD(CPT)  = TABNO(I,J)
              TABDIR(I,J) = CPT
-             SCORN2(CPT) = ABS(LSN(TABNO(I,J)))
+             SCORN2(CPT) = ABS(ZR(JLNSV-1+TABNO(I,J)))
           ELSE
             TABDIR(I,J)  = IK
           ENDIF
@@ -108,8 +131,8 @@ C
           NI         = SCORNO(TABDIR(IA,1))
           NJ         = SCORNO(TABDIR(IA,2))
           SCORAR(IA) = ABS(NI-NJ)
-          LI         = ABS(LSN(TABNO(IA,1)))
-          LJ         = ABS(LSN(TABNO(IA,2)))
+          LI         = ABS(ZR(JLNSV-1+TABNO(IA,1)))
+          LJ         = ABS(ZR(JLNSV-1+TABNO(IA,2)))
           IF (NI.GT.NJ) SCORA2(IA)=LI/(LI+LJ)
           IF (NI.LT.NJ) SCORA2(IA)=LJ/(LI+LJ)
           IF (NI.EQ.NJ) SCORA2(IA)=MIN(LI,LJ)/(LI+LJ)
@@ -186,5 +209,9 @@ C
 C --- NOMBRE DE PICKED NODES
 C
       NBPINO = CPTNO
+C
+C --- DESTRUCTION DES OBJETS TEMPORAIRES
+C
+      CALL DETRSD('CHAM_NO_S',CNSLN)
 C
       END

@@ -5,7 +5,7 @@
      &                  XIMIN ,YIMIN ,PROJIN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,7 +61,7 @@ C              D'INTERSECTIONS DES FACETTES DE CONTACT
 C IN  ALIAS  : TYPE DE MAILLE DE CONTACT
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  IZONE  : ZONE DE CONTACT DU POINT D'INTEGRATION ESCLAVE
-C IN  STATUE : STATUT DE LA MAILLE ESCLAVE
+C IN  STATUE : STATUM DE LA MAILLE ESCLAVE
 C IN  PMAIT  : NUMERO LOCAL DU POINT D'INTERSECTION LE PLUS PROCHE
 C IN  AMAIT  : NUMERO LOCAL DE L'ARETE INTERSECTÉ
 C IN  NMAIT  : NUMERO LOCAL DU NOEUD INTERSECTÉ
@@ -108,7 +108,7 @@ C
       INTEGER      CFMMVD,ZMESX
       CHARACTER*24 MAESCX
       INTEGER      JMAESX      
-      INTEGER      STATUT
+      INTEGER      STATUM
       INTEGER      JCSD1,JCSV1,JCSL1
       INTEGER      JCSD2,JCSV2,JCSL2
       INTEGER      JCSD3,JCSV3,JCSL3
@@ -123,7 +123,7 @@ C
       REAL*8       COORMA(27),XI,YI
       REAL*8       R8GAEM,R3BID(3)
       CHARACTER*8  TYPMA
-      LOGICAL      DIRAPP,NOAPAR
+      LOGICAL      DIRAPP,NOAPAR,NOPROJ
       INTEGER      IPROJ,IPROJM      
       INTEGER      IAD,JMA,ITYPMA
 C
@@ -134,7 +134,8 @@ C
 C --- INITIALISATIONS
 C
       JEUMIN = R8GAEM()
-      PROJIN = .TRUE.
+      PROJIN = .FALSE.
+      NOPROJ = .TRUE.
       NUMMIN = 0      
       DO 10 I=1,27
         COORMA(I)=0.D0
@@ -176,134 +177,169 @@ C --- ON RECUPERE LES INFOS SUR LA CONNECTIVITE DES FACETTES DE CONTACT
 C
       CALL JEVEUO(CHSCF//'.CESD','L',JCSD3)
       CALL JEVEUO(CHSCF//'.CESV','L',JCSV3)
-      CALL JEVEUO(CHSCF//'.CESL','L',JCSL3)     
-C
-      IF (STATUE.NE.-2) THEN
-C --- ELEMENT NON CRACK-TIP, ON FAIT L'APPARIEMENT
+      CALL JEVEUO(CHSCF//'.CESL','L',JCSL3)
 C
 C ----- NB: ON SE BASE SUR LE TYPE DE LA MAILLE MAITRE.
 C
-        CALL JEVEUO(NOMA//'.TYPMAIL','L',JMA)
-        ITYPMA = ZI(JMA-1+MMAIT)
-        CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)      
+      CALL JEVEUO(NOMA//'.TYPMAIL','L',JMA)
+      ITYPMA = ZI(JMA-1+MMAIT)
+      CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)      
 C
 C ----- ON RECUPERE LA CONNECTIVITE DU MAILLAGE
 C
-        CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
-        CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)      
+      CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
+      CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)      
 C
 C ----- SI LE POINT DE CONTACT EST SUR UNE ARETE
 C
-        IF (AMAIT.GT.0) THEN            
-          CALL CONARE(TYPMA,AR,NBAR)
-          NA     = AR(AMAIT,1)
-          NB     = AR(AMAIT,2)
-          NUNOA  = ZI(JCONX1-1+ZI(JCONX2+MMAIT-1)+NA-1)
-          NUNOB  = ZI(JCONX1-1+ZI(JCONX2+MMAIT-1)+NB-1)
+      IF (AMAIT.GT.0) THEN            
+        CALL CONARE(TYPMA,AR,NBAR)
+        NA     = AR(AMAIT,1)
+        NB     = AR(AMAIT,2)
+        NUNOA  = ZI(JCONX1-1+ZI(JCONX2+MMAIT-1)+NA-1)
+        NUNOB  = ZI(JCONX1-1+ZI(JCONX2+MMAIT-1)+NB-1)
 C
 C ----- SI LE POINT DE CONTACT EST SUR UN NOEUD
 C
-        ELSE
-          NUNOG  = ZI(JCONX1-1+ZI(JCONX2+MMAIT-1)+NMAIT-1)
-          CALL PANBNO(ITYPMA,NBNOTT)
-          NBNOS  = NBNOTT(1)
-        ENDIF
+      ELSEIF (NMAIT.GT.0) THEN
+        NUNOG  = ZI(JCONX1-1+ZI(JCONX2+MMAIT-1)+NMAIT-1)
+        CALL PANBNO(ITYPMA,NBNOTT)
+        NBNOS  = NBNOTT(1)
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
 
 C
 C --- BOUCLE SUR LES MAILLES FISSURÉES
 C
-        DO 100 IMA=1,NTMAE
-          NUMMAI = ZI(JMAESX+ZMESX*(IMA-1)+1-1)
-          STATUT = ZI(JMAESX+ZMESX*(IMA-1)+4-1)
+      DO 100 IMA=1,NTMAE
+        NUMMAI = ZI(JMAESX+ZMESX*(IMA-1)+1-1)
+        STATUM = ZI(JMAESX+ZMESX*(IMA-1)+4-1)
 C
-          IF (STATUT.EQ.-1) GO TO 100
-          NOAPAR = .TRUE.
+        NOAPAR = .TRUE.
 C
-          IF (AMAIT.GT.0) THEN     
+        IF (AMAIT.GT.0) THEN     
 C
 C ----- SI LE POINT DE CONTACT EST SUR UNE ARÊTE     
 C ----- ON BOUCLE SUR LES ARETES DE LA MAILLE COURANTE
 C ----- ON REGARDE SI L'ARETE APPARTIENT A CETTE MAILLE
 C
-            DO 110 IA=1,NBAR
-              N1     = AR(IA,1)
-              N2     = AR(IA,2)
-              NUGLA  = ZI(JCONX1-1+ZI(JCONX2+NUMMAI-1)+N1-1)
-              NUGLB  = ZI(JCONX1-1+ZI(JCONX2+NUMMAI-1)+N2-1)
+          DO 110 IA=1,NBAR
+            N1     = AR(IA,1)
+            N2     = AR(IA,2)
+            NUGLA  = ZI(JCONX1-1+ZI(JCONX2+NUMMAI-1)+N1-1)
+            NUGLB  = ZI(JCONX1-1+ZI(JCONX2+NUMMAI-1)+N2-1)
 C
-              IF (((NUGLA.EQ.NUNOA).AND.(NUGLB.EQ.NUNOB)).OR.
-     &            ((NUGLA.EQ.NUNOB).AND.(NUGLB.EQ.NUNOA))) THEN
-                NOAPAR=.FALSE.
-              ENDIF
- 110        CONTINUE
-          ELSE
+            IF (((NUGLA.EQ.NUNOA).AND.(NUGLB.EQ.NUNOB)).OR.
+     &          ((NUGLA.EQ.NUNOB).AND.(NUGLB.EQ.NUNOA))) THEN
+              NOAPAR=.FALSE.
+            ENDIF
+ 110      CONTINUE
+        ELSE
 C
 C ----- SI LE POINT DE CONTACT EST UN NOEUD
 C ----- ON BOUCLE SUR LES NOEUDS DE LA MAILLE COURANTE
 C ----- ON REGARDE SI LE NOEUD APPARTIENT A CETTE MAILLE
 C
-            DO 120 INO=1,NBNOS
-              NUNOIN=ZI(JCONX1-1+ZI(JCONX2+NUMMAI-1)+INO-1)
-              IF (NUNOIN.EQ.NUNOG) THEN
-                NOAPAR=.FALSE.
-              ENDIF
- 120        CONTINUE
-          ENDIF
+          DO 120 INO=1,NBNOS
+            NUNOIN=ZI(JCONX1-1+ZI(JCONX2+NUMMAI-1)+INO-1)
+            IF (NUNOIN.EQ.NUNOG) THEN
+              NOAPAR=.FALSE.
+            ENDIF
+ 120      CONTINUE
+        ENDIF
 C         
-          IF (NOAPAR) GOTO 100
+        IF (NOAPAR) GOTO 100
 C
 C ----- RECUPERATION DU NOMBRE DE FACETTES DE CONTACT DE LA MAILLE
 C
-          CALL CESEXI('S',JCSD2,JCSL2,NUMMAI,1,1,2,IAD)
-          CALL ASSERT(IAD.GT.0)
-          NFACEM  = ZI(JCSV2-1+IAD)
+        CALL CESEXI('S',JCSD2,JCSL2,NUMMAI,1,1,2,IAD)
+        CALL ASSERT(IAD.GT.0)
+        NFACEM  = ZI(JCSV2-1+IAD)
 C
 C ----- BOUCLE SUR LES FACETTES DE CONTACT DE LA MAILLE COURANTE
 C
-          DO 130 IFACEM=1,NFACEM
+        DO 130 IFACEM=1,NFACEM
 C
 C ----- RECUPERATION DES NUMEROS LOCAUX DES POINTS D'INTERSECTIONS
 C ----- DE LA FACETTE DANS LA MAILLE
-C  
-            DO 140 I=1,NDIM       
-              CALL CESEXI('S',JCSD3,JCSL3,NUMMAI,1,1,
-     &                   (IFACEM-1)*NDIM+I,IAD)
-              CALL ASSERT(IAD.GT.0)
-              NUMPI(I) = ZI(JCSV3-1+IAD)
- 140        CONTINUE
+C
+          DO 140 I=1,NDIM       
+            CALL CESEXI('S',JCSD3,JCSL3,NUMMAI,1,1,
+     &                 (IFACEM-1)*NDIM+I,IAD)
+            CALL ASSERT(IAD.GT.0)
+            NUMPI(I) = ZI(JCSV3-1+IAD)
+ 140      CONTINUE
 C
 C ----- RECUPERATION DES COORDONNES REELLES DES POINTS D'INTERSECTION
 C ----- DE LA FACETTE MAITRE
 C
-            DO 150 I=1,NDIM
-              DO 160 J=1,NDIM
-                CALL CESEXI('S',JCSD1,JCSL1,NUMMAI,1,1,
-     &                      NDIM*(NUMPI(I)-1)+J,IAD)
-                CALL ASSERT(IAD.GT.0)
-                COORMA(3*(I-1)+J)=ZR(JCSV1-1+IAD)
- 160          CONTINUE
- 150        CONTINUE
+          DO 150 I=1,NDIM
+            DO 160 J=1,NDIM
+              CALL CESEXI('S',JCSD1,JCSL1,NUMMAI,1,1,
+     &                    NDIM*(NUMPI(I)-1)+J,IAD)
+              CALL ASSERT(IAD.GT.0)
+              COORMA(3*(I-1)+J)=ZR(JCSV1-1+IAD)
+ 160        CONTINUE
+ 150      CONTINUE
 C
 C --- PROJECTION SUR LA FACETTE MAITRE
 C
-            CALL MMPROJ(ALIAS ,NDIM  ,NDIM  ,COORMA,GEOM  ,
-     &                  ITEMAX,EPSMAX,TOLEOU,DIRAPP,R3BID ,
-     &                  XI    ,YI    ,TAU1  ,TAU2  ,IPROJ ,
-     &                  NIVERR)
+          CALL MMPROJ(ALIAS ,NDIM  ,NDIM  ,COORMA,GEOM  ,
+     &                ITEMAX,EPSMAX,TOLEOU,DIRAPP,R3BID ,
+     &                XI    ,YI    ,TAU1  ,TAU2  ,IPROJ ,
+     &                NIVERR)
 C
 C --- ECHEC DE NEWTON
 C      
-            IF (NIVERR.EQ.1) THEN
-              CALL ASSERT(.FALSE.)
-            ENDIF
-C
-C --- CALCUL DU JEU
-C
-            CALL MMJEUX(ALIAS ,NDIM  ,NDIM  ,COORMA,XI    ,
-     &                  YI    ,GEOM  ,JEU   )
+          IF (NIVERR.EQ.1) THEN
+            CALL ASSERT(.FALSE.)
+          ENDIF
 C              
 C --- CHOIX DE LA MAILLE 
 C              
+          IF (STATUM.EQ.2.OR.STATUE.EQ.2) THEN
+            IF (IPROJ.LE.1) THEN
+C --- ON EST EN FACE D'UNE FACETTE EXCLUSIVEMENT CT, 
+C --- OU ALORS ON TRAITE UNE FACETTE EXCLUSIVEMENT CT
+C --- ON N'APPARIE PAS MAIS ON ACTIVE LE CONTACT 
+              PROJIN = .TRUE.
+            ENDIF
+            IF (STATUE.EQ.2.AND.NOPROJ) THEN
+C      
+C --- ELEMENT EXCLUSIVEMENT CRACK-TIP, ON PROJETTE SUR LUI-MEME
+C
+              DO 240 I=1,NDIM       
+                CALL CESEXI('S',JCSD3,JCSL3,NUMMAE,1,1,
+     &                   (IFACEE-1)*NDIM+I,IAD)
+                CALL ASSERT(IAD.GT.0)
+                NUMPI(I) = ZI(JCSV3-1+IAD)
+ 240          CONTINUE
+              DO 250 I=1,NDIM
+                DO 260 J=1,NDIM
+                  CALL CESEXI('S',JCSD1,JCSL1,NUMMAE,1,1,
+     &                    NDIM*(NUMPI(I)-1)+J,IAD)
+                  CALL ASSERT(IAD.GT.0)
+                  COORMA(3*(I-1)+J)=ZR(JCSV1-1+IAD)
+ 260            CONTINUE
+ 250          CONTINUE
+              CALL MMPROJ(ALIAS ,NDIM  ,NDIM  ,COORMA,GEOM  ,
+     &                ITEMAX,EPSMAX,TOLEOU,DIRAPP,R3BID ,
+     &                XIMIN ,YIMIN ,T1MIN ,T2MIN ,IPROJM,
+     &                NIVERR)
+              IF (NIVERR.EQ.1) THEN
+                CALL ASSERT(.FALSE.)
+              ENDIF
+              NUMMIN = NUMMAE
+              IFAMIN = IFACEE
+              NOPROJ = .FALSE.
+            ENDIF
+          ELSE
+C        
+C --- CALCUL DU JEU
+C
+            CALL MMJEUX(ALIAS ,NDIM  ,NDIM  ,COORMA,XI    ,
+     &                YI    ,GEOM  ,JEU   )
             IF (JEU.LT.JEUMIN) THEN
               NUMMIN = NUMMAI
               IFAMIN = IFACEM
@@ -316,51 +352,18 @@ C
               XIMIN = XI
               YIMIN = YI
             ENDIF
- 130      CONTINUE        
- 100    CONTINUE
-      ELSE
-C      
-C --- ELEMENT EXCLUSIVEMENT CRACK-TIP, ON PROJETTE SUR LUI-MEME
+          ENDIF
 C
-        DO 240 I=1,NDIM       
-          CALL CESEXI('S',JCSD3,JCSL3,NUMMAE,1,1,
-     &                 (IFACEE-1)*NDIM+I,IAD)
-          CALL ASSERT(IAD.GT.0)
-          NUMPI(I) = ZI(JCSV3-1+IAD)
- 240    CONTINUE
-        DO 250 I=1,NDIM
-          DO 260 J=1,NDIM
-            CALL CESEXI('S',JCSD1,JCSL1,NUMMAE,1,1,
-     &                  NDIM*(NUMPI(I)-1)+J,IAD)
-            CALL ASSERT(IAD.GT.0)
-            COORMA(3*(I-1)+J)=ZR(JCSV1-1+IAD)
- 260      CONTINUE
- 250    CONTINUE
-C
-C --- PROJECTION SUR LA FACETTE MAITRE
-C
-        CALL MMPROJ(ALIAS ,NDIM  ,NDIM  ,COORMA,GEOM  ,
-     &              ITEMAX,EPSMAX,TOLEOU,DIRAPP,R3BID ,
-     &              XIMIN ,YIMIN ,T1MIN ,T2MIN ,IPROJM,
-     &              NIVERR)
-C
-C --- ECHEC DE NEWTON
-C      
-        IF (NIVERR.EQ.1) THEN
-          CALL ASSERT(.FALSE.)
-        ENDIF   
-        NUMMIN = NUMMAE
-        IFAMIN = IFACEE
-C --- ON FORCE L'APPARIEMENT
-        IF (IPROJM.EQ.2) IPROJM = 1  
-      ENDIF 
+ 130    CONTINUE        
+ 100  CONTINUE
+
 C
 C --- NORMALISATION DES VECTEURS TANGENTS
 C
       CALL NORMEV(T1MIN,NRESE)
       CALL NORMEV(T2MIN,NRESE) 
 C
-      IF (IPROJM.EQ.2) PROJIN = .FALSE.
+      IF (IPROJM.LE.1) PROJIN = .TRUE.
       IF (TOLEOU.EQ.-1.D0) PROJIN = .TRUE.
 C
       CALL JEDEMA()

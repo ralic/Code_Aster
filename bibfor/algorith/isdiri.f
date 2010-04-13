@@ -1,7 +1,7 @@
-      LOGICAL FUNCTION ISDIRI(LISCHA)     
+      LOGICAL FUNCTION ISDIRI(LISCHA,SOUTYP)     
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,20 +21,23 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*19 LISCHA
+      CHARACTER*19  LISCHA
+      CHARACTER*4   SOUTYP
 C 
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (UTILITAIRE)
 C
-C DIT SI ON A DES CHARGEMENTS DE TYPE DIRICHLET PAR AFFE_CHAR_MECA
-C
-C ATTENTION ! ON NE DETECTE APS LES DIRICHELT PAR AFFE_CHAR_CINE !
+C DIT SI ON A DES CHARGEMENTS DE TYPE DIRICHLET
 C      
 C ----------------------------------------------------------------------
 C
 C
 C IN  LISCHA : SD L_CHARGES
+C IN  SOUTYP : TYPE DE CHARGE
+C                'DUAL' - PAR DUALISATION (AFFE_CHAR_MECA)
+C                'ELIM' - PAR ELIMINATION (AFFE_CHAR_CINE)
+C                'TOUT' - PAR DUALISATION ET ELIMINATION
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -55,46 +58,25 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      IRET,ICHA
-      CHARACTER*8  K8BID,NOMCHA
-      INTEGER      JCHAR,JINF
-      INTEGER      NCHAR
-      CHARACTER*19 LIGRCH      
+      INTEGER      ICHAR
+      LOGICAL      LELIM,LDUAL,ISCHAR         
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()      
-C
-C --- INITIALISATIONS
-C 
-      ISDIRI = .FALSE.
-     
-     
-      CALL JEEXIN(LISCHA(1:19)//'.LCHA', IRET)
-      IF (IRET.EQ.0) THEN
-        ISDIRI = .FALSE.
-        GOTO 99
-      ELSE  
-        CALL JELIRA(LISCHA(1:19)//'.LCHA','LONMAX',NCHAR,K8BID)
-        CALL JEVEUO(LISCHA(1:19)//'.LCHA','L',JCHAR)
-        CALL JEVEUO(LISCHA(1:19)//'.INFC','L',JINF)   
-        IF (ZK24(JCHAR).NE.'        ') THEN
-          DO 10 ICHA = 1,NCHAR
-            IF (ZI(JINF+ICHA).NE.0) THEN
-              NOMCHA = ZK24(JCHAR+ICHA-1) (1:8)
-              LIGRCH = NOMCHA(1:8)//'.CHME.LIGRE'
-              CALL JEEXIN(LIGRCH(1:19)//'.LIEL',IRET)
-              IF (IRET.LE.0) GO TO 10
-              CALL EXISD('CHAMP_GD',NOMCHA(1:8)//'.CHME.CMULT',IRET)
-              IF (IRET.LE.0) GO TO 10
-              ISDIRI = .TRUE.
-              GOTO 99
-            ENDIF
-  10      CONTINUE
-        ENDIF               
-      ENDIF
-C
-  99  CONTINUE
+      CALL JEMARQ()
+C      
+      ICHAR  = 0
+      LELIM  = ISCHAR(LISCHA,'DIRI','ELIM',ICHAR )
+      LDUAL  = ISCHAR(LISCHA,'DIRI','DUAL',ICHAR )
+      IF (SOUTYP.EQ.'TOUT') THEN
+        ISDIRI = LELIM.OR.LDUAL
+      ELSEIF (SOUTYP.EQ.'ELIM') THEN
+        ISDIRI = LELIM  
+      ELSEIF (SOUTYP.EQ.'DUAL') THEN
+        ISDIRI = LDUAL
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF             
 C
       CALL JEDEMA()
       END

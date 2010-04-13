@@ -1,7 +1,7 @@
       FUNCTION LCVMF1(DP,NONLOC)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C ======================================================================
 C
 C     ARGUMENTS:
 C     ----------
-      REAL*8 LCVMF1,DP,NONLOC(3)
+      REAL*8 LCVMF1,DP,NONLOC(2)
 C ----------------------------------------------------------------------
 C    BUT:  EVALUER LA FONCTION DONT ON CHERCHE LE ZERO
 C          POUR LA PLASTICITE DE VON_MISES ISOTROPE C_PLAN
@@ -52,8 +52,8 @@ C
 C DEB-------------------------------------------------------------------
 C
 
-      RAUG=NONLOC(2)
-      PHI=NONLOC(3)
+      PHI  = NONLOC(1)
+      RAUG = NONLOC(2)
 
       IF (LINE.GE.0.5D0) THEN
         RPP = SIGY - PHI +(RPRIM+RAUG)*(PM+DP)

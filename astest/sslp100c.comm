@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 12/04/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (SANS SOUS-STRUCTURATION)
 # sslp100c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,7 +103,7 @@ U=STAT_NON_LINE(
                         REAC_ITER=1
                         ),
             CONVERGENCE=_F(
-            RESI_GLOB_MAXI = 1E-8,
+        #    RESI_GLOB_MAXI = 1E-8,
                          ITER_GLOB_MAXI = 10,
                          ),
                SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON',)

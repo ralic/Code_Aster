@@ -2,7 +2,7 @@
      &                   T,LAMBDA,DEUXMU,LAMF,DEUMUF,GMT,GMC,GF,
      &                   SEUIL,ALF,CRIT,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 12/04/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +20,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
-C TOLE CRP_20
 
       IMPLICIT NONE
 
@@ -81,12 +80,12 @@ C       QFF        = Tf DANS R7.01.32
 
       INTEGER K, L, I, T(2,2),KDMAX
 
-      REAL*8  EPS(6), TREPS, FD1, FD2, DA1, DA2, TR(6)
+      REAL*8  EPS(6), TREPS, FD1, FD2, DA1, DA2
       REAL*8  EMP(2), VMP(2,2), VFP(2,2), DSPDEP(6,6)
       REAL*8  DEUMUD(3), LAMBDD, SIGP(3), RTEMP, GMT, GMC
-      REAL*8  SEUIL, LAMBDA, DEUXMU, QME33, KSIM, GM
+      REAL*8  SEUIL, LAMBDA, DEUXMU, QME33, KSIM
       REAL*8  MU, A11, A22, A12, A21, B1, B2
-      REAL*8  TREPS2, TR2, EN0, COF1, COF2
+      REAL*8  TREPS2, TR2, EN0, COF1
       REAL*8  FDI1(3), FDI2(3), SD1(3), SD2(3), D1E(3), D2E(3)
       REAL*8  QDE(3), SIGHP(3), SIGHM(3), EFP(2), GI(2)
       REAL*8  TR2D, KSI2D, EPS33, DE33I, QFF(2), SIGF(2)
@@ -123,23 +122,20 @@ C-- ICI ON SUPPOSE QUE GF1=GF2, CE QUI N EST PAS NECESSAIRE
           EPS(K) = EPSM(K)
 40      CONTINUE
       ENDIF
+
+C -- ON UTILISE EPSILON SOUS FORME VECTORIELLE
+C    DONC ON DIVISE LES TERMES NON DIAGONNAUX PAR 2
       EPS(3) = EPS(3)/2.0D0
       EPS(6) = EPS(6)/2.0D0
 
 C -- DIAGONALISATION DES DEFORMATIONS
-      TR(1) = EPS(1)
-      TR(2) = EPS(3)
-      TR(3) = EPS(2)
-      CALL DIAGP2(TR,VMP,EMP)
-      TR(1) = EPS(4)
-      TR(2) = EPS(6)
-      TR(3) = EPS(5)
-      CALL DIAGP2(TR,VFP,EFP)
+      CALL DIAGO2(EPS(1),VMP,EMP)
+      CALL DIAGO2(EPS(4),VFP,EFP)
 
 C -- CALCUL DES D1,D2,EPS33 INITIAUX
       TR2D  = EPS(1)+EPS(2)
       TROT  = EFP(1)+EFP(2)
-      TROT2 = TROT*TROT
+      TROT2 = TROT**2
 
 C   CALCULER LES CONSTANTES INDEPENDANT DE D1,D2,EPS33
       IF(TR2D .GT. 0.0D0) THEN
@@ -159,9 +155,9 @@ C   CALCULER LES CONSTANTES INDEPENDANT DE D1,D2,EPS33
 
       DO 4510, K = 1,2
         IF(EFP(K) .GT. 0.0D0) THEN
-          QFF(2) = QFF(2) + MUF*EFP(K)*EFP(K)
+          QFF(2) = QFF(2) + MUF*EFP(K)**2
         ELSE
-          QFF(1) = QFF(1) + MUF*EFP(K)*EFP(K)
+          QFF(1) = QFF(1) + MUF*EFP(K)**2
         ENDIF
 4510  CONTINUE
 
@@ -177,9 +173,9 @@ C   CALCULER LES CONSTANTES INDEPENDANT DE D1,D2,EPS33
  50   CONTINUE
 
       COF1 = 0.5D0*LAMBDA*GTR2
-      COF2 = 0.5D0*LAMBDA*TR2D * GTR2
-      Q2D  = 0.25D0*LAMBDA * TR2D*TR2D * GTR2
-     &     + 0.5D0*MU * (EMP(1)*EMP(1)*GI(1) + EMP(2)*EMP(2)*GI(2))
+C     COF2 = 0.5D0*LAMBDA*TR2D * GTR2
+      Q2D  = 0.5D0*MU * (EMP(1)**2*GI(1) + EMP(2)**2*GI(2))
+
 
       IF(LELAS) THEN
         DA1 = 0.0D0
@@ -193,9 +189,9 @@ C   CALCULER LES CONSTANTES INDEPENDANT DE D1,D2,EPS33
      &             EPS33,DE33D1,DE33D2,KSI2D,DKSI1,DKSI2)
 
       TREPS  = TR2D + EPS33
-      TREPS2 = TREPS*TREPS
+      TREPS2 = TREPS**2
 
-      QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
+      QM1 = 0.5D0*COF1*TREPS2+Q2D
       QM2 = QM1
 
 C--------CALCUL DE DA1,DA2,EPS33
@@ -203,16 +199,12 @@ C--------CALCUL DE DA1,DA2,EPS33
         TOLD = CRIT(3)
         KDMAX = NINT(CRIT(1))
 
-        CALL GLDLOC(LAMBDA,DEUXMU,SEUIL,ALF,GMT,GMC,COF1,COF2,VIM,
-     &                      Q2D,QFF,TR2D,EPS33,DE33D1,DE33D2,
+        CALL GLDLOC(LAMBDA,DEUXMU,SEUIL,ALF,GMT,GMC,COF1,VIM
+     &                      ,Q2D,QFF,TR2D,EPS33,DE33D1,DE33D2,
      &                      KSI2D,DA1,DA2,KDMAX,TOLD,CODRET)
 
-        IF (DA1.LT.VIM(1)) THEN
-          DA1 = VIM(1)
-        END IF
-        IF (DA2.LT.VIM(2)) THEN
-          DA2 = VIM(2)
-        END IF
+        IF (DA1.LT.VIM(1))DA1 = VIM(1)
+        IF (DA2.LT.VIM(2))DA2 = VIM(2)
 
         ELAS1 = DA1.LE.VIM(1)
         ELAS2 = DA2.LE.VIM(2)
@@ -251,7 +243,7 @@ C--------CALCUL DE DA1,DA2,EPS33
         ENDIF
       ENDIF
 
-      TR2 = EMP(1)*EMP(1) + EMP(2)*EMP(2) + EPS33*EPS33
+      TR2 = EMP(1)**2 + EMP(2)**2 + EPS33**2
       EN0 = 0.5D0*LAMBDA*TREPS2 + MU*TR2
 
       IF(TR2D .GT. 0.0D0) THEN
@@ -280,7 +272,7 @@ C--------CALCUL DE DA1,DA2,EPS33
           D2MUD(K) = -MU*(1.D0-GMC)/(1.D0+DA2)**2
           D1MUD(K) = -MU*(1.D0-GMC)/(1.D0+DA1)**2
         ENDIF
-        DEUMUD(K) = DEUXMU* 0.5D0*(FDI1(K) + FDI2(K))
+        DEUMUD(K) = MU*(FDI1(K) + FDI2(K))
         SIGP(K)=LAMBDD*TREPS + DEUMUD(K)*EMP(K)
  80   CONTINUE
 
@@ -315,17 +307,17 @@ C--------CALCUL DE DA1,DA2,EPS33
         SIGF(K) = LAMFD*TROT + DEMUDF(K)*EFP(K)
  90   CONTINUE
 
-      IF ((RESI).AND.(.NOT.COUP)) THEN
+      IF (RESI .AND.(.NOT.COUP)) THEN
         CALL R8INIR(6,0.D0,SIG,1)
         DO 1010 I=1,2
           RTEMP=SIGP(I)
-          SIG(1)=SIG(1)+VMP(1,I)*VMP(1,I)*RTEMP
-          SIG(2)=SIG(2)+VMP(2,I)*VMP(2,I)*RTEMP
+          SIG(1)=SIG(1)+VMP(1,I)**2*RTEMP
+          SIG(2)=SIG(2)+VMP(2,I)**2*RTEMP
           SIG(3)=SIG(3)+VMP(1,I)*VMP(2,I)*RTEMP
 
           RTEMP=SIGF(I)
-          SIG(4)=SIG(4)+VFP(1,I)*VFP(1,I)*RTEMP
-          SIG(5)=SIG(5)+VFP(2,I)*VFP(2,I)*RTEMP
+          SIG(4)=SIG(4)+VFP(1,I)**2*RTEMP
+          SIG(5)=SIG(5)+VFP(2,I)**2*RTEMP
           SIG(6)=SIG(6)+VFP(1,I)*VFP(2,I)*RTEMP
 1010    CONTINUE
       ENDIF
@@ -345,56 +337,6 @@ C -- CALCUL DE LA MATRICE TANGENTE
         ELSE
           CALL R8INIR(36, 0.D0, DSIDEP, 1)
         ENDIF
-
-        IF(TROT .GT. 0.0D0) THEN
-          LAMFD  =  LAMF*(ALF + GF2*DA2)/(ALF + DA2)
-          DLMFD2 = -LAMF*ALF*(1.0D0 - GF2)/(ALF + DA2)**2
-          DLMFD1 = 0.0D0
-          SFFT2  =  ALF*LAMF*(1.0D0 - GF2)
-          SFFT1  =  0.0D0
-        ELSE
-          LAMFD  =  LAMF*(ALF + GF1*DA1)/(ALF + DA1)
-          DLMFD1 = -LAMF*ALF*(1.0D0 - GF1)/(ALF + DA1)**2
-          DLMFD2 = 0.0D0
-          SFFT1  =  ALF*LAMF*(1.0D0 - GF1)
-          SFFT2  =  0.0D0
-        ENDIF
-
-        DO 1020, K = 1,2
-          IF(EFP(K) .GT. 0.0D0) THEN
-            DEMUDF(K) =  DEUMUF*(ALF + GF2*DA2)/(ALF + DA2)
-            D2MUDF(K) = -DEUMUF*ALF*(1.0D0 - GF2)/(ALF + DA2)**2
-            D1MUDF(K) =  0.0D0
-            SFF2(K)   =  ALF*DEUMUF*(1.0D0 - GF2)
-            SFF1(K)   =  0.0D0
-          ELSE
-            DEMUDF(K) =  DEUMUF*(ALF + GF1*DA1)/(ALF + DA1)
-            D1MUDF(K) = -DEUMUF*ALF*(1.0D0 - GF1)/(ALF + DA1)**2
-            D2MUDF(K) = 0.0D0
-            SFF1(K)   =  ALF*DEUMUF*(1.0D0 - GF1)
-            SFF2(K)   =  0.0D0
-          ENDIF
- 1020   CONTINUE
-
-        IF(TR2D .GT. 0.0D0) THEN
-          FD1 = (1.0D0 + GMT*DA1) / (1.0D0 + DA1)
-          FD2 = (1.0D0 + GMT*DA2) / (1.0D0 + DA2)
-        ELSE
-          FD1 = (1.0D0 + GMC*DA1) / (1.0D0 + DA1)
-          FD2 = (1.0D0 + GMC*DA2) / (1.0D0 + DA2)
-        ENDIF
-        LAMBDD = LAMBDA *0.5D0 *(FD1 + FD2)
-
-        DO 1030, K=1,2
-          IF (EMP(K).GT.0.D0) THEN
-            FDI1(K) = (1.0D0 + GMT*DA1) / (1.0D0 + DA1)
-            FDI2(K) = (1.0D0 + GMT*DA2) / (1.0D0 + DA2)
-          ELSE
-            FDI1(K) = (1.0D0 + GMC*DA1) / (1.0D0 + DA1)
-            FDI2(K) = (1.0D0 + GMC*DA2) / (1.0D0 + DA2)
-          ENDIF
-          DEUMUD(K) = DEUXMU* 0.5D0*(FDI1(K) + FDI2(K))
- 1030   CONTINUE
 
         DE33I = -LAMBDA*KSI2D/(DEUXMU  + LAMBDA*KSI2D)
 
@@ -431,37 +373,15 @@ C -- CONTRIBUTION DISSIPATIVE
           CALL R8INIR(3, 0.D0, SIGHP, 1)
           CALL R8INIR(3, 0.D0, SIGHM, 1)
 
-          IF(TR2D .GT. 0.0D0) THEN
-
-            GM   = 1.0D0 - GMT
-            FD1  = GM / ((1.0D0+DA1)*(1.0D0+DA1)) *0.5D0*LAMBDA
-            FD2  = GM / ((1.0D0+DA2)*(1.0D0+DA2)) *0.5D0*LAMBDA
-            KSIM = 0.5D0*((1.0D0+GMT*DA1)/(1.0D0+DA1)
-     &                 + (1.0D0+GMT*DA2)/(1.0D0+DA2))
-          ELSE
-
-            GM   = 1.0D0 - GMC
-            FD1  = GM / ((1.0D0+DA1)*(1.0D0+DA1)) *0.5D0*LAMBDA
-            FD2  = GM / ((1.0D0+DA2)*(1.0D0+DA2)) *0.5D0*LAMBDA
-            KSIM = 0.5D0*((1.0D0+GMC*DA1)/(1.0D0+DA1)
-     &                 + (1.0D0+GMC*DA2)/(1.0D0+DA2))
-          ENDIF
+          KSIM = LAMBDD / LAMBDA
 
           DO 800, K=1,2
-            IF (EMP(K).GT.0.D0) THEN
-              FDI1(K)  = (1.0D0-GMT) / ((1.0D0+DA1)*(1.0D0+DA1)) *MU
-              FDI2(K)  = (1.0D0-GMT) / ((1.0D0+DA2)*(1.0D0+DA2)) *MU
-            ELSE
-              FDI1(K)  = (1.0D0-GMC) / ((1.0D0+DA1)*(1.0D0+DA1)) *MU
-              FDI2(K)  = (1.0D0-GMC) / ((1.0D0+DA2)*(1.0D0+DA2)) *MU
-            ENDIF
-
             TREPS = TR2D + EPS33
-            QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
+            TREPS2 = TREPS**2
+            QM1 = 0.5D0*COF1*TREPS2+Q2D
             QM2 = QM1
-            QME33 = 0.5D0*LAMBDA*TREPS*GM + MU*EPS33
-            QDE(K) = COF1 * EPS33 + 0.5D0*LAMBDA*TR2D*GTR2
-     &             + MU * EMP(K) * GI(K)
+            QME33 = COF1*TREPS + MU*EPS33
+            QDE(K) = COF1*(TR2D+EPS33)+MU*EMP(K)*GI(K)
 
             A11 = 2.0D0*(QM1/(1.0D0 + DA1)**3 + QFF(1)/(ALF + DA1)**3)
      &          - QME33*DE33D1/(1.0D0 + DA1)**2

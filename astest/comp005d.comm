@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 # TITRE VALIDATION DE LA MODELISATION 3D_GRAD_VARI AVEC PILOTAGE
 # comp005d.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,7 +49,8 @@ METAL = DEFI_MATERIAU(
                   ),
   ECRO_LINE  = _F(SY= 100., D_SIGM_EPSI = -1.E4),
   BETON_ECRO_LINE  = _F(SYT= 100., D_SIGM_EPSI = -1.E4),
-  NON_LOCAL  = _F(LONG_CARA = 1.,PENA_LAGR=1000.)
+#  NON_LOCAL  = _F(LONG_CARA = 1.,PENA_LAGR=1000.)
+  NON_LOCAL  = _F(C_GRAD_VARI = 2800.,PENA_LAGR=1000.*2800.)
   )
 
 
@@ -71,7 +72,7 @@ MA=[MA_Q,MA_L];
 
 
 modelisation=['3D_GRAD_VARI','3D'];
-comportement=['ENDO_FRAGILE','ENDO_ISOT_BETON'];
+comportement=['ENDO_ISOT_BETON'];
 
 
 for i in range(0,len(modelisation)):

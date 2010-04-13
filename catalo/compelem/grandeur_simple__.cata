@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+%& MODIF COMPELEM  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1419,9 +1419,10 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        EFFORT :
        MOMENT :
        DEPL :
+       LAG_GV :
 >>
     PREC     = R    PREC     SIGM     EPSI     FHYDR1   FHYDR2   FTHERM   VARI
-                    EFFORT   MOMENT   DEPL
+                    EFFORT   MOMENT   DEPL     LAG_GV
 
 <<  PRES_C Type:C Chargement surfacique appliqué a un modèle mécanique
    (PRES,CISA)

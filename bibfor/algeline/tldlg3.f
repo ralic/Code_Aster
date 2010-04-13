@@ -2,7 +2,7 @@
      &                  NDECI,ISINGU,NPVNEG,IRET,SOLVOP)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 13/04/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER NDECI1,NDECI2,IEQ4,NZERO,VALI(2),IPIV
       REAL*8 EPS,DMAX,DMIN,D1,R8MAEM,RBID
       COMPLEX*16 CBID
-      LOGICAL LXFEM
+      LOGICAL LXFEM,LMUMPS
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       NOM = ZI(LMAT+1)
@@ -107,6 +107,7 @@ C     ------------------------------------------------------------------
       TYPSYM = ZI(LMAT+4)
       NOMA19 = ZK24(NOM)
       METRES = METREZ
+      LMUMPS=.FALSE.
 
       IF (METRES.NE.'LDLT'.AND.METRES.NE.'MULT_FRO'
      &                    .AND.METRES.NE.'MUMPS') THEN
@@ -207,6 +208,7 @@ C     ---------------------------------------
 
       ELSE IF (METRES.EQ.'MUMPS') THEN
 C     ---------------------------------------
+        LMUMPS=.TRUE. 
         CALL AMUMPH('DETR_OCC',SOLVOP,NOMA19,RBID,CBID,' ',0,IRET)
         CALL AMUMPH('PRERES',SOLVOP,NOMA19,RBID,CBID,' ',0,IRET)
         NZERO=-9999
@@ -353,9 +355,17 @@ C     ----------------------------------------------
       VALI(2)= NDECI
       IF (NU.EQ.' ') THEN
         IF (IRET.EQ.1) THEN
-          CALL U2MESG(CODMES,'FACTOR_10',0,VALK,2,VALI,0,0.D0)
+          IF (LMUMPS) THEN
+            CALL U2MESG(CODMES,'FACTOR_75',0,VALK,2,VALI,0,0.D0)
+          ELSE
+            CALL U2MESG(CODMES,'FACTOR_10',0,VALK,2,VALI,0,0.D0)
+          ENDIF
         ELSE IF (IRET.EQ.2) THEN
-          CALL U2MESG(CODMES,'FACTOR_11',0,VALK,1,VALI,0,0.D0)
+          IF (LMUMPS) THEN
+            CALL U2MESG(CODMES,'FACTOR_76',0,VALK,1,VALI,0,0.D0)
+          ELSE
+            CALL U2MESG(CODMES,'FACTOR_11',0,VALK,1,VALI,0,0.D0)
+          ENDIF
         ENDIF
 
       ELSE
@@ -375,12 +385,24 @@ C     ----------------------------------------------
         IF (TARDIF(1:4).EQ.'    ') THEN
           IF (IRET.EQ.1) THEN
             IF (.NOT.LXFEM) THEN
-              CALL U2MESG(CODMES,'FACTOR_20',4,VALK,2,VALI,0,0.D0)
+              IF (LMUMPS) THEN
+                CALL U2MESG(CODMES,'FACTOR_77',4,VALK,2,VALI,0,0.D0)
+              ELSE
+                CALL U2MESG(CODMES,'FACTOR_20',4,VALK,2,VALI,0,0.D0)
+              ENDIF
             ELSE
-              CALL U2MESG(CODMES,'FACTOR_22',4,VALK,2,VALI,0,0.D0)
+              IF (LMUMPS) THEN
+                CALL U2MESG(CODMES,'FACTOR_78',4,VALK,2,VALI,0,0.D0)
+              ELSE
+                CALL U2MESG(CODMES,'FACTOR_22',4,VALK,2,VALI,0,0.D0)
+              ENDIF
             ENDIF
           ELSE IF (IRET.EQ.2) THEN
-            CALL U2MESG(CODMES,'FACTOR_21',4,VALK,1,VALI,0,0.D0)
+            IF (LMUMPS) THEN
+              CALL U2MESG(CODMES,'FACTOR_76',4,VALK,1,VALI,0,0.D0)
+            ELSE
+              CALL U2MESG(CODMES,'FACTOR_21',4,VALK,1,VALI,0,0.D0)
+            ENDIF
           ENDIF
 
         ELSE
@@ -391,15 +413,31 @@ C            ON IMPRIME LES NOEUDS CONCERNES PAR LA LIAISON :
           IF (LLIAI.GT.0) THEN
              CALL IMPPIV(NU,ISINGU)
              IF (IRET.EQ.1) THEN
-               CALL U2MESG(CODMES,'FACTOR_30',4,VALK,2,VALI,0,0.D0)
+               IF (LMUMPS) THEN
+                 CALL U2MESG(CODMES,'FACTOR_78',4,VALK,2,VALI,0,0.D0)
+               ELSE
+                 CALL U2MESG(CODMES,'FACTOR_30',4,VALK,2,VALI,0,0.D0)
+               ENDIF
              ELSE IF (IRET.EQ.2) THEN
-               CALL U2MESG(CODMES,'FACTOR_31',4,VALK,1,VALI,0,0.D0)
+               IF (LMUMPS) THEN
+                 CALL U2MESG(CODMES,'FACTOR_76',4,VALK,1,VALI,0,0.D0)
+               ELSE
+                 CALL U2MESG(CODMES,'FACTOR_31',4,VALK,1,VALI,0,0.D0)
+               ENDIF
              ENDIF
           ELSE
              IF (IRET.EQ.1) THEN
-               CALL U2MESG(CODMES,'FACTOR_40',4,VALK,2,VALI,0,0.D0)
+               IF (LMUMPS) THEN
+                 CALL U2MESG(CODMES,'FACTOR_79',4,VALK,2,VALI,0,0.D0)
+               ELSE
+                 CALL U2MESG(CODMES,'FACTOR_40',4,VALK,2,VALI,0,0.D0)
+               ENDIF
              ELSE IF (IRET.EQ.2) THEN
-               CALL U2MESG(CODMES,'FACTOR_41',4,VALK,1,VALI,0,0.D0)
+               IF (LMUMPS) THEN
+                 CALL U2MESG(CODMES,'FACTOR_76',4,VALK,1,VALI,0,0.D0)
+               ELSE
+                 CALL U2MESG(CODMES,'FACTOR_41',4,VALK,1,VALI,0,0.D0)
+               ENDIF
              ENDIF
           END IF
         END IF

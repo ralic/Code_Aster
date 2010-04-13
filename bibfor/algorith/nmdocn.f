@@ -1,7 +1,7 @@
       SUBROUTINE NMDOCN(MODELE,PARCRI,PARCON)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C                6 : VARI_REFE
 C                7 : EFFORT
 C                8 : MOMENT
 C                9 : DEPL_REFE
+C               10 : LAGR_REFE
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -137,6 +138,8 @@ C
         ENDIF
         CALL GETVR8('CONVERGENCE','DEPL_REFE',1,1,1,PARCON(9),IRET)
         IF (IRET.LE.0) PARCON(9)=R8VIDE()
+        CALL GETVR8('CONVERGENCE','LAGR_REFE',1,1,1,PARCON(10),IRET)
+        IF (IRET.LE.0) PARCON(10)=R8VIDE()
       ENDIF
      
           

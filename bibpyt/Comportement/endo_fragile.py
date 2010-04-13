@@ -1,4 +1,4 @@
-#@ MODIF endo_fragile Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF endo_fragile Comportement  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ loi = LoiComportement(
    nb_vari        = 2,
    nom_vari       = ('ENDO', 'INDICAT'),
    mc_mater       = ('ELAS', 'ECRO_LINE', 'NON_LOCAL'),
-   modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN','GRADVARI','GRADEPSI'),
+   modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN','GRADEPSI'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
    schema         = ('IMPLICITE',),

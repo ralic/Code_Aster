@@ -2,7 +2,7 @@
      &                  P,RP,RPRIM,SIELEQ,DP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF MODELISA  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C ======================================================================
 
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER          JPROL,JVALE,NBVALE
-      REAL*8           E,NU,SIGY,P,SIELEQ,RP,RPRIM,DP,NONLOC(3)
+      REAL*8           E,NU,SIGY,P,SIELEQ,RP,RPRIM,DP,NONLOC(2)
       CHARACTER*(*)    NOMRC
 C ----------------------------------------------------------------------
 C - RESOLUTION DE L'EQUATION R(P+DP) + 3 MU DP = SIELEQ
@@ -70,8 +70,8 @@ C - DESCRIPTIF DE LA COURBE R(P)
       JR = JVALE + NBVALE
 
 C - RECUPERATION DES PARAMETRES NON LOCAUX
-      RAUG=NONLOC(2)
-      PHI=NONLOC(3)
+      PHI  = NONLOC(1)
+      RAUG = NONLOC(2)
 
 
 C - RESOLUTION DE L'EQUATION R(P+DP) + 3 MU DP = SIELEQ

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('VOLU',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM_CONT',),),);       
+                              MODELISATION='3D',),),);       
 
 LN1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-2.5');
 
@@ -145,39 +145,39 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    # CONDITIONS IMPOSEES A LA MAIN
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
-                   LIAISON_DDL=(_F(NOEUD=('N9','N9','N13','N13',),
-                                  DDL=('DCX','H1X','DCX','H1X',),
-                                  COEF_MULT=(.5,0.5,0.5,.5),
+                   LIAISON_DDL=(_F(NOEUD=('N9','N9',),
+                                  DDL=('DX','H1X',),
+                                  COEF_MULT=(1,1,),
                                   COEF_IMPO=DEPX,),
-                               _F(NOEUD=('N45','N45','N49','N49',),
-                                  DDL=('DCX','H1X','DCX','H1X',),
-                                  COEF_MULT=(.5,0.5,0.5,.5),
+                               _F(NOEUD=('N29','N29',),
+                                  DDL=('DX','H1X',),
+                                  COEF_MULT=(1,1,),
                                   COEF_IMPO=DEPX,),
-                               _F(NOEUD=('N29','N29','N25','N25',),
-                                  DDL=('DCX','H1X','DCX','H1X',),
-                                  COEF_MULT=(.5,0.5,0.5,.5),
+                               _F(NOEUD=('N45','N45',),
+                                  DDL=('DX','H1X',),
+                                  COEF_MULT=(1,1,),
                                   COEF_IMPO=DEPX,),
-                               _F(NOEUD=('N65','N65','N61','N61',),
-                                  DDL=('DCX','H1X','DCX','H1X',),
-                                  COEF_MULT=(.5,0.5,0.5,.5),
+                               _F(NOEUD=('N65','N65',),
+                                  DDL=('DX','H1X',),
+                                  COEF_MULT=(1,1,),
                                   COEF_IMPO=DEPX,),
                                _F(NOEUD=('N9','N9',),
-                                  DDL=('DCZ','H1Z',),
-                                  COEF_MULT=(1.0,1.0,),
-                                  COEF_IMPO=DEPZ,),
-                               _F(NOEUD=('N45','N45',),
-                                  DDL=('DCZ','H1Z',),
-                                  COEF_MULT=(1.0,1.0,),
+                                  DDL=('DZ','H1Z',),
+                                  COEF_MULT=(1,1,),
                                   COEF_IMPO=DEPZ,),
                                _F(NOEUD=('N29','N29',),
-                                  DDL=('DCZ','H1Z',),
-                                  COEF_MULT=(1.0,1.0,),
+                                  DDL=('DZ','H1Z',),
+                                  COEF_MULT=(1,1,),
+                                  COEF_IMPO=DEPZ,),
+                               _F(NOEUD=('N45','N45',),
+                                  DDL=('DZ','H1Z',),
+                                  COEF_MULT=(1,1,),
                                   COEF_IMPO=DEPZ,),
                                _F(NOEUD=('N65','N65',),
-                                  DDL=('DCZ','H1Z',),
-                                  COEF_MULT=(1.0,1.0,),
+                                  DDL=('DZ','H1Z',),
+                                  COEF_MULT=(1,1,),
                                   COEF_IMPO=DEPZ,),),
-                    INFO=1,);        
+                    INFO=1,);
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,1.,1.),
@@ -212,7 +212,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     SOLVEUR=_F(METHODE='MUMPS',
                                PCENT_PIVOT=80,NPREC=-1,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=2,);
+                    INFO=1,);
 
 LAG=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]

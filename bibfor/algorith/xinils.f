@@ -1,23 +1,23 @@
-      SUBROUTINE XINILS(NOMA,METH,NFONF,NFONG,GEOFIS,A,B,NOEUD,COTE,
-     &                                         VECT1,VECT2,CNSLT,CNSLN)
+      SUBROUTINE XINILS(NOMA,DIMENS,METH,NFONF,NFONG,GEOFIS,A,B,
+     &                  NOEUD,COTE,VECT1,VECT2,CNSLT,CNSLN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C TOLE CRP_20
@@ -38,7 +38,7 @@ C  NFONF  :  NOM DE LA FONCTION LEVEL SET TANGENTE
 C  NFONG  :  NOM DE LA FONCTION LEVEL SET NORMALE
 C  GEOFIS :  GEOMETRIE DE LA FISSURE
 C  A,B,NOEUD,COTE,VECT1,VECT2 : QUANTITES DEFINISSANT LA GEO DE LA FISS
-C SORTIE : 
+C SORTIE :
 C      CNSLN  :  LEVEL-SET NORMALE  (PLAN DE LA FISSURE)
 C      CNSLT  :  LEVEL-SET TANGENTE (TRACE DE LA FISSURE)
 C
@@ -60,12 +60,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32    JEXNUM,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C     
+C
       INTEGER       IA,IMA,ITYPMA,JCONX1,JCONX2,JDLIMA,JDLISE,JMA
       INTEGER       NA,NB,NBAR,NBMA,NBSEF,NMAABS,NUNOA,NUNOB,JCLTSV
       INTEGER       JCNV,JCNL,JCTV,JCTL,NBCMP,JCND,JCTD
       REAL*8        XLN,XLT,MAT(3,3)
-      INTEGER       DIMENS, ADDIM, DIMNO
+      INTEGER       DIMENS, DIMNO
       INTEGER       IBID,IRET,ME1,ME2,CLSM,ME4
       INTEGER       NBNO,INO,JCOOR,NBMAF,I,J
       INTEGER       JLTSV,JLTSL,JLNSV,JLNSL,AR(12,2)
@@ -81,7 +81,7 @@ C
       INTEGER       IFM,NIV
 C
       CALL JEMARQ()
-      CALL INFDBG('XFEM',IFM,NIV)  
+      CALL INFDBG('XFEM',IFM,NIV)
       IF (NIV.GE.3) WRITE(IFM,*)'CALCUL DES LEVEL-SETS'
 C
       CALL GETRES(FISS,K16BID,K16BID)
@@ -99,12 +99,10 @@ C
       CALL JEVEUO(CNSLT//'.CNSL','E',JLTSL)
       CALL JEVEUO(CNSLN//'.CNSV','E',JLNSV)
       CALL JEVEUO(CNSLN//'.CNSL','E',JLNSL)
-     
+
       CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
-     
-      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-      DIMENS=ZI(ADDIM-1+6)
+
 
       CALL DISMOI('F','TYPE_DISCONTINUITE',FISS,'FISS_XFEM',
      &                                                 IBID,TYPDIS,IRET)
@@ -130,7 +128,7 @@ C-----------------------------------------------------------------------
           ZR(JLNSV-1+(INO-1)+1)=XLN
           ZR(JLTSV-1+(INO-1)+1)=XLT
           ZL(JLTSL-1+(INO-1)+1)=.TRUE.
-          ZL(JLNSL-1+(INO-1)+1)=.TRUE.             
+          ZL(JLNSL-1+(INO-1)+1)=.TRUE.
  1      CONTINUE
 
       ELSEIF (METH.EQ.'GROUP_MA') THEN
@@ -139,22 +137,22 @@ C-----------------------------------------------------------------------
 C       DANS LE CAS OU ON DONNE GROUP_MA_FISS ET GROUP_MA_FOND
 C-----------------------------------------------------------------------
 
-        LISMA = '&&XINILS.LISTE_MA_FISSUR'    
+        LISMA = '&&XINILS.LISTE_MA_FISSUR'
         CALL RELIEM(' ',NOMA,'NU_MAILLE','DEFI_FISS',1,1,
-     &              'GROUP_MA_FISS','GROUP_MA',LISMA,NBMAF)       
+     &              'GROUP_MA_FISS','GROUP_MA',LISMA,NBMAF)
         CALL JEVEUO(LISMA,'L',JDLIMA)
 
         IF (CALLST) THEN
-          LISSE = '&&XINILS.LISTE_MA_FONFIS' 
+          LISSE = '&&XINILS.LISTE_MA_FONFIS'
           CALL RELIEM(' ',NOMA,'NU_MAILLE','DEFI_FISS',1,1,
-     &                'GROUP_MA_FOND','GROUP_MA',LISSE,NBSEF)  
+     &                'GROUP_MA_FOND','GROUP_MA',LISSE,NBSEF)
           CALL JEVEUO(LISSE,'L',JDLISE)
         ENDIF
 
         IF (DIMENS .EQ. 3) THEN
          CALL XLS3D(CALLST,JLTSV,JLTSL,JLNSV,JLNSL,NBNO,JCOOR,
      &              NBMAF,JDLIMA,NBSEF,JDLISE,JCONX1,JCONX2,NOMA)
-        ELSE     
+        ELSE
          CALL XLS2D(CALLST,JLTSV,JLTSL,JLNSV,JLNSL,NBNO,JCOOR,
      &              NBMAF,JDLIMA,NBSEF,JDLISE,JCONX1,JCONX2)
         ENDIF
@@ -168,9 +166,9 @@ C-----------------------------------------------------------------------
 C       VERIFICATIONS (CAR REGLES INMPOSSIBLES DANS CAPY)
         IF (.NOT.CALLST) THEN
           IF (GEOFIS.EQ.'ELLIPSE'.OR.
-     &        GEOFIS.EQ.'CYLINDRE'.OR.      
+     &        GEOFIS.EQ.'CYLINDRE'.OR.
      &        GEOFIS.EQ.'DEMI_PLAN'.OR.
-     &        GEOFIS.EQ.'SEGMENT'.OR.      
+     &        GEOFIS.EQ.'SEGMENT'.OR.
      &        GEOFIS.EQ.'DEMI_DROITE') THEN
             VALK(1) = 'INTERFACE'
             VALK(2) =  GEOFIS
@@ -178,22 +176,22 @@ C       VERIFICATIONS (CAR REGLES INMPOSSIBLES DANS CAPY)
             CALL U2MESK('F','XFEM_23',3,VALK)
           ENDIF
         ELSEIF (CALLST) THEN
-          IF (GEOFIS.EQ.'DROITE'.OR.      
-     &        GEOFIS.EQ.'INCLUSION') THEN  
+          IF (GEOFIS.EQ.'DROITE'.OR.
+     &        GEOFIS.EQ.'INCLUSION') THEN
             VALK(1) = 'FISSURE'
             VALK(2) =  GEOFIS
             VALK(3) = 'INTERFACE'
             CALL U2MESK('F','XFEM_23',3,VALK)
           ENDIF
         ENDIF
-                
+
         IF (GEOFIS.EQ.'ELLIPSE') THEN
-            
+
 C  VECT1  = VECT DU DEMI-GRAND AXE
 C  VECT2  = VECT DU DEMI-PETIT AXE
 C  NOEUD  = CENTRE DE L'ELLIPSE
-C  A      =  DEMI-GRAND AXE       
-C  B      =  DEMI-PETIT AXE       
+C  A      =  DEMI-GRAND AXE
+C  B      =  DEMI-PETIT AXE
 C  COTE   =  COTE DE LA FISSURE ('IN' OU 'OUT' DE L'ELLIPSE)
 
           DO 20 INO=1,NBNO
@@ -231,22 +229,22 @@ C           LEVEL SET TANGENTE CORRESPOND A LA DISTANCE DU POINT
 C           A L'ELLIPSE DANS LE PLAN (VECT1,VECT2)
             CALL DISELL(PLOC,A,B,H)
 
-C           SI LA FISSURE EST A L'EXTERIEUR DE L'ELLIPSE, ON PREND 
+C           SI LA FISSURE EST A L'EXTERIEUR DE L'ELLIPSE, ON PREND
 C           L'OPPOSEE DE H (PAR DEFAUT, LA FISSURE EST A L'INTERIEUR)
             IF (COTE.EQ.'OUT') H = -1.D0 * H
 
             ZR(JLTSV-1+(INO-1)+1)=H
             ZL(JLTSL-1+(INO-1)+1)=.TRUE.
 
- 20       CONTINUE          
-        
+ 20       CONTINUE
+
         ELSEIF (GEOFIS.EQ.'CYLINDRE') THEN
-           
+
 C  VECT1  = VECT DU DEMI-GRAND AXE
 C  VECT2  = VECT DU DEMI-PETIT AXE
 C  NOEUD  = CENTRE DE L'ELLIPSE
-C  A      =  DEMI-GRAND AXE       
-C  B      =  DEMI-PETIT AXE       
+C  A      =  DEMI-GRAND AXE
+C  B      =  DEMI-PETIT AXE
 
           DO 30 INO=1,NBNO
 
@@ -286,13 +284,13 @@ C           AU CYLINDRE
             ZR(JLNSV-1+(INO-1)+1)=H
             ZL(JLNSL-1+(INO-1)+1)=.TRUE.
 
- 30       CONTINUE          
-        
+ 30       CONTINUE
+
         ELSEIF (GEOFIS.EQ.'DEMI_PLAN') THEN
 
 
 C  VECT1 = VECT NORMAL AU PLAN DE FISSURE
-C  VECT2 = VECT DANS LE PLAN DE FISSURE  
+C  VECT2 = VECT DANS LE PLAN DE FISSURE
 C          (NORMALE AU FOND : DIRECTION DE PROPAGATION POTENTIELLE)
 C  NOEUD = NOEUD DU FOND DE FISSURE
 
@@ -325,14 +323,14 @@ C           PROJECTION DU POINT 3D DANS LE REPERE LOCAL
 
 C           LEVEL SET NORMALE CORRESPOND A LA 3EME COORDONNEE LOCALE
             ZR(JLNSV-1+(INO-1)+1)= PLOC(3)
-            ZL(JLNSL-1+(INO-1)+1)=.TRUE.        
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.
 
 C           LEVEL SET TANGENTE CORRESPOND A LA 1ERE COORDONNEE LOCALE
             ZR(JLTSV-1+(INO-1)+1)= PLOC(1)
             ZL(JLTSL-1+(INO-1)+1)=.TRUE.
-            
- 29       CONTINUE          
-         
+
+ 29       CONTINUE
+
         ELSEIF (GEOFIS.EQ.'SEGMENT') THEN
 
 C  VECT1 = NOEUD DU FOND ORIGINE
@@ -343,8 +341,8 @@ C  VECT2 = NOEUD DU FOND EXTREMITE
             NEXT(I) = VECT2(I)
             NMIL(I) = (NORI(I) + NEXT(I))/2
             VSEG(I) = NEXT(I)-NORI(I)
- 100      CONTINUE   
- 
+ 100      CONTINUE
+
           NSEG = SQRT(VSEG(1)**2 + VSEG(2)**2 + VSEG(3)**2)
 
           DO 50 INO=1,NBNO
@@ -357,7 +355,7 @@ C           COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
             VECT3(1) = 0.D0
             VECT3(2) = 0.D0
             VECT3(3) = 1.D0
-            
+
 C           BASE LOCALE : (VSEG,VECT2)
             CALL NORMEV(VSEG,NORME)
             CALL PROVEC(VECT3,VSEG,VECT2)
@@ -379,18 +377,18 @@ C           POSITIONNE AU CENTRE DU SEGEMENT
 
 C           LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
             ZR(JLNSV-1+(INO-1)+1)= PLOC(2)
-            ZL(JLNSL-1+(INO-1)+1)=.TRUE.        
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.
 
-C           LEVEL SET TANGENTE EST DEFINIE PAR : 
+C           LEVEL SET TANGENTE EST DEFINIE PAR :
             ZR(JLTSV-1+(INO-1)+1)= ABS(PLOC(1)) - NSEG/2
             ZL(JLTSL-1+(INO-1)+1)=.TRUE.
-            
- 50       CONTINUE          
 
-          
+ 50       CONTINUE
+
+
         ELSEIF (GEOFIS.EQ.'DEMI_DROITE') THEN
 
-C  VECT1 = VECTEUR DIRECTEUR DE LA DEMI DROITE 
+C  VECT1 = VECTEUR DIRECTEUR DE LA DEMI DROITE
 C          DANS LA DIRECTION DE PROPA
 C  NOEUD = NOEUD DU FOND DE FISSURE
 
@@ -400,11 +398,11 @@ C           COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
             DO 36 DIMNO=1, DIMENS
               P2D(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
  36         CONTINUE
-            
+
             VECT3(1) = 0.D0
             VECT3(2) = 0.D0
             VECT3(3) = 1.D0
-            
+
 C           BASE LOCALE : (VECT1,VECT2)
             CALL NORMEV(VECT1,NORME)
             CALL PROVEC(VECT3,VECT1,VECT2)
@@ -425,13 +423,13 @@ C           PROJECTION DU POINT 2D DANS LE REPERE LOCAL
 
 C           LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
             ZR(JLNSV-1+(INO-1)+1)= PLOC(2)
-            ZL(JLNSL-1+(INO-1)+1)=.TRUE.        
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.
 
 C           LEVEL SET TANGENTE CORRESPOND A LA 1ERE COORDONNEE LOCALE
             ZR(JLTSV-1+(INO-1)+1)= PLOC(1)
             ZL(JLTSL-1+(INO-1)+1)=.TRUE.
-            
- 35       CONTINUE  
+
+ 35       CONTINUE
 
 
         ELSEIF (GEOFIS.EQ.'DROITE') THEN
@@ -445,11 +443,11 @@ C           COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
             DO 41 DIMNO=1, DIMENS
               P2D(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
  41         CONTINUE
-            
+
             VECT3(1) = 0.D0
             VECT3(2) = 0.D0
             VECT3(3) = 1.D0
-            
+
 C           BASE LOCALE : (VECT1,VECT2)
             CALL NORMEV(VECT1,NORME)
             CALL PROVEC(VECT3,VECT1,VECT2)
@@ -471,22 +469,22 @@ C           PROJECTION DU POINT 2D DANS LE REPERE LOCAL
 
 C           LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
             ZR(JLNSV-1+(INO-1)+1)= PLOC(2)
-            ZL(JLNSL-1+(INO-1)+1)=.TRUE.        
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.
 
-C           LEVEL SET TANGENTE PAS DEFINIE 
+C           LEVEL SET TANGENTE PAS DEFINIE
             CALL ASSERT(.NOT.CALLST)
             ZR(JLTSV-1+(INO-1)+1)= -1.D0
-            ZL(JLTSL-1+(INO-1)+1)=.TRUE.        
-            
- 40       CONTINUE  
-        
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.
+
+ 40       CONTINUE
+
         ELSEIF  (GEOFIS.EQ.'INCLUSION') THEN
-           
+
 C  VECT1  = VECT DU DEMI-GRAND AXE
 C  VECT2  = VECT DU DEMI-PETIT AXE
 C  NOEUD  = CENTRE DE L'ELLIPSE
-C  A      =  DEMI-GRAND AXE       
-C  B      =  DEMI-PETIT AXE       
+C  A      =  DEMI-GRAND AXE
+C  B      =  DEMI-PETIT AXE
 
           DO 45 INO=1,NBNO
 
@@ -520,13 +518,13 @@ C           AU CYLINDRE
             ZR(JLNSV-1+(INO-1)+1)=H
             ZL(JLNSL-1+(INO-1)+1)=.TRUE.
 
-C           LEVEL SET TANGENTE PAS DEFINIE 
+C           LEVEL SET TANGENTE PAS DEFINIE
             CALL ASSERT(.NOT.CALLST)
             ZR(JLTSV-1+(INO-1)+1)= -1.D0
-            ZL(JLTSL-1+(INO-1)+1)=.TRUE.        
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.
 
- 45       CONTINUE          
-                          
+ 45       CONTINUE
+
         ENDIF
 
       ELSE IF (METH.EQ.'CHAMP') THEN
@@ -559,17 +557,17 @@ C           ON VERIFIE QUE LE NOEUD POSSEDE CETTE COMPOSANTE
             CALL ASSERT(ZL(JCNL+INO-1))
             IF (CALLST) CALL ASSERT(ZL(JCTL+INO-1))
             ZR(JLNSV-1+(INO-1)+1)=ZR(JCNV+INO-1)
-            ZL(JLNSL-1+(INO-1)+1)=.TRUE. 
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.
             IF (CALLST)      ZR(JLTSV-1+(INO-1)+1)=ZR(JCTV+INO-1)
             IF (.NOT.CALLST) ZR(JLTSV-1+(INO-1)+1)= -1.D0
             ZL(JLTSL-1+(INO-1)+1)=.TRUE.
- 60     CONTINUE 
+ 60     CONTINUE
 
         CALL JEDETR(CHSLSN)
         IF (CALLST) CALL JEDETR(CHSLST)
 
-      ENDIF     
-      
+      ENDIF
+
 C-----------------------------------------------------------------------
 C     REAJUSTEMENT DE LSN (BOOK III 06/02/04) ET LST
 C-----------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/03/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209j.para = tps_job 500 mem_job 800Mo mem_aster 20 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,7 +80,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               MODELISATION='3D',),
                            _F(GROUP_MA=('CYLROD',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM_CONT',),),
+                              MODELISATION='3D',),),
                               INFO=1);
 
 # FORME ANALYTIQUE POUR LA FISSURE
@@ -128,6 +128,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 #----------------------------------------------
 #                   CHARGEMENTS
 #----------------------------------------------
+
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       ITER_FROT_MAXI = 12,
@@ -167,14 +168,14 @@ CHCINE=AFFE_CHAR_MECA(MODELE=MODELEK,
                                    DY=0.,),),
                       LIAISON_GROUP=(_F(GROUP_NO_1 = ('BLOCAX2'),
                                         GROUP_NO_2 = ('BLOCAX2'),
-                                        DDL_1      = 'DCX',
+                                        DDL_1      = 'DX',
                                         DDL_2      = 'H1X',
                                         COEF_MULT_1=  1.,
                                         COEF_MULT_2=  1.,
                                         COEF_IMPO= 0.,),
                                      _F(GROUP_NO_1 = ('BLOCAY2',),
                                         GROUP_NO_2 = ('BLOCAY2',),
-                                        DDL_1      = 'DCY',
+                                        DDL_1      = 'DY',
                                         DDL_2      = 'H1Y',
                                         COEF_MULT_1=  1.,
                                         COEF_MULT_2=  1.,
@@ -211,8 +212,9 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
-                    CONTACT = CTXFEM,
-                    EXCIT=(_F(CHARGE=CHXFEM,),
+                    CONTACT=CTXFEM,
+                    EXCIT=(
+                           _F(CHARGE=CHXFEM,),
                            _F(CHARGE=CHCINE,),
                            _F(CHARGE=CHMECA,
                               FONC_MULT=RAMPE),

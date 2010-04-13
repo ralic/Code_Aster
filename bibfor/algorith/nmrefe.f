@@ -2,7 +2,7 @@
      &                  PARCON,VECELZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,6 +54,7 @@ C                     6 : VARI_REFE
 C                     7 : EFFORT (FORC_REFE)
 C                     8 : MOMENT (FORC_REFE)
 C                     9 : DEPL_REFE
+C                    10 : LAGR_REFE
 C OUT CNVFRE : FORCE DE REFERENCE POUR CONVERGENCE EN REFERENCE
 C OUT VECELE : NOM DU VECT_ELEM
 C
@@ -83,7 +84,7 @@ C
       CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
 C
       INTEGER      NBSIG
-      PARAMETER    (NBSIG=9)
+      PARAMETER    (NBSIG=10)
       CHARACTER*8  SIGERE(NBSIG)      
 C
       LOGICAL      LBID
@@ -100,7 +101,7 @@ C
       CHARACTER*16 OPTION
 C      
       DATA  SIGERE / 'SIGM','EPSI','FTHERM','FHYDR1','FHYDR2','VARI',
-     &               'EFFORT','MOMENT','DEPL' /
+     &               'EFFORT','MOMENT','DEPL','LAG_GV' /
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()

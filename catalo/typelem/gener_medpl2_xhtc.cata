@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,13 +32,13 @@ ENTETE__ ELEMENT__ MEDPQU4_XHTC      MAILLE__ QUAD4
    ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3 FPG2=FPG2 FPG3=FPG3 FPG4=FPG4 NOEU=NOEU GAUSS=FPG3  SIMP=SIMP COTES=COTES SIMP1=SIMP1 COTES1=COTES1 COTES2=COTES2
    ATTRIBUT__  XFEM=XHTC XLAG=NOEUD
    ENS_NOEUD__  EN1     =     1   2   3   4
-ENTETE__ ELEMENT__ MEDPTR6_XHTC      MAILLE__ TRIA6
+ENTETE__ ELEMENT__ MEDPTR6_XHTC_X    MAILLE__ TRIA6
    ELREFE__  TR3       GAUSS__  XINT=FPG12  RIGI=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM36   FPG_LISTE__  MATER = (RIGI XFEM NOEU)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3 FPG2=FPG2 FPG3=FPG3 FPG4=FPG4 NOEU=NOEU GAUSS=FPG3  SIMP=SIMP COTES=COTES SIMP1=SIMP1 COTES1=COTES1 COTES2=COTES2
    ATTRIBUT__  XFEM=XHTC XLAG=ARETE
    ENS_NOEUD__  EN2     =     4   5   6
    ENS_NOEUD__  EN1     =     1   2   3
-ENTETE__ ELEMENT__ MEDPQU8_XHTC      MAILLE__ QUAD8
+ENTETE__ ELEMENT__ MEDPQU8_XHTC_X    MAILLE__ QUAD8
    ELREFE__  QU4       GAUSS__  RIGI=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM72   FPG_LISTE__  MATER = (RIGI XFEM NOEU)
    ELREFE__  TR3       GAUSS__  RIGI=FPG3  XINT=FPG12
    ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3 FPG2=FPG2 FPG3=FPG3 FPG4=FPG4 NOEU=NOEU GAUSS=FPG3  SIMP=SIMP COTES=COTES SIMP1=SIMP1 COTES1=COTES1 COTES2=COTES2
@@ -65,11 +65,11 @@ MODE_LOCAL__
                                         Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
-                                 EN1   (DCX      DCY      H1X      H1Y      E1X      E1Y
+                                 EN1   (DX      DY      H1X      H1Y      E1X      E1Y
                                         E2X      E2Y      E3X      E3Y      E4X      E4Y
                                         LAGS_C   LAGS_F1  )
                                  EN2   (LAGS_C   LAGS_F1  )
-                                 EN3   (DCX      DCY      H1X      H1Y      E1X      E1Y
+                                 EN3   (DX      DY      H1X      H1Y      E1X      E1Y
                                         E2X      E2Y      E3X      E3Y      E4X      E4Y)
     DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX      DY      )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
@@ -143,7 +143,7 @@ OPTION__
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  DDL_MECC PTHETAR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO
                                      E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     EPRESNO  PPRESSR  E4NEUTR  PPINTER
+                                     N1NEUT_R PLST     EPRESNO  PPRESSR  E4NEUTR  PPINTER  
                                      E10NEUTR PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONGCO
                               OUT__  EGTHETA  PGTHETA
     CALC_G_F            288   IN__   DDL_MECA PDEPLAR  CFORCEF  PFFVOLU  DDL_MECC PTHETAR  NGEOMER  PGEOMER
@@ -152,7 +152,7 @@ OPTION__
                                      E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST     CPRESSF  PPRESSF  CCOMPOR  PCOMPOR
                                      E4NEUTR  PPINTER  E10NEUTR PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONGCO
-                                     CTEMPSR  PTEMPSR
+                                     CTEMPSR  PTEMPSR  
                               OUT__  EGTHETA  PGTHETA
     CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -263,7 +263,6 @@ OPTION__
                                      N2NEUT_R PGRADLN
                               OUT__  E4NEUTR  PPINTER  E10NEUTR PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONCHA
                                      E8NEUTR  PBASECO  E4NEUTR  PGESCLA  E4NEUTR  PGMAITR  E4NEUTR  PGESCLO
-                                     E4NEUTR  PGMAITO
     GEOM_FAC            519   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLA   E4NEUTR  PPINTER  E2NEUTI  PLONCHA
                                      E4NEUTR  PGESCLO  N1NEUT_R PLST
                               OUT__  E4NEUTR  PNEWGES  E4NEUTR  PNEWGEM  E8NEUTR  PBASESC  E8NEUTR  PBASMAI

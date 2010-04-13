@@ -1,28 +1,28 @@
       SUBROUTINE OP0113(IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
       IMPLICIT NONE
       INTEGER           IER
-C      
+C
 C ----------------------------------------------------------------------
 C
 C OPERATEUR MODI_MODELE_XFEM
@@ -60,34 +60,23 @@ C
       INTEGER         KK,I,IFISS,J,J2
       INTEGER         IADRMA,JMOFIS
       INTEGER         NBMA,NELT
-      INTEGER         NMAENR,NB1
+      INTEGER         NB1
       INTEGER         NFISS,JNFIS
-      INTEGER         JDIME,JCONX1,JCONX2
+      INTEGER         JDIME
       INTEGER         NDIM
       CHARACTER*16    MOTFAC,K16BID
       CHARACTER*19    LIGR1,LIGR2
       CHARACTER*24    LIEL1,LIEL2
-      CHARACTER*24    XINDIC,GRP(3),MAIL2
-      INTEGER         JINDIC,JGRP,JMAIL2
+      CHARACTER*24    MAIL2
       CHARACTER*24    TRAV
-      INTEGER         JTAB,JNCMP,JVALV
-      INTEGER         JXC     
+      INTEGER         JMAIL2,JTAB,JXC,IRET
       CHARACTER*8     MODELX,MOD1,K8BID,NOMA,K8CONT
       CHARACTER*19    PINTTO,CNSETO,HEAVTO,LONCHA,AINTER
-      CHARACTER*19    BASLOC,LTNO,LNNO,STNO 
-      CHARACTER*19    PINTER,CFACE ,FACLON,BASECO,CARTE
-      CHARACTER*19    GMAITR,GESCLA,GMAITO,GESCLO
-C      
-C --- FONCTION ACCESS MAILLAGE (POUR MAILLE NUMERO ABSOLU IMAIL)
-C --- ZZCONX: CONNECTIVITE DE LA MAILLE IMAIL
-C --- ZZNBNE: NOMBRE DE NOEUDS DE LA MAILLE IMAIL
+      CHARACTER*19    BASLOC,LTNO,LNNO,STNO
+      CHARACTER*19    PINTER,CFACE ,FACLON,BASECO
+      CHARACTER*19    GESCLA,GMAITR,GESCLO
 C
-C      INTEGER         ZZNBNE,ZZCONX
-            
-C      ZZCONX(IMAIL,J) = ZI(JCONX1-1+ZI(JCONX2+IMAIL-1)+J-1)
-C      ZZNBNE(IMAIL)   = ZI(JCONX2+IMAIL) - ZI(JCONX2+IMAIL-1)
-C
-      DATA MOTFAC /' '/      
+      DATA MOTFAC /' '/
 C
 C ----------------------------------------------------------------------
 C
@@ -98,45 +87,36 @@ C
       CALL GETRES(MODELX,K16BID,K16BID)
       LIGR2  = MODELX(1:8)//'.MODELE'
       LIEL2  = LIGR2(1:19)//'.LIEL'
-C      
+C
 C --- NOM DU MODELE INITIAL
-C     
+C
       CALL GETVID(MOTFAC,'MODELE_IN',1,1,1,MOD1,IBID )
       LIGR1  = MOD1(1:8)//'.MODELE'
       LIEL1  = LIGR1(1:19)//'.LIEL'
 C
 C --- ACCES AU MAILLAGE INITIAL
-C      
+C
       CALL JEVEUO(MOD1(1:8)//'.MODELE    .LGRF','L',IADRMA)
       NOMA   = ZK8(IADRMA)
-      CALL JEVEUO(NOMA(1:8)//'.DIME','L',JDIME)
-      NDIM   = ZI(JDIME-1+6)
+      CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIM,K8BID,IRET)
+
       CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IBID)
-      CALL JEVEUO(NOMA(1:8)//'.CONNEX','L',JCONX1)
-      CALL JEVEUO(JEXATR(NOMA(1:8)//'.CONNEX','LONCUM'),'L',JCONX2)
 
 C --- RECUPERER LE NOMBRE DE FISSURES
-C      
+C
       CALL GETVID(MOTFAC,'FISSURE'  ,1,1,0,K8BID,NFISS)
       NFISS = -NFISS
 
 C --- CREATION DES OBJETS POUR MULTIFISSURATION DANS MODELE MODIFIE
 C
       CALL WKVECT(MODELX(1:8)//'.NFIS'  ,'G V I'  ,1    ,JNFIS)
-      CALL WKVECT(MODELX(1:8)//'.FISS'  ,'G V K8' ,NFISS,JMOFIS) 
+      CALL WKVECT(MODELX(1:8)//'.FISS'  ,'G V K8' ,NFISS,JMOFIS)
       ZI(JNFIS)   = NFISS
-C      
+C
 C --- RECUPERER LES FISSURES ET REMPLISSAGE DE MODELX(1:8)//'.FISS'
-C       
+C
       CALL GETVID(MOTFAC,'FISSURE',1,1,NFISS,ZK8(JMOFIS), IBID )
       CALL GETVR8(MOTFAC,'CRITERE',1,1,1,CRIMAX,IBID)
-C
-C     CREATION D'UNE CARTE CONTENANT LES NOMS DES SD FISS_XFEM
-      CARTE = MODELX(1:8)//'.XMAFIS'
-      CALL ALCART ( 'G', CARTE, NOMA, 'NEUT_K8')
-      CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
-      CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
-      ZK8(JNCMP)   = 'Z1'
 C
 C --- CONTACT ?
 C
@@ -144,8 +124,8 @@ C
       CALL WKVECT(MODELX(1:8)//'.XFEM_CONT'  ,'G V I'  ,1,JXC)
       IF (K8CONT.EQ.'OUI') THEN
         ZI(JXC) = 1
-      ELSE   
-        ZI(JXC) = 0 
+      ELSE
+        ZI(JXC) = 0
       ENDIF
 C
 C --- CREATION DU TABLEAU DE TRAVAIL
@@ -157,51 +137,18 @@ C
         ZI(JTAB-1+5*(I-1)+4) = 1
  110  CONTINUE
 C
-C --------------------------------------------------------------------- 
+C ---------------------------------------------------------------------
 C     1)  REMPLISSAGE DE TAB : NBMA X 5 : GR1 | GR2 | GR3 | GR0 | ITYP
-C --------------------------------------------------------------------- 
+C ---------------------------------------------------------------------
 C
+      CALL XTYELE(NOMA,MODELX,TRAV,NFISS,ZK8(JMOFIS),ZI(JXC),NDIM)
 C
-C --- BOUCLE SUR NOMBRE OCCURRENCES FISSURES
-C
-      DO 220 IFISS = 1,NFISS
-      
-        GRP(1) = ZK8(JMOFIS+IFISS-1)//'.MAILFISS  .HEAV'
-        GRP(2) = ZK8(JMOFIS+IFISS-1)//'.MAILFISS  .CTIP'
-        GRP(3) = ZK8(JMOFIS+IFISS-1)//'.MAILFISS  .HECT'
-        XINDIC = ZK8(JMOFIS+IFISS-1)//'.MAILFISS .INDIC'
-        
-        CALL JEVEUO(XINDIC,'L',JINDIC)  
-
-        DO 1000 KK = 1,3
-          IF (ZI(JINDIC-1+2*(KK-1)+1).EQ.1) THEN
-            CALL JEVEUO(GRP(KK),'L',JGRP)
-            NMAENR = ZI(JINDIC-1+2*KK)
-C            
-C --- POUR CHAQUE MAILLE DE CE GRP, ON MET À 1 LA CASE DE TAB 
-C --- COLONNE 1 ET À O LA CASE DE TAB COLONNE 4
-C
-            DO 120 I = 1,NMAENR
-              IMA                     = ZI(JGRP-1+I)
-              ZI(JTAB-1+5*(IMA-1)+KK) = 1
-              ZI(JTAB-1+5*(IMA-1)+4)  = 0
-
-              ZK8(JVALV) = ZK8(JMOFIS+IFISS-1)
-              CALL NOCART ( CARTE,3,' ','NUM',1,' ',IMA,' ',1)
-
- 120        CONTINUE
-          ENDIF
- 1000   CONTINUE
- 220  CONTINUE 
-
-C      CALL IMPRSD('CHAMP',CARTE,6,'NOM DES SD FISS')
-C
-C --------------------------------------------------------------------- 
+C ---------------------------------------------------------------------
 C       2)  MODIFICATION DE TAB EN FONCTION DE L'ENRICHISSEMENT
 C ---------------------------------------------------------------------
 C
       CALL XMOLIG(LIEL1,TRAV)
-C      
+C
 C --- ON COMPTE LE NB DE MAILLES DU LIGREL1 (= NB DE GREL DE LIEL2)
 C
       NELT   = 0
@@ -212,7 +159,7 @@ C
  230  CONTINUE
       IF (NELT.EQ.0) THEN
         CALL U2MESS('F','XFEM2_51')
-      ENDIF  
+      ENDIF
 
 C-----------------------------------------------------------------------
 C     3)  CONSTRUCTION DU .LIEL2
@@ -236,7 +183,7 @@ C-----------------------------------------------------------------------
       CALL ASSERT(NB1.EQ.NELT)
 
 C-----------------------------------------------------------------------
-C     4)  CONSTRUCTION DU .MAILLE 
+C     4)  CONSTRUCTION DU .MAILLE
 C-----------------------------------------------------------------------
 
       MAIL2 = MODELX//'.MAILLE'
@@ -275,7 +222,7 @@ C-----------------------------------------------------------------------
 C
 C --- CONCATENER LES CHAMPS ELEMENTAIRES ET NODAUX POUR LES
 C --- FISSURES DU MODELE
-C      
+C
       PINTTO = MODELX(1:8)//'.TOPOSE.PIN'
       CNSETO = MODELX(1:8)//'.TOPOSE.CNS'
       HEAVTO = MODELX(1:8)//'.TOPOSE.HEA'
@@ -287,10 +234,10 @@ C
       STNO   = MODELX(1:8)//'.STNO'
 
       CALL XCONNO(MODELX,'.BASLOC    ','G',BASLOC)
-      CALL XCONNO(MODELX,'.LNNO      ','G',LNNO)  
+      CALL XCONNO(MODELX,'.LNNO      ','G',LNNO)
       CALL XCONNO(MODELX,'.LTNO      ','G',LTNO)
       CALL XCONNO(MODELX,'.STNO      ','G',STNO)
-      
+
       CALL XCONEL(MODELX,'.TOPOSE.PIN','G','TOPOSE','PPINTTO',PINTTO)
       CALL XCONEL(MODELX,'.TOPOSE.CNS','G','TOPOSE','PCNSETO',CNSETO)
       CALL XCONEL(MODELX,'.TOPOSE.HEA','G','TOPOSE','PHEAVTO',HEAVTO)
@@ -305,8 +252,7 @@ C
       GESCLA = MODELX(1:8)//'.TOPOFAC.GE'
       GMAITR = MODELX(1:8)//'.TOPOFAC.GM'
       GESCLO = MODELX(1:8)//'.TOPOFAC.OE'
-      GMAITO = MODELX(1:8)//'.TOPOFAC.OM'
-      
+
 C     MAINTENANT, ON FAIT LA CONCATÉNATION DES CHAMPS DE CONTACT
 C     TOUTES LES MAILLES X-FEM 2D COMME 3D
         CALL XCONEL(MODELX,'.TOPOFAC.PI','G','TOPOFA',
@@ -318,15 +264,13 @@ C     TOUTES LES MAILLES X-FEM 2D COMME 3D
         CALL XCONEL(MODELX,'.TOPOFAC.LO','G','TOPOFA',
      &              'PLONCHA',FACLON)
         CALL XCONEL(MODELX,'.TOPOFAC.BA','G','TOPOFA',
-     &              'PBASECO',BASECO)     
+     &              'PBASECO',BASECO)
         CALL XCONEL(MODELX,'.TOPOFAC.GE','G','TOPOFA',
      &              'PGESCLA',GESCLA)
-        CALL XCONEL(MODELX,'.TOPOFAC.GM','G','TOPOFA',
-     &              'PGMAITR',GMAITR)
         CALL XCONEL(MODELX,'.TOPOFAC.OE','G','TOPOFA',
      &              'PGESCLO',GESCLO)
-        CALL XCONEL(MODELX,'.TOPOFAC.OM','G','TOPOFA',
-     &              'PGMAITO',GMAITO)
+        CALL XCONEL(MODELX,'.TOPOFAC.GM','G','TOPOFA',
+     &              'PGMAITR',GMAITR)
 C
 C --- MENAGE
 C

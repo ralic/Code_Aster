@@ -4,7 +4,7 @@
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -272,7 +272,7 @@ C        --- DIMENSION GEOMETRIE ---
                CALL DISMOI('C','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
                IF ( IERD .NE. 0 ) GOTO 9000
             ENDIF
-            CALL DISMOI('C','DIM_GEOM',CBID,'MAILLAGE',IBID,CBID,IERD)
+            CALL DISMOI('C','DIM_GEOM_B',CBID,'MAILLAGE',IBID,CBID,IERD)
             IF ( IERD .NE. 0 ) GOTO 9000
             CGEN = '.D'
             CALL CODENT(IBID,'G',CGEN(1:1))

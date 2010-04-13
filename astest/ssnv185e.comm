@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185e.para = tps_job 70 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,30 +118,7 @@ OUAUX1 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='-1.*coef*sqrt(R(X,Y,Z))*cos(T(X,Y,
 UAUX2 = FORMULE(NOM_PARA=('X','Y','Z'),VALE=' coef*sqrt(R(X,Y,Z))*sin(T(X,Y,Z)/2.)*(3.-4.*nu-cos(T(X,Y,Z)))');
 UAUX3 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='0.');
 
-CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,DDL_IMPO=_F(GROUP_NO='NCLA',DX=UAUX3,DY=OUAUX1,DZ=UAUX2,),);
-
-#  CES VALEURS SONT CALCULEES POUR CHAQUE NOEUD HEAVISIDE A PARTIR DE LA FORMULE GENERALE
-CH=AFFE_CHAR_MECA(MODELE=MODELEK,
-                     DDL_IMPO=(_F(NOEUD=('N501','N502','N534','N535','N512','N513','N545','N546','N523','N524','N556','N557','N1286','N1287','N1297','N1298',),
-                                  DCX=0., E1X=0.,              E2X=0.,              E3X=0.,       E4X=0.,
-                                  DCY=0., E1Y=0.,              E2Y=coef*(4.*nu-2.), E3Y=-1.*coef, E4Y=0.,
-                                  DCZ=0., E1Z=coef*(4.-4.*nu), E2Z=0.,              E3Z=0.,       E4Z=-1.*coef,),
-                               _F(NOEUD=('N536','N547','N558','N1299',),DCX=0.,DCY= 2.80089E-15,DCZ= 1.01787E-11,H1X=0.,H1Y=-3.20989E-09,H1Z=1.86346E-08,),
-                               _F(NOEUD=('N503','N514','N525','N1288',),DCX=0.,DCY=-2.80089E-15,DCZ=-1.01787E-11,H1X=0.,H1Y= 3.20989E-09,H1Z=1.86346E-08,),
-
-                               _F(NOEUD=('N537','N548','N559','N1300',),DCX=0.,DCY= 2.28933E-15,DCZ= 1.84271E-12,H1X=0.,H1Y=-2.53273E-09,H1Z=2.40571E-08,),
-                               _F(NOEUD=('N504','N515','N526','N1289',),DCX=0.,DCY=-2.28933E-15,DCZ=-1.84271E-12,H1X=0.,H1Y= 2.53273E-09,H1Z=2.40571E-08,),
-
-                               _F(NOEUD=('N538','N549','N560','N1301',),DCX=0.,DCY= 1.96578E-15,DCZ= 5.80554E-13,H1X=0.,H1Y=-2.15205E-09,H1Z=2.84648E-08,),
-                               _F(NOEUD=('N505','N516','N527','N1290',),DCX=0.,DCY=-1.96578E-15,DCZ=-5.80554E-13,H1X=0.,H1Y= 2.15205E-09,H1Z=2.84648E-08,),
-
-                               _F(NOEUD=('N539','N550','N561','N1302',),DCX=0.,DCY= 1.74526E-15,DCZ= 2.43185E-13,H1X=0.,H1Y=-1.90218E-09,H1Z=3.2276E-08,),
-                               _F(NOEUD=('N506','N517','N528','N1291',),DCX=0.,DCY=-1.74526E-15,DCZ=-2.43185E-13,H1X=0.,H1Y= 1.90218E-09,H1Z=3.2276E-08,),
-
-                               _F(NOEUD=('N1072','N1073','N1074','N1303',),DCX=0.,DCY= 1.58404E-15,DCZ= 1.2106E-13,H1X=0.,H1Y=-1.72255E-09,H1Z=3.56825E-08,),
-                               _F(NOEUD=('N1069','N1070','N1071','N1292',),DCX=0.,DCY=-1.58404E-15,DCZ=-1.2106E-13,H1X=0.,H1Y= 1.72255E-09,H1Z=3.56825E-08,),
-                                 ),
-                     );
+CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,DDL_IMPO=_F(GROUP_NO=('NCLA','NXFEM'),DX=UAUX3,DY=OUAUX1,DZ=UAUX2,),);
 
 
 #----------------------------------------------
@@ -154,7 +131,6 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM,),
                           _F(CHARGE=CHF,),
-                          _F(CHARGE=CH,),
                           ),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),

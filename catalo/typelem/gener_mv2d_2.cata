@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,7 +96,7 @@ MODE_LOCAL__
     EGNEUT1R = NEUT_R   ELGA__ RIGI    (X1       )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    EREFCO   = PREC     ELEM__         (SIGM     VARI)
+    EREFCO   = PREC     ELEM__         (SIGM     VARI     LAG_GV   )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
     CCDTAU   = PILO_R   ELEM__         (A0       )
@@ -195,8 +195,8 @@ OPTION__
     EQUI_ELNO_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     ERRE_ELEM_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     ERRE_ELNO_ELEM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    FORC_NODA           508   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
-                                     CCARCRI  PCARCRI  CMATERC  PMATERC
+    FORC_NODA           508   IN__   ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER  CCARCRI  PCARCRI
+                                     CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           545   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
@@ -246,7 +246,7 @@ OPTION__
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    REFE_FORC_NODA      508   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  EREFCO   PREFCO   CCOMPOR  PCOMPOR
+    REFE_FORC_NODA      508   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
     RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     RIGI_MECA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 13/04/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE DETECTION DE SINGULARITE SIMPLE AVEC LES SOLVEURS LINEAIRES 
 # erreu03a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,9 +26,9 @@
 # SURABONDANT) AVEC LES SOLVEURS LINEAIRES DIRECTS: MUMPS, LDLT ET MF.
 # CAS SYMETRIQUE REEL AVEC UN OPERATEUR INTEGRE: MECA_STATIQUE
 # ON TESTE LES MSGS SUIVANT:
-#    1. MANQUE DE BLOCAGE: FACTOR_20 POUR LDLT/MF/MUMPS
+#    1. MANQUE DE BLOCAGE: FACTOR_20/77 POUR LDLT/MF/MUMPS
 #             + FACTOR_57 SI MUMPS ET NPREC<0
-#    2. BLOCAGE SURABONDANTS: FACTOR_41 POUR LDLT/MF/MUMPS
+#    2. BLOCAGE SURABONDANTS: FACTOR_41/76 POUR LDLT/MF/MUMPS
 #             + FACTOR_42 SI MUMPS ET NPREC<0
 #########################################################################
 
@@ -116,7 +116,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("FACTOR_20", str(err))<>None :
+   if re.search("FACTOR_77", str(err))<>None :
       is_ok = 1
 TAB130=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -189,7 +189,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("FACTOR_41", str(err))<>None :
+   if re.search("FACTOR_76", str(err))<>None :
       is_ok = 1
 TAB230=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)

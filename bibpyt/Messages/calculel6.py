@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calculel6 Messages  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,11 +141,11 @@ Solution :
  erreurs données composante inconnue  %(k1)s  pour la grandeur  %(k2)s
 """),
 
-50: _("""
- Préparation des variables de commande :
- Dans le CHAM_MATER %(k1)s et pour la variable de commande %(k2)s,
- on ignore la composante %(k3)s
-"""),
+
+
+
+
+
 
 51: _("""
  erreurs donnees composante inconnue  %(k1)s
@@ -282,8 +282,8 @@ Solution :
 65: _("""
  Vous avez fourni %(i1)d charges alors qu'il n'y a %(i2)d dans la SD résultat.
 
- Risque & Conseil : 
-   Vous pouvez obtenir des résultats faux si les charges sont différentes.  
+ Risque & Conseil :
+   Vous pouvez obtenir des résultats faux si les charges sont différentes.
    Vérifiez que vous n'avez pas oublié de charge ou que vous n'en avez pas ajouté.
 """),
 
@@ -385,9 +385,9 @@ Solution :
 """),
 
 83 : _("""
-  L'option %(k1)s n'est pas traitée pour un résultat de type fourier_elas 
+  L'option %(k1)s n'est pas traitée pour un résultat de type fourier_elas
 (produit par MACRO_ELAS_MULT). Il faut faire après MACRO_ELAS_MULT une
- recombinaison de Fourier par l'opérateur COMB_FOURIER. 
+ recombinaison de Fourier par l'opérateur COMB_FOURIER.
 """),
 
 84: _("""

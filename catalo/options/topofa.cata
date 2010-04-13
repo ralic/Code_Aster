@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 % RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -36,6 +36,5 @@ OPTION__
         PLONCHA  NEUT_I ELEM__
         PBASECO  NEUT_R ELEM__
         PGESCLA  NEUT_R ELEM__
-        PGMAITR  NEUT_R ELEM__
         PGESCLO  NEUT_R ELEM__
-        PGMAITO  NEUT_R ELEM__
+        PGMAITR  NEUT_R ELEM__

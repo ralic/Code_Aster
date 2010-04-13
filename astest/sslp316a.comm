@@ -1,4 +1,4 @@
-# MODIF  DATE 26/10/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE L'ESTIMATEUR D'ERREUR XFEM SUR UNE PLAQUE FISSUREE
 # sslp316a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,12 +57,6 @@ OUAUX1 = FORMULE(VALE='-1.*coef*sqrt(R(X,Y))*cos(T(X,Y)/2.)*(3.-4.*nu-cos(T(X,Y)
 
 UAUX2 = FORMULE(VALE=' coef*sqrt(R(X,Y))*sin(T(X,Y)/2.)*(3.-4.*nu-cos(T(X,Y)))',NOM_PARA=('X','Y',),);
 
-ZERO = FORMULE(VALE='0.',NOM_PARA=('X','Y',),);
-
-DCYSUP = FORMULE(VALE='UAUX2(X,Y)+coef*sqrt(R(X,0.5))*(-4.+4.*nu)',NOM_PARA=('X','Y',),);
-
-DCYINF = FORMULE(VALE='UAUX2(X,Y)-coef*sqrt(R(X,0.5))*(-4.+4.*nu)',NOM_PARA=('X','Y',),);
-
 UAUX1 = FORMULE(VALE='-1.* OUAUX1(X,Y)',NOM_PARA=('X','Y',),);
 
 H1YSUP = FORMULE(VALE='coef*sqrt(R(X,0.5))*(4.-4.*nu)',NOM_PARA=('X','Y',),);
@@ -111,13 +105,13 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MODK,
                                   DX=OUAUX1,
                                   DY=UAUX2,),
                                _F(GROUP_NO='NHSUP',
-                                  DCX=ZERO,
-                                  DCY=DCYSUP,
+                                  DX =OUAUX1,
+                                  DY = UAUX2,
                                   H1X=OUAUX1,
                                   H1Y=H1YSUP,),
                                _F(GROUP_NO='NHINF',
-                                  DCX=ZERO,
-                                  DCY=DCYINF,
+                                  DX =OUAUX1,
+                                  DY = UAUX2,
                                   H1X=UAUX1,
                                   H1Y=H1YSUP,),),);
 

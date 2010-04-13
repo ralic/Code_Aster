@@ -4,7 +4,7 @@
      &                  NDDLSE,VTMP  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C ======================================================================
 C
       IMPLICIT NONE
       INTEGER  NDIM,NNC,NNE,NNES,NFAES,JPCAI,CFACE(5,3),NDDLSE
-      REAL*8   HPG,FFC(9),JACOBI,COEFCA
+      REAL*8   HPG,FFC(8),JACOBI,COEFCA
       REAL*8   DLAGRF(2)   
       REAL*8   TAU1(3),TAU2(3)     
       REAL*8   VTMP(168)

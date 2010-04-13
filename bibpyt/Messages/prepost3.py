@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 10/11/2009   AUTEUR CORUS M.CORUS 
+#@ MODIF prepost3 Messages  DATE 12/04/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,10 +138,6 @@ cata_msg = {
 70 : _("""
  Vous avez demandé une impression au format ASTER sans préciser de MAILLAGE.
  Aucune impression ne sera réalisée car IMPR_RESU au format ASTER n'imprime qu'un MAILLAGE.
-"""),
-
-71 : _("""
- le mot cle "info_resu" est reserve au format resultat
 """),
 
 72 : _("""

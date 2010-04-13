@@ -2,7 +2,7 @@
      &                  NBCMP,CMP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF PREPOST  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -90,7 +90,7 @@ C     ON REGARDE LES COMPOSANTES ACTIVES POUR TOUS LES NOEUDS
         DO 22,J=1,N
            IF (.NOT.EXIST(J,I)) GOTO 21   
  22     CONTINUE 
-        IF (NOMCMP(1:2).EQ.'DC') THEN
+        IF (NOMCMP(1:1).EQ.'D') THEN
           IPOS = IPOS +1
           NDC = NDC +1
           CMP(IPOS)=I

@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 15/03/2010   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -694,7 +694,8 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
     RESULTAT=__resuch
   l_mailla=aster.getvectjev(n_modele.ljust(8)+'.MODELE    .LGRF')
   n_mailla=string.strip(l_mailla[0])
-  dime=aster.getvectjev(n_mailla.ljust(8)+'.DIME')[5]
+  # le maillage est-il 2D ou 3D ?
+  iret,dime,kbid = aster.dismoi('F','DIM_GEOM',n_mailla,'MAILLAGE')
   collgrma=aster.getcolljev(n_mailla.ljust(8)+'.GROUPEMA')
   typma=aster.getvectjev(n_mailla.ljust(8)+'.TYPMAIL')
   connex=aster.getcolljev(n_mailla.ljust(8)+'.CONNEX')

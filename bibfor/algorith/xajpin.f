@@ -5,7 +5,7 @@
       REAL*8        NEWPT(3),LONGAR,AL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,9 +57,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*8     NOMA
+      CHARACTER*8     NOMA,KBID
       REAL*8          PADIST,P(3)
-      INTEGER         I,J,NDIM,IBID,IADZI,IAZK24,JDIM
+      INTEGER         I,J,NDIM,IBID,IADZI,IAZK24,IRET
       LOGICAL         DEJA
       INTEGER      ZXAIN,XXMMVD
 C ----------------------------------------------------------------------
@@ -68,8 +68,7 @@ C ----------------------------------------------------------------------
       ZXAIN = XXMMVD('ZXAIN')
       CALL TECAEL(IADZI,IAZK24)
       NOMA=ZK24(IAZK24)
-      CALL JEVEUO(NOMA//'.DIME','L',JDIM)
-      NDIM=ZI(JDIM-1+6)
+      CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIM,KBID,IRET)
 
 C     VERIFICATION SI CE POINT EST DEJA DANS LA LISTE
       DEJA = .FALSE.
@@ -86,7 +85,7 @@ C       CE POINT N'A PAS DEJA ETE TROUVE, ON LE GARDE
         IPT = IPT + 1
         CPT = CPT + 1
 C       TROP DE POINTS DANS LA LISTE
-        CALL ASSERT(IPT .LE. LONG) 
+        CALL ASSERT(IPT .LE. LONG)
         DO 101 J = 1, NDIM
          ZR(JLIST-1+NDIM*(IPT-1)+J) = NEWPT(J)
  101    CONTINUE

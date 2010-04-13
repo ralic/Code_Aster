@@ -1,9 +1,9 @@
-      SUBROUTINE GLDLOC (LAMBDA,DEUXMU,SEUIL,ALF,GMT,GMC,COF1,COF2,VIM,
-     &                   Q2D,QFF,TR2D,EPS33,DE33D1,DE33D2,KSI2D,
-     &                   DA1,DA2,KDMAX,TOLD,CODRET)
+      SUBROUTINE GLDLOC (LAMBDA,DEUXMU,SEUIL,ALF,GMT,GMC,COF1,VIM
+     &                   ,Q2D,QFF,TR2D,EPS33,DE33D1,DE33D2,KSI2D
+     &                   ,DA1,DA2,KDMAX,TOLD,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 12/04/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,7 +27,7 @@ C TOLE CRP_21
       INTEGER KDMAX,CODRET
       REAL*8  VIM(*),GMT,GMC,QFF(2),TR2D,EPS33,COF1
       REAL*8  LAMBDA,DEUXMU,SEUIL,ALF,Q2D,TOLD
-      REAL*8  DE33D1,DE33D2,KSI2D,DA1,DA2,COF2
+      REAL*8  DE33D1,DE33D2,KSI2D,DA1,DA2,TREPS,TREPS2
 
 C ----------------------------------------------------------------------
 C
@@ -45,7 +45,7 @@ C       VIM     : VARIABLES INTERNES EN T-
 C       Q2D     : PARTIE CONSTANTE DU RESIDU MEMBRANE
 C       QFF(2)  : PARTIE CONSTANTE DU RESIDU FLEXION
 C       TR2D    : EPS11 + EPS22
-C       COF1,COF2    : PARAMETRES
+C       COF1    : PARAMETRE
 C OUT:
 C       DA1     : ENDOMMAGEMENT SUR LA PARTIE 1 DE LA PLAQUE
 C       DA2     : ENDOMMAGEMENT SUR LA PARTIE 2 DE LA PLAQUE
@@ -68,8 +68,9 @@ C ----------------------------------------------------------------------
       REAL*8  DKSI1,DKSI2,QM1,QM2
       REAL*8  RD1,RD2,DR1D,DR2D,DD1,DD2,SEUILR
 
-
-      QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
+      TREPS = TR2D + EPS33
+      TREPS2 = TREPS**2
+      QM1 = 0.5D0*COF1*TREPS2+Q2D
       QM2 = QM1
 
       RD1 = QM1/(1.0D0 + DA1)**2 - SEUIL
@@ -89,10 +90,10 @@ C-----VERIFIER SI LE SEUIL EST ATTEINT
      &    .OR. (.NOT. LCONV2 .AND. DA2.GE.VIM(2))) THEN
 
         DO 60, I = 1,KDMAX
-          DR1D  = (COF1*EPS33 + COF2)*DE33D1/(1.0D0 + DA1)**2
+          DR1D  = COF1*TREPS*DE33D1 /(1.0D0 + DA1)**2
      &          - 2.0D0*QM1   /(1.0D0 + DA1)**3
      &          - 2.0D0*QFF(1)/(ALF   + DA1)**3
-          DR2D  = (COF1*EPS33 + COF2)*DE33D2/(1.0D0 + DA2)**2
+          DR2D  = COF1*TREPS*DE33D2 /(1.0D0 + DA2)**2      
      &          - 2.0D0*QM2   /(1.0D0 + DA2)**3
      &          - 2.0D0*QFF(2)/(ALF   + DA2)**3
 
@@ -123,7 +124,9 @@ C-----VERIFIER SI LE SEUIL EST ATTEINT
           CALL CEPS33 (LAMBDA,DEUXMU,TR2D,DA1,DA2,GMT,GMC
      &                ,EPS33,DE33D1,DE33D2,KSI2D,DKSI1,DKSI2)
 
-          QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
+          TREPS = TR2D + EPS33
+          TREPS2 = TREPS**2
+          QM1 = 0.5D0*COF1*TREPS2+Q2D
           QM2 = QM1
 
           RD1 = QM1/(1.0D0 + DA1)**2 - SEUIL

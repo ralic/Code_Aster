@@ -4,7 +4,7 @@
       CHARACTER*1         TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,13 +54,15 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       IBID, IFM, NIV, ICMP, CMP, IER, INO, NBNO, NUNO,
      +              IOC, JCNSV, JCNSL, IDINO, NBOBM, JDDL, JTYP, N,
      +              IDNDDL, IDVDDL, NBDDL, IDDL, I, IDPROL, JAFCK,
-     +              ILA, INDIK8, NBCMP, JCMP, NOC, N1, IORD,IRET
+     +              ILA, INDIK8, NBCMP, JCMP, NOC, N1, IORD,IRET,
+     +              JSTNOV,JSTNOL
       CHARACTER*2   TYP
       CHARACTER*8   K8B, MA, MCLE, NOMGD, NOGDSI, GDCNS,EVOIM
       CHARACTER*16  MFAC, K16B, MOTCLE(5), PHENOM,TYPCO
-      CHARACTER*19  CHCI, CNS, DEPLA
+      CHARACTER*19  CHCI, CNS, DEPLA, STNO
       CHARACTER*24  CINO, CNUDDL, CVLDDL, NPROL
       CHARACTER*80  TITRE
+      LOGICAL       LXFEM, LENRI
       DATA NPROL/'                   .PROL'/
 C --- DEBUT -----------------------------------------------------------
 C
@@ -80,6 +82,21 @@ C
       CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOGDSI),'LONMAX',NBCMP,K8B)
       CNS='&&CHARCI.CHAM_NO_S'
 
+C    --------------------------------------------------------
+C    MODELE X-FEM
+C    --------------------------------------------------------
+      CALL JEEXIN(MO(1:8)//'.XFEM_CONT',IER)
+      IF (IER.EQ.0) THEN
+        LXFEM = .FALSE.
+      ELSE
+        LXFEM = .TRUE.
+      ENDIF
+      IF (LXFEM) THEN
+        STNO = '&&CHARCI.STNO'
+        CALL CNOCNS(MO(1:8)//'.STNO','V',STNO)
+        CALL JEVEUO(STNO//'.CNSL','L',JSTNOL)
+        CALL JEVEUO(STNO//'.CNSV','L',JSTNOV)
+      ENDIF
 
 C     -- CAS DE EVOL_IMPO : ON IMPOSE TOUS LES DDLS DU 1ER CHAMP
 C     ------------------------------------------------------------
@@ -180,6 +197,18 @@ C
 C ------- VERIFICATION QUE LA COMPOSANTE EXISTE DANS LA GRANDEUR
           ICMP = INDIK8( ZK8(JCMP), K16B(1:8), 1, NBCMP )
           CALL ASSERT( ICMP .NE. 0 )
+
+C ------- VERIFICATION DE LA COMPOSANTE SUR LES NOEUDS XFEM
+          IF (LXFEM) THEN
+            IF (K16B(1:1).EQ.'D') THEN
+              DO 113 INO = 1,NBNO
+                NUNO = ZI(IDINO-1+INO)
+                IF (ZL(JSTNOL-1+NUNO)) THEN
+                  CALL ASSERT(ZI(JSTNOV-1+NUNO).EQ.0)
+                ENDIF
+ 113          CONTINUE
+            ENDIF
+          ENDIF
 C
           IF (TYPE.EQ.'R')
      &             CALL GETVR8(MFAC,K16B,IOC,1,1, ZR(IDVDDL+NBDDL),ILA)
@@ -265,6 +294,9 @@ C --- CREATION DE LA SD AFFE_CHAR_CINE
 C     -- SI EVOL_IMPO : IL NE FAUT PAS UTILISER LES VALEURS DE CHCI :
       IF (EVOIM.NE.' ') CALL JEDETR(CHCI//'.AFCV')
 
- 9999 CONTINUE
+      IF (LXFEM) THEN
+        CALL JEDETR(STNO)
+      ENDIF
+C
       CALL JEDEMA()
       END

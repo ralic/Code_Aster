@@ -1,4 +1,4 @@
-# MODIF  DATE 23/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 12/04/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE COMPRESSION/TRACTION EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -239,7 +239,8 @@ SOLNL=STAT_NON_LINE(
                 REAC_ITER = 5),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 20,
-                RESI_GLOB_MAXI = 1.E-12,)
+               # RESI_GLOB_MAXI = 1.E-12,
+                )
               )
 
 SOLNL=STAT_NON_LINE( reuse=SOLNL,

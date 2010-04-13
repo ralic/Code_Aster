@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/09/2008   AUTEUR LAVERNE J.LAVERNE 
+C MODIF MODELISA  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C             GLOBAL
 C             SI =2 OU 3 C'EST LA DIMENSION DE LA GEOMETRIE DU
 C             PROBLEME ET LA DIRECTION DE LA COMPOSANTE A CONTRAINDRE
 C             EST DONNEE PAR DIRECT(3)
-C  MOD     :  NOM DE L'OBJET MODELE ASSOCIE AU LIGREL DE CHARGE       
+C  MOD     :  NOM DE L'OBJET MODELE ASSOCIE AU LIGREL DE CHARGE
 
 C ARGUMENTS D'ENTREE MODIFIES:
 
@@ -87,13 +87,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER IBID
+      INTEGER IBID,IER
       CHARACTER*16 OPER
       CHARACTER*8  K8B
       CHARACTER*4  FONRE1,FONRE2,TYPCOE
       CHARACTER*2  TYPLAG
       REAL*8       COEF,RBID(3)
       COMPLEX*16   CUN
+      LOGICAL      LXFEM, LENRI
 C-----------------------------------------------------------------------
 
       CALL GETRES(K8B,K8B,OPER)
@@ -104,18 +105,31 @@ C-----------------------------------------------------------------------
       IF (FONREE.EQ.'COMP')  TYPCOE = 'COMP'
       IF (IITYP.EQ.1)  TYPCOE = 'COMP'
 
+C    --------------------------------------------------------
+C    MODELE X-FEM
+C    --------------------------------------------------------
+      CALL JEEXIN(MOD//'.XFEM_CONT',IER)
+      IF (IER.EQ.0) THEN
+        LXFEM = .FALSE.
+      ELSE
+        LXFEM = .TRUE.
+      ENDIF
 
 C --- AFFECTATION DU BLOCAGE A LA LISTE DE RELATIONS LISREL :
 C     -----------------------------------------------------
       DO 30 J = 1,NDDLA
-
-        ICMP = INDIK8(NOMCMP,MOTCLE(J)(1:8),1,NBCMP)
-        IF (.NOT.EXISDG(PRNM,ICMP)) THEN
+        IF (LXFEM) THEN
           CALL XDDLIM(MOD,MOTCLE(J)(1:8),NOMCMP,NBCMP,NOMN,INO,
      &                VALIMR(J),VALIMC(J),VALIMF(J),PRNM,FONREE,
-     &                ICOMPT(J),LISREL,IBID,RBID)
-          GOTO 30
+     &                ICOMPT(J),LISREL,IBID,RBID,LENRI)
+          IF (LENRI) GOTO 30
         ENDIF
+
+C       -- SI LA CMP N'EXISTE PAS SUR LE NOEUD, ON SAUTE :
+        ICMP = INDIK8(NOMCMP,MOTCLE(J)(1:8),1,NBCMP)
+        CALL ASSERT(ICMP.GT.0)
+        IF (.NOT.EXISDG(PRNM,ICMP)) GOTO 30
+
         ICOMPT(J) = ICOMPT(J) + 1
 
         IF (DDLIMP(J).NE.0) THEN

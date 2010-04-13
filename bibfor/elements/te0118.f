@@ -1,6 +1,6 @@
       SUBROUTINE TE0118(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ELEMENTS  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER     IADZI,IAZK24,IGEOM,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &            JGANO,I,J,INO,IMEAST,INI,ILSNO,IGRLS,IGDF,IDPHI,NBMA,
-     &            IALPHA,INEUTR,IMOYEL,ILC,ADDIM,IADRMA,IBID,
+     &            IALPHA,INEUTR,IMOYEL,ILC,ADDIM,IADRMA,IBID,IRET,
      &            NDIME
       REAL*8      DFDX(27),DFDY(27),DFDZ(27),MEAST,NX,NY,NZ,NEUTR,JAC,
      &            GRADX,GRADY,GRADZ,NORMGR,K(8),DELPHI,DPHI(8),SIGMAK,
@@ -126,10 +126,9 @@ C --- NOM DU MAILLAGE ATTACHE AU MODELE
 C
          CALL JEVEUO(NOMO(1:8)//'.MODELE    .LGRF','L',IADRMA)
          NOMA  = ZK8(IADRMA)
-         CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-         NDIME=ZI(ADDIM-1+6)
+         CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIME,K8BID,IRET)
          CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IBID)
-       
+
 
          IF (NDIME.EQ.3) THEN
 C  ----------------------------------------------------------
@@ -155,10 +154,10 @@ C     ON CHERCHE LE NOEUDS SOMMET LE PLUS PROCHE
                  IF ((DISTIJ.LE.DMIN).AND.(DISTIJ.NE.0))  DMIN = DISTIJ
 
  20           CONTINUE
-              
+
  10        CONTINUE
 
-         ELSEIF (NDIME.EQ.2) THEN 
+         ELSEIF (NDIME.EQ.2) THEN
 
 C  ----------------------------------------------------------
 C  CALCUL DE LA PLUS PETITE DISTANCE ENTRE LES NOEUDS SOMMETS
@@ -217,7 +216,7 @@ C  --------------------------
 
          NEUTR = NEUTR / NNO
          ZR(IMOYEL) = NEUTR
-  
+
 C-----------------------------------------------------------------------
       ELSEIF (OPTION.EQ.'XFEM_SMPLX_INIT') THEN
 C-----------------------------------------------------------------------
@@ -291,7 +290,7 @@ C       Volume elementaire
                NORM14=NORM14**.5D0
 C       Surface elementaire
                MEAST = NORM12 * NORM14
-           ELSEIF (TYPMA(1:3).EQ.'TRI') THEN           
+           ELSEIF (TYPMA(1:3).EQ.'TRI') THEN
                CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,
      &                  IDFDE,JGANO)
 C               CALL ASSERT(NPG.EQ.1)
@@ -324,15 +323,15 @@ C  -----------------------
                ZR(INI-1+(INO-1)*3+3) = NDIM * MEAST * DFDZ(INO)/4.D0
 
             ELSEIF (TYPMA(1:3).EQ.'QUA') THEN
-C   Rq : Pur les QUAD la derivee des FF en 0 vaut la moitie de celle au 
+C   Rq : Pur les QUAD la derivee des FF en 0 vaut la moitie de celle au
 C   Noeud considere. Il faudra penser a s'occuper des FF d'ordre 2!
                ZR(INI-1+(INO-1)*2+1) = NDIM * MEAST * DFDX(INO)/2.D0
                ZR(INI-1+(INO-1)*2+2) = NDIM * MEAST * DFDY(INO)/2.D0
 
-            ELSEIF (TYPMA(1:3).EQ.'TRI') THEN 
+            ELSEIF (TYPMA(1:3).EQ.'TRI') THEN
                ZR(INI-1+(INO-1)*2+1) = NDIM * MEAST * DFDX(INO)
-               ZR(INI-1+(INO-1)*2+2) = NDIM * MEAST * DFDY(INO)      
-                     
+               ZR(INI-1+(INO-1)*2+2) = NDIM * MEAST * DFDY(INO)
+
             ENDIF
  100     CONTINUE
 
@@ -419,9 +418,9 @@ C  RECUPERATION DE LA DIRECTION NI AU NOEUD
             NY = ZR(INI-1+(INO-1)*NDIME+2)
             IF (NDIME.EQ.3) NZ = ZR(INI-1+(INO-1)*3+3)
             IF (NDIME.EQ.2) NZ = 0.D0
-            
 
-C  CALCUL DE KI AU NOEUD            
+
+C  CALCUL DE KI AU NOEUD
            K(INO) = ZR(IGDF)*(GRADX*NX+GRADY*NY+GRADZ*NZ)/(NORMGR*NDIM)
 
  400     CONTINUE
@@ -454,7 +453,7 @@ C  CALCUL DE SIGKFI = SIGMA( K(I)(-)*(LS(INO)-LS(I)) ) AUX NOEUDS
             DELPHI = DELPHI + K(INO)*ZR(ILSNO+INO-1)
 
  600     CONTINUE
-         
+
          IF (ABS(DELPHI).LT.R8PREM()) GOTO 850
 
 C  --------------------------------------------------------
@@ -473,7 +472,7 @@ C  --------------------------
          DO 800 INO=1,NNO
             ALPHA(INO) = MAX(0.D0,DPHI(INO)/DELPHI) / SMXDFI
  800     CONTINUE
-         
+
  850     CONTINUE
 
 C  --------------------
@@ -483,10 +482,10 @@ C  --------------------
          CALL JEVECH('PALPHA','E',IALPHA)
 
          ZR(IDPHI) = DELPHI
-            
+
          DO 900 INO=1,NNO
             ZR(IALPHA-1+INO) = ALPHA(INO)
-            
+
  900     CONTINUE
 
 C-----------------------------------------------------------------------

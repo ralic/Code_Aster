@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 12/04/2010   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 # zzzz161a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -74,6 +74,9 @@ RESUTRQU=MECA_STATIQUE( MODELE=MODETRQU,
                         EXCIT  =_F( CHARGE = CHARTRQU),
                         SOLVEUR=_F( METHODE='LDLT', ),
                        )
+
+# On profite de l'occasion pour tester la commande INFO_RESU
+INFO_RESU(RESULTAT=RESUTRQU)
 
 #
 # 3.5. Ecriture relecture du resultat complet au format MED

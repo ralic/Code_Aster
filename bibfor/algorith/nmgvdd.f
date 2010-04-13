@@ -1,7 +1,7 @@
       SUBROUTINE NMGVDD(NDIM,NNO1,NNO2,IU,IA,IL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 
        IMPLICIT NONE
 
-       INTEGER NDIM,NNO1,NNO2,IU(NDIM*NNO1),IA(NNO2),IL(NNO2)
+       INTEGER NDIM,NNO1,NNO2,IU(3,27),IA(NNO2),IL(NNO2)
 C ----------------------------------------------------------------------
 C
 C     POSITION DES INDICES POUR LES DEGRES DE LIBERTE
@@ -33,8 +33,6 @@ C ----------------------------------------------------------------------
       
       INTEGER N,I,OS
 
-      CHARACTER*16 NOMELT
-      COMMON /FFAUTO/ NOMELT
 C ----------------------------------------------------------------------
 
       
@@ -42,7 +40,7 @@ C      ELEMENT P1 - CONTINU
 
         DO 110 N = 1,NNO2
           DO 120 I = 1,NDIM
-            IU(NNO1*(I-1)+N) = I + (N-1)*(NDIM+2)
+            IU(I,N) = I + (N-1)*(NDIM+2)
  120      CONTINUE
           IA(N) = 1 + NDIM + (N-1)*(NDIM+2)
           IL(N) = 2 + NDIM + (N-1)*(NDIM+2)
@@ -50,7 +48,7 @@ C      ELEMENT P1 - CONTINU
         OS = (2+NDIM)*NNO2
         DO 140 N = 1,NNO1-NNO2
           DO 150 I = 1,NDIM
-            IU(NNO1*(I-1)+N+NNO2) = I + (N-1)*NDIM + OS
+            IU(I,N+NNO2) = I + (N-1)*NDIM + OS
  150      CONTINUE
  140    CONTINUE
 

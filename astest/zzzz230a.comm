@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/04/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE MISE EN OEUVRE DU "ZOOM STRUCTURAL" SUR UN PROBLEME 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,9 +124,9 @@ LIST2=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=3,),);
 RESU2=STAT_NON_LINE(MODELE=MO2, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE = CHAR2,),
                     COMP_INCR=_F(TOUT='OUI',RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LIST2,),
-                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-10),)  # on est oblige d'utiliser RESI_GLOB_MAXI car il n'y a
-                                                             # de chargement "en force".
 
+
+                     )
 
 TEST_RESU( RESU=_F(RESULTAT = RESU2,  NUME_ORDRE = 3, NOM_CHAM = 'DEPL', REFERENCE='AUTRE_ASTER',
                    GROUP_NO='HZ',NOM_CMP = 'DX', VALE = 1.116E-01 , PRECISION=0.03 ))

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,7 +89,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               MODELISATION='D_PLAN',),
                            _F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_XFEM_CONT',),
+                              MODELISATION='D_PLAN',),
                            _F(GROUP_MA=('LIG2',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',),
@@ -548,14 +548,6 @@ TEST_TABLE(TABLE=DEP_PPB,
 
 TEST_TABLE(TABLE=DEP_PPC,
            NOM_PARA='LAGS_C',
-           TYPE_TEST='MAX',
-           VALE=-1.4724675280627E+07,
-           CRITERE='RELATIF',
-           PRECISION=5.E-2,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=DEP_PPC,
-           NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
            VALE=-1.4724675280627E+07,
            CRITERE='RELATIF',
@@ -564,24 +556,8 @@ TEST_TABLE(TABLE=DEP_PPC,
 
 TEST_TABLE(TABLE=DEP_PPD,
            NOM_PARA='LAGS_C',
-           TYPE_TEST='MAX',
-           VALE=-2.4583481034903E+07,
-           CRITERE='RELATIF',
-           PRECISION=preci,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=DEP_PPD,
-           NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
            VALE=-2.4583481034903E+07,
-           CRITERE='RELATIF',
-           PRECISION=preci,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=DEP_PPE,
-           NOM_PARA='LAGS_C',
-           TYPE_TEST='MAX',
-           VALE=-3.4650090742044E+07,
            CRITERE='RELATIF',
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);

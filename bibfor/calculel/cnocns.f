@@ -2,7 +2,7 @@
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 12/04/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,12 +49,12 @@ C     VARIABLES LOCALES:
 C     ------------------
       CHARACTER*1 KBID,BASE
       CHARACTER*3 TSCA
-      CHARACTER*8 MA,NOMGD,LICMP(200)
+      CHARACTER*8 MA,NOMGD
       CHARACTER*19 CNO,CNS,PROFCN
       LOGICAL EXISDG
-      INTEGER NEC,GD,NCMPMX,IBID,NBNO,JCMPGD,JNUCMP,JREFE,JVALE,JDESC
+      INTEGER NEC,GD,NCMPMX,IBID,NBNO,JNUCMP,JREFE,JVALE
       INTEGER IADG,ICMP,JPRNO,JNUEQ,INO,NCMP,NCMP1,JCNSL,JCNSV
-      INTEGER IVAL,ICO,IEQ,ICMP1,LONG
+      INTEGER IVAL,ICO,IEQ,ICMP1,JNOCMP,JDESC
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -72,11 +72,8 @@ C     -- SI CNS EXISTE DEJA, ON LE DETRUIT :
       CALL DISMOI('F','NB_NO_MAILLA',MA,'MAILLAGE',NBNO,KBID,IBID)
 
       CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NEC,KBID,IBID)
-      CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NCMPMX,KBID,IBID)
       CALL DISMOI('F','NUM_GD',NOMGD,'GRANDEUR',GD,KBID,IBID)
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-      CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',JCMPGD)
-      CALL WKVECT('&&CNOCNS.TMP_NUCMP','V V I',NCMPMX,JNUCMP)
 
       CALL JEVEUO(CNO//'.REFE','L',JREFE)
       CALL JEVEUO(CNO//'.VALE','L',JVALE)
@@ -86,55 +83,18 @@ C------------------------------------------------------------------
 C     1- ON ALLOUE CNS :
 C     ------------------
 
-C     1.1 CALCUL DE NCMP1 ET LICMP(NCMP1) :
+C     1.1 CALCUL DE NCMP1 ET ZK8(JNOCMP) :
 C         NCMP1: NOMBRE DE CMPS PORTEES PAR CNO
-C         LICMP: LISTES DES CMPS PORTEES PAR CNO
+C         ZK8(JNOCMP): LISTES DES CMPS PORTEES PAR CNO
 C     -------------------------------------------
-
-C     -- CAS DES CHAM_NO A REPRESENTATION CONSTANTE :
-      IF (ZI(JDESC-1+2).LT.0) THEN
-        PROFCN = ' '
-        CALL JELIRA(CNO//'.DESC','LONMAX',LONG,KBID)
-        CALL ASSERT(LONG.EQ.(2+NEC))
-        IADG = JDESC - 1 + 3
-        DO 10,ICMP = 1,NCMPMX
-          IF (EXISDG(ZI(IADG),ICMP)) THEN
-            ZI(JNUCMP-1+ICMP) = 1
-          END IF
-   10   CONTINUE
-
-
-C     -- CAS DES CHAM_NO A PROF_CHNO:
-      ELSE
-        CALL DISMOI('F','PROF_CHNO',CNO,'CHAM_NO',IBID,PROFCN,IBID)
-        CALL JEVEUO(JEXNUM(PROFCN//'.PRNO',1),'L',JPRNO)
-        CALL JEVEUO(PROFCN//'.NUEQ','L',JNUEQ)
-        DO 30,INO = 1,NBNO
-          NCMP = ZI(JPRNO-1+ (INO-1)* (NEC+2)+2)
-          IF (NCMP.EQ.0) GO TO 30
-          IADG = JPRNO - 1 + (INO-1)* (NEC+2) + 3
-          DO 20,ICMP = 1,NCMPMX
-            IF (EXISDG(ZI(IADG),ICMP)) THEN
-              ZI(JNUCMP-1+ICMP) = 1
-            END IF
-   20     CONTINUE
-   30   CONTINUE
-
-      END IF
-
-      NCMP1 = 0
-      DO 40,ICMP = 1,NCMPMX
-        IF (ZI(JNUCMP-1+ICMP).EQ.1) THEN
-          NCMP1 = NCMP1 + 1
-          CALL ASSERT(NCMP1.LE.200)
-          ZI(JNUCMP-1+ICMP) = NCMP1
-          LICMP(NCMP1) = ZK8(JCMPGD-1+ICMP)
-        END IF
-   40 CONTINUE
+      CALL CMPCHA(CNO,'&&CNOCNS.NOM_CMP','&&CNOCNS.CORR_CMP',
+     &            NCMP1,NCMPMX)
+      CALL JEVEUO('&&CNOCNS.NOM_CMP','L',JNOCMP)
+      CALL JEVEUO('&&CNOCNS.CORR_CMP','L',JNUCMP)
 
 C     1.2 ALLOCATION DE CNS :
 C     -------------------------------------------
-      CALL CNSCRE(MA,NOMGD,NCMP1,LICMP,BASE,CNS)
+      CALL CNSCRE(MA,NOMGD,NCMP1,ZK8(JNOCMP),BASE,CNS)
 
 
 
@@ -144,6 +104,13 @@ C     -------------------------------------------
       CALL JEVEUO(CNS//'.CNSL','E',JCNSL)
       CALL JEVEUO(CNS//'.CNSV','E',JCNSV)
 
+C     -- CAS DES CHAM_NO A REPRESENTATION CONSTANTE :
+      IF (ZI(JDESC-1+2).LT.0) THEN
+        PROFCN = ' '
+C     -- CAS DES CHAM_NO A PROF_CHNO:
+      ELSE
+        CALL DISMOI('F','PROF_CHNO',CNO,'CHAM_NO',IBID,PROFCN,IBID)
+      END IF
 
 C     2.1 CAS DES CHAM_NO A REPRESENTATION CONSTANTE :
 C     ---------------------------------------------------
@@ -173,6 +140,10 @@ C     ---------------------------------------------------
 C     2.2 CAS DES CHAM_NO A PROF-CHNO
 C     ---------------------------------------------------
       ELSE
+        CALL DISMOI('F','PROF_CHNO',CNO,'CHAM_NO',IBID,PROFCN,
+     &              IBID)
+        CALL JEVEUO(JEXNUM(PROFCN//'.PRNO',1),'L',JPRNO)
+        CALL JEVEUO(PROFCN//'.NUEQ','L',JNUEQ)
         DO 80,INO = 1,NBNO
 
 C         NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
@@ -212,5 +183,7 @@ C         IADG : DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD INO
 C------------------------------------------------------------------
 
       CALL JEDETR('&&CNOCNS.TMP_NUCMP')
+      CALL JEDETR('&&CNOCNS.NOM_CMP')
+      CALL JEDETR('&&CNOCNS.CORR_CMP')
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503f.para = tps_job 120 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,7 +52,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_XFEM_CONT',),),); 
+                              MODELISATION='D_PLAN',),),); 
 
 LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-2.5');
 
@@ -72,13 +72,12 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
                          CONTACT='OUI',
                          INFO=1,);
-
                          
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       REAC_GEOM      = 'AUTOMATIQUE',
                       ITER_FROT_MAXI = 10,
-                      ITER_CONT_MAXI = 4,
+                      ITER_CONT_MAXI = 10,
                       ITER_GEOM_MAXI = 10,
                       FROTTEMENT     = 'COULOMB',
                       ZONE = (_F(
@@ -102,9 +101,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  ALGO_LAGR     = 'VERSION2',
                               ),
                             )
-                    );                          
-
-                         
+                    );
                           
 E=100.0E6
 nu=0.3
@@ -137,17 +134,16 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
                    LIAISON_DDL=(_F(
-                                   NOEUD=('N51','N51','N390','N390',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                                   NOEUD=('N390','N390',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPX,),
                                 _F(
-                                   NOEUD=('N33','N33','N70','N70',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                                   NOEUD=('N70','N70',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPX,),
-                                ),
-                    INFO=1,);               
+                                ),);
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,1.,1.),
@@ -166,8 +162,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=4,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                    CHAM_MATER=CHAMPMAT,  
-                    CONTACT = CTXFEM,            
+                    CHAM_MATER=CHAMPMAT,
+                    CONTACT = CTXFEM,
                     EXCIT=(
                            _F(CHARGE=CHXFEM,),                                    
                            _F(CHARGE=CH1,FONC_MULT=VAR1),

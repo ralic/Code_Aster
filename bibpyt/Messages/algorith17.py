@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF algorith17 Messages  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,4 +51,5 @@ cata_msg={
   Il manque le nume_ddl pour le resultat. Le mot-cle NUME_REF doit etre
   renseigne.
 """), 
+9 : _("""L'équation d'évolution de l'endommagement n'admet pas de solution réelle  """),
 }

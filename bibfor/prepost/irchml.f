@@ -11,7 +11,7 @@ C
      &                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,7 +121,7 @@ C         SI VALE_MAX/VALE_MIN EST PRESENTE, ON IMPRIME LES MIN/MAX
             CALL IRSSPT(CHAMES,IFI,NBMAT,NUMMAI,NBCMP,NOMCMP,
      &                  LSUP,LINF,LMAX,LMIN,BORINF,BORSUP)
           ELSE
-C           SINON ON IMPRIME LE CHAMP TEL QUEL 
+C           SINON ON IMPRIME LE CHAMP TEL QUEL
             CALL U2MESK('I','PREPOST_98',1,NOMSY2)
             CALL CESIMP('&&IRCHML_CES',IFI,NBMAT,NUMMAI)
           ENDIF
@@ -214,7 +214,7 @@ C --
 C --  RECHERCHE DES COORDONNEES ET DE LA DIMENSION
 C
           IF(LCOR) THEN
-            CALL DISMOI('F','DIM_GEOM',NOMMA,'MAILLAGE',NDIM,CBID,IER)
+            CALL DISMOI('F','DIM_GEOM_B',NOMMA,'MAILLAGE',NDIM,CBID,IER)
             CALL JEVEUO(NOMMA//'.COORDO    .VALE','L',JCOOR)
           ENDIF
         END IF

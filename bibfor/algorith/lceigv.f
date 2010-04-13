@@ -2,7 +2,7 @@
      &                   DEPS,VIM,NONLOC,OPTION,SIG,VIP,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +26,7 @@ C ======================================================================
       CHARACTER*16       COMPOR(*),OPTION
       CHARACTER*(*)      FAMI
       INTEGER            NDIM, IMATE, KSP, KPG
-      REAL*8             NONLOC(3),EPSM(6), DEPS(6), VIM(2)
+      REAL*8             NONLOC(2),EPSM(6), DEPS(6), VIM(2)
       REAL*8             SIG(6), VIP(2), DSIDEP(6,6,4)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDO_ISOT_BETON (NON LOCAL GRAD_VARI)
@@ -141,8 +141,8 @@ C -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
 46      CONTINUE
       ENDIF
 
-      R=NONLOC(2)
-      PHI = NONLOC(3)
+      PHI = NONLOC(1)
+      R   = NONLOC(2)
 
 C -- DIAGONALISATION DES DEFORMATIONS
 

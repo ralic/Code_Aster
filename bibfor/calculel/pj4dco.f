@@ -1,14 +1,14 @@
       SUBROUTINE PJ4DCO(MOCLE,MOA1,MOA2,NBMA1,LIMA1,NBNO2,LINO2,
-     &                  GEOM1,GEOM2,CORRES,LDMAX,DISTMA)
+     &                  GEOM1,GEOM2,CORRES,LDMAX,DISTMA,ALARM2)
       IMPLICIT NONE
       CHARACTER*16 CORRES,K16BID,NOMCMD
       CHARACTER*(*) GEOM1,GEOM2
       CHARACTER*8  MOA1,MOA2
-      CHARACTER*(*) MOCLE
+      CHARACTER*(*) MOCLE,ALARM2
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*),INO2M
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,8 @@ C                           NOEUDS DU MAILLAGE 2 (OU ' ')
 C                REMARQUE:  LES OBJETS GEOM1 ET GEOM2 NE SONT UTILES
 C                           QUE LORSQUE L'ON VEUT TRUANDER LA GEOMETRIE
 C                           DES MAILLAGES
+C  IN   ALARM2  K3   : /' '/'OUI'/'NON' :
+C                       POUR "FORCER" L'EMMISSION (OU NON) DES ALARMES
 
 C  IN/JXOUT  CORRES  K16 : NOM DE LA SD CORRESP_2_MAILLA
 C ----------------------------------------------------------------------
@@ -294,6 +296,7 @@ C     -- EMISSION D'UN EVENTUEL MESSAGE D'ALARME:
          IF (NOMCMD.EQ.'PROJ_CHAMP') THEN
             CALL GETVTX(' ','ALARME',1,0,1,ALARME,IBID)
          ENDIF
+         IF (ALARM2.NE.' ')  ALARME=ALARM2
 
          IF (ALARME.EQ.'OUI') THEN
             DO 70,II=1,NBNOD

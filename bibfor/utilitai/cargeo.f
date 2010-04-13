@@ -3,7 +3,7 @@
       CHARACTER*(*)       MAILLA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C
      +              D1, D2, D3, D4, R8GAEM,RMINSP
       COMPLEX*16    C16B
       CHARACTER*8   K8B, MA, NOPARA(NBPARA), TYPARA(NBPARA), TYPM
+      CHARACTER*1   BAS1
       CHARACTER*19  NOMT19
       CHARACTER*24  NODIME, CONNEX, COORDO, TYPMAI
 C
@@ -69,13 +70,16 @@ C
 C DEB------------------------------------------------------------------
 C
       CALL JEMARQ ( )
-C
+
       MA = MAILLA
       NODIME = MA//'.DIME           '
       CONNEX = MA//'.CONNEX         '
       COORDO = MA//'.COORDO    .VALE'
       TYPMAI = MA//'.TYPMAIL        '
-C
+
+      CALL JELIRA(NODIME,'CLAS',IBID,BAS1)
+      CALL ASSERT(BAS1.EQ.'G' .OR. BAS1.EQ.'V')
+
       CALL JEVEUO ( NODIME , 'L' , JDIME )
       NBNOEU = ZI(JDIME)
       NBMAIL = ZI(JDIME+3-1)
@@ -252,14 +256,14 @@ C
          CALL LTNOTB ( MAILLA , 'CARA_GEOM' , NOMT19 )
          CALL DETRSD ( 'TABLE' , NOMT19 )
       ELSE
-         CALL LTCRSD ( MAILLA , 'G' )
+         CALL LTCRSD ( MAILLA , BAS1 )
       ENDIF
       CALL LTNOTB ( MAILLA , 'CARA_GEOM' , NOMT19 )
 C
       CALL JEEXIN ( NOMT19//'.TBBA', IRET )
       IF ( IRET .NE. 0 )  CALL DETRSD ( 'TABLE' , NOMT19 )
 C
-      CALL TBCRSD ( NOMT19, 'G' )
+      CALL TBCRSD ( NOMT19, BAS1 )
       CALL TBAJPA ( NOMT19, NBPART, NOPARA, TYPARA )
       CALL TBAJLI ( NOMT19, NBPART, NOPARA,
      +                              IBID, VALE, C16B, K8B, 0 )

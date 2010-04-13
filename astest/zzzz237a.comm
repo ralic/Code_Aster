@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 12/04/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DU MOT-CLE LIAISON_UNILATER PAR UNE CONDITION PORTANT SUR DES DEPLACEMENTS
 # zzzz237a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -317,7 +317,7 @@ RESU_TA=STAT_NON_LINE(MODELE=MO,
                    CONTACT  = CONT_TA,       
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_TPS,),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-6,),
+                #   CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-6,),
                    SOLVEUR=_F(SYME='OUI',),
                    );
 
@@ -332,7 +332,7 @@ RESUC_TA=STAT_NON_LINE(MODELE=MO,
                    CONTACT  = CONTC_TA,       
                    COMP_INCR=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_TPS,),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-6,),
+                 #  CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-6,),
                    NEWTON=_F(REAC_ITER=1),
                    SOLVEUR=_F(SYME='OUI',),
                    );

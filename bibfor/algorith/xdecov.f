@@ -7,7 +7,7 @@
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,9 +63,9 @@ C
       REAL*8          PADIST,P(3),XYZ(4,3),AB(3),AC(3),AD(3),VN(3),PS
       INTEGER         JPTINT,JAINT,JCOSE,JHEAV
       INTEGER         NSEMAX,IN,INH,I,J,AR(12,2),NBAR,ISE,NDIM,IBID
-      INTEGER         A1,A2,A3,A4,A,B,C,IADZI,IAZK24,NDIME,JDIM
-      CHARACTER*8     TYPMA,NOMA
-      INTEGER      ZXAIN,XXMMVD
+      INTEGER         A1,A2,A3,A4,A,B,C,IADZI,IAZK24,NDIME
+      CHARACTER*8     TYPMA,NOMA,KBID
+      INTEGER      ZXAIN,XXMMVD,IRET
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -73,8 +73,7 @@ C ----------------------------------------------------------------------
       ZXAIN = XXMMVD('ZXAIN')
       CALL TECAEL(IADZI,IAZK24)
       NOMA=ZK24(IAZK24)
-      CALL JEVEUO(NOMA//'.DIME','L',JDIM)
-      NDIM=ZI(JDIM-1+6)
+      CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIM,KBID,IRET)
 
 C     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
 C     NDIM EST LA DIMENSION DU MAILLAGE
@@ -184,7 +183,7 @@ C         1 SEUL ELEMENT
 C         TROP DE POINTS D'INTERSECTION
           CALL ASSERT(NINTER.LE.3)
         ENDIF
-        
+
       ELSEIF (NDIME .EQ. 1) THEN
 
         IF (NINTER .LT. 1) THEN
@@ -228,7 +227,7 @@ C         1 SEUL ELEMENT
         ELSE
 C         TROP DE POINTS D'INTERSECTION
           CALL ASSERT(NINTER.LE.2)
-        ENDIF   
+        ENDIF
 
 
 
@@ -333,7 +332,7 @@ C             CONFIGURATION N°4
               CNSE(1,4)=CONNEC(IT,4)
               CALL XPENTE(2,CNSE,CONNEC(IT,1),CONNEC(IT,2),CONNEC(IT,3),
      &                                                      101,102,103)
-            ELSE 
+            ELSE
 C             PROBLEME DE DECOUPAGE À 3 POINTS
               CALL ASSERT(A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.3)
             ENDIF
@@ -363,7 +362,7 @@ C          CONFIGURATION N°2
 C          CONFIGURATION N°3
            CALL XPENTE(1,CNSE,101,103,CONNEC(IT,3),102,104,CONNEC(IT,4))
            CALL XPENTE(4,CNSE,CONNEC(IT,2),104,103,CONNEC(IT,1),102,101)
-          ELSE 
+          ELSE
 C          PROBLEME DE DECOUPAGE A 4 POINTS
            CALL ASSERT(A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.5.AND.A4.EQ.6)
           ENDIF
@@ -463,7 +462,7 @@ C     DES NORMALES, OU ON EN PROFITE POUR CORRIGER AUSSI ZR(JHEAV-1+ISE)
         CALL ASSERT(NSE.EQ.1)
          ZR(JHEAV-1+1)=99.D0
       ENDIF
-      
+
 
       CALL JEDEMA()
       END

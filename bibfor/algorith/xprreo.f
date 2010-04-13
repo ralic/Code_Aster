@@ -8,7 +8,7 @@
      &               CNXINV,NODTOR,ELETOR,LIGGRD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2010   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNUM,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER        I,IFM,NIV,NBNOM,NBMA,IRET,JCONX1,JCONX2,JMAI,ADDIM,
+      INTEGER        I,IFM,NIV,NBNOM,NBMA,IRET,JCONX1,JCONX2,JMAI,
      &               NDIM,JLNNO,JGLNNO,JLTNO,JGLTNO,JVI,JVIL,JWI,JWIL,
      &               JMEAST,JMESTL,JMESTD,JVF,JVFL,JGDF,JGDFL,ITEMP,IMA,
      &               JDELFI,JDEFIL,JDEFID,JALPHA,JALPHL,JALPHD,NBNOMA,
@@ -119,8 +119,7 @@ C  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
       MAI = NOMA//'.TYPMAIL'
       CALL JEVEUO(MAI,'L',JMAI)
-      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-      NDIM=ZI(ADDIM-1+6)
+      CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIM,K8B,IRET)
       CALL JEVEUO('&CATA.TM.TMDIM','L',JTMDIM)
 
 C     RETRIEVE THE NUMBER OF THE NODES THAT MUST TO BE USED IN THE
@@ -142,7 +141,7 @@ C   RECUPERATION DE L'ADRESSE DES VALEURS DE LS ET DU GRADIENT DE LS
       CALL JEVEUO(CNSLT//'.CNSV','E',JLTNO)
       CALL JEVEUO (CNSGLT//'.CNSV','E',JGLTNO)
 
-    
+
 C  RECUPERATION DE L'ADRESSE DE L'INFORMATION 'NOEUD SOMMET'
       CALL JEVEUO(NOESOM,'L',JNOSOM)
 
@@ -198,16 +197,16 @@ C        RETREIVE THE NODE NUMBER
          ZL(JVFL-1+3*(NODE-1)+1)=.TRUE.
          ZL(JVFL-1+3*(NODE-1)+2)=.TRUE.
          ZL(JVFL-1+3*(NODE-1)+3)=.TRUE.
-         IF (NDIM.EQ.3) THEN         
+         IF (NDIM.EQ.3) THEN
            NORMGN = ( ZR(JGLNNO-1+3*(NODE-1)+1)**2.D0 +
      &                ZR(JGLNNO-1+3*(NODE-1)+2)**2.D0 +
      &                ZR(JGLNNO-1+3*(NODE-1)+3)**2.D0 )**0.5D0
          ELSEIF (NDIM.EQ.2) THEN
            NORMGN = ( ZR(JGLNNO-1+2*(NODE-1)+1)**2.D0 +
-     &                ZR(JGLNNO-1+2*(NODE-1)+2)**2.D0)**0.5D0         
+     &                ZR(JGLNNO-1+2*(NODE-1)+2)**2.D0)**0.5D0
          ENDIF
 
-         IF (NORMGN.LT.R8PREM().OR.ABS(ZR(JLNNO-1+NODE)).LT.R8PREM()) 
+         IF (NORMGN.LT.R8PREM().OR.ABS(ZR(JLNNO-1+NODE)).LT.R8PREM())
      &      THEN
             ZR(JVF-1+3*(NODE-1)+1) = 0.D0
             ZR(JVF-1+3*(NODE-1)+2) = 0.D0
@@ -222,7 +221,7 @@ C        RETREIVE THE NODE NUMBER
           IF (NDIM.EQ.3)
      &    ZR(JVF-1+3*(NODE-1)+3)=SIGNLN*ZR(JGLNNO-1+3*(NODE-1)+3)/NORMGN
          ENDIF
-  
+
  10   CONTINUE
 
 C-----------------------------------------------------------------------
@@ -240,8 +239,8 @@ C-----------------------------------------------------------------------
       CALL JEVEUO(CNSGDF//'.CNSV','E',JGDF)
       CALL JEVEUO(CNSGDF//'.CNSL','E',JGDFL)
 
-      CNOGDF = '&&XPRREO.CNOGDF'     
-            
+      CNOGDF = '&&XPRREO.CNOGDF'
+
       CELGDF =  '&&XPRREO.CELGDF'
 
       CALL CNSCNO(CNSLT,' ','NON','V',CNOLT,'F',IBID)
@@ -275,20 +274,20 @@ C  Modif Julien
                ZR(JGDF-1+NODE)=
      &           ( ZR(JGLTNO-1+3*(NODE-1)+1)*ZR(JVF-1+3*(NODE-1)+1) +
      &             ZR(JGLTNO-1+3*(NODE-1)+2)*ZR(JVF-1+3*(NODE-1)+2) +
-     &             ZR(JGLTNO-1+3*(NODE-1)+3)*ZR(JVF-1+3*(NODE-1)+3) ) 
+     &             ZR(JGLTNO-1+3*(NODE-1)+3)*ZR(JVF-1+3*(NODE-1)+3) )
      &             / NORMGT
             ENDIF
           ELSEIF (NDIM.EQ.2) THEN
             NORMGT = ( ZR(JGLTNO-1+2*(NODE-1)+1)**2.D0 +
-     &                 ZR(JGLTNO-1+2*(NODE-1)+2)**2.D0)**0.5D0  
+     &                 ZR(JGLTNO-1+2*(NODE-1)+2)**2.D0)**0.5D0
             ZL(JGDFL-1+NODE) = .TRUE.
 
             IF (NORMGT.LT.R8PREM()) THEN
                ZR(JGDF-1+NODE)=0.D0
-            ELSE          
+            ELSE
                ZR(JGDF-1+NODE)=
      &           ( ZR(JGLTNO-1+2*(NODE-1)+1)*ZR(JVF-1+3*(NODE-1)+1) +
-     &             ZR(JGLTNO-1+2*(NODE-1)+2)*ZR(JVF-1+3*(NODE-1)+2)) 
+     &             ZR(JGLTNO-1+2*(NODE-1)+2)*ZR(JVF-1+3*(NODE-1)+2))
      &             / NORMGT
             ENDIF
           ENDIF
@@ -326,7 +325,7 @@ C---------------------------------------------------------
 
          CALL CALCUL('S','XFEM_SMPLX_CALC',LIGGRD,4,LCHIN,LPAIN,2,
      &               LCHOUT,LPAOUT,'V')
-                                   
+
          CALL CELCES (CELDFI,'V',CESDFI)
          CALL JEVEUO (CESDFI//'.CESV','L',JDELFI)
          CALL JEVEUO (CESDFI//'.CESL','L',JDEFIL)
@@ -351,7 +350,7 @@ C   VERIFICATION DU TYPE DE MAILLE
 C           NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
             NDIME = ZI(JTMDIM-1+ZI(JMAI-1+IMA))
             IF (NDIME.NE.NDIM) GOTO 120
-               
+
 C   BOUCLE SUR LES NOEUDS DE LA MAILLE
             CALL CESEXI('S',JMESTD,JMESTL,IMA,1,1,1,IADMET)
             CALL CESEXI('S',JDEFID,JDEFIL,IMA,1,1,1,IADDFI)
@@ -418,11 +417,11 @@ C           RETREIVE THE NODE NUMBER
 C  ON ECARTE LES NOEUDS MILIEUX
             IF (.NOT.ZL(JNOSOM-1+NODE)) GOTO 800
 C  ON ECARTE LES NOEUDS CALCULES PLUS HAUT
-            IF (ZL(JZERO-1+NODE)) GOTO 800            
-            
+            IF (ZL(JZERO-1+NODE)) GOTO 800
+
             IF (ABS(ZR(JWI-1+NODE)).LT.R8PREM()) THEN
 C           WRITE(*,*)'La reortho du noeud d"indice',I,' se fait a WI=0'
-                          
+
 C    RECUPERATION DES MAILLES CONTENANT LE NOEUD NODE
                CALL JELIRA(JEXNUM(CNXINV,NODE),'LONMAX',NMANOI,K8B)
                CALL JEVEUO(JEXNUM(CNXINV,NODE),'L',JMANOI)
@@ -444,45 +443,45 @@ C     SI MAILLE NON VOLUMIQUE (en 3D) OU SURFACIQUE (en 2D) ON LA SAUTE
 C     BOUCLE SUR LES NOEUDS DE LA MAILLE
                   NBNOMA = ZI(JCONX2+NUMAI) - ZI(JCONX2+NUMAI-1)
 
-C    Algo modifie par Julien 
+C    Algo modifie par Julien
 C   (On cherche a appliquer une reinitialisation aux mailles de bord
 C   et uniquement a elles!)
 
                   DO 170 INO=1,NBNOMA
                      NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAI-1)+INO-1)
                      IF (.NOT.ZL(JNOSOM-1+NUNO)) GOTO 170
-                     
+
                      IF (ABS(ZR(JWI-1+NUNO)).GT.R8PREM()) THEN
-                     
+
                         DIST=0.D0
-                         DO 175 J=1,NDIM                         
+                         DO 175 J=1,NDIM
                            JI(J) = ZR(JCOOR-1+3*(NODE-1)+J)
      &                           - ZR(JCOOR-1+3*(NUNO-1)+J)
                             DIST=DIST+JI(J)**2
  175                     CONTINUE
                          DIST=DIST**0.5D0
-C     On repere le noeud le plus proche                         
+C     On repere le noeud le plus proche
                          IF (DIST.LT.DISMIN) THEN
                            DISMIN = DIST
                            NUMIN = NUNO
                          ENDIF
-                     ENDIF 
-                                        
+                     ENDIF
+
  170              CONTINUE
  160           CONTINUE
 C On affecte au noeud I (WI=0), la reactualisation du noeud NUMIN (WI>0)
                LTPREC = ZR(JLTNO-1+NODE)
                LTNOUV = ZR(JLTNO-1+NODE)
-     &          -DELTAT*(ZR(JVI-1+NUMIN)/ZR(JWI-1+NUMIN))              
-                
-               ZR(JLTNO-1+NODE) = LTNOUV 
+     &          -DELTAT*(ZR(JVI-1+NUMIN)/ZR(JWI-1+NUMIN))
 
-            
-            
+               ZR(JLTNO-1+NODE) = LTNOUV
+
+
+
             ENDIF
-            
-            
-            
+
+
+
  800     CONTINUE
 C---------------------------------------------------
 C     CALCUL DU GRADIENT DE LA LEVEL SET RESULTANTE

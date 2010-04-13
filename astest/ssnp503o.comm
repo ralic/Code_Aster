@@ -1,4 +1,4 @@
-# MODIF  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503o.para = tps_job 300 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,7 +57,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('VOLU',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM_CONT',),),);       
+                              MODELISATION='3D',),),);       
 
 LN1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-2.5');
 LT1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-2.5');  
@@ -146,38 +146,38 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    # CONDITIONS IMPOSEES A LA MAIN
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
-                   LIAISON_DDL=(_F(NOEUD=('N9','N9','N13','N13',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
-                                   COEF_IMPO=DEPX,),
-                                _F(NOEUD=('N45','N45','N49','N49',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
-                                   COEF_IMPO=DEPX,),
-                                _F(NOEUD=('N29','N29','N25','N25',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,-0.5,.5,-0.5),
-                                   COEF_IMPO=DEPX,),
-                                _F(NOEUD=('N65','N65','N61','N61',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,-0.5,.5,-0.5),
-                                   COEF_IMPO=DEPX,),
-                                _F(NOEUD=('N9','N9',),
-                                   DDL=('DCZ','H1Z',),
-                                   COEF_MULT=(1.0,1.0,),
-                                   COEF_IMPO=DEPZ,),
-                                _F(NOEUD=('N45','N45',),
-                                   DDL=('DCZ','H1Z',),
-                                   COEF_MULT=(1.0,1.0,),
-                                   COEF_IMPO=DEPZ,),
-                                _F(NOEUD=('N29','N29',),
-                                   DDL=('DCZ','H1Z',),
-                                   COEF_MULT=(1.0,-1.0,),
-                                   COEF_IMPO=DEPZ,),
-                                _F(NOEUD=('N65','N65',),
-                                   DDL=('DCZ','H1Z',),
-                                   COEF_MULT=(1.0,-1.0,),
-                                   COEF_IMPO=DEPZ,),),
+                   LIAISON_DDL=(_F(NOEUD=('N9','N9',),
+                                  DDL=('DX','H1X',),
+                                  COEF_MULT=(1,1,),
+                                  COEF_IMPO=DEPX,),
+                               _F(NOEUD=('N29','N29',),
+                                  DDL=('DX','H1X',),
+                                  COEF_MULT=(1,-1,),
+                                  COEF_IMPO=DEPX,),
+                               _F(NOEUD=('N45','N45',),
+                                  DDL=('DX','H1X',),
+                                  COEF_MULT=(1,1,),
+                                  COEF_IMPO=DEPX,),
+                               _F(NOEUD=('N65','N65',),
+                                  DDL=('DX','H1X',),
+                                  COEF_MULT=(1,-1,),
+                                  COEF_IMPO=DEPX,),
+                               _F(NOEUD=('N9','N9',),
+                                  DDL=('DZ','H1Z',),
+                                  COEF_MULT=(1,1,),
+                                  COEF_IMPO=DEPZ,),
+                               _F(NOEUD=('N29','N29',),
+                                  DDL=('DZ','H1Z',),
+                                  COEF_MULT=(1,-1,),
+                                  COEF_IMPO=DEPZ,),
+                               _F(NOEUD=('N45','N45',),
+                                  DDL=('DZ','H1Z',),
+                                  COEF_MULT=(1,1,),
+                                  COEF_IMPO=DEPZ,),
+                               _F(NOEUD=('N65','N65',),
+                                  DDL=('DZ','H1Z',),
+                                  COEF_MULT=(1,-1,),
+                                  COEF_IMPO=DEPZ,),),
                     INFO=1,);
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
@@ -218,10 +218,10 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 LAG=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]
 
-vale = [[-1.4922085453317E+05,-4.4964660477316E+04,-1.1560081641114E+04,-1.1560081641114E+04],
-           [-2.9844254580455E+05,-8.9929003174795E+04,-2.3119982111424E+04,-2.3119982111424E+04],
-           [-4.4766423637664E+05,-1.3489334596908E+05,-3.4679882617927E+04,-3.4679882617927E+04],
-           [-5.9687934486023E+05,-1.7986014193268E+05,-4.6241200926537E+04,-4.6241200926537E+04]]
+vale = [[-1.4922085453317E+05,-4.4964660477316E+04,-1.1560081641114E+04],
+           [-2.9844254580455E+05,-8.9929003174795E+04,-2.3119982111424E+04],
+           [-4.4766423637664E+05,-1.3489334596908E+05,-3.4679882617927E+04],
+           [-5.9687934486023E+05,-1.7986014193268E+05,-4.6241200926537E+04]]
 
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -241,7 +241,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
               TRI=_F(NOM_PARA=('COOR_X',),
                      ORDRE='CROISSANT',),);
   
-   for j in [0,1,2,3]: #Boucle sur les positions testees
+   for j in [0,1,2]: #Boucle sur les positions testees
       if (vale[i-1] [j] == 0.0):
         precision = 1.0E-10
         critere = 'ABSOLU'

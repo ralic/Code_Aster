@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,7 +37,7 @@ C
       REAL*8             CRIT(3),INSTAM,INSTAP,LINE
       REAL*8             DEPS(6),PREC,DX,DEUXMU,DEMU,CINCO
       REAL*8             SIGM(6),VIM(2),SIGP(6),VIP(2),DSIDEP(6,6,4)
-      REAL*8             NONLOC(3)
+      REAL*8             NONLOC(2)
 C ----------------------------------------------------------------------
 C     REALISE LA LOI DE VON MISES ISOTROPE ET ELASTIQUE EN NON LOCAL
 C     GRAD_VARI
@@ -144,8 +144,8 @@ C     -- 2 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
 
 C     NON LOCAL
-      RAUG=NONLOC(2)
-      PHI=NONLOC(3)
+      PHI  = NONLOC(1)
+      RAUG = NONLOC(2)
 
 C     MATERIAU
       NOMRES(1)='E'

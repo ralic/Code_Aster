@@ -1,7 +1,7 @@
       SUBROUTINE MPJEFT(CORRES)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,7 +156,7 @@ C  ELEMENT VOLUMIQUE / ELEMENT SURFACIQUE / ELEMENT LINEIQUE
      &              .FALSE.,RBID)
       ELSE IF (NCAS.EQ.4) THEN
         CALL PJ4DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES,
-     &              .FALSE.,RBID)
+     &              .FALSE.,RBID,' ')
       ELSE IF (NCAS.EQ.5) THEN
         CALL PJ5DCO(MODEL1,MODEL2,CORRES)
       ELSE

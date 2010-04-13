@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 # ssnv186e.para = tps_job 60 mem_job 512Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,7 +35,8 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA='VOL',),);
+                       #LINE_QUAD=_F(GROUP_MA='VOL',),
+                      );
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -48,7 +49,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('VOL',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM_CONT',),
+                              MODELISATION='3D',),
                            _F(GROUP_MA=('SURFINF','SURFSUP',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),),);        
@@ -80,7 +81,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COULOMB      = 1.0,
                                ALGO_CONT    = 'STANDARD',
                                COEF_CONT    = 100.,                                
-                               ALGO_LAGR    = 'VERSION1',
+                               ALGO_LAGR    = 'VERSION2',
                              ), 
                          ),
                    );

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE : VALIDATION DES CONDITIONS DE NEUMANN AVEC X-FEM EN 2D
 # ssnv191c.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -217,467 +217,276 @@ UTOT4=STAT_NON_LINE(MODELE=MODELEK,
                                 INST_FIN=1.0,),
                    NEWTON=_F(REAC_ITER=1,),
                     INFO=1,);
+
+#----------------------------------------------
+#             IMPRESSION
+#----------------------------------------------
+
+MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                       MODELE        = MODELEK)
+
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE = MA_XFEM,))
+IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(MAILLAGE = MA_XFEM,))
+
+
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=(_F(GROUP_MA=('MTOT',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='C_PLAN',),),
+                              );  
+
+RES_X1=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                        MAILLAGE_FISS = MA_XFEM,
+                        MODELE        = MODELEK,
+                        MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        NOM_CHAM      = ('DEPL','SIEF_ELGA'))
+
+RES_X2=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                        MAILLAGE_FISS = MA_XFEM,
+                        MODELE        = MODELEK,
+                        MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT2,
+                        NOM_CHAM      = ('DEPL','SIEF_ELGA'))
+
+RES_X3=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                        MAILLAGE_FISS = MA_XFEM,
+                        MODELE        = MODELEK,
+                        MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT3,
+                        NOM_CHAM      = ('DEPL','SIEF_ELGA'))
+
+RES_X4=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                        MAILLAGE_FISS = MA_XFEM,
+                        MODELE        = MODELEK,
+                        MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT4,
+                        NOM_CHAM      = ('DEPL','SIEF_ELGA'))
+
+IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_X1,));
+
+
 #----------------------------------------------
 #                  TESTS
 #----------------------------------------------
 #PREMIER CHARGEMENT
 
-DEP1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                             INTITULE='DEPLE',
-                             RESULTAT=UTOT1,
-                             NOM_CHAM='DEPL',
-                             NUME_ORDRE=1,
-                             NOEUD=('N1','N2','N3','N4','N5','N11','N18','N13','N14','N15','N16','N17',),
-                             TOUT_CMP='OUI',),);
+DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                GROUP_NO=('NFISSU',),
+                                RESULTAT=RES_X1,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
 
 IMPR_TABLE(TABLE=DEP1,);
 
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N1',),
+
+DEP1P = CALC_TABLE(TABLE = DEP1,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]',),),);
+
+
+DEP1M = CALC_TABLE(TABLE = DEP1,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]',),),);
+
+TEST_TABLE(TABLE=DEP1P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           VALE= 1e-06,
+           CRITERE='RELATIF',
+           PRECISION=1e-11,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP1P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           VALE= 1e-06,
+           CRITERE='RELATIF',
+           PRECISION=1e-11,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP1P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N2',),
+TEST_TABLE(TABLE=DEP1P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
+           TYPE_TEST='MAX',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N5',),
+TEST_TABLE(TABLE=DEP1M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           VALE= 1e-06,
+           CRITERE='RELATIF',
+           PRECISION=1e-11,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP1M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           VALE= 1e-06,
+           CRITERE='RELATIF',
+           PRECISION=1e-11,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP1M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N11',),
+TEST_TABLE(TABLE=DEP1M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
+           TYPE_TEST='MAX',
            VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N2',),
-           NOM_PARA='DCX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N5',),
-           NOM_PARA='DCX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N2',),
-           NOM_PARA='H1X',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N5',),
-           NOM_PARA='H1X',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N3',),
-           NOM_PARA='DCX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N3',),
-           NOM_PARA='H1X',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N4',),
-           NOM_PARA='DCX',
-           VALE=-1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N4',),
-           NOM_PARA='H1X',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N18',),
-           NOM_PARA='DX',
-           VALE=1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N13',),
-           NOM_PARA='DX',
-           VALE=1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N16',),
-           NOM_PARA='DX',
-           VALE=1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N17',),
-           NOM_PARA='DX',
-           VALE=1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N13',),
-           NOM_PARA='DCX',
-           VALE=1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N16',),
-           NOM_PARA='DCX',
-           VALE=1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N13',),
-           NOM_PARA='H1X',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N16',),
-           NOM_PARA='H1X',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N14',),
-           NOM_PARA='DCX',
-           VALE=1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N14',),
-           NOM_PARA='H1X',
-           VALE=0.0,
-           CRITERE='ABSOLU',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N15',),
-           NOM_PARA='DCX',
-           VALE=1e-06,
-           CRITERE='RELATIF',
-           PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N15',),
-           NOM_PARA='H1X',
-           VALE=0.0,
-           CRITERE='ABSOLU',
            PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
 #DEUXIEME CHARGEMENT
 
 DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                NOEUD=('N1','N2','N3','N4','N5','N11','N18','N13','N14','N15','N16','N17',),
-                                RESULTAT=UTOT2,
+                                GROUP_NO=('NFISSU',),
+                                RESULTAT=RES_X2,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=DEP2,);
+IMPR_TABLE(TABLE=DEP1,);
 
 
+DEP2P = CALC_TABLE(TABLE = DEP2,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]',),),);
 
-TEST_TABLE(TABLE=DEP2,
+
+DEP2M = CALC_TABLE(TABLE = DEP2,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]',),),);
+
+TEST_TABLE(TABLE=DEP2P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N1',),
-           VALE=1.e-6,
+           TYPE_TEST='MIN',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(TABLE=DEP2P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
-           VALE=1.E-6,
+           TYPE_TEST='MAX',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(TABLE=DEP2P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
-           VALE=-1.e-6,
+           TYPE_TEST='MIN',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(TABLE=DEP2P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N11',),
-           VALE=-1.E-6,
+           TYPE_TEST='MAX',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-
-
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
-           VALE=1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
-           VALE=-1.e-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-
-
-
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N3',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N3',),
-           VALE=-1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N4',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N4',),
-           VALE=-1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-
-
-
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(TABLE=DEP2M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N18',),
-           VALE=-1.e-6,
+           TYPE_TEST='MIN',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(TABLE=DEP2M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N13',),
-           VALE=-1.E-6,
+           TYPE_TEST='MAX',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(TABLE=DEP2M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
-           VALE=1.e-6,
+           TYPE_TEST='MIN',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP2,
+TEST_TABLE(TABLE=DEP2M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N17',),
-           VALE=1.E-6,
+           TYPE_TEST='MAX',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
-
-
-
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N13',),
-           VALE=-1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
-           VALE=1.e-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N13',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N14',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N14',),
-           VALE=1.e-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N15',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP2,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N15',),
-           VALE=1.e-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
+           
 #TROISIEME CHARGEMENT
 
 DEP3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                NOEUD=('N1','N2','N3','N4','N5','N11','N18','N13','N14','N15','N16','N17',),
-                                RESULTAT=UTOT3,
+                                GROUP_NO=('NFISSU',),
+                                RESULTAT=RES_X3,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
@@ -686,217 +495,104 @@ DEP3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
 IMPR_TABLE(TABLE=DEP3,);
 
 
+DEP3P = CALC_TABLE(TABLE = DEP3,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]',),),);
 
-TEST_TABLE(TABLE=DEP3,
+
+DEP3M = CALC_TABLE(TABLE = DEP3,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]',),),);
+
+TEST_TABLE(TABLE=DEP3P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N1',),
-           VALE=-1.e-6,
+           TYPE_TEST='MIN',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP3,
+TEST_TABLE(TABLE=DEP3P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
-           VALE=-1.E-6,
+           TYPE_TEST='MAX',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP3,
+TEST_TABLE(TABLE=DEP3P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
-           VALE=-1.e-6,
+           TYPE_TEST='MIN',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP3,
+TEST_TABLE(TABLE=DEP3P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N11',),
-           VALE=-1.E-6,
+           TYPE_TEST='MAX',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
-           VALE=-1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
-           VALE=-1.e-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N3',),
-           VALE=-1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N3',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N4',),
-           VALE=-1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N4',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-
-
-
-TEST_TABLE(TABLE=DEP3,
+TEST_TABLE(TABLE=DEP3M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N18',),
-           VALE=1.e-6,
+           TYPE_TEST='MIN',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP3,
+TEST_TABLE(TABLE=DEP3M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N13',),
-           VALE=1.E-6,
+           TYPE_TEST='MAX',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP3,
+TEST_TABLE(TABLE=DEP3M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
-           VALE=1.e-6,
+           TYPE_TEST='MIN',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP3,
+TEST_TABLE(TABLE=DEP3M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N17',),
-           VALE=1.E-6,
+           TYPE_TEST='MAX',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N13',),
-           VALE=1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
-           VALE=1.e-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N13',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N14',),
-           VALE=1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N14',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N15',),
-           VALE=1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP3,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N15',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
+           PRECISION=1e-11,
+           REFERENCE='ANALYTIQUE',);    
 
 #QUATRIEME CHARGEMENT
 
 DEP4=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                NOEUD=('N1','N2','N3','N4','N5','N11','N18','N13','N14','N15','N16','N17',),
-                                RESULTAT=UTOT4,
+                                GROUP_NO=('NFISSU',),
+                                RESULTAT=RES_X4,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
@@ -905,220 +601,98 @@ DEP4=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
 IMPR_TABLE(TABLE=DEP4,);
 
 
+DEP4P = CALC_TABLE(TABLE = DEP4,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]',),),);
 
-TEST_TABLE(TABLE=DEP4,
+
+DEP4M = CALC_TABLE(TABLE = DEP4,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]',),),);
+
+TEST_TABLE(TABLE=DEP4P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N1',),
-           VALE=1.e-6,
+           TYPE_TEST='MIN',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP4,
+TEST_TABLE(TABLE=DEP4P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
-           VALE=1.E-6,
+           TYPE_TEST='MAX',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP4,
+TEST_TABLE(TABLE=DEP4P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
-           VALE=-1.e-6,
+           TYPE_TEST='MIN',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP4,
+TEST_TABLE(TABLE=DEP4P,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N11',),
-           VALE=-1.E-6,
+           TYPE_TEST='MAX',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-
-
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
-           VALE=1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
-           VALE=-1.e-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-
-
-
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N3',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N3',),
-           VALE=-1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N4',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N4',),
-           VALE=-1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-
-
-
-TEST_TABLE(TABLE=DEP4,
+TEST_TABLE(TABLE=DEP4M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N18',),
-           VALE=-1.e-6,
+           TYPE_TEST='MIN',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP4,
+TEST_TABLE(TABLE=DEP4M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=0,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N13',),
-           VALE=-1.E-6,
+           TYPE_TEST='MAX',
+           VALE= 1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP4,
+TEST_TABLE(TABLE=DEP4M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
-           VALE=1.e-6,
+           TYPE_TEST='MIN',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=DEP4,
+TEST_TABLE(TABLE=DEP4M,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=lx,),
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N17',),
-           VALE=1.E-6,
+           TYPE_TEST='MAX',
+           VALE=-1e-06,
            CRITERE='RELATIF',
-           PRECISION=1.0E-11,
+           PRECISION=1e-11,
            REFERENCE='ANALYTIQUE',);
-
-
-
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N13',),
-           VALE=-1.E-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
-           VALE=1.e-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N13',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N14',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N14',),
-           VALE=1.e-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='DCX',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N15',),
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-
-TEST_TABLE(TABLE=DEP4,
-           NOM_PARA='H1X',
-           FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N15',),
-           VALE=1.e-6,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
-#----------------------------------------------
-#             IMPRESSION
-#----------------------------------------------
 
 FIN();
 

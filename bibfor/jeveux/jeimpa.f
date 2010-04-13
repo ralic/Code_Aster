@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPA ( UNIT , NOMLU , COM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 12/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C
       CHARACTER *33   CVAL
       INTEGER         ICRE , IRET , IVAL
 C
-      PARAMETER     ( NNAO = 16 )
+      PARAMETER     ( NNAO = 15 )
       PARAMETER     ( NNAC = 6  )
       CHARACTER *8    NAC(NNAC) , NAO(NNAO)
       CHARACTER *1    TAC(NNAC) , TAO(NNAO)  , GENRI
@@ -75,21 +75,21 @@ C
      &               / '$$XNUM  ' , '$$XNOM  '  /
       DATA NAO     /
      &     'CLAS    ' , 'GENR    ' , 'TYPE    ' , 'LTYP    ' ,
-     &     'DOCU    ' , 'DATE    ' , 'ORIG    ' , 'LONMAX  ' ,
+     &     'DOCU    ' , 'DATE    ' ,              'LONMAX  ' ,
      &     'NOMMAX  ' , 'LONUTI  ' , 'NOMUTI  ' , 'LONO    ' ,
      &     'IADM    ' , 'IADD    ' , 'LADD    ' , 'USAGE   ' /
       DATA NAC     /   'ACCES   ' , 'STOCKAGE' , 'MODELONG' ,
      &                 'NMAXOC  ' , 'NUTIOC  ' , 'LONT    ' /
       DATA TAO     /
      &     'K'      , 'K'      , 'K'      , 'I'      ,
-     &     'K'      , 'I'      , 'K'      , 'I'      ,
+     &     'K'      , 'I'      , 'I'      ,
      &     'I'      , 'I'      , 'I'      , 'I'      ,
      &     'I'      , 'I'      , 'I'      , 'K'      /
       DATA TAC     /
      &  'K'    , 'K'     , 'K'     , 'I'     ,'I' ,    'I' /
       DATA LAO     /
      &     1        , 1        , 1        , 0        ,
-     &     4        , 0        , 8        , 0        ,
+     &     4        , 0        , 0        ,
      &     0        , 0        , 0        , 0        ,
      &     0        , 0        , 0        , 3        /
       DATA LAC     /

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,7 +93,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='D_PLAN',),
                            _F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_XFEM_CONT',),
+                              MODELISATION='D_PLAN',),
                            _F(GROUP_MA=('LIG2',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',),

@@ -1,5 +1,5 @@
       SUBROUTINE XCFACF(JPTINT,PTMAX,IPT,JAINT,LSN,LST,IGEOM,NNO,NDIM,
-     &                                                          TYPMA)
+     &                                                      LLIN,TYPMA)
       IMPLICIT NONE
 
       INTEGER       JPTINT,PTMAX,IPT,JAINT,IGEOM,NNO,NDIM
@@ -7,7 +7,7 @@
       CHARACTER*8   TYPMA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,11 +71,11 @@ C
       INTEGER       I,NBF,IBID,IFQ,J,JMIN,CODRET
       INTEGER       FA(6,4),IBID3(12,3)
       INTEGER       ZXAIN,XXMMVD
+      LOGICAL       LLIN,ISMALI
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       ZXAIN = XXMMVD('ZXAIN')
-
       CALL ELREF1(ELREF)
 
 C     INITIALISATION DES MIN ET MAX
@@ -124,58 +124,64 @@ C       LONGUEUR CARACTERISTIQUE
         LONCAR=(PADIST(NDIM,A,B)+PADIST(NDIM,A,C))/2.D0
 
 C       ON AJOUTE A LA LISTE LE POINT M
-        CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,M,LONCAR,JAINT,-1,-1,0.D0)
+
+        IF (LLIN) THEN
+          CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,M,LONCAR,JAINT,0,0,0.D0)
+        ELSE
+          CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,M,LONCAR,JAINT,-1,-1,0.D0)
+        ENDIF
 
  200  CONTINUE
-  
-  
-C     POUR UN RACCORD CONTACT (BOOK VI 17/03/2006)
-C     ON MET LES LAMBDAS DU FOND EGAUX AU LAMBDA NODAL LE PLUS PROCHE
-      DO 300 I=1,IPT
 
-C       ON SE RESTREINT AUX LAMBDA DU FOND
-        IF (ZR(JAINT-1+ZXAIN*(I-1)+1).NE.-1.D0) GOTO 300
+      IF (.NOT.LLIN) THEN
+  
+C     POUR UN RACCORD CONTACT (BOOK VI 17/03/2006) ANCIEN SHEMAS
+C     ON MET LES LAMBDAS DU FOND EGAUX AU LAMBDA NODAL LE PLUS PROCHE
+        DO 300 I=1,IPT
+
+C         ON SE RESTREINT AUX LAMBDA DU FOND
+          IF (ZR(JAINT-1+ZXAIN*(I-1)+1).NE.-1.D0) GOTO 300
  
-C       RECHERCHE DU LAMBDA NODAL LE PLUS PROCHE 
-        DMIN=R8MAEM()
-        DO 310 J=1,IPT
-          IF (J.EQ.I) GOTO 310
-          IF (ZR(JAINT-1+ZXAIN*(J-1)+1).EQ.-1.D0 .OR.
+C         RECHERCHE DU LAMBDA NODAL LE PLUS PROCHE 
+          DMIN=R8MAEM()
+          DO 310 J=1,IPT
+            IF (J.EQ.I) GOTO 310
+            IF (ZR(JAINT-1+ZXAIN*(J-1)+1).EQ.-1.D0 .OR.
      &        ZR(JAINT-1+ZXAIN*(J-1)+2).EQ.-1.D0 )  GOTO 310
-          DIST=PADIST(NDIM,ZR(JPTINT-1+NDIM*(I-1)+1),
+            DIST=PADIST(NDIM,ZR(JPTINT-1+NDIM*(I-1)+1),
      &                  ZR(JPTINT-1+NDIM*(J-1)+1))
-          IF (DIST.LE.DMIN) THEN
-             DMIN=DIST
-             JMIN=J
-          ENDIF
- 310    CONTINUE
+            IF (DIST.LE.DMIN) THEN
+               DMIN=DIST
+               JMIN=J
+            ENDIF
+ 310      CONTINUE
   
 C       COPIE DU VECTEUR JAINT 
 C       MAIS ON LAISSE UNE INDIC -1 POUR POUVOIR ENCORE RECONNAITRE
 C       UN POINT DU FOND
-        IF (ZR(JAINT-1+ZXAIN*(JMIN-1)+1).GT.0)
+          IF (ZR(JAINT-1+ZXAIN*(JMIN-1)+1).GT.0)
      &      ZR(JAINT-1+ZXAIN*(I-1)+1) = ZR(JAINT-1+ZXAIN*(JMIN-1)+1)
-
-        IF (ZR(JAINT-1+ZXAIN*(JMIN-1)+2).GT.0)
+   
+          IF (ZR(JAINT-1+ZXAIN*(JMIN-1)+2).GT.0)
      &      ZR(JAINT-1+ZXAIN*(I-1)+2) = ZR(JAINT-1+ZXAIN*(JMIN-1)+2)
+   
+          ZR(JAINT-1+ZXAIN*(I-1)+3) = ZR(JAINT-1+ZXAIN*(JMIN-1)+3)
+          ZR(JAINT-1+ZXAIN*(I-1)+4) = ZR(JAINT-1+ZXAIN*(JMIN-1)+4)
 
-        ZR(JAINT-1+ZXAIN*(I-1)+3) = ZR(JAINT-1+ZXAIN*(JMIN-1)+3)
-        ZR(JAINT-1+ZXAIN*(I-1)+4) = ZR(JAINT-1+ZXAIN*(JMIN-1)+4)
+ 300    CONTINUE
 
- 300  CONTINUE
- 
 C --------------------------- FIN ------------------------------------- 
- 
+   
 C      ON SUPPRIME LES -1 RESTANT
-       DO 400 I=1,IPT
+        DO 400 I=1,IPT
           DO 410 J=1,2
-             IF (ZR(JAINT-1+ZXAIN*(I-1)+J).EQ.-1.D0) THEN
+            IF (ZR(JAINT-1+ZXAIN*(I-1)+J).EQ.-1.D0) THEN
                ZR(JAINT-1+ZXAIN*(I-1)+J)=0.D0
-             ENDIF 
+            ENDIF 
  410      CONTINUE
- 400   CONTINUE
+ 400    CONTINUE
+      ENDIF
 
  9999 CONTINUE
-
       CALL JEDEMA()
       END

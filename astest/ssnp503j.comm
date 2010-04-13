@@ -1,4 +1,4 @@
-# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('VOLU',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM_CONT',),),);       
+                              MODELISATION='3D',),),);       
 
 LN1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-2.5');
 
@@ -129,37 +129,37 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    # CONDITIONS IMPOSEES A LA MAIN
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
-                   LIAISON_DDL=(_F(NOEUD=('N19','N19','N13','N13',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                   LIAISON_DDL=(_F(NOEUD=('N13','N13',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPX,),
-                                _F(NOEUD=('N37','N37','N43','N43',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                                _F(NOEUD=('N43','N43',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPX,),
-                                _F(NOEUD=('N73','N73','N76','N76',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                                _F(NOEUD=('N61','N61',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPX,),
-                                _F(NOEUD=('N64','N64','N61','N61',),
-                                   DDL=('DCX','H1X','DCX','H1X',),
-                                   COEF_MULT=(.5,0.5,0.5,.5),
+                                _F(NOEUD=('N76','N76',),
+                                   DDL=('DX','H1X',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPX,),
                                 _F(NOEUD=('N13','N13',),
-                                   DDL=('DCZ','H1Z',),
-                                   COEF_MULT=(1.0,1.0,),
-                                   COEF_IMPO=DEPZ,),
-                                _F(NOEUD=('N61','N61',),
-                                   DDL=('DCZ','H1Z',),
-                                   COEF_MULT=(1.0,1.0,),
+                                   DDL=('DZ','H1Z',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPZ,),
                                 _F(NOEUD=('N43','N43',),
-                                   DDL=('DCZ','H1Z',),
-                                   COEF_MULT=(1.0,1.0,),
+                                   DDL=('DZ','H1Z',),
+                                   COEF_MULT=(1,1,),
+                                   COEF_IMPO=DEPZ,),
+                                _F(NOEUD=('N61','N61',),
+                                   DDL=('DZ','H1Z',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPZ,),
                                 _F(NOEUD=('N76','N76',),
-                                   DDL=('DCZ','H1Z',),
-                                   COEF_MULT=(1.0,1.0,),
+                                   DDL=('DZ','H1Z',),
+                                   COEF_MULT=(1,1,),
                                    COEF_IMPO=DEPZ,),),
                     INFO=1,);        
 
