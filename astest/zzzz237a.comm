@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/04/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DU MOT-CLE LIAISON_UNILATER PAR UNE CONDITION PORTANT SUR DES DEPLACEMENTS
 # zzzz237a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,7 +105,7 @@ L_TPS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=20.0,
                                    NOMBRE=20,),);
 
-RESU=STAT_NON_LINE(MODELE=MO,
+RESU0=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CAR_DIS,
                    EXCIT=(_F(CHARGE=BLOCAGE,),
@@ -115,9 +115,25 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           ),
                    CONTACT  = CONT,       
                    COMP_INCR=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=L_TPS,),
+                   INCREMENT=_F(LIST_INST=L_TPS,INST_FIN=10.),
                    SOLVEUR=_F(SYME='OUI',),
                    );
+  
+  
+RESU=STAT_NON_LINE(MODELE=MO,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=CAR_DIS,
+                 EXCIT=(_F(CHARGE=BLOCAGE,),
+                        _F(CHARGE=DEPL,
+                           FONC_MULT=F_FORC,),
+                        _F(CHARGE=BLOC_DIS,),
+                        ),
+                 CONTACT  = CONT,
+                 NEWTON=_F(REAC_ITER=1,PREDICTION='DEPL_CALCULE',EVOL_NOLI=RESU0),       
+                 COMP_INCR=_F(RELATION='ELAS',),
+                 INCREMENT=_F(LIST_INST=L_TPS,),
+                 SOLVEUR=_F(SYME='OUI',),
+                 );                 
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,

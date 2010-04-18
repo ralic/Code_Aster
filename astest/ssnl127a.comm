@@ -1,5 +1,5 @@
 
-# MODIF  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 19/04/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE BARRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl127a.para = tps_job 60 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,12 +107,20 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=20,),
                                  _F(JUSQU_A=0.02,
                                     NOMBRE=10,),),);
+                                                                   
+
+DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST,),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                        SUBD_PAS=4,
+                        SUBD_PAS_MINI=1E-6,
+                                 ),)
+
 
 CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,
       AFFE=       _F( GROUP_MA = 'TOUT', MATER = MATC2),
       AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR,), )
 
-REST=STAT_NON_LINE(MODELE=MO,
+REST=STAT_NON_LINE(MODELE=MO,INFO=1,
                    CHAM_MATER=CHMAT1,
                    CARA_ELEM=CAREL,
                    EXCIT=_F(CHARGE=CHART,
@@ -121,15 +129,22 @@ REST=STAT_NON_LINE(MODELE=MO,
                                 GROUP_MA='TOUT',
                                 RESI_INTE_RELA=1e-06,
                                 ITER_INTE_MAXI=150),
-                   INCREMENT=_F(LIST_INST=LINST,),
+                   INCREMENT=_F(LIST_INST=DEFLIST2,
+                 #  SUBD_METHODE='UNIFORME',
+                 #       SUBD_PAS=4,
+                 #       SUBD_PAS_MINI=1E-6,
+                   
+                   
+                   ),
                    NEWTON=_F(REAC_INCR=1,
                              PREDICTION='ELASTIQUE',
                              MATRICE='TANGENTE',
                              REAC_ITER=3,),
-                   RECH_LINEAIRE=_F(METHODE='MIXTE',
+                   RECH_LINEAIRE=_F(METHODE='CORDE',
                                     ITER_LINE_MAXI=3,
-                                    RHO_MIN=1e-06,
-                                    RHO_MAX=10.0,),
+                                  #  RHO_MIN=1e-06,
+                                  #  RHO_MAX=10.0,
+                                    ),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
                                   ITER_GLOB_MAXI=10),
                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
@@ -152,17 +167,17 @@ PdeU=RECU_FONCTION(RESULTAT=REST,
                    MAILLE='SR1',
                    POINT=1,);
 
-IMPR_FONCTION(FORMAT='TABLEAU',
-              COURBE=_F(FONCTION=NdeU,),
-              UNITE=8,);
+#IMPR_FONCTION(FORMAT='TABLEAU',
+#              COURBE=_F(FONCTION=NdeU,),
+#              UNITE=8,);
 
-IMPR_FONCTION(FORMAT='TABLEAU',
-              COURBE=_F(FONCTION=PdeU,),
-              UNITE=8,);
+#IMPR_FONCTION(FORMAT='TABLEAU',
+#              COURBE=_F(FONCTION=PdeU,),
+#              UNITE=8,);
 
-IMPR_FONCTION(FORMAT='TABLEAU',
-              COURBE=_F(FONCTION=DdeU,),
-              UNITE=8,);
+#IMPR_FONCTION(FORMAT='TABLEAU',
+#              COURBE=_F(FONCTION=DdeU,),
+#              UNITE=8,);
 
 CHCOR2=CREA_CHAMP(TYPE_CHAM='CART_CORR_R',
                   OPERATION='AFFE',
@@ -182,7 +197,7 @@ CHMAT2=AFFE_MATERIAU(   MAILLAGE=MA,
       AFFE=       _F( GROUP_MA = 'TOUT', MATER = MATC2),
       AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR2,), )
 
-REST2=STAT_NON_LINE(MODELE=MO,
+REST2=STAT_NON_LINE(MODELE=MO,INFO=1,
                     CHAM_MATER=CHMAT2,
                     CARA_ELEM=CAREL,
                     EXCIT=_F(CHARGE=CHART,
@@ -198,8 +213,9 @@ REST2=STAT_NON_LINE(MODELE=MO,
                               PAS_MINI_ELAS=0.0001,
                               REAC_ITER=3,),
                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,
-                                     RHO_MIN=1e-06,
-                                     RHO_MAX=10.0,),
+                                     #RHO_MIN=1e-06,
+                                     #RHO_MAX=10.0,
+                                     ),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=10,),
@@ -253,7 +269,7 @@ CHMAT3=AFFE_MATERIAU(   MAILLAGE=MA,
       AFFE=       _F( GROUP_MA = 'TOUT', MATER = MATC2),
       AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR3,), )
 
-REST3=STAT_NON_LINE(MODELE=MO,
+REST3=STAT_NON_LINE(MODELE=MO,INFO=1,
                     CHAM_MATER=CHMAT3,
                     CARA_ELEM=CAREL,
                     EXCIT=_F(CHARGE=CHART,
@@ -269,8 +285,9 @@ REST3=STAT_NON_LINE(MODELE=MO,
                               PAS_MINI_ELAS=0.0001,
                               REAC_ITER=3,),
                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,
-                                     RHO_MIN=1e-06,
-                                     RHO_MAX=10.0,),
+                                     #RHO_MIN=1e-06,
+                                     #RHO_MAX=10.0,
+                                     ),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=10,),

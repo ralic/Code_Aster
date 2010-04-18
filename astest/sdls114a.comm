@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 19/04/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
+# sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -177,7 +178,7 @@ for i in range(0,n_mode) :
                                     RESULTAT=MODE,
                                     NUME_MODE=imode,
                                     NOM_CHAM='DEPL',
-                                    NOM_CMP=('DX','DY','DZ',),
+                                    NOM_CMP=('DX','DY',),
                                     OPERATION='EXTRACTION',),);
    
    
@@ -186,7 +187,7 @@ for i in range(0,n_mode) :
                                     RESULTAT=MODE,
                                     NUME_MODE=imode,
                                     NOM_CHAM='DEPL',
-                                    NOM_CMP=('DX','DY','DZ',),
+                                    NOM_CMP=('DX','DY',),
                                     OPERATION='EXTRACTION',),);
   
    

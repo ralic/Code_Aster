@@ -1,7 +1,7 @@
       LOGICAL FUNCTION ISCHAR(LISCHA,TYPCHA,SOUTYP,ICHAR )     
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/04/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -121,7 +121,7 @@ C
         
         CALL JEVEUO(CHARGE,'L',JALICH)
         CALL JEVEUO(INFCHA,'L',JINFCH)
-           
+C
         DO 10 ICHA = DEB,FIN
 C
 C ------- DIRICHLETS          
@@ -174,9 +174,7 @@ C
             ELSEIF (ZI(JINFCH+NCHAR+ICHA).EQ.0) THEN
               IF (ZI(JINFCH+2*NCHAR+2).NE.0) THEN
                 LNEUM = .TRUE.
-                LLAPL = .TRUE.             
-              ELSE
-                CALL ASSERT(.FALSE.)
+                LLAPL = .TRUE.
               ENDIF
             ELSE
               CALL ASSERT(.FALSE.)

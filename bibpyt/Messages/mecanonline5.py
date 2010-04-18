@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+#@ MODIF mecanonline5 Messages  DATE 19/04/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -196,27 +196,6 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
 
 """),
 
-48 : _("""
-  Vous utilisez l'option EXTRAPOL ou DEPL_CALCULE en prédiction,
-  mais il n'y a aucune condition aux limites de Dirichlet donnée par AFFE_CHAR_MECA dans EXCIT.
-
-  On n'a donc pas pu projeter le champ de déplacement donné ou extrapolé
-  sur un champ cinématiquement admissible.
-  -> Risque & Conseil :
-   La convergence risque d'etre difficile si le champ donné ou extrapolé
-   est vraiment cinématiquement non admissible.
-"""),
-
-
-49 : _("""
-  Vous utilisez l'option EXTRAPOL ou DEPL_CALCULE en prédiction,
-  mais il n'y a aucune condition aux limites de Dirichlet donnée par AFFE_CHAR_MECA dans EXCIT.
-  L'absence de matrice en correction va empecher le code d'évaluer le
-  résidu d'équilibre.
-  -> Risque & Conseil :
-   - Choisir REAC_ITER et REAC_INCR judicieusement pour avoir une
-   matrice en CORRECTION.
-"""),
 
 
 50 : _("""
