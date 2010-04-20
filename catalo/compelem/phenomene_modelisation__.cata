@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -136,6 +136,11 @@ PHENOMENE_MODELISATION__
 
 
    PHENOMENE__  MECANIQUE       CODE__  'ME'
+
+        MODELISATION__ '2D_JOINT_HMS'        DIM__ 2 2   CODE__ 'JH1'
+              ATTRIBUT__  THM=OUI D_PLAN=OUI
+              MAILLE__ QUAD8    ELEMENT__ HM_J_DPQ8S
+              MAILLE__ SEG3     ELEMENT__ HM_J_DPSE3
 
         MODELISATION__ '3D_HH2SUDM'        DIM__ 3 3   CODE__ '3DM'
               ATTRIBUT__  VOLU_FINI=OUI THM=OUI TYPE_VOISIN=F3
@@ -1552,4 +1557,3 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD9     ELEMENT__ ACPLQU9
               MAILLE__ SEG2      ELEMENT__ ACPLSE2
               MAILLE__ SEG3      ELEMENT__ ACPLSE3
-

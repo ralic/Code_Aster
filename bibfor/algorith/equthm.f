@@ -9,7 +9,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -143,7 +143,8 @@ C ======================================================================
       REAL*8       CONGEP(1:DIMCON),VINTM(1:NBVARI),VINTP(1:NBVARI)
       REAL*8       R(1:DIMDEF+1),DRDS(1:DIMDEF+1,1:DIMCON),PESA(3)
       REAL*8       DSDE(1:DIMCON,1:DIMDEF),DT,CRIT(*),RINSTP,RINSTM
-      REAL*8       DEUX,RAC2,TA,TA1,RBID,P10,P20
+      REAL*8       DEUX,RAC2,TA,TA1,P10,P20
+      REAL*8       RBID1(6,14,6),RBID2(14,6)
       PARAMETER    (DEUX = 2.D0)
       LOGICAL      PERMAN
       CHARACTER*8  TYPMOD(2)
@@ -171,7 +172,6 @@ C ======================================================================
       ADCOTE = TEMPE(3)
 C
       IBID = 0
-      RBID = 0.D0
       P10 = 0.D0 
       P20 = 0.D0       
 C ============================================================
@@ -216,7 +216,7 @@ C ======================================================================
          DRDS(DIMDEF+1,J)=0.D0
  800  CONTINUE
 
-      CALL COMTHM(OPTION,PERMAN,.FALSE.,IBID,RBID,RBID,
+      CALL COMTHM(OPTION,PERMAN,.FALSE.,IBID,RBID1,RBID2,
      &            IMATE,TYPMOD,COMPOR,
      &            CRIT,RINSTM,RINSTP,
      &            NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,

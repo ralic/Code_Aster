@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+#@ MODIF algorith17 Messages  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,4 +52,15 @@ cata_msg={
   renseigne.
 """), 
 9 : _("""L'équation d'évolution de l'endommagement n'admet pas de solution réelle  """),
+10 : _("""
+  La loi de comportement mécanique %(k1)s n'est pas compatible avec les 
+  éléments de joint avec couplage hydro-mécanique.
+"""),
+11 : _("""
+  La fermeture du joint sort des bornes [0,fermeture maximale] sur la maille %(k1)s.
+  fermeture du joint CLO = %(r1)f
+  fermeture maximale UMC = %(r2)f
+  Vérifier la cohérence chargement mécanique, fermeture asymptotique et ouverture 
+  initiale.
+"""),
 }

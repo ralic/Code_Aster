@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE   EXTRUSION D'UN LOPIN AVEC LE CONTACT GLISSIERE
 # ssnv504j.para = tps_job 210 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -207,7 +207,7 @@ TEST_RESU(RESU=(_F(RESULTAT  =U,
                 _F(RESULTAT  =U,
                    NUME_ORDRE=3,
                    PARA      ='ITER_GLOB',
-                   VALE_I    =1,
+                   VALE_I    =0,
                    PRECISION =1.E-3,
                    REFERENCE ='NON_REGRESSION'),
                 _F(RESULTAT  =U,
@@ -221,7 +221,7 @@ TEST_RESU(RESU=(_F(RESULTAT  =U,
                 _F(RESULTAT  =U,
                    NUME_ORDRE=6,
                    PARA      ='ITER_GLOB',
-                   VALE_I    =1,
+                   VALE_I    =0,
                    PRECISION =1.E-3,
                    REFERENCE ='NON_REGRESSION'),
 #                 _F(RESULTAT=U,

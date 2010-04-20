@@ -1,5 +1,6 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 # TITRE TEST EFFET LAME FLUIDE ENTRE DEUX STRUCTURES MOBILES
+# sdnd112a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

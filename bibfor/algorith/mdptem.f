@@ -1,14 +1,14 @@
       SUBROUTINE MDPTEM (NBMODE,MASGEN,RIGGEN,PULSAT,NBCHOC,DPLMOD,
-     &                   PARCHO,NOECHO,DT,TINIT,TFIN,NBPAS,INFO,IER)
+     &       PARCHO,NOECHO,DT,DTS,DTU,DTMAX,TINIT,TFIN,NBPAS,INFO,IER)
       IMPLICIT   REAL*8 (A-H,O-Z)
       INTEGER            NBCHOC, NBPAS, INFO,IER, NBMODE
       REAL*8             MASGEN(*),RIGGEN(*),PULSAT(*),
      &                   PARCHO(NBCHOC,*),DPLMOD(NBCHOC,NBMODE,*)
-      REAL*8             DT, TINIT, TFIN
+      REAL*8             DT, TINIT, TFIN, DTMAX, DTS, DTU
       CHARACTER*8        NOECHO(NBCHOC,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2009   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,8 @@ C IN  : DPLMOD : TABLEAU DES DEPL MODAUX AUX NOEUDS DE CHOC
 C IN  : PARCHO : TABLEAU DES PARAMETRES DE CHOC
 C IN  : NOECHO : TABLEAU DES NOMS DES NOEUDS DE CHOC
 C OUT : DT     : PAS DE TEMPS
+C OUT : DTS    : PAS DE TEMPS LIMITE (BASE ET CHOCS)
+C OUT : DTU    : PAS DE TEMPS UTILISATEUR
 C OUT : TINIT  : TEMPS INITIAL
 C OUT : TFIN   : TEMPS FINAL
 C OUT : NBPAS  : NOMBRE DE PAS CALCULE (INITIAL NON COMPRIS)
@@ -60,10 +62,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       IC,IA,I,J,IVERI,JINST, N1,N2,N3,N4,N5,NBINST,
-     &              NR,NT
-      REAL*8        KNORM, KTANG 
+     &              NR,NT,N6
+      REAL*8        KNORM, KTANG, R8BID
       REAL*8        VALR(3)
-      REAL*8        ZERO, DEUXPI, DTS, DTU, DTI, R8DEPI, R8GAEM
+      REAL*8        ZERO, DEUXPI, DTI, R8DEPI, R8GAEM, DTP
       CHARACTER*8   METHOD, VERIPA,NOMRES,TRAN
       CHARACTER*24  VALK(2)
       CHARACTER*16  TYPRES,NOMCMD
@@ -79,6 +81,7 @@ C
       DEUXPI = R8DEPI()
       DTS = 1.D10
       DTU = 1.D+10
+      DTMAX = 1.D+10
       CALL GETVTX(' ','METHODE'  ,0,1,1,METHOD,N1)
       CALL GETVR8('INCREMENT','INST_INIT' ,1,1,1,  TINIT,N2)
       IF (N2.EQ.0) THEN
@@ -153,15 +156,18 @@ C
       ENDIF
 C
       IF     ( METHOD .EQ. 'DEVOGE'  ) THEN
-         DT = MIN( DTS / 10.D0 , DTU )
+         DTP = DTS / 10.D0
+         DT = MIN( DTP , DTU )
       ELSEIF ( METHOD .EQ. 'NEWMARK' ) THEN
-         DT = MIN( DTS / 10.D0 , DTU )
+         DTP = DTS / 10.D0
+         DT = MIN( DTP , DTU )
       ELSEIF ( METHOD .EQ. 'ITMI'    ) THEN
          DT = DTU
          GOTO 9999
       ELSE
 C      CASE METHOD .EQ. 'EULER' OR OTHER
-         DT = MIN( DTS / 20.D0 , DTU )
+         DTP = DTS / 20.D0
+         DT = MIN( DTP , DTU )
       ENDIF
       NBPAS = NINT( ( TFIN - TINIT ) / DT )
       IF ( N4 .EQ. 0 ) GOTO 9999
@@ -188,6 +194,28 @@ C
          NBPAS = NINT( ( TFIN - TINIT ) / DT )
          ENDIF
       ENDIF
-C
  9999 CONTINUE
+C     GESTION DU PAS MAXIMAL POUR SCHEMA ADAPT
+      IF ( METHOD .EQ. 'ADAPT') THEN
+        CALL GETVR8('INCREMENT','PAS_MAXI',1,1,1, R8BID,N6)
+        IF ( N6 .NE. 0 ) THEN
+          CALL GETVR8('INCREMENT','PAS_MAXI',1,1,1,DTMAX,N6)
+          IF ( DTMAX .GT. (DTS / 20.D0) ) THEN
+            VALR (1) = DTMAX
+            VALR (2) = DT
+            CALL U2MESG('A','DYNAMIQUE_17',0,' ',0,0,2,VALR)
+          ENDIF
+          IF ( ( DTMAX .LT. DTU ) . AND. ( N4 .NE. 0 ) ) THEN
+            VALR (1) = DTMAX
+            VALR (2) = DTU             
+            CALL U2MESG('E','DYNAMIQUE_15',0,' ',0,0,2,VALR)
+          ENDIF
+        ELSE
+          DTMAX = DTS / 20.D0
+          IF ( DTS .GE. 1.D10 )
+     &      CALL U2MESG('A','DYNAMIQUE_16',0,' ',0,0,1,DTMAX)
+        ENDIF
+      ENDIF
+C
+
       END

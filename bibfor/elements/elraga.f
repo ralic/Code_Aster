@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/06/2009   AUTEUR MAZET S.MAZET 
+C MODIF ELEMENTS  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1315,6 +1315,29 @@ C     ------------------------------------------------------------------
           HPG(2) = HPG(1)
           HPG(3) = 0.347854845137454D0
           HPG(4) = HPG(3)
+
+        ELSE IF (FAPG.EQ.'FPG2NOS') THEN
+          XPG(1) = 0.577350269189626D0
+          XPG(2) = -XPG(1)
+          XPG(3) = XNO(1)
+          XPG(4) = XNO(2)
+
+          HPG(1) = UN
+          HPG(2) = HPG(1)
+          HPG(3) = VOL/NNOS
+          HPG(4) = HPG(3)
+
+        ELSE IF (FAPG.EQ.'FPG3NOS') THEN
+          XPG(1) = -0.774596669241483D0
+          XPG(2) = 0.D0
+          XPG(3) = 0.774596669241483D0
+          XPG(4) = XNO(1)
+          XPG(5) = XNO(NNOS)
+          HPG(1) = 0.555555555555556D0
+          HPG(2) = 0.888888888888889D0
+          HPG(3) = 0.555555555555556D0
+          HPG(4) = VOL/NNOS
+          HPG(5) = HPG(4)
 
         ELSE IF (FAPG.EQ.'SIMP') THEN
           XPG(1) = -1.D0

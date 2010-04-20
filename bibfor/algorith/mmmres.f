@@ -1,7 +1,7 @@
       SUBROUTINE MMMRES(FONACT,DEFICO,RESOCO,DEPDEL,NOMA  ,
      &                  CNSINR,CNSPER,INST  ,VEASSE)
 C 
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -541,6 +541,7 @@ C
                       END IF
                     ELSE
                       LAGSF = 0.D0
+                      ZR(JCNSVR-1+ZRESU* (NUNOE-1)+1) = 2.D0
                     ENDIF                      
                   END IF
                 END IF
@@ -840,6 +841,7 @@ C
                       END IF
                     ELSE
                       LAGSF = 0.D0
+                      ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) = 2.D0
                     ENDIF                      
                   END IF
                 END IF

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 # TITRE SOUS-STRUCT. TRANS. (MNEAL) : SYSTEME 3 MASSES - 4 RESSORTS
 # sdld102b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -302,6 +302,9 @@ TRANGEN4=DYNA_TRAN_MODAL(   METHODE='ADAPT',
                                        COEF_MULT = 1.),
                             INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 82.,
+# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
+# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
+                                        PAS_MAXI = 0.01,
                                         PAS = 0.01,
                                         NB_POIN_PERIODE = 300,
                                         VITE_MIN = 'MAXI'),

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,7 @@ ENTETE__ ELEMENT__ MECA_XHC_PY13_X      MAILLE__ PYRAM13
 ENTETE__ ELEMENT__ MECA_XHC_TE10_X      MAILLE__ TETRA10
    ELREFE__  TE4       GAUSS__  RIGI=FPG1    NOEU=NOEU   XINT=FPG15 XFEM=XFEM90   FPG_LISTE__  MATER = (RIGI XFEM NOEU)
    ELREFE__  T10       GAUSS__  NOEU=NOEU
-   ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6   FPG7=FPG7   XCON=FPG12
+   ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6   FPG7=FPG7   XCON=FPG12   GAUSS=FPG12
    ATTRIBUT__  XFEM=XHC XLAG=ARETE
    ENS_NOEUD__  EN2     =     5   6   7   8   9  10
    ENS_NOEUD__  EN1     =     1   2   3   4
@@ -91,7 +91,7 @@ MODE_LOCAL__
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH    COSTCO   COSTFR
-                                        COPECO   COPEFR)
+                                        COPECO   COPEFR   RELA)
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
@@ -107,6 +107,7 @@ MODE_LOCAL__
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
     E2NEUTI  = NEUT_I   ELEM__         (X1       X2      )
+    E3NEUTR  = NEUT_R   ELEM__         (X[3])
     E9NEUTI  = NEUT_I   ELEM__         (X[9]     )
     E15NEUTI = NEUT_I   ELEM__         (X[15]    )
     E18NEUTR = NEUT_R   ELEM__         (X[18]    )
@@ -208,10 +209,12 @@ OPTION__
     CHAR_MECA_CONT      534   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     E18NEUTR PPINTER  E30NEUTR PAINTER
                                      E15NEUTI PCFACE   E2NEUTI  PLONCHA  E54NEUTR PBASECO  E1NEUTR  PSEUIL
+                                     E3NEUTR  PCOHES   CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FROT      534   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     E18NEUTR PPINTER  E30NEUTR PAINTER
                                      E15NEUTI PCFACE   E2NEUTI  PLONCHA  E54NEUTR PBASECO  E1NEUTR  PSEUIL
+                                     E3NEUTR  PCOHES   CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F    37    IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  E18NEUTR PPINTER
                                      E30NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONGCO   N1NEUT_R PLST
@@ -283,12 +286,12 @@ OPTION__
     RIGI_CONT           533   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     N1NEUT_R PLSN     E18NEUTR PPINTER
                                      E30NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONCHA  E54NEUTR PBASECO
-                                     E1NEUTR  PSEUIL
+                                     E1NEUTR  PSEUIL   E3NEUTR  PCOHES   CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
     RIGI_FROT           533   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     N1NEUT_R PLSN     E18NEUTR PPINTER
                                      E30NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONCHA  E54NEUTR PBASECO
-                                     E1NEUTR  PSEUIL
+                                     E1NEUTR  PSEUIL   E3NEUTR  PCOHES   CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA           11    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
@@ -318,6 +321,7 @@ OPTION__
     XCVBCA              532   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      N1NEUT_R PLST     E18NEUTR PPINTER  E30NEUTR PAINTER  E15NEUTI PCFACE
                                      E2NEUTI  PLONCHA  CONTX_R  PDONCO   E1NEUTI  PGLISS   E1NEUTI  PMEMCON
+                                     E3NEUTR  PCOHES
                               OUT__  E1NEUTI  PINCOCA  E1NEUTI  PINDCOO  E1NEUTI  PINDMEM
     XFEM_SMPLX_INIT     118   IN__   NGEOMER  PGEOMER
                               OUT__  E1NEUTR  PMEAST   N3NEUT_R PNIELNO
@@ -327,5 +331,6 @@ OPTION__
                                      E9NEUTI  PLONCHA
                               OUT__  XFGEOM_R PXFGEOM
     XREACL              548   IN__   DDL_MECA PDEPL_P  E30NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONCHA
-                                     CONTX_R  PDONCO   E18NEUTR PPINTER  NGEOMER  PGEOMER
-                              OUT__  E1NEUTR  PSEUIL
+                                     CONTX_R  PDONCO   E18NEUTR PPINTER  NGEOMER  PGEOMER  N1NEUT_R PLSN 
+                                     N1NEUT_R PLST     E3NEUTR  PCOHES   CMATERC  PMATERC
+                              OUT__  E1NEUTR  PSEUIL   E3NEUTR  PCOHESO

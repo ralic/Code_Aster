@@ -2,7 +2,7 @@
      &              LAMBDA,MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C
 C-------------------------------------------------------------
 
       INTEGER            I,J,K,T(3,3),T2(2,2),IRET
-      REAL*8             RAC2,KRON(6),NOFBM,UN
+      REAL*8             RAC2,KRON(6),NOFBM,UN,DEUX
       REAL*8             CC(6),VECC(3,3),VALCC(3),CCP(6),CPE(6)
       REAL*8             VECEPG(3,3),VALEPG(3)
       REAL*8             FB(6),VECFB(3,3),VALFB(3),TREB
@@ -52,7 +52,8 @@ C-------------------------------------------------------------
 
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
-      RAC2=SQRT(2.D0)
+      DEUX=2.D0
+      RAC2=SQRT(DEUX)
       UN=1.D0
       T(1,1)=1
       T(2,2)=2
@@ -121,7 +122,7 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
   19    CONTINUE
       ENDIF
       DO 20 I=1,6
-        FB(I)=FB(I)-MU/2.D0*CPE(I)+ECROB*(KRON(I)-B(I))
+        FB(I)=FB(I)-MU/DEUX*CPE(I)+ECROB*(KRON(I)-B(I))
   20  CONTINUE
 
        FBS(1)=FB(1)
@@ -170,9 +171,9 @@ C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
         IF (TREPSG.GT.0.D0) THEN
           TREPSG=0.D0
         ENDIF
-        DCOEFD=2.D0*(1.D0-D)
+        DCOEFD=DEUX*(UN-D)
         ENE=LAMBDA/2*TREPSG**2+MU*TREM
-        FD=DCOEFD*ENE-2.D0*D*ECROD
+        FD=DCOEFD*ENE-DEUX*D*ECROD
 
 
 
@@ -183,19 +184,19 @@ C---CALCUL DE DERIVEES UTILES----------------------------------
 C----CALCUL DE LA DERIVEE DU SEUIL---------------------
 
 
-      DCRIT(1)=-K1*(-TREPSG/K2/(1.D0+(-TREPSG/K2)**2.D0)
+      DCRIT(1)=-K1*(-TREPSG/K2/(UN+(-TREPSG/K2)**DEUX)
      &           +ATAN2(-TREPSG/K2,UN))
-      DCRIT(2)=-K1*(-TREPSG/K2/(1.D0+(-TREPSG/K2)**2.D0)
+      DCRIT(2)=-K1*(-TREPSG/K2/(UN+(-TREPSG/K2)**DEUX)
      &           +ATAN2(-TREPSG/K2,UN))
-      DCRIT(3)=-K1*(-TREPSG/K2/(1.D0+(-TREPSG/K2)**2.D0)
+      DCRIT(3)=-K1*(-TREPSG/K2/(UN+(-TREPSG/K2)**DEUX)
      &           +ATAN2(-TREPSG/K2,UN))
       DCRIT(4)=0.D0
       DCRIT(5)=0.D0
       DCRIT(6)=0.D0
 
-      CALL DFBDB(3,B,EPSG,2.D0*MU,LAMBDA,ECROB,TDFBDB)
-      CALL DFBDE(3,B,EPSG,2.D0*MU,LAMBDA,TDFBDE)
-      CALL DFBDE(3,B,EPS,2.D0*MU,LAMBDA,DSIGB)
+      CALL DFBDB(3,B,EPSG,DEUX*MU,LAMBDA,ECROB,TDFBDB)
+      CALL DFBDE(3,B,EPSG,DEUX*MU,LAMBDA,TDFBDE)
+      CALL DFBDE(3,B,EPS,DEUX*MU,LAMBDA,DSIGB)
 
             SDFBDB(1,1)=TDFBDB(1,1)
             SDFBDB(1,2)=TDFBDB(1,2)
@@ -226,7 +227,9 @@ C----CALCUL DE LA DERIVEE DU SEUIL---------------------
 
          NOFBM=FBSM(1)**2+FBSM(2)**2+FBSM(3)**2
 
-      COUPL=SQRT(ALPHA*NOFBM+(1.D0-ALPHA)*FD**2.D0)
+      COUPL=SQRT(ALPHA*NOFBM+(UN-ALPHA)*FD**DEUX)
+
+      CALL R8INIR(36,0.D0,DSIDEP,1)
 
       IF ((FD.NE.0.D0).AND.(NOFBM.NE.0.D0)) THEN
 
@@ -241,7 +244,7 @@ C---CALCUL DE KSI ET PSI
       CALL R8INIR(9,0.D0,KSI,1)
 
       DO 110 I=1,6
-        INTERT(I)=(1.D0-ALPHA)*FD*TDFDDE(I)-COUPL*DCRIT(I)
+        INTERT(I)=(UN-ALPHA)*FD*TDFDDE(I)-COUPL*DCRIT(I)
         DO 111 J=1,3
           DO 112 K=1,3
           INTERT(I)=INTERT(I)+ALPHA*FBSM(K)*DFMF(K,J)*SDFBDE(J,I)
@@ -252,7 +255,7 @@ C---CALCUL DE KSI ET PSI
 
 
       DO 310 I=1,3
-        INTERG(I)=DELTAS(I)/FD-ALPHA*FBSM(I)/(1.D0-ALPHA)/FD/TDFDDD
+        INTERG(I)=DELTAS(I)/FD-ALPHA*FBSM(I)/(UN-ALPHA)/FD/TDFDDD
         DO 311 J=1,3
           DO 312 K=1,3
           KSI(I,J)=KSI(I,J)+ALPHA*DELTAD*DFMF(I,K)*SDFBDB(K,J)
@@ -268,7 +271,7 @@ C---CALCUL DE KSI ET PSI
 
 
       DO 120 I=1,3
-        KSI(I,I)=KSI(I,I)-(1.D0-ALPHA)*FD
+        KSI(I,I)=KSI(I,I)-(UN-ALPHA)*FD
  120  CONTINUE
 
       DO 130 I=1,3
@@ -277,7 +280,7 @@ C---CALCUL DE KSI ET PSI
  131    CONTINUE
         DO 331 J=1,6
         PSI(I,J)=PSI(I,J)-INTERG(I)*INTERT(J)
-     &                  +(1.D0-ALPHA)*DELTAS(I)*TDFDDE(J)
+     &                  +(UN-ALPHA)*DELTAS(I)*TDFDDE(J)
  331    CONTINUE
  130  CONTINUE
 
@@ -295,21 +298,16 @@ C-- ! ksi n est plus disponible
       CALL R8INIR(6,0.D0,MATD,1)
 
       DO 150 I=1,6
-        MATD(I)=-INTERT(I)/(1.D0-ALPHA)/FD/TDFDDD
+        MATD(I)=-INTERT(I)/(UN-ALPHA)/FD/TDFDDD
         DO 151 J=1,3
                DO 152 K=1,3
             MATB(J,I)=MATB(J,I)+IKSI(J,K)*PSI(K,I)
             MATD(I)=MATD(I)-INTERD(J)*IKSI(J,K)*PSI(K,I)
-     &                   /(1.D0-ALPHA)/FD/TDFDDD
+     &                   /(UN-ALPHA)/FD/TDFDDD
 152          CONTINUE
 C            WRITE(6,*) 'MB(',J,',',I,')=',MATB(J,I),';'
 151        CONTINUE
 150    CONTINUE
-
-
-
-      CALL R8INIR(36,0.D0,DSIDEP,1)
-
 
        DO 201 I=1,6
          DO 202 J=1,6
@@ -363,7 +361,6 @@ C         WRITE(6,*) 'DID(',I,',',J,')=', DSIDEP(I,J),';'
 551             CONTINUE
 550      CONTINUE
 
-         CALL R8INIR(36,0.D0,DSIDEP,1)
          DO 561 I=1,6
            DO 562 J=1,6
              DO 563 K=1,3
@@ -374,10 +371,9 @@ C         WRITE(6,*) 'DID(',I,',',J,')=', DSIDEP(I,J),';'
 
        ELSEIF ((FD.NE.0.D0).AND.(NOFBM.EQ.0.D0)) THEN
 
-         CALL R8INIR(36,0.D0,DSIDEP,1)
          DO 661 I=1,6
            DO 662 J=1,6
-             DSIDEP(I,J)= -DSIGD(I)*(-TDFDDE(J)+COUPL/(1.D0-ALPHA)
+             DSIDEP(I,J)= -DSIGD(I)*(-TDFDDE(J)+COUPL/(UN-ALPHA)
      &                      *DCRIT(J)/FD)/TDFDDD
  662             CONTINUE
  661     CONTINUE

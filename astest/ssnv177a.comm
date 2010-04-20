@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE TEST DE WILLAM AVEC LA LOI ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -239,7 +239,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=ROT_EPSI,
 
 TEST_FONCTION(VALEUR=_F(FONCTION=ROT_ENDO,
                         VALE_PARA=1.,
-                        VALE_REFE=2.04527E+01,
+                        VALE_REFE=2.30825E+01,
                         REFERENCE = 'NON_REGRESSION',),);
 
 

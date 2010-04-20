@@ -1,0 +1,417 @@
+# MODIF  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+# TITRE   TEST HM, 2D , MODELISATION THMC=GAZ
+# wtnp126a.para = tps_job 200 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'WTNP126A',NIV_PUB_WEB='INTERNET'))
+
+
+####################################
+#  DEFINITION DES CONSTANTES
+####################################
+
+pini=1.E5
+
+sigma=12.3E6
+sigp=sigma-pini
+
+kni=1.E9
+ouvm=4.E-4
+ouvini = 1.27E-5
+
+VISCOG=DEFI_CONSTANTE(VALE=9.E-6,);
+
+DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
+
+PERMG1=DEFI_CONSTANTE(VALE=2.75E-20,);
+
+PERMG2=DEFI_CONSTANTE(VALE=2.75E-21,);
+
+PERMV=DEFI_CONSTANTE(VALE=1.E-8,);
+
+####################################
+#  LISTE DES INSTANTS DE CALCUL
+####################################
+
+
+LISTINST=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
+# 15 ans :
+                        _F(  JUSQU_A = 473040000.,  NOMBRE = 2),
+# 50 ans :
+                      _F(  JUSQU_A = 15768.E5,  NOMBRE = 3),
+# 100 ans :
+                       _F(  JUSQU_A =31536.E5,  NOMBRE = 2),
+# 200 ans :
+                       _F(  JUSQU_A =63072.E5,  NOMBRE = 2),
+# 500 ans :
+                       _F(  JUSQU_A =15768.E6,  NOMBRE = 5),
+# 1000 ans :
+                       _F(  JUSQU_A =31536.E6,  NOMBRE = 10),
+                     ),);
+
+####################################
+#   OPERATIONS SUR LE MAILLAGE
+#
+####################################
+
+MA0=LIRE_MAILLAGE(FORMAT='ASTER',
+                   VERI_MAIL=_F(APLAT=1.E-8,
+                                 VERIF='OUI'),);
+
+MA=CREA_MAILLAGE(MAILLAGE = MA0, LINE_QUAD = _F(TOUT='OUI'));
+
+
+MA = DEFI_GROUP(reuse = MA,
+       MAILLAGE = MA,
+       CREA_GROUP_MA = (
+          _F(NOM = 'MASSIF_H', GROUP_MA = 'G_2D_26'),
+          _F(NOM = 'MASSIF_B', GROUP_MA = 'G_2D_33'),
+          _F(NOM = 'MASSIF', UNION = ('MASSIF_H','MASSIF_B')),
+          _F(NOM = 'FISSURE', GROUP_MA = 'G_2D_27'),
+          _F(NOM = 'ENTREE', GROUP_MA = 'G_2D_28'),
+          _F(NOM = 'JOINT' , UNION = ('FISSURE','ENTREE',)),
+          _F(NOM = 'JEU',UNION = ('G_2D_29',)),
+          _F(NOM = 'VIDE',UNION = ('G_2D_28','JEU',)),
+          _F(NOM = 'DROITE_2' , GROUP_MA = 'G_1D_37'),
+          _F(NOM = 'DROITE_V' , GROUP_MA = 'G_1D_36'),
+          _F(NOM = 'DROITE',    UNION = ('DROITE_V','DROITE_2'),),
+          _F(NOM = 'GAUCHE_2' , GROUP_MA = 'G_1D_35'),
+          _F(NOM = 'GAUCHE_V',  GROUP_MA = 'G_1D_32'), 
+          _F(NOM = 'GAUCHE',    UNION = ('GAUCHE_V','GAUCHE_2')),
+          _F(NOM = 'HAUT', GROUP_MA='G_1D_30'),
+          _F(NOM = 'BAS' , GROUP_MA='G_1D_31'),
+       ),);
+
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_2D=_F(GROUP_MA=('HAUT','BAS','DROITE','GAUCHE'),),
+                 );
+
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_FISSURE=_F(GROUP_MA='JOINT'),
+                 );
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               GRANDEUR_CARA=_F(LONGUEUR=20.,
+                                PRESSION=1.E6,),
+                    AFFE=(_F(GROUP_MA=('MASSIF','JEU','BAS','HAUT','DROITE_V','GAUCHE_V',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='D_PLAN_HMS',),
+                         _F(GROUP_MA=('JOINT','GAUCHE_2','DROITE_2'),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='2D_JOINT_HMS',),));
+
+####################################
+#   ORIENTATION FISSURE
+#
+####################################
+
+ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
+                        MASSIF=_F(GROUP_MA='JOINT',
+                                  ANGL_EULER=(90,0,0,),),);
+
+####################################
+#   DEFINITION DES MATERIAUX
+#
+####################################
+
+MAT_M1=DEFI_MATERIAU(ELAS=_F(E=3.E9,
+                          NU=0.12,
+                          ALPHA=0.0,),
+                       COMP_THM='GAZ',
+                       THM_INIT=_F(PRE1=0.,
+                                   PORO=0.18,
+                                   TEMP=303.),
+                       THM_DIFFU=_F(R_GAZ=8.31,
+                                    RHO=1600.0,
+                                    BIOT_COEF=0.6,
+                                    PESA_X=0.0,
+                                    PESA_Y=00.0,
+                                    PESA_Z=00.0,
+                                    PERM_IN=PERMG1,),
+                       THM_GAZ=_F(MASS_MOL=0.002,
+                                  VISC=VISCOG,
+                                   D_VISC_TEMP=DVISCOG,),
+                       JOINT_BANDIS=_F(K=kni, 
+                                     DMAX=ouvm,
+                                     GAMMA=2.,),
+                         );
+
+MAT_M2=DEFI_MATERIAU(ELAS=_F(E=3.E9,
+                          NU=0.12,
+                          ALPHA=0.0,),
+                       COMP_THM='GAZ',
+                       THM_INIT=_F(PRE1=0.,
+                                   PORO=0.18,
+                                   TEMP=303.),
+                       THM_DIFFU=_F(R_GAZ=8.31,
+                                    RHO=1600.0,
+                                    BIOT_COEF=0.6,
+                                    PESA_X=0.0,
+                                    PESA_Y=00.0,
+                                    PESA_Z=00.0,
+                                    PERM_IN=PERMG2,),
+                       THM_GAZ=_F(MASS_MOL=0.002,
+                                  VISC=VISCOG,
+                                   D_VISC_TEMP=DVISCOG,),
+                       JOINT_BANDIS=_F(K=kni, 
+                                     DMAX=ouvm,
+                                     GAMMA=2.,),
+                         );
+
+MAT_V=DEFI_MATERIAU(ELAS=_F(E=3.E6,
+                          NU=0.12,
+                          ALPHA=0.0,),
+                       COMP_THM='GAZ',
+                       THM_INIT=_F(PRE1=0.0,
+                                   PORO=1.,
+                                   TEMP=303.),
+                       THM_DIFFU=_F(R_GAZ=8.31,
+                                    RHO=1600.0,
+                                    BIOT_COEF=1.,
+                                    PESA_X=0.0,
+                                    PESA_Y=0.0,
+                                    PESA_Z=0.0,
+                                    PERM_IN=PERMV,),
+                       THM_GAZ=_F(MASS_MOL=0.002,
+                                  VISC=VISCOG,
+                                  D_VISC_TEMP=DVISCOG,),
+                       JOINT_BANDIS=_F(K=kni, 
+                                     DMAX=ouvm,
+                                     GAMMA=2.,),
+                         );
+
+CM=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=(_F(TOUT='OUI',
+                         MATER=MAT_M1,),
+                       _F(GROUP_MA='MASSIF_B',
+                         MATER=MAT_M2,), 
+                       _F(GROUP_MA=('VIDE',),
+                         MATER=MAT_V,),),);
+
+####################################
+#   DEFINITION DES CHARGEMENTS
+#
+####################################
+
+# MECANIQUE
+
+LIAISON=AFFE_CHAR_MECA(
+  MODELE=MO,
+  DDL_IMPO= (
+    _F(GROUP_MA=('BAS',),DY=0),
+    _F(GROUP_MA=('DROITE'),DX=0),
+    ),
+  );
+
+CONT=AFFE_CHAR_MECA(
+  MODELE=MO,
+  PRES_REP=_F(GROUP_MA=('HAUT'),PRES=sigma,),
+  ); 
+
+# HYDRAULIQUE  
+
+FLUH_1=AFFE_CHAR_MECA(MODELE=MO,
+                      FLUX_THM_REP=_F(GROUP_MA=('HAUT','BAS'),
+                                         FLUN_HYDR1=0.,),);
+
+FLUH_2=AFFE_CHAR_MECA(MODELE=MO,
+                      FLUX_THM_REP=_F(GROUP_MA=('GAUCHE_V',),
+                                         FLUN_HYDR1=1.E-10,),);
+
+PWELL=AFFE_CHAR_MECA(MODELE=MO,
+                          DDL_IMPO=(_F(GROUP_MA=('DROITE',),
+                                       PRE1=pini,),
+                                   ),);
+
+####################################
+#   INITIALISATION DES CHAMPS
+#
+####################################
+
+CHAMNO=CREA_CHAMP(MAILLAGE=MA,
+                    OPERATION='AFFE', 
+                    TYPE_CHAM='NOEU_DEPL_R',
+                    AFFE=(
+                           _F(TOUT='OUI',
+                             NOM_CMP='PRE1',
+                             VALE=pini,),
+                             ),);
+
+SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
+                   OPERATION='AFFE',
+                   MAILLAGE=MA,
+                   AFFE=(_F(GROUP_MA=('MASSIF','JEU'),
+                           NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ','SIP','M11','FH11X','FH11Y',),
+                           VALE=(0.0,-sigp,0.0,0.0,0.0,0.0,-pini,0.,0.,0.,),),
+                         _F(GROUP_MA='JOINT',
+                           NOM_CMP=('SIGN','SITX','SIP','M11','FH11X','LH1P','LH1M','DPRE1P','DPRE1M'),
+                           VALE=(-sigp,0.0,-pini,ouvini*0.002,0.,0.,0.,0.,0.),),),);
+
+CH_X=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='CART_NEUT_R',
+                   MODELE=MO,
+                   AFFE=(
+           _F( GROUP_MA = ('MASSIF','JEU'),   NOM_CMP = ('X1','X2',  'X3'),
+                                     VALE = ( 0 , 0, 0)),
+           _F( GROUP_MA = 'JOINT',   NOM_CMP = ('X1',     'X2',  'X3',),
+                                     VALE = ( ouvini**2/12, 0., ouvini)),
+                    ))
+
+
+
+CH_VARI=CREA_CHAMP( OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
+                   INFO=1,
+                   MODELE=MO,
+                   ASSE=(
+           _F( CHAM_GD = CH_X, 
+               GROUP_MA = ('MASSIF','JEU'), NOM_CMP = ('X1',  'X2',  'X3'),NOM_CMP_RESU  = ('V1',  'V2',  'V3')),
+           _F( CHAM_GD = CH_X, 
+               GROUP_MA = 'JOINT',    
+               NOM_CMP      = ('X1',  'X2',  'X3',),
+               NOM_CMP_RESU = ('V1',  'V2',  'V3',),),
+                   ))
+
+
+
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LISTINST ),
+                        ECHEC=_F(
+                  SUBD_METHODE='UNIFORME',
+                  SUBD_PAS  = 5,
+                  SUBD_PAS_MINI = 1.E-10,
+                  SUBD_NIVEAU=12,
+
+                                 ),);
+
+####################################
+#   STAT_NON_LINE
+#
+####################################
+
+U_1=STAT_NON_LINE( 
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  CARA_ELEM  = ORIEN_FI,
+  EXCIT      = (
+                 _F(CHARGE = LIAISON),
+                 _F(CHARGE = CONT),
+                 _F(CHARGE = FLUH_1),
+                 _F(CHARGE = FLUH_2),
+                 _F(CHARGE = PWELL),
+               ),
+  ETAT_INIT=_F(DEPL=CHAMNO,SIGM=SIGINIT,VARI=CH_VARI),
+  COMP_INCR=(_F(RELATION='KIT_HM',
+               RELATION_KIT=('ELAS','GAZ','HYDR_UTIL',),
+               GROUP_MA=('MASSIF','JEU'),),
+            _F(RELATION='KIT_HM',
+               RELATION_KIT=('JOINT_BANDIS','GAZ','HYDR_UTIL',),
+               GROUP_MA='JOINT',),
+                ),
+  INCREMENT=_F(LIST_INST=DEFLIST,
+               INST_FIN=31536.E6,),
+  NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+  CONVERGENCE=_F(
+                 ITER_GLOB_MAXI=10,),  
+  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=100,NPREC=-1),
+  );
+
+####################################
+#   TESTS DE VALIDATION
+#
+####################################  
+
+# TEST PRE1 N1037, N1331 ET NS5193 A 200 ANS ET 1000 ANS 
+
+TEST_RESU(RESU=_F(RESULTAT=U_1,
+                  NUME_ORDRE=9,  
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE1',
+                  NOEUD='N1037',
+                  VALE=1.1159E5,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=U_1,
+                  NUME_ORDRE=9,  
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE1',
+                  NOEUD='N1331',
+                  VALE=1.0135E5,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=U_1,
+                  NUME_ORDRE=9,  
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE1',
+                  NOEUD='NS5193',
+                  VALE=1.1470E5,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=U_1,
+                  NUME_ORDRE=24,  
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE1',
+                  NOEUD='N1037',
+                  VALE=1.1447E5,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=U_1,
+                  NUME_ORDRE=24,  
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE1',
+                  NOEUD='N1331',
+                  VALE=1.0929E5,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=U_1,
+                  NUME_ORDRE=24,  
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE1',
+                  NOEUD='NS5193',
+                  VALE=1.1478E5,
+                  REFERENCE='NON_REGRESSION',),);
+
+####################################
+# DONNEES POUR COURBES DOC V 
+####################################
+
+# PROFILS DE PRESSION
+
+AXE_COUP=INTE_MAIL_2D(MAILLAGE=MA,
+                    DEFI_SEGMENT=_F(  ORIGINE = ( 4.,  7.5, ),
+                                       EXTREMITE = ( 4.,  -7.5, ),
+                                       ),
+                    PRECISION=0.000001,
+                                       );
+
+V_X_01=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='PRE1 selon x',
+                               RESULTAT=U_1,
+                               NOM_CHAM='DEPL',
+                               NUME_ORDRE=(2,5,7,9,14,24),
+                               CHEMIN=AXE_COUP,
+                               NOM_CMP=('PRE1',),),);
+
+IMPR_TABLE(TABLE=V_X_01,
+           FORMAT='TABLEAU_CROISE',
+           NOM_PARA=('INST','COOR_Y','PRE1'),
+          );
+
+FIN();

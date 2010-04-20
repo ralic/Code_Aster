@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 19/04/2010   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,9 +137,15 @@ Conseil :
 """),
 
 
+36 : _("""
+PROJ_CHAMP (ou LIAISON_MAILLE) :
+  Le mot-clé TYPE_CHAM est incompatible avec le mot-clé CHAM_GD.
+  Il n'est utilisable qu'avec le mot-clé RESULTAT."""),
 
-
-
+37 : _("""
+PROJ_CHAMP (ou LIAISON_MAILLE) :
+  Vous cherchez à projeter un champ par élément (ELNO ou ELEM).
+  Pour cela, il vous faut renseigner le mot-clé MODELE_2."""),
 
 38 : _("""
   il faut definir un champ de vitesse

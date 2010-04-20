@@ -1,7 +1,7 @@
       SUBROUTINE PJTYCO(ISOLE,RESUIN,CHAM1,
-     &                  LNOEU,LELGA)
+     &                  LNOEU,LELNO,LELEM,LELGA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/03/2010   AUTEUR BERARD A.BERARD 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,19 +32,17 @@ C
 C 0.1. ==> ARGUMENTS
 C
 
-      LOGICAL ISOLE
-      LOGICAL LNOEU,LELGA
       CHARACTER*8 RESUIN
       CHARACTER*19 CHAM1
+      LOGICAL ISOLE
+      LOGICAL LNOEU,LELNO,LELEM,LELGA
 
 C
-C  LELGA  : .TRUE.  : IL Y A AU MOINS UN CHAM_ELGA A PROJETER
-C           .FALSE. : IL N'Y A AUCUN CHAM_ELGA A PROJETER
-C
-C  LNOEU  : .TRUE.  : IL Y A AU MOINS UN AUTRE CHAMP QU'UN CHAM_ELGA
-C                     A PROJETER
-C           .FALSE. : IL N'Y A AUCUN AUTRE CHAMP QU'UN CHAM_ELGA
-C                     A PROJETER
+C  LNOEU  : .TRUE.  : IL Y A UN CHAM_NO A PROJETER
+C  LELNO  : .TRUE.  : IL Y A UN CHAM_ELEM DE TYPE ELNO A PROJETER
+C  LELEM  : .TRUE.  : IL Y A UN CHAM_ELEM DE TYPE ELEM A PROJETER
+C  LELGA  : .TRUE.  : IL Y A UN CHAM_ELEM DE TYPE ELGA A PROJETER
+
 
 
 C
@@ -85,87 +83,138 @@ C
 
 
 
-
-
-
-
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
+
+      LNOEU=.FALSE.
+      LELNO=.FALSE.
+      LELEM=.FALSE.
+      LELGA=.FALSE.  
+
 
 
 C       1- CAS CHAMP ISOLE :
 C       =====================
-        IF (ISOLE) THEN
-
+      IF (ISOLE) THEN
         CALL DISMOI('F','TYPE_CHAMP',CHAM1,'CHAMP',IBID,TYCH,IBID)
-        IF (TYCH.EQ.'ELGA') THEN
-          LNOEU=.FALSE.
-          LELGA=.TRUE.
-        ELSEIF ((TYCH.EQ.'NOEU') 
-     &    .OR.  (TYCH.EQ.'ELNO')
-     &    .OR.  (TYCH.EQ.'ELEM')) THEN
+        IF (TYCH.EQ.'NOEU') THEN
           LNOEU=.TRUE.
-          LELGA=.FALSE.
+        ELSEIF (TYCH.EQ.'ELNO') THEN
+          LELNO=.TRUE.
+        ELSEIF (TYCH.EQ.'ELEM') THEN
+          LELEM=.TRUE.
+        ELSEIF (TYCH.EQ.'ELGA') THEN
+          LELGA=.TRUE.
         ENDIF
-
 
 
 C       2- CAS SD_RESULTAT :
 C       =====================
-        ELSE
+      ELSE
+
+
+      CALL GETVR8(' ','PRECISION',0,1,1,PREC,IE)
+      CALL GETVTX(' ','CRITERE'  ,0,1,1,CRIT,IE)
+      CALL RSUTNU(RESUIN,' ',0,'&&PJXXCO.NUME_ORDRE',NBORDR,PREC,
+     &            CRIT,IRET)
+
+      IF (IRET.NE.0) THEN
+        CALL U2MESK('F','CALCULEL4_61',1,RESUIN)
+      ENDIF
+      IF (NBORDR.EQ.0) THEN
+        CALL U2MESK('F','CALCULEL4_62',1,RESUIN)
+      ENDIF
+
+      CALL JEVEUO('&&PJXXCO.NUME_ORDRE','L',JORDR)
 
 
 
-        CALL GETVR8(' ','PRECISION',0,1,1,PREC,IE)
-        CALL GETVTX(' ','CRITERE'  ,0,1,1,CRIT,IE)
-        CALL RSUTNU(RESUIN,' ',0,'&&PJXXCO.NUME_ORDRE',NBORDR,PREC,
-     &              CRIT,IRET)
-
-        IF (IRET.NE.0) THEN
-          CALL U2MESK('F','CALCULEL4_61',1,RESUIN)
-        ENDIF
-        IF (NBORDR.EQ.0) THEN
-          CALL U2MESK('F','CALCULEL4_62',1,RESUIN)
-        ENDIF
-
-        CALL JEVEUO('&&PJXXCO.NUME_ORDRE','L',JORDR)
+      CALL RSUTC4(RESUIN,' ',1,200,NOMSYM,NBSYM,ACCENO)
 
 
+C DETERMINATION DE LNOEU
+C DES QU'ON TROUVE UN CHAM_NO, ON SORT DE LA BOUCLE
 
-        CALL RSUTC4(RESUIN,' ',1,200,NOMSYM,NBSYM,ACCENO)
+      DO 11,ISYM = 1,NBSYM
+        DO 12,I = 1,NBORDR
+          IORDR = ZI(JORDR+I-1)
+          CALL RSEXCH(RESUIN,NOMSYM(ISYM),IORDR,CHAM1,IRET)
 
-        DO 33,ISYM = 1,NBSYM
-          DO 22,I = 1,NBORDR
-            IORDR = ZI(JORDR+I-1)
-            CALL RSEXCH(RESUIN,NOMSYM(ISYM),IORDR,CHAM1,IRET)
-
-            IF (IRET.EQ.0) THEN
-              CALL DISMOI('F','TYPE_CHAMP',CHAM1,'CHAMP',IBID,TYCH,IBID)
-
-              IF (TYCH.EQ.'ELGA') THEN
-                LELGA=.TRUE.
-                GOTO 33
-              ELSE
-                LELGA=.FALSE.
-              ENDIF
-
-              IF ((TYCH.EQ.'NOEU') 
-     &      .OR.  (TYCH.EQ.'ELNO')
-     &      .OR.  (TYCH.EQ.'ELEM')) THEN
-                LNOEU=.TRUE.
-                GOTO 33
-              ELSE
-                LNOEU=.FALSE.
-              ENDIF
-
+          IF (IRET.EQ.0) THEN
+            CALL DISMOI('F','TYPE_CHAMP',CHAM1,'CHAMP',IBID,TYCH,IBID)
+            IF (TYCH.EQ.'NOEU') THEN
+              LNOEU=.TRUE.
+              GOTO 11
             ENDIF
+          ENDIF
 
-   22     CONTINUE
-   33   CONTINUE
+   12   CONTINUE
+   11 CONTINUE
+
+C DETERMINATION DE LELNO
+C DES QU'ON TROUVE UN CHAM_ELEM DE TYPE ELNO, ON SORT DE LA BOUCLE
+
+      DO 21,ISYM = 1,NBSYM
+        DO 22,I = 1,NBORDR
+          IORDR = ZI(JORDR+I-1)
+          CALL RSEXCH(RESUIN,NOMSYM(ISYM),IORDR,CHAM1,IRET)
+
+          IF (IRET.EQ.0) THEN
+            CALL DISMOI('F','TYPE_CHAMP',CHAM1,'CHAMP',IBID,TYCH,IBID)
+            IF (TYCH.EQ.'ELNO') THEN
+              LELNO=.TRUE.
+              GOTO 21
+            ENDIF
+          ENDIF
+
+   22   CONTINUE
+   21 CONTINUE
+
+C DETERMINATION DE LELEM
+C DES QU'ON TROUVE UN CHAM_ELEM DE TYPE ELEM, ON SORT DE LA BOUCLE
+
+      DO 31,ISYM = 1,NBSYM
+        DO 32,I = 1,NBORDR
+          IORDR = ZI(JORDR+I-1)
+          CALL RSEXCH(RESUIN,NOMSYM(ISYM),IORDR,CHAM1,IRET)
+
+          IF (IRET.EQ.0) THEN
+            CALL DISMOI('F','TYPE_CHAMP',CHAM1,'CHAMP',IBID,TYCH,IBID)
+            IF (TYCH.EQ.'ELEM') THEN
+              LELEM=.TRUE.
+              GOTO 31
+            ENDIF
+          ENDIF
+
+   32   CONTINUE
+   31 CONTINUE
+
+C DETERMINATION DE LELGA
+C DES QU'ON TROUVE UN CHAM_ELEM DE TYPE ELGA, ON SORT DE LA BOUCLE
+
+      DO 41,ISYM = 1,NBSYM
+        DO 42,I = 1,NBORDR
+          IORDR = ZI(JORDR+I-1)
+          CALL RSEXCH(RESUIN,NOMSYM(ISYM),IORDR,CHAM1,IRET)
+
+          IF (IRET.EQ.0) THEN
+            CALL DISMOI('F','TYPE_CHAMP',CHAM1,'CHAMP',IBID,TYCH,IBID)
+            IF (TYCH.EQ.'ELGA') THEN
+              LELGA=.TRUE.
+              GOTO 41
+            ENDIF
+          ENDIF
+
+   42   CONTINUE
+   41 CONTINUE
 
 
 
-        ENDIF
+
+      ENDIF
+
+
+
 
       CALL JEDEMA()
       END

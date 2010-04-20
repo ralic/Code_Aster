@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : CALCUL DE REFERENCE
+# sdnl105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -222,7 +223,10 @@ TRAN_GE3=DYNA_TRAN_MODAL(METHODE='ADAPT',
                          RIGI_GENE=K_PROJ,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=1.,
-                                      PAS=2.E-4,),
+# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
+# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
+                                      PAS_MAXI=2.E-4,
+                                      PAS=2.E-4),
                          ARCHIVAGE=_F(PAS_ARCH=5,),
                          EXCIT=_F(VECT_GENE=F_PROJ,
                                   COEF_MULT=1000.,),

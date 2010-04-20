@@ -1,4 +1,4 @@
-#@ MODIF sd_contact SD  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sd_contact SD  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ class sd_contact(AsBase):
     zdirn = 6
     zcmdf = 6
     zcmcf = 27
-    zcmxf = 15
+    zcmxf = 16
     zexcl = 6
     ztypn = 1
     ztypm = 2 

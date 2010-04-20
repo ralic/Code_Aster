@@ -1,4 +1,4 @@
-#@ MODIF dynamique Messages  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#@ MODIF dynamique Messages  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,5 +106,37 @@ cata_msg={
    La matrice est presque singulière à la fréquence : %(r1)f
    Cette fréquence est probablement une fréquence propre du système.
 """),
+
+15 : _("""
+ Pas de temps maximal (mot-clé PAS_MAXI) demandé : %(r1)f plus petit que
+ le pas de temps initial demandé par l'utilisateur (mot-clé PAS) : %(r2)f
+ Il faut s'assurer que PAS est bien inférieur ou égal à PAS_MAXI 
+"""), 
+
+16 : _("""
+ Pas de temps maximal calculé pour le schéma ADAPT : %(r1)f
+ 
+ Risque & Conseil : la méthode de calcul automatique de ce pas maximal semble être prise en défaut.
+ On recommande donc de définir explicitement cette valeur avec le mot-clé PAS_MAXI (sous INCREMENT).
+"""), 
+
+17 : _("""
+ Pas de temps maximal (mot-clé PAS_MAXI) demandé trop grand :   %(r1)f
+ Pas de temps necessaire pour le calcul: %(r2)f
+ Risques de problemes de precision 
+"""), 
+
+18 : _("""
+ Le nombre maximal de sous-division du pas : %(i1)d est atteint à l'instant : %(r1)f 
+ Le pas de temps vaut alors : %(r2)f
+ On continue cependant la résolution en passant au pas suivant.
+ 
+ Risque & Conseil : la solution calculée risque d'être imprécise.
+ Il faudrait relancer la calcul en autorisant le schéma ADAPT à utiliser un pas de temps plus petit.
+ Pour cela on peut jouer sur au moins un des trois paramètres suivants :
+ - diminuer le pas de temps initial (mot-clé PAS),
+ - augmenter le nombre maximal de sous-découpage du pas (mot-clé NMAX_ITER_PAS),
+ - augmenter le facteur de division du pas (mot-clé COEF_DIVI_PAS)
+"""), 
 
 }

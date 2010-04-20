@@ -1,4 +1,4 @@
-      SUBROUTINE MDADAP (DTI,NEQGEN,PULSAT,PULSA2,
+      SUBROUTINE MDADAP (DTI,DTMAX,NEQGEN,PULSAT,PULSA2,
      &                   MASGEN,DESCM,RIGGEN,DESCR,LAMOR,AMOGEN,
      &                   DESCA,TYPBAS,BASEMO,TINIT,TFIN,DTARCH,NBSAUV,
      &                   ITEMAX,PREC,XLAMBD,LFLU,
@@ -22,7 +22,8 @@ C
      &             PASSTO(*),TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),
      &             DREDST(*),PREC,EPSI,DPLMOD(NBCHOC,NEQGEN,*),
      &             DPLREV(*),DPLRED(*)
-      REAL*8        DT,DTSTO,TCF,VROTAT
+      REAL*8       DTI,DTMAX
+      REAL*8       DT,DTSTO,TCF,VROTAT
       CHARACTER*8  BASEMO,NOECHO(NBCHOC,*),FONRED(*),FONREV(*),VVAR
       CHARACTER*8  NOMRES,MONMOT
       CHARACTER*16 TYPBAS
@@ -37,7 +38,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +122,7 @@ C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       REAL*8        TPS1(4)
-      REAL*8        VALR(3), CONV,RINT1,RINT2
+      REAL*8        VALR(3), CONV,RINT1,RINT2, VALR2(2)
       INTEGER       VALI(2)
       CHARACTER*8   TRAN
       CHARACTER*19  MAMASS,SOLVEU,MATPRE
@@ -180,7 +181,7 @@ C
 C     --- RECUPERATION DES PARAMETRES D'ADAPTATION DU PAS
 C
       CALL WKVECT('&&MDADAP.VMIN','V V R8',NEQGEN,JVMIN)
-      CALL RECPAR(NEQGEN,ZR(JVMIN),VVAR,CMP,CDP,CPMIN,NPER,NRMAX)
+      CALL RECPAR(NEQGEN,DTMAX,ZR(JVMIN),VVAR,CMP,CDP,CPMIN,NPER,NRMAX)
       DTMIN = DTI * CPMIN
 C
 C     --- FACTORISATION DE LA MATRICE MASSE ---
@@ -539,6 +540,11 @@ C 29         CONTINUE
 C           LES DEUX LIGNES SUIVANTES SIMULENT LE WHILE - CONTINUE
             GOTO 29
             ENDIF
+            IF (ERR .GT. 1.D0 .AND. NR .EQ. NRMAX) THEN
+              VALR2(1) = TEMPS
+              VALR2(2) = DT
+              CALL U2MESG('A','DYNAMIQUE_18',0,' ',1,NR,2,VALR2)
+            ENDIF
 C
             DT1 = DT2
             TEMP2 = TEMPS + DT2
@@ -549,13 +555,14 @@ C
             IF((ERR .LT. 0.75D0) .AND. (CONV .GT. 0.D0)) THEN
               IF(NPAS .EQ. 5) THEN
                 DT2 = CMP*DT2
-                DT2 = MIN(DT2,DTI)
+                DT2 = MIN(DT2,DTMAX)
                 NPAS = 4
               ENDIF
               NPAS = NPAS + 1
             ELSE
                 NPAS = 0
             ENDIF
+            IF(TEMPS+DT2 .GT. TFIN) DT2 = TFIN-TEMPS
 C
             IPAS  = IPAS + 1
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
+# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 # TITRE SYSTEME MASSE-RESSORT AVEC CHOCS SOUS EXCITATION FORCEE
 # sdnd121a.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,6 +143,9 @@ DTMADAPT=DYNA_TRAN_MODAL(
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=duree,
                                       PAS=pdt,
+# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
+# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
+                                      PAS_MAXI=pdt,
                                       COEF_MULT_PAS=1.0,
                                       COEF_DIVI_PAS=1.0,
                                       ),
@@ -171,6 +174,9 @@ DTMADAP2=DYNA_TRAN_MODAL(
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=3.0,
                                       PAS=3.E-5,
+# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
+# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
+                                      PAS_MAXI=3.E-5,
                                       COEF_MULT_PAS=1.2,
                                       COEF_DIVI_PAS=1.4,
                                       ),

@@ -1,5 +1,6 @@
       SUBROUTINE OP0019(IER)
-C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+      
+C MODIF MODELISA  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,9 +54,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 
       PARAMETER (NBEPO=13,NBEDI=8,NBECO=26,NBECA=2)
-      PARAMETER (NBEBA=2,NBEMA=48,NBEGB=6)
+      PARAMETER (NBEBA=2,NBEMA=52,NBEGB=6)
       PARAMETER (NBTEL=NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+NBEGB)
-      PARAMETER (NBMCF=13,NBEL1=51,NBEL2=54)
+      PARAMETER (NBMCF=13,NBEL1=51,NBEL2=58)
 
       INTEGER NBMCLE(NBMCF),NBOCC(NBMCF),IVR(3)
       INTEGER NTYELE(NBTEL)
@@ -115,7 +116,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &     'THAXTR6         ','THAXQU8         ','THAXQU9         ',
      &     'THPLTR3         ','THPLQU4         ','THPLTR6         ',
      &     'THPLQU8         ','THPLQU9         ','MET3SEG3        ',
-     &     'MET6SEG3        ','MET3SEG4        ',
+     &     'MET6SEG3        ','MET3SEG4        ','HM_DPQ8         ',
+     &     'HM_DPQ8S        ','HH2M_DPQ8S      ','HHM_DPQ8S       ',
      &     'MEGCQU4         ','MEGMTR3         ','MEGMQU4         ',
      &     'MEGMTR6         ','MEGMQU8         ','MEGCTR3         '/
       DATA NBMCLE/2,2,4,4,2,2,2,2,2,1,2,0,4/

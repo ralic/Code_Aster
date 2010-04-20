@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 # TITRE CHOC D'UNE POUTRE SUR UN APPUI : CALCUL DE REFERENCE
+# sdnl104a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -170,7 +171,8 @@ TRAN_GE3=DYNA_TRAN_MODAL(   METHODE='ADAPT',
                                        COEF_MULT = 1.),
                              INCREMENT=_F(  INST_INIT = 0.,
                                          INST_FIN = 1.,
-                                         PAS = 1.E-4),
+                                         PAS_MAXI = 1.E-4,
+                                         PAS = 1.E-5),
                             ARCHIVAGE=_F( PAS_ARCH = 10),
                                  CHOC=_F( NOEUD_1 = 'N11',
                                        OBSTACLE = OBSTACLE,
@@ -257,14 +259,14 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN3,
                   NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'N11',            NOM_CMP = 'DY',
-                  VALE = 8.32656E-04))
+                  VALE = 8.32856E-04))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
                   NOM_CHAM = 'ACCE',      NUME_ORDRE = 11,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'N11',            NOM_CMP = 'DY',
-                  VALE = 3.45755E-01))
+                  VALE = 3.457814E-01))
 
 #
 FIN()

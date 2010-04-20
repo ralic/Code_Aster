@@ -3,7 +3,7 @@
      &                  LCOMPL,JEU   ,JEUVIT,LAMBDC)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF DEBUG  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -150,10 +150,10 @@ C
         WRITE(IFM,6000) JEU,LAMBDC
       ENDIF
  6000 FORMAT (' <CONTACT>         <> JEU:',E10.3,
-     &        ' - LAGR_C :',E10.3) 
+     &        ' - LAGS_C :',E10.3) 
  6001 FORMAT (' <CONTACT>         <> JEU:',E10.3,
      &        ' - SAUT VITESSE:',E10.3,
-     &        ' - LAGR_C :',E10.3)       
+     &        ' - LAGS_C :',E10.3)       
 C
 C --- ETAT DE CONTACT FINAL
 C

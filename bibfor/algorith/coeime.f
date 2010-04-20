@@ -1,0 +1,145 @@
+      SUBROUTINE COEIME(MECA,IMATE,NOMAIL,RESI,RIGI,NDIM,DIMDEF,DIMCON,
+     &                  YAP1,YAP2,YATE,ADDEME,ADDEP1,ADDEP2,
+     &                  NBVARI,ADVIME,ADVICO,NPG,DEFGEP,
+     &                  DEFGEM,SIGM,SIGP,VARIM,VARIP,OUVH,
+     &                  TLINT,DRDE,KPI,RETCOM)
+
+C ======================================================================
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C ======================================================================
+C TOLE CRP_21
+C ======================================================================
+
+      IMPLICIT NONE
+
+C VARIABLES D'ENTREE
+      INTEGER IMATE,NDIM,DIMCON,ADDEME,ADDEP1,ADDEP2,NPG,KPI
+      INTEGER RETCOM,DIMDEF,YAP1,YAP2,YATE,ADVIME,NBVARI,ADVICO
+      REAL*8 DEFGEM(DIMDEF),DEFGEP(DIMDEF),SIGM(DIMCON),VARIM(NBVARI)
+      CHARACTER*8 NOMAIL
+      CHARACTER*16 MECA
+      LOGICAL RESI,RIGI
+
+C VARIABLES DE SORTIE
+      REAL*8 SIGP(DIMCON),VARIP(NBVARI),DRDE(DIMDEF,DIMDEF)
+
+C VARIABLES LOCALES
+      INTEGER I,IBID
+      REAL*8 PARA(4),CLO,KNI,UMC,GAMMA,KT,TMECN,TMECS
+      REAL*8 TLINT,OUVH,VALR(2)
+      CHARACTER*8 NCRA1(4)
+      CHARACTER*2 CODRET(18)
+
+C =====================================================================
+C.......................................................................
+C
+C     BUT:  INTEGRATION DE LA LOI DE COMPORTEMENT MECANIQUE ET RENVOI
+C           DE LA LOI CUBIQUE
+C
+C.......................................................................
+C =====================================================================
+C IN MECA   : COMPORTEMENT MECA
+C IN IMATE  : CODE MATERIAU
+C IN RESI   : FULL_MECA OU RAPH_MECA
+C IN RIGI   : FULL_MECA OU RIGI_MECA
+C IN NDIM   : DIMENSION ESPACE
+C IN DIMDEF : DIMENSION DEFORMATION GENERALISEE
+C IN DIMCON : DIMENSION VECTEUR CONTRAINTES GENERALISEES
+C IN YAP1   : SI =1 PRESENCE CONSTITUTANT 1
+C IN YAP2   : SI =1 PRESENCE CONSTITUTANT 2
+C IN YATE   : SI =1 THERMIQUE
+C IN ADDEME : ADRESSE DES DEFORMATIONS MECANIQUES
+C IN ADDEP1 : ADRESSE DES DEFORMATIONS PRESSION 1
+C IN ADDEP2 : ADRESSE DES DEFORMATIONS PRESSION 2
+C IN NBVARI : NOMBRE DE VARIABLES INTERNES
+C IN ADVIME : ADRESSE DES VI MECANIQUES
+C IN ADVICO : ADRESSE DES VI DE COUPLAGE
+C IN NPG    : NOMBRE DE POINTS DE GAUSS
+C IN DEFGEP : DEFORMATIONS AU TEMPS PLUS
+C IN DERGEM : DEFORMATIONS AU TEMPS MOINS
+C IN SIGM   : CONTRAINTES AU TEMPS MOINS
+C IN VARIM  : VARIABLES INTERNES AU TEMPS MOINS
+C IN KPI    : POINT D'INTEGRATION
+C =====================================================================
+C OUT SIGP  : CONTRAINTES AU TEMPS PLUS
+C OUT VARIP : VARIABLES INTERNES AU TEMPS PLUS
+C OUT OUVH  : OUVERTURE NORMALE DU JOINT
+C OUT TLINT : PERMEABILITE LONGITUDINALE
+C OUT DRDE  : MATRICE DE RIGIDITE
+C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
+C =====================================================================
+
+        DATA NCRA1 / 'K','DMAX','GAMMA','KT' /
+
+      IF (MECA.EQ.'JOINT_BANDIS') THEN
+
+        CALL RCVALA(IMATE,' ','JOINT_BANDIS',0,' ', 0.D0,4,
+     &                                 NCRA1(1),PARA(1),CODRET,'FM')
+         KNI    = PARA(1)
+         UMC    = PARA(2)
+         GAMMA     = PARA(3)
+         KT = PARA(4)
+         CLO = 0.D0
+         OUVH = VARIM(ADVICO)
+         CLO = UMC - OUVH
+         CLO = CLO - DEFGEP(ADDEME) + DEFGEM(ADDEME)
+
+        IF (RESI) THEN
+         IF ((CLO.GT.UMC) .OR.(CLO.LT.-1.D-3))  THEN
+           VALR(1) = CLO
+           VALR(2) = UMC
+           CALL U2MESG('A','ALGORITH17_11',1,NOMAIL,0,IBID,2,VALR)
+           RETCOM = 1
+           GO TO 9000
+         ENDIF
+       END IF
+
+           IF (RESI) THEN
+             OUVH = UMC-CLO  
+             VARIP(ADVICO) = OUVH
+             DO 300 I=1,DIMCON
+               SIGP(I)=0.D0
+ 300         CONTINUE
+             SIGP(1)=SIGM(1)
+     &        -KNI/(1-CLO/UMC)**GAMMA*(VARIM(ADVICO)-VARIP(ADVICO))
+           IF (YAP1 .EQ. 1) THEN    
+               SIGP(1+NDIM)= -DEFGEP(ADDEP1)
+           END IF
+               SIGP(2)=SIGM(2)+KT*(DEFGEP(ADDEME+1)-DEFGEM(ADDEME+1))
+
+C ATTENTION ON A ENLEVE LE TERME EN P2
+           END IF
+         
+         IF ((RIGI) .AND. (KPI .LE. NPG)) THEN
+              TMECN = KNI/(1-CLO/UMC)**GAMMA
+              TMECS = KT
+
+             DRDE(ADDEME,ADDEME)= TMECN 
+             DRDE(ADDEME+1,ADDEME+1)= TMECS
+         END IF
+
+         TLINT = OUVH**2/12.D0
+         IF (RESI) VARIP(ADVIME)=TLINT
+     
+      END IF
+
+ 9000 CONTINUE
+
+      END

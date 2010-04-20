@@ -9,7 +9,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,11 +97,10 @@ C VARIABLES IN / OUT
 C ======================================================================
       IMPLICIT NONE
 
-      REAL*8        VALCEN(14,6),VALCEV(14,6)
+      REAL*8        VALCEN(14,6)
       INTEGER       MAXFA
       PARAMETER     (MAXFA=6)
       REAL*8        VALFAC(MAXFA,14,6)
-      REAL*8        VALFAV(MAXFA,14,6)
       INTEGER       MASSE,DMASP1,DMASP2
       INTEGER       EAU,AIR
       INTEGER       VKINT,KXX,KYY,KZZ,KXY,KYZ,KZX
@@ -262,7 +261,7 @@ C ======================================================================
      &                FICK,DFICKT,DFICKG,FICKAD,DFADT,KH,UNSURK,
      &                ALPHA,VISCL,DVISCL,MAMOLG,VISCG,DVISCG,
      &                MAMOVG,ISOT,
-     &                VINTP,ADVICO,DFICKS,VF,IFA,VALFAC,VALCEN)
+     &                DFICKS,VF,IFA,VALFAC,VALCEN)
           IF ( RETCOM.NE.0) THEN
              GOTO 9000
           ENDIF

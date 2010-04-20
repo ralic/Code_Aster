@@ -1,7 +1,7 @@
       SUBROUTINE OP0166(IER)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/03/2010   AUTEUR BERARD A.BERARD 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,14 +55,17 @@ C
       INTEGER NRPASS,NBPASS
       INTEGER ADRECG
 C
-      CHARACTER*8 K8B,NOMA1,NOMA2,NOMA3,RESUIN
+
+      CHARACTER*4 TYCHV
+      CHARACTER*8 K8B,NOMA1,NOMA2,NOMA3,RESUIN,PROL0
       CHARACTER*8 LERES0,NOPASE,NOMO1,NOMO2,MOA1,MOA2,CNREF
       CHARACTER*16 TYPRES,NOMCMD,LCORRE(2)
       CHARACTER*19 RESUOU,CHAM1,METHOD
-      CHARACTER*19 LERES1
+      CHARACTER*19 LERES1,LIGREL
       CHARACTER*24 NORECG
       CHARACTER*24 VALK(2)
       LOGICAL ISOLE
+      LOGICAL LNOEU,LELNO,LELEM,LELGA
 
 
 C DEB ------------------------------------------------------------------
@@ -75,7 +78,7 @@ C DEB ------------------------------------------------------------------
 C     1- CALCUL DE RESUOU, TYPRES, METHOD, ISOLE, CHAM1, RESUIN :
 C     ------------------------------------------------------------
 C        RESUOU : NOM DU CONCEPT RESULTAT
-C        TYPRES : TYPE DU RESULTAT (CHAM_NO OU SD_RESULTAT)
+C        TYPRES : TYPE DU RESULTAT (CHAM_GD OU SD_RESULTAT)
 C        METHOD : METHODE CHOISIE POUR LA PROJECTION
 C        ISOLE  : .TRUE.  : ON NE PROJETTE QU'UN CHAMP ISOLE
 C                 .FALSE. : ON PROJETTE UNE SD_RESULTAT
@@ -89,7 +92,7 @@ C        RESUIN : NOM DE LA SD_RESULTAT A PROJETER (SI .NOT.ISOLE)
         CHAM1=' '
       ELSE
         ISOLE=.TRUE.
-        CALL GETVID(' ','CHAM_NO',1,1,1,CHAM1,N3)
+        CALL GETVID(' ','CHAM_GD',1,1,1,CHAM1,N3)
         CALL ASSERT(N3.EQ.1)
         RESUIN=' '
       ENDIF
@@ -204,9 +207,53 @@ C       -- LA SENSIBILITE NE CONCERNE PAS LE CAS ISOLE:
 C       1- CAS CHAMP ISOLE :
 C       =====================
         IF (ISOLE) THEN
-          CALL PJXXCH(LCORRE(1),CHAM1,LERES1,' ','NON',' ','G',IRET)
-          CALL ASSERT(IRET.EQ.0)
 
+          IF (METHOD.EQ.'ELEM') THEN
+
+C       ---- DANS LE CAS DE LA METHODE 'ELEM', ON PEUT PROJETER
+C       ---- DES CHAM_NO OU DES CHAM_ELEM
+C       ---- ON INTERDIT LE MOT-CLE 'TYPE_CHAM' POUR UN CHAMP ISOLE
+
+            CALL GETVTX(' ','TYPE_CHAM',1,1,1,TYCHV,IBID)
+            IF (TYCHV.EQ.'NOEU') THEN
+              CALL U2MESS('F','CALCULEL5_36')
+            ENDIF
+
+C       ---- ON DETERMINE LE TYPE DE CHAMP A PROJETER
+
+            CALL PJTYCO(ISOLE,K8B,CHAM1,
+     &                LNOEU,LELNO,LELEM,LELGA)
+
+C       ---- CAS OU IL Y A UN CHAM_ELEM
+
+            IF ((LELNO).OR.(LELEM).OR.(LELGA)) THEN
+              CALL GETVID(' ','MODELE_2',1,1,1,NOMO2,N1)
+              IF (N1.EQ.0) THEN
+                CALL U2MESS('F','CALCULEL5_37')
+              ENDIF
+              LIGREL = NOMO2//'.MODELE'
+              CALL GETVTX(' ','PROL_ZERO',1,1,1,PROL0,IE)
+              CALL PJXXCH(LCORRE(1),CHAM1,LERES1,
+     &          ' ',PROL0,LIGREL,'G',IRET)
+              CALL ASSERT(IRET.EQ.0)
+
+C       ---- CAS OU IL Y A UN CHAM_NO
+
+            ELSEIF (LNOEU) THEN
+              CALL PJXXCH(LCORRE(1),CHAM1,
+     &            LERES1,' ','NON',' ','G',IRET)
+              CALL ASSERT(IRET.EQ.0)
+            ENDIF
+C	      
+          ELSE
+
+C       -- DANS LE CAS DE LA METHODE 'NUAGE_DEG', ON NE PEUT PROJETER
+C       -- QUE DES CHAM_NO
+
+            CALL PJXXCH(LCORRE(1),CHAM1,LERES1,' ','NON',' ','G',IRET)
+            CALL ASSERT(IRET.EQ.0)
+C	  
+          ENDIF
 
 
 C       2- CAS SD_RESULTAT :

@@ -3,7 +3,7 @@
      &                     SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C ----------------------------------------------------------------------
       REAL*8      TREPS,TREB,TREM
       REAL*8      CC(6),CPE(6),CCP(6),FBM(6),RESB(6)
       REAL*8      KRON(6)
-      REAL*8      RAC2
+      REAL*8      RAC2,UN,DEUX
       REAL*8      RTEMP2,RTEMP3,DELTA1(6),DELTA2
       REAL*8      DDG
       REAL*8      TOLC,DET
@@ -89,10 +89,10 @@ C ----------------------------------------------------------------------
       T(3,1)=5
       T(3,2)=6
       T(3,3)=3
-
-      RAC2=SQRT(2.D0)
+      DEUX=2.D0
+      RAC2=SQRT(DEUX)
       TOLC=SEUIL*TOLE
-
+      UN=1.D0
       COMPTE=0
       MULT=0.D0
 
@@ -153,7 +153,7 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
   19    CONTINUE
       ENDIF
       DO 20 I=1,6
-        FB(I)=FB(I)-MU/2.D0*CPE(I)+ECROB*(KRON(I)-B(I))
+        FB(I)=FB(I)-MU/DEUX*CPE(I)+ECROB*(KRON(I)-B(I))
   20  CONTINUE
 
       CALL DIAGO3(FB,VECFB,VALFB)
@@ -198,9 +198,9 @@ C        WRITE(6,*) 'ligne 176'
         IF (TREPS.GT.0.D0) THEN
           TREPS=0.D0
         ENDIF
-        DCOEFD=2.D0*(1.D0-D)
-        ENE=LAMBDA/2*TREPS**2+MU*TREM
-        FD=DCOEFD*ENE-2.D0*D*ECROD
+        DCOEFD=DEUX*(UN-D)
+        ENE=LAMBDA/DEUX*TREPS**2+MU*TREM
+        FD=DCOEFD*ENE-DEUX*D*ECROD
         IF (FD.LT.0.D0) THEN
                FD=0.D0
         ENDIF
@@ -250,14 +250,14 @@ C--------------------------------------------------------
           IF (COMPTE.LT.INTMAX) THEN
 
             CALL DFMDF(6,FB,MTE1)
-            CALL DFBDB(3,B,EPS,2.D0*MU,LAMBDA,ECROB,MTE2)
+            CALL DFBDB(3,B,EPS,DEUX*MU,LAMBDA,ECROB,MTE2)
 
             DDCOED=0.D0
             DFDDD=0.D0
 
             IF ((.NOT.DBLOQ).AND.(FD.NE.0.D0)) THEN
             DDCOED=-2.D0
-            DFDDD=DDCOED*ENE-2.D0*ECROD
+            DFDDD=DDCOED*ENE-DEUX*ECROD
             ENDIF
 
             CALL R8INIR(36,0.D0,KSI,1)
@@ -410,7 +410,7 @@ C----CALCUL DE FB DANS NEWTON---------------------------
  119          CONTINUE
             ENDIF
             DO 120 I=1,6
-              FB(I)=FB(I)-MU/2.D0*CPE(I)+ECROB*(KRON(I)-B(I))
+              FB(I)=FB(I)-MU/DEUX*CPE(I)+ECROB*(KRON(I)-B(I))
  120        CONTINUE
 
             CALL DIAGO3(FB,VECFB,VALFB)
@@ -436,8 +436,8 @@ C----CALCUL DE FD DANS NEWTON----------------------------
             IF (DBLOQ) THEN
               FD=0.D0
             ELSE
-              DCOEFD=2.D0*(1.D0-D)
-              FD=DCOEFD*ENE-2.D0*D*ECROD
+              DCOEFD=DEUX*(UN-D)
+              FD=DCOEFD*ENE-DEUX*D*ECROD
             IF(FD.LT.0.D0) THEN
               FD=0.D0
             ENDIF

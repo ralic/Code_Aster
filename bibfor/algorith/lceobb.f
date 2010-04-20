@@ -4,7 +4,7 @@
      &                     IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C TOLE CRP_20
       INTEGER     I,J,K,L
       INTEGER     BDIM,COMPTE,T(3,3)
 
-      REAL*8      TOLB,UN
+      REAL*8      TOLB,UN,R8PREM,DEUX
       REAL*8      VALBM(3),VECBM(3,3),VALBR(3),VECBR(3,3)
       REAL*8      VALB(3),VECB(3,3),SEUIL
       REAL*8      BMR(6),BR(6),EPSR(6)
@@ -79,6 +79,7 @@ C TOLE CRP_20
 
 
       UN=1.D0
+      DEUX=2.D0
       T(1,1)=1
       T(1,2)=4
       T(1,3)=5
@@ -102,7 +103,7 @@ C-------------------------------------------------
       DO 1 K = 1,6
         EPSF(K) = EPSM(K)+DEPS(K)
         EPSI(K) = EPSM(K)
-        EPST(K) = (EPSF(K)+EPSI(K))/2.D0
+        EPST(K) = (EPSF(K)+EPSI(K))/DEUX
  1    CONTINUE
 
 
@@ -127,7 +128,7 @@ C-------------------------------------------------
             CALL DIAGO3(BM,VECBM,VALBM)
             BDIM=3
             DO 201 I=1,3
-              IF (ABS(VALBM(I)).LT.TOLB) THEN
+              IF (ABS(VALBM(I))-TOLB.LT.R8PREM()) THEN
                 BDIM=BDIM-1
               ENDIF
  201        CONTINUE
@@ -151,22 +152,23 @@ C----CAS OU LES 3 VALEURS PROPRES SONT NON NULLES---------------------
                REINIT=.FALSE.
               IF (COMPTE.LT.100) THEN
                 DO 101 I=1,3
-                  IF (((VALB(I).LT.0).AND.(ABS(VALB(I)).GT.TOLB)).OR.
-     &              ((D.GT.1.D0).AND.(ABS(1.D0-D).GT.TOLB))) THEN
+                  IF (((VALB(I).LT.0).AND.(ABS(VALB(I))-TOLB
+     &         .GT.R8PREM())).OR.((D.GT.1.D0).AND.(ABS(UN-D)
+     &         -TOLB.GT.R8PREM()))) THEN
                     REINIT=.TRUE.
                   ELSE
-                    IF ((VALB(I).LT.0).AND.(ABS(VALB(I)).LT.TOLB)) THEN
-                      VALB(I)=0.D0
+                    IF (ABS(VALB(I))-TOLB.LT.R8PREM()) THEN
+                      VALB(I)=TOLB
                     ENDIF
-                    IF (ABS(1.D0-D).LT.TOLB) THEN
-                      D=1.D0-TOLB/2.D0
+                    IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+                      D=UN-TOLB
                       DBLOQ=.TRUE.
                     ENDIF
                   ENDIF
  101            CONTINUE
                 IF (REINIT) THEN
                   DO 800 I=1,6
-                    EPST(I)=(EPST(I)+EPSI(I))/2.D0
+                    EPST(I)=(EPST(I)+EPSI(I))/DEUX
  800              CONTINUE
                   GOTO 999
                 ELSE
@@ -189,12 +191,13 @@ C----CAS OU LES 3 VALEURS PROPRES SONT NON NULLES---------------------
                 ENDIF
               ELSE
                 DO 701 I=1,3
-                  IF ((VALB(I).LT.0).AND.(ABS(VALB(I)).LT.TOLB)) THEN
-                    VALB(I)=0.D0
+                  IF ((VALB(I).LT.0).AND.(ABS(VALB(I))-TOLB.LT.
+     &            R8PREM())) THEN
+                    VALB(I)=TOLB
                   ENDIF
  701            CONTINUE
-                IF (ABS(1.D0-D).LT.TOLB) THEN
-                  D=1.D0-TOLB/2
+                IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+                  D=UN-TOLB
                             DBLOQ=.TRUE.
                 ENDIF
                 CALL R8INIR(6,0.D0,B,1)
@@ -237,7 +240,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
             TOT2=.FALSE.
             TOT3=.FALSE.
             CALL R8INIR(6,0.D0,BMR,1)
-            IF (ABS(VALBM(1)).LT.TOLB) THEN
+            IF (ABS(VALBM(1))-TOLB.LT.R8PREM()) THEN
 
               BMR(1)=VALBM(2)
               BMR(2)=VALBM(3)
@@ -248,7 +251,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
               EPSR(5)=EPI(4)
               EPSR(6)=EPI(5)
               TOT1=.TRUE.
-            ELSEIF (ABS(VALBM(2)).LT.TOLB) THEN
+            ELSEIF (ABS(VALBM(2))-TOLB.LT.R8PREM()) THEN
 
               BMR(1)=VALBM(3)
               BMR(2)=VALBM(1)
@@ -260,7 +263,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
               EPSR(6)=EPI(4)
               TOT2=.TRUE.
 
-            ELSEIF (ABS(VALBM(3)).LT.TOLB) THEN
+            ELSEIF (ABS(VALBM(3))-TOLB.LT.R8PREM()) THEN
 
               BMR(1)=VALBM(1)
               BMR(2)=VALBM(2)
@@ -284,35 +287,38 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
 
             DO 102 I=1,2
               IF (VALBR(I).LT.0) THEN
-                IF (ABS(VALBR(I)).LT.TOLB) THEN
-                  VALBR(I)=0.D0
+                IF (ABS(VALBR(I))-TOLB.LT.R8PREM()) THEN
+                  VALBR(I)=TOLB
                 ELSE
                   REINIT=.TRUE.
                 ENDIF
               ENDIF
-              IF (ABS(VALBR(I)).LT.TOLB) THEN
-                VALBR(I)=0.D0
+              IF (ABS(VALBR(I))-TOLB.LT.R8PREM()) THEN
+                VALBR(I)=TOLB
               ENDIF
  102        CONTINUE
             IF (D.GT.1.D0) THEN
-              IF (ABS(1.D0-D).LT.TOLB) THEN
-                D=1.D0-TOLB/2.D0
+              IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+                D=UN-TOLB
                 DBLOQ=.TRUE.
               ELSE
                 REINIT=.TRUE.
               ENDIF
             ENDIF
-
+            IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+              D=UN-TOLB
+              DBLOQ=.TRUE.
+            ENDIF
             ELSE
 
             REINIT=.FALSE.
             DO 902 I=1,2
-              IF (VALBR(I).LT.TOLB) THEN
-                VALBR(I)=0.D0
+              IF (VALBR(I)-TOLB.LT.R8PREM()) THEN
+                VALBR(I)=TOLB
               ENDIF
  902        CONTINUE
-            IF (D.GE.(1.D0-TOLB)) THEN
-                D=1.D0-TOLB/2.D0
+            IF (D-(UN-TOLB).GE.R8PREM()) THEN
+                D=UN-TOLB
                 DBLOQ=.TRUE.
             ENDIF
 
@@ -335,7 +341,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
  222           CONTINUE
 
               IF (TOT1) THEN
-              BINTER(1)=0.D0
+              BINTER(1)=TOLB
               BINTER(2)=BR(1)
               BINTER(3)=BR(2)
               BINTER(4)=0.D0
@@ -343,7 +349,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
               BINTER(6)=BR(4)
               ELSEIF (TOT2) THEN
               BINTER(1)=BR(2)
-              BINTER(2)=0.D0
+              BINTER(2)=TOLB
               BINTER(3)=BR(1)
               BINTER(4)=0.D0
               BINTER(5)=BR(4)
@@ -351,7 +357,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
               ELSEIF (TOT3) THEN
               BINTER(1)=BR(1)
               BINTER(2)=BR(2)
-              BINTER(3)=0.D0
+              BINTER(3)=TOLB
               BINTER(4)=BR(4)
               BINTER(5)=0.D0
               BINTER(6)=0.D0
@@ -402,7 +408,7 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
                   TOT2=.FALSE.
                   TOT3=.FALSE.
                   CALL R8INIR(6,0.D0,BMR,1)
-                  IF (ABS(VALBM(1)).GT.TOLB) THEN
+                  IF (ABS(VALBM(1))-TOLB.GT.R8PREM()) THEN
                     BMR(1)=VALBM(1)
                     EPSR(1)=EPI(1)
                     EPSR(2)=EPI(2)
@@ -412,7 +418,7 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
                     EPSR(6)=EPI(6)
                     TOT1=.TRUE.
 
-                  ELSEIF (ABS(VALBM(2)).GT.TOLB) THEN
+                  ELSEIF (ABS(VALBM(2))-TOLB.GT.R8PREM()) THEN
                     BMR(1)=VALBM(2)
                     EPSR(1)=EPI(2)
                     EPSR(2)=EPI(3)
@@ -422,7 +428,7 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
                     EPSR(6)=EPI(5)
                     TOT2=.TRUE.
 
-                  ELSEIF (ABS(VALBM(3)).GT.TOLB) THEN
+                  ELSEIF (ABS(VALBM(3))-TOLB.GT.R8PREM()) THEN
                     BMR(1)=VALBM(3)
                     EPSR(1)=EPI(3)
                     EPSR(2)=EPI(1)
@@ -440,32 +446,39 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
                   IF (COMPTE.LT.100) THEN
 
                   IF (BR(1).LT.0) THEN
-                    IF (ABS(BR(1)).LT.TOLB) THEN
-                      BR(1)=0.D0
+                    IF (ABS(BR(1))-TOLB.LT.R8PREM()) THEN
+                      BR(1)=TOLB
                     ELSE
                       REINIT=.TRUE.
                     ENDIF
                   ENDIF
-                  IF (ABS(BR(1)).LT.TOLB) THEN
-                    BR(1)=0.D0
+                  IF (ABS(BR(1))-TOLB.LT.R8PREM()) THEN
+                    BR(1)=TOLB
                   ENDIF
                   IF (D.GT.1.D0) THEN
-                    IF (ABS(1.D0-D).LT.TOLB) THEN
-                      D=1.D0-TOLB/2.D0
+                    IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+                      D=UN-TOLB
                       DBLOQ=.TRUE.
                     ELSE
                       REINIT=.TRUE.
                     ENDIF
                   ENDIF
-                  ELSE
-                  REINIT=.FALSE.
-                  IF (BR(1).LT.TOLB) THEN
-                    BR(1)=0.D0
+                  IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+                    D=UN-TOLB
+                    DBLOQ=.TRUE.
                   ENDIF
-                  IF (D.GE.(1.D0-TOLB)) THEN
-                      D=1.D0-TOLB/2.D0
+
+                  ELSE
+                  
+                  REINIT=.FALSE.
+                  IF (BR(1)-TOLB.LT.R8PREM()) THEN
+                    BR(1)=TOLB
+                  ENDIF
+                  IF (D-(UN-TOLB).GE.R8PREM()) THEN
+                      D=UN-TOLB
                       DBLOQ=.TRUE.
                   ENDIF
+                  
                   ENDIF
 
               IF (REINIT) THEN
@@ -475,12 +488,12 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
               GOTO 999
 
               ELSE
-                    VALB(1)=0.D0
-                    VALB(2)=0.D0
-                    VALB(3)=0.D0
+                    VALB(1)=TOLB
+                    VALB(2)=TOLB
+                    VALB(3)=TOLB
                     IF (TOT1) VALB(1)=BR(1)
-                    IF (TOT2) VALB(2)=BR(2)
-                    IF (TOT3) VALB(1)=BR(3)
+                    IF (TOT2) VALB(2)=BR(1)
+                    IF (TOT3) VALB(3)=BR(1)
                     CALL R8INIR(6,0.D0,B,1)
                     CALL R8INIR(6,0.D0,BM,1)
                     DO 252 I=1,3

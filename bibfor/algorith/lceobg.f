@@ -2,7 +2,7 @@
      &                   VIM, OPTION, SIGP, VIP,  DSIDEP, PROJ, IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C TOLE CRP_20
       REAL*8      TREPS,TREB, COPLAN,TOTO(3,3),TREM
       REAL*8      EPS(6),EPSM(6),EPSG(6),EPSMG(6),DEPSG(6),DEPS(6)
       REAL*8      CC(6),CPE(6),CCP(6),RESB(6)
-      REAL*8      KRON(6),MULT,SEUIL,UN
+      REAL*8      KRON(6),MULT,SEUIL,UN,DEUX
       REAL*8      RAC2,BOBO(6,6),ZOZO(6,6),ZAZA(6,6)
       REAL*8      RTEMP1,RTEMP2,RTEMP3,RTEMP4,RTEMP5,RTEMP6
       REAL*8      E, NU, ALPHA, LAMBDA, MU
@@ -101,12 +101,13 @@ C TOLE CRP_20
       CHARACTER*8 NOMRES(6)
       REAL*8       VALRES(6)
 
-      REAL*8      DDOT
+      REAL*8      DDOT,R8PREM
 
 
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
       UN=1.D0
+      DEUX=2.D0
       T(1,1)=1
       T(1,2)=4
       T(1,3)=5
@@ -133,7 +134,7 @@ C TOLE CRP_20
       R2(6)=4
 
 
-      RAC2=SQRT(2.D0)
+      RAC2=SQRT(DEUX)
       TOLB=1.D-2
       MULT=0.D0
 
@@ -159,8 +160,8 @@ C---------------------------------------------------
      &              NOMRES,VALRES,CODRET, 'FM')
       E     = VALRES(1)
       NU    = VALRES(2)
-      LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
-      MU = E/(2.D0*(1.D0+NU))
+      LAMBDA = E * NU / (UN+NU) / (UN - DEUX*NU)
+      MU = E/(DEUX*(UN+NU))
 C-------------------------------------------------
 C -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
 C-------------------------------------------------
@@ -205,9 +206,9 @@ C-------------------------------------------------
       DO 701 I=1,NDIM
         DO 702 J=I,NDIM
           ARRET=1.D0
-          IF ((1.D0-VPP(I)).LE.TOLB) THEN
+          IF ((UN-VPP(I))-TOLB.LE.R8PREM()) THEN
             ARRET=0.D0
-          ELSEIF ((1.D0-VPP(J)).LE.TOLB) THEN
+          ELSEIF ((UN-VPP(J))-TOLB.LE.R8PREM()) THEN
             ARRET=0.D0
           ENDIF
           IF (I.EQ.J) THEN
@@ -228,7 +229,7 @@ C-------------------------------------------------
               VECPIL = VECP((L-1)*NDIM+I)
               PROJT(T(I,J),T(K,L))=PROJT(T(I,J),T(K,L))
      &            +ARRET*(VECPIK*VECPJL+VECPJK*VECPIL)
-     &             /RTEMP*RTEMP2/2.D0
+     &             /RTEMP*RTEMP2/DEUX
  704        CONTINUE
  703      CONTINUE
  702    CONTINUE
@@ -297,7 +298,7 @@ C-------------------------------------------------
 C -- ENDOMMAGEMENT DANS LE REPERE GLOBAL
 C-------------------------------------------------
       DO 3 I = 1,3
-        BM(I)   = 1.D0-VIM(I)
+        BM(I)   = UN-VIM(I)
         B(I)   = BM(I)
  3    CONTINUE
       DO 300 I = 4,6
@@ -316,12 +317,12 @@ C------------------------------------------------------------------
       CALL DIAGO3(B,VECB,VALB)
       BDIM=3
       DO 201 I=1,3
-        IF (ABS(VALB(I)).LT.TOLB) THEN
+        IF (ABS(VALB(I))-TOLB.LT.R8PREM()) THEN
           BDIM=BDIM-1
         ENDIF
  201  CONTINUE
       DBLOQ=.FALSE.
-      IF (D.GE.(1.D0-TOLB)) THEN
+      IF (D-(UN-TOLB).GE.R8PREM()) THEN
         DBLOQ=.TRUE.
       ENDIF
 
@@ -353,25 +354,29 @@ C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
         CALL DIAGO3(B,VECB,VALB)
         DO 101 I=1,3
           IF (VALB(I).LT.0) THEN
-            IF (ABS(VALB(I)).LT.TOLB) THEN
-              VALB(I)=TOLB/2.D0
+            IF (ABS(VALB(I))-TOLB.LT.R8PREM()) THEN
+              VALB(I)=TOLB
               TOTAL=.TRUE.
             ELSE
               REINIT=.TRUE.
             ENDIF
           ENDIF
-          IF (ABS(VALB(I)).LT.TOLB) THEN
-            VALB(I)=TOLB/2.D0
+          IF (ABS(VALB(I))-TOLB.LT.R8PREM()) THEN
+            VALB(I)=TOLB
             TOTAL=.TRUE.
           ENDIF
  101    CONTINUE
         IF (D.GT.1.D0) THEN
-          IF (ABS(1.D0-D).LT.TOLB) THEN
-            D=1.D0-TOLB/2.D0
+          IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+            D=UN-TOLB
             DBLOQ=.TRUE.
           ELSE
             REINIT=.TRUE.
           ENDIF
+        ENDIF
+        IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+          D=UN-TOLB
+          DBLOQ=.TRUE.
         ENDIF
         IF (.NOT.REINIT) THEN
           IF (TOTAL) THEN
@@ -423,21 +428,21 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS 2 DIRECTIONS
         TOT2=.FALSE.
         TOT3=.FALSE.
         CALL R8INIR(6,0.D0,BMR,1)
-        IF (ABS(VALB(1)).LT.TOLB) THEN
+        IF (ABS(VALB(1))-TOLB.LT.R8PREM()) THEN
           BMR(1)=VALB(2)
           BMR(2)=VALB(3)
           DO 801 I=1,6
             EPSR(I)=EPI(R1(I))
  801      CONTINUE
           TOT1=.TRUE.
-        ELSEIF (ABS(VALB(2)).LT.TOLB) THEN
+        ELSEIF (ABS(VALB(2))-TOLB.LT.R8PREM()) THEN
           BMR(1)=VALB(3)
           BMR(2)=VALB(1)
           DO 802 I=1,6
             EPSR(I)=EPI(R2(I))
  802      CONTINUE
           TOT2=.TRUE.
-        ELSEIF (ABS(VALB(3)).LT.TOLB) THEN
+        ELSEIF (ABS(VALB(3))-TOLB.LT.R8PREM()) THEN
           BMR(1)=VALB(1)
           BMR(2)=VALB(2)
           DO 803 I=1,6
@@ -458,25 +463,29 @@ C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
         CALL DIAGO3(BR,VECBR,VALBR)
         DO 102 I=1,2
           IF (VALBR(I).LT.0) THEN
-            IF (ABS(VALBR(I)).LT.TOLB) THEN
-              VALBR(I)=TOLB/2.D0
+            IF (ABS(VALBR(I))-TOLB.LT.R8PREM()) THEN
+              VALBR(I)=TOLB
               TOTAL=.TRUE.
             ELSE
               REINIT=.TRUE.
             ENDIF
           ENDIF
-          IF (ABS(VALBR(I)).LT.TOLB) THEN
-            VALBR(I)=TOLB/2.D0
+          IF (ABS(VALBR(I))-TOLB.LT.R8PREM()) THEN
+            VALBR(I)=TOLB
             TOTAL=.TRUE.
           ENDIF
  102    CONTINUE
         IF (D.GT.1.D0) THEN
-          IF (ABS(1.D0-D).LT.TOLB) THEN
-            D=1.D0-TOLB/2.D0
+          IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+            D=UN-TOLB
             DBLOQ=.TRUE.
           ELSE
             REINIT=.TRUE.
           ENDIF
+        ENDIF
+        IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+          D=UN-TOLB
+          DBLOQ=.TRUE.
         ENDIF
         IF (.NOT.REINIT) THEN
           IF (TOTAL) THEN
@@ -491,16 +500,19 @@ C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
           ENDIF
           CALL R8INIR(6,0.D0,BINTER,1)
           IF (TOT1) THEN
+          BINTER(1)=TOLB
           BINTER(2)=BR(1)
           BINTER(3)=BR(2)
           BINTER(6)=BR(4)
           ELSEIF (TOT2) THEN
           BINTER(1)=BR(2)
+          BINTER(2)=TOLB
           BINTER(3)=BR(1)
           BINTER(5)=BR(4)
           ELSEIF (TOT3) THEN
           BINTER(1)=BR(1)
           BINTER(2)=BR(2)
+          BINTER(3)=TOLB
           BINTER(4)=BR(4)
           ENDIF
           CALL R8INIR(9,0.D0,INTERM,1)
@@ -554,19 +566,19 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS UNE DIRECTION
         TOT2=.FALSE.
         TOT3=.FALSE.
         CALL R8INIR(6,0.D0,BMR,1)
-        IF (ABS(VALB(1)).GT.TOLB) THEN
+        IF (ABS(VALB(1))-TOLB.GT.R8PREM()) THEN
           BMR(1)=VALB(1)
           DO 804 I=1,6
             EPSR(I)=EPI(I)
  804      CONTINUE
           TOT1=.TRUE.
-        ELSEIF (ABS(VALB(2)).GT.TOLB) THEN
+        ELSEIF (ABS(VALB(2))-TOLB.GT.R8PREM()) THEN
           BMR(1)=VALB(2)
           DO 805 I=1,6
             EPSR(I)=EPI(R1(I))
  805      CONTINUE
           TOT2=.TRUE.
-        ELSEIF (ABS(VALB(3)).GT.TOLB) THEN
+        ELSEIF (ABS(VALB(3))-TOLB.GT.R8PREM()) THEN
           BMR(1)=VALB(3)
           DO 806 I=1,6
             EPSR(I)=EPI(R2(I))
@@ -584,27 +596,31 @@ C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
 C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
 
         IF (BR(1).LT.0) THEN
-          IF (ABS(BR(1)).LT.TOLB) THEN
-            BR(1)=TOLB/2.D0
+          IF (ABS(BR(1))-TOLB.LT.R8PREM()) THEN
+            BR(1)=TOLB
           ELSE
             REINIT=.TRUE.
           ENDIF
         ENDIF
-        IF (ABS(BR(1)).LT.TOLB) THEN
-          BR(1)=TOLB/2.D0
+        IF (ABS(BR(1))-TOLB.LT.R8PREM()) THEN
+          BR(1)=TOLB
         ENDIF
         IF (D.GT.1.D0) THEN
-          IF (ABS(1.D0-D).LT.TOLB) THEN
-            D=1.D0-TOLB/2.D0
+          IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+            D=UN-TOLB
             DBLOQ=.TRUE.
           ELSE
             REINIT=.TRUE.
           ENDIF
         ENDIF
+        IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
+          D=UN-TOLB
+          DBLOQ=.TRUE.
+        ENDIF
         IF (.NOT.REINIT) THEN
-          VALB(1)=TOLB/2.D0
-          VALB(2)=TOLB/2.D0
-          VALB(3)=TOLB/2.D0
+          VALB(1)=TOLB
+          VALB(2)=TOLB
+          VALB(3)=TOLB
           IF (TOT1) VALB(1)=BR(1)
           IF (TOT2) VALB(2)=BR(1)
           IF (TOT3) VALB(3)=BR(1)
@@ -660,7 +676,7 @@ C         ENDIF
 C  281  CONTINUE
 
       DBLOQ=.FALSE.
-      IF (D.GE.(1.D0-TOLB)) THEN
+      IF (D-(UN-TOLB).GE.R8PREM()) THEN
         DBLOQ=.TRUE.
       ENDIF
 
@@ -688,7 +704,7 @@ C  281  CONTINUE
         ELSE
 
 
-      AD=(1.D0-D)**2.D0
+      AD=(UN-D)**DEUX
 
 
 
@@ -707,7 +723,7 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
         TREPS=0.D0
         TREB=0.D0
         DO 181 I=1,3
-          TREB=TREB+CC(I)/2.D0
+          TREB=TREB+CC(I)/DEUX
           TREPS=TREPS+EPS(I)
  181    CONTINUE
         IF (TREB.GE.0.D0) THEN
@@ -748,7 +764,7 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
         CALL DFMDF(6,EPS,ZOZO)
         DO 106 I=1,6
           DO 107 J=1,6
-            DSIDEP(I,J,1)=DSIDEP(I,J,1)+2.D0*AD*MU*ZOZO(I,J)
+            DSIDEP(I,J,1)=DSIDEP(I,J,1)+DEUX*AD*MU*ZOZO(I,J)
  107      CONTINUE
  106    CONTINUE
 
@@ -766,18 +782,18 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
                  IF (P.EQ.Q) THEN
                  RTEMP3=1.D0
                  ELSE
-                 RTEMP3=1.D0/RAC2
+                 RTEMP3=UN/RAC2
                  ENDIF
                  DO 112 K=1,3
                    IF (K.EQ.I) THEN
                    RTEMP4=1.D0
                    ELSE
-                   RTEMP4=1.D0/RAC2
+                   RTEMP4=UN/RAC2
                    ENDIF
                    IF (K.EQ.J) THEN
                    RTEMP5=1.D0
                    ELSE
-                   RTEMP5=1.D0/RAC2
+                   RTEMP5=UN/RAC2
                    ENDIF
                    DO 113 M=1,3
                      DO 114 N=1,3
@@ -805,7 +821,7 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
 
         DO 115 I=1,6
           DO 116 J=1,6
-            DSIDEP(I,J,1)=DSIDEP(I,J,1)+MU/2.D0*BOBO(I,J)
+            DSIDEP(I,J,1)=DSIDEP(I,J,1)+MU/DEUX*BOBO(I,J)
  116      CONTINUE
  115    CONTINUE
 
@@ -854,7 +870,7 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
              TOT3=.FALSE.
              CALL R8INIR(6,0.D0,BR,1)
              CALL R8INIR(6,0.D0,DELTAB,1)
-             IF (ABS(VALB(1)).LT.TOLB) THEN
+             IF (ABS(VALB(1))-TOLB.LT.R8PREM()) THEN
 
                BR(1)=VALB(2)
                BR(2)=VALB(3)
@@ -867,7 +883,7 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
                DELTAB(4)=-EPIB(6)
                DELTAD=D-DM
                TOT1=.TRUE.
-             ELSEIF (ABS(VALB(2)).LT.TOLB) THEN
+             ELSEIF (ABS(VALB(2))-TOLB.LT.R8PREM()) THEN
 
                BR(1)=VALB(3)
                BR(2)=VALB(1)
@@ -881,7 +897,7 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
                DELTAD=D-DM
                TOT2=.TRUE.
 
-             ELSEIF (ABS(VALB(3)).LT.TOLB) THEN
+             ELSEIF (ABS(VALB(3))-TOLB.LT.R8PREM()) THEN
 
                BR(1)=VALB(1)
                BR(2)=VALB(2)
@@ -904,12 +920,12 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
               DO 811 I=1,6
                 DO 812 J=1,6
                 IF (I.GE.4) THEN
-                  RTEMP1=1.D0/RAC2
+                  RTEMP1=UN/RAC2
                 ELSE
                   RTEMP1=1.D0
                 ENDIF
                 IF (J.GE.4) THEN
-                  RTEMP2=1.D0/RAC2
+                  RTEMP2=UN/RAC2
                 ELSE
                   RTEMP2=1.D0
                 ENDIF
@@ -920,12 +936,12 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
               DO 813 I=1,6
                 DO 814 J=1,6
                 IF (I.GE.4) THEN
-                  RTEMP1=1.D0/RAC2
+                  RTEMP1=UN/RAC2
                 ELSE
                   RTEMP1=1.D0
                 ENDIF
                 IF (J.GE.4) THEN
-                  RTEMP2=1.D0/RAC2
+                  RTEMP2=UN/RAC2
                 ELSE
                   RTEMP2=1.D0
                 ENDIF
@@ -936,12 +952,12 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
               DO 815 I=1,6
                 DO 816 J=1,6
                 IF (I.GE.4) THEN
-                  RTEMP1=1.D0/RAC2
+                  RTEMP1=UN/RAC2
                 ELSE
                   RTEMP1=1.D0
                 ENDIF
                 IF (J.GE.4) THEN
-                  RTEMP2=1.D0/RAC2
+                  RTEMP2=UN/RAC2
                 ELSE
                   RTEMP2=1.D0
                 ENDIF
@@ -1016,7 +1032,7 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
              CALL R8INIR(6,0.D0,BR,1)
              CALL R8INIR(6,0.D0,DELTAB,1)
 
-             IF (ABS(VALB(1)).GT.TOLB) THEN
+             IF (ABS(VALB(1))-TOLB.GT.R8PREM()) THEN
 
                BR(1)=VALB(1)
                DO 607 I=1,6
@@ -1027,7 +1043,7 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
                DELTAD=D-DM
                TOT1=.TRUE.
 
-             ELSEIF (ABS(VALB(2)).GT.TOLB) THEN
+             ELSEIF (ABS(VALB(2))-TOLB.GT.R8PREM()) THEN
 
                BR(1)=VALB(2)
 
@@ -1039,7 +1055,7 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
                DELTAD=D-DM
                TOT2=.TRUE.
 
-             ELSEIF (ABS(VALB(3)).GT.TOLB) THEN
+             ELSEIF (ABS(VALB(3))-TOLB.GT.R8PREM()) THEN
 
                BR(1)=VALB(3)
 
@@ -1061,12 +1077,12 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
               DO 611 I=1,6
                 DO 612 J=1,6
                 IF (I.GE.4) THEN
-                  RTEMP1=1.D0/RAC2
+                  RTEMP1=UN/RAC2
                 ELSE
                   RTEMP1=1.D0
                 ENDIF
                 IF (J.GE.4) THEN
-                  RTEMP2=1.D0/RAC2
+                  RTEMP2=UN/RAC2
                 ELSE
                   RTEMP2=1.D0
                 ENDIF
@@ -1077,12 +1093,12 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
               DO 613 I=1,6
                 DO 614 J=1,6
                 IF (I.GE.4) THEN
-                  RTEMP1=1.D0/RAC2
+                  RTEMP1=UN/RAC2
                 ELSE
                   RTEMP1=1.D0
                 ENDIF
                 IF (J.GE.4) THEN
-                  RTEMP2=1.D0/RAC2
+                  RTEMP2=UN/RAC2
                 ELSE
                   RTEMP2=1.D0
                 ENDIF
@@ -1093,12 +1109,12 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
               DO 615 I=1,6
                 DO 616 J=1,6
                 IF (I.GE.4) THEN
-                  RTEMP1=1.D0/RAC2
+                  RTEMP1=UN/RAC2
                 ELSE
                   RTEMP1=1.D0
                 ENDIF
                 IF (J.GE.4) THEN
-                  RTEMP2=1.D0/RAC2
+                  RTEMP2=UN/RAC2
                 ELSE
                   RTEMP2=1.D0
                 ENDIF

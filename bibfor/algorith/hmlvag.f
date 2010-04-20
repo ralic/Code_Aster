@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,7 +73,7 @@ C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
       REAL*8       RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
-      REAL*8       RBID8, RBID10, RBID14
+      REAL*8       RBID8, RBID10, RBID14(3)
       REAL*8       RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
       REAL*8       RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
       REAL*8       RBID27, RBID28, RBID29, RBID32

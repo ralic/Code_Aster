@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+#& MODIF COMMUN  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,6 +70,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "HOEK_BROWN_TOT",
                                        "MAZARS",
                                        "ENDO_ISOT_BETON",
+                                       "JOINT_BANDIS",
 # THMC
                                        "GAZ",
                                        "LIQU_SATU",

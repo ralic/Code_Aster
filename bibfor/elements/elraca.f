@@ -8,7 +8,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -846,7 +846,7 @@ C     ------------------------------------------------------------------
         NNOS = 2
         VOL = 2.D0
 
-        NBFPG = 11
+        NBFPG = 13
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -858,6 +858,8 @@ C     ------------------------------------------------------------------
         NBPG(9) = 4
         NBPG(10) = 5
         NBPG(11) = 10
+        NBPG(12) = NNOS + 2
+        NBPG(13) = NNOS+3
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -870,7 +872,8 @@ C     ------------------------------------------------------------------
         FAPG(9) = 'COTES'
         FAPG(10) = 'COTES1'
         FAPG(11) = 'COTES2'
-
+        FAPG(12) = 'FPG2NOS'
+        FAPG(13) = 'FPG3NOS'
 
         XIN(1) = -1.D0
         XIN(2) = +1.D0
@@ -882,7 +885,7 @@ C     ------------------------------------------------------------------
         NNOS = 2
         VOL = 2.D0
 
-        NBFPG = 8
+        NBFPG = 10
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -891,6 +894,8 @@ C     ------------------------------------------------------------------
         NBPG(6) = 4
         NBPG(7) = 3
         NBPG(8) = 4
+        NBPG(9) = NNOS+2
+        NBPG(10) = NNOS+3
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -900,6 +905,8 @@ C     ------------------------------------------------------------------
         FAPG(6) = 'FPG4'
         FAPG(7) = 'SIMP'
         FAPG(8) = 'COTES'
+        FAPG(9) = 'FPG2NOS'
+        FAPG(10) = 'FPG3NOS'
 
         XIN(1) = -1.D0
         XIN(2) = +1.D0

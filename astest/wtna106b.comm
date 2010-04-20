@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 # ======================================================================
 # TITRE MODELISATION AXIS_THHS EN QUAD8
 # wtna106b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -476,7 +476,7 @@ U2=STAT_NON_LINE(reuse=U2,
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
                  CONVERGENCE=_F(
-                                RESI_GLOB_RELA=1.E-6,
+                                RESI_GLOB_RELA=1.E-8,
                                 ITER_GLOB_MAXI=20),
                  );
 

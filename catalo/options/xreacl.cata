@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+%& MODIF OPTIONS  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 % RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -28,6 +28,12 @@ OPTION__
         PDONCO   XCONTAC
         PPINTER  NEUT_R
         PGEOMER  GEOM_R
+        PLSN     NEUT_R
+        PLST     NEUT_R
+        PCOHES   NEUT_R
+        PMATERC  ADRSJEVE
+        
    OUT__
         PSEUIL  NEUT_R ELEM__
+        PCOHESO  NEUT_R ELEM__
 

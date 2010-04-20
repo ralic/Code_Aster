@@ -1,8 +1,9 @@
       SUBROUTINE NMTHMC(COMP, MODELZ, MOCLEF, K, COMEL, NCOMEL, NBNVI)
+      
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +58,7 @@ C =====================================================================
       INTEGER       NBMA, IERD, IBID, JNOMA, JMESM, NUMLC
       PARAMETER   ( DMTHMC = 8  )
       PARAMETER   ( DMHYDR = 4  )
-      PARAMETER   ( DMMECA = 15 )
+      PARAMETER   ( DMMECA = 16 )
       CHARACTER*16  POTHMC(DMTHMC), MODELI, NOMTE,KBID
       CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA)
       CHARACTER*16  COMCOD
@@ -110,7 +111,8 @@ C =====================================================================
      &              'ENDO_ISOT_BETON' ,
      &              'ELAS_GONF'       ,
      &              'DRUCK_PRAGER'    ,
-     &              'DRUCK_PRAG_N_A'  /
+     &              'DRUCK_PRAG_N_A'  ,
+     &              'JOINT_BANDIS'    /
 C *********************************************************************
 C --- FIN INITIALISATION -------------------------------------------- *
 C *********************************************************************
@@ -164,6 +166,7 @@ C =====================================================================
      &                (MODELI(1:7).NE.'AXIS_HM').AND.
      &                (MODELI(1:10).NE.'D_PLAN_THM').AND.
      &                (MODELI(1:9).NE.'D_PLAN_HM').AND.
+     &                (MODELI(1:11).NE.'2D_JOINT_HM').AND.
      &                (MODELI.NE.'#PLUSIEURS')) THEN
 
                           VALK(1) = COMEL(JJ)

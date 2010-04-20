@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 19/04/2010   AUTEUR BERARD A.BERARD 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,26 +17,28 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE PELLET J.PELLET
-def proj_champ_prod(RESULTAT=None,CHAM_NO=None,**args ):
+def proj_champ_prod(RESULTAT=None,CHAM_GD=None,**args ):
     if AsType(RESULTAT) != None : return AsType(RESULTAT)
-    if CHAM_NO          != None : return cham_no_sdaster
+    if AsType(CHAM_GD)  != None : return AsType(CHAM_GD)
     raise AsException("type de concept resultat non prevu")
+
+
 
 
 PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
-                fr="Projeter les champs d'une SD résultat sur un autre maillage",
+                fr="Projeter des champs d'un maillage sur un autre",
 
 
          METHODE         =SIMP(statut='f',typ='TXM',defaut="ELEM",
                                into=("NUAGE_DEG_0","NUAGE_DEG_1","ELEM",) ),
 
-         regles=(UN_PARMI('RESULTAT','CHAM_NO'),
+         regles=(UN_PARMI('RESULTAT','CHAM_GD'),
                  UN_PARMI('MODELE_1','MAILLAGE_1'),
                  UN_PARMI('MODELE_2','MAILLAGE_2'),
                  ),
          RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),
-         CHAM_NO         =SIMP(statut='f',typ=cham_no_sdaster),
+         CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,cham_elem)),
 
          MODELE_1        =SIMP(statut='f',typ=modele_sdaster),
          MAILLAGE_1      =SIMP(statut='f',typ=maillage_sdaster),

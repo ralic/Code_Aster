@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/03/2010   AUTEUR JAUBERT A.JAUBERT 
+#& MODIF COMMANDE  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -493,6 +493,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                        CONTACT_INIT   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
 
                                        GLISSIERE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
+                                       RELATION         = SIMP(statut='f',typ='TXM',into=("CZM_XFEM","NON")),
 
                                        ALGO_LAGR      = SIMP(statut='f',typ='TXM',defaut="VERSION1",
                                                              into=("NON","VERSION1","VERSION2"),),

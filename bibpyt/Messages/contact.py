@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact Messages  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,6 +119,10 @@ Contact methode VERIF.
  -> Risque & Conseil :
     Vérifier si le niveau d'interpénétration des surfaces est acceptable dans
     votre problème.
+"""),
+
+94 : _("""
+Contact méthode continue. La modélisation COQUE_3D n'est pas encore compatible avec la formulation 'CONTINUE'.
 """),
 
 95 : _("""

@@ -1,6 +1,6 @@
-      SUBROUTINE MATIMP(MATZ,IFIC)
+      SUBROUTINE MATIMP(MATZ,IFIC,TYPIMZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF DEBUG  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +20,7 @@ C ======================================================================
 C TOLE CRP_4
 C RESPONSABLE PELLET J.PELLET
       IMPLICIT NONE
-      CHARACTER*(*) MATZ
+      CHARACTER*(*) MATZ,TYPIMZ
       INTEGER IFIC
 C ---------------------------------------------------------------------
 C BUT: IMPRIMER UNE MATRICE SUR UN LISTING
@@ -28,6 +28,8 @@ C ---------------------------------------------------------------------
 C     ARGUMENTS:
 C MATZ   IN/JXIN  K19 : MATR_ASSE A IMPRIMER
 C IFIC   IN       I   : NUMERO DE L'UNITE LOGIQUE D'IMPRESSION
+C TYPIMP IN       K8  : FORMAT DE L'IMPRESSION ' ', 'ASTER' OU 'MATLAB'
+C                       SI TYPIMP=' ', TYPIMP='ASTER'
 C ---------------------------------------------------------------------
 
 
@@ -53,7 +55,7 @@ C     ------------------------------------------------------------------
       INTEGER JDELG,N1,NVALE,JVALE,NLONG,JVAL2,IBID,NUNO,NUCMP,K,JCMP
       INTEGER JDEEQ,JREFN
       CHARACTER*1 KBID
-      CHARACTER*8 NOMGD,NOMNO,NOCMP,NOMA,NONO
+      CHARACTER*8 NOMGD,NOMNO,NOCMP,NOMA,NONO,TYPIMP
       CHARACTER*14 NONU
       CHARACTER*1 KTYP
       CHARACTER*19 MAT19
@@ -66,6 +68,7 @@ C     ------------------------------------------------------------------
 
 
       MAT19 = MATZ
+      TYPIMP=TYPIMZ
 
       CALL JEVEUO(MAT19//'.REFA','L',JREFA)
       NOMA=ZK24(JREFA-1+1)
@@ -106,21 +109,37 @@ C     --- CALCUL DE NZ
       CALL JELIRA(JEXNUM(MAT19//'.VALM',1),'TYPE',IBID,KTYP)
       LTYPR=(KTYP.EQ.'R')
 
-
+C     --- ENTETES 
       WRITE(IFIC,*) ' '
-      WRITE(IFIC,*) 'DIMENSION DE LA MATRICE :',N
-      WRITE(IFIC,*) 'NOMBRE DE TERMES NON NULS (MATRICE SYMETRIQUE) :',
-     &              NZ
-      WRITE(IFIC,*) 'MATRICE A COEEFICIENTS REELS :',LTYPR
-      WRITE(IFIC,*) 'MATRICE SYMETRIQUE :',LSYM
-      WRITE(IFIC,*) ' '
-
-
+      WRITE(IFIC,*) '% --------------------------------------------'//
+     &                '----------------------------------------------'
+C     --- ENTETE FORMAT ASTER
+      IF ((TYPIMP.EQ.' ').OR.(TYPIMP.EQ.'ASTER')) THEN 
+        WRITE(IFIC,*) 'DIMENSION DE LA MATRICE :',N
+        WRITE(IFIC,*) 'NOMBRE DE TERMES NON NULS (MATRICE SYMETRIQUE) :'
+     &                ,NZ
+        WRITE(IFIC,*) 'MATRICE A COEEFICIENTS REELS :',LTYPR
+        WRITE(IFIC,*) 'MATRICE SYMETRIQUE :',LSYM
+        WRITE(IFIC,*) ' '
+C     --- ENTETE FORMAT MATLAB
+      ELSE IF (TYPIMP.EQ.'MATLAB') THEN
+        WRITE(IFIC,*) '% IMPRESSION DE LA MATRICE '//MAT19//' AU FORMAT'
+     &                //' MATLAB.'
+        WRITE(IFIC,*) '% 1- COPIER DANS UN FICHIER mat.dat.'
+        WRITE(IFIC,*) '% 2- CHARGER DANS MATLAB OU OCTAVE PAR :'
+        WRITE(IFIC,*) '% 2-1 >> load mat.dat;'
+        WRITE(IFIC,*) '% 2-2 >> A=spconvert(mat);'
+        WRITE(IFIC,*) ' '
+      ELSE
+         CALL ASSERT(.FALSE.)
+      ENDIF
+        
 
 C     ------------------------------------------------
 C     IMPRESSION DES TERMES DE LA MATRICE
 C     ------------------------------------------------
-      WRITE(IFIC,1003) 'ILIG','JCOL','VALEUR'
+      IF ((TYPIMP.EQ.' ').OR.(TYPIMP.EQ.'ASTER'))  
+     &                           WRITE(IFIC,1003) 'ILIG','JCOL','VALEUR'
       JCOL=1
       DO 1,KTERM=1,NZ
 
@@ -143,53 +162,70 @@ C        --- PARTIE TRIANGULAIRE INFERIEURE
      &                     DIMAG(ZC(JVAL2-1+KTERM))
           ENDIF
         ENDIF
+
+C       --- SI 'MATLAB' ET SYMETRIQUE , PSEUDO PARTIE INFERIEURE
+        IF (LSYM.AND.(TYPIMP.EQ.'MATLAB').AND.(ILIG.NE.JCOL)) THEN
+          IF (LTYPR) THEN
+            WRITE(IFIC,1001) JCOL,ILIG,ZR(JVALE-1+KTERM)
+          ELSE
+            WRITE(IFIC,1002) JCOL,ILIG,DBLE(ZC(JVALE-1+KTERM)),
+     &                       DIMAG(ZC(JVALE-1+KTERM))
+          ENDIF
+        ENDIF
+
  1    CONTINUE
 
-
+      
+      
 
 C     -- IMPRESSION DES CARACTERISTIQUES DES EQUATIONS :
 C     --------------------------------------------------
 
-      WRITE(IFIC,*) ' '
-      WRITE(IFIC,*) 'DESCRIPTION DES EQUATIONS :'
-      WRITE(IFIC,*) ' '
-      WRITE(IFIC,*) '   NUM_EQUA NOEUD    CMP'
-      CALL JEVEUO(NONU//'.NUME.DEEQ','L',JDEEQ)
-      CALL JEVEUO(NONU//'.NUME.REFN','L',JREFN)
-      CALL JELIRA(NONU//'.NUME.DEEQ','LONMAX',N1,KBID)
-      NOMGD=ZK24(JREFN-1+2)
-      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',JCMP)
-      CALL ASSERT(N1.EQ.2*N)
-      DO 2, K=1,N
-        NUNO=ZI(JDEEQ-1+2*(K-1)+1)
-        NUCMP=ZI(JDEEQ-1+2*(K-1)+2)
-        IF (NUNO.GT.0 .AND. NUCMP.GT.0) THEN
-          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO),NONO)
-          NOCMP=ZK8(JCMP-1+NUCMP)
-          WRITE(IFIC,1004) K,NONO,NOCMP
-        ELSEIF (NUCMP.LT.0) THEN
-          CALL ASSERT(NUNO.GT.0)
-          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO),NONO)
-          NOCMP=ZK8(JCMP-1-NUCMP)
-          IF (ZI(JDELG-1+K).EQ.-1) THEN
-            WRITE(IFIC,1005) K,NONO,NOCMP,' LAGR1 BLOCAGE'
+      IF ((TYPIMP.EQ.' ').OR.(TYPIMP.EQ.'ASTER')) THEN
+        WRITE(IFIC,*) ' '
+        WRITE(IFIC,*) 'DESCRIPTION DES EQUATIONS :'
+        WRITE(IFIC,*) ' '
+        WRITE(IFIC,*) '   NUM_EQUA NOEUD    CMP'
+        CALL JEVEUO(NONU//'.NUME.DEEQ','L',JDEEQ)
+        CALL JEVEUO(NONU//'.NUME.REFN','L',JREFN)
+        CALL JELIRA(NONU//'.NUME.DEEQ','LONMAX',N1,KBID)
+        NOMGD=ZK24(JREFN-1+2)
+        CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',JCMP)
+        CALL ASSERT(N1.EQ.2*N)
+        DO 2, K=1,N
+          NUNO=ZI(JDEEQ-1+2*(K-1)+1)
+          NUCMP=ZI(JDEEQ-1+2*(K-1)+2)
+          IF (NUNO.GT.0 .AND. NUCMP.GT.0) THEN
+            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO),NONO)
+            NOCMP=ZK8(JCMP-1+NUCMP)
+            WRITE(IFIC,1004) K,NONO,NOCMP
+          ELSEIF (NUCMP.LT.0) THEN
+            CALL ASSERT(NUNO.GT.0)
+            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO),NONO)
+            NOCMP=ZK8(JCMP-1-NUCMP)
+            IF (ZI(JDELG-1+K).EQ.-1) THEN
+              WRITE(IFIC,1005) K,NONO,NOCMP,' LAGR1 BLOCAGE'
+            ELSE
+              CALL ASSERT(ZI(JDELG-1+K).EQ.-2)
+              WRITE(IFIC,1005) K,NONO,NOCMP,' LAGR2 BLOCAGE'
+            ENDIF
           ELSE
-            CALL ASSERT(ZI(JDELG-1+K).EQ.-2)
-            WRITE(IFIC,1005) K,NONO,NOCMP,' LAGR2 BLOCAGE'
+            CALL ASSERT(NUNO.EQ.0 .AND. NUCMP.EQ.0)
+            NONO=' '
+            NOCMP=' '
+            IF (ZI(JDELG-1+K).EQ.-1) THEN
+              WRITE(IFIC,1005) K,NONO,NOCMP,' LAGR1 RELATION LINEAIRE'
+            ELSE
+              CALL ASSERT(ZI(JDELG-1+K).EQ.-2)
+              WRITE(IFIC,1005) K,NONO,NOCMP,' LAGR2 RELATION LINEAIRE'
+            ENDIF
           ENDIF
-        ELSE
-          CALL ASSERT(NUNO.EQ.0 .AND. NUCMP.EQ.0)
-          NONO=' '
-          NOCMP=' '
-          IF (ZI(JDELG-1+K).EQ.-1) THEN
-            WRITE(IFIC,1005) K,NONO,NOCMP,' LAGR1 RELATION LINEAIRE'
-          ELSE
-            CALL ASSERT(ZI(JDELG-1+K).EQ.-2)
-            WRITE(IFIC,1005) K,NONO,NOCMP,' LAGR2 RELATION LINEAIRE'
-          ENDIF
-        ENDIF
-2     CONTINUE
+2       CONTINUE
+      ENDIF
 
+C     --- FIN IMPRESSION
+      WRITE(IFIC,*) '% --------------------------------------------'//
+     &              '----------------------------------------------'
 
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 # TITRE FRICTION SLIDER WITH STATIC AND DYNAMIC FRICTION COEFFICIENTS 
 # sdnd106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,7 +126,10 @@ RESU_GEN=DYNA_TRAN_MODAL(
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=duration,
                                       PAS=time_step,
-                                      ),
+# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
+# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
+                                      PAS_MAXI=time_step,
+                                     ),
                          ARCHIVAGE=_F(PAS_ARCH=1),
                          EXCIT=_F(VECT_GENE=F_GENERA,
                                   FONC_MULT=F_FUNCT,),

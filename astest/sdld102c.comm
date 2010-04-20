@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 # TITRE SOUS-STRUCT. TRANSITOIRE : SYSTEME MASSES-RESSORTS AMORTI
+# sdld102c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -274,6 +275,9 @@ TRANGEN3=DYNA_TRAN_MODAL(   METHODE='ADAPT',
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
+# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
+# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
+                                       PAS_MAXI = 0.01,
                                        PAS = 0.01,
                                        NB_POIN_PERIODE = 300,
                                        VITE_MIN = 'MAXI'),

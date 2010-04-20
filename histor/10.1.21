@@ -1,0 +1,1341 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR berard       BERARD Alexandre       DATE 19/04/2010 - 17:10:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014926 DU 2010-04-09 09:12:02
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Extension de PROJ_CHAMP aux champs ELNO et ELEM pour des champs isolés
+FONCTIONNALITE
+   Contexte
+   ========
+   
+   Dans la fiche issue14218, Samuel regrettait qu'il ne soit pas possible de projeter un CHAM_GD isolé avec 
+   la méthode 'ELEM' : effectivement, il fallait obligatoirement passer par un RESULTAT.
+   
+   Jacques a réalisé cette évolution non pas pour tous les CHAM_GD, mais seulement pour les CHAM_NO.
+   
+   
+   
+   Travail réalisé
+   ===============
+   
+   L'extension à la projection de CHAM_ELEM isolés (de type ELEM et ELNO) ne pose pas de difficultés 
+   supplémentaires : elle est effectuée dans cette fiche.
+   
+   
+   
+   Perspectives
+   ============
+   
+   Cette évolution prépare le terrain pour la projection de CHAM_ELEM de type ELGA, qui sera réalisée via 
+   la fiche issue14183. Un cas-test de validation sera écrit à cette occasion ; il permettra de valider les 
+   modifications effectuées dans cette fiche.
+   
+   
+   
+   Fichiers impactés
+   =================
+   proj_champ.capy
+   calculel5.py
+   op0166.f
+   pjtyco.f
+   pjxxco.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.72.05
+VALIDATION
+   Tests persos
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 20/04/2010 - 12:51:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014956 DU 2010-04-15 15:45:12
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   La prxc3xa9diction ne tient pas compte du contact en formulation continue
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   La formulation continue du contact souffrait depuis son introduction dans Code_Aster d'un
+   bug entraînant la non prise en compte des forces de contact et de frottement dans la
+   prédiction.
+   
+   Détails
+   =======
+   
+   La recherche de ce bug est détaillée dans le CR-AMA-010.77 à paraître. On y montre en
+   particulier que la formulation continue ne travaille en correction qu'au sein de la boucle
+   de Newton et que le critère de convergence de Newton devra être adapté pour mieux traiter
+   le caractère mixte du problème de C/F.
+   
+   Le bug avait pour conséquence l'impossibilité de vérifier la condition de Signorini sur le
+   jeu dès la prédiction si le jeu initial n'était pas nul. Ainsi cela expliquait pourquoi
+   l'on faisait toujours 2 itérations de Newton même en élastique HPP pour atteindre la
+   convergence.
+   
+   En effet les forces de contact/frottement sont calculées à chaque itération mais elles ne
+   sont ajoutées qu'aux forces internes après le calcul de celles-ci. Or les forces internes
+   ne sont calculées qu'après intégration de la LdC, donc jamais en prédiction.
+   En effet en prédiction on calcule les forces internes directement à partir des contraintes
+   à l'instant moins : c'est ce que l'on appelle les forces nodales dans Code_Aster qui sont
+   calculées par l'option FORC_NODA.
+   ==> Comme l'on ajoutait pas les forces de C/F aux forces nodales, elles n'intervenaient
+   pas à la prédiction
+   
+   Correction
+   ==========
+   
+   La correction est très simple, il suffit de modifier l'assemblage de second membre en
+   prédiction pour ajouter ces forces (qui on le rappelle étaient déjà calculées !).
+   
+   Impact : nmassp.f
+   
+   À faire en V9.
+   
+   Validation
+   ==========
+   
+   La correction impactant la formulation 'CONTINUE' + 'XFEM' du contact, on a fait un astout
+   contact sur ces 2 formulations. Le bilan des tests cassés est le suivant : 
+   
+   feti008a             NOOK_TEST_RESU         6.60        1.90        8.50
+   feti008b             NOOK_TEST_RESU         6.01        0.88        6.89
+   feti010a             NOOK_TEST_RESU         7.55        1.40        8.95
+   ssnp110d             ERREUR_<F>             5.86        1.88        7.74
+   ssnv209b             ERREUR_<F>             4.96        1.01        5.97
+   ssnv504d             NOOK_TEST_RESU        24.54        1.60       26.14
+   ssnv504j             NOOK_TEST_RESU        44.79        1.70       46.49
+   --------  ---------  ----------------  ---------   ---------   ---------
+        124    117          7              11961.28      698.49    12659.77
+   
+   +feti008* : 2 valeurs quasi nulles testées en relatif sont désormais testées en absolu
+               5 tests de non-régression dépassent la tolérance fixée à 10^¯4% tout 
+               en restant inférieurs à 0.1%. On change les valeurs de référence.
+   
+   +feti010a : 1 test de non-régression dépasse la tolérance. Même remède que pour feti008*.
+   
+   +ssnp110d/ssnv209b : déjà cassés en NEW10.
+   
+   +ssnv504d/ssnv504j : on testait que le nombre d'itérations de Newton à certains pas de
+   temps était bien de 2, c'est désormais 1, on change donc les valeurs de référence.
+   
+   Gain potentiel (ou pas)
+   =======================
+   
+   * On va gagner en perfs : 
+   - dans le cas HPP élastique, par exemple cf. SSNA102D, qui fait 2 fois moins d'itérations
+   de Newton
+   - dans le cas où le jeu initial était non nul ou bien le contact est établi
+   progressivement, par exemple cf. SSNV501, 503, 504. On gagne dans ces tests une poignée
+   d'itérations (5%)
+   
+   * On ne va pas gagner en perfs :
+   - en dynamique, en effet les forces internes interviennent déjà en prédiction. Cela
+   explique pourquoi en dynamique on ne faisait qu'une seule itération de Newton, cf SDNL111E
+   - dans le cas où les solides sont initialement en contact, le jeu est donc nul, et ne pas
+   tenir des forces de contact revient à imposer un variation de jeu nulle.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.52
+VALIDATION
+   astout continu+xfem
+NB_JOURS_TRAV  : 12.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011803 DU 2008-02-25 10:14:15
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   CTC2 - Méthode continue routine MMELEM, cas non prévus
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   Cette fiche a pour but de compléter les fonctionnalités de la méthode continue en terme de
+   supports de maille pour les éléments de contact.
+   
+   Détails
+   =======
+   
+   Les éléments de contact dans la méthode continue sont créés entre un élément esclave et un
+   élément maître (et cet EF est appelé autant de fois qu'il y a de points d'intégrations
+   dans l'élément esclave).
+   Jusqu'ici certains éléments étaient incomplètement programmés (contact
+   QUAD8(esclave)-TRIA3(maître)) voire pas du tout (HEXA27, faces QUAD9). On a donc fait
+   l'inventaire de tous les combinaisons de supports de maille possibles et on a rajouté ceux
+   manquants. Sauf quelques cas ou un seul sens était codé, l'essentiel tourne autour des
+   faces QUAD9.
+   
+   Pour les schémas d'intégration, on utilise pour les QUAD9, les mêmes schémas que pour le
+   QUAD8. La rationalisation des schémas est prévue dans une autre fiche.
+   
+   Remarques
+   ========
+   
+   * Les COQUE_3D dont le support sont soit des TRIA7 ou des QUAD9 ne sont pas couvertes par
+   cette évolution : elles ne fonctionnent pour l'instant pas avec la formulation 'CONTINUE'.
+   Cela est lié au fait que les mailles supports des ddls de déplacements sont en fait des
+   TRIA6 et des QUAD8 (or on repère dans la formulation continue les mailles par leur nom).
+   Désormais, on arrête proprement l'utilisateur.
+   
+   * A priori il n'y a pas de raison théorique à préférer les HEXA27 aux HEXA20 en
+   formulation continue, contrairement aux formulations discrètes. En effet on ne raisonne
+   pas sur le signe des forces nodales de contact mais bien sur la pression elle-même et une
+   pression uniforme sur une face est bien représentée par un multiplicateur uniforme et de
+   même signe aux noeuds.
+   
+   Impact
+   ======
+   
+   F : mmgaus.f, mmimp4.f, mmeltm.f, mmelem.f
+   
+   Validation
+   ==========
+   
+   On valide dans 
+   
+   * SSNP121 : nouvelle modélisation du patch-test avec 2 mailles HEXA27 en vis-à-vis
+   * SSNV128 : nouvelle modélisation du patin frottant avec des mailles HEXA27
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.03.121,V6.04.128
+VALIDATION
+   ssnp121,ssnv128
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012007 DU 2008-04-18 16:42:20
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   CTC2 - DIST_STRUCT pour méthode continue
+FONCTIONNALITE
+   Validation
+   ==========
+   
+   Cette fiche a pour objet de valider pour la formulation 'CONTINUE' du contact la
+   fonctionnalité DIST_POUTRE/DIST_COQUE (qui sert à introduire un jeu fictif ad-hoc dans les
+   éléments de structure) .
+   L'utilisation de ces mot-clés pour le contact continu est possible depuis la refonte du
+   contact par Mickaël (DEFI_CONTACT).
+   
+   
+   Poutre
+   ------
+   On valide DIST_POUTRE en modifiant la modélisation G de SSNV505 qui valide déjà la
+   formulation 'DISCRETE' dans le cadre du contact entre 2 poutres. On rajoute donc le même
+   calcul en formulation 'CONTINUE'.
+   Les tests sont des tests par rapport à la référence en formulation 'DISCRETE' utilisant
+   DIST_MAIT/DIST_ESCL.
+   
+   Coque
+   -----
+   On valide DIST_COQUE en ajoutant une modélisation à SSNV505 similaire à la modélisation A
+   qui valide le contact entre 2 coques. Cette modélisation est réalisée en grands
+   déplacements avec des COQUE_3D. Comme ces éléments ne fonctionnent pas encore avec la
+   méthode continue, on reproduit le même test avec des éléments DKT.
+   ==> cela a plusieurs conséquences : on ne peut pas faire de grands déplacements, ni
+   prendre en compte le cisaillement transverse, on se compare donc à une référence obtenue
+   en formulation discrète
+   
+   
+   Rappel : DIST_POUTRE ou DIST_COQUE permettent de rajouter un jeu fictif directement tiré
+   d'un AFFE_CARA_ELEM pour la surface esclave, si on veut faire de même pour la surface
+   maître, on doit utiliser DIST_MAIT (même si celle-ci est supportée par un élément de
+   structure).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.505
+VALIDATION
+   ssnv505*
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012964 DU 2008-12-09 08:50:36
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   CTC2 - CONTACT / Indicateur contact flottant calculxc3xa9 par la mxc3xa9thode continue
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   The-Hiep a été surpris de constater qu'un même calcul de contact avec 2 méthodes
+   différentes donnaient un indicateur de contact dans VALE_CONT différent :
+   * le calcul en méthode 'CONTRAINTE' donne un indicateur égal à 2
+   * le calcul en méthode 'CONTINUE' donne un indicateur égal à 1
+   
+   Détails
+   =======
+   
+   Il y avait un double "bug" pouvant doublement induire en erreur les utilisateurs. Tout
+   d'abord la doc U4 était fausse et indiquait à tort que CONT=1 signifie un contact
+   glissant, tandis que CONT=2 signifie un contact adhérent.
+   C'est l'inverse ! Cela a déjà été corrige dans la doc V9 et V10.
+   
+   Dans le code, on écrivait par ailleurs mal le champ VALE_CONT en méthode continue sans
+   frottement. En effet dans ce cas, il n'y a que 2 états possibles : 
+   * pas de contact, CONT=0
+   * il y a contact, celui-ci est nécessairement glissant, CONT=2
+   Or on laissait dans ce cas CONT=1. Ce qui pouvait laisser à penser que l'on faisait un
+   calcul de frottement, ce qui n'était pas le cas.
+   
+   Dans le cas contact ET frottement, tout était bon.
+   
+   Impact : mmmres.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.11
+VALIDATION
+   visuelle
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014897 DU 2010-04-01 16:42:01
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Gain minime pour un calcul multiprocesseurs de transitoire thermique en plasticitxc3xa9
+FONCTIONNALITE
+   Jean-François,
+   
+   Je vais essayer de répondre le plus simplement possible à ta question : "Peut-on, sans
+   effort de mise au point supplémentaire, obtenir un gain de temps d'exécution notable en
+   passant au parallélisme ?"
+   
+   Il est vrai que chercher la performance dans Code_Aster demande désormais des efforts
+   parfois importants. Je vais donc te décrire la démarche que j'ai adoptée vis à vis des
+   fichiers de message que tu as transmis.
+   
+   ------------------------------------------------------------------------------------------
+   
+   Commençons par répondre clairement à ta question ; si l'on ne souhaite pas faire d'effort
+   de mise au point supplémentaire pour accélérer une étude qui fonctionne en séquentiel,
+   alors tu as fait ce qu'il fallait à savoir :
+   - activer MUMPS en tant que solveur linéaire
+   - sélectionner la version "_mpi" dans ASTK
+   - indiquer un nombre de processeurs
+   - lancer le calcul sur Bull
+   
+   Les résultats que tu as obtenus sont jugés médiocres. Il y a plusieurs raisons à cela :
+   
+   1. le calcul de référence est fait sur Calibre 5 avec le solveur MULT_FRONT alors que les
+   calculs parallèles sont faits avec MUMPS sur Bull. Or c'est un fait les Calibre 5 dont on
+   dispose aujourd'hui sont à peu près 2 fois plus rapides en séquentiel que la machine Bull.
+   Pour s'en convaincre, il suffit de regarder les temps des THER_NON_LINE sur ton étude (où
+   l'on utilise le même solveur sur Calibre et Bull à savoir GCPC) : 1043s elapsed vs. 2207s
+   elapsed
+   ==> le gain de temps lié au passage au // sur Bull est donc réduit (partant du fait que tu
+   effectues beaucoup de calculs en local)
+   
+   2. la remarque que tu pourrais faire à cela est que si l'on compare les temps sur Bull
+   entre MUMPS 1proc et MUMPS 2 proc, les gains sont somme toute pas terribles. C'est exact
+   mais parfaitement attendu compte tenu du type de parallélisme activé.
+   En gros la démarche "sans effort de mise au point supplémentaire" ne peut pas faire mieux.
+   Pour aller plus loin il faut adopter la démarche que je décris ensuite.
+   
+   ------------------------------------------------------------------------------------------
+   
+   Démarche adoptée
+   ================
+   
+   Je me concentre uniquement sur le fichier "B5Fc1MixRefMtt.mess" (calcul séquentiel sur
+   Calibre 5), les informations que j'en tire sont : 
+   
+   * tu utilises la STA9, toutes les remarques que je formule s'appliquent donc à cette
+   version (comprendre on peut parfois mieux faire mais ça serait en V10)
+   
+   * les parties THER_NON_LINE utilisent GCPC/LDLT_INC, elles ne peuvent donc pas bénéficier
+   d'un parallélisme sans changer de solveur (mais ce n'est pas absurde car un solveur
+   itératif est bien adapté à la thermique). Elles représentent à la louche près de 2000s de
+   temps de calcul, soit un peu moins de 3% du total, le gain du au parallélisme ne dépassera
+   pas un facteur 30.
+   
+   * la partie STAT_NON_LINE coûte le plus cher du calcul à concurrence de 
+   - 50% pour les calculs élémentaires (ceux que l'on dénomme intégration du comportement), -
+   50% pour la résolution de Ku=f (dont une part non négligeable est la résolution car on ne
+   factorise pas la matrice tangente à chaque itération de Newton)
+   
+   * on utilise des fonctionnalités avancées de STAT_NON_LINE comme la recherche linéaire qui
+   implique de calculer les forces internes pour déterminer le pas (et donc des
+   communications en parallèle qui pourront coûter)
+   
+   * le calcul est non-linéaire, il faudra faire attention à la répartition des mailles si la
+   non-linéarité est localisée.
+   
+   * la taille du problème mécanique est d'environ 400000 ddls, je considère cela comme un
+   gros problème, qui se prête à priori bien à la parallélisation. Il y a 10000 Lagranges, on
+   peut transformer le AFFE_CHAR_MECA/DDL_IMPO en AFFE_CHAR_CINE pour faire baisser un peu le
+   nombre d'inconnues.
+   
+   * le minimum de mémoire requis pour faire tourner le calcul est de 1Go, on a autorisé
+   jusqu'à 2Go de mémoire, ce qui entraîne 2549 appels au mécanisme de libération (pour faire
+   de la place en mémoire). C'est beaucoup. Pour un calcul de cette taille, on peut
+   certainement s'autoriser à prendre plus de mémoire pour faire moins d'appels au mécanisme
+   de libération (qui peut coûter cher car il fait appel au disque dur).
+   
+   
+   
+   Application
+   ===========
+   
+   Une fois ces repérages effectués, voilà comment je procéderai :
+   
+   1. Séparation des calculs : en poursuite je ne fais que le STAT_NON_LINE, le seul
+   opérateur que l'on va paralléliser
+   2. J'alloue jusqu'à 4Go de mémoire au calcul
+   3. Je transforme le AFFE_CHAR_MECA/DDL_IMPO en AFFE_CHAR_CINE
+   4. Je modifie le mot-clé SOLVEUR comme suit : 
+   
+   SOLVEUR=_F(METHODE='MUMPS',
+              PARALLELISME='DISTRIBUE_MD',
+              OUT_OF_CORE='OUI',
+              );
+   
+   Remarques :
+   * OUT_OF_CORE='OUI' permet d'économiser de la mémoire, en version 9 ce n'est pas encore
+   aussi performant qu'en V10, si on voit que c'est trop lent alors le supprimer
+   * PARALLELISME='DISTRIBUE_MD' : c'est ici que tout se joue. Dans ton cas, tu as utilisé la
+   valeur par défaut qui est 'CENTRALISE'. Cela veut dire que l'on ne parallélise que la
+   factorisation/résolution de la matrice.
+   ==> c'est pour cela que les gains obtenus n'étaient pas terribles, en effet les calculs
+   élémentaires prenaient la moitié du temps et sont restés séquentiels. De plus c'est
+   surtout sur la factorisation que le parallélisme de MUMPS joue, or la partie résolution
+   était aussi importante dans ton cas.
+   ==> 'PARALLELISME_MD' : veut dire que l'on distribue les mailles EF selon les processeurs
+   comme aux cartes (une carte chacun et on boucle). Cela permet en théorie d'éviter de
+   concentrer les mailles très non-linéaires (et donc consommatrices de CPU) sur un même
+   processeur. Si cela donne des résultats médiocres alors il faudra passer par
+   PARALLELISME='DISTRIBUE_SD', et fournir un concept partition produit par DEFI_PART_FETI.
+   
+   ------------------------------------------------------------------------------------------
+   
+   J'ai été long mais j'ai essayé d'être simple. Pour avoir plus d'infos, je te renvois vers
+   les documentations parues ou à paraître écrites par Olivier Boiteau :
+   
+   U4.50.01 : mot-clé SOLVEUR (de la V10)
+   U1.03.03 : Indicateurs de performance d'un calcul (temps/mémoire)
+   U2.08.06 : Notice d'utilisation du parallélisme
+   
+   Je mets la fiche en "résolu", si tu veux que l'on regarde un peu plus, émets une nouvelle
+   fiche avec les fichiers.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   nxc3xa9ant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 20/04/2010 - 12:51:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014941 DU 2010-04-14 16:08:49
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Imprimer une matrice au format MATLAB
+FONCTIONNALITE
+   On propose d'ajouter un format aux arguments de la routine matimp.f : ' ', 'ASTER' ou
+   'MATLAB'.
+   Dans le cas ' ' ou ' ASTER', on ne change rien.
+   Sans le cas 'MATLAB', on imprime le script suivant :
+   
+   
+   % ------------------------------------------------------------------------------------------
+   % IMPRESSION DE LA MATRICE &&MESTAT_MATR_ASSEM AU FORMAT MATLAB.
+   % 1- COPIER DANS UN FICHIER mat.dat.
+   % 2- CHARGER DANS MATLAB OU OCTAVE PAR :
+   % 2-1 >> load mat.dat;
+   % 2-2 >> A=spconvert(mat);
+     
+   .          1           1   2.467948717950035E+04
+   .          1           2   8.413461538461539E+03
+   .          2           1   8.413461538461539E+03
+   .................
+   .         48          48  -4.935897435897437E+04
+   % ------------------------------------------------------------------------------------------
+   
+   On peut ainsi charger efficacement une matrice dans Matlab et y réaliser diverses opérations.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test perso
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 19/04/2010 - 16:55:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014906 DU 2010-04-06 08:48:16
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   DYNA_TRAN_MODAL schéma ADAPT : pas de temps maximal
+FONCTIONNALITE
+   En accord avec T61 (Emmanuel, Ionel et Nicolas) et en préambule à la fiche 
+   14767 on propose une première série d'améliorations pour le schéma ADAPT de 
+   DYNA_TRAN_MODAL.
+   
+   
+   Synthese
+   Il s'agit d'améliorer la gestion du pas de temps du schéma ADAPT,  en 
+   autorisant une plus grande souplesse pour le choix de sa valeur maximale.
+   
+   
+   Contexte
+   Avec l'opérateur DYNA_TRAN_MODAL, quand on utilise le schéma en temps ADAPT, 
+   l'argument PAS (dtu) du mot-clé facteur INCREMENT joue un double rôle (cf. doc 
+   U4.53.21) :
+   - c'est le pas de temps initial (dtinit),
+   - c'est aussi le pas de temps maximal (plus exactement dtmax = MIN(dtu, dts/20) 
+   avec dts = MIN(2 PI / OMEGA_i) pour OMEGA_i étant l'ensemble des pulsations 
+   propres d'indice i de la base, et  éventuellement corrigée par les raideurs de 
+   choc.
+   
+   Pour le couplage avec EDYOS (projet ODYMAT) ce mode de fonctionnement ne 
+   convient pas.
+   En effet, le pas de temps maximal doit pouvoir dépasser le pas initial.
+   
+   
+   Solution
+   On va définir deux modes de gestion du pas de temps maximal, en rajoutant un 
+   mot-clé simple sous le mot-clé facteur INCREMENT :
+   PAS_MAXI            =SIMP(statut='f',typ='R' ),
+   - Si on ne donne pas de valeur, alors dtmax (pas de temps maximal) = dts / 20.
+   La valeur dts étant toujours calculée comme actuellement :
+   dts = MIN(2 PI / OMEGA) éventuellement corrigée par les raideurs de choc.
+   Si jamais ce paramètre dts est très grand (base ne comportant que des mouvement 
+   de solide rigide par exemple), alors on émettra une alarme signalant que le pas 
+   de temps maximal risque d'être trop grand.
+   - Si on rentre une valeur alors elle définit dtmax (avec une alarme si dtmax > 
+   dts / 20).
+   Pour retrouver le fonctionnement existant, il suffit de donner la même valeur à 
+   PAS et PAS_MAXI. Pour ne pas modifier les valeurs testées dans les cas-tests 
+   utilisant le schéma ADAPT, on introduit cette modification de syntaxe dans les 
+   cas-tests existants.
+   
+   Remarque : si l'utilisateur ne donne ni PAS, ni PAS_MAXI, alors on aura : PAS = 
+   PAS_MAXI = dts / 20 (actuellement, si l'utilisateur ne donne pas PAS, alors 
+   PAS = dts / 20, on reste donc cohérent avec ce choix).
+   
+   
+   Validation
+   On modifie le cas-test sdnl104a en autorisant le pas à atteindre 10-4s (et en 
+   partant de 10-5 au lieu de 10-4s). Les valeurs de référence (non régression) 
+   sont quasi inchangées : on ajuste juste deux valeurs (de 0.02 % et 0.005 %) .
+   On repasse tous les cas-tests utilisant le schéma ADAPT avec le rajout de la 
+   condition PAS_MAXI = PAS pour retrouver l'ancien fonctionnement :
+   sdld102a
+   sdld102b
+   sdld102c
+   sdld103a
+   sdld321b
+   sdld325a
+   sdld325b
+   sdnd104a
+   sdnd105a
+   sdnd106a
+   sdnd112a
+   sdnd121a
+   sdnl104b
+   sdnl105a
+   sdnl105b
+   
+   
+   Autres améliorations
+   En développant j'ai déclenché une erreur sd_veri (problème lié à l'archivage), 
+   dont le message était peu clair... Je modifie donc ce message via sd_util.py 
+   (vu avec Jacques).
+   Ancien message :
+   Objet : 'TRAN_GE3           .INST'    Message : condition non respectée : 101  
+   ==  19 (Tous différents: )
+   Nouveau message :
+   Objet : 'TRAN_GE3           .INST'    Message : condition non respectée pour 
+   le test suivant : longueur séquence (101) n'est pas égale au nombre d'éléments 
+   différents dans la séquence (19) (Tous les éléments de la séquence devraient 
+   être différents, mais ils ne le sont pas)
+   
+   J'ai constaté que pour le schéma ADAPT, on définit un nombre maximal de sous-
+   divisions successives du pas de temps (variable NRMAX venant du mot-clé 
+   NMAX_ITER_PAS sous INCREMENT).
+   Dans MDADAP, on boucle donc en diminuant le pas jusqu'à ce que le critère de 
+   convergence soit respecté (calcul d'une fréquence apparente que le pas de temps 
+   doit bien échantillonner). Au maximum on peut itérer NRMAX fois.
+   Si jamais on ne respecte pas le critère à la dernière itération, alors on sort 
+   et on va forcer le passage au pas suivant sans rien signaler. Il m'a semblé 
+   préférable de prévenir l'utilisateur en envoyant une alarme avec le message 
+   suivant (dans algorith17.py) :
+   
+    Le nombre maximal de sous-division du pas : %(i1)d est atteint à l'instant : %
+   (r1)f 
+    Le pas de temps vaut alors : %(r2)f
+    On continue cependant la résolution en passant au pas suivant.
+    
+    Risque & Conseil : la solution calculée risque d'être imprécise.
+    Il faudrait relancer la calcul en autorisant le schéma ADAPT à utiliser un pas 
+   de temps plus petit.
+    Pour cela on peut jouer sur au moins un des trois paramètres suivants :
+    - diminuer le pas de temps initial (mot-clé PAS),
+    - augmenter le nombre maximal de sous-découpage du pas (mot-clé NMAX_ITER_PAS),
+    - augmenter le facteur de division du pas (mot-clé COEF_DIVI_PAS)
+   
+   
+   Impacts informatiques
+   On modifie les routines :
+   - dyna_tran_modal.capy
+   - MDADAP
+   - MDPTEM
+   - MDTR74
+   - RECPAR
+   - SSDT74
+   - DLADAP
+   On introduit de nouveaux messages dans :
+   - algorith15.py (on complète le message 68 avec le pas maximal)
+   - dynamique.py (on rajoute 4 messages avec des conseils sur le choix du pas)
+   On modifie la routine :
+   sd_util.py (messages plus clair pour sdu_tous_differents et sdu_compare)
+   On modifie les cas-tests suivants (PAS_MAXI = PAS, sauf pour sdnl104a) :
+   sdld102a.comm 
+   sdld102b.comm 
+   sdld102c.comm 
+   sdld103a.comm 
+   sdld321b.comm 
+   sdld325a.comm 
+   sdld325b.comm 
+   sdnd104a.comm (PAS_MAXI = 10 * PAS)
+   sdnd105a.comm 
+   sdnd106a.comm 
+   sdnd112a.comm 
+   sdnd121a.comm 
+   sdnl104a.comm 
+   sdnl104b.comm 
+   sdnl105a.comm 
+   sdnl105b.comm 
+   
+   Docs impactées : U4.53.21, V5.02.104, R5.06.04
+   
+   
+   Perspectives
+   Modifier les cas-tests afin d'autoriser un PAS_MAXI plus grand (cela nécessite 
+   de revoir tous les TEST_RESU qui se basent sur un numéro d'ordre).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.53.21, V5.02.104, R5.06.04
+VALIDATION
+   sdnl104a et tous les cas-tests ADAPT
+NB_JOURS_TRAV  : 7.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR idoux        IDOUX Ludovic          DATE 19/04/2010 - 16:08:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014931 DU 2010-04-12 07:05:01
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Correction de bug dans la loi ENDO_ORTH_BETON
+FONCTIONNALITE
+   L'objet de cette fiche est corriger divers erreurs de programmation dans la loi
+   ENDO_ORTH_BETON. En quelques mots, ces erreurs sont :
+   - mauvais calcul de RTEMP dans LCEOB1.F -> Floating Point Exception
+   - mauvaise reconstruction de BINTER dans LCEOBL.F -> Resultats Faux (relativement) 
+   - cohérence entre les tests pour le blocage de l'endommagement (1-TOLB) et la valeur
+   maximale de l'endommagement (1-TOLB/2). La correction de ce point casse le cas-test
+   SSNV177A, dont une des valeurs de référence (non-régression) soit être changée -> Absence
+   de Convergence dans l'algorithme de Newton
+   - homogénéisation de la valeur de TOLB (1e-2 pour toutes les sources) -> pas de problème
+   particulier mis en évidence 
+   - rajout de test pour borner l'endommagement de compression à 1-TOLB (auparavant, pouvait
+   prendre toutes les valeurs comprises etre 1-TOLB et 1) -> pas de problème particulier mis
+   en évidence
+   - initialisation d'une variable à 0 non effectuée pouvant entrainer des NaN dans MEOBLi.F
+   et MEOBGi.F -> Floating Point Exception / Matrice non inversible pivot nul 
+   - erreur dans la doc R de la loi à corriger 
+   
+   D'autre part, les routines LCEOB1.F et MEOBL1.F ne sont actuellement pas couvertes par les
+   tests.
+   
+   Pour mettre en évidence tous ces problèmes et les corriger, j'ai constitué un cas-test qui
+   permet d'aller progressivement dans toutes les sources de la loi ENDO_ORTH_BETON en
+   modélisation locale. Je propose de le restituer sous le nom SSNV217A.
+   
+   
+   Impact :
+   
+   a) Fortran (15)
+   LCEOBL.F
+   LCEOBG.F
+   LCEOBB.F
+   LCEOB1.F
+   LCEOB2.F
+   LCEOB3.F
+   MEOBL1.F
+   MEOBL2.F
+   MEOBL3.F
+   MEOBG1.F
+   MEOBG2.F
+   MEOBG3.F
+   SIGEOB.F
+   
+   b) Cas-tests 
+   SSNV177A : valeur de référence à modifier
+   SSNV217A : nouveau cas-test
+   
+   c) Documentation
+   modification de la doc R7.01.09 (loi ENDO_ORTH_BETON)
+   modification de la doc V6.04.177 (valeur de référence à modifier dans le cas-test SSNV177A)
+   ajout de la doc V6.04.217 (liée au cas-test que je rajoute)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.01.09, V6.04.177, V6.04.217
+VALIDATION
+   tout test utilisant ENDO_ORTH_BETON
+NB_JOURS_TRAV  : 12.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR laverne      LAVERNE Jérôme       DATE 20/04/2010 - 19:11:12
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013730 DU 2009-08-18 16:52:11
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : Zones cohésives
+FONCTIONNALITE
+   [Restitution des travaux de stage de Prabu Manoharan et Tanguy 
+   Mathieu]- Restitution des travaux de A. Jaubert.
+   
+   FONCTIONALITES
+   ============================
+   Prise en compte des forces de cohésion lors de l'ouverture d'une 
+   fissure X-FEM.
+   On développe ici la loi CZM_EXP_REG qui existe déjà en méthode des 
+   éléments finis classiques.
+   
+   Utilisation
+   ============================
+   
+   Pour activer la loi cohésive, l'utilisateur doit renseigner le mot 
+   clé RELATION='CZM_XFEM' du mot clé facteur ZONE de l'opérateur 
+   DEFI_CONTACT.
+   Les paramètres matériaux à donner sont les mêmes que pour la loi 
+   CZM_EXP_REG en méthode classique : dans le mot clé facteur 
+   RUPT_FRAG de l'opérateur DEFI_MATERIAU, on donne les valeurs de GC 
+   (ténacité), SIGM_C (contrainte critique à la rupture), et 
+   PENA_ADHERENCE (paramètre de régularisation de l'énergie). Si au 
+   moins un de ces trois paramètres n'est pas donné, on déclenche une 
+   erreur fatale.
+   
+   Implémentation
+   ===========================
+   MODIFICATION DES FORTRANS
+   
+   cazocx.f : lecture du contenu du mot clé RELATION dans l'opérateur DEFI_CONTACT
+   cfmmvd.f : augmentation de la taille de la structure de donnée SD_CONTACT
+   exfonc.f : on lève ici, de façon temporaire, l'incompatibilité entre pilotage et contact
+   pour la méthode X-FEM seulement
+   matcox.f : nouvelle routine appelée par le te0533 calculant les termes de la matrice de
+   rigidité augmentée de contact due aux forces cohésives
+   mminfp.f : interroge sur l'activation de la loi cohésive
+   nmarch.f : archivage de trois nouvelles cartes : INDC_ELGA (indicateur de contact aux
+   points de Gauss), COHE_ELGA (valeur de la cohésion, plus grande norme du saut atteinte
+   durant l'histoire du matériau) et SECO_ELGA (seuil de frottement).
+   nmcalm.f : ajout de MATE dans les arguments de NMCELM
+   nmcalv.f : ajout de MATE dans les arguments de NMCELV
+   nmctcf.f : ajout de MATE dans les arguments de la routine et dans ceux de XREACL
+   nmdoet : écriture des valeurs des champs d'indicateur de contact, de seuil de frottement
+   et de cohésion à l'instant initial en cas de reprise de calcul
+   nmelcm.f : ajout de MATE dans les arguments de la routine, ajout de COHES à la liste des
+   champs entrant
+   nmelcv.f : ajout de MATE dans les arguments de la routine, ajout de COHES à la liste des
+   champs entrant
+   nmtble.f : ajout de MATE dans les arguments de la routine et dans ceux de XREACL
+   op0070.f : ajout de MATE dans les arguments de NMTBLE
+   rscrsd.f : ajout de trois cartes INDC_ELGA, COHE_ELGA et SECO_ELGA dans la liste des
+   champs mécaniques CHMEC3
+   te0533.f : vérification de l'activation de la loi cohésive, récupération des données
+   matériau de la loi cohésive (appel à RCVALA). S'ils sont trouvés, on calcule la matrice de
+   rigidité augmentée due aux forces cohésives par un appel à la loi de comportement lcejex.f
+   des éléments de joint CZM_EXP_REG classiques
+   te0534.f : vérification de l'activation de la loi cohésive, récupération des données
+   matériau de la loi cohésive (appel à RCVALA). S'ils sont trouvés, on calcule les seconds
+   membres dus aux forces cohésives par un appel à la loi de comportement lcejex.f des
+   éléments de joint CZM_EXP_REG classiques
+   te0548.f : ajout de la mise à jour du seuil de cohésion
+   xmele1.f : création du champ d'indicateur de contact s'il n'existe pas 
+   xmele3.f : création du champ de seuil de frottement s'il n'existe pas
+   xmele5.f : nouvelle routine appelée par XMELEM, création du champs de cohésion s'il
+   n'existe pas
+   xmelem.f : ajout de l'appel à XMELE5
+   xmmbca.f : ajout de la cohésion dans la liste des champs entrant
+   xreacl.f : ajout de MATE dans les arguments de la routine, ajout de COHESO  à la liste des
+   champs sortant et ajout de PLSN PLST, COHES et MATE à la liste des champs entrant
+   
+   MODIFICATION DES CATALOGUES
+   ================================
+   char_meca_cont.cata    gener_medpl2_xhc.cata  rigi_frot.cata
+   char_meca_frot.cata    gener_me_xhc.cata      xcvbca.cata
+   gener_mecpl2_xhc.cata  rigi_cont.cata         xreacl.cata
+   
+   option char_meca_cont : ajout de E3NEUT_R PCOHES et de ADRESJEVE PMATERC aux champs entrant
+   option char_meca_frot : ajout de E3NEUT_R PCOHES et de ADRESJEVE PMATERC aux champs entrant
+   option rigi_cont : ajout de E3NEUT_R PCOHES et de ADRESJEVE PMATERC aux champs entrant
+   option rigi_frot : ajout de E3NEUT_R PCOHES et de ADRESJEVE PMATERC aux champs entrant
+   option xcvbca: ajout de E3NEUT_R PCOHES aux champs entrant
+   option xreacl: ajout de E3NEUT_R PCOHES,ADRESJEVE PMATERC, E1NEUT_R PLSN, E1NEUT_R PLST,
+   aux champs entrant et de E3NEUT_R ELEM_ PCOHESO aux champs sortant.
+   
+   grandeur_simple__.cata : ajout de RELA (activation de la loi cohésive) à XCONTACT
+   
+   
+   MODIFICATION DES SOURCES CAPY
+   ================================
+   defi_contact.capy : ajout du mot clé RELATION='CZM_XFEM' au mot clé facteur ZONE.
+   
+   MODIFICATION DES SOURCES PYTHON
+   ================================
+   
+   sd_contact.py : augmentation de la taille de la structure de donnee SD_CONTACT
+   
+   VALIDATION
+   ================================
+   Le cas test ssnp144 est ajouté à la base. Il s'agit d'un barreau traversé par une
+   interface sur lequel on applique un chargement 
+   d'ouverture en mode I et II. Le saut de déplacement est contrôlé à chaque pas de temps
+   grâce à un pilotage par DDL_IMPO. On explore 
+   ainsi toutes les phases de la loi : charge élastique, décharge élastique et endommagement.
+   Les résultats sont validés en comparant les valeurs des Lagrangiens de contact et de
+   frottement à une solution de référence analytique.
+   Ce test comprend douze modélisations pour tester différentes 
+   situations :
+   	-en 2D et en 3D 
+   	-différents types d'éléments (quad, triangles, cubes, pentaèdres et tétraèdres)
+   	-interface au centre d'un élément ou entre deux éléments.
+   
+   Dans la dernière modélisation (ssnp144l), le saut de déplacement est piloté en ouverture
+   et en fermeture, l'algorithme de contact utilisé étant la pénalisation. Il permet de
+   justifier la levée temporaire de l'incompatibilité entre contact et pilotage en fermeture.
+   
+   
+   PERSPECTIVES
+   ================================
+   Actuellement, le pilotage utilisé dans le cas test est un pilotage par DDL_IMPO : on
+   contrôle le ddl H1Y en mode I (respectivement H1X en mode II) d'un seul noeud.
+   Un pilotage plus pertinent serait un pilotage de type PRED_ELAS ou LONG_ARC qui ne sont
+   pas encore accessibles avec XFEM.
+   De plus, l'incompatibilité entre contact et pilotage doit être étudiée de façon plus
+   précise. Intuitivement en méthode de contact pénalisée, le pilotage est possible car à
+   tout champ de déplacement on peut associer un champ de réaction correspondant qui est
+   résolu de manière explicite.
+   Ce point sera creusé lors de la fin de stage de Mathieu Tanguy.
+   
+   IMPACT DOCUMENTAIRE
+   ================================
+   
+   R7.02.12 (doc X-FEM) en cours
+   nouvelle doc V6.03.144
+   U4.44.11 (defi_contact)
+   U2.05.02
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R7.02.12, V6.03.144, U4.44.11, U2.05.02
+VALIDATION
+   nouveau cas test : ssnp144
+NB_JOURS_TRAV  : 180.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jaubert      JAUBERT André         DATE 20/04/2010 - 19:11:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014940 DU 2010-04-14 15:01:43
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   cas-test ssnv186 avec contact aux aretes
+FONCTIONNALITE
+   Bug dans la recopie de la base tangente qui sert à imposer des 
+   relations lineaires sur les lagranges de frottement dans le cas 
+   de la formulation du contact aux aretes.
+   Ca se passe dans la routine xlagsp, on le corrige en remplaçant 
+   la ligne 306 :
+    
+        &                        NDIM*I*(PINT-1)+J,IAD5)
+    
+   par :
+    
+        &                        NDIM*NDIM*(PINT-1)+NDIM*(I-1)
+   +J,IAD5)
+    
+   D'autre part correction dans cette meme routine d'un write(6,*) 
+   a la ligne 243 qu'il faut enlever.
+   Correction apportée par Maximilien Siavelis
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv186
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014939 DU 2010-04-14 14:56:53
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Arret fatal sur test ssnp110d
+FONCTIONNALITE
+   La dernière restitution de Maximilien Siavelis a révélé un problème
+   dans la routine xnmpl2 au niveau de:
+           DO 135 M=1,3
+             SIGN(M) = SIGM(M,KPG)
+    135    CONTINUE
+           DO 145 M=4,6
+             SIGN(M) = SIGM(M,KPG)*RAC2
+    145    CONTINUE
+   alors que SIGM est déclaré en SIGM(4,NPG)
+   Il faut donc faire un VECINI sur les 6 variables de SIGN
+   et ensuite écrire:        
+   DO 135 M=1,3
+             SIGN(M) = SIGM(M,KPG)
+    135    CONTINUE        
+             SIGN(4) = SIGM(4,KPG)*RAC2
+   Maximilien a apporté les corrections et cela marche désormais.
+   Merci à lui.
+   M'attribuer la fiche. La correction de bug sera apportée dans les
+   deux prochaines semaines.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp110d
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR massin       MASSIN Patrick         DATE 20/04/2010 - 19:11:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014302 DU 2009-12-14 15:10:35
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   Mise a jour et correction de l'orientation de la normale dans la doc r5.03.53
+FONCTIONNALITE
+   La correction du document a été faite, révision 1506.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR granet       GRANET Sylvie          DATE 20/04/2010 - 19:11:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014386 DU 2010-01-07 14:55:11
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Element d'interface en THM
+FONCTIONNALITE
+   On propose une nouvelle modélisation 2D_JOINT_HMS afin de traiter le 
+   problème des fissures avec couplage hydro-mécanique. 
+   
+   On crée donc un nouvel élément de joint, QUAD8 dégénéré, hybride 
+   entre un élément de joint quadratique et un élément THM. Ces 
+   éléments sont uniquement compatibles avec des éléments HM (HM_DPQ8 
+   et HM_DPQ8S) 2D. Par ailleurs, on choisit une méthode d'intégration 
+   sélective par défaut.
+   
+   On ajoute une nouvelle loi de comportement mécanique pour ce joint 
+   hydraulique : JOINT_BANDIS. Ses paramètres sont une rigidité normale 
+   initiale, une ouverture maximale, un paramètre gamma et une rigidité 
+   tangentielle.
+   
+   L'écoulement hydraulique longitudinal dans le joint est décrit par 
+   la loi cubique. La transmissivité de la fissure est proportionnelle 
+   à l'ouverture de fissure au cube.
+   
+   2 - Impacts fortran
+   
+   - Les routines elraga.f et elraca.f sont modifiées afin d'ajouter 
+   des familles de point d'intégration point de Gauss + sommets pour 
+   les éléments 1D.
+   - La routine op0019.f est modifiée pour permettre aux éléments HM 2D 
+   d'être éléments massif d'un élément de fissure orienté par 
+   AFFE_CARA_ELEM.
+   - La routine nmthmc.f est modifiée afin d'autoriser la nouvelle loi 
+   de comportement JOINT_BANDIS.
+   - Les routines hmlisa.f et hmgazp.f sont modifiées afin de pouvoir 
+   utiliser les lois LIQU_SATU et GAZ pour décrire l'écoulement dans la 
+   fissure.
+   
+   -On ajoute les routines aseihm.f, caeihm.f, coeihm.f, coeime.f, 
+   fneihm.f, fonoei.f, greihm.f, matthm.f et poeihm.f
+   
+   3 - Impacts catalogues
+   
+   - On introduit la nouvelle modélisation 2D_JOINT_HMS dans 
+   phenomene_modelisation__.cata
+   - On introduit un nouveau degré de liberté (LH1) et de nouvelles 
+   contraintes (LH1P,LH1M,DPRE1P,DPRE1M) dans grandeur_simple__.cata
+   - On ajoute les nouvelles familles de point d'intégration dans 
+   type_maille__.cata
+   
+   -On ajoute les catalogues d'éléments gener_ejdh21.cata (élément de 
+   bord HM_J_DPSE3) et gener_ejdh22.cata (élément de joint MH_J_DPQ8S).
+   
+   4 - Impacts catalogues python
+   
+   - affe_char_cine.capy est modifié afin de pouvoir imposer une valeur 
+   au nouveau ddl LH1.
+   -affe_modele.capy est modifié pour pouvoir affecter la nouvelle 
+   modélisation 2D_JOINT_HMS.
+   -Dans c_comp_incr. capy, c_relation .capy et defi_materiau.capy on 
+   ajoute la loi de comportement JOINT_BANDIS et ses paramètres 
+   utilisateur.
+   
+   5 - Impacts python
+   
+   -On ajoute JOINT_BANDIS dans les lois compatibles dans kit_hm.py
+   
+   -On ajoute la loi de comportement joint_bandis.py
+   
+   6 - Validation
+   
+   Quatre cas test sont ajoutés
+   -wtnp125a : Déplétion d'un réservoir (LIQU_SATU) - comparaison avec 
+   le code Lagamine
+   -wtnp125b : même problème en testant une orientation de fissure 
+   différente
+   -wtnp126a : Injection de gaz dans un milieu saturé en gaz et fracturé
+   -wtnp126b : même problème avec joint imperméable pour tester 
+   AFFE_CHAR_CINE avec LH1
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U2.04.05  U4.51.11 U4.44.03 U4.41.01 U4.51.11 U4.43.01 V7.32.126 V7.32.125
+VALIDATION
+   Passage cas test wtnp125 et wtnp126
+NB_JOURS_TRAV  : 30.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014868 DU 2010-03-29 06:29:42
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.16, le cas-test wtnp117d s'arrete en <F>_ERROR sur Calibre 4.
+FONCTIONNALITE
+   Une variable était mal dimensionnée dans l'appel des routines hml* comthm.f
+   On en profite pour faire un peu de ménages dans quelques routines
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage wtnp117 sur C4
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014859 DU 2010-03-25 16:39:09
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.16, les cas-tests wtnp123b et c s'arretent en erreur superviseur par manque de temps CPU sur Bull
+FONCTIONNALITE
+   Les cas-tests WTNP123B et C s'arretent en erreur superviseur par 
+   manque de temps CPU sur Bull.
+   Les temps renseignés dans le *.para étaient en effet beaucoup trop 
+   justes (100s pour un cas test qui tourne autours de 95s).
+   On passe le temps à 150s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage cas test wtnp123b et c
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014858 DU 2010-03-25 16:35:18
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.16, les cas-tests wtnp120b et wtnp120c sont NOOK sur Rocks et Calibre 4
+FONCTIONNALITE
+   Les résultats en NOOK correspondent à des résultats quasimment nuls 
+   (zone où il ne se passe rien). 
+   Ces valeurs epsilon doivent être évaluées avec un test en critère 
+   absolu et non relatif (0. à 1.E-8 pret)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage des test sur C4
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 20/04/2010 - 10:40:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014413 DU 2010-01-13 09:13:13
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   SV01 - cas tests PETSC en parallxc3xa8le
+FONCTIONNALITE
+   Il n'existe à ce jour qu'un seul test exploitant la librairie de solveurs PETSc et il est
+   séquentiel : yyyy118d.
+   Dans l'optique de supprimer PETSc dans la version séquentielle d'Aster, je propose de
+   détruire ce test et de restituer une nouvelle famille de tests petsc0x, qui seront tous
+   parallèles. 
+   
+   Je restitue ici le test petsc01. Il s'agit d'un test en élasticité linéaire 3D où les
+   conditions aux limites sont affectées à la fois par dualisation et élimination.
+   ...petsc01a : MECA_STATIQUE avec ALGORITHME='CR',PRE_COND='LDLT_INC'
+   ...petsc01b : STAT_NON_LINE avec ALGORITHME='CR',PRE_COND='LDLT_INC'
+   ...petsc01c : RESOUDRE avec ALGORITHME='CR',PRE_COND='LDLT_INC'
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.4.116
+VALIDATION
+   Passage du nouveau cas-test
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT petsc01a                      tardieu N.TARDIEU           98     98      0
+ CASTEST AJOUT petsc01b                      tardieu N.TARDIEU          106    106      0
+ CASTEST AJOUT petsc01c                      tardieu N.TARDIEU          115    115      0
+ CASTEST AJOUT ssnp121q                       desoza T.DESOZA           250    250      0
+ CASTEST AJOUT ssnp144a                      jaubert A.JAUBERT          521    521      0
+ CASTEST AJOUT ssnp144b                      jaubert A.JAUBERT          529    529      0
+ CASTEST AJOUT ssnp144c                      jaubert A.JAUBERT          534    534      0
+ CASTEST AJOUT ssnp144d                      jaubert A.JAUBERT          525    525      0
+ CASTEST AJOUT ssnp144e                      jaubert A.JAUBERT          520    520      0
+ CASTEST AJOUT ssnp144f                      jaubert A.JAUBERT          518    518      0
+ CASTEST AJOUT ssnp144g                      jaubert A.JAUBERT          513    513      0
+ CASTEST AJOUT ssnp144h                      jaubert A.JAUBERT          512    512      0
+ CASTEST AJOUT ssnp144i                      jaubert A.JAUBERT          516    516      0
+ CASTEST AJOUT ssnp144j                      jaubert A.JAUBERT          519    519      0
+ CASTEST AJOUT ssnp144k                      jaubert A.JAUBERT          512    512      0
+ CASTEST AJOUT ssnp144l                      jaubert A.JAUBERT          343    343      0
+ CASTEST AJOUT ssnv128x                       desoza T.DESOZA           173    173      0
+ CASTEST AJOUT ssnv217a                        idoux L.IDOUX            230    230      0
+ CASTEST AJOUT ssnv505i                       desoza T.DESOZA           225    225      0
+ CASTEST AJOUT wtnp125a                      jaubert A.JAUBERT          428    428      0
+ CASTEST AJOUT wtnp125b                      jaubert A.JAUBERT          362    362      0
+ CASTEST AJOUT wtnp126a                      jaubert A.JAUBERT          417    417      0
+ CASTEST AJOUT wtnp126b                      jaubert A.JAUBERT          415    415      0
+ CASTEST MODIF feti008a                       desoza T.DESOZA           157      9      9
+ CASTEST MODIF feti008b                       desoza T.DESOZA           162      9      9
+ CASTEST MODIF feti010a                       desoza T.DESOZA           290      2      2
+ CASTEST MODIF sdld102a                      greffet N.GREFFET          881     11      1
+ CASTEST MODIF sdld102b                      greffet N.GREFFET          471      4      1
+ CASTEST MODIF sdld102c                      greffet N.GREFFET          342      5      1
+ CASTEST MODIF sdld103a                      greffet N.GREFFET          619      5      2
+ CASTEST MODIF sdld321b                      greffet N.GREFFET          351      5      1
+ CASTEST MODIF sdld325a                      greffet N.GREFFET          488      2      1
+ CASTEST MODIF sdld325b                      greffet N.GREFFET          522      2      1
+ CASTEST MODIF sdnd104a                      greffet N.GREFFET          664     14      1
+ CASTEST MODIF sdnd105a                      greffet N.GREFFET          214      5      2
+ CASTEST MODIF sdnd106a                      greffet N.GREFFET          256      4      1
+ CASTEST MODIF sdnd112a                      greffet N.GREFFET          289      2      1
+ CASTEST MODIF sdnd121a                      greffet N.GREFFET          248      7      1
+ CASTEST MODIF sdnl104a                      greffet N.GREFFET          273      6      4
+ CASTEST MODIF sdnl104b                      greffet N.GREFFET          481      4      1
+ CASTEST MODIF sdnl105a                      greffet N.GREFFET          543      6      2
+ CASTEST MODIF sdnl105b                      greffet N.GREFFET          566      4      1
+ CASTEST MODIF ssls20a                        berard A.BERARD           138      6      5
+ CASTEST MODIF ssnv104e                       desoza T.DESOZA           467     11     11
+ CASTEST MODIF ssnv177a                        idoux L.IDOUX            251      2      2
+ CASTEST MODIF ssnv504d                       desoza T.DESOZA           304      9      9
+ CASTEST MODIF ssnv504j                       desoza T.DESOZA           271      3      3
+ CASTEST MODIF ssnv505g                       desoza T.DESOZA           326     70      2
+ CASTEST MODIF wtna106b                      jaubert A.JAUBERT          502      2      2
+ CASTEST MODIF wtnp120b                      jaubert A.JAUBERT          725     13     13
+ CASTEST MODIF wtnp120c                      jaubert A.JAUBERT          732     13     13
+ CASTEST MODIF wtnp123b                      jaubert A.JAUBERT          580      2      2
+ CASTEST MODIF wtnp123c                      jaubert A.JAUBERT          581      2      2
+ CASTEST SUPPR yyyy118d.comm                 tardieu N.TARDIEU          251      0    251
+CATALOGU AJOUT typelem/gener_ejdh21          jaubert A.JAUBERT           57     57      0
+CATALOGU AJOUT typelem/gener_ejdh22          jaubert A.JAUBERT          228    228      0
+CATALOGU MODIF compelem/grandeur_simple__    jaubert A.JAUBERT         2054     22      7
+CATALOGU MODIF compelem/phenomene_modelisation__    jaubert A.JAUBERT         1559      6      2
+CATALOGU MODIF compelem/type_maille__        jaubert A.JAUBERT          406      5      1
+CATALOGU MODIF options/char_meca_cont        jaubert A.JAUBERT           52      4      2
+CATALOGU MODIF options/char_meca_frot        jaubert A.JAUBERT           52      3      1
+CATALOGU MODIF options/rigi_cont             jaubert A.JAUBERT           51      4      1
+CATALOGU MODIF options/rigi_frot             jaubert A.JAUBERT           51      4      1
+CATALOGU MODIF options/xcvbca                jaubert A.JAUBERT           45      2      1
+CATALOGU MODIF options/xreacl                jaubert A.JAUBERT           39      7      1
+CATALOGU MODIF typelem/gener_mecpl2_xhc      jaubert A.JAUBERT          293     12      6
+CATALOGU MODIF typelem/gener_medpl2_xhc      jaubert A.JAUBERT          297     12      6
+CATALOGU MODIF typelem/gener_me_xhc          jaubert A.JAUBERT          336     12      7
+CATALOPY MODIF commande/affe_char_cine       jaubert A.JAUBERT          162      3      2
+CATALOPY MODIF commande/affe_modele          jaubert A.JAUBERT          269      2      1
+CATALOPY MODIF commande/defi_contact         jaubert A.JAUBERT          545      2      1
+CATALOPY MODIF commande/defi_materiau        jaubert A.JAUBERT         3057      8      1
+CATALOPY MODIF commande/dyna_tran_modal      greffet N.GREFFET          256      2      1
+CATALOPY MODIF commun/c_comp_incr            jaubert A.JAUBERT          143      2      1
+CATALOPY MODIF commun/c_relation             jaubert A.JAUBERT          148      2      1
+ FORTRAN AJOUT algorith/aseihm               jaubert A.JAUBERT          235    235      0
+ FORTRAN AJOUT algorith/caeihm               jaubert A.JAUBERT          152    152      0
+ FORTRAN AJOUT algorith/coeihm               jaubert A.JAUBERT          391    391      0
+ FORTRAN AJOUT algorith/coeime               jaubert A.JAUBERT          145    145      0
+ FORTRAN AJOUT algorith/fneihm               jaubert A.JAUBERT          158    158      0
+ FORTRAN AJOUT algorith/fonoei               jaubert A.JAUBERT          116    116      0
+ FORTRAN AJOUT algorith/greihm               jaubert A.JAUBERT          249    249      0
+ FORTRAN AJOUT algorith/matcox               jaubert A.JAUBERT          130    130      0
+ FORTRAN AJOUT algorith/matthm               jaubert A.JAUBERT          131    131      0
+ FORTRAN AJOUT algorith/poeihm               jaubert A.JAUBERT          191    191      0
+ FORTRAN AJOUT algorith/xmele5               jaubert A.JAUBERT          103    103      0
+ FORTRAN AJOUT elements/te0313               jaubert A.JAUBERT          285    285      0
+ FORTRAN AJOUT elements/te0314               jaubert A.JAUBERT          112    112      0
+ FORTRAN MODIF algorith/calcfh               jaubert A.JAUBERT         1641     15     26
+ FORTRAN MODIF algorith/comthm               jaubert A.JAUBERT          289      3      4
+ FORTRAN MODIF algorith/dladap               greffet N.GREFFET          547      3      3
+ FORTRAN MODIF algorith/equthm               jaubert A.JAUBERT          703      4      4
+ FORTRAN MODIF algorith/equthp               jaubert A.JAUBERT          577      3      2
+ FORTRAN MODIF algorith/exfonc               jaubert A.JAUBERT          255      3      2
+ FORTRAN MODIF algorith/hmgazp               jaubert A.JAUBERT          280      4      2
+ FORTRAN MODIF algorith/hmladg               jaubert A.JAUBERT          369      3      2
+ FORTRAN MODIF algorith/hmlgat               jaubert A.JAUBERT          289      2      2
+ FORTRAN MODIF algorith/hmliga               jaubert A.JAUBERT          352      2      2
+ FORTRAN MODIF algorith/hmlisa               jaubert A.JAUBERT          295      7      3
+ FORTRAN MODIF algorith/hmliva               jaubert A.JAUBERT          387      2      2
+ FORTRAN MODIF algorith/hmlvag               jaubert A.JAUBERT          376      2      2
+ FORTRAN MODIF algorith/hmlvga               jaubert A.JAUBERT          399      2      2
+ FORTRAN MODIF algorith/lceob1                 idoux L.IDOUX            372     18     17
+ FORTRAN MODIF algorith/lceob2                 idoux L.IDOUX            520     22     22
+ FORTRAN MODIF algorith/lceob3                 idoux L.IDOUX            475     14     14
+ FORTRAN MODIF algorith/lceobb                 idoux L.IDOUX            519     63     50
+ FORTRAN MODIF algorith/lceobg                 idoux L.IDOUX           1171     81     65
+ FORTRAN MODIF algorith/lceobl                 idoux L.IDOUX           1037     79     82
+ FORTRAN MODIF algorith/mdadap               greffet N.GREFFET          719     12      5
+ FORTRAN MODIF algorith/mdptem               greffet N.GREFFET          221     38     10
+ FORTRAN MODIF algorith/mdtr74               greffet N.GREFFET          797      8      5
+ FORTRAN MODIF algorith/meobg1                 idoux L.IDOUX            303     23     28
+ FORTRAN MODIF algorith/meobg2                 idoux L.IDOUX            385     23     27
+ FORTRAN MODIF algorith/meobg3                 idoux L.IDOUX            336     21     27
+ FORTRAN MODIF algorith/meobl1                 idoux L.IDOUX            293     22     31
+ FORTRAN MODIF algorith/meobl2                 idoux L.IDOUX            387     21     27
+ FORTRAN MODIF algorith/meobl3                 idoux L.IDOUX            371     21     30
+ FORTRAN MODIF algorith/mmelem                desoza T.DESOZA           327    113     30
+ FORTRAN MODIF algorith/mmeltm                desoza T.DESOZA            64      2      2
+ FORTRAN MODIF algorith/mmgaus                desoza T.DESOZA          1988      3      3
+ FORTRAN MODIF algorith/mminfp               jaubert A.JAUBERT          588     15      1
+ FORTRAN MODIF algorith/mmmres                desoza T.DESOZA           935      3      1
+ FORTRAN MODIF algorith/nmarch               jaubert A.JAUBERT          334     55      1
+ FORTRAN MODIF algorith/nmcalm               jaubert A.JAUBERT          214      4      3
+ FORTRAN MODIF algorith/nmcalv               jaubert A.JAUBERT          318      3      3
+ FORTRAN MODIF algorith/nmctcf               jaubert A.JAUBERT          101      5      4
+ FORTRAN MODIF algorith/nmdoet               jaubert A.JAUBERT          492     40      6
+ FORTRAN MODIF algorith/nmelcm               jaubert A.JAUBERT          306     17      4
+ FORTRAN MODIF algorith/nmelcv               jaubert A.JAUBERT          293     11      4
+ FORTRAN MODIF algorith/nminit               jaubert A.JAUBERT          265      3      3
+ FORTRAN MODIF algorith/nmtble               jaubert A.JAUBERT          221      5      4
+ FORTRAN MODIF algorith/nmthmc               jaubert A.JAUBERT          470      6      3
+ FORTRAN MODIF algorith/nsassp                desoza T.DESOZA           196     27      7
+ FORTRAN MODIF algorith/op0070               jaubert A.JAUBERT          553      2      2
+ FORTRAN MODIF algorith/op0166                berard A.BERARD           270     53      6
+ FORTRAN MODIF algorith/pjtyco                berard A.BERARD           220     89     40
+ FORTRAN MODIF algorith/pjxxco                berard A.BERARD           134      7      6
+ FORTRAN MODIF algorith/recpar               greffet N.GREFFET           83      9      5
+ FORTRAN MODIF algorith/sigeob                 idoux L.IDOUX            183     27     30
+ FORTRAN MODIF algorith/ssdt74               greffet N.GREFFET          388      5      4
+ FORTRAN MODIF algorith/xlagsp               jaubert A.JAUBERT          428      2      3
+ FORTRAN MODIF algorith/xmele1               jaubert A.JAUBERT          183      5      2
+ FORTRAN MODIF algorith/xmele2               jaubert A.JAUBERT          280     15      8
+ FORTRAN MODIF algorith/xmele3               jaubert A.JAUBERT          177      6      2
+ FORTRAN MODIF algorith/xmelem               jaubert A.JAUBERT          130     13      4
+ FORTRAN MODIF algorith/xmmbca               jaubert A.JAUBERT          220      6      3
+ FORTRAN MODIF algorith/xnmpl2               jaubert A.JAUBERT          365      3     10
+ FORTRAN MODIF algorith/xreacl               jaubert A.JAUBERT          185     22      5
+ FORTRAN MODIF debug/matimp                   desoza T.DESOZA           240     45      9
+ FORTRAN MODIF debug/mmimp4                   desoza T.DESOZA           182      3      3
+ FORTRAN MODIF elements/elraca               jaubert A.JAUBERT          957     11      4
+ FORTRAN MODIF elements/elraga               jaubert A.JAUBERT         1431     24      1
+ FORTRAN MODIF elements/te0533               jaubert A.JAUBERT         1077    289     22
+ FORTRAN MODIF elements/te0534               jaubert A.JAUBERT          906    312     41
+ FORTRAN MODIF elements/te0548               jaubert A.JAUBERT          309    123     11
+ FORTRAN MODIF modelisa/cazocx               jaubert A.JAUBERT          286     11      2
+ FORTRAN MODIF modelisa/cflecq                desoza T.DESOZA           189     13      4
+ FORTRAN MODIF modelisa/cfmmvd               jaubert A.JAUBERT          117      3      2
+ FORTRAN MODIF modelisa/elimco                desoza T.DESOZA           163      7      7
+ FORTRAN MODIF modelisa/op0019               jaubert A.JAUBERT          456      6      4
+ FORTRAN MODIF utilitai/imprsd                desoza T.DESOZA           145      2      2
+ FORTRAN MODIF utilitai/rscrsd               jaubert A.JAUBERT          438      4      3
+  PYTHON AJOUT Comportement/joint_bandis     jaubert A.JAUBERT           37     37      0
+  PYTHON MODIF Comportement/kit_hm           jaubert A.JAUBERT           55      2      2
+  PYTHON MODIF Messages/algorith15           greffet N.GREFFET          421      2      1
+  PYTHON MODIF Messages/algorith17           jaubert A.JAUBERT           66     12      1
+  PYTHON MODIF Messages/calculel5             berard A.BERARD           344      9      3
+  PYTHON MODIF Messages/contact               desoza T.DESOZA           152      5      1
+  PYTHON MODIF Messages/dynamique            greffet N.GREFFET          142     33      1
+  PYTHON MODIF SD/sd_contact                 jaubert A.JAUBERT          294      2      2
+  PYTHON MODIF SD/sd_util                    greffet N.GREFFET          191      9      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   39       11601     11601            +11601
+ MODIF :  131       56646      2377     986     +1391
+ SUPPR :    1         251               251      -251
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  171       68498     13978    1237    +12741 

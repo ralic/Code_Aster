@@ -2,7 +2,7 @@
      &                  NLISEQ,NLISRL,NLISCO,NBASCO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -240,7 +240,6 @@ C
 C
 C --- NUMERO DE L'ARETE INTERSECTÉE
 C
-            WRITE(6,*) TYPELE
             CALL CESEXI('S',JCESD3,JCESL3,IMA,1,1,ZXAIN*(PINT-1)+1,IAD3)
             CALL ASSERT(IAD3.GT.0)
             IA=NINT(ZR(JCESV3-1+IAD3))
@@ -303,7 +302,7 @@ C
               DO 145 I=1,NDIM
                 DO 146 J=1,NDIM
                   CALL CESEXI('S',JCESD5,JCESL5,IMA,1,1,
-     &                        NDIM*I*(PINT-1)+J,IAD5)
+     &                        NDIM*NDIM*(PINT-1)+NDIM*(I-1)+J,IAD5)
                   CALL ASSERT(IAD5.GT.0)
                   ZR(JCNSV-1+ZXBAS*(NUNOM-1)+3*I+J)=
      &                        ZR(JCESV5-1+IAD5)

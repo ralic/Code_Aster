@@ -2,7 +2,7 @@
      &                  LREP   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,19 +108,19 @@ C
       NZOCO  = CFDISI(DEFICO,'NZOCO' )
       IFORM  = CFDISI(DEFICO,'FORMULATION')
       CALL ASSERT(IZONE.GT.0)
-      IF (NZOCO.NE.0) THEN
+      IF (NZOCO.NE.0) THEN   
         CALL ASSERT(IZONE.LE.NZOCO)
       ENDIF       
 C
 C ---- INTERROGATION METHCO
 C 
       IF (QUESTI(1:11).EQ.'APPARIEMENT')    THEN
-        CALL JEVEUO(METHCO,'L',JMETH)      
-        IREP(1) = ZI(JMETH+ZMETH*(IZONE-1)+1-1) 
+        CALL JEVEUO(METHCO,'L',JMETH)     
+        IREP(1) = ZI(JMETH+ZMETH*(IZONE-1)+1-1)      
 C
       ELSEIF (QUESTI.EQ.'NORMALE') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
-        IREP(1) = ZI(JMETH+ZMETH*(IZONE-1)+8-1) 
+        IREP(1) = ZI(JMETH+ZMETH*(IZONE-1)+8-1)
 C
       ELSEIF (QUESTI.EQ.'MAIT') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
@@ -128,7 +128,7 @@ C
           LREP(1) = .TRUE.
         ELSE
           LREP(1) = .FALSE.
-        ENDIF 
+        ENDIF        
 C
       ELSEIF (QUESTI.EQ.'MAIT_ESCL') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
@@ -144,7 +144,7 @@ C
           LREP(1) = .TRUE.
         ELSE
           LREP(1) = .FALSE.
-        ENDIF    
+        ENDIF         
 C
       ELSEIF (QUESTI.EQ.'VECT_MAIT') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
@@ -157,7 +157,7 @@ C
           RREP(1) = ZR(JDIRNO+ZDIRN*(IZONE-1))  
         ELSE
           CALL ASSERT(.FALSE.)  
-        ENDIF 
+        ENDIF          
 C        
       ELSEIF (QUESTI.EQ.'VECT_MAIT_DIRY') THEN  
         CALL JEVEUO(METHCO,'L',JMETH)            
@@ -175,7 +175,8 @@ C
           RREP(1) = ZR(JDIRNO+ZDIRN*(IZONE-1)+2)  
         ELSE
           CALL ASSERT(.FALSE.)  
-        ENDIF                                   
+        ENDIF           
+                                          
 C
       ELSEIF (QUESTI.EQ.'VECT_ESCL') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
@@ -188,7 +189,8 @@ C
           RREP(1) = ZR(JDIRNO+ZDIRN*(IZONE-1)+3) 
         ELSE
           CALL ASSERT(.FALSE.) 
-        ENDIF  
+        ENDIF          
+         
 C              
       ELSEIF (QUESTI.EQ.'VECT_ESCL_DIRY') THEN  
         CALL JEVEUO(METHCO,'L',JMETH)   
@@ -197,7 +199,7 @@ C
           RREP(1) = ZR(JDIRNO+ZDIRN*(IZONE-1)+4)
         ELSE
           CALL ASSERT(.FALSE.) 
-        ENDIF        
+        ENDIF                 
 C              
       ELSEIF (QUESTI.EQ.'VECT_ESCL_DIRZ') THEN  
         CALL JEVEUO(METHCO,'L',JMETH)   
@@ -206,7 +208,7 @@ C
           RREP(1) = ZR(JDIRNO+ZDIRN*(IZONE-1)+5)
         ELSE
           CALL ASSERT(.FALSE.) 
-        ENDIF     
+        ENDIF              
 C
       ELSEIF (QUESTI.EQ.'TYPE_APPA') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
@@ -223,7 +225,8 @@ C
           RREP(1) = ZR(JDIRAP+3*(IZONE-1))
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF  
+        ENDIF           
+         
 C
       ELSEIF (QUESTI.EQ.'TYPE_APPA_DIRY') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
@@ -232,7 +235,7 @@ C
           RREP(1) = ZR(JDIRAP+3*(IZONE-1)+1)
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF   
+        ENDIF           
 C
       ELSEIF (QUESTI.EQ.'TYPE_APPA_DIRZ') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
@@ -241,7 +244,7 @@ C
           RREP(1) = ZR(JDIRAP+3*(IZONE-1)+2)
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF                         
+        ENDIF                                   
 C
       ELSEIF (QUESTI.EQ.'GLISSIERE_ZONE') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
@@ -257,7 +260,7 @@ C
           LREP(1) = NINT(ZR(JCMXF+ZCMXF*(IZONE-1)+10-1)).EQ.1 
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF                       
+        ENDIF                             
 C
       ELSEIF (QUESTI.EQ.'DIST_POUTRE') THEN
         CALL JEVEUO(METHCO,'L',JMETH)
@@ -280,7 +283,18 @@ C
 C        
       ELSEIF (QUESTI.EQ.'TOLE_APPA') THEN
         CALL JEVEUO(TOLECO,'L',JTOLE)
-        RREP(1) = ZR(JTOLE+ZTOLE*(IZONE-1)+2-1)        
+        RREP(1) = ZR(JTOLE+ZTOLE*(IZONE-1)+2-1)
+
+C
+C ---- INTERROGATION CARAXF
+C 
+      ELSEIF (QUESTI.EQ.'RELATION') THEN
+          IF (IFORM.EQ.3) THEN 
+          CALL JEVEUO(CARAXF,'L',JCMXF)
+          RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+16-1)
+          ELSE
+          CALL ASSERT(.FALSE.)
+          ENDIF       
 C
 C ---- INTERROGATION CMCF/CMXF
 C             

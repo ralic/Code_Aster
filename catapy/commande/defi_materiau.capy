@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+#& MODIF COMMANDE  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2929,6 +2929,12 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              BETAM           =SIMP(statut='o',typ='R'),
              PREF            =SIMP(statut='o',typ='R'),
            ),
+             JOINT_BANDIS         =FACT(statut='f',
+             K                =SIMP(statut='o',typ='R'),
+             DMAX             =SIMP(statut='o',typ='R'),
+             GAMMA            =SIMP(statut='o',typ='R'),
+             KT               =SIMP(statut='f',typ='R',defaut = 1.E12),
+           ),
 ####  MONOCRISTAL
 
            ECOU_VISC1      =FACT(statut='f',
@@ -3048,3 +3054,4 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 
            INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )  ;
+

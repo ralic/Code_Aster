@@ -1,0 +1,225 @@
+# MODIF  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
+# TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
+# ssnv505i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# REMARQUES : 
+# - CE TEST VALIDE L'UTILISATION DE DIST_COQUE AVEC METHODE CONTINUE
+# - L'UTILISATION DES DKT EN LINEAIRE GEOMETRIQUE NE PERMET PAS
+#   DE TRAITER EXACTEMENT LE CAS DU CONTACT ENTRE LES 2 POUTRES
+# - EN CONSEQUENCE, LES TESTS SONT DE NON-REGRESSION
+
+DEBUT(CODE=_F(NOM='SSNV505I', NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'), DEBUG=_F(SDVERI='OUI'))
+
+MAILL2=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAILL2=DEFI_GROUP(reuse =MAILL2,
+                  MAILLAGE=MAILL2,
+                  CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),
+                                 _F(NOM='SOMMET',
+                                    GROUP_MA='TOUT',
+                                    CRIT_NOEUD='SOMMET',),
+                                 ),
+                  INFO=1
+                  );
+
+MODE=AFFE_MODELE(MAILLAGE=MAILL2,
+                 AFFE=_F(GROUP_MA='TOUT',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DKT',),);
+
+
+MAILL2=MODI_MAILLAGE(reuse =MAILL2,
+                     MAILLAGE=MAILL2,
+                     ORIE_NORM_COQUE=_F(GROUP_MA='POUTRE_B',
+                                        VECT_NORM=(0.0,1.0,0.0),
+                                        GROUP_NO='A',
+                                      ),
+                     );
+
+MAILL2=MODI_MAILLAGE(reuse =MAILL2,
+                     MAILLAGE=MAILL2,
+                     ORIE_NORM_COQUE=_F(GROUP_MA='POUTRE_H',
+                                        VECT_NORM=(0.0,-1.0,0.0),
+                                        GROUP_NO='B',),
+                     );
+
+MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,
+                              NU=0.3333,),);
+
+CARA=AFFE_CARA_ELEM(MODELE=MODE,
+                    COQUE=_F(GROUP_MA=('POUTRE_B','POUTRE_H'),
+                             COQUE_NCOU =1,
+                             EPAIS=63.5,
+                             COEF_RIGI_DRZ=1.E-3,
+                             ),);
+
+CM=AFFE_MATERIAU(MAILLAGE=MAILL2,
+                 AFFE=_F(GROUP_MA='TOUT',
+                         MATER=MPOUTRE,),);
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
+                        DDL_IMPO=(_F(GROUP_NO='SOMMET',
+                                     DZ=0,DRX=0),
+                                 _F(GROUP_NO=('COTE_A','COTE_B'),
+                                     DX=0.0,DY=0.0,DZ=0.0,DRX=0,DRY=0,DRZ=0,),
+                                  ),);
+
+
+CH1=AFFE_CHAR_MECA(MODELE=MODE,
+                   DDL_IMPO=_F(GROUP_NO=('COTE_C'),
+                               DY=-790.,
+                             ),);
+
+F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
+
+
+CH2 = DEFI_CONTACT(MODELE       = MODE,
+                   FORMULATION  = 'CONTINUE',
+                   ZONE=(
+                        _F(
+                            GROUP_MA_MAIT='POUTRE_B',
+                            GROUP_MA_ESCL='POUTRE_H',
+                            SANS_GROUP_NO=('COTE_A','COTE_B'),
+                            DIST_MAIT=F_DIST_M,
+                            CARA_ELEM=CARA, 
+                            DIST_COQUE='OUI', 
+                            TOLE_PROJ_EXT=0.25,
+                         ),                           
+                                                                           
+                       ),  
+                  )
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,1.0,1.0),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=1.,
+                                   NOMBRE=20,),);
+
+
+LARCH=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=1.,
+                                   NOMBRE=25,),);
+
+U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                MODELE=MODE,
+                CHAM_MATER=CM,
+                CARA_ELEM=CARA,
+                EXCIT=(_F(CHARGE=COND_LIM,),
+                       _F(CHARGE=CH1,
+                          FONC_MULT=RAMPE,),
+                       ),
+                CONTACT  = CH2,       
+                COMP_INCR=_F(RELATION='ELAS',
+                             #DEFORMATION='PETIT_REAC',
+                             GROUP_MA='TOUT',),
+                INCREMENT=_F(LIST_INST=LINST,
+                             INST_FIN=1.0,
+                             ),
+                NEWTON=_F(REAC_ITER=1,
+                          ),
+                #RECH_LINEAIRE=_F(),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
+                             #LIST_INST=LARCH,
+                             ),
+                INFO=1,);
+
+U=CALC_NO(reuse =U,
+          RESULTAT=U,
+          CARA_ELEM=CARA,
+          OPTION=('REAC_NODA','FORC_NODA',),
+          MODELE=MODE,
+          CHAM_MATER=CM,
+          EXCIT=(_F(CHARGE=COND_LIM,),
+                 _F(CHARGE=CH1,
+                    FONC_MULT=RAMPE,),
+                 ),
+         );
+
+TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+                                 GROUP_NO='COTE_C',
+                                 RESULTAT=U,
+                                 NOM_CHAM='DEPL',
+                                 NOM_CMP='DY',
+                                 OPERATION='EXTRACTION',),);
+IMPR_TABLE(FORMAT='TABLEAU',
+           TABLE=TAB_DEPL,);
+
+TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
+                                 GROUP_NO=('COTE_A','COTE_C'),
+                                 RESULTAT=U,
+                                 NOM_CHAM='FORC_NODA',
+                                 RESULTANTE='DY',
+                                 OPERATION='EXTRACTION',),);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.2),
+           VALE=-345.9108,
+           PRECISION=0.1E-2,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.1.19',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4),
+           VALE=-1011.761,
+           PRECISION=0.1E-2,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.1.19',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.6),
+           VALE=-2094.007,
+           PRECISION=0.1E-2,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.1.19',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8),
+           VALE=-3192.924,
+           PRECISION=0.1E-2,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.1.19',);
+
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0),
+           VALE=-4302.262,
+           PRECISION=0.1E-2,
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.1.19',);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=U,),);
+
+FIN();

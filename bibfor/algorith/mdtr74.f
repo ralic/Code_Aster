@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,9 +61,10 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19 MARIG
       LOGICAL      LAMOR,LFLU,LPSTO
       INTEGER      KREF,ITYPFL,KINST
-      INTEGER VALI(3)
+      INTEGER      VALI(3)
       REAL*8       R8B,XLAMBD,ACRIT,AGENE,TOTO
-      REAL*8 VALR(3)
+      REAL*8       VALR(3)
+      REAL*8       DT,DTS,DTU,DTMAX
 
 C  COUPLAGE EDYOS
 C =>
@@ -89,6 +90,7 @@ C-----------------------------------------------------------------------
       DEUX = 2.D0
 C-----------------------------------------------------------------------
 
+      
       IBID = 0
       JRANC = 1
       JPARC = 1
@@ -590,7 +592,8 @@ C     --- DESTRUCTION DU VECTEUR BASE MODALE (POUR FAIRE DE LA PLACE)
 C     --- VERIFICATION DU PAS DE TEMPS ---
 
       CALL MDPTEM(NBMODE,ZR(JMASG),ZR(JRAIG),ZR(JPULS),NBNLI,ZR(JDEPL),
-     &            ZR(JPARC),ZK8(JNOEC),DT,TINIT,TFIN,NBPAS,INFO,IRET)
+     & ZR(JPARC),ZK8(JNOEC),DT,DTS,DTU,DTMAX,TINIT,TFIN,NBPAS,INFO,IRET)
+C      DTS = DTS / 10.D0
       
 C
 C     --- COUPLAGE EDYOS ---
@@ -613,7 +616,7 @@ C     --- ARCHIVAGE ---
         CALL GETVIS('ARCHIVAGE','PAS_ARCH',1,1,1,IPARCH,N1)
         IF (N1.EQ.0) IPARCH = 1
         IF (METHOD.EQ.'ADAPT') THEN
-          DTARCH = DT*IPARCH
+          DTARCH = DTMAX*IPARCH
           NBSAUV = INT((TFIN-TINIT)/DTARCH) + 1
           IF ((TFIN - (TINIT+(NBSAUV-1)*DTARCH)).GE.R8PREM()) THEN
              NBSAUV=NBSAUV+1
@@ -716,7 +719,8 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
      &              NBPAL,NUMDDL,DTSTO,TCF,TFIN,VROTAT,PRDEFF,NOMRES)
 
       ELSE IF (METHOD.EQ.'ADAPT') THEN
-        CALL MDADAP(DT,NBMODE,ZR(JPULS),ZR(JPUL2),ZR(JMASG),IBID,
+        CALL MDADAP(DT,DTMAX,NBMODE,ZR(JPULS),ZR(JPUL2),ZR(JMASG),
+     &              IBID,
      &              ZR(JRAIG),IBID,LAMOR,ZR(JAMOG),IBID,TYPBAS,BASEMO,
      &              TINIT,TFIN,DTARCH,NBSAUV,ITEMAX,PREC,XLAMBD,LFLU,
      &              NBNLI,ZI(JRANC),ZR(JDEPL),ZR(JPARC),ZK8(JNOEC),
@@ -728,7 +732,6 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
      &              ZK8(JNOVIT),ZK8(JNOACC),ZK8(JNOMFO),ZR(JPSID),
      &              MONMOT,
      &              NBPAL,NUMDDL,DTSTO,TCF,VROTAT,PRDEFF,NOMRES)
-
       ELSE IF (METHOD.EQ.'NEWMARK') THEN
         CALL MDNEWM(NBPAS,DT,NBMODE,ZR(JPULS),ZR(JPUL2),ZR(JMASG),
      &              ZR(JRAIG),LAMOR,ZR(JAMOG),TYPBAS,BASEMO,TINIT,

@@ -1,7 +1,7 @@
       CHARACTER*16 FUNCTION MMELTM(ITYP)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,7 +50,7 @@ C
      &      'QU8QU4','QUAD88','QU4TR3','TR3QU4','TR6QU4',
      &      'QU4TR6','TR6QU8','QU8TR6','TR6QU9','QU9TR6',
      &      'QU8TR3','TR3QU8','QU8QU9','QU9QU8','QU9QU4',
-     &      'QU4QU9','QU9TR3','TR3QU9','QU9QU9','SEG22'/
+     &      'QU4QU9','QU9TR3','TR3QU9','QUAD99','SEG22'/
 C
 C ----------------------------------------------------------------------
 C

@@ -1,4 +1,4 @@
-#@ MODIF sd_util SD  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_util SD  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,21 +51,27 @@ def sdu_compare(ojb, checker, val1, comp, val2, comment=''):
     ok = 0
     if comp == "==" :
        ok = val1 == val2
+       comp1 = "n'est pas égale au"
     elif comp == "!=" :
        ok = val1 != val2
+       comp1 = "est égale au"
     elif comp == ">=" :
        ok = val1 >= val2
+       comp1 = "est inférieure strictement au"
     elif comp == "<=" :
        ok = val1 <= val2
+       comp1 = "est supérieure strictement au"
     elif comp == ">" :
        ok = val1 > val2
+       comp1 = "est inférieure ou égale au"
     elif comp == "<" :
        ok = val1 < val2
+       comp1 = "est supérieure ou égale au"
     else :
        sdu_assert(ojb, checker, 0, 'sdu_compare: opérateur de comparaison interdit: '+comp)
 
     if not ok :
-            checker.err(ojb, "condition non respectée : %s  %s  %s (%s)" % (val1,comp,val2,comment))
+            checker.err(ojb, "condition non respectée pour le test suivant : longueur séquence (%s) %s nombre d'éléments différents dans la séquence (%s) (%s)" % (val1,comp1,val2,comment))
 
 
 #   1.2 Utilitaires pour des séquences :
@@ -80,7 +86,7 @@ def sdu_tous_differents(ojb,checker,sequence=None,comment=''):
     else :
         seq=ojb.get()
 
-    sdu_compare(ojb, checker, len(seq), '==', len(set(seq)), comment='Tous différents: '+comment)
+    sdu_compare(ojb, checker, len(seq), '==', len(set(seq)), comment='Tous les éléments de la séquence devraient être différents, mais ils ne le sont pas'+comment)
 
 
 def sdu_tous_non_blancs(ojb,checker,sequence=None,comment=''):

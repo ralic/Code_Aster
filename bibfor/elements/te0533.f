@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,22 +58,36 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      JINDCO,JDONCO,JLSN,IPOIDS,IVF,IDFDE,JGANO,IGEOM
       INTEGER      IDEPM,IDEPD,IMATT,JLST,JPTINT,JAINT,JCFACE,JLONCH
       INTEGER      IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,JBASEC,JSEUIL
-      INTEGER      NDIM,DDLH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF
+      INTEGER      NDIM,DDLH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF,JCOHES
       INTEGER      NPG,NPGF,XOULA,FAC(6,4),NBF
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
       INTEGER      INTEG,NFE,SINGU,JSTNO,NVIT
       INTEGER      NNOL,PLA(27),LACT(8),NLACT
       CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG
-      REAL*8       FFI,FFJ,FFP(27),FFC(8),SAUT(3),KNP(3,3)
+      REAL*8       FFI,FFJ,FFP(27),FFC(8),KNP(3,3)
       REAL*8       MMAT(204,204),JAC,RHON,MU,RHOTK,COEFBU,COEFFR
+      REAL*8       DEPEQI,SQRNOR,SQRTAN,DTANG(3),DNOR(3)
+      REAL*8       BETA,BETASQ, GC,SIGMC,ALPHA0,ALPHA
       REAL*8       NDN(3,6),TAU1(3,6),TAU2(3,6),LAMB1(3)
       REAL*8       ND(3),METR(2,2),P(3,3),KN(3,3),R3(3),SEUIL(60),DDOT
       REAL*8       PTKNP(3,3),TAUKNP(2,3),TAIKTA(2,2),IK(3,3),NBARY(3)
-      REAL*8       LSN,LST,R,RR,E,G(3),RBID,ID(3,3)
+      REAL*8       LSN,LST,R,RR,E,G(3),RBID,ID(3,3),R8PREM
+      REAL*8       DDT1(3,3),DDT2(3,3),DDT3(3,3),DDT4(3,3),COHES(60)
       LOGICAL      ADHER
       REAL *8      CSTACO,CSTAFR,CPENCO,CPENFR,VITANG(3),GT(3),X(4)
       INTEGER      ZXAIN,XXMMVD
       LOGICAL      LPENAF,MALIN,LPENAC
+      CHARACTER*2  CODRET(3)
+      CHARACTER*8  NOMRES(3)
+      REAL*8       VALRES(3),PENADH,RELA
+      INTEGER      IMATE,III,IA,IB
+      REAL*8       VIM(9),VIP(9)
+      REAL*8       SAUT(3),DSAUT(3),TAU11(3),TAU22(3)              
+      REAL*8       SIGMA(3,3),DSIDEP(3,3)
+      REAL*8       AM(3),DAM(3),TSELAS
+      REAL*8       COEFF1,COEFF2,COEFF3,COEFF4,UNITY(3,3),PP(3,3)     
+      CHARACTER*16 OPTIO2,ENR
+      REAL*8       AM2D(2),DAM2D(2),DSID2D(2,2)
 C......................................................................
 
       CALL JEMARQ()
@@ -85,6 +99,7 @@ C
       ZXAIN=XXMMVD('ZXAIN')
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+
 C
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
       CALL XTEINI(NOMTE,DDLH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL)
@@ -95,15 +110,21 @@ C
       IF (NDIM .EQ. 3) THEN
          CALL CONFAC(TYPMA,IBID2,IBID,FAC,NBF)
       ENDIF
-
+      
 C     INITIALISATION DE LA MATRICE DE TRAVAIL
       CALL MATINI(204,204,0.D0,MMAT)
+      
+C------ INITIALISATION DES VARIABLES INTERNES POUR CZM-XFEM
+      DO 265 III=1,9
+      VIM(III)=0.0D0
+      VIP(III)=0.0D0
+ 265  CONTINUE 
 C
 C-----------------------------------------------------------------------
 C     RECUPERATION DES ENTREES / SORTIE
 C-----------------------------------------------------------------------
 C
-      CALL JEVECH('PGEOMER','E',IGEOM)
+      CALL JEVECH('PGEOMER','E',IGEOM)   
 C     DEPMOI
       CALL JEVECH('PDEPL_M','L',IDEPM)
 C     DEPDEL
@@ -118,22 +139,36 @@ C     DEPDEL
       CALL JEVECH('PCFACE','L',JCFACE)
       CALL JEVECH('PLONCHA','L',JLONCH)
       CALL JEVECH('PBASECO','L',JBASEC)
+      CALL JEVECH('PMATUUR','E',IMATT) 
 
-      CALL JEVECH('PMATUUR','E',IMATT)
 
+      CALL TEATTR(NOMTE,'S','XFEM',ENR,IBID)          
+      IF (ENR.EQ.'XHC') THEN
+        RELA =  ZR(JDONCO-1+10)
+      ELSE
+        RELA=0.0D0
+      ENDIF
+
+      IF(RELA.EQ.1.D0) THEN
+        CALL JEVECH('PMATERC','L',IMATE)
+        CALL JEVECH('PCOHES' ,'L',JCOHES)
+      ENDIF         
+        
+        
 C     RECUPERATIONS DES DONNEES SUR LE CONTACT ET
 C     SUR LA TOPOLOGIE DES FACETTES
       NINTER=ZI(JLONCH-1+1)
       NFACE=ZI(JLONCH-1+2)
-
+      
       DO 10 I=1,60
         INDCO(I) = ZI(JINDCO-1+I)
         SEUIL(I) = ZR(JSEUIL-1+I)
+      IF(RELA.EQ.1.D0)COHES(I) = ZR(JCOHES-1+I)
  10   CONTINUE
 
       RHON = ZR(JDONCO-1+1)
       MU = ZR(JDONCO-1+2)
-      RHOTK = ZR(JDONCO-1+3)
+      RHOTK = ZR(JDONCO-1+3)               
 
 C     COEFFICIENTS DE STABILISATION
       CSTACO=ZR(JDONCO-1+6)
@@ -142,7 +177,6 @@ C     COEFFICIENTS DE STABILISATION
 C     COEFFICIENTS DE PENALISATION
       CPENCO=ZR(JDONCO-1+8)
       CPENFR=ZR(JDONCO-1+9)
-
       IF (CSTACO.EQ.0.D0) CSTACO=RHON
       IF (CSTAFR.EQ.0.D0) CSTAFR=RHOTK
 
@@ -196,8 +230,9 @@ C     DISCUSSION VOIR BOOK IV 18/10/2004 ET BOOK VI 06/07/2005
           CFACE(I,J)=ZI(JCFACE-1+NDIM*(I-1)+J)
  12      CONTINUE
  11   CONTINUE
+ 
 
-C     RECUPERATION DU COEFFICIENT DE MISE À L'ECHELLE DES PRESSIONS
+C     RECUPERATION DU COEFFICIENT DE MISE Ã€ L'ECHELLE DES PRESSIONS
       E=ZR(JDONCO-1+5)
 
 C     RECUPERATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
@@ -222,19 +257,21 @@ C
 C     LISTE DES LAMBDAS ACTIFS
 C
       IF (MALIN) THEN
-        CALL XLACTI(TYPMA,NINTER,JAINT,LACT,NLACT)
+        CALL XLACTI(TYPMA,NINTER,JAINT,LACT,NLACT) 
       ENDIF
+
 C
 C-----------------------------------------------------------------------
 C
 C     BOUCLE SUR LES FACETTES
-      DO 100 IFA=1,NFACE
+      DO 100 IFA=1,NFACE     
+C
 C       NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
         IF (MALIN) THEN
           NNOL=NNO
           DO 15 I=1,NNO
-            CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,I,PLI)
-            PLA(I)=PLI
+              CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,I,PLI)
+              PLA(I)=PLI
  15       CONTINUE
         ELSE
           NNOL=NNOF
@@ -246,6 +283,7 @@ C           PLACE DU LAMBDA DANS LA MATRICE
             PLA(I)=PLI
  16       CONTINUE
         ENDIF
+        
 C
 C       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
         DO 110 IPGF=1,NPGF
@@ -255,7 +293,7 @@ C         INDICE DE CE POINT DE GAUSS DANS INDCO
 C
 C         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 C         ET DES FF DE L'ELEMENT PARENT AU POINT DE GAUSS
-C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
+C         ET LA NORMALE ND ORIENTÃ‰E DE ESCL -> MAIT
           IF (NDIM.EQ.3) THEN
             CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
      &                                         'NON',JAC,FFP,RBID,ND)
@@ -267,7 +305,6 @@ C        CALCUL DES FONCTIONS DE FORMES DE CONTACT DANS LE CAS LINEAIRE
           IF (MALIN) THEN
             CALL XMOFFC(LACT,NLACT,NNO,FFP,FFC)
           ENDIF
-C
 C         CE POINT DE GAUSS EST-IL SUR UNE ARETE?
           K=0
           DO 17 I=1,NINTER
@@ -297,7 +334,7 @@ C         NE CONTIENT PAS DE NOEUDS
      &             .OR.(FPG.EQ.'XCON')) NVIT=1
 
 C         NORMALE AU CENTRE DE LA FACETTE
-          CALL VECINI(NDIM,0.D0,NBARY)
+          CALL VECINI(3,0.D0,NBARY)
           DO 122 I=1,NNOF
             NBARY(1)=NBARY(1)+NDN(1,CFACE(IFA,I))/NNOF
             NBARY(2)=NBARY(2)+NDN(2,CFACE(IFA,I))/NNOF
@@ -323,9 +360,9 @@ C         I) CALCUL DES MATRICES DE CONTACT
 C         ..............................
 
           IF (OPTION.EQ.'RIGI_CONT') THEN
-
+          
 C
-C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT LA MATRICE C
+C  SI PAS DE CONTACT POUR CE PG : ON REMPLIT LA MATRICE C
             IF (INDCO(ISSPG).EQ.0) THEN
 C
               IF (NVIT.NE.0) THEN
@@ -355,6 +392,7 @@ C
  120            CONTINUE
 
               ENDIF
+               
 C
 C           SI CONTACT POUR CE PG : ON REMPLIT LES MATRICES A, AT ET A_U
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
@@ -462,12 +500,13 @@ C
 
  221              CONTINUE
  220            CONTINUE
-              ENDIF
+              ENDIF 
 C
             ELSE
 C             SI INDCO N'EST NI EGAL A 0 NI EGAL A 1
 C             PROBLEME DE STATUT DE CONTACT.
-              CALL ASSERT(INDCO(ISSPG).EQ.0 .OR. INDCO(ISSPG).EQ.1)
+              CALL ASSERT(INDCO(ISSPG).EQ.0
+     &             .OR. INDCO(ISSPG).EQ.1)
             END IF
 C
 C         II) CALCUL DES MATRICES DE FROTTEMENT
@@ -477,7 +516,8 @@ C         ..............................
 
             IF (MU.EQ.0.D0.OR.SEUIL(ISSPG).EQ.0.D0) INDCO(ISSPG) = 0
 
-C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LA MATRICE F
+C         II.1) SI PAS DE CONTACT POUR CE PG : 
+C               ON REMPLIT QUE LA MATRICE F
             IF (INDCO(ISSPG).EQ.0) THEN
 
               IF (NVIT.NE.0) THEN
@@ -504,7 +544,7 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LA MATRICE F
                       NLJ=CFACE(IFA,J)
                     ENDIF
 
-C                   MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
+C                   MÃ‰TRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
                     METR(1,1)=DDOT(NDIM,TAU1(1,NLI),1,TAU1(1,NLJ),1)
                     IF (NDIM.EQ.3) THEN
                       METR(1,2)=DDOT(NDIM,TAU1(1,NLI),1,TAU2(1,NLJ),1)
@@ -514,6 +554,7 @@ C                   MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
 
                     DO 152 K = 1,NDIM-1
                       DO 153 L = 1,NDIM-1
+
                         MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
      &                           + FFI * FFJ * METR(K,L) * JAC
 
@@ -522,9 +563,228 @@ C                   MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
  151              CONTINUE
  150            CONTINUE
 
-             ENDIF
+              ENDIF
 
-C           SI CONTACT POUR CE PG : ON REMPLIT B, BT, B_U ET F
+C           II.2. CALCUL DES MATRICES DE COHESION
+
+C           II.2.1. ACTIVATION DE LA LOI COHESIVE 
+C                   ET RECUPERATION DES PARAMETRES MATERIAUX :
+C        .............................. 
+              IF(RELA.NE.1.0D0) THEN
+                GO TO 53
+              ENDIF
+                            
+              NOMRES(1) = 'GC'
+              NOMRES(2) = 'SIGM_C'
+              NOMRES(3) = 'PENA_ADHERENCE'
+             
+              CALL RCVALA ( ZI(IMATE),' ','RUPT_FRAG',0,' ',0.D0,3,
+     &                     NOMRES,VALRES,CODRET, 'FM' )
+              GC   = VALRES(1)              
+              SIGMC  = VALRES(2)               
+              PENADH = VALRES(3)
+              BETA=1.0D0                
+              BETASQ=BETA*BETA
+              ALPHA0=(GC/SIGMC)*PENADH
+C
+C           II.2.2. CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT [[Ueg]]
+C        .............................. 
+              DEPEQI=0.0D0
+              CALL MATINI(3,3,0.D0,DSIDEP)
+              CALL MATINI(2,2,0.D0,DSID2D)
+              CALL MATINI(3,3,0.D0,SIGMA)
+              CALL MATINI(3,3,0.D0,UNITY)
+              CALL VECINI(3,0.D0,AM)
+              CALL VECINI(3,0.D0,DAM)
+              CALL MATINI(3,3,0.D0,PP)
+              CALL VECINI(3,0.D0,TAU11)
+              CALL VECINI(3,0.D0,TAU22)
+
+              DO 215 I = 1,NDIM
+                UNITY(I,I)= 1.0D0
+ 215          CONTINUE  
+        
+C             P : OPERATEUR DE PROJECTION 3D
+              CALL XMAFR1(3,ND,P)                
+              CALL VECINI(3,0.D0,SAUT)
+C 
+              DO 204 INO=1,NNO
+                DO 205 J=1,DDLH
+                       SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) *
+     &                           (ZR(IDEPD-1+DDLS*(INO-1)+NDIM+J)
+     &                          +ZR(IDEPM-1+DDLS*(INO-1)+NDIM+J)
+     &                           )
+ 205            CONTINUE                            
+                DO 206 J = 1,SINGU*NDIM
+                       SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) * RR *
+     &                           (ZR(IDEPD-1+DDLS*(INO-1)+NDIM+DDLH+J)
+     &                          +ZR(IDEPM-1+DDLS*(INO-1)+NDIM+DDLH+J)
+     &                           )
+ 206            CONTINUE
+ 204          CONTINUE
+              DO 310 I = 1,NNOL
+                PLI=PLA(I)
+                IF (MALIN) THEN
+                    FFI=FFC(I)
+                    NLI=LACT(I)
+                    IF (NLI.EQ.0) GOTO 310
+                ELSE
+                    FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+                    NLI=CFACE(IFA,I)
+                 ENDIF
+                 DO 311 J=1,NDIM
+                   IF (NDIM .EQ.3) THEN
+                       TAU11(J)=TAU11(J)+FFI*TAU1(J,NLI)
+                       TAU22(J)=TAU22(J)+FFI*TAU2(J,NLI)
+                   ELSEIF (NDIM.EQ.2) THEN
+                       TAU11(J)=TAU11(J)+FFI*TAU1(J,NLI)
+                   ENDIF
+ 311             CONTINUE
+ 310          CONTINUE 
+
+              DO 218 I=1,NDIM
+                DTANG(I) = 0.D0
+                DNOR(I) = 0.D0
+
+                DO 219  K=1,NDIM
+                  PP(I,K)=ND(I)*ND(K)
+                  DTANG(I)=DTANG(I)+P(I,K)*SAUT(K)
+                  DNOR(I) = DNOR(I) +PP(I,K)*SAUT(K)                    
+ 219            CONTINUE 
+                AM(1) = AM(1) + DNOR(I)*ND(I)
+                AM(2) = AM(2) + DTANG(I)*TAU11(I)
+                AM(3) = AM(3) + DTANG(I)*TAU22(I)
+                DAM(1) = AM(1)
+                DAM(2) = AM(2)
+                DAM(3) = AM(3)  
+ 218          CONTINUE
+ 
+              SQRTAN=0.D0
+              SQRNOR=0.D0
+                
+              DO 214 I=1,NDIM
+                SQRTAN=SQRTAN+DTANG(I)**2
+                SQRNOR=SQRNOR+DNOR(I)**2
+ 214          CONTINUE 
+ 
+              DEPEQI = SQRT(SQRNOR+BETASQ*SQRTAN)                 
+              ALPHA = DEPEQI
+C                
+C VIM = VARIABLES INTERNES UTILISEES DANS LCEJEX
+C.............VIM(1): SEUIL, PLUS GRANDE NORME DU SAUT
+C.............VIM(2): INDICATEUR DE DISSIPATION (0 : NON, 1 : OUI)
+              IF ( ( ALPHA . GE . ALPHA0) . AND . 
+     &                ( ALPHA . GE . COHES(ISSPG)*1.001D0) ) THEN
+                VIM(1) = ALPHA
+                VIM(2) = 1
+              ELSE
+                VIM(1) = COHES(ISSPG)   
+                VIM(2) = 0
+              ENDIF
+C                
+C L'INTERPENETRATION DES LEVRES DE LA FISSURE CORRESPOND
+C        A UN SAUT NEGATIF DANS LCEJEX                  
+C
+              DO 777 I=1,NDIM
+                AM(I)=-AM(I)
+                DAM(I)=-DAM(I)
+ 777          CONTINUE
+ 
+              OPTIO2=OPTION
+              OPTION='RIGI_MECA'
+              
+              IF (NDIM.EQ.2)   THEN
+                           
+                AM2D(1)=AM(1)
+                AM2D(2)=AM(2)              
+                DAM2D(1)=DAM(1)
+                DAM2D(2)=DAM(2)
+                CALL LCEJEX('RIGI',IPGF,1,2,ZI(IMATE),OPTION,AM2D, 
+     &                      DAM2D,SIGMA,DSID2D,VIM,VIP)
+                DSIDEP(1,1)=DSID2D(1,1)                
+                DSIDEP(1,2)=DSID2D(1,2)                
+                DSIDEP(2,1)=DSID2D(2,1)                
+                DSIDEP(2,2)=DSID2D(2,2)                
+              
+              ELSE IF (NDIM.EQ.3)   THEN                         
+                CALL LCEJEX('RIGI',IPGF,1,3,ZI(IMATE),OPTION,AM, 
+     &                      DAM,SIGMA,DSIDEP,VIM,VIP)
+              ENDIF     
+     
+              OPTION=OPTIO2
+
+              IF (ABS(DEPEQI) . LE . R8PREM() ) THEN
+                  GOTO 110
+              ELSE
+C
+C           II.2.3. CALCUL DES MATRICES DE COHESION 
+C        .............................. 
+                CALL MATINI(3,3,0.D0,DDT1)
+                CALL MATINI(3,3,0.D0,DDT2)
+                CALL MATINI(3,3,0.D0,DDT3)
+                CALL MATINI(3,3,0.D0,DDT4)    
+C
+                IF ( ( ALPHA . GE . ALPHA0) . AND . 
+     &                  ( ALPHA . GE . COHES(ISSPG)*1.001D0) ) THEN
+C                 CHARGE COHESIVE-ENDOMAGEMENT 
+                  COEFF1 = (DSIDEP(1,1)-DSIDEP(2,2))/
+     &                         ((AM(1))**2-(AM(2))**2)
+                  COEFF2 = DSIDEP(1,1) - COEFF1*(AM(1))**2 
+                  COEFF3 = -(SIGMC*COEFF2)/DEPEQI                
+                  COEFF4 = (SIGMC*DEPEQI+GC)/(DEPEQI*SIGMC*GC)
+                  
+                  DO 216 I = 1,NDIM
+                    DO 217 J = 1,NDIM
+                      DDT1(I,J)= COEFF1*DNOR(I)*DNOR(J)+
+     &                              COEFF2*UNITY(I,J)
+                      DDT2(I,J)=(COEFF3*DNOR(I)*DTANG(J)*COEFF4)
+                      DDT3(I,J)=(COEFF3*DTANG(I)*DNOR(J)*COEFF4)
+                      DDT4(I,J)= COEFF1*DTANG(I)*DTANG(J)+
+     &                              COEFF2*UNITY(I,J)
+ 217                CONTINUE
+ 216              CONTINUE
+              
+                ELSE IF ( ( ALPHA . LT . ALPHA0) . AND . 
+     &                  ( ALPHA . GE . COHES(ISSPG)*1.001D0) ) THEN
+C                 CHARGE ELASTIQUE AVANT ENDOMAGEMENT     
+                  TSELAS = DSIDEP(1,1)
+                  DO 316 I = 1,NDIM
+                    DO 317 J = 1,NDIM                        
+                      DDT1(I,J)=TSELAS*UNITY(I,J)
+                      DDT2(I,J)=0.0D0
+                      DDT3(I,J)=0.0D0
+                      DDT4(I,J)=TSELAS*UNITY(I,J)
+317                 CONTINUE
+316               CONTINUE
+
+                ELSE IF ( ALPHA . LT . COHES(ISSPG)*1.001D0)  THEN
+C                 CHARGE ET DECHARGE ELASTIQUE APRES ENDOMAGEMENT
+                  ALPHA = COHES(ISSPG)
+                  TSELAS = DSIDEP(1,1)
+
+                  DO 416 I = 1,NDIM
+                    DO 417 J = 1,NDIM
+                      DDT1(I,J)=TSELAS*UNITY(I,J)
+                      DDT2(I,J)=0.0D0
+                      DDT3(I,J)=0.0D0
+                      DDT4(I,J)=TSELAS*UNITY(I,J)
+ 417                CONTINUE
+ 416              CONTINUE 
+
+                ELSE
+C                ALPHA NE CORRESPOND A AUCUN CAS
+                 CALL ASSERT(.FALSE.)
+                ENDIF
+
+                CALL MATCOX(NDIM,PP,DDT1,DDT2,DDT3,DDT4,P,
+     &                  NNO,DDLH,DDLS,JAC,FFP,SINGU,RR,
+     &                  MMAT)  
+              ENDIF
+C 
+ 53           CONTINUE
+ 
+C           II.3. SI CONTACT POUR CE PG : ON REMPLIT B, BT, B_U et F
+
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
 
 C             INITIALISATIONS DES MATRICES DE TRAVAIL 3X3, EN 2D ET 3D
@@ -532,12 +792,13 @@ C             INITIALISATIONS DES MATRICES DE TRAVAIL 3X3, EN 2D ET 3D
               CALL MATINI(3,3,0.D0,PTKNP)
               CALL MATINI(2,3,0.D0,TAUKNP)
 
-C             P : OPÉRATEUR DE PROJECTION
+C             P : OPÃ‰RATEUR DE PROJECTION
               CALL XMAFR1(NDIM,ND,P)
 
 C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
-              CALL VECINI(NDIM,0.D0,SAUT)
-              CALL VECINI(NDIM,0.D0,LAMB1)
+              CALL VECINI(3,0.D0,SAUT)
+              CALL VECINI(3,0.D0,LAMB1)
+              
 
               DO 154 INO=1,NNO
                 DO 155 J=1,DDLH
@@ -578,7 +839,7 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
 
               CALL PROMAT(KN,3,NDIM,NDIM,P,3,NDIM,NDIM,KNP)
 
-C             II.1. CALCUL DE B ET DE BT
+C             II.3.1. CALCUL DE B ET DE BT
 
 C             B ET BT SONT NULLES EN PENALISATION SEULE
               IF (LPENAF) GOTO 190
@@ -610,6 +871,7 @@ C               CALCUL DE TAU.KN.P
                       TAUKNP(2,J) = TAUKNP(2,J) + TAU2(K,NLI) * KNP(K,J)
  164                CONTINUE
  163              CONTINUE
+
                 ENDIF
 
                 DO 165 J = 1,NNO
@@ -641,7 +903,7 @@ C
  165            CONTINUE
  160          CONTINUE
 
-C             II.2. CALCUL DE B_U
+C             II.3.2. CALCUL DE B_U
 
  190          CONTINUE
               IF (ADHER) THEN
@@ -707,7 +969,7 @@ C
  170          CONTINUE
 
 C
-C             II.3. CALCUL DE F
+C             II.3.3. CALCUL DE F
 
 C             F EST NULLE SI LE POINT EST ADHERENT, ET
 C             SI ON N'EST PAS EN PENALISATION SEULE
@@ -717,6 +979,7 @@ C               LE COEFFICIENT DE F_R EST CELUI DE STABILISATION
                 COEFFR=CSTAFR
 C               SAUF EN CAS DE PENALISATION SEULE
                 IF (LPENAF) COEFFR=CPENFR
+
                 DO 180 I = 1,NNOL
                   PLI=PLA(I)
                   IF (MALIN) THEN
@@ -737,6 +1000,7 @@ C               SAUF EN CAS DE PENALISATION SEULE
                       FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
                       NLJ=CFACE(IFA,J)
                     ENDIF
+
                     IF (LPENAF) THEN
 C                     PENALISATION SEULE, TAIKTA=TAUT.ID.TAU
                       CALL MATINI(3,3,0.D0,ID)
@@ -753,18 +1017,21 @@ C                     CALCUL DE TAIKTA = TAUT.(ID-KN).TAU
                       DO 183 L = 1,NDIM-1
                         
                         MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
-     &                         + (MU*SEUIL(ISSPG)/COEFFR)*
-     &                         FFI*FFJ*TAIKTA(K,L)*JAC
+     &                           + (MU*SEUIL(ISSPG)/COEFFR)*
+     &                           FFI*FFJ*TAIKTA(K,L)*JAC
+
  183                  CONTINUE
  182                CONTINUE
  181              CONTINUE
  180            CONTINUE
+
               ENDIF
 
             ELSE
-C             SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1
+C             SI INDCO N'EST NI Ã‰GAL Ã€ 0 NI Ã‰GAL Ã€ 1
 C             PROBLEME DE STATUT DE CONTACT.
-              CALL ASSERT(INDCO(ISSPG).EQ.0 .OR. INDCO(ISSPG).EQ.1)
+              CALL ASSERT(INDCO(ISSPG).EQ.0 
+     &                    .OR. INDCO(ISSPG).EQ.1)
             END IF
 
           ELSE
@@ -789,7 +1056,7 @@ C
           ZR(IMATT+IJ-1) = MMAT(I,J)
  210    CONTINUE
  200  CONTINUE
-
+      
       CALL TEATTR (NOMTE,'C','XLAG',LAG,IBID)
       IF (IBID.EQ.0.AND.LAG.EQ.'ARETE') THEN
         NNO = NNOS

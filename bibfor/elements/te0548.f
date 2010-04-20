@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,11 +23,12 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C.......................................................................
 C
-C                CONTACT X-FEM MÉTHODE CONTINUE : 
-C             MISE À JOUR DU SEUIL DE FROTTEMENT
+C                CONTACT X-FEM METHODE CONTINUE : 
+C             MISE A JOUR DU SEUIL DE FROTTEMENT
+C             MISE A JOUR DE LA COHESION DANS LE CAS COHESIF
 C
 C
-C  OPTION : 'XREACL' (X-FEM MISE À JOUR DU SEUIL DE FROTTEMENT)
+C  OPTION : 'XREACL' (X-FEM MISE A JOUR DU SEUIL DE FROTTEMENT)
 
 C  ENTREES  ---> OPTION : OPTION DE CALCUL
 C           ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -36,7 +37,7 @@ C......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR 
+      REAL*8 ZR
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -51,24 +52,34 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 
-      INTEGER      I,J,IFA,IPGF,ISSPG,NI,PLI,AR(12,2),NBAR
+      INTEGER      I,J,K,IFA,IPGF,ISSPG,NI,PLI,AR(12,2),NBAR,JLST
       INTEGER      IDEPPL,JAINT,JCFACE,JLONCH,JSEUIL,IPOIDF,IVFF,IDFDEF
-      INTEGER      IADZI,IAZK24,IPOIDS,IVF,IDFDE,JGANO,JDONCO
+      INTEGER      IADZI,IAZK24,IPOIDS,IVF,IDFDE,JGANO,JDONCO,JCOHEO
       INTEGER      NDIM,NNO,NNOS,NPG,DDLH,DDLC,NNOM,INTEG,NINTER,NFE
-      INTEGER      NFACE,CFACE(5,3),IBID,NNOF,NPGF,XOULA,JPTINT
+      INTEGER      NFACE,CFACE(5,3),IBID,NNOF,NPGF,XOULA,JPTINT,JCOHES
       CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG
       REAL*8       SEUIL,FFI,E,G(3),RBID,FFP(27),FFC(8),ND(3)
       INTEGER      DDLS,NDDL,NNOL,LACT(8),NLACT,IGEOM
+      
+
+      REAL*8       SAUT(3),LST,R,RR
+      REAL*8       BETA,GC,SIGMC,BETASQ,ALPHA0,DTANG(3),DNOR(3)
+      REAL*8       DEPEQI,SQRNOR,SQRTAN,P(3,3),PP(3,3)
       LOGICAL      MALIN
+      CHARACTER*2  CODRET(3)
+      CHARACTER*8  NOMRES(3)
+      CHARACTER*16 ENR
+      REAL*8       VALRES(3),PENADH,RELA,COHES
+      INTEGER      IMATE,SINGU
 C......................................................................
 
-      CALL JEMARQ()
+      CALL JEMARQ() 
 C
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-      CALL XTEINI(NOMTE,DDLH,NFE,IBID,DDLC,NNOM,DDLS,NDDL)
+      CALL XTEINI(NOMTE,DDLH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL)
 
 C     DEP ACTUEL (DEPPLU) : 'PDEPL_P'
       CALL JEVECH('PDEPL_P','L',IDEPPL)
@@ -79,10 +90,25 @@ C     DEP ACTUEL (DEPPLU) : 'PDEPL_P'
       CALL JEVECH('PPINTER','L',JPTINT)
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PSEUIL' ,'E',JSEUIL)
-      
+
+
+      CALL TEATTR(NOMTE,'S','XFEM',ENR,IBID)          
+      IF (ENR.EQ.'XHC') THEN
+        RELA =  ZR(JDONCO-1+10)
+      ELSE
+        RELA=0.0D0
+      ENDIF
+      IF(RELA.EQ.1.D0) THEN
+        CALL JEVECH('PMATERC','L',IMATE)
+        CALL JEVECH('PCOHES' ,'L',JCOHES)
+        CALL JEVECH('PCOHESO' ,'E',JCOHEO)
+        CALL JEVECH('PLST','L',JLST)
+      ENDIF
+  
 C     RECUPERATIONS DES DONNEES SUR LE CONTACT ET
 C     SUR LA TOPOLOGIE DES FACETTES
       NINTER=ZI(JLONCH-1+1)
+
       NFACE=ZI(JLONCH-1+2)
       DO 15 I=1,NFACE
         DO 16 J=1,NDIM
@@ -119,7 +145,7 @@ C     SCHEMA D'INTEGRATION NUMERIQUE ET ELEMENT DE REFERENCE DE CONTACT
       ENDIF
       CALL ELREF4(ELC,FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,IDFDEF,IBID)
 
-C     RECUPERATION DU COEFFICIENT DE MISE À L'ECHELLE DES PRESSIONS
+C     RECUPERATION DU COEFFICIENT DE MISE Ã€ L'ECHELLE DES PRESSIONS
       E=ZR(JDONCO-1+5)
 
       CALL TECAEL(IADZI,IAZK24)
@@ -148,7 +174,7 @@ C     BOUCLE SUR LES FACETTES
       DO 100 IFA=1,NFACE
 C
 C       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
-        DO 110 IPGF=1,NPGF
+        DO 110 IPGF=1,NPGF    
 C
 C         INDICE DE CE POINT DE GAUSS DANS PSEUIL
           ISSPG=NPGF*(IFA-1)+IPGF
@@ -156,7 +182,7 @@ C         INDICE DE CE POINT DE GAUSS DANS PSEUIL
 C
 C         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 C         ET DES FF DE L'ELEMENT PARENT AU POINT DE GAUSS
-C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
+C         ET LA NORMALE ND ORIENTÃ‰E DE ESCL -> MAIT
           IF (NDIM.EQ.3) THEN
             CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
      &                                         'NON',RBID,FFP,RBID,ND)
@@ -169,7 +195,7 @@ C        CALCUL DES FONCTIONS DE FORMES DE CONTACT DANS LE CAS LINEAIRE
             CALL XMOFFC(LACT,NLACT,NNO,FFP,FFC)
           ENDIF
 C         CALCUL DU NOUVEAU SEUIL A PARTIR DES LAMBDA DE DEPPLU
-C         RQ : LA VALEUR DANS IDEPPL EST LA PRESSION DIVISÉE PAR E
+C         RQ : LA VALEUR DANS IDEPPL EST LA PRESSION DIVISÃ‰E PAR E
           SEUIL = 0.D0
           DO 120 I = 1,NNOL
             IF (MALIN) THEN
@@ -190,6 +216,92 @@ C         SOIENT TROP PETITES. LE POINT DOIT ETRE CONSIDERE GLISSANT.
           ENDIF
 
           ZR(JSEUIL-1+ISSPG)=SEUIL
+C
+C         CALCUL DE LA NOUVELLE VALEUR DE LA COHESION
+C
+C         ACTIVATION DE LA LOI COHESIVE ET 
+C         RECUPERATION DES PARAMETRES MATERIAUX : 
+             IF(RELA.NE.1.D0) THEN
+               GO TO 53
+             ENDIF
+             
+              NOMRES(1) = 'GC'
+              NOMRES(2) = 'SIGM_C'
+                  NOMRES(3) = 'PENA_ADHERENCE'
+
+              CALL RCVALA ( ZI(IMATE),' ','RUPT_FRAG',0,' ',0.D0,3,
+     &                 NOMRES,VALRES,CODRET, 'FM' )
+C
+                GC   = VALRES(1)
+                SIGMC  = VALRES(2)
+                PENADH = VALRES(3)
+C
+                BETA=1.0D0                
+                BETASQ=BETA*BETA
+                ALPHA0=(GC/SIGMC)*PENADH
+C
+C          SAUT DE DEPLACEMENT EQUIVALENT [[u]]eq
+            DEPEQI=0.0D0
+            COHES = 0.D0
+            IF (SINGU.EQ.1) THEN
+              LST=0.D0
+              DO 112 I=1,NNO
+                LST=LST+ZR(JLST-1+I)*FFP(I)
+ 112          CONTINUE
+              R=ABS(LST)
+              RR=SQRT(R)
+            ENDIF
+            CALL VECINI(3,0.D0,SAUT)
+            DO 140 I = 1,NNO
+              DO 141 J = 1,DDLH
+                 
+                SAUT(J) = SAUT(J) - 2.D0 * FFP(I) *
+     &                              ZR(IDEPPL-1+DDLS*(I-1)+NDIM+J)
+
+ 141          CONTINUE
+              DO 142 J = 1,SINGU*NDIM
+                SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * RR *
+     &                             ZR(IDEPPL-1+DDLS*(I-1)+NDIM+DDLH+J)
+
+ 142          CONTINUE
+ 140        CONTINUE
+ 
+            CALL MATINI(3,3,0.D0,PP)
+            CALL XMAFR1(NDIM,ND,P)    
+            DO 212 I=1,NDIM
+              DTANG(I) = 0.D0
+              DNOR(I) = 0.D0
+              DO 213  K=1,NDIM
+                PP(I,K)=ND(I)*ND(K)
+                DTANG(I)=DTANG(I)+P(I,K)*SAUT(K)
+                DNOR(I) = DNOR(I) +PP(I,K)*SAUT(K)
+ 213         CONTINUE
+ 212        CONTINUE
+
+            SQRTAN=0.D0 
+            SQRNOR=0.D0
+            
+            DO 214 I=1,NDIM
+              SQRTAN=SQRTAN+DTANG(I)**2
+              SQRNOR=SQRNOR+DNOR(I)**2
+ 214        CONTINUE    
+
+            DEPEQI=SQRT((SQRNOR+(BETASQ*SQRTAN)))
+
+            IF (ABS(COHES).LT.1.D-11) THEN
+              COHES=0.D0
+            ENDIF
+C
+           IF ( DEPEQI . GE . ZR(JCOHES-1+ISSPG)*1.001D0 ) THEN
+            ZR(JCOHEO-1+ISSPG)=DEPEQI
+            IF(DEPEQI . LT . ALPHA0 ) ZR(JCOHEO-1+ISSPG)= 0.D0
+
+            ELSE IF (DEPEQI.LT.ZR(JCOHES-1+ISSPG)*1.001D0) THEN
+               ZR(JCOHEO-1+ISSPG)=ZR(JCOHES-1+ISSPG)
+            END IF            
+            
+ 53       CONTINUE
+
  110    CONTINUE
  100  CONTINUE
 

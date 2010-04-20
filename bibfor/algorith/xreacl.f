@@ -1,7 +1,7 @@
-      SUBROUTINE XREACL(NOMA  ,NOMO  ,VALINC,RESOCO)
+      SUBROUTINE XREACL(NOMA  ,NOMO  ,MATE  ,VALINC,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C RESPONSABLE GENIAUT S.GENIAUT
 C
       IMPLICIT NONE
       CHARACTER*8   NOMA ,NOMO
-      CHARACTER*24  RESOCO
+      CHARACTER*24  RESOCO,MATE
       CHARACTER*19  VALINC(*)
 C     
 C ----------------------------------------------------------------------
@@ -59,19 +59,20 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      NBOUT,NBIN
-      PARAMETER    (NBOUT=1, NBIN=7)
+      PARAMETER    (NBOUT=2, NBIN=11)
       CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
       CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
 C
       INTEGER      NBMA,IBID
       CHARACTER*8  KBID
-      CHARACTER*19 LIGRMO,XDONCO,XSEUCO,CSEUIL
+      CHARACTER*19 LIGRMO,XDONCO,XSEUCO,CSEUIL,CCOHES,XCOHES
+      CHARACTER*19 LNNO,LTNO
       CHARACTER*16 OPTION
       CHARACTER*24 AINTER,CFACE,FACLON,PINTER,CHGEOM
       CHARACTER*19 DEPPLU
       INTEGER      JXC 
       LOGICAL      DEBUG,LCONTX         
-      INTEGER      IFM,NIV,IFMDBG,NIVDBG            
+      INTEGER      IFM,NIV,IFMDBG,NIVDBG                
 C
 C ----------------------------------------------------------------------
 C
@@ -83,8 +84,10 @@ C --- INITIALISATIONS
 C 
       LIGRMO = NOMO(1:8)//'.MODELE'
       CSEUIL = '&&XREACL.SEUIL'
+      CCOHES = '&&XREACL.COHES'
       XDONCO = RESOCO(1:14)//'.XFDO'
-      XSEUCO = RESOCO(1:14)//'.XFSE'      
+      XSEUCO = RESOCO(1:14)//'.XFSE'
+      XCOHES = RESOCO(1:14)//'.XCOH'      
       OPTION = 'XREACL' 
       IF (NIVDBG.GE.2) THEN
         DEBUG  = .TRUE.
@@ -112,10 +115,13 @@ C
 C                                                               
 C --- CREATION DU CHAM_ELEM_S VIERGE                             
 C               
-      CALL XMCHEX(NOMA  ,NBMA  ,CSEUIL)      
+      CALL XMCHEX(NOMA  ,NBMA  ,CSEUIL)
+      CALL XMCHEX(NOMA  ,NBMA  ,CCOHES)      
 C
 C --- RECUPERATION DES DONNEES XFEM
 C
+      LNNO   = NOMO(1:8)//'.LNNO'
+      LTNO   = NOMO(1:8)//'.LTNO'
       AINTER = NOMO(1:8)//'.TOPOFAC.AI'
       CFACE  = NOMO(1:8)//'.TOPOFAC.CF'
       FACLON = NOMO(1:8)//'.TOPOFAC.LO'
@@ -141,11 +147,21 @@ C
       LCHIN(6) = PINTER(1:19)
       LPAIN(7) = 'PGEOMER'
       LCHIN(7) = CHGEOM(1:19)
+      LPAIN(8)  = 'PLSN'
+      LCHIN(8)  = LNNO(1:19)
+      LPAIN(9)  = 'PLST'
+      LCHIN(9)  = LTNO(1:19)
+      LPAIN(10) = 'PCOHES'
+      LCHIN(10) = XCOHES(1:19)
+      LPAIN(11) = 'PMATERC'
+      LCHIN(11) = MATE(1:24)
 C       
 C --- CREATION DES LISTES DES CHAMPS OUT
 C    
       LPAOUT(1) = 'PSEUIL'
       LCHOUT(1) = CSEUIL(1:19)
+      LPAOUT(2) = 'PCOHESO'
+      LCHOUT(2) = CCOHES(1:19)
 C
 C --- APPEL A CALCUL
 C
@@ -161,6 +177,7 @@ C
 C --- ON COPIE CSEUIL DANS RESOCO.SE
 C
       CALL COPISD('CHAMP_GD','V',LCHOUT(1),XSEUCO)
+      CALL COPISD('CHAMP_GD','V',LCHOUT(2),XCOHES) 
 C
  9999 CONTINUE
 C

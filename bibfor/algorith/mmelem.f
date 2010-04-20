@@ -3,7 +3,7 @@
      &                  NBDM  ,LAXIS )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,6 +78,9 @@ C ----- COMPOSANTE : LAGS_C
         CALL ASSERT(.FALSE.)
       ENDIF
 C
+C --- 2D
+C
+C --- 'SE2'
       IF (NOMTE(1:6).EQ.'CFS2S2' .OR. NOMTE(1:6).EQ.'COS2S2') THEN
         NDIM    = 2
         NOMMAE  = 'SE2'
@@ -92,6 +95,7 @@ C
         NOMMAM  = 'SE3'
         NNM     = 3
         NDDL    = NNM*NDIM + NNE*(NDIM+I2D)
+C --- 'SE3'
       ELSE IF (NOMTE(1:6).EQ.'CFS3S2' .OR. NOMTE(1:6).EQ.'COS3S2') THEN
         NDIM    = 2
         NOMMAE  = 'SE3'
@@ -106,6 +110,18 @@ C
         NOMMAM  = 'SE3'
         NNM     = 3
         NDDL    = NNM*NDIM + NNE*(NDIM+I2D)
+C
+C --- 3D
+C
+C --- 'SE2'
+      ELSEIF (NOMTE.EQ.'CFP2P2' .OR. NOMTE.EQ.'COP2P2') THEN
+        NDIM = 3
+        NOMMAE  = 'SE2'
+        NNE  = 2
+        NOMMAM = 'SE2'
+        NNM  = 2
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+C --- 'TR3'
       ELSE IF (NOMTE.EQ.'CFT3T3' .OR. NOMTE.EQ.'COT3T3') THEN
         NDIM    = 3
         NOMMAE  = 'TR3'
@@ -120,6 +136,28 @@ C
         NOMMAM  = 'TR6'
         NNM     = 6
         NDDL    = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT3Q4' .OR. NOMTE.EQ.'COT3Q4') THEN
+        NDIM = 3
+        NOMMAE  = 'TR3'
+        NNE  = 3
+        NOMMAM = 'QU4'
+        NNM  = 4
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT3Q8' .OR. NOMTE.EQ.'COT3Q8') THEN
+        NDIM = 3
+        NOMMAE  = 'TR3'
+        NNE  = 3
+        NOMMAM = 'QU8'
+        NNM  = 8
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT3Q9' .OR. NOMTE.EQ.'COT3Q9') THEN
+        NDIM = 3
+        NOMMAE  = 'TR3'
+        NNE  = 3
+        NOMMAM = 'QU9'
+        NNM  = 9
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+C --- 'TR6'
       ELSE IF (NOMTE.EQ.'CFT6T3' .OR. NOMTE.EQ.'COT6T3') THEN
         NDIM    = 3
         NOMMAE  = 'TR6'
@@ -134,6 +172,42 @@ C
         NOMMAM  = 'TR6'
         NNM     = 6
         NDDL    = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT6Q4' .OR. NOMTE.EQ.'COT6Q4') THEN
+        NDIM = 3
+        NOMMAE  = 'TR6'
+        NNE  = 6
+        NOMMAM = 'QU4'
+        NNM  = 4
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT6Q8' .OR. NOMTE.EQ.'COT6Q8') THEN
+        NDIM = 3
+        NOMMAE  = 'TR6'
+        NNE  = 6
+        NOMMAM = 'QU8'
+        NNM  = 8
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT6Q9' .OR. NOMTE.EQ.'COT6Q9') THEN
+        NDIM = 3
+        NOMMAE  = 'TR6'
+        NNE  = 6
+        NOMMAM = 'QU9'
+        NNM  = 9
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+C --- 'QU4'
+      ELSE IF (NOMTE.EQ.'CFQ4T3' .OR. NOMTE.EQ.'COQ4T3') THEN
+        NDIM = 3
+        NOMMAE  = 'QU4'
+        NNE  = 4
+        NOMMAM = 'TR3'
+        NNM  = 3
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFQ4T6' .OR. NOMTE.EQ.'COQ4T6') THEN
+        NDIM = 3
+        NOMMAE  = 'QU4'
+        NNE  = 4
+        NOMMAM = 'TR6'
+        NNM  = 6
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFQ4Q4' .OR. NOMTE.EQ.'COQ4Q4') THEN
         NDIM = 3
         NOMMAE  = 'QU4'
@@ -147,6 +221,28 @@ C
         NNE  = 4
         NOMMAM = 'QU8'
         NNM  = 8
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFQ4Q9' .OR. NOMTE.EQ.'COQ4Q9') THEN
+        NDIM = 3
+        NOMMAE  = 'QU4'
+        NNE  = 4
+        NOMMAM = 'QU9'
+        NNM  = 9
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+C --- 'QU8'
+      ELSE IF (NOMTE.EQ.'CFQ8T3' .OR. NOMTE.EQ.'COQ8T3') THEN
+        NDIM = 3
+        NOMMAE  = 'QU8'
+        NNE  = 8
+        NOMMAM = 'TR3'
+        NNM  = 3
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFQ8T6' .OR. NOMTE.EQ.'COQ8T6') THEN
+        NDIM = 3
+        NOMMAE  = 'QU8'
+        NNE  = 8
+        NOMMAM = 'TR6'
+        NNM  = 6
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE IF (NOMTE.EQ.'CFQ8Q4' .OR. NOMTE.EQ.'COQ8Q4') THEN
         NDIM = 3
@@ -162,45 +258,39 @@ C
         NOMMAM = 'QU8'
         NNM  = 8
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
-      ELSE IF (NOMTE.EQ.'CFQ8T6' .OR. NOMTE.EQ.'COQ8T6') THEN
+      ELSE IF (NOMTE.EQ.'CFQ8Q9' .OR. NOMTE.EQ.'COQ8Q9') THEN
         NDIM = 3
         NOMMAE  = 'QU8'
         NNE  = 8
-        NOMMAM = 'TR6'
-        NNM  = 6
+        NOMMAM = 'QU9'
+        NNM  = 9
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
-      ELSE IF (NOMTE.EQ.'CFT6Q8' .OR. NOMTE.EQ.'COT6Q8') THEN
+C --- 'QU9'
+      ELSE IF (NOMTE.EQ.'CFQ9T3' .OR. NOMTE.EQ.'COQ9T3') THEN
         NDIM = 3
-        NOMMAE  = 'TR6'
-        NNE  = 6
-        NOMMAM = 'QU8'
-        NNM  = 8
-        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
-      ELSE IF (NOMTE.EQ.'CFQ4T3' .OR. NOMTE.EQ.'COQ4T3') THEN
-        NDIM = 3
-        NOMMAE  = 'QU4'
-        NNE  = 4
+        NOMMAE  = 'QU9'
+        NNE  = 9
         NOMMAM = 'TR3'
         NNM  = 3
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
-      ELSE IF (NOMTE.EQ.'CFQ4T6' .OR. NOMTE.EQ.'COQ4T6') THEN
+      ELSE IF (NOMTE.EQ.'CFQ9T6' .OR. NOMTE.EQ.'COQ9T6') THEN
         NDIM = 3
-        NOMMAE  = 'QU4'
-        NNE  = 4
+        NOMMAE  = 'QU9'
+        NNE  = 9
         NOMMAM = 'TR6'
         NNM  = 6
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
-      ELSE IF (NOMTE.EQ.'CFT3Q4' .OR. NOMTE.EQ.'COT3Q4') THEN
+      ELSE IF (NOMTE.EQ.'CFQ9Q4' .OR. NOMTE.EQ.'COQ9Q4') THEN
         NDIM = 3
-        NOMMAE  = 'TR3'
-        NNE  = 3
+        NOMMAE  = 'QU9'
+        NNE  = 9
         NOMMAM = 'QU4'
         NNM  = 4
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
-      ELSE IF (NOMTE.EQ.'CFT3Q8' .OR. NOMTE.EQ.'COT3Q8') THEN
+      ELSE IF (NOMTE.EQ.'CFQ9Q8' .OR. NOMTE.EQ.'COQ9Q8') THEN
         NDIM = 3
-        NOMMAE  = 'TR3'
-        NNE  = 3
+        NOMMAE  = 'QU9'
+        NNE  = 9
         NOMMAM = 'QU8'
         NNM  = 8
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
@@ -210,13 +300,6 @@ C
         NNE  = 9
         NOMMAM = 'QU9'
         NNM  = 9
-        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
-      ELSEIF (NOMTE.EQ.'CFP2P2' .OR. NOMTE.EQ.'COP2P2') THEN
-        NDIM = 3
-        NOMMAE  = 'SE2'
-        NNE  = 2
-        NOMMAM = 'SE2'
-        NNM  = 2
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE
         CALL ASSERT(.FALSE.)

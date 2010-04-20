@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+%& MODIF COMPELEM  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -532,6 +532,7 @@ GRANDEUR_SIMPLE__
        SIGN    : effort de contact normal
        SITX    : effort de contact normal
        SITY    : effort de contact tangent direction 2
+       LH1     : multiplicateur de Lagrange pression a travers fissure HM
 >>
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
@@ -546,7 +547,7 @@ GRANDEUR_SIMPLE__
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33   SIGN     SITX     SITY
+                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1
 
 <<  DEPL_F Type:K8 Déplacement (fonction)
        DX, DY, DZ : translation suivant X, Y ET Z (repère global)
@@ -597,6 +598,7 @@ GRANDEUR_SIMPLE__
        SIGN    : effort de contact normal
        SITX    : effort de contact normal
        SITY    : effort de contact tangent direction 2
+       LH1     : multiplicateur de Lagrange pression a travers fissure HM
 >>
 
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
@@ -612,7 +614,7 @@ GRANDEUR_SIMPLE__
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33   SIGN     SITX     SITY
+                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1
 
 <<  DEPL_R Type:R Déplacement réel aux noeuds
        DX, DY, DZ : translation suivant X, Y ET Z (repère global)
@@ -663,6 +665,7 @@ GRANDEUR_SIMPLE__
        SIGN    : effort de contact normal
        SITX    : effort de contact normal
        SITY    : effort de contact tangent direction 2
+       LH1     : multiplicateur de Lagrange pression a travers fissure HM
 >>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
@@ -677,7 +680,7 @@ GRANDEUR_SIMPLE__
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33   SIGN     SITX     SITY
+                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1
 
 <<  DISS_R Type:R énergie dissipée
        TOTALE : dissipation cumulée (endommagement plus plasticité)
@@ -1707,6 +1710,10 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        CONT_X :
        CONT_Y :
        CONT_Z :
+       LH1P   :
+       LH1M   :
+       DPRE1P :
+       DPRE1M :
 >>
     SIEF_C   = C    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
        VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
@@ -1730,7 +1737,8 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
        CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_TX   SIG_TY   SIG_TZ   SIG_T1X
-       SIG_T1Y  SIG_T1Z  SIG_T2X  SIG_T2Y  SIG_T2Z
+       SIG_T1Y  SIG_T1Z  SIG_T2X  SIG_T2Y  SIG_T2Z  LH1P     LH1M     DPRE1P    
+       DPRE1M     
 
 <<  SIEF_R Type:R Etat de contrainte (ou d'effort interne) (cf. (U .. . .. . .))
        SIXX : sigma_xx contraintes dans un milieu continu
@@ -1845,6 +1853,10 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        CONT_X :
        CONT_Y :
        CONT_Z :
+       LH1P   :
+       LH1M   :
+       DPRE1P :
+       DPRE1M :
 >>
     SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
        VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
@@ -1868,7 +1880,8 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
        CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_TX   SIG_TY   SIG_TZ   SIG_T1X
-       SIG_T1Y  SIG_T1Z  SIG_T2X  SIG_T2Y  SIG_T2Z
+       SIG_T1Y  SIG_T1Z  SIG_T2X  SIG_T2Y  SIG_T2Z  LH1P     LH1M     DPRE1P    
+       DPRE1M    
 
 <<  SING_R Type:R grandeurs liée au calcul de carte de taille
        DEGRE : ordre de la singularité
@@ -2017,9 +2030,10 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        CSTFR  : coefficient de stabilisation du frottement, COEF_STAB_CONT
        CPECO  : coefficient de pénalisation du contact, COEF_PENA_CONT
        CPEFR  : coefficient de pénalisation du frottement, COEF_PENA_CONT
+       RELA   : gère l''activation des lois cohésives avec X-FEM
 >>
     XCONTAC  = R      RHON     MU       RHOTK     INTEG    COECH    COSTCO   COSTFR
-                      COPECO   COPEFR
+                      COPECO   COPEFR   RELA
 
 GRANDEUR_ELEMENTAIRE__
    MDEP_C 2 DEPL_C   DEPL_C   MS
@@ -2037,3 +2051,4 @@ GRANDEUR_ELEMENTAIRE__
    VTEM_R 1 TEMP_R
    VVAR_R 1 VANL_R
    MZNS_R 2 NEUT_R   NEUT_R   MR
+   

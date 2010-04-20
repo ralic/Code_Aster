@@ -3,7 +3,7 @@
      &                     SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C TOLE CRP_20
       REAL*8      RESD,ENE,DCOEFD,DDCOED,DFDDD,PSI
       REAL*8      INTER1,INTER2,INTER3,INTER4
       REAL*8      INTER,TOTO
-      REAL*8      KRON(6)
+      REAL*8      KRON(6),DEUX,UN
 
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
@@ -95,10 +95,10 @@ C TOLE CRP_20
       R(2,2)=2
       R(1,2)=3
       R(2,1)=3
-
-      RAC2=SQRT(2.D0)
+      DEUX=2.D0
+      RAC2=SQRT(DEUX)
       TOLC= SEUIL*TOLE
-
+      UN=1.D0
       COMPTE=0
       MULT=0.D0
 
@@ -159,7 +159,7 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
   19    CONTINUE
       ENDIF
       DO 20 I=1,6
-        FB(I)=FB(I)-MU/2.D0*CPE(I)+ECROB*(KRON(I)-B(I))
+        FB(I)=FB(I)-MU/DEUX*CPE(I)+ECROB*(KRON(I)-B(I))
   20  CONTINUE
 
        FBS(1)=FB(1)
@@ -222,9 +222,9 @@ C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
         IF (TREPS.GT.0.D0) THEN
           TREPS=0.D0
         ENDIF
-        DCOEFD=2.D0*(1.D0-D)
+        DCOEFD=DEUX*(UN-D)
         ENE=LAMBDA/2*TREPS**2+MU*TREM
-        FD=DCOEFD*ENE-2.D0*D*ECROD
+        FD=DCOEFD*ENE-DEUX*D*ECROD
         IF (FD.LT.0.D0) THEN
                FD=0.D0
              ENDIF
@@ -232,7 +232,7 @@ C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
 
 C----CALCUL DU CRITERE-------------------------------------
-      COUPL=SQRT(ALPHA*RTEMP+(1.D0-ALPHA)*FD**2)
+      COUPL=SQRT(ALPHA*RTEMP+(UN-ALPHA)*FD**2)
       CRIT=COUPL-SEUIL
 
 
@@ -247,7 +247,7 @@ C----CALCUL DU CRITERE-------------------------------------
         DO 32 I=1,3
           RESB(I)=-BS(I)+BMS(I)+ALPHA*MULT*FBSM(I)
 32      CONTINUE
-        RESD=-D+DM+(1.D0-ALPHA)*MULT*FD
+        RESD=-D+DM+(UN-ALPHA)*MULT*FD
         RESB(3)=RAC2*RESB(3)
 
         TATA=0.D0
@@ -271,7 +271,7 @@ C--------------------------------------------------------
 
             CALL DFMDF(3,FBS,MTE1)
 
-            CALL DFBDB(3,B,EPS,2.D0*MU,LAMBDA,ECROB,MTE2)
+            CALL DFBDB(3,B,EPS,DEUX*MU,LAMBDA,ECROB,MTE2)
 
             MTE2S(1,1)=MTE2(1,1)
             MTE2S(1,2)=MTE2(1,2)
@@ -288,7 +288,7 @@ C--------------------------------------------------------
 
             IF ((.NOT.DBLOQ).AND.(FD.NE.0.D0)) THEN
             DDCOED=-2.D0
-            DFDDD=DDCOED*ENE-2.D0*ECROD
+            DFDDD=DDCOED*ENE-DEUX*ECROD
             ENDIF
 
             CALL R8INIR(9,0.D0,KSI,1)
@@ -301,7 +301,7 @@ C--------------------------------------------------------
  40         CONTINUE
 
             DO 43 I=1,3
-              KSI(I,I)=KSI(I,I)+1.D0
+              KSI(I,I)=KSI(I,I)+UN
  43         CONTINUE
 
             DO 44 I=1,3
@@ -333,7 +333,7 @@ C--------------------------------------------------------
  52           CONTINUE
  51         CONTINUE
 
-            PSI=1.D0-MULT*(1.D0-ALPHA)*DFDDD
+            PSI=UN-MULT*(UN-ALPHA)*DFDDD
 
             CALL R8INIR(3,0.D0,DELTA1,1)
             DO 53 I=1,3
@@ -347,7 +347,7 @@ C--------------------------------------------------------
  54           CONTINUE
  53         CONTINUE
 
-            DELTA2=(1.D0-ALPHA)/COUPL*FD*DFDDD
+            DELTA2=(UN-ALPHA)/COUPL*FD*DFDDD
 
             INTER1=0.D0
             INTER3=0.D0
@@ -365,11 +365,11 @@ C--------------------------------------------------------
  55         CONTINUE
 
             INTER2=DELTA2/PSI*RESD
-            INTER4=DELTA2/PSI*(1.D0-ALPHA)*FD
+            INTER4=DELTA2/PSI*(UN-ALPHA)*FD
 
             DDG = -(CRIT+INTER1+INTER2)/(INTER3+INTER4)
 
-            DD=RESD/PSI+DDG*(1.D0-ALPHA)*FD/PSI
+            DD=RESD/PSI+DDG*(UN-ALPHA)*FD/PSI
 
             CALL R8INIR(3,0.D0,DBS,1)
             DO 57 I=1,3
@@ -448,7 +448,7 @@ C----CALCUL DE FB DANS NEWTON---------------------------
  119          CONTINUE
             ENDIF
             DO 120 I=1,6
-              FB(I)=FB(I)-MU/2.D0*CPE(I)+ECROB*(KRON(I)-B(I))
+              FB(I)=FB(I)-MU/DEUX*CPE(I)+ECROB*(KRON(I)-B(I))
  120        CONTINUE
 
             FBS(1)=FB(1)
@@ -482,21 +482,21 @@ C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
             IF (DBLOQ) THEN
               FD=0.D0
             ELSE
-              DCOEFD=2.D0*(1.D0-D)
-              FD=DCOEFD*ENE-2.D0*D*ECROD
+              DCOEFD=DEUX*(UN-D)
+              FD=DCOEFD*ENE-DEUX*D*ECROD
                    IF (FD.LT.0.D0) THEN
                     FD=0.D0
                    ENDIF
             ENDIF
 
 C----CALCUL DU CRITERE-------------------------------------
-           COUPL=SQRT(ALPHA*RTEMP+(1.D0-ALPHA)*FD**2.D0)
+           COUPL=SQRT(ALPHA*RTEMP+(UN-ALPHA)*FD**DEUX)
            CRIT=COUPL-SEUIL
 
             DO 132 I=1,3
               RESB(I)=-BS(I)+BMS(I)+ALPHA*MULT*FBSM(I)
 132         CONTINUE
-            RESD=-D+DM+(1.D0-ALPHA)*MULT*FD
+            RESD=-D+DM+(UN-ALPHA)*MULT*FD
             RESB(3)=RAC2*RESB(3)
 
             TATA=0.D0

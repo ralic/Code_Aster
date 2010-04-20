@@ -2,7 +2,7 @@
      &                    MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C-------------------------------------------------------------
       LOGICAL           IRET
 
       INTEGER           I,J,K,T(3,3)
-      REAL*8             KRON(6),UN
+      REAL*8             KRON(6),UN,DEUX
       REAL*8             CC(6),VECC(3,3),VALCC(3),CCP(6),CPE(6)
       REAL*8        VECEPS(3,3),VALEPS(3)
       REAL*8             FB(6),VECFB(3,3),VALFB(3),TREB
@@ -57,6 +57,7 @@ C-------------------------------------------------------------
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
       UN=1.D0
+      DEUX=2.D0
       T(1,1)=1
       T(2,2)=2
       T(3,3)=3
@@ -66,7 +67,7 @@ C-------------------------------------------------------------
       T(3,1)=5
       T(2,3)=6
       T(3,2)=6
-
+      CALL R8INIR(36,0.D0,DSIDEP,1)
 C-------------------------------------------------------
 C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
@@ -118,7 +119,7 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
   19    CONTINUE
       ENDIF
       DO 20 I=1,6
-        FB(I)=FB(I)-MU/2.D0*CPE(I)+ECROB*(KRON(I)-B(I))
+        FB(I)=FB(I)-MU/DEUX*CPE(I)+ECROB*(KRON(I)-B(I))
   20  CONTINUE
 
        FBS=FB(1)
@@ -149,9 +150,9 @@ C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
         IF (TREPS.GT.0.D0) THEN
           TREPS=0.D0
         ENDIF
-        DCOEFD=2.D0*(1.D0-D)
+        DCOEFD=DEUX*(UN-D)
         ENE=LAMBDA/2*TREPS**2+MU*TREM
-        FD=DCOEFD*ENE-2.D0*D*ECROD
+        FD=DCOEFD*ENE-DEUX*D*ECROD
         IF (FD.LT.0.D0) THEN
           FD=0.D0
         ENDIF
@@ -165,11 +166,11 @@ C---CALCUL DE DERIVEES UTILES----------------------------------
          DFMF=0.D0
        ENDIF
 
-      DCRIT(1)=-K1*(-TREPS/K2/(1.D0+(-TREPS/K2)**2.D0)
+      DCRIT(1)=-K1*(-TREPS/K2/(UN+(-TREPS/K2)**DEUX)
      &           +ATAN2(-TREPS/K2,UN))
-      DCRIT(2)=-K1*(-TREPS/K2/(1.D0+(-TREPS/K2)**2.D0)
+      DCRIT(2)=-K1*(-TREPS/K2/(UN+(-TREPS/K2)**DEUX)
      &           +ATAN2(-TREPS/K2,UN))
-      DCRIT(3)=-K1*(-TREPS/K2/(1.D0+(-TREPS/K2)**2.D0)
+      DCRIT(3)=-K1*(-TREPS/K2/(UN+(-TREPS/K2)**DEUX)
      &           +ATAN2(-TREPS/K2,UN))
       DCRIT(4)=0.D0
       DCRIT(5)=0.D0
@@ -177,8 +178,8 @@ C---CALCUL DE DERIVEES UTILES----------------------------------
 
 
 
-      CALL DFBDB(3,B,EPS,2.D0*MU,LAMBDA,ECROB,TDFBDB)
-      CALL DFBDE(3,B,EPS,2.D0*MU,LAMBDA,TDFBDE)
+      CALL DFBDB(3,B,EPS,DEUX*MU,LAMBDA,ECROB,TDFBDB)
+      CALL DFBDE(3,B,EPS,DEUX*MU,LAMBDA,TDFBDE)
 
             SDFBDB=TDFBDB(1,1)
 
@@ -191,8 +192,7 @@ C---CALCUL DE DERIVEES UTILES----------------------------------
         SDFBDE(I)=TDFBDE(1,I)
  381  CONTINUE
 
-      COUPL=SQRT(ALPHA*FBSM**2.D0+(1.D0-ALPHA)*FD**2.D0)
-
+      COUPL=SQRT(ALPHA*FBSM**DEUX+(UN-ALPHA)*FD**DEUX)
       IF ((FD.NE.0.D0).AND.(FBSM.NE.0.D0)) THEN
 
 C---CALCUL DE DBDE ET DDDE-------------------------------------
@@ -206,26 +206,26 @@ C---CALCUL DE KSI ET PSI
       KSI=0.D0
 
       DO 110 I=1,6
-        INTERT(I)=(1.D0-ALPHA)*FD*TDFDDE(I)+ALPHA*FBSM*DFMF*SDFBDE(I)
+        INTERT(I)=(UN-ALPHA)*FD*TDFDDE(I)+ALPHA*FBSM*DFMF*SDFBDE(I)
      &           -COUPL*DCRIT(I)
  110  CONTINUE
 
-        INTERG=DELTAS/FD-ALPHA*FBSM/(1.D0-ALPHA)/FD/TDFDDD
+        INTERG=DELTAS/FD-ALPHA*FBSM/(UN-ALPHA)/FD/TDFDDD
         INTERD=ALPHA*FBSM*DFMF*SDFBDB
         DO 313 J=1,6
           PSI(J)=-ALPHA*DELTAD*DFMF*SDFBDE(J)-INTERG*INTERT(J)
-     &                  +(1.D0-ALPHA)*DELTAS*TDFDDE(J)
+     &                  +(UN-ALPHA)*DELTAS*TDFDDE(J)
  313  CONTINUE
 
 
-       KSI=ALPHA*DELTAD*DFMF*SDFBDB-(1.D0-ALPHA)*FD
+       KSI=ALPHA*DELTAD*DFMF*SDFBDB-(UN-ALPHA)*FD
      &              +INTERG*INTERD
 
 
 
 
        IF (KSI.NE.0.D0) THEN
-         IKSI=1.D0/KSI
+         IKSI=UN/KSI
        ELSE
          CALL U2MESS('F','ALGORITH4_54')
        ENDIF
@@ -240,15 +240,10 @@ C-- ! ksi n est plus disponible
       CALL R8INIR(6,0.D0,MATD,1)
 
       DO 150 I=1,6
-        MATD(I)=-INTERT(I)/(1.D0-ALPHA)/FD/TDFDDD
-     &         -INTERD*IKSI*PSI(I)/(1.D0-ALPHA)/FD/TDFDDD
+        MATD(I)=-INTERT(I)/(UN-ALPHA)/FD/TDFDDD
+     &         -INTERD*IKSI*PSI(I)/(UN-ALPHA)/FD/TDFDDD
         MATB(I)=MATB(I)+IKSI*PSI(I)
 150    CONTINUE
-
-
-
-      CALL R8INIR(36,0.D0,DSIDEP,1)
-
 
        DO 201 I=1,6
          DO 202 J=1,6
@@ -266,7 +261,7 @@ C-- ! ksi n est plus disponible
  581     CONTINUE
 
          IF (KSI.NE.0.D0) THEN
-           IKSI=1.D0/KSI
+           IKSI=UN/KSI
          ELSE
            CALL U2MESS('F','ALGORITH5_79')
          ENDIF
@@ -277,24 +272,20 @@ C-- ! ksi n est plus disponible
              MATB(J)=IKSI*PSI(J)
 551           CONTINUE
 
-         CALL R8INIR(36,0.D0,DSIDEP,1)
          DO 561 I=1,6
            DO 562 J=1,6
               DSIDEP(I,J)=DSIDEP(I,J)-SDFBDE(I)*MATB(J)
  562             CONTINUE
  561     CONTINUE
 
-
        ELSEIF ((FD.NE.0.D0).AND.(FBSM.EQ.0.D0)) THEN
 
-         CALL R8INIR(36,0.D0,DSIDEP,1)
          DO 661 I=1,6
            DO 662 J=1,6
-             DSIDEP(I,J)= -TDFDDE(I)*(-TDFDDE(J)+COUPL/(1.D0-ALPHA)
+             DSIDEP(I,J)= -TDFDDE(I)*(-TDFDDE(J)+COUPL/(UN-ALPHA)
      &                      *DCRIT(J)/FD)/TDFDDD
  662             CONTINUE
  661     CONTINUE
-
 
       ENDIF
 

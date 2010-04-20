@@ -7,7 +7,7 @@ C
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,12 +38,12 @@ C     IN  LAMBDA MU: COEFFICIENT DE LAME
 C     OUT SIGM     : CONTRAINTE
 C----------------------------------------------------------------------
 
-      REAL*8            RAC2
+      REAL*8            RAC2, R8PREM,DEUX,UN
       REAL*8            TREB,TREPS,BE(6),BEEB(6),B(6)
       REAL*8            TO(6),TU(6),VP(3),VPE(3)
       REAL*8            VALBE(3),VECBE(3,3)
       REAL*8            VALEPS(3),VECEPS(3,3),PHID
-      REAL*8            VECB(3,3),VB(3),VALB(3),TOLB
+      REAL*8            VECB(3,3),VB(3),VALB(3)
       INTEGER           I,J,K,T(3,3)
 
       
@@ -56,33 +56,30 @@ C----------------------------------------------------------------------
       T(3,1)=5
       T(3,2)=6
       T(3,3)=3
+      DEUX=2.D0
+      RAC2=SQRT(DEUX)
+      DEUX=2.D0
+      UN=1.D0
 
-      RAC2=SQRT(2.D0)
+      PHID = (UN-ENDO)**DEUX
 
-C----TOLB: TOLERANCE SUR L ENDOMMAGEMENT POUR ARRET DE L EVOLUTION
-      TOLB=1.D-2
-
-      PHID = (1.D0-ENDO)**2.D0
-
-      CALL DIAGO3(BT,VECB,VALB)
-      CALL R8INIR(3,0.D0,VB,1)
-      DO 32 I=1,NDIM
-        IF (VALB(I).GE.TOLB) THEN
-          VB(I)=VALB(I)
-        ELSE
-          VB(I)=0.D0
-        ENDIF
- 32   CONTINUE
-
+C      CALL DIAGO3(BT,VECB,VALB)
+C      CALL R8INIR(3,0.D0,VB,1)
+C      DO 32 I=1,NDIM
+C          VB(I)=VALB(I)
+C 32   CONTINUE
+C
       CALL R8INIR(6,0.D0,B,1)
-      DO 33 I=1,NDIM
-        DO 34 J=I,NDIM
-          DO 35 K=1,NDIM
-            B(T(I,J))=B(T(I,J))+VECB(I,K)*VB(K)*VECB(J,K)
- 35       CONTINUE
- 34     CONTINUE
- 33   CONTINUE
-
+C      DO 33 I=1,NDIM
+C        DO 34 J=I,NDIM
+C          DO 35 K=1,NDIM
+C            B(T(I,J))=B(T(I,J))+VECB(I,K)*VB(K)*VECB(J,K)
+C 35       CONTINUE
+C 34     CONTINUE
+C 33   CONTINUE
+      DO 32 I=1,6
+        B(I)=BT(I)
+ 32   CONTINUE
       CALL R8INIR(6,0.D0,SIGM,1)
       CALL R8INIR(6,0.D0,BE,1)
       DO 1 I=1,NDIM
@@ -173,7 +170,7 @@ C----TOLB: TOLERANCE SUR L ENDOMMAGEMENT POUR ARRET DE L EVOLUTION
 
       DO 23 I=1,NDIM
         DO 24 J=I,NDIM
-            SIGM(T(I,J))=SIGM(T(I,J))+2.D0*MU*PHID*TU(T(I,J))
+            SIGM(T(I,J))=SIGM(T(I,J))+DEUX*MU*PHID*TU(T(I,J))
   24    CONTINUE
   23  CONTINUE
 

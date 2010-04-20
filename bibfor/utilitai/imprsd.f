@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD,TITRE
       INTEGER IFIC
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -132,7 +132,7 @@ C     --------------------------------------
       ELSE IF (TYP2SD.EQ.'MATRICE') THEN
 C     --------------------------------------
         MATR=NOMSD
-        CALL MATIMP(MATR,IFIC)
+        CALL MATIMP(MATR,IFIC,'ASTER')
 
 
       ELSE

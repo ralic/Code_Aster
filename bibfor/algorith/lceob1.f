@@ -3,7 +3,7 @@
      &                     SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C ----------------------------------------------------------------------
 
       INTEGER     I,J,K,COMPTE,T(3,3)
 
-      REAL*8      BS,BMS
+      REAL*8      BS,BMS,DEUX,UN
       REAL*8      FB(6),DBS,FD,DD
       REAL*8      TREPS,TREB,TREM
       REAL*8      CC(6),CPE(6),CCP(6),FBM(6),RESB
@@ -92,7 +92,8 @@ C ----------------------------------------------------------------------
 
       COMPTE=0
       MULT=0.D0
-
+      UN=1.D0
+      DEUX=2.D0
       DO 100 I=1,6
         B(I)=BM(I)
  100  CONTINUE
@@ -148,7 +149,7 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
   19    CONTINUE
       ENDIF
       DO 20 I=1,6
-        FB(I)=FB(I)-MU/2.D0*CPE(I)+ECROB*(KRON(I)-B(I))
+        FB(I)=FB(I)-MU/DEUX*CPE(I)+ECROB*(KRON(I)-B(I))
   20  CONTINUE
 
        FBS=FB(1)
@@ -160,7 +161,7 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
         ELSE
           FBSM=FBS
         ENDIF
-        RTEMP=FBS**2
+        RTEMP=FBSM**2
 
 C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
@@ -190,9 +191,9 @@ C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
         IF (TREPS.GT.0.D0) THEN
           TREPS=0.D0
         ENDIF
-        DCOEFD=2.D0*(1.D0-D)
-        ENE=LAMBDA/2*TREPS**2+MU*TREM
-        FD=DCOEFD*ENE-2.D0*D*ECROD
+        DCOEFD=DEUX*(UN-D)
+        ENE=LAMBDA/DEUX*TREPS**2+MU*TREM
+        FD=DCOEFD*ENE-DEUX*D*ECROD
         IF (FD.LT.0.D0) THEN
           FD=0.D0
         ENDIF
@@ -232,7 +233,7 @@ C--------------------------------------------------------
               MTE1=1.D0
             ENDIF
 
-            CALL DFBDB(3,B,EPS,2.D0*MU,LAMBDA,ECROB,MTE2)
+            CALL DFBDB(3,B,EPS,DEUX*MU,LAMBDA,ECROB,MTE2)
 
             MTE2S=MTE2(1,1)
 
@@ -240,14 +241,14 @@ C--------------------------------------------------------
             DFDDD=0.D0
 
             IF ((.NOT.DBLOQ).AND.(FD.NE.0.D0)) THEN
-            DDCOED=-2.D0
-            DFDDD=DDCOED*ENE-2.D0*ECROD
+            DDCOED=-DEUX
+            DFDDD=DDCOED*ENE-DEUX*ECROD
             ENDIF
 
-            KSI=-MULT*ALPHA*MTE1*MTE2S+1.D0
+            KSI=-MULT*ALPHA*MTE1*MTE2S+UN
 
             IF (KSI.NE.0.D0) THEN
-              IKSI=1.D0/KSI
+              IKSI=UN/KSI
             ELSE
               CALL U2MESS('F','ALGORITH4_54')
             ENDIF
@@ -325,7 +326,7 @@ C----CALCUL DE FB DANS NEWTON---------------------------
  119          CONTINUE
             ENDIF
             DO 120 I=1,6
-              FB(I)=FB(I)-MU/2.D0*CPE(I)+ECROB*(KRON(I)-B(I))
+              FB(I)=FB(I)-MU/DEUX*CPE(I)+ECROB*(KRON(I)-B(I))
  120        CONTINUE
 
             FBS=FB(1)
@@ -334,15 +335,15 @@ C----CALCUL DE FB DANS NEWTON---------------------------
             ELSE
               FBSM=FBS
             ENDIF
-            RTEMP=FBS**2
+            RTEMP=FBSM**2
 C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
             IF (DBLOQ) THEN
               FD=0.D0
             ELSE
-              DCOEFD=2.D0*(1.D0-D)
-              FD=DCOEFD*ENE-2.D0*D*ECROD
+              DCOEFD=DEUX*(UN-D)
+              FD=DCOEFD*ENE-DEUX*D*ECROD
               IF (FD.LT.0.D0) THEN
                 FD=0.D0
               ENDIF

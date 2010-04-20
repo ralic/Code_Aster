@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+#& MODIF COMMUN  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,6 +66,7 @@ def C_RELATION() : return (             "ELAS",            # RESP. : PROIX J.M.P
                                         "HUJEUX",          # RESP. : FOUCAULT A.FOUCAULT
                                         "IRRAD3M",         # RESP. : FLEJOU J.L.FLEJOU
                                         "JOINT_BA",        # RESP. : MICHEL S.MICHEL
+                                        "JOINT_BANDIS",
                                         "JOINT_MECA_RUPT", # RESP. : KAZYMYRENKO C.KAZYMYRENKO 
                                         "KIT_DDI",         # RESP. : CHAVANT C.CHAVANT
                                         "KIT_HHM",         # RESP. : GRANET S.GRANET

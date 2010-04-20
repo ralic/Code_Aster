@@ -2,7 +2,7 @@
      &                  CHELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER       NBCMP
-      PARAMETER     (NBCMP = 9)
+      PARAMETER     (NBCMP = 10)
       CHARACTER*8   LICMP(NBCMP)
 C
       INTEGER       IFM,NIV
@@ -78,12 +78,12 @@ C
       INTEGER       JGRP,JINDIC
       CHARACTER*19  CHELSI
       REAL*8        MMINFR,COEFCR,COEFFF,COEFFR,INTEGR,COECHE
-      REAL*8        COCAUS,COFAUS,COCAUP,COFAUP
+      REAL*8        COCAUS,COFAUS,COCAUP,COFAUP,RELATI
       CHARACTER*19  VALK(2)
       INTEGER       VALI(1)
 C
       DATA LICMP    /'RHON','MU','RHOTK','INTEG','COECH',
-     &         'COSTCO','COSTFR','COPECO','COPEFR'/
+     &         'COSTCO','COSTFR','COPECO','COPEFR','RELA'/
 C
 C ----------------------------------------------------------------------
 C
@@ -135,15 +135,16 @@ C
 C
 C --- CARACTERISTIQUES DU CONTACT POUR LA FISSURE EN COURS
 C
-        COEFCR = MMINFR(DEFICO,'COEF_REGU_CONT',IZONE )
-        COEFFR = MMINFR(DEFICO,'COEF_REGU_FROT',IZONE ) 
-        COEFFF = MMINFR(DEFICO,'COEF_COULOMB'  ,IZONE )       
-        COECHE = MMINFR(DEFICO,'COEF_ECHELLE'  ,IZONE )
-        INTEGR = MMINFI(DEFICO,'INTEGRATION'   ,IZONE )
-        COCAUS = MMINFR(DEFICO,'COEF_STAB_CONT',IZONE )
-        COFAUS = MMINFR(DEFICO,'COEF_STAB_FROT',IZONE ) 
-        COCAUP = MMINFR(DEFICO,'COEF_PENA_CONT',IZONE )
-        COFAUP = MMINFR(DEFICO,'COEF_PENA_FROT',IZONE ) 
+        COEFCR  = MMINFR(DEFICO,'COEF_REGU_CONT',IZONE )
+        COEFFR  = MMINFR(DEFICO,'COEF_REGU_FROT',IZONE ) 
+        COEFFF  = MMINFR(DEFICO,'COEF_COULOMB'  ,IZONE )       
+        COECHE  = MMINFR(DEFICO,'COEF_ECHELLE'  ,IZONE )
+        INTEGR  = MMINFI(DEFICO,'INTEGRATION'   ,IZONE )
+        COCAUS  = MMINFR(DEFICO,'COEF_STAB_CONT',IZONE )
+        COFAUS  = MMINFR(DEFICO,'COEF_STAB_FROT',IZONE ) 
+        COCAUP  = MMINFR(DEFICO,'COEF_PENA_CONT',IZONE )
+        COFAUP  = MMINFR(DEFICO,'COEF_PENA_FROT',IZONE )
+        RELATI  = MMINFR(DEFICO,'RELATION',IZONE )
 C
 C --- ACCES AU CHAMP INDICATEUR
 C
@@ -248,11 +249,17 @@ C
                 CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
               ENDIF
               ZL(JCESL-1-IAD) = .TRUE.
-              ZR(JCESV-1-IAD) = COFAUP              
-             
-              
-              
-              
+              ZR(JCESV-1-IAD) = COFAUP
+C
+              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,10,IAD)
+              IF (IAD.GE.0) THEN
+                VALI(1) = 6
+                VALK(1) = CHELSI(1:19)
+                VALK(2) = 'ELEM'
+                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
+              ENDIF
+                ZL(JCESL-1-IAD) = .TRUE.
+                ZR(JCESV-1-IAD) = RELATI            
  120       CONTINUE
           ENDIF
  1000    CONTINUE
