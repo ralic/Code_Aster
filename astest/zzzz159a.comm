@@ -1,4 +1,4 @@
-# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 # zzzz159a.para = tps_job 600 mem_job 300Mo mem_aster 10 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,10 +73,10 @@ experience=[    Numeric.array([[0.00000E+00  , 0.00000E+00 ],
 # LANCEMENT DE L'IDENTIFICATION
 
 RESU=MACR_RECAL(
-         UNITE_ESCL       =3,
-         RESU_EXP         =experience,
-         LIST_PARA        =parametres,
-         RESU_CALC        =calcul,
+         UNITE_ESCL       = 3,
+         RESU_EXP         = experience,
+         LIST_PARA        = parametres,
+         RESU_CALC        = calcul,
 )  ;
 
 

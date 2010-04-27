@@ -1,21 +1,21 @@
-#@ MODIF macr_ecre_calc_ops Macro  DATE 05/10/2009   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_ecre_calc_ops Macro  DATE 21/04/2010   AUTEUR BOTTONI M.BOTTONI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -31,7 +31,7 @@ def macr_ecre_calc_ops(
   LOGICIEL,
   VERSION,
   ENTETE,
-  COURBES,
+  #COURBES,
   IMPRESSION,
   INFO,
   **args):
@@ -44,11 +44,17 @@ def macr_ecre_calc_ops(
   import os, string, types, shutil
   import aster
   from Accas import _F
-  from Noyau.N_utils import AsType
+  #from Noyau.N_utils import AsType
   from Utilitai.Utmess import UTMESS
   from Utilitai.System import ExecCommand
 
   ier=0
+
+
+  # PARAMETRES DEBUG
+  debug = True
+
+
 
   # Concept sortant
   self.DeclareOut('__TAB',TABLE)
@@ -57,16 +63,15 @@ def macr_ecre_calc_ops(
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
-  # Parametres
-  # Niveaux de debug
-  debug1 = (INFO>1)
-  debug2 = (INFO>2)
-    
+  # Info
+  info2 = (INFO==2)
+  if debug :
+      info2=True
 
   # Parametres Developpeur
   tmp_ecrevisse = "tmp_ecrevisse"
-  fichier_data = "data.dat"
-  defaut = '00'
+  fichier_data  = "data.dat"
+  defaut        = '00'
 
   # IMPORTATION DE COMMANDES ASTER
   EXEC_LOGICIEL  = self.get_cmd("EXEC_LOGICIEL")
@@ -95,19 +100,21 @@ def macr_ecre_calc_ops(
   for i in dCONVERGENCE.keys():
     if dCONVERGENCE[i]==None : del dCONVERGENCE[i]
 
-  if debug2:
-    print 'dFISSURE = ', dFISSURE
-    print 'dECOULEMENT = ', dECOULEMENT
-    print 'dTEMPERATURE = ', dTEMPERATURE
-    print 'dMODELE_ECRE = ', dMODELE_ECRE
-    print 'dCONVERGENCE = ', dCONVERGENCE
-    print 'ENTETE = ', ENTETE
-    print 'IMPRESSION = ', IMPRESSION
-    print 'INFO = ', INFO
+  if debug:
+      print 'dFISSURE = ', dFISSURE
+      print 'dECOULEMENT = ', dECOULEMENT
+      print 'dTEMPERATURE = ', dTEMPERATURE
+      print 'dMODELE_ECRE = ', dMODELE_ECRE
+      print 'dCONVERGENCE = ', dCONVERGENCE
+      print 'ENTETE = ', ENTETE
+      print 'IMPRESSION = ', IMPRESSION
+      print 'INFO = ', INFO
+
+
+
 
 # ---------------------------------------------------------------------
-
-  # CONSTRUCTION DU JEU DE PARAMETRES
+# CONSTRUCTION DU JEU DE PARAMETRES
 
   d = {}
   d[ 0 ] = ENTETE,
@@ -211,11 +218,14 @@ def macr_ecre_calc_ops(
   d[ 89 ] = dCONVERGENCE['ITER_GLOB_MAXI'],
   d[ 90 ] = dCONVERGENCE['CRIT_CONV_DEBI'],
 
-  if debug2: print d
+  if debug: print d
+
+
+
 
 # ---------------------------------------------------------------------
+# GENERATION DU FICHIER DATA.DAT
 
-  # GENERATION DU FICHIER DATA.DAT
   txt = fichier_data_ecrevisse()
 
   for num_param in d.keys():
@@ -235,21 +245,24 @@ def macr_ecre_calc_ops(
     # On remplace la variable dans le fichier par sa valeur
     txt = txt.replace( '$V['+str(num_param)+']', txt0 )
 
-  if debug1: print txt
+  if debug : print txt
+
+
 
 
 # ---------------------------------------------------------------------
+# CREATION DE L'ENVIRONNEMENT D'ETUDE POUR ECREVISSE
 
-  # CREATION DE L'ENVIRONNEMENT D'ETUDE POUR ECREVISSE
 
   # Repertoire temporaire d'execution d'Ecrevisse
   tmp_ecrevisse = os.path.join(os.getcwd(),tmp_ecrevisse)
 
-  if not os.path.isdir(tmp_ecrevisse):
+  if not os.path.isdir(tmp_ecrevisse) :
     try :
       os.mkdir(tmp_ecrevisse)
     except os.error,erreur :
-      print "Code d'erreur de mkdir : " + str(erreur[0]) + " : " + str(erreur[1])
+      if debug :
+        print "Code d'erreur de mkdir : " + str(erreur[0]) + " : " + str(erreur[1])
       UTMESS('F','ECREVISSE0_12',valk=[tmp_ecrevisse])
 
   # On recopie eventuellement l'ancien fichier debits
@@ -259,16 +272,20 @@ def macr_ecre_calc_ops(
      try:
         shutil.copyfile(src, dst)
      except Exception, e:
-        print "ERREUR : copyfile %s -> %s" % (src, dst)
+        UTMESS('F','ECREVISSE0_24',valk=[src, dst])
+        #print "ERREUR : copyfile %s -> %s" % (src, dst)
 
   # Executable Ecrevisse
-  if LOGICIEL:
+  if LOGICIEL :
     if not os.path.isfile(str(LOGICIEL)):
       UTMESS('F','ECREVISSE0_13')
     else:
       chemin_executable = str(LOGICIEL)
-  else:
+  else :
     chemin_executable = os.path.join(aster.repout(), 'ecrevisse')
+    #chemin_executable = os.path.join(aster.repout(),version,'ecrevisse') 
+    if debug :
+      print 'chemin_executable:',chemin_executable
 
   # Soit on fait un lien symbolique (incompatible avec certaines plate-formes) soit on recopie l'executable
   if not os.path.isfile(os.path.join(tmp_ecrevisse, 'ecrevisse')):
@@ -291,8 +308,7 @@ def macr_ecre_calc_ops(
 
 
 # ---------------------------------------------------------------------
-
-  # EXECUTION D'ECREVISSE
+# EXECUTION D'ECREVISSE
 
   # Choix du shell
   cmd = '#!sh'
@@ -305,7 +321,7 @@ def macr_ecre_calc_ops(
 #   cmd = cmd + '\nexport LD_LIBRARY_PATH=/logiciels/aster/Linux/GF4/public/gcc-4.1.1/lib:$LD_LIBRARY_PATH'
 
   # Creation du contenu du script de lancement ecrevisse.sh
-  cmd = cmd + '\ncd ' + tmp_ecrevisse + '\n' + os.path.join(tmp_ecrevisse, 'ecrevisse') + '\nset iret=$?\ncd ..\nexit $iret'
+  cmd = cmd + '\ncd ' + tmp_ecrevisse + '\n' + os.path.join(tmp_ecrevisse, 'ecrevisse') + ' ' + str(VERSION) + '\nset iret=$?\ncd ..\nexit $iret'
   fw = open(os.path.join(tmp_ecrevisse, 'ecrevisse.sh'),'w')
   fw.write(cmd)
   fw.close()
@@ -317,143 +333,73 @@ def macr_ecre_calc_ops(
   UTMESS('I','ECREVISSE0_17')
 
 
-  if debug1: os.system('ls -al ' + tmp_ecrevisse)
+  if info2: os.system('ls -al ' + tmp_ecrevisse)
+
+
 
 
 # ---------------------------------------------------------------------
+# RECUPERATION DES RESULTATS DEPUIS ECREVISSE
 
-  # RECUPERATION DU RESULTAT DEPUIS ECREVISSE
 
-
+  # 1)  5 COLONNES (a partir de ECREVISSE 3.1.e)
+  #       COTE z (m), FLUX THERMIQUE (W/m2), PRESSION TOTALE ABSOLUE (Pa),
+  #       TEMPERATURE FLUIDE (degres C), COEFFICIENT DE CONVECTION (W/m2/K)
   try:
-    f_ast = open(os.path.join(tmp_ecrevisse, 'pour_aster'),'r')
-    _txt = f_ast.read()
-    f_ast.close()
-    # transforme le texte en liste
-    _lst = _txt.split()
-    # transforme la liste de textes en liste de float
-    _lst = map( float, _lst )
+      f_ast = open(os.path.join(tmp_ecrevisse, 'pour_aster'),'r')
+      _txt = f_ast.read()
+      f_ast.close()
+      # transforme le texte en liste
+      _lst = _txt.split()
+      # transforme la liste de textes en liste de float
+      _lst = map( float, _lst )
 
-    # 5 colonnes (a partir de ECREVISSE 3.1.e)
-    #    cote z (m), flux thermique (W/m2), pression totale absolue (Pa), temperature fluide (degres C), coefficient de convection (W/m2/K)
-    _ecr_c  = _lst[1:len(_lst):5]
-    _ecr_f  = _lst[2:len(_lst):5]
-    _ecr_p  = _lst[3:len(_lst):5]
-    _ecr_t  = _lst[4:len(_lst):5]
-    _ecr_cc = _lst[5:len(_lst):5]
-
+      # ATTENTION : les cotes _ecr_c sont celles des resultats ecrevisse,
+      #              c'est a dire les points de milieu du maillage aster,
+      #              eventuellement multiplies par 1/TORTUOSITE!
+      _ecr_c  = _lst[1:len(_lst):5]
+      _ecr_f  = _lst[2:len(_lst):5]
+      _ecr_p  = _lst[3:len(_lst):5]
+      _ecr_t  = _lst[4:len(_lst):5]
+      _ecr_cc = _lst[5:len(_lst):5]
 
   except:
       UTMESS('F','ECREVISSE0_18')
-      _ecr_c = [-1]
-      _ecr_f = [-1]
-      _ecr_p = [-1]
-      _ecr_t = [-1]
+      _ecr_c  = [-1]
+      _ecr_f  = [-1]
+      _ecr_p  = [-1]
+      _ecr_t  = [-1]
       _ecr_cc = [-1]
 
   else:
-      # Generation de la table resultat
-      if debug1: print "Chargement donne par Ecrevisse"
-      if debug1: print len(_ecr_c), len(_ecr_f), len(_ecr_p)
-      if debug1:
-        print '_ecr_c : min=', min(_ecr_c), ' / max=', max(_ecr_c), ' / ', _ecr_c
-        print '_ecr_f : min=', min(_ecr_f), ' / max=', max(_ecr_f), ' / ', _ecr_f
-        print '_ecr_p : min=', min(_ecr_p), ' / max=', max(_ecr_p), ' / ', _ecr_p
-        print '_ecr_t : min=', min(_ecr_t), ' / max=', max(_ecr_t), ' / ', _ecr_t
-        print '_ecr_cc : min=', min(_ecr_cc), ' / max=', max(_ecr_cc), ' / ', _ecr_cc
-
-
-      # Formule permettant de redefinir les chargements par mailles
+      # On elimine les eventuels points en plus
+      #   (cela arrive si la longueur de la fissure est plus grande de la derniere cotes)
+      #   mais on considere quand meme la derniere cote du maillage aster
       lx_ast = dFISSURE['LISTE_COTES_AH']
-
-      # epsilon pour le decalage
-      eps = 1.e-8
-
-      lx = []
-      ly = []
-      ly2 = []
-      ly3 = []
-      ly4 = []
-
-      lx.append( lx_ast[0] )
-      ly.append( _ecr_f[0] )
-      ly2.append( _ecr_p[0] )
-      ly3.append( _ecr_t[0] )
-      ly4.append( _ecr_cc[0] )
-
-      for i in range(len(lx_ast)-2):
-        x = lx_ast[i+1]
-        lx.append( x - eps )
-        lx.append( x + eps )
-        ly.append( _ecr_f[i] )
-        ly.append( _ecr_f[i+1] )
-        ly2.append( _ecr_p[i] )
-        ly2.append( _ecr_p[i+1] )
-        ly3.append( _ecr_t[i] )
-        ly3.append( _ecr_t[i+1] )
-        ly4.append( _ecr_cc[i] )
-        ly4.append( _ecr_cc[i+1] )
-      #
-      lx.append( lx_ast[-1] )
-      ly.append( _ecr_f[-1] )
-      ly2.append( _ecr_p[-1] )
-      ly3.append( _ecr_t[-1] )
-      ly4.append( _ecr_cc[-1] )
-
-      _ecr_c = lx
-      _ecr_f = ly
-      _ecr_p = ly2
-      _ecr_t = ly3
-      _ecr_cc = ly4
+      nbCotesEcre = len(lx_ast)
+      _ecr_c  = _ecr_c[0:nbCotesEcre]
+      _ecr_f  = _ecr_f[0:nbCotesEcre]
+      _ecr_p  = _ecr_p[0:nbCotesEcre]
+      _ecr_t  = _ecr_t[0:nbCotesEcre]
+      _ecr_cc = _ecr_cc[0:nbCotesEcre]
 
 
-  # Generation de la table resultat
-  if debug1: print "Chargement par mailles pour Aster"
-  if debug1: print len(_ecr_c), len(_ecr_f), len(_ecr_p)
-  if debug1:
-    print '_ecr_c : min=', min(_ecr_c), ' / max=', max(_ecr_c), ' / ', _ecr_c
-    print '_ecr_f : min=', min(_ecr_f), ' / max=', max(_ecr_f), ' / ', _ecr_f
-    print '_ecr_p : min=', min(_ecr_p), ' / max=', max(_ecr_p), ' / ', _ecr_p
-    print '_ecr_t : min=', min(_ecr_t), ' / max=', max(_ecr_t), ' / ', _ecr_t
-    print '_ecr_cc : min=', min(_ecr_cc), ' / max=', max(_ecr_cc), ' / ', _ecr_cc
 
-  # Creation de la SD table (resultat de CALC_ECREVISSE)
-  __TAB=CREA_TABLE(LISTE=(_F(LISTE_R=_ecr_c,
-                           PARA='COTES'),
-                        _F(LISTE_R=_ecr_f,
-                           PARA='FLUX'),
-                        _F(LISTE_R=_ecr_p,
-                           PARA='PRESSION'),
-                        _F(LISTE_R=_ecr_t,
-                           PARA='TEMP'),
-                        _F(LISTE_R=_ecr_cc,
-                           PARA='COEF_CONV'),
-                         ));
-
-
-#  if debug: IMPR_TABLE(TABLE=__TAB, FORMAT='TABLEAU',);
-
-# ---------------------------------------------------------------------
-
-  # RECUPERATION DU DEBIT DEPUIS ECREVISSE
-
+  # 2)   DEBIT - 5 COLONNES (a partir de ECREVISSE 3.1.e)
+  #          DEBIT TOTAL (kg/s), DEBIT AIR (kg/s), DEBIT VAPEUR (kg/s),
+  #          DEBIT LIQUIDE (kg/s), TYPE ECOULEMENT
   try:
-    f_deb = open(os.path.join(tmp_ecrevisse, 'debits'),'r')
-    _tex = f_deb.read()
-    f_deb.close()
-    # transforme le texte en liste
-    _lis = _tex.split()
-    # transforme la liste de textes en liste de float
-    _lis = map( float, _lis )
+      f_deb = open(os.path.join(tmp_ecrevisse, 'debits'),'r')
+      _tex = f_deb.read()
+      f_deb.close()
+      _lis = _tex.split()
+      _lis = map( float, _lis )
 
-    # 5 colonnes (a partir de ECREVISSE 3.1.e)
-    # debit total (kg/s), debit d'air (kg/s), debit de vapeur (kg/s), debit de liquide (kg/s), type d'ecoulement
-    _dtot  = _lis[0:len(_lis):5]
-    _dair  = _lis[1:len(_lis):5]
-    _dvap  = _lis[2:len(_lis):5]
-    _dliq  = _lis[3:len(_lis):5]
-    _ecou  = _lis[4:len(_lis):5]
-
+      _dtot  = _lis[0:len(_lis):5]
+      _dair  = _lis[1:len(_lis):5]
+      _dvap  = _lis[2:len(_lis):5]
+      _dliq  = _lis[3:len(_lis):5]
+      _ecou  = _lis[4:len(_lis):5]
 
   except:
       UTMESS('A','ECREVISSE0_18')
@@ -464,50 +410,22 @@ def macr_ecre_calc_ops(
       _ecou = [-1]
 
 
-      # Formule permettant de redefinir les chargements par mailles
-      ly_deb = LIST_INST
 
+# ---------------------------------------------------------------------
+# CREATION DES SD-TABLE DE RESULTATS
 
-      # epsilon pour le decalage
-      eps = 1.e-8
+  __TAB=CREA_TABLE(LISTE=(_F(LISTE_R=_ecr_c,
+                           PARA='COTES'),
+                        _F(LISTE_R=_ecr_f,
+                           PARA='FLUX'),
+                        _F(LISTE_R=_ecr_p,
+                           PARA='PRESSION'),
+                        _F(LISTE_R=_ecr_t,
+                           PARA='TEMP'),
+                        _F(LISTE_R=_ecr_cc,
+                           PARA='COEF_CONV'),
+                         ))
 
-      ly = []
-      ly1 = []
-      ly2 = []
-      ly3 = []
-      ly4 = []
-
-      ly.append( _dtot[0] )
-      ly1.append( _dair[0] )
-      ly2.append( _dvap[0] )
-      ly3.append( _dliq[0] )
-      ly4.append( _ecou[0] )
-
-      for i in range(len(ly_deb)-2):
-        ly.append( _dtot[i] )
-        ly.append( _dtot[i+1] )
-        ly1.append( _dair[i] )
-        ly1.append( _dair[i+1] )
-        ly2.append( _dvap[i] )
-        ly2.append( _dvap[i+1] )
-        ly3.append( _dliq[i] )
-        ly3.append( _dliq[i+1] )
-        ly4.append( _ecou[i] )
-        ly4.append( _ecou[i+1] )
-      #
-      ly.append( _dtot[-1] )
-      ly1.append( _dair[-1] )
-      ly2.append( _dvap[-1] )
-      ly3.append( _dliq[-1] )
-      ly4.append( _ecou[-1] )
-
-      _dtot = ly
-      _dair = ly1
-      _dvap = ly2
-      _dliq = ly3
-      _ecou = ly4
-
-  # Creation de la SD table (resultat de CALC_ECREVISSE)
   __DEB=CREA_TABLE(LISTE=(_F(LISTE_R=_dtot,
                            PARA='DEBTOT'),
                         _F(LISTE_R=_dair,
@@ -518,27 +436,48 @@ def macr_ecre_calc_ops(
                            PARA='DEBLIQ'),
                         _F(LISTE_I=_ecou,
                            PARA='ECOULEMENT'),
-                         ));
+                         ))
 
 
-#  if debug: IMPR_TABLE(TABLE=__DEB, FORMAT='TABLEAU',);
+
 
 # ---------------------------------------------------------------------
+# DEBUG
+  if debug :
+      print 'DEBUT DEBUG MACR_ECRE_CALC'
+      print 'Chargements donnes par Ecrevisse'
+      print 'cotes aster :', lx_ast
+      print '_ecr_c  : min=', min(_ecr_c), ' / max=', max(_ecr_c), ' / ', _ecr_c
+      print '_ecr_f  : min=', min(_ecr_f), ' / max=', max(_ecr_f), ' / ', _ecr_f
+      print '_ecr_p  : min=', min(_ecr_p), ' / max=', max(_ecr_p), ' / ', _ecr_p
+      print '_ecr_t  : min=', min(_ecr_t), ' / max=', max(_ecr_t), ' / ', _ecr_t
+      print '_ecr_cc : min=', min(_ecr_cc), ' / max=', max(_ecr_cc), ' / ', _ecr_cc
+      print '_dtot=', _dtot
+      print '_dair=', _dair
+      print '_dvap=', _dvap
+      print '_dliq=', _dliq
+      print '_ecou=', _ecou
+      print __DEB.EXTR_TABLE()
+      print __TAB.EXTR_TABLE()
+      print 'FIN DEBUG MACR_ECRE_CALC'
 
-  # RECUPERATION DES RESULTATS OPTIONNELS DEPUIS ECREVISSE
 
+
+# ---------------------------------------------------------------------
+# RECUPERATION DES RESULTATS OPTIONNELS DEPUIS ECREVISSE
 # A finir
-
 #  lst_fic = os.listdir(tmp_ecrevisse)
 
+
+
 # ---------------------------------------------------------------------
-
-  # FIN MACR_ECRE_CALC
-
+# FIN MACR_ECRE_CALC
   return ier
 
-# ---------------------------------------------------------------------
 
+
+
+# ---------------------------------------------------------------------
 def fichier_data_ecrevisse():
 
   """

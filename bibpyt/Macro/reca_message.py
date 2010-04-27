@@ -1,4 +1,4 @@
-#@ MODIF reca_message Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_message Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,149 +20,129 @@
 # ======================================================================
 
 import os, Numeric
-
+from Utilitai.Utmess import UTMESS, MessageLog
+from recal import Affiche_Param
 #===========================================================================================
 
 
 # AFFICHAGE DES MESSAGES
 
 class Message :
-   """classe gérant l'affichage des messages concernant le déroulement de l'optmisation """
-   #Constructeur de la classe
+   """
+       classe gérant l'affichage des messages concernant le déroulement de l'optmisation
+   """
 
-# ------------------------------------------------------------------------------
-
+   # ------------------------------------------------------------------------------
    def __init__(self,para,val_init,resu_exp,ul_out):
       self.nom_para = para
       self.resu_exp = resu_exp
       self.val_init = val_init
       self.resu_exp = resu_exp
-      self.ul_out = ul_out
+      self.ul_out   = ul_out
 
-# ------------------------------------------------------------------------------
+      
+   # ------------------------------------------------------------------------------
    def get_filename(self):
       return os.getcwd()+'/fort.'+str(self.ul_out)
    
    
+   # ------------------------------------------------------------------------------
    def initialise(self):
-      res=open(self.get_filename(), 'w')
-      res.close()
-
-      txt = ' <INFO>  MACR_RECAL\n\n'
-      self.ecrire(txt)
-
-# ------------------------------------------------------------------------------
-   
-   def ecrire(self,txt):
-      res=open(self.get_filename(), 'a')
-      res.write(txt+'\n')
-      res.flush()
-      res.close()
+      """ Initialisation du fichier """
+      UTMESS('I','RECAL0_1', cc=self.get_filename())
 
 
-# ------------------------------------------------------------------------------
-   
+   # ------------------------------------------------------------------------------
    def affiche_valeurs(self,val):
+      """ Affichage de la valeur des parametres """
+      txt = Affiche_Param(self.nom_para, val)
+      UTMESS('I','RECAL0_32', valk=txt, cc=self.get_filename())
 
-      txt = '\n=> Paramètres    = '
-      for i in range(len(val)):
-         txt += '\n         '+ self.nom_para[i]+' = '+str(val[i])
-      self.ecrire(txt)
 
-# ------------------------------------------------------------------------------
-   
+   # ------------------------------------------------------------------------------
    def affiche_fonctionnelle(self,J):
+      """ Affichage de la fonctionnelle  """
+      UTMESS('I','RECAL0_33', valr=J, cc=self.get_filename())
 
-      txt = '\n=> Fonctionnelle = '+str(J)
-      self.ecrire(txt)
 
-# ------------------------------------------------------------------------------
-   
-   def affiche_result_iter(self,iter,J,val,residu,Act=[],):
+   # ------------------------------------------------------------------------------
+   def affiche_result_iter(self, iter, J, val, residu, Act=[], ecart_para=None, ecart_fonc=None):
+      """ Affichage du message recapitulatif de l'iteration
+      """
+      UTMESS('I','RECAL0_30')
+      UTMESS('I','RECAL0_79', cc=self.get_filename())
+      UTMESS('I','RECAL0_31', vali=iter, cc=self.get_filename())
+      self.affiche_fonctionnelle(J)
+      UTMESS('I','RECAL0_34', valr=residu, cc=self.get_filename())
+      if ecart_para: UTMESS('I','RECAL0_37', valr=ecart_para, cc=self.get_filename())
+      if ecart_fonc: UTMESS('I','RECAL0_38', valr=ecart_fonc, cc=self.get_filename())
 
-      txt  = '\n=======================================================\n'
-      txt += 'Iteration '+str(iter)+' :\n'
-      txt += '\n=> Fonctionnelle = '+str(J)
-      txt += '\n=> Résidu        = '+str(residu)
-
-      self.ecrire(txt)
-
-      txt = ''
+      # Affichage des parametres
       self.affiche_valeurs(val)
 
+      # Si les parametres sont en butee
       if (len(Act)!=0):
+         lpara = ' '.join([self.nom_para[i] for i in Act])
          if (len(Act)==1):
-            txt += '\n\n Le paramètre '
+            UTMESS('I','RECAL0_46', valk=lpara, cc=self.get_filename())
          else:
-            txt += '\n\n Les paramètres '
-         for i in Act:
-            txt += self.nom_para[i]+' '
-         if (len(Act)==1):
-            txt += '\n est en butée sur un bord de leur domaine admissible.'
-         else:
-            txt += '\n sont en butée sur un bord de leur domaine admissible.'
-      txt += '\n=======================================================\n\n'
-      self.ecrire(txt)
+            UTMESS('I','RECAL0_47', valk=lpara, cc=self.get_filename())
+
+      UTMESS('I','RECAL0_80', cc=self.get_filename())
 
 
-# ------------------------------------------------------------------------------
-
+   # ------------------------------------------------------------------------------
    def affiche_etat_final_convergence(self,iter,max_iter,iter_fonc,max_iter_fonc,prec,residu,Act=[]):
-
-      txt = ''
-      if ((iter <= max_iter) or (residu <= prec) or (iter_fonc <= max_iter_fonc) ):
-        txt += '\n=======================================================\n'
-        txt += '                   CONVERGENCE ATTEINTE                '
-        if (len(Act)!=0):
-           txt += "\n\n         ATTENTION : L'OPTIMUM EST ATTEINT AVEC      "
-           txt += "\n           DES PARAMETRES EN BUTEE SUR LE BORD     "
-           txt += "\n               DU DOMAINE ADMISSIBLE                 "
-        txt += '\n=======================================================\n'
+      """ Affichage du message recapitulatif a la fin du processus d'optimisation
+      """
+      if ((iter < max_iter) and (residu <= prec) and (iter_fonc < max_iter_fonc) ):
+         UTMESS('I','RECAL0_56', cc=self.get_filename())
+         if (len(Act)!=0):                UTMESS('I','RECAL0_58', cc=self.get_filename())
       else:
-        txt += "\n=======================================================\n"
-        txt += '               CONVERGENCE  NON ATTEINTE              '
-        if (iter > max_iter):
-          txt += "\n  Le nombre maximal  d'itération ("+str(max_iter)+") a été dépassé"
-        if (iter_fonc > max_iter_fonc):
-          txt += "\n  Le nombre maximal  d'evaluation de la fonction ("+str(max_iter_fonc)+") a été dépassé"
-        txt += '\n=======================================================\n'
-      self.ecrire(txt)
+         UTMESS('I','RECAL0_57', cc=self.get_filename())
+         if (iter >= max_iter):           UTMESS('I','RECAL0_55', cc=self.get_filename())
+         if (iter_fonc >= max_iter_fonc): UTMESS('I','RECAL0_54', cc=self.get_filename())
+
+      UTMESS('I','RECAL0_80', cc=self.get_filename())
 
 
-# ------------------------------------------------------------------------------
-
+   # ------------------------------------------------------------------------------
    def affiche_calcul_etat_final(self,para,Hessien,valeurs_propres,vecteurs_propres,sensible,insensible):
+      """ Affichage des informations de l'optimisation (valeurs propres, vecteurs propres, etc.)
+      """
+      UTMESS('I','RECAL0_60', valk=str(valeurs_propres), cc=self.get_filename())
+      UTMESS('I','RECAL0_61', valk=str(vecteurs_propres), cc=self.get_filename())
+      UTMESS('I','RECAL0_62', cc=self.get_filename())
 
-        txt  = '\n\nValeurs propres du Hessien:\n'
-        txt += str( valeurs_propres)
-        txt += '\n\nVecteurs propres associés:\n'
-        txt += str( vecteurs_propres)
-        txt += '\n\n              --------'
-        txt += '\n\nOn peut en déduire que :'
-        # Paramètres sensibles
-        if (len(sensible)!=0):
-           txt += '\n\nLes combinaisons suivantes de paramètres sont prépondérantes pour votre calcul :\n'
-           k=0
-           for i in sensible:
-              k=k+1
-              colonne=vecteurs_propres[:,i]
-              numero=Numeric.nonzero(Numeric.greater(abs(colonne/max(abs(colonne))),1.E-1))
-              txt += '\n   '+str(k)+') '
-              for j in numero:
-                 txt += '%+3.1E ' %colonne[j]+'* '+para[j]+' '
-              txt += '\n      associée à la valeur propre %3.1E \n' %valeurs_propres[i]
-        # Paramètres insensibles
-        if (len(insensible)!=0):
-           txt += '\n\nLes combinaisons suivantes de paramètres sont insensibles pour votre calcul :\n'
-           k=0
-           for i in insensible:
-              k=k+1
-              colonne=vecteurs_propres[:,i]
-              numero=Numeric.nonzero(Numeric.greater(abs(colonne/max(abs(colonne))),1.E-1))
-              txt += '\n   '+str(k)+') '
-              for j in numero:
-                 txt += '%+3.1E ' %colonne[j]+'* '+para[j]+' '
-              txt += '\n      associée à la valeur propre %3.1E \n' %valeurs_propres[i]
-      
-        self.ecrire(txt)
+      if (len(sensible)!=0 or len(insensible)!=0):
+         UTMESS('I','RECAL0_63', cc=self.get_filename())
+
+      # Parametres sensibles
+      if (len(sensible)!=0):
+         UTMESS('I','RECAL0_64', cc=self.get_filename())
+         k=0
+         for i in sensible:
+            k=k+1
+            colonne=vecteurs_propres[:,i]
+            numero=Numeric.nonzero(Numeric.greater(abs(colonne/max(abs(colonne))),1.E-1))
+            txt = '\n   '+str(k)+') '
+            for j in numero:
+               txt += '%+3.1E ' %colonne[j]+'* '+para[j]+' '
+            UTMESS('I','RECAL0_65', valk=(txt, str(valeurs_propres[i])), cc=self.get_filename())
+
+      # Parametres insensibles
+      if (len(insensible)!=0):
+         UTMESS('I','RECAL0_66', cc=self.get_filename())
+         k=0
+         for i in insensible:
+            k=k+1
+            colonne=vecteurs_propres[:,i]
+            numero=Numeric.nonzero(Numeric.greater(abs(colonne/max(abs(colonne))),1.E-1))
+            txt = '\n   '+str(k)+') '
+            for j in numero:
+               txt += '%+3.1E ' %colonne[j]+'* '+para[j]+' '
+            UTMESS('I','RECAL0_65', valk=(txt, str(valeurs_propres[i])), cc=self.get_filename())
+
+      if (len(sensible)!=0 or len(insensible)!=0):
+         UTMESS('I','RECAL0_62', cc=self.get_filename())
 

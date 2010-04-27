@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
+#@ MODIF reca_calcul_aster Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,737 +19,416 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# mode_include = False
-# __follow_output = False
-# table_sensibilite = False
-__commandes_aster__ = False
 
 debug = False
 
-import copy, Numeric, types, os, sys, pprint, math
-from glob import glob
+import copy, types, os, sys, pprint, math, glob, socket, shutil
+import Numeric
 
 from Utilitai.System import ExecCommand
 from Utilitai.Utmess import UTMESS
 
-# Nom de la routine
-nompro = 'MACR_RECAL'
+from recal import Affiche_Param, CALCULS_ASTER, CALC_ERROR
+from reca_utilitaires import Random_Tmp_Name
 
 
 # ------------------------------------------------------------------------------
-
-class PARAMETRES:
-
-  def __init__(self, METHODE, DYNAMIQUE, UNITE_RESU, INFO=1, fich_output='./REPE_OUT/output_esclave.txt', mode_include=False, follow_output=False, 
-               table_sensibilite=False, memjeveux_esclave=None, PARA_DIFF_FINI=1.E-3, ITER_MAXI=10, ITER_FONC_MAXI=100):
-
-    self.METHODE        = METHODE
-    self.DYNAMIQUE      = DYNAMIQUE
-    self.UNITE_RESU     = UNITE_RESU
-    self.INFO           = INFO
-    self.fich_output    = fich_output
-    self.PARA_DIFF_FINI = PARA_DIFF_FINI
-    self.ITER_FONC_MAXI = ITER_FONC_MAXI
-    self.ITER_MAXI      = ITER_MAXI,
-
-    try:
-      import Cata, aster
-      from Cata.cata import INCLUDE, DETRUIRE, FIN, DEFI_FICHIER, IMPR_TABLE, LIRE_TABLE, INFO_EXEC_ASTER, EXTR_TABLE, CREA_TABLE
-      from Accas import _F
-    except:
-      mode_include = False
-
-    if not mode_include:
-      try:
-        from Macro.lire_table_ops import lecture_table
-        mode_aster = True
-      except:
-        try:
-          sys.path.append( './Python/Macro' )
-          from Macro.lire_table_ops import lecture_table
-          mode_aster = False
-        except:
-          UTMESS('F','RECAL0_20')
-    self.mode_include      = mode_include
-    self.follow_output     = follow_output
-    self.mode_aster        = mode_aster
-    self.memjeveux_esclave = memjeveux_esclave    
-    self.table_sensibilite = table_sensibilite
-
-    self.vector_output     = False
-    self.error_output      = False
-
-
-# ------------------------------------------------------------------------------
-
 class CALCUL_ASTER:
 
-  def __init__(self, PARAMETRES, UL, para, reponses, LIST_SENSI=[], LIST_DERIV=[]):
-
-    self.UL                    = UL
-    self.para                  = para
-    self.reponses              = reponses
-    self.LIST_SENSI            = LIST_SENSI
-    self.LIST_DERIV            = LIST_DERIV
-
-    self.METHODE               = PARAMETRES.METHODE
-    self.DYNAMIQUE             = PARAMETRES.DYNAMIQUE
-    self.UNITE_RESU            = PARAMETRES.UNITE_RESU
-    self.INFO                  = PARAMETRES.INFO
-    self.fich_output           = PARAMETRES.fich_output
-    self.mode_include          = PARAMETRES.mode_include
-    self.follow_output         = PARAMETRES.follow_output
-    self.table_sensibilite     = PARAMETRES.table_sensibilite
-    self.mode_aster            = PARAMETRES.mode_aster
-    self.memjeveux_esclave     = PARAMETRES.memjeveux_esclave    
-    self.PARA_DIFF_FINI        = PARAMETRES.PARA_DIFF_FINI
-    self.ITER_FONC_MAXI        = PARAMETRES.ITER_FONC_MAXI
-    self.vector_output         = PARAMETRES.vector_output
-    self.error_output          = PARAMETRES.vector_output
-
-    self.UNITE_GRAPHIQUE       = None
-    self.new_export            = 'tmp_export'
-    self.nom_fichier_mess_fils = None
-    self.nom_fichier_resu_fils = None
-
-    self.fichier_esclave       = None
-
-    self.evaluation_fonction   = 0
-
-    self.L_J_init              = None
-    self.val                   = None
-    self.L                     = None
-    self.L_deriv_sensible      = None
-    self.ordre_mac_num         =[]
-    self.ordre_mac_exp         =[]
-    self.graph_mac             = False
-
-
-  # ------------------------------------------------------------------------------
-
-  def Lancement_Commande(self, cmd):
-
-          if self.INFO>=1: UTMESS('I','EXECLOGICIEL0_8',valk=cmd)
-
-          fich_output       = self.fich_output
-          follow_output     = self.follow_output
-
-          # Lancement d'Aster avec le deuxieme export
-          iret, txt_output = ExecCommand(cmd, follow_output=self.follow_output,verbose=False)
-
-          if fich_output:
-             # Recuperation du .mess 'fils'
-             f=open(fich_output, 'w')
-             f.write( txt_output )
-             f.close()
-
-          if self.INFO>=1: UTMESS('I','EXECLOGICIEL0_12',valk=cmd)
-
-          diag = self.Recuperation_Diagnostic(txt_output)
-
-          return
-
-
-  # ------------------------------------------------------------------------------
-
-  def Recuperation_Diagnostic(self, output):
-
-    txt = '--- DIAGNOSTIC JOB :'
-    diag = ''
-    for ligne in output.splitlines():
-      if ligne.find(txt) > -1:
-        diag = ligne.split(txt)[-1].strip()
-        break
-
-    if self.INFO>=1: UTMESS('I','RECAL0_21',valk=diag)
-
-    if diag in ['OK', 'NOOK_TEST_RESU', '<A>_ALARM', '<F>_COPY_ERROR']: return True
-    else:
-      UTMESS('F','RECAL0_22')
-
-
-  # ------------------------------------------------------------------------------
-
-  def Remplace_fichier_esclave(self, val_in): pass
-
-
-  # ------------------------------------------------------------------------------
-
-  def calcul_Aster(self, val, INFO=0):
-
-        self.val   = val
-        UL         = self.UL
-        para       = self.para
-        reponses   = self.reponses
-        DYNAMIQUE  = self.DYNAMIQUE
-        UNITE_RESU = self.UNITE_RESU
-        LIST_SENSI = self.LIST_SENSI
-        LIST_DERIV = self.LIST_DERIV
-
-        mode_include      = self.mode_include
-        follow_output     = self.follow_output
-        table_sensibilite = self.table_sensibilite
-
-        if self.evaluation_fonction > self.ITER_FONC_MAXI:
-           UTMESS('F', 'RECAL0_23')
-        self.evaluation_fonction += 1
-
-
-        if not mode_include:
-
-          # Creation du repertoire temporaire pour l'execution de l'esclave
-          tmp_macr_recal = self.Creation_Temporaire_Esclave()
-
-          # Creation du fichier .export de l'esclave
-          self.Creation_Fichier_Export_Esclave(tmp_macr_recal)  
-
-        # Fichier esclave a modifier (si methode EXTERNE alors on prend directement le fichier esclave, sinon c'est le fort.UL dans le repertoire d'execution
-        try:
-           if self.METHODE=='EXTERNE':
-              fic = open(self.fichier_esclave,'r')
-           else:
-              fic = open('fort.'+str(UL),'r')
-
-           # On stocke le contenu de fort.UL dans la variable fichier qui est une string 
-           fichier=fic.read()
-           # On stocke le contenu initial de fort.UL dans la variable fichiersauv 
-           fichiersauv=copy.copy(fichier)
-           fic.close()
-        except:
-           UTMESS('F', 'RECAL0_24', valk=self.fichier_esclave)
-
-        # chemin vers as_run
-        if os.environ.has_key('ASTER_ROOT'):
-           as_run = os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'bin', 'as_run')
-        elif os.path.isfile(aster.repout() + os.sep + 'as_run'):
-           as_run = aster.repout() + os.sep + 'as_run'
-        else:
-           as_run = 'as_run'
-           if INFO>=1: UTMESS('A', 'RECAL0_83')
-
-        if __commandes_aster__:
-          try:
-            from Cata.cata import INCLUDE, DETRUIRE, FIN, DEFI_FICHIER, IMPR_TABLE, LIRE_TABLE, INFO_EXEC_ASTER, EXTR_TABLE, CREA_TABLE,MAC_MODES
-          except: 
-            message = "Erreur"
-            UTMESS('F', 'DVP_1')
-
-        # Utilisation du module Python de LIRE_TABLE
-        if self.mode_aster:
-          from Macro.lire_table_ops import lecture_table
-        else:
-          try:
-            sys.path.append( './Python/Macro' )
-            from lire_table_ops import lecture_table
-          except:
-            UTMESS('F','RECAL0_20')
-
-        txt = []
-        for i in para:
-          txt.append( "\t\t\t%s : %s" % (i, val[para.index(i)]) )
-        if INFO>=1: UTMESS('I','RECAL0_25',valk='\n'.join(txt))
+  def __init__(self, jdc, METHODE,
+                          UNITE_ESCL,
+                          UNITE_RESU, 
+                          para,
+                          reponses,
+                          PARA_DIFF_FINI=1.E-3,
+                          vector_output=True,
+                          GRADIENT=None,
+                          DYNAMIQUE=None,
+                          #LANCEMENT='DISTRIBUE',
+                          CALCUL_ESCLAVE=None,
+                          INFO=0,
+               ):
   
-  
-        # On supprime tous les commentaires du fichier esclave
-        fichiernew=[]
-        for ligne in fichier.split('\n'):
-           if ligne.strip() != '':
-              if ligne.replace(' ', '')[0] == '#': ligne = ''
-              fichiernew.append(ligne)
-        fichier = '\n'.join(fichiernew)
+      self.METHODE               = METHODE
+      self.UNITE_ESCL            = UNITE_ESCL
+      self.UNITE_RESU            = UNITE_RESU
+      self.para                  = para
+      self.reponses              = reponses
+      self.PARA_DIFF_FINI        = PARA_DIFF_FINI
+      self.vector_output         = vector_output
 
-        #Fichier_Resu est une liste ou l'on va stocker le fichier modifié
-        #idée générale :on délimite des 'blocs' dans fichier
-        #on modifie ou non ces blocs suivant les besoins 
-        #on ajoute ces blocs dans la liste Fichier_Resu
-        Fichier_Resu=[]                      
+      self.memjeveux_esclave     = CALCUL_ESCLAVE['memjeveux_esclave']
+      self.mem_aster             = CALCUL_ESCLAVE['mem_aster']
+      self.MODE                  = CALCUL_ESCLAVE['MODE']
+      self.MEMOIRE               = CALCUL_ESCLAVE['MEMOIRE']
+      self.TEMPS                 = CALCUL_ESCLAVE['TEMPS']
+      self.CLASSE                = CALCUL_ESCLAVE['CLASSE']
+      self.ACTUALISATION         = CALCUL_ESCLAVE['ACTUALISATION']
+      self.NMAX_SIMULT           = CALCUL_ESCLAVE['NMAX_SIMULT']
+      self.LANCEMENT             = CALCUL_ESCLAVE['LANCEMENT']
 
-        # Dans le cas du mode INCLUDE on enleve le mot-clé DEBUT
-        if mode_include:
-          try: 
-             #cherche l'indice de DEBUT()
-             index_deb=fichier.index('DEBUT(')
-             while( fichier[index_deb]!='\n'):
-                index_deb=index_deb+1
-             #on restreint fichier en enlevant 'DEBUT();'
-             fichier = fichier[index_deb+1:]   
-          except:
-             #on va dans l'except si on a modifié le fichier au moins une fois
-             pass 
-  
-        # On enleve le mot-clé FIN()
-        try:
-           #cherche l'indice de FIN()
-           index_fin = fichier.index('FIN(')
-           #on restreint fichier en enlevant 'FIN();'
-           fichier = fichier[:index_fin]
-        except : pass
-
-
-        #--------------------------------------------------------------------------------
-        #on cherche à délimiter le bloc des parametres dans le fichier
-        #Tout d'abord on cherche les indices d'apparition des paras dans le fichier 
-        #en effet l'utilisateur n'est pas obligé de rentrer les paras dans optimise
-        #avec le meme ordre que son fichier de commande
-        index_para = Numeric.zeros(len(para))
-        for i in range(len(para)):
-           index_para[i] = fichier.index(para[i])
-
-        #On range les indices par ordre croissant afin de déterminer
-        #les indice_max et indice_min
-        index_para = Numeric.sort(index_para)
-        index_first_para = index_para[0]
-        index_last_para = index_para[len(index_para)-1]
-
-  
-        #on va délimiter les blocs intermédiaires entre chaque para "utiles" à l'optimsation
-        bloc_inter ='\n'
-        for i in range(len(para)-1):
-           j = index_para[i]
-           k = index_para[i+1]
-           while(fichier[j]!= '\n'):
-              j=j+1
-           bloc_inter=bloc_inter + fichier[j:k] + '\n'
-  
-        #on veut se placer sur le premier retour chariot que l'on trouve sur la ligne du dernier para
-        i = index_last_para 
-        while(fichier[i] != '\n'):
-           i = i + 1
-        index_last_para  = i
-        #on délimite les blocs suivants:
-        pre_bloc = fichier[:index_first_para]        #fichier avant premier parametre
-        post_bloc = fichier[ index_last_para+ 1:]    #fichier après dernier parametre
-  
-        #on ajoute dans L tous ce qui est avant le premier paramètre 
-        Fichier_Resu.append(pre_bloc)
-        Fichier_Resu.append('\n')
-  
-        # Liste des parametres utilisant la SENSIBILITE
-        liste_sensibilite = []
-        if len(LIST_SENSI)>0:
-          for i in LIST_SENSI:
-            liste_sensibilite.append( i )
-  
-        #On ajoute la nouvelle valeur des parametres
-        dim_para=len(para)
-        for j in range(dim_para):
-           if not para[j] in liste_sensibilite:
-             Fichier_Resu.append(para[j]+'='+str(val[j]) + ';' + '\n')
-           else:
-             Fichier_Resu.append(para[j]+'=DEFI_PARA_SENSI(VALE='+str(val[j]) + ',);' + '\n')
-             
-             
-        #On ajoute à Fichier_Resu tous ce qui est entre les parametres
-        Fichier_Resu.append(bloc_inter)
-        
-        Fichier_Resu.append(post_bloc)
-  
-        #--------------------------------------------------------------------------------
-        #on va ajouter la fonction d'extraction du numarray de la table par la méthode Array 
-        #et on stocke les réponses calculées dans la liste Lrep
-        #qui va etre retournée par la fonction calcul_Aster
-        if mode_include:
-          self.g_context['Lrep'] = []
-          Fichier_Resu.append('Lrep=[]'+'\n')
-          for i in range(len(reponses)):
-             Fichier_Resu.append('t'+str(reponses[i][0])+'='+str(reponses[i][0])+'.EXTR_TABLE()'+'\n')
-             Fichier_Resu.append('F = '+'t'+str(reponses[i][0])+'.Array('+"'"+str(reponses[i][1])+"'"+','+"'"+str(reponses[i][2])+"'"+')'+'\n')
-             Fichier_Resu.append('Lrep.append(F)'+'\n')
-
-        #ouverture du fichier fort.3 et mise a jour de celui ci
-        x=open('fort.'+str(UL),'w')
-        if mode_include:
-          x.writelines('from Accas import _F \nfrom Cata.cata import * \n')
-        x.writelines(Fichier_Resu)
-        x.close()
-
-        del(pre_bloc)
-        del(post_bloc)
-        del(fichier)
+      self.INFO                  = INFO
  
-        # ----------------------------------------------------------------------------------
-        # Execution d'une deuxieme instance d'Aster
+      # Optionnels
+      self.UNITE_GRAPHIQUE       = None
+      self.export                = None
+      self.follow_output         = None
+      self.GRADIENT              = GRADIENT
+      self.DYNAMIQUE             = DYNAMIQUE
+      #self.LANCEMENT             = LANCEMENT
 
-        if not mode_include:
+      # Variables locales
+      self.new_export            = os.path.join(os.getcwd(), 'tmp_export')
 
-          # Ajout des commandes d'impression des tables Resultats et Derivees à la fin du fichier esclave
-          Fichier_Resu = []
-          num_ul = '99'
-            
-          # Tables correspondant aux Resultats
-          for i in range(len(reponses)):
-             _ul = str(int(100+i))
+      # Variables calculees
+      self.evaluation_fonction   = 0
 
-             try:    os.remove( tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+_ul )
-             except: pass
+      # Initialisation
+      self.reset()
 
-             Fichier_Resu.append("\n# Recuperation de la table : " + str(reponses[i][0]) + "\n")
-             Fichier_Resu.append("DEFI_FICHIER(UNITE="+num_ul+", FICHIER='"+tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+_ul+"',);\n")
-             Fichier_Resu.append("IMPR_TABLE(TABLE="+str(reponses[i][0])+", FORMAT='ASTER', UNITE="+num_ul+", INFO=1, FORMAT_R='E30.20',);\n")
-             Fichier_Resu.append("DEFI_FICHIER(ACTION='LIBERER', UNITE="+num_ul+",);\n")
- 
-          # Tables correspondant aux Derivees
-          if len(LIST_SENSI)>0:
-              i = 0
-              for _para in LIST_SENSI:
-                  _lst_tbl  = LIST_DERIV[_para][0]
-                  for _lst_tbl in LIST_DERIV[_para]:
-                     i += 1
-                     _tbl = _lst_tbl[0]
-  
-                     _ul = str(int(100+len(reponses)+i))
-                     try:    os.remove( tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+_ul )
-                     except: pass
-  
-                     Fichier_Resu.append("\n# Recuperation de la table derivee : " + _tbl + " (parametre " + _para + ")\n")
-                     Fichier_Resu.append("DEFI_FICHIER(UNITE="+num_ul+", FICHIER='"+tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+_ul+"',);\n")
-                     if table_sensibilite:
-                       Fichier_Resu.append("IMPR_TABLE(TABLE="+_tbl+", SENSIBILITE="+_para+", FORMAT='ASTER', UNITE="+num_ul+", INFO=1, FORMAT_R='E30.20',);\n")
-                     else:
-                       Fichier_Resu.append("IMPR_TABLE(TABLE="+_tbl+", FORMAT='ASTER', UNITE="+num_ul+", INFO=1, FORMAT_R='E30.20',);\n")
-                     Fichier_Resu.append("DEFI_FICHIER(ACTION='LIBERER', UNITE="+num_ul+",);\n")
+      # Dynamique : pour l'appariement manuel des modes en dynamique
+      self.graph_mac             = False
 
-          # pour la dynamique et si APPARIEMENT_MANUEL='OUI', on ajoute le calcul du MAC
-
-          if (DYNAMIQUE!=None and DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI' and self.graph_mac): self.ajout_post_mac(Fichier_Resu, num_ul, tmp_macr_recal)
-
-          # Ecriture du "nouveau" fichier .comm
-          x=open('fort.'+str(UL),'a')
-          x.write( '\n'.join(Fichier_Resu) )
-          x.write('\nFIN();\n')
-          x.close()
-
-#
-#          os.system("cat %s" % self.new_export)
-
-          # Lancement du calcul Aster esclave
-          cmd = '%s %s' % (as_run, self.new_export)
-          self.Lancement_Commande(cmd)
- 
-          # Recuperation du .mess et du .resu 'fils'
-          if self.METHODE != 'EXTERNE':
-             if self.nom_fichier_mess_fils:
-                 cmd = 'cp ' + tmp_macr_recal + os.sep + self.nom_fichier_mess_fils + ' ./REPE_OUT/'
-                 os.system( cmd )
-             if self.nom_fichier_resu_fils:
-                 cmd = 'cp ' + tmp_macr_recal + os.sep + self.nom_fichier_resu_fils + ' ./REPE_OUT/'
-                 os.system( cmd )
-  
-          if __commandes_aster__:
-              # Unite logique libre
-              _tbul_libre=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
-              _ul_libre=_tbul_libre['UNITE_LIBRE',1]
+      # JDC
+      self.jdc                   = jdc
 
 
-          # ------------------------------------------------------
+  # ------------------------------------------------------------------------------
+  def Set_Parameters(self, **args):
+    for cle in args.keys(): 
+       exec( "%s=%s" % (cle, args[cle]) )
 
 
-          #Recuperation es liste d'appariement des MAC
-          if (DYNAMIQUE!=None and DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI' and self.graph_mac):
-              _fic_table = tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+str(int(199))
-              self.get_liste_mac(_fic_table)
+  # ------------------------------------------------------------------------------
+  def reset(self):
 
-          # Recuperation des tableaux resultats
-          Lrep=[]
-          _TB = [None]*len(reponses)
-          for i in range(len(reponses)):
+      self.Lcalc                 = None
+      self.erreur                = None
+      self.residu                = None
+      self.norme                 = None
+      self.A_nodim               = None
+      self.A                     = None
+      self.norme_A_nodim         = None
+      self.norme_A               = None
+      self.L                     = None
+#      self.L_J_init              = None
 
-            if __commandes_aster__:
 
-                # Version par des commandes Aster
-                # -------
+  # ------------------------------------------------------------------------------
+  def calcul_Aster(self, val, dX=None):
+
+        # ----------------------------------------------------------------------------
+        # Commun
+        # ----------------------------------------------------------------------------
+        self.val         = val
+        info             = self.INFO
+
+        # MACR_RECAL inputs
+        parametres       = self.LIST_PARA
+        calcul           = self.RESU_CALC
+        experience       = self.RESU_EXP
+
+        # Current estimation
+        X0               = val
+        dX               = dX
+
+        # Objet Calcul
+        C = CALCULS_ASTER(
+                # MACR_RECAL inputs
+                parametres    = parametres,
+                calcul        = calcul,
+                experience    = experience,
+                LANCEMENT     = self.LANCEMENT,
+                jdc           = self.jdc,
+                         )
+
+        # Traitement special pour la dynamique (affichage des MAC dans l'esclave)
+        if self.DYNAMIQUE: C.SetDynamiqueMode(self.DYNAMIQUE, self.graph_mac)
 
 
-                DEFI_FICHIER(UNITE=_ul_libre, FICHIER=tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+str(int(100+i)), );
-                try:
-                  _TB[i]=LIRE_TABLE(UNITE=_ul_libre,
-                                    FORMAT='ASTER',
-                                    NUME_TABLE=1,
-                                    SEPARATEUR=' ',);
-                  DEFI_FICHIER(ACTION='LIBERER', UNITE=_ul_libre,);
-                  tREPONSE=_TB[i].EXTR_TABLE()
-  
-                  F = tREPONSE.Array( str(reponses[i][1]), str(reponses[i][2]) )
-                  Lrep.append(F)
-                except:
-                  UTMESS('F', 'RECAL0_26')
+        # ----------------------------------------------------------------------------
+        # ASRUN distribue
+        # ----------------------------------------------------------------------------
+        if self.LANCEMENT == 'DISTRIBUTION':
 
+            # Creation du repertoire temporaire pour l'execution de l'esclave
+            tmp_macr_recal = self.Creation_Temporaire_Esclave()
+
+            # Creation du fichier .export de l'esclave
+            self.Creation_Fichier_Export_Esclave(tmp_macr_recal)  
+
+            # Code_Aster installation
+            if  os.environ.has_key('ASTER_ROOT'):
+                ASTER_ROOT = os.environ['ASTER_ROOT']
             else:
+                import aster
+                ASTER_ROOT       = os.path.join(aster.repout(), '..')
+            as_run           = os.path.join(ASTER_ROOT, 'bin', 'as_run')
 
-                # Version par utilisation directe du python de lire_table
-                # -------
+            # General
+            resudir          = None
+            clean            = True
+            NMAX_SIMULT      = self.NMAX_SIMULT
 
-                # Chemin vers le fichier contenant la table
-                _fic_table = tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+str(int(100+i))
+            # Study
+            export           = self.new_export
 
-                try:
-                   file=open(_fic_table,'r')
-                   texte=file.read()
-                   file.close()
-                except Exception, err:
-                   ier=1
-                   UTMESS('F', 'RECAL0_27', valk=str(err))
+            C.follow_output = self.follow_output
 
-                try:
-                   table_lue = lecture_table(texte, 1, ' ')
-                   list_para = table_lue.para
-                   tab_lue   = table_lue.values()
-                except Exception, err:
-                   UTMESS('F', 'RECAL0_28', valk=str(err))
-                #pour la dynamique on cherche la reponse qui a MAC comme parametre,
-                #il aura un traitement different pour extraire la reponse
-                if (DYNAMIQUE!=None and 'MAC' in list_para): self.get_table_mac(table_lue,Lrep)
+            # Lancement des calculs
+            fonctionnelle, gradient = C.run(
+                # Current estimation
+                X0,
+                dX,
 
-                else:
-                    try:
-                        nb_val = len(tab_lue[ list_para[0] ])
-                        F = Numeric.zeros((nb_val,2), Numeric.Float)
-                        for k in range(nb_val):
-                            F[k][0] = tab_lue[ str(reponses[i][1]) ][k]
-                            F[k][1] = tab_lue[ str(reponses[i][2]) ][k]
-                        Lrep.append(F)
-                    except Exception, err:
-                        UTMESS('F', 'RECAL0_29', valk=str(err))
+                # Code_Aster installation
+                ASTER_ROOT     = ASTER_ROOT,
+                as_run         = as_run,
 
+                # General
+                resudir        = resudir,
+                clean          = clean,
+                info           = info,
+                NMAX_SIMULT    = NMAX_SIMULT,
 
-          # ------------------------------------------------------
-          # Recuperation des tableaux des derivees (SENSIBILITE)
-          L_deriv={}
-          if len(LIST_SENSI)>0:
-              _lon = 0
-              for _para in LIST_SENSI:
-                  _lon += len(LIST_DERIV[_para])
-              _TBD = [None]*_lon
+                # Study
+                export         = export,
 
-              i = 0
-              for _para in LIST_SENSI:
-
-                  L_deriv[_para] = []
-                  _lst_tbl  = LIST_DERIV[_para][0]
-
-                  for _lst_tbl in LIST_DERIV[_para]:
-                      j = LIST_DERIV[_para].index(_lst_tbl)
-                      _tbl = _lst_tbl[0]
-
-                      if __commandes_aster__:
-
-                          # Version par des commandes Aster
-                          # -------
-
-                          DEFI_FICHIER(UNITE=_ul_libre, FICHIER=tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+str(int(100+len(reponses)+1+i)),);
-                          _TBD[i]=LIRE_TABLE(UNITE=_ul_libre,
-                                           FORMAT='ASTER',
-                                           NUME_TABLE=1,
-                                           SEPARATEUR=' ',);
-                          DEFI_FICHIER(ACTION='LIBERER', UNITE=_ul_libre,);
-                          tREPONSE=_TBD[i].EXTR_TABLE()
-                          DF = tREPONSE.Array( str(LIST_DERIV[_para][j][1]), str(LIST_DERIV[_para][j][2]) )
-                          L_deriv[_para].append(DF)
-                          i+=1
-
-                      else:
-
-                          # Version par utilisation directe du python de lire_table
-                          # -------
-      
-                          # Chemin vers le fichier contenant la table
-                          _fic_table = tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+str(int(100+len(reponses)+1+i))
-
-                          try:
-                             file=open(_fic_table,'r')
-                             texte=file.read()
-                             file.close()
-                          except Exception, err:
-                             UTMESS('F', 'RECAL0_27', valk=str(err))
-
-                          try:
-                             table_lue = lecture_table(texte, 1, ' ')
-                             list_para = table_lue.para
-                             tab_lue   = table_lue.values()
-                          except Exception, err:
-                             UTMESS('F', 'RECAL0_28', valk=str(err))
-          
-                          try:
-                              nb_val = len(tab_lue[ list_para[0] ])
-                              DF = Numeric.zeros((nb_val,2), Numeric.Float)
-                              for k in range(nb_val):
-                                DF[k][0] = tab_lue[ str(LIST_DERIV[_para][j][1]) ][k]
-                                DF[k][1] = tab_lue[ str(LIST_DERIV[_para][j][2]) ][k]
-                              L_deriv[_para].append(DF)
-                              i+=1
-                          except Exception, err:
-                             UTMESS('F', 'RECAL0_29', valk=str(err))
+                                           )
 
 
-          # Nettoyage du export
-          try:    os.remove(self.new_export)
-          except: pass
-  
-          # Nettoyage du repertoire temporaire
-          if self.METHODE == 'EXTERNE': listdir =  ['REPE_TABLE', 'base', 'REPE_IN']
-          else:                         listdir =  ['.', 'REPE_TABLE', 'base', 'REPE_OUT', 'REPE_IN']
-          for dir in listdir:
-            try:
-              for fic in os.listdir(tmp_macr_recal+os.sep+dir):
-                try:    os.remove(tmp_macr_recal+os.sep+dir+os.sep+fic)
-                except: pass
-            except: pass
+        # ----------------------------------------------------------------------------
+        # Aiguillage vers INCLUDE
+        # ----------------------------------------------------------------------------
+        if self.LANCEMENT == 'INCLUSION':
+            C.UNITE_ESCL  = self.UNITE_ESCL
+
+            # Lancement des calculs
+            fonctionnelle, gradient = C.run(
+                # Current estimation
+                X0,
+                dX,
+                # General
+                info,
+                                  )
 
 
+        # ----------------------------------------------------------------------------
+        # Sortie
+        # ----------------------------------------------------------------------------
+        if dX: self.evaluation_fonction += 1+ len(dX)
+        else:  self.evaluation_fonction += 1
 
-        # ----------------------------------------------------------------------------------
-        # Ou bien on inclue le fichier Esclave
+        self.Lcalc = C.Lcalc
 
-        elif mode_include:
-
-          if debug: os.system('cp fort.'+str(UL)+' REPE_OUT/')
-  
-          INCLUDE(UNITE = UL)
-  
-          Lrep = self.g_context['Lrep']
-          L_deriv = None
-  
-          # Destruction des concepts Aster
-          reca_utilitaires.detr_concepts(self)
-  
-  
-        # ----------------------------------------------------------------------------------
-        # Ou alors probleme ?
-        else: sys.exit(1)
-  
-  
-        del(Fichier_Resu)
-  
-        # on remet le fichier dans son etat initial
-        x=open('fort.'+str(UL),'w')
-        x.writelines(fichiersauv)
-        x.close()
-
-        return Lrep, L_deriv
+        if not dX: return self.Lcalc[0], {}
+        else:      return fonctionnelle, gradient
 
 
   # ------------------------------------------------------------------------------
-
-  def calcul_FG(self, val):
-
-     self.L, self.L_deriv_sensible = self.calcul_Aster(val, INFO=self.INFO)
-     self.L_J, self.erreur = self.Simul.multi_interpole(self.L, self.reponses)
-     if not self.L_J_init: self.L_J_init = copy.copy(self.L_J)
-     self.J = self.Simul.norme_J(self.L_J_init, self.L_J, self.UNITE_RESU)
-
-     # Calcul des derivees
-     self.A_nodim = self.Simul.sensibilite(self, self.L, self.L_deriv_sensible, val, self.PARA_DIFF_FINI)
-
-     self.A = self.Dim.adim_sensi( copy.copy(self.A_nodim) )
-#     self.residu = self.reca_algo.test_convergence(self.gradient_init, self.erreur, self.A, Numeric.zeros(len(self.gradient_init),Numeric.Float) )
-     self.residu = 0.
-
-     if self.vector_output:
-        return self.erreur, self.residu, self.A_nodim, self.A
-     else:
-        # norme de l'erreur
-        self.norme = Numeric.dot(self.erreur, self.erreur)**0.5
-
-        self.norme_A_nodim = Numeric.zeros( (1,len(self.para)), Numeric.Float )
-        self.norme_A       = Numeric.zeros( (1,len(self.para)), Numeric.Float )
-        for c in range(len(self.A[0,:])):
-           norme_A_nodim = 0
-           norme_A        = 0
-           for l in range(len(self.A[:,0])):
-              norme_A_nodim += self.A_nodim[l,c] * self.A_nodim[l,c]
-              norme_A       += self.A[l,c] * self.A[l,c]
-           self.norme_A_nodim[0,c] = math.sqrt( norme_A_nodim ) 
-           self.norme_A[0,c] = math.sqrt( norme_A )
-
-        return self.norme, self.residu, self.norme_A_nodim, self.norme_A
+  def Affiche_Param(self, val):
+      """ Affiche les parametres """
+      return Affiche_Param(self.para, val)
 
 
   # ------------------------------------------------------------------------------
-
   def calcul_F(self, val):
+       """
+          Calcul de F
+       """
+       UTMESS('I', 'RECAL0_25', valk=self.Affiche_Param(val) )
 
-     self.L, self.L_deriv_sensible = self.calcul_Aster(val, INFO=self.INFO)
-     L_J, erreur = self.Simul.multi_interpole(self.L, self.reponses)
-     if not self.L_J_init: self.L_J_init = copy.copy(L_J)
-     J = self.Simul.norme_J(self.L_J_init, L_J, self.UNITE_RESU)
+       # Reset les variables deja calculees par les calculs precedents
+       self.reset()
+  
+       # Calcul pour le jeu de parametre val
+       fonctionnelle, gradient = self.calcul_Aster(val, dX=None)
+  
+       # Calcul de l'erreur par rapport aux donnees experimentale
+       E = CALC_ERROR(
+           experience          = self.RESU_EXP,
+           X0                  = val,
+           calcul              = self.RESU_CALC,
+           poids               = self.Simul.poids,
+           objective_type      = 'vector',
+           info                = self.INFO,
+       )
+       self.erreur  = E.CalcError(self.Lcalc)
 
-     # norme de l'erreur
-     norme = Numeric.sum( [x**2 for x in erreur] )
+       # norme de l'erreur
+       self.norme = Numeric.sum( [x**2 for x in self.erreur] )
+  
+       if debug:
+           print "self.reponses=", self.reponses
+           print "F=", E.F
+           print "L_J=", E.L_J
+           print "L_J_init=", E.L_J_init
+           print "J=", E.J
+           print 'erreur=', self.erreur
+           print "norme de l'erreur=", self.norme
+           print "norme de J (fonctionnelle)=", str(E.J)
+  
+       if self.INFO>=2: 
+          UTMESS('I', 'RECAL0_30')
+          if self.evaluation_fonction >1: UTMESS('I', 'RECAL0_39', valk=str(self.evaluation_fonction))
+  
+       if self.vector_output:
+          if self.INFO>=2: UTMESS('I', 'RECAL0_35', valr=self.norme)
+          return self.erreur
+       else:
+          if self.INFO>=2: UTMESS('I', 'RECAL0_36', valr=self.norme)
+          return self.norme
 
-     if debug:
-        print 'erreur=', erreur
-        print "norme de l'erreur=", norme
-        print "norme de J (fonctionnelle)=", str(J)
 
-     if self.INFO>=1: 
-        UTMESS('I', 'RECAL0_30')
-        if self.evaluation_fonction >1:
-           UTMESS('I', 'RECAL0_1', valk=str(self.evaluation_fonction))
-        UTMESS('I', 'RECAL0_31', valk=J)
+  # ------------------------------------------------------------------------------
+  def calcul_F2(self, val):
+      """
+         Calcul de F (et de G) mais renvoit juste la fonctionnelle
+         Sert pour les algorithmes qui veulent une fonction ou F, une fonction pour G mais qu'on veut pouvoir tout calculer en distibue
+      """
+      a, b, c, d = self.calcul_FG(val)
+      if self.vector_output: return self.erreur
+      else:                  return self.norme
 
-     if self.vector_output:
-        if self.INFO>=1:
-           UTMESS('I', 'RECAL0_32', valk=str(norme))
-        return erreur
-     else:
-        if self.INFO>=1:
-           UTMESS('I', 'RECAL0_33', valk=str(norme))
-        return norme
+
+  # ------------------------------------------------------------------------------
+  def calcul_FG(self, val):
+      """
+         Calcul de F et de G
+      """
+      UTMESS('I', 'RECAL0_26', valk=self.Affiche_Param(val) )
+
+      # Reset les variables deja calculees par les calculs precedents
+      self.reset()
+
+      # Calcul pour le jeu de parametres val
+      dX = len(val)*[self.PARA_DIFF_FINI]
+      fonctionnelle, gradient = self.calcul_Aster(val, dX)
+
+      # Calcul de l'erreur par rapport aux donnees experimentale
+      E = CALC_ERROR(
+          experience          = self.RESU_EXP,
+          X0                  = val,
+          calcul              = self.RESU_CALC,
+          poids               = self.Simul.poids,
+          objective_type      = 'vector',
+          info                = self.INFO,
+      )
+
+      self.erreur, self.residu, self.A_nodim, self.A  = E.CalcSensibilityMatrix(Lcalc=self.Lcalc, val=val, dX=None, pas=self.PARA_DIFF_FINI)
+
+      if debug:
+          print "A_nodim=", self.A_nodim
+          print "self.A=", self.A
+          print "self.erreur=", self.erreur
+          print "self.residu=", self.residu
+          print "self.vector_output=", self.vector_output
+
+
+      if self.vector_output:
+          return self.erreur, self.residu, self.A_nodim, self.A
+      else:
+          # norme de l'erreur
+          self.norme = Numeric.dot(self.erreur, self.erreur)**0.5
+          self.norme_A_nodim = Numeric.zeros( (1,len(self.para)), Numeric.Float )
+          self.norme_A       = Numeric.zeros( (1,len(self.para)), Numeric.Float )
+          for c in range(len(self.A[0,:])):
+              norme_A_nodim = 0
+              norme_A       = 0
+              for l in range(len(self.A[:,0])):
+                   norme_A_nodim += self.A_nodim[l,c] * self.A_nodim[l,c]
+                   norme_A       += self.A[l,c] * self.A[l,c]
+              self.norme_A_nodim[0,c] = math.sqrt( norme_A_nodim ) 
+              self.norme_A[0,c] = math.sqrt( norme_A )
+          return self.norme, self.residu, self.norme_A_nodim, self.norme_A
 
 
 
   # ------------------------------------------------------------------------------
-
   def calcul_G(self, val):
+      """
+        Calcul de G
+      """
+      UTMESS('I', 'RECAL0_27', valk=self.Affiche_Param(val) )
 
-     # Si le calcul Aster est deja effectue pour val on ne le refait pas
-     if (self.val == val) and self.L and self.L_deriv_sensible: pass
-     else:
-        self.L, self.L_deriv_sensible = self.calcul_Aster(val, INFO=self.INFO)
-     A = self.Simul.sensibilite(self, self.L, self.L_deriv_sensible, val, self.PARA_DIFF_FINI)
-     A = self.Dim.adim_sensi(A)
-     L_J, erreur = self.Simul.multi_interpole(self.L, self.reponses)
-     grad = Numeric.dot(Numeric.transpose(A),erreur) 
-     if debug: print 'grad=', grad
-     return grad
+      # Si le calcul Aster (et ses derivees) est deja effectue pour val on ne le refait pas
+      if not ( (self.val == val) and self.A):
+          self.erreur, self.residu, self.A_nodim, self.A = self.calcul_FG(val)
+      return Numeric.dot(Numeric.transpose(self.A), self.erreur) 
 
 
   # ------------------------------------------------------------------------------
-
   def Creation_Temporaire_Esclave(self):
      """
         Creation du repertoire temporaire d'execution du calcul esclace
      """
-
      # Creation du repertoire temporaire
      tmp_macr_recal = os.getcwd() + os.sep + 'tmp_macr_recal'
+#     tmp_macr_recal = Random_Tmp_Name( prefix = os.getenv('HOME') + os.sep + 'tmp_macr_recal_' )
      try:    os.mkdir(tmp_macr_recal)
      except: pass
-     if not os.path.exists(tmp_macr_recal): UTMESS('F','RECAL0_34',valk=tmp_macr_recal)
+     if not os.path.exists(tmp_macr_recal): UTMESS('F','RECAL0_82',valk=tmp_macr_recal)
      try:    os.mkdir(tmp_macr_recal + os.sep + 'REPE_TABLE')
      except: pass
-     if not os.path.exists(tmp_macr_recal + os.sep + 'REPE_TABLE'): UTMESS('F','RECAL0_34',valk=tmp_macr_recal + os.sep + 'REPE_TABLE')
+     if not os.path.exists(tmp_macr_recal + os.sep + 'REPE_TABLE'): UTMESS('F','RECAL0_82',valk=tmp_macr_recal + os.sep + 'REPE_TABLE')
 
      return tmp_macr_recal
 
 
   # ------------------------------------------------------------------------------
-
   def Creation_Fichier_Export_Esclave(self, tmp_macr_recal):
      """
         Creation du fichier .export pour le calcul esclave
      """
 
-     from as_profil import ASTER_PROFIL
+     from asrun.profil import ASTER_PROFIL
 
      # Recuperation du fichier .export
-     list_export = glob('*.export')
-
-     if len(list_export) == 0: UTMESS('F','RECAL0_4')
-     elif len(list_export) >1: UTMESS('F','RECAL0_5')
+     if self.export:  export = self.export
+     else:
+         list_export = glob.glob('*.export')
+         if len(list_export) == 0: UTMESS('F','RECAL0_4')
+         elif len(list_export) >1: UTMESS('F','RECAL0_5')
+         export = list_export[0]
 
      # On modifie le profil
-     prof = ASTER_PROFIL(list_export[0])
+     prof = ASTER_PROFIL(export)
+
+     # En local
+     user_mach = ''
+
+     # Chaine user@hostname (pour les calculs distribues et en batch)
+     try:         username = prof.param['username'][0]
+     except: 
+         try:     username = os.getlogin()
+         except:  
+                  import getpass
+                  username = getpass.getuser()
+     user_mach_dist = "%s@%s:" % ( username, socket.gethostname() )
+
+
+     # On cherche s'il y a un fichier hostfile pour rajouter user@hostname
+     l_fr = getattr(prof, 'data')
+     l_tmp = l_fr[:]
+     for dico in l_tmp:
+        if dico['type']=='hostfile':
+           user_mach = user_mach_dist
+           break
+
+     # En distribue
+     if self.TEMPS:    prof.param['tpsjob']    = str(self.TEMPS)
+     if self.MEMOIRE:  prof.param['memjob']    = str(self.MEMOIRE)
+
+     # En batch et distribue
+     if self.MODE == 'BATCH':
+#        user_mach = "%s@%s:" % ( prof.param['username'][0], socket.gethostname() )
+        user_mach = user_mach_dist
+        prof.param['mode']      = 'batch'
+        if self.mem_aster: prof.param['mem_aster'] = str(self.mem_aster)
+
+        # classe reservee sur la machine Aster
+        if self.CLASSE:
+           prof.param['classe'] = self.CLASSE
 
      # xterm
      if prof.param.has_key('xterm'):
@@ -767,12 +446,12 @@ class CALCUL_ASTER:
          # répertoires
          if dico['isrep']:
 
-             # base non prise en compte
+           # base non prise en compte
            if dico['type'] in ('base', 'bhdf'):
              l_fr.remove(dico)
 
            if lab == 'resu':
-             dico['path'] = os.path.join(tmp_macr_recal, os.path.basename(dico['path']))
+             dico['path'] = user_mach + os.path.join(tmp_macr_recal, os.path.basename(dico['path']))
 
          # fichiers
          else:
@@ -780,7 +459,6 @@ class CALCUL_ASTER:
            # Nom du fichier .mess (pour recuperation dans REPE_OUT)
            if dico['ul'] == '6':
              self.nom_fichier_mess_fils = os.path.basename(dico['path'])
-#             self.nom_fichier_mess_fils = os.path.join(os.getcwd(), 'fort.%d' % self.UL)
 
            # Nom du fichier .resu (pour recuperation dans REPE_OUT)
            if dico['ul'] == '8':
@@ -792,24 +470,34 @@ class CALCUL_ASTER:
              l_fr.remove(dico)
 
            # Fichier d'unite logique UL devient le nouveau .comm
-           elif dico['ul'] == str(self.UL):
+           elif dico['ul'] == str(self.UNITE_ESCL):
              self.fichier_esclave = dico['path']
              dico['type'] = 'comm'
              dico['ul']   = '1'
-             dico['path'] = os.path.join(os.getcwd(), 'fort.%d' % self.UL)
+             dico['path'] = user_mach + os.path.join(os.getcwd(), 'fort.%d' % self.UNITE_ESCL)
 
            # Tous les autres fichiers en Resultat
            elif lab == 'resu':
-              if self.UNITE_GRAPHIQUE and dico['ul'] == str(self.UNITE_GRAPHIQUE): l_fr.remove(dico)
-              else:
-                 dico['path'] = os.path.join(tmp_macr_recal, os.path.basename(dico['path']))
+#               if self.UNITE_GRAPHIQUE and dico['ul'] == str(self.UNITE_GRAPHIQUE): l_fr.remove(dico)
+#               else:
+#                  dico['path'] = user_mach + os.path.join(tmp_macr_recal, os.path.basename(dico['path']))
+              l_fr.remove(dico)
 
            # Tous les autres fichiers en Donnees
            elif lab == 'data':
               if dico['type'] not in ('exec', 'ele'):
                  if dico['ul']   != '0':   # Traite le cas des sources python sourchargees
-                    if self.METHODE !='EXTERNE': 
-                       dico['path'] = os.path.join(os.getcwd(), 'fort.%s' % dico['ul'])
+                     # Si distant/distribue on doit prendre les fichiers de donnes dans un endroit partage entre les machines/noeuds
+                     if user_mach:
+                        src = dico['path']
+                        dst = os.path.join(tmp_macr_recal, os.path.basename(dico['path']))
+                        try:
+                            shutil.copyfile(src, dst)
+                            dico['path'] = user_mach + os.path.join(tmp_macr_recal, os.path.basename(dico['path']))
+                        except Exception, e:
+                            print e
+                     else:
+                        dico['path'] = user_mach + os.path.join(os.getcwd(), 'fort.%s' % dico['ul'])
 
            # sinon on garde la ligne telle quelle
        setattr(prof, lab, l_fr)
@@ -818,86 +506,7 @@ class CALCUL_ASTER:
      prof.WriteExportTo(self.new_export)
 
      if debug: os.system('cp ' + self.new_export + ' /tmp')
-
-
-  def get_table_mac(self,table_lue,Lrep):
-      list_para = table_lue.para
-      tab_lue   = table_lue.values()
-      data1=[]
-      data2=[]
-      data_mac=[]
-      ordre_mac_num=self.ordre_mac_num
-      ordre_mac_exp=self.ordre_mac_exp
-      
-      for j in range(len(tab_lue[ list_para[0] ])):
-          data1.append(tab_lue['NUME_MODE_1'][j])
-          data2.append(tab_lue['NUME_MODE_2'][j])
-          data_mac.append(tab_lue['MAC'][j])
-      N = int(Numeric.maximum.reduce(data1[:]))
-      M = int(Numeric.maximum.reduce(data2[:]))
-      rep_mac = Numeric.zeros( (N,M), Numeric.Float )
-     #on met les MAC dans une matrice
-      for i in range(len(data1)):
-          i1 = int(data1[i])-1
-          i2 = int(data2[i])-1
-          rep_mac[ i1, i2 ] = data_mac[i]                                   
-      nb_val = N
-      F = Numeric.zeros((nb_val,2), Numeric.Float)
-      #en dynamique, si on a fait l'appariement a la main on range les MAC suivant les 
-      #listes recuperes plus haut
-      if (self.DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI'):
-          for k in range(nb_val):
-              F[k][0]=k+1 
-              F[k][1]=rep_mac[int(self.ordre_mac_num[k])-1,int(self.ordre_mac_exp[k])-1]
- 
-          Lrep.append(F)
-      else:
-          for k in range(nb_val):
-              F[k][0]=k+1 
-              F[k][1]=rep_mac[k,k] 
-          Lrep.append(F)
-
-  def ajout_post_mac(self,Fichier_Resu, num_ul, tmp_macr_recal):
-      _ul = str(int(199))
-      Fichier_Resu.append("_MAC_EXP=MAC_MODES(BASE_1="+self.DYNAMIQUE['MODE_CALC']+",BASE_2="+self.DYNAMIQUE['MODE_EXP']+",);\n")
-      Fichier_Resu.append("from Macro.reca_mac import extract_mac_array, get_modes, fenetre_mac\n")
-      Fichier_Resu.append("_mac = extract_mac_array(_MAC_EXP)\n")
-      Fichier_Resu.append("frame =fenetre_mac("+self.DYNAMIQUE['MODE_EXP']+","+self.DYNAMIQUE['MODE_CALC']+",_mac)\n")
-      Fichier_Resu.append("list_exp,list_num =frame.get_list()\n")
-      Fichier_Resu.append("LIST_MAC=CREA_TABLE(LISTE=(_F(PARA='NUME_ORDRE',LISTE_I=range(1,len(list_exp)+1),),_F(PARA='MAC_EXP',LISTE_I=list_exp,),_F(PARA='MAC_NUM',LISTE_I=list_num,)),)\n")        
-      Fichier_Resu.append("DEFI_FICHIER(UNITE="+num_ul+", FICHIER='"+tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+_ul+"',);\n")
-      Fichier_Resu.append("IMPR_TABLE(TABLE=LIST_MAC, FORMAT='ASTER', UNITE="+num_ul+", INFO=1, FORMAT_R='E30.20',);\n")
-      Fichier_Resu.append("DEFI_FICHIER(ACTION='LIBERER', UNITE="+num_ul+",);\n")
-
-
-  def get_liste_mac(self,_fic_table):
-      from lire_table_ops import lecture_table
-      try:
-          file=open(_fic_table,'r')
-          texte=file.read()
-          file.close()
-      except Exception, err:
-          ier=1
-          UTMESS('F', 'RECAL0_27', valk=str(err))
-
-      try:
-          table_lue = lecture_table(texte, 1, ' ')
-          list_para = table_lue.para
-          tab_lue   = table_lue.values()
-      except Exception, err:
-          UTMESS('F', 'RECAL0_28', valk=str(err))
-
-      try:
-          nb_val = len(tab_lue[ list_para[0] ])
-          self.ordre_mac_num=[]
-          self.ordre_mac_exp=[]
-          for k in range(nb_val):
-               self.ordre_mac_num.append(tab_lue['MAC_NUM'][k])
-               self.ordre_mac_exp.append(tab_lue['MAC_EXP'][k])
-
-      except Exception, err:
-          UTMESS('F', 'RECAL0_29', valk=str(err))
+     os.system('cp ' + self.new_export + ' /tmp')
+     #os.system('sleep 500')
 
   # --FIN CLASSE  ----------------------------------------------------------------------------
-
-

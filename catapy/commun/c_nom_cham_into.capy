@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 25/01/2010   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMUN  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,6 +110,7 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "EXTR_ELGA_VARI",
                         "EXTR_ELNO_VARI",
                         "EXTR_NOEU_VARI",
+                        "FLHN_ELGA",
                         "FLUX_ELGA_TEMP",
                         "FLUX_ELNO_TEMP",
                         "FLUX_NOEU_TEMP",

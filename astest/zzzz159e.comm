@@ -1,5 +1,6 @@
-# MODIF  DATE 27/07/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
+# zzzz159e.para = tps_job 600 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,7 +83,6 @@ RESU=MACR_RECAL(
          POIDS            = weight,
          ITER_MAXI        = 50,
          ITER_FONC_MAXI   = 50,
-         SUIVI_ESCLAVE    = 'OUI',
          METHODE          = "FMINBFGS",
 )  ;
 

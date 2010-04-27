@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/01/2010   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,63 +28,84 @@ MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,
                       sd_prod=macr_recal_prod,
                       fr="Réalise le recalage des calculs Aster sur des résultats expérimentaux"
                         +" ou sur d'autres résultats de calculs",
+
          UNITE_ESCL      =SIMP(statut='o',typ='I'),
          RESU_EXP        =SIMP(statut='o',typ=assd,max='**'),
          POIDS           =SIMP(statut='f',typ=assd,max='**'),
          RESU_CALC       =SIMP(statut='o',typ=assd,max='**'),
          LIST_PARA       =SIMP(statut='o',typ=assd,max='**'),
-         LIST_DERIV      =SIMP(statut='f',typ=assd,max='**'),
-         ITER_MAXI       =SIMP(statut='f',typ='I',defaut=10),
-         ITER_FONC_MAXI  =SIMP(statut='f',typ='I',defaut=100),
-         RESI_GLOB_RELA  =SIMP(statut='f',typ='R',defaut=1.E-3),
+
          UNITE_RESU      =SIMP(statut='f',typ='I',defaut=91),
          PARA_DIFF_FINI  =SIMP(statut='f',typ='R',defaut=0.001),
+
          GRAPHIQUE       =FACT(statut='f',
-           FORMAT          =SIMP(statut='f',typ='TXM',defaut='XMGRACE',into=("XMGRACE","GNUPLOT")),
-           b_pilote = BLOC(condition = "FORMAT == 'XMGRACE'",
-                          fr="Mots-clés propres à XMGRACE",
-             PILOTE          =SIMP(statut='f',typ='TXM',defaut='',
-                                 into=('','POSTSCRIPT','EPS','MIF','SVG','PNM','PNG','JPEG','PDF','INTERACTIF'),
+             FORMAT          =SIMP(statut='f',typ='TXM',defaut='XMGRACE',into=("XMGRACE","GNUPLOT"),),
+             AFFICHAGE       =SIMP(statut='f',typ='TXM',defaut='TOUTE_ITERATION',into=("TOUTE_ITERATION","ITERATION_FINALE"),),
+             b_pilote = BLOC(condition = "FORMAT == 'XMGRACE'", fr="Mots-clés propres à XMGRACE",
+                 PILOTE          =SIMP(statut='f',typ='TXM',defaut='', 
+                                       into=('','POSTSCRIPT','EPS','MIF','SVG','PNM','PNG','JPEG','PDF','INTERACTIF'),
                             fr="Pilote de sortie, PNG/JPEG/PDF ne sont pas disponibles sur toutes les installations de xmgrace"),
-             UNITE           =SIMP(statut='f',typ='I',val_min=10,val_max=90,defaut=29,
-                                 fr="Unité logique définissant le fichier (fort.N) dans lequel on écrit"),
+                 UNITE           =SIMP(statut='f',typ='I',val_min=10,val_max=90,defaut=29,
+                            fr="Unité logique définissant le fichier (fort.N) dans lequel on écrit"),
+             ),
          ),
 
-         AFFICHAGE       =SIMP(statut='f',typ='TXM',defaut='TOUTE_ITERATION',into=("TOUTE_ITERATION","ITERATION_FINALE")),),
-         SUIVI_ESCLAVE   =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON"),),
 
-         METHODE         =SIMP(statut='f',typ='TXM',defaut='LEVENBERG',into=("LEVENBERG","FMIN","FMINBFGS","FMINNCG","EXTERNE",
+         # Methodes d'optimisation
+         # -----------------------
+         METHODE         =SIMP(statut='f',typ='TXM',defaut='LEVENBERG',into=("LEVENBERG", "FMIN", "FMINBFGS", "FMINNCG",
                                                                              "GENETIQUE","HYBRIDE")),
 
-
-         
          b_genetique_options=BLOC(condition = "METHODE == 'GENETIQUE' or METHODE == 'HYBRIDE'" ,
              NB_PARENTS       =SIMP(statut='f',typ='I',defaut=10),
              NB_FILS          =SIMP(statut='f',typ='I',defaut=5),
              ECART_TYPE       =SIMP(statut='f',typ='R',defaut=1.),
              GRAINE           =SIMP(statut='f',typ='I'),
-             ITER_ALGO_GENE  =SIMP(statut='f',typ='I',defaut=10),
-             RESI_ALGO_GENE  =SIMP(statut='f',typ='R',defaut=1.E-3),
+             ITER_ALGO_GENE   =SIMP(statut='f',typ='I',defaut=10),
+             RESI_ALGO_GENE   =SIMP(statut='f',typ='R',defaut=1.E-3),
          ),
          
-         
+
+         # Criteres d'arret globaux
+         # -------------------------
+         ITER_MAXI       =SIMP(statut='f',typ='I',defaut=10,    fr="Nombre maximum d'iterations d'optimisation"),
+         ITER_FONC_MAXI  =SIMP(statut='f',typ='I',defaut=1000,  fr="Nombre maximum d'evaluations de la focntionnelle"),
+         RESI_GLOB_RELA  =SIMP(statut='f',typ='R',defaut=1.E-3, fr="Critere d'arret sur la valeur du residu"),
+         TOLE_PARA       =SIMP(statut='f',typ='R',defaut=1.E-8, fr="Critere d'arret sur la valeur des parametres"),
+         TOLE_FONC       =SIMP(statut='f',typ='R',defaut=1.E-8, fr="Critere d'arret sur la valeur de la fonctionnelle"),
+
+
+         # Calculs des gradients
+         # ---------------------
          b_gradient =BLOC(condition = "METHODE == 'FMINBFGS' or METHODE == 'FMINNCG'" ,
-            GRADIENT        =SIMP(statut='f',typ='TXM',defaut='NON_CALCULE', into=("NON_CALCULE", "NORMAL", "ADIMENSIONNE" )),
+             GRADIENT        =SIMP(statut='f',typ='TXM',defaut='NON_CALCULE', into=("NON_CALCULE", "NORMAL", "ADIMENSIONNE" )),
          ),
 
-         b_gradient_externe =BLOC(condition = "METHODE == 'EXTERNE'" ,
-            GRADIENT        =SIMP(statut='f',typ='TXM',defaut='NON_CALCULE', into=("NON_CALCULE", "NORMAL", "ADIMENSIONNE" )),
+         b_gradient_levenberg =BLOC(condition = "METHODE == 'LEVENBERG'" ,
+             GRADIENT        =SIMP(statut='f',typ='TXM',defaut='NORMAL', into=( "NORMAL", "ADIMENSIONNE" )),
          ),
 
-         b_type_fonctionnelle =BLOC(condition = "METHODE == 'EXTERNE'" ,
-            FONCTIONNELLE   =SIMP(statut='f',typ='TXM',defaut='SCALAIRE',into=("SCALAIRE","VECTORIELLE")),
+
+         # Mode d'evaluation de l'esclave
+         # ------------------------------
+         CALCUL_ESCLAVE       =FACT(statut='d',
+            LANCEMENT         =SIMP(statut='f', typ='TXM', defaut='INCLUSION',into=("DISTRIBUTION","INCLUSION"),),
+
+            b_eval_distrib =BLOC(condition = "LANCEMENT == 'DISTRIBUTION'",
+                MODE          =SIMP(statut='f', typ='TXM',      into=("INTERACTIF","BATCH"),),
+                MEMOIRE       =SIMP(statut='f', typ='I',        fr="Memoire demandee pour les calculs esclaves (Mo)"),
+                TEMPS         =SIMP(statut='f', typ='I',        fr="Temps demandee pour les calculs esclaves (secondes)"),
+                CLASSE        =SIMP(statut='f', typ='TXM',      fr="Classe demandee pour les calculs en batch"),
+                NMAX_SIMULT   =SIMP(statut='f', typ='I',
+                               fr="Nombre de calculs esclaves lances en paralle en mode distribution (non precise = automatique)"),
+            ),
          ),
-         
+
          DYNAMIQUE       =FACT(statut='f',
-               MODE_EXP=SIMP(statut='o',typ='TXM'),
-               MODE_CALC=SIMP(statut='o',typ='TXM'),
-               APPARIEMENT_MANUEL=SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON")),           
+               MODE_EXP           =SIMP(statut='o',typ='TXM'),
+               MODE_CALC          =SIMP(statut='o',typ='TXM'),
+               APPARIEMENT_MANUEL =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON")),           
                                ),
-         
+
          INFO            =SIMP(statut='f',typ='I',defaut=2,into=( 1, 2 ) ),
 );

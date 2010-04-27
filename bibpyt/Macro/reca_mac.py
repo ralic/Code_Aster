@@ -1,4 +1,4 @@
-#@ MODIF reca_mac Macro  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
+#@ MODIF reca_mac Macro  DATE 26/04/2010   AUTEUR NISTOR I.NISTOR 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,13 +44,8 @@ def extract_mac_array( mac_mode ):
 
 
 def get_modes(resu):
-    from Cata.cata import RECU_TABLE, DETRUIRE
-    from Accas import _F
-    __freq  = RECU_TABLE(CO=resu,
-                         NOM_PARA='FREQ',);
-    afreq  = __freq.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
-    
-    DETRUIRE( CONCEPT = _F( NOM = __freq ))
+
+    afreq  = resu.LIST_PARA()['FREQ']
 
     return afreq
     
@@ -66,7 +61,7 @@ class fenetre_mac:
         nom1 = resu1.nom
         nom2 = resu2.nom
         titre = "MAC pour la base " + nom1 + " et " + nom2
-        size = (400,400)
+        size = (20,300)
 
         # la fenetre de MAC
         mac_win = MacWindowFrame( self.root, titre, nom1, nom2, size)

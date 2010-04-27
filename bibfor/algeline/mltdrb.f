@@ -1,9 +1,9 @@
       SUBROUTINE MLTDRB(NBLOC,NCBLOC,DECAL,SEQ,NBSN,NBND,SUPND,
-     +     ADRESS,GLOBAL,LGSN,FACTOL,FACTOU,SM,X,
+     +     ADRESS,GLOBAL,LGSN,FACTOL,FACTOU,X,TEMP,
      +     INVP,PERM,AD,TRAV,TYPSYM,NBSM,S)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 27/04/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C     TOLE CRP_21 CRP_4
       INTEGER SEQ(NBSN),SUPND(NBSN+1),LGSN(NBSN)
       INTEGER ADRESS(NBSN+1),INVP(NBND),PERM(NBND),AD(NBND)
       INTEGER NBSOL,TYPSYM,NBSM
-      REAL*8 SM(NBND,NBSM),X(NBND,NBSM),TRAV(NBND,NBSM),S(NBSM)
+      REAL*8 TEMP(NBND),X(NBND,NBSM),TRAV(NBND,NBSM),S(NBSM)
       CHARACTER*32 JEXNUM
       CHARACTER*24 FACTOL,FACTOU,FACTOR
       INTEGER IL,K0
@@ -61,10 +61,10 @@ C
       SEUIL = NPROC - MOD(TRANCH*NPROC-NBSM,NPROC)
       DO 130 ISM=1,NBSM
          DO 110 J = 1,NBND
-            X(INVP(J),ISM) = SM(J,ISM)
+            TEMP(INVP(J)) = X(J,ISM)
  110     CONTINUE
          DO 120 J = 1,NBND
-            SM(J,ISM) = X(J,ISM)
+            X(J,ISM) = TEMP(J)
  120     CONTINUE
  130  CONTINUE
 
@@ -89,7 +89,7 @@ C     DESCENTE  L * Y = B
             DO 150 J = 1,L - 1
                NDJ = NDJ + 1
 C     CALCUL DU BLOC  DIAGONAL
-               SM(NDJ,1) = ZR(IFAC-1+AD(J))
+               TEMP(NDJ) = ZR(IFAC-1+AD(J))
                DO 145 ISM=1,NBSM
                   K = 1
                   DO 140 I = J + 1,L
@@ -103,7 +103,7 @@ C     CALCUL DU BLOC  DIAGONAL
  150        CONTINUE
             NDJ = NDJ + 1
 C     RANGEMENT DU TERME DIAGONAL
-            SM(NDJ,1) = ZR(IFAC-1+ AD(L))
+            TEMP(NDJ) = ZR(IFAC-1+ AD(L))
             AD(L) = AD(L) + 1
             IF (LONG.GT.L) THEN
                P = L
@@ -144,7 +144,7 @@ C=======================================================================
 C     D * Z = Y
       DO 194 ISM=1,NBSM
          DO 190 J = DEB1,NBND
-            X(J,ISM) = X(J,ISM)/SM(J,1)
+            X(J,ISM) = X(J,ISM)/TEMP(J)
  190     CONTINUE
  194  CONTINUE
 C=======================================================================
@@ -208,8 +208,13 @@ C     PARTIE DIAGONALE
 C     ON RANGE DANS SM  LA SOLUTION DANS LA NUMEROTATION INITIALE
       DO 265 ISM=1,NBSM
          DO 270 J = 1,NBND
-            SM(PERM(J),ISM) = X(J,ISM)
+         
+            TEMP(PERM(J)) = X(J,ISM)
  270     CONTINUE
+
+         DO 275 J = 1,NBND
+            X(J,ISM) = TEMP(J)
+ 275     CONTINUE
  265  CONTINUE
       CALL JEDEMA()
       END

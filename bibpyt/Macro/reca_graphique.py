@@ -1,4 +1,4 @@
-#@ MODIF reca_graphique Macro  DATE 16/05/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_graphique Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,6 @@
 import string, copy, Numeric, types
 import Cata
 from Cata.cata import DEFI_FICHIER, IMPR_FONCTION
-from Utilitai.Utmess import UTMESS
 from Accas import _F
 
 try:

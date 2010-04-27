@@ -1,4 +1,4 @@
-#@ MODIF E_utils Execution  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_utils Execution  DATE 27/04/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,6 +26,7 @@
 """
 # Modules Python
 import types,string
+import os,shutil
 
 def repr_float(valeur):
   """ 
@@ -90,3 +91,37 @@ def repr_float(valeur):
   s=s+'E'+neg*'-'+repr(cpt)
   return s
 
+def lierRepertoire(source,destination,exeptions=[]):
+  """
+  Cette fonction sert à recopier (sous forme de liens symboliques)
+  un répertoire
+  """
+  if os.path.exists(destination):
+    try: shutil.rmtree(destination)
+    except OSError: os.remove(destination)
+  
+  os.mkdir(destination)
+  
+  listeFichiers = os.listdir(source)
+  for fichier in listeFichiers:
+    aEviter = False
+    for fichierAEviter in exeptions:
+      if fichier[:len(fichierAEviter)] == fichierAEviter:
+        aEviter = True
+    if aEviter: continue
+    os.symlink(source+"/"+fichier,destination+"/"+fichier)
+
+def copierBase(source,destination):
+  """
+  Fonction servant à recopier une base vers un repertoire
+  """
+  if os.path.exists(destination+"/glob.1"):
+    os.remove(destination+"/glob.1")
+    shutil.copy(source+"/glob.1",destination)
+  
+  if os.path.exists("pick.1"):
+    os.remove("pick.1")
+    shutil.copy(source+"/pick.1",destination)
+
+def supprimerRepertoire(path):
+  shutil.rmtree(path)

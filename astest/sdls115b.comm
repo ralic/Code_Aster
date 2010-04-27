@@ -1,4 +1,4 @@
-# MODIF  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 27/04/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE COMPARAISON AVEC LA SOLUTION ANALYTIQUE D'UNE PLAQUE (DKT) EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,8 +138,47 @@ DTARC=10.*DT
 LARCH = DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
                           _F(JUSQU_A = TMAX,PAS = DTARC),
                       ),);
+
+# Liste d'observation pour le premier calcul coupee en deux
+LOBS1a = DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
+                          _F(JUSQU_A = TMAX/2,PAS = DTARC),
+                      ),);
+
+LOBS1b = DEFI_LIST_REEL(DEBUT=TMAX/2,INTERVALLE=(
+                          _F(JUSQU_A = TMAX,PAS = DTARC),
+                      ),);
+
 # Calcul explicite MASS_DIAG = NON
 RESU1 = DYNA_NON_LINE(
+                       MODELE=MOD1,
+                       CHAM_MATER= CHMAT,
+                       CARA_ELEM = CELE1,
+                       MASS_DIAG='NON',
+                       COMP_INCR=_F(
+                                    RELATION ='ELAS',     ),
+                       INCREMENT=_F( LIST_INST = INST1,
+                                     PRECISION =1.E-1,
+                                     INST_FIN=TMAX/2,
+                                     ),
+                       EXCIT=(   _F( CHARGE = COND_L1,
+                                     FONC_MULT = chf1,),
+                             ),
+                       SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                                      FORMULATION='ACCELERATION',),
+                       ETAT_INIT = _F(
+                                       VITE = VIT_INI,
+                                      ),
+                       ARCHIVAGE=_F(LIST_INST=LARCH,),
+                       OBSERVATION=(_F(NOM_CHAM='DEPL',
+                                       NOM_CMP='DX',
+                                       LIST_INST= LOBS1a,
+                                       NOEUD='N1',SUIVI_DDL='NON'),),
+                     );
+
+# Calcul explicite MASS_DIAG = NON
+# On coupe le DYNA_NON_LINE en deux et on fait une reprise
+# pour tester la bonne construction de la table d'observation
+RESU1 = DYNA_NON_LINE( reuse=RESU1,
                        MODELE=MOD1,
                        CHAM_MATER= CHMAT,
                        CARA_ELEM = CELE1,
@@ -154,12 +193,12 @@ RESU1 = DYNA_NON_LINE(
                        SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
                                       FORMULATION='ACCELERATION',),
                        ETAT_INIT = _F(
-                                       VITE = VIT_INI,
+                                       EVOL_NOLI = RESU1,
                                       ),
                        ARCHIVAGE=_F(LIST_INST=LARCH,),
                        OBSERVATION=(_F(NOM_CHAM='DEPL',
                                        NOM_CMP='DX',
-                                       LIST_INST= LARCH,
+                                       LIST_INST= LOBS1b,
                                        NOEUD='N1',SUIVI_DDL='NON'),),
                      );
 
@@ -188,6 +227,8 @@ RESU2 = DYNA_NON_LINE(
                                        NOEUD='N1',SUIVI_DDL='NON'),),
                      );
 
+# --------------------- TESTS -------------------------
+# ANALYTIQUES
 UXRES = Q0*sin(K*LONG)*sin(FREQ*TMAX)
 TEST_RESU(RESU=(
                 _F(RESULTAT=RESU1,
@@ -209,5 +250,34 @@ TEST_RESU(RESU=(
                   REFERENCE='ANALYTIQUE',
                   ),
                   ),);
+
+# NON-REGRESSION
+# VERIFICATION DE LA BONNE CONSTRUCTION DE LA TABLE D'OBSERVATION
+
+TAB_OBS = RECU_TABLE (CO = RESU1,
+                      NOM_TABLE = 'OBSERVATION');
+
+IMPR_TABLE(TABLE=TAB_OBS);
+
+TEST_TABLE(TABLE=TAB_OBS,
+           FILTRE=_F(NOM_PARA='INST',
+                     CRIT_COMP='EQ',
+                     VALE=9.0E-4,),
+           NOM_PARA='VALE',
+           VALE=2.46867E-20,
+           CRITERE='ABSOLU',
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.1.21',);
+
+
+TEST_TABLE(TABLE=TAB_OBS,
+           FILTRE=_F(NOM_PARA='INST',
+                     CRIT_COMP='EQ',
+                     VALE=1.2E-3,),
+           NOM_PARA='VALE',
+           VALE=5.61805E-20,
+           CRITERE='ABSOLU',
+           REFERENCE='NON_REGRESSION',
+           VERSION='10.1.21',);
 
 FIN();

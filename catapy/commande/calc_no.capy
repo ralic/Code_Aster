@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "PMPB_NOEU_SIEF",
                                      "PRES_NOEU_DBEL","PRES_NOEU_IMAG","PRES_NOEU_REEL",
                                      "RADI_NOEU_SIGM",
-                                     "SIEF_NOEU"     ,"SIEF_NOEU_ELGA",
+                                     "SIEF_NOEU_ELGA",
                                      "SIGM_NOEU_CART","SIGM_NOEU_COQU","SIGM_NOEU_DEPL",
                                      "SIGM_NOEU_SIEF",
                                      "SIPO_NOEU_DEPL","SIPO_NOEU_SIEF",

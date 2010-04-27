@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -491,6 +491,7 @@ C    ------------------------------------------------------------------
      &        OPTION.EQ.'SIRE_ELNO_DEPL' .OR.
      &        OPTION.EQ.'DEGE_ELNO_DEPL' .OR.
      &        OPTION.EQ.'SIGM_ELNO_SIEF' .OR.
+     &        OPTION.EQ.'FLHN_ELGA' .OR.
      &        OPTION.EQ.'SIPO_ELNO_SIEF') THEN
 
 C ---- VERIF SENSIBILITE
@@ -740,6 +741,13 @@ C     POUR LE CALCUL DES OPTIONS SIEF_ELGA_DEPL ET EFGE_ELNO_DEPL
                   CALL U2MESK('A','CALCULEL3_5',1,OPTION)
                   CALL JEDEMA
                   GO TO 440
+                END IF
+              END IF
+              IF (OPTION.EQ.'FLHN_ELGA') THEN
+                CALL RSEXC2(1,1,RESUCO,'SIEF_NOEU_ELGA',IORDR,CHSIG,
+     &                      OPTION,IRET)
+                IF (IRET.GT.0) THEN
+                  CALL U2MESK('F','CALCULEL7_1',1,OPTION)
                 END IF
               END IF
               IF (TYPESE.EQ.-1) THEN

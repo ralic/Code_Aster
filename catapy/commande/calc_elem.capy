@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -287,14 +287,15 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
 #    statique ou dynamique non lineaire : evol_noli
      b_noli          =BLOC( condition = "AsType(RESULTAT) == evol_noli",fr="options mecaniques non lineaires",
           TYPE_OPTION =SIMP(statut='f',typ='TXM',defaut='TOUTES',fr="type d'options mecaniques non lineaires",
-                           into=("SIGM_MASSIF","SIGM_STRUCT","EPSI","ENER","CRIT",
+                           into=("SIGM_MASSIF","SIGM_STRUCT","EPSI","ENER","CRIT","FLUX",
                                  "VARI","INDI_ERREUR","TOUTES","AUTRES"),
                           ),
-          b_toutes =BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol elas",
+          b_toutes =BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol noli",
                OPTION      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=( "SIEF_ELNO_ELGA","PROJ_ELEM_SIGM",
                                   "SIGM_ELNO_TUYO","SIGM_ELNO_COQU","PROJ_ELNO_SIGM",
                                   "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","EFGE_ELNO_CART",
+                                  "FLHN_ELGA",
                                   # EPSI
                                   "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL",
                                  "EPME_ELNO_DEPL","EPME_ELGA_DEPL","EPMG_ELNO_DEPL","EPMG_ELGA_DEPL",
@@ -356,6 +357,13 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                     PUIS_PULS       =SIMP(statut='f',typ='I'),
                     TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",),),),
                          ),
+
+          b_flux =BLOC( condition = "TYPE_OPTION == 'FLUX'",
+                                      fr="option de calcul de flux hydraulique 2D et 3D",
+               OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
+                              #  flux hydraulique
+                           into=( "FLHN_ELGA",),),
+                            ),
 
           b_sigm_massif =BLOC( condition = "TYPE_OPTION == 'SIGM_MASSIF'",
                                       fr="options de contraintes non lin 2D et 3D",

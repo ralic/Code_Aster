@@ -1,21 +1,21 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 21/04/2010   AUTEUR BOTTONI M.BOTTONI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def macr_ecrevisse_ops(self,reuse,
@@ -48,7 +48,7 @@ def macr_ecrevisse_ops(self,reuse,
    **args):
    """
         Procedure de couplage Aster-Ecrevisse
-        Execution pour tous les pas de temps des calculs thermiques, mécaniques puis hydraulique
+        Execution pour tous les pas de temps des calculs thermiques, mecaniques puis hydraulique
         DecoupageGeneration par Aster du fichier de donnees d'Ecrevisse et lancement d'Ecrevisse
    """
 
@@ -59,15 +59,18 @@ def macr_ecrevisse_ops(self,reuse,
    import os, aster, copy
 
    ier=0
-   # Niveaux de debug
-   debug1 = (INFO>1)
-   debug2 = (INFO>2)
-  
-   #
-   InfoAster = 1
    #
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
+
+   # Parametres debug
+   debug = False
+
+   # Info
+   InfoAster = 1
+   info2 = (INFO==2)
+   if debug :
+       info2=True
 
    # IMPORTATION DE COMMANDES ASTER
    DEFI_LIST_REEL = self.get_cmd("DEFI_LIST_REEL")
@@ -90,7 +93,7 @@ def macr_ecrevisse_ops(self,reuse,
    # Concepts sortant: les resultats de STAT_NON_LINE et de THER_LINEAIRE valides vis-a-vis du calcul ecrevisse
    self.DeclareOut('RTHERM',TEMPER)
    self.DeclareOut('MECANIC', self.sd)
-   
+
    IsPoursuite = False
    IsInit = True
    # Traitement de l'etat initial en cas de poursuite
@@ -104,9 +107,9 @@ def macr_ecrevisse_ops(self,reuse,
        IsPoursuite= True
    else :
        dEtatInit=None
- 
-   # Valeur par defaut du mot cle LOGICIEL
-   if not LOGICIEL: LOGICIEL = os.path.join(aster.repout(), 'ecrevisse')
+
+   ## Valeur par defaut du mot cle LOGICIEL
+   #if not LOGICIEL: LOGICIEL = os.path.join(aster.repout(), 'ecrevisse')
 
    # RECUPERATION DES MOTS-CLES FACTEURS
 
@@ -149,12 +152,16 @@ def macr_ecrevisse_ops(self,reuse,
    motclefsCALC_ECREVISSE = {}
    motclefsCALC_ECREVISSE['COURBES'] = COURBES,
 
+
+
+
+
    # -----------------------------------------------------------------------------------------------------
    # Debut de la macro
 
    # Si LIST_INST est un DEFI_LIST_REEL :
    _liste_inst = LIST_INST.Valeurs()
-   if ( debug1 ):
+   if (debug):
       print 'liste des instants liste_inst = ', _liste_inst
 
    # Drapeaux pour les 1ers calculs et les 1eres definitions
@@ -190,7 +197,7 @@ def macr_ecrevisse_ops(self,reuse,
      _nume_ordre = 0
    else :
      # Dans le cas d'une poursuite :
-     # n reconstruit une nouvelle liste d'instant composee de l'ancienne liste jusqu'a l'instant recherche, 
+     # n reconstruit une nouvelle liste d'instant composee de l'ancienne liste jusqu'a l'instant recherche,
      # puis de la nouvelle a partir de cet instant
      # ainsi le _nume_ordre de la nouvelle liste correspond au nume_ordre de l'ancienne
      __dico1 = __THINIT.LIST_VARI_ACCES()
@@ -210,30 +217,29 @@ def macr_ecrevisse_ops(self,reuse,
               break
            idx += 1
      new_list = _list_precedente[0:_nume_ordre]  # liste precedent jusqu'a l'instant a recalculer (inclu, ca permet de gerer le cas ou l'instant a recalculer n'est pas dans la nouvelle liste : il sera ajoute)
-     new_list.extend( _liste_inst[_idx+1:] )  # on lui ajoute la nouvelle liste a partir du l'instant a recalculer 
+     new_list.extend( _liste_inst[_idx+1:] )  # on lui ajoute la nouvelle liste a partir du l'instant a recalculer
      _liste_inst = copy.copy(new_list)
-     
-   ########################################################################################  
+
+   ########################################################################################
    # Debut boucle sur la liste d'instant
    ########################################################################################
    FinBoucle = False
    while ( not FinBoucle ):
       _inst      = _liste_inst[_nume_ordre]
-      if (debug1):
-         print 'instant debut boucle', _inst
-
+      if ( debug ):
+          print 'Instant debut boucle', _inst
       # On boucle jusqu'a convergence
       NbIter = 0
       while True:
 
 
-         if ( (not IsPoursuite) or EcrevisseExe) : 
+         if ( (not IsPoursuite) or EcrevisseExe) :
          # Le temps que l'on traite
            _inst_p_un = _liste_inst[_nume_ordre+1]
            IsInitEcre= False
            # Construction de la liste des pas
            LES_PAS = DEFI_LIST_REEL( VALE=_liste_inst, )
-           if ( debug1 ):
+           if (debug):
               print '=====> ===== ===== ===== <===='
               print 'Iteration numero : ', NbIter
               print 'Instant          : ', _inst
@@ -258,33 +264,33 @@ def macr_ecrevisse_ops(self,reuse,
            if ( EcrevisseExe ):
               _dEXCIT_THER.append( _F(CHARGE=FLU1ECR0) )
               _dEXCIT_THER.append( _F(CHARGE=FLU2ECR0) )
- 
-           # Definition de l'etat initial 
+
+           # Definition de l'etat initial
            motclefs = {}
            if (_nume_ordre == 0) :
-              # On verifie que temp_ref est bien renseigne dans AFFE_MATERIAU            
+              # On verifie que temp_ref est bien renseigne dans AFFE_MATERIAU
               try:
                  tref = CHAM_MATER['AFFE_VARC']['VALE_REF']
               except:
                  UTMESS('F','ECREVISSE0_22',)
-            
+
               motclefs['ETAT_INIT']=[_F(VALE=tref, NUME_ORDRE=_nume_ordre)]
-              if ( debug2 ):
+              if ( debug ):
                  print 'thermique initialise avec tref'
            else:
               if (IsInit) :
-                 motclefs['reuse']=__THINIT  
+                 motclefs['reuse']=__THINIT
                  motclefs['ETAT_INIT']=[_F(EVOL_THER=__THINIT,  NUME_ORDRE=_nume_ordre)]
-                 if (debug2):
+                 if (debug):
                     print 'thermique initialise avec etat_initial'
               else :
                  motclefs['reuse']=RTHERM
                  motclefs['ETAT_INIT']=[_F(EVOL_THER=RTHERM,  NUME_ORDRE=_nume_ordre)]
-                 if (debug2):
+                 if (debug):
                     print 'thermique initialise avec instant precedent'
-           if ( debug1 ):
+
+           if (debug):
               print '====> THER_LINEAIRE <===='
-           if ( debug2 ):
               print '   Les charges thermiques'
               print EXCIT_THER
          #
@@ -297,13 +303,13 @@ def macr_ecrevisse_ops(self,reuse,
                 ARCHIVAGE  = _F(NUME_INIT=_nume_ordre+1,DETR_NUME_SUIV='OUI'),
                 INFO       = InfoAster,
                 **motclefs )
-            
+
               RTHERMPJ=PROJ_CHAMP(RESULTAT=__THINIT, MODELE_1=MODELE_THER, MODELE_2=MODELE_MECA,
                      VIS_A_VIS=_F(TOUT_1='OUI', TOUT_2='OUI',),
                      INFO=2,
                       )
               RTHERM=__THINIT
-           else : 
+           else :
               RTHERM=THER_LINEAIRE(
                MODELE     = MODELE_THER,
                CHAM_MATER = CHAM_MATER,
@@ -314,7 +320,7 @@ def macr_ecrevisse_ops(self,reuse,
                **motclefs
                )
 
-           # Projection du champ thermique, à tous les instants sinon pas de deformations thermiques
+           # Projection du champ thermique, a tous les instants sinon pas de deformations thermiques
               RTHERMPJ=PROJ_CHAMP(RESULTAT=RTHERM, MODELE_1=MODELE_THER, MODELE_2=MODELE_MECA,
                 VIS_A_VIS=_F(TOUT_1='OUI', TOUT_2='OUI',),
                 INFO=2,
@@ -359,8 +365,8 @@ def macr_ecrevisse_ops(self,reuse,
                  for j in dEXCIT_MECA_i.keys():
                     if dEXCIT_MECA_i[j]==None : del dEXCIT_MECA_i[j]
                  _dEXCIT_MECA.append(dEXCIT_MECA_i)
-         
-         
+
+
            # Definition des chargements venant d'Ecrevisse
            if ( EcrevisseExe ):
               _dEXCIT_MECA.append( _F(CHARGE=MECAECR0) )
@@ -371,25 +377,24 @@ def macr_ecrevisse_ops(self,reuse,
              if (_nume_ordre != 0):
                 motclefs['reuse'] = MECANIC
                 motclefs['ETAT_INIT']=[_F(EVOL_NOLI=MECANIC, NUME_ORDRE=_nume_ordre)]
-                if (debug2):
+                if (debug):
                    print 'etat meca initial = pas precedent'
              else:
-                if (debug2):
-                   print 'etat meca initial : vierge'   
-           else:   
+                if (debug):
+                   print 'etat meca initial : vierge'
+           else:
               motclefs['reuse']=__EVINIT
               motclefs['ETAT_INIT']=[_F(EVOL_NOLI=__EVINIT, NUME_ORDRE=_nume_ordre)]
-              if (debug2):
+              if (debug):
                  print 'etat meca initial dReuseM', motclefs
-            
-            
-           if ( debug1 ):
+
+           if (debug):
               print '====> STAT_NON_LINE <===='
-           if ( debug2 ):
+           if (debug):
               print '   Les charges mecaniques'
               print _dEXCIT_MECA
-            
-            
+
+
            MECANIC=STAT_NON_LINE(
               MODELE      = MODELE_MECA,
               CHAM_MATER  = __MATMEC,
@@ -409,13 +414,13 @@ def macr_ecrevisse_ops(self,reuse,
            #  Thermique projete
            #  Liste des pas
            DETRUIRE( CONCEPT=(_F(NOM=RTHERMPJ),_F(NOM=LES_PAS),),INFO=1,ALARME='NON',)
-         
+
          else :
-           #      CAS OU LA MACRO EST REENTRANTE : ON RELANCE ECREVISSE POUR CONNAITRE 
+           #      CAS OU LA MACRO EST REENTRANTE : ON RELANCE ECREVISSE POUR CONNAITRE
            #     LES CHARGEMENT A UTILISER POUR LES PROBLEMES THERMIQUES ET MECANIQUES
            _inst_p_un=_inst
            IsInitEcre = True
-           
+
          # -----------------------------------------------------------------------
          #        ECREVISSE : ATTENTION SI REPRISE CALCUL, ON RECALCULE LE DERNIER INSTANT
          # -------------------------------------------------------------------------
@@ -448,11 +453,11 @@ def macr_ecrevisse_ops(self,reuse,
          TABLECR1=CO('TABLECR1')
          DEBIECR1=CO('DEBIECR1')
 
-         if ( debug1 ):
+         if (debug):
             print '====> ECREVISSE entree dans CALC_ECREVISSE <===='
-         
-         if (not IsPoursuite) : 
-                  
+
+         if (not IsPoursuite) :
+
            CALC_ECREVISSE(
               CHARGE_MECA      = MECAECR1,
               CHARGE_THER1     = FLU1ECR1,
@@ -474,7 +479,7 @@ def macr_ecrevisse_ops(self,reuse,
               # assurer la coherence des donnees en fonction de FLUIDE_ENTREE = iflow (voir doc Ecrevisse)
               # activation eventuelle de TITR_VA et P_AIR
 
-              FISSURE=l_dFISSURE, # TODO a verifier
+              FISSURE=l_dFISSURE,
               ECOULEMENT=_F( **dECOULEMENT_ecrevisse ),
               MODELE_ECRE=_F( **dMODELE_ECRE),
 
@@ -503,26 +508,26 @@ def macr_ecrevisse_ops(self,reuse,
               # assurer la coherence des donnees en fonction de FLUIDE_ENTREE = iflow (voir doc Ecrevisse)
               # activation eventuelle de TITR_VA et P_AIR
 
-              FISSURE=l_dFISSURE, # TODO a verifier
+              FISSURE=l_dFISSURE,
               ECOULEMENT=_F( **dECOULEMENT_ecrevisse ),
               MODELE_ECRE=_F( **dMODELE_ECRE),
 
               CONVERGENCE=_F( **dCONVERGENCE_ECREVISSE ),
               **motclefsCALC_ECREVISSE
               );
-                
-         if ( debug1 ):
+
+         if (debug):
             print '====> ECREVISSE sortie de CALC_ECREVISSE <===='
 
 
          # Recuperation des infos de la table resultat Ecrevisse
          T_TABL_TMP1 = TABLECR1.EXTR_TABLE()
          T_DEB_TMP1  = DEBIECR1.EXTR_TABLE()
-#         # Ajout de deux colonnes supplementaires
+#         # On ajoute deux colonnes supplementaires
 #         _nb_ligne = len(T_DEB_TMP1["DEBTOT"])
 #         T_DEB_TMP1["NUME_ORDRE"] = [_nume_ordre+1]*_nb_ligne
 #         T_DEB_TMP1["INST"]       = [_inst_p_un]*_nb_ligne
-         
+
          # Le calcul Ecrevisse c'est bien passe ?
          EcrevisseExe = ( T_TABL_TMP1.values()['COTES'][0] != -1 )
          #
@@ -554,7 +559,7 @@ def macr_ecrevisse_ops(self,reuse,
          #  TABLECR0 table Ecrevisse a _inst
          #  TABLECR1 table Ecrevisse a _inst_p_un
          # --------------------
-         
+
          if ( not IsInit ):
             # On recupere la liste des temperatures a t et t+1
             lst_T_0 = T_TABL_TMP0.values()['TEMP']
@@ -584,21 +589,23 @@ def macr_ecrevisse_ops(self,reuse,
                Erreur = ErreurP
             else:
                Erreur = ErreurG
-            #
-            print 'CONVERGENCE_MACR_ECREVISSE. Instant de calcul : %.3f .' % (_inst_p_un)
-            print '  Erreur en Temperature : %f . Ecart en Temperature : %.3f' % (ErreurT,max_T_diff_01)
-            print '  Erreur en Pression    : %f . Ecart en Pression    : %.3f' % (ErreurP,max_P_diff_01)
-            print '  Erreur Temp-Press     : %f' % (ErreurG)
+
             if ( MacrCritere != 'EXPLICITE' ):
                Convergence = ( Erreur <= MacrPrecisCritere )
-               print 'CONVERGENCE_MACR_ECREVISSE . Nature du Critere %s . Valeur du critere %s . Convergence %s ' % (MacrCritere,MacrPrecisCritere,Convergence,)
+            #
+            if info2 :
+                # Info Critere
+                UTMESS('I', 'ECREVISSE0_35', valr=[_inst_p_un], valk=[MacrCritere,MacrPrecisCritere,Convergence])
+                # Info Convergence
+                UTMESS('I', 'ECREVISSE0_34', valr=[_inst_p_un,ErreurT,max_T_diff_01,ErreurP,max_P_diff_01,ErreurG])
 
          else:
             Convergence = True
-            print 'CONVERGENCE_MACR_ECREVISSE. 1er Instant de calcul : %f . Pas de calcul de critere.' % (_inst_p_un)
+            if info2 :
+                UTMESS('I', 'ECREVISSE0_36', valr=[_inst_p_un])
          # --------------------
-
          #
+
 
          if ( MacrCritere == 'EXPLICITE' ):
             Convergence = True
@@ -614,7 +621,7 @@ def macr_ecrevisse_ops(self,reuse,
             T_TABL_TMP1["NUME_ORDRE"] = [_nume_ordre+1]*nb_lignes_t1
             T_TABL_TMP1["INST"]       = [_inst_p_un]*nb_lignes_t1
 
-            # POUR LA TABLE DES DEBITS  
+            # POUR LA TABLE DES DEBITS
             nb_ligne_t2 = len(T_DEB_TMP1["DEBTOT"])
             T_DEB_TMP1["NUME_ORDRE"] = [_nume_ordre+1]*nb_ligne_t2
             T_DEB_TMP1["INST"]       = [_inst_p_un]*nb_ligne_t2
@@ -642,10 +649,10 @@ def macr_ecrevisse_ops(self,reuse,
             T_TABL_TMP0 = T_TABL_TMP1
             if (not IsInitEcre) :
               IsInit = False
-            if ( debug1 ):
-               print 'Convergence atteinte, on passe au pas de temps suivant'
+            if (info2):
+              UTMESS('I','ECREVISSE0_37', valr=[_inst_p_un])
             break
-            
+
          else:
             NbIter += 1
             # A t'on le droit de decouper, par rapport au nombre de division
@@ -662,7 +669,7 @@ def macr_ecrevisse_ops(self,reuse,
                UTMESS('A','ECREVISSE0_31', valr=[_inst,_inst_p_un,tmp,MacrPasMini])
                break
             #
-            if ( debug1 ):
+            if ( info2 ):
                UTMESS('A','ECREVISSE0_32', valr=[_inst,_inst_p_un,tmp],vali=[NbIter])
             # on insere le nouveau temps dans la liste des instants avant "_inst_p_un"
             _liste_inst.insert(_nume_ordre+1,tmp)
@@ -698,7 +705,7 @@ def macr_ecrevisse_ops(self,reuse,
             ),
             INFO=1,ALARME='NON',
    )
-   
+
    if (_nume_ordre != 0 ):
        DETRUIRE(
                 CONCEPT=( _F(NOM=MECAECR0),

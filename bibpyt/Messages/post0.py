@@ -1,4 +1,4 @@
-#@ MODIF post0 Messages  DATE 15/03/2010   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF post0 Messages  DATE 21/04/2010   AUTEUR BOTTONI M.BOTTONI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,4 +136,17 @@ Attention la ligne de coupe %(i1)d traverse des zones sans matière :
  - Le nombre de points éliminés (car hors de la matière) est:
             %(i2)d
 """),
+
+33: _("""
+Attention : le modèle n'est pas une entrée de la macro-commande et n'appartient pas a la structure données résultat
+"""),
+
+34: _("""
+Attention : donner un maillage 2D en entrée
+"""),
+
+35: _("""
+Attention : le type de champ en entrée ne fait pas partie des champs que la macro peut traiter
+"""),
+
 }

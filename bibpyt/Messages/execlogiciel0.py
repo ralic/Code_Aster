@@ -1,4 +1,4 @@
-#@ MODIF execlogiciel0 Messages  DATE 15/03/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF execlogiciel0 Messages  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,9 +76,7 @@ Mode de lancement inconnu : %(k1)s
  Code retour = %(i1)d      (maximum toléré : %(i2)d)
 """),
 
-12 : _("""
- Fin de la commande : %(k1)s
-"""),
+#12 : _(""" """),
 
 13 : _("""
  -> Le maillage n'a pas été produit par le logiciel externe (format "%(k1)s")

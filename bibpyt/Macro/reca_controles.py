@@ -1,4 +1,4 @@
-#@ MODIF reca_controles Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_controles Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,7 +32,6 @@ nompro = 'MACR_RECAL'
 #_____________________________________________
 
 # ------------------------------------------------------------------------------
-
 def erreur_de_type(code_erreur,X):
    """
    code_erreur ==0 --> X est une liste
@@ -55,7 +54,6 @@ def erreur_de_type(code_erreur,X):
    
 
 # ------------------------------------------------------------------------------
-   
 def erreur_dimension(PARAMETRES,REPONSES):
    """
    On verifie que la dimension de chaque sous_liste de parametre est 4
@@ -73,7 +71,6 @@ def erreur_dimension(PARAMETRES,REPONSES):
 
 
 # ------------------------------------------------------------------------------
-
 def compare__dim_rep__dim_RESU_EXP(REPONSES,RESU_EXP):
    """
    X et Y sont deux arguments qui doivent avoir la meme dimension
@@ -87,7 +84,6 @@ def compare__dim_rep__dim_RESU_EXP(REPONSES,RESU_EXP):
 
 
 # ------------------------------------------------------------------------------
-
 def compare__dim_poids__dim_RESU_EXP(POIDS,RESU_EXP):
    """
    POIDS et Y sont deux arguments qui doivent avoir la meme dimension
@@ -101,7 +97,6 @@ def compare__dim_poids__dim_RESU_EXP(POIDS,RESU_EXP):
 
 
 # ------------------------------------------------------------------------------
-
 def verif_fichier(UL,PARAMETRES,REPONSES):
    """
    On verifie les occurences des noms des PARAMETRES et REPONSES 
@@ -126,7 +121,6 @@ def verif_fichier(UL,PARAMETRES,REPONSES):
 
 
 # ------------------------------------------------------------------------------
-
 def verif_valeurs_des_PARAMETRES(PARAMETRES):
    """
    On verifie que pour chaque PARAMETRES de l'optimisation
@@ -163,7 +157,6 @@ def verif_valeurs_des_PARAMETRES(PARAMETRES):
 
 
 # ------------------------------------------------------------------------------
-
 def verif_UNITE(GRAPHIQUE,UNITE_RESU):
    """
    On vérifie que les unités de résultat et 
@@ -178,7 +171,6 @@ def verif_UNITE(GRAPHIQUE,UNITE_RESU):
 
 
 # ------------------------------------------------------------------------------
-
 def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE):
    """
    Cette methode va utiliser les methodes de cette classe declarée ci-dessus

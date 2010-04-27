@@ -1,4 +1,4 @@
-#@ MODIF recal0 Messages  DATE 11/01/2010   AUTEUR NISTOR I.NISTOR 
+#@ MODIF recal0 Messages  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,10 @@
 def _(x) : return x
 
 cata_msg = {
- 1 : _("""Nombre d'evaluation de la fonction : %(k1)s
+ 1 : _("""
+
+ <INFO> Fichier d'informations de MACR_RECAL
+
 """),
 
  2 : _("""Impossible d'importer le module as_profil ! Vérifier la variable
@@ -38,8 +41,8 @@ On desactive l'affichage des courbes par Gnuplot.
  5 : _("""Il y a plus d'un fichier .export dans le repertoire de travail !
 """),
 
- 6 : _("""Il faut spécifier une valeur pour 'mem_aster' (menu Option de ASTK)
-pour limiter la mémoire allouée au calcul maître.
+ 6 : _("""Pour les calculs DISTRIBUES en mode INTERACTIF, il faut spécifier une valeur pour 'mem_aster' 
+(menu Option de ASTK) pour limiter la mémoire allouée au calcul maître.
 """),
 
  7 : _("""Aucune valeur pour le paramètre 'memjeveux'. Verifier le .export.
@@ -58,7 +61,7 @@ pour limiter la mémoire allouée au calcul maître.
 """),
 
 12 : _("""Recalage :
-   %s
+   %(k1)s
 """),
 
 13 : _("""Lancement de l'optimisation avec la methode : %(k1)s.
@@ -71,12 +74,7 @@ pour limiter la mémoire allouée au calcul maître.
 """),
 
 16 : _("""
-Informations de convergence :
-=======================================================
-Fin de l'iteration %(i1)d
-=> Fonctionnelle = %(r1)s
-=> Residu        = %(r2)s
-=======================================================
+--> Calcul du gradient par differences finies <--
 """),
 
 17 : _("""Tracé des graphiques
@@ -88,82 +86,84 @@ Fin de l'iteration %(i1)d
 19 : _("""Erreur dans le test de convergence de MACR_RECAL.
 """),
 
-20 : _("""Impossible d'importer le module de lecture des tables !
+20 : _("""
+Information : les calculs esclaves seront lancés en BATCH avec les paramètres suivants :
+     Temps   (sec) : %(k1)s
+     Mémoire (Mo)  : %(k2)s
+     Classe        : %(k3)s
+
 """),
 
-21 : _("""Diagnostic du calcul esclave : %(k1)s
+#21 : _(""" """),
+
+#22 : _(""" """),
+
+23 : _("""Impossible d'importer le module de lecture des tables !
 """),
 
-22 : _("""Le fichier esclave ne s'est pas terminé correctement.
-"""),
-
-23 : _("""Le nombre d'évaluation de la fonctionnelle dépasse le critère ITER_FONC_MAXI.
-"""),
-
-24 : _("""Impossible de relire le fichier esclave : %(k1)s
-"""),
-
-25 : _("""Calcul de F avec les paramètres :
-%(k1)s
-"""),
-
-26 : _("""Impossible de récupérer les résultats de calcul esclave !
-"""),
-
-27 : _("""Impossible de récupérer les résultats de calcul esclave (lecture des tables) ! 
-Le calcul esclave n'a pas dû se terminer correctement (ajouter un repertoire dans ASTK
-en Résultat avec le type repe et voir l'output du fichier esclave dans ce répertoire.
-Message :
+24 : _("""Impossible de récupérer les résultats de calcul esclave (lecture des tables) ! 
+Message d'erreur :
    %(k1)s
 """),
 
-28 : _("""Impossible de récupérer les résultats de calcul esclave (lecture des tables) ! 
-Message :
+25 : _("""
+Calcul de F avec les paramètres :
+     %(k1)s
+"""),
+
+26 : _("""
+Calcul de F et G avec les paramètres :
+     %(k1)s
+"""),
+
+27 : _("""
+Calcul de G avec les paramètres :
    %(k1)s
 """),
 
-29 : _("""Impossible de récupérer les résultats de calcul esclave (récupération des tables) !
-Message :
-   %(k1)s
+28 : _("""--> Mode de lancement BATCH impossible sur : %(k1)s, on bascule en INTERACTIF <--
 """),
 
-30 : _("""Informations de convergence :
-=======================================================
+29 : _("""--> Mode de lancement des calculs esclaves : %(k1)s <--
 """),
 
-31 : _("""=> Fonctionnelle     = %(k1)s
+30 : _("""
+Informations de convergence :
+======================================================================
 """),
 
-32 : _("""=> Norme de l'erreur = %(k1)s
+31 : _("""Iteration %(i1)d :
+
 """),
 
-33 : _("""=> Erreur            = %(k1)s
+32 : _("""
+=> Paramètres :
+     %(k1)s
+
 """),
 
-34 : _("""Impossible de creer le repertoire temporaire : %(k1)s
+33 : _("""=> Fonctionnelle                        = %(r1)s
 """),
 
-35 : _("""Problème lors de l'interpolation du calcul dérivé sur les données expérimentale !
-Valeur à interpoler              :  %(k1)s
-Domaine couvert par l'experience : [%(k2)s : %(k3)s]
+34 : _("""=> Residu                               = %(r1)s
 """),
 
-36 : _("""Problème de division par zéro dans la normalisation de la fonctionnelle.
-Une des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine : %(r1).2f
+35 : _("""=> Norme de l'erreur                    = %(r1)s
 """),
 
-37 : _("""On utilise les differences finies pour calculer la sensibilite de : %(k1)s
+36 : _("""=> Erreur                               = %(r1)s
 """),
 
-38 : _("""Probleme de division par zéro dans le calcul de la matrice de sensiblité.
-Le parametre %(k1)s est nul ou plus petit que la précision machine.
+37 : _("""=> Variation des parametres (norme L2)  = %(r1)s
 """),
 
-39 : _("""On utilise le calcul de SENSIBILITE pour : %(k1)s
+38 : _("""=> Variation de la fonctionnelle        = %(r1)s
 """),
 
-40 : _("""Arrêt de MACR_RECAL par manque de temps CPU.
+39 : _("""=> Nombre d'evaluation de la fonction   = %(k1)s
 """),
+
+#40 : _(""" """),
 
 41 : _("""Tracé des courbes dans le fichier : %(k1)s
 """),
@@ -173,63 +173,191 @@ Erreur :
    %(k1)s
 """),
 
-43 : _("""Attention, vous utilisez une valeur pour l'option GRAINE. 
-Cette option n'est recommandée que pour les cas-tests car elle va forcer la graine pour le tirage au sort
-et va restreindre le caractère aléatoire de la solution. 
-"""),
-
-
-83 : _("""Variable d'environnement ASTER_ROOT absente, on essaiera avec 'as_run' dans le $PATH.
-"""),
-
-84 : _("""Impossible d'écrire le fichier export : %(k1)s
-"""),
-
-85 : _("""Ecriture du fichier : %(k1)s
-"""),
-
-86 : _("""Dans la commande MACR_RECAL, il faut choisir METHODE='EXTERNE'.
-"""),
-
-87 : _("""La commande MACR_RECAL n'a pas été trouvée dans le .comm
-"""),
-
-88 : _("""Il faut mettre les paramètres sous la forme d'une ligne python :
-   %(k1)s = [param1, param2, ...]
-"""),
-
-89 : _("""Lecture du fichier : %(k1)s
-"""),
-
-90 : _("""Le mode EXTERNE tourne en mode dégradé. Lire la documentation.
-"""),
-
-91 : _("""Impossible d'importer le module Utilitai !
-"""),
-
-92 : _("""Le fichier de commande :
+43 : _("""Erreur :
    %(k1)s
-ne semble pas comporter la commande MACR_RECAL.
 """),
 
-93 : _("""Paramètres d'entrée : %(k1)s
+44 : _("""Problème de division par zéro dans la normalisation de la fonctionnelle.
+Une des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine : %(r1).2f
 """),
 
-94 : _("""Impossible de lire le fichier d'entrée : %(k1)s
+45 : _("""Probleme de division par zéro dans le calcul de la matrice de sensiblité.
+Le parametre %(k1)s est nul ou plus petit que la précision machine.
 """),
 
-95 : _("""Lecture du fichier : %(k1)s
+46 : _("""Le parametre %(k1)s est en butée sur un bord du domaine admissible.
 """),
 
-96 : _("""Le fichier .comm suivant n'est pas défini : %(k1)s
+47 : _("""Les parametres %(k1)s sont en butée sur un bord du domaine admissible.
 """),
 
-97 : _("""Le fichier .comm n'est pas défini dans le .export.
+48 : _("""Problème lors de l'interpolation du calcul dérivé sur les données expérimentale !
+Valeur à interpoler              :  %(k1)s
+Domaine couvert par l'experience : [%(k2)s : %(k3)s]
 """),
 
-98 : _("""Impossible de déterminer le fichier .export à utiliser.
-Spécifier le sur la ligne de commande.
+#49 : _(""" """),
+
+50 : _("""
+--> Critere d'arret sur le residu atteint, la valeur du residu est : %(r1)s <--
 """),
+
+51 : _("""
+--> Critere d'arret TOLE_PARA atteint, la variation des parametres est : %(r1)s <--
+"""),
+
+52 : _("""
+--> Critere d'arret TOLE_FONC atteint, la variation de la fonctionnelle est : %(r1)s <--
+"""),
+
+53 : _("""
+--> Arret par manque de temps CPU <--
+"""),
+
+54 : _("""
+--> Le nombre maximum d'evaluations de la fonction (ITER_FONC_MAXI) a ete atteint <--
+"""),
+
+55 : _("""
+--> Le nombre maximum d'iterations de l'algorithme (ITER_MAXI) a ete atteint <--
+"""),
+
+56 : _("""
+======================================================================
+                       CONVERGENCE ATTEINTE
+
+"""),
+
+57 : _("""
+======================================================================
+                      CONVERGENCE NON ATTEINTE
+
+"""),
+
+58 : _("""
+                 ATTENTION : L'OPTIMUM EST ATTEINT AVEC
+                 DES PARAMETRES EN BUTEE SUR LE BORD
+                     DU DOMAINE ADMISSIBLE
+"""),
+
+#59 : _(""" """),
+
+60 : _("""
+Valeurs propres du Hessien:
+%(k1)s
+"""),
+
+61 : _("""
+Vecteurs propres associés:
+%(k1)s
+"""),
+
+62 : _("""
+
+              --------
+
+"""),
+
+63 : _("""
+On peut en déduire que :
+
+"""),
+
+64 : _("""
+Les combinaisons suivantes de paramètres sont prépondérantes pour votre calcul :
+
+"""),
+
+65 : _("""%(k1)s
+      associée à la valeur propre %(k2)s
+
+"""),
+
+66 : _("""
+Les combinaisons suivantes de paramètres sont insensibles pour votre calcul :
+
+"""),
+
+67 : _("""
+Calcul avec les parametres suivants (point courant) :
+     %(k1)s
+"""),
+
+68 : _("""
+Calcul avec les parametres suivants (pertubation du parametre %(k2)s pour le gradient) :
+     %(k1)s
+"""),
+
+#69 : _(""" """),
+
+#70 : _(""" """),
+
+#70 : _(""" """),
+
+#71 : _(""" """),
+
+#72 : _(""" """),
+
+#73 : _(""" """),
+
+#74 : _(""" """),
+
+#75 : _(""" """),
+
+#76 : _(""" """),
+
+#77 : _(""" """),
+
+#78 : _(""" """),
+
+79 : _("""
+
+======================================================================
+"""),
+
+80 : _("""======================================================================
+
+
+"""),
+
+81 : _("""Repertoire contenant les executions Aster :
+   %(k1)s
+"""),
+
+82 : _("""Impossible de creer le repertoire temporaire : %(k1)s
+"""),
+
+#83 : _(""" """),
+
+#84 : _(""" """),
+
+#85 : _(""" """),
+
+#86 : _(""" """),
+
+#87 : _(""" """),
+
+#88 : _(""" """),
+
+#89 : _(""" """),
+
+#90 : _(""" """),
+
+#91 : _(""" """),
+
+#92 : _(""" """),
+
+#93 : _(""" """),
+
+#94 : _(""" """),
+
+#95 : _(""" """),
+
+#96 : _(""" """),
+
+#97 : _(""" """),
+
+#98 : _(""" """),
 
 99 : _("""Impossible de déterminer l'emplacement d'Aster !
 Fixer le chemin avec la variable d'environnement ASTER_ROOT.

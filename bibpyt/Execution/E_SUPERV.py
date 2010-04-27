@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 14/12/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 27/04/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -30,6 +30,7 @@ import sys
 import os
 import traceback
 import re
+from E_utils import *
 
 class SUPERV:
    usage="""
@@ -90,6 +91,7 @@ class SUPERV:
       self.tempsMax=0.
       self.verif=0
       self.interact=0
+      self.totalview=0
       for arg in sys.argv :
          if sys.argv[k] == '-eficas_path' :
             self.CHEMIN=sys.argv[k+1]
@@ -113,6 +115,8 @@ class SUPERV:
             self.verif=1
          elif sys.argv[k] == '-interact' :
             self.interact=1
+         elif sys.argv[k] == '-totalview' :
+            self.totalview=1
          else :
             pass
          k=k+1
@@ -354,6 +358,19 @@ class SUPERV:
       ier=self.getargs()
       if ier:return ier
 
+      if self.totalview == 1:
+         curPID = os.getpid()
+         pathOrigine = os.getcwd()
+         pathDestination = pathOrigine+"/tv_"+str(curPID)
+         
+         # Creation des liens symboliques vers les fichiers du
+         # repertoire courant dans un sous repertoire
+         lierRepertoire(pathOrigine,pathDestination,["tv_"])
+         
+         copierBase(pathOrigine,pathDestination)
+         
+         os.chdir(pathDestination)
+
       self.set_path()
 
       ier = self.init_timer()
@@ -363,8 +380,12 @@ class SUPERV:
       if ier:return ier
 
       #ier=self.testeCata();if ier:return ier
-
-      return self.Execute(params)
+      ier = self.Execute(params)
+      
+      if self.totalview == 1:
+         supprimerRepertoire(os.getcwd())
+      
+      return ier
 
 
 def main():

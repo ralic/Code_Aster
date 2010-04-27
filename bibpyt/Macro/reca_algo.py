@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_algo Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -33,20 +33,26 @@ try:
 except: pass
 
 
+# ------------------------------------------------------------------------------
 def calcul_gradient(A,erreur):
    grad = Numeric.dot(Numeric.transpose(A),erreur)
    return grad
 
+# ------------------------------------------------------------------------------
+def calcul_norme2(V):
+   a = Numeric.array(V)
+   return Numeric.dot(a,Numeric.transpose(a))**0.5
+
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-
 class Dimension:
    """
       Classe gérant l'adimensionnement et le dimensionnement
    """
 
-   def __init__(self,val_initiales,para):
+   # ------------------------------------------------------------------------------
+   def __init__(self, val_initiales):
       """
          Le constructeur calcul la matrice D et son inverse
       """
@@ -58,33 +64,29 @@ class Dimension:
       self.inv_D=LinearAlgebra.inverse(self.D)
    
 
-# ------------------------------------------------------------------------------
-
-   def adim_sensi(self,A):
+   # ------------------------------------------------------------------------------
+   def adim_sensi(self, A):
       for i in range(A.shape[0]):
          for j in range(A.shape[1]):
             A[i,j] = A[i,j] * self.val_init[j]
       return A
 
 
-# ------------------------------------------------------------------------------
-
-   def redim_sensi(self,A):
+   # ------------------------------------------------------------------------------
+   def redim_sensi(self, A):
       for i in range(A.shape[0]):
          for j in range(A.shape[1]):
             A[i,j] = A[i,j] / self.val_init[j]
       return A
 
 
-# ------------------------------------------------------------------------------
-
-   def adim(self,tab):
+   # ------------------------------------------------------------------------------
+   def adim(self, tab):
       tab_adim = Numeric.dot(self.inv_D,copy.copy(tab))
       return tab_adim
 
 
-# ------------------------------------------------------------------------------
-
+   # ------------------------------------------------------------------------------
    def redim(self,tab_adim):
       tab = Numeric.dot(self.D,tab_adim)
       return tab
@@ -98,7 +100,6 @@ class Dimension:
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-
 def cond(matrix):
     e1=LinearAlgebra.eigenvalues(matrix)
     e=map(abs,e1)
@@ -112,11 +113,8 @@ def cond(matrix):
 
 
 
-
-
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-
 def norm(matrix):
     e=LinearAlgebra.Heigenvalues(matrix)
     size=len(e)
@@ -127,7 +125,6 @@ def norm(matrix):
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-
 def lambda_init(matrix):
      """
         Routine qui calcule la valeur initial du parametre de regularisation l.
@@ -145,8 +142,7 @@ def lambda_init(matrix):
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-
-def Levenberg_bornes(val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out):  
+def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_out):  
    """
       On resoud le système par contraintes actives:
          Q.dval + s + d =0
@@ -228,8 +224,7 @@ def Levenberg_bornes(val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out):
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-
-def actualise_lambda(l,val,new_val,A,erreur,new_J,old_J):
+def actualise_lambda(l, val, new_val, A, erreur, new_J, old_J):
    dim = len(val)
    id = Numeric.identity(dim)
    # Matrice du système
@@ -255,8 +250,7 @@ def actualise_lambda(l,val,new_val,A,erreur,new_J,old_J):
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-
-def test_convergence(gradient_init,erreur,A,s):
+def test_convergence(gradient_init, erreur, A, s):
    """
       Renvoie le residu
    """
@@ -272,8 +266,7 @@ def test_convergence(gradient_init,erreur,A,s):
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-
-def calcul_etat_final(para,A,iter,max_iter,prec,residu,Messg):
+def calcul_etat_final(para, A, iter, max_iter, prec, residu, Messg):
    """
       Fonction appelée quand la convergence est atteinte
       on calcule le Hessien et les valeurs propres et vecteurs 
@@ -282,13 +275,13 @@ def calcul_etat_final(para,A,iter,max_iter,prec,residu,Messg):
       At*A = hessien
    """
 
-   if ((iter < max_iter) or (residu < prec)):
+#   if ((iter < max_iter) or (residu < prec)):
+   if 1==1:
       Hessien = Numeric.matrixmultiply(Numeric.transpose(A),A)
 
       # Desactive temporairement les FPE qui pourraient etre generees (a tord!) par blas
       aster.matfpe(-1)
       valeurs_propres,vecteurs_propres = LinearAlgebra.eigenvectors(Hessien) 
-#      valeurs_propres,vecteurs_propres = MLab.eig(Hessien) 
       sensible=Numeric.nonzero(Numeric.greater(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-1))
       insensible=Numeric.nonzero(Numeric.less(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-2))
       # Reactive les FPE

@@ -1,4 +1,4 @@
-# MODIF  DATE 14/12/2009   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # TITRE RECALAGE DES PARAMETRES D'UN MODELE DYNAMIQUE PAR ANALYSE MODALE
 # sdls121b.para = tps_job 600 mem_job 300Mo mem_aster 64 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,13 +20,41 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SDLS121B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
+DEBUT(CODE=_F(NOM='SDLS121B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      PAR_LOT='NON');
+
+# On ajoute les commandes correspondant au modeles experimental
+INCLUDE(UNITE=2)
+
+#nombre de frequences utiles
+NF=8
+
+# le tableau des frequences experimentales
+
+REPEXP1=RECU_TABLE(CO=MODMES,
+                    NOM_PARA='FREQ');
+
+# le tableau des MAC experimentaux - en fait le MAC ideal qui est 1.0
+
+liste_mac=[]
+for i in range(NF):
+    liste_mac.append(1.0)
+
+REPEXP2=CREA_TABLE(LISTE=(_F(PARA='NUME_ORDRE',LISTE_I=range(1,NF+1),),
+                          _F(PARA='MAC_EXP',LISTE_R=liste_mac,),
+                       ),);
+
+# on recupere les reponses experimentales en format Numeric.array
+
+data1 = REPEXP1.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
+data2 = REPEXP2.EXTR_TABLE().Array('NUME_ORDRE','MAC_EXP')
+
 
 parametres =[['EP__',0.25,0.1,1.0],['MP__',3.0E4,2.E4,7.E4]]
 
 calcul = [['REPONSE1','NUME_ORDRE','FREQ'],['REPONSE2','NUME_ORDRE','MAC']]
 
-experience= [['REPEXP1','NUME_ORDRE','FREQ'],['REPEXP2','NUME_ORDRE','MAC_EXP']]
+experience= [Numeric.array(data1),Numeric.array(data2)]
 
 poids =Numeric.array([3.0, 1.0])
 
@@ -39,9 +67,11 @@ RESU=MACR_RECAL(
          RESU_CALC        =calcul,
          POIDS            =poids,
          METHODE          ='LEVENBERG',
-         ITER_FONC_MAXI=500,
 
-         SUIVI_ESCLAVE='NON',
+         CALCUL_ESCLAVE=_F(
+             LANCEMENT   = 'DISTRIBUTION',
+             MODE        = 'BATCH',
+                   ),
          DYNAMIQUE =_F(
               MODE_EXP='MODMES',
               MODE_CALC='MODNUM',

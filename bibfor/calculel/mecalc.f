@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -293,6 +293,11 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
           ELSE IF (OPTIO2.EQ.'SIEF_ELNO_ELGA') THEN
             LPAIN(1) = 'PDEPLPR'
             LPAOUT(1) = 'PSIEFNOR'
+          ELSE IF (OPTIO2.EQ.'FLHN_ELGA') THEN
+            LPAIN(2) = 'PCONTR'
+            LCHIN(2) = CHSIG
+            NBIN = 2
+            LPAOUT(1) = 'PFLHN'
           ELSE IF (OPTIO2.EQ.'DEGE_ELNO_DEPL') THEN
             LPAOUT(1) = 'PDEFOGR'
           ELSE IF (OPTIO2.EQ.'EPSI_ELNO_DEPL' .OR.

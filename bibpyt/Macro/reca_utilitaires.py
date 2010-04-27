@@ -1,4 +1,4 @@
-#@ MODIF reca_utilitaires Macro  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_utilitaires Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-import Numeric, LinearAlgebra, copy, os, string, types, sys, glob
+import Numeric, LinearAlgebra, copy, os, string, types, sys, glob, random
 from Numeric import take
 
 try:    import Gnuplot
@@ -93,10 +93,16 @@ def detr_concepts(self):
 
 
 # ------------------------------------------------------------------------------
-
-
-
-
+def Random_Tmp_Name(prefix=None):
+   crit = False
+   while crit == False:
+      nombre = int(random.random()*10000000)
+      if prefix: fic = prefix + str(nombre)
+      else:
+         if os.environ.has_key('TEMP'): fic = os.path.join( os.environ['TEMP'], 'file%s' % str(nombre) )
+         else:                          fic = '/tmp/file' + str(nombre)
+      if not os.path.isfile(fic): crit = True
+   return fic
 
 
 
@@ -107,7 +113,6 @@ def detr_concepts(self):
 #_____________________________________________
 
 
-#def temps_CPU(self,restant_old,temps_iter_old):
 def temps_CPU(restant_old,temps_iter_old):
    """
       Fonction controlant le temps CPU restant
@@ -134,7 +139,7 @@ def temps_CPU(restant_old,temps_iter_old):
             temps_iter=(temps_iter_old + (restant_old-restant))/2.
          if ((temps_iter>0.96*restant)or(restant<0.)):
             err=1
-            msg = MessageLog.GetText('F', 'RECAL0_40')
+            msg = MessageLog.GetText('F', 'RECAL0_53')
             raise CPU_Exception, msg
 
    return restant,temps_iter,err

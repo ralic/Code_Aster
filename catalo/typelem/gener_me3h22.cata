@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/06/2009   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -39,10 +39,14 @@ MODE_LOCAL__
     CFLUXF   = FTHM_F   ELEM__         (PFLU1    )
     EFLUXE   = FTHM_R   ELGA__ RIGI    (PFLU1    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    NSIEF_R  = SIEF_R   ELNO__ DIFF__  
+                                 EN1   (FH11X        FH11Y      FH11Z       )
+                                 EN2   (      )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )    
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
+    EFLHN    = FLHN_R   ELGA__ RIGI    (FH11     )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -62,6 +66,8 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG                              
+    FLHN_ELGA           493   IN__   NGEOMER  PGEOMER  NSIEF_R  PCONTR
+                              OUT__  EFLHN    PFLHN                              
     RIGI_MECA      -1    IN__   XXXXXX   XXXXXX
                          OUT__  XXXXXX   XXXXXX
 

@@ -1,4 +1,4 @@
-#@ MODIF optimize Utilitai  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF optimize Utilitai  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

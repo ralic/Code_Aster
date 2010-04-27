@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,340 +19,1560 @@
 # ======================================================================
 
 
-
-
-import string, copy, Numeric, types
-import Cata
-from Cata.cata import INCLUDE, DETRUIRE
-
-
-#_____________________________________________
+#___________________________________________________________________________
 #
-# DIVERS UTILITAIRES POUR LA MACRO
-#_____________________________________________
+#           MODULE DE CALCUL DISTRIBUE POUR MACR_RECAL
+# 
+#  Utilisable en mode EXTERNE, voir les flags avec "python recal.py -h"
+#___________________________________________________________________________
 
 
-# Transforme les données entrées par l'utilisateur en tableau Numeric
-def transforme_list_Num(parametres,res_exp):
-   dim_para = len(parametres)  #donne le nb de parametres
-   val_para = Numeric.zeros(dim_para,Numeric.Float)
-   borne_inf = Numeric.zeros(dim_para,Numeric.Float)
-   borne_sup = Numeric.zeros(dim_para,Numeric.Float)
-   para = []
-   for i in range(dim_para):
-      para.append(parametres[i][0])
-      val_para[i] = parametres[i][1]
-      borne_inf[i] = parametres[i][2]
-      borne_sup[i] = parametres[i][3]
-   return para,val_para,borne_inf,borne_sup
+import os, sys, shutil, tempfile, glob, math, copy, re, platform
+from math import log10
+import Numeric
 
+
+# Importation de commandes Aster
+try:
+   import aster
+   import Macro
+   from Accas import _F
+   from Cata import cata
+   from Cata.cata import *
+except ImportError:
+   pass
+
+include_pattern = "# -->INCLUDE<--"
+debug = False
+
+# -------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
+def get_absolute_path(path):
+   """Retourne le chemin absolu en suivant les liens éventuels.
+   """
+   if os.path.islink(path):
+      path = os.path.realpath(path)
+   res = os.path.normpath(os.path.abspath(path))
+   return res
+
+# -------------------------------------------------------------------------------
+#if os.environ.has_key('bibpytdir'): sys.path.append( os.environ['bibpytdir'] )
+
+# recupere "bibpyt" à partir de "bibpyt/Macro/recal.py"
+sys.path.append(get_absolute_path(os.path.join(sys.argv[0], '..', '..')))
+
+try:
+   from Utilitai.Utmess import UTMESS
+except:
+   def UTMESS(code='I', txt='',valk='', vali='', valr=''):
+       print txt, valk, vali, valr
+       if code=='F': sys.exit()
+
+
+# # -------------------------------------------------------------------------------
+# def find_parameter(content, param):
+#    """
+#    Return the lowest index in content where param is found and
+#    the index of the end of the command.
+#    """
+#    pos, endpos = -1, -1
+#    re_start = re.compile('^ *%s *\=' % re.escape(param), re.M)
+#    mat_start = re_start.search(content)
+#    if mat_start is not None:
+#       pos = mat_start.start()
+#       endpos = search_enclosed(content, pos)
+#    return pos, endpos
+
+
+
+# -------------------------------------------------------------------------------
+def find_parameter(content, param):
+    """
+    Supprime les parametres du fichier de commande
+    """
+    re_start = re.compile('^ *%s *\=' % re.escape(param), re.M)
+    l=[]
+    for line in content.split('\n'):
+       mat_start = re_start.search(line)
+       if mat_start is None: l.append(line)
+    return '\n'.join(l)
+
+
+# -------------------------------------------------------------------------------
+def Affiche_Param(para, val):
+    """Affiche les parametres
+    """
+    t = []
+    for p, v in zip(para, val):
+        t.append( "     %s : %s" % ( p.ljust(9), v) )
+    return '\n'.join(t)
+
+
+# -------------------------------------------------------------------------------
+def make_include_files(UNITE_INCLUDE, calcul, parametres):
+   """  Module permettant de generer les fichiers a inclure (mode INCLUSION)
+   """
+
+#    # Importation de commandes Aster
+#    try:
+#       import aster
+#       import Macro
+#       from Accas import _F
+#       from Cata.cata import *
+#    except ImportError:
+#       raise "Le mode INCLUSION doit etre lance depuis Aster"
+
+   try:
+       ASTER_ROOT = os.path.join(aster.repout, '..')
+       sys.path.append(os.path.join(ASTER_ROOT, 'ASTK', 'ASTK_SERV', 'lib'))
+       sys.path.append(os.path.join(ASTER_ROOT, 'lib', 'python%s.%s' % (sys.version_info[0], sys.version_info[1] ) , 'site-packages'))
+   except: pass
+   try:
+       from asrun.utils import find_command, search_enclosed
+   except Exception, e:
+       print e
+       UTMESS('F','RECAL0_99')
+
+
+   # ----------------------------------------------------------------------------
+   # Preparation des fichiers
+   # ----------------------------------------------------------------------------
+   liste_reponses = []
+   for reponse in [ x[0] for x in calcul ]:
+      if not reponse in liste_reponses: liste_reponses.append(reponse)
+
+   try:
+       old = "fort.%s"     % UNITE_INCLUDE
+       pre = "fort.%s.pre" % UNITE_INCLUDE
+       new = "fort.%s.new" % UNITE_INCLUDE
+
+       # Lecture du fichier
+       f=open(old, 'r')
+       newtxt = f.read()
+       f.close()
+
+       # On retire la commande DEBUT
+       pos, endpos = find_command(newtxt, "DEBUT")
+       if endpos!=-1: newtxt = newtxt[endpos+1:]
+       if newtxt[0]==';': newtxt = newtxt[1:]  # Bug dans find_command si la commande se termine par un ";"
+
+       # On retire les parametres
+       list_params = [x[0] for x in parametres]
+       for param in list_params:
+           newtxt = find_parameter(newtxt, param)
+
+       # Isole la partie a inclure si elle est specifiee
+       n = newtxt.find(include_pattern)
+       pretxt = None
+       if n!=-1:
+           pretxt = newtxt[:n]
+           pretxt = "# -*- coding: iso-8859-1 -*-\n" + pretxt
+           # Ecriture du nouveau fichier
+           fw=open(pre, 'w')
+           fw.write(pretxt)
+           fw.close()
+           newtxt = newtxt[n+len(include_pattern):]
+
+       # Retire la commande FIN
+       pos, endpos = find_command(newtxt, "FIN")
+       if pos!=-1: newtxt = newtxt[:pos]
+
+       # Ajoute un global pour ramener les courbes dans l'espace Aster
+       newtxt = "global %s\n" % ','.join(liste_reponses) + newtxt
+
+       # Ajoute un encodage pour eviter les erreurs dues aux accents (ssna110a par exemple)
+       newtxt = "# -*- coding: iso-8859-1 -*-\n" + newtxt
+
+       # Ecriture du nouveau fichier
+       fw=open(new, 'w')
+       fw.write(newtxt)
+       fw.close()
+   except Exception, e:
+       raise e
+
+   if debug:
+       print 5*"\n" + 60*"+"
+       print newtxt
+       print 60*"+" + 5*"\n"
+
+   return
+
+
+# -------------------------------------------------------------------------------
 def mes_concepts(list_concepts=[],base=None):
-  # Fonction qui liste les concepts créés
+   """ Fonction qui liste les concepts créés """
    for e in base.etapes:
+      #print "AA2=", e.nom
       if e.nom in ('INCLUDE','MACR_RECAL',) :
-        list_concepts=list(mes_concepts(list_concepts=list_concepts,base=e))
+         list_concepts=list(mes_concepts(list_concepts=list_concepts,base=e))
       elif (e.sd != None) and (e.parent.nom=='INCLUDE') :
-        nom_concept=e.sd.get_name()
-        if not(nom_concept in list_concepts):
-          list_concepts.append( nom_concept )
+         nom_concept=e.sd.get_name()
+         if not(nom_concept in list_concepts):
+            list_concepts.append( nom_concept )
    return tuple(list_concepts)
 
 
+# -------------------------------------------------------------------------------
 def detr_concepts(self):
      liste_concepts=mes_concepts(base=self.parent)
+     if debug: print "liste_concepts=", liste_concepts
      for e in liste_concepts:
         nom = string.strip(e)
-        DETRUIRE( OBJET =self.g_context['_F'](CHAINE = nom),INFO=1)
+        DETRUIRE( OBJET =self.g_context['_F'](CHAINE = nom), INFO=2)
         if self.jdc.g_context.has_key(nom) : del self.jdc.g_context[nom]
      del(liste_concepts)
 
 
-def calcul_F(self,UL,para,val,reponses):
-      fic = open('fort.'+str(UL),'r')
-      #On stocke le contenu de fort.UL dans la variable fichier qui est un string 
-      fichier=fic.read()
-      #On stocke le contenu initial de fort.UL dans la variable fichiersauv 
-      fichiersauv=copy.copy(fichier)
-      fic.close()
+# # -------------------------------------------------------------------------------
+# def exec_file(filename):
+#    """ Lance les commandes qui sont dans le fichier filename
+#    """
+#    # Importation de commandes Aster
+#    try:
+#       import aster
+#       import Macro
+#       from Accas import _F
+#       from Cata.cata import *
+#    except ImportError:
+#       raise "Le mode INCLUSION doit etre lance depuis Aster"
+# 
+#    try:
+#      if 1:
+#       execfile(filename)
+# 
+#      if 0:
+#       _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
+#       unite=_UL['UNITE_LIBRE',1]
+#       DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
+#       shutil.copyfile(filename, "fort.%s" % unite)
+#       INCLUDE(UNITE=unite)
+# 
+#      if 0:
+#       txt=open(filename).read()
+#       exec(txt)
+# 
+# 
+#    except Exception, e:
+#       print "\n\n" + 100*"-" + "\nError while executing the commands slave :\n" + str(e) + "\n\n" + 100*"-"
+#       os.system('cp -ax %s ./REPE_OUT/' % filename)
+#       print "Output file follow:\n" + open(filename).read() + "\n" + 80*"-" 
+#       raise "Stop on previous error"
+#    return
+# 
+# 
+# #     _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
+# #     unite=_UL['UNITE_LIBRE',1]
+# #     DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
+# #     return(unite)
 
-      #Fichier_Resu est une liste ou l'on va stocker le fichier modifié
-      #idée générale :on délimite des 'blocs' dans fichier
-      #on modifie ou non ces blocs suivant les besoins 
-      #on ajoute ces blocs dans la liste Fichier_Resu
-      Fichier_Resu=[]                      
-      
-      try: 
-         #cherche l'indice de DEBUT()
-         index_deb=string.index(fichier,'DEBUT(')
-         while( fichier[index_deb]!='\n'):
-            index_deb=index_deb+1
-         #on restreind fichier en enlevant 'DEBUT();'
-         fichier = fichier[index_deb+1:]   
-      except :
-         #on va dans l'except si on a modifié le fichier au moins une fois
-         pass 
-         
+
+# -------------------------------------------------------------------------------
+def get_tables(tables_calc, tmp_repe_table, prof):
+   """ Recupere les resultats Aster (Table Aster -> Numeric Python)
+   """
+   assert (tables_calc is not None)
+   assert (tmp_repe_table is not None)
+
+   # Import du module lire_table
+   if os.environ.has_key('ASTER_ROOT'):
+      version = prof['version'][0]
+      bibpyt = os.path.join(os.environ['ASTER_ROOT'], version, 'bibpyt')
+      sys.path.append(bibpyt)
+      for mdl in glob.glob(os.path.join(bibpyt, '*')):
+         sys.path.append(os.path.join(os.environ['ASTER_ROOT'], version, 'bibpyt', mdl))
+   try:
+      from lire_table_ops import lecture_table
+   except:
+      UTMESS('F','RECAL0_23')
+
+   reponses = tables_calc
+   Lrep=[]
+   for i in range(len(reponses)):
+      _fic_table = tmp_repe_table + os.sep + "fort."+str(int(100+i))
+
       try:
-         #cherche l'indice de FIN()
-         index_fin = string.index(fichier,'FIN(')
-         #on restreind fichier en enlevant 'FIN();'
-         fichier = fichier[:index_fin]   
-      except : pass
-      #--------------------------------------------------------------------------------
-      #on cherche à délimiter le bloc des parametres dans le fichier
-      #Tout d'abord on cherche les indices  d'apparition des paras dans le fichier 
-      #en effet l'utilisateur n'est pas obligé de rentrer les paras dans optimise
-      #avec le meme ordre de son fichier de commande
-      index_para = Numeric.zeros(len(para))
-      for i in range(len(para)):
-         index_para[i] = string.index(fichier,para[i])
-      #On range les indices par ordre croissant afin de déterminer
-      #les indice_max et indice_min
-      index_para = Numeric.sort(index_para)
-      index_first_para = index_para[0]
-      index_last_para = index_para[len(index_para)-1]
-      
-      
-      #on va délimiter les blocs intermédiaires entre chaque para "utiles" à l'optimsation
-      bloc_inter ='\n'
-      for i in range(len(para)-1):
-         j = index_para[i]
-         k = index_para[i+1]
-         while(fichier[j]!= '\n'):
-            j=j+1
-         bloc_inter=bloc_inter + fichier[j:k] + '\n'
-         
-      #on veut se placer sur le premier retour chariot que l'on trouve sur la ligne du dernier para
-      i = index_last_para 
-      while(fichier[i] != '\n'):
-         i = i + 1
-      index_last_para  = i
-      #on délimite les blocs suivants:
-      pre_bloc = fichier[:index_first_para]       #fichier avant premier parametre
-      post_bloc = fichier[ index_last_para+ 1:]    #fichier après dernier parametre
-      
-      #on ajoute dans L tous ce qui est avant le premier paramètre 
-      Fichier_Resu.append(pre_bloc)
-      Fichier_Resu.append('\n')
-      #On ajoute la nouvelle valeur des parametres
-      dim_para=len(para)
-      for j in range(dim_para):
-         Fichier_Resu.append(para[j]+'='+str(val[j]) + ';' + '\n')
-      #On ajoute à Fichier_Resu tous ce qui est entre les parametres
-      Fichier_Resu.append(bloc_inter)
-      
-      Fichier_Resu.append(post_bloc)
-      #--------------------------------------------------------------------------------
-      #on va ajouter la fonction d'extraction du numarray de la table par la méthode Array 
-      #et on stocke les réponses calculées dans la liste Lrep
-      #qui va etre retournée par la fonction calcul_F
-      self.g_context['Lrep'] = []
-      Fichier_Resu.append('Lrep=[]'+'\n')
-      for i in range(len(reponses)):
-         Fichier_Resu.append('t'+str(reponses[i][0])+'='+str(reponses[i][0])+'.EXTR_TABLE()'+'\n')
-         Fichier_Resu.append('_F_ = '+'t'+str(reponses[i][0])+'.Array('+"'"+str(reponses[i][1])+"'"+','+"'"+str(reponses[i][2])+"'"+')'+'\n')
-         Fichier_Resu.append('Lrep.append(_F_)'+'\n')
-      
-      #ouverture du fichier fort.3 et mise a jour de celui ci
-      x=open('fort.'+str(UL),'w')
-      x.writelines('from Accas import _F \nfrom Cata.cata import * \n')
-      x.writelines(Fichier_Resu)
-      x.close()
-      del(Fichier_Resu)
-      del(pre_bloc)
-      del(post_bloc)
-      del(fichier)
-      
-      INCLUDE(UNITE = UL)
-      detr_concepts(self)
-      # on remet le fichier dans son etat initial
-      x=open('fort.'+str(UL),'w')
-      x.writelines(fichiersauv)
-      x.close()
-      return self.g_context['Lrep']
+         f=open(_fic_table,'r')
+         texte=f.read()
+         f.close()
+      except Exception, err:
+         ier=1
+         UTMESS('F','RECAL0_24',valk=str(err))
 
-
-#_____________________________________________
-#
-# CONTROLE DES ENTREES UTILISATEUR
-#_____________________________________________
-
-def erreur_de_type(code_erreur,X):
-   #code_erreur ==0 --> X est une liste
-   #code erreur ==1 --> X est un char
-   #code erreur ==2 --> X est un float
-   #test est un boolean (test = 0 défaut et 1 si un test if est verifier
-   txt=""
-   if(code_erreur == 0 ):
-      if type(X) is not types.ListType:
-         txt="\nCette entrée: " +str(X)+" n'est pas une liste valide"
-   if(code_erreur == 1 ):
-      if type(X) is not types.StringType:
-         txt="\nCette entrée: " +str(X)+" n'est pas une chaine de caractère valide ; Veuillez la ressaisir en lui appliquant le type char de python"
-   if(code_erreur == 2 ):
-      if type(X) is not types.FloatType:
-         txt="\nCette entrée:  " +str(X)+" n'est pas une valeur float valide ; Veuillez la ressaisir en lui appliquant le type float de python"
-   return txt
-   
-   
-def erreur_dimension(PARAMETRES,REPONSES):
-#On verifie que la dimension de chaque sous_liste de parametre est 4
-#et que la dimension de chaque sous_liste de REPONSES est 3
-   txt=""
-   for i in range(len(PARAMETRES)):
-      if (len(PARAMETRES[i]) != 4):
-         txt=txt + "\nLa sous-liste de la variable paramètre numéro " + str(i+1)+" n'est pas de longueur 4"
-   for i in range(len(REPONSES)):
-      if (len(REPONSES[i]) != 3):
-         txt=txt + "\nLa sous-liste de la variable réponse numéro " + str(i+1)+" n'est pas de longueur 3"
-   return txt
-
-
-def compare__dim_rep__dim_RESU_EXP(REPONSES,RESU_EXP):
-   # X et Y sont deux arguments qui doivent avoir la meme dimension
-   # pour éviter l'arret du programme
-   txt=""
-   if( len(REPONSES) != len(RESU_EXP)):
-      txt="\nVous avez entré " +str(len(REPONSES))+ " réponses et "+str(len(RESU_EXP))+ " expériences ; On doit avoir autant de réponses que de résultats expérimentaux"
-   return txt
-
-def verif_RESU_EXP(RESU_EXP):
-   # RESU_EXP doit etre une liste de tableaux Numeric de taille Nx2
-   # pour éviter l'arret du programme
-   txt=""
-   for index,resu in enumerate(RESU_EXP):
-      if (isinstance(resu,Numeric.ArrayType)):
-         if (len(Numeric.shape(resu)) != 2):                                                                                                                                                                               
-            txt="\nLa courbe experimentale no " +str(index+1)+ " n'est pas un tableau de N lignes et 2 colonnes."                                             
-         else:
-            if (Numeric.shape(resu)[1] != 2):                                                                                                                                                                               
-               txt="\nLa courbe experimentale no " +str(index+1)+ " n'est pas un tableau de N lignes et 2 colonnes."                                             
+      try:
+         table_lue = lecture_table(texte, 1, ' ')
+         list_para = table_lue.para
+         tab_lue   = table_lue.values()
+      except Exception, err:
+         ier=1
       else:
-         txt="\nLa courbe experimentale no " +str(index+1)+ " n'est pas un tableau Numeric."                                             
-   return txt
+         ier=0
 
-def compare__dim_poids__dim_RESU_EXP(POIDS,RESU_EXP):
-   # POIDS et Y sont deux arguments qui doivent avoir la meme dimension
-   # pour éviter l'arret du programme
-   txt=""
-   if( len(POIDS) != len(RESU_EXP)):
-      txt="\nVous avez entré " +str(len(POIDS))+ " poids et "+str(len(RESU_EXP))+ " expériences ; On doit avoir autant de poids que de résultats expérimentaux"
-   return txt
+      if ier!=0 : UTMESS('F','RECAL0_24',valk=str(err))
+
+      F = table2numpy(tab_lue, list_para, reponses, i)
+      Lrep.append(F)
 
 
-def verif_fichier(UL,PARAMETRES,REPONSES):
-#On verifie les occurences des noms des PARAMETRES et REPONSES 
-#dans le fichier de commande ASTER
-   txt=""
-   fichier = open('fort.'+str(UL),'r')
-   fic=fichier.read()
-   for i in range(len(PARAMETRES)):
-      if((string.find(fic,PARAMETRES[i][0])==-1) or ((string.find(fic,PARAMETRES[i][0]+'=')==-1) and (string.find(fic,PARAMETRES[i][0]+' ')==-1))):
-         txt=txt + "\nLe paramètre "+PARAMETRES[i][0]+" que vous avez entré pour la phase d'optimisation n'a pas été trouvé dans votre fichier de commandes ASTER"
-   for i in range(len(REPONSES)):
-      if((string.find(fic,REPONSES[i][0])==-1) or ((string.find(fic,REPONSES[i][0]+'=')==-1) and (string.find(fic,REPONSES[i][0]+' ')==-1))):
-         txt=txt + "\nLa réponse  "+REPONSES[i][0]+" que vous avez entrée pour la phase d'optimisation n'a pas été trouvée dans votre fichier de commandes ASTER"
-   return txt
+   return Lrep
 
 
-def verif_valeurs_des_PARAMETRES(PARAMETRES):
-#On verifie que pour chaque PARAMETRES de l'optimisation
-# les valeurs entrées par l'utilisateur sont telles que :
-#              val_inf<val_sup
-#              val_init appartient à [borne_inf, borne_sup] 
-#              val_init!=0         
-#              borne_sup!=0         
-#              borne_inf!=0         
-   txt=""
-   #verification des bornes
-   for i in range(len(PARAMETRES)):
-      if( PARAMETRES[i][2] >PARAMETRES[i][3]):
-         txt=txt + "\nLa borne inférieure "+str(PARAMETRES[i][2])+" de  "+PARAMETRES[i][0]+ "est plus grande que sa borne supérieure"+str(PARAMETRES[i][3])
-   #verification de l'encadrement de val_init 
-   for i in range(len(PARAMETRES)):
-      if( (PARAMETRES[i][1] < PARAMETRES[i][2]) or (PARAMETRES[i][1] > PARAMETRES[i][3])):
-         txt=txt + "\nLa valeur initiale "+str(PARAMETRES[i][1])+" de "+PARAMETRES[i][0]+ " n'est pas dans l'intervalle [borne_inf,born_inf]=["+str(PARAMETRES[i][2])+" , "+str(PARAMETRES[i][3])+"]"
-   #verification que val_init !=0
-   for  i in range(len(PARAMETRES)):
-      if (PARAMETRES[i][1] == 0. ):
-         txt=txt + "\nProblème de valeurs initiales pour le paramètre "+PARAMETRES[i][0]+" : ne pas donner de valeur initiale nulle mais un ordre de grandeur."
-   #verification que borne_sup !=0
-   for  i in range(len(PARAMETRES)):
-      if (PARAMETRES[i][3] == 0. ):
-         txt=txt + "\nProblème de borne supérieure pour le paramètre "+PARAMETRES[i][0]+" : ne pas donner de valeur strictement nulle."
-   #verification que borne_inf !=0
-   for  i in range(len(PARAMETRES)):
-      if (PARAMETRES[i][2] == 0. ):
-         txt=txt + "\nProblème de borne inférieure pour le paramètre "+PARAMETRES[i][0]+" : ne pas donner de valeur strictement nulle."
-   return txt
+# --------------------------------------------------------------------------------------------------
+def table2numpy(tab_lue, list_para, reponses, i):
+   """  Extraction des resultats depuis la table Aster
+   """
+   try:
+       nb_val = len(tab_lue[ list_para[0] ])
+       F = Numeric.zeros((nb_val,2), Numeric.Float)
+       for k in range(nb_val):
+         F[k][0] = tab_lue[ str(reponses[i][1]) ][k]
+         F[k][1] = tab_lue[ str(reponses[i][2]) ][k]
+   except Exception, err:
+       UTMESS('F','RECAL0_24',valk=str(err))
+   return F
 
 
-def verif_UNITE(GRAPHIQUE,UNITE_RESU):
-   # On vérifie que les unités de résultat et 
-   # de graphique sont différentes
-   txt=""
-   GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
-   if (GRAPHE_UL_OUT==UNITE_RESU):
-       txt=txt + "\nLes unités logiques des fichiers de résultats graphiques et de résultats d'optimisation sont les memes."
-   return txt
+# --------------------------------------------------------------------------------------------------
+def Ecriture_Fonctionnelle(output_file, type_fonctionnelle, fonctionnelle):
+
+   try:    os.remove(output_file)
+   except: pass
+
+   f=open(output_file, 'w')
+   if type_fonctionnelle == 'vector':
+      try:    fonctionnelle = fonctionnelle.tolist()
+      except: pass
+      fonctionnelle = str(fonctionnelle).replace('[','').replace(']','').replace('\n', ' ')
+   f.write( str(fonctionnelle) )
+   f.close()
+
+
+# --------------------------------------------------------------------------------------------------
+def Ecriture_Derivees(output_file, derivees):
+
+   try:    os.remove(output_file)
+   except: pass
+
+   # on cherche a imprimer la gradient calcule a partir de Fcalc
+   if type(derivees) in [list, tuple]:
+       t = []
+       for l in derivees:
+          #print l
+          l = str(l).replace('[', '').replace(']', '')
+          t.append( l )
+       txt = '\n'.join(t)
+
+   # On cherche a imprimer la matrice des sensibilite (A ou A_nodim)
+   elif type(derivees) == Numeric.arraytype:
+       t = []
+       a = derivees
+       for c in range(len(a[0,:])):
+           l = a[:,c].tolist()
+           l = str(l).replace('[', '').replace(']', '')
+           t.append( l )
+       txt = '\n'.join(t)
+
+   else: raise "Wrong type for gradient !"
+
+   # Ecriture
+   f=open(output_file, 'w')
+   f.write(txt)
+   f.close()
 
 
 
-def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU):
-   #Cette methode va utiliser les methodes de cette classe declarée ci_dessus
-   #test  est un boolean: test=0 -> pas d'erreur
-   #                      test=1 -> erreur détectée
+# --------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
+class CALCULS_ASTER:
+   """
+      Classe gérant les calculs Aster (distribues ou include)
+   """
 
-   texte=""
-   #On vérifie d'abord si PARAMETRES, REPONSES, RESU_EXP sont bien des listes au sens python
-   #test de PARAMETRES
-   texte = texte + erreur_de_type(0,PARAMETRES)
-   #test de REPONSES
-   texte = texte + erreur_de_type(0,REPONSES)
-   #test de RESU_EXP
-   texte = texte + erreur_de_type(0,RESU_EXP) 
-   
-   #On vérifie si chaque sous liste de PARAMETRES, REPONSES,  possède le type adéquat
-   #test des sous_listes de PARAMETRES
-   for i in range(len(PARAMETRES)):
-      texte = texte +  erreur_de_type(0,PARAMETRES[i]) 
-   #test des sous_listes de REPONSES
-   for i in range(len(REPONSES)):
-      texte = texte + erreur_de_type(0,REPONSES[i])
+   # ---------------------------------------------------------------------------
+   def __init__(self,
+
+       # MACR_RECAL inputs are optional here (if passed to self.run methods)
+       parametres          = None,
+       calcul              = None,
+       experience          = None,
+       LANCEMENT        = 'DISTRIBUTION',
+       jdc                 = None,
+               ):
+
+       self.parametres         = parametres
+       self.calcul             = calcul
+       self.experience         = experience
+       #self.eval_esclave       = mode_esclave
+       self.LANCEMENT       = LANCEMENT
+       self.UNITE_ESCL         = None
+       self.UNITE_INCLUDE      = None
+       self.ASTER_ROOT         = None
+
+       self.jdc                = jdc
+
+       self.list_params        = [x[0] for x in parametres]
+       self.list_params.sort()
+
+       # Valable uniquement pour le mode INCLUDE
+       self.pre    = None
+       self.pretxt = None
+       self.new    = None
+       self.newtxt = None
+
+       # Mode dynamique desactive par defaut
+       self.SetDynamiqueMode(None, None)
+
+
+   # ---------------------------------------------------------------------------------------------------------
+   def SetDynamiqueMode(self, DYNAMIQUE, graph_mac):
+       self.DYNAMIQUE = DYNAMIQUE
+       self.graph_mac = graph_mac
+
+
+   # ---------------------------------------------------------------------------------------------------------
+   # ---------------------------------------------------------------------------------------------------------
+   def run(self,
+
+                # Current estimation
+                X0,
+                dX             = None,
+
+                # Code_Aster installation
+                ASTER_ROOT     = None,
+                as_run         = None,
+
+                # General
+                resudir        = None,
+                clean          = True,
+                info           = None,
+                NMAX_SIMULT   = None,
+
+                # Study
+                export         = None,
+
+                # MACR_RECAL inputs
+                parametres     = None,
+                calcul         = None,
+                experience     = None,
+        ):
+
+        # Current estimation
+        self.X0             = X0
+        self.dX             = dX
+
+        # Code_Aster installation
+        self.ASTER_ROOT     = ASTER_ROOT
+        self.as_run         = as_run
+
+        # General
+        self.resudir        = resudir
+        self.clean          = clean
+        self.info           = info
+        if not NMAX_SIMULT: NMAX_SIMULT = 0
+        self.NMAX_SIMULT   = NMAX_SIMULT
+
+        # Study
+        self.export         = export
+
+        # MACR_RECAL inputs
+        if parametres:   self.parametres     = parametres
+        if calcul:       self.calcul         = calcul
+        if experience:   self.experience     = experience
+
+        parametres  = self.parametres
+        calcul      = self.calcul
+        experience  = self.experience
+
+        list_params = self.list_params
+
+        if dX: CalcGradient = True
+        else:  CalcGradient = False
+        self.CalcGradient   = CalcGradient
+
+        self.list_diag      = []
+
+        # Pour le moment on conserve un seul fichier
+        self.UNITE_INCLUDE  = self.UNITE_ESCL
+
+
+        # ----------------------------------------------------------------------------
+        # Liste de tous les jeux de parametres (initial + differences finies)
+        # ----------------------------------------------------------------------------
+        list_val = []
+
+        # Dictionnaire des parametres du point courant
+        dic = dict( zip( list_params, X0 ) )
+        list_val.append( dic )
+
+        # Calcul du gradient (perturbations des differences finies)
+        if CalcGradient:
+            UTMESS('I','RECAL0_16')
+            # Dictionnaires des parametres des calculs esclaves
+            for n in range(1,len(dX)+1):
+               l = [0] * len(dX)
+               l[n-1] = dX[n-1]
+               X = [ X0[i] * (1+l[i]) for i in range(len(dX)) ]
+               dic = dict( zip( list_params, X ) )
+               list_val.append( dic )
+
+
+        # ----------------------------------------------------------------------------
+        # Aiguillage vers INCLUDE
+        # ----------------------------------------------------------------------------
+        if self.LANCEMENT == 'INCLUSION':
+           #txt = "%s de l'unite logique : %s" % (self.LANCEMENT, self.UNITE_INCLUDE)
+           #print "\n--> Mode d'evaluation des calculs esclaves : %s <--\n" % txt
+           UTMESS('I','RECAL0_29', valk=self.LANCEMENT)
+           fonctionnelle, gradient = self.run_include(list_val)
+
+
+        # ----------------------------------------------------------------------------
+        # Aiguillage vers ASRUN distribue
+        # ----------------------------------------------------------------------------
+        elif self.LANCEMENT == 'DISTRIBUTION':
+           #print "\n--> Mode d'evaluation des calculs esclaves : %s <--\n" % self.LANCEMENT
+           UTMESS('I','RECAL0_29', valk=self.LANCEMENT)
+           fonctionnelle, gradient = self.run_distrib(list_val)
+
+
+        # ----------------------------------------------------------------------------
+        # Erreur d'aiguillage
+        # ----------------------------------------------------------------------------
+        else:
+           raise "Erreur : mode %s inconnu!" % self.LANCEMENT
+
+
+        #sys.exit()
+        # ----------------------------------------------------------------------------
+        # Sortie
+        # ----------------------------------------------------------------------------
+        return fonctionnelle, gradient
+
+
+
+   # ---------------------------------------------------------------------------------------------------------
+   # ---------------------------------------------------------------------------------------------------------
+   def run_include(self,list_val):
+     """  Module permettant de lancer N+1 calculs via un mecanisme d'include
+     """
+
+#      # Importation de commandes Aster
+#      try:
+#         import aster
+#         import Macro
+#         from Accas import _F
+#         from Cata import cata
+#         from Cata.cata import *
+#      except ImportError:
+#         raise "Simu_point_mat doit etre lance depuis Aster"
+
+     try:
+         import aster
+         import Macro
+         from Cata import cata
+         from Cata.cata import OPER, MACRO
+         from Accas import _F
+    
+         # Declaration de toutes les commandes Aster
+         import cata
+         for k,v in cata.__dict__.items() :
+           #print k,v
+           if isinstance(v, (OPER, MACRO)):
+             #print k,v
+             #self.jdc.current_context[k]= v
+             exec("from Cata.cata import %s" % k)
+         #self.jdc.current_context['_F']=cata.__dict__['_F']
+     except Exception, e:
+         raise "Le mode INCLUDE doit etre lance depuis Aster : \nErreur : " % e
+
+
+     list_params = self.list_params
+     calcul      = self.calcul
+     reponses    = self.calcul
+
+# AA : marche pas car on peut oublier des courbes, tant pis on refait des extract en trop..
+#      liste_reponses = []
+#      for reponse in [ x[0] for x in calcul ]:
+#          if not reponse in liste_reponses: liste_reponses.append(reponse)
+
+     liste_reponses = [ x[0] for x in calcul ]
+     if debug: print "AA3/liste_reponses=", liste_reponses
+
+
+     # ----------------------------------------------------------------------------
+     # Boucle sur les N+1 calculs
+     # ----------------------------------------------------------------------------
+     Lcalc = []
+     for i in range(len(list_val)):
+         params = list_val[i]
+         if debug: print "AA/params=", params
+
+
+         # ----------------------------------------------------------------------------
+         # Affectation des valeurs des parametres
+         # ----------------------------------------------------------------------------
+         for nompara in list_params:
+             valpara = params[nompara]
+             if debug: print "AA/nompara/valpara:", nompara, valpara
+             exec( "%s=%s" % (nompara, valpara) )    #  YOUN__ = X0[0], DSDE__ = X0[1], ...
+
+
+         # ----------------------------------------------------------------------------
+         # Affichage des parametres du calcul courant
+         # ----------------------------------------------------------------------------
+         tpara = Affiche_Param(list_params, [ params[x] for x in list_params] )
+         if i==0:  UTMESS('I', 'RECAL0_67', valk=tpara)
+         else:     UTMESS('I', 'RECAL0_68', valk=(tpara, list_params[i-1]) )
+
+
+         # ----------------------------------------------------------------------------
+         # Lancement du calcul (par un include)
+         # ----------------------------------------------------------------------------
+         new = "fort.%s.new" % self.UNITE_INCLUDE
+#         exec_file(filename=new)
+         execfile(new)
+
+#          print "UNSURM__=", UNSURM__
+#          sys.exit()
+# 
+#          R0__ = 5.39556628611
+#          PETITB__ = 0.0936790879154
+#          PETITW__ = 0.1524782189
+#          GAMA1__ = 530.27009253
+# 
+# #          execfile("fort.3.pre")
+#          print "UNSURM__=", UNSURM__
+#          execfile("fort.3.new")
+# #          execfile("fort.3.new")
+#          sys.exit()
+
+#          try:
+#              execfile(new)
+#          except Exception, e:
+#              print "\n\n" + 80*"-" + "\n\nError while executing the commands slave :\n" + str(e)
+#              if debug: print "Output file follow:\n" + newtxt + "\n" + 80*"-" 
+#              raise "Stop on previous error"
+
+    #      f = open("fort.%s" % self.UNITE_INCLUDE)
+    #      txt = f.read()
+    #      f.close()
+    #      INCLUDE(UNITE=2, INFO=2)
+    #      d = {}
+    #      dd = {}
+    #      print globals()
+    #      execfile("fort.%s" % UL, globals(), locals())
+    #      execfile("fort.%s" % UL, globals(), d)
+    #      print d
+    #      print U
+
+         # ----------------------------------------------------------------------------
+         # On considere que le job est OK s'il ne s'est pas plante dans le except precedent..
+         # ----------------------------------------------------------------------------
+         self.list_diag.append("OK")
+
+
+         # ----------------------------------------------------------------------------
+         # Extraction des tables
+         # ----------------------------------------------------------------------------
+         Lrep=[]
+         for i in range(len(liste_reponses)):
+             reponse = liste_reponses[i]
+             DETRUIRE(OBJET=_F(CHAINE='VEXTR___'), ALARME='NON', INFO=1)  # Faudrait proteger ce nom ici (VEXTR___ peut etre deja utilise dans l'etude)
+             if debug: print "AA3/reponse=", reponse
+             exec( "VEXTR___ = %s.EXTR_TABLE()" % reponse)
+             list_para = VEXTR___.para
+             tab_lue   = VEXTR___.values()
  
-   #On verifie si la dimension de chaque sous-liste de : PARAMETRES, REPONSES
-   #il faut que:la dimension d'une sous-liste de PARAMETRES = 4
-   #et   que    la dimension d'une sous liste de REPONSES   = 3
-   texte = texte + erreur_dimension(PARAMETRES,REPONSES)
+             if debug: print "AA3/reponses=", reponses
 
-   #on verifie le type et la dimension des résultats expérimentaux
-   texte = texte + verif_RESU_EXP(RESU_EXP)
-   #on verifie que l'on a autant de réponses que de résultats expérimentaux
-   texte = texte + compare__dim_rep__dim_RESU_EXP(REPONSES,RESU_EXP)
-   #on verifie que l'on a autant de poids que de résultats expérimentaux
-   texte = texte + compare__dim_poids__dim_RESU_EXP(POIDS,RESU_EXP)
+             F = table2numpy(tab_lue, list_para, reponses, i)
+             Lrep.append(F)
 
-   #on verifie les types des arguments de chaque sous liste de PARAMETRES et REPONSES
-      #verification du type stringet type float des arguments de PARAMETRES
-   for i in range(len(PARAMETRES)):
-      texte = texte + erreur_de_type(1,PARAMETRES[i][0])
-      for k in [1,2,3]:
-         texte = texte + erreur_de_type(2,PARAMETRES[i][k])
-         
-   #verification du type string pour les arguments  de REPONSES
-   for i in range(len(REPONSES)):
-      for j in range(len(REPONSES[i])):
-         texte = texte + erreur_de_type(1,REPONSES[i][j])
-   
-   #verification du fichier de commndes ASTER
-   texte = texte + verif_fichier(UL,PARAMETRES,REPONSES)
+             if debug:
+                exec("IMPR_TABLE(TABLE=%s)" % reponse)
+                print "AA3/reponse=", reponse
+                print "AA1/F=", F
 
-   #verifiaction des valeurs des PARAMETRES entrées par l'utilisteur 
-   texte = texte + verif_valeurs_des_PARAMETRES(PARAMETRES)
+         if debug:
+             print "AA/params=", params
+             print "AA1/Lrep=", Lrep
 
-   #verifiaction des unités logiques renseignées par l'utilisateur
-   texte = texte + verif_UNITE(GRAPHIQUE,UNITE_RESU)
+         Lcalc.append( Lrep )
 
-   return texte
-   
+         #print self.jdc.g_context
+         #print self.jdc.parent
 
+         # Destruction des concepts Aster
+         liste_concepts = self.jdc.g_context.keys()
+         for c in liste_concepts:
+             DETRUIRE(OBJET=_F(CHAINE=c), ALARME='NON', INFO=1);
+
+         #detr_concepts(self.jdc)  # marche pas !
+         #sys.exit()
+
+
+     # ----------------------------------------------------------------------------
+     # Calcul de la fonctionnelle et du gradient
+     # ----------------------------------------------------------------------------
+     if debug: print "AA4/Lcalc=", Lcalc
+     fonctionnelle, gradient = self.calc2fonc_gradient(Lcalc)
+
+
+     # ----------------------------------------------------------------------------
+     # Save all calculated responses
+     self.Lcalc = Lcalc
+     # ----------------------------------------------------------------------------
+
+
+     return fonctionnelle, gradient
+
+
+
+
+
+
+   # ---------------------------------------------------------------------------------------------------------
+   # ---------------------------------------------------------------------------------------------------------
+   def run_distrib(self, list_val):
+        """ Module permettant de lancer N+1 calculs avec le module de calculs distribues d'asrun
+        """
+
+        # ----------------------------------------------------------------------------
+        # Parametres
+        # ----------------------------------------------------------------------------
+
+        # Code_Aster installation
+        ASTER_ROOT     = self.ASTER_ROOT
+        as_run         = self.as_run
+
+        # General
+        resudir        = self.resudir
+        clean          = self.clean
+        info           = self.info
+
+        # Study
+        export         = self.export
+
+        # MACR_RECAL inputs
+        parametres     = self.parametres
+        calcul         = self.calcul
+        experience     = self.experience
+
+        parametres     = self.parametres
+        calcul         = self.calcul
+        experience     = self.experience
+
+        CalcGradient   = self.CalcGradient
+        NMAX_SIMULT   = self.NMAX_SIMULT
+
+
+        # ----------------------------------------------------------------------------
+        # Import des modules python d'ASTK
+        # ----------------------------------------------------------------------------
+        if not ASTER_ROOT:
+            try:    ASTER_ROOT = os.path.join(aster.repout, '..')
+            except: pass
+        try:
+            sys.path.append(os.path.join(ASTER_ROOT, 'ASTK', 'ASTK_SERV', 'lib'))
+            sys.path.append(os.path.join(ASTER_ROOT, 'lib', 'python%s.%s' % (sys.version_info[0], sys.version_info[1] ) , 'site-packages'))
+        except: pass
+        #print sys.path
+        #print ASTER_ROOT
+        try:
+            from asrun.run          import AsRunFactory
+            from asrun.profil       import ASTER_PROFIL
+            from asrun.common_func  import get_hostrc
+            from asrun.utils        import get_timeout
+            from asrun.parametric   import is_list_of_dict
+            from asrun.thread       import Dispatcher
+            from asrun.distrib      import DistribParametricTask
+        except Exception, e:
+            print e
+            UTMESS('F','RECAL0_99')
+
+
+        assert is_list_of_dict(list_val)
+        nbval = len(list_val)
+
+        # ----------------------------------------------------------------------------
+        # Generation des etudes esclaves
+        # ----------------------------------------------------------------------------
+        sys.argv = ['']
+        run = AsRunFactory()
+        run.options['debug_stderr'] = True  # pas d'output d'executions des esclaves dans k'output maitre
+
+        # Master profile
+        prof = ASTER_PROFIL(filename=export)
+        tmp_param = tempfile.mkdtemp()
+        try:    username = prof.param['username'][0]
+        except: username = os.environ['LOGNAME']
+        try:    noeud    = prof.param['noeud'][0]
+        except: noeud    = platform.uname()[1]
+        tmp_param = "%s@%s:%s" % ( username, noeud, tmp_param)
+        prof.Set('R', {'type' : 'repe', 'isrep' : True, 'ul' : 0, 'compr' : False, 'path' : tmp_param })
+        if info>=2: print prof
+
+        # Si batch n'est pas possible, on bascule en interactif
+        if prof.param['mode'][0]=='batch' and run.get('batch')=='non':
+           UTMESS('I','RECAL0_28',valk=noeud)
+           prof.param['mode'][0] = 'interactif'
+
+        # result directories
+        if resudir:
+            if not os.path.isdir(resudir):
+                try:    os.mkdir(resudir)
+                except: 
+                    if info>=1: UTMESS('A','RECAL0_82',valk=resudir)
+                    resudir = None
+        if not resudir:
+            # Par defaut, dans un sous-repertoire du repertoire d'execution
+            pref = 'tmp_macr_recal_'
+            # On cherche s'il y a un fichier hostfile pour placer les fichiers dans un repertoire partage
+            l_fr = getattr(prof, 'data')
+            l_tmp = l_fr[:]
+            for dico in l_tmp:
+               if dico['type']=='hostfile':
+                  pref = os.environ['HOME'] + os.sep + 'tmp_macr_recal_'
+                  break
+            # Si batch alors on place les fichiers dans un repertoire partage
+            if prof['mode'][0]=='batch': pref = os.environ['HOME'] + os.sep + 'tmp_macr_recal_'
+
+            resudir = tempfile.mkdtemp(prefix=pref)
+        flashdir = os.path.join(resudir,'flash')
+        if info>=1: UTMESS('I','RECAL0_81',valk=resudir)
+
+        prof.WriteExportTo( os.path.join(resudir, 'master.export') )
+
+        # get hostrc object
+        hostrc = get_hostrc(run, prof)
+
+        # timeout before rejected a job
+        timeout = get_timeout(prof)
+
+
+        # Ajout des impressions de tables a la fin du .comm
+        t = []
+        reponses = calcul
+        for i in range(len(reponses)):
+            _ul = str(int(100+i))
+            num_ul = '99'
+
+            # Pour la dynamique la table avec la matrice MAC a un traitement different
+            if self.DYNAMIQUE:
+               if ('MAC' in reponses[i][2]):
+                       t.append( self.ajout_post_mac( reponses[i] ) )
+
+            try:    os.remove( tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+_ul )
+            except: pass
+
+            t.append("\n# Recuperation de la table : " + str(reponses[i][0]) + "\n")
+            t.append("DEFI_FICHIER(UNITE=" + num_ul + ", FICHIER='" + os.path.join('.', 'REPE_OUT', 'fort.'+_ul) + "',);\n" )
+            t.append("IMPR_TABLE(TABLE="+str(reponses[i][0])+", FORMAT='ASTER', UNITE="+num_ul+", INFO=1, FORMAT_R='E30.20',);\n")
+            t.append("DEFI_FICHIER(ACTION='LIBERER', UNITE="+num_ul+",);\n")
+
+
+        # number of threads to follow execution
+        numthread = 1
+
+
+        # ----------------------------------------------------------------------------
+        # Executions des etudes esclaves
+        # ----------------------------------------------------------------------------
+        # ----- Execute calcutions in parallel using a Dispatcher object
+        # elementary task...
+        task = DistribParametricTask(run=run, prof=prof, # IN
+                                     hostrc=hostrc,
+                                     nbmaxitem=self.NMAX_SIMULT, timeout=timeout,
+                                     resudir=resudir, flashdir=flashdir,
+                                     keywords={'POST_CALCUL': '\n'.join(t)},
+                                     info=info,
+                                     nbnook=0, exec_result=[])            # OUT
+        # ... and dispatch task on 'list_tests'
+        etiq = 'calc_%%0%dd' % (int(log10(nbval)) + 1)
+        labels = [etiq % (i+1) for i in range(nbval)]
+        couples = zip(labels, list_val)
+
+        if info>=2: print couples
+        execution = Dispatcher(couples, task, numthread=numthread)
+
+        # ----------------------------------------------------------------------------
+        # Liste des diagnostics
+        # ----------------------------------------------------------------------------
+        d_diag = {}
+        for result in task.exec_result:
+            print result
+            label = result[0]
+            diag  = result[2]
+            d_diag[label] = diag
+            if not diag[0:2] in ['OK', '<A']:
+                print "Erreur! Le calcul esclave '%s' ne s'est pas arrete correctement! Verifier le repertoire : %s" % (label, resudir)
+
+        if not d_diag: raise "\nErreur! Au moins un calcul esclave ne s'est pas arrete correctement! Verifier le repertoire : %s" % resudir
+        self.list_diag = [ d_diag[label] for label in labels ]
+
+        # ----------------------------------------------------------------------------
+        # Arret si tous les jobs ne se sont pas deroules correctement
+        # ----------------------------------------------------------------------------
+        iret = 0
+        if task.nbnook > 0:
+           iret = 4
+        if iret:
+           print "\nErreur! Au moins un calcul esclave ne s'est pas arrete correctement! Verifier le repertoire : %s" % resudir
+           run.Sortie(iret)
+
+#         for diag in self.list_diag:
+#             if not diag[0:2] in ['OK', '<A']:
+#                 raise ValueError("Au moins un calcul ne s'est pas deroule normalement. Verifier le repertoire : %s" % resudir)
+
+
+        # ----------------------------------------------------------------------------
+        # Recuperation des tables calculees
+        # ----------------------------------------------------------------------------
+        Lcalc = []
+        i=0
+        for c in labels:
+            tbl = get_tables(tables_calc=calcul, tmp_repe_table=os.path.join(resudir, c, 'REPE_OUT'), prof=prof)
+            Lcalc.append( tbl )  # On stocke sous la forme d'une liste de Numeric
+            if debug:
+                print "AA/params=", list_val[i]
+                print "AA1/Lrep=", tbl
+            i+=1
+
+
+        # ----------------------------------------------------------------------------
+        # Calcul de la fonctionnelle et du gradient
+        # ----------------------------------------------------------------------------
+        if debug: print "AA4/Lcalc=", Lcalc
+        fonctionnelle, gradient = self.calc2fonc_gradient(Lcalc)
+
+
+        # ----------------------------------------------------------------------------
+        # Clean result directories
+        # ----------------------------------------------------------------------------
+        if clean: shutil.rmtree(resudir, ignore_errors=True)
+
+
+        # ----------------------------------------------------------------------------
+        # Save all calculated responses
+        # ----------------------------------------------------------------------------
+        self.Lcalc = Lcalc
+
+        return fonctionnelle, gradient
+
+
+   # ---------------------------------------------------------------------------------------------------------
+   # ---------------------------------------------------------------------------
+   def calc2fonc_gradient(self, Lcalc):
+        """  Calculs de la fonctionnelle et du gradient a partir des tables calculees
+        """
+
+        #print "AA1/Lcalc=", Lcalc
+
+        info         = self.info
+        CalcGradient = self.CalcGradient
+
+        # ----------------------------------------------------------------------------
+        # Recuperation des tables calculees
+        # ----------------------------------------------------------------------------
+        seq_FX   = []
+        seq_FY   = []
+        seq_DIMS = []
+        lst_iter = []
+        for i in range(len(Lcalc)):
+            tbl = Lcalc[i]
+            FX = []
+            FY = []
+            ldims = []
+            for array in tbl:
+                 FX.extend([ x[0] for x in array ])
+                 FY.extend([ x[1] for x in array ])
+                 ldims.append(len(array))
+            # Agregation des resultats
+            seq_FX.append(FX)
+            seq_FY.append(FY)
+            seq_DIMS.append(ldims)
+            lst_iter.append(i)
+
+
+        # ----------------------------------------------------------------------------
+        # Fonctionnelle
+        # ----------------------------------------------------------------------------
+        # Calcul maitre (point X0)
+        idx0 = lst_iter.index(0)   # index (les calculs arrivent-ils dans le desordre?)
+        FY_X0 = seq_FY[idx0]
+        fonctionnelle = FY_X0
+
+
+        # ----------------------------------------------------------------------------
+        # Procedure d'assemblage du gradient (une liste de liste)
+        # ----------------------------------------------------------------------------
+        gradient = []
+        if CalcGradient:
+            for n in range(len(lst_iter))[1:]:
+                idx = lst_iter.index(n)
+                FY   = seq_FY[idx]
+                col = [ (y-x) for x, y in zip(FY, FY_X0) ]
+                gradient.append(col)
+                if info>=1: print 'Calcul numero: %s - Diagnostic: %s' % (n, self.list_diag[idx])
+
+
+        # ----------------------------------------------------------------------------
+        # Affichages
+        # ----------------------------------------------------------------------------
+        if info>=2:
+            print "\nFonctionnelle au point X0: \n%s" % str(fonctionnelle)
+            import pprint
+            if CalcGradient:
+                print "\nGradient au point X0:"
+                pprint.pprint(gradient)
+
+
+        return fonctionnelle, gradient
+
+
+   # ---------------------------------------------------------------------------------------------------------
+   # ---------------------------------------------------------------------------
+   def find_parameter0(self, content, param):
+       """
+       Return the lowest index in content where param is found and
+       the index of the end of the command.
+       """
+       if not self.ASTER_ROOT:
+           try:    ASTER_ROOT = os.path.join(aster.repout, '..')
+           except: pass
+       try:
+           sys.path.append(os.path.join(ASTER_ROOT, 'ASTK', 'ASTK_SERV', 'lib'))
+           sys.path.append(os.path.join(ASTER_ROOT, 'lib', 'python%s.%s' % (sys.version_info[0], sys.version_info[1] ) , 'site-packages'))
+       except: pass
+       try:
+           from asrun.utils        import search_enclosed
+       except Exception, e:
+           print e
+           UTMESS('F','RECAL0_99')
+
+       pos, endpos = -1, -1
+       re_start = re.compile('^ *%s *\=' % re.escape(param), re.M)
+       mat_start = re_start.search(content)
+       if mat_start is not None:
+          pos = mat_start.start()
+          endpos = search_enclosed(content, pos)
+       return pos, endpos
+
+
+   # ---------------------------------------------------------------------------------------------------------
+   # ---------------------------------------------------------------------------
+   def find_parameter(self, content, param):
+       """
+       Supprime les parametres du fichier de commande
+       """
+       re_start = re.compile('^ *%s *\=' % re.escape(param), re.M)
+       l=[]
+       for line in content.split('\n'):
+          mat_start = re_start.search(line)
+          if mat_start is None: l.append(line)
+       return '\n'.join(l)
+
+
+   # ---------------------------------------------------------------------------------------------------------
+   # ---------------------------------------------------------------------------
+   def ajout_post_mac(self, reponse):
+      """
+         Ajoute un bloc a la fin de l'esclave pour l'affichage des MAC pour l'appariement manuel
+      """
+      txt = []
+      txt.append( "from Macro.reca_mac import extract_mac_array, get_modes, fenetre_mac\n" )
+      txt.append( "_mac = extract_mac_array("+str(reponse[0])+")\n" )
+      txt.append( "l_mac=[]\n" )
+      txt.append( "nb_freq=_mac.shape[0]\n" )
+      if (self.DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI' and self.graph_mac):
+          txt.append( "frame =fenetre_mac(" + self.DYNAMIQUE['MODE_EXP']+"," + self.DYNAMIQUE['MODE_CALC']+",_mac)\n" )
+          txt.append( "list_exp,list_num =frame.get_list()\n" )
+          txt.append( "for i in range(nb_freq): l_mac.append(_mac[int(list_num[i])-1,int(list_exp[i])-1])\n" )
+      else:
+          txt.append( "for i in range(nb_freq): l_mac.append(_mac[i,i])\n" )
+      txt.append( "DETRUIRE(CONCEPT=_F(NOM="+str(reponse[0])+"),)\n" )
+      txt.append( str(reponse[0]) + "=CREA_TABLE(LISTE=(_F(PARA='NUME_ORDRE',LISTE_I=range(1,nb_freq+1),),_F(PARA='MAC',LISTE_R=l_mac,),),)\n" )
+      return '\n'.join(txt)
+
+
+# --------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
+class CALC_ERROR:
+   """
+      Classe gérant l'erreur par rapport aux donnees experimentales, la matrice des sensibilites
+   """
+   # ---------------------------------------------------------------------------
+   def __init__(self, experience, X0, calcul, poids=None, objective_type='vector', info=0, unite_resu=None):
+
+       if not poids: poids = Numeric.ones(len(experience))
+       self.experience     = experience
+       self.X0             = X0
+       self.calcul         = calcul
+       self.poids          = poids
+       self.objective_type = objective_type
+       self.INFO           = info
+       self.unite_resu     = unite_resu
+
+       from Macro import reca_interp, reca_algo
+       self.test_convergence   = reca_algo.test_convergence
+       self.calcul_gradient    = reca_algo.calcul_gradient
+       self.Simul              = reca_interp.Sim_exp(self.experience, self.poids)
+       try:    self.Dim   = reca_algo.Dimension(copy.copy(self.X0))
+       except: self.Dim   = reca_algo.Dimension(copy.copy(self.X0), None)  # gere l'ancienne version de MACR_RECAL
+       #self.Dim   = reca_algo.Dimension(copy.copy(self.X0))
+
+       self.F               = None
+       self.L_J_init        = None
+       self.L_J             = None
+       self.J_init          = None
+       self.J               = None
+       self.L_init          = None
+       self.erreur          = None
+       self.norme           = None
+       self.A               = None
+       self.A_nodim         = None
+       self.norme_A_        = None
+       self.norme_A_nodim   = None
+
+       if info>=3: self.debug = True
+       else:       self.debug = False
+       if debug: self.debug = True
+
+
+   # ---------------------------------------------------------------------------
+   def CalcError(self, Lcalc):
+
+       self.F = Lcalc[0]
+       if not self.L_init:    self.L_init   = copy.copy(self.F)
+
+       self.L_J, self.erreur = self.Simul.multi_interpole(self.F, self.calcul)
+       if not self.L_J_init:  self.L_J_init = copy.copy(self.L_J)
+
+       self.J = self.Simul.norme_J( copy.copy(self.L_J_init), copy.copy(self.L_J) )
+       if not self.J_init:      self.J_init   = copy.copy(self.J)
+
+       # norme de l'erreur
+       self.norme = Numeric.sum( [x**2 for x in self.erreur] )
+
+       if self.debug:
+           print "AA1/F=", self.F
+           print "AA1/calcul=", self.calcul
+           print "AA1/L_J=", self.L_J
+           print "AA1/erreur=", self.erreur
+           print "AA1/L_J_init=", self.L_J_init
+           print "AA1/J=", self.J
+           print "AA1/norme de l'erreur=", self.norme
+           print "AA1/norme de J (fonctionnelle)=", str(self.J)
+
+       if self.INFO>=1: 
+           UTMESS('I', 'RECAL0_30')
+           #UTMESS('I', 'RECAL0_33', valr=self.J)
+
+       if self.objective_type=='vector':
+           if self.INFO>=1: UTMESS('I', 'RECAL0_35', valr=self.norme)
+           return self.erreur
+       else:
+           if self.INFO>=1: UTMESS('I', 'RECAL0_36', valr=self.norme)
+           return self.norme
+
+
+   # ---------------------------------------------------------------------------
+   def CalcSensibilityMatrix(self, Lcalc, val, dX=None, pas=None):
+
+      """
+         Calcul de F(X0) et de tous les F(X0+h)
+         Formation de la matrice des sensibilites A
+         N+1 calculs distribues
+      """
+
+      if not dX and not pas: raise "Need 'dX' or 'pas' parameter."
+      if     dX and     pas: raise "Need 'dX' or 'pas' parameter, not both."
+      if pas: dX = len(val)*[pas]
+      if len(dX) != len(val): raise "Error : 'dX' and 'val' parameters aren't compatible (lenght are not equal).\ndX = %s\nval = %s" % (str(dx), str(val))
+
+      reponses  = self.calcul
+      resu_exp  = self.experience
+      len_para  = len(val)  # initialement len(self.para)
+
+
+      # Erreur de l'interpolation de F_interp : valeur de F interpolée sur les valeurs experimentales
+      F = Lcalc[0]
+      F_interp = self.Simul.multi_interpole_sensib(F, reponses)  #F_interp est une liste contenant des tab num des reponses interpolés
+
+
+      # Creation de la liste des matrices de sensibilités
+      L_A=[]
+      for i in range(len(reponses)):     
+          L_A.append(Numeric.zeros((len(resu_exp[i]),len(val)),Numeric.Float) )
+
+      for k in range(len(val)):   # pour une colone de A (dim = nb parametres)
+
+          F_perturbe = Lcalc[k+1]
+
+          # Erreur de l'interpolation de F_perturb : valeur de F (perturbée) interpolée sur les valeurs experimentales
+          F_perturbe_interp = self.Simul.multi_interpole_sensib(F_perturbe, reponses)
+
+          # Calcul de L_A (matrice sensibilité des erreurs sur F interpolée)
+          h = val[k]*dX[k]
+          for j in range(len(reponses)):
+             for i in range(len(resu_exp[j])):
+                try:
+                   L_A[j][i,k] = -1*(F_interp[j][i] - F_perturbe_interp[j][i])/h
+                except ZeroDivisionError:
+                   if self.unite_resu:
+                       fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
+                       fic.write('\n Probleme de division par zéro dans le calcul de la matrice de sensiblité')
+                       fic.write('\n Le parametre '+para[k]+'est nul ou plus petit que la précision machine')
+                       fic.close() 
+                   UTMESS('F','RECAL0_45',valk=para[k])
+                   return
+
+      # On construit la matrice de sensiblité sous forme d'un tab num
+      dim =[]
+      for i in range(len(L_A)):
+         dim.append(len(L_A[i]))
+      dim_totale = Numeric.sum(dim)
+      a=0
+      self.A_nodim = Numeric.zeros((dim_totale,len(val)),Numeric.Float)
+      for n in range(len(L_A)):
+         for k in range(len(val)):
+            for i in range(dim[n]):
+               self.A_nodim[i+a][k] = L_A[n][i,k]
+         a=dim[n]
+
+      del(L_A)
+
+
+      self.A = self.Dim.adim_sensi( copy.copy(self.A_nodim) )
+
+      # Si on n'est pas encore passe par CalcError...
+      if not self.erreur: self.erreur = self.CalcError(Lcalc)
+      self.gradient_init = self.calcul_gradient(self.A, self.erreur)  #utile pour le test de convergence, on prend les valeurs dimensionnées
+      self.residu = self.test_convergence(self.gradient_init, self.erreur, self.A, Numeric.zeros(len(self.gradient_init),Numeric.Float))
+
+      if self.debug:
+          print "AA1/erreur=", self.erreur
+          print "AA1/residu=", self.residu
+          print "AA1/A_nodim=", self.A_nodim
+          print "AA1/A=", self.A
+
+
+      if self.objective_type=='vector':
+          return self.erreur, self.residu, self.A_nodim, self.A
+      else:
+          # norme de l'erreur
+          self.norme = Numeric.dot(self.erreur, self.erreur)**0.5
+          self.norme_A_nodim = Numeric.zeros( (1,len_para), Numeric.Float )
+          self.norme_A       = Numeric.zeros( (1,len_para), Numeric.Float )
+          for c in range(len(self.A[0,:])):
+              norme_A_nodim = 0
+              norme_A       = 0
+              for l in range(len(self.A[:,0])):
+                   norme_A_nodim += self.A_nodim[l,c] * self.A_nodim[l,c]
+                   norme_A       += self.A[l,c] * self.A[l,c]
+              self.norme_A_nodim[0,c] = math.sqrt( norme_A_nodim ) 
+              self.norme_A[0,c] = math.sqrt( norme_A )
+          if self.debug:
+              print "AA1/norme_A_nodim=", self.norme_A_nodim
+              print "AA1/norme_A=", self.norme_A
+          return self.erreur, self.residu, self.norme_A_nodim, self.norme_A
+
+
+
+
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
+if __name__ == '__main__':
+
+    # Execution via YACS ou en externe
+    isFromYacs = globals().get('ASTER_ROOT', None)
+
+
+    # ------------------------------------------------------------------------------------------------------------------
+    #                               Execution depuis YACS
+    # ------------------------------------------------------------------------------------------------------------------
+    if isFromYacs:
+        # Execution depuis YACS : les parametres sont deja charges en memoire
+
+        # ----------------------------------------------------------------------------
+        # Parametres courant
+        X0 = globals().get('X0', [ 80000.,  1000., 30. ])
+        dX = globals().get('dX', [ 0.001, 0.001, 0.0001])
+        # ----------------------------------------------------------------------------
+
+        # ----------------------------------------------------------------------------
+        # Parametres
+        os.environ['ASTER_ROOT'] = ASTER_ROOT
+        if debug:
+            clean = False
+            info  = 1
+        else:
+            clean = True
+            info  = 0
+        # ----------------------------------------------------------------------------
+
+
+    # ------------------------------------------------------------------------------------------------------------------
+    #                               Execution en mode EXTERNE
+    # ------------------------------------------------------------------------------------------------------------------
+    else:
+        # Execution en mode EXTERNE : on doit depouiller les parametres de la ligne de commande
+
+
+        from optparse import OptionParser, OptionGroup
+    
+        p = OptionParser(usage='usage: %s fichier_export [options]' % sys.argv[0])
+
+        # Current estimation
+        p.add_option('--input',             action='store',       dest='input',             type='string',                                       help='Chaine de texte contenant les parametres')
+        p.add_option('--input_step',        action='store',       dest='input_step',        type='string',                                       help='Chaine de texte contenant les pas de discretisation des differences finies')
+        p.add_option('--input_file',        action='store',       dest='input_file',        type='string',   default='input.txt',                help='Fichier contenant les parametres')
+        p.add_option('--input_step_file',   action='store',       dest='input_step_file',   type='string',                                       help='Fichier contenant les pas de discretisation des differences finies')
+
+        # Outputs
+        p.add_option('--output',            action='store',       dest='output',            type='string',   default='output.txt',               help='fichier contenant la fonctionnelle')
+        p.add_option('--output_grad',       action='store',       dest='output_grad',       type='string',   default='grad.txt',                 help='fichier contenant le gradient')
+
+        # Code_Aster installation
+        p.add_option('--aster_root',        action='store',       dest='aster_root',        type='string',                                       help="Chemin d'installation d'Aster")
+        p.add_option('--as_run',            action='store',       dest='as_run',            type='string',                                       help="Chemin vers as_run")
+
+        # General
+        p.add_option('--resudir',           action='store',       dest='resudir',           type='string',                                       help="Chemin par defaut des executions temporaires d'Aster")
+        p.add_option("--noclean",           action="store_false", dest="clean",                              default=True,                       help="Erase temporary Code_Aster execution directory")
+        p.add_option('--info',              action='store',       dest='info',              type='int',      default=1,                          help="niveau de message (0, [1], 2)")
+        p.add_option('--sources_root',      action='store',       dest='SOURCES_ROOT',      type='string',                                       help="Chemin par defaut des surcharges Python")
+        #p.add_option('--slave_computation', action='store',       dest='slave_computation', type='string',   default='distrib',                  help="Evaluation de l'esclave ([distrib], include)")
+
+        # MACR_RECAL parameters
+        p.add_option('--objective',         action='store',       dest='objective',         type='string',   default='fcalc',                    help="Fonctionnelle ([fcalc]/[error])")
+        p.add_option('--objective_type',    action='store',       dest='objective_type',    type='string',   default='vector',                   help="type de la fonctionnelle (float/[vector])")
+        p.add_option('--gradient_type',     action='store',       dest='gradient_type' ,    type='string',   default='no',                       help="calcul du gradient par Aster ([no]/normal/adim)")
+
+        # MACR_RECAL inputs
+        p.add_option('--mr_parameters',     action='store',       dest='mr_parameters',     type='string',   default='N_MR_Parameters.py',       help="Fichier de parametres de MACR_RECAL : parametres, calcul, experience")
+        p.add_option('--study_parameters',  action='store',       dest='study_parameters',  type='string',                                       help="Fichier de parametre de l'etude : export")
+        p.add_option('--parameters',        action='store',       dest='parameters',        type='string',                                       help="Fichier de parametres")
+
+        options, args = p.parse_args()
+        print options
+
+
+        # Study : .export file
+        if args: export =  args[0]
+        else:
+           liste = glob.glob('*.export')
+           export = liste[0]
+        if not os.path.isfile(export): raise "Export file : is missing!"
+        print export
+
+
+        # Code_Aster installation
+        ASTER_ROOT = None
+        if options.aster_root:                  ASTER_ROOT = options.aster_root
+        elif os.environ.has_key('ASTER_ROOT'):  ASTER_ROOT = os.environ['ASTER_ROOT']
+        if not ASTER_ROOT: raise "ASTER_ROOT is missing! Set it by --aster_root flag or environment variable ASTER_ROOT" 
+        if not os.path.isdir(ASTER_ROOT): raise "Wrong directory for ASTER_ROOT : %s" % ASTER_ROOT
+        os.environ['ASTER_ROOT'] = ASTER_ROOT
+#         sys.path.append(get_absolute_path(os.path.join(ASTER_ROOT, 'STA10.1', 'bibpyt' )))
+#         from Utilitai.Utmess import UTMESS
+
+        if options.as_run:          as_run = options.as_run
+        else:                       as_run = os.path.join(ASTER_ROOT, 'bin', 'as_run')
+
+
+        # General
+        if options.resudir: resudir = options.resudir
+        clean = options.clean
+
+#         if   options.info == 0: info = False
+#         elif options.info == 1: info = False
+#         elif options.info == 2: info = True
+        info = options.info
+
+        # Import des modules supplementaires
+        if options.SOURCES_ROOT: 
+             if not os.path.isdir(options.SOURCES_ROOT): raise "Wrong directory for sources_root : %s" % options.SOURCES_ROOT
+             else: 
+                 sys.path.insert(0, options.SOURCES_ROOT)
+                 sys.path.insert(0, os.path.join(options.SOURCES_ROOT, 'sources'))
+
+
+        # MACR_RECAL inputs
+        if options.mr_parameters:
+            try:    
+                if info>=1: print "Read MR parameters file : %s" % options.mr_parameters
+                execfile(options.mr_parameters)
+            except: raise "Wrong file for MR Parameters: %s" % options.mr_parameters
+        else: raise "MR Parameters file needed ! Use --mr_parameters flag"
+        parametres = globals().get('parametres',  None)
+        calcul     = globals().get('calcul',      None)
+        experience = globals().get('experience',  None)
+        poids      = globals().get('poids',       None)
+
+        if not parametres:  raise "MR Parameters file need to define 'parametres' variable"
+        if not calcul:      raise "MR Parameters file need to define 'calcul' variable"
+        if type(parametres)  != list: raise "Wrong type for 'parametres' variable in MR parameters file : %s"  % options.mr_parameters
+        if type(calcul)      != list: raise "Wrong type for 'calcul' variable in MR parameters file : %s"      % options.mr_parameters
+
+        if options.objective == 'error':
+             if type(experience) != list: raise "For error objective output, the 'experience' variable must be a list of arrays"
+             if type(poids) not in [list, tuple, Numeric.arraytype]: raise "The 'poids' variable must be a list or an array"
+             if len(poids) != len(experience): raise "'experience' and 'poids' lists must have the same lenght"
+
+
+        # MACR_RECAL parameters
+        objective      = options.objective
+        objective_type = options.objective_type
+        gradient_type  = options.gradient_type
+
+
+        # X0 : read from commandline flag or from file
+        if not os.path.isfile(options.input_file): options.input_file = None
+        if not (options.input or  options.input_file): raise "Missing input parameters"
+        if     (options.input and options.input_file): raise "Error : please use only one choice for input parameters definition"
+
+        if options.input_file:
+            try:
+                f = open(options.input_file, 'r')
+                options.input = f.read()
+                f.close()
+            except:
+                raise "Can't read input parameters file : %s" % options.input_file
+
+        # Extract X0 from text
+        try:
+            txt = options.input.strip()
+            txt = txt.replace(',', ' ')
+            txt = txt.replace(';', ' ')
+            X0 = [ float(x) for x in txt.split() ]
+            if type(X0) != list: raise "Wrong string for input parameters : %s" % options.input
+        except:
+            raise "Can't decode input parameters string : %s.\n It should be a comma separated list." % options.input
+
+
+        # dX : read from commandline flag or from file
+        dX = None
+        if options.gradient_type == 'no':
+            if (options.input_step or  options.input_step_file): raise "You must set 'gradient_type' to another choice than 'no' or remove input step parameters from commandline"
+        else:
+            if not (options.input_step or  options.input_step_file): raise "Missing input step parameters"
+            if     (options.input_step and options.input_step_file): raise "Error : please use only one choice for input step parameters definition"
+
+            if options.input_step_file: 
+                try:
+                    f = open(options.input_step_file, 'r')
+                    options.input_step = f.read()
+                    f.close()
+                except:
+                    raise "Can't read file for discretisation step : %s" % options.input_step_file
+
+            # Extract dX from text
+            try:
+                txt = options.input_step.strip()
+                txt = txt.replace(',', ' ')
+                txt = txt.replace(';', ' ')
+                dX = [ float(x) for x in txt.split() ]
+                if type(dX) != list: raise "Wrong string for discretisation step : %s" % options.input_step
+            except:
+                raise "Can't decode input parameters string : %s.\n It should be a comma separated list." % options.input_step
+
+
+
+
+    # ------------------------------------------------------------------------------------------------------------------
+    #                               Execution des calculs (N+1 calculs distribues si dX est fourni)
+    # ------------------------------------------------------------------------------------------------------------------
+
+    # Repertoire contenant les resultats des calculs Aster (None = un rep temp est cree)
+    resudir = globals().get('resudir', None)
+
+    # Affichage des parametres
+    lpara = [x[0] for x in parametres]
+    lpara.sort()
+    if info >=1:
+       lpara = [x[0] for x in parametres]
+       lpara.sort()
+       print "Calcul avec les parametres : \n%s" % Affiche_Param(lpara, X0)
+
+    C = CALCULS_ASTER(
+                # MACR_RECAL inputs
+                parametres          = parametres,
+                calcul              = calcul,
+                experience          = experience,
+                     )
+
+    fonctionnelle, gradient = C.run(
+                # Current estimation
+                X0                  = X0,
+                dX                  = dX,
+
+                # Code_Aster installation
+                ASTER_ROOT          = ASTER_ROOT,
+                as_run              = as_run,
+
+                # General
+                resudir             = resudir,
+                clean               = clean,
+                info                = info,
+
+                # Study
+                export              = export,
+
+#                 # MACR_RECAL inputs
+#                 parametres          = parametres,
+#                 calcul              = calcul,
+#                 experience          = experience,
+    )
+
+    # ------------------------------------------------------------------------------------------------------------------
+    #                               Calcul de l'erreur par rapport aux donnees experimentale
+    # ------------------------------------------------------------------------------------------------------------------
+    if not isFromYacs:        # Execution en mode EXTERNE uniquement
+
+        # Calcul de l'erreur par rapport aux donnees experimentale
+        if objective == 'error': 
+            E = CALC_ERROR(
+                experience          = experience,
+                X0                  = X0,
+                calcul              = calcul,
+                poids               = poids,
+                objective_type      = objective_type,
+                info=info,
+            )
+
+            erreur                      = E.CalcError(C.Lcalc)
+            erreur, residu, A_nodim, A  = E.CalcSensibilityMatrix(C.Lcalc, X0, dX=dX, pas=None)
+
+            fonctionnelle = erreur
+            if   gradient_type == 'normal': gradient = A
+            elif gradient_type == 'adim':   gradient = A_nodim
+            else: raise "??"
+
+
+
+    # ------------------------------------------------------------------------------------------------------------------
+    #                               Ecriture des resultats
+    # ------------------------------------------------------------------------------------------------------------------
+    if not isFromYacs:        # Execution en mode EXTERNE uniquement
+
+        # Fonctionnelle
+        if options.objective_type == 'float':
+           fonctionnelle = math.sqrt( Numeric.sum( [x**2 for x in fonctionnelle] ) )
+        Ecriture_Fonctionnelle(output_file=options.output, type_fonctionnelle=options.objective_type, fonctionnelle=fonctionnelle)
+
+        # Gradient
+        if gradient: Ecriture_Derivees(output_file=options.output_grad, derivees=gradient)
+
+
+
+    # ------------------------------------------------------------------------------------------------------------------
+    #                               Affichages
+    # ------------------------------------------------------------------------------------------------------------------
+    if info>=2:
+        print "\nFonctionnelle au point X0: \n%s" % str(fonctionnelle)
+        import pprint
+        if dX:
+           print "\nGradient au point X0:"
+           pprint.pprint(gradient)

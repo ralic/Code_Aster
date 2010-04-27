@@ -1,4 +1,4 @@
-# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DU MODE EXTERNE DE LA MACRO-COMMANDE DE RECALAGE
 # zzzz159f.para = tps_job 150 mem_job 300Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -29,23 +29,26 @@ ROOT = os.getcwd()
 # Recuperation du chemin du fichier macr_recal_ops.py
 commande = None
 for REPPY in ['Eficas', 'Python']:
-   fic = os.path.join( ROOT, REPPY, 'Macro', 'macr_recal_ops.py' )
+   fic = os.path.join( ROOT, REPPY, 'Macro', 'recal.py' )
+   print fic, os.path.isfile(fic)
    if os.path.isfile(fic):
       commande = fic
+      print "Zzzzzzzzzz"
       break
+if not commande: raise aster.error,"<F> Probleme : impossible de recuperer le chemin de recal.py" 
 
+
+ASTER_ROOT = os.environ['ASTER_ROOT']
 sys.path.append(os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'lib'))
+sys.path.append(os.path.join(ASTER_ROOT, 'lib', 'python%s.%s' % (sys.version_info[0], sys.version_info[1] ) , 'site-packages'))
 
 from Utilitai.System import ExecCommand
-from as_profil import ASTER_PROFIL
+from asrun.profil       import ASTER_PROFIL
 
-if not commande: raise aster.error,"<F> Probleme : impossible de recuperer le chemin de macr_recal_ops.py" 
-
-arguments = "-v 2 -F float -f True -G normal"        # Calcul du gradient par Aster
+arguments = ' --objective=fcalc --objective_type=float --gradient_type=no --mr_parameters=fort.2 '
 commande = '%s %s %s' % (sys.executable, commande, arguments)
 
 # Parametres
-fichier_in       = 'input.txt'
 fichier_out      = 'output.txt'
 fichier_grad_out = 'grad.txt'
 
@@ -63,21 +66,15 @@ def fonction(val):
    print val
 
    # Menage
-   for fic in [fichier_in, fichier_out, fichier_grad_out]:
-      try:    os.remove(fic)
-      except: pass
+   try:    os.remove(fichier_grad_out)
+   except: pass
 
-   # Ecriture du fichier des parametres
-   txt = ' '.join( [ str(x) for x in val ] )
-   try:
-      f=open(fichier_in, 'w')
-      f.write(txt)
-      f.close()
-   except:
-      raise aster.error,"<F> Probleme : impossible d ecrire le fichier des parametres : %s" % fichier_in
+
+   # Ajout des parametres
+   cmd = commande + '--input="%s"' % ','.join( [ str(x) for x in val ] )
 
    # Execution de Code_Aster
-   iret = ExecCommand(commande, follow_output=verbose, verbose=verbose)
+   iret = ExecCommand(cmd, follow_output=verbose, verbose=verbose)
 
    # Lecture du fichier de F
    try:
@@ -86,7 +83,7 @@ def fonction(val):
       f.close()
       fval = float(txt)
    except:
-      raise aster.error,"<F> Probleme : impossible de lire le fichier de la focntion F : %s" % fichier_out
+      raise aster.error,"<F> Probleme : impossible de lire le fichier de la fonction F : %s" % fichier_out
 
    # Affichage
    print '  --> fonctionnelle : ' + str(fval)
@@ -110,7 +107,7 @@ def fonction(val):
 
 # ------------------------------------------------------------
 # Modification du profil .export
-# - Le fichier fort.2 devient le nouveau .comm (commande MACR_RECAL)
+# - Le fichier fort.3 devient le nouveau .comm
 # - On fixe les noms des fichiers esclave (fort.3) et maillage (fort.20)
 # - On retire du profil tous les fichiers resultats
 liste = glob.glob('*.export')
@@ -122,13 +119,9 @@ for lab in ('data', 'resu'):
    for dico in l_tmp:
       # fichiers
       if not dico['isrep']:
-         # Le fichier d'UL 2 est le nouveau .comm de MACR_RECAL
+         # Le fichier d'UL 3 est le nouveau .comm
          if dico['type'] == 'comm' and dico['ul'] == '1':
-            dico['path'] = os.path.join(ROOT, 'fort.2')
-         else:
-            if dico['ul'] == '3':  dico['path'] = os.path.join(ROOT, 'fort.3')
-            if dico['ul'] == '20': dico['path'] = os.path.join(ROOT, 'fort.20')
-            if dico['ul'] == '2':  l_fr.remove(dico)
+            dico['path'] = os.path.join(ROOT, 'fort.3')
 
             # On supprime tous les fichiers resultats
             if lab == 'resu': l_fr.remove(dico)
@@ -144,31 +137,20 @@ prof.WriteExportTo(fichier_export)
 #      DSDE__,   SIGY__,   YOUN__
 x0 = [ 2000.,    200.,     200000. ]    # Point de depart
 
-# Une iteration du calcul de F et de G
-fval, gval = fonction(x0)
-
-norme_gval = math.sqrt( sum([x**2 for x in gval]) )
+# Une iteration du calcul de F
+fval = fonction(x0)
 
 TBL=CREA_TABLE(LISTE=(_F(LISTE_R=[ fval ],
                          PARA='FVAL'),
-                      _F(LISTE_R=[ norme_gval ],
-                         PARA='GVAL'),
                       )); 
 
 TEST_TABLE(TABLE=TBL,
            NOM_PARA='FVAL',
-           VALE=0.,
-           PRECISION=0.0001,
-           CRITERE='ABSOLU',
-           REFERENCE='NON_REGRESSION',
-           );
-
-TEST_TABLE(TABLE=TBL,
-           NOM_PARA='GVAL',
-           VALE=0.94588,
+           VALE= 620.1645,
            PRECISION=0.001,
            CRITERE='ABSOLU',
            REFERENCE='NON_REGRESSION',
            );
+
 
 FIN()

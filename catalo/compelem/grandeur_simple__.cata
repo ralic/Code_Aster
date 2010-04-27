@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+%& MODIF COMPELEM  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -974,6 +974,14 @@ GRANDEUR_SIMPLE__
        NOGEOM : champ de géométrie
 >>
     FLAPLA   = K24  NOMAIL   NOGEOM
+
+<<  FLHN_R Type:R Flux hydraulique sortant par unité de surface
+       FH11 : valeur du flux sortant
+       FH12 : valeur du flux sortant
+       FH21 : valeur du flux sortant
+       FH22 : valeur du flux sortant
+>>
+    FLHN_R   = R    FH11 FH12 FH21 FH22
 
 <<  FLUN_F Type:K8 Flux de chaleur sortant par unité de surface
     PHI = (-lambda.laplacien(T)).n (c'est un scalaire)

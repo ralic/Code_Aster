@@ -1,6 +1,7 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 27/04/2010   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM EN 3D
 #
+# zzzz110b.para = tps_job 60 mem_job 128Mo memjeveux_stat 128 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +21,8 @@
 # ======================================================================
 #CAS_TEST__: ZZZZ110B
 
-DEBUT(CODE=_F(NOM='ZZZZ110B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='ZZZZ110B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
+      MEMOIRE=_F(  TYPE_ALLOCATION = 2, DYNAMIQUE=0))
 
 # 1ER CALCUL SUR LE MAILLAGE MA1 :
 # --------------------------------
@@ -48,6 +50,14 @@ CHM1=AFFE_CHAR_MECA(   MODELE=MO1,DDL_IMPO=(
            _F( GROUP_NO = 'BAS',    DX = 0., DY = 0., DZ = 0.),
            _F( GROUP_NO = 'HAUT',   DZ = 2.))
                           )
+
+###############################################################
+#
+
+IMPR_JEVEUX ( ENTITE='MEMOIRE' )
+
+IMPR_JEVEUX ( ENTITE='ENREGISTREMENT' , CLASSE = 'G' , NUMERO=1 , INFO=1)
+
 
 LR=DEFI_LIST_REEL(  VALE=3.2 )
 
