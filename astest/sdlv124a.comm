@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 03/05/2010   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE PAVE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdlv124a.para = tps_job 660 mem_job 1000Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,9 +19,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 import Numeric
-from Numeric import size,asarray
+from Numeric import size
 
 DEBUT(CODE=_F( NOM = 'SDLV124A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),
       PAR_LOT='NON');
 
 # Definition des parametres de l'excitation sinusoidale
@@ -255,10 +256,13 @@ DYNHGEN=DYNA_LINE_HARM(MATR_MASS=MDIAG,
                              );
 
 
+plus = 0
+# la reference doit etre celle obtenue sur base physique!!!
+if plus:
 #######################################################
 # CALCUL DYNAMIQUE TEMPOREL SUR BASE MODALE
 #######################################################
-DYNTGEN=DYNA_TRAN_MODAL(  METHODE='NEWMARK',
+  DYNTGEN=DYNA_TRAN_MODAL(  METHODE='NEWMARK',
                            MASS_GENE=MDIAG,  
                            RIGI_GENE=KDIAG,
                            AMOR_GENE=CDIAG,
@@ -272,14 +276,14 @@ DYNTGEN=DYNA_TRAN_MODAL(  METHODE='NEWMARK',
                                PAS = pas),
                              );
 
-DYNTPHY=REST_GENE_PHYS(RESU_GENE=DYNTGEN,    
+  DYNTPHY=REST_GENE_PHYS(RESU_GENE=DYNTGEN,    
                        PRECISION=1.E-7,
                        LIST_INST=LISTRD,
                        NOM_CHAM=('DEPL','VITE','ACCE'),
                        INTERPOL='LIN',
                                  );
 
-DYNTPHY=CALC_ELEM(reuse =DYNTPHY,
+  DYNTPHY=CALC_ELEM(reuse =DYNTPHY,
                MODELE=MODEL,
                CHAM_MATER=CHMAT,
                RESULTAT=DYNTPHY,
@@ -343,7 +347,8 @@ DTX1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     TOUT_ORDRE = 'OUI',
                     );
 
-DTX2=RECU_FONCTION (   RESULTAT = DYNTPHY,
+if plus:
+  DTX2=RECU_FONCTION (   RESULTAT = DYNTPHY,
                           NOM_CMP = 'DX',
                           NOEUD = 'N433',
                           NOM_CHAM = 'DEPL',
@@ -368,23 +373,22 @@ DHX11=CALC_FONCTION(EXTRACTION=_F(FONCTION=DHX1,PARTIE='MODULE'),);
 DHX21=CALC_FONCTION(EXTRACTION=_F(FONCTION=DHX2,PARTIE='MODULE'),);
 
 DTX11=CALC_FONCTION(ABS=_F(FONCTION=DTX1),);
-DTX21=CALC_FONCTION(ABS=_F(FONCTION=DTX2),);
-
 DTX111=INFO_FONCTION(MAX=_F(FONCTION=DTX11));                      
-DTX211=INFO_FONCTION(MAX=_F(FONCTION=DTX21));                      
-
 valtmp1=DTX111.EXTR_TABLE();
-valtmp2=DTX211.EXTR_TABLE();
-
 test1=valtmp1.Array('INST','DX')[1][1]
-test2=valtmp2.Array('INST','DX')[1][1]
+
+if plus:
+  DTX21=CALC_FONCTION(ABS=_F(FONCTION=DTX2),);
+  DTX211=INFO_FONCTION(MAX=_F(FONCTION=DTX21));                      
+  valtmp2=DTX211.EXTR_TABLE();
+  test2=valtmp2.Array('INST','DX')[1][1]
 
 # TEST DE LA VALEUR HARMONIQUE / VALEUR TEMPORELLE
 TEST_FONCTION(VALEUR=_F(FONCTION=DHX11,
                         NOM_PARA='FREQ',
                         VALE_PARA=freq,
                         VALE_REFE=test1,
-                        REFERENCE='ANALYTIQUE',
+                        REFERENCE='AUTRE_ASTER',
                         PRECISION=0.01)
               );
 
@@ -392,9 +396,12 @@ TEST_FONCTION(VALEUR=_F(FONCTION=DHX11,
 TEST_FONCTION(VALEUR=(
                      _F(FONCTION=DHX21,
                         NOM_PARA='FREQ',
-                        VALE_PARA=DHX11.Absc(),
-                        VALE_REFE=DHX11.Ordo(),
-                        REFERENCE='ANALYTIQUE',
+     # la reference doit etre celle obtenue sur base physique!!!
+                     #   VALE_PARA=DHX11.Absc(),
+                     #   VALE_REFE=DHX11.Ordo(),
+                        VALE_PARA=freq,
+                        VALE_REFE=test1,
+                        REFERENCE='AUTRE_ASTER',
                         PRECISION=0.01),
                         ),
               );
@@ -435,7 +442,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=SIH11,
                         NOM_PARA='FREQ',
                         VALE_PARA=freq,
                         VALE_REFE=test3,
-                        REFERENCE='ANALYTIQUE',
+                        REFERENCE='AUTRE_ASTER',
                         PRECISION=0.01)
               );
 
@@ -474,7 +481,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=SEH11,
                         NOM_PARA='FREQ',
                         VALE_PARA=freq,
                         VALE_REFE=test4,
-                        REFERENCE='ANALYTIQUE',
+                        REFERENCE='AUTRE_ASTER',
                         PRECISION=0.01)
               );
 
@@ -513,7 +520,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=EPH11,
                         NOM_PARA='FREQ',
                         VALE_PARA=freq,
                         VALE_REFE=test5,
-                        REFERENCE='ANALYTIQUE',
+                        REFERENCE='AUTRE_ASTER',
                         PRECISION=0.01)
               );
 
@@ -552,7 +559,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=EGH11,
                         NOM_PARA='FREQ',
                         VALE_PARA=freq,
                         VALE_REFE=test6,
-                        REFERENCE='ANALYTIQUE',
+                        REFERENCE='AUTRE_ASTER',
                         PRECISION=0.01)
               );
 

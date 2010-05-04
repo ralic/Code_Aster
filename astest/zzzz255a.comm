@@ -1,6 +1,7 @@
-# MODIF  DATE 22/02/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 03/05/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE L'OPTION TEST_MAIL DANS PROPA_FISS
 # zzzz255b.para = tps_job 250 mem_job 512Mo liste_test S
+# zzzz255a.para = tps_job 300 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +19,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE GENIAUT S.GENIAUT
+# RESPONSABLE MESSIER
 
 DEBUT(CODE=_F(NOM='ZZZZ255A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
             IGNORE_ALARM=('XFEM2_60'),)

@@ -2,7 +2,7 @@
      &                   T,LAMBDA,DEUXMU,LAMF,DEUMUF,GMT,GMC,GF,
      &                   SEUIL,ALF,CRIT,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/04/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 04/05/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -83,11 +83,11 @@ C       QFF        = Tf DANS R7.01.32
       REAL*8  EPS(6), TREPS, FD1, FD2, DA1, DA2
       REAL*8  EMP(2), VMP(2,2), VFP(2,2), DSPDEP(6,6)
       REAL*8  DEUMUD(3), LAMBDD, SIGP(3), RTEMP, GMT, GMC
-      REAL*8  SEUIL, LAMBDA, DEUXMU, QME33, KSIM
+      REAL*8  SEUIL, LAMBDA, DEUXMU, QME33
       REAL*8  MU, A11, A22, A12, A21, B1, B2
       REAL*8  TREPS2, TR2, EN0, COF1
       REAL*8  FDI1(3), FDI2(3), SD1(3), SD2(3), D1E(3), D2E(3)
-      REAL*8  QDE(3), SIGHP(3), SIGHM(3), EFP(2), GI(2)
+      REAL*8  QDE(3), EFP(2), GI(2)
       REAL*8  TR2D, KSI2D, EPS33, DE33I, QFF(2), SIGF(2)
       REAL*8  DKSI1, DKSI2, TOLD, DE33D1, DE33D2, Q2D, GTR2
       REAL*8  LAMFD, DEMUDF(2), TROT, TROT2, DLMFD1, DLMFD2
@@ -173,7 +173,6 @@ C   CALCULER LES CONSTANTES INDEPENDANT DE D1,D2,EPS33
  50   CONTINUE
 
       COF1 = 0.5D0*LAMBDA*GTR2
-C     COF2 = 0.5D0*LAMBDA*TR2D * GTR2
       Q2D  = 0.5D0*MU * (EMP(1)**2*GI(1) + EMP(2)**2*GI(2))
 
 
@@ -370,18 +369,13 @@ C -- CONTRIBUTION DISSIPATIVE
         IF ((.NOT. ELAS).AND.((EN0.GT.0.D0) .OR.
      &     ((QFF(1) + QFF(2)).GT.0.0D0))) THEN
 
-          CALL R8INIR(3, 0.D0, SIGHP, 1)
-          CALL R8INIR(3, 0.D0, SIGHM, 1)
-
-          KSIM = LAMBDD / LAMBDA
-
           DO 800, K=1,2
             TREPS = TR2D + EPS33
             TREPS2 = TREPS**2
             QM1 = 0.5D0*COF1*TREPS2+Q2D
             QM2 = QM1
-            QME33 = COF1*TREPS + MU*EPS33
-            QDE(K) = COF1*(TR2D+EPS33)+MU*EMP(K)*GI(K)
+            QME33 = COF1*TREPS
+            QDE(K) = COF1*TREPS+MU*EMP(K)*GI(K)
 
             A11 = 2.0D0*(QM1/(1.0D0 + DA1)**3 + QFF(1)/(ALF + DA1)**3)
      &          - QME33*DE33D1/(1.0D0 + DA1)**2
@@ -391,9 +385,9 @@ C -- CONTRIBUTION DISSIPATIVE
      &          - QME33*DE33D2/(1.0D0 + DA2)**2
             A21 = -QME33*DE33D1/(1.0D0 + DA2)**2
 
-            B1  = (QDE(K) - QME33* KSIM*LAMBDA/(DEUXMU + KSIM*LAMBDA))
+            B1  = (QDE(K) - QME33* LAMBDD/(DEUXMU + LAMBDD))
      &          / (1.0D0 + DA1)**2
-            B2  = (QDE(K) - QME33* KSIM*LAMBDA/(DEUXMU + KSIM*LAMBDA))
+            B2  = (QDE(K) - QME33* LAMBDD/(DEUXMU + LAMBDD))
      &          / (1.0D0 + DA2)**2
 
             LSING1 = ABS(A11) .LT. MAX(1.0D-10*A22,1.0D-14)

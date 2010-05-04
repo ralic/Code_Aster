@@ -1,5 +1,5 @@
 
-# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPARAISON POLYCRISTAL ET MONOCRISTAL.
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv171b.para = tps_job 600 mem_job 512Mo mem_aster 10 ncpus 1 liste_test S
@@ -21,7 +21,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV171B',  NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV171B',  NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='NON')
 
 TFIN = 1.5;
 
@@ -67,18 +67,19 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                         ECHEC=_F(SUBD_METHODE='UNIFORME',
                                  SUBD_PAS=10,
                                  SUBD_NIVEAU=10),)
-MONOIMPL=SIMU_POINT_MAT(INFO=2,
+MONOIMPL=SIMU_POINT_MAT(INFO=1,
                    COMP_INCR=_F(RELATION='MONOCRISTAL',
                                 COMPOR=COMPOR1,
+                                RESO_INTE='IMPLICITE_RELI',
                                 ),
                    MASSIF=_F(ANGL_REP=30.0),
                    ANGLE=0.,
                    SUPPORT='POINT',
-                   NEWTON=_F(
+                   NEWTON=_F(PREDICTION='TANGENTE',
                              REAC_ITER=1,),
                    MATER      = ACIER,  
                    INCREMENT=_F(LIST_INST=DEFLIST1),
-                   ARCHIVAGE=_F(LIST_INST=LINST),
+                   ARCHIVAGE=_F(LIST_INST=LINST,PRECISION=1.E-6),
                    SIGM_IMPOSE=_F(SIXX=CHARGE),
                         );  
                                               
@@ -120,23 +121,20 @@ TEST_TABLE(TABLE=MONOIMPL,
                    REFERENCE='NON_REGRESSION',)
 
 
-
-MONOEXPL=SIMU_POINT_MAT(INFO=1,
+MONOEXPL=SIMU_POINT_MAT(INFO=2,
                    COMP_INCR=_F(RELATION='MONOCRISTAL',
                                 COMPOR=COMPOR1,
-                                   RESO_INTE='RUNGE_KUTTA_2',
-                                   RESI_INTE_RELA=1.E-6,
-                                  # ITER_INTE_PAS=2,
+                                RESO_INTE='RUNGE_KUTTA_2',
+                                RESI_INTE_RELA=1.E-6,
+                                TYPE_MATR_TANG='PERTURBATION',
                                 ),
-                   MASSIF=_F(ANGL_REP=30.0),
+                   MASSIF=_F(ANGL_EULER=30.0),
                    ANGLE=0.,
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
-                 #  NEWTON=_F(MATRICE='ELASTIQUE',PREDICTION='ELASTIQUE',
-                 #            REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,RESI_GLOB_RELA=1.E-6),
                    MATER      = ACIER,  
-                   INCREMENT=_F(LIST_INST=LINST2),
+                   INCREMENT=_F(LIST_INST=LINST2,NUME_INST_FIN=1001),
                    SIGM_IMPOSE=_F(SIXX=CHARGE),
                         );  
                                               
@@ -160,7 +158,7 @@ TEST_TABLE(TABLE=MONOEXPL,
            FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
            NOM_PARA='EPYY',
            VALE=0.00050265,
-           PRECISION=0.005,                       
+           PRECISION=0.007,                       
            REFERENCE='AUTRE_ASTER',)
 
                    
@@ -171,12 +169,6 @@ TEST_TABLE(TABLE=MONOEXPL,
                    PRECISION=0.03,
                    REFERENCE='AUTRE_ASTER',)
 
-COMPORP=DEFI_COMPOR(POLYCRISTAL=(
-                               _F(MONOCRISTAL=COMPOR1,
-                                  FRAC_VOL=1.0,
-                                  ANGL_REP=(30.,0.,0.)),),
-                    LOCALISATION='BETA',DA=0.,DL=0.,
-                    );
 
 FIN()
 

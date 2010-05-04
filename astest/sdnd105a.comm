@@ -1,4 +1,4 @@
-# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 03/05/2010   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE CHOC D'UNE MASSE SUR UNE PAROI AU COMPORTEMENT FLAMBAGE
 # sdnd105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,9 +152,7 @@ TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_G
                                  RIGI_NOR_POST_FL = 0.5),
 
                       INCREMENT=_F(
-# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
-# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
-                                 INST_FIN = 1.,  PAS = 0.0002,PAS_MAXI = 0.0002)
+                                 INST_FIN = 1.,  PAS = 0.0002,PAS_MAXI = 0.001)
                             )
 
 TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
@@ -183,13 +181,18 @@ TABLE=POST_DYNA_MODA_T(   RESU_GENE=TRAN_GEN,
                               CHOC=_F(  OPTION = 'IMPACT')
                           )
 
+# references
+tfl = Numeric.pi/6
+dp = 3.
+t0 = Numeric.pi/6 +2*sqrt(3.) +(Numeric.pi+6)/sqrt(2.)
+
 TEST_TABLE(TABLE=TABLE,FILTRE=(
                 _F(  NOM_PARA = 'CALCUL',
                          VALE_K = 'FLAMBAGE'),
                 _F(  NOM_PARA = 'NOEUD',
                          VALE_K = 'N02')),
                NOM_PARA='ECRAS_RESI',
-               VALE=3.,    PRECISION=1.E-3,
+               VALE=dp,    PRECISION=1.E-3,
                REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(TABLE=TABLE,FILTRE=(
@@ -198,11 +201,11 @@ TEST_TABLE(TABLE=TABLE,FILTRE=(
                 _F(  NOM_PARA = 'NOEUD',
                          VALE_K = 'N02')),
                NOM_PARA='INST_FLAMB',
-               VALE=0.523598775,    PRECISION=1.E-3,
+               VALE=tfl,    PRECISION=1.E-3,
                REFERENCE='ANALYTIQUE' )
 
 TEST_RESU(RESU=_F( RESULTAT = TRAN,
-                    NOM_CHAM = 'DEPL',  INST = 10.4518,
+                    NOM_CHAM = 'DEPL',  INST = t0,
                     NOEUD = 'N02',       NOM_CMP = 'DX',
                     CRITERE = ('ABSOLU', 'RELATIF',),
                     PRECISION = ( 3.E-3, 5.E-5,),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/01/2010   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 03/05/2010   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -139,7 +139,7 @@ PROPA_FISS=MACRO(nom="PROPA_FISS",op=propa_fiss_ops,sd_prod=propa_fiss_prod,
                   VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),
                   ANGLE_ORIG        = SIMP(statut='o',typ='R',),
                   ANGLE_EXTR        = SIMP(statut='o',typ='R',),
-                  NB_POINT_FOND     = SIMP(statut='o',typ='I',val_max=26,),
+                  NB_POINT_FOND     = SIMP(statut='o',typ='I',val_max=52,),
                ),   
              ),       
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/05/2010   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE PLAQUE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE   
 # sdls113a.para = tps_job 120 mem_job 1024Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,9 +19,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 import Numeric
-from Numeric import size,asarray
+from Numeric import size
 
 DEBUT(CODE=_F( NOM = 'SDLS113A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),
       PAR_LOT='NON',);
 
 # Definition des parametres de l'excitation sinusoidale
@@ -113,12 +114,12 @@ CASS=ASSE_MATRICE(MATR_ELEM=CELEM,
 FASS=ASSE_VECTEUR(VECT_ELEM=FELEM,
                   NUME_DDL=NUME,);
 
-MODES=MODE_ITER_SIMULT(MATR_A=KASS,
-                       MATR_B=MASS,
-                       CALC_FREQ=_F(
-                       NMAX_FREQ=15,),
-                       VERI_MODE=_F(STOP_ERREUR='OUI',
-                                    STURM='OUI',),);
+#MODES=MODE_ITER_SIMULT(MATR_A=KASS,
+#                       MATR_B=MASS,
+#                       CALC_FREQ=_F(
+#                       NMAX_FREQ=15,),
+#                       VERI_MODE=_F(STOP_ERREUR='OUI',
+#                                    STURM='OUI',),);
                
 
 #######################################################
@@ -253,7 +254,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=DHX11,
                         NOM_PARA='FREQ',
                         VALE_PARA=freq,
                         VALE_REFE=test1,
-                        REFERENCE='ANALYTIQUE',
+                        REFERENCE='AUTRE_ASTER',
                         PRECISION=0.01)
               );
 
@@ -293,7 +294,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=SIH11,
                         NOM_PARA='FREQ',
                         VALE_PARA=freq,
                         VALE_REFE=test3,
-                        REFERENCE='ANALYTIQUE',
+                        REFERENCE='AUTRE_ASTER',
                         PRECISION=0.01)
               );
 
@@ -333,7 +334,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=SEH11,
                         NOM_PARA='FREQ',
                         VALE_PARA=freq,
                         VALE_REFE=test4,
-                        REFERENCE='ANALYTIQUE',
+                        REFERENCE='AUTRE_ASTER',
                         PRECISION=0.01)
               );
 
@@ -373,7 +374,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=EPH11,
                         NOM_PARA='FREQ',
                         VALE_PARA=freq,
                         VALE_REFE=test5,
-                        REFERENCE='ANALYTIQUE',
+                        REFERENCE='AUTRE_ASTER',
                         PRECISION=0.01)
               );
 #########################################################
@@ -412,7 +413,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=EGH11,
                         NOM_PARA='FREQ',
                         VALE_PARA=freq,
                         VALE_REFE=test6,
-                        REFERENCE='ANALYTIQUE',
+                        REFERENCE='AUTRE_ASTER',
                         PRECISION=0.01)
               );
 FIN();

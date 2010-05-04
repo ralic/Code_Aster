@@ -8,7 +8,7 @@
       CHARACTER*8        NOECHO(NBCHOC,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 03/05/2010   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,26 +172,27 @@ C      CASE METHOD .EQ. 'EULER' OR OTHER
       NBPAS = NINT( ( TFIN - TINIT ) / DT )
       IF ( N4 .EQ. 0 ) GOTO 9999
 C
-      IF ( DT .NE. DTU ) THEN
+      IF ( DTU .GT. DT ) THEN
          IF (METHOD .EQ. 'NEWMARK') THEN
-         VALR (1) = DTU
-         VALR (2) = DT
-         CALL U2MESG('A','ALGORITH16_14',0,' ',0,0,2,VALR)
+           VALR (1) = DTU
+           VALR (2) = DT
+           CALL U2MESG('A','ALGORITH16_14',0,' ',0,0,2,VALR)
+           DT = DTU
          ELSEIF (IVERI.EQ.1 .AND. METHOD .NE. 'ADAPT') THEN
-         IER = IER + 1
-         VALR (1) = DTU
-         VALR (2) = DT
-         VALI = NBPAS
-         CALL U2MESG('E','ALGORITH16_15',0,' ',1,VALI,2,VALR)
+           IER = IER + 1
+           VALR (1) = DTU
+           VALR (2) = DT
+           VALI = NBPAS
+           CALL U2MESG('E','ALGORITH16_15',0,' ',1,VALI,2,VALR)
          ELSE
-         VALR (1) = DTU
-         VALR (2) = DT
-         CALL U2MESG('A+','ALGORITH16_16',0,' ',0,0,2,VALR)
+           VALR (1) = DTU
+           VALR (2) = DT
+           CALL U2MESG('A+','ALGORITH16_16',0,' ',0,0,2,VALR)
          IF (IVERI.NE.1) CALL U2MESS('A+','ALGORITH16_89')
-         VALI = NBPAS
-         CALL U2MESG('A','ALGORITH16_17',0,' ',1,VALI,0,0.D0)
-         DT = DTU
-         NBPAS = NINT( ( TFIN - TINIT ) / DT )
+           VALI = NBPAS
+           CALL U2MESG('A','ALGORITH16_17',0,' ',1,VALI,0,0.D0)
+           DT = DTU
+           NBPAS = NINT( ( TFIN - TINIT ) / DT )
          ENDIF
       ENDIF
  9999 CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF contact2 Messages  DATE 15/03/2010   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact2 Messages  DATE 04/05/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,14 @@ cata_msg={
 
 2 : _("""
    Echec : la matrice de contact est singulière.
+"""),
+
+11 : _("""
+Au moins une des mailles de contact que vous avez définies est de dimension %(i1)i, or la dimension de votre problème est : %(i2)i.
+Cette maille n'est donc pas une maille de bord. Il doit y avoir une erreur dans votre mise en données.
+
+Conseil :
+Vérifiez votre AFFE_MODELE et le type de vos mailles dans la définition des surfaces de contact. 
 """),
 
 12 : _("""

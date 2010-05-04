@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF_HYPOELAS VISCOPLASTIQUE
 # ssnd108a.para = tps_job 180 mem_job 64Mo mem_aster 50 ncpus 1 liste_test S
@@ -135,7 +135,8 @@ for icomp,comp in enumerate(compor) :
                    EXCIT=_F(CHARGE=clim_tra, FONC_MULT=F_trac,),
                    COMP_INCR=_F(RELATION=comp[0],DEFORMATION=comp[1],ITER_INTE_MAXI=iterintemaxi),
                    INCREMENT=_F(LIST_INST=DEFLIST1),
-                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,PREDICTION='ELASTIQUE',),                           
+                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,#PREDICTION='ELASTIQUE',
+                   ),                           
                              );
 
     # increments de rotation puis traction
@@ -159,7 +160,8 @@ for icomp,comp in enumerate(compor) :
                                         ITER_INTE_MAXI=iterintemaxi),
                            ETAT_INIT=_F(EVOL_NOLI=resu[icomp],),
                            INCREMENT=_F(LIST_INST=DEFLIST2,),
-                           NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=reaciter,PREDICTION='ELASTIQUE',),
+                           NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=reaciter,#PREDICTION='ELASTIQUE',
+                           ),
                            );
         DETRUIRE(CONCEPT=_F(NOM=(Linst2,DEFLIST2)),INFO=1)
         # nouvelle traction
@@ -181,7 +183,8 @@ for icomp,comp in enumerate(compor) :
                                         ITER_INTE_MAXI=iterintemaxi),
                            ETAT_INIT=_F(EVOL_NOLI=resu[icomp]),
                            INCREMENT=_F(LIST_INST=DEFLIST2,INST_FIN=tfintrac),
-                           NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=reaciter,PREDICTION='ELASTIQUE',),
+                           NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=reaciter,#PREDICTION='ELASTIQUE',
+                           ),
                                            );
         DETRUIRE(CONCEPT=_F(NOM=(Linst2,DEFLIST2)),INFO=1)
 

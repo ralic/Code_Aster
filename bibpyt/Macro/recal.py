@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF recal Macro  DATE 04/05/2010   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1082,7 +1082,7 @@ class CALCULS_ASTER:
       txt.append( "from Macro.reca_mac import extract_mac_array, get_modes, fenetre_mac\n" )
       txt.append( "_mac = extract_mac_array("+str(reponse[0])+")\n" )
       txt.append( "l_mac=[]\n" )
-      txt.append( "nb_freq=_mac.shape[0]\n" )
+      txt.append( "nb_freq=_mac.shape[1]\n" )
       if (self.DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI' and self.graph_mac):
           txt.append( "frame =fenetre_mac(" + self.DYNAMIQUE['MODE_EXP']+"," + self.DYNAMIQUE['MODE_CALC']+",_mac)\n" )
           txt.append( "list_exp,list_num =frame.get_list()\n" )

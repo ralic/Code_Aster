@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT", op=simu_point_mat_ops,sd_prod=table_s
            RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
            RELATION        =SIMP(statut='o',typ='TXM',defaut="ELAS",
-                                 into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_HYPER")),
+                                 into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_VMIS_PUIS","ELAS_HYPER")),
            DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GROT_GDEP",) ),
          ),
    MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
@@ -46,26 +46,30 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT", op=simu_point_mat_ops,sd_prod=table_s
    INCREMENT       =C_INCREMENT(),
    NEWTON          =C_NEWTON(),
    CONVERGENCE     =C_CONVERGENCE(),
-   ARCHIVAGE       =FACT(statut='f',
-    LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),                                                 
-    INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
-    PAS_ARCH        =SIMP(statut='f',typ='I' ),
-    PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-    ARCH_ETAT_INIT  =SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI"),
-    NUME_INIT       =SIMP(statut='f',typ='I'),
-    DETR_NUME_SUIV  =SIMP(statut='f',typ='TXM',into=("OUI",)),
-    CHAM_EXCLU      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                 into=("DEPL","SIEF_ELGA","VARI_ELGA",)),
-     ),      
       
    SUPPORT= SIMP(statut='f',typ='TXM',max=1,into=("POINT","ELEMENT",)),
    
    b_PM = BLOC(condition="SUPPORT !=  'ELEMENT'",fr="Simulation sans élément fini",
       NB_VARI_TABLE  =SIMP(statut='f',typ='I',max=1,),
+      ARCHIVAGE       =FACT(statut='f',
+       LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
+       PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+                           ),
                ),        
    b_EF = BLOC(condition="SUPPORT ==  'ELEMENT'",fr="Simulation sur un élément fini",                    
       MODELISATION  =SIMP(statut='f',typ='TXM',max=1,into=("3D","C_PLAN","D_PLAN",)),
       RECH_LINEAIRE   =C_RECH_LINEAIRE(),                                      
+      ARCHIVAGE       =FACT(statut='f',
+       LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
+       INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
+       PAS_ARCH        =SIMP(statut='f',typ='I' ),
+       PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+       ARCH_ETAT_INIT  =SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI"),
+       NUME_INIT       =SIMP(statut='f',typ='I'),
+       DETR_NUME_SUIV  =SIMP(statut='f',typ='TXM',into=("OUI",)),
+       CHAM_EXCLU      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                                    into=("DEPL","SIEF_ELGA","VARI_ELGA",)),
+        ),
                  ),                                            
    # on permet certaines variables de commandes scalaires, définies par une fonction du temps
    b_EFV = BLOC(condition="SUPPORT ==  'ELEMENT'",fr="variables de commande sur un élément fini",                    

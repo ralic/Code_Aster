@@ -3,7 +3,7 @@
      &                   DEPS,   SIGM,   VIM,    OPTION, ANGMAS,
      &                   SIGP,   VIP,    DSIDEP, CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/03/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -62,7 +62,7 @@ C  DSIDEP (R8*) : MATRICE CARREE
 C ----------------------------------------------------------------------
 C
       IMPLICIT NONE
-      INTEGER            NDIM,CODRET,I,NUNIT,KPG,KSP,NVARCM,IRET2
+      INTEGER    NDIM,CODRET,I,NUNIT,KPG,KSP,NVARCM,IRET2,IDBG,NUMA
       PARAMETER (NVARCM=5)
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*), OPTION, NOMVAR(NVARCM)
@@ -169,7 +169,13 @@ C     sechage
       CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,VARREF(5),IRET2)
       IF ( IRET2.NE.0) VARREF(5)=0.D0
 
-      CALL TECAEL(IZI,IZK)
+      IDBG=0
+      IF (IDBG.EQ.1) THEN
+         CALL TECAEL(IZI,IZK)
+         NUMA=ZI(IZI)
+      ELSE
+         NUMA=0
+      ENDIF
       IF (NDIM.EQ.3) THEN
          IF (ANGMAS(4).EQ.1.D0) THEN
              CALL NAUEUL(ANGMAS,ANGEUL)
@@ -184,7 +190,7 @@ C     sechage
          ANGEUL(3)=0.D0
       ENDIF
 
-      CALL ZASTER(ZI(IZI),MODELE,NVAR,NDEF,NUNIT,INSTAM,INSTAP,
+      CALL ZASTER(NUMA,MODELE,NVAR,NDEF,NUNIT,INSTAM,INSTAP,
      &       NVARCM,NOMVAR,VARPLU,VARMOI,VARREF,
      &       EPSM,DEPS,SIGM,VIM,NOPT,ANGEUL,SIGP,VIP,
      &       DSIDEP,CODRET)

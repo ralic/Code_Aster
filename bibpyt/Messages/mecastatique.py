@@ -1,4 +1,4 @@
-#@ MODIF mecastatique Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecastatique Messages  DATE 04/05/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,11 +21,6 @@
 def _(x) : return x
 
 cata_msg = {
-
-24 : _("""
- La charge de contact n'est pas traitée dans MECA_STATIQUE.
- Utilisez STAT_NON_LINE.
-"""),
 
 25 : _("""
  Le chargement contient plus d'une charge répartie.

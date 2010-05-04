@@ -1,5 +1,6 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/05/2010   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE CHOC DE DEUX MASSES AU COMPORTEMENT FLAMBAGE PLASTIQUE
+# sdnd105b.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,9 +44,9 @@ CON_LIM=AFFE_CHAR_MECA( MODELE=MODELE,DDL_IMPO=(
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                        _F(  GROUP_NO = 'AUTRE',
                                  CARA = 'M_TR_N',
-                                 VALE = ( 1., 1., 1., 1., 1., 1., 1.,
-                                         1., 1., 1., 1., 1., 1., 1.,
-                                         1., 1., 1., 1., 1., 1., 1.,)),
+                                 VALE = ( 1., 0., 1., 0., 0., 1., 0.,
+                                         0., 0., 0., 0., 0., 0., 0.,
+                                         0., 0., 0., 0., 0., 0., 0.,)),
                                _F(  GROUP_MA = 'STRUC',  CARA = 'K_TR_D_L',
                                  VALE = ( 0.0000001, 0., 0., 0., 0., 0., ),
                                  REPERE = 'GLOBAL'))                )
@@ -85,9 +86,9 @@ MACRO_PROJ_BASE(  BASE=MODE_MEC,MATR_ASSE_GENE=(
 
 #
 
-V02=1.41421356
+V02=2.
 
-V03=-1.41421356
+V03=-2.
 
 VIT_INI1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
               MAILLAGE=MAILLAGE,AFFE=(
@@ -139,19 +140,45 @@ TRAN_GEN=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
                                  NORM_OBST = (0., 1., 0.,),
                                  DIST_1 = 5.,
                                  DIST_2 = 5.,
-                                 RIGI_NOR = 1.,
+                                 RIGI_NOR = 0.5,
                                  FNOR_CRIT = 1.,
                                  FNOR_POST_FL = 0.5,
-                                 RIGI_NOR_POST_FL = 0.5),
+                                 RIGI_NOR_POST_FL = 0.25),
 
                       INCREMENT=_F(
                                   INST_INIT = 0.,   INST_FIN = 3.,
                                   PAS = 0.001)
                             )
 
+TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+                               METHODE='ADAPT',
+                      ETAT_INIT=_F(  RESU_GENE = TRAN_GEN,
+                                  INST_INIT = 3.),
+
+                      FLAMBAGE=_F(  NOEUD_1 = 'N02',
+                                 NOEUD_2 = 'N03',
+                                 OBSTACLE = BI_PLANY,
+                                 NORM_OBST = (0., 1., 0.,),
+                                 DIST_1 = 5.,
+                                 DIST_2 = 5.,
+                                 RIGI_NOR = 0.5,
+                                 FNOR_CRIT = 1.,
+                                 FNOR_POST_FL = 0.5,
+                                 RIGI_NOR_POST_FL = 0.25),
+
+                      INCREMENT=_F(
+                                 INST_FIN = 12.,  PAS = 0.001,PAS_MAXI = 0.005)
+                            )
+
+
 TABLE=POST_DYNA_MODA_T(   RESU_GENE=TRAN_GEN,
                               CHOC=_F(  OPTION = 'IMPACT')
                           )
+
+# references
+tfl = Numeric.pi/6
+dp = 3.
+t0 = Numeric.pi/6 +2*sqrt(3.) +(Numeric.pi+6)/sqrt(2.)
 
 TEST_TABLE(TABLE=TABLE,FILTRE=(
                 _F(  NOM_PARA = 'CALCUL',
@@ -159,7 +186,7 @@ TEST_TABLE(TABLE=TABLE,FILTRE=(
                 _F(  NOM_PARA = 'NOEUD',
                          VALE_K = 'N02')),
                NOM_PARA='INST_FLAMB',
-               VALE=0.3702,    PRECISION=3.E-3,
+               VALE=tfl,    PRECISION=3.E-3,
                REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(TABLE=TABLE,FILTRE=(
@@ -168,8 +195,21 @@ TEST_TABLE(TABLE=TABLE,FILTRE=(
                 _F(  NOM_PARA = 'NOEUD',
                          VALE_K = 'N03')),
                NOM_PARA='ECRAS_RESI',
-               VALE=1.5,    PRECISION=3.E-3,
+               VALE=dp,    PRECISION=3.E-3,
                REFERENCE='ANALYTIQUE' )
+
+TRAN=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN,
+                           NOM_CHAM='DEPL',
+                       )
+
+TEST_RESU(RESU=_F( RESULTAT = TRAN,
+                    NOM_CHAM = 'DEPL',  INST = t0,
+                    NOEUD = 'N02',       NOM_CMP = 'DX',
+                    CRITERE = ('ABSOLU', 'RELATIF',),
+                    PRECISION = ( 3.E-3, 2.E-4,),
+                    VALE = 0.,
+                    REFERENCE = 'ANALYTIQUE')
+             )
 
 FIN()
 #

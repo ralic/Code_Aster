@@ -1,4 +1,4 @@
-# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE CAS TEST HYDROSTATIQUE CAM_CLAY EN 3D; AVEC SIMU_POINT_MAT
 # ssnv160e.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -170,7 +170,6 @@ RESU3=SIMU_POINT_MAT(
                                 ),
                    SIGM_IMPOSE=_F(SIXX=PRESS2, SIYY=PRESS2, SIZZ=PRESS2,
                    ),
-                   ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI'),
                         );
 IMPR_TABLE(TABLE=RESU3)
 

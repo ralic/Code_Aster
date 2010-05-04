@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,7 +70,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
            itetra=1
            UTMESS('A','COMPOR2_1',valk=lcomp['DEFORMATION'] )
      elif COMP_ELAS != None :
-        lcomp = COMP_ELAS.List_F()
+        lcomp = COMP_ELAS.List_F()[0]
         if lcomp['DEFORMATION'] != 'PETIT' :
            itetra=1
            UTMESS('A','COMPOR2_1',valk=lcomp['DEFORMATION'] )
@@ -153,7 +153,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
              lr=lr8.Valeurs()
              REPONSE=CALC_TABLE( TABLE=__REP1,TITRE=Titre,
                            ACTION=_F(OPERATION='FILTRE',NOM_PARA='INST',
-                                     VALE=lr),
+                                     VALE=lr,PRECISION=ARCHIVAGE['PRECISION']),
                           )
           else :
              REPONSE=CALC_TABLE( TABLE=__REP1,TITRE=Titre,

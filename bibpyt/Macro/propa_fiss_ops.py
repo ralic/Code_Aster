@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 05/01/2010   AUTEUR GALENNE E.GALENNE 
+#@ MODIF propa_fiss_ops Macro  DATE 03/05/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,7 +95,10 @@ def dadN(C,N,M,DK,R) :
 from math import atan, atan2, cos, sin
 from Numeric import pi,array,asarray,Float,concatenate,sqrt,sign,resize,dot,zeros,transpose,matrixmultiply
 def betaf(k1,k2) :
-  beta = 2*atan(0.25*(k1/k2-abs(k2)/k2*sqrt((k1/k2)**2+8)))
+  if k2 == 0:
+     beta = 0.
+  else :
+     beta = 2*atan(0.25*(k1/k2-abs(k2)/k2*sqrt((k1/k2)**2+8)))
   return beta
 
 def cross_product(a,b):
@@ -300,7 +303,10 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
 #------------------------------------------------------------------
 # CAS 2 : METHODE_PROPA = 'MAILLAGE'
 #
+
+# il faudrait rendre cela plus automatique pour lever la limite à 52 points....
   ALPHABET=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+#            'AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AY','AZ'];
   
   if METHODE_PROPA == 'MAILLAGE' :
     Fissures =  args['FISSURE']

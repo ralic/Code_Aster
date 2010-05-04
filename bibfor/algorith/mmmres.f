@@ -1,7 +1,7 @@
       SUBROUTINE MMMRES(FONACT,DEFICO,RESOCO,DEPDEL,NOMA  ,
      &                  CNSINR,CNSPER,INST  ,VEASSE)
-C 
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
+C
+C MODIF ALGORITH  DATE 04/05/2010   AUTEUR DESOZA T.DESOZA 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,9 +28,9 @@ C
       REAL*8       INST(*)
       CHARACTER*19 CNSINR,CNSPER
       CHARACTER*19 VEASSE(*)
-      CHARACTER*24 DEFICO,RESOCO  
+      CHARACTER*24 DEFICO,RESOCO
       CHARACTER*19 DEPDEL
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - POST-TRAITEMENT)
@@ -69,7 +69,7 @@ C
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
-C 
+C
       INTEGER      IPC,NDD1,INOE,IN
       INTEGER      IBID,ILONG,IMA,ICMP,I,IZONE
       INTEGER      NBNO,NBPC,NNOCO,NNOM,NNOE
@@ -93,25 +93,25 @@ C
       CHARACTER*19 FCONT,FFROT
       CHARACTER*24 JEU,GLIE,GLIM,CONTAC,PREMIE
       CHARACTER*24 TABFIN,ETATCT,TYPENO,CONTNO,APJEU
-      INTEGER      JTABF ,JETAT ,JTYPNO,JNOCO ,JAPJEU      
+      INTEGER      JTABF ,JETAT ,JTYPNO,JNOCO ,JAPJEU
       CHARACTER*24 JEUSUR,MAESCL
       INTEGER      JUSU  ,JMAESC
       INTEGER      TYCO,CFDISI
       REAL*8       DELTAT,R,RX,RY,RZ,IMP,IMPX,IMPY,IMPZ
       INTEGER      IFM,NIV
       LOGICAL      ISFONC,MMINFL,LCTFC,LFROT
-      INTEGER      JCNSVR,JCNSLR,JCNSVP,JCNSLP    
+      INTEGER      JCNSVR,JCNSLR,JCNSVP,JCNSLP
       PARAMETER (EPS=1.D-6)
-      
+
 C ----------------------------------------------------------------------
       DATA LICMP4
      &   / 'DX'     ,'DY'      ,
-     &     'LAGS_C' ,'LAGS_F1' /   
+     &     'LAGS_C' ,'LAGS_F1' /
       DATA LICMP6
      &   / 'DX'     ,'DY'      ,'DZ'      ,
-     &     'LAGS_C' ,'LAGS_F1' ,'LAGS_F2' /   
+     &     'LAGS_C' ,'LAGS_F1' ,'LAGS_F2' /
       DATA LICNT3
-     &   / 'DX'     ,'DY'      ,'DZ'      /      
+     &   / 'DX'     ,'DY'      ,'DZ'      /
 C
 C ----------------------------------------------------------------------
 C
@@ -130,39 +130,39 @@ C
       GLIE   = '&&MMMRES.GLIE'
       GLIM   = '&&MMMRES.GLIM'
       CONTAC = '&&MMMRES.CONTAC'
-      PREMIE = '&&MMMRES.PREMIE'    
+      PREMIE = '&&MMMRES.PREMIE'
 C
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-C 
+C
       TABFIN = RESOCO(1:14)//'.TABFIN'
-      ETATCT = RESOCO(1:14)//'.ETATCT'      
+      ETATCT = RESOCO(1:14)//'.ETATCT'
       TYPENO = DEFICO(1:16)//'.TYPENO'
       CONTNO = DEFICO(1:16)//'.NOEUCO'
        APJEU = RESOCO(1:14)//'.APJEU '
       JEUSUR = RESOCO(1:14)//'.JEUSUR'
       MAESCL = DEFICO(1:16)//'.MAESCL'
       CALL JEVEUO(TABFIN,'L',JTABF)
-      CALL JEVEUO(ETATCT,'E',JETAT)      
+      CALL JEVEUO(ETATCT,'E',JETAT)
       CALL JEVEUO(TYPENO,'L',JTYPNO)
       CALL JEVEUO(CONTNO,'L',JNOCO)
       CALL JEVEUO(APJEU ,'L',JAPJEU)
       CALL JEVEUO(JEUSUR,'L',JUSU)
-      CALL JEVEUO(MAESCL,'L',JMAESC)        
-C      
+      CALL JEVEUO(MAESCL,'L',JMAESC)
+C
       ZTABF  = CFMMVD('ZTABF')
       ZETAT  = CFMMVD('ZETAT')
-      ZPERC  = CFMMVD('ZPERC') 
+      ZPERC  = CFMMVD('ZPERC')
       ZRESU  = CFMMVD('ZRESU')
       ZMAES  = CFMMVD('ZMAES')
       DELTAT = INST(2)
-      NNOCO  = CFDISI(DEFICO,'NNOCO') 
-      NZOCO  = CFDISI(DEFICO,'NZOCO') 
+      NNOCO  = CFDISI(DEFICO,'NNOCO')
+      NZOCO  = CFDISI(DEFICO,'NZOCO')
       NDIM   = CFDISI(DEFICO,'NDIM' )
       NTMAE  = CFDISI(DEFICO,'NTMAE')
-      NTPC   = CFDISI(DEFICO,'NTPC')      
+      NTPC   = CFDISI(DEFICO,'NTPC')
 C
 C --- ACCES AU MAILLAGE
-C      
+C
       CALL JEVEUO(NOMA(1:8)//'.TYPMAIL','L',IATYMA)
       CALL JEVEUO(JEXATR(NOMA(1:8)//'.CONNEX','LONCUM'),'L',ILONG)
       CALL JEVEUO(NOMA(1:8)//'.CONNEX','L',ICONEX)
@@ -181,29 +181,29 @@ C       COMPLIANCE (ASPERITE)
         ZR(JETAT-1+ZETAT*(IPC-1)+3) = ZR(JTABF+ZTABF*(IPC-1)+23)
 C       MEMOIRE DE GLISSIERE
         ZR(JETAT-1+ZETAT*(IPC-1)+4) = ZR(JTABF+ZTABF*(IPC-1)+17)
-1000  CONTINUE      
+1000  CONTINUE
 C
 C --- RECHERCHE DE LA METHODE D INTEGRATION
 C
-      DO 10 IZONE = 1,NZOCO 
-        TYCO   = MMINFI(DEFICO,'INTEGRATION'      ,IZONE )    
+      DO 10 IZONE = 1,NZOCO
+        TYCO   = MMINFI(DEFICO,'INTEGRATION'      ,IZONE )
         IF (TYCO.NE.1) THEN
           CALL U2MESS('A','CONTACT3_16')
           GOTO 999
-        ENDIF    
+        ENDIF
    10 CONTINUE
 C
 C --- FROTTEMENT SUR AU MOINS UNE ZONE ?
 C
-      LCTFC  = ISFONC(FONACT,'FROT_CONTINU')     
+      LCTFC  = ISFONC(FONACT,'FROT_CONTINU')
 C
 C --- TRANSFORMATION DU CHAM_NO DEPDEL
-C     
+C
       CALL CNOCNS(DEPDEL,'V',DEPDES)
 C
 C --- REDUCTION DU CHAM_NO_S DES DDL EN UN CHAM_NO_S DES LAGRANGES
 C --- DE CONTACT/FROTTEMENT
-C     
+C
       IF (NDIM.EQ.3) THEN
         IF ( LCTFC ) THEN
           NDD1 = 6
@@ -219,7 +219,7 @@ C
         ENDIF
         CALL CNSRED(DEPDES,0,0,NDD1,LICMP4,'V',DEPCN)
       ELSE
-        CALL ASSERT(.FALSE.)   
+        CALL ASSERT(.FALSE.)
       END IF
 C
 C --- ACCES AU CHAM_NO_S POUR LES DEPLACEMENTS/LAGRANGES
@@ -244,17 +244,17 @@ C
         DO 711 ICMP = 1,ZRESU
           ZL(JCNSLR-1+ZRESU*(IPC-1)+ICMP) = .TRUE.
           ZR(JCNSVR-1+ZRESU*(IPC-1)+ICMP) = 0.D0
- 711    CONTINUE    
+ 711    CONTINUE
         DO 712 ICMP = 1,ZPERC
           ZL(JCNSLP-1+ZPERC*(IPC-1)+ICMP) = .TRUE.
- 712    CONTINUE        
- 710  CONTINUE 
+ 712    CONTINUE
+ 710  CONTINUE
 C
 C --- FORCES NODALES DE CONTACT
 C
       CALL NMCHEX(VEASSE,'VEASSE','CNELTC',FCONT)
       CALL CNOCNS(FCONT,'V',FCONTS)
-      
+
       CALL CNSRED(FCONTS,0,0,NDIM,LICNT3,'V',FCTCN)
       CALL JEVEUO(FCTCN//'.CNSV','L',JCONT)
       CALL JEVEUO(FCTCN//'.CNSL','L',JCONL)
@@ -266,12 +266,12 @@ C
         CALL CNOCNS(FFROT,'V',FFROTS)
         CALL CNSRED(FFROTS,0,0,NDIM,LICNT3,'V',FFROCN)
         CALL JEVEUO(FFROCN//'.CNSV','L',JFROT)
-        CALL JEVEUO(FFROCN//'.CNSL','L',JFROL) 
-      ENDIF   
+        CALL JEVEUO(FFROCN//'.CNSL','L',JFROL)
+      ENDIF
 C
 C --- NOMBRE DE POINTS D'INTEGRATION DE CONTACT
 C
-      NBNO  = 0    
+      NBNO  = 0
       DO 20 IMA = 1,NTMAE
         NBPC = ZI(JMAESC+ZMAES*(IMA-1)+3-1)
         NBNO = NBNO + NBPC
@@ -292,7 +292,7 @@ C
       CALL WKVECT(GLIM  ,'V V R',2*NBNO,JGLIM)
       CALL WKVECT(CONTAC,'V V R',NBNO  ,JCONTA)
       CALL WKVECT(PREMIE,'V V L',NBNOM ,JPREMI)
-      
+
 C
 C --- TRAITEMENT EN DIMENSION TROIS
 C
@@ -372,13 +372,13 @@ C
      &                                    DEPLPE(2)*TAU1(2) +
      &                                    DEPLPE(3)*TAU1(3)
             ZR(JGLIE+2* (NTPC+IPC-1)+1) = DEPLPE(1)*TAU2(1) +
-     &                                    DEPLPE(2)*TAU2(2) + 
+     &                                    DEPLPE(2)*TAU2(2) +
      &                                    DEPLPE(3)*TAU2(3)
             ZR(JGLIM+2* (NTPC+IPC-1))   = DEPLPM(1)*TAU1(1) +
      &                                    DEPLPM(2)*TAU1(2) +
      &                                    DEPLPM(3)*TAU1(3)
             ZR(JGLIM+2* (NTPC+IPC-1)+1) = DEPLPM(1)*TAU2(1) +
-     &                                    DEPLPM(2)*TAU2(2) + 
+     &                                    DEPLPM(2)*TAU2(2) +
      &                                    DEPLPM(3)*TAU2(3)
    50     CONTINUE
           NTPC = NTPC + NBPC
@@ -468,35 +468,17 @@ C
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+20)= ZR(JUSU-1+INOE)
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) = ZR(JTABF+
      &                                              ZTABF*(INOE-1)+22)
-                    GLI1 = ZR(JGLIE+2* (INOE-1)) -
-     &                     ZR(JGLIM+2* (INOE-1))
-                    GLI2 = ZR(JGLIE+2* (INOE-1)+1) -
-     &                     ZR(JGLIM+2* (INOE-1)+1)
-                    GLI  = SQRT(GLI1**2+GLI2**2)
-                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+7) = GLI1
-                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+8) = GLI2
-                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+9) = GLI
                   ELSE
-                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2) = 
+                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2) =
      &                MIN(ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2),
      &                    -ZR(JAPJEU-1+INOE))
-                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) = 
+                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) =
      &                MAX(ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1),
      &                    ZR(JTABF+ZTABF*(INOE-1)+22))
-                    GLI1 = ZR(JGLIE+2* (INOE-1)) -
-     &                     ZR(JGLIM+2* (INOE-1))
-                    GLI2 = ZR(JGLIE+2* (INOE-1)+1) -
-     &                     ZR(JGLIM+2* (INOE-1)+1)
-                    GLI  = SQRT(GLI1**2+GLI2**2)
-                    IF (GLI.GT.ZR(JCNSVR-1+ZRESU*(NUNOE-1)+9)) THEN
-                      ZR(JCNSVR-1+ZRESU* (NUNOE-1)+9) = GLI
-                      ZR(JCNSVR-1+ZRESU* (NUNOE-1)+7) = GLI1
-                      ZR(JCNSVR-1+ZRESU* (NUNOE-1)+8) = GLI2
-                    END IF
                   END IF
 C
 C --- ETAT DU CONTACT: CONT
-C                  
+C
                   CONT = ZR(JCNSVR-1+ZRESU* (NUNOE-1)+1)
 C
 C --- RECUPERATION DES FORCES NODALES DE CONTACT
@@ -511,15 +493,27 @@ C
                     RN  = SQRT(RNX**2+RNY**2+RNZ**2)
 C
 C --- Y-A-T-IL DU FROTTEMENT ?
-C 
+C
                     LFROT = MMINFL(DEFICO,'FROTTEMENT_ZONE',IZONE)
-                    
-                    IF (LFROT) THEN                
+
+                    IF (LFROT) THEN
+C
+C --- CALCUL DU GLISSEMENT
+C
+                      GLI1 = ZR(JGLIE+2*(INOE-1))-ZR(JGLIM+2*(INOE-1))
+                      GLI2 = ZR(JGLIE+2*(INOE-1)+1) -
+     &                       ZR(JGLIM+2*(INOE-1)+1)
+                      GLI  = SQRT(GLI1**2+GLI2**2)
+                      IF (GLI.GT.ZR(JCNSVR-1+ZRESU*(NUNOE-1)+9)) THEN
+                        ZR(JCNSVR-1+ZRESU* (NUNOE-1)+9) = GLI
+                        ZR(JCNSVR-1+ZRESU* (NUNOE-1)+7) = GLI1
+                        ZR(JCNSVR-1+ZRESU* (NUNOE-1)+8) = GLI2
+                      END IF
 C
 C --- NORME DU MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT
 C
-                      LAGSF = SQRT((ZR(JDEPDE-1+6*(NUNOE-1)+5))**2+
-     &                             (ZR(JDEPDE-1+6*(NUNOE-1)+6))**2)
+                      LAGSF = SQRT(ZR(JDEPDE-1+6*(NUNOE-1)+5)**2+
+     &                             ZR(JDEPDE-1+6*(NUNOE-1)+6)**2)
                       CALL ASSERT(ZL(JFROL-1+3* (NUNOE-1)+1))
                       CALL ASSERT(ZL(JFROL-1+3* (NUNOE-1)+2))
                       CALL ASSERT(ZL(JFROL-1+3* (NUNOE-1)+3))
@@ -542,7 +536,7 @@ C
                     ELSE
                       LAGSF = 0.D0
                       ZR(JCNSVR-1+ZRESU* (NUNOE-1)+1) = 2.D0
-                    ENDIF                      
+                    ENDIF
                   END IF
                 END IF
    80         CONTINUE
@@ -553,14 +547,14 @@ C --- CALCUL DES PERCUSSIONS
 C
               R = SQRT((RNX+RTAX+RTGX)**2.D0+(RNY+RTAY+RTGY)**2.D0+
      &                 (RNZ+RTAZ+RTGZ)**2.D0)
-     
-                   
+
+
               ZL(JCNSLP-1+ZPERC*(NUNOE-1)+1) = .TRUE.
               ZL(JCNSLP-1+ZPERC*(NUNOE-1)+2) = .TRUE.
               ZL(JCNSLP-1+ZPERC*(NUNOE-1)+3) = .TRUE.
               ZL(JCNSLP-1+ZPERC*(NUNOE-1)+4) = .TRUE.
-C              
-              IF (R .LE. EPS) THEN           
+C
+              IF (R .LE. EPS) THEN
                 IMP    = 0.D0
                 IMPX   = 0.D0
                 IMPY   = 0.D0
@@ -569,20 +563,20 @@ C
                 ZR(JCNSVP-1+ZPERC*(NUNOE-1)+2) = 0.D0
                 ZR(JCNSVP-1+ZPERC*(NUNOE-1)+3) = 0.D0
                 ZR(JCNSVP-1+ZPERC*(NUNOE-1)+4) = 0.D0
-              ELSE    
+              ELSE
                 RX     = RNX + RTAX + RTGX
                 RY     = RNY + RTAY + RTGY
-                RZ     = RNZ + RTAZ + RTGZ                     
-                     
+                RZ     = RNZ + RTAZ + RTGZ
+
                 IMP    = ZR(JCNSVP-1+ZPERC*(NUNOE-1)+1) + R*DELTAT
                 ZR(JCNSVP-1+ZPERC*(NUNOE-1)+1) = IMP
                 IMPX   = ZR(JCNSVP-1+ZPERC*(NUNOE-1)+2) + RX*DELTAT
-                ZR(JCNSVP-1+ZPERC*(NUNOE-1)+2) = IMPX                
+                ZR(JCNSVP-1+ZPERC*(NUNOE-1)+2) = IMPX
                 IMPY   = ZR(JCNSVP-1+ZPERC*(NUNOE-1)+3) + RY*DELTAT
-                ZR(JCNSVP-1+ZPERC*(NUNOE-1)+3) = IMPY   
+                ZR(JCNSVP-1+ZPERC*(NUNOE-1)+3) = IMPY
                 IMPZ   = ZR(JCNSVP-1+ZPERC*(NUNOE-1)+4) + RZ*DELTAT
-                ZR(JCNSVP-1+ZPERC*(NUNOE-1)+4) = IMPZ  
-                         
+                ZR(JCNSVP-1+ZPERC*(NUNOE-1)+4) = IMPZ
+
               ENDIF
 C
 C --- ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CREE
@@ -607,7 +601,7 @@ C
               ZR(JCNSVR-1+ZRESU*(NUNOE-1)+22)= IMPX
               ZR(JCNSVR-1+ZRESU*(NUNOE-1)+23)= IMPY
               ZR(JCNSVR-1+ZRESU*(NUNOE-1)+24)= IMPZ
-C              
+C
               ZL(JCNSLR-1+ (NUNOE-1)*ZRESU+1) = .TRUE.
               ZL(JCNSLR-1+ (NUNOE-1)*ZRESU+2) = .TRUE.
               ZL(JCNSLR-1+ (NUNOE-1)*ZRESU+3) = .TRUE.
@@ -631,12 +625,12 @@ C
               ZL(JCNSLR-1+ (NUNOE-1)*ZRESU+21)= .TRUE.
               ZL(JCNSLR-1+ (NUNOE-1)*ZRESU+22)= .TRUE.
               ZL(JCNSLR-1+ (NUNOE-1)*ZRESU+23)= .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*ZRESU+24)= .TRUE. 
+              ZL(JCNSLR-1+ (NUNOE-1)*ZRESU+24)= .TRUE.
             END IF
   100     CONTINUE
 C
 C --- TRAITEMENT EN DIMENSION DEUX
-C     
+C
       ELSE IF (NDIM.EQ.2) THEN
 C
 C --- CALCUL DU JEU AUX NOEUDS EN PRENANT LE MIN DES JEUX AUX NOEUDS,
@@ -753,7 +747,7 @@ C
 C
 C --- DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 C --- POUR LE CALCUL DU GLISSEMENT
-C                
+C
                 DO 150 I = 1,NNOE
                   NUNO = ZI(ICONEX+ZI(ILONG-1+NUMMAE)+I-2)
                   COORE(1) = COORE(1)+ZR(JCOOR-1+3*(NUNO-1)+1)*FF(I)
@@ -779,13 +773,8 @@ C
                     ZL(JPREMI-1+NUNOE) = .TRUE.
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2) = -ZR(JAPJEU-1+INOE)
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+20)= ZR(JUSU-1+INOE)
-                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) = 
+                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) =
      &                              ZR(JTABF+ZTABF*(INOE-1)+22)
-
-                    GLI1 = ZR(JGLIE+INOE-1) - ZR(JGLIM+INOE-1)
-                    GLI  = SQRT(GLI1**2)
-                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+7) = GLI1
-                    ZR(JCNSVR-1+ZRESU*(NUNOE-1)+9) = GLI
                   ELSE
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2) =
      &                MIN(ZR(JCNSVR-1+ZRESU*(NUNOE-1)+2),
@@ -793,12 +782,6 @@ C
                     ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) =
      &                MAX(ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1),
      &                    ZR(JTABF+ZTABF*(INOE-1)+22))
-                    GLI1 = ZR(JGLIE+INOE-1) - ZR(JGLIM+INOE-1)
-                    GLI  = SQRT(GLI1**2)
-                    IF (GLI.GT.ZR(JCNSVR-1+ZRESU*(NUNOE-1)+9)) THEN
-                      ZR(JCNSVR-1+ZRESU*(NUNOE-1)+9) = GLI
-                      ZR(JCNSVR-1+ZRESU*(NUNOE-1)+7) = GLI1
-                    END IF
                   END IF
 C
 C --- ETAT DU CONTACT: CONT
@@ -806,19 +789,28 @@ C
                   CONT = ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1)
 C
 C --- RECUPERATION DES FORCES NODALES DE CONTACT
-C                    
+C
                   IF (CONT.GE.1.D0) THEN
                     CALL ASSERT(ZL(JCONL-1+2*(NUNOE-1)+1))
                     CALL ASSERT(ZL(JCONL-1+2*(NUNOE-1)+2))
                     RNX = ZR(JCONT-1+2*(NUNOE-1)+1)
                     RNY = ZR(JCONT-1+2*(NUNOE-1)+2)
-                    
+
                     RN  = SQRT(RNX**2+RNY**2)
 C
 C --- Y-A-T-IL DU FROTTEMENT ?
-C  
+C
                     LFROT = MMINFL(DEFICO,'FROTTEMENT_ZONE',IZONE)
-                    IF (LFROT) THEN                        
+                    IF (LFROT) THEN
+C
+C --- CALCUL DU GLISSEMENT
+C
+                      GLI1 = ZR(JGLIE+INOE-1) - ZR(JGLIM+INOE-1)
+                      GLI  = SQRT(GLI1**2)
+                      IF (GLI.GT.ZR(JCNSVR-1+ZRESU*(NUNOE-1)+9)) THEN
+                        ZR(JCNSVR-1+ZRESU*(NUNOE-1)+9) = GLI
+                        ZR(JCNSVR-1+ZRESU*(NUNOE-1)+7) = GLI1
+                      END IF
 C
 C --- NORME DU MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT
 C
@@ -842,7 +834,7 @@ C
                     ELSE
                       LAGSF = 0.D0
                       ZR(JCNSVR-1+ZRESU*(NUNOE-1)+1) = 2.D0
-                    ENDIF                      
+                    ENDIF
                   END IF
                 END IF
   160         CONTINUE

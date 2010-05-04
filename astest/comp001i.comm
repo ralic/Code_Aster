@@ -1,5 +1,5 @@
-# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
-# TITRE TEST EN 3D VMIS_ISOT_PUIS, UTILISANT SIMU_POINT_MAT
+# MODIF  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
+# TITRE TEST EN 3D ELAS_VMIS_PUIS, ELAS_VMIS_TRAC UTILISANT SIMU_POINT_MAT
 # comp001i.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,13 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='COMP001I',NIV_PUB_WEB='INTERNET',),);
+
+from Utilitai.veri_matr_tang import VERI_MATR_TANG
+
+
+DEBUT(CODE=_F(NOM='COMP001I',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',IMPR_MACRO='NON');
+
+# DEFINITION DES DEUX MATERIAUX EQUIVALENT POUR UNE INTERCOMPARAISON
 
 YOUNG=200000.0
 SY=500.0
@@ -27,1500 +33,315 @@ POISSON=0.3
 APUI=20000
 NPUI=3.5
 
-MAIL=LIRE_MAILLAGE();
+# def des materiaux
+ACIER = [None]*3
+ACIER2 = [None]*3
+#unite en Pa
+C_Pa = 1.e+6
+YOUNG_Pa = YOUNG * C_Pa
+SY_Pa = SY * C_Pa;
 
-
-# DEFINITION DES DEUX MATERIAUX EQUIVALENT POUR UNE INTERCOMPARAISON
-
-ACIER=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
-                            NU=POISSON),
+ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
+                               NU=POISSON),
+                    ECRO_PUIS=_F(A_PUIS=APUI,
+                                 N_PUIS=NPUI,
+                                 SY=SY_Pa,
+                                 ),
+                                 );
+                                 
+#unite en MPa
+ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                               NU=POISSON),
                     ECRO_PUIS=_F(A_PUIS=APUI,
                                  N_PUIS=NPUI,
                                  SY=SY,
-                                 ),);
+                                 ),
+                   )
+                                 
+# courbe de traction equivalente
 
-EPSE=SY/YOUNG
+# courbe R(p)
+Rdep = FORMULE(VALE='SY+SY*(YOUNG*p/APUI/SY)**(1./NPUI)',NOM_PARA='p',);
 
-ECROU = FORMULE(VALE='SY+SY*(YOUNG/(APUI*SY)*(EPSI-EPSE))**(1./NPUI)',
-               NOM_PARA='EPSI',);
+LISTE=DEFI_LIST_REEL(DEBUT=0.,INFO=1,
+                        INTERVALLE=_F(JUSQU_A=1.,
+                                      NOMBRE=1000,),);
 
-LISTE=DEFI_LIST_REEL(DEBUT=EPSE,INFO=1,
-                        INTERVALLE=_F(JUSQU_A=2,
-                                      NOMBRE=500,),);
-
-ECROUI=CALC_FONC_INTERP(FONCTION=ECROU,
-                       INFO=1,
+Rdep2=CALC_FONC_INTERP(FONCTION=Rdep,
                        LIST_PARA=LISTE,
-                       NOM_PARA='EPSI',
-                       PROL_DROITE='EXCLU',
-                       PROL_GAUCHE='EXCLU',);
+                       NOM_PARA='p');
+                       
+# transforamtion en courbe Sigma=F(epsilon)
 
-MO=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+TRdep=CREA_TABLE(FONCTION=_F(FONCTION=Rdep2,PARA=('p','SIGM')))
 
+EPSI = FORMULE(VALE='p+SIGM/YOUNG',NOM_PARA=('p','SIGM'),)
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+TTRAC = CALC_TABLE(TABLE = TRdep,
+ACTION = _F (OPERATION = 'OPER',FORMULE = EPSI,NOM_PARA = ('EPSI')))
 
+Ftrac=RECU_FONCTION(TABLE=TTRAC,PARA_X='EPSI',PARA_Y='SIGM')
 
-ACIER2=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+ACIER2[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                             NU=POISSON),
-                    TRACTION=_F(SIGM=ECROUI),);
+                    TRACTION=_F(SIGM=Ftrac),);
+
+FtracPa=CALC_FONCTION(COMB=(
+                          _F( FONCTION = Ftrac, COEF =  C_Pa), 
+                          ) );
+
+ACIER2[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
+                            NU=POISSON),
+                    TRACTION=_F(SIGM=FtracPa),);
+                    
+                    
+             
+                    
+compor1='ELAS_VMIS_PUIS'
 
 
-CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=ACIER2,),);
+#Discretisation du calcul
+#Ncal = 10
+Ncal = 7
+N_pas = 4*[1] + [1, 5, 25, 125, 625, 3125]
+N_cas = len(N_pas)
 
-INSTANTS=DEFI_LIST_REEL( VALE =[i for i in range(8)],)
+# les differents calculs effectues et les precisions sur chaque TEST_RESU
+label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
+prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
+prec_tgt=1.e-8
 
-#######################################################################
 
-# definition du trajet de chargement 3D
+
+# utilitaires divers
+INCLUDE(UNITE=91)
+# definition du chargement 3D
+INCLUDE(UNITE=93)
+
+ch_param=['V1','VMIS','TRACE','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
+
+
+##################################################################################
+#  TEST 3D ELAS_VMIS_PUIS
+##################################################################################
+                                 
+
+#Discretisation du calcul
+
+RESU=[None]*Ncal
+R_SI=[None]*len(ch_param)
+TMP_S=[None]
+
+#pointeur materiau
+P_imat = [0] + [1] + (N_cas-2)*[1]
+#pointeur deformation
+P_idef = 2*[0] + [1] + [2] + (N_cas-4)*[0]
+
+#Boucle sur l'ensemble des calculs
+for i in range(Ncal):
+        N = N_pas[i]
+        imat = P_imat[i]
+        idef = P_idef[i]
+        eps_imp = V_EPS[idef]
+        temps=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+
+#       Resout le pb a deformation imposee
+        RESU[i]=SIMU_POINT_MAT( INFO=1,
+                   COMP_ELAS=_F(RELATION=compor1,ITER_INTE_MAXI=10,RESI_INTE_RELA=1.E-6),
+                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                   MATER      = ACIER[imat],  
+                   ARCHIVAGE = _F(LIST_INST = temps_ar),
+                   INCREMENT=_F(LIST_INST=temps,),
+                   EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
+                                  EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
+                    );
+#       On renomme les composantes en fonction de  l'ordre de discretisation
+        N = N_pas[i]
+        chN=label_cal[i]+str(N)
+        for ch in ch_param:
+                j=ch_param.index(ch)
+                chnew=ch+chN
+                ##Extraction par type de variable 
+                if i==0 :
+                        R_SI[j]=CALC_TABLE( TABLE=RESU[i],TITRE = ' ',
+                                     ACTION=( _F(OPERATION='EXTR',
+                                            NOM_PARA=('INST',ch,),),
+                                              _F(OPERATION='RENOMME',
+                                                NOM_PARA=(ch,chnew,),),),);
+                else:
+                        TMP_S=CALC_TABLE( TABLE=RESU[i],TITRE = ' ',
+                                     ACTION=(_F(OPERATION='EXTR',
+                                            NOM_PARA=('INST',ch,),),
+                                                _F(OPERATION='RENOMME',
+                                                NOM_PARA=(ch,chnew,),),
+                                                                ),);
+                        R_SI[j]=CALC_TABLE( reuse=R_SI[j], TABLE=R_SI[j], TITRE = ' ',
+                                        ACTION=( _F(OPERATION='COMB',
+                                        TABLE=TMP_S,NOM_PARA='INST',),
+                                                ),);
+                        DETRUIRE ( CONCEPT = _F (NOM = TMP_S,),)
+        DETRUIRE ( CONCEPT = _F (NOM = temps,),)
         
-#######################################################################
+# TEST_RESU sur les erreurs relatives 
+# label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
+prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
+prec_zero=[1.E-10, 0.01, 0.01]
+
+# les quantites (invariants...) sur lequels portent les calculs d'erreur et les test_resu
+ch_param2=['V1','VMIS','TRACE']
+TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
+
+# impressions
+                
+for i in range(len(ch_param)):
+        IMPR_TABLE(TABLE=R_SI[i])
+        
+
+        
+                
+# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
+TEST_TABLE(TABLE=R_SI[0],
+           NOM_PARA='V1_Pa_1',VALE=7.84215E-03,
+           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[1],
+           NOM_PARA='VMIS_Pa_1',VALE=5.40922E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=R_SI[3],
+           NOM_PARA='SIXX_Pa_1',VALE=-3.44568E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+
+for i in range(Ncal):
+    DETRUIRE ( CONCEPT = _F(NOM = RESU[i]),)
+for i in range(len(ch_param)):
+    DETRUIRE ( CONCEPT = _F(NOM = R_SI[i]),)
+
+##################################################################################
+#  TEST 3D ELAS_VMIS_TRAC
+##################################################################################
+
+                                 
+compor2='ELAS_VMIS_TRAC'
+
+#Discretisation du calcul
+
+RESU=[None]*Ncal
+R_SI=[None]*len(ch_param)
+TMP_S=[None]
+
+#pointeur materiau
+P_imat = [0] + [1] + (N_cas-2)*[1]
+#pointeur deformation
+P_idef = 2*[0] + [1] + [2] + (N_cas-4)*[0]
+
+#Boucle sur l'ensemble des calculs
+for i in range(Ncal):
+        N = N_pas[i]
+        imat = P_imat[i]
+        idef = P_idef[i]
+        eps_imp = V_EPS[idef]
+        temps=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+
+#       Resout le pb a deformation imposee
+        RESU[i]=SIMU_POINT_MAT( INFO=1,
+                   COMP_ELAS=_F(RELATION=compor2),
+                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                   MATER      = ACIER2[imat],  
+                   ARCHIVAGE = _F(LIST_INST = temps_ar),
+                   INCREMENT=_F(LIST_INST=temps,),
+                   EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
+                                  EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
+                    );
+#       On renomme les composantes en fonction de  l'ordre de discretisation
+        N = N_pas[i]
+        chN=label_cal[i]+str(N)
+        for ch in ch_param:
+                j=ch_param.index(ch)
+                chnew=ch+chN
+                ##Extraction par type de variable 
+                if i==0 :
+                        R_SI[j]=CALC_TABLE( TABLE=RESU[i],TITRE = ' ',
+                                     ACTION=( _F(OPERATION='EXTR',
+                                            NOM_PARA=('INST',ch,),),
+                                              _F(OPERATION='RENOMME',
+                                                NOM_PARA=(ch,chnew,),),),);
+                else:
+                        TMP_S=CALC_TABLE( TABLE=RESU[i],TITRE = ' ',
+                                     ACTION=(_F(OPERATION='EXTR',
+                                            NOM_PARA=('INST',ch,),),
+                                                _F(OPERATION='RENOMME',
+                                                NOM_PARA=(ch,chnew,),),
+                                                                ),);
+                        R_SI[j]=CALC_TABLE( reuse=R_SI[j], TABLE=R_SI[j], TITRE = ' ',
+                                        ACTION=( _F(OPERATION='COMB',
+                                        TABLE=TMP_S,NOM_PARA='INST',),
+                                                ),);
+                        DETRUIRE ( CONCEPT = _F (NOM = TMP_S,),)
+        DETRUIRE ( CONCEPT = _F (NOM = temps,),)
+        
+# TEST_RESU sur les erreurs relatives 
+# label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
+prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
+prec_zero=[1.E-10, 0.01, 0.01]
 
+# les quantites (invariants...) sur lequels portent les calculs d'erreur et les test_resu
+ch_param2=['V1','VMIS','TRACE']
+TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
 
-#fonctions chargement  
-calibrage = 3.5;
-Ctau = ((2 * calibrage) * ((1 + POISSON) / (2 * YOUNG)));
-Ctrac = (calibrage * (1 / YOUNG));
-Y_trace=DEFI_LIST_REEL( VALE = (0., 150., 150., -50, 0., 50., -150., -150.),)
-Trace=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE_PARA= INSTANTS,
-                    VALE_FONC= Y_trace,
-                    PROL_DROITE='EXCLU',
-                    PROL_GAUCHE='EXCLU',);
 
-Y_Devi_1=DEFI_LIST_REEL( VALE = (0., 75., 150., 150, 0., -150., -150., -75.),)
-Devi_1=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE_PARA= INSTANTS,
-                    VALE_FONC= Y_Devi_1, 
-                     PROL_DROITE='EXCLU',
-                     PROL_GAUCHE='EXCLU',);
 
-Y_Devi_2=DEFI_LIST_REEL( VALE = (0., 75., -50., 100, 0., -100., 50., -75.),)
-Devi_2=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE_PARA= INSTANTS,
-                    VALE_FONC= Y_Devi_2, 
-                     PROL_DROITE='EXCLU',
-                     PROL_GAUCHE='EXCLU',);
 
-Y_tauxy=DEFI_LIST_REEL( VALE = (0., 200., 100., 300, 0., -300., -100., -200.),)
-TAU_xy=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE_PARA= INSTANTS,
-                    VALE_FONC= Y_tauxy, 
-                     PROL_DROITE='EXCLU',
-                     PROL_GAUCHE='EXCLU',);
+# impressions
+                
+for i in range(len(ch_param)):
+        IMPR_TABLE(TABLE=R_SI[i])
+        
 
-Y_tauxz=DEFI_LIST_REEL( VALE = (0., -100., 100., 200, 0., -200., -100., 100.),)
-TAU_xz=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE_PARA= INSTANTS,
-                    VALE_FONC= Y_tauxz, 
-                     PROL_DROITE='EXCLU',
-                     PROL_GAUCHE='EXCLU',);
+        
+                
+# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
+TEST_TABLE(TABLE=R_SI[0],
+           NOM_PARA='V1_Pa_1',VALE=7.84215E-03,
+           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
 
-Y_tauyz=DEFI_LIST_REEL( VALE = (0., 0., 200., -100, 0., 100., -200., 0.),)
-TAU_yz=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE_PARA= INSTANTS,
-                    VALE_FONC= Y_tauyz, 
-                     PROL_DROITE='EXCLU',
-                     PROL_GAUCHE='EXCLU',);
+TEST_TABLE(TABLE=R_SI[1],
+           NOM_PARA='VMIS_Pa_1',VALE=5.40922E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
 
-EPS_XY=CALC_FONCTION(COMB=_F(FONCTION=TAU_xy,
-                             COEF=Ctau,),);
+TEST_TABLE(TABLE=R_SI[3],
+           NOM_PARA='SIXX_Pa_1',VALE=-3.44568E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
+           REFERENCE='NON_REGRESSION',);     
 
-EPS_XZ=CALC_FONCTION(COMB=_F(FONCTION=TAU_xz,
-                             COEF=Ctau,),);
+###############################################################################                                 
 
-EPS_YZ=CALC_FONCTION(COMB=_F(FONCTION=TAU_yz,
-                             COEF=Ctau,),);
 
-EPS_XX=CALC_FONCTION(COMB=(_F(FONCTION=Trace,
-                              COEF=Ctrac,),
-                           _F(FONCTION=Devi_1,
-                              COEF=Ctrac,),),);
+FIN();
 
-EPS_YY=CALC_FONCTION(COMB=(_F(FONCTION=Trace,
-                              COEF=Ctrac,),
-                           _F(FONCTION=Devi_1,
-                              COEF=-(Ctrac),),
-                           _F(FONCTION=Devi_2,
-                              COEF=Ctrac,),),);
 
-EPS_ZZ=CALC_FONCTION(COMB=(_F(FONCTION=Trace,
-                              COEF=Ctrac,),
-                           _F(FONCTION=Devi_2,
-                              COEF=-(Ctrac),),),);
 
-
-CH0 = AFFE_CHAR_MECA(
-MODELE = MO,DDL_IMPO = _F(NOEUD = 'P0',DX = 0,DY = 0,DZ = 0),
-LIAISON_DDL = (
-  _F(NOEUD=('P2','P1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
-  _F(NOEUD=('P3','P1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
-  _F(NOEUD=('P3','P2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
-  ),);
-CH1 = AFFE_CHAR_MECA(
-    MODELE = MO,
-    DDL_IMPO = _F(NOEUD='P1', DX=1)
-    )
-     
-CH2 = AFFE_CHAR_MECA(
-    MODELE = MO,
-    DDL_IMPO = _F(NOEUD='P2', DY=1)
-    )
-
-
-CH3 = AFFE_CHAR_MECA(
-         MODELE = MO,
-         DDL_IMPO = _F(NOEUD='P3', DZ=1)
-         )
-    
-CH4 = AFFE_CHAR_MECA(
-        MODELE = MO,
-        DDL_IMPO = _F(NOEUD='P1', DY=1)
-        )
-         
-CH5 = AFFE_CHAR_MECA(
-        MODELE = MO,
-        DDL_IMPO = _F(NOEUD='P1', DZ=1)
-        )
-         
-CH6 = AFFE_CHAR_MECA(
-        MODELE = MO,
-        DDL_IMPO = _F(NOEUD='P2', DZ=1)
-        )
-
-
-# PREMIER CALCUL AVEC LA LOI ELAS_VMIS_TRAC (SOLUTION DE REFERENCE POUR LE
-#CALCUL ULTERIEUR)
-
-
-TRAC=STAT_NON_LINE(
-   COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',                        
-                DEFORMATION='PETIT',                         
-                ITER_INTE_MAXI=20,                           
-                ),                 
-   CHAM_MATER = CHMAT2,
-   MODELE=MO,
-   EXCIT=(_F(CHARGE=CH0),
-          _F(CHARGE=CH1,FONC_MULT=EPS_XX),
-          _F(CHARGE=CH2,FONC_MULT=EPS_YY),
-          _F(CHARGE=CH3,FONC_MULT=EPS_ZZ),
-          _F(CHARGE=CH4,FONC_MULT=EPS_XY),
-          _F(CHARGE=CH5,FONC_MULT=EPS_XZ),
-          _F(CHARGE=CH6,FONC_MULT=EPS_YZ),),
-   INCREMENT=_F(
-      LIST_INST  =INSTANTS,
-   ),
-)
-
-# TEST DE NON REGRESSION
-
-
-# NUMERO D ORDRE 1
-
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=1.3893974929328E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=1.3125000000000E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=1.2356025070672E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=2.6657797550026E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-1.3328898775013E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 2
-
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=1.4393719843542E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=1.1433373541944E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=1.3547906614514E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=1.0995571977364E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=1.0995571977364E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=2.1991143954727E+02,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 3
-
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-3.4451845428691E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-4.6849384857103E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-4.9948769714206E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=2.4175201885405E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=1.6116801256936E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-8.0584006284682E+01,
-                  REFERENCE='NON_REGRESSION'),);
-
-# NUMERO D ORDRE 4
-
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 5
-
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=3.4451845428691E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=4.6849384857103E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=4.9948769714206E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-2.4175201885405E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-1.6116801256936E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=8.0584006284682E+01,
-                  REFERENCE='NON_REGRESSION'),);
-
-# NUMERO D ORDRE 6
-
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-1.4393719843542E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-1.1433373541944E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-1.3547906614514E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-1.0995571977364E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-1.0995571977364E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-2.1991143954727E+02,
-                  REFERENCE='NON_REGRESSION'),);
-
-# NUMERO D ORDRE 7
-
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-1.3893974929328E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-1.3125000000000E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-1.2356025070672E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=-2.6657797550026E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,
-                  VALE=1.3328898775013E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=TRAC,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-
-
-# SECOND CALCUL AVEC LA LOI ELAS_VMIS_PUIS
-
-
-PUIS=STAT_NON_LINE(
-    COMP_ELAS=_F(RELATION='ELAS_VMIS_PUIS',                        
-                DEFORMATION='PETIT',                         
-                ITER_INTE_MAXI=20,                           
-                ),                 
-   CHAM_MATER = CHMAT,
-   MODELE=MO,
-   EXCIT=(_F(CHARGE=CH0),
-          _F(CHARGE=CH1,FONC_MULT=EPS_XX),
-          _F(CHARGE=CH2,FONC_MULT=EPS_YY),
-          _F(CHARGE=CH3,FONC_MULT=EPS_ZZ),
-          _F(CHARGE=CH4,FONC_MULT=EPS_XY),
-          _F(CHARGE=CH5,FONC_MULT=EPS_XZ),
-          _F(CHARGE=CH6,FONC_MULT=EPS_YZ),),
-   INCREMENT=_F(
-      LIST_INST  =INSTANTS,
-   ),
-)
-
-# TEST DE COMPARAISON
-
-
-# NUMERO D ORDRE 1
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=1.3893974929328E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=1.3125000000000E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=1.2356025070672E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=2.6657797550026E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-1.3328898775013E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-8,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 2
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=1.4393719843542E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=1.1433373541944E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=1.3547906614514E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=1.0995571977364E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=1.0995571977364E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=2.1991143954727E+02,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 3
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-3.4451845428691E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-4.6849384857103E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-4.9948769714206E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=2.4175201885405E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=1.6116801256936E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-8.0584006284682E+01,
-                  REFERENCE='NON_REGRESSION'),);
-
-# NUMERO D ORDRE 4
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-8,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-8,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-8,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-8,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-8,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-8,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 5
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=3.4451845428691E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=4.6849384857103E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=4.9948769714206E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-2.4175201885405E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-1.6116801256936E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=8.0584006284682E+01,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 6
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-1.4393719843542E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-1.1433373541944E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-1.3547906614514E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-1.0995571977364E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-1.0995571977364E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-2.1991143954727E+02,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 7
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-1.3893974929328E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-1.3125000000000E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-1.2356025070672E+03,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=-2.6657797550026E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-4,
-                  VALE=1.3328898775013E+02,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-
-# CHANGEMENT D UNITE POUR VALIDATION
-
-YOUNG2=200000E6
-SY2=500E6
-POISSON2=0.3
-APUI2=20000
-NPUI2=3.5
-
-
-MAIL2=LIRE_MAILLAGE(UNITE=51);
-
-
-# DEFINITION DES DEUX MATERIAUX EQUIVALENT POUR UNE INTERCOMPARAISON
-
-ACIER3=DEFI_MATERIAU(ELAS=_F(E=YOUNG2,
-                            NU=POISSON2),
-                    ECRO_PUIS=_F(A_PUIS=APUI2,
-                                 N_PUIS=NPUI2,
-                                 SY=SY2,
-                                 ),);
-
-
-
-MO2=AFFE_MODELE(MAILLAGE=MAIL2,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
-
-
-CHMAT3=AFFE_MATERIAU(MAILLAGE=MAIL2,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=ACIER3,),);
-
-
-CH10 = AFFE_CHAR_MECA(
-MODELE = MO2,DDL_IMPO = _F(NOEUD = 'P0',DX = 0,DY = 0,DZ = 0),
-LIAISON_DDL = (
-  _F(NOEUD=('P2','P1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
-  _F(NOEUD=('P3','P1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
-  _F(NOEUD=('P3','P2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
-  ),);
-CH11 = AFFE_CHAR_MECA(
-    MODELE = MO2,
-    DDL_IMPO = _F(NOEUD='P1', DX=1E-3)
-    )
-     
-CH12 = AFFE_CHAR_MECA(
-    MODELE = MO2,
-    DDL_IMPO = _F(NOEUD='P2', DY=1E-3)
-    )
-
-
-CH13 = AFFE_CHAR_MECA(
-         MODELE = MO2,
-         DDL_IMPO = _F(NOEUD='P3', DZ=1E-3)
-         )
-    
-CH14 = AFFE_CHAR_MECA(
-        MODELE = MO2,
-        DDL_IMPO = _F(NOEUD='P1', DY=1E-3)
-        )
-         
-CH15 = AFFE_CHAR_MECA(
-        MODELE = MO2,
-        DDL_IMPO = _F(NOEUD='P1', DZ=1E-3)
-        )
-         
-CH16 = AFFE_CHAR_MECA(
-        MODELE = MO2,
-        DDL_IMPO = _F(NOEUD='P2', DZ=1E-3)
-        )
-
-
-PUIS2=STAT_NON_LINE(
-   COMP_ELAS=_F(RELATION='ELAS_VMIS_PUIS',                        
-                DEFORMATION='PETIT',                         
-                ITER_INTE_MAXI=20,                           
-                ),                 
-   CHAM_MATER = CHMAT3,
-   MODELE=MO2,
-   EXCIT=(_F(CHARGE=CH10),
-          _F(CHARGE=CH11,FONC_MULT=EPS_XX),
-          _F(CHARGE=CH12,FONC_MULT=EPS_YY),
-          _F(CHARGE=CH13,FONC_MULT=EPS_ZZ),
-          _F(CHARGE=CH14,FONC_MULT=EPS_XY),
-          _F(CHARGE=CH15,FONC_MULT=EPS_XZ),
-          _F(CHARGE=CH16,FONC_MULT=EPS_YZ),),
-   INCREMENT=_F(
-      LIST_INST  =INSTANTS,
-   ),);
-
-# NUMERO D ORDRE 1
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=1.3894016406104E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=1.3125000000000E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=1.2355983593896E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=2.6659235411590E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-1.3329617705795E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-7,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 2
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=1.4393849805285E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=1.1433200259620E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=1.3547949935095E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=1.0996698312473E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=1.0996698312473E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=2.1993396624946E+08,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 3
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-3.4456844996714E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-4.6847718334428E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-4.9945436668857E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=2.4162203008542E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=1.6108135339028E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=3,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-8.0540676695140E+07,
-                  REFERENCE='NON_REGRESSION'),);
-
-# NUMERO D ORDRE 4
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-6,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-6,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-6,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-6,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=3.E-7,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=4,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-7,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 5
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=3.4456844996715E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=4.6847718334428E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=4.9945436668857E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-2.4162203008542E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-1.6108135339028E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=8.0540676695140E+07,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 6
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-1.4393849805285E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-1.1433200259620E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-1.3547949935095E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-1.0996698312473E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-1.0996698312473E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=6,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-2.1993396624946E+08,
-                  REFERENCE='NON_REGRESSION'),);
-# NUMERO D ORDRE 7
-
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-1.3894016406104E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-1.3125000000000E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIZZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-1.2355983593896E+09,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXY',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=-2.6659235411590E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-8,
-                  VALE=1.3329617705795E+08,
-                  REFERENCE='NON_REGRESSION'),);
-TEST_RESU(RESU=_F(RESULTAT=PUIS2,
-                  NUME_ORDRE=7,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIYZ',
-                  POINT=1,MAILLE='VOLUME',
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-07,
-                  VALE=0,
-                  REFERENCE='NON_REGRESSION'),);
-
-FIN()
