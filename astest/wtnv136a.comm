@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (3D HH2MS)
 # wtnv136a.para = tps_job 150 mem_job 128Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,7 +23,6 @@ DEBUT(CODE=_F(NOM='WTNV136A', NIV_PUB_WEB='INTERNET'))
 import sys
 import string
 import os
-from Numeric import  power, exp, sqrt, log, pi
 
 
 MAILLAGE=LIRE_MAILLAGE();

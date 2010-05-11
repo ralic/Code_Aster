@@ -1,4 +1,4 @@
-#@ MODIF soustruc2 Messages  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
+#@ MODIF soustruc2 Messages  DATE 10/05/2010   AUTEUR CORUS M.CORUS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,6 +57,17 @@ cata_msg={
  -> Risque & Conseil:
     Veuillez vous assurer que le type de mailles souhaité soit cohérant
     avec votre maillage.
+"""),
+
+8 : _("""
+  Aucun DDL actif n'a ete trouve pour les interfaces donnees 
+   => Les modes d'attaches, de contrainte ou de couplage ne peuvent pas etre calcules.
+   
+  CONSEIL : Verifiez la coherence de la definition des interfaces (conditions limites)
+            avec la methode retenue :
+             - CRAIGB   : le modele doit etre defini avec des interfaces encastrees,
+             - CB_HARMO : le modele doit etre defini avec des interfaces encastrees,
+             - MNEAL    : le modele doit etre defini avec des interfaces libres.
 """),
 
 

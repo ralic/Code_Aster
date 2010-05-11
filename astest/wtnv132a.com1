@@ -11,7 +11,6 @@
 # on ne garantit pas la transposabilite de ce post-traitement
 # a un autre maillage.
 
-from Numeric import *
 
 POURSUITE(CODE=_F(NOM='WTNV132A'),PAR_LOT='NON')
 

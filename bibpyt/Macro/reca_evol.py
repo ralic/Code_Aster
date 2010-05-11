@@ -1,4 +1,4 @@
-#@ MODIF reca_evol Macro  DATE 11/01/2010   AUTEUR NISTOR I.NISTOR 
+#@ MODIF reca_evol Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ Le programme d'optimisation d'une fonctionelle base sur l'algorithm genetique,
 developpement issu du contrat PdM-AMA
 '''
 
-import Numeric
+import numpy
 import math
 import random
 
@@ -107,7 +107,7 @@ def selection(fonc,fils,parents,err_parents,nb_parents):
     for ind in parents:
         famille.append(ind)
 
-    ordre=Numeric.argsort(err).tolist()
+    ordre=numpy.argsort(err).tolist()
     fam_ordonne=[]
     err_ordonne=[]
     for ind in ordre:

@@ -2,11 +2,11 @@
      +                   HYDR, IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1,
      +                   ADDEP2, ADDETE, NDIM, T0, P10, P20, PHI0, PVP0,
      +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
-     +                   GRAT, GRAP1, GRAP2, NVITH, RETCOM,RINSTP)
+     +                   GRAT, GRAP1, GRAP2, RETCOM,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ALGORITH  DATE 10/05/2010   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ C ======================================================================
 C TOLE CRP_21
 C ======================================================================
       IMPLICIT NONE
-      INTEGER       YAMEC, YATE, YAP1, YAP2, IMATE, NVITH
+      INTEGER       YAMEC, YATE, YAP1, YAP2, IMATE
       INTEGER       ADDEME, ADDEP1, ADDEP2, ADDETE, NDIM, RETCOM
       REAL*8        T0, P10, P20, PHI0, PVP0, DEPSV, EPSV, DEPS(6), T
       REAL*8        P1, P2, GRAT(3), GRAP1(3), GRAP2(3), DP1, DP2, DT

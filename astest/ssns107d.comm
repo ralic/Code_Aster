@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE AVEC ARMATURES SOUS PRESSION.  GRILLE_MEMBRANE QUAD8
 # ssns107d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,7 +32,7 @@ P=1e6
 
 sec = 1.
 
-#from Numeric import *
+#import numpy as NP
 #l = nu*E/(1.-2.*nu)/(1.+nu)
 #m = 1/2.*E/(1.+nu)
 #a= 10.
@@ -136,8 +136,8 @@ RESU=STAT_NON_LINE(MODELE=MO,
 #y=CHAMELG.EXTR_COMP("Y",[])
 #w=CHAMELG.EXTR_COMP("W",[])
 #
-#r=sqrt(x.valeurs**2+y.valeurs**2)
-#theta=arctan(y.valeurs/x.valeurs)
+#r=NP.sqrt(x.valeurs**2+y.valeurs**2)
+#theta=NP.arctan(y.valeurs/x.valeurs)
 #
 #CONT  = CREA_CHAMP(
 #             TYPE_CHAM = 'ELGA_SIEF_R',
@@ -151,16 +151,16 @@ RESU=STAT_NON_LINE(MODELE=MO,
 #syy=CONT.EXTR_COMP("SIYY",['GM100005']).valeurs
 #sxy=CONT.EXTR_COMP("SIXY",['GM100005']).valeurs
 #
-#srr=sxx*cos(theta)**2+syy*sin(theta)**2+2*sxy*sin(theta)*cos(theta)
-#stt=sxx*sin(theta)**2+syy*cos(theta)**2-2*sxy*sin(theta)*cos(theta)
+#srr=sxx*NP.cos(theta)**2+syy*NP.sin(theta)**2+2*sxy*NP.sin(theta)*NP.cos(theta)
+#stt=sxx*NP.sin(theta)**2+syy*NP.cos(theta)**2-2*sxy*NP.sin(theta)*NP.cos(theta)
 #
-#ax=sort(r)
-#ay=array(map(f_srr,ax))
-#az=take(srr,argsort(r))
+#ax=NP.sort(r)
+#ay=NP.array(map(f_srr,ax))
+#az=NP.take(srr,NP.argsort(r))
 #
 #bx=ax
-#by=array(map( f_stt,bx))
-#bz=take(stt,argsort(r))
+#by=NP.array(map( f_stt,bx))
+#bz=NP.take(stt,NP.argsort(r))
 #
 #fichier=open('./REPE_OUT/resu_grille_lin_1.dat','w')
 #for i in xrange(len(r)) :

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/11/2009   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE AVEC TROIS DISQUES
 # shll102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,13 +21,11 @@
 # CALCUL HARMONIQUE
 # REFERENCE : ROTORDYNAMICS, PREDICTION IN ENGINEERING
 #             M. LALANNE, G. FERRARIS - WILEY, pp 68-75
+import numpy as NP
+import numpy.linalg as LA
+
 DEBUT(CODE=_F(NOM='SHLL102A',NIV_PUB_WEB='INTERNET'),
       PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'),)
-
-from Numeric import *
-from LinearAlgebra import *
-
-import os
 
 
 def ellipse(modx,mody,thetx,thety) :
@@ -38,7 +36,7 @@ def ellipse(modx,mody,thetx,thety) :
     if abs(denum) < 1e-33 :
        maxdemiaxe = 0.
     else :
-       T=.5*arctan(-num/denum)
+       T=.5*atan(-num/denum)
        ux1 = modx*cos(T+thetx)
        uy1 = mody*cos(T+thety)
        ux2 = modx*cos(T+thetx+pi/2.)
@@ -157,19 +155,19 @@ FUN=DEFI_CONSTANTE(VALE=1.0,);
 
 tourdeb=0.01
 pastour=100.
-tours=array([3620.5,3798.3,10018.,11281.,16787.,24418.,26611.],Float)
+tours=NP.array([3620.5,3798.3,10018.,11281.,16787.,24418.,26611.])
 nbtour=tours.shape[0]
-MODYDIS2=zeros(nbtour,Float)
-MODZDIS2=zeros(nbtour,Float)
-PHAYDIS2=zeros(nbtour,Float)
-PHAZDIS2=zeros(nbtour,Float)
+MODYDIS2=NP.zeros(nbtour)
+MODZDIS2=NP.zeros(nbtour)
+PHAYDIS2=NP.zeros(nbtour)
+PHAZDIS2=NP.zeros(nbtour)
 
 
 
 print "\n"
-F=zeros([nddl,1],Complex)
-reponsy=zeros([nbtour,1],Complex)
-reponsz=zeros([nbtour,1],Complex)
+F=NP.zeros([nddl,1], complex)
+reponsy=NP.zeros([nbtour,1], complex)
+reponsz=NP.zeros([nbtour,1], complex)
 
 
 i=0
@@ -192,7 +190,7 @@ for NTRIM in tours:
   [d,amogyro]=EXTR_MATR(AMOGYRO,1)
   masho = rig - OM**2 * mas + 1j*OM*amogyro
 
-  repons=solve_linear_equations(masho,F)
+  repons=LA.solve(masho,F)
   reponsy[i]=repons[25]
   reponsz[i]=repons[26]
 
@@ -303,7 +301,7 @@ for NTRIM in tours:
 
 
 
-elli1=zeros([nbtour+1,1],Float)
+elli1=NP.zeros([nbtour+1,1])
 i=0
 for NTRIM in tours:
     dax=ellipse(MODYDIS2[i],MODZDIS2[i],PHAYDIS2[i],PHAZDIS2[i])
@@ -312,15 +310,15 @@ for NTRIM in tours:
 
 
 
-elli2=zeros([nbtour+1,1],Float)
-freqi=zeros([nbtour+1,1],Float)
+elli2=NP.zeros([nbtour+1,1])
+freqi=NP.zeros([nbtour+1,1])
 
 i=0
 for NTRIM in tours:
-    mody=sqrt(reponsy[i]*conjugate(reponsy[i]))
-    angy=arctan2(reponsy[i].imag,reponsy[i].real)*180/pi
-    modz=sqrt(reponsz[i]*conjugate(reponsz[i]))
-    angz=arctan2(reponsz[i].imag,reponsz[i].real)*180/pi
+    mody=NP.sqrt(reponsy[i]*NP.conjugate(reponsy[i]))
+    angy=NP.arctan2(reponsy[i].imag,reponsy[i].real)*180/NP.pi
+    modz=NP.sqrt(reponsz[i]*NP.conjugate(reponsz[i]))
+    angz=NP.arctan2(reponsz[i].imag,reponsz[i].real)*180/NP.pi
     dax=ellipse(mody.real,modz.real,angy,angz)
     freqi[i]=NTRIM/60.
     elli2[i]=dax

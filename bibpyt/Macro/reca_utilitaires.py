@@ -1,4 +1,4 @@
-#@ MODIF reca_utilitaires Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_utilitaires Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,8 +19,14 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-import Numeric, LinearAlgebra, copy, os, string, types, sys, glob, random
-from Numeric import take
+import copy
+import os
+import string
+import types
+import sys
+import glob
+
+import numpy as NP
 
 try:    import Gnuplot
 except: pass
@@ -46,13 +52,13 @@ except:
 
 def transforme_list_Num(parametres,res_exp):
    """
-      Transforme les données entrées par l'utilisateur en tableau Numeric
+      Transforme les données entrées par l'utilisateur en tableau numpy
    """
 
    dim_para = len(parametres)  #donne le nb de parametres
-   val_para = Numeric.zeros(dim_para,Numeric.Float)
-   borne_inf = Numeric.zeros(dim_para,Numeric.Float)
-   borne_sup = Numeric.zeros(dim_para,Numeric.Float)
+   val_para = NP.zeros(dim_para)
+   borne_inf = NP.zeros(dim_para)
+   borne_sup = NP.zeros(dim_para)
    para = []
    for i in range(dim_para):
       para.append(parametres[i][0])

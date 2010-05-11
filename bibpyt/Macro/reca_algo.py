@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_algo Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,10 +19,11 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-import Numeric, MLab
-from Numeric import take, size
-import copy, os
-import LinearAlgebra 
+import os
+import copy
+
+import numpy as NP
+import numpy.linalg as linalg
 
 try:
   import aster
@@ -35,13 +36,13 @@ except: pass
 
 # ------------------------------------------------------------------------------
 def calcul_gradient(A,erreur):
-   grad = Numeric.dot(Numeric.transpose(A),erreur)
+   grad = NP.dot(NP.transpose(A),erreur)
    return grad
 
 # ------------------------------------------------------------------------------
 def calcul_norme2(V):
-   a = Numeric.array(V)
-   return Numeric.dot(a,Numeric.transpose(a))**0.5
+   a = NP.array(V)
+   return NP.dot(a,NP.transpose(a))**0.5
 
 
 # ------------------------------------------------------------------------------
@@ -51,20 +52,19 @@ class Dimension:
       Classe gérant l'adimensionnement et le dimensionnement
    """
 
-   # ------------------------------------------------------------------------------
-   def __init__(self, val_initiales):
+   def __init__(self,val_initiales):
       """
          Le constructeur calcul la matrice D et son inverse
       """
       self.val_init = val_initiales
       dim =len(self.val_init)
-      self.D = Numeric.zeros((dim,dim),Numeric.Float)
+      self.D = NP.zeros((dim,dim), float)
       for i in range(dim):
          self.D[i][i] = self.val_init[i]
-      self.inv_D=LinearAlgebra.inverse(self.D)
+      self.inv_D=linalg.inv(self.D)
    
 
-   # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
    def adim_sensi(self, A):
       for i in range(A.shape[0]):
          for j in range(A.shape[1]):
@@ -72,7 +72,7 @@ class Dimension:
       return A
 
 
-   # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
    def redim_sensi(self, A):
       for i in range(A.shape[0]):
          for j in range(A.shape[1]):
@@ -80,15 +80,16 @@ class Dimension:
       return A
 
 
-   # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
    def adim(self, tab):
-      tab_adim = Numeric.dot(self.inv_D,copy.copy(tab))
+      tab_adim = NP.dot(self.inv_D,copy.copy(tab))
       return tab_adim
 
 
-   # ------------------------------------------------------------------------------
-   def redim(self,tab_adim):
-      tab = Numeric.dot(self.D,tab_adim)
+# ------------------------------------------------------------------------------
+
+   def redim(self, tab_adim):
+      tab = NP.dot(self.D,tab_adim)
       return tab
 
 # ------------------------------------------------------------------------------
@@ -101,13 +102,13 @@ class Dimension:
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 def cond(matrix):
-    e1=LinearAlgebra.eigenvalues(matrix)
+    e1=linalg.eigvals(matrix)
     e=map(abs,e1)
     size=len(e)
-    e=Numeric.sort(e)
-    try:
+    e=NP.sort(e)
+    if NP.all(e[0] != 0):
       condi=e[size-1]/e[0]
-    except ZeroDivisionError:
+    else:
       condi=0.0
     return condi,e[size-1],e[0]
 
@@ -116,9 +117,9 @@ def cond(matrix):
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 def norm(matrix):
-    e=LinearAlgebra.Heigenvalues(matrix)
+    e=linalg.eigvalsh(matrix)
     size=len(e)
-    e=Numeric.sort(e)
+    e=NP.sort(e)
     norm=e[size-1]
     return norm
 
@@ -130,7 +131,7 @@ def lambda_init(matrix):
         Routine qui calcule la valeur initial du parametre de regularisation l.
      """
      condi,emax,emin=cond(matrix)
-     id=Numeric.identity(matrix.shape[0])
+     id=NP.identity(matrix.shape[0])
      if (condi==0.0):
          l=1.e-3*norm(matrix)
      elif (condi<=10000):
@@ -142,7 +143,7 @@ def lambda_init(matrix):
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_out):  
+def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_out):
    """
       On resoud le système par contraintes actives:
          Q.dval + s + d =0
@@ -153,24 +154,24 @@ def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_
                  s.(borne_sup - dval)=0
    """
    dim = len(val)
-   id = Numeric.identity(dim)
+   id = NP.identity(dim)
    # Matrice du système
-   Q=Numeric.matrixmultiply(Numeric.transpose(A),A) +l*id
+   Q=NP.dot(NP.transpose(A),A) +l*id
    # Second membre du système
-   d=Numeric.matrixmultiply(Numeric.transpose(A),erreur)
+   d=NP.dot(NP.transpose(A),erreur)
    # Ens. de liaisons actives
-   Act=Numeric.array([])
+   Act=NP.array([], dtype=int)
    k=0
    done=0
    # Increment des parametres 
-   dval=Numeric.zeros(dim,Numeric.Float)
+   dval=NP.zeros(dim)
    while done <1 :
       k=k+1
-      I=Numeric.ones(dim)
+      I=NP.ones(dim, dtype=int)
       for i in Act:
          I[i]=0
-      I=Numeric.nonzero(Numeric.greater(I,0))
-      s=Numeric.zeros(dim,Numeric.Float)
+      I=NP.nonzero(NP.greater(I,0))[0]
+      s=NP.zeros(dim)
       for i in Act:
          # test sur les bornes (on stocke si on est en butée haute ou basse)
          if (val[i]+dval[i]>=borne_sup[i]):
@@ -181,41 +182,43 @@ def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_
             s[i]=-1.
       if (len(I)!=0):
           # xi=-Q(I)-1.(d(I)+Q(I,Act).dval(Act))
-          t_QI = take(Q, I)
-          t_tQI_Act = take(t_QI, Act, 1)
-          t_adim_Act = take(Dim.adim(dval), Act)
-          if size(t_tQI_Act) > 0 and size(t_adim_Act) > 0:
-             smemb = take(d, I) + Numeric.dot(t_tQI_Act, t_adim_Act)
+          t_QI = NP.take(Q, I, axis=0)
+          t_tQI_Act = NP.take(t_QI, Act, axis=1)
+          t_adim_Act = NP.take(Dim.adim(dval), Act)
+          if NP.size(t_tQI_Act) > 0 and NP.size(t_adim_Act) > 0:
+             smemb = NP.take(d, I) + NP.dot(t_tQI_Act, t_adim_Act)
           else:
-             smemb = take(d, I)
-          xi=-LinearAlgebra.solve_linear_equations(take(t_QI, I, 1), smemb)
-          for i in Numeric.arange(len(I)):
+             smemb = NP.take(d, I)
+          xi=-linalg.solve(NP.take(t_QI, I, axis=1), smemb)
+          for i in NP.arange(len(I)):
              dval[I[i]]=xi[i]*val_init[I[i]]
       if (len(Act)!=0):
          # s(Av)=-d(Act)-Q(Act,:).dval
-         sa=-take(d,Act)-Numeric.dot(take(Q,Act),Dim.adim(dval))
+         sa=-NP.take(d,Act)-NP.dot(NP.take(Q,Act,axis=0),Dim.adim(dval))
          for i in range(len(Act)):
             if (s[Act[i]]==-1.):
                s[Act[i]]=-sa[i]
             else:
                s[Act[i]]=sa[i]
       # Nouvel ens. de liaisons actives
-      Act=Numeric.concatenate((Numeric.nonzero(Numeric.greater(dval,borne_sup-val)),Numeric.nonzero(Numeric.less(dval,borne_inf-val)),Numeric.nonzero(Numeric.greater(s,0.))))
+      Act=NP.concatenate((NP.nonzero(NP.greater(dval,borne_sup-val))[0],
+                          NP.nonzero(NP.less(dval,borne_inf-val))[0],
+                          NP.nonzero(NP.greater(s,0.))[0])).astype(int)
       done=(max(val+dval-borne_sup)<=0)&(min(val+dval-borne_inf)>=0)&(min(s)>=0.0)
       # Pour éviter le cyclage
       if (k>50):
          try:
             l=l*2
-            Q=Numeric.matrixmultiply(Numeric.transpose(A),A) +l*id
+            Q=NP.dot(NP.transpose(A),A) +l*id
             k=0
          except:
              res=open(os.getcwd()+'/fort.'+str(ul_out),'a')
-             res.write('\n\nQ = \n'+Numeric.array2string(Q-l*id,array_output=1,separator=','))
-             res.write('\n\nd = '+Numeric.array2string(d,array_output=1,separator=','))
-             res.write('\n\nval = '+Numeric.array2string(val,array_output=1,separator=','))
-             res.write('\n\nval_ini= '+Numeric.array2string(val_init,array_output=1,separator=','))
-             res.write('\n\nborne_inf= '+Numeric.array2string(borne_inf,array_output=1,separator=','))
-             res.write('\n\nborne_sup= '+Numeric.array2string(borne_sup,array_output=1,separator=','))
+             res.write('\n\nQ = \n'+NP.array2string(Q-l*id,array_output=1,separator=','))
+             res.write('\n\nd = '+NP.array2string(d,array_output=1,separator=','))
+             res.write('\n\nval = '+NP.array2string(val,array_output=1,separator=','))
+             res.write('\n\nval_ini= '+NP.array2string(val_init,array_output=1,separator=','))
+             res.write('\n\nborne_inf= '+NP.array2string(borne_inf,array_output=1,separator=','))
+             res.write('\n\nborne_sup= '+NP.array2string(borne_sup,array_output=1,separator=','))
              UTMESS('F','RECAL0_18')
              return 
    newval=copy.copy(val+dval)
@@ -226,21 +229,21 @@ def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_
 # ------------------------------------------------------------------------------
 def actualise_lambda(l, val, new_val, A, erreur, new_J, old_J):
    dim = len(val)
-   id = Numeric.identity(dim)
+   id = NP.identity(dim)
    # Matrice du système
-   Q=Numeric.matrixmultiply(Numeric.transpose(A),A) +l*id
+   Q=NP.dot(NP.transpose(A),A) +l*id
    # Second membre du système
-   d=Numeric.matrixmultiply(Numeric.transpose(A),erreur)
+   d=NP.dot(NP.transpose(A),erreur)
    old_Q=old_J
-   new_Q=old_J+0.5*Numeric.dot(Numeric.transpose(new_val-val),Numeric.dot(Q,new_val-val))+Numeric.dot(Numeric.transpose(new_val-val),d)
+   new_Q=old_J+0.5*NP.dot(NP.transpose(new_val-val),NP.dot(Q,new_val-val))+NP.dot(NP.transpose(new_val-val),d)
    # Ratio de la décroissance réelle et de l'approx. quad.
-   try:
+   if NP.all((old_Q-new_Q) != 0.):
       R=(old_J-new_J)/(old_Q-new_Q)
       if (R<0.25):
          l = l*10.
       elif (R>0.75):
          l = l/15.
-   except ZeroDivisionError:
+   else:
       if (old_J>new_J):
          l = l*10.
       else:
@@ -256,7 +259,7 @@ def test_convergence(gradient_init, erreur, A, s):
    """
    gradient = calcul_gradient(A,erreur)+s
    try:
-      epsilon = Numeric.dot(gradient,gradient)/Numeric.dot(gradient_init,gradient_init)
+      epsilon = NP.dot(gradient,gradient)/NP.dot(gradient_init,gradient_init)
    except:
        UTMESS('F', "RECAL0_19")
        return 
@@ -277,14 +280,16 @@ def calcul_etat_final(para, A, iter, max_iter, prec, residu, Messg):
 
 #   if ((iter < max_iter) or (residu < prec)):
    if 1==1:
-      Hessien = Numeric.matrixmultiply(Numeric.transpose(A),A)
+      Hessien = NP.dot(NP.transpose(A),A)
 
       # Desactive temporairement les FPE qui pourraient etre generees (a tord!) par blas
       aster.matfpe(-1)
-      valeurs_propres,vecteurs_propres = LinearAlgebra.eigenvectors(Hessien) 
-      sensible=Numeric.nonzero(Numeric.greater(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-1))
-      insensible=Numeric.nonzero(Numeric.less(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-2))
+      valeurs_propres,vecteurs_propres = linalg.eig(Hessien) 
+      sensible=NP.nonzero(NP.greater(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-1))[0]
+      insensible=NP.nonzero(NP.less(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-2))[0]
       # Reactive les FPE
       aster.matfpe(1)
 
       Messg.affiche_calcul_etat_final(para,Hessien,valeurs_propres,vecteurs_propres,sensible,insensible)
+
+

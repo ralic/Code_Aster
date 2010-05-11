@@ -1,4 +1,4 @@
-# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,11 +38,7 @@
 #                       PRE-TRAITEMENTS PYTHON
 #-------------------------------------------------------------------
 # IMPORT PYTHON
-#import os
-#import string
-#import copy
-#import Gnuplot
-import Numeric
+import numpy as NP
 
 # VALEURS DE REFERENCE (APPROCHEES) APRES 4 REMAILLAGES UNIFORMES TRIA6
 ener_ref =  0.102242
@@ -53,10 +49,10 @@ energie_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 fleche_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 erenergie_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 erfleche_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-energie_vs_raff_NUM = Numeric.zeros((len(energie_vs_raff),2),Numeric.Float)
-fleche_vs_raff_NUM  = Numeric.zeros((len(fleche_vs_raff),2),Numeric.Float)
-erenergie_vs_raff_NUM = Numeric.zeros((len(energie_vs_raff),2),Numeric.Float)
-erfleche_vs_raff_NUM  = Numeric.zeros((len(fleche_vs_raff),2),Numeric.Float)
+energie_vs_raff_NUM = NP.zeros((len(energie_vs_raff),2))
+fleche_vs_raff_NUM  = NP.zeros((len(fleche_vs_raff),2))
+erenergie_vs_raff_NUM = NP.zeros((len(energie_vs_raff),2))
+erfleche_vs_raff_NUM  = NP.zeros((len(fleche_vs_raff),2))
 
 for i in range(len(energie_vs_raff)) :
     energie_vs_raff_NUM[i][1] = 0.0

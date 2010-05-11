@@ -1,4 +1,4 @@
-#@ MODIF defi_inte_spec_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF defi_inte_spec_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,9 +18,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+import math
+
 def tocomplex(arg):
-    if arg[0]=='RI' : return complex(arg[1],arg[2])
-    if arg[0]=='MP' : return complex(arg[1]*cos(arg[2]),arg[1]*sin(arg[2]))
+    if arg[0]=='RI' : return complex(arg[1], arg[2])
+    if arg[0]=='MP' : return complex(arg[1]*math.cos(arg[2]), arg[1]*math.sin(arg[2]))
+
 
 def defi_inte_spec_ops(self,DIMENSION,PAR_FONCTION,KANAI_TAJIMI,
                        CONSTANT,TITRE,INFO,**args):
@@ -33,7 +36,7 @@ def defi_inte_spec_ops(self,DIMENSION,PAR_FONCTION,KANAI_TAJIMI,
    EnumTypes = (ListType, TupleType)
    from Accas               import _F
    from Utilitai.Utmess     import  UTMESS
-   import Numeric
+   import numpy
    
    commande='DEFI_INTE_SPEC'
 
@@ -103,7 +106,7 @@ def defi_inte_spec_ops(self,DIMENSION,PAR_FONCTION,KANAI_TAJIMI,
               else :
                  valr=1.
                  vali=0.
-              x1=Numeric.arange(occ[1]['FREQ_MIN'],occ[1]['FREQ_MAX'],occ[1]['PAS'])
+              x1=numpy.arange(occ[1]['FREQ_MIN'],occ[1]['FREQ_MAX'],occ[1]['PAS'])
               x1=x1.tolist()+[occ[1]['FREQ_MAX'],]
               valc=[]
               for absc in x1 : valc=valc+[absc,valr,vali]
@@ -113,13 +116,13 @@ def defi_inte_spec_ops(self,DIMENSION,PAR_FONCTION,KANAI_TAJIMI,
        if occ[0]=='KANAI_TAJIMI'     :
               amor   = occ[1]['AMOR_REDUIT']
               frqmoy = occ[1]['FREQ_MOY']
-              x11  =Numeric.array([4*(amor**2)*(frqmoy**2)*FREQ**2 \
+              x11  =numpy.array([4*(amor**2)*(frqmoy**2)*FREQ**2 \
                                    for FREQ in x1 ])
               xnum =x11+frqmoy**4
-              denom=Numeric.array([ (frqmoy**2-FREQ**2)**2 \
+              denom=numpy.array([ (frqmoy**2-FREQ**2)**2 \
                                    for FREQ in x1 ])
               denom=denom+x11
-              g0=Numeric.array([valr]*len(denom))
+              g0=numpy.array([valr]*len(denom))
               g0=g0*xnum/denom
               valc=[]
               for i in range(len(x1)): valc=valc+[x1[i],g0[i],0.]

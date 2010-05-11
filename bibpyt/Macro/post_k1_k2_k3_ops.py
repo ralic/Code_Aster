@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 06/04/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,6 +32,7 @@ def veri_tab(tab,nom,ndim) :
           label='COOR_Z'
           UTMESS('F','RUPTURE0_2',valk=[label,nom])
 
+#TODO prefer use numpy.cross
 def cross_product(a,b):
     cross = [0]*3
     cross[0] = a[1]*b[2]-a[2]*b[1]
@@ -109,8 +110,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    import string
    import copy
    import math
-   import Numeric
-   from Numeric import array,asarray,Float,sqrt,matrixmultiply,transpose,sign,resize,dot,multiply
+   import numpy as NP
    from math import pi
    from types import ListType, TupleType
    from Accas import _F
@@ -181,14 +181,14 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    
    if not Tempe3D :
       coefd3 = 0.
-      coefd  = e * sqrt(2.*pi)
+      coefd  = e * NP.sqrt(2.*pi)
       unmnu2 = 1. - nu**2
       unpnu  = 1. + nu
       if MODELISATION=='3D' :
          coefk='K1 K2 K3'
          ndim   = 3
          coefd  = coefd      / ( 8.0 * unmnu2 )
-         coefd3 = e*sqrt(2*pi) / ( 8.0 * unpnu )
+         coefd3 = e*NP.sqrt(2*pi) / ( 8.0 * unpnu )
          coefg  = unmnu2 / e
          coefg3 = unpnu  / e
       elif MODELISATION=='AXIS' :
@@ -310,10 +310,10 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         tcoorf=__NCOFON.EXTR_TABLE()
         DETRUIRE(CONCEPT=_F(NOM=__NCOFON),INFO=1) 
         nbt = len(tcoorf['NOEUD'].values()['NOEUD'])
-        xs=array(tcoorf['COOR_X'].values()['COOR_X'][:nbt],Float)
-        ys=array(tcoorf['COOR_Y'].values()['COOR_Y'][:nbt],Float)
-        if ndim==2 : zs=Numeric.zeros(nbt,Float)
-        elif ndim==3 : zs=array(tcoorf['COOR_Z'].values()['COOR_Z'][:nbt],Float)
+        xs=NP.array(tcoorf['COOR_X'].values()['COOR_X'][:nbt])
+        ys=NP.array(tcoorf['COOR_Y'].values()['COOR_Y'][:nbt])
+        if ndim==2 : zs=NP.zeros(nbt)
+        elif ndim==3 : zs=NP.array(tcoorf['COOR_Z'].values()['COOR_Z'][:nbt])
         ns = tcoorf['NOEUD'].values()['NOEUD'][:nbt]
         ns = map(string.rstrip,ns)
         l_coorf =  [[ns[i],xs[i],ys[i],zs[i]] for i in range(0,nbt)]
@@ -338,58 +338,58 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         xl=moy(tcoorl['COOR_X'].values()['COOR_X'][:nbt])
         yl=moy(tcoorl['COOR_Y'].values()['COOR_Y'][:nbt])
         zl=moy(tcoorl['COOR_Z'].values()['COOR_Z'][:nbt])
-        Plev = array([xl, yl, zl])
+        Plev = NP.array([xl, yl, zl])
 # Calcul des normales a chaque noeud du fond
-        v1 =  array(VECT_K1)
+        v1 =  NP.array(VECT_K1)
         VN = [None]*Nbfond
         absfon = [0,]
         if MODELISATION=='3D' :
           DTANOR = FOND_FISS.DTAN_ORIGINE.get()
-          Pfon2 = array([d_coorf[LNOFO[0]][0],d_coorf[LNOFO[0]][1],d_coorf[LNOFO[0]][2]])
+          Pfon2 = NP.array([d_coorf[LNOFO[0]][0],d_coorf[LNOFO[0]][1],d_coorf[LNOFO[0]][2]])
           VLori = Pfon2 - Plev
           if DTANOR != None :
-            VN[0] = array(DTANOR)
+            VN[0] = NP.array(DTANOR)
           else :
-            Pfon3 = array([d_coorf[LNOFO[1]][0],d_coorf[LNOFO[1]][1],d_coorf[LNOFO[1]][2]])
-            VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-            VN[0] = array(cross_product(VT,v1))
+            Pfon3 = NP.array([d_coorf[LNOFO[1]][0],d_coorf[LNOFO[1]][1],d_coorf[LNOFO[1]][2]])
+            VT = (Pfon3 - Pfon2)/NP.sqrt(NP.dot(NP.transpose(Pfon3-Pfon2),Pfon3-Pfon2))
+            VN[0] = NP.array(cross_product(VT,v1))
           for i in range(1,Nbfond-1):
-            Pfon1 = array([d_coorf[LNOFO[i-1]][0],d_coorf[LNOFO[i-1]][1],d_coorf[LNOFO[i-1]][2]])
-            Pfon2 = array([d_coorf[LNOFO[i]][0],d_coorf[LNOFO[i]][1],d_coorf[LNOFO[i]][2]])
-            Pfon3 = array([d_coorf[LNOFO[i+1]][0],d_coorf[LNOFO[i+1]][1],d_coorf[LNOFO[i+1]][2]])
-            absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
+            Pfon1 = NP.array([d_coorf[LNOFO[i-1]][0],d_coorf[LNOFO[i-1]][1],d_coorf[LNOFO[i-1]][2]])
+            Pfon2 = NP.array([d_coorf[LNOFO[i]][0],d_coorf[LNOFO[i]][1],d_coorf[LNOFO[i]][2]])
+            Pfon3 = NP.array([d_coorf[LNOFO[i+1]][0],d_coorf[LNOFO[i+1]][1],d_coorf[LNOFO[i+1]][2]])
+            absf = NP.sqrt(NP.dot(NP.transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
             absfon.append(absf)
-            VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-            VT = VT+(Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-            VN[i] = array(cross_product(VT,v1)) 
-            VN[i] = VN[i]/sqrt(dot(transpose(VN[i]),VN[i]))
+            VT = (Pfon3 - Pfon2)/NP.sqrt(NP.dot(NP.transpose(Pfon3-Pfon2),Pfon3-Pfon2))
+            VT = VT+(Pfon2 - Pfon1)/NP.sqrt(NP.dot(NP.transpose(Pfon2-Pfon1),Pfon2-Pfon1))
+            VN[i] = NP.array(cross_product(VT,v1)) 
+            VN[i] = VN[i]/NP.sqrt(NP.dot(NP.transpose(VN[i]),VN[i]))
           i = Nbfond-1
-          Pfon1 = array([d_coorf[LNOFO[i-1]][0],d_coorf[LNOFO[i-1]][1],d_coorf[LNOFO[i-1]][2]])
-          Pfon2 = array([d_coorf[LNOFO[i]][0],d_coorf[LNOFO[i]][1],d_coorf[LNOFO[i]][2]])
+          Pfon1 = NP.array([d_coorf[LNOFO[i-1]][0],d_coorf[LNOFO[i-1]][1],d_coorf[LNOFO[i-1]][2]])
+          Pfon2 = NP.array([d_coorf[LNOFO[i]][0],d_coorf[LNOFO[i]][1],d_coorf[LNOFO[i]][2]])
           VLextr = Pfon2 - Plev
-          absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
+          absf = NP.sqrt(NP.dot(NP.transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
           absfon.append(absf)
           DTANEX = FOND_FISS.DTAN_EXTREMITE.get()
           if DTANEX != None :
-            VN[i] = array(DTANEX)
+            VN[i] = NP.array(DTANEX)
           else :
-            VT = (Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-            VN[i] = array(cross_product(VT,v1))
+            VT = (Pfon2 - Pfon1)/NP.sqrt(NP.dot(NP.transpose(Pfon2-Pfon1),Pfon2-Pfon1))
+            VN[i] = NP.array(cross_product(VT,v1))
           dicoF = dict([(LNOFO[i],absfon[i]) for i in range(Nbfond)])  
           dicVN = dict([(LNOFO[i],VN[i]) for i in range(Nbfond)])
 #Sens de la tangente       
           v = cross_product(VLori,VLextr)
-          sens = sign(dot(transpose(v),v1))
+          sens = NP.sign(NP.dot(NP.transpose(v),v1))
 #Cas 2D              
         if MODELISATION!='3D' :
           DTANOR = False
           DTANEX = False
-          VT = array([0.,0.,1.])
-          VN = array(cross_product(v1,VT))
+          VT = NP.array([0.,0.,1.])
+          VN = NP.array(cross_product(v1,VT))
           dicVN = dict([(LNOFO[0],VN)])
-          Pfon = array([d_coorf[LNOFO[0]][0],d_coorf[LNOFO[0]][1],d_coorf[LNOFO[0]][2]])
+          Pfon = NP.array([d_coorf[LNOFO[0]][0],d_coorf[LNOFO[0]][1],d_coorf[LNOFO[0]][2]])
           VLori = Pfon - Plev
-          sens = sign(dot(transpose(VN),VLori))
+          sens = NP.sign(NP.dot(NP.transpose(VN),VLori))
 #Extraction dep sup/inf sur les normales          
         TlibS = [None]*Nbf1
         TlibI = [None]*Nbf1
@@ -402,7 +402,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         MODEL = self.get_concept(n_modele)
         dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
         for i in range(Nbf1):
-          Porig = array(d_coorf[Lnf1[i]] )
+          Porig = NP.array(d_coorf[Lnf1[i]] )
           if Lnf1[i]==LNOFO[0] and DTANOR : Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnf1[i]]
           elif Lnf1[i]==LNOFO[Nbfond-1] and DTANEX : Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnf1[i]]
           else : Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnf1[i]]*sens
@@ -466,10 +466,10 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           else :
             tcoor=TABL_DEPL_SUP.EXTR_TABLE()
         nbt = len(tcoor['NOEUD'].values()['NOEUD'])
-        xs=array(tcoor['COOR_X'].values()['COOR_X'][:nbt],Float)
-        ys=array(tcoor['COOR_Y'].values()['COOR_Y'][:nbt],Float)
-        if ndim==2 : zs=Numeric.zeros(nbt,Float)
-        elif ndim==3 : zs=array(tcoor['COOR_Z'].values()['COOR_Z'][:nbt],Float)
+        xs=NP.array(tcoor['COOR_X'].values()['COOR_X'][:nbt])
+        ys=NP.array(tcoor['COOR_Y'].values()['COOR_Y'][:nbt])
+        if ndim==2 : zs=NP.zeros(nbt)
+        elif ndim==3 : zs=NP.array(tcoor['COOR_Z'].values()['COOR_Z'][:nbt])
         ns = tcoor['NOEUD'].values()['NOEUD'][:nbt]
         ns = map(string.rstrip,ns)
         l_coor =  [[ns[i],xs[i],ys[i],zs[i]] for i in range(0,nbt)]
@@ -479,9 +479,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #   ---------- Abscisse curviligne du fond  -------------  
         absfon = [0,]
         for i in range(Nbfond-1) :
-          Pfon1 = array([d_coor[LNOFO[i]][0],d_coor[LNOFO[i]][1],d_coor[LNOFO[i]][2]])
-          Pfon2 = array([d_coor[LNOFO[i+1]][0],d_coor[LNOFO[i+1]][1],d_coor[LNOFO[i+1]][2]])
-          absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i]
+          Pfon1 = NP.array([d_coor[LNOFO[i]][0],d_coor[LNOFO[i]][1],d_coor[LNOFO[i]][2]])
+          Pfon2 = NP.array([d_coor[LNOFO[i+1]][0],d_coor[LNOFO[i+1]][1],d_coor[LNOFO[i+1]][2]])
+          absf = NP.sqrt(NP.dot(NP.transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i]
           absfon.append(absf)
         dicoF = dict([(LNOFO[i],absfon[i]) for i in range(Nbfond)])
 
@@ -500,7 +500,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         precn = precv * rmax
         rmprec= rmax*(1.+precv/10.)
         for i in range(0,Nbf1) :
-           Pfon = array([d_coor[Lnf1[i]][0],d_coor[Lnf1[i]][1],d_coor[Lnf1[i]][2]])
+           Pfon = NP.array([d_coor[Lnf1[i]][0],d_coor[Lnf1[i]][1],d_coor[Lnf1[i]][2]])
            Tmpsup = []
            Tmpinf = []
            itots = 0
@@ -511,8 +511,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
               if dicoS[Lnf1[i]][k] !='':
                  itots = itots +1
                  Nsup =  dicoS[Lnf1[i]][k]
-                 Psup = array([d_coor[Nsup][0],d_coor[Nsup][1],d_coor[Nsup][2]])
-                 abss = sqrt(dot(transpose(Pfon-Psup),Pfon-Psup))
+                 Psup = NP.array([d_coor[Nsup][0],d_coor[Nsup][1],d_coor[Nsup][2]])
+                 abss = NP.sqrt(NP.dot(NP.transpose(Pfon-Psup),Pfon-Psup))
                  if abss<rmprec :
                     NBTRLS = NBTRLS +1
                     Tmpsup.append(dicoS[Lnf1[i]][k])
@@ -520,11 +520,11 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
                  if dicoI[Lnf1[i]][k] !='':
                     itoti = itoti +1
                     Ninf =  dicoI[Lnf1[i]][k]
-                    Pinf = array([d_coor[Ninf][0],d_coor[Ninf][1],d_coor[Ninf][2]])
-                    absi = sqrt(dot(transpose(Pfon-Pinf),Pfon-Pinf))
+                    Pinf = NP.array([d_coor[Ninf][0],d_coor[Ninf][1],d_coor[Ninf][2]])
+                    absi = NP.sqrt(NP.dot(NP.transpose(Pfon-Pinf),Pfon-Pinf))
 # On verifie que les noeuds sont en vis a vis
                     if abss<rmprec :
-                      dist = sqrt(dot(transpose(Psup-Pinf),Psup-Pinf))
+                      dist = NP.sqrt(NP.dot(NP.transpose(Psup-Pinf),Psup-Pinf))
                       if dist>precn : 
                         UTMESS('A','RUPTURE0_21',valk=Lnf1[i])
                       else :
@@ -615,115 +615,115 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
        i = 0
        if MODELISATION=='3D' :
          if DTAN_ORIG != None :
-           VP[0] = array(DTAN_ORIG)
-           VP[0] = VP[0]/sqrt(VP[0][0]**2+VP[0][1]**2+VP[0][2]**2)
-           VN[0] = array([Vpropa[0],Vpropa[1],Vpropa[2]])
-           verif = dot(transpose(VP[0]),VN[0]) 
+           VP[0] = NP.array(DTAN_ORIG)
+           VP[0] = VP[0]/NP.sqrt(VP[0][0]**2+VP[0][1]**2+VP[0][2]**2)
+           VN[0] = NP.array([Vpropa[0],Vpropa[1],Vpropa[2]])
+           verif = NP.dot(NP.transpose(VP[0]),VN[0]) 
            if abs(verif) > 0.01:
              UTMESS('A','RUPTURE1_33',valr=[VN[0][0],VN[0][1],VN[0][2]])
          else :
-           VN[0] = array([Vpropa[0],Vpropa[1],Vpropa[2]])
-           VP[0] = array([Vpropa[3+0],Vpropa[3+1],Vpropa[3+2]])
+           VN[0] = NP.array([Vpropa[0],Vpropa[1],Vpropa[2]])
+           VP[0] = NP.array([Vpropa[3+0],Vpropa[3+1],Vpropa[3+2]])
          for i in range(1,Nbfond-1):
            absf = Coorfo[4*i+3]
            absfon.append(absf)
-           VN[i] = array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-           VP[i] = array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
-           verif = dot(transpose(VN[i]),VN[i-1]) 
+           VN[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+           VP[i] = NP.array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
+           verif = NP.dot(NP.transpose(VN[i]),VN[i-1]) 
            if abs(verif) < 0.98:
              UTMESS('A','RUPTURE1_35',vali=[i-1,i])
          i = Nbfond-1
          absf =  Coorfo[4*i+3]
          absfon.append(absf)
          if DTAN_EXTR != None :
-           VP[i] = array(DTAN_EXTR)
-           VN[i] = array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-           verif = dot(transpose(VP[i]),VN[0]) 
+           VP[i] = NP.array(DTAN_EXTR)
+           VN[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+           verif = NP.dot(NP.transpose(VP[i]),VN[0]) 
            if abs(verif) > 0.01:
              UTMESS('A','RUPTURE1_34',valr=[VN[i][0],VN[i][1],VN[i][2]])
          else :
-           VN[i] = array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-           VP[i] = array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
+           VN[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+           VP[i] = NP.array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
        else : 
          for i in range(0,Nbfond):
-           VP[i] = array([Vpropa[2+4*i],Vpropa[3+4*i],0.])
-           VN[i] = array([Vpropa[0+4*i],Vpropa[1+4*i],0.])
+           VP[i] = NP.array([Vpropa[2+4*i],Vpropa[3+4*i],0.])
+           VN[i] = NP.array([Vpropa[0+4*i],Vpropa[1+4*i],0.])
 # Cas fissure plane (VECT_K1 donne)
      if VECT_K1 != None :
-       v1 =  array(VECT_K1)
-       v1  = v1/sqrt(v1[0]**2+v1[1]**2+v1[2]**2)
-       v1 =  array(VECT_K1)
+       v1 =  NP.array(VECT_K1)
+       v1  = v1/NP.sqrt(v1[0]**2+v1[1]**2+v1[2]**2)
+       v1 =  NP.array(VECT_K1)
        i = 0
        if MODELISATION=='3D' :
 # Sens du vecteur VECT_K1       
-         v1x =array([Vpropa[0],Vpropa[1],Vpropa[2]])
-         verif = dot(transpose(v1),v1x) 
+         v1x =NP.array([Vpropa[0],Vpropa[1],Vpropa[2]])
+         verif = NP.dot(NP.transpose(v1),v1x) 
          if verif < 0 : v1 = -v1
          VN = [v1]*Nbfond
          if DTAN_ORIG != None :
-           VP[i] = array(DTAN_ORIG)
-           VP[i] = VP[i]/sqrt(VP[i][0]**2+VP[i][1]**2+VP[i][2]**2)
-           verif = dot(transpose(VP[i]),VN[0]) 
+           VP[i] = NP.array(DTAN_ORIG)
+           VP[i] = VP[i]/NP.sqrt(VP[i][0]**2+VP[i][1]**2+VP[i][2]**2)
+           verif = NP.dot(NP.transpose(VP[i]),VN[0]) 
            if abs(verif) > 0.01:
              UTMESS('A','RUPTURE1_36')
          else :
-           Pfon2 = array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
-           Pfon3 = array([Coorfo[4*(i+1)],Coorfo[4*(i+1)+1],Coorfo[4*(i+1)+2]])
-           VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-           VP[0] = array(cross_product(VT,v1))
-           VNi = array([Vpropa[3],Vpropa[4],Vpropa[5]])
-           verif = dot(transpose(VP[i]),VNi) 
+           Pfon2 = NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
+           Pfon3 = NP.array([Coorfo[4*(i+1)],Coorfo[4*(i+1)+1],Coorfo[4*(i+1)+2]])
+           VT = (Pfon3 - Pfon2)/NP.sqrt(NP.dot(NP.transpose(Pfon3-Pfon2),Pfon3-Pfon2))
+           VP[0] = NP.array(cross_product(VT,v1))
+           VNi = NP.array([Vpropa[3],Vpropa[4],Vpropa[5]])
+           verif = NP.dot(NP.transpose(VP[i]),VNi) 
            if abs(verif) < 0.99:
              vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
              UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
          for i in range(1,Nbfond-1):
-           Pfon1 = array([Coorfo[4*(i-1)],Coorfo[4*(i-1)+1],Coorfo[4*(i-1)+2]])
-           Pfon2 = array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
-           Pfon3 = array([Coorfo[4*(i+1)],Coorfo[4*(i+1)+1],Coorfo[4*(i+1)+2]])
+           Pfon1 = NP.array([Coorfo[4*(i-1)],Coorfo[4*(i-1)+1],Coorfo[4*(i-1)+2]])
+           Pfon2 = NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
+           Pfon3 = NP.array([Coorfo[4*(i+1)],Coorfo[4*(i+1)+1],Coorfo[4*(i+1)+2]])
            absf =  Coorfo[4*i+3]
            absfon.append(absf)
-           VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-           VT = VT+(Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-           VP[i] = array(cross_product(VT,v1)) 
-           VP[i] = VP[i]/sqrt(dot(transpose(VP[i]),VP[i]))
-           VNi = array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-           verif = dot(transpose(VN[i]),VNi) 
+           VT = (Pfon3 - Pfon2)/NP.sqrt(NP.dot(NP.transpose(Pfon3-Pfon2),Pfon3-Pfon2))
+           VT = VT+(Pfon2 - Pfon1)/NP.sqrt(NP.dot(NP.transpose(Pfon2-Pfon1),Pfon2-Pfon1))
+           VP[i] = NP.array(cross_product(VT,v1)) 
+           VP[i] = VP[i]/NP.sqrt(NP.dot(NP.transpose(VP[i]),VP[i]))
+           VNi = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+           verif = NP.dot(NP.transpose(VN[i]),VNi) 
            if abs(verif) < 0.99:
              vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
              UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
          i = Nbfond-1
-         Pfon1 = array([Coorfo[4*(i-1)],Coorfo[4*(i-1)+1],Coorfo[4*(i-1)+2]])
-         Pfon2 = array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
+         Pfon1 = NP.array([Coorfo[4*(i-1)],Coorfo[4*(i-1)+1],Coorfo[4*(i-1)+2]])
+         Pfon2 = NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
          absf =  Coorfo[4*i+3]
          absfon.append(absf)
          if DTAN_EXTR != None :
-           VP[i] = array(DTAN_EXTR)
-           VP[i] = VP[i]/sqrt(VP[i][0]**2+VP[i][1]**2+VP[i][2]**2)
-           verif = dot(transpose(VP[i]),VN[i]) 
+           VP[i] = NP.array(DTAN_EXTR)
+           VP[i] = VP[i]/NP.sqrt(VP[i][0]**2+VP[i][1]**2+VP[i][2]**2)
+           verif = NP.dot(NP.transpose(VP[i]),VN[i]) 
            if abs(verif) > 0.01:
              UTMESS('A','RUPTURE1_37')
          else :
-           VT = (Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-           VP[i] = array(cross_product(VT,v1))
-           VNi = array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-           verif = dot(transpose(VN[i]),VNi) 
+           VT = (Pfon2 - Pfon1)/NP.sqrt(NP.dot(NP.transpose(Pfon2-Pfon1),Pfon2-Pfon1))
+           VP[i] = NP.array(cross_product(VT,v1))
+           VNi = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+           verif = NP.dot(NP.transpose(VN[i]),VNi) 
            if abs(verif) < 0.99 :
              vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
              UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
        else :  
-         VT = array([0.,0.,1.])
+         VT = NP.array([0.,0.,1.])
          for i in range(0,Nbfond):
-           VP[i] = array(cross_product(v1,VT))  
+           VP[i] = NP.array(cross_product(v1,VT))  
            VN[i] = v1
-           VNi = array([Vpropa[0+4*i],Vpropa[1+4*i],0.])
-           verif = dot(transpose(VN[i]),VNi) 
+           VNi = NP.array([Vpropa[0+4*i],Vpropa[1+4*i],0.])
+           verif = NP.dot(NP.transpose(VN[i]),VNi) 
            if abs(verif) < 0.99 :
              vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
              UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
 #Sens de la tangente   
      if MODELISATION=='3D' : i = Nbfond/2
      else : i = 0
-     Po =  array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
+     Po =  NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
      Porig = Po + ABSC_CURV_MAXI*VP[i]
      Pextr = Po - ABSC_CURV_MAXI*VP[i]
      __Tabg = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
@@ -748,7 +748,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
        NB_NOEUD_COUPE = 5
      mcfact=[]
      for i in range(Nbfond):
-        Porig = array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
+        Porig = NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
         if i==0 and DTAN_ORIG!=None : Pextr = Porig - ABSC_CURV_MAXI*VP[i]
         elif i==(Nbfond-1) and DTAN_EXTR!=None : Pextr = Porig - ABSC_CURV_MAXI*VP[i]
         else : Pextr = Porig + ABSC_CURV_MAXI*VP[i]*sens
@@ -965,32 +965,32 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
             nbval = len(refsc)
           else :
             nbval=len(abscs)
-          abscs=array(abscs[:nbval])
-          coxs=array(tabsupi['COOR_X'].values()['COOR_X'][:nbval],Float)
-          coys=array(tabsupi['COOR_Y'].values()['COOR_Y'][:nbval],Float)
-          if ndim==2 :  cozs=Numeric.zeros(nbval,Float)
-          elif ndim==3 :  cozs=array(tabsupi['COOR_Z'].values()['COOR_Z'][:nbval],Float)
+          abscs=NP.array(abscs[:nbval])
+          coxs=NP.array(tabsupi['COOR_X'].values()['COOR_X'][:nbval])
+          coys=NP.array(tabsupi['COOR_Y'].values()['COOR_Y'][:nbval])
+          if ndim==2 :  cozs=NP.zeros(nbval)
+          elif ndim==3 :  cozs=NP.array(tabsupi['COOR_Z'].values()['COOR_Z'][:nbval])
           
           if FOND_FISS and not RESULTAT : #tri des noeuds avec abscisse
-            Pfon = array([d_coor[Lnofon[ino]][0],d_coor[Lnofon[ino]][1],d_coor[Lnofon[ino]][2]])
-            abscs = sqrt((coxs-Pfon[0])**2+(coys-Pfon[1])**2+(cozs-Pfon[2])**2)
+            Pfon = NP.array([d_coor[Lnofon[ino]][0],d_coor[Lnofon[ino]][1],d_coor[Lnofon[ino]][2]])
+            abscs = NP.sqrt((coxs-Pfon[0])**2+(coys-Pfon[1])**2+(cozs-Pfon[2])**2)
             tabsupi['Abs_fo'] = abscs
             tabsupi.sort('Abs_fo')
             abscs = getattr(tabsupi,'Abs_fo').values()
-            abscs=array(abscs[:nbval])
-            coxs=array(tabsupi['COOR_X'].values()['COOR_X'][:nbval],Float)
-            coys=array(tabsupi['COOR_Y'].values()['COOR_Y'][:nbval],Float)
-            if ndim==2 :  cozs=Numeric.zeros(nbval,Float)
-            elif ndim==3 :  cozs=array(tabsupi['COOR_Z'].values()['COOR_Z'][:nbval],Float)
+            abscs=NP.array(abscs[:nbval])
+            coxs=NP.array(tabsupi['COOR_X'].values()['COOR_X'][:nbval])
+            coys=NP.array(tabsupi['COOR_Y'].values()['COOR_Y'][:nbval])
+            if ndim==2 :  cozs=NP.zeros(nbval)
+            elif ndim==3 :  cozs=NP.array(tabsupi['COOR_Z'].values()['COOR_Z'][:nbval])
             
           if FOND_FISS and INFO==2 and iord==0 and not TYPE_MAILLAGE =='LIBRE':
             for ks in range(0,nbval) :
               texte="NOEUD RETENU POUR LA LEVRE SUP: %s  %f"%(Lnosup[ino][ks],abscs[ks])
               aster.affiche('MESSAGE',texte)
-          dxs=array(tabsupi['DX'].values()['DX'][:nbval],Float)
-          dys=array(tabsupi['DY'].values()['DY'][:nbval],Float)
-          if ndim==2 : dzs=Numeric.zeros(nbval,Float)
-          elif ndim==3 : dzs=array(tabsupi['DZ'].values()['DZ'][:nbval],Float)
+          dxs=NP.array(tabsupi['DX'].values()['DX'][:nbval])
+          dys=NP.array(tabsupi['DY'].values()['DY'][:nbval])
+          if ndim==2 : dzs=NP.zeros(nbval)
+          elif ndim==3 : dzs=NP.array(tabsupi['DZ'].values()['DZ'][:nbval])
           
 #     --- LEVRE INF :  "ABSC_CURV" CROISSANTES et < RMAX ---
         if SYME_CHAR=='SANS' and not FISSURE : 
@@ -1012,35 +1012,35 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
              else:
                 UTMESS('A','RUPTURE0_42')
           nbval=min(nbval,nbvali)
-          absci=array(absci[:nbval])
-          coxi=array(tabinfi['COOR_X'].values()['COOR_X'][:nbval],Float)
-          coyi=array(tabinfi['COOR_Y'].values()['COOR_Y'][:nbval],Float)
-          if ndim==2 : cozi=Numeric.zeros(nbval,Float)
-          elif ndim==3 : cozi=array(tabinfi['COOR_Z'].values()['COOR_Z'][:nbval],Float)
+          absci=NP.array(absci[:nbval])
+          coxi=NP.array(tabinfi['COOR_X'].values()['COOR_X'][:nbval])
+          coyi=NP.array(tabinfi['COOR_Y'].values()['COOR_Y'][:nbval])
+          if ndim==2 : cozi=NP.zeros(nbval)
+          elif ndim==3 : cozi=NP.array(tabinfi['COOR_Z'].values()['COOR_Z'][:nbval])
 #     --- ON VERIFIE QUE LES NOEUDS SONT EN VIS_A_VIS  (SYME=SANS)   ---
           if not FOND_FISS :
             precn = precv * rmax
             dist=(coxs-coxi)**2+(coys-coyi)**2+(cozs-cozi)**2
-            dist=sqrt(dist)
+            dist=NP.sqrt(dist)
             for d in dist :
                if d>precn : UTMESS('F','RUPTURE0_44')
           
           if FOND_FISS and not RESULTAT :#tri des noeuds avec abscisse
-            Pfon = array([d_coor[Lnofon[ino]][0],d_coor[Lnofon[ino]][1],d_coor[Lnofon[ino]][2]])
-            absci = sqrt((coxi-Pfon[0])**2+(coyi-Pfon[1])**2+(cozi-Pfon[2])**2)
+            Pfon = NP.array([d_coor[Lnofon[ino]][0],d_coor[Lnofon[ino]][1],d_coor[Lnofon[ino]][2]])
+            absci = NP.sqrt((coxi-Pfon[0])**2+(coyi-Pfon[1])**2+(cozi-Pfon[2])**2)
             tabinfi['Abs_fo'] = absci
             tabinfi.sort('Abs_fo')
             absci = getattr(tabinfi,'Abs_fo').values()
-            absci=array(abscs[:nbval])
-            coxi=array(tabinfi['COOR_X'].values()['COOR_X'][:nbval],Float)
-            coyi=array(tabinfi['COOR_Y'].values()['COOR_Y'][:nbval],Float)
-            if ndim==2 :  cozi=Numeric.zeros(nbval,Float)
-            elif ndim==3 :  cozi=array(tabinfi['COOR_Z'].values()['COOR_Z'][:nbval],Float)
+            absci=NP.array(abscs[:nbval])
+            coxi=NP.array(tabinfi['COOR_X'].values()['COOR_X'][:nbval])
+            coyi=NP.array(tabinfi['COOR_Y'].values()['COOR_Y'][:nbval])
+            if ndim==2 :  cozi=NP.zeros(nbval)
+            elif ndim==3 :  cozi=NP.array(tabinfi['COOR_Z'].values()['COOR_Z'][:nbval])
 
-          dxi=array(tabinfi['DX'].values()['DX'][:nbval],Float)
-          dyi=array(tabinfi['DY'].values()['DY'][:nbval],Float)
-          if ndim==2 : dzi=Numeric.zeros(nbval,Float)
-          elif ndim==3 : dzi=array(tabinfi['DZ'].values()['DZ'][:nbval],Float)
+          dxi=NP.array(tabinfi['DX'].values()['DX'][:nbval])
+          dyi=NP.array(tabinfi['DY'].values()['DY'][:nbval])
+          if ndim==2 : dzi=NP.zeros(nbval)
+          elif ndim==3 : dzi=NP.array(tabinfi['DZ'].values()['DZ'][:nbval])
           
           if FOND_FISS and INFO==2 and iord==0 and not TYPE_MAILLAGE =='LIBRE':
             for ki in range(0,nbval) :
@@ -1054,18 +1054,18 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
            H1 = complete(H1)
            E1 = getattr(tabsupi,'E1X').values()
            E1 = complete(E1)
-           dxs = 2*(H1 + sqrt(abscs)*E1)
+           dxs = 2*(H1 + NP.sqrt(abscs)*E1)
            H1 = getattr(tabsupi,'H1Y').values()
            E1 = getattr(tabsupi,'E1Y').values()
            H1 = complete(H1)
            E1 = complete(E1)
-           dys = 2*(H1 + sqrt(abscs)*E1)
+           dys = 2*(H1 + NP.sqrt(abscs)*E1)
            H1 = getattr(tabsupi,'H1Z').values()
            E1 = getattr(tabsupi,'E1Z').values()
            H1 = complete(H1)
            E1 = complete(E1)
-           dzs = 2*(H1 + sqrt(abscs)*E1)
-           abscs=array(abscs[:nbval])
+           dzs = 2*(H1 + NP.sqrt(abscs)*E1)
+           abscs=NP.array(abscs[:nbval])
 
 #   ---------- CALCUL PROP. MATERIAU AVEC TEMPERATURE -----------  
         if Tempe3D :
@@ -1077,8 +1077,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
            valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,'F')
            e = valres[0]
            nu = valres[1] 
-           coefd  = e * sqrt(2.*pi)      / ( 8.0 * (1. - nu**2))
-           coefd3 = e*sqrt(2*pi) / ( 8.0 * (1. + nu))
+           coefd  = e * NP.sqrt(2.*pi)      / ( 8.0 * (1. - nu**2))
+           coefd3 = e*NP.sqrt(2*pi) / ( 8.0 * (1. + nu))
            coefg  = (1. - nu**2) / e
            coefg3 = (1. + nu)  / e
 
@@ -1110,34 +1110,34 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
             v2 = VP[ino]
             v1 = VN[ino]
          elif SYME_CHAR=='SANS' :
-            vo =  array([( coxs[-1]+coxi[-1] )/2.,( coys[-1]+coyi[-1] )/2.,( cozs[-1]+cozi[-1] )/2.])
-            ve =  array([( coxs[0 ]+coxi[0 ] )/2.,( coys[0 ]+coyi[0 ] )/2.,( cozs[0 ]+cozi[0 ] )/2.])
+            vo =  NP.array([( coxs[-1]+coxi[-1] )/2.,( coys[-1]+coyi[-1] )/2.,( cozs[-1]+cozi[-1] )/2.])
+            ve =  NP.array([( coxs[0 ]+coxi[0 ] )/2.,( coys[0 ]+coyi[0 ] )/2.,( cozs[0 ]+cozi[0 ] )/2.])
             v2 =  ve-vo
          else :
-            vo = array([ coxs[-1], coys[-1], cozs[-1]])
-            ve = array([ coxs[0], coys[0], cozs[0]])
+            vo = NP.array([ coxs[-1], coys[-1], cozs[-1]])
+            ve = NP.array([ coxs[0], coys[0], cozs[0]])
             v2 =  ve-vo
-         if not FISSURE :  v1 =  array(VECT_K1)
-         v2 =  v2/sqrt(v2[0]**2+v2[1]**2+v2[2]**2)
+         if not FISSURE :  v1 =  NP.array(VECT_K1)
+         v2 =  v2/NP.sqrt(v2[0]**2+v2[1]**2+v2[2]**2)
          v1p = sum(v2*v1)
          if SYME_CHAR=='SANS' : v1  = v1-v1p*v2
          else : v2  = v2-v1p*v1 
-         v1  = v1/sqrt(v1[0]**2+v1[1]**2+v1[2]**2)
-         v2 =  v2/sqrt(v2[0]**2+v2[1]**2+v2[2]**2)
-         v3  = array([v1[1]*v2[2]-v2[1]*v1[2],v1[2]*v2[0]-v2[2]*v1[0],v1[0]*v2[1]-v2[0]*v1[1]])
-         pgl  = asarray([v1,v2,v3])
-         dpls = asarray([dxs,dys,dzs])
-         dpls = matrixmultiply(pgl,dpls)
+         v1  = v1/NP.sqrt(v1[0]**2+v1[1]**2+v1[2]**2)
+         v2 =  v2/NP.sqrt(v2[0]**2+v2[1]**2+v2[2]**2)
+         v3  = NP.array([v1[1]*v2[2]-v2[1]*v1[2],v1[2]*v2[0]-v2[2]*v1[0],v1[0]*v2[1]-v2[0]*v1[1]])
+         pgl  = NP.asarray([v1,v2,v3])
+         dpls = NP.asarray([dxs,dys,dzs])
+         dpls = NP.dot(pgl,dpls)
          if SYME_CHAR!='SANS' and abs(dpls[0][0]) > 1.e-10 :
            UTMESS('A','RUPTURE0_49',valk=[Lnofon[ino],SYME_CHAR])
          if FISSURE :
             saut=dpls
          elif SYME_CHAR=='SANS' :
-            dpli = asarray([dxi,dyi,dzi])
-            dpli = matrixmultiply(pgl,dpli)
+            dpli = NP.asarray([dxi,dyi,dzi])
+            dpli = NP.dot(pgl,dpli)
             saut=(dpls-dpli)
          else :
-            dpli = [multiply(dpls[0],-1.),dpls[1],dpls[2]]
+            dpli = [NP.multiply(dpls[0],-1.),dpls[1],dpls[2]]
             saut=(dpls-dpli)
          if INFO==2 :
            mcfact=[]
@@ -1161,14 +1161,14 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #     ------------------------------------------------------------------
 #                           CALCUL DES K1, K2, K3
 #     ------------------------------------------------------------------
-         isig=sign(transpose(resize(saut[:,-1],(nbval-1,3))))
-         isig=sign(isig+0.001)
-         saut=saut*array([[coefd]*nbval,[coefd]*nbval,[coefd3]*nbval])
+         isig=NP.sign(NP.transpose(NP.resize(saut[:,-1],(nbval-1,3))))
+         isig=NP.sign(isig+0.001)
+         saut=saut*NP.array([[coefd]*nbval,[coefd]*nbval,[coefd3]*nbval])
          saut=saut**2
          ksig = isig[:,1]
-         ksig = array([ksig,ksig])
-         ksig = transpose(ksig)
-         kgsig=resize(ksig,(1,6))[0]
+         ksig = NP.array([ksig,ksig])
+         ksig = NP.transpose(ksig)
+         kgsig=NP.resize(ksig,(1,6))[0]
 #     ------------------------------------------------------------------
 #                           --- METHODE 1 ---
 #     ------------------------------------------------------------------
@@ -1180,9 +1180,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          k  = abs(y1-x1*(y2-y1)/(x2-x1))
          g  = coefg*(k[0]+k[1])+coefg3*k[2]
          kg1 = [max(k[0]),min(k[0]),max(k[1]),min(k[1]),max(k[2]),min(k[2])]
-         kg1 = sqrt(kg1)*kgsig
-         kg1=Numeric.concatenate([kg1,[max(g),min(g)]])
-         vk  = sqrt(k)*isig[:,:-1]
+         kg1 = NP.sqrt(kg1)*kgsig
+         kg1=NP.concatenate([kg1,[max(g),min(g)]])
+         vk  = NP.sqrt(k)*isig[:,:-1]
          if INFO==2 :
            mcfact=[]
            mcfact.append(_F(PARA='ABSC_CURV_1' ,LISTE_R=x1.tolist() ))
@@ -1204,9 +1204,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          k  = abs(y1/x1)
          g  = coefg*(k[0]+k[1])+coefg3*k[2]
          kg2= [max(k[0]),min(k[0]),max(k[1]),min(k[1]),max(k[2]),min(k[2])]
-         kg2 = sqrt(kg2)*kgsig
-         kg2=Numeric.concatenate([kg2,[max(g),min(g)]])
-         vk = sqrt(k)*isig
+         kg2 = NP.sqrt(kg2)*kgsig
+         kg2=NP.concatenate([kg2,[max(g),min(g)]])
+         vk = NP.sqrt(k)*isig
          if INFO==2 :
            mcfact=[]
            mcfact.append(_F(PARA='ABSC_CURV' ,LISTE_R=x1.tolist() ))
@@ -1226,12 +1226,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          x2 = abscs[1:nabs]
          y1 = saut[:,:-1]
          y2 = saut[:,1:nabs]
-         k  = (sqrt(y2)*sqrt(x2)+sqrt(y1)*sqrt(x1))*(x2-x1)
-         k  = Numeric.sum(transpose(k))
+         k  = (NP.sqrt(y2)*NP.sqrt(x2)+NP.sqrt(y1)*NP.sqrt(x1))*(x2-x1)
+         k  = NP.sum(NP.transpose(k), axis=0)
          de = abscs[-1]
          vk = (k/de**2)*isig[:,0]
          g  = coefg*(vk[0]**2+vk[1]**2)+coefg3*vk[2]**2
-         kg3=Numeric.concatenate([[vk[0]]*2,[vk[1]]*2,[vk[2]]*2,[g]*2])
+         kg3=NP.concatenate([[vk[0]]*2,[vk[1]]*2,[vk[2]]*2,[g]*2])
          if INFO==2 :
            mcfact=[]
            mcfact.append(_F(PARA='K1'        ,LISTE_R=vk[0] ))
@@ -1245,8 +1245,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #     ------------------------------------------------------------------
 #                           CREATION DE LA TABLE 
 #     ------------------------------------------------------------------
-        kg=array([kg1,kg2,kg3])
-        kg=transpose(kg)
+        kg=NP.array([kg1,kg2,kg3])
+        kg=NP.transpose(kg)
         mcfact=[]
         if TITRE != None :
           titre = TITRE

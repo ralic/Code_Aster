@@ -1,4 +1,4 @@
-# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE VABHHTS J.PELLET
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM (EN 2D ET EN FILAIRE)
 #                   + CAS_FIGURE='2D'
@@ -208,7 +208,8 @@ XX5=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',INFO=1, RESULTAT=XX4, NO
 
 # 3.3.1) passage du tenseur des contraintes du repere axis (oy) au repere 3D (OZ):
 #---------------------------------------------------------------------------------
-import Numeric, math
+import numpy as NP
+import math
 
 def cyl2cart(P,sigcyl,epsilon=1.e-10):
       """
@@ -225,7 +226,7 @@ def cyl2cart(P,sigcyl,epsilon=1.e-10):
       assert len(sigcyl)==4,sigcyl
       assert len(P)==3,P
 
-      sig1=Numeric.zeros( (3,3), Numeric.Float32)
+      sig1=NP.zeros( (3,3) )
       sig1[0][0]=sigcyl[0]  # sixx
       sig1[2][2]=sigcyl[1]  # siyy
       sig1[1][1]=sigcyl[2]  # sizz
@@ -247,15 +248,15 @@ def change_rep(tens2,theta):
     s=math.sin(theta)
 
     # P : matrice de rotation pour un vecteur de R3 autour de Oz :
-    P=Numeric.zeros( (3,3), Numeric.Float32)
+    P=NP.zeros( (3,3))
     P[0][0]=c
     P[1][1]=c
     P[2][2]=1
     P[0][1]=s
     P[1][0]=-s
 
-    Q=Numeric.dot(tens2,P)
-    R=Numeric.dot(Numeric.transpose(P),Q)
+    Q=NP.dot(tens2,P)
+    R=NP.dot(NP.transpose(P),Q)
 
     return R
 

@@ -1,4 +1,4 @@
-#@ MODIF table0 Messages  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF table0 Messages  DATE 10/05/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,4 +128,7 @@ faire l'intersection  ou l'union (opérateurs &, |).
 36 : _("""La table doit avoir exactement trois paramètres.
 """),
 
+37 : _("""
+   La table %(k1)s n'existe pas dans le résultat %(k2)s.
+"""),
 }

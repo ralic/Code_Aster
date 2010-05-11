@@ -1,4 +1,4 @@
-#@ MODIF defi_fonc_elec_ops Macro  DATE 09/02/2010   AUTEUR DURAND C.DURAND 
+#@ MODIF defi_fonc_elec_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,7 +66,7 @@ def FcontinuGR2R(T,I1R,I2R,TRR,PHI1R,PHI2R,TAU1R,TAU2R,D) :
 def defi_fonc_elec_ops(self,FREQ,SIGNAL,COUR,COUR_PRIN,COUR_SECO,**args):
         ier=0
         from Utilitai.Utmess     import  UTMESS
-        import Numeric
+        import numpy
 
         # On importe les definitions des commandes a utiliser dans la macro
         # Le nom de la variable doit etre obligatoirement le nom de la commande
@@ -106,7 +106,7 @@ def defi_fonc_elec_ops(self,FREQ,SIGNAL,COUR,COUR_PRIN,COUR_SECO,**args):
                                 fff.append(0.)
                                 T2moins=T2
                         premier=0
-                        t_k_cour=Numeric.arange((T2-T1)/pas_t)
+                        t_k_cour=numpy.arange((T2-T1)/pas_t)
                         t_k_cour=t_k_cour*pas_t
                         t_k_cour=t_k_cour+T1
                         t_k_cour=t_k_cour.tolist()
@@ -145,7 +145,7 @@ def defi_fonc_elec_ops(self,FREQ,SIGNAL,COUR,COUR_PRIN,COUR_SECO,**args):
                 if (abs(TR-T2moins)<1.E-7) : pass
                 else :
                         temps.append(0)
-                        t_k_cour=Numeric.arange((T2moins-TR)/pas_t)
+                        t_k_cour=numpy.arange((T2moins-TR)/pas_t)
                         t_k_cour=t_k_cour*pas_t
                         t_k_cour=t_k_cour+TR
                         t_k_cour=t_k_cour.tolist()

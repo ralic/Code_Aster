@@ -1,4 +1,4 @@
-#@ MODIF reca_controles Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_controles Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,11 +19,17 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-import string, copy, Numeric, types, os, sys, pprint
+import string
+import copy
+import types
+import os
+import sys
+import pprint
 
 # Nom de la routine
 nompro = 'MACR_RECAL'
 
+from Noyau.N_types import is_float, is_str, is_enum
 
 
 #_____________________________________________
@@ -42,13 +48,13 @@ def erreur_de_type(code_erreur,X):
 
    txt = ""
    if(code_erreur == 0 ):
-      if type(X) is not types.ListType:
+      if not is_enum(X):
          txt="\nCette entrée: " +str(X)+" n'est pas une liste valide"
    if(code_erreur == 1 ):
-      if type(X) is not types.StringType:
+      if not is_str(X):
          txt="\nCette entrée: " +str(X)+" n'est pas une chaine de caractère valide ; Veuillez la ressaisir en lui appliquant le type char de python"
    if(code_erreur == 2 ):
-      if type(X) is not types.FloatType:
+      if not is_float(X):
          txt="\nCette entrée:  " +str(X)+" n'est pas une valeur float valide ; Veuillez la ressaisir en lui appliquant le type float de python"
    return txt
    

@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,9 @@
 
 from types import FunctionType
 from Noyau.N_ASSD import ASSD
+from Noyau.N_types import is_float, is_list, is_enum
 from B_SENSIBILITE_COMMANDES_SENSIBLES import SENSIBILITE_COMMANDES_SENSIBLES
+
 
 class SENSIBILITE_DERIVATION :
    """
@@ -354,7 +356,7 @@ class SENSIBILITE_DERIVATION :
            ok_objet = 1
 
        # 1. La valeur est un reel isolé : sa dérivée est le réel associé
-       if type(mcsimp.valeur) == float:
+       if is_float(mcsimp.valeur):
          if self.reel is not None :
            mcsimp.valeur = self.reel
 
@@ -370,10 +372,10 @@ class SENSIBILITE_DERIVATION :
 
        # 4. La valeur est une liste ou un tuple : on applique les étapes 1, 2 et 3 à chacun
        # de ses éléments et on reconstitue une liste ou un tuple avec les dérivés.
-       elif type(mcsimp.valeur) in (list, tuple) :
+       elif is_enum(mcsimp.valeur):
          aux = [ ]
          for val in mcsimp.valeur :
-           if type(val) == float:
+           if is_enum(val):
              if self.reel is not None :
                val_nouv = self.reel
              else :
@@ -389,7 +391,7 @@ class SENSIBILITE_DERIVATION :
            else :
              val_nouv = val
            aux.append(val_nouv)
-         if type(mcsimp.valeur) is list:
+         if is_list(mcsimp.valeur):
            mcsimp.valeur = aux
          else :
            mcsimp.valeur = tuple(aux)

@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 16/11/2009   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF calc_europlexus_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ dryrun = False
 
 import types,string
 import os
-import Numeric as N
+import numpy
 import math 
 import copy
 
@@ -54,7 +54,7 @@ tst = 1.0E-10
 #-----------------------------------------------------------------------   
 
 def norme(u) :
-  return N.sqrt(N.dot(u,u))
+  return numpy.sqrt(numpy.dot(u,u))
 
 def vecteurs_egaux(v1,v2):
   diff = v1-v2
@@ -335,7 +335,7 @@ class EUROPLEXUS:
         ligne_vale = [float(val) for val in ligne]
         courbes[icourbe].append(ligne_vale)
     for courbe in courbes :
-        courbes[courbe]=N.transpose(N.array(courbes[courbe]))
+        courbes[courbe]=numpy.transpose(numpy.array(courbes[courbe]))
     return courbes
     
 #-----------------------------------------------------------------------   
@@ -986,7 +986,7 @@ class EUROPLEXUS:
               if debug: print 'type(car_temp) = %s'%type(car_temp)
               dic_mater[nom_mater]['BETON'][car] = None
               if car_temp :
-                  if type(car_temp) == float :
+                  if isinstance(car_temp, float) :
                     dic_mater[nom_mater]['BETON'][car] = car_temp
                   else :
                     if debug: print dir(car_temp)
@@ -1137,7 +1137,7 @@ class EUROPLEXUS:
             vale    = dic_mater[nom_mater]['BETON'][car_aster]
             car_epx = dic_corres2[car_aster]
             if vale is not None :
-                if type(vale) == float :
+                if isinstance(vale, float) :
                     epx[MODULE].append('%s %s' %(car_epx,vale))
                 else :
                     epx[MODULE].append('%s %s' %(car_epx,vale))
@@ -1145,7 +1145,7 @@ class EUROPLEXUS:
             vale    = dic_mater[nom_mater]['BETON'][car_aster]
             car_epx = dic_corres2b[car_aster]
             if vale is not None :
-                if type(vale) == float :
+                if isinstance(vale, float) :
                     epx[MODULE].append('%s %s' %(car_epx,vale))
                 else :
                     epx[MODULE].append('%s %s' %(car_epx,vale))
@@ -2433,7 +2433,7 @@ class POUTRE:
   def angle2vecty(self,angl):
     #transformer en rd
     for iangl in range(len(angl)):
-      angl[iangl] = N.pi*angl[iangl]/180. 
+      angl[iangl] = numpy.pi*angl[iangl]/180. 
  
     cosa = math.cos( angl[0] )
     sina = math.sin( angl[0] )
@@ -2444,7 +2444,7 @@ class POUTRE:
     vect = [ sing*sinb*cosa - cosg*sina , cosg*cosa + sing*sinb*sina , sing*cosb ]
     for ii in range(len(vect)):
       if abs(vect[ii]) <= tst : vect[ii] = 0.0
-    vect = N.array(vect)
+    vect = numpy.array(vect)
     vect = vect/norme(vect)
     return vect
     

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,22 +144,22 @@ DEPT    = [None]*nb_calc_total_plus_1*nb_de_fissures_plus_1
 DEPB    = [None]*nb_calc_total_plus_1*nb_de_fissures_plus_1
 #        Variables a deux parametres
 #
-import Numeric
-T      =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-K1_min =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-K1_max =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-K2_min =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-K2_max =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-KI1    =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-KI2    =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-DELTAK =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-NCYCL  =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-DELTA  =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-R      =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-Kmin   =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-Kmax   =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-gdr    =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
-KEFF   =Numeric.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1],Numeric.Float)
+import numpy as NP
+T      =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+K1_min =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+K1_max =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+K2_min =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+K2_max =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+KI1    =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+KI2    =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+DELTAK =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+NCYCL  =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+DELTA  =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+R      =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+Kmin   =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+Kmax   =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+gdr    =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
+KEFF   =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
 #       
 #############################################################################
 #       

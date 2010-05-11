@@ -1,4 +1,4 @@
-# MODIF  DATE 14/12/2009   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
 # sdlv131c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,6 +25,8 @@
 #  - RESULTATS ISSUS DE DYNA_LINE_TRAN
 #---------------------------------------------------------------------
 #
+import numpy as NP
+
 DEBUT( CODE=_F( NOM = 'SDLV131C',NIV_PUB_WEB='INTERNET'),
        DEBUG=_F(SDVERI='OUI'),
        IMPR_MACRO='NON',
@@ -107,11 +109,10 @@ NU=NUME_DDL( MATR_RIGI=M_EL_RIG)
 M_AS_RIG=ASSE_MATRICE( MATR_ELEM=M_EL_RIG,   NUME_DDL=NU)
 M_AS_MAS=ASSE_MATRICE( MATR_ELEM=M_EL_MAS,   NUME_DDL=NU)
 
-import Numeric
 rota = 90.
-rota_rad = rota*Numeric.pi/180.
-cosinus = Numeric.cos(rota_rad)
-sinus = Numeric.sin(rota_rad)
+rota_rad = rota*NP.pi/180.
+cosinus = NP.cos(rota_rad)
+sinus = NP.sin(rota_rad)
 
 CHF=AFFE_CHAR_MECA(MODELE=MODEL,
                    FORCE_FACE=(_F(GROUP_MA='SURF2',FX=force),
@@ -231,8 +232,8 @@ else:
 #IMPR_CO(CONCEPT=_F(NOM=OBSJAU)),
 
 if dynatrans:
-  omega0=Numeric.sqrt(omega0_2)
-  deltal = 3.*force*(tfin-Numeric.sin(omega0*tfin)/omega0)/(rho*longueur*omega0_2)
+  omega0=NP.sqrt(omega0_2)
+  deltal = 3.*force*(tfin-NP.sin(omega0*tfin)/omega0)/(rho*longueur*omega0_2)
   exx = deltal/longueur
   eyy = -poisson*exx
   ezz = -poisson*exx

@@ -1,4 +1,4 @@
-#@ MODIF macr_fiabilite_ops Macro  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF macr_fiabilite_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,9 +18,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-
 # RESPONSABLE GNICOLAS G.NICOLAS
-#
+
+import os
+import sys
+
+
 def macr_fiabilite_ops(self, INFO,
                        LOGICIEL, VERSION,
                        UNITE_ESCL, MESS_ASTER,
@@ -43,10 +46,7 @@ def macr_fiabilite_ops(self, INFO,
   from Accas import _F
   from Macro import fiabilite_mefisto
   import aster
-  import os
-  import string
-  import sys
-  import Numeric
+  import numpy
 #
 #____________________________________________________________________
 #
@@ -180,16 +180,16 @@ def macr_fiabilite_ops(self, INFO,
         if la_variable["VALE_MOY_PHY"] is None :
           v_moy_loi = la_variable["VALE_MOY"]
           sigma_loi = la_variable["ECART_TYPE"]
-          aux = Numeric.exp(0.5*sigma_loi*sigma_loi+v_moy_loi)
+          aux = numpy.exp(0.5*sigma_loi*sigma_loi+v_moy_loi)
           v_moy_physique = v_min_loi + aux
         else :
           v_moy_physique = la_variable["VALE_MOY_PHY"]
           aux = la_variable["ECART_TYPE_PHY"]/(la_variable["VALE_MOY_PHY"]-la_variable["VALE_MIN"])
           aux1 = 1. + aux*aux
-          aux2 = Numeric.sqrt(aux1)
-          v_moy_loi = Numeric.log((la_variable["VALE_MOY_PHY"]-la_variable["VALE_MIN"])/aux2)
-          aux2 = Numeric.log(aux1)
-          sigma_loi = Numeric.sqrt(aux2)
+          aux2 = numpy.sqrt(aux1)
+          v_moy_loi = numpy.log((la_variable["VALE_MOY_PHY"]-la_variable["VALE_MIN"])/aux2)
+          aux2 = numpy.log(aux1)
+          sigma_loi = numpy.sqrt(aux2)
 #
 # 3.1.4. ==> loi normale tronquée : transfert des moyenne, mini/maxi et écart-type
 #            on définit une moyennne comme étant la médiane des extremes.
@@ -250,8 +250,7 @@ def macr_fiabilite_ops(self, INFO,
 #____________________________________________________________________
 #
 #
-    VERSION = string.replace(VERSION, "_", ".")
-    VERSION = string.replace(VERSION, "N", "n")
+    VERSION = VERSION.replace("_", ".").replace("N", "n")
 #
     EXEC_LOGICIEL ( ARGUMENT = (Rep_Calc_LOGICIEL_global, # nom du repertoire
                                 LOGICIEL,                 # nom du logiciel de fiabilité

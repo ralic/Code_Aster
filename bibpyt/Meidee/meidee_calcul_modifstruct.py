@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_modifstruct Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_calcul_modifstruct Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -208,6 +208,8 @@ class ModifStruct:
     
     def find_maillage_modif_from(self, modc_name):
         """Trouve le maillage modif dans la memoire JEVEUX"""
+        # existence du modele
+        modele = self.objects.get_model(modc_name)
         for modele_name, modele in self.objects.modeles.items():
             if modele_name == modc_name :
                 mailx_name = modele.maya_name
@@ -375,7 +377,7 @@ class ModifStruct:
         self.clear_concept(self.x_modgen)
         self.x_modgen = None
 
-        nom_cmp = base_mod_es.get_modes_data()['NOM_CMP']
+        nom_cmp = base_mod_es.get_modes_data()['NOEUD_CMP']
         nume_modes_sup = base_mod_es.get_modes_data()['NUME_ORDRE']
 
         if calc_freq is None:
@@ -441,7 +443,7 @@ class ModifStruct:
             # self.mess.disp_mess("Recalcul de la base modale par ES")
             nodes = {}
             for num in modes_expansion_retenus:
-                node,comp = self.base_proj.get_modes_data()['NOM_CMP'][num-1].split()
+                node,comp = self.base_proj.get_modes_data()['NOEUD_CMP'][num-1].split()
                 nodes.setdefault( node, [] ).append( comp )
             grno = []
             for node, comps in nodes.items():
@@ -497,11 +499,9 @@ class ModifStruct:
                                   )
 
         self.x_mailcond = __MAILCD
-        print "self.x_mailcond1 = ", self.x_mailcond, type(self.x_mailcond), self.x_mailcond.nom
 
     def modele_couple(self):
         """Creation du modele couple"""
-        print "self.x_mailcond2 = ", self.x_mailcond, type(self.x_mailcond), self.x_mailcond.nom
         self.cpl.reinit(self.modlx, self.mailx, self.x_mailcond, self.sumail )
         
         try:
@@ -1066,7 +1066,6 @@ class CreateModeleCouple(CopyModelMeca):
                                                     PHENOMENE='MECANIQUE',),
                                 )
         self.modele = __MDLCPL
-        print "type(__MDLCPL) = ", type(__MDLCPL), __MDLCPL, __MDLCPL.nom
         self.objects.update(__MDLCPL.nom,__MDLCPL)
 
 

@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 10/05/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,9 +109,10 @@ C ----------------------------------------------------------------------
       CALL JEVEUO(LIGRMO//'.LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)
 
-      NDIM = 3
-      CALL DISMOI('F','Z_CST',MO,'MODELE',IBID,ZCST,IER)
-      IF (ZCST.EQ.'OUI') NDIM = 2
+      CALL DISMOI('F','DIM_GEOM',MO,'MODELE',NDIM,K8B,IER)
+      IF (NDIM.GT.1000) NDIM=NDIM-1000
+      IF (.NOT.(NDIM.EQ.2.OR.NDIM.EQ.3))
+     &    CALL U2MESS('F','MODELISA2_6')
 
       IF (NDIM.EQ.2) THEN
         NBTYP = 3

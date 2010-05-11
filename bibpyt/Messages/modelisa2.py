@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF modelisa2 Messages  DATE 10/05/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,6 +46,17 @@ cata_msg={
  Utilisez CALC_FONC_INTERP pour tabuler la formule %(k1)s
 """),
 
+6: _("""
+Erreur d'utilisation :
+ Le modèle contient un mélange d'éléments 2D (vivant dans le plan XOY) et 3D.
+ Le code n'a pas prévu ce cas de figure ici.
+
+Risques et conseils :
+ Il faut peut etre émettre une demande d'évolution pour pouvoir traiter ce problème.
+"""),
+
+
+
 9: _("""
   Erreur utilisateur :
     l'objet %(k1)s n'existe pas. On ne peut pas continuer.
@@ -81,9 +92,7 @@ cata_msg={
  un noeud de group_ma_2 n est geometriquement appariable avec aucun de GROUP_MA_1
 """),
 
-20: _("""
- les 2 maillages doivent être du même type : 2d (ou 3d).
-"""),
+
 
 21: _("""
   -> Le group_ma %(k1)s est présent dans les 2 maillages que l'on assemble.
@@ -260,14 +269,14 @@ Risque & Conseil:
 
 83: _("""
  on doit utiliser le mot cle CHAM_NO pour donner le CHAM_NO dont les composantes seront les seconds membres de la relation linéaire.
- 
+
  """),
 
 84: _("""
  il faut que le CHAM_NO dont les termes servent de seconds membres à la relation linéaire à écrire ait été défini.
  """),
 
-85: _(""" 
+85: _("""
  on doit donner un CHAM_NO après le mot cle CHAM_NO derrière le mot facteur CHAMNO_IMPO .
 """),
 
@@ -315,11 +324,11 @@ Les mots-cles admissibles pour définir la seconde liste de noeuds sous le mot-fa
 96: _("""
   %(k1)s   %(k2)s ne fait pas partie du maillage :  %(k3)s
 """),
- 
+
 97: _("""
   Assemblage de maillages : Présence de noeuds confondus dans la zone à coller GROUP_MA_1.
 """),
- 
+
 98: _("""
  on doit utiliser le mot clé CHAM_NO pour donner le CHAM_NO dont les composantes seront les coefficients de la relation linéaire.
 """),

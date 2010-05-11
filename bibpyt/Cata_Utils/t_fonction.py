@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Cata_Utils  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF t_fonction Cata_Utils  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,26 +17,15 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
-# ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
-# ======================================================================
-from Numeric import *
 import copy
 import types
+from math import exp, log
+
+import numpy as NP
+import numpy.fft as FFT
+
+from Noyau.N_types import is_float, is_float_or_int, is_complex, is_number, is_enum
+
 
 # -----------------------------------------------------------------------------
 class FonctionError(Exception): pass
@@ -59,11 +48,10 @@ def interp(typ_i,val,x1,x2,y1,y2,tol=1.e-6) :
       else:
          raise InterpolationError, "abscisse = %g, intervalle = [%g, %g]" % (val, x1, x2)
 
-import Numeric
 
 def is_ordo(liste):
   if len(liste) > 1:
-    val = Numeric.array(liste, Numeric.Float)
+    val = NP.array(liste, float)
     return min(val[1:len(val)] - val[0:len(val)-1]) >= 0.
   else: return True
 
@@ -87,8 +75,8 @@ class t_fonction :
          raise FonctionError, 'fonction : parametre PROL_DROITE incorrect'
     if para['PROL_GAUCHE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
          raise FonctionError, 'fonction : parametre PROL_GAUCHE incorrect'
-    self.vale_x    = array(vale_x)
-    self.vale_y    = array(vale_y)
+    self.vale_x    = NP.array(vale_x)
+    self.vale_y    = NP.array(vale_y)
     self.para      = para
     if len(self.vale_x)!=len(self.vale_y) :
          raise FonctionError, 'fonction : longueur abscisse <> longueur ordonnées'
@@ -105,10 +93,10 @@ class t_fonction :
       ggg=other.evalfonc(vale_x)
       if   isinstance(self,t_fonction_c): return t_fonction_c(vale_x,fff.vale_y+ggg.vale_y,para)
       else                              : return t_fonction(vale_x,fff.vale_y+ggg.vale_y,para)
-    elif type(other) in [types.FloatType,types.IntType,types.ComplexType] :
+    elif is_number(other):
       if   isinstance(self,t_fonction_c): return t_fonction_c(self.vale_x,self.vale_y+other,self.para)
       else                              : return t_fonction(self.vale_x,self.vale_y+other,self.para)
-    else:  raise FonctionError, 'fonctions : erreur de type dans __add__'
+    else:  raise FonctionError, 'fonctions : erreur de type dans __add__ : %s %s' % (self, type(other))
 
   def __mul__(self,other) :
     """multiplication avec une autre fonction ou un nombre, par surcharge de l'opérateur *
@@ -120,11 +108,11 @@ class t_fonction :
       ggg=other.evalfonc(vale_x)
       if   isinstance(self,t_fonction_c): return t_fonction_c(vale_x,fff.vale_y*ggg.vale_y,para)
       else                              : return t_fonction(vale_x,fff.vale_y*ggg.vale_y,para)
-    elif type(other) in [types.FloatType,types.IntType] :
+    elif is_float_or_int(other):
       return t_fonction(self.vale_x,self.vale_y*other,self.para)
-    elif type(other) ==types.ComplexType :
+    elif is_complex(other):
       return t_fonction_c(self.vale_x,self.vale_y*other,self.para)
-    else:  raise FonctionError, 'fonctions : erreur de type dans __mul__'
+    else:  raise FonctionError, 'fonctions : erreur de type dans __mul__%s %s' % (self, type(other))
 
   def __repr__(self) :
     """affichage de la fonction en double colonne
@@ -138,7 +126,7 @@ class t_fonction :
     """composition de deux fonction F[G]=FoG=F(G(x))
     """
     para=copy.copy(self.para)
-    if other.para['NOM_RESU']!=self.para['NOM_PARA'] :
+    if other.para['NOM_RESU'] != self.para['NOM_PARA'] :
        raise ParametreError,'''composition de fonctions : NOM_RESU1 et NOM_PARA2 incohérents '''
     para['NOM_PARA']==other.para['NOM_PARA']
     return t_fonction(other.vale_x,map(self,other.vale_y),para)
@@ -148,7 +136,7 @@ class t_fonction :
     - tolérance, par défaut 1.e-6 en relatif sur la longueur de l'intervalle
     - adjacent, pour capter les erreurs d'arrondi en cas de prolongement exclu
     """
-    i=searchsorted(self.vale_x,val)
+    i=NP.searchsorted(self.vale_x,val)
     n=len(self.vale_x)
     if n == 1:
       # Utilisation abusive de la tolérance relative mais ce cas est particulier
@@ -214,9 +202,9 @@ class t_fonction :
        else                                  : f_d=self
     val_max    =f_d.vale_x[-1]
     prol_droite=f_d.para['PROL_DROITE']
-    vale_x=concatenate((self.vale_x,other.vale_x))
-    vale_x=clip(vale_x,val_min,val_max)
-    vale_x=sort(list(set(vale_x)))
+    vale_x=NP.concatenate((self.vale_x,other.vale_x))
+    vale_x=NP.clip(vale_x,val_min,val_max)
+    vale_x=NP.sort(list(set(vale_x)))
     return vale_x, prol_gauche, prol_droite
 
   def cut(self,rinf,rsup,prec,crit='RELATIF') :
@@ -227,18 +215,18 @@ class t_fonction :
     para=copy.copy(self.para)
     para['PROL_GAUCHE']='EXCLU'
     para['PROL_DROITE']='EXCLU'
-    if   crit=='ABSOLU' : rinf_tab=greater(abs(self.vale_x-rinf),prec)
-    elif crit=='RELATIF': rinf_tab=greater(abs(self.vale_x-rinf),prec*rinf)
+    if   crit=='ABSOLU' : rinf_tab=NP.greater(abs(self.vale_x-rinf),prec)
+    elif crit=='RELATIF': rinf_tab=NP.greater(abs(self.vale_x-rinf),prec*rinf)
     else : raise FonctionError, 'fonction : cut : critère absolu ou relatif'
-    if   crit=='ABSOLU' : rsup_tab=greater(abs(self.vale_x-rsup),prec)
-    elif crit=='RELATIF': rsup_tab=greater(abs(self.vale_x-rsup),prec*rsup)
+    if   crit=='ABSOLU' : rsup_tab=NP.greater(abs(self.vale_x-rsup),prec)
+    elif crit=='RELATIF': rsup_tab=NP.greater(abs(self.vale_x-rsup),prec*rsup)
     else : raise FonctionError, 'fonction : cut : critère absolu ou relatif'
-    if alltrue(rinf_tab) : i=searchsorted(self.vale_x,rinf)
+    if NP.alltrue(rinf_tab) : i=NP.searchsorted(self.vale_x,rinf)
     else                 : i=rinf_tab.tolist().index(0)+1
-    if alltrue(rsup_tab) : j=searchsorted(self.vale_x,rsup)
+    if NP.alltrue(rsup_tab) : j=NP.searchsorted(self.vale_x,rsup)
     else                 : j=rsup_tab.tolist().index(0)
-    vale_x=array([rinf,]+self.vale_x.tolist()[i:j]+[rsup,])
-    vale_y=array([self(rinf),]+self.vale_y.tolist()[i:j]+[self(rsup),])
+    vale_x=NP.array([rinf,]+self.vale_x.tolist()[i:j]+[rsup,])
+    vale_y=NP.array([self(rinf),]+self.vale_y.tolist()[i:j]+[self(rsup),])
     return t_fonction(vale_x,vale_y,para)
 
   def cat(self,other,surcharge) :
@@ -246,7 +234,7 @@ class t_fonction :
     """
     para=copy.copy(self.para)
     if self.para['INTERPOL']!=other.para['INTERPOL'] : raise FonctionError, 'concaténation de fonctions à interpolations différentes'
-    if min(self.vale_x)<min(other.vale_x) :
+    if NP.min(self.vale_x)<NP.min(other.vale_x) :
             f1=self
             f2=other
     else                                  :
@@ -254,24 +242,24 @@ class t_fonction :
             f2=self
     para['PROL_GAUCHE']=f1.para['PROL_GAUCHE']
     if   surcharge=='GAUCHE' :
-       i=searchsorted(f2.vale_x,f1.vale_x[-1])
+       i=NP.searchsorted(f2.vale_x,f1.vale_x[-1])
        if i!=len(f2.vale_x) : para['PROL_DROITE']=f2.para['PROL_DROITE']
        else                 : para['PROL_DROITE']=f1.para['PROL_DROITE']
-       vale_x = concatenate((f1.vale_x, f2.vale_x[i:len(f2.vale_x)]))
-       vale_y = concatenate((f1.vale_y, f2.vale_y[i:len(f2.vale_y)]))
+       vale_x = NP.concatenate((f1.vale_x, f2.vale_x[i:len(f2.vale_x)]))
+       vale_y = NP.concatenate((f1.vale_y, f2.vale_y[i:len(f2.vale_y)]))
     elif surcharge=='DROITE' :
-       i=searchsorted(f1.vale_x,f2.vale_x[0])
+       i=NP.searchsorted(f1.vale_x,f2.vale_x[0])
        if i!=len(f1.vale_x) : para['PROL_DROITE']=f2.para['PROL_DROITE']
        else                 : para['PROL_DROITE']=f1.para['PROL_DROITE']
-       vale_x = concatenate((f1.vale_x[:i], f2.vale_x))
-       vale_y = concatenate((f1.vale_y[:i], f2.vale_y))
+       vale_x = NP.concatenate((f1.vale_x[:i], f2.vale_x))
+       vale_y = NP.concatenate((f1.vale_y[:i], f2.vale_y))
     return t_fonction(vale_x,vale_y,para)
 
   def tabul(self) :
     """mise en forme de la fonction selon un vecteur unique (x1,y1,x2,y2,...)
     """
-    __tab=array([self.vale_x,self.vale_y])
-    return ravel(transpose(__tab)).tolist()
+    __tab=NP.array([self.vale_x,self.vale_y])
+    return NP.ravel(NP.transpose(__tab)).tolist()
 
   def extreme(self) :
     """renvoie un dictionnaire des valeurs d'ordonnées min et max
@@ -293,10 +281,10 @@ class t_fonction :
     """renvoie la primitive de la fonction, calculée avec la constante d'intégration 'coef'
     """
     n = len(self.vale_y)   # [1:n] car pb sur calibre 5 (etch, python2.5 x86_64)
-    trapz     = zeros(n, Float)
+    trapz     = NP.zeros(n, float)
     trapz[0]  = coef
     trapz[1:n] = (self.vale_y[1:n]+self.vale_y[:-1])/2*(self.vale_x[1:n]-self.vale_x[:-1])
-    prim_y=cumsum(trapz)
+    prim_y=NP.cumsum(trapz)
     para=copy.copy(self.para)
     para['PROL_GAUCHE']='EXCLU'
     para['PROL_DROITE']='EXCLU'
@@ -376,7 +364,7 @@ class t_fonction :
     para=copy.copy(self.para)
     if para['PROL_GAUCHE']=='LINEAIRE' : para['PROL_GAUCHE']='EXCLU'
     if para['PROL_DROITE']=='LINEAIRE' : para['PROL_DROITE']='EXCLU'
-    return t_fonction(self.vale_x,absolute(self.vale_y),para)
+    return t_fonction(self.vale_x,NP.absolute(self.vale_y),para)
 
   def evalfonc(self,liste_val) :
     """renvoie la mm fonction interpolée aux points définis par la liste 'liste_val'
@@ -388,10 +376,10 @@ class t_fonction :
     suppression de la tendance moyenne d'une fonction
     """
     para=copy.copy(self.para)
-    xy=sum(self.vale_x*self.vale_y)
-    x0=sum(self.vale_x)
-    y0=sum(self.vale_y)
-    xx=sum(self.vale_x*self.vale_x)
+    xy=NP.sum(self.vale_x*self.vale_y)
+    x0=NP.sum(self.vale_x)
+    y0=NP.sum(self.vale_y)
+    xx=NP.sum(self.vale_x*self.vale_x)
     n=len(self.vale_x)
     a1 = ( n*xy - x0*y0) / (n*xx - x0*x0)
     a0 = (xx*x0 - x0*xy) / (n*xx - x0*x0)
@@ -402,19 +390,18 @@ class t_fonction :
     """
     __ex=self*self
     __ex=__ex.trapeze(0.)
-    return sqrt(__ex.vale_y[-1])
+    return NP.sqrt(__ex.vale_y[-1])
 
   def fft(self,methode) :
     """renvoie la transformée de Fourier rapide FFT
     """
-    import FFT
     para=copy.copy(self.para)
     para['NOM_PARA']='FREQ'
     if self.para['NOM_PARA']!='INST' :
        raise ParametreError, 'fonction réelle : FFT : NOM_PARA=INST pour une transformée directe'
     pas = self.vale_x[1]-self.vale_x[0]
     for i in range(1,len(self.vale_x)) :
-        ecart = abs(((self.vale_x[i]-self.vale_x[i-1])-pas)/pas)
+        ecart = NP.abs(((self.vale_x[i]-self.vale_x[i-1])-pas)/pas)
         if ecart>1.e-2 :
            raise FonctionError, 'fonction réelle : FFT : la fonction doit etre à pas constant'
     n=int(log(len(self.vale_x))/log(2))
@@ -423,7 +410,7 @@ class t_fonction :
     elif methode=='PROL_ZERO'  :
        vale_y=self.vale_y.tolist()
        vale_y=vale_y+[0.]*(2**(n+1)-len(self.vale_x))
-       vale_y=array(vale_y)
+       vale_y=NP.array(vale_y)
     elif   methode=='COMPLET'  : 
        vale_y=self.vale_y
     vect=FFT.fft(vale_y)
@@ -440,8 +427,8 @@ class t_fonction_c(t_fonction) :
   def tabul(self) :
     """mise en forme de la fonction selon un vecteur unique (x1,yr1,yi1,x2,yr2,yr2,...)
     """
-    __tab=array([self.vale_x,self.vale_y.real,self.vale_y.imag])
-    return ravel(transpose(__tab)).tolist()
+    __tab=NP.array([self.vale_x,self.vale_y.real,self.vale_y.imag])
+    return NP.ravel(NP.transpose(__tab)).tolist()
 
   def __repr__(self) :
     """affichage de la fonction en double colonne
@@ -461,14 +448,13 @@ class t_fonction_c(t_fonction) :
        On effectue un prolongement a l'ordre 2 par continuite pour simplifier
        l'analyse des pas de temps en post traitement
     """
-    import FFT
     para=copy.copy(self.para)
     para['NOM_PARA']='INST'
     if self.para['NOM_PARA']!='FREQ' :
        raise ParametreError, 'fonction complexe : FFT : NOM_PARA=FREQ pour une transformée directe'
     pas = self.vale_x[1]-self.vale_x[0]
     for i in range(1,len(self.vale_x)) :
-        ecart = abs(((self.vale_x[i]-self.vale_x[i-1])-pas)/pas)
+        ecart = NP.abs(((self.vale_x[i]-self.vale_x[i-1])-pas)/pas)
         if ecart>1.e-3 :
            raise FonctionError, 'fonction complexe : FFT : la fonction doit etre à pas constant'
     n=int(log(len(self.vale_x))/log(2))
@@ -485,7 +471,7 @@ class t_fonction_c(t_fonction) :
           fonc_temp=self.vale_y
           part1=fonc_temp.tolist();
 
-       if remainder(len(part1),2) == 0 :
+       if NP.remainder(len(part1),2) == 0 :
           # Si le nombre de point du spectre est pair,
           # on prolonge en interpolant les 3 dernier points par un polynome de
           # degre 2, en imposant une tangente horizontale au dernier point (celui
@@ -495,10 +481,10 @@ class t_fonction_c(t_fonction) :
           # pour la symetrie. On identifie a, b et c, pour calculer Y(N+1)
           middle=[];
           middle.append((4*part1[-1].real-part1[len(part1)-2].real)/3);
-          part2=conjugate(fonc_temp[1:len(part1)])
+          part2=NP.conjugate(fonc_temp[1:len(part1)])
           part2=part2.tolist();
           part2.reverse();
-          vale_fonc=array(part1+middle+part2)
+          vale_fonc=NP.array(part1+middle+part2)
        else :
           # Si le dernier point est effectivement reel, on reconstruit theoriquement
           if abs(part1[-1].imag) < abs(part1[-1].real*1e-6) :
@@ -506,12 +492,12 @@ class t_fonction_c(t_fonction) :
           else :
           # Sinon, on approxime comme dans le cas ou N est pair
              part1[-1]=(4*part1[len(part1)-2].real-part1[len(part1)-3].real)/3
-          part2=conjugate(fonc_temp[1:len(part1)-1])
+          part2=NP.conjugate(fonc_temp[1:len(part1)-1])
           part2=part2.tolist();
           part2.reverse();
-          vale_fonc=array(part1+part2)
+          vale_fonc=NP.array(part1+part2)
 
-    vect=FFT.inverse_fft(vale_fonc)
+    vect=FFT.ifft(vale_fonc)
     vect=vect.real
     pasfreq =1./(pas*(len(vect)))
     vale_x  =[pasfreq*i for i in range(len(vect))]
@@ -540,8 +526,8 @@ class t_nappe :
          raise FonctionError, 'nappe : parametre PROL_DROITE incorrect'
     if para['PROL_GAUCHE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
          raise FonctionError, 'nappe : parametre PROL_GAUCHE incorrect'
-    self.vale_para    = array(vale_para)
-    if type(l_fonc) not in (types.ListType,types.TupleType) :
+    self.vale_para    = NP.array(vale_para)
+    if not is_enum(l_fonc):
          raise FonctionError, 'nappe : la liste de fonctions fournie n est pas une liste'
     if len(l_fonc)!=len(vale_para) :
          raise FonctionError, 'nappe : nombre de fonctions différent du nombre de valeurs du paramètre'
@@ -554,7 +540,7 @@ class t_nappe :
   def __call__(self,val1,val2):
     """méthode pour évaluer nappe(val1,val2)
     """
-    i=searchsorted(self.vale_para,val1)
+    i=NP.searchsorted(self.vale_para,val1)
     n=len(self.vale_para)
     if i==0 :
       if val1==self.vale_para[0]  : return self.l_fonc[0](val2)
@@ -597,11 +583,12 @@ class t_nappe :
     """
     l_fonc=[]
     if   isinstance(other,t_nappe):
-      if self.vale_para!=other.vale_para : raise ParametreError, 'nappes à valeurs de paramètres différentes'
+      if NP.all(self.vale_para != other.vale_para):
+          raise ParametreError, 'nappes à valeurs de paramètres différentes'
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]+other.l_fonc[i])
-    elif type(other) in [types.FloatType,types.IntType] :
+    elif is_float_or_int(other):
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]+other)
-    else:  raise FonctionError, 't_nappe : erreur de type dans __add__'
+    else:  raise FonctionError, 't_nappe : erreur de type dans __add__ : %s %s' % (other, type(other))
     return t_nappe(self.vale_para,l_fonc,self.para)
 
   def __mul__(self,other) :
@@ -609,11 +596,12 @@ class t_nappe :
     """
     l_fonc=[]
     if   isinstance(other,t_nappe):
-      if self.vale_para!=other.vale_para : raise ParametreError, 'nappes à valeurs de paramètres différentes'
+      if NP.all(self.vale_para != other.vale_para) :
+          raise ParametreError, 'nappes à valeurs de paramètres différentes'
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]*other.l_fonc[i])
-    elif type(other) in [types.FloatType,types.IntType] :
+    elif is_float_or_int(other):
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]*other)
-    else:  raise FonctionError, 't_nappe : erreur de type dans __mul__'
+    else:  raise FonctionError, 't_nappe : erreur de type dans __mul__ : %s %s' % (other, type(other))
     return t_nappe(self.vale_para,l_fonc,self.para)
 
   def __repr__(self) :
@@ -634,13 +622,13 @@ class t_nappe :
     vale_para=self.vale_para.tolist()+other.vale_para.tolist()
     vale_para=list(set(vale_para))
     vale_para.sort()
-    vale_para=array(vale_para)
+    vale_para=NP.array(vale_para)
     l_fonc=[]
     for val in vale_para :
       if   val in self.vale_para:
-         l_fonc.append(self.l_fonc[searchsorted(self.vale_para, val)])
+         l_fonc.append(self.l_fonc[NP.searchsorted(self.vale_para, val)])
       elif val in other.vale_para:
-         other_fonc=other.l_fonc[searchsorted(other.vale_para, val)]
+         other_fonc=other.l_fonc[NP.searchsorted(other.vale_para, val)]
          new_vale_x=other_fonc.vale_x
          new_para  =other_fonc.para
          new_vale_y=[self(val,x) for x in new_vale_x]
@@ -675,7 +663,7 @@ def homo_support_nappe(l_f):
    """Homogénéisation du support d'une liste de nappes.
    Retourne une liste de nappes.
    """
-   if type(l_f) not in (list, tuple):
+   if not is_enum(l_f):
       l_f = [l_f,]
    l_fres=[]
    for f in l_f:
@@ -699,7 +687,7 @@ def func_union(func,l_f) :
     # on ote les abscisses doublons
     vale_x = list(set(vale_x))
     vale_x.sort()
-    vale_x = array(vale_x)
+    vale_x = NP.array(vale_x)
     # interpolation des fonctions sur l'union des abscisses
     vale_y = [map(f,vale_x) for f in l_f]
     # applique la fonction
@@ -728,13 +716,13 @@ def fractile(l_f, fract):
     # on ote les abscisses doublons
     vale_x = list(set(vale_x))
     vale_x.sort()
-    vale_x = array(vale_x)
+    vale_x = NP.array(vale_x)
     #
     l_vale_y=[]
     for f in l_f :
         vale_y = map(f,vale_x)
         l_vale_y.append(vale_y)
-    tab_val=transpose(array(l_vale_y))
+    tab_val=NP.transpose(NP.array(l_vale_y))
     tab_val=tab_val.tolist()
     for l in tab_val : l.sort()
     vale_y=[]

@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 10/05/2010   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,13 +107,14 @@ C =====================================================================
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 C --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
-C --- ELLES NE SONT THEOTIQUEMENT PAS UTILISEES ------------------------
+C --- ELLES NE SONT THEORIQUEMENT PAS UTILISEES ------------------------
 C ======================================================================
       EMMAG = .FALSE.
       RETCOM = 0
       DPAD   = 0.0D0
       SIGNE  = 1.0D0
       RHO22  = 0.0D0
+      CP22   = 0.0D0
       M11M   = CONGEM(ADCP11)
       M12M   = CONGEM(ADCP12)
       M21M   = CONGEM(ADCP21)

@@ -1,4 +1,4 @@
-#@ MODIF calc_spec_ops Macro  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF calc_spec_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,8 +41,8 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
    EnumTypes = (ListType, TupleType)
    from Accas               import _F
    from Utilitai.Utmess     import  UTMESS
-   import Numeric
-   import FFT
+   import numpy
+   import numpy.fft as FFT
    
    commande='CALC_SPEC'
 
@@ -128,21 +128,21 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
       for i1 in range(3) :
           if l_ech_t[i1] !=None :
              if   i1 == 0 : 
-                l_ech=int(Numeric.floor(l_ech_t[i1]/dt));
+                l_ech=int(numpy.floor(l_ech_t[i1]/dt));
              elif i1 == 1 :
-                l_ech=int(Numeric.floor((len(temp)/2)*l_ech_t[i1]*0.01));
+                l_ech=int(numpy.floor((len(temp)/2)*l_ech_t[i1]*0.01));
              elif i1 == 2 :
-                l_ech=int(Numeric.floor(l_ech_t[i1]))
+                l_ech=int(numpy.floor(l_ech_t[i1]))
       if l_ech > len(temp)/2 :
          raise FonctionError, 'Vous devez specifier une longueur d'+"'"+'echantillon inferieure a la longueur totale de l'+"'"+'acquisition'
       for i1 in range(3) :
           if recouvr_t[i1] !=None :
              if   i1 == 0 : 
-                recouvr=int(Numeric.floor(recouvr_t[i1]/dt));
+                recouvr=int(numpy.floor(recouvr_t[i1]/dt));
              elif i1 == 1 :
-                recouvr=int(Numeric.floor((l_ech)*recouvr_t[i1]*0.01));
+                recouvr=int(numpy.floor((l_ech)*recouvr_t[i1]*0.01));
              elif i1 == 2 :
-                recouvr=int(Numeric.floor(recouvr_t[i1]))
+                recouvr=int(numpy.floor(recouvr_t[i1]))
       if recouvr > l_ech :
          raise FonctionError, 'La longueur de recouvrement ne peut exceder la longueur '
       print "test2 : l_ech = ", l_ech
@@ -154,21 +154,21 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
       if occ[1]['FENETRE'] == 'RECT' :
          fene=[1.]*l_ech
       elif occ[1]['FENETRE'] == 'HAMM' :
-         fene=[0.54-0.46*Numeric.cos(2*Numeric.pi*i1/(l_ech-1)) for i1 in range(l_ech)]
+         fene=[0.54-0.46*numpy.cos(2*numpy.pi*i1/(l_ech-1)) for i1 in range(l_ech)]
       elif occ[1]['FENETRE'] == 'HANN' :
-         fene=[0.5-0.5*Numeric.cos(2*Numeric.pi*i1/(l_ech-1)) for i1 in range(l_ech)]
+         fene=[0.5-0.5*numpy.cos(2*numpy.pi*i1/(l_ech-1)) for i1 in range(l_ech)]
       elif occ[1]['FENETRE'] == 'EXPO' :
          para=occ[1]['DEFI_FENE']
          if len(para) != 2 :
             raise FonctionError, 'Erreur de taille dans DEFI_FENE : ' + 'la fenetre exponentielle est definie par exactement deux valeurs'
-         fene=[1.]*int(para[0])+[Numeric.exp(para[1]*(i1-int(para[0]-1))*dt) for i1 in range(int(para[0]),l_ech)]
+         fene=[1.]*int(para[0])+[numpy.exp(para[1]*(i1-int(para[0]-1))*dt) for i1 in range(int(para[0]),l_ech)]
       elif occ[1]['FENETRE'] == 'PART' :
          fene=occ[1]['DEFI_FENE']
          if len(fene) != l_ech :
             raise FonctionError, 'Erreur de taille dans DEFI_FENE : ' + 'La fenetre doit etre definie avec le meme nombre de points que les echantillons'
       
       # normalisation de la fenetre
-      fene=Numeric.divide(fene,Numeric.sqrt(Numeric.sum(Numeric.multiply(fene,fene)))).tolist()
+      fene=numpy.divide(fene,numpy.sqrt(numpy.sum(numpy.multiply(fene,fene)))).tolist()
       
    if len(TRANSFERT)+len(INTERSPE) == 0 : #-- on ne rentre rien : interspectre par defaut - fenetre rectangulaire
       fene=[1.]*l_ech
@@ -190,11 +190,11 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
    
    if TAB_ECHANT : # Cas TAB_ECHANT
       num_mes_temp= tab_py['NUME_MES'].values()['NUME_MES']
-      max_mes=Numeric.maximum.reduce(num_mes_temp);
+      max_mes=numpy.maximum.reduce(num_mes_temp);
       num_ord_temp= tab_py['NUME_ORDRE_I'].values()['NUME_ORDRE_I']
       long_fonc=[len(fonc_py[i1].VALE.get()) for i1 in range(len(fonc_py))]
       
-      N_fen=int(Numeric.floor((Numeric.minimum.reduce(long_fonc)/2-l_ech)/(l_ech-recouvr))+1)
+      N_fen=int(numpy.floor((numpy.minimum.reduce(long_fonc)/2-l_ech)/(l_ech-recouvr))+1)
 
       sig=[]; 
       dt=[];    
@@ -202,7 +202,7 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
          vale=fonc_py[i1].VALE.get();
          temp=(list(vale[0:int(len(vale)/2)]));
          sig.append(list(vale[int(len(vale)/2):]));
-         test_pas=Numeric.subtract(temp[1:],temp[0:-1])
+         test_pas=numpy.subtract(temp[1:],temp[0:-1])
          crit=test_pas.tolist();
          crit.sort();
          dt.append(crit[-1]);
@@ -211,13 +211,13 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
 
       for j1 in range(N_fen) :
          for i1 in range(len(fonc_py)) :
-            fft.append(FFT.fft(Numeric.multiply(sig[i1][j1*(l_ech-recouvr):(j1*(l_ech-recouvr)+l_ech)],fene)))
+            fft.append(FFT.fft(numpy.multiply(sig[i1][j1*(l_ech-recouvr):(j1*(l_ech-recouvr)+l_ech)],fene)))
             if j1 == 0 : df.append(1./(dt[i1])/l_ech);
             num_mes.append(num_mes_temp[i1]+max_mes*j1);
             num_ord.append(num_ord_temp[i1]); 
 
       if len(df)>1 :
-         test_df=Numeric.subtract(df[1:],df[0:-1])
+         test_df=numpy.subtract(df[1:],df[0:-1])
          test_df=test_df.tolist();
          test_df.sort();
          if abs(test_df[-1]) > 1.e-5 :
@@ -241,27 +241,27 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
          num_ord.append(occ[1]['NUME_ORDRE_I'])
       
          tmp.append(vale_sig[0])
-         test_pas=Numeric.subtract(vale_sig[0][1:],vale_sig[0][0:-1])
+         test_pas=numpy.subtract(vale_sig[0][1:],vale_sig[0][0:-1])
          crit=test_pas.tolist();
          crit.sort();
          if abs((crit[-1]-crit[0])/crit[-1]) > 1.e-5 :
             raise FonctionError, 'L'+"'"+'echantillonage doit etre fait a pas constant'
          print "vale_sig[1]= ", len(vale_sig[1]), vale_sig[1]
          print "  fene = ",len(fene), fene
-         fft.append(FFT.fft(Numeric.multiply(vale_sig[1],fene)))
+         fft.append(FFT.fft(numpy.multiply(vale_sig[1],fene)))
          df.append(1./(crit[-1])/len(vale_sig[0]));
       
       
       #-- Verification des longueurs --#      
       
-      test_long=Numeric.subtract(lt[1:],lt[0:-1])
+      test_long=numpy.subtract(lt[1:],lt[0:-1])
       test_long=test_long.tolist();
       test_long.sort();
       if (test_long[-1]-test_long[0]) != 0 :
          raise FonctionError, 'Toutes les fonctions doivent etre definies avec le meme nombre de points'
    
       if len(df) > 1 :
-         test_df=Numeric.subtract(df[1:],df[0:-1])
+         test_df=numpy.subtract(df[1:],df[0:-1])
          test_df=test_df.tolist();
          test_df.sort();
          if abs(test_df[-1]) > 1.e-5 :
@@ -316,13 +316,13 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
             dsp=[0.j]*l_ech;
             if len(ind_mes) > 0 :   
                for l1 in range(len(ind_mes)) :
-                  dsp_t=Numeric.multiply(Numeric.conjugate(fft[ind_mes[l1][0]]),fft[ind_mes[l1][1]])
-                  dsp_t=Numeric.divide(dsp_t,l_ech*len(ind_mes))
-                  dsp=Numeric.add(dsp,dsp_t)
+                  dsp_t=numpy.multiply(numpy.conjugate(fft[ind_mes[l1][0]]),fft[ind_mes[l1][1]])
+                  dsp_t=numpy.divide(dsp_t,l_ech*len(ind_mes))
+                  dsp=numpy.add(dsp,dsp_t)
                dsp=dsp.tolist();
                dsp_r=[];
        
-               for k1 in range(int(Numeric.floor(l_ech/2))) :
+               for k1 in range(int(numpy.floor(l_ech/2))) :
                   dsp_r=dsp_r+[frq[k1],dsp[k1].real,dsp[k1].imag]
     
                _fonc = DEFI_FONCTION(NOM_PARA='FREQ',VALE_C=dsp_r,);
@@ -390,29 +390,29 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
                   Gyu=[0.j]*l_ech;
                   if len(ind_mes) > 0 :   
                      for l1 in range(len(ind_mes)) :
-                        Guu_t=Numeric.multiply(Numeric.conjugate(fft[ind_mes[l1][0]]),fft[ind_mes[l1][0]])
-                        Guu=Numeric.add(Guu,Guu_t)
-                        Gyu_t=Numeric.multiply(Numeric.conjugate(fft[ind_mes[l1][1]]),fft[ind_mes[l1][0]])
-                        Gyu=Numeric.add(Gyu,Gyu_t)
-                        Gyy_t=Numeric.multiply(Numeric.conjugate(fft[ind_mes[l1][1]]),fft[ind_mes[l1][1]])
-                        Gyy=Numeric.add(Gyy,Gyy_t)
+                        Guu_t=numpy.multiply(numpy.conjugate(fft[ind_mes[l1][0]]),fft[ind_mes[l1][0]])
+                        Guu=numpy.add(Guu,Guu_t)
+                        Gyu_t=numpy.multiply(numpy.conjugate(fft[ind_mes[l1][1]]),fft[ind_mes[l1][0]])
+                        Gyu=numpy.add(Gyu,Gyu_t)
+                        Gyy_t=numpy.multiply(numpy.conjugate(fft[ind_mes[l1][1]]),fft[ind_mes[l1][1]])
+                        Gyy=numpy.add(Gyy,Gyy_t)
 
                      if l_H[0][1]['ESTIM']=='H1' :
-                        frf=Numeric.divide(Numeric.conjugate(Gyu),Guu);
+                        frf=numpy.divide(numpy.conjugate(Gyu),Guu);
                         nom_frf='FRF-H1';
                      elif l_H[0][1]['ESTIM']=='H2' :
-                        frf=Numeric.divide(Gyy,Gyu);
+                        frf=numpy.divide(Gyy,Gyu);
                         nom_frf='FRF-H2';
                      elif l_H[0][1]['ESTIM']=='CO' :
-                        H1=Numeric.divide(Numeric.conjugate(Gyu),Guu);
-                        H2=Numeric.divide(Gyy,Gyu);
-                        frf=Numeric.divide(H1,H2);
+                        H1=numpy.divide(numpy.conjugate(Gyu),Guu);
+                        H2=numpy.divide(Gyy,Gyu);
+                        frf=numpy.divide(H1,H2);
                         nom_frf='FRF-COH';
 
                      frf=frf.tolist();
                      frf_r=[];
 
-                     for k1 in range(int(Numeric.floor(l_ech/2))) :
+                     for k1 in range(int(numpy.floor(l_ech/2))) :
                         frf_r=frf_r+[frq[k1],frf[k1].real,frf[k1].imag]
 
                      _fonc = DEFI_FONCTION(NOM_PARA='FREQ',VALE_C=frf_r,);

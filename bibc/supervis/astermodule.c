@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 06/04/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -26,12 +26,10 @@
 #include <ctype.h>
 #include <string.h>
 #include "aster.h"
-#include <Numeric/arrayobject.h>
 
 /* --- declarations des interfaces des fonctions de ce fichier --- */
 
 static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args ) ;
-const char *aster_ident() ;
 
 int EstPret( _IN char *chaine , _IN STRING_SIZE longueur ) ;
 STRING_SIZE FindLength( _IN char *chaineFortran , _IN STRING_SIZE longueur ) ;
@@ -4093,14 +4091,6 @@ void AjoutChaineA( _INOUT char **base , _IN char *supplement )
                 *base=(char*)0 ;
         }
         *base = resultat ;
-}
-
-
-/* ------------------------------------------------------------------ */
-const char *aster_ident()
-{
-        const char *identCVS = "$Id: astermodule.c,v 1.59.12.1.2.1 2001/05/16 16:14:54 iliade Exp $ $Name:  $" ;
-        return identCVS ;
 }
 
 

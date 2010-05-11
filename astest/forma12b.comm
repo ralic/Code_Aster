@@ -1,6 +1,6 @@
-# MODIF  DATE 15/12/2009   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 10/05/2010   AUTEUR PELLET J.PELLET 
 # TITRE TP DYNAMIQUE TRANSITOIRE LINEAIRE
-# forma12b.para = tps_job 180 mem_job 60Mo ncpus 1 liste_test S
+# forma12b.para = tps_job 180 mem_job 180Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG

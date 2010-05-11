@@ -1,4 +1,4 @@
-# MODIF  DATE 24/11/2008   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -43,11 +43,7 @@
 #                       PRE-TRAITEMENTS PYTHON
 #-------------------------------------------------------------------
 # IMPORT PYTHON
-#import os
-#import string
-#import copy
-#import Gnuplot
-import Numeric
+import numpy as NP
 
 # VALEUR DE REFERENCE (APPROCHEE) APRES 3 REMAIL. UNIF.
 ener_ref  =  6.75073756E-5
@@ -55,8 +51,8 @@ ener_ref  =  6.75073756E-5
 # INITIALISATION DES LISTES PYTHON ET CREATION DES VECTEURS ASSOCIES
 energie_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 erenergie_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-energie_vs_raff_NUM = Numeric.zeros((len(energie_vs_raff),2),Numeric.Float)
-erenergie_vs_raff_NUM = Numeric.zeros((len(erenergie_vs_raff),2),Numeric.Float)
+energie_vs_raff_NUM = NP.zeros((len(energie_vs_raff),2))
+erenergie_vs_raff_NUM = NP.zeros((len(erenergie_vs_raff),2))
 
 for i in range(len(energie_vs_raff)) :
     energie_vs_raff_NUM[i][1] = 0.0

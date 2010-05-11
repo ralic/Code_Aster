@@ -1,4 +1,4 @@
-#@ MODIF genpy Execution  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF genpy Execution  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -31,7 +31,9 @@ import sys
 
 # Modules Eficas
 from Noyau.N_ASSD import ASSD
+from Noyau.N_types import is_float, is_enum
 import E_utils
+
 
 class genpy:
   def __init__(self,defaut='sans',simp='tous',indent=2):
@@ -160,23 +162,23 @@ class genpy:
           mcf.supprime()
 
   def evalMCSIMP(self,object):
-    if type(object) == tuple:
+    if type(object) is tuple:
       st = '('
       for val in object :
-        if type(val) == float:
+        if is_float(val):
           st = st + E_utils.repr_float(val)
         else :
           st = st + `val`
         st = st +','
       st = st + ')'
-    elif type(object) == float:
+    elif is_float(object):
       st = E_utils.repr_float(object)
     else :
       st=`object`
     return st
 
   def visitMCSIMP(self,node):
-    if type(node.valeur) in (tuple, list) :
+    if is_enum(node.valeur):
       st = ['(',]
       # Si la liste est trop longue, on ne l'imprime pas completement
       listVal=node.valeur
@@ -189,7 +191,7 @@ class genpy:
             st = st.append("CO('"+ self.sdname+ "')")
           else:
             st.append(self.sdname)
-        elif type(val) == float:
+        elif is_float(val):
           st.append(E_utils.repr_float(val))
         else :
           st.append(`val`)
@@ -203,7 +205,7 @@ class genpy:
         st="CO('"+self.sdname+"')"
       else:
         st = self.sdname
-    elif type(node.valeur) == float:
+    elif is_float(node.valeur):
       st = E_utils.repr_float(node.valeur)
     elif node.definition.type[0] == 'shell':
       # Texte FORMULE
@@ -274,7 +276,7 @@ class genpy:
     return self.setap
 
   def __format(self,object):
-    if type(object) == list:
+    if type(object) is list:
       #MCList
       self.line=self.line+'('
       self.indent.append(len(self.line))
@@ -289,7 +291,7 @@ class genpy:
       self.line=self.line+')'
       del self.indent[-1]
       self.indent_courant=self.indent[-1]
-    elif type(object) == dict:
+    elif type(object) is dict:
       #MCFACT
       self.line=self.line+'_F('
       self.indent.append(len(self.line))

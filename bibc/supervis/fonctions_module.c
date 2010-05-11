@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF fonctions_module supervis  DATE 12/05/2005   AUTEUR DURAND C.DURAND */
+/* MODIF fonctions_module supervis  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,7 +17,7 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include <Python.h>
-#include <Numeric/arrayobject.h>
+#include <numpy/arrayobject.h>
 
 /*
 #define __DEBUG__

@@ -1,83 +1,82 @@
 POURSUITE(CODE=_F(NOM = 'SDND121A',),);
 
-from Numeric import array, Float, zeros, nonzero, sqrt, sum, cumsum, sin, pi
-# import cmath (pour calculer la solution analytique quand numpy est installe)
+import numpy as NP
 
 ############################################################
 ################  Bilan energetique  #######################
 ############################################################
 tmpd = aster.getvectjev('D_EULER            .VALE        ');
-t = array(tmpd[0:len(tmpd)/2])
-fext = Fa*sin(2*pi*f*t)  # formule qui definit le chargement exterieur
+t = NP.array(tmpd[0:len(tmpd)/2])
+fext = Fa*NP.sin(2*NP.pi*f*t)  # formule qui definit le chargement exterieur
 
 # Euler:
-d_euler = array(tmpd[len(tmpd)/2:len(tmpd)])
+d_euler = NP.array(tmpd[len(tmpd)/2:len(tmpd)])
 del tmpd
 
 tmpv = aster.getvectjev('V_EULER            .VALE        ');
-v_euler = array(tmpv[len(tmpv)/2:len(tmpv)])
+v_euler = NP.array(tmpv[len(tmpv)/2:len(tmpv)])
 del tmpv
 
 tmpa = aster.getvectjev('A_EULER            .VALE        ');
-a_euler = array(tmpa[len(tmpa)/2:len(tmpa)])
+a_euler = NP.array(tmpa[len(tmpa)/2:len(tmpa)])
 del tmpa
 
 # tmpf = aster.getvectjev('FC_EULER           .VALE        ');
-# fchoc_euler = array(tmpf[len(tmpf)/2:len(tmpf)])
+# fchoc_euler = NP.array(tmpf[len(tmpf)/2:len(tmpf)])
 # del tmpf
 
 E_pot_euler = 1./2 * k_rappel * d_euler**2
 E_cin_euler = 1./2 * m * v_euler**2
-E_choc_euler = 1./2 * kn_choc * (((d_euler-jeu_choc)+abs(d_euler-jeu_choc))/2)**2
+E_choc_euler = 1./2 * kn_choc * (((d_euler-jeu_choc)+NP.abs(d_euler-jeu_choc))/2)**2
 E_tot_euler = E_pot_euler + E_cin_euler + E_choc_euler
 # Pour Euler, il faut utiliser v(i+1/2) pour le travail des forces
-v_euler12 = zeros(len(v_euler), Float)
+v_euler12 = NP.zeros(len(v_euler))
 v_euler12[0:len(v_euler12)-1] = 1./2*(v_euler[0:len(v_euler)-1]+ v_euler[1:len(v_euler)])
 v_euler12[len(v_euler12)-1] = v_euler[len(v_euler)-1] + a_euler[len(a_euler)-1]*pdt*pas_archi/2
-E_inj_euler = cumsum(fext*v_euler12*pdt*pas_archi)
-err_globale_E_euler = sqrt( sum((E_inj_euler-E_tot_euler)**2) / sum(E_inj_euler**2) ) *100
+E_inj_euler = NP.cumsum(fext*v_euler12*pdt*pas_archi)
+err_globale_E_euler = NP.sqrt( NP.sum((E_inj_euler-E_tot_euler)**2) / NP.sum(E_inj_euler**2) ) *100
 
 #-------
 
 # Adapt:
 tmpd = aster.getvectjev('D_ADAPT            .VALE        ');
-t = array(tmpd[0:len(tmpd)/2])
-d_adapt = array(tmpd[len(tmpd)/2:len(tmpd)])
+t = NP.array(tmpd[0:len(tmpd)/2])
+d_adapt = NP.array(tmpd[len(tmpd)/2:len(tmpd)])
 del tmpd
 
 tmpv = aster.getvectjev('V_ADAPT            .VALE        ');
-v_adapt = array(tmpv[len(tmpv)/2:len(tmpv)])
+v_adapt = NP.array(tmpv[len(tmpv)/2:len(tmpv)])
 del tmpv
 
 tmpa = aster.getvectjev('A_ADAPT            .VALE        ');
-a_adapt = array(tmpa[len(tmpa)/2:len(tmpa)])
+a_adapt = NP.array(tmpa[len(tmpa)/2:len(tmpa)])
 del tmpa
 
 # tmpf = aster.getvectjev('FC_ADAPT           .VALE        ');
-# fchoc_adapt = array(tmpf[len(tmpf)/2:len(tmpf)])
+# fchoc_adapt = NP.array(tmpf[len(tmpf)/2:len(tmpf)])
 # del tmpf
 
 E_pot_adapt = 1./2 * k_rappel * d_adapt**2
 E_cin_adapt = 1./2 * m * v_adapt**2
-E_choc_adapt = 1./2 * kn_choc * (((d_adapt-jeu_choc)+abs(d_adapt-jeu_choc))/2)**2
+E_choc_adapt = 1./2 * kn_choc * (((d_adapt-jeu_choc)+NP.abs(d_adapt-jeu_choc))/2)**2
 E_tot_adapt = E_pot_adapt + E_cin_adapt + E_choc_adapt
-E_inj_adapt = cumsum(fext*v_adapt*pdt*pas_archi)
-err_globale_E_adapt = sqrt( sum((E_inj_adapt-E_tot_adapt)**2) / sum(E_inj_adapt**2) ) *100
+E_inj_adapt = NP.cumsum(fext*v_adapt*pdt*pas_archi)
+err_globale_E_adapt = NP.sqrt( NP.sum((E_inj_adapt-E_tot_adapt)**2) / NP.sum(E_inj_adapt**2) ) *100
 #####################################################################
 
 ############################################################
 # Verification de la coherence entre la force de choc et la cinematique:
 ############################################################
 tmpd = aster.getvectjev('D_ADAP2            .VALE        ');
-d_adap2 = array(tmpd[len(tmpd)/2:len(tmpd)])
+d_adap2 = NP.array(tmpd[len(tmpd)/2:len(tmpd)])
 del tmpd
 
 tmpf = aster.getvectjev('FC_ADAP2           .VALE        ');
-fchoc_adap2 = array(tmpf[len(tmpf)/2:len(tmpf)])
+fchoc_adap2 = NP.array(tmpf[len(tmpf)/2:len(tmpf)])
 del tmpf
 
-fchoc_cine = kn_choc * (((d_adap2-jeu_choc)+abs(d_adap2-jeu_choc))/2)
-err_globale_F_adap2 = sqrt( sum((fchoc_adap2-fchoc_cine)**2) / sum(fchoc_cine**2) ) *100
+fchoc_cine = kn_choc * (((d_adap2-jeu_choc)+NP.abs(d_adap2-jeu_choc))/2)
+err_globale_F_adap2 = NP.sqrt( NP.sum((fchoc_adap2-fchoc_cine)**2) / NP.sum(fchoc_cine**2) ) *100
 print 'err_globale_F_adap2', err_globale_F_adap2
 #####################################################################
 
@@ -87,12 +86,12 @@ print 'err_globale_F_adap2', err_globale_F_adap2
 N=len(t)
    # Pour Euler:
 dchoc_euler = d_euler>=jeu_choc
-diff_euler = zeros(N)
+diff_euler = NP.zeros(N)
 diff_euler[1:len(diff_euler)] = dchoc_euler[1:N]-dchoc_euler[0:N-1]
 in_euler = diff_euler>=1
-in2_euler = nonzero(in_euler)
+in2_euler = NP.nonzero(in_euler)[0]
 out_euler = diff_euler<=-1
-out2_euler = nonzero(out_euler)
+out2_euler = NP.nonzero(out_euler)[0]
 
 t_inout_euler = []
 for i in in2_euler:
@@ -103,12 +102,12 @@ t_inout_euler.sort()
 
    # Pour Differences centrees:
 dchoc_adapt = d_adapt>=jeu_choc
-diff_adapt = zeros(N)
+diff_adapt = NP.zeros(N)
 diff_adapt[1:len(diff_adapt)] = dchoc_adapt[1:N]-dchoc_adapt[0:N-1]
 in_adapt = diff_adapt>=1
-in2_adapt = nonzero(in_adapt)
+in2_adapt = NP.nonzero(in_adapt)[0]
 out_adapt = diff_adapt<=-1
-out2_adapt = nonzero(out_adapt)
+out2_adapt = NP.nonzero(out_adapt)[0]
 
 t_inout_adapt = []
 for i in in2_adapt:
@@ -209,13 +208,13 @@ for i in range(0,len(t_inout_adapt)):
 # INCLUDE(UNITE=61);
 # INCLUDE(UNITE=62);
 # 
-# err_globale_D_euler = sqrt( sum((d_euler-D)**2) / sum(D**2) ) *100
-# err_globale_V_euler = sqrt( sum((v_euler-V)**2) / sum(V**2) ) *100
-# err_globale_A_euler = sqrt( sum((a_euler-A)**2) / sum(A**2) ) *100
+# err_globale_D_euler = NP.sqrt( NP.sum((d_euler-D)**2) / NP.sum(D**2) ) *100
+# err_globale_V_euler = NP.sqrt( NP.sum((v_euler-V)**2) / NP.sum(V**2) ) *100
+# err_globale_A_euler = NP.sqrt( NP.sum((a_euler-A)**2) / NP.sum(A**2) ) *100
 # 
-# err_globale_D_adapt = sqrt( sum((d_adapt-D)**2) / sum(D**2) ) *100
-# err_globale_V_adapt = sqrt( sum((v_adapt-V)**2) / sum(V**2) ) *100
-# err_globale_A_adapt = sqrt( sum((a_adapt-A)**2) / sum(A**2) ) *100
+# err_globale_D_adapt = NP.sqrt( NP.sum((d_adapt-D)**2) / NP.sum(D**2) ) *100
+# err_globale_V_adapt = NP.sqrt( NP.sum((v_adapt-V)**2) / NP.sum(V**2) ) *100
+# err_globale_A_adapt = NP.sqrt( NP.sum((a_adapt-A)**2) / NP.sum(A**2) ) *100
 # 
 # 
 # TEMPSFIN = DEFI_LIST_REEL(VALE=duree,);

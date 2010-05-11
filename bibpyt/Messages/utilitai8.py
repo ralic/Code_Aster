@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF utilitai8 Messages  DATE 10/05/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,16 +62,26 @@ cata_msg = {
    Numéro d'ordre :  %(i1)d             inst :  %(r1)g
 """),
 
+13 : _("""
+  Dans la structure de données resultat %(k1)s,
+  le champ %(k2)s
+"""),
+
 14 : _("""
- Champ  inexistant  %(k1)s
+  ou le champ %(k1)s
 """),
 
 15 : _("""
-  ou  %(k1)s
+  n'existe pas. 
 """),
 
 16 : _("""
-  NUME_ORDRE  %(i1)d  on ne calcule pas l'option  %(k1)s
+  Pour le numéro d'ordre NUME_ORDRE %(i1)d, 
+  l'option %(k1)s n'est pas calculée.
+
+  Conseil : 
+    Vérifiez le nom de la structure de donnée et vérifiez que les champs existent. 
+    Si le concept n'est pas réentrant les champs ne sont pas cherchés dans %(k2)s.
 """),
 
 17 : _("""

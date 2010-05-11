@@ -1,4 +1,4 @@
-#@ MODIF meidee_calc_spec Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_calc_spec Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: utf-8 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,9 +20,7 @@
 
 # RESPONSABLE BODEL C.BODEL
 
-from Numeric import array, zeros, conjugate, identity
-from Numeric import transpose, ones, arctan, pi, log, absolute
-from Numeric import multiply, divide, arctan, sqrt, fmod
+import numpy
 
 from Tkinter import Frame, Menubutton, Checkbutton, Menu, StringVar, IntVar
 from Tkinter import Scrollbar, Label, Radiobutton, Button, Entry
@@ -37,7 +35,6 @@ from Meidee.modes import DispFRFDialogue
 
 from SD.sd_fonction import sd_fonction
 
-#import aster
 
 ########################
 #                      #
@@ -404,17 +401,17 @@ class InterfaceCalcSpec(Frame):
            elif root_tab.radio_donnees.get()==2 :
               sig=p_imag
            elif root_tab.radio_donnees.get()==1 :
-              sig=multiply(p_reel,p_reel)+multiply(p_imag,p_imag)
-              sig=sqrt(sig)
+              sig=numpy.multiply(p_reel,p_reel) + numpy.multiply(p_imag,p_imag)
+              sig=numpy.sqrt(sig)
               epsilon=2.22e-16
               sig=sig+epsilon
               sig=sig.tolist()
            elif root_tab.radio_donnees.get()==3 :
-              sig=arctan(divide(p_imag,p_reel)).tolist()
+              sig=numpy.arctan(numpy.divide(p_imag,p_reel)).tolist()
         
            ech_y='LIN'
            if root_tab.radio_ylinlog.get()==1 :
-              sig=log(absolute(sig)).tolist()
+              sig=numpy.log(numpy.absolute(sig)).tolist()
               #ech_y='LOG'
             
            ech_x='LIN'   
@@ -423,7 +420,7 @@ class InterfaceCalcSpec(Frame):
               if freq.count(0) :
                  freq=freq[1,:]
                  sig=sdisplay_mesig[1:]
-              freq=log(absolute(freq)).tolist()
+              freq=numpy.log(numpy.absolute(freq)).tolist()
               #ech_x='LOG'
                 
             

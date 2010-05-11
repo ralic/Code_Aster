@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,10 +25,9 @@ import sys
 import os
 import re
 from copy  import copy
-from types import ListType, TupleType, IntType, LongType, FloatType, ComplexType, \
-                  DictType, StringType, StringTypes, UnicodeType, NoneType
-EnumTypes = (ListType, TupleType)
-NumberTypes = (IntType, LongType, FloatType, ComplexType)
+from types import IntType, FloatType, StringType, UnicodeType, NoneType
+
+from Noyau.N_types import is_int, is_float, is_complex, is_number, is_str, is_enum
 
 import transpose
 from Utilitai.Utmess import UTMESS
@@ -101,7 +100,7 @@ class TableBase(object):
          'dform'     : DicForm.copy(),
          'mode'      : para[FORMAT]['mode'],
       }
-      if dform != None and type(dform) == DictType:
+      if dform != None and type(dform) is dict:
          kargs['dform'].update(dform)
       # ajout des options
       kargs.update(opts)
@@ -111,7 +110,7 @@ class TableBase(object):
          para[FORMAT]['driver'](**kargs)
 
       else:
-         if not type(kargs['PAGINATION']) in EnumTypes:
+         if not is_enum(kargs['PAGINATION']):
             ppag = [kargs['PAGINATION'],]
          else:
             ppag = list(kargs['PAGINATION'])
@@ -168,7 +167,7 @@ class TableBase(object):
       rows=self.rows
       para=self.para
       typ =self.type
-      if not type(para) in EnumTypes:
+      if not is_enum(para):
          para=[self.para,]
          typ =[self.type,]
       if dform==None:
@@ -335,9 +334,9 @@ class Table(TableBase):
 # ------------------------------------------------------------------------------
    def add_para(self, para, typ):
       """Ajoute un nouveau paramètre."""
-      if not type(para) in EnumTypes:
+      if not is_enum(para):
          para=[para,]
-      if not type(typ) in EnumTypes:
+      if not is_enum(typ):
          typ =[typ,]
       if len(typ) != len(para):
          typ = [typ[0],] * len(para)
@@ -413,14 +412,14 @@ class Table(TableBase):
          if not hasattr(funct, 'nompar'):
             UTMESS('F', 'TABLE0_26', valk=funct.__name__)
          l_para = funct.nompar
-      if not type(l_para) in EnumTypes:
+      if not is_enum(l_para):
          l_para = [l_para]
       not_found = ', '.join([p for p in l_para if not p in self.para])
       if not_found != '':
          UTMESS('F','TABLE0_27', valk=not_found)
       if const == None:
          const = {}
-      if type(const) is not DictType:
+      if type(const) is not dict:
          UTMESS('F', 'TABLE0_28')
       # liste des valeurs des paramètres
       tabpar = []
@@ -464,7 +463,7 @@ class Table(TableBase):
       if CLES == None:
          CLES = self.para[:]
       # vérification des arguments
-      if not type(CLES) in EnumTypes:
+      if not is_enum(CLES):
          CLES = [CLES]
       else:
          CLES = list(CLES)
@@ -479,7 +478,7 @@ class Table(TableBase):
 # ------------------------------------------------------------------------------
    def __delitem__(self, args):
       """Supprime les colonnes correspondantes aux éléments de args """
-      if not type(args) in EnumTypes:
+      if not is_enum(args):
          args=[args,]
       for item in args:
          try:
@@ -495,7 +494,7 @@ class Table(TableBase):
 # ------------------------------------------------------------------------------
    def __getitem__(self, args):
       """Extrait la sous table composée des colonnes dont les paramètres sont dans args """
-      if not type(args) in EnumTypes:
+      if not is_enum(args):
          args=[args,]
       else:
          args=list(args)
@@ -603,9 +602,9 @@ class Table(TableBase):
       """Renvoie sous forme de NumArray le résultat d'une extraction dans une table
       méthode utile à macr_recal
       """
-      import Numeric
+      import numpy
       __Rep = self[Para,Champ].values()
-      F = Numeric.zeros((len(__Rep[Para]),2), Numeric.Float)
+      F = numpy.zeros((len(__Rep[Para]),2))
       for i in range(len(__Rep[Para])):
          F[i][0] = __Rep[Para][i]
          F[i][1] = __Rep[Champ][i]
@@ -701,7 +700,7 @@ class Colonne(TableBase):
 
 # ------------------------------------------------------------------------------
    def __le__(self, VALE):
-      if type(VALE) in EnumTypes :
+      if is_enum(VALE) :
         crit = max(VALE)
       else:
         crit = VALE
@@ -709,7 +708,7 @@ class Colonne(TableBase):
 
 # ------------------------------------------------------------------------------
    def __lt__(self, VALE):
-      if type(VALE) in EnumTypes :
+      if is_enum(VALE) :
         crit = max(VALE)
       else:
         crit = VALE
@@ -717,7 +716,7 @@ class Colonne(TableBase):
 
 # ------------------------------------------------------------------------------
    def __ge__(self, VALE):
-      if type(VALE) in EnumTypes :
+      if is_enum(VALE):
         crit = min(VALE)
       else:
         crit = VALE
@@ -725,7 +724,7 @@ class Colonne(TableBase):
 
 # ------------------------------------------------------------------------------
    def __gt__(self, VALE):
-      if type(VALE) in EnumTypes :
+      if is_enum(VALE):
         crit = min(VALE)
       else:
         crit = VALE
@@ -733,9 +732,9 @@ class Colonne(TableBase):
 
 # ------------------------------------------------------------------------------
    def __eq__(self, VALE, CRITERE='RELATIF', PRECISION=0.):
-      if not type(VALE) in EnumTypes :
+      if not is_enum(VALE):
          VALE = [VALE]
-      if type(VALE[0]) in StringTypes:
+      if is_str(VALE[0]):
          stripVALE = [value.strip() for value in VALE]
          return self._extract(lambda v: str(v).strip() in stripVALE)
       else:           
@@ -751,15 +750,15 @@ class Colonne(TableBase):
       """Retient les lignes dont le paramètre satisfait l'expression
       régulière `regexp`.
       """
-      if not type(regexp) in StringTypes:
+      if not is_str(regexp):
          return self._extract(lambda v : False)
       return self._extract(lambda v : v != None and re.search(regexp, v) != None)
 
 # ------------------------------------------------------------------------------
    def __ne__(self, VALE, CRITERE='RELATIF', PRECISION=0.):
-      if not type(VALE) in EnumTypes :
+      if not is_enum(VALE):
          VALE = [VALE]
-      if type(VALE[0]) in StringTypes:
+      if is_str(VALE[0]):
          stripVALE = [value.strip() for value in VALE]
          return self._extract(lambda v: str(v).strip() not in stripVALE)
       else:           
@@ -785,13 +784,13 @@ class Colonne(TableBase):
 # ------------------------------------------------------------------------------
    def ABS_MAXI(self):
       # important pour les performances de récupérer le max une fois pour toutes
-      abs_maxi=max([abs(v) for v in self.values() if type(v) in NumberTypes])
+      abs_maxi=max([abs(v) for v in self.values() if is_number(v)])
       return self._extract(lambda v: v==abs_maxi or v==-abs_maxi)
 
 # ------------------------------------------------------------------------------
    def ABS_MINI(self):
       # important pour les performances de récupérer le min une fois pour toutes
-      abs_mini=min([abs(v) for v in self.values() if type(v) in NumberTypes])
+      abs_mini=min([abs(v) for v in self.values() if is_number(v)])
       # tester le type de v est trop long donc pas de abs(v)
       return self._extract(lambda v: v==abs_mini or v==-abs_mini)
 
@@ -925,7 +924,7 @@ def merge(tab1, tab2, labels=[], restrict=False):
    """
    tb1 = tab1.copy()
    tb2 = tab2.copy()
-   if type(labels) not in EnumTypes:
+   if not is_enum(labels):
       labels=(labels,)
    for key in labels :
        if key not in tb1.para : UTMESS('F','TABLE0_27', valk=key)
@@ -1000,6 +999,8 @@ def _typaster(obj, prev=None, strict=False):
       StringType : Kdef, UnicodeType : Kdef,
       NoneType   : 'I',
    }
+   if is_float(obj):
+       obj = float(obj)
    if type(obj) in dtyp.keys():
       typobj=dtyp[type(obj)]
       if prev in [None, typobj]:

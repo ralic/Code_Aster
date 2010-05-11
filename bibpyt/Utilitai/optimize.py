@@ -1,4 +1,4 @@
-#@ MODIF optimize Utilitai  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF optimize Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,22 +40,20 @@ fminNCG     ---      Line-search Newton Conjugate Gradient (uses function, gradi
                      and hessian (if it's provided))
 
 """
-import Numeric
-import MLab
-Num = Numeric
-max = MLab.max
-min = MLab.min
+import numpy as Num
+max = Num.max
+min = Num.min
 abs = Num.absolute
 __version__="0.3.1"
 
 def rosen(x):  # The Rosenbrock function
-    return MLab.sum(100.0*(x[1:len(x)]-x[0:-1]**2.0)**2.0 + (1-x[0:-1])**2.0)
+    return Num.sum(100.0*(x[1:len(x)]-x[0:-1]**2.0)**2.0 + (1-x[0:-1])**2.0)
 
 def rosen_der(x):
     xm = x[1:-1]
     xm_m1 = x[0:-2]
     xm_p1 = x[2:len(x)]
-    der = MLab.zeros(x.shape,x.typecode())
+    der = Num.zeros(x.shape,x.dtype.char)
     der[1:-1] = 200*(xm-xm_m1**2) - 400*(xm_p1 - xm**2)*xm - 2*(1-xm)
     der[0] = -400*x[0]*(x[1]-x[0]**2) - 2*(1-x[0])
     der[-1] = 200*(x[-1]-x[-2]**2)
@@ -64,7 +62,7 @@ def rosen_der(x):
 def rosen3_hess_p(x,p):
     assert(len(x)==3)
     assert(len(p)==3)
-    hessp = Num.zeros((3,),x.typecode())
+    hessp = Num.zeros((3,),x.dtype.char)
     hessp[0] = (2 + 800*x[0]**2 - 400*(-x[0]**2 + x[1])) * p[0] \
                - 400*x[0]*p[1] \
                + 0
@@ -79,7 +77,7 @@ def rosen3_hess_p(x,p):
 
 def rosen3_hess(x):
     assert(len(x)==3)
-    hessp = Num.zeros((3,3),x.typecode())
+    hessp = Num.zeros((3,3),x.dtype.char)
     hessp[0,:] = [2 + 800*x[0]**2 -400*(-x[0]**2 + x[1]), -400*x[0], 0]
     hessp[1,:] = [-400*x[0], 202+800*x[1]**2 -400*(-x[1]**2 + x[2]), -400*x[1]]
     hessp[2,:] = [0,-400*x[1], 200]
@@ -104,7 +102,7 @@ def fmin(func, x0, args=(), xtol=1e-4, ftol=1e-4, maxiter=None, maxfun=None, ful
     rho = 1; chi = 2; psi = 0.5; sigma = 0.5;
     one2np1 = range(1,N+1)
 
-    sim = Num.zeros((N+1,N),x0.typecode())
+    sim = Num.zeros((N+1,N),x0.dtype.char)
     fsim = Num.zeros((N+1,),'d')
     sim[0] = x0
     fsim[0] = apply(func,(x0,)+args)
@@ -364,7 +362,7 @@ def fminBFGS(f, x0, fprime=None, args=(), avegtol=1e-5, maxiter=None, fulloutput
     k = 0
     N = len(x0)
     gtol = N*avegtol
-    I = MLab.eye(N)
+    I = Num.eye(N)
     Hk = I
 
     if app_fprime:
@@ -393,9 +391,9 @@ def fminBFGS(f, x0, fprime=None, args=(), avegtol=1e-5, maxiter=None, fulloutput
         k = k + 1
 
         rhok = 1 / Num.dot(yk,sk)
-        A1 = I - sk[:,Num.NewAxis] * yk[Num.NewAxis,:] * rhok
-        A2 = I - yk[:,Num.NewAxis] * sk[Num.NewAxis,:] * rhok
-        Hk = Num.dot(A1,Num.dot(Hk,A2)) + rhok * sk[:,Num.NewAxis] * sk[Num.NewAxis,:]
+        A1 = I - sk[:,Num.newaxis] * yk[Num.newaxis,:] * rhok
+        A2 = I - yk[:,Num.newaxis] * sk[Num.newaxis,:] * rhok
+        Hk = Num.dot(A1,Num.dot(Hk,A2)) + rhok * sk[:,Num.newaxis] * sk[Num.newaxis,:]
         gfk = gfkp1
 
 

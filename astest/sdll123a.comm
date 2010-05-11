@@ -1,4 +1,4 @@
-# MODIF  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FREQUENCES D'UNE LIGNE D'ARBRE SIMPLIFIEE (AMORTISSEMENT GYROSCOPIQUE)
 # sdll123a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,11 +19,11 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-from Numeric import *
-from LinearAlgebra import *
+import numpy as NP
+import numpy.linalg as LA
 
 def EXTR_MATR(matrrr) :
-# fonction permettant de recuperer les matrices assemblees au format Numerical array
+# fonction permettant de recuperer les matrices assemblees au format numpy
 # attention a l'espace memoire
 
 # construction des vecteurs jeveux
@@ -105,7 +105,7 @@ def EXTR_MATR(matrrr) :
 
 # construction de la matrice complete ddl lag compris (cette etape peut etre fusionnee avec la suivante mais ca devient complique)
                 lon=len(adia)
-                valeu=Numeric.zeros([lon,lon],Numeric.Float)
+                valeu=NP.zeros([lon,lon])
                 opi=0
                 indc=0
                 indl=0
@@ -126,7 +126,7 @@ def EXTR_MATR(matrrr) :
                 matrig=valeu
 
 # elimination des ddl de lagrange et des ddl nuls
-                rig11=Numeric.zeros([ddlphy,ddlphy],Numeric.Float)
+                rig11=NP.zeros([ddlphy,ddlphy])
                 for ii in range(0,ddlphy):
                         for jj in range(0,ddlphy):
                                 rig11[ii][jj]=matrig[indint[ii]][indint[jj]]
@@ -230,14 +230,14 @@ MODEQ=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                         )
 gyro=EXTR_MATR(GYOM)
 
-masI=inverse(mas)
-HPRIME=zeros((nddl*2,nddl*2),Float)
-HPRIME[0:nddl,0:nddl]=matrixmultiply(gyro,masI)
-HPRIME[0:nddl,nddl:2*nddl]=matrixmultiply(rig,masI)
-HPRIME[nddl:2*nddl,0:nddl]=-identity(nddl)
+masI=LA.inv(mas)
+HPRIME=NP.zeros((nddl*2,nddl*2))
+HPRIME[0:nddl,0:nddl]=NP.dot(gyro,masI)
+HPRIME[0:nddl,nddl:2*nddl]=NP.dot(rig,masI)
+HPRIME[nddl:2*nddl,0:nddl]=-NP.identity(nddl)
 aster.matfpe(-1)
 print 'valeurs propres primes'
-vprime=eigenvalues(HPRIME)/2./pi
+vprime=LA.eigvals(HPRIME)/2./NP.pi
 vpreal=list(vprime.imag)
 vpreal.sort()
 i=1

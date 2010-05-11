@@ -3,7 +3,7 @@
       CHARACTER*(*)       LITAB , NOMTAB , NOMSD
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 10/05/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,13 +49,18 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*8   K8B
       CHARACTER*16  NOMSYM
       CHARACTER*19  LISTAB
+      CHARACTER*24  VALK(2)
 C DEB------------------------------------------------------------------
 C
       CALL JEMARQ ( )
 C
       LISTAB = LITAB
       CALL JEEXIN ( LISTAB//'.LTNT', IRET )
-      CALL ASSERT( IRET .GT. 0 )
+      IF (IRET.EQ.0) THEN
+        VALK(1) = NOMTAB
+        VALK(2) = LITAB
+        CALL U2MESK('F','TABLE0_37',2,VALK)
+      ENDIF
 C
       NOMSYM = NOMTAB
       CALL JELIRA ( LISTAB//'.LTNT', 'LONMAX', NBTM, K8B)

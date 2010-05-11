@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ORIENTATION DE MAILLES PAR UNE BOUCLE PYTHON       
 # zzzz189a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -42,17 +42,18 @@
 #
 # ==================================================================================================
 
+import numpy as NP
 
 
 def crossprod(x,y):
-   z=Numeric.ones(3,Numeric.Float)
+   z=NP.ones(3)
    z[0]=x[1]*y[2]-x[2]*y[1]
    z[1]=x[2]*y[0]-x[0]*y[2]
    z[2]=x[0]*y[1]-x[1]*y[0]
    return z
 
 def norm(x):
-   tmp = Numeric.sqrt(Numeric.dot(x,x))
+   tmp = NP.sqrt(NP.dot(x,x))
    return tmp
 
 
@@ -63,7 +64,7 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MAILLAGE,**args):
      Produit une liste de commandes pour orienter circonferentiellement un groupe de mailles par AFFE_CARA_ELEM
   """
 
-  import copy,Numeric
+  import copy
 
   # On recupere la connectivite, les noms des mailles,
   # les coordonnees et le groupes de mailles GROUP_MA
@@ -73,19 +74,19 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MAILLAGE,**args):
   groupma=MAILLAGE.GROUPEMA.get()[GROUP_MA.ljust(8)]
 
   # On met en forme les coordonnees : matrice 3 colonnes
-  coordo=Numeric.reshape(coordo,[len(coordo)/3,3])
+  coordo=NP.reshape(coordo,[len(coordo)/3,3])
   # On recupere chacune des coordonnees
   X=coordo[:,0]
   Y=coordo[:,1]
   Z=coordo[:,2]
 
-  n1n2=Numeric.ones(3,Numeric.Float)
-  n1n3=Numeric.ones(3,Numeric.Float)
-  vecX=Numeric.array([1.,0.,0.])
-  vecY=Numeric.array([0.,1.,0.])
-  vecAxe=Numeric.array(AXE)
-  normale=Numeric.ones(3,Numeric.Float)
-  vrep=Numeric.ones(3,Numeric.Float)
+  n1n2=NP.ones(3)
+  n1n3=NP.ones(3)
+  vecX=NP.array([1.,0.,0.])
+  vecY=NP.array([0.,1.,0.])
+  vecAxe=NP.array(AXE)
+  normale=NP.ones(3)
+  vrep=NP.ones(3)
 
 
   LISTE_CARA=[]
@@ -115,8 +116,8 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MAILLAGE,**args):
          vecX1[2]=0.
 
          # On calcule les angles de ANGL_REP pour obtenir le vecteur vecV
-         alpha=Numeric.arctan2(vecX1[1],vecX1[0])*180./Numeric.pi
-         beta=Numeric.arctan2(vecV[2],norm(vecX1))*180./Numeric.pi
+         alpha=NP.arctan2(vecX1[1],vecX1[0])*180./NP.pi
+         beta=NP.arctan2(vecV[2],norm(vecX1))*180./NP.pi
 
          # Meme remarque que precedemment sur les listes Python
          nom_maille=nommai[ima-1]

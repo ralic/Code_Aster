@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Intranet  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+#@ MODIF calc_eolienne Intranet  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,7 @@
 #
 # On charge les modules necessaires
 import os
-import Numeric
+import numpy
 import re
 import math
 #
@@ -718,7 +718,7 @@ test = 'NON'
   
 def extr_char_houle(k,dict_temps,Nb_valeur,lignes) :
 
-  liste = Numeric.zeros((Nb_valeur,2), Numeric.Float)
+  liste = numpy.zeros((Nb_valeur,2))
 
   nume_ligne_temps = dict_temps["TEMPS_"+str(k)]
   range_depart = int(nume_ligne_temps) + 2

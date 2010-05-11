@@ -1,4 +1,4 @@
-# MODIF  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 # zzzz159b.para = tps_job 600 mem_job 300Mo mem_aster 10 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,6 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE ASSIRE A.ASSIRE
+import numpy as NP
 
 DEBUT(CODE=_F(NOM='ZZZZ159B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 
@@ -26,7 +27,7 @@ parametres =[['YOUN__',100000.,50000.,150000.],['DSDE__',2000.,500.,10000.],['SI
 
 calcul = [['REPONSE1','INST','SIYY'],['REPONSE2','INST','V1']]
 
-experience=[    Numeric.array([[0.00000E+00  , 0.00000E+00 ],
+experience=[    NP.array([[0.00000E+00  , 0.00000E+00 ],
                               [5.00000E-02  , 5.00000E+01 ],
                               [1.00000E-01  , 1.00000E+02 ],
                               [1.50000E-01  , 1.50000E+02 ],
@@ -47,7 +48,7 @@ experience=[    Numeric.array([[0.00000E+00  , 0.00000E+00 ],
                               [9.00000E-01  , 2.07000E+02 ],
                               [9.50000E-01  , 2.07500E+02 ],
                               [1.00000E+00  , 2.08000E+02 ]]),
-               Numeric.array([[0.00000E+00  , 0.00000E+00 ],
+               NP.array([[0.00000E+00  , 0.00000E+00 ],
                               [5.00000E-02  , 0.00000E+00 ],
                               [1.00000E-01  , 0.00000E+00 ],
                               [1.50000E-01  , 0.00000E+00 ],

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/04/2010   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL MODAL D'UN ARBRE AVEC PALIERS A CARACTERISTIQUES VARIABLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,23 +21,19 @@
 # CAS_TEST__:SDLL128A
 #
 
+import numpy as NP
+from Utilitai.Table import Table
+
 DEBUT(CODE=_F(NOM='SDLL128A',
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),
               PAR_LOT='NON',
               DEBUG=_F(SDVERI='OUI'),);
 
-from Numeric import *
-import aster 
-import os
-from Accas import _F
-from types import ListType, TupleType
-from Utilitai.Table import Table
-
 DEBV=5000.0;
 FINV=6500.0;
 PASV = 250.0;
-VIT=Numeric.arange(DEBV,FINV+1,PASV);
+VIT=NP.arange(DEBV,FINV+1,PASV);
 nbV=len(VIT);
 nbF=12;
 print nbV
@@ -72,7 +68,7 @@ K1YYL=CALC_FONC_INTERP(FONCTION=K1YY,
 
 TABK1YY=CREA_TABLE(FONCTION=_F(FONCTION=K1YYL, ))
 
-MODK1YY=zeros(nbV,Float)
+MODK1YY=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -95,7 +91,7 @@ K1YZL=CALC_FONC_INTERP(FONCTION=K1YZ,
 
 TABK1YZ=CREA_TABLE(FONCTION=_F(FONCTION=K1YZL, ))
 
-MODK1YZ=zeros(nbV,Float)
+MODK1YZ=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -118,7 +114,7 @@ K1ZYL=CALC_FONC_INTERP(FONCTION=K1ZY,
 
 TABK1ZY=CREA_TABLE(FONCTION=_F(FONCTION=K1ZYL, ))
 
-MODK1ZY=zeros(nbV,Float)
+MODK1ZY=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -141,7 +137,7 @@ K1ZZL=CALC_FONC_INTERP(FONCTION=K1ZZ,
 
 TABK1ZZ=CREA_TABLE(FONCTION=_F(FONCTION=K1ZZL, ))
 
-MODK1ZZ=zeros(nbV,Float)
+MODK1ZZ=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -164,7 +160,7 @@ C1YYL=CALC_FONC_INTERP(FONCTION=C1YY,
 
 TABC1YY=CREA_TABLE(FONCTION=_F(FONCTION=C1YYL, ))
 
-MODC1YY=zeros(nbV,Float)
+MODC1YY=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -187,7 +183,7 @@ C1YZL=CALC_FONC_INTERP(FONCTION=C1YZ,
 
 TABC1YZ=CREA_TABLE(FONCTION=_F(FONCTION=C1YZL, ))
 
-MODC1YZ=zeros(nbV,Float)
+MODC1YZ=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -210,7 +206,7 @@ C1ZYL=CALC_FONC_INTERP(FONCTION=C1ZY,
 
 TABC1ZY=CREA_TABLE(FONCTION=_F(FONCTION=C1ZYL, ))
 
-MODC1ZY=zeros(nbV,Float)
+MODC1ZY=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -233,7 +229,7 @@ C1ZZL=CALC_FONC_INTERP(FONCTION=C1ZZ,
 
 TABC1ZZ=CREA_TABLE(FONCTION=_F(FONCTION=C1ZZL, ))
 
-MODC1ZZ=zeros(nbV,Float)
+MODC1ZZ=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -256,7 +252,7 @@ K2YYL=CALC_FONC_INTERP(FONCTION=K2YY,
 
 TABK2YY=CREA_TABLE(FONCTION=_F(FONCTION=K2YYL, ))
 
-MODK2YY=zeros(nbV,Float)
+MODK2YY=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -279,7 +275,7 @@ K2YZL=CALC_FONC_INTERP(FONCTION=K2YZ,
 
 TABK2YZ=CREA_TABLE(FONCTION=_F(FONCTION=K2YZL, ))
 
-MODK2YZ=zeros(nbV,Float)
+MODK2YZ=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -302,7 +298,7 @@ K2ZYL=CALC_FONC_INTERP(FONCTION=K2ZY,
 
 TABK2ZY=CREA_TABLE(FONCTION=_F(FONCTION=K2ZYL, ))
 
-MODK2ZY=zeros(nbV,Float)
+MODK2ZY=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -325,7 +321,7 @@ K2ZZL=CALC_FONC_INTERP(FONCTION=K2ZZ,
 
 TABK2ZZ=CREA_TABLE(FONCTION=_F(FONCTION=K2ZZL, ))
 
-MODK2ZZ=zeros(nbV,Float)
+MODK2ZZ=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -348,7 +344,7 @@ C2YYL=CALC_FONC_INTERP(FONCTION=C2YY,
 
 TABC2YY=CREA_TABLE(FONCTION=_F(FONCTION=C2YYL, ))
 
-MODC2YY=zeros(nbV,Float)
+MODC2YY=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -371,7 +367,7 @@ C2YZL=CALC_FONC_INTERP(FONCTION=C2YZ,
 
 TABC2YZ=CREA_TABLE(FONCTION=_F(FONCTION=C2YZL, ))
 
-MODC2YZ=zeros(nbV,Float)
+MODC2YZ=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -394,7 +390,7 @@ C2ZYL=CALC_FONC_INTERP(FONCTION=C2ZY,
 
 TABC2ZY=CREA_TABLE(FONCTION=_F(FONCTION=C2ZYL, ))
 
-MODC2ZY=zeros(nbV,Float)
+MODC2ZY=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :
@@ -417,7 +413,7 @@ C2ZZL=CALC_FONC_INTERP(FONCTION=C2ZZ,
 
 TABC2ZZ=CREA_TABLE(FONCTION=_F(FONCTION=C2ZZL, ))
 
-MODC2ZZ=zeros(nbV,Float)
+MODC2ZZ=NP.zeros(nbV)
 
 i=0
 for kk in range(0,nbV,1) :

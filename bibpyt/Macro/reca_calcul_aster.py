@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,8 +22,17 @@
 
 debug = False
 
-import copy, types, os, sys, pprint, math, glob, socket, shutil
-import Numeric
+import copy
+import types
+import os
+import sys
+import pprint
+import math
+import glob
+import socket
+import shutil
+
+import numpy as NP
 
 from Utilitai.System import ExecCommand
 from Utilitai.Utmess import UTMESS
@@ -256,7 +265,7 @@ class CALCUL_ASTER:
        self.erreur  = E.CalcError(self.Lcalc)
 
        # norme de l'erreur
-       self.norme = Numeric.sum( [x**2 for x in self.erreur] )
+       self.norme = NP.sum( [x**2 for x in self.erreur] )
   
        if debug:
            print "self.reponses=", self.reponses
@@ -329,9 +338,9 @@ class CALCUL_ASTER:
           return self.erreur, self.residu, self.A_nodim, self.A
       else:
           # norme de l'erreur
-          self.norme = Numeric.dot(self.erreur, self.erreur)**0.5
-          self.norme_A_nodim = Numeric.zeros( (1,len(self.para)), Numeric.Float )
-          self.norme_A       = Numeric.zeros( (1,len(self.para)), Numeric.Float )
+          self.norme = NP.dot(self.erreur, self.erreur)**0.5
+          self.norme_A_nodim = NP.zeros( (1,len(self.para)))
+          self.norme_A       = NP.zeros( (1,len(self.para)))
           for c in range(len(self.A[0,:])):
               norme_A_nodim = 0
               norme_A       = 0
@@ -354,7 +363,7 @@ class CALCUL_ASTER:
       # Si le calcul Aster (et ses derivees) est deja effectue pour val on ne le refait pas
       if not ( (self.val == val) and self.A):
           self.erreur, self.residu, self.A_nodim, self.A = self.calcul_FG(val)
-      return Numeric.dot(Numeric.transpose(self.A), self.erreur) 
+      return NP.dot(NP.transpose(self.A), self.erreur) 
 
 
   # ------------------------------------------------------------------------------

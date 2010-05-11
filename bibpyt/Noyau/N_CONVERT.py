@@ -1,4 +1,4 @@
-#@ MODIF N_CONVERT Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_CONVERT Noyau  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,13 +23,15 @@
    Module de conversion des valeurs saisies par l'utilisateur après vérification.
 """
 
-# -----------------------------------------------------------------------------
-def is_int(real):
+from N_types import is_int, is_float, is_enum
+
+
+def has_int_value(real):
    """Est-ce que 'real' a une valeur entière ?
    """
    return abs(int(real) - real) < 1.e-12
 
-# -----------------------------------------------------------------------------
+
 class Conversion:
    """Conversion de type.
    """
@@ -40,15 +42,15 @@ class Conversion:
    def convert(self, obj):
       """Filtre liste
       """
-      in_type = type(obj)
-      if in_type not in (list, tuple):
+      in_as_enum = is_enum(obj)
+      if not in_as_enum:
          obj = (obj,)
       
       result = []
       for o in obj:
          result.append(self.function(o))
       
-      if in_type not in (list, tuple):
+      if not in_as_enum:
          return result[0]
       else:
          # ne marche pas avec MACR_RECAL qui attend une liste et non un tuple
@@ -57,14 +59,14 @@ class Conversion:
    def function(self, o):
       raise NotImplementedError, 'cette classe doit être dérivée'
 
-# -----------------------------------------------------------------------------
+
 class TypeConversion(Conversion):
    """Conversion de type
    """
    def __init__(self, typ):
       Conversion.__init__(self, 'type', typ)
 
-# -----------------------------------------------------------------------------
+
 class IntConversion(TypeConversion):
    """Conversion en entier
    """
@@ -72,11 +74,11 @@ class IntConversion(TypeConversion):
       TypeConversion.__init__(self, 'I')
 
    def function(self, o):
-      if type(o) is float and is_int(o):
+      if is_float(o) and has_int_value(o):
          o = int(o)
       return o
 
-# -----------------------------------------------------------------------------
+
 class FloatConversion(TypeConversion):
    """Conversion de type
    """
@@ -84,11 +86,11 @@ class FloatConversion(TypeConversion):
       TypeConversion.__init__(self, 'R')
 
    def function(self, o):
-      if type(o) in (int, float, long):
+      if is_float(o):
          o = float(o)
       return o
 
-# -----------------------------------------------------------------------------
+
 _convertI = IntConversion()
 _convertR = FloatConversion()
 

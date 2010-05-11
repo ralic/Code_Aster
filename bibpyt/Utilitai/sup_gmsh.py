@@ -1,4 +1,4 @@
-#@ MODIF sup_gmsh Utilitai  DATE 08/11/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF sup_gmsh Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,6 @@
 # ======================================================================
 
 import os.path, string, os, copy
-from Numeric import *
 
 try :
   from Cata.cata import *

@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 03/05/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF propa_fiss_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+
+from math import atan, atan2, cos, sin, sqrt
+
+import numpy as NP
 
 
 def InterpolationLineaire(x0, points) :
@@ -92,8 +96,6 @@ def dadN(C,N,M,DK,R) :
    v = C/((1-R)**N)*abs(DK)**M
    return v
    
-from math import atan, atan2, cos, sin
-from Numeric import pi,array,asarray,Float,concatenate,sqrt,sign,resize,dot,zeros,transpose,matrixmultiply
 def betaf(k1,k2) :
   if k2 == 0:
      beta = 0.
@@ -101,6 +103,7 @@ def betaf(k1,k2) :
      beta = 2*atan(0.25*(k1/k2-abs(k2)/k2*sqrt((k1/k2)**2+8)))
   return beta
 
+#TODO prefer use numpy.cross
 def cross_product(a,b):
     cross = [0]*3
     cross[0] = a[1]*b[2]-a[2]*b[1]
@@ -123,7 +126,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   from types import ListType, TupleType
   from Utilitai.Table      import Table, merge
   from Utilitai.partition import MAIL_PY
-  import Numeric
   from SD.sd_mater     import sd_compor1
   from Cata.cata import table_sdaster,fiss_xfem,modele_sdaster
 
@@ -136,6 +138,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   # On importe les definitions des commandes a utiliser dans la macro
   ASSE_MAILLAGE         =self.get_cmd('ASSE_MAILLAGE'  )
   LIRE_MAILLAGE    =self.get_cmd('LIRE_MAILLAGE'  )
+  DEFI_FICHIER = self.get_cmd('DEFI_FICHIER'  )
   CREA_TABLE    =self.get_cmd('CREA_TABLE'  )
   CALC_TABLE    =self.get_cmd('CALC_TABLE'  )
   PROPA_XFEM = self.get_cmd('PROPA_XFEM'  )
@@ -303,8 +306,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
 #------------------------------------------------------------------
 # CAS 2 : METHODE_PROPA = 'MAILLAGE'
 #
-
-# il faudrait rendre cela plus automatique pour lever la limite à 52 points....
+# il faudrait rendre cela plus automatique pour lever la limite a 52 points
   ALPHABET=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 #            'AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AY','AZ'];
   
@@ -409,14 +411,14 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               CMAX = COMP_LINE['COEF_MULT_MAXI']
             if (min(__tab1['G_MAX']) < 0.) :
               UTMESS('F','RUPTURE1_46')
-            DKmax0 = max(sqrt(__tab1['G_MAX']))
+            DKmax0 = max(NP.sqrt(__tab1['G_MAX']))
             DKmax = max(DKmax,DKmax0)
             for k in range(nbptfon) :
               k1 = __tab1['K1_MAX'][k]
               k2 = __tab1['K2_MAX'][k]
               if (dime == 3) : absc[k]=__tab1['ABSC_CURV'][k]
               BETA[numfis][k] = [absc[k] , betaf(k1,k2)] 
-              DKeq[numfis][k] = [absc[k],sqrt(YOUNG)*sqrt(__tab1['G_MAX'][k])]
+              DKeq[numfis][k] = [absc[k],sqrt(YOUNG)*NP.sqrt(__tab1['G_MAX'][k])]
               RmM[numfis][k] = [absc[k], CMIN/CMAX]
               VMAX0 = dadN(coef_C,coef_N,coef_M,DKeq[numfis][k][1],RmM[numfis][k][1]) 
               VMAX = max(VMAX,VMAX0 )
@@ -471,7 +473,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               CMAX = COMP_LINE['COEF_MULT_MAXI']
             if (min(__tab1['G_LOCAL']) < 0.) :
               UTMESS('F','RUPTURE1_46')
-            DKeq[numfis] = [[__tab1['ABSC_CURV'][i],sqrt(__tab1['G_LOCAL'][i])*sqrt(YOUNG) ] for i in range(nbptfon)]
+            DKeq[numfis] = [[__tab1['ABSC_CURV'][i],NP.sqrt(__tab1['G_LOCAL'][i])*sqrt(YOUNG) ] for i in range(nbptfon)]
             RmM[numfis] = [[__tab1['ABSC_CURV'][i], CMIN/CMAX] for i in range(nbptfon)]
             BETA[numfis] = [[__tab1['ABSC_CURV'][i],__tab1['BETA_LOCAL'][i]] for i in range(nbptfon)]
             for i in range(nbptfon) :
@@ -488,7 +490,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               CMAX = COMP_LINE['COEF_MULT_MAXI']
             if (min(__tab1['G']) < 0.) :
               UTMESS('F','RUPTURE1_46')
-            DKeq[numfis][0] = [0.,sqrt(YOUNG)*max(sqrt(__tab1['G']))]
+            DKeq[numfis][0] = [0.,sqrt(YOUNG)*max(NP.sqrt(__tab1['G']))]
             k1 = __tab1['K1'][0]
             k2 = __tab1['K2'][0]
             BETA[numfis][0] = [0.,betaf(k1,k2)] 
@@ -596,16 +598,16 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
            
            beta = InterpolationLineaire(abscf[ifond], BETA[numfis])
            Vloc = NBCYCL*dadN(coef_C,coef_N,coef_M,DKeqloc,Rloc)
-           Xf2 = Xf + coef_C*(VPVNi[3]*cos(beta)+VPVNi[0]*sin(beta))*Vloc
-           Yf2 = Yf + coef_C*(VPVNi[4]*cos(beta)+VPVNi[1]*sin(beta))*Vloc
-           Zf2 = Zf + coef_C*(VPVNi[5]*cos(beta)+VPVNi[2]*sin(beta))*Vloc
+           Xf2 = Xf + (VPVNi[3]*cos(beta)+VPVNi[0]*sin(beta))*Vloc
+           Yf2 = Yf + (VPVNi[4]*cos(beta)+VPVNi[1]*sin(beta))*Vloc
+           Zf2 = Zf + (VPVNi[5]*cos(beta)+VPVNi[2]*sin(beta))*Vloc
            
-           LesNoeudsEnPlus = array([[Xf2,Yf2,Zf2]])
+           LesNoeudsEnPlus = NP.array([[Xf2,Yf2,Zf2]])
            if ifond ==0 :
               Pini = (Xf2,Yf2,Zf2)
               vectorie = (VPVNi[0],VPVNi[1],VPVNi[2],)
            NomNoeudsEnPlus =     ['NX%s%i' %(ALPHABET[ifond],it+1)]
-           mm[numfis].cn = concatenate((mm[numfis].cn,LesNoeudsEnPlus))
+           mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
            mm[numfis].correspondance_noeuds = tuple( list(mm[numfis].correspondance_noeuds) + NomNoeudsEnPlus )
     
   # Ajout Maille levre (quad4)      
@@ -621,17 +623,18 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
            i2 = nbnotot - 2*nbnofo  + ifond +1
            i3 = nbnotot - nbnofo  + ifond +1
            i4 = nbnotot - nbnofo  + ifond 
-           NoeudsMailles.append( array([i1,i2,i3,i4]))
+           NoeudsMailles.append( NP.array([i1,i2,i3,i4]))
   
         typ_maille = mm[numfis].dic['QUAD4']
         NbMailleAjoute = nbnofo-1
-        mm[numfis].tm = concatenate((mm[numfis].tm,array([typ_maille]*NbMailleAjoute)))
+        mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille]*NbMailleAjoute)))
         mm[numfis].correspondance_mailles += tuple(NomMaillesEnPlus)
         mm[numfis].co += NoeudsMailles
+        #XXX utilise resize/arange... (MC)
         fsi = mm[numfis].gma['%s_%i' %(MFISS,it-1)]
         for ifond in range(nbnofo-1) :
-          fsi = concatenate((fsi,array([nbma+ifond])))
-        mm[numfis].gma['%s_%i' %(MFISS,it)] = fsi
+          fsi = NP.concatenate((fsi,NP.array([nbma+ifond])))
+        mm[numfis].gma['%s_%i' %(MFISS,it)] = fsi.astype(int)
        
 # Ajout Maille fond (SEG2)      
         NomMaillesEnPlus = []
@@ -643,17 +646,14 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
            num_maille.append( nbma + ifond + nbnofo )
            i3 = nbnotot - nbnofo  + ifond 
            i4 = nbnotot - nbnofo  + ifond +1
-           NoeudsMailles.append( array([i3,i4]))
+           NoeudsMailles.append( NP.array([i3,i4]))
   
         typ_maille = mm[numfis].dic['SEG2']
         NbMailleAjoute = nbnofo-1
-        mm[numfis].tm = concatenate((mm[numfis].tm,array([typ_maille]*NbMailleAjoute)))
+        mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille]*NbMailleAjoute)))
         mm[numfis].correspondance_mailles += tuple(NomMaillesEnPlus)
         mm[numfis].co += NoeudsMailles
-        fsi = []
-        for ifond in range(nbnofo-1) :
-          fsi = concatenate((fsi,array([nbma+ifond+nbnofo-1])))
-        mm[numfis].gma['%s_%i' %(MFOND,it)] = fsi
+        mm[numfis].gma['%s_%i' %(MFOND,it)] = NP.arange(nbma+nbnofo-1, nbma+2*(nbnofo-1))
        
 #------------------------------------------------------------------
 # CAS 2b : MODELE 2D
@@ -683,34 +683,34 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         Xf2 = Xf +V*(VPVNi[2]*cos(beta)+VPVNi[0]*sin(beta))
         Yf2 = Yf + V*(VPVNi[3]*cos(beta)+VPVNi[1]*sin(beta))
         
-        LesNoeudsEnPlus = array([[Xf2,Yf2]])
+        LesNoeudsEnPlus = NP.array([[Xf2,Yf2]])
         NomNoeudsEnPlus =     ['NXA%i' %(it+1)]
-        mm[numfis].cn = concatenate((mm[numfis].cn,LesNoeudsEnPlus))
+        mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
         mm[numfis].correspondance_noeuds = tuple(linomno + NomNoeudsEnPlus )
         
   # Ajout Maille levre (SEG2)
         NomMaillesEnPlus =     ['MX%s%i' %(ALPHABET[0], it+1)]
         num_maille = [ nbma + 1 ]
         num_maille.append( nbma + 1 )
-        NoeudsMailles = [array([nbno-1,nbno])]
+        NoeudsMailles = [NP.array([nbno-1,nbno])]
         typ_maille = mm[numfis].dic['SEG2']
         NbMailleAjoute = 1
-        mm[numfis].tm = concatenate((mm[numfis].tm,array([typ_maille]*NbMailleAjoute)))
+        mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille]*NbMailleAjoute)))
         mm[numfis].correspondance_mailles += tuple(NomMaillesEnPlus)
         mm[numfis].co += NoeudsMailles
         fsi = mm[numfis].gma['%s_%i' %(MFISS,it-1)]
-        fsi = concatenate((fsi,array([nbma])))
-        mm[numfis].gma['%s_%i' %(MFISS,it)] = fsi
+        fsi = NP.concatenate((fsi,NP.array([nbma])))
+        mm[numfis].gma['%s_%i' %(MFISS,it)] = fsi.astype(int)
   
 # Ajout Maille fond (POI1)
         NomMaillesEnPlus =     ['MF%s%i' %(ALPHABET[0], it+1)]
         num_maille = [ nbma + 2 ]
-        NoeudsMailles = [array([nbno])]
+        NoeudsMailles = [NP.array([nbno])]
         typ_maille = mm[numfis].dic['POI1']
-        mm[numfis].tm = concatenate((mm[numfis].tm,array([typ_maille]*1)))
+        mm[numfis].tm = NP.concatenate((mm[numfis].tm,NP.array([typ_maille]*1)))
         mm[numfis].correspondance_mailles += tuple(NomMaillesEnPlus)
         mm[numfis].co += NoeudsMailles
-        mm[numfis].gma['%s_%i' %(MFOND,it)] = array(nbma+1)
+        mm[numfis].gma['%s_%i' %(MFOND,it)] = NP.array([nbma+1], dtype=int)
 # Fin du 2D      
 
       if INFO==2 :
@@ -722,13 +722,13 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       MAIL_FISS2 = Fiss['MAIL_PROPAGE']
       if MAIL_FISS2 != None : self.DeclareOut('ma_xfem2',MAIL_FISS2)
       
+      unit = mm[numfis].ToAster()
+      DEFI_FICHIER(UNITE=unit, ACTION="LIBERER")
+      ma_xfem2=LIRE_MAILLAGE(UNITE=unit);
+
       if numfis == 0 :
-        __MA = mm[numfis].ToAster(unite=39)
-        ma_xfem2=LIRE_MAILLAGE(UNITE=39);
-        __MMX[0]=LIRE_MAILLAGE(UNITE=39);
-      if numfis > 0 :
-        __MA = mm[numfis].ToAster(unite=39)
-        ma_xfem2=LIRE_MAILLAGE(UNITE=39);
+        __MMX[0]=LIRE_MAILLAGE(UNITE=unit);
+      else:
         __MMX[numfis]=ASSE_MAILLAGE(MAILLAGE_1 = __MMX[numfis-1],
                       MAILLAGE_2 = ma_xfem2,
                       OPERATION='SUPERPOSE')
@@ -755,14 +755,14 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
     if form == 'DEMI_DROITE' :
       PF = args['PFON']
       DTAN = args['DTAN']
-      PI = array([[PF[0]-DTAN[0],PF[1]-DTAN[1]],])
+      PI = NP.array([[PF[0]-DTAN[0],PF[1]-DTAN[1]],])
 
       ndim = 2
       mm = MAIL_PY()
       mm.__init__()
      
 # Ajout des noeuds 
-      LesNoeudsEnPlus = concatenate((PI,array([PF[0:2]])))
+      LesNoeudsEnPlus = NP.concatenate((PI,NP.array([PF[0:2]])))
       NomNoeudsEnPlus =     ['NXA0','NXA1']
       mm.cn = LesNoeudsEnPlus
       mm.correspondance_noeuds = tuple( NomNoeudsEnPlus )
@@ -774,23 +774,23 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       NomMaillesEnPlus =     ['MX%s%i' %(ALPHABET[0], it)]
       num_maille = [ nbma + 1 ]
       num_maille.append( nbma + 1 )
-      NoeudsMailles = [array([nbno,nbno+1])]
+      NoeudsMailles = [NP.array([nbno,nbno+1])]
       typ_maille = mm.dic['SEG2']
       NbMailleAjoute = 1
-      mm.tm = concatenate((mm.tm,array([typ_maille]*NbMailleAjoute)))
+      mm.tm = NP.concatenate((mm.tm,NP.array([typ_maille]*NbMailleAjoute)))
       mm.correspondance_mailles += tuple(NomMaillesEnPlus)
       mm.co += NoeudsMailles
-      mm.gma['%s_0' %(MFISS)] = array(nbma)
+      mm.gma['%s_0' %(MFISS)] = NP.array([nbma], dtype=int)
 
 # Ajout Maille fond (POI1)
       NomMaillesEnPlus =     ['MF%s%i' %(ALPHABET[0], it)]
       num_maille = [ nbma + 2 ]
-      NoeudsMailles = [array([nbno+1])]
+      NoeudsMailles = [NP.array([nbno+1])]
       typ_maille = mm.dic['POI1']
-      mm.tm = concatenate((mm.tm,array([typ_maille]*1)))
+      mm.tm = NP.concatenate((mm.tm,NP.array([typ_maille]*1)))
       mm.correspondance_mailles += tuple(NomMaillesEnPlus)
       mm.co += NoeudsMailles
-      mm.gma['%s_0' %(MFOND)] = array(nbma+1)
+      mm.gma['%s_0' %(MFOND)] = NP.array([nbma+1], dtype=int)
 
 
 # 3-b : demi-plan    
@@ -799,7 +799,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       P1 = args['POINT_EXTR']
       dpropa = args['DTAN']
       nbpt = args['NB_POINT_FOND']
-      Q0 = array([[P0[0]-dpropa[0],P0[1]-dpropa[1],P0[2]-dpropa[2]]])
+      Q0 = NP.array([[P0[0]-dpropa[0],P0[1]-dpropa[1],P0[2]-dpropa[2]]])
       
       mm = MAIL_PY()
       mm.__init__()
@@ -821,18 +821,18 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         xx[i] = x[i] - dpropa[0]
         yy[i] = y[i] - dpropa[1]
         zz[i] = z[i] - dpropa[2]
-        LesNoeudsEnPlus = array([[xx[i],yy[i],zz[i]]])
+        LesNoeudsEnPlus = NP.array([[xx[i],yy[i],zz[i]]])
         NomNoeudsEnPlus =     ['NX%s0' %(ALPHABET[i]) ]
-        mm.cn = concatenate((mm.cn,LesNoeudsEnPlus))
+        mm.cn = NP.concatenate((mm.cn,LesNoeudsEnPlus))
         mm.correspondance_noeuds = tuple(list(mm.correspondance_noeuds)  +NomNoeudsEnPlus )
-      LesNoeudsEnPlus = array([P0])
+      LesNoeudsEnPlus = NP.array([P0])
       NomNoeudsEnPlus =     ['NXA1']
-      mm.cn = concatenate((mm.cn,LesNoeudsEnPlus))
+      mm.cn = NP.concatenate((mm.cn,LesNoeudsEnPlus))
       mm.correspondance_noeuds = tuple(list(mm.correspondance_noeuds)  + NomNoeudsEnPlus )
       for i in range(1,nbpt) :
-        LesNoeudsEnPlus = array([[x[i],y[i],z[i]]])
+        LesNoeudsEnPlus = NP.array([[x[i],y[i],z[i]]])
         NomNoeudsEnPlus =     ['NX%s1' %(ALPHABET[i]) ]
-        mm.cn = concatenate((mm.cn,LesNoeudsEnPlus))
+        mm.cn = NP.concatenate((mm.cn,LesNoeudsEnPlus))
         mm.correspondance_noeuds = tuple(list(mm.correspondance_noeuds)  +NomNoeudsEnPlus )
 
 # Ajout Maille levre (quad4)      
@@ -847,17 +847,14 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
          i2 = ifond+1
          i3 = nbpt+ifond
          i4 = nbpt+ifond+1
-         NoeudsMailles.append( array([i1,i2,i4,i3]))
+         NoeudsMailles.append( NP.array([i1,i2,i4,i3]))
 
       typ_maille = mm.dic['QUAD4']
       NbMailleAjoute = nbpt-1
-      mm.tm = concatenate((mm.tm,array([typ_maille]*NbMailleAjoute)))
+      mm.tm = NP.concatenate((mm.tm,NP.array([typ_maille]*NbMailleAjoute)))
       mm.correspondance_mailles += tuple(NomMaillesEnPlus)
       mm.co += NoeudsMailles
-      fsi =[]
-      for ifond in range(nbpt-1) :
-        fsi = concatenate((fsi,array([ifond])))
-      mm.gma['%s_0' %(MFISS) ] = fsi
+      mm.gma['%s_0' %(MFISS) ] = NP.arange(nbpt-1)
     
 # Ajout Maille fond (SEG2)      
       NomMaillesEnPlus = []
@@ -869,17 +866,14 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
          num_maille.append( ifond + nbpt )
          i3 = nbpt+ifond
          i4 = nbpt+ifond+1
-         NoeudsMailles.append( array([i3,i4]))
+         NoeudsMailles.append( NP.array([i3,i4]))
 
       typ_maille = mm.dic['SEG2']
       NbMailleAjoute = nbpt-1
-      mm.tm = concatenate((mm.tm,array([typ_maille]*NbMailleAjoute)))
+      mm.tm = NP.concatenate((mm.tm,NP.array([typ_maille]*NbMailleAjoute)))
       mm.correspondance_mailles += tuple(NomMaillesEnPlus)
       mm.co += NoeudsMailles
-      fsi = []
-      for ifond in range(nbpt-1) :
-        fsi = concatenate((fsi,array([ifond+nbpt-1])))
-      mm.gma['%s_0' %(MFOND)] = fsi
+      mm.gma['%s_0' %(MFOND)] = NP.arange(nbpt-1, 2*(nbpt-1))
         
 # 3-c : ellipse    
     if form == 'ELLIPSE' :
@@ -891,30 +885,30 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       gdax = args['DEMI_GRAND_AXE']
       ptax = args['DEMI_PETIT_AXE']
       normale = cross_product(vect_x,vect_y)
-      verif = matrixmultiply(vect_x,vect_y)
+      verif = NP.dot(vect_x,vect_y)
       if abs(verif) > 0.01:
           UTMESS('F','RUPTURE1_52')
       nbpt = args['NB_POINT_FOND']
 
       mm = MAIL_PY()
       mm.__init__()      
-      LesNoeudsEnPlus = array([[P0[0],P0[1],P0[2]]])
+      LesNoeudsEnPlus = NP.array([[P0[0],P0[1],P0[2]]])
       NomNoeudsEnPlus =     ['NXA0']
       mm.cn = LesNoeudsEnPlus
       mm.correspondance_noeuds = tuple( NomNoeudsEnPlus )
       
 # Coordonnees des noeuds  
-      matr = asarray([vect_x,vect_y,normale])
-      matr2 = transpose(matr)
-      alpha0 = alpha0*pi/180. 
-      alpha1 = alpha1*pi/180. 
+      matr = NP.asarray([vect_x,vect_y,normale])
+      matr2 = NP.transpose(matr)
+      alpha0 = alpha0*NP.pi/180. 
+      alpha1 = alpha1*NP.pi/180. 
       for i in range(nbpt) :
          alphai = alpha0 + i*(alpha1-alpha0) / (nbpt-1)
-         coor_r1 = asarray([gdax*cos(alphai), ptax*sin(alphai), 0])
-         coor_r0 = matrixmultiply(matr2,coor_r1) + P0
-         LesNoeudsEnPlus = array([[coor_r0[0],coor_r0[1],coor_r0[2]]])
+         coor_r1 = NP.asarray([gdax*cos(alphai), ptax*sin(alphai), 0])
+         coor_r0 = NP.dot(matr2,coor_r1) + P0
+         LesNoeudsEnPlus = NP.array([[coor_r0[0],coor_r0[1],coor_r0[2]]])
          NomNoeudsEnPlus =     ['NX%s1' %(ALPHABET[i]) ]
-         mm.cn = concatenate((mm.cn,LesNoeudsEnPlus))
+         mm.cn = NP.concatenate((mm.cn,LesNoeudsEnPlus))
          mm.correspondance_noeuds = tuple(list(mm.correspondance_noeuds)  +NomNoeudsEnPlus )
 
 # Ajout Maille levre (TRIA3)      
@@ -929,15 +923,14 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
          i1 = 0
          i2 = ifond + 1
          i3 = ifond + 2
-         NoeudsMailles.append( array([i1,i2,i3]))
+         NoeudsMailles.append( NP.array([i1,i2,i3]))
       NbMailleAjoute = nbpt-1
-      mm.tm = concatenate((mm.tm,array([typ_maille]*NbMailleAjoute)))
+      mm.tm = NP.concatenate((mm.tm,NP.array([typ_maille]*NbMailleAjoute)))
       mm.correspondance_mailles += tuple(NomMaillesEnPlus)
       mm.co += NoeudsMailles
-      fsi =[]
-      for ifond in range(NbMailleAjoute) :
-        fsi = concatenate((fsi,array([ifond])))
-      mm.gma['%s_0' %(MFISS) ] = fsi
+      mm.gma['%s_0' %(MFISS) ] = NP.arange(NbMailleAjoute)
+      
+      
 
 # Ajout Maille fond (SEG2)      
       NomMaillesEnPlus = []
@@ -950,16 +943,13 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
          num_maille.append( ifond + nbpt )
          i3 = ifond + 1
          i4 = ifond + 2
-         NoeudsMailles.append( array([i3,i4]))
+         NoeudsMailles.append( NP.array([i3,i4]))
 
       NbMailleAjoute = nbpt-1
-      mm.tm = concatenate((mm.tm,array([typ_maille]*NbMailleAjoute)))
+      mm.tm = NP.concatenate((mm.tm,NP.array([typ_maille]*NbMailleAjoute)))
       mm.correspondance_mailles += tuple(NomMaillesEnPlus)
       mm.co += NoeudsMailles
-      fsi = []
-      for ifond in range(nbpt-1) :
-        fsi = concatenate((fsi,array([ifond+nbpt-1])))
-      mm.gma['%s_0' %(MFOND)] = fsi
+      mm.gma['%s_0' %(MFOND)] = NP.arange(nbpt-1, 2*(nbpt-1))
     
     
     if INFO==2 :
@@ -970,9 +960,10 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
 # Sauvegarde (maillage xfem et maillage concatene)
     MAIL_FISS2 = args['MAIL_FISS']
     if MAIL_FISS2 != None : self.DeclareOut('ma_xfem2',MAIL_FISS2)
-    __MA = mm.ToAster(unite=39)
+    unit = mm.ToAster()
+    DEFI_FICHIER(UNITE=unit, ACTION="LIBERER")
     self.DeclareOut('ma_xfem2',MAIL_FISS2)
-    ma_xfem2=LIRE_MAILLAGE(UNITE=39);
+    ma_xfem2=LIRE_MAILLAGE(UNITE=unit);
 
     MAIL_TOTAL = args['MAIL_TOTAL']
     if MAIL_TOTAL != None : self.DeclareOut('ma_tot',MAIL_TOTAL)

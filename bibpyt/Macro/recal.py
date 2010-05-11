@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 04/05/2010   AUTEUR NISTOR I.NISTOR 
+#@ MODIF recal Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,9 +27,18 @@
 #___________________________________________________________________________
 
 
-import os, sys, shutil, tempfile, glob, math, copy, re, platform
+import os
+import sys
+import shutil
+import tempfile
+import glob
+import math
+import copy
+import re
+import platform
 from math import log10
-import Numeric
+
+import numpy as NP
 
 
 # Importation de commandes Aster
@@ -268,7 +277,7 @@ def detr_concepts(self):
 
 # -------------------------------------------------------------------------------
 def get_tables(tables_calc, tmp_repe_table, prof):
-   """ Recupere les resultats Aster (Table Aster -> Numeric Python)
+   """ Recupere les resultats Aster (Table Aster -> numpy)
    """
    assert (tables_calc is not None)
    assert (tmp_repe_table is not None)
@@ -322,7 +331,7 @@ def table2numpy(tab_lue, list_para, reponses, i):
    """
    try:
        nb_val = len(tab_lue[ list_para[0] ])
-       F = Numeric.zeros((nb_val,2), Numeric.Float)
+       F = NP.zeros((nb_val,2))
        for k in range(nb_val):
          F[k][0] = tab_lue[ str(reponses[i][1]) ][k]
          F[k][1] = tab_lue[ str(reponses[i][2]) ][k]
@@ -362,7 +371,7 @@ def Ecriture_Derivees(output_file, derivees):
        txt = '\n'.join(t)
 
    # On cherche a imprimer la matrice des sensibilite (A ou A_nodim)
-   elif type(derivees) == Numeric.arraytype:
+   elif type(derivees) == NP.ndarray:
        t = []
        a = derivees
        for c in range(len(a[0,:])):
@@ -931,7 +940,7 @@ class CALCULS_ASTER:
         i=0
         for c in labels:
             tbl = get_tables(tables_calc=calcul, tmp_repe_table=os.path.join(resudir, c, 'REPE_OUT'), prof=prof)
-            Lcalc.append( tbl )  # On stocke sous la forme d'une liste de Numeric
+            Lcalc.append( tbl )  # On stocke sous la forme d'une liste de numpy
             if debug:
                 print "AA/params=", list_val[i]
                 print "AA1/Lrep=", tbl
@@ -1103,7 +1112,8 @@ class CALC_ERROR:
    # ---------------------------------------------------------------------------
    def __init__(self, experience, X0, calcul, poids=None, objective_type='vector', info=0, unite_resu=None):
 
-       if not poids: poids = Numeric.ones(len(experience))
+       if poids is None:
+            poids = NP.ones(len(experience))
        self.experience     = experience
        self.X0             = X0
        self.calcul         = calcul
@@ -1136,22 +1146,23 @@ class CALC_ERROR:
        if info>=3: self.debug = True
        else:       self.debug = False
        if debug: self.debug = True
+       self.debug = True
 
 
    # ---------------------------------------------------------------------------
    def CalcError(self, Lcalc):
 
        self.F = Lcalc[0]
-       if not self.L_init:    self.L_init   = copy.copy(self.F)
+       if self.L_init is None:    self.L_init   = copy.copy(self.F)
 
        self.L_J, self.erreur = self.Simul.multi_interpole(self.F, self.calcul)
-       if not self.L_J_init:  self.L_J_init = copy.copy(self.L_J)
+       if self.L_J_init is None:  self.L_J_init = copy.copy(self.L_J)
 
        self.J = self.Simul.norme_J( copy.copy(self.L_J_init), copy.copy(self.L_J) )
-       if not self.J_init:      self.J_init   = copy.copy(self.J)
+       if self.J_init is None:      self.J_init   = copy.copy(self.J)
 
        # norme de l'erreur
-       self.norme = Numeric.sum( [x**2 for x in self.erreur] )
+       self.norme = NP.sum( [x**2 for x in self.erreur] )
 
        if self.debug:
            print "AA1/F=", self.F
@@ -1202,7 +1213,7 @@ class CALC_ERROR:
       # Creation de la liste des matrices de sensibilités
       L_A=[]
       for i in range(len(reponses)):     
-          L_A.append(Numeric.zeros((len(resu_exp[i]),len(val)),Numeric.Float) )
+          L_A.append(NP.zeros((len(resu_exp[i]),len(val))) )
 
       for k in range(len(val)):   # pour une colone de A (dim = nb parametres)
 
@@ -1215,9 +1226,9 @@ class CALC_ERROR:
           h = val[k]*dX[k]
           for j in range(len(reponses)):
              for i in range(len(resu_exp[j])):
-                try:
+                if NP.all(h != 0.):
                    L_A[j][i,k] = -1*(F_interp[j][i] - F_perturbe_interp[j][i])/h
-                except ZeroDivisionError:
+                else:
                    if self.unite_resu:
                        fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
                        fic.write('\n Probleme de division par zéro dans le calcul de la matrice de sensiblité')
@@ -1230,9 +1241,9 @@ class CALC_ERROR:
       dim =[]
       for i in range(len(L_A)):
          dim.append(len(L_A[i]))
-      dim_totale = Numeric.sum(dim)
+      dim_totale = NP.sum(dim)
       a=0
-      self.A_nodim = Numeric.zeros((dim_totale,len(val)),Numeric.Float)
+      self.A_nodim = NP.zeros((dim_totale,len(val)))
       for n in range(len(L_A)):
          for k in range(len(val)):
             for i in range(dim[n]):
@@ -1245,9 +1256,10 @@ class CALC_ERROR:
       self.A = self.Dim.adim_sensi( copy.copy(self.A_nodim) )
 
       # Si on n'est pas encore passe par CalcError...
-      if not self.erreur: self.erreur = self.CalcError(Lcalc)
+      if self.erreur is None:
+          self.erreur = self.CalcError(Lcalc)
       self.gradient_init = self.calcul_gradient(self.A, self.erreur)  #utile pour le test de convergence, on prend les valeurs dimensionnées
-      self.residu = self.test_convergence(self.gradient_init, self.erreur, self.A, Numeric.zeros(len(self.gradient_init),Numeric.Float))
+      self.residu = self.test_convergence(self.gradient_init, self.erreur, self.A, NP.zeros(len(self.gradient_init)))
 
       if self.debug:
           print "AA1/erreur=", self.erreur
@@ -1260,9 +1272,9 @@ class CALC_ERROR:
           return self.erreur, self.residu, self.A_nodim, self.A
       else:
           # norme de l'erreur
-          self.norme = Numeric.dot(self.erreur, self.erreur)**0.5
-          self.norme_A_nodim = Numeric.zeros( (1,len_para), Numeric.Float )
-          self.norme_A       = Numeric.zeros( (1,len_para), Numeric.Float )
+          self.norme = NP.dot(self.erreur, self.erreur)**0.5
+          self.norme_A_nodim = NP.zeros( (1,len_para))
+          self.norme_A       = NP.zeros( (1,len_para))
           for c in range(len(self.A[0,:])):
               norme_A_nodim = 0
               norme_A       = 0
@@ -1418,7 +1430,7 @@ if __name__ == '__main__':
 
         if options.objective == 'error':
              if type(experience) != list: raise "For error objective output, the 'experience' variable must be a list of arrays"
-             if type(poids) not in [list, tuple, Numeric.arraytype]: raise "The 'poids' variable must be a list or an array"
+             if type(poids) not in [list, tuple, NP.ndarray]: raise "The 'poids' variable must be a list or an array"
              if len(poids) != len(experience): raise "'experience' and 'poids' lists must have the same lenght"
 
 
@@ -1559,7 +1571,7 @@ if __name__ == '__main__':
 
         # Fonctionnelle
         if options.objective_type == 'float':
-           fonctionnelle = math.sqrt( Numeric.sum( [x**2 for x in fonctionnelle] ) )
+           fonctionnelle = math.sqrt( NP.sum( [x**2 for x in fonctionnelle] ) )
         Ecriture_Fonctionnelle(output_file=options.output, type_fonctionnelle=options.objective_type, fonctionnelle=fonctionnelle)
 
         # Gradient

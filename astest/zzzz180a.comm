@@ -1,4 +1,4 @@
-# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST ANALYTIQUE DE LA GENERATION DE FONCTIONS ALEATOIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 # PREMIER AVEX UN DECALAGE DE T=0.015s ET COEF. DE CORRE. DE RHO=0.8 
 # Responsable : S.Cambier
 
-from Numeric import arange, power, exp, sqrt, log, pi
+import numpy as NP
 from math import atan
 
 DEBUT(CODE=_F(NOM='zzzz180a',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
@@ -48,7 +48,7 @@ t11=[]
 t22=[]
 t12=[]
 
-for f in arange(0.,300.2,.2):
+for f in NP.arange(0.,300.2,.2):
   if f<=100:
     c11=2.
   elif f<=200:
@@ -57,7 +57,7 @@ for f in arange(0.,300.2,.2):
     c11=1.E-2  
   t11[len(t11):]=[f,c11,0.]
   t22[len(t22):]=[f,1.,0.]
-  c12=sqrt(RHO*c11)*exp(1j*2*pi*f*T)
+  c12=NP.sqrt(RHO*c11)*NP.exp(1j*2*pi*f*T)
   t12[len(t12):]=[f,c12.real,c12.imag]
  
 SPECT11=DEFI_FONCTION(    NOM_PARA='FREQ',  VALE_C=tuple(t11))
@@ -270,7 +270,7 @@ PF22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F22,
 
 #ON ECRIT LA FCT LOG POUR POUVOIR COMPARER LES VALEURS EN ECHELLE LOG DANS TEST_FONCTION                                  
 FLOG = FORMULE(NOM_PARA='DSP',VALE='log(DSP)')
-LX=DEFI_LIST_REEL( VALE=(tuple(power(10,arange(-10,10,.01)))))
+LX=DEFI_LIST_REEL( VALE=(tuple(NP.power(10,NP.arange(-10,10,.01)))))
 FFLOG=CALC_FONC_INTERP(     FONCTION=FLOG,    LIST_PARA=LX,
                             NOM_PARA='DSP',
                             NOM_RESU='LOG',
@@ -293,8 +293,8 @@ LOGF22=CALC_FONCTION(    COMPOSE=_F(  FONC_RESU = FFLOG,
                             PROL_GAUCHE='CONSTANT',  PROL_DROITE='CONSTANT',
                             INTERPOL='LIN', )
                            
-v1=sqrt(RHO*2.)*exp(1j*2*pi*10.*T)
-v2=sqrt(RHO*1.005)*exp(1j*2*pi*150.*T)
+v1=NP.sqrt(RHO*2.)*NP.exp(1j*2*pi*10.*T)
+v2=NP.sqrt(RHO*1.005)*NP.exp(1j*2*pi*150.*T)
 
 # CES TESTS NE SONT PAS EFFECTUES SUR DES QUANTITES QUI ONT CONVERGES
 # STATISTIQUEMENT => GRANDE TOLERANCE 
@@ -366,69 +366,7 @@ TEST_FONCTION(VALEUR=(
 
 # MEME TESTS, MAIS DE NON REGRESSION
 
-# attention : le comportement du generateur de nombres aleatoires
-# (module random) a change entre la version 2.2 de python et la
-# version 2.3. Les resultats s en trouvent un peu affectes.
-# On teste donc avec des valeurs de reference differentes suivant
-# les versions de python
-
-import sys
-version=sys.version_info[:2]
-if version<(2,3) :
-  TEST_FONCTION(VALEUR=(   
-                    _F(  FONCTION = LOGF11,
-                      VALE_PARA = 10.,
-                      VALE_REFE =7.6930730990851E-01 , 
-                      REFERENCE='NON_REGRESSION', 
-                      VERSION  ='7.2.2',
-                      PRECISION = 1.E-10,),
-                     _F(  FONCTION = LOGF11,
-                      VALE_PARA = 150.,
-                      VALE_REFE =1.4571321791086E-01 , 
-                      REFERENCE='NON_REGRESSION', 
-                      VERSION  ='7.2.2',
-                      PRECISION = 1.E-10,),
-                      
-                    _F(  FONCTION = LOGF12,
-                      VALE_PARA = 10.,
-                      VALE_REFE = 2.0684813041233E-01, 
-                      REFERENCE='NON_REGRESSION', 
-                      VERSION  ='7.2.2',
-                      PRECISION = 1.E-10,),
-                    _F(  FONCTION = PF12,
-                      VALE_PARA = 10.,
-                      VALE_REFE = 7.7952542449506E+01, 
-                      REFERENCE='NON_REGRESSION', 
-                      VERSION  ='7.2.2',
-                      PRECISION = 1.E-10,),
-                     _F(  FONCTION = LOGF12,
-                      VALE_PARA = 150.,
-                      VALE_REFE = -6.8562098585892E-02, 
-                      REFERENCE='NON_REGRESSION', 
-                      VERSION  ='7.2.2',
-                      PRECISION = 1.E-10,),
-                    _F(  FONCTION = PF12,
-                      VALE_PARA = 150.,
-                      VALE_REFE = -1.0620813289116E+02, 
-                     REFERENCE='NON_REGRESSION', 
-                      VERSION  ='7.2.2',
-                      PRECISION = 1.E-10,),
-                      
-                    _F(  FONCTION = LOGF22,
-                      VALE_PARA = 10.,
-                      VALE_REFE = -1.6923917251631E-01, 
-                      REFERENCE='NON_REGRESSION', 
-                      VERSION  ='7.2.2',
-                      PRECISION = 1.E-10,),
-                     _F(  FONCTION = LOGF22,
-                      VALE_PARA = 150.,
-                      VALE_REFE = -1.5997740141350E-01, 
-                      REFERENCE='NON_REGRESSION', 
-                      VERSION  ='7.2.2',
-                      PRECISION = 1.E-10,),
-                     ))
-else :
-  TEST_FONCTION(VALEUR=(   
+TEST_FONCTION(VALEUR=(   
                     _F(  FONCTION = LOGF11,
                       VALE_PARA = 10.,
                       VALE_REFE =7.2765415923379E-01 , 

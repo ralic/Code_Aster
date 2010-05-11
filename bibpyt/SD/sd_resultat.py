@@ -1,4 +1,4 @@
-#@ MODIF sd_resultat SD  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sd_resultat SD  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,8 +35,6 @@ class sd_resultat(sd_titre):
     TACH = AsColl(SDNom(debut=19), acces='NU', stockage='CONTIG', modelong='CONSTANT', type='K', ltyp=24, )
     ORDR = AsVI(SDNom(debut=19), )
     DESC = AsObject(SDNom(debut=19), genr='N', xous='S', type='K', ltyp=16, )
-
-    NOEU = Facultatif(AsVK16(SDNom(debut=19)))  # en attendant la correction de EL 12583
 
     # la déclaration suivante simplifie la fonction check_resultat_i_char
     CHAR = Facultatif(AsVK24(SDNom(debut=19),))

@@ -1,5 +1,6 @@
-# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 10/05/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE TREMPE D UN BARREAU INFINI A SECTION CARREE
+# mtlp100a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +19,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='MTLP100A', NIV_PUB_WEB='INTERNET'), BASE=_F(FICHIER='GLOBALE', LONG_REPE=7000), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='MTLP100A', NIV_PUB_WEB='INTERNET'),
+      BASE=_F(FICHIER='GLOBALE', LONG_REPE=7000),
+      DEBUG=_F(SDVERI='OUI'),);
 
 # DEFINITION DES CARACTERISTIQUES DU MATERIAU
 
@@ -676,8 +679,7 @@ TEMPE1=CALC_ELEM(reuse =TEMPE1,
 #                 OPTION=('DURT_ELGA_META','DURT_ELNO_META',),);
                  OPTION=('DURT_ELNO_META',),);
 
-TEST_RESU(RESU=(
-                   _F(RESULTAT=TEMPE1,
+TEST_RESU(RESU=(_F(RESULTAT=TEMPE1,
                    INST=300.0,
                    NOM_CHAM='META_ELNO_TEMP',
                    NOM_CMP='V3',
@@ -779,4 +781,568 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION',),),);
 
 FIN();
+
+#-----------------------------------------------------------------------
 #
+# Ceci est une copie du programme DEFITRC permettant de produire la 
+#   commande DEFI_TRC a partir des diagrammes TRC. La syntaxe produite
+#   est compatible avec les versions 9 et 10.
+#   On retrouve ce programme dans le fichier mtlp100a.66
+#
+#-----------------------------------------------------------------------
+#
+#      PROGRAM DEFITRC
+#C.......................................................................
+#C.  CONSTRUCTION D UN T.R.C. MINIMAL --> CORPS DE LA COMMANDE DEFI_TRC .
+#C.......................................................................
+#      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+#      DIMENSION Z1(40),Z2(40),Z3(40),T(40),EPS(40)
+#      CHARACTER*20 NOMTRC
+#      CHARACTER*12 TOTO1,TOTO2,TOTO3,TOTO4,TOTO5
+#      CHARACTER*1  VIRGULE
+#      NFIRES=12
+#      VIRGULE=','
+#10    WRITE(6,*)'******************************************************'
+#      WRITE(6,*)'SAISIE DES HISTOIRES THERMO-METALLURGIQUES DONT ON A'
+#      WRITE(6,*)'  LA CONNAISSANCE EXPERIMENTALE POUR UN ACIER DONNE'
+#      WRITE(6,*)'******************************************************'
+#      WRITE(6,*)
+#      WRITE(6,*)'    ENTREZ LE NOM DE L''ACIER '
+#      WRITE(6,*)'(8 CARACTERES ALPHABETIQUES MAXI)'
+#      READ(5,999)NOMTRC
+#C      CALL LXMIN(NOMTRC)
+#      NOMTRC=NOMTRC(1:8)//' = DEFI_TRC('
+#      WRITE(6,*)
+#      WRITE(6,*)'ENTREZ LA VALEUR DE LA TEMPERATURE AR3'
+#      READ(5,*)AR3
+#      WRITE(6,*)'  ENTREZ LA VALEUR DE LA TEMPERATURE EN DESSOUS DE '
+#      WRITE(6,*)'LAQUELLE TOUTES LES TRANSFORMATIONS SONT FINIES (TMIN)'
+#      READ(5,*)TMIN
+#      WRITE(6,*)
+#      WRITE(6,*)'LA SAISIE SE FAIT PAR ENSEMBLE D''HISTOIRES'
+#      WRITE(6,*)
+#      WRITE(6,*)'UN ENSEMBLE D''HISTOIRES EST CARACTERISE PAR :'
+#      WRITE(6,*)
+#      WRITE(6,*)'1 - LE NOMBRE D''HISTOIRES QUI LE COMPOSE'
+#      WRITE(6,*)
+#      WRITE(6,*)'2 - LES COEFFICIENTS A, B, C, D, E ET F DU POLYNOME'
+#      WRITE(6,*)'    D''ORDRE 5 :A+BT+CT2+DT3+ET4+FT5 APPROXIMANT LA'
+#      WRITE(6,*)'    LA COURBE PILOTE DE REFROIDISSEMENT F(T) TELLE '
+#      WRITE(6,*)'    QUE : t(T)=exp(F(T)-F(700)-LN(Tp(700)*F''(700)))'
+#      WRITE(6,*) '   OU Tp EST LA DERIVEE DE T(t) et F'' celle de F(T)'
+#      WRITE(6,*)
+#      WRITE(6,*)'3 - LA VALEUR DU PARAMETRE D''EQUIVALENCE TEMPS-'
+#      WRITE(6,*)'    TEMPERATURE D''AUSTENITISATION P'
+#      WRITE(6,*)
+#      WRITE(6,*)'4 - LES VALEURS DE MS0 ET ALPHA'
+#      WRITE(6,*)'    OU POUR L''ENSEMBLE DE CES HISTOIRES, MS0 EST LA'
+#      WRITE(6,*)'    TEMPERATURE DE DEBUT DE TRANSFORMATION MARTENSI-'
+#      WRITE(6,*)'    TIQUE LORSQUE CELLE CI EST TOTALE'
+#      WRITE(6,*)'    ET ALPHA LE COEFFICIENT POSITIF DE LA LOI DE'
+#      WRITE(6,*)'    KOISTINEN-MARBURGER : ZM = 1-EXP(-ALPHA*(MS0-T))'
+#      WRITE(6,*)' -----------------------------------------------------'
+#      WRITE(6,*)' !!!!!!!!!!!!!!!!!!  ATTENTION !!!!!!!!!!!!!!!!!!!!!!!'
+#      WRITE(6,*)'  LA PREMIERE HISTOIRE SAISIE DOIT ETRE LA PLUS LENTE'
+#      WRITE(6,*)'      C''EST A DIRE LA PLUS PROCHE DE L''EQUILIBRE'
+#      WRITE(6,*)'         ET LA DERNIERE DOIT ETRE LA PLUS RAPIDE '
+#      WRITE(6,*)' !!!!!!!!!!!!!!!!!!  ATTENTION !!!!!!!!!!!!!!!!!!!!!!!'
+#      WRITE(6,*)' -----------------------------------------------------'
+#      WRITE(6,*)' '
+#      WRITE(6,*)'ENTREZ LE NOMBRE D''ENSEMBLE QUE VOUS VOULEZ SAISIR'
+#      READ(5,*)NBE
+#      WRITE(6,*)'ATTENTION ! VOUS ALLEZ SAISIR', NBE
+#      WRITE(6,*)'ENSEMBLES D''HISTOIRES THERMO-METALLURGIQUES'
+#      WRITE(6,*)'                                             OK --> 0'
+#      READ(5,*)IOK
+#      IF (IOK.NE.0) THEN
+#        GOTO 10
+#      ENDIF
+#      WRITE(NFIRES,999) NOMTRC
+#      WRITE(NFIRES,*)'HIST_EXP=('
+#20    CONTINUE
+#      DO 1000 IE=1,NBE
+#        WRITE(6,*)'1 - DONNER LE NOMBRE D''HISTOIRE DE L''ENSEMBLE',IE
+#        READ(5,*)NBHT
+#        WRITE(6,*)'2 - DEFINITION DE LA COURBE PILOTE DE'
+#        WRITE(6,*)'    REFROIDISSEMENT F(T) TELLE QUE : '
+#        WRITE(6,*)'t(T)=exp(F(T)-F(700)-LN(Tp(700)*F''(700)))'
+#        WRITE(6,*)
+#        WRITE(6,*)' ENTREZ LES COEEFICIENTS A, B, C, D, E, F '//
+#     &            'DU POLYNOME'
+#        WRITE(6,*)' D''ORDRE 5 : A+BT+CT2+DT3+ET4+FT5 APPROXIMANT F(T)'
+#        READ(5,*)A,B,C,D,E,F
+#        WRITE(6,*)'3 - ENTREZ LA VALEUR DU PARAMETRE D''EQUIVALENCE'
+#        WRITE(6,*)'       TEMPS-TEMPERATURE D''AUSTENITISATION P'
+#        READ(5,*)P
+#        WRITE(6,*)'4 - ENTREZ LES VALEURS DE MS0 ET ALPHA'
+#        READ(5,*)MS0,ALPHA
+#        WRITE(6,*)'ATTENTION ! VOUS ALLEZ SAISIR', NBHT
+#        WRITE(6,*)'HISTOIRES THERMO-METALLURGIQUES'
+#        WRITE(6,*)
+#        WRITE(6,*)'DONT LA COURBE PILOTE DE REFROIDISSEMENT EST TELLE'
+#        WRITE(6,*)'QUE : A EGALE',A
+#        WRITE(6,*)'      B EGALE',B
+#        WRITE(6,*)'      C EGALE',C
+#        WRITE(6,*)'      D EGALE',D
+#        WRITE(6,*)'      E EGALE',E
+#        WRITE(6,*)'      F EGALE',F
+#        WRITE(6,*)
+#        WRITE(6,*)'ET POUR LESQUELLES :   P EGALE',P
+#        WRITE(6,*)'                   : MS0 EGALE',MS0
+#        WRITE(6,*)'                ET ALPHA EGALE',ALPHA
+#        WRITE(6,*)
+#        WRITE(6,*)'SI VOUS ETES D''ACCORD --> 0'
+#        WRITE(6,*)'                 SINON --> 1'
+#        READ(5,*)IOK
+#        IF (IOK.NE.0) THEN
+#          GOTO 20
+#        ENDIF
+#        WRITE(6,*)'****************************************************'
+#        WRITE(6,*)'ATTENTION ! LA PROPORTION MINIMALE SIGNIFICATIVE DE'
+#        WRITE(6,*)'PRESENCE D''UN CONSTITUANT A L''AMBIANTE EST DE 0.03'
+#        WRITE(6,*)'****************************************************'
+#        WRITE(6,*)
+#        DO 500 NUH=1,NBHT
+#30        WRITE(6,*)'HISTOIRE NUMERO', NUH
+#          WRITE(6,*)
+#          WRITE(6,*)'ENTREZ LA VALEUR DE TPOINT 700'
+#          READ(5,*)TP700
+#          IF(TP700.GE.0.)THEN
+#            WRITE(6,*)'TPOINT 700 DOIT ETRE NEGATIF'
+#            WRITE(6,*)
+#            GOTO 30
+#          ENDIF
+# 40       WRITE(6,*)'ENTREZ LES PROPORTIONS FINALES DE FERRITE (ZFF)'
+#          WRITE(6,*)' PERLITE (ZFP) BAINITE (ZFB) POUR L''HISTOIRE',NUH
+#          WRITE(6,*)
+#          READ(5,*)ZFF,ZFP,ZFB
+#          IF((ZFF.LT.0.).OR.(ZFF.GT.1.))THEN
+#            WRITE(6,*)'ZFF DOIT ETRE COMPRIS ENTRE 0 ET 1'
+#            GOTO 40
+#          ENDIF
+#          IF((ZFP.LT.0.).OR.(ZFP.GT.1.))THEN
+#            WRITE(6,*)'ZFP DOIT ETRE COMPRIS ENTRE 0 ET 1'
+#            GOTO 40
+#          ENDIF
+#          IF((ZFB.LT.0.).OR.(ZFB.GT.1.))THEN
+#            WRITE(6,*)'ZFB DOIT ETRE COMPRIS ENTRE 0 ET 1'
+#            GOTO 40
+#          ENDIF
+#          SZF=ZFF+ZFP+ZFB
+#          IF((SZF.LT.0.).OR.(SZF.GT.1.))THEN
+#            WRITE(6,*)'LA SOMME DES ZF DOIT ETRE COMPRISE ENTRE 0 ET 1'
+#            GOTO 40
+#          ENDIF
+#50        WRITE(6,*)'ENTREE DES TEMPERATURES DE DEBUT ET DE FIN'
+#          WRITE(6,*)'   DE TRANSFORMATION POUR L''HISTOIRE',NUH
+#          WRITE(6,*)
+#          N=0
+#          IF(ZFF.GT.0.029)THEN
+#            WRITE(6,*)'ENTREZ LES TEMPERATURES DE DEBUT'
+#            WRITE(6,*)'  ET DE FIN DE TRANSFORMATION'
+#            WRITE(6,*)'    FERRITIQUE TDF ET TFF'
+#            READ(5,*)TDF,TFF
+#            IF((TDF.GT.AR3).OR.(TDF.LT.TMIN))THEN
+#              N=1
+#            ENDIF
+#            IF((TFF.GT.AR3).OR.(TFF.LT.TMIN))THEN
+#              N=1
+#            ENDIF
+#          ELSE
+#            TDF=0.
+#            TPZF=0.
+#          ENDIF
+#          IF(ZFP.GT.0.029) THEN
+#            WRITE(6,*)'ENTREZ LES TEMPERATURES DE DEBUT'
+#            WRITE(6,*)'  ET DE FIN DE TRANSFORMATION'
+#            WRITE(6,*)'     PERLITIQUE TDP ET TFP'
+#            READ(5,*)TDP,TFP
+#            IF((TDP.GT.AR3).OR.(TDP.LT.TMIN))THEN
+#              N=1
+#            ENDIF
+#            IF((TFP.GT.AR3).OR.(TFP.LT.TMIN))THEN
+#              N=1
+#            ENDIF
+#          ELSE
+#            TDP=0.
+#            TPZP=0.
+#          ENDIF
+#          IF(ZFB.GT.0.029) THEN
+#            WRITE(6,*)'ENTREZ LES TEMPERATURES DE DEBUT'
+#            WRITE(6,*)'  ET DE FIN DE TRANSFORMATION'
+#            WRITE(6,*)'    BAINITIQUE TDB ET TFB'
+#            READ(5,*) TDB,TFB
+#            IF((TDB.GT.AR3).OR.(TDB.LT.TMIN))THEN
+#              N=1
+#            ENDIF
+#            IF((TFB.GT.AR3).OR.(TFB.LT.TMIN))THEN
+#              N=1
+#            ENDIF
+#          ELSE
+#            TDB=0.
+#            TPZB=0.
+#          ENDIF
+#          IF(N.EQ.1)THEN
+#            WRITE(6,*)'ATTENTION ! IL EST IMPERATIF DE NE SAISIR QUE'
+#            WRITE(6,*)'DES TEMPERATURES COMPRISES ENTRE AR3 ET TMIN '
+#            GOTO 50
+#          ENDIF
+#C VALIDATION DE L'HISTOIRE CONSIDEREE
+#          WRITE(6,*)
+#     &   'VALIDEZ-VOUS L HISTOIRE NUMERO (OUI=0 NON=1)',NUH
+#          WRITE(6,*)
+#          WRITE(6,*)'TPOINT A 700 DEGRES'
+#          WRITE(6,1)TP700
+#          WRITE(6,*)
+#          WRITE(6,*)'    ZFF   ,    TDF   ,    TFF'
+#          IF(ZFF.GT.0.029)THEN
+#            WRITE(6,3)ZFF,TDF,TFF
+#          ELSE
+#            WRITE(6,1)ZFF
+#          ENDIF
+#          WRITE(6,*)'    ZFP   ,    TDP   ,    TFP'
+#          IF(ZFP.GT.0.029)THEN
+#            WRITE(6,3)ZFP,TDP,TFP
+#          ELSE
+#            WRITE(6,1)ZFP
+#          ENDIF
+#          WRITE(6,*)'    ZFB   ,    TDB   ,    TFB'
+#          IF(ZFB.GT.0.029)THEN
+#            WRITE(6,3)ZFB,TDB,TFB
+#          ELSE
+#            WRITE(6,1)ZFB
+#          ENDIF
+#          READ(5,*)V
+#          IF(V.NE.0.) THEN
+#            GOTO 30
+#          ENDIF
+#C CONSTRUCTION DE LA SUITE DES TEMPERATURES DE L HISTOIRE COMPLETE
+#          K=1
+#          T(K)=AR3
+#          IF(ZFF.GT.0.029)THEN
+#            DZF=ZFF-0.02
+#            TPZF=(TDF-TFF)/DZF
+#            T(K+1)=TDF+2.*TPZF*0.01
+#            T(K+2)=TDF
+#            T(K+3)=TFF
+#            T(K+4)=TFF-2.*TPZF*0.01
+#            K=K+4
+#          ENDIF
+#          IF(ZFP.GT.0.029)THEN
+#            DZP=ZFP-0.02
+#            TPZP=(TDP-TFP)/DZP
+#            T(K+1)=TDP+2.*TPZP*0.01
+#            J=K
+#100         IF(T(K+1).GT.T(J))THEN
+#              J=J-1
+#              GOTO 100
+#            ENDIF
+#            IF(J.LT.(K))THEN
+#C             ECRITURE DU PT K+1 APRES LE PT J
+#              TS=T(K+1)
+#              DO 110 I=K+1,J+2,-1
+#                T(I)=T(I-1)
+#110           CONTINUE
+#              T(J+1)=TS
+#            ENDIF
+#            T(K+2)=TDP
+#            J=K+1
+#120         IF(T(K+2).GT.T(J))THEN
+#              J=J-1
+#              GOTO 120
+#            ENDIF
+#            IF(J.LT.(K+1))THEN
+#C             ECRITURE DU PT K+2 APRES LE PT J
+#              TS=T(K+2)
+#              DO 130 I=K+2,J+2,-1
+#                T(I)=T(I-1)
+#130           CONTINUE
+#              T(J+1)=TS
+#            ENDIF
+#            T(K+3)=TFP
+#            J=K+2
+#140         IF(T(K+3).GT.T(J))THEN
+#              J=J-1
+#              GOTO 140
+#            ENDIF
+#            IF(J.LT.(K+2))THEN
+#C             ECRITURE DU PT K+3 APRES LE PT J
+#              TS=T(K+3)
+#              DO 150 I=K+3,J+1,-1
+#                T(I)=T(I-1)
+#150           CONTINUE
+#              T(J+1)=TS
+#            ENDIF
+#            T(K+4)=TFP-2.*TPZP*0.01
+#            J=K+3
+#160         IF(T(K+4).GT.T(J))THEN
+#              J=J-1
+#              GOTO 160
+#            ENDIF
+#            IF(J.LT.(K+3))THEN
+#C             ECRITURE DU PT K+4 APRES LE PT J
+#              IF(T(J+1).EQ.T(J))THEN
+#                K=K-1
+#              ENDIF
+#              TS=T(K+4)
+#              DO 170 I=K+4,J+2,-1
+#                T(I)=T(I-1)
+#170           CONTINUE
+#              T(J+1)=TS
+#            ENDIF
+#            K=K+4
+#          ENDIF
+#          IF(ZFB.GT.0.029)THEN
+#            DZ=ZFB-0.02
+#            TPZB=(TDB-TFB)/DZ
+#            T(K+1)=TDB+2.*TPZB*0.01
+#            J=K
+#180         IF(T(K+1).GT.T(J))THEN
+#              J=J-1
+#              GOTO 180
+#            ENDIF
+#            IF(J.LT.(K))THEN
+#C             ECRITURE DU PT K+1 APRES LE PT J
+#              TS=T(K+1)
+#              DO 190 I=K+1,J+2,-1
+#                T(I)=T(I-1)
+#190           CONTINUE
+#              T(J+1)=TS
+#            ENDIF
+#            T(K+2)=TDB
+#            J=K+1
+#200         IF(T(K+2).GT.T(J))THEN
+#              J=J-1
+#              GOTO 200
+#            ENDIF
+#            IF(J.LT.(K+1))THEN
+#C             ECRITURE DU PT K+2 APRES LE PT J
+#              TS=T(K+2)
+#              DO 210 I=K+2,J+2,-1
+#                T(I)=T(I-1)
+#210           CONTINUE
+#              T(J+1)=TS
+#            ENDIF
+#            T(K+3)=TFB
+#            J=K+2
+#220         IF(T(K+3).GT.T(J))THEN
+#              J=J-1
+#              GOTO 220
+#            ENDIF
+#            IF(J.LT.(K+2))THEN
+#C             ECRITURE DU PT K+3 APRES LE PT J
+#              TS=T(K+3)
+#              DO 230 I=K+3,J+2,-1
+#                T(I)=T(I-1)
+#230           CONTINUE
+#              T(J+1)=TS
+#            ENDIF
+#            T(K+4)=TFB-2.*TPZB*0.01
+#            J=K+3
+#240         IF(T(K+4).GT.T(J))THEN
+#              J=J-1
+#              GOTO 240
+#            ENDIF
+#            IF(J.LT.(K+3))THEN
+#C             ECRITURE DU PT K+4 APRES LE PT J
+#              TS=T(K+4)
+#              DO 250 I=K+4,J+2,-1
+#                T(I)=T(I-1)
+#250           CONTINUE
+#              T(J+1)=TS
+#            ENDIF
+#            K=K+4
+#          ENDIF
+#C RETRAIT DES TEMPERATURES EGALES POUR L'HISTOIRE
+#          NBT=K
+#          DO 310 I=K-1,1,-1
+#            EPS(I)=T(I)-T(I+1)
+#            EPSI=0.5
+#            IF(EPS(I).LT.EPSI)THEN
+#              NBT=NBT-1
+#              DO 300 L=I,NBT
+#                T(L)=T(L+1)
+# 300          CONTINUE
+#            ENDIF
+# 310      CONTINUE
+#C CONSTRUCTION DES Z1 ASSOCIES AUX TEMPERATURES DE L'HISTOIRE
+#          Z1(1)=0.
+#          Z2(1)=0.
+#          Z3(1)=0.
+#          T11=TDF+2.*TPZF*0.01
+#          T12=TDF
+#          T13=TFF
+#          T14=TFF-2.*TPZF*0.01
+#          DO 330 K=2,NBT
+#            IF(T(K).GE.T11)THEN
+#              Z1(K)=0.
+#            ELSE
+#              IF(T(K).GE.T12)THEN
+#                Z1(K)=0.01*(T(K)-T11)/(T12-T11)
+#              ELSE
+#                IF(T(K).GE.T13)THEN
+#                  Z1(K)=0.01-(T(K)-T12)/TPZF
+#                ELSE
+#                  IF(T(K).GE.T14)THEN
+#                    Z1(K)=ZFF+0.01*((T(K)-T13)/(T14-T13)-1.)
+#                  ELSE
+#                    Z1(K)=ZFF
+#                  ENDIF
+#                ENDIF
+#              ENDIF
+#            ENDIF
+#330       CONTINUE
+#C CONSTRUCTION DES Z2 ASSOCIES AUX TEMPERATURES DE L'HISTOIRE
+#          T21=TDP+2.*TPZP*0.01
+#          T22=TDP
+#          T23=TFP
+#          T24=TFP-2.*TPZP*0.01
+#          DO 340 K=2,NBT
+#            IF(T(K).GE.T21)THEN
+#              Z2(K)=0.
+#            ELSE
+#              IF(T(K).GE.T22)THEN
+#                Z2(K)=0.01*(T(K)-T21)/(T22-T21)
+#              ELSE
+#                IF(T(K).GE.T23)THEN
+#                  Z2(K)=0.01-(T(K)-T22)/TPZP
+#                ELSE
+#                  IF(T(K).GE.T24)THEN
+#                    Z2(K)=ZFP+0.01*((T(K)-T23)/(T24-T23)-1.)
+#                  ELSE
+#                    Z2(K)=ZFP
+#                  ENDIF
+#                ENDIF
+#              ENDIF
+#            ENDIF
+#340       CONTINUE
+#C CONSTRUCTION DES Z3 ASSOCIES AUX TEMPERATURES DE L'HISTOIRE
+#          T31=TDB+2.*TPZB*0.01
+#          T32=TDB
+#          T33=TFB
+#          T34=TFB-2.*TPZB*0.01
+#          IF((T34.LT.TFM).OR.(T34.LT.250.D0))THEN
+#            T34=TFB-1.5*TPZB*0.01
+#          ENDIF
+#          DO 350 K=2,NBT
+#            IF(T(K).GE.T31)THEN
+#              Z3(K)=0.
+#            ELSE
+#              IF(T(K).GE.T32)THEN
+#                Z3(K)=0.01*(T(K)-T31)/(T32-T31)
+#              ELSE
+#                IF(T(K).GE.T33)THEN
+#                  Z3(K)=0.01-(T(K)-T32)/TPZB
+#                ELSE
+#                  IF(T(K).GE.T34)THEN
+#                    Z3(K)=ZFB+0.01*((T(K)-T33)/(T34-T33)-1.)
+#                  ELSE
+#                    Z3(K)=ZFB
+#                  ENDIF
+#                ENDIF
+#              ENDIF
+#            ENDIF
+#350       CONTINUE
+#C ECRITURE DE L'HISTOIRE DISCRETISEE DANS LE FICHIER NFIRES
+#          WRITE(NFIRES,*)'_F(VALE=('
+#          WRITE(NFIRES,4)TP700,VIRGULE,P,VIRGULE,A,VIRGULE,B,VIRGULE
+#          WRITE(NFIRES,4)C,VIRGULE,D,VIRGULE,E,VIRGULE,F,VIRGULE
+#          DO 400 K=1,NBT
+#            WRITE(NFIRES,4)Z1(K),VIRGULE,Z2(K),VIRGULE,Z3(K),
+#     &                          VIRGULE,T(K),VIRGULE
+# 400      CONTINUE
+#        WRITE(NFIRES,*)'                   ),'
+#        WRITE(NFIRES,*)'             ),'
+# 500    CONTINUE
+#1000  CONTINUE
+#        WRITE(NFIRES,*)'          ),'
+#      WRITE(6,*)'******************************************************'
+#      WRITE(6,*)'DEFINITION DE LA VARIATION DE MS EN FONCTION DE '
+#      WRITE(6,*)'                 ZF + ZP+ ZB '
+#      WRITE(6,*)'******************************************************'
+#      WRITE(6,*)
+#      WRITE(6,*)'POUR UNE VALEUR DONNEE DE P (I.E. POUR DES CONDITIONS'
+#      WRITE(6,*)'  D''AUSTENITISATION DONNEES), ON CONSIDERE QUE LA '
+#      WRITE(6,*)'TEMPERATURE DE DEBUT DE TRANSFORMATION MARTENSITIQUE'
+#      WRITE(6,*)'MS DIMINUE LORSQUE ZF+ZP+ZB DEPASSE UN CERTAIN SEUIL'
+#      WRITE(6,*)'  ON A AINSI POUR CHAQUE VALEUR DE P UNE FONCTION : '
+#      WRITE(6,*)
+#      WRITE(6,*)'MS=MS0                      SI (ZF+ZP+ZB) < SEUIL'
+#      WRITE(6,*)'MS=MS0+AKM*(ZF+ZP+ZB)+BKM   SINON'
+#      WRITE(6,*)
+#      WRITE(6,*)'IL FAUT DE PLUS DEFINIR LA VITESSE DE REFROIDISSEMEMT'
+#      WRITE(6,*)'MINIMALE TPLM POUR LAQUELLE IL Y A FORMATION PARTIELLE'
+#      WRITE(6,*)'DE MARTENSITE'
+#      WRITE(6,*)
+#      WRITE(6,*)'ENTREZ LE NOMBRE DE LOI DE VARIATION DE MS EN FONCTION'
+#      WRITE(6,*)'      DE (ZF+ZP+ZB) QUE VOUS VOULEZ SAISIR :'
+#      READ(5,*)NBTRC
+#        WRITE(NFIRES,*)'TEMP_MS=('
+#      DO 3000 NUTRC=1,NBTRC
+#2000    WRITE(6,*)'ENTREZ LA VALEUR DE P, DU SEUIL DES COEFFICIENTS'
+#        WRITE(6,*)'AKM ET BKM ET DE TPLM POUR LA LOI ',NUTRC
+#        READ(5,*)P,SEUIL,AKM,BKM,TPLM
+#        WRITE(6,*)'VALIDEZ-VOUS LA LOI',NUTRC
+#        WRITE(6,*)'TELLE QUE :     P = ',P
+#        WRITE(6,*)'            SEUIL = ',SEUIL
+#        WRITE(6,*)'              AKM = ',AKM
+#        WRITE(6,*)'              BKM = ',BKM
+#        WRITE(6,*)'             TPLM = ',BKM
+#        WRITE(6,*)'OUI ---> 0'
+#        READ(5,*)IOK
+#        IF (IOK.NE.0) THEN
+#          GOTO 2000
+#        ENDIF
+#        WRITE(NFIRES,*)'         _F('
+#        TOTO1='        P ='
+#        TOTO2='    SEUIL ='
+#        TOTO3='      AKM ='
+#        TOTO4='      BKM ='
+#        TOTO5='     TPLM ='
+#        WRITE(NFIRES,998)TOTO1,P,VIRGULE
+#        WRITE(NFIRES,998)TOTO2,SEUIL,VIRGULE
+#        WRITE(NFIRES,998)TOTO3,AKM,VIRGULE
+#        WRITE(NFIRES,998)TOTO4,BKM,VIRGULE
+#        WRITE(NFIRES,998)TOTO5,TPLM,VIRGULE
+#        WRITE(NFIRES,*)'            ),'
+#        WRITE(NFIRES,*)'         ),'
+#        WRITE(NFIRES,*)'                    );'
+#3000  CONTINUE
+#   1  FORMAT(1(1PD10.3,1X))
+#   3  FORMAT(3(1PD10.3,1X))
+#   4  FORMAT(4(1PD10.3,1A,1X))
+# 998  FORMAT(1A12,1PD10.3,1A,1X)
+# 999  FORMAT(1A20)
+#C.......................................................................
+#C.    AUTEURS  : F.W                                DATE     : 17.02.92.
+#C.......................................................................
+#      END
+#      SUBROUTINE LXMIN(CHAINE)
+#      CHARACTER*(*)     CHAINE
+#C     ------------------------------------------------------------------
+#C      TRANSFORME LES MAJUSCULES EN MINUSCULES
+#C      ROUTINE(S) FORTRAN UTILISEES :        CHAR    ICHAR   LEN
+#C     ------------------------------------------------------------------
+#      INTEGER      MXCHAR,LONG,FIRST
+#      PARAMETER  ( MXCHAR=255 )
+#      CHARACTER*1  CLASS(0:MXCHAR)
+#      CHARACTER*28 MINUS, MAJOR
+#      SAVE         CLASS, FIRST
+#      DATA FIRST/0/
+#      DATA MINUS/'abcdefghijklmnopqrstuvwxyzee'/
+#      DATA MAJOR/'ABCDEFGHIJKLMNOPQRSTUVWXYZEE'/
+#      IF ( FIRST.EQ.0 ) THEN
+#C        INITIALISATION DES TABLES DE CONVERSION
+#         FIRST = 1
+#         DO 10 I = 0, MXCHAR
+#            CLASS(I) = CHAR(I)
+# 10      CONTINUE
+#         DO 20 I = 1 , 28
+#            CLASS(ICHAR(MAJOR(I:I))) = CLASS(ICHAR(MINUS(I:I)))
+# 20      CONTINUE
+#      ENDIF
+#      LONG = LEN(CHAINE)
+#      DO 100 ILONG = 1, LONG
+#         CHAINE(ILONG:ILONG) = CLASS(ICHAR(CHAINE(ILONG:ILONG)))
+# 100  CONTINUE
+#      END

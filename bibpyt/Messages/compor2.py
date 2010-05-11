@@ -1,4 +1,4 @@
-#@ MODIF compor2 Messages  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor2 Messages  DATE 10/05/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,13 +46,18 @@ cata_msg={
 """),
 
 6 : _("""
-   SIMU_POINT_MAT : nombre de variable internes trop grand pour la table.
-   On ne stocke que les 99 premieres. Utiliser NB_VARI_TABLE pour limiter leur nombre.
+   SIMU_POINT_MAT : nombre de variables internes trop grand pour la table.
+   On ne stocke que les 99 premières. Utiliser NB_VARI_TABLE pour limiter leur nombre.
 """),
 
 7 : _("""
-   SIMU_POINT_MAT : le nombre de variable internes dépasse le maximum : <%(i1)i>
+   SIMU_POINT_MAT : le nombre de variables internes dépasse le maximum : <%(i1)i>
    Faire une demande d'évolution ou modifier NBVIMAX dans OP0033.
+"""),
+
+8 : _("""
+   DEFI_COMPOR : la somme des fractions volumiques est très différente de 1.0 : <%(r1).15E>
+   Vérifiez FRAC_VOL pour toutes les occurrences du mot clé POLYCRISTAL.
 """),
 
 }

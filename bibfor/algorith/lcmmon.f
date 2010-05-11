@@ -9,7 +9,7 @@
         CHARACTER*(*) FAMI
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/05/2010   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -143,9 +143,7 @@ C
 C            IF (NECOUL.NE.'KOCKS_RAUCH') THEN
             IF (NUECOU.NE.4) THEN
 C              ECROUISSAGE CINEMATIQUE
-C              ITMAX=100
-C              TOLER=1.D-6
-               CALL LCMMFC( COEFT,IFA,NMAT,NBCOMM,NECRCI,
+               CALL LCMMEC( COEFT,IFA,NMAT,NBCOMM,NECRCI,
      &           ITMAX, TOLER,VIS(1),DGAMMA,DALPHA, IRET)
                IF (IRET.NE.0) GOTO 9999
             ENDIF

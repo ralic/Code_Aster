@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 10/05/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,7 @@ C --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
 
 C ---  LIGREL DU MODELE ---
 
-      LIGRMO = MOD(1:8)//'.MODELE'
+      LIGRMO = MOD//'.MODELE'
 
       IF (NOMCMD(11:14).EQ.'MECA') THEN
          NOMG='DEPL_R'
@@ -152,12 +152,9 @@ C ---------------------------------------------------
 C     --------------------------------------------------------
 C     RECUPERATION DE LA DIMENSION DE L'ESPACE DES COORDONNEES
 C     --------------------------------------------------------
-      CALL DISMOI('F','Z_CST',MOD,'MODELE',IBID,CDIM,IE)
-      IF (CDIM.EQ.'OUI') THEN
-        NDIM = 2
-      ELSE
-        NDIM = 3
-      END IF
+      CALL DISMOI('F','DIM_GEOM',MOD,'MODELE',NDIM,K8B,IER)
+      IF (NDIM.GT.1000) NDIM=NDIM-1000
+
 C    --------------------------------------------------------
 C    MODELE X-FEM
 C    --------------------------------------------------------
@@ -237,6 +234,14 @@ C ---------------------------------------------------
               INOR = INOR + DDLIMP(J)
             END IF
    70     CONTINUE
+
+C         -- SI DNOR OU DTAN, IL FAUT SAVOIR SI NDIM=2/3 :
+          IF (DDLIMP(NDDLA+1).NE.0.OR.DDLIMP(NDDLA+2).NE.0) THEN
+            IF (.NOT.(NDIM.EQ.2.OR.NDIM.EQ.3))
+     &       CALL U2MESS('F','MODELISA2_6')
+          ENDIF
+
+
           IF (NDIM.EQ.3 .AND. DDLIMP(NDDLA+2).NE.0) THEN
             CALL U2MESS('F','MODELISA2_63')
           END IF
@@ -342,7 +347,7 @@ C   ----------------------
             IN = ZI(JLINU+INO-1)
 
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
-            
+
             IF (DDLIMP(NDDLA+1).NE.0) THEN
               DO 100 IDIM = 1,NDIM
                 DIRECT(IDIM) = ZR(JNORM-1+NDIM* (INO-1)+IDIM)

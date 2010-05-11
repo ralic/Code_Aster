@@ -1,4 +1,4 @@
-#@ MODIF reca_message Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_message Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-import os, Numeric
+import os
+import numpy as NP
 from Utilitai.Utmess import UTMESS, MessageLog
 from recal import Affiche_Param
 #===========================================================================================
@@ -124,7 +125,7 @@ class Message :
          for i in sensible:
             k=k+1
             colonne=vecteurs_propres[:,i]
-            numero=Numeric.nonzero(Numeric.greater(abs(colonne/max(abs(colonne))),1.E-1))
+            numero=NP.nonzero(NP.greater(abs(colonne/max(abs(colonne))),1.E-1))[0]
             txt = '\n   '+str(k)+') '
             for j in numero:
                txt += '%+3.1E ' %colonne[j]+'* '+para[j]+' '
@@ -137,7 +138,7 @@ class Message :
          for i in insensible:
             k=k+1
             colonne=vecteurs_propres[:,i]
-            numero=Numeric.nonzero(Numeric.greater(abs(colonne/max(abs(colonne))),1.E-1))
+            numero=NP.nonzero(NP.greater(abs(colonne/max(abs(colonne))),1.E-1))[0]
             txt = '\n   '+str(k)+') '
             for j in numero:
                txt += '%+3.1E ' %colonne[j]+'* '+para[j]+' '

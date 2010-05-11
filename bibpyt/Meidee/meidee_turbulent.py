@@ -1,4 +1,4 @@
-#@ MODIF meidee_turbulent Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_turbulent Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,8 +20,8 @@
 
 # RESPONSABLE BODEL C.BODEL
 
-from Numeric import array, zeros, conjugate, identity
-from Numeric import transpose, ones, arctan, pi, log
+from numpy import array, zeros, conjugate, identity
+from numpy import transpose, ones, arctan, pi, log
 
 from Tkinter import Frame, Menubutton, Checkbutton, Menu, StringVar, IntVar
 from Tkinter import Scrollbar, Label, Radiobutton, Button, Entry

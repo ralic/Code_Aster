@@ -1,4 +1,4 @@
-#@ MODIF meidee_modifstruct Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_modifstruct Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -377,16 +377,30 @@ class InterfaceExpansion(Frame):
         """Renvoit  True si tous les paramêtres pour calculer les modes
         de la structure modifiée ont pu être obtenu."""
         disp_mess = self.root.mess.disp_mess
-        
+        retour = True
+
+        # resultat experimentaux
+        resu_exp_name = self.var_resu_exp.get()
+        try:
+            self.modif_struct.find_experimental_result_from(resu_exp_name)
+        except KeyError:
+            disp_mess("Il faut donner les donnees experimentales")
+            retour = False
+
+        # modele support        
         modlsup = self.var_modl_sup.get()
-        self.modif_struct.find_support_modele_from(modlsup)
+        try:
+            self.modif_struct.find_support_modele_from(modlsup)
+        except KeyError:
+            disp_mess("Il faut donner un modele support")
+            retour = False
 
         objects = self.modif_struct.objects
         matr_rig = objects.get_matr(self.var_raid_name.get())
         if matr_rig == None :
             disp_mess( ("Il faut selectionner une matrice raideur " \
                         "parmi celles proposées!") )
-            return False
+            retour = False
         else:
             self.modif_struct.set_stiffness_matrix(matr_rig)
 
@@ -397,12 +411,22 @@ class InterfaceExpansion(Frame):
         if not grno_capt :
             disp_mess( ("Il faut selectionner un GROUP_NO capteur " \
                          "parmi ceux proposes!") )
-            return False
+            retour = False
         else:
             self.modif_struct.set_captor_groups(grno_capt)
         
         grno_iface= self.iface.get_selected()
         self.modif_struct.set_ms_externe_groups(grno_iface)
+
+        try:
+            self.modif_struct.find_maillage_modif_from(self.var_modlx.get())
+        except KeyError:
+            disp_mess("Il faut donner le modele associe a la modification")
+            retour = False
+
+        if retour == False:
+            disp_mess("calcul impossible !!")
+            return False
         
         return True
 
@@ -419,7 +443,9 @@ class InterfaceExpansion(Frame):
         self.modif_struct.find_maillage_modif_from(self.var_modlx.get())
         self.modif_struct.find_maillage_support_from(self.var_modl_sup.get())
         self.modif_struct.find_modele_couple_from(self.var_modlx.get())
-     
+
+
+        
         # Getting the frequency from the interface for the LMME method
         calc_freq = None
         if self.modif_struct.method_name == "LMME": 
@@ -661,17 +687,21 @@ class InterfaceCondensation(Frame):
         sur la stucture modifiée ont pu être obtenu."""
         expans = self.root.expansion
         disp_mess = self.root.mess.disp_mess
+        retour = True
         
         # resultat experimentaux
-        resu_exp_name = expans.var_resu_exp.get()  
-        self.modif_struct.find_experimental_result_from(resu_exp_name)
+        resu_exp_name = expans.var_resu_exp.get()
+        try:
+            self.modif_struct.find_experimental_result_from(resu_exp_name)
+        except KeyError:
+            disp_mess("Il faut donner les donnees experimentales")
+            retour = False
         # caracteristiques du modele support
-        # Sould not it be done just one time? 
         modlsup_name = expans.var_modl_sup.get()
-        self.modif_struct.find_support_modele_from(modlsup_name)
-        
-        # XXX Finally kassup and matr_rig are the same?
-        #kassup = mdo.get_matr(expans.var_raid_name.get())
+        try:
+            self.modif_struct.find_support_modele_from(modlsup_name)
+        except KeyError:
+            disp_mess("Il faut donner le modele support")
         
         grno_capt = expans.capteur.get_selected()
         self.modif_struct.set_captor_groups(grno_capt)
@@ -682,7 +712,7 @@ class InterfaceCondensation(Frame):
         if not modes_ide:
             disp_mess("Il faut sélectionner des modes " \
                       "du modèle experimental pour la condensation")
-            return False
+            retour = False
         else:
             self.modif_struct.set_modes_ide(modes_ide)
 
@@ -690,7 +720,7 @@ class InterfaceCondensation(Frame):
         if not modes_expansion:
             disp_mess("Il faut sélectionner des modes " \
                       "de la base d'expansion pour la condensation")
-            return False
+            retour = False
         else:
             self.modif_struct.set_modes_expansion(modes_expansion)
         
@@ -698,6 +728,16 @@ class InterfaceCondensation(Frame):
         self.modif_struct.set_coupling_method_name(choix)
 
         if not self.modif_struct._can_get_nume_support_model():
+            retour = False
+
+        try:
+            self.modif_struct.find_maillage_modif_from(self.var_modlx.get())
+        except KeyError:
+            disp_mess("Il faut donner le modele associe a la modification")
+            retour = False
+
+        if retour == False:
+            disp_mess("Calcul impossible !!")
             return False
             
         return True

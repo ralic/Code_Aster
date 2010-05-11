@@ -1,4 +1,4 @@
-#@ MODIF N_VALIDATOR Noyau  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_VALIDATOR Noyau  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,9 +24,10 @@
    implanter le concept de validateur dans Accas
 """
 import types
-import string
 import traceback
 from N_ASSD import ASSD
+from N_types import is_int, is_float_or_int, is_complex, is_number, is_str, is_enum
+
 
 class ValError(Exception):pass
 
@@ -80,18 +81,18 @@ class PProtocol(Protocol):
 class ListProtocol(Protocol):
     """Verificateur de protocole liste : convertit un objet quelconque en liste pour validation ultérieure"""
     def default(self,obj):
-        if type(obj) == types.TupleType :
+        if type(obj) is tuple:
             if len(obj) > 0 and obj[0] in ('RI','MP'):
                 #il s'agit d'un complexe ancienne mode. La cardinalite vaut 1
                 return (obj,)
             else:
                 return obj
-        elif type(obj) == types.ListType :
+        elif type(obj) is list:
             return obj
-        elif obj == None :
+        elif obj == None:
             # pas de valeur affecte. La cardinalite vaut 0
             return obj
-        elif type(obj) == types.StringType :
+        elif is_str(obj):
             #il s'agit d'une chaine. La cardinalite vaut 1
             return (obj,)
         else:
@@ -105,6 +106,7 @@ class ListProtocol(Protocol):
 
 listProto=ListProtocol("list")
 
+
 class TypeProtocol(PProtocol):
     """Verificateur de type parmi une liste de types possibles"""
     #pas de registre par instance. Registre unique pour toutes les instances de TypeProtocol
@@ -117,23 +119,23 @@ class TypeProtocol(PProtocol):
         help = ""
         for type_permis in typ:
             if type_permis == 'R':
-                if type(obj) in (types.IntType,types.FloatType,types.LongType):return obj
+                if is_float_or_int(obj): return obj
             elif type_permis == 'I':
-                if type(obj) in (types.IntType,types.LongType):return obj
+                if is_int(obj): return obj
             elif type_permis == 'C':
-                if self.is_complexe(obj):return obj
+                if self.is_complexe(obj): return obj
             elif type_permis == 'TXM':
-                if type(obj)==types.StringType:return obj
+                if is_str(obj): return obj
             elif type_permis == 'shell':
-                if type(obj)==types.StringType:return obj
+                if is_str(obj): return obj
             elif type(type_permis) == types.ClassType or isinstance(type_permis,type):
                 try:
-                    if self.is_object_from(obj,type_permis):return obj
+                    if self.is_object_from(obj,type_permis): return obj
                 except Exception, err:
                     help = str(err)
             elif type(type_permis) == types.InstanceType or isinstance(type_permis,object):
                 try:
-                    if type_permis.__convert__(obj) : return obj
+                    if type_permis.__convert__(obj): return obj
                 except Exception, err:
                     help = str(err)
             else:
@@ -142,10 +144,10 @@ class TypeProtocol(PProtocol):
 
     def is_complexe(self,valeur):
         """ Retourne 1 si valeur est un complexe, 0 sinon """
-        if type(valeur) in (types.ComplexType,types.IntType,types.FloatType,types.LongType):
-            # Pour permettre l'utilisation de complexes Python
+        if is_number(valeur):
+            # Pour permettre l'utilisation de complexes Python (accepte les entiers et réels)
             return 1
-        elif type(valeur) != types.TupleType :
+        elif type(valeur) != tuple :
             # On n'autorise pas les listes pour les complexes
             return 0
         elif len(valeur) != 3:
@@ -153,7 +155,7 @@ class TypeProtocol(PProtocol):
         else:
             # Un complexe doit etre un tuple de longueur 3 avec 'RI' ou 'MP' comme premiere
             # valeur suivie de 2 reels.
-            if string.strip(valeur[0]) in ('RI','MP'):
+            if valeur[0].strip() in ('RI','MP'):
                 try:
                     v1=reelProto.adapt(valeur[1]),reelProto.adapt(valeur[2])
                     return 1
@@ -209,7 +211,7 @@ class IntoProtocol(PProtocol):
                 raise ValError("La valeur : %s  ne fait pas partie des choix possibles %s" % (repr(obj),into) )
         else:
             #on est dans le cas d'un ensemble continu de valeurs possibles (intervalle)
-            if type(obj) in (types.IntType,types.FloatType,types.LongType) :
+            if is_float_or_int(obj):
                 if val_min == '**': val_min = obj -1
                 if val_max == '**': val_max = obj +1
                 if obj < val_min or obj > val_max :
@@ -224,7 +226,7 @@ class MinStr:
         self.max=max
 
     def __convert__(self,valeur):
-        if type(valeur) == types.StringType and self.min <= len(valeur) <= self.max:return valeur
+        if is_str(valeur) and self.min <= len(valeur) <= self.max:return valeur
         raise ValError("%s n'est pas une chaine de longueur comprise entre %s et %s" % (valeur,self.min,self.max))
 
     def __repr__(self):
@@ -402,7 +404,7 @@ class ListVal(Valid):
           fait appel à la méthode convert_item sur chaque élément de la
           liste.
        """
-       if type(valeur) in (types.ListType,types.TupleType):
+       if is_enum(valeur):
           for val in valeur:
               self.convert_item(val)
           return valeur
@@ -416,7 +418,7 @@ class ListVal(Valid):
           liste. Si valeur est un paramètre, on utilise sa valeur effective
           valeur.valeur.
        """
-       if type(valeur) in (types.ListType,types.TupleType):
+       if is_enum(valeur):
           for val in valeur:
               if not self.verif_item(val):
                  return 0
@@ -431,7 +433,7 @@ class Compulsory(ListVal):
       """
       registry={}
       def __init__(self,elem=()):
-          if type(elem) not in (types.ListType,types.TupleType): elem=(elem,)
+          if not is_enum(elem): elem=(elem,)
           Valid.__init__(self,elem=elem)
           self.elem=elem
           self.cata_info=""
@@ -458,7 +460,7 @@ class Compulsory(ListVal):
           return 1
 
       def verif(self,valeur):
-          if type(valeur) not in (types.ListType,types.TupleType):
+          if not is_enum(valeur):
              liste=list(valeur)
           else:
              liste=valeur
@@ -499,7 +501,7 @@ class NoRepeat(ListVal):
           return 1
 
       def verif(self,valeur):
-          if type(valeur) in (types.ListType,types.TupleType):
+          if is_enum(valeur):
              liste=list(valeur)
              for val in liste:
                 if liste.count(val)!=1 : return 0
@@ -553,7 +555,7 @@ class LongStr(ListVal):
              return 0
 
       def default(self,valeur,low,high):
-          if type(valeur) != types.StringType :
+          if not is_str(valeur):
              raise ValError("%s n'est pas une string" % repr(valeur))
           if valeur[0]=="'" and valeur[-1]=="'" :
              low=low+2
@@ -625,7 +627,7 @@ class OrVal(Valid):
           Elle verifie qu'au moins un des validateurs de la liste valide la valeur
       """
       def __init__(self,validators=()):
-          if type(validators) not in (types.ListType,types.TupleType):
+          if not is_enum(validators):
              validators=(validators,)
           self.validators=[]
           for validator in validators:
@@ -750,7 +752,7 @@ class AndVal(Valid):
           Elle verifie que tous les validateurs de la liste valident la valeur
       """
       def __init__(self,validators=()):
-          if type(validators) not in (types.ListType,types.TupleType):
+          if not is_enum(validators):
              validators=(validators,)
           self.validators=[]
           for validator in validators:
@@ -884,9 +886,9 @@ def do_liste(validators):
     for validator in validators:
         if type(validator) == types.FunctionType:
            valids.append(FunctionVal(validator))
-        elif type(validator) == types.TupleType:
+        elif type(validator) is tuple:
            valids.append(OrVal(do_liste(validator)))
-        elif type(validator) == types.ListType:
+        elif type(validator) is list:
            valids.append(AndVal(do_liste(validator)))
         else:
            valids.append(validator)
@@ -895,9 +897,9 @@ def do_liste(validators):
 def validatorFactory(validator):
     if type(validator) == types.FunctionType:
        return FunctionVal(validator)
-    elif type(validator) == types.TupleType:
+    elif type(validator) is tuple:
        return OrVal(do_liste(validator))
-    elif type(validator) == types.ListType:
+    elif type(validator) is list:
        return AndVal(do_liste(validator))
     else:
        return validator
@@ -971,7 +973,7 @@ class CardVal(Valid):
              return []
 
       def convert(self,valeur):
-          if type(valeur) in (types.ListType,types.TupleType):
+          if is_enum(valeur):
              l=len(valeur)
           elif valeur is None:
              l=0
@@ -985,7 +987,7 @@ class CardVal(Valid):
           return 1
 
       def verif(self,valeur):
-          if type(valeur) in (types.ListType,types.TupleType):
+          if is_enum(valeur):
              if self.max != '**' and len(valeur) > self.max:return 0
              if self.min != '**' and len(valeur) < self.min:return 0
              return 1
@@ -1037,7 +1039,7 @@ class PairVal(ListVal):
           return valeur % 2 == 0
 
       def verif(self,valeur):
-          if type(valeur) in (types.ListType,types.TupleType):
+          if is_enum(valeur):
              for val in valeur:
                 if val % 2 != 0:return 0
              return 1
@@ -1052,7 +1054,8 @@ class EnumVal(ListVal):
           Susceptible de remplacer l attribut "into" dans les catalogues
       """
       def __init__(self,into=()):
-          if type(into) not in (types.ListType,types.TupleType): into=(into,)
+          if not is_enum(into): 
+              into=(into,)
           self.into=into
           self.cata_info=""
 
@@ -1089,7 +1092,7 @@ def ImpairVal(valeur):
         Cette fonction est un validateur. Elle verifie que la valeur passee
         est bien un nombre impair.
     """
-    if type(valeur) in (types.ListType,types.TupleType):
+    if is_enum(valeur):
        for val in valeur:
            if val % 2 != 1:return 0
        return 1
@@ -1114,7 +1117,7 @@ class F1Val(Valid):
           return "valeur %s pour la somme des cles A et B " % self.somme
 
       def verif(self,valeur):
-          if type(valeur) in (types.ListType,types.TupleType):
+          if is_enum(valeur):
              for val in valeur:
                 if not val.has_key("A"):return 0
                 if not val.has_key("B"):return 0

@@ -1,14 +1,14 @@
         SUBROUTINE CALCME(OPTION,COMPOR,THMC,MECA,IMATE,TYPMOD,CRIT,
      &                    INSTAM,INSTAP,
      &                    TREF,NDIM,DIMDEF,DIMCON,NVIMEC,
-     &                    NVITH,YATE,ADDEME,ADCOME,ADDETE,DEFGEM,CONGEM,
+     &                    YATE,ADDEME,ADCOME,ADDETE,DEFGEM,CONGEM,
      &                    CONGEP,VINTM,VINTP,ADDEP1,ADDEP2,DSDE,
      &                    DEPS,DEPSV,P1,P2,T,DT,RETCOM,DP1,DP2,
      &                    SAT,BIOT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 26/01/2010   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 10/05/2010   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,10 +50,10 @@ C                OUT RETCOM
 C ======================================================================
       IMPLICIT      NONE
       LOGICAL       MECTRU,PRE2TR
-      INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,ADDEME,ADDETE,ADDEP1
+      INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,ADDEME,ADDETE,ADDEP1
       INTEGER       ADDEP2,ADCOME,IMATE,YATE,RETCOM
       REAL*8        DEFGEM(1:DIMDEF),CONGEM(1:DIMCON),CONGEP(1:DIMCON)
-      REAL*8        VINTM(1:NVIMEC+NVITH),VINTP(1:NVIMEC+NVITH)
+      REAL*8        VINTM(1:NVIMEC),VINTP(1:NVIMEC)
       REAL*8        DSDE(1:DIMCON,1:DIMDEF)
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  OPTION,COMPOR(*),MECA,THMC

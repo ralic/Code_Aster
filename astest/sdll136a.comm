@@ -1,4 +1,4 @@
-# MODIF  DATE 29/03/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL D USURE SUR UN TUBE GV SOUMIS A UNE EXCITATION ALEATOIRE MULTIDIRECTIONNELLE
 # sdll136a.para = tps_job 500 mem_job 600Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -615,6 +615,8 @@ TRANGENE = DYNA_TRAN_MODAL (
                   INST_INIT=0.0,
                   INST_FIN=5.000000e+01,
                   PAS=1.000000e-05,
+                  NMAX_ITER_PAS=25,
+                  NB_POIN_PERIODE=50,
                   ),
              ARCHIVAGE=_F(PAS_ARCH=1,),
              );

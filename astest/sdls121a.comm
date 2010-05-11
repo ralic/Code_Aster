@@ -1,4 +1,4 @@
-# MODIF  DATE 04/05/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE RECALAGE DES PARAMETRES D'UN MODELE DYNAMIQUE PAR ANALYSE MODALE
 # sdls121a.para = tps_job 600 mem_job 300Mo mem_aster 64 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
+import numpy as NP
 
 DEBUT(CODE=_F(NOM='SDLS121A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       IGNORE_ALARM=('RECAL0_43'),PAR_LOT='NON');
@@ -45,7 +45,7 @@ REPEXP2=CREA_TABLE(LISTE=(_F(PARA='NUME_ORDRE',LISTE_I=range(1,NF+1),),
                           _F(PARA='MAC_EXP',LISTE_R=liste_mac,),
                        ),);
 
-# on recupere les reponses experimentales en format Numeric.array
+# on recupere les reponses experimentales en format numpy
 
 data1 = REPEXP1.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
 data2 = REPEXP2.EXTR_TABLE().Array('NUME_ORDRE','MAC_EXP')
@@ -54,9 +54,9 @@ parametres =[['EP__',0.15,0.1,1.0],['MP__',3.0E4,2.E4,7.E4]]
 
 calcul = [['REPONSE1','NUME_ORDRE','FREQ'],['REPONSE2','NUME_ORDRE','MAC']]
 
-experience= [Numeric.array(data1),Numeric.array(data2)]
+experience= [NP.array(data1),NP.array(data2)]
 
-poids =Numeric.array([3.0, 1.0])
+poids =NP.array([3.0, 1.0])
 
 # LANCEMENT DE L'IDENTIFICATION
 

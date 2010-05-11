@@ -1,4 +1,4 @@
-#@ MODIF co_fonction SD  DATE 14/12/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_fonction SD  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ from SD import *
 from sd_fonction import sd_fonction_aster
 
 import os
-import Numeric
+import numpy
 from math import pi
 
 # -----------------------------------------------------------------------------
@@ -170,13 +170,13 @@ class fonction_c(fonction_class, sd_fonction_aster):
                           self.Parametres(),
                           nom=self.nom)
       elif arg=='modul' :
-        modul=Numeric.sqrt(Numeric.array(self.Ordo())**2+Numeric.array(self.OrdoImg())**2)
+        modul=numpy.sqrt(numpy.array(self.Ordo())**2+numpy.array(self.OrdoImg())**2)
         return t_fonction(self.Absc(),
                           modul,
                           self.Parametres(),
                           nom=self.nom)
       elif arg=='phase' :
-        phase=Numeric.arctan2(Numeric.array(self.OrdoImg()),Numeric.array(self.Ordo()))
+        phase=numpy.arctan2(numpy.array(self.OrdoImg()),numpy.array(self.Ordo()))
         phase=phase*180./pi
         return t_fonction(self.Absc(),
                           phase,

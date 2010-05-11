@@ -1,4 +1,4 @@
-#@ MODIF reca_mac Macro  DATE 26/04/2010   AUTEUR NISTOR I.NISTOR 
+#@ MODIF reca_mac Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,8 +22,7 @@ On regroupe ici les fonctions Python necessaires au lancement
 de la fenetre graphique d'appariement manuel des MAC pour le 
 recalage en dynamique
 '''
-import aster
-import Numeric
+import numpy as NP
 
 from Tkinter import Tk, Frame, StringVar, Entry, Label, Button
 from Meidee.modes import MacWindowFrame
@@ -33,9 +32,9 @@ def extract_mac_array( mac_mode ):
     data1 = mac_mode.EXTR_TABLE().Array('NUME_MODE_1','MAC')
     data2 = mac_mode.EXTR_TABLE().Array('NUME_MODE_2','MAC')
 
-    N = int(Numeric.maximum.reduce(data1[:,0]))
-    M = int(Numeric.maximum.reduce(data2[:,0]))
-    mac = Numeric.zeros( (N,M), Numeric.Float )
+    N = int(NP.maximum.reduce(data1[:,0]))
+    M = int(NP.maximum.reduce(data2[:,0]))
+    mac = NP.zeros( (N,M) )
     for i in range(data1.shape[0]):
         i1 = int(data1[i,0])-1
         i2 = int(data2[i,0])-1
@@ -44,7 +43,7 @@ def extract_mac_array( mac_mode ):
 
 
 def get_modes(resu):
-
+    
     afreq  = resu.LIST_PARA()['FREQ']
 
     return afreq

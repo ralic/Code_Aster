@@ -1,4 +1,4 @@
-#@ MODIF co_cham_elem SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_cham_elem SD  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ from SD import *
 from sd_cham_elem import sd_cham_elem
 from co_champ     import cham_gd_sdaster
 
-import Numeric
+import numpy
 
 # -----------------------------------------------------------------------------
 # post-traitement :
@@ -42,7 +42,7 @@ class cham_elem(cham_gd_sdaster, sd_cham_elem):
         topologie si topo>0. Si lgma est une liste vide, c'est equivalent
         a un TOUT='OUI' dans les commandes aster
         Attributs retourne
-          - self.valeurs : Numeric.array contenant les valeurs
+          - self.valeurs : numpy.array contenant les valeurs
         Si on a demande la topo  :
           - self.maille  : numero de mailles
           - self.point   : numero du point dans la maille
@@ -57,7 +57,7 @@ class cham_elem(cham_gd_sdaster, sd_cham_elem):
 
       aster.prepcompcham(ncham,nchams,ncmp,"EL      ",topo,lgma)
 
-      valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
+      valeurs=numpy.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
 
       if (topo>0) :
          maille=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.M'))

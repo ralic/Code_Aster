@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 10/05/2010   AUTEUR TARDIEU N.TARDIEU 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -177,15 +177,18 @@ MODE_LOCAL__
     EFLUXNO  = FLUX_R   ELNO__ IDEN__  (FLUX     FLUY     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W)
+    EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EHYDRNO  = HYDR_R   ELNO__ IDEN__  (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[6])
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[6])
     CDECENT  = NEUT_K24 ELEM__         (Z1       )
     CREFERK  = NEUT_K24 ELEM__         (Z[19])
     ECASECT  = NEUT_R   ELEM__         (X[9])
     EGNEUT1R = NEUT_R   ELGA__ RIGI    (X1       )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[6])
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
     CSOURCR  = SOUR_R   ELEM__         (SOUR     )
@@ -333,6 +336,8 @@ OPTION__
                               OUT__  MMATTTR  PSYM
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  CSOURCR  PSOUR_R
+    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+                              OUT__  ESOURCR  PSOUR_R  EGNEUT_R PNEUT_R  EGGEOM_R PGEOM_R  EGNEUT_F PNEUT_F 
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
                                      EPHASNO_ PVARI_R

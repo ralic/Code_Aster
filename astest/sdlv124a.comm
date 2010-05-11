@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2010   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PAVE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdlv124a.para = tps_job 660 mem_job 1000Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,8 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-import Numeric
-from Numeric import size
+import numpy as NP
 
 DEBUT(CODE=_F( NOM = 'SDLV124A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       DEBUG=_F(SDVERI='OUI'),
@@ -31,7 +30,7 @@ periode=1.0/freq
 pas=periode/100.0
 
 # definition du sinus
-SINOMEGT = FORMULE(NOM_PARA='INST',VALE='sin(2*Numeric.pi*freq*INST)')
+SINOMEGT = FORMULE(NOM_PARA='INST',VALE='sin(2*pi*freq*INST)')
 
 # construction de l'excitation
 LIEXCIT=DEFI_LIST_REEL(DEBUT=0.,
@@ -141,8 +140,8 @@ LISTRD=DEFI_LIST_REEL(DEBUT=(98.0)*periode+pas,
                                      PAS=pas,),);
 
 # Creation de la liste des pas d'archivage
-archsize=size(LISTRD.Valeurs())
-archfin=size(LISTTM.Valeurs())
+archsize=NP.size(LISTRD.Valeurs())
+archfin=NP.size(LISTTM.Valeurs())
 archinit=archfin-archsize
 
 LISTARCH=DEFI_LIST_ENTI(DEBUT=archinit,

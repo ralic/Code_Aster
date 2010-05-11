@@ -1,4 +1,4 @@
-#@ MODIF veri_matr_tang Utilitai  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF veri_matr_tang Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,14 +19,16 @@
 # ======================================================================
 from Cata.cata import *
 
-# ===========================================================================
 #              MACRO "VERI_MATR_TANG"
-#           -------------------------------------
-import Numeric
-from Numeric import *
-import cPickle,string
-import LinearAlgebra as LA
+#           ----------------------------
+import cPickle
+import string
+
+import numpy as NP
+from numpy import linalg as LA
+
 import aster
+
 class TANGENT :
 
      """
@@ -90,8 +92,7 @@ class TANGENT :
  
  
      def Eigen(self) :
- 
-       self.vp = sort(LA.eigenvalues(self.mat))
+       self.vp = NP.sort(LA.eigvals(self.mat))
  
  
      def Matrice(self,matrice) :
@@ -101,10 +102,10 @@ class TANGENT :
        """
  
        if type(matrice) == type((1,)) :
-         matrice = array(list(matrice))
+         matrice = NP.array(list(matrice))
        elif type(matrice) == type([]) :
-         matrice = array(matrice)
-       matrice = matrice.astype(Float)
+         matrice = NP.array(matrice)
+       matrice = matrice.astype(float)
  
        nddl = int(len(matrice)**0.5+0.5)
        matrice.shape = (nddl,nddl)
@@ -117,7 +118,7 @@ class TANGENT :
        elif len(self.ddl) <> nddl :
          raise 'Nommage des DDL incoherents avec la taille de la matrice'
 
-       self.norme = trace(dot(transpose(self.mat),self.mat))
+       self.norme = NP.trace(NP.dot(NP.transpose(self.mat),self.mat))
  
 
      def Difference(self,matp,affi_ok=0,prec_diff = 1.E-4) :
@@ -130,27 +131,27 @@ class TANGENT :
          prec_diff : ecart au-dessus duquel on considere que ce n'est pas OK
        """
  
-       if type(matp) == type((1,)) :
-         matp = array(list(matp))
-       elif type(matp) == type([]) :
-         matp = array(matp)
+       if type(matp) is tuple :
+         matp = NP.array(list(matp))
+       elif type(matp) is list :
+         matp = NP.array(matp)
        elif type(matp) == type(self) :
          matp = matp.mat
-       elif type(matp) == type(array([1])) :
+       elif type(matp) is NP.ndarray:
          pass
        else :
-         raise '1er argument doit etre une matrice (tuple,liste,TANGENT ou Numeric Array)'
-       matp = ravel(matp)
-       matp = matp.astype(Float)
+         raise '1er argument doit etre une matrice (tuple,liste,TANGENT ou tableau numpy)'
+       matp = NP.ravel(matp)
+       matp = matp.astype(float)
  
        if len(matp) <> self.nddl*self.nddl :
          raise 'Matrices de tailles differentes'
        matp.shape = (self.nddl,self.nddl)
  
-       refe = abs(self.mat) + abs(matp)
-       diff = where(refe > self.prec_zero,abs(self.mat-matp)/(refe+self.prec_zero),0)
-       nook = nonzero(ravel(diff)  > prec_diff)
-       ok   = nonzero(ravel(diff) <= prec_diff)
+       refe = NP.abs(self.mat) + NP.abs(matp)
+       diff = NP.where(refe > self.prec_zero,NP.abs(self.mat-matp)/(refe+self.prec_zero),0)
+       nook = (diff.ravel()  > prec_diff).nonzero()[0]
+       ok   = (diff.ravel() <= prec_diff).nonzero()[0]
 
        if affi_ok :
          affi = [ok,nook]
@@ -172,11 +173,11 @@ class TANGENT :
            liste_j.append(j+1)
            liste_matt.append(self.mat[i,j])
            liste_matp.append(matp[i,j])
-           liste_diff.append( abs(self.mat[i,j]-matp[i,j])/ ( abs(self.mat[i,j]) + abs(matp[i,j]) + self.prec_zero))
+           liste_diff.append( NP.abs(self.mat[i,j]-matp[i,j])/ ( NP.abs(self.mat[i,j]) + NP.abs(matp[i,j]) + self.prec_zero))
 #       print '-'*80
        if self.norme > self.prec_zero :
          ecart = (self.mat - matp)/2.
-         nor_ecart = trace(dot(transpose(ecart),ecart))
+         nor_ecart = NP.trace(NP.dot(NP.transpose(ecart),ecart))
          nor_diff= nor_ecart / self.norme
        else :
          nor_diff= 0.
@@ -194,13 +195,13 @@ class TANGENT :
          prec_diff : ecart au-dessus duquel on considere que ce n'est pas OK
        """
 
-       tran = transpose(self.mat)
+       tran = NP.transpose(self.mat)
        liste_i,liste_j,liste_matt,liste_matp,liste_diff,nor_diff=self.Difference(tran,affi_ok=0,prec_diff=prec_diff)
        
  
 #       if self.norme > self.prec_zero :
 #         ecart = (self.mat - tran)/2.
-#         nor_ecart = trace(dot(transpose(ecart),ecart))
+#         nor_ecart = NP.trace(NP.dot(NP.transpose(ecart),ecart))
 #         return nor_ecart / self.norme
 #       else :
 #         return 0.
@@ -216,7 +217,6 @@ def veri_matr_tang_ops(self,SYMETRIE,DIFFERENCE,PRECISION,**args):
    """
    import os
    from Accas import _F
-   from Noyau.N_utils import AsType
    from Utilitai.Utmess     import UTMESS
    from Utilitai.UniteAster import UniteAster
 
@@ -264,6 +264,4 @@ fr="verification de la matrice tangente : symétrie et différence par rapport a l
          DIFFERENCE      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          PRECISION       =SIMP(statut='f',typ='R',defaut=1.E-4 ),
 )  ;
-
-
 

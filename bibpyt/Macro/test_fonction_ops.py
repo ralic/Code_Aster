@@ -1,4 +1,4 @@
-#@ MODIF test_fonction_ops Macro  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+#@ MODIF test_fonction_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,8 @@
 # RESPONSABLE SELLENET N.SELLENET
 
 import os
+
+from Noyau.N_types import is_complex, is_str, is_enum
 
 epsi = 1e-15
 
@@ -57,7 +59,7 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
    
    isTestOk = 0
    vtc = valRef[0]
-   if type(vtc) in (list, tuple):
+   if is_enum(vtc):
       assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) )
       if vtc[0]=='RI':
          vtc = vtc[1]+1j*vtc[2]
@@ -65,7 +67,7 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
          vtc = vtc[1]*cmath.exp(1j*math.pi*vtc[2]/180)
    if sSigne == 'OUI':
       res = abs(res)
-      if type(valRef[0]) == complex:
+      if is_complex(valRef[0]):
          vtc = abs(vtc)
    
    # Recherche de la valeur la plus proche de la valeur calculee
@@ -74,13 +76,13 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
    curI = 0
    for i in range(len(valRef)):
       vtc = valRef[i]
-      if type(vtc) in (list, tuple):
+      if is_enum(vtc):
          assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) )
          if vtc[0]=='RI':
             vtc = vtc[1]+1j*vtc[2]
          else:
             vtc = vtc[1]*cmath.exp(1j*math.pi*vtc[2]/180)
-      if sSigne == 'OUI' and type(vtc) == complex:
+      if sSigne == 'OUI' and is_complex(vtc):
          vtc = abs(vtc)
       valTmp = abs(res-vtc)
       if valTmp < minTmp:
@@ -88,13 +90,13 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
          curI = i
    
    vtc = valRef[curI]
-   if type(vtc) in (list, tuple):
+   if is_enum(vtc):
       assert( (vtc[0]=='RI')|(vtc[0]=='MP' ) )
       if vtc[0]=='RI':
          vtc = vtc[1]+1j*vtc[2]
       else:
          vtc = vtc[1]*cmath.exp(1j*math.pi*vtc[2]/180)
-   if sSigne == 'OUI' and type(vtc) == complex:
+   if sSigne == 'OUI' and is_complex(vtc):
       vtc = abs(vtc)
 
    testOk = 'NOOK'
@@ -105,7 +107,7 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
    if crit[0:4] == 'RELA':
       isTestOk = ( abs(res-vtc) <= epsi*abs(vtc) )
       if vtc != 0:
-         if type(res) == complex or type(vtc) == complex:
+         if is_complex(res) or is_complex(vtc):
             err = abs(res - vtc)/abs(vtc)*100
          else:
             err = (res - vtc)/vtc*100
@@ -116,7 +118,7 @@ def TesterValeur(nomPara,valPu,valRef,res,epsi,crit,sSigne):
       pourcent = '%'
    else:
       isTestOk = ( abs(res-vtc) <= epsi )
-      if type(res) == complex or type(vtc) == complex:
+      if is_complex(res) or is_complex(vtc):
          err = abs(res - vtc)
       else:
          err = res - vtc
@@ -257,8 +259,8 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt):
    if crit[0:4] == 'RELA':
       pourcent = '%'
 
-   if type(res) == complex:
-     if type(vtc)!=complex:
+   if is_complex(res):
+     if not is_complex(vtc):
         vtc0=complex(vtc,0)
      else:
         vtc0=vtc
@@ -268,7 +270,7 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt):
      vtc0=vtc
      res2,vtc2,errr,curEpsr=RoundValues('R',res,vtc0,err,curEps)
 
-   if type(res) == complex:
+   if is_complex(res):
       if(res.imag<0):
          val_cal=resr.upper()+resc.upper()+'j'
       else:
@@ -277,7 +279,7 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt):
       val_cal=res2.upper()
       
   
-   if type(vtc0) == complex:
+   if is_complex(vtc0):
       if(vtc0.imag<0):
          val_ref=vtcr.upper()+vtcc.upper()+'j'
       else:
@@ -374,7 +376,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
          nomfct = fct.nomj.nomj
          
          # Transformation de nompara en liste
-         if (not type(nompara) in (list, tuple)) and nompara != None:
+         if (not is_enum(nompara)) and nompara != None:
             nompara = [nompara,]
          
          bcle = []
@@ -385,7 +387,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
             bcle = [fct,]
          else:
             pres_sensi = 1
-            if not type(sensi) in (list, tuple):
+            if not is_enum(sensi):
                bcle = [sensi,]
          
          for ps in bcle:
@@ -404,7 +406,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
             res = 0.
             typeFct = ''
             valpu = dres['VALE_PARA']
-            if not type(valpu) in (list, tuple): valpu = [valpu,]
+            if not is_enum(valpu): valpu = [valpu,]
             
             valref  = None
             if (type(lafonc) == formule_c) or (type(lafonc) == fonction_c):
@@ -412,9 +414,9 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
             else:
                valref = dres['VALE_REFE']
             # L'enjeu est de transformer valref en tableau
-            if not type(valref) in (list, tuple): valref = [valref,]
+            if not is_enum(valref): valref = [valref,]
             else:
-               if type(valref[0]) == str:
+               if is_str(valref[0]):
                   valref = [valref,]
             
             intervalle = dres['INTERVALLE']
@@ -424,7 +426,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
             # - "fonction" sur un intervalle
             # - "formule",
             # - "fonction" ou "nappe"
-            if (type(lafonc) == (fonction_sdaster)) and intervalle != None:
+            if (type(lafonc) == fonction_sdaster) and intervalle != None:
                fctProl = lafonc.PROL.get()
                prolG = 'rien'
                if fctProl[4][0:1] == 'C':
@@ -463,7 +465,7 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
                # On cherche les valeurs de reference passees a TEST_FONCTION et
                # on les trie grace a ceux de la formule
                paramFormule = lafonc.Parametres()['NOM_PARA']
-               if not type(paramFormule) in (list, tuple):
+               if not is_enum(paramFormule):
                   paramFormule = [paramFormule,]
                if nompara[0] == '':
                   nompara = paramFormule

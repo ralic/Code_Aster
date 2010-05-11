@@ -1,4 +1,4 @@
-# MODIF  DATE 27/07/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME EN GRILLE_EXCENTRE QUAD4
 # sdns107b.para = tps_job 220 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -329,7 +329,7 @@ TEST_TABLE(TABLE=REAC,
 #=============================================================================================
 # pour obtenir ECIN de reference, passer en PAR_LOT='NON'
 #=============================================================================================
-#import Numeric
+#import numpy as NP
 # VIT = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 #        OPERATION='EXTR',                  
 #        NUME_ORDRE=n,
@@ -352,9 +352,9 @@ TEST_TABLE(TABLE=REAC,
 # VIT3Y = VITY + .03*VITRX
 # VIT3Z = VITZ
 # 
-# EPYTB = 25.*Numeric.add.reduce(VITX**2+VITY**2+VITZ**2)
+# EPYTB = 25.*NP.add.reduce(VITX**2+VITY**2+VITZ**2)
 # #EPYTA = 0.
-# EPYTA = 39.*Numeric.add.reduce(VIT2X**2+VIT2Y**2+VIT2Z**2)+39.*Numeric.add.reduce(VIT3X**2+VIT3Y**2+VIT3Z**2)
+# EPYTA = 39.*NP.add.reduce(VIT2X**2+VIT2Y**2+VIT2Z**2)+39.*NP.add.reduce(VIT3X**2+VIT3Y**2+VIT3Z**2)
 # 
 # EPYTA = EPYTA/1536/2
 # EPYTB = EPYTB/1536/2

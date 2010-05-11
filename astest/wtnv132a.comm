@@ -1,4 +1,4 @@
-# MODIF  DATE 09/02/2010   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 512Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-from Numeric import *
 
 # Nombre de couches
 # (dont la couche elastique correspondant au BEDROCK)

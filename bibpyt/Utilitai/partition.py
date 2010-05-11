@@ -1,4 +1,4 @@
-#@ MODIF partition Utilitai  DATE 20/10/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF partition Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 import aster
 import string, os, time, sys, UserList, types
-import Numeric as N
+import numpy as NP
 
 from Accas import _F
 from Noyau.N_utils import AsType
@@ -32,14 +32,17 @@ def enleve_doublons_liste(liste):
       A partir d une liste qui peut contenir des doublons, on renvoie une liste sans
       doublons (et qui reviendra triée)
    """
-   # Au cas ou ca ne serait pas deja un vecteur numpy  # Exemple
-   liste=N.sort(N.array(liste,copy=0))                 # [1, 2, 2, 3, 3, 4, 5]
-   liste_diff=liste[1:]-liste[:-1]                     # [1, 0, 1, 0, 1, 1]
-   liste_temp=N.nonzero(liste_diff)                    # [0, 2, 4, 5]
-   liste_indice=N.zeros(liste_temp.shape[0]+1)
+   #MC pourquoi ne pas faire :
+   # liste2 = NP.array(list(set(liste)))
+   # liste2.sort()
+   # Au cas ou ca ne serait pas deja un vecteur numpy      # Exemple
+   liste=NP.sort(NP.array(liste,copy=0))                   # [1, 2, 2, 3, 3, 4, 5]
+   liste_diff=liste[1:]-liste[:-1]                         # [1, 0, 1, 0, 1, 1]
+   liste_temp=NP.nonzero(liste_diff)[0]                    # [0, 2, 4, 5]
+   liste_indice=NP.zeros(liste_temp.shape[0]+1, dtype=int)
    liste_indice[0]=0
-   liste_indice[1:]=liste_temp+1                       # [0, 1, 3, 5, 6]
-   liste2=N.take(liste,liste_indice)                   # [1, 2, 3, 4, 5]
+   liste_indice[1:]=liste_temp+1                           # [0, 1, 3, 5, 6]
+   liste2=NP.take(liste,liste_indice)                      # [1, 2, 3, 4, 5]
    return liste2
 
 
@@ -60,16 +63,16 @@ class CONNEC(UserList.UserList) :
       """
       # Dimension des deux vecteurs
       nma  = len(self)
-      ltot = N.reduce(lambda x,y : x+len(y), self,0)
-      ind = N.zeros(nma+1,Int)
-      noe = N.zeros(ltot,Int)
+      ltot = NP.reduce(lambda x,y : x+len(y), self,0)
+      ind = NP.zeros(nma+1, dtype=int)
+      noe = NP.zeros(ltot, dtype=int)
 
       # Construction des vecteurs
       ind[0] = 0
       for i in range(nma) :
          m = self[i]
          ind[i+1] = ind[i] + len(m)
-         noe[ind[i]:ind[i+1]] = N.array(m)
+         noe[ind[i]:ind[i+1]] = NP.array(m)
 
       return ind,noe
 
@@ -82,7 +85,7 @@ class MAIL_PY :
 EXEMPLE D'UTILISATION
 ---------------------
 from Utilitai.Partition import *
-import Numeric as N
+import numpy as N
 
 mail=LIRE_MAILLAGE();
 
@@ -108,13 +111,13 @@ connex   = mm.co
 # Le décalage de -1 est déjà fait sur les numéros des noeuds et des mailles
 # Pour ajouter des Noeuds
    #  Coordonnées
-         LesNoeudsEnPlus = N.array([[xx,yy,zz]])
-         LesNoeudsEnPlus = N.concatenate((LesNoeudsEnPlus,N.array([[xx,yy,zz]])))
+         LesNoeudsEnPlus = NP.array([[xx,yy,zz]])
+         LesNoeudsEnPlus = NP.concatenate((LesNoeudsEnPlus,NP.array([[xx,yy,zz]])))
    #  Noms
          NomNoeudsEnPlus =     ['X%' % in]
          NomNoeudsEnPlus.append('X%' % in)
 # Ajout des noeuds au maillage : coordonnées , noms
-   mm.cn = N.concatenate((mm.cn,LesNoeudsEnPlus))
+   mm.cn = NP.concatenate((mm.cn,LesNoeudsEnPlus))
    mm.correspondance_noeuds = tuple(linomno + NomNoeudsEnPlus )
 
 # Pour ajouter des mailles (ici TRIA3)  in [ 1 , NbMailleAjouté ]
@@ -125,22 +128,23 @@ connex   = mm.co
          num_maille = [ nbma + im ]
          num_maille.append( nbma + im )
    #  Noeuds des mailles
-         NoeudsMailles = [N.array([i1,i2,i3])]
-         NoeudsMailles.append(N.array(N.array([i1,i2,i3])))
+         NoeudsMailles = [NP.array([i1,i2,i3])]
+         NoeudsMailles.append(NP.array(NP.array([i1,i2,i3])))
 # Ajout des TRIA3
    # Type de maille
          typ_maille = mm.dic['TRIA3']
-         mm.tm = N.concatenate((mm.tm,N.array([typ_maille]*NbMailleAjouté)))
+         mm.tm = NP.concatenate((mm.tm,NP.array([typ_maille]*NbMailleAjouté)))
    # Nom des mailles
          mm.correspondance_mailles += tuple(NomMaillesEnPlus)
    # connectivite des éléments
       mm.co += NoeudsMailles
 
 # Ajout d'un groupe de maille contenant les mailles ajoutés
-   maillage_python.gma['XXXAJOUT'] = N.array(num_maille)
+   maillage_python.gma['XXXAJOUT'] = NP.array(num_maille)
 
-# Ecriture dans un fichier
-   MAIL9 = mm.ToAster(unite=38)
+# Ecriture dans un fichier, et transfert dans l'espace Aster
+   unite = mm.ToAster()
+   mail = LIRE_MAILLAGE(UNITE=unite)
    """
 
    def __init__(self, nno=0, nma=0, ndim=None) :
@@ -148,12 +152,12 @@ connex   = mm.co
       if ndim is None:
          # on initialise le tableau au plus grand
          ndim = 3
-      self.cn  = N.zeros((nno, ndim),N.Float)
-      self.tm  = N.zeros(nma,N.Int)
+      self.cn  = NP.zeros((nno, ndim), dtype=int)
+      self.tm  = NP.zeros(nma, dtype=int)
       self.co  = CONNEC(nma)
       self.gma = {}
       self.gno = {}
-      self.indice_noeuds = N.arange(nno)
+      self.indice_noeuds = NP.arange(nno)
 
       self.correspondance_noeuds = []
       self.correspondance_mailles = []
@@ -181,19 +185,19 @@ connex   = mm.co
       try:
          psyco.bind(self.FromAster)
       except: pass
-   
+
 # -------------------------------------------------------------
    def get_connexite(self, nom, nma):
       co=CONNEC(nma)
       dico_connexite = aster.getcolljev(nom)
       for element in dico_connexite.keys() :
-         co[int(element)-1] = (N.array(dico_connexite[element])-1)
+         co[int(element)-1] = (NP.array(dico_connexite[element])-1)
       return co
 
    def get_coordonnees_noeuds(self, nom, nombre_noeuds):
       assert self.ndim != None, """Dimension réelle du maillage non initialisée."""
       lcoord = aster.getvectjev(nom)
-      coordonnees_noeuds = N.array(lcoord)
+      coordonnees_noeuds = NP.array(lcoord)
       nno = len(coordonnees_noeuds) / 3
       assert nno == nombre_noeuds, """Données incohérentes."""
       coordonnees_noeuds.shape = (nno, 3)
@@ -227,12 +231,12 @@ connex   = mm.co
       self.cn = self.get_coordonnees_noeuds(nom_maillage+'.COORDO    .VALE', nombre_noeuds)
 
       # type de maille
-      self.tm = N.array(aster.getvectjev(nom_maillage+'.TYPMAIL'))
+      self.tm = NP.array(aster.getvectjev(nom_maillage+'.TYPMAIL'))
 
       # connexite
       self.co = self.get_connexite(nom_maillage+'.CONNEX', nombre_mailles)
 
-      self.indice_noeuds=N.arange(nombre_noeuds)
+      self.indice_noeuds=NP.arange(nombre_noeuds)
 
       # groupe de noeuds
       Lno_groupno_tot = aster.getcolljev(nom_maillage+'.GROUPENO')
@@ -241,7 +245,7 @@ connex   = mm.co
       for key in Lno_groupno_tot :
          # Tolerance car parfois defi_group crée des groupes nuls à clé entiere
          try:
-            Lno_groupno[key.strip()]=N.array(Lno_groupno_tot[key])-1
+            Lno_groupno[key.strip()]=NP.array(Lno_groupno_tot[key])-1
          except:
             pass
       self.gno=Lno_groupno
@@ -250,7 +254,7 @@ connex   = mm.co
       Lma_groupma_tot     = aster.getcolljev(nom_maillage+'.GROUPEMA')
       Lma_groupma={}
       for key in Lma_groupma_tot :
-         Lma_groupma[key.strip()]=N.array(Lma_groupma_tot[key])-1
+         Lma_groupma[key.strip()]=NP.array(Lma_groupma_tot[key])-1
       self.gma=Lma_groupma
 
       del(Lma_groupma_tot)
@@ -260,7 +264,7 @@ connex   = mm.co
       self.correspondance_mailles = aster.getvectjev(nom_maillage+'.NOMMAI')
 
 # -------------------------------------------------------------
-   def ToAster(self,unite=None,transfert=False):
+   def ToAster(self,unite=None):
       from Utilitai.UniteAster import UniteAster
       try:
          LIRE_MAILLAGE   = self.jdc.get_cmd('LIRE_MAILLAGE')
@@ -273,7 +277,7 @@ connex   = mm.co
 
       UL = UniteAster()
       # Récupération d'une unité logique libre si besoin
-      if ( unite == None ): unite = UL.Libre()
+      if ( unite == None ): unite = UL.Libre(action='ASSOCIER')
       fichier = UL.Nom(unite)
       # Bascule le fichier en F : ferme
       UL.Etat(unite,etat='F')
@@ -282,16 +286,10 @@ connex   = mm.co
       # Sauvegarde du maillage dans le fichier
       f.write( self.Voir_Mail() )
       f.close()
-
       # Remet les unités comme au debut
       UL.EtatInit()
-      if ( transfert ):
-         # Lecture de ce fichier .mail pour l'injecter dans l'espace Aster
-         _SMESH_ = LIRE_MAILLAGE(UNITE = unite)
-         # Remet tout comme au debut
-         return _SMESH_
 
-      return None
+      return unite
 
 # -------------------------------------------------------------
    def __str__(self) :
@@ -330,7 +328,7 @@ connex   = mm.co
             l.append("%-8s  %s" % (self.correspondance_noeuds[i], ch))
 
       # Connectivité des mailles
-      ind = N.argsort(self.tm)
+      ind = NP.argsort(self.tm)
       ty = 0
       # Si le maillage initial ne provient pas d'Aster
       if len(self.correspondance_mailles) == 0:
@@ -425,8 +423,8 @@ class PARTITION:
     self.jdc = jdc
 
     self.fichier_out        = ''
-    self.liste_mailles      = N.array( [] )
-    self.liste_sd           = N.array( [] )
+    self.liste_mailles      = NP.array( [] )
+    self.liste_sd           = NP.array( [] )
     self.liste_mailles_bord = []
     self.liste_sd_bord      = []
 
@@ -556,7 +554,7 @@ class PARTITION:
 
       # Pour prendre en compte des mélanges d'elements de dimension differente
       _LST, _LST_BD = self.Elimination_Mailles_de_bords(MAILLAGE_Python, _D_DIM_MAILLES, _DIM)
-      self.liste_mailles = N.concatenate( (self.liste_mailles,N.array(_LST)) )
+      self.liste_mailles = NP.concatenate( (self.liste_mailles,NP.array(_LST)) )
 
       if self.OPTIONS['INFO']>=5:
         print '_LST_BD=',_LST_BD
@@ -710,7 +708,7 @@ class PARTITION:
     ll = []
     for type_maille in _DIC_MA.keys():
       ll.extend( _DIC_MA[type_maille][0:-1] )
-    _LST_MA = N.array( ll ) - 1
+    _LST_MA = NP.array( ll ) - 1
 
     if self.OPTIONS['INFO']>=5:
       print '\n# ----- MODELE ----- #\n'
@@ -728,32 +726,32 @@ class PARTITION:
 
     # Si _LST_MA est renseigné on extrait la liste des TMA correspondante aux mailles de _LST_MA
     if _LST_MA != None:
-      _LST_TMA = N.take(_LST_TMA,_LST_MA)
+      _LST_TMA = NP.take(_LST_TMA,_LST_MA)
     else:
-      _LST_MA = N.arange(len(_LST_TMA))
+      _LST_MA = NP.arange(len(_LST_TMA))
 
     _D_DIM_MAILLES = {}
 
     # Liste des mailles 3D (type maille de 18 à 26)
-    _lst = N.where( _LST_TMA>=18, -3, _LST_TMA )
-    _tmp = N.where( _lst==-3, -1, 0 )
-#    _D_DIM_MAILLES[3] = N.nonzero( _tmp )
-    _D_DIM_MAILLES[3] = N.take(_LST_MA, N.nonzero( _tmp ) )
+    _lst = NP.where( _LST_TMA>=18, -3, _LST_TMA )
+    _tmp = NP.where( _lst==-3, -1, 0 )
+#    _D_DIM_MAILLES[3] = NP.nonzero( _tmp )
+    _D_DIM_MAILLES[3] = NP.take(_LST_MA, NP.nonzero( _tmp )[0] )
 
     # Liste des mailles 2D (type maille de 7 à 17)
-    _lst = N.where( _lst>=7, -2, _lst )
-    _tmp = N.where( _lst==-2, -1, 0 )
-    _D_DIM_MAILLES[2] = N.take(_LST_MA, N.nonzero( _tmp ) )
+    _lst = NP.where( _lst>=7, -2, _lst )
+    _tmp = NP.where( _lst==-2, -1, 0 )
+    _D_DIM_MAILLES[2] = NP.take(_LST_MA, NP.nonzero( _tmp )[0] )
 
     # Liste des mailles 1D (type maille de 2 à 6)
-    _lst = N.where( _lst>=2, -1, _lst )
-    _tmp = N.where( _lst==-1, -1, 0 )
-    _D_DIM_MAILLES[1] = N.take(_LST_MA, N.nonzero( _tmp ) )
+    _lst = NP.where( _lst>=2, -1, _lst )
+    _tmp = NP.where( _lst==-1, -1, 0 )
+    _D_DIM_MAILLES[1] = NP.take(_LST_MA, NP.nonzero( _tmp )[0] )
 
     # Liste des mailles 0D (type maille 1)
-    _lst = N.where( _lst>=1, -4, _lst )
-    _tmp = N.where( _lst==-4, -1, 0 )
-    _D_DIM_MAILLES[0] = N.take(_LST_MA, N.nonzero( _tmp ) )
+    _lst = NP.where( _lst>=1, -4, _lst )
+    _tmp = NP.where( _lst==-4, -1, 0 )
+    _D_DIM_MAILLES[0] = NP.take(_LST_MA, NP.nonzero( _tmp )[0] )
 
 
     if self.OPTIONS['INFO']>=5:
@@ -774,7 +772,7 @@ class PARTITION:
     t0 = time.clock()
 
     # Si _LST_OK n'est pas renseigné on prend toutes les mailles
-    if not _LST_OK: _LST_OK = N.arange(len(self.MAILLAGE_Python.tm))
+    if not _LST_OK: _LST_OK = NP.arange(len(self.MAILLAGE_Python.tm))
 
     if self.OPTIONS['INFO']>=5: print '_LST_OK (ca)=',_LST_OK
 
@@ -859,7 +857,7 @@ class PARTITION:
     if self.OPTIONS['INFO']>=5: print '\n\nElimination des mailles de bord de DIM', _DIM - 1
 
     _LST4 = _D_DIM_MAILLES[ _DIM - 1 ]
-    _LST_IND = N.arange( len(_LST4) ) + 1  # on ajoute 1 pour eviter le premier 0 dans les test nonzero plus bas
+    _LST_IND = NP.arange( len(_LST4) ) + 1  # on ajoute 1 pour eviter le premier 0 dans les test nonzero plus bas
 
     if self.OPTIONS['INFO']>=5: print '  Mailles concernées=',_LST4
 
@@ -868,7 +866,7 @@ class PARTITION:
       if self.OPTIONS['INFO']>=5: print '\n  Maille de dim N-1:',m, ' Aster:',string.strip(_LST_MAI[m]), ' TMA:',self.MAILLAGE_Python.tm[m], ' CO:',self.MAILLAGE_Python.co[m], '(noeuds de cette maille)'
       nb = maille2nb[ self.MAILLAGE_Python.tm[m] ]
       ll = self.MAILLAGE_Python.co[m][0:nb]
-      ll = N.sort(ll)
+      ll = NP.sort(ll)
       ll = ll.tolist()
       ll = tuple(ll)
       if self.OPTIONS['INFO']>=5: print '  Bord (lineaire)', ll, nb
@@ -886,12 +884,12 @@ class PARTITION:
       i+=1
 
     # Recuperation des mailles de bords et non-bords
-    _LST_BD = N.nonzero(_LST_IND)
-    _LST_BD = N.take(_LST4,_LST_BD)
+    _LST_BD = NP.nonzero(_LST_IND)[0]
+    _LST_BD = NP.take(_LST4,_LST_BD)
 
-    _LST_OK = N.where( _LST_IND==0, 1 , 0 )
-    _LST_OK = N.nonzero(_LST_OK)
-    _LST_OK = N.take(_LST4,_LST_OK)
+    _LST_OK = NP.where( _LST_IND==0, 1 , 0 )
+    _LST_OK = NP.nonzero(_LST_OK)[0]
+    _LST_OK = NP.take(_LST4,_LST_OK)
 
     if self.OPTIONS['INFO']>=5: print '\nListe Maille de bords de DIM', _DIM - 1,' :',_LST_BD
     if self.OPTIONS['INFO']>=5: print 'Liste Maille de DIM', _DIM - 1,'qui ne sont pas des bords :',_LST_OK
@@ -915,7 +913,7 @@ class PARTITION:
 
         nb = maille2nb[ self.MAILLAGE_Python.tm[mai] ]
         ll = self.MAILLAGE_Python.co[mai][0:nb]
-        ll = N.sort(ll)
+        ll = NP.sort(ll)
         ll = ll.tolist()
         _tmp = tuple(ll)
 #        _tmp = self.MAILLAGE_Python.co[mai]
@@ -948,8 +946,8 @@ class PARTITION:
       t0 = time.clock()
 
 
-    _LST_OK = N.concatenate( (_LST_OK, N.array(_LST_OK0)) )
-    _LST_BD = N.concatenate( (_LST_BD, N.array(_LST_BD0)) )
+    _LST_OK = NP.concatenate( (_LST_OK, NP.array(_LST_OK0)) )
+    _LST_BD = NP.concatenate( (_LST_BD, NP.array(_LST_BD0)) )
 
     if self.OPTIONS['INFO']>=5: print '\nTotal:\nListe Maille de bords=',_LST_BD
     if self.OPTIONS['INFO']>=5: print 'Liste Maille non-bords=',_LST_OK,'\n'
@@ -991,7 +989,7 @@ class PARTITION:
       if self.OPTIONS['INFO']>=5: print '\n  Maille de dim N-1:',m, ' Aster:',string.strip(_LST_MAI[m]), ' TMA:',self.MAILLAGE_Python.tm[m], ' CO:',self.MAILLAGE_Python.co[m], '(noeuds de cette maille)'
       nb = maille2nb[ self.MAILLAGE_Python.tm[m] ]
       ll = self.MAILLAGE_Python.co[m][0:nb]
-      ll = N.sort(ll)
+      ll = NP.sort(ll)
       ll = ll.tolist()
       ll = tuple(ll)
       if self.OPTIONS['INFO']>=5: print '  Bord (lineaire)', ll, nb
@@ -1126,7 +1124,7 @@ class PARTITION:
 
     # On doit renumeroter les mailles qui arrivent dans self.liste_mailles pour avoir 0... N-1
     _D_CORRES = {}
-    for i in N.arange(len(self.liste_mailles)):
+    for i in NP.arange(len(self.liste_mailles)):
       _D_CORRES[ self.liste_mailles[i] ] = i
 
     # Ecriture du fichier fort.UL pour metis
@@ -1168,7 +1166,7 @@ class PARTITION:
       for l in f.readlines():
         _tmp.append( int(string.strip(l)) )
       f.close()
-      _l_domaines = N.array(_tmp,copy=0)
+      _l_domaines = NP.array(_tmp,copy=0)
 
       # Pour garder le fichier metis
       os.system( 'mv ' + fichier + ' REPE_OUT/' )

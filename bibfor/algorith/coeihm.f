@@ -12,7 +12,7 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 10/05/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,7 +52,7 @@ C - VARIABLES SORTIE
       REAL*8 RES(DIMDEF),DRDE(DIMDEF,DIMDEF)
 
 C - VARIABLES LOCALES
-      INTEGER NVIM,NVIT,NVIH,NVIC,NVITH,ADVIME,ADVITH,ADVIHY,ADVICO
+      INTEGER NVIM,NVIT,NVIH,NVIC,ADVIME,ADVITH,ADVIHY,ADVICO
       INTEGER I,J,F
       INTEGER VIHRHO,VICPHI,VICPVP,VICSAT
       INTEGER IFA,VICPR1,VICPR2    
@@ -63,7 +63,7 @@ C - VARIABLES LOCALES
       REAL*8 PERMFH, PERMLI, DPERML, PERMGZ,DPERMS,DPERMP,FICK,DFICKT
       REAL*8 LAMBP,DLAMBP, UNSURK, ALPHA, LAMBS, DLAMBS, VISCL,DFICKG
       REAL*8 DVISCL, MAMOLG, LAMBT, DLAMBT, VISCG, DVISCG
-      REAL*8 MAMOVG, FICKAD, DFADT, LAMBCT,ISOT(3)
+      REAL*8 MAMOVG, FICKAD, DFADT, LAMBCT,ISOT(6)
       REAL*8 DFICKS
       REAL*8 DSDE(DIMCON,DIMDEF)
       REAL*8 TLINT,OUVH,DELTAT
@@ -209,7 +209,7 @@ C ======================================================================
      +                   IMATE,DEFGEM,DEFGEP, ADDEME, ADDEP1, ADDEP2,
      +                   ADDETE, NDIM-1, T0, P10, P20, PHI0, PVP0,
      +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
-     +                   GRAT, GRAP1, GRAP2, NVITH, RETCOM,INSTAP)
+     +                   GRAT, GRAP1, GRAP2, RETCOM,INSTAP)
 
       EPSV = 0.D0
       DEPSV = 0.D0
@@ -386,6 +386,5 @@ C ======================================================================
 C ======================================================================
  9000 CONTINUE
 C ======================================================================
- 9001 FORMAT (A8,2X,A30,2X,A8)
 
       END

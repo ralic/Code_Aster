@@ -1,4 +1,4 @@
-#@ MODIF meidee_cata Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_cata Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,14 +32,13 @@
 ##   TODO : la création des objets Aster étant assez longue, ne les créer que lorsque
 ##   demande explicitement de les saver
 
+import numpy
+
 import aster
 from Utilitai.Utmess import UTMESS
 from Cata.cata import modele_sdaster , mode_meca, matr_asse_depl_r, maillage_sdaster
 from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
 from Cata.cata import nume_ddl_sdaster, dyna_harmo, matr_asse_gene_r
-import Numeric
-from Numeric import array, transpose
-from Numeric import zeros
 from Accas import _F
 
 
@@ -195,27 +194,25 @@ class ModeMeca(Resultat):
                     'RIGI_GENE':[],
                     'MASS_GENE':[],
                     'NUME_MODE':[], #VOIR SI ON A VRAIMENT BESOIN DE CELUI-LA. SIMPLIFIER AU MAX
-                    'NOM_CMP':[]
+                    'NOEUD_CMP':[]
                     }
-        # Si il existe des modes statiques:
-        nomno = self.nom.ljust(19)+".NOEU"
-        resu_stat = aster.getvectjev( nomno.ljust(32) )
+        resu_stat = self.obj.LIST_PARA()['NOEUD_CMP']
         nume_ordr = self.obj.LIST_PARA()['NUME_ORDRE']
-        if not resu_stat:
-            resu_stat=['        ']*len(nume_ordr)
+        cara_mod['NUME_MODE'] = self.obj.LIST_PARA()['NUME_MODE']
+        cara_mod['NUME_ORDRE'] = self.obj.LIST_PARA()['NUME_ORDRE']
+
+        # Rangement des donnees modales selon le type : statique ou dynamique
+        # Si une donnee est incompatible avec le type (exemple : la frequence d'un mode statique), on remplit par None
         for ind_ordr in range(len(nume_ordr)):
-            # Pour chaque numero d'ordre, remplissage des donnees selon que l'on ait des modes statiques ou dynamiques
-            cara_mod['NUME_MODE'].append(self.obj.LIST_PARA()['NUME_MODE'][ind_ordr])
-            cara_mod['NUME_ORDRE'].append(self.obj.LIST_PARA()['NUME_ORDRE'][ind_ordr])
             liste = ['FREQ','AMOR_REDUIT','AMOR_GENE','RIGI_GENE','MASS_GENE']
-            if resu_stat[ind_ordr].strip():
+            if resu_stat[ind_ordr].strip(): # mode statique
                 for ind_list in liste:
                     cara_mod[ind_list].append(None)
-                cara_mod['NOM_CMP'].append(resu_stat[ind_ordr])
-            else:
+                cara_mod['NOEUD_CMP'].append(resu_stat[ind_ordr])
+            else: # mode dynamique
                 for ind_list in liste:
                     cara_mod[ind_list].append(self.obj.LIST_PARA()[ind_list][ind_ordr])
-                cara_mod['NOM_CMP'].append(None)
+                cara_mod['NOEUD_CMP'].append(None)
 
         self.cara_mod = cara_mod
         return cara_mod
@@ -241,7 +238,7 @@ class ModeMeca(Resultat):
                 defo.append(champ[ddl])
             matrice.append(defo)
 
-        matrice = transpose(array(matrice))
+        matrice = numpy.transpose(numpy.array(matrice))
 
         return matrice
 
@@ -252,7 +249,7 @@ class ModeMeca(Resultat):
         self.mess.disp_mess(self.nom)
         self.mess.disp_mess("caracteristiques modales de" + self.nom)
         self.mess.disp_mess("NUME_ORDRE  FREQUENCE  MASS_GENE  AMOR_REDUIT  NUME_MODE")
-        for ind in range(Numeric.size(cara_mod,0)):
+        for ind in range(numpy.size(cara_mod,0)):
             self.mess.disp_mess("%3i        %7.5g    %7.5g        %7.5g      %3i" %tuple(cara_mod[ind,:])  )
 
 
@@ -506,7 +503,7 @@ class InterSpectre:
                                      VALE_C     =fonc,)
                 l_fonc.append(_fonc.nom)
 
-        nume_ordr = Numeric.array(nume_ordr)
+        nume_ordr = numpy.array(nume_ordr)
         nume_i = nume_ordr[:,0]
         nume_j = nume_ordr[:,1]
         mcfact=[]
@@ -588,15 +585,14 @@ class InterSpectre:
 
         # il doit y avoir coherence de longueur entre taille de l'inter-spectre et le nombre de DDL du resu
         if nb_mes*(nb_mes+1)/2 != len(nom_fonc):
-            nb_mes_intsp = 0.5*(-1+Numeric.sqrt(1+8*len(nom_fonc)))
+            nb_mes_intsp = 0.5*(-1+numpy.sqrt(1+8*len(nom_fonc)))
             self.mess.disp_mess(" Nombre de mesures de CPhi : " + str(int(nb_mes)))
             self.mess.disp_mess(" Nombre de mesures de l'inter-spectre : "
                                 + str(int(nb_mes_intsp)))
             self.mess.disp_mess(" ")
             raise TypeError
 
-        self.matr_inte_spec = Numeric.zeros((nb_freq, nb_mes, nb_mes),
-                                             Numeric.Complex)
+        self.matr_inte_spec = numpy.zeros((nb_freq, nb_mes, nb_mes), complex)
 
         coupl_ddl = []
         try:
@@ -648,7 +644,7 @@ class InterSpectre:
             for ind_freq in range(nb_freq):
                 self.matr_inte_spec[ind_freq,ind_l,ind_c] = fonc_py[ind_coupl].vale_y[ind_freq]
                 if ind_l != ind_c:
-                    self.matr_inte_spec[ind_freq,ind_c,ind_l] = Numeric.conjugate(self.matr_inte_spec[ind_freq,ind_l,ind_c])
+                    self.matr_inte_spec[ind_freq,ind_c,ind_l] = numpy.conjugate(self.matr_inte_spec[ind_freq,ind_l,ind_c])
 
 
 
@@ -1212,7 +1208,7 @@ def find_no(maya,mcsimp):
     list_no = []
     if mcsimp.has_key('GROUP_NO') :
         for group in mcsimp['GROUP_NO'] :
-            list_ind_no = list(Numeric.array(maya.GROUPENO.get()
+            list_ind_no = list(numpy.array(maya.GROUPENO.get()
                                              [group.ljust(8)]) - 1)
             for ind_no in list_ind_no :
                 nomnoe = maya.NOMNOE.get()[ind_no]
@@ -1221,7 +1217,7 @@ def find_no(maya,mcsimp):
 
     elif mcsimp.has_key('GROUP_MA') :
         for group in mcsimp['GROUP_MA']:
-            list_nu_ma = list(Numeric.array(maya.GROUPEMA.get()
+            list_nu_ma = list(numpy.array(maya.GROUPEMA.get()
                                             [group.ljust(8)]) - 1)
             tmp = list(maya.NOMMAI.get())
             for nu_ma in list_nu_ma:

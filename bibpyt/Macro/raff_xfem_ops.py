@@ -1,4 +1,4 @@
-#@ MODIF raff_xfem_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF raff_xfem_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,6 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
    import string
    import copy
    import math
-   import Numeric
    from types import ListType, TupleType
    from Accas import _F
    from SD.sd_xfem import sd_fiss_xfem

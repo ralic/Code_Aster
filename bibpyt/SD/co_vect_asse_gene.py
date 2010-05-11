@@ -1,4 +1,4 @@
-#@ MODIF co_vect_asse_gene SD  DATE 30/06/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_vect_asse_gene SD  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,40 +22,40 @@ import Accas
 from SD import *
 from sd_cham_gene import sd_cham_gene
 
-import Numeric
+import numpy
 
 # -----------------------------------------------------------------------------
 
 class vect_asse_gene(ASSD, sd_cham_gene):
    def EXTR_VECT_GENE_R(self) :
       """ retourne les valeurs du vecteur generalisee
-      dans un format Numerical Array
+      dans un format numpy
          Attributs retourne
-            - self.valeurs : Numeric.array contenant les valeurs """
+            - self.valeurs : numpy.array contenant les valeurs """
       if not self.accessible():
          raise Accas.AsException("Erreur dans vect_asse_gene_r.EXTR_VECT_GENE en PAR_LOT='OUI'")
       ncham=self.get_name()
       ncham=ncham+(8-len(ncham))*' '
-      valeur=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.VALE'))
+      valeur=numpy.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.VALE'))
       return valeur
 
    def RECU_VECT_GENE_R(self,vecteur) :
-      """ envoie les valeurs d'un Numerical Array dans un vecteur generalise
+      """ envoie les valeurs d'un tableau numpy dans un vecteur generalise
       reel definie dans jeveux
          Attributs ne retourne rien """
       if not self.accessible():
          raise Accas.AsException("Erreur dans vect_asse_gene_r.RECU_VECT_GENE en PAR_LOT='OUI'")
 
-      Numeric.asarray(vecteur)
+      numpy.asarray(vecteur)
       ncham=self.get_name()
       ncham=ncham+(8-len(ncham))*' '
-      desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
+      desc=numpy.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
       # On teste si le DESC du vecteur existe
       if (desc==None):
          raise Accas.AsException("L'objet vecteur n'existe pas ou \
          est mal cree par Code Aster")
       # On teste si la taille du vecteur jeveux et python est identique
-      if desc[1]<>Numeric.shape(vecteur)[0] :
+      if desc[1]<>numpy.shape(vecteur)[0] :
          raise Accas.AsException("La taille du vecteur python est incorrecte")
       aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALE',len(vecteur),tuple((\
       range(1,len(vecteur)+1))),tuple(vecteur),tuple(vecteur),1)
@@ -63,35 +63,35 @@ class vect_asse_gene(ASSD, sd_cham_gene):
 
    def EXTR_VECT_GENE_C(self) :
       """ retourne les valeurs du vecteur generalisee
-      dans un format Numerical Array
+      dans un format numpy
          Attributs retourne
-            - self.valeurs : Numeric.array contenant les valeurs """
+            - self.valeurs : numpy.array contenant les valeurs """
       if not self.accessible():
          raise Accas.AsException("Erreur dans vect_asse_gene_c.EXTR_VECT_GENE en PAR_LOT='OUI'")
 
       ncham=self.get_name()
       ncham=ncham+(8-len(ncham))*' '
-      valeur=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.VALE'),Numeric.Complex)
+      valeur=numpy.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.VALE'), complex)
 
       return valeur
 
    def RECU_VECT_GENE_C(self,vecteur) :
-      """ envoie les valeurs d'un Numerical Array dans un vecteur generalise
+      """ envoie les valeurs d'un tableau numpy dans un vecteur generalise
       complexe definie dans jeveux
          Attributs ne retourne rien """
       if not self.accessible():
          raise Accas.AsException("Erreur dans vect_asse_gene_c.RECU_VECT_GENE en PAR_LOT='OUI'")
 
-      Numeric.asarray(vecteur)
+      numpy.asarray(vecteur)
       ncham=self.get_name()
       ncham=ncham+(8-len(ncham))*' '
-      desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
+      desc=numpy.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
       # On teste si le DESC de la matrice existe
       if (desc==None):
          raise Accas.AsException("L'objet vecteur n'existe pas ou \
          est mal cree par Code Aster")
       # On teste si la taille de la matrice jeveux et python est identique
-      if desc[1]<>Numeric.shape(vecteur)[0] :
+      if desc[1]<>numpy.shape(vecteur)[0] :
          raise Accas.AsException("La taille du vecteur python est incorrecte")
       tmpr=vecteur.real
       tmpc=vecteur.imag

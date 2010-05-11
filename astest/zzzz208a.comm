@@ -1,4 +1,4 @@
-# MODIF  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEUR GENERALISEES : POUTRE 3D ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,8 +23,8 @@
 # CAS_TEST__: ZZZZ208A
 #             VALIDATION FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES
 
-import Numeric
-import LinearAlgebra
+import numpy as NP
+import numpy.linalg as LA
 
 DEBUT(CODE=_F(NOM='ZZZZ208A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 #******************************
@@ -208,25 +208,25 @@ DYNDIAG=DYNA_LINE_HARM(MATR_MASS=MDIAG,
                     EXCIT=_F(VECT_ASSE=FDIAGC,
                              COEF_MULT=1.0,),);
 
-# CALCUL PAR NUMERICAL PYTHON
-#----------------------------
+# CALCUL PAR NUMPY
+#-----------------
 # inversion de la matrice de masse
-MPYDI=LinearAlgebra.inverse(MPYD)
+MPYDI=LA.inv(MPYD)
 
-# calcul des valeurs propres generalises par Numerical Python sur K*inv(M)
-frequence=LinearAlgebra.eigenvalues(Numeric.matrixmultiply(KPYD2,MPYDI))
-frequencc=LinearAlgebra.eigenvalues(Numeric.matrixmultiply(KPYDC2,MPYDI))
+# calcul des valeurs propres generalises par numpy sur K*inv(M)
+frequence=LA.eigvals(NP.dot(KPYD2,MPYDI))
+frequencc=LA.eigvals(NP.dot(KPYDC2,MPYDI))
 
 # tri des valeurs propres
-frequence=Numeric.sort(Numeric.sqrt(frequence)/2/Numeric.pi)
-frequencc=Numeric.sort(Numeric.sqrt(frequencc.real)/2/Numeric.pi)
+frequence=NP.sort(NP.sqrt(frequence)/2/NP.pi)
+frequencc=NP.sort(NP.sqrt(frequencc.real)/2/NP.pi)
 
-# resolution du systeme lineaire par Numerical Python
-DYNPYD=LinearAlgebra.solve_linear_equations(KPYDC2-((2*Numeric.pi*500.)**2)*MPYD, FPYDC2)
+# resolution du systeme lineaire par numpy
+DYNPYD=LA.solve(KPYDC2-((2*NP.pi*500.)**2)*MPYD, FPYDC2)
 # calcul de la somme des composantes generalisees
-VALDYND=(Numeric.sum(DYNPYD).real)+(Numeric.sum(DYNPYD).imag)
+VALDYND=(NP.sum(DYNPYD).real)+(NP.sum(DYNPYD).imag)
 
-# TEST DE COHERENCE ENTRE ASTER ET NUMERICAL PYTHON
+# TEST DE COHERENCE ENTRE ASTER ET NUMPY
 TEST_RESU(RESU=(
                _F(RESULTAT=MODEGD,
                   NUME_MODE=1,
@@ -427,19 +427,19 @@ DYNPLEI2=DYNA_LINE_HARM(MATR_MASS=MPLEIN,
                     EXCIT=_F(VECT_ASSE=FPLEINC,
                              COEF_MULT=1.0,),);
 
-# MEME CALCUL PAR NUMERICAL PYTHON
-#---------------------------------
-MPYPI=LinearAlgebra.inverse(MPYP)
-frequence=LinearAlgebra.eigenvalues(Numeric.matrixmultiply(KPYP,MPYPI))
-frequence=Numeric.sort(Numeric.sqrt(frequence)/2/Numeric.pi)
-frequence2=LinearAlgebra.eigenvalues(Numeric.matrixmultiply(KPYP2,MPYPI))
-frequence2=Numeric.sort(Numeric.sqrt(frequence2)/2/Numeric.pi)
+# MEME CALCUL PAR NUMPY
+#----------------------
+MPYPI=LA.inv(MPYP)
+frequence=LA.eigvals(NP.dot(KPYP,MPYPI))
+frequence=NP.sort(NP.sqrt(frequence)/2/NP.pi)
+frequence2=LA.eigvals(NP.dot(KPYP2,MPYPI))
+frequence2=NP.sort(NP.sqrt(frequence2)/2/NP.pi)
 
-DYNPYP=LinearAlgebra.solve_linear_equations(KPYPC-((2*Numeric.pi*500.)**2)*MPYP, FPYPC)
-VALDYNP=(Numeric.sum(DYNPYP).real)+(Numeric.sum(DYNPYP).imag)
+DYNPYP=LA.solve(KPYPC-((2*NP.pi*500.)**2)*MPYP, FPYPC)
+VALDYNP=(NP.sum(DYNPYP).real)+(NP.sum(DYNPYP).imag)
 
-DYNPYP2=LinearAlgebra.solve_linear_equations(KPYPC2-((2*Numeric.pi*500.)**2)*MPYP, FPYPC2)
-VALDYNP2=(Numeric.sum(DYNPYP2).real)+(Numeric.sum(DYNPYP2).imag)
+DYNPYP2=LA.solve(KPYPC2-((2*NP.pi*500.)**2)*MPYP, FPYPC2)
+VALDYNP2=(NP.sum(DYNPYP2).real)+(NP.sum(DYNPYP2).imag)
 
 TEST_RESU(RESU=(
                _F(RESULTAT=MODEGP,

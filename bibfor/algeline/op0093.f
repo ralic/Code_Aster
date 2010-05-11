@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGELINE  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -516,12 +516,6 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
      &                 .FALSE.,.FALSE., FORMAR,LMOD,NIVE,VERSIO)
       ENDIF
 
-
-C     -- UNE PETITE "GLUTE" EN ATTENDANT L'EVOLUTION 12583
-C        IL FAUDRA ENSUITE SUPPRIMER CE BLOC.
-      RESU19=RESU
-      CALL RSLIPA(RESU,'NOEUD_CMP','&&OP0093.NOEU',IBID,IBID)
-      CALL JEDUPO('&&OP0093.NOEU', 'G', RESU19//'.NOEU', .FALSE.)
 
 
 C     ------------------------------------------------------------------

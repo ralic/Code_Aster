@@ -1,4 +1,4 @@
-#@ MODIF as_courbes Stanley  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF as_courbes Stanley  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-import Numeric, copy, xmgrace
+import numpy
+import copy
+
+import xmgrace
 
 
 def Extr_colonne (table, para, *l_crit) :
@@ -37,7 +40,7 @@ def Extr_colonne (table, para, *l_crit) :
     except KeyError:
       break  
   
-  colonne = Numeric.array(valeurs)
+  colonne = numpy.array(valeurs)
   return colonne
 
 
@@ -56,7 +59,7 @@ class Courbe :
 
 # -------------------------------------------------------------------------
 # BUT Initialisation d'un objet de la classe Courbe
-# IN  valeurs  Numeric array (N,2) des points (x,y)
+# IN  valeurs  numpy array (N,2) des points (x,y)
 #      defaut : 1 ligne nulle
 
 
@@ -68,29 +71,29 @@ class Courbe :
      2 parametres    -> on formatte chacun des deux tableaux
      On peut ainsi traiter :
        les listes
-       les tableaux Numeric
+       les tableaux numpy
        les matrices Matrix  
     """
     
     npara = len(para)
     if npara == 0 :
-      x = Numeric.array([0.])
-      y = Numeric.array([0.])
+      x = numpy.array([0.])
+      y = numpy.array([0.])
     elif npara == 1 :
-      xy = Numeric.array(para[0])
+      xy = numpy.array(para[0])
       xy.shape = (-1,2)
       x = xy[:,0]
       y = xy[:,1]
     elif npara == 2 :
-      x = Numeric.array(para[0])
-      y = Numeric.array(para[1])
+      x = numpy.array(para[0])
+      y = numpy.array(para[1])
       x.shape = (-1,)
       y.shape = (-1,)
     else :
       raise 'Bad parameter number (0,1 or 2)'
         
-    dim_x = Numeric.shape(x)
-    dim_y = Numeric.shape(y)
+    dim_x = numpy.shape(x)
+    dim_y = numpy.shape(y)
     if len(dim_x)<>1 or len(dim_y)<>1 : raise Courbe.BAD_VALUES
     if dim_x <> dim_y : raise Courbe.BAD_VALUES 
 
@@ -100,12 +103,12 @@ class Courbe :
 
   def set_x(self,vect) :
     
-    self.x = Numeric.array(vect)
+    self.x = numpy.array(vect)
     self.x.shape = (-1,)
     
   def set_y(self,vect) :
     
-    self.y = Numeric.array(vect)
+    self.y = numpy.array(vect)
     self.y.shape = (-1,)
     
 # -------------------------------------------------------------------------
@@ -144,8 +147,8 @@ class Courbe :
         xmin = xmax
       except IndexError :
         break
-    self.x = Numeric.array(l)
-    self.y = Numeric.zeros(len(l),Numeric.Float)
+    self.x = numpy.array(l)
+    self.y = numpy.zeros(len(l))
 
   
   def Merge(self) :
@@ -155,9 +158,9 @@ class Courbe :
     """
     
     l = len(self.x)
-    tab = Numeric.array([self.x,self.y])
-    tab = Numeric.transpose(tab)
-    return tuple(Numeric.reshape(tab,(2*l,)))
+    tab = numpy.array([self.x,self.y])
+    tab = numpy.transpose(tab)
+    return tuple(numpy.reshape(tab,(2*l,)))
     
     
 
@@ -218,7 +221,7 @@ class Courbe :
       Realise : self.y = fonc(self.x)
     """
   
-    self.y = Numeric.array(map(fonc,self.x))
+    self.y = numpy.array(map(fonc,self.x))
   
 
 
@@ -228,10 +231,10 @@ class Courbe :
 # BUT Applique une fonction sur les ordonnees d'une ou plusieurs courbes
 
     l_valeurs = [self.y]
-    taille = Numeric.shape(self.y)
+    taille = numpy.shape(self.y)
     
     for courbe in autres_courbes :
-      if Numeric.shape(courbe.y) <> taille :
+      if numpy.shape(courbe.y) <> taille :
         raise 'Dimensions incompatibles'
       l_valeurs.append(courbe.y)
       

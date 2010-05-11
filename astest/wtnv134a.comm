@@ -1,4 +1,4 @@
-# MODIF  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI  
 # wtnv134a.para = tps_job 250 mem_job 391Mo ncpus 1 liste_test S
@@ -22,7 +22,6 @@
 #                    DE HUJEUX SUR SABLE D'HOSTUN
 #          ===============================================
 
-from Numeric import *
 
 DEBUT(CODE=_F(NOM='WTNV134A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 

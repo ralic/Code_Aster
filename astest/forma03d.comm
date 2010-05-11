@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TP FORMATION NON LINEAIRE. RECALAGE PARAMETRES PUIS CALCUL PLAQUE TROUEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
+import numpy as NP
 
 DEBUT(CODE=_F(NOM='FORMA03D',
               NIV_PUB_WEB='INTERNET',
@@ -36,7 +36,7 @@ calcul = [['RESU1','INST','SIYY'],]
 # COURBE DE TRACTION MODELISATION A
 #######################################################
 
-experience=[    Numeric.array([
+experience=[    NP.array([
                               [ 1.00000E-03 , 2.00000E+02  ],
                               [ 6.00000E-03 , 2.15275E+02  ],
                               [ 1.10000E-02 , 2.27253E+02  ],

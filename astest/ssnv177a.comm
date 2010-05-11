@@ -1,4 +1,4 @@
-# MODIF  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE WILLAM AVEC LA LOI ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,8 +40,10 @@
 DEBUT(CODE=_F(NOM='SSNV177A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
       PAR_LOT='NON')
 
-import Numeric as N
-import LinearAlgebra as LA
+import numpy as NP
+import numpy.linalg as LA
+from math import pi, acos
+
 
 MA=LIRE_MAILLAGE();
 
@@ -195,31 +197,36 @@ print 'nb = ',nb
 # levees par blas/lapack (bug libMKL)
 aster.matfpe(-1)
 
-tenseurD=N.zeros((2,2),N.Float)
+tenseurD=NP.zeros((2,2))
 tenseurD[0,0]=D_xx.valeurs[0]
 tenseurD[0,1]=D_xy.valeurs[0]
 tenseurD[1,0]=D_xy.valeurs[0]
 tenseurD[1,1]=D_yy.valeurs[0]
 
-tenseurE=N.zeros((2,2),N.Float)
+tenseurE=NP.zeros((2,2))
 tenseurE[0,0]=EPSI_xx.valeurs[0]
 tenseurE[0,1]=EPSI_xy.valeurs[0]
 tenseurE[1,0]=EPSI_xy.valeurs[0]
 tenseurE[1,1]=EPSI_yy.valeurs[0]
 
-evalues_epsi,evectors_epsi = LA.eigenvectors(tenseurE)
-evalues_endo,evectors_endo = LA.eigenvectors(tenseurD)
+print tenseurE
+evalues_epsi,evectors_epsi = LA.eig(tenseurE)
+evalues_endo,evectors_endo = LA.eig(tenseurD)
 
 print 'evalues_epsi,evectors_epsi :',evalues_epsi,evectors_epsi
 print 'evalues_endo,evectors_endo :',evalues_endo,evectors_endo
 
-pi=3.1415927
+v1_epsi = evectors_epsi[:, 0]
+angle_defi = 180/pi * atan2(v1_epsi[1], v1_epsi[0])
 
-angle_defi=180/pi*N.arccos(evectors_epsi[0,1])
-angle_endo=180/pi*N.arccos(evectors_endo[0,0])
+v1_endo = evectors_endo[:, 0]
+angle_endo = 180/pi * atan2(v1_endo[1], v1_endo[0])
 
 print angle_defi
 print angle_endo
+
+refe_defi = 135.7160
+refe_endo = 23.0825
 
 # on reactive
 aster.matfpe(1)
@@ -234,12 +241,12 @@ ROT_ENDO=DEFI_FONCTION(NOM_PARA='INST',
 
 TEST_FONCTION(VALEUR=_F(FONCTION=ROT_EPSI,
                         VALE_PARA=1.,
-                        VALE_REFE=4.57160E+01,
+                        VALE_REFE=(refe_defi, refe_defi - 180.),
                         REFERENCE = 'NON_REGRESSION',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=ROT_ENDO,
                         VALE_PARA=1.,
-                        VALE_REFE=2.30825E+01,
+                        VALE_REFE=(refe_endo, refe_endo - 180.),
                         REFERENCE = 'NON_REGRESSION',),);
 
 

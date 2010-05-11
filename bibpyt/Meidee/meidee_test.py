@@ -1,4 +1,4 @@
-#@ MODIF meidee_test Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_test Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ from Accas import _F, ASSD
 #from meidee_calcul_fludela import MeideeFludela, MeideeTurbMonomod
 from meidee_calcul_correlation import MeideeCorrelation
 from meidee_calcul_turbulent import CalculTurbulent, CalculInverse
-from Numeric import take
+from numpy import take
 
 def TestMeidee(macro,
                mess,

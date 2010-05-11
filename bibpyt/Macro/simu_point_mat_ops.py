@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   ier = 0
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
-  import Numeric
+  import math
   
   # On importe les definitions des commandes a utiliser dans la macro
   # Le nom de la variable doit etre obligatoirement le nom de la commande
@@ -278,8 +278,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 ##             imposées.
          if ANGLE != 0. :
             __MA=MODI_MAILLAGE(reuse=__MA ,MAILLAGE = __MA ,ROTATION=_F(POIN_1=(0.,0. ),ANGL = ANGLE),)
-            c=Numeric.cos(ANGLE*Numeric.pi/180.)
-            s=Numeric.sin(ANGLE*Numeric.pi/180.)
+            c=math.cos(ANGLE*math.pi/180.)
+            s=math.sin(ANGLE*math.pi/180.)
             __C_RIGIDE=AFFE_CHAR_MECA(MODELE=__MO,
                   DDL_IMPO=_F(NOEUD='P0',DX=0,DY=0.,DZ=0.),
                   LIAISON_DDL = (
@@ -302,8 +302,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 ##             imposées.
          if ANGLE != 0. :
             __MA=MODI_MAILLAGE(reuse=__MA ,MAILLAGE=__MA,ROTATION=_F(POIN_1=(0.,0.),ANGL=ANGLE),)
-            c=Numeric.cos(ANGLE*Numeric.pi/180.)
-            s=Numeric.sin(ANGLE*Numeric.pi/180.)
+            c=math.cos(ANGLE*math.pi/180.)
+            s=math.sin(ANGLE*math.pi/180.)
             __C_RIGIDE = AFFE_CHAR_MECA(MODELE = __MO,
                   DDL_IMPO=_F(NOEUD='P0',DX=0,DY=0.),
                   LIAISON_DDL=(_F(NOEUD=('P1','P1','P2','P2'),DDL=('DX','DY','DX','DY'),
@@ -346,8 +346,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
             LIAISON_OBLIQUE = _F(NOEUD='P2', DZ=1, ANGL_NAUT=ANGLE))
  
       else:
-          c=Numeric.cos(ANGLE*Numeric.pi/180.)
-          s=Numeric.sin(ANGLE*Numeric.pi/180.)
+          c=math.cos(ANGLE*math.pi/180.)
+          s=math.sin(ANGLE*math.pi/180.)
           __E[2] = AFFE_CHAR_MECA(MODELE = __MO,
             LIAISON_OBLIQUE = _F(NOEUD='P1', DY=1, ANGL_NAUT=ANGLE),)
 

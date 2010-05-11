@@ -1,4 +1,4 @@
-#@ MODIF N_utils Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_utils Noyau  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -31,7 +31,7 @@ import sys
 
 # Modules EFICAS
 from N_Exception import AsException
-from N_ASSD      import ASSD
+from N_types     import is_int, is_float, is_complex, is_str, is_enum, is_assd
 
 SEP='_'
 
@@ -67,24 +67,27 @@ def callee_where(niveau=4):
    except:
      return 0,"inconnu",0,{}
 
+
 def AsType(a):
    """
       Retourne le type d'un concept (a) à partir
       des caractéristiques de l'objet Python
    """
-   if type(a) in (tuple, list):return AsType(a[0])
-   if isinstance(a, ASSD):return type(a)
-   if type(a) == float:return "R"
-   if type(a) == int:return "I"
-   if type(a) == str:return "TXM"
-   if a == None : return None
-   print 'a=',a,type(a)
+   if is_enum(a):  return AsType(a[0])
+   if is_assd(a):  return type(a)
+   if is_float(a): return "R"
+   if is_int(a):   return "I"
+   if is_str(a):   return "TXM"
+   if a == None:   return None
+   print 'a=', a, type(a)
    raise AsException("type inconnu")
+
 
 def prbanner(s):
    print "*"*(len(s)+10)
    print "*"*5 + s + "*"*5
    print "*"*(len(s)+10)
+
 
 def repr_float(valeur):
   """ 

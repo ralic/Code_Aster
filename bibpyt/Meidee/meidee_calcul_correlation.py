@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_correlation Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_calcul_correlation Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 
 # RESPONSABLE BODEL C.BODEL
 
-import Numeric
+import numpy
 import aster
 from Accas import _F
 from Utilitai.Utmess import UTMESS
@@ -39,15 +39,15 @@ from Meidee.meidee_cata import Resultat, DynaHarmo
 #######################
 
 def extract_mac_array( mac_mode,nom_table ):
-    """!Reconstruit un tableau numeric de modes MAC
+    """!Reconstruit un tableau numpy de modes MAC
 
     /param mac_mode concept Table aster
     """
     data1 = mac_mode.EXTR_TABLE().Array('NUME_MODE_1',nom_table)
     data2 = mac_mode.EXTR_TABLE().Array('NUME_MODE_2',nom_table)
-    N = int(Numeric.maximum.reduce(data1[:,0]))
-    M = int(Numeric.maximum.reduce(data2[:,0]))
-    mac = Numeric.zeros( (N,M), Numeric.Float )
+    N = int(numpy.maximum.reduce(data1[:,0]))
+    M = int(numpy.maximum.reduce(data2[:,0]))
+    mac = numpy.zeros( (N,M) )
     for i in range(data1.shape[0]):
         i1 = int(data1[i,0])-1
         i2 = int(data2[i,0])-1

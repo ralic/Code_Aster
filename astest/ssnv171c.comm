@@ -1,5 +1,4 @@
-
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/05/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL ET POLYCRISTAL
 # RESPONSABLE JMBHH01 J.M.PROIX
 # VALIDATION DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE
@@ -44,6 +43,9 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.3,),
+                    WEIBULL=_F(M=24.,
+                               VOLU_REFE=1.E-3,
+                               SIGM_REFE=2630.0E0,),
                     ECOU_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,),
@@ -51,16 +53,11 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   Q=9.77,
                                   B=19.34,
                                   H=0.0,),
-                    ECRO_CINE1=_F(D=36.68,),
-                    WEIBULL=_F( M = 24., 
-                                VOLU_REFE = 1.E-3, 
-                                SIGM_REFE = 2630.0E0)
-                    );
+                    ECRO_CINE1=_F(D=36.68,),);
 
-COEF=DEFI_FONCTION(NOM_PARA='INST',
-                   VALE=(0.0,0.0,1.0,1.0,),
-                   PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+COEF=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                         1.0,1.0,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
@@ -86,42 +83,36 @@ TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                                   _F(NOEUD=('NO1','NO5',),
                                      FX=-35.0,),),);
 
-COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
-                                    ECOULEMENT='ECOU_VISC1',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE1',
-                                    ELAS='ELAS',
-                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),);
-
+COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
+                                   ECOULEMENT='ECOU_VISC1',
+                                   ECRO_ISOT='ECRO_ISOT1',
+                                   ECRO_CINE='ECRO_CINE1',
+                                   ELAS='ELAS',
+                                   FAMI_SYST_GLIS='OCTAEDRIQUE',),);
 
 ORIEN1=AFFE_CARA_ELEM(MODELE=TROISD,
-                     MASSIF=_F(GROUP_MA='TOUT',
-                               ANGL_REP=(30.0,0.0,0.0,),),);
-
-
-
-
+                      MASSIF=_F(GROUP_MA='TOUT',
+                                ANGL_REP=(30.0,0.0,0.0,),),);
 
 MONOEXPL=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MAT,
-                     CARA_ELEM=ORIEN1,
-                     EXCIT=(_F(CHARGE=TRAC,
-                               FONC_MULT=COEF,
-                               TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                   COMPOR=COMPORT,
-                                   ITER_INTE_MAXI=100,
-                                   RESO_INTE='RUNGE_KUTTA_2',),),
-                     INCREMENT=_F(LIST_INST=LINST),
-                     NEWTON=(_F(PREDICTION='EXTRAPOL',
-                                MATRICE='ELASTIQUE',
-                                REAC_ITER=0,),),
-                     CONVERGENCE=(_F(ITER_GLOB_MAXI=100,
-                                     ),),);
+                       CHAM_MATER=MAT,
+                       CARA_ELEM=ORIEN1,
+                       EXCIT=_F(CHARGE=TRAC,
+                                FONC_MULT=COEF,
+                                TYPE_CHARGE='FIXE_CSTE',),
+                       COMP_INCR=_F(RELATION='MONOCRISTAL',
+                                    COMPOR=COMPORT,
+                                    ITER_INTE_MAXI=100,
+                                    RESO_INTE='RUNGE_KUTTA_2',),
+                       INCREMENT=_F(LIST_INST=LINST,),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
+                       NEWTON=_F(PREDICTION='EXTRAPOL',
+                                 MATRICE='ELASTIQUE',
+                                 REAC_ITER=0,),);
 
 MONOEXPL=CALC_ELEM(reuse =MONOEXPL,
-                 RESULTAT=MONOEXPL,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+                   RESULTAT=MONOEXPL,
+                   OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=MONOEXPL,
                    INST=TFIN,
@@ -137,7 +128,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MONOEXPL,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=1.88744E-03,
+                   VALE=0.00188744,
                    PRECISION=(0.0001,1e-06,),
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MONOEXPL,
@@ -146,7 +137,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MONOEXPL,
                    NOM_CMP='EPYY',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-5.021232E-4,
+                   VALE=-0.0005021232,
                    PRECISION=(0.0001,1e-06,),
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MONOEXPL,
@@ -155,7 +146,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MONOEXPL,
                    NOM_CMP='EPYY',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-6.8248e-05,
+                   VALE=-6.8239e-05,
                    PRECISION=(0.0001,1e-06,),
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MONOEXPL,
@@ -164,30 +155,28 @@ TEST_RESU(RESU=(_F(RESULTAT=MONOEXPL,
                    NOM_CMP='V44',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=4.81432e-04,
+                   VALE=0.000481367,
                    PRECISION=(0.0001,1e-06,),
-                   REFERENCE='NON_REGRESSION',),
-                   ),);
-
+                   REFERENCE='NON_REGRESSION',),),);
 
 MONO1IMP=STAT_NON_LINE(MODELE=TROISD,
-                    CHAM_MATER=MAT,
-                    CARA_ELEM=ORIEN1,
-                    EXCIT=(_F(CHARGE=TRAC,
-                              FONC_MULT=COEF,
-                              TYPE_CHARGE='FIXE_CSTE',),),
-                    COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                  COMPOR=COMPORT,
-                                  ITER_INTE_MAXI=100,
-                                  ITER_INTE_PAS=4,
-                                  RESO_INTE='IMPLICITE',),),
-                    INCREMENT=_F(LIST_INST=LINST),
-                    NEWTON=(_F(REAC_ITER=1,),),
-                    CONVERGENCE=(_F(ITER_GLOB_MAXI=100),),);
+                       CHAM_MATER=MAT,
+                       CARA_ELEM=ORIEN1,
+                       EXCIT=_F(CHARGE=TRAC,
+                                FONC_MULT=COEF,
+                                TYPE_CHARGE='FIXE_CSTE',),
+                       COMP_INCR=_F(RELATION='MONOCRISTAL',
+                                    COMPOR=COMPORT,
+                                    ITER_INTE_MAXI=100,
+                                    ITER_INTE_PAS=4,
+                                    RESO_INTE='IMPLICITE',),
+                       INCREMENT=_F(LIST_INST=LINST,),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
+                       NEWTON=_F(REAC_ITER=1,),);
 
 MONO1IMP=CALC_ELEM(reuse =MONO1IMP,
-                RESULTAT=MONO1IMP,
-                OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA','EPSG_ELGA_DEPL'),);
+                   RESULTAT=MONO1IMP,
+                   OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA','EPSG_ELGA_DEPL',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=MONO1IMP,
                    INST=TFIN,
@@ -203,7 +192,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MONO1IMP,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=1.88738425E-03,
+                   VALE=0.00188738425,
                    PRECISION=(0.005,1e-06,),
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=MONO1IMP,
@@ -212,7 +201,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MONO1IMP,
                    NOM_CMP='EPYY',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-5.021232E-04,
+                   VALE=-0.0005021232,
                    PRECISION=(0.003,1e-06,),
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=MONO1IMP,
@@ -221,7 +210,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MONO1IMP,
                    NOM_CMP='EPYY',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-6.823915E-05,
+                   VALE=-6.823915e-05,
                    PRECISION=(0.02,1e-06,),
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=MONO1IMP,
@@ -230,127 +219,118 @@ TEST_RESU(RESU=(_F(RESULTAT=MONO1IMP,
                    NOM_CMP='V44',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=4.813675E-04,
+                   VALE=0.0004813675,
                    PRECISION=(0.02,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),
-                   ),);
-
+                   REFERENCE='AUTRE_ASTER',),),);
 
 # TESTS DE WEIBULL
 # ---------------
-
 # TEST 1-A (A PARTIR DE LA SD RESULTAT ISSUE DE STAT_NON_LINE)
 
-AE2=POST_ELEM(RESULTAT=MONO1IMP,
-              TOUT_ORDRE='OUI',
-              WEIBULL=_F(TOUT = 'OUI',
-                         OPTION = 'SIGM_ELGA',
-                         CORR_PLAST = 'OUI'
-                   )
-                   )
+AE2=POST_ELEM(WEIBULL=_F(TOUT='OUI',
+                         OPTION='SIGM_ELGA',
+                         CORR_PLAST='OUI',),
+              RESULTAT=MONO1IMP,
+              TOUT_ORDRE='OUI',);
 
 TEST_TABLE(TABLE=AE2,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=100,),
-                   _F(NOM_PARA = 'LIEU',
-                      VALE_K = 'CUBE')), 
-                      REFERENCE='NON_REGRESSION',
-                      NOM_PARA='SIGMA_WEIBULL',
-                      VALE=2.78611E+02,
-                      CRITERE='ABSOLU',  )
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='CUBE',),),
+           NOM_PARA='SIGMA_WEIBULL',
+           VALE=278.611,
+           CRITERE='ABSOLU',
+           REFERENCE='NON_REGRESSION',);
 
 # TEST 1-B (A PARTIR DE LA SD RESULTAT ISSUE DE LIRE_RESU)
 
-DEFI_FICHIER(UNITE=81)
+DEFI_FICHIER(UNITE=81,);
 
-IMPR_RESU(FORMAT='MED',UNITE=81,
-          RESU=_F(RESULTAT=MONO1IMP,),)
-
-MONO2IMP=LIRE_RESU(
-         TYPE_RESU='EVOL_NOLI',
-         CHAM_MATER=MAT,
-         CARA_ELEM=ORIEN1,
-         FORMAT='MED',
-         MODELE=TROISD,
-         FORMAT_MED=(_F( NOM_CHAM_MED='MONO1IMPDEPL____________________',
-                         NOM_CHAM    ='DEPL' ),
-                     _F( NOM_CHAM_MED='MONO1IMPSIEF_ELGA_______________',
-                         NOM_CHAM    ='SIEF_ELGA'),
-                     _F( NOM_CHAM_MED='MONO1IMPEPSG_ELGA_DEPL__________',
-                         NOM_CHAM    ='EPSG_ELGA_DEPL'),
-                     _F( NOM_CHAM_MED='MONO1IMPVARI_ELGA_______________',
-                         NOM_CHAM    ='VARI_ELGA', 
-                         NOM_CMP=('V1','V2','V3','V4','V5','V6','V7','V8','V9',                          
-                                 'V10','V11','V12','V13','V14','V15','V16','V17','V18','V19',
-                                 'V20','V21','V22','V23','V24','V25','V26','V27','V28','V29',
-                                 'V30','V31','V32','V33','V34','V35','V36','V37','V38','V39',
-                                'V40','V41','V42','V43','V44','V45'),
-                         NOM_CMP_MED=('V1','V2','V3','V4','V5','V6','V7','V8','V9',                          
-                                 'V10','V11','V12','V13','V14','V15','V16','V17','V18','V19',
-                                 'V20','V21','V22','V23','V24','V25','V26','V27','V28','V29',
-                                 'V30','V31','V32','V33','V34','V35','V36','V37','V38','V39',
-                                 'V40','V41','V42','V43','V44','V45'),
-                     )
-                          ),
+IMPR_RESU(FORMAT='MED',
           UNITE=81,
-          COMP_INCR=_F(RELATION='MONOCRISTAL',
-                       COMPOR=COMPORT,),
-          TOUT_ORDRE='OUI',);
+          RESU=_F(RESULTAT=MONO1IMP,),);
 
-AE3=POST_ELEM(RESULTAT=MONO2IMP,
-              TOUT_ORDRE='OUI',
-              WEIBULL=_F(TOUT = 'OUI',
-                         OPTION = 'SIGM_ELGA',
-                         CORR_PLAST = 'OUI'
-                   )
-                   )
+MONO2IMP=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
+                   FORMAT='MED',
+                   MODELE=TROISD,
+                   COMP_INCR=_F(RELATION='MONOCRISTAL',
+                                COMPOR=COMPORT,),
+                   CHAM_MATER=MAT,
+                   CARA_ELEM=ORIEN1,
+                   UNITE=81,
+                   FORMAT_MED=(
+                   _F(NOM_CHAM='DEPL',
+                      NOM_CHAM_MED='MONO1IMPDEPL____________________',),
+                   _F(NOM_CHAM='SIEF_ELGA',
+                      NOM_CHAM_MED='MONO1IMPSIEF_ELGA_______________',),
+                   _F(NOM_CHAM='EPSG_ELGA_DEPL',
+                      NOM_CHAM_MED='MONO1IMPEPSG_ELGA_DEPL__________',),
+                   _F(NOM_CHAM='VARI_ELGA',
+                      NOM_CHAM_MED='MONO1IMPVARI_ELGA_______________',
+                      NOM_CMP=
+                      ('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14',
+                                'V15','V16','V17','V18','V19','V20','V21','V22','V23','V24','V25','V26','V27','V28','V29',
+                                'V30','V31','V32','V33','V34','V35','V36','V37','V38','V39','V40','V41','V42','V43','V44',
+                                'V45',),
+                      NOM_CMP_MED=
+                      ('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13',
+                                    'V14','V15','V16','V17','V18','V19','V20','V21','V22','V23','V24','V25','V26','V27',
+                                    'V28','V29','V30','V31','V32','V33','V34','V35','V36','V37','V38','V39','V40','V41',
+                                    'V42','V43','V44','V45',),),),
+                   TOUT_ORDRE='OUI',);
+
+AE3=POST_ELEM(WEIBULL=_F(TOUT='OUI',
+                         OPTION='SIGM_ELGA',
+                         CORR_PLAST='OUI',),
+              RESULTAT=MONO2IMP,
+              TOUT_ORDRE='OUI',);
 
 TEST_TABLE(TABLE=AE3,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=100,),
-                   _F(NOM_PARA = 'LIEU',
-                      VALE_K = 'CUBE')), 
-                      REFERENCE='NON_REGRESSION',
-                      NOM_PARA='SIGMA_WEIBULL',
-                      VALE=2.78611E+02,
-                      CRITERE='ABSOLU',  )
-
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='CUBE',),),
+           NOM_PARA='SIGMA_WEIBULL',
+           VALE=278.611,
+           CRITERE='ABSOLU',
+           REFERENCE='NON_REGRESSION',);
 
 # TEST 2
 
 ORIEN2=AFFE_CARA_ELEM(MODELE=TROISD,
-                     MASSIF=_F(GROUP_MA='TOUT',
-                               ANGL_REP=(15.,0.,0.,),),);
+                      MASSIF=_F(GROUP_MA='TOUT',
+                                ANGL_REP=(15.,0.,0.,),),);
 
-COMPORP=DEFI_COMPOR(POLYCRISTAL=(
-                               _F(MONOCRISTAL=COMPORT,
-                                  FRAC_VOL=1.0,
-                                  ANGL_REP=(15.,0.,0.)),),
-                    LOCALISATION='BETA',DA=0.,DL=0.,
-                    );
+COMPORP=DEFI_COMPOR(POLYCRISTAL=_F(MONOCRISTAL=COMPORT,
+                                   FRAC_VOL=1.0,
+                                   ANGL_REP=(15.,0.,0.,),),
+                    LOCALISATION='BETA',
+                    DL=0.,
+                    DA=0.,);
 
 POLYEXPL=STAT_NON_LINE(MODELE=TROISD,
-                    CHAM_MATER=MAT,
-                    CARA_ELEM=ORIEN2,
-                    EXCIT=(_F(CHARGE=TRAC,
-                              FONC_MULT=COEF,
-                              TYPE_CHARGE='FIXE_CSTE',),),
-                    COMP_INCR=(_F(RELATION='POLYCRISTAL',
-                                  COMPOR=COMPORP,
-                                  DEFORMATION='PETIT',
-                                  ITER_INTE_MAXI=10,
-                                  RESO_INTE='RUNGE_KUTTA_2',
-                                  TOUT='OUI',),),
-                    INCREMENT=_F(LIST_INST=LINST),
-                     NEWTON=(_F(PREDICTION='EXTRAPOL',
-                                MATRICE='ELASTIQUE',
-                                REAC_ITER=0,),),
-                    CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
-                                    ITER_GLOB_MAXI=100),),);
-                                    
+                       CHAM_MATER=MAT,
+                       CARA_ELEM=ORIEN2,
+                       EXCIT=_F(CHARGE=TRAC,
+                                FONC_MULT=COEF,
+                                TYPE_CHARGE='FIXE_CSTE',),
+                       COMP_INCR=_F(RELATION='POLYCRISTAL',
+                                    COMPOR=COMPORP,
+                                    DEFORMATION='PETIT',
+                                    ITER_INTE_MAXI=10,
+                                    RESO_INTE='RUNGE_KUTTA_2',
+                                    TOUT='OUI',),
+                       INCREMENT=_F(LIST_INST=LINST,),
+                       CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                      ITER_GLOB_MAXI=100,),
+                       NEWTON=_F(PREDICTION='EXTRAPOL',
+                                 MATRICE='ELASTIQUE',
+                                 REAC_ITER=0,),);
+
 POLYEXPL=CALC_ELEM(reuse =POLYEXPL,
-                 RESULTAT=POLYEXPL,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA','EPSG_ELGA_DEPL'),);
+                   RESULTAT=POLYEXPL,
+                   OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA','EPSG_ELGA_DEPL',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=POLYEXPL,
                    INST=TFIN,
@@ -366,7 +346,7 @@ TEST_RESU(RESU=(_F(RESULTAT=POLYEXPL,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=1.88738425E-03,
+                   VALE=0.00188738425,
                    PRECISION=(0.02,1e-06,),
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=POLYEXPL,
@@ -375,7 +355,7 @@ TEST_RESU(RESU=(_F(RESULTAT=POLYEXPL,
                    NOM_CMP='EPYY',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-5.021232E-04,
+                   VALE=-0.0005021232,
                    PRECISION=(0.02,1e-06,),
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=POLYEXPL,
@@ -384,38 +364,33 @@ TEST_RESU(RESU=(_F(RESULTAT=POLYEXPL,
                    NOM_CMP='EPYY',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-6.823915E-05,
+                   VALE=-6.823915e-05,
                    PRECISION=(0.02,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),                   
+                   REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=POLYEXPL,
                    INST=TFIN,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V7',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=4.813675E-04,
+                   VALE=0.0004813675,
                    PRECISION=(0.001,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),
-                   ),);
+                   REFERENCE='AUTRE_ASTER',),),);
 
-AE2P2=POST_ELEM(RESULTAT=POLYEXPL,
-              TOUT_ORDRE='OUI',
-              WEIBULL=_F(TOUT = 'OUI',
-                         OPTION = 'SIGM_ELGA',
-                         CORR_PLAST = 'OUI'
-                   )
-                   )
+AE2P2=POST_ELEM(WEIBULL=_F(TOUT='OUI',
+                           OPTION='SIGM_ELGA',
+                           CORR_PLAST='OUI',),
+                RESULTAT=POLYEXPL,
+                TOUT_ORDRE='OUI',);
 
 TEST_TABLE(TABLE=AE2P2,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=100,),
-                   _F(NOM_PARA = 'LIEU',
-                      VALE_K = 'CUBE')), 
-                      REFERENCE='AUTRE_ASTER',
-                      NOM_PARA='SIGMA_WEIBULL',
-                      VALE=2.786101E+02,
-                      CRITERE='ABSOLU',  )
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='CUBE',),),
+           NOM_PARA='SIGMA_WEIBULL',
+           VALE=278.6101,
+           CRITERE='ABSOLU',
+           REFERENCE='AUTRE_ASTER',);
 
-
-FIN()
-
+FIN();

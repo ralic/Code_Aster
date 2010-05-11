@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 14/12/2009   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#@ MODIF observation_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,7 +49,6 @@ def observation_ops(self,
 
     # importation de commandes
     import aster
-    import Numeric
     from Accas import _F
     from Utilitai.UniteAster import UniteAster
     from Utilitai.Utmess     import UTMESS
@@ -777,7 +776,6 @@ def crea_normale(self, modele_1, modele_2,
        projection du champ de normales cree sur le maillage numerique
        les mailles doivent etre des elements de <peau> (facettes)
     """
-    import Numeric
     PROJ_CHAMP  = self.get_cmd('PROJ_CHAMP')
     CREA_CHAMP  = self.get_cmd('CREA_CHAMP')
     CREA_RESU   = self.get_cmd('CREA_RESU')
@@ -865,7 +863,7 @@ def crea_repere(chnorm, ind_no, vect):
        de trois parametres et du vecteur de base concerne.
     """
 
-    import Numeric
+    import numpy
 
     nom_para = vect.keys()[0] # nom_para = 'VECT_X' ou 'VECT_Y'
     condition = list(vect[nom_para])
@@ -887,16 +885,16 @@ def crea_repere(chnorm, ind_no, vect):
     # (option VECT_X Ou VECT_Y). Dans ce cas la, le 3e est le produit
     # vectoriel des deux premiers.
     if nom_para == 'VECT_X' :
-        vect1 = Numeric.array(list(vect[nom_para])) # vect x du reploc
-        vect2 = cross_product(normale,vect1)
-        reploc = Numeric.array([vect1.tolist(), vect2.tolist(), normale])
-        reploc = Numeric.transpose(reploc)
+        vect1 = numpy.array(list(vect[nom_para])) # vect x du reploc
+        vect2 = numpy.cross(normale,vect1)
+        reploc = numpy.array([vect1.tolist(), vect2.tolist(), normale])
+        reploc = numpy.transpose(reploc)
 
     elif nom_para == 'VECT_Y' :
-        vect2 = Numeric.array(list(vect[nom_para])) # vect y du reploc
-        vect1 = cross_product(vect2, normale)
-        reploc = Numeric.array([vect1.tolist(), vect2.tolist(), normale])
-        reploc = Numeric.transpose(reploc)
+        vect2 = numpy.array(list(vect[nom_para])) # vect y du reploc
+        vect1 = numpy.cross(vect2, normale)
+        reploc = numpy.array([vect1.tolist(), vect2.tolist(), normale])
+        reploc = numpy.transpose(reploc)
 
     # 2.2) TODO : plutot que de donner explicitement un vecteur du repere
     # local avec VECT_X/Y, on devrait aussi pouvoir donner une condition
@@ -930,24 +928,24 @@ def crea_repere_xy(vect_x, vect_y):
        Si vect_x == None et vect_y == None alors on ne fait rien
     """
 
-    import Numeric
+    import numpy
     from Utilitai.Utmess import UTMESS
 
     if vect_x == None and vect_y == None:
       angl_naut = (0.,0.,0.)
     else:
       if vect_x and vect_y:
-        vx = Numeric.array(list(vect_x))
-        vy = Numeric.array(list(vect_y))
+        vx = numpy.array(list(vect_x))
+        vy = numpy.array(list(vect_y))
         vect1 = vx
-        vect3 = cross_product(vx,vy)
-        vect2 = cross_product(vect3,vx)
+        vect3 = numpy.cross(vx,vy)
+        vect2 = numpy.cross(vect3,vx)
 
       elif vect_x:
-        vx = Numeric.array(list(vect_x))
-        vy1 = cross_product((1.,0.,0.),vx)
-        vy2 = cross_product((0.,1.,0.),vx)
-        vy3 = cross_product((0.,0.,1.),vx)
+        vx = numpy.array(list(vect_x))
+        vy1 = numpy.cross((1.,0.,0.),vx)
+        vy2 = numpy.cross((0.,1.,0.),vx)
+        vy3 = numpy.cross((0.,0.,1.),vx)
         n1 = norm(vy1)
         n2 = norm(vy2)
         n3 = norm(vy3)
@@ -960,15 +958,15 @@ def crea_repere_xy(vect_x, vect_y):
             vy = vy3
         else:
             UTMESS('F','UTILITAI_7')
-        vect3 = cross_product(vx,vy)
+        vect3 = numpy.cross(vx,vy)
         vect1 = vx
-        vect2 = cross_product(vect3,vect1)
+        vect2 = numpy.cross(vect3,vect1)
 
       elif vect_y:
-        vy = Numeric.array(list(vect_y))
-        vx1 = cross_product((1.,0.,0.),vy)
-        vx2 = cross_product((0.,1.,0.),vy)
-        vx3 = cross_product((0.,0.,1.),vy)
+        vy = numpy.array(list(vect_y))
+        vx1 = numpy.cross((1.,0.,0.),vy)
+        vx2 = numpy.cross((0.,1.,0.),vy)
+        vx3 = numpy.cross((0.,0.,1.),vy)
         n1 = norm(vx1)
         n2 = norm(vx2)
         n3 = norm(vx3)
@@ -981,19 +979,19 @@ def crea_repere_xy(vect_x, vect_y):
             vx = vx3
         else:
             UTMESS('F','UTILITAI_7')
-        vect3 = cross_product(vx,vy)
+        vect3 = numpy.cross(vx,vy)
         vect2 = vy
-        vect1 = cross_product(vect2, vect3)
+        vect1 = numpy.cross(vect2, vect3)
 
       
-      norm12=Numeric.dot(vect1,vect1)
-      norm22=Numeric.dot(vect2,vect2)
-      norm32=Numeric.dot(vect3,vect3)
+      norm12=numpy.dot(vect1,vect1)
+      norm22=numpy.dot(vect2,vect2)
+      norm32=numpy.dot(vect3,vect3)
       if norm12 == 0 or norm22 == 0 or norm32 == 0:
           UTMESS('F','UTILITAI_7')
       else:
-          reploc = Numeric.array([vect1.tolist(),vect2.tolist(),vect3.tolist()])
-          reploc = Numeric.transpose(reploc)
+          reploc = numpy.array([vect1.tolist(),vect2.tolist(),vect3.tolist()])
+          reploc = numpy.transpose(reploc)
           angl_naut = anglnaut(reploc)
 
     return angl_naut
@@ -1012,7 +1010,7 @@ def find_no(maya,mcsimp):
         etc...
     """
 
-    import Numeric
+    import numpy
 
     list_no = []
     if mcsimp.has_key('GROUP_NO') and type(mcsimp['GROUP_NO']) != tuple :
@@ -1026,7 +1024,7 @@ def find_no(maya,mcsimp):
         list_no = list(mcsimp['NOEUD'])
     elif mcsimp.has_key('GROUP_NO') :
         for group in mcsimp['GROUP_NO'] :
-            list_ind_no = list(Numeric.array(maya.GROUPENO.get()[group.ljust(8)])-1)
+            list_ind_no = list(numpy.array(maya.GROUPENO.get()[group.ljust(8)])-1)
             for ind_no in list_ind_no :
                 nomnoe = maya.NOMNOE.get()[ind_no]
                 if nomnoe not in list_no :
@@ -1042,7 +1040,7 @@ def find_no(maya,mcsimp):
                         list_no.append(nomnoe)
     elif mcsimp.has_key('GROUP_MA') :
         for group in mcsimp['GROUP_MA'] :
-            list_nu_ma = list(Numeric.array(maya.GROUPEMA.get()
+            list_nu_ma = list(numpy.array(maya.GROUPEMA.get()
                                             [group.ljust(8)]) - 1)
             for nu_ma in list_nu_ma:
                 for ind_no in maya.CONNEX.get()[nu_ma+1]:
@@ -1061,7 +1059,7 @@ def find_ma(maya,mcsimp):
         Si mot cle GROUP_MA, on va chercher les mailles dans ces groupes
     """
 
-    import Numeric
+    import numpy
 
     list_ma = []
     if mcsimp.has_key('GROUP_MA') and type(mcsimp['GROUP_MA']) != tuple :
@@ -1074,7 +1072,7 @@ def find_ma(maya,mcsimp):
             list_ma.append(mail)
     elif mcsimp.has_key('GROUP_MA') :
         for group in mcsimp['GROUP_MA'] :
-            list_ind_ma = list(Numeric.array(maya.GROUPEMA.get()[group.ljust(8)])-1)
+            list_ind_ma = list(numpy.array(maya.GROUPEMA.get()[group.ljust(8)])-1)
             for ind_ma in list_ind_ma :
                 nommail = maya.NOMMAI.get()[ind_ma]
                 if nommail not in list_ma :
@@ -1087,34 +1085,12 @@ def find_ma(maya,mcsimp):
 # Quelques utilitaires de calculs d'angles nautiques (viennent de zmat004a.comm
 #************************************************************************************
 
-
-def cross_product(a, b):
-    """Return the cross product of two vectors.
-    For a dimension of 2,
-    the z-component of the equivalent three-dimensional cross product is
-    returned.
-
-    For backward compatibility with Numeric <= 23
-    """
-    from Numeric import asarray, array
-    a = asarray(a)
-    b = asarray(b)
-    dim =  a.shape[0]
-    assert 2<= dim <=3 and dim == b.shape[0], "incompatible dimensions for cross product"
-    if dim == 2:
-        result = a[0]*b[1] - a[1]*b[0]
-    elif dim == 3:
-        x = a[1]*b[2] - a[2]*b[1]
-        y = a[2]*b[0] - a[0]*b[2]
-        z = a[0]*b[1] - a[1]*b[0]
-        result = array([x,y,z])
-    return result
-
 def norm(x):
     """Calcul de la norme euclidienne d'un vecteur"""
-    import Numeric
-    tmp = Numeric.sqrt(Numeric.dot(x,x))
+    import numpy
+    tmp = numpy.sqrt(numpy.dot(x,x))
     return tmp
+
 
 def anglnaut(P):
 
@@ -1125,11 +1101,11 @@ def anglnaut(P):
     """
 
     import copy
-    import Numeric
+    import numpy
     # expression des coordonnees globales des 3 vecteurs de base locale
-    x = Numeric.array([1.,0.,0.])
-    y = Numeric.array([0.,1.,0.])
-    z = Numeric.array([0.,0.,1.])
+    x = numpy.array([1.,0.,0.])
+    y = numpy.array([0.,1.,0.])
+    z = numpy.array([0.,0.,1.])
 
     xg = P[:,0]
     yg = P[:,1]
@@ -1148,25 +1124,25 @@ def anglnaut(P):
         COSA=x1[0]/normx
         #produit vectoriel X xg
         SINA=x1[1]/normx
-    ar=Numeric.arctan2(SINA,COSA)
-    alpha=ar*180/Numeric.pi
+    ar=numpy.arctan2(SINA,COSA)
+    alpha=ar*180/numpy.pi
 
     COSB=norm(x1)
     SINB=-xg[2]
-    beta=Numeric.arctan2(SINB,COSB)*180/Numeric.pi
+    beta=numpy.arctan2(SINB,COSB)*180/numpy.pi
 
-    P2=Numeric.zeros((3,3),Numeric.Float)
-    P2[0,0]=Numeric.cos(ar)
-    P2[1,0]=Numeric.sin(ar)
-    P2[1,1]=Numeric.cos(ar)
-    P2[0,1]=-Numeric.sin(ar)
-    y1=Numeric.dot(P2,y)
+    P2=numpy.zeros((3,3))
+    P2[0,0]=numpy.cos(ar)
+    P2[1,0]=numpy.sin(ar)
+    P2[1,1]=numpy.cos(ar)
+    P2[0,1]=-numpy.sin(ar)
+    y1=numpy.dot(P2,y)
     y1n=y1/norm(y1)
 
     # calcul de gamma
-    COSG=Numeric.dot(y1n,yg)
-    SING=Numeric.dot(xg,cross_product(y1n,yg))
-    gamma=Numeric.arctan2(SING,COSG)*180/Numeric.pi
+    COSG=numpy.dot(y1n,yg)
+    SING=numpy.dot(xg,numpy.cross(y1n,yg))
+    gamma=numpy.arctan2(SING,COSG)*180/numpy.pi
 
     return alpha,beta,gamma
 

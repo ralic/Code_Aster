@@ -2,7 +2,7 @@ POURSUITE(CODE=_F(NOM = 'SSNP15A',), PAR_LOT='NON')
 
 # TEST de l'utilisation des methodes LIST_xxx sur les concepts resultat
 
-import Numeric as Num
+import numpy as NP
 
 para = U.LIST_PARA()
 var = U.LIST_VARI_ACCES()
@@ -25,7 +25,7 @@ iter_line = para['ITER_LINE']
 assert sum(iter_line) < nbord, iter_line  # pas a tous les pas de temps
 
 # test parametre de type R
-val_inst = Num.array(para['INST'])
+val_inst = NP.array(para['INST'])
 dt = val_inst[1:len(val_inst)] - val_inst[0:-1]
 assert min(dt) > 0., dt                   # croissance des pas de temps
 

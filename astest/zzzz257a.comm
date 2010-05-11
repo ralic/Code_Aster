@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/05/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -169,6 +169,11 @@ RESU=CALC_ELEM(reuse =RESU,
                        'ERRE_ELEM_SIGM',
                        'ERZ1_ELEM_SIGM',
                        'ERZ2_ELEM_SIGM',),);
+
+TABI=RECU_TABLE(CO=RESU,
+                NOM_TABLE='ESTI_GLOB',);
+
+IMPR_TABLE(TABLE=TABI);
 
 # ---------------------------
 # definition du probleme dual

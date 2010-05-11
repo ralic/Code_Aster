@@ -1,4 +1,4 @@
-# MODIF  DATE 14/10/2008   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DES ESTIMATEURS D'ERREUR BASES SUR LES RESIDUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,24 +17,24 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-from Numeric import *
+import numpy as NP
 
 nbel = 2
 # ----------------------------------------------------------------------
 # Declaration des tableaux :
 # ----------------------------------------------------------------------
-sigma=zeros((nbel,4),Float)
-dndx=zeros((nbel,3),Float)
-dndy=zeros((nbel,3),Float)
-hf=zeros((nbel,3),Float)
-nx=zeros((nbel,3),Float)
-ny=zeros((nbel,3),Float)
-terme1=zeros(nbel,Float)
-terme2=zeros(nbel,Float)
-terme3=zeros(nbel,Float)
-terme=zeros(nbel,Float)
-norsig=zeros(nbel,Float)
-relatif=zeros((nbel,4),Float)
+sigma=NP.zeros((nbel,4))
+dndx=NP.zeros((nbel,3))
+dndy=NP.zeros((nbel,3))
+hf=NP.zeros((nbel,3))
+nx=NP.zeros((nbel,3))
+ny=NP.zeros((nbel,3))
+terme1=NP.zeros(nbel)
+terme2=NP.zeros(nbel)
+terme3=NP.zeros(nbel)
+terme=NP.zeros(nbel)
+norsig=NP.zeros(nbel)
+relatif=NP.zeros((nbel,4))
 # ----------------------------------------------------------------------
 # Donnees :
 # ----------------------------------------------------------------------
@@ -213,11 +213,11 @@ for i in range(nbel) :
 #
 # Integration de Gauss sur un point
 #
-    norsig[i] = sqrt((spg11**2 + spg22**2 + spg33**2 + spg12**2) * jacob * poids)
+    norsig[i] = NP.sqrt((spg11**2 + spg22**2 + spg33**2 + spg12**2) * jacob * poids)
     print "Element(",i+1,"),             norme de sigma =",norsig[i]
     terme1[i] = he**2 * (((forx + dsx)**2 + (fory + dsy)**2) * jacob * poids)**2
     print "Element(",i+1,"),  valeur absolue du terme 1 =",coef*terme1[i]
-    relatif[i,0] = 100. * sqrt( terme1[i]**2 / ( terme1[i]**2 + norsig[i]**2 ) )
+    relatif[i,0] = 100. * NP.sqrt( terme1[i]**2 / ( terme1[i]**2 + norsig[i]**2 ) )
     print "Element(",i+1,"), valeur relative du terme 1 =",relatif[i,0],"%"
 #
 # ----------------------------------------------------------------------
@@ -252,9 +252,9 @@ for i in range(nbel) :
 #
 # Integration de Newton-Cotes sur deux points
 #
-    terme2[i] = terme2[i] + 1./2. * hf[i,bord-1] * (sqrt(inte))**2
+    terme2[i] = terme2[i] + 1./2. * hf[i,bord-1] * (NP.sqrt(inte))**2
     print "Element(",i+1,"),  valeur absolue du terme 2 =",coef*terme2[i]
-    relatif[i,1] = 100. * sqrt( terme2[i]**2 / ( terme2[i]**2 + norsig[i]**2 ) )
+    relatif[i,1] = 100. * NP.sqrt( terme2[i]**2 / ( terme2[i]**2 + norsig[i]**2 ) )
     print "Element(",i+1,"), valeur relative du terme 2 =",relatif[i,1],"%"
 #
 # ----------------------------------------------------------------------
@@ -278,18 +278,18 @@ for i in range(nbel) :
 #
 # Integration de Newton-Cotes sur deux points
 #
-    terme3[i] = terme3[i] + hf[i,listbord-1] * (sqrt(inte))**2
+    terme3[i] = terme3[i] + hf[i,listbord-1] * (NP.sqrt(inte))**2
     print "Element(",i+1,"),  valeur absolue du terme 3 =",coef*terme3[i]
-    relatif[i,2] = 100. * sqrt( terme3[i]**2 / ( terme3[i]**2 + norsig[i]**2 ) )
+    relatif[i,2] = 100. * NP.sqrt( terme3[i]**2 / ( terme3[i]**2 + norsig[i]**2 ) )
     print "Element(",i+1,"), valeur relative du terme 3 =",relatif[i,2],"%"
 #
 # ----------------------------------------------------------------------
 # Calcul de l'erreur par element
 # ----------------------------------------------------------------------
 #
-    terme[i] = coef*sqrt(terme1[i] + terme2[i] + terme3[i])
+    terme[i] = coef*NP.sqrt(terme1[i] + terme2[i] + terme3[i])
     print "Element(",i+1,"),  valeur absolue de l'erreur =",terme[i]
-    relatif[i,3] = 100. * sqrt( terme[i]**2 / ( terme[i]**2 + norsig[i]**2 ) )
+    relatif[i,3] = 100. * NP.sqrt( terme[i]**2 / ( terme[i]**2 + norsig[i]**2 ) )
     print "Element(",i+1,"), valeur relative de l'erreur =",relatif[i,3],"%"
 #
 # ----------------------------------------------------------------------
@@ -298,9 +298,9 @@ for i in range(nbel) :
 #
     erreur = erreur + (terme[i])**2
     norme = norme + (norsig[i])**2
-erreur = sqrt(erreur)
-norme = sqrt(norme)
-errela = 100. * sqrt( erreur**2 / ( erreur**2 + norme**2 ) )
+erreur = NP.sqrt(erreur)
+norme = NP.sqrt(norme)
+errela = 100. * NP.sqrt( erreur**2 / ( erreur**2 + norme**2 ) )
 
 print ""
 print ""

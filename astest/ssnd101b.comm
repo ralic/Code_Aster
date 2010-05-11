@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DISCRETS AVEC COMPORTEMENT VISQUEUX 2D : T ET TR SUR NOEUD ET SEG2
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,9 @@
 #    K_T_D_N    K_TR_D_N
 #=======================================================================
 
+from math import pow
+import numpy as NP
+
 
 DEBUT( CODE=_F(  NOM = 'SSND101B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 
@@ -39,8 +42,6 @@ MODE=AFFE_MODELE(
 )
 
 
-#
-from math import *
 #
 ZERO = DEFI_CONSTANTE(VALE=0.0)
 def Sinus(t,freq):
@@ -193,19 +194,18 @@ RESU=STAT_NON_LINE(
 # ==========================================================
 # Recupere les reponses sur les 4 discrets pour tous les DDL
 #
-import Numeric as NUM
 
 # Fabrique la liste des instants les plus proches de ceux utilises : linstS
 #   qui correspondent aux maxima/minima des efforts
 #   on calcule les valeurs theoriques de l'effort a cet instant
 def InstVale(Freq,Fmax,Puis,Dt,Tmax):
    alpha = int(Tmax*Freq)
-   LKp = NUM.arange(1.0,alpha+1.0)
-   LKm = NUM.arange(0.0,alpha)+0.5
-   lesinstp =  NUM.array(map(round,LKp/(Freq*Dt)))*Dt
-   lesvalep =  Fmax*NUM.power(abs(NUM.cos(lesinstp*2.0*pi*Freq)),Puis)
-   lesinstm =  NUM.array(map(round,LKm/(Freq*Dt)))*Dt
-   lesvalem = -Fmax*NUM.power(abs(NUM.cos(lesinstm*2.0*pi*Freq)),Puis)
+   LKp = NP.arange(1.0,alpha+1.0)
+   LKm = NP.arange(0.0,alpha)+0.5
+   lesinstp =  NP.array(map(round,LKp/(Freq*Dt)))*Dt
+   lesvalep =  Fmax*NP.power(abs(NP.cos(lesinstp*2.0*pi*Freq)),Puis)
+   lesinstm =  NP.array(map(round,LKm/(Freq*Dt)))*Dt
+   lesvalem = -Fmax*NP.power(abs(NP.cos(lesinstm*2.0*pi*Freq)),Puis)
    return list(lesinstp)+list(lesinstm),list(lesvalep)+list(lesvalem)
 
 

@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_turbulent Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_calcul_turbulent Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,13 +21,13 @@
 # RESPONSABLE BODEL C.BODEL
 
 from Utilitai.Utmess import UTMESS
-from Numeric import array, zeros, conjugate, identity
-from Numeric import transpose, ones, arctan, pi, log
+from numpy import array, zeros, conjugate, identity
+from numpy import transpose, arctan, pi, log
+from numpy import matrix
+import numpy.linalg as linalg
 
 from Meidee.meidee_cata import Resultat, InterSpectre, nume_ddl_phy, nume_ddl_gene
-import MLab
 import aster
-from Matrix import Matrix
 from Accas import _F
 from Cata.cata import CREA_CHAMP, PROJ_CHAMP, DETRUIRE, OBSERVATION
 
@@ -198,13 +198,13 @@ class CalculInverse:
         self.CPhi = CPhi
         self.PhiT_B = PhiT_B
         self.Syy = Syy.matr_inte_spec
-        self.SQQ = zeros((self.nb_freq,self.nb_mod,self.nb_mod),'D')
-        self.Syy_R = zeros((self.nb_freq,self.nb_mes,self.nb_mes),'D')
-        self.val_sing = zeros((self.nb_mod,self.nb_freq),'D')        
-        self.regul = zeros((self.nb_mod,self.nb_freq),'D')
-        self.Syy_S = zeros((self.nb_freq,self.nb_mes,self.nb_mes),'D')
-        self.SQQ_R = zeros((self.nb_freq,self.nb_mod,self.nb_mod),'D')
-        self.Sff = zeros((self.nb_freq,self.nb_act,self.nb_act),'D')
+        self.SQQ = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
+        self.Syy_R = zeros((self.nb_freq,self.nb_mes,self.nb_mes), dtype=complex)
+        self.val_sing = zeros((self.nb_mod,self.nb_freq), dtype=complex)        
+        self.regul = zeros((self.nb_mod,self.nb_freq), dtype=complex)
+        self.Syy_S = zeros((self.nb_freq,self.nb_mes,self.nb_mes), dtype=complex)
+        self.SQQ_R = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
+        self.Sff = zeros((self.nb_freq,self.nb_act,self.nb_act), dtype=complex)
         self.Z, self.Zm1 = self.calc_Z(type_intsp)
         
 
@@ -216,8 +216,8 @@ class CalculInverse:
 
     def calc_Z(self,type_intsp):
         """ Calcul de la matrice d'impedence"""
-        Z = zeros((self.nb_freq,self.nb_mod,self.nb_mod),'D')
-        Zm1 = zeros((self.nb_freq,self.nb_mod,self.nb_mod),'D')
+        Z = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
+        Zm1 = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
         
         # exposant : selon que l'inter-spectre soit en depl, vite ou acce, on change l'exposant
         if type_intsp == 'DEPL':exp = 0
@@ -247,10 +247,10 @@ class CalculInverse:
         """ Calcul de la matrice d'impedance, affichage des cara modales
         et  calcul des excitations modales : [SQQ(om)] = [Z].[Sqq].[Z]^H"""
 
-        CPhi = Matrix(self.CPhi)
+        CPhi = matrix(self.CPhi)
         for ind_freq in range(self.nb_freq):
             omega = 2*pi*self.f[ind_freq]
-            Zm1 = Matrix(self.Zm1[ind_freq,:,:])
+            Zm1 = matrix(self.Zm1[ind_freq,:,:])
             try:
                 CPhiZm1 = CPhi*Zm1
             except ValueError:
@@ -258,14 +258,14 @@ class CalculInverse:
                 self.mess_err("SQQ",{"CPhi":str(shape(CPhi)),"d'impedance mecanique":str(shape(Zm1))})
                 raise TypeError
 ##            aster.matfpe(-1)
-            U,S,VH = MLab.svd(CPhiZm1)
+            U,S,VH = linalg.svd(CPhiZm1, full_matrices=False)
 ##            aster.matfpe(1)
             Smax = max(S)
-            U = Matrix(U)
-            V = Matrix(conjugate(transpose(VH)))
+            U = matrix(U)
+            V = matrix(conjugate(transpose(VH)))
             l = len(S)
             S = array(S)
-            inv_S = zeros(S.shape,'D')
+            inv_S = zeros(S.shape, dtype=complex)
             self.val_sing[:,ind_freq] = S
             alpha = self.choix_alpha(self.alpha,VH,omega)
             for ind in range(l):
@@ -274,11 +274,11 @@ class CalculInverse:
                 else:
                     inv_S[ind] = 0
                 self.regul[ind,ind_freq] = alpha[ind,0]
-            inv_S = Matrix(array(inv_S)*identity(l))
+            inv_S = matrix(array(inv_S)*identity(l))
             inv_CPhiZm1 = V*inv_S*conjugate(transpose(U))
             inv_CPhiZm1_H = conjugate(transpose(inv_CPhiZm1))
 
-            Syy_f = Matrix(self.Syy[ind_freq,:,:])
+            Syy_f = matrix(self.Syy[ind_freq,:,:])
             SQQ_f = inv_CPhiZm1*Syy_f*inv_CPhiZm1_H
             self.SQQ[ind_freq,:,:] = SQQ_f
 
@@ -297,12 +297,12 @@ class CalculInverse:
     def verif_Syy(self):
         """ Recalcule l'inter-spectre Syy a partir de SQQ pour verification"""
 
-        CPhi = Matrix(self.CPhi)
-        CPhi_H = Matrix(conjugate(transpose(CPhi)))
+        CPhi = matrix(self.CPhi)
+        CPhi_H = matrix(conjugate(transpose(CPhi)))
         for ind_freq in range(self.nb_freq):
-            Zm1 = Matrix(self.Zm1[ind_freq,:,:])
-            Zm1_H = Matrix(conjugate(transpose(Zm1)))
-            SQQ_f = Matrix(self.SQQ[ind_freq,:,:])
+            Zm1 = matrix(self.Zm1[ind_freq,:,:])
+            Zm1_H = matrix(conjugate(transpose(Zm1)))
+            SQQ_f = matrix(self.SQQ[ind_freq,:,:])
             Syy_R_f = CPhi*Zm1*SQQ_f*Zm1_H*CPhi_H
             self.Syy_R[ind_freq,:,:] = Syy_R_f
             
@@ -321,15 +321,15 @@ class CalculInverse:
         """ Calcul de l'inter-spectre des efforts physiques a partir des
         deplacements physiques : [Sqq(om)] = ([CPhi]+)[Syy(om)]([CPhi]+)^H"""
 
-        PhiT_B = Matrix(self.PhiT_B)
+        PhiT_B = matrix(self.PhiT_B)
 ##        aster.matfpe(-1)
-        U,S,VH = MLab.svd(PhiT_B)
+        U,S,VH = linalg.svd(PhiT_B, full_matrices=False)
 ##        aster.matfpe(1)
         Smax = max(S)
-        U = Matrix(U)
-        V = Matrix(conjugate(transpose(VH)))
+        U = matrix(U)
+        V = matrix(conjugate(transpose(VH)))
         l = len(S)
-        inv_S = zeros(S.shape,'D')
+        inv_S = zeros(S.shape, dtype=complex)
         self.mess.disp_mess("Valeurs singulieres de la matrice de commande")
         val_sing = "  "
         for s in S:
@@ -340,11 +340,11 @@ class CalculInverse:
                 inv_S[ind] = S[ind]/(S[ind]**2+self.alpha)
             else:
                 inv_S[ind] = 0
-        inv_S = Matrix(array(inv_S)*identity(l))
+        inv_S = matrix(array(inv_S)*identity(l))
         inv_PhiT_B = V*inv_S*conjugate(transpose(U))
         inv_PhiT_B_H = conjugate(transpose(inv_PhiT_B))
         for ind_freq in range(self.nb_freq):
-            SQQ_f = Matrix(self.SQQ[ind_freq,:,:])
+            SQQ_f = matrix(self.SQQ[ind_freq,:,:])
             try:
                 Sff_f = inv_PhiT_B*SQQ_f*inv_PhiT_B_H
             except ValueError:
@@ -367,10 +367,10 @@ class CalculInverse:
     def verif_SQQ(self):
         """ Recalcule l'inter-spectre SQQ a partir de Sff, calcule un coefficient d'erreur"""
 
-        PhiT_B = Matrix(self.PhiT_B)
-        PhiT_B_H = conjugate(transpose(Matrix(PhiT_B)))
+        PhiT_B = matrix(self.PhiT_B)
+        PhiT_B_H = conjugate(transpose(matrix(PhiT_B)))
         for ind_freq in range(self.nb_freq):
-            Sff_f = Matrix(self.Sff[ind_freq,:,:])
+            Sff_f = matrix(self.Sff[ind_freq,:,:])
             SQQ_R_f = PhiT_B*Sff_f*PhiT_B_H
             self.SQQ_R[ind_freq,:,:] = SQQ_R_f
             
@@ -389,12 +389,12 @@ class CalculInverse:
     def synthes_Syy(self):
         """! Synthese de l'inter-spectre a partir des efforts physiques identifies"""
 
-        CPhi = Matrix(self.CPhi)
+        CPhi = matrix(self.CPhi)
         CPhi_H = conjugate(transpose(CPhi))
         for ind_freq in range(self.nb_freq):
-            Zm1_f = Matrix(self.Zm1[ind_freq,:,:])
+            Zm1_f = matrix(self.Zm1[ind_freq,:,:])
             Zm1_f_H = conjugate(transpose(Zm1_f))
-            SQQ_R_f = Matrix(self.SQQ_R[ind_freq,:,:])
+            SQQ_R_f = matrix(self.SQQ_R[ind_freq,:,:])
             Syy_S_f = CPhi*Zm1_f*SQQ_R_f*Zm1_f_H*CPhi_H
             self.Syy_S[ind_freq,:,:] = Syy_S_f
             
@@ -420,7 +420,7 @@ class CalculInverse:
         m = self.mcoeff
         vect = []
         omega_i = self.l_omega_i
-        V = Matrix(conjugate(transpose(VH)))
+        V = matrix(conjugate(transpose(VH)))
         nb_mod = len(omega_i)
         one = array([[1]]*nb_mod)
         vect1 = V*one
@@ -432,7 +432,7 @@ class CalculInverse:
             else:
                 vect.append([vect1[ind,0]*(omega-om)**m+1.])
             ind = ind+1
-        vect = alpha*Matrix(vect)
+        vect = alpha*matrix(vect)
         regul = VH*vect
         
 

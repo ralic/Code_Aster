@@ -1,4 +1,4 @@
-#@ MODIF meidee_parametres Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_parametres Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,6 @@
 
 from Utilitai.Utmess import UTMESS
 
-import Numeric
 import sys
 import aster
 

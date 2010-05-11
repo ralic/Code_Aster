@@ -1,4 +1,4 @@
-#@ MODIF co_cham_no SD  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_cham_no SD  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ from SD import *
 from sd_cham_no import sd_cham_no
 from co_champ   import cham_gd_sdaster
 
-import Numeric
+import numpy
 
 # -----------------------------------------------------------------------------
 # post-traitement :
@@ -40,7 +40,7 @@ class cham_no_sdaster(cham_gd_sdaster, sd_cham_no):
         topologie si topo>0. Si lgno est une liste vide, c'est equivalent
         a un TOUT='OUI' dans les commandes aster
         Attributs retourne
-          - self.valeurs : Numeric.array contenant les valeurs
+          - self.valeurs : numpy.array contenant les valeurs
         Si on a demande la topo (i.e. self.topo = 1) :
           - self.noeud  : numero de noeud """
       if not self.accessible() :
@@ -53,7 +53,7 @@ class cham_no_sdaster(cham_gd_sdaster, sd_cham_no):
 
       aster.prepcompcham(ncham,nchams,ncmp,"NO      ",topo,lgno)
 
-      valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
+      valeurs=numpy.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
 
       if (topo>0) :
          noeud=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.N'))

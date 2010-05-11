@@ -1,4 +1,4 @@
-#@ MODIF fiabilite_mefisto Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF fiabilite_mefisto Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,10 +17,11 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
-
 # RESPONSABLE GNICOLAS G.NICOLAS
-#
+
+import os
+
+
 def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
                         INFO, VERSION,
                         SEUIL, SEUIL_TYPE,
@@ -44,10 +45,8 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
 #
   """ Ecriture des données spécifiques à MEFISTO. """
 #
+  import numpy
   from Macro import fiabilite_fichier
-  import os
-  import string
-  import Numeric
   from Utilitai.Utmess import  UTMESS
 #
 #____________________________________________________________________
@@ -167,9 +166,9 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
 # 4.3 ==> Ecriture des données nécessaires
 #
     f_stoch.Ecrit_Titre ("Code name")
-    aux=string.replace(VERSION,"_",".")
-    aux=string.replace(aux,"N","n")
-    aux=string.replace(aux,"V","v")
+    aux=VERSION.replace("_",".")
+    aux=aux.replace("N","n")
+    aux=aux.replace("V","v")
     f_stoch.Ecrit_Valeurs ( "aster_" + aux )
 #
     aux = [ "Gradients evaluated by the code" ]
@@ -246,8 +245,8 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
           aux.append(args["MATRICE"][n + m*nb_occu_variable])
         f_stoch.Ecrit_Valeurs ( aux )
     else:
-        aux=Numeric.identity(nb_occu_variable)
-        aux=Numeric.concatenate(aux)
+        aux=numpy.identity(nb_occu_variable)
+        aux=numpy.concatenate(aux)
         aux=aux.tolist()
         f_stoch.Ecrit_Valeurs ( aux )
 #

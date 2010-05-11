@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 # forma05a.para = tps_job 160 mem_job 128Mo ncpus 1 liste_test R
@@ -40,7 +40,7 @@
 # MEG;'FICHIER/OUVRIR' AVEC TP21_LOCAL.PRET; BOUTON 'GO'
 # POUR TRAITER 1A: DECOMMENTARISER LE PREMIER FIN() ET COMMENTARISER
 #                  LE SECOND.
-# POUR TRAITER 1B: FAITES L'INVERSE
+# POUR TRAITER 1B: FAITES L'inv
 # POUR TRAITER 1C: COMMENTARISER ET MODIFIER MACR_ADAP_MAIL
 #-------------------------------------------------------------------
 
@@ -48,11 +48,7 @@
 #                       PRE-TRAITEMENTS PYTHON
 #-------------------------------------------------------------------
 # IMPORT PYTHON
-#import os
-#import string
-#import copy
-#import Gnuplot
-import Numeric
+import numpy as NP
 
 # VALEURS DE REFERENCE (APPROCHEES) APRES 3 REMAIL. UNIF. TRIA3 LUMPE
 ener_ref  =  -2016.80291
@@ -65,12 +61,12 @@ tmoyen_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 ertmoyen_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 BR_vs_raff = [22.301, 13.573 , 7.915 , 0.0 , 0.0 , 0.0, 0.0, 0.0]
 nbddl_vs_raff = [911, 3443 , 13364 , 0.0, 0.0 , 0.0, 0.0, 0.0]
-energie_vs_raff_NUM = Numeric.zeros((len(energie_vs_raff),2),Numeric.Float)
-erenergie_vs_raff_NUM = Numeric.zeros((len(erenergie_vs_raff),2),Numeric.Float)
-BR_vs_raff_NUM      = Numeric.zeros((len(BR_vs_raff),2),Numeric.Float)
-nbddl_vs_raff_NUM   = Numeric.zeros((len(nbddl_vs_raff),2),Numeric.Float)
-tmoyen_vs_raff_NUM = Numeric.zeros((len(tmoyen_vs_raff),2),Numeric.Float)
-ertmoyen_vs_raff_NUM = Numeric.zeros((len(ertmoyen_vs_raff),2),Numeric.Float)
+energie_vs_raff_NUM = NP.zeros((len(energie_vs_raff),2))
+erenergie_vs_raff_NUM = NP.zeros((len(erenergie_vs_raff),2))
+BR_vs_raff_NUM      = NP.zeros((len(BR_vs_raff),2))
+nbddl_vs_raff_NUM   = NP.zeros((len(nbddl_vs_raff),2))
+tmoyen_vs_raff_NUM = NP.zeros((len(tmoyen_vs_raff),2))
+ertmoyen_vs_raff_NUM = NP.zeros((len(ertmoyen_vs_raff),2))
 
 for i in range(len(energie_vs_raff)) :
     energie_vs_raff_NUM[i][1] = 0.0

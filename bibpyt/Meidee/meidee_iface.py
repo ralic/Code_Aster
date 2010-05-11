@@ -1,4 +1,4 @@
-#@ MODIF meidee_iface Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_iface Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@
 import os
 from popen2 import Popen3
 
-from Numeric import minimum, maximum, array, arange, log
+from numpy import minimum, maximum, array, arange, log
 from Tkinter import Frame, Label, Menubutton, Menu, StringVar, IntVar, Listbox
 from Tkinter import Toplevel, Scrollbar, Radiobutton, Button, Entry
 from Tkinter import Checkbutton, Canvas, Text, END
@@ -749,8 +749,8 @@ class MacMode(Canvas):
         yc = height*arange(0., m+1, 1.)/m
         _min = minimum.reduce
         _max = maximum.reduce
-        cmin = _min(mat.flat)
-        cmax = _max(mat.flat)
+        cmin = _min(mat.ravel())
+        cmax = _max(mat.ravel())
         for i in range(n):
             for j in range(m):
                 v = int(255*mat[i,j])

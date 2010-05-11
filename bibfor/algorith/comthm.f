@@ -9,7 +9,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 10/05/2010   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,7 +127,7 @@ C      PARAMETER(DENSIT=14)
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
-      INTEGER       NVIM,NVITH,ADVIME,ADVITH,ADVIHY,ADVICO
+      INTEGER       NVIM,ADVIME,ADVITH,ADVIHY,ADVICO
       INTEGER       VIHRHO,VICPHI,VICPVP,VICSAT,NVIH,NVIC,NVIT
       REAL*8        P1,DP1,GRAP1(3),P2,DP2,GRAP2(3),T,DT,GRAT(3)
       REAL*8        PHI,PVP,PAD,H11,H12,RHO11,EPSV,DEPS(6),DEPSV
@@ -160,7 +160,7 @@ C ======================================================================
      +            IMATE, DEFGEM, DEFGEP, ADDEME, ADDEP1, ADDEP2,
      +            ADDETE, NDIM, T0, P10, P20, PHI0, PVP0,
      +            DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
-     +            GRAT, GRAP1, GRAP2, NVITH, RETCOM,INSTAP)
+     +            GRAT, GRAP1, GRAP2, RETCOM,INSTAP)
       IF (RETCOM.NE.0) THEN
          GOTO 9000
       ENDIF
@@ -218,7 +218,7 @@ C ======================================================================
       IF (YAMEC.EQ.1 .AND. KPI .LE. NPG) THEN
          CALL CALCME(OPTION,COMPOR,THMC,MECA,IMATE,TYPMOD,CRIT,
      +               INSTAM,INSTAP,
-     +               T0,NDIM,DIMDEF,DIMCON,NVIM,NVITH,YATE,ADDEME,
+     +               T0,NDIM,DIMDEF,DIMCON,NVIM,YATE,ADDEME,
      +               ADCOME,ADDETE,DEFGEM,CONGEM,CONGEP,VINTM,VINTP,
      +               ADDEP1,ADDEP2,DSDE,DEPS,DEPSV,
      +               P1,P2,T,DT,RETCOM,DP1,DP2,SAT,BIOT)

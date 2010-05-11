@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2010   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CHOC D'UNE MASSE SUR UNE PAROI AU COMPORTEMENT FLAMBAGE
 # sdnd105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -182,9 +182,9 @@ TABLE=POST_DYNA_MODA_T(   RESU_GENE=TRAN_GEN,
                           )
 
 # references
-tfl = Numeric.pi/6
+tfl = pi/6
 dp = 3.
-t0 = Numeric.pi/6 +2*sqrt(3.) +(Numeric.pi+6)/sqrt(2.)
+t0 = pi/6 +2*sqrt(3.) +(pi+6)/sqrt(2.)
 
 TEST_TABLE(TABLE=TABLE,FILTRE=(
                 _F(  NOM_PARA = 'CALCUL',

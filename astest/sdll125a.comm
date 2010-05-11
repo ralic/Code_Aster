@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE TORKHANI M.TORKHANI
 # TITRE DIAGRAMME DE CAMPBELL D'UNE LIGNE D'ARBRE SIMPLIFIEE
 # sdll125a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
@@ -21,6 +21,7 @@
 # ======================================================================
 # CAS_TEST__:SDLL125A
 #
+import numpy as NP
 
 DEBUT(CODE=_F(NOM='SDLL125A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       DEBUG=_F(SDVERI='OUI'),);
@@ -143,7 +144,7 @@ GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
 DEBV=0.0;
 FINV=60000;
 PASV = 5000.0;
-VIT=Numeric.arange(DEBV,FINV+1,PASV);
+VIT=NP.arange(DEBV,FINV+1,PASV);
 nbF=20;
 nbF_camp=10;
 nbV=len(VIT);

@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,8 +19,13 @@
 # ======================================================================
 # RESPONSABLE ASSIRE A.ASSIRE
 
-import os, sys, copy, math, glob
-import Numeric
+import os
+import sys
+import copy
+import math
+import glob
+
+import numpy as NP
 from recal import *
 
 debug = False
@@ -117,7 +122,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC, ITER_
          self.current_context[k]= v
    self.current_context['_F']=cata.__dict__['_F']
 
-   macr_recal(self, UNITE_ESCL, force_list(RESU_EXP, Numeric.ArrayType), POIDS, force_list(LIST_PARA), force_list(RESU_CALC), 
+   macr_recal(self, UNITE_ESCL, force_list(RESU_EXP, NP.ndarray), POIDS, force_list(LIST_PARA), force_list(RESU_CALC), 
              ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
              GRAPHIQUE, METHODE, INFO, **args)
 
@@ -302,7 +307,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    # GESTION DE L'OPTION FACULTATIVE POUR LES POIDS
    #_______________________________________________
 
-   if( POIDS == None): POIDS = Numeric.ones(len(RESU_EXP))
+   if( POIDS == None): POIDS = NP.ones(len(RESU_EXP))
 
 
    #_____________________________________________
@@ -471,10 +476,10 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
        gradient_init  = E.gradient_init
 
        # Calcul du lambda_init
-       l = reca_algo.lambda_init(Numeric.matrixmultiply(Numeric.transpose(A),A))
+       l = reca_algo.lambda_init(NP.dot(NP.transpose(A),A))
 
 
-       Mess.affiche_result_iter(iter,J,val,residu,Numeric.array([]))
+       Mess.affiche_result_iter(iter,J,val,residu,NP.array([]))
 
        CALCUL_ASTER.L_init         = L_init
        CALCUL_ASTER.L_J_init       = L_J_init
@@ -548,7 +553,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
                 new_val, s, l, Act = reca_algo.Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, UNITE_RESU) 
 
                 # On teste la variation sur les parametres
-                ecart_para = reca_algo.calcul_norme2( Numeric.array(new_val) - Numeric.array(val) )
+                ecart_para = reca_algo.calcul_norme2( NP.array(new_val) - NP.array(val) )
                 if debug: print "AA0/ecart para=%s\nAA0/oldpara/newpara=%s %s" % (ecart_para, val, new_val)
                 if ecart_para < TOLE_PARA:
                     UTMESS('I','RECAL0_51', valr=ecart_para, cc=Mess.get_filename())

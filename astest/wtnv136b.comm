@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (3D HHMS)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,6 @@ DEBUT(CODE=_F(NOM='WTNV136B', NIV_PUB_WEB='INTERNET'))
 import sys
 import string
 import os
-from Numeric import  power, exp, sqrt, log, pi
 
 def Pcdesat(PR,SR,n,S) :
       m=1.-1./n

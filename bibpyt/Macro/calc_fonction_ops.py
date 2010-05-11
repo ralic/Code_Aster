@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_fonction_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,19 +18,11 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+import os
 import copy
 import traceback
-import os
-from math import pi
 
 
-# -----------------------------------------------------------------------------
-def tocomplex(arg):
-    if arg[0]=='RI' : return complex(arg[1],arg[2])
-    if arg[0]=='MP' : return complex(arg[1]*cos(arg[2]),arg[1]*sin(arg[2]))
-
-
-# -----------------------------------------------------------------------------
 def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
                       SPEC_OSCI,ABS,COMB,COMB_C,COMPOSE,EXTRACTION,
                       ENVELOPPE,FRACTILE,ASSE,CORR_ACCE,PUISSANCE,INVERSE,
@@ -44,11 +36,10 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
    from Cata_Utils.t_fonction import t_fonction, t_fonction_c, t_nappe, homo_support_nappe, \
             FonctionError, ParametreError, InterpolationError, ProlongementError, enveloppe, fractile
    from Utilitai import liss_enveloppe
+   from Macro.defi_inte_spec_ops import tocomplex
    from Accas import _F
    from Cata.cata import nappe_sdaster,fonction_sdaster,fonction_c
    from Utilitai.Utmess import  UTMESS
-   from Numeric import alltrue,less,array,reshape,cos,sin,exp,sqrt
-   from Numeric import choose,zeros,Float
    import aster_fonctions
    EnumTypes = (list, tuple)
    
@@ -388,7 +379,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
    return ier
 
 
-# -----------------------------------------------------------------------------
+
 class Context(object):
    """Permet de stocker des éléments de contexte pour aider au
    diagnostic lors de l'émission de message.

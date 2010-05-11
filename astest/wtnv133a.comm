@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE AVEC LA LOI DE HUJEUX 
 # wtnv133a.para = tps_job 200 mem_job 100Mo ncpus 1 liste_test S
@@ -22,7 +22,6 @@
 #                         SUR SABLE D'HOSTUN
 #          ===============================================
 
-from Numeric import *
 
 DEBUT(CODE=_F(NOM='WTNV133A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 #PRE_GIBI();

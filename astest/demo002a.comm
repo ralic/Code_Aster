@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -30,9 +30,9 @@
 
 ##############################################################################################
 # Outils Python utilises
-#  - Numeric Python: module permettant des operations numeriques de haut niveau.
+#  - numpy: module permettant des operations numeriques de haut niveau.
 #     Dans cet exemple, on utilise les transformeee de Fourier rapides (FFT)
-#     integres dans le package mais il FAUT l'installer
+#     integres dans le package
 #  - XMGRACE: module permettant de creer des graphiques
 ##############################################################################################
 
@@ -96,8 +96,8 @@ fichier_GMSH     = "depl.pos"
 # Importation des modules Python
 #=============================================================================================
 
-from Numeric import *
-from FFT import *
+import numpy as NP
+import numpy.fft as FFT
 
 ##############################################################################################
 #
@@ -382,7 +382,7 @@ if launch_GMSH == 1:
    os.system(executable_GMSH+' '+fichier_GMSH)
 
 #=============================================================================================
-# Passage d'ASTER a Numeric Python
+# Passage d'ASTER a numpy
 #=============================================================================================
 
 # Extraction pour le cas avec contact
@@ -412,13 +412,13 @@ DEPLX2 = TAB2e.Array('INST','DY')
 #=============================================================================================
 # Calcul des transformees de Fourier
 #=============================================================================================
-FFT_DEPL  = fft(DEPLX[:,1])
-PUISS     = FFT_DEPL*conjugate(FFT_DEPL)
+FFT_DEPL  = FFT.fft(DEPLX[:,1])
+PUISS     = FFT_DEPL*NP.conjugate(FFT_DEPL)
 
-FFT_DEPL2 = fft(DEPLX2[:,1])
-PUISS2    = FFT_DEPL2*conjugate(FFT_DEPL2)
+FFT_DEPL2 = FFT.fft(DEPLX2[:,1])
+PUISS2    = FFT_DEPL2*NP.conjugate(FFT_DEPL2)
 
-absc = (arange(n/2)/fin).tolist()
+absc = (NP.arange(n/2)/fin).tolist()
 
 #=============================================================================================
 # XMGRACE

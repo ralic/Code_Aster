@@ -8,7 +8,7 @@
       INTEGER IORDR
       CHARACTER*(*) NOMSD,NOMSY
       CHARACTER*24 CHEXTR
-      CHARACTER*24 VALK
+      CHARACTER*24 VALK(2)
       CHARACTER*16 NOMCMD,OPTION
       CHARACTER*8  CONCEP
       CHARACTER*16 TYPCON
@@ -17,7 +17,7 @@
       INTEGER VALI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 10/05/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,15 +77,18 @@ C ----------------------------------------------------------------------
       ALARME=ALARME.AND.ICODE.GT.0
       IF ( ALARME.AND.I1.EQ.I2) THEN
          CALL GETRES(CONCEP,TYPCON,NOMCMD)
-         VALK = NOMS(1)
-         CALL U2MESG('A+','UTILITAI8_14',1,VALK,0,0,0,0.D0)
+         VALK(1) = NOMSD
+         VALK(2) = NOMS(1)
+         CALL U2MESG('A+','UTILITAI8_13',2,VALK,0,0,0,0.D0)
          DO 10 J=2,I2
-            VALK = NOMS(J)
-            CALL U2MESG('A+','UTILITAI8_15',1,VALK,0,0,0,0.D0)
+            VALK(1) = NOMS(J)
+            CALL U2MESG('A+','UTILITAI8_14',1,VALK,0,0,0,0.D0)
    10    CONTINUE
-         VALI = IORDR
-         VALK = OPTION
-         CALL U2MESG('A','UTILITAI8_16',1,VALK,1,VALI,0,0.D0)
+         CALL U2MESS('A+','UTILITAI8_15')
+         VALI    = IORDR
+         VALK(1) = OPTION
+         VALK(2) = NOMSD
+         CALL U2MESG('A','UTILITAI8_16',2,VALK,1,VALI,0,0.D0)
       ENDIF
       IRETG=MIN(ICODE,IRETG)
    20 CONTINUE

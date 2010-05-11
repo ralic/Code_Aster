@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 10/05/2010   AUTEUR GRANET S.GRANET 
 # ======================================================================
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 # wtnv102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -139,14 +139,14 @@ FVPPV  = CALC_FONC_INTERP ( FONCTION    =  FVP_PV     ,
                             PROL_DROITE = 'CONSTANT' ,
                             INFO        = 2          ,);
 
-DM8=DEFI_CONSTANTE(VALE=5.9000000000000003E-06,);
+DM8=DEFI_CONSTANTE(VALE=5.9E-06,);
 
 KINTBO=DEFI_CONSTANTE(VALE=9.9999999999999995E-21,);
 #
 # CONDUCTIVITE THERMIQUE
 #
 
-LAMBT=DEFI_CONSTANTE(VALE=8.3300000000000001,);
+LAMBT=DEFI_CONSTANTE(VALE=8.33,);
 LS = FORMULE(NOM_PARA='SAT',VALE='(0.3*SAT)');
 
 LAMBS=CALC_FONC_INTERP(FONCTION=LS,
@@ -157,8 +157,8 @@ LAMBS=CALC_FONC_INTERP(FONCTION=LS,
                         INFO=2,);
 DLS=DEFI_CONSTANTE(VALE=0.3,);
 
-MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
-                              NU=0.20000000000000001,
+MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
+                              NU=0.2,
                               RHO=2670.0,
                               ALPHA=0.,),
                       COMP_THM = 'LIQU_VAPE_GAZ',
@@ -181,7 +181,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                                   PRE2=1.E5,
                                   PORO=0.3,
                                   PRES_VAPE=3700.0,
-                                  DEGR_SATU=0.78000000000000003,),
+                                  DEGR_SATU=0.78,),
                       THM_DIFFU=_F(R_GAZ=8.315,
                                    RHO=2200.0,
                                    CP=1050.0,

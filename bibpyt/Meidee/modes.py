@@ -1,4 +1,4 @@
-#@ MODIF modes Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF modes Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ from Tkinter import *
 
 import aster
 import string
-import Numeric
+import numpy
 from Meidee.meidee_iface import MyMenu, MacMode, VecteurEntry
 from Meidee.meidee_cata import DynaHarmo
 from Accas import _F, ASSD
@@ -105,8 +105,8 @@ class ModeList(Frame): # pure Tk -> testable hors aster
 
 class ModeFreqList(ModeList):
     """!Permet de créer une liste de modes contenues dans un sd_resultat.
-        indexes par leur frequence (modes dynamiques ou leur nom_cmp
-        (modes statiques"""
+        indexes par leur frequence (modes dynamiques ou leur noeud_cmp
+        (modes statiques)"""
     def __init__(self, root, title=None):
         if title is None:
             title="Choisissez les modes"
@@ -114,13 +114,11 @@ class ModeFreqList(ModeList):
 
     def set_resu(self, resu):
         cara_mod = resu.get_modes_data()
-        print "resu.nom = ", resu.nom
-        print "cara_mod= ", cara_mod
         freq = cara_mod['FREQ']
         nume_ordr = cara_mod['NUME_ORDRE']
-        nom_cmp = cara_mod['NOM_CMP']
+        noeud_cmp = cara_mod['NOEUD_CMP']
         for ind_ordr in range(len(freq)):
-            if not freq[ind_ordr]: freq[ind_ordr] = nom_cmp[ind_ordr]
+            if not freq[ind_ordr]: freq[ind_ordr] = noeud_cmp[ind_ordr]
         self.fill_modes( [ ('%3i' % n, self.set_display(f)) for n,f in zip(nume_ordr,freq) ] )
 
     def set_display(self,data):
@@ -1081,7 +1079,7 @@ class DispFRFDialogue(Toplevel):
         freq_max = string.atof(self.freq_max.get())
         df = string.atof(self.df.get())
         nbfreq = int(freq_max/df)
-        freq = tuple(1./df*Numeric.array(range(nbfreq)))
+        freq = tuple(1./df*numpy.array(range(nbfreq)))
 
         modele = resu.modele.obj
         

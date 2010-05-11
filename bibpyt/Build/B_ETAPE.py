@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -30,8 +30,8 @@ from types import ClassType, TypeType
 
 # Module Eficas
 import Noyau.N_FONCTION
-from Noyau.N_utils import prbanner
-from Noyau.N_utils import AsType
+from Noyau.N_utils import prbanner, AsType
+from Noyau.N_types import is_int, is_float, is_float_or_int, is_complex, is_str, is_enum, is_assd
 from Noyau import N_MCSIMP,N_MCFACT,N_MCBLOC,N_MCLIST,N_ASSD,N_ENTITE
 from Noyau import N_FACT,N_BLOC,N_SIMP
 from Noyau.N_Exception import AsException
@@ -40,6 +40,7 @@ import B_utils
 from B_CODE import CODE
 import B_OBJECT
 from Utilitai.utils import miss_dble
+
 
 class ETAPE(B_OBJECT.OBJECT,CODE):
    """
@@ -235,7 +236,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       valeur=self.Traite_value(valeur,"TX")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVTX',nom_motfac,iocc,nom_motcle,valeur)
-         for k in valeur[1] : assert(type(k) == str)
+         for k in valeur[1] : assert is_str(k)
       # il faut prendre en compte le catalogue : 'TXM' --> on retourne la chaine en majuscules,
       # 'TX' --> on la retourne telle qu'elle est
       return valeur
@@ -323,7 +324,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
 
       if isinstance(valeur, N_ASSD.ASSD):
          return valeur.nom
-      elif type(valeur) in (list, tuple):
+      elif is_enum(valeur):
          l=[]
          for obj in valeur :
              l.append(self.transforme_valeur_nom(obj))
@@ -349,7 +350,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       for k in tup_avant :
           if isinstance(k,N_ASSD.ASSD):
               k=k.valeur
-          if type(k) in (tuple, list) :
+          if is_enum(k):
               if leType == "C8" and k[0] in ("MP","RI") :
                  # on est en presence d'un complexe isolé
                  list_apres.append( k )
@@ -373,10 +374,10 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       """Vérifier que les éléments de 'values' sont du bon type (pour getvid, getvtx, getvr8).
       """
       ok = True
-      if not type(values) in (list, tuple):
+      if not is_enum(values):
          values = [values,]
       for v in values:
-         if type(v) in (list, tuple):
+         if is_enum(v):
             ok = self.check_values(func, v)
             continue
          ok = func(v)
@@ -388,19 +389,19 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
    def check_float(self, values):
       """Vérifier que les éléments de 'values' sont des réels (pour getvtx).
       """
-      return self.check_values(lambda v : type(v) in (int, long, float), values)
+      return self.check_values(is_float_or_int, values)
 
 
    def check_text(self, values):
       """Vérifier que les éléments de 'values' sont des chaines de caractères (pour getvtx).
       """
-      return self.check_values(lambda v : type(v) in (str, unicode), values)
+      return self.check_values(is_str, values)
 
 
    def check_assd(self, values):
       """Vérifier que les éléments de 'values' sont des concepts (pour getvid).
       """
-      return self.check_values(lambda v : isinstance(v, N_ASSD.ASSD), values)
+      return self.check_values(is_assd, values)
 
 
    def retnom( self ) :
@@ -428,7 +429,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       longueurs=[]
       k=0
       for  chaine in tup[1] :
-          assert(type(chaine) == str)
+          assert is_str(chaine)
           longueurs.append(len(chaine))
           k = k+1
       assert(k==tup[0])
@@ -448,7 +449,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       valeur=self.Traite_value(valeur,"IS")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVIS',nom_motfac,iocc,nom_motcle,valeur)
-         for k in valeur[1] : assert(type(k) == int), type(k)
+         for k in valeur[1] : assert is_int(k), type(k)
       return valeur
 
    def getoper(self):
@@ -557,7 +558,7 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
       valeur=self.Traite_value(valeur,"R8")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVR8',nom_motfac,iocc,nom_motcle,valeur)
-         for k in valeur[1] : assert(type(k) == float),`k`+" n'est pas un float"
+         for k in valeur[1] : assert is_float_or_int(k),`k`+" n'est pas un float"
       return valeur
 
    def getvc8(self,nom_motfac,nom_motcle,iocc,iarg,mxval):
@@ -611,7 +612,7 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
       #XXX est ce IS ou LS ????
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVLS',nom_motfac,iocc,nom_motcle,valeur)
-         for k in valeur[1] : assert(type(k) == int)
+         for k in valeur[1] : assert is_int(k)
       return valeur
 
    def gettco( self , nom_concept ) :
@@ -718,16 +719,16 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
       for name in dico_mcsimp.keys() :
          if dico_mcsimp[name] != None :
             lmc.append(name)
-            if type(dico_mcsimp[name]) in (list, tuple) : obj=dico_mcsimp[name][0]
-            else                                        : obj=dico_mcsimp[name]
+            if is_enum(dico_mcsimp[name])      : obj=dico_mcsimp[name][0]
+            else                               : obj=dico_mcsimp[name]
             if isinstance(obj, (N_ASSD.ASSD, N_ENTITE.ENTITE, N_MCLIST.MCList)):
                lty.append(type(obj).__name__)
-            if isinstance(obj,complex)                  : lty.append('C8')
-            if type(obj) == float                       : lty.append('R8')
-            if type(obj) == str:
-                if obj.strip() in ('RI','MP')           : lty.append('C8')
-                else                                    : lty.append('TX')
-            if type(obj) in (int, long)      :
+            if is_complex(obj)                 : lty.append('C8')
+            if is_float(obj)                   : lty.append('R8')
+            if is_str(obj):
+                if obj.strip() in ('RI','MP')  : lty.append('C8')
+                else                           : lty.append('TX')
+            if is_int(obj):
             ### on gere le cas d un reel entre par l utilisateur sans le '.' distinctif d un entier
             ### pour ca on teste la presence de R8 dans la liste des types attendus cote catalogue
                                                child=mcfact.definition.get_entite(name)
@@ -738,6 +739,7 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
                                                  lty.append('C8')
                                                else :
                                                  lty.append('I')
+      assert len(lmc) == len(lty), "cardinalité différente : \n%s\n%s" % (lmc, lty)
       return (lmc,lty)
 
 

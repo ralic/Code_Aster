@@ -1,4 +1,4 @@
-#@ MODIF transpose Utilitai  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF transpose Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,17 +19,23 @@
 # ======================================================================
 
 
+# Il NE faudrait utiliser cette fonction QUE sur des tableaux hétérogènes.
+# Pour les tableaux homogènes (int, float, string), utiliser numpy.transpose.
 
-######################################################################
-####  méthode de transposition de double liste
-####  à résorber quand on aura numarray et possibilité
-####  d opérations sur des arrays de strings
-######################################################################
 def transpose(liste):
-  n=range(len(liste[0]))
-  m=range(len(liste))
-  liste_t=[[] for i in n]
-  for i in n :
-    for j in m :
-      liste_t[i].append(liste[j][i])
-  return liste_t
+    """Transposition de double liste
+    """
+    import numpy
+    if isinstance(liste, numpy.ndarray):
+        from warnings import warn
+        warn('prefer use of numpy.transpose instead', DeprecationWarning, stacklevel=2)
+
+    n = range(len(liste[0]))
+    m = range(len(liste))
+    liste_t = [[] for i in n]
+    for i in n :
+        for j in m :
+            liste_t[i].append(liste[j][i])
+    return liste_t
+
+

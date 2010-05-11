@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURATION INTERFACE 3D (HEXA20) SUR DCB AVEC FISSURE INITIALE MAILLEE, LOI CZM_OUV_MIX
 # ssnv199g.para = tps_job 150 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,8 +20,6 @@
 # ======================================================================
 
 DEBUT(CODE=_F( NOM = 'SSNV199G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI')
-
-from Numeric import *
 
 tfin = 4
 nbpas = 10*tfin

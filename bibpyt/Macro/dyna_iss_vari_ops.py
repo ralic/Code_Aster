@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,8 +17,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-from Accas import _F
-import string
+import os
+
 
 def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNITE_RESU_FORC,
                        NB_FREQ, PAS, UNITE_RESU_IMPE, TYPE, MATR_GENE , OPTION,INFO,
@@ -27,25 +27,18 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
       Macro DYNA_ISS_VARI
    """
    ier=0
-   import Numeric as Num
-   import LinearAlgebra as LinAl
-   import MLab
-   import os
+   import numpy as NP
+   from numpy import linalg
    import aster
-   diag = MLab.diag
-   max = MLab.max
-   min = MLab.min
-   sum = Num.sum
-   abs = Num.absolute
-   conj = Num.conjugate
+   from Accas import _F
    from Utilitai.Table import Table
    from Utilitai.Utmess import  UTMESS
 
    def get_group_coord(group):
       """Retourne les coordonnees des noeuds du groupe 'group'
       """
-      l_ind = Num.array(coll_grno.get('%-8s' % group, [])) - 1
-      return Num.take(t_coordo, l_ind)
+      l_ind = NP.array(coll_grno.get('%-8s' % group, [])) - 1
+      return NP.take(t_coordo, l_ind, axis=0)
 
 
    # On importe les definitions des commandes a utiliser dans la macro
@@ -111,13 +104,12 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
 
    # coordonnees des noeuds
    l_coordo = maillage.COORDO.VALE.get()
-   t_coordo = Num.array(l_coordo)
+   t_coordo = NP.array(l_coordo)
    t_coordo.shape = nbnot, 3
    # groupes de noeuds
    coll_grno = maillage.GROUPENO.get()
    GROUP_NO_INTER=INTERF['GROUP_NO_INTERF']
    noe_interf = get_group_coord(GROUP_NO_INTER)
-   #  print noe_interf  
    nbno, nbval = noe_interf.shape
    if INFO==2:
       aster.affiche('MESSAGE','NBNO INTERFACE : '+str(nbno))
@@ -134,7 +126,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
       texte = 'NOMBRE DE MODES: '+str(nbmodt)+'   MODES DYNAMIQUES: '+str(nbmodd)+'   MODES STATIQUES: '+str(nbmods)
       aster.affiche('MESSAGE',texte)
       aster.affiche('MESSAGE','COMPOSANTE '+NOM_CMP)
-   SPEC = Num.zeros((NB_FREQ,nbmodt,nbmodt), Num.Float)+1j
+   SPEC = NP.zeros((NB_FREQ,nbmodt,nbmodt)) + 1j
 #
 #---------------------------------------------------------------------
   # BOUCLE SUR LES FREQUENCES
@@ -150,32 +142,33 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
       XX=noe_interf[:,0]
       YY=noe_interf[:,1]
 
-      XN=Num.repeat(XX,nbno)
-      YN=Num.repeat(YY,nbno)
-      XR=Num.reshape(XN,(nbno,nbno))
-      YR=Num.reshape(YN,(nbno,nbno))
-      XRT=Num.transpose(XR)
-      YRT=Num.transpose(YR)
+      XN=NP.repeat(XX,nbno)
+      YN=NP.repeat(YY,nbno)
+      XR=NP.reshape(XN,(nbno,nbno))
+      YR=NP.reshape(YN,(nbno,nbno))
+      XRT=NP.transpose(XR)
+      YRT=NP.transpose(YR)
       DX=XR-XRT
       DY=YR-YRT
       DIST=DX**2+DY**2
-      COHE=Num.exp(-(DIST*(alpha*freqk/VITE_ONDE)**2.))
+      COHE=NP.exp(-(DIST*(alpha*freqk/VITE_ONDE)**2.))
       
       # On desactive temporairement les FPE qui pourraient etre generees (a tord!) par blas
       aster.matfpe(-1)
-      eig, vec =LinAl.eigenvectors(COHE)
+      eig, vec =linalg.eig(COHE)
+      vec = NP.transpose(vec)   # les vecteurs sont en colonne dans numpy
       aster.matfpe(1)
       eig=eig.real
       vec=vec.real
       # on rearrange selon un ordre decroissant
-      eig = Num.where(eig < 1.E-10, 0.0, eig)
-      order = (Num.argsort(eig)[::-1])
-      eig = Num.take(eig, order)
-      vec = Num.take(vec, order, 0)
+      eig = NP.where(eig < 1.E-10, 0.0, eig)
+      order = (NP.argsort(eig)[::-1])
+      eig = NP.take(eig, order)
+      vec = NP.take(vec, order, 0)
 
       #-----------------------
       # Nombre de modes POD a retenir
-      etot=sum(diag(COHE))
+      etot=NP.sum(NP.diag(COHE))
       ener=0.0
       nbme=0
  
@@ -193,11 +186,11 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
       aster.affiche('MESSAGE','NOMBRE DE MODES POD RETENUS : '+str(nbme))
       aster.affiche('MESSAGE','PRECISION (ENERGIE RETENUE) : '+str(prec))      
 
-      PVEC=Num.zeros((nbme,nbno), Num.Float)
+      PVEC=NP.zeros((nbme,nbno))
       for k1 in range(0,nbme):
-         PVEC[k1, 0:nbno]=Num.sqrt(eig[k1])*vec[k1] 
+         PVEC[k1, 0:nbno]=NP.sqrt(eig[k1])*vec[k1]
       # CALCUL DE FS variable-------------------------------
-      XO=Num.zeros((nbme,nbmods), Num.Float)
+      XO=NP.zeros((nbme,nbmods))
       if NOM_CMP=='DX':
          COMP = 1
       elif NOM_CMP=='DY':
@@ -220,10 +213,10 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
          NNO =__CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER], topo=1).noeud
 
 
-         som=sum(MCMP)
-         max1=max(MCMP)
-         min1=min(MCMP)
-         maxm=max([abs(max1),abs(min1)])
+         som=NP.sum(MCMP)
+         max1=NP.max(MCMP)
+         min1=NP.min(MCMP)
+         maxm=NP.max([NP.abs(max1), NP.abs(min1)])
       #CALCUL DE XO
 #  on recupere la composante COMP (dx,dy,dz) des modes et on projete
          #  CAS 1: MODES DE CORPS RIGIDE
@@ -231,11 +224,11 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
             for modp in range(0,nbme):
                #modes de translation
                if mods+1 <=3:
-                  if abs(som)<10.E-6:
+                  if NP.abs(som)<10.E-6:
                      XO[modp,mods]=0.0
                   else :
                      fact=1./som               
-                     XO[modp,mods]=fact*Num.innerproduct(MCMP,PVEC[modp])
+                     XO[modp,mods]=fact*NP.inner(MCMP,PVEC[modp])
                #modes de rotation
                else:
                   if maxm<10.E-6:
@@ -245,19 +238,19 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
                         UTMESS('F','ALGORITH6_86')
                   else :  
                      fact = 1./(nbno)                   
-                     XO[modp,mods]=1./(maxm**2.)*fact*Num.innerproduct(MCMP,PVEC[modp])
+                     XO[modp,mods]=1./(maxm**2.)*fact*NP.inner(MCMP,PVEC[modp])
 
          # CAS 2: MODES EF
          if INTERF['MODE_INTERF'] =='TOUT':
             for modp in range(0,nbme):
-               if abs(som)<10.E-6:
+               if NP.abs(som)<10.E-6:
                   if maxm<10.E-6:
                      XO[modp,mods]=0.0 
                   else:
                      UTMESS('F','UTILITAI5_89')                     
                else:
                   fact=1./som                  
-                  XO[modp,mods]=fact*Num.innerproduct(MCMP,PVEC[modp])
+                  XO[modp,mods]=fact*NP.inner(MCMP,PVEC[modp])
 
          DETRUIRE(CONCEPT=_F(NOM=(__CHAM)),INFO=1)
 
@@ -294,12 +287,12 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
       # force sismique pour verif
 #      FS0=__fosi.EXTR_VECT_GENE_C()
 #      FSE=FS0[nbmodd:nbmodt][:]
-      SP=Num.zeros((nbmodt,nbmodt),Num.Float)
+      SP=NP.zeros((nbmodt,nbmodt))
       for k1 in range(0,nbme):
          #  calcul de la force sismique mode POD par mode POD
-         FS = Num.matrixmultiply(KRS,XO[k1]) 
-         Fzero=Num.zeros((1,nbmodd),Num.Float) 
-         FS2=Num.concatenate((Fzero,Num.reshape(FS,(1,nbmods))),1)
+         FS = NP.dot(KRS,XO[k1]) 
+         Fzero=NP.zeros((1,nbmodd)) 
+         FS2=NP.concatenate((Fzero,NP.reshape(FS,(1,nbmods))),1)
       #  Calcul harmonique
          __fosi.RECU_VECT_GENE_C(FS2[0]) 
          __dyge = DYNA_LINE_HARM(MODELE=modele,
@@ -316,10 +309,9 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
          assert desc[0].strip() == 'DEPL', 'Champ DEPL non trouvé'
          nomcham = __dyge.TACH.get()[1][0].strip()
          cham = sd_cham_gene(nomcham)
-         RS = Num.array(cham.VALE.get())      
-         SP=SP+RS*conj(RS[:,Num.NewAxis])   
+         RS = NP.array(cham.VALE.get())
+         SP=SP+RS*NP.conj(RS[:,NP.newaxis])   
          DETRUIRE(CONCEPT=_F(NOM=(__dyge)),INFO=1) 
-
 
       SPEC[k]=SP
 

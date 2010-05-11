@@ -1,6 +1,6 @@
       SUBROUTINE MATIMP(MATZ,IFIC,TYPIMZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF DEBUG  DATE 10/05/2010   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -127,7 +127,7 @@ C     --- ENTETE FORMAT MATLAB
      &                //' MATLAB.'
         WRITE(IFIC,*) '% 1- COPIER DANS UN FICHIER mat.dat.'
         WRITE(IFIC,*) '% 2- CHARGER DANS MATLAB OU OCTAVE PAR :'
-        WRITE(IFIC,*) '% 2-1 >> load mat.dat;'
+        WRITE(IFIC,*) '% 2-1 >> load -ascii mat.dat;'
         WRITE(IFIC,*) '% 2-2 >> A=spconvert(mat);'
         WRITE(IFIC,*) ' '
       ELSE

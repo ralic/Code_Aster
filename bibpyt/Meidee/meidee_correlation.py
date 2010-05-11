@@ -1,4 +1,4 @@
-#@ MODIF meidee_correlation Meidee  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_correlation Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,18 +27,18 @@
 # 
 # La classe InterfaceCorrelation dirige les objets graphiques
 
+import sys
+import weakref
+import os
+
 from Utilitai.Utmess import UTMESS
 
-import Numeric
-import sys
 import aster
 from Meidee.meidee_cata import CaraElem, InterSpectre, MeideeObjects
 from Meidee.meidee_cata import Resultat, ModeMeca, DynaHarmo
 from Meidee.modes import ParamProjMesuModal
 
 from Accas import _F
-import weakref
-import os
 import tkFont
 
 from Tkinter import Frame, Menubutton, Menu, StringVar, IntVar, Listbox
@@ -443,14 +443,14 @@ class InterfaceCorrelation(Frame):
         mac_win = MacWindowFrame( f, titre, resu1.nom, resu2.nom, size)
         mac_win.grid(row=0,column=0,sticky='nsew')
         afreq1 = resu1.get_modes_data()['FREQ']
-        nom_cmp1 = resu1.get_modes_data()['NOM_CMP']
+        neud_cmp1 = resu1.get_modes_data()['NOEUD_CMP']
         afreq2 = resu2.get_modes_data()['FREQ']
-        nom_cmp2 = resu2.get_modes_data()['NOM_CMP']
-        # si mode statique, on donne le champ NOM_CMP a la place de la frequence
+        neud_cmp2 = resu2.get_modes_data()['NOEUD_CMP']
+        # si mode statique, on donne le champ NOEUD_CMP a la place de la frequence
         for ind_ordr in range(len(afreq1)):
-            if afreq1[ind_ordr]==None:afreq1[ind_ordr]=nom_cmp1[ind_ordr]
+            if afreq1[ind_ordr]==None:afreq1[ind_ordr]=neud_cmp1[ind_ordr]
         for ind_ordr in range(len(afreq2)):
-            if afreq2[ind_ordr]==None:afreq2[ind_ordr]=nom_cmp2[ind_ordr]
+            if afreq2[ind_ordr]==None:afreq2[ind_ordr]=neud_cmp2[ind_ordr]
         mac_win.set_modes(afreq1, afreq2, mac)
 
         self.mac_windows.append( mac_win )

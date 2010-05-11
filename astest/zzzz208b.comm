@@ -1,4 +1,4 @@
-# MODIF  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES : POUTRE 3D SOUS-STRUCTUREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,12 +23,8 @@
 #             VALIDATION FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES
 #             EN SOUS-STRUCTURATION
 
-import Numeric
-import LinearAlgebra
-#from Numeric import array,shape,zeros,concatenate,repeat,around
-#from Numeric import sqrt,cos,sin,pi,asarray
-from LinearAlgebra import *
-from Numeric import *
+import numpy as NP
+import numpy.linalg as LA
 
 # DEFINITION DE LA METHODE DE CREATION DE MATRICE BLOC DIAGONALE
 def blkdiag(varargin):
@@ -36,14 +32,14 @@ def blkdiag(varargin):
 #BLKDIAG  Block diagonal concatenation of input arguments.
     """
     Nbmat=len(varargin)
-    matrice=asarray(varargin[0])
+    matrice=NP.asarray(varargin[0])
     for i in range(1,Nbmat):
-        mati=asarray(varargin[i])
+        mati=NP.asarray(varargin[i])
         matricex,matricey=matrice.shape
         matix,matiy=mati.shape
-        Atmp=concatenate([matrice,zeros([matricex,matiy])],axis=-1)
-        Btmp=concatenate([zeros([matix,matricey]),mati],axis=-1)
-        matrice=concatenate([Atmp,Btmp],axis=0)
+        Atmp=NP.concatenate([matrice,NP.zeros([matricex,matiy])],axis=-1)
+        Btmp=NP.concatenate([NP.zeros([matix,matricey]),mati],axis=-1)
+        matrice=NP.concatenate([Atmp,Btmp],axis=0)
         del Atmp
         del Btmp
     return matrice
@@ -384,11 +380,11 @@ MACM=blkdiag([MAC1M11,MAC1M22+MAC2M22,MAC2M11])
 # assemblage des blocs extra-diagonaux
 MACK[0:MDYNM1,MDYNM1:MTOT_M1]=MAC1K12
 MACM[0:MDYNM1,MDYNM1:MTOT_M1]=MAC1M12
-MACK[MDYNM1:MTOT_M1,0:MDYNM1]=Numeric.transpose(MAC1K12)
-MACM[MDYNM1:MTOT_M1,0:MDYNM1]=Numeric.transpose(MAC1M12)
+MACK[MDYNM1:MTOT_M1,0:MDYNM1]=NP.transpose(MAC1K12)
+MACM[MDYNM1:MTOT_M1,0:MDYNM1]=NP.transpose(MAC1M12)
 
-MACK[MDYNM1:MTOT_M1,MTOT_M1:(MTOT_M1+MDYNM2)]=Numeric.transpose(MAC2K12)
-MACM[MDYNM1:MTOT_M1,MTOT_M1:(MTOT_M1+MDYNM2)]=Numeric.transpose(MAC2M12)
+MACK[MDYNM1:MTOT_M1,MTOT_M1:(MTOT_M1+MDYNM2)]=NP.transpose(MAC2K12)
+MACM[MDYNM1:MTOT_M1,MTOT_M1:(MTOT_M1+MDYNM2)]=NP.transpose(MAC2M12)
 MACK[MTOT_M1:(MTOT_M1+MDYNM2),MDYNM1:MTOT_M1]=MAC2K12
 MACM[MTOT_M1:(MTOT_M1+MDYNM2),MDYNM1:MTOT_M1]=MAC2M12
 
@@ -410,10 +406,10 @@ MPYR=ASSE_MATR_GENE(NUME_DDL_GENE=NUGER,
 KPYR.RECU_MATR_GENE(MACK)
 MPYR.RECU_MATR_GENE(MACM)
 
-# calcul des modes generalises avec Numerical Python
-MPYPI=LinearAlgebra.inverse(MACM)
-frequence=LinearAlgebra.eigenvalues(Numeric.matrixmultiply(MACK,MPYPI))
-frequence=Numeric.sort(Numeric.sqrt(frequence)/2/Numeric.pi)
+# calcul des modes generalises avec numpy
+MPYPI=LA.inv(MACM)
+frequence=LA.eigvals(NP.dot(MACK,MPYPI))
+frequence=NP.sort(NP.sqrt(frequence)/2/NP.pi)
 
 # calcul des modes generalises avec Aster a partir des matrices assemblees dans Python
 MODPYR=MODE_ITER_SIMULT(MATR_A=KPYR,

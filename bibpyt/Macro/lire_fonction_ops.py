@@ -1,4 +1,4 @@
-#@ MODIF lire_fonction_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF lire_fonction_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-import os.path, Numeric
+import os.path as osp
+import numpy
 
 class LectureBlocError(Exception):
    pass
@@ -53,13 +54,13 @@ def lire_blocs(nomfich, SEPAR):
          if lignes==[]:
             pass  # dans ce cas, on a plusieurs lignes délimitant 2 fonctions
          else:
-            blocs.append(Numeric.array(lignes))
+            blocs.append(numpy.array(lignes))
             info(len(blocs), len(lignes), llen)
             lignes=[]
             llen=0
    fich.close()
    if len(lignes) > 0 :
-      blocs.append(Numeric.array(lignes))
+      blocs.append(numpy.array(lignes))
       info(len(blocs), len(lignes), llen)
    return blocs
 
@@ -161,7 +162,7 @@ def lire_fonction_ops(self,FORMAT,TYPE,SEPAR,INDIC_PARA,UNITE,
   # Lecture de la fonction dans un fichier d unité logique UNITE
   UL = UniteAster()
   nomfich=UL.Nom(UNITE)
-  if not os.path.isfile(nomfich):
+  if not osp.isfile(nomfich):
      UTMESS('F','FONCT0_41',valk=nomfich)
 
   # fonction(_c) ou nappe en sortie

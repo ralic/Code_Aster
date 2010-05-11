@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_dyna_alea_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,6 @@
 # ======================================================================
 
 import random
-import Numeric
 from types import ListType, TupleType
 from math  import pi,sqrt,log,exp
 
@@ -27,6 +26,7 @@ EnumTypes = (ListType, TupleType)
 
 
 def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
+   import numpy as NP
    import aster
    from Accas                 import _F
    from Utilitai.Utmess       import UTMESS
@@ -117,9 +117,9 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 
       Nbval=len(liste_indic)
 
-      test1 = Numeric.equal(None,liste_indic)
-      test2 = Numeric.equal(None,liste_def)
-      if test1 >=1 or test2 >=1:
+      test1 = NP.equal(None,liste_indic)
+      test2 = NP.equal(None,liste_def)
+      if test1.any() or test2.any():
          UTMESS('F','TABLE0_15')
 
       # estimation paramètres
@@ -130,8 +130,8 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       aster.affiche('MESSAGE',texte)      #print 'parametres Am, beta estimes: ', xopt
 
       #courbe de fragilité
-      vec_a=Numeric.array(liste_a)
-      vecval=(Numeric.log(vec_a/xopt[0]))/xopt[1]
+      vec_a=NP.array(liste_a)
+      vecval=(NP.log(vec_a/xopt[0]))/xopt[1]
       for m in range(Nba):
          lpfa.append(normcdf(vecval[m]))
 
@@ -181,7 +181,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                texte2='  PARAMETRES Am, beta ESTIMES : '+str(xopt)+'\n'
                aster.affiche('MESSAGE',texte1) 
                aster.affiche('MESSAGE',texte2)
-            vecval=(Numeric.log(vec_a/xopt[0]))/xopt[1]
+            vecval=(NP.log(vec_a/xopt[0]))/xopt[1]
             for m in range(Nba):
                lpfa.append(normcdf(vecval[m]))
 
@@ -374,8 +374,8 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                                 FILTRE       = mcfact, )
 
            val  = __fon1.Valeurs()
-           fvalx= Numeric.array(val[0])
-           fvaly= Numeric.array(val[1])
+           fvalx= NP.array(val[0])
+           fvaly= NP.array(val[1])
            frez = fvalx[0]
 
            # -- moments spectraux
@@ -383,11 +383,11 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
            val_mom={}
            for i_mom in l_moments :
                n         = len(fvaly)
-               trapz     = Numeric.zeros(n,Numeric.Float)
+               trapz     = NP.zeros(n)
                trapz[0]  = 0.
                valy      = fvaly*(2*pi*fvalx)**i_mom
                trapz[1:n] = (valy[1:n]+valy[:-1])/2*(fvalx[1:n]-fvalx[:-1])
-               prim_y    = Numeric.cumsum(trapz)
+               prim_y    = NP.cumsum(trapz)
                val_mom[i_mom] = prim_y[-1]
            for i_mom in l_moments :
              chmo='LAMBDA_'+str(i_mom).zfill(2)
