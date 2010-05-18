@@ -3,7 +3,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C ======================================================================
       IMPLICIT NONE
 
       REAL*8            EPS(6),EPSG(6),B(6),D,DSIDEP(6,6)
-      REAL*8            DELTAB(6),DELTAD,MULT
+      REAL*8            EPSGM(6),DELTAB(6),DELTAD,MULT
       REAL*8            LAMBDA,MU,ALPHA,K1,K2,ECROB,ECROD
 
 C--CALCUL DE LA MATRICE TANGENTE POUR LA LOI ENDO_ORTHO_BETON
@@ -36,98 +36,34 @@ C
 C
 C-------------------------------------------------------------
 
+      LOGICAL            IRET
 
-      LOGICAL           IRET
-
-      INTEGER           I,J,K,T(3,3)
-      REAL*8             KRON(6),UN,DEUX
-      REAL*8             CC(6),VECC(3,3),VALCC(3),CCP(6),CPE(6)
-      REAL*8        VECEPG(3,3),VALEPG(3)
-      REAL*8             FB(6),VECFB(3,3),VALFB(3),TREB
-      REAL*8             TREPSG,DCOEFD,ENE,FD,TREM
+      INTEGER            I,J,K
+      REAL*8             UN,DEUX
+      REAL*8             FB(6),TREPSG,FD
       REAL*8             DFMF,TDFBDB(6,6),TDFBDE(6,6)
       REAL*8             TDFDDE(6),TDFDDD
       REAL*8             INTERD,INTERT(6),INTERG
       REAL*8             PSI(6),KSI,IKSI
       REAL*8             MATB(6),MATD(6)
-      REAL*8        FBS,DELTAS
-      REAL*8        FBSM,SDFBDB,SDFBDE(6)
-      REAL*8        DSIGB(6,6),DSIGD(6),DIB(6)
-      REAL*8         COUPL,DCRIT(6)
-
-
-      DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+      REAL*8             FBS,DELTAS
+      REAL*8             FBSM,SDFBDB,SDFBDE(6)
+      REAL*8             DSIGB(6,6),DSIGD(6),DIB(6)
+      REAL*8             COUPL,DCRIT(6)
 
       UN=1.D0
       DEUX=2.D0
-      T(1,1)=1
-      T(2,2)=2
-      T(3,3)=3
-      T(1,2)=4
-      T(2,1)=4
-      T(1,3)=5
-      T(3,1)=5
-      T(2,3)=6
-      T(3,2)=6
 
 C-------------------------------------------------------
 C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
-
-
-      CALL R8INIR(6,0.D0,CC,1)
-
-      DO 9 I=1,3
-        DO 10 J=I,3
-          DO 11 K=1,3
-            CC(T(I,J))=CC(T(I,J))+B(T(I,K))*EPSG(T(K,J))+
-     &                 B(T(J,K))*EPSG(T(K,I))
- 11       CONTINUE
- 10     CONTINUE
- 9    CONTINUE
-      CALL DIAGO3(CC,VECC,VALCC)
-      CALL R8INIR(6,0.D0,CCP,1)
-      CALL R8INIR(6,0.D0,CPE,1)
-      DO 12 I=1,3
-        IF (VALCC(I).LT.0.D0) THEN
-          VALCC(I)=0.D0
-        ENDIF
- 12   CONTINUE
-      DO 13 I=1,3
-        DO 14 J=I,3
-          DO 15 K=1,3
-          CCP(T(I,J))=CCP(T(I,J))+VECC(I,K)*VALCC(K)*VECC(J,K)
- 15       CONTINUE
- 14     CONTINUE
- 13   CONTINUE
-      DO 16 I=1,3
-        DO 17 J=I,3
-          DO 18 K=1,3
-            CPE(T(I,J))=CPE(T(I,J))+ CCP(T(I,K))*EPSG(T(K,J))+
-     &                    CCP(T(J,K))*EPSG(T(K,I))
-  18      CONTINUE
-  17    CONTINUE
-  16  CONTINUE
-
-      CALL R8INIR(6,0.D0,FB,1)
-      TREB=0.D0
-      DO 301 I=1,3
-      TREB=TREB+CC(I)/2
- 301  CONTINUE
-      IF (TREB.GT.0.D0) THEN
-        DO 19 I=1,6
-          FB(I)=-LAMBDA*TREB*EPSG(I)
-  19    CONTINUE
-      ENDIF
-      DO 20 I=1,6
-        FB(I)=FB(I)-MU/DEUX*CPE(I)+ECROB*(KRON(I)-B(I))
-  20  CONTINUE
+      
+       CALL CEOBFB(B,EPSG,LAMBDA,MU,ECROB,FB)
 
        FBS=FB(1)
 
        DELTAS=DELTAB(1)
-
 
        IF (FBS.LT.0.D0) THEN
          FBSM=FBS
@@ -135,27 +71,14 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
          FBSM=0.D0
        ENDIF
 
-
 C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
-
-        TREPSG=EPSG(1)+EPSG(2)+EPSG(3)
-        CALL DIAGO3(EPSG,VECEPG,VALEPG)
-        DO 22 I=1,3
-          IF (VALEPG(I).GT.0.D0) THEN
-            VALEPG(I)=0.D0
-          ENDIF
- 22     CONTINUE
-
-        TREM=VALEPG(1)**2+VALEPG(2)**2+VALEPG(3)**2
-        IF (TREPSG.GT.0.D0) THEN
-          TREPSG=0.D0
-        ENDIF
-        DCOEFD=DEUX*(UN-D)
-        ENE=LAMBDA/2*TREPSG**2+MU*TREM
-        FD=DCOEFD*ENE-DEUX*D*ECROD
-
+       CALL CEOBFD(D,EPSG,LAMBDA,MU,ECROD,FD)
+C Rajout du test sur le signe de FD
+       IF (FD.LT.0.D0) THEN
+          FD=0.D0
+       ENDIF
 
 
 C---CALCUL DE DERIVEES UTILES----------------------------------
@@ -165,7 +88,11 @@ C---CALCUL DE DERIVEES UTILES----------------------------------
        ELSE
          DFMF=0.D0
        ENDIF
-
+ 
+      TREPSG=EPSG(1)+EPSG(2)+EPSG(3)
+      IF (TREPSG.GT.0.D0) THEN
+        TREPSG=0.D0
+      ENDIF      
       DCRIT(1)=-K1*(-TREPSG/K2/(UN+(-TREPSG/K2)**DEUX)
      &           +ATAN2(-TREPSG/K2,UN))
       DCRIT(2)=-K1*(-TREPSG/K2/(UN+(-TREPSG/K2)**DEUX)
@@ -176,15 +103,11 @@ C---CALCUL DE DERIVEES UTILES----------------------------------
       DCRIT(5)=0.D0
       DCRIT(6)=0.D0
 
-
       CALL DFBDB(3,B,EPSG,DEUX*MU,LAMBDA,ECROB,TDFBDB)
       CALL DFBDE(3,B,EPSG,DEUX*MU,LAMBDA,TDFBDE)
       CALL DFBDE(3,B,EPS,DEUX*MU,LAMBDA,DSIGB)
 
             SDFBDB=TDFBDB(1,1)
-
-
-
 
       DO 381 I=1,6
         SDFBDE(I)=TDFBDE(1,I)
@@ -223,22 +146,14 @@ C---CALCUL DE KSI ET PSI
      &                  +(UN-ALPHA)*DELTAS*TDFDDE(J)
  313  CONTINUE
 
-
        KSI=ALPHA*DELTAD*DFMF*SDFBDB-(UN-ALPHA)*FD
      &              +INTERG*INTERD
-
-
-
 
        IF (KSI.NE.0.D0) THEN
          IKSI=UN/KSI
        ELSE
          CALL U2MESS('F','ALGORITH4_54')
        ENDIF
-
-
-
-
 
 C-- ! ksi n est plus disponible
 
@@ -284,7 +199,6 @@ C-- ! ksi n est plus disponible
  562             CONTINUE
  561     CONTINUE
 
-
         ELSEIF ((FD.NE.0.D0).AND.(FBSM.EQ.0.D0)) THEN
 
          DO 661 I=1,6
@@ -294,10 +208,6 @@ C-- ! ksi n est plus disponible
  662             CONTINUE
  661     CONTINUE
 
-
-
-
       ENDIF
-
 
       END

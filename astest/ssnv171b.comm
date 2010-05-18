@@ -1,5 +1,5 @@
 
-# MODIF  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPARAISON POLYCRISTAL ET MONOCRISTAL.
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv171b.para = tps_job 600 mem_job 512Mo mem_aster 10 ncpus 1 liste_test S
@@ -108,22 +108,33 @@ TEST_TABLE(TABLE=MONOIMPL,
                    
 TEST_TABLE(TABLE=MONOIMPL,
            FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
+                   NOM_PARA='V2',
+                   VALE=6.88473E-5,
+                   PRECISION=0.002,
+                   REFERENCE='NON_REGRESSION',)
+
+# rotation de reseau
+TEST_TABLE(TABLE=MONOIMPL,
+           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
                    NOM_PARA='V58',
                    VALE=1.88E-4, # rotation de reseau
                    PRECISION=0.001,
                    REFERENCE='NON_REGRESSION',)
                    
-TEST_TABLE(TABLE=MONOIMPL,
-           FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-                   NOM_PARA='V60',
-                   VALE=4.851E-4,
-                   PRECISION=0.002,
-                   REFERENCE='NON_REGRESSION',)
 
+
+# explicite
+
+COMPOR2=DEFI_COMPOR( MONOCRISTAL=(_F(MATER=ACIER,
+                                    ECOULEMENT='ECOU_VISC1',
+                                    ECRO_ISOT='ECRO_ISOT1',
+                                    ECRO_CINE='ECRO_CINE1',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),);
 
 MONOEXPL=SIMU_POINT_MAT(INFO=2,
                    COMP_INCR=_F(RELATION='MONOCRISTAL',
-                                COMPOR=COMPOR1,
+                                COMPOR=COMPOR2,
                                 RESO_INTE='RUNGE_KUTTA_2',
                                 RESI_INTE_RELA=1.E-6,
                                 TYPE_MATR_TANG='PERTURBATION',
@@ -162,12 +173,12 @@ TEST_TABLE(TABLE=MONOEXPL,
            REFERENCE='AUTRE_ASTER',)
 
                    
-TEST_TABLE(TABLE=MONOEXPL,
+TEST_TABLE(TABLE=MONOIMPL,
            FILTRE=_F(NOM_PARA='INST',VALE=TFIN,PRECISION=1.E-6,),
-                   NOM_PARA='V60',
-                   VALE=4.851E-4,
-                   PRECISION=0.03,
-                   REFERENCE='AUTRE_ASTER',)
+                   NOM_PARA='V2',
+                   VALE=6.88473E-5,
+                   PRECISION=0.002,
+                   REFERENCE='NON_REGRESSION',)
 
 
 FIN()

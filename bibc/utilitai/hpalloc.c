@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF HPALLOC UTILITAI  DATE 06/07/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF HPALLOC UTILITAI  DATE 18/05/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -22,26 +22,19 @@
 void DEFPPPP(HPALLOC, hpalloc, void **addr,INTEGER *length, INTEGER *errcode, INTEGER *abrt)
 {
     void *malloc(),abort();
-    void perror(char *s);
-    if ( *length <= 0 )
-    {
+    if ( *length <= 0 ) {
         *errcode = -1;
     }
-    else
-    {
+    else {
         *addr = (void *)malloc(*length * sizeof(long));
-        if ( *addr == (void *)0 )
-        {
+        if ( *addr == (void *)0 ) {
             *errcode = -2;
-            perror("ERREUR DANS LA FONCTION HPALLOC");
         }
-        else
-        {
+        else {
             *errcode = 0;
         }
     }
-    if ( *errcode != 0 && *abrt != 0 )
-    {
-     abort();
+    if ( *errcode != 0 && *abrt != 0 ) {
+        abort();
     }
 }

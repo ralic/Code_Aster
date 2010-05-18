@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 21/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF indicateur Messages  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ La valeur prise par défaut pour theta est 0.57
 
 5: _("""
 Attention : récupération d'une valeur de theta illicite dans le resultat %(k1)s.
-La valeur prise par défaut pour theta est 1.
+theta doit être compris entre 0 et 1.
 """),
 
 6 : _("""
@@ -66,7 +66,7 @@ Probleme sur les charges. Consulter la documentation
  On ne calcule pas l'option %(k2)s sur cette maille.
 
  Risques & conseils :
-   Il faut vérifier votre maillage ! 
+   Il faut vérifier votre maillage !
    Vérifiez les messages émis par la commande AFFE_MODELE.
 """),
 
@@ -110,6 +110,9 @@ indicateur d'erreur temporelle.
 Pour le calcul de l'indicateur d'erreur en HM, il faut fournir
 les longueur et pression caractéristiques.
 Ces valeurs doivent etre strictement positives.
+
+-> Conseil :
+     N'oubliez pas de renseigner les valeurs sous le mot-clef GRANDEUR_CARA dans AFFE_MODELE.
 """),
 
 31: _("""

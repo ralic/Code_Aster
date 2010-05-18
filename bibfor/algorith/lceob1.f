@@ -3,7 +3,7 @@
      &                     SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,35 +58,16 @@ C OUT DBLOQ  : BLOQUAGE DE L'ENDOMMAGEMENT DE COMPRESSION
 C OUT IRET   : CODE RETOUR
 C ----------------------------------------------------------------------
 
-      INTEGER     I,J,K,COMPTE,T(3,3)
+      INTEGER     I,J,K,COMPTE
 
-      REAL*8      BS,BMS,DEUX,UN
-      REAL*8      FB(6),DBS,FD,DD
-      REAL*8      TREPS,TREB,TREM
-      REAL*8      CC(6),CPE(6),CCP(6),FBM(6),RESB
-      REAL*8      RTEMP2,RTEMP3,DELTA1,DELTA2
-      REAL*8      DDG,FBEN(1)
-      REAL*8      TOLC
+      REAL*8      BS,BMS,DEUX,UN,TOLC
+      REAL*8      FB(6),DBS,FD,DD,FBM(6)
+      REAL*8      RESB,DELTA1,DELTA2,DDG
       REAL*8      NORMRB,RTEMP,CRIT
       REAL*8      MTE1,MTE2(6,6),MTE2S
-      REAL*8      FBS,FBSM
-      REAL*8      KSI,IKSI
-      REAL*8      VECC(3,3),VALCC(3)
-      REAL*8      COUPL,KRON(6)
-      REAL*8      RESD,ENE,DCOEFD,DDCOED,DFDDD,PSI
+      REAL*8      FBS,FBSM,KSI,IKSI,COUPL
+      REAL*8      RESD,DFDDD,PSI
       REAL*8      INTER1,INTER2,INTER3,INTER4
-
-      DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-
-      T(1,1)=1
-      T(1,2)=4
-      T(1,3)=5
-      T(2,1)=4
-      T(2,2)=2
-      T(2,3)=6
-      T(3,1)=5
-      T(3,2)=6
-      T(3,3)=3
 
       TOLC=SEUIL*TOLE
 
@@ -98,59 +79,12 @@ C ----------------------------------------------------------------------
         B(I)=BM(I)
  100  CONTINUE
       D=DM
-
 C-------------------------------------------------------
 C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
 
-      CALL R8INIR(6,0.D0,CC,1)
-
-      DO 9 I=1,3
-        DO 10 J=I,3
-          DO 11 K=1,3
-            CC(T(I,J))=CC(T(I,J))+B(T(I,K))*EPS(T(K,J))+
-     &                 B(T(J,K))*EPS(T(K,I))
- 11       CONTINUE
- 10     CONTINUE
- 9    CONTINUE
-      CALL DIAGO3(CC,VECC,VALCC)
-      CALL R8INIR(6,0.D0,CCP,1)
-      CALL R8INIR(6,0.D0,CPE,1)
-      DO 12 I=1,3
-        IF (VALCC(I).LT.0.D0) THEN
-          VALCC(I)=0.D0
-        ENDIF
- 12   CONTINUE
-      DO 13 I=1,3
-        DO 14 J=I,3
-          DO 15 K=1,3
-          CCP(T(I,J))=CCP(T(I,J))+VECC(I,K)*VALCC(K)*VECC(J,K)
- 15       CONTINUE
- 14     CONTINUE
- 13   CONTINUE
-      DO 16 I=1,3
-        DO 17 J=I,3
-          DO 18 K=1,3
-            CPE(T(I,J))=CPE(T(I,J))+ CCP(T(I,K))*EPS(T(K,J))+
-     &                    CCP(T(J,K))*EPS(T(K,I))
-  18      CONTINUE
-  17    CONTINUE
-  16  CONTINUE
-
-      CALL R8INIR(6,0.D0,FB,1)
-      TREB=0.D0
-      DO 301 I=1,3
-      TREB=TREB+CC(I)/2
- 301  CONTINUE
-      IF (TREB.GT.0.D0) THEN
-        DO 19 I=1,6
-          FB(I)=-LAMBDA*TREB*EPS(I)
-  19    CONTINUE
-      ENDIF
-      DO 20 I=1,6
-        FB(I)=FB(I)-MU/DEUX*CPE(I)+ECROB*(KRON(I)-B(I))
-  20  CONTINUE
+       CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,FB)
 
        FBS=FB(1)
        BS=B(1)
@@ -169,31 +103,7 @@ C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
       IF (DBLOQ) THEN
         FD=0.D0
       ELSE
-        TREPS=EPS(1)+EPS(2)+EPS(3)
-        CALL DIAGO3(EPS,VECC,VALCC)
-        DO 22 I=1,3
-          IF (VALCC(I).GT.0.D0) THEN
-            VALCC(I)=0.D0
-          ENDIF
- 22     CONTINUE
-
-        CALL R8INIR(6,0.D0,CCP,1)
-
-        DO 23 I=1,3
-          DO 24 J=I,3
-            DO 25 K=1,3
-            CCP(T(I,J))=CCP(T(I,J))+VECC(I,K)*VALCC(K)*VECC(J,K)
- 25         CONTINUE
- 24       CONTINUE
- 23     CONTINUE
-
-        TREM=VALCC(1)**2+VALCC(2)**2+VALCC(3)**2
-        IF (TREPS.GT.0.D0) THEN
-          TREPS=0.D0
-        ENDIF
-        DCOEFD=DEUX*(UN-D)
-        ENE=LAMBDA/DEUX*TREPS**2+MU*TREM
-        FD=DCOEFD*ENE-DEUX*D*ECROD
+        CALL CEOBFD(D,EPS,LAMBDA,MU,ECROD,FD)
         IF (FD.LT.0.D0) THEN
           FD=0.D0
         ENDIF
@@ -223,10 +133,12 @@ C--BOUCLE DU NEWTON SUR LES VARIABLES INTERNES-----------
 C--------------------------------------------------------
 
 38      CONTINUE
-        IF(((CRIT.GT.TOLC).OR.(NORMRB.GT.TOLE).OR.(RESD.GT.TOLE)))
+        IF(((CRIT.GT.TOLC).OR.(NORMRB.GT.TOLE).OR.(ABS(RESD).GT.TOLE)))
      &      THEN
-          IF (COMPTE.LT.INTMAX) THEN
-
+          IF ((COMPTE.LT.INTMAX).AND.(COUPL.NE.0.D0)) THEN
+C Rajout du test sur COUPL (fiche 15020) : lorsque c'est le cas,
+C la derivee du residu est une matrice singuliere et le systeme ne
+C peut etre resolu. On sort pour enclencher la decoupe du pas de temps
             IF (FBS.GT.0.D0) THEN
               MTE1=0.D0
             ELSE
@@ -237,12 +149,10 @@ C--------------------------------------------------------
 
             MTE2S=MTE2(1,1)
 
-            DDCOED=0.D0
             DFDDD=0.D0
 
             IF ((.NOT.DBLOQ).AND.(FD.NE.0.D0)) THEN
-            DDCOED=-DEUX
-            DFDDD=DDCOED*ENE-DEUX*ECROD
+              DFDDD=-(FD+DEUX*ECROD)/(UN-D)
             ENDIF
 
             KSI=-MULT*ALPHA*MTE1*MTE2S+UN
@@ -267,7 +177,6 @@ C--------------------------------------------------------
 
             DDG=-(CRIT*COUPL+INTER1+INTER2)/(INTER3+INTER4)
 
-
             DD=RESD/PSI+DDG*(1-ALPHA)*FD/PSI
             DBS=IKSI*(RESB+DDG*ALPHA*FBSM)
 
@@ -279,55 +188,11 @@ C--------------------------------------------------------
 
 C----CALCUL DE FB DANS NEWTON---------------------------
 
-           CALL R8INIR(6,0.D0,B,1)
+            CALL R8INIR(6,0.D0,B,1)
 
-           B(1)=BS
+            B(1)=BS
 
-            CALL R8INIR(6,0.D0,CC,1)
-
-            DO 109 I=1,3
-              DO 110 J=I,3
-                DO 111 K=1,3
-                  CC(T(I,J))=CC(T(I,J))+B(T(I,K))*EPS(T(K,J))+
-     &                      B(T(J,K))*EPS(T(K,I))
- 111            CONTINUE
- 110          CONTINUE
- 109        CONTINUE
-
-            CALL DIAGO3(CC,VECC,VALCC)
-            CALL R8INIR(6,0.D0,CCP,1)
-            CALL R8INIR(6,0.D0,CPE,1)
-            DO 112 I=1,3
-              IF (VALCC(I).LT.0.D0) THEN
-                VALCC(I)=0.D0
-              ENDIF
- 112        CONTINUE
-            DO 113 I=1,3
-              DO 114 J=I,3
-                DO 115 K=1,3
-             CCP(T(I,J))=CCP(T(I,J))+VECC(I,K)*VALCC(K)*VECC(J,K)
- 115            CONTINUE
- 114          CONTINUE
- 113        CONTINUE
-            DO 116 I=1,3
-              DO 117 J=I,3
-                DO 118 K=1,3
-             CPE(T(I,J))=CPE(T(I,J))+ CCP(T(I,K))*EPS(T(K,J))+
-     &                     CCP(T(J,K))*EPS(T(K,I))
- 118            CONTINUE
- 117          CONTINUE
- 116        CONTINUE
-
-            CALL R8INIR(6,0.D0,FB,1)
-            TREB=(CC(1)+CC(2)+CC(3))/2
-            IF (TREB.GT.0.D0) THEN
-              DO 119 I=1,6
-                FB(I)=-LAMBDA*TREB*EPS(I)
- 119          CONTINUE
-            ENDIF
-            DO 120 I=1,6
-              FB(I)=FB(I)-MU/DEUX*CPE(I)+ECROB*(KRON(I)-B(I))
- 120        CONTINUE
+            CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,FB)
 
             FBS=FB(1)
             IF (FBS.GT.0.D0) THEN
@@ -342,13 +207,11 @@ C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
             IF (DBLOQ) THEN
               FD=0.D0
             ELSE
-              DCOEFD=DEUX*(UN-D)
-              FD=DCOEFD*ENE-DEUX*D*ECROD
+              CALL CEOBFD(D,EPS,LAMBDA,MU,ECROD,FD)
               IF (FD.LT.0.D0) THEN
                 FD=0.D0
               ENDIF
             ENDIF
-
 
 C----CALCUL DU CRITERE-------------------------------------
            COUPL=SQRT(ALPHA*RTEMP+(1-ALPHA)*FD**2)

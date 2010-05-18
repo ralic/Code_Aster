@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ELEMENTS  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +61,6 @@ C =====================================================================
       INTEGER DIMDEP,DIMDEF,DIMCON,NBVARI,NDDLS,NDDLM,II,INO
       INTEGER NMEC,NP1,NP2,I,NCMP,NNOS,ICHG,ICHN
       INTEGER JTAB(7),IGAU,ISIG,NNOM
-C     REMARQUE : CES DIMENSIONS DOIVENT ETRE LES MEMES QUE DANS TE0492
       REAL*8 DEFGEP(21),DEFGEM(21)
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS
       REAL*8 DFDI(20,3),DFDI2(20,3),B(21,120),EPSM(405),EPSNO(405)

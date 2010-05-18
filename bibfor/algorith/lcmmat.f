@@ -1,9 +1,9 @@
         SUBROUTINE LCMMAT (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,
      &   ANGMAS,PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI,
-     &   HSR,TOUTMS,VIND)
+     &   HSR,TOUTMS,VIND,IMPEXP)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -56,6 +56,7 @@ C           HSR    : MATRICE D'INTERACTION POUR L'ECROUISSAGE ISOTROPE
 C                    UTILISEE SEULEMENT POUR LE MONOCRISTAL IMPLICITE
 C           TOUTMS : TOUS LES TENSEURS D'ORIENTATION POUR TOUS LES
 C                    SYSTEMES DE GLISSEMENT
+C           IMPEXP : 0 IMPLICITE, 1 EXPLICITE
 C       ----------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
@@ -75,7 +76,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     ----------------------------------------------------------------
       INTEGER  NMAT, NDT , NDI  , NR , NVI,NBCOMM(NMAT,3),NBVAL,NVINI
-      INTEGER         KPG,KSP, ICOMPI,IROTA
+      INTEGER         KPG,KSP, ICOMPI,IROTA, IMPEXP
       REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
       REAL*8          HOOK(6,6)
       REAL*8          REPERE(7),XYZ(3),KOOH(6,6)
@@ -120,6 +121,13 @@ C
       CALL JEVEUO(COMPI,'L',ICOMPI)
       NBFSYS=ZI(ICOMPI-1+5)
       IROTA=ZI(ICOMPI-1+6)
+      
+      IF (IMPEXP.EQ.1) THEN
+         IF (IROTA.NE.0) THEN
+            CALL U2MESS('F','COMPOR2_11')
+         ENDIF
+      ENDIF
+      
 C     LA DERNIERE VARIABLE INTERNE EST L'INDICATEUR PLASTIQUE
 C
       CALL MATROT(ANGMAS,PGL)

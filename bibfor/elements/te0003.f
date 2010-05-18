@@ -1,7 +1,7 @@
       SUBROUTINE TE0003(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ELEMENTS  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,7 @@ C DECLARATION VARIABLES LOCALES
       INTEGER NBF
       INTEGER TYMVOL,NDEGRE,IFA,TYV
 C
-      REAL*8 R8BID,R8BID2,R8BID3(4),R8BID4(3)
+      REAL*8 R8BID,R8BID3(4)
       REAL*8 R8PREM
       REAL*8 INSOLD,INST,VALTHE,AUX,RHOCP,DFDX(27),DFDY(27),
      >       POIDS,R,VALFP(9),VALFM(9),R8CART,VALSP,VALSM,
@@ -291,7 +291,7 @@ C INITIALISATIONS/RECUPERATION DE LA GEOMETRIE ET DES CHAMPS LOCAUX
 C--------------------------------------------------------------------
  1000 FORMAT(A,' :',(6(1X,1PE17.10)))
  1001 FORMAT(A,' :',9I10)
- 2000 FORMAT(A,10I8)
+C 2000 FORMAT(A,10I8)
 C ----------------------------------------------------------------------
 C 1 -------------- GESTION DES DONNEES ---------------------------------
 C ----------------------------------------------------------------------
@@ -360,10 +360,8 @@ C
  1    CONTINUE
 C
 C INITIALISATION DIMENSION DE L'ESPACE DE TRAVAIL/LLUMPE OU PAS
-      LLUMPE = .FALSE.
-      IF(LTEATT(' ','LUMPE','OUI')) LLUMPE = .TRUE.
-      L2D = .TRUE.
-      IF(LTEATT(' ','DIM_TOPO_MAILLE','X3')) L2D = .FALSE.
+      LLUMPE = LTEATT(' ','LUMPE','OUI')
+      L2D = (NDIM.EQ.2)
       IF ( LLUMPE ) THEN
         IF ( ( ELREFE(1:3).EQ.'H20' ) .OR.
      >       ( ELREFE(1:3).EQ.'H27' ) .OR.
@@ -381,14 +379,8 @@ C INIT. GENERALES (PARAM NUMERIQUE, INTERPOLATION, FLAG SI AXI...)
       NOMPAR(1) = 'X'
       NOMPAR(2) = 'Y'
       NOMPAR(NBPAR) = 'INST'
-      IF (L2D) THEN
-        IF (LTEATT(' ','AXIS','OUI')) THEN
-          LAXI = .TRUE.
-        ELSE
-          LAXI = .FALSE.
-        END IF
-      ELSE
-        LAXI = .FALSE.
+      LAXI = LTEATT(' ','AXIS','OUI')
+      IF (.NOT.L2D) THEN
         NOMPAR(3) = 'Z'
       END IF
 
@@ -449,11 +441,7 @@ C RECUPERATION DES CARTES FLUX, CHARGEMENT ET DE LEUR TYPE
       NOMGDS = ZK24(ICHARG+11)(1:19)
 
 C FLAG POUR EFFECTUER LES CALCULS IMPLIQUANT (1-THETA)
-      IF (VALUNT.GT.PREC) THEN
-        LTHETA = .TRUE.
-      ELSE
-        LTHETA = .FALSE.
-      END IF
+      LTHETA = (VALUNT.GT.PREC)
 
 C IMPRESSIONS NIVEAU 2 POUR DIAGNOSTIC
       IF (TABNIV(2).EQ.2) THEN

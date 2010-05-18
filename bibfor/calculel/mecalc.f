@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
+C MODIF CALCULEL  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -571,7 +571,7 @@ C           -- GLUTE MECALM.F : IL FAUT PERMUTER PDEPLAR ET PDEPSEN
         CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
         IF (IRET.EQ.0) THEN
           CODRET = 1
-          CALL U2MESK('A','CALCULEL2_88',1,OPTIO2)
+          CALL U2MESK('A','CALCULEL2_89',1,OPTIO2)
         END IF
 C     POUR 'SIEF_ELNO_ELGA' CAS X-FEM, ON VERIFIE LA PRESENCE DU CHAMP
 C     SUPPLEMENTAIRE "DE CONTRAINTES AUX NOEUDS PAR SOUS ELEMENTS"

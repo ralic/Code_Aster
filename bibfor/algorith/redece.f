@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,13 +95,13 @@ C               DSDE    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 C       ----------------------------------------------------------------
         INTEGER         IMATE,NDIM,NDT,NDI,NVI,KPG,KSP,NUMLC
 C
-        REAL*8          CRIT(*), ANGMAS(3)
+        REAL*8          CRIT(*), ANGMAS(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
         REAL*8          TAMPON(*)
-        REAL*8          EPSDT(6),  DEPST(6)
-        REAL*8          SIGD(6),   SIGF(6)
+        REAL*8          EPSDT(*),  DEPST(*)
+        REAL*8          SIGD(*),   SIGF(*)
         REAL*8          VIND(*),   VINF(*)
-        REAL*8          DSDE(6,6)
+        REAL*8          DSDE(6,*)
 C
         CHARACTER*16    COMPOR(*),     OPT
         CHARACTER*8     TYPMOD(*)
@@ -203,6 +203,11 @@ C
 C
         IF ( NPAL .EQ. 0 ) THEN
            GOTO 2
+        ELSE
+           IF ((TYPMOD(2).EQ.'GRADEPSI').OR.
+     &         (TYPMOD(2).EQ.'GRADVARI')) THEN              
+              CALL U2MESK('A','COMPOR2_10',1,TYPMOD(2))           
+           ENDIF
         ENDIF
 C
         IF ( ICOMP .GT. 3 ) THEN

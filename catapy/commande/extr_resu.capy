@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,6 +22,7 @@ def extr_resu_prod(RESULTAT,**args):
   if AsType(RESULTAT) == evol_elas    : return evol_elas
   if AsType(RESULTAT) == evol_noli    : return evol_noli
   if AsType(RESULTAT) == evol_ther    : return evol_ther
+  if AsType(RESULTAT) == evol_varc    : return evol_varc
   if AsType(RESULTAT) == dyna_trans   : return dyna_trans
   if AsType(RESULTAT) == dyna_harmo   : return dyna_harmo
   if AsType(RESULTAT) == acou_harmo   : return acou_harmo
@@ -29,16 +30,17 @@ def extr_resu_prod(RESULTAT,**args):
   if AsType(RESULTAT) == mode_acou    : return mode_acou
   if AsType(RESULTAT) == mult_elas    : return mult_elas
   if AsType(RESULTAT) == fourier_elas : return fourier_elas
+
   raise AsException("type de concept resultat non prevu")
 
 EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
             fr="Extraire des champs au sein d'une SD Résultat",
-         regles=(CONCEPT_SENSIBLE('SEPARE'), 
+         regles=(CONCEPT_SENSIBLE('SEPARE'),
                  #REUSE_SENSIBLE(),
                  DERIVABLE('RESULTAT'),),
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
-                                               mode_acou,evol_ther,evol_noli,
+                                               mode_acou,evol_ther,evol_noli,evol_varc,
                                                mult_elas,fourier_elas,fourier_ther ) ),
 
          SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',

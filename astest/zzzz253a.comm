@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/05/2010   AUTEUR SELLENET N.SELLENET 
 # TITRE calcul non lineaire mecanique avec changement de maillage
 # zzzz253a.para = tps_job 60 mem_job 32Mo mem_aster 90 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,7 +87,10 @@ RESU1=STAT_NON_LINE(MODELE=MO1,  CHAM_MATER=CHMAT,
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE', RESI_INTE_RELA = 1.E-9),
                    INCREMENT=_F(LIST_INST=L_INST, ),
                    NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
-                   CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9))
+                   CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9),
+                   SOLVEUR=_F(METHODE='GCPC',
+                              PRE_COND='LDLT_SP',
+                              REAC_PRECOND=1,),)
 
 if 0 :  # pour verifier que le calcul sans projection est bien fichu : champs uniaxiaux, pas d'oscillations, ...
     CALC_ELEM(reuse =RESU1, RESULTAT=RESU1, OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',))
@@ -111,7 +114,10 @@ RESU2=STAT_NON_LINE(MODELE=MO2,  CHAM_MATER=CHMAT,
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE', RESI_INTE_RELA = 1.E-9),
                    INCREMENT=_F(LIST_INST=L_INST, ),
                    NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
-                   CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9))
+                   CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9),
+                   SOLVEUR=_F(METHODE='GCPC',
+                              PRE_COND='LDLT_SP',
+                              REAC_PRECOND=1,),)
 
 # 3eme calcul (on commence avec le maillage BARR1)
 #-------------------------------------------------
@@ -120,7 +126,10 @@ RESU3A=STAT_NON_LINE(MODELE=MO1,  CHAM_MATER=CHMAT,
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE', RESI_INTE_RELA = 1.E-9),
                    INCREMENT=_F(LIST_INST=L_INST, INST_FIN=inst1 ),
                    NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
-                   CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9))
+                   CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9),
+                   SOLVEUR=_F(METHODE='GCPC',
+                              PRE_COND='LDLT_SP',
+                              REAC_PRECOND=1,),)
 
 
 # 3eme calcul (on projette le resultat de BARR1 sur BARR2)
@@ -144,7 +153,10 @@ RESU3=STAT_NON_LINE(MODELE=MO2,  CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=BLOQ2,),_F(CHARGE=CHARG2,  FONC_MULT=FMULT,),),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE', RESI_INTE_RELA = 1.E-9),
                    NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
-                   CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9))
+                   CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-9),
+                   SOLVEUR=_F(METHODE='GCPC',
+                              PRE_COND='LDLT_SP',
+                              REAC_PRECOND=1,),)
 
 
 # Validation :

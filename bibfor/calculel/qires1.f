@@ -3,7 +3,7 @@
      &                   MATE  , CHVOIS, TABIDO, CHELEM           )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF CALCULEL  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -536,8 +536,7 @@ CGN 3000 FORMAT(I2,1X,A8,1X,A24)
      &            LCHOUT,LPAOUT,'G')
       CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
       IF (IRET.EQ.0) THEN
-        CALL U2MESK('A','CALCULEL2_88',1,OPTION)
-        GOTO 9999
+        CALL U2MESK('F','CALCULEL2_88',1,OPTION)
       END IF
 C
 C====
@@ -553,7 +552,5 @@ C
       CALL DETRSD('CHAMP_GD','&&'//NOMPRO//'.CH_PRESSP')
       CALL DETRSD('CHAMP_GD','&&'//NOMPRO//'.CH_FORCED')
       CALL DETRSD('CHAMP_GD','&&'//NOMPRO//'.CH_PRESSD')
-C
-9999  CONTINUE
 C
       END

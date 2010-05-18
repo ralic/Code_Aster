@@ -3,7 +3,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/04/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,9 +51,6 @@ C OUT         : IRET CODE RETOUR
 C ----------------------------------------------------------------------
 C TOLE CRP_20
 
-
-
-
       LOGICAL     RIGI, RESI, ELAS,REINIT
       LOGICAL     TOTAL,TOT1,TOT2,TOT3,DBLOQ
       INTEGER     NDIMSI,I,J,K,L,P,Q,M,N, COMPTE,T(3,3)
@@ -84,8 +81,7 @@ C TOLE CRP_20
       REAL*8       VALRES(6)
 
       REAL*8      R8DOT,R8PREM
-      
-      
+     
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
       UN=1.D0
@@ -99,8 +95,6 @@ C TOLE CRP_20
       T(3,1)=5
       T(3,2)=6
       T(3,3)=3
-            
-
 
       R1(1)=2
       R1(2)=3
@@ -161,7 +155,6 @@ C-------------------------------------------------
       ECROB = VALRES(5)
       ECROD = VALRES(6)
 
-
       TOLER=CRIT(3)
       INTMAX=INT(CRIT(1))
 
@@ -214,7 +207,6 @@ C-------------------------------------------------
       DM=VIM(7)
       D=DM
 
-
 C------------------------------------------------------------------ 
 C-- VERIFICATION SUR LES VALEURS PROPRES DE L ENDOMMAGEMENT
 C-- DE TRACTION ET SUR L ENDOMMAGEMENT DE COMPRESSION POUR BLOQUAGE
@@ -223,12 +215,12 @@ C------------------------------------------------------------------
       CALL DIAGO3(B,VECB,VALB)
       BDIM=3
       DO 201 I=1,3
-        IF (ABS(VALB(I))-TOLB.LT.R8PREM()) THEN
+        IF (VALB(I)-TOLB.LE.0.D0) THEN
           BDIM=BDIM-1
         ENDIF
  201  CONTINUE
       DBLOQ=.FALSE.
-      IF (D-(UN-TOLB).GE.R8PREM()) THEN
+      IF (D-(UN-TOLB).GE.0.D0) THEN
         DBLOQ=.TRUE.
       ENDIF
 
@@ -257,34 +249,26 @@ C----------------------------------------------------------------
 C--VERIF SUR ENDO FINAL POUR VOIR SI ENDO DEPASSE 1 OU PAS
 C-- SI ENDO DEPASSE 1 PLUS QUE TOLERANCE ON PASSE DANS LCEOBB
 C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
-
+        
         CALL DIAGO3(B,VECB,VALB)
+
         DO 101 I=1,3
           IF (VALB(I).LT.0) THEN
-            IF (ABS(VALB(I))-TOLB.LT.R8PREM()) THEN
-              VALB(I)=TOLB
-              TOTAL=.TRUE.
-            ELSE
-              REINIT=.TRUE.
-            ENDIF
+            REINIT=.TRUE.
           ENDIF
-          IF (ABS(VALB(I))-TOLB.LT.R8PREM()) THEN
-            VALB(I)=TOLB
+          IF (VALB(I)-TOLB.LE.0.D0) THEN
+            VALB(I)=TOLB-R8PREM()
             TOTAL=.TRUE.
           ENDIF
  101    CONTINUE
         IF (D.GT.1.D0) THEN
-          IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
-            D=UN-TOLB
-            DBLOQ=.TRUE.
-          ELSE
-            REINIT=.TRUE.
-          ENDIF
+          REINIT=.TRUE.
         ENDIF
-        IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
-          D=UN-TOLB
+        IF (UN-D-TOLB.LE.0.D0) THEN
+          D=UN-TOLB+R8PREM()
           DBLOQ=.TRUE.
         ENDIF
+        
         IF (.NOT.REINIT) THEN
           IF (TOTAL) THEN
             CALL R8INIR(6,0.D0,B,1)
@@ -328,21 +312,21 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS 2 DIRECTIONS
         TOT2=.FALSE.
         TOT3=.FALSE.
         CALL R8INIR(6,0.D0,BMR,1)
-        IF (ABS(VALB(1))-TOLB.LT.R8PREM()) THEN
+        IF (VALB(1)-TOLB.LE.0.D0) THEN
           BMR(1)=VALB(2)
           BMR(2)=VALB(3)
           DO 801 I=1,6
             EPSR(I)=EPI(R1(I))
  801      CONTINUE
           TOT1=.TRUE.
-        ELSEIF (ABS(VALB(2))-TOLB.LT.R8PREM()) THEN
+        ELSEIF (VALB(2)-TOLB.LE.0.D0) THEN
           BMR(1)=VALB(3)
           BMR(2)=VALB(1)
           DO 802 I=1,6
             EPSR(I)=EPI(R2(I))
  802      CONTINUE
           TOT2=.TRUE.
-        ELSEIF (ABS(VALB(3))-TOLB.LT.R8PREM()) THEN
+        ELSEIF (VALB(3)-TOLB.LE.0.D0) THEN
           BMR(1)=VALB(1)
           BMR(2)=VALB(2)
           DO 803 I=1,6
@@ -362,28 +346,18 @@ C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
         CALL DIAGO3(BR,VECBR,VALBR)
         DO 102 I=1,2
           IF (VALBR(I).LT.0) THEN
-            IF (ABS(VALBR(I))-TOLB.LT.R8PREM()) THEN
-              VALBR(I)=TOLB
-              TOTAL=.TRUE.
-            ELSE
-              REINIT=.TRUE.
-            ENDIF
+            REINIT=.TRUE.
           ENDIF
-          IF (ABS(VALBR(I))-TOLB.LT.R8PREM()) THEN
-            VALBR(I)=TOLB
+          IF (VALBR(I)-TOLB.LE.0.D0) THEN
+            VALBR(I)=TOLB-R8PREM()
             TOTAL=.TRUE.
           ENDIF
  102    CONTINUE
         IF (D.GT.1.D0) THEN
-          IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
-            D=UN-TOLB
-            DBLOQ=.TRUE.
-          ELSE
-            REINIT=.TRUE.
-          ENDIF
+          REINIT=.TRUE.
         ENDIF
-        IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
-          D=UN-TOLB
+        IF (UN-D-TOLB.LE.0.D0) THEN
+          D=UN-TOLB+R8PREM()
           DBLOQ=.TRUE.
         ENDIF 
         IF (.NOT.REINIT) THEN
@@ -399,19 +373,19 @@ C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
           ENDIF
           CALL R8INIR(6,0.D0,BINTER,1)
           IF (TOT1) THEN
-          BINTER(1)=TOLB
+          BINTER(1)=TOLB-R8PREM()
           BINTER(2)=BR(1)
           BINTER(3)=BR(2)
           BINTER(6)=BR(4)
           ELSEIF (TOT2) THEN
           BINTER(1)=BR(2)
-          BINTER(2)=TOLB
+          BINTER(2)=TOLB-R8PREM()
           BINTER(3)=BR(1)
           BINTER(5)=BR(4)
           ELSEIF (TOT3) THEN
           BINTER(1)=BR(1)
           BINTER(2)=BR(2)
-          BINTER(3)=TOLB
+          BINTER(3)=TOLB-R8PREM()
           BINTER(4)=BR(4)
           ENDIF
           CALL R8INIR(9,0.D0,INTERM,1)
@@ -432,7 +406,6 @@ C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
      &                 RK,RK1,RK2,
      &                 B,D,MULT,ELAS,DBLOQ,IRET)
         ENDIF
-
 
 C----------------------------------------------------------------
 C----CAS OU 2 VALEURS PROPRES SONT NULLES------------------------
@@ -458,19 +431,19 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS UNE DIRECTION
         TOT2=.FALSE.
         TOT3=.FALSE.
         CALL R8INIR(6,0.D0,BMR,1)
-        IF (ABS(VALB(1))-TOLB.GT.R8PREM()) THEN
+        IF (VALB(1)-TOLB.GT.0.D0) THEN
           BMR(1)=VALB(1)
           DO 804 I=1,6
             EPSR(I)=EPI(I)
  804      CONTINUE
           TOT1=.TRUE.
-        ELSEIF (ABS(VALB(2))-TOLB.GT.R8PREM()) THEN
+        ELSEIF (VALB(2)-TOLB.GT.0.D0) THEN
           BMR(1)=VALB(2)
           DO 805 I=1,6
             EPSR(I)=EPI(R1(I))
  805      CONTINUE
           TOT2=.TRUE.
-        ELSEIF (ABS(VALB(3))-TOLB.GT.R8PREM()) THEN
+        ELSEIF (VALB(3)-TOLB.GT.0.D0) THEN
           BMR(1)=VALB(3)
           DO 806 I=1,6
             EPSR(I)=EPI(R2(I))
@@ -487,31 +460,22 @@ C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
 C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
 
         IF (BR(1).LT.0) THEN
-          IF (ABS(BR(1))-TOLB.LT.R8PREM()) THEN
-            BR(1)=TOLB
-          ELSE
-            REINIT=.TRUE.
-          ENDIF
+          REINIT=.TRUE.
         ENDIF
-        IF (ABS(BR(1))-TOLB.LT.R8PREM()) THEN
-          BR(1)=TOLB
+        IF (BR(1)-TOLB.LE.0.D0) THEN
+          BR(1)=TOLB-R8PREM()
         ENDIF
         IF (D.GT.1.D0) THEN
-          IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
-            D=UN-TOLB
-            DBLOQ=.TRUE.
-          ELSE
-            REINIT=.TRUE.
-          ENDIF
+          REINIT=.TRUE.
         ENDIF
-        IF (ABS(UN-D)-TOLB.LT.R8PREM()) THEN
-          D=UN-TOLB
+        IF (UN-D-TOLB.LE.0.D0) THEN
+          D=UN-TOLB+R8PREM()
           DBLOQ=.TRUE.
         ENDIF
         IF (.NOT.REINIT) THEN
-          VALB(1)=TOLB
-          VALB(2)=TOLB
-          VALB(3)=TOLB
+          VALB(1)=TOLB-R8PREM()
+          VALB(2)=TOLB-R8PREM()
+          VALB(3)=TOLB-R8PREM()
           IF (TOT1) VALB(1)=BR(1)
           IF (TOT2) VALB(2)=BR(1)
           IF (TOT3) VALB(3)=BR(1)
@@ -537,7 +501,7 @@ C-----------------------------------------------------
 C--ON RECUPERE L ENDOMMAGEMENT ET LA CONTRAINTE
 C-----------------------------------------------------
           DO 262 I=1,3
-            VIP(I)=1-B(I)
+            VIP(I)=UN-B(I)
  262      CONTINUE
           DO 263 I=4,6
             VIP(I)=-B(I)
@@ -697,7 +661,7 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
             DSIDEP(I,J)=DSIDEP(I,J)+MU/DEUX*BOBO(I,J)
  116      CONTINUE
  115    CONTINUE
-             CALL R8INIR(36,0.D0,DSISUP,1)
+        CALL R8INIR(36,0.D0,DSISUP,1)
         IF (OPTION(10:14).NE.'_ELAS') THEN
           IF (.NOT.ELAS) THEN
  
@@ -737,7 +701,7 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
                   TOT3=.FALSE.
                   CALL R8INIR(6,0.D0,BR,1)
                   CALL R8INIR(6,0.D0,DELTAB,1)
-                  IF (ABS(VALB(1))-TOLB.LT.R8PREM()) THEN
+                  IF (ABS(VALB(1))-TOLB.LE.0.D0) THEN
 
                BR(1)=VALB(2)
                      BR(2)=VALB(3)
@@ -749,7 +713,7 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
                     DELTAB(4)=-EPIB(6)
                     DELTAD=D-DM
                     TOT1=.TRUE.
-                 ELSEIF (ABS(VALB(2))-TOLB.LT.R8PREM()) THEN
+                 ELSEIF (ABS(VALB(2))-TOLB.LE.0.D0) THEN
                       
                     BR(1)=VALB(3)
                     BR(2)=VALB(1)
@@ -762,7 +726,7 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
                DELTAD=D-DM
                TOT2=.TRUE.
              
-                 ELSEIF (ABS(VALB(3))-TOLB.LT.R8PREM()) THEN
+                 ELSEIF (ABS(VALB(3))-TOLB.LE.0.D0) THEN
              
                BR(1)=VALB(1)
                BR(2)=VALB(2)
@@ -897,7 +861,7 @@ C--------------------------------------------------------
               CALL R8INIR(6,0.D0,BR,1)
               CALL R8INIR(6,0.D0,DELTAB,1)
  
-              IF (ABS(VALB(1))-TOLB.GT.R8PREM()) THEN
+              IF (ABS(VALB(1))-TOLB.GT.0.D0) THEN
              
                 BR(1)=VALB(1)
                 DO 607 I=1,6
@@ -907,7 +871,7 @@ C--------------------------------------------------------
                 DELTAD=D-DM
                 TOT1=.TRUE.
  
-              ELSEIF (ABS(VALB(2))-TOLB.GT.R8PREM()) THEN
+              ELSEIF (ABS(VALB(2))-TOLB.GT.0.D0) THEN
              
                 BR(1)=VALB(2)
  
@@ -918,7 +882,7 @@ C--------------------------------------------------------
                 DELTAD=D-DM
                 TOT2=.TRUE.
              
-              ELSEIF (ABS(VALB(3))-TOLB.GT.R8PREM()) THEN
+              ELSEIF (ABS(VALB(3))-TOLB.GT.0.D0) THEN
              
                 BR(1)=VALB(3)
  

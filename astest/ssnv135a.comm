@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE
 # ssnv135a.para = tps_job 210 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1124,6 +1124,9 @@ TEST_RESU(RESU=(
 #***********************************************************************
 #    CALCUL DE LA SOLUTION FINALE OPTION GROT_GDEP ACTIVEE MATRICE SYM
 #***********************************************************************
+# LIMITATION A UNE DEFORMATION DE 5% => NUMERO D'ORDRE 40
+# CAR GROT_GDEP  EST FAUX EN GRANDES DEFORMATIONS
+#***********************************************************************
 
 
 W3=STAT_NON_LINE( 
@@ -1141,7 +1144,7 @@ W3=STAT_NON_LINE(
                          ETAT_INIT=_F( 
                 SIGM = SIG_IN3,
                 VARI = VAR_IN3),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(  NUME_INST_FIN=40, 
                 LIST_INST = TEMPS2),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE'),
@@ -1163,12 +1166,12 @@ W3=CALC_ELEM( reuse=W3,
 
 
 W3=CALC_ELEM( reuse=W3,     RESULTAT=W3,
-                    NUME_ORDRE=(10, 20, 40, 60, 100,),
+                    NUME_ORDRE=(10, 20, 40,  ),
                         OPTION=('EPSI_ELNO_DEPL', )
                 )
 
 W3=CALC_NO(  reuse=W3,     RESULTAT=W3,
-                    NUME_ORDRE=(10, 20, 40, 60, 100,),
+                    NUME_ORDRE=(10, 20, 40,),
                        OPTION=('EPSI_NOEU_DEPL', 'SIEF_NOEU_ELGA', )
                )
 
@@ -1188,14 +1191,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIXX',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIYY
                  _F(  RESULTAT = W3,
@@ -1206,14 +1201,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIYY',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIZZ
                  _F(  RESULTAT = W3,
@@ -1240,23 +1227,7 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 40,
                        PRECISION = 1.E-5,
                        VALE = -1047.8),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 60,
-                       PRECISION = 1.E-5,
-                       VALE = -1262.74),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -929.529))
-
+                      ),
            )
 
 
@@ -1275,14 +1246,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'B',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIXX',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIYY
                  _F(  RESULTAT = W3,
@@ -1293,14 +1256,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'B',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIYY',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIZZ
                  _F(  RESULTAT = W3,
@@ -1327,23 +1282,7 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 40,
                        PRECISION = 1.E-5,
                        VALE = -1047.8),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'B',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 60,
-                       PRECISION = 1.E-5,
-                       VALE = -1262.74),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'B',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -929.529))
-
+                       ),
            )
 
 
@@ -1362,14 +1301,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'C',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIXX',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIYY
                  _F(  RESULTAT = W3,
@@ -1380,14 +1311,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'C',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIYY',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIZZ
                  _F(  RESULTAT = W3,
@@ -1414,29 +1337,15 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 40,
                        PRECISION = 1.E-5,
                        VALE = -1047.8),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'C',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 60,
-                       PRECISION = 1.E-5,
-                       VALE = -1262.74),
-                 _F(  RESULTAT = W3,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'C',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -929.529))
-
+               ),
            )
 
 #***********************************************************************
 #    CALCUL DE LA SOLUTION FINALE OPTION GROT_GDEP ACTIVEE MATRICE NONSYM
 #***********************************************************************
-
+# LIMITATION A UNE DEFORMATION DE 5% => NUMERO D'ORDRE 40
+# CAR GROT_GDEP  EST FAUX EN GRANDES DEFORMATIONS
+#***********************************************************************
 
 W4=STAT_NON_LINE( 
                             MODELE=MODELE,
@@ -1453,7 +1362,7 @@ W4=STAT_NON_LINE(
                          ETAT_INIT=_F( 
                 SIGM = SIG_IN3,
                 VARI = VAR_IN3),
-                         INCREMENT=_F( 
+                         INCREMENT=_F( NUME_INST_FIN=40,
                 LIST_INST = TEMPS2),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE'),
@@ -1475,12 +1384,12 @@ W4=CALC_ELEM( reuse=W4,
 
 
 W4=CALC_ELEM( reuse=W4,     RESULTAT=W4,
-                    NUME_ORDRE=(10, 20, 40, 60, 100,),
+                    NUME_ORDRE=(10, 20, 40,),
                         OPTION=('EPSI_ELNO_DEPL', )
                 )
 
 W4=CALC_NO(  reuse=W4,     RESULTAT=W4,
-                    NUME_ORDRE=(10, 20, 40, 60, 100,),
+                    NUME_ORDRE=(10, 20, 40,),
                        OPTION=('EPSI_NOEU_DEPL', 'SIEF_NOEU_ELGA', )
                )
 
@@ -1499,14 +1408,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W4,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIXX',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIYY
                  _F(  RESULTAT = W4,
@@ -1517,14 +1418,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W4,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIYY',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIZZ
                  _F(  RESULTAT = W4,
@@ -1551,23 +1444,7 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 40,
                        PRECISION = 1.E-5,
                        VALE = -1047.8),
-                 _F(  RESULTAT = W4,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 60,
-                       PRECISION = 1.E-5,
-                       VALE = -1262.74),
-                 _F(  RESULTAT = W4,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'A',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -929.529))
-
+            ),
            )
 
 
@@ -1586,14 +1463,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W4,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'B',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIXX',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIYY
                  _F(  RESULTAT = W4,
@@ -1604,14 +1473,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W4,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'B',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIYY',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIZZ
                  _F(  RESULTAT = W4,
@@ -1638,23 +1499,7 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 40,
                        PRECISION = 1.E-5,
                        VALE = -1047.8),
-                 _F(  RESULTAT = W4,
-                       GROUP_NO = 'B',
-                      REFERENCE  = 'NON_REGRESSION',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 60,
-                       PRECISION = 1.E-5,
-                       VALE = -1262.74),
-                 _F(  RESULTAT = W4,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'B',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -929.529))
-
+                ),
            )
 
 
@@ -1673,14 +1518,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W4,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'C',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIXX',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIYY
                  _F(  RESULTAT = W4,
@@ -1691,14 +1528,6 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 10,
                        PRECISION = 1.E-5,
                        VALE = -402.256),
-                 _F(  RESULTAT = W4,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'C',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIYY',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -462.44),
 
 # CONTRAINTE SIZZ
                  _F(  RESULTAT = W4,
@@ -1725,23 +1554,7 @@ TEST_RESU(RESU=(
                        NUME_ORDRE = 40,
                        PRECISION = 1.E-5,
                        VALE = -1047.8),
-                 _F(  RESULTAT = W4,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'C',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 60,
-                       PRECISION = 1.E-5,
-                       VALE = -1262.74),
-                 _F(  RESULTAT = W4,
-                      REFERENCE  = 'NON_REGRESSION',
-                       GROUP_NO = 'C',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       NUME_ORDRE = 100,
-                       PRECISION = 1.E-5,
-                       VALE = -929.529))
-
+                ),
            )
 
 FIN()

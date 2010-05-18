@@ -1,5 +1,6 @@
-# MODIF  DATE 06/04/2010   AUTEUR MESSIER J.MESSIER 
+# MODIF  DATE 18/05/2010   AUTEUR MESSIER J.MESSIER 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
+# ssnv185s.para = tps_job 300 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,24 +17,6 @@
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
-# ======================================================================
-# ssnv185s.para = tps_job 100 mem_job 1024Mo liste_test S
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
-# ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -111,6 +94,12 @@ FISS[0]=DEFI_FISS_XFEM(MODELE=MODELE[0],
 #                   CHARGEMENTS
 #----------------------------------------------
 
+NPAS = 3
+NPAS = NPAS +2
+
+LSN = [None]*NPAS 
+LST = [None]*NPAS 
+
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELE[0],
                    DDL_IMPO=_F(GROUP_MA='SURFINF',DX=0.0,DY=0.0,DZ=0.0,),);
@@ -120,19 +109,20 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELE[0],
 #         PROPAGATION SUR 3 PAS DE TEMPS
 #----------------------------------------------
 
-CHXFEM = [None]*5
-RESU = [None]*5
-SIF = [None]*5
-LSN = [None]*5
-LST = [None]*5
-CHRX = [None]*5
+CHXFEM = [None]*NPAS
+RESU = [None]*NPAS
+SIF = [None]*NPAS
+LSN = [None]*NPAS
+LST = [None]*NPAS
+CHRX = [None]*NPAS
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+#RI = 1.
+#RS = 2.
 RI = 1.
 RS = 2.
 
-
-for i in range(1,4) :
+for i in range(1,NPAS-1) :
 
    MODELE[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE[0],FISSURE=FISS[i-1],INFO=1,);
 
@@ -162,6 +152,7 @@ for i in range(1,4) :
                          COMP_ELAS=_F(RELATION='ELAS',),
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FISS[i-1],
+                                   NB_POINT_FOND = 3,
                                    R_INF=RI,
                                    R_SUP=RS,),
                          LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
@@ -171,13 +162,14 @@ for i in range(1,4) :
 
    IMPR_TABLE(TABLE=SIF[i],);
 
-   if ( i != 3 ) :
+   if ( i != NPAS-2 ) :
       FISS[i] = CO('FISS_%d'%(i))
       PROPA_FISS(METHODE_PROPA='SIMPLEXE',
                  MODELE=MODELE[i],
                  FISSURE=_F(FISS_ACTUELLE=FISS[i-1],
                             FISS_PROPAGEE=FISS[i],
                             TABLE=SIF[i],
+                            NB_POINT_FOND = 3,
                            ),
                  RAYON=RS,
                  ZONE_MAJ='TOUT',
@@ -192,10 +184,28 @@ for i in range(1,4) :
                               MATER=ACIER,),
                 );
 
+#     LEVEL SET AU PAS DE PROPAGATION COURANT
+      LSN[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                          OPERATION='EXTR',
+                          FISSURE=FISS[i],
+                          NOM_CHAM='LNNO',);
+      LST[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                          OPERATION='EXTR',
+                          FISSURE=FISS[i],
+                          NOM_CHAM='LTNO',);
+
+      IMPR_RESU(FORMAT='MED',
+                UNITE=30,
+                RESU=_F(CHAM_GD=LSN[i],),);
+      IMPR_RESU(FORMAT='MED',
+                UNITE=30,
+                RESU=_F(CHAM_GD=LST[i],),);
+
+# LES VALEURS DE NON REGRESSION SONT CELLES DE LA BULL
 TEST_TABLE(TABLE=SIF[i],
                NOM_PARA='K1_LOCAL',
                TYPE_TEST='MAX',
-               VALE=6.04030E+09,
+               VALE=2.75203E+09,
                CRITERE='RELATIF',               
                PRECISION=1.E-3,
                REFERENCE='NON_REGRESSION',),
@@ -203,7 +213,7 @@ TEST_TABLE(TABLE=SIF[i],
 TEST_TABLE(TABLE=SIF[i],
                NOM_PARA='K1_LOCAL',
                TYPE_TEST='MIN',
-               VALE=6.04030E+09,
+               VALE=2.75203E+09,
                CRITERE='RELATIF',               
                PRECISION=1.E-3,
                REFERENCE='NON_REGRESSION',),

@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+#@ MODIF modelisa Messages  DATE 18/05/2010   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,6 +109,10 @@ cata_msg = {
 
 21 : _("""
  le noeud  %(k1)s  éxtremité d'un des discrets n'existe pas dans la surface donnée par GROUP_MA.
+"""),
+
+22 : _("""
+ La température de référence doit être comprise entre %(r1)f et %(r2)f.
 """),
 
 

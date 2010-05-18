@@ -1,21 +1,21 @@
-#@ MODIF postrele Messages  DATE 25/03/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF postrele Messages  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -23,17 +23,17 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
- création/extension de la table %(k1)s 
+ création/extension de la table %(k1)s
 """),
 
 2 : _("""
- post_traitement numéro :  %(i1)d 
- inexistence de CHAM_GD 
- pas de post-traitement 
+ post_traitement numéro :  %(i1)d
+ inexistence de CHAM_GD
+ pas de post-traitement
  """),
 
 3 : _("""
- post_traitement numéro :  %(i1)d 
+ post_traitement numéro :  %(i1)d
  aucune maille ne correspond aux critères demandés
  pas de post-traitement
 """),
@@ -61,7 +61,7 @@ cata_msg = {
 """),
 
 10 : _("""
- paramètre %(k1)s de type %(k2)s 
+ paramètre %(k1)s de type %(k2)s
 """),
 
 11 : _("""
@@ -78,7 +78,7 @@ cata_msg = {
 """),
 
 14 : _("""
- en repère local, on ne traite pas le champ %(k1)s 
+ en repère local, on ne traite pas le champ %(k1)s
 """),
 
 15 : _("""
@@ -114,7 +114,7 @@ cata_msg = {
 """),
 
 22 : _("""
- avec VECT_Y, il faut préciser 
+ avec VECT_Y, il faut préciser
    - soit un seul groupe de noeuds
    - soit plusieurs noeuds
 """),
@@ -134,14 +134,14 @@ cata_msg = {
 26 : _("""
  changement de repère:
  champ non traité %(k1)s
- option de calcul %(k2)s 
+ option de calcul %(k2)s
 """),
 
 27 : _("""
  noeud sur l'AXE_Z
  maille      : %(k1)s
  noeud       : %(k2)s
- coordonnées : %(r1)f 
+ coordonnées : %(r1)f
 """),
 
 28 : _("""
@@ -150,7 +150,7 @@ cata_msg = {
 """),
 
 29 : _("""
- on ne sait pas faire ce post-traitement pour le chemin %(k1)s en repère %(k2)s 
+ on ne sait pas faire ce post-traitement pour le chemin %(k1)s en repère %(k2)s
 """),
 
 30 : _("""
@@ -168,111 +168,111 @@ cata_msg = {
 """),
 
 33 : _("""
- option non traitée: %(k1)s, post-traitement: %(i1)d 
+ option non traitée: %(k1)s, post-traitement: %(i1)d
  les invariants tensoriels sont calculés
-   pour les options :  %(k2)s 
-                       %(k3)s 
-                       %(k4)s 
-                       %(k5)s 
-                       %(k6)s 
-                       %(k7)s 
-                       %(k8)s 
-                       %(k9)s 
-                       %(k10)s 
-                       %(k11)s 
-                       %(k12)s 
-                       %(k13)s 
-                       %(k14)s 
-                       %(k15)s 
-                       %(k16)s 
-                       %(k17)s 
-                       %(k18)s 
-                       %(k19)s 
-                       %(k20)s 
+   pour les options :  %(k2)s
+                       %(k3)s
+                       %(k4)s
+                       %(k5)s
+                       %(k6)s
+                       %(k7)s
+                       %(k8)s
+                       %(k9)s
+                       %(k10)s
+                       %(k11)s
+                       %(k12)s
+                       %(k13)s
+                       %(k14)s
+                       %(k15)s
+                       %(k16)s
+                       %(k17)s
+                       %(k18)s
+                       %(k19)s
+                       %(k20)s
 """),
 
 34 : _("""
- option non traitée: %(k1)s, post-traitement: %(i1)d 
- les traces normales sont calculées 
-   pour les options :  %(k2)s 
-                       %(k3)s 
-                       %(k4)s 
-                       %(k5)s 
-                       %(k6)s 
-                       %(k7)s 
-                       %(k8)s 
-                       %(k9)s 
-                       %(k10)s 
-                       %(k11)s 
-                       %(k12)s 
-                       %(k13)s 
-                       %(k14)s 
-                       %(k15)s 
-                       %(k16)s 
-                       %(k17)s 
-                       %(k18)s 
-   ou pour les grandeurs %(k19)s 
-                         %(k20)s 
+ option non traitée: %(k1)s, post-traitement: %(i1)d
+ les traces normales sont calculées
+   pour les options :  %(k2)s
+                       %(k3)s
+                       %(k4)s
+                       %(k5)s
+                       %(k6)s
+                       %(k7)s
+                       %(k8)s
+                       %(k9)s
+                       %(k10)s
+                       %(k11)s
+                       %(k12)s
+                       %(k13)s
+                       %(k14)s
+                       %(k15)s
+                       %(k16)s
+                       %(k17)s
+                       %(k18)s
+   ou pour les grandeurs %(k19)s
+                         %(k20)s
 """),
 
 35 : _("""
- option non traitée: %(k1)s, post-traitement: %(i1)d 
+ option non traitée: %(k1)s, post-traitement: %(i1)d
  les traces directionnelles sont calculées
-   pour les options :  %(k2)s 
-                       %(k3)s 
-                       %(k4)s 
-                       %(k5)s 
-                       %(k6)s 
-                       %(k7)s 
-                       %(k8)s 
-                       %(k9)s 
-                       %(k10)s 
-                       %(k11)s 
-                       %(k12)s 
-                       %(k13)s 
-                       %(k14)s 
-                       %(k15)s 
-                       %(k16)s 
-                       %(k17)s 
-                       %(k18)s 
-                       %(k19)s 
-                       %(k20)s 
-   ou pour les grandeurs %(k21)s 
-                         %(k22)s 
-                         %(k23)s 
+   pour les options :  %(k2)s
+                       %(k3)s
+                       %(k4)s
+                       %(k5)s
+                       %(k6)s
+                       %(k7)s
+                       %(k8)s
+                       %(k9)s
+                       %(k10)s
+                       %(k11)s
+                       %(k12)s
+                       %(k13)s
+                       %(k14)s
+                       %(k15)s
+                       %(k16)s
+                       %(k17)s
+                       %(k18)s
+                       %(k19)s
+                       %(k20)s
+   ou pour les grandeurs %(k21)s
+                         %(k22)s
+                         %(k23)s
 """),
 
 36 : _("""
- trace directionnelle, post-traitement: %(i1)d 
+ trace directionnelle, post-traitement: %(i1)d
  direction nulle, pas de calul
 """),
 
 37 : _("""
- attention post-traitement %(i1)d 
+ attention post-traitement %(i1)d
  seules les composantes du tenseur des contraintes sont traitées
 """),
 
 38 : _("""
- post-traitement %(i1)d 
+ post-traitement %(i1)d
  composante non traitée dans un changement de repere
  Contactez le support
 """),
 
 39 : _("""
- post-traitement %(i1)d 
+ post-traitement %(i1)d
  grandeur %(k1)s non traitée dans un changement de repere
  les changements de repere sont possibles
    pour la grandeur %(k2)s  option: %(k3)s
-   pour la grandeur %(k4)s  options: %(k5)s %(k6)s 
+   pour la grandeur %(k4)s  options: %(k5)s %(k6)s
    pour les grandeurs %(k7)s  %(k8)s
 """),
 
 40 : _("""
- le noeud numéro %(i1)d n'est pas connecté à la maille de nom %(k1)s 
+ le noeud numéro %(i1)d n'est pas connecté à la maille de nom %(k1)s
 """),
 
 41 : _("""
- champ inexistant nom_cham: %(k1)s  nume_ordre: %(i1)d 
+ champ inexistant nom_cham: %(k1)s  nume_ordre: %(i1)d
 """),
 
 42 : _("""
@@ -288,7 +288,7 @@ cata_msg = {
 
 44 : _("""
  occurence %(i1)d du mot clé facteur ACTION
- on ne peut accéder au RESULTAT de nom %(k1)s et de type %(k2)s par %(k3)s ou par %(k4)s 
+ on ne peut accéder au RESULTAT de nom %(k1)s et de type %(k2)s par %(k3)s ou par %(k4)s
 """),
 
 45 : _("""
@@ -304,7 +304,7 @@ cata_msg = {
 
 47 : _("""
  occurence %(i1)d du mot clé facteur ACTION
- le ou les champs élémentaires mis en jeu est ou sont donnés aux pointe de gauss
+ le ou les champs élémentaires mis en jeu est ou sont donnés aux points de gauss
  ce ou ces champs ne sont pas traités.
 """),
 
@@ -339,7 +339,7 @@ cata_msg = {
 
 54 : _("""
  occurence %(i1)d du mot clé facteur ACTION
- Impossible de récupérer les composantes du champ. 
+ Impossible de récupérer les composantes du champ.
 """),
 
 55 : _("""
@@ -370,32 +370,36 @@ cata_msg = {
 """),
 
 61 : _("""
- Nombre de cycles admissibles négatif, 
+ Nombre de cycles admissibles négatif,
  verifier la courbe de WOLHER
- contrainte calculee =  %(r1)f    nadm =  %(r2)f 
- 
+ contrainte calculee =  %(r1)f    nadm =  %(r2)f
+
 """),
 
 62 : _("""
  Attention lors de la définition de votre liste de noeuds,
- %(i1)d noeud est hors de la matière 
- 
+ %(i1)d noeud est hors de la matière
+
 """),
 
 63 : _("""
  Attention lors de la définition de votre liste de noeuds,
- %(i1)d noeuds sont hors de la matière 
- 
+ %(i1)d noeuds sont hors de la matière
+
 """),
 
 64 : _("""
-On cherche à faire une extraction sur des noeuds qui ne font 
-pas partie du maillage, peut-etre créés par PROPA_FISS 
+On cherche à faire une extraction sur des noeuds qui ne font
+pas partie du maillage, peut-etre créés par PROPA_FISS
 """),
 
 65 : _("""
-La composante %(k1)s n'existe pas pour le champ de type %(k2)s 
-du résultat %(k3)s 
+La composante %(k1)s n'existe pas pour le champ de type %(k2)s
+du résultat %(k3)s
 """),
 
+66 : _("""
+Dans le cas d'un champ de type ELEM, l'utilisation des mots clés NOEUD, GROUP_NO
+n'a pas de sens, seul le mot clé MAILLE ou GROUP_MA est autorisé.
+"""),
 }

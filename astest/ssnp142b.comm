@@ -1,6 +1,6 @@
-# MODIF  DATE 29/03/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 3D A L'AIDE DES ELEMENT DE JOINT ET DE LA LOI JOINT_MECA_RUPT
-# ssnp142b.para = tps_job 500 mem_job 128Mo ncpus 1 liste_test S
+# ssnp142b.para = tps_job 500 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG

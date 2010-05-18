@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -388,6 +388,11 @@ Conseils :
 """),
 
 88: _("""
+ L'option %(k1)s  n'est disponible pour aucun des éléments de votre modèle.
+ Le calcul d'indicateur d'erreur est donc impossible.
+"""),
+
+89: _("""
  option  %(k1)s  non disponible sur les éléments du modèle
  pas de champ créé
 """),

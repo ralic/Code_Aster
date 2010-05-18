@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,6 +140,7 @@ C-- 1. INITIALISATIONS :
 C----------------------
       ITMAX =  INT(CRIT(1))
       IER=0
+      IRET=0
       
       IF ( ITMAX .LE. 0 )ITMAX = -ITMAX
       TOLER =  CRIT(3)

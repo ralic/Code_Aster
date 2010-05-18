@@ -3,7 +3,7 @@
      &                  CARELE,LISCH2,DEFICO,RESOCO,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/05/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -182,7 +182,7 @@ C
             FORCE  = .TRUE.
             INCR   = NRPASE.EQ.0
             CALL NMARCH(RESULT,NUMINS,SDDISC,FORCE ,COMPOR,
-     &                  SDCRIT,CARCRI,RESOCO,VALINI,INCR  ,
+     &                  SDCRIT,CARCRI,DEFICO,RESOCO,VALINI,INCR  ,
      &                  MODELE,MATE  ,CARELE,FONACT,LISCH2,
      &                  SDDYNA)
           END IF   

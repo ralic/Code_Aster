@@ -5,7 +5,7 @@
      &                    TYPESE, NPASS,  CODRET )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -264,8 +264,7 @@ C - --RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR
      &                      IAD,K8B)
                 THETA = ZR(IAD)
                 IF ((THETA.GT.1.D0) .OR. (THETA.LT.0.D0)) THEN
-                     THETA = 1.D0
-                  CALL U2MESK('A','INDICATEUR_5',1,RESUCO)
+                  CALL U2MESK('F','INDICATEUR_5',1,RESUCO)
                 ENDIF
               ENDIF
 C - --

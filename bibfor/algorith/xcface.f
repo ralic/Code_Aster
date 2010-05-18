@@ -1,4 +1,4 @@
-      SUBROUTINE XCFACE(ELREF,LSN,LST,JGRLSN,IGEOM,
+      SUBROUTINE XCFACE(ELREF,LSN,LST,JGRLSN,IGEOM,ENR,
      &                            PINTER,NINTER,AINTER,NFACE,CFACE)
       IMPLICIT NONE
 
@@ -6,9 +6,10 @@
       INTEGER       JGRLSN,IGEOM,NINTER,NFACE,CFACE(5,3)
       CHARACTER*8   ELREF
       CHARACTER*24  PINTER,AINTER
+      CHARACTER*16  ENR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/05/2010   AUTEUR JAUBERT A.JAUBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +36,7 @@ C       LSN      : VALEURS DE LA LEVEL SET NORMALE
 C       LST      : VALEURS DE LA LEVEL SET TANGENTE
 C       JGRLSN   : ADRESSE DU GRADIENT DE LA LEVEL SET NORMALE
 C       IGEOM    : ADRESSE DES COORDONNEES DES NOEUDS DE L'ELT PARENT
+C       ENR      : VALEUR DE L'ATTRIBUT DE L'ELEMENT
 C
 C     SORTIE
 C       PINTER  : COORDONNEES DES POINTS D'INTERSECTION
@@ -144,43 +146,82 @@ C       NUM NO DE L'ELEMENT
               C(3)=0.D0
         ENDIF
         LONGAR=PADIST(NDIM,A,B)
-        IF ((LSNA*LSNB).LE.0.D0) THEN
-          IF ((LSNA.EQ.0.D0).AND.(LSTA.LE.PREC)) THEN
-C           ON AJOUTE A LA LISTE LE POINT A
-            IF (LSTA.GE.0.D0.AND.LLIN) THEN
-             CALL XAJPIN(JPTINT,PTMAX,IPT,INS,A,LONGAR,JAINT,0,0,0.D0)
-            ELSE
-             CALL XAJPIN(JPTINT,PTMAX,IPT,INS,A,LONGAR,JAINT,0,NA,0.D0)
-            ENDIF
-          ENDIF
-          IF (LSNB.EQ.0.D0.AND.LSTB.LE.PREC) THEN
-C           ON AJOUTE A LA LISTE LE POINT B
-            IF (LSTB.GE.0.D0.AND.LLIN) THEN
-             CALL XAJPIN(JPTINT,PTMAX,IPT,INS,B,LONGAR,JAINT,0,0,0.D0)
-            ELSE
-             CALL XAJPIN(JPTINT,PTMAX,IPT,INS,B,LONGAR,JAINT,0,NB,0.D0)
-            ENDIF
-          ENDIF
-          IF (LSNA.NE.0.D0.AND.LSNB.NE.0.D0) THEN
-C           INTERPOLATION DES COORDONNÉES DE C
-            DO 130 I=1,NDIM
-              C(I)=A(I)-LSNA/(LSNB-LSNA)*(B(I)-A(I))
- 130        CONTINUE
-C           POSITION DU PT D'INTERSECTION SUR L'ARETE
-            ALPHA=PADIST(NDIM,A,C)
-            LSTC=LSTA-(LSNA/(LSNB-LSNA))*(LSTB-LSTA)
-            IF (LSTC.LE.PREC) THEN
-              IF (LSTC.GE.0.D0.AND.LLIN) THEN
-                CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,C,LONGAR,JAINT,0,0,
-     &                       0.D0)
+
+        IF ((ENR.EQ.'XHC').OR. (ENR.EQ.'XHTC')) THEN
+          IF ((LSNA*LSNB).LE.0.D0) THEN
+            IF ((LSNA.EQ.0.D0).AND.(LSTA.LE.PREC)) THEN
+C             ON AJOUTE A LA LISTE LE POINT A
+              IF (LSTA.GE.0.D0.AND.LLIN) THEN
+               CALL XAJPIN(JPTINT,PTMAX,IPT,INS,A,LONGAR,
+     &                     JAINT,0,0,0.D0)
               ELSE
-                CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,C,LONGAR,JAINT,IA,0,
-     &                     ALPHA)
+               CALL XAJPIN(JPTINT,PTMAX,IPT,INS,A,LONGAR,
+     &                     JAINT,0,NA,0.D0)
+              ENDIF
+            ENDIF
+            IF (LSNB.EQ.0.D0.AND.LSTB.LE.PREC) THEN
+C             ON AJOUTE A LA LISTE LE POINT B
+              IF (LSTB.GE.0.D0.AND.LLIN) THEN
+               CALL XAJPIN(JPTINT,PTMAX,IPT,INS,B,LONGAR,
+     &                     JAINT,0,0,0.D0)
+              ELSE
+               CALL XAJPIN(JPTINT,PTMAX,IPT,INS,B,LONGAR,
+     &                     JAINT,0,NB,0.D0)
+              ENDIF
+            ENDIF
+            IF (LSNA.NE.0.D0.AND.LSNB.NE.0.D0) THEN
+C             INTERPOLATION DES COORDONN??ES DE C
+              DO 130 I=1,NDIM
+                C(I)=A(I)-LSNA/(LSNB-LSNA)*(B(I)-A(I))
+ 130          CONTINUE
+C             POSITION DU PT D'INTERSECTION SUR L'ARETE
+              ALPHA=PADIST(NDIM,A,C)
+              LSTC=LSTA-(LSNA/(LSNB-LSNA))*(LSTB-LSTA)
+              IF (LSTC.LE.PREC) THEN
+                IF (LSTC.GE.0.D0.AND.LLIN) THEN
+                  CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,C,LONGAR,
+     &                        JAINT,0,0,0.D0)
+                ELSE
+                  CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,C,LONGAR,
+     &                        JAINT,IA,0,ALPHA)
+                ENDIF
+              ENDIF
+            ENDIF
+          ENDIF
+      
+        ELSE
+          IF ((LSNA*LSNB).LE.0.D0) THEN
+            IF ((LSNA.EQ.0.D0).AND.(LSTA.LE.0.D0)) THEN
+C             ON AJOUTE A LA LISTE LE POINT A
+              CALL XAJPIN(JPTINT,PTMAX,IPT,INS,A,LONGAR,
+     &                    JAINT,0,NA,0.D0)
+            ENDIF
+            IF (LSNB.EQ.0.D0.AND.LSTB.LE.0.D0) THEN
+C             ON AJOUTE A LA LISTE LE POINT B
+              CALL XAJPIN(JPTINT,PTMAX,IPT,INS,B,LONGAR,
+     &                    JAINT,0,NB,0.D0)
+            ENDIF
+            IF (LSNA.NE.0.D0.AND.LSNB.NE.0.D0) THEN
+C             INTERPOLATION DES COORDONNÉES DE C
+              DO 140 I=1,NDIM
+                C(I)=A(I)-LSNA/(LSNB-LSNA)*(B(I)-A(I))
+ 140          CONTINUE
+C             POSITION DU PT D'INTERSECTION SUR L'ARETE
+              ALPHA=PADIST(NDIM,A,C)
+              LSTC=LSTA-(LSNA/(LSNB-LSNA))*(LSTB-LSTA)
+
+C             CAS OU LE FRONT EST EXCATEMENT SUR L'ARETE 
+C             IF (LSTC.LE.PREC.AND.LSTC.GT.0.D0) THEN
+              IF (LSTC.LE.PREC) THEN
+                IF (LSTC.GT.0.D0) LSTC=0.D0               
+                CALL XAJPIN(JPTINT,PTMAX,IPT,IBID,C,LONGAR,
+     &                      JAINT,IA,0,
+     &                      ALPHA)
               ENDIF
             ENDIF
           ENDIF
         ENDIF
-
+   
  100  CONTINUE
 
 C     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
@@ -188,15 +229,6 @@ C     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
      &                                                    LLIN,TYPMA)
 
       NINTER=IPT
-
-      IF (0.EQ.1) THEN
-        WRITE(6,*)'POINTS D''INTERSECTION NON TRIES'
-        DO 150 I=1,NINTER
-          DO 151 J=1,NDIM
-            WRITE(6,*)' ',ZR(JPTINT-1+(I-1)*NDIM+J)
- 151      CONTINUE
- 150    CONTINUE
-      ENDIF
 
 C     2) DECOUPAGE EN FACETTES TRIANGULAIRES DE LA SURFACE DEFINIE
 C     ------------------------------------------------------------
@@ -276,7 +308,7 @@ C       TRI SUIVANT THETA CROISSANT
            ZR(JPTINT-1+3*(PP-1)+K)=ZR(JPTINT-1+3*(PD-1)+K)
            ZR(JPTINT-1+3*(PD-1)+K)=TAMPOR(K)
  252     CONTINUE
-         DO 253 K=1,4
+         DO 253 K=1,ZXAIN
            TAMPOR(K)=ZR(JAINT-1+ZXAIN*(PP-1)+K)
            ZR(JAINT-1+ZXAIN*(PP-1)+K)=ZR(JAINT-1+ZXAIN*(PD-1)+K)
            ZR(JAINT-1+ZXAIN*(PD-1)+K)=TAMPOR(K)
@@ -379,16 +411,7 @@ C       PROBLEME DE DIMENSION : NI 2D, NI 3D
         CALL ASSERT(NDIM.EQ.2 .OR. NDIM.EQ.3)
       ENDIF
 
-      IF (0.EQ.1) THEN
-        WRITE(6,*)'CFACE '
-        DO 300 I=1,NFACE
-          DO 301 J=1,NDIM
-            WRITE(6,*)' ',CFACE(I,J)
- 301      CONTINUE
- 300    CONTINUE
-      ENDIF
-
  999  CONTINUE
-
+ 
       CALL JEDEMA()
       END

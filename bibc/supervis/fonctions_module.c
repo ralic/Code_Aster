@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF fonctions_module supervis  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF fonctions_module supervis  DATE 18/05/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -32,16 +32,16 @@ PyObject* SPEC_OSCI( PyObject* self, PyObject* args )
 {
    PyObject *OX, *OY, *OF, *OA;
    PyArrayObject *Vx, *Vy, *Vf, *Va, *Sp;
-   int dims[3];
+   npy_intp dims[3];
    int nbpts, len_f, len_a;
 
    if (!PyArg_ParseTuple(args,"OOOO:SPEC_OSCI",&OX,&OY,&OF,&OA))
       return NULL;
 
-   Vx=(PyArrayObject*)PyArray_ContiguousFromObject(OX,PyArray_DOUBLE,1,1);
-   Vy=(PyArrayObject*)PyArray_ContiguousFromObject(OY,PyArray_DOUBLE,1,1);
-   Vf=(PyArrayObject*)PyArray_ContiguousFromObject(OF,PyArray_DOUBLE,1,1);
-   Va=(PyArrayObject*)PyArray_ContiguousFromObject(OA,PyArray_DOUBLE,1,1);
+   Vx = (PyArrayObject*) PyArray_FROM_OTF(OX, NPY_DOUBLE, NPY_IN_ARRAY);
+   Vy = (PyArrayObject*) PyArray_FROM_OTF(OY, NPY_DOUBLE, NPY_IN_ARRAY);
+   Vf = (PyArrayObject*) PyArray_FROM_OTF(OF, NPY_DOUBLE, NPY_IN_ARRAY);
+   Va = (PyArrayObject*) PyArray_FROM_OTF(OA, NPY_DOUBLE, NPY_IN_ARRAY);
 
    /* verification des arguments */
    if ( ! ( Vx && Vy && Va && Vf ))
@@ -68,11 +68,11 @@ PyObject* SPEC_OSCI( PyObject* self, PyObject* args )
    printf("<SPEC_OSCI> Nombre d'amortissements         : %d\n", len_a);
 #endif
 
-   dims[0]=len_a;
+   dims[0]=(npy_intp)len_a;
    dims[1]=3;
-   dims[2]=len_f;
+   dims[2]=(npy_intp)len_f;
 
-   Sp = (PyArrayObject*)PyArray_FromDims(3,dims,PyArray_DOUBLE);
+   Sp = (PyArrayObject*) PyArray_SimpleNew(3, dims, NPY_DOUBLE);
    calc_SPEC_OSCI( nbpts, (double*)Vx->data, (double*)Vy->data,
                    len_f, (double*)Vf->data, len_a, (double*)Va->data,
                    (double*)Sp->data );
@@ -151,7 +151,7 @@ static PyMethodDef methods[] = {
 };
 
 
-void initaster_fonctions(void)
+PyMODINIT_FUNC initaster_fonctions(void)
 {
    Py_InitModule("aster_fonctions", methods);
    import_array();

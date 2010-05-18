@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+%& MODIF COMPELEM  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -159,18 +159,19 @@ PHENOMENE_MODELISATION__
 
         MODELISATION__ 'D_PLAN_HH2SUDM'    DIM__ 2 2  CODE__ '2DM'
                ATTRIBUT__  VOLU_FINI=OUI  THM=OUI TYPE_VOISIN=A2
+                           D_PLAN=OUI
                MAILLE__ TRIA7     ELEMENT__ DHH2T7_SUDM
                MAILLE__ QUAD9     ELEMENT__ DHH2Q9_SUDM
                MAILLE__ SEG3      ELEMENT__ DHH2S3_SUDM
- 
+
         MODELISATION__ 'D_PLAN_HH2SUDA'    DIM__ 2 2  CODE__ '2DA'
-               ATTRIBUT__    THM=OUI
+               ATTRIBUT__    THM=OUI D_PLAN=OUI
                MAILLE__ TRIA7     ELEMENT__ DHH2T7_SUDA
                MAILLE__ QUAD9     ELEMENT__ DHH2Q9_SUDA
                MAILLE__ SEG3      ELEMENT__ DHH2S3_SUDA
 
         MODELISATION__ 'D_PLAN_HH2SUC'    DIM__ 2 2  CODE__ '2SC'
-               ATTRIBUT__    THM=OUI
+               ATTRIBUT__    THM=OUI D_PLAN=OUI
                MAILLE__ TRIA7     ELEMENT__ DHH2T7_SUC
                MAILLE__ QUAD9     ELEMENT__ DHH2Q9_SUC
                MAILLE__ SEG3      ELEMENT__ DHH2S3_SUC
@@ -399,7 +400,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MECA_ARETE2
 
        MODELISATION__ '3D_INCO'          DIM__ 3 3   CODE__ '3DI'
-              ATTRIBUT__  NBSIGM=X6  INCO=OUI  TYPMOD=COMP3D 
+              ATTRIBUT__  NBSIGM=X6  INCO=OUI  TYPMOD=COMP3D
               MAILLE__ HEXA20    ELEMENT__ MINC_HEXA20
               MAILLE__ PENTA15   ELEMENT__ MINC_PENTA15
               MAILLE__ TETRA10   ELEMENT__ MINC_TETRA10
@@ -464,7 +465,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEFOSE3
 
        MODELISATION__ 'AXIS_INCO'        DIM__ 2 2   CODE__ 'AXC'
-              ATTRIBUT__  AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=OUI  
+              ATTRIBUT__  AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=OUI
               MAILLE__ TRIA6     ELEMENT__ MIAXTR6
               MAILLE__ QUAD8     ELEMENT__ MIAXQU8
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
@@ -729,7 +730,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
 
        MODELISATION__ 'D_PLAN_INCO'      DIM__ 2 2   CODE__ 'PLI'
-              ATTRIBUT__  NBSIGM=X4 TYPMOD=D_PLAN  INCO=OUI  
+              ATTRIBUT__  NBSIGM=X4 TYPMOD=D_PLAN  INCO=OUI
               MAILLE__ TRIA6     ELEMENT__ MIPLTR6
               MAILLE__ QUAD8     ELEMENT__ MIPLQU8
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
@@ -1042,7 +1043,7 @@ PHENOMENE_MODELISATION__
              MAILLE__ SEG3      ELEMENT__ HH_D_PLAN_SE3
 
        MODELISATION__ 'D_PLAN_HH2S'      DIM__ 2 2   CODE__ 'DZ3'
-              ATTRIBUT__  THM=OUI
+              ATTRIBUT__  THM=OUI   D_PLAN=OUI
              MAILLE__ QUAD8     ELEMENT__ HH2_DPQ8S
              MAILLE__ TRIA6     ELEMENT__ HH2_DPTR6S
              MAILLE__ SEG3      ELEMENT__ HH2_D_PLAN_SE3
@@ -1557,3 +1558,4 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD9     ELEMENT__ ACPLQU9
               MAILLE__ SEG2      ELEMENT__ ACPLSE2
               MAILLE__ SEG3      ELEMENT__ ACPLSE3
+

@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -360,11 +360,6 @@ Conseil :
 98 : _("""
  on n'a pas pu récupérer le paramètre THETA dans le résultat  %(k1)s
  valeur prise pour THETA: 0.57
-"""),
-
-99 : _("""
- récupération d'une valeur de THETA illicite dans le résultat  %(k1)s
- valeur prise pour THETA: 1.
 """),
 
 }

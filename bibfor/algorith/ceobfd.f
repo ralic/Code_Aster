@@ -1,0 +1,67 @@
+       SUBROUTINE CEOBFD (DM,EPSM,LAMBDA,MU,ECROD,FD)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE IDOUX L.IDOUX
+      IMPLICIT NONE
+      REAL*8             EPSM(6),DM,FD
+      REAL*8             LAMBDA,MU,ECROD
+C ----------------------------------------------------------------------
+C     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
+C     ROUTINE DE CALCUL DE LA FORCE THERMODYNAMIQUE FD
+C
+C  IN DM     : ENDOMMAGEMENT DE COMPRESSION
+C  IN EPSM   : TENSEUR DE DEFORMATION
+C  IN LAMBDA : /
+C  IN MU     : / COEFFICIENTS DE LAME
+C  IN ECROD  : PARAMETRE DU MODELE
+C
+C OUT FD     : FORCE THERMODYNAMIQUE
+C ----------------------------------------------------------------------
+
+      INTEGER     I,J,K
+
+      REAL*8      CC(6),CPE(6),EPS(6),D
+      REAL*8      UN,DEUX,TREPS,TREM,DCOEFD,ENE
+      REAL*8      VECC(3,3),VALCC(3)
+
+      UN=1.D0
+      DEUX=2.D0
+     
+      D=DM
+      DO 100 I=1,6
+        EPS(I)=EPSM(I)
+ 100  CONTINUE
+      
+      TREPS=EPS(1)+EPS(2)+EPS(3)
+      CALL DIAGO3(EPS,VECC,VALCC)
+      DO 22 I=1,3
+        IF (VALCC(I).GT.0.D0) THEN
+          VALCC(I)=0.D0
+        ENDIF
+ 22   CONTINUE
+
+      TREM=VALCC(1)**2+VALCC(2)**2+VALCC(3)**2
+      IF (TREPS.GT.0.D0) THEN
+        TREPS=0.D0
+      ENDIF
+      DCOEFD=DEUX*(UN-D)
+      ENE=LAMBDA/DEUX*TREPS**2+MU*TREM
+      FD=DCOEFD*ENE-DEUX*D*ECROD
+
+      END

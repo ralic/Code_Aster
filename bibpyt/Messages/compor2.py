@@ -1,4 +1,4 @@
-#@ MODIF compor2 Messages  DATE 10/05/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor2 Messages  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,6 +58,25 @@ cata_msg={
 8 : _("""
    DEFI_COMPOR : la somme des fractions volumiques est très différente de 1.0 : <%(r1).15E>
    Vérifiez FRAC_VOL pour toutes les occurrences du mot clé POLYCRISTAL.
+"""),
+
+9 : _("""
+Les déformations deviennent trop grandes : <%(r1)E>
+=> GROT_GDEP sous COMP_INCR n'est plus valide.
+
+Pour un calcul en grandes déforamtion sous COMP_INCR
+il faut utiliser GDEF_HYPO_ELAS ou SIMO_MIEHE.
+
+Pour un calcul hyperelastique, utiliser COMP_ELAS.
+"""),
+
+
+10 : _("""
+Le redécoupage local du pas de temps n'est pas compatible avec <%(k1)s>
+"""),
+
+11 : _("""
+La rotation de réseau n'est pas compatible ave RUNGE_KUTTA. Utiliser l'integration IMPLICITE.
 """),
 
 }
