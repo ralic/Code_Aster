@@ -5,7 +5,7 @@ C
       REAL*8        PARAVI(3), MATER(NBMAT,2)
 C ==================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/05/2010   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,7 +42,13 @@ C ==================================================================
       A0     = MATER( 8,2)
       S0     = MATER(11,2)
       M0     = MATER(12,2)
-      
+
+
+C ==================================================================
+C --- ON IMPOSE A0=1 CAR POUR LA LOI LETK ON MODIFIE LES CRITERES --
+C --- VISQUEUX POUR AVOIR UNE DROITE
+C ==================================================================
+      A0     = 1.0D0
       AVMAX  = 1.D0
       MVMAX  = MATER(19,2)
       SVMAX  = S0

@@ -1,7 +1,7 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/05/2010   AUTEUR FERNANDES R.FERNANDES 
 # ======================================================================
 # TITRE ETUDE ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH : LETK
-# wtnv135a.para = tps_job 230 mem_job 128Mo ncpus 1 liste_test S
+# wtnv135a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -262,7 +262,7 @@ EVOL_DEV=DEFI_FONCTION(      NOM_PARA='INST',
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS2 ,),
                                 ECHEC=_F(SUBD_METHODE='UNIFORME',
                                          SUBD_PAS=10,
-                                         SUBD_PAS_MINI=1.,),)
+                                         SUBD_PAS_MINI=0.01,),)
 
 
 U2=STAT_NON_LINE( 
@@ -294,11 +294,14 @@ U2=STAT_NON_LINE(
                 ),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
-                REAC_ITER=1,   
+                REAC_ITER=1,
+                PAS_MINI_ELAS=1.0,
+                REAC_ITER_ELAS=100,
                 ),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-6,    
-                ITER_GLOB_MAXI = 30,    
+                ITER_GLOB_MAXI = 20,   
+                ITER_GLOB_ELAS = 100, 
                 )
               )
 
@@ -329,7 +332,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DX',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = 3.35767E-2),),)
+                      VALE       = 3.015E-2),),)
 
 TEST_RESU(RESU=(
 
@@ -342,7 +345,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIZZ',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = -1.17996E7),),)
+                      VALE       = -1.1956E7),),)
 
 
 FIN () ;

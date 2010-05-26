@@ -5,7 +5,7 @@ C
       REAL*8      INVAR, S(6), MATER(NBMAT,2), VIN(7), SEUIL
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 26/05/2010   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,7 +41,7 @@ C =================================================================
       REAL*8    SII, SIGC, PREF, LGLEPS 
       REAL*8    H0E, H0C, HTHETA 
       REAL*8    COS3T, RCOS3T, UCRIV
-      REAL*8    PARAVI(3), VARVI(4), ZERO  , XIV, VINTR 
+      REAL*8    PARAVI(3), VARVI(4), XIV, VINTR 
 C =================================================================
       COMMON /TDIM/   NDT , NDI
 C =================================================================
@@ -49,7 +49,6 @@ C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
 C =================================================================
       PARAMETER       ( LGLEPS  = 1.0D-8 )
-      PARAMETER       ( ZERO    = 0.D0 )
 C =================================================================
 C =================================================================
 C --- RECUPERATION DE PARAMETRES DU MODELE ------------------------
@@ -77,7 +76,7 @@ C =================================================================
 C ---  CRITERE ELASTOPLASTIQUE ------------------------------------
 C =================================================================
       UCRIV  = VARVI(1)*SII*HTHETA + VARVI(2)*INVAR+VARVI(3)
-      IF (UCRIV .LT. ZERO) GOTO 100
+C      IF (UCRIV .LT. ZERO) GOTO 100
 
       SEUIL  = SII*HTHETA - SIGC*H0C*(UCRIV)**PARAVI(1)
 C =================================================================

@@ -1,6 +1,6 @@
-# MODIF  DATE 18/05/2010   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_TRAN_MODAL
-# sdld31b.para = tps_job 60 mem_job 128M ncpus 1 liste_test S
+# sdld31b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG

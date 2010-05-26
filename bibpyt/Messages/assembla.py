@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
+#@ MODIF assembla Messages  DATE 25/05/2010   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -266,8 +266,15 @@ Risques & conseils :
 """),
 
 68 : _("""
- Problème dans NUMERO.F avec FETI: Incohérence entre la SD_FETI et le paramètrage
- de l'opérateur. Nombre d'incohérences= %(i1)d
+ Problème avec le solveur linéaire FETI: %(i1)d incohérence(s) entre la SD_FETI
+ et le paramètrage de l'opérateur.
+ 
+ Conseil:
+ ========
+ Vérifiez bien que le modèle et la liste de charges utilisés lors du partitionnement
+ (opérateur DEFI_PART...) sont identiques à ceux utilisés pour le calcul.
+ 
+ Détail informatique: arrêt dans NUMERO.f.
 """),
 
 }

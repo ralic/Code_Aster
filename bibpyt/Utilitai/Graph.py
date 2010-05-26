@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,7 +194,7 @@ class Graph:
             Y0 = min([Y0,]+list(self.Valeurs[i][ny]))
             Y1 = max([Y1,]+list(self.Valeurs[i][ny]))
             self.MinP_Y = min([self.MinP_Y,]+[y for y \
-                  in list(self.Valeurs[i][0]) if y>0])
+                  in list(self.Valeurs[i][ny]) if y>0])
       self.BBXmin = X0
       self.BBXmax = X1
       self.BBYmin = Y0

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 25/05/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,10 +59,10 @@ MODE_LOCAL__
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
-    EPJSIGN  = SIEF_R   ELEM__         (SIG_NX    SIG_NY    SIG_NZ   )
-    EPJSIGT  = SIEF_R   ELEM__         (SIG_TX    SIG_TY    SIG_TZ   )
-    EPJSIT1  = SIEF_R   ELEM__         (SIG_T1X   SIG_T1Y   SIG_T1Z  )
-    EPJSIT2  = SIEF_R   ELEM__         (SIG_T2X   SIG_T2Y   SIG_T2Z  )
+    EPJSIGN  = SIEF_R   ELEM__         (SIG_NX    SIG_NY    SIG_NZ   SIG_N)
+    EPJSIGT  = SIEF_R   ELEM__         (SIG_TX    SIG_TY    SIG_TZ)
+    EPJSIT1  = SIEF_R   ELEM__         (SIG_T1X   SIG_T1Y   SIG_T1Z  SIG_T1)
+    EPJSIT2  = SIEF_R   ELEM__         (SIG_T2X   SIG_T2Y   SIG_T2Z  SIG_T2)
     EGTHETA  = G        ELEM__         (GTHETA   )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )

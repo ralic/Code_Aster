@@ -5,7 +5,7 @@ C
       REAL*8    VIN(7), MATER(NBMAT,2),PARA(3),INVAR,S(6),LKBPRI
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/05/2010   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -144,13 +144,13 @@ C =================================================================
 
       SINPSI = MU0V*((SIGMAX - SIGLIM)/(XI0V*SIGMAX + SIGLIM))
       ELSE
-      SINPSI = MU1*((ALPHA - ALRES)/(XI1*ALPHA - ALRES))
+      SINPSI = MU1*((ALPHA - ALRES)/(XI1*ALPHA + ALRES))
 
 
       ENDIF
 C =================================================================
 C --- CALCUL DE LKBPRI=BPRIME -------------------------------------
 C =================================================================
-      LKBPRI = DEUX*SQRT(SIX)*SINPSI/(TROIS-SINPSI)
+      LKBPRI = -DEUX*SQRT(SIX)*SINPSI/(TROIS-SINPSI)
 C =================================================================
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/09/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FATIGUE VIBRATOIRE D'UNE AUBE DE VENTILATEUR
 # sdlv129a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -263,8 +263,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12,
                   PRECISION=0.01,),);
 
                                        
-TDMG12=POST_RELEVE_T(ACTION=_F(     GROUP_NO='ELTS',
-                                    INTITULE='(MODE 1) + 0,5 * (MODE 2)',
+TDMG12=POST_RELEVE_T(ACTION=_F(     INTITULE='(MODE 1) + 0,5 * (MODE 2)',
                                     CHAM_GD=D_MOD12,
                                     TOUT_CMP='OUI',
                                     OPERATION='EXTREMA',) ,) ;
@@ -302,8 +301,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12b,
                   PRECISION=0.01,),);
 
                                        
-TDMG12b=POST_RELEVE_T(ACTION=_F(     GROUP_NO='ELTS',
-                                    INTITULE='(MODE 1) + 0,5 * (MODE 2)',
+TDMG12b=POST_RELEVE_T(ACTION=_F(    INTITULE='(MODE 1) + 0,5 * (MODE 2)',
                                     CHAM_GD=D_MOD12b,
                                     TOUT_CMP='OUI',
                                     OPERATION='EXTREMA',) ,) ;

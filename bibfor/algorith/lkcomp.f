@@ -13,7 +13,7 @@ C
       REAL*8             DSIDE(6,6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 26/05/2010   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -209,7 +209,7 @@ C --- CALCUL DE fv(SIGE, XIVM) ---CRITERE VISQUEUX MAX-------------
 C =================================================================
            CALL LKCRIV(XIVM,IEL,SEL,VINM, NBMAT,MATERD,UCRIVM,SEUIVM)
 
-           IF (UCRIVM.LT.ZERO)  CALL U2MESS('F','COMPOR1_27')
+C           IF (UCRIVM.LT.ZERO)  CALL U2MESS('F','COMPOR1_27')
            
 C---- VARV : EN DESSOUS DU CRITERE VISQUEUX MAX : CONTRACTANCE: VARV=0
 C---- VARV : AU DESSUS DU CRITERE VISQUEUX MAX  : DILATANCE:    VARV=1
@@ -240,26 +240,26 @@ C =================================================================
 C --- VERIFICATION SUR L'AXE HYDROSTATIQUE ------------------------
 C =================================================================
 
-           IF ((UCRIV .LT. ZERO).OR.(UCRVM .LT. ZERO)) THEN 
+C           IF ((UCRIV .LT. ZERO).OR.(UCRVM .LT. ZERO)) THEN
 
-              CALL LKVARP(VINM, NBMAT,  MATERD, PARAEP)
+C              CALL LKVARP(VINM, NBMAT,  MATERD, PARAEP)
               
-              CALL LKVACP(NBMAT, MATERD, PARAEP, VARPL)     
+C              CALL LKVACP(NBMAT, MATERD, PARAEP, VARPL)     
               
-              CALL LKVARV(VINTR,NBMAT, MATERD, PARAVI)
+C              CALL LKVARV(VINTR,NBMAT, MATERD, PARAVI)
               
-              CALL LKVACV(NBMAT, MATERD, PARAVI, VARVI)     
+C              CALL LKVACV(NBMAT, MATERD, PARAVI, VARVI)     
               
-           IF ((-(VARVI(3)/VARVI(2))).LT.(-(VARPL(3)/VARPL(2)))) THEN
-                RETCOM = 1
-                GOTO 1000
+C           IF ((-(VARVI(3)/VARVI(2))).LT.(-(VARPL(3)/VARPL(2)))) THEN
+C                RETCOM = 1
+C                GOTO 1000
                 
-                  ELSE
-                CALL U2MESS('F','COMPOR1_28')
+C                  ELSE
+C                CALL U2MESS('F','COMPOR1_28')
                  
-           ENDIF
+C           ENDIF
          
-           ENDIF  
+C           ENDIF  
            
 C =================================================================
 C --- PAS DE VISCOSITE  -------------------------------------------

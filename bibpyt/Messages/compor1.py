@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+#@ MODIF compor1 Messages  DATE 26/05/2010   AUTEUR FERNANDES R.FERNANDES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,16 +148,6 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 
 26: _("""
  LETK - lklmat :: paramètres de la loi LETK non cohérents 
-"""),
-27: _("""
- LETK - lkcomp :: Réduire le pas de temps peut dans certains cas remédier au problème.
- Le critère visqueux max en ce point de charge n'est 
- pas défini. Le calcul de la distance au critère n'est pas fait.
-"""),
-28: _("""
- LETK - lkcomp :: Réduire le pas de temps peut dans certains cas remédier au problème.
- Le critère visqueux en ce point de charge n'est pas défini. 
- Le calcul de la distance au critère n'est pas fait.
 """),
 
 29: _("""

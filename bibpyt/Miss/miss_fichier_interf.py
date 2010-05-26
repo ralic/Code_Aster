@@ -1,4 +1,4 @@
-#@ MODIF miss_fichier_interf Miss  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_fichier_interf Miss  DATE 25/05/2010   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,6 +41,7 @@ def fichier_mvol(struct):
     cont.extend(en_ligne(struct.noeud_coor, dict_format['sR'], 3, ""))
     cont.extend(en_ligne(struct.maille_connec, dict_format['sI'], 20,
                          format_ligne="%(valeurs)s     GR    1"))
+    cont.append("")
     return os.linesep.join(cont)
 
 

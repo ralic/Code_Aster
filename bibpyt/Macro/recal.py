@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal Macro  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -199,11 +199,6 @@ def make_include_files(UNITE_INCLUDE, calcul, parametres):
    except Exception, e:
        raise e
 
-   if debug:
-       print 5*"\n" + 60*"+"
-       print newtxt
-       print 60*"+" + 5*"\n"
-
    return
 
 
@@ -211,7 +206,6 @@ def make_include_files(UNITE_INCLUDE, calcul, parametres):
 def mes_concepts(list_concepts=[],base=None):
    """ Fonction qui liste les concepts créés """
    for e in base.etapes:
-      #print "AA2=", e.nom
       if e.nom in ('INCLUDE','MACR_RECAL',) :
          list_concepts=list(mes_concepts(list_concepts=list_concepts,base=e))
       elif (e.sd != None) and (e.parent.nom=='INCLUDE') :
@@ -224,55 +218,11 @@ def mes_concepts(list_concepts=[],base=None):
 # -------------------------------------------------------------------------------
 def detr_concepts(self):
      liste_concepts=mes_concepts(base=self.parent)
-     if debug: print "liste_concepts=", liste_concepts
      for e in liste_concepts:
         nom = string.strip(e)
         DETRUIRE( OBJET =self.g_context['_F'](CHAINE = nom), INFO=2)
         if self.jdc.g_context.has_key(nom) : del self.jdc.g_context[nom]
      del(liste_concepts)
-
-
-# # -------------------------------------------------------------------------------
-# def exec_file(filename):
-#    """ Lance les commandes qui sont dans le fichier filename
-#    """
-#    # Importation de commandes Aster
-#    try:
-#       import aster
-#       import Macro
-#       from Accas import _F
-#       from Cata.cata import *
-#    except ImportError:
-#       raise "Le mode INCLUSION doit etre lance depuis Aster"
-# 
-#    try:
-#      if 1:
-#       execfile(filename)
-# 
-#      if 0:
-#       _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
-#       unite=_UL['UNITE_LIBRE',1]
-#       DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
-#       shutil.copyfile(filename, "fort.%s" % unite)
-#       INCLUDE(UNITE=unite)
-# 
-#      if 0:
-#       txt=open(filename).read()
-#       exec(txt)
-# 
-# 
-#    except Exception, e:
-#       print "\n\n" + 100*"-" + "\nError while executing the commands slave :\n" + str(e) + "\n\n" + 100*"-"
-#       os.system('cp -ax %s ./REPE_OUT/' % filename)
-#       print "Output file follow:\n" + open(filename).read() + "\n" + 80*"-" 
-#       raise "Stop on previous error"
-#    return
-# 
-# 
-# #     _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
-# #     unite=_UL['UNITE_LIBRE',1]
-# #     DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
-# #     return(unite)
 
 
 # -------------------------------------------------------------------------------
@@ -365,7 +315,6 @@ def Ecriture_Derivees(output_file, derivees):
    if type(derivees) in [list, tuple]:
        t = []
        for l in derivees:
-          #print l
           l = str(l).replace('[', '').replace(']', '')
           t.append( l )
        txt = '\n'.join(t)
@@ -528,8 +477,6 @@ class CALCULS_ASTER:
         # Aiguillage vers INCLUDE
         # ----------------------------------------------------------------------------
         if self.LANCEMENT == 'INCLUSION':
-           #txt = "%s de l'unite logique : %s" % (self.LANCEMENT, self.UNITE_INCLUDE)
-           #print "\n--> Mode d'evaluation des calculs esclaves : %s <--\n" % txt
            UTMESS('I','RECAL0_29', valk=self.LANCEMENT)
            fonctionnelle, gradient = self.run_include(list_val)
 
@@ -538,7 +485,6 @@ class CALCULS_ASTER:
         # Aiguillage vers ASRUN distribue
         # ----------------------------------------------------------------------------
         elif self.LANCEMENT == 'DISTRIBUTION':
-           #print "\n--> Mode d'evaluation des calculs esclaves : %s <--\n" % self.LANCEMENT
            UTMESS('I','RECAL0_29', valk=self.LANCEMENT)
            fonctionnelle, gradient = self.run_distrib(list_val)
 
@@ -604,7 +550,6 @@ class CALCULS_ASTER:
 #          if not reponse in liste_reponses: liste_reponses.append(reponse)
 
      liste_reponses = [ x[0] for x in calcul ]
-     if debug: print "AA3/liste_reponses=", liste_reponses
 
 
      # ----------------------------------------------------------------------------
@@ -613,7 +558,6 @@ class CALCULS_ASTER:
      Lcalc = []
      for i in range(len(list_val)):
          params = list_val[i]
-         if debug: print "AA/params=", params
 
 
          # ----------------------------------------------------------------------------
@@ -621,7 +565,6 @@ class CALCULS_ASTER:
          # ----------------------------------------------------------------------------
          for nompara in list_params:
              valpara = params[nompara]
-             if debug: print "AA/nompara/valpara:", nompara, valpara
              exec( "%s=%s" % (nompara, valpara) )    #  YOUN__ = X0[0], DSDE__ = X0[1], ...
 
 
@@ -637,41 +580,8 @@ class CALCULS_ASTER:
          # Lancement du calcul (par un include)
          # ----------------------------------------------------------------------------
          new = "fort.%s.new" % self.UNITE_INCLUDE
-#         exec_file(filename=new)
          execfile(new)
 
-#          print "UNSURM__=", UNSURM__
-#          sys.exit()
-# 
-#          R0__ = 5.39556628611
-#          PETITB__ = 0.0936790879154
-#          PETITW__ = 0.1524782189
-#          GAMA1__ = 530.27009253
-# 
-# #          execfile("fort.3.pre")
-#          print "UNSURM__=", UNSURM__
-#          execfile("fort.3.new")
-# #          execfile("fort.3.new")
-#          sys.exit()
-
-#          try:
-#              execfile(new)
-#          except Exception, e:
-#              print "\n\n" + 80*"-" + "\n\nError while executing the commands slave :\n" + str(e)
-#              if debug: print "Output file follow:\n" + newtxt + "\n" + 80*"-" 
-#              raise "Stop on previous error"
-
-    #      f = open("fort.%s" % self.UNITE_INCLUDE)
-    #      txt = f.read()
-    #      f.close()
-    #      INCLUDE(UNITE=2, INFO=2)
-    #      d = {}
-    #      dd = {}
-    #      print globals()
-    #      execfile("fort.%s" % UL, globals(), locals())
-    #      execfile("fort.%s" % UL, globals(), d)
-    #      print d
-    #      print U
 
          # ----------------------------------------------------------------------------
          # On considere que le job est OK s'il ne s'est pas plante dans le except precedent..
@@ -686,29 +596,16 @@ class CALCULS_ASTER:
          for i in range(len(liste_reponses)):
              reponse = liste_reponses[i]
              DETRUIRE(OBJET=_F(CHAINE='VEXTR___'), ALARME='NON', INFO=1)  # Faudrait proteger ce nom ici (VEXTR___ peut etre deja utilise dans l'etude)
-             if debug: print "AA3/reponse=", reponse
              exec( "VEXTR___ = %s.EXTR_TABLE()" % reponse)
              list_para = VEXTR___.para
              tab_lue   = VEXTR___.values()
- 
-             if debug: print "AA3/reponses=", reponses
-
              F = table2numpy(tab_lue, list_para, reponses, i)
              Lrep.append(F)
 
-             if debug:
-                exec("IMPR_TABLE(TABLE=%s)" % reponse)
-                print "AA3/reponse=", reponse
-                print "AA1/F=", F
 
-         if debug:
-             print "AA/params=", params
-             print "AA1/Lrep=", Lrep
 
          Lcalc.append( Lrep )
 
-         #print self.jdc.g_context
-         #print self.jdc.parent
 
          # Destruction des concepts Aster
          liste_concepts = self.jdc.g_context.keys()
@@ -784,8 +681,6 @@ class CALCULS_ASTER:
             sys.path.append(os.path.join(ASTER_ROOT, 'ASTK', 'ASTK_SERV', 'lib'))
             sys.path.append(os.path.join(ASTER_ROOT, 'lib', 'python%s.%s' % (sys.version_info[0], sys.version_info[1] ) , 'site-packages'))
         except: pass
-        #print sys.path
-        #print ASTER_ROOT
         try:
             from asrun.run          import AsRunFactory
             from asrun.profil       import ASTER_PROFIL
@@ -908,14 +803,26 @@ class CALCULS_ASTER:
         # ----------------------------------------------------------------------------
         d_diag = {}
         for result in task.exec_result:
-            print result
+            #print result
             label = result[0]
             diag  = result[2]
+            if len(result) >= 8: output_filename = os.path.join('~', 'flasheur', str(result[7]))
+            else:                output_filename = ''
             d_diag[label] = diag
             if not diag[0:2] in ['OK', '<A']:
-                print "Erreur! Le calcul esclave '%s' ne s'est pas arrete correctement! Verifier le repertoire : %s" % (label, resudir)
+              if not diag in ['<F>_COPY_ERROR']:
+                  UTMESS('A', 'RECAL0_70', valk=(label, output_filename))
+  
+                  # Affichage de l'output
+                  try:
+                     f=open(output_filename, 'r')
+                     print f.read()
+                     f.close()
+                  except: pass
 
-        if not d_diag: raise "\nErreur! Au moins un calcul esclave ne s'est pas arrete correctement! Verifier le repertoire : %s" % resudir
+
+        if not d_diag: 
+                UTMESS('F', 'RECAL0_71', valk=resudir)
         self.list_diag = [ d_diag[label] for label in labels ]
 
         # ----------------------------------------------------------------------------
@@ -925,12 +832,9 @@ class CALCULS_ASTER:
         if task.nbnook > 0:
            iret = 4
         if iret:
-           print "\nErreur! Au moins un calcul esclave ne s'est pas arrete correctement! Verifier le repertoire : %s" % resudir
+           UTMESS('A', 'RECAL0_71', valk=resudir)
            run.Sortie(iret)
 
-#         for diag in self.list_diag:
-#             if not diag[0:2] in ['OK', '<A']:
-#                 raise ValueError("Au moins un calcul ne s'est pas deroule normalement. Verifier le repertoire : %s" % resudir)
 
 
         # ----------------------------------------------------------------------------
@@ -941,9 +845,6 @@ class CALCULS_ASTER:
         for c in labels:
             tbl = get_tables(tables_calc=calcul, tmp_repe_table=os.path.join(resudir, c, 'REPE_OUT'), prof=prof)
             Lcalc.append( tbl )  # On stocke sous la forme d'une liste de numpy
-            if debug:
-                print "AA/params=", list_val[i]
-                print "AA1/Lrep=", tbl
             i+=1
 
 
@@ -1021,19 +922,18 @@ class CALCULS_ASTER:
                 FY   = seq_FY[idx]
                 col = [ (y-x) for x, y in zip(FY, FY_X0) ]
                 gradient.append(col)
-                if info>=1: print 'Calcul numero: %s - Diagnostic: %s' % (n, self.list_diag[idx])
-
+                #print 'Calcul numero: %s - Diagnostic: %s' % (n, self.list_diag[idx])
+                if info>=1: UTMESS('I', 'RECAL0_74', valk=(str(n), self.list_diag[idx]) )
 
         # ----------------------------------------------------------------------------
         # Affichages
         # ----------------------------------------------------------------------------
         if info>=2:
-            print "\nFonctionnelle au point X0: \n%s" % str(fonctionnelle)
+            UTMESS('I', 'RECAL0_72', valk=str(fonctionnelle))
             import pprint
             if CalcGradient:
-                print "\nGradient au point X0:"
+                UTMESS('I', 'RECAL0_73')
                 pprint.pprint(gradient)
-
 
         return fonctionnelle, gradient
 
@@ -1145,7 +1045,7 @@ class CALC_ERROR:
 
        if info>=3: self.debug = True
        else:       self.debug = False
-       if debug: self.debug = True
+       #if debug: self.debug = True
        self.debug = True
 
 
@@ -1176,7 +1076,6 @@ class CALC_ERROR:
 
        if self.INFO>=1: 
            UTMESS('I', 'RECAL0_30')
-           #UTMESS('I', 'RECAL0_33', valr=self.J)
 
        if self.objective_type=='vector':
            if self.INFO>=1: UTMESS('I', 'RECAL0_35', valr=self.norme)
@@ -1368,7 +1267,6 @@ if __name__ == '__main__':
         p.add_option('--parameters',        action='store',       dest='parameters',        type='string',                                       help="Fichier de parametres")
 
         options, args = p.parse_args()
-        print options
 
 
         # Study : .export file
@@ -1377,7 +1275,6 @@ if __name__ == '__main__':
            liste = glob.glob('*.export')
            export = liste[0]
         if not os.path.isfile(export): raise "Export file : is missing!"
-        print export
 
 
         # Code_Aster installation

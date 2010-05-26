@@ -1,6 +1,6 @@
       FUNCTION TYPMAT(NBMAT,TLIMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 26/05/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,10 +23,14 @@ C ======================================================================
       CHARACTER*1 TYPMAT
 C-----------------------------------------------------------------------
 C
-C- BUT : CETTE FONCTION RETOURNE LE TYPE SYMETRIQUE : 'S'
+C  BUT : CETTE FONCTION RETOURNE LE TYPE SYMETRIQUE : 'S'
 C                                     OU PLEINE     : 'N'
 C        DE LA MATRICE GLOBALE RESULTANTE DE L'ASSEMBLAGE
 C        DES MATR_ELEM TLIMAT
+C  ATTENTION :
+C    SI ON EST EN PARALLELE MPI, LA REPONSE EST GLOBALE.
+C    CETTE ROUTINE FAIT DU MPI_ALLREDUCE. IL FAUT DONC L'APPELER
+C    DE LA MEME FACON SUR TOUS LES PROCS.
 C
 C-----------------------------------------------------------------------
 C --- DESCRIPTION DES PARAMETRES
@@ -40,7 +44,7 @@ C----------------------------------------------------------------------
       CHARACTER*19 MATEL
       INTEGER I,ITYMAT
       INTEGER IBID, IERD
-      INTEGER IRET
+      INTEGER IEXI,IEXIAV
 C----------------------------------------------------------------------
 C     ITYMAT =  0 -> SYMETRIQUE
 C            =  1 -> NON-SYMETRIQUE
@@ -50,28 +54,31 @@ C     --  PAR DEFAUT LE TYPE DE MATRICE EST SYMETRIQUE
 
       DO 10 I =1, NBMAT
         MATEL = TLIMAT(I)
+        CALL JEEXIN(MATEL//'.RELR',IEXI)
+        IEXI=MIN(1,ABS(IEXI))
+        IEXIAV=IEXI
+        CALL MPICM1('MPI_MAX','I',1,IEXI,RBID)
+        IEXI=MIN(1,ABS(IEXI))
+        CALL ASSERT(IEXI.EQ.IEXIAV)
+        IF (IEXI.EQ.0) GOTO 10
+
 C       -- LA LOGIQUE CI-DESSOUS N'EST VALABLE QUE SI LE MATR_ELEM
 C          A ETE EXPURGE DE SES RESUELEM NULS => CALL REDETR()
         CALL REDETR(MATEL)
 
-        CALL JEEXIN(MATEL//'.RELR',IRET)
-        IF (IRET.EQ.0) GOTO 10
         CALL DISMOI('F','TYPE_MATRICE',MATEL,'MATR_ELEM',IBID,SYM,IERD)
         IF (SYM.EQ.'NON_SYM') THEN
           CALL DISMOI('F','ZERO',MATEL,'MATR_ELEM',IBID,ZERO,IERD)
           IF (ZERO.EQ.'NON') THEN
             ITYMAT = 1
-            GOTO 11
           ENDIF
         ENDIF
+
+        CALL MPICM1('MPI_MAX','I',1,ITYMAT,RBID)
+        IF (ITYMAT.EQ.1)  GOTO 11
+
    10 CONTINUE
    11 CONTINUE
-
-
-C     -- SI CALCULS DISTRIBUES, IL FAUT COMMUNIQUER :
-      CALL PARTI0(NBMAT,TLIMAT,PARTIT)
-
-      IF (PARTIT.NE.' ') CALL MPICM1('MPI_MAX','I',1,ITYMAT,RBID)
 
       IF (ITYMAT.EQ.0) THEN
          TYPMAT='S'

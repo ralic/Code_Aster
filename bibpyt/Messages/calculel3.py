@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 16/03/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 26/05/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -227,6 +227,64 @@ Conseils :
   Il s'agit probablement d'une erreur de programmation.
   Mais il faut peut etre émettre une demande d'évolution pour traiter ce cas.
 """),
+
+47 : _("""
+Possible erreur d'utilisation :
+  Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
+  Pour cela, vous précisez un état initial (mot clé ETAT_INIT / EVOL_NOLI).
+  Pour le calcul du 1er pas de temps, le champ des variables internes du début du pas est pris
+  dans le concept evol_noli fourni.
+  Pour l'élément porté par la maille %(k1)s, ce champ de variables internes a été calculé avec
+  la relation de comportement %(k2)s, mais le comportement choisi pour le calcul est différent (%(k3)s).
+
+Risques & conseils :
+  Ce changement de comportement est-il volontaire ou s'agit-il d'une faute de frappe ?
+"""),
+
+48 : _("""
+Possible erreur d'utilisation :
+  Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
+  Pour cela, vous précisez un état initial (mot clé ETAT_INIT / VARI=chvari).
+  Pour le calcul du 1er pas de temps, le champ des variables internes utilisé pour le début du pas
+  est "chvari".
+  Pour l'élément porté par la maille %(k1)s, ce champ de variables internes n'a pas le meme nombre de
+  variables internes (%(i1)d) que le nombre attendu par le comportement choisi pour le calcul (%(i2)d).
+
+  Il y a donc un changement de comportement pour la maille %(k1)s
+
+  Un changement de comportement lors d'un transitoire est a priori "douteux".
+  Il semble que vous soyez dans l'un des cas tolérés par le code :
+    / comportement "-" élastique
+    / comportement "+" élastique
+
+  Sur cet élément, les variables internes "-" sont mises à zéro.
+
+Risques & conseils :
+  Ce changement de comportement est-il volontaire ou s'agit-il d'une faute de frappe ?
+"""),
+
+49 : _("""
+Erreur d'utilisation :
+  Vous voulez "poursuivre" un calcul non-linéaire (STAT_NON_LINE ou DYNA_NON_LINE).
+  Pour cela, vous précisez un état initial (mot clé ETAT_INIT / VARI=chvari).
+  Pour le calcul du 1er pas de temps, le champ des variables internes utilisé pour le début du pas
+  est "chvari".
+  Pour l'élément porté par la maille %(k1)s, ce champ de variables internes n'a pas le meme nombre de
+  variables internes (%(i1)d) que le nombre attendu par le comportement choisi pour le calcul (%(i2)d).
+
+  Il y a donc un changement de comportement pour la maille %(k1)s
+  Le code n'accepte de changement de comportement que dans quelques cas très particuliers :
+    - LEMAITRE <-> VMIS_ISOT_XXXX
+    - ELAS     <-> XXXX
+  Il ne semble pas que vous soyez dans ce cas de figure. L'exécution est arretée.
+
+Risques & conseils :
+  Vérifiez le comportement affecté sur cette maille.
+"""),
+
+
+
+
 
 50 : _("""
  La commande a besoin d'un nom de modèle.

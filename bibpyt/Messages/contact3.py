@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 15/03/2010   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact3 Messages  DATE 26/05/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -161,7 +161,7 @@ Problème pour récupérer l'excentricité de la coque pour la maille  %(k1)s
 
 43 : _("""
 La normale que vous avez prédéfinie par (VECT_* = 'VECT_Y') n'est pas utilisable en 2D.
-Utilisez plutot (ou Dingo) VECT_* = 'FIXE'
+Utilisez plutôt VECT_* = 'FIXE'
 """),
 
 

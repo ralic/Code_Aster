@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
+%& MODIF COMPELEM  DATE 25/05/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1744,9 +1744,9 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        SIG232   SIG233   SIG311   SIG312   SIG313   SIG321   SIG322   SIG323
        SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
-       CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_TX   SIG_TY   SIG_TZ   SIG_T1X
-       SIG_T1Y  SIG_T1Z  SIG_T2X  SIG_T2Y  SIG_T2Z  LH1P     LH1M     DPRE1P    
-       DPRE1M     
+       CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_N    SIG_TX   SIG_TY   SIG_TZ
+       SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1   SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2
+       LH1P     LH1M     DPRE1P   DPRE1M        
 
 <<  SIEF_R Type:R Etat de contrainte (ou d'effort interne) (cf. (U .. . .. . .))
        SIXX : sigma_xx contraintes dans un milieu continu
@@ -1887,9 +1887,9 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        SIG232   SIG233   SIG311   SIG312   SIG313   SIG321   SIG322   SIG323
        SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
-       CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_TX   SIG_TY   SIG_TZ   SIG_T1X
-       SIG_T1Y  SIG_T1Z  SIG_T2X  SIG_T2Y  SIG_T2Z  LH1P     LH1M     DPRE1P    
-       DPRE1M    
+       CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_N    SIG_TX   SIG_TY   SIG_TZ
+       SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1   SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2
+       LH1P     LH1M     DPRE1P   DPRE1M    
 
 <<  SING_R Type:R grandeurs liée au calcul de carte de taille
        DEGRE : ordre de la singularité

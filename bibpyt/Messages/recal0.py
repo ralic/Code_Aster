@@ -1,4 +1,4 @@
-#@ MODIF recal0 Messages  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF recal0 Messages  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,13 +86,7 @@ On desactive l'affichage des courbes par Gnuplot.
 19 : _("""Erreur dans le test de convergence de MACR_RECAL.
 """),
 
-20 : _("""
-Information : les calculs esclaves seront lancés en BATCH avec les paramètres suivants :
-     Temps   (sec) : %(k1)s
-     Mémoire (Mo)  : %(k2)s
-     Classe        : %(k3)s
-
-"""),
+#20 : _(""" """),
 
 #21 : _(""" """),
 
@@ -288,19 +282,37 @@ Calcul avec les parametres suivants (pertubation du parametre %(k2)s pour le gra
      %(k1)s
 """),
 
-#69 : _(""" """),
 
-#70 : _(""" """),
+69 : _("""
+Information : les calculs esclaves seront lancés en BATCH avec les paramètres suivants :
+     Temps   (sec) : %(k1)s
+     Mémoire (Mo)  : %(k2)s
+     Classe        : %(k3)s
 
-#70 : _(""" """),
+"""),
 
-#71 : _(""" """),
+70 : _("""
+Erreur! Le calcul esclave '%(k1)s' ne s'est pas arrete correctement!
+L'output du job est : %(k2)s
+Il est recopié ci-dessous.
+"""),
 
-#72 : _(""" """),
+71 : _("""
+Erreur! Au moins un calcul esclave ne s'est pas arreté correctement! Vérifier le repertoire : %(k1)s
+"""),
 
-#73 : _(""" """),
+72 : _("""
+Fonctionnelle au point X0:
+     %(k1)s
+"""),
 
-#74 : _(""" """),
+73 : _("""
+Gradient au point X0:
+"""),
+
+74 : _("""
+Calcul numero:  %(k1)s - Diagnostic: %(k2)s
+"""),
 
 #75 : _(""" """),
 

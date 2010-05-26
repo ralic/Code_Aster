@@ -1,0 +1,167 @@
+# MODIF  DATE 26/05/2010   AUTEUR PELLET J.PELLET 
+# TITRE  VALIDATION DE STAT_NON_LINE / ETAT_INIT
+# zzzz258a.para = tps_job 60 mem_job 128Mo mem_aster 50 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ======================================================================
+# DANS CE TEST, ON VALIDE LES POSSIBILITES DE "POURSUITE" DE STAT_NON_LINE
+# (MOT CLE ETAT_INIT) EN PARTICULIER LE PROBLEME POSE PAR LE CHAMP INITIAL
+# DES VARIABLES INTERNES (ROUTINE VRCOMP.F).
+#
+# ON TESTE LES 2 POSSIBILITES SUIVANTES :
+#   * ETAT_INIT / EVOL_NOLI + INST
+#   * ETAT_INIT / DEPL + SIGM + VARI
+#
+# ON TESTE :
+#   * L'AJOUT DE NOUVEAUX ELEMENTS DANS LE MODELE
+#   * LA SUPPRESSION D'ELEMENTS DANS LE MODELE
+#   * LES POSSIBILITES DE CHANGER DE COMPORTEMENT SUIVANTES :
+#        'VMIS_CINE_LINE'   ->   'VMIS_CINE_LINE'
+#        'VMIS_CINE_LINE'   ->   'RIEN'             (SUPPRESSION D'ELEMENTS)
+#        'VMIS_CINE_LINE'   ->   'VMIS_CINE_LINE'
+#        'VMIS_ISOT_TRAC'   ->   'VMIS_ISOT_LINE'
+#        'VMIS_ISOT_TRAC'   ->   'ELAS'
+#        'VMIS_ISOT_LINE'   ->   'VMIS_ISOT_TRAC'
+#        'ELAS'             ->   'VMIS_CINE_LINE'
+#        'RIEN'             ->   'VMIS_CINE_LINE'  (AJOUT D'ELEMENTS)
+#        'RIEN'             ->   'VMIS_CINE_LINE'  (AJOUT D'ELEMENTS)
+
+#-----------------------------------------------------------------------------
+DEBUT(CODE=_F(NOM='ZZZZ258A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+
+PRE_GIBI()
+MAIL=LIRE_MAILLAGE( )
+DEFI_GROUP(reuse =MAIL, MAILLAGE=MAIL,
+              CREA_GROUP_MA=(
+                    _F(NOM='GM2', MAILLE=('M2',)),
+                    _F(NOM='GM89', MAILLE=('M8','M9',)),
+                    _F(NOM='GMS2',  DIFFE=('CARRE','GM2',)),
+                    _F(NOM='GMS89', DIFFE=('CARRE','GM89',)),
+             ))
+
+SIGMF=DEFI_FONCTION( NOM_PARA='EPSI', VALE=(0.1,   200.,
+                                            1.0,   500. ))
+MATER=DEFI_MATERIAU(
+          ELAS=     _F(E= 2000., NU = 0.3),
+          PRAGER=   _F(C= 0.1),
+          TRACTION= _F(SIGM= SIGMF),
+          ECRO_LINE=_F(D_SIGM_EPSI=100., SY=100.,),
+          )
+CHMAT=AFFE_MATERIAU( MAILLAGE=MAIL, AFFE=_F( TOUT = 'OUI',MATER = MATER))
+
+L_INST=DEFI_LIST_REEL( DEBUT=0.,INTERVALLE= _F( JUSQU_A = 100.,   NOMBRE = 5))
+
+
+# 1. CALCUL SUR LE MODELE MOMEC1 (TOUTES LES MAILLES SAUF M8 ET M9) :
+#--------------------------------------------------------------------
+
+MOMEC1=AFFE_MODELE(  MAILLAGE=MAIL,
+          AFFE=_F( GROUP_MA = 'GMS89',
+                   MODELISATION = 'D_PLAN',     PHENOMENE = 'MECANIQUE'))
+
+
+CHMEC1=AFFE_CHAR_MECA( MODELE=MOMEC1,DDL_IMPO=(
+           _F( GROUP_MA = 'BORD1',  DX = 0.,  DY=0. ),
+           _F( GROUP_MA = 'BORD2',  DX = 0.3, DY=0.6 )),)
+
+
+U1=STAT_NON_LINE(MODELE=MOMEC1,  CHAM_MATER=CHMAT,
+                 EXCIT=_F( CHARGE = CHMEC1),
+                 COMP_INCR=(
+                       _F( RELATION = 'VMIS_CINE_LINE', MAILLE=('M1','M2','M3')),
+                       _F( RELATION = 'VMIS_ISOT_TRAC', MAILLE=('M4','M5')),
+                       _F( RELATION = 'VMIS_ISOT_LINE', MAILLE=('M6')),
+                       _F( RELATION = 'ELAS',           MAILLE=('M7')),
+                       ),
+                 INCREMENT=_F( LIST_INST = L_INST),
+                 CONVERGENCE=_F( ITER_GLOB_MAXI=50),
+                 NEWTON=_F(REAC_ITER=2,),
+                 )
+
+
+# 2. CALCUL SUR LE MODELE MOMEC2 (TOUTES LES MAILLES SAUF M2) :
+#--------------------------------------------------------------------
+
+MOMEC2=AFFE_MODELE(  MAILLAGE=MAIL,
+          AFFE=_F( GROUP_MA = 'GMS2',
+                   MODELISATION = 'D_PLAN',     PHENOMENE = 'MECANIQUE'))
+
+
+CHMEC2=AFFE_CHAR_MECA( MODELE=MOMEC2,DDL_IMPO=(
+           _F( GROUP_MA = 'BORD1',  DX = 0.,  DY=0. ),
+           _F( GROUP_MA = 'BORD2',  DX = 0.3, DY=0.6 )),)
+
+#  CHANGEMENTS DE COMPORTEMENT:
+#       M1 :   'VMIS_CINE_LINE'   ->   'VMIS_CINE_LINE'
+#       M2 :   'VMIS_CINE_LINE'   ->   'RIEN'
+#       M3 :   'VMIS_CINE_LINE'   ->   'VMIS_CINE_LINE'
+#       M4 :   'VMIS_ISOT_TRAC'   ->   'VMIS_ISOT_LINE'
+#       M5 :   'VMIS_ISOT_TRAC'   ->   'ELAS'
+#       M6 :   'VMIS_ISOT_LINE'   ->   'VMIS_ISOT_TRAC'
+#       M7 :   'ELAS'             ->   'VMIS_CINE_LINE'
+#       M8 :   'RIEN'             ->   'VMIS_CINE_LINE'
+#       M9 :   'RIEN'             ->   'VMIS_CINE_LINE'
+
+# 2.1 ETAT_INIT / EVOL_NOLI + INST :
+#--------------------------------------------------------------------
+U2_1=STAT_NON_LINE(MODELE=MOMEC2,  CHAM_MATER=CHMAT,
+                 ETAT_INIT=_F( EVOL_NOLI = U1, INST=60.),
+                 EXCIT=_F( CHARGE = CHMEC2),
+                 COMP_INCR=(
+                       _F( RELATION = 'VMIS_CINE_LINE', MAILLE=('M1','M3','M7','M8','M9')),
+                       _F( RELATION = 'VMIS_ISOT_TRAC', MAILLE=('M6')),
+                       _F( RELATION = 'VMIS_ISOT_LINE', MAILLE=('M4')),
+                       _F( RELATION = 'ELAS',           MAILLE=('M5')),
+                       ),
+                 INCREMENT=_F( LIST_INST = L_INST,INST_INIT=60. ),
+                 CONVERGENCE=_F( ITER_GLOB_MAXI=50),
+                 NEWTON=_F(REAC_ITER=2,),
+               )
+
+# 2.2 ETAT_INIT / EVOL_NOLI + DEPL, SIGM, VARI :
+#--------------------------------------------------------------------
+
+D1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR', RESULTAT=U1, NOM_CHAM='DEPL',      INST=60.)
+S1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=U1, NOM_CHAM='SIEF_ELGA', INST=60.)
+V1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR', RESULTAT=U1, NOM_CHAM='VARI_ELGA', INST=60.)
+
+U2_2=STAT_NON_LINE(MODELE=MOMEC2,  CHAM_MATER=CHMAT,
+                 ETAT_INIT=_F( DEPL=D1, SIGM=S1, VARI=V1),
+                 EXCIT=_F( CHARGE = CHMEC2),
+                 COMP_INCR=(
+                       _F( RELATION = 'VMIS_CINE_LINE', MAILLE=('M1','M3','M7','M8','M9')),
+                       _F( RELATION = 'VMIS_ISOT_TRAC', MAILLE=('M6')),
+                       _F( RELATION = 'VMIS_ISOT_LINE', MAILLE=('M4')),
+                       _F( RELATION = 'ELAS',           MAILLE=('M5')),
+                       ),
+                 INCREMENT=_F( LIST_INST = L_INST,INST_INIT=60. ),
+                 CONVERGENCE=_F( ITER_GLOB_MAXI=50),
+                 NEWTON=_F(REAC_ITER=2,),
+               )
+
+
+
+# TEST_RESU (NON-REGRESSION) :
+#------------------------------
+TEST_RESU(OBJET=(
+        _F( NOM='U1      .001.000005.VALE', REFERENCE='NON_REGRESSION', PRECISION=1.E-7,   S_R=4.169889608  ),
+        _F( NOM='U2_1    .001.000002.VALE', REFERENCE='NON_REGRESSION', PRECISION=1.E-7,   S_R=8.989960536  ),
+        _F( NOM='U2_2    .001.000002.VALE', REFERENCE='NON_REGRESSION', PRECISION=1.E-7,   S_R=8.989960536  ),
+))
+FIN()

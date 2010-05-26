@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_algo Macro  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -285,6 +285,7 @@ def calcul_etat_final(para, A, iter, max_iter, prec, residu, Messg):
       # Desactive temporairement les FPE qui pourraient etre generees (a tord!) par blas
       aster.matfpe(-1)
       valeurs_propres,vecteurs_propres = linalg.eig(Hessien) 
+      vecteurs_propres=NP.transpose(vecteurs_propres)  # numpy et Numeric n'ont pas la meme convention
       sensible=NP.nonzero(NP.greater(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-1))[0]
       insensible=NP.nonzero(NP.less(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-2))[0]
       # Reactive les FPE

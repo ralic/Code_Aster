@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 19/04/2010   AUTEUR BERARD A.BERARD 
+#@ MODIF calculel5 Messages  DATE 26/05/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,13 +155,8 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  la grandeur pour la variable:  %(k1)s  doit etre:  %(k2)s  mais elle est:  %(k3)s
 """),
 
-40 : _("""
- Erreur utilisateur.
- Le champ de variables internes initiales n'a pas le bon nombre de sous-points.
- Maille : %(k1)s
- Nombre de sous-points a l'instant '-' : %(i1)d
- Nombre de sous-points a l'instant '+' : %(i2)d
-"""),
+
+
 
 41 : _("""
  pas de variables internes initiales pour la maille  %(k1)s

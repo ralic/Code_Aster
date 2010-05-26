@@ -7,7 +7,7 @@
       CHARACTER*(*)           BASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 25/05/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -214,10 +214,8 @@ C     -------------------
          GO TO 9999
       ELSE IF (ISTOP.EQ.1) THEN
          STP = 'A'
-      ELSE IF ((ISTOP.EQ.2).AND.(IER.GE.20)) THEN
+      ELSE IF (ISTOP.EQ.2) THEN
          STP = 'F'
-      ELSE IF ((ISTOP.EQ.2).AND.(IER.LT.20)) THEN
-         STP = 'A'
       END IF
 
 

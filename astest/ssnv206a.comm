@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 26/05/2010   AUTEUR FERNANDES R.FERNANDES 
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE LETK
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH LETK
@@ -302,7 +302,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DX',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = 3.3574E-2),),)
+                      VALE       = 3.010E-2),),)
 
 TEST_RESU(RESU=(
 
@@ -324,7 +324,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIYY',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = -11.799),),)
+                      VALE       = -11.958),),)
 
 
 FIN()

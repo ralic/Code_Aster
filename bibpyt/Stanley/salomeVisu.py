@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 06/10/2008   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeVisu Stanley  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -216,7 +216,8 @@ class ISOVALEURS( VISU ):
         """
         Stanley fonctionne sur le poste local de l'utilisateur
         """        
-        os.rename( self.fichier, self.fichier  + '.pos' )
+        try:    os.rename( self.fichier, self.fichier  + '.pos' )
+        except: pass
         self.fichier += '.pos'
         
 
@@ -314,8 +315,6 @@ class ISOVALEURS( VISU ):
         @type     salomeParam:  dictionary.
         @param  salomeParam:  parametre Salome pour initialistion composant VISU de pylotage
         """
-        if not os.path.isfile( medFilePath ):
-           raise _("Fichier MED manquant") + medFilePath
 
         try:
           salomeVisu = Visu.Visu( **salomeParam )

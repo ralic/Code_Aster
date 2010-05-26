@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Cata_Utils  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF t_fonction Cata_Utils  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -404,13 +404,14 @@ class t_fonction :
         ecart = NP.abs(((self.vale_x[i]-self.vale_x[i-1])-pas)/pas)
         if ecart>1.e-2 :
            raise FonctionError, 'fonction réelle : FFT : la fonction doit etre à pas constant'
-    n=int(log(len(self.vale_x))/log(2))
+    n = get_len_puis2(self.vale_x)
     if   methode=='TRONCATURE' :
        vale_y=self.vale_y[:2**n]
     elif methode=='PROL_ZERO'  :
-       vale_y=self.vale_y.tolist()
-       vale_y=vale_y+[0.]*(2**(n+1)-len(self.vale_x))
-       vale_y=NP.array(vale_y)
+       vale_y=self.vale_y
+       if len(self.vale_y) < 2**(n + 1):
+          vale_y=NP.array(self.vale_y)
+          vale_y = NP.concatenate( (vale_y, NP.zeros(2**(n+1)-len(self.vale_x))) )
     elif   methode=='COMPLET'  : 
        vale_y=self.vale_y
     vect=FFT.fft(vale_y)
@@ -457,19 +458,19 @@ class t_fonction_c(t_fonction) :
         ecart = NP.abs(((self.vale_x[i]-self.vale_x[i-1])-pas)/pas)
         if ecart>1.e-3 :
            raise FonctionError, 'fonction complexe : FFT : la fonction doit etre à pas constant'
-    n=int(log(len(self.vale_x))/log(2))
+    n = get_len_puis2(self.vale_x)
     if   syme=='OUI' :
        vale_fonc=self.vale_y
     else :
        if methode=='PROL_ZERO' :
-          fonc_temp=self.vale_y.tolist()+[complex(0.)]*(2**(n+1)-len(self.vale_x));
-          part1=fonc_temp
+          fonc_temp=self.vale_y
+          if len(self.vale_y) < 2**(n + 1):
+             fonc_temp = NP.concatenate( (self.vale_y, NP.zeros(2**(n+1)-len(self.vale_x)))  )
        elif methode=='TRONCATURE' :
-          fonc_temp=self.vale_y[:2**n];
-          part1=fonc_temp.tolist();
+          fonc_temp=self.vale_y[:2**n]
        elif methode=='COMPLET' :
           fonc_temp=self.vale_y
-          part1=fonc_temp.tolist();
+       part1=fonc_temp.tolist()
 
        if NP.remainder(len(part1),2) == 0 :
           # Si le nombre de point du spectre est pair,
@@ -674,7 +675,7 @@ def homo_support_nappe(l_f):
       l_fres.append(__ff)
    return l_fres
 
-# -----------------------------------------------------------------------------
+
 def func_union(func,l_f) :
     """Retourne la fonction x : func(y0=l_f[0](x), y1=l_f[1](x), ...)
     sur la liste d'abscisses union de celles de self et de other.
@@ -694,6 +695,7 @@ def func_union(func,l_f) :
     vale_y = map(func, *vale_y)
     return t_fonction(vale_x, vale_y, para)
 
+
 def enveloppe(l_f, crit):
     """renvoie l'enveloppe supérieure ou inférieure de self et other.
     """
@@ -704,6 +706,7 @@ def enveloppe(l_f, crit):
     else:
        raise FonctionError, 'enveloppe : le critère doit etre SUP ou INF !'
     return env
+
 
 def fractile(l_f, fract):
     """renvoie l'enveloppe supérieure ou inférieure de self et other.
@@ -735,3 +738,11 @@ def fractile(l_f, fract):
        for l_val in tab_val :
            vale_y.append(l_val[indice]*(1-reste)+l_val[indice+1]*reste)
     return t_fonction(vale_x, vale_y, para)
+
+
+def get_len_puis2(tab_in):
+    """Retourne N, la plus grande puissance de 2 telle que 2**N <= len(tab_in)
+    """
+    return int( log(len(tab_in)) / log(2.) )
+
+

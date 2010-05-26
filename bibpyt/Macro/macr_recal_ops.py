@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_recal_ops Macro  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -279,7 +279,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
        if CALCUL_ESCLAVE['MODE']=='BATCH':
            if CALCUL_ESCLAVE['CLASSE']: classe = CALCUL_ESCLAVE['CLASSE']
            else:                        classe = ' -auto- '
-           UTMESS('I','RECAL0_20', valk=( str(CALCUL_ESCLAVE['TEMPS']), str(CALCUL_ESCLAVE['MEMOIRE']), classe ) )
+           UTMESS('I','RECAL0_69', valk=( str(CALCUL_ESCLAVE['TEMPS']), str(CALCUL_ESCLAVE['MEMOIRE']), classe ) )
 
 
    #_____________________________________________

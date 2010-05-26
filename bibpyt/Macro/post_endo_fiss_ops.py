@@ -1,4 +1,4 @@
-#@ MODIF post_endo_fiss_ops Macro  DATE 21/04/2010   AUTEUR BOTTONI M.BOTTONI 
+#@ MODIF post_endo_fiss_ops Macro  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,12 +37,12 @@
 #    On retourne tous les indices des valeurs cherchees
 #    Vect doit etre un vecteur unidimensionnel
 def vfind(Vect,a) :
-  from Numeric import nonzero, array, put, ones
+  import numpy as NP
   Vect0 = Vect-a
-  lst0  = nonzero(Vect0)
-  put(Vect0,lst0,ones(lst0.shape))
+  lst0  = NP.nonzero(Vect0)[0]
+  NP.put(Vect0,lst0, NP.ones(lst0.shape))
   Vect0 = Vect0-1
-  lst0 = nonzero(Vect0)
+  lst0 = NP.nonzero(Vect0)[0]
   return lst0
 
 # DELETE ELEMENT IN A VECTOR :
@@ -50,13 +50,13 @@ def vfind(Vect,a) :
 #   (element array unidimmensionnel ou matrice avec la deuxieme dimension 1)
 #   a: vecteur d'indices avec le meme cahracteristiques que Vect
 def delEl(Vect,a) :
-  from Numeric import array, ravel, sort
+  import numpy as NP
   class LengthError(Exception):
     pass
 
   shapeV = Vect.shape
   if type(a) == list :
-    a=array(a)
+    a=NP.array(a)
   shapea = a.shape
 
   lenErr = True
@@ -67,11 +67,11 @@ def delEl(Vect,a) :
   if  len(shapea)==2 and (shapea[0]==1 or shapea[1]==1) :
     lenErr = False
   if lenErr :
-    raise LectureBlocError
+    raise LengthError
 
   Vect = Vect.tolist()
-  a    = ravel(a)
-  a    = sort(a)
+  a    = NP.ravel(a)
+  a    = NP.sort(a)
 
   for i in range(len(a)) :
     idx = a[i]
@@ -81,7 +81,7 @@ def delEl(Vect,a) :
       raise TypeError
     a = a-1
 
-  Vect = array(Vect)
+  Vect = NP.array(Vect)
   return Vect
 
 
@@ -89,7 +89,6 @@ def delEl(Vect,a) :
 # Fonction qui elimine les doublons dans un vecteur Vect
 #   Vect doit etre un vecteur unidimensionnel
 def unique(Vect):
-  from Numeric import array
   i = 0
   while i < len(Vect) :
     num = Vect[i]
@@ -196,7 +195,7 @@ def post_endo_fiss_ops(self,
   from Accas import _F
   from math import radians
   import os
-  import Numeric as N
+  import numpy as NP
 
 
   ier = 0
@@ -377,9 +376,9 @@ def post_endo_fiss_ops(self,
     Ybarno   = __YBARNO.EXTR_COMP(NOM_CMP,[],1)
     Ybar     = Ybarno.valeurs
     Noeybar  = Ybarno.noeud
-    IdxNoeud = N.array(Noeybar)-1
-    Coorx    = N.take(Xtot,IdxNoeud)
-    Coory    = N.take(Ytot,IdxNoeud)
+    IdxNoeud = NP.array(Noeybar)-1
+    Coorx    = NP.take(Xtot,IdxNoeud)
+    Coory    = NP.take(Ytot,IdxNoeud)
 
 
     # --------------------------------------------------
@@ -388,14 +387,14 @@ def post_endo_fiss_ops(self,
 
     # Point ou la Ybar est maximale
     #
-    idxmax  = N.argmax(Ybar)
+    idxmax  = NP.argmax(Ybar)
     xmax    = Coorx[idxmax]
     ymax    = Coory[idxmax]
     ybarmax = Ybar[idxmax]
 
-    CoxAmm  = N.array([xmax], N.Float)
-    CoyAmm  = N.array([ymax], N.Float)
-    YbarAmm = N.array([ybarmax], N.Float)
+    CoxAmm  = NP.array([xmax], float)
+    CoyAmm  = NP.array([ymax], float)
+    YbarAmm = NP.array([ybarmax], float)
 
     # Creation d'un circle autour du point de max
     #  et projection sur le circle
@@ -444,18 +443,18 @@ def post_endo_fiss_ops(self,
     # Nonvide : liste de noeud du profil orthogonal
     #   avec des valeurs associes
     # idxpred : connections entres les 2 demi-circle
-    Nonvide  = N.array(list(dx0.noeud))
+    Nonvide  = NP.array(list(dx0.noeud))
     idxpred1 = vfind(Nonvide,2*nbPoints-1)
     idxpred2 = vfind(Nonvide,nbPoints)
 
     Ybarort  = dx0.valeurs
     Coor0    = __MAI.COORDO.VALE.get()
-    Coorxort = N.array(Coor0[0:len(Coor0):3] , N.Float)
-    Cooryort = N.array(Coor0[1:len(Coor0):3] , N.Float)
+    Coorxort = NP.array(Coor0[0:len(Coor0):3] , float)
+    Cooryort = NP.array(Coor0[1:len(Coor0):3] , float)
 
     # On elimine les noeuds sans valeurs associes
-    Coorxort = N.take(Coorxort,Nonvide-1)
-    Cooryort = N.take(Cooryort,Nonvide-1)
+    Coorxort = NP.take(Coorxort,Nonvide-1)
+    Cooryort = NP.take(Cooryort,Nonvide-1)
     Coorxort = delEl(Coorxort,idxpred1)
     Coorxort = delEl(Coorxort,idxpred2)
     Cooryort = delEl(Cooryort,idxpred1)
@@ -464,56 +463,56 @@ def post_endo_fiss_ops(self,
     Ybarort  = delEl(Ybarort,idxpred2)
 
     # Regularisation sur le circle
-    YbarReg = N.zeros((len(Ybarort),),N.Float)
-    X1 = N.concatenate((Coorxort[1:len(Coorxort)],N.array([Coorxort[0]])))
-    Y1 = N.concatenate((Cooryort[1:len(Coorxort)],N.array([Cooryort[0]])))
+    YbarReg = NP.zeros((len(Ybarort),), float)
+    X1 = NP.concatenate((Coorxort[1:len(Coorxort)], NP.array([Coorxort[0]])))
+    Y1 = NP.concatenate((Cooryort[1:len(Coorxort)], NP.array([Cooryort[0]])))
     DX = X1-Coorxort
     DY = Y1-Cooryort
-    DS = N.sqrt(DX**2+DY**2)
+    DS = NP.sqrt(DX**2+DY**2)
     for l in range(len(Ybarort)):
       DSa   = DS[(l-1):len(DS)]
       DSb   = DS[0:(l-1)]
-      DS1   = N.concatenate((DSa,DSb))
-      Dist  = N.zeros((len(Ybarort),),N.Float)
-      Gauss = N.zeros((len(Ybarort),),N.Float)
+      DS1   = NP.concatenate((DSa,DSb))
+      Dist  = NP.zeros((len(Ybarort),), float)
+      Gauss = NP.zeros((len(Ybarort),), float)
       for k in range(len(Ybarort)/2):
         Dist[k+1]  = Dist[k]  + DS1[k]
         Dist[-k-1] = Dist[-k] + DS1[-k-1]
       for k in range(len(Ybarort)):
-        Gauss[k]   = N.e**(-(2*Dist[k]/(pas/5))**2)
+        Gauss[k]   = NP.e**(-(2*Dist[k]/(pas/5))**2)
 
-      Gauss2 = N.concatenate((Gauss[1:len(Gauss)],N.array([Gauss[0]])))
+      Gauss2 = NP.concatenate((Gauss[1:len(Gauss)], NP.array([Gauss[0]])))
       Den    = DS1 * ((Gauss + Gauss2)/2)
 
-      YbarortShft = N.concatenate((Ybarort[l:len(Ybarort)],Ybarort[0:(l)]))
+      YbarortShft = NP.concatenate((Ybarort[l:len(Ybarort)],Ybarort[0:(l)]))
       Ybargauss   = YbarortShft * Gauss
-      Ybargauss2  = N.concatenate((Ybargauss[1:len(Ybargauss)],N.array([Ybargauss[0]])))
+      Ybargauss2  = NP.concatenate((Ybargauss[1:len(Ybargauss)], NP.array([Ybargauss[0]])))
       Num         = DS1 * ((Ybargauss + Ybargauss2)/2)
 
-      YbarReg[l]  = N.sum(Num)/N.sum(Den)
+      YbarReg[l]  = NP.sum(Num)/NP.sum(Den)
 
     # Deuxieme point de la crete
-    idxmax   = N.argmax(YbarReg)
+    idxmax   = NP.argmax(YbarReg)
     valmax   = Ybarort[idxmax]
     cox      = Coorxort[idxmax]
     coy      = Cooryort[idxmax]
 
-    CoxAmm   = N.concatenate((CoxAmm,N.array([cox])))
-    CoyAmm   = N.concatenate((CoyAmm,N.array([coy])))
-    YbarAmm  = N.concatenate((YbarAmm,N.array([valmax])))
+    CoxAmm   = NP.concatenate((CoxAmm, NP.array([cox])))
+    CoyAmm   = NP.concatenate((CoyAmm, NP.array([coy])))
+    YbarAmm  = NP.concatenate((YbarAmm, NP.array([valmax])))
 
 
     # On re-calcule le premier point
     #
-    CoxLast  = N.array([ CoxAmm[1] , CoxAmm[0] ])
-    CoyLast  = N.array([ CoyAmm[1] , CoyAmm[0] ])
-    VersAvan = N.array([CoxLast[1] - CoxLast[0], CoyLast[1] - CoyLast[0]])
-    VersAvan = VersAvan / (N.sqrt((VersAvan[0])**2 + (VersAvan[1])**2))
+    CoxLast  = NP.array([ CoxAmm[1] , CoxAmm[0] ])
+    CoyLast  = NP.array([ CoyAmm[1] , CoyAmm[0] ])
+    VersAvan = NP.array([CoxLast[1] - CoxLast[0], CoyLast[1] - CoyLast[0]])
+    VersAvan = VersAvan / (NP.sqrt((VersAvan[0])**2 + (VersAvan[1])**2))
 
-    Ppred    = N.array([CoxLast[0] + VersAvan[0]*pas, CoyLast[0] + VersAvan[1]*pas ])
-    VersNorm = (1 / N.sqrt((VersAvan[0])**2 + (VersAvan[1])**2)) * N.array([ -VersAvan[1] , VersAvan[0] ])
-    PPlus    = N.array([ Ppred[0] + (lort/2)*VersNorm[0] , Ppred[1] + (lort/2)*VersNorm[1] ])
-    PMoin    = N.array([ Ppred[0] - (lort/2)*VersNorm[0] , Ppred[1] - (lort/2)*VersNorm[1] ])
+    Ppred    = NP.array([CoxLast[0] + VersAvan[0]*pas, CoyLast[0] + VersAvan[1]*pas ])
+    VersNorm = (1 / NP.sqrt((VersAvan[0])**2 + (VersAvan[1])**2)) * NP.array([ -VersAvan[1] , VersAvan[0] ])
+    PPlus    = NP.array([ Ppred[0] + (lort/2)*VersNorm[0] , Ppred[1] + (lort/2)*VersNorm[1] ])
+    PMoin    = NP.array([ Ppred[0] - (lort/2)*VersNorm[0] , Ppred[1] - (lort/2)*VersNorm[1] ])
 
     # creation du profil orthogonal
     lignes = []
@@ -560,37 +559,37 @@ def post_endo_fiss_ops(self,
     # Pas de cas ou le point de prediction est hors de matiere!
     #  Recherche du point de prediction parmis les points projetes
     #  et elimination du double point au milieu
-    Nonvide  = N.array(list(dx0.noeud))
+    Nonvide  = NP.array(list(dx0.noeud))
     idxpred  = vfind(Nonvide,nbPoints)
     Ybarort  = dx0.valeurs
 
     Coor0    = __MAI.COORDO.VALE.get()
-    Coorxort = N.array(Coor0[0:len(Coor0):3] , N.Float)
-    Cooryort = N.array(Coor0[1:len(Coor0):3] , N.Float)
-    Coorxort = N.take(Coorxort,Nonvide-1)
-    Cooryort = N.take(Cooryort,Nonvide-1)
+    Coorxort = NP.array(Coor0[0:len(Coor0):3] , float)
+    Cooryort = NP.array(Coor0[1:len(Coor0):3] , float)
+    Coorxort = NP.take(Coorxort,Nonvide-1)
+    Cooryort = NP.take(Cooryort,Nonvide-1)
     Coorxort = delEl(Coorxort,idxpred)
     Cooryort = delEl(Cooryort,idxpred)
     Ybarort  = delEl(Ybarort,idxpred)
 
     # Regularisation du profil orthogonal
-    YbarReg = N.zeros((len(Ybarort),),N.Float)
+    YbarReg = NP.zeros((len(Ybarort),), float)
     for l in range(len(Ybarort)):
       xcentre = Coorxort[l]
       ycentre = Cooryort[l]
       Dist    = ((Coorxort-xcentre)**2 + (Cooryort-ycentre)**2)**0.5
-      Gauss = N.zeros((len(Dist),),N.Float)
+      Gauss = NP.zeros((len(Dist),), float)
       for m in range(len(Dist)) :
-        Gauss[m] = N.e**(-(2*Dist[m]/lreg)**2)
+        Gauss[m] = NP.e**(-(2*Dist[m]/lreg)**2)
       Ybargauss = Ybarort * Gauss
-      DeltaL = N.absolute(Dist[0:len(Dist)-1] - Dist[1:len(Dist)])
+      DeltaL = NP.absolute(Dist[0:len(Dist)-1] - Dist[1:len(Dist)])
       Num = DeltaL * (Ybargauss[0:len(Dist)-1] + Ybargauss[1:len(Dist)])/2
       Den = DeltaL * (Gauss[0:len(Dist)-1] + Gauss[1:len(Dist)])/2
 
-      YbarReg[l] = N.sum(Num)/sum(Den)
+      YbarReg[l] = NP.sum(Num)/NP.sum(Den)
 
     # Premier point de la crete
-    idxmax    = N.argmax(YbarReg)
+    idxmax    = NP.argmax(YbarReg)
     valmax    = Ybarort[idxmax]
     cox       = Coorxort[idxmax]
     coy       = Cooryort[idxmax]
@@ -607,20 +606,20 @@ def post_endo_fiss_ops(self,
 
     # Definition des deux directions d'avancement possibles
     #
-    VersAvn1 = N.array([CoxAmm[1]-CoxAmm[0],CoyAmm[1]-CoyAmm[0]])
+    VersAvn1 = NP.array([CoxAmm[1]-CoxAmm[0],CoyAmm[1]-CoyAmm[0]])
     module   = ((VersAvn1[0])**2 + (VersAvn1[1])**2)**0.5
     VersAvn1 = VersAvn1 * (1/module)
     VersAvn2 = -VersAvn1
 
     # Initialisation vecteurs
     #
-    Coxcrete1  = N.array([CoxAmm[1]])
-    Coycrete1  = N.array([CoyAmm[1]])
-    Ybarcrete1 = N.array([YbarAmm[1]])
+    Coxcrete1  = NP.array([CoxAmm[1]])
+    Coycrete1  = NP.array([CoyAmm[1]])
+    Ybarcrete1 = NP.array([YbarAmm[1]])
 
-    Coxcrete2  = N.array([CoxAmm[0]])
-    Coycrete2  = N.array([CoyAmm[0]])
-    Ybarcrete2 = N.array([YbarAmm[0]])
+    Coxcrete2  = NP.array([CoxAmm[0]])
+    Coycrete2  = NP.array([CoyAmm[0]])
+    Ybarcrete2 = NP.array([YbarAmm[0]])
 
     # Boucle sur les points de la crete
     #     Variables du boucle :
@@ -639,25 +638,25 @@ def post_endo_fiss_ops(self,
           VersAvan = VersAvn2
       else:
         if dirRech == 1:
-          CoxLast = N.array( [Coxcrete1[i-2] , Coxcrete1[i-1] ])
-          CoyLast = N.array([ Coycrete1[i-2] , Coycrete1[i-1] ])
+          CoxLast = NP.array( [Coxcrete1[i-2] , Coxcrete1[i-1] ])
+          CoyLast = NP.array([ Coycrete1[i-2] , Coycrete1[i-1] ])
         else :
-          CoxLast = N.array( [Coxcrete2[i-2] , Coxcrete2[i-1] ])
-          CoyLast = N.array([ Coycrete2[i-2] , Coycrete2[i-1] ])
-        VersAvan  = N.array([CoxLast[1]-CoxLast[0],CoyLast[1]-CoyLast[0]])
+          CoxLast = NP.array( [Coxcrete2[i-2] , Coxcrete2[i-1] ])
+          CoyLast = NP.array([ Coycrete2[i-2] , Coycrete2[i-1] ])
+        VersAvan  = NP.array([CoxLast[1]-CoxLast[0],CoyLast[1]-CoyLast[0]])
         module    = ((VersAvan[0])**2. + (VersAvan[1])**2.)**0.5
         VersAvan  = VersAvan * (1/module)
 
       if dirRech == 1:
-        PStart = N.array([Coxcrete1[i-1],Coycrete1[i-1]])
+        PStart = NP.array([Coxcrete1[i-1],Coycrete1[i-1]])
       else:
-        PStart = N.array([Coxcrete2[i-1],Coycrete2[i-1]])
+        PStart = NP.array([Coxcrete2[i-1],Coycrete2[i-1]])
 
       # point de prediction
-      Ppred    = N.array([PStart[0] + VersAvan[0]*pas, PStart[1] + VersAvan[1]*pas ])
-      VersNorm = (1. / N.sqrt((VersAvan[0])**2. + (VersAvan[1])**2.)) * N.array([ -VersAvan[1] , VersAvan[0] ])
-      PPlus    = N.array([ Ppred[0] + (lort/2.)*VersNorm[0] , Ppred[1] + (lort/2.)*VersNorm[1] ])
-      PMoin    = N.array([ Ppred[0] - (lort/2.)*VersNorm[0] , Ppred[1] - (lort/2.)*VersNorm[1] ])
+      Ppred    = NP.array([PStart[0] + VersAvan[0]*pas, PStart[1] + VersAvan[1]*pas ])
+      VersNorm = (1. / NP.sqrt((VersAvan[0])**2. + (VersAvan[1])**2.)) * NP.array([ -VersAvan[1] , VersAvan[0] ])
+      PPlus    = NP.array([ Ppred[0] + (lort/2.)*VersNorm[0] , Ppred[1] + (lort/2.)*VersNorm[1] ])
+      PMoin    = NP.array([ Ppred[0] - (lort/2.)*VersNorm[0] , Ppred[1] - (lort/2.)*VersNorm[1] ])
 
       # creation du profil orthogonal
       lignes = []
@@ -694,6 +693,7 @@ def post_endo_fiss_ops(self,
                               NUME_ORDRE   = 1,)
 
       except :
+        print "#MC dans EXCEPT"
         # Attention!! Ici on gere seulement le cas d'aucun point dans la matiere!
         # Il faudra gerer tous les possibles erreurs de proj_champ, ou trouver nom
         # a l'erreur specifique!
@@ -712,7 +712,7 @@ def post_endo_fiss_ops(self,
                               NUME_ORDRE = 1,)
 
         dx0     = __YBARCH.EXTR_COMP(NOM_CMP,[],1)
-        Nonvide = N.array(list(dx0.noeud))
+        Nonvide = NP.array(list(dx0.noeud))
 
         # recherche du point de prediction parmis les points projetes
         idxpred = vfind(Nonvide,nbPoints)
@@ -729,35 +729,35 @@ def post_endo_fiss_ops(self,
 
         Ybarort = dx0.valeurs
         Coor0    = __MAI.COORDO.VALE.get()
-        Coorxort = N.array(Coor0[0:len(Coor0):3] , N.Float)
-        Cooryort = N.array(Coor0[1:len(Coor0):3] , N.Float)
-        Coorxort = N.take(Coorxort,Nonvide-1)
-        Cooryort = N.take(Cooryort,Nonvide-1)
+        Coorxort = NP.array(Coor0[0:len(Coor0):3] , float)
+        Cooryort = NP.array(Coor0[1:len(Coor0):3] , float)
+        Coorxort = NP.take(Coorxort,Nonvide-1)
+        Cooryort = NP.take(Cooryort,Nonvide-1)
         Coorxort = delEl(Coorxort,idxpred)
         Cooryort = delEl(Cooryort,idxpred)
         Ybarort  = delEl(Ybarort,idxpred)
 
         # Regularisation sur le profil orthogonal
         #
-        YbarReg = N.zeros((len(Ybarort),),N.Float)
+        YbarReg = NP.zeros((len(Ybarort),), float)
         for l in range(len(Ybarort)):
           xcentre = Coorxort[l]
           ycentre = Cooryort[l]
           Dist    = ((Coorxort-xcentre)**2 + (Cooryort-ycentre)**2)**0.5
-          Gauss   = N.zeros((len(Dist),),N.Float)
+          Gauss   = NP.zeros((len(Dist),), float)
           for m in range(len(Dist)) :
-            Gauss[m] = N.e**(-(2*Dist[m]/lreg)**2)
+            Gauss[m] = NP.e**(-(2*Dist[m]/lreg)**2)
 
           Ybargauss = Ybarort * Gauss
-          DeltaL = N.absolute(Dist[0:len(Dist)-1] - Dist[1:len(Dist)])
+          DeltaL = NP.absolute(Dist[0:len(Dist)-1] - Dist[1:len(Dist)])
           Num = DeltaL * (Ybargauss[0:len(Dist)-1] + Ybargauss[1:len(Dist)])/2
           Den = DeltaL * (Gauss[0:len(Dist)-1] + Gauss[1:len(Dist)])/2
-          YbarReg[l] = N.sum(Num)/N.sum(Den)
+          YbarReg[l] = NP.sum(Num)/NP.sum(Den)
 
 
         # Nouveau point de la crete
         #
-        idxmax  = N.argmax(YbarReg)
+        idxmax  = NP.argmax(YbarReg)
         valmax  = Ybarort[idxmax]
         cox     = Coorxort[idxmax]
         coy     = Cooryort[idxmax]
@@ -769,7 +769,7 @@ def post_endo_fiss_ops(self,
 
         if round(alpha) != 180. :
           alphar = radians(alpha)
-          blim   = pas * N.tan(alphar/2.)
+          blim   = pas * NP.tan(alphar/2.)
           btest  = ((cox-Ppred[0])**2. + (coy-Ppred[1])**2.)**0.5
           if btest > blim :
             if dirRech == 1 :
@@ -781,13 +781,13 @@ def post_endo_fiss_ops(self,
               break
 
         if dirRech == 1:
-          Coxcrete1  = N.concatenate((Coxcrete1,N.array([cox])))
-          Coycrete1  = N.concatenate((Coycrete1,N.array([coy])))
-          Ybarcrete1 = N.concatenate((Ybarcrete1,N.array([valmax])))
+          Coxcrete1  = NP.concatenate((Coxcrete1,NP.array([cox])))
+          Coycrete1  = NP.concatenate((Coycrete1,NP.array([coy])))
+          Ybarcrete1 = NP.concatenate((Ybarcrete1,NP.array([valmax])))
         else:
-          Coxcrete2  = N.concatenate((Coxcrete2,N.array([cox])))
-          Coycrete2  = N.concatenate((Coycrete2,N.array([coy])))
-          Ybarcrete2 = N.concatenate((Ybarcrete2,N.array([valmax])))
+          Coxcrete2  = NP.concatenate((Coxcrete2,NP.array([cox])))
+          Coycrete2  = NP.concatenate((Coycrete2,NP.array([coy])))
+          Ybarcrete2 = NP.concatenate((Ybarcrete2,NP.array([valmax])))
 
         condSort = valmax
         if condSort <= seuil and dirRech == 1 :

@@ -1,4 +1,4 @@
-#@ MODIF sup_gmsh Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sup_gmsh Utilitai  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,6 +19,7 @@
 # ======================================================================
 
 import os.path, string, os, copy
+import numpy as NP
 
 try :
   from Cata.cata import *
@@ -376,7 +377,7 @@ class Point(Geometric) :
   def __init__(self,x,y,z=0) :
 
     Geometric.__init__(self)
-    self.coor = array([x,y,z], Float)
+    self.coor = NP.array([x,y,z], NP.float)
     self.attractor = None
 
 
@@ -404,7 +405,7 @@ class Point(Geometric) :
 
   def Translate(self,x,y,z=0) :
 
-    tran = array([x,y,z]).astype(Float)
+    tran = NP.array([x,y,z]).astype(NP.float)
     self.coor = self.coor + tran
 
 
@@ -1131,7 +1132,7 @@ class SurfaceLoop(Geometric) :    # Used only during the meshing phase
 
 def VectorProduct(u,v) :
 
-  return array([u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]])
+  return NP.array([u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]])
 
 
 def VectorNorm(u) :

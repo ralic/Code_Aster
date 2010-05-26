@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -525,6 +525,8 @@ Paramètres répétés : %s""" % args
       # appel de fonction definie dans le corps du jeu de commandes
       try:
            context={}
+           # mettre le contexte du parent de l'étape courante (INCLUDE par exemple)
+           context.update(self.parent.g_context)
            # récupération des constantes locales en cas de MACRO
            context.update(getattr(self.parent, 'macro_const_context', {}))
            # on reduit le dict au seul parametre de la formule

@@ -2,7 +2,7 @@
      &                  RESU  ,RESIGR,DEPDEL,CTCCVG,CTCFIX)
 C   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/05/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -489,6 +489,14 @@ C ======================================================================
         ZR(JDELTA-1+ILIAI) = ZR(JDEPDE-1+ILIAI) + ZR(JDELTA-1+ILIAI)
   240 CONTINUE
 C ======================================================================
+C --- INITIALISATION DE ATMU ET DE AFMU
+C ======================================================================
+      DO 110 ILIAI = 1, NEQ
+         ZR(JATMU+ILIAI-1) = 0.0D0
+         ZR(JAFMU+ILIAI-1) = 0.0D0
+ 110  CONTINUE
+      IF (NBLIAC.EQ.0) GOTO 999
+C ======================================================================
 C --- CALCUL DES FORCES DE CONTACT (AT.MU)
 C ======================================================================
       CALL CFATMU(NEQ   ,NTNOE ,NDIM  ,NBLIAC,1     ,
@@ -632,7 +640,7 @@ C
             JJC = JJ
           END IF
   310   CONTINUE
-C --- INITIALISATION DE CM3A
+C --- INITIALISATION DE FRO2
         CALL JEVEUO(JEXNUM(FRO2,ILIAI),'E',JFRO2)
         DO 320 LL = 1,NDLMAX
           ZR(JFRO2-1+LL) = 0.0D0
@@ -699,6 +707,8 @@ C
       IF ((NBLIAC.NE.NBLCIN).AND.(INDIC.NE.0)) THEN
         CTCFIX = .TRUE.
       ENDIF
+C
+  999 CONTINUE
 C      
 C --- ETAT DES VARIABLES DE CONTROLE DU CONTACT
 C      
@@ -707,8 +717,6 @@ C
       IF ( NIV .GE. 2 ) THEN
         WRITE(IFM,1002) ITER
       END IF
-C
-  999 CONTINUE
 C 
 C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC 
 C 

@@ -8,7 +8,7 @@ C
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 26/05/2010   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,8 @@ C =================================================================
       INTEGER         II,INDAL
       REAL*8          E, NU, MU, K
       REAL*8          UN, DEUX, TROIS
-      REAL*8          MU0V, XI0V,S0
+      REAL*8          MU0V, XI0V, S0
+      REAL*8          MPIC, APIC, SIGMP1, SIGC, ME, AE, COHERE
       CHARACTER*2     CERR(32)
       CHARACTER*8     NOMC(32)
 C =================================================================
@@ -131,11 +132,26 @@ C =================================================================
 C =================================================================
 C - VERIFICATIONS -------------------------------------------------
 C =================================================================
-      MU0V   = MATERD(29,2)
-      XI0V   = MATERD(30,2)
-      S0     = MATERD(14,2)
+      MU0V   = MATERD(24,2)
+      XI0V   = MATERD(25,2)
+      S0     = MATERD(11,2)
       IF ((MU0V.GT.XI0V).AND.((UN/S0).GT.((UN+MU0V)/(MU0V-XI0V)))) THEN
          CALL U2MESS('F','COMPOR1_26')
+      ENDIF
+C =================================================================
+C --- VERIFICATION DE LA COHERENCE DES PARAMETRES : ---------------
+C --- SIGMA_C, SIGMA_P1, M_PIC, A_PIC, A_E ET M_E -----------------
+C =================================================================
+      MPIC   = MATERD(14,2)
+      APIC   = MATERD(10,2)
+      SIGMP1 = MATERD(23,2)
+      SIGC   = MATERD( 3,2)
+      ME     = MATERD(13,2)
+      AE     = MATERD( 9,2)
+      COHERE =
+     &        ABS(SIGC/SIGMP1*((MPIC*SIGMP1/SIGC+1)**(APIC/AE))-ME)
+      IF (COHERE.GT.1.0D-2) THEN
+         CALL U2MESS('F','ALGORITH5_12')
       ENDIF
 C =================================================================
 C --- DEFINITION D'UN MATERIAU FINAL ------------------------------

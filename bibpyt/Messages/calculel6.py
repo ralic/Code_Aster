@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 26/05/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,17 +160,6 @@ Solution :
  nb sous-points "k"   :  %(i2)d
 """),
 
-53: _("""
- Erreur utilisateur :
-   On cherche à "poursuivre" un calcul non linéaire mais les variables internes de l'état
-   initial ne sont pas compatibles avec le comportement choisi pour la suite du calcul.
-   Pour la maille  : %(k1)s
-     Nombre de variables pour l'état initial         :  %(i1)d
-     Nombre de variables attendu par le comportement :  %(i2)d
-
- Risques & conseils :
-   Vérifier que vous n'avez pas changé de relation de comportement (mot clé RELATION).
-"""),
 
 54: _("""
  Problème d'utilisation du parallélisme :

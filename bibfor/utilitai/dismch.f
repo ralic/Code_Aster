@@ -1,6 +1,6 @@
       SUBROUTINE DISMCH(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 26/05/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,9 +39,9 @@ C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
       CHARACTER*4  SUF
-      CHARACTER*8  K8BID,TEMPE,HYDRAT,SECHAG
+      CHARACTER*8  KTYP
+      CHARACTER*19 NOM19
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)
@@ -51,9 +51,8 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 ZR
       COMPLEX*16 ZC
       LOGICAL ZL
-      CHARACTER*8 ZK8,KTYP
-      CHARACTER*16 ZK16,TYPECO
-      CHARACTER*19 NOM19
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
@@ -102,11 +101,15 @@ C     -- CHARGE OU CHAR_CINE ?
       ELSE IF (KTYP(1:5).EQ.'CIAC_') THEN
          IPHEN = 3
          SUF = 'CIAC'
+C --- LIGREL ELEMENTS DE CONTACT
+      ELSEIF (KTYP(1:3).EQ.'ME ') THEN
+         IPHEN = 1
+         SUF = 'CHME'         
       ELSE
          CALL U2MESS('F','UTILITAI_52')
       END IF
 
-      IF (SUF(1:2).EQ.'CH') THEN
+      IF ((SUF(1:2).EQ.'CH').AND.(KTYP(1:3).NE.'ME ')) THEN
          CALL JEVEUO(NOMOB//'.'//SUF//'.MODEL.NOMO','L',IANOMO)
          MODELE = ZK8(IANOMO)
       ENDIF

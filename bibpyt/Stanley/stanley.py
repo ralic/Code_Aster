@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 01/12/2009   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1601,6 +1601,7 @@ class STANLEY:
       # Incorporation du nouveau point 
       self.etat_geom.Fusion(geom)
     except Exception, e:
+      print e
       self.selection.Refresh()
 
 
@@ -2084,8 +2085,9 @@ class DRIVER :
 
     try:
       __MO_P = AFFE_MODELE(MAILLAGE = __MA,
-                           AFFE = _F(GROUP_MA = selection.geom[1],
-  #                                   TOUT         = 'OUI',
+                           AFFE = _F(
+#                                     GROUP_MA = selection.geom[1],
+                                     GROUP_MA = geom,
                                      PHENOMENE    = 'MECANIQUE',   # sans doute faire qchose de plus fin
                                      MODELISATION = type_modelisation,       # a ce niveau ...
                                     )
@@ -2099,6 +2101,11 @@ class DRIVER :
     motscles = { 'METHODE' : 'ELEM' }
     if contexte.para_sensi:
        motscles['SENSIBILITE'] = contexte.para_sensi
+
+    try:
+       DETRUIRE(CONCEPT = _F(NOM    = _RESU_P), INFO=2, ALARME='NON')
+    except Exception,e:
+       pass
 
     try:
       __RESU_P = PROJ_CHAMP(
@@ -2564,10 +2571,8 @@ class DRIVER_COURBES(DRIVER) :
     # Options supplementaires du IMPR_RESU pour la SENSIBILITE
     if contexte.para_sensi:
        para['SENSIBILITE'] = contexte.para_sensi
-#       DETRUIRE(OBJET = _F(CHAINE = 'STNTBLG2'),INFO=1, ALARME='NON')
        DETR( 'STNTBLG2' )
 
-#    DETRUIRE(OBJET = _F(CHAINE = 'STNTBLGR'),INFO=1, ALARME='NON')
     DETR( 'STNTBLGR' )
 
     if selection.geom[0] == 'POINT' :
@@ -2577,7 +2582,8 @@ class DRIVER_COURBES(DRIVER) :
         contexte, detr = self.Projeter(selection, contexte, point) 
         if not contexte: return False
 
-        l_detr += detr
+#        l_detr += detr
+        l_detr.extend(detr)
         para['RESULTAT'] = contexte.resultat
         para['GROUP_NO'] = point
 
@@ -2592,7 +2598,6 @@ class DRIVER_COURBES(DRIVER) :
           return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1, texte)
 
         for comp in l_nom_cmp :
-
           vale_x = selection.vale_va
           courbe = as_courbes.Courbe(vale_x,vale_x)
 
@@ -2607,11 +2612,8 @@ class DRIVER_COURBES(DRIVER) :
 
           l_courbes.append( (courbe, nom) )
 
-#        DETRUIRE(OBJET = _F(CHAINE = 'STNTBLGR'),INFO=1, ALARME='NON')
         DETR( 'STNTBLGR' )
-#        if contexte.para_sensi: DETRUIRE(OBJET = _F(CHAINE = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
         if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
-#        if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ),INFO=1, ALARME='NON')
         if l_detr: DETR( tuple(l_detr) )
 
 

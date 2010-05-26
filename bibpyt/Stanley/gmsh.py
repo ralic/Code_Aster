@@ -1,4 +1,4 @@
-#@ MODIF gmsh Stanley  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF gmsh Stanley  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,7 +171,8 @@ class GMSH_DISTANT :
         Lancement d'une commande
      """
      UTMESS('I','STANLEY_9',valk=[str(cmd)])
-     res = os.system(cmd)
+     try:    res = os.system(cmd)
+     except: pass
      return
 
 

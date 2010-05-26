@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith2 Messages  DATE 25/05/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -277,6 +277,12 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 
 79 : _("""
  pas de valeurs propres trouvées
+"""),
+
+
+80 : _("""
+ le champ %(k1)s associé à la grandeur de type %(k2)s ne peut pas être utilisé dans une
+ structure de données de type %(k3)s
 """),
 
 }

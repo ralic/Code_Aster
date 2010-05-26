@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 15/03/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# RESPONSABLE MCOURTOI M.COURTOIS
+# RESPONSABLE COURTOIS M.COURTOIS
 
 def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    """
@@ -32,6 +32,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    from Utilitai.Utmess       import  UTMESS
    from Utilitai              import transpose
    from Utilitai.Table        import Table, merge
+   from Utilitai.utils        import get_titre_concept
 
    ier = 0
    # La macro compte pour 1 dans la numerotation des commandes
@@ -57,6 +58,10 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
       tab = sdtab.EXTR_TABLE()
    else:
       tab = TABLE.EXTR_TABLE()
+
+   # Réinitialiser le titre si on n'est pas réentrant
+   if self.reuse is None:
+      tab.titr = get_titre_concept(self.sd)
 
    #----------------------------------------------
    # Boucle sur les actions à effectuer
@@ -160,7 +165,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    #----------------------------------------------
    # 99. Création de la table_sdaster résultat
    # cas réentrant : il faut détruire l'ancienne table_sdaster
-   if self.sd.nom == TABLE.nom:
+   if self.reuse is not None:
       DETRUIRE(CONCEPT=_F(NOM=TABLE,), INFO=1)
 
    dprod = tab.dict_CREA_TABLE()

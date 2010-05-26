@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 26/05/2010   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +74,7 @@ C PARAMETRES D'APPELS
       CHARACTER*8 POUX,NOMODE,LPAIN(MAXIN),LPAOUT(MAXOUT),NOMGD,CAREL,
      &            MATERI,MATERS,NOMA
       CHARACTER*16 OPTIO2,VARI
-      CHARACTER*19 CANBSP,CANBVA,CHXFEM(3)
+      CHARACTER*19 CANBSP,CANBVA,CHXFEM(3),CHVAR2
       CHARACTER*24 VALK
       CHARACTER*24 LCHIN(MAXIN),LCHOUT(MAXOUT),CHDEP2,CHELE2,CHC,CHTHET,
      &             MATSEN,CHNOVA
@@ -84,12 +84,13 @@ C PARAMETRES D'APPELS
 
       CHDEP2 = CHDEPL
       CHELE2 = CHELEM
+      CHVAR2 = '&&MECALC.CHVARI'
+      CHNOVA = '&&MECALC.NOVARI'
       CODRET = 0
 
       BASE2 = BASE
       NOMODE = MODELE
       OPTIO2 = OPTION
-      CHNOVA = '&&MECALC.NOVARI'
       CALL INFNIV(IFM,NIV)
       DO 10,IAUX = 1,MAXIN
         LPAIN(IAUX) = ' '
@@ -179,7 +180,12 @@ C     ---------------------------------------------------------
           IF (NOMGD.EQ.'VARI_R') THEN
             CALL EXISD('CHAM_ELEM_S',COMPOR,IRET2)
             IF (IRET2.NE.1) CALL CESVAR(CAREL,COMPOR,LIGREL,COMPOR)
-            CALL VRCOMP(' ',COMPOR,CHDEPL)
+C           -- COMME VRCOMP PEUT MODIFIER LE 3EME ARGUMENT, ON EN
+C              FAIT UNE COPIE :
+            CALL COPISD('CHAMP','V',CHDEPL,CHVAR2)
+
+            CALL VRCOMP(' ',COMPOR,CHVAR2,LIGREL)
+            LCHIN(1) = CHVAR2
           END IF
         END IF
 
@@ -582,11 +588,14 @@ C     SUPPLEMENTAIRE "DE CONTRAINTES AUX NOEUDS PAR SOUS ELEMENTS"
             CALL U2MESK('A','CALCULEL6_79',1,OPTIO2)
           ENDIF
         END IF
+
+
 C     MENAGE :
 C     -------
         IF (POUX.EQ.'OUI') CALL JEDETC('V','&&MECHPO',1)
         CALL DETRSD('CHAM_ELEM_S',CHELE2)
         CALL JEDETC ('V',CHNOVA,1)
+        CALL DETRSD('CHAMP',CHVAR2)
 
       END IF
    40 CONTINUE

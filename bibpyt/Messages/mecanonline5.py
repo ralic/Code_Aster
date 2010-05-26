@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 19/04/2010   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline5 Messages  DATE 26/05/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,6 +165,10 @@ option PROJ_MODAL et que l'archivage a été fait (mot-clef ARCHIVAGE de DYNA_NON_
 33 : _("""
 Dynamique non-linéaire
 La méthode IMPL_EX n'est pas possible.
+"""),
+
+34 : _("""
+La recherche linéaire est incompatible avec le pilotage de type DDL_IMPO.
 """),
 
 43 : _("""

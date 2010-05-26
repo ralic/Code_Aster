@@ -1,4 +1,4 @@
-# MODIF  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 25/05/2010   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 # zzzz175a.para = tps_job 100 mem_job 300Mo ncpus 1 liste_test S
@@ -205,16 +205,16 @@ for num_calc in range(nbre_calcul):
 #    que le mecanisme de nommage automatique n'a pas ete degrade.
 #
 TEST_RESU(RESU=(
-       _F(  RESULTAT = resu_3,    INST=T_final,  
-            NOM_CHAM = 'DEPL',    GROUP_NO = 'GNP19',  
-            CRITERE = 'RELATIF',  PRECISION = 1.E-6,  
-            NOM_CMP = 'DX',       VALE = -1.1408102E-02, 
-            REFERENCE = 'NON_REGRESSION', VERSION = '10.00.24' ),
-       _F(  RESULTAT = resu_3,    INST=T_final,  
-            NOM_CHAM = 'DEPL',    GROUP_NO = 'GNP19',  
-            CRITERE = 'RELATIF',  PRECISION = 1.E-6,  
-            NOM_CMP = 'DY',       VALE = -1.0048700E-01,
-            REFERENCE = 'NON_REGRESSION', VERSION = '10.00.24' ))
+       _F(  RESULTAT = resu_3,    INST=T_final,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'GNP19',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-5,
+            NOM_CMP = 'DX',       VALE = -1.140817E-02,
+            REFERENCE = 'NON_REGRESSION', VERSION = '10.01.25' ),
+       _F(  RESULTAT = resu_3,    INST=T_final,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'GNP19',
+            CRITERE = 'RELATIF',  PRECISION = 1.1E-5,
+            NOM_CMP = 'DY',       VALE = -1.004880E-01,
+            REFERENCE = 'NON_REGRESSION', VERSION = '10.01.25' ))
           )
 #
 ####      program homard

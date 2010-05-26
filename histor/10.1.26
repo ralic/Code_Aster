@@ -1,0 +1,2640 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 26/05/2010 - 13:00:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015092 DU 2010-05-19 12:01:44
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Bug dans DISMOI pour les types de charges de CONTACT
+FONCTIONNALITE
+   Vu sur le forum.
+   Le mélange de charges de type suiveuse et du contact provoque un arrêt brutal dans
+   STAT_NON_LINE:
+   
+   
+      !--------------------------------------------!
+      ! <F> <UTILITAI_52>                          !
+      !                                            !
+      ! type de charge inconnu                     !
+      !                                            !
+      !                                            !
+      ! Cette erreur est fatale. Le code s'arrete. !
+      !--------------------------------------------!
+   
+   
+   La routine en cause est DISMCH qui traite la question CALL
+   DISMOI('F','TYPE_CHARGE',ZK24(JCHAR+ICHA-1),'CHARGE',IBID,AFFCHA,IERD)
+   
+   Ceci permet de connaitre le type d'une charge (mécanique, thermqique, constante, fonction)
+   Depuis l'introduction de DEFI_CONTACT, la "charge" des éléments de contact n'est pas d'un
+   type reconnu par ce DISMOI. Il plante donc avec un message d'erreur.
+   
+   Je corrige DISMCH pour ne plus planter en testant le type correctement.
+   
+   Par précautions avant la STA, je passe la liste complète.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste complxc3xa8te
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015009 DU 2010-04-28 15:45:24
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Message pas assez drxc3xb4le
+FONCTIONNALITE
+   Le message suivant semble un peu trop excentrique pour certaines personnes
+   
+      !-----------------------------------------------------------------------------------------!
+      ! <EXCEPTION> <CONTACT3_43>                                                               !
+      !                                                                                         !
+      ! La normale que vous avez prédéfinie par (VECT_* = 'VECT_Y') n'est pas utilisable en 2D. !
+      ! Utilisez plutot (ou Dingo) VECT_* = 'FIXE'                                              !
+      !-----------------------------------------------------------------------------------------!
+   
+   On le modifie en
+   
+   
+      !-----------------------------------------------------------------------------------------!
+      ! <EXCEPTION> <CONTACT3_43>                                                               !
+      !                                                                                         !
+      ! La normale que vous avez prédéfinie par (VECT_* = 'VECT_Y') n'est pas utilisable en 2D. !
+      ! Utilisez plutot  VECT_* = 'FIXE'                                              !
+      !-----------------------------------------------------------------------------------------!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   nxc3xa9ant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013927 DU 2009-09-24 07:10:37
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Pilotage et recherche linxc3xa9aire
+FONCTIONNALITE
+   Lors de la formation Aster, on a remarqué que le pilotage (DDL_IMPO) avec la recherche
+   linéaire ne fonctionnait pas du tout (défaut de convergence, "perte" du second membre).
+   Or le problème (plaque trouée en plasticité) est vraiment élémentaire et on ne comprend
+   pas pourquoi la recherche linéaire est aussi fantaisiste dans ce cas.
+   Il suffit de reprendre le cas-test forma03c pour voir le problème.
+   
+   Analyse:
+   
+   Dans le cas de DDL_IMPO pilotage+rech_line, dans la routine NMREPL, on se contente de
+   faire la recherche linéaire mais on ne résout JAMAIS l'équation de pilotage (il y a un
+   GOTO 9999 après la recherche linéaire !).
+   La recherche linéaire en pilotage DDL_IMPO n'a jamais fonctionné (en tout cas en V7, c'est
+   pareil !)
+   
+   Actions:
+   
+   Il faut la programmer, tout simplement(!). J'ai essayé en modifiant un peu les sources
+   mais il s'avère que c'est pas si simple (la gestion de l'OFFSET et des résidus d'équilibre
+   n'est pas facile).
+   Après quelques modifs (bricolage), sur forma03c, en activant la recherche linéaire avec
+   DDL_IMPO et en imposant RHO_MAX = 1, je converge vers la solution, mais en deux fois plus
+   d'itérations de Newton (super efficace  !)
+   Vu le temps avant la stabilisation de Code_Aster, je propose carrément d'interdire
+   PILOTAGE='DDL_IMPO' + RECH_LINE par un message d'erreur propre (aucun cas-test ne vérifie
+   la fonctionnalité). 
+   
+   En v9 et en V10.
+   
+   
+   RESULTATS FAUX:
+   **************
+   
+   Il y a peut etre un risque de résultat faux car l'équation de pilotage n'est pas vérifiée.
+   Mais le risque est faible car quand on fait du pilotage en général, c'est que le problème
+   n'est pas soluble sans. Donc, on risque surtout de ne pas avoir de solution.
+   
+   Circonstances du  bug:
+   - RECH_LINEAIRE + PILOTAGE='DDL_IMPO'
+   
+   Moyens de contrôle:
+   - l'équation (linéaire) du pilotage n'est pas vérifiée, l'utilisateur doit s'en rendre
+   compte (c'est équivalent à faire une erreur dans l'imposition des conditions limites)
+   
+   
+   J'émets une autre fiche (d'évolution issue15089) pour développer la fonctionnalité manquante.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   nxc3xa9ant
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014936 DU 2010-04-14 11:33:25
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Double affichage de la dernixc3xa8re ligne xc3xa0 convergence dans MNL
+FONCTIONNALITE
+   L'affichage du tableau de convergence en présence de contact et en REAC_GEOM='SANS' est
+   désormais OK (cf. ssnv129a) mais celui sans contact est mauvais : on affiche 2 fois la
+   dernière ligne du résidu convergé.
+   
+   Encore un problème dans NMCONV
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   visuelle
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015110 DU 2010-05-25 12:02:08
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.25, le cas-test sdnv105a s'arrete anormalement sur Rocks
+FONCTIONNALITE
+   Un léger NOOK
+   
+    ---- TABLE            NOM_PARA         TYPE_TEST
+         B_en_t_5         TOTALE           MAX
+         REFERENCE        LEGENDE          VALE_REF         VALE_CAL         ERREUR         
+    TOLE            
+   NOOK  ANALYTIQUE       XXXX             1.119            1.025            8.4%           
+    8.0%   
+   
+   Je passe la tolérance à 9%
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdnv105a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 26/05/2010 - 16:49:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015061 DU 2010-05-10 16:23:36
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Affichage dans MACR_RECAL
+FONCTIONNALITE
+   uite à la restitution de issue11630, les vecteurs propres fournis par numpy sont fournis
+   en colonne. Avec Numeric/LinearAlgebra, ils étaient censés être en ligne.
+   
+   Dans MACR_RECAL, les vecteurs ne sont utilisés que pour l'affichage, à la fin de la
+   procédure d'optimisation. Néanmoins, on corrige.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   neant
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015010 DU 2010-04-29 12:03:11
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.01.22, les cas-tests sdld121a, sdls121b, sdls121c et zzzz159b s'arretent anormalement sur Rocks.
+FONCTIONNALITE
+   En NEW10.01.22, les cas-tests sdld121a, sdls121b et sdls121c s'arretent anormalement sur
+   Rocks.
+   C'est un problème informatique : les calculs esclaves doivent être lancés en batch depuis
+   le calcul Aster, lui même lancé en batch. 
+   
+   Or, lorsqu'on veut relancer en batch des calculs depuis un astout, ils sont forcement
+   lancés en utilisant les services rcp/rsh, malgré le fait que dans ASTK on puisse choisir
+   SCP/SSH (ca doit être dans les scripts de l'AGLA).
+   
+   Or, le serice RSH n'est pas actif sur les noeuds de clpaster. Pour l'activer, il faut
+   aller sur tous les noeuds et faire les commandes suivantes :
+   
+   vi /etc/xinetd.d/rsh        # remplace "disable = yes" par "disable = no"
+   vi /etc/xinetd.d/rlogin     # idem
+   vi /etc/xinetd.d/rexec      # idem
+   /etc/init.d/xinetd restart
+   
+   Je corrige cette fois mais il faudra faire mieux car ces paramètres "sautent" à chaque
+   arrêt violent de clpaster (l'auto-réinstallation des noeuds n'active pas RSH) :
+   
+   - soit passer ne SCP/SSH dans les scripts de l'AGLA
+   - soit trouver comment forcer l'activation des services RSH lors de la réinstallation d'un
+   noeud
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdld121a, sdls121b et sdls121c
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014873 DU 2010-03-29 14:33:05
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   CALC_EUROPLEXUS pendu
+FONCTIONNALITE
+   Après analyse :
+   
+   Lorsque je refais tourner l'étude en interactif sur la BULL, on voit que tout le temps est
+   passé à générer le fichier champs.e2m (le fichier résultat au format MED généré par
+   Europlexus). Au bout de quelques minutes, il dépasse 1 Go et continue de grimper.
+   Deux constats :
+   . est-ce bien raisonable de generer un fichier MED si gros ?
+   . Europlexus n'a pas l'air tres veloce pour generer ce fichier (peut etre quelque chose à
+   leur faire remonter).
+   
+   
+   Pour l'erreur qui apparait dans le mess, on voit apparaitre le message suivant :
+   
+   """
+   ** ERROR  2 in the Routine CALDIR ** the MESSAGE is the following one :
+   DERNIER TEMPS DES CHARGES  0.00E+00 (TROP PROCHE AU TEMPS FINAL  1.00E-03) PROLONGEZ LES
+   CHARGES!         
+   
+     Recopie des fichiers dans : /tmp/markovic@aster3-interactif.1882/REPE_OUT 
+   
+      fin de l execution de EUROPLEXUS DEVELOPPEMENT 
+   Code_Retour Europlexus : 0
+   """
+   
+   Il y a donc un probleme dans Europlexus, dont l'execution s'est mal passée.
+   Après, coté Aster, on renvoie un code retour 0, qui semble indiquer que tout s'est bien
+   déroulé (ce qui n'est pas le cas) et surtout on continue l'execution d'Aster. Je ne suis
+   donc pas très étonné que LIRE_RESU ne retrouve pas les infos voulues.
+   
+   Je vais voir avec Sergeui pourquoi le runexp_d d'Europlexus retourne 0 dans ce cas là
+   (mais le message "Code_Retour Europlexus :" retourne bien le code retour du script de
+   lancement d'Europlexus).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude fournie
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014550 DU 2010-02-02 16:24:21
+TYPE anomalie concernant Eficas (VERSION 1.7)
+TITRE
+   Couper-coller dans Eficas sur Calibre 5
+FONCTIONNALITE
+   Eficas 1.17 a été installé sur Bull et Calibre 5.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   neant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011486 DU 2007-11-21 10:41:53
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   Macr_recal et Utmess
+FONCTIONNALITE
+   Je propose qu'on ferme cette fiche, puisque tous les développements ont été mutualisés et
+   seront restitués avec la 11119.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008983 DU 2005-09-09 00:00:00
+TYPE evolution concernant Documentation (VERSION 8.1)
+TMA : DeltaCad
+TITRE
+   V3.03.122 - docv ssls122a
+FONCTIONNALITE
+   Ecriture de la dov V du Cas-tests SSLP122.
+   
+   Titre :"Plaque homogène isotrope rectangulaire excentrée"
+   4 modélisations:
+     - A : Maille TRIA3 : modélisation DKT
+     - B : Maille QUAD4 : modélisation DKT
+     - C : Maille TRIA3 : modélisation DST
+     - D : Maille QUAD4 : modélisation DST
+   
+   La doc est dans l'applis doc sous le numero : V3.03.122
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V3.03.122
+VALIDATION
+   neant
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014650 DU 2010-02-17 13:30:51
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Stanley + Salome en mode Distant
+FONCTIONNALITE
+   Lorsque l'on utilise Stanley avec Salome et lorsque Salome est sur une machine distante,
+   il y a un bug dans Stanley : celui-ci cherche a vérifier que le fichier MED contenant les
+   resultat est bien présent en local alors qu'en fait il doit faire cette vérification sur
+   la machine distante.
+   
+   On corrige en v9 et v10.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   maneulle
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015105 DU 2010-05-21 11:14:15
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Stanley : ajout chemin/point
+FONCTIONNALITE
+   Sur la NEW10, dans Stanley, lorsqu'on ajoute un chemin/point, rien ne se passait.
+   Le problème existe depuis le passage Numeric -> numpy.
+   
+   Dans bibpyt/Utilitai/sup_gmsh.py, on faisait un "from Numeric import *" au debut, qui a
+   été supprimé. 
+   
+   De plus, Numeric.Float doit être remplacé par numpy.float.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   stanley
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014841 DU 2010-03-24 08:28:27
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Tracé de courbes d'évolution en 2 points distincts dans STANLEY
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Dans Stanley, on ne pouvait pas tracer des courbes en sélectionnant plusieurs points dont
+   un au moins a été ajouté par l'utilisateur.
+   
+   
+   Correction
+   ==========
+   
+   La sélection n'était pas correctement prise en compte dans la création du modèle qui sert
+   à la projection (méthode Projeter).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   forma01c
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 25/05/2010 - 17:23:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014935 DU 2010-04-14 07:54:25
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   plantage Feti pas trxc3xa8s clair
+FONCTIONNALITE
+   Ce problème est clairement expliqué dans le doc U SOLVEUR.
+   Je l'explicite aussi dans le message. Il devient
+   
+    68 : _("""
+    Problème avec le solveur linéaire FETI: %(i1)d incohérence(s) 
+   entre la SD_FETI et le paramétrage de l'opérateur.
+    
+    Conseil:
+    ========
+    Vérifier bien que le modèle et la liste de charges utilisés 
+   lors du partitionnement (opérateur DEFI_PART...) sont iden
+   tiques à eux utilisés pour le calcul
+    
+    Détail informatique: arrêt dans NUMERO.f.
+   """),
+   
+   Validation
+   ===========
+   feti005a en enlevant des charges lors de l'appel à 
+   MECA_STATIQUE.
+   
+   Source restituée
+   ================
+   assembla.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique,non-rxc3xa9gression
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 26/05/2010 - 11:48:11
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015090 DU 2010-05-19 08:32:14
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   sdld31b.para syntaxe incorrecte
+FONCTIONNALITE
+   Le fichier sdld31b.para a été restitué avec une syntaxe 
+   incorrecte : "mem_job 128Mo" et non "128M"
+   
+   La présence de l'unité de mémoire Mo est maintenant testée 
+   dans les scripts de l'agla (asverif et pre_eda). Une erreur 
+   fatale est émise si la syntaxe est incorrecte.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   decodage du .para par as_run
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015091 DU 2010-05-19 08:53:21
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   NEW10.1.25 : sdlv129a en ERREUR
+FONCTIONNALITE
+   Le test sdlv129a appelle POST_RELEVE_T / EXTREMA sur un cham 
+   elem et utilise le mot-clé GROUP_NO.
+   
+   Or depuis 10.1.25, il est interdit de mettre GROUP_NO car il 
+   n'était pas utilisé.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdlv129a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015038 DU 2010-05-06 06:18:39
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Calc_fonction: erreur dans le prolongement par zero pour fft
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Dans CALC_FONCTION option FFT, on peut demander le 
+   prolongement par zéro afin d'obtenir un signal d'une 
+   longueur adaptée à la FFT (M=2**N).
+   
+   Cette prolongation ne fonctionne pas correctement si le 
+   signal est déjà de taille L=2**N car dans ce cas, 
+   l'algorithme produit un signal de 2**(N+1)
+   
+   
+   Correction
+   ==========
+   
+   N étant la plus grande puissance de 2 telle que 2**N <= L, 
+   il suffit de ne faire le prolongement que si L < 2**N.
+   
+   
+   Validation sur l'accélérogramme de miss01a (unité 31).
+   A reporter en version 9.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   miss01a.31
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013332 DU 2009-04-21 15:15:08
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Xmgrace et xc3xa9chelle log
+FONCTIONNALITE
+   Problème
+   ========
+   
+   On souhaite tracer une courbe dont les abscisses et 
+   ordonnées sont comprises entre 0 et 1 au format XMGRACE.
+   
+   En échelles LIN/LIN, tout se passe bien.
+   En échelles LOG/LOG, on obtient un message à l'ouverture du 
+   fichier dans xmgrace : World DY<=0
+   
+   
+   Correction
+   ==========
+   
+   Il y avait une anomalie dans la méthode AutoBB de l'objet 
+   Graph. Cette méthode calcule les extrema d'un graphique et 
+   en particulier, les minima (absc/ordo) des valeurs 
+   positives, justement pour les graphiques en échelle 
+   logarithmique.
+   
+   Or le minimum positif des ordonnées était calculé à partir 
+   de la valeur des abscisses ! C'est pour cela qu'il se 
+   trouvait être plus grand que le max des ordonnées.
+   
+   Selon les valeurs, en échelle LOG/LOG, il semble que 
+   certains points n'apparaissent pas sur la courbe tracée par 
+   défaut par xmgrace. La courbe complète est affichée après 
+   l'AutoZoom.
+   En échelle LOG/LOG, il semble préférable de fixer les bornes 
+   aux puissances de 10 inférieure au min et supérieure au max 
+   avec les mots-clés BORNE_X/BORNE_Y.
+   
+   
+   Exemple : BORNE_Y = (0.0001, 0.01)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014350 DU 2009-12-30 12:57:32
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Bug commande INCLUDE
+FONCTIONNALITE
+   Problème
+   ========
+   
+   L'étude bien plus compliquée peut se ramener au test suivant 
+   :
+   
+    DEBUT()
+    INCLUDE(UNITE=90)
+    FIN()
+   
+   avec fichier 90 :
+   
+    COEF=1.
+    form = FORMULE(VALE='INST*COEF', NOM_PARA='INST',)
+    ftab = CALC_FONC_INTERP(FONCTION=form, VALE_PARA=(1., 5.))
+   
+   
+   Cela fonctionne en PAR_LOT='OUI'.
+   En PAR_LOT='NON', on a ce type d'erreur :
+   
+   ...!---------------------------------------------------------------------------
+   --------------!
+   ...!.<A>.<FONCT0_51>...........................................................
+   ..............!
+   ...!...........................................................................
+   ..............!
+   ...!.Erreur.lors.de.l'interprétation.de.la.formule.'AMORT'.....................
+   ..............!
+   ...!...........................................................................
+   ..............!
+   ...!.Erreur.lors.de.l'évaluation.de.la.formule.................................
+   ..............!
+   ...!.La.remontée.d'erreur.suivante.peut.aider.à.comprendre.où.se.situe.l'erreur
+   .:............!
+   ...!.Traceback.(most.recent.call.last):........................................
+   ..............!
+   ...!...File."./Python/Build/B_ETAPE.py",.line.534,.in.fiintf...................
+   ..............!
+   ...!.....res=eval(objet_sd.code,.self.jdc.const_context,.context)..............
+   ..............!
+   ...!...File."exp(-
+   COEF*INST)",.line.1,.in.<module>...........................................!
+   ...!.NameError:.name.'COEF'.is.not.defined.....................................
+   ..............!
+   ...!...........................................................................
+   ..............!
+   ...!.Conseils.:................................................................
+   ..............!
+   ...!...Si.le.problème.reporté.ci-
+   dessus.ressemble.à.'NameError:.name.'XXX'.is.not.defined.',.!
+   ...!...vérifiez.que.le.paramètre.'XXX'.fait.bien.partie.des.paramètres.de.défin
+   ition.de......!
+   ...!...la.formule.(mot.clé.FORMULE./.NOM_PARA).................................
+   ..............!
+   ...!...........................................................................
+   ..............!
+   ...!...........................................................................
+   ..............!
+   ...!.Ceci.est.une.alarme..Si.vous.ne.comprenez.pas.le.sens.de.cette............
+   ..............!
+   ...!.alarme,.vous.pouvez.obtenir.des.résultats.inattendus.!....................
+   ..............!
+   ...!---------------------------------------------------------------------------
+   --------------!
+   
+   
+   
+   Correction
+   ==========
+   
+   1. Çà se passe bien en PAR_LOT='OUI' car le contexte de la 
+   macro INCLUDE est ajouté au contexte du parent (le JDC) lors 
+   de la phase d'analyse.
+   Et donc, lors de la phase d'exécution de CALC_FONC_INTERP, 
+   COEF est présent dans le contexte du JDC, qui est utilisé 
+   pour l'évaluation de la formule.
+   
+   
+   2. En PAR_LOT='NON', on exécute les commandes de l'INCLUDE 
+   **avant** que le contexte local ait été ajouté à celui du 
+   JDC, donc CALC_FONC_INTERP ne connait pas COEF.
+   
+   => Pour corriger, il suffit d'ajouter le contexte de 
+   l'INCLUDE pour l'évaluation de la formule. C'est à dire :
+    le contexte du parent de la commande qui évalue la formule
+    == contexte du parent de CALC_FONC_INTERP
+    == contexte de INCLUDE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test joint
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014221 DU 2009-11-23 16:31:59
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   CALC_TABLE - Nom du concept resultat
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Dans l'étude jointe à la fiche, on fait :
+   tab0 = CREA_TABLE(...)
+   tab1 = CALC_TABLE(TABLE=tab0, ...)  # pas de reuse
+   tab2 = CALC_TABLE(TABLE=tab0, ...)  # pas de reuse
+   ...
+   
+   Puis :
+   IMPR_TABLE(TABLE=tab0)
+   IMPR_TABLE(TABLE=tab1)
+   IMPR_TABLE(TABLE=tab2)
+   
+   Dans le fichier .resu, il voit :
+   
+   
+   #---------------------------------------
+   #
+   #ASTER 10.1.25 CONCEPT tab0 CALCULE LE 05/21/2010 A 18:44:26 
+   DE TYPE
+   #TABLE_SDASTER
+   ...
+   #---------------------------------------
+   #
+   #ASTER 10.1.25 CONCEPT tab0 CALCULE LE 05/21/2010 A 18:44:26 
+   DE TYPE
+   #TABLE_SDASTER
+   ...
+   #---------------------------------------
+   #
+   #ASTER 10.1.25 CONCEPT tab0 CALCULE LE 05/21/2010 A 18:44:26 
+   DE TYPE
+   #TABLE_SDASTER
+   ...
+   
+   On a donc l'impression que c'est toujours la même table qui 
+   est imprimée avec la même date de création.
+   
+   
+   
+   Correction
+   ==========
+   
+   Le coupable est CALC_TABLE qui conserve le titre de la table 
+   en entrée et, selon les opérations, ajoute des informations 
+   dans le titre (en cas de fusion de 2 tables par exemple).
+   
+   Or, il faut réinitialiser le titre quand la commande n'est 
+   pas réentrante puisqu'on crée une nouvelle table.
+   
+   Pour cela, on crée un petit utilitaire get_titre_concept 
+   dans Utilitai.utils qui produit un titre semblable à la 
+   routine TITRE fortran.
+   (il faudra homogénéiser l'ensemble ou appeler cet utilitaire 
+   depuis le fortran)
+   
+   Maintenant, on voit bien le nom de chaque table dans le 
+   titre, ainsi que la véritable date/heure de création.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude jointe + test xc3xa9lxc3xa9mentaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015076 DU 2010-05-17 12:01:35
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.24, le cas-test zzzz264a s'arrete anormalement sur Calibre 4.
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Le test zzzz264a s'arrête sur l'erreur :
+   
+   File "./Python/Macro/post_endo_fiss_ops.py", line 391, in 
+   post_endo_fiss_ops
+     idxmax  = N.argmax(Ybar)
+   File "/usr/lib/python2.4/site-packages/Numeric/Numeric.py", 
+   line 289, in argmax
+     s = multiarray.argmax(a)
+   TypeError: type not ordered
+   
+   
+   Correction
+   ==========
+    
+   POST_ENDO_FISS a été oublié lors du passage à numpy (car 
+   restitué en 10.1.22).
+   
+   Il est en erreur sur Calibre4 car on applique une fonction 
+   Numeric sur un tableau numpy (fourni par EXTR_COMP).
+   Ce n'est pas illogique que cette hétérogénéité conduise à 
+   une erreur (Numeric 23.8 sur cette machine, Numeric 24.2 sur 
+   une autre machine 32 bits passe...).
+   
+   
+   On fait la mise à jour vers numpy. Le test est ok ensuite.
+   En revanche, le temps d'exécution est beaucoup plus long 
+   (750 s au lieu de 350 s).
+   On augmente le .para de 400 à 1000 s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz264a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014244 DU 2009-11-30 08:08:07
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   "Appels rxc3xa9cursifs de messages d'erreur ou d'alarme" provoque une erreur <F>
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Lorsque l'on arrête un calcul par le signal USR1 par ASTK, 
+   on a parfois le message suivant :
+   
+    <I> arret sur signal SIGUSR1 
+      
+   ...!-----------------------------------------------------!
+   ...!.<EXCEPTION>.<SUPERVIS_39>...........................!
+   ...!.....................................................!
+   ...!.....................................................!
+   ...!..Arret.de.l'exécution.et.fermeture.des.bases.jeveux.!
+   ...!.....................................................!
+   ...!.....................................................!
+   ...!.....................................................!
+   ...!.....................................................!
+   ...!-----------------------------------------------------!
+      
+   
+   Classement sans suite
+   =====================
+   
+   On ne sait pas comment reproduire le problème...
+   Il se trouve que le kill USR1 ne marchait plus dans astk 
+   1.8.0.
+   Après réparation (dans astk 1.8.1 à venir pour la STA), j'ai 
+   introduit un test unitaire du kill USR1 dans as_run.
+   En lançant ce dernier de multiple fois, je n'ai pas observé 
+   ce comportement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014829 DU 2010-03-22 09:05:41
+TYPE anomalie concernant astk (VERSION 7.0)
+TITRE
+   post traitement en sxc3xa9quentiel
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Il s'agit d'un post-traitement d'un calcul lancé en MPI.
+   Le post-traitement échoue car il a été lancé sur plusieurs 
+   processeurs mais en NEW10.
+   
+   
+   Correction
+   ==========
+   
+   La correction consiste à ignorer le nombre de 
+   noeuds/processeurs demandés si on n'utilise pas une version 
+   MPI.
+   C'est fait dans as_run 1.8.1.
+   
+   (le lancement en batch sur Bull n'en tient pas encore compte)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test xc3xa9lxc3xa9mentaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 26/05/2010 - 10:27:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015106 DU 2010-05-21 11:24:01
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Problème de projection sur QUAD9 (fonctions de forme erronées)
+FONCTIONNALITE
+   Express
+   =======
+   
+   Un utilisateur du forum (mihe) a remarqué un problème lors de l'utilisation d'éléments
+   HEXA27 en contact. Il a réduit le problème (merci à lui !) en montrant que c'est la
+   projection sur une face QUAD9 qui est buggée.
+   En effet il a fourni 2 maillages et un même fichier de commandes. Les 2 maillages ne
+   diffèrent que par le fait qu'ils sont translatés en Y,Z (ce sont 2 mailles HEXA27
+   déformées en vis-à-vis). La projection doit donc être la même dans les 2 cas. Or sur un
+   des maillages cela marche, sur l'autre non.
+   
+   Réf : http://www.code-aster.org/forum2/viewtopic.php?id=13581
+   
+   Analyse
+   =======
+   
+   Si on lance les 2 calculs en INFO=2, on constate que le problème vient du fait que 4
+   noeuds (les noeuds sommets de la face esclave QUAD9) sont exclus du contact sur le calcul
+   fautif.
+   Ils sont exclus car la projection donne des projetés en dehors de la maille maître.
+   
+   La projection est effectuée par un Newton où la fonctionnelle à minimiser est la norme au
+   carré de la distance entre le point x0 (esclave, fixe) et un point de la maille maître. En
+   réécrivant les équations de ce Newton (qu'il faudra d'ailleurs écrire dans la doc R), on
+   trouve les mêmes que dans le Fortran.
+   En comparant les quantités au déboggueur dans le cas qui marche et celui qui échoue, on
+   voit que ce sont les courbures qui diffèrent : ce sont elles qui permettent d'exprimer la
+   matrice tangente.
+   
+   Les courbures sont calculées à partir des dérivées secondes des fonctions de forme : ces
+   dérivées sont données par la routine ELRFD2.f. Les formules écrites dans cette routine
+   sont cohérentes avec la doc R3.01.01 .... mais en refaisant les calculs on se rend compte
+   que cette doc est fausse !
+   Les dérivées secondes aux noeuds sommets du QUAD9 ont un facteur 1/4 en trop.
+   
+   Correction & Validation
+   =======================
+   
+   On supprime le facteur 1/4 dans les dérivées secondes, cela permet de retrouver les mêmes
+   résultats sur les 2 maillages.
+   
+   Résultats faux
+   ==============
+   
+   Les dérivées secondes des fonctions de forme sont utilisées (merci au formidable outil de
+   Nicolas ;)) au moins par 2 fonctionnalités : 
+   
+   * Arlequin
+   * Contact (on oubliait certains noeuds lors de l'écriture des conditions de contact faute
+   d'avoir pu les projeter dans une maille)
+   
+   Il y a d'autres parties du code qui sont susceptibles de les utiliser via CALCUL. Grâce à
+   Jacques, je suis en mesure de dire lesquelles :
+   * option de calcul CALC_DG, calcul de G en "sensibilité" (qui récupèrent les dérivées
+   secondes via ELREF5 dans TE0096 et TE0282)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R3.01.01,R5.03.50
+VALIDATION
+   astout contact + cas fourni
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015095 DU 2010-05-20 09:18:42
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Plantage dans un ASSERT pour un calcul de contact
+FONCTIONNALITE
+   Express
+   =======
+   
+   Un utilisateur du forum nous a fait part d'un calcul fonctionnant en STA10.1 et plantant
+   en NEW10 suite à l'introduction de DEFI_CONTACT
+   
+   Réf : http://www.code-aster.org/forum2/viewtopic.php?id=13539
+   
+   Détails
+   =======
+   
+   Le calcul fait de la dualisation pour le contact et de la pénalisation pour le frottement.
+   On plante dans un ASSERT de la routine ATASMO destinée à construire le terme de
+   pénalisation du frottement. L'ASSERT se déclenche car le nombre de liaisons possibles est
+   nul, or la routine n'est pas prévue pour construire une matrice nulle.
+   
+   En fait le calcul de l'utilisateur est tel qu'à la première itération, tous les noeuds
+   sont exclus du contact lors de l'appariement. Il n'y a donc rien à imposer et depuis
+   DEFI_CONTACT, on dit donc que NBLIAI=0 (avant NBLIAI=nombre de noeuds esclaves et on
+   sautait les noeuds exclus). Le nombre de liaisons actives est donc nul (il n'y a rien à
+   faire).
+   
+   Or la routine qui traite le cas de l'utilisateur (FROPGD.f) est la seule de toutes les
+   méthodes de contact à ne pas sauter la résolution du contact si le nombre de liaisons
+   actives est nulle (il manque un GOTO).
+   
+   
+   Correction
+   ==========
+   
+   Impact : FROPGD.f
+   On valide avec le cas de l'utilisateur. La méthode en elle même était validée par la base
+   mais il n'y a pas de cas où tous les noeuds sont exclus du contact.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas fourni
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015079 DU 2010-05-17 14:16:50
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Correction dans la dxc3xa9tection des mailles axisymxc3xa9triques en CC
+FONCTIONNALITE
+   Express
+   =======
+   
+   Cette fiche a pour but une petite correction dans la routine chargée de détecter le
+   caractère axisymétrique des mailles de contact pour la formulation continue (SAV de la
+   fiche 14380).
+   
+   Lors d'un test sur le benchmark n°3 du stage contact NAFEMS, on s'est aperçu d'un cas non
+   prévu : on a un massif 2D maillé dont on ne met dans le modèle que les mailles de bord
+   (pour faire office de surface maître rigide). L'intérêt d'une telle action est de ne pas
+   s'embêter pour l'orientation des mailles (c'est beaucoup plus dur en 2D qu'en 3D). Dans ce
+   cas, on plantait en erreur JEVEUX dans une recherche sur le catalogue d'éléments.
+   
+   On profite de l'occasion pour inhiber (via INFMUE/INFBAV, merci Mickaël) l'alarme émise
+   par UTMASU (que l'on utilise) lorsque INFO=2.
+   
+   La correction se situe dans MMMAXI.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout cc
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 25/05/2010 - 16:07:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014904 DU 2010-04-02 14:39:28
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   POST_ELEM pour des calculs de moyenne
+FONCTIONNALITE
+   En fait le message est du au fait que le catalogue des 
+   éléments discrets MECA_DIS_TR_N renvoie par erreur au te 
+   des éléments 3D pour l'option COOR_ELGA.
+   Aster ne calcule pas cette option pour les discrets ayant 
+   pour support la maille POI1. On met donc à -1 le calcul de 
+   COOR_ELGA dans les catalogues de ces éléments. Dans le cas 
+   de la fiche on obtient un message clair disant 
+   
+      ! Erreur 
+   utilisateur :                                              
+      !   -> Le TYPE_ELEMENT MECA_DIS_TR_N  ne sait pas 
+   encore calculer l'OPTION:  COOR_ELGA.    
+                    !
+    qui montre qu'on essaie d'intégrer un champ sur des 
+   mailles POI1.
+   
+   A faire en V9.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fichiers associés à la fiche
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR fernandes    FERNANDES Roméo       DATE 26/05/2010 - 07:09:27
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014764 DU 2010-03-10 06:46:54
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Loi de dilatance du modèle LETK
+FONCTIONNALITE
+   L’angle de dilatance intervient directement dans 
+   l’expression de la fonction potentielle pilotant 
+   l’évolution de la déformation volumique plastique au 
+   travers du paramètre de dilatance  . Celui-ci est 
+   positif en compression et devient négatif quand la 
+   plasticité se développe. Ce paramètre traduit la loi de 
+   dilatance du modèle L&K.
+    
+   
+   Une erreur de signe s’est introduite dans Code_Aster.
+   
+   Modification des routines lkbpri, lkcriv, lkcomp et lkvarv
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.1.17
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.1.17
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.01.24
+VALIDATION
+   test letk
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014765 DU 2010-03-10 06:49:46
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Angle de dilatance post-pic du modxc3xa8le LETK
+FONCTIONNALITE
+   En phase de radoucissement post-pic le comportement 
+   volumique doit toujours être dilatant. Or on observe un 
+   comportement de nouveau contractant avec la formulation 
+   L&K en phase post-pic après la limite de clivage. Cette 
+   transition caractérise le comportement de la roche au 
+   moment où la perte de cohésion est totale. Une fois la 
+   limite de clivage atteinte, l’angle de dilatance doit 
+   diminuer pour progressivement s’annuler.
+   
+   il s'agit d'une erreur de signe qu'on corrige.
+   
+   Cette modification impacte les résultats. Du coup il est 
+   nécessaire de modifier également le critère visqueux 
+   (évolutions complémentaires à prévoir dans une version à 
+   venir de LETK).
+   
+   lkbpri, lkvarv, lkcomp et lkcriv
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.1.17
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.1.17
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.01.24
+VALIDATION
+   tests letk
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014775 DU 2010-03-10 11:59:04
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Cohérence des lois d'évolutions d'écrouissage du comportement LETK
+FONCTIONNALITE
+   Lors du calage des paramètres matériaux de la loi L&K avec Code_Aster sur des essais
+   triaxiaux menés en laboratoire par le Laego, Roland Plassart fait constater une
+   discontinuité de la réponse du déviateur des 
+   contraintes lors de la phase post-pic (voir Figure 2).
+    
+   Cette discontinuité s’explique par le non respect d’une condition de cohérence sur la
+   continuité des lois d’évolutions des paramètres d’écrouissages contrôlant la surface de
+   charge élastoplastique post-pic.
+   
+   On propose d'ajouter le même test de cohérence sur les paramètres matériaux que celui déjà
+   existant dans la loi de comportement Laigle.
+   Et on corrige le test fait précédemment.
+   
+   
+   Impact fortran : lklmat
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.31.135, V6.04.206
+VALIDATION
+   tests letk
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014729 DU 2010-03-04 14:23:54
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   VISC_DRUC_PRAG
+FONCTIONNALITE
+   Lorsque le coefficient de dilatation est non nul, le code plante en mécanique pure.
+   il s'agit d'une mauvaise initialisation dans ce cas des variables de températures.
+   
+   on modifie donc la routine lc0042.f
+   
+   Roméo
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests VISC_DRUC_PRAG
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR gnicolas     NICOLAS Gérald        DATE 25/05/2010 - 14:42:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014810 DU 2010-03-18 08:04:02
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   En NEW10.1.15, le cas-test zzzz175a est NOOK sur Rocks et Calibre 4.
+FONCTIONNALITE
+   Après analyse, la seule différence entre les maillages produits par HOMARD sur cette
+   machine et une 64 bits se voit sur la précision des coordonnées de certains noeuds. On
+   constate à quelques endroits des écarts de l'ordre du dix-millième. Comme ensuite on
+   enchaîne des itérations de non linéaire, on récupère un écart à la fin sur le déplacement
+   qui plante le TEST_RESU, le contrôle étant fait au millionième.
+   
+   La raison de cette différence est la suivante. Ce cas-test met en oeuvre du suivi d'une
+   frontière 1D. Les opérations de positionnement des noeuds sur le bord représentant la
+   frontière courbe font appel à des tests de distance. Ces tests sont faits relativement à
+   une précision de 1.e-8 ou 1.e-16 selon la machine. Quand la valeur à tester est entre les
+   deux, la décision prise change. Cela n'a aucne importance en soi pour le calcul car soit
+   le noeud reste tel quel, soit il bouge mais l'écart entre les deux positions est très
+   faible, de l'ordre du dix-millième. Mais cet écart est suffisant pour se manifester au
+   moment du TEST_RESU particulièrement sévère.
+   
+   Ce phénomène est apparu au changement de version de HOMARD (9.5->9.6) car à cette occasion
+   la technique de placement des noeuds sur la frontière courbe a changé pour pouvoir prendre
+   en compte des lignes dans l'espace 3D et non plus seulement dans le plan (cf. fiche 14158).
+   
+   Aprsè discussion, nous avons pris la décision suivante. On modifiera dans HOMARD
+   l'algorithme de placement des noeuds pour le rendre indépendant des machines, par exemple
+   en prenant une précision liée à la taille globale du domaine de calcul. Cela n'est pas
+   prioritaire. Pour lever l'erreur sur le cas-test, on modifie les valeurs du TEST_RESU : on
+   prend une valeur moyenne entre les deux valeurs calculées et on ajuste la précision.
+   
+   Le seul changement a donc lieu dans le fichier de commandes du cas-test :
+   
+   N°1 :
+   AVANT :
+   VALE = -1.1408102E-02, PRECISION = 1.E-6
+   APRES :
+   VALE = -1.140817E-02,  PRECISION = 1.E-5
+   
+   N°2 :
+   AVANT :
+   VALE = -1.0048700E-01, PRECISION = 1.E-6
+   APRES :
+   VALE = -1.004880E-01,  PRECISION = 1.1E-5
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.175
+VALIDATION
+   zzzz175a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 25/05/2010 - 15:27:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015083 DU 2010-05-18 08:36:37
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.24, les cas-tests miss03a , miss04a et miss07c s'arretent anormalement sur Rocks.
+FONCTIONNALITE
+   Il y a deux causes différentes à ces plantages.
+   Pour miss03a et miss04a, c'est l'oubli de report de la fiche 14656 sur plateforme Rocks.
+   J'ai testé en reportant cette modification (qui intervient sur le script miss3d.csh) et 
+   les deux cas-tests sont OK.
+   
+   Pour miss07c, il y a plusieurs problèmes :
+   Premièrement les scripts run_miss3d n'avaient pas été recopiés sur clpaster.
+   Une fois ces scripts recopiés et les chemins vérifies et OK, le cas-test plante encore 
+   mais plus loin : erreur de lecture du fichier d'entrée maillage de miss3d : .mvol :
+   ----- Sortie erreur standard (stderr) --------------------------------------------
+   fmt: end of file
+   apparent state: unit 10 named MISS07A.mvol
+   last format: (A)
+   lately reading sequential formatted external IO
+   /home/aster/MISS/V1_4/run_miss3d: line 10: 28863 Aborted                 (core dumped) 
+   $MISS_ROOT/$MISS_VERSION/miss3d.x
+   ----- fin stderr -----------------------------------------------------------------
+   
+   En comparant avec le même fichier mais généré par le cas-tes tmiss07a (qui ne passe pas 
+   par CALC_MISS mais par MACRO_MISS_3D) on voit qu'il manque just eun retour chariot à la 
+   dernière ligne.
+   je teste en modifiant la routine qui génère le .mvol  : miss_fichier_interf.py. Je 
+   rajoute :
+       cont.append("")
+   A la fin de la procedure fichier_mvol(struct).
+   Le cas-test miss07c passe alors très bien.
+   
+   Si on regarde le fichier .mvol sur Bull, il lui manque aussi le retour chariot à la 
+   dernière ligne, mais la lecture en fortran passe...
+   C'est donc cette lecture dans miss3d qui est plus "chatouilleuse" sur clpaster que sur 
+   Bull ou Calibre 5.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   miss03a, miss04a, miss07c
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014747 DU 2010-03-08 13:45:22
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   calcul pression critique de flambement
+FONCTIONNALITE
+   Après analyse (merci à François Voldoire pour son aide) et suite au dernier message de
+   l'utilisateur sur le forum qui confirme que son calcul marche bien, je propose de clore
+   cette fiche.
+   
+   Le thread en question :
+   http://www.code-aster.org/forum2/viewtopic.php?id=13675
+   
+   Pour résumer.
+   Pour les analyses de stabilité on dispose de deux approches dans Aster.
+   1) Approche linéaire type Euler en passant par MECA_STATIQUE, calcul de la raideur
+   géométrique Kg et recherche des charges critiques avec MODE_ITER_SIMULT (on cherche les l
+   t.q. : det(K+l.Kg)=0). Avec cette méthode, on ne peut pas tenir compte des forces
+   suiveuses, car on ne peut pas les utiliser dans MECA_STATIQUE.
+   
+   2) Approche totalement non-linéaire avec STAT_NON_LINE (SNL) / CRIT_FLAMB. Si on sait
+   calculer la raideur géométrique Kg (en petites déformations, donc pas en GREEN ou ses
+   variantes) on va alors résoudre det(Kt+l.Kg)=0 avec Kt qui est la raideur tangente
+   actualisée). Sinon on cherche à résoudre : det(Kt-l.I)=0. Avec cette approche on peut
+   tenir compte des forces suiveuses.
+   
+   pour commencer, l'utilisateur avec fait du EULER et comparait avec un résultat thérique
+   tenant compte de l'aspect suiveur de la force. François Voldoire a bien expliqué ainsi
+   l'écart d'un facteur 4 / 3 observé. Pour faire l'analyse de stabilité avec force suiveuse,
+   il faut obligatoirement utiliser la deuxième approche basée sur SNL.
+   
+   L'utilisateur lance donc ensuite un calcul SNL / CRIT_FLAMB en GREEN. L'instabilité se
+   traduira donc par l'annulation d'un valeur propre. Dans le fichier résultat fourni on
+   observe ça pour un chargement de 23,116, au lieu de la valeur théorique de 22,3, soit un
+   écart relatif de moins de 3,7 %. Le pas de temps est assez grand, en pratique, et la
+   détection précise de la valeur critique est donc un peu imprécise : on se base sur le
+   changement de signe d'un pas au suivant, puis un interpolation linéaire.
+   J'ai donc proposé de réduire le pas de temps, à minima sur la période encadrant le charge
+   critique déjà évaluée et l'utilisateur confirme sur le forum que la précision du calcul
+   devient très bonne.
+   
+   Ce fiche est donc en fait une AOM, et on peut remarquer que la doc U2.08.04, explique la
+   problématique des forces suiveuses en haut de la page 6. La doc U2.06.11 montre
+   l'utilisation de CRIT_FLAMB page 12. On complète ces deux docs, plus les docs
+   d'utilisation U4.51.03 et U4.53.01 pour mieux expliquer les limitations de l'analyse 
+   d'Euler linéaire (pas de forces suiveuses) et l'utilisation de CRIT_FLAMB.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.51.03, U4.53.01, U2.08.04, U2.06.11
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014519 DU 2010-01-28 13:19:23
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   DYNA_NON_LINE critxc3xa8re d'arrxc3xaat
+FONCTIONNALITE
+   Après discussion avec Mickael, on est d'accord pour clore cette fiche car il n'y a pas 
+   d'anomalie à proprement parler.
+   
+   Pour le calcul du résidu en équilibre, on écrit dans NMRESI  (<> représente la norme 
+   infinie)
+    :
+   <Résidu_équilibre>     = <Forces_internes> + <Réaction_appui> - <Forces_extérieures>
+   Soit donc :
+   <Résidu_équilibre> = ABS(ZR(JFINT+I-1)+ZR(JDIRI+I-1)-ZR(JFEXT+I-1))
+   
+   Par suite, le RESI_GLOB_RELA, c'est :
+   <Résidu_équilibre>/<Chargement_extérieur>
+   Avec VCHAR sui est le nom du dénominateur dans le fortran.
+   
+   
+   Pour se fondre dans le moule SNL on va en fait masquer tous les termes dynamiques, type 
+   forces d'inertie dans <Forces_extérieures> (ZR(JFEXT+I-1)). Ce choix permet de minimiser 
+   l'impact sur les sources pour le résidu.
+   
+   pour certains schémas type THETA_SCHEMA ou KRENK l'expression du résidu fait apparaître un 
+   terme supplémentaire de dimension une inerie sous la forme : coef . M . V / dt.
+   Ce terme spécifique est stocké dans FOINER et est calculé dans NDINER, puis ajouté auxx 
+   forces extérieures dans NDTHET. Si on ne tient pas compte de ce terme le réidu en 
+   équilibre est faux. Ce terme n'existe pas avec les autres schémas en temps.
+   
+   Pour les schémas type THETA_SCHEMA ou KRENK on construit donc un vecteur de forces 
+   extérieures qui contient une force d'inertie spécifique.
+   
+   Ce vecteur sert aussi à calculer le dénominateur du résidu relatif.
+   Ce dénominateur (VCHAR dans NMRESI) est :
+   MAX(<Forces_extérieures>,<FOINER>)
+   Donc pour les schémas type THETA_SCHEMA ou KRENK on fait le max entre FOINER et un vecteur 
+   qui contient FOINER, alors qu'avec tous les autres schémas on prend le max entre FOINER et 
+   un vecteur qui ne contient pas cette contribution.
+   
+   L'adimensionnement de RESI_GLOB_RELA dépend donc du schéma.
+   
+   Si on veut éviter cela, il faudrait ne pas utiliser le même vecteur de force extérieure 
+   entre le calcul du résidu et le dénominateur de RESI_GLOB_RELA. Ce serait une évolution 
+   moyennement impactante au niveau de NMRESI et ses routines filles, en plus d'augmenter un 
+   peu l'occupation mémoire.
+   
+   Cette évolution ne réglerait cependant pas le problème de nullité du dénominateur pour un 
+   système non déformé en chute libre non soumis à un champ de pesanteur (cas assez rare et 
+   peu physique).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014320 DU 2009-12-17 10:17:29
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Theta-schema, anomalie sur les accxc3xa9lxc3xa9rations
+FONCTIONNALITE
+   Après discussion avec Mickael, on est d'accord pour clore cette fiche.
+   
+   Il n'y a pas d'anomalie : ça aurait fait planter SDLD31A dont les tests ont des tolérances 
+   très serrées.
+   En fait c'est juste la programmation dans le fortran qui est assez compliquée à lire.
+   Le prédicteur en accélération qui est calculé dans NDPRED se sert des coefficient qui 
+   viennent de NDNPAS.
+   Effectivement si on s'arrête là, on peut penser à un problème de prédicteur (on ne voit 
+   pas de terme en theta pour la résolution en vitesse).
+   En fait ce qu'on utilise pour écrire le second membre de l'équilibre ce n'est pas le 
+   prédicteur directement (où même ce prédicteur multiplié par la matrice qui va bien, M ou 
+   K), c'est en fait le produit de ce prédicteur par la matrice correspondante, par un autre 
+   coefficients qui lui apparaît dans NMASVA et NMASFI :
+         COEEX2 = NDYNRE(SDDYNA,'COEF_MPAS_FEXT_COUR')       
+   En pratique COEEX2 pour le theta schéma en vitesse vaut theta justement !
+   
+   La notion de prédicteur est donc peu clair surtout pour ces schémas.
+   Au final on calcule les bonnes contributions.
+   
+   Si on veut modifier les coefficients, il faut faire très attention aux effets de bord sur 
+   d'autres coefficient, en particulier au niveau du calcul du résidu et les risques d'erreur 
+   sont très grands !
+   
+   Pour finir, une remarque générale, avec les schémas type THETA_SCHEMA ou KRENK, 
+   l'accélération ne sert pas à la résolution, on utilise seulement le déplacement et la 
+   vitesse, contrairement à tous les autres schémas. l'accélération doit être vue comme 
+   un "post-traitement" et sa définition peut être variable, car elle n'est pas donnée 
+   explicitement par le schéma en temps.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014314 DU 2009-12-16 17:19:04
+TYPE evolution concernant Documentation (VERSION )
+TITRE
+   Mise xc3xa0 jour Doc R5.05.05 Dyna non line
+FONCTIONNALITE
+   Les modifications sont faites pour inclure la syntaxe FORMULATION.
+   La description du theta schéma est complétée (merci François).
+   Pour le cas-test SDLD31A, les tracés des solutions sont assez peu parlant car beaucoup 
+   sont confondus : tous les schémas non dissipatifs. Les schcémas dissipatifs sont eux très 
+   proches. Je n'ai donc pas modifié cette documentation.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R5.05.05
+VALIDATION
+   sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR idoux        IDOUX Ludovic          DATE 25/05/2010 - 14:12:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014842 DU 2010-03-24 08:40:02
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Interpolation impossible de la temperature entraine erreur JEVEUX
+FONCTIONNALITE
+   L'objet de cette fiche est d'améliorer la compréhension d'un arrêt en erreur fatale. TdS a
+   réalisé un calcul qui indique un plantage peu compréhensible sur une erreur JEVEUX (objet
+   inexistant). L'analyse est la suivante :
+   
+   dans la routine RSINCH.F (INTERPOLATION D'UN CHAMP_19 A PARTIR D'1 SD RESULTAT-COMPOSE),
+   on a en paramètre d'entrée ISTOP qui d'après les commentaires indiquent l'attitude à
+   adopter en cas d'erreur :
+   C IN  : ISTOP  :  EN CAS D'ERREUR D'INTERPOLATION:
+   C                 0  --> N'ECRIT PAS DE MESSAGE , NE FAIT PAS STOP.
+   C                 1  --> ECRIT MESSAGES , NE FAIT PAS STOP.
+   C                 2  --> ECRIT MESSAGES , FAIT STOP.
+   
+   On a en sortie de la routine le code retour IER :
+   C                LE CHAMP N'EST PAS CALCULE:
+   C                10 --> IL N'EXISTE AUCUN CHAMP POUR L'INTERPOLATION.
+   C                11 --> LE PROLONGEMENT A GAUCHE INTERDIT.
+   C                12 --> SI PROLONGEMENT A DROITE INTERDIT.
+   C                20 --> LA VARIABLE D'ACCES EST ILLICITE.
+   
+   
+   Dans le calcul ici réalisé, on entre dans la routine avec ISTOP=2. En principe, on devrait
+   donc écrire un message et s'arrêter en erreur fatale.
+   
+   Or, plus bas dans la routine, on a ajouté un test :
+   
+         IF (ISTOP.EQ.0) THEN
+            GO TO 9999
+         ELSE IF (ISTOP.EQ.1) THEN
+            STP = 'A'
+         ELSE IF ((ISTOP.EQ.2).AND.(IER.GE.20)) THEN
+            STP = 'F'
+         ELSE IF ((ISTOP.EQ.2).AND.(IER.LT.20)) THEN
+            STP = 'A'
+         END IF
+   
+   La variable STP est utilisée pour U2MESS ou U2MESG et indique si on a un message d'alarme
+   <A> ou <F>. On a ainsi décomposé le cas ISTOP=2 en deux sous-cas selon que IER=20 ou
+   IER=10/11/12. 
+   Cette modification est liée à la fiche n°11804, et a été restituée dans la version 9.2.18.
+   A l'époque, Sylvie Michelle Ponelle avait effectué un calcul où le temps d'interpolation
+   d'une variable était plus court que le temps de STAT_NON_LINE, et son calcul plantait sans
+   créer de base. Cette modif a été faite afin de ne pas planter dans RSINCH.F, et selon le
+   code retour remonté à travers de nombreuses routines, permettre la création d'une base en
+   gérant une exception (je sais pas si je suis clair!)
+   
+   Ce besoin n'est plus d'actualité puisqu'on peut maintenant obtenir une base de toute
+   façon, même si on s'arrête en erreur fatale. Les modifications liées à cette ancienne
+   fiche 11804 seraient en principe à résorber.
+   
+   En l'occurence, comme le nombre de sources impactées est très grand, je propose simplement
+   de supprimer le test suivant :
+   
+       ELSE IF ((ISTOP.EQ.2).AND.(IER.GE.20)) THEN
+            STP = 'F'
+         ELSE IF ((ISTOP.EQ.2).AND.(IER.LT.20)) THEN
+            STP = 'A'
+   
+   et le remplacer par :
+   
+      ELSE IF (ISTOP.EQ.2) THEN
+            STP = 'F'
+   
+   C'est-à-dire respecter à nouveau les commentaires donnés en entrée de routine et la
+   ramener à son fonctionnement originel. Ainsi le calcul de Thomas s'arrêtera immédiatement
+   en erreur fatale plutôt qu'afficher d'abord une alarme <A> et ensuite une alarme <F>. 
+   
+   Validation :
+   - calcul de Thomas avec une erreur plus explicite :
+      !-------------------------------------------------------------------!
+      ! <F> <UTILITAI8_32>                                                !
+      !                                                                   !
+      ! L'extrapolation ne peut etre faite à gauche (interdit).           !
+      !                                                                   !
+      !  Résultat: TEMPE nom_cham: TEMP  variable d'accès: INST valeur: 0 !
+      !                                                                   !
+      !                                                                   !
+      ! Cette erreur est fatale. Le code s'arrete.                        !
+      !-------------------------------------------------------------------!
+   On peut comprendre que ça plante parce qu'on a pas défini la température en T=0.
+   
+   - qques cas-tests qui passent dans la routine RSINCH.F dans la partie modifiée (finissent
+   tous correctement en <A> Alarm à cause de la surcharge)
+   
+   
+   Impact :
+   RSINCH.F
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   calcul de TdS + qques cas-test qui passent dans la routine RSINCH.F
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jaubert      JAUBERT André         DATE 25/05/2010 - 16:50:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015047 DU 2010-05-07 11:32:15
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.1.23 le cas test ssnp110d est NOOK sur toutes les machines
+FONCTIONNALITE
+   ANOMALIE :
+   ---------
+   En NEW10.1.23 le cas test ssnp110d est NOOK sur toutes les machines.
+   
+   Le test NOOK est le suivant:
+   "
+    ---- RESULTAT         NUME_ORDRE       NOM_CHAM         NOM_CMP          MAILLE           
+   POINT
+         UTOT1            125              VARI_ELGA        V1               M277             10
+         REFERENCE        LEGENDE          VALE_REF         VALE_CAL         ERREUR           
+   TOLE            
+   NOOK  NON_REGRESSION   XXXX             0.02450861       0.02450742       4.9E-03%         
+   1.0E-03%        
+   
+   "
+   
+   
+   CAUSE :
+   ------
+   Ce cas-test X-FEM est en contact (fermeture de fissure) au dernier instant (instant où on 
+   observe un NOOK). 
+   La dernière restitution de Maximilien Siavelis a provoqué ce NOOK. Dans cette restitution, 
+   Maximilien corrige notamment un bug sur le calcul du jeu lors de la réactualisation des 
+   statuts de contact. Ci-dessous un extrait de son histor en 10.1.19 :
+   
+   
+   "bug sur le calcul du jeu lors de la reactualisation des statuts de contact en x-fem HPP: 
+   modification dans le te0532 du champ de déplacement pour calculer le saut. Possibilités de
+   résultats faux si on utilisait plusieurs pas de temps avec des statuts de contact évolutifs. 
+   On modifie le cas test ssnv201a de façon à le rendre conforme avec le descriptif et appliquer 
+   des rampes de chargement du type 1,-1,1 en déplacement.
+   Changement de:
+      DO 140 I = 1,NNO
+        DO 141 J = 1,DDLH
+           SAUT(J)=SAUT(J)-2*FFP(I)*(ZR(IDEPM-1+DDLS*(I-1)+NDIM+J)
+                                  +ZR(IDEPL-1+DDLS*(I-1)+NDIM+J))
+       141        CONTINUE
+       140      CONTINUE
+   en:
+       DO 140 I = 1,NNO
+        DO 141 J = 1,DDLH
+           SAUT(J)=SAUT(J)-2*FFP(I)*(ZR(IDEPL-1+DDLS*(I-1)+NDIM+J))
+       141        CONTINUE
+       140      CONTINUE"
+   
+   
+   
+   En reprenant l'ancienne version du TE0532, on retrouve bien la solution d'avant la 
+   restitution de Maximilien.
+   
+   
+   SOLUTION :
+   ---------
+   On modifie la valeur du test de non regression sur la valeur de la déformation plastique 
+   effective au dernier instant.
+   Elle était de 0.02450861 en 10.1.18. 
+   On la passe à 0.024507420622247 en 10.1.26.
+   
+   
+   IMPACT CAS-TEST :
+   ---------------
+   ssnp110d.comm
+   
+   
+   IMPACT DOC :
+   ----------
+   ssnp110d
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v6.03.110
+VALIDATION
+   ssnp110d
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR laverne      LAVERNE Jérôme       DATE 25/05/2010 - 16:27:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015066 DU 2010-05-11 13:55:27
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   Elements de joint (EJ) : Erreur calcul poids des PG en 2d axis
+FONCTIONNALITE
+   En 2D axis on multiplie le poids des points de gauss en 2D plan par la distance de ces 
+   derniers à l'axe de révolution.
+   
+   PROBLEME : 
+   Actuellement les poids des deux points de gauss de l'EJ sont multipliés par la 
+   distance du milieu de l'élément à l'axe de symétrie. Ce développement avait été 
+   initialement réalisé dans une première version où les EJ n'avaient qu'un point de 
+   gauss (situé au milieu de l'EJ). La mise à jour suite au passage à 2PG n'avais pas été 
+   réalisée.
+   
+   RESULTATS FAUX : 
+   NON si les EJ sont dans la même direction que l'axe de révolution(verticaux), comme 
+   c'est le cas des tests aster : ssna112a et ssna115b. 
+   OUI sinon, mais l'erreur ne doit pas être très importante si le maillage est assez fin 
+   et les EJ loin de l'axe.
+   
+   SOLUTION : 
+   Multiplier les poids des points de gauss par leur distance à l'axe de révolution.
+   Effectué dans la routine nmfisa.f
+   
+   VALIDATION :
+   Tests EJ 2D axis et plan.
+   Dans le futur prévoir un test avec des EJ axis pas orientés dans la même direction que l'axe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tous tests EJ 2D : axis et plan
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR fournier     FOURNIER Isabelle      DATE 25/05/2010 - 15:20:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015040 DU 2010-05-06 13:24:07
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   visualisation 'rosettes' et 'normale/tangente' des contraintes
+FONCTIONNALITE
+   0. Contexte
+   Le développmeent de l'option PROJ_ELEM_SIGM ne permettait pas d'afficher la valeur 
+   positive/negative de la valeur propre car ne comportait que la seule donnée de son module 
+   (norme du vecteur). On rajoute donc une composante qui porte la valeur propre.
+   
+   1. Analyse
+   Pour avoir le signe des valeurs propres, on ajoute une composante 
+   supplémentaire SG_i aux champs suivants:
+    - Contraintes normales et tangeantielles
+            => PROJ_ELEM_SIG_N  : SIG_NX, SIG_NY, SIG_NZ, SIG_N
+            => PROJ_ELEM_SIG_T  n'a pas été modifiée : SIG_TX, SIG_TY, SIG_TZ
+   
+    - Rosettes des contraintes 
+            => PROJ_ELEM_SIG_T1 : SIG_T1X SIG_T1Y SIG_T1Z SIG_T1
+            => PROJ_ELEM_SIG_T2 : SIG_T2X SIG_T2Y SIG_T2Z SIG_T2
+   
+   2. Modifications:
+     => catalogues: gener_me3d_2.cata, grandeur_simple__.cata
+     => fortran: te0411.f: on ajoute la valeur propres pour déterniner SIG_i. 
+        
+   3. Validation
+    - on ajoute au cas-test sdlv04a des TEST_RESU pour valider la quatrième composante.
+    - test sous SALOME_MECA
+   
+   4. Documentation
+    - Mise à jour de la doc de CALC_ELEM [U4.81.01]
+    - Mise à jour de la doc V du cas-test sslv04 [V3.04.004]
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.01 V3.04.004
+VALIDATION
+   sdlv04 - Validation IHM
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 25/05/2010 - 15:20:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011486 DU 2007-11-21 10:41:53
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   Macr_recal et Utmess
+FONCTIONNALITE
+   Je propose qu'on ferme cette fiche, puisque tous les développements ont été mutualisés et
+   seront restitués avec la 11119.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008983 DU 2005-09-09 00:00:00
+TYPE evolution concernant Documentation (VERSION 8.1)
+TMA : DeltaCad
+TITRE
+   V3.03.122 - docv ssls122a
+FONCTIONNALITE
+   Ecriture de la dov V du Cas-tests SSLP122.
+   
+   Titre :"Plaque homogène isotrope rectangulaire excentrée"
+   4 modélisations:
+     - A : Maille TRIA3 : modélisation DKT
+     - B : Maille QUAD4 : modélisation DKT
+     - C : Maille TRIA3 : modélisation DST
+     - D : Maille QUAD4 : modélisation DST
+   
+   La doc est dans l'applis doc sous le numero : V3.03.122
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V3.03.122
+VALIDATION
+   neant
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 25/05/2010 - 14:32:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014591 DU 2010-02-09 15:05:53
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   CREA_RESU / EVOL_CHAR
+FONCTIONNALITE
+   Création d'une structure de données EVOL_CHAR dans CREA_RESU
+   
+   Problème :
+   ========
+   
+   Lorsque l'on crée une SD EVOL_CHAR avec la commande CREA_RESU avec le mot clé AFFE, rien
+   n'empêche de fournir des champs qui s'appuient sur une grandeur inutilisable ensuite. 
+   C'est le cas avec les champ associés à la grandeur NEUT_R.
+   
+   Corrections :
+   ===========
+   On ajoute une vérification dans CREA_RESU, lorsque l'on crée une SD EVOL_ChAR avec
+   émission d'une erreur fatale :
+   
+      
+      !------------------------------------------------------------------------------------!
+      ! <EXCEPTION> <ALGORITH2_80>                                                         !
+      !                                                                                    !
+      ! le champ X6 associé à la grandeur de type NEUT_R ne peut pas être utilisé dans une !
+      !  structure de données de type EVOL_CHAR                                            !
+      !------------------------------------------------------------------------------------!
+      
+   En plus, on modifie le catalogue de CREA_RESU en ajoutant des blocs pour n'accepter que
+   certains types de champs lors de la création d'un EVOL_CHAR :
+   
+              TYPE_RESU   
+   =SIMP(statut='o',position='global',typ='TXM',into=("MODE_MECA","MULT_ELAS","EVOL_ELAS","EVOL_NOLI",
+                                
+   "DYNA_HARMO","DYNA_TRANS","FOURIER_ELAS","EVOL_THER","EVOL_VARC","EVOL_CHAR","FOURIER_THER")
+   ),
+              b_type_resu    =BLOC(condition = "TYPE_RESU == 'EVOL_CHAR'",
+                NOM_CHAM    
+   =SIMP(statut='o',typ='TXM',into=("PRES","FSUR_2D","FSUR_3D","FVOL_2D","FVOL_3D","VITE_VENT")),
+              ),
+   
+              b_evol_char    =BLOC(condition = "TYPE_RESU != 'EVOL_CHAR'",
+                NOM_CHAM     =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO()),
+              ),
+   
+   Ce qui provoque une erreur de syntaxe, si le type de champ est incorrect :
+      Etape : CREA_RESU    ligne : 72    fichier : 'fort.1'
+         Bloc :b_affe
+            Bloc :b_type_resu
+               Mot-clé simple : NOM_CHAM
+                 
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                  ! La valeur : 'NEUT'  ne fait pas partie des choix possibles ('PRES',
+   'FSUR_2D', !
+                  ! 'FSUR_3D', 'FVOL_2D', 'FVOL_3D', 'VITE_VENT')                           
+         !
+                 
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   variante du test zzzz242a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014923 DU 2010-04-08 13:33:52
+TYPE anomalie concernant agla (VERSION *)
+TITRE
+   problxc3xa8me pre_eda si on veut dxc3xa9truire par exemple un fichier test.mail
+FONCTIONNALITE
+   Anomalie :
+   ========
+   Lorsque l'on veut supprimer un fichier associé à un test, et si par ailleurs ce test est
+   modifié ou bien s'il fait partie dela liste restreinte, les procédures pre_eda et asrest
+   le prennait en compte deux fois dans les tests à soumettre.
+   
+   Détails :
+   =======
+   Il s'agissait d'une erreur dans le traitement du fichier récapitulatif de la restitution,
+   on recherchait une expression régulière contenant "CASTEST SUPPR" avec un caractère ".",
+   or ce dernier figure systématiquement dans le nom utilisateur. 
+   
+   Correction :
+   ==========
+   On filtre les expressions contenant CASTEST SUPPR de façon plus rigoureuse (dans
+   /aster/agla/tool/prepa_astout.csh ligne 106) :
+   
+   grep "CASTEST SUPPR" $DIREST/recap | grep '\.' | awk '{print $1 $2 $3}' | awk '{print $3}'
+   |  awk -F'.' '{print $1}' | sort -u > $DATMP/liste_ct_suppr
+    
+    en remplacement de 
+   
+   grep "CASTEST SUPPR" $DIREST/recap | grep '\.'  | awk '{print $3}' |  awk -F'.' '{print
+   $1}' | sort -u > $DATMP/liste_ct_suppr
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   pre_eda avec suppression partielle
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014160 DU 2009-11-10 09:59:35
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   U7.02.01 - Affichage doc LIRE_RESU
+FONCTIONNALITE
+   Josselin a collé une belle image à la place du tableau illisible.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.001
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012374 DU 2008-08-08 07:43:37
+TYPE evolution concernant Documentation (VERSION )
+TITRE
+   Doc LIRE_RESU
+FONCTIONNALITE
+   Charles a fait le nécessaire directement dans la doc.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.001
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 007214 DU 2003-09-09 00:00:00
+TYPE evolution concernant Documentation (VERSION 7.1)
+TITRE
+   unigest et les cas tests
+FONCTIONNALITE
+   Le wiki D1.02.02 - Syntaxes diverses : fichier test.para, unigest, cartes MODIF, ... est à
+   jour.
+   On ferme la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.001
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 26/05/2010 - 15:58:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014903 DU 2010-04-02 09:34:05
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   STAT_NON_LINE/ETAT_INIT: erreur numérique
+FONCTIONNALITE
+   Problème:
+   ---------
+   L'utilisateur (Sogeti pour le compte de L. Scliffet) essaye de "poursuivre" un calcul
+   non-linéaire (STAT_NON_LINE + ETAT_INIT) en changeant le modèle (ajout et/ou suppression
+   d'éléments).
+   Malheureusement, le calcul se passe mal (non convergence).
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   Analyse :
+   ---------
+   Concrètement, il réalise une boucle python comme :
+                                                                                            
+                                                                     
+   for k in range (2,120):
+      ...
+      am0v[k]=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR',
+                         RESULTAT=plas[k-1], NOM_CHAM='VARI_ELGA', ...)
+      ...
+      am2v[k]= ... (champ de variables internes calculé partiellement à partir de am0v[k])
+                                                                                            
+                                                                     
+      plas[k]=STAT_NON_LINE(MODELE=mome[k], CHAM_MATER=chma[k],
+                   ETAT_INIT=_F(DEPL=am2d[k], SIGM=am2s[k], VARI=am2v[k],),
+                   COMP_INCR=_F(RELATION='VMIS_CINE_LINE', DEFORMATION='GREEN',
+                                GROUP_MA=('COUPON','CO'+str(k))),
+                   ...)
+                                                                                            
+                                                                     
+   On voit que :
+     * le modèle change à chaque itération (mome[k])
+     * l'état initial pour les variables internes (am2v[k]) est obtenu (partiellement) à
+   partir du calcul non-linéaire de l'itération précédente.
+     * le comportement non-linéaire ('VMIS_CINE_LINE' + 'GREEN') est appliqué sur un groupe
+   de mailles différent à chaque itération ('CO1', 'CO2', 'CO3', ...)
+                                                                                            
+                                                                     
+   Lorqu'on change de comportement non-linéaire au cours d'un transitoire mécanique, le
+   problème concerne les variables internes. Le calcul incrémental nécessite que l'on
+   connaisse l'état des variables internes au début du pas de temps. Le nombre et la
+   signification de ces variables internes est a priori différent pour chaque relation de
+   comportement. Par exemple, le comportement VMIS_CINE_LINE nécessite 7 variables internes.
+   Il est donc a priori interdit de changer de relation de comportement au cours d'un calcul
+   (pour une maille donnée).
+                                                                                            
+                                                                     
+   Quelques exceptions sont acceptées :
+       * RELATION='LEMAITRE'       ->  RELATION='VMIS_ISOT_XXX'
+       * RELATION='VMIS_ISOT_XXX'  ->  RELATION='LEMAITRE'
+       * RELATION='*'              ->  RELATION='ELAS'/'SANS'
+       * RELATION='ELAS'/'SANS'    ->  RELATION='*'
+   On peut justifier les 2 dernières exceptions par le fait que les relations 'ELAS' et
+   'SANS'  n'ayant pas de variables internes, il n'y a pas de confusion possible.
+                                                                                            
+                                                                     
+   Un problème posé par le fichier de commande de l'utilisateur est qu'il définit l'état
+   initial à partir de 3 champs isolés (depl,sief,vari). Il ne se sert pas de ETAT_INIT /
+   EVOL_NOLI. La "trace" du comportement utilisé pour calculer vari "-" est perdue. On ne
+   peut donc pas vérifier que le comportement reste cohérent.
+                                                                                            
+                                                                     
+   La seule vérification possible dans ce cas est le nombre de variables. Mais cette
+   situation est dangereuse : un utilisateur qui change de comportement LDC1 -> LDC2 n'est
+   pas arreté si nb_vari(LDC1)=nb_vari(LDC2)
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   Confirmation du problème :
+   --------------------------
+   L'étude fournie est licite : certaines mailles changent peut-etre de comportement au cours
+   du temps, mais si c'est le cas il s'agit d'une transition "de" ou "vers" 'ELAS'. Le calcul
+   est théoriquement possible.
+                                                                                            
+                                                                     
+   Le problème observé (non-convergence) est probablement le résultat d'une anomalie.
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   Correction :
+   ------------
+   Lorsqu'on ajoute des éléments dans le modèle, le code doit allouer des champs '-'
+   (contraintes et variables internes) vierges sur les nouveaux éléments.
+   C'est fait systématiquement au début de la routine calcul.f (par la routine chligr.f) si
+   un cham_elem "in" n'est pas associé au ligrel du calcul.
+   Mais cette routine n'a pas les moyens de savoir le nombre de variables internes
+   nécessaires pour les nouveaux éléments.
+                                                                                            
+                                                                     
+   C'est pour cela que l'adapation du champ de variables internes '-' est faite en "amont"
+   dans la routine vrcomp.f
+                                                                                            
+                                                                     
+   Mais dans la routine vrcomp.f, il y a plusieurs problèmes de programmation :
+     - Si on utilise ETAT_INIT / EVOL_NOLI = evo1 :
+       - on oublie d'allouer les variables internes sur les "nouveaux" éléments (routine
+   vrcom2.f)
+     - Si on utilise ETAT_INIT / VARI = chvar1 :
+       - si un nouvel élément ne porte pas de variables internes, on ne s'en aperçoit pas et
+   le calcul se pousuit avec des variables internes on allouées (inexistantes).
+                                                                                            
+                                                                     
+   Je corrige donc les 2 routines vrcomp.f et vrcom2.f
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   Détails :
+   ------------
+   Je modifie significativement les 2 routines vrcomp.f et vrcom2.f :
+     * j'ajoute un argument nécessaire LIGREP (ligrel du modèle à l'instant "+")
+     * vrcomp fait les vérifications (émission d'alarmes ou d'erreurs)
+     * vrcom2 modifie VARMOI (si nécessaire)
+     * je rends possible l'usage de vrcom2 meme si COMPOM=' '
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   Validation :
+   ------------
+   Je n'ai pas pu vérifier la nouvelle programmation sur l'étude correspondant à la fiche car
+   les fichiers fournis ne permettent pas de rejouer la scène.
+   Je pense qu'il y a une erreur dans les données : certains éléments nouveaux (affectés par
+   la relation VMIS_CINE_LINE), n'ont pas été affectés dans le champ am2v[k]. Comme la
+   programmation de vrcomp.f ne vérifie pas le nombre de variables pour les nouveaux
+   éléments, le calcul se poursuit et une erreur numérique apparait plus tard dans le calcul
+   du comportement.
+   Le fichier de commande est compliqué à comprendre si on ne connait pas les GROUP_MA du
+   maillage. Le problème évoqué ci-dessus se produira si le GROUP_MA('CO'+str(k)) contient
+   des mailles qui n'appartiennent pas à l'union des 2 GROUP_MA ('COR_'+str(k)) et
+   ('CO'+str(k-1)). Est-ce le cas ???
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   Je propose d'ajouter 2 nouveaux tests informatiques permettant de vérifier :
+     * que le code va jusqu'au bout lorsqu'on ajoute (ou retire) des mailles dans le modèle
+     * que le code s'arrete bien lorsque qu'il le faut (changement de comportement illicite).
+     * que le code va jusqu'au bout et qu'il émet un message d'alarme lorsqu'il effectue un
+   changement de comportement illicite
+                                                                                            
+                                                                     
+   ----------------------------------------------------------------------------------------------------------------------------
+   zzzz258 :  Validation du mot clé ETAT_INIT de STAT_NON_LINE (v1.01.258)
+   ---------
+     on teste les 2 possibilites suivantes :
+       * etat_init / evol_noli + inst
+       * etat_init / depl + sigm + vari
+                                                                                            
+                                                                     
+     on teste :
+       * l'ajout de nouveaux elements dans le modele
+       * la suppression d'elements dans le modele
+       * les possibilites de changer de comportement suivantes :
+            'vmis_cine_line'   ->   'vmis_cine_line'
+            'vmis_cine_line'   ->   'rien'             (suppression d'elements)
+            'vmis_cine_line'   ->   'vmis_cine_line'
+            'vmis_isot_trac'   ->   'vmis_isot_line'
+            'vmis_isot_trac'   ->   'elas'
+            'vmis_isot_line'   ->   'vmis_isot_trac'
+            'elas'             ->   'vmis_cine_line'
+            'rien'             ->   'vmis_cine_line'  (ajout d'elements)
+            'rien'             ->   'vmis_cine_line'  (ajout d'elements)
+                                                                                            
+                                                                     
+   Ce nouveau test émet les 4 alarmes suivantes :
+                                                                                            
+                                                                     
+   Si ETAT_INIT / EVOL_NOLI= xxx
+                                                                                            
+                                                                     
+   !----------------------------------------------------------------------------------------------------------------!
+   !.<A>.<CALCULEL3_47>.............................................................................................!
+   !................................................................................................................!
+   !.Possible.erreur.d'utilisation.:................................................................................!
+   !...Vous.voulez."poursuivre".un.calcul.non-linéaire.(STAT_NON_LINE.ou.DYNA_NON_LINE).............................!
+   !...Pour.cela,.vous.précisez.un.état.initial.(mot.clé.ETAT_INIT./.EVOL_NOLI).....................................!
+   !...Pour.le.calcul.du.1er.pas.de.temps,.le.champ.des.variables.internes.du.début.du.pas.est.pris.................!
+   !...dans.le.concept.evol_noli.fourni.............................................................................!
+   !...Pour.l'élément.porté.par.la.maille.M5,.ce.champ.de.variables.internes.a.été.calculé.avec.....................!
+   !...la.relation.de.comportement.VMIS_ISOT_TRAC,.mais.le.comportement.choisi.pour.le.calcul.est.différent.(ELAS)..!
+   !................................................................................................................!
+   !.Risques.&.conseils.:...........................................................................................!
+   !...Ce.changement.de.comportement.est-il.volontaire.ou.s'agit-il.d'une.faute.de.frappe.?.........................!
+   !----------------------------------------------------------------------------------------------------------------!
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   !----------------------------------------------------------------------------------------------------------------!
+   !.<A>.<CALCULEL3_47>.............................................................................................!
+   !................................................................................................................!
+   !.Possible.erreur.d'utilisation.:................................................................................!
+   !...Vous.voulez."poursuivre".un.calcul.non-linéaire.(STAT_NON_LINE.ou.DYNA_NON_LINE).............................!
+   !...Pour.cela,.vous.précisez.un.état.initial.(mot.clé.ETAT_INIT./.EVOL_NOLI).....................................!
+   !...Pour.le.calcul.du.1er.pas.de.temps,.le.champ.des.variables.internes.du.début.du.pas.est.pris.................!
+   !...dans.le.concept.evol_noli.fourni.............................................................................!
+   !...Pour.l'élément.porté.par.la.maille.M7,.ce.champ.de.variables.internes.a.été.calculé.avec.....................!
+   !...la.relation.de.comportement.ELAS,.mais.le.comportement.choisi.pour.le.calcul.est.différent.(VMIS_CINE_LINE)..!
+   !................................................................................................................!
+   !.Risques.&.conseils.:...........................................................................................!
+   !...Ce.changement.de.comportement.est-il.volontaire.ou.s'agit-il.d'une.faute.de.frappe.?.........................!
+   !----------------------------------------------------------------------------------------------------------------!
+                                                                                            
+                                                                     
+   Si ETAT_INIT / VARI= xxx
+                                                                                            
+                                                                     
+   !----------------------------------------------------------------------------------------------------!
+   !.<A>.<CALCULEL3_48>.................................................................................!
+   !....................................................................................................!
+   !.Possible.erreur.d'utilisation.:....................................................................!
+   !...Vous.voulez."poursuivre".un.calcul.non-linéaire.(STAT_NON_LINE.ou.DYNA_NON_LINE).................!
+   !...Pour.cela,.vous.précisez.un.état.initial.(mot.clé.ETAT_INIT./.VARI=chvari).......................!
+   !...Pour.le.calcul.du.1er.pas.de.temps,.le.champ.des.variables.internes.utilisé.pour.le.début.du.pas.!
+   !...est."chvari".....................................................................................!
+   !...Pour.l'élément.porté.par.la.maille.M5,.ce.champ.de.variables.internes.n'a.pas.le.meme.nombre.de..!
+   !...variables.internes.(2).que.le.nombre.attendu.par.le.comportement.choisi.pour.le.calcul.(1).......!
+   !....................................................................................................!
+   !...Il.y.a.donc.un.changement.de.comportement.pour.la.maille.M5......................................!
+   !....................................................................................................!
+   !...Un.changement.de.comportement.lors.d'un.transitoire.est.a.priori."douteux".......................!
+   !...Il.semble.que.vous.soyez.dans.l'un.des.cas.tolérés.par.le.code.:.................................!
+   !...../.comportement."-".élastique...................................................................!
+   !...../.comportement."+".élastique...................................................................!
+   !....................................................................................................!
+   !...Sur.cet.élément,.les.variables.internes."-".sont.mises.à.zéro....................................!
+   !....................................................................................................!
+   !.Risques.&.conseils.:...............................................................................!
+   !...Ce.changement.de.comportement.est-il.volontaire.ou.s'agit-il.d'une.faute.de.frappe.?.............!
+   !----------------------------------------------------------------------------------------------------!
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   !----------------------------------------------------------------------------------------------------!
+   !.<A>.<CALCULEL3_48>.................................................................................!
+   !....................................................................................................!
+   !.Possible.erreur.d'utilisation.:....................................................................!
+   !...Vous.voulez."poursuivre".un.calcul.non-linéaire.(STAT_NON_LINE.ou.DYNA_NON_LINE).................!
+   !...Pour.cela,.vous.précisez.un.état.initial.(mot.clé.ETAT_INIT./.VARI=chvari).......................!
+   !...Pour.le.calcul.du.1er.pas.de.temps,.le.champ.des.variables.internes.utilisé.pour.le.début.du.pas.!
+   !...est."chvari".....................................................................................!
+   !...Pour.l'élément.porté.par.la.maille.M7,.ce.champ.de.variables.internes.n'a.pas.le.meme.nombre.de..!
+   !...variables.internes.(1).que.le.nombre.attendu.par.le.comportement.choisi.pour.le.calcul.(7).......!
+   !....................................................................................................!
+   !...Il.y.a.donc.un.changement.de.comportement.pour.la.maille.M7......................................!
+   !....................................................................................................!
+   !...Un.changement.de.comportement.lors.d'un.transitoire.est.a.priori."douteux".......................!
+   !...Il.semble.que.vous.soyez.dans.l'un.des.cas.tolérés.par.le.code.:.................................!
+   !...../.comportement."-".élastique...................................................................!
+   !...../.comportement."+".élastique...................................................................!
+   !....................................................................................................!
+   !...Sur.cet.élément,.les.variables.internes."-".sont.mises.à.zéro....................................!
+   !....................................................................................................!
+   !.Risques.&.conseils.:...............................................................................!
+   !...Ce.changement.de.comportement.est-il.volontaire.ou.s'agit-il.d'une.faute.de.frappe.?.............!
+   !----------------------------------------------------------------------------------------------------!
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   ----------------------------------------------------------------------------------------------------------------------------
+   erreu03 :  Validation de l'émission de messages d'erreur lors d'un changement de
+   comportement (v1.01.260)
+   --------
+     on teste les 2 possibilites suivantes :
+       * etat_init / evol_noli + inst
+       * etat_init / depl + sigm + vari
+                                                                                            
+                                                                     
+     On vérifie que le code émet une erreur fatale lorsqu'on essaye de faire un changement de
+     comportement interdit.
+                                                                                            
+                                                                     
+     Le test émet les alarmes suivantes :
+                                                                                            
+                                                                     
+   Si ETAT_INIT / EVOL_NOLI= xxx
+                                                                                            
+                                                                     
+   !---------------------------------------------------------------------------------------!
+   !.<EXCEPTION>.<CALCULEL5_42>............................................................!
+   !.......................................................................................!
+   !.comportements.incompatibles.:..VMIS_CINE_LINE..et..VMIS_ISOT_TRAC..pour.la.maille..M1.!
+   !---------------------------------------------------------------------------------------!
+                                                                                            
+                                                                     
+   Si ETAT_INIT / VARI= xxx
+                                                                                            
+                                                                     
+   !----------------------------------------------------------------------------------------------------!
+   !.<EXCEPTION>.<CALCULEL3_49>.........................................................................!
+   !....................................................................................................!
+   !.Erreur.d'utilisation.:.............................................................................!
+   !...Vous.voulez."poursuivre".un.calcul.non-linéaire.(STAT_NON_LINE.ou.DYNA_NON_LINE).................!
+   !...Pour.cela,.vous.précisez.un.état.initial.(mot.clé.ETAT_INIT./.VARI=chvari).......................!
+   !...Pour.le.calcul.du.1er.pas.de.temps,.le.champ.des.variables.internes.utilisé.pour.le.début.du.pas.!
+   !...est."chvari".....................................................................................!
+   !...Pour.l'élément.porté.par.la.maille.M1,.ce.champ.de.variables.internes.n'a.pas.le.meme.nombre.de..!
+   !...variables.internes.(7).que.le.nombre.attendu.par.le.comportement.choisi.pour.le.calcul.(2).......!
+   !....................................................................................................!
+   !...Il.y.a.donc.un.changement.de.comportement.pour.la.maille.M1......................................!
+   !...Le.code.n'accepte.de.changement.de.comportement.que.dans.quelques.cas.très.particuliers.:........!
+   !.....-.LEMAITRE.<->.VMIS_ISOT_XXXX..................................................................!
+   !.....-.ELAS.....<->.XXXX............................................................................!
+   !...Il.ne.semble.pas.que.vous.soyez.dans.ce.cas.de.figure..L'exécution.est.arretée...................!
+   !....................................................................................................!
+   !.Risques.&.conseils.:...............................................................................!
+   !...Vérifiez.le.comportement.affecté.sur.cette.maille................................................!
+   !----------------------------------------------------------------------------------------------------!
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   ----------------------------------------------------------------------------------------------------------------------------
+   NEW9 :
+   ------
+   Les routines vrcomp.f et vrcom2.f sont identiques actuellement en NEW9 et NEW10.
+   On peut donc reporter la correction de cette fiche en NEW9.
+   Mais il faut également modifier les 2 appelant de vrcomp pour ajouter un argument.
+   Il faut également ajouter en NEW9 les 2 nouveaux tests proposés.
+   Ils permettrons de vérifier que le comportement attendu est toujours correct.
+   Remarque : les messages d'erreur ou d'alarme ont changé, je n'ai pas vérifié que les
+   numéros sont possibles en NEW9.
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   Résultats faux :
+   ----------------
+   Le problème est que le champ de variables internes '-' ne correspond pas toujours à ce que
+   les éléments attendent.
+   Lorsqu'on utilise ces variables internes (dans les routines lcxxxx), on utilise parfois
+   les variables d'autres éléments. Cela peut entrainer des résultats faux, mais cela peut
+   également entrainer des erreurs fatales dans le calcul du comportement (par exemple quand
+   les différentes variables d'un modèle sont de magnitude très différentes : contraintes et
+   déformations).
+   Par ailleurs, pour les derniers éléments de chaque GREL, il y a un risque de "déborder"
+   des limites du champ (puisqu'on a ajouté des éléments dans le modèle) et donc de récupérer
+   le "NaN" placé au bout du champ.
+   Globalement, au vu de mes essais, une erreur fatale semble plus probable que des résultas
+   faux. Mais il est certaienement possible de mener un calcul jusqu'au bout et d'observer
+   des résultats faux.
+                                                                                            
+                                                                     
+   En résumé, on peut obtenir des résultats faux (ou etre arreté en erreur numérique) si :
+     * On utilise STAT_NON_LINE (ou DYNA_NON_LINE) avec le mot-clé ETAT_INIT
+     * Le modèle utilisé pour le STAT_NON_LINE contient plus d'éléments que celui ayant
+   produit l'état initial (ajout d'éléments dans le modèle)
+     * Le comportement choisi sur les nouveaux éléments n'est pas élastique.
+                                                                                            
+                                                                     
+   La seule façon de faire une "poursuite" correcte d'un calcul non-linéaire sur un modèle en
+   ajoutant des éléments non élastiques est de fabriquer "à la main" le champ de variables
+   internes "-" (par CREA_CHAMP / ASSE) en prenant garde d'initialiser le bon nombre de
+   variables sur les nouveaux éléments.
+                                                                                            
+                                                                     
+   Impact documentaire :
+   ---------------------
+     * U4.51.03 (STAT_NON_LINE) : dire qu'en général, lors d'une poursuite de calcul, on ne
+   doit pas changer de relation de comportement. Citer les exceptions ?
+     * zzzz258 :  Validation du mot clé ETAT_INIT de STAT_NON_LINE (v1.01.258)
+     * erreu03 :  Validation de l'émission de messages d'erreur lors d'un changement de
+   comportement (v1.01.260)
+                                                                                            
+                                                                     
+                                                                                            
+                                                                     
+   Liste des fichiers impactés par la correction de la fiche:  14903
+     mecalc.f  nmdoet.f vrcomp.f  vrcom2.f
+     calculel3.py  calculel5.py  calculel6.py
+     erreu03.comm  zzzz258.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.51.03 v1.01.258 v1.01.260
+VALIDATION
+   zzzz258 erreu03
+NB_JOURS_TRAV  : 3.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015021 DU 2010-05-04 07:29:51
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Arret par manque de temps CPU en version // MPI
+FONCTIONNALITE
+   Problème :
+   ----------
+   En version NEW10.1.22 MPI, les tests suivants s'arrêtent en manque de temps CPU : wtna101a
+   et wtnv100c
+                                                                                            
+                                         
+                                                                                            
+                                         
+   Analyse :
+   ----------
+   Thomas De Soza a remarqué que ces 2 tests se "bloquent" à cause de messages MPI.
+   Le blocage concerne la routine redetr.f qui est sensée détruire les resuelem
+   non-symétriques quand ils sont nuls.
+                                                                                            
+                                        
+   Les routines redetr.f et typmat.f sont effectivement mal programmées et j'en suis responsable.
+                                                                                            
+                                         
+   La correction de cette anomalie m'a aidé à mieux "comprendre" les contraintes de la
+   programmation parallèle :
+   Il est INDISPENSABLE que les appels aux communications collectives MPI (par exemple
+   MPI_ALLREDUCE) soient efectuées de la meme façon sur TOUS les processeurs (et dans le meme
+   ordre).
+                                                                                            
+                                         
+   Dans la routine typmat, on trouve la boucle suivante :
+                                                                                            
+                                         
+         DO 10 I =1, NBMAT
+           MATEL = TLIMAT(I)
+   C       -- LA LOGIQUE CI-DESSOUS N'EST VALABLE QUE SI LE MATR_ELEM
+   C          A ETE EXPURGE DE SES RESUELEM NULS => CALL REDETR()
+           CALL REDETR(MATEL)
+                                                                                            
+                                         
+           CALL JEEXIN(MATEL//'.RELR',IRET)
+           IF (IRET.EQ.0) GOTO 10
+           CALL DISMOI('F','TYPE_MATRICE',MATEL,'MATR_ELEM',IBID,SYM,IERD)
+           IF (SYM.EQ.'NON_SYM') THEN
+             CALL DISMOI('F','ZERO',MATEL,'MATR_ELEM',IBID,ZERO,IERD)
+             IF (ZERO.EQ.'NON') THEN
+               ITYMAT = 1
+               GOTO 11
+             ENDIF
+           ENDIF
+      10 CONTINUE
+      11 CONTINUE
+                                                                                            
+                                         
+   Le danger vient du GOTO 11.
+   Si sur sur 1 processeur, le matr_elem est non-symétrique et non nul, on conclut (à juste
+   titre) que la matr_asse sera non-symétrique. Mais avant de quitter la boucle, il faut en
+   informer les autres processeurs pour qu'ils puissent tous quitter la boucle à la meme
+   itération.
+                                                                                            
+                                         
+                                                                                            
+                                         
+                                                                                            
+                                         
+   Détails :
+   ---------
+   1) Après correction des routines redetr.f et typmat.f, je suis tombé sur un autre problème
+   dans le test wtnv100c.
+                                                                                            
+                                         
+   Ce problème est aussi de mon fait (routine uttcpi.f).
+   Cette routine a pour but d'imprimer les temps CPU consommés dans les calculs élémentaires,
+   les résolutions, ...
+   J'y ai ajouté récemment une impression sur le temps consommé lors du déchargement de la
+   mémoire sur disque (routine jjldyn.f).
+   Pour faire "riche" (j'ai voulu "copier" Olivier !), j'imprime également des informations
+   mesurées sur les autres processeurs (moyenne et écart type). Cela nécessite des échanges
+   MPI (ALLREDUCE).
+                                                                                            
+                                         
+   Pour faire joli, l'impression ne se déclenche que si le mécanisme jjldyn a été activé.
+   Malheureusement, le mécanisme jjldyn peut se déclencher sur un processeur et pas sur un
+   autre. Dans ce cas de figure, on tombe alors sur un blocage MPI.
+   Je corrige donc uttcpi.f pour que tous les procs fassent systématiquement les memes appels
+   aux routines MPI.
+                                                                                            
+                                         
+   2) Pour m'aider à débuguer ces 2 problèmes, j'ai écrit un tout petit utilitaire (dbgmpi.F)
+   qui vérifie qu'un entier fourni par la routine appelante a bien la meme valeur sur tous
+   les procs.
+                                                                                            
+                                         
+   Par exemple, j'ai modifié la routine superviseur execop.f pour y ajouter la ligne :
+         CALL DBGMPI(ICMD)                       ! AJACOT NON !!
+   ICMD est le numéro de la commande que l'on execute (dans la liste des étapes).
+                                                                                            
+                                         
+   La routine dbgmpi.F fait :
+      1 MPI_ALLREDUCE / MPI_SUM  sur 1 entier
+      1 MPI_ALLREDUCE / MPI_MAX  sur 1 entier
+                                                                                            
+                                         
+   S'il y a une erreur de programmation quelque part et que les MPI_ALLREDUCE exécutés sur
+   les différents procs ne se correspondent pas, par exemple s'il y en a 1 de moins sur le
+   proc 1 que sur le proc 0, alors le MPI_ALLREDUCE en "trop" sur le proc 0 se retrouvera en
+   communication avec celui de la routine dbgmpi.F, ce qui provoquera une erreur fatale dans
+   dbgmpi et l'on saura dans quelle commande a lieu le problème.
+                                                                                            
+                                         
+   Pour aller plus loin, on peut ajouter dans toutes les routines qui font appel à MPICM1/2
+   un "CALL DBGMPI(IDENT)" avec un numéro IDENT qui identifie la routine appelante. Par exemple :
+     1001 pour redetr.f
+     1002 pour uttcpi.f
+     1003 pour cescel.f
+     ...
+                                                                                            
+                                         
+   C'est une façon de vérifier que tous les processeurs passent bien dans les memes routines
+   au meme "moment".
+                                                                                            
+                                         
+                                                                                            
+                                         
+   Validation :
+   ------------
+   Passage des 40 tests MPI les moins couteux (durée inférieure à 250s).
+                                                                                            
+                                         
+                                                                                            
+                                         
+   Impact documentaire :
+   ---------------------
+   1) Je ne sais pas dans quel document l'écrire, mais il faut retenir que l'on doit etre
+   très prudent quand on ajoute une communicaton collective (MPI_ALLREDUCE par exemple) dans
+   une routine fortran. Il faut etre sur que cette routine sera toujours appelée de la meme
+   façon sur tous les processeurs. Il faut donc l'éviter dans les utilitaires de plus bas
+   niveau (par exemple les routines DISMOI).
+   2) La remarque précédente m'oblige à préciser le comportement de la routine DISMOI pour la
+   question 'ZERO' :
+      Par exemple, quand on pose la question DISMOI('ZERO', resuel, 'RESUELEM', ...), on veut
+   savoir si la sd_resuelem resuel est nul ou non. Le parallélisme nous oblige à préciser la
+   question : le resuelem est-il nul sur tous les procs ou seulement sur le proc où l'on se
+   trouve ?
+      En cohérence avec ce que j'ai écrit ci-dessus, j'ai décidé que la question 'ZERO' avait
+   une réponse "locale" qui pouvait etre différente sur les différents processeurs. Je vais
+   l'écrire dans D6.07.01
+                                                                                            
+                                         
+    
+   Liste des fichiers impactés par la correction de la fiche:  15021
+     redetr.f  typmat.f  uttcpi.f  vrcomp.f
+     dbgmpi.F
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D6.07.01
+VALIDATION
+   40 tests MPI sur bull
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT erreu07a                       pellet J.PELLET           189    189      0
+ CASTEST AJOUT zzzz258a                       pellet J.PELLET           167    167      0
+ CASTEST MODIF sdld31b                      courtois M.COURTOIS         365      2      2
+ CASTEST MODIF sdlv129a                     courtois M.COURTOIS         317      3      5
+ CASTEST MODIF sdnv105a                        abbas M.ABBAS           1361      2      2
+ CASTEST MODIF sslv04a                     lebouvier F.LEBOUVIER       1554    126      2
+ CASTEST MODIF ssnp110d                      jaubert A.JAUBERT          315      4      3
+ CASTEST MODIF ssnv206a                    fernandes R.FERNANDES        330      3      3
+ CASTEST MODIF wtnv135a                    fernandes R.FERNANDES        352      9      6
+ CASTEST MODIF zzzz175a                     gnicolas G.NICOLAS          624      7      7
+ CASTEST MODIF zzzz264a                     courtois M.COURTOIS         125      2      2
+CATALOGU MODIF compelem/grandeur_simple__  lebouvier F.LEBOUVIER       2062      7      7
+CATALOGU MODIF typelem/gener_me2dt0        desroches X.DESROCHES        175      3      1
+CATALOGU MODIF typelem/gener_me2tr0        desroches X.DESROCHES        174      3      1
+CATALOGU MODIF typelem/gener_me3d_2        lebouvier F.LEBOUVIER        221      5      5
+CATALOGU MODIF typelem/gener_medit0        desroches X.DESROCHES        186      3      1
+CATALOGU MODIF typelem/gener_medtr0        desroches X.DESROCHES        196      3      3
+CATALOPY MODIF commande/crea_resu           lefebvre J-P.LEFEBVRE       216      7      1
+FORTRAN90 AJOUT utilitai/dbgmpi                pellet J.PELLET           115    115      0
+ FORTRAN MODIF algeline/typmat                pellet J.PELLET            88     19     12
+ FORTRAN MODIF algorith/cfdisi                desoza T.DESOZA           232      2      2
+ FORTRAN MODIF algorith/crtype              lefebvre J-P.LEFEBVRE       508     11      3
+ FORTRAN MODIF algorith/exfonc                 abbas M.ABBAS            268     16      3
+ FORTRAN MODIF algorith/fropgd                desoza T.DESOZA           730     12      4
+ FORTRAN MODIF algorith/lc0042             fernandes R.FERNANDES        106      8      1
+ FORTRAN MODIF algorith/lkbpri             fernandes R.FERNANDES        156      3      3
+ FORTRAN MODIF algorith/lkcomp             fernandes R.FERNANDES        596     14     14
+ FORTRAN MODIF algorith/lkcriv             fernandes R.FERNANDES         84      3      4
+ FORTRAN MODIF algorith/lklmat             fernandes R.FERNANDES        165     21      5
+ FORTRAN MODIF algorith/lkvarv             fernandes R.FERNANDES         90      7      1
+ FORTRAN MODIF algorith/nmconv                 abbas M.ABBAS            516     13     20
+ FORTRAN MODIF algorith/nmdoet                pellet J.PELLET           493      7      6
+ FORTRAN MODIF algorith/nmfisa               laverne J.LAVERNE          102     17     17
+ FORTRAN MODIF algorith/nmfonc                 abbas M.ABBAS            506      1      1
+ FORTRAN MODIF algorith/nminit                 abbas M.ABBAS            265      1      1
+ FORTRAN MODIF algorith/op0070                 abbas M.ABBAS            552     11     12
+ FORTRAN MODIF calculel/mecalc                pellet J.PELLET           602     13      4
+ FORTRAN MODIF calculel/vrcom2                pellet J.PELLET           175     54    104
+ FORTRAN MODIF calculel/vrcomp                pellet J.PELLET           350    215    111
+ FORTRAN MODIF elements/elrfd2                desoza T.DESOZA           396      9      9
+ FORTRAN MODIF elements/te0411             lebouvier F.LEBOUVIER        275      4      1
+ FORTRAN MODIF modelisa/mmmaxi                desoza T.DESOZA           158      8      3
+ FORTRAN MODIF modelisa/mmprel                desoza T.DESOZA           142      4      1
+ FORTRAN MODIF utilitai/dismch                 abbas M.ABBAS            149     10      7
+ FORTRAN MODIF utilitai/redetr                pellet J.PELLET           165     18      3
+ FORTRAN MODIF utilitai/rsinch                 idoux L.IDOUX            251      2      4
+ FORTRAN MODIF utilitai/uttcpi                pellet J.PELLET           215     34      4
+  PYTHON MODIF Build/B_ETAPE                courtois M.COURTOIS         808      3      1
+  PYTHON MODIF Cata_Utils/t_fonction        courtois M.COURTOIS         748     23     12
+  PYTHON MODIF Macro/calc_table_ops         courtois M.COURTOIS         193      8      3
+  PYTHON MODIF Macro/macr_recal_ops           assire A.ASSIRE           674      2      2
+  PYTHON MODIF Macro/post_endo_fiss_ops     courtois M.COURTOIS         868     98     98
+  PYTHON MODIF Macro/reca_algo                assire A.ASSIRE           296      2      1
+  PYTHON MODIF Macro/recal                    assire A.ASSIRE          1487     22    125
+  PYTHON MODIF Messages/algorith2           lefebvre J-P.LEFEBVRE       288      7      1
+  PYTHON MODIF Messages/assembla             boiteau O.BOITEAU          280     10      3
+  PYTHON MODIF Messages/calculel3             pellet J.PELLET           473     59      1
+  PYTHON MODIF Messages/calculel5             pellet J.PELLET           339      3      8
+  PYTHON MODIF Messages/calculel6             pellet J.PELLET           449      1     12
+  PYTHON MODIF Messages/compor1            fernandes R.FERNANDES        367      1     11
+  PYTHON MODIF Messages/contact3               abbas M.ABBAS            259      2      2
+  PYTHON MODIF Messages/mecanonline5           abbas M.ABBAS            226      5      1
+  PYTHON MODIF Messages/recal0                assire A.ASSIRE           378     27     15
+  PYTHON MODIF Miss/miss_fichier_interf      greffet N.GREFFET          223      2      1
+  PYTHON MODIF Stanley/gmsh                   assire A.ASSIRE           379      3      2
+  PYTHON MODIF Stanley/salomeVisu             assire A.ASSIRE           508      3      4
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          3229     12     10
+  PYTHON MODIF Utilitai/Graph               courtois M.COURTOIS        1200      2      2
+  PYTHON MODIF Utilitai/sup_gmsh              assire A.ASSIRE          1416      5      4
+  PYTHON MODIF Utilitai/utils               courtois M.COURTOIS         105     60      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    3         471       471              +471
+ MODIF :   67       32101      1086     733      +353
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   70       32572      1557     733      +824 

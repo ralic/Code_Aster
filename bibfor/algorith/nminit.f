@@ -7,7 +7,7 @@
      &                  DEFICU,RESOCU,RESOCO,VALINC,SOLALG,
      &                  MEASSE,VEELEM,MEELEM,VEASSE,CODERE)
 C
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 26/05/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

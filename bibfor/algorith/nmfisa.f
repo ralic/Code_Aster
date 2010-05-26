@@ -1,7 +1,7 @@
       SUBROUTINE NMFISA(AXI,GEOM,KPG,POIDS,B)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 25/05/2010   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +25,7 @@ C ======================================================================
       LOGICAL AXI
       INTEGER KPG
       REAL*8  GEOM(2,4),POIDS,B(2,8)
-      
-     
+           
 C-----------------------------------------------------------------------
 C
 C BUT:
@@ -52,24 +51,25 @@ C IN  : GEOM,KPG
 C OUT : POIDS, B
 C   
 C-----------------------------------------------------------------------
-
-      REAL*8  CO,SI, C, S,COEF(2), AIRE
+      REAL*8  CO,SI, C, S,COEF(2), AIRE, RAYON
 C-----------------------------------------------------------------------
 
-
+      COEF(1) = 0.5D0*(1.D0 + SQRT(3.D0)/3.D0)
+      COEF(2) = 0.5D0*(1.D0 - SQRT(3.D0)/3.D0)
 
 C -- CALCUL DU POIDS DU POINT DE GAUSS
 
       AIRE = SQRT( (GEOM(1,2)-GEOM(1,1))**2 + (GEOM(2,2)-GEOM(2,1))**2 )
-      IF (AXI) AIRE = AIRE * (GEOM(1,1)+GEOM(1,2))/2.D0
+      
+C     DISTANCE DU PG A L'AXE DE REVOLUTION (I.E ABSCISSE DU PG)
+      RAYON = GEOM(1,1)*COEF(KPG) + GEOM(1,2)*(1.D0-COEF(KPG))
+      IF (AXI) AIRE = AIRE*RAYON
+      
       POIDS = AIRE/2
 
 C -- CALCUL DE LA MATRICE B
 
       CALL R8INIR(16, 0.D0, B ,1)
-
-      COEF(2) = 0.5D0*(1.D0 - SQRT(3.D0)/3.D0)
-      COEF(1) = 0.5D0*(1.D0 + SQRT(3.D0)/3.D0)
       
       CO =   (GEOM(2,2) - GEOM(2,1))  
       SI =  -(GEOM(1,2) - GEOM(1,1))
@@ -83,19 +83,19 @@ C AUX NOEUDS :
 
       B(1,1) =   C*COEF(KPG) 
       B(1,2) =   S*COEF(KPG)
-      B(1,3) =   C*(1-COEF(KPG))
-      B(1,4) =   S*(1-COEF(KPG))
-      B(1,5) =  -C*(1-COEF(KPG))
-      B(1,6) =  -S*(1-COEF(KPG))
+      B(1,3) =   C*(1.D0-COEF(KPG))
+      B(1,4) =   S*(1.D0-COEF(KPG))
+      B(1,5) =  -C*(1.D0-COEF(KPG))
+      B(1,6) =  -S*(1.D0-COEF(KPG))
       B(1,7) =  -C*COEF(KPG)
       B(1,8) =  -S*COEF(KPG)
 
       B(2,1) =   -S*COEF(KPG)
       B(2,2) =    C*COEF(KPG)
-      B(2,3) =   -S*(1-COEF(KPG))
-      B(2,4) =    C*(1-COEF(KPG))
-      B(2,5) =    S*(1-COEF(KPG))
-      B(2,6) =   -C*(1-COEF(KPG))
+      B(2,3) =   -S*(1.D0-COEF(KPG))
+      B(2,4) =    C*(1.D0-COEF(KPG))
+      B(2,5) =    S*(1.D0-COEF(KPG))
+      B(2,6) =   -C*(1.D0-COEF(KPG))
       B(2,7) =    S*COEF(KPG)
       B(2,8) =   -C*COEF(KPG)
       

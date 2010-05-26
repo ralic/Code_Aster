@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 26/05/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -309,23 +309,23 @@ C     ------------------------------------------------------------------
         NDIM = 2
 
         DFF2(1,1,1) = Y0 * (Y0 - UN) * UNDEMI
-        DFF2(2,1,1) = (X0 - UNDEMI) * (Y0 - UNDEMI) * UNS4
-        DFF2(1,2,1) = (X0 - UNDEMI) * (Y0 - UNDEMI) * UNS4
+        DFF2(2,1,1) = (X0 - UNDEMI) * (Y0 - UNDEMI)
+        DFF2(1,2,1) = (X0 - UNDEMI) * (Y0 - UNDEMI)
         DFF2(2,2,1) = X0 * (X0 - UN) * UNDEMI
 
         DFF2(1,1,2) = Y0 * (Y0 - UN) * UNDEMI
-        DFF2(2,1,2) = (X0 + UNDEMI) * (Y0 - UNDEMI) * UNS4
-        DFF2(1,2,2) = (X0 + UNDEMI) * (Y0 - UNDEMI) * UNS4
+        DFF2(2,1,2) = (X0 + UNDEMI) * (Y0 - UNDEMI)
+        DFF2(1,2,2) = (X0 + UNDEMI) * (Y0 - UNDEMI)
         DFF2(2,2,2) = X0 * (X0 + UN) * UNDEMI
 
         DFF2(1,1,3) = Y0 * (Y0 + UN) * UNDEMI
-        DFF2(2,1,3) = (X0 + UNDEMI) * (Y0 + UNDEMI) * UNS4
-        DFF2(1,2,3) = (X0 + UNDEMI) * (Y0 + UNDEMI) * UNS4
+        DFF2(2,1,3) = (X0 + UNDEMI) * (Y0 + UNDEMI)
+        DFF2(1,2,3) = (X0 + UNDEMI) * (Y0 + UNDEMI)
         DFF2(2,2,3) = X0 * (X0 + UN) * UNDEMI
 
         DFF2(1,1,4) = Y0 * (Y0 + UN) * UNDEMI 
-        DFF2(2,1,4) = (X0 - UNDEMI) * (Y0 + UNDEMI) * UNS4
-        DFF2(1,2,4) = (X0 - UNDEMI) * (Y0 + UNDEMI) * UNS4
+        DFF2(2,1,4) = (X0 - UNDEMI) * (Y0 + UNDEMI)
+        DFF2(1,2,4) = (X0 - UNDEMI) * (Y0 + UNDEMI)
         DFF2(2,2,4) = X0 * (X0 - UN) * UNDEMI
 
         DFF2(1,1,5) = -Y0 * (Y0 - UN)

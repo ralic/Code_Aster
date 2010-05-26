@@ -1,6 +1,6 @@
       SUBROUTINE TE0411(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 25/05/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -234,11 +234,13 @@ C        PASSAGE AU REPERE GLOBAL
             ZR(ISIT1)  =VTMP(1)
             ZR(ISIT1+1)=VTMP(2)
             ZR(ISIT1+2)=VTMP(3)
+            ZR(ISIT1+3)= L1
          ELSEIF(OPTION(1:14).EQ.'PROJ_ELEM_SIT2')THEN
             CALL PMAVEC('ZERO',3,MLG,V2,VTMP)
             ZR(ISIT2)  =VTMP(1)
             ZR(ISIT2+1)=VTMP(2)
             ZR(ISIT2+2)=VTMP(3)
+            ZR(ISIT2+3)= L2
          ENDIF
          GOTO 111
       ENDIF
@@ -254,6 +256,7 @@ C     =======================================================
             ZR(ISIGN)  = VTMP2(1)
             ZR(ISIGN+1)= VTMP2(2)
             ZR(ISIGN+2)= VTMP2(3)
+            ZR(ISIGN+3)= SIGL(3,3)
          ELSEIF(OPTION(1:14).EQ.'PROJ_ELEM_SIGT')THEN
             VTMP(1)=SIGL(1,1)
             VTMP(2)=SIGL(2,2)
