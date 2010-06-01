@@ -1,4 +1,4 @@
-#@ MODIF post_endo_fiss_ops Macro  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_endo_fiss_ops Macro  DATE 31/05/2010   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -275,7 +275,7 @@ def post_endo_fiss_ops(self,
 
     if args['MODELE'] != None :
       __modtot = args['MODELE']
-    elif (dicResu['MODELE'])[0].strip() != '' :
+    elif dicResu['MODELE'][0] is not None:
       lst_n_modele = dicResu['MODELE']
       n_modele     = lst_n_modele[nume_ordre-1]
       n_modele = n_modele.strip()

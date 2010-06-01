@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 31/05/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
 # sslv113d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,9 +149,9 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M1',
                   POINT=1,
-                  VALE=0.0276906923335,
+                  VALE=2.76907E-02,
                   CRITERE='RELATIF',
-                  PRECISION=1e-05,
+                  PRECISION=1e-06,
                   REFERENCE='NON_REGRESSION',
                   VERSION='9.3.15',),);
 
@@ -161,11 +161,11 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M1',
                   POINT=1,
-                  VALE=5.4281800533798E-03,
+                  VALE=6.2004157E-03,
                   CRITERE='RELATIF',
-                  PRECISION=1e-05,
+                  PRECISION=1e-06,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='10.00.20',),);
+                  VERSION='9.3.15',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
@@ -173,19 +173,19 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M4',
                   NOEUD='N1',
-                  VALE=8.1689076417331E-05,
+                  VALE=1.01420306E-04,
                   CRITERE='RELATIF',
-                  PRECISION=1e-05,
+                  PRECISION=1e-06,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='10.00.20',),);
+                  VERSION='9.3.15',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
                   PARA='ERREUR_QIRE',
-                  VALE=5.7885189411087E-03,
+                  VALE=6.53117E-03,
                   CRITERE='RELATIF',
-                  PRECISION=1e-05,
+                  PRECISION=1e-06,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='10.00.20',),);
+                  VERSION='9.3.15',),);
 
 FIN();

@@ -1,9 +1,9 @@
 # MODIF  DATE 31/05/2010   AUTEUR JAUBERT A.JAUBERT 
 # TITRE BLOC AVEC INTERFACE EN CONTACT GLISSIERE AVEC X-FEM
-# ssnv201a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+# ssnv201b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV201A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NOM='SSNV201B',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
 
 PRE_GIBI();
 
@@ -95,6 +95,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
+                      REAC_GEOM      = 'AUTOMATIQUE',
                       ZONE=(_F(INTEGRATION  = 'NOEUD',
                                CONTACT_INIT = 'NON',
                                GLISSIERE    = 'OUI',
@@ -223,10 +224,10 @@ criterezp = ['RELATIF','RELATIF','RELATIF']
 critereym = ['ABSOLU','ABSOLU','ABSOLU']
 critereyp = ['ABSOLU','ABSOLU','RELATIF']
 
-precisionzm = [1.0E-16,1.0E-11,1.0E-11]
-precisionzp = [1.0E-11,1.0E-11,1.0E-11]
-precisionym = [1.0E-16,1.0E-16,1.0E-16]
-precisionyp = [1.0E-16,1.0E-16,1.0E-11]
+precisionzm = [1.0E-16,1.0E-11,1.0E-3]
+precisionzp = [1.0E-11,1.0E-11,1.0E-3]
+precisionym = [1.0E-16,1.0E-15,1.0E-6]
+precisionyp = [1.0E-16,1.0E-15,1.0E-3]
 
 for i in [1,2,3]: #Boucle sur les increments 
   DEP[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -325,6 +326,7 @@ for i in [1,2,3]: #Boucle sur les increments
              CRITERE=critereyp[i-1],
              PRECISION=precisionyp[i-1],
              REFERENCE='ANALYTIQUE',);
+
 
 
 FIN();

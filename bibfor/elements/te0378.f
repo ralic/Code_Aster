@@ -1,7 +1,7 @@
       SUBROUTINE TE0378 (OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/10/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 31/05/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -375,7 +375,7 @@ C
 C
 C ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA PB. DUAL -----
 C
-        IBID = 1
+        IBID = 0
         CALL ERMEV2(NNO,IGEOM,ZR(IAUX),IADD,NBCMP,DFDX,DFDY,
      >              POIDS,IBID,
      >              DSDX,DSDY,R8BID)

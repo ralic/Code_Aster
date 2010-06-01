@@ -1,4 +1,4 @@
-#@ MODIF meidee_cata Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_cata Meidee  DATE 31/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -203,9 +203,10 @@ class ModeMeca(Resultat):
 
         # Rangement des donnees modales selon le type : statique ou dynamique
         # Si une donnee est incompatible avec le type (exemple : la frequence d'un mode statique), on remplit par None
+        #XXX depuis issue15113, le "if/else" n'est peut-etre plus nécessaire.
         for ind_ordr in range(len(nume_ordr)):
             liste = ['FREQ','AMOR_REDUIT','AMOR_GENE','RIGI_GENE','MASS_GENE']
-            if resu_stat[ind_ordr].strip(): # mode statique
+            if resu_stat[ind_ordr] is not None: # mode statique
                 for ind_list in liste:
                     cara_mod[ind_list].append(None)
                 cara_mod['NOEUD_CMP'].append(resu_stat[ind_ordr])

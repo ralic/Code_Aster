@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 31/05/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -1077,12 +1077,12 @@ void DEFSSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
            kvar = valk + i*lvk;
            PyTuple_SetItem( tup_valk, i, PyString_FromStringAndSize(kvar,lvk) ) ;
         }
-	
-        tup_vali = PyTuple_New( *nbi ) ;	
+    
+        tup_vali = PyTuple_New( *nbi ) ;    
         for(i=0;i<*nbi;i++){
            PyTuple_SetItem( tup_vali, i, PyInt_FromLong(vali[i]) ) ;
         }
-	
+    
         tup_valr = PyTuple_New( *nbr ) ;
         for(i=0;i<*nbr;i++){
            PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble(valr[i]) ) ;
@@ -2318,10 +2318,17 @@ PyObject *args;
 void DEFSPPPPPP(PUTCON,putcon,char *,STRING_SIZE,INTEGER *,INTEGER *,DOUBLE *,DOUBLE *,INTEGER *,INTEGER *);
 
 static char putvectjev_doc[]=
-"putvectjev(nomsd)->valsd      \n\
+"putvectjev(nomsd, nbval, indices, reel, imag, num)\n\
 \n\
-Renvoie le contenu d'un objet python dans  \n\
-un vecteur jeveux.";
+Renvoie le contenu d'un objet python dans un vecteur jeveux.\n\
+\
+    nomsd   : nom du vecteur jeveux\n\
+    nbval   : nombre de valeurs\n\
+    indices : indices dans le vecteur (commence à 1, de longueur nbval)\n\
+    reel    : valeurs réelles ou parties réelles en cas de complexes (de longueur nbval)\n\
+    imag    : parties imaginaires en cas de complexes (de longueur nbval)\n\
+    num     : 1.\n\
+";
 
 /* ------------------------------------------------------------------ */
 static PyObject* aster_putvectjev(self, args)
@@ -2341,7 +2348,7 @@ PyObject *args;
         int ok        = 0 ;
         INTEGER iret=0;
         void *malloc(size_t size);
-	
+    
         ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,&nbind,&tupi,&tupr,&tupc,&num);
         if (!ok)MYABORT("erreur dans la partie Python");
         nomsd32[32] = '\0';
@@ -2460,6 +2467,9 @@ void DEFSPPSPPPSP(RSACPA,rsacpa,char *, STRING_SIZE, INTEGER *, INTEGER *, char 
 #define CALL_RSACPA(nomsd, numva, icode, nomva, ctype, ival, rval, kval, ier) \
                   CALLSPPSPPPSP(RSACPA,rsacpa, nomsd, numva, icode, nomva, ctype, ival, rval, kval, ier)
 
+#define CALL_R8VIDE STDCALL(R8VIDE,r8vide)
+#define CALL_ISNNEM STDCALL(ISNNEM,isnnem)
+
 /* ------------------------------------------------------------------ */
 static PyObject* aster_GetResu(self, args)
 PyObject *self; /* Not used */
@@ -2502,8 +2512,13 @@ PyObject *args;
    char nomch[16], nomva[16];
    int i, lo, icode, ctype, ksize, ksizemax=80;
    PyObject *dico, *liste, *key;
+   char blanc[80];
    void *malloc(size_t size);
+   DOUBLE CALL_R8VIDE();
+   INTEGER CALL_ISNNEM();
 
+   BLANK(blanc, 80);
+   
    if (!PyArg_ParseTuple(args, "ss",&nomsd, &mode)) return NULL;
    nomsd32[32] = '\0';
    CSTRING_FCPY(nomsd32, 32, nomsd);
@@ -2579,12 +2594,22 @@ PyObject *args;
                 return NULL;
             }
             else if (ctype == 1) {
-                for (i=0; i<nbord; i++)
-                    PyList_Append(liste,PyFloat_FromDouble(rval[i]));
+                for (i=0; i<nbord; i++) {
+                    if (rval[i] != CALL_R8VIDE() ) {
+                        PyList_Append(liste, PyFloat_FromDouble(rval[i]));
+                    } else {
+                        PyList_Append(liste, Py_None);
+                    }
+                }
             }
             else if (ctype == 2) {
-                for (i=0; i<nbord; i++)
-                    PyList_Append(liste,PyInt_FromLong(ival[i]));
+                for (i=0; i<nbord; i++) {
+                    if (ival[i] != CALL_ISNNEM() ) {
+                        PyList_Append(liste, PyInt_FromLong(ival[i]));
+                    } else {
+                        PyList_Append(liste, Py_None);
+                    }
+                }
             }
             else if (ctype == 4 || ctype == 5 || ctype == 6 || ctype == 7 || ctype == 8) {
                 switch ( ctype ) {
@@ -2596,7 +2621,11 @@ PyObject *args;
                 }
                 for (i=0; i<nbord; i++) {
                     kvar = kval + i*ksizemax;
-                    PyList_Append(liste, PyString_FromStringAndSize(kvar, ksize));
+                    if ( strncmp(kvar, blanc, ksize) != 0 ) {
+                        PyList_Append(liste, PyString_FromStringAndSize(kvar, ksize));
+                    } else {
+                        PyList_Append(liste, Py_None);
+                    }
                 }
             }
             PyDict_SetItem(dico,key,liste);
@@ -3104,7 +3133,7 @@ PyObject *args;
         PyObject *temp = (PyObject*)0 ;
         INTEGER lnomam=0;
         INTEGER codret=0;
-	     int lon1;
+        int lon1;
         char *nomast;
         char nomamd[33],n1[9];
 
@@ -3416,40 +3445,40 @@ void DEFSSPP(JELST3,jelst3, char*, STRING_SIZE, char*, STRING_SIZE, INTEGER*, IN
 
 static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)
 {
-	INTEGER nmax, total;
-	char* base;
-	PyObject* the_list, *pystr;
-	char dummy[25];
-	char *tmp, *ptr;
-	int tmpsize, i;
-	
-	if (!PyArg_ParseTuple(args, "s",&base))
-		return NULL;
+    INTEGER nmax, total;
+    char* base;
+    PyObject* the_list, *pystr;
+    char dummy[25];
+    char *tmp, *ptr;
+    int tmpsize, i;
+    
+    if (!PyArg_ParseTuple(args, "s",&base))
+        return NULL;
 
-	if (strlen(base)!=1) {
-		MYABORT("le type de base doit etre 1 caractere" );
-	}
+    if (strlen(base)!=1) {
+        MYABORT("le type de base doit etre 1 caractere" );
+    }
 
-	memset( dummy, ' ', 24 );
-	dummy[24] = 0;
-	nmax = 0;
-	/* premier appel avec nmax==0 pour connaitre le total */
-	CALL_JELST3( base, dummy, &nmax, &total );
-	tmpsize = 24*total*sizeof(char);
-	tmp = (char*)malloc( tmpsize+1 );
-	memset( tmp, ' ', tmpsize );
-	tmp[tmpsize] = 0;
-	nmax = total;
-	/* second appel après allocation mémoire */
-	CALL_JELST3( base, tmp, &nmax, &total );
-	
-	the_list = PyList_New(total);
-	for( i=0, ptr=tmp; i<total;++i, ptr+=24 ) {
-		pystr = PyString_FromStringAndSize( ptr, 24 );
-		PyList_SetItem( the_list, i, pystr );
-	}
-	free( tmp );
-	return the_list;
+    memset( dummy, ' ', 24 );
+    dummy[24] = 0;
+    nmax = 0;
+    /* premier appel avec nmax==0 pour connaitre le total */
+    CALL_JELST3( base, dummy, &nmax, &total );
+    tmpsize = 24*total*sizeof(char);
+    tmp = (char*)malloc( tmpsize+1 );
+    memset( tmp, ' ', tmpsize );
+    tmp[tmpsize] = 0;
+    nmax = total;
+    /* second appel après allocation mémoire */
+    CALL_JELST3( base, tmp, &nmax, &total );
+    
+    the_list = PyList_New(total);
+    for( i=0, ptr=tmp; i<total;++i, ptr+=24 ) {
+        pystr = PyString_FromStringAndSize( ptr, 24 );
+        PyList_SetItem( the_list, i, pystr );
+    }
+    free( tmp );
+    return the_list;
 }
 
 #define CALL_JELIRA(a,b,c,d)  CALLSSPS(JELIRA,jelira,a,b,c,d)
@@ -3458,17 +3487,17 @@ void DEFSSPS(JELIRA,jelira, char*, STRING_SIZE, char*, STRING_SIZE, INTEGER*, ch
 /* ------------------------------------------------------------------ */
 static PyObject *jeveux_getattr( PyObject* self, PyObject* args)
 {
-	char *nomobj, *attr;
-	char charval[34];
-	INTEGER intval = 0;
-	
-	BLANK(charval, 33);
-	charval[33] = '\0';
-	if (!PyArg_ParseTuple(args, "ss",&nomobj,&attr))
-		return NULL;
-	CALL_JELIRA( nomobj, attr, &intval, charval );
-	
-	return Py_BuildValue( "is", intval, charval );
+    char *nomobj, *attr;
+    char charval[34];
+    INTEGER intval = 0;
+    
+    BLANK(charval, 33);
+    charval[33] = '\0';
+    if (!PyArg_ParseTuple(args, "ss",&nomobj,&attr))
+        return NULL;
+    CALL_JELIRA( nomobj, attr, &intval, charval );
+    
+    return Py_BuildValue( "is", intval, charval );
 }
 
 #define CALL_JEEXIN(a,b)  CALLSP(JEEXIN,jeexin,a,b)
@@ -3477,27 +3506,27 @@ void DEFSP(JEEXIN,jeexin, char*, STRING_SIZE, INTEGER* );
 
 static PyObject *jeveux_exists( PyObject* self, PyObject* args)
 {
-	char *nomobj;
-	char tmpbuf[33];
-	int l;
-	INTEGER intval = 0;
-	
-	if (!PyArg_ParseTuple(args, "s",&nomobj))
-		return NULL;
-	strncpy( tmpbuf, nomobj, 32 );
-	l = strlen( nomobj );
-	memset( tmpbuf+l, ' ', 32-l );
-	tmpbuf[32]=0;
-		
-	CALL_JEEXIN( tmpbuf, &intval );
-	
-	if (intval==0) {
-		Py_INCREF( Py_False );
-		return Py_False;
-	} else {
-		Py_INCREF( Py_True );
-		return Py_True;
-	}
+    char *nomobj;
+    char tmpbuf[33];
+    int l;
+    INTEGER intval = 0;
+    
+    if (!PyArg_ParseTuple(args, "s",&nomobj))
+        return NULL;
+    strncpy( tmpbuf, nomobj, 32 );
+    l = strlen( nomobj );
+    memset( tmpbuf+l, ' ', 32-l );
+    tmpbuf[32]=0;
+        
+    CALL_JEEXIN( tmpbuf, &intval );
+    
+    if (intval==0) {
+        Py_INCREF( Py_False );
+        return Py_False;
+    } else {
+        Py_INCREF( Py_True );
+        return Py_True;
+    }
 }
 
 /* ---------------------------------------------------------------------- */
@@ -3543,17 +3572,17 @@ PyObject *args;
 /*       usage : aster.co_register_jev(nomsd, typsd, nomcmd)
                  appele gcugen(0, ...) puis gcugen(1, ...)
 */
-	char *nomsd, *typsd, *oper;
-	INTEGER icmdt = 0, icode;
-	
-	if (!PyArg_ParseTuple(args, "sss", &nomsd, &typsd, &oper))
-		return NULL;
-	icode = 0;
-	CALL_GCUGEN( &icode, nomsd, typsd, oper, &icmdt );
-	icode = 1;
-	CALL_GCUGEN( &icode, nomsd, typsd, oper, &icmdt );
-	
-	return PyInt_FromLong( icmdt );
+    char *nomsd, *typsd, *oper;
+    INTEGER icmdt = 0, icode;
+    
+    if (!PyArg_ParseTuple(args, "sss", &nomsd, &typsd, &oper))
+        return NULL;
+    icode = 0;
+    CALL_GCUGEN( &icode, nomsd, typsd, oper, &icmdt );
+    icode = 1;
+    CALL_GCUGEN( &icode, nomsd, typsd, oper, &icmdt );
+    
+    return PyInt_FromLong( icmdt );
 }
 
 /* ------------------------------------------------------------------ */
@@ -4061,7 +4090,7 @@ void AjoutChaineA( _INOUT char **base , _IN char *supplement )
         int taille     = 0 ;
         int total      = 0 ;
         void *malloc(size_t size);
-	
+    
         taille = ( *base ) ? strlen( *base ) : 0 ;
 
         ajout = ( supplement ) ? strlen( supplement ) : 0 ;

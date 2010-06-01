@@ -1,7 +1,7 @@
       SUBROUTINE PIPEOU(MAT,SUP,SUD,MUP,MUD,VIM,TAU,COPILO)
             
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 31/05/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,10 +37,8 @@ C                FEL = COPILO(1) + COPILO(2)*ETA
 C                FEL = COPILO(3) + COPILO(4)*ETA
 C                COPILO(5) <> R8VIDE => PAS DE SOLUTION
 C ----------------------------------------------------------------------
-      INTEGER NRAC,I
       REAL*8  SC,GC,DC,H,R,KA,GA,SK,VAL(3),TMP
       REAL*8  TT,TPN,TDN,TAUREF
-      REAL*8  R8VIDE
       CHARACTER*2 COD(3)
       CHARACTER*8 NOM(3)
       
@@ -51,21 +49,21 @@ C ----------------------------------------------------------------------
 C -- CAS DE L'ENDOMMAGEMENT SATURE
 
       GA = VIM(4) + TAU
-      IF (GA .GT. 1) GOTO 9999
+      IF (GA .GT. 1.D0) GOTO 9999
 
 C -- RECUPERATION DES PARAMETRES PHYSIQUES
 
       CALL RCVALA(MAT,' ','RUPT_FRAG',0,' ',0.D0,3,NOM,VAL,COD,'F ')
       GC   = VAL(1)      
       SC   = VAL(2)  
-      DC   = 2*GC/SC
+      DC   = 2.D0*GC/SC
       H    = SC/DC
       R    = H * VAL(3)
       
 C    CALCUL DE KAPPA : KA = DC*(1-SQRT(1-GA))
 
-      TMP = SQRT(MAX(0.D0,1-GA))
-      TMP = DC*(1-TMP)
+      TMP = SQRT(MAX(0.D0,1.D0-GA))
+      TMP = DC*(1.D0-TMP)
       TMP = MAX(0.D0,TMP)
       TMP = MIN(DC,TMP)
       KA  = TMP

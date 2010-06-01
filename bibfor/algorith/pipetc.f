@@ -1,7 +1,7 @@
       SUBROUTINE PIPETC(MAT,SUP,SUD,MUP,MUD,VIM,TAU,COPILO)
             
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 31/05/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,7 +52,7 @@ C -- SEUIL EN ENERGIE DISSIPE
       GA = VIM(4) + TAU
 
 C -- CAS DE L'ENDOMMAGEMENT SATURE
-      IF (GA .GT. 1) GOTO 9999
+      IF (GA .GT. 1.D0) GOTO 9999
 
 C -- RECUPERATION DES PARAMETRES PHYSIQUES
 
@@ -60,20 +60,20 @@ C -- RECUPERATION DES PARAMETRES PHYSIQUES
 
       GC   = VAL(1)      
       SC   = VAL(2)  
-      DC   = 2*GC/SC
+      DC   = 2.D0*GC/SC
       H    = SC/DC
       R    = H * VAL(3)
       
 C    CALCUL DE KAPPA : KA = DC*(1-SQRT(1-GA)) : SEUIL EN SAUT
-      TMP = SQRT(MAX(0.D0,1-GA))
-      TMP = DC*(1-TMP)
+      TMP = SQRT(MAX(0.D0,1.D0-GA))
+      TMP = DC*(1.D0-TMP)
       TMP = MAX(0.D0,TMP)
       TMP = MIN(DC,TMP)
       KA  = TMP
       SK  = MAX(0.D0,SC - H*KA)
 
 C   CALCUL DU SEUIL (EN CONTRAINTE)
-      TT2 = (R*KA + SK)**2
+      TT2 = (R*KA + SK)**2.D0
      
 C -- CALCUL DU SECOND MEMBRE 
        
@@ -105,7 +105,7 @@ C    OUVERTURE    : N0 + 2.N1 ETA + N2 ETA**2
       N2 = TDN*TDN
 
 C    SI LE POINT N'EST PAS PILOTABLE :
-      IF (C2+N2.EQ.0) GOTO 9999
+      IF (C2+N2.EQ.0.D0) GOTO 9999
           
   
 C -- RESOLUTION DES EQUATIONS
@@ -117,10 +117,10 @@ C    INITIALISATION
       CALL R8INIR(4,R8VIDE(),RAC,1)
       
 C    EQUATION SUR LE CISAILLEMENT SEUL
-      IF (C2.NE.0) CALL ZEROP2(2*C1/C2, (C0-TT2)/C2, RAC(1), NRAC)
+      IF (C2.NE.0.D0) CALL ZEROP2(2.D0*C1/C2, (C0-TT2)/C2, RAC(1), NRAC)
 
 C    EQUATION SUR LE CISAILLEMENT + L'OUVERTURE
-      CALL ZEROP2(2*(C1+N1)/(C2+N2), (C0+N0-TT2)/(C2+N2),RAC(3),NRAC)
+      CALL ZEROP2(2.D0*(C1+N1)/(C2+N2), (C0+N0-TT2)/(C2+N2),RAC(3),NRAC)
 
 
 C -- SELECTION DES SOLUTIONS CONFORMES AVEC LE SIGNE SUR L'OUVERTURE
@@ -131,15 +131,15 @@ C -- SELECTION DES SOLUTIONS CONFORMES AVEC LE SIGNE SUR L'OUVERTURE
           ETA = RAC(I)
           
           IF (I.LE.2) THEN
-            IF ( (TPN + ETA*TDN).LT.0 ) THEN
-              PENTE = 2*(C2*ETA + C1)
+            IF ( (TPN + ETA*TDN).LT.0.D0 ) THEN
+              PENTE = 2.D0*(C2*ETA + C1)
               COPILO(NRAC+1) = TAU - PENTE*ETA
               COPILO(NRAC+2) = PENTE
               NRAC = NRAC + 2
             END IF
           ELSE
-            IF ( (TPN + ETA*TDN).GE.0 ) THEN
-              PENTE = 2*((C2+N2)*ETA + C1+N1)
+            IF ( (TPN + ETA*TDN).GE.0.D0 ) THEN
+              PENTE = 2.D0*((C2+N2)*ETA + C1+N1)
               COPILO(NRAC+1) = TAU - PENTE*ETA
               COPILO(NRAC+2) = PENTE
               NRAC = NRAC + 2

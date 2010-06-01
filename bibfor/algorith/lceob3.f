@@ -3,7 +3,7 @@
      &                     SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 31/05/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,9 +59,10 @@ C OUT IRET     : CODE RETOUR
 C ----------------------------------------------------------------------
 
       INTEGER     I,J,K,COMPTE,IRET1
+      INTEGER     T(3,3)
 
       REAL*8      FB(6),DB(6),FD,DD,FBM(6),RESB(6)
-      REAL*8      RAC2,UN,DEUX,T(3,3)
+      REAL*8      RAC2,UN,DEUX
       REAL*8      RTEMP2,RTEMP3,DELTA1(6),DELTA2
       REAL*8      DDG,TOLC,DET,TATA,NORMRB,RTEMP,CRIT
       REAL*8      MTE1(6,6),MTE2(6,6)

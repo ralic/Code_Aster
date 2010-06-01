@@ -1,4 +1,4 @@
-#@ MODIF seisme Messages  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF seisme Messages  DATE 31/05/2010   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,6 +149,10 @@ cata_msg={
 """),
 
 27: _("""
+  La base modale utilisé %(k1)s ne contient pas tous les paramètres modaux 
+  nécessaires au calcul.
+  Il faut que le concept soit issu d'un calcul sur coordonnées physiques et
+  non pas généralisées.
 """),
 
 28: _("""
@@ -167,6 +171,7 @@ cata_msg={
   Un seul groupe d'appuis a été constitué contenant tous les appuis. 
   Relancez le calcul avec le mot-clé MULTI_APPUI=CORRELE.
 """),
+
 
 }
 

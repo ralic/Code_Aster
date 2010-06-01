@@ -1,6 +1,6 @@
        SUBROUTINE CEOBFB (BM,EPSM,LAMBDA,MU,ECROB,FB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 31/05/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,8 +35,9 @@ C OUT FB     : FORCE THERMODYNAMIQUE
 C ----------------------------------------------------------------------
 
       INTEGER     I,J,K
+      INTEGER     T(3,3)
 
-      REAL*8      CC(6),CPE(6),CCP(6),T(3,3),EPS(6),B(6)
+      REAL*8      CC(6),CPE(6),CCP(6),EPS(6),B(6)
       REAL*8      DEUX,TREB,KRON(6)
       REAL*8      VECC(3,3),VALCC(3)
 

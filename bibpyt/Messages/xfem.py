@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF xfem Messages  DATE 31/05/2010   AUTEUR JAUBERT A.JAUBERT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,10 +146,15 @@ cata_msg={
 16: _("""
   -> Il n'y a aucun élément enrichi.
   -> Risque & Conseil:
-     - Si le contact est défini sur les lèvres de la fissure, la modélisation
-       doit etre 3D_XFEM_CONT ou C_PLAN_XFEM_CONT ou D_PLAN_XFEM_CONT.
-     - Si le contact n'est pas défini sur les lèvres de la fissure,
-       la modélisation doit etre 3D ou C_PLAN ou D_PLAN'.
+     - Si vous souhaitez définir du contact sur les lèvres de la fissure, il est préférable
+       d'utiliser les modélisations 3D, C_PLAN ou D_PLAN afin de bénéficier des dernières 
+       avancées concernant le contact avec X-FEM.
+     - Les modélisations 3D_XFEM_CONT, C_PLAN_XFEM_CONT ou D_PLAN_XFEM_CONT sont réservés à
+       l'ancienne formulation qui stocke des inconnues de contact aux arêtes.
+       Si vous souhaitez tout de même utiliser l'ancienne formulation, le maillage doit être
+       quadratique afin de stocker les inconnues de contact aux noeuds milieux. Le problème
+       sera alors traité avec une interpolation linéaire.
+     - Vous pouvez utilisez l'opérateur LINE_QUAD pour rendre le maillage quadratique.
 """),
 
 17: _("""

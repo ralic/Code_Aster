@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/06/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 # mumps05b.para = tps_job 8660 mem_job 17900Mo mem_aster 5.33333333333 mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 1 liste_test M
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -45,7 +45,7 @@ solveur = 'MUMPS';
 #  de XX, le parametre mem_pivot autorise MUMPS a en prendre    #
 #  (1+mem_pivot/100)*XX                                         #
 # --------------------------------------------------------------#
-mem_pivot = 10;
+mem_pivot = 20;
 #
 # Choix de la methode de renumeration
 meth_renum = 'METIS';
@@ -131,7 +131,7 @@ TEST_RESU(RESU=_F(RESULTAT=MECAC,
 #       EQUILIBRAGE DE CHARGE AUTOMATIQUE
 #----------------------------------------------------------
 
-MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
+X="""MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
 MECAD1=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
@@ -156,6 +156,6 @@ TEST_RESU(RESU=_F(RESULTAT=MECAD1,
                   VALE=0.0,
                   CRITERE='ABSOLU',
                   PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE',),);
+                  REFERENCE='ANALYTIQUE',),);"""
 
 FIN();

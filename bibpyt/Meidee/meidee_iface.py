@@ -1,4 +1,4 @@
-#@ MODIF meidee_iface Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_iface Meidee  DATE 31/05/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -775,6 +775,6 @@ class MacMode(Canvas):
         dans ce cas on recrée le canvas en prenant en compte les nouvelles
         dimensions
         """
-        if self.mat:
+        if self.mat is not None:
             self.refresh_display()
 

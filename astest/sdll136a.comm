@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 31/05/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE CALCUL D USURE SUR UN TUBE GV SOUMIS A UNE EXCITATION ALEATOIRE MULTIDIRECTIONNELLE
 # sdll136a.para = tps_job 500 mem_job 600Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -615,7 +615,7 @@ TRANGENE = DYNA_TRAN_MODAL (
                   INST_INIT=0.0,
                   INST_FIN=5.000000e+01,
                   PAS=1.000000e-05,
-                  NMAX_ITER_PAS=25,
+                  NMAX_ITER_PAS=50,
                   NB_POIN_PERIODE=50,
                   ),
              ARCHIVAGE=_F(PAS_ARCH=1,),
@@ -644,7 +644,7 @@ USURE = POST_USURE (
 );
 
 TEST_TABLE(        TABLE=USURE,
-                   PRECISION=5E-3,
+                   PRECISION=1E-2,
                    NOM_PARA='PUIS_USUR_GLOBAL',
                    REFERENCE='NON_REGRESSION',
                    VALE=6.7384733953441E-02    )
