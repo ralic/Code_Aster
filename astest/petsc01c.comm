@@ -1,6 +1,6 @@
 # MODIF  DATE 20/04/2010   AUTEUR TARDIEU N.TARDIEU 
 # TITRE  Validation du solveur PETSc en elasticite lineaire 3D
-# petsc01c.para = tps_job 60 mem_job 1000Mo liste_test I
+# petsc01c.para = tps_job 60 mem_job 1000Mo nproc_mpi 2 liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
