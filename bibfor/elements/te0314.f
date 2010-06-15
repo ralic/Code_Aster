@@ -4,7 +4,7 @@
       
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ELEMENTS  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,33 +56,15 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C ======================================================================
-      LOGICAL     AXI,PERMAN,VF
-      INTEGER     NNO,NNO2,NNOS,NPG,NDIM,JGANO,JGANO2,NAPRE1
-      INTEGER     IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2
-      INTEGER     IRES,IFLUX,ITEMPS,NDLNM
-      INTEGER     NDLNO,TYPVF
-      REAL*8      FLU1,DELTAT
-      CHARACTER*8 TYPMOD(2)
+      LOGICAL     AXI,LTEATT
+      INTEGER     IRES,IFLUX,ITEMPS,IGEOM
+      REAL*8      FLU1,DELTAT,R
       
-    
-C ======================================================================
-C --- CARACTERISTIQUES DE LA MODELISATION ------------------------------
-C ======================================================================
-      CALL BORTHM(NOMTE,AXI,VF,PERMAN,TYPVF,TYPMOD,NDIM,NDLNO,NDLNM)
-C ======================================================================
-C --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
-C ======================================================================
-C --- LES DDLS THERMO-HYDRAULIQUES NE SONT PLUS EXPRIMES AUX NOEUDS ----
-C --- MILIEUX ----------------------------------------------------------
-C ======================================================================
-C --- INTERPOLATION (QUADRATIQUE) POUR LA MECANIQUE --------------------
-C ======================================================================
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-C ======================================================================
-C --- INTERPOLATION (LINEAIRE) POUR LA THERMO-HYDRAULIQUE --------------
-C ======================================================================
-      CALL ELREF4('SE2','RIGI',NDIM,NNO2,NNOS,NPG,IPOID2,IVF2,IDFDE2,
-     +                                                           JGANO2)
+      AXI = .FALSE.
+          
+      IF ( LTEATT(' ','AXIS','OUI') ) THEN
+        AXI  = .TRUE.
+      END IF
 C ======================================================================
 C --- RECUPERATION DES CHAMPS IN ET DES CHAMPS OUT ---------------------
 C ======================================================================
@@ -94,6 +76,7 @@ C ======================================================================
       IF (OPTION.EQ.'CHAR_MECA_FLUX_R') THEN
         CALL JEVECH('PFLUXR','L',IFLUX)
         CALL JEVECH('PTEMPSR','L',ITEMPS)
+        CALL JEVECH('PGEOMER','L',IGEOM)
         DELTAT = ZR(ITEMPS+1)
       END IF
  
@@ -105,8 +88,12 @@ C ======================================================================
 C --- SI MODELISATION = HM ---------------------------------------------
 C ======================================================================
           IF (NOMTE(1:2).EQ.'HM') THEN
-             NAPRE1 = 0
-             FLU1 = ZR(IFLUX+NAPRE1)
-             ZR(IRES+6) = ZR(IRES+4) - DELTAT*FLU1             
+             FLU1 = ZR(IFLUX)
+             IF (AXI) THEN
+               R = ZR(IGEOM)
+               ZR(IRES+6) = ZR(IRES+6) - DELTAT*FLU1*R 
+             ELSE
+               ZR(IRES+6) = ZR(IRES+6) - DELTAT*FLU1  
+             END IF           
           END IF
       END

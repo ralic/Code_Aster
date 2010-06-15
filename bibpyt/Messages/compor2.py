@@ -1,4 +1,4 @@
-#@ MODIF compor2 Messages  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor2 Messages  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,4 +79,10 @@ Le redécoupage local du pas de temps n'est pas compatible avec <%(k1)s>
 La rotation de réseau n'est pas compatible ave RUNGE_KUTTA. Utiliser l'integration IMPLICITE.
 """),
 
+12 : _("""
+  LA LOI ENDO_HETEROGENE N'EST COMPATIBLE QU'AVEC LE MODELE NON LOCAL GRAD_SIGM.
+"""),
+13 : _("""
+  LA MODELISATION GRAD_SIGM N'EST COMPATIBLE QU'AVEC LA LOI ENDO_HETEROGENE.
+"""),
 }

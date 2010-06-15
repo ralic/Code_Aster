@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF recal Macro  DATE 14/06/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,8 +46,6 @@ try:
    import aster
    import Macro
    from Accas import _F
-   from Cata import cata
-   from Cata.cata import *
 except ImportError:
    pass
 

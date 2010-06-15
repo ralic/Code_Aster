@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+#& MODIF COMMUN  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,7 @@ def C_RELATION() : return (             "ELAS",            # RESP. : PROIX J.M.P
                                         "DRUCK_PRAGER",    # RESP. : FERNANDES R.FERNANDES
                                         "DRUCK_PRAG_N_A",  # RESP. : FERNANDES R.FERNANDES
                                         "VISC_DRUC_PRAG",  # RESP. : ELGHARIB J.ELGHARIB
+                                        "ENDO_HETEROGENE", # RESP. : GRANET S.GRANET
                                         "ELAS_GONF",       # RESP. : GRANET S.GRANET
                                         "ELAS_HYPER",      # RESP. : ABBAS M.ABBAS
                                         "ENDO_FRAGILE",    # RESP. : MICHEL S.MICHEL

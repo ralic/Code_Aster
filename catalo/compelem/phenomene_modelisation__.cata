@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF COMPELEM  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -136,6 +136,11 @@ PHENOMENE_MODELISATION__
 
 
    PHENOMENE__  MECANIQUE       CODE__  'ME'
+
+        MODELISATION__ 'AXIS_JOINT_HMS'        DIM__ 2 2   CODE__ 'JH2'
+              ATTRIBUT__  THM=OUI AXIS=OUI
+              MAILLE__ QUAD8    ELEMENT__ HM_J_AXQ8S
+              MAILLE__ SEG3     ELEMENT__ HM_J_AXSE3
 
         MODELISATION__ '2D_JOINT_HMS'        DIM__ 2 2   CODE__ 'JH1'
               ATTRIBUT__  THM=OUI D_PLAN=OUI
@@ -498,6 +503,13 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA3     ELEMENT__ MGDPTR3
               MAILLE__ TRIA6     ELEMENT__ MGDPTR6
               MAILLE__ QUAD8     ELEMENT__ MGDPQU8
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2
+              MAILLE__ SEG3      ELEMENT__ MEPLSE3
+
+       MODELISATION__ 'D_PLAN_GRAD_SIGM'   DIM__ 2 2   CODE__ 'DSG'
+              ATTRIBUT__  NBSIGM=X4  D_PLAN=OUI TYPMOD=D_PLAN
+              MAILLE__ TRIA6     ELEMENT__ MGSPTR6
+              MAILLE__ QUAD8     ELEMENT__ MGSPQU8
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
 

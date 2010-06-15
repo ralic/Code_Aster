@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/12/2009   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 14/06/2010   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
-from Miss.defi_sol_miss_ops import defi_sol_miss_ops
+from Macro.defi_sol_miss_ops import defi_sol_miss_ops
 
 DEFI_SOL_MISS = MACRO(nom="DEFI_SOL_MISS",op=defi_sol_miss_ops, sd_prod=table_sdaster,
                       fr="Définition des données de sol pour Miss", reentrant='n',

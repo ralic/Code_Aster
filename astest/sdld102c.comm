@@ -1,4 +1,4 @@
-# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE SOUS-STRUCT. TRANSITOIRE : SYSTEME MASSES-RESSORTS AMORTI
 # sdld102c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -275,9 +275,8 @@ TRANGEN3=DYNA_TRAN_MODAL(   METHODE='ADAPT',
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
-# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
-# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
-                                       PAS_MAXI = 0.01,
+# POUR AMELIORER LE TEMPS CPU ON A IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
+                                       PAS_MAXI = 0.1,
                                        PAS = 0.01,
                                        NB_POIN_PERIODE = 300,
                                        VITE_MIN = 'MAXI'),
@@ -293,12 +292,14 @@ TRAN1=REST_GENE_PHYS(   RESU_GENE=TRANGEN1,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO )
 
+
 #
 TRAN2=REST_GENE_PHYS(   RESU_GENE=TRANGEN2,
                         TOUT_CHAM='OUI',
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO )
+
 
 #
 TRAN3=REST_GENE_PHYS(   RESU_GENE=TRANGEN3,
@@ -310,7 +311,7 @@ TRAN3=REST_GENE_PHYS(   RESU_GENE=TRANGEN3,
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
                   NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 11,
+                  INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
                   PRECISION = 1.E-2,
                   NOEUD = 'NO3',
@@ -320,7 +321,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN1,
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN2,
                   NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 11,
+                  INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
                   PRECISION = 1.E-2,
                   NOEUD = 'NO3',
@@ -330,7 +331,7 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN2,
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
                   NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 11,
+                  INST = 8.00000E+01,
                   CRITERE = 'RELATIF',
                   PRECISION = 1.E-2,
                   NOEUD = 'NO3',

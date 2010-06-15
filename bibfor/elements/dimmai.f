@@ -1,6 +1,6 @@
       SUBROUTINE DIMMAI(TYPEM,DIMMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,6 +29,8 @@ C ======================================================================
       ELSEIF (TYPEM(1:3).EQ.'SEG') THEN
         DIMMA=1
       ELSE
-        CALL U2MESG('F','VOLUFINI_1',1,TYPEM(1:4),0,0,0,0.D0)
+C  POUR DES CONDITIONS AUX LIMITES PONCTUELLES
+        DIMMA=0
+C        CALL U2MESG('F','VOLUFINI_1',1,TYPEM(1:4),0,0,0,0.D0)
       ENDIF
       END

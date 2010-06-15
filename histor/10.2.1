@@ -1,0 +1,462 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 14/06/2010 - 13:20:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015191 DU 2010-06-14 07:29:24
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Correction du catalogue pour eficas
+FONCTIONNALITE
+   L'objet de cette fiche est de corriger le catalogue de 
+   commandes pour être cohérent avec eficas.
+   
+   En effet, eficas doit importer le catalogue sans avoir aster, 
+   sans embarquer tous les répertoires de bibpyt.
+   
+   => déplacement de calc_miss, defi_sol_miss dans Macro
+   => imports récursifs de cata (recal.py, extr_table)
+   => import aster dans calc_mode_rotation
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest + eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR granet       GRANET Sylvie          DATE 15/06/2010 - 16:50:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013915 DU 2009-09-22 07:04:31
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Introduction du modele d'endommagement a 2 seuils du BRGM
+FONCTIONNALITE
+   Dans le cadre du projet stockage et de la thèse de Nicolas Guy, le 
+   BRGM a développé un modèle d'endommagement afin de représenter la 
+   progression d'un réseau de fissures sous chargement mécanique.
+    
+   Ce modèle prend en compte l’effet de l’hétérogénéité de la roche sur 
+   sa  probabilité de rupture. Un modèle de type Poisson-Weibull est 
+   utilisé pour  représenter la répartition de ces sites d’amorçage. La 
+   formation de réseaux de fissures est ensuite modélisée en étudiant 
+   l’interaction entre les différents sites d’amorçage. 
+   
+   L'intégration numérique de ce modèle probabiliste dans Code_Aster est 
+   faite comme une loi d'endommagemetn non locale basée sur les 
+   contraintes régularisée. 
+   Un modèle à 2 seuils a été développé afin de dissocier l'amorçage des 
+   fissures ainsi que la propagation (basée sur le facteur d'intensité 
+   des contraintes régularisées).
+   In fine chaque élément est représenté soit comme un élément sain, 
+   soit comme un élément cassé.
+   Cette modélisation nécessite pour chaque élément la connaissance des 
+   variables  internes de ses voisins (pour cela certain développement 
+   faits pour les modélisations volumes finis ont été utilisés).
+   
+   Une nouvelle modélisation est créée avec pour nom D_PLAN_GRAD_SIGM 
+   (contraintes régularisées). 
+   Cette modélisation est exclusivement 2D pour triangles et 
+   quadrangles. 
+   Elle est associée à la loi de  comportement ENDO_HETEROGENE (un 
+   message d'erreur est renvoyé lorsque ce n'est aps le cas). 
+   ENDO_HETEROGENE sert aussi de mot clé pour rentrer les paramètres de 
+   la loi dans DEFI_MATERIAU.
+   Les paramètres par défaut sont choisis de manière à ce que 
+   les cas tests soient reproductibles (pas de tirage aléatoire, graine 
+   fixée).
+   
+   2 cas tests sont restitués : 
+   - un cas test de calcul de facteur d'intensité de contrainte 
+   (solution analytique) : ssnp148 
+   - un cas test représentant l'amorçage d'une fissure sur maillages 
+   triangles et quadrangles (test de non regression) : ssnp147
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.03.148 V6.03.147 R5.03.24 U4.43.01 U4.51.11
+VALIDATION
+   Passage ssnp148 et ssnp147
+NB_JOURS_TRAV  : 60.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR carrier      CARRIER Benoit         DATE 15/06/2010 - 16:50:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015169 DU 2010-06-08 15:32:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Extension de la modélisation JOINT_HMS en axisymétrie
+FONCTIONNALITE
+   On propose une nouvelle modélisation AXIS_JOINT_HMS afin de traiter le 
+   problème des fissures avec couplage hydro-mécanique dans le cas axisylétrique.
+   
+   Il s'agit d'une extension de la modélisation 2D_JOINT_HMS, restituée dans la fiche 14386. 
+   
+   1 - Impacts fortran
+   
+   - La routine op0019.f est modifiée pour permettre aux éléments HM axisymétriques 
+   d'être éléments massif d'un élément de fissure orienté par 
+   AFFE_CARA_ELEM.
+   - La routine nmthmc.f est modifiée afin d'autoriser la nouvelle modélisation AXIS_JOINT_HMS
+   - Les routines eicine.f, caeihm.f et te0314.f sont modifiées 
+   
+   
+   2 - Impacts catalogues
+   
+   - On introduit la nouvelle modélisation AXIS_JOINT_HMS dans 
+   phenomene_modelisation__.cata
+   -On ajoute les catalogues d'éléments gener_ejah21.cata (élément de 
+   bord HM_J_AXSE3) et gener_ejah22.cata (éléments de joint HM_J_AXQ8S).
+   
+   3 - Impacts catalogues python
+   
+   -affe_modele.capy est modifié pour pouvoir affecter la nouvelle 
+   modélisation AXIS_JOINT_HMS.
+   
+   4 - Validation
+   
+   Un cas test est ajouté
+   -wtnp111a : injection dans un massif fracturé en axisymétrique
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V7.33.111, U4.41.01
+VALIDATION
+   passage cas test wtna111
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nistor       NISTOR Ionel           DATE 15/06/2010 - 13:48:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013867 DU 2009-09-14 10:52:58
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TMA : CS
+TITRE
+   FAUX : Erreur dans le concept resu issu de COMB_SISM_MODAL
+FONCTIONNALITE
+   Problème: 
+   -------- 
+   Lors de l'impression via IMPR_RESU des résultats issus de COMB_SISM_MODAL, 
+   IMPR_RESU affiche les trois variables d'acces suivants (FREQ,NUME_MODE,NOEUD_CMP) 
+   quelque soit le type du mode (i.e. dynamique ou statique) 
+   
+   
+   Exemple: 
+   " 
+   ------> 
+   CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                       
+   NUMERO D'ORDRE: 1                                                              
+   FREQ:  1.79769+308 NOEUD_CMP: DIR     X        NUME_MODE: ****************     
+   NOEUD        DX           DY           DZ     
+   NO1       3.25261E-19  0.00000E+00  0.00000E+00 
+   NO2       4.12562E-02  0.00000E+00  0.00000E+00 
+   NO3       6.60152E-03  0.00000E+00  0.00000E+00 
+   NO4       1.46704E-19  0.00000E+00  0.00000E+00 
+   " 
+   
+   Solution: 
+   --------- 
+   IMPR_RESU devrait afficher que NOEUD_CMP, si le mode issu de COMB_SISM_MODAL est statique. 
+   Dans la routine d'impression des valeurs des variables d'acces (titreb.f) on verifie si ces 
+   valeurs ont un sens. S'il s'agit de R8VIDE ou des chaines ***, on ne les imprime pas.
+   Après coreection on obtient pour le cas analysé:
+   
+   " 
+   ------> 
+   CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  REAC_NODA                                  
+   NUMERO D'ORDRE: 1 NOEUD_CMP: DIR     X                        
+   NOEUD        DX           DY           DZ     
+   NO1       5.36769E+01  0.00000E+00  3.17645E-31 
+   NO2       5.57572E-12  0.00000E+00  5.62164E-31 
+   NO3       5.45321E-12  0.00000E+00  4.00622E-30 
+   NO4       7.44120E+01  0.00000E+00  3.89113E-30 
+   " 
+   
+   si le mode issu de COMB_SISM_MODAL est dynamique, alors on aura:
+   " 
+   CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  DEPL                                       
+   NUMERO D'ORDRE: 1 FREQ:  2.18815E+00 NUME_MODE: 1                              
+   NOEUD        DX           DY           DZ     
+   NO1       0.00000E+00  0.00000E+00  0.00000E+00 
+   NO2       1.00000E+00  0.00000E+00  0.00000E+00 
+   NO3       1.09772E-01  0.00000E+00  0.00000E+00 
+   NO4       0.00000E+00  0.00000E+00  0.00000E+00 
+   " 
+   
+   
+   
+   Modification :
+   ------------- 
+   fortran : titreb.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdld30a
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 15/06/2010 - 13:48:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014972 DU 2010-04-20 08:42:04
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   Amélioration des cas-tests utilisant le schéma ADAPT de DYNA_TRAN_MODAL
+FONCTIONNALITE
+   PROBLEME:
+   --------
+   
+   Suite à la fiche 14906, qui permet une gestion plus souple du pas de temps 
+   pour le schéma d'intégration en temps
+   ADAPT de DYNA_TRAN_MODAL, il est souhaitable d'utiliser cette nouvelle 
+   fonctionnalité autant que possible dans tous les cas-tests qui utilisent 
+   ADAPT. 
+   Les cas-tests concernés sont:
+   sdld102a, sdld102b, sdld102c
+   sdld103a
+   sdld321b
+   sdld325a
+   sdld325b
+   sdnd104a
+   sdnd105a
+   sdnd106a
+   sdnd112a
+   sdnd121a
+   sdnl104a, sdnl104b
+   sdnl105a, sdnl105b
+   
+   
+   SOLUTION : 
+   --------
+   
+   - Optimiser la gestion du pas de temps en évitant le message d'alarme 
+   DYNAMIQUE_18 et
+   DYNAMIQUE_17.
+   - Modifier tous les tests pour les basculer en accès par instant physique
+   - Mettre à jour les docs V.
+   
+   Les cas-tests qui ont été modifiés, en gardant le principe d'optimiser le 
+   temps CPU tout en conservant une bonne qualité de résultats sont les 
+   suivants :
+   
+   sdld102a,sdld102b, et sdld102c
+   sdld103a
+   sdld321b
+   sdld325a
+   sdnd104a
+   sdnl104a, sdnl104b
+   sdnl205a et b 
+   sdnl105a et b
+   
+   
+   Le cas-test sdnd121a a été modifié mais ne sera finalement pas restitué car 
+   il est actuellement en échec sur la Bull.
+   
+   A titre d'information:
+   ----------------------
+   Au niveau du temps CPU total de tous ces cas-test modifiés, on passe de 345 
+   s à 333 s sur Bull : le gain est faible car ces cas-tests sont très petits 
+   et car le coût relatif de DTM est assez faible comparé au coût CPU de 
+   toutes les autres opérations.
+   Le gain en temps CPU sera bien plus grand sur des études industrielles.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.01.102, V2.01.103, V2.01.321,V2.01.325, V5.01.104, V5.01.105, V5.01.106, V5.01.112, V5.01.121, V5.02.104, V5.02.105
+VALIDATION
+   sdld102a, sdld102b, sdld102c, sdld103a, sdld321b, sdld325a, sdnd104a, sdnl104a, sdnl104b,sdnl205a, sdnl205b, sdnl105a, sdnl105b
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 15/06/2010 - 13:49:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014524 DU 2010-01-28 16:25:22
+TYPE anomalie concernant Documentation (VERSION *)
+TMA : DeltaCad
+TITRE
+   Doc v3.02.102 obsolète
+FONCTIONNALITE
+   L'objectif de cette fiche a été de documenté le cas-test sslp102b.
+   Etant donné que la modélisation A avait été résorbée, le cas-test sslp102b a ete
+   renomme en sslp102a pour combler le trou dans les modelisations de ce cas-test.
+   
+   De plus, une partie du cas-test a été supprimée : 
+   elle correspondait aux commandes suivantes :
+   
+   #--------------------------------------------------------------------
+   #..POUR.TEST.INFORMATIQUE:.CHARGEMENT.PESANTEUR.ET.FORCE_INTERNE
+   #--------------------------------------------------------------------
+   
+   DIX.=.FORMULE(NOM_PARA=('X','Y'),VALE='10.')
+   
+   CHPESA1=AFFE_CHAR_MECA(.......MODELE=MO,
+   .............................PESANTEUR=_F(GRAVITE=10.,
+   ..........................................DIRECTION=(.0.,.-1.,.0.,),.),)
+   
+   CHPESA2=AFFE_CHAR_MECA_F(...........MODELE=MO,
+   ...............................FORCE_INTERNE=_F(.TOUT.=.'OUI',.FY.=.DIX))
+   
+   G21=CALC_G(........RESULTAT=RESU,
+   ...................NUME_ORDRE=1,
+   ...................EXCIT=(_F(CHARGE=CH),
+   ............................._F(CHARGE=.CHPESA1),
+   ............................._F(CHARGE=.CHPESA2,),),
+   ...................THETA=_F(THETA=THETA1.));
+   
+   
+   On rajoutait 2 charges de pesanteur dans le CALC_G sans aucun calcul mécanique préalable !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V3.02.102
+VALIDATION
+   sslp102a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 14/06/2010 - 16:18:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015186 DU 2010-06-11 12:46:54
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Prxc3xa9conditionneur simple prxc3xa9cision et xc3xa9limination
+FONCTIONNALITE
+   Quand on utilise le préconditionneur simple précision LDLT_SP avec le solveur GCPC, on
+   fait un appel à MUMPS. Lors de cet appel, on transmet le vecteur des chargements
+   cinématiques qui est donc utilisé par MUMPS pour ajouter une contribution au second
+   membre. Or, l'ajout de termes au second membre a déjà été réalisé par la routine RESGRA.F
+   qui appelle GCPC.F. On ajoute donc cette contribution 2 fois, d'où une absence de convergence.
+   Si on ne passe plus le vecteur des chargements cinématiques à MUMPS, tout rentre dans l'ordre.
+   
+   Je modifie le test gcpc002c pour utiliser un chargement cinématique NON NUL!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   gcpc002c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sslp102a                      rezette C.REZETTE          229    229      0
+ CASTEST AJOUT ssnp147a                       granet S.GRANET           236    236      0
+ CASTEST AJOUT ssnp147b                       granet S.GRANET           238    238      0
+ CASTEST AJOUT ssnp148a                       granet S.GRANET           325    325      0
+ CASTEST AJOUT wtna111a                       granet S.GRANET           366    366      0
+ CASTEST MODIF gcpc002c                      tardieu N.TARDIEU          705     10      6
+ CASTEST MODIF sdld102a                      macocco K.MACOCCO          888     36     29
+ CASTEST MODIF sdld102b                      macocco K.MACOCCO          470     15     16
+ CASTEST MODIF sdld102c                      macocco K.MACOCCO          343      8      7
+ CASTEST MODIF sdld103a                      macocco K.MACOCCO          618      4      5
+ CASTEST MODIF sdld30a                       macocco K.MACOCCO         1676      8      1
+ CASTEST MODIF sdld321b                      macocco K.MACOCCO          351     36     36
+ CASTEST MODIF sdld325a                      macocco K.MACOCCO          493     50     45
+ CASTEST MODIF sdld325b                      macocco K.MACOCCO          524     53     51
+ CASTEST MODIF sdnd104a                      macocco K.MACOCCO          665     12     11
+ CASTEST MODIF sdnl104a                      macocco K.MACOCCO          273     10     10
+ CASTEST MODIF sdnl104b                      macocco K.MACOCCO          493     30     18
+ CASTEST MODIF sdnl105a                      macocco K.MACOCCO          543     19     19
+ CASTEST MODIF sdnl105b                      macocco K.MACOCCO          567     20     19
+ CASTEST SUPPR sslp102b.comm                 rezette C.REZETTE          254      0    254
+CATALOGU AJOUT typelem/gener_ejah21           granet S.GRANET            54     54      0
+CATALOGU AJOUT typelem/gener_ejah22           granet S.GRANET           208    208      0
+CATALOGU AJOUT typelem/gener_me2dsi_2         granet S.GRANET           356    356      0
+CATALOGU MODIF compelem/grandeur_simple__     granet S.GRANET          2065      8      5
+CATALOGU MODIF compelem/phenomene_modelisation__     granet S.GRANET          1573     13      1
+CATALOPY MODIF commande/affe_modele           granet S.GRANET           271      3      1
+CATALOPY MODIF commande/calc_europlexus     courtois M.COURTOIS         149      1      3
+CATALOPY MODIF commande/calc_miss           courtois M.COURTOIS          78      2      2
+CATALOPY MODIF commande/defi_materiau         granet S.GRANET          3065      9      1
+CATALOPY MODIF commande/defi_sol_miss       courtois M.COURTOIS          46      2      2
+CATALOPY MODIF commande/extr_table          courtois M.COURTOIS          54      4      4
+CATALOPY MODIF commande/lire_champ          courtois M.COURTOIS          69      1      3
+CATALOPY MODIF commun/c_relation              granet S.GRANET           149      2      1
+CATALOPY MODIF entete/accas                 courtois M.COURTOIS         220      1      4
+ FORTRAN AJOUT algorith/carand                granet S.GRANET            63     63      0
+ FORTRAN AJOUT algorith/casurf                granet S.GRANET            66     66      0
+ FORTRAN AJOUT algorith/cavini                granet S.GRANET           108    108      0
+ FORTRAN AJOUT algorith/lc0047                granet S.GRANET            76     76      0
+ FORTRAN AJOUT algorith/lcbrgm                granet S.GRANET           202    202      0
+ FORTRAN AJOUT algorith/nmplgs                granet S.GRANET           638    638      0
+ FORTRAN AJOUT algorith/te0123                granet S.GRANET           229    229      0
+ FORTRAN MODIF algeline/gcpc                 tardieu N.TARDIEU          275      3      2
+ FORTRAN MODIF algorith/caeihm                granet S.GRANET           153     12     11
+ FORTRAN MODIF algorith/eicine                granet S.GRANET           101     14      2
+ FORTRAN MODIF algorith/nmthmc                granet S.GRANET           471      2      1
+ FORTRAN MODIF calculel/debca1                granet S.GRANET           125      8      3
+ FORTRAN MODIF elements/dimmai                granet S.GRANET            36      4      2
+ FORTRAN MODIF elements/eqcara                granet S.GRANET           277      3      2
+ FORTRAN MODIF elements/nbsomm                granet S.GRANET            43      4      2
+ FORTRAN MODIF elements/te0314                granet S.GRANET            99     16     29
+ FORTRAN MODIF elements/voiuti                granet S.GRANET           216      2      3
+ FORTRAN MODIF modelisa/op0018                granet S.GRANET           610      9      4
+ FORTRAN MODIF modelisa/op0019                granet S.GRANET           456      3      3
+ FORTRAN MODIF utilitai/dismlg                granet S.GRANET           389     23      2
+ FORTRAN MODIF utilitai/titreb               macocco K.MACOCCO          542     68      5
+  PYTHON AJOUT Comportement/endo_heterogene     granet S.GRANET            37     37      0
+  PYTHON AJOUT Macro/calc_miss_ops          courtois M.COURTOIS          52     52      0
+  PYTHON AJOUT Macro/defi_sol_miss_ops      courtois M.COURTOIS          93     93      0
+  PYTHON MODIF Comportement/kit_hm            granet S.GRANET            55      2      2
+  PYTHON MODIF Macro/calc_mode_rotation_ops   courtois M.COURTOIS          97      1      2
+  PYTHON MODIF Macro/macr_recal_ops         courtois M.COURTOIS         662      2     14
+  PYTHON MODIF Macro/recal                  courtois M.COURTOIS        1485      1      3
+  PYTHON MODIF Messages/compor2               granet S.GRANET            88      7      1
+  PYTHON MODIF Messages/volufini              granet S.GRANET            84      1      5
+  PYTHON SUPPR Miss/calc_miss_ops           courtois M.COURTOIS           0      0      0
+  PYTHON SUPPR Miss/defi_sol_miss_ops       courtois M.COURTOIS           0      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   18        3576      3576             +3576
+ MODIF :   45       22612       542     398      +144
+ SUPPR :    3         254               254      -254
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   66       26442      4118     652     +3466 

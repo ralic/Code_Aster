@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 14/06/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,6 @@ import math
 import glob
 
 import numpy as NP
-from recal import *
 
 debug = False
 
@@ -73,17 +72,6 @@ def force_list(obj, typref=list):
       if type(elt) != typref:
          obj = [obj,]
    return obj
-
-
-# --------------------------------------------------------------------------------------------------
-def get_absolute_path(path):
-   """Retourne le chemin absolu en suivant les liens éventuels.
-   """
-   if os.path.islink(path):
-      path = os.path.realpath(path)
-   res = os.path.normpath(os.path.abspath(path))
-   return res
-
 
 
 # --------------------------------------------------------------------------------------------------
@@ -461,7 +449,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
        # Calcul de F et G
        erreur, residu, A_nodim, A = CALCUL_ASTER.calcul_FG(val)
-       E = CALC_ERROR(experience=RESU_EXP, X0=val, calcul=RESU_CALC, poids=POIDS)
+       E = recal.CALC_ERROR(experience=RESU_EXP, X0=val, calcul=RESU_CALC, poids=POIDS)
        E.CalcError(CALCUL_ASTER.Lcalc)
        E.CalcSensibilityMatrix(CALCUL_ASTER.Lcalc, val, dX=None, pas=PARA_DIFF_FINI)
 

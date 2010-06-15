@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 25/05/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+%& MODIF COMPELEM  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -533,6 +533,7 @@ GRANDEUR_SIMPLE__
        SITX    : effort de contact normal
        SITY    : effort de contact tangent direction 2
        LH1     : multiplicateur de Lagrange pression a travers fissure HM
+       SIXX,SIYY,SIXY    : contraintes regularisees pour modele GRAD_SIGM
 >>
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
@@ -547,8 +548,8 @@ GRANDEUR_SIMPLE__
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1
-
+                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1      SIXX
+                    SIYY     SIZZ     SIXY
 <<  DEPL_F Type:K8 Déplacement (fonction)
        DX, DY, DZ : translation suivant X, Y ET Z (repère global)
        DRX, DRY, DRZ : rotation autour de X, Y ET Z (repère global)
@@ -614,7 +615,8 @@ GRANDEUR_SIMPLE__
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1
+                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1      SIXX
+                    SIYY     SIZZ     SIXY
 
 <<  DEPL_R Type:R Déplacement réel aux noeuds
        DX, DY, DZ : translation suivant X, Y ET Z (repère global)
@@ -680,7 +682,8 @@ GRANDEUR_SIMPLE__
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
                     LAG_GV   V11      V12      V13      V21      V22      V23      V31
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1
+                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1      SIXX
+                    SIYY     SIZZ     SIXY
 
 <<  DISS_R Type:R énergie dissipée
        TOTALE : dissipation cumulée (endommagement plus plasticité)

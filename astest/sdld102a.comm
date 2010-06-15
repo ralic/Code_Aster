@@ -1,4 +1,4 @@
-# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 # sdld102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -385,9 +385,8 @@ TRANGEN4=DYNA_TRAN_MODAL(METHODE='ADAPT',
                          RIGI_GENE=RIGPRO,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=82.,
-# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
-# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
-                                      PAS_MAXI = 0.1,
+# POUR AMELIORER LE TEMPS CPU ON A IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
+                                      PAS_MAXI = 0.15,
                                       PAS=0.1,
                                       VITE_MIN='MAXI',
                                       NB_POIN_PERIODE=300,),
@@ -402,13 +401,13 @@ TRANGEN5=DYNA_TRAN_MODAL(METHODE='ADAPT',
                          RIGI_GENE=RIGGEN,
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=82.,
-# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
-# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
-                                      PAS_MAXI = 0.1,
+# POUR AMELIORER LE TEMPS CPU ON A IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
+                                      PAS_MAXI = 0.2,
                                       PAS=0.1,
                                       VITE_MIN='MAXI',
                                       COEF_MULT_PAS=1.3,
-                                      NB_POIN_PERIODE=300,),
+                                      NB_POIN_PERIODE=300,
+                                      NMAX_ITER_PAS = 300,),
                          ARCHIVAGE=_F(PAS_ARCH=1,),
                          EXCIT=_F(VECT_GENE=FGEN,
                                   COEF_MULT=1.,),);
@@ -426,6 +425,7 @@ TRAN1=REST_GENE_PHYS(RESU_GENE=TRANGEN1,
                      TOUT_CHAM='OUI',
                      NOEUD='NO3',);
 
+
 #
 
 TRAN2=REST_GENE_PHYS(RESU_GENE=TRANGEN2,
@@ -434,6 +434,7 @@ TRAN2=REST_GENE_PHYS(RESU_GENE=TRANGEN2,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',
                      NOEUD='NO3',);
+
 
 #
 
@@ -453,6 +454,8 @@ TRAN4=REST_GENE_PHYS(RESU_GENE=TRANGEN4,
                      TOUT_CHAM='OUI',
                      NOEUD='NO3',);
 
+
+
 DEBUG(SDVERI='OUI',);
 
 #
@@ -464,14 +467,18 @@ TRAN5=REST_SOUS_STRUC(RESU_GENE=TRANGEN5,
                       NOEUD='NO3',
                       SQUELETTE=SQUEL,);
 
+
+
 TRAN_SS=REST_GENE_PHYS(RESU_GENE=TRANGEN1,
                        MODE_MECA=MODCOT,
                        LIST_INST=LIST_R,
                        INTERPOL='LIN',
                        TOUT_CHAM='OUI',);
 
+
+
 TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -482,7 +489,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN1,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='VITE',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -493,7 +500,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN1,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='ACCE',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -504,7 +511,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN1,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -515,7 +522,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN2,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='VITE',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -526,7 +533,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN2,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='ACCE',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -537,7 +544,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN2,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -548,7 +555,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN3,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='VITE',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -559,7 +566,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN3,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='ACCE',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -570,7 +577,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN3,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN4,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -581,7 +588,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN4,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN4,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='VITE',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -592,7 +599,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN4,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN4,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='ACCE',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -603,7 +610,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN4,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN5,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -614,7 +621,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN5,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN5,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='VITE',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -625,7 +632,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN5,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN5,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='ACCE',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -778,9 +785,8 @@ TRANG4=DYNA_TRAN_MODAL(METHODE='ADAPT',
                        RIGI_GENE=K_PROJ,
                        INCREMENT=_F(INST_INIT=0.,
                                     INST_FIN=82.,
-# ON IMPOSE PAS_MAXI = PAS POUR RETROUVER LES ANCIENS RESULTATS
-# POUR AMELIORER LE TEMPS CPU IL VAUT MIEUX TESTER AVEC UN PAS_MAXI PLUS GRAND
-                                    PAS_MAXI=0.1,
+# POUR AMELIORER LE TEMPS CPU ON A IMPOSE UN PAS_MAXI PLUS GRAND QUE PAS
+                                    PAS_MAXI=0.15,
                                     PAS=0.1,
                                     VITE_MIN='NORM',
                                     NB_POIN_PERIODE=300,),
@@ -840,10 +846,11 @@ RESULT4=REST_GENE_PHYS(RESU_GENE=TRANG4,
                        TOUT_CHAM='OUI',
                        NOEUD='NO3',);
 
+
 #
 
 TEST_RESU(RESU=_F(RESULTAT=RESULT4,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -854,7 +861,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESULT4,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=RESULT4,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='VITE',
                   NOM_CMP='DX',
                   NOEUD='NO3',
@@ -865,7 +872,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESULT4,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=RESULT4,
-                  NUME_ORDRE=11,
+                  INST = 8.00000E+01,
                   NOM_CHAM='ACCE',
                   NOM_CMP='DX',
                   NOEUD='NO3',

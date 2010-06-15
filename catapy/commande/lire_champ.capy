@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 14/06/2010   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +20,6 @@
 def lire_champ_prod(TYPE_CHAM=None,**args):
 # Remarque : si cette liste évolue, il faut penser à mettre à jour son
 #            homologue dans macr_adap_mail
-  import string
-#  
   if TYPE_CHAM[0:5] == "NOEU_" : return cham_no_sdaster
   if TYPE_CHAM[0:2] == "EL"    : return cham_elem
   raise AsException("type de concept resultat non prevu")

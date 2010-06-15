@@ -1,9 +1,9 @@
       SUBROUTINE NMTHMC(COMP, MODELZ, MOCLEF, K, COMEL, NCOMEL, NBNVI)
-      
+
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,6 +167,7 @@ C =====================================================================
      &                (MODELI(1:10).NE.'D_PLAN_THM').AND.
      &                (MODELI(1:9).NE.'D_PLAN_HM').AND.
      &                (MODELI(1:11).NE.'2D_JOINT_HM').AND.
+     &                (MODELI(1:13).NE.'AXIS_JOINT_HM').AND.     
      &                (MODELI.NE.'#PLUSIEURS')) THEN
 
                           VALK(1) = COMEL(JJ)

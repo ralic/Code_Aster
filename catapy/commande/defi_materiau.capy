@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+#& MODIF COMMANDE  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,6 +26,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                       'ELAS_HYPER','ELAS_2NDG',),
                EXCLUS('THER','THER_FO','THER_ORTH','THER_NL'),
                EXCLUS('ECRO_LINE','ECRO_LINE_FO','ECRO_PUIS'),
+               EXCLUS('ENDO_HETEROGENE'),
                EXCLUS('TAHERI','TAHERI_FO'),
                EXCLUS('ROUSSELIER','ROUSSELIER_FO'),
                EXCLUS('VISC_SINH','VISC_SINH_FO'),
@@ -302,6 +303,13 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            ECRO_LINE       =FACT(statut='f',
              D_SIGM_EPSI     =SIMP(statut='o',typ='R',),
              SY              =SIMP(statut='o',typ='R',),
+           ),
+           ENDO_HETEROGENE   =FACT(statut='f',
+             WEIBULL         =SIMP(statut='o',typ='R',),
+             SY              =SIMP(statut='o',typ='R',),
+             KI              =SIMP(statut='o',typ='R',),
+             EPAI            =SIMP(statut='o',typ='R',),
+             GR              =SIMP(statut='f',typ='R',defaut= 1.0),
            ),
            ECRO_LINE_FO    =FACT(statut='f',
              D_SIGM_EPSI     =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),

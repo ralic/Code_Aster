@@ -3,7 +3,7 @@
 C RESPONSABLE PELLET J.PELLET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER VALI(4),D1,D2
       CHARACTER*4 KIOC,CDIM
-      CHARACTER*8 NOMA,NOMU,K8B,VERIF(2),EXIVF
+      CHARACTER*8 NOMA,NOMU,K8B,VERIF(2),EXIVF,BEVOIS
       CHARACTER*8 TYPEMA
       CHARACTER*16 K16BID
       CHARACTER*16 CONCEP,CMD,PHENOM,MODELI,LMODEL(10)
@@ -581,9 +581,14 @@ C     ---------------------------------------------------
 C     -- POUR LES VOLUMES FINIS, CREATION DU VOISINAGE :
 C     ---------------------------------------------------
       CALL DISMOI('F','EXI_VF',LIGREL,'LIGREL',IBID,EXIVF,IBID)
-      IF (EXIVF.EQ.'OUI') CALL CREVGE(NOMA)
+C      
+C     -- SCHEMAS NON VF AYANT BESOIN D'UN VOISINAGE :
+C     ---------------------------------------------------
+      CALL DISMOI('F','BESOIN_VOISIN',LIGREL,'LIGREL',IBID,BEVOIS,IBID)
+C
 
-
+      IF ((BEVOIS.EQ.'OUI').OR.(EXIVF.EQ.'OUI')) CALL CREVGE(NOMA)
+C
 C     -- ON VERIFIE QUE LA GEOMETRIE DES MAILLES
 C        N'EST PAS TROP CHAHUTEE :
 C     ---------------------------------------------------

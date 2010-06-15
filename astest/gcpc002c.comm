@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 14/06/2010   AUTEUR TARDIEU N.TARDIEU 
 # TITRE DSR3 SANS RENUM/AFFE_CHAR_MECA/MECA_STAT(GCPC)
 # gcpc002c.para = tps_job 250 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,21 +37,24 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT,),);
 
-CHA=AFFE_CHAR_MECA(MODELE=MO,
+CHA1=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_NO='SUPY',
-                                DY=0.,),
-                             _F(GROUP_NO='APPUI',
-                                DX=0.,),
-                             _F(GROUP_NO='SUPZ',
-                                DZ=0.,),
-                             _F(GROUP_NO='CHARGE',
-                                DX=-1.,),),);
+                                 DY=0.,),
+                              _F(GROUP_NO='APPUI',
+                                 DX=0.,),),);
+
+CHA2=AFFE_CHAR_CINE(MODELE=MO,
+                   MECA_IMPO=(_F(GROUP_NO='SUPZ',
+                                 DZ=0.,),
+                              _F(GROUP_NO='CHARGE',
+                                 DX=-1.,),),);
 
 # ----------------------------------------------------------------------
 
 VECAS=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
-                    EXCIT=_F(CHARGE=CHA,),
+                    EXCIT=(_F(CHARGE=CHA1,),
+                           _F(CHARGE=CHA2,),),
                     SOLVEUR=_F(METHODE='GCPC',
                                PRE_COND='LDLT_INC',
                                RENUM='SANS',
@@ -64,7 +67,8 @@ VECAS=CALC_ELEM(reuse =VECAS,
 
 VECAS2=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
-                    EXCIT=_F(CHARGE=CHA,),
+                    EXCIT=(_F(CHARGE=CHA1,),
+                           _F(CHARGE=CHA2,),),
                     SOLVEUR=_F(METHODE='GCPC',
                                PRE_COND='LDLT_SP',
                                RESI_RELA=1.E-10,

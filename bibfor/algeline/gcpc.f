@@ -2,7 +2,7 @@
      &                NITER,EPSI,CRITER,
      &                SOLVEU,MATAS,SMBR,VCINE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 14/06/2010   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -174,7 +174,8 @@ C                                                  ZK <--- RR()
             ZR(JSMBR-1+I)=R(I)
     1     CONTINUE
           SOLVBD=ZK24(ISLVK-1+3)
-          CALL AMUMPH('RESOUD',SOLVBD,MATAS,ZR(JSMBR),CBID,VCINE,1,IRET)
+C         ON PASSE ' ' AU LIEU DE VCINE, DEJA PRIS EN COMPTE DANS RESGRA
+          CALL AMUMPH('RESOUD',SOLVBD,MATAS,ZR(JSMBR),CBID,' ',1,IRET)
           CALL JEVEUO(SMBR//'.VALE','L',JSMBR)
           DO 2 I=1,M
             RR(I)=ZR(JSMBR-1+I)

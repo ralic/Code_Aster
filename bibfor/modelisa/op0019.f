@@ -1,6 +1,6 @@
       SUBROUTINE OP0019(IER)
       
-C MODIF MODELISA  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF MODELISA  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,8 +116,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &     'THAXTR6         ','THAXQU8         ','THAXQU9         ',
      &     'THPLTR3         ','THPLQU4         ','THPLTR6         ',
      &     'THPLQU8         ','THPLQU9         ','MET3SEG3        ',
-     &     'MET6SEG3        ','MET3SEG4        ','HM_DPQ8         ',
-     &     'HM_DPQ8S        ','HH2M_DPQ8S      ','HHM_DPQ8S       ',
+     &     'MET6SEG3        ','MET3SEG4        ','HM_DPQ8S        ',
+     &     'HM_AXIS_QU8S    ','HM_DPTR6S       ','HM_AXIS_TR6S    ',
      &     'MEGCQU4         ','MEGMTR3         ','MEGMQU4         ',
      &     'MEGMTR6         ','MEGMQU8         ','MEGCTR3         '/
       DATA NBMCLE/2,2,4,4,2,2,2,2,2,1,2,0,4/

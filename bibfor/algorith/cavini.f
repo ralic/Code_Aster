@@ -1,0 +1,108 @@
+         SUBROUTINE CAVINI(NDIM,NNO,GEOM,VIM,NPG,LGPG,IMATE)
+C
+C ======================================================================
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C ======================================================================
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C ======================================================================
+C CAVINI :
+C CALCUL DES CONTRAINTES DE RUPTURE POUR MODELE ENDO_HETEROGENE
+C VIM(3,GG) = CONTRAINTE D AMORCAGE AU PT DE GAUSS GG
+C VIM(4,GG) = CONTRAINTE DE PROPAGATION AU PT DE GAUSS GG
+
+      IMPLICIT NONE
+      INTEGER NDIM,NNO,NPG,LGPG,IMATE,ZZ,ZZZ,ZZZZ,NONO
+      REAL*8 GEOM(1:NDIM,1:NNO)
+      REAL*8 VIM(1:LGPG,1:NPG),GR
+      CHARACTER*16  COMPOR(4)
+      REAL*8      LC,MM,ECHP,KI,EPAI,CT1,CT2,RANDD,SURFF
+      CHARACTER*2 CODRET(5), K2
+      CHARACTER*8 NOMRES(5)
+      REAL*8      VALRES(5),SA,SP,SC
+
+
+567   CONTINUE
+
+      NONO=0
+C RMQ NICO : INITIALISATION DE LA CONTRAINTE D AMORCAGE
+C SI NON PRECISEE
+
+        CALL CASURF(NDIM,NNO,GEOM,SURFF)
+        NOMRES(1) = 'SY'
+        NOMRES(2) = 'WEIBULL'
+        NOMRES(3) = 'KI'
+        NOMRES(4) = 'EPAI'
+        NOMRES(5) = 'GR'
+        CALL RCVALA(IMATE,' ','ENDO_HETEROGENE',0,' ',0.D0,5,
+     &              NOMRES,VALRES,CODRET,'FM')
+        CALL RCVALA(IMATE,' ','NON_LOCAL',0,' ',0.D0,1,'LONG_CAR',
+     &              LC,K2,'FM')
+C  FACTEUR D ECHELLE
+        ECHP = VALRES(1)
+C  MODULE DE WEIBULL
+        MM   = VALRES(2)
+C EPAISSEUR
+C 
+        KI   = VALRES(3)
+        EPAI = VALRES(4)
+C GRAINE
+        GR   = VALRES(5)
+
+      IF(VIM(3,1) .LT. 0.0001D0) THEN
+        CALL CARAND(RANDD,GR)
+        CT1=0.D0
+        CT1=0.D0-LOG(1.D0-RANDD)
+        SA=0.D0
+        SA=ECHP*((LC**3.D0)**(1.D0/MM))/
+     &        ((SURFF*EPAI)**(1.D0/MM))*(CT1**(1.D0/MM))
+        DO 5,ZZ=1,NPG
+          VIM(3,ZZ)=SA
+5       CONTINUE
+      ENDIF
+C  INITIALISATION DE LA CONTRAINTE DE PROPAGATION
+C SI NON PRECISEE
+      IF(VIM(4,1) .LT. 0.0001D0) THEN
+C       CALL RCVALA(IMATE,' ','NON_LOCAL',0,' ',0.D0,1,'LONG_CAR',
+C     &              LC,K2,'FM')
+
+C TENACITE
+C        KI=1.0D6
+        CT2=0.D0
+        CT2=0.5736D0
+        SP=0.D0
+        SP=CT2*((KI**2.D0/(3.1416D0*LC))**(0.5D0))
+        DO 6,ZZZ=1,NPG
+          VIM(4,ZZZ)=SP
+6       CONTINUE
+      ENDIF
+
+C  VERIFICATION DE LA COHERENCE DES DEUX SEUILS
+      SC = ((2.D0)**(0.5D0))*VIM(4,1)
+      IF(SC .GT. VIM(3,1)) THEN
+        DO 7,ZZZZ=1,NPG
+          VIM(3,ZZZZ)=0.D0
+          VIM(4,ZZZZ)=0.D0
+7       CONTINUE
+        NONO=1
+      ENDIF
+
+      IF(NONO .EQ. 1) GOTO 567
+
+      END

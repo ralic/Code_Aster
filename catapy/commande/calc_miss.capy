@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 14/06/2010   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
-from Miss.calc_miss_ops import calc_miss_ops
+from Macro.calc_miss_ops import calc_miss_ops
 
 CALC_MISS = MACRO(nom="CALC_MISS",op=calc_miss_ops,
                   fr="Préparation des données puis exécution du logiciel MISS3D",

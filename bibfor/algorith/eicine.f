@@ -2,7 +2,7 @@
      &                  ANG,WG,B)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,12 +43,12 @@ C OUT B      MATRICE DE PASSAGE UNODAL -> SAUT DE U LOCAL
 C-----------------------------------------------------------------------
       INTEGER N,I,J,NANG
       REAL*8 COVA(3,3),METR(2,2),DFDX(9),COUR,JAC,COSA,SINA,NOA1
-      REAL*8 ANGLOC(3),ROT(3,3),R
+      REAL*8 ANGLOC(3),ROT(3,3),R,RMAX
       REAL*8 DDOT
 C-----------------------------------------------------------------------
-      
+
 C    CALCUL DU JACOBIEN
-            
+ 
       IF (NDIM.EQ.3) THEN
         CALL SUBACO(NNO2,DFFR2,GEOM,COVA)
         CALL SUMETR(COVA,METR,JAC)
@@ -59,8 +59,20 @@ C    CALCUL DU JACOBIEN
 
       IF (AXI) THEN
         R = DDOT(NNO2,GEOM,2,VFF2,1)
-        WG = R*WG
-      END IF     
+C ----------------------------------------------------------------------
+C POUR LES ELEMENTS AVEC COUPLAGE HM, DANS LE CAS OU R EGAL 0, ON A UN
+C JACOBIEN NUL EN UN PG. ON PRENDS LE MAX DU RAYON MULTIPLIE PAR 1.E-3
+C ----------------------------------------------------------------------
+        IF (R .EQ. 0.D0) THEN
+            RMAX=GEOM(1,1)
+            DO 11 N=2,NNO2
+               RMAX=MAX(GEOM(1,N),RMAX)
+ 11         CONTINUE
+            WG = WG*1.D-03*RMAX
+         ELSE
+            WG = R*WG
+         ENDIF
+      END IF
 
 C    CALCUL DES ANGLES D'EULER AU POINT D'INTEGRATION
 
@@ -68,11 +80,11 @@ C    CALCUL DES ANGLES D'EULER AU POINT D'INTEGRATION
       IF (NDIM.EQ.3) NANG = 3
       CALL R8INIR(3,0.D0,ANGLOC,1)
       DO 10 I = 1,NANG
-        ANGLOC(I) = DDOT(NNO2,ANG(I),NANG,VFF2,1)        
+        ANGLOC(I) = DDOT(NNO2,ANG(I),NANG,VFF2,1)     
  10   CONTINUE
-      
+
 C    CALCUL DE LA MATRICE DE ROTATION GLOBAL -> LOCAL
-      
+
       CALL MATROT(ANGLOC,ROT)
 
 C    CONSTRUCTION DE LA MATRICE B
@@ -85,5 +97,5 @@ C    CONSTRUCTION DE LA MATRICE B
  40       CONTINUE
  30     CONTINUE
  20   CONTINUE
-              
+
       END

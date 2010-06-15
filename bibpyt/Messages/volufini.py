@@ -1,4 +1,4 @@
-#@ MODIF volufini Messages  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+#@ MODIF volufini Messages  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,10 +21,6 @@
 def _(x) : return x
 
 cata_msg = {
-
-1 : _("""
-  -> type de maille  %(k1)s incorrect
-  """),
 
 2 : _("""
   -> le sommet de numero global %(i1)i n appartient pas

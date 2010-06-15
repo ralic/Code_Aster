@@ -1,6 +1,7 @@
-# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  SYSTEME 2 MASSES - 3 RESSORTS ENCASTRE EN NO1 ET NO4
 #        SOUMISE A UNE EXCITATION  SPECTRALE MULTIPLE
+# sdld30a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -138,6 +139,8 @@ MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(NMAX_FREQ=3,),);
 
+IMPR_RESU(RESU=(_F(RESULTAT=MODES,
+                   TOUT_PARA = 'OUI',)))
 #
 
 MODES=NORM_MODE(reuse =MODES,
@@ -272,6 +275,10 @@ RGQBC=COMB_SISM_MODAL(MODE_MECA=MODES,
                       GROUP_APPUI=(_F(NOEUD='NO1',),),
                       INFO=2,
                       IMPRESSION=_F(TOUT='OUI',),);
+
+IMPR_RESU(RESU=(_F(RESULTAT=RGQBC,
+                   TOUT_PARA = 'OUI',)))
+
 
 # TESTS DES DEPLACEMENTS
 #------------------------------------------

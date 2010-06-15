@@ -4,7 +4,7 @@
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,18 +47,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER       IVAL, IGEN
+      INTEGER       IVAL, IGEN,IPOSA,IPOSB,IPOSC
       REAL*8        RVAL,RBID
       CHARACTER*4   CTYPE
       CHARACTER*4   CT(3)
       CHARACTER*80  CVAL
       CHARACTER*255 CGEN
 C
-      LOGICAL LEXP
+      LOGICAL LEXP,LFREQ
 C
 C     REMARQUE :  MXPARA DONNE LE NOMBRE DE PARAMETRES DU DEMON
       PARAMETER          (MXDEMO=20)
-      CHARACTER*16 DEMONS(MXDEMO) , CBID,K16BID,TYPVAL
+      CHARACTER*16 DEMONS(MXDEMO) , CBID,K16BID,TYPVAL, TYSD
       CHARACTER*24 PARA(2)
       INTEGER      MXPARA(MXDEMO)
 C     ------------------------------------------------------------------
@@ -82,6 +82,7 @@ C
 C     --- LIRE LE NOM DU DEMON DE MINUIT ---
       CALL JEMARQ()
       NBPARA = 0
+      LFREQ = .FALSE.
       ICOLD  = ICOLD + 1
     1 CONTINUE
       CALL LXSCAN(DONNEE(ILIGD),ICOLD,ICLASS,IVAL,RVAL,CVAL)
@@ -355,53 +356,115 @@ C        --- ACCES ---
               GOTO 9001
             ENDIF
             DO 191  IACC=1,NBACCE
+               CALL GETTCO(PARA(1)(1:8),TYSD)
                ILG = LXLGUT(ZK16(JPARA-1+IACC))
                CGEN(IGEN+1:IGEN+ILG) = ZK16(JPARA-1+IACC)
                CGEN(IGEN+ILG+1:IGEN+ILG+1) = ':'
-               IGEN = IGEN+ILG+2
+
                CALL RSADPA(PARA(1)(1:8),'L',1,ZK16(JPARA-1+IACC),
      &                                               IBID,1,IAD,CTYPE)
-               IF (CTYPE(1:1).EQ.'I') THEN
-C                 ENTIER
-                  CALL CODENT(ZI(IAD),'G',CBID)
-                  ILG = LXLGUT(CBID)
-                  CGEN(IGEN+1:IGEN+ILG) = CBID
-                  IGEN = IGEN+ILG+1
-               ELSE IF (CTYPE(1:1).EQ.'R') THEN
-C                 REEL
-                  ILG = 12
-                  WRITE(CGEN(IGEN+1:IGEN+ILG),'(1PE12.5)') ZR(IAD)
-                  IGEN = IGEN+ILG+1
-               ELSE IF (CTYPE(1:2).EQ.'K8') THEN
-C                 K8
-                  ILG = 8
-                  WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK8(IAD)
-                  IGEN = IGEN+ILG+1
-               ELSE IF (CTYPE(1:3).EQ.'K16') THEN
-C                 K16
-                  ILG = 16
-                  WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK16(IAD)
-                  IGEN = IGEN+ILG+1
-               ELSE IF (CTYPE(1:3).EQ.'K24') THEN
-C                 K24
-                  ILG = 24
-                  WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK24(IAD)
-                  IGEN = IGEN+ILG+1
-               ELSE IF (CTYPE(1:3).EQ.'K32') THEN
-C                 K32
-                  ILG = 32
-                  WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK32(IAD)
-                  IGEN = IGEN+ILG+1
-               ELSE IF (CTYPE(1:3).EQ.'K80') THEN
-C                 K80
-                  ILG = 80
-                  WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK80(IAD)
-                  IGEN = IGEN+ILG+1
-               ELSE IF (CTYPE(1:1).EQ.'C') THEN
-                   CALL ASSERT(.FALSE.)
+C              TEST SUR LE TYPE DU CONCEPT 
+C              MODE_MECA A 3 VAR D'ACCES (FREQ,NUME_MODE,et NOEUD_CMP)
+               IF(TYSD.EQ.'MODE_MECA') THEN
+                  IF (ZK16(JPARA-1+IACC).EQ.'FREQ') THEN
+                    IF(ZR(IAD).EQ.R8VIDE())THEN
+                      LFREQ= .TRUE.
+                    ELSE 
+                      LFREQ = .FALSE.
+                    ENDIF  
+                  ENDIF
+                  
+                  IPOSA = IGEN+1
+                  IPOSB = IGEN+ILG
+                  IPOSC = IGEN+ILG+1
+
+                  IF (.NOT.LFREQ) THEN
+C                   PAS D'AFFICHAGE DU TEXTE NOEUD_CMP
+                    IF (ZK16(JPARA-1+IACC).EQ.'NOEUD_CMP')THEN
+                      CGEN(IPOSA:IPOSB) = ' '
+                      CGEN(IPOSC:IPOSC) = ' '
+                    ENDIF
+                  ELSE
+C                   PAS D'AFFICHAGE DU TEXTE FREQ,ET NUME_MODE       
+                    IF (ZK16(JPARA-1+IACC).EQ.'FREQ')THEN
+                      CGEN(IPOSA:IPOSB) = ' '
+                      CGEN(IPOSC:IPOSC) = ' '
+                    ELSE IF (ZK16(JPARA-1+IACC).EQ.'NUME_MODE')THEN
+                      CGEN(IPOSA:IPOSB) = ' '
+                      CGEN(IPOSC:IPOSC) = ' ' 
+                    ENDIF
+                  ENDIF
+                  
+                  IGEN = IGEN+ILG+2
+                  IF ((CTYPE(1:1).EQ.'I').AND.(.NOT.LFREQ)) THEN
+C                   ENTIER
+                    CALL CODENT(ZI(IAD),'G',CBID)
+                    ILG = LXLGUT(CBID)
+                    CGEN(IGEN+1:IGEN+ILG) = CBID
+                    IGEN = IGEN+ILG+1
+                  ELSE IF ((CTYPE(1:1).EQ.'R').AND.(.NOT.LFREQ)) THEN
+C                   REEL
+                    ILG = 12
+                    WRITE(CGEN(IGEN+1:IGEN+ILG),'(1PE12.5)') ZR(IAD)
+                    IGEN = IGEN+ILG+1
+                  ELSE IF ((CTYPE(1:3).EQ.'K16').AND.(LFREQ)) THEN
+C                   K16
+                    ILG = 16
+                    WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK16(IAD)
+                    IGEN = IGEN+ILG+1
+                  ELSE
+                    IF((CTYPE(1:3).EQ.'K16').OR.(CTYPE(1:1).EQ.'I').OR.
+     &                 (CTYPE(1:1).EQ.'R'))THEN
+                      GOTO 191
+                    ENDIF
+                    CALL ASSERT(.FALSE.)
+                  ENDIF
+ 
                ELSE
-                   CALL ASSERT(.FALSE.)
-               ENDIF
+               
+                  IGEN = IGEN+ILG+2
+                  IF (CTYPE(1:1).EQ.'I') THEN
+C                   ENTIER	
+                    CALL CODENT(ZI(IAD),'G',CBID)
+                    ILG = LXLGUT(CBID)
+                    CGEN(IGEN+1:IGEN+ILG) = CBID
+                    IGEN = IGEN+ILG+1
+                  ELSE IF (CTYPE(1:1).EQ.'R') THEN
+C                   REEL
+                    ILG = 12
+                    WRITE(CGEN(IGEN+1:IGEN+ILG),'(1PE12.5)') ZR(IAD)
+                    IGEN = IGEN+ILG+1
+                  ELSE IF (CTYPE(1:2).EQ.'K8') THEN
+C                   K8
+                    ILG = 8
+                    WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK8(IAD)
+                    IGEN = IGEN+ILG+1
+                  ELSE IF (CTYPE(1:3).EQ.'K16') THEN
+C                   K16
+                    ILG = 16
+                    WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK16(IAD)
+                    IGEN = IGEN+ILG+1
+                  ELSE IF (CTYPE(1:3).EQ.'K24') THEN
+C                   K24
+                    ILG = 24
+                    WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK24(IAD)
+                    IGEN = IGEN+ILG+1
+                  ELSE IF (CTYPE(1:3).EQ.'K32') THEN
+C                   K32
+                    ILG = 32
+                    WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK32(IAD)
+                    IGEN = IGEN+ILG+1
+                  ELSE IF (CTYPE(1:3).EQ.'K80') THEN
+C                   K80
+                    ILG = 80
+                    WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK80(IAD)
+                    IGEN = IGEN+ILG+1
+                  ELSE IF (CTYPE(1:1).EQ.'C') THEN
+                    CALL ASSERT(.FALSE.)
+                  ELSE
+                    CALL ASSERT(.FALSE.)
+                  ENDIF
+              ENDIF
   191       CONTINUE
             CALL JEDETR('&&TITREB.NOM_ACCE')
          GOTO 9000

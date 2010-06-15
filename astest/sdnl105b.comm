@@ -1,4 +1,4 @@
-# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION
 # sdnl105b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -371,126 +371,127 @@ TRAN3=REST_GENE_PHYS(   RESU_GENE=TRAN_GE3,
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO8',            NOM_CMP = 'DY',
                   VALE = 1.64295E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'VITE',
+                  INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO8',            NOM_CMP = 'DY',
                   VALE = 2.54158E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO23',           NOM_CMP = 'DY',
                   VALE = 1.11677E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'VITE',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO23',           NOM_CMP = 'DY',
                   VALE = 4.42640E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO38',           NOM_CMP = 'DY',
                   VALE = 5.89757E-03))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'VITE',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO38',           NOM_CMP = 'DY',
                   VALE = 1.04583E-01))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO8',            NOM_CMP = 'DY',
                   VALE = 1.64264E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'VITE',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO8',            NOM_CMP = 'DY',
                   VALE = 2.54155E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO23',           NOM_CMP = 'DY',
                   VALE = 1.11627E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'VITE',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO23',           NOM_CMP = 'DY',
                   VALE = 4.41197E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO38',           NOM_CMP = 'DY',
                   VALE = 5.88736E-03))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'VITE',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO38',           NOM_CMP = 'DY',
                   VALE = 1.04550E-01))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO8',            NOM_CMP = 'DY',
                   VALE = 1.64269E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'VITE',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO8',            NOM_CMP = 'DY',
                   VALE = 2.54110E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO23',           NOM_CMP = 'DY',
                   VALE = 1.11633E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'VITE',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO23',           NOM_CMP = 'DY',
                   VALE = 4.42591E-02))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO38',           NOM_CMP = 'DY',
                   VALE = 5.88712E-03))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'VITE',      INST =  1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
                   NOEUD = 'NO38',           NOM_CMP = 'DY',
                   VALE = 1.04587E-01))

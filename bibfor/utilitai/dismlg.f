@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       LOGICAL MELANG,LTEATT
       CHARACTER*1  K1BID
       CHARACTER*8  KBID,CALCRI
-      CHARACTER*16 NOMTE,PHENOM,NOMODL
+      CHARACTER*16 NOMTE,PHENOM,NOMODL,TYVOIS
       CHARACTER*19 NOMOB
       CHARACTER*32 REPK
 C DEB ------------------------------------------------------------------
@@ -100,6 +100,27 @@ C     -----------------------------------------------------------------
             END IF
  11       CONTINUE
         END IF
+
+C     -----------------------------------------------------------------
+      ELSEIF ((QUESTI.EQ.'BESOIN_VOISIN') ) THEN
+C     -----------------------------------------------------------------
+        REPK = 'NON'
+        CALL JEEXIN(NOMOB//'.LIEL',IRET)
+        IF (IRET.GT.0) THEN
+          CALL JELIRA(NOMOB//'.LIEL','NUTIOC',NBGREL,K1BID)
+          DO 12,IGREL = 1,NBGREL
+            CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGREL),'L',IALIEL)
+            CALL JELIRA(JEXNUM(NOMOB//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
+            ITYPEL = ZI(IALIEL-1+NEL)
+            CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
+            CALL TEATTR (NOMTE,'C','TYPE_VOISIN',TYVOIS,IRET)
+            IF (IRET.EQ.0) THEN
+              REPK = 'OUI'
+              GO TO 12
+            END IF
+ 12       CONTINUE
+        END IF
+
 
 
 C     -----------------------------------------------------------------

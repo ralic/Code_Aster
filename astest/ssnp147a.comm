@@ -1,0 +1,236 @@
+# MODIF  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
+# TITRE  MODELISATION DE L'AMORCAGE DE FISSURE AVEC LE MODELE ENDO_HETEROGENE
+# ssnp147a.para = tps_job 30 mem_job 32Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# 
+DEBUT(CODE=_F(NOM='SSNP147A', NIV_PUB_WEB='INTERNET'));
+
+
+INSTEL=DEFI_LIST_REEL(INTERVALLE=(_F(JUSQU_A=1,NOMBRE=1),),
+                      DEBUT=0,
+                      );
+
+
+PRE_GMSH();
+MAILIN=LIRE_MAILLAGE();
+MAIL=CREA_MAILLAGE(MAILLAGE=MAILIN,
+                   LINE_QUAD=_F(TOUT='OUI'),
+                   );
+MAIL=DEFI_GROUP(reuse=MAIL,
+                CREA_GROUP_MA=(_F(GROUP_MA='GM41',NOM='gauchem'),
+                                _F(GROUP_MA='GM42',NOM='droitem'),
+                                _F(GROUP_MA='GM39',NOM='testptm'),
+                                _F(GROUP_MA='GM32',NOM='basdm'),
+                                _F(GROUP_MA='GM31',NOM='basgm'),
+                                _F(GROUP_MA='GM61',NOM='restm'),
+                                                ),
+
+                CREA_GROUP_NO=(_F(GROUP_MA='gauchem',NOM='gauchen'),
+                               _F(GROUP_MA='droitem',NOM='droiten'),
+                               _F(GROUP_MA='basgm',NOM='basgn'),
+                               _F(GROUP_MA='testptm',NOM='testptn'),
+                               _F(GROUP_MA='basdm',NOM='basdn'),
+                               _F(GROUP_MA='restm',NOM='restn'),
+                               ),
+                MAILLAGE=MAIL,
+                );
+
+
+# DEFINITION DU COMPORTEMENT DES MATERIAUX
+
+ROCHE=DEFI_MATERIAU(
+                ELAS=_F(       #PARAMETRES ELASTIQUES
+                E = 20.0E9,
+                NU = 0.25),
+
+                ENDO_HETEROGENE=_F(   #PARAMETRES ENDO-FRAGILE
+                SY = 5.0E6,
+                WEIBULL = 6.0,
+                KI = 1.0E6,
+                EPAI = 1.0,
+                GR = 121.0,
+                ),
+
+               NON_LOCAL=_F(
+               LONG_CARA = 0.2)
+
+              )
+
+
+MAT=AFFE_MATERIAU(
+              MAILLAGE=MAIL,
+                AFFE=(_F(
+                GROUP_MA = 'restm',
+                MATER = ROCHE),
+                )
+              )
+
+# CHOIX DU MODELE 
+
+
+MO_MECA=AFFE_MODELE(
+               MAILLAGE=MAIL,
+                AFFE=(_F(
+                TOUT='OUI',
+                PHENOMENE = 'MECANIQUE',
+                MODELISATION = 'D_PLAN_GRAD_SIGM',),),
+                    )
+
+# DEFINITION DU CHARGEMENT
+
+LIAISON=AFFE_CHAR_MECA(
+
+                      MODELE=MO_MECA,
+                   DDL_IMPO=(_F(
+                                GROUP_NO = 'basgn',
+                                DY=0.0),
+                             _F(
+                                GROUP_NO = 'basdn',
+                                DY=0.0),
+                ),
+                )
+
+LIST_PA=DEFI_LIST_REEL(VALE=(0.0,1.0),
+                       );
+LIST_PRD=DEFI_LIST_REEL(VALE=(0.00010,-0.0000),
+                       );
+
+PROFILD=DEFI_FONCTION(NOM_PARA='Y',
+                       VALE_PARA=LIST_PA,
+                       VALE_FONC=LIST_PRD,
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='CONSTANT',
+                       INTERPOL=('LIN','LIN'),
+                       );
+
+CINED = AFFE_CHAR_MECA_F(
+  MODELE = MO_MECA,
+  DDL_IMPO = _F(GROUP_NO = 'droiten', DX = PROFILD)
+  )
+
+LIST_PRG=DEFI_LIST_REEL(VALE=(-0.00010,0.0000),
+                       );
+
+PROFILG=DEFI_FONCTION(NOM_PARA='Y',
+                       VALE_PARA=LIST_PA,
+                       VALE_FONC=LIST_PRG,
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='CONSTANT',
+                       INTERPOL=('LIN','LIN'),
+                       );
+
+CINEG = AFFE_CHAR_MECA_F(
+  MODELE = MO_MECA,
+  DDL_IMPO = _F(GROUP_NO = 'gauchen', DX = PROFILG)
+  )
+
+
+LIST_PAA=DEFI_LIST_REEL(VALE=(0.,1.0),
+                       );
+LIST_PRR=DEFI_LIST_REEL(VALE=(0.0,1.0),
+                       );
+
+RAMPE= DEFI_FONCTION(  NOM_PARA = 'INST',
+  VALE_PARA=LIST_PAA,
+  VALE_FONC=LIST_PRR,
+  PROL_DROITE='CONSTANT',
+  PROL_GAUCHE='CONSTANT',
+  INTERPOL=('LIN','LIN'),
+  );
+
+
+
+INSTEL2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INSTEL),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                 SUBD_PAS=2,
+                                 SUBD_PAS_MINI=0.00001,))
+
+EVOEL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MULT_FRONT',),
+                    CHAM_MATER=MAT,
+                    MODELE=MO_MECA,EXCIT=(
+                             _F(CHARGE=LIAISON),
+                             _F(CHARGE=CINED,FONC_MULT=RAMPE),
+                             _F(CHARGE=CINEG,FONC_MULT=RAMPE),),
+                         COMP_INCR=_F(
+                RELATION = 'ENDO_HETEROGENE',
+                DEFORMATION = 'PETIT'),
+
+                        ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),
+
+                 INCREMENT=_F(LIST_INST=INSTEL2,),
+                     NEWTON =_F(MATRICE='TANGENTE',
+                            REAC_INCR = 1,
+                            REAC_ITER=1,
+                                  ),
+                     CONVERGENCE = (_F(ITER_GLOB_MAXI=30,
+                                      RESI_GLOB_RELA=1.E-5,
+                                      ),),
+
+              )
+
+#IMPRESSION DE TOUS LES CHAMPS AU FORMAT GMSH
+
+EVOEL=CALC_ELEM(reuse =EVOEL,
+               RESULTAT=EVOEL,
+               CHAM_MATER=MAT,
+               MODELE=MO_MECA,
+               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+                );
+
+RESTEST=POST_RELEVE_T(ACTION=(_F(INTITULE='restest',
+                                GROUP_NO='testptn',
+                                RESULTAT=EVOEL,
+                                NOM_CHAM=('DEPL'),
+                                TOUT_CMP='OUI',
+                                OPERATION= 'EXTRACTION',
+                                PRECISION=9.99999E-04,
+                                ),
+                        ),
+                );
+IMPR_TABLE(TABLE = RESTEST,
+           NOM_PARA=('INST','COOR_X','COOR_Y','DX','DY'),
+           FORMAT = 'AGRAF',
+           UNITE=8,
+           );
+
+TEST_RESU(RESU=(  _F(
+               RESULTAT = EVOEL,
+               REFERENCE = 'NON_REGRESSION',
+               INST = 1.0,
+               GROUP_NO = 'testptn',
+               NOM_CHAM = 'DEPL',
+               NOM_CMP = 'DX',
+               VALE = 1.0138E-04 , PRECISION=1.E-3, )
+               )
+            )
+
+EVOEL = CALC_NO(reuse = EVOEL,
+                RESULTAT = EVOEL,
+                OPTION   = ( 'VARI_NOEU_ELGA')
+               )
+
+IMPR_RESU(FORMAT='MED',
+ RESU=_F(RESULTAT=EVOEL,NOM_CHAM='DEPL',NOM_CMP='DX'),
+ )
+DEFI_FICHIER(UNITE=30,);
+IMPR_RESU(FORMAT='MED',
+            UNITE=30,
+ RESU=_F(RESULTAT=EVOEL,NOM_CHAM='VARI_NOEU_ELGA',NOM_CMP='V1'),
+ )
+FIN();

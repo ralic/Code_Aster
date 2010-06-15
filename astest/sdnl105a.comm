@@ -1,4 +1,4 @@
-# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : CALCUL DE REFERENCE
 # sdnl105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -268,7 +268,7 @@ TRAN3=REST_GENE_PHYS(RESU_GENE=TRAN_GE3,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   NOEUD='N8',
@@ -279,7 +279,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN1,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='VITE',
                   NOM_CMP='DY',
                   NOEUD='N8',
@@ -290,7 +290,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN1,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   NOEUD='M8',
@@ -301,7 +301,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN1,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='VITE',
                   NOM_CMP='DY',
                   NOEUD='M8',
@@ -312,7 +312,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN1,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   NOEUD='O8',
@@ -323,7 +323,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN1,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN1,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='VITE',
                   NOM_CMP='DY',
                   NOEUD='O8',
@@ -334,7 +334,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN1,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   NOEUD='N8',
@@ -345,7 +345,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN2,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='VITE',
                   NOM_CMP='DY',
                   NOEUD='N8',
@@ -356,7 +356,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN2,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   NOEUD='M8',
@@ -367,7 +367,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN2,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='VITE',
                   NOM_CMP='DY',
                   NOEUD='M8',
@@ -378,7 +378,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN2,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   NOEUD='O8',
@@ -389,7 +389,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN2,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN2,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='VITE',
                   NOM_CMP='DY',
                   NOEUD='O8',
@@ -400,7 +400,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN2,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   NOEUD='N8',
@@ -411,7 +411,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN3,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='VITE',
                   NOM_CMP='DY',
                   NOEUD='N8',
@@ -422,7 +422,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN3,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   NOEUD='M8',
@@ -433,7 +433,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN3,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='VITE',
                   NOM_CMP='DY',
                   NOEUD='M8',
@@ -444,7 +444,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN3,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   NOEUD='O8',
@@ -455,7 +455,7 @@ TEST_RESU(RESU=_F(RESULTAT=TRAN3,
 #
 
 TEST_RESU(RESU=_F(RESULTAT=TRAN3,
-                  NUME_ORDRE=11,
+                  INST=  1.00000E+00,
                   NOM_CHAM='VITE',
                   NOM_CMP='DY',
                   NOEUD='O8',

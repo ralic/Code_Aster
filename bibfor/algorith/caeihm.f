@@ -1,12 +1,12 @@
-      SUBROUTINE CAEIHM(NOMTE,AXI,PERMAN,
-     >                  MECANI,PRESS1,PRESS2,TEMPE,
-     >                  DIMDEF,DIMCON,NDIM,NNO1,
-     >                  NNO2,NPI,NPG,DIMUEL,IW,IVF1,IDF1,IVF2,IDF2,
-     >                  JGANO1,IU,IP,IPF,IQ,MODINT)
+      SUBROUTINE CAEIHM(NOMTE ,AXI   ,PERMAN,MECANI,PRESS1,PRESS2,
+     >                  TEMPE ,DIMDEF,DIMCON,NDIM  ,NNO1  ,NNO2  ,
+     >                  NPI   ,NPG   ,DIMUEL,IW    ,IVF1  ,IDF1  ,
+     >                  IVF2  ,IDF2  ,JGANO1,IU    ,IP    ,IPF   ,
+     >                  IQ    ,MODINT)
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,7 +65,7 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      LOGICAL       AXI, PERMAN
+      LOGICAL       AXI, PERMAN,LTEATT
       INTEGER       MECANI(8),PRESS1(9),PRESS2(9),TEMPE(5),DIMUEL
       INTEGER       NDIM,NNOS,NNO1,NNO2,NTROU
       INTEGER       DIMDEF,DIMCON
@@ -76,8 +76,6 @@ C DECLARATION PARAMETRES D'APPELS
       CHARACTER*3   MODINT
       CHARACTER*8   LIELRF(10)
       CHARACTER*16  NOMTE
-
-       
 
 C --- INITIALISATIONS --------------------------------------------------
 
@@ -92,7 +90,10 @@ C ======================================================================
 
 
       CALL MODTHM(NOMTE,MODINT)
-
+      
+      IF ( LTEATT(' ','AXIS','OUI') ) THEN
+        AXI       = .TRUE.
+      END IF
 C ======================================================================
 C --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 C --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
@@ -109,7 +110,7 @@ C ======================================================================
       IF (MODINT .EQ. 'CLA') THEN
         NPG= NPI
       END IF
-      
+
       NDIM   = NDIM + 1
 
 C ======================================================================
@@ -121,8 +122,9 @@ C ======================================================================
       DATA F3Q8 /1,2/
       DATA F4Q8 /4,3/
 
-      IF (NOMTE(1:9).EQ.'HM_J_DPQ8') THEN   
-        DIMUEL = 2*NNO1*NDIM+NNO2*3*(PRESS1(1)+PRESS2(1))+2   
+      IF ((NOMTE(1:9).EQ.'HM_J_DPQ8').OR.(NOMTE(1:9).EQ.'HM_J_AXQ8'))
+     &  THEN
+        DIMUEL = 2*NNO1*NDIM+NNO2*3*(PRESS1(1)+PRESS2(1))+2
         DO 10 N = 1,5
           DO 11 I = 1,2
           IU(I,N) = I + (F1Q8(N)-1)*3
@@ -130,23 +132,22 @@ C ======================================================================
  10     CONTINUE
         DO 12 I = 1,2
           IU(I,6) = IU(I,3) + 4
- 12     CONTINUE         
-        
+ 12     CONTINUE
+
         DO 20 N = 1,2
-          IP(1,N) = 16 + (F2Q8(N)-6)*2             
+          IP(1,N) = 16 + (F2Q8(N)-6)*2
  20     CONTINUE
- 
+
         DO 30 N = 1,2
-          IPF(1,1,N) = 3+(F4Q8(N)-1)*3      
+          IPF(1,1,N) = 3+(F4Q8(N)-1)*3
  30     CONTINUE
 
         DO 40 N = 1,2
-          IPF(1,2,N) = 3+(F3Q8(N)-1)*3       
+          IPF(1,2,N) = 3+(F3Q8(N)-1)*3   
  40     CONTINUE
         IQ(1,1,1)=IU(2,6)+1
         IQ(1,2,1)=IU(2,3)+1
-      END IF     
-
+      END IF
 
 C ======================================================================
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CHOC D UNE POUTRE SUR UN APPUI : SOUS-STRUCTURATION
 # sdnl104b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -320,6 +320,7 @@ LIST_R2=DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 9))
 
 #
 DEBUG(SDVERI='OUI')
+
 TRAN1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
@@ -339,70 +340,80 @@ TRAN3=REST_GENE_PHYS(   RESU_GENE=TRAN_GE3,
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
                              MODE_MECA=MODGLO )
+
 DEBUG(SDVERI='OUI')
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',
+                  INST = 1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 5.E-4,
                   NOEUD = 'NO12',           NOM_CMP = 'DY',
                   VALE = -1.25483E-04))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'VITE',
+                  INST = 1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
                   NOEUD = 'NO12',           NOM_CMP = 'DY',
                   VALE = 8.35213E-04))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
-                  NOM_CHAM = 'ACCE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'ACCE',
+                  INST = 1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 7.E-2,
                   NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = 3.63953E-01))
+                  VALE = 3.63952E-01))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',
+                  INST = 1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 5.E-4,
                   NOEUD = 'NO12',           NOM_CMP = 'DY',
                   VALE = -1.25437E-04))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'VITE',
+                  INST = 1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 1.5E-2,
                   NOEUD = 'NO12',           NOM_CMP = 'DY',
                   VALE = 8.40985E-04))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN2,
-                  NOM_CHAM = 'ACCE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'ACCE',
+                  INST = 1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 8.E-2,
                   NOEUD = 'NO12',           NOM_CMP = 'DY',
                   VALE = 2.85454E-01))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'DEPL',
+                  INST = 1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 5.E-4,
                   NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = -1.25526E-04))
+                  VALE = -1.25525E-04))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
-                  CRITERE = 'RELATIF',    PRECISION = 9.E-3,
+                  NOM_CHAM = 'VITE',
+                  INST = 1.00000E+00,
+                  CRITERE = 'RELATIF',    PRECISION = 9.0E-3,
                   NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = 8.32656E-04))
+                  VALE = 8.32855E-04))
 
 #
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
-                  NOM_CHAM = 'ACCE',      NUME_ORDRE = 11,
+                  NOM_CHAM = 'ACCE',
+                  INST = 1.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 7.E-2,
                   NOEUD = 'NO12',           NOM_CMP = 'DY',
-                  VALE = 3.45755E-01))
+                  VALE = 3.45781E-01))
 
 mod1=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                     SOUS_STRUC='COTE1',
@@ -420,7 +431,8 @@ resu_dy1=CALC_ELEM(reuse=resu_dy1,RESULTAT= resu_dy1,
 
 
 TEST_RESU( RESU=_F( RESULTAT = resu_dy1,
-                  NOM_CHAM = 'SIGM_ELNO_DEPL',      NUME_ORDRE = 1,
+                  NOM_CHAM = 'SIGM_ELNO_DEPL',
+                  INST = 0.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 9.E-3,
                   NOEUD = 'N1',MAILLE='S1',   NOM_CMP = 'SIXX',
                   REFERENCE = 'NON_REGRESSION',VERSION='8.3.23',
@@ -440,12 +452,12 @@ t_cin1=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
 # IMPR_TABLE(TABLE=t_cin1,)
 
 TEST_TABLE(      TABLE=t_cin1,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'TOUT',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 11,),),
-                   REFERENCE='NON_REGRESSION',
-                   NOM_PARA='TOTALE',
-                   VALE=1.93800E-02,
-                   PRECISION=0.001)
+                 FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'TOUT',),
+                         _F(  NOM_PARA = 'INST', VALE = 1.0,),),
+                REFERENCE='NON_REGRESSION',
+                NOM_PARA='TOTALE',
+                VALE=1.93800E-02,
+                PRECISION=0.001)
 
 mod2=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                     SOUS_STRUC='COTE2',
@@ -470,12 +482,12 @@ t_cin2=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
 # IMPR_TABLE(TABLE=t_cin2,)
 
 TEST_TABLE(      TABLE=t_cin2,
-                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'TOUT',),
-                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 11,),),
-                   REFERENCE='NON_REGRESSION',
-                   NOM_PARA='TOTALE',
-                   VALE=4.93814E-02,
-                   PRECISION=0.001)
+                 FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'TOUT',),
+                         _F(  NOM_PARA = 'INST', VALE = 1.0,),),
+                 REFERENCE='NON_REGRESSION',
+                 NOM_PARA='TOTALE',
+                 VALE=4.93814E-02,
+                 PRECISION=0.001)
 #
 FIN()
 #

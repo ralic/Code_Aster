@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+#& MODIF COMMANDE  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,6 +107,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "D_PLAN_XFEM_CONT",# RESP. : GENIAUT S.GENIAUT
                                   "D_PLAN_GRAD_EPSI",# RESP. : MICHEL S.MICHEL
                                   "D_PLAN_GRAD_VARI",# RESP. : MICHEL S.MICHEL
+                                  "D_PLAN_GRAD_SIGM",# RESP. : GRANET S.GRANET
                                   "PLAN_JOINT",      # RESP. : LAVERNE J.LAVERNE
                                   "PLAN_INTERFACE",  # RESP. : LAVERNE J.LAVERNE
                                   "PLAN_ELDI",       # RESP. : LAVERNE J.LAVERNE
@@ -226,6 +227,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "D_PLAN_HH2SUC",   # RESP. : GRANET S.GRANET
                                   "D_PLAN_HH2SUDA",  # RESP. : GRANET S.GRANET
                                   "2D_JOINT_HMS",
+                                  "AXIS_JOINT_HMS",
                                                                       )  )  ),
 
                 b_thermique     =BLOC( condition = "PHENOMENE=='THERMIQUE'",
