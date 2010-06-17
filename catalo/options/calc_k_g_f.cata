@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 % RESPONSABLE GALENNE
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -50,5 +50,7 @@ OPTION__
         PAINTER  NEUT_R
         PCFACE   NEUT_I
         PLONGCO  NEUT_I
+        PPMILTO  NEUT_R
+        PBASECO  NEUT_R
    OUT__
 PGTHETA G ELEM__

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 27/07/2009   AUTEUR NISTOR I.NISTOR 
+%& MODIF OPTIONS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 % RESPONSABLE PELLET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -52,6 +52,7 @@ OPTION__
         PBASLOR  NEUT_R
         PLSN     NEUT_R
         PLST     NEUT_R
+        PPMILTO  NEUT_R 
 %fin de paramèetres spécifiques X-FEM
    OUT__
         PMATUUR  MDEP_R  RESL__

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 16/06/2010   AUTEUR CARON A.CARON 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,13 +33,18 @@ ENTETE__ ELEMENT__ MECPQU4_XH      MAILLE__ QUAD4
    ATTRIBUT__  XFEM=XH
    ENS_NOEUD__  EN1     =     1   2   3   4
 ENTETE__ ELEMENT__ MECPTR6_XH      MAILLE__ TRIA6
-   ELREFE__  TR6       GAUSS__  RIGI=FPG3  GANO=FPG6  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM72   FPG_LISTE__  MATER = (RIGI XFEM NOEU)
-   ELREFE__  TR3       GAUSS__  RIGI=FPG6  XINT=FPG12
+   ELREFE__  TR6       GAUSS__  RIGI=FPG3  XINT=FPG12  GANO=FPG6  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM72   FPG_LISTE__  MATER = (RIGI XFEM NOEU)
+   ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
+   ELREFE__  SE3       GAUSS__  RIGI=FPG4  MASS=FPG4
    ATTRIBUT__  XFEM=XH
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6
 ENTETE__ ELEMENT__ MECPQU8_XH      MAILLE__ QUAD8
    ELREFE__  QU8       GAUSS__  RIGI=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM144  FPG_LISTE__  MATER = (RIGI XFEM NOEU)
-   ELREFE__  TR3       GAUSS__  RIGI=FPG6  XINT=FPG12
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4  GANO=FPG4
+   ELREFE__  TR6       GAUSS__  RIGI=FPG3  XINT=FPG12
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3  XINT=FPG12 GANO=FPG3
+   ELREFE__  SE3       GAUSS__  RIGI=FPG4  MASS=FPG4
+   ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
    ATTRIBUT__  XFEM=XH
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8
 ENTETE__ ELEMENT__ MECPTR6_XH_X    MAILLE__ TRIA6
@@ -55,6 +60,7 @@ ENTETE__ ELEMENT__ MECPQU8_XH_X    MAILLE__ QUAD8
    ATTRIBUT__  XFEM=XH
    ENS_NOEUD__  EN2     =     5   6   7   8
    ENS_NOEUD__  EN1     =     1   2   3   4
+
 
 MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
@@ -77,20 +83,21 @@ MODE_LOCAL__
                                         Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
-                                 EN1    (DX     DY      H1X      H1Y  )
+                                 EN1    (DX     DY      H1X    H1Y  )
                                  EN2    (  )
     DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX      DY      )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
-    E2NEUTI  = NEUT_I   ELEM__         (X1       X2       )
-    E9NEUTI  = NEUT_I   ELEM__         (X[9]     )
+    E3NEUTI  = NEUT_I   ELEM__         (X[3]     )
+    E6NEUTI  = NEUT_I   ELEM__         (X[6]     )
     E4NEUTR  = NEUT_R   ELEM__         (X[4]     )
-    E8NEUTR  = NEUT_R   ELEM__         (X[8]     )
-    E10NEUTR = NEUT_R   ELEM__         (X[10]    )                                   
+    E12NEUTR  = NEUT_R   ELEM__        (X[12]     )
+    E15NEUTR = NEUT_R   ELEM__         (X[15]    )                                   
     E6NEUTR = NEUT_R    ELEM__         (X[6]     )
-    E6NEUTI = NEUT_I    ELEM__         (X[6]     )
     E20NEUTR = NEUT_R   ELEM__         (X[20]    )
+    E22NEUTR = NEUT_R   ELEM__         (X[22]    )
     E18NEUI = NEUT_I   ELEM__          (X[18]    )
+    E36NEUI = NEUT_I   ELEM__          (X[36]    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
@@ -138,67 +145,69 @@ OPTION__
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER OUT__  EGGEOP_R PCOORPG
     CALC_G              288   IN__   DDL_MECA PDEPLAR  CCOMPOR  PCOMPOR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  DDL_MECC PTHETAR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO
-                                     E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     EPRESNO  PPRESSR  E4NEUTR  PPINTER  
-                                     E10NEUTR PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONGCO
+                                     ZVARCPG  PVARCRR  DDL_MECC PTHETAR  E6NEUTR  PPINTTO  E36NEUI  PCNSETO
+                                     E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     EPRESNO  PPRESSR  E6NEUTR  PPINTER  E12NEUTR  PBASECO  
+                                     E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONGCO  E22NEUTR PPMILTO
                               OUT__  EGTHETA  PGTHETA
     CALC_G_F            288   IN__   DDL_MECA PDEPLAR  CFORCEF  PFFVOLU  DDL_MECC PTHETAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO
-                                     E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  E6NEUTR  PPINTTO  E36NEUI  PCNSETO
+                                     E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST     CPRESSF  PPRESSF  CCOMPOR  PCOMPOR
-                                     E4NEUTR  PPINTER  E10NEUTR PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONGCO
-                                     CTEMPSR  PTEMPSR  
+                                     E6NEUTR  PPINTER  E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONGCO
+                                     CTEMPSR  PTEMPSR  E22NEUTR PPMILTO  E12NEUTR  PBASECO
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            297   IN__   DDL_MECA PDEPLAR  CCOMPOR  PCOMPOR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  DDL_MECC PTHETAR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO
-                                     E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     EPRESNO  PPRESSR  E4NEUTR  PPINTER  CCOMPOR  PCOMPOR
-                                     E10NEUTR PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONGCO
+                                     ZVARCPG  PVARCRR  DDL_MECC PTHETAR  E6NEUTR  PPINTTO  E36NEUI  PCNSETO
+                                     E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     EPRESNO  PPRESSR  E6NEUTR  PPINTER  CCOMPOR  PCOMPOR
+                                     E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONGCO  E22NEUTR PPMILTO
+                                     E12NEUTR  PBASECO
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          297   IN__   DDL_MECA PDEPLAR  CFORCEF  PFFVOLU  DDL_MECC PTHETAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
-                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO
-                                     E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  E6NEUTR  PPINTTO  E36NEUI  PCNSETO
+                                     E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST     CPRESSF  PPRESSF  CCOMPOR  PCOMPOR
-                                     E4NEUTR  PPINTER  E10NEUTR PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONGCO
-                                     CTEMPSR  PTEMPSR
+                                     E6NEUTR  PPINTER  E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONGCO
+                                     CTEMPSR  PTEMPSR  E22NEUTR PPMILTO  E12NEUTR  PBASECO
                               OUT__  EKTHETA  PGTHETA
     CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CFL_XFEM            118   IN__   NGEOMER  PGEOMER
-                              OUT__  E1NEUTR  PLONCAR      
+                              OUT__  E1NEUTR  PLONCAR              
     CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_MECA_FF2D2D    440   IN__   CFORCEF  PFF2D2D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  STANO_I  PSTANO
-                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
-                                     N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA
+                                     N1NEUT_R PLSN     N1NEUT_R PLST     E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR2D2D    440   IN__   NFORCER  PFR2D2D  NGEOMER  PGEOMER  STANO_I  PSTANO
-                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
-                                     N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA
+                                     N1NEUT_R PLSN     N1NEUT_R PLST     E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PESA_R    441   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  STANO_I  PSTANO
-                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
-                                     N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA
+                                     N1NEUT_R PLSN     N1NEUT_R PLST     E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PRES_F    37    IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  E4NEUTR  PPINTER
-                                     E10NEUTR PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONGCO  N1NEUT_R PLST
-                                     STANO_I  PSTANO
+    CHAR_MECA_PRES_F    37    IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  E6NEUTR  PPINTER
+                                     E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONGCO  N1NEUT_R PLST
+                                     STANO_I  PSTANO   E12NEUTR  PBASECO
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PRES_R    37    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E4NEUTR  PPINTER  E10NEUTR PAINTER
-                                     E2NEUTI  PCFACE   E2NEUTI  PLONGCO  N1NEUT_R PLST     STANO_I  PSTANO
+    CHAR_MECA_PRES_R    37    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E6NEUTR  PPINTER  E15NEUTR PAINTER
+                                     E3NEUTI  PCFACE   E3NEUTI  PLONGCO  N1NEUT_R PLST     STANO_I  PSTANO
+                                     E12NEUTR  PBASECO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    441   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CROTATR  PROTATR  STANO_I  PSTANO
-                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
-                                     N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA
+                                     N1NEUT_R PLSN     N1NEUT_R PLST     E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_TEMP_R    99    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  MVECTUR  PVECTUR
-    CHVOIS_XFEM         400   IN__   E18NEUI  PCNSETO E9NEUTI  PLONCHA
+    CHVOIS_XFEM         400   IN__   E36NEUI  PCNSETO E6NEUTI  PLONCHA
                               OUT__  E18NEUI  PCVOISX
     ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -211,19 +220,21 @@ OPTION__
     ERRE_ELEM_SIGM      382   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR
                                      EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ECONTNO  PCONTNO  E6NEUTR  PPINTTO
-                                     E18NEUI  PCNSETO  E9NEUTI  PLONCHA  E18NEUI  PCVOISX  ECONTSE  PSIEFSER
+                                     E36NEUI  PCNSETO  E6NEUTI  PLONCHA  E18NEUI  PCVOISX  ECONTSE  PSIEFSER
+                                     E22NEUTR PPMILTO
                               OUT__  EERREUR  PERREUR
     FORC_NODA           542   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
-                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI PHEAVTO   E9NEUTI  PLONCHA
+                                     E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI PHEAVTO   E6NEUTI  PLONCHA
                                      N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
+                                     E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           539   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO
-                                     E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     STANO_I  PSTANO
+                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E36NEUI  PCNSETO
+                                     E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     STANO_I  PSTANO   E22NEUTR PPMILTO
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
@@ -239,8 +250,9 @@ OPTION__
     MASS_INER           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MASS_MECA           538   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  STANO_I  PSTANO
-                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO
-                                     E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO
+                                     E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E22NEUTR PPMILTO
                               OUT__  MMATUUR  PMATUUR
     MOY_NOEU_S          118   IN__   N1NEUT_R PNEUTR
                               OUT__  E1NEUTR  PMOYEL
@@ -250,42 +262,43 @@ OPTION__
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO
-                                     E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     STANO_I  PSTANO
+                                     ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E36NEUI  PCNSETO
+                                     E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     STANO_I  PSTANO   E22NEUTR PPMILTO
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    REFE_FORC_NODA      542   IN__   NGEOMER  PGEOMER  EREFCO   PREFCO   E6NEUTR  PPINTTO  E18NEUI  PCNSETO
-                                     E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST
+    REFE_FORC_NODA      542   IN__   NGEOMER  PGEOMER  EREFCO   PREFCO   E6NEUTR  PPINTTO  E36NEUI  PCNSETO
+                                     E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-
     RIGI_MECA           539   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  STANO_I  PSTANO
-                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO
-                                     E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO
+                                     E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E22NEUTR PPMILTO
                               OUT__  MMATUUR  PMATUUR
-
     RIGI_MECA_TANG      539   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  STANO_I  PSTANO
-                                     ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO
-                                     E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO
+                                     E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E22NEUTR PPMILTO
                               OUT__  MMATUNS  PMATUNS  MMATUUR  PMATUUR
     RIGI_MECA_GE        536   IN__   NGEOMER  PGEOMER  ECONTPG  PCONTRR  STANO_I  PSTANO
-                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO
-                                     E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO
+                                     E6NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E22NEUTR PPMILTO
                               OUT__  MMATUUR  PMATUUR
-    SIEF_ELNO_ELGA      289   IN__   ECONTPG  PCONTRR  E18NEUI  PCNSETO  E9NEUTI  PLONCHA
+    SIEF_ELNO_ELGA      289   IN__   ECONTPG  PCONTRR  E36NEUI  PCNSETO  E6NEUTI  PLONCHA
                               OUT__  ECONTNO  PSIEFNOR ECONTSE  PSIEFSER
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N2NEUT_R PGRADLT
                                      N2NEUT_R PGRADLN
-                              OUT__  E4NEUTR  PPINTER  E10NEUTR PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONCHA
-                                     E8NEUTR  PBASECO  E4NEUTR  PGESCLA  E4NEUTR  PGMAITR  E4NEUTR  PGESCLO
-    TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
-                                     E10NEUTR PAINTER  E1NEUTR  PCRITER
+                              OUT__  E6NEUTR  PPINTER  E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA
+                                     E12NEUTR  PBASECO  E6NEUTR  PGESCLA  E6NEUTR  PGMAITR  E6NEUTR  PGESCLO
+    TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  N2NEUT_R PGRADLN
+                              OUT__  E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E6NEUTI  PLONCHA
+                                     E15NEUTR PAINTER  E1NEUTR  PCRITER  E22NEUTR PPMILTO
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F
                                      EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
@@ -297,6 +310,6 @@ OPTION__
                               OUT__  E1NEUTR  PMEAST   N2NEUT_R PNIELNO
     XFEM_SMPLX_CALC     118   IN__   N1NEUT_R PLSNO    N2NEUT_R PGRLS    E1NEUTR  PGRANDF  N2NEUT_R PNIELNO
                               OUT__  E1NEUTR  PDPHI    N1NEUT_R PALPHA
-    XFEM_XPG            46    IN__   NGEOMER  PGEOMER  E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO
-                                     E9NEUTI  PLONCHA
+    XFEM_XPG            46    IN__   NGEOMER  PGEOMER  E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO
+                                     E6NEUTI  PLONCHA  E22NEUTR PPMILTO
                               OUT__  XFGEOM_R PXFGEOM

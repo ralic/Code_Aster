@@ -10,7 +10,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,6 +67,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 OPTION,NOMCMD,TYPRES
       CHARACTER*19 NOMFON,CHVARC
       CHARACTER*19 PINTTO,CNSETO,HEAVTO,LONCHA,BASLOC,LSN,LST,STANO
+      CHARACTER*19 PMILTO
       CHARACTER*24 LIGRMO,LIGRCH,LCHIN(25),LCHOUT(2)
       CHARACTER*24 CHGEOM,CHCARA(18),CHTEMP,CHTREF,CHHARM
       CHARACTER*24 CHCHAR,ARGU,CHTIME
@@ -128,6 +129,7 @@ C  ---  CAS DU MODELE X-FEM-----------
         CNSETO = MODELE(1:8)//'.TOPOSE.CNS'
         HEAVTO = MODELE(1:8)//'.TOPOSE.HEA'
         LONCHA = MODELE(1:8)//'.TOPOSE.LON'
+        PMILTO = MODELE(1:8)//'.TOPOSE.PMI'
         BASLOC = MODELE(1:8)//'.BASLOC'
         LSN    = MODELE(1:8)//'.LNNO'
         LST    = MODELE(1:8)//'.LTNO'
@@ -155,8 +157,10 @@ C
         LCHIN(9) = LST
         LPAIN(10) = 'PSTANO'
         LCHIN(10) = STANO
+        LPAIN(11) = 'PPMILTO'
+        LCHIN(11) = PMILTO
 
-        CALL CALCUL('S',OPTION,LIGRMO,10,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
+        CALL CALCUL('S',OPTION,LIGRMO,11,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
      &              BASE)
         CALL REAJRE(MATEL,LCHOUT(1),BASE)
 

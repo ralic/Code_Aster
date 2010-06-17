@@ -2,7 +2,7 @@
      &                  LPAOU,BASE)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

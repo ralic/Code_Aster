@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+%& MODIF OPTIONS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 % RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -25,7 +25,7 @@ OPTION__
    IN__
         PGEOMER  GEOM_R    
         PLEVSET  NEUT_R
-
+        PGRADLN  NEUT_R
    OUT__
         PPINTTO  NEUT_R ELEM__
         PCNSETO  NEUT_I ELEM__
@@ -33,4 +33,4 @@ OPTION__
         PLONCHA  NEUT_I ELEM__
         PAINTER  NEUT_R ELEM__
         PCRITER  NEUT_R ELEM__
-
+        PPMILTO  NEUT_R ELEM__ 

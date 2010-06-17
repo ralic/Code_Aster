@@ -5,7 +5,7 @@
       CHARACTER*19   CNXINV,VCN,VCND,REFJEV
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C     CREATION OF THE CONNECTION TABLE OF THE NODES
       INTEGER          JVCN,JVCND,IBID
       INTEGER          NODE,NODEPS,NODEDG,NBELNO,ELNO,JELNO,ELNOL
       REAL*8           NODXYZ(2,3), ABSXYZ(3), LOCXYZ(3),R8PREM
-      INTEGER          NODCON(3),ELDEF(8),NOCUR,ORPH,UNSUPP,AR(12,2),
+      INTEGER          NODCON(3),ELDEF(8),NOCUR,ORPH,UNSUPP,AR(12,3),
      &                 NBAR,MAXEDG(3),NUMNOD(3)
 
 C-----------------------------------------------------------------------
@@ -448,7 +448,6 @@ C                           AXIS
      &                               (ABSXYZ(2).LT.MODVEC))) THEN
                                 NOTPAR = NOTPAR+1
                             ENDIF
-
 C                           CHECK THAT THE VALUE OF DELTAZ IS GREATER
 C                           THAN ZERO
                             IF (.NOT.(ABSXYZ(3).GT.R8PREM())) THEN

@@ -1,11 +1,11 @@
       SUBROUTINE XDIVTE(TYPMA,CONNEC,AREPAR,NIT)
       IMPLICIT NONE
 
-      INTEGER       CONNEC(6,4),AREPAR(6,6),NIT
+      INTEGER       CONNEC(6,6),AREPAR(6,6),NIT
       CHARACTER*8   TYPMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,8 +62,9 @@ C ----------------------------------------------------------------------
       CALL JEMARQ()
 
       DO 100 I=1,6
-        DO 110 J=1,4
+        DO 110 J=1,6
           CONNEC(I,J)=0
+          AREPAR(I,J)=0
  110    CONTINUE
  100  CONTINUE
 
@@ -198,7 +199,7 @@ C                 1 3 4 5]
         AREPAR(1,5)=5
         AREPAR(1,6)=6
         NIT=1
-      ELSEIF (TYPMA(1:4).EQ.'QUAD') THEN
+      ELSEIF (TYPMA(1:5).EQ.'QUAD4') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=4
@@ -212,7 +213,27 @@ C                 1 3 4 5]
         AREPAR(2,2)=3
         AREPAR(2,3)=0
         NIT=2
-      ELSEIF (TYPMA(1:4).EQ.'TRIA') THEN
+      ELSEIF (TYPMA(1:5).EQ.'QUAD8') THEN
+        CONNEC(1,1)=1
+        CONNEC(1,2)=2
+        CONNEC(1,3)=4
+        CONNEC(1,4)=5
+        CONNEC(1,5)=9
+        CONNEC(1,6)=8
+        CONNEC(2,1)=2
+        CONNEC(2,2)=3
+        CONNEC(2,3)=4
+        CONNEC(2,4)=6
+        CONNEC(2,5)=7
+        CONNEC(2,6)=9
+        AREPAR(1,1)=1
+        AREPAR(1,2)=0
+        AREPAR(1,3)=4
+        AREPAR(2,1)=2
+        AREPAR(2,2)=3
+        AREPAR(2,3)=0
+        NIT=2
+      ELSEIF (TYPMA(1:5).EQ.'TRIA3') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=3
@@ -220,12 +241,30 @@ C                 1 3 4 5]
         AREPAR(1,2)=2
         AREPAR(1,3)=3
         NIT=1
-      ELSEIF (TYPMA(1:2).EQ.'SE') THEN
+      ELSEIF (TYPMA(1:5).EQ.'TRIA6') THEN
+        CONNEC(1,1)=1
+        CONNEC(1,2)=2
+        CONNEC(1,3)=3
+        CONNEC(1,4)=4
+        CONNEC(1,5)=5
+        CONNEC(1,6)=6
+        AREPAR(1,1)=1
+        AREPAR(1,2)=2
+        AREPAR(1,3)=3
+        NIT=1
+      ELSEIF (TYPMA(1:4).EQ.'SEG2') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         AREPAR(1,1)=1
         AREPAR(1,2)=2
         NIT=1  
+      ELSEIF (TYPMA(1:4).EQ.'SEG3') THEN
+        CONNEC(1,1)=1
+        CONNEC(1,2)=2
+        CONNEC(1,3)=3
+        AREPAR(1,1)=1
+        AREPAR(1,2)=2
+        NIT=1
       ELSE
 C       TYPE D'ELEMENT FINI PAS TRAITE
         CALL ASSERT(.FALSE.)

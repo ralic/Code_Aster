@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 % RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -26,6 +26,6 @@ OPTION__
         PCNSETO  NEUT_I
         PHEAVTO  NEUT_I
         PLONCHA  NEUT_I
-
+        PPMILTO  NEUT_R
    OUT__
         PXFGEOM  GEOM_R  ELGA__

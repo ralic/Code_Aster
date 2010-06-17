@@ -9,7 +9,7 @@
       CHARACTER*24  LISNO,STANO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER         IN,AR(12,2),IA,I,J,K,NBNOE,NBNOTT(3)
+      INTEGER         IN,AR(12,3),IA,I,J,K,NBNOE,NBNOTT(3)
       INTEGER         INO,IMA,NBNOMA,NUNO,NRIEN,NBAR,NA
       INTEGER         NB,NUNOA,NUNOB,ENR,ENR1,ENR2,JDLINO,JMA,JSTANO
       INTEGER         JCONX1,JCONX2,JLTSV,JLNSV,JCOOR,ITYPMA,NDIM

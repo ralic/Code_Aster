@@ -3,11 +3,11 @@
       IMPLICIT NONE
 
       REAL*8        LSN(*)
-      INTEGER       IT,CONNEC(6,4),IGEOM,NINTER,NPTS,NSE,CNSE(6,4)
+      INTEGER       IT,CONNEC(6,6),IGEOM,NINTER,NPTS,NSE,CNSE(6,6)
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,12 +60,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      REAL*8          PADIST,P(3),XYZ(4,3),AB(3),AC(3),AD(3),VN(3),PS
+      REAL*8          XYZ(4,3),AB(3),AC(3),AD(3),VN(3),PS
       INTEGER         JPTINT,JAINT,JCOSE,JHEAV
-      INTEGER         NSEMAX,IN,INH,I,J,AR(12,2),NBAR,ISE,NDIM,IBID
+      INTEGER         IN,INH,I,J,AR(12,3),NBAR,ISE,NDIM,IBID
       INTEGER         A1,A2,A3,A4,A,B,C,IADZI,IAZK24,NDIME
-      CHARACTER*8     TYPMA,NOMA,KBID
-      INTEGER      ZXAIN,XXMMVD,IRET
+      CHARACTER*8     TYPMA,NOMA,ELRESE(3),KBID
+      INTEGER         ZXAIN,XXMMVD,NSEMAX(3),IRET
+      DATA            ELRESE /'SEG2','TRIA3','TETRA4'/
+      DATA            NSEMAX / 2 , 3 , 6 /
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -81,31 +83,17 @@ C     NDIME EST DIMENSION DE L'ELEMENT FINI
 C     PAR EXEMPLE, POUR LES ELEMENT DE BORDS D'UN MAILLAGE 3D :
 C     NDIME = 2 ALORS QUE NDIM = 3
 
-      IF (NDIME.EQ.3) THEN
-        NSEMAX=6
-      ELSEIF (NDIME.EQ.2) THEN
-        NSEMAX=3
-      ELSEIF (NDIME.EQ.1) THEN
-        NSEMAX=2
-      ENDIF
-
       CALL JEVEUO(PINTER,'L',JPTINT)
       CALL JEVEUO(AINTER,'L',JAINT)
-      CALL WKVECT(COORSE,'V V R',NDIM*NSEMAX*(NDIM+1),JCOSE)
+      CALL WKVECT(COORSE,'V V R',NDIM*NSEMAX(NDIME)*(NDIM+1),JCOSE)
 
       DO 10 IN=1,6
-        DO 20 J=1,4
+        DO 20 J=1,6
           CNSE(IN,J)=0
  20     CONTINUE
  10   CONTINUE
 
-      IF (NDIME .EQ. 2) THEN
-        TYPMA='TRIA3'
-      ELSEIF  (NDIME.EQ.3) THEN
-        TYPMA='TETRA4'
-      ELSEIF  (NDIME.EQ.1) THEN
-        TYPMA='SEG2'
-      ENDIF
+      TYPMA=ELRESE(NDIME)
       CALL CONARE(TYPMA,AR,NBAR)
 
 C-----------------------------------------------------------------------
@@ -183,7 +171,7 @@ C         1 SEUL ELEMENT
 C         TROP DE POINTS D'INTERSECTION
           CALL ASSERT(NINTER.LE.3)
         ENDIF
-
+        
       ELSEIF (NDIME .EQ. 1) THEN
 
         IF (NINTER .LT. 1) THEN
@@ -362,7 +350,7 @@ C          CONFIGURATION N°2
 C          CONFIGURATION N°3
            CALL XPENTE(1,CNSE,101,103,CONNEC(IT,3),102,104,CONNEC(IT,4))
            CALL XPENTE(4,CNSE,CONNEC(IT,2),104,103,CONNEC(IT,1),102,101)
-          ELSE
+          ELSE 
 C          PROBLEME DE DECOUPAGE A 4 POINTS
            CALL ASSERT(A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.5.AND.A4.EQ.6)
           ENDIF
@@ -462,7 +450,7 @@ C     DES NORMALES, OU ON EN PROFITE POUR CORRIGER AUSSI ZR(JHEAV-1+ISE)
         CALL ASSERT(NSE.EQ.1)
          ZR(JHEAV-1+1)=99.D0
       ENDIF
-
+      
 
       CALL JEDEMA()
       END

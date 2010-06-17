@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+%& MODIF OPTIONS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 % RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -32,7 +32,8 @@ OPTION__
         PLST     NEUT_R
         PCOHES   NEUT_R
         PMATERC  ADRSJEVE
-        
+        PBASECO  NEUT_R
+
    OUT__
         PSEUIL  NEUT_R ELEM__
         PCOHESO  NEUT_R ELEM__

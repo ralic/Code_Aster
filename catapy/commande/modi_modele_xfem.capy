@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/04/2009   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 16/06/2010   AUTEUR CARON A.CARON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,5 +26,7 @@ MODI_MODELE_XFEM=OPER(nom="MODI_MODELE_XFEM",op= 113,sd_prod=modele_sdaster,docu
     FISSURE         =SIMP(statut='o',typ=fiss_xfem,min=1,max='**',),
     CRITERE         =SIMP(statut='f',typ='R',defaut=1.1E-4),
     INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,)),
-    CONTACT         =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON"),min=1,max=1,),
+#    CONTACT         =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON"),min=1,max=1,),
+     CONTACT        
+     =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","P1P1","P1P1A","P2P1","NON"),min=1,max=1,),
 )  ;

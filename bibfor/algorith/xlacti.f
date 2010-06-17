@@ -1,6 +1,6 @@
       SUBROUTINE XLACTI(TYPMA,NINTER,JAINT,LACT,NLACT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +20,7 @@ C ======================================================================
 C
       IMPLICIT NONE
       CHARACTER*8   TYPMA
-      INTEGER      NINTER,JAINT,LACT(8),NLACT
+      INTEGER       NINTER,JAINT,LACT(8),NLACT
 C      
 C ----------------------------------------------------------------------
 C
@@ -40,12 +40,11 @@ C
 C IN  TYPMA  : TYPE  DE MAILLE DE L'ELEMENT PARENT
 C IN  NINTER : NOMBRE DE POINTS D'INTERSECTION
 C IN  JAINT  : ADRESSE DES INFORMATIONS CONCERNANT LES ARETES COUPÉES
-C OUT LACT   : LITE DES LAGRANGES ACTIFS
+C OUT LACT   : LISTE DES LAGRANGES ACTIFS
 C OUT NLACT  : NOMBRE TOTAL DE LAGRANGES ACTIFS
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*32 JEXNUM,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -64,13 +63,13 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER     ZXAIN,XXMMVD
-      INTEGER     INO,INO1,INO2,IAR,AR(12,2),NBAR
+      INTEGER     INO,INO1,INO2,IAR,AR(12,3),NBAR
       INTEGER     VIT(8),NVIT,NLI
 C.......................................................................
       CALL JEMARQ()
 C
 C --- INITIALISATIONS
-C 
+C
       DO 30 INO = 1,8
         LACT(INO) = 0
         VIT(INO) = 0   

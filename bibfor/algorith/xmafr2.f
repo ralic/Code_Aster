@@ -1,7 +1,7 @@
-      SUBROUTINE XMAFR2(NLI,NLJ,TAU1,TAU2,B,ABC)
+      SUBROUTINE XMAFR2(TAU1,TAU2,B,ABC)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,8 +21,7 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
       IMPLICIT NONE
-      REAL*8     TAU1(3,6),TAU2(3,6),B(3,3),ABC(2,2)
-      INTEGER    NLI,NLJ
+      REAL*8     TAU1(3),TAU2(3),B(3,3),ABC(2,2)
 
 C ----------------------------------------------------------------------
 C                      
@@ -67,10 +66,10 @@ C                         (TAU2)
 
 C     MATRICES A ET C
       DO 10 J=1,NDIM
-        A(1,J)=TAU1(J,NLI)
-        IF (NDIM.EQ.3) A(2,J)=TAU2(J,NLI)
-        C(J,1)=TAU1(J,NLJ)
-        IF (NDIM.EQ.3) C(J,2)=TAU2(J,NLJ)
+        A(1,J)=TAU1(J)
+        IF (NDIM.EQ.3) A(2,J)=TAU2(J)
+        C(J,1)=TAU1(J)
+        IF (NDIM.EQ.3) C(J,2)=TAU2(J)
  10   CONTINUE
  
 C     PRODUIT B.C

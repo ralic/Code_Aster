@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+%& MODIF COMPELEM  DATE 16/06/2010   AUTEUR CARON A.CARON 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,6 +75,11 @@ MAILLE__ SEG3       3       DIM__  1   CODE__  'SE3'
          FAMILLE__ FPG3        3
          FAMILLE__ FPG3NOS     5
          FAMILLE__ FPG4        4
+         FAMILLE__ SIMP        3
+         FAMILLE__ SIMP1       5
+         FAMILLE__ COTES       4
+         FAMILLE__ COTES1      5
+         FAMILLE__ COTES2      10
    ELREFE__ THCOSE3
          FAMILLE__ FPG1        3
    ELREFE__ V_SEG3

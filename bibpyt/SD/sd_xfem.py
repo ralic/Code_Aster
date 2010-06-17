@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 11/01/2010   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF sd_xfem SD  DATE 16/06/2010   AUTEUR CARON A.CARON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,6 +101,7 @@ class sd_modele_xfem(AsBase):
     TOPOSE_HEA  = sd_cham_elem(SDNom(nomj='.TOPOSE.HEA'))
     TOPOSE_LON  = sd_cham_elem(SDNom(nomj='.TOPOSE.LON'))
     TOPOSE_AIN  = sd_cham_elem(SDNom(nomj='.TOPOSE.AIN'))
+    TOPOSE_PMI  = sd_cham_elem(SDNom(nomj='.TOPOSE.PMI'))    
     TOPOSE_CRI  = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOSE.CRI')))
 
 # II.2) objets relatifs aux facettes de contact

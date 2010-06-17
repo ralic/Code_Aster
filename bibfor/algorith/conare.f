@@ -1,10 +1,10 @@
       SUBROUTINE       CONARE(TYPMA,AR,NBAR)
       IMPLICIT NONE
-      INTEGER          AR(12,2),NBAR
+      INTEGER          AR(12,3),NBAR
       CHARACTER*8      TYPMA
-C     ------------------------------------------------------------------
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +30,8 @@ C
 C    SORTIE :
 C              AR   : MATRICE DE CONNECTIVITÉ DES ARETES
 C              NBAR : NOMBRE D'ARETES
-C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+C......................................................................
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  -------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
@@ -46,20 +46,20 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------
 C
       INTEGER       I,J
-C ----------------------------------------------------------------------
+C......................................................................
 
       CALL JEMARQ()
 
       DO 100 I=1,12
-        DO 110 J=1,2
+        DO 110 J=1,3
           AR(I,J)=0
  110    CONTINUE
  100  CONTINUE
 
-      IF (TYPMA.EQ.'HEXA8'.OR.TYPMA.EQ.'HEXA20') THEN
+      IF (TYPMA.EQ.'HEXA8' .OR. TYPMA.EQ.'HEXA20') THEN
         NBAR=12
 C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE HEXA8 OU HEXA20
         AR(1,1)=1
@@ -141,9 +141,9 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TETRA4 OU TETRA10
         AR(5,2)=4
         AR(6,1)=3
         AR(6,2)=4
-      ELSEIF (TYPMA.EQ.'QUAD4'.OR.TYPMA.EQ.'QUAD8') THEN
+      ELSEIF (TYPMA.EQ.'QUAD4') THEN
         NBAR=4
-C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE QUAD4 OU QUAD10
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE QUAD4
         AR(1,1)=1
         AR(1,2)=2
         AR(2,1)=2
@@ -152,20 +152,53 @@ C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE QUAD4 OU QUAD10
         AR(3,2)=4
         AR(4,1)=4
         AR(4,2)=1
-      ELSEIF (TYPMA.EQ.'TRIA3'.OR.TYPMA.EQ.'TRIA6') THEN
+      ELSEIF (TYPMA.EQ.'QUAD8' .OR. TYPMA.EQ.'QU8') THEN
+        NBAR=4
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE QUAD8
+        AR(1,1)=1
+        AR(1,2)=2
+        AR(1,3)=5
+        AR(2,1)=2
+        AR(2,2)=3
+        AR(2,3)=6
+        AR(3,1)=3
+        AR(3,2)=4
+        AR(3,3)=7
+        AR(4,1)=4
+        AR(4,2)=1
+        AR(4,3)=8
+      ELSEIF (TYPMA.EQ.'TRIA3') THEN
         NBAR=3
-C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TRIA3 OU TRIA6
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TRIA3
         AR(1,1)=1
         AR(1,2)=2
         AR(2,1)=2
         AR(2,2)=3
         AR(3,1)=3
         AR(3,2)=1
-      ELSEIF (TYPMA.EQ.'SEG2'.OR.TYPMA.EQ.'SEG3') THEN
-        NBAR=1
-C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE SEG2 OU SEG3
+      ELSEIF (TYPMA.EQ.'TRIA6' .OR. TYPMA.EQ.'TR6') THEN
+        NBAR=3
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE TRIA6
         AR(1,1)=1
         AR(1,2)=2
+        AR(1,3)=4
+        AR(2,1)=2
+        AR(2,2)=3
+        AR(2,3)=5
+        AR(3,1)=3
+        AR(3,2)=1
+        AR(3,3)=6
+      ELSEIF (TYPMA.EQ.'SEG2') THEN
+        NBAR=1
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE SEG2
+        AR(1,1)=1
+        AR(1,2)=2
+      ELSEIF (TYPMA.EQ.'SEG3' .OR. TYPMA.EQ.'SE3') THEN
+        NBAR=1
+C       CONNECTIVITÉ DES ARETES POUR UNE MAILLE SEG3
+        AR(1,1)=1
+        AR(1,2)=2
+        AR(1,3)=3
       ELSEIF (TYPMA.EQ.'POI1') THEN
         NBAR=0
       ELSE

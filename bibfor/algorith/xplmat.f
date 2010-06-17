@@ -1,10 +1,10 @@
-      SUBROUTINE       XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,N,PL)
+      SUBROUTINE       XPLMAT(NDIM,DDLH,NFE,DDLC,DDLM,NNO,NNOM,N,PL)
 
       IMPLICIT NONE
-      INTEGER          NDIM,DDLH,NFE,DDLC,NNO,NNOM,N,PL
+      INTEGER          NDIM,DDLH,NFE,DDLC,NNO,NNOM,N,PL,DDLM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,13 +55,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     
       INTEGER       DDLS      
-C ----------------------------------------------------------------------
 
+C ----------------------------------------------------------------------
       CALL ASSERT(N.LE.(NNO+NNOM))
 
 C     NOMBRE DE DDL PAR NOEUD SOMMET 
       DDLS=NDIM+DDLH+NFE*NDIM+DDLC
-      
+
+C     PLACE DU PREMIER DDL DE CONTACT POUR CHAQUE N
       IF (N.LE.NNO) THEN
         PL=DDLS*(N-1)+NDIM+DDLH+NFE*NDIM+1
       ELSE

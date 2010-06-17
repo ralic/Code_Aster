@@ -1,10 +1,10 @@
-      SUBROUTINE REEREF(ELREFP,NNOP  ,IGEOM  ,XG   ,DEPL  ,
-     &                  GRAND ,NDIM  ,HE     ,DDLH ,NFE   ,
-     &                  DDLT  ,FE    ,DGDGL  ,CINEM,XE    ,
-     &                  FF    ,DFDI  ,F      ,EPS  ,GRAD)
+      SUBROUTINE REEREF(ELREFP,NNOP,NNOS,IGEOM,XG,IDEPL,
+     &                  GRAND ,NDIM,HE,DDLH,NFE,
+     &                  DDLS,DDLM,FE,DGDGL,CINEM,XE,
+     &                  FF,DFDI,F,EPS,GRAD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,15 +21,17 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C
+C TOLE CRP_21
+
       IMPLICIT NONE
       CHARACTER*3  CINEM
       CHARACTER*8  ELREFP
-      INTEGER      IGEOM,NNOP,NDIM,DDLH,NFE,DDLT
-      REAL*8       XG(NDIM),DEPL(DDLT,NNOP),HE,FE(4),DGDGL(4,NDIM)
+      INTEGER      IGEOM,NNOP,NDIM,DDLH,NFE,DDLS,IDEPL
+      REAL*8       XG(NDIM),HE,FE(4),DGDGL(4,NDIM)
       REAL*8       XE(NDIM),FF(NNOP),DFDI(NNOP,NDIM),F(3,3)
       REAL*8       EPS(6),GRAD(NDIM,NDIM)
       LOGICAL      GRAND
+      INTEGER      NNOS,DDLM
 C
 C ----------------------------------------------------------------------
 C
@@ -92,7 +94,7 @@ C
 C
       REAL*8      ZERO,UN,RAC2
       INTEGER     I,J,K,N,P,IG,CPT
-      INTEGER     NNO,NDERIV,IRET
+      INTEGER     NNO,NDERIV,IRET,NN
       REAL*8      INVJAC(3,3)
       REAL*8      DFF(3,NBNOMX)
       REAL*8      KRON(3,3),TMP,EPSTAB(3,3)
@@ -103,7 +105,8 @@ C
 C
 C --- INITIALISATIONS
 C
-      CALL ASSERT(CINEM.EQ.'NON'.OR.CINEM.EQ.'OUI'.OR.CINEM.EQ.'DFF')
+      CALL ASSERT(CINEM.EQ.'NON'.OR.CINEM.EQ.'OUI'.OR.CINEM.EQ.'DFF'
+     &             .OR.CINEM.EQ.'INI')
       ZERO = 0.D0
       UN   = 1.D0
       RAC2 = SQRT(2.D0)
@@ -148,42 +151,61 @@ C
 C
 C --- CALCUL DES GRADIENTS : GRAD(U) ET F
 C
-      DO 400 I=1,3
-        DO 401 J=1,3
+      DO 20 I=1,3
+        DO 21 J=1,3
           F(I,J)    = KRON(I,J)
- 401    CONTINUE
- 400  CONTINUE
+ 21     CONTINUE
+ 20   CONTINUE
 C
-      DO 399 I=1,NDIM
-        DO 398 J=1,NDIM
+      DO 30 I=1,NDIM
+        DO 31 J=1,NDIM
            GRAD(I,J) = ZERO
- 398    CONTINUE
- 399  CONTINUE
+ 31     CONTINUE
+ 30   CONTINUE
+
+      DO 40 I=1,6
+         EPS(I) = ZERO
+ 40   CONTINUE
+
+      IF (CINEM.EQ.'INI') GOTO 9999
 C
 C --- L'ORDRE DES DDLS DOIT ETRE 'DC' 'H1' 'E1' 'E2' 'E3' 'E4' 'LAGC'
 C
-      DO 402 N=1,NNO
+      DO 402 N=1,NNOP
+C
+C --- DDLM=-1 PERMET D'EVITER D'AVOIR A FOURNIR DDLM DANS CHAQUE CAS
+        IF (DDLM.EQ.-1) THEN
+          NN=DDLS*(N-1)
+        ELSE
+          CALL INDENT(N,DDLS,DDLM,NNOS,NN)
+        ENDIF
+
         CPT=0
+
 C -- DDLS CLASSIQUES
         DO 403 I=1,NDIM
           CPT = CPT+1
           DO 404 J=1,NDIM
-            GRAD(I,J) = GRAD(I,J) + DFDI(N,J) * DEPL(CPT,N)
+            GRAD(I,J) = GRAD(I,J) + DFDI(N,J) *
+     &                            ZR(IDEPL-1+NN+CPT)
  404      CONTINUE
  403    CONTINUE
+
 C -- DDLS HEAVISIDE
         DO 405 I=1,DDLH
           CPT = CPT+1
           DO 406 J=1,NDIM
-            GRAD(I,J) = GRAD(I,J) + HE * DFDI(N,J) *  DEPL(CPT,N)
+            GRAD(I,J) = GRAD(I,J) + HE * DFDI(N,J) *
+     &                            ZR(IDEPL-1+NN+CPT)
  406      CONTINUE
  405    CONTINUE
+
 C -- DDL ENRICHIS EN FOND DE FISSURE
         DO 407 IG=1,NFE
           DO 408 I=1,NDIM
             CPT = CPT+1
             DO 409 J=1,NDIM
-              GRAD(I,J) = GRAD(I,J) + DEPL(CPT,N) *
+              GRAD(I,J) = GRAD(I,J) + ZR(IDEPL-1+NN+CPT) *
      &                    (DFDI(N,J) * FE(IG) + FF(N) * DGDGL(IG,J))
  409        CONTINUE
  408      CONTINUE

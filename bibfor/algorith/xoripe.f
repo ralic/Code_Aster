@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,14 +55,18 @@ C
       INTEGER       JMAIL,CPT,NBMAIL,IRET,NBPAR,JCOOR,JM3D,IBID,JVECNO
       INTEGER       NUMAPR,NUMAB,NUMA1D,NBNOPR,NBNOBO,NBNOM1,NBNOTT(3)
       INTEGER       JCONX1,JCONX2,INO,NUNO,NORIEG,NTRAIT,JTYPMA,JTMDIM
-      INTEGER       ICH,JCESD(4),JCESV(4),JCESL(4),IAD,NIT,IT,NSE,ISE,IN
+      INTEGER       ICH,JCESD(5),JCESV(5),JCESL(5),IAD,NIT,IT,NSE,ISE,IN
       INTEGER       NDIME,ICMP,NDIM,ID(3),INTEMP,NSEORI,IFM,NIV,NNCP
       INTEGER       JDIM,S1,S2,JGRP,NMAENR,JINDIC,ZERO,JLSN,JMA
       INTEGER       NSIGNP,NSIGNM,NSIGNZ,IHE,NSEMAX(3),HE,ITYPMA
-      CHARACTER*8   NOMA,K8BID,K8B
+      CHARACTER*8   NOMA,K8BID,K8B,TYPBO
       CHARACTER*2   KDIM
-      CHARACTER*19  LIGREL,NOMT19,CHS(4),PINTTO,CNSETO,LONCHA,HEAV,CHLSN
+      CHARACTER*19  LIGREL,NOMT19,CHS(5),CHLSN
       CHARACTER*24  MAMOD,GRMAPE,NOMOB,PARA,VECNOR,GRP(3),XINDIC
+      CHARACTER*19  PINTTO,CNSETO,LONCHA,HEAV,PMILTO
+      LOGICAL       ISMALI,MAQUA
+      INTEGER       ITYPBO
+
       DATA          NSEMAX / 2 , 3 , 6 /
 C ----------------------------------------------------------------------
 
@@ -161,10 +165,6 @@ C     ------------------------------------------------------------------
      &              ZERO,IBID )
       CALL JEVEUO (NOMOB,'L',JM3D)
 
-C      DO 200 IMA=1,NBMAIL
-C        WRITE(6,*)'NUMAPR ',ZI(JM3D-1+IMA)
-C 200  CONTINUE
-
 C     ------------------------------------------------------------------
 C     III°) CREATION DU VECTEUR DES NORMALES SORTANTES
 C     ------------------------------------------------------------------
@@ -236,6 +236,7 @@ C     ------------------------------------------------------------------
         CALL JEVEUO(CHS(ICH)//'.CESL','L',JCESL(ICH))
  40   CONTINUE
 
+
       DO 400 IMA=1,NBMAIL
 
         DO 401 J=1,NDIM
@@ -250,6 +251,21 @@ C     ------------------------------------------------------------------
 
         ITYPMA=ZI(JTYPMA-1+NUMAPR)
         CALL PANBNO(ITYPMA,NBNOTT)
+
+        IF (ZI(JINDIC-1+1).EQ.1) THEN
+          CALL JEVEUO(GRP(1),'L',JGRP)
+          NMAENR = ZI(JINDIC-1+2)
+C         BOUCLE SUR LES MAILLES DE CHAQUE GROUPE
+          DO 402 I = 1,NMAENR
+            IF((IMA - ZI(JGRP-1+I)).EQ.0 .AND. NDIM.LE.2) THEN
+              ITYPBO=ZI(JTYPMA-1+NUMAB)
+              CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPBO),TYPBO)
+              NBNOBO=ZI(JCONX2+NUMAB) - ZI(JCONX2+NUMAB-1)
+            ELSE
+               NBNOBO=NDIME+1
+           ENDIF
+ 402      CONTINUE
+        ENDIF
 
 C       RECUPERATION DE LA SUBDIVISION LA MAILLE DE PEAU EN NIT
 C       SOUS-ELEMENTS
@@ -271,9 +287,8 @@ C         BOUCLE SUR LES NSE SOUS-ELEMENTS
 
 C           CO(J,IN) : Jeme COORDONNEE DU INeme SOMMET DU SOUS-ELEMENT
             DO 421 IN=1,NDIM
-              ICMP=(NDIME+1)*(CPT-1)+IN
+              ICMP=NBNOBO*(CPT-1)+IN
               CALL CESEXI('S',JCESD(2),JCESL(2),NUMAB,1,1,ICMP,ID(IN))
-
               INO=ZI(JCESV(2)-1+ID(IN))
               IF (INO.LT.1000) THEN
                 NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAB-1)+INO-1)
@@ -281,7 +296,7 @@ C           CO(J,IN) : Jeme COORDONNEE DU INeme SOMMET DU SOUS-ELEMENT
                 DO 422 J=1,NDIM
                   CO(J,IN)=ZR(JCOOR-1+3*(NUNO-1)+J)
  422            CONTINUE
-              ELSE
+              ELSEIF (INO.GT.1000 .AND. INO.LT.2000) THEN
                 DO 423 J=1,NDIM
                   ICMP=NDIM*(INO-1000-1)+J
                   CALL CESEXI('S',JCESD(1),JCESL(1),NUMAB,1,1,ICMP,IAD)
@@ -325,6 +340,7 @@ C             (ON INVERSE 1 ET 2 EN 2D
 C              ON INVERSE 2 ET 3 EN 3D)
               NSEORI=NSEORI+1
               INTEMP=ZI(JCESV(2)-1+ID(S1))
+
               ZI(JCESV(2)-1+ID(S1))=ZI(JCESV(2)-1+ID(S2))
               ZI(JCESV(2)-1+ID(S2))=INTEMP
             ENDIF

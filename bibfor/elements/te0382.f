@@ -1,7 +1,7 @@
       SUBROUTINE TE0382(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/10/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,9 +79,10 @@ C     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
       INTEGER NBS,JCOORS,IDFSE
       INTEGER INP
       INTEGER INO,NBSIGM,NBNAPA
-      INTEGER JPINTT,JCNSET,JLONCH,JVOXSE,JSIGSE
+      INTEGER JPINTT,JCNSET,JLONCH,JVOXSE,JSIGSE,JPMILT
       INTEGER NIT,NSE,IT,ISE,CPT,IN,J,IPG
       INTEGER LEVOIS
+      INTEGER IER,IRESE
 
       REAL*8 R8BID,RTBID3(3)
       REAL*8 DFDXP(9),DFDYP(9),POIDP,HE,HSE,HF,COEFF
@@ -97,14 +98,17 @@ C     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
       CHARACTER*2 NOEU
       CHARACTER*3 TYPNOR
       CHARACTER*8 TYPMAV, ELREFE
-      CHARACTER*8 FAMI(3),ELRESE(3)
+      CHARACTER*8 FAMI(6),ELRESE(6)
       CHARACTER*8 NOMPAR(2)
+      CHARACTER*8 ENR
       CHARACTER*16 PHENOM,BLAN16,NOMTSE
       CHARACTER*24 COORSE
       CHARACTER*24 VALK(2)
 
-      DATA    ELRESE /'SE2','TR3','TE4'/
-      DATA    FAMI   /'BID','XINT','XINT'/
+      LOGICAL ISMALI
+
+      DATA    ELRESE /'SE2','TR3','TE4','SE3','TR6','TE4'/
+      DATA    FAMI   /'BID','XINT','XINT','BID','XINT','XINT'/
 C
 C ----------------------------------------------------------------------
 C ----- NORME CALCULEE : SEMI-H1 (H1) ou ENERGIE (NRJ) -----------------
@@ -116,7 +120,6 @@ C ----------------------------------------------------------------------
 C 1 -------------- GESTION DES DONNEES ---------------------------------
 C ----------------------------------------------------------------------
       CALL JEMARQ()
-
       CALL INFNIV(IFM,NIV)
 
 C 1.1. --- LES INCONTOURNABLES
@@ -128,7 +131,6 @@ C
       CALL JEVECH('PERREUR','E',IERR)
 
 C 1.2. --- LES CARACTERISTIQUES DE LA MAILLE EN COURS
-
       CALL TECAEL(IADZI,IAZK24)
       VALK(1)=ZK24(IAZK24-1+3)
       VALK(2)=OPTION
@@ -159,7 +161,13 @@ C                   123456
 C
 C --- SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IDFSE
 C
-      CALL ELREF4(ELRESE(NDIM),FAMI(NDIM),IBID,NNO,IBID,NPG,
+      IF (ISMALI(ELREFE)) THEN
+        IRESE=0
+      ELSEIF (.NOT.ISMALI(ELREFE)) THEN
+        IRESE=3
+      ENDIF
+C
+      CALL ELREF4(ELRESE(NDIM+IRESE),FAMI(NDIM+IRESE),IBID,NNO,IBID,NPG,
      &     IBID,IBID,IDFSE,IBID)
 C
 C --- RECUPERATION DES CHAMPS IN "CLASSIQUES"
@@ -178,6 +186,10 @@ C
       CALL JEVECH('PLONCHA','L',JLONCH)
       CALL JEVECH('PCVOISX','L',JVOXSE)
       CALL JEVECH('PSIEFSER','L',JSIGSE)
+C     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
+      CALL TEATTR (NOMTE,'S','XFEM',ENR,IBID)
+      IF (IBID.EQ.0 .AND.(ENR.EQ.'XH'.OR.ENR.EQ.'XHC').AND. NDIM.LE.2)
+     &  CALL JEVECH('PPMILTO','L',JPMILT)
 C
 C ----------------------------------------------------------------------
 C ----------------------------- PREALABLES -----------------------------
@@ -365,16 +377,19 @@ C
 C ------- BOUCLE SUR LES 3 SOMMETS DU SOUS-ELEMENT
 C
           DO 311 IN=1,NNO
-            INO=ZI(JCNSET-1+(NDIM+1)*(CPT-1)+IN)
+            INO=ZI(JCNSET-1+NNO*(CPT-1)+IN)
             DO 312 J=1,NDIM
               IF (INO.LT.1000) THEN
-C             IL S'AGIT D'UN NOEUD DE L'ELT PARENT
+                ZR(JCOORS-1+NDIM*(IN-1)+J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
+              ELSEIF (INO.GT.1000 .AND. INO.LT.2000) THEN
                 ZR(JCOORS-1+NDIM*(IN-1)+J)=
-     &               ZR(IGEOM-1+NDIM*(INO-1)+J)
-              ELSE
-C             IL S'AGIT D'UN POINT D'INTERSECTION
+     &                               ZR(JPINTT-1+NDIM*(INO-1000-1)+J)
+              ELSEIF (INO.GT.2000 .AND. INO.LT.3000) THEN
                 ZR(JCOORS-1+NDIM*(IN-1)+J)=
-     &               ZR(JPINTT-1+NDIM*(INO-1000-1)+J)
+     &                               ZR(JPMILT-1+NDIM*(INO-2000-1)+J)
+              ELSEIF (INO.GT.3000) THEN
+                ZR(JCOORS-1+NDIM*(IN-1)+J)=
+     &                               ZR(JPMILT-1+NDIM*(INO-3000-1)+J)
               ENDIF
  312        CONTINUE
  311      CONTINUE

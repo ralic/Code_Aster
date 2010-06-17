@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,37 +54,42 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER     I,J,K,L,IJ,IFA,IPGF,INO,ISSPG,NI,NJ,NLI,PLI,PLJ,III
-      INTEGER     JINDCO,JDONCO,JLST,IPOIDS,IVF,IDFDE,JGANO,IGEOM,JSEUIL
-      INTEGER     IDEPM,IDEPL,IMATT,JSTANO,JPTINT,JAINT,JCFACE,JLONCH
-      INTEGER     IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,IVECT,JBASEC
-      INTEGER     NDIM,DDLH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF,JCOHES
-      INTEGER     NPG,NPGF,XOULA,IN(3),FAC(6,4),NBF
-      INTEGER     INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
-      INTEGER     INTEG,NFE,SINGU,JSTNO,NVIT
-      INTEGER     NNOL,PLA(27),LACT(8),NLACT,NOLA(27)
-      CHARACTER*8 ELREF,TYPMA,FPG,ELC,LAG,NOMRES(3)
-      REAL*8      HE,SIGN,VTMP(400),REAC,REAC12(3),FFI,LAMBDA,JAC,JACN
-      REAL*8      ND(3),DN,FFP(27),FFC(8),PTPB(3),PADIST
-      REAL*8      METR(2),AL,RHON,MU,RHOTK,P(3,3),SEUIL(60),FFN(27)
-      REAL*8      NDN(3,6),TAU1(3,6),TAU2(3,6),PB(3),RPB(3),R8PREM
-      REAL*8      RBID1(3,3),RBID2(3,3),RBID3(3,3),NBARY(3),DDOT,PP(3,3)
-      REAL*8      LST,R,RR,E,G(3),TT(3),RBID,TNCOH,TTCOH,BETASQ,PPTG(3)
-      REAL*8      DEPEQI,SQRNOR,SQRTAN,TTX(3),COHES(60)
-      REAL*8      BETA,GC,SIGMC,TSELAS,ALPHA0,ALPHA
-      REAL*8      DTANG(3),DNOR(3),VALRES(3),PENADH,RELA,PTPG(3)
-      LOGICAL     LBID,ADHER
-      REAL *8     CSTACO,CSTAFR,CPENCO,CPENFR,VITANG(3),X(4)
-      INTEGER     ZXAIN,XXMMVD,IMATE
-      LOGICAL     LPENAF,MALIN,LPENAC
-      CHARACTER*2 CODRET(3)
-      REAL*8       VIM(9),VIP(9)
-      REAL*8       SAUT(3),DSAUT(3)             
+      INTEGER      I,J,K,L,IJ,IFA,IPGF,INO,ISSPG,NI,NJ,NLI,PLI,PLJ
+      INTEGER      JINDCO,JDONCO,JLST,IPOIDS,IVF,IDFDE,JGANO,IGEOM
+      INTEGER      IDEPM,IDEPL,IMATT,JSTANO,JPTINT,JAINT,JCFACE,JLONCH
+      INTEGER      IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,IVECT,JBASEC
+      INTEGER      NDIM,DDLH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF,DDLM
+      INTEGER      NPG,NPGF,XOULA,FAC(6,4),NBF,JSEUIL
+      INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
+      INTEGER      INTEG,NFE,SINGU,JSTNO,NVIT
+      INTEGER      NNOL,PLA(27),LACT(8),NLACT
+      INTEGER      IER,IN,NCONTA
+      REAL*8       HE,SIGN,VTMP(400),REAC,REAC12(3),FFI,LAMBDA,JAC,JACN
+      REAL*8       ND(3),DN,FFP(27),FFC(8),PTPB(3),PADIST
+      REAL*8       METR(2),AL,RHON,MU,RHOTK,P(3,3),SEUIL(60),FFN(27)
+      REAL*8       TAU1(3),TAU2(3),PB(3),RPB(3)
+      REAL*8       RBID1(3,3),RBID2(3,3),RBID3(3,3),DDOT
+      REAL*8       LST,R,RR,E,G(3),TT(3),RBID
+      REAL*8       FFPC(27),DFBID(27,3),R3BID(3),R2BID(2)
+      REAL*8       CSTACO,CSTAFR,CPENCO,CPENFR,VITANG(3),X(4)
+      REAL*8       VTANG2(3),NVTNG2
+      INTEGER      ZXAIN,XXMMVD
+      INTEGER      JCOHES,III,IMATE
+      LOGICAL      LPENAF,MALIN,LPENAC,LBID,ADHER,ISMALI
+      REAL*8       DEPEQI,SQRNOR,SQRTAN,TTX(3),COHES(60)
+      REAL*8       BETA,GC,SIGMC,TSELAS,ALPHA0,ALPHA,R8PREM
+      REAL*8       DTANG(3),DNOR(3),VALRES(3),PENADH,RELA,PTPG(3)
+      REAL*8       VIM(9),VIP(9),PP(3,3)
+      REAL*8       SAUT(3),DSAUT(3),TNCOH,TTCOH,BETASQ,PPTG(3)        
       REAL*8       SIGMA(3,3),DSIDEP(3,3)
       REAL*8       AM(3),DAM(3),COEFF1,COEFF2
+      CHARACTER*2  CODRET(3)
+      CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG,ELREFC
+      CHARACTER*8 NOMRES(3)
       CHARACTER*16 OPTIO2,ENR
       REAL*8       AM2D(2),DAM2D(2),DSID2D(2,2),TAU11(3),TAU22(3)
-      
+      INTEGER      NPTF
+
 C.......................................................................
 
       CALL JEMARQ()
@@ -97,8 +102,7 @@ C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-      CALL XTEINI(NOMTE,DDLH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL)
-C
+      CALL XTEINI(NOMTE,DDLH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL,DDLM)
 C
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
@@ -106,19 +110,32 @@ C
       IF (NDIM .EQ. 3) THEN
          CALL CONFAC(TYPMA,IBID2,IBID,FAC,NBF)
       ENDIF
-C
-C     INITIALISATION DU VECTEUR DE TRAVAIL
+
       DO 40 J=1,NDDL
         VTMP(J)=0.D0
 40    CONTINUE
-C------ INITIALISATION DES VARIABLES INTERNES POUR CZM-XFEM
+
+C      INITIALISATION DES VARIABLES INTERNES POUR CZM-XFEM
        DO 295 III=1,9
        VIM(III)=0.0D0
        VIP(III)=0.0D0
  295   CONTINUE 
+
+C------------RECUPERATION DU TYPE DE CONTACT----------------------------
+C
+      NCONTA=0
+      CALL TEATTR (NOMTE,'C','XLAG',LAG,IBID)
+      IF (IBID.EQ.0.AND.LAG.EQ.'NOEUD') THEN
+        MALIN=.TRUE.
+        IF(ISMALI(ELREF))      NCONTA=1
+        IF(.NOT.ISMALI(ELREF)) NCONTA=3
+      ELSE
+        MALIN=.FALSE.
+      ENDIF
+      CALL ELELIN(NCONTA,ELREF,ELREFC,IBID,IBID)
 C
 C-----------------------------------------------------------------------
-C     RECUPERATION DES ENTRÃ‰ES / SORTIE
+C     RECUPERATION DES ENTRÉES / SORTIE
 C-----------------------------------------------------------------------
       CALL JEVECH('PGEOMER','E',IGEOM)
 C     DEPLACEMENT A L'EQUILIBRE PRECEDENT  (DEPMOI)       : 'PDEPL_M'
@@ -136,7 +153,6 @@ C     INCREMENT DE DEP DEPUIS L'EQUILIBRE PRECEDENT (DEPDEL) : 'PDEPL_P'
       CALL JEVECH('PBASECO','L',JBASEC)
       CALL JEVECH('PVECTUR','E',IVECT)
 
-
       CALL TEATTR(NOMTE,'S','XFEM',ENR,IBID)          
       IF (ENR.EQ.'XHC') THEN
         RELA =  ZR(JDONCO-1+10)
@@ -149,11 +165,11 @@ C     INCREMENT DE DEP DEPUIS L'EQUILIBRE PRECEDENT (DEPDEL) : 'PDEPL_P'
         CALL JEVECH('PCOHES' ,'L',JCOHES)
       ENDIF
 
-C     RÃ‰CUPÃ‰RATIONS DES DONNÃ‰ES SUR LE CONTACT ET
+C     RÉCUPÉRATIONS DES DONNÉES SUR LE CONTACT ET
 C     SUR LA TOPOLOGIE DES FACETTES
-
       NINTER=ZI(JLONCH-1+1)
       NFACE=ZI(JLONCH-1+2)
+      NPTF=ZI(JLONCH-1+3)
 
       DO 10 I=1,60
         INDCO(I) = ZI(JINDCO-1+I)
@@ -188,17 +204,23 @@ C     SCHEMA D'INTEGRATION NUMERIQUE ET ELEMENT DE REFERENCE DE CONTACT
         IF (INTEG.EQ.12) FPG='FPG2'
         IF (INTEG.EQ.13) FPG='FPG3'
         IF (INTEG.EQ.14) FPG='FPG4'
-        ELC='SE2'
-      ENDIF 
+        IF(ISMALI(ELREF)) THEN
+          ELC='SE2'
+        ELSE
+          ELC='SE3'
+        ENDIF
+
+      ENDIF
       CALL ELREF4(ELC,FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,IDFDEF,IBID)
+
 C
       DO 11 I=1,NFACE
-        DO 12 J=1,NDIM
-          CFACE(I,J)=ZI(JCFACE-1+NDIM*(I-1)+J)
+        DO 12 J=1,NPTF
+          CFACE(I,J)=ZI(JCFACE-1+NPTF*(I-1)+J)
  12     CONTINUE
  11   CONTINUE
 
-C     RECUPERATION DU COEFFICIENT DE MISE Ã€ L'ECHELLE DES PRESSIONS
+C     RECUPERATION DU COEFFICIENT DE MISE À L'ECHELLE DES PRESSIONS
       E=ZR(JDONCO-1+5)
 
 C     COEFFICIENTS DE STABILISATION
@@ -217,63 +239,42 @@ C     COEFFICIENTS DE PENALISATION
 
 C     PENALISATION PURE
 C     PENALISATION DU CONTACT
-       LPENAC=.FALSE.
-       IF (CSTACO.EQ.0.D0) THEN
-       CSTACO=CPENCO
-       LPENAC=.TRUE.
-       ENDIF
+      LPENAC=.FALSE.
+      IF (CSTACO.EQ.0.D0) THEN
+        CSTACO=CPENCO
+        LPENAC=.TRUE.
+      ENDIF
 C     PENALISATION DU FROTTEMENT
-       LPENAF=.FALSE.
+      LPENAF=.FALSE.
       IF (CSTAFR.EQ.0.D0) THEN
         LPENAF=.TRUE.
       ENDIF
 
-C     RECUPERATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
-      DO 13 NLI=1,NINTER
-        DO 14 J=1,NDIM
-          NDN(J,NLI)  =ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J)
-          TAU1(J,NLI)=ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J+NDIM)
-          IF (NDIM .EQ. 3)
-     &      TAU2(J,NLI)=ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J+2*NDIM)
- 14     CONTINUE
- 13   CONTINUE
-C
-C     L'ELEMENT EST-IL LINEAIRE OU QUADRATIQUE
-C
-      CALL TEATTR (NOMTE,'C','XLAG',LAG,IBID)
-      IF (IBID.EQ.0.AND.LAG.EQ.'NOEUD') THEN
-        MALIN=.TRUE.
-      ELSE
-        MALIN=.FALSE.
-      ENDIF
 C
 C     LISTE DES LAMBDAS ACTIFS
 C
-      IF (MALIN) THEN
-        CALL XLACTI(TYPMA,NINTER,JAINT,LACT,NLACT)
-      ENDIF
+      IF(MALIN) CALL XLACTI(TYPMA,NINTER,JAINT,LACT,NLACT)
 C
 C-----------------------------------------------------------------------
 C
 C     BOUCLE SUR LES FACETTES
+
       DO 100 IFA=1,NFACE
 C       NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
         IF (MALIN) THEN
-          NNOL=NNO
+          IF (NCONTA.EQ.1) NNOL=NNO
+          IF (NCONTA.EQ.3) NNOL=NNOS
           DO 15 I=1,NNOL
-            CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,I,PLI)
+            CALL XPLMAT(NDIM,DDLH,NFE,DDLC,DDLM,NNO,NNOM,I,PLI)
             PLA(I)=PLI
  15       CONTINUE
         ELSE
           NNOL=NNOF
           DO 16 I=1,NNOF
 C           XOULA  : RENVOIE LE NUMERO DU NOEUD PORTANT CE LAMBDA
-
             NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
 C           PLACE DU LAMBDA DANS LA MATRICE
-
-            CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
-          
+            CALL XPLMAT(NDIM,DDLH,NFE,DDLC,DDLM,NNO,NNOM,NI,PLI)
             PLA(I)=PLI
  16       CONTINUE
         ENDIF
@@ -285,23 +286,23 @@ C         INDICE DE CE POINT DE GAUSS DANS INDCO
           ISSPG=NPGF*(IFA-1)+IPGF
 
 C         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
-C         ET DES FF DE L'Ã‰LÃ‰MENT PARENT AU POINT DE GAUSS
-C         ET LA NORMALE ND ORIENTÃ‰E DE ESCL -> MAIT
-          IF (NDIM .EQ. 3) THEN
-
-            CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
-     &                                         'NON',JAC,FFP,RBID,ND)
-
+C         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
+C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
+          IF (NDIM.EQ.3) THEN
+            CALL XJACFF(ELREF,ELREFC,ELC,NDIM,FPG,JPTINT,IFA,CFACE,IPGF,
+     &         NNO,IGEOM,JBASEC,G,'NON',JAC,FFP,FFPC,DFBID,ND,TAU1,TAU2)
           ELSEIF (NDIM.EQ.2) THEN
-  
-            CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
-     &                                         'NON',JAC,FFP,RBID,ND)  
+            CALL XJACF2(ELREF,ELREFC,ELC,NDIM,FPG,JPTINT,IFA,CFACE,NPTF,
+     &      IPGF,NNO,IGEOM,JBASEC,G,'NON',JAC,FFP,FFPC,DFBID,ND,TAU1)
           ENDIF
-C        CALCUL DES FONCTIONS DE FORMES DE CONTACT DANS LE CAS LINEAIRE
-          IF (MALIN) THEN
+
+C        CALCUL DES FONCTIONS DE FORMES DE CONTACT DANS LE CAS LAG NOEUD
+          IF (NCONTA.EQ.1) THEN
             CALL XMOFFC(LACT,NLACT,NNO,FFP,FFC)
+          ELSEIF (NCONTA.EQ.3) THEN
+            CALL XMOFFC(LACT,NLACT,NNOS,FFPC,FFC)
           ENDIF
-C
+
 C         CE POINT DE GAUSS EST-IL SUR UNE ARETE?
           K=0
           DO 17 I=1,NINTER
@@ -331,10 +332,10 @@ C         NE CONTIENT PAS DE NOEUDS
           IF ((FPG(1:3).EQ.'FPG').OR.(FPG.EQ.'GAUSS')
      &             .OR.(FPG.EQ.'XCON')) NVIT=1
 C
-C        REACTION CONTACT = SOMME DES FF(I).LAMBDA(I) POUR I=1,NNOL
-C        RQ : LA VALEUR DANS IDEPPL EST LA PRESSION DIVISEE PAR E
-C        REACTION FROTT = SOMME DES FF(I).(LAMB1(I).TAU1+LAMB2(I).TAU2)
-C       (DEPDEL+DEPMOI)
+C         RÉACTION CONTACT = SOMME DES FF(I).LAMBDA(I) POUR I=1,NNOL
+C         RQ : LA VALEUR DANS IDEPPL EST LA PRESSION DIVISÉE PAR E
+C         RÉACTION FROTT = SOMME DES FF(I).(LAMB1(I).TAU1+LAMB2(I).TAU2)
+C        (DEPDEL+DEPMOI)
           REAC=0.D0
           CALL VECINI(3,0.D0,REAC12)
           DO 120 I = 1,NNOL
@@ -348,27 +349,20 @@ C       (DEPDEL+DEPMOI)
               NLI=CFACE(IFA,I)
             ENDIF
             REAC = REAC + FFI * (ZR(IDEPL-1+PLI)+ZR(IDEPM-1+PLI)) * E
+
             DO 121 J=1,NDIM
               IF (NDIM .EQ.3) THEN
-                REAC12(J)=REAC12(J)+FFI*(ZR(IDEPL-1+PLI+1)*TAU1(J,NLI)
-     &                                  +ZR(IDEPM-1+PLI+1)*TAU1(J,NLI)
-     &                                  +ZR(IDEPM-1+PLI+2)*TAU2(J,NLI)
-     &                                  +ZR(IDEPL-1+PLI+2)*TAU2(J,NLI))
+                REAC12(J)=REAC12(J)+FFI*(ZR(IDEPL-1+PLI+1)*TAU1(J)
+     &                                  +ZR(IDEPM-1+PLI+1)*TAU1(J)
+     &                                  +ZR(IDEPM-1+PLI+2)*TAU2(J)
+     &                                  +ZR(IDEPL-1+PLI+2)*TAU2(J))
               ELSEIF (NDIM.EQ.2) THEN
-                REAC12(J)=REAC12(J)+FFI*(ZR(IDEPL-1+PLI+1)*TAU1(J,NLI)
-     &                                  +ZR(IDEPM-1+PLI+1)*TAU1(J,NLI))
+                REAC12(J)=REAC12(J)+FFI*(ZR(IDEPL-1+PLI+1)*TAU1(J)
+     &                                  +ZR(IDEPM-1+PLI+1)*TAU1(J))
               ENDIF
  121        CONTINUE
  120      CONTINUE
 
-C         NORMALE AU CENTRE DE LA FACETTE
-          CALL VECINI(3,0.D0,NBARY)
-          DO 122 I=1,NNOF
-            NBARY(1)=NBARY(1)+NDN(1,CFACE(IFA,I))/NNOF
-            NBARY(2)=NBARY(2)+NDN(2,CFACE(IFA,I))/NNOF
-            IF (NDIM .EQ. 3)
-     &        NBARY(3)=NBARY(3)+NDN(3,CFACE(IFA,I))/NNOF
- 122      CONTINUE
 
 C         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
           IF (SINGU.EQ.1) THEN
@@ -384,9 +378,11 @@ C         I) CALCUL DES SECONDS MEMBRES DE CONTACT
 C         ..............................
 
           IF (OPTION.EQ.'CHAR_MECA_CONT') THEN
+
+
 C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT LE VECTEUR LN2
             IF (INDCO(ISSPG).EQ.0) THEN
-C
+
               IF (NVIT.NE.0) THEN
 
                 DO 130 I = 1,NNOL
@@ -401,24 +397,25 @@ C
                   VTMP(PLI) = VTMP(PLI) - REAC*FFI*JAC/CSTACO*E
  130            CONTINUE
 
-              ENDIF   
+              ENDIF
 C
 C           SI CONTACT POUR CE PG : ON REMPLIT LES VECTEURS LN1 ET LN2
-            ELSE IF (INDCO(ISSPG).EQ.1) THEN     
-
+            ELSE IF (INDCO(ISSPG).EQ.1) THEN
 C
 C             CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
               CALL VECINI(3,0.D0,SAUT)
               DO 140 I = 1,NNO
+                CALL INDENT(I,DDLS,DDLM,NNOS,IN)
+
                 DO 141 J = 1,DDLH
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(I) *
-     &                             (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+J)
-     &                               + ZR(IDEPL-1+DDLS*(I-1)+NDIM+J) )
+     &                             (   ZR(IDEPM-1+IN+NDIM+J)
+     &                               + ZR(IDEPL-1+IN+NDIM+J) )
  141            CONTINUE
                 DO 142 J = 1,SINGU*NDIM
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * RR *
-     &                          (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+DDLH+J)
-     &                            + ZR(IDEPL-1+DDLS*(I-1)+NDIM+DDLH+J) )
+     &                          (   ZR(IDEPM-1+IN+NDIM+DDLH+J)
+     &                            + ZR(IDEPL-1+IN+NDIM+DDLH+J) )
  142            CONTINUE
  140          CONTINUE
               DN = 0.D0
@@ -426,35 +423,38 @@ C             CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
                 DN = DN + SAUT(J)*ND(J)
  143          CONTINUE
 
-C
 C             TERME LN1
               IF (LPENAC) THEN
 C               PENALISATION DU CONTACT
                 DO 153 I = 1,NNO
+                  CALL INDENT(I,DDLS,DDLM,NNOS,IN)
+
                   DO 154 J = 1,DDLH
-                    VTMP(DDLS*(I-1)+NDIM+J) =
-     &              VTMP(DDLS*(I-1)+NDIM+J) -
+                    VTMP(IN+NDIM+J) =
+     &              VTMP(IN+NDIM+J) -
      &              (CPENCO*DN)*2.D0*FFP(I)*ND(J)*JAC
  154              CONTINUE
                   DO 155 J = 1,SINGU*NDIM
-                    VTMP(DDLS*(I-1)+NDIM+DDLH+J) =
-     &              VTMP(DDLS*(I-1)+NDIM+DDLH+J) -
+                    VTMP(IN+NDIM+DDLH+J) =
+     &              VTMP(IN+NDIM+DDLH+J) -
      &              (CPENCO*DN)*2.D0*FFP(I)*RR*ND(J)*JAC
  155              CONTINUE
  153            CONTINUE
               ELSE
-              DO 150 I = 1,NNO
-                DO 151 J = 1,DDLH
-                  VTMP(DDLS*(I-1)+NDIM+J) =
-     &            VTMP(DDLS*(I-1)+NDIM+J) +
-     &            (REAC-CPENCO*DN)*2.D0*FFP(I)*ND(J)*JAC
- 151            CONTINUE
-                DO 152 J = 1,SINGU*NDIM
-                  VTMP(DDLS*(I-1)+NDIM+DDLH+J) =
-     &            VTMP(DDLS*(I-1)+NDIM+DDLH+J) +
-     &            (REAC-CPENCO*DN)*2.D0*FFP(I)*RR*ND(J)*JAC
- 152            CONTINUE
- 150          CONTINUE
+                DO 150 I = 1,NNO
+                  CALL INDENT(I,DDLS,DDLM,NNOS,IN)
+
+                  DO 151 J = 1,DDLH
+                    VTMP(IN+NDIM+J) =
+     &              VTMP(IN+NDIM+J) +
+     &              (REAC-CPENCO*DN)*2.D0*FFP(I)*ND(J)*JAC
+ 151              CONTINUE
+                  DO 152 J = 1,SINGU*NDIM
+                    VTMP(IN+NDIM+DDLH+J) =
+     &              VTMP(IN+NDIM+DDLH+J) +
+     &              (REAC-CPENCO*DN)*2.D0*FFP(I)*RR*ND(J)*JAC
+ 152              CONTINUE
+ 150            CONTINUE
               ENDIF
 C
 C             TERME LN2
@@ -475,18 +475,16 @@ C             TERME LN2
  160          CONTINUE
 
             ELSE
-C             SI INDCO N'EST NI Ã‰GAL Ã€ 0 NI Ã‰GAL Ã€ 1
+C             SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1
 C             PROBLEME DE STATUT DE CONTACT.
-
-              CALL ASSERT(INDCO(ISSPG).EQ.0
-     &                    .OR. INDCO(ISSPG).EQ.1)         
-                      
+              CALL ASSERT(INDCO(ISSPG).EQ.0 .OR. INDCO(ISSPG).EQ.1)
             END IF
 C
 C         II) CALCUL DES SECONDS MEMBRES DE FROTTEMENT
 C         ..............................
 
           ELSEIF (OPTION.EQ.'CHAR_MECA_FROT') THEN
+
             IF (MU.EQ.0.D0.OR.SEUIL(ISSPG).EQ.0.D0) INDCO(ISSPG) = 0
 
 C           II.1. SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
@@ -496,15 +494,17 @@ C           II.1. SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
 
                 CALL VECINI(3,0.D0,SAUT)
                 DO 161 I = 1,NNO
+                  CALL INDENT(I,DDLS,DDLM,NNOS,IN)
+
                   DO 162 J = 1,DDLH
                     SAUT(J) = SAUT(J) - 2.D0 * FFP(I) *
-     &                       (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+J)
-     &                       + ZR(IDEPL-1+DDLS*(I-1)+NDIM+J) )
+     &                       (   ZR(IDEPM-1+IN+NDIM+J)
+     &                       + ZR(IDEPL-1+IN+NDIM+J) )
  162              CONTINUE
                   DO 163 J = 1,SINGU*NDIM
                     SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * RR *
-     &                       (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+DDLH+J)
-     &                       + ZR(IDEPL-1+DDLS*(I-1)+NDIM+DDLH+J) )
+     &                       (   ZR(IDEPM-1+IN+NDIM+DDLH+J)
+     &                       + ZR(IDEPL-1+IN+NDIM+DDLH+J) )
  163              CONTINUE
  161            CONTINUE
 
@@ -520,17 +520,18 @@ C           II.1. SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
                     NLI=CFACE(IFA,I)
                   ENDIF
 
-                  METR(1)=DDOT(NDIM,TAU1(1,NLI),1,SAUT,1)
-                  IF (NDIM.EQ.3) METR(2)=DDOT(NDIM,TAU2(1,NLI),1,
+                  METR(1)=DDOT(NDIM,TAU1(1),1,SAUT,1)
+                  IF (NDIM.EQ.3) METR(2)=DDOT(NDIM,TAU2(1),1,
      &                                        SAUT,1)
-                  TT(1)=DDOT(NDIM,TAU1(1,NLI),1,REAC12,1)
-                  IF (NDIM .EQ.3) TT(2)=DDOT(NDIM,TAU2(1,NLI),1,
+                  TT(1)=DDOT(NDIM,TAU1(1),1,REAC12,1)
+                  IF (NDIM .EQ.3) TT(2)=DDOT(NDIM,TAU2(1),1,
      &                                       REAC12,1)
                   DO 167 K=1,NDIM-1
                     VTMP(PLI+K) = VTMP(PLI+K) + TT(K)*FFI*JAC
  167              CONTINUE
  165            CONTINUE
-          
+
+
 C         II.2. CALCUL DES SECONDS MEMBRES DE COHESION
 C         ..............................
 C            II.2.1. VERIFICATION DE L'ACTIVATION DE LA LOI COHESIVE
@@ -541,7 +542,7 @@ C                    ET RECUPERATION DES PARAMETRES MATERIAUX :
 C                                      
                 NOMRES(1) = 'GC'
                 NOMRES(2) = 'SIGM_C'
-                NOMRES(3) = 'PENA_ADHERENCE'
+                NOMRES(3) = 'PENA_ADH'
 C
                 CALL RCVALA ( ZI(IMATE),' ','RUPT_FRAG',0,' ',0.D0,3,
      &                 NOMRES,VALRES,CODRET, 'FM' )
@@ -590,10 +591,10 @@ C
                 ENDIF
                 DO 211 J=1,NDIM
                 IF (NDIM .EQ.3) THEN
-                   TAU11(J)=TAU11(J)+FFI*TAU1(J,NLI)
-                   TAU22(J)=TAU22(J)+FFI*TAU2(J,NLI)
+                   TAU11(J)=TAU11(J)+FFI*TAU1(J)
+                   TAU22(J)=TAU22(J)+FFI*TAU2(J)
                 ELSEIF (NDIM.EQ.2) THEN
-                   TAU11(J)=TAU11(J)+FFI*TAU1(J,NLI)
+                   TAU11(J)=TAU11(J)+FFI*TAU1(J)
                 ENDIF
  211           CONTINUE
  210           CONTINUE
@@ -738,8 +739,8 @@ C                   ALPHA NE CORRESPOND A AUCUN CAS
                       FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                       NLI=CFACE(IFA,I)
                     ENDIF
-                    TTX(1)=DDOT(NDIM,TAU1(1,NLI),1,DTANG,1)
-                    IF (NDIM .EQ.3) TTX(2)=DDOT(NDIM,TAU2(1,NLI),
+                    TTX(1)=DDOT(NDIM,TAU1(1),1,DTANG,1)
+                    IF (NDIM .EQ.3) TTX(2)=DDOT(NDIM,TAU2(1),
      &                                           1,DTANG,1)
                     DO 465 K=1,NDIM-1
                       VTMP(PLI+K) = VTMP(PLI+K)
@@ -766,23 +767,25 @@ C                   ALPHA NE CORRESPOND A AUCUN CAS
                 ENDIF           
  53             CONTINUE    
               ENDIF
-              
+
 C           II.3)SI CONTACT POUR CE PG : ON REMPLIT LN1 ET LN3
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
-            
-C             P : OPÃ‰RATEUR DE PROJECTION
+
+C             P : OPÉRATEUR DE PROJECTION
               CALL XMAFR1(NDIM,ND,P)
 
-C             PBOUL SELON L'Ã‰TAT D'ADHERENCE DU PG (AVEC DEPDEL)
+C             PBOUL SELON L'ÉTAT D'ADHERENCE DU PG (AVEC DEPDEL)
               CALL VECINI(3,0.D0,SAUT)
               DO 175 INO=1,NNO
+                CALL INDENT(INO,DDLS,DDLM,NNOS,IN)
+
                 DO 176 J=1,DDLH
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) *
-     &                                ZR(IDEPL-1+DDLS*(INO-1)+NDIM+J)
+     &                                ZR(IDEPL-1+IN+NDIM+J)
  176            CONTINUE
                 DO 177 J = 1,SINGU*NDIM
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) * RR *
-     &                              ZR(IDEPL-1+DDLS*(INO-1)+NDIM+DDLH+J)
+     &                              ZR(IDEPL-1+IN+NDIM+DDLH+J)
 
  177            CONTINUE
  175          CONTINUE
@@ -818,14 +821,16 @@ C               CALCUL DE PT.PBOUL
               ENDIF
 
               DO 185 I = 1,NNO
+                CALL INDENT(I,DDLS,DDLM,NNOS,IN)
+
                 DO 186 J = 1,DDLH
-                  VTMP(DDLS*(I-1)+NDIM+J) =
-     &            VTMP(DDLS*(I-1)+NDIM+J) +
+                  VTMP(IN+NDIM+J) =
+     &            VTMP(IN+NDIM+J) +
      &            2.D0*MU*SEUIL(ISSPG)* PTPB(J)*FFP(I)*JAC
  186            CONTINUE
                 DO 187 J = 1,SINGU*NDIM
-                  VTMP(DDLS*(I-1)+NDIM+DDLH+J) =
-     &            VTMP(DDLS*(I-1)+NDIM+DDLH+J) +
+                  VTMP(IN+NDIM+DDLH+J) =
+     &            VTMP(IN+NDIM+DDLH+J) +
      &            2.D0*RR*MU*SEUIL(ISSPG)* PTPB(J)*FFP(I)*JAC
  187            CONTINUE
  185          CONTINUE
@@ -834,9 +839,9 @@ C             TERME LN3
 
 C             CALCUL DE REAC12-PBOUL
               IF (LPENAF) CSTAFR=CPENFR
-                DO 180 I=1,NDIM
-                  RPB(I)=REAC12(I)-PB(I)
- 180            CONTINUE
+              DO 180 I=1,NDIM
+                RPB(I)=REAC12(I)-PB(I)
+ 180          CONTINUE
   
               DO 194 I = 1,NNOL
                 PLI=PLA(I)
@@ -849,9 +854,9 @@ C             CALCUL DE REAC12-PBOUL
                   NLI=CFACE(IFA,I)
                 ENDIF
 
-                METR(1)=DDOT(NDIM,TAU1(1,NLI),1,RPB,1)
+                METR(1)=DDOT(NDIM,TAU1(1),1,RPB,1)
                 IF(NDIM.EQ.3)
-     &            METR(2)=DDOT(NDIM,TAU2(1,NLI),1,RPB,1)
+     &            METR(2)=DDOT(NDIM,TAU2(1),1,RPB,1)
                 DO 195 K=1,NDIM-1
                   VTMP(PLI+K) = VTMP(PLI+K)
      &                  + MU*SEUIL(ISSPG)/CSTAFR * METR(K)*FFI*JAC
@@ -860,10 +865,9 @@ C             CALCUL DE REAC12-PBOUL
  194          CONTINUE
 
             ELSE
-C             SI INDCO N'EST NI Ã‰GAL Ã€ 0 NI Ã‰GAL Ã€ 1
+C             SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1
 C             PROBLEME DE STATUT DE CONTACT.
-              CALL ASSERT(INDCO(ISSPG).EQ.0 .OR.
-     &                      INDCO(ISSPG).EQ.1)
+              CALL ASSERT(INDCO(ISSPG).EQ.0 .OR. INDCO(ISSPG).EQ.1)
             END IF
 
           ELSE
@@ -877,7 +881,7 @@ C         FIN DE BOUCLE SUR LES POINTS DE GAUSS
 
 C       FIN DE BOUCLE SUR LES FACETTES
  100  CONTINUE
- 
+
 C
 C-----------------------------------------------------------------------
 C     COPIE DES CHAMPS DE SORTIES ET FIN
@@ -894,13 +898,14 @@ C
 C     SUPPRESSION DES DDLS DE DEPLACEMENT SEULEMENT POUR LES XHTC
       IF (DDLH*NFE.NE.0) THEN
         CALL JEVECH('PSTANO' ,'L',JSTNO)
-        CALL XTEDDL(NDIM,DDLH,NFE,DDLS,NDDL,NNOS,ZI(JSTNO),
-     &               .FALSE.,LBID,OPTION,NOMTE,RBID,ZR(IVECT))
+        CALL XTEDDL(NDIM,DDLH,NFE,DDLS,NDDL,NNOS,NNOS,ZI(JSTNO),
+     &              .FALSE.,LBID,OPTION,NOMTE,RBID,ZR(IVECT),DDLM)
       ENDIF
 C     SUPPRESSION DES DDLS DE CONTACT
       IF (MALIN.AND.NLACT.LT.NNO) THEN
-        CALL XTEDDL(NDIM,DDLH,NFE,DDLS,NDDL,NNOS,LACT,
-     &              .TRUE.,.TRUE.,OPTION,NOMTE,RBID,ZR(IVECT))
+        CALL XTEDDL(NDIM,DDLH,NFE,DDLS,NDDL,NNO,NNOS,LACT,
+     &              .TRUE.,.TRUE.,OPTION,NOMTE,RBID,ZR(IVECT),DDLM)
       ENDIF
+
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF OPTIONS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 % RESPONSABLE PELLET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -79,6 +79,7 @@ OPTION__
         PLSN     NEUT_R
         PLST     NEUT_R
         PSTANO   NEUT_I
+        PPMILTO  NEUT_R
        <<  CADRE X-FEM : PPINTTO : COORDONNEES DES POINTS D INTERSECTION
                          PCNSETO : CONNECTIVITE DES SOUS-ELEMENTS
                          PHEAVTO : VALEURS DE L HEAVISIDE SUR LES SS-ELTS

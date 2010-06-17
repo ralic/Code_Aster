@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 31/05/2010   AUTEUR JAUBERT A.JAUBERT 
+#@ MODIF xfem Messages  DATE 16/06/2010   AUTEUR CARON A.CARON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -316,6 +316,40 @@ cata_msg={
 
      Dans tout le cas, il faut vérifier que l'angle de propagation de la fissure calculée
      par CALC_G a sens physique pour le problème à résoudre.
+"""),
+
+63: _("""
+  -> ---Eléments XFEM quadratiques 2D---
+       Un sous élément est intersecté par l'iso-zéro de la level set normale en deux endroits
+       sur une arête.
+       Cette configuration est proscrite.
+"""),
+
+64: _("""
+  -> ---Eléments XFEM quadratiques 2D---
+     Le calcul ne peut aboutir pour l'une des raisons suivante :
+     - les calculs des coordonnées des points d'intersection entre un élément et la fissure
+       se sont mal déroulés
+     - l'élément ne peut être découpé selon la configuration de fissure qui le traverse
+"""),
+
+65: _("""
+  -> ---Eléments XFEM quadratiques 2D---
+     On recherche un point de l'iso-zéro de la level set normale intersectant l'arête
+     d'un sous élément qui n'existe pas.
+"""),
+
+66: _("""
+  -> ---Eléments XFEM quadratiques 2D---
+     Le calcul d'abscisse curviligne sur une arête quadratique ne peut aboutir pour l'une des
+     raisons suivante :
+     - les trois points qui définissent l'arête quadratique sont identiques
+     - l'arête est "trop" arrondie
+"""),
+
+67: _("""
+  -> ---Eléments XFEM quadratiques 2D---
+     Newton : nombre d'itérations maximal atteint
 """),
 
 }

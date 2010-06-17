@@ -1,9 +1,9 @@
-      SUBROUTINE XTEDDL(NDIM,DDLH,NFE,DDLS,NDDL,NNO,STANO,
+      SUBROUTINE XTEDDL(NDIM,DDLH,NFE,DDLS,NDDL,NNO,NNOS,STANO,
      &                  LCONTX,MATSYM,OPTION,NOMTE,
-     &                  MAT,VECT)
+     &                  MAT,VECT,DDLM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,11 +23,11 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 
       IMPLICIT NONE
-      INTEGER      NDIM,DDLH,NFE,DDLC,DDLS,NDDL,NNO,STANO(*)
+      INTEGER      NDIM,DDLH,NFE,DDLS,NDDL,NNO,NNOS,STANO(*)
       LOGICAL      MATSYM,LCONTX
       CHARACTER*16 OPTION,NOMTE
       REAL*8       MAT(*),VECT(*)
-
+      INTEGER      DDLM
 C     BUT: SUPPRIMER LES DDLS "EN TROP" (VOIR BOOK III 09/06/04
 C                                         ET  BOOK IV  30/07/07)
 
@@ -37,6 +37,7 @@ C OUT  NFE    : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
 C IN   DDLS   : NOMBRE DE DDL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
 C IN   NDDL   : NOMBRE DE DDL TOTAL DE L'ÉLÉMENT
 C IN   NNO    : NOMBRE DE NOEUDS DE L'ELEMENT PORTANT DES DDLS DE DEPL
+C IN   NNOS   : NOMBRE DE NOEUDS SOMMENT DE L'ELEMENT
 C IN   STANO  : STATUT DES NOEUDS
 C IN   LCONTX : ON S'OCCUPE DES DDLS DE CONTACT
 C IN   MATSYM : STOCKAGE DE LA MATRICE SYMÉTRIQUE ?
@@ -46,6 +47,7 @@ C IN   NOMTE  : NOM DU TYPE ELEMENT
 C IN/OUT :   MAT   : MATRICE DE RIGIDITÉ
 C IN/OUT :   VECT  : VECTEUR SECOND MEMBRE
 C
+C IN   DDLM   : NOMBRE DE DDL (DEPL+CONTACT) A CHAQUE NOEUD MILIEU
 
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -62,24 +64,22 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C-----------------------------------------------------------------------
 C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 
-       INTEGER      JPOS,IER,ISTATU,INO,K,I,J,IELIM
+       INTEGER      JPOS,IER,ISTATU,INO,K,I,J,IELIM,IN
        CHARACTER*8  TYENEL
        CHARACTER*19 POSDDL
        LOGICAL      LELIM
        REAL*8       R8MAEM,DMAX,DMIN,CODIA
-
+C
 C-------------------------------------------------------------
 
       CALL JEMARQ()
 
 C     TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
       CALL TEATTR (NOMTE,'S','XFEM',TYENEL,IER)
-C     
       IF (TYENEL.EQ.'XH'.OR.TYENEL.EQ.'XHC') THEN
         IELIM=1
       ELSEIF (TYENEL.EQ.'XT'.OR.TYENEL.EQ.'XTC') THEN
@@ -97,7 +97,7 @@ C     VRAI SI ON ELIMINE LES DDLS D'AU MOINS UN NOEUD
       LELIM=.FALSE.
 
       DO 100 INO = 1,NNO
-
+        CALL INDENT(INO,DDLS,DDLM,NNOS,IN)
 C       ENRICHISSEMENT DU NOEUD
         ISTATU = STANO(INO)
 
@@ -111,9 +111,9 @@ C         PB DE STATUT DES NOEUDS ENRICHIS
           IF (ISTATU.EQ.1) THEN
 C           ON NE SUPPRIME AUCUN DDL
           ELSE IF (ISTATU.EQ.0) THEN
-C           ON SUPPRIME LES DDLS H
+C           ON SUPPRIME LES DDL H
             DO 10 K = 1,NDIM
-              ZI(JPOS-1+DDLS*(INO-1)+NDIM+K)=1
+              ZI(JPOS-1+IN+NDIM+K)=1
    10       CONTINUE
             LELIM=.TRUE.
           END IF
@@ -128,9 +128,9 @@ C         PB DE STATUT DES NOEUDS ENRICHIS
           IF (ISTATU.EQ.2) THEN
 C           ON NE SUPPRIME AUCUN DDL
           ELSE IF (ISTATU.EQ.0) THEN
-C           ON SUPPRIME LES DDLS E
+C           ON SUPPRIME LES DDL E
             DO 20 K = 1,NFE*NDIM
-              ZI(JPOS-1+DDLS*(INO-1)+NDIM+DDLH+K)=1
+              ZI(JPOS-1+IN+NDIM+DDLH+K)=1
    20       CONTINUE
             LELIM=.TRUE.
           END IF
@@ -145,37 +145,39 @@ C         PB DE STATUT DES NOEUDS ENRICHIS
           IF (ISTATU.EQ.3) THEN
 C           ON NE SUPPRIME AUCUN DDL
           ELSE IF (ISTATU.EQ.2) THEN
-C           ON SUPPRIME LES DDLS H
+C           ON SUPPRIME LES DDL H
             DO 30 K = 1,NDIM
-              ZI(JPOS-1+DDLS*(INO-1)+NDIM+K)=1
+              ZI(JPOS-1+IN+NDIM+K)=1
    30       CONTINUE
             LELIM=.TRUE.
           ELSE IF (ISTATU.EQ.1) THEN
-C           ON SUPPRIME LES DDLS E
+C           ON SUPPRIME LES DDL E
             DO 40 K = 1,NFE*NDIM
-              ZI(JPOS-1+DDLS*(INO-1)+NDIM+DDLH+K)=1
+              ZI(JPOS-1+IN+NDIM+DDLH+K)=1
    40       CONTINUE
             LELIM=.TRUE.
           ELSE IF (ISTATU.EQ.0) THEN
 C           ON SUPPRIME LES DDLS H ET E
             DO 50 K = 1,NDIM
-              ZI(JPOS-1+DDLS*(INO-1)+NDIM+K)=1
+              ZI(JPOS-1+IN+NDIM+K)=1
    50       CONTINUE
             DO 60 K = 1,NFE*NDIM
-              ZI(JPOS-1+DDLS*(INO-1)+NDIM+DDLH+K)=1
+              ZI(JPOS-1+IN+NDIM+DDLH+K)=1
    60       CONTINUE
             LELIM=.TRUE.
           END IF
-        ELSEIF (IELIM.EQ.4) THEN
 
+        ELSEIF (IELIM.EQ.4) THEN
 C         4) CAS DU CONTACT
 C         ------------------------------
-          IF (ISTATU.EQ.0) THEN
+          IF (INO.LE.NNOS) THEN
+            IF (ISTATU.EQ.0) THEN
 C           ON SUPPRIME LES DDLS LAGS_C, LAGS_F1 ET LAGS_F2
-            DO 70 K = 1,NDIM
-              ZI(JPOS-1+DDLS*(INO-1)+NDIM+DDLH+NFE*NDIM+K)=1
-   70       CONTINUE
-            LELIM=.TRUE.
+              DO 70 K = 1,NDIM
+                ZI(JPOS-1+IN+NDIM+DDLH+NFE*NDIM+K)=1
+   70         CONTINUE
+              LELIM=.TRUE.
+            ENDIF
           ENDIF
         ENDIF
 
@@ -242,7 +244,7 @@ C        MISE A ZERO DES TERMES I
  200    CONTINUE
 
       ENDIF
- 
+
       CALL JEDETR(POSDDL)
 
       CALL JEDEMA()

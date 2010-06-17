@@ -1,0 +1,407 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR massin       MASSIN Patrick         DATE 16/06/2010 - 16:53:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013731 DU 2009-08-18 16:57:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : Developpement d'elements X-FEM avec interfaces courbes en quadratique et prise en compte du contact
+FONCTIONNALITE
+   Implémentation des éléments XFEM quadratiques 2D avec contact et frottement pour le traitement
+   des interfaces en petits glissements.
+   
+   L’implémentation des éléments XFEM 2D quadratiques avec contact et 
+   frottement est le fruit d’un travail d’un an et demi ce qui explique 
+   l’ampleur de la restitution. En effet, la plupart des routines et des
+   catalogues XFEM sont impactés. Si l’histor ne saurait être exhaustif sur toutes les
+   modifications qui ont été apportées, il en retrace les principaux axes.
+   Pour un maximum de clarté, ceux-ci sont présentés par ordre d’appel des opérateurs.
+   Ne sont ici concernés que les éléments heaviside (totalement coupés): la prise
+   en compte de la pointe de fissure sera réalisée ultérieurement (fiche 15204).
+   
+   Petit rappel sur les éléments X-FEM en contact : les éléments de Samuel Géniaut qui
+   généralement résultent d’un maillage linéaire imposent l’utilisation d’un LINEQUAD afin de
+   récupérer les nœuds milieux comme lieu de stockage des DDL de contact. Ce ne sont pas de
+   « vrais » éléments quadratiques et on prendra une certaine précaution à les différencier
+   avec ceux que j’introduis. On explique dans la suite les différentes façons employées
+   que ce soit d’un point de vue utilisateur ou développeur.
+   
+   AFFE_MODELE
+   Après la restitution de Maximilien Siavelis, on distingue les éléments implémentés par
+   Samuel des autres en introduisant le mot clé de la modélisation « C_PLAN_XFEM_CONT » ou
+   « D_PLAN_XFEM_CONT ». Les « vrais » éléments quadratiques 2D s’emploient de la même façon
+   que les « vrais » éléments linéaires par « C_PLAN » ou « D_PLAN ».
+   
+   DEFI_FISS_XFEM
+   Afin de limiter les problèmes d’intégration lorsque la fissure passe « près » d’un nœud,
+   une procédure de réajustement de la level set est mise en place (XAJULS). Le critère
+   utilisé aux nœuds sommets est égal à 1% de la longueur de l’arête pour la lsn et à 0,1% de
+   la longueur de l’arête pour la lst. Pour le nœud milieu, le critère introduit est égal à
+   0,01% de la longueur de l’arête. Dans quelques cas tests de la base, un critère trop élevé
+   engendre des réajustements superflus tandis que dans certaines situations quadratiques, un
+   critère faible ne permet pas d’éviter les pivots nuls dans la matrice. Pour le moment, on
+   garde la situation telle quelle.
+   
+   MODI_MODEL_XFEM
+   En contact, on peut choisir parmi les mots clé suivant :
+   	 ‘P1P1’ ou ‘OUI’ pour les éléments P1 en déplacement, P1 en contact aux nœuds
+   	‘P1P1A’ pour les éléments P1 en déplacement, P1 en contact aux arêtes
+   	‘P2P1’ pour les éléments P2 en déplacement, P1 en contact aux nœuds
+   La résorption du mot-clé 'OUI' est demandée dans la fiche 15202.
+   
+   Sous découpage des éléments XFEM (te0514)
+   XDIVTE : on sous découpe préalablement les quadrangles en deux triangles en introduisant
+   une arête diagonale droite. La connectivité entre le quadrangle et les triangles fait
+   intervenir en quadratique 2D le milieu de l’arête diagonale droite qui n’appartient pas au
+   maillage. On calculera ses coordonnées et la valeur de sa lsn (NDCENT), stockera ses
+   coordonnées dans la même structure de donnée que les autres points milieux issus du sous
+   découpage, et le munira d’une numérotation spécifique pour le différencier.
+   
+   XDECQU : on sous découpe les triangles quadratiques 2D en sous triangles quadratiques de
+   part et d’autre de la fissure (de même pour les éléments de bords : les seg3 en seg3). On
+   recherche tous les nouveaux nœuds dont disposent les sous éléments. Ce sont soit des
+   « points d’intersection », c’est-à- dire les points d’intersection entre la fissure et le
+   triangle soit des « points milieux », c’est-à-dire les points au milieu des arêtes reliant
+   les nœuds sommets des sous éléments. Les points d’intersection peuvent coïncider avec un
+   nœud du triangle ou non. S’ils coïncident avec un nœud du triangle (leur lsn = 0), on
+   récupère leurs coordonnées directement. S’ils ne coïncident pas, on calcule leurs
+   coordonnées (XINTAR). Les points milieux sont calculés uniquement pour les éléments
+   traversés par la fissure (car ils ne sont pas nécessaires pour les fissures qui coïncident
+   avec les interfaces des éléments). Lorsqu’une arête est intersectée, on calcule les deux
+   points milieux situés entre le point d’intersection et les nœuds sommets de l’arête
+   (XMILAR). On calcule le point milieu entre deux points d’intersection. C’est le point
+   milieu sur la fissure (XMILFI). Dans certaines configurations, il est nécessaire
+   d’introduire une arête pour obtenir un sous découpage en triangles (c’est le cas
+   lorsqu’aucun point d’intersection ne coïncide avec un nœud sommet). Cette arête relie un
+   des points d’intersection avec un nœud sommet du triangle. En linéaire, elle était
+   toujours droite car la fissure est droite et on vérifie toujours que l’arête est située en
+   dessous de la fissure. En quadratique 2D, ce n’est pas toujours vrai. On met en place un
+   algorithme qui détermine l’emplacement de l’arête droite par rapport à la fissure (détecte
+   s’il y a chevauchement ou non). S’il n’y a pas de chevauchement, on conserve l’arête
+   droite et on calcule son point milieu. S’il y a chevauchement, on choisit une arête courbe
+   (qui passe sous la courbure de la fissure) et on calcule son point milieu (XMILAC).
+   
+   XDECQV : remplit la connectivité entre le triangle et ses sous éléments (de même pour les
+   éléments de bords : le seg3 en sous seg3).
+   
+   TE0514 : les points d’intersection sont stockés dans la structure de donnée PPINTTO avec
+   une numérotation qui débute à partir de 1000. Les points milieux sont stockés dans la
+   structure de donnée PPMILTO qui débute à partir de 2000. Le point de XDIVTE est stocké à
+   la fin de PPMILTO avec une numérotation qui débute à 3000. La connectivité des sous
+   éléments est transférée dans PCNSETO.
+   
+   Sous découpage des éléments XFEM (te0510)
+   Contrairement au te0514, on ne procède pas à un découpage préalable du quadrangle en
+   triangles. En effet, l’intégration du contact/frottement se fait sur la facette de contact
+   et pas sur le sous élément. On suffit donc juste de récupérer les « nœuds » de la facette.
+   Ces nœuds correspondent aux points d’intersection entre la fissure et l’élément (2 nœuds
+   pour une intégration SE2), et le nœud milieu de la fissure (2 pt inter + 1 pt mil pour une
+   intégration SE3).
+   
+   XCFAQ2 : on réitère le calcul des points d’intersection comme dans XDECQU. En quadratique
+   2D, on calcule le point milieu de la fissure (XINTAR).
+   
+   TE0510 : On stocke dans PLONCHA : NINTER le nombre de points d’intersection (qui ne compte
+   pas le/ les nœuds milieux), NFACE le nombre de facettes, et le rajout d’un champ NPTF le
+   nombre de points par facette (qui prend en compte les points milieux).
+   La base covariante est calculée en chacun des points d’intersection et des points milieux.
+   La normale et les tangentes sont interpolées sur l’élément. Comme l’interpolation ne
+   préserve pas l’orthogonalité, on effectue une correction sur les tangentes. Les valeurs
+   sont stockées dans PBASECO.
+   
+   DEFI_CONTACT
+   On active l’algorithme pour satisfaire la LBB condition par ALGO_LAGR=’VERSION1’ ou
+   ‘VERSION2’. Les Lagrange de contact se trouvant aux nœuds sommets, on privilégie les
+   relations d’égalité entre les multiplicateurs d’une arête vitale ou d’un groupe d’arêtes
+   vitales reliées par un nœud connectant. Il n’y a donc pas de changements majeurs pour le P2P1.
+   
+   STAT_NON_LINE
+   XTEINI : on compte le nombre de DDL total sur l’élément, le nombre de DDL aux nœuds
+   sommets et enfin aux nœuds milieux.
+   
+   TE0533 : En 2D, l’interpolation de la fissure peut être linéaire, c'est-à-dire que l’on
+   intègre aux points de Gauss du SE2 ou quadratique où l’on intègre aux points de Gauss du SE3.
+   
+   XJACF2 : on calcule la normale et la tangente au point de Gauss. La base covariante peut
+   ainsi varier d’un point à un autre. On interpole la normale et tangente sur la facette de
+   contact. Comme l’interpolation ne préserve pas l’orthogonalité, on effectue une correction
+   sur la tangente. La routine renvoie également les fonctions de forme de l’élément parent
+   au point de Gauss et les fonctions de forme de l’élément parent « linéaire » (ELELIN) au
+   point de Gauss. En effet, le contact P1 utilise les fonctions de forme de l’élément linéaire.
+   
+   TE0533 : les nœuds suivant qu’ils sont « sommet » ou « milieu » ne possèdent pas le même
+   nombre de DDL ce qui implique des emplacements indentés différemment dans les matrices de
+   contact/ frottement. J’ai instauré INDENT qui permet de calculer l’indentation à réaliser
+   afin de ne pas alourdir le te. La base covariante initialement aux points d’intersection
+   est remplacée par celle au point de Gauss.
+   
+   XTEDDL : il y a aussi des DDL Heaviside en trop sur les nœuds milieux que l’on retire
+   comme aux nœuds sommets. Ce n’est évidemment pas la peine de vérifier les DDL de contact
+   aux nœuds milieux puisqu’ils sont absents (P1 contact).
+   
+   Ces changements impactent d’autres TE : 534, 532, 548, 37.
+   
+   Matrice de rigidité mécanique ou seconds membres qui sont remplis qu’aux nœuds qui
+   possèdent des DDL de déplacement, on utilise INDENT pour remplir au « bon endroit »
+   (XNMEL2, XNMPL2, XBSIG2).
+   
+   
+   -------------------------------------------------------------------------------------------
+   | type élément                 |     nœuds sommets      |    nœuds milieux                 |
+   -------------------------------------------------------------------------------------------
+   |   P1 / -                     |               DDLD     |                                  |
+   -------------------------------------------------------------------------------------------
+   |   P1 / P1                    |       DDLD + DDLC      |                                  |
+   -------------------------------------------------------------------------------------------
+   |   P1 / P1A                   |               DDLD     |              DDLC                |
+   -------------------------------------------------------------------------------------------
+   |   P2 / -                     |               DDLD     |              DDLD                |
+   -------------------------------------------------------------------------------------------
+   |   P2 / P1                    |       DDLD + DDLC      |              DDLD                |
+   -------------------------------------------------------------------------------------------
+   P1 : linéaire
+   P2 : quadratique
+   DDLD : DDL de déplacement
+   DDLC : DDL de contact
+   
+   Validation: la validation se fait sur le cas-test ssnv182 
+   interface droite (horizontale ou inclinée) avec contact frottant en situation
+   d'adhérence.
+   Restituion des modélisations k (interface droite) et l (interface penchée).
+   La validation sera complétée par les tests restitués à la cloture de la fiche
+   15201.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.02.12 V6.04.182 D4.10.02
+VALIDATION
+   ssnv182k, ssnv182l
+NB_JOURS_TRAV  : 300.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnv182k                        caron A.CARON            227    227      0
+ CASTEST AJOUT ssnv182l                        caron A.CARON            216    216      0
+ CASTEST MODIF ssnp110d                        caron A.CARON            315      2      2
+ CASTEST MODIF ssnp144b                        caron A.CARON            495      2      2
+ CASTEST MODIF ssnp144c                        caron A.CARON            498      2      2
+ CASTEST MODIF ssnp144d                        caron A.CARON            490      2      2
+ CASTEST MODIF ssnp144e                        caron A.CARON            488      2      2
+ CASTEST MODIF ssnp144j                        caron A.CARON            486      2      2
+ CASTEST MODIF ssnp503d                        caron A.CARON            235      2      2
+ CASTEST MODIF ssnp504d                        caron A.CARON            247      2      2
+ CASTEST MODIF ssnv182a                        caron A.CARON            271      2      2
+ CASTEST MODIF ssnv182b                        caron A.CARON            290      2      2
+ CASTEST MODIF ssnv182d                        caron A.CARON            230      2      2
+ CASTEST MODIF ssnv182e                        caron A.CARON            218      2      2
+ CASTEST MODIF ssnv182f                        caron A.CARON            222      2      2
+ CASTEST MODIF ssnv182g                        caron A.CARON            273      2     20
+ CASTEST MODIF ssnv182h                        caron A.CARON            293      3     22
+ CASTEST MODIF ssnv182i                        caron A.CARON            233      2     20
+ CASTEST MODIF ssnv185g                        caron A.CARON            335      2      2
+ CASTEST MODIF ssnv186a                        caron A.CARON            201      2      2
+ CASTEST MODIF ssnv186d                        caron A.CARON            199      2      2
+ CASTEST MODIF ssnv186f                        caron A.CARON            205      2      2
+ CASTEST MODIF ssnv186h                        caron A.CARON            213      2      2
+ CASTEST MODIF ssnv209d                        caron A.CARON            517      2      2
+ CASTEST MODIF ssnv209e                        caron A.CARON            518      2      2
+ CASTEST MODIF ssnv209g                        caron A.CARON            498      2      2
+CATALOGU MODIF compelem/phenomene_modelisation__      caron A.CARON           1583     19      9
+CATALOGU MODIF compelem/type_maille__          caron A.CARON            411      6      1
+CATALOGU MODIF options/calc_g                  caron A.CARON             62      3      1
+CATALOGU MODIF options/calc_g_f                caron A.CARON             63      3      1
+CATALOGU MODIF options/calc_k_g                caron A.CARON             55      3      2
+CATALOGU MODIF options/calc_k_g_f              caron A.CARON             56      3      1
+CATALOGU MODIF options/char_meca_ff1d2d        caron A.CARON             39      2      1
+CATALOGU MODIF options/char_meca_ff2d2d        caron A.CARON             39      2      1
+CATALOGU MODIF options/char_meca_fr1d2d        caron A.CARON             38      2      1
+CATALOGU MODIF options/char_meca_fr2d2d        caron A.CARON             38      2      1
+CATALOGU MODIF options/char_meca_pesa_r        caron A.CARON             54      2      1
+CATALOGU MODIF options/char_meca_pres_f        caron A.CARON             48      3      1
+CATALOGU MODIF options/char_meca_pres_r        caron A.CARON             46      3      1
+CATALOGU MODIF options/char_meca_rota_r        caron A.CARON             48      2      2
+CATALOGU MODIF options/erre_elem_sigm          caron A.CARON             72      2      1
+CATALOGU MODIF options/forc_noda               caron A.CARON             95      2      1
+CATALOGU MODIF options/full_meca               caron A.CARON             79      2      1
+CATALOGU MODIF options/mass_meca               caron A.CARON             53      2      1
+CATALOGU MODIF options/raph_meca               caron A.CARON             81      2      1
+CATALOGU MODIF options/refe_forc_noda          caron A.CARON             66      2      1
+CATALOGU MODIF options/rigi_meca               caron A.CARON             60      2      1
+CATALOGU MODIF options/rigi_meca_ge            caron A.CARON             46      2      1
+CATALOGU MODIF options/rigi_meca_tang          caron A.CARON             83      2      1
+CATALOGU MODIF options/topose                  caron A.CARON             36      3      3
+CATALOGU MODIF options/xcvbca                  caron A.CARON             46      2      1
+CATALOGU MODIF options/xfem_xpg                caron A.CARON             31      2      2
+CATALOGU MODIF options/xreacl                  caron A.CARON             40      2      1
+CATALOGU MODIF typelem/gener_mecpl2            caron A.CARON            604      2      1
+CATALOGU MODIF typelem/gener_mecpl2_xh         caron A.CARON            315     81     68
+CATALOGU MODIF typelem/gener_mecpl2_xhc        caron A.CARON            315     93     71
+CATALOGU MODIF typelem/gener_mecpl2_xht        caron A.CARON            296     11     11
+CATALOGU MODIF typelem/gener_mecpl2_xhtc       caron A.CARON            294     21     20
+CATALOGU MODIF typelem/gener_mecpl2_xt         caron A.CARON            292     11     11
+CATALOGU MODIF typelem/gener_mecpl2_xtc        caron A.CARON            289     21     20
+CATALOGU MODIF typelem/gener_medpl1_xh         caron A.CARON             83      6      6
+CATALOGU MODIF typelem/gener_medpl2_xh         caron A.CARON            311     70     59
+CATALOGU MODIF typelem/gener_medpl2_xhc        caron A.CARON            316     86     67
+CATALOGU MODIF typelem/gener_medpl2_xht        caron A.CARON            292     11     11
+CATALOGU MODIF typelem/gener_medpl2_xhtc       caron A.CARON            291     21     20
+CATALOGU MODIF typelem/gener_medpl2_xt         caron A.CARON            290     11     11
+CATALOGU MODIF typelem/gener_medpl2_xtc        caron A.CARON            288     21     20
+CATALOGU MODIF typelem/gener_me_xh_2           caron A.CARON             93      7      7
+CATALOGU MODIF typelem/gener_me_xh             caron A.CARON            330     34     31
+CATALOGU MODIF typelem/gener_me_xhc            caron A.CARON            339     41     38
+CATALOGU MODIF typelem/gener_me_xht_2          caron A.CARON             94      7      7
+CATALOGU MODIF typelem/gener_me_xht            caron A.CARON            328     34     31
+CATALOGU MODIF typelem/gener_me_xhtc           caron A.CARON            341     41     37
+CATALOGU MODIF typelem/gener_me_xt_2           caron A.CARON             94      7      7
+CATALOGU MODIF typelem/gener_me_xt             caron A.CARON            330     34     31
+CATALOGU MODIF typelem/gener_me_xtc            caron A.CARON            340     41     37
+CATALOPY MODIF commande/defi_fiss_xfem         caron A.CARON            151      1      1
+CATALOPY MODIF commande/modi_modele_xfem       caron A.CARON             32      4      2
+ FORTRAN AJOUT algorith/abscvf                 caron A.CARON            115    115      0
+ FORTRAN AJOUT algorith/abscvl                 caron A.CARON            110    110      0
+ FORTRAN AJOUT algorith/infoar                 caron A.CARON             59     59      0
+ FORTRAN AJOUT algorith/milfic                 caron A.CARON             64     64      0
+ FORTRAN AJOUT algorith/ndcent                 caron A.CARON             64     64      0
+ FORTRAN AJOUT algorith/xajpmi                 caron A.CARON             90     90      0
+ FORTRAN AJOUT algorith/xcfaq2                 caron A.CARON            350    350      0
+ FORTRAN AJOUT algorith/xdecqu                 caron A.CARON            388    388      0
+ FORTRAN AJOUT algorith/xdecqv                 caron A.CARON            366    366      0
+ FORTRAN AJOUT algorith/xdelt1                 caron A.CARON            138    138      0
+ FORTRAN AJOUT algorith/xdelt2                 caron A.CARON            144    144      0
+ FORTRAN AJOUT algorith/xerfis                 caron A.CARON             96     96      0
+ FORTRAN AJOUT algorith/xintar                 caron A.CARON            195    195      0
+ FORTRAN AJOUT algorith/xinvac                 caron A.CARON            103    103      0
+ FORTRAN AJOUT algorith/xmilac                 caron A.CARON            209    209      0
+ FORTRAN AJOUT algorith/xmilar                 caron A.CARON             91     91      0
+ FORTRAN AJOUT algorith/xmilfi                 caron A.CARON             69     69      0
+ FORTRAN AJOUT algorith/xnewto                 caron A.CARON            140    140      0
+ FORTRAN AJOUT elements/indent                 caron A.CARON             54     54      0
+ FORTRAN AJOUT elements/reere3                 caron A.CARON            225    225      0
+ FORTRAN AJOUT elements/reerel                 caron A.CARON             72     72      0
+ FORTRAN AJOUT modelisa/elelin                 caron A.CARON             68     68      0
+ FORTRAN AJOUT modelisa/fcthyp                 caron A.CARON             53     53      0
+ FORTRAN AJOUT modelisa/pdsca1                 caron A.CARON             40     40      0
+ FORTRAN MODIF algorith/cakg3d                 caron A.CARON            439      5      3
+ FORTRAN MODIF algorith/conare                 caron A.CARON            209     48     15
+ FORTRAN MODIF algorith/loncar                 caron A.CARON            145      3      3
+ FORTRAN MODIF algorith/merimp                 caron A.CARON            328      6      2
+ FORTRAN MODIF algorith/nmed2d                 caron A.CARON            452     12     11
+ FORTRAN MODIF algorith/nmel2d                 caron A.CARON            244      9      9
+ FORTRAN MODIF algorith/nmgc2d                 caron A.CARON            329     14     12
+ FORTRAN MODIF algorith/nmgr2d                 caron A.CARON            373     11     10
+ FORTRAN MODIF algorith/nmgz2d                 caron A.CARON            324     15     13
+ FORTRAN MODIF algorith/nmpl2d                 caron A.CARON            296     12      9
+ FORTRAN MODIF algorith/nmrefe                 caron A.CARON            213      6      3
+ FORTRAN MODIF algorith/op0113                 caron A.CARON            287     14      7
+ FORTRAN MODIF algorith/vechme                 caron A.CARON            463      9      4
+ FORTRAN MODIF algorith/vefnme                 caron A.CARON            295      7      2
+ FORTRAN MODIF algorith/xajuls                 caron A.CARON            181     55     16
+ FORTRAN MODIF algorith/xbarvi                 caron A.CARON            383      8      4
+ FORTRAN MODIF algorith/xcface                 caron A.CARON            423     12      6
+ FORTRAN MODIF algorith/xcrvol                 caron A.CARON            120      4      5
+ FORTRAN MODIF algorith/xdecou                 caron A.CARON            192      3      3
+ FORTRAN MODIF algorith/xdecov                 caron A.CARON            456     11     23
+ FORTRAN MODIF algorith/xdivte                 caron A.CARON            274     45      6
+ FORTRAN MODIF algorith/xjacf2                 caron A.CARON            227    134     47
+ FORTRAN MODIF algorith/xjacff                 caron A.CARON            218    117     34
+ FORTRAN MODIF algorith/xlacti                 caron A.CARON            108      3      4
+ FORTRAN MODIF algorith/xlagsp                 caron A.CARON            430     15     13
+ FORTRAN MODIF algorith/xmafr2                 caron A.CARON             95      7      8
+ FORTRAN MODIF algorith/xmase2                 caron A.CARON            222      3      3
+ FORTRAN MODIF algorith/xmase3                 caron A.CARON            225      3      3
+ FORTRAN MODIF algorith/xmasel                 caron A.CARON            166      2      2
+ FORTRAN MODIF algorith/xmmbca                 caron A.CARON            224      8      4
+ FORTRAN MODIF algorith/xmmres                 caron A.CARON            493     10     10
+ FORTRAN MODIF algorith/xmrema                 caron A.CARON            370      2      2
+ FORTRAN MODIF algorith/xnmel2                 caron A.CARON            425     55     48
+ FORTRAN MODIF algorith/xnmel3                 caron A.CARON            429      9     10
+ FORTRAN MODIF algorith/xnmel                  caron A.CARON            226     59     36
+ FORTRAN MODIF algorith/xnmgr2                 caron A.CARON            385      4      4
+ FORTRAN MODIF algorith/xnmgr3                 caron A.CARON            415      4      4
+ FORTRAN MODIF algorith/xnmpl2                 caron A.CARON            377     45     33
+ FORTRAN MODIF algorith/xnmpl3                 caron A.CARON            384      4      4
+ FORTRAN MODIF algorith/xnmpl                  caron A.CARON            203     57     42
+ FORTRAN MODIF algorith/xoripe                 caron A.CARON            405     27     11
+ FORTRAN MODIF algorith/xplmat                 caron A.CARON             72      5      4
+ FORTRAN MODIF algorith/xprcnu                 caron A.CARON            565      2      3
+ FORTRAN MODIF algorith/xprls0                 caron A.CARON            771      2      2
+ FORTRAN MODIF algorith/xprmil                 caron A.CARON            124      2      2
+ FORTRAN MODIF algorith/xreacl                 caron A.CARON            189      8      4
+ FORTRAN MODIF algorith/xrige2                 caron A.CARON            278     40     20
+ FORTRAN MODIF algorith/xrige3                 caron A.CARON            276      3      3
+ FORTRAN MODIF algorith/xrigel                 caron A.CARON            185     37     20
+ FORTRAN MODIF algorith/xstano                 caron A.CARON            224      2      2
+ FORTRAN MODIF algorith/xtopoi                 caron A.CARON            143     10      4
+ FORTRAN MODIF calculel/calcul                 caron A.CARON            528      1      1
+ FORTRAN MODIF calculel/manopx                 caron A.CARON            180      4      2
+ FORTRAN MODIF calculel/mecagl                 caron A.CARON            481      6      3
+ FORTRAN MODIF calculel/mecalg                 caron A.CARON            511      8      4
+ FORTRAN MODIF calculel/meficg                 caron A.CARON            435     10      5
+ FORTRAN MODIF calculel/memame                 caron A.CARON            265      5      1
+ FORTRAN MODIF calculel/merige                 caron A.CARON            155      8      4
+ FORTRAN MODIF calculel/merime                 caron A.CARON            247      6      2
+ FORTRAN MODIF calculel/resloc                 caron A.CARON            572      7      3
+ FORTRAN MODIF elements/reeref                 caron A.CARON            249     44     22
+ FORTRAN MODIF elements/te0036                 caron A.CARON            465     43     19
+ FORTRAN MODIF elements/te0037                 caron A.CARON            336     34     22
+ FORTRAN MODIF elements/te0046                 caron A.CARON            199     38     20
+ FORTRAN MODIF elements/te0100                 caron A.CARON            319     16     17
+ FORTRAN MODIF elements/te0288                 caron A.CARON            248     40     20
+ FORTRAN MODIF elements/te0289                 caron A.CARON            201      3      3
+ FORTRAN MODIF elements/te0297                 caron A.CARON            334     38     20
+ FORTRAN MODIF elements/te0382                 caron A.CARON            545     29     14
+ FORTRAN MODIF elements/te0400                 caron A.CARON            122     19      9
+ FORTRAN MODIF elements/te0440                 caron A.CARON            183     34     24
+ FORTRAN MODIF elements/te0441                 caron A.CARON            206     35     19
+ FORTRAN MODIF elements/te0510                 caron A.CARON            202     30     19
+ FORTRAN MODIF elements/te0514                 caron A.CARON            361    162     40
+ FORTRAN MODIF elements/te0519                 caron A.CARON            145      2      2
+ FORTRAN MODIF elements/te0532                 caron A.CARON            328     59     39
+ FORTRAN MODIF elements/te0533                 caron A.CARON           1068    153    162
+ FORTRAN MODIF elements/te0534                 caron A.CARON            911    143    138
+ FORTRAN MODIF elements/te0536                 caron A.CARON            129     15     12
+ FORTRAN MODIF elements/te0538                 caron A.CARON            124      5      5
+ FORTRAN MODIF elements/te0539                 caron A.CARON            326     44     47
+ FORTRAN MODIF elements/te0542                 caron A.CARON            121     19     19
+ FORTRAN MODIF elements/te0548                 caron A.CARON            338     59     30
+ FORTRAN MODIF elements/xbsig2                 caron A.CARON            214     33     23
+ FORTRAN MODIF elements/xbsig3                 caron A.CARON            212      3      3
+ FORTRAN MODIF elements/xbsig                  caron A.CARON            169     48     26
+ FORTRAN MODIF elements/xbsigr                 caron A.CARON            175     51     33
+ FORTRAN MODIF elements/xfovol                 caron A.CARON            253     27     17
+ FORTRAN MODIF elements/xgelem                 caron A.CARON            430     54     43
+ FORTRAN MODIF elements/xpesro                 caron A.CARON            216     25     11
+ FORTRAN MODIF elements/xsifel                 caron A.CARON            545     46     21
+ FORTRAN MODIF elements/xsifle                 caron A.CARON            396     30     17
+ FORTRAN MODIF elements/xteddl                 caron A.CARON            251     24     22
+ FORTRAN MODIF elements/xteini                 caron A.CARON            129     36     21
+ FORTRAN MODIF modelisa/xdelco                 caron A.CARON            249     10     10
+ FORTRAN MODIF modelisa/xmolig                 caron A.CARON            398     15     14
+ FORTRAN MODIF modelisa/xtyele                 caron A.CARON            277      2      2
+ FORTRAN MODIF prepost/xpoffo                  caron A.CARON            133      3      5
+ FORTRAN MODIF utilitai/ismali                 caron A.CARON             83     21      3
+  PYTHON MODIF Messages/xfem                   caron A.CARON            355     35      1
+  PYTHON MODIF SD/sd_xfem                      caron A.CARON            132      2      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   26        3746      3746             +3746
+ MODIF :  177       48817      3420    2341     +1079
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  203       52563      7166    2341     +4825 

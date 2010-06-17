@@ -1,14 +1,14 @@
        SUBROUTINE  NMGR2D(FAMI,NNO,NPG,IPOIDS,IVF,IDFDE,GEOMI,TYPMOD,
      &                    OPTION,IMATE,COMPOR,LGPG,CRIT,
      &                    INSTAM,INSTAP,
-     &                    DEPLM,DEPLP,
+     &                    IDEPLM,IDEPLP,
      &                    ANGMAS,
      &                    SIGM,VIM,MATSYM,
      &                    DFDI,
-     &                    PFF,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
+     &                    PFF,DEF,SIGP,VIP,MATUU,IVECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,18 +31,18 @@ C TOLE CRP_21
        IMPLICIT NONE
 
        INTEGER       NNO, NPG, IMATE, LGPG,  CODRET,COD(9)
-       INTEGER       IPOIDS,IVF,IDFDE
+       INTEGER       IPOIDS,IVF,IDFDE,IVECTU,IDEPLM,IDEPLP
        CHARACTER*(*) FAMI
        CHARACTER*8   TYPMOD(*)
        CHARACTER*16  OPTION, COMPOR(4)
 
        REAL*8        INSTAM,INSTAP,ANGMAS(3)
        REAL*8        GEOMI(2,NNO), CRIT(3)
-       REAL*8        DEPLM(1:2,1:NNO),DEPLP(1:2,1:NNO),DFDI(NNO,2)
+       REAL*8        DFDI(NNO,2)
        REAL*8        PFF(4,NNO,NNO),DEF(4,NNO,2)
        REAL*8        SIGM(4,NPG),SIGP(4,NPG)
        REAL*8        VIM(LGPG,NPG),VIP(LGPG,NPG)
-       REAL*8        MATUU(*),VECTU(2,NNO)
+       REAL*8        MATUU(*)
        LOGICAL       MATSYM
 
 C.......................................................................
@@ -125,7 +125,7 @@ C 1 - INITIALISATION
 C 3 - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES AU COMPORTEMENT
 
       CALL LCEGEO(NNO,NPG,IPOIDS,IVF,IDFDE,GEOMI,TYPMOD,OPTION,
-     &            IMATE,COMPOR,LGPG,2,DFDI,DEPLM,DEPLP,ELGEOM)
+     &     IMATE,COMPOR,LGPG,2,DFDI,ZR(IDEPLM),ZR(IDEPLP),ELGEOM)
 
 C 4 - INITIALISATION CODES RETOURS
 
@@ -146,13 +146,13 @@ C 5.2.1 - CALCUL DE EPSM EN T- POUR LDC
           EPSP (J)=0.D0
 20      CONTINUE
         CALL NMGEOM(2,NNO,AXI,GRAND,GEOMI,KPG,IPOIDS,
-     &              IVF,IDFDE,DEPLM,POIDS,DFDI,
+     &              IVF,IDFDE,ZR(IDEPLM),POIDS,DFDI,
      &              FM,EPSM,R)
 
 C 5.2.2 - CALCUL DE F, EPSP, DFDI, R ET POIDS EN T+
 
         CALL NMGEOM(2,NNO,AXI,GRAND,GEOMI,KPG,IPOIDS,
-     &              IVF,IDFDE,DEPLP,POIDS,DFDI,
+     &              IVF,IDFDE,ZR(IDEPLP),POIDS,DFDI,
      &              F,EPSP,R)
 
 C 5.2.3 - CALCUL DE DEPS POUR LDC
@@ -342,7 +342,8 @@ C 5.5 - CALCUL DE LA FORCE INTERIEURE
          DO 230 N=1,NNO
           DO 220 I=1,2
            DO 210 KL=1,4
-            VECTU(I,N)=VECTU(I,N)+DEF(KL,N,I)*SIGMA(KL)*POIDS
+             ZR(IVECTU-1+2*(N-1)+I)=
+     &       ZR(IVECTU-1+2*(N-1)+I)+DEF(KL,N,I)*SIGMA(KL)*POIDS
  210       CONTINUE
  220      CONTINUE
  230     CONTINUE

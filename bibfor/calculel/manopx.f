@@ -1,6 +1,6 @@
       SUBROUTINE MANOPX(LIGREL,OPTION,PARAM,CHSGEO,EXIXFM,KECONO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C---- COMMUNS NORMALISES  JEVEUX
 C     ------------------------------------------------------------------
 
       INTEGER      NBOUT,NBIN
-      PARAMETER   (NBOUT=1, NBIN=5)
+      PARAMETER   (NBOUT=1, NBIN=6)
       CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
       CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
 
@@ -164,6 +164,8 @@ C     ------------------------------------------------------------------
       LCHIN(4) = MO//'.TOPOSE.HEA'
       LPAIN(5) = 'PLONCHA'
       LCHIN(5) = MO//'.TOPOSE.LON'
+      LPAIN(6) = 'PPMILTO'
+      LCHIN(6) = MO//'.TOPOSE.PMI'
       LPAOUT(1) = 'PXFGEOM'
       LCHOUT(1) = CHGEOM
 

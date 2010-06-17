@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 16/06/2010   AUTEUR CARON A.CARON 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,23 +59,23 @@ MATRICE__
 OPTION__
     CHAR_MECA_FF1D2D    36    IN__   CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  E9NEUTR  PPINTTO
                                      E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
-                                     N1NEUT_R PLST     STANO_I  PSTANO   
+                                     N1NEUT_R PLST     STANO_I  PSTANO   E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR1D2D    36    IN__   NFORCER  PFR1D2D  NGEOMER  PGEOMER  E9NEUTR  PPINTTO
                                      E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
-                                     N1NEUT_R PLST     STANO_I  PSTANO   
+                                     N1NEUT_R PLST     STANO_I  PSTANO   E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F    36    IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  E9NEUTR  PPINTTO
                                      E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
-                                     N1NEUT_R PLST     STANO_I  PSTANO   
+                                     N1NEUT_R PLST     STANO_I  PSTANO   E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R    36    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E9NEUTR  PPINTTO  E36NEUI  PCNSETO
                                      E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
-                                     STANO_I  PSTANO   
+                                     STANO_I  PSTANO   E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                               OUT__  E9NEUTR  PPINTTO  E36NEUI  PCNSETO   E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA
-                                     E10NEUTR PAINTER  
+                                     E10NEUTR PAINTER  E22NEUTR PPMILTO
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EPRESNO  PPRES_R
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER

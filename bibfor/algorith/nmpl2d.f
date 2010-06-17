@@ -1,13 +1,13 @@
        SUBROUTINE  NMPL2D(FAMI,NNO,NPG,IPOIDS,IVF,IDFDE,GEOM,TYPMOD,
      &                    OPTION,IMATE,COMPOR,LGPG,CRIT,
      &                    INSTAM,INSTAP,
-     &                    DEPLM,DEPLP,
+     &                    IDEPLM,IDEPLP,
      &                    ANGMAS,
      &                    SIGM,VIM,
-     &                    MATSYM,DFDI,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
+     &                    MATSYM,DFDI,DEF,SIGP,VIP,MATUU,IVECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C TOLE CRP_21
        IMPLICIT NONE
 C
        INTEGER     NNO,NPG,IMATE,LGPG,CODRET,COD(9),IPOIDS,IVF,IDFDE
+       INTEGER     IVECTU,IDEPLM,IDEPLP
 C
        CHARACTER*8   TYPMOD(*)
        CHARACTER*(*) FAMI
@@ -39,11 +40,11 @@ C
        REAL*8        ANGMAS(3)
        REAL*8        GEOM(2,NNO), CRIT(3)
        REAL*8        SREF
-       REAL*8        DEPLM(1:2,1:NNO),DEPLP(1:2,1:NNO),DFDI(NNO,2)
+       REAL*8        DFDI(NNO,2)
        REAL*8        DEF(4,NNO,2)
        REAL*8        SIGM(4,NPG),SIGP(4,NPG)
        REAL*8        VIM(LGPG,NPG),VIP(LGPG,NPG)
-       REAL*8        MATUU(*),VECTU(2,NNO)
+       REAL*8        MATUU(*)
 C
        LOGICAL       MATSYM
 C.......................................................................
@@ -116,7 +117,7 @@ C - INITIALISATION
 C - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES AU COMPORTEMENT
 
       CALL LCEGEO(NNO,NPG,IPOIDS,IVF,IDFDE,GEOM,TYPMOD,OPTION,
-     &            IMATE,COMPOR,LGPG,2,DFDI,DEPLM,DEPLP,ELGEOM)
+     &            IMATE,COMPOR,LGPG,2,DFDI,ZR(IDEPLM),ZR(IDEPLP),ELGEOM)
 
 C - INITIALISATION CODES RETOURS
       DO 1955 KPG=1,NPG
@@ -137,12 +138,12 @@ C
 20      CONTINUE
 C
         CALL NMGEOM(2,NNO,AXI,GRAND,GEOM,KPG,IPOIDS,IVF,IDFDE,
-     &              DEPLM,POIDS,DFDI,F,EPS,R)
+     &              ZR(IDEPLM),POIDS,DFDI,F,EPS,R)
 C
 C     CALCUL DE DEPS
 C
         CALL NMGEOM(2,NNO,AXI,GRAND,GEOM,KPG,IPOIDS,IVF,IDFDE,
-     &              DEPLP,POIDS,DFDI,F,DEPS,R)
+     &              ZR(IDEPLP),POIDS,DFDI,F,DEPS,R)
 C
 C      CALCUL DES PRODUITS SYMETR. DE F PAR N,
         DO 40 N=1,NNO
@@ -263,7 +264,9 @@ C
           DO 230 N=1,NNO
             DO 220 I=1,2
               DO 210 KL=1,4
-                VECTU(I,N)=VECTU(I,N)+DEF(KL,N,I)*SIGMA(KL)*POIDS
+C               VECTU(I,N)=VECTU(I,N)+DEF(KL,N,I)*SIGMA(KL)*POIDS
+                ZR(IVECTU-1+2*(N-1)+I)=
+     &          ZR(IVECTU-1+2*(N-1)+I)+DEF(KL,N,I)*SIGMA(KL)*POIDS
  210          CONTINUE
  220        CONTINUE
  230      CONTINUE

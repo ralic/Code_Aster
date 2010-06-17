@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
+%& MODIF COMPELEM  DATE 16/06/2010   AUTEUR CARON A.CARON 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -542,19 +542,25 @@ PHENOMENE_MODELISATION__
 % modelisations 2d X-FEM non affectables par AFFE_MODELE
        MODELISATION__ 'C_PLAN_XH'         DIM__ 2 2   CODE__ 'CX1'
               ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
-              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH
-              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH
-              MAILLE__ SEG3      ELEMENT__ MEPLSE2_XH
+              MAILLE__ TRIA6     ELEMENT__ MECPTR6_XH
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_XH_X
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH
+              MAILLE__ QUAD8     ELEMENT__ MECPQU8_XH
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_XH_X
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH
+              MAILLE__ SEG3      ELEMENT__ MEPLSE3_XH
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH
 
        MODELISATION__ 'D_PLAN_XH'         DIM__ 2 2   CODE__ 'DX1'
               ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
-              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH
-              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH
-              MAILLE__ SEG3      ELEMENT__ MEPLSE2_XH
+              MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XH
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XH_X
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH
+              MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XH
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XH_X
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH
+              MAILLE__ SEG3      ELEMENT__ MEPLSE3_XH
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH
 
        MODELISATION__ 'C_PLAN_XT'         DIM__ 2 2   CODE__ 'CX2'
               ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
@@ -571,7 +577,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEPLSE2_XT
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XT_X
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XT_X
-
+              
        MODELISATION__ 'C_PLAN_XHT'        DIM__ 2 2   CODE__ 'CX3'
               ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
               MAILLE__ TRIA3     ELEMENT__ MECPTR3_XHT
@@ -627,15 +633,19 @@ PHENOMENE_MODELISATION__
        MODELISATION__ 'C_PLAN2XHC'         DIM__ 2 2   CODE__ 'CX7'
               ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI   TYPMOD=C_PLAN
               MAILLE__ TRIA3     ELEMENT__ MECPTR3_XHC
-              MAILLE__ TRIA6     ELEMENT__ MECPTR6_XHC_X
+              MAILLE__ TRIA6     ELEMENT__ MECPTR6_XHC
               MAILLE__ QUAD4     ELEMENT__ MECPQU4_XHC
+              MAILLE__ QUAD8     ELEMENT__ MECPQU8_XHC
+              MAILLE__ TRIA6     ELEMENT__ MECPTR6_XHC_X
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_XHC_X
 
        MODELISATION__ 'D_PLAN2XHC'         DIM__ 2 2   CODE__ 'DX7'
               ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
               MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XHC
-              MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XHC_X
+              MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XHC
               MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XHC
+              MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XHC
+              MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XHC_X
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XHC_X
 
        MODELISATION__ 'C_PLAN2XTC'         DIM__ 2 2   CODE__ 'CX8'

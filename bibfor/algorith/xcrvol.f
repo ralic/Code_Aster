@@ -2,7 +2,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C RESPONSABLE GENIAUT S.GENIAUT
 C
        IMPLICIT NONE
 C
-       INTEGER      IGEOM,CNSET(4*32),HEAVT(36),LONCH(7)
+       INTEGER      IGEOM,CNSET(4*32),HEAVT(36),LONCH(10)
        REAL*8       CRIT,PINTT(3*11)
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -52,10 +52,9 @@ C.......................................................................
 
 C..............................................................
 C----------------------------------------------------------------
-      CHARACTER*8   ELREFP
       REAL*8        HE,CO(4,3),VOL,VOLM,VOLP,MAT(3,3)
-      INTEGER       CONNEC(6,4),NINTER,NPTS,NSE,CNSE(6,4),NSEMAX,NPG
-      INTEGER       I,IT,ISE,IN,INO,NIT,CPT,NCMP,IDEB,JCOORS,NNOM,J
+      INTEGER       NSE,NSEMAX
+      INTEGER       I,IT,ISE,IN,INO,NIT,CPT,J
       PARAMETER    (NSEMAX=6)
 
 C     RÉCUPÉRATION DE LA SUBDIVISION L'ÉLÉMENT PARENT EN NIT TETRAS 

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/05/2010   AUTEUR JAUBERT A.JAUBERT 
+# MODIF  DATE 16/06/2010   AUTEUR CARON A.CARON 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,7 +85,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     );
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         CONTACT='OUI',
+                         CONTACT='P1P1A',
                          FISSURE=FISS,
                          INFO=1,);
 

@@ -1,15 +1,15 @@
       SUBROUTINE XCFACE(ELREF,LSN,LST,JGRLSN,IGEOM,ENR,
-     &                            PINTER,NINTER,AINTER,NFACE,CFACE)
+     &                  PINTER,NINTER,AINTER,NFACE,NPTF,CFACE)
       IMPLICIT NONE
 
       REAL*8        LSN(*),LST(*)
-      INTEGER       JGRLSN,IGEOM,NINTER,NFACE,CFACE(5,3)
+      INTEGER       JGRLSN,IGEOM,NINTER,NFACE,CFACE(5,3),NPTF
       CHARACTER*8   ELREF
       CHARACTER*24  PINTER,AINTER
       CHARACTER*16  ENR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C
       REAL*8          H(3),OH(3),NOH,COS,NOA,TRIGOM,R3(3),THETA(6),EPS
       REAL*8          R8PI,DDOT,AB(2),LSTA,LSTB,LSTC,ABPRIM(2),PREC
       REAL*8          R8PREM
-      INTEGER         J,AR(12,2),NBAR,NTA,NTB,NA,NB,JPTINT,INS,JAINT
+      INTEGER         J,AR(12,3),NBAR,NTA,NTB,NA,NB,JPTINT,INS,JAINT
       INTEGER         IA,I,IPT,IBID,PP,PD,TAMPOI,NNO,K
       INTEGER         IADZI,IAZK24,NDIM,PTMAX,IFM
       CHARACTER*8     TYPMA,ELP
@@ -114,8 +114,7 @@ C     - ARETE VITALE                        (0 SI NON)
 C     ATTENTION : POUR LES ELEMENTS QUADRATIQUES
 C     PAS DE CONTACT CAR CES ELEMENTS NE PORTENT PAS DE DDLS LSGS_C...
 C     ILS FAUT DONC LES REPERER, ALORS NINTER = -1 (CA SERT DANS XDELCO)
-      IF (ELP.EQ.'QU8'.OR.ELP.EQ.'TR6'.OR.
-     &    ELP.EQ.'H20'.OR.ELP.EQ.'P15'.OR.ELP.EQ.'T10') THEN
+      IF (ELP.EQ.'H20'.OR.ELP.EQ.'P15'.OR.ELP.EQ.'T10') THEN
         NINTER=-1
         NFACE=0
         GOTO 999
@@ -188,7 +187,7 @@ C             POSITION DU PT D'INTERSECTION SUR L'ARETE
               ENDIF
             ENDIF
           ENDIF
-      
+
         ELSE
           IF ((LSNA*LSNB).LE.0.D0) THEN
             IF ((LSNA.EQ.0.D0).AND.(LSTA.LE.0.D0)) THEN
@@ -321,6 +320,7 @@ C       NOMBRE DE POINTS D'INTERSECTION IMPOSSIBLE.
         CALL ASSERT(NINTER.LE.6) 
         IF (NINTER.EQ.6) THEN
           NFACE=4
+          NPTF=3
           CFACE(1,1)=1
           CFACE(1,2)=2
           CFACE(1,3)=3
@@ -335,6 +335,7 @@ C       NOMBRE DE POINTS D'INTERSECTION IMPOSSIBLE.
           CFACE(4,3)=5
         ELSEIF (NINTER.EQ.5) THEN
           NFACE=3
+          NPTF=3
           CFACE(1,1)=1
           CFACE(1,2)=2
           CFACE(1,3)=3
@@ -346,6 +347,7 @@ C       NOMBRE DE POINTS D'INTERSECTION IMPOSSIBLE.
           CFACE(3,3)=5
         ELSEIF (NINTER.EQ.4) THEN
           NFACE=2
+          NPTF=3
           CFACE(1,1)=1
           CFACE(1,2)=2
           CFACE(1,3)=3
@@ -354,10 +356,12 @@ C       NOMBRE DE POINTS D'INTERSECTION IMPOSSIBLE.
           CFACE(2,3)=4
         ELSEIF (NINTER.EQ.3) THEN
           NFACE=1
+          NPTF=3
           CFACE(1,1)=1
           CFACE(1,2)=2
           CFACE(1,3)=3
         ELSE
+          NPTF=0
           NFACE=0
         ENDIF
 
@@ -400,9 +404,11 @@ C       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
  853     CONTINUE
         ENDIF
           NFACE=1
+          NPTF=2
           CFACE(1,1)=1
           CFACE(1,2)=2
         ELSE
+          NPTF=0
           NFACE=0
         ENDIF
 
@@ -412,6 +418,6 @@ C       PROBLEME DE DIMENSION : NI 2D, NI 3D
       ENDIF
 
  999  CONTINUE
- 
+
       CALL JEDEMA()
       END

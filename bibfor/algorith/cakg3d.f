@@ -14,7 +14,7 @@
       LOGICAL EXTIM,THLAGR,GLAGR,THLAG2,PAIR,LMELAS
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/11/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,7 @@ C
       CHARACTER*24 CHSIG,CHEPSP,CHVARI,TYPE,PEPSIN
       CHARACTER*19 PINTTO,CNSETO,HEAVTO,LONCHA,LNNO,LTNO
 C
-C ---------------------------------------------------------------------
+C ------------------------------------------------------------------
 C
       CALL JEMARQ()
 
@@ -273,11 +273,13 @@ C          LCHIN(22) = MODELE(1:8)//'.TOPOFAC.PI'
           LCHIN(24) = MODELE(1:8)//'.TOPOFAC.CF'
           LPAIN(25) = 'PLONGCO'
           LCHIN(25) = MODELE(1:8)//'.TOPOFAC.LO'
+          LPAIN(26) = 'PBASECO'
+          LCHIN(26) = MODELE(1:8)//'.TOPOFAC.BA'
         ENDIF
 
 
         LIGRMO = MODELE//'.MODELE'
-        NCHIN = 25
+        NCHIN = 26
 C
         CHTIME = '&&CAKG3D.CH_INST_R'
         IF (OPTI .EQ. 'CALC_K_G_F') THEN

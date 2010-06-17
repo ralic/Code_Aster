@@ -1,6 +1,6 @@
       SUBROUTINE TE0100(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/03/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-
 C - FONCTIONS DE FORMES ET POINTS DE GAUSS
 C
 
@@ -155,9 +154,9 @@ C        OPTION RIGI_MECA_TANG :         ARGUMENTS EN T-
           CALL NMEL2D(FAMI,'-',NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
      &                LGPG,ZR(ICARCR),
-     &                ZR(IDEPLM),ANGMAS,VECT1,VECT2,
+     &                IDEPLM,ANGMAS,VECT1,VECT2,
      &                VECT3,ZR(ICONTM),ZR(IVARIM),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET)
+     &                ZR(IMATUU),IVECTU,CODRET)
 
         ELSE
 
@@ -169,9 +168,9 @@ C        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
           CALL NMEL2D(FAMI,'+',NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
      &                LGPG,ZR(ICARCR),
-     &                ZR(IDEPLP),ANGMAS,VECT1,VECT2,
+     &                IDEPLP,ANGMAS,VECT1,VECT2,
      &                VECT3,ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET)
+     &                ZR(IMATUU),IVECTU,CODRET)
         END IF
 
       ELSE
@@ -197,10 +196,10 @@ C -       ELEMENT A DISCONTINUITE INTERNE
             CALL NMED2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                  ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
      &                  LGPG,ZR(ICARCR),
-     &                  ZR(IDEPLM),ZR(IDEPLP),
+     &                  IDEPLM,IDEPLP,
      &                  ZR(ICONTM),ZR(IVARIM),VECT1,
      &                  VECT3,ZR(ICONTP),ZR(IVARIP),
-     &                  ZR(IMATUU),ZR(IVECTU),CODRET)
+     &                  ZR(IMATUU),IVECTU,CODRET)
 
           ELSE
 
@@ -208,11 +207,11 @@ C -       ELEMENT A DISCONTINUITE INTERNE
      &                  ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
      &                  LGPG,ZR(ICARCR),
      &                  ZR(IINSTM),ZR(IINSTP),
-     &                  ZR(IDEPLM),ZR(IDEPLP),
+     &                  IDEPLM,IDEPLP,
      &                  ANGMAS,
      &                  ZR(ICONTM),ZR(IVARIM),MATSYM,VECT1,
      &                  VECT3,ZR(ICONTP),ZR(IVARIP),
-     &                  ZR(IMATUU),ZR(IVECTU),CODRET)
+     &                  ZR(IMATUU),IVECTU,CODRET)
 
           ENDIF
 
@@ -239,12 +238,12 @@ C 7.3 - CO-ROTATIONNELLE ZMAT
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
-     &                ZR(IDEPLM),ZR(IDEPLP),
+     &                IDEPLM,IDEPLP,
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
      &                VECT1,VECT2,VECT3,
      &                ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET)
+     &                ZR(IMATUU),IVECTU,CODRET)
 
 C 7.3 - CO-ROTATIONNELLE ZMAT SUPPRIME  ATTENTE CORRECTION FICHE 14063
 
@@ -258,13 +257,12 @@ C 7.3 - CO-ROTATIONNELLE ZMAT SUPPRIME  ATTENTE CORRECTION FICHE 14063
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
-     &                ZR(IDEPLM),ZR(IDEPLP),
+     &                IDEPLM,IDEPLP,
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
      &                VECT1,VECT2,VECT3,
      &                ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET)
-
+     &                ZR(IMATUU),IVECTU,CODRET)
 
 C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         ELSE IF (ZK16(ICOMPO+2) .EQ.'GROT_GDEP') THEN
@@ -277,12 +275,12 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
      &                LGPG,ZR(ICARCR),
      &                ZR(IINSTM),ZR(IINSTP),
-     &                ZR(IDEPLM),ZR(IDEPLP),
+     &                IDEPLM,IDEPLP,
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),MATSYM,
      &                VECT1,VECT2,VECT3,
      &                ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET)
+     &                ZR(IMATUU),IVECTU,CODRET)
      
         ELSE IF ((ZK16(ICOMPO+2).EQ.'GDEF_HYPO_ELAS') .OR.
      &           (ZK16(ICOMPO+2).EQ.'SIMO_HUGHES1')) THEN
@@ -317,4 +315,5 @@ C       Calcul eventuel de la matrice TGTE par PERTURBATION
         CALL JEVECH('PCODRET','E',JCRET)
         ZI(JCRET) = CODRET
       END IF
+
       END

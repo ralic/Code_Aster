@@ -3,7 +3,7 @@
      &                  NOPASZ,TYPESE,STYPSE,VECELZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,7 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER (NOMPRO='VECHME')
 
       INTEGER NCHINX
-      PARAMETER (NCHINX=41)
+      PARAMETER (NCHINX=42)
 
       INTEGER NBCHMX
       PARAMETER (NBCHMX=17)
@@ -385,7 +385,9 @@ C               POUR LES ELEMENTS DE BORD X-FEM
                   LCHIN(NCHIN + 6) = MODELE(1:8)//'.LTNO'
                   LPAIN(NCHIN + 7) = 'PSTANO'
                   LCHIN(NCHIN + 7) = MODELE(1:8)//'.STNO'
-                  NCHIN = NCHIN + 7
+                  LPAIN(NCHIN + 8) = 'PPMILTO'
+                  LCHIN(NCHIN + 8) = MODELE(1:8)//'.TOPOSE.PMI'
+                  NCHIN = NCHIN + 8
                   IF (OPTION.EQ.'CHAR_MECA_PRES_R'.OR.
      &                OPTION.EQ.'CHAR_MECA_PRES_F') THEN
                     LPAIN(NCHIN + 1) = 'PPINTER'
@@ -397,7 +399,9 @@ C                    LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOFAC.PI'
                     LCHIN(NCHIN + 3) = MODELE(1:8)//'.TOPOFAC.CF'
                     LPAIN(NCHIN + 4) = 'PLONGCO'
                     LCHIN(NCHIN + 4) = MODELE(1:8)//'.TOPOFAC.LO'
-                    NCHIN = NCHIN + 4
+                    LPAIN(NCHIN + 5) = 'PBASECO'
+                    LCHIN(NCHIN + 5) = MODELE(1:8)//'.TOPOFAC.BA'
+                    NCHIN = NCHIN + 5
                   ENDIF
                 ENDIF
 
@@ -454,5 +458,6 @@ C          3 - PRESSION
    80 CONTINUE
 
       VECELZ = VECELE//'.RELR'
+
       CALL JEDEMA()
       END

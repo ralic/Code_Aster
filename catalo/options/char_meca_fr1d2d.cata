@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 16/06/2010   AUTEUR CARON A.CARON 
 % RESPONSABLE DESROCHES
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -32,6 +32,7 @@ OPTION__
         PLSN     NEUT_R
         PLST     NEUT_R
         PSTANO   NEUT_I
+        PPMILTO  NEUT_R
    OUT__
 PVECTUR VDEP_R RESL__
 

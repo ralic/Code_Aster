@@ -1,0 +1,144 @@
+         SUBROUTINE XDELT2(ELP,NNO,NDIM,KSI,JPTINT,JTABCO,JTABLS,
+     &                           IPP,IP,DELTA)    
+         IMPLICIT NONE
+   
+      INTEGER       NDIM,NNO,JTABCO,JTABLS,IPP,IP,JPTINT  
+      REAL*8        KSI(NDIM),DELTA(NDIM)
+      CHARACTER*8   ELP
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C                 CALCUL DE LA QUANTITE A MINIMISER POUR LE CALCUL 
+C                    DES COORDONNEES DU PT MILIEU DE LA FISSURE
+C                    
+C     ENTREE
+C       NDIM    : DIMENSION TOPOLOGIQUE DU MAILLAGE
+C       KSI     : COORDONNEES DE REFERENCE DU POINT
+C       PINTER  : COORDONNÉES DES POINTS D'INTERSECTION
+C       JTABCO  : COORDONNEES DES NOEUDS DE L'ELEMENT
+C       JTABLS  : VALEUR DES LSN DES NOEUDS DE L'ELEMENT
+C
+C     SORTIE
+C       DELTA   : QUANTITE A MINIMISER
+C     ----------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
+C
+      INTEGER       NBNOMX
+      PARAMETER     (NBNOMX = 27)
+
+      REAL*8        FF(NNO),DFF(3,NBNOMX)
+      INTEGER       I,NDERIV
+      REAL*8        C,D,DELTA3,PINT1(NDIM),PINT2(NDIM),R8PREM
+      REAL*8        FCTF,FCTG
+      REAL*8        D1FCTF,D1FCTG
+      REAL*8        D2FCTF,D2FCTG   
+C
+C......................................................................
+C       
+C --- CALCUL DES FONCTIONS DE FORME ET DE LEUR DERIVEES EN UN POINT 
+C --- DANS LA MAILLE
+C
+
+      FCTF = 0.D0
+      FCTG = 0.D0
+      D1FCTF = 0.D0
+      D2FCTF = 0.D0
+      D1FCTG = 0.D0
+      D2FCTG = 0.D0
+      DO 10 I=1,NDIM
+        PINT1(I)=ZR(JPTINT-1+NDIM*(IPP-1)+I)
+        PINT2(I)=ZR(JPTINT-1+NDIM*(IP-1)+I)
+ 10   CONTINUE
+
+C     CALCUL DES FONCTIONS DE FORME DE L'ELEMENT EN KSI
+      CALL ELRFVF(ELP,KSI,NBNOMX,FF,NNO)
+
+C     CALCUL DES DERIVEES FONCTIONS DE FORME DE L'ELEMENT EN KSI
+      CALL ELRFDF(ELP,KSI,NDIM*NBNOMX,DFF,NNO,NDERIV)
+
+C --- CALCUL DE FCTF EN KSI
+C ---           FCTF : MEDIATRICE DU SEGMENT PASSANT PAR LES 2 PTS INTER
+C               SPECIFIQUE NDIM=2
+C     SI SEGMENT HORIZONTAL --> MEDIATRICE VERTICALE
+      IF (PINT1(2).EQ.PINT2(2)) THEN
+C        CHAQUE POINT DE LA MEDIATRICE VERIFIE X = C (SOIT X-C=0)
+C                   C = (XI+XII)/2
+C                   X = SUM(FF*TABCO(1))
+         C = (PINT1(1)+PINT2(1))/2  
+         DO 101 I=1,NNO
+           FCTF = FCTF + FF(I)*ZR(JTABCO-1+NDIM*(I-1)+1)
+ 101     CONTINUE 
+         FCTF = FCTF - C
+
+C        CALCUL DES DERIVEES PREMIERES DE F EN KSI
+         DO 102 I=1,NNO
+           D1FCTF = D1FCTF + DFF(1,I)*ZR(JTABCO-1+NDIM*(I-1)+1)
+           D2FCTF = D2FCTF + DFF(2,I)*ZR(JTABCO-1+NDIM*(I-1)+1)
+ 102     CONTINUE
+
+C     SI SEGMENT NON HORIZONTAL --> MEDIATRICE INCLINEE
+      ELSE
+C     CHAQUE POINT DE LA MEDIATRICE VERIFIE Y = C*X+D (SOIT Y-C*X-D=0)
+C                   C = -(XII-XI)/YII-YI
+C                   D = Y-C*X = (YII+YI)/2 - C*(XII+XI)/2
+C                   X = SUM(FF*TABCO(1))
+C                   Y = SUM(FF*TABCO(2))
+
+         C = PINT1(1)-PINT2(1)
+         C = C/(PINT2(2)-PINT1(2))
+   
+         D = (PINT2(2)+PINT1(2))/2
+         D = D-C*(PINT1(1)+PINT2(1))/2
+
+         DO 103 I=1,NNO
+         FCTF = FCTF + FF(I)*(ZR(JTABCO-1+NDIM*(I-1)+2)-
+     &                               C*ZR(JTABCO-1+NDIM*(I-1)+1))
+ 103     CONTINUE
+      
+         FCTF = FCTF - D
+
+C        CALCUL DES DERIVEES PREMIERES DE F EN KSI
+         DO 104 I=1,NNO
+           D1FCTF = D1FCTF + DFF(1,I)*(ZR(JTABCO-1+NDIM*(I-1)+2)-
+     &                                C*ZR(JTABCO-1+NDIM*(I-1)+1))
+           D2FCTF = D2FCTF + DFF(2,I)*(ZR(JTABCO-1+NDIM*(I-1)+2)-
+     &                                C*ZR(JTABCO-1+NDIM*(I-1)+1))
+ 104    CONTINUE
+
+       END IF
+
+C --- CALCUL DE FCTG,D1FCTG,D2FCTG EN KSI
+C ---           FCTG : LEVEL SET NORMALE
+         DO 105 I=1,NNO
+           FCTG = FCTG + FF(I)*ZR(JTABLS-1+I)
+           D1FCTG = D1FCTG + DFF(1,I)*ZR(JTABLS-1+I)
+           D2FCTG = D2FCTG + DFF(2,I)*ZR(JTABLS-1+I)
+ 105     CONTINUE
+
+C --- CALCUL DES QUANTITES A MINIMISER
+C     CALCUL DE DELTAS
+         DELTA3 = D1FCTF*D2FCTG - D2FCTF*D1FCTG
+         CALL ASSERT (ABS(DELTA3).GT.R8PREM())
+         DELTA(1) = (FCTF*D2FCTG - FCTG*D2FCTF) / DELTA3
+         DELTA(2) = (FCTG*D1FCTF - FCTF*D1FCTG) / DELTA3
+
+      END
