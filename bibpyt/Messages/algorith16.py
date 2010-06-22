@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 28/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith16 Messages  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -360,42 +360,6 @@ cata_msg = {
      - ERREUR > %(r1)f
      - Diminuer la taille d'incrément
 
- """),
-
-72 : _("""
-   LMARC : erreur d'intégration
-     - Essai d'intégration numéro : %(i1)d
-     - Divergence de l'intégration locale
-     - Diminuer la taille d'incrément
- """),
-
-73 : _("""
-   LMARC : erreur d'intégration
-     - Essai d'intégration numéro : %(i1)d
-     - Convergence vers une solution non conforme
-     - Incrément de déformation cumulée négative : %(r1)f
-     - Changer la taille d'incrément
- """),
-
-74 : _("""
-   LMARC : erreur
-     - Non convergence a itération maxi :  %(i1)d
-     - Convergence régulière mais trop lente
-     - Diminuer la taille d'incrément
- """),
-
-75 : _("""
-   LMARC : erreur
-     - Non convergence a itération maxi :  %(i1)d
-     - Convergence irrégulière & erreur >  %(r1)f
-     - Diminuer la taille d'incrément
- """),
-
-76 : _("""
-   LMARC : erreur
-     - Non convergence a itération maxi :  %(i1)d
-     - erreur > %(r1)f
-     - Diminuer la taille d'incrément
  """),
 
 77 : _("""

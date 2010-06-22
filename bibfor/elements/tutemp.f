@@ -1,6 +1,6 @@
       SUBROUTINE TUTEMP(OPTION,NOMTE,NBRDDL,F,B,VOUT,PASS,VTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ C ......................................................................
       INTEGER NNO,NPG,NBCOU,NBSEC,M,LORIEN,ICOUDE,I
       INTEGER IPOIDS,IVF,ICOU,ITEMP,NBPAR,ITEMPF,ITAB(8)
       INTEGER ICAGEP,IGEOM,JOUT,JTREF,IER,IMATE,J
-      INTEGER IGAU,ISECT,K,IBID,ICOUD2,MMT
+      INTEGER IGAU,ISECT,K,IBID,ICOUD2,MMT,NSPG
       INTEGER JNBSPI,IRET,IRET1,IRET2
       INTEGER NDIM,NNOS,JCOOPG,IDFDK,JDFD2,JGANO
 
@@ -133,7 +133,9 @@ C---- RECUPERATION TEMPERATURE
 C===============================================================
 C          -- RECUPERATION DE LA TEMPERATURE :
 C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-      CALL MOYTEM('RIGI',NPG,3,'+',VALPAR,IRET2)
+      NSPG=(2*NBSEC + 1)*(2*NBCOU + 1)
+      IRET2=0
+      CALL MOYTEM('RIGI',NPG,NSPG,'+',VALPAR,IRET2)
       NBPAR = 1
       NOMPAR = 'TEMP'
 C===============================================================
@@ -181,9 +183,12 @@ C===============================================================
 C     DEBUT CONSTRUCTION DE B
 
 C BOUCLE SUR LES POINTS DE GAUSS
-
+        NSPG=(2*NBSEC + 1)*(2*NBCOU + 1)
         DO 130 IGAU = 1,NPG
-          CALL VERIFG('RIGI',IGAU,3,'+',ZI(IMATE),'ELAS',1,COE1,IRET)
+C ATTENTION IRET NON INITIALISE PAR VERIFG
+          IRET=0
+          CALL VERIFG('RIGI',IGAU,NSPG,'+',ZI(IMATE),'ELAS',1,COE1,IRET)
+          IF (IRET.NE.0) COE1=0.D0
           SIG(1) = (C(1,1)+C(1,2))*COE1
           SIG(2) = (C(2,1)+C(2,2))*COE1
           SIG(3) = 0.D0

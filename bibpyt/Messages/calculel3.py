@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 26/05/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 21/06/2010   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -313,10 +313,6 @@ Risques & conseils :
 
 54 : _("""
  longueurs des modes locaux imcompatibles entre eux.
-"""),
-
-56 : _("""
- il n'y a pas autant de composantes
 """),
 
 57 : _("""

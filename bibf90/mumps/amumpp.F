@@ -2,7 +2,7 @@
      &                  IFMUMP,ELI2LG,RSOLU,CSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPP MUMPS  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -114,14 +114,14 @@ C     ------------------------------------------------
         N=SMPSK%N
         SMPSK%NRHS=NBSOL
         SMPSK%LRHS=N
-	LTYPR=.TRUE.
+        LTYPR=.TRUE.
       ELSE IF (TYPE.EQ.'C') THEN
         CMPSK=>CMPS(KXMPS)
         RANG=CMPSK%MYID
         N=CMPSK%N
         CMPSK%NRHS=NBSOL
         CMPSK%LRHS=N
-	LTYPR=.FALSE.
+        LTYPR=.FALSE.
       ELSE IF (TYPE.EQ.'D') THEN
         DMPSK=>DMPS(KXMPS)
         RANG=DMPSK%MYID
@@ -135,7 +135,7 @@ C     ------------------------------------------------
         N=ZMPSK%N
         ZMPSK%NRHS=NBSOL
         ZMPSK%LRHS=N
-	LTYPR=.FALSE.
+        LTYPR=.FALSE.
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -172,8 +172,8 @@ C       ------------------------------------------------
               ALLOCATE(DMPSK%RHS(NNBSOL))
             ELSE IF (TYPE.EQ.'Z') THEN
               ALLOCATE(ZMPSK%RHS(NNBSOL))
-	    ELSE
-	      CALL ASSERT(.FALSE.)
+            ELSE
+              CALL ASSERT(.FALSE.)
             ENDIF
           ENDIF
 
@@ -231,25 +231,25 @@ C         -- REDUCE DU SECOND MEMBRE AU PROC MAITRE
 
 C         -- COPIE DE SOLU DANS %RHS:
           IF (RANG.EQ.0) THEN
-	    IF (TYPE.EQ.'S') THEN
-	      DO I=1,NNBSOL
-	        RAUX=RSOLU(I)
-	        IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
-	        SMPSK%RHS(I)=RAUX
-	      ENDDO
-	    ELSE IF (TYPE.EQ.'C') THEN
-	      DO I=1,NNBSOL
-	        CAUX=CSOLU(I)
-		RBID=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
-	        IF (RBID.GT.RR4MAX) CALL ASSERT(.FALSE.)
-	        CMPSK%RHS(I)=CAUX
-	      ENDDO
+            IF (TYPE.EQ.'S') THEN
+              DO I=1,NNBSOL
+                RAUX=RSOLU(I)
+                IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
+                SMPSK%RHS(I)=RAUX
+              ENDDO
+            ELSE IF (TYPE.EQ.'C') THEN
+              DO I=1,NNBSOL
+                CAUX=CSOLU(I)
+                RBID=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
+                IF (RBID.GT.RR4MAX) CALL ASSERT(.FALSE.)
+                CMPSK%RHS(I)=CAUX
+              ENDDO
             ELSE IF (TYPE.EQ.'D') THEN
               CALL DCOPY(N4,RSOLU,1,DMPSK%RHS,1)
             ELSE IF (TYPE.EQ.'Z') THEN
               CALL ZCOPY(N4,CSOLU,1,ZMPSK%RHS,1)
-	    ELSE
-	      CALL ASSERT(.FALSE.)
+            ELSE
+              CALL ASSERT(.FALSE.)
             ENDIF
 
           ENDIF
@@ -273,8 +273,8 @@ C         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
                 DO K=1,NNBSOL
                   WRITE(IFMUMP,*) K,ZMPSK%RHS(K)
                 ENDDO
-	      ELSE
-	        CALL ASSERT(.FALSE.)
+              ELSE
+                CALL ASSERT(.FALSE.)
               ENDIF
               WRITE(IFMUMP,*) 'MUMPS FIN RHS'
             ENDIF
@@ -292,23 +292,23 @@ C        POST-TRAITEMENTS ASTER DE LA SOLUTION :
 C       ------------------------------------------------
         IF (RANG.EQ.0) THEN
           IF (TYPE.EQ.'S') THEN
-	    DO I=1,NNBSOL
-	      RSOLU(I)=SMPSK%RHS(I)
-	    ENDDO
+            DO I=1,NNBSOL
+              RSOLU(I)=SMPSK%RHS(I)
+            ENDDO
             DEALLOCATE(SMPSK%RHS)
           ELSE IF (TYPE.EQ.'C') THEN
-	    DO I=1,NNBSOL
-	      CSOLU(I)=CMPSK%RHS(I)
-	    ENDDO
+            DO I=1,NNBSOL
+              CSOLU(I)=CMPSK%RHS(I)
+            ENDDO
             DEALLOCATE(CMPSK%RHS)
-	  ELSE IF (TYPE.EQ.'D') THEN
+          ELSE IF (TYPE.EQ.'D') THEN
             CALL DCOPY(N4,DMPSK%RHS,1,RSOLU,1)
             DEALLOCATE(DMPSK%RHS)
           ELSE IF (TYPE.EQ.'Z') THEN
             CALL ZCOPY(N4,ZMPSK%RHS,1,CSOLU,1)
             DEALLOCATE(ZMPSK%RHS)
-	  ELSE
-	    CALL ASSERT(.FALSE.)
+          ELSE
+            CALL ASSERT(.FALSE.)
           ENDIF
 
           IF (ELI2LG) THEN

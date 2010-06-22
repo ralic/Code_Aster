@@ -5,7 +5,7 @@
       INTEGER NBCHC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +56,7 @@ C----------------------------------------------------------------------
       CHARACTER*14 NU
       CHARACTER*19 MAT,NOMCH
       INTEGER JREFA,JNEQU,NEQ,IBID,IERD,NUMGD,IDDES,NEC,JCCID,IDPRNO
-      INTEGER NELIM,JAFCI,NIMP,IMP,INO,IDDL,IEQ,ICH
+      INTEGER NELIM,JAFCI,NIMP,IMP,INO,IDDL,IEQ,ICH,IMATD,JNUGL
 C----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -66,7 +66,11 @@ C----------------------------------------------------------------------
       CALL ASSERT(ZK24(JREFA-1+2).EQ.NU)
       IF (NBCHC.EQ.0) GO TO 40
 
+      CALL JEEXIN(NU//'.NUML.DELG',IMATD)
       CALL JEVEUO(NU//'.NUME.NEQU','L',JNEQU)
+      IF ( IMATD.NE.0 ) THEN
+        CALL JEVEUO(NU//'.NUML.NUGL','L',JNUGL)
+      ENDIF
       NEQ = ZI(JNEQU)
       CALL DISMOI('F','NOM_GD',NU,'NUME_DDL',IBID,GD,IERD)
       CALL JENONU(JEXNOM('&CATA.GD.NOMGD',GD),NUMGD)
@@ -100,6 +104,9 @@ C----------------------------------------------------------------------
 
       NELIM=0
       DO 30, IEQ=1,NEQ
+        IF ( IMATD.NE.0 ) THEN
+          IF ( ZI(JNUGL+IEQ-1).EQ.0 ) GOTO 30
+        ENDIF
         IF (ZI(JCCID-1+IEQ).EQ.1) NELIM=NELIM+1
    30 CONTINUE
       ZI(JCCID-1+NEQ+1) = NELIM

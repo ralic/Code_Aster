@@ -3,7 +3,7 @@
       CHARACTER*(*) MATAS,ACTION
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C IN   ACTION  K*5     : /'ELIMF' /'ELIML'
 C-----------------------------------------------------------------------
       CHARACTER*32 JEXNUM
       INTEGER*4 ZI4
-      COMMON  /I4VAJE/ZI4(1)      
+      COMMON  /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -59,8 +59,8 @@ C----------------------------------------------------------------------
       CHARACTER*19 MAT,NOMSTO
       INTEGER TYPMAT,IELIM,JELIM,KDEB,KFIN,KKELI,ILIG,JCOL
       INTEGER JSMHC,JSMDI,JVALM,JVALM2,JCCVA,JCCLL,NELIM
-      INTEGER JREFA,JNEQU,IEQ,K,DECIEL,NEQ,IER
-      INTEGER IRET,NBLOCM,JREMP,DECJEL,IREMP,JCCID,KETA
+      INTEGER JREFA,JNEQU,IEQ,K,DECIEL,NEQ,IER,JNULG
+      INTEGER IRET,NBLOCM,JREMP,DECJEL,IREMP,JCCID,KETA,IMATD
       LOGICAL NONSYM
 C----------------------------------------------------------------------
       CALL JEMARQ()
@@ -94,7 +94,13 @@ C        TRAITEMENT CI-DESSOUS
 
 
       NU = ZK24(JREFA-1+2)(1:14)
-      CALL JEVEUO(NU//'.NUME.NEQU','L',JNEQU)
+      CALL JEEXIN(NU//'.NUML.DELG',IMATD)
+      IF ( IMATD.NE.0 ) THEN
+        CALL JEVEUO(NU//'.NUML.NEQU','L',JNEQU)
+        CALL JEVEUO(NU//'.NUML.NULG','L',JNULG)
+      ELSE
+        CALL JEVEUO(NU//'.NUME.NEQU','L',JNEQU)
+      ENDIF
       NEQ = ZI(JNEQU)
 
 
@@ -129,7 +135,11 @@ C     NELIM   I       : NOMBRE D'EQUATIONS DE LA MATRICE A ELIMINER
       CALL JEVEUO(MAT//'.CCID','L',JCCID)
       NELIM=0
       DO 1, IEQ=1,NEQ
-         KETA=ZI(JCCID-1+IEQ)
+         IF ( IMATD.NE.0 ) THEN
+           KETA=ZI(JCCID-1+ZI(JNULG+IEQ-1))
+         ELSE
+           KETA=ZI(JCCID-1+IEQ)
+         ENDIF
          CALL ASSERT(KETA.EQ.1 .OR. KETA.EQ.0)
          IF (KETA.EQ.1) THEN
             NELIM=NELIM+1

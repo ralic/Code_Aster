@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/06/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CRITERES GEOMETRIQUES DANS DEFI_GROUP EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,31 +26,67 @@
 
 DEBUT(CODE=_F(NOM='ZZZZ106A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE( )
+MA=LIRE_MAILLAGE(INFO=2, )
 MA1=LIRE_MAILLAGE(UNITE=14 )
 
 MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
                 CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
-                CREA_GROUP_MA=( _F(  NOM = 'GM1',
-                                       OPTION = 'SPHERE',
-                                       GROUP_NO_CENTRE = 'GRN1',
-                                       RAYON = 2.),
-                                _F(  NOM = 'GM2',
+                CREA_GROUP_MA=( _F(  NOM = 'GD0',
+                                     OPTION = 'SPHERE',
+                                     GROUP_NO_CENTRE = 'GRN1',
+                                     RAYON = 4.0,
+                                     CRIT_NOEUD ='AU_MOINS_UN',),
+                                _F(  NOM = 'GD1',
+                                     OPTION = 'SPHERE',
+                                     GROUP_NO_CENTRE = 'GRN1',
+                                     RAYON =  4.0,
+                                     CRIT_NOEUD ='TOUS',),
+                                _F(  NOM = 'GD2',
+                                   OPTION = 'SPHERE',
+                                   GROUP_NO_CENTRE = 'GRN1',
+                                   RAYON = 4.0,
+                                   CRIT_NOEUD ='MAJORITE',),
+                                _F(  NOM = 'GC1',
+                                     OPTION = 'CYLINDRE',
+                                     NOEUD_CENTRE = 'N1',
+                                     RAYON = 4.,
+                                     ANGL_NAUT = (0.,90.,),
+                                     CRIT_NOEUD ='AU_MOINS_UN',),
+                                _F(  NOM = 'GC2',
                                        OPTION = 'CYLINDRE',
                                        NOEUD_CENTRE = 'N1',
-                                       RAYON = 2.,
-                                       ANGL_NAUT = (0.,90.,)),
-                                _F(  NOM = 'GM3',
+                                       RAYON = 4.,
+                                       ANGL_NAUT = (0.,90.,),
+                                       CRIT_NOEUD ='TOUS',),
+                               _F(  NOM = 'GC3',
+                                       OPTION = 'CYLINDRE',
+                                       NOEUD_CENTRE = 'N1',
+                                       RAYON = 4.,
+                                       ANGL_NAUT = (0.,90.,),
+                                       CRIT_NOEUD ='MAJORITE',),
+                                _F(  NOM = 'GT1',
                                        OPTION = 'BANDE',
                                        NOEUD_CENTRE = 'N1',
-                                       DIST = 2.,
-                                       VECT_NORMALE = (0.,1.,0.,)),
+                                       DIST = 4.,
+                                       VECT_NORMALE = (0.,1.,0.,),
+                                       CRIT_NOEUD ='AU_MOINS_UN',),
+                                _F(  NOM = 'GT2',
+                                       OPTION = 'BANDE',
+                                       NOEUD_CENTRE = 'N1',
+                                       DIST = 4.,
+                                       VECT_NORMALE = (0.,1.,0.,),
+                                       CRIT_NOEUD ='TOUS',),
+                                _F(  NOM = 'GT3',
+                                       OPTION = 'BANDE',
+                                       NOEUD_CENTRE = 'N1',
+                                       DIST = 4.,
+                                       VECT_NORMALE = (0.,1.,0.,),
+                                       CRIT_NOEUD ='MAJORITE',),
                                 _F(  NOM = 'GM4',
                                        OPTION = 'FACE_NORMALE',
-                                       VECT_NORMALE = (0.,0.,1.,)),
-                               ),
+                                       VECT_NORMALE = (0.,0.,1.,)),),
                 CREA_GROUP_NO=(
                                 _F(  NOM = 'GN1',
                                        OPTION = 'ENV_SPHERE',
@@ -83,7 +119,7 @@ DEFI_GROUP(reuse=MA,   MAILLAGE=MA,
 
 DEFI_GROUP(reuse=MA,   MAILLAGE=MA,
             CREA_GROUP_MA=_F( NOM = 'TR11AB',OPTION='APPUI',
-                              TYPE_APPUI='TOUT', GROUP_NO='TR11AB'))
+                              TYPE_APPUI='TOUT', GROUP_NO='TR11AB',))
 
 
 # -------  VALIDATION DE : DEFI_GROUP / DETR_GROUP_XX -----------

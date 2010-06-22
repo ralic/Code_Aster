@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,9 +53,6 @@ C       ----------------------------------------------------------------
          IF     ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
             CALL  CVMJPL (MOD,NMAT,MATER,
      &        TIMED, TIMEF,EPSD,DEPS,SIGF,VINF,SIGD,VIND,NVI,NR,DSDE)
-         ELSEIF ( LOI(1:5) .EQ. 'LMARC'     ) THEN
-            CALL  LMAJPL (MOD,NMAT,MATER,
-     &            TIMED, TIMEF,SIGF,VINF,SIGD,VIND,NVI,NR,DSDE)
          ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS'     ) THEN
             CALL  LCMMJP (FAMI,KPG,KSP,MOD,NMAT,MATER,
      &          TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,

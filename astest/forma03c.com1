@@ -48,10 +48,6 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=_F(FONC_X=DYG,
                         FONC_Y=SYG,),
               TITRE='SigmaYY en fonction de Dy au point G ',
-              BORNE_X=(0.0,3.0,),
-              BORNE_Y=(0.0,7.0,),
-              GRILLE_X=0.5,
-              GRILLE_Y=1.0,
               LEGENDE_X='D\xe9placement DY au point G',
               LEGENDE_Y='Contraine SIGMAYY',);
 #######################################################
@@ -92,11 +88,43 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=_F(FONC_X=DYG,
                         FONC_Y=F_FY_G,),
               TITRE='Resultante de Fy(FG) fonction de Dy(G)',
-              BORNE_X=(0.0,3.0,),
-              BORNE_Y=(0.0,700.0,),
-              GRILLE_X=0.5,
-              GRILLE_Y=100.0,
               LEGENDE_X='D\xe9placement DY au point G',
               LEGENDE_Y='R\xe9sultante FY sur FG',);
+
+
+#
+# COURBE instant en fonction du numéro d'ordre
+#######################################################
+
+# pour le moment, il faut convertir NUME_ORDRE en réel (fiche 15220)
+CONV_I_R = FORMULE(NOM_PARA=('NUME_ORDRE'),VALE='1.*NUME_ORDRE'  );
+
+FHAUT = CALC_TABLE(TABLE = FHAUT,
+                   reuse =FHAUT,
+                   ACTION=_F(OPERATION='OPER',FORMULE=CONV_I_R,NOM_PARA='NUME_ORDRE_R'))
+
+IMPR_TABLE(TABLE=FHAUT)
+
+F_NUM_T=RECU_FONCTION(TABLE=FHAUT,
+                      PARA_X='NUME_ORDRE_R',
+                      PARA_Y='INST',)
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=84,
+              COURBE=_F(FONCTION=F_NUM_T),
+              TITRE='Instant fonction du num\xe9ro d ordre',
+              LEGENDE_X='Num\xe9ro d ordre',
+              LEGENDE_Y='Instant (s)',);
+
+
+
+
+
+
+
+
+
+
+
 
 FIN();

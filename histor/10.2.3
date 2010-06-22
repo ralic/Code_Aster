@@ -1,0 +1,1289 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 22/06/2010 - 10:12:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015178 DU 2010-06-10 10:44:53
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Test mumps05a en version STA10.2 sur Bull
+FONCTIONNALITE
+   En NEW10.2.1, avec la version instrumentée en debug, l'exécution se déroule normalement.
+   En instrumentant la routine EXLIM2 pour écrire le nom des objets JEVEUX sur lesquels on
+   effectue un CALL JEEXIN, on obtient : 
+    --- NOMBRE TOTAL DE NOEUDS :                  72289  DONT : 
+                     3368  NOEUDS "LAGRANGE"
+    --- NOMBRE TOTAL D'EQUATIONS :                 210131
+    @@@ jpl 1:SDFETI             .FLINSDD1    
+    @@@ jpl 2:SDFETI             .FCFLSDD1    
+    @@@ jpl 3:ÌÀþÿÿÿ`
+   
+   Ce qui correspond à :
+         write(6,*) '@@@ jpl 3:',LIGRCF//'.LIEL' 
+         CALL JEEXIN(LIGRCF//'.LIEL',IRET)
+   
+   La variable LIGRCF provenant de la routine NUMERO n'est pas initialisée!
+   
+   Le problème vient de la fiche 13647 lors de la résorption contact+FETI en v10.1.3
+   (décembre 2009 ! )
+   
+   Le ménage a été incomplet.
+   
+   Correction: on vide NUMERO, EXLIM2 et ALFETI de toute référence au contact continue
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR corus        CORUS Mathieu          DATE 21/06/2010 - 16:56:29
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014299 DU 2009-12-14 12:18:12
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MOD4 - Performance de la technique de sous-structuration en dynamique
+FONCTIONNALITE
+   #-- ANALYSE DU BESOIN -#
+   
+   Une amélioration du niveau de la performance de la technique de sous-structuration en 
+   dynamique est demandé par les utilisateurs qui rencontrent des difficultés pour obtenir des 
+   résultats en utilisant pourtant des modèles assez légers (voir la fiche REX AOM 14014).
+   
+   Le chantier à mener pour la rénovation de la sous-structuration en dynamique est assez 
+   global. Cette fiche se limite au volet "performance" et il y aura une autre pour le 
+   volet "ergonomie".
+   Après les analyses faites sur le niveau de performance il résulte que les problèmes suivants 
+   sont à résoudre:
+   - la résolution coûteuse d'un système avec des matrices pleines
+   - trop de temps passé à généré les modes statiques
+   - trop de temps passé à créer plein de structures de données (pas optimal)
+   
+   Lors d'une réunion "Pôle développement T61", Mathieu et Hari ont mentionné la possibilité de 
+   fabriquer des modes d'interface pour la sous-structuration sans avoir à calculer tous les 
+   relevés statiques associés (calcul très lourd). Une maquette existe et sera basculé l'année 
+   prochaine dans Code_Aster comme un premier travail pour cette fiche.
+   
+   #-- TRAVAIL REALISE --#
+   
+   Un gros travail de fond a ete realise sur l'ensemble des operateurs permettant de mettre
+   en oeuvre les methodes de sous structuration dynamique.
+   
+   Le premier travail a ete l'integration d'une methode dans l'operateur MODE_STATIQUE
+   permettant le calcul de modes de couplages (modes d'interfaces) sans passer par le calcul
+   de tous les vecteurs de corrections statiques. Les gains de temps sont obtenus d'une part
+   par le calcul efficace des modes de couplages, mais aussi par le fait que les matrices
+   projetees (pleines) sont de tailles beaucoup moins importantes (taille corespondant au
+   nombre de modes de couplages demandes, et non plus du nombre de DDL d'interfaces).
+   
+   Pour prendre en compte cette amelioration, il a fallu egalement travailler sur la
+   definition des modeles generalises. La partie de l'operateur DEFI_MODELE_GENE concernant
+   les problemes reduits a ete completement repensee et reecrite pour prendre en compte tous
+   les types d'incompatibilites d'interfaces possibles :
+   - noeuds non coincidents
+   - modelisations non compatibles (2D / 3D, lineaire / quadratique)
+   - trace des modes a l'interface differentes
+   
+   Un autre vecteur d'amelioration des performances est la modification de la prise en compte
+   des conditions aux limites. Jusqu'alors, les raccords entre sous structures etaient geres
+   par l'introduction de multiplicateurs de Lagranges. Pour alleger les matrices du modele
+   generalise associe, on a choisi de proceder par elimination. Une technique basee sur la
+   decomposition QR des matrices definissant les contraintes lineaires permet de construire
+   un sous espace ou les contraintes sont automatiquement verifiees. Les differentes matrices
+   des sous structures sont assemblees et projetees dans ce sous espace. Cette modification
+   impacte les operateurs NUME_DDL_GENE, ASSE_MATR_GENE et REST_SOUS_STRUCT.
+   
+   Enfin, le dernier point revele comme limitant est la construction du squelette. Cette
+   construction a ete optimisee pour limiter l'occupation memoire, et accelerer nettement les
+   temps de construction.
+   
+   La performance de ces evolutions a ete testee sur le calcul des modes d'un disque aubage
+   (fiche 14014). On realise un gain de temps d'un facteur 60 pour le calcul des 300 premiers
+   modes de la structure (passage de 32000s a 540s), et la restitution des modes sur le
+   modele complet est possible dans des temps courts (500s pour le calcul de 60 modes +
+   restitution), la ou le calcul s'arretait par manque de temps CPU apres 48h.
+   
+   #-- IMPACT SUR LA SYNTAXE --#
+   
+   MODE_STATIQUE : Ajout d'un mot-cle facteur :
+   
+   MODE_INTERF=_F(* TOUT / NOEUD / GROUP_NO = ... (f, UN_PARMI)
+                  * TOUT_CMP / AVEC_CMP / SANS_CMP = ... (f, UN_PARMI)
+                  * NBMOD = ... (o)
+                  * FREQ = ...  (o) )
+   
+   DEFI_MODELE_GENE : pas de changement
+   
+   NUME_DDL_GENE : Enrichissement du mot-cle METHODE AVEC l'option ELIMINE :
+   METHODE = 'CLASSIQUE' / 'INITIAL' / 'ELIMINE'  (DEFAUT = CLASSIQUE)
+   
+   DEFI_SQUELETTE : pas de changement
+   
+   REST_SOUS_STRUCT : pas de changement
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.24.01,U4.52.14,U4.65.02,U4.65.03,U4.65.04,V2.03.106,R4.06.02
+VALIDATION
+   sdls106b
+NB_JOURS_TRAV  : 60.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014900 DU 2010-04-02 08:25:29
+TYPE evolution concernant Code_Aster (VERSION 10.4)
+TITRE
+   AR02-Performance en sous structuration dynamique : liaisonnement des sous structures
+FONCTIONNALITE
+   cf. fiche 14299
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.65.02,V2.03.106
+VALIDATION
+   sdls106b
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014533 DU 2010-02-01 14:47:30
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Problxc3xa8me avec DEFI_MODELE_GENE
+FONCTIONNALITE
+   cf. fiche 14299
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.65.02,V2.03.106
+VALIDATION
+   sdls106b
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014895 DU 2010-04-01 14:14:39
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Problemes de performance DEFI_SQUELETTE
+FONCTIONNALITE
+   cf. fiche 14299
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.24.01
+VALIDATION
+   sdls106b
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR devesa       DEVESA Georges         DATE 22/06/2010 - 10:22:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014796 DU 2010-03-12 17:59:02
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   créer un cas test Aster-MISS en interaction sol-fluide-structure
+FONCTIONNALITE
+   On introduit le nouveau test simple FDLV113A intitulé "Source de 
+   pression dans une boule pleine de fluide en interaction sol - 
+   fluide - structure" permettant de tester toutes les interfaces 
+   intervenant en Interaction sol-fluide-structure (ISFS) avec Aster-
+   MISS : outre l'interface sol-structure, les interfaces sol-
+   fluide, fluide-structure et sol-sol.
+   Il consiste en un cas simple de boule de sol avec du fluide à 
+   l'intérieur dans lequel on injecte une source de pression au 
+   centre. En coupant la boule en 2 parties, on peut modéliser une 
+   partie en sol et une partie en structure afin de générer toutes 
+   les interfaces.
+   On compare ce cas à une solution analytique de réponse harmonique 
+   et cela permet également de tester la nouvelle fonctionnalité de 
+   source ponctuelle dans le fluide via le mot clé SOURCE_FLUIDE 
+   d'IMPR_MISS_3D.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V8.01.113
+VALIDATION
+   test FDLV113A
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014797 DU 2010-03-12 18:07:22
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   lire les impxc3xa9dances de sol et forces sismiques issues de MISS en interaction sol-fluide-structure
+FONCTIONNALITE
+   On introduit le nouveau test FDLV112B intitulé "Analyse modale et 
+   harmonique d'un barrage en interaction sol - fluide - structure". 
+   Il permet d'exploiter la lecture des impédances de sol et des 
+   forces sismiques calculées par MISS en ISFS. 
+   Afin de pouvoir procéder à une réponse sismique par calcul 
+   harmonique dans Aster en ISFS, il est nécessaire de modifier les 
+   opérateurs LIRE_IMPE_MISS et LIRE_FORC_MISS en introduisant le 
+   mot clé ISSF='OUI' (cf. MACRO_MISS_3D) pour pouvoir lire un 
+   nouveau format dédié à l'ISFS. On permet également d'introduire 
+   une matrice d'impédance ainsi lue en ISFS par le mot clé 
+   MATR_IMPE_INIT de MACR_ELEM_DYNA afin d'extraire une masse 
+   équivalente condensée sur l'interface fluide-structure.
+   On teste simplement ce développement dans le nouveau cas test par 
+   une analyse modale et harmonique d'un modèle de barrage et 
+   retenue avec domaine de sol. La structure du barrage est la même 
+   que celle du test FDLV112A où le fluide était sous forme de masse 
+   ajoutée et on vérifie qu'on retrouve les premières fréquences.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V8.01.112, U7.02.32, U7.02.33, U4.65.01
+VALIDATION
+   test FDLV112B
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014742 DU 2010-03-05 20:14:05
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Rxc3xa9duction du nombre de modes d'interface avec macro-xc3xa9lxc3xa9ments statiques
+FONCTIONNALITE
+   On introduit la possibilité d'utiliser une base de modes réduite afin 
+   de représenter les mouvements des interfaces entre des domaines 
+   linéaires condensés par des macro-éléments et des domaines non 
+   linéaires non condensés modélisés par EF.
+   Cela permet des gains en performances et/ou mémoire par rapport au 
+   traitement actuel de la condensation statique qui exige en vue de 
+   l'assemblage de calculer les modes d'interface associés à tous les 
+   DDLs physiques pour chaque interface. 
+   Pour cela, on lève le problème de pouvoir assembler sur l'interface 
+   des DDLS physiques et des DDLS modaux associés à ces modes réduits en 
+   modifiant la programmation de l'opérateur MACR_ELEM_DYNA (routine 
+   COMP81) sans modifier sa syntaxe. On y introduit la distinction entre 
+   l'interface constituée des noeuds physiques et celle constituée de 
+   noeuds virtuels internes au domaine condensé représentatifs des modes 
+   d'interface, soit la même astuce que pour la prise en compte des modes 
+   dynamiques déjà implémentée. 
+   Ensuite, il faut faire le lien dans le modèle mixte EF-macroéléments 
+   entre les DDLs physiques des interfaces et les DDLS généralisés 
+   associés aux modes quelconques de réduction d'interface. Cela pourra 
+   se faire pour chaque macro-élément concerné via une série de relations 
+   linéaires du type Uphys = PHI. Ugen pour chaque DDL physique de 
+   l'interface qu'on implémente via une une nouvelle option répétable 
+   d'AFFE_CHAR_MECA, appelée LIAISON_INTERF, (routines CHARME et une 
+   nouvelle CALIMC) où il suffit de donner successivement le nom des 
+   macro-éléments à relier avec la structure physique à calculer. 
+   Syntaxe AFFE_CHAR_MECA :
+       LIAISON_INTERF = _F( (o) MACR_ELEM_DYNA = ...,
+                            (f) TYPE_LIAISON = / 'RIGIDE' (defaut) 
+                                               / 'SOUPLE' )
+   La relation de liaison peut s'exprimer par une forme "souple" avec 
+   double produit : PHI^t Uphys = PHI^t PHI. Ugen 
+   Enfin, pour la restitution des résultats sur base physique dans les 
+   structures associées à chaque macro-élément, on modifie la 
+   programmation de la commande REST_COND_TRAN (routine MACR78) sans 
+   modifier sa syntaxe pour prendre en compte la réduction de base modale.
+   
+   Le développement est testé par une nouvelle modélisation B du test 
+   SDNV107 : "Poutre plastique en traction dynamique condensée par sous-
+   structuration statique" où sur un cas pas très gros (2000 Ddls), on 
+   constate un gain déjà de l'ordre de 3 sur le temps de calcul par 
+   rapport au modèle complet avec les mêmes résultats.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V5.03.107,U2.07.04,U4.44.01,R4.06.02
+VALIDATION
+   test SDNV107B
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 21/06/2010 - 16:46:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015068 DU 2010-05-12 07:41:40
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   X-FEM : bug dans PROPA_FISS mxc3xa9thode MAILLAGE dans l'orientation des mailles de la fissures
+FONCTIONNALITE
+   Problème :
+   -----------
+   
+   La méthode MAILLAGE de PROPA_FISS ne vérifie pas l'adéquation entre l'orientation des
+   mailles de la fissures nouvellement créées, et celle des mailles initiales (voir image
+   jointe).
+   Cela peut provoquer un calcul des level sets complètement faux -> résu faux !!
+   
+   
+   Solution :
+   ---------
+   
+   en fait, le pb est réglé suite à la restitution de la fiche 15075
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015099 DU 2010-05-20 15:05:38
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   DEFI_FOND_FISS plante dans une boucle
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Dans l'étude jointe on fait un DEFI_FOND_FISS suivi d'un raffinement de maillage uniforme,
+   le tout
+   dans une boucle.
+   
+   Au bout de 2 raffinement, on plante avec ce message :
+   
+      !------------------------------------------------------------------------------!
+      ! <EXCEPTION> <RUPTURE0_64>                                                    !
+      !                                                                              !
+      ! Arret sur erreur utilisateur : deux mailles ou groupes de mailles du fond de !
+      ! fissure sont non consécutives dans la numérotation des noeuds.               !
+      !------------------------------------------------------------------------------!
+   
+   Je suis étonné car on ne plante ni sur le premier maillage ni sur le premier maillage raffiné.
+   
+   
+   Analyse du problème :
+   ---------------------
+   
+   le "pb" vient d'Homard. mais je pense que c'est pas un bug d'homard,
+   car Homard ne garantit pas que l'on garde l'ordre des mailles dans un groupe ... car cet
+   "ordre" n'a de sens qu'en 2D le long d'un chemin.
+   
+   
+   maillage_0 : FONFIS = [ M7501    M7502    M7503    M7504    M7505   ]
+   avec 
+    M7501  :  N1       N16     
+    M7502  :  N16      N31     
+    M7503  :  N31      N46     
+    M7504  :  N46      N61     
+    M7505  :  N61      N4626   
+   Les noeuds se suivent bien.
+   
+   
+   maillage_1 : FONFIS = [ M3       M4       M39      M40    ...]
+   avec
+    M3     :  N1       N9577   
+    M4     :  N9577    N16     
+    M39    :  N16      N9639   
+    M40    :  N9639    N31     
+   ...
+   Les noeuds se suivent bien.
+   
+   
+   maillage_2 :  FONFIS  = [ M3       M4       M5       M6    ....]
+   avec 
+    M3      : N1       N68102  
+    M4      : N68102   N9577   
+    M5      : N68103   N16     
+    M6      : N9577    N68103  
+   on passe de M4 à M5 mais le noeud n°2 de M4 n'est pas le noeud n°1 de M5.
+   En fait, la maille M4 du maillage_1 a été divisée en 2 :  M5 et M6 dans le 
+   maillage_2.
+   Mais on aurait préféré que l'ordre soit inversé : M6,M5...
+   Cependant, Homard est dans son droit en renvoyant M5,M6.
+   
+   
+   Solution :
+   ----------
+   
+   Pour ordonner le groupe de maille, il faut utiliser les mot-clés suivants de DEFI_FOND_FISS :
+   NOEUD_ORIG   
+   GROUP_NO_ORIG
+   NOEUD_EXTR   
+   GROUP_NO_EXTR
+   On modifie le message d'erreur :
+   """
+   Arret sur erreur utilisateur : deux mailles ou groupes de mailles du fond de
+   fissure sont non consécutives dans la numérotation des noeuds.
+   En effet, le fond de fissures doit être discrétisé avec des mailles segment 
+   ordonnées de telle sorte que pour deux segments consécutifs, le 2ème noeud sommet
+   du 1er segment soit le même que le 1er noeud sommet du 2ème segment.
+   
+   Conseil : Pour ordonner les mailles du fond de fissure, veuillez 
+   utiliser NOEUD_ORIG (ou GROUP_NO_ORIG) et NOEUD_EXTR (ou GROUP_NO_EXTR)"""),
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015216 DU 2010-06-15 16:43:15
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   La doc V3.02.313 n'est pas xc3xa0 jour
+FONCTIONNALITE
+   Cette fiche trace le défaut de documentation des modélisation D et E.
+   
+   Je mets à jour la doc en V9.
+   Suite à la fiche 15217, les 2 tests ont été supprimés en V10, donc je ne mets pas à jour
+   la doc en V10
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v3.02.313
+VALIDATION
+   aucun
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015217 DU 2010-06-16 06:16:37
+TYPE express concernant Code_Aster (VERSION 10.2)
+TITRE
+   X-FEM : suppression de cas test 2D sslp313d et e
+FONCTIONNALITE
+   Lors de la restitution des 1ers travaux sur les éléments X-FEM en 2D (en 8.2.1), 2
+   cas-tests ont été restitués :
+   sslp313d et e (fissure inclinée dans un plan infini). A l'époque, seul le calcul mécanique
+   était possible (pas le post-traitement de G et des K). Donc les 2 tests en question se
+   sont contentés de testés la base locale en fond de fissure.
+   
+   Ensuite, lorsque le calcul de G et des K ont été restitués en 2D (en 9.2.5), on a préféré
+   créer un nouveau cas-test dédié à X-FEM : ssnp138, ressemblant fortement au sslp313. En
+   effet, c'est aussi un test de fissure inclinée, mais dans lequel on fait varier l'angle
+   entre 0 et 90 (donc plus complet que le sslp313).
+   
+   
+   On décide donc de supprimer les tests sslp313d et sslp313e
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.02.313
+VALIDATION
+   neant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015222 DU 2010-06-16 11:20:10
+TYPE express concernant Code_Aster (VERSION 10.2)
+TITRE
+   DEFI_LIST_INST dans forma03c
+FONCTIONNALITE
+   On propose de passer en gestion automatique du pas de temps pour le test forma03c.
+   
+   Pour cela :
+   on rajoute DEFI_LIST_INST avant le STAT_NON_LINE.
+   en mettant que 3 instants : t0, t1 et tfin
+   le 1er pas de temps est de la même longueur que les pas de temps manuels (soit 4/160 s)
+   
+   On rencontre alors des pb de pivots presque nuls : <F> <FACTOR_20>    
+   que l'on résoud en autorisant du sous-découpage dans ce cas 
+   avec                      SOLVEUR=_F(STOP_SINGULIER='DECOUPE'),
+   
+   le calcul converge avec la même précision (pas de changement du test_resu) en 22
+   nume_ordre au lieu de 160.
+   Gain en tems CPU :
+   
+   Temps USER+SYS
+          comm  com1
+   avant 51.32  5.45
+   après 16.49  3.82
+   
+   On joint la courbe comparative (merci JMP) : 
+   l'ancienne version est en vert (MANUEL)
+   la nouvelle version est en rouge (AUTO - ABAQUS)
+   la courbe en noir est un essai avec la gestion AUTO type ZMAT basé sur les variations de DP
+   
+   
+   
+   Rq sur l'impact doc :
+   la doc officielle actuelle du test n'est pas à jour.
+   il existe une doc "à jour" pour les formations, au format .doc
+   je modifie cet doc (voir PJ) 
+   La conversion en .odt + soumission dans la GED sera réalisée par
+   Josselin dans la fiche 15156
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.114
+VALIDATION
+   forma03c
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 21/06/2010 - 14:36:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013489 DU 2009-06-09 09:19:07
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TMA : CS
+TITRE
+   routine memax.f xc3xa0 rxc3xa9xc3xa9crire
+FONCTIONNALITE
+   Probleme:
+   ---------
+   Samuel veut calculer le "max" d'un cham_elem. Il essaye d'utiliser la routine memax.f
+   (décrite dans le wiki), mais en regardant son source, on s'aperçoit qu'elle ne peut
+   fonctionner que pour les cham_elem / ELEM et que l'argument NUCP n'est pas bien 
+   spécifié.
+   
+   Solution:
+   ---------
+   
+   La routine memax a été réécrite afin de fonctionner aussi pour les cham_elem de type 
+   ELGA
+   et ELNO. L'argument NUCP est remplacé par l'argument NOMCMP qui est plus explicite (nom 
+   de
+   composante). La programmation est plus optimale.
+   Une vérification a été effectuée sur Calibre 5 et Rocks afin de s'assurer que -R8MAEM()
+   est bien un très grand nombre. Sur Rocks comme sur Calibre 5, il vaut -1.7977e308.
+   
+   Il semble de plus que l'on observe sur certains cas-test un petit gain
+   en temps de l'ordre de 5%.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013714 DU 2009-08-13 08:01:14
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   IMPR_RESU ne sait pas imprimer les champs d'entiers au format RESULTAT
+FONCTIONNALITE
+   PROBLEME :
+   ---------
+   
+   IMPR_RESU ne sait pas imprimer les champs de type "I" ou de type "K".
+   
+   ACH03=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_I',
+       MAILLAGE=MA,
+       AFFE=(_F( TOUT  = 'OUI', NOM_CMP=('X15','X120'), VALE_I=(1,2),),
+             _F( NOEUD = ('A2',), NOM_CMP = ('X2'), VALE_I =3 ),),
+       )
+       
+   
+   ...IMPR_RESU(INFO=1,
+   ............FORMAT='RESULTAT',
+   ............UNITE=8,
+   ............RESU=_F(CHAM_GD=ACH03,
+   ....................FORMAT_R='1PE12.5',
+   ....................IMPR_COOR='NON'),
+   ............);
+   
+   ...
+   ...!----------------------------------------------------------------!
+   ...!.<A>.<PREPOST_97>...............................................!
+   ...!................................................................!
+   ...!................................................................!
+   ...!..on.ne.sait.pas.imprimer.les.champs.de.type.".I."..............!
+   ...!................................................................!
+   ...!................................................................!
+   ...!................................................................!
+   ...!.Ceci.est.une.alarme..Si.vous.ne.comprenez.pas.le.sens.de.cette.!
+   ...!.alarme,.vous.pouvez.obtenir.des.résultats.inattendus.!.........!
+   ...!----------------------------------------------------------------!
+   
+   MODIFICATION :
+   ---------
+   Pour imprimer les champs de type "I" ou de type "K", des appels à imprsd ont été
+   introduits dans les routines irchml.f et irdepl.f pour les champs de type "I" ou de type "K".
+   La validation a consisté à enrichir le test zzzz126a en utilisant le champ aux noeuds de
+   type "NOEU_NEUT_I" déjà présent et en ajoutant une creation de champ aux éléments de type
+   "ELEM_DCEL_I" afin de tester l'impression.
+   Exemple de l'impression d'un champ aux nœuds de type entier 'I' : 
+   
+    ------>
+    CHAMP AUX NOEUDS                                                                
+     
+    -----------------------------------------------
+    ACH03   
+     
+     GRANDEUR: NEUT_I  
+     
+          NOEUD|    X2      |    X15     |    X120    
+       A1      |            |           1|           2
+       A2      |           3|           1|           2
+       A3      |            |           1|           2
+       A4      |            |           1|           2
+       B1      |            |           1|           2
+       B2      |            |           1|           2
+       B3      |            |           1|           2
+       B4      |            |           1|           2
+   
+   Impact:
+   -------
+   fortran : irchml.f et irdepl.f
+   
+   Validation:
+   ----------
+   zzzz126a.comm enrichi
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz126a
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014150 DU 2009-11-06 14:57:39
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   DEFI_GROUP : CREA_GROUP_MA pouvoir specifier NOEUDS='TOUS' ou 'AU_MOINS_UN'
+FONCTIONNALITE
+   PROBLEME :
+   ----------------
+   
+   Dans DEFI_GROUP/CREA_GROUP_MA :
+   
+   les différentes options (SPHERE, CYLINDRE....) permettent de définir un GROUP_MA constitué
+   des mailles dont AU MOINS un noeud appartient à la forme précisée. Cela ne garantit donc
+   pas que les mailles sont incluses dans la forme précisée.  
+   
+   On souhaiterait pouvoir choisir "au moins un noeud" ou "tous les noeuds" ou "majorite"
+   
+   
+   MODIFICATION:
+   ----------------
+   Dans CREA_GROUP_MA, le mot-clé CRIT_NOEUD a été ajouté pour les options 'SPHERE',
+   'CYLINDRE' et 'BANDE'. Il peut valoir:
+   - 'TOUS': dans ce cas, seules les mailles dont tous les noeuds appartiennent à la forme
+   précisée sont retenues
+   - 'AU_MOINS_UN': dans ce cas, les mailles dont au moins un noeud appartient à la forme
+   précisée sont retenues 
+   - 'MAJORITE': dans ce cas, les mailles dont au moins la moitié des noeuds appartiennent à
+   la forme précisée sont retenues
+   
+   
+   IMPACT:
+   ------
+   fortran: cgmaba.f, cgmasp.f et cgmacy.f 
+   catalo: defi_group.capy. 
+   
+   VALIDATION
+   ----------
+   zzzz106a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.22.01
+VALIDATION
+   zzzz106a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 21/06/2010 - 17:30:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015162 DU 2010-06-08 06:17:10
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   Anomalie DEFI_MATERIAU ECRO_ISOT2
+FONCTIONNALITE
+   Probleme rencontré
+   ==================
+   
+   Dans le cas du comportement MONOCRISTAL, La comparaison des calculs :
+   	ECRO_ISOT1 avec q1 et b1 non nuls
+   	ECRO_ISOT2 avec q1 et b1 de même valeur que précédemment et q2=b2=0 
+   doit conduire à des résultats identiques.
+   
+   Ce n'est pas le cas. Il y a donc une anomalie.
+   
+   Correction
+   ==========
+   
+   c'était dû à une mauvaise récupération des coefficients matériau pour l'écrouissage
+   isotrope de type ECRO_ISOT2
+   Après correction, on retrouve des résultats identiques.
+   
+   Validation
+   ==========
+   Le test SSNV172A permet de reproduire ce qui a été à l'origine de l'anomalie : on donne
+   des coefficients tels que ECRO_ISOT2=ECRO_ISOT2. On retrouve maintenant les mêmes résultats.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.11, V6.04.172
+VALIDATION
+   ssnv172a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015140 DU 2010-06-01 09:24:21
+TYPE anomalie concernant Code_Aster (VERSION 10.1)
+TITRE
+   probleme calcul 3D 1D avec tuyau 6M
+FONCTIONNALITE
+   Problème rencontré
+   ==================
+   
+   j'ai une modélisation de la ligne VVP N4 réalisée en filaire (tuyau 6M) et qui comporte 8
+   té 3D raccordés avec des liaisons elem 3D tuyau. Le calcul modal marche pour les 8 tés
+   raccordés, mais si je rajoute un tuyau 6M après le 8ème té, le calcul plante avec comme
+   message d'erreur :
+   
+   EXCEPTION   DVP_1
+   
+   Erreur de programmation: condition non respectée
+   
+   Il y a probablement une erreur dans la programmation
+   Veuillez contacter votre assistance technique.
+   
+   Analyse 
+   =======
+   
+   Il y a un problème dans le maillage du groupe TUY10 : certaines mailles se chevauchent :
+   
+   par exemple la maille M2674 a pour extrémités N113536 et N103350 
+   et M2086 a pour extrémités N36329 et N28181 ; elles sont colinéaires et se superposent
+   (problème de création du maillage). Denis confirme que cela fonctionne après avoir réparé
+   le maillage.
+   
+   
+   Correction 
+   ==========
+   
+   Le message d'erreur a été amélioré :
+   
+   
+    !--------------------------------------------------------------------------------------------!
+      ! <EXCEPTION> <MODELISA10_4>                                                          
+         !
+      !                                                                                     
+         !
+      ! Les mailles affectées à la modélisation TUYAU ne semblent pas former des lignes
+   continues. !
+      ! Il y a probablement un probleme dans le maillage (superposition d'éléments par
+   exemple).   !
+      ! Pour obtenir le détail des mailles affectées, utilisez INFO=2.                      
+         !
+     
+   !--------------------------------------------------------------------------------------------!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015070 DU 2010-05-12 15:14:58
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   rxc3xa9sorption loi LMARC
+FONCTIONNALITE
+   Suite aux problèmes numériques rencontré par MRI avec la loi LMARC, et après discussion
+   avec les responsables à MMC, nous proposons de résorber la loi LMARC :
+   
+   - cette loi (qui correspond à une version ancienne du modèle viscoplastique du LMARC à
+   Besancon) a été introduite dans Code_Aster en 1995 (version 3.5.2) pour modéliser le
+   comportement anisotrope des tubes de gaine en Zircaloy
+   
+   - cette loi ne semble pas avoir été utilisée depuis longtemps (sauf récemment par MRI, à
+   cause du terme de viscosité en SINH, mais pour le reste avec critère isotrope )
+   
+   - elle est difficile à maintenir (complexité du modèle).
+   
+   - elle est peu robuste (sensibilité aux unités, valable dans un repère particulier)
+   
+   - elle peut avantageusement être remplacée par les lois de Zmat (Delobelle)
+   
+   - il manque la prise en compte des variations des paramètres en fonction de la température
+   
+   - pour modéliser la gaine combustible, on a développé récemment la loi META_LEMA_ANI, plus
+   performante.
+   
+   Pour ces raisons, nous proposons de la résorber (ainsi que LMARC_IRRA)  en NEW10.2.3. 
+   Elle restera bien sûr accessible en version 10.2 pour 6 mois et en version 9 pour 2 ans.
+   Ceci ne concerne que le comportement LMARC. Par contre le comportement 1D nommé LMARC_IRRA
+   reste disponible (en attendant sa résorption si personne ne l'utilise !).
+   
+   En ce qui concerne la demande initiale de MRI, (disposer d'une loi de viscosité en SINH)
+   rappelons les possibilités : 
+   -avec un écrouissage isotrope : VISC_ISOT_LINE, VISC_ISOT_TRAC, 
+   -avec ROUSSLIER (ROUSS_VISC),
+   -avec d'autres types d'écrouissage : ZMAT.
+   
+   S'il faut développer un comportement de type écrouissage cinématique non linéaire avec
+   viscosité en SINH, et que Zmat ne peut être utilisé, c'est possible et à instruire dans le
+   cadre d'un projet R&D.
+   
+   En ce qui concerne la demande initiale de MRI, le comportement "Delobelle" de Zmat convient.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.11, U4.43.01, R5.03.10, R5.03.14, R7.01.19, R7.01.13, U2.10.01
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015108 DU 2010-05-25 07:45:37
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   programmation incorrecte dans tutemp.f (modélisations "tuyau")
+FONCTIONNALITE
+   En regardant la routine tutemp.f qui calcule CHAR_MECA_TEMP_R pour les éléments de tuyaux,
+   je me suis aperçu de plusieurs problèmes :
+                                                                                            
+   Anomalie
+   ========
+   
+   JP a observé que dans la programmation des routines des éléments TUYAU, l'appel à la
+   fonction VERIFG, qui calcule la dilatation thermique, était incorrect :                  
+                                                                
+   
+   Par exemple :
+   * tutemp ne teste pas le code_retour des routines :
+     * moytem
+     * verifg                                                                               
+                              
+   * tutemp appelle les 2 routines précédentes avec un nombre de sous-points fantaisiste (3).
+     J'aurais préféré une formule du type NBSP=NBCOU*NBSEC*NPGH
+                                                   
+   Cette programmation donnerait des résultats faux si un jour on était capable de calculer
+   un champ de variables de commande variables sur les fibres du tuyau. Par exemple, si on
+   réalisait une option de type PREP_VRC2 sur ces éléments pour obtenir une température
+   variable dans l'épaisseur du tuyau.
+                                                   
+   PS : il faut vérifier les autres appelants (tuyaux) de verifg et moytem      
+   
+   Correction
+   ==========
+   
+   Dans les routines TUTEMP, TUSIEF, TUFORC, on corrige l'appel à VERIFG :
+   
+         NSPG=(2*NBSEC + 1)*(2*NBCOU + 1)
+         DO 120 IGAU = 1,NPG
+           IF (OPTION(1:14).EQ.'SIEF_ELGA_DEPL') THEN
+             CALL VERIFG('RIGI',IGAU,NSPG,'+',ZI(IMATE),'ELAS',1,
+        &                 EPSTHE,IRET)
+             IF (IRET.NE.0) EPSTHE=0.D0
+   ainsi que l'appel à MOYTEM
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests  tuyau
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 22/06/2010 - 13:26:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015175 DU 2010-06-09 13:32:18
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   DYNA_NON_LINE et calcul parallèle
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Dans ce calcul (parallèle !) vu sur le forum, on tombe sur un message d'erreur nous
+   expliquant qu'un traitement n'a pas été prévu pour fonctionner en //.
+   Il s'agit en l'occurrence du produit matrice-vecteur entre la matrice de masse et le
+   vecteur accélération (calcul des forces d'inertie).
+   C'est tout à fait normal (d'aillers aucun test parallèle n'utilise DYNA_NON_LINE) car la
+   routine MRMULT n'a pas été prévue pour cela.
+   """
+   
+   
+   Solution :
+   ----------
+   On applique le patch qu'a proposé Thomas dans la fiche (mrmult.f). La modification
+   consiste à réaliser une communication entre les processus après avoir réalisé le produit
+   matrice-vecteur local et cela pour obtenir le vecteur global.
+   
+   On en profite pour rajouter un cas test DYNA_NON_LINE à la validation parallèle : zzzz265a.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   unitaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012531 DU 2008-09-25 09:06:02
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Utilisation MEDConforme pour tester un fichier MED au lieu de OuvrirFichier
+FONCTIONNALITE
+   Problème :
+   ----------
+   Lorsqu'on utilise Stanley avec le MED de Salomé, on obtient le message suivant à la suite
+   d'un IMPR_RESU :
+   """
+   MEDouvrir.c [53] : Impossible d'accéder aux fichier :
+   MEDouvrir.c [54] : nom = "fort.80"
+   """
+   
+   Et cela alors que tout se passe bien lors de l'impression du fichier MED.
+   
+   Ce message est provoqué par la lib MED qui est compilée pour Salomé sans l'option
+   --disable-msgerr (qui rend MED muet).
+   
+   
+   Solution :
+   ----------
+   On protège tous les appels à EFOUVR dans IMPR_RESU de sorte qu'on évite de demander à MED
+   d'ouvrir un fichier qui n'existe pas encore.
+   
+   
+   Validation :
+   ------------
+   Test unitaire avec Salomé, Stanley et aster modifié.
+   
+   
+   Routines impactées :
+   --------------------
+   ircam1.f ircmpf.f irmhdf.f irmpg1.f mdexcc.f mdexcv.f mdexma.f mdexpm.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   unitaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013552 DU 2009-06-23 07:09:51
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   SV02 - Charges cinematiques dans mumps matrice distribuee
+FONCTIONNALITE
+   Demande initiale :
+   ------------------
+   Permettre l'utilisation de MATR_DISTRIBUEE avec AFFE_CHAR_CINE et STAT_NON_LINE.
+   
+   
+   Réalisation :
+   -------------
+   MATR_DISTRIBUEE est désormais utilisable avec les charges cinématiques et STAT_NON_LINE.
+   
+   De même, le contact discret et continue fonctionne avec cette option.
+   
+   
+   Développements :
+   ----------------
+   En ce qui concerne le fonctionnement de STAT_NON_LINE et MATR_DISTRIBUEE, rien n'a été
+   réalisé puisque ce fonctionnement avait déjà été prévu lors de la restitution de l'année
+   dernière.
+   
+   AMUMPM a été modifié pour rendre possible l'utilisation des matrices non symètriques.
+   
+   Pour le fonctionnement avec les charges cinématiques, la structure de donnée a été
+   modifiée. Plus précisément, on a modifié les objets .CCID, .CCVA, .CCII et .CCLL. Tous ces
+   objets servent à décrire les ddl éliminés dans la matrice assemblée et à reporter les
+   termes utiles dans le second membre.
+   
+   Les objets .CCVA, .CCII et .CCLL deviennent locaux alors que le .CCID reste global. En
+   effet, le .CCID est utilisé dans NMRESI pour calculer le résidu sur les ddl globaux du
+   problème.
+   
+   De plus, on ajoute dans le .NUML l'objet .NUGL dimensionné au nombre d'équations globales
+   et qui sert à passer de la numérotation globale à la locale.
+   
+   
+   Validation :
+   ------------
+   Elle a été réalisée sur un petit cas test perso et sur certains cas tests MPI utilisant
+   MUMPS dont voici la liste :
+   feti008a, feti008b, feti009a, feti010a, mumps01a, mumps02a, mumps04a, mumps05a, perf009d,
+   perf009e, perf010e, ssll117f, ssls09c, ssna117b, ssnl101a, ssnl125a, ssnp118a, ssnp118d,
+   ssnp121l, ssnp124b, ssnv126a, ssnv129e, ssnv173i, ssnv112d, wtnp109a, wtnp111b
+   
+   Tous ces cas tests ont été passés en utilisant MATR_DISTRIBUEE='OUI'.
+   
+   On propose aussi de modifier certains de ces cas test en les passant en
+   MATR_DISTRIBUEE='OUI' :
+   feti08a, 08b, 09a et 10a,
+   mumps01a, 02a, 04a et 05a,
+   ssnp118a,
+   ssnp121l,
+   ssnv129e,
+   wtnp109a.
+   
+   
+   Sources impactés :
+   --------------------
+   c_solveur.capy
+   asmchc.f
+   asschc.f
+   cresol.f
+   csmbc8.f
+   csmbgg.f
+   csmbr8.f
+   detrsd.f
+   mtdscr.f
+   mtmchc.f
+   nugllo.f
+   amumph.F
+   amumpm.F
+   amumpp.F
+   assembla.py
+   
+   L'alarme ASSEMBLA_3 devient une information.
+   
+   
+   Impact documentaire :
+   ---------------------
+   U4.50.01, U2.08.06.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.50.01 U2.08.06
+VALIDATION
+   test unitaire + test MPI MUMPS
+NB_JOURS_TRAV  : 12.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sfayolle     FAYOLLE Sebastien      DATE 22/06/2010 - 13:17:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015199 DU 2010-06-14 15:19:30
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Changement de version STA10: problxc3xa8me de convergence de DINA_NON_LINE
+FONCTIONNALITE
+   Problème :
+   ~~~~~~~~~~
+   
+   Il s’agit d’un calcul non linéaire en analyse sismique de structure en génie civil
+   utilisant la loi de comportement GLRC_DM. Il s’avère que le calcul ne converge plus depuis
+   que la version STA10.1 a été changé en STA10.2.
+   
+   Solutions :
+   ~~~~~~~~~~~
+   
+   Le "problème" est la conséquence de la fiche 14758. La résolution de la fiche 14758 a
+   consisté à brancher GLRC_DM dans les canaux standards de Code_Aster avec la possibilité de
+   modifier les critères de convergence dans le fichiers .comm. Les critères par défaut sont
+   ITER_INTE_RELA = 10e-6 et ITER_INTE_MAXI = 10 alors que les anciens paramètres étaient
+   ITER_INTE_RELA = 10e-16 et ITER_INTE_MAXI = 30
+   
+   La solution consiste dans le cas présent à mettre ITER_INTE_MAXI = 30 dans le bloc
+   COMP_INCR de GLRC_DM.
+   J'ai effectué deux calculs: un avec le ITER_INTE_MAXI par défaut et un avec ITER_INTE_MAXI
+   = 30. Le premier plante effectivement par manque d'itérations dans l'intégration de la loi
+   de comportement. Le second exhibe un comportement correct.
+   
+   Ci joint le fichier .comm modifié
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT fdlv112b                       devesa G.DEVESA           461    461      0
+ CASTEST AJOUT fdlv113a                       devesa G.DEVESA           334    334      0
+ CASTEST AJOUT sdls106b                        corus M.CORUS            314    314      0
+ CASTEST AJOUT sdnv107b                       devesa G.DEVESA           470    470      0
+ CASTEST AJOUT zzzz265a                     sellenet N.SELLENET         270    270      0
+ CASTEST MODIF feti008a                     sellenet N.SELLENET         158      3      2
+ CASTEST MODIF feti008b                     sellenet N.SELLENET         163      3      2
+ CASTEST MODIF feti009a                     sellenet N.SELLENET         213      3      2
+ CASTEST MODIF feti010a                     sellenet N.SELLENET         291      3      2
+ CASTEST MODIF forma03c                      geniaut S.GENIAUT          162     15     10
+ CASTEST MODIF mumps01a                     sellenet N.SELLENET         173      9      1
+ CASTEST MODIF mumps02a                     sellenet N.SELLENET         182     19      1
+ CASTEST MODIF mumps04a                     sellenet N.SELLENET         423      1      1
+ CASTEST MODIF ssnp118a                     sellenet N.SELLENET         395      5      5
+ CASTEST MODIF ssnp121l                     sellenet N.SELLENET         176      2      2
+ CASTEST MODIF ssnv129e                     sellenet N.SELLENET         213      2      2
+ CASTEST MODIF ssnv172a                        proix J-M.PROIX         1095     83     88
+ CASTEST MODIF wtnp109a                     sellenet N.SELLENET         357      2      2
+ CASTEST MODIF zzzz106a                      macocco K.MACOCCO          471     49     13
+ CASTEST MODIF zzzz126a                      macocco K.MACOCCO          486     35      2
+ CASTEST SUPPR sslp313d.comm                 geniaut S.GENIAUT          199      0    199
+ CASTEST SUPPR sslp313e.comm                 geniaut S.GENIAUT          224      0    224
+ CASTEST SUPPR ssnv117a.comm                   proix J-M.PROIX          393      0    393
+ CASTEST SUPPR ssnv117b.comm                   proix J-M.PROIX          455      0    455
+CATALOGU MODIF compelem/phenomene_modelisation__      proix J-M.PROIX         1591     10      2
+CATALOPY MODIF commande/affe_char_meca        devesa G.DEVESA           733      8      1
+CATALOPY MODIF commande/defi_group           macocco K.MACOCCO          229      7      1
+CATALOPY MODIF commande/defi_materiau          proix J-M.PROIX         3002      1     64
+CATALOPY MODIF commande/lire_forc_miss        devesa G.DEVESA            34      5      2
+CATALOPY MODIF commande/lire_impe_miss        devesa G.DEVESA            32      3      1
+CATALOPY MODIF commande/macr_elem_dyna        devesa G.DEVESA            43      2      1
+CATALOPY MODIF commande/mode_statique          corus M.CORUS            140     24      3
+CATALOPY MODIF commande/nume_ddl_gene          corus M.CORUS             35      2      2
+CATALOPY MODIF commun/c_relation               proix J-M.PROIX          149    129    129
+CATALOPY MODIF commun/c_solveur             sellenet N.SELLENET          89      2      1
+FORTRAN90 MODIF mumps/amumph                 sellenet N.SELLENET         392      1      1
+FORTRAN90 MODIF mumps/amumpm                 sellenet N.SELLENET         676     14      2
+FORTRAN90 MODIF mumps/amumpp                 sellenet N.SELLENET         378      1      1
+ FORTRAN AJOUT algorith/arch93                 corus M.CORUS            422    422      0
+ FORTRAN AJOUT algorith/asgeel                 corus M.CORUS            281    281      0
+ FORTRAN AJOUT algorith/conint                 corus M.CORUS            457    457      0
+ FORTRAN AJOUT algorith/indlia                 corus M.CORUS            410    410      0
+ FORTRAN AJOUT algorith/inmain                 corus M.CORUS            106    106      0
+ FORTRAN AJOUT algorith/intdis                 corus M.CORUS            204    204      0
+ FORTRAN AJOUT algorith/lipsrb                 corus M.CORUS            485    485      0
+ FORTRAN AJOUT algorith/matint                 corus M.CORUS            254    254      0
+ FORTRAN AJOUT algorith/modint                 corus M.CORUS            482    482      0
+ FORTRAN AJOUT algorith/moin93                 corus M.CORUS            256    256      0
+ FORTRAN AJOUT algorith/nugeel                 corus M.CORUS            276    276      0
+ FORTRAN AJOUT algorith/psmo93                 corus M.CORUS            178    178      0
+ FORTRAN AJOUT algorith/rotati                 corus M.CORUS            129    129      0
+ FORTRAN AJOUT algorith/rotlir                 corus M.CORUS            264    264      0
+ FORTRAN AJOUT modelisa/calimc                devesa G.DEVESA           357    357      0
+ FORTRAN MODIF algeline/csmbc8              sellenet N.SELLENET         130     32      4
+ FORTRAN MODIF algeline/csmbgg              sellenet N.SELLENET         113      6      2
+ FORTRAN MODIF algeline/csmbr8              sellenet N.SELLENET         129     32      4
+ FORTRAN MODIF algeline/mrmult              sellenet N.SELLENET         126     28      6
+ FORTRAN MODIF algeline/mstget                 corus M.CORUS            250      5      1
+ FORTRAN MODIF algeline/mtdscr              sellenet N.SELLENET         198      4      3
+ FORTRAN MODIF algeline/op0093                 corus M.CORUS            219    116    420
+ FORTRAN MODIF algorith/callis                 corus M.CORUS            458    180     22
+ FORTRAN MODIF algorith/cla110                 corus M.CORUS            528     24      9
+ FORTRAN MODIF algorith/comp81                devesa G.DEVESA           376     90     24
+ FORTRAN MODIF algorith/cresol              sellenet N.SELLENET         181     11      9
+ FORTRAN MODIF algorith/impe81                devesa G.DEVESA           152     12      2
+ FORTRAN MODIF algorith/lccnvx                 proix J-M.PROIX           78      1      4
+ FORTRAN MODIF algorith/lcconv                 proix J-M.PROIX          104      2      7
+ FORTRAN MODIF algorith/lcinit                 proix J-M.PROIX           83      2      6
+ FORTRAN MODIF algorith/lcjacb                 proix J-M.PROIX           78      2      6
+ FORTRAN MODIF algorith/lcjplc                 proix J-M.PROIX           63      1      4
+ FORTRAN MODIF algorith/lcmate                 proix J-M.PROIX          123      1      5
+ FORTRAN MODIF algorith/lcmmfi                 proix J-M.PROIX          107      4      4
+ FORTRAN MODIF algorith/lcresi                 proix J-M.PROIX           77      2      6
+ FORTRAN MODIF algorith/liared                 corus M.CORUS            277    214     55
+ FORTRAN MODIF algorith/macr78                devesa G.DEVESA           248     61     13
+ FORTRAN MODIF algorith/moco99                devesa G.DEVESA           236      6      2
+ FORTRAN MODIF algorith/nmcoup                 proix J-M.PROIX          204      1      2
+ FORTRAN MODIF algorith/nmcpla                 proix J-M.PROIX          446      1      5
+ FORTRAN MODIF algorith/op0126                 corus M.CORUS            118      6      3
+ FORTRAN MODIF algorith/op0127                 corus M.CORUS             97      9      2
+ FORTRAN MODIF algorith/op0128                 corus M.CORUS             72     14      2
+ FORTRAN MODIF algorith/op0164                devesa G.DEVESA           276     56     21
+ FORTRAN MODIF algorith/op0179                devesa G.DEVESA           200     35     11
+ FORTRAN MODIF algorith/regegl                 corus M.CORUS            392     87     21
+ FORTRAN MODIF algorith/vecomo                 corus M.CORUS            412     22      6
+ FORTRAN MODIF algorith/xprcfl               macocco K.MACOCCO           97      2      2
+ FORTRAN MODIF assembla/asmchc              sellenet N.SELLENET         304     10      3
+ FORTRAN MODIF assembla/asschc              sellenet N.SELLENET         118      9      2
+ FORTRAN MODIF assembla/mtmchc              sellenet N.SELLENET         217     13      3
+ FORTRAN MODIF assembla/nugllo              sellenet N.SELLENET         373     34     18
+ FORTRAN MODIF assembla/numero                 abbas M.ABBAS            409      3      2
+ FORTRAN MODIF calculel/memax                macocco K.MACOCCO          209    128    133
+ FORTRAN MODIF elements/tuforc                 proix J-M.PROIX          457     11      4
+ FORTRAN MODIF elements/tumass                 proix J-M.PROIX          280      6      3
+ FORTRAN MODIF elements/turigi                 proix J-M.PROIX          251      6      4
+ FORTRAN MODIF elements/tusief                 proix J-M.PROIX          308     12      7
+ FORTRAN MODIF elements/tutemp                 proix J-M.PROIX          252     10      5
+ FORTRAN MODIF modelisa/aceatu                 proix J-M.PROIX          297      5      2
+ FORTRAN MODIF modelisa/cgmaba               macocco K.MACOCCO          313     42      1
+ FORTRAN MODIF modelisa/cgmacy               macocco K.MACOCCO          328     46      2
+ FORTRAN MODIF modelisa/cgmasp               macocco K.MACOCCO          234     44      3
+ FORTRAN MODIF modelisa/charme                devesa G.DEVESA           338      6      2
+ FORTRAN MODIF prepost/ircam1               sellenet N.SELLENET         365     13      3
+ FORTRAN MODIF prepost/irchml                macocco K.MACOCCO          348     13      6
+ FORTRAN MODIF prepost/irdepl                macocco K.MACOCCO          424     20      7
+ FORTRAN MODIF prepost/irmhdf               sellenet N.SELLENET         294     14     10
+ FORTRAN MODIF prepost/irmpg1               sellenet N.SELLENET         458      6      1
+ FORTRAN MODIF prepost/mdexcc               sellenet N.SELLENET         247      6      2
+ FORTRAN MODIF prepost/mdexcv               sellenet N.SELLENET         127      9      3
+ FORTRAN MODIF prepost/mdexma               sellenet N.SELLENET         178      9      4
+ FORTRAN MODIF prepost/mdexpm               sellenet N.SELLENET         144      9      4
+ FORTRAN MODIF prepost/op0039               sellenet N.SELLENET         977      1      1
+ FORTRAN MODIF utilitai/detrsd              sellenet N.SELLENET         661     16      1
+ FORTRAN MODIF utilitai/pechli               macocco K.MACOCCO          198      8      4
+ FORTRAN MODIF utilitai/peritr               macocco K.MACOCCO          405      7      4
+ FORTRAN SUPPR algorith/lmaani                 proix J-M.PROIX           67      0     67
+ FORTRAN SUPPR algorith/lmacid                 proix J-M.PROIX           45      0     45
+ FORTRAN SUPPR algorith/lmacin                 proix J-M.PROIX           45      0     45
+ FORTRAN SUPPR algorith/lmacvg                 proix J-M.PROIX          300      0    300
+ FORTRAN SUPPR algorith/lmacvx                 proix J-M.PROIX           57      0     57
+ FORTRAN SUPPR algorith/lmafs                  proix J-M.PROIX           56      0     56
+ FORTRAN SUPPR algorith/lmafss                 proix J-M.PROIX           64      0     64
+ FORTRAN SUPPR algorith/lmafsx                 proix J-M.PROIX           59      0     59
+ FORTRAN SUPPR algorith/lmaini                 proix J-M.PROIX          168      0    168
+ FORTRAN SUPPR algorith/lmajac                 proix J-M.PROIX          299      0    299
+ FORTRAN SUPPR algorith/lmajpl                 proix J-M.PROIX          210      0    210
+ FORTRAN SUPPR algorith/lmamat                 proix J-M.PROIX          183      0    183
+ FORTRAN SUPPR algorith/lmanvi                 proix J-M.PROIX           67      0     67
+ FORTRAN SUPPR algorith/lmares                 proix J-M.PROIX          170      0    170
+  PYTHON AJOUT SD/sd_nume_elim                 corus M.CORUS             30     30      0
+  PYTHON MODIF Messages/algorith16             proix J-M.PROIX          448      1     37
+  PYTHON MODIF Messages/algorith5              proix J-M.PROIX          348      1     12
+  PYTHON MODIF Messages/assembla            sellenet N.SELLENET         283     10      7
+  PYTHON MODIF Messages/calculel3            macocco K.MACOCCO          469      1      5
+  PYTHON MODIF Messages/compor1                proix J-M.PROIX          355      1     13
+  PYTHON MODIF Messages/med2                sellenet N.SELLENET          46      5      1
+  PYTHON MODIF Messages/modelisa10             proix J-M.PROIX           51      9      1
+  PYTHON MODIF Messages/rupture0             geniaut S.GENIAUT          568      7      2
+  PYTHON MODIF SD/sd_nume_ddl_gene             corus M.CORUS             34      3      2
+  PYTHON SUPPR Comportement/lmarc              proix J-M.PROIX            0      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   21        6440      6440             +6440
+ MODIF :  100       31245      2066    1363      +703
+ SUPPR :   19        3061              3061     -3061
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  140       40746      8506    4424     +4082 

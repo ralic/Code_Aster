@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/06/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE VALIDATION DE LA COMMANDE  CREA_CHAMP/ASSE ET CREA_CHAMP/EXTR/TABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,7 +58,6 @@ CALC_ELEM( reuse=SOLPL,
                           RESULTAT=SOLPL,
               )
 
-
 #================================================================
 #  VALIDATION :CREA_CHAMP/AFFE, TYPE_CHAM='NOEU_XXXX_X'
 #================================================================
@@ -87,6 +86,13 @@ ACH03=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_I',
           _F( NOEUD = ('A2',), NOM_CMP = ('X2'), VALE_I =3 ),),
     )
 
+IMPR_RESU(FORMAT='RESULTAT',
+          UNITE=8,
+          RESU=_F(CHAM_GD=ACH03,
+                  IMPR_COOR='NON',
+                  FORMAT_R='1PE12.5',),
+          INFO=1,);
+
 # C : CHAM_NO_NEUT_F :
 # ------------------
 
@@ -114,6 +120,33 @@ TEST_RESU(CHAM_NO=(
       PRECISION = 1.E-12, VALE_C = ('RI',1.0,0.5,),
       REFERENCE = 'NON_REGRESSION'))
 )
+
+
+#================================================================
+#  VALIDATION :CREA_CHAMP/AFFE, TYPE_CHAM='ELEM_XXXX_X'
+#================================================================
+
+
+# E : CHAM_ELEM_NEUT_I :
+# ---------------------
+
+ACH06=CREA_CHAMP(INFO=2,
+                 TYPE_CHAM='ELEM_DCEL_I',
+                 OPERATION='AFFE',
+                 AFFE=_F(NOM_CMP='NPG_DYN',
+                         MAILLE=('M1','M2','M3',),
+                         VALE_I=1),
+                 OPTION = 'NSPG_NBVA',
+                 MODELE=MO,
+                 PROL_ZERO='OUI',
+                 );
+
+IMPR_RESU(FORMAT='RESULTAT',
+          UNITE=8,
+          RESU=_F(CHAM_GD=ACH06,
+                  IMPR_COOR='NON',
+                  FORMAT_R='1PE12.5',),
+          INFO=1,);
 
 #================================================================
 #  VALIDATION :CREA_CHAMP/ASSE

@@ -1,6 +1,7 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/06/2010   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TP FORMATION NON LINEAIRE PLAQUE TROUEE EN TRACTION - PILOTAGE
+# forma03c.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,14 +71,18 @@ F_DEPL=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
 # DISCRETISATION EN TEMPS
 TFIN = 4.0;
 
-
+# EN GESTION MANUELLE, ON FAISAIT 160 PAS DE TEMPS POUR 4S -> PAS DE TEMPS DE 0,025 S
+# EN GESTION AUTOMATIQUE, ON IMPOSE SEULEMENT LE 1ER PAS DE TEMPS
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=TFIN,
-                                    NOMBRE=160,),);
+                      INTERVALLE=(_F(JUSQU_A=0.025,NOMBRE=1),
+                                  _F(JUSQU_A= TFIN,NOMBRE=1))
+                      )
 
-L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=TFIN,
-                                    NOMBRE=40,),);
+# GESTION AUTOMATIQUE DU PAS DE TEMPS : SOUS-DECOUPAGE ET ADAPTATION PAR DEFAUT
+DEF_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='AUTO',
+                                     LIST_INST=L_INST,
+                                     PAS_MINI=1.e-6)
+                      )
 
 #PILOTAGE                            
 
@@ -87,14 +92,14 @@ RESUNL=STAT_NON_LINE(MODELE=MO,
                             _F(CHARGE=CH2,
                                TYPE_CHARGE='FIXE_PILO',),),
                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
-                     INCREMENT=_F(LIST_INST=L_INST,
+                     INCREMENT=_F(LIST_INST=DEF_INST,
                                   INST_FIN=TFIN,),
                      NEWTON=_F(REAC_ITER=1,),
                      PILOTAGE=_F(TYPE='DDL_IMPO',
                                  COEF_MULT=1.0,
                                  GROUP_NO='G',
                                  NOM_CMP='DY',),
-                     ARCHIVAGE=_F(LIST_INST=L_ARCH,),
+                     SOLVEUR=_F(STOP_SINGULIER='DECOUPE'),
 #                      SUIVI_DDL=(_F(NUME_SUIVI=1,
 #                                    NOM_CHAM='DEPL',
 #                                    NOM_CMP='DY',

@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture0 Messages  DATE 21/06/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -358,7 +358,12 @@ En 2D, utiliser GROUP_NO ou NOEUD pour définir le fond de fissure.
 64 : _("""
 Arret sur erreur utilisateur : deux mailles ou groupes de mailles du fond de
 fissure sont non consécutives dans la numérotation des noeuds.
-"""),
+En effet, le fond de fissures doit être discrétisé avec des mailles segment 
+ordonnées de telle sorte que pour deux segments consécutifs, le 2ème noeud sommet
+du 1er segment soit le même que le 1er noeud sommet du 2ème segment.
+
+Conseil : Pour ordonner les mailles du fond de fissure, veuillez 
+utiliser NOEUD_ORIG (ou GROUP_NO_ORIG) et NOEUD_EXTR (ou GROUP_NO_EXTR)"""),
 
 65 : _("""
 Détection d'une maille de type %(k1)s dans la définition des lèvres de la

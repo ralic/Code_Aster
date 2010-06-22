@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 16/06/2010   AUTEUR CARON A.CARON 
+%& MODIF COMPELEM  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -76,11 +76,19 @@ PHENOMENE_MODELISATION__
 %           (bibpyt/Comportement/*.py)
 %  TYPMOD = C_PLAN   l'élément fait appel a des comportements C_PLAN
 %           D_PLAN   l'élément fait appel a des comportements D_PLAN
+%           AXIS     l'élément fait appel a des comportements AXIS
 %           COMP1D   l'élément fait appel a des comportements COMP1D + DEBORST
 %           COMP3D   l'élément fait appel a des comportements 3D
 %           PLAN     l'élément fait appel a des comportements PLAN
-%           GRADEPSI l'élément utilise des comportements non locaux (TYPMOD(2)='GRADEPSI' pour NMCOMP)
+%
+%  TYPMOD2 : Complément au type de  modélisation utilisé pour intégrer les lois de comportement TYPMOD
+%            (TYPMOD2 est utilisé dans NMCOMP et certaines routines LCxxxx)
+%           Les valeurs possibles de cet attribut sont :%
+%  TYPMOD2= GRADEPSI l'élément utilise des comportements non locaux (TYPMOD(2)='GRADEPSI' pour NMCOMP)
 %           GRADVARI l'élément utilise des comportements non locaux (TYPMOD(2)='GRADVARI' pour NMCOMP)
+%           ELEMJOIN l'élément utilise des comportements d'éléments de joints (CZM sur des modélisations *_JOINT)
+%           INTERFAC l'élément utilise des comportements d'éléments d'interface (CZM sur des modélisations *_INTERFACE)
+%           ELEMDISC l'élément utilise des comportements d'éléments a discontinuité interne 
 %
 %  PRINCIPAL =  'OUI' :
 %       l'élément est "principal" pour la modélisation (i.e. ce n'est pas un élément de "bord").

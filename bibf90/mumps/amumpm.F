@@ -2,7 +2,7 @@
      &                  TYPE,LMD,EPSMAT)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPM MUMPS  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -187,15 +187,15 @@ C ---- DETERMINATION DES TERMES DE REFERENCE POUR LE FILTRAGE
          CALL JEEXIN(KFILTR,IRET)
          IF (IRET.NE.0) CALL JEDETR(KFILTR)
          CALL WKVECT(KFILTR,'V V R',N,IFILTR)
-	 IF (LTYPR) THEN
+         IF (LTYPR) THEN
            DO K=1,N
              ZR(IFILTR-1+K)=EPSMAT*ABS(ZR(JVALE-1+ZI(JSMDI-1+K)))
            ENDDO
-	 ELSE
+         ELSE
            DO K=1,N
              ZR(IFILTR-1+K)=EPSMAT*ABS(ZC(JVALE-1+ZI(JSMDI-1+K)))
            ENDDO
-	 ENDIF	 
+         ENDIF
        ELSE
          LFILTR=.FALSE.
        ENDIF
@@ -216,51 +216,51 @@ C       ------------------------------------------------
         DO KTERM = 1, NZ
           IF (ZI(JSMDI-1+JCOLL).LT.KTERM) JCOLL=JCOLL+1
           ILIGL=ZI4(JSMHC-1+KTERM)
-	  IF (LFILTR) THEN
-	    RFILTR=ZR(IFILTR-1+ILIGL)+ZR(IFILTR-1+JCOLL)
-	  ELSE
-	    RFILTR=-1.D0
-	  ENDIF
+          IF (LFILTR) THEN
+            RFILTR=ZR(IFILTR-1+ILIGL)+ZR(IFILTR-1+JCOLL)
+          ELSE
+            RFILTR=-1.D0
+          ENDIF
           IF (LTYPR) THEN
             RAUX=ZR(JVALE-1+KTERM)
             IF (RAUX.NE.0.D0) THEN
-	      IF (ABS(RAUX).LT.RFILTR) THEN
-	        NFILTR=NFILTR+1
-C	        WRITE(IFM,*)'TERME FILTRE ',ILIGL,JCOLL,RAUX
-	      ELSE
-	        NZLOC=NZLOC+1
-	      ENDIF
-	    ENDIF
+              IF (ABS(RAUX).LT.RFILTR) THEN
+                NFILTR=NFILTR+1
+C                WRITE(IFM,*)'TERME FILTRE ',ILIGL,JCOLL,RAUX
+              ELSE
+                NZLOC=NZLOC+1
+              ENDIF
+            ENDIF
           ELSE
-            CAUX=ZC(JVALE-1+KTERM)	    
+            CAUX=ZC(JVALE-1+KTERM)
             IF (CAUX.NE.(0.D0,0.D0)) THEN
-	      IF (ABS(CAUX).LT.RFILTR) THEN
-	        NFILTR=NFILTR+1
-	      ELSE
-	        NZLOC=NZLOC+1
-	      ENDIF
-	    ENDIF
+              IF (ABS(CAUX).LT.RFILTR) THEN
+                NFILTR=NFILTR+1
+              ELSE
+                NZLOC=NZLOC+1
+              ENDIF
+            ENDIF
           ENDIF
 C -- SOUS LA DIAGONALE :
           IF ((SYM.EQ.0).AND.(ILIGL.NE.JCOLL)) THEN
             IF (LTYPR) THEN
               IF (LMNSY) RAUX=ZR(JVALE2-1+KTERM)
               IF (RAUX.NE.0.D0) THEN
-	        IF (ABS(RAUX).LT.RFILTR) THEN
-	          NFILTR=NFILTR+1
-	        ELSE
-	          NZLOC=NZLOC+1
-		ENDIF
-	      ENDIF
+                IF (ABS(RAUX).LT.RFILTR) THEN
+                  NFILTR=NFILTR+1
+                ELSE
+                  NZLOC=NZLOC+1
+                ENDIF
+              ENDIF
             ELSE
               IF (LMNSY) CAUX=ZC(JVALE2-1+KTERM)
               IF (CAUX.NE.(0.D0,0.D0)) THEN
-	        IF (ABS(CAUX).LT.RFILTR) THEN
-	          NFILTR=NFILTR+1
-	        ELSE
-	          NZLOC=NZLOC+1
-		ENDIF
-	      ENDIF
+                IF (ABS(CAUX).LT.RFILTR) THEN
+                  NFILTR=NFILTR+1
+                ELSE
+                  NZLOC=NZLOC+1
+                ENDIF
+              ENDIF
             ENDIF
           ENDIF
         ENDDO
@@ -273,13 +273,13 @@ C  -- POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A MUMPS.
 C  -- MAIS CELA PEUT ETRE COUTEUX EN // AVEC DES ACCES DISQUES
 C  -- LENTS.
 
-      CALL JJLDYN(0,-1,IBID)       
+      CALL JJLDYN(0,-1,IBID)
 
 C       ------------------------------------------------
 C       ALLOCATION DES OBJETS MUMPS F90
 C       ------------------------------------------------
       IF ((( RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
-                    
+
         IF (LDIST) THEN
           IF (TYPE.EQ.'S') THEN
             IF (LMD) THEN
@@ -313,8 +313,8 @@ C       ------------------------------------------------
             ALLOCATE(ZMPSK%IRN_loc(NZ2))
             ALLOCATE(ZMPSK%JCN_loc(NZ2))
             ALLOCATE(ZMPSK%A_loc(NZ2))
-	  ELSE
-	    CALL ASSERT(.FALSE.)
+          ELSE
+            CALL ASSERT(.FALSE.)
           ENDIF
         ELSE
           IF (TYPE.EQ.'S') THEN
@@ -341,8 +341,8 @@ C       ------------------------------------------------
             ALLOCATE(ZMPSK%IRN(NZ2))
             ALLOCATE(ZMPSK%JCN(NZ2))
             ALLOCATE(ZMPSK%A(NZ2))
-	  ELSE
-	    CALL ASSERT(.FALSE.)
+          ELSE
+            CALL ASSERT(.FALSE.)
           ENDIF
         ENDIF
             
@@ -356,30 +356,30 @@ C       ------------------------------------------------
 C --- PARTIE TRIANGULAIRE SUPERIEURE
           IF (ZI(JSMDI-1+JCOLL).LT.KTERM) JCOLL=JCOLL+1
           ILIGL=ZI4(JSMHC-1+KTERM)
-	  IF (LFILTR) THEN
-	    RFILTR=ZR(IFILTR-1+ILIGL)+ZR(IFILTR-1+JCOLL)
-	  ELSE
-	    RFILTR=-1.D0
-	  ENDIF
+          IF (LFILTR) THEN
+            RFILTR=ZR(IFILTR-1+ILIGL)+ZR(IFILTR-1+JCOLL)
+          ELSE
+            RFILTR=-1.D0
+          ENDIF
           LNN=.FALSE.
           IF (LTYPR) THEN
             RAUX=ZR(JVALE-1+KTERM)
             IF (RAUX.NE.0.D0) THEN
-	      IF (ABS(RAUX).LT.RFILTR) THEN
-	        NFILTR=NFILTR+1
-	      ELSE
-	        LNN=.TRUE.
-	      ENDIF
-	    ENDIF
+              IF (ABS(RAUX).LT.RFILTR) THEN
+                NFILTR=NFILTR+1
+              ELSE
+                LNN=.TRUE.
+              ENDIF
+            ENDIF
           ELSE
             CAUX=ZC(JVALE-1+KTERM)
             IF (CAUX.NE.(0.D0,0.D0)) THEN
-	      IF (ABS(CAUX).LT.RFILTR) THEN
-	        NFILTR=NFILTR+1
-	      ELSE
-	        LNN=.TRUE.
-	      ENDIF
-	    ENDIF
+              IF (ABS(CAUX).LT.RFILTR) THEN
+                NFILTR=NFILTR+1
+              ELSE
+                LNN=.TRUE.
+              ENDIF
+            ENDIF
           ENDIF
           IF (LMD) THEN
             ILIGG=ZI(JNULOGL+ILIGL-1)
@@ -388,21 +388,21 @@ C --- PARTIE TRIANGULAIRE SUPERIEURE
             ILIGG=ILIGL
             JCOLG=JCOLL
           ENDIF
-          IF ( ILIGG.GE.JCOLG ) THEN
+          IF ( (SYM.NE.0).AND.(ILIGG.GE.JCOLG) ) THEN
             COLTMP=JCOLG
             JCOLG=ILIGG
             ILIGG=COLTMP
           ENDIF
-
+          
 C ---- TERME NON NUL
           IF (LNN) THEN
             ITERM=ITERM+1
-	    IF (TYPE.EQ.'S') THEN
-	      IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
-	    ELSE IF (TYPE.EQ.'C') THEN
-	      RAUX1=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
-	      IF (RAUX1.GT.RR4MAX) CALL ASSERT(.FALSE.)
-	    ENDIF
+            IF (TYPE.EQ.'S') THEN
+              IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
+            ELSE IF (TYPE.EQ.'C') THEN
+              RAUX1=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
+              IF (RAUX1.GT.RR4MAX) CALL ASSERT(.FALSE.)
+            ENDIF
             IF (LDIST) THEN
               IF (TYPE.EQ.'S') THEN
                 SMPSK%IRN_loc(ITERM)=ILIGG
@@ -420,8 +420,8 @@ C ---- TERME NON NUL
                 ZMPSK%IRN_loc(ITERM)=ILIGG
                 ZMPSK%JCN_loc(ITERM)=JCOLG
                 ZMPSK%A_loc(ITERM)=CAUX
-	      ELSE
-	        CALL ASSERT(.FALSE.)
+              ELSE
+                CALL ASSERT(.FALSE.)
               ENDIF
             ELSE
               IF (TYPE.EQ.'S') THEN
@@ -440,8 +440,8 @@ C ---- TERME NON NUL
                 ZMPSK%IRN(ITERM)=ILIGG
                 ZMPSK%JCN(ITERM)=JCOLG
                 ZMPSK%A(ITERM)=CAUX
-	      ELSE
-	        CALL ASSERT(.FALSE.)
+              ELSE
+                CALL ASSERT(.FALSE.)
               ENDIF
             ENDIF
             IF (ELI2LG) THEN
@@ -458,6 +458,12 @@ C ------      ON ELIMINE LE DERNIER TERME DE A/A_loc SI LAG2
                 IF (JCOLL.NE.ILIGL) KZERO=1
               ENDIF
               IF (KZERO.EQ.1)  ITERM=ITERM-1
+C NSELLENET
+C      IF(KZERO.EQ.0)WRITE(6,*)'K0 ',ILIGG,JCOLG,RAUX
+C      IF(KZERO.EQ.1)WRITE(6,*)'K1 ',ILIGL,'- ',JCOLL,': ',RAUX
+C            ELSE
+C              WRITE(6,*)'K0 ',ILIGG,JCOLG,RAUX
+C NSELLENET
             ENDIF
           ENDIF
 
@@ -467,21 +473,21 @@ C --- PARTIE TRIANGULAIRE INFERIEURE
             IF (LTYPR) THEN
               IF (LMNSY) RAUX=ZR(JVALE2-1+KTERM)
               IF (RAUX.NE.0.D0) THEN
-	        IF (ABS(RAUX).LT.RFILTR) THEN
-	          NFILTR=NFILTR+1
-		ELSE
-	          LNN=.TRUE.
-		ENDIF
-	      ENDIF
+                IF (ABS(RAUX).LT.RFILTR) THEN
+                  NFILTR=NFILTR+1
+                ELSE
+                  LNN=.TRUE.
+                ENDIF
+              ENDIF
             ELSE
               IF (LMNSY) CAUX=ZC(JVALE2-1+KTERM)
               IF (CAUX.NE.(0.D0,0.D0)) THEN
-	        IF (ABS(CAUX).LT.RFILTR) THEN
-	          NFILTR=NFILTR+1
-	        ELSE
-	          LNN=.TRUE.
-		ENDIF
-	      ENDIF
+                IF (ABS(CAUX).LT.RFILTR) THEN
+                  NFILTR=NFILTR+1
+                ELSE
+                  LNN=.TRUE.
+                ENDIF
+              ENDIF
             ENDIF
             IF (LNN) THEN
               ITERM=ITERM+1
@@ -492,12 +498,12 @@ C --- PARTIE TRIANGULAIRE INFERIEURE
                 ILIGG=ILIGL
                 JCOLG=JCOLL
               ENDIF
-	      IF (TYPE.EQ.'S') THEN
-	        IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
-	      ELSE IF (TYPE.EQ.'C') THEN
-	        RAUX1=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
-	        IF (RAUX1.GT.RR4MAX) CALL ASSERT(.FALSE.)
-	      ENDIF
+              IF (TYPE.EQ.'S') THEN
+                IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
+              ELSE IF (TYPE.EQ.'C') THEN
+                RAUX1=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
+                IF (RAUX1.GT.RR4MAX) CALL ASSERT(.FALSE.)
+              ENDIF
               IF (LDIST) THEN
                 IF (TYPE.EQ.'S') THEN
                   SMPSK%IRN_loc(ITERM)=JCOLG
@@ -515,8 +521,8 @@ C --- PARTIE TRIANGULAIRE INFERIEURE
                   ZMPSK%IRN_loc(ITERM)=JCOLG
                   ZMPSK%JCN_loc(ITERM)=ILIGG
                   ZMPSK%A_loc(ITERM)=CAUX
-		ELSE
-		  CALL ASSERT(.FALSE.)
+                ELSE
+                  CALL ASSERT(.FALSE.)
                 ENDIF
               ELSE
                 IF (TYPE.EQ.'S') THEN
@@ -535,12 +541,18 @@ C --- PARTIE TRIANGULAIRE INFERIEURE
                   ZMPSK%IRN(ITERM)=JCOLG
                   ZMPSK%JCN(ITERM)=ILIGG
                   ZMPSK%A(ITERM)=CAUX
-		ELSE
-		  CALL ASSERT(.FALSE.)
+                ELSE
+                  CALL ASSERT(.FALSE.)
                 ENDIF
               ENDIF
               IF (ELI2LG) THEN
                 IF (KZERO.EQ.1) ITERM=ITERM-1
+C NSELLENET
+C      IF(KZERO.EQ.0)WRITE(6,*)'K0 ',ILIGG,JCOLG,RAUX
+C      IF(KZERO.EQ.1)WRITE(6,*)'K1 ',ILIGL,'- ',JCOLL,': ',RAUX
+C            ELSE
+C              WRITE(6,*)'K0 ',ILIGG,JCOLG,RAUX
+C NSELLENET
               ENDIF
             ENDIF
           ENDIF
@@ -558,7 +570,7 @@ C ---FIN DE LA BOUCLE SUR NZ
             DMPSK%NZ_loc=NZ2
           ELSE IF (TYPE.EQ.'Z') THEN
             ZMPSK%NZ_loc=NZ2
-	  ELSE
+          ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
         ELSE
@@ -570,7 +582,7 @@ C ---FIN DE LA BOUCLE SUR NZ
             DMPSK%NZ=NZ2
           ELSE IF (TYPE.EQ.'Z') THEN
             ZMPSK%NZ=NZ2
-	  ELSE
+          ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
         ENDIF
@@ -643,8 +655,8 @@ C       ------------------------------------------------
                 WRITE(IFMUMP,*)ZMPSK%IRN(K),ZMPSK%JCN(K),ZMPSK%A(K)
               ENDIF
             ENDDO
-	  ELSE
-	    CALL ASSERT(.FALSE.)
+          ELSE
+            CALL ASSERT(.FALSE.)
           ENDIF
           IF (LDIST) THEN
             WRITE(IFMUMP,*) 'MUMPS FIN A_loc'
@@ -655,7 +667,7 @@ C       ------------------------------------------------
 C FIN DU IF LDIST
       ENDIF
 
-C --- NETTOYAGE VECTEUR TEMPORAIRE LOCAL     
+C --- NETTOYAGE VECTEUR TEMPORAIRE LOCAL
       CALL JEEXIN(KFILTR,IRET)
       IF (IRET.NE.0) CALL JEDETR(KFILTR)
 

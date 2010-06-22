@@ -1,4 +1,4 @@
-#@ MODIF sd_nume_ddl_gene SD  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_nume_ddl_gene SD  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,12 +22,13 @@ from SD import *
 
 from SD.sd_nume_ddl_com import sd_nume_ddl_com
 from SD.sd_nume_eqge import sd_nume_eqge
-
+from SD.sd_nume_elim import sd_nume_elim
 
 class sd_nume_ddl_gene(sd_nume_ddl_com):
 #---------------------------------------
     nomj = SDNom(fin=14)
     nume = Facultatif(sd_nume_eqge(SDNom(nomj='.NUME'))) # n'existe pas toujours : CALC_MATR_AJOU/fdlv106a
+    ELIM = Facultatif(sd_nume_elim(SDNom(nomj='.ELIM'))) # n'existe pas toujours : ELIMINATION
 
 
 

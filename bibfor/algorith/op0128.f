@@ -1,6 +1,6 @@
       SUBROUTINE OP0128 ( IER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C     CONCEPT CREE: MATR_ASSE_GEN
 C
 C-----------------------------------------------------------------------
 C
-      INTEGER          IER
+      INTEGER     IER,IRET
       CHARACTER*8 NOMRES,NUMEG
       CHARACTER*9 METHOD
       CHARACTER*11 OPTION
@@ -51,10 +51,22 @@ C
 C---------------------------------ASSEMBLAGE----------------------------
 C
       CALL GETVTX(' ','METHODE',1,1,1,METHOD,IOPT)
+      
+C-- ON TESTE SI LES OBJETS POUR L'ELIMINATION EXISTENT      
+      CALL JEEXIN(NUGENE//'.ELIM.BASE',IRET)
+      
       IF (METHOD.EQ.'CLASSIQUE') THEN
-        CALL ASSGEN (NOMRES, OPTION, NUGENE)
+        IF (IRET .GT. 0) THEN
+          CALL ASGEEL (NOMRES, OPTION, NUGENE)  
+        ELSE
+          CALL ASSGEN (NOMRES, OPTION, NUGENE)
+        ENDIF  
       ELSE
-        CALL ASSGCY (NOMRES, NUGENE)
+        IF (IRET .GT. 0) THEN
+          CALL ASGEEL (NOMRES, OPTION, NUGENE)  
+        ELSE
+          CALL ASSGCY (NOMRES, NUGENE)
+        ENDIF  
       ENDIF
 C
       END

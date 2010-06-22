@@ -4,7 +4,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/04/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,12 +60,7 @@ C       ----------------------------------------------------------------
 C
          IRTETI = 0
 
-       IF ( LOI(1:5) .EQ. 'LMARC' ) THEN
-         CALL LMACVG (       DY,     DDY,   NR, ITMAX,  TOLER, ITER,
-     &                 INTG, TYPESS, ESSAI, ICOMP, IRTET)
-         IF ( IRTET.GT.0 ) GOTO (1,2,3), IRTET
-C
-      ELSEIF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
+      IF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
          CALL CVMCVG (       DY,     DDY,   NR, ITMAX,  TOLER, ITER,
      &                 INTG, TYPESS, ESSAI, ICOMP, IRTET)
          IF ( IRTET.GT.0 ) GOTO (1,2,3), IRTET

@@ -1,4 +1,4 @@
-#@ MODIF algorith5 Messages  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith5 Messages  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,17 +61,6 @@ La condition GAMMA/KSI <= 1 n'est pas respectée.
 
 12 : _("""
 Incohérence des relations SIGMA_C, SIGMA_P1, M_PIC, A_PIC, A_E et M_E.
-"""),
-
-13 : _("""
-Erreur d'intégration :
- - Essai d'intégration numéro  %(k1)s
- - Divergence de l'intégration locale
- - Redécoupage du pas de temps
-"""),
-
-14 : _("""
-Incrément de deformation cumulée (dv) = - %(k1)s .
 """),
 
 16 : _("""

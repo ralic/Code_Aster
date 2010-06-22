@@ -3,7 +3,7 @@
       CHARACTER*(*) NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C             NOMMAT//'.&IN2'   VECTEUR DE K24
 C
 C     ZI(+0) : INUTILISE
 C     ZK24(ZI(+1) : NOM DEVELOPPEUR DE LA MATRICE
-C     ZI(+2) : NOMBRE D'EQUATIONS
+C     ZI(+2) : NOMBRE GLOBAL D'EQUATIONS
 C     ZI(+3) : TYPE DE VALEURS
 C                1 : REELLE
 C                2 : COMPLEXE
@@ -124,7 +124,8 @@ C     ------------
 C     -- LMAT+2 :
 C     ------------
       CALL JEVEUO(NOMSTO//'.SMDE','L',JSMDE)
-      ZI(LMAT+2) = ZI(JSMDE-1+1)
+      CALL JEVEUO(NU//'.NUME.NEQU','L',JNEQU)
+      ZI(LMAT+2) = ZI(JNEQU-1+1)
 
 
 C     -- LMAT+3 :

@@ -1,0 +1,470 @@
+# MODIF  DATE 22/06/2010   AUTEUR DEVESA G.DEVESA 
+# TITRE POUTRE PLASTIQUE EN TRACTION DYNAMIQUE CONDENSEE PAR 
+# sdnv107b.para = tps_job 300 mem_job 900Mo mem_aster 90 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#  SOUS-STRUCTURATION STATIQUE
+
+DEBUT(  CODE=_F( NOM = 'SDNV107B',NIV_PUB_WEB='INTERNET'), );
+
+MAILLA=LIRE_MAILLAGE( );
+
+MAILLA=DEFI_GROUP(reuse =MAILLA,
+                    MAILLAGE=MAILLA,
+                    CREA_GROUP_NO=_F(
+                     GROUP_MA=('SURF1','SURF2','SURF3','BASE',
+                               'VOLU1','VOLU2','VOLU3','VOLU',),
+                     ),
+                    );
+                    
+MAILLA=DEFI_GROUP(reuse =MAILLA,
+                    MAILLAGE=MAILLA,
+                    CREA_GROUP_NO=(_F(NOM='VOLU3N',
+                                  DIFFE=('VOLU3','SURF2',),),
+                                   _F(NOM='VOLU2N',
+                                  DIFFE=('VOLU2','SURF2',),),
+                                  ),
+                    );
+                                 
+MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAILLA,
+          CREA_POI1 = (
+                _F(NOM_GROUP_MA='PC0',GROUP_NO='PC0',),
+                _F(NOM_GROUP_MA='PC1',GROUP_NO='PC1',),
+                _F(NOM_GROUP_MA='PC2',GROUP_NO='PC2',),
+                _F(NOM_GROUP_MA='PC3',GROUP_NO='PC3',),
+                _F(NOM_GROUP_MA='PSURF2',GROUP_NO='PC2',),
+                _F(NOM_GROUP_MA='PVOLU1',GROUP_NO='VOLU1',),
+                _F(NOM_GROUP_MA='PVOLU2',GROUP_NO='VOLU2',),
+                _F(NOM_GROUP_MA='PVOLU3',GROUP_NO='VOLU3',),
+                _F(NOM_GROUP_MA='PVOLU',GROUP_NO='VOLU',),
+                _F(NOM_GROUP_MA='PVOLU2N',GROUP_NO='VOLU2N',),
+                      ),
+                        );                      
+
+MATER=DEFI_MATERIAU(  ELAS=_F( E = 4.E11,  NU = 0.,  RHO = 1000.0),
+                      ECRO_LINE=_F( D_SIGM_EPSI = 4.E10, SY = 80.E6),
+                   );
+                   
+MATERN=DEFI_MATERIAU(  ELAS=_F( E = 4.E11,  NU = 0.,  RHO = 0.001),
+                      ECRO_LINE=_F( D_SIGM_EPSI = 4.E10, SY = 80.E6),
+                   );
+
+#
+CHAMAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                              AFFE=_F( GROUP_MA = ('VOLU','PVOLU'),
+                                    MATER = MATER));
+
+CHAMATN=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                              AFFE=(_F( GROUP_MA = ('VOLU3','PVOLU'),
+                                        MATER = MATER),
+                                    _F( GROUP_MA = ('VOLU1','VOLU2'),
+                                        MATER = MATERN),
+                                    ),
+                      );
+                                 
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,
+                            AFFE=(_F( GROUP_MA = 'VOLU',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = '3D'),
+                                  _F(PHENOMENE='MECANIQUE',
+                                     GROUP_MA=('PC3',),
+                                     MODELISATION='DIS_T'),
+                                  _F(PHENOMENE='MECANIQUE',
+                                     GROUP_MA=('PVOLU',),
+                                     MODELISATION='DIS_T')
+                                  ),
+                  );
+                                  
+MODELE1=AFFE_MODELE(  MAILLAGE=MAILLAGE,
+                            AFFE=(_F(GROUP_MA = ('VOLU1','VOLU2'),
+                                     PHENOMENE = 'MECANIQUE',
+                                     MODELISATION = '3D'),
+                                  _F(PHENOMENE='MECANIQUE',
+                                     GROUP_MA=('PSURF2',),
+                                     MODELISATION='DIS_T'),
+                                  _F(PHENOMENE='MECANIQUE',
+                                     GROUP_MA=('PVOLU1','PVOLU2'),
+                                     MODELISATION='DIS_T'),
+                                 ),
+                   );
+                   
+PARAM=AFFE_CARA_ELEM(  MODELE=MODELE,
+                            DISCRET=(_F( CARA='K_T_D_N',
+                                        #VALE=(1.E8,0.,0.,),
+                                        VALE=(0.E9,0.,0.,),
+                                   GROUP_MA = ('PC3',), ),
+                                     _F( CARA='K_T_D_N',
+                                        VALE=(0.,1.E14,1.E14,),
+                                   GROUP_MA = ('PVOLU'), ),
+                                    ),
+                                   );
+                                  
+PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
+                            DISCRET=(_F( CARA='K_T_D_N',
+                                        VALE=(0.,0.,0.,),
+                                   GROUP_MA = ('PSURF2',), ),
+                                     _F( CARA='K_T_D_N',
+                                        VALE=(0.,1.E14,1.E14,),
+                                   GROUP_MA = ('PVOLU1','PVOLU2'), ),
+                                     ),
+                                   );
+                                   
+PARAM1B=AFFE_CARA_ELEM(  MODELE=MODELE1,
+                            DISCRET=(_F( CARA='K_T_D_N',
+                                        #VALE=(5.E8,1.25E6,1.25E6,),
+                                        VALE=(5.E8,0.,0.,),
+                                   GROUP_MA = ('PSURF2',), ),
+                                     _F( CARA='M_T_D_N',
+                                        VALE=(125.,),
+                                   GROUP_MA = ('PSURF2',), ),
+                                     _F( CARA='K_T_D_N',
+                                        VALE=(0.,1.E14,1.E14,),
+                                   GROUP_MA = ('PVOLU1','PVOLU2'), ),
+                                     ),
+                                   );                                   
+                                   
+CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+               _F( GROUP_NO = 'BASE', DX = 0.0,
+                                      DY = 0.0,  DZ = 0.0,),
+                                              ),
+               LIAISON_UNIF=(_F(GROUP_NO = 'SURF3',DDL=('DX')),),
+               );
+               
+CHARGE1=AFFE_CHAR_MECA(  MODELE=MODELE1,DDL_IMPO=(
+               _F( GROUP_NO = ('BASE','SURF2'), DX = 0.0, ),
+                                              ),
+               );
+               
+CHARGE1B=AFFE_CHAR_MECA(  MODELE=MODELE1,DDL_IMPO=(
+               _F( GROUP_NO = ('BASE',), DX = 0.0, ),
+                                              ),
+               LIAISON_UNIF=(_F(GROUP_NO = 'SURF2',DDL=('DX')),),
+               );
+               
+##  MACRO_MATR_ASSE(MODELE=MODELE,
+##                  CHAM_MATER=CHAMAT,
+##                  CARA_ELEM=PARAM,
+##                  CHARGE=(CHARGE),
+##                  NUME_DDL=CO('NUME'),
+##                  MATR_ASSE=(_F(MATRICE=CO('MATR'),
+##                                OPTION='RIGI_MECA',),
+##                             _F(MATRICE=CO('MATM'),
+##                                OPTION='MASS_MECA',),
+##                             ),
+##                  ); 
+##                                
+##  MODE=MODE_ITER_SIMULT(  MATR_A=MATR,   MATR_B=MATM,
+##                             CALC_FREQ=_F(
+##                                          NMAX_FREQ=18,  
+##                                         ),
+##                             VERI_MODE=_F(  STOP_ERREUR='NON')
+##                           );
+
+MACRO_MATR_ASSE(MODELE=MODELE1,
+                CHAM_MATER=CHAMAT,
+                CHARGE=(CHARGE1),
+                CARA_ELEM=PARAM1,
+                NUME_DDL=CO('NUME1'),
+                MATR_ASSE=(_F(MATRICE=CO('MATR1'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATM1'),
+                              OPTION='MASS_MECA',),
+                           ),
+                ); 
+                              
+MODE1=MODE_ITER_SIMULT(  MATR_A=MATR1,   MATR_B=MATM1,
+                           CALC_FREQ=_F(
+                                        NMAX_FREQ=30,  
+                                       ),
+                           VERI_MODE=_F(  STOP_ERREUR='NON')
+                         );
+                         
+MACRO_MATR_ASSE(MODELE=MODELE1,
+                CHAM_MATER=CHAMATN,
+                CHARGE=(CHARGE1B),
+                CARA_ELEM=PARAM1B,
+                NUME_DDL=CO('NUMEN'),
+                MATR_ASSE=(_F(MATRICE=CO('MATRN'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATMN'),
+                              OPTION='MASS_MECA',),
+                           ),
+                ); 
+                              
+MODSTA1=MODE_ITER_SIMULT(  MATR_A=MATRN,   MATR_B=MATMN,
+                           CALC_FREQ=_F(
+                                        NMAX_FREQ=12,  
+                                       ),
+                           VERI_MODE=_F(  STOP_ERREUR='NON')
+                         );
+                         
+INTERDY1=DEFI_INTERF_DYNA(  NUME_DDL=NUME1,
+            INTERFACE=_F( NOM = 'DROITE',
+                       TYPE = 'CRAIGB',
+                       GROUP_NO = ('SURF2',))
+           );                        
+
+BAMO1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE1,
+                                NMAX_MODE=120,),
+                             _F(MODE_INTF=MODSTA1,
+                                NMAX_MODE=3,),
+                             ),
+                       INTERF_DYNA=INTERDY1,
+                       NUME_REF=NUME1,);
+                       
+MAEL1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
+                       MATR_RIGI=MATR1,
+                       MATR_MASS=MATM1,
+                       SANS_GROUP_NO='SURF2',
+                     );
+                     
+MAYADYN=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=(
+                          _F(MACR_ELEM=MAEL1,
+                             SUPER_MAILLE='STAT1',),
+                                         ),
+                      RECO_GLOBAL=_F(TOUT='OUI',),
+                      DEFI_NOEUD=_F(TOUT='OUI',
+                                     INDEX=(1,0,1,8,),),);
+                                     
+MAILB=ASSE_MAILLAGE(MAILLAGE_1=MAILLAGE,
+                    MAILLAGE_2=MAYADYN,
+                    OPERATION='SOUS_STR',);
+                    
+                    
+CHMATB=AFFE_MATERIAU(MAILLAGE=MAILB,
+                     AFFE=(_F(GROUP_MA='VOLU3',
+                              MATER=MATER,),                            
+                           ),
+                     );                    
+                     
+MODELB=AFFE_MODELE(MAILLAGE=MAILB,
+                   AFFE_SOUS_STRUC=_F(SUPER_MAILLE=('STAT1',),
+                                      PHENOMENE='MECANIQUE',),
+                   AFFE=(_F(GROUP_MA='VOLU3',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),
+                         _F(PHENOMENE='MECANIQUE',
+                           GROUP_MA=('PC3',),
+                           MODELISATION='DIS_T'),
+                         _F(PHENOMENE='MECANIQUE',
+                           GROUP_MA=('PVOLU3',),
+                           MODELISATION='DIS_T'),
+                        ),
+                  );                                                  
+
+                        
+COND_LIB=AFFE_CHAR_MECA(MODELE=MODELB,
+                        LIAISON_INTERF=(
+                                        _F(MACR_ELEM_DYNA=MAEL1,),
+                                        ),
+                        );
+                        
+PARAMB=AFFE_CARA_ELEM(  MODELE=MODELB,
+                            DISCRET=(_F( CARA='K_T_D_N',
+                                        VALE=(0.E9,0.,0.,),
+                                        #VALE=(1.E8,0.,0.,),
+                                   GROUP_MA = ('PC3',), ),
+                                     _F( CARA='K_T_D_N',
+                                        VALE=(0.,1.E14,1.E14,),
+                                   GROUP_MA = ('PVOLU3'), ),
+                                    ),
+                                   );
+                        
+CHARGEB=AFFE_CHAR_MECA(  MODELE=MODELB,
+               LIAISON_UNIF=(_F(GROUP_NO = 'SURF3',DDL=('DX')),),
+               );
+                                                                     
+MACRO_MATR_ASSE(MODELE=MODELB,
+                CHAM_MATER=CHMATB,
+                CARA_ELEM=PARAMB,
+                CHARGE=(COND_LIB,CHARGEB),
+                NUME_DDL=CO('NUMEROTB'),
+                MATR_ASSE=(_F(MATRICE=CO('MATRRIGB'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATRMASB'),
+                              OPTION='MASS_MECA',),
+                           ),
+               );
+               
+                                                                                                
+LINSDYN=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=0.014,
+                                     NOMBRE=28,),);
+LINSDY2=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=0.014,
+                                     NOMBRE=56,),);
+                                     
+EXCIMO=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(GROUP_NO='PC3',
+                                      FX=1.E8,),);
+                                      
+EXCIMOB=AFFE_CHAR_MECA(MODELE=MODELB,
+                      FORCE_NODALE=_F(GROUP_NO='PC3',
+                                      FX=1.E8,),);
+                                      
+#
+# DEFINITION DE LA FONCTION D EVOLUTION DE FY
+#
+
+#OMEGA = 314.16 ;
+
+OMEGA = 314. ;
+
+EVOL_FY = FORMULE(NOM_PARA='INST',VALE='sin(OMEGA*INST) ');
+
+EVINT=CALC_FONC_INTERP(FONCTION=EVOL_FY, NOM_PARA = 'INST',
+                          NOM_RESU='EVOL_FY',
+                          LIST_PARA=LINSDY2);
+                          
+DYTREX=DYNA_NON_LINE(MODELE=MODELB,
+                     CHAM_MATER=CHMATB,
+                     CARA_ELEM=PARAMB,
+                     EXCIT=(_F(CHARGE=COND_LIB, ),
+                            _F(CHARGE=CHARGEB, ),
+                            _F(CHARGE=EXCIMOB,
+                               FONC_MULT=EVINT,),),
+                     COMP_INCR=(
+                                _F(
+                                  RELATION='VMIS_ISOT_LINE',
+                                  GROUP_MA='VOLU3',
+                                  ),
+                                _F(
+                                  RELATION='ELAS',
+                                  GROUP_MA=('PVOLU3'),
+                                  ),
+                               ),
+                     INCREMENT=_F(LIST_INST=LINSDY2,),
+                     ARCHIVAGE=_F(LIST_INST=LINSDYN,),
+                     SCHEMA_TEMPS=_F(SCHEMA='HHT', 
+                                 FORMULATION='DEPLACEMENT',
+                                 ALPHA=-0.0,
+                                 ),
+                     NEWTON=_F(
+                               REAC_INCR=1,
+                               MATRICE='TANGENTE',
+                               REAC_ITER=1,
+                               # REAC_INCR=0,
+                               # MATRICE='ELASTIQUE',
+                               # REAC_ITER=0,
+                               ),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
+                                    ITER_GLOB_MAXI=20,
+                                    ARRET='NON',), 
+                     );
+                     
+DYTREX0=DYNA_NON_LINE(MODELE=MODELE,
+                     CARA_ELEM=PARAM,
+                     CHAM_MATER=CHAMAT,
+                     EXCIT=(_F(CHARGE=CHARGE, ),
+                            _F(CHARGE=EXCIMO,
+                               FONC_MULT=EVINT,),),
+                     COMP_INCR=(
+                                _F(
+                                  RELATION='ELAS',
+                                  GROUP_MA=('VOLU1','VOLU2'),
+                                  ),
+                                _F(
+                                  RELATION='ELAS',
+                                  GROUP_MA=('PVOLU'),
+                                  ),
+                                _F(
+                                  RELATION='VMIS_ISOT_LINE',
+                                  GROUP_MA='VOLU3',
+                                  ),
+                               ),
+                     INCREMENT=_F(LIST_INST=LINSDY2,),
+                     ARCHIVAGE=_F(LIST_INST=LINSDYN,),
+                     SCHEMA_TEMPS=_F(SCHEMA='HHT', 
+                                 FORMULATION='DEPLACEMENT',
+                                 ALPHA=-0.0,
+                                 ),
+                     NEWTON=_F(
+                               REAC_INCR=1,
+                               MATRICE='TANGENTE',
+                               REAC_ITER=1,
+                               ),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
+                                    ITER_GLOB_MAXI=20,
+                                    ARRET='NON',),
+                     # SOLVEUR = _F(METHODE='LDLT',)
+                     );
+                     
+             
+TEMPL2B=DEFI_LIST_REEL(
+                      DEBUT=5.e-4,
+                      INTERVALLE=_F(JUSQU_A=0.014,
+                                    PAS=5.e-4,),
+                      );
+             
+RESUGLO=REST_COND_TRAN(  RESULTAT=DYTREX,
+                         MACR_ELEM_DYNA=MAEL1,
+                         LIST_INST=TEMPL2B,
+                         PRECISION=1.E-4,
+                         NOM_CHAM='DEPL',
+                       );
+                       
+             
+TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
+                    REFERENCE='NON_REGRESSION',
+                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = 1.13490E-02))
+                                     
+TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
+                    REFERENCE='NON_REGRESSION',
+                  NOM_CHAM = 'VITE',      INST=3.5E-3, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = 3.99430E+00))
+                  
+                                    
+TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
+                    REFERENCE='NON_REGRESSION',
+                  NOM_CHAM = 'DEPL',      INST=1.4E-2, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = -9.93393E-03))
+                                     
+                  
+                                                      
+TEST_RESU( RESU=_F( RESULTAT = DYTREX0, REFERENCE = 'AUTRE_ASTER', 
+                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
+                  PRECISION = 0.2E-2, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = 1.13478E-02))
+                  
+TEST_RESU( RESU=_F( RESULTAT = DYTREX0, REFERENCE = 'AUTRE_ASTER', 
+                  NOM_CHAM = 'DEPL',      INST=1.4E-2, 
+                  PRECISION = 0.2E-2, 
+                  GROUP_NO='PC3',         NOM_CMP = 'DX', 
+                  VALE = -9.93393E-03))
+                  
+TEST_RESU( RESU=_F( RESULTAT = DYTREX, 
+                    REFERENCE='NON_REGRESSION', 
+                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
+                  GROUP_NO='PC2',         NOM_CMP = 'DX', 
+                  VALE = 6.97145E-03))  
+                                                          
+                  
+TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
+                    REFERENCE='NON_REGRESSION', 
+                  NOM_CHAM = 'DEPL',      INST=5.E-3, 
+                  GROUP_NO='PC2',         NOM_CMP = 'DX', 
+                  VALE = 6.97145E-03))                  
+                                
+FIN( ); 
+                      
+

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
+#& MODIF COMMUN  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,133 +17,133 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE PROIX J.M.PROIX
-def C_RELATION() : return (             "ELAS",            # RESP. : PROIX J.M.PROIX   #COMMUN#
-                                        "ARME",            # RESP. : PEYRARD C.PEYRARD
-                                        "ASSE_CORN",       # RESP. : PEYRARD C.PEYRARD
-                                        "BARCELONE",       # RESP. : ELGHARIB J.ELGHARIB
-                                        "BETON_DOUBLE_DP", # RESP. : ELGHARIB J.ELGHARIB
-                                        "BETON_RAG",       # RESP. : DEBONNIERES P.DEBONNIERES
-                                        "BETON_REGLE_PR",  # RESP. : NECS
-                                        "BETON_UMLV_FP",   # RESP. : LEPAPE Y.LEPAPE
-                                        "CAM_CLAY",        # RESP. : ELGHARIB J.ELGHARIB
-                                        "CJS",             # RESP. : CHAVANT C.CHAVANT
-                                        "CORR_ACIER",      # RESP. : LEPAPE Y.LEPAPE
-                                        "CZM_EXP_REG",     # RESP. : LAVERNE J.LAVERNE
-                                        "CZM_EXP",         # RESP. : LAVERNE J.LAVERNE
-                                        "CZM_LIN_REG",     # RESP. : LAVERNE J.LAVERNE
-                                        "CZM_OUV_MIX",     # RESP. : LAVERNE J.LAVERNE
-                                        "CZM_TAC_MIX",     # RESP. : LAVERNE J.LAVERNE
-                                        "CZM_FAT_MIX",     # RESP. : LAVERNE J.LAVERNE
-                                        "DIS_BILI_ELAS",   # RESP. : FLEJOU J.L.FLEJOU
-                                        "DIS_CHOC",        # RESP. : DEVESA G.DEVESA
-                                        "DIS_ECRO_CINE",   # RESP. : FLEJOU J.L.FLEJOU
-                                        "DIS_GOUJ2E_ELAS", # RESP. : ANGLES J.ANGLES
-                                        "DIS_GOUJ2E_PLAS", # RESP. : ANGLES J.ANGLES
-                                        "DIS_GRICRA",      # RESP. : FERNANDES R.FERNANDES
-                                        "DIS_VISC",        # RESP. : FLEJOU J.L.FLEJOU
-                                        "DRUCK_PRAGER",    # RESP. : FERNANDES R.FERNANDES
-                                        "DRUCK_PRAG_N_A",  # RESP. : FERNANDES R.FERNANDES
-                                        "VISC_DRUC_PRAG",  # RESP. : ELGHARIB J.ELGHARIB
-                                        "ENDO_HETEROGENE", # RESP. : GRANET S.GRANET
-                                        "ELAS_GONF",       # RESP. : GRANET S.GRANET
-                                        "ELAS_HYPER",      # RESP. : ABBAS M.ABBAS
-                                        "ENDO_FRAGILE",    # RESP. : MICHEL S.MICHEL
-                                        "ENDO_SCALAIRE",   # RESP. : MICHEL S.MICHEL
-                                        "ENDO_ISOT_BETON", # RESP. : MICHEL S.MICHEL
-                                        "ENDO_ORTH_BETON", # RESP. : MICHEL S.MICHEL
-                                        "GATT_MONERIE",    # RESP. : DEBONNIERES P.DEBONNIERES
-                                        "GLRC_DAMAGE",     # RESP. : MARKOVIC D.MARKOVIC
-                                        "GLRC_DM",         # RESP. : MARKOVIC D.MARKOVIC
-                                        "GRANGER_FP_INDT", # RESP. : ROSPARS C.ROSPARS
-                                        "GRANGER_FP",      # RESP. : ROSPARS C.ROSPARS
-                                        "GRANGER_FP_V",    # RESP. : ROSPARS C.ROSPARS
-                                        "GRAN_IRRA_LOG",   # RESP. : FERNANDES R.FERNANDES
-                                        "GRILLE_CINE_LINE",# RESP. : ROSPARS C.ROSPARS
-                                        "GRILLE_ISOT_LINE",# RESP. : ROSPARS C.ROSPARS
-                                        "GRILLE_PINTO_MEN",# RESP. : ROSPARS C.ROSPARS
-                                        "HOEK_BROWN_EFF",  # RESP. : CHAVANT C.CHAVANT
-                                        "HOEK_BROWN",      # RESP. : CHAVANT C.CHAVANT
-                                        "HOEK_BROWN_TOT",  # RESP. : CHAVANT C.CHAVANT
-                                        "HUJEUX",          # RESP. : FOUCAULT A.FOUCAULT
-                                        "IRRAD3M",         # RESP. : FLEJOU J.L.FLEJOU
-                                        "JOINT_BA",        # RESP. : MICHEL S.MICHEL
+def C_RELATION() : return (             "ELAS",            #COMMUN#
+
+                                        "ARME",            
+                                        "ASSE_CORN",       
+                                        "BARCELONE",       
+                                        "BETON_DOUBLE_DP", 
+                                        "BETON_RAG",       
+                                        "BETON_REGLE_PR",  
+                                        "BETON_UMLV_FP",   
+                                        "CAM_CLAY",        
+                                        "CJS",             
+                                        "CORR_ACIER",      
+                                        "CZM_EXP",         
+                                        "CZM_EXP_REG",     
+                                        "CZM_FAT_MIX",     
+                                        "CZM_LIN_REG",     
+                                        "CZM_OUV_MIX",     
+                                        "CZM_TAC_MIX",     
+                                        "DIS_BILI_ELAS",   
+                                        "DIS_CHOC",        
+                                        "DIS_ECRO_CINE",   
+                                        "DIS_GOUJ2E_ELAS", 
+                                        "DIS_GOUJ2E_PLAS", 
+                                        "DIS_GRICRA",      
+                                        "DIS_VISC",        
+                                        "DRUCK_PRAGER",    
+                                        "DRUCK_PRAG_N_A",  
+                                        "ELAS_GONF",       
+                                        "ELAS_HYPER",      
+                                        "ENDO_FRAGILE",    
+                                        "ENDO_HETEROGENE", 
+                                        "ENDO_ISOT_BETON", 
+                                        "ENDO_ORTH_BETON", 
+                                        "ENDO_SCALAIRE",   
+                                        "GATT_MONERIE",    
+                                        "GLRC_DAMAGE",     
+                                        "GLRC_DM",         
+                                        "GRANGER_FP",      
+                                        "GRANGER_FP_INDT", 
+                                        "GRANGER_FP_V",    
+                                        "GRAN_IRRA_LOG",   
+                                        "GRILLE_CINE_LINE",
+                                        "GRILLE_ISOT_LINE",
+                                        "GRILLE_PINTO_MEN",
+                                        "HOEK_BROWN",      
+                                        "HOEK_BROWN_EFF",  
+                                        "HOEK_BROWN_TOT",  
+                                        "HUJEUX",          
+                                        "IMPLEX_FRAG",     
+                                        "IMPLEX_ISOT_BETO",
+                                        "IMPLEX_ISOT_LINE",
+                                        "IRRAD3M",         
+                                        "JOINT_BA",        
                                         "JOINT_BANDIS",
-                                        "JOINT_MECA_RUPT", # RESP. : KAZYMYRENKO C.KAZYMYRENKO 
-                                        "KIT_DDI",         # RESP. : CHAVANT C.CHAVANT
-                                        "KIT_HHM",         # RESP. : GRANET S.GRANET
-                                        "KIT_HH",          # RESP. : GRANET S.GRANET
-                                        "KIT_HM",          # RESP. : GRANET S.GRANET
-                                        "KIT_THHM",        # RESP. : GRANET S.GRANET
-                                        "KIT_THH",         # RESP. : GRANET S.GRANET
-                                        "KIT_THM",         # RESP. : GRANET S.GRANET
-                                        "KIT_THV",         # RESP. : GRANET S.GRANET
-                                        "LABORD_1D",       # RESP. : VOLDOIRE F.VOLDOIRE
-                                        "LAIGLE",          # RESP. : ELGHARIB J.ELGHARIB
-                                        "LEMAITRE_IRRA",   # RESP. : FERNANDES R.FERNANDES
-                                        "LEMAITRE",        # RESP. : DEBONNIERES P.DEBONNIERES
-                                        "LEMA_SEUIL",      # RESP. : LECLERC S.LECLERC
-                                        "LETK",            # RESP. : ELGHARIB J.ELGHARIB
-                                        "LMARC_IRRA",      # RESP. : FERNANDES R.FERNANDES
-                                        "LMARC",           # RESP. : None
-                                        "MAZARS",          # RESP. : MICHEL S.MICHEL
-                                        "META_LEMA_ANI",   # RESP. : CANO V.CANO
-                                        "META_P_CL_PT_RE", # RESP. : CANO V.CANO
-                                        "META_P_CL_PT",    # RESP. : CANO V.CANO
-                                        "META_P_CL_RE",    # RESP. : CANO V.CANO
-                                        "META_P_CL",       # RESP. : CANO V.CANO
-                                        "META_P_IL_PT_RE", # RESP. : CANO V.CANO
-                                        "META_P_IL_PT",    # RESP. : CANO V.CANO
-                                        "META_P_IL_RE",    # RESP. : CANO V.CANO
-                                        "META_P_IL",       # RESP. : CANO V.CANO
-                                        "META_P_INL_PT_RE",# RESP. : CANO V.CANO
-                                        "META_P_INL_PT",   # RESP. : CANO V.CANO
-                                        "META_P_INL_RE",   # RESP. : CANO V.CANO
-                                        "META_P_INL",      # RESP. : CANO V.CANO
-                                        "META_V_CL_PT_RE", # RESP. : CANO V.CANO
-                                        "META_V_CL_PT",    # RESP. : CANO V.CANO
-                                        "META_V_CL_RE",    # RESP. : CANO V.CANO
-                                        "META_V_CL",       # RESP. : CANO V.CANO
-                                        "META_V_IL_PT_RE", # RESP. : CANO V.CANO
-                                        "META_V_IL_PT",    # RESP. : CANO V.CANO
-                                        "META_V_IL_RE",    # RESP. : CANO V.CANO
-                                        "META_V_IL",       # RESP. : CANO V.CANO
-                                        "META_V_INL_PT_RE",# RESP. : CANO V.CANO
-                                        "META_V_INL_PT",   # RESP. : CANO V.CANO
-                                        "META_V_INL_RE",   # RESP. : CANO V.CANO
-                                        "META_V_INL",      # RESP. : CANO V.CANO
-                                        "MONOCRISTAL",     # RESP. : PROIX J.M.PROIX
-                                        "MULTIFIBRE",      # RESP. : FLEJOU J.L.FLEJOU
-                                        "NORTON_HOFF",     # RESP. : MICHEL S.MICHEL
-                                        "PINTO_MENEGOTTO", # RESP. : ROSPARS C.ROSPARS
-                                        "POLYCRISTAL",     # RESP. : PROIX J.M.PROIX
-                                        "ROUSSELIER",      # RESP. : CANO V.CANO
-                                        "ROUSS_PR",        # RESP. : PARROT A.PARROT
-                                        "ROUSS_VISC",      # RESP. : CANO V.CANO
-                                        "RUPT_FRAG",       # RESP. : LAVERNE J.LAVERNE
-                                        "SANS",            # RESP. : MICHEL S.MICHEL
-                                        "VENDOCHAB",       # RESP. : PROIX J.M.PROIX
-                                        "VISC_CIN1_CHAB",  # RESP. : PROIX J.M.PROIX
-                                        "VISC_CIN2_CHAB",  # RESP. : PROIX J.M.PROIX
-                                        "VISC_CIN2_MEMO",  # RESP. : PROIX J.M.PROIX
-                                        "VISC_IRRA_LOG",   # RESP. : FERNANDES R.FERNANDES
-                                        "VISC_ISOT_LINE",  # RESP. : MICHEL S.MICHEL
-                                        "VISC_ISOT_TRAC",  # RESP. : PROIX J.M.PROIX
-                                        "VISCOCHAB",       # RESP. : GENIAUT S.GENIAUT
-                                        "VISC_TAHERI",     # RESP. : TAHERI S.TAHERI
-                                        "VMIS_ASYM_LINE",  # RESP. : PROIX J.M.PROIX
-                                        "VMIS_CIN1_CHAB",  # RESP. : PROIX J.M.PROIX
-                                        "VMIS_CIN2_CHAB",  # RESP. : PROIX J.M.PROIX
-                                        "VMIS_CIN2_MEMO",  # RESP. : PROIX J.M.PROIX
-                                        "VMIS_CINE_LINE",  # RESP. : PROIX J.M.PROIX
-                                        "VMIS_ECMI_LINE",  # RESP. : PROIX J.M.PROIX
-                                        "VMIS_ECMI_TRAC",  # RESP. : PROIX J.M.PROIX
-                                        "VMIS_ISOT_LINE",  # RESP. : PROIX J.M.PROIX
-                                        "VMIS_ISOT_PUIS",  # RESP. : PROIX J.M.PROIX
-                                        "VMIS_ISOT_TRAC",  # RESP. : PROIX J.M.PROIX
-                                        "VMIS_POU_FLEJOU", # RESP. : FLEJOU J.L.FLEJOU
-                                        "VMIS_POU_LINE",   # RESP. : PROIX J.M.PROIX
-                                        "ZMAT",            # RESP. : PROIX J.M.PROIX
-                                        "IMPLEX_FRAG",     # RESP. : BARGELLINI R.BARGELLINI
-                                        "IMPLEX_ISOT_BETO",# RESP. : BARGELLINI R.BARGELLINI
-                                        "IMPLEX_ISOT_LINE",# RESP. : BARGELLINI R.BARGELLINI
+                                        "JOINT_MECA_RUPT", 
+                                        "KIT_DDI",         
+                                        "KIT_HH",          
+                                        "KIT_HHM",         
+                                        "KIT_HM",          
+                                        "KIT_THH",         
+                                        "KIT_THHM",        
+                                        "KIT_THM",         
+                                        "KIT_THV",         
+                                        "LABORD_1D",       
+                                        "LAIGLE",          
+                                        "LEMAITRE",        
+                                        "LEMAITRE_IRRA",   
+                                        "LEMA_SEUIL",      
+                                        "LETK",            
+                                        "LMARC_IRRA",      
+                                        "MAZARS",          
+                                        "META_LEMA_ANI",   
+                                        "META_P_CL",       
+                                        "META_P_CL_PT",    
+                                        "META_P_CL_PT_RE", 
+                                        "META_P_CL_RE",    
+                                        "META_P_IL",       
+                                        "META_P_IL_PT",    
+                                        "META_P_IL_PT_RE", 
+                                        "META_P_IL_RE",    
+                                        "META_P_INL",      
+                                        "META_P_INL_PT",   
+                                        "META_P_INL_PT_RE",
+                                        "META_P_INL_RE",   
+                                        "META_V_CL",       
+                                        "META_V_CL_PT",    
+                                        "META_V_CL_PT_RE", 
+                                        "META_V_CL_RE",    
+                                        "META_V_IL",       
+                                        "META_V_IL_PT",    
+                                        "META_V_IL_PT_RE", 
+                                        "META_V_IL_RE",    
+                                        "META_V_INL",      
+                                        "META_V_INL_PT",   
+                                        "META_V_INL_PT_RE",
+                                        "META_V_INL_RE",   
+                                        "MONOCRISTAL",     
+                                        "MULTIFIBRE",      
+                                        "NORTON_HOFF",     
+                                        "PINTO_MENEGOTTO", 
+                                        "POLYCRISTAL",     
+                                        "ROUSSELIER",      
+                                        "ROUSS_PR",        
+                                        "ROUSS_VISC",      
+                                        "RUPT_FRAG",       
+                                        "SANS",            
+                                        "VENDOCHAB",       
+                                        "VISCOCHAB",       
+                                        "VISC_CIN1_CHAB",  
+                                        "VISC_CIN2_CHAB",  
+                                        "VISC_CIN2_MEMO",  
+                                        "VISC_DRUC_PRAG",  
+                                        "VISC_IRRA_LOG",   
+                                        "VISC_ISOT_LINE",  
+                                        "VISC_ISOT_TRAC",  
+                                        "VISC_TAHERI",     
+                                        "VMIS_ASYM_LINE",  
+                                        "VMIS_CIN1_CHAB",  
+                                        "VMIS_CIN2_CHAB",  
+                                        "VMIS_CIN2_MEMO",  
+                                        "VMIS_CINE_LINE",  
+                                        "VMIS_ECMI_LINE",  
+                                        "VMIS_ECMI_TRAC",  
+                                        "VMIS_ISOT_LINE",  
+                                        "VMIS_ISOT_PUIS",  
+                                        "VMIS_ISOT_TRAC",  
+                                        "VMIS_POU_FLEJOU", 
+                                        "VMIS_POU_LINE",   
+                                        "ZMAT",            
                                      ) 

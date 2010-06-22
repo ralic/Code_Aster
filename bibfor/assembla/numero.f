@@ -1,6 +1,6 @@
       SUBROUTINE NUMERO(NUPOSS,MODELZ,INFCHZ,SOLVEU,BASE,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ASSEMBLA  DATE 22/06/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,8 @@ C-----------------------------------------------------------------------
       K24CF  = '&&NUMERO.FETI.CONTACT'
       
 C     DECO. FETI+CONTACT      
-        LCF=.FALSE.
+      LCF    = .FALSE.
+      LIGRCF = ' '
 
       INFCHA = INFCHZ
       MODELE = MODELZ

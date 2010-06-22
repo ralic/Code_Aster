@@ -11,7 +11,7 @@ C
      &                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 21/06/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32,JEXNUM,JEXNOM,JEXATR
       CHARACTER*80 ZK80
 C
-      CHARACTER*1  K1BID, TYPE
+      CHARACTER*1  K1BID, TYPE  
       INTEGER      GD, DATE(9), NBACC, JPARA, NUTI, JCELV
       INTEGER VALI(2),VERSIO
       REAL*8       PARA
@@ -95,12 +95,16 @@ C
          ITYPE = 1
       ELSE IF (TYPE(1:1).EQ.'C') THEN
          ITYPE = 2
-      ELSE
+      ELSE IF (TYPE(1:1).EQ.'I') THEN
+         ITYPE = 3
+      ELSE IF (TYPE(1:1).EQ.'K') THEN
+         ITYPE = 4
+      ELSE 
          CALL U2MESK('A','PREPOST_97',1,TYPE(1:1))
          GOTO 9999
       END IF
-
-
+C
+C
 C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
 C        SINON ON LE REMET SOUS SON ANCIENNE FORME :
 C     ----------------------------------------------------------
@@ -109,7 +113,7 @@ C     ----------------------------------------------------------
         CALL CELCEL('NBVARI_CST',CHAME,'V','&&IRCHML.CHAMEL1')
         CHAME= '&&IRCHML.CHAMEL1'
       END IF
-
+C
 C     LES CHAMPS A SOUS-POINTS SONT TRAITES DIFFEREMMENT:
       CALL CELVER(CHAME,'NBSPT_1','COOL',KK)
       IF (KK.EQ.1) THEN
@@ -133,8 +137,7 @@ C           SINON ON IMPRIME LE CHAMP TEL QUEL
         CALL CELCEL('PAS_DE_SP',CHAME,'V','&&IRCHML.CHAMEL2')
         CHAME= '&&IRCHML.CHAMEL2'
       END IF
-
-
+C
       CALL JEVEUO(CHAME//'.CELD','L',JCELD)
       GD = ZI(JCELD-1+1)
       NGR = ZI(JCELD-1+2)
@@ -218,6 +221,7 @@ C
             CALL JEVEUO(NOMMA//'.COORDO    .VALE','L',JCOOR)
           ENDIF
         END IF
+C	
         IF (ITYPE.EQ.1) THEN
           CALL IRCERL(IFI,NBEL,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
      &       ZR(JCELV),ZK8(IAD),ZK8(JNOEL),LOC,ZI(JCELD),
@@ -232,7 +236,10 @@ C
      &       NBNOT,NUMNOE,NBMAC,ZI(JLISTE),
      &       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,
      &       LCOR,NDIM,ZR(JCOOR),NOLILI(1:19), FORMR, NCMP,NUCMP )
+        ELSE IF ((ITYPE.EQ.3).OR.(ITYPE.EQ.4)) THEN 
+           CALL IMPRSD('CHAMP',CHAMEL,IFI,NOMSD)
         ENDIF
+C
         IF (LOC.EQ.'ELNO') CALL JEDETR('&&IRCHML.NOMNOE')
         CALL JEDETR('&&IRCHML.MAILLE')
 C ---------------------------------------------------------------------

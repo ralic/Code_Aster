@@ -5,7 +5,7 @@
       INTEGER CCLL(*),CCII(*),NEQ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,9 +57,10 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C-----------------------------------------------------------------------
-      INTEGER JCCVA,JCCID,NELIM,IELIM,IEQ,J
-      INTEGER DECIEL,KTERM,NTERM
+      INTEGER JCCVA,JCCID,NELIM,IELIM,IEQ,J,JREFA,JNULG,IEQG
+      INTEGER DECIEL,KTERM,NTERM,IMATD,JNUGL
       COMPLEX*16 COEF
+      CHARACTER*14 NU
       CHARACTER*19 MAT
 C-----------------------------------------------------------------------
 C     DEBUT
@@ -70,21 +71,48 @@ C-----------------------------------------------------------------------
       CALL JEVEUO(MAT//'.CCVA','L',JCCVA)
       CALL JELIRA(MAT//'.CCLL','LONMAX',NELIM,KBID)
       NELIM=NELIM/3
+      
+      CALL JEVEUO(MAT//'.REFA','L',JREFA)
+      IF (ZK24(JREFA-1+11).EQ.'MATR_DISTR') THEN
+        IMATD = 1
+        NU = ZK24(JREFA-1+2)(1:14)
+        CALL JEVEUO(NU//'.NUML.NULG','L',JNULG)
+        CALL JEVEUO(NU//'.NUML.NUGL','L',JNUGL)
+      ELSE
+        IMATD = 0
+      ENDIF
 
       DO 20 IELIM = 1,NELIM
         IEQ =    CCLL(3*(IELIM-1)+1)
         NTERM =  CCLL(3*(IELIM-1)+2)
         DECIEL = CCLL(3*(IELIM-1)+3)
-        COEF = VCINE(IEQ)
+        
+        IF ( IMATD.EQ.0 ) THEN
+          IEQG = IEQ
+        ELSE
+          IEQG = ZI(JNULG-1+IEQ)
+        ENDIF
+        COEF = VCINE(IEQG)
+        
         IF (COEF.NE.0.D0) THEN
           DO 10 KTERM = 1,NTERM
-            J=CCII(DECIEL+KTERM)
+            IF ( IMATD.EQ.0 ) THEN
+              J=CCII(DECIEL+KTERM)
+            ELSE
+              J=ZI( JNULG-1 + CCII(DECIEL+KTERM) )
+            ENDIF
             VSMB(J) = VSMB(J) - COEF*ZC(JCCVA-1+DECIEL+KTERM)
    10     CONTINUE
         END IF
 
    20 CONTINUE
       CALL JELIBE(MAT//'.CCVA')
+      
+      IF ( IMATD.NE.0 ) THEN
+        DO 40 IEQ = 1,NEQ
+          IF ( ZI(JNUGL+IEQ-1).EQ.0 ) VCINE(IEQ) = 0.D0
+   40   CONTINUE
+      ENDIF
 
 
       CALL JEVEUO(MAT//'.CCID','L',JCCID)

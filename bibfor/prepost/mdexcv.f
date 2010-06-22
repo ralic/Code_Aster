@@ -2,7 +2,7 @@
      &                    NOCHMD, NOMAMD, NUMPT, NUMORD, TYPENT, TYPGEO,
      &                    NBVAL, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,7 @@ C
       INTEGER IAUX
 C
       CHARACTER*8 SAUX08
+      LOGICAL FICEXI
 C ______________________________________________________________________
 C
 C====
@@ -85,14 +86,18 @@ C    ON PART DU PRINCIPE QUE SI ON N'A PAS PU OUVRIR, C'EST QUE LE
 C    FICHIER N'EXISTE PAS, DONC SANS CHAMP A FORTIORI
 C====
 C
-      CALL EFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
+      NBVAL = 0
+      CODRET = 0
+      INQUIRE(FILE=NOFIMD,EXIST=FICEXI)
 C
-      IF ( IAUX.NE.0 ) THEN
+      IF ( .NOT. FICEXI ) THEN
 C
       NBVAL = 0
       CODRET = 0
 C
       ELSE
+      CALL EFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
+      IF ( IAUX.EQ.0 ) THEN
 C
 C====
 C 2. COMBIEN DE VALEURS ?
@@ -116,6 +121,7 @@ C
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
+      ENDIF
       ENDIF
 C
       END

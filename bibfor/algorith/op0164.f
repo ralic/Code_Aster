@@ -6,7 +6,7 @@ C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 22/06/2010   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,13 +49,14 @@ C
       INTEGER      N1, N2, N4, IADRIF, JSCDE, ULISOP,IER
       REAL*8       PARTR, PARTI
       CHARACTER*8  K8B, NOMRES, BASEMO, NUMGEN, INTERF
-      CHARACTER*16 TYPRES, NOMCOM, TYPBAS, K16NOM, TYPBIN
+      CHARACTER*16 TYPRES,NOMCOM,TYPBAS,K16NOM,TYPBIN,TISSF,TSYM
       CHARACTER*19 RESU , STOLCI
       CHARACTER*14 NUGENE
       CHARACTER*24 TABRIG, TABFRQ
       CHARACTER*72 TEXTE
       REAL*8 A(3)
       INTEGER*8    LONG1,LONG2,LONG3
+      LOGICAL      LISSF, LSYM
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -70,6 +71,12 @@ C
       CALL GETVID ( ' ', 'BASE'          , 1,1,1, BASEMO, N4 )
       CALL GETVID ( ' ', 'NUME_DDL_GENE' , 1,1,1, NUMGEN, N2 )
       CALL GETVTX ( ' ', 'TYPE' , 1,1,1, TYPBIN, N2 )
+      LISSF = .FALSE.
+      CALL GETVTX ( ' ', 'ISSF' , 1,1,1, TISSF, N2 )
+      IF (TISSF(1:3).EQ.'OUI') LISSF = .TRUE.
+      LSYM = .FALSE.
+      CALL GETVTX ( ' ', 'SYME' , 1,1,1, TSYM, N2 )
+      IF (TSYM(1:3).EQ.'OUI') LSYM = .TRUE.
 C
       CALL GETTCO ( BASEMO, TYPBAS )
 C
@@ -87,10 +94,15 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
      &                      NBMODD,K8B,IER)
       CALL DISMOI('F','NB_MODES_STA',BASEMO,'RESULTAT',
      &                      NBMODS,K8B,IER)
+      IF (LISSF) THEN
+        NBMODE = NBMODD + NBMODS
+      ELSE
+        NBMODE = NBMODS
+      ENDIF
 C
       TABRIG = '&&OP0164.RIGM'
       TABFRQ = '&&OP0164.FREQ'
-      CALL WKVECT(TABRIG,'V V R',2*NBMODS*NBMODS,JRIG)
+      CALL WKVECT(TABRIG,'V V R',2*NBMODE*NBMODE,JRIG)
       IF (TYPBIN.NE.'BINAIRE') THEN
         K16NOM = ' '
         IF ( ULISOP ( IFMIS, K16NOM ) .EQ. 0 )  THEN
@@ -101,16 +113,16 @@ C
         REWIND IFMIS
         READ(IFMIS,'(A72)') TEXTE
         IF (TEXTE(1:4).EQ.'XXXX') GOTO 4
-        DO 1 I2 = 1,NBMODS
-        DO 1 I1 = 1,NBMODS
+        DO 1 I2 = 1,NBMODE
+        DO 1 I1 = 1,NBMODE
           NSAUT = NFREQ
           IF (I1.EQ.1.AND.I2.EQ.1) NSAUT = IFREQ
           DO 2 I = 1, NSAUT
             READ(IFMIS,'(A72)') TEXTE
     2     CONTINUE
           READ(IFMIS,*) (A(J),J=1,3)
-          ZR(JRIG+2*(I2-1)*NBMODS+2*I1-2) = A(2)
-          ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1) = -A(3)
+          ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2) = A(2)
+          ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1) = -A(3)
     1   CONTINUE
     4   CONTINUE
       ELSE
@@ -122,7 +134,7 @@ C   Les reels ne posent pas de probleme : ce sont toujours des REAL*8
 C
         READ(IFMIS) LONG1,LONG2,LONG3
         NFREQ=LONG1
-        NBMODS=LONG2
+        NBMODE=LONG2
         N1=LONG3
         CALL WKVECT(TABFRQ,'V V R',NFREQ,JFRQ)
         READ(IFMIS) (ZR(JFRQ+IFR-1),IFR=1,NFREQ)
@@ -138,13 +150,13 @@ C
         DO 5 I = 1, IFREQ-1
           READ(IFMIS) A(1)
     5   CONTINUE
-        READ(IFMIS) ((ZR(JRIG+2*(I2-1)*NBMODS+2*I1-2),
-     &                ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1),
-     &                I1=1,NBMODS),I2=1,NBMODS)
-        DO 6 I1 = 1, NBMODS
-        DO 6 I2 = 1, NBMODS
-          ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1)=
-     &   -ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1)
+        READ(IFMIS) ((ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2),
+     &                ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1),
+     &                I1=1,NBMODE),I2=1,NBMODE)
+        DO 6 I1 = 1, NBMODE
+        DO 6 I2 = 1, NBMODE
+          ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1)=
+     &   -ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1)
     6   CONTINUE
       ENDIF
 C
@@ -159,8 +171,13 @@ C      NBLOC  = ZI(JSCDE-1+3)
 C
       RESU = ' '
       RESU(1:8) = NOMRES
-      CALL JECREC ( RESU//'.VALM', 'G V C', 'NU', 'DISPERSE',
-     &                                            'CONSTANT', 2 )
+      IF (LSYM) THEN
+        CALL JECREC ( RESU//'.VALM', 'G V C', 'NU', 'DISPERSE',
+     &                                              'CONSTANT', 1 )
+      ELSE
+        CALL JECREC ( RESU//'.VALM', 'G V C', 'NU', 'DISPERSE',
+     &                                              'CONSTANT', 2 )
+      ENDIF
       CALL JEECRA ( RESU//'.VALM', 'LONMAX', NTERM, K8B )
 C
       CALL WKVECT ( RESU//'.LIME', 'G V K24', 1, IALIME )
@@ -175,7 +192,11 @@ C
       ZK24(JREFA-1+11)='MPI_COMPLET'
       ZK24(JREFA-1+1)   = BASEMO
       ZK24(JREFA-1+2) = NUGENE
-      ZK24(JREFA-1+9) = 'MR'
+      IF (LSYM) THEN
+        ZK24(JREFA-1+9) = 'MS'
+      ELSE
+        ZK24(JREFA-1+9) = 'MR'
+      ENDIF
       ZK24(JREFA-1+10) = 'GENE'
 C
       CALL WKVECT ( RESU//'.DESC', 'G V I', 3, IADESC )
@@ -196,8 +217,10 @@ C
 C
       CALL JECROC ( JEXNUM(RESU//'.VALM',1) )
       CALL JEVEUO ( JEXNUM(RESU//'.VALM',1), 'E', LDBLO )
-      CALL JECROC ( JEXNUM(RESU//'.VALM',2) )
-      CALL JEVEUO ( JEXNUM(RESU//'.VALM',2), 'E', LDBLO2 )
+      IF (.NOT.LSYM) THEN
+        CALL JECROC ( JEXNUM(RESU//'.VALM',2) )
+        CALL JEVEUO ( JEXNUM(RESU//'.VALM',2), 'E', LDBLO2 )
+      ENDIF
 C
 C ------ PROJECTION DE LA MATRICE ASSEMBLEE
 C
@@ -207,33 +230,45 @@ C
       DO 30 I = 1 , NUEQ
 C
          II = I - NBMODD
+         IF (LISSF.AND.I.LE.NBMODD) II = I+NBMODS
 C
 C --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 C
          DO 40 J = 1 , I
            JJ = J - NBMODD
+           IF (LISSF.AND.J.LE.NBMODD) JJ = J+NBMODS
 C
 C ----------- PRODUIT SCALAIRE VECTASS * MODE
 C
-           IF (I.LE.NBMODD.OR.J.LE.NBMODD) THEN
+           IF (.NOT.LISSF.AND.(I.LE.NBMODD.OR.J.LE.NBMODD)) THEN
              ZC(LDBLO+I*(I-1)/2+J-1) = DCMPLX(0.D0,0.D0)
-             ZC(LDBLO2+I*(I-1)/2+J-1) = DCMPLX(0.D0,0.D0)
+             IF (.NOT.LSYM) THEN
+               ZC(LDBLO2+I*(I-1)/2+J-1) = DCMPLX(0.D0,0.D0)
+             ENDIF
            ELSE
 C
 C ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
 C
-             PARTR = ZR(JRIG+2*(II-1)*NBMODS+2*JJ-2)
-             PARTI = ZR(JRIG+2*(II-1)*NBMODS+2*JJ-1)
+             PARTR = ZR(JRIG+2*(II-1)*NBMODE+2*JJ-2)
+             PARTI = ZR(JRIG+2*(II-1)*NBMODE+2*JJ-1)
+             IF (LSYM) THEN
+               PARTR = 0.5D0*(ZR(JRIG+2*(JJ-1)*NBMODE+2*II-2)
+     &                      + PARTR)
+               PARTI = 0.5D0*(ZR(JRIG+2*(JJ-1)*NBMODE+2*II-1)
+     &                      + PARTI)
+             ENDIF
              ZC(LDBLO+I*(I-1)/2+J-1) = DCMPLX(PARTR,PARTI)
-             PARTR = ZR(JRIG+2*(JJ-1)*NBMODS+2*II-2)
-             PARTI = ZR(JRIG+2*(JJ-1)*NBMODS+2*II-1)
-             ZC(LDBLO2+I*(I-1)/2+J-1) = DCMPLX(PARTR,PARTI)
+             IF (.NOT.LSYM) THEN
+               PARTR = ZR(JRIG+2*(JJ-1)*NBMODE+2*II-2)
+               PARTI = ZR(JRIG+2*(JJ-1)*NBMODE+2*II-1)
+               ZC(LDBLO2+I*(I-1)/2+J-1) = DCMPLX(PARTR,PARTI)
+             ENDIF
            ENDIF
 C
  40      CONTINUE
  30   CONTINUE
       CALL JELIBE ( JEXNUM(RESU//'.VALM', 1) )
-      CALL JELIBE ( JEXNUM(RESU//'.VALM', 2) )
+      IF (.NOT.LSYM) CALL JELIBE ( JEXNUM(RESU//'.VALM', 2) )
       CALL JEDETR(TABRIG)
       CALL JEDETR(TABFRQ)
 C

@@ -3,7 +3,7 @@
       CHARACTER*8  NOMRES,NOMA,BASMOD
       CHARACTER*19 MASSF,RAIDF,AMORF
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 22/06/2010   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,9 +61,10 @@ C      CHARACTER*6  PGC
       CHARACTER*8  NOMCAS,VECTAS,GNEX
       CHARACTER*14 NUMDDL
       CHARACTER*19 NU
+C      CHARACTER*3  TREDU
+      LOGICAL      LREDU
 C
 C-----------------------------------------------------------------------
-C      DATA PGC           /'COMP81'/
       DATA BLANC         /'        '/
 C-----------------------------------------------------------------------
 C --- RECUPERATION EVENTUELLE MATRICE RAIDEUR EN ARGUMENT
@@ -72,14 +73,16 @@ C
 C
       NU = NOMRES
       NU = NU(1:14)//'.NUME'
+      LREDU = .FALSE.
+C      CALL GETVTX ( ' ', 'REDUC' , 1,1,1, TREDU, N2 )
+C      IF (TREDU.EQ.'OUI') LREDU = .TRUE.
 
 C **********************
 C     RECUPERATION DES INFOS UTILES
 C **********************
       CALL JEVEUO(BASMOD//'           .REFD','L',LLREFB)
       NUMDDL=ZK24(LLREFB+3)(1:14)
-      LINTF=ZK24(LLREFB+4)(1:8)
-      
+      LINTF=ZK24(LLREFB+4)(1:8)      
 
       CALL DISMOI('F','NOM_MODELE',NUMDDL,'NUME_DDL',IBID,NOMO,IRET)
       IF (RAIDF.NE.BLANC) THEN
@@ -142,6 +145,23 @@ C On va choisir plusieurs noeuds qui ne sont pas presents dans
 C l'interface et tels que le nbre de ddl considere soit egal 
 C au nbre de modes dynamiques
 C On prend comme postulat que NBNDYN=PARTIE_ENTIERE de NBMDYN/NCMPMX
+      CALL GETVTX(' ','SANS_GROUP_NO',1,1,1,GNEX,IGEX)
+      IF (IGEX.NE.0) THEN
+        CALL JELIRA(JEXNOM(NOMA//'.GROUPENO',GNEX),'LONMAX',NBNO2,K8BID)
+        CALL JEVEUO(JEXNOM(NOMA//'.GROUPENO',GNEX),'L',LDGN0)
+        CALL WKVECT('&&COMP81.NEUEXC','V V I',NBNO2,LDGN)
+        DO 557 J=1,NBNO2
+          ZI(LDGN+J-1)=ZI(LDGN0+J-1)
+  557   CONTINUE
+      ELSE
+        NBNO2=NBNOE
+        IF (NBNO2.NE.0) THEN
+          CALL WKVECT('&&COMP81.NEUEXC','V V I',NBNO2,LDGN)
+          DO 558 J=1,NBNO2
+            ZI(LDGN+J-1)=ZI(LLDEF+J-1)
+  558     CONTINUE
+        ENDIF
+      ENDIF
       NBNDYN=NBMDYN/NCMPMX
       RBNDYN=DBLE(NBMDYN)/DBLE(NCMPMX)
       IF (ABS(RBNDYN-DBLE(NBNDYN)).GT.0.D0) THEN
@@ -151,20 +171,8 @@ C On prend comme postulat que NBNDYN=PARTIE_ENTIERE de NBMDYN/NCMPMX
       WRITE(6,*) 'NBNDYN ',NBNDYN
       IF (NBNDYN.EQ.0) THEN
          CALL WKVECT(NOMRES//'.NEUBID','V V I',1,INEBID)
+         ZI(INEBID) = 0
          GOTO 554
-      ENDIF
-      CALL GETVTX(' ','SANS_GROUP_NO',1,1,1,GNEX,IGEX)
-      IF (IGEX.NE.0) THEN
-        CALL JELIRA(JEXNOM(NOMA//'.GROUPENO',GNEX),'LONMAX',NBNO2,K8BID)
-        CALL JEVEUO(JEXNOM(NOMA//'.GROUPENO',GNEX),'L',LDGN)
-      ELSE
-        NBNO2=NBNOE
-        IF (NBNO2.NE.0) THEN
-          CALL WKVECT('&&COMP81.NEUEXC','V V I',NBNO2,LDGN)
-          DO 557 J=1,NBNO2
-            ZI(LDGN+J-1)=ZI(LLDEF+J-1)
-  557     CONTINUE
-        ENDIF
       ENDIF
       CALL WKVECT(NOMRES//'.NEUBID','V V I',NBNDYN,INEBID)
       DO 555 I=1,NBNO
@@ -183,6 +191,60 @@ C On prend comme postulat que NBNDYN=PARTIE_ENTIERE de NBMDYN/NCMPMX
   555 CONTINUE
 
   554 CONTINUE
+      IF (NBMDEF.NE.0) THEN
+        CALL RSADPA(BASMOD,'L',1,'NOEUD_CMP',NBMDYN+1,0,LNOCMP,K8BID)
+        IF (ZK16(LNOCMP).EQ.' ') LREDU=.TRUE.
+      ENDIF
+C      WRITE(6,*) 'NEUBID ',(ZI(INEBID+I-1),I=1,NBNDYN)
+      WRITE(6,*) 'LREDU ',LREDU
+      IF (LREDU) THEN
+        NBNDEF=NBMDEF/NCMPMX
+        RBNDEF=DBLE(NBMDEF)/DBLE(NCMPMX)
+        IF (ABS(RBNDEF-DBLE(NBNDEF)).GT.0.D0) THEN
+          WRITE(6,*) 
+     +'LE NOMBRE DE MODES STATIQUES EST NON MULTIPLE DE NCMP =',NCMPMX
+        ENDIF
+        WRITE(6,*) 'NBNDEF ',NBNDEF 
+        IF (NBNDYN.NE.0) THEN
+          NBNOT = NBNO2 + NBNDYN
+          CALL JUVECA('&&COMP81.NEUEXC',NBNOT)
+          CALL JEVEUO('&&COMP81.NEUEXC','E',LDGN)
+          DO 651 J=NBNO2+1,NBNOT
+            ZI(LDGN+J-1)=ZI(INEBID+J-1-NBNO2)
+  651     CONTINUE
+          NBNO2 = NBNOT        
+        ENDIF
+        CALL WKVECT('&&COMP81.NOSTDY','V V I',NBNDEF,INSTDY)
+        K=1
+        DO 655 I=1,NBNO
+          NUNOT=ZI(IAPRNO-1+ (I-1)* (NEC+2)+1)
+          IF (NUNOT.NE.0) THEN
+            NUEQ = ZI(IAPRNO-1+ (I-1)* (NEC+2)+2)
+            IF (NUEQ.EQ.NCMPMX) THEN
+              DO 656 J=1,NBNO2
+                IF (I.EQ.ZI(LDGN+J-1)) GOTO 655
+  656         CONTINUE
+              ZI(INSTDY+K-1)= I
+              IF (K.EQ.NBNDEF) GOTO 654
+              K=K+1
+            ENDIF
+          ENDIF
+  655   CONTINUE
+
+  654   CONTINUE
+  
+      ELSE
+        IF (NBNOE.NE.0) THEN
+          CALL WKVECT('&&COMP81.NOSTDY','V V I',NBNOE,INSTDY)
+          DO 658 J=1,NBNOE
+            ZI(INSTDY+J-1)=ZI(LLDEF+J-1)
+  658     CONTINUE
+        ELSE
+          CALL WKVECT('&&COMP81.NOSTDY','V V I',1,INSTDY)
+          ZI(INSTDY) = 0        
+        ENDIF
+        NBNDEF = NBNOE
+      ENDIF
       
 C **********************
 C     CREATION DU .REFM
@@ -211,7 +273,7 @@ C **********************
 C mettre ici le nbre de ?
       ZI(IADESM-1+1)= 0
 C mettre ici le nbre de noeud exterieur non dupliques
-      ZI(IADESM-1+2)=NBNOE+NBNDYN
+      ZI(IADESM-1+2)=NBNDEF+NBNDYN
 C mettre ici le nbre de noeuds internes
       ZI(IADESM-1+3)=NBNO
 C mettre ici le nbre de ddl exterieur
@@ -228,34 +290,36 @@ C mettre ici le nbre de lagrange liaison
 C mettre ici le nbre de lagrange interne
       ZI(IADESM-1+10)=0
 C
-      IF ((NBNOE+NBNDYN).EQ.0) GOTO 669 
+      IF ((NBNDEF+NBNDYN).EQ.0) GOTO 669 
 C
 C **********************
 C     CREATION DU .LINO
 C **********************
-      CALL WKVECT(NOMRES//'.LINO','G V I',NBNOE+NBNDYN,IACONX)
+      CALL WKVECT(NOMRES//'.LINO','G V I',NBNDEF+NBNDYN,IACONX)
       DO 665 I=1,NBNDYN
         ZI(IACONX+I-1)=ZI(INEBID+I-1)
  665  CONTINUE
 C      WRITE(6,*) 'NEUBID ',(ZI(INEBID+I-1),I=1,NBNDYN)
-      DO 666 I=NBNDYN+1,NBNOE+NBNDYN
-        ZI(IACONX+I-1)=ZI(LLDEF+I-NBNDYN-1)
+      DO 666 I=NBNDYN+1,NBNDEF+NBNDYN
+        ZI(IACONX+I-1)=ZI(INSTDY+I-NBNDYN-1)
  666  CONTINUE
+C      WRITE(6,*) 'LINO ',(ZI(IACONX+I-1),I=1,NBNDEF+NBNDYN)
 
 C **********************
 C     CREATION DU .CONX
 C **********************
-      CALL WKVECT(NOMRES//'.CONX','G V I',3*(NBNOE+NBNDYN),IACON1)
+      CALL WKVECT(NOMRES//'.CONX','G V I',3*(NBNDEF+NBNDYN),IACON1)
       DO 667 I=1,NBNDYN
          ZI(IACON1+3*I-3)=1
          ZI(IACON1+3*I-2)=ZI(INEBID+I-1)
          ZI(IACON1+3*I-1)=0
  667  CONTINUE
-      DO 668 I=NBNDYN+1,NBNOE+NBNDYN
+      DO 668 I=NBNDYN+1,NBNDEF+NBNDYN
          ZI(IACON1+3*I-3)=1
-         ZI(IACON1+3*I-2)=ZI(LLDEF+I-NBNDYN-1)
+         ZI(IACON1+3*I-2)=ZI(INSTDY+I-NBNDYN-1)
          ZI(IACON1+3*I-1)=0
  668  CONTINUE
+C      WRITE(6,*) 'CONX ',(ZI(IACON1+I-1),I=1,3*(NBNDEF+NBNDYN))
  669  CONTINUE
 
 C **********************
@@ -304,7 +368,9 @@ C
           ZI(IADESM-1+7)=ICAS
  670    CONTINUE
       ENDIF
-
+C      WRITE(6,*) 'COUCOU FIN COMP81'
+      CALL JEDETC(' ','&&COMP81',1)
+      
  9999 CONTINUE
       CALL JEDEMA()
       END

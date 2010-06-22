@@ -1,4 +1,4 @@
-#@ MODIF med2 Messages  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med2 Messages  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,6 +37,10 @@ cata_msg = {
 
 2 : _("""
      '%(k1)s'
+"""),
+
+3 : _("""
+     Fichier MED introuvable.
 """),
 
 }

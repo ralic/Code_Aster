@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/04/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,13 +176,10 @@ C
           IF (CMP2(1)(1:14).EQ. 'VMIS_ISOT_LINE') NVI2 = 2
 C
       ELSEIF (CMP2(1)(1:8).EQ. 'ROUSS_PR' .OR.
-     &        CMP2(1)(1:5) .EQ. 'LMARC'      .OR.
      &        CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP') THEN
 C
               IF (CMP2(1)(1:8).EQ. 'ROUSS_PR')
      &            CALL RSLNVI ( MOD3D , IBID , IBID2 , IBID3 , NVI2 )
-              IF (CMP2(1)(1:5) .EQ. 'LMARC')
-     &            CALL LMANVI ( MOD3D , IBID , IBID2 , IBID3 , NVI2 )
               IF (CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP')
      &            CALL BETNVI ( MOD3D , IBID , IBID2 , IBID3 , NVI2 )
 C
@@ -318,7 +315,6 @@ C
      &                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID, IRET)
 C
       ELSEIF (CMP2(1)(1:8).EQ. 'ROUSS_PR' .OR.
-     &        CMP2(1)(1:5) .EQ. 'LMARC'      .OR.
      &        CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP') THEN
 C
          CALL LCCREE(1, CMP2, COMCOD)

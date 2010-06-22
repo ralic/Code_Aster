@@ -4,7 +4,7 @@
       CHARACTER*19                                PROFNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,10 +58,11 @@ C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      I,IAD,IAR,IBID,IDEP,IEQ,IER,IORD,IRET,J,JBID,K,L,
      +             LDNEW,LLCHAB,LLCHOL,LLIND,LLINER,LLINSK,LLMASS,
-     +             LLNUEQ,LLORS,LLPRS,LLROT,LREFE,LTROTX,
+     +             I1,J1,K1,L1,LLNUEQ,LLORS,LLPRS,LLROT,LREFE,LTROTX,
      +             LTROTY,LTROTZ,LTVEC,LTYPE,NBBAS,NBCMP,NBCOU,NBMAS,
      +             NBMAX,NBMOD,NBNOT,NBSST,NEQ, NEQS,NNO,NUMO,NUTARS,
-     +             LLREF1,LLREF2,LLREF3
+     +             LLREF1,LLREF2,LLREF3,ELIM,LMOET,NEQET,LMAPRO,
+     +             NEQRED,LSILIA,NUMSST,LSST
       INTEGER      IADPAR(9)
       INTEGER VALI(2)
       REAL*8       COMPX,COMPY,COMPZ,EFMASX,EFMASY,EFMASZ,FREQ,GENEK,
@@ -69,8 +70,8 @@ C
       CHARACTER*8  BASMOD,MACREL,MODGEN,SOUTR,KBID
       CHARACTER*16 DEPL,NOMPAR(9)
       CHARACTER*19 RAID,NUMDDL,NUMGEN,CHAMNE
-      CHARACTER*24 CREFE(2),CHAMOL,CHAMBA,INDIRF
-      CHARACTER*24 VALK
+      CHARACTER*24 CREFE(2),CHAMOL,CHAMBA,INDIRF,SELIAI,SIZLIA,SST
+      CHARACTER*24 VALK,NOMSST
       COMPLEX*16   CBID
       CHARACTER*1 K1BID
 C
@@ -83,6 +84,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
+      
       INDIRF='&&REGEGL.INDIR.SST'
 C
 C-----ECRITURE DU TITRE-------------------------------------------------
@@ -147,6 +149,7 @@ C-----RECUPERATION NOMBRE DE MODES PROPRES CALCULES---------------------
 C
       CALL RSORAC(RESGEN,'LONUTI',IBID,RBID,KBID,CBID,RBID,
      &            KBID,NBMOD,1,IBID)
+     
 C
 C --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
 C
@@ -164,7 +167,34 @@ C
 C
 C-----ALLOCATION STRUCTURE DE DONNEES RESULTAT--------------------------
 C
-      CALL RSCRSD('G',NOMRES,'MODE_MECA',NBMOD)
+      CALL RSCRSD('G',NOMRES,'MODE_MECA',NBMOD)      
+C
+C-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
+C
+
+C      SELIAI= '&&'//NUMGEN(1:8)//'PROJ_EQ_LIAI'
+C      SIZLIA='&&'//NUMGEN(1:8)//'VECT_SIZE_SS'
+C      SST=    '&&'//NUMGEN(1:8)//'VECT_NOM_SS'
+      SELIAI=NUMGEN(1:14)//'.ELIM.BASE'
+      SIZLIA=NUMGEN(1:14)//'.ELIM.TAIL'
+      SST=   NUMGEN(1:14)//'.ELIM.NOMS'
+
+      CALL JEEXIN(SELIAI,ELIM)
+      
+      IF (ELIM .NE. 0) THEN
+        NEQET=0
+        CALL JEVEUO(NUMGEN//'.NEQU','L',IBID)
+        NEQRED=ZI(IBID)
+        NOMSST=MODGEN//'      .MODG.SSNO'
+        CALL JEVEUO(SELIAI,'L',LMAPRO)
+        CALL JEVEUO(SIZLIA,'L',LSILIA)
+        CALL JEVEUO(SST,'L',LSST)
+        DO 10 I=1,NBSST
+          NEQET=NEQET+ZI(LSILIA+I-1)
+  10    CONTINUE
+        CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V R',NEQET,LMOET)    
+      ENDIF
+          
 C
 CC
 CCC---RESTITUTION PROPREMENT DITE---------------------------------------
@@ -185,6 +215,19 @@ C  REQUETTE NOM ET ADRESSE CHAMNO GENERALISE
 C
         CALL DCAPNO ( RESGEN, DEPL, IORD, CHAMOL )
         CALL JEVEUO ( CHAMOL, 'L', LLCHOL )
+
+C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES       
+        IF (ELIM .NE. 0) THEN      
+          DO 21 I1=1,NEQET
+            ZR(LMOET+I1-1)=0.D0
+            DO 31 K1=1,NEQRED
+              ZR(LMOET+I1-1)=ZR(LMOET+I1-1)+
+     &          ZR(LMAPRO+(K1-1)*NEQET+I1-1)*
+     &          ZR(LLCHOL+K1-1)
+  31        CONTINUE
+  21      CONTINUE  
+          LLCHOL=LMOET               
+        ENDIF        
 C
 C  REQUETTE NOM ET ADRESSE NOUVEAU CHAMNO
 C
@@ -211,16 +254,33 @@ C  TEST SI LA SST GENERE DES DDL GLOBAUX
 C
           IF(IRET.NE.0) THEN
             KBID='  '
-            CALL MGUTDM(MODGEN,KBID,K,'NOM_BASE_MODALE',IBID,BASMOD)
+            
+            IF (ELIM .NE. 0) THEN
+              CALL JENONU(JEXNOM(NOMSST,ZK8(LSST+K-1)),NUMSST)
+              IEQ=0
+              DO 41 I1=1,K-1
+                IEQ=IEQ+ZI(LSILIA+I1-1)
+  41          CONTINUE 
+            ELSE
+              NUMSST=K
+C  RECUPERATION DU NUMERO TARDIF DE LA SST
+              DO 40 J=1,NBSST
+                IF(ZI(LLORS+J-1).EQ.NUMSST) NUTARS=J
+  40          CONTINUE
+              IEQ=ZI(LLPRS+(NUTARS-1)*2)
+            ENDIF
+             
+            CALL MGUTDM(MODGEN,KBID,NUMSST,'NOM_BASE_MODALE',IBID,
+     &                  BASMOD)
             CALL JEVEUO(BASMOD//'           .REFD','L',LREFE)
             CALL JEVEUO(ZK24(LREFE+4)(1:8)//'.IDC_TYPE','L',
      &                  LTYPE)
             IF (ZK8(LTYPE).EQ.'AUCUN') THEN
-             VALI (1) = K
-             VALI (2) = K
+             VALI (1) = NUMSST
+             VALI (2) = NUMSST
              CALL U2MESG('A', 'ALGORITH14_28',0,' ',2,VALI,0,0.D0)
             ENDIF
-            CALL MGUTDM(MODGEN,KBID,K,'NOM_MACR_ELEM',IBID,MACREL)
+            CALL MGUTDM(MODGEN,KBID,NUMSST,'NOM_MACR_ELEM',IBID,MACREL)
             CALL JEVEUO(MACREL//'.MAEL_MASS_VALE','L',LLMASS)
             CALL JELIRA(MACREL//'.MAEL_MASS_VALE','LONMAX',NBMAX,
      &                  K1BID)
@@ -229,22 +289,18 @@ C
             CALL JEVEUO(MACREL//'.MAEL_INER_VALE','L',LLINER)
 C
 C           --- CALCUL DE LA MATRICE DE ROTAION ---
-            CALL JEVEUO(JEXNUM(MODGEN//'      .MODG.SSOR',K),'L',LLROT)
+            CALL JEVEUO(JEXNUM(MODGEN//'      .MODG.SSOR',NUMSST),
+     &                  'L',LLROT)
             CALL MATROT(ZR(LLROT),MAT)
 C
             CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',
      &                      NBBAS,KBID,IER)
             KBID='  '
-            CALL MGUTDM(MODGEN,KBID,K,'NOM_NUME_DDL',IBID,NUMDDL)
+            CALL MGUTDM(MODGEN,KBID,NUMSST,'NOM_NUME_DDL',IBID,NUMDDL)
             CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQS,KBID,IRET)
             CALL WKVECT('&&REGEGL.TRAV','V V R',NEQS,LTVEC)
-C
-C  RECUPERATION DU NUMERO TARDIF DE LA SST
-C
-            DO 40 J=1,NBSST
-              IF(ZI(LLORS+J-1).EQ.K) NUTARS=J
-40          CONTINUE
-            IEQ=ZI(LLPRS+(NUTARS-1)*2)
+            
+
 C
 C  BOUCLE SUR LES MODES PROPRES DE LA BASE
 C
@@ -254,7 +310,15 @@ C
 C
 C  BOUCLE SUR LES EQUATIONS PHYSIQUES
 C
-              IAD=LLCHOL+ZI(LLNUEQ+IEQ+J-2)-1
+              
+              IF (ELIM .NE. 0) THEN
+                IAD=LLCHOL+IEQ+J-1
+              ELSE
+                IAD=LLCHOL+ZI(LLNUEQ+IEQ+J-2)-1
+              ENDIF
+              
+C-- DANS LE CAS ELIM, CHANGER LE IAD, le ZI(LLNUEQ EST PAS BON)
+
 C           --- CALCUL DES MASSES EFFECTIVES ---
               COMPX = ZR(LLINER+J-1)
               COMPY = ZR(LLINER+NBBAS+J-1)
@@ -273,17 +337,18 @@ C
                 ZR(LTVEC+L-1)=ZR(LTVEC+L-1)+ZR(LLCHAB+L-1)*
      &                        ZR(IAD)
 60            CONTINUE
+              
               CALL JELIBE(CHAMBA)
 50          CONTINUE
-            CALL JEVEUO(JEXNUM(INDIRF,K),'L',LLIND)
-            CALL JELIRA(JEXNUM(INDIRF,K),'LONMAX',NBCOU,K1BID)
+            CALL JEVEUO(JEXNUM(INDIRF,NUMSST),'L',LLIND)
+            CALL JELIRA(JEXNUM(INDIRF,NUMSST),'LONMAX',NBCOU,K1BID)
             NBCOU=NBCOU/2
             DO 70 L=1,NBCOU
               IDEP=ZI(LLIND+(L-1)*2)
               IAR=ZI(LLIND+(L-1)*2+1)
               ZR(LDNEW+IAR-1)=ZR(LTVEC+IDEP-1)
 70          CONTINUE
-            CALL JELIBE(JEXNUM(INDIRF,K))
+            CALL JELIBE(JEXNUM(INDIRF,NUMSST))
             CALL JEDETR('&&REGEGL.TRAV')
           ENDIF
 30      CONTINUE
@@ -317,6 +382,7 @@ C
 C
       CALL JEDETC('V','&&REGEGL',1)
 C
+      CALL JEDETR ('&&MODE_ETENDU_REST_ELIM')
       CALL JEDETR ( INDIRF )
       CALL JELIBE ( NUMGEN//'.NUEQ' )
       CALL JEDETR ( '&&REGEGL.NUME' )

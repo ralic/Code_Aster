@@ -1,4 +1,4 @@
-# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION CALCUL FETI + CONTACT CONTINUE SUR UNE BARRE
 # feti009a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,7 +98,8 @@ INSTNL=DEFI_LIST_REEL(DEBUT=0.0,
 
 RESU=STAT_NON_LINE(MODELE=MODM,
                    CHAM_MATER=CHMAT,
-                   SOLVEUR=_F(METHODE='MUMPS',),
+                   SOLVEUR=_F(METHODE='MUMPS',
+                              MATR_DISTRIBUEE='OUI',),
                    CONTACT=CH3,
                  EXCIT=(
                           _F(CHARGE=CH1,FONC_MULT=RAMPE),

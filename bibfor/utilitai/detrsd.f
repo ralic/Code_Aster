@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C          'CHAMP_GD' (CHAPEAU DESUET AUX CHAM_NO/CHAM_ELEM/...)
 C          'RESULTAT'  'LIGREL'  'NUAGE'  'MAILLAGE' 'CRITERE'
 C          (OU ' ' QUAND ON NE CONNAIT PAS LE TYPE).
 C          'LISTE_CHARGE' LISTE DES CHARGES
+C          'NUML_DDL'
 C       NOMSD   : NOM DE LA STRUCTURE DE DONNEES A DETRUIRE
 C          NUME_DDL(K14),MATR_ASSE(K19),VECT_ASSE(K19)
 C          CHAMP(K19),MATR_ELEM(K8),VECT_ELEM(K8),VARI_COM(K14)
@@ -570,6 +571,20 @@ C RECURSIVITE DE SECOND NIVEAU SUR DETRSD
    50     CONTINUE
           CALL JEDETR(K24B)
         END IF
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'NUML_DDL') THEN
+C     -----------------------------------
+
+        NU = NOMSD
+        CALL JEDETR(NU//'.NUML.PRNO')
+        CALL JEDETR(NU//'.NUML.NOPR')
+        CALL JEDETR(NU//'.NUML.DELG')
+        CALL JEDETR(NU//'.NUML.NEQU')
+        CALL JEDETR(NU//'.NUML.NULG')
+        CALL JEDETR(NU//'.NUML.NUGL')
+        CALL JEDETR(NU//'.NUML.NUEQ')
+
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'VARI_COM') THEN
 C     -------------------------------------

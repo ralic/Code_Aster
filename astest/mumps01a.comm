@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 # TITRE validation du solveur MUMPS
 # mumps01a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -159,6 +159,14 @@ RESU10=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
                    SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='NONSYM',RESI_RELA=-1.,ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU10,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
+                  GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
+
+#  4.4 : MUMPS (distribue par sous-domaines) charge_dualisee + charge_cine + NONSYM + matrice distribuee:
+# -----------------------------------------------------------------
+RESU11=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
+                           EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
+                   SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='NONSYM',RESI_RELA=-1.,ELIM_LAGR2='NON',PCENT_PIVOT=80,MATR_DISTRIBUEE='OUI',), )
+TEST_RESU( RESU=_F(  RESULTAT = RESU11,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=1.e-8 ))
 
 FIN();

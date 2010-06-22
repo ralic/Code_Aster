@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 # TITRE FISSURATION JOINT 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,7 +126,7 @@ FCT = DEFI_FONCTION(
 #-----------------------------------------------------------------------------------
 
 U_1=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
+  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,MATR_DISTRIBUEE='OUI',),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
@@ -145,7 +145,7 @@ U_1=STAT_NON_LINE(
   )
 
 STAT_NON_LINE(reuse = U_1,
-  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
+  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,MATR_DISTRIBUEE='OUI',),
   ETAT_INIT  = _F(EVOL_NOLI = U_1),
   MODELE     = MO,
   CHAM_MATER = CM,
@@ -177,7 +177,7 @@ STAT_NON_LINE(reuse = U_1,
 # CALCUL AVEC CHARGEMENT EN MODE II
 #-----------------------------------------------------------------------------------
 U_2=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
+  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,MATR_DISTRIBUEE='OUI',),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
@@ -196,7 +196,7 @@ U_2=STAT_NON_LINE(
   )
 
 STAT_NON_LINE(reuse = U_2,
-  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
+  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,MATR_DISTRIBUEE='OUI',),
   ETAT_INIT  = _F(EVOL_NOLI = U_2),
   MODELE     = MO,
   CHAM_MATER = CM,

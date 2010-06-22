@@ -1,4 +1,4 @@
-#@ MODIF modelisa10 Messages  DATE 22/03/2010   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF modelisa10 Messages  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,4 +40,12 @@ Le vecteur definissant l'axe de rotation a une composante non nulle suivant Ox o
 ce qui induit des forces centrifuges hors plan. Avec une modelisation C_PLAN ou D_PLAN,
 l'axe de rotation doit être dirige suivant Oz.
 """),
+
+
+4 : _("""
+Les mailles affectées à la modélisation TUYAU ne semblent pas former des lignes continues.
+Il y a probablement un probleme dans le maillage (superposition d'éléments par exemple).
+Pour obtenir le détail des mailles affectées, utilisez INFO=2. 
+"""),
+
 }

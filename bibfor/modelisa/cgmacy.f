@@ -1,6 +1,6 @@
       SUBROUTINE CGMACY (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 21/06/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,8 @@ C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*8    NOMA, K8BID, NOMAIL, NOMPOI, NOMNOE
       CHARACTER*16   MOTFAC, MOCLE(3)
       CHARACTER*24   LISMAI
+      CHARACTER*16   SELEC
+
 C
       REAL*8         X0(3), X(3), XX0(3), AXE(3), ANGLE(2)
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -77,7 +79,11 @@ C --- INITIALISATIONS :
 C     ---------------
       MOTFAC = MOFAZ
       NOMA   = NOMAZ
-      LISMAI = LISMAZ
+      LISMAI = LISMAZ             
+C
+C --- RECUPERATION DU TYPE DE VERIFICATION A APPLIQUER :
+C     --------------------------------------------------      
+      CALL GETVTX(MOTFAC,'CRIT_NOEUD',IOCC,1,1,SELEC,IBID)
 C
       ZERO  = 0.0D0
       UN    = 1.0D0
@@ -209,10 +215,14 @@ C         ----------------------------------------------------
            CALL JENONU(JEXNOM(NOMA//'.NOMMAI',NOMAIL),IBID)
            CALL JELIRA (JEXNUM(NOMA//'.CONNEX',IBID),'LONMAX',NBNO,
      &                  K1BID)
+
+C ---      COMPTE NOMBRE DES NOEUDS D'UN MAILLE DANS LE CYLINDRE :
+C          ------------------------------------------------------      
+           NBNOD = 0
 C
 C ---     BOUCLE SUR LES CONNECTIVITES DE LA MAILLE :
 C         -----------------------------------------
-            DO 20 INO = 1, NBNO
+           DO 20 INO = 1, NBNO
 C
 C ---        NUMERO DU NOEUD :
 C            ---------------
@@ -238,8 +248,8 @@ C           ----------------------------------------------
                     NBMA = NBMA + 1
                     ZI(IDLIMA+NBMA-1) = IMA
                     GOTO 10
-C
                 ELSE
+C
                     XNOXX0 = SQRT (XNOXX2)
 C
                     XX0(1) = XX0(1)/XNOXX0
@@ -262,20 +272,54 @@ C             -----------
                     D2 =  ((X(1)-X0(1))*(X(1)-X0(1))
      &                   + (X(2)-X0(2))*(X(2)-X0(2))
      &                   + (X(3)-X0(3))*(X(3)-X0(3)))*SIN(ANG)*SIN(ANG)
+
+C ---      SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A AU MOINS UN NOEUD
+C          -------------------------------------------------------------
+C
+                    IF (SELEC.EQ.'AU_MOINS_UN') THEN 
 C
 C ---         SI LE NOEUD COURANT EST DANS LE CYLINDRE, ON AFFECTE
 C ---         LA MAILLE COURANTE A LA LISTE DE MAILLES QUI SERA
 C ---         AFFECTEE AU GROUP_MA :
 C             --------------------
-                    IF (D2.LE.RAYON*RAYON) THEN
-                        NBMA = NBMA + 1
-                        ZI(IDLIMA+NBMA-1) = IMA
-                        GOTO 10
+                      IF (D2.LE.RAYON*RAYON) THEN
+                          NBMA = NBMA + 1
+                          ZI(IDLIMA+NBMA-1) = IMA
+                          GOTO 10
+                      ENDIF
+
+C ---         SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A TOUT OU 
+C ---         MAJORITE, COMPTER LE NOMBRE DES NOEUDS D'UNE MAILLE
+C ---         DANS LE CYLINDRE :
+C             ------------------------------------------------     
+                    ELSE IF((SELEC.EQ.'TOUS').OR.
+     &                       (SELEC.EQ.'MAJORITE'))THEN
+C
+                      IF (D2.LE.RAYON*RAYON) THEN
+                        NBNOD=NBNOD+1
+                      ENDIF
+C
                     ENDIF
 C
                 ENDIF
 C
  20        CONTINUE
+C 
+           IF (SELEC.EQ.'TOUS') THEN
+             IF (NBNOD.EQ.NBNO) THEN
+               NBMA = NBMA + 1
+               ZI(IDLIMA+NBMA-1) = IMA
+               GOTO 10
+             ENDIF
+           ENDIF 
+C
+           IF (SELEC.EQ.'MAJORITE') THEN     
+             IF (NBNOD.GE.(NBNO+1)/2) THEN
+               NBMA = NBMA + 1
+               ZI(IDLIMA+NBMA-1) = IMA     
+               GOTO 10
+             ENDIF
+           ENDIF
 C
  10   CONTINUE
 C

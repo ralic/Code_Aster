@@ -4,7 +4,7 @@
       CHARACTER*19 IMPE
 C TOLE CRP_4
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 22/06/2010   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,11 +41,12 @@ C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
 C
       INTEGER      IBID, N1, N2, N3, N4, N5, NBVECT, IER, NBMODE,
      +             IADRIF, LLREFE, ULISOP
-      REAL*8       RBID, PARTR, PARTI
+      REAL*8       RBID, PARTR, PARTI, PARTR0, PARTI0 
       COMPLEX*16   CBID
       CHARACTER*1  TYPMAT
       CHARACTER*8  K8B, MATRAS, INTERF, BLANC
       CHARACTER*16 TYPRES, NOMCOM
+      CHARACTER*19 IMPINI
 C
       DATA BLANC /'        '/
 C-----------------------------------------------------------------------
@@ -60,6 +61,7 @@ C --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C
       CALL GETVR8(' ','FREQ_EXTR',1,1,1,FREQ,NFR)
       CALL GETVR8(' ','AMOR_SOL',1,1,1,AMSO,NFR)
+      CALL GETVID(' ','MATR_IMPE_INIT',1,1,1,IMPINI,NIM)
       AMSO = 2.D0*AMSO
 C
       TYPMAT= TYPRES(16:16)
@@ -99,7 +101,8 @@ C
 C        BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 C
 C
-      CALL JEVEUO(JEXNUM(IMPE//'.VALM',1),'L',LDBLO) 
+      CALL JEVEUO(JEXNUM(IMPE//'.VALM',1),'L',LDBLO)
+      IF (NIM.NE.0) CALL JEVEUO(JEXNUM(IMPINI//'.VALM',1),'L',LDBLOI)
       DO 30 I = 1 , NBMODE
 C
 C --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
@@ -118,6 +121,13 @@ C
              PARTI = DIMAG(ZC(LDBLO+I*(I-1)/2+J-1))
              ZR(LDRESR+I*(I-1)/2+J-1) = PARTR
              ZR(LDRESA+I*(I-1)/2+J-1) = (PARTI-AMSO*PARTR)/(DPI*FREQ)
+             IF (NIM.NE.0) THEN
+               PARTR0 = DBLE(ZC(LDBLOI+I*(I-1)/2+J-1))
+               PARTI0 = DIMAG(ZC(LDBLOI+I*(I-1)/2+J-1))
+               ZR(LDRESR+I*(I-1)/2+J-1) = PARTR0
+               ZR(LDRESA+I*(I-1)/2+J-1) = (PARTI-PARTI0)/(DPI*FREQ)
+               ZR(LDRESM+I*(I-1)/2+J-1) = (PARTR0-PARTR)/(DPI*FREQ)**2
+             ENDIF
            ENDIF
 C
  40      CONTINUE

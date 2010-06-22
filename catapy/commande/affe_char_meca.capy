@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 22/06/2010   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -386,6 +386,13 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster), #CO()
              COEF_IMPO       =SIMP(statut='o',typ='R' ),
              NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
+           ),
+           
+           
+         LIAISON_INTERF  =FACT(statut='f',max='**',
+             fr="Définit une relation linéaire entre les DDLs d'interface à partir d'un MACRELEM",
+             MACR_ELEM_DYNA  =SIMP(statut='o',typ=macr_elem_dyna),
+             TYPE_LIAISON    =SIMP(statut='f',typ='TXM',defaut="RIGIDE",into=("RIGIDE","SOUPLE") ),
            ),
 
          LIAISON_XFEM      =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON" ),

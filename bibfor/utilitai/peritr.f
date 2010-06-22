@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 21/06/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 VR(5),RTVAL(2),VALER(3)
       CHARACTER*8 K8B,NOMA,RESUL,CRIT,NOMAIL,NOMLIG,NOMMAI,LPAIN(7),
      &            LPAOUT(2),TYPARR(NBPARR),TYPARD(NBPARD),VALEK(2)
+     &            ,TABCMP(5)
       CHARACTER*16 TYPRES,OPTION,OPTIO2,OPTCAL(2),TOPTCA(2),
      &             NOPARR(NBPARR),NOPARD(NBPARD),TABTYP(3)
       CHARACTER*19 CHELEM,KNUM,KINS,VARNUL
@@ -69,6 +70,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C      DATA VARIMG /'&&PERITR.VARIMR'/
       DATA VARNUL/'&&PERITR.VARNUL'/
       DATA TABTYP/'NOEU#DEPL_R','NOEU#TEMP_R','ELEM#ENER_R'/
+      DATA TABCMP/'TRIAX','RSR0','VOLU','NUMEMA','DEPSEQ'/
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -227,7 +229,7 @@ C            OPTION DE CALCUL RICE_TRACEY ---
 
           IF (NT.NE.0) THEN
             IF (OPTCAL(2).EQ.'OUI') THEN
-              CALL MEMAX('MAX',CHELEM,2,MXVALE,VR,0,IBID)
+              CALL MEMAX('MAX',CHELEM,'RSR0',MXVALE,TABCMP,VR,0,IBID)
               DO 30 KK = 1,MXVALE
                 ZR(LVALE+KK-1) = VR(KK)
    30         CONTINUE
@@ -285,7 +287,8 @@ C            OPTION DE CALCUL RICE_TRACEY ---
               END IF
               CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
               IF (OPTCAL(2).EQ.'OUI') THEN
-                CALL MEMAX('MAX',CHELEM,2,MXVALE,VR,NBMA,ZI(JAD))
+                CALL MEMAX('MAX',CHELEM,'RSR0',MXVALE,TABCMP,
+     &                            VR,NBMA,ZI(JAD))
                 DO 40 KK = 1,MXVALE
                   ZR(LVALE+KK-1) = VR(KK)
    40           CONTINUE
@@ -342,7 +345,7 @@ C            OPTION DE CALCUL RICE_TRACEY ---
               END IF
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUME)
               IF (OPTCAL(2).EQ.'OUI') THEN
-                CALL MEMAX('MAX',CHELEM,2,MXVALE,VR,1,NUME)
+                CALL MEMAX('MAX',CHELEM,'RSR0',MXVALE,TABCMP,VR,1,NUME)
                 DO 60 KK = 1,MXVALE
                   ZR(LVALE+KK-1) = VR(KK)
    60           CONTINUE

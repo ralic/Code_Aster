@@ -1,4 +1,4 @@
-# MODIF  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION CALCUL FETI + CONTACT CONTINU ENTRE DEUX CLOISONS
 # feti010a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,7 +171,8 @@ RESUAC=STAT_NON_LINE(MODELE=MOMEQ,
                                 RESI_GLOB_RELA=1e-04,
                                 ITER_GLOB_MAXI=20,
                                 ARRET='OUI',),
-                 SOLVEUR=_F(METHODE='MUMPS',),
+                 SOLVEUR=_F(METHODE='MUMPS',
+                            MATR_DISTRIBUEE='OUI',),
                  INFO=1,);
 # TEST DEPLACEMENTS
 # 2 NOEUDS DIRICHLET, 1 NOEUD AU MILIEU DE LA STRUCTURE

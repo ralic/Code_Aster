@@ -4,7 +4,7 @@
       CHARACTER*(*)     NOMCMP,MATRIC,MOTFAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGELINE  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,6 +91,10 @@ C
          JIND1 = LACB
          JIND2 = LLAG
          TEXTE = TEXT3
+      ELSEIF (MOTFAC(1:11).EQ.'MODE_INTERF') THEN
+         JIND1 = LBLO
+         JIND2 = LACT
+         TEXTE = TEXT1         
       ELSE
          CALL U2MESS('F','ALGELINE2_5')
       ENDIF

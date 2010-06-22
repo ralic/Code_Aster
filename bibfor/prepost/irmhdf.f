@@ -4,7 +4,7 @@
      &                    INFMED )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF PREPOST  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,7 +97,7 @@ C
       CHARACTER*255 KFIC
       CHARACTER*24 VALK(2)
 C
-      LOGICAL EXISTM
+      LOGICAL EXISTM,FICEXI
 C
 C     ------------------------------------------------------------------
 C
@@ -159,17 +159,27 @@ C      SOIT 'CREATION' SI LE FICHIER N'EXISTE PAS ENCORE,
 C      SOIT 'LECTURE_AJOUT' (CELA SIGNIFIE QUE LE FICHIER EST ENRICHI).
 C
 C     TEST L'EXISTENCE DU FICHIER
-      CALL EFOUVR (FID, NOFIMD, EDLECT, CODRET)
-      IF ( CODRET.NE.0 ) THEN
-         EDMODE = EDCREA
-         CODRET = 0
-      ELSE
-         EDMODE = EDLEAJ
-         CALL EFFERM ( FID, CODRET)
+      INQUIRE(FILE=NOFIMD,EXIST=FICEXI)
+      IF ( FICEXI ) THEN
+         EDMODE = EDLECT
+         CALL EFOUVR (FID, NOFIMD, EDMODE, CODRET)
          IF ( CODRET.NE.0 ) THEN
-           SAUX08='EFFERM  '
-           CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+            EDMODE = EDCREA
+         ELSE
+            EDMODE = EDLEAJ
+            CALL EFFERM ( FID, CODRET)
+            IF ( CODRET.NE.0 ) THEN
+              SAUX08='EFFERM  '
+              CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+            ENDIF
          ENDIF
+      ELSE
+         EDMODE = EDCREA
+      ENDIF
+      CALL EFOUVR (FID, NOFIMD, EDMODE, CODRET)
+      IF ( CODRET.NE.0 ) THEN
+         SAUX08='EFOUVR  '
+         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
       IF ( INFMED.GE.2 ) THEN
@@ -181,12 +191,6 @@ C                         1234567890123456
          VALK(1) = SAUX08
          VALK(2) = SAUX16(EDMODE)
          CALL U2MESK('I','MED_40', 2 ,VALK)
-      ENDIF
-C
-      CALL EFOUVR (FID, NOFIMD, EDMODE, CODRET)
-      IF ( CODRET.NE.0 ) THEN
-        SAUX08='EFOUVR  '
-        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 2.2. ==> CREATION DU MAILLAGE AU SENS MED (TYPE MED_NON_STRUCTURE)

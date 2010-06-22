@@ -6,7 +6,7 @@
       CHARACTER*(*) TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/09/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C-----------------------------------------------------------------------
-      INTEGER NEQ,NIMPO,JCCLL,JCCII
+      INTEGER NEQ,NIMPO,JCCLL,JCCII,ECCLL
 C-----------------------------------------------------------------------
 C     DEBUT
       CALL JEMARQ()
@@ -83,6 +83,10 @@ C-----------------------------------------------------------------------
       NEQ = ZI(LMAT+2)
       NIMPO = ZI(LMAT+7)
       IF (NIMPO.EQ.0) GO TO 10
+      
+      CALL JEEXIN(ZK24(ZI(LMAT+1))(1:19)//'.CCLL',ECCLL)
+      IF ( ECCLL.EQ.0 ) GOTO 10
+      
       CALL JEVEUO(ZK24(ZI(LMAT+1))(1:19)//'.CCLL','L',JCCLL)
       CALL JEVEUO(ZK24(ZI(LMAT+1))(1:19)//'.CCII','L',JCCII)
 

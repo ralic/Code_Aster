@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 25/05/2010   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF assembla Messages  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,14 +30,17 @@ cata_msg = {
   Conseil : Changer de solveur
 """),
 
-2 : _("""
-  Erreur d'utilisation :
-    Les charges cinématiques ne fonctionnent pas avec MUMPS en matrice distribuée
-"""),
-
 3: _("""
  Le calcul est séquentiel, on ne peut donc pas utiliser MATR_DISTRIBUEE='OUI'.
- On force MATR_DISTRIBUEE='NON'
+ On force MATR_DISTRIBUEE='NON'.
+"""),
+
+4: _("""
+ L'utilisation de MATR_DISTRIBUEE='OUI' nécessite que chaque processeur ait
+ au moins 1 degré de liberté qui lui soit alloué.
+ Ici, le processeur %(i1)d ne s'est vu attribué aucun ddl.
+ 
+ Conseil : Modifiez le partitionnement des mailles de votre modèle.
 """),
 
 5 : _("""

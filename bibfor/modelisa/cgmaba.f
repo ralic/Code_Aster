@@ -1,6 +1,6 @@
       SUBROUTINE CGMABA (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 21/06/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,6 +70,7 @@ C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*16   MOTFAC, MOCLE(3)
       CHARACTER*24   LISMAI
       CHARACTER*24   VALK
+      CHARACTER*16   SELEC     
 C
       REAL*8         X0(3), X(3), XX0(3), VECNOR(3), ANGLE(2)
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -102,6 +103,11 @@ C
 C
 C
       NBMA   = 0
+
+C
+C --- RECUPERATION DU TYPE DE VERIFICATION A APPLIQUER :
+C     -------------------------------------------------- 
+      CALL GETVTX(MOTFAC,'CRIT_NOEUD',IOCC,1,1,SELEC,IBID)
 C
 C --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
 C     ----------------------------------------
@@ -229,10 +235,15 @@ C         ----------------------------------------------------
            CALL JENONU(JEXNOM(NOMA//'.NOMMAI',NOMAIL),IBID)
            CALL JELIRA (JEXNUM(NOMA//'.CONNEX',IBID),'LONMAX',NBNO,
      &                  K1BID)
+
+C
+C ---      COMPTE NOMBRE DES NOEUDS D'UN MAILLE DANS LE SPHERE :
+C          ----------------------------------------------------      
+           NBNOD = 0
 C
 C ---     BOUCLE SUR LES CONNECTIVITES DE LA MAILLE :
 C         -----------------------------------------
-            DO 20 INO = 1, NBNO
+           DO 20 INO = 1, NBNO
 C
 C ---        NUMERO DU NOEUD :
 C            ---------------
@@ -253,17 +264,47 @@ C            -----------------------------------------------------
                 D    = XX0(1)*VECNOR(1) + XX0(2)*VECNOR(2) +
      &                 XX0(3)*VECNOR(3)
 C
-C ---        SI LE NOEUD COURANT EST DANS LA BANDE, ON AFFECTE
-C ---        LA MAILLE COURANTE A LA LISTE DE MAILLES QUI SERA
-C ---        AFFECTEE AU GROUP_MA :
-C            --------------------
-                IF (ABS(D).LE.DIST) THEN
+C ---      SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A AU MOINS UN NOEUD
+C          -------------------------------------------------------------
+                IF (SELEC.EQ.'AU_MOINS_UN') THEN 
+C
+C ---            SI LE NOEUD COURANT EST DANS LA BANDE, ON AFFECTE
+C ---            LA MAILLE COURANTE A LA LISTE DE MAILLES QUI SERA
+C ---            AFFECTEE AU GROUP_MA :
+C                --------------------
+                  IF (ABS(D).LE.DIST) THEN
                      NBMA = NBMA + 1
                      ZI(IDLIMA+NBMA-1) = IMA
                      GOTO 10
+                  ENDIF
+C
+                ELSE IF ((SELEC.EQ.'TOUS').OR.(SELEC.EQ.'MAJORITE'))THEN
+C ---            SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A TOUT OU 
+C ---            MAJORITE, COMPTER LES NOMBRES DES NOEUDS D'UNE MAILLE
+C ---            DANS LA BANDE:
+C                -------------------------------------------------
+                  IF (ABS(D).LE.DIST) THEN
+                    NBNOD=NBNOD+1
+                  ENDIF                    
                 ENDIF
 C
  20        CONTINUE
+C           
+           IF(SELEC.EQ.'TOUS') THEN
+             IF(NBNOD.EQ.NBNO) THEN
+               NBMA = NBMA + 1
+               ZI(IDLIMA+NBMA-1) = IMA
+               GOTO 10
+             ENDIF
+           ENDIF 
+C
+           IF (SELEC.EQ.'MAJORITE') THEN     
+             IF(NBNOD.GE.(NBNO+1)/2) THEN
+               NBMA = NBMA + 1
+               ZI(IDLIMA+NBMA-1) = IMA     
+               GOTO 10
+             ENDIF
+           ENDIF
 C
  10   CONTINUE
 C

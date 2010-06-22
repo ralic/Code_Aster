@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 26/05/2010   AUTEUR FERNANDES R.FERNANDES 
+#@ MODIF compor1 Messages  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -328,18 +328,6 @@ Couplage: on ne fait pas dependre E, MU et ALPHA de la temperature T, on prend T
 
 61: _("""
 Couplage: on fait dependre E, MU et ALPHA de la temperature maximale Tmax, comme pour MAZARS
-"""),
-
-62: _("""
-L'orthotropie pour le comportement LMARC n'est disponible que pour la modélisation AXIS.
-(cf. R5.03.10). Or la modelisation choisie est <%(k1)s> .\n
-Les coefficients de la matrice d'anisotropie sont :
-   M(1,1)  : <%(r1).15E>
-   M(2,2)  : <%(r2).15E>
-   M(3,3)  : <%(r3).15E>
-   M(6,6)  : <%(r4).15E>
-L'orthotropie est à utiliser seulement en axi, si et seulement si les 
-coefficients sont donnés dans l'ordre (R,Z,T) et non (R,T,Z).
 """),
 
 63 : _("""
