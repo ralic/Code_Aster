@@ -1,4 +1,4 @@
-#@ MODIF table0 Messages  DATE 10/05/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF table0 Messages  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,5 +130,27 @@ faire l'intersection  ou l'union (opérateurs &, |).
 
 37 : _("""
    La table %(k1)s n'existe pas dans le résultat %(k2)s.
+"""),
+
+38 : _("""Champ %(k1)s inexistant à l'ordre %(i1)d .
+"""),
+
+39 : _("""
+Aucun numéro d'ordre associé à l'acces %(k1)s de valeur %(i1)d
+Veuillez vérifier vos données.
+"""),
+
+40 : _("""
+Aucun numéro d'ordre associé à l'acces %(k1)s de valeur %(r1)f
+Veuillez vérifier vos données.
+"""),
+
+41 : _("""
+Les mot-clés 'NOEUD' et 'GROUP_NO' ne sont pas autorisés pour
+les champs élémentaires (ELNO/ELGA).
+"""),
+
+42 : _("""
+Développement non réalisé pour les champs dont les valeurs sont complexes.
 """),
 }

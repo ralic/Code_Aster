@@ -8,7 +8,7 @@
       LOGICAL     CALLST
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 28/06/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        AB(3),AC(3),AP(3),VN(3),VNT(3),BC(3)
       REAL*8        A(3),P(3),B(3),C(3),M(3),PM(3),VNREF(3)
       REAL*8        NORME,PS,PS1,PS2,D
-      LOGICAL       MA2FF
+      LOGICAL       MA2FF,PREM
       CHARACTER*8   TYPMA
       CHARACTER*19  MAI
       CHARACTER*8   NOMAIL
@@ -78,6 +78,7 @@ C     DES MAILLES DE FISSURE
 C
 C     BOUCLE SUR TOUS LES NOEUDS P DU MAILLAGE
       DO 11 INO=1,NBNO
+              
         P(1)=ZR(JCOOR-1+3*(INO-1)+1)
         P(2)=ZR(JCOOR-1+3*(INO-1)+2)
         P(3)=ZR(JCOOR-1+3*(INO-1)+3)
@@ -87,6 +88,7 @@ C       -------------
         DMIN=R8MAEM()
 C       RECHERCHE DE LA MAILLE LA PLUS PROCHE :
 C       BOUCLE SUR NOEUDS DE MAFIS
+        PREM=.TRUE.
         DO 2 IMAFIS=1,NBMAF
           NMAABS=ZI(JDLIMA-1+(IMAFIS-1)+1)
           NBNOMA=ZI(JCONX2+NMAABS) - ZI(JCONX2+NMAABS-1)
@@ -104,14 +106,14 @@ C         BOUCLE SUR LE NOMBRE DE TRIANGLES DE LA MAILLE
             A(3)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+3)
 
             INOMA=2
-            IF (ITRI.EQ.2) INOMA=4
+            IF (ITRI.EQ.2) INOMA=3
             NUNO(INOMA)=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
             B(1)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+1)
             B(2)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+2)
             B(3)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+3)
 
             INOMA=3
-            IF (ITRI.EQ.3) INOMA=4
+            IF (ITRI.EQ.2.OR.ITRI.EQ.3) INOMA=4
             NUNO(INOMA)=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
             C(1)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+1)
             C(2)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+2)
@@ -158,49 +160,54 @@ C           SI M EST DS LE SECTEUR 3
               EPS2=1.D0-EPS1
             END IF
 
-C          ON FINIT DE RAMENER LES POINTS ENCORE DEHORS
-           IF (EPS1.LT.0.D0) EPS1=0.D0
-           IF (EPS2.LT.0.D0) EPS2=0.D0
-           IF (EPS1.GT.1.D0) EPS1=1.D0
-           IF (EPS2.GT.1.D0) EPS2=1.D0
+C           ON FINIT DE RAMENER LES POINTS ENCORE DEHORS
+            IF (EPS1.LT.0.D0) EPS1=0.D0
+            IF (EPS2.LT.0.D0) EPS2=0.D0
+            IF (EPS1.GT.1.D0) EPS1=1.D0
+            IF (EPS2.GT.1.D0) EPS2=1.D0
 
-           DO 212 I=1,3
-             M(I)=A(I)+EPS1*AB(I)+EPS2*AC(I)
-             PM(I)=M(I)-P(I)
- 212       CONTINUE
+            DO 212 I=1,3
+              M(I)=A(I)+EPS1*AB(I)+EPS2*AC(I)
+              PM(I)=M(I)-P(I)
+ 212        CONTINUE
 
-C          CALCUL DE LA DISTANCE PM
-           D=PADIST(3,P,M)
+C           CALCUL DE LA DISTANCE PM
+            D=PADIST(3,P,M)
 
-C          ON VÉRIFIE QUE CETTE NORMALE EST ORIENTÉE COMME LA
-C          PRÉCENDENTE, À PART POUR LE 1ER TRIANGLE DE LA 1ER MAILLE!
-           IF ((IMAFIS.NE.1) .OR. (ITRI.NE.1))THEN
-             PS=DDOT(3,VN,1,VNREF,1)
-             IF (PS.LT.0) VN(1)=-1*VN(1)
-             IF (PS.LT.0) VN(2)=-1*VN(2)
-             IF (PS.LT.0) VN(3)=-1*VN(3)
-           END IF
+C           ON VÉRIFIE QUE CETTE NORMALE EST ORIENTÉE COMME LA
+C           PRÉCENDENTE, À PART POUR LE 1ER TRIANGLE DE LA 1ER MAILLE!
+            IF (.NOT.PREM)THEN
+              PS=DDOT(3,VN,1,VNREF,1)
+              IF (PS.LT.0) then
+                VN(1)=-1*VN(1)
+                VN(2)=-1*VN(2)
+                VN(3)=-1*VN(3)
+              END IF
+            END IF
 
-C          ON GARDE CETTE NORMALE COMME RÉFÉR POUR LA MAILLE SUIVANTE
-           DO 213 I=1,3
-             VNREF(I)=VN(I)
- 213       CONTINUE
+C           ON GARDE CETTE NORMALE COMME RÉFÉR POUR LA MAILLE SUIVANTE
+            DO 213 I=1,3
+              VNREF(I)=VN(I)
+ 213        CONTINUE
+            PREM=.FALSE.
 
-C          MISE EN MÉMOIRE DE LSN POUR LA MAILLE LA PLUS PROCHE
-           IF (D.LT.DMIN) THEN
-             DMIN=D
-             XLN=DDOT(3,VN,1,PM,1)
-           END IF
+C           MISE EN MÉMOIRE DE LSN POUR LA MAILLE LA PLUS PROCHE
+            IF (D.LT.DMIN) THEN
+              DMIN=D
+              XLN=DDOT(3,VN,1,PM,1)
+            END IF
 
- 21      CONTINUE
 
- 2     CONTINUE
+ 21       CONTINUE
 
-       ZR(JLNSV-1+(INO-1)+1)=XLN
-       ZL(JLNSL-1+(INO-1)+1)=.TRUE.
+ 2      CONTINUE
 
-C      CALCUL DE LST
-C      -------------
+        ZR(JLNSV-1+(INO-1)+1)=XLN
+        ZL(JLNSL-1+(INO-1)+1)=.TRUE.
+
+
+C       CALCUL DE LST
+C       -------------
 
         IF (.NOT.CALLST) THEN
           XLT = -1.D0

@@ -1,6 +1,6 @@
       SUBROUTINE OP0033(IER   )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/06/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -291,6 +291,8 @@ C          3 ON FINIT LE PAS DE TEMPS
            GOTO 540
          ELSEIF (ACTION.EQ.3) THEN
            GOTO 550
+         ELSEIF (ACTION.EQ.0) THEN
+           GOTO 550
          ENDIF
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C
@@ -329,7 +331,7 @@ C        PAS DE GESTION DE DELTA_GRANDEUR ACTUELLEMENT
 C 
 C --- DERNIER INSTANT DE CALCUL ? -> ON SORT DE STAT_NON_LINE
 C
-      IF (FINPAS) THEN
+      IF (FINPAS.OR.(ACTION.EQ.0)) THEN
         GOTO 900
       ENDIF
       GOTO 200

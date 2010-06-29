@@ -1,21 +1,21 @@
-#@ MODIF algorith8 Messages  DATE 15/03/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF algorith8 Messages  DATE 28/06/2010   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -132,6 +132,10 @@ cata_msg = {
  la loi de couplage est incorrecte pour une modélisation HHM
 """),
 
+46 : _("""
+ il y a une loi de mécanique dans la relation HH
+"""),
+
 47 : _("""
  loi de mécanique incompatible avec une modélisation HHM
 """),
@@ -144,20 +148,12 @@ cata_msg = {
  la loi de couplage est incorrecte pour une modélisation THH
 """),
 
-50 : _("""
- loi de mécanique incompatible avec une loi THH
-"""),
-
 51 : _("""
  il y a une loi de mecanique dans la relation THV
 """),
 
 52 : _("""
  la loi de couplage est incorrecte pour une modélisation THV
-"""),
-
-53 : _("""
- loi de mécanique incompatible avec une loi THV
 """),
 
 54 : _("""
@@ -176,14 +172,18 @@ cata_msg = {
  Loi de mécanique incompatible avec une modélisation THHM
 """),
 
+58 : _("""
+ la loi de couplage est incorrecte pour une modélisation HH
+"""),
+
 61 : _("""
  Il manque le séchage de référence (AFFE_MATERIAU/AFFE_VARC/VALE_REF)
 """),
 
 65 : _("""
-Arret suite à l'échec de l'intégration de la loi de comportement. 
+Arret suite à l'échec de l'intégration de la loi de comportement.
    Verifiez vos paramètres, la cohérence des unités.
-   Essayez d'augmenter ITER_INTE_MAXI. 
+   Essayez d'augmenter ITER_INTE_MAXI.
 """),
 
 66 : _("""

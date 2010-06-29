@@ -1,10 +1,10 @@
       SUBROUTINE ACEARP(NOMA,NOMO,LMAX,NOEMAF,NBOCC,IVR,IFM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT          NONE
       INTEGER           IFM,LMAX,NOEMAF,NBOCC,IVR(*)
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/10/2009   AUTEUR DEVESA G.DEVESA 
+C MODIF MODELISA  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,9 +49,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER      NBCAR,NBVAL,NRD
       PARAMETER    ( NBCAR = 100 , NBVAL = 12 , NRD = 2 )
-      INTEGER      JDC(3), JDV(3), IBID,NIV,IR
+      INTEGER      JDC(3), JDV(3), IBID,NIV,IR,IUNITE
       INTEGER      JDCINF,  JDVINF
+      INTEGER      I,IAMTO,IER,II,IN,INBN,INO,INOE,IOC,IREP,IREPN,IREPV
+      INTEGER      IRGNO,IRGTO,ISYM,ITBMP,ITBNO,ITROU,IUNIFI,IV
+      INTEGER      IXCI,IXCKMA,IXNW,J,JD,JDDI,JDLS,JDNW,JJ,JN,K,KK
+      INTEGER      L,LDGM,LDNM,LOKM,LOREP,NBMTRD,NBNMA
+      INTEGER      NBNO,NBNOEU,NBORM,NC,NCAR,NCARAC,NCMP
+      INTEGER      NDIM,NG,NGP,NMA,NREP,NUMNOE,NVAL
+
       REAL*8       VAL(NBVAL), ETA, VALE(6),RIROT(3)
       CHARACTER*1  KMA(3), K1BID
       CHARACTER*8  NOMNOE, NOGP, NOMMAI, K8BID, NOMU, CAR(NBCAR)
@@ -60,6 +68,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 VREPXV, VREPXN
       CHARACTER*24 TMPND(3), TMPVD(3)
       CHARACTER*24 TMPDIS, MLGNNO, MLGNMA, TMCINF, TMVINF, MODNEM
+
 
       LOGICAL      TRANSL,TRAROT,EURPLX,LBID
       DATA REPDIS  /'GLOBAL          ','LOCAL           '/
@@ -193,13 +202,16 @@ C        POUR EUROPLEXUS
          IF ( LBID .NEQV. EURPLX ) THEN
             CALL U2MESI('F','MODELISA9_93',1,IOC)
          ENDIF
+C        UNITE POUR IMPRIMER LES VALEUR DES DISCRETS
+         CALL GETVIS('RIGI_PARASOL','UNITE',IOC,1,1,IBID,IER)
+         IUNITE = -1
+         IF ( IER .NE. 0 ) THEN
+            IUNITE = IBID
+         ENDIF
 C
          IF (NCAR.GT.0) NCARAC = NCAR
-         IF (IVR(3).EQ.1) THEN
-            WRITE(IFM,1000) REP,IOC
- 1000       FORMAT(/,3X,
-     &            '<DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',
-     &                       '(REPERE ',A6,'), OCCURRENCE ',I4)
+         IF ( IUNITE .GT. 0) THEN
+            WRITE(IUNITE,1000) REP,IOC
          ENDIF
 C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
@@ -306,40 +318,40 @@ C               IFR = IUNIFI('RESULTAT')
                ELSE
                   LOREP  = 5
                ENDIF
-               IF ( NIV .EQ. 2 ) THEN
+               IF ( IUNITE .GT. 0 ) THEN
                   IF ( TRANSL ) THEN
-                     WRITE(IFM,1005) CAR(NC)(1:LOKM)
+                     WRITE(IUNITE,1005) CAR(NC)(1:LOKM)
                   ELSE
-                     WRITE(IFM,1006) CAR(NC)(1:LOKM),
+                     WRITE(IUNITE,1006) CAR(NC)(1:LOKM),
      &                               RIROT(1),RIROT(2),RIROT(3)
                   ENDIF
                ENDIF
 C
-               IF ( NIV .EQ. 2 ) THEN
+               IF ( IUNITE .GT. 0 ) THEN
                   DO 27 I = 1,NBNO
                      IV = 1
                      JD = ITBMP + I - 1
                      JN = ITBNO + I - 1
                      IF ( NBNOEU .EQ. 1 ) THEN
                         IF ( TRANSL ) THEN
-                           WRITE(IFM,1010) 'NOEUD',ZK8(JN),
+                           WRITE(IUNITE,1010) 'NOEUD',ZK8(JN),
      &                           CAR(NC)(1:LOKM),
      &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
      &                           REPDIS(IREP)(1:LOREP)
                         ELSE
-                           WRITE(IFM,1011) 'NOEUD',ZK8(JN),
+                           WRITE(IUNITE,1011) 'NOEUD',ZK8(JN),
      &                           CAR(NC)(1:LOKM),
      &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
      &                           REPDIS(IREP)(1:LOREP)
                         ENDIF
                      ELSE
                         IF ( TRANSL ) THEN
-                           WRITE(IFM,1010) 'MAILLE',ZK8(JD),
+                           WRITE(IUNITE,1010) 'MAILLE',ZK8(JD),
      &                           CAR(NC)(1:LOKM),
      &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
      &                           REPDIS(IREP)(1:LOREP)
                         ELSE
-                           WRITE(IFM,1011) 'MAILLE',ZK8(JD),
+                           WRITE(IUNITE,1011) 'MAILLE',ZK8(JD),
      &                           CAR(NC)(1:LOKM),
      &                           (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
      &                           REPDIS(IREP)(1:LOREP)
@@ -347,7 +359,7 @@ C
                      ENDIF
  27               CONTINUE
                ENDIF
-                  
+
                DO 28 I = 1,NBNO
                   IV = 1
                   JD = ITBMP + I - 1
@@ -387,25 +399,23 @@ C
                ELSE
                   LOREP  = 5
                ENDIF
-               IF ( NIV .EQ. 2 ) THEN
+               IF ( IUNITE .GT. 0 ) THEN
                   IF ( TRANSL ) THEN
-                     WRITE(IFM,1005) CAR(NC)(1:LOKM)
+                     WRITE(IUNITE,1005) CAR(NC)(1:LOKM)
                   ELSE
-                     WRITE(IFM,1006) CAR(NC)(1:LOKM),
+                     WRITE(IUNITE,1006) CAR(NC)(1:LOKM),
      &                               RIROT(1),RIROT(2),RIROT(3)
                   ENDIF
-               ENDIF
-               IF ( NIV .EQ. 2 ) THEN
                   DO 35 I = 1,NBNO
                      IV = 1
                      JD = ITBNO + I - 1
                      IF ( TRANSL ) THEN
-                        WRITE(IFM,1010) 'NOEUD',ZK8(JD),
+                        WRITE(IUNITE,1010) 'NOEUD',ZK8(JD),
      &                        CAR(NC)(1:LOKM),
      &                        (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
      &                        REPDIS(IREP)(1:LOREP)
                      ELSE
-                        WRITE(IFM,1011) 'NOEUD',ZK8(JD),
+                        WRITE(IUNITE,1011) 'NOEUD',ZK8(JD),
      &                        CAR(NC)(1:LOKM),
      &                        (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
      &                        REPDIS(IREP)(1:LOREP)
@@ -447,6 +457,10 @@ C
       ENDIF
 C
       CALL JEDEMA()
+
+ 1000 FORMAT(/,
+     &    ' <DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',
+     &    '(REPERE ',A6,'), OCCURRENCE ',I4)
  1005 FORMAT(/,' PAS DE REPARTITION EN ROTATION POUR DES ',A,/)
  1006 FORMAT(/,' RAIDEURS DE ROTATION A REPARTIR POUR DES ',A,/
      &        ,'  KRX: ',1PE12.5,' KRY: ',1PE12.5,' KRZ: ',1PE12.5,/)

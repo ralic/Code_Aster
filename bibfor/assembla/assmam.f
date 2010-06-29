@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,7 +99,7 @@ C-----------------------------------------------------------------------
       INTEGER NBLC,NBNOMX,NBNOSS,NBRESU,NBSD
       INTEGER NCMP,NBVEL,NEC,NEL,NEQU,NBPROC
       INTEGER NIV,NLILI,NMXCMP,NNOE,JPTVOI,JELVOI
-      INTEGER NUGD,RANG,IEQ,IDIA,ELLAGR,JREPE,ITYPEL,IMATD
+      INTEGER NUGD,RANG,IEQ,IDIA,ELLAGR,JREPE,ITYPEL,IMATD,IEXI
 
 C-----------------------------------------------------------------------
 C     FONCTIONS FORMULES :
@@ -685,6 +685,9 @@ C               -- MONITORING:
 C             BOUCLE SUR LES GRELS DU LIGREL
 C             ==============================
               DO 60 IGR=1,ZZNGEL(ILIMA)
+                CALL JAEXIN(JEXNUM(RESU//'.RESL',IGR),IEXI)
+                IF (IEXI.EQ.0) GOTO 60
+
                 CALL JEVEUO(RESU//'.DESC','L',JDESC)
                 MODE=ZI(JDESC+IGR+1)
                 IF (MODE.GT.0) THEN

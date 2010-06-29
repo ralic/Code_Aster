@@ -1,4 +1,4 @@
-# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PELLET J.PELLET
 # TITRE Validation de CREA_RESU/ASSE et AFFE_MATERIAU/AFFE_VARC/FONC_INST
 # zzzz223a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -20,7 +20,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='ZZZZ223A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NOM='ZZZZ223A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 #----------------------------------------------------------------------------------------------------------------
 # Ce test montre comment on peut faire un calcul thermo-mecanique dont le chargement
@@ -43,6 +43,7 @@ DEBUT(CODE=_F(NOM='ZZZZ223A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(
 #    U(t=1.3) = U(t=2.3) = U(t=4.3) = 16.
 #----------------------------------------------------------------------------------------------------------------
 
+epsi=1.e-13
 t1=0.7
 t2=0.3
 t3=1.5
@@ -84,10 +85,13 @@ ch2=THER_LINEAIRE( MODELE=MOTH, ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
 # Concatenation de ch1 et ch2  => intervalle [t3, t4]
 #---------------------------------------------------------
 t4=t3+t1+t2
+# On decale un tout petit peu la translation pour ch2, car sinon, l'evol_ther
+# a 2 numeros d'ordre differents pour t3+t1 (instant du recollement).
+# cette situation est en principe interdite et provoque une erreur si SDVERI='OUI'
 TEMPE=CREA_RESU(OPERATION='ASSE', TYPE_RESU='EVOL_THER',
       ASSE=(
         _F(RESULTAT=ch1, TRANSLATION=t3),
-        _F(RESULTAT=ch2, TRANSLATION=(t3+t1)),
+        _F(RESULTAT=ch2, TRANSLATION=(t3+t1+epsi)),
       ))
 #IMPR_RESU(RESU=_F(RESULTAT=TEMPE))
 
@@ -99,8 +103,6 @@ MOME=AFFE_MODELE(  MAILLAGE=MAIL,
                       AFFE=_F( TOUT = 'OUI', MODELISATION = 'D_PLAN', PHENOMENE = 'MECANIQUE'))
 
 
-epsi=1.e-13
-#LR8M=DEFI_LIST_REEL( DEBUT=0.5+epsi, INTERVALLE=_F(    JUSQU_A = 4.5+epsi,   PAS = 0.10) )
 LR8M=DEFI_LIST_REEL( DEBUT=0.5, INTERVALLE=_F(    JUSQU_A = 4.5,   PAS = 0.10) )
 
 
@@ -148,7 +150,11 @@ if 0 :
 #-----------------------------------------------------------
 U =CALC_ELEM(reuse=U ,  RESULTAT=U , OPTION='SIEF_ELGA_DEPL')
 U2=EXTR_RESU(RESULTAT=U, ARCHIVAGE=_F(NUME_ORDRE = (3,5,7,9),))
-U2=CALC_ELEM(reuse=U2,  RESULTAT=U2, OPTION='SIEF_ELNO_ELGA', NUME_ORDRE=(5,7,9))
+# on appelle 3 fois CALC_ELEM + MAILLE pour forcer la creation de 3 LIGREL differents
+# (validation de la fiche 15152)
+U2=CALC_ELEM(reuse=U2,  RESULTAT=U2, OPTION='SIEF_ELNO_ELGA', NUME_ORDRE=5, MAILLE='M1')
+U2=CALC_ELEM(reuse=U2,  RESULTAT=U2, OPTION='SIEF_ELNO_ELGA', NUME_ORDRE=7, MAILLE='M1')
+U2=CALC_ELEM(reuse=U2,  RESULTAT=U2, OPTION='SIEF_ELNO_ELGA', NUME_ORDRE=9, MAILLE='M1')
 U2=CALC_NO  (reuse=U2,  RESULTAT=U2, OPTION='SIEF_NOEU_ELGA', NUME_ORDRE=(5,7,9))
 
 U3=EXTR_RESU(          RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE = (5,9), CHAM_EXCLU = ('SIEF_NOEU_ELGA') ))
@@ -163,6 +169,6 @@ TEST_FICHIER(
 IMPR_CO(UNITE=18,NIVEAU=0, CONCEPT=_F(NOM=U2),)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=18)
 TEST_FICHIER(
-   FICHIER='./fort.18', VALE_K='90430490a6e9eda7102b18846402626a',
-   NB_VALE=75, VALE=3.9200012600000e+02,   REFERENCE='NON_REGRESSION', PRECISION=1.E-9 )
+   FICHIER='./fort.18', VALE_K='e1498ee7bc03d696e40731aa4b161cc8',
+   NB_VALE=95, VALE=4.4200012600000e+02,   REFERENCE='NON_REGRESSION', PRECISION=1.E-9 )
 FIN()

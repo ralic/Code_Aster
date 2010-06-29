@@ -1,5 +1,6 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE LINEAIRE)
+# sdll122a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -153,5 +154,61 @@ REFERENCE='NON_REGRESSION',PRECISION=1.E-6,CRITERE='ABSOLU'),
 
 ));
 
+
+# Test de CREA_TABLE/RESU sur des elements a sous-points
+TU1_1 = CREA_TABLE(RESU=_F(RESULTAT=U1,TOUT='OUI',NOM_CHAM='EFGE_NOEU_DEPL',TOUT_CMP='OUI'))
+
+PourTest = [
+   [ 1, 'N3', 'COOR_X',      5.0 ],
+   [ 1, 'N3', 'VZ',      -5000.0 ],
+   [ 1, 'N2', 'COOR_X',      2.5 ],
+   [ 1, 'N2', 'MFY',     12500.0 ],
+]
+for numordre,noeud,npara,lavale in PourTest:
+   TEST_TABLE(
+      TABLE=TU1_1,
+      FILTRE=(
+         _F(NOM_PARA='NUME_ORDRE', CRIT_COMP='EQ', VALE_I= numordre),
+         _F(NOM_PARA='NOEUD',      CRIT_COMP='EQ', VALE_K= noeud),
+      ),
+      NOM_PARA=npara,VALE=lavale,REFERENCE='NON_REGRESSION',
+   )
+
+
+linst=DEFI_LIST_REEL(VALE=(0.0,1.0))
+U2=STAT_NON_LINE(
+   MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
+   INCREMENT=_F(LIST_INST=linst),
+   COMP_INCR=_F(TOUT='OUI',RELATION='MULTIFIBRE',),
+   EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),
+)
+
+TU2_1 = CREA_TABLE(RESU=_F(RESULTAT=U2,TOUT='OUI',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI'))
+
+PourTest = [
+   [ 1, 'M1', 1,   1, 'COOR_X',   1.97168783649 ],
+   [ 1, 'M1', 1,   1, 'SIXX',     617514.30936  ],
+   [ 1, 'M1', 1,  66, 'COOR_X',   1.97168783649 ],
+   [ 1, 'M1', 1,  66, 'SIXX',    -83555.8906972 ],
+   [ 1, 'M2', 2,  23, 'COOR_X',   3.02831216351 ],
+   [ 1, 'M2', 2,  23, 'SIXX',     527053.638562 ],
+   [ 1, 'M2', 2, 138, 'COOR_X',   3.02831216351 ],
+   [ 1, 'M2', 2, 138, 'SIXX',    -603704.741154 ],
+]
+for numordre,maille,point,spoint,npara,lavale in PourTest:
+   TEST_TABLE(
+      TABLE=TU2_1,
+      FILTRE=(
+         _F(NOM_PARA='NUME_ORDRE', CRIT_COMP='EQ', VALE_I=  numordre),
+         _F(NOM_PARA='MAILLE',     CRIT_COMP='EQ', VALE_K=  maille),
+         _F(NOM_PARA='POINT',      CRIT_COMP='EQ', VALE_I=  point),
+         _F(NOM_PARA='SOUS-POINT', CRIT_COMP='EQ', VALE_I=  spoint),
+      ),
+      NOM_PARA=npara,VALE=lavale,REFERENCE='NON_REGRESSION',
+   )
+
+#IMPR_TABLE(TABLE=TU1_1)
+#IMPR_RESU(RESU=_F(RESULTAT=U2))
+#IMPR_TABLE(TABLE=TU2_1)
 
 FIN();

@@ -3,7 +3,7 @@
       IMPLICIT REAL*8(A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C ---------------------------------------------------------------------
       CHARACTER*24 KMAILA,K24PRN,KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,
      &             KNEQUA,KVALE,NOMOPT,K24B
       CHARACTER*1 K1BID
-      INTEGER ADMODL,LCMODL,NBEC,EPDMS,JPDMS
+      INTEGER ADMODL,LCMODL,NBEC,EPDMS,JPDMS,IEXI
       LOGICAL LDIST
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
@@ -292,6 +292,9 @@ C     ------------------------
             CALL JENONU(JEXNOM(KVELIL,NOMLI),ILIVE)
             CALL JENONU(JEXNOM(KNULIL,NOMLI),ILINU)
             DO 70 IGR=1,ZI(IADLIE+3*(ILIVE-1))
+              CALL JAEXIN(JEXNUM(RESU(1:19)//'.RESL',IGR),IEXI)
+              IF (IEXI.EQ.0) GOTO 70
+
               CALL JEVEUO(RESU(1:19)//'.DESC','L',IDDESC)
               MODE=ZI(IDDESC+IGR+1)
               IF (MODE.GT.0) THEN

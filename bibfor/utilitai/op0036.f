@@ -3,7 +3,7 @@
       INTEGER             IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      IOCC,IBID,NI,NR,NK,I,J,IR,JVALE,JP,NDIM,JT
       INTEGER      NOCC,NOCC2,NINDI,III,DIMMAX,JY,JLNG,JPROL,JD
       INTEGER      JTRAV1,JTRAV2,JTRAV3,JTRAV4,JTRAV5,LXLGUT,NPAR
-      INTEGER      IRET,IVCR,IVCI,LONGCO
+      INTEGER      IRET,IVCR,IVCI,LONGCO,NOCC3
       REAL*8       RBID
       COMPLEX*16   CBID
       CHARACTER*1  KBID
@@ -66,6 +66,8 @@ C     ------------------------------------------------------------------
       CALL GETRES(RESU,CONCEP,NOMCMD)
       CALL GETFAC('LISTE',NOCC)
       CALL GETFAC('FONCTION',NOCC2)
+      CALL GETFAC('RESU',NOCC3)
+
       INDIC  ='&&OP0036.IND'
       TRAV   ='&&OP0036.VAL'
       LDBL   ='&&OP0036.DBL'
@@ -280,6 +282,14 @@ C
             CALL TBAJCO(RESUL1,NMPARF(2),'R',NDIM/2,IBID,
      &                  ZR(JVALE+NDIM/2),CBID,KBID,'R',-1)
           ENDIF
+C
+C     ==============
+C --- CAS : RESU
+C     ==============
+      ELSEIF(NOCC3.NE.0)THEN
+C
+          CALL CTRESU(RESU)
+C
       ENDIF
 C
 C --- FIN BOUCLE SUR LES PASSAGES POUR LA SENSIBILITE

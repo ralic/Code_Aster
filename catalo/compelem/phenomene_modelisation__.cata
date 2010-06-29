@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
+%& MODIF COMPELEM  DATE 28/06/2010   AUTEUR MEUNIER S.MEUNIER 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -110,7 +110,7 @@ PHENOMENE_MODELISATION__
 %  TUYAU  =  'OUI' :  l'élément est un élément de "tuyau".
 %  GRILLE =  'OUI' :  l'élément est un élément de "grille".
 %  THM    =  'OUI' :  l'élément est un élément de "THM" ce qui veut dire :
-%                     - le responsable est C. Chavant
+%                     - la responsable est S. Granet
 %                     - il relève de r7.01.10
 %                     - Il peut définir un coefficient de dilation =f(TEMP) bien que la
 %                       température ne soit pas une variable de commande (mais un ddl)
@@ -1001,7 +1001,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ THM_D_PLAN_SE3
 
        MODELISATION__ 'D_PLAN_THVD'      DIM__ 2 2   CODE__ 'DG3'
-              ATTRIBUT__  D_PLAN=OUI
+              ATTRIBUT__  THM=OUI  D_PLAN=OUI
               MAILLE__ QUAD8     ELEMENT__ THV_DPQ8D
               MAILLE__ TRIA6     ELEMENT__ THV_DPTR6D
               MAILLE__ SEG3      ELEMENT__ THV_D_PLAN_SE3

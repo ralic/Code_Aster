@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 28/06/2010   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ CALC_POINT_MAT=OPER(nom="CALC_POINT_MAT",op=33,sd_prod=table_sdaster,reentrant='
      EPXY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
      EPXZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
      EPYZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-
+     
      SIGM_INIT=FACT(statut='f',
             SIXX = SIMP(statut='f',typ='R',max=1,defaut=0.0E+0),
             SIYY = SIMP(statut='f',typ='R',max=1,defaut=0.0E+0),
@@ -77,6 +77,27 @@ CALC_POINT_MAT=OPER(nom="CALC_POINT_MAT",op=33,sd_prod=table_sdaster,reentrant='
      VARI_INIT=FACT(statut='f',
             VALE = SIMP(statut='o',typ='R',max='**'),
                        ),
+     MATR_C1=FACT(statut='f',max='**',
+           VALE          =SIMP(statut='o',typ='R',max=1, ),
+           NUME_LIGNE    =SIMP(statut='o',typ='I',max=1,val_min=1,val_max=6 ),
+           NUME_COLONNE  =SIMP(statut='o',typ='I',max=1,val_min=1,val_max=12 ),
+                              ),
+     MATR_C2=FACT(statut='f',max='**',
+           VALE          =SIMP(statut='o',typ='R',max=1, ),
+           NUME_LIGNE    =SIMP(statut='o',typ='I',max=1,val_min=1,val_max=6 ),
+           NUME_COLONNE  =SIMP(statut='o',typ='I',max=1,val_min=1,val_max=12 ),
+                              ),
+     VECT_IMPO=FACT(statut='f',max='**',
+           VALE          =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),max=1, ),
+           NUME_LIGNE    =SIMP(statut='o',typ='I',max=1,val_min=1,val_max=6 ),
+                              ),
       NB_VARI_TABLE  =SIMP(statut='f',typ='I',max=1,),
+      
+      ARCHIVAGE       =FACT(statut='f',
+       LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
+       INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
+       PAS_ARCH        =SIMP(statut='f',typ='I' ),
+       PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+                           ),
      );
 

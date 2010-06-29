@@ -1,0 +1,97 @@
+# MODIF  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
+# TITRE  COOR_ELGA POUR LES DISCRETS EN 2D ET 3D
+# zzzz266a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ266A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+mail3d=LIRE_MAILLAGE(UNITE=23)
+mail2d=LIRE_MAILLAGE(UNITE=22)
+
+model3d=AFFE_MODELE(
+   MAILLAGE=mail3d, AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='DIS_T',), )
+model2d=AFFE_MODELE(
+   MAILLAGE=mail2d, AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='2D_DIS_T',), )
+
+bidon=DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2,),)
+
+mater3d=AFFE_MATERIAU(
+   MAILLAGE=mail3d, AFFE=_F(TOUT='OUI', MATER=bidon,), )
+mater2d=AFFE_MATERIAU(
+   MAILLAGE=mail2d, AFFE=_F(TOUT='OUI', MATER=bidon,), )
+
+cara3d=AFFE_CARA_ELEM(
+   MODELE=model3d,
+   DISCRET=(
+      _F(CARA='K_T_D_N',GROUP_MA='DPOI1',VALE=(0.0,0.0,0.0),),
+      _F(CARA='K_T_D_L',GROUP_MA='DSEG', VALE=(0.0,0.0,0.0),),
+   )
+)
+
+cara2d=AFFE_CARA_ELEM(
+   MODELE=model2d,
+   DISCRET_2D=(
+      _F(CARA='K_T_D_N',GROUP_MA='DPOI1',VALE=(0.0,0.0),),
+      _F(CARA='K_T_D_L',GROUP_MA='DSEG', VALE=(0.0,0.0),),
+   )
+)
+
+coor3d=CALC_CHAM_ELEM(MODELE=model3d, CARA_ELEM=cara3d ,CHAM_MATER=mater3d, OPTION='COOR_ELGA',)
+coor2d=CALC_CHAM_ELEM(MODELE=model2d, CARA_ELEM=cara2d ,CHAM_MATER=mater2d, OPTION='COOR_ELGA',)
+
+#IMPR_RESU(RESU=_F(CHAM_GD=coor3d,),)
+#IMPR_RESU(RESU=_F(CHAM_GD=coor2d,),)
+
+
+PourTest = [
+   ['M1',  1,  1.00,  0.00,  0.00,  0.0],
+   ['M2',  1,  2.00,  2.00,  8.00,  0.0],
+   ['M3',  1,  3.00,  2.85,  7.00,  0.0],
+   ['M4',  1,  4.00,  5.71,  3.00,  0.0],
+   ['M5',  1,  1.00,  3.00,  4.30,  0.0],
+   ['M5',  2,  1.00,  3.50,  4.35,  0.0],
+]
+for maille,point,X,Y,Z,W in PourTest:
+   TEST_RESU(
+      CHAM_ELEM=(
+         _F(CHAM_GD = coor3d, MAILLE = maille, POINT = point, NOM_CMP = 'X',VALE=X , REFERENCE='ANALYTIQUE'),
+         _F(CHAM_GD = coor3d, MAILLE = maille, POINT = point, NOM_CMP = 'Y',VALE=Y , REFERENCE='ANALYTIQUE'),
+         _F(CHAM_GD = coor3d, MAILLE = maille, POINT = point, NOM_CMP = 'Z',VALE=Z , REFERENCE='ANALYTIQUE'),
+         _F(CHAM_GD = coor3d, MAILLE = maille, POINT = point, NOM_CMP = 'W',VALE=W , REFERENCE='ANALYTIQUE'),
+      )
+   )
+
+PourTest = [
+   ['M1',  1,  1.00,  0.00,  0.0],
+   ['M2',  1,  2.00,  2.00,  0.0],
+   ['M3',  1,  3.00,  2.85,  0.0],
+   ['M4',  1,  4.00,  5.71,  0.0],
+   ['M5',  1,  1.00,  3.00,  0.0],
+   ['M5',  2,  2.00,  3.50,  0.0],
+]
+for maille,point,X,Y,W in PourTest:
+   TEST_RESU(
+      CHAM_ELEM=(
+         _F(CHAM_GD = coor2d, MAILLE = maille, POINT = point, NOM_CMP = 'X',VALE=X , REFERENCE='ANALYTIQUE'),
+         _F(CHAM_GD = coor2d, MAILLE = maille, POINT = point, NOM_CMP = 'Y',VALE=Y , REFERENCE='ANALYTIQUE'),
+         _F(CHAM_GD = coor2d, MAILLE = maille, POINT = point, NOM_CMP = 'W',VALE=W , REFERENCE='ANALYTIQUE'),
+      )
+   )
+
+FIN()

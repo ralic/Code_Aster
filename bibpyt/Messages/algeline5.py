@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 23/06/2009   AUTEUR SELLENET N.SELLENET 
+#@ MODIF algeline5 Messages  DATE 29/06/2010   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,6 +99,13 @@ cata_msg={
 
 18: _("""
   a une norme d'erreur de  %(r1)f  supérieure au seuil admis  %(r2)f
+  
+  Conseil: Si vous utiliser la méthode 'TRI_DIAG' ou 'SORENSEN' vous
+  pouvez améliorer cette norme en:
+    - augmentant la valeur de COEF_DIM_ESPACE (par défaut valeur 4 pour TRI_DIAG
+      et 2 pour SORENSEN),
+    - réduire le nombre de valeurs propres recherchées (NMAX_FREQ ou taille de
+     la BANDE).
 """),
 
 19: _("""

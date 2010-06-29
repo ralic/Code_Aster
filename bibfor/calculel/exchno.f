@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,18 +100,16 @@ C     -------------------------
       MODLOC=IAMLOC-1+ZI(ILMLOC-1+IMODAT)
       ITYPLO=ZI(MODLOC-1+1)
       DEBUGR=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+5)
+      LGCATA=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+2)
 
+      CALL ASSERT(ITYPLO.LT.4)
 
 C     1-  CAS: CHNO -> ELGA :
 C     -----------------------
-C     CE CAS ITYPLO=3 N EST PREVU : DEVELOPPEMENT A FAIRE ...
+C     LE CAS ITYPLO=3 N EST PAS PREVU : DEVELOPPEMENT A FAIRE ...
       CALL ASSERT(ITYPLO.NE.3)
 
-C     2-  CAS: CHNO -> ASSE :
-C     -----------------------
-      CALL ASSERT(ITYPLO.LT.4)
-
-C     3-  CAS: CHNO -> ELNO :
+C     2-  CAS: CHNO -> ELNO :
 C         CAS: CHNO -> ELEM (MOYENNE)
 C     --------------------------------
       IF ((ITYPLO.EQ.2) .OR. (ITYPLO.EQ.1)) THEN
@@ -122,7 +120,7 @@ C     --------------------------------
         ENDIF
 
 
-C       4.1 ON CHERCHE NNO SUR LE 1ER ELEMENT :
+C       2.1 ON CHERCHE NNO SUR LE 1ER ELEMENT :
 C       ---------------------------------------
         IMA=NUMAIL(IGR,1)
         CALL ASSERT(IMA.NE.0)
@@ -133,7 +131,7 @@ C       ---------------------------------------
         ENDIF
 
 
-C       4.2 ON RECUPERE LE DEBUT DU DESCRIPTEUR GRANDEUR :
+C       2.2 ON RECUPERE LE DEBUT DU DESCRIPTEUR GRANDEUR :
 C       --------------------------------------------------
         NBPT=ZI(MODLOC-1+4)
         NBPT2=MOD(NBPT,10000)
@@ -151,11 +149,10 @@ C       .NOT.MOYENN => (NBPT2=NNO)
         CALL ASSERT(MOYENN .OR. (NBPT2.EQ.NNO))
 
 
-C       4.3 SI MOYENN, IL FAUT METTRE A ZERO LE CHAMP LOCAL
+C       2.3 SI MOYENN, IL FAUT METTRE A ZERO LE CHAMP LOCAL
 C           (POUR POUVOIR CUMULER)
 C       --------------------------------------------------
         IF (MOYENN) THEN
-          LGCATA=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+2)
           NCMP=LGCATA
           IF (TYPEGD.EQ.'R') THEN
             IF (LPARAL) THEN
@@ -200,6 +197,12 @@ C        -------------------------------------------------------
           LONG=-NUM
           DEB2=DEBUGR
           DO 90,IEL=1,NBELGR
+            IF (LPARAL) THEN
+              IF (.NOT.ZL(JPARAL-1+IEL)) THEN
+                DEB2=DEB2+LGCATA
+                GOTO 90
+              ENDIF
+            ENDIF
             IMA=NUMAIL(IGR,IEL)
             CALL ASSERT(IMA.NE.0)
             DO 80 INO=1,NNO
@@ -232,6 +235,12 @@ C        ------------------------------------
           PRNO2=ZI(IACHII-1+11*(IICHIN-1)+9)
           DEB2=DEBUGR
           DO 110,IEL=1,NBELGR
+            IF (LPARAL) THEN
+              IF (.NOT.ZL(JPARAL-1+IEL)) THEN
+                DEB2=DEB2+LGCATA
+                GOTO 110
+              ENDIF
+            ENDIF
             IMA=NUMAIL(IGR,IEL)
             CALL ASSERT(IMA.NE.0)
             DO 100 INO=1,NNO
@@ -258,7 +267,6 @@ C        ------------------------------------
 
 
         IF (MOYENN) THEN
-          LGCATA=ZI(IAWLO2-1+5*(NBGR*(IPARG-1)+IGR-1)+2)
           NCMP=LGCATA
           IF (TYPEGD.EQ.'R') THEN
             IF (LPARAL) THEN

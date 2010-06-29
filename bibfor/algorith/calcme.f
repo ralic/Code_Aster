@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 10/05/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 28/06/2010   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -122,6 +122,7 @@ C --- RECUPERATION OU NON DE LA PRESSION DE GAZ
 C ======================================================================
       YAPRE2 = .FALSE.
       IF ((THMC.EQ.'GAZ').OR.(THMC.EQ.'LIQU_VAPE_GAZ').OR.
+     & (THMC.EQ.'LIQU_AD_GAZ').OR.
      &    (THMC.EQ.'LIQU_GAZ').OR.(THMC.EQ.'LIQU_AD_GAZ_VAPE'))THEN
                 YAPRE2 = .TRUE.
       ENDIF

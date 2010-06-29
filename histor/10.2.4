@@ -1,0 +1,1017 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 29/06/2010 - 08:46:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014921 DU 2010-04-08 12:39:02
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   probleme de calcul avec MODE_ITER_SIMULT
+FONCTIONNALITE
+   PROBLEME
+   ========
+     Ce calcul modal plante sur Calibre 5 et pas sur Bull
+   
+   ANALYSE
+   =======
+   PB 1
+   ----
+     Le calcul plante lors de l'appel à la BLAS ZGEMM qui fait 
+   des produits matrice/matrice en complexe double précision.
+   Avec la même version des BLAS (MKL 9.1.023) on a un 
+   comportement différent suivant les plate-formes:
+            sur Bull: cela marche
+            sur Calibre 5: ça plante
+   qqes soient les versions d'Aster: NEW10 ou STA10.
+   Comme on n'a pas la main sur ces librairies (par ailleurs il 
+   y'a plusieurs fiches d'anomalie identifiées sur le site 
+   d'intel concernant ZGEMM; aucune n'est corrigée) je propose
+   deux solutions palliatives:
+      - utiliser la Bull,
+      - en local, construire une version surchargée d'Aster avec
+   le source originale de la BLAS (mais avec cette version non 
+   optimisée on perd un peu en performance CPU). Je joint le 
+   patch à la fiche corrigée.
+   
+   PB 2
+   ====
+     Dans le .comm fourni, il y'a un appel à MODE_ITER_SIMULT 
+   pour un résoudre un pb modal quadratique. Les modes calculés
+   sont de très mauvaise qualité (tellement qu'on débranche le
+   critère d'arrêt utilisé par défaut en post-traitement via
+   STOP_ERREUR='NON'): (temps elapsed=7s)
+       NORME D'ERREUR MOYENNE:  0.95783E+00
+   
+   Comme conseillé ds la doc, on peut améliorer grandement cette
+   qualité en augmentant la taille de l'espace de projection du 
+   solveur modal. Par défaut, avec Sorensen, il est de 2 fois le
+   nbre de modes recherchés (COEF_DIM_ESPACE=2). Sans que cela 
+   coûte trop cher, lorsqu'on a des pbs de précision comme ici,on 
+   peut doubler la taille de cet espace (via 
+   CALC_FREQ=_F(... COEF_DIM_ESPACE=4...).
+   Et on obtient cette fois  (temps elapsed=15s)
+   
+    NORME D'ERREUR MOYENNE:  0.11517E-06
+   
+   Avec CEOF_DIM_ESPACE=8 cela ne sert plus à rien (temps=36s)
+    NORME D'ERREUR MOYENNE:  0.11518E-06
+   Donc point trop n'en faut !
+   
+   IMPACT DOC
+   ==========
+   Mentionner plus clairement (page "quelques conseils..." comme 
+   ds les docs solveurs et //) les qqes potards à modifier pour:
+     - gagner en temps
+     -... en mémoire
+     - .. en précision
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.52.03
+VALIDATION
+   informatique,non-rxc3xa9gression
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 28/06/2010 - 18:46:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015042 DU 2010-05-07 07:24:42
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   LIRE_RESU format MED de SIGM_NOEU_DEPL, SIEF_NOEU_ELGA, VARI_NOEU_ELGA
+FONCTIONNALITE
+   Ajout dans LIRE_RESU/MED des champs
+   SIGM_NOEU_DEPL
+   SIEF_NOEU_ELGA
+   
+   
+   Ajout des lignes suivantes dans op0150
+             ELSE IF (NOCH.EQ.'SIGM_NOEU_DEPL') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'NOEU'
+             ELSE IF (NOCH.EQ.'SIEF_NOEU_ELGA') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'NOEU'
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013390 DU 2009-05-07 13:36:10
+TYPE evolution concernant Documentation (VERSION )
+TMA : CS
+TITRE
+   IMPR_RESU/RESTREINT :  nom des objets
+FONCTIONNALITE
+   Les modifications sont faites, documents dans l'application documentaire
+   
+   ==> Reprendre les commandes concernées de zzzz240a IMPR_RESU et LIRE_RESU
+   ==> Expliquer les &RESU1, &RESU2, .... &RESUn avec n< ??
+   ==> Comment sont fabriqués les noms des champs, pour ensuite pouvoir les utiliser dans
+   LIRE_RESU ?.
+   
+   Exemple de relecture d'un fichier MED, avec des objets restreint.
+   
+   -IMPR_RESU/'IDEAS'   (U7.05.01)
+   -IMPR_RESU/'CASTEM'  (U7.05.11)
+   -IMPR_RESU/'MED'     (U7.05.21)
+   -IMPR_RESU/'ENSIGHT' (U7.05.31)
+   
+   Ajout d'un bloc autour du mot clef RESTREINT pour ne l'avoir qu'avec le format MED.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.05.01,U7.05.11,U7.05.21,U7.05.31
+VALIDATION
+   perso
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012254 DU 2008-06-30 12:35:35
+TYPE evolution concernant Documentation (VERSION 9.3)
+TITRE
+   Poutre + STAT_NON_LINE + SIEF_ELGA : charge rxc3xa9partie
+FONCTIONNALITE
+   Modification faite dans la documentation AFFE_CHAR_MECA U4.44.01
+   
+   Ajout sous l'option PESANTEUR
+   
+   Il peut exister une différence entre la solution théorique du calcul du poids de la
+   structure et la solution EF. Cela est due à la discrétisation du problème.
+   
+   Lorsque le chargement PESANTEUR est utilisé lors d’un MECA_STATIQUE, Code_Aster calcule
+   les efforts aux nœuds en utilisant la matrice de raideur de l'élément et les déplacements
+   précédemment calculés (option  EFGE_ELNO_DEPL). On retrouve donc bien le poids de la
+   structure là où les conditions de blocages sont imposées.
+   
+   Si le chargement PESANTEUR est utilisé lors d’un STAT_NON_LINE, Code_Aster fait la somme
+   des contraintes aux nœuds à partir des contraintes aux points de Gauss SIEF_ELNO_ELGA. Et
+   cela ne donne pas la même chose que MECA_STATIQUE, car on si impose, lors d’un
+   STAT_NON_LINE, à un nœud à la fois des conditions de déplacement et d'effort (ici venant
+   de la pesanteur), ces efforts ne sont pas pris en compte. La seule façon de retrouver le
+   poids de la structure est :
+   - D'utiliser MECA_STATIQUE
+   - Lors d’une utilisation avec STAT_NON_LINE de faire en sorte que les éléments finis, sur
+   lesquels des conditions cinématiques sont imposées, soient d’une taille suffisamment
+   petite pour que leur poids soit négligeable devant celle de la structure totale.
+   - Lors d’une utilisation d’éléments de poutres avec un STAT_NON_LINE, une solution est de
+   dédoubler les nœuds sur lesquels la condition cinématique est imposée et de faire par
+   exemple une LIAISON_ELEM entre les 2 nœuds ou d’utiliser les discrets.
+   
+   
+   ==> 1 J (temps de modif doc + cas test pour debug)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.44.01
+VALIDATION
+   ...
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014108 DU 2009-10-27 12:23:13
+TYPE evolution concernant Code_Aster (VERSION 10.1)
+TITRE
+   AFFE_CARA_ELEM impression dans le fichier message
+FONCTIONNALITE
+   Ajouter le mot clef UNITE dans AFFE_CARA_ELEM/RIGI_PARA_SOL. 
+   
+   
+   Lorsque l'on utilise la commande AFFE_CARA_ELEM/RIGI_PARA_SOL/UNITE, il y a possibilité de
+   récupérer les valeurs affectées aux discrets dans un fichier.
+   Si l'utilisateur donne UNITE, l'impression est faite dans ce fichier sinon pas d'impression.
+   
+   Il ne faut plus utiliser INFO=2 pour faire cette impression.
+   
+   Doc modifiée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.42.01
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015138 DU 2010-06-01 08:40:15
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Discret POI1 et COOR_ELGA
+FONCTIONNALITE
+   Modifications pour que les tous les discrets sachent calculer COOR_ELGA sont seulement à
+   faire dans les catalogues.
+   
+   Ajout/modification dans MODE_LOCAL__
+   EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z       W)
+   
+   Ajout/modification dans OPTION__
+   ...COOR_ELGA...478...IN__...NGEOMER...PGEOMER
+   .....................OUT__..EGGEOP_R..PCOORPG
+   
+   Aucun discret n'a de points de Gauss. Toutes les grandeurs sont calculées aux nœuds.
+   La famille RIGI de tous les discrets est modifiée, pour les :
+   ...POI1, elle passe de FPG1 à NOEU
+   ...SEG2, elle passe de FPG2 a NOEU
+   
+   Catalogues modifiés :
+   gener_me2dt0.cata gener_me2dt1.cata gener_me2tr0.cata gener_me2tr1.cata
+   gener_medit0.cata gener_medit1.cata gener_medtr0.cata gener_medtr1.cata
+   
+   
+   Il n'y a pas de problème pour les câbles et barres, SEG2 avec RIGI=FPG1. Donc le
+   point est au milieu du segment.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013638 DU 2009-07-22 09:24:32
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   Tables à partir de ELGA et/ou ELNO
+FONCTIONNALITE
+   Enrichir l'opérateur CREA_TABLE pour permettre la création d'une table à partir
+   des valeurs d'un champ réel. Ce champ est soit extrait d'une SD Résultat soit fourni
+   directement à l'opérateur.
+   
+   Paramètres présents dans la table :
+   1) - si le champ est extrait de la SD RESULTAT:
+        RESULTAT, NOM_CHAMP, NUME_ORDRE (et eventuellement INST ou FREQ ou MODE),
+      - si le champ est fourni directement : CHAM_GD
+   2) les noms de composantes (exemple: DX, DY, V1, V2, SIXX, SIYY, ...)
+   3) les noms des:
+        - noeuds (NOEUD) pour les champs de type NOEU ou ELNO
+        - mailles (MAILLE) pour les champs de type ELNO ou ELGA
+      les numéros des:
+        - points (POINT) et sous-points (SOUS_POINT) pour les champs de type ELGA
+   4) leurs coordonnées (COOR_X COOR_Y et eventuellement COOR_Z) 
+   
+   
+   Doc       : CREA_TABLE U4.33.02 (elle est dans l'appli)
+   Cas tests :
+   sdll122a, modèle avec des éléments de poutre multi-fibres ==> sous-points
+   Ajout dans le cas test des CREA_TABLE et des TEST_TABLE sur des valeurs qui étaient déjà
+   testées dans des TEST_RESU.
+   zzz162a, calcul 2D (test ecriture fichier MED)
+   Ajout dans le cas test des CREA_TABLE et des TEST_TABLE sur des valeurs qui étaient déjà
+   testées dans des TEST_RESU.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.33.02
+VALIDATION
+   sdll122a,zzz162a
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015228 DU 2010-06-17 08:38:45
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   COOR_ELGA faux sur beaucoup d'xc3xa9lxc3xa9ments 1D (tous ?)
+FONCTIONNALITE
+   COOR_ELGA sur les éléments 1D
+   
+   L'argument PG de gedisc.f n'est pas bien dimensionné. Il doit avoir comme dimension
+   PG(NDIM+1, NPG) au lieu de PG(NDIM,NPG). Le calcul des coordonnées est donc faux.
+   
+   Tableau dans gedisc.f ==> PG(NDIM+1,NPG)
+   Modification de la déclaration des tableaux des subroutines qui appellent gedisc
+   ==> nmfi2d, te0206, nmfi3d
+   
+   Restitution en même temps que les fiches 15138, 13638. Elles sont toutes liées.
+   Cas tests zzzz266a
+   
+   Résultats faux depuis 8.3.12, dans le cas d'exploitation des COOR_ELGA sur des éléments
+   barre, cable, poutre.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.3.12
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015171 DU 2010-06-09 11:18:37
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   FPE pour discret POI1 et PETIT_REAC
+FONCTIONNALITE
+   Calcul vu sur le forum, on active PETIT_REAC sur un élément discret à 1 noeud.
+   ==> Floating Point Exception
+   
+   Correction : dans le TE0047
+   Si NOEUD=1 ==> Actualisation des coordonnées du noeud
+   Si NOEUD=2 ==> Actualisation des coordonnées des noeuds, calcul de la longueur
+   
+   Si NOEUD=1, la réactualisation n'a pas forcément un sens, mais cela ne plante plus et les
+   coordonnées sont réactualisées.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 28/06/2010 - 18:02:11
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015237 DU 2010-06-21 14:46:25
+TYPE express concernant Code_Aster (VERSION 10.2)
+TITRE
+   X-FEM : bug DEFI_FISS_XFEM orientation des mailles
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Bug dans le calcul de la level set normale (opérateur DEFI_FISS_XFEM)
+   pour la méthode par Projection (sur le groupe de mailles GROUP_MA_FISS).
+   
+   
+   
+   Solution :
+   ---------
+   
+   En effet, il y avait un bug dans xls3d.f lorsque l'on cherchait la distance d'un noeud à
+   un quadrangle.
+   Modification des orientations des facettes triangulaires divisant un quadrangle.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude fournie
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien     DATE 29/06/2010 - 10:32:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014483 DU 2010-01-22 17:48:38
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   Du bon usage de mgauss
+FONCTIONNALITE
+   Problème :
+   ------------
+   Pour résoudre AX=B avec des matrices A et B de taille 2*2 ou 3*3, on utilise la routine
+   mgauss qui passe par une factorisation LU. On propose, pour des raisons de clarté et de
+   performance, de regarder le comportement par l'inversion de la matrice et un produit
+   matrice-vecteur (matinv et promat)
+   
+   Solution :
+   -----------
+   On remplace la routine mgauss par matinv et promat afin d'améliorer le temps CPU.
+   
+   Les routines modifiées sont :
+   lceob2.f
+   meobg2.f
+   meobl2.f
+   dstci2.f
+   dstcis.f
+   op0056.f
+   nuainr.f
+   mmnewd.f
+   
+   Conclusion :
+   ------------
+   
+   Le fichier COMPARE-MAI-JUIN.xls, joint à la fiche, contient un bilan qui compare les
+   performances obtenus en mai et ceux obtenus en juin.
+   
+   On constate que les performances des cas-tests du mois de mai sont légèrement meilleures
+   que celles de juin (sauf pour le test le plus long miss08a).
+   
+   Mais les performances sur les tests de la base sont à peu près les mêmes finalement entre
+   mgauss et un produit matrice-vecteur. Il n'y a pas d'écarts significatifs entre les 2
+   méthodes. Les tests sont de toute façon tous très courts.
+   
+   On ne change donc pas l'utilisation dans ces routines de mgauss.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   18 tests fichier joint
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien     DATE 28/06/2010 - 16:05:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013891 DU 2009-09-17 10:57:24
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Arlequin : influence du paramxc3xa8tre PRECIT
+FONCTIONNALITE
+   Contexte
+   ========
+   
+   Dans le cadre des travaux d'A. Berard sur le transfert de champs, certaines techniques
+   relevant de la 
+   méthode Arlequin sont utilisées ; or, les résultats obtenus sont assez différents en
+   modifiant le paramètre PRECIT, 
+   présent dans la routine arlpar. À titre d'exemple, dans les TEST_RESU pour des tests
+   analytiques, on arrive à passer d'une erreur relative de 10^(-5) à 10^(-14).
+   
+   Diagnostic :
+   ============
+   
+   PRECIT est utilisé dans la méthode Arlequin pour brouiller les coordonnées des noeuds pour
+   éviter le cas de noeuds coïncidents. C'est un des nombreux potards de la méthode. J'ai
+   passé tous les tests de la base en choisissant 10^(-15),
+   10^(-10) et 10^(-8). J'obtiens quelques résultats NOOK pour les tests 2D, surtout en
+   non-régression, ce qui n'est pas très inquiétant à mon sens. Le problème est surtout que
+   le seul test 3D dont on dispose boucle indéfiniment. La valeur la plus faible que je
+   trouve et qui passe serait 10^(-6), ce qui ne nous avance pas beaucoup car la valeur
+   actuelle est 5*10^(-6) !
+   
+   Conséquence :
+   =============
+   
+   De plus, le développement de cette nouvelle méthode de projection pour les champs aux
+   noeuds, en utilisant au maximum les routines Arlequin, est annulé (cf fiche 13890). Elle
+   conduit en effet à des erreurs d'appariement. Pour corriger ces erreurs d'appariement, on
+   a décidé de passer par un script externe Salomé d'intersection de maillages
+   (CR-AMA-09.254). On n'utilise donc de toute façon plus le paramètre PRECIT, si la méthode
+   est développée un jour !
+   
+   On ne fait donc rien.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014667 DU 2010-02-19 10:06:21
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   THM - nmthmc et kit_hh
+FONCTIONNALITE
+   Problème :
+   ---------
+   
+   La routine nmthmc vérifie la cohérence entre la modélisation et la physique du problème
+   définie dans le kit THM. Le cas du kit HH n'est pas traité et aucune vérification sur sa
+   cohérence n'est donc faite. Le risque est que si les données rentrées sont incohérentes,
+   l'utilisateur soit arrêté bien plus tard par un message d'erreur ne
+   correspondant pas à l'erreur réelle.
+   
+   Solution :
+   ----------
+   
+   On traite le cas du kit_hh en s'inspirant du cas du kit_thh.
+   
+   On en profite pour corriger d'autres erreurs de la routine :
+   
+   1. On vérifiait, dans le cas de kits où il n'y a pas de phénomène mécanique (kit_thh et
+   kit_thv), que la loi de comportement mécanique n'est pas de Barcelone, ce qui n'a pas de
+   sens. On enlève donc cette vérification.
+   
+   2. Le cas de la modélisation liqu_ad_gaz n'était pas pris en compte dans la vérification
+   des kits. Je rajoute donc ce cas dans kit_hhm, kit_thh, kit_hh et kit_thhm.
+   
+   On corrige également un bug dans la routine calcme. Un problème a été signalé par Sylvie
+   dans cette routine. Pour le cas de liqu_ad_gaz, le calcul de la dérivée des contraintes
+   mécaniques par rapport à la pression du 2ème liquide (dsde) était faux car on avait oublié
+   de renseigner le logical YAPRE2 l.123 de la routine. On renseigne donc yapre2=.TRUE. et le
+   tour est joué.
+   Il n'y avait cependant pas de risque de résultats faux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 28/06/2010 - 16:29:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015063 DU 2010-05-11 07:00:25
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Amxc3xa9liorer les performances CPU de la routine gnomsd.f
+FONCTIONNALITE
+   Problème :
+   ----------
+   La programmation de la routine gnomsd.f est telle que son cout augmente linéairement avec
+   le nombre de structures de données déjà créées. On préférerait que ce cout soit à peu près
+   constant.
+                                                                                            
+                           
+   Amélioration :
+   --------------
+   On modifie l'algorithme de gnomsd.f pour faire une recherche du plus grand numéro utilisé
+   par dichotomie.
+   On évite ainsi de faire un "CALL JEEXIN" au sein d'une boucle de plus en plus longue.
+                                                                                            
+                           
+                                                                                            
+                           
+   Détails :
+   ----------
+   On en profite pour augmenter la limitation de gnomsd.f : 9999 -> 99999 SD.
+                                                                                            
+                           
+   Validation :
+   ------------
+   Un petit essai bati sur le test zzzz234b passé sur ma machine calibre5 :
+                                                                                            
+                           
+   Avant :
+      - creation de  4000 SD NUME_DDL   =>    8.1s
+      - creation de 40000 SD NUME_DDL   =>  558.s
+                                                                                            
+                           
+      La routine gnomsd est donc responsable d'un sur-cout minimum de 558-(10*8.1)= 477s pour
+   40000 SD
+                                                                                            
+                           
+   Après :
+      - creation de  4000 SD NUME_DDL   =>    5.1s
+      - creation de 40000 SD NUME_DDL   =>   51.s
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essai perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015147 DU 2010-06-02 12:52:02
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   arrxc3xaat peu comprxc3xa9hensible avec des xc3xa9lxc3xa9ments DST dans STAT_NON_LINE
+FONCTIONNALITE
+   Problème :
+   ----------
+   Ludovic Idoux a essayé de faire un calcul non-linéaire sur des éléments DST.
+   Il s'est planté avec un message obscur alors que je pensais qu'il serait arreté
+   par un message du style :
+   "Les éléments de type MEDSQU4 ne savent pas encore calculer l'option FULL_MECA."
+                                                                                            
+                           
+   Analyse :
+   ---------
+   En réalité, le calcul est arreté avant le calcul de l'option FULL_MECA, ce qui explique
+   que le message n'est pas celui attendu.
+   En effet dans la routine nmdorc.f, on vérifie les comportements affactés sur les mailles
+   et comme aucun élément du modèle ne sait calculer FULL_MECA, on se plante dans la routine
+   crcmel.f
+                                                                                            
+                           
+   Correction :
+   ------------
+   Dans la routine crcmel.f, si le champ CEL1 est vide, on émet le message spécifique suivant :
+                                                                                            
+                           
+   !------------------------------------------------------------------------------------------!
+   !.<F>.<CALCULEL5_5>........................................................................!
+   !..........................................................................................!
+   !.Erreur.utilisateur.:.....................................................................!
+   !...Vous.essayez.de.faire.un.calcul.non-linéaire.mécanique.sur.un.modèle.dont.les.éléments.!
+   !...ne.sont.pas.programmés.pour.cela.......................................................!
+   !...On.arrete.le.calcul....................................................................!
+   !..........................................................................................!
+   !.Risques.&.conseils.:.....................................................................!
+   !...Vous.devriez.changer.de.MODELISATION...................................................!
+   !...Pare.exemple,.la.modélisation.'DST'.ne.peut.pas.faire.du.non-linéaire.alors.que.la.....!
+   !...modélisation.'DKT'.le.peut.............................................................!
+   !------------------------------------------------------------------------------------------!
+                                                                                            
+                           
+   NEW9 :
+   La correction est facile à reporter en NEW9
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  15147
+     crcmel.f
+     calculel5.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude jointe
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015152 DU 2010-06-03 15:38:50
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   EXTR_RESU ne dxc3xa9truit pas suffisamment (suite)
+FONCTIONNALITE
+   Problème :
+   ----------
+   Dans le cadre de la fiche 14878, j'ai amélioré la commande EXTR_RESU (en reuse) pour
+   qu'elle conserve moins d'objets dans la structure de données résultat (et donc pour
+   qu'elle soit moins volumineuse).
+   Le ménage effectué concernait :
+     - les prof_chno associés aux cham_no
+     - les sd liste_charge stockées comme paramètre sous le nom EXCIT
+                                                                                            
+                    
+   Ce travail de ménage est insuffisant lorsque la sd_resultat a été enrichie par la commande
+   CALC_ELEM + GROUP_MA / MAILLE.
+   En effet dans ce cas, on crée (à chaque appel à CALC_ELEM) un ligrel "caché" correspondant
+   aux éléments sur lesquels on fait le CALC_ELEM.
+   Ces ligrels "cachés" ne sont jamais détruits.
+                   
+   Correction :
+   ------------
+   Je complète la routine rsmena.f pour qu'elle détruise également les ligrel "cachés" qui
+   doivent l'etre.                                                                          
+                                                                                            
+             
+                    
+   Validation :
+   ------------
+   Je modifie le test zzzz223a pour qu'il crée des ligrels cachés et pour qu'il vérifie que
+   ceux qui doivent etre détruits le sont bien.
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  15152
+     rsmena.f
+     zzzz223a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essai perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015193 DU 2010-06-14 12:07:34
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Problxc3xa8me mesure de temps CPU en // (DEBUT/MESURE_TEMPS)
+FONCTIONNALITE
+   Problème:
+   ---------
+   Les mesures de temps (mot clé DEBUT/MESURE_TEMPS) faites en parallèle sont erronées si les
+   routines ne sont pas appelées le meme nombre de fois sur tous les processeurs.
+   Remarque : j'espère que cela ne se passe pas dans les sources actuels de la NEW10.
+                                                                                            
+                           
+   Correction :
+   ------------
+   Le bug est situé dans la routine uttcpi.f Il a été introduit lors de la correction de la
+   fiche 15021.
+   Je corrige cette routine.
+                                                                                            
+                           
+   Validation :
+   ------------
+   essai perso.
+                                                                                            
+                           
+   Liste des fichiers impactés par la correction de la fiche:  15193
+     uttcpg.f  uttcpi.f  uttcpl.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essai perso
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015233 DU 2010-06-21 11:41:46
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   SV01 - performances de la routine calcul en //
+FONCTIONNALITE
+   Contexte :
+   ---------
+   Dans le cadre du livrable SV01, on s'interroge sur le degré de parallélisme des calculs
+   élémentaires dans Code_Aster (routine calcul.f).
+   Un CR-AMA (10.162) a été réalisé sur ce sujet. Il est en cours de diffusion.
+   Un constat y est fait :
+   Pour une loi de comportement "facile à intégrer" (au sens du nombre d'opérations à
+   effectuer), par exemple : 'ELAS' ou 'VMIS_ISOT_LINE', le speed-up observé sur les calculs
+   élémentaires (rubrique #2.1 Routine calcul) est assez limité : de l'ordre de 4 sur 16
+   processeurs.
+                                                                                            
+                           
+                                                                                            
+                           
+   Proposition d'évolution :
+   -------------------------
+   Pour améliorer ce speed-up, nous proposons 2 évolutions du code :
+                                                                                            
+                           
+   1) Amélioration de la parallélisation de 2 routines utilisées par calcul.f (excar2.f et
+   exchno.f)
+   2) Ajout d'un nouveau mode de "distribution" des éléments finis (mot clé
+   PARTITION/PARALLELISME des commandes AFFE_MODELE et MODI_MODELE) :
+      PARALLELISME='GROUP_ELEM'
+      L'idée de cette distribution est de faire en sorte que TOUS les éléments d'un GREL
+   soient traités par le meme processeur.
+      De cette façon, le parallélisme ne consiste plus à "sauter" des éléments, mais à sauter
+   des GREL, ce qui est plus efficace.
+                                                                                            
+                           
+   Validation :
+   ------------
+   La validation de ces évolution a été faite sur la machine Clamart2 (pour pouvoir faire
+   passer plus rapidement des tests sur 48 processeurs).
+   Le cas test choisi utilise la commande CALCUL. De cette façon, on maitrise mieux ce que
+   l'on mesure : la performance des calculs élémentaires de STAT_NON_LINE
+   (option='FULL_MECA') sur un modèle formé d'HEXA8.
+                                                                                            
+                           
+   Pour un maillage de 45*45*45 (~91000) HEXA8 sur 16 processeurs et pour la loi 'ELAS', on a
+   observé :
+   * avant les évolutions (version 10.2.0) :
+     PARALLELISME='SOUS_DOMAINE'  =>  speed-up = 4.04
+   * après l'amélioration de excar2.f et exchno.f :
+     PARALLELISME='SOUS_DOMAINE'  =>  speed-up = 4.67 (+16%)
+   * nouveau mode de distribution :
+     PARALLELISME='GROUP_ELEM'    =>  speed-up = 9.78 (+142%)
+                                                                                            
+                           
+                                                                                            
+                           
+   Si on augmente le nombre de processeurs jusqu'à 48, pour une loi "facile" (ELAS) :
+     partition='MAIL_DISPERSE'     =>  speed-up = 5
+     partition='GROUP_ELEM'        =>  speed-up = 16
+                                                                                            
+                           
+   En revanche, pour les lois qui ont du "chien" (HUJEUX), le nouveau mode de distribution
+   n'apporte pas grand chose, car le speed-up est déjà au "top" sur 48 processeurs:
+     partition='MAIL_DISPERSE'     =>  speed-up = 45.46
+     partition='GROUP_ELEM'        =>  speed-up = 47.69
+                                                                                            
+                           
+                                                                                            
+                           
+   Autre validation (sur bull) :
+   -----------------------------
+   Pour le test perf002a (qui n'est pas parallélisé actuellement) sur 8 procs :
+   (En séquentiel, les calculs élémentaires consomment environ 100 s de CPU)
+    avant + PARALLELISME='MAIL_DISPERSE'       => speed-up = 2.95
+    après + PARALLELISME='MAIL_DISPERSE'       => speed-up = 3.92  (+33%)
+    après + PARALLELISME='GROUP_ELEM'          => speed-up = 6.06  (+105%)
+                                                                                            
+                           
+   Tests :
+   -------
+   Comme ce nouveau mode de partition des éléments semble etre le plus efficace, nous
+   proposons d'en faire le défaut dans les commandes AFFE_MODELE et MODI_MODELE.
+   Sur les 54 tests de la liste des tests MPI, 34 "forcent" l'usage du mot clé PARALLELISME
+   (toutes les valeurs possibles sont utilisées).
+   Les 24 autres tests utiliseront maintenant PARALLELISME='GROUP_ELEM'
+                                                                                            
+                           
+                                                                                            
+                           
+   Impact documentaire :
+   ---------------------
+   D4.05.01 : sd_partition
+   U4.41.01 : affe_modele
+   U4.41.02 : modi_modele
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+   Liste des fichiers impactés par la correction de la fiche:  15233
+     ajlipa.f  arlast.f  assmam.f  assmiv.f  assvec.f  calcul.f
+     excar2.f  excart.f  exchno.f  jaexin.f  mesomm.f  uttcpg.f
+     uttcpi.f  uttcpl.f  zerobj.f
+     sd_partition.py
+     affe_modele.capy  modi_modele.capy
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.05.01 U4.41.01 U4.41.02
+VALIDATION
+   perf002a
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 28/06/2010 - 13:53:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015000 DU 2010-04-27 08:55:24
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   SIMU_POINT_MAT "point matxc3xa9riel": contraintes cinxc3xa9matiques, thm?
+FONCTIONNALITE
+   Demande initiale
+   ================
+   
+   Le besoin immédiat est de pouvoir simuler des essais non-drainés avec SIMU_POINT_MAT
+   version 'point matériel'.La surcharge que j'utilise pour ce faire (fichiers ci-joints)
+   sert à pénaliser la condition de non-variation de volume (trace(epsi) = 0) (cette solution
+   me paraissant la + simple pour mon besoin immédiat).
+   
+   Pour + de généralités, il serait intéressant d'introduire la possibilité d'établir des
+   relations linéaires entre les ddls, par exemple epsi_xx+epsi_yy+epsi_zz=0. Cela
+   permettrait de faire du non-drainé incompressible sans avoir à demander par ailleurs à
+   l'utilisateur un coef de pénalisation. Cependant, il est important de remarquer que l'on
+   perd l'aspect physique de cette pénalisation qui est reliée à la création de pression
+   hydraulique; 
+   
+   Solution retenue
+   ================
+   En fait une solution simple se dégage : elle consiste à ajouter à SIMU_POINT_MAT 3
+   mots-clés facteurs facultatif, permettant à l'utilisateur de fournir explicitement tous
+   les coefficients non nuls des matrice C1, C2 et g (cf U4.51.12 -ci-jointe). Cette matrice
+   (6x12) réalise les conditions linéaires sur les 12 inconnues (6 cmp de contraintes,
+   suivies des 6 cmp de déformations). 
+   En pratique, l'utilisateur fournit :
+   - soit des conditions simples de contraintes ou déformations imposées (cas de plus
+   fréquent) par SIGM_IMPOSEE ou EPSI_IMPOSEE,
+   - soit, tous les termes des matrices C1, C2, g à l'aide des mots-clés MATR_C1, MAT_C2,
+   VECT_IMPO
+   
+   b=1.
+   KW=1.E12     
+   coef= b*KW/3./K
+        
+   TAB_SIG=SIMU_POINT_MAT(INFO=1,
+                     COMP_INCR=_F(RELATION='HUJEUX', ),
+   ...
+                     MATR_C1=(
+                     _F(NUME_LIGNE=1,NUME_COLONNE=1,VALE=1.),
+                     _F(NUME_LIGNE=2,NUME_COLONNE=2,VALE=1.),
+                     _F(NUME_LIGNE=3,NUME_COLONNE=3,VALE=1.),
+                     ),               
+                     VECT_IMPO=(
+                     _F(NUME_LIGNE=1,VALE=COEF1),
+                     _F(NUME_LIGNE=2,VALE=COEF1),
+                     _F(NUME_LIGNE=3,VALE=COEF3),
+                     ),               
+                     MATR_C2=(
+                     _F(NUME_LIGNE=1,NUME_COLONNE=1,VALE=coef),
+                     _F(NUME_LIGNE=1,NUME_COLONNE=2,VALE=coef),
+                     _F(NUME_LIGNE=1,NUME_COLONNE=3,VALE=coef),
+                     _F(NUME_LIGNE=2,NUME_COLONNE=1,VALE=coef),
+                     _F(NUME_LIGNE=2,NUME_COLONNE=2,VALE=coef),
+                     _F(NUME_LIGNE=2,NUME_COLONNE=3,VALE=coef),
+                     _F(NUME_LIGNE=3,NUME_COLONNE=1,VALE=coef),
+                     _F(NUME_LIGNE=3,NUME_COLONNE=2,VALE=coef),
+                     _F(NUME_LIGNE=3,NUME_COLONNE=3,VALE=coef),
+                     ),               
+                       
+   Validation
+   ===========
+   
+   Le test WTNV134B est issu du test WTNV134A, en remplaçant les STAT_NON_LINE par des
+   SIMU_POINT_MAT, et en appliquant les termes précédemment décrits. Les résultats sont
+   identiques.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.12, V7.31.134
+VALIDATION
+   wtnv134b
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT wtnv134b                        proix J-M.PROIX          515    515      0
+ CASTEST AJOUT zzzz266a                       flejou J-L.FLEJOU          97     97      0
+ CASTEST MODIF sdll122a                       flejou J-L.FLEJOU         214     58      1
+ CASTEST MODIF zzzz162a                       flejou J-L.FLEJOU         769    167      1
+ CASTEST MODIF zzzz223a                       pellet J.PELLET           174     14      8
+CATALOGU MODIF compelem/phenomene_modelisation__    meunier S.MEUNIER         1591      3      3
+CATALOGU MODIF typelem/gener_me2dt0           flejou J-L.FLEJOU         176      5      4
+CATALOGU MODIF typelem/gener_me2dt1           flejou J-L.FLEJOU         189      2      2
+CATALOGU MODIF typelem/gener_me2tr0           flejou J-L.FLEJOU         175      5      4
+CATALOGU MODIF typelem/gener_me2tr1           flejou J-L.FLEJOU         189      2      2
+CATALOGU MODIF typelem/gener_mebar1           flejou J-L.FLEJOU         226      2      2
+CATALOGU MODIF typelem/gener_mecab1           flejou J-L.FLEJOU         171      2      2
+CATALOGU MODIF typelem/gener_medit0           flejou J-L.FLEJOU         187      5      4
+CATALOGU MODIF typelem/gener_medit1           flejou J-L.FLEJOU         196      2      2
+CATALOGU MODIF typelem/gener_medtr0           flejou J-L.FLEJOU         196      4      4
+CATALOGU MODIF typelem/gener_medtr1           flejou J-L.FLEJOU         210      3      3
+CATALOGU MODIF typelem/gener_mf2fi2           flejou J-L.FLEJOU         142      2      2
+CATALOPY MODIF commande/affe_cara_elem        flejou J-L.FLEJOU         588      2      1
+CATALOPY MODIF commande/affe_modele           pellet J.PELLET           271      3      3
+CATALOPY MODIF commande/calc_point_mat         proix J-M.PROIX          103     22      1
+CATALOPY MODIF commande/crea_table            flejou J-L.FLEJOU         104     39      2
+CATALOPY MODIF commande/impr_resu             flejou J-L.FLEJOU         180      3      2
+CATALOPY MODIF commande/modi_modele           pellet J.PELLET            38      3      3
+CATALOPY MODIF commande/simu_point_mat         proix J-M.PROIX          171     41      1
+ FORTRAN AJOUT calculel/jaexin                pellet J.PELLET            52     52      0
+ FORTRAN AJOUT utilitai/ctacce                flejou J-L.FLEJOU         293    293      0
+ FORTRAN AJOUT utilitai/ctcrtb                flejou J-L.FLEJOU         215    215      0
+ FORTRAN AJOUT utilitai/ctdata                flejou J-L.FLEJOU         199    199      0
+ FORTRAN AJOUT utilitai/cteltb                flejou J-L.FLEJOU         359    359      0
+ FORTRAN AJOUT utilitai/ctnotb                flejou J-L.FLEJOU         271    271      0
+ FORTRAN AJOUT utilitai/ctresu                flejou J-L.FLEJOU          94     94      0
+ FORTRAN MODIF algorith/ajlipa                pellet J.PELLET           300     57      7
+ FORTRAN MODIF algorith/calcme               meunier S.MEUNIER          560      2      1
+ FORTRAN MODIF algorith/crcmel                pellet J.PELLET           135      8      3
+ FORTRAN MODIF algorith/nmfi2d                flejou J-L.FLEJOU         154      4      2
+ FORTRAN MODIF algorith/nmfi3d                flejou J-L.FLEJOU         175      3      3
+ FORTRAN MODIF algorith/nmthmc               meunier S.MEUNIER          485     27     13
+ FORTRAN MODIF algorith/op0033                 proix J-M.PROIX          345      4      2
+ FORTRAN MODIF algorith/pmdeco                 proix J-M.PROIX          143      2      2
+ FORTRAN MODIF algorith/pminit                 proix J-M.PROIX          344     31      3
+ FORTRAN MODIF algorith/xls3d                geniaut S.GENIAUT          343     15      8
+ FORTRAN MODIF assembla/assmam                pellet J.PELLET           833      5      2
+ FORTRAN MODIF assembla/assmiv                pellet J.PELLET           384      5      2
+ FORTRAN MODIF assembla/assvec                pellet J.PELLET          1033      7      2
+ FORTRAN MODIF calculel/calcul                pellet J.PELLET           546     29     11
+ FORTRAN MODIF calculel/excar2                pellet J.PELLET           128     28      5
+ FORTRAN MODIF calculel/excart                pellet J.PELLET           131      5      3
+ FORTRAN MODIF calculel/exchno                pellet J.PELLET           310     20     12
+ FORTRAN MODIF calculel/mesomm                pellet J.PELLET           276      7      3
+ FORTRAN MODIF elements/gedisc                flejou J-L.FLEJOU          42      3      3
+ FORTRAN MODIF elements/te0047                flejou J-L.FLEJOU         991     16      6
+ FORTRAN MODIF elements/te0206                flejou J-L.FLEJOU         119      4      3
+ FORTRAN MODIF elements/te0478                flejou J-L.FLEJOU          60      4      3
+ FORTRAN MODIF modelisa/acearp                flejou J-L.FLEJOU         476     37     23
+ FORTRAN MODIF modelisa/arlast                pellet J.PELLET           293      6      2
+ FORTRAN MODIF modelisa/gnomsd                pellet J.PELLET           124     73     13
+ FORTRAN MODIF prepost/rsmena                 pellet J.PELLET           228     52      1
+ FORTRAN MODIF utilitai/op0036                flejou J-L.FLEJOU         303     12      2
+ FORTRAN MODIF utilitai/op0150                flejou J-L.FLEJOU        1150    116    115
+ FORTRAN MODIF utilitai/uttcpg                pellet J.PELLET           104      2      2
+ FORTRAN MODIF utilitai/uttcpi                pellet J.PELLET           213      3      5
+ FORTRAN MODIF utilitai/uttcpl                pellet J.PELLET           102      9      3
+ FORTRAN MODIF utilitai/zerobj                pellet J.PELLET           122      6      2
+  PYTHON MODIF Macro/simu_point_mat_ops        proix J-M.PROIX          666     14      2
+  PYTHON MODIF Messages/algeline5            boiteau O.BOITEAU          392      8      1
+  PYTHON MODIF Messages/algorith8            meunier S.MEUNIER          266      9      9
+  PYTHON MODIF Messages/calculel5             pellet J.PELLET           351     13      1
+  PYTHON MODIF Messages/table0                flejou J-L.FLEJOU         156     23      1
+  PYTHON MODIF SD/sd_partition                pellet J.PELLET            29      4      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    9        2095      2095             +2095
+ MODIF :   60       19072      1062     339      +723
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   69       21167      3157     339     +2818 

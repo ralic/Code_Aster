@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 26/05/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,6 +40,18 @@ Conseil :
 
 4 : _("""
  !! probleme creation cham_elem nul dans alchml !!
+"""),
+
+5 : _("""
+Erreur utilisateur :
+  Vous essayez de faire un calcul non-linéaire mécanique sur un modèle dont les éléments
+  ne sont pas programmés pour cela.
+  On arrete le calcul.
+
+Risques & conseils :
+  Vous devriez changer de MODELISATION.
+  Par exemple, la modélisation 'DST' ne peut pas faire du non-linéaire alors que la
+  modélisation 'DKT' le peut.
 """),
 
 

@@ -1,8 +1,8 @@
-      SUBROUTINE GNOMSD ( NOOJB,K1,K2 )
+      SUBROUTINE GNOMSD(NOOJB,K1,K2)
       IMPLICIT   NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/01/2009   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,32 +32,92 @@ C VAR : NOOJB : NOM D'UN OBJET JEVEUX  (K24)
 C IN  : K1,K2 : INDICES DANS NOOJB DE LA SOUS-CHAINE "NUMERO"
 C     -----------------------------------------------------------------
 C
-      INTEGER         INUM,IRET,K1,K2,NESSAI,NDIGIT,IESSAI
-      CHARACTER*8     NOMU
-      CHARACTER*16    CONCEP,CMD
-      CHARACTER*24    NOOJB,NOOJB1
+      INTEGER IRET,K1,K2,NMAXSD,NDIGIT,IESSAI,INUM,N1,N2
+      CHARACTER*8 NOMU
+      CHARACTER*16 CONCEP,CMD
+      CHARACTER*24 NOOJB,NOOJB1
 C     -----------------------------------------------------------------
       CALL ASSERT(K2.GT.K1)
       CALL ASSERT(K1.GT.8)
       CALL ASSERT(K2.LE.24)
 
       CALL GETRES(NOMU,CONCEP,CMD)
-      NOOJB1 = NOOJB
+      NOOJB1=NOOJB
       NOOJB1(1:8)=NOMU
 
-      NDIGIT=MIN(K2-K1+1,4)
-      NESSAI=INT(10**NDIGIT)
+      NDIGIT=K2-K1+1
+      NMAXSD=INT(10**NDIGIT)
 
-      INUM = -1
-      DO 10, IESSAI=1,NESSAI
-         INUM = INUM + 1
-         CALL CODENT( INUM , 'D0' , NOOJB1(K1:K2)  )
-         CALL JEEXIN ( NOOJB1,IRET )
-         IF ( IRET .EQ. 0 ) GO TO 20
- 10   CONTINUE
-      CALL U2MESI('F','MODELISA4_69',1,INUM)
 
- 20   CONTINUE
+C     -- SI 0 EST LIBRE C'EST GAGNE :
+C     ----------------------------------------------------------
+      INUM=0
+      CALL CODENT(INUM,'D0',NOOJB1(K1:K2))
+      CALL JEEXIN(NOOJB1,IRET)
+      IF (IRET.EQ.0)GOTO 40
+
+
+C     -- IL N'Y A PEUT ETRE PAS DE NOM POSSIBLE :
+C        (TOUS LES NOMS SONT DEJA UTILISES)
+C     ----------------------------------------------------------
+      INUM=NMAXSD-1
+      CALL CODENT(INUM,'D0',NOOJB1(K1:K2))
+      CALL JEEXIN(NOOJB1,IRET)
+      IF (IRET.GT.0) CALL U2MESI('F','MODELISA4_69',1,INUM)
+
+
+C     -- ON CHERCHE UN INTERVALLE (N1,N2) CONTENANT LE NUMERO
+C        INUM CHERCHE :  N1<INUM<=N2
+C     ----------------------------------------------------------
+      N1=0
+      IESSAI=2
+   10 CONTINUE
+      CALL CODENT(IESSAI,'D0',NOOJB1(K1:K2))
+      CALL JEEXIN(NOOJB1,IRET)
+      IF (IRET.EQ.0) THEN
+        N2=IESSAI
+        GOTO 20
+
+      ELSE
+        N1=IESSAI
+        IESSAI=MIN(2*N1,NMAXSD-1)
+        GOTO 10
+
+      ENDIF
+   20 CONTINUE
+      CALL ASSERT(N1.GE.0)
+      CALL ASSERT(N2.LT.NMAXSD)
+      CALL ASSERT(N1.LT.N2)
+
+
+
+C     -- ON CHERCHE INUM DANS N1,N2 PAR DICHOTOMIE :
+C     ----------------------------------------------
+   30 CONTINUE
+      IF (N1.EQ.N2-1) THEN
+C       -- ON A TROUVE :
+        INUM=N2
+        GOTO 40
+
+      ELSE
+        IESSAI=N1+(N2-N1)/2
+        CALL CODENT(IESSAI,'D0',NOOJB1(K1:K2))
+        CALL JEEXIN(NOOJB1,IRET)
+        IF (IRET.EQ.0) THEN
+          N2=IESSAI
+          GOTO 30
+
+        ELSE
+          N1=IESSAI
+          GOTO 30
+
+        ENDIF
+      ENDIF
+
+
+
+   40 CONTINUE
+      CALL CODENT(INUM,'D0',NOOJB1(K1:K2))
       NOOJB=NOOJB1
 
 

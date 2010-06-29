@@ -6,7 +6,7 @@
       COMPLEX*16 VC(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C     ------------------------------------------------------------------
       CHARACTER*19 CHAMP2,LIGREL
       LOGICAL FIRST
       INTEGER I,IACELK,IAVALE,IBID,ICOEF,IDECGR,IEL,IER1,IER2
-      INTEGER IM,INUM,JCELD,JLIGR,K,NBGR,NEL,NUMEL1
+      INTEGER IM,INUM,JCELD,JLIGR,K,NBGR,NEL,NUMEL1,IEXI
 
       CALL JEMARQ()
 
@@ -203,6 +203,8 @@ C        -- (CAS DES RESUELEM):
           DO 120,J = 1,NBGR
             MODE = ZI(JCELD-1+ZI(JCELD-1+4+J)+2)
             IF (MODE.EQ.0) GO TO 120
+            CALL JAEXIN(JEXNUM(CHAMP2//'.RESL',J),IEXI)
+            IF (IEXI.EQ.0) GOTO 120
             CALL JEVEUO(JEXNUM(CHAMP2//'.RESL',J),'L',IAVALE)
             NCMPEL = DIGDEL(MODE)
             NEL = NBELEM(LIGREL,J)
@@ -228,13 +230,15 @@ C        -- (CAS DES RESUELEM):
             DO 150 J = 1,NBGR
               MODE = ZI(JCELD-1+ZI(JCELD-1+4+J)+2)
               IF (MODE.EQ.0) GO TO 150
+              CALL JAEXIN(JEXNUM(CHAMP2//'.RESL',J),IEXI)
+              IF (IEXI.EQ.0) GOTO 150
+              CALL JEVEUO(JEXNUM(CHAMP2//'.RESL',J),'L',IAVALE)
               NCMPEL = DIGDEL(MODE)
               NEL = NBELEM(LIGREL,J)
               NUMEL1 = NUMEL1 + NEL
               DO 140 K = 1,NEL
                 IEL = ZI(JLIGR+INUM+K-1)
                 IF (IEL.NE.NUMAIL(IM)) GO TO 140
-                CALL JEVEUO(JEXNUM(CHAMP2//'.RESL',J),'L',IAVALE)
                 DO 130 I = 1,LONGT
                   IF (SCAL(1:1).EQ.'I') THEN
                     VI(I) = VI(I) + ZI(IAVALE+ (K-1)*NCMPEL-1+I)

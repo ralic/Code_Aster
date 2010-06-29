@@ -3,7 +3,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 28/06/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE UFBHHLL C.CHAVANT
-C TOLE CRP_20
 C =====================================================================
 C --- BUT : DETERMINER LA COHERENCE DE LA RELATION DE COUPLAGE THM ----
 C =====================================================================
@@ -47,14 +46,14 @@ C
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
+      CHARACTER*32     JEXNUM
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C =====================================================================
 C --- DEFINITION DES DIMENSIONS DES VECTEURS DE POSSIBILITE DES LOIS --
 C =====================================================================
-      LOGICAL       LTHMC, LHYDR, LMECA, EXIST, GETEXM, TOUT
-      INTEGER       DMTHMC, DMHYDR, DMMECA, N1, JMAIL, ITYPEL, I
+      LOGICAL       LTHMC, LHYDR, LMECA, TOUT
+      INTEGER       DMTHMC, DMHYDR, DMMECA, JMAIL, ITYPEL
       INTEGER       NBMA, IERD, IBID, JNOMA, JMESM, NUMLC
       PARAMETER   ( DMTHMC = 8  )
       PARAMETER   ( DMHYDR = 4  )
@@ -120,7 +119,7 @@ C *********************************************************************
       CALL JEVEUO(MODELE//'.MODELE    .LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)
 C =====================================================================
-C --- LE COMPORTEMENT DEFINIT EST-IL COHERENT ? -----------------------
+C --- LE COMPORTEMENT DEFINI EST-IL COHERENT ? ------------------------
 C =====================================================================
       LTHMC = .FALSE.
       LHYDR = .FALSE.
@@ -167,7 +166,7 @@ C =====================================================================
      &                (MODELI(1:10).NE.'D_PLAN_THM').AND.
      &                (MODELI(1:9).NE.'D_PLAN_HM').AND.
      &                (MODELI(1:11).NE.'2D_JOINT_HM').AND.
-     &                (MODELI(1:13).NE.'AXIS_JOINT_HM').AND.     
+     &                (MODELI(1:13).NE.'AXIS_JOINT_HM').AND.
      &                (MODELI.NE.'#PLUSIEURS')) THEN
 
                           VALK(1) = COMEL(JJ)
@@ -308,7 +307,8 @@ C =====================================================================
             CALL U2MESS('F','ALGORITH8_41')
          ENDIF
          IF ( THMC.NE.'LIQU_GAZ'.AND.THMC.NE.'LIQU_VAPE_GAZ'.AND.
-     &        THMC.NE.'LIQU_AD_GAZ_VAPE'      ) THEN
+     &        THMC.NE.'LIQU_AD_GAZ_VAPE'.AND.
+     &        THMC.NE.'LIQU_AD_GAZ'      ) THEN
             CALL U2MESS('F','ALGORITH8_45')
          ENDIF
          IF ( HYDR.EQ.'HYDR_ENDO'         .AND.
@@ -336,11 +336,27 @@ C =====================================================================
             CALL U2MESS('F','ALGORITH8_48')
          ENDIF
          IF ( THMC.NE.'LIQU_GAZ' .AND.THMC.NE.'LIQU_VAPE_GAZ'.AND.
-     &        THMC.NE.'LIQU_AD_GAZ_VAPE'      ) THEN
+     &        THMC.NE.'LIQU_AD_GAZ_VAPE'.AND.
+     &        THMC.NE.'LIQU_AD_GAZ'      ) THEN
             CALL U2MESS('F','ALGORITH8_49')
          ENDIF
-         IF ( MECA.EQ.'BARCELONE' ) THEN
-            CALL U2MESS('F','ALGORITH8_50')
+C =====================================================================
+C --- PARTIE KIT_HH --------------------------------------------------
+C =====================================================================
+      ELSE IF (COMP.EQ.'KIT_HH') THEN
+         IF (.NOT.LTHMC) THEN
+            CALL U2MESS('F','ALGORITH8_39')
+         ENDIF
+         IF (.NOT.LHYDR) THEN
+            CALL U2MESS('F','ALGORITH8_40')
+         ENDIF
+         IF (LMECA) THEN
+            CALL U2MESS('F','ALGORITH8_46')
+         ENDIF
+         IF ( THMC.NE.'LIQU_GAZ' .AND.THMC.NE.'LIQU_VAPE_GAZ'.AND.
+     &        THMC.NE.'LIQU_AD_GAZ_VAPE'.AND.
+     &        THMC.NE.'LIQU_AD_GAZ'      ) THEN
+            CALL U2MESS('F','ALGORITH8_58')
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THV --------------------------------------------------
@@ -358,9 +374,6 @@ C =====================================================================
          ENDIF
          IF ( THMC.NE.'LIQU_VAPE' ) THEN
             CALL U2MESS('F','ALGORITH8_52')
-         ENDIF
-         IF ( MECA.EQ.'BARCELONE' ) THEN
-            CALL U2MESS('F','ALGORITH8_53')
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THM --------------------------------------------------
@@ -405,6 +418,7 @@ C =====================================================================
          ENDIF
          IF ( THMC.NE.'LIQU_VAPE_GAZ' .AND.
      &        THMC.NE.'LIQU_AD_GAZ_VAPE' .AND.
+     &        THMC.NE.'LIQU_AD_GAZ'.AND.
      &        THMC.NE.'LIQU_GAZ'           ) THEN
             CALL U2MESS('F','ALGORITH8_56')
          ENDIF

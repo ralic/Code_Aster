@@ -2,7 +2,7 @@
      &                  LPAOU,BASE)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF CALCULEL  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,13 +79,13 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /CAII11/NUTE,JNBELR,JNOELR,IACTIF,JPNLFP,JNOLFP,NBLFPG
       INTEGER CAINDZ(512),CAPOIZ
       COMMON /CAII12/CAINDZ,CAPOIZ
-      INTEGER EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
+      INTEGER EVFINI,CALVOI,JREPE,JPTVOI,JELVOI,IEXI
       COMMON /CAII19/EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
 C-----------------------------------------------------------------------
-      LOGICAL LFETMO,LFETTS,LFETTD,LDIST,LFETI,LFETIC,DBG
+      LOGICAL LFETMO,LFETTS,LFETTD,LDIST,LFETI,LFETIC,DBG,LDGREL
       REAL*8 RBID,TEMP1(6),TEMP2(6)
       CHARACTER*8  LPAIN2(NIN),LPAOU2(NOU)
-      CHARACTER*19 LCHIN2(NIN),LCHOU2(NOU)
+      CHARACTER*19 LCHIN2(NIN),LCHOU2(NOU),NOCHOU
       CHARACTER*19 LIGREL
       CHARACTER*24 K24B,INFOFE,VALK(2),KFEL
       CHARACTER*1 STOP
@@ -94,12 +94,12 @@ C-----------------------------------------------------------------------
       INTEGER IAOPDS,IAOPMO,IAOPNO,IAOPPA,IAOPTT,IMA,IFCPU,RANG,IFM,NIV
       INTEGER IER,ILLIEL,ILMACO,ILMLOC,ILMSCO,ILOPMO,IINF,IRET1,IFEL1
       INTEGER ILOPNO,IRET,IUNCOD,IUNIFI,J,LGCO,IFEL2,IRET2,ILIMPI
-      INTEGER NPARIO,NBOBMX,NPARIN,NBSD,JNUMSD,N1
+      INTEGER NPARIO,NBOBMX,NPARIN,NBSD,JNUMSD,N1,JNOLIG,JNUGSD
       INTEGER NBGREL,TYPELE,NBELEM,NUCALC,VALI(4)
       INTEGER NBOBTR,NVAL,INDIK8
       CHARACTER*32 JEXNOM,JEXNUM,PHEMOD
       INTEGER OPT,AFAIRE,INPARA
-      INTEGER IEL,NUMC,NUMAIL
+      INTEGER IEL,NUMC,NUMAIL,K,JRESL
       INTEGER I,IPAR,NIN2,NIN3,NOU2,NOU3,JTYPMA
       CHARACTER*1 BASE2,KBID
       CHARACTER*8 NOMPAR,CAS,EXIELE,K8BID,PARTIT
@@ -115,6 +115,8 @@ C     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
 C DEB-------------------------------------------------------------------
 
       CALL JEMARQ()
+      CALL UTTCPU('CPU.CALC.1','DEBUT',' ')
+      CALL UTTCPU('CPU.CALC.2','DEBUT',' ')
       CALL INFNIV(IFM,NIV)
       LIGREL=LIGRLZ
       IACTIF=1
@@ -125,8 +127,6 @@ C DEB-------------------------------------------------------------------
       LFETTS=.FALSE.
       LFETTD=.FALSE.
       LFETIC=.FALSE.
-      CALL UTTCPU('CPU.CALC.1','DEBUT',' ')
-      CALL UTTCPU('CPU.CALC.2','DEBUT',' ')
 
 
 C     -- S'IL N'Y A PAS D'ELEMENTS FINIS DANS LE MODELE, ON SORT
@@ -137,7 +137,7 @@ C        TOUT DE SUITE :
         IF (STOP.EQ.'S') THEN
           CALL U2MESK('F','CALCULEL2_25',1,LIGREL)
         ELSE
-          GOTO 121
+          GOTO 120
         ENDIF
       ENDIF
 
@@ -248,9 +248,12 @@ C     0.2- CAS D'UN CALCUL "DISTRIBUE" :
 C     -- CALCUL DE LDIST :
 C          .TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES (PAS FETI)
 C          .FALSE. : SINON
-C     -- SI LDIST == .TRUE. : CALCUL DE  RANG ET JNUMSD
+C     -- CALCUL DE LDGREL :
+C          .TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES PAR GREL
+C     -- SI LDIST  == .TRUE. : CALCUL DE  RANG ET JNUMSD
 C     -------------------------------------------------------------
       LDIST=.FALSE.
+      LDGREL=.FALSE.
       CALL JEEXIN(PARTIT//'.NUPROC.MAILLE',IRET)
       IF ((IRET.NE.0).AND.(.NOT.LFETI)) THEN
         LDIST=.TRUE.
@@ -262,10 +265,18 @@ C     -------------------------------------------------------------
           VALI(2)=NBPROC
           CALL U2MESI('F','CALCULEL_13',2,VALI)
         ENDIF
+        CALL JEEXIN(PARTIT//'.NUPROC.LIGREL',IRET)
+        IF (IRET.GT.0) THEN
+          CALL JEVEUO(PARTIT//'.NUPROC.LIGREL','L',JNOLIG)
+          IF (ZK24(JNOLIG-1+1).EQ.LIGREL) THEN
+            LDGREL=.TRUE.
+            CALL JEVEUO(PARTIT//'.NUPROC.GREL','L',JNUGSD)
+          ENDIF
+        ENDIF
       ENDIF
 
 
-C     0.4- DEBCA1  MET DES OBJETS EN MEMOIRE (ET COMMON):
+C     0.4- DEBCA1 MET DES OBJETS EN MEMOIRE (ET COMMON):
 C     -----------------------------------------------------------------
       CALL DEBCA1(OPTION,LIGREL)
 
@@ -380,6 +391,15 @@ C     -----------------------------------------------------
 C     6- BOUCLE SUR LES GREL :
 C     -------------------------------------------------
       DO 100 IGR=1,NBGR
+
+C       -- SI PARALLELISME='GROUP_ELEM' : ON PEUT PARFOIS TOUT "SAUTER"
+        IF (LDGREL) THEN
+          IF (ZI(JNUGSD-1+IGR).GE.0) THEN
+            IF (ZI(JNUGSD-1+IGR).NE.RANG) THEN
+              GOTO 100
+            ENDIF
+          ENDIF
+        ENDIF
 
         NUTE=TYPELE(LIGREL,IGR)
         CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTE),NOMTE)
@@ -505,8 +525,6 @@ C     ----------------------------------------------------
 
   120 CONTINUE
       IACTIF=0
-
-  121 CONTINUE
 
 
 C     9- MESURE DU TEMPS CONSOMME :

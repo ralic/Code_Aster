@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 15/03/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -600,393 +600,394 @@ C   LA MAILLE IMA N'EST PAS CHARGEE EN PRESSION
       ELSE IF (FORM.EQ.'MED') THEN
 C     =============================
 
-        IF ((TYPRES.EQ.'DYNA_TRANS')  .OR.
+         IF ((TYPRES.EQ.'DYNA_TRANS')  .OR.
      &      (TYPRES.EQ.'DYNA_HARMO')  .OR.
      &      (TYPRES.EQ.'HARM_GENE')   .OR.
      &      (TYPRES.EQ.'MODE_MECA')   .OR.
      &      (TYPRES.EQ.'MODE_MECA_C')) THEN
-          CALL U2MESK('F','UTILITAI5_40',1,TYPRES)
-        ENDIF
+            CALL U2MESK('F','UTILITAI5_40',1,TYPRES)
+         ENDIF
 
-C       ON VERIFIE QUE LE PHENOMENE DU MODELE FOURNI EST COHERENT AVEC
-C       LA SD RESULTAT
-        CALL GETVID(' ','MODELE',0,1,1,NOMO,NBV)
-        IF (NBV.EQ.1) THEN
-           CALL LRVEMO(NOMO)
-        ENDIF
+C        ON VERIFIE QUE LE PHENOMENE DU MODELE FOURNI EST COHERENT AVEC
+C        LA SD RESULTAT
+         CALL GETVID(' ','MODELE',0,1,1,NOMO,NBV)
+         IF (NBV.EQ.1) THEN
+            CALL LRVEMO(NOMO)
+         ENDIF
 
-        DO 260 I = 1,NBNOCH
-          OPTION = ' '
-          PARAM  = ' '
+         DO 260 I = 1,NBNOCH
+            OPTION = ' '
+            PARAM  = ' '
 
-          CALL GETVTX('FORMAT_MED','NOM_CHAM',I,1,1,NOCH,N1)
-          IF ((TYPRES(1:9).EQ.'EVOL_THER') .AND.
-     &        (NOCH(1:4).NE.'TEMP')) THEN
-            CALL U2MESS('F','UTILITAI2_93')
-          END IF
-          IF (NOCH.EQ.'TEMP') THEN
-            NOMGD = 'TEMP_R  '
-            TYPCHA = 'NOEU'
-          ELSE IF (NOCH.EQ.'DEPL') THEN
-            NOMGD = 'DEPL_R  '
-            TYPCHA = 'NOEU'
-          ELSE IF (NOCH.EQ.'VITE') THEN
-            NOMGD = 'DEPL_R  '
-            TYPCHA = 'NOEU'
-          ELSE IF (NOCH.EQ.'ACCE') THEN
-            NOMGD = 'DEPL_R  '
-            TYPCHA = 'NOEU'
-          ELSE IF (NOCH.EQ.'SIEF_ELNO') THEN
-            NOMGD = 'SIEF_R'
-            TYPCHA = 'ELNO'
-            OPTION = 'SIEF_ELNO_ELGA'
-            PARAM  = 'PSIEFNOR'
-          ELSE IF (NOCH.EQ.'SIEF_ELNO_ELGA') THEN
-            NOMGD = 'SIEF_R'
-            TYPCHA = 'ELNO'
-            OPTION = 'SIEF_ELNO_ELGA'
-            PARAM  = 'PSIEFNOR'
-          ELSE IF (NOCH.EQ.'SIEF_NOEU') THEN
-            NOMGD = 'SIEF_R'
-            TYPCHA = 'NOEU'
-          ELSE IF (NOCH.EQ.'SIEF_ELGA') THEN
-            NOMGD = 'SIEF_R'
-            TYPCHA = 'ELGA'
-            OPTION = 'RAPH_MECA'
-            PARAM  = 'PCONTPR'
-          ELSE IF (NOCH.EQ.'SIEF_ELGA_DEPL') THEN
-            NOMGD = 'SIEF_R'
-            TYPCHA = 'ELGA'
-            OPTION = 'SIEF_ELGA_DEPL'
-            PARAM  = 'PCONTPR'
-          ELSE IF (NOCH.EQ.'EPSI_ELNO_DEPL') THEN
-            NOMGD = 'EPSI_R'
-            TYPCHA = 'ELNO'
-            OPTION ='EPSI_ELNO_DEPL'
-            PARAM='PDEFORR'
-          ELSE IF (NOCH.EQ.'EPSI_ELNO_TUYO') THEN
-            NOMGD = 'EPSI_R'
-            TYPCHA = 'ELNO'
-            OPTION ='EPSI_ELNO_TUYO'
-            PARAM='PDEFONO'
-          ELSE IF (NOCH.EQ.'EQUI_ELGA_EPME') THEN
-            NOMGD  = 'EPSI_R'
-            TYPCHA = 'ELGA'
-            OPTION = 'EQUI_ELGA_EPME'
-            PARAM  = 'PDEFOEQ'
-          ELSE IF (NOCH.EQ.'EPSI_NOEU') THEN
-            NOMGD = 'EPSI_R'
-            TYPCHA = 'NOEU'
-          ELSE IF (NOCH.EQ.'EPSI_ELGA') THEN
-            NOMGD = 'EPSI_R'
-            TYPCHA = 'ELGA'
-            OPTION = 'EPSI_ELGA_DEPL'
-            PARAM  = 'PDEFORR'
-          ELSE IF (NOCH.EQ.'EPSI_ELGA_DEPL') THEN
-            NOMGD = 'EPSI_R'
-            TYPCHA = 'ELGA'
-            OPTION = 'EPSI_ELGA_DEPL'
-            PARAM  = 'PDEFORR'
-          ELSE IF (NOCH.EQ.'EPSA_ELNO') THEN
-            NOMGD = 'EPSI_R'
-            TYPCHA = 'ELNO'
-            OPTION ='EPSI_ELNO_DEPL'
-            PARAM='PDEFORR'
-          ELSE IF (NOCH.EQ.'EPSA_NOEU') THEN
-            NOMGD = 'EPSI_R'
-            TYPCHA = 'NOEU'
-          ELSE IF (NOCH.EQ.'VARI_ELNO') THEN
-            NOMGD = 'VARI_R'
-            TYPCHA = 'ELNO'
-            OPTION='VARI_ELNO_ELGA'
-            PARAM='PVARINR'
-          ELSE IF (NOCH.EQ.'VARI_ELNO_ELGA') THEN
-            NOMGD = 'VARI_R'
-            TYPCHA = 'ELNO'
-            OPTION='VARI_ELNO_ELGA'
-            PARAM='PVARINR'
-          ELSE IF (NOCH.EQ.'VARI_NOEU') THEN
-            NOMGD = 'VARI_R'
-            TYPCHA = 'NOEU'
-          ELSE IF (NOCH.EQ.'VARI_ELGA') THEN
-            NOMGD = 'VARI_R'
-            TYPCHA = 'ELGA'
-            OPTION = 'RAPH_MECA'
-            PARAM  = 'PVARIPR'
-          ELSE IF (NOCH.EQ.'EQUI_ELNO_SIGM') THEN
-            NOMGD = 'SIEF_R'
-            TYPCHA = 'ELNO'
-            OPTION = 'EQUI_ELNO_SIGM'
-          ELSE IF (NOCH.EQ.'EQUI_NOEU_SIGM') THEN
-            NOMGD = 'SIEF_R'
-            TYPCHA = 'NOEU'
-            OPTION = 'EQUI_NOEU_SIGM'
-          ELSE IF (NOCH.EQ.'EQUI_ELGA_SIGM') THEN
-            NOMGD = 'SIEF_R'
-            TYPCHA = 'ELGA'
-            OPTION = 'EQUI_ELGA_SIGM'
-            PARAM  = 'PCONTEQ'
-          ELSE IF (NOCH.EQ.'EQUI_ELGA_EPSI') THEN
-            NOMGD = 'EPSI_R'
-            TYPCHA = 'ELGA'
-            OPTION = 'EQUI_ELGA_EPSI'
-            PARAM  = 'PDEFOEQ'
-          ELSE IF (NOCH.EQ.'PRES') THEN
-            NOMGD = 'PRES_R  '
-            TYPCHA = 'ELEM'
-          ELSE IF (NOCH.EQ.'IRRA') THEN
-            NOMGD = 'IRRA_R  '
-            TYPCHA = 'NOEU'
-          ELSE IF (NOCH.EQ.'EPSG_ELGA_DEPL') THEN
-            NOMGD  = 'EPSI_R'
-            TYPCHA = 'ELGA'
-            OPTION = 'EPSG_ELGA_DEPL'
-            PARAM  = 'PDEFORR'
-          ELSE IF (NOCH.EQ.'EPME_ELNO_DEPL') THEN
-            NOMGD  = 'EPSI_R'
-            TYPCHA = 'ELNO'
-          ELSE IF (NOCH.EQ.'EPSP_ELNO') THEN
-            NOMGD  = 'EPSI_R'
-            TYPCHA = 'ELNO'
-            OPTION = 'EPSP_ELNO'
-            PARAM  = 'PDEFOPL'
-          ELSE
-            CALL U2MESK('F','UTILITAI2_94',1,NOCH)
-          END IF 
-
-C         VERIFICATION DE LA PRESENCE DE 'PARAM' ET 'OPTION'
-C         POUR LES CHAMPS ELGA
-          IF(NOCH(6:9).EQ.'ELGA') THEN
-            CALL ASSERT(OPTION.NE.' ')
-            CALL ASSERT(PARAM .NE.' ')
-          ENDIF
-
-C         --- NOM DU CHAMP MED
-          CALL GETVTX('FORMAT_MED','NOM_CHAM_MED',I,1,1,NOCHMD,N1)
-          IF(N1.EQ.0)THEN
-C                    12345678901234567890123456789012
-             NOCHMD='________________________________'
-             CALL GETVTX('FORMAT_MED','NOM_RESU',I,1,1,NORACI,N2)
-             NCHAR=LXLGUT(NORACI)
-             NOCHMD(1:NCHAR)=NORACI(1:NCHAR)
-             NCHAR=LXLGUT(NOCH)
-             NOCHMD(9:8+NCHAR)=NOCH(1:NCHAR)
-          ENDIF
-
-C          ==> NOM DES COMPOSANTES VOULUES
-
-          NCMPVA = '&&'//NOMPRO//'.'//LCMPVA
-          NCMPVM = '&&'//NOMPRO//'.'//LCMPVM
-
-C         --- NOM_CMP ASTER ?
-          NBCMPV=0
-          CALL GETVTX('FORMAT_MED',LCMPVA,I,1,0,REP,IAUX)
-          IF (IAUX.LT.0) THEN
-            NBCMPV = -IAUX
-          ENDIF
-
-C         --- NOM_CMP MED ?
-          CALL GETVTX('FORMAT_MED',LCMPVM,I,1,0,REP,IAUX)
-
-          IF (-IAUX.NE.NBCMPV) THEN
-             VALK(1) = LCMPVA
-             VALK(2) = LCMPVM
-             CALL U2MESK('F','UTILITAI2_95', 2 ,VALK)
-          ENDIF
-
-          IF (NBCMPV.GT.0) THEN
-            CALL WKVECT(NCMPVA,'V V K8',NBCMPV,JCMPVA)
-            CALL GETVTX('FORMAT_MED',LCMPVA,I,1,NBCMPV,ZK8(JCMPVA),
-     &                  IAUX)
-            CALL WKVECT(NCMPVM,'V V K16',NBCMPV,JCMPVM)
-            CALL GETVTX('FORMAT_MED',LCMPVM,I,1,NBCMPV,ZK16(JCMPVM),
-     &                  IAUX)
-          ENDIF
-
-C         --- PROLONGEMENT PAR ZERO OU NOT A NUMBER
-          CALL GETVTX(' ', 'PROL_ZERO', 0, 1, 1, PROLZ, IAUX)
-          IF (PROLZ .NE. 'OUI') THEN
-             PROLZ = 'NAN'
-          ENDIF
-
-C         --- NOM DU FICHIER MED
-          CALL ULISOG(MFICH, KFIC, SAUX01)
-          IF ( KFIC(1:1).EQ.' ' ) THEN
-            CALL CODENT ( MFICH, 'G', SAUX08 )
-            NOFIMD = 'fort.'//SAUX08
-          ELSE
-            NOFIMD = KFIC(1:200)
-          ENDIF
+            CALL GETVTX('FORMAT_MED','NOM_CHAM',I,1,1,NOCH,N1)
+            IF (  (TYPRES(1:9).EQ.'EVOL_THER') .AND.
+     &            (NOCH(1:4).NE.'TEMP')) THEN
+               CALL U2MESS('F','UTILITAI2_93')
+            ENDIF
+            IF      (NOCH.EQ.'TEMP') THEN
+               NOMGD  = 'TEMP_R  '
+               TYPCHA = 'NOEU'
+            ELSE IF (NOCH.EQ.'PRES') THEN
+               NOMGD  = 'PRES_R  '
+               TYPCHA = 'ELEM'
+            ELSE IF (NOCH.EQ.'IRRA') THEN
+               NOMGD  = 'IRRA_R  '
+               TYPCHA = 'NOEU'
 C
-          IF ( NIVINF.GT.1 ) THEN
-            WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
-          ENDIF
-C                   12   345678   90123456789
-          PREFIX = '&&'//NOMPRO//'.MED'
-          CALL JEDETC('V',PREFIX,1)
-
-C     -- RECUPERATION DU NOMBRE DE PAS DE TEMPS DANS LE CHAMP
-C     --------------------------------------------
-
-          IF (TYPCHA(1:2).EQ.'NO') THEN
-            TYPENT = EDNOEU
-            TYPGOM = TYPNOE
-            CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
-            IF (NPAS.EQ.0) THEN
-              CALL U2MESK('A','MED_95',1,NOCHMD)
-              GO TO 240
-            END IF
-            CALL JEVEUO(PREFIX//'.INST','L',IPAS)
-            CALL JEVEUO(PREFIX//'.NUME','L',INUM)
-
-          ELSE IF (TYPCHA(1:2).EQ.'EL') THEN
-            CALL MDEXPM(NOFIMD,NOMAMD,EXISTM,NDIM,IRET)
-            CALL LRMTYP(NBTYP,NOMTYP,NNOTYP,TYPGEO,RENUMD,
-     &              MODNUM, NUANOM, NUMNOA )
-
-            IF(TYPCHA(1:4).EQ.'ELNO')THEN
-              TYPENT = EDNOMA
+C           CHAMP DE GRANDEUR "DEPL_R"
+            ELSE IF (NOCH.EQ.'DEPL') THEN
+               NOMGD  = 'DEPL_R  '
+               TYPCHA = 'NOEU'
+            ELSE IF (NOCH.EQ.'VITE') THEN
+               NOMGD  = 'DEPL_R  '
+               TYPCHA = 'NOEU'
+            ELSE IF (NOCH.EQ.'ACCE') THEN
+               NOMGD  = 'DEPL_R  '
+               TYPCHA = 'NOEU'
+C
+C           CHAMP DE GRANDEUR "SIEF_R"
+            ELSE IF (NOCH.EQ.'SIEF_ELGA') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'ELGA'
+               OPTION = 'RAPH_MECA'
+               PARAM  = 'PCONTPR'
+            ELSE IF (NOCH.EQ.'SIEF_ELGA_DEPL') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'ELGA'
+               OPTION = 'SIEF_ELGA_DEPL'
+               PARAM  = 'PCONTPR'
+            ELSE IF (NOCH.EQ.'EQUI_ELGA_SIGM') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'ELGA'
+               OPTION = 'EQUI_ELGA_SIGM'
+               PARAM  = 'PCONTEQ'
+            ELSE IF (NOCH.EQ.'SIEF_ELNO') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'ELNO'
+               OPTION = 'SIEF_ELNO_ELGA'
+               PARAM  = 'PSIEFNOR'
+            ELSE IF (NOCH.EQ.'SIEF_ELNO_ELGA') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'ELNO'
+               OPTION = 'SIEF_ELNO_ELGA'
+               PARAM  = 'PSIEFNOR'
+            ELSE IF (NOCH.EQ.'EQUI_ELNO_SIGM') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'ELNO'
+               OPTION = 'EQUI_ELNO_SIGM'
+            ELSE IF (NOCH.EQ.'SIEF_NOEU') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'NOEU'
+            ELSE IF (NOCH.EQ.'SIEF_NOEU_ELGA') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'NOEU'
+            ELSE IF (NOCH.EQ.'SIGM_NOEU_DEPL') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'NOEU'
+            ELSE IF (NOCH.EQ.'EQUI_NOEU_SIGM') THEN
+               NOMGD  = 'SIEF_R'
+               TYPCHA = 'NOEU'
+               OPTION = 'EQUI_NOEU_SIGM'
+C
+C           CHAMP DE GRANDEUR "EPSI_R"
+            ELSE IF (NOCH.EQ.'EPSI_ELGA') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'ELGA'
+               OPTION = 'EPSI_ELGA_DEPL'
+               PARAM  = 'PDEFORR'
+            ELSE IF (NOCH.EQ.'EPSI_ELGA_DEPL') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'ELGA'
+               OPTION = 'EPSI_ELGA_DEPL'
+               PARAM  = 'PDEFORR'
+            ELSE IF (NOCH.EQ.'EQUI_ELGA_EPME') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'ELGA'
+               OPTION = 'EQUI_ELGA_EPME'
+               PARAM  = 'PDEFOEQ'
+            ELSE IF (NOCH.EQ.'EQUI_ELGA_EPSI') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'ELGA'
+               OPTION = 'EQUI_ELGA_EPSI'
+               PARAM  = 'PDEFOEQ'
+            ELSE IF (NOCH.EQ.'EPSG_ELGA_DEPL') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'ELGA'
+               OPTION = 'EPSG_ELGA_DEPL'
+               PARAM  = 'PDEFORR'
+            ELSE IF (NOCH.EQ.'EPSI_ELNO_DEPL') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'ELNO'
+               OPTION = 'EPSI_ELNO_DEPL'
+               PARAM  = 'PDEFORR'
+            ELSE IF (NOCH.EQ.'EPSI_ELNO_TUYO') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'ELNO'
+               OPTION = 'EPSI_ELNO_TUYO'
+               PARAM  = 'PDEFONO'
+            ELSE IF (NOCH.EQ.'EPSA_ELNO') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'ELNO'
+               OPTION = 'EPSI_ELNO_DEPL'
+               PARAM  = 'PDEFORR'
+            ELSE IF (NOCH.EQ.'EPSP_ELNO') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'ELNO'
+               OPTION = 'EPSP_ELNO'
+               PARAM  = 'PDEFOPL'
+            ELSE IF (NOCH.EQ.'EPSI_NOEU') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'NOEU'
+            ELSE IF (NOCH.EQ.'EPSA_NOEU') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'NOEU'
+            ELSE IF (NOCH.EQ.'EPME_ELNO_DEPL') THEN
+               NOMGD  = 'EPSI_R'
+               TYPCHA = 'ELNO'
+C
+C           CHAMP DE GRANDEUR "VARI_R"
+            ELSE IF (NOCH.EQ.'VARI_ELGA') THEN
+               NOMGD  = 'VARI_R'
+               TYPCHA = 'ELGA'
+               OPTION = 'RAPH_MECA'
+               PARAM  = 'PVARIPR'
+            ELSE IF (NOCH.EQ.'VARI_ELNO') THEN
+               NOMGD  = 'VARI_R'
+               TYPCHA = 'ELNO'
+               OPTION = 'VARI_ELNO_ELGA'
+               PARAM  = 'PVARINR'
+            ELSE IF (NOCH.EQ.'VARI_ELNO_ELGA') THEN
+               NOMGD  = 'VARI_R'
+               TYPCHA = 'ELNO'
+               OPTION = 'VARI_ELNO_ELGA'
+               PARAM  = 'PVARINR'
+            ELSE IF (NOCH.EQ.'VARI_NOEU') THEN
+               NOMGD  = 'VARI_R'
+               TYPCHA = 'NOEU'
             ELSE
-              TYPENT = EDMAIL
+               CALL U2MESK('F','UTILITAI2_94',1,NOCH)
+            END IF
+
+C           VERIFICATION DE LA PRESENCE DE 'PARAM' ET 'OPTION'
+C           POUR LES CHAMPS ELGA
+            IF(NOCH(6:9).EQ.'ELGA') THEN
+               CALL ASSERT(OPTION.NE.' ')
+               CALL ASSERT(PARAM .NE.' ')
             ENDIF
 
-            DO 230,LETYPE = 1,NBTYP
-              IAUX = RENUMD(LETYPE)
-              TYPGOM = TYPGEO(IAUX)
-              CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
+C           NOM DU CHAMP MED
+            CALL GETVTX('FORMAT_MED','NOM_CHAM_MED',I,1,1,NOCHMD,N1)
+            IF(N1.EQ.0)THEN
+C                      12345678901234567890123456789012
+               NOCHMD='________________________________'
+               CALL GETVTX('FORMAT_MED','NOM_RESU',I,1,1,NORACI,N2)
+               NCHAR=LXLGUT(NORACI)
+               NOCHMD(1:NCHAR)=NORACI(1:NCHAR)
+               NCHAR=LXLGUT(NOCH)
+               NOCHMD(9:8+NCHAR)=NOCH(1:NCHAR)
+            ENDIF
 
-              IF (NPAS.NE.0) THEN
-                CALL JEVEUO(PREFIX//'.INST','L',IPAS)
-                CALL JEVEUO(PREFIX//'.NUME','L',INUM)
-                GO TO 240
-              END IF
-  230       CONTINUE
+C           NOM DES COMPOSANTES VOULUES
+            NCMPVA = '&&'//NOMPRO//'.'//LCMPVA
+            NCMPVM = '&&'//NOMPRO//'.'//LCMPVM
+C           NOM_CMP ASTER ?
+            NBCMPV=0
+            CALL GETVTX('FORMAT_MED',LCMPVA,I,1,0,REP,IAUX)
+            IF (IAUX.LT.0) THEN
+               NBCMPV = -IAUX
+            ENDIF
 
-C           CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
-C           DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
-            IF(TYPCHA(1:4).EQ.'ELNO')THEN
-              TYPENT = EDMAIL
-              CALL U2MESK('A','MED_53',1,NOCHMD)
-              DO 231,LETYPE = 1,NBTYP
-               IAUX = RENUMD(LETYPE)
-               TYPGOM = TYPGEO(IAUX)
+C           NOM_CMP MED ?
+            CALL GETVTX('FORMAT_MED',LCMPVM,I,1,0,REP,IAUX)
+            IF (-IAUX.NE.NBCMPV) THEN
+               VALK(1) = LCMPVA
+               VALK(2) = LCMPVM
+               CALL U2MESK('F','UTILITAI2_95', 2 ,VALK)
+            ENDIF
+            IF (NBCMPV.GT.0) THEN
+               CALL WKVECT(NCMPVA,'V V K8',NBCMPV,JCMPVA)
+               CALL GETVTX('FORMAT_MED',LCMPVA,I,1,NBCMPV,ZK8(JCMPVA),
+     &                     IAUX)
+               CALL WKVECT(NCMPVM,'V V K16',NBCMPV,JCMPVM)
+               CALL GETVTX('FORMAT_MED',LCMPVM,I,1,NBCMPV,ZK16(JCMPVM),
+     &                     IAUX)
+            ENDIF
+
+C           PROLONGEMENT PAR ZERO OU NOT A NUMBER
+            CALL GETVTX(' ', 'PROL_ZERO', 0, 1, 1, PROLZ, IAUX)
+            IF (PROLZ .NE. 'OUI') THEN
+               PROLZ = 'NAN'
+            ENDIF
+
+C           NOM DU FICHIER MED
+            CALL ULISOG(MFICH, KFIC, SAUX01)
+            IF ( KFIC(1:1).EQ.' ' ) THEN
+               CALL CODENT ( MFICH, 'G', SAUX08 )
+               NOFIMD = 'fort.'//SAUX08
+            ELSE
+               NOFIMD = KFIC(1:200)
+            ENDIF
+C
+            IF ( NIVINF.GT.1 ) THEN
+               WRITE(IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
+            ENDIF
+C                     12   345678   90123456789
+            PREFIX = '&&'//NOMPRO//'.MED'
+            CALL JEDETC('V',PREFIX,1)
+
+C           RECUPERATION DU NOMBRE DE PAS DE TEMPS DANS LE CHAMP
+C           ----------------------------------------------------
+            IF (TYPCHA(1:2).EQ.'NO') THEN
+               TYPENT = EDNOEU
+               TYPGOM = TYPNOE
                CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
-               IF (NPAS.NE.0) THEN
-                  CALL JEVEUO(PREFIX//'.INST','L',IPAS)
-                  CALL JEVEUO(PREFIX//'.NUME','L',INUM)
+               IF (NPAS.EQ.0) THEN
+                  CALL U2MESK('A','MED_95',1,NOCHMD)
                   GO TO 240
                END IF
-  231        CONTINUE
-           END IF
+               CALL JEVEUO(PREFIX//'.INST','L',IPAS)
+               CALL JEVEUO(PREFIX//'.NUME','L',INUM)
 
-          END IF
-  240     CONTINUE
+            ELSE IF (TYPCHA(1:2).EQ.'EL') THEN
+               CALL MDEXPM(NOFIMD,NOMAMD,EXISTM,NDIM,IRET)
+               CALL LRMTYP(NBTYP,NOMTYP,NNOTYP,TYPGEO,RENUMD,
+     &                     MODNUM, NUANOM, NUMNOA )
+               IF(TYPCHA(1:4).EQ.'ELNO')THEN
+                  TYPENT = EDNOMA
+               ELSE
+                  TYPENT = EDMAIL
+               ENDIF
 
+               DO 230,LETYPE = 1,NBTYP
+                  IAUX = RENUMD(LETYPE)
+                  TYPGOM = TYPGEO(IAUX)
+                  CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,
+     &                        NPAS,IRET)
+                  IF (NPAS.NE.0) THEN
+                     CALL JEVEUO(PREFIX//'.INST','L',IPAS)
+                     CALL JEVEUO(PREFIX//'.NUME','L',INUM)
+                     GO TO 240
+                  END IF
+230            CONTINUE
+
+C              CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
+C              DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
+               IF(TYPCHA(1:4).EQ.'ELNO')THEN
+                  TYPENT = EDMAIL
+                  CALL U2MESK('A','MED_53',1,NOCHMD)
+                  DO 231,LETYPE = 1,NBTYP
+                     IAUX = RENUMD(LETYPE)
+                     TYPGOM = TYPGEO(IAUX)
+                     CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,
+     &                           NPAS,IRET)
+                     IF (NPAS.NE.0) THEN
+                        CALL JEVEUO(PREFIX//'.INST','L',IPAS)
+                        CALL JEVEUO(PREFIX//'.NUME','L',INUM)
+                        GO TO 240
+                     END IF
+231               CONTINUE
+               END IF
+
+            END IF
+240         CONTINUE
 C
-C
-         IF(ACCES.NE.'TOUT_ORDRE')THEN
-             NPAS0=NBORDR
-         ELSE
-             NPAS0=NPAS
-         ENDIF
-
-C        DETERMINATION DES NUMEROS D'ORDRE MED : ZI(JNUOM)
-         IF(NNU.NE.0)THEN
-            CALL WKVECT('&&OP0150_NUMORD_MED','V V I',NPAS,JNUOM)
-            DO 242 J=1,NPAS
-              ZI(JNUOM+J-1)=ZI(INUM+2*J-1)
- 242        CONTINUE
-         ENDIF
-
-         CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',
-     &                                               NBMA,K8B,IRET)
-         CALL WKVECT('&&OP0150_NBPG_MAILLE','V V I',NBMA,JNBPGM)
-         CALL WKVECT('&&OP0150_NBPG_MED','V V I',NBMA,JNBPMM)
-
-
-
-C     -- BOUCLE SUR LES PAS DE TEMPS
-C     --------------------------------------------
-
-          DO 250 ITPS = 1,NPAS0
-            CHANOM = '&&OP0150.TEMPOR'
-            K32B = '                                '
-C
-            IF(NNU.NE.0)THEN
-              NUMORD = ZI(JNUME+ITPS-1)
-              ITPS0=INDIIS(ZI(JNUOM),NUMORD,1,NPAS)
-              IF(ITPS0.EQ.0)THEN
-                CALL U2MESG('A','MED_87',1,RESU,1,NUMORD,0,R8B)
-                GOTO 250
-              ENDIF
-              NUMPT=ZI(INUM+2*ITPS0-2)
-            ELSEIF(NTO.NE.0)THEN
-              NUMORD = ZI(INUM+2*ITPS-1)
-              NUMPT  = ZI(INUM+2*ITPS-2)
-            ELSEIF(NIS.NE.0)THEN
-              INST = ZR(JLIST+ITPS-1)
+            IF(ACCES.NE.'TOUT_ORDRE')THEN
+               NPAS0=NBORDR
+            ELSE
+               NPAS0=NPAS
             ENDIF
 
-            CALL LRCHME(CHANOM,NOCHMD,K32B,NOMA,TYPCHA,NOMGD,TYPENT,
+C           DETERMINATION DES NUMEROS D'ORDRE MED : ZI(JNUOM)
+            IF(NNU.NE.0)THEN
+               CALL WKVECT('&&OP0150_NUMORD_MED','V V I',NPAS,JNUOM)
+               DO 242 J=1,NPAS
+                  ZI(JNUOM+J-1)=ZI(INUM+2*J-1)
+242            CONTINUE
+            ENDIF
+
+            CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',
+     &                  NBMA,K8B,IRET)
+            CALL WKVECT('&&OP0150_NBPG_MAILLE','V V I',NBMA,JNBPGM)
+            CALL WKVECT('&&OP0150_NBPG_MED','V V I',NBMA,JNBPMM)
+
+C           BOUCLE SUR LES PAS DE TEMPS
+C           ---------------------------
+            DO 250 ITPS = 1,NPAS0
+               CHANOM = '&&OP0150.TEMPOR'
+               K32B = '                                '
+C
+               IF(NNU.NE.0)THEN
+                  NUMORD = ZI(JNUME+ITPS-1)
+                  ITPS0=INDIIS(ZI(JNUOM),NUMORD,1,NPAS)
+                  IF(ITPS0.EQ.0)THEN
+                     CALL U2MESG('A','MED_87',1,RESU,1,NUMORD,0,R8B)
+                     GOTO 250
+                  ENDIF
+                  NUMPT=ZI(INUM+2*ITPS0-2)
+               ELSEIF(NTO.NE.0)THEN
+                  NUMORD = ZI(INUM+2*ITPS-1)
+                  NUMPT  = ZI(INUM+2*ITPS-2)
+               ELSEIF(NIS.NE.0)THEN
+                  INST = ZR(JLIST+ITPS-1)
+               ENDIF
+
+               CALL LRCHME(CHANOM,NOCHMD,K32B,NOMA,TYPCHA,NOMGD,TYPENT,
      &                  NBCMPV,NCMPVA,NCMPVM,PROLZ,
      &                  IINST,NUMPT,NUMORD,INST,CRIT,EPSI,
      &                  MFICH,LIGREL,OPTION,PARAM,ZI(JNBPGM),ZI(JNBPMM),
      &                  IRET)
 
-
-C        -- POUR LES CHAM_NO :
-C        -- POUR ECONOMISER L'ESPACE, ON ESSAYE DE PARTAGER LE PROF_CHNO
-C           DU CHAMP CREE AVEC LE PROF_CHNO PRECEDENT :
-            IF (TYPCHA.EQ.'NOEU') THEN
-               CALL DISMOI('F','PROF_CHNO',CHANOM,'CHAM_NO',IBID,
-     &                     PCHN1,IER)
-               IF (.NOT.IDENSD('PROF_CHNO',NOMPRN(1:19),PCHN1) )  THEN
-                  CALL GNOMSD ( NOMPRN,15,19 )
-                  CALL COPISD ( 'PROF_CHNO', 'G', PCHN1, NOMPRN )
+C              POUR LES CHAM_NO : POUR ECONOMISER L'ESPACE,
+C              ON ESSAYE DE PARTAGER LE PROF_CHNO DU CHAMP CREE AVEC
+C              LE PROF_CHNO PRECEDENT :
+               IF (TYPCHA.EQ.'NOEU') THEN
+                  CALL DISMOI('F','PROF_CHNO',CHANOM,'CHAM_NO',IBID,
+     &                        PCHN1,IER)
+                  IF (.NOT.IDENSD('PROF_CHNO',NOMPRN(1:19),PCHN1)) THEN
+                     CALL GNOMSD( NOMPRN,15,19 )
+                     CALL COPISD( 'PROF_CHNO', 'G', PCHN1, NOMPRN )
+                  END IF
+                  CALL JEVEUO( CHANOM//'.REFE', 'E', JREFE )
+                  ZK24(JREFE+1) = NOMPRN(1:19)
+                  CALL DETRSD( 'PROF_CHNO', PCHN1)
                END IF
-               CALL JEVEUO ( CHANOM//'.REFE', 'E', JREFE )
-               ZK24(JREFE+1) = NOMPRN(1:19)
-               CALL DETRSD ( 'PROF_CHNO', PCHN1)
-            END IF
+               IF (NUMORD.EQ.EDNONO) THEN
+                  NUMORD = NUMPT
+               END IF
 
-            IF (NUMORD.EQ.EDNONO) THEN
-              NUMORD = NUMPT
-            END IF
-
-            CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
-            IF (IRET.EQ.100) THEN
-            ELSE IF (IRET.EQ.110) THEN
-              CALL RSAGSD(RESU,0)
-              CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
-            ELSE
-              VALK (1) = RESU
-              VALK (2) = CHANOM
-              VALI (1) = ITPS
-              VALI (2) = IRET
-              CALL U2MESG('F','UTILITAI8_27',2,VALK,2,VALI,0,0.D0)
-            END IF
-            CALL COPISD('CHAMP_GD','G',CHANOM,NOMCH)
-            CALL RSNOCH(RESU,LINOCH(I),NUMORD,' ')
-            CALL RSADPA(RESU,'E',1,'INST',NUMORD,0,JINST,K8B)
-            IF(NIS.NE.0)THEN
-               ZR(JINST) = INST
-            ELSEIF(NNU.NE.0)THEN
-               ZR(JINST) = ZR(IPAS-1+ITPS0)
-            ELSEIF(NTO.NE.0)THEN
-               ZR(JINST) = ZR(IPAS-1+ITPS)
-            ENDIF
-            CALL DETRSD('CHAMP_GD',CHANOM)
-  250     CONTINUE
-          CALL JEDETR('&&OP0150_NBPG_MAILLE')
-          CALL JEDETR('&&OP0150_NBPG_MED')
-          CALL JEDETR(NCMPVA)
-          CALL JEDETR(NCMPVM)
-          CALL JEDETR('&&OP0150_NUMORD_MED')
-  260   CONTINUE
-
-
+               CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
+               IF (IRET.EQ.100) THEN
+               ELSE IF (IRET.EQ.110) THEN
+                  CALL RSAGSD(RESU,0)
+                  CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
+               ELSE
+                  VALK (1) = RESU
+                  VALK (2) = CHANOM
+                  VALI (1) = ITPS
+                  VALI (2) = IRET
+                  CALL U2MESG('F','UTILITAI8_27',2,VALK,2,VALI,0,0.D0)
+               END IF
+               CALL COPISD('CHAMP_GD','G',CHANOM,NOMCH)
+               CALL RSNOCH(RESU,LINOCH(I),NUMORD,' ')
+               CALL RSADPA(RESU,'E',1,'INST',NUMORD,0,JINST,K8B)
+               IF(NIS.NE.0)THEN
+                  ZR(JINST) = INST
+               ELSEIF(NNU.NE.0)THEN
+                  ZR(JINST) = ZR(IPAS-1+ITPS0)
+               ELSEIF(NTO.NE.0)THEN
+                  ZR(JINST) = ZR(IPAS-1+ITPS)
+               ENDIF
+               CALL DETRSD('CHAMP_GD',CHANOM)
+250         CONTINUE
+            CALL JEDETR('&&OP0150_NBPG_MAILLE')
+            CALL JEDETR('&&OP0150_NBPG_MED')
+            CALL JEDETR(NCMPVA)
+            CALL JEDETR(NCMPVM)
+            CALL JEDETR('&&OP0150_NUMORD_MED')
+260      CONTINUE
+C
       ELSE
-        CALL ASSERT(.FALSE.)
+         CALL ASSERT(.FALSE.)
       END IF
 
 C - STOCKAGE EVENTUEL : MODELE, CHAM_MATER, CARA_ELEM, EXCIT

@@ -5,7 +5,7 @@
       CHARACTER*24 NOMC(DIM)
       CHARACTER*80 NOML(DIM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C  OUT PRPAL(IMES) :  'P' : MESURE PRICIPALE
 C                     'S' : MESURE SECONDAIRE
 C ----------------------------------------------------------------------
       INTEGER NBMAX,K,I1,I2
-      PARAMETER (NBMAX=20)
+      PARAMETER (NBMAX=30)
       CHARACTER*80 D1(NBMAX)
 
 C     -- COMMONS POUR MESURE DE TEMPS :
@@ -70,8 +70,14 @@ C     -----------------------------------------------------
 
       D1(12)='CPU.COFR.1|P|#3 Contact, frottement'
 
-      D1(13)='CPU.MEMD.1|P|#4 Dechargement de la memoire sur disque'
+C     -- LES 2 MESURES SUIVANTES SONT SPECIALES : ON S'INTERDIT DE
+C        FAIRE APPEL A JEVEUX. VOIR UTTCPU.F, UTTCPR.F
+C        C'EST LEUR NOM QUI EST CONNU DE TOUS : 'CPU.MEMD.1/2'
+      D1(13)='CPU.MEMD.1|P|#4 DECHARGEMENT DE LA MEMOIRE SUR DIsque'
       D1(14)='CPU.MEMD.2|P|#4 ??? libre pour mesure interne jeveux'
+
+C     D1(15) ='CPU.CALC.4|S|#2.1.1.1 Routine extrai'
+C     D1(16) ='CPU.CALC.5|S|#2.1.1.2 ...'
 
       NBMESU=14
       CALL ASSERT(NBMAX.GE.NBMESU)

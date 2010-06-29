@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/04/2010   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,15 +56,16 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
            VERSION         =SIMP(statut='f',typ='R',defaut=1.2,into=(1.0,1.2)),
          ),
 
-
-         RESTREINT   =FACT(statut='f', max=1,
-           fr="Pour réduire une ou plusieurs sd_resultat sur un ensemble de mailles",
-           regles=(AU_MOINS_UN('GROUP_MA','MAILLE',),),
-           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
-           TOUT_GROUP_MA   =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON'),),
-           GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-           TOUT_GROUP_NO   =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON'),),
+         b_restreint  =BLOC(condition="FORMAT=='MED'",fr="Seulement pour les fichiers MED",
+            RESTREINT   =FACT(statut='f', max=1,
+            fr="Pour réduire une ou plusieurs sd_resultat sur un ensemble de mailles",
+            regles=(AU_MOINS_UN('GROUP_MA','MAILLE',),),
+            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+            MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+            TOUT_GROUP_MA   =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON'),),
+            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+            TOUT_GROUP_NO   =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON'),),
+            ),
          ),
 
          RESU            =FACT(statut='o',max='**',

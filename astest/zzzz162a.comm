@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -305,7 +305,65 @@ TEST_RESU ( RESU=(
                          NOM_CMP    = 'TEMP',
                          VALE       = 7.3333333E+01       ),
                     ),)
+#-----------------------------------------------
+# VALIDATION DE CREA_TABLE/RESU (1/2) : CHAM_NO
 
+TB01=CREA_TABLE(
+   RESU=_F(RESULTAT=TEMP0, TOUT='OUI', TOUT_CMP='OUI', NOM_CHAM='TEMP',),
+)
+
+PourTest = [
+   [ 4, 'N1', 1.0, 0.0, 85.0],
+   [ 4, 'N2', 2.0, 0.0, 85.0],
+   [ 4, 'N3', 2.0, 4.0, 85.0],
+   [ 4, 'N4', 1.0, 4.0, 85.0],
+   [ 2, 'N1', 1.0, 0.0, 73.333],
+   [ 2, 'N2', 2.0, 0.0, 73.333],
+   [ 2, 'N3', 2.0, 4.0, 73.333],
+   [ 2, 'N4', 1.0, 4.0, 73.333],
+]
+for numordre,noeud,X,Y,VTEMP in PourTest:
+   TEST_TABLE(
+      TABLE=TB01,
+      FILTRE=(
+         _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
+         _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
+      ),
+      NOM_PARA='TEMP', VALE=VTEMP,
+   )
+   TEST_TABLE(
+      TABLE=TB01,
+      FILTRE=(
+         _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
+         _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
+      ),
+      NOM_PARA='COOR_X', VALE=X,
+   )
+   TEST_TABLE(
+      TABLE=TB01,
+      FILTRE=(
+         _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
+         _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
+      ),
+      NOM_PARA='COOR_Y', VALE=Y,
+   )
+
+
+CH01=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+               OPERATION='EXTR',
+               RESULTAT=TEMP0,
+               INST=73.33,
+               NOM_CHAM='TEMP')
+
+TB02=CREA_TABLE(
+   RESU=_F(CHAM_GD=CH01, NOEUD='N1', NOM_CMP='TEMP',),
+)
+
+TEST_TABLE(
+   TABLE=TB02,
+   NOM_PARA='TEMP',
+   VALE=73.33
+)
 
 DETRUIRE(CONCEPT=_F(NOM=TEMP0))
 
@@ -456,6 +514,114 @@ TEST_RESU ( RESU=(
                          NOM_CMP    = 'V1',
                          VALE       = 4.12500E-04       ),
                     ),)
+
+#------------------------------------------------
+# VALIDATION DE CREA_TABLE/RESU (2/2) : CHAM_ELEM
+
+TB11=CREA_TABLE(
+   RESU=_F(RESULTAT=UUU, NOM_CHAM='SIEF_ELNO_ELGA', NOM_CMP=('SIYY','SIZZ'),MAILLE='M1',),
+)
+
+PourTest = [
+   [ 1, 'N1', 1.0, 0.0 , -133.332],
+   [ 2, 'N4', 1.0, 4.0,  -116.66750118],
+   [ 5, 'N3', 2.0, 4.0,   -75.0000013627]
+]
+for numordre,noeud,X,Y, SIYY in PourTest:
+   TEST_TABLE(
+      TABLE=TB11,
+      FILTRE=(
+         _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
+         _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
+      ),
+      NOM_PARA='COOR_X', VALE=X,
+   )
+   TEST_TABLE(
+      TABLE=TB11,
+      FILTRE=(
+         _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
+         _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
+      ),
+      NOM_PARA='COOR_Y', VALE=Y,
+   )
+   TEST_TABLE(
+      TABLE=TB11,
+      FILTRE=(
+         _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
+         _F(NOM_PARA = 'NOEUD',      VALE_K = noeud),
+      ),
+      NOM_PARA='SIYY', VALE=SIYY,
+   )
+
+
+CH11=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                OPERATION='EXTR',
+                RESULTAT=UUU,
+                NUME_ORDRE=2,
+                NOM_CHAM='SIEF_ELGA')
+
+TB12=CREA_TABLE(
+   RESU=_F(CHAM_GD=CH11, NOM_CMP=('SIYY','SIZZ'), MAILLE='M1',),
+)
+
+PourTest = [
+   [ 1, 1.21132486541 , 0.845299461621 , -116.66750118 ],
+   [ 2, 1.78867513459 , 0.845299461621 , -116.66750118 ],
+   [ 3, 1.78867513459 , 3.15470053838  , -116.66750118 ],
+   [ 4, 1.21132486541 , 3.15470053838  , -116.66750118 ],
+]
+for point,X,Y,SIYY in PourTest:
+   TEST_TABLE(TABLE=TB12,
+      FILTRE=_F(NOM_PARA = 'POINT', VALE_I = point),
+      NOM_PARA='SIYY', VALE=SIYY,
+   )
+   TEST_TABLE(TABLE=TB12,
+      FILTRE=_F(NOM_PARA = 'POINT', VALE_I = point),
+      NOM_PARA='COOR_X', VALE=X,
+   )
+   TEST_TABLE(TABLE=TB12,
+      FILTRE=_F(NOM_PARA = 'POINT', VALE_I = point),
+      NOM_PARA='COOR_Y', VALE=Y,
+   )
+
+TB13=CREA_TABLE(
+   RESU=_F(RESULTAT=UUU, NOM_CHAM='VARI_ELGA', NOM_CMP='V1', NUME_ORDRE=5, TOUT='OUI',),
+)
+
+PourTest = [
+ [ 5, 'M1', 1, 1.21132486541, 0.845299461621, 0.000525000000018 ],
+ [ 5, 'M1', 2, 1.78867513459, 0.845299461621, 0.000524999999886 ],
+ [ 5, 'M1', 3, 1.78867513459, 3.15470053838 , 0.000524999999017 ],
+ [ 5, 'M1', 4, 1.21132486541, 3.15470053838 , 0.000525000000993 ],
+]
+for numordre,maille,point,X,Y,V1 in PourTest:
+   TEST_TABLE(
+      TABLE=TB13,
+      FILTRE=(
+         _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
+         _F(NOM_PARA = 'MAILLE', VALE_K = maille),
+         _F(NOM_PARA = 'POINT',  VALE_I = point),
+      ),
+      NOM_PARA='V1', VALE=V1,
+   )
+   TEST_TABLE(
+      TABLE=TB13,
+      FILTRE=(
+         _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
+         _F(NOM_PARA = 'MAILLE', VALE_K = maille),
+         _F(NOM_PARA = 'POINT',  VALE_I = point),
+      ),
+      NOM_PARA='COOR_X', VALE=X,
+   )
+   TEST_TABLE(
+      TABLE=TB13,
+      FILTRE=(
+         _F(NOM_PARA = 'NUME_ORDRE', VALE_I = numordre),
+         _F(NOM_PARA = 'MAILLE', VALE_K = maille),
+         _F(NOM_PARA = 'POINT',  VALE_I = point),
+      ),
+      NOM_PARA='COOR_Y', VALE=Y,
+   )
 
 
 DETRUIRE(CONCEPT=_F(NOM=UUU0))

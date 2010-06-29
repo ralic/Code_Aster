@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/09/2009   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -565,6 +565,7 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
       NOEUD_CENTRE         = SIMP(statut='f',typ=no),
       COOR_CENTRE          = SIMP(statut='f',typ='R',min=2,max=3),
       EUROPLEXUS           = SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON"),
+      UNITE                = SIMP(statut='f',typ='I',val_min=1),
    ),
 
 #============================================================================

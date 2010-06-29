@@ -3,7 +3,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C ---------------------------------------------------------------------
      &             ADMODL,LCMODL,IRET1,IFEL1,IFEL2,IFEL3,
      &             IINF,IFCPU,IBID,IFM,NIV,ILIMPI,IFEL4,IFEL5,ILIMPB,
      &             IRET2,IRET3,IAUX1,JFEL4,IAUX2,IAUX3,COMPT,
-     &             NIVMPI,RANG,NBLOG,NBPROC
+     &             NIVMPI,RANG,NBLOG,NBPROC,IADD
 
       REAL*8       TEMPS(6),RBID
       INTEGER VALI(4)
@@ -616,6 +616,11 @@ C==========================
 C BOUCLE SUR LES GRELS DU LIGREL GLOBAL NOMLI/ILIMA
 C==========================
               DO 170 IGR = 1,ZI(IADLIE+3* (ILIVE-1))
+C               -- L'OBJET .RESL N'EXISTE PAS FORCEMENT :
+C                  (PARALLELISME='GROUP_ELEM')
+                CALL JAEXIN(JEXNUM(RESU(1:19)//'.RESL',IGR),IEXI)
+                IF (IEXI.EQ.0) GOTO 170
+
                 CALL JEVEUO(RESU(1:19)//'.DESC','L',IDDESC)
                 MODE = ZI(IDDESC+IGR+1)
 

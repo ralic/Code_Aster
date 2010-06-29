@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,7 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     ECOPILO  = PILO_R   ELGA__ RIGI    (A0       A1       A2       A3       ETA      )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
