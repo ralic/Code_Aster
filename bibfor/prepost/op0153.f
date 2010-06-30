@@ -1,8 +1,8 @@
-      SUBROUTINE OP0153 ( IERR )
+      SUBROUTINE OP0153()
       IMPLICIT  REAL*8  ( A-H,O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

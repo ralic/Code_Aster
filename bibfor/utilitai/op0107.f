@@ -1,9 +1,8 @@
-      SUBROUTINE OP0107 ( IER )
+      SUBROUTINE OP0107()
       IMPLICIT   NONE
-      INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +39,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NH, IRET, JCHA, JORDR, N1, N2, NBOCC,
-     &             NBORDR, NC, NCHAR, NP, NR, JPARA, ICHA
+     &             NBORDR, NC, NCHAR, NP, NR, JPARA, ICHA,IER
       REAL*8       PREC
       CHARACTER*4  CTYP
       CHARACTER*8  K8B, MODELE, CARA, DEFORM, RESUCO, CRIT

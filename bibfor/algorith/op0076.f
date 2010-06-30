@@ -1,7 +1,7 @@
-      SUBROUTINE OP0076( IERR )
+      SUBROUTINE OP0076()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

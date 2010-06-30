@@ -1,0 +1,500 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 30/06/2010 - 15:22:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015172 DU 2010-06-09 13:07:54
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Stanley + evol_char
+FONCTIONNALITE
+   Problème :
+   ==========
+   L'evol_char n'est pas une SD permise dans Stanley.
+   
+   Correction :
+   ============
+   On ajoute la possibilité d'utiliser une SD evol_char dans Stanley mais aussi la
+   possibilité de d'utiliser les champs liés à evol_char :
+   - 'PRES'     
+   - 'FSUR_2D'  
+   - 'FSUR_3D'  
+   - 'FVOL_2D'  
+   - 'FVOL_3D'  
+   - 'VITE_VENT'
+   
+   Impacts :
+   =========
+   stanley.py
+   cata_champs.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015166 DU 2010-06-08 13:35:30
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+   Doc V ssls130
+FONCTIONNALITE
+   Problème :
+   ==========
+   La doc de ssls130 a été produite mais est restée dans le REX en pièce jointe de la fiche 8995.
+   
+   Correction :
+   ============
+   On transforme le fichier word en fichier open office, on corrige les styles et on met a
+   jour la doc.
+   La doc est maintenant dans l'appli en attente de publication.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : v3.03.130
+VALIDATION
+   *
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015134 DU 2010-05-31 14:51:55
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Responsabilite des catalogues de messages
+FONCTIONNALITE
+   Comme préalable à la reprise globale des catalogues, je me note responsable de
+   ces sources afin de pouvoir contrôler chaque modification.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   *
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015033 DU 2010-05-05 09:07:51
+TYPE anomalie concernant Site web (VERSION )
+TITRE
+   Licences des produits distribuxc3xa9s sur le site
+FONCTIONNALITE
+   Problème :
+   ==========
+   Les licences des produits distribués sur le site ne sont pas affichées clairement (cf.:
+   http://www.code-aster.org/forum2/viewtopic.php?id=13290
+   http://www.code-aster.org/forum2/viewtopic.php?id=13292 ).
+   
+   Correction :
+   ============
+   Une page a été crée dans la rubrique téléchargement pour lister les licences des produits.
+   
+   http://www.code-aster.org/V2/spip.php?article305
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   *
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013496 DU 2009-06-10 13:14:22
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Paramxc3xa8tre IER dans appel OP
+FONCTIONNALITE
+   Problème :
+   ==========
+   Dans toutes les routines des commandes Fortran (commençant par OPxxxx), on a un paramètre
+   "IER" qui sert à rien depuis la mise en place du nouveau superviseur.
+   Sa présence nuit à l'objectif "ZERO WARNING" quand on compile.
+   
+   Correction :
+   ============
+   On supprime ce paramètre d'appel dans les op (sauf op9999.f) et on met fermetur en cohérence.
+   
+   
+   ex0000.f  op0013.f  op0028.f  op0044.f  op0068.f  op0090.f  op0109.f  op0137.f  op0154.f 
+   op0172.f  op0192.f
+   ex0100.f  op0014.f  op0029.f  op0045.f  op0070.f  op0092.f  op0110.f  op0140.f  op0156.f 
+   op0173.f  op0193.f
+   op0000.f  op0015.f  op0030.f  op0046.f  op0071.f  op0093.f  op0113.f  op0141.f  op0157.f 
+   op0174.f  op0194.f
+   op0001.f  op0016.f  op0031.f  op0047.f  op0072.f  op0094.f  op0117.f  op0142.f  op0160.f 
+   op0176.f  op0195.f
+   op0002.f  op0017.f  op0032.f  op0048.f  op0073.f  op0096.f  op0118.f  op0143.f  op0161.f 
+   op0177.f  op0196.f
+   op0003.f  op0018.f  op0033.f  op0049.f  op0074.f  op0098.f  op0119.f  op0144.f  op0162.f 
+   op0178.f  op0197.f
+   op0004.f  op0019.f  op0034.f  op0050.f  op0075.f  op0099.f  op0120.f  op0145.f  op0163.f 
+   op0179.f  op0198.f
+   op0005.f  op0020.f  op0035.f  op0051.f  op0076.f  op0100.f  op0124.f  op0146.f  op0164.f 
+   op0180.f  op0199.f
+   op0006.f  op0021.f  op0036.f  op0054.f  op0077.f  op0101.f  op0126.f  op0147.f  op0165.f 
+   op0181.f
+   op0007.f  op0022.f  op0037.f  op0055.f  op0078.f  op0102.f  op0127.f  op0148.f  op0166.f 
+   op0182.f
+   op0008.f  op0023.f  op0038.f  op0056.f  op0080.f  op0103.f  op0128.f  op0149.f  op0167.f 
+   op0184.f
+   op0009.f  op0024.f  op0039.f  op0057.f  op0081.f  op0104.f  op0130.f  op0150.f  op0168.f 
+   op0186.f
+   op0010.f  op0025.f  op0040.f  op0058.f  op0086.f  op0105.f  op0131.f  op0151.f  op0169.f 
+   op0187.f
+   op0011.f  op0026.f  op0041.f  op0059.f  op0088.f  op0106.f  op0134.f  op0152.f  op0170.f 
+   op0190.f
+   op0012.f  op0027.f  op0042.f  op0060.f  op0089.f  op0107.f  op0136.f  op0153.f  op0171.f 
+   op0191.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste complete
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011490 DU 2007-11-21 14:42:58
+TYPE evolution concernant Site web (VERSION 2.x)
+TITRE
+   Site web et tableau des classes de batch
+FONCTIONNALITE
+   JF Rit nous a passé un script python qui permet de dessiner le tableau des classes de
+   batch. Ce script a été mis à jour par A. Assire pour tourner sur Calibre 5.
+   Je l'ai fait tourné et j'ai obtenu de belles images.
+   
+   Elles ont été insérées sur le site dans la page consacrée au serveur Bull :
+   
+   http://www.code-aster.org/V2/spip.php?article330
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   *
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ FORTRAN MODIF algeline/op0014                delmas J.DELMAS           303      2      3
+ FORTRAN MODIF algeline/op0015                delmas J.DELMAS           118      3      4
+ FORTRAN MODIF algeline/op0031                delmas J.DELMAS           206      2      3
+ FORTRAN MODIF algeline/op0032                delmas J.DELMAS           222      2      3
+ FORTRAN MODIF algeline/op0037                delmas J.DELMAS           649      2      3
+ FORTRAN MODIF algeline/op0044                delmas J.DELMAS           766      2      4
+ FORTRAN MODIF algeline/op0045                delmas J.DELMAS          1170      3      4
+ FORTRAN MODIF algeline/op0092                delmas J.DELMAS            71      2      3
+ FORTRAN MODIF algeline/op0093                delmas J.DELMAS           218      2      3
+ FORTRAN MODIF algeline/op0141                delmas J.DELMAS           389      3      4
+ FORTRAN MODIF algeline/op0144                delmas J.DELMAS           389      2      7
+ FORTRAN MODIF algeline/op0156                delmas J.DELMAS           123      3      4
+ FORTRAN MODIF algeline/op0161                delmas J.DELMAS           138      2      2
+ FORTRAN MODIF algeline/op0167                delmas J.DELMAS           958      2      3
+ FORTRAN MODIF algeline/op0168                delmas J.DELMAS           471      2      3
+ FORTRAN MODIF algorith/op0010                delmas J.DELMAS           986      2      9
+ FORTRAN MODIF algorith/op0021                delmas J.DELMAS            84      2      3
+ FORTRAN MODIF algorith/op0022                delmas J.DELMAS            72      2      4
+ FORTRAN MODIF algorith/op0024                delmas J.DELMAS           206      2      3
+ FORTRAN MODIF algorith/op0025                delmas J.DELMAS           335      2      4
+ FORTRAN MODIF algorith/op0027                delmas J.DELMAS           247      2      5
+ FORTRAN MODIF algorith/op0028                delmas J.DELMAS           473      2     10
+ FORTRAN MODIF algorith/op0033                delmas J.DELMAS           344      3      4
+ FORTRAN MODIF algorith/op0041                delmas J.DELMAS           330      2      7
+ FORTRAN MODIF algorith/op0046                delmas J.DELMAS           242      3      8
+ FORTRAN MODIF algorith/op0048                delmas J.DELMAS           245      2      3
+ FORTRAN MODIF algorith/op0060                delmas J.DELMAS           730      4      9
+ FORTRAN MODIF algorith/op0070                delmas J.DELMAS           545      2      9
+ FORTRAN MODIF algorith/op0071                delmas J.DELMAS           113      2      3
+ FORTRAN MODIF algorith/op0072                delmas J.DELMAS           273      2      2
+ FORTRAN MODIF algorith/op0073                delmas J.DELMAS           212      2      3
+ FORTRAN MODIF algorith/op0074                delmas J.DELMAS           104      2      2
+ FORTRAN MODIF algorith/op0075                delmas J.DELMAS           184      2      3
+ FORTRAN MODIF algorith/op0076                delmas J.DELMAS            92      2      2
+ FORTRAN MODIF algorith/op0077                delmas J.DELMAS           280      2      3
+ FORTRAN MODIF algorith/op0078                delmas J.DELMAS           102      2      3
+ FORTRAN MODIF algorith/op0080                delmas J.DELMAS            83      2      5
+ FORTRAN MODIF algorith/op0081                delmas J.DELMAS           110      3      4
+ FORTRAN MODIF algorith/op0098                delmas J.DELMAS           102      2      3
+ FORTRAN MODIF algorith/op0099                delmas J.DELMAS           121      2      2
+ FORTRAN MODIF algorith/op0109                delmas J.DELMAS           440      2      3
+ FORTRAN MODIF algorith/op0110                delmas J.DELMAS           125      3      4
+ FORTRAN MODIF algorith/op0113                delmas J.DELMAS           281      2      8
+ FORTRAN MODIF algorith/op0118                delmas J.DELMAS           232      2      3
+ FORTRAN MODIF algorith/op0120                delmas J.DELMAS           218      3      4
+ FORTRAN MODIF algorith/op0124                delmas J.DELMAS           106      2      3
+ FORTRAN MODIF algorith/op0126                delmas J.DELMAS           118      3      3
+ FORTRAN MODIF algorith/op0127                delmas J.DELMAS            96      2      3
+ FORTRAN MODIF algorith/op0128                delmas J.DELMAS            72      3      3
+ FORTRAN MODIF algorith/op0131                delmas J.DELMAS           362      2      3
+ FORTRAN MODIF algorith/op0140                delmas J.DELMAS            81      2      3
+ FORTRAN MODIF algorith/op0149                delmas J.DELMAS           373      2      2
+ FORTRAN MODIF algorith/op0152                delmas J.DELMAS           436      2      2
+ FORTRAN MODIF algorith/op0154                delmas J.DELMAS           274      4      5
+ FORTRAN MODIF algorith/op0164                delmas J.DELMAS           273      3      6
+ FORTRAN MODIF algorith/op0166                delmas J.DELMAS           268      2      4
+ FORTRAN MODIF algorith/op0179                delmas J.DELMAS           197      3      6
+ FORTRAN MODIF algorith/op0186                delmas J.DELMAS           650      2      4
+ FORTRAN MODIF algorith/op0191                delmas J.DELMAS           188      2      3
+ FORTRAN MODIF algorith/op0193                delmas J.DELMAS            56      2      3
+ FORTRAN MODIF algorith/op0199                delmas J.DELMAS           219      2      3
+ FORTRAN MODIF assembla/op0011                delmas J.DELMAS           139      3      3
+ FORTRAN MODIF assembla/op0012                delmas J.DELMAS           148      2      3
+ FORTRAN MODIF assembla/op0013                delmas J.DELMAS            82      2      2
+ FORTRAN MODIF calculel/op0008                delmas J.DELMAS           221      2      3
+ FORTRAN MODIF calculel/op0009                delmas J.DELMAS           189      2      3
+ FORTRAN MODIF calculel/op0023                delmas J.DELMAS            80      2      3
+ FORTRAN MODIF calculel/op0026                delmas J.DELMAS           395      3      4
+ FORTRAN MODIF calculel/op0038                delmas J.DELMAS           163      2      3
+ FORTRAN MODIF calculel/op0054                delmas J.DELMAS           270      2      3
+ FORTRAN MODIF calculel/op0055                delmas J.DELMAS           269      2      3
+ FORTRAN MODIF calculel/op0058                delmas J.DELMAS           130      2      3
+ FORTRAN MODIF calculel/op0100                delmas J.DELMAS          1082      5      7
+ FORTRAN MODIF calculel/op0102                delmas J.DELMAS            92      3      3
+ FORTRAN MODIF calculel/op0171                delmas J.DELMAS           390      2      6
+ FORTRAN MODIF calculel/op0173                delmas J.DELMAS           115      2      3
+ FORTRAN MODIF calculel/op0177                delmas J.DELMAS           318      2      5
+ FORTRAN MODIF calculel/op0178                delmas J.DELMAS           182      2      3
+ FORTRAN MODIF echange/op0117                 delmas J.DELMAS            68      3      3
+ FORTRAN MODIF modelisa/op0001                delmas J.DELMAS           212      2      3
+ FORTRAN MODIF modelisa/op0005                delmas J.DELMAS           184      2      3
+ FORTRAN MODIF modelisa/op0006                delmas J.DELMAS           358      3      4
+ FORTRAN MODIF modelisa/op0007                delmas J.DELMAS            69      2      2
+ FORTRAN MODIF modelisa/op0018                delmas J.DELMAS           610      3      3
+ FORTRAN MODIF modelisa/op0019                delmas J.DELMAS           456      2      2
+ FORTRAN MODIF modelisa/op0030                delmas J.DELMAS           155      2      7
+ FORTRAN MODIF modelisa/op0034                delmas J.DELMAS            61      2      3
+ FORTRAN MODIF modelisa/op0056                delmas J.DELMAS           807      2      6
+ FORTRAN MODIF modelisa/op0057                delmas J.DELMAS           470      2      3
+ FORTRAN MODIF modelisa/op0059                delmas J.DELMAS           380      2      3
+ FORTRAN MODIF modelisa/op0068                delmas J.DELMAS            58      2      2
+ FORTRAN MODIF modelisa/op0101                delmas J.DELMAS           110      3      3
+ FORTRAN MODIF modelisa/op0103                delmas J.DELMAS            54      3      4
+ FORTRAN MODIF modelisa/op0119                delmas J.DELMAS           286      3      3
+ FORTRAN MODIF modelisa/op0143                delmas J.DELMAS           559      2      2
+ FORTRAN MODIF modelisa/op0145                delmas J.DELMAS           351      2      5
+ FORTRAN MODIF modelisa/op0146                delmas J.DELMAS           383      2      5
+ FORTRAN MODIF modelisa/op0147                delmas J.DELMAS           149      2      5
+ FORTRAN MODIF modelisa/op0148                delmas J.DELMAS           316      2      5
+ FORTRAN MODIF modelisa/op0180                delmas J.DELMAS           364      2      6
+ FORTRAN MODIF modelisa/op0190                delmas J.DELMAS            56      2      2
+ FORTRAN MODIF postrele/op0050                delmas J.DELMAS            67      3      3
+ FORTRAN MODIF postrele/op0051                delmas J.DELMAS           419      2      3
+ FORTRAN MODIF postrele/op0096                delmas J.DELMAS           514      2      3
+ FORTRAN MODIF postrele/op0165                delmas J.DELMAS           143      2      3
+ FORTRAN MODIF prepost/op0039                 delmas J.DELMAS           976      3      4
+ FORTRAN MODIF prepost/op0047                 delmas J.DELMAS            63      2      3
+ FORTRAN MODIF prepost/op0049                 delmas J.DELMAS           106      2      2
+ FORTRAN MODIF prepost/op0106                 delmas J.DELMAS           928      2      3
+ FORTRAN MODIF prepost/op0130                 delmas J.DELMAS            95      2      3
+ FORTRAN MODIF prepost/op0136                 delmas J.DELMAS            49      2      4
+ FORTRAN MODIF prepost/op0151                 delmas J.DELMAS           506      2      3
+ FORTRAN MODIF prepost/op0153                 delmas J.DELMAS           458      2      2
+ FORTRAN MODIF prepost/op0157                 delmas J.DELMAS           194      2      2
+ FORTRAN MODIF prepost/op0162                 delmas J.DELMAS           348      2      3
+ FORTRAN MODIF prepost/op0163                 delmas J.DELMAS           232      3      4
+ FORTRAN MODIF prepost/op0170                 delmas J.DELMAS           149      2      3
+ FORTRAN MODIF prepost/op0172                 delmas J.DELMAS           480      2      3
+ FORTRAN MODIF prepost/op0176                 delmas J.DELMAS           213      2      3
+ FORTRAN MODIF prepost/op0182                 delmas J.DELMAS           396      2      3
+ FORTRAN MODIF prepost/op0187                 delmas J.DELMAS           145      2      3
+ FORTRAN MODIF prepost/op0196                 delmas J.DELMAS           201      2      3
+ FORTRAN MODIF prepost/op0198                 delmas J.DELMAS           173      2      4
+ FORTRAN MODIF soustruc/op0086                delmas J.DELMAS           133      2      2
+ FORTRAN MODIF soustruc/op0088                delmas J.DELMAS            65      2      3
+ FORTRAN MODIF soustruc/op0089                delmas J.DELMAS           104      2      3
+ FORTRAN MODIF soustruc/op0104                delmas J.DELMAS           164      2      3
+ FORTRAN MODIF soustruc/op0105                delmas J.DELMAS            91      3      3
+ FORTRAN MODIF supervis/ex0000                delmas J.DELMAS           347    101    101
+ FORTRAN MODIF supervis/ex0100                delmas J.DELMAS           347    101    101
+ FORTRAN MODIF supervis/op0000                delmas J.DELMAS            29      2      4
+ FORTRAN MODIF supervis/op0137                delmas J.DELMAS            84      3      4
+ FORTRAN MODIF utilitai/op0002                delmas J.DELMAS            83      2      3
+ FORTRAN MODIF utilitai/op0003                delmas J.DELMAS           286      3      3
+ FORTRAN MODIF utilitai/op0004                delmas J.DELMAS           217      2      3
+ FORTRAN MODIF utilitai/op0016                delmas J.DELMAS           221      2      3
+ FORTRAN MODIF utilitai/op0017                delmas J.DELMAS           127      3      4
+ FORTRAN MODIF utilitai/op0020                delmas J.DELMAS            34      2      3
+ FORTRAN MODIF utilitai/op0029                delmas J.DELMAS            75      2      3
+ FORTRAN MODIF utilitai/op0035                delmas J.DELMAS           128      2      3
+ FORTRAN MODIF utilitai/op0036                delmas J.DELMAS           299      2      6
+ FORTRAN MODIF utilitai/op0040                delmas J.DELMAS            96      2      3
+ FORTRAN MODIF utilitai/op0042                delmas J.DELMAS            52      2      3
+ FORTRAN MODIF utilitai/op0090                delmas J.DELMAS           102      2      2
+ FORTRAN MODIF utilitai/op0094                delmas J.DELMAS           116      2      3
+ FORTRAN MODIF utilitai/op0107                delmas J.DELMAS           314      3      4
+ FORTRAN MODIF utilitai/op0134                delmas J.DELMAS           156      2      4
+ FORTRAN MODIF utilitai/op0142                delmas J.DELMAS           261      3      3
+ FORTRAN MODIF utilitai/op0150                delmas J.DELMAS          1146      5      9
+ FORTRAN MODIF utilitai/op0160                delmas J.DELMAS            74      2      3
+ FORTRAN MODIF utilitai/op0169                delmas J.DELMAS            86      2      6
+ FORTRAN MODIF utilitai/op0174                delmas J.DELMAS           176      2      3
+ FORTRAN MODIF utilitai/op0181                delmas J.DELMAS            93      3      5
+ FORTRAN MODIF utilitai/op0184                delmas J.DELMAS           416      3      4
+ FORTRAN MODIF utilitai/op0192                delmas J.DELMAS           339      2      4
+ FORTRAN MODIF utilitai/op0194                delmas J.DELMAS           128      3      4
+ FORTRAN MODIF utilitai/op0195                delmas J.DELMAS           316      2      3
+ FORTRAN MODIF utilitai/op0197                delmas J.DELMAS           617      2      4
+  PYTHON MODIF Messages/algeline2             delmas J.DELMAS           426      2      1
+  PYTHON MODIF Messages/algeline3             delmas J.DELMAS           440      2      1
+  PYTHON MODIF Messages/algeline4             delmas J.DELMAS           301      2      1
+  PYTHON MODIF Messages/algeline5             delmas J.DELMAS           393      2      1
+  PYTHON MODIF Messages/algeline              delmas J.DELMAS           429      2      1
+  PYTHON MODIF Messages/algorith10            delmas J.DELMAS           299      2      1
+  PYTHON MODIF Messages/algorith11            delmas J.DELMAS           257      2      1
+  PYTHON MODIF Messages/algorith12            delmas J.DELMAS           368      2      1
+  PYTHON MODIF Messages/algorith13            delmas J.DELMAS           268      2      1
+  PYTHON MODIF Messages/algorith14            delmas J.DELMAS           345      2      1
+  PYTHON MODIF Messages/algorith15            delmas J.DELMAS           422      2      1
+  PYTHON MODIF Messages/algorith16            delmas J.DELMAS           449      2      1
+  PYTHON MODIF Messages/algorith17            delmas J.DELMAS            68      3      1
+  PYTHON MODIF Messages/algorith2             delmas J.DELMAS           289      2      1
+  PYTHON MODIF Messages/algorith3             delmas J.DELMAS           273      2      1
+  PYTHON MODIF Messages/algorith4             delmas J.DELMAS           241      2      1
+  PYTHON MODIF Messages/algorith5             delmas J.DELMAS           349      2      1
+  PYTHON MODIF Messages/algorith6             delmas J.DELMAS           253      2      1
+  PYTHON MODIF Messages/algorith7             delmas J.DELMAS           194      2      1
+  PYTHON MODIF Messages/algorith8             delmas J.DELMAS           267      2      1
+  PYTHON MODIF Messages/algorith9             delmas J.DELMAS           263      2      1
+  PYTHON MODIF Messages/algorith              delmas J.DELMAS           210      2      1
+  PYTHON MODIF Messages/appelmpi              delmas J.DELMAS            47      2      1
+  PYTHON MODIF Messages/archivage             delmas J.DELMAS            39      2      1
+  PYTHON MODIF Messages/arlequindebg2         delmas J.DELMAS           176      2      1
+  PYTHON MODIF Messages/arlequindebg          delmas J.DELMAS           452      2      1
+  PYTHON MODIF Messages/arlequin              delmas J.DELMAS           200      3      2
+  PYTHON MODIF Messages/ascouf0               delmas J.DELMAS           338      2      1
+  PYTHON MODIF Messages/aspic0                delmas J.DELMAS           140      2      1
+  PYTHON MODIF Messages/assembla              delmas J.DELMAS           284      2      1
+  PYTHON MODIF Messages/cable0                delmas J.DELMAS            36      2      1
+  PYTHON MODIF Messages/calculel2             delmas J.DELMAS           425      2      1
+  PYTHON MODIF Messages/calculel3             delmas J.DELMAS           470      2      1
+  PYTHON MODIF Messages/calculel4             delmas J.DELMAS           366      2      1
+  PYTHON MODIF Messages/calculel5             delmas J.DELMAS           352      2      1
+  PYTHON MODIF Messages/calculel6             delmas J.DELMAS           450      2      1
+  PYTHON MODIF Messages/calculel7             delmas J.DELMAS            37      2      1
+  PYTHON MODIF Messages/calculel              delmas J.DELMAS           357      2      1
+  PYTHON MODIF Messages/cataelem              delmas J.DELMAS            75      2      1
+  PYTHON MODIF Messages/champs                delmas J.DELMAS            46      2      1
+  PYTHON MODIF Messages/charges               delmas J.DELMAS            78      2      1
+  PYTHON MODIF Messages/compor1               delmas J.DELMAS           356      2      1
+  PYTHON MODIF Messages/compor2               delmas J.DELMAS            89      2      1
+  PYTHON MODIF Messages/contact2              delmas J.DELMAS            57      2      1
+  PYTHON MODIF Messages/contact3              delmas J.DELMAS           260      2      1
+  PYTHON MODIF Messages/contact               delmas J.DELMAS           153      2      1
+  PYTHON MODIF Messages/discretisation        delmas J.DELMAS           120      2      1
+  PYTHON MODIF Messages/discrets              delmas J.DELMAS           121      2      1
+  PYTHON MODIF Messages/dvp                   delmas J.DELMAS            80      2      1
+  PYTHON MODIF Messages/dynamique             delmas J.DELMAS           143      2      1
+  PYTHON MODIF Messages/ecrevisse0            delmas J.DELMAS           204      2      1
+  PYTHON MODIF Messages/edyos                 delmas J.DELMAS           246      2      1
+  PYTHON MODIF Messages/elashyper             delmas J.DELMAS            39      2      1
+  PYTHON MODIF Messages/elasmult0             delmas J.DELMAS            29      2      1
+  PYTHON MODIF Messages/elements2             delmas J.DELMAS           225      2      1
+  PYTHON MODIF Messages/elements3             delmas J.DELMAS           281      2      1
+  PYTHON MODIF Messages/elements4             delmas J.DELMAS           275      2      1
+  PYTHON MODIF Messages/elements5             delmas J.DELMAS           207      2      1
+  PYTHON MODIF Messages/elements              delmas J.DELMAS           346      2      1
+  PYTHON MODIF Messages/execlogiciel0         delmas J.DELMAS            90      2      1
+  PYTHON MODIF Messages/factor                delmas J.DELMAS           409      2      1
+  PYTHON MODIF Messages/fatigue1              delmas J.DELMAS           380      2      1
+  PYTHON MODIF Messages/fermetur              delmas J.DELMAS            94      3      1
+  PYTHON MODIF Messages/feti0                 delmas J.DELMAS            41      2      1
+  PYTHON MODIF Messages/fiabilite0            delmas J.DELMAS            29      2      1
+  PYTHON MODIF Messages/fonct0                delmas J.DELMAS           352      2      1
+  PYTHON MODIF Messages/graph0                delmas J.DELMAS            61      2      1
+  PYTHON MODIF Messages/homard0               delmas J.DELMAS            60      2      1
+  PYTHON MODIF Messages/indicateur            delmas J.DELMAS           153      2      1
+  PYTHON MODIF Messages/intemail              delmas J.DELMAS           167      2      1
+  PYTHON MODIF Messages/jeveux1               delmas J.DELMAS            86      3      1
+  PYTHON MODIF Messages/jeveux                delmas J.DELMAS           549      2      1
+  PYTHON MODIF Messages/mail0                 delmas J.DELMAS            46      2      1
+  PYTHON MODIF Messages/matrice0              delmas J.DELMAS            53      2      1
+  PYTHON MODIF Messages/mecanonline2          delmas J.DELMAS           105      2      1
+  PYTHON MODIF Messages/mecanonline3          delmas J.DELMAS           106      2      1
+  PYTHON MODIF Messages/mecanonline4          delmas J.DELMAS            85      2      1
+  PYTHON MODIF Messages/mecanonline5          delmas J.DELMAS           227      2      1
+  PYTHON MODIF Messages/mecanonline           delmas J.DELMAS           159      2      1
+  PYTHON MODIF Messages/mecastatique          delmas J.DELMAS            31      2      1
+  PYTHON MODIF Messages/med2                  delmas J.DELMAS            47      2      1
+  PYTHON MODIF Messages/med                   delmas J.DELMAS           556      2      1
+  PYTHON MODIF Messages/miss0                 delmas J.DELMAS            69      2      1
+  PYTHON MODIF Messages/modal0                delmas J.DELMAS            30      2      1
+  PYTHON MODIF Messages/modal                 delmas J.DELMAS            30      2      1
+  PYTHON MODIF Messages/modelisa10            delmas J.DELMAS            51      2      2
+  PYTHON MODIF Messages/modelisa2             delmas J.DELMAS           340      2      1
+  PYTHON MODIF Messages/modelisa3             delmas J.DELMAS           352      2      1
+  PYTHON MODIF Messages/modelisa4             delmas J.DELMAS           419      2      1
+  PYTHON MODIF Messages/modelisa5             delmas J.DELMAS           371      2      1
+  PYTHON MODIF Messages/modelisa6             delmas J.DELMAS           366      2      1
+  PYTHON MODIF Messages/modelisa7             delmas J.DELMAS           407      2      1
+  PYTHON MODIF Messages/modelisa8             delmas J.DELMAS           356      2      1
+  PYTHON MODIF Messages/modelisa9             delmas J.DELMAS           370      2      1
+  PYTHON MODIF Messages/modelisa              delmas J.DELMAS           531      2      1
+  PYTHON MODIF Messages/oar0                  delmas J.DELMAS            53      2      1
+  PYTHON MODIF Messages/observation           delmas J.DELMAS           102      3      1
+  PYTHON MODIF Messages/petsc                 delmas J.DELMAS           110      2      1
+  PYTHON MODIF Messages/pilotage              delmas J.DELMAS           108      2      2
+  PYTHON MODIF Messages/plexus                delmas J.DELMAS            62      2      1
+  PYTHON MODIF Messages/post0                 delmas J.DELMAS           153      2      1
+  PYTHON MODIF Messages/postrccm              delmas J.DELMAS           257      2      1
+  PYTHON MODIF Messages/postrele              delmas J.DELMAS           406      2      1
+  PYTHON MODIF Messages/poutre0               delmas J.DELMAS            37      2      1
+  PYTHON MODIF Messages/precalcul             delmas J.DELMAS            44      2      1
+  PYTHON MODIF Messages/prepost2              delmas J.DELMAS           309      2      1
+  PYTHON MODIF Messages/prepost3              delmas J.DELMAS           223      2      1
+  PYTHON MODIF Messages/prepost4              delmas J.DELMAS           266      2      1
+  PYTHON MODIF Messages/prepost5              delmas J.DELMAS           229      2      1
+  PYTHON MODIF Messages/prepost6              delmas J.DELMAS           164      2      1
+  PYTHON MODIF Messages/prepost               delmas J.DELMAS           235      2      1
+  PYTHON MODIF Messages/proba0                delmas J.DELMAS            79      2      1
+  PYTHON MODIF Messages/recal0                delmas J.DELMAS           379      2      1
+  PYTHON MODIF Messages/rupture0              delmas J.DELMAS           569      2      1
+  PYTHON MODIF Messages/rupture1              delmas J.DELMAS           349      2      1
+  PYTHON MODIF Messages/sdveri                delmas J.DELMAS            66      2      1
+  PYTHON MODIF Messages/seisme                delmas J.DELMAS           178      2      1
+  PYTHON MODIF Messages/sensibilite           delmas J.DELMAS           205      2      1
+  PYTHON MODIF Messages/soustruc2             delmas J.DELMAS            75      2      1
+  PYTHON MODIF Messages/soustruc              delmas J.DELMAS           439      2      1
+  PYTHON MODIF Messages/spectral0             delmas J.DELMAS            74      2      1
+  PYTHON MODIF Messages/stanley               delmas J.DELMAS           208      2      1
+  PYTHON MODIF Messages/stbtrias              delmas J.DELMAS            72      2      1
+  PYTHON MODIF Messages/subdivise             delmas J.DELMAS            96      2      1
+  PYTHON MODIF Messages/supervis              delmas J.DELMAS           404      2      1
+  PYTHON MODIF Messages/table0                delmas J.DELMAS           157      2      1
+  PYTHON MODIF Messages/test0                 delmas J.DELMAS            84      2      1
+  PYTHON MODIF Messages/unilater              delmas J.DELMAS            53      2      1
+  PYTHON MODIF Messages/utilitai2             delmas J.DELMAS           288      2      1
+  PYTHON MODIF Messages/utilitai3             delmas J.DELMAS           365      2      1
+  PYTHON MODIF Messages/utilitai4             delmas J.DELMAS           336      2      1
+  PYTHON MODIF Messages/utilitai5             delmas J.DELMAS           307      2      1
+  PYTHON MODIF Messages/utilitai6             delmas J.DELMAS           301      2      1
+  PYTHON MODIF Messages/utilitai7             delmas J.DELMAS            90      2      1
+  PYTHON MODIF Messages/utilitai8             delmas J.DELMAS           271      2      1
+  PYTHON MODIF Messages/utilitai              delmas J.DELMAS           376      2      1
+  PYTHON MODIF Messages/vide                  delmas J.DELMAS            27      2      1
+  PYTHON MODIF Messages/volufini              delmas J.DELMAS            85      2      1
+  PYTHON MODIF Messages/xfem2                 delmas J.DELMAS           595      2      1
+  PYTHON MODIF Messages/xfem                  delmas J.DELMAS           356      2      1
+  PYTHON MODIF Stanley/cata_champs            delmas J.DELMAS           244     16      1
+  PYTHON MODIF Stanley/stanley                delmas J.DELMAS          3230      6      5
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :  300       77926       865     926       -61
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  300       77926       865     926       -61 

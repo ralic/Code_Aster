@@ -1,7 +1,7 @@
-      SUBROUTINE OP0176 ( IER )
+      SUBROUTINE OP0176()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,6 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      INTEGER            IER
 C
 C 0.2. ==> COMMUNS
 C

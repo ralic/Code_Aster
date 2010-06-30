@@ -1,6 +1,6 @@
-      SUBROUTINE OP0060(IERR)
+      SUBROUTINE OP0060()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,11 +26,7 @@ C     ------------------------------------------------------------------
 C
       IMPLICIT NONE
 C
-C 0.1. ==> ARGUMENTS
-C
-      INTEGER  IERR
-C
-C 0.2. ==> COMMUNS
+C ==> COMMUNS
 C
 C     ----- DEBUT DES COMMUNS JEVEUX -----------------------------------
       INTEGER          ZI
@@ -49,7 +45,7 @@ C     ----- DEBUT DES COMMUNS JEVEUX -----------------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN DES COMMUNS JEVEUX -------------------------------------
 C
-C 0.3. ==> VARIABLES LOCALES
+C ==> VARIABLES LOCALES
 C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'OP0060' )
@@ -181,7 +177,6 @@ C====
         DO 1 I=1,NBSYM
            DO 12 J=I+1,NBSYM
              IF ( NOMSYM(I).EQ. NOMSYM(J) ) THEN
-               IERR = IERR + 1
                CALL U2MESS('F','ALGORITH9_30')
              ENDIF
   12      CONTINUE

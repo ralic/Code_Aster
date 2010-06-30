@@ -1,7 +1,7 @@
-      SUBROUTINE OP0021(IER)
+      SUBROUTINE OP0021()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/06/2004   AUTEUR ASSIRE A.ASSIRE 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,7 +37,6 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRE
-      INTEGER IER
       
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI

@@ -1,8 +1,7 @@
-      SUBROUTINE OP0023(IER)
+      SUBROUTINE OP0023()
       IMPLICIT   NONE
-      INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 18/01/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

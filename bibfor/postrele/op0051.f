@@ -1,7 +1,7 @@
-      SUBROUTINE OP0051 ( IER )
+      SUBROUTINE OP0051()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      INTEGER          IER
 C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------

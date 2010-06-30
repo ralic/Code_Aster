@@ -1,7 +1,7 @@
-      SUBROUTINE OP0027 ( IER )
+      SUBROUTINE OP0027()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C     SYMETRIQUES DEFINIES POSITIVES.
 C
 C ----------------------------------------------------------------------
       IMPLICIT   NONE
-      INTEGER    IER
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -55,8 +54,6 @@ C DEB ------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFMAJ()
-C
-      IER=0
 C
       CALL GETRES ( NOMRES, CONCEP, NOMCMD )
 C

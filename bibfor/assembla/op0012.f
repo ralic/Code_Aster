@@ -1,7 +1,7 @@
-      SUBROUTINE OP0012(IER)
+      SUBROUTINE OP0012()
 C======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
-      INTEGER IER
 C
 C                       OPERATEUR ASSE_MATRICE
 C======================================================================

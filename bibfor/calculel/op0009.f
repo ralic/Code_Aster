@@ -1,6 +1,5 @@
-      SUBROUTINE OP0009(IER)
+      SUBROUTINE OP0009()
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -19,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF CALCULEL  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C     COMMANDE:  CALC_MATR_ELEM
 
 C ----------------------------------------------------------------------

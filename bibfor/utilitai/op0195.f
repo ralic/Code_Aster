@@ -1,8 +1,7 @@
-      SUBROUTINE OP0195(IER)
+      SUBROUTINE OP0195()
       IMPLICIT  NONE
-      INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

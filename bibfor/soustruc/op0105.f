@@ -1,8 +1,8 @@
-      SUBROUTINE OP0105 ( IER )
+      SUBROUTINE OP0105()
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF SOUSTRUC  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C
       CHARACTER*8  KBID, MAG, DM(2)
       CHARACTER*16 KBI1,KBI2
       CHARACTER*8  OPER
-      INTEGER      N1, IER, IADIM1, IADIM2, IBID
+      INTEGER      N1, IADIM1, IADIM2, IBID
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()

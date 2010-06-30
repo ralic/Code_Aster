@@ -1,9 +1,8 @@
-      SUBROUTINE OP0054 ( IER )
+      SUBROUTINE OP0054()
       IMPLICIT   NONE
-      INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

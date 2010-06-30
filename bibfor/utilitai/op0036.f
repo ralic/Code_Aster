@@ -1,9 +1,7 @@
-      SUBROUTINE OP0036 ( IER )
+      SUBROUTINE OP0036 ()
       IMPLICIT   NONE
-      INTEGER             IER
-
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,8 +58,6 @@ C SENSIBILITE
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
-
-      IER=0
 
       CALL GETRES(RESU,CONCEP,NOMCMD)
       CALL GETFAC('LISTE',NOCC)

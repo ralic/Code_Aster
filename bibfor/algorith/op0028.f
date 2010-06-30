@@ -1,7 +1,7 @@
-      SUBROUTINE OP0028(IER)
+      SUBROUTINE OP0028()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/12/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,6 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
       IMPLICIT NONE
-      INTEGER           IER
 C
 C ----------------------------------------------------------------------
 C
@@ -30,9 +29,6 @@ C
 C DEFINITION DE LA DISCRETISATION TEMPORELLE
 C
 C ----------------------------------------------------------------------
-C OUT IER   : CODE RETOUR ERREUR COMMANDE
-C               IER = 0 => TOUT S'EST BIEN PASSE
-C               IER > 0 => NOMBRE D'ERREURS RENCONTREES
 C
 C CONCEPT SORTANT DE TYPE LIST_INST
 C
@@ -103,7 +99,6 @@ C
       CALL JEMARQ()
       CALL INFMAJ()
 C      CALL INFDBG('AVOIR',IFM,NIV)
-      IER = 0
 C
 C --- NOM DU CONCEPT 
 C
@@ -130,7 +125,6 @@ C     ZR(JLIR-1 + 7) <===> REDECOUPE SI DIVERGENCE_ERRE (POUR CRESOL)
 
       IF (CL.NE.'MANUEL'.AND.CL.NE.'AUTO') THEN
         WRITE(6,*)'CETTE FONCTIONNALITE N EST PAS ENCORE DISPO'
-        IER = IER + 1
         CALL ASSERT(.FALSE.)
       ENDIF
 
@@ -236,7 +230,6 @@ C     NUMERO DE L'OCCURENCE DE L'EVEN DIVERGENCE
 
         IF (EVEN.NE.'DIVERGENCE') THEN
           WRITE(6,*)'CETTE FONCTIONNALITE N EST PAS ENCORE DISPO'
-          IER = IER + 1
           CALL ASSERT(.FALSE.)
         ENDIF
 
@@ -466,7 +459,6 @@ C          WRITE(6,*)'   SI CV & SEUIL OK, ON ACCELERE DE ',PCENT,'%'
           IF (NOSCHE.EQ.'OLIVER') THEN
             ZR(JATPR-1+LATPR*(IOCC-1)+6) = 1.D0
           ENDIF
-          IER = IER + 1
           WRITE(6,*)'CETTE FONCTIONNALITE N EST PAS ENCORE DISPO'
           CALL ASSERT(.FALSE.)
         ENDIF

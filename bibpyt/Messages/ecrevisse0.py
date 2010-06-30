@@ -1,4 +1,4 @@
-#@ MODIF ecrevisse0 Messages  DATE 21/04/2010   AUTEUR BOTTONI M.BOTTONI 
+#@ MODIF ecrevisse0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE DELMAS J.DELMAS
 
 def _(x) : return x
 

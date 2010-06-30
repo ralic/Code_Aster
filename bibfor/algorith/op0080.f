@@ -1,7 +1,7 @@
-      SUBROUTINE OP0080 (IER)
+      SUBROUTINE OP0080()
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,6 @@ C
 C
 C-----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------------
 C
-      INTEGER      IER
       CHARACTER*8  NOMRES,MODCY1,K8B,BASMOD,MODELE,CHMAT,CARAEL
       CHARACTER*16 NOMOPE,NOMCON
 C
@@ -51,8 +50,6 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
 C --- PHASE DE VERIFICATION
-C
-      IER    = 0
 C
       CALL INFMAJ
 C

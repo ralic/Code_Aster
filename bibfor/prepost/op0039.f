@@ -1,6 +1,5 @@
-      SUBROUTINE OP0039 ( IER )
+      SUBROUTINE OP0039 ()
       IMPLICIT   NONE
-      INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -19,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -63,7 +62,7 @@ C
       INTEGER JLGRM, JNGRM, JLGRN, JNGRN, JLNO, JNNO
       INTEGER NBELE, NBNOE
       INTEGER NINF, NSUP, NMA
-      INTEGER IAUX, JAUX, I, J, JINDNO, JNOFI, II
+      INTEGER IAUX, JAUX, I, J, JINDNO, JNOFI, II, IER
       INTEGER IBID, IRET, ICMP, NVCMP, JVCMP
       INTEGER NRPASS, NBPASS, ADRECG, GD, NCMPMX, IADESC, IAD, NBCMPT
 C

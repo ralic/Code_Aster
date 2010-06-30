@@ -1,9 +1,8 @@
-      SUBROUTINE OP0181(IER)
+      SUBROUTINE OP0181()
       IMPLICIT NONE
-      INTEGER  IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/12/2009   AUTEUR DEVESA G.DEVESA 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,7 +38,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      IEQ,NPARA,NBVA,NVAL,NSENS,NGRAND,I
+      INTEGER      IEQ,NPARA,NBVA,NVAL,NSENS,NGRAND,I,IER
       REAL*8       EPSI,VALR
       COMPLEX*16   VALC
       CHARACTER*1  K1B
@@ -50,7 +49,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 TYPRES
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      IER = 0
       CALL GETRES(RESOU,TYPE,CMD)
 C
 C   Recuperation arguments utilisateurs

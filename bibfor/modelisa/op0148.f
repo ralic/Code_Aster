@@ -1,8 +1,8 @@
-      SUBROUTINE OP0148(IER)
+      SUBROUTINE OP0148()
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,9 +22,6 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C   RESTITUTION D'UN INTERSPECTRE DE REPONSE MODALE DANS LA BASE
 C   PHYSIQUE  OPERATEUR REST_SPEC_PHYS
-C-----------------------------------------------------------------------
-C  OUT  : IER = 0 => TOUT S EST BIEN PASSE
-C         IER > 0 => NOMBRE D ERREURS RENCONTREES
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI

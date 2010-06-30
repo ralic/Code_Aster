@@ -1,6 +1,6 @@
-      SUBROUTINE OP0137(IER)
+      SUBROUTINE OP0137()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 07/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C     OPERATEUR :     DEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
 C ----------------------------------------------------------------------
       CHARACTER*3 REPONS , CBID
-      INTEGER L,SDVERI,IER
+      INTEGER L,SDVERI
 
 
 
@@ -81,5 +81,4 @@ C     ---------------------
       ENDIF
 
 
-      IER=0
       END

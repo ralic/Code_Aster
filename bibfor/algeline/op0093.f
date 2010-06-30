@@ -1,7 +1,7 @@
-      SUBROUTINE OP0093 ( IER )
+      SUBROUTINE OP0093 ()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
+C MODIF ALGELINE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,7 +42,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
-      INTEGER      IER
       INTEGER      IBID,NEQ,LMATR,LMATM,LDUTI,IFM,NIV,VALI,IRET,
      &             NRA,NMA,NBPSMO,IERD,NBMODD,NBMOST,LDDLD,
      &             I,J,K,I1,J1,K1,LMODD,NBMODF,NBFONA,LDDLF,LMODF,IEQ,

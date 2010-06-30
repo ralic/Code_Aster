@@ -1,11 +1,8 @@
-      SUBROUTINE OP0179 ( IERR )
-C      IMPLICIT NONE
+      SUBROUTINE OP0179 ()
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER             IERR
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2010   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +41,7 @@ C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
 C
-      INTEGER      IBID, N1, N2, N4, NBMODE, JSCDE, ULISOP,IER
+      INTEGER      IBID, N1, N2, N4, NBMODE, JSCDE, ULISOP
       REAL*8       PARTR, PARTI, COEF, DPI
       CHARACTER*8  NOMRES, BASEMO, NUMGEN, K8BID
       CHARACTER*16 TYPRES, NOMCOM, TYPBAS, K16NOM, TISSF

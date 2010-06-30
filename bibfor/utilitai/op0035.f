@@ -1,7 +1,7 @@
-      SUBROUTINE OP0035 ( IER )
+      SUBROUTINE OP0035()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,6 @@ C ======================================================================
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER IER
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI

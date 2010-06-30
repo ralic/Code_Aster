@@ -1,8 +1,8 @@
-      SUBROUTINE OP0144(IER)
+      SUBROUTINE OP0144()
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +23,6 @@ C-----------------------------------------------------------------------
 C
 C     OPERATEUR "CALC_FLUI_STRU"
 C
-C-----------------------------------------------------------------------
-C  OUT  : IER = 0 => TOUT S EST BIEN PASSE
-C         IER > 0 => NOMBRE D ERREURS RENCONTREES
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
@@ -106,12 +103,10 @@ C
 C --- 0.VERIFICATIONS AVANT EXECUTION ---
 C
       IF (NBNO.NE.0 .AND. NBAM.NE.0 .AND. NBAM.NE.NBNO) THEN
-        IER = IER + 1
         CALL U2MESS('F','ALGELINE2_82')
       ENDIF
 
       IF (NBNO.NE.0 .AND. NBCONN.NE.0 .AND. NBCONN.NE.NBNO) THEN
-        IER = IER + 1
         CALL U2MESS('F','ALGELINE2_83')
       ENDIF
 C

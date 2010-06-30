@@ -1,8 +1,8 @@
-      SUBROUTINE OP0142 (IER)
+      SUBROUTINE OP0142()
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                 ZK80
       COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
-      INTEGER      PNOE , PTCH, LXLGUT
+      INTEGER      PNOE , PTCH, LXLGUT,IER
       CHARACTER*2  PROLGD
       CHARACTER*4  INTERP(2)
       CHARACTER*8  NOMMAI,  K8BID, NOD, NOF

@@ -1,7 +1,7 @@
-      SUBROUTINE OP0030(IER   )
+      SUBROUTINE OP0030()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,16 +21,12 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER  IER
 C      
 C ----------------------------------------------------------------------
 C
 C COMMANDE:  DEFI_CONTACT
 C      
 C ----------------------------------------------------------------------
-C
-C
-C OUT IER    : NOMBRE D'ERREURS RENCONTREES      
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -71,7 +67,6 @@ C
 C
 C --- INITIALISATIONS
 C
-      IER    = 0
       FORMUL = ' '
       IFORM  = 0    
       OPER   = 'XXXXXXXXXXMEXX'  

@@ -1,6 +1,6 @@
-      SUBROUTINE OP0186(IER)
+      SUBROUTINE OP0186()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,6 @@ C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 
 C 0.2  ==> ARGUMENTS
-      INTEGER IER
 
 C 0.3. ==> VARIABLES LOCALES
       CHARACTER*6 NOMPRO
@@ -120,7 +119,6 @@ C ----------------------------------------------------------------------
       CALL JEMARQ()
 C               12   345678   90123
       INPSCO = '&&'//NOMPRO//'_PSCO'
-      IER    = 0
 
 C     DETERMINATION DU NOM DE LA SD INFO_CHARGE STOCKEE
 C     DANS LA SD RESULTAT

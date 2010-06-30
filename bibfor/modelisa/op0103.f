@@ -1,7 +1,7 @@
-      SUBROUTINE OP0103(IER)
+      SUBROUTINE OP0103()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,11 +40,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNOM,JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 MODELE
-      INTEGER IB,IER
+      INTEGER IB
 
 
       CALL JEMARQ()
-      IER=0
 
 C     -- MODIFICATION DE LA PARTITION  :
 C     ---------------------------------------------------

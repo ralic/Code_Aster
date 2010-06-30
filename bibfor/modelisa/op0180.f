@@ -1,8 +1,8 @@
-      SUBROUTINE OP0180(IER)
+      SUBROUTINE OP0180()
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,9 +22,6 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C  DESCRIPTION :
 C  -----------       O P E R A T E U R    D E F I _ C A B L E _ B P
-C
-C  OUT  : IER = 0 => TOUT S EST BIEN PASSE
-C         IER > 0 => NOMBRE D ERREURS RENCONTREES
 C
 C-------------------   DECLARATION DES VARIABLES   ---------------------
 C
@@ -48,7 +45,6 @@ C     ----- FIN   COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C ARGUMENTS
 C ---------
-      INTEGER       IER
 C
 C VARIABLES LOCALES
 C -----------------

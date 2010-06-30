@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1245,7 +1245,7 @@ class SELECTION:
 
 
 #  NonDeveloppePG = "Fonctionnalite non developpee : seules les options 'SIEF_ELGA', 'VARI_ELGA', 'SIEF_ELGA_TEMP' et 'FLUX_ELGA_TEMP' peuvent etre visualisees aux points de Gauss."
-  NonDeveloppeRS = "Fonctionnalite non developpee : seuls les resultats de type 'EVOL_ELAS', 'EVOL_THER', 'EVOL_NOLI', 'DYNA_TRANS', 'DYNA_HARMO' et 'MODE_MECA' sont geres."
+  NonDeveloppeRS = "Fonctionnalite non developpee : seuls les resultats de type 'EVOL_ELAS', 'EVOL_THER', 'EVOL_NOLI', 'DYNA_TRANS', 'DYNA_HARMO', 'MODE_MECA' et 'EVOL_CHAR' sont geres."
 
   comb_tracables = {      # Combinaisons (type_champ, type_geom) tracables -> outil de trace
     ('NOEU','MAILLAGE')   : 'GMSH',
@@ -2152,6 +2152,7 @@ class DRIVER :
     elif contexte.resultat.__class__ == dyna_trans : type_resu = 'DYNA_TRANS'
     elif contexte.resultat.__class__ == dyna_harmo : type_resu = 'DYNA_HARMO'
     elif contexte.resultat.__class__ == mode_meca  : type_resu = 'MODE_MECA'
+    elif contexte.resultat.__class__ == mode_meca  : type_resu = 'EVOL_CHAR'
     else :
       UTMESS('A','STANLEY_40',valk=[SELECTION.NondeveloppeRS])
       return False, []
@@ -2929,7 +2930,7 @@ class PRE_STANLEY :
     t_cara_elem=[]
     t_para_sensi=[]
 
-    lst = [ 'maillage_sdaster', 'modele_sdaster', 'evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans', 'cham_mater', 'cara_elem_sdaster', 'para_sensi' ]
+    lst = [ 'maillage_sdaster', 'modele_sdaster', 'evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans', 'cham_mater', 'cara_elem_sdaster', 'para_sensi', 'evol_char' ]
 
     current_context = self.jdc_recupere.get_contexte_courant()
     for i in current_context.keys( ):
@@ -2945,7 +2946,7 @@ class PRE_STANLEY :
          concept_exists_and_intypes(i, jdc=self.jdc_recupere,
                                     types='modele_sdaster', append_to=t_modele)
          concept_exists_and_intypes(i, jdc=self.jdc_recupere,
-                                    types=('evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans'),
+                                    types=('evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans', 'evol_char'),
                                     append_to=t_evol)
          concept_exists_and_intypes(i, jdc=self.jdc_recupere,
                                     types='cham_mater', append_to=t_cham_mater)
@@ -2972,7 +2973,7 @@ class PRE_STANLEY :
     _lst = []
     if len(t_maillage) ==0:   _lst.append('MAILLAGE')
     if len(t_modele) ==0:     _lst.append('MODELE')
-    if len(t_evol) ==0:       _lst.append('EVOL_ELAS ou EVOL_NOLI ou EVOL_THER ou DYNA_TRANS ou DYNA_HARMO ou MODE_MECA')
+    if len(t_evol) ==0:       _lst.append('EVOL_ELAS ou EVOL_NOLI ou EVOL_THER ou DYNA_TRANS ou DYNA_HARMO ou MODE_MECA ou EVOL_CHAR')
     if len(t_cham_mater) ==0: _lst.append('CHAM_MATER')
     if len(_lst) > 0:
       txt=[]

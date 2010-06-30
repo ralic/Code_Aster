@@ -1,12 +1,9 @@
-      SUBROUTINE OP0164 ( IERR )
-C      IMPLICIT NONE
+      SUBROUTINE OP0164 ()
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER             IERR
 C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2010   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +43,7 @@ C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
       CHARACTER*32   JEXNUM
 C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
 C
-      INTEGER      N1, N2, N4, IADRIF, JSCDE, ULISOP,IER
+      INTEGER      N1, N2, N4, IADRIF, JSCDE, ULISOP
       REAL*8       PARTR, PARTI
       CHARACTER*8  K8B, NOMRES, BASEMO, NUMGEN, INTERF
       CHARACTER*16 TYPRES,NOMCOM,TYPBAS,K16NOM,TYPBIN,TISSF,TSYM
@@ -54,7 +51,7 @@ C
       CHARACTER*14 NUGENE
       CHARACTER*24 TABRIG, TABFRQ
       CHARACTER*72 TEXTE
-      REAL*8 A(3)
+      REAL*8       A(3)
       INTEGER*8    LONG1,LONG2,LONG3
       LOGICAL      LISSF, LSYM
 C-----------------------------------------------------------------------

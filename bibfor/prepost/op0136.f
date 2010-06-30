@@ -1,9 +1,8 @@
-      SUBROUTINE OP0136 ( IER )
+      SUBROUTINE OP0136()
       IMPLICIT   NONE
-      INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +26,6 @@ C     ------------------------------------------------------------------
       CHARACTER*8   TYPCHA
 C     ------------------------------------------------------------------
 C
-      IER = 0 
       CALL INFMAJ
       CALL GETVTX ( ' ', 'CHARGEMENT', 1,1,1, TYPCHA, N1 )
 C

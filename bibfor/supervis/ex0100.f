@@ -3,7 +3,7 @@
       INTEGER            NUOPER, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,303 +45,303 @@ C     ------------------------------------------------------------------
       GOTO 9999
 C     ------------------------------------------------------------------
   01       CONTINUE
-           CALL OP0100( IER )
+           CALL OP0100( )
       GOTO 9999
   02       CONTINUE
-           CALL OP0101( IER )
+           CALL OP0101( )
       GOTO 9999
   03       CONTINUE
-           CALL OP0102( IER )
+           CALL OP0102( )
       GOTO 9999
   04       CONTINUE
-           CALL OP0103( IER )
+           CALL OP0103( )
       GOTO 9999
   05       CONTINUE
-           CALL OP0104( IER )
+           CALL OP0104( )
       GOTO 9999
   06       CONTINUE
-           CALL OP0105( IER )
+           CALL OP0105( )
       GOTO 9999
   07       CONTINUE
-           CALL OP0106( IER )
+           CALL OP0106( )
       GOTO 9999
   08       CONTINUE
-           CALL OP0107( IER )
+           CALL OP0107( )
       GOTO 9999
   09       CONTINUE
-           CALL OP0108( IER )
+           CALL OP0108( )
       GOTO 9999
   10       CONTINUE
-           CALL OP0109( IER )
+           CALL OP0109( )
       GOTO 9999
   11       CONTINUE
-           CALL OP0110( IER )
+           CALL OP0110( )
       GOTO 9999
   12       CONTINUE
-           CALL OP0111( IER )
+           CALL OP0111( )
       GOTO 9999
   13       CONTINUE
-           CALL OP0112( IER )
+           CALL OP0112( )
       GOTO 9999
   14       CONTINUE
-           CALL OP0113( IER )
+           CALL OP0113( )
       GOTO 9999
   15       CONTINUE
-           CALL OP0114( IER )
+           CALL OP0114( )
       GOTO 9999
   16       CONTINUE
-           CALL OP0115( IER )
+           CALL OP0115( )
       GOTO 9999
   17       CONTINUE
-           CALL OP0116( IER )
+           CALL OP0116( )
       GOTO 9999
   18       CONTINUE
-           CALL OP0117( IER )
+           CALL OP0117( )
       GOTO 9999
   19       CONTINUE
-           CALL OP0118( IER )
+           CALL OP0118( )
       GOTO 9999
   20       CONTINUE
-           CALL OP0119( IER )
+           CALL OP0119( )
       GOTO 9999
   21       CONTINUE
-           CALL OP0120( IER )
+           CALL OP0120( )
       GOTO 9999
   22       CONTINUE
-           CALL OP0121( IER )
+           CALL OP0121( )
       GOTO 9999
   23       CONTINUE
-           CALL OP0122( IER )
+           CALL OP0122( )
       GOTO 9999
   24       CONTINUE
-           CALL OP0123( IER )
+           CALL OP0123( )
       GOTO 9999
   25       CONTINUE
-           CALL OP0124( IER )
+           CALL OP0124( )
       GOTO 9999
   26       CONTINUE
-           CALL OP0125( IER )
+           CALL OP0125( )
       GOTO 9999
   27       CONTINUE
-           CALL OP0126( IER )
+           CALL OP0126( )
       GOTO 9999
   28       CONTINUE
-           CALL OP0127( IER )
+           CALL OP0127( )
       GOTO 9999
   29       CONTINUE
-           CALL OP0128( IER )
+           CALL OP0128( )
       GOTO 9999
   30       CONTINUE
-           CALL OP0129( IER )
+           CALL OP0129( )
       GOTO 9999
   31       CONTINUE
-           CALL OP0130( IER )
+           CALL OP0130( )
       GOTO 9999
   32       CONTINUE
-           CALL OP0131( IER )
+           CALL OP0131( )
       GOTO 9999
   33       CONTINUE
-           CALL OP0132( IER )
+           CALL OP0132( )
       GOTO 9999
   34       CONTINUE
-           CALL OP0133( IER )
+           CALL OP0133( )
       GOTO 9999
   35       CONTINUE
-           CALL OP0134( IER )
+           CALL OP0134( )
       GOTO 9999
   36       CONTINUE
-           CALL OP0135( IER )
+           CALL OP0135( )
       GOTO 9999
   37       CONTINUE
-           CALL OP0136( IER )
+           CALL OP0136( )
       GOTO 9999
   38       CONTINUE
-           CALL OP0137( IER )
+           CALL OP0137( )
       GOTO 9999
   39       CONTINUE
-           CALL OP0138( IER )
+           CALL OP0138( )
       GOTO 9999
   40       CONTINUE
-           CALL OP0139( IER )
+           CALL OP0139( )
       GOTO 9999
   41       CONTINUE
-           CALL OP0140( IER )
+           CALL OP0140( )
       GOTO 9999
   42       CONTINUE
-           CALL OP0141( IER )
+           CALL OP0141( )
       GOTO 9999
   43       CONTINUE
-           CALL OP0142( IER )
+           CALL OP0142( )
       GOTO 9999
   44       CONTINUE
-           CALL OP0143( IER )
+           CALL OP0143( )
       GOTO 9999
   45       CONTINUE
-           CALL OP0144( IER )
+           CALL OP0144( )
       GOTO 9999
   46       CONTINUE
-           CALL OP0145( IER )
+           CALL OP0145( )
       GOTO 9999
   47       CONTINUE
-           CALL OP0146( IER )
+           CALL OP0146( )
       GOTO 9999
   48       CONTINUE
-           CALL OP0147( IER )
+           CALL OP0147( )
       GOTO 9999
   49       CONTINUE
-           CALL OP0148( IER )
+           CALL OP0148( )
       GOTO 9999
   50       CONTINUE
-           CALL OP0149( IER )
+           CALL OP0149( )
       GOTO 9999
   51       CONTINUE
-           CALL OP0150( IER )
+           CALL OP0150( )
       GOTO 9999
   52       CONTINUE
-           CALL OP0151( IER )
+           CALL OP0151( )
       GOTO 9999
   53       CONTINUE
-           CALL OP0152( IER )
+           CALL OP0152( )
       GOTO 9999
   54       CONTINUE
-           CALL OP0153( IER )
+           CALL OP0153( )
       GOTO 9999
   55       CONTINUE
-           CALL OP0154( IER )
+           CALL OP0154( )
       GOTO 9999
   56       CONTINUE
-           CALL OP0155( IER )
+           CALL OP0155( )
       GOTO 9999
   57       CONTINUE
-           CALL OP0156( IER )
+           CALL OP0156( )
       GOTO 9999
   58       CONTINUE
-           CALL OP0157( IER )
+           CALL OP0157( )
       GOTO 9999
   59       CONTINUE
-           CALL OP0158( IER )
+           CALL OP0158( )
       GOTO 9999
   60       CONTINUE
-           CALL OP0159( IER )
+           CALL OP0159( )
       GOTO 9999
   61       CONTINUE
-           CALL OP0160( IER )
+           CALL OP0160( )
       GOTO 9999
   62       CONTINUE
-           CALL OP0161( IER )
+           CALL OP0161( )
       GOTO 9999
   63       CONTINUE
-           CALL OP0162( IER )
+           CALL OP0162( )
       GOTO 9999
   64       CONTINUE
-           CALL OP0163( IER )
+           CALL OP0163( )
       GOTO 9999
   65       CONTINUE
-           CALL OP0164( IER )
+           CALL OP0164( )
       GOTO 9999
   66       CONTINUE
-           CALL OP0165( IER )
+           CALL OP0165( )
       GOTO 9999
   67       CONTINUE
-           CALL OP0166( IER )
+           CALL OP0166( )
       GOTO 9999
   68       CONTINUE
-           CALL OP0167( IER )
+           CALL OP0167( )
       GOTO 9999
   69       CONTINUE
-           CALL OP0168( IER )
+           CALL OP0168( )
       GOTO 9999
   70       CONTINUE
-           CALL OP0169( IER )
+           CALL OP0169( )
       GOTO 9999
   71       CONTINUE
-           CALL OP0170( IER )
+           CALL OP0170( )
       GOTO 9999
   72       CONTINUE
-           CALL OP0171( IER )
+           CALL OP0171( )
       GOTO 9999
   73       CONTINUE
-           CALL OP0172( IER )
+           CALL OP0172( )
       GOTO 9999
   74       CONTINUE
-           CALL OP0173( IER )
+           CALL OP0173( )
       GOTO 9999
   75       CONTINUE
-           CALL OP0174( IER )
+           CALL OP0174( )
       GOTO 9999
   76       CONTINUE
-           CALL OP0175( IER )
+           CALL OP0175( )
       GOTO 9999
   77       CONTINUE
-           CALL OP0176( IER )
+           CALL OP0176( )
       GOTO 9999
   78       CONTINUE
-           CALL OP0177( IER )
+           CALL OP0177( )
       GOTO 9999
   79       CONTINUE
-           CALL OP0178( IER )
+           CALL OP0178( )
       GOTO 9999
   80       CONTINUE
-           CALL OP0179( IER )
+           CALL OP0179( )
       GOTO 9999
   81       CONTINUE
-           CALL OP0180( IER )
+           CALL OP0180( )
       GOTO 9999
   82       CONTINUE
-           CALL OP0181( IER )
+           CALL OP0181( )
       GOTO 9999
   83       CONTINUE
-           CALL OP0182( IER )
+           CALL OP0182( )
       GOTO 9999
   84       CONTINUE
-           CALL OP0183( IER )
+           CALL OP0183( )
       GOTO 9999
   85       CONTINUE
-           CALL OP0184( IER )
+           CALL OP0184( )
       GOTO 9999
   86       CONTINUE
-           CALL OP0185( IER )
+           CALL OP0185( )
       GOTO 9999
   87       CONTINUE
-           CALL OP0186( IER )
+           CALL OP0186( )
       GOTO 9999
   88       CONTINUE
-           CALL OP0187( IER )
+           CALL OP0187( )
       GOTO 9999
   89       CONTINUE
-           CALL OP0188( IER )
+           CALL OP0188( )
       GOTO 9999
   90       CONTINUE
-           CALL OP0189( IER )
+           CALL OP0189( )
       GOTO 9999
   91       CONTINUE
-           CALL OP0190( IER )
+           CALL OP0190( )
       GOTO 9999
   92       CONTINUE
-           CALL OP0191( IER )
+           CALL OP0191( )
       GOTO 9999
   93       CONTINUE
-           CALL OP0192( IER )
+           CALL OP0192( )
       GOTO 9999
   94       CONTINUE
-           CALL OP0193( IER )
+           CALL OP0193( )
       GOTO 9999
   95       CONTINUE
-           CALL OP0194( IER )
+           CALL OP0194( )
       GOTO 9999
   96       CONTINUE
-           CALL OP0195( IER )
+           CALL OP0195( )
       GOTO 9999
   97       CONTINUE
-           CALL OP0196( IER )
+           CALL OP0196( )
       GOTO 9999
   98       CONTINUE
-           CALL OP0197( IER )
+           CALL OP0197( )
       GOTO 9999
   99       CONTINUE
-           CALL OP0198( IER )
+           CALL OP0198( )
       GOTO 9999
  100       CONTINUE
-           CALL OP0199( IER )
+           CALL OP0199( )
  9999 CONTINUE
       END

@@ -1,7 +1,7 @@
-      SUBROUTINE OP0046(IER)
+      SUBROUTINE OP0046()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,17 +20,12 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      INTEGER IER
 C
 C ----------------------------------------------------------------------
 C
 C COMMANDE:  MECA_STATIQUE
 C
 C ----------------------------------------------------------------------
-C
-C
-C OUT IER    : NOMBRE D'ERREURS RENCONTREES
-C
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -59,7 +54,7 @@ C
       INTEGER IBID, NH , NBCHRE , N1, N4, N5, N7
       INTEGER IERD, IORDR, NBMAX , NCHAR, JCHAR
       INTEGER IOCC, NFON, IAINST, IRET, I, JORDR, NBPASE, NBUTI
-      INTEGER IFM,NIV
+      INTEGER IFM, NIV, IER
 C
       REAL*8 TEMPS, TIME , ALPHA
       REAL*8 RUNDF

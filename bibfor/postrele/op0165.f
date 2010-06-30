@@ -1,4 +1,4 @@
-      SUBROUTINE OP0165 ( IER )
+      SUBROUTINE OP0165()
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,9 +17,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT   NONE
-      INTEGER            IER
 C     ------------------------------------------------------------------
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C     ------------------------------------------------------------------
 C
 C     OPERATEUR POST_RCCM

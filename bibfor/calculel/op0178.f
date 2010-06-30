@@ -1,9 +1,8 @@
-      SUBROUTINE OP0178(IER)
+      SUBROUTINE OP0178()
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

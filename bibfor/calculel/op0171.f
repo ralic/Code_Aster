@@ -1,7 +1,7 @@
-      SUBROUTINE OP0171 (IER)
+      SUBROUTINE OP0171()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,12 +20,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      INTEGER            IER
 C ----------------------------------------------------------------------
 C     COMMANDE:  THER_NON_LINE_MO
-C
-C  OUT: IER = 0 => TOUT S'EST BIEN PASSE
-C           > 0 => NOMBRE D'ERREURS RENCONTREES
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C

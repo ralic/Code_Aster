@@ -1,7 +1,7 @@
-      SUBROUTINE OP0048 ( IER )
+      SUBROUTINE OP0048()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,6 @@ C     ------------------------------------------------------------------
 C
       IMPLICIT NONE
 C
-      INTEGER IER
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI

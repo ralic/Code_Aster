@@ -1,9 +1,8 @@
-      SUBROUTINE OP0163 ( IER )
+      SUBROUTINE OP0163()
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +39,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER      APRNO, NCMP, NEC, IERD, GD, ITRESR(3), ITRESI(3)
+      INTEGER      APRNO, NCMP, NEC, IERD, IER, GD, ITRESR(3), ITRESI(3)
       INTEGER      ULISOP
       CHARACTER*4  CTYP, TYPE(3), CHA1, CHA2
       CHARACTER*8  K8B, NOMRES, MASSE, RIGI, NOMA, INTERF

@@ -1,8 +1,8 @@
-      SUBROUTINE OP0146(IER)
+      SUBROUTINE OP0146()
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +23,6 @@ C-----------------------------------------------------------------------
 C     OPERATEUR PROJ_SPEC_BASE
 C     PROJECTION D UN OU PLUSIEURS SPECTRES DE TURBULENCE SUR UNE BASE
 C     MODALE PERTURBEE PAR PRISE EN COMPTE DU COUPLAGE FLUIDE STRUCTURE
-C-----------------------------------------------------------------------
-C  OUT  : IER = 0 => TOUT S EST BIEN PASSE
-C         IER > 0 => NOMBRE D ERREURS RENCONTREES
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI

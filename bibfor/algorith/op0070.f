@@ -1,7 +1,7 @@
-      SUBROUTINE OP0070(IER)
+      SUBROUTINE OP0070()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/05/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,16 +22,10 @@ C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_20
 C
       IMPLICIT NONE
-      INTEGER            IER
 C      
 C ----------------------------------------------------------------------
 C
 C COMMANDE:  STAT_NON_LINE ET DYNA_NON_LINE
-C      
-C ----------------------------------------------------------------------
-C
-C
-C OUT IER    : NOMBRE D'ERREURS RENCONTREES      
 C      
 C ----------------------------------------------------------------------
 C
@@ -136,7 +130,6 @@ C
 C
 C -- TITRE
 C
-      IER    = 0
       CALL TITRE ()
       CALL INFMAJ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV) 

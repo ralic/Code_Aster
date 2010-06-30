@@ -1,7 +1,7 @@
-      SUBROUTINE OP0044(IER)
+      SUBROUTINE OP0044()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGELINE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,6 @@ C
       IMPLICIT NONE
 
 C PARAMETRES D'APPEL
-      INTEGER IER
 
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -733,7 +732,6 @@ C PARAMETRE POUR VERIF. DE STURM ETENDUE (INACTIVE DANS OP0044)
      &         LMAT,OMECOR,PRECDC,IERX,FMIN,FMAX,NPREC,
      &         ZR(LRESUR),ZR(LRESUR+3*MXRESF),ZR(LRESUR+MXRESF),TYPRES,
      &         STURM, NBLAGR)
-CCC      IF ( CTYP .EQ. 'E' ) IER = IER + IERX
 
 C     ------------------------------------------------------------------
 

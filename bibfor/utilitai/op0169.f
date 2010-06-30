@@ -1,9 +1,8 @@
-      SUBROUTINE OP0169(IER)
+      SUBROUTINE OP0169()
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +22,6 @@ C ======================================================================
 C     OPERATEUR FONC_FLUI_STRU
 C     CREATION D UNE FONCTION CONSTANTE (CONCEPT FONCTION) DONNANT
 C     LA VALEUR DU COEFFICIENT DE MASSE AJOUTEE
-C     ------------------------------------------------------------------
-C OUT IER = 0 => TOUT S'EST BIEN PASSE
-C     IER > 0 => NOMBRE D'ERREURS RENCONTREES
 C     ------------------------------------------------------------------
 C     OBJETS SIMPLES CREES:
 C        NOMFON//'.PROL'

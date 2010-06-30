@@ -1,9 +1,8 @@
-      SUBROUTINE OP0110 ( IER )
+      SUBROUTINE OP0110()
       IMPLICIT NONE
-      INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +43,7 @@ C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER       IOC1,IOC2, IOC3, IOC4, NBMA, NBMAIL, JNUM, JNOM,
-     &              IOC11,LLREF,LLNBS,NBSECT,IOC12,IBID
+     &              IOC11,LLREF,LLNBS,NBSECT,IOC12,IBID,IER
       REAL*8        TRANS(3),ANGL(3)
       CHARACTER*8   K8B, MODELG, RESCYC, NOMRES, NOMA, NOMSQU
       CHARACTER*16  NOMOPE, NOMCMD

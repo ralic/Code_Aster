@@ -1,6 +1,5 @@
-#@ MODIF arlequin Messages  DATE 09/11/2009   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF arlequin Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +17,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE DELMAS J.DELMAS
+
 def _(x) : return x
 
 cata_msg={

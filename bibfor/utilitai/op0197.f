@@ -1,9 +1,8 @@
-      SUBROUTINE OP0197 ( IER )
+      SUBROUTINE OP0197()
       IMPLICIT NONE
-      INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/11/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +83,6 @@ C
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
-      IER = 0
 C     ------------------------------------------------------------------
       CALL GETRES (NOMRES,CONCEP,NOMCMD)
 C

@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 28/04/2009   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF cata_champs Stanley  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -197,6 +197,21 @@ class CATA_CHAMPS :
     self('EPSP_ELGA',      'ELGA',['SIEF_ELGA', 'DEPL'],         "Deformations plastiques aux points de Gauss")
     self('ETOT_ELGA',      'ELGA',['SIEF_ELGA', 'DEPL'],         "Densité d'energie totale de deformation aux points de Gauss")
     self('ETOT_ELNO_ELGA', 'ELNO',['SIEF_ELGA', 'DEPL'],         "Densité d'energie totale de deformation aux noeuds par element")
+
+
+# evol_char
+    self('PRES'          , 'NOEU',[],                            "Chargement de pression aux noeuds")
+    self('PRES'          , 'ELNO',[],                            "Chargement de pression par élément aux noeuds")
+    self('FSUR_2D'       , 'NOEU',[],                            "Chargement de bord en 2D aux noeuds")
+    self('FSUR_2D'       , 'ELNO',[],                            "Chargement de bord en 2D par élément aux noeuds")
+    self('FSUR_3D'       , 'NOEU',[],                            "Chargement de bord en 3D aux noeuds")
+    self('FSUR_3D'       , 'ELNO',[],                            "Chargement de bord en 3D par élément aux noeuds")
+    self('FVOL_2D'       , 'NOEU',[],                            "Chargement volumique en 2D aux noeuds")
+    self('FVOL_2D'       , 'ELNO',[],                            "Chargement volumique en 2D par élément aux noeuds")
+    self('FVOL_3D'       , 'NOEU',[],                            "Chargement volumique en 3D aux noeuds")
+    self('FVOL_3D'       , 'ELNO',[],                            "Chargement volumique en 3D par élément aux noeuds")
+    self('VITE_VENT'     , 'NOEU',[],                            "Chargement vent aux noeuds")
+    self('VITE_VENT'     , 'ELNO',[],                            "Chargement vent par élément aux noeuds")
 
 
 

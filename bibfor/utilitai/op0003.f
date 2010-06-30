@@ -1,8 +1,8 @@
-      SUBROUTINE OP0003 (IER)
+      SUBROUTINE OP0003()
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                 ZK80
       COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
-      INTEGER      I, IER, IRET, IBID, IVAL, JVAL, JFON, IFM
+      INTEGER      I, IRET, IBID, IVAL, JVAL, JFON, IFM
       INTEGER      JPAR, LPARA, LPAR2, L, LPRO, N1, N2, N3, N4, N5, NIV
       INTEGER      JNOE, N, NBVAL, LVAL, LFON
       INTEGER      NBCOUP, NBCOU2, LXLGUT

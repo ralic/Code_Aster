@@ -1,9 +1,8 @@
-      SUBROUTINE OP0056(IER)
+      SUBROUTINE OP0056()
       IMPLICIT   NONE
-      INTEGER IER
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +33,6 @@ C .                        CARACTERISTIQUES MECANIQUE OU THERMIQUE     .
 C .                        COUCHE PAR COUCHE DANS LE REPERE DE         .
 C .                        REFERENCE                                   .
 C .  - ARGUMENTS :                                                     .
-C .                                                                    .
-C .      SORTIE :     IER <-- CODE D'ERREUR                            .
 C .                                                                    .
 C .  - ROUTINES APPELEES :                                             .
 C .    GETRES  GETFAC  GETVR8  GETVID  GETVIS  WKVECT  RCVALE          .
@@ -101,7 +98,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL INFMAJ()
 
       BL2 = '  '
-      IER = 0
       EPSI=R8MIEM()
 
       CALL GETRES(MULTIC,TYPE,NOMCMD)

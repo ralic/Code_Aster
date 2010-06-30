@@ -1,8 +1,8 @@
-      SUBROUTINE OP0017 ( IER )
+      SUBROUTINE OP0017()
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/01/2008   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER       IRET,NRPASS,NBPASS,ADRECG,IER
+      INTEGER       IRET,NRPASS,NBPASS,ADRECG
       INTEGER       NIVO,N3,N1,IFI,N2,NBOCC,IALICO,NCON,IPOS,LONG,N4
       INTEGER       I,IAUX,IOCC
       LOGICAL       LATTR, LCONT, ULEXIS
@@ -124,5 +124,4 @@ C          . NOM DU PARAMETRE DE SENSIBILITE
          CALL UTIMSD(IFI,NIVO,LATTR,LCONT,' ',0,BASE)
       END IF
       CALL JEDEMA()
-      IER=0
       END

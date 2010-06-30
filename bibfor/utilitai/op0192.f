@@ -1,8 +1,8 @@
-      SUBROUTINE OP0192 ( IER )
+      SUBROUTINE OP0192()
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/12/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      INTEGER IER
 C
 C 0.2. ==> COMMUNS
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX --------------------------
@@ -103,7 +102,6 @@ C====
 C 1. PREALABLES
 C====
 C
-      IER = 0
       CALL JEMARQ()
 C
 C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION

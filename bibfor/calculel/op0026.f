@@ -1,7 +1,7 @@
-      SUBROUTINE OP0026(IER   )
+      SUBROUTINE OP0026()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,6 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER  IER
 
 C-----------------------------------------------------------------------
 C
@@ -63,7 +62,7 @@ C-----------------------------------------------------------------------
       INTEGER         NIV,IFM,VI(1),JTBNP
       INTEGER         IRET,KNINDI,NUORD,NBPASE,LONG
       INTEGER         INOOBJ, INOMSD, INUORD, IINST, JNOBJ, JNOSD
-      INTEGER         JNUOR, JRINS, JLINS, NBLI, J, JTBLP
+      INTEGER         JNUOR, JRINS, JLINS, NBLI, J, JTBLP, IER
       REAL*8          INSTAM,INSTAP,CONST(2),VR(1),DIINST
       COMPLEX*16      CBID
       CHARACTER*1     TYPCST(2),TYPECH(2),TYPRES

@@ -1,7 +1,7 @@
-      SUBROUTINE OP0194 ( IER )
+      SUBROUTINE OP0194()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      INTEGER    IER
 C ----------------------------------------------------------------------
 C
 C
@@ -45,7 +44,7 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER      IBID, IRET, N1, N2, N3, NUM, NUMPHA, IOP, JOPT, I,
-     &             NBOPT, NBORDT, NBTROU
+     &             NBOPT, NBORDT, NBTROU, IER
       REAL*8       INST, PREC
       REAL*8 VALR
       COMPLEX*16   C16B

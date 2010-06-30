@@ -1,7 +1,7 @@
-      SUBROUTINE OP0113(IER)
+      SUBROUTINE OP0113()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,6 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
       IMPLICIT NONE
-      INTEGER           IER
 C
 C ----------------------------------------------------------------------
 C
@@ -29,11 +28,6 @@ C OPERATEUR MODI_MODELE_XFEM
 C
 C
 C ----------------------------------------------------------------------
-C
-C
-C OUT IER   : CODE RETOUR ERREUR COMMANDE
-C               IER = 0 => TOUT S'EST BIEN PASSE
-C               IER > 0 => NOMBRE D'ERREURS RENCONTREES
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C

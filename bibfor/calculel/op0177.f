@@ -1,7 +1,7 @@
-      SUBROUTINE OP0177 ( IER )
+      SUBROUTINE OP0177()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C ----------------------------------------------------------------------
 C
 C 0.1. ==> ARGUMENTS
 C
-      INTEGER             IER
 C
 C 0.2. ==> COMMUNS
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -79,8 +78,6 @@ C====
 C
       CALL JEMARQ()
       CALL INFMAJ()
-C
-      IER = 0
 C
       TRAVR  = '&&'//NOMPRO//'_TRAVR          '
       TRAVI  = '&&'//NOMPRO//'_TRAVI          '

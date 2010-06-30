@@ -1,6 +1,6 @@
-      SUBROUTINE OP0140(IER)
+      SUBROUTINE OP0140()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C     CONCEPT CREE: VECT_ASSE_GENE
 C
 C-----------------------------------------------------------------------
 C
-      INTEGER IER
 C
 C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
 C

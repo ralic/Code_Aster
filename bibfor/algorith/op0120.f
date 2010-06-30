@@ -1,9 +1,8 @@
-      SUBROUTINE OP0120(IER)
+      SUBROUTINE OP0120()
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       PARAMETER   ( NBPAR = 6 )
-      INTEGER       LONG, IVAL(2)
+      INTEGER       LONG, IVAL(2), IER
       REAL*8        RESU, ZERO
       COMPLEX*16    C16B
       CHARACTER*8   K8B, NOMU, TYPAR(NBPAR)

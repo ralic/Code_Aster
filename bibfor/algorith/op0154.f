@@ -1,9 +1,8 @@
-      SUBROUTINE OP0154 ( IER )
+      SUBROUTINE OP0154()
       IMPLICIT   NONE
-      INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/09/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,8 +40,8 @@ C     --- DEBUT DECLARATIONS NORMALISEES  JEVEUX -----------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     --- FIN  DECLARATIONS  NORMALISEES  JEVEUX -----------------------
 C
-      INTEGER       N1, N2, NBOCC, NBOC1, NBOC2,NOP,I,
-     &              DIM, IADCOO, NBNO, NDDL
+      INTEGER       N1, N2, NBOCC, NBOC1, NBOC2, NOP, I,
+     &              DIM, IADCOO, NBNO, NDDL, IER
       LOGICAL       BIDIM
       CHARACTER*8   MA, MA2, DEPLA, K8BID, COUTUR
       CHARACTER*16  KBI1, KBI2, OPTION

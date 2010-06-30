@@ -1,8 +1,8 @@
-      SUBROUTINE OP0025(IER)
+      SUBROUTINE OP0025()
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      INTEGER IER
 C
 C 0.2. ==> COMMUNS
 C
@@ -107,7 +106,6 @@ C-----RECUPERATION DU NIVEAU D'IMPRESSION
 C
       CALL INFMAJ
       CALL INFNIV(IFM,NIV)
-      IER = 0
 C
 C-----------------------------------------------------------------------
       ASME = .TRUE.

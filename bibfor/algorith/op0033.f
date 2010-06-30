@@ -1,6 +1,6 @@
-      SUBROUTINE OP0033(IER   )
+      SUBROUTINE OP0033()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,7 +19,6 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PROIX J-M.PROIX
       IMPLICIT NONE
-      INTEGER  IER
 C-----------------------------------------------------------------------
 C           OPERATEUR    CALC_POINT_MAT
 C-----------------------------------------------------------------------
@@ -39,7 +38,7 @@ C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-      INTEGER      NDIM,IRET,N1,NBVARI,NBPAR,I,J,K,INCELA
+      INTEGER      NDIM,IRET,N1,NBVARI,NBPAR,I,J,K,INCELA,IER
       INTEGER      JVAL,IMATE,KPG,KSP,ITER,PRED
       INTEGER      NVIMAX,NTAMAX,MATREL,IROTA,DEFIMP
       INTEGER      INDIMP(6),NUMINS,ACTION,ITGT,NBVITA
