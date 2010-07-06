@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 06/07/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121k.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,7 +111,7 @@ RESU=STAT_NON_LINE (MODELE     = MO,
 #                               _F(CHARGE=PRESSION),),
                     CONTACT    = CHA2,
                     COMP_ELAS  =_F(RELATION='ELAS'),
-                         NEWTON=_F(MATRICE='ELASTIQUE',REAC_ITER=1),
+                         NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
                     CONVERGENCE=_F(ARRET='OUI',
                           ITER_GLOB_MAXI=30,
                           RESI_GLOB_MAXI=1.E-8,),);

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 05/07/2010   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,12 +23,15 @@ def formule_prod(self,VALE,VALE_C,**args):
    elif VALE_C != None:
       return formule_c
 
-def form_pyth_ops(self,d):
-   NOM_PARA=self.etape['NOM_PARA']
+def form_pyth_ops(self, d):
+   NOM_PARA = self.etape['NOM_PARA']
    VALE    =self.etape['VALE']
    VALE_C  =self.etape['VALE_C']
    if type(NOM_PARA) not in (list, tuple):
       NOM_PARA = [NOM_PARA,]
+   for para in NOM_PARA:
+       if para.strip() != para:
+           raise AsException("nom de paramètre invalide (contient des blancs) : %s" % repr(para))
    if self.sd == None:
       return
    if VALE     != None :

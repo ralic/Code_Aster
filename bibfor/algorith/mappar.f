@@ -2,7 +2,7 @@
      &                  NEWGEO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 06/07/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,11 +80,12 @@ C
       INTEGER      NUMMAE,NUMMAM,OLDMAM
       INTEGER      ITEMAX
       REAL*8       KSI1,KSI2
-      REAL*8       TAU1M(3),TAU2M(3),TAU1(3),TAU2(3)
-      REAL*8       COORME(27),COORPC(3),JEU
+      REAL*8       TAU1M(3),TAU2M(3),TAU1(3),TAU2(3),NORM(3)
+      REAL*8       COORME(27),COORPC(3),DISTME(3)
+      REAL*8       JEU,JEUSGN,NOOR
       REAL*8       KSIPC1,KSIPC2,WPC
       REAL*8       MMINFR,DIR(3),TOLEOU,SEUILI
-      REAL*8       CFDISR,EPSMAX,TOLEAP
+      REAL*8       CFDISR,EPSMAX,TOLEAP,R8PREM,DDOT
       CHARACTER*8  ALIAS,K8BID,NOMMAE
       CHARACTER*24 MAESCL,TABFIN,CRNUDD
       INTEGER      JMAESC,JTABF,JCRNUD
@@ -124,6 +125,9 @@ C
       DIR(1) = 0.D0
       DIR(2) = 0.D0
       DIR(3) = 0.D0
+      DISTME(1) = 0.D0
+      DISTME(2) = 0.D0
+      DISTME(3) = 0.D0
       CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
 C
 C --- INFOS GENERIQUES POUR L'ALGORITHME D'APPARIEMENT
@@ -242,7 +246,7 @@ C
           CALL MMREMA(NOMA  ,DEFICO,NEWGEO,COORPC,POSNOM,
      &                ITEMAX,EPSMAX,TOLEOU,DIRAPP,DIR   ,
      &                POSMAM,NUMMAM,JEU   ,TAU1M ,TAU2M ,
-     &                KSI1  ,KSI2  ,PROJIN)
+     &                KSI1  ,KSI2  ,PROJIN,DISTME)
 C
 C --- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 C
@@ -286,10 +290,14 @@ C --- CONTACT_INIT
 C
           IF (PREMIE) THEN
             IF (CTCINI) THEN
-              ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+22) = 1.D0
-              IF (LGLISS) THEN
-                ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+17) = 1.D0
-              END IF
+              CALL MMNORM(NDIM  ,TAU1  ,TAU2  ,NORM  ,NOOR  )
+              JEUSGN=DDOT(NDIM  ,NORM  ,1     ,DISTME,1     )
+              IF (JEUSGN.LE.R8PREM()) THEN
+                ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+22) = 1.D0
+                IF (LGLISS) THEN
+                  ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+17) = 1.D0
+                END IF
+              ENDIF
             ELSE
               ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+22) = 0.D0
             END IF

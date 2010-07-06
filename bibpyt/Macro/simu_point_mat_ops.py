@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 28/06/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,EPSI_INIT,VARI_INIT,NEWTON,CONVERGENCE,
-           MASSIF,ANGLE,COMP_INCR,COMP_ELAS,MATR_C1,MATR_C2,VECT_IMPO,INFO,ARCHIVAGE,SUPPORT, **args) :
+           MASSIF,ANGLE,COMP_INCR,COMP_ELAS,INFO,ARCHIVAGE,SUPPORT, **args) :
 
   """Simulation de la reponse d'un point materiel"""
 
@@ -138,14 +138,18 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           if args['NB_VARI_TABLE'] != None:  
              motscles['NB_VARI_TABLE']  = args['NB_VARI_TABLE']
  
-       if MATR_C1 :
-          motscles['MATR_C1']  = MATR_C1.List_F()
+       if args.has_key('MATR_C1'):
+          if args['MATR_C1'] != None:  
+          #   motscles['MATR_C1']  = MATR_C1.List_F()
+             motscles['MATR_C1']  = args['MATR_C1'].List_F()
  
-       if MATR_C2 :
-          motscles['MATR_C2']  = MATR_C2.List_F()
+       if args.has_key('MATR_C2'):
+          if args['MATR_C2'] != None:  
+             motscles['MATR_C2']  = args['MATR_C2'].List_F()
  
-       if VECT_IMPO :
-          motscles['VECT_IMPO']  = VECT_IMPO.List_F()
+       if args.has_key('VECT_IMPO'):
+          if args['VECT_IMPO'] != None:  
+             motscles['VECT_IMPO']  = args['VECT_IMPO'].List_F()
  
        if   ARCHIVAGE   :
          motscles['ARCHIVAGE']   = ARCHIVAGE.List_F()

@@ -4,7 +4,7 @@
       CHARACTER*(*)     TYPE,NU,NOMNO,NOMCMP,TARDIF,LIGREL,INFOBL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 05/07/2010   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -178,7 +178,12 @@ C
         IF ( NUNO .GT. 0 ) THEN
            CALL JEVEUO(JEXNUM(NUME//'.ORIG',1),'L',JORIG)
            NUSST = ZI(JORIG+NUNO-1)
-           CALL JEVEUO(NUME//'.REFE','L',JREFE)
+           CALL JEEXIN(NUME//'.REFE',IRET)
+           IF (IRET .GT. 0) THEN
+             CALL JEVEUO(NUME//'.REFE','L',JREFE)
+           ELSE
+             CALL JEVEUO(NUME//'.REFN','L',JREFE)      
+           ENDIF
            MODGEN = ZK24(JREFE)
            CALL JENUNO(JEXNUM(MODGEN//'      .MODG.SSNO',NUSST),NOMNO)
            NOMCMP(1:3) = 'GEN'

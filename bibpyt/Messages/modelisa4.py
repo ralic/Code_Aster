@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF modelisa4 Messages  DATE 05/07/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,10 +152,6 @@ cata_msg = {
 
 33 : _("""
  <coefrl> le numero de correlation et/ou le type de reseau passes dans le fichier de commande ne  sont pas coherents avec le fichier .71
-"""),
-
-34 : _("""
- les ligrels a concatener ne referencent pas le meme maillage.
 """),
 
 35 : _("""

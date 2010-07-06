@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 05/07/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,7 +23,7 @@
 """
 """
 # Modules Python
-import repr
+from repr import repr as reprlim
 import traceback
 from os import times
 from types import ClassType, TypeType
@@ -101,7 +101,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
           blancs jusqu a une longueur de 8
           Utilise par l interface C-FORTRAN
       """
-      if CONTEXT.debug : prbanner("getres " + self.nom + " " + repr.repr(self))
+      if CONTEXT.debug : prbanner("getres " + self.nom + " " + reprlim(self))
 
       # self ne peut etre qu'un objet de type ETAPE
 
@@ -509,7 +509,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          if len(miss) > 0:
             args = list(miss)
             args.sort()
-            args = ', '.join(args)
+            args = ', '.join([repr(nom) for nom in args])
             msgerr = """Les paramètres de la formule n'ont pas été fournis.
 Paramètres manquants : %s""" % args
             return 4, msgerr, None

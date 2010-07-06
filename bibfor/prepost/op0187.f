@@ -1,7 +1,7 @@
       SUBROUTINE OP0187()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 06/07/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      IBID,IRET,NSETOT,NNNTOT,NCOTOT,NBNOC,NBMAC,IFM,NIV
       INTEGER      NBGMA2,JNIVGR
-      CHARACTER*2  PREFNO(5)
+      CHARACTER*2  PREFNO(4)
       CHARACTER*8  MAXFEM,MO,MALINI,K8B,NOMRES,NOGRFI
       CHARACTER*16 K16B
       CHARACTER*19 K19B
@@ -93,8 +93,8 @@ C     ------------------------------------------------------------------
       IF (NIV.GT.1) WRITE(IFM,*)'3. XPODIM'
       LISTNO = '&&OP0187.LISTNO'
       DIRGRM = '&&OP0187.DIRGRM'
-      CALL XPODIM(MALINI,MAILC,MAILX,NSETOT,NNNTOT,NCOTOT,LISTNO,
-     &            K19B,K19B,K19B,K19B,K19B,K19B,K19B,K19B,
+      CALL XPODIM(MALINI,MAILC,NSETOT,NNNTOT,NCOTOT,LISTNO,
+     &            K19B,K19B,K19B,K19B,K19B,K19B,K19B,
      &            IBID,K8B,NBNOC,NBMAC,LOGRMA,DIRGRM,MAXFEM)
 
 C     ------------------------------------------------------------------

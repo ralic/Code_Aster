@@ -1,10 +1,10 @@
 # MODIF  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
-# TITRE TEST COMPORTEMENT VMIS_ISOT_LINE 3D 
-#......................................................................
-# comp001a.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
+# RESPONSABLE PROIX J-M.PROIX
+# TITRE COMPORTEMENT UMAT 3D CHARGEMENT MULTIDIRECTIONNEL EN DEFORMATION CF COMP001x
+# umat002a.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,7 +23,7 @@
 from Utilitai.veri_matr_tang import VERI_MATR_TANG
 
 
-DEBUT(CODE=_F(NOM='COMP001A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+DEBUT(CODE=_F(NOM='UMAT002A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',IMPR_MACRO='NON');
 
 # donnee materiau et fonction
 
@@ -44,19 +44,33 @@ YOUNG_Pa = YOUNG * C_Pa
 pente_Pa = pente * C_Pa
 SY_Pa = SY * C_Pa;
 
+E=YOUNG
+NU=POISSON
+LAMBDA=E*NU/(1+NU)/(1-2.*NU)
+MU = E/2/(1.0+NU)
+LAMBD_Pa=LAMBDA*C_Pa
+MU_Pa = MU*C_Pa
+LAMBB=LAMBDA/20.
+LAMBB_Pa=LAMBB*C_Pa
+MUB=MU/20.
+MUB_Pa=MUB*C_Pa
+NUB=0.
+
 ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                NU=POISSON,
                                ALPHA=11.8e-6),
+            UMAT=_F( C1 = LAMBD_Pa ,C2= MU_Pa , C3=LAMBB_Pa, C4= MUB_Pa, C5=NUB),
                     ECRO_LINE=_F(D_SIGM_EPSI=pente_Pa,
                                  SY=SY_Pa,),);
 #unite en MPa
 ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                NU=POISSON,
                                ALPHA=11.8e-6),
+            UMAT=_F( C1 = LAMBDA ,C2= MU , C3=LAMBB, C4= MUB, C5=NUB),
                     ECRO_LINE=_F(D_SIGM_EPSI=pente,
                                  SY=SY,),)
                                  
-compor='VMIS_ISOT_LINE'
+compor='UMAT'
 
 
 #Discretisation du calcul
@@ -120,6 +134,7 @@ for i in range(Ncal):
 #       Resout le pb a deformation imposee
         RESU[i]=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,
+                   NB_VARI=1,
                    ),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
@@ -174,7 +189,7 @@ for i in range(Ncal):
 # TEST_RESU sur les erreurs relatives 
 # label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
 prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
-#ch_param2=['V1','VMIS','TRACE']
+
 prec_zero=[1.E-10, 0.01, 0.01]
 
 # les quantites (invariants...) sur lequels portent les calculs d'erreur et les test_resu
@@ -194,19 +209,15 @@ for i in range(len(ch_param)):
         
                 
 # TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
-TEST_TABLE(TABLE=R_SI[0],
-           NOM_PARA='V1_Pa_1',VALE=4.82524E-02,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
 
 TEST_TABLE(TABLE=R_SI[1],
-           NOM_PARA='VMIS_Pa_1',VALE=5.35698E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           NOM_PARA='VMIS_Pa_1',VALE=1.612E+09,
+           FILTRE=_F(NOM_PARA='INST',VALE=6.0*t_0),
            REFERENCE='NON_REGRESSION',);     
 
 TEST_TABLE(TABLE=R_SI[3],
-           NOM_PARA='SIXX_Pa_1',VALE=1.15433E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
+           NOM_PARA='SIXX_Pa_1',VALE=-1.848E+09,
+           FILTRE=_F(NOM_PARA='INST',VALE=6.0*t_0),
            REFERENCE='NON_REGRESSION',);     
 
 
@@ -226,6 +237,7 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
 RESU_TGT=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,                
                                 TYPE_MATR_TANG='VERIFICATION',
+                   NB_VARI=1,
                                 VALE_PERT_RELA=1.E-5,
                                ),
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
@@ -234,7 +246,7 @@ RESU_TGT=SIMU_POINT_MAT(
                    INCREMENT=_F(LIST_INST=Linst,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
-                        );
+                      INFO=1,  );
 
 
 DIFF_MAT=VERI_MATR_TANG()
@@ -249,8 +261,10 @@ TEST_TABLE(TABLE=DIFF_MAT,
 
 
 
-IMPR_TABLE(TABLE=DIFF_MAT)
 
+                                 
+#
+IMPR_TABLE(TABLE=DIFF_MAT)
 FIN();
 
 

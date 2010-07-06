@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 28/06/2010   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF COMPELEM  DATE 05/07/2010   AUTEUR DESROCHES X.DESROCHES 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -387,7 +387,7 @@ PHENOMENE_MODELISATION__
 %-------------------------------------------------------------------
 
        MODELISATION__ 'SHB8'             DIM__ 3 3   CODE__ 'SHB'
-              ATTRIBUT__  TYPMOD=C_PLAN
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=C_PLAN
               MAILLE__ HEXA8     ELEMENT__ MECA_SHB8
               MAILLE__ QUAD4     ELEMENT__ MECA_FACE4
               MAILLE__ SEG2      ELEMENT__ MECA_ARETE2

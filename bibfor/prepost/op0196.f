@@ -1,7 +1,7 @@
       SUBROUTINE OP0196()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 06/07/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 
@@ -51,7 +50,7 @@ C     ------------------------------------------------------------------
       CHARACTER*2  K2B(5)
       CHARACTER*8  MAXFEM,MO,MALINI,RESUCO,RESUX,MODVIS,K8B
       CHARACTER*16 TYSD,NOMCHA
-      CHARACTER*19 CNS1,CNS2,CES1,CES2,CEL2,CH,CESVI1,CESVI2,CELVI2
+      CHARACTER*19 CNS1,CNS2,CES1,CES2,CEL2,CH,CESVI1,CESVI2
       CHARACTER*24 MAILX,MAILC,ORDR,LICHAM,LISTNO,LOGRMA,K24,LISTGR
 
 C
@@ -97,7 +96,6 @@ C     BOUCLE SUR LES NBORDR NUMEROS D'ORDRE
       DO 10 IOR = 1 , NBORDR
 
         IORD=ZI(JORD-1+IOR)
-
 C       ----------------------------------------------------------------
 C       3. DIMENSIONNEMENT DES OBJETS DU RESU X-FEM
 C       ----------------------------------------------------------------
@@ -111,10 +109,9 @@ C       ----------------------------------------------------------------
         CES2   = '&&OP0196.CES2'
         CESVI2   = '&&OP0196.CESVI2'
         CEL2   = '&&OP0196.CEL2'
-        CELVI2   = '&&OP0196.CELVI2'
         LISTNO = '&&OP0196.LISTNO'
-        CALL XPODIM(MALINI,MAILC,MAILX,NSETOT,NNNTOT,NCOTOT,LISTNO,CNS1,
-     &              CNS2,CES1,CES2,CEL2,CESVI1,CESVI2,CELVI2,
+        CALL XPODIM(MALINI,MAILC,NSETOT,NNNTOT,NCOTOT,LISTNO,CNS1,
+     &              CNS2,CES1,CES2,CEL2,CESVI1,CESVI2,
      &              IOR,RESUCO,NBNOC,NBMAC,LOGRMA,K24,MAXFEM)
 
 C       ----------------------------------------------------------------
@@ -182,7 +179,6 @@ C       ----------------------------------------------------------------
         CALL DETRSD('CHAM_ELEM',CEL2)
         CALL DETRSD('CHAM_ELEM_S',CESVI1)
         CALL DETRSD('CHAM_ELEM_S',CESVI2)
-        CALL DETRSD('CHAM_ELEM',CELVI2)
 
  10   CONTINUE
 

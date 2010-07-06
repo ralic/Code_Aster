@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 05/07/2010   AUTEUR DESROCHES X.DESROCHES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,6 +58,8 @@ MODE_LOCAL__
                                         EPNMAX1  EPNMOY1  SIGEQ1   NBRUP1   ENDO1    DTAUM2
                                         VNM2X    VNM2Y    VNM2Z    SINMAX2  SINMOY2  EPNMAX2
                                         EPNMOY2  SIGEQ2   NBRUP2   ENDO2    )
+    CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
@@ -124,10 +126,12 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     CHAR_MECA_EPSA_R    -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    CHAR_MECA_EPSI_F    -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    CHAR_MECA_EPSI_R    -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_EPSI_F    49    IN__   CCAMASS  PCAMASS  CEPSINF  PEPSINF  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_EPSI_R    49    IN__   CCAMASS  PCAMASS  CEPSINR  PEPSINR  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     ZVARCPG  PVARCPR
+                              OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FF3D3D    17    IN__   CFORCEF  PFF3D3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR3D3D    16    IN__   NFORCER  PFR3D3D  NGEOMER  PGEOMER

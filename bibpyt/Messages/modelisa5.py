@@ -1,4 +1,4 @@
-#@ MODIF modelisa5 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF modelisa5 Messages  DATE 05/07/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,10 +113,6 @@ cata_msg = {
 
 37 : _("""
  un group_no n'a pas de nom, suppression de ce groupe.
-"""),
-
-38 : _("""
- type d extraction interdit (dvlp)
 """),
 
 40 : _("""
@@ -364,8 +360,11 @@ cata_msg = {
 """),
 
 99 : _("""
- impossibilité de vérifier l'orientation des mailles de bord : on trouve des groupes de mailles disjoints dans la liste de mailles de bords fournie.
- vérifier que les groupes de mailles de bord définis forment un ensemble connexe.
+ Lors de la vérification automatique de l'orientation des mailles de bord, une erreur a été rencontrée : les groupes de mailles de bord ne forment pas un ensemble connexe.
+ 
+ Conseils :
+ - Commencez par vérifier que les groupes de mailles de bord fournies sont correctement définis.
+ - Si ces groupes de mailles ont des raisons d'être non connexes, vous pouvez désactiver la vérification automatique en renseignant VERI_NORM='NON'.
 """),
 
 }

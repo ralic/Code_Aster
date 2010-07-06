@@ -2,7 +2,7 @@
      &NOMPAR,ANG,PGL,IROTA,EPSM,SIGM,VIM,VIP,DEFIMP,COEF,INDIMP,
      &FONIMP,CIMPO,KEL,SDDISC,PARCRI,PRED,MATREL,OPTION)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -132,9 +132,11 @@ C     ----------------------------------------
 C     TRAITEMENT DES ANGLES
 C     ----------------------------------------
       CALL R8INIR ( 7, 0.D0, ANG ,1 )
+      CALL R8INIR ( 7, 0.D0, ANGEUL ,1 )
       CALL R8INIR(3, 0.D0, XYZGAU, 1)
       CALL GETVR8('MASSIF','ANGL_REP',1,1,3,ANG(1),N1)
       CALL GETVR8('MASSIF','ANGL_EULER',1,1,3,ANGEUL,N2)
+
       IF (N1.GT.0) THEN
          ANG(1) = ANG(1)*R8DGRD()
          IF ( NDIM .EQ. 3 ) THEN
@@ -142,6 +144,7 @@ C     ----------------------------------------
             ANG(3) = ANG(3)*R8DGRD()
          ENDIF
          ANG(4) = 1.D0
+
 C        ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
       ELSEIF (N2.GT.0) THEN
           CALL EULNAU(ANGEUL,ANGD)

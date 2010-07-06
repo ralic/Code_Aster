@@ -1,6 +1,6 @@
-# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
-# TITRE  TEST LOI DE COMPORTEMENT 3D ISOT_TRAC
+# TITRE  TEST LOI DE COMPORTEMENT 3D VMIS_ISOT_TRAC ET C_PLAN
 # comp001b.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

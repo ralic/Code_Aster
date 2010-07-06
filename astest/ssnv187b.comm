@@ -1,4 +1,4 @@
-# MODIF  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 06/07/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UN CUBE - D_PLAN
 # ssnv187b.para = tps_job 80 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -132,8 +132,8 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   PRECISION  = 1E-8,),)
 
 # MATERIAU HYPERELASTIQUE: NEO-HOOKEEN
-C01 = 1.2345;
-C10 = 0.0;
+C01 = 0.0;
+C10 = 1.2345;
 C20 = 0.0;
 NU  = 0.499
 K   = (6*(C10+C01))/(3*(1-2*NU))
@@ -185,8 +185,8 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   NOM_CMP='DY',
                   CRITERE='RELATIF',
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '8.2.6',
-                  VALE = -7.8308330318962E-02,
+                  VERSION = '10.2.6',
+                  VALE = -0.0783308779,
                   PRECISION  = 1E-8,),)
 
 TAB2 = POST_RELEVE_T(ACTION=_F(INTITULE='RET2',

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+#& MODIF COMMUN  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +29,9 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                  fr="Comportement de la bibliotheque Zmat",
                    NB_VARI =SIMP(statut='o',typ='I',max=1),
                    UNITE =SIMP(statut='o',typ='I',max=1),),
+           b_umat      = BLOC(condition = "RELATION == 'UMAT' ",
+                                 fr="Comportement utilisateur de type UMAT",
+                   NB_VARI =SIMP(statut='o',typ='I',max=1,fr="Nombre de variables internes"),),
 
 # KITs
            b_kit_ddi = BLOC(condition = "RELATION == 'KIT_DDI' ",

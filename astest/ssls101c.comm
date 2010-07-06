@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 05/07/2010   AUTEUR DESROCHES X.DESROCHES 
 # TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION  147 SHB8
 # ssls101c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,6 +127,10 @@ CHF3=AFFE_CHAR_MECA(MODELE=MODEL,
                     FORCE_INTERNE=_F(TOUT='OUI',
                                      FZ=-10.0,),);
 
+EPSI=AFFE_CHAR_MECA(MODELE=MODEL,
+                    EPSI_INIT=_F(TOUT='OUI',
+                                     EPZZ=-1.E-5,),);
+
 FZC=DEFI_CONSTANTE(VALE=-10.0)
 
 CHFC=AFFE_CHAR_MECA_F(MODELE=MODEL,
@@ -159,6 +163,10 @@ VEPE=CALC_VECT_ELEM(OPTION='CHAR_MECA',
                     CHARGE=(CINE,CHPE,),
                     CHAM_MATER=CHMAT,);
 
+VEEP=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                    CHARGE=(CINE,EPSI,),
+                    CHAM_MATER=CHMAT,);
+
 NU=NUME_DDL(MATR_RIGI=MATELEM,);
 
 MATASS=ASSE_MATRICE(MATR_ELEM=MATELEM,
@@ -176,6 +184,9 @@ VEFCAS=ASSE_VECTEUR(VECT_ELEM=VEFC,
 VEPEAS=ASSE_VECTEUR(VECT_ELEM=VEPE,
                     NUME_DDL=NU,);
 
+VEEPAS=ASSE_VECTEUR(VECT_ELEM=VEEP,
+                    NUME_DDL=NU,);
+
 MATASS=FACTORISER(reuse =MATASS,
                  MATR_ASSE=MATASS,);
 
@@ -190,6 +201,10 @@ DEFC=RESOUDRE(MATR=MATASS,
 
 DEPE=RESOUDRE(MATR=MATASS,
                CHAM_NO=VEPEAS,);
+
+DEEP=RESOUDRE(MATR=MATASS,
+               CHAM_NO=VEEPAS,);
+#IMPR_RESU(RESU=_F(MAILLAGE=MAIL1,CHAM_GD=DEEP,),);
 #--------------------------------------------------------------------
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEPR,
@@ -365,7 +380,21 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEPR,
                       NOM_CMP='DZ',
                       VALE=-435.8974,
                       CRITERE='RELATIF',
-                      REFERENCE='ANALYTIQUE',PRECISION=0.005,),),);
+                      REFERENCE='ANALYTIQUE',PRECISION=0.005,),
+# EPSI_INIT
+                   _F(CHAM_GD=DEEP,
+                      NOEUD='N2',
+                      NOM_CMP='DY',
+                      VALE=-3.44149E-08,
+                      CRITERE='RELATIF',
+                      REFERENCE='NON_REGRESSION',),
+                   _F(CHAM_GD=DEEP,
+                      NOEUD='N3',
+                      NOM_CMP='DY',
+                      VALE=-6.88232E-08,
+                      CRITERE='RELATIF',
+                      REFERENCE='NON_REGRESSION',),
+                    ),);
 
 CHAMELG=CALC_CHAM_ELEM(    MODELE=MODEL,
                              CHAM_MATER=CHMAT,

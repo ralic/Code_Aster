@@ -1,6 +1,6 @@
       SUBROUTINE OP0033()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,6 +75,7 @@ C ======================================================================
       KSP=1
       K19B=' '
       ITER = 0
+      ACTION=1
       
 C     RECUPERATION DES OPTIONS DEMANDEES
 C     ----------------------------------
