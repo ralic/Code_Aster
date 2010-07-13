@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF observation_ops Macro  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -399,7 +399,8 @@ def observation_ops(self,
 #***********************************************
 
     if PROJECTION == 'OUI':
-        __proj=PROJ_CHAMP(RESULTAT = __proj,
+        __proj=PROJ_CHAMP(METHODE='COLOCATION',
+                          RESULTAT = __proj,
                           MODELE_1 = MODELE_1,
                           MODELE_2 = MODELE_2,
                           NUME_DDL = NUME_DDL,
@@ -833,7 +834,8 @@ def crea_normale(self, modele_1, modele_2,
                        );
 
 
-    __norm4 = PROJ_CHAMP( RESULTAT   = __norm3,
+    __norm4 = PROJ_CHAMP( METHODE='COLOCATION',
+                          RESULTAT   = __norm3,
                           MODELE_1   = modele_1,
                           MODELE_2   = modele_2,
                           NOM_CHAM   = 'DEPL',

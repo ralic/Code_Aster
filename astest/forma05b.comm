@@ -1,6 +1,7 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
+# forma05b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -184,7 +185,7 @@ for num_calc in range(0,nb_calc1) :
 
 # CHAMP DE TEMPERATURE PROJETE
    TEMP2[num_calc]=PROJ_CHAMP(
-               METHODE='ELEM',
+               METHODE='COLOCATION',
                RESULTAT=TEMP[num_calc],
                MODELE_1=MOT[num_calc],
                MODELE_2=MOT2[num_calc],

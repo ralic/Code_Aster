@@ -1,4 +1,4 @@
-#@ MODIF post_endo_fiss_ops Macro  DATE 31/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_endo_fiss_ops Macro  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -423,7 +423,7 @@ def post_endo_fiss_ops(self,
                                       PHENOMENE    = 'MECANIQUE',
                                       MODELISATION = 'BARRE'),)
 
-    __YBARPR = PROJ_CHAMP(METHODE        = 'ELEM',
+    __YBARPR = PROJ_CHAMP(METHODE        = 'COLOCATION',
                             RESULTAT     = __resu,
                             MODELE_1     = __modtot,
                             MODELE_2     = __MO,
@@ -537,7 +537,7 @@ def post_endo_fiss_ops(self,
                                      PHENOMENE    = 'MECANIQUE',
                                      MODELISATION = 'BARRE'),)
 
-    __YBARPR = PROJ_CHAMP(METHODE      = 'ELEM',
+    __YBARPR = PROJ_CHAMP(METHODE      = 'COLOCATION',
                           RESULTAT     = __resu,
                           MODELE_1     = __modtot,
                           MODELE_2     = __MO,
@@ -683,7 +683,7 @@ def post_endo_fiss_ops(self,
 
       try:
         # on essaie de projeter, exception: il n'y a pas des points "dans la matiere"
-        __YBARPR = PROJ_CHAMP(METHODE      = 'ELEM',
+        __YBARPR = PROJ_CHAMP(METHODE      = 'COLOCATION',
                               RESULTAT     = __resu,
                               MODELE_1     = __modtot,
                               MODELE_2     = __MO,

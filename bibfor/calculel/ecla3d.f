@@ -11,7 +11,7 @@
       CHARACTER*8  ELREFA, FAPG
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/05/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF CALCULEL  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,9 +59,21 @@ C
 C ---------------------------------------------------------------------
       INTEGER       K, IHEXA8, IPENT6, ITETR4
       CHARACTER*32  JEXNOM
-      CHARACTER*24 VALK(4)
+      CHARACTER*24 VALK(3)
+      CHARACTER*16 NOMCMD,K16B
+      CHARACTER*19 K19B
+      CHARACTER*1  KUTMES
+
 C ---------------------------------------------------------------------
       CALL JEMARQ()
+
+      CALL GETRES(K19B,K16B,NOMCMD)
+      IF (NOMCMD.EQ.'PROJ_CHAMP') THEN 
+        KUTMES='F'
+      ELSE
+        KUTMES='I'
+      ENDIF
+
 C
       CALL JENONU(JEXNOM('&CATA.TM.NOMTM','HEXA8' ),IHEXA8)
       CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PENTA6'),IPENT6)
@@ -460,10 +472,9 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
 
        ELSE
         VALK (1) = NOMTE
-        VALK (2) = NOMTE
-        VALK (3) = ELREFA
-        VALK (4) = FAPG
-         CALL U2MESG('I', 'CALCULEL5_76',4,VALK,0,0,0,0.D0)
+        VALK (2) = ELREFA
+        VALK (3) = FAPG
+        CALL U2MESK(KUTMES, 'CALCULEL5_76', 3, VALK)
 
        ENDIF
 
@@ -704,11 +715,9 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
 
        ELSE
         VALK (1) = NOMTE
-        VALK (2) = NOMTE
-        VALK (3) = ELREFA
-        VALK (4) = FAPG
-         CALL U2MESG('I', 'CALCULEL5_76',4,VALK,0,0,0,0.D0)
-
+        VALK (2) = ELREFA
+        VALK (3) = FAPG
+        CALL U2MESK(KUTMES, 'CALCULEL5_76', 3, VALK)
        ENDIF
 
 C     -----------------------------------------------------------------
@@ -1003,19 +1012,15 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
 
        ELSE
         VALK (1) = NOMTE
-        VALK (2) = NOMTE
-        VALK (3) = ELREFA
-        VALK (4) = FAPG
-         CALL U2MESG('I', 'CALCULEL5_76',4,VALK,0,0,0,0.D0)
-
+        VALK (2) = ELREFA
+        VALK (3) = FAPG
+        CALL U2MESK(KUTMES, 'CALCULEL5_76', 3, VALK)
        ENDIF
 
       ELSE
         VALK (1) = NOMTE
-        VALK (2) = NOMTE
-        VALK (3) = ELREFA
-        CALL U2MESG('I', 'CALCULEL5_78',3,VALK,0,0,0,0.D0)
-
+        VALK (2) = ELREFA
+        CALL U2MESK(KUTMES, 'CALCULEL5_78', 2, VALK)
       ENDIF
 
       CALL JEDEMA()

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/06/2010   AUTEUR CARON A.CARON 
+%& MODIF TYPELEM  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -241,12 +241,12 @@ OPTION__
                                      CONTX_R  PDONCO   N1NEUT_R PLST     N1NEUT_R PLSN     E4NEUTR  PPINTER
                                      E10NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA  E8NEUTR  PBASECO
                                      E1NEUTR  PSEUIL   STANO_I  PSTANO
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     RIGI_FROT           533   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     N1NEUT_R PLSN     E4NEUTR  PPINTER
                                      E10NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA  E8NEUTR  PBASECO
                                      E1NEUTR  PSEUIL   STANO_I  PSTANO
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     RIGI_MECA           81    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
                                      ZVARCPG PVARCPR
                               OUT__  MMATUUR  PMATUUR

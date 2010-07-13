@@ -3,7 +3,7 @@
      &                  CWEAR ,DISSIP,TYPBAR,TYPRAC,MATRCM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,7 +42,8 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  PHASE  : PHASE DE CALCUL
-C              'CONT' - CONTACT
+C              'CONT' - CONTACT METHODE LAGRANGIENNE
+C              'PCON' - CONTACT METHODE PENALISEE
 C              'USUR' - USURE
 C              'EXCL' - EXCLUSION D'UN NOEUD
 C IN  NDIM   : DIMENSION DU PROBLEME
@@ -70,7 +71,7 @@ C
 C
 C --- PARTIE CONTACT
 C       
-      IF (PHASE.EQ.'CONT') THEN    
+      IF ((PHASE.EQ.'CONT').OR.(PHASE.EQ.'PCON')) THEN    
         DO 200 INOC = 1,NNL
           DO 190 INOM = 1,NNM
             DO 180 IDIM = 1,NDIM
@@ -118,11 +119,7 @@ C
   289     CONTINUE
   299   CONTINUE          
       ELSE
-        CALL ASSERT(.FALSE.)
-      
+        CALL ASSERT(.FALSE.)      
       ENDIF
-
-
-
 C
       END

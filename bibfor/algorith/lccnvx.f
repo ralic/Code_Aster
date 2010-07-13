@@ -1,11 +1,11 @@
         SUBROUTINE LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
      &                SIGF, VIND,COMP, NBCOMM, CPMONO, PGL,NR,
-     &                NVI,VP,VECP,HSR,TOUTMS,SEUIL)
+     &                NVI,VP,VECP,HSR,TOUTMS,TIMED,TIMEF,SEUIL)
         IMPLICIT  NONE
 C TOLE CRP_21
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C ----------------------------------------------------------------------
 C ======================================================================
         INTEGER         NMAT , IMAT, NR, NVI, KPG, KSP, IRET
         CHARACTER*(*)   FAMI
-        REAL*8          MATERF(NMAT,2), SEUIL
+        REAL*8          MATERF(NMAT,2), SEUIL,TIMED,TIMEF
         REAL*8          SIGF(6) , VIND(*),HSR(5,24,24)
         CHARACTER*16    LOI
         INTEGER         NBCOMM(NMAT,3)
@@ -68,7 +68,7 @@ C ======================================================================
 C ======================================================================
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS') THEN
          CALL LCMMVX ( FAMI, KPG, KSP,SIGF, VIND, NMAT, MATERF,
-     &          COMP,NBCOMM, CPMONO, PGL, NR, NVI,HSR, TOUTMS,SEUIL)
+     &  COMP,NBCOMM, CPMONO, PGL, NR, NVI,HSR, TOUTMS,TIMED,TIMEF,SEUIL)
 C ======================================================================
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M') THEN
          CALL IRRCVX ( FAMI, KPG, KSP, NMAT, MATERF, SIGF, VIND, SEUIL)

@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel5 Messages  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,13 +142,30 @@ Risques & conseils :
 
 
 
+32: _("""
+Erreur Utilisateur dans PROJ_CHAMP (ou LIAISON_MAILLE) :
+ Pour le modele  %(k1)s  on ne peut pas visualiser ensemble plusieurs champs ELGA (%(k2)s,  ...)
+ car les familles de points de Gauss sont differentes
+"""),
 
+
+
+
+
+33 : _("""
+PROJ_CHAMP (ou LIAISON_MAILLE) :
+  La méthode %(k1)s est incompatible avec le champ %(k2)s.
+  Vérifiez le type du champ à projeter !"""),
 
 
 34 : _("""
- ! p2 obligeatoire avec terme source non nul !
+ ! p2 obligatoire avec terme source non nul !
 """),
 
+35 : _("""
+PROJ_CHAMP (ou LIAISON_MAILLE) :
+  Vous cherchez à projeter un champ par élément (ELGA).
+  Pour cela, il vous faut renseigner le mot-clé MODELE_1."""),
 
 36 : _("""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
@@ -157,7 +174,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 
 37 : _("""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  Vous cherchez à projeter un champ par élément (ELNO ou ELEM).
+  Vous cherchez à projeter un champ par élément (ELNO, ELEM ou ELGA).
   Pour cela, il vous faut renseigner le mot-clé MODELE_2."""),
 
 38 : _("""
@@ -323,14 +340,16 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 76 : _("""
- on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s
-    elrefa  :  %(k3)s
-    famille :  %(k4)s
+ Il n'est pas encore possible de découper le type_element :  %(k1)s  en sous-éléments 
+    elrefa  :  %(k2)s ;
+    famille :  %(k3)s.
+ Faites une demande d'évolution.
 """),
 
 78 : _("""
- on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s
-    elrefa :  %(k3)s
+ Il n'est pas encore possible de découper le type_element :  %(k1)s  en sous-éléments 
+    elrefa :  %(k2)s.
+ Faites une demande d'évolution.
 """),
 
 

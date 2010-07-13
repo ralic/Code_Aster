@@ -3,7 +3,7 @@
      1       ITMAX, TOLER, TIMED, TIMEF,YD ,YF,DEPS, DY, R, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,32 +120,31 @@ C           TAU      : SCISSION REDUITE TAU=SIG:MS
             
             NUVI=NSFV+3*(IS-1)
 
-C           ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA
-C            IF (NECOUL.NE.'KOCKS_RAUCH') THEN
-            IF (NUECOU.NE.4) THEN
+C           ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA-SAUD MODELES DD
+            IF ((NUECOU.NE.4).AND.(NUECOU.NE.5)) THEN
 
                 DGAMM1=DY(NSFA+IS)
                 ALPHAM=VIND(NUVI+1)
-
                 CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
      &            ITMAX, TOLER,ALPHAM,DGAMM1,DALPHA, IRET)
-
                 IF (IRET.NE.0) GOTO 9999
 
                 ALPHAP=ALPHAM+DALPHA
+                GAMMAP=YD(NSFA+IS)+DGAMM1
+            ELSE
+C           POUR KOCKS-RAUCH ET DD_CFC ALPHA est la variable principale
+               ALPHAP=YD(NSFA+IS)+DY(NSFA+IS)
+               GAMMAP=VIND(NUVI+2)
+            ENDIF
+            
+            IF (NUECOU.NE.4) THEN
 C               ECROUISSAGE ISOTROPE : CALCUL DE R(P)
                 IEXP=0
                 IF (IS.EQ.1) IEXP=1
-                CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
-     &            IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,IEXP,EXPBP,RP)
-     
-                GAMMAP=YD(NSFA+IS)+DGAMM1
-
-C            IF (NECOUL.ES.'KOCKS_RAUCH') THEN
-            ELSEIF (NUECOU.EQ.4) THEN
-C           POUR KOCKS-RAUCH ALPHA représente la variable principale
-               ALPHAP=YD(NSFA+IS)+DY(NSFA+IS)
-               GAMMAP=VIND(NUVI+2)
+                CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,IS,
+     &                      NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,IEXP,
+     &                      EXPBP,RP)
+            IF (IRET.GT.0) GOTO 9999
             ENDIF
             
 C           ECOULEMENT VISCOPLASTIQUE
@@ -161,7 +160,7 @@ C
             IF (IRET.GT.0) GOTO 9999
 
 C            IF (NECOUL.ES.'KOCKS_RAUCH') THEN
-            IF (NUECOU.EQ.4) THEN
+            IF ((NUECOU.EQ.4).OR.(NUECOU.EQ.5)) THEN
 C              POUR KOCKS-RAUCH ALPHA représente la variable principale
                R(NSFA+IS)=-(DY(NSFA+IS)-DALPHA)
             ELSE

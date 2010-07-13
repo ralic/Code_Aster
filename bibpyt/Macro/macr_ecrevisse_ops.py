@@ -1,4 +1,4 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 21/04/2010   AUTEUR BOTTONI M.BOTTONI 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -305,6 +305,7 @@ def macr_ecrevisse_ops(self,reuse,
                 **motclefs )
 
               RTHERMPJ=PROJ_CHAMP(RESULTAT=__THINIT, MODELE_1=MODELE_THER, MODELE_2=MODELE_MECA,
+                     METHODE='COLOCATION',
                      VIS_A_VIS=_F(TOUT_1='OUI', TOUT_2='OUI',),
                      INFO=2,
                       )
@@ -322,6 +323,7 @@ def macr_ecrevisse_ops(self,reuse,
 
            # Projection du champ thermique, a tous les instants sinon pas de deformations thermiques
               RTHERMPJ=PROJ_CHAMP(RESULTAT=RTHERM, MODELE_1=MODELE_THER, MODELE_2=MODELE_MECA,
+                METHODE='COLOCATION',
                 VIS_A_VIS=_F(TOUT_1='OUI', TOUT_2='OUI',),
                 INFO=2,
                  )

@@ -5,7 +5,7 @@
       INTEGER NUTM1D(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C     -----------------------------------------------
       CALL WKVECT(CORRES//'.PJXX_K1','V V K24',5,J2XXK1)
       ZK24(J2XXK1-1+1)=M1
       ZK24(J2XXK1-1+2)=M2
-      ZK24(J2XXK1-1+3)='ELEM'
+      ZK24(J2XXK1-1+3)='COLOCATION'
 
 
 C     2.1 REMPLISSAGE DE .PJEF_NB ET .PJEF_M1:

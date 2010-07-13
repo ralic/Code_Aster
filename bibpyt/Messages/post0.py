@@ -1,4 +1,4 @@
-#@ MODIF post0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF post0 Messages  DATE 13/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,6 +148,9 @@ Attention : donner un maillage 2D en entrée
 
 35: _("""
 Attention : le type de champ en entrée ne fait pas partie des champs que la macro peut traiter
+"""),
+
+36 : _(""" Erreur: liste d'instance définie dans la commande POSTGP ne fait pas partie des instances calculées
 """),
 
 }

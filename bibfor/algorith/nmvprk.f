@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -312,7 +312,7 @@ C
 
       IF ((LOI(1:8).EQ.'MONOCRIS').OR.(LOI(1:8).EQ.'POLYCRIS')) THEN
          CALL LCDPEQ (VIND, VINF,LOI,NBCOMM,CPMONO,NMAT,NVI,SIGI,
-     &  COTHE,COEFF)
+     &  COTHE,COEFF,HSR)
       ENDIF
 
       IF (LOI(1:9).EQ.'VENDOCHAB') THEN

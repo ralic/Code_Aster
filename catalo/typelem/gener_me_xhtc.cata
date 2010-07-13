@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/06/2010   AUTEUR CARON A.CARON 
+%& MODIF TYPELEM  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -158,6 +158,7 @@ VECTEUR__
 
 MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
+    MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
     CALC_K_G            297   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
@@ -293,12 +294,12 @@ OPTION__
                                      CONTX_R  PDONCO   N1NEUT_R PLST     N1NEUT_R PLSN     E18NEUTR PPINTER
                                      E30NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONCHA  E54NEUTR PBASECO
                                      E1NEUTR  PSEUIL   STANO_I  PSTANO
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     RIGI_FROT           533   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     N1NEUT_R PLSN     E18NEUTR PPINTER
                                      E30NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONCHA  E54NEUTR PBASECO
                                      E1NEUTR  PSEUIL   STANO_I  PSTANO
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     RIGI_MECA           11    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_TANG      539   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR

@@ -1,0 +1,352 @@
+# MODIF  DATE 12/07/2010   AUTEUR GREFFET N.GREFFET 
+# TITRE VALEUR DE REFERENCE POUR LES ELEMENTS POUTRES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# COMME ZZZZ234A SAUF QUE C'EST EN DYNAMIQUE
+# zzzz234f.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test C
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+DEBUT(CODE=_F(NOM='ZZZZ234F',NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'))
+
+
+# Fonction de calcul de l'erreur
+CoefRef = 1.0E-05
+CERREUR = FORMULE(NOM_PARA=('RESI_REFE','RESI_GLOB'),
+                  VALE='(RESI_REFE - 1.0E+05*RESI_GLOB)')
+
+
+MA = LIRE_MAILLAGE(INFO=2);
+
+# Poutes multifibres POU_D_EM et POU_D_TGM
+# lecture du maillage de la section
+
+PRE_GMSH(UNITE_GMSH=19, UNITE_MAILLAGE=21)
+
+MASECT=LIRE_MAILLAGE(UNITE=21,INFO=2)
+
+GFF=DEFI_GEOM_FIBRE(SECTION= _F(MAILLAGE_SECT = MASECT , TOUT_SECT = 'OUI',
+                                GROUP_FIBRE = 'ACIER',
+                                COOR_AXE_POUTRE = (0.,0.,)))
+
+MATE = DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3,RHO=7800.),)
+
+MATFF=DEFI_COMPOR(GEOM_FIBRE=GFF,MATER_SECT=MATE,
+                 MULTIFIBRE=(_F(GROUP_FIBRE='ACIER',MATER=MATE,RELATION='ELAS')))
+
+#
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE        = _F(TOUT='OUI',MATER=MATE,),
+                      AFFE_COMPOR = _F(TOUT='OUI',COMPOR=MATFF))
+
+#=====================================================================================
+#    POUTRES
+#=====================================================================================
+#    POU_D_T   : Poutre droite de Timoshenko
+#    POU_D_E   : Poutre droite d'EULER
+#    POU_D_TG  : Poutre droite de Timoshenko (avec gauchissement)
+#    POU_D_EM  : Poutres multi-fibres
+#    POU_D_TGM : Poutre droite multi-fibres de Timoshenko (avec gauchissement)
+#    POU_D_TGD : Poutre droite (grands deplassements)
+#    POU_C_T   : Poutre courbe de Timoshenko
+#-----------------------------------------------------------------------
+
+LIS_INST =DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=200,),),)
+L_ARCH =DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=1,),),)
+
+#-------------------------------------------------------------------------------------
+# 1 --> POU_D_T
+#-----------------
+
+MO_D_T = AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=_F(GROUP_MA='POUD',PHENOMENE='MECANIQUE',MODELISATION='POU_D_T'),)
+
+CA_D_T = AFFE_CARA_ELEM(  POUTRE=_F( GROUP_MA='POUD',
+                                  SECTION='CERCLE',CARA= 'R',VALE=0.02,),
+                                  MODELE=MO_D_T)
+
+CL_D_T = AFFE_CHAR_MECA(MODELE=MO_D_T,
+                               DDL_IMPO=_F(GROUP_NO='A',
+                               DX=0., DY=0., DZ=0.,
+                               DRX=0.,DRY=0.,DRZ=0.),)
+
+CH_D_T = AFFE_CHAR_MECA(MODELE=MO_D_T,
+                        FORCE_NODALE=_F(GROUP_NO='B',
+                                        FX= 1000.,
+                                        FY= 1100.,
+                                        FZ= 1200.,
+                                        MX= 1300.,
+                                        MY= 1400.,
+                                        MZ= 1500.,
+                                        ),)
+
+
+RE_D_T=DYNA_NON_LINE(MODELE     = MO_D_T,
+                     CHAM_MATER = CHMAT,
+                     CARA_ELEM  = CA_D_T,
+                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', 
+                                 FORMULATION='DEPLACEMENT', ),
+
+                     EXCIT      = (_F(CHARGE = CL_D_T),
+                                   _F(CHARGE = CH_D_T),),
+                     COMP_INCR  =  _F(RELATION   = 'ELAS',
+                                     DEFORMATION = 'PETIT',
+                                     GROUP_MA    = 'POUD',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+      ARCHIVAGE=_F(LIST_INST  = L_ARCH),
+   );
+
+TB_D_T = RECU_TABLE(CO=RE_D_T,NOM_PARA=('RESI_REFE','RESI_GLOB_RELA','RESI_GLOB'),)
+
+TB_D_T = CALC_TABLE(reuse=TB_D_T, TABLE=TB_D_T,
+   ACTION=( _F(OPERATION='OPER',FORMULE=CERREUR,NOM_PARA='ERREUR'), ),
+)
+IMPR_TABLE(TABLE=TB_D_T)
+TEST_TABLE(TABLE=TB_D_T, NOM_PARA='ERREUR', VALE=0.0,
+           CRITERE='ABSOLU', PRECISION=1.0E-10, REFERENCE='ANALYTIQUE',);
+#IMPR_RESU(RESU=_F(RESULTAT=RE_D_T))
+
+
+#
+#-------------------------------------------------------------------------------------
+# 2 --> POU_D_E
+# ---------------
+
+MO_D_E = AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=_F(GROUP_MA='POUD',PHENOMENE='MECANIQUE',MODELISATION='POU_D_E'),)
+
+CA_D_E = AFFE_CARA_ELEM(  POUTRE=_F( GROUP_MA='POUD',
+                                  SECTION='CERCLE',CARA= 'R',VALE=0.02,),
+                                  MODELE=MO_D_E)
+
+CL_D_E = AFFE_CHAR_MECA(MODELE=MO_D_E,
+                    DDL_IMPO=_F(GROUP_NO='A',
+                    DX=0., DY=0., DZ=0.,
+                    DRX=0.,DRY=0.,DRZ=0.),)
+
+CH_D_E = AFFE_CHAR_MECA(MODELE=MO_D_E,
+                        FORCE_NODALE=_F(GROUP_NO='B',
+                                        FX= 1000.,
+                                        FY= 1100.,
+                                        FZ= 1200.,
+                                        MX= 1300.,
+                                        MY= 1400.,
+                                        MZ= 1500.,
+                                        ),)
+
+RE_D_E=DYNA_NON_LINE(MODELE     = MO_D_E,
+                     CHAM_MATER = CHMAT,
+                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', 
+                                 FORMULATION='DEPLACEMENT', ),
+
+                     CARA_ELEM  = CA_D_E,
+                     EXCIT      = (_F(CHARGE = CL_D_E),
+                                   _F(CHARGE = CH_D_E),),
+                     COMP_INCR  =  _F(RELATION   = 'ELAS',
+                                     DEFORMATION = 'PETIT',
+                                     GROUP_MA    = 'POUD',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+      ARCHIVAGE=_F(LIST_INST  = L_ARCH),
+   );
+TB_D_E = RECU_TABLE(CO=RE_D_E,NOM_PARA=('RESI_REFE','RESI_GLOB_RELA','RESI_GLOB'),)
+
+TB_D_E = CALC_TABLE(reuse=TB_D_E, TABLE=TB_D_E,
+   ACTION=( _F(OPERATION='OPER',FORMULE=CERREUR,NOM_PARA='ERREUR'), ),
+)
+IMPR_TABLE(TABLE=TB_D_E)
+TEST_TABLE(TABLE=TB_D_E, NOM_PARA='ERREUR', VALE=0.0,
+           CRITERE='ABSOLU', PRECISION=1.0E-10, REFERENCE='ANALYTIQUE',);
+#IMPR_RESU(RESU=_F(RESULTAT=RE_D_E))
+
+
+#
+#-------------------------------------------------------------------------------------
+# 4 --> POU_D_EM
+# ----------------
+
+MO_D_EM = AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=_F(GROUP_MA='POUD',PHENOMENE='MECANIQUE',MODELISATION='POU_D_EM'),)
+
+CA_D_EM = AFFE_CARA_ELEM(  POUTRE=_F( GROUP_MA='POUD',
+                                  SECTION='CERCLE',CARA= 'R',VALE=0.02,
+  PREC_AIRE = 2.E-2),
+    MULTIFIBRE = _F (GROUP_MA='POUD',GROUP_FIBRE= 'ACIER',),
+                            GEOM_FIBRE = GFF ,
+                            MODELE=MO_D_EM)
+
+CL_D_EM = AFFE_CHAR_MECA(MODELE=MO_D_EM,
+                    DDL_IMPO=_F(GROUP_NO='A',
+                    DX=0., DY=0., DZ=0.,
+                    DRX=0.,DRY=0.,DRZ=0.),)
+
+CH_D_EM = AFFE_CHAR_MECA(MODELE=MO_D_EM,
+                        FORCE_NODALE=_F(GROUP_NO='B',
+                                        FX= 1000.,
+                                        FY= 1100.,
+                                        FZ= 1200.,
+                                        MX= 1300.,
+                                        MY= 1400.,
+                                        MZ= 1500.,
+                                        ),)
+
+RE_D_EM=DYNA_NON_LINE(MODELE     = MO_D_EM,
+                     CHAM_MATER = CHMAT,
+                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', 
+                                 FORMULATION='DEPLACEMENT', ),
+
+                     CARA_ELEM  = CA_D_EM,
+                     EXCIT      = (_F(CHARGE = CL_D_EM),
+                                   _F(CHARGE = CH_D_EM),),
+                     COMP_INCR  =  _F(RELATION   = 'MULTIFIBRE',
+                                     DEFORMATION = 'PETIT',
+                                     GROUP_MA    = 'POUD',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+      ARCHIVAGE=_F(LIST_INST  = L_ARCH),
+   );
+
+TB_D_EM = RECU_TABLE(CO=RE_D_EM,NOM_PARA=('RESI_REFE','RESI_GLOB_RELA','RESI_GLOB'),)
+TB_D_EM = CALC_TABLE(reuse=TB_D_EM, TABLE=TB_D_EM,
+   ACTION=( _F(OPERATION='OPER',FORMULE=CERREUR,NOM_PARA='ERREUR'), ),
+)
+IMPR_TABLE(TABLE=TB_D_EM)
+TEST_TABLE(TABLE=TB_D_EM, NOM_PARA='ERREUR', VALE=0.0,
+           CRITERE='ABSOLU', PRECISION=1.0E-10, REFERENCE='ANALYTIQUE',);
+#IMPR_RESU(RESU=_F(RESULTAT=RE_D_EM))
+
+
+#-------------------------------------------------------------------------------------
+# 6 --> POU_D_T_GD
+# ------------------
+
+MO_D_TGD = AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=_F(GROUP_MA='POUD',PHENOMENE='MECANIQUE',MODELISATION='POU_D_T_GD'),)
+
+CA_D_TGD = AFFE_CARA_ELEM(  POUTRE=_F( GROUP_MA='POUD',
+                                  SECTION='CERCLE',CARA= 'R',VALE=0.02,),
+                                  MODELE=MO_D_TGD)
+
+CL_D_TGD = AFFE_CHAR_MECA(MODELE=MO_D_TGD,
+                    DDL_IMPO=_F(GROUP_NO='A',
+                    DX=0., DY=0., DZ=0.,
+                    DRX=0.,DRY=0.,DRZ=0.),)
+
+CH_D_TGD = AFFE_CHAR_MECA(MODELE=MO_D_TGD,
+                        FORCE_NODALE=_F(GROUP_NO='B',
+                                        FX= 10.,
+                                        FY= 11.,
+                                        FZ= 12.,
+                                        MX= 13.,
+                                        MY= 14.,
+                                        MZ= 15.,
+                                        ),)
+
+RE_D_TGD=DYNA_NON_LINE(
+   MODELE     = MO_D_TGD, 
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', 
+                                 FORMULATION='DEPLACEMENT', ),
+   CHAM_MATER = CHMAT,
+   CARA_ELEM  = CA_D_TGD,
+   EXCIT      = (_F(CHARGE = CL_D_TGD),
+                  _F(CHARGE = CH_D_TGD),),
+   COMP_ELAS  = _F(RELATION   = 'ELAS_POUTRE_GR',GROUP_MA= 'POUD',
+                  DEFORMATION = 'GROT_GDEP'),
+   INCREMENT = _F(LIST_INST = LIS_INST,),
+   CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+      ARCHIVAGE=_F(LIST_INST  = L_ARCH),
+   );
+
+TB_D_TGD = RECU_TABLE(CO=RE_D_TGD,NOM_PARA=('RESI_REFE','RESI_GLOB_RELA','RESI_GLOB'),)
+TB_D_TGD = CALC_TABLE(reuse=TB_D_TGD, TABLE=TB_D_TGD,
+   ACTION=( _F(OPERATION='OPER',FORMULE=CERREUR,NOM_PARA='ERREUR'), ),
+)
+IMPR_TABLE(TABLE=TB_D_TGD)
+TEST_TABLE(TABLE=TB_D_TGD, NOM_PARA='ERREUR', VALE=0.0,
+           CRITERE='ABSOLU', PRECISION=1.0E-10, REFERENCE='ANALYTIQUE',);
+#IMPR_RESU(RESU=_F(RESULTAT=RE_D_TGD))
+
+
+
+#-------------------------------------------------------------------------------------
+# 7 --> POU_C_T
+# ---------------
+
+MO_C_T = AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=_F(GROUP_MA='POUC',PHENOMENE='MECANIQUE',MODELISATION='POU_C_T'),)
+
+CA_C_T = AFFE_CARA_ELEM(
+   MODELE=MO_C_T,
+   POUTRE=_F( GROUP_MA='POUC', SECTION='CERCLE',CARA= 'R',VALE=0.02,),
+   DEFI_ARC=_F(MAILLE='M2',NOEUD_CENTRE='N1'),
+)
+
+CL_C_T = AFFE_CHAR_MECA(MODELE=MO_C_T,
+                   DDL_IMPO=_F(GROUP_NO='C',
+                   DX=0., DY=0., DZ=0.,
+                   DRX=0.,DRY=0.,DRZ=0.),)
+
+CH_C_T = AFFE_CHAR_MECA(MODELE=MO_C_T,
+                        FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.0,FZ= 1000.0),)
+
+RE_C_T=DYNA_NON_LINE(MODELE     = MO_C_T,
+                     CHAM_MATER = CHMAT,
+                                           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', 
+                                 FORMULATION='DEPLACEMENT', ),
+
+                     CARA_ELEM  = CA_C_T,
+                     EXCIT      = (_F(CHARGE = CL_C_T),
+                                   _F(CHARGE = CH_C_T),),
+      COMP_ELAS  =  _F(RELATION   = 'ELAS',
+                      DEFORMATION = 'PETIT',
+                      GROUP_MA    = 'POUC',),
+      NEWTON=_F(PREDICTION='ELASTIQUE',MATRICE='ELASTIQUE'),
+      INCREMENT = _F(LIST_INST = LIS_INST,),
+      CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+      ARCHIVAGE=_F(LIST_INST  = L_ARCH),
+   );
+
+TB_C_T = RECU_TABLE(CO=RE_C_T,NOM_PARA=('RESI_REFE','RESI_GLOB_RELA','RESI_GLOB'),)
+TB_C_T = CALC_TABLE(reuse=TB_C_T, TABLE=TB_C_T,
+   ACTION=( _F(OPERATION='OPER',FORMULE=CERREUR,NOM_PARA='ERREUR'), ),
+)
+IMPR_TABLE(TABLE=TB_C_T)
+TEST_TABLE(TABLE=TB_C_T, NOM_PARA='ERREUR', VALE=0.0,
+           CRITERE='ABSOLU', PRECISION=1.0E-10, REFERENCE='ANALYTIQUE',);
+#IMPR_RESU(RESU=_F(RESULTAT=RE_C_T))
+
+
+FIN()
+

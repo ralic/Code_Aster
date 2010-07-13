@@ -3,7 +3,7 @@
      &          TAMPON)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,10 +30,10 @@ C     ----------------------------------------------------------------
       REAL*8   VIND(*),VINF(*),DVIN(6),DY(*),YF(*),MATERF(NMAT*2)
       REAL*8   LCNRTE, EPSEQ,PGL(3,3),D,MS(6),NG(3),DGAMMA,DP,DALPHA
       REAL*8   ALPHAM,DEVI(6),TOUTMS(5,24,6),TOLER,HSR(5,24,24)
-      REAL*8   BSD,GCB,KDCS, RACR,SOM, AUX, TAUS,CISA2,L(3,3)
-      REAL*8   CRIT, SGNS, DT,OMP(3),R8MIEM,Q(3,3),OMEGAE(3,3)
-      REAL*8   SI(3,3),SING(3),SICL, P,LG(3),DTHETA,TAMPON(*)
-      CHARACTER*16 CPMONO(5*NMAT+1),NOMFAM,NECRCI,NECOUL
+      REAL*8   BSD,GCB,KDCS, RACR,SOM, AUX, TAUS,CISA2,L(3,3),MAXRP
+      REAL*8   CRIT, SGNS, DT,OMP(3),R8MIEM,Q(3,3),OMEGAE(3,3),ZE(12)
+      REAL*8   SI(3,3),SING(3),SICL, P,LG(3),DTHETA,TAMPON(*),RP
+      CHARACTER*16 CPMONO(5*NMAT+1),NOMFAM,NECRCI,NECOUL,NECRIS
       REAL*8 IDEN(3,3),OMEGA(3,3),OMEGAP(3,3),QM(3,3),NAX(3,3),DQ(3,3)
       DATA IDEN/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C
@@ -41,10 +41,12 @@ C     CAS MONO1 : ON RECALCULE LES VARIABLES INTERNES
       CALL R8INIR(6, 0.D0, DEVI, 1)                        
       CALL R8INIR(3, 0.D0, OMP, 1)                        
       CALL R8INIR(9, 0.D0, QM, 1)                        
+      CALL R8INIR(12, 0.D0, ZE, 1)                        
       NBFSYS=NBCOMM(NMAT,2)                                
       NUVI=6                                               
       NUV1=NDT                                             
       SICL = 0.D0
+      MAXRP=-1.D20
 C ROTATION RESEAU DEBUT
       IF (NBCOMM(NMAT,1).GT.0) THEN
 C        LA MATRICE DE ROTATION QM EST STOCKEE DANS VIND (N-19 a N-9)
@@ -60,6 +62,7 @@ C        LA MATRICE DE ROTATION QM EST STOCKEE DANS VIND (N-19 a N-9)
       DO 6 IFA=1,NBFSYS                                     
          NOMFAM=CPMONO(5*(IFA-1)+1)                        
          NECOUL=CPMONO(5*(IFA-1)+3)
+         NECRIS=CPMONO(5*(IFA-1)+4)
          NECRCI=CPMONO(5*(IFA-1)+5)
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,0,Q)                
          DO 7 IS=1,NBSYS                                   
@@ -82,6 +85,17 @@ C        LA MATRICE DE ROTATION QM EST STOCKEE DANS VIND (N-19 a N-9)
                CALL LCMMKR(TAUS,MATERF(NMAT+1),CISA2,IFA,NMAT,NBCOMM,
      &           IS,NBSYS,HSR,VIND(7),DY(NUV1),DT,
      &           DALPHA,DGAMMA,DP,CRIT,SGNS,IRET)
+            ELSEIF(NECOUL.EQ.'ECOU_DD_CFC') THEN
+               TAUS=0.D0
+               DO 103 I=1,6
+                  TAUS=TAUS+YF(I)*MS(I)
+ 103            CONTINUE
+               CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
+     &                     IS,NBSYS,VIND(7),DY(7),HSR,1,ZE,RP)
+               MAXRP=MAX(RP,MAXRP)
+               CALL LCMMFE( TAUS,MATERF(NMAT+1),MATERF(1),IFA,
+     &                      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIND(7),DY(7),
+     &                  RP,ZE,ZE,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET)
             ELSE
                DGAMMA=DY(NUV1)                                       
                DP=ABS(DGAMMA)                                        
@@ -131,6 +145,7 @@ C           stockage de OMEGAP pour la rotation de reseau
 C ROTATION RESEAU FIN
             ENDIF
   7      CONTINUE                                             
+            IF(NECOUL.EQ.'ECOU_DD_CFC') VINF(NVI-2)=MAXRP
   6   CONTINUE
                                                
 C ROTATION RESEAU DEBUT
@@ -149,8 +164,8 @@ C LE VECTEUR  ROTATION PLASTIQUE EST STOCKE DANS VINF (N-9 a N-7)
           CALL R8INIR(9,0.D0,OMEGAP,1)
           OMEGAP(2,3)=-OMP(1)
           OMEGAP(3,2)=+OMP(1)
-          OMEGAP(1,3)=-OMP(2)
-          OMEGAP(3,1)=+OMP(2)
+          OMEGAP(1,3)=+OMP(2)
+          OMEGAP(3,1)=-OMP(2)
           OMEGAP(1,2)=-OMP(3)
           OMEGAP(2,1)=+OMP(3)
           DO 23 I = 1, 3
@@ -187,9 +202,9 @@ C LE VECTEUR D-ROTATION PLASTIQUE EST STOCKE DANS VINF (N-9 a N-7)
           VINF(NVI-8) = OMP(2)                           
           VINF(NVI-7) = OMP(3)   
 C LE VECTEUR D-ROTATION ELASTIQUE EST STOCKE DANS VINF (N-6 a N-4)
-          VINF(NVI-6) = OMEGAE(2,3)
-          VINF(NVI-5) = OMEGAE(3,1)
-          VINF(NVI-4) = OMEGAE(1,2)
+          VINF(NVI-6) = OMEGAE(3,2)
+          VINF(NVI-5) = OMEGAE(1,3)
+          VINF(NVI-4) = OMEGAE(2,1)
           VINF(NVI-3) = DTHETA+VIND(NVI-3)
 C LA MATRICE DE ROTATION ESt STOCKEE DANS VINF (N-18 a N-10)
           DO 29 I = 1, 3

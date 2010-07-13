@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/04/2010   AUTEUR BERARD A.BERARD 
+#& MODIF COMMANDE  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,8 +30,8 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
                 fr="Projeter des champs d'un maillage sur un autre",
 
 
-         METHODE         =SIMP(statut='f',typ='TXM',defaut="ELEM",
-                               into=("NUAGE_DEG_0","NUAGE_DEG_1","ELEM",) ),
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                               into=("NUAGE_DEG_0","NUAGE_DEG_1","AUTO","COLOCATION","ECLA_PG",) ),
 
          regles=(UN_PARMI('RESULTAT','CHAM_GD'),
                  UN_PARMI('MODELE_1','MAILLAGE_1'),
@@ -53,9 +53,9 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
          ),
 
 
-         # Cas de la projection ELEM :
+         # Cas de la projection COLOCATION :
          #--------------------------------------------
-         b_elem          =BLOC(condition="METHODE == 'ELEM'",
+         b_elem          =BLOC(condition="METHODE in ('COLOCATION','ECLA_PG','AUTO')",
              CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",),
                   fr="Pour indiquer au programme le type de projection souhaité"),
              DISTANCE_MAX    =SIMP(statut='f',typ='R',
@@ -140,7 +140,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            NOEUD_2         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
 
-           # les mots clés suivants ne sont actifs que si METHODE='ELEM' mais on ne peut pas le vérifier:
+           # les mots clés suivants ne sont actifs que si METHODE='COLOCATION' mais on ne peut pas le vérifier:
                CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
                TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
                     fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+

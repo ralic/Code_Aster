@@ -1,6 +1,6 @@
-# MODIF  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+# MODIF  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
-# wtnp125b.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+# wtnp125b.para = tps_job 350 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG

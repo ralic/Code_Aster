@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # RESPONSABLE sellali N.SELLALI
 # TITRE CORRIGE DU TP3D DE LA FORMATION POST TRAITEMENT
 # forma08b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
@@ -127,7 +127,7 @@ MOBARRE=AFFE_MODELE(MAILLAGE=MAILB,
 
 PJBARRE = PROJ_CHAMP( TYPE_CHAM='NOEU',
                       DISTANCE_MAX=3.1383638757482347E-05,
-                      METHODE='ELEM',
+                      METHODE='COLOCATION',
                       RESULTAT=RESU,
                       NOM_CHAM='DEPL',
                       MODELE_1=MODMECA,

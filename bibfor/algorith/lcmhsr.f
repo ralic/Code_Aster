@@ -1,7 +1,7 @@
       SUBROUTINE LCMHSR (NBSYS, NBCOEF, COEFH, HSR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,24 +28,16 @@ C         NBCOEF  :  NOMBRE DE COEFFICIENTS
 C         COEFH  :  COEFFICIENTS H1 A H6
 C     OUT HSR    :  MATRICE D'INTERACTION
 C     ----------------------------------------------------------------
-      INTEGER         NBCOEF,NBSYS,IR,IS,I,J
-      REAL*8          COEFH(6),HSR(24,24),H, R8VIDE
-      REAL*8          A1(3,3),A2(3,3),A3(3,3),A4(3,3)
+      INTEGER NBCOEF,NBSYS,IR,IS,I,J
+      REAL*8  COEFH(6),HSR(24,24),H, R8VIDE
+      REAL*8  A1(3,3),A2(3,3),A3(3,3),A4(3,3),A0(3,3)
+      REAL*8  AETOIL,ACOLIN,AGLISS,ALOMER,AHIRTH
 C     ----------------------------------------------------------------
 C
 
       IF (NBCOEF.EQ.1) THEN                            
           H=COEFH(1)                                    
 C  MATRICE D INTERACTION (NBSYS*NBSYS): 1 SUR LA DIAGONALE, H AILLEURS
-C           DO 507 IS = 1, NBSYS             
-C              DO 508 IR = 1, NBSYS          
-C                 IF (IS.EQ.IR) THEN         
-C                    HSR(IS,IR) = 1.D0   
-C                 ELSE                       
-C                    HSR(IS,IR) = H      
-C                 ENDIF                      
-C   508        CONTINUE                      
-C   507     CONTINUE  
           DO 507 IS = 1, NBSYS             
              DO 508 IR = 1, NBSYS          
                    HSR(IS,IR) = H      
@@ -119,7 +111,7 @@ C         DEFINITION DE LA MATRICE D INTERACTION BCC24
 
       ELSEIF (NBCOEF.EQ.6) THEN
              
-C  MATRICE D INTERACTION (12*12): 6 COEFFICIENTS 
+C  MATRICE D INTERACTION (12*12): 6 COEFFICIENTS CF ZMAT
       
           IF (NBSYS.NE.12) CALL U2MESS('F','COMPOR1_24')
 
@@ -193,7 +185,11 @@ C  MATRICE D INTERACTION (12*12): 6 COEFFICIENTS
           HSR(12,10)=COEFH(2)
           HSR(12,11)=COEFH(2)
           
-          
+      ELSEIF (NBCOEF.EQ.5) THEN
+             
+C  MATRICE D INTERACTION (12*12): 5 COEFFICIENTS DD_CFC
+C  DEFINITION SELON G.MONET 
+          CALL LCMHDD(NBSYS,NBCOEF,COEFH,HSR)  
       ELSE
           CALL U2MESS('F','COMPOR1_25')
       ENDIF

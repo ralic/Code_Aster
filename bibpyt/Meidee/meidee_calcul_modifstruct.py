@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_modifstruct Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_calcul_modifstruct Meidee  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -648,7 +648,7 @@ class ModifStruct:
 
         self.clear_concept( self.x_deplint )
         self.x_deplint = None
-        __DEPINT=PROJ_CHAMP(METHODE='ELEM',
+        __DEPINT=PROJ_CHAMP(METHODE='COLOCATION',
                             RESULTAT=self.x_deplpr,
                             MODELE_1=self.support_modele.obj,
                             MODELE_2=self.x_modlint,
@@ -661,7 +661,7 @@ class ModifStruct:
         self.clear_concept( self.x_deplxint )
         self.x_deplxint = None
         # CHAMP DE DEPL AUX INTERFACES SUR LE MODELE COUPLE
-        __DPXINT=PROJ_CHAMP(METHODE='ELEM',
+        __DPXINT=PROJ_CHAMP(METHODE='COLOCATION',
                             RESULTAT=self.modes_couple,
                             MODELE_1=self.cpl.modele,
                             MODELE_2=self.x_modlint,

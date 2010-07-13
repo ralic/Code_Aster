@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2010   AUTEUR DEVESA G.DEVESA 
+#& MODIF COMMANDE  DATE 12/07/2010   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -354,21 +354,25 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
            ),
 
-           LIAISON_ELEM    =FACT(statut='f',max='**',
-             fr="Modélise le raccord d'une partie massive 3D avec une poutre ou avec un tuyau, le raccord d'une coque"
-              +" avec une poutre ou avec un tuyau",
-             regles=(UN_PARMI('GROUP_MA_1','MAILLE_1'),
-                     UN_PARMI('GROUP_NO_2','NOEUD_2'),),
-             OPTION          =SIMP(statut='o',typ='TXM',into=("3D_TUYAU","3D_POU","COQ_POU","COQ_TUYAU") ),
-             GROUP_MA_1      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             MAILLE_1        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-             GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-             NOEUD_2         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-             NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
-             CARA_ELEM       =SIMP(statut='f',typ=(cara_elem) ),
-             AXE_POUTRE      =SIMP(statut='f',typ='R',max=3),
-             ANGL_MAX        =SIMP(statut='f',typ='R',defaut= 1. ),
-           ),
+         LIAISON_ELEM    =FACT(statut='f',max='**',
+            fr="Modélise le raccord : d'une partie massive 3D avec une poutre ou avec un tuyau, d'une coque"
+               +" avec une poutre ou avec un tuyau, d'une plaque avec une poutre",
+            regles      =(UN_PARMI('GROUP_MA_1','MAILLE_1'), UN_PARMI('GROUP_NO_2','NOEUD_2'),),
+            OPTION      =SIMP(statut='o',typ='TXM',into=("3D_TUYAU","3D_POU","COQ_POU","COQ_TUYAU","PLAQ_POUT_ORTH") ),
+            GROUP_MA_1  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+            MAILLE_1    =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+            GROUP_NO_2  =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+            NOEUD_2     =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+            NUME_LAGR   =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
+            ANGL_MAX    =SIMP(statut='f',typ='R',defaut= 1. ),
+            b_dalcol =BLOC( condition = "OPTION == 'PLAQ_POUT_ORTH'",
+               VERIF_EXCENT   =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+            ),
+            b_option =BLOC( condition = "OPTION != 'PLAQ_POUT_ORTH'",
+               CARA_ELEM   =SIMP(statut='f',typ=(cara_elem) ),
+               AXE_POUTRE  =SIMP(statut='f',typ='R',max=3),
+            ),
+         ),
 
            LIAISON_UNIF    =FACT(statut='f',max='**',
              fr="Impose une meme valeur (inconnue) à des DDLs d'un ensemble de noeuds",
@@ -387,8 +391,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              COEF_IMPO       =SIMP(statut='o',typ='R' ),
              NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
            ),
-           
-           
+
+
          LIAISON_INTERF  =FACT(statut='f',max='**',
              fr="Définit une relation linéaire entre les DDLs d'interface à partir d'un MACRELEM",
              MACR_ELEM_DYNA  =SIMP(statut='o',typ=macr_elem_dyna),

@@ -1,4 +1,4 @@
-#@ MODIF sd_contact SD  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+#@ MODIF sd_contact SD  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ class sd_contact(AsBase):
 
     # Recap longueurs vecteurs (voir CFMMVD.F)    
     zdime = 12
-    zpari = 25
+    zpari = 26
     zparr = 5
     zdirn = 6
     zcmdf = 6

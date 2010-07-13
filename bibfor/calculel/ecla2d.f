@@ -11,7 +11,7 @@
       CHARACTER*8  ELREFA, FAPG
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,11 +51,21 @@ C POINT_I = SOMME COEF(K)*NOEUD(K)  (1<= K <=NTERMES)
 C           NTERMES <= 27 (HEXA27)
 C
 C ---------------------------------------------------------------------
-      INTEGER       K, ITRIA3, IQUAD4
-      CHARACTER*32  JEXNOM
-      CHARACTER*24 VALK(4)
+      INTEGER      K, ITRIA3, IQUAD4
+      CHARACTER*32 JEXNOM
+      CHARACTER*24 VALK(3)
+      CHARACTER*16 NOMCMD,K16B
+      CHARACTER*19 K19B
+      CHARACTER*1  KUTMES
 C ---------------------------------------------------------------------
       CALL JEMARQ()
+
+      CALL GETRES(K19B,K16B,NOMCMD)
+      IF (NOMCMD.EQ.'PROJ_CHAMP') THEN 
+        KUTMES='F'
+      ELSE
+        KUTMES='I'
+      ENDIF
 
       CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA3'),ITRIA3)
       CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD4'),IQUAD4)
@@ -201,10 +211,9 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
 
        ELSE
         VALK (1) = NOMTE
-        VALK (2) = NOMTE
-        VALK (3) = ELREFA
-        VALK (4) = FAPG
-         CALL U2MESG('I', 'CALCULEL5_76',4,VALK,0,0,0,0.D0)
+        VALK (2) = ELREFA
+        VALK (3) = FAPG
+        CALL U2MESK(KUTMES, 'CALCULEL5_76', 3, VALK)
 
        ENDIF
 
@@ -423,19 +432,15 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
 
        ELSE
         VALK (1) = NOMTE
-        VALK (2) = NOMTE
-        VALK (3) = ELREFA
-        VALK (4) = FAPG
-         CALL U2MESG('I', 'CALCULEL5_76',4,VALK,0,0,0,0.D0)
-
+        VALK (2) = ELREFA
+        VALK (3) = FAPG
+        CALL U2MESK(KUTMES, 'CALCULEL5_76', 3, VALK)
        ENDIF
 
       ELSE
         VALK (1) = NOMTE
-        VALK (2) = NOMTE
-        VALK (3) = ELREFA
-        CALL U2MESG('I', 'CALCULEL5_78',3,VALK,0,0,0,0.D0)
-
+        VALK (2) = ELREFA
+        CALL U2MESK(KUTMES, 'CALCULEL5_78', 2, VALK)
       ENDIF
 
       CALL JEDEMA()

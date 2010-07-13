@@ -12,7 +12,7 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,10 +63,10 @@ C - VARIABLES LOCALES
       REAL*8 PERMFH, PERMLI, DPERML, PERMGZ,DPERMS,DPERMP,FICK,DFICKT
       REAL*8 LAMBP,DLAMBP, UNSURK, ALPHA, LAMBS, DLAMBS, VISCL,DFICKG
       REAL*8 DVISCL, MAMOLG, LAMBT, DLAMBT, VISCG, DVISCG
-      REAL*8 MAMOVG, FICKAD, DFADT, LAMBCT,ISOT(6)
+      REAL*8 MAMOVG, FICKAD, DFADT, LAMBCT,ISOT(3)
       REAL*8 DFICKS
       REAL*8 DSDE(DIMCON,DIMDEF)
-      REAL*8 TLINT,OUVH,DELTAT
+      REAL*8 TLINT,OUVH,DELTAT,UNSURN
       REAL*8 VALCEN(14,6)
       INTEGER MAXFA
       PARAMETER (MAXFA=6)
@@ -173,6 +173,7 @@ C ======================================================================
         END IF
 
 
+
 C ======================================================================
 C --- MISE AU POINT POUR LES VARIABLES INTERNES ------------------------
 C --- DEFINITION DES POINTEURS POUR LES DIFFERENTES RELATIONS DE -------
@@ -181,23 +182,23 @@ C ======================================================================
       CALL NVITHM(COMPOR, MECA, THMC, THER, HYDR, NVIM, NVIT,
      +            NVIH, NVIC, ADVIME, ADVITH, ADVIHY, ADVICO,
      +            VIHRHO, VICPHI, VICPVP, VICSAT,VICPR1,VICPR2)
-     
+
 C - TEST LOI DE COMPORTEMENT
 
-        IF (MECA.NE.'JOINT_BANDIS') THEN
+        IF ((MECA.NE.'JOINT_BANDIS').AND.(MECA.NE.'CZM_LIN_REG').AND.
+     &     (MECA.NE.'CZM_EXP_REG')) THEN
           CALL U2MESK('F','ALGORITH17_10',1,MECA)
-        END IF     
+        END IF
 
 C ======================================================================
 C --- CALCULS MECA -----------------------------------------------------
 C ======================================================================
-      CALL COEIME(MECA,IMATE,NOMAIL,RESI,RIGI,NDIM,DIMDEF,DIMCON,
-     &                  YAP1,YAP2,YATE,ADDEME,ADDEP1,ADDEP2,
-     &                  NBVARI,ADVIME,ADVICO,NPG,DEFGEP,DEFGEM,
-     &                  SIGM,SIGP,VARIM,VARIP,OUVH,TLINT,
-     &                  DRDE,KPI,RETCOM)
-
-
+      CALL COEIME(MECA  ,IMATE ,NOMAIL,OPTION,RESI  ,RIGI  ,
+     &            NDIM  ,DIMDEF,DIMCON,YAP1  ,YAP2  ,YATE  ,
+     &            ADDEME,ADDEP1,ADDEP2,NBVARI,ADVIME,ADVICO,
+     &            NPG   ,NPI   ,DEFGEP,DEFGEM,SIGM  ,SIGP  ,
+     &            VARIM ,VARIP ,OUVH  ,TLINT ,DRDE  ,KPI   ,
+     &            VICPHI,UNSURN,RETCOM)
 
       IF (RETCOM.NE.0) THEN
          GOTO 9000
@@ -209,7 +210,7 @@ C ======================================================================
      +                   IMATE,DEFGEM,DEFGEP, ADDEME, ADDEP1, ADDEP2,
      +                   ADDETE, NDIM-1, T0, P10, P20, PHI0, PVP0,
      +                   DEPSV, EPSV, DEPS, T, P1, P2, DT, DP1, DP2,
-     +                   GRAT, GRAP1, GRAP2, RETCOM,INSTAP)
+     +                   GRAT, GRAP1, GRAP2,RETCOM,INSTAP)
 
       EPSV = 0.D0
       DEPSV = 0.D0
@@ -218,7 +219,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
 C ======================================================================
-
+    
       CALL CALCCO(OPTION,PERMAN,MECA,THMC,THER,HYDR,IMATE,
      +                    NDIM-1,DIMDEF,DIMCON,NBVARI,2,
      +                    YATE,ADDEME,ADCOME,ADVIHY,
@@ -275,14 +276,13 @@ C ======================================================================
 
          IF (RESI) THEN
 C - COMPOSANTES CONSTITUANT 1
-           IF (YAP1 .EQ. 1) THEN  
-             SIGP(ADCP11+1) = OUVH*SIGP(ADCP11+1)  
+           IF (YAP1 .EQ. 1) THEN 
+             SIGP(ADCP11+1) = OUVH*SIGP(ADCP11+1)
              DO 305 F = 1,2
                SIGP(ADCOP1+F-1) = DEFGEP(ADDLH1+1+F)
                SIGP(ADCOP1+F+1)= DEFGEP(ADDLH1-1+F)-DEFGEP(ADDEP1)
  305         CONTINUE 
            END IF
-
 C ======================================================================
 C --- CALCUL DU VECTEUR FORCE INTERNE AUX POINTS DE GAUSS --------------
 C ======================================================================
@@ -302,7 +302,7 @@ C - COMPOSANTES CONSTITUANT 1
              RES(ADDEP1) = DELTAT*(SIGP(ADCOP1)+SIGP(ADCOP1+1))
              DO 421 J = 1,NDIM-1 
                RES(ADDEP1+J) = DELTAT*SIGP(ADCP11+J)
- 421         CONTINUE    
+ 421         CONTINUE 
              DO 422 F = 1,2
                RES(ADDLH1+F-1) = -DELTAT*SIGP(ADCOP1+F-1)
                RES(ADDLH1+F+1) = SIGP(ADCOP1+F+1)
@@ -333,12 +333,6 @@ C --- D(RESIDU)/D(DEFORMATIONS GENERALISES)------------
 C --- POUR MATRICE DE RIGIDITE------------------------------------------
 C ======================================================================
         IF (KPI .LE. NPG) THEN
-  
-C - LIGNES CORRESPONDANT AU SAUT DE U ET A LAMBDA
-
-         IF (YAP1 .EQ. 1) THEN 
-           DRDE(ADDEME,ADDEP1)=-1.D0
-         END IF
 
 C - LIGNES CORRESPONDANT AUX TERMES HYDRAULIQUES
 
@@ -355,11 +349,11 @@ C - LIGNES CORRESPONDANT AUX TERMES HYDRAULIQUES
             DO 512 J=1,NDIM-1
               IF (THMC.EQ.'GAZ') THEN
                 DRDE(ADDEP1+I,1) = DRDE(ADDEP1+I,1)
-     &      +DELTAT*3.D0*PERMFH*RHO11/VISCG*(-GRAP1(I)+RHO11*PESA(I))
+     &      +DELTAT*3.D0*TLINT*RHO11/VISCG*(-GRAP1(I)+RHO11*PESA(I))
               END IF
               IF (THMC.EQ.'LIQU_SATU') THEN
                 DRDE(ADDEP1+I,1) = DRDE(ADDEP1+I,1)
-     &      +DELTAT*3.D0*PERMFH*RHO11/VISCL*(-GRAP1(I)+RHO11*PESA(I))
+     &      +DELTAT*3.D0*TLINT*RHO11/VISCL*(-GRAP1(I)+RHO11*PESA(I))
               END IF
                 DRDE(ADDEP1+I,ADDEP1)= DRDE(ADDEP1+I,ADDEP1)
      &                +DELTAT*OUVH*DSDE(ADCP11+J,ADDEP1)
@@ -377,10 +371,11 @@ C ======================================================================
 
           IF (YAP1 .EQ. 1) THEN
             DRDE(ADDEP1,ADDEME) = DRDE(ADDEP1,ADDEME) - RHO11 
-            DRDE(ADDEP1,ADDEP1) = DRDE(ADDEP1,ADDEP1)
+            DRDE(ADDEP1,ADDEP1) = RHO11*DRDE(ADDEP1,ADDEP1)
      &                          + DSDE(ADCP11,ADDEP1) 
           END IF     
         END IF
+
       END IF
 
 C ======================================================================

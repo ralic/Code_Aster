@@ -1,6 +1,6 @@
-# MODIF  DATE 16/06/2010   AUTEUR CARON A.CARON 
+# MODIF  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
-# ssnv182h.para = tps_job 1200 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
+# ssnv182h.para = tps_job 100 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +74,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                ALGO_CONT    = 'PENALISATION',
                                COEF_PENA_CONT    = 1.E23,
                                ALGO_FROT    = 'PENALISATION',
-                               COEF_PENA_FROT    = 1.E18,                             
+                               COEF_PENA_FROT    = 1.E16,                             
                                SEUIL_INIT   = -1.E11,
                              ), 
                          ),
@@ -133,11 +133,10 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    NEWTON=_F(REAC_ITER=1,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=40,
-                                  RESI_GLOB_RELA=1.E-6,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=5,),
                    SOLVEUR=_F(METHODE='MUMPS',
                               PCENT_PIVOT=10,
-                              NPREC=25,),
+                              NPREC=-1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 

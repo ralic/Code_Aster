@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+#& MODIF COMMANDE  DATE 12/07/2010   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -242,33 +242,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          ),
 #-------------------------------------------------------------------
-         CONVERGENCE     =FACT(statut='d',
-           regles=(PRESENT_ABSENT('RESI_REFE_RELA','RESI_GLOB_MAXI','RESI_GLOB_RELA','RESI_COMP_RELA'),),
-           b_refe_rela    =BLOC(condition = "RESI_REFE_RELA != None",
-             regles=(AU_MOINS_UN('SIGM_REFE','EPSI_REFE','FLUX_THER_REFE',
-                                  'FLUX_HYD1_REFE','FLUX_HYD2_REFE','VARI_REFE'),),
-             SIGM_REFE       =SIMP(statut='f',typ='R'),
-             EPSI_REFE       =SIMP(statut='f',typ='R'),
-             FLUX_THER_REFE  =SIMP(statut='f',typ='R'),
-             FLUX_HYD1_REFE  =SIMP(statut='f',typ='R'),
-             FLUX_HYD2_REFE  =SIMP(statut='f',typ='R'),
-             VARI_REFE       =SIMP(statut='f',typ='R'),
-           ),
-           RESI_REFE_RELA  =SIMP(statut='f',typ='R'),
-           RESI_GLOB_MAXI  =SIMP(statut='f',typ='R'),
-           RESI_GLOB_RELA  =SIMP(statut='f',typ='R'),
-           RESI_COMP_RELA  =SIMP(statut='f',typ='R'),
-           ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut=10),
-           ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
-           TYPE            =SIMP(statut='f',typ='TXM',defaut="PIC",into=("PIC","PLATEAU")),
-           b_plateau    =BLOC(condition = "TYPE == 'PLATEAU' ",
-             
-             PLATEAU_ITER    =SIMP(statut='f',typ='I',defaut=3, val_min =2),
-             PLATEAU_RELA    =SIMP(statut='f',typ='R',defaut=1E-3),                   
-           ),
-           ARRET           =SIMP(statut='f',typ='TXM',defaut="OUI"),
-           
-         ),
+         CONVERGENCE     =C_CONVERGENCE(),
 #-------------------------------------------------------------------
          OBSERVATION     =FACT(statut='f',max='**',
            NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),

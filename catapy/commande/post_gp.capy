@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 13/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,14 +17,20 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE WADIER Y.WADIER
-
+   
 from Macro.post_gp_ops import post_gp_ops
-def post_gp_prod(self, TABL_RESU, **kargs):
+
+def post_gp_prod(self, TABL_GPMAX,TABL_GP, **kargs):
    """Typage des sd_prod
    """
-   if TABL_RESU != None:
-      self.type_sdprod(TABL_RESU, table_sdaster)
+   if TABL_GPMAX != None:
+      self.type_sdprod(TABL_GPMAX, table_sdaster)
+   if TABL_GP != None :
+      if TABL_GPMAX != None:
+         self.type_sdprod(TABL_GPMAX, table_sdaster)
+         self.type_sdprod(TABL_GP, table_sdaster)
    return table_sdaster
+
 
 POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
               fr="Calcul du critère énergétique Gp suite à un calcul thermo-mécanique",
@@ -32,7 +38,6 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
               UIinfo={"groupes":("Post traitements",)},
               regles=(UN_PARMI('IDENTIFICATION', 'PREDICTION'),
                       UN_PARMI('THETA_2D','THETA_3D'),
-                      UN_PARMI('PAS_ENTAILLE','LIST_EP_COPEAUX'),
                       PRESENT_PRESENT('THETA_2D','DIRECTION'),),
       
       # Résultat, modèle, comportement, chargement
@@ -47,6 +52,7 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
            DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GROT_GDEP",) ),
       ),
       
+      TYPE_DEF = SIMP(statut='f',typ='TXM', defaut="PETIT", into=("PETIT","GRAND")),
       EXCIT        = FACT(statut='f', max='**',
             CHARGE      = SIMP(statut='o', typ=(char_meca,char_cine_meca)),
             FONC_MULT   = SIMP(statut='f', typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -54,15 +60,22 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
       ),
       SYME_CHAR    = SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","ANTI","SANS")),
       
+      
       DIRECTION    = SIMP(statut='f', typ='R', max=3),
-
+      
       THETA_2D     = FACT(statut='f', max='**',
                           fr="paramètres de définition des champs theta",
             GROUP_NO    = SIMP(statut='o', typ=grno, validators=NoRepeat(), max='**'),
             R_INF       = SIMP(statut='o', typ='R'),
-            R_SUP       = SIMP(statut='o', typ='R'),
-      ),
+            R_SUP       = SIMP(statut='o', typ='R'),),
 
+      b_theta_2d=BLOC(condition="(THETA_2D != None)",
+           # correction axisymétrie
+            RAYON_AXIS   = SIMP(statut='f', typ='R', val_min=0., defaut=1.),
+            TRANCHE = FACT(statut='o', max=1,
+     
+                           GROUP_MA  = SIMP(statut='o', typ=grma, validators=NoRepeat(), max='**'),
+                           ),),
 
       THETA_3D        =FACT(statut='f',max='**',
             GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
@@ -79,27 +92,19 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
                              ),
     
             FOND_FISS       =SIMP(statut='o',typ=fond_fiss,max=1,),
-            NB_TRANCHES     =SIMP(statut='o',typ='I',max=1,
-                            fr="nombre de tranches: nombre de segments maillant le fond de fissure",),
-                         ),
+            TRANCHE = FACT(statut='o', max='**',
+                           GROUP_MA  = SIMP(statut='o', typ=grma, validators=NoRepeat(), max='**'),
+                           ),),
 
       # prise en compte de la traction compression
       TRAC_COMP    = SIMP(statut='f',typ='TXM',into=("OUI",),
                           fr="prise en compte de la traction-compression (plus lent)",
                          ),
 
-      # copeaux
-      GROUP_MA        = SIMP(statut='o', typ=grma, validators=NoRepeat(), max='**'),
-      PAS_ENTAILLE    = SIMP(statut='f', typ='R', val_min=0.),
-      LIST_EP_COPEAUX = SIMP(statut='f', typ='R', max='**'),
-      
       # critère sur Gp
       CRIT_MAXI_GP = SIMP(statut='f', typ='TXM', defaut="ABSOLU",
                           into=("RELATIF","ABSOLU")),
-      
-      # correction axisymétrie
-      RAYON_AXIS   = SIMP(statut='f', typ='R', val_min=0., defaut=1.),
-      
+            
       # identification
       IDENTIFICATION = FACT(statut='f', max=1,
             KJ_CRIT     = SIMP(statut='o', typ='R', val_min=0., max='**'),
@@ -113,7 +118,10 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
       ),
       
       # table résultat
-      TABL_RESU    = SIMP(statut='o', typ=CO,),
-      
+      TABL_GPMAX    = SIMP(statut='o', typ=CO,),
+      TABL_GP       = SIMP(statut='f', typ=CO,),
+      b_tabl_gp=BLOC(condition="(TABL_GP != None)",
+             INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
+             LIST_INST  = SIMP(statut='f',typ=listr8_sdaster),),
       INFO         = SIMP(statut='f', typ='I', defaut=1, into=(1, 2),),
 )

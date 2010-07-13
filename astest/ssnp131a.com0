@@ -22,7 +22,6 @@ tab = POST_GP(RESULTAT=RESU,
               EXCIT=(_F(CHARGE=COND_LIM,),
                      _F(CHARGE=CHAD,),),
               SYME_CHAR='SYME',
-         
               DIRECTION=(1., 0., 0.),
               THETA_2D=(_F(GROUP_NO='PFON_0',
                            R_INF=0.25,
@@ -36,17 +35,16 @@ tab = POST_GP(RESULTAT=RESU,
                         _F(GROUP_NO='PFON_0',
                            R_INF=2.,
                            R_SUP=5.),),
-              
-              GROUP_MA=l_copeaux,
-              PAS_ENTAILLE=0.02,
-              
+	           TRANCHE=_F(GROUP_MA=l_copeaux),
               IDENTIFICATION=_F(KJ_CRIT=(kjc1, kjc2, kjc3),
                                 TEMP   =(tcal, tcal, tcal),),
-              TABL_RESU=CO('tabident'),
+              TABL_GPMAX=CO('tabident'),
+#              TABL_GP     = CO('tabgp'),
               INFO=2)
 
 IMPR_TABLE(TABLE=tab)
 IMPR_TABLE(TABLE=tabident)
+# IMPR_TABLE(TABLE=tabgp)
 
 TEST_TABLE(TABLE=tabident,
            FILTRE=_F(NOM_PARA='KJ_CRIT',

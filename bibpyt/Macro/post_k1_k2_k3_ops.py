@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -570,7 +570,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
                            AFFE=(_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION=MODELISATION,),),);        
-       __RESX=PROJ_CHAMP(METHODE='ELEM',TYPE_CHAM='NOEU',NOM_CHAM='DEPL',
+       __RESX=PROJ_CHAMP(METHODE='COLOCATION',TYPE_CHAM='NOEU',NOM_CHAM='DEPL',
                      RESULTAT=RESULTAT,
                      MODELE_1=MODEL,
                      MODELE_2=__MODLINE, );   

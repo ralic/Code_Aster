@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ELEMENTS  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,7 +155,7 @@ C     DEPDEL
       CALL JEVECH('PCFACE','L',JCFACE)
       CALL JEVECH('PLONCHA','L',JLONCH)
       CALL JEVECH('PBASECO','L',JBASEC)
-      CALL JEVECH('PMATUUR','E',IMATT)
+
 
       CALL TEATTR(NOMTE,'S','XFEM',ENR,IBID)          
       IF (ENR.EQ.'XHC') THEN
@@ -204,12 +204,12 @@ C     PENALISATION DU CONTACT
       LPENAC=.FALSE.
       IF (CSTACO.EQ.0.D0) THEN
         CSTACO=CPENCO
-        LPENAC=.TRUE.
+        IF(CPENCO.NE.0.0D0)LPENAC=.TRUE.
       ENDIF
 C     PENALISATION DU FROTTEMENT
       LPENAF=.FALSE.
       IF (CSTAFR.EQ.0.D0) THEN
-        LPENAF=.TRUE.
+        IF(CPENFR.NE.0.0D0)LPENAF=.TRUE.
       ENDIF
       
 C     SCHEMA D'INTEGRATION NUMERIQUE ET ELEMENT DE REFERENCE DE CONTACT
@@ -409,9 +409,11 @@ C             I.1. CALCUL DE A ET DE AT
      &              MMAT(PLI,JN+NDIM+L)+
      &              2.D0 * FFI * FFP(J) * ND(L) * JAC * E
 C
-                    MMAT(JN+NDIM+L,PLI)=
-     &              MMAT(JN+NDIM+L,PLI)+
-     &              2.D0 * FFI * FFP(J) * ND(L) * JAC * E
+                    IF(.NOT.LPENAC)THEN
+                      MMAT(JN+NDIM+L,PLI)=
+     &                MMAT(JN+NDIM+L,PLI)+
+     &                2.D0 * FFI * FFP(J) * ND(L) * JAC * E
+                    ENDIF
  132              CONTINUE
 C
                   DO 133 L = 1,SINGU*NDIM
@@ -419,9 +421,11 @@ C
      &              MMAT(PLI,JN+NDIM+DDLH+L)+
      &              2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * E
 C
-                    MMAT(JN+NDIM+DDLH+L,PLI)=
-     &              MMAT(JN+NDIM+DDLH+L,PLI)+
-     &              2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * E
+                    IF(.NOT.LPENAC)THEN
+                      MMAT(JN+NDIM+DDLH+L,PLI)=
+     &                MMAT(JN+NDIM+DDLH+L,PLI)+
+     &                2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * E
+                    ENDIF
  133              CONTINUE
 
  131            CONTINUE
@@ -832,9 +836,6 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
 
 C             II.3.1. CALCUL DE B ET DE BT
 
-C             B ET BT SONT NULLES EN PENALISATION SEULE
-              IF (LPENAF) GOTO 190
-
               DO 160 I = 1,NNOL
 
                 PLI=PLA(I)
@@ -872,9 +873,11 @@ C               CALCUL DE TAU.KN.P
      &                MMAT(PLI+K,JN+NDIM+L) +
      &              2.D0*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC
 C
-                      MMAT(JN+NDIM+L,PLI+K) =
-     &                MMAT(JN+NDIM+L,PLI+K) +
+                      IF(.NOT.LPENAF)THEN
+                        MMAT(JN+NDIM+L,PLI+K) =
+     &                  MMAT(JN+NDIM+L,PLI+K) +
      &              2.D0*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC
+                      ENDIF
 C
  167                CONTINUE
 C
@@ -884,9 +887,11 @@ C
      &                MMAT(PLI+K,JN+NDIM+DDLH+L) +
      &           2.D0*RR*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC
 C
-                      MMAT(JN+NDIM+DDLH+L,PLI+K) =
-     &                MMAT(JN+NDIM+DDLH+L,PLI+K) +
+                      IF(.NOT.LPENAF)THEN
+                        MMAT(JN+NDIM+DDLH+L,PLI+K) =
+     &                  MMAT(JN+NDIM+DDLH+L,PLI+K) +
      &           2.D0*RR*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC
+                      ENDIF
 C
  168                CONTINUE
  166              CONTINUE
@@ -895,7 +900,6 @@ C
 
 C             II.3.2. CALCUL DE B_U
 
- 190          CONTINUE
               IF (ADHER) THEN
 
 C               CAS ADHERENT, TERME DE PENALISATION:
@@ -1041,13 +1045,26 @@ C-----------------------------------------------------------------------
 C     COPIE DES CHAMPS DE SORTIES ET FIN
 C-----------------------------------------------------------------------
 C
-      DO 200 J = 1,NDDL
-        DO 210 I = 1,J
-          IJ = (J-1)*J/2 + I
-          ZR(IMATT+IJ-1) = MMAT(I,J)
- 210    CONTINUE
- 200  CONTINUE
-
+      IF((LPENAC.AND.(OPTION.EQ.'RIGI_CONT'))
+     &    .OR.(LPENAF.AND.(OPTION.EQ.'RIGI_FROT')))THEN
+C --- RECUPERATION DE LA MATRICE 'OUT' NON SYMETRIQUE
+        CALL JEVECH('PMATUNS','E',IMATT)
+        DO 201 J = 1,NDDL
+          DO 211 I = 1,NDDL
+            IJ = J+NDDL*(I-1)
+            ZR(IMATT+IJ-1) = MMAT(I,J)
+ 211      CONTINUE
+ 201    CONTINUE
+      ELSE
+C --- RECUPERATION DE LA MATRICE 'OUT' SYMETRIQUE
+        CALL JEVECH('PMATUUR','E',IMATT)
+        DO 200 J = 1,NDDL
+          DO 210 I = 1,J
+            IJ = (J-1)*J/2 + I
+            ZR(IMATT+IJ-1) = MMAT(I,J)
+ 210      CONTINUE
+ 200    CONTINUE
+      ENDIF
       CALL TEATTR (NOMTE,'C','XLAG',LAG,IBID)
       IF (IBID.EQ.0.AND.LAG.EQ.'ARETE') THEN
         NNO = NNOS

@@ -1,9 +1,9 @@
         SUBROUTINE LCDPEQ(VIND, VINF,LOI,NBCOMM,CPMONO,NMAT,NVI,SIG,
-     &  COTHE,COEFF)
+     &  COTHE,COEFF,HSR)
      
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/10/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,11 +26,12 @@ C       IN  VIND   :  VARIABLES INTERNES A T
 C       IN  VINF   :  VARIABLES INTERNES A T+DT
 C       ----------------------------------------------------------------
         INTEGER         NVI,NMAT,NBCOMM(NMAT,3),NBPHAS,I,IPHAS,INDFV
-        INTEGER         NUVI,INDPHA
+        INTEGER         NUVI,INDPHA,NBFSYS,IFA,IS,NBSYS,IRET
         REAL*8          VIND(NVI),VINF(NVI),DVIN(NVI),SIG(6),GRANB(6)
         REAL*8          LCNRTE, EPSEQ,COTHE(NMAT),COEFF(NMAT),E,NU,FV
-        REAL*8          SIGG(6)
+        REAL*8          SIGG(6),MAXRP,ZE(12),RP,HSR(5,24,24)
         CHARACTER*16    LOI,CPMONO(5*NMAT+1),LOCA
+      CHARACTER*16 NOMFAM,NECRIS,NECOUL
 C V.I. 1 a 6 représente la deformation viscoplastique macro
         EPSEQ=0
         DO 10 I=1,6
@@ -38,11 +39,27 @@ C V.I. 1 a 6 représente la deformation viscoplastique macro
             EPSEQ=EPSEQ+DVIN(I)*DVIN(I)
 10      CONTINUE
         EPSEQ = SQRT ( 2.0D0/3.0D0* EPSEQ )
+        CALL R8INIR(12, 0.D0, ZE, 1)                        
+     
+        NBFSYS=NBCOMM(NMAT,2)                                
+        MAXRP=-1.D20
          
          IF (LOI(1:8).EQ.'MONOCRIS') THEN
-
             VINF (NVI-1) = VIND (NVI-1) + EPSEQ
-           
+            DO 6 IFA=1,NBFSYS
+               NOMFAM=CPMONO(5*(IFA-1)+1)
+               NECOUL=CPMONO(5*(IFA-1)+3)
+               IF(NECOUL.EQ.'ECOU_DD_CFC') THEN
+                  NECRIS=CPMONO(5*(IFA-1)+4)
+                  CALL LCMMSG(NOMFAM,NBSYS,0,ZE,ZE,ZE,ZE,0,ZE)
+                  DO 7 IS=1,NBSYS
+                     CALL LCMMFI(COEFF,IFA,NMAT,NBCOMM,NECRIS,
+     &              IS,NBSYS,VINF(7),ZE,HSR,1,ZE,RP)
+                     MAXRP=MAX(RP,MAXRP)
+  7               CONTINUE
+                  VINF(NVI-2)=MAXRP
+               ENDIF
+  6         CONTINUE
          ELSEIF (LOI(1:8).EQ.'POLYCRIS') THEN
 
             VINF (7) = VIND (7) + EPSEQ

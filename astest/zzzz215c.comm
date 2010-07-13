@@ -1,5 +1,6 @@
-# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # TITRE CHAINAGE 3D CODE_SATURNE CODE_ASTER
+# zzzz215c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,7 +78,7 @@ MATER=AFFE_MATERIAU(MAILLAGE=MASOLIDE,
                     AFFE=_F(TOUT='OUI',
                             MATER=ACIER,),);
 
-RES_PROJ=PROJ_CHAMP(METHODE='ELEM',
+RES_PROJ=PROJ_CHAMP(METHODE='COLOCATION',
                     RESULTAT=RES_PRES,
                     MODELE_1=MOFLUIDE,
                     MODELE_2=MOSOLIDE,

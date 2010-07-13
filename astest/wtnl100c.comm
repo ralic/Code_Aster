@@ -1,4 +1,4 @@
-# MODIF  DATE 27/04/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # ======================================================================
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8  
 # wtnl100c.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test R
@@ -169,7 +169,7 @@ MODELIN=AFFE_MODELE(MAILLAGE=MAILLIN,
                            MODELISATION='D_PLAN',),);
 
 RESULIN = PROJ_CHAMP(
-               METHODE='ELEM',
+               METHODE='COLOCATION',
                RESULTAT=RESU1,
                MODELE_1=MODELE,
                MODELE_2=MODELIN,
@@ -190,7 +190,7 @@ IMPR_RESU(FORMAT = 'IDEAS', UNITE = 30,
 
                   
 RESULINS = PROJ_CHAMP(
-               METHODE='ELEM',
+               METHODE='COLOCATION',
                RESULTAT=RESU1,
                MODELE_1=MODELE,
                MODELE_2=MODELIN,

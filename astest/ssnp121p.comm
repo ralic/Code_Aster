@@ -1,6 +1,6 @@
-# MODIF  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE CONTACT DE DEUX BLOCS
-# ssnp121p.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
+# ssnp121p.para = tps_job 30 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -128,13 +128,10 @@ RESU=STAT_NON_LINE (
                                   REAC_INCR=1,),
                    CONVERGENCE=_F(
                                 ARRET='OUI',
-                                ITER_GLOB_MAXI=60,
-                                #RESI_GLOB_MAXI=2.E-8,
-                                 ),
+                                ITER_GLOB_MAXI=5,),
                    SOLVEUR     =_F(
                                METHODE='LDLT',
-                               RENUM='SANS',),
-                   );
+                               RENUM='SANS',),);
 
 
 RESU=CALC_ELEM( reuse=RESU,

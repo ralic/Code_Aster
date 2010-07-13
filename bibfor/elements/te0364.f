@@ -3,7 +3,7 @@
       CHARACTER*16         OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -397,22 +397,44 @@ C
      &            MATREM,MATRME,MATRCE,MATRCM,MATRMC,
      &            MATREC,MATRFF,MATRFE,MATRFM,MATRMF,
      &            MATREF,MMAT  )
+
+      IF((LPENAC.AND.(OPTION.EQ.'RIGI_CONT'))
+     &    .OR.(LPENAF.AND.(OPTION.EQ.'RIGI_FROT')))THEN
 C
-C --- RECUPERATION DE LA MATRICE 'OUT'
+C --- RECUPERATION DE LA MATRICE 'OUT' NON SYMETRIQUE
 C
-      CALL JEVECH('PMATUUR','E',JMATT )
+        CALL JEVECH('PMATUNS','E',JMATT )
 C
 C --- FIN DE CHANGEMENT ET COPIE
 C
-      DO 760 J = 1,NDDL
-         DO 750 I = 1,J
-           IJ = (J-1)*J/2 + I
-           ZR(JMATT+IJ-1) = MMAT(I,J)
-           IF (DEBUG) THEN
-             CALL MMMTDB(MMAT(I,J),'IJ',I,J)
-           ENDIF    
- 750     CONTINUE
- 760  CONTINUE
+        DO 760 J = 1,NDDL
+           DO 750 I = 1,NDDL
+             IJ = J+NDDL*(I-1)
+             ZR(JMATT+IJ-1) = MMAT(I,J)
+             IF (DEBUG) THEN
+               CALL MMMTDB(MMAT(I,J),'IJ',I,J)
+             ENDIF    
+ 750       CONTINUE
+ 760    CONTINUE
+      ELSE 
 C
+C --- RECUPERATION DE LA MATRICE 'OUT' SYMETRIQUE
+C
+        CALL JEVECH('PMATUUR','E',JMATT )
+C
+C --- FIN DE CHANGEMENT ET COPIE
+C
+        DO 761 J = 1,NDDL
+           DO 751 I = 1,J
+             IJ = (J-1)*J/2 + I
+             ZR(JMATT+IJ-1) = MMAT(I,J)
+             IF (DEBUG) THEN
+               CALL MMMTDB(MMAT(I,J),'IJ',I,J)
+             ENDIF    
+ 751       CONTINUE
+ 761    CONTINUE 
+C
+      ENDIF
+
       CALL JEDEMA()
       END

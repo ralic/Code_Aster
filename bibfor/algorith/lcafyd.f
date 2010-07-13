@@ -1,8 +1,8 @@
-        SUBROUTINE LCAFYD ( MATERF, NBCOMM,NMAT,NVI,VIND,YD, CRIT)
+        SUBROUTINE LCAFYD (LOI, MATERF, NBCOMM,NMAT,NVI,VIND,YD)
 C RESPONSABLE PROIX J-M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,44 +19,47 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C       ----------------------------------------------------------------
-C       CHOIX DES VALEURS DE VIND A AFFECTER A YD
-C       CAS PARTICULIER DU  MONOCRISTAL  : 
-C       ON GARDE 1 VARIABLE INTERNE PAR SYSTEME DE GLISSEMENT SUR 3
-C       ----------------------------------------------------------------
-C       IN 
-C            MATERF :  COEF MATERIAU
-C            NBCOMM :  INCIDES DES COEF MATERIAU
-C            NMAT   :  DIMENSION MATER
-C            NVI    :  NOMBRE DE VARIABLES INTERNES
-C       OUT  YD     :  VECTEUR INITIAL
-C       ----------------------------------------------------------------
-        INTEGER         NDT,NVI,NMAT,NDI,NS,I,NBCOMM(NMAT,3)
-        REAL*8          YD(*),MATERF(NMAT,2),VIND(*),CRIT(*)
-        COMMON /TDIM/   NDT  , NDI
-C       ----------------------------------------------------------------
+C     ----------------------------------------------------------------
+C     CHOIX DES VALEURS DE VIND A AFFECTER A YD
+C     CAS PARTICULIER DU  MONOCRISTAL  : 
+C     ON GARDE 1 VARIABLE INTERNE PAR SYSTEME DE GLISSEMENT SUR 3
+C     ----------------------------------------------------------------
+C     IN 
+C          MATERF :  COEF MATERIAU
+C          NBCOMM :  INCIDES DES COEF MATERIAU
+C          NMAT   :  DIMENSION MATER
+C          NVI    :  NOMBRE DE VARIABLES INTERNES
+C     OUT  YD     :  VECTEUR INITIAL
+C     ----------------------------------------------------------------
+      INTEGER         NDT,NVI,NMAT,NDI,NS,I,NBCOMM(NMAT,3)
+      REAL*8          YD(*),MATERF(NMAT,2),VIND(*)
+      CHARACTER*16    LOI
+      COMMON /TDIM/   NDT  , NDI
+C     ----------------------------------------------------------------
 
-C       MONOCRISTAL
+C     INITIALISATION DE YD EN IMPLICITE
 
-C       EXPLICITE=1 OU IMPLICITE=0
-        IF (INT(CRIT(6)).EQ.1) THEN
-           NS=(NVI-8)/3
-C            KOCKS-RAUCH
-           IF (MATERF(NBCOMM(1,1),2).EQ.4) THEN
-C             NOMBRE DE FAMILLES DE SYST : NBFSYS
-              CALL ASSERT(NBCOMM(NMAT,2).EQ.1)
-              DO 102 I=1,NS
-                 YD(NDT+I)=VIND(6+3*(I-1)+1)
- 102          CONTINUE
-           ELSE
-              DO 103 I=1,NS
-                 YD(NDT+I)=VIND(6+3*(I-1)+2)
- 103          CONTINUE
-           ENDIF
-        ELSE
+      IF (LOI(1:8).EQ.'MONOCRIS') THEN
+         NS=(NVI-8)/3
+         IF ((MATERF(NBCOMM(1,1),2).EQ.4).OR.
+     &       (MATERF(NBCOMM(1,1),2).EQ.5)) THEN
+C            KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
+             CALL ASSERT(NBCOMM(NMAT,2).EQ.1)
+             DO 102 I=1,NS
+                YD(NDT+I)=VIND(6+3*(I-1)+1)
+ 102         CONTINUE
+         ELSE
+C           AUTRES COMPORTEMENTS MONOCRISTALLINS
+            DO 103 I=1,NS
+               YD(NDT+I)=VIND(6+3*(I-1)+2)
+ 103        CONTINUE
+         ENDIF
+      ELSE
 
-C        CAS GENERAL        
+C        CAS GENERAL 
+       
            CALL LCEQVN ( NVI-1,  VIND , YD(NDT+1) )
            
-        ENDIF
+      ENDIF
+      
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 12/07/2010   AUTEUR DESROCHES X.DESROCHES 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (SANS SOUS-STRUCTURATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,9 @@
 
 
 DEBUT(CODE=_F(  NOM = 'SSLP100A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-
+ZERO=DEFI_CONSTANTE(VALE=0.0)
+DEUX=DEFI_CONSTANTE(VALE=2.0)
+FONC=FORMULE(NOM_PARA=('X','Y'),VALE='-X+Y')
 ACIER=DEFI_MATERIAU(ELAS=_F( E = 15., NU = 0.3) )
 
 MA=LIRE_MAILLAGE()
@@ -41,17 +43,25 @@ MO=AFFE_MODELE(  MAILLAGE=MA,     AFFE= (
 CARELE=AFFE_CARA_ELEM( MODELE=MO, DISCRET_2D=( _F(MAILLE='MISOLE',CARA = 'K_T_N',
                                      VALE = (180000.,0.,180000.,),),
                       ))
-CHBL=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=(
+CHBL=AFFE_CHAR_MECA_F(MODELE=MO,DDL_IMPO=(
 #                    J , N8, N17, N25 :
 
-                    _F( NOEUD = ('N8','N17','N25',), DX = 0.0, DY = 0.0),
-                    _F( NOEUD = ('N35',), DX = 2.0)),LIAISON_DDL=(
+                    _F( NOEUD = ('N8','N17','N25',), DX = ZERO, DY = ZERO),
+                    _F( NOEUD = ('N35',), DX = DEUX)),
+#
+#  TEST DE LIAISON_DDL COEF_MULT_FONC
+#
+                    LIAISON_DDL=(
 #           GH :
 
-  _F( NOEUD = ('N22','N22',),DDL = ('DY','DX',), COEF_MULT = (1.0,1.0,), COEF_IMPO = 0.0),
-  _F( NOEUD = ('N24','N24',),DDL = ('DY','DX',), COEF_MULT = (1.0,1.0,), COEF_IMPO = 0.0),
-  _F( NOEUD = ('N26','N26',),DDL = ('DY','DX',), COEF_MULT = (1.0,1.0,), COEF_IMPO = 0.0),
-  _F( NOEUD = ('N28','N28',),DDL = ('DY','DX',), COEF_MULT = (1.0,1.0,), COEF_IMPO = 0.0))
+  _F( NOEUD = ('N22','N22',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
+   COEF_IMPO = ZERO),
+  _F( NOEUD = ('N24','N24',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
+   COEF_IMPO = ZERO),
+  _F( NOEUD = ('N26','N26',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
+   COEF_IMPO = ZERO),
+  _F( NOEUD = ('N28','N28',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
+   COEF_IMPO = ZERO))
             )
 
 CHF1=AFFE_CHAR_MECA(MODELE=MO,

@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -813,7 +813,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   if NOM_CHAM[5:9]=='ELGA' : UTMESS('F','POST0_18',valk=[NOM_CHAM,])
 
-  __recou=PROJ_CHAMP(METHODE='ELEM',
+  __recou=PROJ_CHAMP(METHODE='COLOCATION',
                      RESULTAT=RESULTAT,
                      MODELE_1=MODELE_1,
                      DISTANCE_MAX=m['DISTANCE_MAX'],

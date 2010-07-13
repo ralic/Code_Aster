@@ -1,7 +1,7 @@
       FUNCTION CFDISI(DEFICZ,QUESTZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/05/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -220,7 +220,11 @@ C
                 
       ELSEIF (QUESTI.EQ.'NTELNO')         THEN
         CALL JEVEUO(NDIMCO,'L',JDIM )      
-        CFDISI = ZI(JDIM+12-1)                    
+        CFDISI = ZI(JDIM+12-1)
+
+      ELSEIF (QUESTI.EQ.'PENA_CONTINUE')   THEN
+        CALL JEVEUO(PARACI,'L',JPARCI)     
+        CFDISI = ZI(JPARCI+26-1)
 C                              
       ELSE
         WRITE(6,*) 'QUESTION: ',QUESTI

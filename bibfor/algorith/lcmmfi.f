@@ -5,7 +5,7 @@
         REAL*8 COEFT(NMAT),DY(*),VIND(*),HSR(5,24,24),SQ,EXPBP(*)
         CHARACTER*16 NECRIS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,7 @@ C ======================================================================
 
 C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,B,RP,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,V,D
-      REAL*8 TPERD,TABS,PR,DRDP,B1P
+      REAL*8 TPERD,TABS,PR,DRDP,B1P,MU,CEFF,ALPHAM(12),ALPHAS(12),R8B
       INTEGER IEI,TNS,NS,IR,NBCOEF,NUEISO
       INTEGER NUMHSR
 C     ----------------------------------------------------------------
@@ -100,8 +100,36 @@ C        DE LA FAMILLE COURANTE;
          P=VIND(3*(IS-1)+3)+ABS(DY(IS))
          RP=R0+Q1*SQ+Q2*(1.D0-EXP(-B2*P))
          
+C      ELSEIF (NECRIS.EQ.'ECRO_DD_CFC') THEN
+      ELSEIF (NUEISO.EQ.3) THEN
+         MU    =COEFT(IEI+4)
+         NUMHSR=NINT(COEFT(IEI+5))
+C        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT
+C        DE LA FAMILLE COURANTE;         
+C        VARIABLE INTERNE PRINCIPALE : ALPHA=RHO*B**2
+
+C        RHO_0  VALEUR INITIALE DE DENSITE DE DISLOCATION
+         DO 55 IR=1,NBSYS
+            ALPHAM(IR)=VIND(3*(IR-1)+1)
+            ALPHAS(IR)= ALPHAM(IR)+DY(IR)
+ 55      CONTINUE
+ 
+         RP=0.D0
+         DO 23 IR = 1, NBSYS                              
+            IF (ALPHAS(IR).GT.0.D0) THEN
+            RP=RP+ALPHAS(IR)*HSR(NUMHSR,IS,IR) 
+            ENDIF
+  23     CONTINUE       
+C        CE QUE L'ON APPELLE RP CORRESPOND ICI A TAU_S_FOREST
+
+         CALL LCMMDC(COEFT,IFA,NMAT,NBCOMM,ALPHAS,IS,CEFF,R8B)
+         
+         RP=MU*SQRT(RP)*CEFF
+         
       ELSE
           CALL U2MESS('F','COMPOR1_21')          
       ENDIF
+      
+ 9999 CONTINUE           
            
       END

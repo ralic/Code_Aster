@@ -3,7 +3,7 @@
      &                  MAT,VECT,DDLM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ELEMENTS  DATE 12/07/2010   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -231,16 +231,22 @@ C        MISE A ZERO DES TERMES I
  210        CONTINUE
           ENDIF
           IF (OPTION.EQ.'RAPH_MECA' .OR.
-     &             OPTION.EQ.'FULL_MECA' .OR.
-     &             OPTION.EQ.'FORC_NODA' .OR.
-     &             OPTION.EQ.'CHAR_MECA_PRES_R' .OR.
-     &             OPTION.EQ.'CHAR_MECA_PRES_F' .OR.
-     &             OPTION.EQ.'CHAR_MECA_FR2D3D' .OR.
-     &             OPTION.EQ.'CHAR_MECA_FR1D2D' .OR.     
-     &             OPTION.EQ.'CHAR_MECA_FF2D3D' .OR.
-     &             OPTION.EQ.'CHAR_MECA_FF1D2D' .OR.
-     &             OPTION.EQ.'CHAR_MECA_CONT' .OR.
-     &             OPTION.EQ.'CHAR_MECA_FROT') VECT(I) = 0.D0
+     &        OPTION.EQ.'FULL_MECA' .OR.
+     &        OPTION.EQ.'FORC_NODA' .OR.
+     &        OPTION.EQ.'CHAR_MECA_PRES_R' .OR.
+     &        OPTION.EQ.'CHAR_MECA_PRES_F' .OR.
+     &        OPTION.EQ.'CHAR_MECA_FR2D3D' .OR.
+     &        OPTION.EQ.'CHAR_MECA_FR1D2D' .OR.     
+     &        OPTION.EQ.'CHAR_MECA_FF2D3D' .OR.
+     &        OPTION.EQ.'CHAR_MECA_FF1D2D' .OR.
+     &        OPTION.EQ.'CHAR_MECA_CONT' .OR.
+     &        OPTION.EQ.'CHAR_MECA_FROT' .OR.
+     &        OPTION.EQ.'CHAR_MECA_FR3D3D' .OR.
+     &        OPTION.EQ.'CHAR_MECA_FR2D2D' .OR.
+     &        OPTION.EQ.'CHAR_MECA_FF3D3D' .OR.
+     &        OPTION.EQ.'CHAR_MECA_FF2D2D' .OR.
+     &        OPTION.EQ.'CHAR_MECA_PESA_R' .OR.
+     &        OPTION.EQ.'CHAR_MECA_ROTA_R'     ) VECT(I) = 0.D0
  200    CONTINUE
 
       ENDIF

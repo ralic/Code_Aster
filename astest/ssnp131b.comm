@@ -1,6 +1,6 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 3D
-# ssnp131b.para = tps_job 500 mem_job 1400Mo mem_aster 30 ncpus 1 liste_test S
+# ssnp131b.para = tps_job 500 mem_job 1400Mo mem_aster 180 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -280,18 +280,26 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                    SOLVEUR=_F(METHODE='MUMPS',
                               PCENT_PIVOT=30),);
                               
-nbcop = 40;
+nbcop = 10;
 
 # Script pour generer la liste des copeaux:
 # =========================================
 
 nbtranches = 2
-l_copeaux=[]
-for j in range(1,nbtranches+1):
-    for i in range(1,nbcop+1):
-        nom = "T%i_C%i"%(j , i)
-        l_copeaux.append(nom)
-print l_copeaux
+l_copeaux1=[]
+for i in range(1,nbcop+1):
+  nom = "T1_C%i"%(i)
+  l_copeaux1.append(nom)
+print l_copeaux1
+
+
+l_copeaux2=[]
+for i in range(1,nbcop+1):
+  nom = "T2_C%i"%(i)
+  l_copeaux2.append(nom)
+print l_copeaux2
+
+
 
 # fin du script pour generer la liste
 # ===================================
@@ -340,12 +348,14 @@ tab=POST_GP(RESULTAT=RESU,
                          R_SUP=20,),
                          ),
             FOND_FISS=FONFISS,
-            NB_TRANCHES=nbtranches,
-            GROUP_MA=l_copeaux,
-            PAS_ENTAILLE=0.02,
+            TRANCHE = (
+                       _F(GROUP_MA=l_copeaux1,),
+                       _F(GROUP_MA=l_copeaux2,),
+                       ),
             IDENTIFICATION=_F(KJ_CRIT=(kjc1),
                               TEMP = (tcal),),
-            TABL_RESU=CO('tabident'),
+            TABL_GPMAX=CO('tabident'),
+#            TABL_GP     = CO('tabgp'),
             LISSAGE=_F( LISSAGE_THETA='LEGENDRE',
                            DEGRE=1,),
             INFO=2,);
@@ -353,6 +363,8 @@ tab=POST_GP(RESULTAT=RESU,
 IMPR_TABLE(TABLE=tab,);
 
 IMPR_TABLE(TABLE=tabident,);
+
+# IMPR_TABLE(TABLE=tabgp,);
 
 TEST_TABLE(TABLE=tabident,
            FILTRE=_F(NOM_PARA='KJ_CRIT',

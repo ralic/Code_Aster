@@ -1,0 +1,892 @@
+# MODIF  DATE 13/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# TITRE CALCUL DU PARAMETRE GP DANS LE CAS D'UNE ENTAILLE ELLIPTIQUE EN 3D
+# ssnv218a.para = tps_job 400 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT(CODE=_F( NOM = 'SSNV218A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI' );
+
+
+# LECTURE ET MODIFICATION DU MAILLAGE POUR L'UTILISATION DE POST_GP
+# CUMUL DES COPEAUX
+
+MA=LIRE_MAILLAGE(FORMAT='MED' );
+
+MA=MODI_MAILLAGE(reuse=MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_3D =( _F( GROUP_MA=('SINF'), ), ),
+                 );
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA=('SLAT_S','SSUP_S','SAR',),),);
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=_F(UNION=('CO_1_1','CO_1_2',),NOM='CO_CUM'),);
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              DETR_GROUP_MA=_F(NOM='CO_1_2'),
+              CREA_GROUP_MA=_F(NOM='CO_1_2',UNION=('CO_CUM'),),);
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,DETR_GROUP_MA=_F(NOM='CO_CUM'),
+              CREA_GROUP_MA=_F(UNION=('CO_2_1','CO_2_2',),NOM='CO_CUM'),);
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              DETR_GROUP_MA=_F(NOM='CO_2_2'),
+              CREA_GROUP_MA=_F(NOM='CO_2_2',UNION=('CO_CUM'),),);
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,DETR_GROUP_MA=_F(NOM='CO_CUM'),
+              CREA_GROUP_MA=_F(UNION=('CO_3_1','CO_3_2',),NOM='CO_CUM'),);
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              DETR_GROUP_MA=_F(NOM='CO_3_2'),
+              CREA_GROUP_MA=_F(NOM='CO_3_2',UNION=('CO_CUM'),),);
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,DETR_GROUP_MA=_F(NOM='CO_CUM'),
+              CREA_GROUP_MA=_F(UNION=('CO_4_1','CO_4_2',),NOM='CO_CUM'),);
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              DETR_GROUP_MA=_F(NOM='CO_4_2'),
+              CREA_GROUP_MA=_F(NOM='CO_4_2',UNION=('CO_CUM'),),);
+
+#
+#----------------  AFFECTATION MODELE MECANIQUE    --------------------
+#
+
+MOD=AFFE_MODELE(MAILLAGE=MA,
+                AFFE=_F(GROUP_MA=('VBLOC','SINF'),
+                 PHENOMENE='MECANIQUE',
+                 MODELISATION='3D',),);
+
+#---------------- DONNEES MECANIQUES ACIER  -------------------
+
+
+
+YOUNG=DEFI_FONCTION(NOM_PARA='TEMP',
+                    VALE=[-170. ,225189. ,-150.,223194. ,-100. ,218321. ,-80. ,216418. ,-60. ,214541.,
+                           -50. ,213612. , -40.,212690. , -20. ,210865. ,  0. ,209067. , 20. ,207295.,
+                            30. ,206419. ,  50. ,204686., 100. ,200468. ,150. ,196415. ,200. ,192525.,
+                           250. ,188799. , 300. ,185237. ],);
+
+ALPHA_T=DEFI_FONCTION(NOM_PARA='TEMP',
+                      VALE=[-170. , 9.7002e-6 ,-150., 9.87e-6 ,-100. ,10.2844e-6 ,-80. ,10.4462e-6 ,-60. ,10.6056e-6,
+                             -50. ,10.6844e-6 , -40.,10.7627e-6 , -20. ,10.9175e-6 ,  0. ,11.07e-6 ,20.,11.2202e-6,
+                              30. ,11.2944e-6 , 50.,11.4411e-6,  100. ,11.7978e-6 ,150. ,12.14e-6 ,200.,12.4678e-6,
+                             250. ,12.7811e-6 , 300. ,13.08e-6 ],);
+#
+def SR3(temp):
+
+  s3 = 3150 + 6*(temp-100.)
+  if (s3 < 2900.):
+    s3 = 2900.
+    
+  return s3
+  
+SREF3 = FORMULE( NOM_PARA='TEMP',VALE='SR3(TEMP)' );
+
+
+M3_M150=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(
+
+0.00379042 , 846    ,
+0.00579042 , 849.2  ,
+0.01179042 , 840.9  ,
+0.01479042 , 842.4  ,
+0.01879042 , 849.7  ,
+0.02179042 , 855.9  ,
+0.02979042 , 894.2  ,
+0.04679042 , 951.2  ,
+0.07179042 , 1012.9 ,
+0.10379042 , 1067.1 ,
+0.13479042 , 1106.6 ,
+0.20379042 , 1165.7 ,
+0.30379042 , 1228.4 ,
+0.40379042 , 1275.3 ,
+0.50379042 , 1313   ,
+0.60379042 , 1344.8 ,
+0.70379042 , 1372.4 ,
+0.80379042 , 1396.8 ,
+0.90379042 , 1418.7 ,
+1.00379042 , 1438.7 ,
+
+                      ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+M3_M100=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(
+
+0.00329332, 719.  ,
+0.00529332, 721.8 ,
+0.00829332, 725.  ,
+0.01029332, 729.1 ,
+0.01229332, 732.6 ,
+0.01429332, 742.3 ,
+0.01829332, 760.1 ,
+0.02229332, 780.6 ,
+0.02829332, 805.1 ,
+0.03429332, 830.4 ,
+0.04229332, 856.4 ,
+0.05029332, 881.5 ,
+0.05929332, 903.3 ,
+0.06729332, 924.1 ,
+0.07729332, 941.8 ,
+0.08629332, 957.8 ,
+0.09629332, 970.4 ,
+0.10629332, 983.3 ,
+0.11729332, 993.1 ,
+0.12829332, 1002.5,
+0.13829332, 1011. ,
+0.20329332, 1055.6,
+0.30329332, 1103.8,
+0.40329332, 1139.6,
+0.50329332, 1168.3,
+0.60329332, 1192.4,
+0.70329332, 1213.2,
+0.80329332, 1231.6,
+0.90329332, 1248.1,
+1.00329332, 1263. ,
+1.10329332, 1276.7,
+1.20329332, 1289.4,
+1.30329332, 1301.2,
+1.40329332, 1312.2,
+1.50329332, 1322.6,
+1.60329332, 1332.4,
+1.70329332, 1341.6,
+1.80329332, 1350.4,
+1.90329332, 1358.8,
+
+                      ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+
+
+M3_M80=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(
+
+0.00320214, 693.,
+0.00520214, 695.1,
+0.00820214, 693.1,
+0.00920214, 694.9,
+0.01020214, 696.8,
+0.01220214, 701.8,
+0.01320214, 705.9,
+0.01520214, 719.7,
+0.01820214, 734.,
+0.02220214, 747.9,
+0.02620214, 767.2,
+0.03120214, 787.1,
+0.03720214, 808.7,
+0.04420214, 833.2,
+0.05320214, 859.5,
+0.06420214, 886.,
+0.07720214, 910.7,
+0.09020214, 929.6,
+0.10420214, 945.,
+0.11720214, 957.8,
+0.13020214, 967.8,
+0.20320214, 1016.8,
+0.30320214, 1062.4,
+0.40320214, 1096.3,
+0.50320214, 1123.4,
+0.60320214, 1146.1,
+0.70320214, 1165.8,
+0.80320214, 1183.2,
+0.90320214, 1198.7,
+1.00320214, 1212.8,
+1.10320214, 1225.8,
+1.20320214, 1237.7,
+1.30320214, 1248.9,
+1.40320214, 1259.2,
+1.50320214, 1269. ,
+1.60320214, 1278.2,
+1.70320214, 1287. ,
+1.80320214, 1295.3,
+1.90320214, 1303.2,
+
+          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+M3_M60=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(
+
+0.00314159, 674,
+0.00514159, 675.9,
+0.00814159, 677.9,
+0.00914159, 680.3,
+0.01014159, 683.5,
+0.01214159, 694.1,
+0.01714159, 712.3,
+0.02114159, 730.5,
+0.02614159, 749.5,
+0.03114159, 768.8,
+0.03714159, 791.2,
+0.04414159, 811.7,
+0.05114159, 828.7,
+0.05814159, 844.3,
+0.06414159, 858.5,
+0.07114159, 870.1,
+0.07914159, 882.5,
+0.08714159, 894,
+0.09714159, 905,
+0.10814159, 915.6,
+0.12114159, 925,
+0.20314159, 980.3,
+0.30314159, 1024.1,
+0.40314159, 1056.6,
+0.50314159, 1082.7,
+0.60314159, 1104.6,
+0.70314159, 1123.5,
+0.80314159, 1140.2,
+0.90314159, 1155.2,
+1.00314159, 1168.7,
+1.10314159, 1181.2,
+1.20314159, 1192.7,
+1.30314159, 1203.4,
+1.40314159, 1213.4,
+1.50314159, 1222.8,
+1.60314159, 1231.7,
+1.70314159, 1240.1,
+1.80314159, 1248.1,
+1.90314159, 1255.7,
+
+                      ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+M3_M40=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(
+
+0.00310781, 661.,
+0.00510781, 663.3,
+0.00710781, 673.9,
+0.00810781, 674.3,
+0.01010781, 676.9,
+0.01110781, 678.8,
+0.01310781, 685.7,
+0.01510781, 696.4,
+0.01810781, 709.6,
+0.02210781, 727.,
+0.02710781, 747.,
+0.03310781, 770.,
+0.04010781, 794.7,
+0.04810781, 818.3,
+0.05710781, 839.5,
+0.06610781, 856.8,
+0.07510781, 870.6,
+0.08410781, 881.4,
+0.09310781, 891.2,
+0.10210781, 899.1,
+0.11110781, 906.7,
+0.20310781, 963.1,
+0.30310781, 1002.6,
+0.40310781, 1031.9,
+0.50310781, 1055.3,
+0.60310781, 1074.9,
+0.70310781, 1091.8,
+0.80310781, 1106.7,
+0.90310781, 1120.,
+1.00310781, 1132.1,
+1.10310781, 1143.2,
+1.20310781, 1153.4,
+1.30310781, 1162.9,
+1.40310781, 1171.8,
+1.50310781, 1180.1,
+1.60310781, 1188.,
+1.70310781, 1195.4,
+1.80310781, 1202.5,
+1.90310781, 1209.2,
+
+                      ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+M3_0=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(
+
+0.00308035, 644   ,
+0.00508035, 646.5 ,
+0.00808035, 654.8 ,
+0.01008035, 657.2 ,
+0.01208035, 666.4 ,
+0.01508035, 675.6 ,
+0.01808035, 689.4 ,
+0.02208035, 704.6 ,
+0.02608035, 720.7 ,
+0.03108035, 737   ,
+0.03508035, 753.2 ,
+0.04008035, 767.8 ,
+0.04608035, 781.4 ,
+0.05208035, 794.6 ,
+0.05808035, 806.6 ,
+0.06508035, 817.8 ,
+0.07108035, 826.5 ,
+0.07808035, 834.3 ,
+0.08408035, 840.4 ,
+0.09108035, 845.6 ,
+0.09608035, 849.4 ,
+0.20308035, 912.7 ,
+0.30308035, 948   ,
+0.40308035, 974.1 ,
+0.50308035, 994.8 ,
+0.60308035, 1012.2,
+0.70308035, 1027.2,
+0.80308035, 1040.3,
+0.90308035, 1052.1,
+1.00308035, 1062.8,
+1.10308035, 1072.5,
+1.20308035, 1081.5,
+1.30308035, 1089.9,
+1.40308035, 1097.7,
+1.50308035, 1105  ,
+1.60308035, 1111.9,
+1.70308035, 1118.5,
+1.80308035, 1124.6,
+1.90308035, 1130.5,
+
+                      ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+M3_P30=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(
+
+0.00308111, 636   ,
+0.00508111, 637.3 ,
+0.00708111, 640.7 ,
+0.00808111, 641.4 ,
+0.00908111, 649.6 ,
+0.01108111, 650.4 ,
+0.01308111, 660.2 ,
+0.01708111, 673,
+0.02108111, 691,
+0.02608111, 710.3 ,
+0.03208111, 730.1 ,
+0.03808111, 748.6 ,
+0.04508111, 765.9 ,
+0.05208111, 780.4 ,
+0.05908111, 792.3 ,
+0.06608111, 802.6 ,
+0.07308111, 810.5 ,
+0.08008111, 816.9 ,
+0.08708111, 822.6 ,
+0.09308111, 826.9 ,
+0.20308111, 887.2 ,
+0.30308111, 919.4 ,
+0.40308111, 943.1 ,
+0.50308111, 962   ,
+0.60308111, 977.7 ,
+0.70308111, 991.3 ,
+0.80308111, 1003.2,
+0.90308111, 1013.8,
+1.00308111, 1023.5,
+1.10308111, 1032.3,
+1.20308111, 1040.4,
+1.30308111, 1047.9,
+1.40308111, 1055,
+1.50308111, 1061.6,
+1.60308111, 1067.8,
+1.70308111, 1073.7,
+1.80308111, 1079.2,
+1.90308111, 1084.5,
+
+                      ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+M3_P100=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(
+
+0.00310776, 623.,
+0.00510776, 624.3,
+0.00710776, 627.7,
+0.00810776, 628.4,
+0.00910776, 636.6,
+0.01110776, 637.4,
+0.01310776, 647.2,
+0.01710776, 660.,
+0.02110776, 678.,
+0.02610776, 697.3,
+0.03210776, 717.1,
+0.03810776, 735.6,
+0.04510776, 752.9,
+0.05210776, 767.4,
+0.05910776, 779.3,
+0.06610776, 789.6,
+0.07310776, 797.5,
+0.08010776, 803.9,
+0.08710776, 809.6,
+0.09310776, 813.9,
+0.20310776, 874.2,
+0.30310776, 906.4,
+0.40310776, 930.1,
+0.50310776, 949,
+0.60310776, 964.7,
+0.70310776, 978.3,
+0.80310776, 990.2,
+0.90310776, 1000.8,
+1.00310776, 1010.5,
+1.10310776, 1019.3,
+1.20310776, 1027.4,
+1.30310776, 1034.9,
+1.40310776, 1042,
+1.50310776, 1048.6,
+1.60310776, 1054.8,
+1.70310776, 1060.7,
+1.80310776, 1066.2,
+1.90310776, 1071.5,
+
+                      ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+M3_P200=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(
+
+ 0.00317361  , 611.   ,
+ 0.00517361  , 612.3  ,
+ 0.00717361  , 615.7  ,
+ 0.00817361  , 616.4  ,
+ 0.00917361  , 624.6  ,
+ 0.01117361  , 625.4  ,
+ 0.01317361  , 635.2  ,
+ 0.01717361  , 648.   ,
+ 0.02117361  , 666.   ,
+ 0.02617361  , 685.3  ,
+ 0.03217361  , 705.1  ,
+ 0.03817361  , 723.6  ,
+ 0.04517361  , 740.9  ,
+ 0.05217361  , 755.4  ,
+ 0.05917361  , 767.3  ,
+ 0.06617361  , 777.6  ,
+ 0.07317361  , 785.5  ,
+ 0.08017361  , 791.9  ,
+ 0.08717361  , 797.6  ,
+ 0.09317361  , 801.9  ,
+ 0.20317361  , 862.2  ,
+ 0.30317361  , 894.4  ,
+ 0.40317361  , 918.1  ,
+ 0.50317361  , 937    ,
+ 0.60317361  , 952.7  ,
+ 0.70317361  , 966.3  ,
+ 0.80317361  , 978.2  ,
+ 0.90317361  , 988.8  ,
+ 1.00317361  , 998.5  ,
+ 1.10317361  , 1007.3 ,
+ 1.20317361  , 1015.4 ,
+ 1.30317361  , 1022.9 ,
+ 1.40317361  , 1030.  ,
+ 1.50317361  , 1036.6 ,
+ 1.60317361  , 1042.8 ,
+ 1.70317361  , 1048.7 ,
+ 1.80317361  , 1054.2 ,
+ 1.90317361  , 1059.5 ,
+
+                      ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+M3_P300=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(
+
+0.00323909 ,  600.    ,
+0.00523909 ,  601.3   ,
+0.00723909 ,  604.7   ,
+0.00823909 ,  605.4   ,
+0.00923909 ,  613.6   ,
+0.01123909 ,  614.4   ,
+0.01323909 ,  624.2   ,
+0.01723909 ,  637.    ,
+0.02123909 ,  655.    ,
+0.02623909 ,  674.3   ,
+0.03223909 ,  694.1   ,
+0.03823909 ,  712.6   ,
+0.04523909 ,  729.9   ,
+0.05223909 ,  744.4   ,
+0.05923909 ,  756.3   ,
+0.06623909 ,  766.6   ,
+0.07323909 ,  774.5   ,
+0.08023909 ,  780.9   ,
+0.08723909 ,  786.6   ,
+0.09323909 ,  790.9   ,
+0.20323909 ,  851.2   ,
+0.30323909 ,  883.4   ,
+0.40323909 ,  907.1   ,
+0.50323909 ,  926.    ,
+0.60323909 ,  941.7   ,
+0.70323909 ,  955.3   ,
+0.80323909 ,  967.2   ,
+0.90323909 ,  977.8   ,
+1.00323909 ,  987.5   ,
+1.10323909 ,  996.3   ,
+1.20323909 ,  1004.4  ,
+1.30323909 ,  1011.9  ,
+1.40323909 ,  1019.   ,
+1.50323909 ,  1025.6  ,
+1.60323909 ,  1031.8  ,
+1.70323909 ,  1037.7  ,
+1.80323909 ,  1043.2  ,
+1.90323909 ,  1048.5  ,
+
+                      ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+SIGM3=DEFI_NAPPE(NOM_PARA='TEMP',
+                 PARA=(-150.,-100.,-80.,-60.,-40.,0.,30.,100.,200.,300.),
+                
+                 FONCTION=(M3_M150,M3_M100,M3_M80,M3_M60,M3_M40,M3_0,
+                           M3_P30,M3_P100,M3_P200,M3_P300),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+NU=DEFI_CONSTANTE(VALE=0.3,);
+
+ZERO=DEFI_CONSTANTE(VALE=0,);
+tpcal = -150.
+                  
+
+M_TR_M3=DEFI_MATERIAU(ELAS_FO = _F(NU=NU,
+                                   ALPHA=ALPHA_T,
+                                   TEMP_DEF_ALPHA=tpcal,
+                                   E=YOUNG,),
+                      TRACTION = _F(SIGM=SIGM3,),
+                      WEIBULL_FO = _F(M = 20.,
+                                      VOLU_REFE = 1.25e-4,
+                                      SIGM_REFE = SREF3,
+                                      SIGM_CNV = SREF3(-150.)),);
+
+#--------- TEMPERATURE 
+
+T_T_LF=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE= ( 0. , tpcal,
+                             50., tpcal,),
+                     PROL_DROITE='CONSTANT',);
+        
+TEMP_T=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+                  OPERATION='AFFE',
+                  MAILLAGE=MA,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='TEMP',
+                          VALE_F=T_T_LF,),);
+                                                                      
+# 
+# DEFINITION D UNE RAMPE ET D UNE LISTE D INSTANTS 
+# ----------------------------------------------------------------------
+#
+
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=300.0,  NOMBRE=300,),
+                     ),);
+
+RESU_T=CREA_RESU(TYPE_RESU='EVOL_THER',
+                 OPERATION='AFFE',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=TEMP_T,
+                         LIST_INST=L_INST,),);
+
+# AFFECTATION DES PROPRIETES MECANIQUES
+# ----------------------------------------------------------------------
+#
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                   AFFE=(_F(GROUP_MA='VBLOC',
+                            MATER=M_TR_M3,
+                            ),),
+                 AFFE_VARC=_F(EVOL=RESU_T,NOM_VARC='TEMP',
+                              VALE_REF=tpcal,
+                              TOUT='OUI',),
+                            );
+
+# CONDITIONS LIMITES
+# -------------------
+#
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MOD,
+                        DDL_IMPO=(_F(GROUP_NO='SLAT_S',
+                                     DX=0.,),
+                                  _F(GROUP_NO='SSUP_S',
+                                     DZ=0.,),
+                                  _F(GROUP_NO='SAR',
+                                     DY=0.,),),);
+
+#
+# CHARGEMENT 
+# -----------
+# 
+                                                                                                
+
+RAMPE_LF=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=( 0.,     0.,
+                          20.,   -2000.,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+CHARF=AFFE_CHAR_MECA_F(MODELE=MOD,
+                       FORCE_FACE=_F(GROUP_MA='SINF',
+                                      FZ = RAMPE_LF,),);
+                
+
+nufin = 3
+
+
+RESU=STAT_NON_LINE(MODELE=MOD,
+                CHAM_MATER=CHMAT,
+                EXCIT=(_F(CHARGE=COND_LIM,),
+                       _F(CHARGE=CHARF,),),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
+                               DEFORMATION='PETIT',
+                               GROUP_MA='VBLOC',),
+                INCREMENT=_F(LIST_INST=L_INST,
+                NUME_INST_FIN=nufin,),
+                NEWTON=_F(REAC_ITER=3,),
+                RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),
+                CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
+                               ITER_GLOB_MAXI=30),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',
+                              RENUM='METIS',),);
+
+
+
+# POST_TRAITEMENT VIA POST_GP
+# DEFINITION DU FOND DE FISSURE
+
+FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
+                       FOND_FISS=_F(GROUP_MA='LFOND',
+                                    GROUP_NO_ORIG='PFONI',),
+                       NORMALE=(0.,0.,1.,),);
+l_copeaux1 = ('CO_1_1','CO_1_2')
+l_copeaux2 = ('CO_2_1','CO_2_2')
+l_copeaux3 = ('CO_3_1','CO_3_2')
+l_copeaux4 = ('CO_4_1','CO_4_2')
+l_copeaux5 = ('CO_5_1','CO_5_2')
+l_copeaux6 = ('CO_6_1','CO_6_2')
+l_copeaux7 = ('CO_7_1','CO_7_2')
+l_copeaux8 = ('CO_8_1','CO_8_2')
+
+L_INS_GP = DEFI_LIST_REEL(VALE=[1.0,3.0],);
+conv = 1000.**0.5
+kjc1=conv*22
+tab=POST_GP(RESULTAT=RESU,
+            MODELE=MOD,
+            MATER=M_TR_M3,
+            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
+                         DEFORMATION='PETIT',),
+            EXCIT=(_F(CHARGE=COND_LIM,),
+                   _F(CHARGE=CHARF,),),
+            DIRECTION = (1., 0., 0.),
+            THETA_3D=(_F(GROUP_MA='LFOND',
+                         R_INF=0.25,
+                         R_SUP=0.5,),
+                      _F(GROUP_MA='LFOND',
+                         R_INF=0.5,
+                         R_SUP=1.1,),
+                      _F(GROUP_MA='LFOND',
+                         R_INF=1.1,
+                         R_SUP=2.1,),
+                         ),
+            TYPE_DEF='GRAND',
+            FOND_FISS=FONFISS,
+            TRANCHE = (
+                      _F(GROUP_MA=l_copeaux1,),
+                      _F(GROUP_MA=l_copeaux2,),
+                      _F(GROUP_MA=l_copeaux3,),
+                      _F(GROUP_MA=l_copeaux4,),
+                      _F(GROUP_MA=l_copeaux5,),
+                      _F(GROUP_MA=l_copeaux6,),
+                      _F(GROUP_MA=l_copeaux7,),
+                      _F(GROUP_MA=l_copeaux8,),
+                       ), 
+            LIST_INST=L_INS_GP,
+            IDENTIFICATION=_F(KJ_CRIT=(kjc1),
+                              TEMP = (60),),
+            TABL_GP     = CO('tabgp'),
+            TABL_GPMAX     = CO('tabident'),
+            INFO=2,);
+
+IMPR_TABLE(TABLE=tab,);
+IMPR_TABLE(TABLE=tabgp,);
+IMPR_TABLE(TABLE=tabident,);
+
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_1_1',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.221402,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_1_2',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.241955,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_2_1',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.223091,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_2_2',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.245413,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_3_1',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.223549,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_3_2',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.245855,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_4_1',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.224918,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_4_2',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.249164,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_1_1',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.360683,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_1_2',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.383966,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_2_1',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.391368,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_2_2',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.429562,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_3_1',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.390810,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_3_2',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.430676,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_4_1',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.393613,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+           
+TEST_TABLE(TABLE=tabgp,
+           FILTRE=(_F(NOM_PARA='GROUP_MA',
+                      VALE_K='CO_4_2',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='GP',
+           VALE=0.433800,
+           PRECISION=2.E-5,
+           REFERENCE='AUTRE_ASTER',);
+
+FIN();
+

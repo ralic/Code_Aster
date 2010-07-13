@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2010   AUTEUR MESSIER J.MESSIER 
+# MODIF  DATE 12/07/2010   AUTEUR LAVERNE J.LAVERNE 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -189,7 +189,7 @@ for i in range(1,4) :
 TEST_TABLE(TABLE=SIF[i],
                NOM_PARA='K1_LOCAL',
                TYPE_TEST='MAX',
-               VALE=7.20480E+09,
+               VALE=7.20565E+09,
                CRITERE='RELATIF',               
                PRECISION=1.E-3,
                REFERENCE='NON_REGRESSION',),
@@ -197,7 +197,7 @@ TEST_TABLE(TABLE=SIF[i],
 TEST_TABLE(TABLE=SIF[i],
                NOM_PARA='K1_LOCAL',
                TYPE_TEST='MIN',
-               VALE=7.20480E+09,
+               VALE=7.20565E+09,
                CRITERE='RELATIF',               
                PRECISION=1.E-3,
                REFERENCE='NON_REGRESSION',),

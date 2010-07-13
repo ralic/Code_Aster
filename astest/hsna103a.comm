@@ -1,6 +1,6 @@
-# MODIF  DATE 29/03/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE PREDICTION D'AMORCAGE PAR LE CRITERE ENERGETIQUE GP EN 2D
-# hsna103a.para = tps_job 1200 mem_job 128Mo ncpus 1 liste_test S
+# hsna103a.para = tps_job 1400 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

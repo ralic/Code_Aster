@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel2 Messages  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,10 +139,6 @@ Erreur lors d'une transformation de cham_no_s en cham_no :
 
 31: _("""
  maille  %(k1)s  indisponible
-"""),
-
-32: _("""
- probleme creation champ
 """),
 
 33: _("""

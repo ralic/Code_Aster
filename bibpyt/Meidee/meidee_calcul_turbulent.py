@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_turbulent Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_calcul_turbulent Meidee  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

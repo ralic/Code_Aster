@@ -1,9 +1,9 @@
       SUBROUTINE LCMMVX ( FAMI, KPG, KSP, SIGF ,VIN, NMAT, MATERF,
-     &             COMP,NBCOMM, CPMONO, PGL, NR, NVI,HSR,TOUTMS,SEUIL)
+     &  COMP,NBCOMM, CPMONO, PGL, NR, NVI,HSR,TOUTMS,TIMED,TIMEF,SEUIL)
       IMPLICIT NONE
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C     ----------------------------------------------------------------
       INTEGER         NBCOMM(NMAT,3),IRET,KPG,KSP
       REAL*8          SIGF(6),VIN(NVI),RP,F,HSR(5,24,24)
       REAL*8          MATERF(NMAT*2),SEUIL,DT,SQ,DY(NVI),ALPHAM
-      REAL*8          VIS(3),MS(6),NG(3),Q(3,3),LG(3)
+      REAL*8          VIS(3),MS(6),NG(3),Q(3,3),TIMED,TIMEF,LG(3)
       REAL*8          TAUS,DGAMMA,DALPHA,DP,EXPBP(24)
       REAL*8          PGL(3,3),CRIT,SGNS,TOUTMS(5,24,6),GAMMAM,DAL
       CHARACTER*(*)   FAMI
@@ -57,7 +57,7 @@ C
       CALL R8INIR(NVI,0.D0, DY, 1)
 
       SEUIL=-1.D0
-      DT=1.D0
+      DT=TIMEF-TIMED
 C     NSFV : debut de la famille IFA dans les variables internes
       NSFV=6
 C     NSFA : debut de la famille IFA dans DY et YD, YF

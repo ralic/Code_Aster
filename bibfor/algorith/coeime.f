@@ -1,12 +1,13 @@
-      SUBROUTINE COEIME(MECA,IMATE,NOMAIL,RESI,RIGI,NDIM,DIMDEF,DIMCON,
-     &                  YAP1,YAP2,YATE,ADDEME,ADDEP1,ADDEP2,
-     &                  NBVARI,ADVIME,ADVICO,NPG,DEFGEP,
-     &                  DEFGEM,SIGM,SIGP,VARIM,VARIP,OUVH,
-     &                  TLINT,DRDE,KPI,RETCOM)
+      SUBROUTINE COEIME(MECA  ,IMATE ,NOMAIL,OPTION,RESI  ,RIGI  ,
+     &                  NDIM  ,DIMDEF,DIMCON,YAP1  ,YAP2  ,YATE  ,
+     &                  ADDEME,ADDEP1,ADDEP2,NBVARI,ADVIME,ADVICO,
+     &                  NPG   ,NPI   ,DEFGEP,DEFGEM,SIGM  ,SIGP  ,
+     &                  VARIM ,VARIP ,OUVH  ,TLINT ,DRDE  ,KPI   ,
+     &                  VICPHI,UNSURN,RETCOM)
 
-C ======================================================================
+C======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,29 +24,27 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ======================================================================
 C TOLE CRP_21
 C ======================================================================
 
       IMPLICIT NONE
 
 C VARIABLES D'ENTREE
-      INTEGER IMATE,NDIM,DIMCON,ADDEME,ADDEP1,ADDEP2,NPG,KPI
-      INTEGER RETCOM,DIMDEF,YAP1,YAP2,YATE,ADVIME,NBVARI,ADVICO
+      INTEGER IMATE,NDIM,DIMCON,ADDEME,ADDEP1,ADDEP2,NPG,KPI,NPI
+      INTEGER RETCOM,DIMDEF,YAP1,YAP2,YATE,ADVIME,NBVARI,ADVICO,VICPHI
       REAL*8 DEFGEM(DIMDEF),DEFGEP(DIMDEF),SIGM(DIMCON),VARIM(NBVARI)
       CHARACTER*8 NOMAIL
-      CHARACTER*16 MECA
+      CHARACTER*16 MECA,OPTION
       LOGICAL RESI,RIGI
 
 C VARIABLES DE SORTIE
-      REAL*8 SIGP(DIMCON),VARIP(NBVARI),DRDE(DIMDEF,DIMDEF)
-
+      REAL*8 SIGP(DIMCON),VARIP(NBVARI),DRDE(DIMDEF,DIMDEF),TLINT,OUVH
+      
 C VARIABLES LOCALES
-      INTEGER I,IBID
-      REAL*8 PARA(4),CLO,KNI,UMC,GAMMA,KT,TMECN,TMECS
-      REAL*8 TLINT,OUVH,VALR(2)
-      CHARACTER*8 NCRA1(4)
-      CHARACTER*2 CODRET(18)
+      INTEGER I,J
+      REAL*8 DA(NDIM),DSIDEP(NDIM,NDIM),PARA(2),OUVFIC,UNSURN
+      CHARACTER*8 NCRA(2) 
+      CHARACTER*2 CODRET(18) 
 
 C =====================================================================
 C.......................................................................
@@ -85,61 +84,168 @@ C OUT TLINT : PERMEABILITE LONGITUDINALE
 C OUT DRDE  : MATRICE DE RIGIDITE
 C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
 C =====================================================================
+     
+      DATA NCRA / 'OUV_FICT','UN_SUR_N' /
+      OUVH=0.D0
+      TLINT=0.D0
 
-        DATA NCRA1 / 'K','DMAX','GAMMA','KT' /
+C ====================================================================
+C LOI DE COMPORTEMENT JOINT_BANDIS
+C ====================================================================
 
       IF (MECA.EQ.'JOINT_BANDIS') THEN
 
-        CALL RCVALA(IMATE,' ','JOINT_BANDIS',0,' ', 0.D0,4,
-     &                                 NCRA1(1),PARA(1),CODRET,'FM')
-         KNI    = PARA(1)
-         UMC    = PARA(2)
-         GAMMA     = PARA(3)
-         KT = PARA(4)
-         CLO = 0.D0
-         OUVH = VARIM(ADVICO)
-         CLO = UMC - OUVH
-         CLO = CLO - DEFGEP(ADDEME) + DEFGEM(ADDEME)
-
-        IF (RESI) THEN
-         IF ((CLO.GT.UMC) .OR.(CLO.LT.-1.D-3))  THEN
-           VALR(1) = CLO
-           VALR(2) = UMC
-           CALL U2MESG('A','ALGORITH17_11',1,NOMAIL,0,IBID,2,VALR)
-           RETCOM = 1
-           GO TO 9000
-         ENDIF
-       END IF
-
-           IF (RESI) THEN
-             OUVH = UMC-CLO  
-             VARIP(ADVICO) = OUVH
-             DO 300 I=1,DIMCON
-               SIGP(I)=0.D0
- 300         CONTINUE
-             SIGP(1)=SIGM(1)
-     &        -KNI/(1-CLO/UMC)**GAMMA*(VARIM(ADVICO)-VARIP(ADVICO))
-           IF (YAP1 .EQ. 1) THEN    
-               SIGP(1+NDIM)= -DEFGEP(ADDEP1)
-           END IF
-               SIGP(2)=SIGM(2)+KT*(DEFGEP(ADDEME+1)-DEFGEM(ADDEME+1))
-
-C ATTENTION ON A ENLEVE LE TERME EN P2
-           END IF
-         
-         IF ((RIGI) .AND. (KPI .LE. NPG)) THEN
-              TMECN = KNI/(1-CLO/UMC)**GAMMA
-              TMECS = KT
-
-             DRDE(ADDEME,ADDEME)= TMECN 
-             DRDE(ADDEME+1,ADDEME+1)= TMECS
-         END IF
+        CALL LCJOHM(IMATE ,RESI  ,RIGI  ,KPI   ,NPG   ,NOMAIL,
+     &              ADDEME,ADVICO,NDIM  ,DIMDEF,DIMCON,NBVARI,
+     &              DEFGEM,DEFGEP,VARIM ,VARIP ,SIGM  ,SIGP  ,
+     &              DRDE  ,OUVH  ,RETCOM)
 
          TLINT = OUVH**2/12.D0
-         IF (RESI) VARIP(ADVIME)=TLINT
+         IF (RESI) THEN
+           VARIP(ADVIME)=TLINT
+           IF (YAP1 .EQ. 1) THEN 
+             SIGP(1+NDIM)=-DEFGEP(ADDEP1)
+           END IF
+         END IF
+         IF ((RIGI).AND. (KPI .LE. NPG)) THEN
+           IF (YAP1 .EQ. 1) THEN 
+             DRDE(ADDEME,ADDEP1)=-1.D0
+           END IF
+         END IF
+      END IF
+      
+C ====================================================================
+C LOI DE COMPORTEMENT CZM_LIN_REG
+C ====================================================================
+      IF (MECA.EQ.'CZM_LIN_REG') THEN
+      
+         DO 10 I=1,NDIM
+           DA(I) = DEFGEP(I) - DEFGEM(I)
+ 10      CONTINUE
+
+C - INTEGRATION DE LA LOI DE COMPORTEMENT MECANIQUE
+
+         CALL LCEJLI('RIGI',KPI,1,NDIM,IMATE,OPTION,DEFGEM,DA,SIGP,
+     &                  DSIDEP,VARIM(ADVIME),VARIP(ADVIME))
      
+C - RECUPERATION DES PARAMETRES DE COUPLAGE POUR LA POINTE DE FISSURE   
+
+         IF (VARIP(ADVIME) .EQ. 2) THEN
+           UNSURN=0.D0
+         ELSE
+           CALL RCVALA(IMATE,' ','THM_RUPT',0,' ', 0.D0,2,
+     &                                 NCRA(1),PARA(1),CODRET,'FM')
+           OUVFIC    = PARA(1)
+           UNSURN    = PARA(2)
+         END IF
+
+C - CALCUL DES TERMES MECA ET DE COUPLAGE DE L'OPERATEUR TANGENT
+
+         IF (RIGI) THEN
+           IF (KPI .LE. NPG) THEN
+             DO 20 I=1,NDIM
+               DO 21 J=1,NDIM
+                 DRDE(I,J)=DSIDEP(I,J)
+ 21            CONTINUE
+ 20          CONTINUE
+             IF ((YAP1 .EQ. 1).AND.((VARIP(ADVIME+2) .EQ. 1)
+     &           .OR.(VARIP(ADVIME+2).EQ. 2))) THEN 
+               DRDE(1,ADDEP1)=-1.D0
+             END IF
+           END IF
+           IF ((KPI .GT. NPG) .OR. (NPI .EQ. NPG)) THEN
+             DRDE(ADDEP1,ADDEP1)=DRDE(ADDEP1,ADDEP1)-UNSURN
+           END IF
+C - CALCUL DE L'OUVERTURE HYDRO ET DE LA PERMEABILITE
+           OUVH=VARIM(ADVICO+VICPHI)
+           IF (VARIM(3).EQ.0) THEN
+             OUVH=OUVFIC
+           END IF
+           TLINT=OUVH**2/12    
+         END IF
+
+C - CALCUL DES TERMES MECA ET DE COUPLAGE DU VECTEUR FORCES INTERNES
+
+         IF (RESI) THEN
+           IF ((YAP1 .EQ. 1).AND.((VARIP(ADVIME+2) .EQ. 1)
+     &           .OR.(VARIP(ADVIME+2).EQ. 2))) THEN
+             SIGP(1+NDIM)=-DEFGEP(ADDEP1)
+           END IF
+C - CALCUL DE L'OUVERTURE HYDRO ET DE LA PERMEABILITE           
+           VARIP(ADVICO+VICPHI)=DEFGEP(1)
+           OUVH=VARIP(ADVICO+VICPHI)
+C - SI FISSURE FERMEE ALORS ON DONNE UNE OUVERTURE HYDRO FICTIVE
+           IF ((VARIP(3).EQ.0)) THEN
+             OUVH=OUVFIC
+           END IF
+           TLINT=OUVH**2/12
+           VARIP(ADVICO+VICPHI)=DEFGEP(1)+DEFGEP(ADDEP1)*UNSURN
+        END IF
       END IF
 
- 9000 CONTINUE
+C ====================================================================
+C LOI DE COMPORTEMENT CZM_EXP_REG
+C ====================================================================
+
+      IF (MECA.EQ.'CZM_EXP_REG') THEN
+
+        DO 40 I=1,NDIM
+          DA(I) = DEFGEP(I) - DEFGEM(I)
+ 40     CONTINUE
+
+C - INTEGRATION DE LA LOI DE COMPORTEMENT MECANIQUE
+
+        CALL LCEJEX('RIGI',KPI,1,NDIM,IMATE,OPTION,DEFGEM,DA,SIGP,
+     &                  DSIDEP,VARIM(ADVIME),VARIP(ADVIME))
+
+C - RECUPERATION DES PARAMETRES DE COUPLAGE POUR LA POINTE DE FISSURE
+
+        CALL RCVALA(IMATE,' ','THM_RUPT',0,' ', 0.D0,2,
+     &                                 NCRA(1),PARA(1),CODRET,'FM')
+        OUVFIC    = PARA(1)
+        UNSURN    = PARA(2)
+
+C - CALCUL DES TERMES MECA ET DE COUPLAGE DE L'OPERATEUR TANGENT
+
+        IF (RIGI) THEN
+          IF (KPI .LE. NPG) THEN
+             DO 120 I=1,NDIM
+               DO 121 J=1,NDIM
+                 DRDE(I,J)=DSIDEP(I,J)
+ 121            CONTINUE
+ 120          CONTINUE
+             IF ((YAP1 .EQ. 1).AND.(VARIP(ADVIME+2) .EQ. 1)) THEN
+               DRDE(1,ADDEP1)=-1.D0
+             END IF
+           END IF
+           IF ((KPI .GT. NPG) .OR. (NPI .EQ. NPG)) THEN
+             DRDE(ADDEP1,ADDEP1)=DRDE(ADDEP1,ADDEP1)-UNSURN
+           END IF
+C - CALCUL DE L'OUVERTURE HYDRO ET DE LA PERMEABILITE
+           OUVH=VARIM(ADVICO+VICPHI)
+           IF (VARIM(3).EQ.0) THEN
+             OUVH=OUVFIC
+           END IF
+           TLINT=OUVH**2/12  
+         END IF
+
+C - CALCUL DES TERMES MECA ET DE COUPLAGE DU VECTEUR FORCES INTERNES
+
+         IF (RESI) THEN
+           IF ((YAP1 .EQ. 1).AND.(VARIP(ADVIME+2) .EQ. 1))THEN
+             SIGP(1+NDIM)=-DEFGEP(ADDEP1)
+           END IF
+C - CALCUL DE L'OUVERTURE HYDRO ET DE LA PERMEABILITE 
+           VARIP(ADVICO+VICPHI)=DEFGEP(1)
+           OUVH=VARIP(ADVICO+VICPHI)   
+           IF (VARIP(3).EQ.0) THEN
+C - SI FISSURE FERMEE ALORS ON DONNE UNE OUVERTURE HYDRO FICTIVE
+             OUVH=OUVFIC
+           END IF
+           TLINT=OUVH**2/12
+           VARIP(ADVICO+VICPHI)=DEFGEP(1)+DEFGEP(ADDEP1)*UNSURN
+         END IF
+      END IF
+
 
       END

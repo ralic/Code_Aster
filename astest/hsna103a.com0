@@ -12,6 +12,8 @@ gp150=1.73059404
 gp200=2.58727503
 gp300=2.58727503
 
+# IMPR_CO(CONCEPT=_F(NOM=SIG),),
+
 tab = POST_GP(RESULTAT=SIG,
               RESU_THER=THERMIK2,
               MODELE=MO_MECA,
@@ -39,17 +41,18 @@ tab = POST_GP(RESULTAT=SIG,
                            R_SUP=5.),
                            ),
               
-              GROUP_MA=l_copeaux,
-              PAS_ENTAILLE=0.02,
+              TRANCHE=_F(GROUP_MA=l_copeaux,),
               RAYON_AXIS = 55.,
               PREDICTION=_F(GP_CRIT=(gp23,gp35,gp100,gp150,gp200,gp300,),
                             TEMP   =(23.,35.,100.,150.,200.,300.,),),
-              TABL_RESU=CO('tabpredi'),
+              TABL_GPMAX=CO('tabpredi'),
+#	      TABL_GP     = CO('tabgp'),
               INFO=2)
+	      
 
 IMPR_TABLE(TABLE=tab)
 IMPR_TABLE(TABLE=tabpredi)
-
+# IMPR_TABLE(TABLE=tabgp)
 
 TEST_TABLE(TABLE=tabpredi,
            FILTRE=_F(NOM_PARA='INST',

@@ -1,4 +1,4 @@
-#@ MODIF intemail Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF intemail Messages  DATE 12/07/2010   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,6 +162,11 @@ cata_msg={
 
 32: _("""
  probleme pour récupérer la grandeur %(k1)s dans la table "CARA_GEOM"
+"""),
+
+33: _("""
+ occurence %(i1)d de DEFI_SEGMENT : le segment comporte trop de points 
+d intersection avec le maillage. Il faut le diviser en %(i2)d segments
 """),
 
 }

@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*),INO2M
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -325,7 +325,7 @@ C     ---------------------------------------------------
       CALL WKVECT(CORTR3//'.PJXX_K1','V V K24',5,JXXK1)
       ZK24(JXXK1-1+1)=M1
       ZK24(JXXK1-1+2)=M2
-      ZK24(JXXK1-1+3)='ELEM'
+      ZK24(JXXK1-1+3)='COLOCATION'
       CALL WKVECT(CORTR3//'.PJEF_NB','V V I',NNO2,IACONB)
       CALL WKVECT(CORTR3//'.PJEF_NU','V V I',4*NNO2,IACONU)
       CALL WKVECT(CORTR3//'.PJEF_CF','V V R',4*NNO2,IACOCF)

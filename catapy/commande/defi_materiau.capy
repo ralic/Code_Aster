@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2706,6 +2706,12 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                COEF_CISA_TRAC     =SIMP(statut='o',typ='R',val_min=1.0E0,val_max=1.7321E0),
              ),
            ),
+
+
+           THM_RUPT       =FACT(statut='f',
+             OUV_FICT        =SIMP(statut='o',typ='R'),
+             UN_SUR_N        =SIMP(statut='f',typ='R',defaut= 0.),
+           ),
 #
 # autres comportements ...
 #
@@ -2997,6 +3003,30 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              PM              =SIMP(statut='o',typ='R'),
              C               =SIMP(statut='o',typ='R'),
            ),
+           ECOU_DD_CFC      =FACT(statut='f',
+             TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_VISC",),),
+             GAMMA0          =SIMP(statut='f',typ='R',defaut=0.001,fr="Vitesse d ecoulement initiale en s**-1"),
+             TAU_F           =SIMP(statut='o',typ='R',fr="Contraintes , en unite de contraintes ex 20 MPa"),
+             A               =SIMP(statut='f',typ='R',defaut=0.13,fr="paramètre A, sans unité"),
+             B               =SIMP(statut='f',typ='R',defaut=0.005,fr="paramètre B, sans unité"),
+             N               =SIMP(statut='f',typ='R',defaut=200.,fr="paramètre n, sans unité"),
+             Y               =SIMP(statut='o',typ='R',fr="paramète Y, en unité de longueur ex 2.5 A"),
+           ),
+           ECRO_DD_CFC      =FACT(statut='f',
+              regles=(PRESENT_PRESENT('H1','H2','H3','H4','H5'),
+                      ),
+             TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECRO_ISOT",),),
+             ALPHA           =SIMP(statut='f',typ='R',defaut=0.35,fr="ecrouissage, paramètre alpha"),
+             BETA            =SIMP(statut='o',typ='R',fr="ecrouissage, paramètre b, en unite de longueur"),
+             RHO_REF         =SIMP(statut='o',typ='R',fr="ecrouissage, paramètre rho_ref, en unité de longueur **-2"),
+             H               =SIMP(statut='f',typ='R'),
+             H1              =SIMP(statut='f',typ='R',defaut=0.124,fr="matrice d'interaction, terme a*",),
+             H2              =SIMP(statut='f',typ='R',defaut=0.625,fr="matrice d'interaction, terme a_colineaire",),
+             H3              =SIMP(statut='f',typ='R',defaut=0.137,fr="matrice d'interaction, terme a_glissile",),
+             H4              =SIMP(statut='f',typ='R',defaut=0.122,fr="matrice d'interaction, terme a_Lomer",),
+             H5              =SIMP(statut='f',typ='R',defaut=0.07,fr="matrice d'interaction, terme a_Hirth",),
+           ),
+
 
 ####  MONOCRISTAL
 

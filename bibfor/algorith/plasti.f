@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -318,7 +318,7 @@ C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
         CALL LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
      &      SIGF, VIND,COMP, NBCOMM, CPMONO, PGL, NR, NVI,
-     &      VP,VECP, HSR, TOUTMS, SEUIL)
+     &      VP,VECP, HSR, TOUTMS, TIMED,TIMEF, SEUIL)
 
 C
           IF ( SEUIL .GE. 0.D0 ) THEN

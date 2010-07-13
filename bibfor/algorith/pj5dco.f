@@ -4,7 +4,7 @@
       CHARACTER*8  MO1,MO2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,7 +210,7 @@ C     ---------------------------------------------------
 
       ZK24(J2XXK1-1 +1)=M1
       ZK24(J2XXK1-1 +2)=M2
-      ZK24(J2XXK1-1 +3)='ELEM'
+      ZK24(J2XXK1-1 +3)='COLOCATION'
 
       DO 10, INO=1,NNO2
         ZI(I2CONB-1 +INO)=2

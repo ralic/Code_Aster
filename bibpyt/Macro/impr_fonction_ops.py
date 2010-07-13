@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          aster.affiche('MESSAGE', ' Nom du fichier :'+nomfich)
    if nomfich and os.path.exists(nomfich) and os.stat(nomfich).st_size!=0:
       if FORMAT=='XMGRACE':
-         niv='A'
+         niv='I'
       else:
          niv='I'
       UTMESS(niv, 'FONCT0_1', valk=nomfich)

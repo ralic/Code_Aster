@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C
 C
 C     COMMANDE:  PROJ_CHAMP
 C
-      IMPLICIT   NONE
+      IMPLICIT NONE
 C
 C 0.1. ==> ARGUMENTS
 C
@@ -52,19 +52,17 @@ C
       INTEGER IAUX,JAUX,IRET
       INTEGER IE,IBID,N1,N2,N3
       INTEGER NRPASS,NBPASS
-      INTEGER ADRECG
-C
-
-      CHARACTER*4 TYCHV
-      CHARACTER*8 K8B,NOMA1,NOMA2,NOMA3,RESUIN,PROL0
-      CHARACTER*8 LERES0,NOPASE,NOMO1,NOMO2,MOA1,MOA2,CNREF
-      CHARACTER*16 TYPRES,NOMCMD,LCORRE(2)
-      CHARACTER*19 RESUOU,CHAM1,METHOD
-      CHARACTER*19 LERES1,LIGREL
-      CHARACTER*24 NORECG
-      CHARACTER*24 VALK(2)
+      INTEGER ADRECG,I
       LOGICAL ISOLE
       LOGICAL LNOEU,LELNO,LELEM,LELGA
+      CHARACTER*4 TYCHV
+      CHARACTER*8 K8B,NOMA1,NOMA2,NOMA3,RESUIN,PROL0,MA1P
+      CHARACTER*8 LERES0,NOPASE,NOMO1,NOMO2,MOA1,MOA2,CNREF
+      CHARACTER*16 TYPRES,NOMCMD,LCORRE(2)
+      CHARACTER*19 RESUOU,CHAM1,METHOD,CHAM1E,CHAUXS
+      CHARACTER*19 LERES1,LIGRE1,LIGRE2,LERESP
+      CHARACTER*24 NORECG,VALK(2)
+
 
 
 C DEB ------------------------------------------------------------------
@@ -94,6 +92,8 @@ C        RESUIN : NOM DE LA SD_RESULTAT A PROJETER (SI .NOT.ISOLE)
         CALL ASSERT(N3.EQ.1)
         RESUIN=' '
       ENDIF
+
+
 
 
 C     2- CALCUL DE NOMA1, NOMA2, MOA1, MOA2, CNREF:
@@ -141,14 +141,13 @@ C     ------------------------------------
 C     LA SD_LCORRESP_2_MAILLA EST CONSTITUEE D'UNE LISTE DE DEUX SD :
 C        LA 1RE EST UNE SD_CORRESP_2_MAILLA (CF. DOC WIKI)
 C        LA 2DE EST UNE SD_CORRESP_2_MAILLA PARTICULIERE
-C          POUR LE MOMENT, SEULE LA 1RE SD DE LA LISTE EST UTILISEE
-C          LA 2DE SERA UTILISEE POUR LA PROJECTION DE CHAMPS AUX ELGA
-C
+C          ELLE EST UTILISEE POUR LA PROJECTION DE CHAM_ELEM (ELGA)
+C          ELLE COMPORTE PJEF_EL (TABLEAU AUXILIAIRE)
 
       LCORRE(1)='&&OP0166.CORRES'
       LCORRE(2)='&&OP0166.CORRE2'
-      CALL PJXXCO(METHOD,LCORRE,
-     &            ISOLE,RESUIN,CHAM1,
+      CALL PJXXCO(METHOD,LCORRE,ISOLE,
+     &            RESUIN,CHAM1,
      &            MOA1,MOA2,
      &            NOMA1,NOMA2,CNREF)
 
@@ -206,10 +205,18 @@ C       1- CAS CHAMP ISOLE :
 C       =====================
         IF (ISOLE) THEN
 
-          IF (METHOD.EQ.'ELEM') THEN
+          IF (METHOD(1:10).EQ.'NUAGE_DEG_') THEN
 
-C       ---- DANS LE CAS DE LA METHODE 'ELEM', ON PEUT PROJETER
-C       ---- DES CHAM_NO OU DES CHAM_ELEM
+C       ---- METHODE 'NUAGE_DEG' : 
+C       ----   ON NE PEUT PROJETER QUE DES CHAM_NO
+
+            CALL PJXXCH(LCORRE(1),CHAM1,LERES1,' ','NON',' ','G',IRET)
+            CALL ASSERT(IRET.EQ.0)
+
+          ELSE
+
+C       ---- AUTRE METHODE : 
+C       ---- ON PEUT PROJETER DES CHAM_NO OU DES CHAM_ELEM
 C       ---- ON INTERDIT LE MOT-CLE 'TYPE_CHAM' POUR UN CHAMP ISOLE
 
             CALL GETVTX(' ','TYPE_CHAM',1,1,1,TYCHV,IBID)
@@ -222,35 +229,60 @@ C       ---- ON DETERMINE LE TYPE DE CHAMP A PROJETER
             CALL PJTYCO(ISOLE,K8B,CHAM1,
      &                LNOEU,LELNO,LELEM,LELGA)
 
-C       ---- CAS OU IL Y A UN CHAM_ELEM
+            IF (LNOEU) THEN
+C       ------ CAS OU IL Y A UN CHAM_NO
+              IF (METHOD.EQ.'ECLA_PG') THEN
+                VALK(1) = METHOD
+                VALK(2) = CHAM1
+                CALL U2MESK('F','CALCULEL5_33', 2 ,VALK)
+              ENDIF
+              CALL PJXXCH(LCORRE(1),CHAM1,
+     &            LERES1,' ','NON',' ','G',IRET)
+              CALL ASSERT(IRET.EQ.0)
 
-            IF ((LELNO).OR.(LELEM).OR.(LELGA)) THEN
+            ELSEIF ((LELNO).OR.(LELEM)) THEN
+C       ------ CAS OU IL Y A UN CHAM_ELEM (ELNO) OU UN CHAM_ELEM (ELEM)
+              IF (METHOD.EQ.'ECLA_PG') THEN
+                VALK(1) = METHOD
+                VALK(2) = CHAM1
+                CALL U2MESK('F','CALCULEL5_33', 2 ,VALK)
+              ENDIF
+C       ------   LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
+              CALL GETVTX(' ','PROL_ZERO',1,1,1,PROL0,IE)
               CALL GETVID(' ','MODELE_2',1,1,1,NOMO2,N1)
               IF (N1.EQ.0) THEN
                 CALL U2MESS('F','CALCULEL5_37')
               ENDIF
-              LIGREL = NOMO2//'.MODELE'
-              CALL GETVTX(' ','PROL_ZERO',1,1,1,PROL0,IE)
-              CALL PJXXCH(LCORRE(1),CHAM1,LERES1,
-     &          ' ',PROL0,LIGREL,'G',IRET)
-              CALL ASSERT(IRET.EQ.0)
-
-C       ---- CAS OU IL Y A UN CHAM_NO
-
-            ELSEIF (LNOEU) THEN
+              LIGRE2 = NOMO2//'.MODELE'
               CALL PJXXCH(LCORRE(1),CHAM1,
-     &            LERES1,' ','NON',' ','G',IRET)
+     &            LERES1,' ',PROL0,LIGRE2,'G',IRET)
               CALL ASSERT(IRET.EQ.0)
+
+            ELSEIF (LELGA) THEN
+C       ------ CAS OU IL Y A UN CHAM_ELEM (ELGA)
+              IF (METHOD.EQ.'COLOCATION') THEN
+                VALK(1) = METHOD
+                VALK(2) = CHAM1
+                CALL U2MESK('F','CALCULEL5_33', 2 ,VALK)
+              ENDIF
+C       ------  LES MOTS-CLES 'MODELE_1' ET 'MODELE_2' SONT OBLIGATOIRES
+              CALL GETVTX(' ','PROL_ZERO',1,1,1,PROL0,IE)
+              CALL GETVID(' ','MODELE_1',1,1,1,NOMO1,N1)
+              IF (N1.EQ.0) THEN
+                CALL U2MESS('F','CALCULEL5_35')
+              ENDIF
+              CALL GETVID(' ','MODELE_2',1,1,1,NOMO2,N1)
+              IF (N1.EQ.0) THEN
+                CALL U2MESS('F','CALCULEL5_37')
+              ENDIF
+              LIGRE1 = NOMO1//'.MODELE'
+              LIGRE2 = NOMO2//'.MODELE'
+              CALL PJELGA(CHAM1,LIGRE1,PROL0,
+     &             LCORRE(2),LERES1,LIGRE2,IRET)
+              CALL ASSERT(IRET.EQ.0)
+
             ENDIF
-C	      
-          ELSE
 
-C       -- DANS LE CAS DE LA METHODE 'NUAGE_DEG', ON NE PEUT PROJETER
-C       -- QUE DES CHAM_NO
-
-            CALL PJXXCH(LCORRE(1),CHAM1,LERES1,' ','NON',' ','G',IRET)
-            CALL ASSERT(IRET.EQ.0)
-C	  
           ENDIF
 
 
@@ -264,5 +296,9 @@ C       =====================
 C     ============= FIN DE LA BOUCLE SENSIBILITE
 
       CALL DETRSD('CORRESP_2_MAILLA',LCORRE(1))
+      CALL DETRSD('CORRESP_2_MAILLA',LCORRE(2))
+      CALL JEDETR(LCORRE(2)//'.PJEF_MP')
+      CALL JEDETR(LCORRE(2)//'.PJEF_EL')
+      CALL JEDETC(' ','&&PJELC2',1)
       CALL JEDEMA()
       END

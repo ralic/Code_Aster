@@ -1,5 +1,6 @@
-# MODIF  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # TITRE CHOC THERMIQUE SUR UN MUR INFINI QUAD8 - TEMP_INIT
+# ttll01b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,7 +136,7 @@ CHTH2=AFFE_CHAR_THER_F(MODELE=MOTH,TEMP_IMPO=(
           )
          )
 
-TIMP=PROJ_CHAMP(RESULTAT=TEMPE,METHODE='ELEM',  MODELE_1=MOTH,MODELE_2=MOTH, NOM_CHAM='TEMP',
+TIMP=PROJ_CHAMP(RESULTAT=TEMPE,METHODE='COLOCATION',  MODELE_1=MOTH,MODELE_2=MOTH, NOM_CHAM='TEMP',
                 VIS_A_VIS=_F(TOUT_1   =  'OUI',
                              NOEUD_2 = ('N41','N42','N102', # NOEUDS DE GRMA12
                                         'N67','N68','N69',) ,

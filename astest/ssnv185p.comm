@@ -1,4 +1,4 @@
-# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/07/2010   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185p.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -282,14 +282,15 @@ TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
 DXREF=4.7430e+03
 DYREF=4.74300e+04
 DZREF=1.42289996944e+05
-PREC=1.e-10
+PREC1=1.e-10
+PREC2=1.e-6
 
 TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='COOR_X',
            TYPE_TEST='SOMM_ABS',
            VALE=DXREF,
            CRITERE='RELATIF',
-           PRECISION=PREC,
+           PRECISION=PREC1,
            REFERENCE = 'NON_REGRESSION',
            VERSION = '9.3.15'),
 
@@ -298,7 +299,7 @@ TEST_TABLE(TABLE=TABDEP,
            TYPE_TEST='SOMM_ABS',
            VALE=DYREF,
            CRITERE='RELATIF',
-           PRECISION=PREC,
+           PRECISION=PREC1,
            REFERENCE = 'NON_REGRESSION',
            VERSION = '9.3.15'),
 
@@ -307,7 +308,7 @@ TEST_TABLE(TABLE=TABDEP,
            TYPE_TEST='SOMM_ABS',
            VALE=DZREF,
            CRITERE='RELATIF',
-           PRECISION=PREC,
+           PRECISION=PREC1,
            REFERENCE = 'NON_REGRESSION',
            VERSION = '9.3.15'),
 
@@ -334,31 +335,31 @@ RES_XFEM=CALC_ELEM(reuse =RES_XFEM,
                    OPTION=('EQUI_ELGA_SIGM','EQUI_ELNO_SIGM'));
 
 
-# TESTS DE NON REGRESSION PAR RAPPORT A LA VERSION 9.3.15
+# TESTS DE NON REGRESSION PAR RAPPORT A LA VERSION 10.2.06
 TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DX',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'ABSOLU',
-                     VALE = 4.9092869281028E-04,
+                     VALE = 5.00171E-04,
                      REFERENCE = 'NON_REGRESSION',
-                     PRECISION=PREC,
-                     VERSION = '9.3.15'),
+                     PRECISION=PREC2,
+                     VERSION = '10.2.06'),
                 _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DY',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'ABSOLU',
-                     VALE = 2.3850898077271,
+                     VALE = 2.3850744,
                      REFERENCE = 'NON_REGRESSION',
-                     PRECISION=PREC,
-                     VERSION = '9.3.15'),
+                     PRECISION=PREC2,
+                     VERSION = '10.2.06'),
                 _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DZ',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'ABSOLU',
-                     VALE = 2.8879217827483,
+                     VALE = 2.887881,
                      REFERENCE = 'NON_REGRESSION',
-                     PRECISION=PREC,
-                     VERSION = '9.3.15'),
+                     PRECISION=PREC2,
+                     VERSION = '10.2.06'),
             ),)
 
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')));

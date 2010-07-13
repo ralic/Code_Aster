@@ -4,7 +4,7 @@
      &                  NDEXFR,COEFFF,COEFFS,COEFFR,MATRFM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,8 +45,10 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  PHASE  : PHASE DE CALCUL
-C              'GLIS' - CONTACT GLISSANT
-C              'ADHE' - CONTACT ADHERENT
+C              'GLIS' - CONTACT GLISSANT METHODE LAGRANGIENNE
+C              'ADHE' - CONTACT ADHERENT METHODE LAGRANGIENNE
+C              'PGLI' - CONTACT GLISSANT METHODE PENALISEE
+C              'PADH' - CONTACT ADHERENT METHODE PENALISEE
 C              'EXFR' - EXCLUSION D'UNE DIRECTION DE FROTTEMENT
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NBCPS  : NB DE DDL DE LAGRANGE
@@ -89,7 +91,7 @@ C
       CALL VECINI(3,0.D0,H2)
       NBCPF  = NBCPS - 1
 C
-C --- PARTIE ADHERENT
+C --- PARTIE ADHERENT METHODE LAGRANGIENNE
 C       
       IF (PHASE.EQ.'ADHE') THEN   
 C ---   MATRICE [A] = [T]t*[P]
@@ -118,7 +120,9 @@ C
  282        CONTINUE
  283      CONTINUE
  284    CONTINUE       
-C       
+C
+C --- PARTIE GLISSANT METHODE LAGRANGIENNE
+C        
       ELSEIF (PHASE.EQ.'GLIS') THEN
 C       --- VECTEUR PROJ. BOULE SUR TGT1: {H1} = [K].{T1}
         CALL MKKVEC(RESE  ,NRESE ,NDIM  ,TAU1  ,H1    )
@@ -152,6 +156,72 @@ C
  182        CONTINUE
  183      CONTINUE
  184    CONTINUE 
+C
+C --- PARTIE ADHERENT METHODE PENALISEE
+C       
+      ELSEIF (PHASE.EQ.'PADH') THEN   
+C ---   MATRICE [A] = [T]t*[P]
+        DO 304  I = 1,NDIM
+          DO 305  K = 1,NDIM
+            A(1,I) = TAU1(K)*MPROJT(K,I) + A(1,I)
+ 305      CONTINUE
+ 304    CONTINUE
+        DO 306  I = 1,NDIM
+          DO 307  K = 1,NDIM
+            A(2,I) = TAU2(K)*MPROJT(K,I) + A(2,I)
+ 307      CONTINUE
+ 306    CONTINUE      
+C
+        DO 384 INOF = 1,NNL
+          DO 383 INOM = 1,NNM
+            DO 382 ICMP = 1,NBCPF
+              DO 381 IDIM = 1,NDIM
+                II = NBCPF*(INOF-1)+ICMP
+                JJ = NDIM*(INOM-1)+IDIM
+                MATRFM(II,JJ) = MATRFM(II,JJ)+
+     &                          HPG*FFL(INOF)*FFM(INOM)*JACOBI*
+     &                          LAMBDA*COEFFF*COEFFR*A(ICMP,IDIM)
+
+ 381          CONTINUE
+ 382        CONTINUE
+ 383      CONTINUE
+ 384    CONTINUE       
+C
+C --- PARTIE GLISSANT METHODE PENALISEE
+C        
+      ELSEIF (PHASE.EQ.'PGLI') THEN
+C       --- VECTEUR PROJ. BOULE SUR TGT1: {H1} = [K].{T1}
+        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,TAU1  ,H1    )
+C       --- VECTEUR PROJ. BOULE SUR TGT1: {H2} = [K].{T2}        
+        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,TAU2  ,H2    )
+C       --- MATRICE [H] = [{H1}{H2}]        
+        DO 416 IDIM = 1,3
+          H(IDIM,1) = H1(IDIM)
+          H(IDIM,2) = H2(IDIM)
+ 416    CONTINUE      
+C       --- MATRICE [B] = [P]*[H]t
+        DO 423 ICMP = 1,NBCPF
+          DO 424 J = 1,NDIM
+            DO 425  K = 1,NDIM
+              B(ICMP,J) = H(K,ICMP)*MPROJT(K,J)+B(ICMP,J)
+ 425        CONTINUE
+ 424      CONTINUE
+ 423    CONTINUE        
+C    
+        DO 484 INOF = 1,NNL
+          DO 483 INOM = 1,NNM
+            DO 482 ICMP = 1,NBCPF
+              DO 481 IDIM = 1,NDIM
+                II = NBCPF*(INOF-1)+ICMP
+                JJ = NDIM*(INOM-1)+IDIM
+                MATRFM(II,JJ) = MATRFM(II,JJ)+
+     &                          HPG*FFL(INOF)*FFM(INOM)*JACOBI*
+     &                          LAMBDA*COEFFF*COEFFR*B(ICMP,IDIM)
+
+ 481          CONTINUE
+ 482        CONTINUE
+ 483      CONTINUE
+ 484    CONTINUE 
       ELSEIF (PHASE.EQ.'EXFR') THEN
         CALL ISDECO(NDEXFR,NDEXCL,9)
         CMP = 0
@@ -170,15 +240,9 @@ C               // AUX AXES CAR DEVELOPPEMENT NON GENERIQUE
               MATRFM(II,JJ) = 0.D0
  121        CONTINUE
           ENDIF
- 122    CONTINUE     
- 
-  
+ 122    CONTINUE
       ELSE
-        CALL ASSERT(.FALSE.)
-      
+        CALL ASSERT(.FALSE.)      
       ENDIF
-
-
-
 C
       END

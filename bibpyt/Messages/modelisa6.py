@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF modelisa6 Messages  DATE 12/07/2010   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,6 +108,14 @@ cata_msg = {
  dans le maillage " %(k1)s " la maille " %(k2)s " est de type " %(k3)s " (ni TRIA3 ni QUAD4)
 """),
 
+28 : _("""
+ Le noeud <%(k1)s> de la poutre, de coordonnées <%(r1)g  %(r2)g  %(r3)g>,
+ne doit pas appartenir à des mailles constituant la trace de la poutre sur la coque.
+Le problème vient de l'occurence %(i1)d de LIAISON_ELEM.
+
+Solution : Il faut dédoubler le noeud.
+"""),
+
 30 : _("""
  l'indicateur :  %(k1)s de position des multiplicateurs de lagrange associés à une relation lineaire n'est pas correct.
 """),
@@ -121,6 +129,10 @@ cata_msg = {
       Tabulez votre formule, à une finesse de discrétisation d'abcisse (TEMP) à votre convenance,
       par la commande CALC_FONC_INTERP
  """),
+
+32 : _("""
+ impossibilité, le noeud  %(k1)s ne porte le ddl de rotation %(k2)s
+"""),
 
 33 : _("""
  il faut COEF_GROUP ou FONC_GROUP

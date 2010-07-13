@@ -1,4 +1,4 @@
-# MODIF  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+# MODIF  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # ======================================================================
 # TITRE : RESATURATION D UNE ALVEOLE TEST THH2D, 2D ,
 # wtnp113d.para = tps_job 3200 mem_job 256Mo ncpus 1 liste_test L
@@ -367,7 +367,7 @@ MODELIN=AFFE_MODELE(   MAILLAGE=MAILIN,
                      )
 
 RESULIN = PROJ_CHAMP(
-               METHODE='ELEM',
+               METHODE='COLOCATION',
                RESULTAT=RESU0,
                MODELE_1=MODELE,
                MODELE_2=MODELIN,

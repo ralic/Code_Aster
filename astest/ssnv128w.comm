@@ -1,6 +1,6 @@
-# MODIF  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
-# ssnv128w.para = tps_job 170 mem_job 200Mo ncpus 1 liste_test S
+# ssnv128w.para = tps_job 100 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,8 +118,7 @@ U2M=STAT_NON_LINE(MODELE   = MO,
                 NEWTON     = _F(REAC_ITER = 1),
                 INCREMENT  = _F(LIST_INST = L_INST),
                 CONVERGENCE= _F(ARRET = 'OUI',
-                               ITER_GLOB_MAXI = 40,
-                               RESI_GLOB_RELA = 1.0E-6));
+                               ITER_GLOB_MAXI = 15,),);
 
 TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    INST       = 1.0,

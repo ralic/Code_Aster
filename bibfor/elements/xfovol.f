@@ -3,7 +3,7 @@
      &                  FONC,FONO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ELEMENTS  DATE 12/07/2010   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -199,7 +199,6 @@ C           FORCE FOURNIE AU PG
           
         ENDIF
 
-
 C       CALCUL EFFECTIF DU SECOND MEMBRE
 C       --------------------------------
 
@@ -214,14 +213,11 @@ C         TERME CLASSIQUE
           
  109      CONTINUE
 
-C         DOUTE SUR LA PRISE EN COMPTE DES TERMES SINGULIERS,
-C         TEMPORAIREMENT ON NE LES PREND PAS EN COMPTE
-
 C         TERME HEAVISIDE
           DO 110 J=1,DDLH
             POS=POS+1
             ZR(IVECTU-1+POS) = ZR(IVECTU-1+POS)
-     &                       + 0.D0*HE*FORVOL(J)*POIDS*FF(INO)
+     &                       + HE*FORVOL(J)*POIDS*FF(INO)
      
  110      CONTINUE
 
@@ -230,7 +226,7 @@ C         TERME SINGULIER
             DO 112 J=1,NDIM
               POS=POS+1
               ZR(IVECTU-1+POS) = ZR(IVECTU-1+POS)
-     &                         + 0.D0*FE(IG)*FORVOL(J)*POIDS*FF(INO)
+     &                         + FE(IG)*FORVOL(J)*POIDS*FF(INO)
  112        CONTINUE
  111      CONTINUE 
  

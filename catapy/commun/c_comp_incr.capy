@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,6 +74,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "MAZARS",
                                        "ENDO_ISOT_BETON",
                                        "JOINT_BANDIS",
+                                       "CZM_LIN_REG",
+                                       "CZM_EXP_REG",
 # THMC
                                        "GAZ",
                                        "LIQU_SATU",

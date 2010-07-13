@@ -1,4 +1,4 @@
-#@ MODIF macro_expans_ops Macro  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF macro_expans_ops Macro  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,7 +175,7 @@ def macro_expans_ops( self,
         nume = NUME_DDL
     if not nume :
         UTMESS('A','MEIDEE0_5')
-    RESU_RD = PROJ_CHAMP( METHODE    = 'ELEM',
+    RESU_RD = PROJ_CHAMP( METHODE    = 'COLOCATION',
                           RESULTAT   = RESU_ET,
                           MODELE_1   = MOD_CALCUL,
                           MODELE_2   = MOD_MESURE,

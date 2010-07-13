@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF mecanonline3 Messages  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,5 +102,26 @@ Contact méthode continue et pilotage sont incompatibles
 
 96 : _("""
  la combinaison : LIAISON_UNILATER et solveur GCPC n'est pas disponible.
+"""),
+
+97 : _("""
+  -> Vous utilisez l'algorithme 'PENALISATION' de contact en formulation 'CONTINUE' ou 'XFEM' 
+     conjointement avec une matrice de rigidité symétrique (mot-clé SYME='OUI').
+     Ces fonctionnalités sont incompatibles.
+
+  -> Conseil :
+     Changez d'algorithme de contact en utilisant les mots-clés ALGO_CONT et ALGO_FROT de DEFI_CONTACT ou bien
+     utilisez une matrice non symétrique en renseignant SYME='NON' sous le mot-clé facteur SOLVEUR.
+"""),
+
+98 : _("""
+  -> Vous utilisez le contact frottant X-FEM en grands glissements conjointement avec 
+     une matrice de rigidité symétrique (mot-clé SYME='OUI').
+     Ces fonctionnalités sont incompatibles.
+
+  -> Conseil :
+     N'utilisez pas la méthode grands glissements en donnant une autre valeur que
+     "AUTOMATIQUE" au mot clé REAC_GEOM de DEFI_CONTACT ou bien utilisez une matrice
+     non symétrique en renseignant SYME='NON' sous le mot-clé facteur SOLVEUR.
 """),
 }

@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Intranet  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_eolienne Intranet  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1341,7 +1341,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                                  MODELE   = MOREF,
                                  AFFE     = motscles['AFFE_MATERIAU'],)  
   
-      RESPRO = PROJ_CHAMP( METHODE  = 'ELEM',
+      RESPRO = PROJ_CHAMP( METHODE  = 'COLOCATION',
                            NOM_CHAM = 'SIGM_NOEU_DEPL',
                            RESULTAT = RESU,
                            MODELE_1 = __MO[j],
