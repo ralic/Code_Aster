@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE VIBRATIONS D UN PENDULE EN ROTATION
 # RESPONSABLE VABHHTS J.PELLET
 # sdll403a.para = tps_job 60 mem_job 130Mo ncpus 1 liste_test S
@@ -45,7 +45,8 @@ STRUCTUR=AFFE_MODELE(MAILLAGE=MAYA,
 CHARGE_1=AFFE_CHAR_MECA(MODELE=STRUCTUR,
                         PESANTEUR=_F(GRAVITE=-9.81,
                                      DIRECTION=(0.0,0.0,1.0,),),
-                        ROTATION=(10.0,0.0,0.0,1.0,),
+                        ROTATION= _F(VITESSE=10.0,
+                                     AXE=(0.0,0.0,1.0,),),
                         DDL_IMPO=(_F(GROUP_NO='POINT_A',
                                      DX=0.0,
                                      DY=0.0,
@@ -111,7 +112,8 @@ SIGMA=CREA_CHAMP( OPERATION='EXTR',
 CHARGE_2=AFFE_CHAR_MECA(MODELE=STRUCTUR,
                         PESANTEUR=_F(GRAVITE=-9.81,
                                      DIRECTION=(0.0,0.0,1.0,),),
-                        ROTATION=(10.0,0.0,0.0,1.0,),
+                        ROTATION= _F(VITESSE=10.0,
+                                     AXE=(0.0,0.0,1.0,),),
                         DDL_IMPO=(_F(GROUP_NO='POINT_A',
                                      DX=0.0,
                                      DY=0.0,

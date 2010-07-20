@@ -1,4 +1,4 @@
-# MODIF  DATE 09/11/2009   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 # sslp313f.para = tps_job 400 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -163,7 +163,7 @@ THETA01=CALC_THETA(MODELE=MO_RES,
 
 G01=CALC_G(THETA=_F(THETA=THETA01,),
            RESULTAT=RESU_RES,
-           NUME_ORDRE=10,
+           NUME_ORDRE=1,
            SYME_CHAR='SANS',
            COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
            OPTION='CALC_G',);
@@ -174,7 +174,7 @@ GK01=CALC_G(THETA=_F(FOND_FISS=FOND1,
                      MODULE=1.0,
                      DIRECTION=(0.7986,0.6018,0.0,),),
             RESULTAT=RESU_RES,
-            NUME_ORDRE=10,
+            NUME_ORDRE=1,
             SYME_CHAR='SANS',
             COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
             OPTION='CALC_K_G',);

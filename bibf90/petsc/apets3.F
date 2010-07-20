@@ -1,7 +1,7 @@
       SUBROUTINE APETS3(ACTION,KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS3 PETSC  DATE 03/11/2008   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETS3 PETSC  DATE 19/07/2010   AUTEUR TARDIEU N.TARDIEU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -30,8 +30,8 @@
 #include "include/finclude/petsc.h"
 #include "include/finclude/petscvec.h"
 #include "include/finclude/petscmat.h"
-#include "include/finclude/petscksp.h"
 #include "include/finclude/petscpc.h"
+#include "include/finclude/petscksp.h"
 !================================================================
 ! --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
@@ -55,16 +55,15 @@
       PARAMETER (NMXINS=5)
 
       INTEGER JSLVK,JSLVR,JSLVI
-      INTEGER NIREMP
+      INTEGER NIREMP,NSMDI
 
+      CHARACTER*24 PRECON,SOLVBD
       CHARACTER*19 NOMAT,NOSOLV
       CHARACTER*14 NONU
-
-      CHARACTER*24 PRECON
+      CHARACTER*4  KBID
 
       REAL*8 FILLIN
 
-!
 !     -- ON STOCKE AU PLUS NMXINS INSTANCES DE PETSC
 !     -- PLUS PRECISEMENT LES MATRICES, SOLVEURS, ETC
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS)
@@ -72,6 +71,16 @@
       Mat      Ap(NMXINS)
       KSP      Kp(NMXINS)
       COMMON /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
+      
+      
+!      -- SUBROUTINES EXTERNES POUR L'UTILISATION DU 
+!      -- PRECONDITIONNEUR SIMPLE PRECISION LDLT_SP 
+       external LDSP1
+       external LDSP2
+!     -- COMMON POUR L'UTILISATION DU PRECONDITIONNEUR
+!     -- SIMPLE PRECISION LDLT_SP
+      COMMON       /LDLTSP/xtemp,SOLVBD,NOMAT,NOSOLV
+      
 !=================================================================
 !  Variables PETSc
 !
@@ -80,8 +89,9 @@
 !  x, b - approx solution, RHS vectors
 !
       PetscMPIInt rang,size,ier
-      PetscInt fill,ierr
+      PetscInt fill,ierr,NEQ
       PetscReal fillp
+      Vec xtemp
       Mat A
       KSP ksp,kspp
       PC  pc,pcp
@@ -137,16 +147,34 @@
          call PCSetType(pc,PCJACOBI,ierr)
       ELSEIF (PRECON.eq.'SOR') THEN
          call PCSetType(pc,PCSOR,ierr)
+      ELSEIF (PRECON.eq.'LDLT_SP') THEN
+        call PCSetType(pc,PCSHELL,ierr)
+        call PCShellSetSetUp(pc,LDSP1,ierr)
+        call PCShellSetApply(pc,LDSP2,ierr)
       ELSE
          CALL ASSERT(.FALSE.)
       ENDIF
-      CALL ASSERT(ierr.EQ.0)
 
       call PCSetUp(pc,ierr)
       CALL ASSERT(ierr.EQ.0)
 
-
+      
+      
 999   CONTINUE
+
+
+C     ON DOIT CREER CE SOLVEUR BIDON POUR LE PRECONDITIONNEUR LDLT_SP
+C     SI ACTION='PRERES' *ET* ACTION='RESOUD' 
+      IF (PRECON.EQ.'LDLT_SP') THEN
+C       CREATION D'UN VECTEUR TEMPORAIRE UTILISE DANS PREC_SP
+        CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
+        NEQ=NSMDI
+        call VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,NEQ,xtemp,ierr)
+        CALL ASSERT(ierr.EQ.0)
+C       CREATION SOLVEUR BIDON
+        SOLVBD=ZK24(JSLVK-1+3)
+        CALL CRSMSP(SOLVBD,NOMAT)
+      ENDIF
 
       CALL JEDEMA()
 

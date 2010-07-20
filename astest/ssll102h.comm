@@ -1,4 +1,4 @@
-# MODIF  DATE 22/03/2010   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 26/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -101,7 +101,8 @@ CHARGE3=AFFE_CHAR_MECA(MODELE=POUTMODE,
 #
 
 CHARGE4=AFFE_CHAR_MECA(MODELE=POUTMODE,
-                       ROTATION=(100.,0.,0.,1.,),);
+                       ROTATION=_F(VITESSE=100.,
+                                   AXE=(0.,0.,1.,),),);
 
 #
 #---------------------------------------------------------------------
@@ -231,8 +232,9 @@ POUTMAIL=MODI_MAILLAGE(reuse =POUTMAIL,
 
 
 CHARGE5=AFFE_CHAR_MECA(MODELE=POUTMODE,
-                       ROTATION=(100.,0.,0.,1.,),
-                       CENTRE=(10.,10.,0.,),
+                       ROTATION=_F(VITESSE = 100.,
+                                   AXE = (0.,0.,1.,),
+                                   CENTRE=(10.,10.,0.,),)
                        );
 #
 

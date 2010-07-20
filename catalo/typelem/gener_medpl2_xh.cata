@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/06/2010   AUTEUR CARON A.CARON 
+%& MODIF TYPELEM  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,7 +135,6 @@ VECTEUR__
 MATRICE__
     MMATUUC = MDEP_C NDEPLAC NDEPLAC
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
-    MMATUNS = MDNS_R DDL_MECA DDL_MECA
     MMATZZR = MSIZ_R DDL_NOZ1 DDL_NOZ1
 
 OPTION__
@@ -152,7 +151,7 @@ OPTION__
                                      E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST     CPRESSF  PPRESSF  CCOMPOR  PCOMPOR  E12NEUTR  PBASECO
                                      E6NEUTR  PPINTER  E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONGCO
-                                     CTEMPSR  PTEMPSR  E22NEUTR PPMILTO  
+                                     CTEMPSR  PTEMPSR  E22NEUTR PPMILTO
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            297   IN__   DDL_MECA PDEPLAR  CCOMPOR  PCOMPOR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
@@ -231,7 +230,7 @@ OPTION__
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E36NEUI  PCNSETO
                                      E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST     E22NEUTR PPMILTO
-                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
+                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
                               OUT__  N2NEUT_R PGNEUTR
@@ -275,7 +274,7 @@ OPTION__
                                      ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO
                                      E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
                                      E22NEUTR PPMILTO
-                              OUT__  MMATUNS  PMATUNS  MMATUUR  PMATUUR
+                              OUT__  MMATUUR  PMATUUR
     RIGI_MECA           539   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  STANO_I  PSTANO
                                      E6NEUTR  PPINTTO  E36NEUI  PCNSETO  E6NEUTI  PHEAVTO
                                      E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST

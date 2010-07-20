@@ -1,9 +1,9 @@
       SUBROUTINE DISMLG(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
+C MODIF UTILITAI  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,10 +52,13 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER DIMGE(3)
       LOGICAL MELANG,LTEATT
       CHARACTER*1  K1BID
-      CHARACTER*8  KBID,CALCRI
+      CHARACTER*8  KBID,CALCRI,MAILLA,NOMACR
       CHARACTER*16 NOMTE,PHENOM,NOMODL,TYVOIS
       CHARACTER*19 NOMOB
       CHARACTER*32 REPK
+      INTEGER JLGRF,IRET,NBGREL,IGREL,JLIEL,NEL,ITYPEL,I7,JSSSA,N1
+      INTEGER IGE2,IGR,IAGREL,ITE,IGE1,IGE3,IRET2,NBGR
+      INTEGER JNOMAC,NBSM,ISM,IANBNO,IANOMO,IBID,DIMGE1
 C DEB ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -90,9 +93,9 @@ C     -----------------------------------------------------------------
         IF (IRET.GT.0) THEN
           CALL JELIRA(NOMOB//'.LIEL','NUTIOC',NBGREL,K1BID)
           DO 11,IGREL = 1,NBGREL
-            CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGREL),'L',IALIEL)
+            CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGREL),'L',JLIEL)
             CALL JELIRA(JEXNUM(NOMOB//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
-            ITYPEL = ZI(IALIEL-1+NEL)
+            ITYPEL = ZI(JLIEL-1+NEL)
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
             IF (LTEATT (NOMTE,'VOLU_FINI','OUI')) THEN
               REPK = 'OUI'
@@ -109,9 +112,9 @@ C     -----------------------------------------------------------------
         IF (IRET.GT.0) THEN
           CALL JELIRA(NOMOB//'.LIEL','NUTIOC',NBGREL,K1BID)
           DO 12,IGREL = 1,NBGREL
-            CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGREL),'L',IALIEL)
+            CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGREL),'L',JLIEL)
             CALL JELIRA(JEXNUM(NOMOB//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
-            ITYPEL = ZI(IALIEL-1+NEL)
+            ITYPEL = ZI(JLIEL-1+NEL)
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
             CALL TEATTR (NOMTE,'C','TYPE_VOISIN',TYVOIS,IRET)
             IF (IRET.EQ.0) THEN
@@ -137,9 +140,9 @@ C     -----------------------------------------------------------------
           CALL JELIRA(NOMOB//'.LIEL','NUTIOC',NBGREL,K1BID)
           REPK = 'NON'
           DO 10,IGREL = 1,NBGREL
-            CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGREL),'L',IALIEL)
+            CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGREL),'L',JLIEL)
             CALL JELIRA(JEXNUM(NOMOB//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
-            ITYPEL = ZI(IALIEL-1+NEL)
+            ITYPEL = ZI(JLIEL-1+NEL)
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
 
             IF (QUESTI.EQ.'EXI_RDM') THEN
@@ -260,14 +263,14 @@ C     ------------------------------------------
          IF (IRET.EQ.0) THEN
            REPI=0
          ELSE
-           CALL JEVEUO(NOMOB//'.SSSA','L',IASSSA)
+           CALL JEVEUO(NOMOB//'.SSSA','L',JSSSA)
            CALL JELIRA(NOMOB//'.SSSA','LONMAX',N1,KBID)
            IF (QUESTI.EQ.'NB_SM_MAILLA') THEN
-             REPI= ZI(IASSSA-1+N1-2)
+             REPI= ZI(JSSSA-1+N1-2)
            ELSE IF (QUESTI.EQ.'NB_SS_ACTI') THEN
-             REPI= ZI(IASSSA-1+N1-1)
+             REPI= ZI(JSSSA-1+N1-1)
            ELSE IF (QUESTI.EQ.'NB_NL_MAILLA') THEN
-             REPI= ZI(IASSSA-1+N1)
+             REPI= ZI(JSSSA-1+N1)
            END IF
          END IF
 
@@ -287,10 +290,10 @@ C     -----------------------------------
       ELSE IF (QUESTI.EQ.'DIM_GEOM') THEN
 C     -----------------------------------
         REPI = 0
+        IGE2 = 0
         CALL JEEXIN(NOMOB//'.LIEL',IRET)
         IF (IRET.GT.0) THEN
           CALL JELIRA(NOMOB//'.LIEL','NUTIOC',NBGR,K1BID)
-          IGE2 = 0
           DIMGE(1) = 0
           DIMGE(2) = 0
           DIMGE(3) = 0
@@ -312,11 +315,29 @@ C     -----------------------------------
             IGE3 = IGE3 + 1*3*DIMGE(3)
             IGE2 = IGE3
           END IF
-          REPI = IGE2
         END IF
-C        -- SI IL EXISTE DES MACRO-ELEMENTS : ON AJOUTE 1000
+C        -- SI IL EXISTE DES MACRO-ELEMENTS, IL FAUT EN TENIR COMPTE :
         CALL JEEXIN(NOMOB//'.SSSA',IRET2)
-        IF (IRET2.GT.0) REPI = 1000 + REPI
+        IF (IRET2.GT.0) THEN
+          CALL JELIRA(NOMOB//'.SSSA','LONMAX',N1,KBID)
+          CALL JEVEUO(NOMOB//'.SSSA','L',JSSSA)
+          CALL JEVEUO(NOMOB//'.LGRF','L',JLGRF)
+          MAILLA = ZK8(JLGRF-1+1)
+          CALL JEVEUO(MAILLA//'.NOMACR','L',JNOMAC)
+          NBSM=N1-3
+          DO 777, ISM=1,NBSM
+            IF (ZI(JSSSA-1+ISM).EQ.1) THEN
+              NOMACR=ZK8(JNOMAC-1+ISM)
+              CALL DISMML(QUESTI,NOMACR,IGE1,REPK,IERD)
+              CALL ASSERT(IGE1.GE.0 .AND. IGE1.LE.123)
+              IF (IGE2.NE.IGE1) THEN
+                 IGE2=DIMGE1(IGE2,IGE1)
+              ENDIF
+            ENDIF
+777       CONTINUE
+        ENDIF
+        REPI = IGE2
+
 
 C     ----------------------------------
       ELSE IF (QUESTI.EQ.'NB_GREL') THEN

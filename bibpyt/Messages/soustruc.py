@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF soustruc Messages  DATE 19/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -213,7 +213,7 @@ cata_msg={
 """),
 
 44: _("""
- la maille :  %(k1)s  n existe pas dans le maillage : //mag
+ la maille :  %(k1)s  n existe pas dans le maillage : %(k2)s
 """),
 
 45: _("""

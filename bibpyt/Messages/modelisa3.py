@@ -1,4 +1,4 @@
-#@ MODIF modelisa3 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF modelisa3 Messages  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -178,10 +178,11 @@ Suggestion :
  erreur a l appel de la routine etenca pour extension de la carte  %(k1)s 
 """),
 
-
-
-
-
+40: _("""
+ Erreur utilisateur :
+ Il ne faut pas definir les mots clés GROUP_MA et TOUT en meme temps dans AFFE_CHAR_MECA/ROTATION
+ , ni les mots clés MAILLE et TOUT.
+"""),
 
 44: _("""
  Erreur utilisateur dans CREA_MAILLAGE / LINE_QUAD :
@@ -208,10 +209,6 @@ Suggestion :
 64: _("""
  nombre d occurence du mot cle "sour_calculee"  superieur a 1
 """),
-
-
-
-
 
 
 66: _("""

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,42 +19,42 @@
 GENER_CMCFZ1
 TYPE_GENE__
 
-ENTETE__ ELEMENT__ CFS2S2           MAILLE__ SEG22     
+ENTETE__ ELEMENT__ CFS2S2           MAILLE__ SEG22
    ELREFE__  V_SEG22
    ENS_NOEUD__  EN1     =     1  2
    ENS_NOEUD__  EN2     =     3  4
-ENTETE__ ELEMENT__ CFS3S3           MAILLE__ SEG33     
+ENTETE__ ELEMENT__ CFS3S3           MAILLE__ SEG33
    ELREFE__  V_SEG33
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
-ENTETE__ ELEMENT__ CFS2S3           MAILLE__ SEG23     
+ENTETE__ ELEMENT__ CFS2S3           MAILLE__ SEG23
    ELREFE__  V_SEG23
    ENS_NOEUD__  EN1     =     1  2
    ENS_NOEUD__  EN2     =     3  4  5
-ENTETE__ ELEMENT__ CFS3S2           MAILLE__ SEG32     
+ENTETE__ ELEMENT__ CFS3S2           MAILLE__ SEG32
    ELREFE__  V_SEG32
-   ENS_NOEUD__  EN1     =     1  2  3       
+   ENS_NOEUD__  EN1     =     1  2  3
    ENS_NOEUD__  EN2     =     4  5
-ENTETE__ ELEMENT__ CFS2S2A          MAILLE__ SEG22     
+ENTETE__ ELEMENT__ CFS2S2A          MAILLE__ SEG22
    ELREFE__  V_SEG22
    ATTRIBUT__  AXIS=OUI
    ENS_NOEUD__  EN1     =     1  2
    ENS_NOEUD__  EN2     =     3  4
-ENTETE__ ELEMENT__ CFS3S3A          MAILLE__ SEG33     
+ENTETE__ ELEMENT__ CFS3S3A          MAILLE__ SEG33
    ELREFE__  V_SEG33
    ATTRIBUT__  AXIS=OUI
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
-ENTETE__ ELEMENT__ CFS2S3A          MAILLE__ SEG23     
+ENTETE__ ELEMENT__ CFS2S3A          MAILLE__ SEG23
    ELREFE__  V_SEG23
    ATTRIBUT__  AXIS=OUI
    ENS_NOEUD__  EN1     =     1  2
    ENS_NOEUD__  EN2     =     3  4  5
-ENTETE__ ELEMENT__ CFS3S2A          MAILLE__ SEG32     
+ENTETE__ ELEMENT__ CFS3S2A          MAILLE__ SEG32
    ELREFE__  V_SEG32
    ATTRIBUT__  AXIS=OUI
-   ENS_NOEUD__  EN1     =     1  2  3       
-   ENS_NOEUD__  EN2     =     4  5   
+   ENS_NOEUD__  EN1     =     1  2  3
+   ENS_NOEUD__  EN2     =     4  5
 
 MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ DIFF__
@@ -84,3 +84,4 @@ OPTION__
     RIGI_FROT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PVITE_M  DDL_MECA PACCE_M
                                      ENEUTR   PUSULAR  DDL_MECA PVITE_P
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
+    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM OUT__  MMATUUR  PSYM

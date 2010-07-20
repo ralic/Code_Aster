@@ -1,4 +1,4 @@
-# MODIF  DATE 22/03/2010   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE POUTRE EN ROTATION EN 2D
 # sslv104d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,8 +49,9 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILET,
 #
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MODELE,
-                      ROTATION=(3000.,0.,0.,1.,),
-                      CENTRE=(10.,10.,0.),
+                      ROTATION=_F(VITESSE = 3000.,
+                                  AXE= (0.,0.,1.,),
+                                  CENTRE=(10.,10.,0.),),
                       DDL_IMPO=_F(GROUP_NO='AB',
                                   DX=0.,
                                   DY=0.,),);

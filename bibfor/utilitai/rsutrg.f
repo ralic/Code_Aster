@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/10/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*19 NOMD2
       CHARACTER*1 K1BID
-      INTEGER NBORDR,JORDR,I
+      INTEGER NBORDR,JORDR,I,DEBUT,MILIEU,FIN,DIFF,MAXIT
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -78,12 +78,33 @@ C     --- ON REGARDE SI ZI=I POUR EVITER UNE BOUCLE DE CALCUL ---
 
 
 C     --- RECHERCHE DU NUMERO DE RANGEMENT ---
-      DO 10 I = 1,NBORDR
-        IF (ZI(JORDR+I-1).EQ.IORDR) THEN
-          IRANG = I
-          GO TO 20
-        END IF
-   10 CONTINUE
+      IF ( NBORDR.EQ.1 ) THEN
+        IF ( ZI(JORDR).EQ.IORDR ) THEN
+          IRANG = 1
+        ENDIF
+      ELSE
+        DEBUT = 0
+        FIN   = NBORDR-1
+        MAXIT = 1+LOG(1.D0*NBORDR+1.D0)/LOG(2.D0)
+        DO 10 I = 1,MAXIT
+          DIFF = (FIN-DEBUT)/2
+          MILIEU = DEBUT+DIFF
+          IF ( ZI(JORDR+MILIEU).EQ.IORDR ) THEN
+            IRANG = MILIEU+1
+            GO TO 20
+          ELSEIF ( ZI(JORDR+MILIEU).GT.IORDR ) THEN
+            FIN = MILIEU-1
+          ELSE
+            DEBUT = MILIEU+1
+          ENDIF
+          IF ( DEBUT.GE.FIN ) THEN
+            DIFF = (FIN-DEBUT)/2
+            MILIEU = DEBUT+DIFF
+            IF ( ZI(JORDR+MILIEU).EQ.IORDR ) IRANG = MILIEU+1
+            GO TO 20
+          ENDIF
+   10   CONTINUE
+      ENDIF
 
    20 CONTINUE
       CALL JEDEMA()

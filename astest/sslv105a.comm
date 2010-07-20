@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE RAIDISSEMENT CENTRIFUGE D'UNE POUTRE EN ROTATION
 # sslv105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,7 +51,8 @@ CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAILET,
 CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,
                          DDL_IMPO=_F( GROUP_NO = 'PIED', DX = 0.0, DY = 0.0,
                          DZ = 0.0),
-                         ROTATION=(3000.,1.,0.,-1.,))
+                         ROTATION=_F(VITESSE= 3000.,
+                                     AXE = (1.,0.,-1.,),),);
 
 #
 #

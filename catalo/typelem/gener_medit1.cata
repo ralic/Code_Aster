@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF TYPELEM  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -184,6 +184,7 @@ OPTION__
                               OUT__  EEFGEGA  PSIEFGR
     SIEF_ELNO_ELGA      39    IN__   EEFGEGA  PCONTRR   CCINFDI  PCINFDI
                               OUT__  EEFGENO  PSIEFNOR  EEFGENC  PSIEFNOC
+    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : POUTRE BI-APPUYEE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -361,19 +361,19 @@ MODGLO=REST_SOUS_STRUC(    RESU_GENE=RESGEN,
 TEST_RESU(RESU=(
    _F(   RESULTAT = RESGEN,      PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 1,       VALE = 115.7),
+           NUME_MODE = 1,       VALE = 115.7),
    _F(   RESULTAT = RESGEN,      PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 2,       VALE = 442.2),
+           NUME_MODE = 2,       VALE = 442.2),
    _F(   RESULTAT = RESGEN,      PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 3,         VALE = 648.6),
+           NUME_MODE = 3,         VALE = 648.6),
    _F(   RESULTAT = RESGEN,      PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 4,       VALE = 931.6),
+           NUME_MODE = 4,       VALE = 931.6),
    _F(   RESULTAT = RESGEN,      PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 1.E-2,
-           NUME_ORDRE = 5,       VALE = 1534.))
+           NUME_MODE = 5,       VALE = 1534.))
           )
 
 #

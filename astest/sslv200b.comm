@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE TEST DE NON-REGRESSION D ASTER : MECANIQUE LINEAIRE 3D_SI
 # RESPONSABLE VABHHTS J.PELLET
 # sslv200b.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -386,7 +386,8 @@ CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                 VERI_NORM='NON',
                                 PESANTEUR=_F(GRAVITE=9.8,
                                              DIRECTION=(0.3,  0.1, -0.4,),),
-                                ROTATION=(0.2, 0.5, -0.2, 0.2,),
+                                ROTATION=_F(VITESSE = 0.2, 
+                                            AXE = (0.5, -0.2, 0.2,),),
                                 FORCE_INTERNE=(
 #  ----  MAILLES 3D
                            _F(  GROUP_MA = 'GMA1',

@@ -1,4 +1,4 @@
-#@ MODIF sd_resultat SD  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_resultat SD  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,6 +93,10 @@ class sd_resultat(sd_titre):
 
         # les numeros d'ordre doivent etre tous différents :
         sdu_tous_differents(V,checker,V.get()[:nuti],'1:NUTI')
+
+        # les numeros d'ordre doivent etre croissants
+        if nuti > 1:
+            assert sdu_monotone(V.get()[:nuti]) in (1,)
 
 
     # vérification des longueurs des différents objets :

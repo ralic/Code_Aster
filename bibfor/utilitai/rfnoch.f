@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 19/07/2010   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,8 +39,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IFM,NIV
-      INTEGER       IBID, N, NC, NG, INT, IND, NSST, IRET, JREFE1,
-     &              JREFE2
+      INTEGER       IBID, N, NC, NG, INT, IND, NSST, IRET, JREFE1
       CHARACTER*8   K8B,NOMA, SST, BASEMO, RAIDE, NOEUD, INTITU, NOGNO
       CHARACTER*24 VALK
       CHARACTER*16  PARAX,PARAY, NOMCMD, TYPCON
@@ -72,9 +71,8 @@ C
 C
          CALL JEVEUO ( RESU//'.REFD', 'L', JREFE1 )
          BASEMO = ZK24(JREFE1+5)(1:8)
-         CALL JEVEUO ( BASEMO//'           .REFD', 'L', JREFE2 )
-         RAIDE = ZK24(JREFE2)(1:8)
-         CALL DISMOI('F','NOM_MAILLA',RAIDE,'MATR_ASSE',IBID,NOMA,IRET)
+         CALL DISMOI('F','NOM_MAILLA',BASEMO,'RESULTAT',IBID,
+     &                 NOMA,IRET)
 C
          CALL UTNONO ( ' ', NOMA, 'NOEUD', NOGNO, NOEUD, IRET )
          IF (IRET.EQ.10) THEN

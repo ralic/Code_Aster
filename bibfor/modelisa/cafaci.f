@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/05/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,7 +153,6 @@ C     --------------------------------------------------------
 C     RECUPERATION DE LA DIMENSION DE L'ESPACE DES COORDONNEES
 C     --------------------------------------------------------
       CALL DISMOI('F','DIM_GEOM',MOD,'MODELE',NDIM,K8B,IER)
-      IF (NDIM.GT.1000) NDIM=NDIM-1000
 
 C    --------------------------------------------------------
 C    MODELE X-FEM

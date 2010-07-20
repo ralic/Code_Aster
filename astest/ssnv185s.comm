@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2010   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185s.para = tps_job 300 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,8 +129,9 @@ for i in range(1,NPAS-1) :
    CHXFEM[i]=AFFE_CHAR_MECA(MODELE=MODELE[i],LIAISON_XFEM='OUI',INFO=1,);
 
    CHRX[i]=AFFE_CHAR_MECA(MODELE=MODELE[i],
-                       ROTATION=(10.,1.,0.,0.,),
-                       CENTRE=(0.,10.,0.,),
+                       ROTATION=_F(VITESSE = 10.,
+                                   AXE = (1.,0.,0.,),
+                                   CENTRE=(0.,10.,0.,),),
                        ); 
 
    RESU[i]=STAT_NON_LINE(MODELE=MODELE[i],

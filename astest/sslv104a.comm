@@ -1,4 +1,4 @@
-# MODIF  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE POUTRE EN ROTATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,9 @@ CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAILET,
 #
 CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,
                          DDL_IMPO=_F( GROUP_NO = 'PIED', DX = 0.0, DY = 0.0, DZ = 0.0),
-                         ROTATION=(3000.,1.,0.,-1.,), CENTRE=(10.,10.,10.),)
+                         ROTATION=_F(VITESSE = 3000.,
+                                     AXE = (1.,0.,-1.,), 
+                                     CENTRE=(10.,10.,10.),),);
 
 #
 #

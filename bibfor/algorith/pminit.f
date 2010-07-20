@@ -2,7 +2,7 @@
      &NOMPAR,ANG,PGL,IROTA,EPSM,SIGM,VIM,VIP,DEFIMP,COEF,INDIMP,
      &FONIMP,CIMPO,KEL,SDDISC,PARCRI,PRED,MATREL,OPTION)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 20/07/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -318,8 +318,7 @@ C     mais NMCRAR crée d'autre objets utiles au redécoupage
       ZR(JINFO-1 + 1) = 0
       ZR(JINFO-1 + 2) = 1
       
-C     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS      
-      CALL NMCRSU(SDDISC,LISINS,DELMIN,NOMCMD)
+
       
 C     ----------------------------------------
 C     NEWTON 
@@ -343,5 +342,8 @@ C     ----------------------------------------
 C     LECTURE DES PARAMETRES DE CONVERGENCE
 C     ----------------------------------------
       CALL NMDOCN(K24BID,PARCRI,PARCON)   
+
+C     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS      
+      CALL NMCRSU(SDDISC,LISINS,PARCRI,NOMCMD)
 
       END

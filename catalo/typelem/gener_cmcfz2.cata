@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -157,4 +157,5 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     RIGI_FROT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PVITE_M  DDL_MECA PACCE_M
                                      ENEUTR   PUSULAR  DDL_MECA PVITE_P
-                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS      
+                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
+    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM OUT__  MMATUUR  PSYM

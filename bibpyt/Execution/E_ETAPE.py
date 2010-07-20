@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 18/01/2010   AUTEUR SELLENET N.SELLENET 
+#@ MODIF E_ETAPE Execution  DATE 19/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,6 +36,7 @@ import genpy
 import aster
 import checksd
 from E_Global import MessageLog
+from Utilitai.Utmess import UTMESS
 
 class ETAPE:
    """
@@ -230,6 +231,12 @@ class ETAPE:
          echo_mess.append(decalage + '  #  ' + '-'*90)
          texte_final=os.linesep.join(echo_mess)
          aster.affiche('MESSAGE', texte_final)
+
+         if cpu_user > 60. and cpu_syst > 0.5*cpu_user :
+            if int(rval[7]) > 0 :
+              UTMESS('A','SUPERVIS_94',valr=(cpu_syst,cpu_user),vali=(20,int(rval[7])))
+            else :
+              UTMESS('A','SUPERVIS_95',valr=(cpu_syst,cpu_user))  
 
       return
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 # sslp201a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -345,8 +345,8 @@ CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                VERI_NORM='NON',
                                PESANTEUR=_F(GRAVITE=9.8,
                                             DIRECTION=(0.3,  0.1, -0.4,),),
-#                               ROTATION=(0.2,  0.5, -0.2,  0.2,),
-                               ROTATION=(0.069631062,  0., 0.,   1.,),
+                               ROTATION=_F(VITESSE = 0.069631062,  
+                                           AXE =(0., 0.,   1.,),),
 #  ----  MAILLES 2D
                            FORCE_INTERNE=_F(  MAILLE = ('M42', 'M77',),
                                            FX = 0.84),

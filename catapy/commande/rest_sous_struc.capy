@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 19/07/2010   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,7 @@ REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
               EXCLUS('NOEUD','GROUP_NO'),
               EXCLUS('MAILLE','GROUP_MA'),
               PRESENT_PRESENT('RESULTAT','SQUELETTE'),
+              UN_PARMI('SQUELETTE','SOUS_STRUC','SECTEUR'),
 
                 ),
          RESULTAT        =SIMP(statut='f',typ=(evol_noli,dyna_trans,
@@ -81,6 +82,6 @@ REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
 
          SQUELETTE       =SIMP(statut='f',typ=squelette ),
          SOUS_STRUC      =SIMP(statut='f',typ='TXM' ),  
-         SECTEUR         =SIMP(statut='f',typ='I',defaut= 1 ),  
+         SECTEUR         =SIMP(statut='f',typ='I'),  
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  
 )  ;

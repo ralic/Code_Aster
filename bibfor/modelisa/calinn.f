@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*(*)  MOTFAZ,PREFIZ,NOMAZ,LISI1Z,LISI2Z,MODZ
       INTEGER        IOCC
 C ---------------------------------------------------------------------
-C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
 C
 C     BUT : CREER LA STRUCTURE INTERMEDIAIRE PRFEIXEE PAR PREFIX
 C           DESCRIVANT LES COUPLES DE NOEUDS EN REGARD AVEC
@@ -165,7 +165,7 @@ C
 C
 C ---    LES 2 LISTES DOIVENT AVOIR LA MEME LONGUEUR
 C
-      IF (LONLI1.NE.LONLI2) THEN      
+      IF (LONLI1.NE.LONLI2) THEN
          NOM1 = '        '
          NOM2 = '        '
          N1 = 0
@@ -239,7 +239,6 @@ C
 C
       IF (DNOR) THEN
         CALL DISMOI ('F','DIM_GEOM',MOD,'MODELE',NDIM,K8BID,IER)
-         IF ( NDIM .GT. 1000 )  NDIM = 3
         CALL PACOJE ( CONI, IOCC, MOTFAC, NOMA, CONR, NDIM )
       ENDIF
 C

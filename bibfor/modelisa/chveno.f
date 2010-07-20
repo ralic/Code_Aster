@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,7 +116,6 @@ C
 C
       NDIM = 0
       CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',NDIM,K8B,IER1)
-      IF ( NDIM .GT. 1000 )  NDIM = 3
 C
       CALL JEEXIN ( NOMMA//'.TYPMAIL        ', IRET )
       IF ( IRET .NE. 0 ) THEN

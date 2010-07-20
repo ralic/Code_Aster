@@ -1,4 +1,4 @@
-# MODIF  DATE 22/03/2010   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE CYLINDRE EN C.P. (TRIA6 QUAD8) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -327,7 +327,8 @@ TEST_RESU(RESU=(
 #  TEST DU CHARGEMENT ROTATION EN AXIS
 #
 CHROT=AFFE_CHAR_MECA(MODELE=MO,
-                  ROTATION=(100.,0.,1.,0.,),
+                  ROTATION=_F(VITESSE = 100.,
+                              AXE = (0.,1.,0.,),),
                   DDL_IMPO=_F(GROUP_NO='F',
                               DY=0.,),);
 
@@ -416,7 +417,8 @@ MO2=AFFE_MODELE(MAILLAGE=M,
                        MODELISATION='AXIS_FOURIER',),);
 
 CH2=AFFE_CHAR_MECA(MODELE=MO2,
-                  ROTATION=(100.,0.,1.,0.,),);
+                  ROTATION=_F(VITESSE = 100.,
+                              AXE = (0.,1.,0.,),),);
 
 CHDIR=AFFE_CHAR_MECA(MODELE=MO2,
                      DDL_IMPO=_F(GROUP_NO='F',

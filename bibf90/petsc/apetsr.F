@@ -1,23 +1,23 @@
       SUBROUTINE APETSR(ACTION,KPTSC,RSOLU,VCINE)
       IMPLICIT NONE
-!           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETSR PETSC  DATE 06/04/2010   AUTEUR TARDIEU N.TARDIEU 
-! ================================================================== 
-! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
-!                                                                    
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
-! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
-! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE 
-! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.                    
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,    
-! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF     
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU   
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.                           
-!                                                                    
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE  
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
-! ================================================================== 
+!           CONFIGURATION MANAGEMENT OF EDF VERSION
+!& MODIF APETSR PETSC  DATE 19/07/2010   AUTEUR TARDIEU N.TARDIEU 
+! ==================================================================
+! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
+!
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
+! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
+! PUBLISHED BY THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE
+! LICENSE, OR (AT YOUR OPTION) ANY LATER VERSION.
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+! BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ==================================================================
       CHARACTER*(*) ACTION
       INTEGER       KPTSC
       REAL*8        RSOLU(*)
@@ -69,24 +69,29 @@
       PARAMETER (NMXINS=5)
 
       INTEGER   IFM,NIV,NSMDI,IERD,IBID,NMAXIT,PTSERR
-      INTEGER   LMAT,IDVALC
-      
+      INTEGER   LMAT,IDVALC,JSLVK
+
+      CHARACTER*24 PRECON,SOLVBD
       CHARACTER*19 NOMAT,NOSOLV
       CHARACTER*14 NONU
       CHARACTER*4  KBID
       CHARACTER*1  ROUC
 
       REAL*8       DIVTOL
-
       COMPLEX*16   CBID
 !
 !     -- ON STOCKE AU PLUS NMXINS INSTANCES DE PETSC
 !     -- PLUS PRECISEMENT LES MATRICES, SOLVEURS, ETC
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS)
       CHARACTER*14 NONUS(NMXINS)
-      Mat      Ap(NMXINS)
-      KSP      Kp(NMXINS)
-      COMMON /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
+      Mat          Ap(NMXINS)
+      KSP          Kp(NMXINS)
+      COMMON       /SPETSC/ Ap,Kp,NOMATS,NOSOLS,NONUS
+
+!     -- COMMON POUR L'UTILISATION DU PRECONDITIONNEUR
+!     -- SIMPLE PRECISION LDLT_SP
+      COMMON       /LDLTSP/xtemp,SOLVBD,NOMAT,NOSOLV
+
 !=================================================================
 !  Variables PETSc
 !
@@ -98,7 +103,7 @@
       PetscInt    ierr,NEQ,low,high,i
       PetscInt    maxits
       PetscReal   rtol,atol,dtol
-      Vec         b,xgth
+      Vec         b,xgth,xtemp
       PetscScalar  XX(1)
       PetscOffset xidx
       VecScatter   ctx
@@ -118,6 +123,9 @@
       NOMAT=NOMATS(KPTSC)
       NOSOLV=NOSOLS(KPTSC)
       NONU=NONUS(KPTSC)
+
+      CALL JEVEUO(NOSOLV//'.SLVK','L',JSLVK)
+      PRECON=ZK24(JSLVK-1+2)
 
       IF (ACTION.EQ.'PRERES') THEN
 !     ----------------------------
@@ -203,7 +211,7 @@
          CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
          NEQ=NSMDI
          call VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,NEQ,b,ierr)
-         CALL ASSERT(ierr.EQ.0)     
+         CALL ASSERT(ierr.EQ.0)
 
          call VecGetArray(b,XX,xidx,ierr)
 
@@ -211,7 +219,7 @@
 
          DO i=1,high-low
             XX(xidx+i)=RSOLU(low+i)
-         END DO 
+         END DO
 
          call VecRestoreArray(b,XX,xidx,ierr)
 
@@ -290,7 +298,7 @@
            RSOLU(i)=XX(xidx+i)
         END DO
         CALL MRCONL(LMAT,0,'R',RSOLU,1)
-        
+
         call VecRestoreArray(xgth,XX,xidx,ierr)
         CALL ASSERT(ierr.EQ.0)
 
@@ -304,6 +312,13 @@
         CALL ASSERT(ierr.EQ.0)
         call VecDestroy(b,ierr)
         CALL ASSERT(ierr.EQ.0)
+
+        IF (PRECON .EQ. 'LDLT_SP') THEN
+           SOLVBD=ZK24(JSLVK-1+3)
+           CALL DETRSD('SOLVEUR',SOLVBD)
+           call VecDestroy(xtemp,ierr)
+        ENDIF
+
 
       ELSE IF (ACTION.EQ.'DETR_MAT') THEN
 !     -----------------------------------
@@ -333,6 +348,8 @@
       ELSE
           CALL ASSERT(.FALSE.)
       END IF
+
+
 
 !     -- ON REACTIVE LA LEVEE D'EXCEPTION
       CALL MATFPE(1)

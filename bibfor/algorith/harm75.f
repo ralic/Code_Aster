@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 19/07/2010   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C
       CHARACTER*8      ZK8
       CHARACTER*16            ZK16
       CHARACTER*24                    ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -56,7 +57,7 @@ C
       COMPLEX*16    CBID
       CHARACTER*4   TYPE(3)
       CHARACTER*8   K8B,BASEMO,CRIT,CHAMP(8),INTERP,NOMRES,
-     &              NOMIN,MODE,TOUCH
+     &              NOMIN,MODE,TOUCH, NOMMA, MAILLA
       CHARACTER*8   NOMMOT,MATPRO
       CHARACTER*14  NUMDDL
       CHARACTER*16  TYPRES,NOMCMD,TYPBAS
@@ -137,6 +138,19 @@ C
          CALL RSEXCH(BASEMO,'DEPL',1,CHMOD,IRET)
          CHMOD = CHMOD(1:19)//'.REFE'
          CALL JEVEUO(CHMOD,'L',LLCHA)
+         MAILLA = ZK24(LLCHA)
+
+C------ON VERIFIE QUE L'UTILISATEUR A RENSEIGNE LE MEME SUPPORT DE 
+C------RESTITUTION DANS LE FICHIER DE COMMANDE
+         CALL GETVID(' ','SQUELETTE',1,1,1,NOMMA,ISK)
+         IF (ISK.NE.0) THEN
+           IF (NOMMA.NE.MAILLA) THEN
+             VALK (1) = NOMMA
+             VALK (2) = MAILLA
+             CALL U2MESK('F','SOUSTRUC2_9',2,VALK)
+           ENDIF
+         ENDIF
+
          CREFE(1) = ZK24(LLCHA)
          CREFE(2) = ZK24(LLCHA+1)
          CALL JELIRA(CREFE(2)(1:19)//'.NUEQ','LONMAX',NEQ,K8B)

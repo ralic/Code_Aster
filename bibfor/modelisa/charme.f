@@ -1,6 +1,6 @@
       SUBROUTINE CHARME ( FONREE )
 
-C MODIF MODELISA  DATE 22/06/2010   AUTEUR DEVESA G.DEVESA 
+C MODIF MODELISA  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -202,7 +202,7 @@ C     DEFORMATIONS ANELASTIQUES, RELA_CINE_BP ---
 C         ================
          CALL CBPRCA ( CHAR )
          CALL CBPESA ( CHAR, NOMA, NDIM, LIGRMO )
-         CALL CBROTA ( CHAR, NOMA )
+         CALL CBROTA ( CHAR, NOMA, NDIM, LIGRMO )
          CALL CAPREC ( CHAR, NOMA )
 
 C --- FORCE_ELEC ----

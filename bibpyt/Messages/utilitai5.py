@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF utilitai5 Messages  DATE 19/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,7 +104,7 @@ cata_msg = {
 """),
 
 21 : _("""
- nombre d'unites logiques ouvertes superieur a //k4b
+ nombre d'unités logiques ouvertes superieur a %(i1)f
 """),
 
 22 : _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/07/2010   AUTEUR CORUS M.CORUS 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -306,22 +306,22 @@ IMPR_RESU(FORMAT='MED',
 
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_ORDRE = 1,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 1,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_ORDRE = 2,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 2,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_ORDRE = 3,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 3,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_ORDRE = 4,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 4,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_ORDRE = 5,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 5,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_ORDRE = 6,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),      
+                NUME_MODE = 6,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),      
                 ) )
 
 FIN()

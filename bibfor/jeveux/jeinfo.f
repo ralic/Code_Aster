@@ -1,8 +1,8 @@
       SUBROUTINE JEINFO(RVAL)
       IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8           RVAL(7)      
+      REAL*8           RVAL(8)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C TOLE CRS_512
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,11 +26,15 @@ C     RVAL(2) = TAILLE EN MO MAXIMUM UTILISEE AU COURS DE L'EXÉCUTION
 C     RVAL(3) = TAILLE EN MO CUMULEE ALLOUEE DYNAMIQUEMENT
 C     RVAL(4) = TAILLE EN MO MAXIMUM ALLOUEE DYNAMIQUEMENT
 C     RVAL(5) = LIMITE MAXIMALE POUR L'ALLOCATION DYNAMIQUE
+C     RVAL(6) = TAILLE EN MO POUR VmData
+C     RVAL(7) = TAILLE EN MO POUR VmSize
 C DEB ------------------------------------------------------------------
       REAL *8          SVUSE,SMXUSE   
       COMMON /STATJE/  SVUSE,SMXUSE  
       REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO   
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2) 
+      INTEGER          ICDYN , MXLTOT
+      COMMON /XDYNJE/  ICDYN , MXLTOT
 C FIN ------------------------------------------------------------------
       INTEGER LOISEM,IV(2),IVAL
       IV(1) = 0
@@ -50,5 +54,6 @@ C       IV(2) VmSize
         RVAL(6) = 0.D0
         RVAL(7) = 0.D0
       ENDIF
+      RVAL(8) = DBLE(ICDYN)
             
       END      

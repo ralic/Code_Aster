@@ -14,7 +14,7 @@
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 19/07/2010   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -93,6 +93,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8   RHO
 
 C--------------------------------------------------------------------
+
 
 C     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
       DDLD=NDIM+DDLH+NDIM*NFE
@@ -196,7 +197,6 @@ C       ON RECUPERE LA MASSE VOLUMIQUE
         CALL RCVALB('RIGI',KPG,1,'+',IMATE,' ',PHENOM,0,' ',0.D0,
      &             1,'RHO',RHO,RETOUR,CODRHO)
 
- 
         DO 230 N=1,NNOP
           DO 231 I=1,DDLD
             KKD = (DDLT*(N-1)+I-1) * (DDLT*(N-1)+I) /2
@@ -209,7 +209,7 @@ C       ON RECUPERE LA MASSE VOLUMIQUE
                 ENDIF
                 IF (J.LE.J1) THEN
                   KK = KKD + DDLT*(M-1)+J
-                  MATUU(KK) = MATUU(KK)+ENR(N,I)*ENR(N,J)*JAC*RHO
+                  MATUU(KK) = MATUU(KK)+ENR(N,I)*ENR(M,J)*JAC*RHO
                 END IF
 C  
  241          CONTINUE

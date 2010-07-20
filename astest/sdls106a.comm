@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -328,37 +328,37 @@ MODGLO=NORM_MODE(       reuse=MODGLO,
 #
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, NOM_CHAM = 'DEPL',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 1, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
+                NUME_MODE = 1, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
                 NOEUD = 'NO1',     VALE = 4.1435E-01),
           _F( RESULTAT = MODGLBIS, NOM_CHAM = 'DEPL',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 1, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
+                NUME_MODE = 1, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
                 NOEUD = 'NO1072',   VALE = 4.1435E-01)) )
 
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, NOM_CHAM = 'DEPL',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 3, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
+                NUME_MODE = 3, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
                 NOEUD = 'NO2',     VALE = 1.7741E-01),
           _F( RESULTAT = MODGLBIS, NOM_CHAM = 'DEPL',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 3, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
+                NUME_MODE = 3, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
                 NOEUD = 'NO1073',   VALE = 1.7741E-01)) )
 
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, NOM_CHAM = 'DEPL',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 4, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
+                NUME_MODE = 4, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
                 NOEUD = 'NO3',     VALE = 1.9720E-01),
           _F( RESULTAT = MODGLBIS, NOM_CHAM = 'DEPL',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 4, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
+                NUME_MODE = 4, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
                 NOEUD = 'NO1074',   VALE = 1.9720E-01),
           _F( RESULTAT = MODGLO, NOM_CHAM = 'DEPL',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 4, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
+                NUME_MODE = 4, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
                 NOEUD = 'NO1292',   VALE = 1.6230E-01),
           _F( RESULTAT = MODGLBIS, NOM_CHAM = 'DEPL',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
-                NUME_ORDRE = 4, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
+                NUME_MODE = 4, NOM_CMP = 'DZ', REFERENCE = 'NON_REGRESSION',
                 NOEUD = 'NO1292',   VALE = 1.6230E-01))
           )
 
@@ -366,19 +366,19 @@ TEST_RESU(RESU=(_F( RESULTAT = MODGLO, NOM_CHAM = 'DEPL',
 
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 1,  VALE = 17.12, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 1,  VALE = 17.12, REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 2,  VALE = 35.61, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 2,  VALE = 35.61, REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 3,  VALE = 49.99, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 3,  VALE = 49.99, REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 4,  VALE = 66.42, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 4,  VALE = 66.42, REFERENCE = 'ANALYTIQUE',),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 5,  VALE = 68.48, REFERENCE = 'ANALYTIQUE',)) )
+                NUME_MODE = 5,  VALE = 68.48, REFERENCE = 'ANALYTIQUE',)) )
 
 FIN()
 #

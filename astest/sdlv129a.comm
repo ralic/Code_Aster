@@ -1,4 +1,4 @@
-# MODIF  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE FATIGUE VIBRATOIRE D'UNE AUBE DE VENTILATEUR
 # sdlv129a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -48,10 +48,9 @@ CH=AFFE_CHAR_MECA(    MODELE=MO,
        FACE_IMPO = _F(  GROUP_MA = 'SLAT2',  DNOR = 0.),
                 );
 
-ROTA=AFFE_CHAR_MECA(MODELE=MO, 
-                    ROTATION=(0.5,  0.,1.,  0.,),
-                     );   
-
+ROTA=AFFE_CHAR_MECA(MODELE=MO,
+                    ROTATION= _F(VITESSE=0.5,
+                                 AXE=(0.0,1.0,0.0,),),);
 #
 # CALCUL DES CONTRAINTES STATIQUES
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -313,10 +313,10 @@ TB01=CREA_TABLE(
 )
 
 PourTest = [
-   [ 4, 'N1', 1.0, 0.0, 85.0],
-   [ 4, 'N2', 2.0, 0.0, 85.0],
-   [ 4, 'N3', 2.0, 4.0, 85.0],
-   [ 4, 'N4', 1.0, 4.0, 85.0],
+   [ 1, 'N1', 1.0, 0.0, 85.0],
+   [ 1, 'N2', 2.0, 0.0, 85.0],
+   [ 1, 'N3', 2.0, 4.0, 85.0],
+   [ 1, 'N4', 1.0, 4.0, 85.0],
    [ 2, 'N1', 1.0, 0.0, 73.333],
    [ 2, 'N2', 2.0, 0.0, 73.333],
    [ 2, 'N3', 2.0, 4.0, 73.333],

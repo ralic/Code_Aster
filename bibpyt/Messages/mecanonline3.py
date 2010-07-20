@@ -1,21 +1,21 @@
-#@ MODIF mecanonline3 Messages  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
+#@ MODIF mecanonline3 Messages  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -36,7 +36,7 @@ cata_msg = {
  or on utilise une matrice élastique constante au cours du temps.
  Si vous faites de l'amortissement de Rayleigh, il y a un risque de résultats faux
  si l'amortissement dépend de cette variable de commande (via les coefficients élastiques).
- 
+
  """),
 
 70 : _("""
@@ -104,24 +104,6 @@ Contact méthode continue et pilotage sont incompatibles
  la combinaison : LIAISON_UNILATER et solveur GCPC n'est pas disponible.
 """),
 
-97 : _("""
-  -> Vous utilisez l'algorithme 'PENALISATION' de contact en formulation 'CONTINUE' ou 'XFEM' 
-     conjointement avec une matrice de rigidité symétrique (mot-clé SYME='OUI').
-     Ces fonctionnalités sont incompatibles.
 
-  -> Conseil :
-     Changez d'algorithme de contact en utilisant les mots-clés ALGO_CONT et ALGO_FROT de DEFI_CONTACT ou bien
-     utilisez une matrice non symétrique en renseignant SYME='NON' sous le mot-clé facteur SOLVEUR.
-"""),
 
-98 : _("""
-  -> Vous utilisez le contact frottant X-FEM en grands glissements conjointement avec 
-     une matrice de rigidité symétrique (mot-clé SYME='OUI').
-     Ces fonctionnalités sont incompatibles.
-
-  -> Conseil :
-     N'utilisez pas la méthode grands glissements en donnant une autre valeur que
-     "AUTOMATIQUE" au mot clé REAC_GEOM de DEFI_CONTACT ou bien utilisez une matrice
-     non symétrique en renseignant SYME='NON' sous le mot-clé facteur SOLVEUR.
-"""),
 }

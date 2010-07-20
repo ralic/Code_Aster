@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2008   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE MASSE AJOUTEE CALCULEE SUR MODELE GENERALISE - MODES MOUILLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -391,32 +391,32 @@ MODDEF2=REST_SOUS_STRUC(   RESU_GENE=RESDEF2,
 
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 1,  VALE = 15.87),
+                NUME_MODE = 1,  VALE = 15.87),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 2,  VALE = 16.78),
+                NUME_MODE = 2,  VALE = 16.78),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 3,  VALE = 39.04),
+                NUME_MODE = 3,  VALE = 39.04),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 4,  VALE = 53.05))
+                NUME_MODE = 4,  VALE = 53.05))
            )
 
 #NOUVELLE METHODE
 
 TEST_RESU(RESU=(_F( RESULTAT = MODEAU, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 1,  VALE = 15.87),
+                NUME_MODE = 1,  VALE = 15.87),
           _F( RESULTAT = MODEAU, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 2,  VALE = 16.78),
+                NUME_MODE = 2,  VALE = 16.78),
           _F( RESULTAT = MODEAU, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 3,  VALE = 39.04),
+                NUME_MODE = 3,  VALE = 39.04),
           _F( RESULTAT = MODEAU, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2,
-                NUME_ORDRE = 4,  VALE = 53.05))
+                NUME_MODE = 4,  VALE = 53.05))
            )
 
 #SANS DEFORMEES STATIQUES ; ON A UN ECART PLUS IMPORTANT
@@ -431,32 +431,32 @@ TEST_RESU(RESU=(_F( RESULTAT = MODEAU, PARA = 'FREQ',
 
 TEST_RESU(RESU=(_F( RESULTAT = MODDEF, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-2,
-                NUME_ORDRE = 1,  VALE = 15.87),
+                NUME_MODE = 1,  VALE = 15.87),
           _F( RESULTAT = MODDEF, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.5E-2,
-                NUME_ORDRE = 2,  VALE = 16.78),
+                NUME_MODE = 2,  VALE = 16.78),
           _F( RESULTAT = MODDEF, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-2,
-                NUME_ORDRE = 3,  VALE = 39.04),
+                NUME_MODE = 3,  VALE = 39.04),
           _F( RESULTAT = MODDEF, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-2,
-                NUME_ORDRE = 4,  VALE = 53.05))
+                NUME_MODE = 4,  VALE = 53.05))
            )
 
 #NOUVELLE METHODE
 
 TEST_RESU(RESU=(_F( RESULTAT = MODDEF2, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-2,
-                NUME_ORDRE = 1,  VALE = 15.87),
+                NUME_MODE = 1,  VALE = 15.87),
           _F( RESULTAT = MODDEF2, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-2,
-                NUME_ORDRE = 2,  VALE = 16.78),
+                NUME_MODE = 2,  VALE = 16.78),
           _F( RESULTAT = MODDEF2, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-2,
-                NUME_ORDRE = 3,  VALE = 39.04),
+                NUME_MODE = 3,  VALE = 39.04),
           _F( RESULTAT = MODDEF2, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 5.E-2,
-                NUME_ORDRE = 4,  VALE = 53.05))
+                NUME_MODE = 4,  VALE = 53.05))
            )
 
 FIN()

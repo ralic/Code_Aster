@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/07/2010   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMANDE  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,9 +45,17 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
          METHODE         =SIMP(statut='c',typ='TXM',fr="Stratégie de résolution pour les déplacements imposés",
                                into=('DUALISATION',),defaut='DUALISATION',),
                                # METHODE='ELIMINATION' est traité dans le fortran mais dangereux actuellement
-         ROTATION        =SIMP(statut='f',typ='R',fr="Champ de rotation", min=4,max=4),
-         b_rotation      =BLOC ( condition = "ROTATION != None",
-           CENTRE          =SIMP(statut='f',typ='R',defaut=(0.,0.,0.),max=3),),
+
+         ROTATION        =FACT(statut='f', max='**', fr="Définition d'un chargement de rotation",
+                       GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(), max='**'),
+                       MAILLE   = SIMP(statut='f',typ=ma, validators=NoRepeat(),max='**'),
+                       VITESSE  = SIMP(statut='o', typ='R',min=1,max=1),
+                       AXE      = SIMP(statut='o', typ='R',min=2, max=3),
+                       CENTRE   = SIMP(statut='f',typ='R',defaut=(0.,0.,0.),max=3),
+         b_rotation_tout=BLOC(condition="(GROUP_MA == None) and (MAILLE ==None)",
+                       TOUT     = SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI",),),
+         b_rotation=BLOC(condition="(GROUP_MA != None) or (MAILLE !=None)",
+                       TOUT     = SIMP(statut='f',typ='TXM',into=("NON","OUI"),defaut="NON",),),),
 
          DDL_IMPO        =FACT(statut='f',max='**',
              fr="Impose à des noeuds une ou plusieurs valeurs de déplacement (ou de certaines grandeurs asscociées)",

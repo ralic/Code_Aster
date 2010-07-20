@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE CALCUL D MASSE AJOUTEE SUR MODELE GENERALISE
 # fdlv102b.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -285,16 +285,16 @@ MODGLO2=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
 #
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 1,  VALE = 15.8782),
+                NUME_MODE = 1,  VALE = 15.8782),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 2,  VALE = 16.7811),
+                NUME_MODE = 2,  VALE = 16.7811),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 3,  VALE = 39.0389),
+                NUME_MODE = 3,  VALE = 39.0389),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                NUME_ORDRE = 4,  VALE = 53.0488)))
+                NUME_MODE = 4,  VALE = 53.0488)))
 
 FIN()
 #

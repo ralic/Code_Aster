@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # TITRE SOUS-STRUCTURATION CYCLIQUE : ROUET DE POMPE
 # sdlv301b.para = tps_job 180 mem_job 800Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -55,7 +55,7 @@ LIMIT=AFFE_CHAR_MECA(    MODELE=ROUET,DDL_IMPO=(
 #
                  _F(  GROUP_NO = 'GAUCHE',  DX = 0., DY = 0., DZ = 0.),
                  _F(  GROUP_NO = 'DROITE',  DX = 0., DY = 0., DZ = 0.)),
-                 ROTATION=( 2000., 0., 0., 1., ))
+                 ROTATION=_F(VITESSE= 2000., AXE =( 0., 0., 1., ),),)
 
 #
 # CALCUL DE LA MATRICE DE RIGIDITE ELEMENTAIRE SOUS CHARGE STATIQUE
@@ -156,28 +156,28 @@ DYNAM=REST_SOUS_STRUC(    RESU_GENE=MOCYCL,
 TEST_RESU(RESU=(
    _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 3.E-2,
-           NUME_ORDRE = 1,         VALE = 409.0),
+           NUME_MODE = 1,         VALE = 409.0),
    _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 3.E-2,
-           NUME_ORDRE = 2,         VALE = 409.0),
+           NUME_MODE = 2,         VALE = 409.0),
    _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 3.E-2,
-           NUME_ORDRE = 3,         VALE = 1431.),
+           NUME_MODE = 3,         VALE = 1431.),
    _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 3.E-2,
-           NUME_ORDRE = 4,         VALE = 1431.),
+           NUME_MODE = 4,         VALE = 1431.),
    _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 3.E-2,
-           NUME_ORDRE = 5,         VALE = 3335.),
+           NUME_MODE = 5,         VALE = 3335.),
    _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 3.E-2,
-           NUME_ORDRE = 6,         VALE = 3335.),
+           NUME_MODE = 6,         VALE = 3335.),
    _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 3.E-2,
-           NUME_ORDRE = 7,         VALE = 4852.),
+           NUME_MODE = 7,         VALE = 4852.),
    _F(   RESULTAT = DYNAM,       PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 3.E-2,
-           NUME_ORDRE = 8,         VALE = 4852.))
+           NUME_MODE = 8,         VALE = 4852.))
           )
 
 #

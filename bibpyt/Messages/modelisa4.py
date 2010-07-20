@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 05/07/2010   AUTEUR SELLENET N.SELLENET 
+#@ MODIF modelisa4 Messages  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,8 +35,7 @@ cata_msg = {
 
 
 4 : _("""
-  -> Le modèle contient un mélange de modélisations planes et volumiques
-     ou bien il contient des sous-structures statiques.
+  -> Le modèle contient un mélange d'éléments finis 2D (plan XOY) et 3D
 
   -> Risque & Conseil :
      Sur ce genre de modèle, on ne sait pas déterminer s'il est 2D ou 3D.
