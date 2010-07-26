@@ -1,7 +1,7 @@
       SUBROUTINE JJIMHD (IDFIC,INAT,CRNOM,NGRP,KATTR,IADMI,GENRI,
      &                   TYPEI,LT,LONOI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_508 CRS_512
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            IDFIC,INAT,IADMI,LT,LONOI
       CHARACTER*(*)      CRNOM,NGRP,GENRI,TYPEI
@@ -72,7 +73,6 @@ C ----------------------------------------------------------------------
       PARAMETER      ( PGME = 'JJIMHD' )
       CHARACTER*24     NOMATR
       PARAMETER      ( NOMATR = 'ATTRIBUTS JEVEUX' )
-      CHARACTER*75     CMESS
       CHARACTER*18     FMT
 C DEB ------------------------------------------------------------------
       KADM = IADMI
@@ -136,14 +136,12 @@ C
             WRITE(KATTR(4)(11:11),'(I1)') LT
           ENDIF
         ELSE
-          CMESS = 'ERREUR DE TYPE SUR LE SEGMENT DE VALEURS'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX1_43',1,TYPEI)
         ENDIF
         IDDAT = HDFOPD (IDFIC,NGRP,CRNOM)
         IRET  = HDFWAT (IDDAT,NOMATR,5,KATTR)
         IF (IRET.LT.0) THEN
-          CMESS = 'ERREUR ECRITURE ATTRIBUT HDF'//CRNOM
-          CALL U2MESK('A','JEVEUX_01',1,CMESS)
+          CALL U2MESK('A','JEVEUX1_48',1,CRNOM)
         ENDIF
         IRET  = HDFCLD (IDDAT)
       ELSE
@@ -164,8 +162,7 @@ C
         ENDIF
         IRET  = HDFWAT (IDG,NOMATR,5,KATTR)
         IF (IRET.LT.0) THEN
-          CMESS = 'ERREUR ECRITURE ATTRIBUT HDF'//CRNOM
-          CALL U2MESK('A','JEVEUX_01',1,CMESS)
+          CALL U2MESK('A','JEVEUX1_48',1,CRNOM)
         ENDIF
         IRET  = HDFWSV (IDFIC,CRNOM,'T_NOM',TYPEI,LT,K1ZON(JI),LG)
         TYPEI = 'I'

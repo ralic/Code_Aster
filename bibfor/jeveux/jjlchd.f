@@ -1,6 +1,6 @@
       SUBROUTINE JJLCHD (ID, IC, IDFIC, IDTS, NGRP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,7 @@ C IN  NGRP  : NOM DU GROUPE CONTENANT LE DATASET IDTS
 C
 C ----------------------------------------------------------------------
 C TOLE CRP_18 CRS_508 CRS_512 CRS_513
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT NONE
       INTEGER            ID, IC, IDFIC, IDTS
       CHARACTER*(*)      NGRP
@@ -83,7 +84,6 @@ C     ------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C     ------------------------------------------------------------------
-      CHARACTER*75     CMESS
       CHARACTER*32     NOMO,NGRC,D32,NOM32
       CHARACTER*8      NREP(2)
       CHARACTER*1      GENRI,TYPEI,TYPEB
@@ -133,8 +133,7 @@ C     ----------- OBJETS ATTRIBUTS DE COLLECTION
           IF ( GENRI .NE. 'N' )THEN
             IDA = HDFOPD(IDFIC,NGRP,NOMO)
             IF ( IDA .LT. 0 ) THEN
-              CMESS='IMPOSSIBLE D''ACCEDER AU DATASET ASSOCIE A'//NOMO
-              CALL U2MESK('F','JEVEUX_01',1,CMESS)
+              CALL U2MESK('F','JEVEUX1_52',1,NOMO)
             ENDIF
             IADMI = 0
             IF (K.EQ.IDIADM .OR. K.EQ.IDMARQ .OR. K.EQ.IDIADD) THEN

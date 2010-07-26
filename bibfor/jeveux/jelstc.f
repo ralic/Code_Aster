@@ -1,6 +1,6 @@
       SUBROUTINE JELSTC ( CLAS , SOUCH , IPOS , MAXVAL , KLST , NBVAL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       CLAS , SOUCH                 , KLST(*)
       INTEGER                            IPOS , MAXVAL        , NBVAL
@@ -53,16 +54,14 @@ C
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
 C     ==================================================================
       INTEGER          NCLA1,NCLA2,IC,J
-      CHARACTER*75     CMESS
-      CHARACTER*32     CRNOM
+      CHARACTER*32     CRNOM,K32VAL
       CHARACTER*1      KCLAS
 C     ==================================================================
       PGMA = 'JELSTC'
       L = LEN ( SOUCH )
       IF ( IPOS + L .GT. 25 .OR. IPOS .LT. 0 .OR. L .EQ. 0) THEN
-         CMESS = ' LONGUEUR OU POSITION DE LA SOUS-CHAINE '//SOUCH//
-     &           ' INVALIDE'
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
+         K32VAL=SOUCH
+         CALL U2MESK('F','JEVEUX1_11',1,K32VAL)
       ENDIF
       KCLAS  = CLAS (1:MIN(1,LEN(CLAS)))
       IF ( KCLAS .EQ. ' ' ) THEN

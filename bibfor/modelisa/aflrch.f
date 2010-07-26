@@ -1,7 +1,7 @@
       SUBROUTINE AFLRCH(LISREZ,CHARGZ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,7 @@ C                - JXVAR -      -
 C -------------------------------------------------------
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ------
-      CHARACTER*32 JEXNUM,JEXNOM
+      CHARACTER*32 JEXNOM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -68,7 +68,6 @@ C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*9 NOMTE
       CHARACTER*19 CA1,CA2
       CHARACTER*19 LIGRMO,LIGRCH
-      CHARACTER*123 TEXTE
       INTEGER NTYPEL(NMOCL)
       INTEGER VALI(2)
       LOGICAL EXISDG
@@ -228,7 +227,7 @@ C --- CREEES AU PREALABLE
         ELSEIF (TYPVAL.EQ.'COMP') THEN
           BETAC=ZC(JRLBE+IRELA-1)
         ELSEIF (TYPVAL.EQ.'FONC') THEN
-          BETAF=ZK24(JRLBE+IRELA-1)
+          BETAF=ZK24(JRLBE+IRELA-1)(1:19)
         ENDIF
         IDECAL=IPNTRL-NBTERM
         JRLCOF=JRLCO+IDECAL
@@ -265,10 +264,7 @@ C --- CREEES AU PREALABLE
             CALL NOLIGR(LIGRCH,IGREL,NUMEL,1,IN,'        ',3,1,INEMA,
      &                  ZI(JNBNO),ZK8(JRLLA+IRELA-1))
           ELSE
-            TEXTE(1:9)='LE NOEUD '
-            TEXTE(18:80)=' NE FAIT PAS PARTIE DU MODELE. '
-            WRITE (TEXTE(10:17),'(A)')NOMNOE
-            CALL U2MESK('F','JEVEUX_1',1,TEXTE)
+            CALL U2MESK('F','AFFECHARMECA_1',1,NOMNOE)
           ENDIF
    40   CONTINUE
 
@@ -277,9 +273,7 @@ C --- CREEES AU PREALABLE
 C       --  STOCKAGE DANS LES CARTES CA1 ET CA2
         NBNEMA=INEMA-INEMA0
         IF (NBNEMA.NE.NBTERM) THEN
-          TEXTE=' LE NOMBRE DE NOEUDS N''EST'//
-     &          ' PAS EGAL AU NOMBRE DE DDL'
-          CALL U2MESK('F','JEVEUX_1',1,TEXTE)
+          CALL U2MESS('F','AFFECHARMECA_2')
         ENDIF
         ZK8(JNCMP1)='A1'
         ZK8(JNCMP2)='C'
@@ -332,7 +326,7 @@ C     ------------------------------------------------------------
           ELSEIF (TYPVAL.EQ.'COMP') THEN
             BETAC=ZC(JRLBE+IRELA-1)
           ELSEIF (TYPVAL.EQ.'FONC') THEN
-            BETAF=ZK24(JRLBE+IRELA-1)
+            BETAF=ZK24(JRLBE+IRELA-1)(1:19)
           ENDIF
           IDECAL=IPNTRL-NBTERM
           JRLCOF=JRLCO+IDECAL
@@ -344,9 +338,7 @@ C     ------------------------------------------------------------
      &                IRELA)
    70   CONTINUE
       ENDIF
-
-
-9999  CONTINUE
+C
       CALL JEDETR(LISREL//'.RLCO')
       CALL JEDETR(LISREL//'.RLDD')
       CALL JEDETR(LISREL//'.RLNO')

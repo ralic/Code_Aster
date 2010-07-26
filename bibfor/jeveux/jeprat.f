@@ -1,6 +1,6 @@
       SUBROUTINE JEPRAT ( UNIT , NOMLU , CIDATR , PARM , MESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_726 CFT_720 CRP_18 CRS_508 CRS_512
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             UNIT
       CHARACTER *(*)     NOMLU , CIDATR , PARM , MESS
@@ -64,8 +65,7 @@ C
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C     ------------------------------------------------------------------
-      CHARACTER *75   CMESS
-      CHARACTER *32   NOML32
+      CHARACTER *32   NOML32,VALK(2)
       CHARACTER *1    GENRI , TYPEI
       CHARACTER *8    NOM
       INTEGER         ICRE , IRET , JCTAB , LTYPI , LONOI
@@ -103,8 +103,7 @@ C
       IF ( NOML32(1:1) .EQ. '$' ) THEN
         ICLAS = INDEX ( CLASSE , NOML32(2:2) )
         IF ( ICLAS .EQ. 0 ) THEN
-          CMESS = ' CLASSE INVALIDE >'//NOML32(2:2)//'<'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX1_15',1,NOML32(2:2))
         ENDIF
         DO 1 K = 1, LIDBAS
            IF ( NOM .EQ. CIDBAS(K) ) THEN
@@ -120,8 +119,7 @@ C
               GO TO 10
            ENDIF
  1      CONTINUE
-        CMESS = ' NOM D''OBJET ATTRIBUT INVALIDE '
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX1_16',1,NOM)
  10     CONTINUE
 C
       ELSE
@@ -136,8 +134,7 @@ C
               GO TO 20
             ENDIF
  2        CONTINUE
-          CMESS = ' NOM D''ATTRIBUT INVALIDE '
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX1_17',1,NOM)
  20       CONTINUE
           CALL JJCREN (NOML32(1:24)//NOM , 0 , IRET2)
           IF ( IRET2 .EQ. 0 ) THEN
@@ -161,8 +158,9 @@ C
             IPGC = IPGCEX
           ENDIF
         ELSE IF ( IRET .NE. 2 ) THEN
-          CMESS = 'IMPRESSION D''OBJET ATTRIBUT IMPOSSIBLE'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          VALK(1) = NOM
+          VALK(2) = NOML32
+          CALL U2MESK('F','JEVEUX1_18',2,VALK)
         ELSE
           LCOL = .TRUE.
           CALL JJALLC ( ICLACO , IDATCO , 'L' , IBACOL )
@@ -172,16 +170,13 @@ C
               GO TO 30
             ENDIF
  3        CONTINUE
-          CMESS = ' NOM D''ATTRIBUT INVALIDE '
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX1_17',1,NOM)
  30       CONTINUE
           IXATR = ISZON ( JISZON + IBACOL + IDATR )
           IF ( IXATR .GT. 0 ) THEN
              IBATR = IADM( JIADM(ICLACO) + 2*IXATR-1 )
              IF ( IBATR .EQ. 0 ) THEN
-               CMESS = ' SEGMENT DE VALEUR ASSOCIE A L''ATTRIBUT '//
-     &                 NOM//' NON ACCESSIBLE '
-               CALL U2MESK('F','JEVEUX_01',1,CMESS)
+               CALL U2MESK('F','JEVEUX1_19',1,NOM)
              ENDIF
              IDECI = 0
              GENRI = GENR( JGENR(ICLACO) + IXATR )

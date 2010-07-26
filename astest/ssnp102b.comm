@@ -1,5 +1,5 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
-# TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE
+# MODIF  DATE 26/07/2010   AUTEUR GENIAUT S.GENIAUT 
+# TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE : APPROCHE GTP
 # ssnp102b.para = tps_job 200 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

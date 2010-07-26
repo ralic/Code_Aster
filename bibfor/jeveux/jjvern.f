@@ -1,6 +1,6 @@
       SUBROUTINE JJVERN ( NOML32 , ICRE , IRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_6
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER *32       NOML32
       INTEGER                      ICRE , IRET
@@ -28,7 +29,6 @@ C     ------------------------------------------------------------------
       INTEGER          ILLICI , JCLASS(0:255)
       COMMON /JCHAJE/  ILLICI , JCLASS
 C     ------------------------------------------------------------------
-      CHARACTER *75    CMESS
       CHARACTER *24    NOML24
       CHARACTER *32    NOM32,BLAN32
       CHARACTER *8     NUME     , NOME     , NOMATR   ,  NOML8
@@ -45,8 +45,7 @@ C DEB ------------------------------------------------------------------
         IF ( NOML8 .NE. NOME .AND.
      &       NOML8 .NE. NUME .AND.
      &       NOML8 .NE. NOMATR     ) THEN
-          CMESS  = 'LONGUEUR OU STRUCTURE DU NOM INCORRECTE'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX1_56',1,NOML8)
         ENDIF
       END IF
       IF (NOML24       .EQ. NOMOS(1:24) .AND.
@@ -63,13 +62,11 @@ C ----- VALIDITE DES CARACTERES COMPOSANT LE NOM
 C
         IF(IRET.NE.0 .AND. ICRE .NE. 0 ) THEN
           IF ( INDEX ( NOML24 , '$' ) .NE. 0 ) THEN
-            CMESS  = 'LONGUEUR OU STRUCTURE DU NOM INCORRECTE'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX1_57',1,NOML24)
           ENDIF
           DO 10 K = 1,32
             IF( JCLASS(ICHAR( NOM32(K:K) )).EQ. ILLICI ) THEN
-              CMESS = 'LE CARACTERE "'//NOM32(K:K)//'" EST ILLICITE'
-              CALL U2MESK('F','JEVEUX_01',1,CMESS)
+              CALL U2MESK('F','JEVEUX1_58',1,NOM32(K:K))
             END IF
  10       CONTINUE
         ENDIF

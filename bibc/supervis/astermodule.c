@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 19/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF astermodule supervis  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -3542,7 +3542,7 @@ PyObject *args;
 {
    DOUBLE *rval;
    INTEGER *ival;
-   int i, longueur=8;
+   int i, longueur=9;
    PyObject *tup;
 
    rval = (DOUBLE *)malloc((longueur)*sizeof(DOUBLE));

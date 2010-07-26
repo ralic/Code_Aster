@@ -1,4 +1,4 @@
-# MODIF  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 27/07/2010   AUTEUR DESOZA T.DESOZA 
 # RESPONSABLE ABBAS M.ABBAS
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 # ssnv129e.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
@@ -39,7 +39,9 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='DKT',),
                      _F(GROUP_MA='Q1',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKT',),),);
+                        MODELISATION='DKT',),),
+# ce test n'a qu'un seul GREL, 'GROUP_ELEM' n'est pas possible
+               PARTITION=_F(PARALLELISME='MAIL_DISPERSE'),);
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,

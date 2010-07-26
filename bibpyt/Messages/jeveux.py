@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF jeveux Messages  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,10 +22,6 @@
 def _(x) : return x
 
 cata_msg = {
-
-1 : _("""
-  %(k1)s
-"""),
 
 2 : _("""
  Pointeur de longueur externe interdit maintenant.

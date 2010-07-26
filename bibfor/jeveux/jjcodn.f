@@ -1,6 +1,6 @@
       FUNCTION JJCODN(ICRE , NOMREP , NOMEC , IREP, CREP , NMAX , NUTI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRS_512
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)          NOMREP , NOMEC ,       CREP(*)
       INTEGER         ICRE                  , IREP(*)    , NMAX , NUTI
@@ -25,8 +26,7 @@ C ----------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
       INTEGER          IRET
-      CHARACTER*32     CLE , NOM
-      CHARACTER*75     CMESS
+      CHARACTER*32     CLE , NOM , VALK(2)
       CHARACTER*6      PGME
       PARAMETER      ( PGME = 'JJCODN' )
       LOGICAL          RINSER
@@ -42,13 +42,14 @@ C DEB ------------------------------------------------------------------
       NOM    = NOMEC(1:LL)
       I      = JXHCOD (NOM,LOREP)
       NE     = 1
+      VALK(1) = NOM
+      VALK(2) = NOMREP
 C
     5 CONTINUE
       IF ( IREP(IDEHCO+I) .EQ. 0 .AND. .NOT. RINSER ) THEN
          IF ( ICRE .EQ. 3  ) THEN
             IF ( NUTI .GE. NMAX ) THEN
-               CMESS = ' LE REPERTOIRE '//NOMREP//' EST SATURE '
-               CALL U2MESK('F','JEVEUX_01',1,CMESS)
+               CALL U2MESK('F','JEVEUX1_33',1,VALK(2))
             ELSE
                J = NUTI + 1
                DO 12 K = 1 , LL
@@ -63,8 +64,7 @@ C
             IF ( ICRE .EQ. 0 )   THEN
               IRET = 0
             ELSE
-              CMESS =' LE NOM N''EXISTE PAS DANS '//NOMREP
-              CALL U2MESK('F','JEVEUX_01',1,CMESS)
+              CALL U2MESK('F','JEVEUX1_34',2,VALK)
             END IF
          END IF
       ELSE
@@ -77,9 +77,7 @@ C
    16    CONTINUE
          IF ( CLE .EQ. NOM ) THEN
             IF ( ICRE .EQ. 3 ) THEN
-              CMESS=' LE NOM DEMANDE EXISTE DEJA DANS LE REPERTOIRE '
-     &                //NOMREP
-              CALL U2MESK('F','JEVEUX_01',1,CMESS)
+              CALL U2MESK('F','JEVEUX1_35',2,VALK)
             ELSE IF ( ICRE .EQ. 0 ) THEN
               IRET  = J
             ELSE IF ( ICRE .EQ. -3 ) THEN
@@ -104,9 +102,7 @@ C
                GOTO 5
             ELSE
                IF ( ICRE .EQ. 3 ) THEN
-                  CMESS = 'POUR LE REPERTOIRE '//NOMREP//' TROP '//
-     &                    'DE COLLISION DANS LE HCODING.'
-                  CALL U2MESK('F','JEVEUX_01',1,CMESS)
+                  CALL U2MESK('F','JEVEUX1_36',2,VALK)
                ELSE IF ( ICRE .EQ. 0 )   THEN
                   IRET = 0
                ENDIF

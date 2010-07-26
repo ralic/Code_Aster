@@ -1,9 +1,10 @@
       SUBROUTINE JEINFO(RVAL)
       IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8           RVAL(8)
+      REAL*8           RVAL(9)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C TOLE CRS_512
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,6 +29,8 @@ C     RVAL(4) = TAILLE EN MO MAXIMUM ALLOUEE DYNAMIQUEMENT
 C     RVAL(5) = LIMITE MAXIMALE POUR L'ALLOCATION DYNAMIQUE
 C     RVAL(6) = TAILLE EN MO POUR VmData
 C     RVAL(7) = TAILLE EN MO POUR VmSize
+C     RVAL(8) = NOMBRE DE MISE EN OEUVRE DU MECANISME DE LIBERATION 
+C     RVAL(9) = TAILLE EN MO POUR VmPeak
 C DEB ------------------------------------------------------------------
       REAL *8          SVUSE,SMXUSE   
       COMMON /STATJE/  SVUSE,SMXUSE  
@@ -36,9 +39,10 @@ C DEB ------------------------------------------------------------------
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
 C FIN ------------------------------------------------------------------
-      INTEGER LOISEM,IV(2),IVAL
+      INTEGER LOISEM,IV(3),IVAL
       IV(1) = 0
       IV(2) = 0
+      IV(3) = 0
       RVAL(1) = (SVUSE*LOISEM())/(1024*1024)
       RVAL(2) = (SMXUSE*LOISEM())/(1024*1024)
       RVAL(3) =  MCDYN  /(1024*1024)
@@ -50,9 +54,11 @@ C       IV(2) VmSize
       IF ( IVAL .NE. -1 ) THEN 
         RVAL(6) = DBLE(IV(1))
         RVAL(7) = DBLE(IV(2))
+        RVAL(9) = DBLE(IV(3))
       ELSE
         RVAL(6) = 0.D0
         RVAL(7) = 0.D0
+        RVAL(9) = 0.D0
       ENDIF
       RVAL(8) = DBLE(ICDYN)
             

@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 19/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF supervis Messages  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -404,7 +404,7 @@ On détruit cette variable ("%(k1)s" dans l'exemple ci-dessus).
 94 : _("""
 Le temps CPU system (%(r1)f) atteint une valeur supérieure à %(i1)d%% du temps CPU (%(r2)f).
 Ce comportement est peut-être anormal. 
-%(i2)d appels au mécanisme de déchargement de la mémoire ont été effectués. 
+Le nombre d'appel au mécanisme de déchargement de la mémoire depuis le début du calcul vaut : %(i2)d. 
  
 -> Conseil :
    Augmenter la mémoire JEVEUX, peut permettre de diminuer le temps système.

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMPID utilitai  DATE 06/07/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF MEMPID utilitai  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2009  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+/* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -47,7 +48,7 @@ INTEGER DEFP (MEMPID, mempid, INTEGER *val)
         fd = open(filename, O_RDONLY, 0);
         if (fd==-1) return -1;
 	num_read=read(fd,sbuf,(sizeof sbuf)-1);
-/*	printf (" contenu du buffer = %s\n",sbuf); */	
+/*	printf (" contenu du buffer = %s\n",sbuf);*/ 	
         close(fd);
 	
         S=strstr(sbuf,"VmData:")+8;
@@ -56,9 +57,15 @@ INTEGER DEFP (MEMPID, mempid, INTEGER *val)
 	S=strstr(sbuf,"VmSize:")+8;
         val[1] = atoi(S); 
 
-	S=strstr(sbuf,"VmStk:")+7;
+	if ( strstr(sbuf,"VmPeak:") != NULL ) {
+	   S=strstr(sbuf,"VmPeak:")+8;
+           val[2] = atoi(S);
+	} else {
+	   val[2] = -1 ;  
+        }
+	  
+        S=strstr(sbuf,"VmStk:")+7;
         lmem = atoi(S);
-
         return lmem ;
 #else
 /* 
@@ -66,6 +73,7 @@ INTEGER DEFP (MEMPID, mempid, INTEGER *val)
 */
         val[0] = 0 ;
 	val[1] = 0 ;
+	val[2] = 0 ;
         return -1 ;
 #endif
 }

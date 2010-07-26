@@ -1,6 +1,6 @@
       SUBROUTINE JENUNO ( NOMLU , NOMO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/05/2008   AUTEUR DELMAS J.DELMAS 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_726 CFT_720 CRP_18 CRS_508  CRS_512
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER *(*)      NOMLU , NOMO
 C ----------------------------------------------------------------------
@@ -69,11 +70,11 @@ C ----------------------------------------------------------------------
      &               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C ----------------------------------------------------------------------
-      CHARACTER *75    CMESS
       CHARACTER *32    NOML32
       CHARACTER *6     CNUMO , CLUTI
       CHARACTER *1     GENRI
-      INTEGER          ICRE , IRET, ITAB
+      INTEGER          ICRE , IRET, ITAB, VALI(2)
+      REAL*8           VALR
       CHARACTER *8     NUME
       DATA             NUME  / '$$XNUM  ' /
 C DEB ------------------------------------------------------------------
@@ -93,16 +94,13 @@ C ------- OBJET DE TYPE REPERTOIRE
 C
           GENRI = GENR ( JGENR(ICLAOS) + IDATOS )
           IF ( GENRI .NE. 'N' ) THEN
-            CMESS = 'INTERROGATION SUR UN OBJET NON REPERTOIRE'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX1_12',1,NOML32)
           ENDIF
           LUTII = LUTI ( JLUTI(ICLAOS) + IDATOS )
           IF ( LUTII .LT. NUMEC .OR. NUMEC .LE. 0 ) THEN
-            WRITE ( CLUTI , '(I6)' ) LUTII
-            WRITE ( CNUMO , '(I6)' ) NUMEC
-            CMESS = 'REPERTOIRE DE '//CLUTI//' NOMS NE CONTIENT PAS '
-     &              //CNUMO
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            VALI(1) = LUTII
+            VALI(2) = NUMEC
+            CALL U2MESG('F','JEVEUX1_13',1,NOML32,2,VALI,0,VALR)
           ENDIF
           IADMI  = IADM ( JIADM(ICLAOS) + 2*IDATOS-1 )
           IADMEX = IADMI
@@ -129,16 +127,13 @@ C
           CALL JJALLC ( ICLACO , IDATCO , 'L' , IBACOL )
           IXNOM = ISZON ( JISZON + IBACOL + IDNOM )
           IF ( IXNOM .EQ. 0 ) THEN
-            CMESS = 'INTERROGATION SUR UNE COLLECTION NON NOMMEE'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX1_14',1,NOML32)
           ENDIF
           LUTII = LUTI ( JLUTI(ICLACO) + IXNOM )
           IF ( LUTII .LT. NUMEC .OR. NUMEC .LE. 0) THEN
-            WRITE ( CLUTI , '(I6)' ) LUTII
-            WRITE ( CNUMO , '(I6)' ) NUMEC
-            CMESS = 'REPERTOIRE DE '//CLUTI//' NOMS NE CONTIENT PAS '
-     &              //CNUMO
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            VALI(1) = LUTII
+            VALI(2) = NUMEC
+            CALL U2MESG('F','JEVEUX1_13',1,NOML32,2,VALI,0,VALR)
           ENDIF
           IADMI  = IADM ( JIADM(ICLACO) + 2*IXNOM-1 )
           KADM   = IADMI
@@ -151,8 +146,7 @@ C
    20     CONTINUE
           CALL JJLIDE ( 'JENUNO' , NOMLU(1:24) , 2 )
         ELSE
-          CMESS = 'ERREUR DE PROGRAMMATION'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
       IPGC = IPGCEX

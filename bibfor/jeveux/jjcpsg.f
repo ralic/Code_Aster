@@ -1,6 +1,6 @@
       SUBROUTINE JJCPSG ( RPART , ICODE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_508
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C ROUTINE INTERNE JEVEUX DE PARTIONNEMENT DE LA SEGMENTATION MEMOIRE
@@ -38,13 +39,11 @@ C ----------------------------------------------------------------------
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
 C ----------------------------------------------------------------------
-      CHARACTER *75    CMESS
       INTEGER          IADPAR,VALI(2)
 C DEB ------------------------------------------------------------------
       IF ( ICODE .EQ. 1 ) THEN
         IF ( RPART .LE. 0.D0 .OR. RPART .GT. 1.D0 ) THEN
-          CMESS = 'LA VALEUR DU RAPPORT ENTRE PARTITIONS EST INVALIDE'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESR('F','JEVEUX1_37',1,RPART)
         ENDIF
         IADPAR = NINT( LISZON * (1.0D0 - RPART) )
         IADP   = ISZON(JISZON + LISZON - 4 )

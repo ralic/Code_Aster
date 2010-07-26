@@ -1,6 +1,6 @@
       SUBROUTINE JXLIRO ( IC , IADMI , IADDI , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18 CRP_6 CRS_508
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             IC , IADMI , IADDI(2) , LSO
 C ----------------------------------------------------------------------
@@ -50,7 +51,6 @@ C
       COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
 C ----------------------------------------------------------------------
-      CHARACTER*75     CMESS
       INTEGER          IADMO , KADD , LADD , LGBL , LSO2 
       LOGICAL          LPETIT
       PARAMETER      ( NDE = 6)
@@ -69,8 +69,7 @@ C DEB ------------------------------------------------------------------
       LPETIT = ( LSO .LT. LGBL-NDE*LOIS )
 C
       IF ( IADDI(1) .EQ. 0 ) THEN
-        CMESS = 'OBJET SANS IMAGE DISQUE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESS('F','JEVEUX1_59')
       ELSE
 C
 C ----- RECHARGEMENTS ULTERIEURS

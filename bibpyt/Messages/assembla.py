@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF assembla Messages  DATE 27/07/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,8 @@ cata_msg = {
  au moins 1 degré de liberté qui lui soit alloué.
  Ici, le processeur %(i1)d ne s'est vu attribué aucun ddl.
  
- Conseil : Modifiez le partitionnement des mailles de votre modèle.
+ Conseil : Modifiez le partitionnement des mailles de votre modèle dans
+           AFFE_MODELE/PARTITION/PARALLELISME ou diminuez le nombre de processeurs.
 """),
 
 5 : _("""

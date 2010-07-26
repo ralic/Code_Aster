@@ -1,6 +1,6 @@
       SUBROUTINE JETYPR( RECH , CAND , ISEG , ITAIL , RVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER *(*) RECH, CAND
       INTEGER        ISEG
@@ -52,7 +53,6 @@ C ----------------------------------------------------------------------
       INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
 C ----------------------------------------------------------------------
-      CHARACTER*75     CMESS
       CHARACTER*8      CHR8
       CHARACTER*2      CHC2
 C DEB ------------------------------------------------------------------
@@ -70,8 +70,7 @@ C DEB ------------------------------------------------------------------
       ELSE IF ( CHR8 .EQ. 'LIBERE  ' ) THEN
         ITIAD = 3
       ELSE
-        CMESS = 'TYPE DE RECHERCHE DE PLACE INVALIDE '
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX1_23',1,CHR8)
       ENDIF
 C
       IF ( CHC2 .EQ. 'XX' ) THEN
@@ -81,8 +80,7 @@ C
       ELSE IF ( CHC2 .EQ. 'XD' ) THEN
         ITRECH = 3
       ELSE
-        CMESS = 'TYPE DE RECHERCHE DE PLACE INVALIDE '
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX1_23',1,CHC2)
       ENDIF
 C
  100  CONTINUE
@@ -94,25 +92,21 @@ C
         ITCOL = 3
         LMOTS = ITAIL
         IF (LMOTS .LE. 0) THEN
-           CMESS = 'TAILLE DES SEGMENTS DE VALEURS INVALIDE'
-           CALL U2MESK('F','JEVEUX_01',1,CMESS)
+           CALL U2MESI('F','JEVEUX1_24',1,LMOTS)
         ENDIF
       ELSE IF ( ISEG .EQ. 4 ) THEN
         ITCOL = 4
         LMOTS = ITAIL
         IF (LMOTS .LE. 0) THEN
-           CMESS = 'TAILLE DES SEGMENTS DE VALEURS INVALIDE'
-           CALL U2MESK('F','JEVEUX_01',1,CMESS)
+           CALL U2MESI('F','JEVEUX1_24',1,LMOTS)
         ENDIF
         RPAR  = RVAL
         IF (RPAR .LE. 0.D0 .OR. RPAR .GE. 1.D0) THEN
-           CMESS = 'TAILLE DE LA PARTITION INVALIDE'
-           CALL U2MESK('F','JEVEUX_01',1,CMESS)
+           CALL U2MESR('F','JEVEUX1_25',1,RPAR)
         ENDIF
         CALL JJCPSG( RPAR, 1 )
       ELSE
-        CMESS = 'TYPE DE PARCOURS DE LA SEGMENTATION  INVALIDE '
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESI('F','JEVEUX1_26',1,ISEG)
       ENDIF
 C FIN ------------------------------------------------------------------
       END

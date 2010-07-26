@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) FONREZ,CHARGZ
 C ----------------------------------------------------------------------
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 
 C     CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 C          ET REMPLIR LIGRCH, POUR LE MOT-CLE LIAISON_GROUP
@@ -56,10 +56,10 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*7 TYPCHA
       CHARACTER*8 NOMNO1,NOMNO2,CHARGE,NOMG,NOMA,MOD,K8BID,NOMDEP,KBETA,
      &            CMP,NOMCMP(NMOCL)
-      CHARACTER*16 MOTFAC,MCGREX,MCEX
+      CHARACTER*16 MOTFAC,MCGREX,MCEX,VALK(2)
       CHARACTER*19 PREFIX,LIGRMO,LISREL
       CHARACTER*24 CONI,CONR,NOMDD1,NOMDD2,COEF1,COEF2,LISIN1,LISIN2
-      CHARACTER*123 TEXTE
+
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -336,12 +336,10 @@ C ---  AFFECTATION DE CE VECTEUR ---
           IDG2 = JPRNM - 1 + (INO2-1)*NBEC + 1
 
           IF (IEXCM1.EQ.0) THEN
-            TEXTE(1:9) = 'LE NOEUD '
-            TEXTE(18:80) = ' NE FAIT PAS PARTIE DU MODELE. '//MOTFAC//
-     &                     ' IMPOSSIBLE'
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO1),NOMNO1)
-            WRITE (TEXTE(10:17),'(A)') NOMNO1
-            CALL U2MESK('F','JEVEUX_1',1,TEXTE)
+            VALK(1) = NOMNO1
+            VALK(2) = MOTFAC
+            CALL U2MESK('F','AFFECHARMECA_3',2,VALK)
           END IF
           ZI(IDNBN-1+2* (J-1)+1) = 3
           IF ((ICMPZ.EQ.0) .OR. (.NOT.EXISDG(ZI(IDG1),ICMPZ))) THEN
@@ -349,12 +347,10 @@ C ---  AFFECTATION DE CE VECTEUR ---
           END IF
 
           IF (IEXCM2.EQ.0) THEN
-            TEXTE(1:9) = 'LE NOEUD '
-            TEXTE(18:80) = ' NE FAIT PAS PARTIE DU MODELE. '//MOTFAC//
-     &                     ' IMPOSSIBLE'
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO2),NOMNO2)
-            WRITE (TEXTE(10:17),'(A)') NOMNO2
-            CALL U2MESK('F','JEVEUX_1',1,TEXTE)
+            VALK(1) = NOMNO2
+            VALK(2) = MOTFAC
+            CALL U2MESK('F','AFFECHARMECA_3',2,VALK)    
           END IF
           ZI(IDNBN-1+2* (J-1)+2) = 3
           IF ((ICMPZ.EQ.0) .OR. (.NOT.EXISDG(ZI(IDG2),ICMPZ))) THEN

@@ -1,6 +1,6 @@
       SUBROUTINE JJANAL( CONDLU, NVAL , NVALO , LVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,11 +17,11 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER *(*)     CONDLU                       , CVAL(*)
       INTEGER                    NVAL , NVALO , LVAL(*)
 C
-      CHARACTER *75  CMESS
       INTEGER        LONG , I , J , NBSC
 C
       DO 20 I = 1 , NVAL
@@ -30,8 +30,7 @@ C
  20   CONTINUE
       LONG = LEN(CONDLU)
       IF ( LONG .EQ. 0 .AND. NVALO .GT. 0 ) THEN
-         CMESS = 'LISTE INCOMPLETE'
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
+         CALL U2MESS('F','JEVEUX1_31')
       ENDIF
       NBSC = 0
       I = 1
@@ -39,8 +38,7 @@ C
  1    CONTINUE
       IF ( I .GT. LONG ) THEN
          IF ( NBSC .LT. NVALO ) THEN
-            CMESS = 'LISTE INCOMPLETE'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESS('F','JEVEUX1_31')
          ELSE
             GOTO 100
          ENDIF
@@ -65,14 +63,12 @@ C
          I = J + 1
          GO TO 1
       ELSE IF ( NBSC .LT. NVALO   .AND. J. EQ. LONG+1) THEN
-         CMESS = 'LISTE INCOMPLETE'
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
+         CALL U2MESS('F','JEVEUX1_31')
       END IF
  100  CONTINUE
       DO 10 I = J , LONG
          IF ( CONDLU(I:I) .NE. ' ') THEN
-            CMESS = 'LISTE TROP LONGUE '
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESS('F','JEVEUX1_32')
          END IF
  10   CONTINUE
 C

@@ -1,6 +1,6 @@
       SUBROUTINE JJCROC ( KNAT , ICRE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508 CRS_512
-
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER                    ICRE
       CHARACTER*8         KNAT
@@ -75,9 +75,7 @@ C ----------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C ----------------------------------------------------------------------
-      CHARACTER *75    CMESS
       CHARACTER *24    NOM
-      CHARACTER *8     CIOC
       INTEGER          JITAB,IRT
 C
       CHARACTER *8     NUME       , NOME
@@ -144,8 +142,7 @@ C
             NUTI   = ISZON(JISZON+IBNUM+1)
           ELSE IF ( IXNOM .NE. 0 ) THEN
             IF ( ICRE .GT. 0 ) THEN
-              CMESS = 'CREATION D''OBJET AUTORISEE UNIQUEMENT PAR NOM'
-              CALL U2MESK('F','JEVEUX_01',1,CMESS)
+              CALL U2MESS('F','JEVEUX1_44')
             ENDIF
             NMAX   = LONG ( JLONG(IC) + IXNOM )
             NUTI   = LUTI ( JLUTI(IC) + IXNOM )
@@ -157,16 +154,13 @@ C
           IDATOC = 0
           IF ( ICRE .GT. 0 ) THEN
             IF ( NUMEC .LE. NUTIEX ) THEN
-              WRITE (CIOC , '(I8)' ) NUMEC
-              CMESS = 'OBJET DE COLLECTION '//CIOC//' DEJA EXISTANT'
-              CALL U2MESK('F','JEVEUX_01',1,CMESS)
+              CALL U2MESI('F','JEVEUX1_45',1,NUMEC)
             ELSE
               IF ( NUTIEX .LT. NMAX ) THEN
                 NUTI = NUTI + 1
                 ISZON(JISZON+IBNUM+1) = NUTI
               ELSE
-                CMESS = 'REPERTOIRE SATURE'
-                CALL U2MESK('F','JEVEUX_01',1,CMESS)
+                CALL U2MESS('F','JEVEUX1_46')
               ENDIF
             ENDIF
           ENDIF
@@ -177,8 +171,7 @@ C --------  ACCES PAR NOM
 C
           IXNOM   = ISZON(JISZON+IBACOL+IDNOM )
           IF ( IXNOM .EQ. 0 ) THEN
-            CMESS = 'ACCES PAR NOM A UNE COLLECTION NUMEROTEE '
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESS('F','JEVEUX1_47')
           ELSE
             NMAX    = LONG (JLONG(IC)+IXNOM )
             NUTI    = LUTI (JLUTI(IC)+IXNOM )

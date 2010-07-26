@@ -1,6 +1,6 @@
       SUBROUTINE JJCREC ( ICL , IDA , GENRI , TYPEI , NB , IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_726 CFT_720 CRP_18 CRS_508
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             ICL , IDA                 , NB , IADMI
       CHARACTER*(*)                   GENRI , TYPEI
@@ -54,7 +55,6 @@ C     ------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
 C     ------------------------------------------------------------------
-      CHARACTER*75     CMESS
       CHARACTER*4      IFMT
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
@@ -64,29 +64,24 @@ C DEB ------------------------------------------------------------------
       GENR(JGENR (ICL) + IDA ) = GENRI(1:1)
       TYPE(JTYPE (ICL) + IDA ) = TYPEI(1:1)
       IF ( GENRI .EQ. 'N' .AND. TYPEI(1:1) .NE. 'K' ) THEN
-        CMESS = 'UN OBJET REPERTOIRE DOIT ETRE DE TYPE K'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESS('F','JEVEUX1_38')
       ENDIF
       IF ( TYPEI(1:1) .EQ. 'K' ) THEN
         L = LEN(TYPEI)
         IF ( L .EQ. 1 ) THEN
-          CMESS  = ' LTYP D''UN OBJET DE TYPE K NON DEFINI'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESS('F','JEVEUX1_39')
         ENDIF
         WRITE(IFMT,'(''(I'',I1,'')'')') L - 1
         READ ( TYPEI(2:L) , IFMT ) IV
         IF ( IV .LE. 0 .OR. IV .GT. 512 ) THEN
-          CMESS = 'LTYP D'' OBJET DE TYPE K INVALIDE >'//TYPEI(2:)
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESI('F','JEVEUX1_40',1,IV)
         ENDIF
         IF ( GENRI .EQ. 'N' ) THEN
           IF ( MOD ( IV , LOIS ) .NE. 0 ) THEN
-            CMESS = 'LTYP D'' OBJET REPERTOIRE NON MULTIPLE DE K8'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESI('F','JEVEUX1_41',1,IV)
           ENDIF
           IF ( IV .GT. 24 ) THEN
-            CMESS = 'LTYP D''OBJET REPERTOIRE > 24'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESI('F','JEVEUX1_42',1,IV)
           ENDIF
         ENDIF
       ELSE IF ( TYPEI(1:1) .EQ. 'S' ) THEN
@@ -100,8 +95,7 @@ C DEB ------------------------------------------------------------------
       ELSE IF ( TYPEI(1:1) .EQ. 'L' ) THEN
         IV = LOLS
       ELSE
-        CMESS = 'TYPE D''OBJET DE REFERENCE INCORRECT'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX1_43',1,TYPEI(1:1))
       ENDIF
       LTYP(JLTYP (ICL) + IDA ) = IV
       IADM(JIADM (ICL) + 2*IDA-1 ) = 0

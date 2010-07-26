@@ -1,6 +1,6 @@
       SUBROUTINE JXVEUO (CEL , ITAB , INAT , JITAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508 CRS_512
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER                  ITAB(*),INAT , JITAB
       CHARACTER*(*)      CEL
@@ -62,7 +63,6 @@ C ----------------------------------------------------------------------
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
 C ----------------------------------------------------------------------
       CHARACTER*1      TYPEI , GENRI
-      CHARACTER*75     CMESS
       INTEGER          LTYPI , IADDI(2) , IADMI ,  LONOI , IRT
       LOGICAL          LDEPS  , LCONST
 C ----------------------------------------------------------------------
@@ -113,8 +113,7 @@ C
           IF ( LONG(JLONG(IC)+IXDESO) .NE. 0 ) THEN
             LONOI  = LONO ( JLONO(IC) + IXDESO ) * LTYPI
           ELSE
-            CMESS ='COLLECTION CONTIG LONGUEUR CONSTANTE NON DEFINIE'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESS('F','JEVEUX1_62')
           ENDIF
         ELSE
           IBLONO = IADM ( JIADM(IC) + 2*IXLONO-1 )
@@ -222,8 +221,7 @@ C
             CALL JJALLS( LONOI, IC, GENRI, TYPEI, LTYPI, 'INIT',
      &                   ITAB, JITAB, IADMI, IADYN)
           ELSE
-            CMESS = 'IMPOSSIBLE DE LIRE  SANS IMAGE DISQUE'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESS('F','JEVEUX1_61')
           ENDIF
         ELSE
 C

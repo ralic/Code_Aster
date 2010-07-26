@@ -1,4 +1,4 @@
-#@ MODIF algorith4 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algorith4 Messages  DATE 26/07/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,9 +39,6 @@ cata_msg = {
  élément à discontinuité avec une loi CZM_EXP : la matrice H est non inversible
 """),
 
-49 : _("""
- modélisation  %(k1)s imcompatible avec la loi BETON_DOUBLE_DP.
-"""),
 
 50 : _("""
   comportement inattendu :  %(k1)s

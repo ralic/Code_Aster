@@ -1,6 +1,6 @@
       SUBROUTINE JXLOCS ( ITAB, GENR, LTYP, LONO, IADM , LDEPS, JITAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_6 CRP_18 CRS_508 CRP_4
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             ITAB(*),    LTYP, LONO, IADM ,        JITAB
       LOGICAL                                            LDEPS
@@ -44,7 +45,6 @@ C ----------------------------------------------------------------------
       INTEGER          ILOC
       COMMON /ILOCJE/  ILOC
 C
-      CHARACTER*75     CMESS
       INTEGER          IDEC
       INTEGER*8        VALLOC,IA,LTYP2
 C DEB-------------------------------------------------------------------
@@ -69,9 +69,7 @@ C DEB-------------------------------------------------------------------
             CALL JXDEPS ( (KADM-1)*LOIS + LADM + 1 ,
      &                    (KADM-1)*LOIS + IR   + 1 , LONO )
           ELSE
-            CMESS = 'OBJET CHARACTER DEJA ALLOUE - DEPLACEMENT MEMOIRE'
-     &              //' INTERDIT SANS LIBERATION'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESS('F','JEVEUX1_60')
           ENDIF
         ENDIF
       ENDIF

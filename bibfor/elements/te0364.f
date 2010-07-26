@@ -3,7 +3,7 @@
       CHARACTER*16         OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 27/07/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -279,14 +279,14 @@ C
      &                  NNE   ,NNM   ,NNL   ,NBCPS ,NORM  ,
      &                  TAU1  ,TAU2  ,MPROJN,MPROJT,HPG   ,
      &                  FFE   ,FFM   ,FFL   ,JACOBI,COEFCP,
-     &                  COEFCR,COEFCS,COEFFP,COEFFR,COEFFS,
-     &                  COEFFF,JEU   ,LAMBDA,RESE  ,NRESE ,
-     &                  TYPBAR,TYPRAC,NDEXFR,ASPERI,KAPPAN,
-     &                  KAPPAV,DELTAT,BETA  ,GAMMA ,CWEAR ,
-     &                  DISSIP,DLAGRC,DELUSU,MATREE,MATRMM,
-     &                  MATREM,MATRME,MATRCE,MATRCM,MATRMC,
-     &                  MATREC,MATRCC,MATRFE,MATRFM,MATREF,
-     &                  MATRMF,MATRFF)
+     &                  COEFCR,COEFCS,COEFFP,COEFFS,COEFFF,
+     &                  JEU   ,LAMBDA,RESE  ,NRESE ,TYPBAR,
+     &                  TYPRAC,NDEXFR,ASPERI,KAPPAN,KAPPAV,
+     &                  DELTAT,BETA  ,GAMMA ,CWEAR ,DISSIP,
+     &                  DLAGRC,DELUSU,MATREE,MATRMM,MATREM,
+     &                  MATRME,MATRCE,MATRCM,MATRMC,MATREC,
+     &                  MATRCC,MATRFE,MATRFM,MATREF,MATRMF,
+     &                  MATRFF)
         ELSE
           IF (INDASP.EQ.0) THEN
             CALL MMMMAT('SANS',
@@ -295,14 +295,14 @@ C
      &                  NNE   ,NNM   ,NNL   ,NBCPS ,NORM  ,
      &                  TAU1  ,TAU2  ,MPROJN,MPROJT,HPG   ,
      &                  FFE   ,FFM   ,FFL   ,JACOBI,COEFCP,
-     &                  COEFCR,COEFCS,COEFFP,COEFFR,COEFFS,
-     &                  COEFFF,JEU   ,LAMBDA,RESE  ,NRESE ,
-     &                  TYPBAR,TYPRAC,NDEXFR,ASPERI,KAPPAN,
-     &                  KAPPAV,DELTAT,BETA  ,GAMMA ,CWEAR ,
-     &                  DISSIP,DLAGRC,DELUSU,MATREE,MATRMM,
-     &                  MATREM,MATRME,MATRCE,MATRCM,MATRMC,
-     &                  MATREC,MATRCC,MATRFE,MATRFM,MATREF,
-     &                  MATRMF,MATRFF)
+     &                  COEFCR,COEFCS,COEFFP,COEFFS,COEFFF,
+     &                  JEU   ,LAMBDA,RESE  ,NRESE ,TYPBAR,
+     &                  TYPRAC,NDEXFR,ASPERI,KAPPAN,KAPPAV,
+     &                  DELTAT,BETA  ,GAMMA ,CWEAR ,DISSIP,
+     &                  DLAGRC,DELUSU,MATREE,MATRMM,MATREM,
+     &                  MATRME,MATRCE,MATRCM,MATRMC,MATREC,
+     &                  MATRCC,MATRFE,MATRFM,MATREF,MATRMF,
+     &                  MATRFF)
           ELSE IF (INDASP.EQ.1) THEN
             IF (INDCO.EQ.0) THEN
               CALL MMMMAT('SANS',
@@ -311,14 +311,14 @@ C
      &                  NNE   ,NNM   ,NNL   ,NBCPS ,NORM  ,
      &                  TAU1  ,TAU2  ,MPROJN,MPROJT,HPG   ,
      &                  FFE   ,FFM   ,FFL   ,JACOBI,COEFCP,
-     &                  COEFCR,COEFCS,COEFFP,COEFFR,COEFFS,
-     &                  COEFFF,JEU   ,LAMBDA,RESE  ,NRESE ,
-     &                  TYPBAR,TYPRAC,NDEXFR,ASPERI,KAPPAN,
-     &                  KAPPAV,DELTAT,BETA  ,GAMMA ,CWEAR ,
-     &                  DISSIP,DLAGRC,DELUSU,MATREE,MATRMM,
-     &                  MATREM,MATRME,MATRCE,MATRCM,MATRMC,
-     &                  MATREC,MATRCC,MATRFE,MATRFM,MATREF,
-     &                  MATRMF,MATRFF)
+     &                  COEFCR,COEFCS,COEFFP,COEFFS,COEFFF,
+     &                  JEU   ,LAMBDA,RESE  ,NRESE ,TYPBAR,
+     &                  TYPRAC,NDEXFR,ASPERI,KAPPAN,KAPPAV,
+     &                  DELTAT,BETA  ,GAMMA ,CWEAR ,DISSIP,
+     &                  DLAGRC,DELUSU,MATREE,MATRMM,MATREM,
+     &                  MATRME,MATRCE,MATRCM,MATRMC,MATREC,
+     &                  MATRCC,MATRFE,MATRFM,MATREF,MATRMF,
+     &                  MATRFF)
             ELSEIF (INDCO.EQ.1) THEN
               CALL MMMMAT('CONT',
      &                  LUSURE,LSTABC,LPENAC,LCOMPL,LFROTT,
@@ -326,14 +326,14 @@ C
      &                  NNE   ,NNM   ,NNL   ,NBCPS ,NORM  ,
      &                  TAU1  ,TAU2  ,MPROJN,MPROJT,HPG   ,
      &                  FFE   ,FFM   ,FFL   ,JACOBI,COEFCP,
-     &                  COEFCR,COEFCS,COEFFP,COEFFR,COEFFS,
-     &                  COEFFF,JEU   ,LAMBDA,RESE  ,NRESE ,
-     &                  TYPBAR,TYPRAC,NDEXFR,ASPERI,KAPPAN,
-     &                  KAPPAV,DELTAT,BETA  ,GAMMA ,CWEAR ,
-     &                  DISSIP,DLAGRC,DELUSU,MATREE,MATRMM,
-     &                  MATREM,MATRME,MATRCE,MATRCM,MATRMC,
-     &                  MATREC,MATRCC,MATRFE,MATRFM,MATREF,
-     &                  MATRMF,MATRFF)
+     &                  COEFCR,COEFCS,COEFFP,COEFFS,COEFFF,
+     &                  JEU   ,LAMBDA,RESE  ,NRESE ,TYPBAR,
+     &                  TYPRAC,NDEXFR,ASPERI,KAPPAN,KAPPAV,
+     &                  DELTAT,BETA  ,GAMMA ,CWEAR ,DISSIP,
+     &                  DLAGRC,DELUSU,MATREE,MATRMM,MATREM,
+     &                  MATRME,MATRCE,MATRCM,MATRMC,MATREC,
+     &                  MATRCC,MATRFE,MATRFM,MATREF,MATRMF,
+     &                  MATRFF)
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF 
@@ -355,14 +355,14 @@ C
      &                  NNE   ,NNM   ,NNL   ,NBCPS ,NORM  ,
      &                  TAU1  ,TAU2  ,MPROJN,MPROJT,HPG   ,
      &                  FFE   ,FFM   ,FFL   ,JACOBI,COEFCP,
-     &                  COEFCR,COEFCS,COEFFP,COEFFR,COEFFS,
-     &                  COEFFF,JEU   ,LAMBDA,RESE  ,NRESE ,
-     &                  TYPBAR,TYPRAC,NDEXFR,ASPERI,KAPPAN,
-     &                  KAPPAV,DELTAT,BETA  ,GAMMA ,CWEAR ,
-     &                  DISSIP,DLAGRC,DELUSU,MATREE,MATRMM,
-     &                  MATREM,MATRME,MATRCE,MATRCM,MATRMC,
-     &                  MATREC,MATRCC,MATRFE,MATRFM,MATREF,
-     &                  MATRMF,MATRFF)
+     &                  COEFCR,COEFCS,COEFFP,COEFFS,COEFFF,
+     &                  JEU   ,LAMBDA,RESE  ,NRESE ,TYPBAR,
+     &                  TYPRAC,NDEXFR,ASPERI,KAPPAN,KAPPAV,
+     &                  DELTAT,BETA  ,GAMMA ,CWEAR ,DISSIP,
+     &                  DLAGRC,DELUSU,MATREE,MATRMM,MATREM,
+     &                  MATRME,MATRCE,MATRCM,MATRMC,MATREC,
+     &                  MATRCC,MATRFE,MATRFM,MATREF,MATRMF,
+     &                  MATRFF)
         ELSE IF (INDCO.EQ.1) THEN
           CALL TTPRSM(NDIM  ,DDEPLE,DDEPLM,DLAGRF,COEFFR,
      &                TAU1  ,TAU2  ,MPROJT,INADH ,RESE  ,
@@ -375,14 +375,14 @@ C
      &                  NNE   ,NNM   ,NNL   ,NBCPS ,NORM  ,
      &                  TAU1  ,TAU2  ,MPROJN,MPROJT,HPG   ,
      &                  FFE   ,FFM   ,FFL   ,JACOBI,COEFCP,
-     &                  COEFCR,COEFCS,COEFFP,COEFFR,COEFFS,
-     &                  COEFFF,JEU   ,LAMBDA,RESE  ,NRESE ,
-     &                  TYPBAR,TYPRAC,NDEXFR,ASPERI,KAPPAN,
-     &                  KAPPAV,DELTAT,BETA  ,GAMMA ,CWEAR ,
-     &                  DISSIP,DLAGRC,DELUSU,MATREE,MATRMM,
-     &                  MATREM,MATRME,MATRCE,MATRCM,MATRMC,
-     &                  MATREC,MATRCC,MATRFE,MATRFM,MATREF,
-     &                  MATRMF,MATRFF)
+     &                  COEFCR,COEFCS,COEFFP,COEFFS,COEFFF,
+     &                  JEU   ,LAMBDA,RESE  ,NRESE ,TYPBAR,
+     &                  TYPRAC,NDEXFR,ASPERI,KAPPAN,KAPPAV,
+     &                  DELTAT,BETA  ,GAMMA ,CWEAR ,DISSIP,
+     &                  DLAGRC,DELUSU,MATREE,MATRMM,MATREM,
+     &                  MATRME,MATRCE,MATRCM,MATRMC,MATREC,
+     &                  MATRCC,MATRFE,MATRFM,MATREF,MATRMF,
+     &                  MATRFF)
         ELSE
           CALL ASSERT(.FALSE.)
         END IF

@@ -1,6 +1,6 @@
       SUBROUTINE JJLIRS(IADM,ICLAS,IDOS,IDCO,IUS,IST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IADM,ICLAS,IUS,IST
 C ----------------------------------------------------------------------
@@ -38,37 +39,26 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
-C ----------------------------------------------------------------------
-      CHARACTER*75 CMESS
-      CHARACTER*10 CIADM
 C DEB ------------------------------------------------------------------
       ISTA1  = ISZON(JISZON+IADM-1)
       IDATOC = ISZON(JISZON+IADM-2)
       IF (IDATOC.NE.IDOS) THEN
-        WRITE (CIADM,'(I10)') IADM
-        CMESS = 'ECRASEMENT AMONT POSSIBLE ADRESSE >'//CIADM
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESI('F','JEVEUX1_54',1,IADM)
       END IF
 C
       IF (ISTA1.NE.ISTAT(1) .AND. ISTA1.NE.ISTAT(2)) THEN
-        WRITE (CIADM,'(I10)') IADM
-        CMESS = 'ECRASEMENT AMONT POSSIBLE ADRESSE >'//CIADM
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESI('F','JEVEUX1_54',1,IADM)
       END IF
 C
       IS = JISZON+ISZON(JISZON+IADM-4)
       ISTA2 = ISZON(IS-4)
       ICLA2 = ISZON(IS-2)
       IF (ICLA2.NE.ICLAS) THEN
-        WRITE (CIADM,'(I10)') IADM
-        CMESS = 'ECRASEMENT AVAL  POSSIBLE ADRESSE >'//CIADM
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESI('F','JEVEUX1_55',1,IADM)
       END IF
 
       IF (ISTA2.NE.ISTAT(3) .AND. ISTA2.NE.ISTAT(4)) THEN
-        WRITE (CIADM,'(I10)') IADM
-        CMESS = 'ECRASEMENT AVAL  POSSIBLE ADRESSE >'//CIADM
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESI('F','JEVEUX1_55',1,IADM)
       END IF
 C
       IUS = ISTA1

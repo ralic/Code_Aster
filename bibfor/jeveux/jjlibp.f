@@ -1,6 +1,6 @@
       SUBROUTINE JJLIBP ( IADMI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             IADMI
 C ----------------------------------------------------------------------
@@ -54,8 +55,6 @@ C ----------------------------------------------------------------------
       COMMON /ISTAJE/  ISTAT(4)
       REAL *8          SVUSE,SMXUSE   
       COMMON /STATJE/  SVUSE,SMXUSE  
-C ----------------------------------------------------------------------
-      CHARACTER*75     CMESS
 C DEB ------------------------------------------------------------------
       IFSP  = IADMI - 5
       IDSV  = IADMI - 4
@@ -117,8 +116,7 @@ C
           ISZON(JISZON+K) = LUNDEF
  100    CONTINUE
       ELSE
-        CMESS = 'LA ZONE A LIBERER EST DEJA LIBRE '
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESS('F','JEVEUX1_53')
       ENDIF
 C FIN ------------------------------------------------------------------
       END

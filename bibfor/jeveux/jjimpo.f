@@ -1,7 +1,7 @@
       SUBROUTINE JJIMPO (UNIT , IADMI , IDECI , IDATOC , GENRI , TYPEI,
      &                   LT    , LONOI , MESS , PARM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_726 CFT_720 CFT_753 CRP_18 CRP_4 CRS_508 CRS_512
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            UNIT
       INTEGER            IADMI , IDECI , IDATOC        , LT , LONOI
@@ -68,7 +69,6 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       CHARACTER*6      PGME
       PARAMETER      ( PGME = 'JJIMPO' )
-      CHARACTER*75     CMESS
       CHARACTER*18     FMT
 C DEB ------------------------------------------------------------------
 C
@@ -84,18 +84,14 @@ C
       IDCO = ISZON(JISZON+IES+1)
 C
       IF ( IDOS .EQ. 0 ) THEN
-         CMESS = 'ECRASEMENT DE L''ADRESSE REPERTOIRE DU SEGMENT '
-     &            //'DE VALEURS'
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
+         CALL U2MESS('F','JEVEUX1_49')
       ENDIF
       IF ( ICLS .LT. 0 .OR. ICLS .GT. LEN(CLASSE))  THEN
-         CMESS = 'ECRASEMENT DE LA CLASSE DU SEGMENT DE VALEURS'
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
+         CALL U2MESI('F','JEVEUX1_50',1,ICLS)
       ELSE
          IF ( CLASSE(ICLS:ICLS) .EQ. ' ' .OR.
      &        CLASSE(ICLS:ICLS) .EQ. '$' ) THEN
-            CMESS = 'ECRASEMENT DE LA CLASSE DU SEGMENT DE VALEURS'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX1_51',1, CLASSE(ICLS:ICLS))
          ENDIF
       ENDIF
       IF ( IDATOC .EQ. 0 ) THEN
@@ -184,8 +180,7 @@ C
      &        ('>',(K1ZON(JI+LT*((K-1)+NL*NB)+J-1),J=1,LT),'<',K=1,ND)
             ENDIF
          ELSE
-            CMESS = 'ERREUR DE TYPE SUR LE SEGMENT DE VALEURS'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX1_43',1,TYPEI)
          ENDIF
       ELSE
          NM     = ISZON(JISZON+KADM-1+ILMAX)
