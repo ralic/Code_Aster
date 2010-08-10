@@ -3,7 +3,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C =====================================================================
       CHARACTER*16  THMC, THER, HYDR, MECA, MOCLES(2)
       CHARACTER*8   NOMA, TYPMCL(2),MODELE
       CHARACTER*24  MESMAI
-      CHARACTER*24 VALK(2)
+      CHARACTER*24  VALK(2)
 C
       INTEGER       JJ, II, IM, IMA
 C *********************************************************************
@@ -163,9 +163,11 @@ C =====================================================================
 
                   IF ((MODELI(1:6).NE.'3D_THM').AND.
      &                (MODELI(1:5).NE.'3D_HM').AND.
+     &                (MODELI(1:5).NE.'3D_HS').AND.
      &                (MODELI(1:8).NE.'AXIS_THM').AND.
      &                (MODELI(1:7).NE.'AXIS_HM').AND.
      &                (MODELI(1:10).NE.'D_PLAN_THM').AND.
+     &                (MODELI(1:9).NE.'D_PLAN_HS').AND.
      &                (MODELI(1:9).NE.'D_PLAN_HM').AND.
      &                (MODELI(1:11).NE.'2D_JOINT_HM').AND.
      &                (MODELI(1:13).NE.'AXIS_JOINT_HM').AND.
@@ -270,22 +272,24 @@ C =====================================================================
 C =====================================================================
 C --- VERIFICATION DE LA COHERENCE AVEC LA RELATION DEMANDEE ----------
 C =====================================================================
+      IF (.NOT.LTHMC) THEN
+        CALL U2MESS('F','ALGORITH8_39')
+      ENDIF
+      IF (.NOT.LHYDR) THEN
+        CALL U2MESS('F','ALGORITH8_40')
+      ENDIF
+C =====================================================================
 C --- PARTIE KIT_HM ---------------------------------------------------
 C =====================================================================
       IF (COMP.EQ.'KIT_HM') THEN
-         IF (.NOT.LTHMC) THEN
-            CALL U2MESS('F','ALGORITH8_39')
-         ENDIF
-         IF (.NOT.LHYDR) THEN
-            CALL U2MESS('F','ALGORITH8_40')
-         ENDIF
          IF (.NOT.LMECA) THEN
             CALL U2MESS('F','ALGORITH8_41')
          ENDIF
          IF ( THMC.NE.'LIQU_SATU'    .AND.
      &        THMC.NE.'GAZ'          .AND.
      &        THMC.NE.'LIQU_GAZ_ATM'      ) THEN
-            CALL U2MESS('F','ALGORITH8_42')
+           VALK(1) = 'HM'
+           CALL U2MESK('F','ALGORITH8_42',1,VALK)
          ENDIF
          IF ( HYDR.EQ.'HYDR_ENDO'         .AND.
      &        ( MECA.NE.'MAZARS'          .AND.
@@ -293,25 +297,21 @@ C =====================================================================
             CALL U2MESS('F','ALGORITH8_43')
          ENDIF
          IF ( MECA.EQ.'BARCELONE' ) THEN
-            CALL U2MESS('F','ALGORITH8_44')
+           VALK(1) = 'HM'
+           CALL U2MESK('F','ALGORITH8_44',1,VALK)
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_HHM --------------------------------------------------
 C =====================================================================
       ELSE IF (COMP.EQ.'KIT_HHM') THEN
-         IF (.NOT.LTHMC) THEN
-            CALL U2MESS('F','ALGORITH8_39')
-         ENDIF
-         IF (.NOT.LHYDR) THEN
-            CALL U2MESS('F','ALGORITH8_40')
-         ENDIF
          IF (.NOT.LMECA) THEN
             CALL U2MESS('F','ALGORITH8_41')
          ENDIF
          IF ( THMC.NE.'LIQU_GAZ'.AND.THMC.NE.'LIQU_VAPE_GAZ'.AND.
      &        THMC.NE.'LIQU_AD_GAZ_VAPE'.AND.
      &        THMC.NE.'LIQU_AD_GAZ'      ) THEN
-            CALL U2MESS('F','ALGORITH8_45')
+           VALK(1) = 'HHM'
+           CALL U2MESK('F','ALGORITH8_42',1,VALK)
          ENDIF
          IF ( HYDR.EQ.'HYDR_ENDO'         .AND.
      &        ( MECA.NE.'MAZARS'          .AND.
@@ -321,80 +321,75 @@ C =====================================================================
          IF ( MECA.EQ.'BARCELONE' .AND.
      &        (THMC.NE.'LIQU_GAZ' .AND.
      &         THMC.NE.'LIQU_VAPE_GAZ')) THEN
-            CALL U2MESS('F','ALGORITH8_47')
+           VALK(1) = 'HHM'
+           CALL U2MESK('F','ALGORITH8_44',1,VALK)
+         ENDIF
+C =====================================================================
+C --- PARTIE KIT_H ----------------------------------------------------
+C =====================================================================
+      ELSE IF (COMP.EQ.'KIT_H') THEN
+         IF (LMECA) THEN
+           VALK(1) = 'H'
+           CALL U2MESK('F','ALGORITH8_46',1,VALK)
+         ENDIF
+         IF ( THMC.NE.'LIQU_SATU'.AND.THMC.NE.'GAZ') THEN
+            CALL U2MESS('F','ALGORITH8_59')
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THH --------------------------------------------------
 C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THH') THEN
          THER = 'THER'
-         IF (.NOT.LTHMC) THEN
-            CALL U2MESS('F','ALGORITH8_39')
-         ENDIF
-         IF (.NOT.LHYDR) THEN
-            CALL U2MESS('F','ALGORITH8_40')
-         ENDIF
          IF (LMECA) THEN
-            CALL U2MESS('F','ALGORITH8_48')
+           VALK(1) = 'THH'
+           CALL U2MESK('F','ALGORITH8_46',1,VALK)
          ENDIF
          IF ( THMC.NE.'LIQU_GAZ' .AND.THMC.NE.'LIQU_VAPE_GAZ'.AND.
      &        THMC.NE.'LIQU_AD_GAZ_VAPE'.AND.
      &        THMC.NE.'LIQU_AD_GAZ'      ) THEN
-            CALL U2MESS('F','ALGORITH8_49')
+           VALK(1) = 'THH'
+           CALL U2MESK('F','ALGORITH8_42',1,VALK)
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_HH --------------------------------------------------
 C =====================================================================
       ELSE IF (COMP.EQ.'KIT_HH') THEN
-         IF (.NOT.LTHMC) THEN
-            CALL U2MESS('F','ALGORITH8_39')
-         ENDIF
-         IF (.NOT.LHYDR) THEN
-            CALL U2MESS('F','ALGORITH8_40')
-         ENDIF
          IF (LMECA) THEN
-            CALL U2MESS('F','ALGORITH8_46')
+           VALK(1) = 'HH'
+           CALL U2MESK('F','ALGORITH8_46',1,VALK)
          ENDIF
          IF ( THMC.NE.'LIQU_GAZ' .AND.THMC.NE.'LIQU_VAPE_GAZ'.AND.
      &        THMC.NE.'LIQU_AD_GAZ_VAPE'.AND.
      &        THMC.NE.'LIQU_AD_GAZ'      ) THEN
-            CALL U2MESS('F','ALGORITH8_58')
+           VALK(1) = 'HH'
+           CALL U2MESK('F','ALGORITH8_42',1,VALK)
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THV --------------------------------------------------
 C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THV') THEN
          THER = 'THER'
-         IF (.NOT.LTHMC) THEN
-            CALL U2MESS('F','ALGORITH8_39')
-         ENDIF
-         IF (.NOT.LHYDR) THEN
-            CALL U2MESS('F','ALGORITH8_40')
-         ENDIF
          IF (LMECA) THEN
-            CALL U2MESS('F','ALGORITH8_51')
+           VALK(1) = 'THV'
+           CALL U2MESK('F','ALGORITH8_46',1,VALK)
          ENDIF
          IF ( THMC.NE.'LIQU_VAPE' ) THEN
-            CALL U2MESS('F','ALGORITH8_52')
+           VALK(1) = 'THV'
+           CALL U2MESK('F','ALGORITH8_42',1,VALK)
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THM --------------------------------------------------
 C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THM') THEN
          THER = 'THER'
-         IF (.NOT.LTHMC) THEN
-            CALL U2MESS('F','ALGORITH8_39')
-         ENDIF
-         IF (.NOT.LHYDR) THEN
-            CALL U2MESS('F','ALGORITH8_40')
-         ENDIF
          IF (.NOT.LMECA) THEN
             CALL U2MESS('F','ALGORITH8_41')
          ENDIF
          IF ( THMC.NE.'LIQU_SATU'     .AND.
      &        THMC.NE.'LIQU_GAZ_ATM'  .AND.
      &        THMC.NE.'GAZ'                ) THEN
-            CALL U2MESS('F','ALGORITH8_54')
+           VALK(1) = 'THM'
+           CALL U2MESK('F','ALGORITH8_42',1,VALK)
          ENDIF
          IF ( HYDR.EQ.'HYDR_ENDO'         .AND.
      &        ( MECA.NE.'MAZARS'          .AND.
@@ -402,19 +397,14 @@ C =====================================================================
             CALL U2MESS('F','ALGORITH8_43')
          ENDIF
          IF ( MECA.EQ.'BARCELONE' ) THEN
-            CALL U2MESS('F','ALGORITH8_55')
+           VALK(1) = 'THM'
+           CALL U2MESK('F','ALGORITH8_44',1,VALK)
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THHM -------------------------------------------------
 C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THHM') THEN
          THER = 'THER'
-         IF (.NOT.LTHMC) THEN
-            CALL U2MESS('F','ALGORITH8_39')
-         ENDIF
-         IF (.NOT.LHYDR) THEN
-            CALL U2MESS('F','ALGORITH8_40')
-         ENDIF
          IF (.NOT.LMECA) THEN
             CALL U2MESS('F','ALGORITH8_41')
          ENDIF
@@ -422,7 +412,8 @@ C =====================================================================
      &        THMC.NE.'LIQU_AD_GAZ_VAPE' .AND.
      &        THMC.NE.'LIQU_AD_GAZ'.AND.
      &        THMC.NE.'LIQU_GAZ'           ) THEN
-            CALL U2MESS('F','ALGORITH8_56')
+           VALK(1) = 'THHM'
+           CALL U2MESK('F','ALGORITH8_42',1,VALK)
          ENDIF
          IF ( HYDR.EQ.'HYDR_ENDO'         .AND.
      &        ( MECA.NE.'MAZARS'          .AND.
@@ -432,17 +423,18 @@ C =====================================================================
          IF ( MECA.EQ.'BARCELONE' .AND.
      &        (THMC.NE.'LIQU_GAZ' .AND.
      &        THMC.NE.'LIQU_VAPE_GAZ')) THEN
-            CALL U2MESS('F','ALGORITH8_57')
+           VALK(1) = 'THHM'
+           CALL U2MESK('F','ALGORITH8_42',1,VALK)
          ENDIF
       ENDIF
-C          =========================================================
-C          MISE A JOUR DES RELATIONS DE COMPORTEMENTS --------------
-C          =========================================================
-           COMEL(1) = THMC
-           COMEL(2) = THER
-           COMEL(3) = HYDR
-           COMEL(4) = MECA
-C  RECUPARATION DES NOMBRES DE VARIABLES INTERNES
+C =========================================================
+C MISE A JOUR DES RELATIONS DE COMPORTEMENTS --------------
+C =========================================================
+      COMEL(1) = THMC
+      COMEL(2) = THER
+      COMEL(3) = HYDR
+      COMEL(4) = MECA
+C  RECUPERATION DES NOMBRES DE VARIABLES INTERNES
 
 C ======================================================================
 C --- POUR CHAQUE RELATION DE COMPORTEMENT PRESENTE ON RECUPERE --------

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -158,6 +158,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "D_PLAN_THHMS",    # RESP. : GRANET S.GRANET
                                   "D_PLAN_THMS",     # RESP. : GRANET S.GRANET
                                   "D_PLAN_HM_P",     # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HS",       # RESP. : GRANET S.GRANET
                                   "D_PLAN_HHD",      # RESP. : GRANET S.GRANET
                                   "D_PLAN_HHS",      # RESP. : GRANET S.GRANET
                                   "D_PLAN_HH2D",     # RESP. : GRANET S.GRANET
@@ -215,6 +216,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "3D_HH2MS",        # RESP. : GRANET S.GRANET
                                   "3D_THH2S",        # RESP. : GRANET S.GRANET
                                   "3D_THH2D",        # RESP. : GRANET S.GRANET
+                                  "3D_HS",           # RESP. : GRANET S.GRANET
                                   "3D_HHD",          # RESP. : GRANET S.GRANET
                                   "3D_HHS",          # RESP. : GRANET S.GRANET
                                   "3D_HH2D",         # RESP. : GRANET S.GRANET

@@ -1,7 +1,7 @@
       SUBROUTINE TE0497(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ELEMENTS  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C DECLARATION VARIABLES LOCALES
 C
       INTEGER IFM,NIV,TYPVF
       INTEGER IBID,IAUX,IRET,ITAB(7)
-      INTEGER IGEOM,JTIME
+      INTEGER IGEOM
       INTEGER IERR, IVOIS
       INTEGER IERRM
       INTEGER IMATE
@@ -75,11 +75,11 @@ C
       INTEGER                    IPOID2, IVF2, IDFDE2
       INTEGER NBCMP
       INTEGER IPG
-      INTEGER TYMVOL,NDEGRE,IFA,TYV
-      INTEGER NBS 
+      INTEGER IFA,TYV
+      INTEGER NBS
       INTEGER ISIENP ,ISIENM,IDEPLP,IDEPLM,JKP,NBNA
       INTEGER IAGD  ,IATYMA,TYP
-      INTEGER TYPV   ,IACMP
+      INTEGER IACMP
       INTEGER IADE2,IAVA2,IAPTM2,IGD2,NCMPM2
       INTEGER IADE3,IAVA3,IAPTM3,IGD3,NCMPM3
       INTEGER IGRDCA
@@ -93,14 +93,14 @@ C
       INTEGER II
 C
       REAL*8 R8MIEM,OVFL
-      REAL*8 R8BID,R8BID2,R8BID3(2),R8BID4(2)
+      REAL*8 R8BID3(2)
       REAL*8 VALRES(1)
       REAL*8 ORIEN,NX(3),NY(3),TX(3),TY(3),HF
       REAL*8 FPX,FPY
       REAL*8 FRX(9),FRY(9)
       REAL*8 FOVO(2)
       REAL*8 INSTPM(2)
-      REAL*8 BIOT,RHOLIQ,UNSURK,UNSURM,JACO(27)
+      REAL*8 BIOT,RHOLIQ,UNSURK,UNSURM,JACO(9)
       REAL*8 HK,DELTAT,THETA
       REAL*8 CYOUNG,RHOHOM,PERMIN,VISCLI,POROSI,POISSO
       REAL*8 TM2H1V(3),TM2H1B(3),TM2H1S(3)
@@ -117,27 +117,36 @@ C
       CHARACTER*8  TYPMOD(2)
 C
       INTEGER     NBRE1     , NBRE2    , NBRE3     , NBRE4
-      PARAMETER ( NBRE1 = 3 , NBRE2 = 2, NBRE3 = 1 , NBRE4 = 2 )
+      PARAMETER ( NBRE1 = 2 , NBRE2 = 2, NBRE3 = 1 , NBRE4 = 2 )
+C
+      INTEGER     NBR11     , NBR12
+      PARAMETER ( NBR11 = 1 , NBR12 = 3 )
 C
       REAL*8       VALRE1(NBRE1),VALRE2(NBRE2),
-     &             VALRE3(NBRE3),VALRE4(NBRE4)
+     &             VALRE3(NBRE3),VALRE4(NBRE4),
+     &             VALR11(NBR11),VALR12(NBR12)
 C
       CHARACTER*2  CODME1(NBRE1),CODME2(NBRE2),
-     &             CODME3(NBRE3),CODME4(NBRE4)
+     &             CODME3(NBRE3),CODME4(NBRE4),
+     &             CODM11(NBR11),CODM12(NBR12)
+C
       CHARACTER*8  NOMRE1(NBRE1),NOMRE2(NBRE2),
-     &             NOMRE3(NBRE3),NOMRE4(NBRE4)
+     &             NOMRE3(NBRE3),NOMRE4(NBRE4),
+     &             NOMR11(NBR11),NOMR12(NBR12)
       CHARACTER*8 VALK(2)
 
       LOGICAL YAPR, YARO
 C
-      DATA NOMRE1 / 'RHO','BIOT_COE','PERM_IN' /
+      DATA NOMRE1 / 'RHO','BIOT_COE' /
+      DATA NOMR11 / 'PERM_IN' /
+      DATA NOMR12 / 'PERMIN_X','PERMIN_Y','PERMIN_Z' /
       DATA NOMRE2 / 'RHO','VISC' /
       DATA NOMRE3 / 'PORO'       /
       DATA NOMRE4 / 'E', 'NU'    /
 C
 C ----------------------------------------------------------------------
  1000 FORMAT(A,' :',(6(1X,1PE17.10)))
- 2000 FORMAT(A,10I8)
+C 2000 FORMAT(A,10I8)
 C ----------------------------------------------------------------------
 C 1 -------------- GESTION DES DONNEES ---------------------------------
 C ----------------------------------------------------------------------
@@ -266,14 +275,32 @@ C
       CALL RCVALA ( ZI(IMATE), ' ', 'THM_DIFFU', 1, NOMPAR, VALRES,
      &              NBRE1, NOMRE1, VALRE1, CODME1, 'FM' )
 C
-      IF ( CODME1(1).EQ.'OK' .AND. CODME1(2).EQ.'OK' .AND.
-     &     CODME1(3).EQ.'OK' ) THEN
+      IF ( CODME1(1).EQ.'OK' .AND. CODME1(2).EQ.'OK' ) THEN
         RHOHOM = VALRE1(1)
         BIOT   = VALRE1(2)
-        PERMIN = VALRE1(3)
       ELSE
-        CALL U2MESK('F','ELEMENTS4_78',1,
-     &              NOMRE1(1)//NOMRE1(2)//NOMRE1(3))
+        CALL U2MESK('F','ELEMENTS4_78',1,NOMRE1(1)//NOMRE1(2))
+      ENDIF
+C
+C ON RECUPERE LA PERMEABILITE INTRINSEQUE
+C
+C => PERMIN SI ISOTROPE
+C => PERMIN_X,PERMIN_Y ET PERMIN_Z SINON
+C
+      CALL RCVALA ( ZI(IMATE), ' ', 'THM_DIFFU', 1, NOMPAR, VALRES,
+     &              NBR11, NOMR11, VALR11, CODM11, '  ' )
+C
+      IF ( CODM11(1).EQ.'OK') THEN
+        PERMIN = VALR11(1)
+      ELSE IF ( CODM11(1).EQ.'NO' ) THEN
+        CALL RCVALA ( ZI(IMATE), ' ', 'THM_DIFFU', 1, NOMPAR, VALRES,
+     &              NBR12, NOMR12, VALR12, CODM12, '  ' )
+        IF (( CODM12(1).EQ.'OK' ).AND.( CODM12(2).EQ.'OK' ).AND.
+     &      ( CODM12(3).EQ.'OK' )) THEN
+          PERMIN = SQRT(VALR12(1)**2+VALR12(2)**2+VALR12(3)**2)
+        ENDIF
+      ELSE
+        CALL U2MESK('F','ELEMENTS4_78',1,NOMR11(1))
       ENDIF
 C
       CALL RCVALA ( ZI(IMATE), ' ', 'THM_LIQU', 1, NOMPAR, VALRES,
@@ -507,10 +534,14 @@ C
 C
       NOEU = TYPEMA(5:5)
 C
-      IF (NOEU.EQ.'6'.OR.NOEU.EQ.'8'.OR.NOEU.EQ.'9') THEN
+C EN THM, ON EST TOUJOURS SUR DES MAILLAGES QUADRATIQUES.
+C (TRIA6 OU QUAD8 EN 2D)
+C ON A DONC FORCEMENT NBNA = 3
+C
+      IF (NOEU.EQ.'6'.OR.NOEU.EQ.'8') THEN
         NBNA = 3
       ELSE
-        NBNA = 2
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
 C CALCUL DE L'ORIENTATION DE LA MAILLE 2D
@@ -569,7 +600,7 @@ C
           IF (TYPMAV(1:4).EQ.'TRIA'.OR.
      >        TYPMAV(1:4).EQ.'QUAD') THEN
 C
-            CALL ERHMS2( PERMAN    , IFA      , NBS       , NBNA ,
+            CALL ERHMS2( PERMAN    , IFA      , NBS       ,
      &                   THETA     , JACO      , NX        , NY   ,
      &                   ZR(ISIENP), ADSIP    , ZR(ISIENM), NBCMP,
      &                   TYPMAV    , ZI(IREF1), ZI(IREF2) , IVOIS,
@@ -580,7 +611,7 @@ C         CALCUL DES TERMES DE VERIFICATION DES CONDITIONS DE BORD
 C
           ELSE IF (TYPMAV(1:2).EQ.'SE') THEN
 C
-            CALL ERHMB2( PERMAN    , IFA       , NBS   , NBNA  ,
+            CALL ERHMB2( PERMAN    , IFA       , NBS   ,
      &                   NDIM      , THETA     , INSTPM, JACO   , NX,
      &                   NY        , TX        , TY    , NBCMP ,
      &                   ZR(IGEOM) , IVOIS     ,

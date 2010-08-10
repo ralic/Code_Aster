@@ -1,0 +1,221 @@
+# MODIF  DATE 09/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
+# TITRE VALIDATION DE POST_BORDET EN 2D ET 3D
+# zzzz268a.para = tps_job 45 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT(CODE=_F(  NOM = 'ZZZZ268A',NIV_PUB_WEB='INTERNET'));
+MA = LIRE_MAILLAGE()
+##########################################################
+# MATERIAU
+##########################################################
+ACIER=DEFI_MATERIAU(ELAS=_F(E=300000.0,
+                            NU=0.,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=0.0,
+                                 SY=300.0,),
+                    );
+
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),
+                         );
+
+
+##########################################################
+# MODELE
+##########################################################
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(
+                     _F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='AXIS_SI',),),
+                      );
+
+
+##########################################################
+# INSTANTS DE CALCUL ET D'ARCHIVAGE
+##########################################################
+INST=DEFI_LIST_REEL(DEBUT=0.,
+                    INTERVALLE=_F(JUSQU_A=10.0,
+                                  PAS=1.,),);
+INSTANTS=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=INST),
+                        ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                SUBD_PAS=4,
+                                SUBD_NIVEAU=4,),);
+##########################################################
+# CHARGEMENT
+##########################################################
+
+CLIM=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_MA='BAS',
+                                 DY=0.,),
+                              _F(GROUP_MA='GAUCHE',
+                                 DX=0.),),
+                                 );
+                                 
+TRAC=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=_F(GROUP_MA='HAUT',
+                                    DY=.01,),);
+
+CMULT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          1.0,1.0,
+                          ),PROL_DROITE='LINEAIRE',);
+
+
+##########################################################
+# CALCUL 
+##########################################################
+EVOL=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=TRAC,
+                            FONC_MULT=CMULT,
+                            TYPE_CHARGE='FIXE_CSTE',),
+                          _F(CHARGE=CLIM,),),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                TOUT='OUI',),
+                   INCREMENT=_F(LIST_INST=INSTANTS,
+                                INST_FIN=10.0,),
+                   NEWTON=_F(REAC_INCR=1,
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=0.000001,
+                                  ITER_GLOB_MAXI=20,),
+                   ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
+                                LIST_INST=INST),);
+
+
+##########################################################
+# POST-TRAITEMENT POUR BORDET
+##########################################################
+
+SIGY1=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,00.,
+                         100.,1000.,
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                         
+SIGY2=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,00.,
+                         100.,500.,
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+
+
+SIGY=DEFI_NAPPE(NOM_PARA='EPSI',
+                PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                PARA=(0.0005,0.001),
+                FONCTION=(SIGY1,SIGY2),);
+                
+TEMP=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,10.,100.),
+                    PROL_DROITE='LINEAIRE',PROL_GAUCHE='CONSTANT',);
+
+SIGREF=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,200.,
+                         100.,300.,
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                 
+                 
+                                            
+BORDET=POST_BORDET(
+            GROUP_MA='PAVE',
+            NUME_ORDRE=5,
+            PROBA_NUCL='OUI',
+            PARAM=_F(M=22.,
+                     SIG_CRIT=250,
+                     SEUIL_REFE=300.,
+                     VOLU_REFE=1.,
+                     SIGM_REFE=SIGREF,
+                     SEUIL_CALC=SIGY,
+                     DEF_PLAS_REFE=0.001,
+                     ),
+            RESULTAT=EVOL,
+            MODELE=MO,
+            CHAM_MATER=CHMAT,
+            TEMP=TEMP,
+            COEF_MULT=2*pi)
+            
+
+#########################################################
+# --COMPARAISON AVEC L'ANALYTIQUE--
+#########################################################
+TEST_TABLE( TABLE     = BORDET,
+            NOM_PARA  = 'SIG_BORDET',
+            FILTRE    = (_F(NOM_PARA  = 'INST',
+                            VALE      = 2.,
+                            CRIT_COMP = 'EQ',),),
+            VALE      = 247.66,
+            CRITERE   = 'RELATIF',
+            PRECISION = 1.E-3,
+            REFERENCE = 'ANALYTIQUE',
+            )
+
+TEST_TABLE( TABLE     = BORDET,
+            NOM_PARA  = 'SIG_BORDET',
+            FILTRE    = (_F(NOM_PARA  = 'INST',
+                            VALE      = 3.,
+                            CRIT_COMP = 'EQ',),),
+            VALE      = 252.23,
+            CRITERE   = 'RELATIF',
+            PRECISION = 1.E-3,
+            REFERENCE = 'ANALYTIQUE',
+            )
+
+TEST_TABLE( TABLE     = BORDET,
+            NOM_PARA  = 'SIG_BORDET',
+            FILTRE    = (_F(NOM_PARA  = 'INST',
+                            VALE      = 5.,
+                            CRIT_COMP = 'EQ',),),
+            VALE      = 254.70,
+            CRITERE   = 'RELATIF',
+            PRECISION = 1.E-3,
+            REFERENCE = 'ANALYTIQUE',
+            )
+            
+TEST_TABLE( TABLE     = BORDET,
+            NOM_PARA  = 'PROBA_BORDET',
+            FILTRE    = (_F(NOM_PARA  = 'INST',
+                            VALE      = 2.,
+                            CRIT_COMP = 'EQ',),),
+            VALE      = 1,
+            CRITERE   = 'RELATIF',
+            PRECISION = 1.E-3,
+            REFERENCE = 'ANALYTIQUE',
+            )
+
+TEST_TABLE( TABLE     = BORDET,
+            NOM_PARA  = 'PROBA_BORDET',
+            FILTRE    = (_F(NOM_PARA  = 'INST',
+                            VALE      = 3.,
+                            CRIT_COMP = 'EQ',),),
+            VALE      = 0.9995,
+            CRITERE   = 'RELATIF',
+            PRECISION = 1.E-3,
+            REFERENCE = 'ANALYTIQUE',
+            )
+
+TEST_TABLE( TABLE     = BORDET,
+            NOM_PARA  = 'PROBA_BORDET',
+            FILTRE    = (_F(NOM_PARA  = 'INST',
+                            VALE      = 5.,
+                            CRIT_COMP = 'EQ',),),
+            VALE      = 0.778,
+            CRITERE   = 'RELATIF',
+            PRECISION = 1.E-3,
+            REFERENCE = 'ANALYTIQUE',
+            )           
+        
+           
+
+
+FIN();

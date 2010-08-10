@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 05/07/2010   AUTEUR DESROCHES X.DESROCHES 
+%& MODIF COMPELEM  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -88,7 +88,7 @@ PHENOMENE_MODELISATION__
 %           GRADVARI l'élément utilise des comportements non locaux (TYPMOD(2)='GRADVARI' pour NMCOMP)
 %           ELEMJOIN l'élément utilise des comportements d'éléments de joints (CZM sur des modélisations *_JOINT)
 %           INTERFAC l'élément utilise des comportements d'éléments d'interface (CZM sur des modélisations *_INTERFACE)
-%           ELEMDISC l'élément utilise des comportements d'éléments a discontinuité interne 
+%           ELEMDISC l'élément utilise des comportements d'éléments a discontinuité interne
 %
 %  PRINCIPAL =  'OUI' :
 %       l'élément est "principal" pour la modélisation (i.e. ce n'est pas un élément de "bord").
@@ -585,7 +585,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEPLSE2_XT
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XT_X
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XT_X
-              
+
        MODELISATION__ 'C_PLAN_XHT'        DIM__ 2 2   CODE__ 'CX3'
               ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
               MAILLE__ TRIA3     ELEMENT__ MECPTR3_XHT
@@ -933,6 +933,12 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6
               MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3
+
+      MODELISATION__ 'D_PLAN_HS'        DIM__ 2 2   CODE__ 'DHA'
+              ATTRIBUT__  THM=OUI  D_PLAN=OUI
+              MAILLE__ QUAD8     ELEMENT__ H_DPQ8S
+              MAILLE__ TRIA6     ELEMENT__ H_DPTR6S
+              MAILLE__ SEG3      ELEMENT__ H_D_PLAN_SE3
 
        MODELISATION__ 'D_PLAN_HM_P'      DIM__ 2 2   CODE__ 'DHB'
               ATTRIBUT__  THM=OUI  D_PLAN=OUI
@@ -1461,6 +1467,14 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA20    ELEMENT__ HH2_HEXA20D
               MAILLE__ QUAD8     ELEMENT__ HH2_FACE8
               MAILLE__ TRIA6     ELEMENT__ HH2_FACE6
+
+       MODELISATION__ '3D_HS'          DIM__ 3 3   CODE__ 'EH3'
+              ATTRIBUT__  THM=OUI
+              MAILLE__ TETRA10   ELEMENT__ H_TETRA10S
+              MAILLE__ PENTA15   ELEMENT__ H_PENTA15S
+              MAILLE__ HEXA20    ELEMENT__ H_HEXA20S
+              MAILLE__ QUAD8     ELEMENT__ H_FACE8
+              MAILLE__ TRIA6     ELEMENT__ H_FACE6
 
        MODELISATION__ 'D_PLAN_2DG'        DIM__ 2 2   CODE__ 'D2G'
               ATTRIBUT__  D_PLAN=OUI

@@ -1,5 +1,6 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 09/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
 # TITRE DEPOUILLEMENT WEIBULL EPROUVETTE AE2 M=8 OPTION GAUSS
+# ssna108a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -142,6 +143,13 @@ RET=POST_ELEM(
                                      LOCAL = 'OUI')
                    )
 
+
+
+
+
+
+
+
 TEST_TABLE(      TABLE=AE2,FILTRE=( 
                  _F(  NOM_PARA = 'NUME_ORDRE',
                           VALE_I = 2),
@@ -237,6 +245,70 @@ TEST_TABLE(     TABLE=RET,FILTRE=(
                           VALE_K = 'MA281')),
                NOM_PARA='TX_CROIS_CAVITES',
                    VALE=1.0315E+00           )
+
+#####################################################
+#Pour validation de POST_BORDET
+
+SIGY=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,555.,
+                         100.,555.,
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
+
+SIGU=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,2630.,
+                         100.,2630.,
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
+
+#Calcul de bordet                                           
+BORDET=POST_BORDET(
+            TOUT='OUI',
+            NUME_ORDRE=10,
+            PROBA_NUCL='NON',
+            PARAM=_F(M=8.,
+                     SIG_CRIT=600,
+                     SEUIL_REFE=555.,
+                     VOLU_REFE=1.E-3,
+                     SIGM_REFE=SIGU,
+                     SEUIL_CALC=SIGY,
+                     ),
+            RESULTAT=U,
+            MODELE=MO,
+            CHAM_MATER=CM,
+            TEMP=20,
+             )
+
+
+
+
+TEST_TABLE(      TABLE=BORDET,
+                  FILTRE=( 
+                          _F(  NOM_PARA = 'INST',
+                               VALE = 2.),),
+               NOM_PARA='SIG_BORDET',
+                   VALE=0.     )
+
+TEST_TABLE(      TABLE=BORDET,FILTRE=( 
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 4.),),
+               NOM_PARA='SIG_BORDET',
+                   VALE=721.8      )
+
+TEST_TABLE(      TABLE=BORDET,FILTRE=( 
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 6.,),),
+                  NOM_PARA='SIG_BORDET',
+                   VALE=1302.4      )
+
+TEST_TABLE(      TABLE=BORDET,FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 8.),),
+               NOM_PARA='SIG_BORDET',
+                   VALE=1730.5      )
+
+TEST_TABLE(      TABLE=BORDET,FILTRE=( 
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 10.),),
+               NOM_PARA='SIG_BORDET',
+                   VALE=2022.5      )
+
 
 FIN( )
 #

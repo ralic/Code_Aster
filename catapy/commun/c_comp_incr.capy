@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "MAZARS"
                                        ),),
                    ),
-           b_kit_thm = BLOC(condition = "RELATION in ['KIT_HHM','KIT_HH','KIT_HM','KIT_THHM','KIT_THH','KIT_THM','KIT_THV']",
+           b_kit_thm = BLOC(condition = "RELATION in ['KIT_HHM','KIT_HH','KIT_H','KIT_HM','KIT_THHM',\
+                                                      'KIT_THH','KIT_THM','KIT_THV']",
                             fr="lois de comportements thermo-hydro-mecaniques",
                RELATION_KIT    =SIMP(statut='o',typ='TXM',max=9,validators=NoRepeat(),
                                  into=(

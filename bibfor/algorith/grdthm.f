@@ -8,22 +8,22 @@
       CHARACTER*16 NOMTE
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ALGORITH  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C   TABLEAU MECANI :
 C   MECANI(1) = 1 : IL Y A UNE EQUATION MECANIQUE
@@ -93,23 +93,23 @@ C=========================================
        IF (NOMTE(2:4).EQ.'HH2') THEN
          MECANI(1) = 0
          TEMPE(1)  = 0
-C         
+C
          PRESS1(1) = 1
          PRESS1(2) = 2
-         PRESS1(3) = 1 
+         PRESS1(3) = 1
          PRESS1(4) = 1
          PRESS1(5) = 3
          PRESS1(6) = 1+NDIM
          PRESS1(7) = 2
-C         
+C
          PRESS2(1) = 1
          PRESS2(2) = 2
-         PRESS2(3) = 1+NDIM+1 
+         PRESS2(3) = 1+NDIM+1
          PRESS2(4) = 5
          PRESS2(5) = 7
          PRESS2(6) = 1+NDIM
          PRESS2(7) = 2
-C          
+C
          DIMDEP = NDIM*MECANI(1) + PRESS1(1) + PRESS2(1) + TEMPE(1)
          DIMDEF = PRESS1(6) + PRESS2(6)
          DIMCON = 8
@@ -206,6 +206,17 @@ C =====================================================================
             TEMPE(1)  = 1
             PRESS1(2) = 2
             PRESS2(2) = 2
+         END IF
+C =====================================================================
+C --- SI MODELISATION = H --------------------------------------------
+C =====================================================================
+         IF (NOMTE(1:2).EQ.'H_') THEN
+            MECANI(1) = 0
+            PRESS1(1) = 1
+            PRESS2(1) = 0
+            TEMPE(1)  = 0
+            PRESS1(2) = 1
+            PRESS2(2) = 0
          END IF
 C =====================================================================
 C --- SI MODELISATION = HH -------------------------------------------
@@ -354,11 +365,11 @@ C
 C =====================================================================
 C 2.3. DIMENSION DES DEPLACEMENTS, DEFORMATIONS ET CONTRAINTES --------
 C =====================================================================
-C 
- 
+C
+
              DIMDEP = NDIM*MECANI(1) + PRESS1(1) + PRESS2(1) + TEMPE(1)
              DIMDEF = MECANI(4) + PRESS1(6) + PRESS2(6) + TEMPE(4)
-             DIMCON = MECANI(5) + PRESS1(2)*PRESS1(7) + 
+             DIMCON = MECANI(5) + PRESS1(2)*PRESS1(7) +
      &                 PRESS2(2)*PRESS2(7) + TEMPE(5)
 C=====================================================================
 C

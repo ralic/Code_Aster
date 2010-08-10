@@ -7,7 +7,7 @@
       LOGICAL       ELSUFM
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ALGORITH  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C     NDDLM  NOMBRE DE DDL DES NOEUDS MILIEU DE SEGMENTS OU FACE
       ELSUFM= (( NOMTE(IAUX-4:IAUX).EQ.'_SUDM').OR.
      >        ( NOMTE(IAUX-4:IAUX).EQ.'_SUDA' ).OR.
      >        ( NOMTE(IAUX-3:IAUX).EQ.'_SUC' ))
-      
+
       IF (ELSUFM) THEN
 C ======================================================================
 C --- SI MODELISATION = SUSHI   ----------------------------------------
@@ -89,6 +89,12 @@ C ======================================================================
 C --- SI MODELISATION = HH_ -------------------------------------------
 C ======================================================================
          NDLNO = 2
+         NDLNM = 0
+      ELSE IF (NOMTE(1:2).EQ.'H_') THEN
+C ======================================================================
+C --- SI MODELISATION = H_ --------------------------------------------
+C ======================================================================
+         NDLNO = 1
          NDLNM = 0
       ELSE IF (NOMTE(1:4).EQ.'HH2_') THEN
 C ======================================================================

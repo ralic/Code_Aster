@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algorith8 Messages  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,7 +118,7 @@ cata_msg = {
 """),
 
 42 : _("""
- la loi de couplage est incorrecte pour une modélisation HM
+ la loi de couplage est incorrecte pour une modélisation %(k1)s
 """),
 
 43 : _("""
@@ -126,55 +126,15 @@ cata_msg = {
 """),
 
 44 : _("""
- loi de mécanique incompatible avec une modelisation HM
-"""),
-
-45 : _("""
- la loi de couplage est incorrecte pour une modélisation HHM
+ loi de mécanique incompatible avec une modélisation %(k1)s
 """),
 
 46 : _("""
- il y a une loi de mécanique dans la relation HH
+ il y a une loi de mécanique dans la relation %(k1)s
 """),
 
-47 : _("""
- loi de mécanique incompatible avec une modélisation HHM
-"""),
-
-48 : _("""
- il y a une loi de mécanique dans la relation THH
-"""),
-
-49 : _("""
- la loi de couplage est incorrecte pour une modélisation THH
-"""),
-
-51 : _("""
- il y a une loi de mecanique dans la relation THV
-"""),
-
-52 : _("""
- la loi de couplage est incorrecte pour une modélisation THV
-"""),
-
-54 : _("""
- la loi de couplage est incorrecte pour une modélisation THM
-"""),
-
-55 : _("""
- loi de mécanique incompatible avec une modélisation THM
-"""),
-
-56 : _("""
- la loi de couplage est incorrecte pour une modélisation THHM
-"""),
-
-57 : _("""
- Loi de mécanique incompatible avec une modélisation THHM
-"""),
-
-58 : _("""
- la loi de couplage est incorrecte pour une modélisation HH
+59 : _("""
+ la loi de couplage doit être LIQU_SATU ou GAZ pour une modélisation H
 """),
 
 61 : _("""

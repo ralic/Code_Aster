@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF rupture1 Messages  DATE 09/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -346,4 +346,24 @@ définissant la fissure initiale, de forme elliptique, ne sont pas orthogonaux. V
 les données d'entrée.
 """),
 
+53: _("""
+L'instant %(r1)d n'appartient pas au résultat %(k1)s.
+"""),
+
+54:_("""
+Les champs de contraintes et de déformations ne sont pas de même taille. Vérifiez que votre
+calcul mécanique s'est bien passé.
+"""),
+
+55:_("""
+Problème dans la liste d'instants du résultats: 2 instants consécutifs sont égaux.
+"""),
+
+56:_("""
+La contrainte de référence est nulle à l'instant %(r1)d.
+"""),
+
+57:_("""
+Problème dans la dimension du modèle. POST_BORDET ne supporte pas les raccords 2D-3D
+"""),
 }

@@ -9,7 +9,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 10/05/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -209,7 +209,7 @@ C
        ENDIF
 
       ENDIF
-      
+
 C ======================================================================
 C --- CALCUL DES GRANDEURS MECANIQUES PURES UNIQUEMENT SI YAMEC = 1 -
 C ET SI ON EST SUR UN POINT DE GAUSS (POUR L'INTEGRATION REDUITE)

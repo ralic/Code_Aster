@@ -1,0 +1,351 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bargellini   BARGELLINI Renaud      DATE 09/08/2010 - 16:46:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015369 DU 2010-07-21 12:16:41
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Introduction du modèle de Bordet dans Code_Aster
+FONCTIONNALITE
+   BESOIN :
+   -------------------------------------
+   Dans le cadre du projet ANODE, il est demandé de réaliser 
+   l'implentation du modèle de Bordet dans Code_Aster.
+   Ce modèle est un modèle de post-traitement de mécanique de 
+   la rupture dont le but est de définir une problabilité de 
+   clivage ; il est analogue au modèle de Beremin (Weibull) 
+   mais prend mieux en compte l'histoire du chargement et la 
+   notion de plasticité active.
+   Du fait de leurs analogies, les modèles de Weibull et 
+   Bordet sont décrits dans la même doc R et sont validés à 
+   travers un cas test identique.
+   
+   REALISATION :
+   -------------------------------------
+   Suite à discussion avec JMP et Mathieu Courtois, la 
+   décision de réaliser une macro-commande Python est prise.
+   Cette macro, nommée POST-BORDET, réalise le calcul de la 
+   contrainte de Bordet et de la probabilité de clivage 
+   associée. Elle prend en argument les paramètres du modèle 
+   et permet de distinguer 2 versions du modèle (avec 
+   probabilité de nucléation, nécessitant un paramètre 
+   supplémentaire, ou sans) ; elle sort un concept de type 
+   TABLE avec 3 données : les instants de calculs ('INST'), 
+   la contrainte de bordet ('SIG_BORDET') et la probabilité 
+   associée ('PROBA_BORDET').
+   
+   VALIDATION :
+   -------------------------------------
+   On ajoute tout d'abord des cas tests élémentaires avec des 
+   champs uniformes(barreau axi et cube 3D en traction) 
+   nommés zzzz268a et b. Ces cas tests élémentaires ont une 
+   réponse analytique qui permettent une validation des 
+   différentes options.
+   On modifie également le cas test ssna108a qui validait les 
+   modèles de Weibull et Rice et Tracey par un calcul de la 
+   probabilité et de la contrainte de Bordet. Ce cas test 
+   sera de type NON_REGRESSION (aucune valeur de référence 
+   n'est connue)
+   
+   DOCUMENTATION :
+   -------------------------------------
+   La description du modèle est faite par modification de la 
+   doc R7.02.06 initialement dédiée aux modèles de Weibull et 
+   de Rice et Tracey.
+   Une documentation utilisateur est faite (doc U4.81.41).
+   La doc V6.01.108 est modifiée.
+   Une documentation du cas test élémentaire zzzz268 est 
+   rédigée (V1.01.268).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : u4.81.41, r7.02.06,v1.01.268,v6.01.108
+VALIDATION
+   zzzz268, ssna108a
+NB_JOURS_TRAV  : 30.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien     DATE 10/08/2010 - 13:27:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014134 DU 2009-11-04 15:55:09
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Une nouvelle modélisation hydraulique saturée pour la thm
+FONCTIONNALITE
+   Fonctionnalité :
+   ----------------
+   
+   On restitue une nouvelle modélisation hydraulique saturée en éléments finis pour la thm à
+   intégration sélective dans le kit_thm.
+   
+   Cette nouvelle modélisation servira notamment pour le chaînage pour la thm dans le cadre
+   du projet stockage.
+   
+   Routines modifiées :
+   --------------------
+   dimthm.f  grdthm.f  nmthmc.f
+   
+   Catalogues modifiés :
+   ---------------------
+   affe_modele.capy  phenomene_modelisation__.cata
+   c_comp_incr.capy  c_relation.capy
+   algorith_8.py
+   
+   Nouveaux catalogues :
+   ---------------------
+   2d   : gener_medha1.cata gener_medha2.cata
+   3d   : gener_meh32.cata  gener_meh33.cata
+   
+   kit_h.py
+   
+   Validation :
+   ------------
+   3 nouveaux tests : wtnp121m, wtnp121n, wtnp122i
+   
+   On rajoute 2 nouvelles modélisations au test wtnp121 pour le 2D et le 3d.
+   C'est le test d'un barreau sous pression de liquide initiale constante qu'on relâche.
+   
+   On rajoute une modélisation au test wtnp122 pour le 2D pour valider le cas saturé en gaz.
+   C'est le cas d'un barreau sous pression de gaz initiale constante qu'on relâche.
+   
+   On dispose pour ces 2 tests d'une solution analytique.
+   
+   Remarque suite à l'eda :
+   ------------------------
+   On ne restitue pas de version axisymétrique pour cette modélisation avec intégration
+   sélecive car on a observé des résultats étranges sur le test wtnp121 avec l'axisymétrie et
+   une modélisation hydraulique saturée.
+   Le problème est que les résultats ne sont plus symétriques pour ce test si on est trop
+   proche de l'axe de symétrie. Une fiche d'anomalie trace et détaille cette bizarrerie pour
+   une modélisation HMS, avec les ddls de méca bloqués, ce qui revient à une modélisation
+   hydraulique saturée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.32.121,V7.32.122,U2.04.05,U4.51.11,U4.41.01,R7.01.11
+VALIDATION
+   wtnp121, wtnp122
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015370 DU 2010-07-21 12:37:16
+TYPE express concernant Code_Aster (VERSION 10.2)
+TITRE
+   wtnp121 - amélioration du jdc
+FONCTIONNALITE
+   Dans le test wtnp121, la convergence est pour toutes les modélisations en arrêt='NON'.
+   Ceci n'a aucun intérêt car c'est un problème linéaire. La convergence doit se faire en 1
+   itération de Newton. J'enlève donc le mot-clef ARRET='NON' dans wtnp121.
+   
+   Par ailleurs, dans ce test, les ddls PRE2 sont bloqués partout. On a donc PRE2=0 sur tout
+   le modèle. Il y a pourtant dans certaines modélisations (a, b, c, d e, g, h) un relevé des
+   valeurs de PRE2 sur certains noeuds et une impression des tableaux correspondants.
+   J'enlève ces impressions comme l'information n'est pas importante.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   wtnp121
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014664 DU 2010-02-18 15:56:15
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   THM - tenseur de perméabilité non sphérique
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   En THM, le tenseur de perméabilité intrinsèque perm_in peut ne pas être sphérique. Dans ce
+   cas, il a 3 composantes diagonales : permin_x, permin_y et permin_z. Pour l'estimation
+   d'erreur a posteriori, on n'avait pas pris en compte jusqu'à maintenant cette possibilité.
+   
+   On était donc arrêté par un message d'erreur de récupération des données matériaux
+   (permin) dans le calcul des estimateurs.
+   
+   Désormais, on peut calculer l'estimateur d'erreur en temps et en espace avec n'importe
+   quel tenseur de perméabilité intrinsèque.
+   
+   Solution :
+   ----------
+   La perméabilité intrinsèque K n'intervient que dans l'adimensionnement des estimateurs. Si
+   on suppose K sous la forme K=(kx,ky,kz), on choisit la norme de K (sqrt(kx²+ky²+kz²))
+   comme facteur d'adimensionnement. L'impact est uniquement dans :
+   -> te0500.f : calcul de l'estimateur d'erreur en temps
+   -> te0497.f : calcul de l'estimateur d'erreur en espace
+   
+   Validation : wtnp110a
+   ------------
+   On rajoute un calcul d'estimateur d'erreur en espace et en temps dans wtnp110a. C'est le
+   seul test de la base disposant d'une modélisation HM saturée élastique, avec un tenseur de
+   perméabilité non sphérique.
+   
+   On a de plus dans ce test une solution analytique :
+   -> en pression : affine indépendante du temps (p(x,y)=)a*x+b*y+c)
+   -> en déplacements mécaniques : ils sont bloqués
+   
+   L'indicateur d'erreur en temps doit donc être nul (ce qui est vérifié par un TEST_RESU)
+   mais il faut faire attention à déclarer un état initial cohérent en flux hydraulique pour
+   la solution initiale car l'estimateur d'erreur calcule (FH+ - FH-) où FH est le flux
+   hydraulique.
+   
+   L'indicateur d'erreur en espace doit être nul également mais il faut regarder la
+   composante hydraulique uniquement : ERHMHY_G. En effet, la composante mécanique n'a pas
+   vraiment de sens pour ce test car les déplacements sont pris nuls partout. On rajoute donc
+   un TEST_RESU sur la composante hydraulique de l'erreur nulle.
+   
+   Rebondissement :
+   ----------------
+   En restituant cette fiche, je me suis rendu compte que les termes de bord de l'indicateur
+   d'erreur en THM étaient faux. La fiche 15410 a donc été émise.
+   
+   Dans cette fiche 14664, on restitue donc simultanément le développement qui corrige la
+   fiche 15410.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.32.110
+VALIDATION
+   wtnp110a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015410 DU 2010-08-04 11:09:10
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+   Indicateur d'erreur en HM - calcul des termes de bord faux
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Le test wtnp110a (test HM) s'arrête en erreur fatale dvp_2 (floating point exception)
+   lorsqu'on demande un calcul d'indicateur d'erreur en espace dans CALC_ELEM('ERRE_ELEM_SIGM').
+   
+   Contexte :
+   ----------
+   
+   Cette fiche est une conséquence de la fiche 14664. Grâce à elle, on se rend compte que les
+   termes de bord de l'indicateur en résidu sont mal calculés en HM.
+   
+   On rappelle qu'il y a 2 conditions limites (CL), pour la pression et la mécanique, et
+   qu'il y a 3 possibilités pour chacune d'elle pour chaque maille au bord :
+   
+   1. on n'a pas imposé de CL. Dans ce cas, la CL mathématique est une CL de Neumann nulle
+   2. on a imposé une CL de Dirichlet
+   3. on a imposé une CL de Neumann
+   
+   Diagnostic :
+   ------------
+   
+   Dans la programmation actuelle, les résultats sont faux uniquement dans le cas où toutes
+   les mailles de bord portent des CL de Dirichlet sur une physique.
+   
+   C'est précisément le cas du test wtnp110a, pour la mécanique et pour l'hydraulique.
+   
+   Dans cette situation, on calcule une contribution du bord à l'erreur du type (FLU_IMP -
+   FLUHN), où FLU_IMP est un flux hydraulique imposé et FLUHN le flux hydraulique numérique
+   au bord alors qu'on ne devrait pas. FLUIMP n'existe pas en toute rigueur ! C'est ce qui a
+   provoqué le bug sur la Bull en debug.
+   
+   Solution :
+   ----------
+   
+   On réécrit complètement erhmb2.f en s'inspirant de ermeb2.f qui calcule la contribution
+   des termes de bord à l'indicateur d'erreur en mécanique pure.
+   
+   Cela corrige le bug et on en profite pour avoir une programmation plus lisible. Désormais,
+   on a le comportement suivant :
+   1. si on a une CL de Dirichlet, on ne calcule rien
+   2. si on n'a pas déclaré de CL (on a donc en toute rigueur une CL de Neumann), on ne
+   calcule rien
+   3. si on a une CL de Neumann, on calcule une contribution à l'indicateur d'erreur
+   
+   Validation :
+   ------------
+   wtnp116a, wtnl100e : le comportement est inchangé car on n'est pas dans le cas
+   problématique où on n'a que des CLs de Dirichlet pour une physique
+   
+   wtnp110a : nouveau calcul d'indicateur d'erreur en espace (voir fiche 14664). Comme on a
+   une solution analytique linéaire en pression, l'erreur sur l'hydraulique doit être nulle,
+   ce qui est vérifié
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.32.110
+VALIDATION
+   wtnp116a,wtnl100e,wtnp110a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT wtnp121m                      meunier S.MEUNIER          271    271      0
+ CASTEST AJOUT wtnp121n                      meunier S.MEUNIER          242    242      0
+ CASTEST AJOUT wtnp122i                      meunier S.MEUNIER          300    300      0
+ CASTEST AJOUT zzzz268a                   bargellini R.BARGELLINI       221    221      0
+ CASTEST AJOUT zzzz268b                   bargellini R.BARGELLINI       221    221      0
+ CASTEST MODIF ssna108a                   bargellini R.BARGELLINI       314     73      1
+ CASTEST MODIF wtnp110a                      meunier S.MEUNIER          250    138     76
+ CASTEST MODIF wtnp121a                      meunier S.MEUNIER          392      3     17
+ CASTEST MODIF wtnp121b                      meunier S.MEUNIER          388      3     18
+ CASTEST MODIF wtnp121c                      meunier S.MEUNIER          389      3     18
+ CASTEST MODIF wtnp121d                      meunier S.MEUNIER          328      3     19
+ CASTEST MODIF wtnp121e                      meunier S.MEUNIER          337      3     20
+ CASTEST MODIF wtnp121f                      meunier S.MEUNIER          326      3      5
+ CASTEST MODIF wtnp121g                      meunier S.MEUNIER          345      3     19
+ CASTEST MODIF wtnp121h                      meunier S.MEUNIER          317      3     20
+ CASTEST MODIF wtnp121i                      meunier S.MEUNIER          321      3      6
+ CASTEST MODIF wtnp121j                      meunier S.MEUNIER          323      3      5
+ CASTEST MODIF wtnp121k                      meunier S.MEUNIER          324      3      5
+ CASTEST MODIF wtnp121l                      meunier S.MEUNIER          321      3      6
+CATALOGU AJOUT typelem/gener_medha1          meunier S.MEUNIER           58     58      0
+CATALOGU AJOUT typelem/gener_medha2          meunier S.MEUNIER          142    142      0
+CATALOGU AJOUT typelem/gener_meh32           meunier S.MEUNIER           63     63      0
+CATALOGU AJOUT typelem/gener_meh33           meunier S.MEUNIER          148    148      0
+CATALOGU MODIF compelem/phenomene_modelisation__    meunier S.MEUNIER         1605     15      1
+CATALOPY AJOUT commande/post_bordet       bargellini R.BARGELLINI        65     65      0
+CATALOPY MODIF commande/affe_modele          meunier S.MEUNIER          273      3      1
+CATALOPY MODIF commun/c_comp_incr            meunier S.MEUNIER          149      3      2
+CATALOPY MODIF commun/c_relation             meunier S.MEUNIER          151      2      1
+ FORTRAN MODIF algorith/comthm               meunier S.MEUNIER          289      1      1
+ FORTRAN MODIF algorith/dimthm               meunier S.MEUNIER          121      7      1
+ FORTRAN MODIF algorith/grdthm               meunier S.MEUNIER          379     12      1
+ FORTRAN MODIF algorith/nmthmc               meunier S.MEUNIER          479     47     55
+ FORTRAN MODIF elements/erhmb2               meunier S.MEUNIER          622    168    123
+ FORTRAN MODIF elements/erhms2               meunier S.MEUNIER          449      4     34
+ FORTRAN MODIF elements/te0497               meunier S.MEUNIER          708     52     21
+ FORTRAN MODIF elements/te0500               meunier S.MEUNIER          294     21     10
+  PYTHON AJOUT Comportement/kit_h            meunier S.MEUNIER           54     54      0
+  PYTHON AJOUT Macro/post_bordet_ops      bargellini R.BARGELLINI       309    309      0
+  PYTHON MODIF Messages/algorith8            meunier S.MEUNIER          227      6     46
+  PYTHON MODIF Messages/rupture1          bargellini R.BARGELLINI       369     21      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   12        2094      2094             +2094
+ MODIF :   28       10790       609     533       +76
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   40       12884      2703     533     +2170 
