@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 16/06/2010   AUTEUR CARON A.CARON 
+#@ MODIF sd_xfem SD  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,6 @@ from SD.sd_carte     import sd_carte
 from SD.sd_util      import *
 
 
-
 #-------------------------------
 #       I. sd fiss_xfem
 #-------------------------------
@@ -35,6 +34,7 @@ class sd_fiss_xfem(AsBase):
     nomj = SDNom(fin=8)
 
     INFO   = AsVK16(lonmax=2,)   # info discontinuite
+    MODELE = AsVK8(lonmax=1,)
 
 # I.1) objets relatifs aux level sets
 

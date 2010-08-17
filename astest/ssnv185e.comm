@@ -1,4 +1,4 @@
-# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185e.para = tps_job 70 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -192,7 +192,7 @@ for i in range(0,nbc) :
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
 # -------------------------------------------------------------   
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
+MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,
                        INFO          = 2)
 
@@ -201,12 +201,9 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),) 
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
-                        MODELE_VISU   = MOD_VISU,
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
+                        
                         INFO          = 2)
 
 FIN();

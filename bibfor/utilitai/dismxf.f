@@ -1,7 +1,7 @@
       SUBROUTINE DISMXF(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C
 C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER JINFO
+      INTEGER JINFO,JMOD
 
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
@@ -65,13 +65,24 @@ C
       REPK=' '
 
       IF (QUESTI.EQ.'TYPE_DISCONTINUITE') THEN
+
         CALL JEVEUO(NOMOB//'.INFO','L',JINFO)
         REPK = ZK16(JINFO-1+1)
+
       ELSE IF (QUESTI.EQ.'CHAM_DISCONTINUITE') THEN
+
         CALL JEVEUO(NOMOB//'.INFO','L',JINFO)
         REPK = ZK16(JINFO-1+2)
+
+      ELSE IF (QUESTI.EQ.'NOM_MODELE') THEN
+
+        CALL JEVEUO(NOMOB//'.MODELE','L',JMOD)
+        REPK = ZK8(JMOD-1+1)
+
       ELSE
+
         IERD=1
+
       END IF
 C
       REPKZ = REPK

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/09/2009   AUTEUR MESSIER J.MESSIER 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DEBOUCHANTE SOLLICITEE EN MODE I
 # sslp320c.para = tps_job 150 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -244,20 +244,17 @@ DEPL = [None]*(NPAS+1)
 
 
 for i in range(1,NPAS+1) :
-   MAXFE[i]=POST_MAIL_XFEM(MODELE=MODEL[i],
-                             MAILLAGE_SAIN = MAILLAG1,);
+   MAXFE[i]=POST_MAIL_XFEM(MODELE=MODEL[i]);
 
    MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFE[i],
                          AFFE=_F(TOUT='OUI',
                                  PHENOMENE='MECANIQUE',
                                  MODELISATION='D_PLAN',),) 
 
-   DEPL[i]=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                          MAILLAGE_FISS = MAXFE[i],
-                          MODELE=MODEL[i],
+   DEPL[i]=POST_CHAM_XFEM(
                           MODELE_VISU   = MOVIS[i],
                           RESULTAT=RESU[i],
-                          NOM_CHAM=('DEPL','SIEF_ELGA'),);
+                          );
 
 #   DEFI_FICHIER(UNITE=30+i,);
 #   IMPR_RESU(

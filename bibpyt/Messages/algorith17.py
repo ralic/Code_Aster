@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algorith17 Messages  DATE 16/08/2010   AUTEUR GRANET S.GRANET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,5 +64,11 @@ cata_msg={
   fermeture maximale UMC = %(r2)f
   Vérifier la cohérence chargement mécanique, fermeture asymptotique et ouverture 
   initiale.
+"""),
+12 : _("""
+  La température de référence (exprimée en Kelvin) doit toujours être strictement supérieure à zéro.
+"""),
+13 : _("""
+  La pression de gaz de référence doit toujours être différente de zéro.
 """),
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,11 +25,6 @@ PRE_GIBI();
 
 MAILLAG1=LIRE_MAILLAGE(INFO=1,);
 
-MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                    MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),
-                    );
-
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                    AFFE=_F(GROUP_MA=('VOL',),
                             PHENOMENE='MECANIQUE',
@@ -41,7 +36,6 @@ LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN,),
-                    GROUP_MA_ENRI='VOL',
                     INFO=3, );
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
@@ -123,7 +117,7 @@ UTOT2=STAT_NON_LINE(MODELE=MODELEK,
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
 # -------------------------------------------------------------   
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
+MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,
                        INFO          = 2)
 
@@ -132,20 +126,14 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),) 
 
-RES_X1=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
-                        MODELE_VISU   = MOD_VISU,
+RES_X1=POST_CHAM_XFEM( MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
+                        
                         INFO          = 2)
 
-RES_X2=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
-                        MODELE_VISU   = MOD_VISU,
+RES_X2=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT2,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
+                        
                         INFO          = 2)
 
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_X1));

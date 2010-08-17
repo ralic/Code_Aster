@@ -1,0 +1,1307 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bargellini   BARGELLINI Renaud      DATE 16/08/2010 - 18:28:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015425 DU 2010-08-12 16:53:11
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TMA : CS
+TITRE
+   Group_ma créé en global dans macro POST_GP qui fait tout planter
+FONCTIONNALITE
+   PROBLEME
+   -------------------------------------------------------
+   Pour réaliser le calcul de Gp, on créé un groupe maille 
+   (MAI_PLA2) temporaire et on oublie de le supprimer dans un 
+   des cas.
+   Ceci empêche de le créer à nouveau car le nom reste dans 
+   la structure maillage.
+   
+   RESOLUTION
+   -------------------------------------------------------
+   On ajoute un DETR_GROUP_MA dans le bloc DEFI_GROUP de la 
+   ligne 241 de post_gp_ops.py
+   
+   VALIDATION
+   --------------------------------------------------------
+   L'étude qui a permis de déceler le bug passe.
+   On vérifie avec tous les tests de POST_GP qu'il n'y a pas 
+   d'impact négatif.
+   
+   
+   PS pour Dana :
+   il va y avoir conflit entre ma légère modif et ta modif 
+   plus lourde. Je pense qu'il te sera plus facile de gérer 
+   çà qu'à moi...
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   none
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 17/08/2010 - 14:54:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015357 DU 2010-07-19 11:08:55
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Interpénétration dans contact
+FONCTIONNALITE
+   AOM
+   ===
+   
+   Demande AOM d'un utilisateur MMC, extrait du message initial ci-dessous :
+   
+   '''
+   L’objectif de cette étude est d’observer l’évolution des contraintes dans les garnitures
+   (CYL1, CYL2 et CYL3) après une pression imposée par le fouloir (PL). Vous retrouverez la
+   nomenclature des pièces et les surfaces  dans le fichier "pe_log_axis_avec_tige_details.jpg".
+   
+   La simulation numérique montre qu’il y a l’interpénétration dans le contact aux interfaces
+   garniture-garniture (rubrique "contact intra-pe" dans le fichier .comm). En outre, c’est
+   le cas unique car c’est plutôt  les nœuds esclaves au bord des surfaces qui pénètrent dans
+   les surfaces maîtres lors de la visualisation dans 
+   salomé avec le « scale factor » est égal à 1.
+   [...]
+   '''
+   
+   L'étude jointe concerne une modélisation AXIS simplifiée d'un mécanisme de robinetterie.
+   Les matériaux sont élastiques, il y a de nombreuses zones de contact certaines impliquant
+   du frottement. Il note de nombreuses interpénétrations des noeuds esclaves dans les
+   surfaces maîtres : ce qui est le signe d'une résolution fausse.
+   
+   Solution proposée
+   =================
+   
+   1. Dans un premier temps, j'ai proposé des modifications simples : 
+   
+   - élimination des CL pour diminuer le nombre de ddls et accélérer les temps de calcul
+   - modification des paramètres de convergence de la formulation continue pour ne plus avoir
+   de convergence forcée (qui peut conduire comme le message d'alarme l'atteste à des
+   résultats faux)
+   
+   ==> j'observe toujours des interpénétrations mais uniquement au niveau des coins des
+   interfaces des garnitures.
+   
+   2. L'interpénétration observée est normale car la définition des multiples zones de
+   contact au niveau de ces coins est incompatible avec la façon dont on résout le problème
+   (ça ne peut pas marcher et d'ailleurs c'est pour cela qu'il y a des interpénétrations). 
+   
+   ==> le coin des interfaces garnitures qui est à la fois esclave côté boite (ou tige) et
+   esclave côté bague pose problème (on ne peut pas avoir un noeud appartenant à 2 surfaces
+   esclaves)
+   
+   
+   3. Pour pallier à ce problème, j'ai redéfinie les surfaces de contact en les restreignant
+   par endroit (j'ai pour cela rajouté des groupes dans le maillage). Le schéma scanné joint
+   à cette fiche explique cela.
+   Ayant exclus certains noeuds du contact, j'ai donc fait une hypothèse : les coins des
+   contact entre garnitures sont liés en DX et DY.
+   C'est une approximation (ils ne peuvent plus se décoller et glissent ou adhèrent de la
+   même manière que le coin en vis-à-vis) mais cela permet de faire tourner le calcul sans
+   interpénétration.
+   
+   En post-traitant, j'observe que le contact ne s'établit pas bien au niveau du PLAT et du
+   FOND en ce qui concerne les zones INT et EXT. Il faudrait creuser ce point : est-ce du au
+   chargement ?
+   
+   
+   4. Une évolution prochaine sur l'opérateur SANS_GROUP_NO_FR pourra simplifier le
+   traitement de ce genre de problème relativement courant lorsqu'on fait du frottement (en
+   évitant les LIAISON_DDL pour lier les déplacements) mais quoi qu'il arrive on ne pourra
+   jamais traiter le problème du coin : il faut absolument mettre un congé si on veut faire
+   tout en contact frottant.
+   
+   
+   Réponse de l'utilisateur
+   ========================
+   
+   '''
+   Je vous remercie pour votre aide. Effectivement, cette solution permet de faire tourner le
+   calcul sans interpénétration entre les garnitures. [...]
+   
+   Par ailleurs, concernant le contact aux zones INT et EXT au niveau du PLAT et du FOND, je
+   pense que c’est lié  à la déformation radiale des garnitures du au chargement. Plus
+   d’instant, je ne vois pas l’inconvénient d’utiliser votre méthode pour traiter le problème
+   sachant qu’on s’intéresse à la distribution des contraintes  le long des garnitures.
+   '''
+   
+   L'utilisateur demandait également une aide dans la modification de son maillage au format
+   GIBI, je ne peux malheureusement pas y répondre. La modification des groupes ne doit
+   cependant pas poser problème.
+   
+   Remarque
+   ========
+   
+   Je joins à la fiche le schéma en PDF puis ensuite une archive contenant : 
+   
+   - le maillage modifié (pour ajouter des groupes)
+   - le fichier de commandes modifié
+   - des images qui montrent le jeu et les statuts de contact
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   néant
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015394 DU 2010-07-27 14:18:02
+TYPE aide utilisation concernant Code_Aster (VERSION 7.0)
+TITRE
+   Probleme de convergence en analyse limite
+FONCTIONNALITE
+   AOM
+   ===
+   
+   Cette demande de l'UTO est une AOM pour la convergence d'un calcul d'analyse limite
+   utilisant le pilotage ad-hoc et la LdC de Norton-Hoff.
+   
+   Solution apportée
+   =================
+   
+   J'ai jeté un premier coup d'oeil. J'ai fait quelques modifs au fichier de commandes et
+   j'ai lancé un test rapide qui m'a permis d'atteindre l'instant 2.08. Cela permet d'avoir
+   une bonne précision sur la charge limite supérieure mais pas sur la borne inférieure.
+   
+   Tout d'abord, voici les modifications apportées au fichier : 
+   
+   - passage des CL en AFFE_CHAR_CINE (au lieu de AFFE_CHAR_MECA) car cela diminue de plus de
+   15% la taille du problème. C'est appréciable dans la mesure où les éléments 3D_INCO sont
+   relativement lents (entre autre à cause de la formulation à 3 champs et du quadratique
+   obligatoire)
+   
+   - la liste d'instants n'était pas correcte. Comme il est préconisé dans la doc U2.05.04,
+   il faut décrire une liste d'instants qui va de 0 à 1 puis ensuite progresse à pas constant
+   (au début) que l'on affinera selon les difficultés de convergence.
+   Pour obtenir une bonne précision sur les charges limites sup et inf il vaut mieux aller
+   jusqu'à l'instant t=3 ou +.
+   J'ai fait un premier calcul avec une liste revue allant de 1 à 3 par pas de 0.5 puis je
+   l'ai affiné empiriquement. La liste que j'ai obtenue m'emmène sans difficulté à 2.08 mais
+   on voit que plus on progresse plus le pas de temps doit diminuer.
+   
+   - j'ai changé le nombre maxi d'itérations de Newton pour revenir à la valeur par défaut :
+   10. En effet si l'on dépasse 10 itérations on voit bien que l'on a divergé, pas la peine
+   d'en faire plus et mieux vaut laisser faire le redécoupage automatique du pas de temps.
+   
+   - enfin j'ai supprimé la recherche linéaire : elle est parfois conseillée en analyse
+   limite mais ici visiblement elle pose plus de problèmes qu'elle en apporte. Peut être
+   faudra-t-il la réactiver pour aller au delà de l'instant 2.08.
+   
+   Je joins le fichier modifié à la fiche.
+   
+   
+   Réponse de l'utilisateur
+   ========================
+   
+   J'ai eu Laurent au téléphone alors qu'il allait étudier les fichiers modifiés, mais pas
+   depuis. On clot la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   néant
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 10/08/2010 - 09:36:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014535 DU 2010-02-01 16:23:10
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   RUPT : rendre plus modulaire POST_K1_K2_K3
+FONCTIONNALITE
+   Dans cette fiche, on revoit l'architecture de la macro post_k1_k2_k3_ops.py pour la rendre
+   plus modulaire.
+    
+   Le corps de la macro fait maintenant 400 lignes (contre 1200 auparavant).
+   De nombreuses fonctions ont été créées, ce qui améliore grandement la lisibilité
+   algorithmique de la macro.
+   
+   Ce travail était nécessaire avant de futures modifications en profondeur (fiches 14630,
+   14541, 14085, 14617, 14538, 14540, 14537, 14536...).
+   Cependant, de nombreuses variables sont encore mutualisables entre les 3 "approches"
+   (fissure maillée réglée, fissure maillée libre et fissure X-FEM), ainsi que des morceaux
+   de programmation.
+   La programmation pourrait donc être encore largement améliorée.
+   
+   Cela se fera au coup par coup, chaque partie sera revue dans la fiche associée (cf. la
+   dizaine de fiches précédemment citées).
+   Ce sera nettement plus facile désormais, car les dépendances entre les "parties"
+   (fonctions) sont maintenant claires.
+   
+   On espère ainsi qu'à terme, la macro aura une programmation "parfaite", sans avoir à tout
+   reprogrammer.
+   
+   impact :
+   --------
+   post_k1_k2_k3_ops.py  rupture0.py
+   post_k1_k2_k3.capy : rajout valeur par défaut pour NB_NOEUD_COUPE si fond_fiss
+   
+   ssnv166a,b : on donne en entrée de post_k1_k2_k3 non plus des tables de déplacements, mais
+   simplement le RESU
+   sslv134d : on supprime des appels redondants à post_k1_k2_k3 
+   zzzz257d : on augmente le temps CPU de 20s (ce point sera réglé dans la fiche 14085)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.05
+VALIDATION
+   tests post_k1_k2_k3
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015018 DU 2010-05-03 09:08:44
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   X-FEM : bug dans POST_K1_K2_K3 si utilisation d'une fissure maillée définie par DEFI_FISS_XFEM
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Pour calculer K le long du fond de fissure maillée en 3D, il faut utiliser :
+   - soit DEFI_FOND_FISS + POST_K1_K2_K3
+   - soit DEFI_FISS_XFEM + CALC_G
+   
+   La combinaison DEFI_FISS_XFEM + POST_K1_K2_K3 plante salement.
+   
+   
+   Solution :
+   ----------
+   
+   On émet un message d'erreur dans POST_K1_K2_K3 si on a renseigné une fissure venant de
+   DEFI_FISS_XFEM avec un calcul non X-FEM (modèle classique) :
+   """
+   Erreur utilisateur :                                                                       
+   Incohérence entre le mot-clé FISSURE et le modèle associé au mot-clé RESULTAT.             
+   - Pour utiliser une fissure maillée, renseignez sous le mot-clé FOND_FISS                  
+   une fissure provenant de la commande DEFI_FOND_FISS.                                       
+   - Pour utiliser une fissure non-maillée (calcul X-FEM), renseignez sous le mot-clé FISSURE 
+   une fissure provenant de la commande DEFI_FISS_XFEM. Le modèle associé au mot-clé RESULTAT 
+   doit être un modèle X-FEM provenant de la commande MODI_MODELE_XFEM.                       
+   """
+   
+   
+   Remarque n°1 :
+   Dans un futur plus ou moins proche, tout ceci sera bien plus clair (fiche 14537) :
+   fissure maillée : j'utilise toujours DEFI_FOND_FISS
+   fissure non-maillée : j'utilise toujours DEFI_FISS_XFEM
+   
+   Remarque n°2 :
+   Lors de l'EDA, il a été suggéré de corriger ce bug aussi en NEW9.
+   Cependant, la correction proposée repose sur les fiches 14219 et 15406 qui seront
+   restituées en même temps, mais seulement en NEW10 (EL). Finalement, on ne fait rien en NEW9.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv166a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013931 DU 2009-09-24 08:23:29
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : POST_K sur une fissure maillee avec des level sets
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Pour calculer K le long du fond de fissure en 3D, lorsque la fissure est maillée, on peut
+   utiliser soit :
+   - DEFI_FOND_FISS + POST_K1_K2_K3,
+   - DEFI_FISS_XFEM + CALC_G.
+   
+   En effet, on ne peut pas utiliser DEFI_FOND_FISS + CALC_G car on ne connait pas la base
+   locale en fond de fissure.
+   Pour la connaitre, on se sert des level sets (définies dans DEFI_FISS_XFEM).
+   
+   Il pourrait être intéressant de rendre possible DEFI_FISS_XFEM + POST_K1_K2_K3 pour les
+   fissures maillées.
+   
+   Solution :
+   ----------
+   
+   Après réflexion, cela ne sert à rien.
+   
+   La fiche 15018 s'est chargée d'émettre un message d'erreur clair dans ce cas
+   
+   On ne fait donc rien dans cette fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucun
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013558 DU 2009-06-23 16:12:29
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : CALC_G : calcul sur plusieurs fonds
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Dans les calculs X-FEM, plusieurs fonds peuvent être définis dans la même
+   structure de données fiss_xfem.
+   Pour le post-traitement avec CALC_G (et POST_K1_K2_K3), le choix avait été fait de
+   calculer G et K pour un seul fond à la fois (opérande NUME_FOND).
+   Dans le cas d'une étude de propagation de fissures avec PROPA_FISS, ce choix pose
+   cependant problème : il faut disposer d'une seule table contenant les résultats sur tous
+   les fonds.
+   
+   
+   Solution :
+   ----------
+   
+   La solution la plus élégante serait de faire le calcul dans CALC_G directement sur tous
+   les fonds de fissure.
+   Autant ce développement serait facile en python, autant il serait plus délicat
+   à faire directement en fortran (ajout d'une boucle qui encapsule toutes les autres
+   routines, dimensionnement du tableau résultat, ...).
+   On pourrait alors encapsuler CALC_G dans une macro qui réaliserait la boucle puis créerait
+   la table par concaténation des tables unitaires (par CREA_TABLE ou CALC_TABLE).
+   La plus value de cette macro serait finalement assez faible.
+   
+   On propose donc de laisser à l'utilisateur le soin de réaliser lui-même la boucle puis la
+   concaténation des tables (cf. sslp318a). Si on veut rester en PAR_LOT='OUI', cela
+   nécessite de connaître à l'avance le nombre de fonds.
+   Conclusion : on ne fait aucun développement.
+   
+   Remarque n°1 :
+   Dans des cas de propagation complexe où le fond de sub-divise en plusieurs fonds ou bien
+   si les fonds se recombinent entre-eux, alors on ne peut pas connaître à l'avance le nombre
+   de fonds, et si sera alors nécessaire de récupérer ce nombre dans la sd_fiss_xfem (en
+   PAR_LOT='NON' donc).
+   Pour le moment, on se contente de cette solution, car aucun calcul de propagation n'a
+   jamais exhibé ce comportement (mais PROPA_FISS serait en mesure de réaliser de tels
+   calculs). De toute façon, ce genre de calcul est réservé à un utilisateur expérimenté,
+   donc l'usage de PAR_LOT='NON' est tolérable.
+   
+   Remarque n°2 :
+   La restitution de la fiche 13676 (faciliter le post-traitement des objets de
+   DEFI_FISS_XFEM) pourrait peut-être faciliter la récupération du nombre de fonds.
+   
+   Remarque n°3 :
+   Les explications contenues dans cette fiche sont reportées sur la doc d'utilisation de
+   X-FEM (U2.05.02)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U2.05.02
+VALIDATION
+   sslp318a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012770 DU 2008-11-04 11:58:29
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   DEF2 - Commande CALCUL : calcul des reactions d'appuis (Bt.Lambda)
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Lorsque l'on simule STAT_NON_LINE par des commandes éclatées, le calcul du second membre
+   nécessite de connaître le
+   vecteur des réactions d'appuis lors d'une itération de Newton.
+   
+   Ces réactions ne sont pas calculées par la commande CALCUL.
+   
+   
+   Solution :
+   ----------
+   
+   On rajoute un champ de sortie supplémentaire à la table container de CALCUL : les vecteurs
+   élémentaires des réactions d'appuis (Lagrange).
+   Ce champ est calculé pour toutes les options de CALCUL.
+   Cela nécessite que la création du champ en sortie de la routine calcul.f soit effectuée
+   dans la base globale (argument en plus des routines vebtla.f et nmdiri.f)
+   
+   impact : op0026.f, vebtla.f, nmdiri.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.10
+VALIDATION
+   pynl02a, b
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013704 DU 2009-08-12 08:29:51
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   DEF2 - SNL en commandes éclatées - mise au propre des cas tests
+FONCTIONNALITE
+   Suite à un prototypage de la commande STAT_NON_LINE en commande éclatées, des tests
+   reproduisant le comportement de SNL sur un problème d'élasto-plasticité complet (plusieurs
+   incréments, plusieurs itérations) ont été réalisés, mais jamais restitués.
+   
+   Grâce à la restitution des fiches 12351 et 13711 sur la combinaison des cham_no en
+   conservant les noeuds tardifs, le cas test proposé devient propre et restituable.
+   
+   Nouveau cas test :
+   pynl02 : "STAT_NON_LINE EN COMMANDES ECLATEES POUR UN CALCUL ELASTO-PLASTIQUE"
+   modélisation a : COMPORTEMENT VMIS_ECMI_TRAC AVEC PLUSIEURS PAS DE TEMPS
+   
+   Le TEST_RESU porte sur la différence entre contraintes (resp. variables internes) entre
+   STAT_NON_LINE (pris comme référence) et CALCUL, pris au dernier instant à convergence.
+   C'est ce qui était fait dans pynl01a (juste après la prédiction).
+   
+   
+   
+   en PAR_LOT='NON' par de multiples raisons :
+   - récupération de la liste d'instants : l_inst = LIST.Valeurs()
+   - vérification du code retour de la LDC : cod = aster.getvectjev("CODE               .CELV
+          ") (objet de la fiche 15396)
+   - calcul du résidu : tmp_x = F_AS.EXTR_COMP('DX',[]).valeurs...
+   
+   impact doc:
+   V1.01.269
+   on en profite pour rédiger la doc du pynl01 (V1.01.226)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.226, V1.01.269
+VALIDATION
+   pynl02a
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015159 DU 2010-06-07 12:37:48
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   DEFI_LIST_INST : alarme si SUBD_NIVEAU est présent en gestion AUTO
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Si l'on utilise le découpage automatique du pas de temps via
+   DEFI_LIST_INST/METHODE='AUTO', on a presque toujours apparition de l'alarme :
+   
+   !-------------------------------------------------------------------------------------------------------!
+   ! <A> <DISCRETISATION_4>                                                                 
+                 !
+   !                                                                                        
+                 !
+   ! Avec une gestion automatique de la liste d'instants, la notion de NIVEAU de subdivisions
+   est ignorée. !
+   !                                                                                        
+                 !
+   !                                                                                        
+                 !
+   ! Ceci est une alarme. Si vous ne comprenez pas le sens de cette                         
+                 !
+   ! alarme, vous pouvez obtenir des résultats inattendus !                                 
+                 !
+   !-------------------------------------------------------------------------------------------------------!
+   
+   
+   
+   Analyse :
+   ---------
+   
+   Cette alarme est émise si METHODE='AUTO' et SUBD_NIVEAU est différent de 0 (ce qui est la
+   cas par
+   défaut).
+   
+   
+   Solution :
+   ----------
+   
+   L'idéal serait de savoir dans le fortran si l'utilisateur a renseigné SUBD_NIVEAU (et du coup,
+   l'alarme est légitime) ou bien s'il s'agit de la valeur par défaut.
+   Or cela est impossible.
+   
+   L'unique solution consiste à interdire SUBD_NIVEAU dans le .capy pour la méthode AUTO
+   (introduction de blocs conditionnels, c'est assez moche, mais c'est la seule solution).
+   
+   impact : 
+   defi_list_inst.capy
+   op0028.f
+   discretisation.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.34.03
+VALIDATION
+   wtnp117b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015406 DU 2010-08-02 11:23:56
+TYPE express concernant Code_Aster (VERSION 10.3)
+TITRE
+   X-FEM : message pas clair dans MODI_MODELE_XFEM
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Dans MODI_MODELE_XFEM, on plante avec le message suivant :  
+   
+      ! -> Les fissures X-FEM sont surement trop proches.     !
+      !      Il faut au minimum 2 mailles entre les fissures. !
+      !   -> Risque & Conseil:                                !
+      !      Veuillez raffiner le maillage entre les fissures !
+      !      (ou écarter les fissures).                       !
+   
+   
+   Or il n'y a qu'une fissure en entrée de MODI_MODELE_XFEM.
+   
+   
+   Analyse :
+   ---------
+   
+   En fait, le problème vient dans ce cas du fait que le modèle sur lequel on définit la
+   fissure n'est pas le modèle sain en entrée de MODI_MODELE_XFEM
+   Il faut blinder ce cas.
+   
+   
+   Solution :
+   ----------
+   
+   On fait en début de op0113 la vérification que toutes les fissures en entrée de
+   MODI_MODELE_XFEM sont bien définies à partir du modèle sain (MODELE_IN).
+   Si ce n'est pas le cas, on s'arrete avec le message fatal suivant :
+   
+      !----------------------------------------------------------------------------------------!
+      ! <F> <XFEM_39>                                                                          !
+      !                                                                                        !
+      ! Erreur utilisateur : incohérence entre les mot-clés FISSURE et MODELE_IN.              !
+      !      Il faut que les (ou la) fissure sous le mot-clé FISSURE soient toutes définies à  !
+      !      partir du même modèle.                                                            !
+      !      Or :                                                                              !
+      !      - la fissure .9000008 est définie à partir du modèle plate                        !
+      !      - le modèle renseigné sous MODELE_IN est ModX.                                    !
+      !      Conseil :                                                                         !
+      !      Veuillez revoir la définition de la fissure .9000008 ou bien changer MODELE_IN.   !
+      !                                                                                        !
+   
+   
+   Du coup, le mot-clé MODELE_IN ne sert plus à grand chose dans MODI_MODELE_XFEM.
+   On pourrait le supprimer, mais on le converse pour des raisons de logique :
+   MODI_MODELE_XFEM créé un modèle enrichi à partir d'une fissure (FISSURE) et d'un modèle
+   (MODELE_IN). Il faut donc définir FISSURE et MODELE_IN.
+   
+   
+   Remarque :
+   ----------
+   
+   Ces vérifications ont mis en évidence certaines incohérences dans des tests de propagation :
+   - sslp321b,c : on créait un modèle sain à chapque pas de propagation, alors que cela ne
+   servait à rien -> émission du message d'erreur sur l'incohérence FISSURE / MODELE_IN
+   - zzzz255a,b : ce test valide l'option TEST_MAIL de la commande PROPA_FISS : on propage en
+   souterrain (propa_fiss_ops.py) la fissure sur plusieurs pas. Pour cela, on lançait la
+   commande MODI_MODELE_XFEM avec le modèle en entrée de PROPA_FISS, ce qui n'est pas
+   correct. Désormais, on lance MODI_MODELE_XFEM en souterrain avec comme MODELE_IN le modèle
+   associé à la fissure.
+    
+   
+   impact : xfem.py, op0113.f, xvermo.f, propa_fiss_ops.py
+   sspl321b, sspl321c
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014219 DU 2009-11-23 16:10:40
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : recupere le nom du modele rattache a une fissure X-FEM
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Il serait très pratique de pouvoir récupérer proprement le nom du modèle rattaché à une
+   fissure X-FEM, grace à l'utilitaire dismoi
+   
+   
+   Solution :
+   ----------
+   
+   
+   On rajoute une question MODELE pour les sd_fiss_xfem :
+           CALL DISMOI('F','MODELE',FISS,'FISS_XFEM',IBID,MODELE,IER) 
+   
+   On va chercher le nom du modèle dans la sd_fiss_xfem : FISS.MODELE (nouvel objet), qui est
+   désormais stocké par op0041.f (DEFI_FISS_XFEM).
+   Dans PROPA_FISS, on duplique le .MODELE de la fissure initiale car la nouvelle fissure
+   reste attachée au modèle sain initial.
+   
+   impact :
+   op0041.f, op0010.f, dismxf.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.10.02
+VALIDATION
+   test perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014220 DU 2009-11-23 16:13:19
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   X-FEM : mot-cle GROUP_MA_ENRI de DEFI_FISS_XFEM facultatif
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Il serait très pratique que le mot-clé GROUP_MA_ENRI de DEFI_FISS_XFEM soit facultatif au
+   lieu d'être obligatoire.
+   
+   Solution :
+   ----------
+   
+   Ce mot-clé sert à limiter la zone d'enrichissement (et non pas limiter la zone de calcul
+   des level sets).
+   S'il n'est pas présent, on prend toutes les mailles du maillage associé au
+   modèle en entrée de DEFI_FISS_XFEM.
+   
+   On valide avec le ssnv173b dans lequel on enlève le GROUP_MA_ENR (créé juste avant avec
+   DEFI_GROUP/TOUT...)
+   
+   impact :
+   xlenri.f
+   defi_fiss_xfem.capy
+   
+   Remarque :
+   Une fiche est émise (15413) pour supprimer GROUP_MA_ENRI des tests X-FEM -> TMA.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.08
+VALIDATION
+   ssnv173b
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015407 DU 2010-08-02 13:02:55
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+   X-FEM : Probleme de pivot nul avec introduction d'une fissure X-FEM
+FONCTIONNALITE
+   Problème :
+   -----------
+   
+   voici l'étude qui fonctionne sans la déclaration de la fissure XFEM
+   (avec opérateur MECA_STATIQUE ou STAT_NON_LINE)et qui rencontre un pivot nul avec une
+   fissure XFEM
+   (avec et sans le mot-clé LIAISON-XFEM sur version NEW10 de Code_Aster)
+   
+   
+   
+   Solution :
+   ----------
+   
+   Le pivot nul se corrige en rajoutant dans le STAT_NON_LINE les charges 'symetrie' et
+   'blocage'.
+   
+   En STAT10.
+   
+   (en NEW10 : la syntaxe du mot-clé ROTATION a changé)
+   
+   J'en profite pour supprimer le mot-clé VECT_K1 dans POST_K1_K2_K3 qui génère des Alarmes.
+   
+   Je mets en PJ le .comm après modification
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude fournie
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013055 DU 2009-01-14 08:05:29
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   X-FEM : pb de calculs de level sets sur une fissure recourbee
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Lors de la réunion avec le CENAERO en 2008, Marc Duflot nous a fait remarquer
+   qu'il était indispensale de limiter la zone de définition des level sets autour de la fissure.
+   Sinon, des fronts parasites pouvaient apparaitre.
+   
+   Dans Aster, nous avions déjà pris conscience de ce genre de problème, et nous limitons,
+   non pas la zone de définition des level sets, mais la zone d'enrichissement. Cela
+   fonctionne bien si on connait la position de la fissure. Mais dans le cas d'une
+   propagation,cette zone doit etre changée à chque pas de propagation, et surtout, le pb est
+   qu'on ne sait pas où la fissure va aller...
+   
+   En témoigne la simulation suivante :
+   plaque 2d en traction latérale, avec une inclusion circulaire rigide (maillée) au centre
+   de la plaque.
+   une fissure initiale verticale, un peu décalée à droite.
+   La fissure contourne l'inclusion rigide, et à un certain moment, patratas, le calcul donne
+   n'importe quoi : un 2ème fond de fissure apparait en bas à droite.
+   ceci est dû à la trop grande zone de défintion de la level set tangente.
+   (on peut remarquer qu'à ce pas de temps, la droite normale au vrai fond de fissure coupe
+   la fissure au niveau du fond de fissure parasite).
+   
+   
+   Solution :
+   ----------
+   
+   Les travaux de Daniele Colombo restitués en 2009 permettent justement de répondre à ce
+   problème : utilisation de ZONE_MAJ='TORE' (par défaut) dans PROPA_FISS (restitué dans la
+   fiche 13983).
+   Ce test a d'ailleurs été utilisé pour illustré l'intérêt de ce nouveau mot-clé.
+   On pourra voir des illustrations sur le PDF des transparents de la RTA du 15
+   octobre 2009 à la page 37, en PJ de la fiche 13983.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test fourni
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015316 DU 2010-07-08 15:32:02
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   X-FEM : simplification de POST_MAIL_XFEM et POST_CHAM_XFEM
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Il semble y avoir (au moins) 2 bugs dans la commande POST_CHAM_XFEM :
+   - si on ne précise pas MODELE_VISU (qui n'est pas utile selon la doc lorsque le seul champ
+   est DEPL), on a une erreur JEVEUX,
+   - si on précise MODELE_VISU mais que l'on ne demande que DEPL dans NOM_CHAM, on a une
+   erreur de syntaxe : le mot-clé MODELE_VISU est inconnu !
+   
+   
+   De plus, certains argument des commandes POST_MAIL_XFEM et POST_CHAM_XFEM sont superflus.
+   
+   
+   Solution :
+   ----------
+   
+   1) On supprime le mot-clé NOM_CHAM de POST_CHAM_XFEM.
+   Du coup, on post-traite systématiquement DEPL, SIEG_ELGA et VARI_ELGA
+   (dans la mesure où ces champs existent dans le resu du STAT_NON_LINE).
+   
+   2) Arguments d'entrée superflus :
+   
+   Pour POST_MAIL_XFEM :
+   on demande le maillage sain et le modèle enrichi.
+   Or le modele enrichi est construit à partir du modele sain, lui-même basé sur le maillage
+   sain.
+   Donc le modele enrichi est associé au maillage sain.
+   Ce qui signifie que la seule donnée du modèle enrichi permet aussi de connaitre le
+   maillage sain.
+   L'argument MAILLAGE_SAIN est donc superflu.
+   
+   Pour POST_CHAM_XFEM :
+   On demande les maillages sain et de visu, le modèle enrichi et de visu, ainsi que le résultat
+   Or on a les relations suivantes :
+   resultat -> modele enrichi -> maillage sain
+   modele de visu -> maillage de visu
+   Seuls le resultat et le modele de visu sont nécessaires.
+   Les autres sont superflus.
+   
+   
+   Remarque n°1 :
+   cela est vrai, sauf pour la modélisation X-FEM avec contact aux arêtes (dénomination
+   'P1P1A' dans MODI_MODELE_XFEM).
+   En effet, dans cette modélisation, on travaille avec un maillage linéaire et un maillage
+   quadratisé.
+   Dans POST_MAIL_XFEM et POST_CHAM_XFEM, il faut fournir le maillage "linéaire"
+   alors que le modèle enrichi est associé au maillage "quadratique"...
+   Pour cette modélisation particulière, le mot-clé MAILLAGE_SAIN est nécessaire.
+   On le laisse facultatif.
+   On émet une alamre s'il est rempli dans le cas non contact P1P1A (superflu)
+   On émet une erreur F s'il n'est pas rempli dans le cas contact P1P1A.
+   
+   
+   Remarque n°2 :
+   Il semblerait que la visualisation des variables internes pour le contact quadratique avec
+   X-FEM ('P2P1') pose problème.
+   Pour cette modélisation, on fait une glute et on ne post-traite pas pour le moment le
+   champ VARI_ELGA.
+   La fiche 15408 a été émise pour corriger ce problème.
+   
+   
+   
+   
+   impact :
+   post_mail_xfem.capy, post_cham_xfem.capy
+   
+   xfem2.py
+   
+   op0187.f  op0196.f  xpodim.f  xpoini.f  xposep.f
+   
+   hsnv132b.comm, hsnv132c.comm, hsnv132d.comm, sdls120b.comm, sdlv130b.comm,
+   sslp315c.comm, sslp315d.comm, sslp315e.comm, sslp317a.comm, sslp318a.comm,
+   sslp318b.comm, sslp319a.comm, sslp319b.comm, sslp320a.comm, sslp320b.comm,
+   sslp320c.comm, sslp321a.comm, sslp321b.comm, sslp321c.comm, sslp322a.comm,
+   sslv110f.comm, sslv314a.comm, sslv314d.comm, sslv315a.comm, sslv315b.comm,
+   sslv315c.comm, sslv315d.comm, sslv316a.comm, sslv316b.comm, sslv316c.comm,
+   sslv316d.comm, sslv316e.comm, sslv316f.comm, sslv316g.comm, sslv316h.comm,
+   ssnp110c.comm, ssnp110d.comm, ssnp138a.comm, ssnp138b.comm, ssnp144a.comm,
+   ssnp144b.comm, ssnp144c.comm, ssnp144d.comm, ssnp144e.comm, ssnp144f.comm,
+   ssnp144g.comm, ssnp144h.comm, ssnp144i.comm, ssnp144j.comm, ssnp144k.comm,
+   ssnp144l.comm, ssnp503h.comm, ssnp503j.comm, ssnp503l.comm, ssnp504f.comm,
+   ssnv108b.comm, ssnv108c.comm, ssnv108d.comm, ssnv173a.comm, ssnv173b.comm,
+   ssnv173c.comm, ssnv173d.comm, ssnv173e.comm, ssnv173f.comm, ssnv173g.comm,
+   ssnv173h.comm, ssnv173i.comm, ssnv173j.comm, ssnv173k.comm, ssnv182a.comm,
+   ssnv182b.comm, ssnv182c.comm, ssnv182d.comm, ssnv182e.comm, ssnv182f.comm,
+   ssnv182g.comm, ssnv182h.comm, ssnv182i.comm, ssnv182j.comm, ssnv182k.comm,
+   ssnv182l.comm, ssnv185b.comm, ssnv185c.comm, ssnv185d.comm, ssnv185e.comm,
+   ssnv185f.comm, ssnv185g.comm, ssnv185h.comm, ssnv185i.comm, ssnv185j.comm,
+   ssnv185k.comm, ssnv185l.comm, ssnv185m.comm, ssnv185n.comm, ssnv185p.comm,
+   ssnv185q.comm, ssnv185r.comm, ssnv186a.comm, ssnv186b.comm, ssnv186c.comm,
+   ssnv186d.comm, ssnv186e.comm, ssnv186f.comm, ssnv186g.comm, ssnv186h.comm,
+   ssnv186i.comm, ssnv186j.comm, ssnv186k.comm, ssnv191a.comm, ssnv191b.comm,
+   ssnv191c.comm, ssnv192a.comm, ssnv195a.comm, ssnv195b.comm, ssnv195c.comm,
+   ssnv195d.comm, ssnv198a.comm, ssnv198b.comm, ssnv201a.comm, ssnv201b.comm,
+   ssnv203a.comm, ssnv203b.comm, ssnv209b.comm, ssnv209c.comm, ssnv209d.comm,
+   ssnv209e.comm, ssnv209g.comm, ssnv209h.comm, ssnv209j.comm, ssnv209k.comm,
+   ssnv209l.comm, ssnv209m.comm, ssnv209n.comm, ssnv507a.comm, ssnv507b.comm,
+   ssnv507c.comm, ssnv507d.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.21, U4.82.22
+VALIDATION
+   tests X-FEM
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015377 DU 2010-07-22 08:41:24
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+   En version NEW10.2.8, les cas-tests ssnv507a,b,c,d s'arretent en erreur <F> sur Bull, Calibre 5 et Rocks.
+FONCTIONNALITE
+   Problème:
+   --------- 
+   
+   En version NEW10.2.8, les cas-tests ssnv507a,b,c,d s'arretent en erreur <F> sur Bull,
+   Calibre 5 et Rocks.
+   
+   Le message d'erreur est le suivant:
+   "
+      !-------------------------------------------------------!
+      ! <F> <DVP_1>                                           !
+      !                                                       !
+      ! Erreur de programmation : condition non respectée.    !
+      !                                                       !
+      !                                                       !
+      ! Cette erreur est fatale. Le code s'arrete.            !
+      ! Il y a probablement une erreur dans la programmation. !
+      ! Veuillez contacter votre assistance technique.        !
+      !-------------------------------------------------------!
+   
+   "
+   
+   "
+   >> JDC.py : DEBUT RAPPORT
+   DEBUT CR validation : fort.1
+      Etape : MODI_MODELE_XFEM    ligne : 58    fichier : 'fort.1'
+         Mot-clé simple : CONTACT
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            ! La valeur : 'NON'  ne fait pas partie des choix possibles ('P1P1', 'P1P1A', !
+            ! 'P2P1', 'SANS')                                                             !
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+         Fin Mot-clé simple : CONTACT
+      Fin Etape : MODI_MODELE_XFEM
+   FIN CR validation :fort.1
+   
+   >> JDC.py : FIN RAPPORT
+   "
+   
+   Rappelle:
+   --------
+   Suite à la restitution de la fiche 15202, l’option ‘NON’ de la commande
+   MODI_MODELE_XFEM/CONTACT a été replacé par 'SANS' 
+   
+   
+   Solution:
+   ---------
+   Replacer l'option 'NON' par 'SANS'
+   
+   
+   IMPACT DOC : 
+   ------------
+   Pouvez vous m'envoyer le doc V du cas test ssnv507 ?  MERCI.
+   
+   MODIFICATION :
+   -------------
+   les *.comm(s) du cas test ssnv507
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.507
+VALIDATION
+   ssnv507a,b,c,d
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR granet       GRANET Sylvie          DATE 16/08/2010 - 17:33:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015100 DU 2010-05-20 16:03:28
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   PARM_THETA pour un calcul THM
+FONCTIONNALITE
+   En THM le paramètre de la discrétisation en temps PARM_THETA n'est pas testé  :
+   l'utilisateur peut donc prendre n'importe quelle valeur !
+    Pour remédier à cela, on rajoute aux attributs de PARM_THETA dans le catalogue
+   c_comp_incr.capy, val_min=0 et val_max= 1.
+   
+   Par ailleurs, lors de l'utilisation des indicateurs d'erreurs en espace et non en temps,
+   le paramètre thêta n'est pas stocké une fois sortie de stat_non_line ce qui pose problème.
+   Pour remédier à cela,  on archive ce paramètre pour les problèmes thm dans la routine nmarch.
+   
+   Pour valider cela, on introduit le cas test wtnl100f qui duplique le cas tests de
+   Sébastien : wtnl100e avec indicateurs d'erreur en espace mais plus en temps.
+   
+   Concernant la documentation, l'utilisation de la THM pour les équations évolutives de THM
+   est détaillée dans la doc
+   R7.01.10 (chap. 5).
+   Le renvois à la doc R5.03.60 est donc une coquille que je modifie dans U4.51.11.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.11 V7.30.100
+VALIDATION
+   passage de wtnl100f
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015383 DU 2010-07-22 17:03:31
+TYPE anomalie concernant Code_Aster (VERSION 9.8)
+TITRE
+   Test THM -  erreur développeur
+FONCTIONNALITE
+   Toutes les lois de couplage avec prise en compte du gaz nécessitent : 
+   
+   - De prendre une température de référence non nulle (sinon on a une division par zéro dans
+   la loi des gaz parfaits). Cette température - renseignée sous THM_INIT - doit en outre
+   être exprimée en Kelvin.
+   On rajoute donc un test de positivité de cette valeur dans thmrcp (actuellement si
+   l'utilisateur met 0, le code plante salement sans message d'erreur).
+   
+   - De prendre une pression de gaz de référence  non nulle (sinon division par zéro dans la
+   dérivée de la masse volumique de gaz). Cette valeur est également renseignée dans
+   THM_INIT. Idem : on rajoute un test de positivité dans thmrcp.
+   
+   
+   On précise dans la doc de DEFI_MATERIAU U4.43.01 et dans la doc d'utilisation de la THM
+   U2.04.05 que les températures et pressions de gaz de référence doivent être non nulles. On
+   précise également que la température de référence doit être exprimée en Kelvin.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.43.01 U2.04.05
+VALIDATION
+   passage des cas test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 16/08/2010 - 22:33:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015220 DU 2010-06-16 09:21:16
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+   bug RECU_FONCTION : types de parametres differents
+FONCTIONNALITE
+   Objectif
+   --------
+   Actuellement, la construction d'une fonction a partir d'une 
+   table n'est permise que si les types des valeurs des parametres 
+   sont identiques.
+   Il n'est donc pas possible de construire une fonction ayant en 
+   abscisses des entiers et en ordonnees des reels, par exemple la
+   representation graphique des instants en fonction des numeros 
+   d'ordre n'est pas realisable.
+   
+   Nous avons introduit une exception a la regle sur les types I et 
+   R (I=Integer, R=Real): 
+   On autorise la creation de la fonction dans les cas suivants:
+   
+         ----------------------------------------------------------
+   -----------
+         TYPE DES VALEURS DES PARAMETRES DE LA TABLE POUR LES  | 
+         ----------------------------------------------------  |  
+   COMMENTAIRE
+               ABSCISSES          |   ORDONNEES                | 
+         ----------------------------------------------------------
+   ----------
+                I                 |      I                     | 
+   actuellement
+                R                 |      R                     | 
+   actuellement
+                I                 |      R                     | 
+   nouveau
+                R                 |      I                     | 
+   nouveau
+   
+   
+   Developpement
+   -------------
+   - bibfor
+   La routine tbexfo a ete enrichie de sorte a creer une fonction a 
+   valeurs reelles dans le cas ou les parametres X et Y de la table 
+   sont respectivement entier et reel, ou reel et entier. 
+   
+   Validation
+   ----------
+   - validation interne basee sur le cas de S.Geniaut
+   - restitution forma03c dans lequel nous avons supprime l'etape 
+   qui consistait a passer par une formule de conversion entier -> 
+   reel pour creer la fonction. Desormais, cette conversion est 
+   realisee dans le fortran.
+   - liste restreinte
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   forma03c
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT pynl02a                       geniaut S.GENIAUT          614    614      0
+ CASTEST AJOUT wtnl100f                       granet S.GRANET           220    220      0
+ CASTEST MODIF forma03c                      rezette C.REZETTE          162      1      1
+ CASTEST MODIF hsnv132b                      geniaut S.GENIAUT          243      4      8
+ CASTEST MODIF hsnv132c                      geniaut S.GENIAUT          190      3      8
+ CASTEST MODIF hsnv132d                      geniaut S.GENIAUT          203      3      8
+ CASTEST MODIF sdls120b                      geniaut S.GENIAUT          338      2      6
+ CASTEST MODIF sdlv130b                      geniaut S.GENIAUT          350      2      6
+ CASTEST MODIF sslp315c                      geniaut S.GENIAUT          315      4      7
+ CASTEST MODIF sslp315d                      geniaut S.GENIAUT          292      4      8
+ CASTEST MODIF sslp315e                      geniaut S.GENIAUT          315      4      8
+ CASTEST MODIF sslp317a                      geniaut S.GENIAUT          243      3      6
+ CASTEST MODIF sslp318a                      geniaut S.GENIAUT          261      4      7
+ CASTEST MODIF sslp318b                      geniaut S.GENIAUT          264      4      7
+ CASTEST MODIF sslp319a                      geniaut S.GENIAUT          278      4      7
+ CASTEST MODIF sslp319b                      geniaut S.GENIAUT          273      4      7
+ CASTEST MODIF sslp320a                      geniaut S.GENIAUT          254      1     29
+ CASTEST MODIF sslp320b                      geniaut S.GENIAUT          214      1     32
+ CASTEST MODIF sslp320c                      geniaut S.GENIAUT          265      4      7
+ CASTEST MODIF sslp321a                      geniaut S.GENIAUT          225      4      7
+ CASTEST MODIF sslp321b                      geniaut S.GENIAUT          216      8     18
+ CASTEST MODIF sslp321c                      geniaut S.GENIAUT          217      9     18
+ CASTEST MODIF sslp322a                      geniaut S.GENIAUT          241      4      7
+ CASTEST MODIF sslv110f                      geniaut S.GENIAUT          205      1      8
+ CASTEST MODIF sslv314a                      geniaut S.GENIAUT          267      4      6
+ CASTEST MODIF sslv314d                      geniaut S.GENIAUT          273      4      6
+ CASTEST MODIF sslv315a                      geniaut S.GENIAUT          280      5      7
+ CASTEST MODIF sslv315b                      geniaut S.GENIAUT          257      4     10
+ CASTEST MODIF sslv315c                      geniaut S.GENIAUT          230      4      9
+ CASTEST MODIF sslv315d                      geniaut S.GENIAUT          291      5      7
+ CASTEST MODIF sslv316a                      geniaut S.GENIAUT          309      4      6
+ CASTEST MODIF sslv316b                      geniaut S.GENIAUT          336      4      6
+ CASTEST MODIF sslv316c                      geniaut S.GENIAUT          314      4      6
+ CASTEST MODIF sslv316d                      geniaut S.GENIAUT          336      4      6
+ CASTEST MODIF sslv316e                      geniaut S.GENIAUT          310      4      6
+ CASTEST MODIF sslv316f                      geniaut S.GENIAUT          337      4      6
+ CASTEST MODIF sslv316g                      geniaut S.GENIAUT          315      5      6
+ CASTEST MODIF sslv316h                      geniaut S.GENIAUT          337      4      6
+ CASTEST MODIF ssnp110c                      geniaut S.GENIAUT          369      3      7
+ CASTEST MODIF ssnp110d                      geniaut S.GENIAUT          313      2      4
+ CASTEST MODIF ssnp131a                   bargellini R.BARGELLINI       341      1      1
+ CASTEST MODIF ssnp131b                   bargellini R.BARGELLINI       455     86     22
+ CASTEST MODIF ssnp138a                      geniaut S.GENIAUT          355      4      7
+ CASTEST MODIF ssnp138b                      geniaut S.GENIAUT          391      4      7
+ CASTEST MODIF ssnp144a                      geniaut S.GENIAUT          481      1      7
+ CASTEST MODIF ssnp144b                      geniaut S.GENIAUT          489      1      7
+ CASTEST MODIF ssnp144c                      geniaut S.GENIAUT          492      1      7
+ CASTEST MODIF ssnp144d                      geniaut S.GENIAUT          484      1      7
+ CASTEST MODIF ssnp144e                      geniaut S.GENIAUT          483      2      7
+ CASTEST MODIF ssnp144f                      geniaut S.GENIAUT          478      5     12
+ CASTEST MODIF ssnp144g                      geniaut S.GENIAUT          476      6     11
+ CASTEST MODIF ssnp144h                      geniaut S.GENIAUT          477      8     10
+ CASTEST MODIF ssnp144i                      geniaut S.GENIAUT          480      7     10
+ CASTEST MODIF ssnp144j                      geniaut S.GENIAUT          480      1      7
+ CASTEST MODIF ssnp144k                      geniaut S.GENIAUT          474      6     12
+ CASTEST MODIF ssnp144l                      geniaut S.GENIAUT          312      1      4
+ CASTEST MODIF ssnp503h                      geniaut S.GENIAUT          289      3      6
+ CASTEST MODIF ssnp503j                      geniaut S.GENIAUT          270      4      7
+ CASTEST MODIF ssnp503l                      geniaut S.GENIAUT          278      5      6
+ CASTEST MODIF ssnp504f                      geniaut S.GENIAUT          235      1     31
+ CASTEST MODIF ssnv108b                      geniaut S.GENIAUT          172      3      8
+ CASTEST MODIF ssnv108c                      geniaut S.GENIAUT          195      3      8
+ CASTEST MODIF ssnv108d                      geniaut S.GENIAUT          188      3      8
+ CASTEST MODIF ssnv166a                      geniaut S.GENIAUT          357     15     81
+ CASTEST MODIF ssnv166b                      geniaut S.GENIAUT          374      8     79
+ CASTEST MODIF ssnv173a                      geniaut S.GENIAUT          302      4      7
+ CASTEST MODIF ssnv173b                      geniaut S.GENIAUT          403      6     18
+ CASTEST MODIF ssnv173c                      geniaut S.GENIAUT          169      4      7
+ CASTEST MODIF ssnv173d                      geniaut S.GENIAUT          255      4      7
+ CASTEST MODIF ssnv173e                      geniaut S.GENIAUT          428      6     12
+ CASTEST MODIF ssnv173f                      geniaut S.GENIAUT          242      4      7
+ CASTEST MODIF ssnv173g                      geniaut S.GENIAUT          235      4      7
+ CASTEST MODIF ssnv173h                      geniaut S.GENIAUT          225      4      7
+ CASTEST MODIF ssnv173i                      geniaut S.GENIAUT          246      4      7
+ CASTEST MODIF ssnv173j                      geniaut S.GENIAUT          241      4      7
+ CASTEST MODIF ssnv173k                      geniaut S.GENIAUT          285      4      7
+ CASTEST MODIF ssnv182a                      geniaut S.GENIAUT          269      2      4
+ CASTEST MODIF ssnv182b                      geniaut S.GENIAUT          288      2      4
+ CASTEST MODIF ssnv182c                      geniaut S.GENIAUT          232      2      4
+ CASTEST MODIF ssnv182d                      geniaut S.GENIAUT          228      2      4
+ CASTEST MODIF ssnv182e                      geniaut S.GENIAUT          216      2      4
+ CASTEST MODIF ssnv182f                      geniaut S.GENIAUT          220      2      4
+ CASTEST MODIF ssnv182g                      geniaut S.GENIAUT          269      2      4
+ CASTEST MODIF ssnv182h                      geniaut S.GENIAUT          290      2      4
+ CASTEST MODIF ssnv182i                      geniaut S.GENIAUT          230      2      4
+ CASTEST MODIF ssnv182j                      geniaut S.GENIAUT          215      2      4
+ CASTEST MODIF ssnv182k                      geniaut S.GENIAUT          228     16     12
+ CASTEST MODIF ssnv182l                      geniaut S.GENIAUT          212      4      7
+ CASTEST MODIF ssnv185b                      geniaut S.GENIAUT          398      4      7
+ CASTEST MODIF ssnv185c                      geniaut S.GENIAUT          481      4     26
+ CASTEST MODIF ssnv185d                      geniaut S.GENIAUT          301      4      7
+ CASTEST MODIF ssnv185e                      geniaut S.GENIAUT          209      4      7
+ CASTEST MODIF ssnv185f                      geniaut S.GENIAUT          250      4      7
+ CASTEST MODIF ssnv185g                      geniaut S.GENIAUT          333      2      4
+ CASTEST MODIF ssnv185h                      geniaut S.GENIAUT          294      4      7
+ CASTEST MODIF ssnv185i                      geniaut S.GENIAUT          266      4      7
+ CASTEST MODIF ssnv185j                      geniaut S.GENIAUT          261      4      7
+ CASTEST MODIF ssnv185k                      geniaut S.GENIAUT          294      4      7
+ CASTEST MODIF ssnv185l                      geniaut S.GENIAUT          460      4      7
+ CASTEST MODIF ssnv185m                      geniaut S.GENIAUT          285      4      7
+ CASTEST MODIF ssnv185n                      geniaut S.GENIAUT          386      4      7
+ CASTEST MODIF ssnv185p                      geniaut S.GENIAUT          366      4      7
+ CASTEST MODIF ssnv185q                      geniaut S.GENIAUT          256      4      7
+ CASTEST MODIF ssnv185r                      geniaut S.GENIAUT          258      4      7
+ CASTEST MODIF ssnv186a                      geniaut S.GENIAUT          199      2      4
+ CASTEST MODIF ssnv186b                      geniaut S.GENIAUT          229      2      4
+ CASTEST MODIF ssnv186c                      geniaut S.GENIAUT          199      2      4
+ CASTEST MODIF ssnv186d                      geniaut S.GENIAUT          197      2      4
+ CASTEST MODIF ssnv186e                      geniaut S.GENIAUT          189      3      8
+ CASTEST MODIF ssnv186f                      geniaut S.GENIAUT          203      2      4
+ CASTEST MODIF ssnv186g                      geniaut S.GENIAUT          210      2      4
+ CASTEST MODIF ssnv186h                      geniaut S.GENIAUT          211      2      4
+ CASTEST MODIF ssnv186i                      geniaut S.GENIAUT          200      2      4
+ CASTEST MODIF ssnv186j                      geniaut S.GENIAUT          193      3      8
+ CASTEST MODIF ssnv186k                      geniaut S.GENIAUT          213      2      4
+ CASTEST MODIF ssnv191a                      geniaut S.GENIAUT          674     10     22
+ CASTEST MODIF ssnv191b                      geniaut S.GENIAUT          690     10     22
+ CASTEST MODIF ssnv191c                      geniaut S.GENIAUT          686     10     22
+ CASTEST MODIF ssnv192a                      geniaut S.GENIAUT          471      4      7
+ CASTEST MODIF ssnv195a                      geniaut S.GENIAUT          364      4      7
+ CASTEST MODIF ssnv195b                      geniaut S.GENIAUT          312      2      4
+ CASTEST MODIF ssnv195c                      geniaut S.GENIAUT          416      2      4
+ CASTEST MODIF ssnv195d                      geniaut S.GENIAUT          318      4      7
+ CASTEST MODIF ssnv198a                      geniaut S.GENIAUT          273      4      7
+ CASTEST MODIF ssnv198b                      geniaut S.GENIAUT          238      4      7
+ CASTEST MODIF ssnv201a                      geniaut S.GENIAUT          327      4      7
+ CASTEST MODIF ssnv201b                      geniaut S.GENIAUT          329      4      7
+ CASTEST MODIF ssnv203a                      geniaut S.GENIAUT          332      6     12
+ CASTEST MODIF ssnv203b                      geniaut S.GENIAUT          303      6     12
+ CASTEST MODIF ssnv209b                      geniaut S.GENIAUT          570      4      7
+ CASTEST MODIF ssnv209c                      geniaut S.GENIAUT          484      4      7
+ CASTEST MODIF ssnv209d                      geniaut S.GENIAUT          515      2      4
+ CASTEST MODIF ssnv209e                      geniaut S.GENIAUT          516      2      4
+ CASTEST MODIF ssnv209g                      geniaut S.GENIAUT          496      2      4
+ CASTEST MODIF ssnv209h                      geniaut S.GENIAUT          454      4      7
+ CASTEST MODIF ssnv209j                      geniaut S.GENIAUT          373      4      7
+ CASTEST MODIF ssnv209k                      geniaut S.GENIAUT          512      2      4
+ CASTEST MODIF ssnv209l                      geniaut S.GENIAUT          476      4      7
+ CASTEST MODIF ssnv209m                      geniaut S.GENIAUT          521      4      7
+ CASTEST MODIF ssnv209n                      geniaut S.GENIAUT          522      4      7
+ CASTEST MODIF ssnv218a                   bargellini R.BARGELLINI       892      1      1
+ CASTEST MODIF ssnv507a                      geniaut S.GENIAUT          193      6      7
+ CASTEST MODIF ssnv507b                      geniaut S.GENIAUT          193      6      7
+ CASTEST MODIF ssnv507c                      geniaut S.GENIAUT          196      6      7
+ CASTEST MODIF ssnv507d                      geniaut S.GENIAUT          196      6      7
+ CASTEST MODIF zzzz257d                      geniaut S.GENIAUT          246      2      2
+CATALOPY MODIF commande/defi_fiss_xfem       geniaut S.GENIAUT          151      2      2
+CATALOPY MODIF commande/defi_list_inst       geniaut S.GENIAUT          217     22      3
+CATALOPY MODIF commande/post_cham_xfem       geniaut S.GENIAUT           34      4     11
+CATALOPY MODIF commande/post_k1_k2_k3        geniaut S.GENIAUT           89      6      4
+CATALOPY MODIF commande/post_mail_xfem       geniaut S.GENIAUT           33      2      2
+CATALOPY MODIF commun/c_comp_incr             granet S.GRANET           149      2      2
+ FORTRAN AJOUT modelisa/xvermo               geniaut S.GENIAUT           81     81      0
+ FORTRAN MODIF algorith/nmarch                granet S.GRANET           362     14      2
+ FORTRAN MODIF algorith/nmdiri               geniaut S.GENIAUT          106      2      2
+ FORTRAN MODIF algorith/op0010               geniaut S.GENIAUT          990      7      3
+ FORTRAN MODIF algorith/op0028               geniaut S.GENIAUT          469      1      5
+ FORTRAN MODIF algorith/op0041               geniaut S.GENIAUT          332      5      3
+ FORTRAN MODIF algorith/op0113               geniaut S.GENIAUT          285      5      1
+ FORTRAN MODIF algorith/thmrcp                granet S.GRANET          2223     24      3
+ FORTRAN MODIF algorith/vebtla               geniaut S.GENIAUT          154      7      5
+ FORTRAN MODIF calculel/op0026               geniaut S.GENIAUT          405     15      5
+ FORTRAN MODIF modelisa/xlenri               geniaut S.GENIAUT          106     34      6
+ FORTRAN MODIF prepost/op0187                geniaut S.GENIAUT          145      3      3
+ FORTRAN MODIF prepost/op0196                geniaut S.GENIAUT          210     21      8
+ FORTRAN MODIF prepost/xpodim                geniaut S.GENIAUT          317     22     19
+ FORTRAN MODIF prepost/xpoini                geniaut S.GENIAUT          155     69     27
+ FORTRAN MODIF prepost/xposep                geniaut S.GENIAUT          226      1      1
+ FORTRAN MODIF utilitai/dismxf               geniaut S.GENIAUT           90     13      2
+ FORTRAN MODIF utilitai/tbexfo               rezette C.REZETTE          250     30      1
+  PYTHON MODIF Macro/post_gp_ops          bargellini R.BARGELLINI      1449      5      2
+  PYTHON MODIF Macro/post_k1_k2_k3_ops       geniaut S.GENIAUT         1920   1260    634
+  PYTHON MODIF Macro/propa_fiss_ops          geniaut S.GENIAUT          980      7      2
+  PYTHON MODIF Messages/algorith17            granet S.GRANET            74      7      1
+  PYTHON MODIF Messages/discretisation       geniaut S.GENIAUT          117      1      4
+  PYTHON MODIF Messages/rupture0             geniaut S.GENIAUT          545     14     38
+  PYTHON MODIF Messages/xfem2                geniaut S.GENIAUT          613     19      1
+  PYTHON MODIF Messages/xfem                 geniaut S.GENIAUT          367     12      1
+  PYTHON MODIF SD/sd_xfem                    geniaut S.GENIAUT          132      2      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    3         915       915              +915
+ MODIF :  176       59996      2271    2076      +195
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  179       60911      3186    2076     +1110 

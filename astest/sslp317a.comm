@@ -1,4 +1,4 @@
-# MODIF  DATE 26/07/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
 # sslp317a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,7 +178,7 @@ UTOT=STAT_NON_LINE(MODELE=MODELEK,
 
 #---------------POST--------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MA[nb_raff],
+MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,
                        INFO          = 2)
 
@@ -187,12 +187,9 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',),) 
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MA[nb_raff],
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
+RES_XFEM=POST_CHAM_XFEM(
                         MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
                         INFO          = 2)
 
 

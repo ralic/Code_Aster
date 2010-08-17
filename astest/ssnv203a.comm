@@ -1,4 +1,4 @@
-# MODIF  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : APPLICATION D'UNE PRESSION SUR LES LEVRES D'UNE FISSURE AVEC X-FEM EN 2D
 # ssnv203a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,7 +149,7 @@ UTOT2=STAT_NON_LINE(MODELE=MODELEK,
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
 # -------------------------------------------------------------   
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG2,
+MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK)
 
 #IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE = MA_XFEM,))
@@ -161,19 +161,13 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               MODELISATION='D_PLAN',),),
                               );  
 
-RES_X1=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG2,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
-                        MODELE_VISU   = MOD_VISU,
+RES_X1=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'))
+                        )
 
-RES_X2=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG2,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
-                        MODELE_VISU   = MOD_VISU,
+RES_X2=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT2,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'))
+                        )
 
 IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_X1,));
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 16/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 3D
 # ssnp131b.para = tps_job 500 mem_job 1400Mo mem_aster 180 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -323,6 +323,8 @@ FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
                                     GROUP_NO_ORIG='PFON_0',),
                        NORMALE=(0.,-1.,0.,),);
 
+
+
 tab=POST_GP(RESULTAT=RESU,
             RESU_THER=RESU_T,
             MODELE=MOD,
@@ -352,37 +354,99 @@ tab=POST_GP(RESULTAT=RESU,
                        _F(GROUP_MA=l_copeaux1,),
                        _F(GROUP_MA=l_copeaux2,),
                        ),
-            IDENTIFICATION=_F(KJ_CRIT=(kjc1),
-                              TEMP = (tcal),),
-            TABL_GPMAX=CO('tabident'),
-#            TABL_GP     = CO('tabgp'),
+            PREDICTION=_F(GP_CRIT  =(0.673969,1.),
+                              TEMP = (tcal,100),),
+            TABL_GPMAX=CO('tabgpmax'),
+            TABL_GP   =CO('tabgp'),
             LISSAGE=_F( LISSAGE_THETA='LEGENDRE',
                            DEGRE=1,),
             INFO=2,);
+           
+TEST_TABLE(TABLE=tabgpmax,
+           FILTRE=(_F(NOM_PARA='NUME_TRANCHE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='INST',
+                      VALE=10.0,
+                      PRECISION=1e-6,),
+                   ),
+           NOM_PARA='PREDICTION',
+           VALE_I=0,
+           PRECISION=1.E-10,
+           REFERENCE='AUTRE_ASTER',);
 
-IMPR_TABLE(TABLE=tab,);
+TEST_TABLE(TABLE=tabgpmax,
+           FILTRE=(_F(NOM_PARA='NUME_TRANCHE',
+                     VALE_I=1,),
+                   _F(NOM_PARA='INST',
+                      VALE=10.,
+                      PRECISION=1e-6,),  ),
+           NOM_PARA='GPMAX',
+           VALE=0.307405,
+           CRITERE='RELATIF',
+           PRECISION=0.0001,
+           REFERENCE='AUTRE_ASTER',);
 
-IMPR_TABLE(TABLE=tabident,);
+
+#tab=POST_GP(RESULTAT=RESU,
+#            RESU_THER=RESU_T,
+#            MODELE=MOD,
+#            MATER=ACIER,
+#            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
+#                         DEFORMATION='PETIT',),
+#            EXCIT=(_F(CHARGE=COND_LIM,),
+#                   _F(CHARGE=COND_LI2,),
+#                   _F(CHARGE=CHAD,),),
+#            SYME_CHAR='SYME',
+#            DIRECTION = (1., 0., 0.),
+#            THETA_3D=(_F(GROUP_MA='FONDFISS',
+#                         R_INF=1,
+#                         R_SUP=2,),
+#                      _F(GROUP_MA='FONDFISS',
+#                         R_INF=2,
+#                         R_SUP=5,),
+#                      _F(GROUP_MA='FONDFISS',
+#                         R_INF=5,
+#                         R_SUP=10,),
+#                      _F(GROUP_MA='FONDFISS',
+#                         R_INF=10,
+#                         R_SUP=20,),
+#                         ),
+#            FOND_FISS=FONFISS,
+#            TRANCHE = (
+#                       _F(GROUP_MA=l_copeaux1,),
+#                       _F(GROUP_MA=l_copeaux2,),
+#                       ),
+#            IDENTIFICATION=_F(KJ_CRIT=(kjc1),
+#                              TEMP = (tcal),),
+#            TABL_GPMAX=CO('tabident'),
+##            TABL_GP     = CO('tabgp'),
+#            LISSAGE=_F( LISSAGE_THETA='LEGENDRE',
+#                           DEGRE=1,),
+#            INFO=2,);##
+
+#IMPR_TABLE(TABLE=tab,);
+
+#IMPR_TABLE(TABLE=tabident,);
 
 # IMPR_TABLE(TABLE=tabgp,);
 
-TEST_TABLE(TABLE=tabident,
-           FILTRE=_F(NOM_PARA='KJ_CRIT',
-                     VALE=kjc1,),
-           NOM_PARA='GPMAX',
-           VALE=0.30740456474220,
-           CRITERE='RELATIF',
-           PRECISION=0.0001,
-           REFERENCE='AUTRE_ASTER',);
-           
-TEST_TABLE(TABLE=tabident,
-           FILTRE=_F(NOM_PARA='KJ_CRIT',
-                     VALE=kjc1,),
-           NOM_PARA='KGPMAX',
-           VALE=272.147,
-           CRITERE='RELATIF',
-           PRECISION=0.0001,
-           REFERENCE='AUTRE_ASTER',);
+#TEST_TABLE(TABLE=tabident,
+#           FILTRE=_F(NOM_PARA='KJ_CRIT',
+#                     VALE=kjc1,),
+#          NOM_PARA='GPMAX',
+#           VALE=0.30740456474220,
+#           CRITERE='RELATIF',
+#           PRECISION=0.0001,
+#           REFERENCE='AUTRE_ASTER',);
+#           
+#TEST_TABLE(TABLE=tabident,
+#           FILTRE=_F(NOM_PARA='KJ_CRIT',
+#                     VALE=kjc1,),
+#           NOM_PARA='KGPMAX',
+#           VALE=272.147,
+#           CRITERE='RELATIF',
+#           PRECISION=0.0001,
+#           REFERENCE='AUTRE_ASTER',);#
 
                               
 FIN();

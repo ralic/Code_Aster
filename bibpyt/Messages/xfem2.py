@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF xfem2 Messages  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,6 +33,24 @@ cata_msg = {
   -> Seules les modélisations C_PLAN/D_PLAN sont disponibles pour XFEM.
   -> Risques et conseils:
      Veuillez considérer l'une des deux modélisations dans AFFE_MODELE.
+"""),
+
+3 : _("""
+  -> Erreur utilisateur : Pour le post-traitement de visualisation en présence
+     de contact aux arêtes ('P1P1A' dans la commande MODI_MODELE_XFEM), il faut
+     obligatoirement renseigner le mot-clé MAILLAGE_SAIN de la commande %(k1)s.
+  -> Risques et conseils:
+     Veuillez renseigner le mot-clé MAILLAGE_SAIN avec le maillage linéaire.
+"""),
+
+4 : _("""
+  -> Pour le post-traitement de visualisation standard (sans présence
+     de contact aux arêtes dans la commande MODI_MODELE_XFEM), le mot-clé 
+     MAILLAGE_SAIN de la commande %(k1)s ne sert à rien. Il ne sera pas
+     utilisé.
+  -> Risques et conseils:
+     Pour ne plus avoir cette alarme, veuillez supprimer le mot-clé MAILLAGE_SAIN
+     de la commande %(k1)s.
 """),
 
 7 : _("""

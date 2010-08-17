@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION D'UNE FISSURE XFEM EN 2D DANS UNE PLAQUE TROUEE EN FLEXION 3 POINTS
 # sslp315d.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -272,20 +272,16 @@ DEPL = [None]*NPS
 DEFI_FICHIER(UNITE=31,);
 
 for i in range(0,NPS-1) :
-   MAXF[i]=POST_MAIL_XFEM(MODELE=ModX[i],
-                             MAILLAGE_SAIN = poutre,);
+   MAXF[i]=POST_MAIL_XFEM(MODELE=ModX[i]);
 
    MOVI[i]=AFFE_MODELE(MAILLAGE=MAXF[i],
                          AFFE=_F(TOUT='OUI',
                                  PHENOMENE='MECANIQUE',
                                  MODELISATION='D_PLAN',),) 
 
-   DEPL[i]=POST_CHAM_XFEM(MAILLAGE_SAIN = poutre,
-                          MAILLAGE_FISS = MAXF[i],
-                          MODELE=ModX[i],
-                          MODELE_VISU   = MOVI[i],
+   DEPL[i]=POST_CHAM_XFEM(MODELE_VISU   = MOVI[i],
                           RESULTAT=ResX[i],
-                          NOM_CHAM=('DEPL','SIEF_ELGA'),);
+                          );
 
    IMPR_RESU(FORMAT='MED',
              UNITE=31,

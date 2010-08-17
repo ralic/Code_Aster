@@ -1,4 +1,4 @@
-# MODIF  DATE 08/03/2010   AUTEUR COLOMBO D.COLOMBO 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
 # sslp321c.para = tps_job 200 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -47,10 +47,10 @@ yinit = 19.
 #                   MODELE
 #----------------------------------------------
                     
-MODEL = [None]*(NPAS+1)
+
 MODE = [None]*(NPAS+1)
-MOD = [None]*(NPAS+1)
-MOD[0]=AFFE_MODELE(MAILLAGE=MAILLAG1,
+
+MODEL=AFFE_MODELE(MAILLAGE=MAILLAG1,
                       AFFE=(_F(GROUP_MA=('Surface',),
                                PHENOMENE='MECANIQUE',
                                MODELISATION='D_PLAN',),),);
@@ -79,7 +79,7 @@ LT=FORMULE(NOM_PARA=('X','Y'),VALE='Y-Y0');
 
 FISS = [None]*(NPAS+2)
 
-FISS[0]=DEFI_FISS_XFEM(MODELE=MOD[0],
+FISS[0]=DEFI_FISS_XFEM(MODELE=MODEL,
                        DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                        GROUP_MA_ENRI='Surface',
 #                        TYPE_ENRI_FOND = 'GEOMETRIQUE',
@@ -106,14 +106,8 @@ K1REF=[0.243961, 0.290147, 0.33084, 0.375984, 0.433606, 0.496975, 0.573785, 0.67
 K2REF=[4.27722E-02, 1.21013E-04, 7.10255E-03, 1.94683E-03, 1.20266E-03, 8.82542E-04, -1.23199E-03, -3.54655E-03, -4.54122E-03, -8.18030E-03, -1.55772E-02, -2.31849E-02, -3.52229E-02]
 
 for i in range(1,NPAS+1) :
-    
-    MODEL[i]=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                      AFFE=(_F(GROUP_MA=('Surface',),
-                               PHENOMENE='MECANIQUE',
-                               MODELISATION='D_PLAN',),
-                            ),);
-                                              
-    MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[i],FISSURE=FISS[i-1],);
+                                                  
+    MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL,FISSURE=FISS[i-1],);
 
     CHXFE[i]=AFFE_CHAR_MECA(MODELE=MODE[i],LIAISON_XFEM='OUI',);
 
@@ -202,20 +196,17 @@ for i in range(1,NPAS+1) :
     DEPL = [None]*(NPAS+1)
 
 
-    MAXFE[i]=POST_MAIL_XFEM(MODELE=MODE[i],
-                             MAILLAGE_SAIN = MAILLAG1,);
+    MAXFE[i]=POST_MAIL_XFEM(MODELE=MODE[i]);
 
     MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFE[i],
                          AFFE=_F(TOUT='OUI',
                                  PHENOMENE='MECANIQUE',
                                  MODELISATION='D_PLAN',),) 
 
-    DEPL[i]=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                          MAILLAGE_FISS = MAXFE[i],
-                          MODELE=MODE[i],
+    DEPL[i]=POST_CHAM_XFEM(
                           MODELE_VISU   = MOVIS[i],
                           RESULTAT=RESU[i],
-                          NOM_CHAM=('DEPL','SIEF_ELGA'),);
+                          );
 
     DEFI_FICHIER(UNITE=30,);
     IMPR_RESU(   FORMAT='MED',

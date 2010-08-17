@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2010   AUTEUR CARON A.CARON 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,14 +111,12 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    EXCIT=(_F(CHARGE=CHXFEM,),                     
                           _F(CHARGE=CH1,),),
                    CONTACT  = CTXFEM,       
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='SURF',),
+                   COMP_ELAS=_F(RELATION='ELAS',TOUT='OUI'),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.0,),
                    SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,
                               ),
                    NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 
 
@@ -131,6 +129,14 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              NOM_CMP=('LAGS_C','LAGS_F1',),
                              OPERATION='EXTRACTION',),);
 
+
+VI=CREA_CHAMP(
+                TYPE_CHAM='ELGA_VARI_R',
+                OPERATION='EXTR',
+                RESULTAT=UTOT1,
+                NOM_CHAM='VARI_ELGA',);
+                
+IMPR_RESU(RESU=_F(CHAM_GD = VI))                
 
 
 IMPR_TABLE(TABLE=LAG,
@@ -181,24 +187,22 @@ TEST_TABLE(TABLE=LAG,
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
 # -------------------------------------------------------------   
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                       MODELE        = MODELEK,
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
                        INFO          = 2)
+
+IMPR_RESU(RESU=_F(MAILLAGE=MA_XFEM))
+
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN',),) 
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
-                        MODELE_VISU   = MOD_VISU,
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
                         INFO          = 2)
 
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XFEM));
+IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
 
 #TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
 #                     NOM_CHAM='DEPL',NOM_CMP='DX',

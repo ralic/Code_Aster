@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -325,7 +325,7 @@ for i in range(nbcalc) :
 #------------------------------------------------------------------------
 i =0
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAGE,
+MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELK[i],
                        INFO          = 2)
 
@@ -334,12 +334,9 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                              PHENOMENE='MECANIQUE',
                              MODELISATION='D_PLAN',),)
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAGE,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELK[i],
-                        MODELE_VISU   = MOD_VISU,
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1[i],
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
+                        
                         INFO          = 2)
 
 RES_XFEM=CALC_ELEM(reuse =RES_XFEM,

@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF propa_fiss_ops Macro  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -263,6 +263,11 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
        __Fis = [None]*(StepTot*len(FissAct))
        __Mod = [None]*StepTot
        mcsimp['TOLERANCE'] = args['TOLERANCE']
+       fiss = FissAct[0]
+       iret,ibid,mod_fiss = aster.dismoi('F','NOM_MODELE',fiss.nom,'FISS_XFEM')
+       mod_fiss=mod_fiss.strip()
+       MOD_FISS = self.get_concept(mod_fiss)
+
        for NumStep in range(0,StepTot) :
          
            aster.affiche('MESSAGE',' ------------------------')
@@ -296,7 +301,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               aster.affiche('MESSAGE',' ------------------------')
               aster.affiche('MESSAGE',' CREATION DU MODELE FISSURE TEMPORAIRE')
               aster.affiche('MESSAGE',' ')
-              __Mod[NumStep] = MODI_MODELE_XFEM(MODELE_IN=args['MODELE'],FISSURE=(ListeFiss))
+              __Mod[NumStep] = MODI_MODELE_XFEM(MODELE_IN=MOD_FISS,FISSURE=(ListeFiss))
               mcsimp['LISTE_FISS'] = ListeFiss
               aster.affiche('MESSAGE',' ')
               aster.affiche('MESSAGE',' ------------------------')

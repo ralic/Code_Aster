@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 13/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+#@ MODIF post_gp_ops Macro  DATE 16/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -214,12 +214,13 @@ def post_gp_ops(self, **args):
                    OPTION='APPUI',
                    GROUP_NO='Cop_Pl',
                    TYPE_APPUI='TOUT',),INFO=1);
-       
+
           DEFI_GROUP(reuse =maya,
                    MAILLAGE=maya,
                    DETR_GROUP_MA=_F(NOM='Mai_Plan'),
                    CREA_GROUP_MA=_F(NOM='Mai_Plan',
                                     DIFFE=('Mai_Pla1','Mai_Pla2'),),);
+                          
           DEFI_GROUP(reuse =maya,
                  MAILLAGE=maya,
                  DETR_GROUP_MA=_F(NOM='Mai_Pla2'),
@@ -234,8 +235,10 @@ def post_gp_ops(self, **args):
                    OPTION='APPUI',
                    GROUP_NO='Cop_Pl',
                    TYPE_APPUI='TOUT',),INFO=1);
+          
           DEFI_GROUP(reuse =maya,
                  MAILLAGE=maya,
+                 DETR_GROUP_MA=_F(NOM='Mai_Pla2'),
                  CREA_GROUP_MA=_F(NOM='Mai_Pla2',
                                   GROUP_MA=('Mai_Plan'),),);
           mesure[Copeau_k] = NP.zeros(num_ord)
@@ -351,7 +354,6 @@ def post_gp_ops(self, **args):
                    GROUP_NO='Cop_Pl',
                    TYPE_APPUI='TOUT',),INFO=1);
                    
-       
           DEFI_GROUP(reuse =maya,
                    MAILLAGE=maya,
                    DETR_GROUP_MA=_F(NOM='Mai_Plan'),
@@ -382,6 +384,7 @@ def post_gp_ops(self, **args):
                    OPTION='APPUI',
                    GROUP_NO='Cop_Pl',
                    TYPE_APPUI='TOUT',),INFO=1);
+
           DEFI_GROUP(reuse =maya,
                  MAILLAGE=maya,
                  DETR_GROUP_MA=_F(NOM='Mai_Pla2'),

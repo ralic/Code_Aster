@@ -1,4 +1,4 @@
-# MODIF  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173k.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -121,7 +121,7 @@ UTOT2=STAT_NON_LINE(MODELE=MODX,
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
 # -------------------------------------------------------------   
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MA1,
+MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODX,
                        INFO          = 2)
 
@@ -130,12 +130,9 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),) 
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MA1,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODX,
-                        MODELE_VISU   = MOD_VISU,
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT2,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
+                        
                         INFO          = 2)
  
 #IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XFEM));

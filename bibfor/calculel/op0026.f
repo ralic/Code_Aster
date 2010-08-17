@@ -1,7 +1,7 @@
       SUBROUTINE OP0026()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER         NBPAR,NBLIBL
-      PARAMETER       (NBPAR=5,NBLIBL=5)
+      PARAMETER       (NBPAR=5,NBLIBL=6)
       CHARACTER*19    NOMPAR(NBPAR),TYPPAR(NBPAR)
       CHARACTER*24    VK(NBPAR)
       CHARACTER*24    KNOOBJ(NBLIBL),VKK(NBLIBL),KNOTYP(NBLIBL)
@@ -72,7 +72,7 @@ C-----------------------------------------------------------------------
       CHARACTER*16    LOPT(3),OPTION
       CHARACTER*19    LISCHA,K19BLA
       CHARACTER*19    LINST
-      CHARACTER*19    MEDIRI,MERIGI,VEFINT
+      CHARACTER*19    MEDIRI,MERIGI,VEFINT,VEDIRI
       CHARACTER*24    DEPDEL,MATE,CARELE,COMPOR,CARCRI,INPSCO
       CHARACTER*24    DEPPLU,SIGPLU,VARPLU,COMMOI,MODELE,DEPMOI
       CHARACTER*24    COMPLU, CODERE
@@ -96,10 +96,12 @@ C-----------------------------------------------------------------------
      &                 'SIEF_ELGA               ',
      &                 'VARI_ELGA               ',
      &                 'VECT_ELEM               ',
+     &                 'VEDIRI_EL               ',
      &                 'CODE_RETOUR             '/
       DATA KNOTYP     /'MATR_ELEM_DEPL_R        ',
      &                 'CHAM_ELEM               ',
      &                 'CHAM_ELEM               ',
+     &                 'VECT_ELEM_DEPL_R        ',
      &                 'VECT_ELEM_DEPL_R        ',
      &                 'CHAM_ELEM               '/
 C
@@ -127,6 +129,7 @@ C     --------------------------
       CALL GCNCON('_',VEFINT)
       CALL GCNCON('_',MEDIRI)
       CALL GCNCON('_',CODERE)
+      CALL GCNCON('_',VEDIRI)
 
 C     RECUPERATION DES OPTIONS DEMANDEES
 C     ----------------------------------
@@ -242,6 +245,8 @@ C --- CALCUL DE LA CONTRIBUTION DES "LAGRANGE"
 C
       CALL MEDIME('G','CUMU',MODELE,LISCHA,MERIGI)
 
+C     CALCUL DES VECTEURS ELEMENTAIRES DES REACTIONS D'APPUIS (LAGRANGE)
+      CALL VEBTLA('G',MODELE,MATE,CARELE,DEPPLU,LISCHA,VEDIRI)     
 
 C ======================================================================
 C --- ECRITURE DES RESULTATS DANS UNE TABLE
@@ -268,7 +273,8 @@ C ======================================================================
       VKK(2)=SIGPLU
       VKK(3)=VARPLU
       VKK(4)=VEFINT
-      VKK(5)=CODERE
+      VKK(5)=VEDIRI
+      VKK(6)=CODERE
 
       CALL GETVID(' ','TABLE',0,1,0,K8B,N1)
 
@@ -300,6 +306,10 @@ C     ---------------------------------------------
         VK(1)=KNOOBJ(5)
         VK(2)=KNOTYP(5)
         VK(3)=VKK(5)
+        CALL TBAJLI(TABLE,NBPAR,NOMPAR,VI,VR,CBID,VK,0)
+        VK(1)=KNOOBJ(6)
+        VK(2)=KNOTYP(6)
+        VK(3)=VKK(6)
         CALL TBAJLI(TABLE,NBPAR,NOMPAR,VI,VR,CBID,VK,0)
 
       ELSE
@@ -351,7 +361,7 @@ C       RECUPERATION DES POINTEURS POUR LIRE ET MODIFIER LA TABLE
         CALL JEVEUO(ZK24(JTBLP+(IINST -1)*4+2),'E',JRINS)
         CALL JEVEUO(ZK24(JTBLP+(IINST -1)*4+3),'L',JLINS)
 
-C       POUR LES NBLIBL(=5) NOM_OBJET DE CALCUL
+C       POUR LES NBLIBL(=6) NOM_OBJET DE CALCUL
         DO 10 I=1,NBLIBL
 C         ON PARCOURT LES LIGNES DE LA TABLE POUR:
           DO 20 J=1,NBLI

@@ -1,4 +1,4 @@
-# MODIF  DATE 27/10/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110f.para = tps_job 450 mem_job 1200Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,14 +151,7 @@ SIFK1=POST_K1_K2_K3(  MODELISATION='3D',
 IMPR_TABLE(TABLE = SIFK1,
             FILTRE=_F(NOM_PARA='METHODE',VALE=3,),)
 
-#MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
 
-#DEPL=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
-#                    MODELE=MODELEK,
-#                    NOM_CHAM='DEPL',
-#                    RESULTAT=UTOT1)
-
-#IMPR_RESU(FORMAT='IDEAS',RESU=_F(MAILLAGE=MA_XFEM,RESULTAT = DEPL))
 #----------------------------------------------------------------------
 #              TEST DE K1 EN 2 POINTS
 #----------------------------------------------------------------------

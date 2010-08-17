@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
+#& MODIF COMMUN  DATE 16/08/2010   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -138,7 +138,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                  TAUX_RETOUR  =SIMP(statut='f',typ='R',defaut= 0.05 ),
                                   ),
 
-           PARM_THETA      =SIMP(statut='f',typ='R',defaut= 1. ),
+           PARM_THETA      =SIMP(statut='f',typ='R',val_min=0.,val_max=1., defaut= 1.),
            PARM_ALPHA      =SIMP(statut='f',typ='R',defaut= 1. ),
 
            regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),

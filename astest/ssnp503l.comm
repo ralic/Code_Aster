@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503l.para = tps_job 600 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -182,7 +182,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                     INFO=1,);
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG2,
+MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -190,12 +190,11 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                              PHENOMENE='MECANIQUE',
                              MODELISATION='3D',),)
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG2,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
+RES_XFEM=POST_CHAM_XFEM(
+                        
                         MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),)
+                        )
 
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_XFEM,
 #                                 NOM_CHAM='DEPL',

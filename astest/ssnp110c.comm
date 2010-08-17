@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 # ssnp110c.para = tps_job 150 mem_job 192Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -190,18 +190,14 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 #------------------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,
-                       MAILLAGE_SAIN=MAILLAG1,);
+                       );
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
                              MODELISATION='C_PLAN',),);
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN=MAILLAG1,
-                        MAILLAGE_FISS=MA_XFEM,
-                        NOM_CHAM=('DEPL','SIEF_ELGA',),
-                        MODELE=MODELEK,
-                        RESULTAT=UTOT1,
+RES_XFEM=POST_CHAM_XFEM(RESULTAT=UTOT1,
                         MODELE_VISU=MOD_VISU,);
 
 IMPR_RESU(FORMAT='GMSH',

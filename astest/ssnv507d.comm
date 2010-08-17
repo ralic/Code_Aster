@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE GRANDES ROTATIONS AVEC X-FEM
 # ssnv507d.para = tps_job 150 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -55,7 +55,7 @@ FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1),
-                         CONTACT='NON',
+                         CONTACT='SANS',
                          INFO=1,);
 
 E=100.0E6
@@ -118,7 +118,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 #             POST-TRAITEMENT POUR LA VISUALISATION
 #-----------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG,
+MA_XFEM=POST_MAIL_XFEM(
                                                 MODELE=MODELEK);
 
 RINF = R - 1;
@@ -137,12 +137,11 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                                                             MODELISATION='3D',
                 ),)
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG,
-                                                    MAILLAGE_FISS = MA_XFEM,
-                                                    MODELE            = MODELEK,
+RES_XFEM=POST_CHAM_XFEM(
+                                                    
                                                     MODELE_VISU  = MOD_VISU,
                                                     RESULTAT        = UTOT1,
-                                                    NOM_CHAM      = ('DEPL','SIEF_ELGA'),)
+                                                    )
 
 #----------------------------------------------
 #                   POST RELEVE

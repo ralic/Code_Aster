@@ -1,4 +1,4 @@
-# MODIF  DATE 07/09/2009   AUTEUR MESSIER J.MESSIER 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DEBOUCHANTE SOLLICITEE EN MODE I
 # sslp320b.para = tps_job 200 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -209,37 +209,6 @@ for i in range(1,NPAS+1) :
                                COEF_MULT_MAXI=1.,),
                  );
                       
-#Test des coordonnees du fond de fissure y proche de yinit
-#en developpement
 
-#----------------------------------------------
-#         EDITION DE FICHIERS MED
-#----------------------------------------------
-#for i in range(1,NPAS-1) :
-#    MAXFE = [None]*NPAS
-#    MOVIS = [None]*NPAS
-#    DEPL = [None]*NPAS
-#
-#
-#    MAXFE[i]=POST_MAIL_XFEM(MODELE=MODEL[i],
-#                             MAILLAGE_SAIN = MAILLAG1,);
-#
-#    MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFE[i],
-#                         AFFE=_F(TOUT='OUI',
-#                                 PHENOMENE='MECANIQUE',
-#                                 MODELISATION='D_PLAN',),) 
-#
-#    DEPL[i]=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-#                          MAILLAGE_FISS = MAXFE[i],
-#                          MODELE=MODEL[i],
-#                          MODELE_VISU   = MOVIS[i],
-#                          RESULTAT=RESU[i],
-#                          NOM_CHAM=('DEPL','SIEF_ELGA'),);
-#
-#    DEFI_FICHIER(UNITE=30+i,);
-#    IMPR_RESU(   FORMAT='MED',
-##              FORMAT='CASTEM',
-#             UNITE=30+i,
-#             RESU=_F(RESULTAT=DEPL[i],),);
              
 FIN();

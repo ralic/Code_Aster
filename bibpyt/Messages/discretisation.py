@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF discretisation Messages  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,9 +32,6 @@ Certains pas de temps de la liste (LISTE_INST) sont plus petits
  le nombre de subdivisions du pas de temps doit etre plus grand que 1 (SUBD_PAS)
 """),
 
-4 : _("""
- Avec une gestion automatique de la liste d'instants, la notion de NIVEAU de subdivisions est ignorée.
-"""),
 
 5 : _("""
  L'adaptation du pas de temps a été désactivée. Seuls les instants définis par LIST_INST seront calculés

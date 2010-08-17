@@ -1,7 +1,7 @@
       SUBROUTINE OP0187()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/07/2010   AUTEUR CARON A.CARON 
+C MODIF PREPOST  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C     ------------------------------------------------------------------
 C
       IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'1. XPOINI'
-      CALL XPOINI(MAXFEM,MO,MALINI,K24B,IBID,K8B,K8B,PREFNO,NOGRFI)
+      CALL XPOINI(MAXFEM,MO,MALINI,K8B,K24B,K8B,K8B,PREFNO,NOGRFI)
 C
 C     ------------------------------------------------------------------
 C     2. SEPARATION DES MAILLES DE MALINI EN 2 GROUPES
@@ -93,7 +93,7 @@ C     ------------------------------------------------------------------
       IF (NIV.GT.1) WRITE(IFM,*)'3. XPODIM'
       LISTNO = '&&OP0187.LISTNO'
       DIRGRM = '&&OP0187.DIRGRM'
-      CALL XPODIM(MALINI,MAILC,NSETOT,NNNTOT,NCOTOT,LISTNO,
+      CALL XPODIM(MALINI,MAILC,K8B,K24B,NSETOT,NNNTOT,NCOTOT,LISTNO,
      &            K19B,K19B,K19B,K19B,K19B,K19B,K19B,
      &            IBID,K8B,NBNOC,NBMAC,LOGRMA,DIRGRM,MAXFEM)
 

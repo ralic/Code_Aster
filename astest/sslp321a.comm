@@ -1,4 +1,4 @@
-# MODIF  DATE 05/01/2010   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
 # sslp321a.para = tps_job 150 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -205,20 +205,17 @@ for i in range(NPAS+1) :
     MOVIS = [None]*(NPAS+1)
     DEPL = [None]*(NPAS+1)
 
-    MAXFE[i]=POST_MAIL_XFEM(MODELE=MODE[i],
-                             MAILLAGE_SAIN = MAT[i],);
+    MAXFE[i]=POST_MAIL_XFEM(MODELE=MODE[i]);
 
     MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFE[i],
                          AFFE=_F(TOUT='OUI',
                                  PHENOMENE='MECANIQUE',
                                  MODELISATION='D_PLAN',),) 
 
-    DEPL[i]=POST_CHAM_XFEM(MAILLAGE_SAIN = MAT[i],
-                          MAILLAGE_FISS = MAXFE[i],
-                          MODELE=MODE[i],
+    DEPL[i]=POST_CHAM_XFEM(
                           MODELE_VISU   = MOVIS[i],
                           RESULTAT=RESU[i],
-                          NOM_CHAM=('DEPL','SIEF_ELGA'),);
+                          );
 
     DEFI_FICHIER(UNITE=30,);
     IMPR_RESU(   FORMAT='MED',

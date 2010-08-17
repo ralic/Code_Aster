@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2010   AUTEUR CARON A.CARON 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -346,16 +346,10 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                              MODELISATION='C_PLAN',),);
 
 RESXFEM1=POST_CHAM_XFEM(MAILLAGE_SAIN=MAILLAG1,
-                        MAILLAGE_FISS=MA_XFEM,
-                        NOM_CHAM=('DEPL','SIEF_ELGA',),
-                        MODELE=MODELEK,
                         RESULTAT=UTOT1,
                         MODELE_VISU=MOD_VISU,);
                         
 RESXFEM2=POST_CHAM_XFEM(MAILLAGE_SAIN=MAILLAG1,
-                        MAILLAGE_FISS=MA_XFEM,
-                        NOM_CHAM=('DEPL','SIEF_ELGA',),
-                        MODELE=MODELEK,
                         RESULTAT=UTOT2,
                         MODELE_VISU=MOD_VISU,);
 #--------------------------------------------------------

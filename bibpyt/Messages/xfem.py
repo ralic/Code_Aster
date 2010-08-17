@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF xfem Messages  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -270,6 +270,17 @@ cata_msg={
      Vous pouvez activer cette formulation en commentant LINE_QUAD afin que les mailles
      soient de type QUAD4 ou TRIA3.
      
+"""),
+
+39: _("""
+     Erreur utilisateur : incohérence entre les mot-clés FISSURE et MODELE_IN.
+     Il faut que les (ou la) fissure sous le mot-clé FISSURE soient toutes définies à 
+     partir du même modèle.
+     Or : 
+     - la fissure %(k1)s est définie à partir du modèle %(k2)s
+     - le modèle renseigné sous MODELE_IN est %(k3)s.
+     Conseil :
+     Veuillez revoir la définition de la fissure %(k1)s ou bien changer MODELE_IN.
 """),
 
 57: _("""

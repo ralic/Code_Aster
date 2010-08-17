@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF rupture0 Messages  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE DELMAS J.DELMAS
 
 def _(x) : return x
 
@@ -33,6 +32,17 @@ Le label %(k1)s doit etre présent dans la table %(k2)s.
 3: _("""
 Création de la table  %(k1)s.
 """),
+
+4: _("""
+Erreur utilisateur :
+Incohérence entre le mot-clé FISSURE et le modèle associé au mot-clé RESULTAT.
+- Pour utiliser une fissure maillée, renseignez sous le mot-clé FOND_FISS
+une fissure provenant de la commande DEFI_FOND_FISS.
+- Pour utiliser une fissure non-maillée (calcul X-FEM), renseignez sous le mot-clé FISSURE
+une fissure provenant de la commande DEFI_FISS_XFEM. Le modèle associé au mot-clé RESULTAT 
+doit être un modèle X-FEM provenant de la commande MODI_MODELE_XFEM.
+"""),
+
 
 5: _("""
 Il faut définir ELAS dans DEFI_MATERIAU.
@@ -95,13 +105,6 @@ Veuillez vérifier les données fournies au mot-clé GROUP_NO ou NOEUD.
 
 16: _("""
 Le mot clé RESULTAT est obligatoire pour TYPE_MAILLAGE = LIBRE.
-"""),
-
-17: _("""
-Le nombre de noeuds NB_NOEUD_COUPE doit etre supérieur à 3.
--> Risque et Conseil :
-Le calcul s'est poursuivi avec la valeur par défaut (=5, cf doc U4.82.05)
-
 """),
 
 18: _("""
@@ -213,15 +216,6 @@ Il y a plusieurs causes possibles :
   pas "sortir" de la matière.
 """),
 
-34: _("""
- Le nombre de noeuds NB_NOEUD_COUPE doit etre supérieur à 3 : 
- on prend la valeur par défaut.
-"""),
-
-35: _("""
-Les mots-clés TABL_DEPL_SUP et TABL_DEPL_INF sont obligatoires
-si SYME_CHAR=SANS.
-"""),
 
 37: _("""
 Le numéro d'ordre %(i1)d n'a pas été trouvé dans la table.
@@ -239,24 +233,6 @@ Plusieurs instants trouvés dans la table pour l'instant %(r1)f.
 ABSC_CURV non croissants pour %(k1)s.
 """),
 
-42: _("""
-Différence de points entre la lèvre supérieure et la lèvre inférieure.
-"""),
-
-43: _("""
-Pour traiter le noeud %(k1)s:
- Nombre de points - lèvre supérieure : %(i1)d
- Nombre de points - lèvre inférieure : %(i2)d
-"""),
-
-44: _("""
-Les noeuds ne sont pas en vis-à-vis.
--> Risque et Conseil :
-Pour interpoler les sauts de déplacement, les noeuds doivent être par défaut en 
-vis-à-vis deux à deux sur les lèvres. Si ce n'est pas le cas, utilisez l'option 
-TYPE_MAILLE='LIBRE' dans POST_K1_K2_K3.
-
-"""),
 
 46: _("""
 Il faut au moins trois noeuds dans le plan défini par les lèvres et perpendiculaire 
@@ -353,7 +329,6 @@ groupe identique au premier noeud du groupe suivant dans la liste.
 
 63 : _("""
 Les mailles du fond de fissure doivent etre du type segment (SEG2 ou SEG3).
-En 2D, utiliser GROUP_NO ou NOEUD pour définir le fond de fissure.
 """),
 
 64 : _("""
@@ -364,7 +339,8 @@ ordonnées de telle sorte que pour deux segments consécutifs, le 2ème noeud somme
 du 1er segment soit le même que le 1er noeud sommet du 2ème segment.
 
 Conseil : Pour ordonner les mailles du fond de fissure, veuillez 
-utiliser NOEUD_ORIG (ou GROUP_NO_ORIG) et NOEUD_EXTR (ou GROUP_NO_EXTR)"""),
+utiliser NOEUD_ORIG (ou GROUP_NO_ORIG) et NOEUD_EXTR (ou GROUP_NO_EXTR).
+"""),
 
 65 : _("""
 Détection d'une maille de type %(k1)s dans la définition des lèvres de la

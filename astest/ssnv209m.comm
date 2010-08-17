@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2010   AUTEUR CARON A.CARON 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -245,7 +245,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 #             POST-TRAITEMENT POUR LA VISUALISATION
 #-----------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
+MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,)
 
 MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
@@ -288,12 +288,9 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                              PHENOMENE='MECANIQUE',
                              MODELISATION='D_PLAN',),)
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
-                        MODELE_VISU   = MOD_VISU,
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),)
+                        )
 
 #----------------------------------------------
 #                   POST RELEVE

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2010   AUTEUR CARON A.CARON 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -189,11 +189,9 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               );  
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
                         MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA','VARI_ELGA'))
+                        )
 
 
 #IMPR_RESU(FORMAT='GMSH',UNITE=33,RESU=_F(RESULTAT=RES_XFEM,

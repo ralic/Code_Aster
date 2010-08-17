@@ -12,7 +12,7 @@
      &                 ISOT,DFICKS,INSTAP)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ALGORITH  DATE 16/08/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,8 @@ C
       REAL*8      VAL35(DIM35+1),VAL36(DIM36),VAL37(DIM37),VAL38(DIM38)
       REAL*8      VAL40(DIM40),VAL41(DIM41),VAL42(DIM42),VAL43(DIM43)
       REAL*8      VAL39(DIM39),VALPAR(DIMPAR), COND(NCON), R8VIDE
-      REAL*8      VG(DIMVG),FPESA
+      REAL*8      VG(DIMVG),FPESA,R8PREM
+
 C
       CHARACTER*2   CODRET(NRESMA)
       CHARACTER*4   NOMPAR(DIMPAR)
@@ -515,17 +516,37 @@ C =====================================================================
          P20  = VAL1(3)
          PHI0 = VAL1(4)
          PVP0 = VAL1(5)
-        IF ( (THMC.EQ.'GAZ')           .OR.
+C
+C VERIFICATION TEMPERATURE DE REFERENCE
+         IF ( (THMC.EQ.'GAZ')           .OR.
      &        (THMC.EQ.'LIQU_VAPE')     .OR.
      &        (THMC.EQ.'LIQU_VAPE_GAZ') .OR.
      &        (THMC.EQ.'LIQU_AD_GAZ_VAPE') .OR.
      &        (THMC.EQ.'LIQU_AD_GAZ') .OR.
      &        (THMC.EQ.'LIQU_GAZ')           ) THEN
-            IF ( T0.EQ.R8VIDE() ) THEN
+            IF(T0.EQ.R8VIDE())THEN
                CALL U2MESK('F','ALGORITH10_90',1,THMC)
+            ENDIF
+            IF (T0 .LE. R8PREM())THEN
+              CALL U2MESS('F','ALGORITH17_12')
             ENDIF
          ENDIF
          IF ( T0.EQ.R8VIDE() ) T0 = 0.0D0
+C VERIFICATION PRESSION DE GAZ DE REFERENCE NON NULLE 
+         IF ( (THMC.EQ.'LIQU_VAPE_GAZ') .OR.
+     &        (THMC.EQ.'LIQU_AD_GAZ_VAPE') .OR.
+     &        (THMC.EQ.'LIQU_AD_GAZ') .OR.
+     &        (THMC.EQ.'LIQU_GAZ')           ) THEN
+            IF (ABS(P20) .LE. R8PREM()) THEN
+              CALL U2MESS('F','ALGORITH17_13')
+            ENDIF
+         ELSE IF(THMC.EQ.'GAZ')THEN
+            IF (ABS(P10) .LE. R8PREM()) THEN
+              CALL U2MESS('F','ALGORITH17_13')
+            ENDIF
+         ENDIF
+
+C
       ELSE IF (ETAPE.EQ.'INTERMED') THEN
 C =====================================================================
 C --- CAS INTERMEDIAIRE -----------------------------------------------

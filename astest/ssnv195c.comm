@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv195c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -236,11 +236,9 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               MODELISATION='3D',),) 
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAGE,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
                         MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
+                        
                         INFO          = 2)
  
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv314a.para = tps_job 230 mem_job 1024Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -249,19 +249,17 @@ TEST_TABLE(TABLE=TABLST,
 
 
 MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i],
-                          MAILLAGE_SAIN = MAILLAG1,);
+                          );
 
 MOVISU=AFFE_MODELE(MAILLAGE=MAXFEM,
                       AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),) 
 
-DEPL=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                       MAILLAGE_FISS = MAXFEM,
-                       MODELE=MODELX[i],
+DEPL=POST_CHAM_XFEM(
                        MODELE_VISU   = MOVISU,
                        RESULTAT=RESU[i],
-                       NOM_CHAM=('DEPL','SIEF_ELGA'),);
+                       );
 
 #IMPR_RESU(FORMAT='IDEAS',
 #          RESU=_F(RESULTAT=DEPL,MAILLAGE=MAXFEM),);

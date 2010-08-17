@@ -1,4 +1,4 @@
-# MODIF  DATE 19/07/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PLAQUE 3D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
 # sdlv130b.para = tps_job 120 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,7 +196,6 @@ MODES=MODE_ITER_SIMULT(MATR_A=MATRC,
 #----------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,
-                       MAILLAGE_SAIN=MAILLAG1,
                        INFO=2,);
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -204,10 +203,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                              PHENOMENE='MECANIQUE',
                              MODELISATION='3D',),);
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN=MAILLAG1,
-                        MAILLAGE_FISS=MA_XFEM,
-                        NOM_CHAM='DEPL',
-                        MODELE=MODELEK,
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU=MOD_VISU,
                         RESULTAT=MODES,
                         INFO=1,);
 

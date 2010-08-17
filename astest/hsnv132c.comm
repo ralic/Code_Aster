@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
 # hsnv132c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,8 +148,7 @@ UTOT=STAT_NON_LINE(MODELE=MODELEK,
 
 #---------------post--------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                       MODELE        = MODELEK,
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
                        INFO          = 2)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -157,12 +156,8 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),) 
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
-                        MODELE_VISU   = MOD_VISU,
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
                         INFO          = 2)
 
 

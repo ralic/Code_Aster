@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/06/2010   AUTEUR CARON A.CARON 
+#& MODIF COMMANDE  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,7 +100,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 #                       partie du maillage potentiellement enrichie
 # ------------------------------------------------------------------------------------------------------------------------
 
-    GROUP_MA_ENRI         =SIMP(statut='o',typ=grma,max=01),
+    GROUP_MA_ENRI         =SIMP(statut='f',typ=grma,max=01),
 
 # ------------------------------------------------------------------------------------------------------------------------
 #                       types d'enrichissement 

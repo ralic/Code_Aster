@@ -5,7 +5,7 @@
      &                    PROLGD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 16/08/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,8 +112,11 @@ C
       NOJVLY = ZK24(JTBLP+4*(IPARY-1)+3)
 C
       IF ( TYPEX .NE. TYPEY ) THEN
-         CALL U2MESS('F','UTILITAI4_77')
-      ENDIF
+          IF ( (TYPEX(1:1).EQ.'I' .AND. TYPEY(1:1).EQ.'R') .OR.
+     &         (TYPEX(1:1).EQ.'R' .AND. TYPEY(1:1).EQ.'I')) GOTO 17
+          CALL U2MESS('F','UTILITAI4_77')
+      ENDIF     
+ 17   CONTINUE
 C
       CALL JEVEUO ( NOJVX , 'L', JVALEX )
       CALL JEVEUO ( NOJVY , 'L', JVALEY )
@@ -143,7 +146,18 @@ C
       NBVAL = 2 * NBVAL
 C
       IV = 0
-      IF     ( TYPEX(1:1) .EQ. 'I'   ) THEN
+      IF ( TYPEX(1:1) .EQ. 'I'   ) THEN
+
+       IF ( TYPEY(1:1) .EQ. 'R'   ) THEN
+         CALL WKVECT( NOMFON//'.VALE', BASE//' V R', NBVAL, KVALE )
+         DO 300 I = 1 , NBLIGN
+            IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
+               IV = IV + 1
+               ZR(KVALE+IV-1) = ZI(JVALEX+I-1)*1.D0
+               ZR(KVALE+NBFON+IV-1) = ZR(JVALEY+I-1)
+            ENDIF
+ 300     CONTINUE
+       ELSE
          CALL WKVECT( NOMFON//'.VALE', BASE//' V I', NBVAL, KVALE )
          DO 30 I = 1 , NBLIGN
             IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
@@ -152,7 +166,20 @@ C
                ZI(KVALE+NBFON+IV-1) = ZI(JVALEY+I-1)
             ENDIF
  30      CONTINUE
+       ENDIF
+
       ELSEIF ( TYPEX(1:1) .EQ. 'R'   ) THEN
+
+       IF ( TYPEY(1:1) .EQ. 'I'   ) THEN
+         CALL WKVECT( NOMFON//'.VALE', BASE//' V R', NBVAL, KVALE )
+         DO 311 I = 1 , NBLIGN
+            IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
+               IV = IV + 1
+               ZR(KVALE+IV-1) = ZR(JVALEX+I-1)
+               ZR(KVALE+NBFON+IV-1) = ZI(JVALEY+I-1)*1.D0
+            ENDIF
+ 311     CONTINUE
+       ELSE
          CALL WKVECT( NOMFON//'.VALE', BASE//' V R', NBVAL, KVALE )
          DO 31 I = 1 , NBLIGN
             IF ( ZI(JVALLX+I-1).EQ.1 .AND. ZI(JVALLY+I-1).EQ.1 ) THEN
@@ -161,6 +188,8 @@ C
                ZR(KVALE+NBFON+IV-1) = ZR(JVALEY+I-1)
             ENDIF
  31      CONTINUE
+       ENDIF
+
       ELSEIF ( TYPEX(1:1) .EQ. 'C'   ) THEN
          CALL WKVECT( NOMFON//'.VALE', BASE//' V C', NBVAL, KVALE )
          DO 32 I = 1 , NBLIGN
