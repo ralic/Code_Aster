@@ -1,7 +1,7 @@
       SUBROUTINE APETSR(ACTION,KPTSC,RSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETSR PETSC  DATE 19/07/2010   AUTEUR TARDIEU N.TARDIEU 
+!& MODIF APETSR PETSC  DATE 23/08/2010   AUTEUR TARDIEU N.TARDIEU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -71,8 +71,8 @@
       INTEGER   IFM,NIV,NSMDI,IERD,IBID,NMAXIT,PTSERR
       INTEGER   LMAT,IDVALC,JSLVK
 
-      CHARACTER*24 PRECON,SOLVBD
-      CHARACTER*19 NOMAT,NOSOLV
+      CHARACTER*24 PRECON
+      CHARACTER*19 NOMAT,NOSOLV,SOLVBD
       CHARACTER*14 NONU
       CHARACTER*4  KBID
       CHARACTER*1  ROUC
@@ -90,7 +90,7 @@
 
 !     -- COMMON POUR L'UTILISATION DU PRECONDITIONNEUR
 !     -- SIMPLE PRECISION LDLT_SP
-      COMMON       /LDLTSP/xtemp,SOLVBD,NOMAT,NOSOLV
+      COMMON /LDLTSP/SOLVBD,NOMAT,NOSOLV,xlocal,xscatt,xglobal
 
 !=================================================================
 !  Variables PETSc
@@ -103,10 +103,10 @@
       PetscInt    ierr,NEQ,low,high,i
       PetscInt    maxits
       PetscReal   rtol,atol,dtol
-      Vec         b,xgth,xtemp
+      Vec         b,xgth,xlocal,xglobal
       PetscScalar  XX(1)
       PetscOffset xidx
-      VecScatter   ctx
+      VecScatter   ctx,xscatt
       KSPConvergedReason indic
       Mat A
       KSP ksp
@@ -313,10 +313,13 @@
         call VecDestroy(b,ierr)
         CALL ASSERT(ierr.EQ.0)
 
+!       -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
         IF (PRECON .EQ. 'LDLT_SP') THEN
            SOLVBD=ZK24(JSLVK-1+3)
            CALL DETRSD('SOLVEUR',SOLVBD)
-           call VecDestroy(xtemp,ierr)
+           call VecDestroy(xlocal,ierr)
+           call VecDestroy(xglobal,ierr)
+           call VecScatterDestroy(xscatt,ierr)
         ENDIF
 
 

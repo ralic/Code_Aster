@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MURA 11.17 FISSURE SOUS FLUX DE CHALEUR UNIFORME
 # hplp311g.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,16 +151,16 @@ VECT_ELE=CALC_VECT_ELEM(        CHARGE=CH,
                            )
 
 #
-NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
+NUMEDDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
 
 #
 RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,
-                            NUME_DDL=NUME_DDL
+                            NUME_DDL=NUMEDDL
                         )
 
 #
 FORCE=ASSE_VECTEUR(    VECT_ELEM=VECT_ELE,
-                              NUME_DDL=NUME_DDL
+                              NUME_DDL=NUMEDDL
                          )
 
 #

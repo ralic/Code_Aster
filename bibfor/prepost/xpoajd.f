@@ -1,17 +1,17 @@
       SUBROUTINE  XPOAJD(ELREFP,ENTITE,NNOP,LSN,LST,JAINT,IAINT,NPI,
-     &                   TYPMA,LNO,CO,IGEOM,
+     &                   TYPMA,LNO,CO,IGEOM,NINTER,JAINC,IAINC,
      &                   NDIME,NDIM,CMP,NBCMP,DDLH,NFE,DDLC,IMA,JCONX1,
      &                   JCONX2,JCNSV1,JCNSV2,JCNSL2,NBNOC,INNTOT)
       IMPLICIT NONE
 
-      INTEGER     NNOP,LNO,IGEOM,NDIM,NDIME,DDLC
+      INTEGER     NNOP,LNO,IGEOM,NDIM,NDIME,DDLC,NINTER,JAINC,IAINC
       INTEGER     NBCMP,CMP(NBCMP),NFE,DDLH,IMA,JCONX1,JCONX2,JCNSV1
       INTEGER     JCNSV2,JCNSL2,NBNOC,INNTOT,JAINT,IAINT,NPI
       CHARACTER*8 ENTITE,ELREFP,TYPMA
       REAL*8      CO(3),LSN,LST
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/07/2010   AUTEUR CARON A.CARON 
+C MODIF PREPOST  DATE 24/08/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -92,12 +92,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
-      CHARACTER*8  ELREFC
-      REAL*8       HE(2),FF(NNOP),FFC(NNOP),FE(4),CRILSN
+      CHARACTER*8  ELREFC,LAG
+      REAL*8       HE(2),FF(NNOP),FFC(NNOP),FE(4),CRILSN,FFPC(NNOP)
       REAL*8       R,THETA,DEPR(3),DEPL(3),R8PREM
       INTEGER      NDOUBL,ID,I,J,INO1,IAD,IPOS,IG,INO2,IAR,INOLA
       INTEGER      NNOL,NOMIL,NLO(8),NGL(8),IPI,INO,NCONTA,IBID
       LOGICAL      ISMALI
+      INTEGER      LACT(8),NLACT,VIT(8),NVIT,NLI
+      INTEGER      JNO,JNO1,JNO2,JAR,AR(12,3),NBAR
+
       PARAMETER    (CRILSN = 1.D-4)
 
 C     ------------------------------------------------------------------
@@ -150,11 +153,14 @@ C     TYPE DE CONTACT
       NCONTA=0
       IF (ISMALI(TYPMA)) THEN
         NCONTA = 1
+        LAG='NOEUD'
       ELSE
         IF (ISMALI(ELREFP)) THEN
           NCONTA = 2
+          LAG='ARETE'
         ELSEIF (.NOT.ISMALI(ELREFP).AND.NDIM.LE.2) THEN
           NCONTA = 3
+          LAG='NOEUD'
         ENDIF
       ENDIF
 
@@ -219,7 +225,9 @@ C           L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
           FE(4)=SQRT(R)*COS(THETA/2.D0)*SIN(THETA)
         ENDIF
 
-C       CALCUL DE L'APPROXIMATION DU DEPLACEMENT
+C     ------------------------------------------------------------------
+C              CALCUL DE L'APPROXIMATION DU DEPLACEMENT
+C     ------------------------------------------------------------------
         DO 200 J=1,NNOP
 
 C         NUMERO DU NOEUD DANS MALINI (MA1)
@@ -252,34 +260,84 @@ C         DDL ENRICHIS EN FOND DE FISSURE
 
  200    CONTINUE
 
-C       CALCUL DES LAGRANGES DE CONTACT FROTTEMENT
-        DO 310 I=1,DDLC
-          IF (NCONTA.EQ.1) THEN
-C           CAS ELTS LINEAIRES
-            DO 330 J=1,NNOL
-              DEPL(I)=DEPL(I)+ZR(JCNSV1-1+NBCMP*(NGL(J)-1)
-     &                 +CMP(NDIM+DDLH+NFE*NDIM+I))*FF(NLO(J))
- 330        CONTINUE
-          ELSEIF (NCONTA.EQ.3) THEN
-C           SEULS LES NOEUDS SOMMETS POSSEDENT DES DDLC
-            IF ((ENTITE.EQ.'NOEUD' .AND. LNO.LE.NNOL) .OR.
-     &          (ENTITE.EQ.'POINT' .AND. IAR.LE.NNOL) ) THEN
-C             FFC : FONCTIONS DE FORMES DE L'ELEMENT DE CONTACT
-              CALL XPOFFO(NDIM,NDIME,ELREFC,NNOL,IGEOM,CO,FFC)
-              DO 331 J=1,NNOL
+C     ------------------------------------------------------------------
+C              CALCUL DES LAGRANGES DE CONTACT FROTTEMENT
+C     ------------------------------------------------------------------
+
+
+        DO 400 I=1,DDLC
+          IF (LAG.EQ.'NOEUD') THEN
+
+            DO 410 INO = 1,8
+              LACT(INO) = 0
+              VIT(INO) = 0   
+ 410        CONTINUE
+            NLACT = 0
+            CALL CONARE(TYPMA,AR,NBAR)
+
+            DO 420 NLI=1,NINTER
+              JAR=INT(ZR(JAINC-1+IAINC-1+5*(NLI-1)+1))
+              JNO=INT(ZR(JAINC-1+IAINC-1+5*(NLI-1)+2))
+              NVIT=INT(ZR(JAINC-1+IAINC-1+5*(NLI-1)+5))
+              IF (JNO.GT.0) THEN
+                LACT(JNO)=NLI
+              ELSEIF (JAR.GT.0) THEN
+                JNO1=AR(JAR,1)
+                JNO2=AR(JAR,2)
+                IF (NVIT.EQ.1) THEN
+                  LACT(JNO1)=NLI
+                  VIT(JNO1)=1
+                  LACT(JNO2)=NLI
+                  VIT(JNO2)=1
+                ELSE
+                  IF (VIT(JNO1).EQ.0) LACT(JNO1)=NLI
+                  IF (VIT(JNO2).EQ.0) LACT(JNO2)=NLI
+                ENDIF
+              ENDIF
+ 420        CONTINUE
+            DO 430 JNO=1,8
+              IF (LACT(JNO).NE.0) NLACT=NLACT+1
+ 430        CONTINUE
+            IF (NCONTA.EQ.1) THEN
+              IF (NLACT.GT.0) THEN
+                CALL XMOFFC(LACT,NLACT,NNOP,FF,FFC)
+              ELSE
+                DO 440 J=1,NNOP
+                  FFC(J)=FF(J)
+ 440            CONTINUE
+              ENDIF
+              DO 450 J=1,NNOL
                 DEPL(I)=DEPL(I)+ZR(JCNSV1-1+NBCMP*(NGL(J)-1)
      &                 +CMP(NDIM+DDLH+NFE*NDIM+I))*FFC(NLO(J))
- 331          CONTINUE
+ 450          CONTINUE
+            ELSEIF (NCONTA.EQ.3) THEN
+              IF ((ENTITE.EQ.'NOEUD' .AND. LNO.LE.NNOL) .OR.
+     &            (ENTITE.EQ.'POINT' .AND. IAR.LE.NNOL) ) THEN
+                CALL XPOFFO(NDIM,NDIME,ELREFC,NNOL,IGEOM,CO,FFPC)
+C      LES ELEMENTS QUI ARRIVENT NE SONT PAS FORCEMENT DE CONTACT
+                IF (NLACT.GT.0) THEN
+                  CALL XMOFFC(LACT,NLACT,NNOL,FFPC,FFC)
+                ELSE
+                  DO 460 J=1,NNOP
+                    FFC(J)=FFPC(J)
+ 460              CONTINUE
+                ENDIF
+                DO 470 J=1,NNOL
+                  DEPL(I)=DEPL(I)+ZR(JCNSV1-1+NBCMP*(NGL(J)-1)
+     &                 +CMP(NDIM+DDLH+NFE*NDIM+I))*FFC(NLO(J))
+ 470            CONTINUE
+              ENDIF
             ENDIF
-          ELSEIF (NCONTA.EQ.2) THEN
+
+          ELSEIF (LAG.EQ.'ARETE') THEN
 C           CAS FAUX QUADRATIQUE
-            DO 360 J=1,NNOL
+            DO 480 J=1,NNOL
               DEPL(I)=ZR(JCNSV1-1+NBCMP*(NGL(J)-1)
      &                 +CMP(NDIM+DDLH+NFE*NDIM+I))
- 360        CONTINUE
+ 480        CONTINUE
           ENDIF
 
- 310    CONTINUE
+ 400    CONTINUE
 
 C       ECRITURE DANS LE .VALE2 POUR LE NOEUD INO2
         INNTOT = INNTOT + 1

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE SOUMISE A UNE FORCE SINUSOIDALE REPARTIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,7 +137,7 @@ L_TEMPS=DEFI_LIST_REEL(         DEBUT=0.0,
                          )
 
 #
-CO = FORMULE(NOM_PARA='INST',VALE='cos(INST) ')
+fCOS = FORMULE(NOM_PARA='INST',VALE='cos(INST) ')
 #
 DYNFX=DYNA_LINE_TRAN(        MODELE=MO,
                            CHAM_MATER=CHMAT,
@@ -145,7 +145,7 @@ DYNFX=DYNA_LINE_TRAN(        MODELE=MO,
                             MATR_MASS=MMATR1,
                             MATR_RIGI=KMATR1,
                                 EXCIT=_F( CHARGE = REPFX,
-                                       FONC_MULT = CO),
+                                       FONC_MULT = fCOS),
                               NEWMARK=_F(),
                             INCREMENT=_F( LIST_INST = L_TEMPS)
                        )
@@ -156,7 +156,7 @@ DYNFX=CALC_ELEM( reuse=DYNFX,       MODELE=MO,
                         CARA_ELEM=CAREL,
                          RESULTAT=DYNFX,
                             EXCIT=_F( CHARGE = REPFX,
-                                   FONC_MULT = CO),
+                                   FONC_MULT = fCOS),
                            OPTION=('EFGE_ELNO_DEPL',
                                    'SIGM_ELNO_DEPL',
                                   )
@@ -275,7 +275,7 @@ DYNPOF20=DYNA_LINE_TRAN(        MODELE=MO,
                                MATR_MASS=MMATR2,
                                MATR_RIGI=KMATR2,
                                    EXCIT=_F( CHARGE = PONF20,
-                                          FONC_MULT = CO),
+                                          FONC_MULT = fCOS),
                                  NEWMARK=_F(),
                                INCREMENT=_F( LIST_INST = L_TEMPS)
                           )
@@ -286,7 +286,7 @@ DYNPOF20=CALC_ELEM( reuse=DYNPOF20,       MODELE=MO,
                            CARA_ELEM=CAREL,
                             RESULTAT=DYNPOF20,
                                EXCIT=_F( CHARGE = PONF20,
-                                      FONC_MULT = CO),
+                                      FONC_MULT = fCOS),
                               OPTION=('EFGE_ELNO_DEPL',
                                       'SIGM_ELNO_DEPL',
                                      )
@@ -329,7 +329,7 @@ DYNPOM20=DYNA_LINE_TRAN(        MODELE=MO,
                                MATR_MASS=MMATR2,
                                MATR_RIGI=KMATR2,
                                    EXCIT=_F( CHARGE = PONM20,
-                                          FONC_MULT = CO),
+                                          FONC_MULT = fCOS),
                                  NEWMARK=_F(),
                                INCREMENT=_F( LIST_INST = L_TEMPS)
                        )
@@ -340,7 +340,7 @@ DYNPOM20=CALC_ELEM( reuse=DYNPOM20,       MODELE=MO,
                            CARA_ELEM=CAREL,
                             RESULTAT=DYNPOM20,
                                EXCIT=_F( CHARGE = PONM20,
-                                      FONC_MULT = CO),
+                                      FONC_MULT = fCOS),
                               OPTION=('EFGE_ELNO_DEPL',
                                       'SIGM_ELNO_DEPL',
                                      )

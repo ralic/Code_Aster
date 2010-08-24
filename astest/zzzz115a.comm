@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DU FORMAT MED 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -292,15 +292,15 @@ MASS_ELE=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         CHARGE=COND_LIM,);
 #
 
-NUME_DDL=NUME_DDL(MATR_RIGI=RIGI_ELE,
+NUMEDDL=NUME_DDL(MATR_RIGI=RIGI_ELE,
                   METHODE='LDLT',
                   RENUM='RCMK',);
 
 RIGIDITE=ASSE_MATRICE(MATR_ELEM=RIGI_ELE,
-                      NUME_DDL=NUME_DDL,);
+                      NUME_DDL=NUMEDDL,);
 
 MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE,
-                   NUME_DDL=NUME_DDL,);
+                   NUME_DDL=NUMEDDL,);
 #
 # CALCUL DES MODES :
 #---------------------------------------------

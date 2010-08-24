@@ -6,7 +6,7 @@
       REAL*8        INTAR(NDIM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 24/08/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,12 +81,12 @@ C ARETE 3-1-6
       ELSEIF(ELP.EQ.'SE3')THEN 
         MAX=1.D0
         MIN=-1.D0
-        A = C1/2+C2/2-C3
-        B = -C1/2
-        C = C2/2+C3      
         C1=ZR(JTABLS-1+1)
         C2=ZR(JTABLS-1+2)
         C3=ZR(JTABLS-1+3)
+        A = C1/2+C2/2-C3
+        B = (C2-C1)/2
+        C = C3      
 
       ELSEIF(ELP.EQ.'QU8')THEN
         MAX=1.D0

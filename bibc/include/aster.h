@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster include  DATE 06/04/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster include  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2006  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,6 +21,8 @@
 #define ASTER_H
 
 #include <string.h>
+#include <Python.h>
+
 #include "aster_depend.h"
 #include "definition.h"
 
@@ -37,8 +39,9 @@
 #define _INOUT
 #define _UNUSED
 
-
-/* FIN DE pour définir les appels et signatures de fonctions appelables en Fortran */
+#if (PY_VERSION_HEX < 0x02050000)
+typedef int Py_ssize_t;
+#endif
 
 /* Fonction retournant PI en R8 */
 #define R8PI() F_FUNC(R8PI,r8pi)()

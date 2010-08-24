@@ -1,4 +1,4 @@
-#@ MODIF fermetur Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF fermetur Messages  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,72 +23,83 @@ def _(x) : return x
 
 cata_msg={
 
-
 1: _("""
-  Erreur :
-      le solveur "MUMPS" n'est pas installé sur cette machine.
+Le solveur "MUMPS" n'est pas installé sur cette machine.
 """),
 
 2: _("""
-  Erreur :
-      la bibliothèque "MED" n'est pas installée sur cette machine.
+La bibliothèque "MED" n'est pas installée sur cette machine.
 """),
 
 3: _("""
-  Erreur :
-      la bibliothèque "HDF5" n'est pas installée sur cette machine.
+La bibliothèque "HDF5" n'est pas installée sur cette machine.
 """),
 
 4: _("""
-  Erreur :
-      la bibliothèque "ZMAT" n'est pas installée sur cette machine.
+La bibliothèque "ZMAT" n'est pas installée sur cette machine ou bien elle
+n'a pas été trouvée.
+
+Conseil : Vérifier que l'environnement est correctement défini,
+          notamment la variable LD_LIBRARY_PATH.
 """),
 
 5: _("""
-  Erreur de programmation :
-      On essaye d'utiliser un operateur (op0xxx) qui n'est pas encore programmé.
+Erreur de programmation :
+    On essaie d'utiliser un opérateur (op0xxx) qui n'est pas encore programmé.
 """),
 
 6: _("""
-  Erreur de programmation :
-      On essaye d'utiliser un operateur (ops0xx) qui n'est pas encore programmé.
+Erreur de programmation :
+    On essaie d'utiliser un opérateur (ops0xx) qui n'est pas encore programmé.
 """),
 
-
 7: _("""
-  Erreur :
-      le logiciel "SCOTCH" n'est pas installé sur cette machine.
+Le logiciel "SCOTCH" n'est pas installé sur cette machine.
 """),
 
 8: _("""
-  Erreur de programmation :
-      On essaye d'utiliser une routine de calcul élémentaire (te0xxx)
-      qui n'est pas encore programmée.
+Erreur de programmation :
+    On essaie d'utiliser une routine de calcul élémentaire (te0xxx)
+    qui n'est pas encore programmée.
 """),
 
 9: _("""
-  Erreur de programmation :
-      On essaye d'utiliser une routine d'initialisation élémentaire (ini0xx)
-      qui n'est pas encore programmée.
+Erreur de programmation :
+    On essaie d'utiliser une routine d'initialisation élémentaire (ini0xx)
+    qui n'est pas encore programmée.
 """),
 
 10: _("""
-  Erreur :
-      le solveur "PETSc" n'est pas installé sur cette machine.
+Le solveur "PETSc" n'est pas installé sur cette machine.
 """),
 
-
 11: _("""
-  Erreur de programmation :
-      On essaye d'utiliser une routine de comportement (lc00xx)
-      qui n'est pas encore programmée.
+Erreur de programmation :
+    On essaie d'utiliser une routine de comportement (lc00xx)
+    qui n'est pas encore programmée.
 """),
 
 12: _("""
-  Erreur :
-      On essaye d'utiliser des routines d'échanges YACS 
-      alors que Code_Aster n'est pas linké sur YACS.
+La bibliothèque "YACS" n'est pas installée sur cette machine.
 """),
 
+13 : _("""
+La bibliothèque UMAT n'a pas pu être chargée.
+
+Nom de la bibliothèque : %(k1)s
+
+Conseil : Vérifier que l'environnement est correctement défini,
+          notamment la variable LD_LIBRARY_PATH.
+"""),
+
+14 : _("""
+Le symbole demandé n'a pas été trouvé dans la bibliothèque UMAT.
+
+Nom de la bibliothèque : %(k1)s
+        Nom du symbole : %(k2)s
+
+Conseil : Vérifier que l'environnement est correctement défini,
+          notamment la variable LD_LIBRARY_PATH.
+"""),
 
 }

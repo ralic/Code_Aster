@@ -16,11 +16,11 @@ C
       IMPLICIT     REAL*8 (A-H,O-Z)
 C
       INTEGER      IORSTO(*),IREDST(*),ITEMAX,DESCMM,DESCMR,DESCMA,
-     &             NPREC,IPARCH(*),LOGCHO(NBCHOC,*),ICHOST(*)
+     &             IPARCH(*),LOGCHO(NBCHOC,*),ICHOST(*)
       REAL*8       PULSAT(*),PULSA2(*),MASGEN(*),RIGGEN(*),AMOGEN(*),
      &             PARCHO(*),PARRED(*),DEPSTO(*),VITSTO(*),ACCSTO(*),
      &             TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),DREDST(*),
-     &             PREC,EPS,RBID,DPLMOD(NBCHOC,NEQGEN,*),
+     &             PREC,RBID,DPLMOD(NBCHOC,NEQGEN,*),
      &             DPLRED(*),DPLREV(*)
       REAL*8       DT,DTSTO,TCF,TFIN,VROTAT,CONV
       CHARACTER*8  BASEMO,NOECHO(NBCHOC,*),FONRED(*),FONREV(*)
@@ -31,13 +31,12 @@ C
       REAL*8       COEFM(*),PSIDEL(*)
       INTEGER      LIAD(*),INUMOR(*),IDESCF(*)
       INTEGER      NBPAL
-      INTEGER      NBPAL3
       CHARACTER*8  NOFDEP(*),NOFVIT(*),NOFACC(*),NOMFON(*)
       CHARACTER*14 NUMDDL
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,13 +126,6 @@ C
       CHARACTER*8 TRAN
       CHARACTER*19 MATPRE,MATASM
 C     ------------------------------------------------------------------
-      INTEGER       LENVAR
-      PARAMETER (LENVAR = 144)
-      CHARACTER*(LENVAR) NOMVAR
-C     COMMON
-C     ======
-      INTEGER     ICOMPO
-   
       INTEGER       PALMAX 
       PARAMETER (PALMAX=20)
       CHARACTER*6   TYPAL(PALMAX)
@@ -144,7 +136,8 @@ C     ======
       INTEGER       NOPAL(PALMAX) 
       CHARACTER*6  CNPAL(PALMAX)    
 
-      INTEGER       IADR,IADRI,IADRK,IAPP
+      INTEGER       IADRI,IADRK,IAPP
+      INTEGER       ETAUSR
       CHARACTER*24  CPAL, NPAL   
       CALL JEMARQ()
       ZERO = 0.D0
@@ -466,6 +459,12 @@ C
      &                  DEPSTO,VITSTO,ACCSTO,RBID,LPSTO,IORSTO,
      &                  TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,
      &                  ZR(JVINT),IREDST,DREDST)
+         ENDIF
+C
+C        --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1 ---
+C
+         IF ( ETAUSR().EQ.1 ) THEN
+            CALL SIGUSR()
          ENDIF
 C
 C        --- TEST SI LE TEMPS RESTANT EST SUFFISANT POUR CONTINUER ---

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE CYLINDRE CREUX THERMOELASTICITE LINEAIRE - TEST UMAT AXIS
 # umat001a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
@@ -19,6 +19,26 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+
+import os
+from asrun.toolbox import make_shared
+
+# Juste pour les besoins du cas-test.
+# Il est preferable d'utiliser :
+#       as_run --make_shared -o libumat.so src.f
+# avant de lancer l'etude.
+
+# Special sur la Bull
+from asrun.config import ASTER_CONFIG
+conf = ASTER_CONFIG('config.txt')
+if conf['ID_PERF'][0] == 'Bull':
+    os.rename("fort.44", "libumat.so")
+    os.chmod("libumat.so", 0755)
+else:
+    os.rename("fort.22", "fort.22.f")
+    # On force la ligne de commande pour ne pas etre gene par les licences des compilateurs
+    make_shared("libumat.so", "fort.22.f", compiler_command="gfortran")
+
 
 DEBUT(CODE=_F(NOM='UMAT001A',NIV_PUB_WEB='INTERNET'))
 
@@ -150,7 +170,10 @@ CHUMAT = AFFE_MATERIAU (MAILLAGE = MA,
 RESUMAT = STAT_NON_LINE (MODELE = MO, 
                       CHAM_MATER = CHUMAT,
                       EXCIT =(_F( CHARGE = BLOC),),
-                      COMP_INCR =_F(RELATION ='UMAT',NB_VARI=1),
+                      COMP_INCR =_F(RELATION ='UMAT',
+                                    NB_VARI=1,
+                                    LIBRAIRIE='libumat.so',
+                                    NOM_ROUTINE='umat'),
                       INCREMENT =_F(LIST_INST =L_INST),
                       NEWTON    =_F(
                                 PREDICTION ='ELASTIQUE', 

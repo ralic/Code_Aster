@@ -1,4 +1,4 @@
-# MODIF  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE COMPORTEMENT UMAT 3D CHARGEMENT MULTIDIRECTIONNEL EN DEFORMATION CF COMP001x
 # umat002a.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
@@ -20,7 +20,30 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+import os
+from asrun.toolbox import make_shared
 from Utilitai.veri_matr_tang import VERI_MATR_TANG
+
+# Juste pour les besoins du cas-test.
+# Il est preferable d'utiliser :
+#       as_run --make_shared -o libumat.so src.f
+# avant de lancer l'etude.
+# On teste ici l'utilisation conjointe de deux bibliotheques (seul le nom de la routine change)
+
+# Special sur la Bull
+from asrun.config import ASTER_CONFIG
+conf = ASTER_CONFIG('config.txt')
+if conf['ID_PERF'][0] == 'Bull':
+    os.rename("fort.44", "libumat1.so")
+    os.rename("fort.46", "libumat2.so")
+    os.chmod("libumat1.so", 0755)
+    os.chmod("libumat2.so", 0755)
+else:
+    os.rename("fort.22", "fort.22.f")
+    os.rename("fort.23", "fort.23.f")
+    # On force la ligne de commande pour ne pas etre gene par les licences des compilateurs
+    make_shared("libumat1.so", "fort.22.f", compiler_command="gfortran")
+    make_shared("libumat2.so", "fort.23.f", compiler_command="gfortran")
 
 
 DEBUT(CODE=_F(NOM='UMAT002A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',IMPR_MACRO='NON');
@@ -134,8 +157,9 @@ for i in range(Ncal):
 #       Resout le pb a deformation imposee
         RESU[i]=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,
-                   NB_VARI=1,
-                   ),
+                                NB_VARI=1,
+                                LIBRAIRIE='libumat1.so',
+                                NOM_ROUTINE='umat_'),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
@@ -145,7 +169,7 @@ for i in range(Ncal):
                  #  THER=_F(INST_IMP= inst_th, TEMP_IMP= temp_th, OPTION = opt_ther,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
-                      INFO=1,  );
+                      INFO=2,  );
                         
         #IMPR_TABLE(TABLE=RESU[i]);
         
@@ -237,9 +261,10 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
 RESU_TGT=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,                
                                 TYPE_MATR_TANG='VERIFICATION',
-                   NB_VARI=1,
+                                NB_VARI=1,
                                 VALE_PERT_RELA=1.E-5,
-                               ),
+                                LIBRAIRIE='libumat2.so',
+                                NOM_ROUTINE='second'),  # un '_' doit etre ajoute automatiquement
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    MATER      = ACIER[1],  

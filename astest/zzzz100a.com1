@@ -5,7 +5,7 @@ POURSUITE( CODE=_F(NOM='ZZZZ100A'), PAR_LOT='NON')
 #       dans un autre jdc.
 
 tab = CREA_TABLE(LISTE=_F(PARA='TEST',
-                          LISTE_R=[SI(pi/2.), DFR1(1.), SIa(pi/2.)],))
+                          LISTE_R=[SIi(pi/2.), DFR1(1.), SIa(pi/2.)],))
 
 IMPR_TABLE(TABLE=tab)
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,14 +135,14 @@ VECT_ELE=CALC_VECT_ELEM(        CHARGE=CH,
                                    OPTION='CHAR_MECA'
                            )
 
-NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
+NUMEDDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
 
 RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,
-                            NUME_DDL=NUME_DDL
+                            NUME_DDL=NUMEDDL
                         )
 
 FORCE=ASSE_VECTEUR(    VECT_ELEM=VECT_ELE,
-                              NUME_DDL=NUME_DDL
+                              NUME_DDL=NUMEDDL
                          )
 
 RIGIDITE=FACTORISER(    reuse=RIGIDITE,  MATR_ASSE=RIGIDITE)

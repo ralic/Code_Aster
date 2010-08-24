@@ -2,7 +2,7 @@
      &                  SDERRO,SDTIME)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,6 +25,7 @@ C
       LOGICAL       MTCPUI,MTCPUP,ITEMAX
       INTEGER       NUMINS,ITERAT
       CHARACTER*24  SDTIME,SDERRO
+      INTEGER ETAUSR
 C 
 C ----------------------------------------------------------------------
 C
@@ -54,6 +55,12 @@ C
       LOGICAL      ECHLDC,ECHEQU,ECHCON(2),ECHPIL      
 C      
 C ----------------------------------------------------------------------
+C
+C --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
+C
+      IF ( ETAUSR().EQ.1 ) THEN
+         CALL SIGUSR()
+      ENDIF
 C
 C --- LECTURE TIMERS
 C TPSITE : TEMPS MOYEN PAR ITERATION DE NEWTON

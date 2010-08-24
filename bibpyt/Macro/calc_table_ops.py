@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,6 +19,7 @@
 # ======================================================================
 
 # RESPONSABLE COURTOIS M.COURTOIS
+import os
 
 def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    """
@@ -51,7 +52,6 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    DETRUIRE      = self.get_cmd('DETRUIRE')
 
    # 0. faut-il utiliser une table dérivée
-   form_sens='\n... SENSIBILITE AU PARAMETRE %s (SD COMP %s)'
    if args['SENSIBILITE']:
       ncomp = self.jdc.memo_sensi.get_nocomp(TABLE.nom, args['SENSIBILITE'].nom)
       sdtab = table_jeveux(ncomp)
@@ -151,7 +151,8 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
          tab.fromfunction(occ['NOM_PARA'], occ['FORMULE'])
          if INFO == 2:
             vectval = getattr(tab, occ['NOM_PARA']).values()
-            aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s' % (occ['NOM_PARA']+repr(vectval))+'\n')
+            aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s' \
+                % (occ['NOM_PARA'], repr(vectval)))
 
       #----------------------------------------------
       # 8. Traitement de AJOUT
@@ -170,13 +171,12 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
 
    dprod = tab.dict_CREA_TABLE()
    if INFO == 2:
-      echo_mess = []
-      echo_mess.append( '@-'*30+'\n' )
-      echo_mess.append( tab )
+      echo_mess = ['']
+      echo_mess.append( repr(tab) )
       from pprint import pformat
       echo_mess.append( pformat(dprod) )
-      echo_mess.append( '@-'*30+'\n' )
-      texte_final = ' '.join(echo_mess)
+      echo_mess.append('')
+      texte_final = os.linesep.join(echo_mess)
       aster.affiche('MESSAGE', texte_final)
 
    # surcharge par le titre fourni

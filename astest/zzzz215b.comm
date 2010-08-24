@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CHAINAGE 3D CODE_SATURNE CODE_ASTER
 # zzzz215b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,7 +41,7 @@ MOFLUIDE=AFFE_MODELE(MAILLAGE=MAFLUIDE,
                           PHENOMENE='MECANIQUE',
                           MODELISATION='3D',),);
 
-FORMULE=FORMULE(NOM_PARA=('X','Y','Z','INST'),
+FORM=FORMULE(NOM_PARA=('X','Y','Z','INST'),
                 VALE='1.E-4*INST*(X+Y+Z)');
 
 VALE=CREA_CHAMP(TYPE_CHAM='NOEU_PRES_F',
@@ -50,7 +50,7 @@ VALE=CREA_CHAMP(TYPE_CHAM='NOEU_PRES_F',
                 PROL_ZERO='OUI',
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='PRES',
-                        VALE_F=FORMULE,),
+                        VALE_F=FORM,),
                 INFO=1,);
 
 L_INST0=DEFI_LIST_REEL(DEBUT=0.0,

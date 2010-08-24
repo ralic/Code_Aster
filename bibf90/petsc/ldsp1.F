@@ -1,7 +1,7 @@
       SUBROUTINE LDSP1(pc,ierr)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF LDSP1 PETSC  DATE 19/07/2010   AUTEUR TARDIEU N.TARDIEU 
+!& MODIF LDSP1 PETSC  DATE 23/08/2010   AUTEUR TARDIEU N.TARDIEU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -28,11 +28,11 @@
 #include "include/finclude/petscpc.h"
 #include "include/finclude/petscksp.h"
 !================================================================
-      CHARACTER*24 SOLVBD
+      CHARACTER*19 SOLVBD
       CHARACTER*19 NOMAT,NOSOLV,VTEMP
       CHARACTER*4  ETAMAT
       INTEGER      JREFA,ISLVK
-      COMMON       /LDLTSP/xtemp,SOLVBD,NOMAT,NOSOLV
+      COMMON /LDLTSP/SOLVBD,NOMAT,NOSOLV,xlocal,xscatt,xglobal
 !================================================================
 ! --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
@@ -53,25 +53,26 @@
 !  Variables PETSc
       PetscInt ierr
       PC  pc
-      Vec xtemp
+      Vec xlocal,xglobal
+      VecScatter   xscatt
 !================================================================
 
       CALL JEMARQ()
 
-C -- LA MATRICE A ETE TRAITEE PAR PETSC DONC ELLE EST CONSIDEREE
-C -- COMME FACTORISEE, SI ON LA LAISSE COMME CA MUMPH VA LA
-C -- CONSIDERER COMME TELLE ET NE FERA PAS DE FACTO SP
+! -- LA MATRICE A ETE TRAITEE PAR PETSC DONC ELLE EST CONSIDEREE
+! -- COMME FACTORISEE, SI ON LA LAISSE COMME CA MUMPH VA LA
+! -- CONSIDERER COMME TELLE ET NE FERA PAS DE FACTO SP
       CALL JEVEUO(NOMAT//'.REFA','E',JREFA)
       ZK24(JREFA-1+8)=' '
 
-C --  APPEL A LA ROUTINE DE FACTO SP POUR LE PRECONDITIONNEMENT
+! --  APPEL A LA ROUTINE DE FACTO SP POUR LE PRECONDITIONNEMENT
       CALL PCMUMP(NOMAT,NOSOLV)
 
       CALL JEDEMA()
 
 #else
 
-C      DECLARATION BIDON POUR ASSURER LA COMPILATION
+!      DECLARATION BIDON POUR ASSURER LA COMPILATION
        INTEGER pc,ierr
 
 #endif

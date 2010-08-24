@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ABSORPTION D'UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
 # sdlv120b.para = tps_job 980 mem_job 300Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,19 +76,19 @@ VECTELEM=CALC_VECT_ELEM(    OPTION='CHAR_MECA',
                               CHARGE=COND_LIM
                             )
 
-NUME_DDL=NUME_DDL(    MATR_RIGI=RIGI_ELE )
+NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE )
 #METHODE : 'LDLT');
 
 RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
-                            NUME_DDL=NUME_DDL
+                            NUME_DDL=NUMEDDL
                           )
 
 MASSE=ASSE_MATRICE(    MATR_ELEM=MASS_ELE,
-                         NUME_DDL=NUME_DDL
+                         NUME_DDL=NUMEDDL
                        )
 
 VECTASS=ASSE_VECTEUR(    VECT_ELEM=VECTELEM,
-                           NUME_DDL=NUME_DDL
+                           NUME_DDL=NUMEDDL
                          )
 
 # --- LECTURE DE LA FONCTION D'EXCITATION ---

@@ -3,7 +3,7 @@
      &                   DEPS,   SIGM,   VIM,    OPTION, ANGMAS,
      &                   SIGP,   VIP,    DSIDEP, CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -67,7 +67,7 @@ C
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*), OPTION, NOMVAR(NVARCM)
       CHARACTER*(*)      FAMI
-      REAL*8             CRIT(*), INSTAM, INSTAP, TM, TP, TREF
+      REAL*8             CRIT(*), INSTAM, INSTAP
       REAL*8             EPSM(*), DEPS(*), DSIDEP(*)
       REAL*8             SIGM(*), VIM(*), SIGP(*), VIP(*)
       REAL*8             ANGMAS(7),ANGEUL(3)
@@ -190,7 +190,7 @@ C     sechage
          ANGEUL(3)=0.D0
       ENDIF
 
-      CALL ZASTER(NUMA,MODELE,NVAR,NDEF,NUNIT,INSTAM,INSTAP,
+      CALL ZASWRP(NUMA,MODELE,NVAR,NDEF,NUNIT,INSTAM,INSTAP,
      &       NVARCM,NOMVAR,VARPLU,VARMOI,VARREF,
      &       EPSM,DEPS,SIGM,VIM,NOPT,ANGEUL,SIGP,VIP,
      &       DSIDEP,CODRET)

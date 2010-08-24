@@ -6,7 +6,7 @@
      &                  CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       INTEGER NBTYAR
       PARAMETER ( NBTYAR = 3 )
       INTEGER NRORES
-      INTEGER IFM, NIV
+      INTEGER IFM, NIV, ETAUSR
       INTEGER IAUX, JAUX
       INTEGER IV, IV1, IV2
       INTEGER JDEPL, JDEP2
@@ -523,6 +523,12 @@ C
 C====
 C 5. LA FIN
 C====
+C
+C --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
+C
+      IF ( ETAUSR().EQ.1 ) THEN
+         CALL SIGUSR()
+      ENDIF
 C
       IF (TPS1(1).LE.MAX(TJOB/100.D0,15.D0)) THEN
         VALI(1) = IPAS

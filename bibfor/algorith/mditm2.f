@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C
 C ARGUMENTS
 C ---------
       INTEGER       NP2, NP3, NP4, N2, NBM, NBMCD, NBMP, NBNL, INDIC,
-     &              IMPR, ITRANS,IBID
+     &              IMPR, ITRANS
       REAL*8        EPST,PARCHO(NBNL,*)
       INTEGER       ICOUPL
       CHARACTER*8   TPFL,NOECHO(NBNL,*)
@@ -115,8 +115,8 @@ C ---------
 C
 C VARIABLES LOCALES
 C -----------------
-      INTEGER       ITEST, TESTC, IER, IVAR, INDNEW, INDNE0,I,
-     &              XIT0, IT0, IDECRT, NTRANS, XNBR0,JINST,
+      INTEGER       ITEST, TESTC, IER, IVAR, INDNEW, INDNE0,
+     &              XIT0, IT0, IDECRT, NTRANS, XNBR0,
      &              ILONG, NPF, NPFMAX, NPFTS, NTTR, NDEF, INDT, NBR0
       INTEGER       JORDRE, JTEMPS, JDEPG, JVITG, JACCG, JDEP, JFOR,
      &              JVIT, KDEPL, KVITE, KACCE, KORDR, KINST, KPTEM,
@@ -136,7 +136,7 @@ C     INTRINSIC     MOD
 C
 C FONCTIONS EXTERNES
 C ------------------
-      INTEGER       IUNIFI
+      INTEGER       IUNIFI, ETAUSR
       REAL*8        R8MIEM, R8PREM
 C     EXTERNAL      IUNIFI, R8MIEM, R8PREM
 C
@@ -501,6 +501,12 @@ C     ------------------------------------------------------------
          VALR (2) = TPS1(4)
          VALR (3) = TPS1(1)
          CALL UTEXCM(28,'ALGORITH16_87',0,' ',1,VALI,3,VALR)
+      ENDIF
+C
+C --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
+C
+      IF ( ETAUSR().EQ.1 ) THEN
+         CALL SIGUSR()
       ENDIF
 C
       CALL JEDEMA()

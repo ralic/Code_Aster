@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,9 +41,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IUNIFI, ICHK , INFO
-      INTEGER      IEND, IVERI, IFM, NOCC, IUNERR, IUNRES, IUNMES
+      INTEGER      IEND, IFM, IUNERR, IUNRES, IUNMES
       LOGICAL      ULEXIS
-      CHARACTER*8  K8B, OUINON, OUIPER, TYPRES, OUIHDF
+      CHARACTER*8  K8B, OUINON, TYPRES
       CHARACTER*16 FCHIER,FHDF
       CHARACTER*80 FICH
 C     ------------------------------------------------------------------
@@ -51,6 +51,9 @@ C
       CALL JEMARQ()
       IFIN = 1
       INFO = 1
+
+C     LIBERE TOUS LES COMPOSANTS CHARGES DYNAMIQUEMENT
+      CALL DLLCLS()
 
 C     TEST ERREUR E SANS ERREUR F
 C     1ER PASSAGE ICOND=1, ON AFFICHE LE RECAPITULATIF DES ALARMES

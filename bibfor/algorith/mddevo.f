@@ -28,7 +28,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,16 +99,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
 C
-      INTEGER VALI(2),IBID
+      INTEGER VALI(2)
       REAL*8 R8BID2,R8BID3,R8BID4,R8BID5,R8B,R8B2,TPS1(4),VALR(3)
       REAL*8 RINT1, RINT2
-      CHARACTER*8  TRAN
-      INTEGER       PALMAX
+      CHARACTER*8   TRAN
+      INTEGER       PALMAX, ETAUSR
       PARAMETER (PALMAX=20)
       CHARACTER*6   TYPAL(PALMAX)
       CHARACTER*3   FINPAL(PALMAX)
-      CHARACTER*6  CNPAL(PALMAX)
-      CHARACTER*14 NUMDDL  
+      CHARACTER*6   CNPAL(PALMAX)
+      CHARACTER*14  NUMDDL  
 C
       CALL JEMARQ()
       ZERO = 0.D0
@@ -337,6 +337,12 @@ C
             ZR(JFEX2+IM) = ZR(JFEX4+IM)
  40      CONTINUE
 C
+C
+C        --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1 ---
+C
+         IF ( ETAUSR().EQ.1 ) THEN
+            CALL SIGUSR()
+         ENDIF
 C
 C        --- TEST SI LE TEMPS RESTANT EST SUFFISANT POUR CONTINUER ---
 C

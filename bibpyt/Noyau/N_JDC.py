@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,6 +89,7 @@ NONE = None
       self.cata=cata
       if type(self.cata) != types.TupleType and cata != None: 
          self.cata=(self.cata,)
+      self._build_reserved_kw_list()
       self.cata_ordonne_dico=cata_ord_dico
       self.nom = nom
       self.appli=appli
@@ -345,6 +346,8 @@ Causes possibles :
       o=self.sds_dict.get(sdnom,None)
       if isinstance(o,ASSD):
          raise AsException("Nom de concept deja defini : %s" % sdnom)
+      if self._reserved_kw.get(sdnom) == 1:
+         raise AsException("Nom de concept invalide. '%s' est un mot-clé réservé." % sdnom)
 
       # ATTENTION : Il ne faut pas ajouter sd dans sds car il s y trouve deja.
       # Ajoute a la creation (appel de reg_sd).
@@ -543,4 +546,15 @@ Causes possibles :
       """
       if CONTEXT.debug: print ' `- JDC sd_accessible : PAR_LOT =', self.par_lot
       return self.par_lot == 'NON'
+
+
+   def _build_reserved_kw_list(self):
+       """Construit la liste des mots-clés réservés (interdits pour le
+       nommage des concepts)."""
+       wrk = set()
+       for cat in self.cata:
+           wrk.update([kw for kw in dir(cat) if len(kw) <= 8 and kw == kw.upper()])
+       wrk.difference_update(['OPER', 'MACRO', 'BLOC', 'SIMP', 'FACT', 'FORM',
+                              'GEOM', 'MCSIMP', 'MCFACT'])
+       self._reserved_kw = {}.fromkeys(wrk, 1)
 

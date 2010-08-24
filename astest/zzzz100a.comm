@@ -1,4 +1,4 @@
-# MODIF  DATE 15/03/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -379,7 +379,7 @@ LR1=DEFI_LIST_REEL(  DEBUT=INST0,
 
 SIa = FORMULE(NOM_PARA='INST',VALE='sin(INST)')
 
-SI=CALC_FONC_INTERP(        FONCTION=SIa,    LIST_PARA=LI1,
+SIi=CALC_FONC_INTERP(        FONCTION=SIa,    LIST_PARA=LI1,
                             NOM_PARA='INST',
                             NOM_RESU='DEPLACEMENT',
                             PROL_GAUCHE='EXCLU',
@@ -387,37 +387,37 @@ SI=CALC_FONC_INTERP(        FONCTION=SIa,    LIST_PARA=LI1,
                             INTERPOL='LIN',
                             TITRE=' FONCTION SINUS '    )
 
-IMPR_FONCTION(     COURBE=_F(  FONCTION = SI),
+IMPR_FONCTION(     COURBE=_F(  FONCTION = SIi),
                              )
 
 val=sin(INST9)
 TEST_FONCTION(ATTRIBUT=(
-                _F(  FONCTION = SI,  ATTR = 'NOM_PARA',
+                _F(  FONCTION = SIi,  ATTR = 'NOM_PARA',
                                  ATTR_REFE = 'INST'),
-                _F(  FONCTION = SI,  ATTR = 'NOM_RESU',
+                _F(  FONCTION = SIi,  ATTR = 'NOM_RESU',
                                  ATTR_REFE = 'DEPLACEMENT'),
-                _F(  FONCTION = SI,  ATTR = 'INTERPOL',
+                _F(  FONCTION = SIi,  ATTR = 'INTERPOL',
                                  ATTR_REFE = 'LIN LIN '),
-                _F(  FONCTION = SI,  ATTR = 'PROL_DROITE',
+                _F(  FONCTION = SIi,  ATTR = 'PROL_DROITE',
                                  ATTR_REFE = 'CONSTANT'),
-                _F(  FONCTION = SI,  ATTR = 'PROL_GAUCHE',
+                _F(  FONCTION = SIi,  ATTR = 'PROL_GAUCHE',
                                  ATTR_REFE = 'EXCLU')),
 
-                VALEUR=_F(  FONCTION = SI,  VALE_PARA = 7.,
+                VALEUR=_F(  FONCTION = SIi,  VALE_PARA = 7.,
                                  VALE_REFE = val)  )
 
 # ------------------ FORMULE 2 -----------------------------------
 
 COa = FORMULE(NOM_PARA='INST',VALE='cos(INST)')
 
-CO=CALC_FONC_INTERP(        FONCTION=COa,    LIST_PARA=LI1,
+COi=CALC_FONC_INTERP(        FONCTION=COa,    LIST_PARA=LI1,
                             NOM_PARA='INST',
                             NOM_RESU='DEPL',
                             PROL_GAUCHE='EXCLU',  PROL_DROITE='LINEAIRE',
                             INTERPOL='LIN',
                             TITRE=' FONCTION COSINUS'   )
 
-IMPR_FONCTION(   COURBE=_F(  FONCTION = CO, LIST_PARA = LR1), )
+IMPR_FONCTION(   COURBE=_F(  FONCTION = COi, LIST_PARA = LR1), )
 
 X1=INST0 + (199. * PAS0 )
 X2=INST9
@@ -426,18 +426,18 @@ X0=7.
 Y0=COa(X1)+(X0-X1)*(COa(X2)-COa(X1))/(X2-X1)
 
 TEST_FONCTION(ATTRIBUT=(
-                _F(  FONCTION = CO,  ATTR = 'NOM_PARA',
+                _F(  FONCTION = COi,  ATTR = 'NOM_PARA',
                                  ATTR_REFE = 'INST'),
-                _F(  FONCTION = CO,  ATTR = 'NOM_RESU',
+                _F(  FONCTION = COi,  ATTR = 'NOM_RESU',
                                  ATTR_REFE = 'DEPL'),
-                _F(  FONCTION = CO,  ATTR = 'INTERPOL',
+                _F(  FONCTION = COi,  ATTR = 'INTERPOL',
                                  ATTR_REFE = 'LIN LIN '),
-                _F(  FONCTION = CO,  ATTR = 'PROL_DROITE',
+                _F(  FONCTION = COi,  ATTR = 'PROL_DROITE',
                                  ATTR_REFE = 'LINEAIRE'),
-                _F(  FONCTION = CO,  ATTR = 'PROL_GAUCHE',
+                _F(  FONCTION = COi,  ATTR = 'PROL_GAUCHE',
                                  ATTR_REFE = 'EXCLU')),
 
-                VALEUR=_F(  FONCTION = CO,  VALE_PARA = X0,  VALE_REFE = Y0) )
+                VALEUR=_F(  FONCTION = COi,  VALE_PARA = X0,  VALE_REFE = Y0) )
 
 #=======================================================================
 #
@@ -627,20 +627,20 @@ TEST_FONCTION(VALEUR=(_F( FONCTION = DN1_3,
 #
 #=======================================================================
 
-RMS_SI=INFO_FONCTION( RMS=_F(  FONCTION = SI)
+RMS_SI=INFO_FONCTION( RMS=_F(  FONCTION = SIi)
                          )
 
 TEST_TABLE(      TABLE=RMS_SI,
                     FILTRE=_F(  NOM_PARA = 'FONCTION',
-                             VALE_K = 'SI'),
+                             VALE_K = 'SIi'),
                   NOM_PARA='RMS',
                       VALE=7.07107E-01   )
 
-RMS_CO=INFO_FONCTION( RMS=_F(  FONCTION = CO)  )
+RMS_CO=INFO_FONCTION( RMS=_F(  FONCTION = COi)  )
 
 TEST_TABLE(      TABLE=RMS_CO,
                     FILTRE=_F(  NOM_PARA = 'FONCTION',
-                             VALE_K = 'CO'),
+                             VALE_K = 'COi'),
                   NOM_PARA='RMS',
                       VALE=7.07107E-01   )
 
@@ -1193,7 +1193,7 @@ TEST_TABLE(  TABLE=AC32M,
 #
 #=======================================================================
 
-ENV1=CALC_FONCTION( ENVELOPPE=_F(  FONCTION = ( SI,  CO, ),
+ENV1=CALC_FONCTION( ENVELOPPE=_F(  FONCTION = ( SIi,  COi, ),
                                      CRITERE = 'SUP') )
 
 IMPR_FONCTION(   COURBE=_F(  FONCTION = ENV1) )
@@ -1231,7 +1231,7 @@ TEST_FONCTION(VALEUR=(
                      REFERENCE = 'ANALYTIQUE',))
                 )
 
-ENV2=CALC_FONCTION( ENVELOPPE=_F(  FONCTION = ( SI,  CO, ),
+ENV2=CALC_FONCTION( ENVELOPPE=_F(  FONCTION = ( SIi,  COi, ),
                                      CRITERE = 'INF') )
 
 IMPR_FONCTION(   COURBE=_F(  FONCTION = ENV2, LIST_PARA = LR1) )
@@ -1272,12 +1272,12 @@ TEST_FONCTION(VALEUR=(
 #
 #=======================================================================
 
-DER1=CALC_FONCTION( DERIVE=_F(  FONCTION = SI) )
+DER1=CALC_FONCTION( DERIVE=_F(  FONCTION = SIi) )
 
 IMPR_FONCTION(   COURBE=_F(  FONCTION = DER1, LIST_PARA = LR1) )
 
 TEST_FONCTION(ATTRIBUT=(
-                _F(  FONCTION = SI, ATTR = 'NOM_RESU',
+                _F(  FONCTION = SIi, ATTR = 'NOM_RESU',
                                     ATTR_REFE = 'DEPLACEMENT'),
                 _F(  FONCTION = DER1, ATTR = 'NOM_RESU',
                                       ATTR_REFE = 'VITE')),
@@ -1354,7 +1354,7 @@ TEST_FONCTION(
                      REFERENCE = 'ANALYTIQUE',))
                 )
 
-DER2=CALC_FONCTION( DERIVE=_F(  FONCTION = CO) )
+DER2=CALC_FONCTION( DERIVE=_F(  FONCTION = COi) )
 
 IMPR_FONCTION(   COURBE=_F(  FONCTION = DER2, LIST_PARA = LR1) )
 
@@ -1370,7 +1370,7 @@ v8=-SIa(INST8)
 v9=-SIa(INST9)
 
 TEST_FONCTION(ATTRIBUT=(
-                _F(  FONCTION = CO, ATTR = 'NOM_RESU', ATTR_REFE = 'DEPL'),
+                _F(  FONCTION = COi, ATTR = 'NOM_RESU', ATTR_REFE = 'DEPL'),
                 _F(  FONCTION = DER2, ATTR = 'NOM_RESU', ATTR_REFE = 'VITE')),VALEUR=(
 
                 _F(  FONCTION = DER2, NOM_PARA = 'INST',
@@ -1460,12 +1460,12 @@ SICO = FORMULE(NOM_PARA=('INSTA','INSTB'),VALE='''
 LST=DEFI_LIST_REEL(  VALE=( INST0, INST1, INST2, INST3, INST4,
                             INST5, INST6, INST7, INST8, INST9, )  )
 
-COM7=CALC_FONCTION(COMB=( _F(  FONCTION = SI, COEF = 1.),
-                          _F(  FONCTION = CO, COEF = +1.))
+COM7=CALC_FONCTION(COMB=( _F(  FONCTION = SIi, COEF = 1.),
+                          _F(  FONCTION = COi, COEF = +1.))
                        )
 
-COM00=CALC_FONCTION(  COMB=(_F(  FONCTION = SI, COEF = 1.),
-                            _F(  FONCTION = CO, COEF = +1.))
+COM00=CALC_FONCTION(  COMB=(_F(  FONCTION = SIi, COEF = 1.),
+                            _F(  FONCTION = COi, COEF = +1.))
                        )
 
 COM0=CALC_FONC_INTERP(  LIST_PARA=LST,
@@ -1505,7 +1505,7 @@ TEST_FONCTION(VALEUR=(
                      REFERENCE = 'ANALYTIQUE',))
                 )
 
-COM1=CALC_FONCTION(COMB=( _F(  FONCTION = SI, COEF = 1.),
+COM1=CALC_FONCTION(COMB=( _F(  FONCTION = SIi, COEF = 1.),
                               _F(  FONCTION = INT1, COEF = -1.))  )
 
 TEST_FONCTION(VALEUR=(
@@ -1531,7 +1531,7 @@ TEST_FONCTION(VALEUR=(
                                   REFERENCE='ANALYTIQUE',VALE_PARA = INST9, VALE_REFE = 0.))
                 )
 
-COM2=CALC_FONCTION(COMB=( _F(  FONCTION = CO, COEF = 1.),
+COM2=CALC_FONCTION(COMB=( _F(  FONCTION = COi, COEF = 1.),
                               _F(  FONCTION = INT2, COEF = -1.))  )
 
 TEST_FONCTION(VALEUR=(
@@ -1801,6 +1801,7 @@ FONCb=DEFI_FONCTION(    NOM_PARA='X',
                                      0.9, 18.,
                                      1.0, 20., ) )
 TABM=INFO_FONCTION(MAX=_F(FONCTION=(FONCa,FONCb)))
+IMPR_TABLE(TABLE=TABM)
 
 TEST_TABLE(  TABLE=TABM,
              FILTRE=( _F(  NOM_PARA = 'FONCTION',
@@ -1820,6 +1821,101 @@ TEST_TABLE(  TABLE=TABM,
              NOM_PARA='F',
              REFERENCE='ANALYTIQUE',
              VALE=0.0  )
+
+TABM_INT = INFO_FONCTION(MAX=_F(FONCTION=FONCa,
+                                INTERVALLE=(1., 7., 12., 20.),),)
+IMPR_TABLE(TABLE=TABM_INT)
+
+# INTERVALLE 1
+TEST_TABLE(  TABLE=TABM_INT,
+             FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                           VALE_K = 'FONCa'),
+                      _F(  NOM_PARA = 'TYPE',
+                           VALE_K = 'MAXI'),
+                      _F(  NOM_PARA = 'INTERVALLE',
+                           VALE_I = 1),),
+             NOM_PARA='X_MIN',
+             REFERENCE='ANALYTIQUE',
+             VALE=1.  )
+
+TEST_TABLE(  TABLE=TABM_INT,
+             FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                           VALE_K = 'FONCa'),
+                      _F(  NOM_PARA = 'TYPE',
+                           VALE_K = 'MAXI'),
+                      _F(  NOM_PARA = 'INTERVALLE',
+                           VALE_I = 1),),
+             NOM_PARA='X_MAX',
+             REFERENCE='ANALYTIQUE',
+             VALE=7.  )
+
+TEST_TABLE(  TABLE=TABM_INT,
+             FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                           VALE_K = 'FONCa'),
+                      _F(  NOM_PARA = 'TYPE',
+                           VALE_K = 'MAXI'),
+                      _F(  NOM_PARA = 'INTERVALLE',
+                           VALE_I = 1),),
+             NOM_PARA='X',
+             REFERENCE='ANALYTIQUE',
+             VALE=5.  )
+
+TEST_TABLE(  TABLE=TABM_INT,
+             FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                           VALE_K = 'FONCa'),
+                      _F(  NOM_PARA = 'TYPE',
+                           VALE_K = 'MAXI'),
+                      _F(  NOM_PARA = 'INTERVALLE',
+                           VALE_I = 1),),
+             NOM_PARA='F',
+             REFERENCE='ANALYTIQUE',
+             VALE=15.  )
+
+# INTERVALLE 2
+TEST_TABLE(  TABLE=TABM_INT,
+             FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                           VALE_K = 'FONCa'),
+                      _F(  NOM_PARA = 'TYPE',
+                           VALE_K = 'MINI'),
+                      _F(  NOM_PARA = 'INTERVALLE',
+                           VALE_I = 2),),
+             NOM_PARA='X_MIN',
+             REFERENCE='ANALYTIQUE',
+             VALE=12.  )
+
+TEST_TABLE(  TABLE=TABM_INT,
+             FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                           VALE_K = 'FONCa'),
+                      _F(  NOM_PARA = 'TYPE',
+                           VALE_K = 'MINI'),
+                      _F(  NOM_PARA = 'INTERVALLE',
+                           VALE_I = 2),),
+             NOM_PARA='X_MAX',
+             REFERENCE='ANALYTIQUE',
+             VALE=20.  )
+
+TEST_TABLE(  TABLE=TABM_INT,
+             FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                           VALE_K = 'FONCa'),
+                      _F(  NOM_PARA = 'TYPE',
+                           VALE_K = 'MINI'),
+                      _F(  NOM_PARA = 'INTERVALLE',
+                           VALE_I = 2),),
+             NOM_PARA='X',
+             REFERENCE='ANALYTIQUE',
+             VALE=20.  )
+
+TEST_TABLE(  TABLE=TABM_INT,
+             FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                           VALE_K = 'FONCa'),
+                      _F(  NOM_PARA = 'TYPE',
+                           VALE_K = 'MINI'),
+                      _F(  NOM_PARA = 'INTERVALLE',
+                           VALE_I = 2),),
+             NOM_PARA='F',
+             REFERENCE='ANALYTIQUE',
+             VALE=0.  )
+
 
 #=======================================================================
 # VALIDATION DE CALC_FONC_INTERP POUR UNE NAPPE

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,6 +79,8 @@ INFO_FONCTION=MACRO(nom="INFO_FONCTION",op=info_fonction_ops,sd_prod=info_foncti
          ),
          MAX             =FACT(statut='f',fr="Extrémas locaux d'une fonction",
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster),max='**' ),
+           INTERVALLE      =SIMP(statut='f',typ='R',min=2,max='**',
+                               fr ="définition des bornes des intervalles sous forme de couples (xi_i1,xs_i1,xi_i2,xs_i2)"),
          ),
          NORME           =FACT(statut='f',fr="Norme L2 d'une fonction",
             FONCTION      =SIMP(statut='o', typ=nappe_sdaster),

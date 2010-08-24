@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ELEMENTS  DATE 24/08/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C.......................................................................
 C
 C     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
@@ -56,7 +57,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*8   NOMPAR(4),NOMPA2(3),NOMA,ELREFP,ELRESE(4),ENR,LAG
-      CHARACTER*8   K8BID
+      CHARACTER*8   K8BID,ELREF
       CHARACTER*16  NOMTE,OPTION
       CHARACTER*24  COORLO,GEOMLO,COORSE
       INTEGER       JPINTT,JCNSET,JHEAVT,JLONCH,JCOORS,JLSN,JLST,K
@@ -71,14 +72,15 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        ND(3),NORME,NAB,RB1(3),RB2(3),GLOC(2),N(3),CISA
       REAL*8        AN(3),G(3),HE,POIDS,DDOT,PADIST,FORREP(3),VF
       LOGICAL       LBID,ISMALI
-
-      DATA          ELRESE /'SE2','TR3','SE3','TR6'/
+      REAL*8        RB3,RB4,KSIB,KSIG,DX,DY,DFF(1,3),SEG(3),R8PREM,JAC
+      INTEGER       KK,IB1,IB2
+      DATA          ELRESE /'SE2','TR3','SE3','TR3'/
       DATA          NSEMAX /2,3,6/
 C
 C-----------------------------------------------------------------------
 C     INITIALISATIONS
 C-----------------------------------------------------------------------
-C
+
 C     ELEMENT DE REFERENCE PARENT
       CALL ELREF1(ELREFP)
       CALL ELREF4(' ','RIGI',NDIME,NNOP,NNOPS,IBID,IBID,IBID,IBID,IBID)
@@ -95,13 +97,13 @@ C     NDIME EST DIMENSION DE L'ELEMENT FINI
 C     SUR UN ELET DE BORD, ON A :  NDIM = NDIME + 1
 
 C     SOUS-ELEMENT DE REFERENCE
-      IF (ISMALI(ELREFP)) THEN
-        IRESE=0
-      ELSEIF (.NOT.ISMALI(ELREFP)) THEN
+      IF (.NOT.ISMALI(ELREFP).AND. NDIM.LE.2) THEN
         IRESE=2
+      ELSE
+        IRESE=0
       ENDIF
-      CALL ELREF4(ELRESE(NDIME+IRESE),'RIGI',IBID,NNO,NNOS,NPG,
-     &                                    IPOIDS,IVF,IDFDE,IBID)
+      ELREF=ELRESE(NDIME+IRESE)
+      CALL ELREF4(ELREF,'RIGI',IBID,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,IBID)
 
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
 C     IL NE FAUT PAS APPELER XTEINI CAR IL NE GERE PAS LES ELEMENTS
@@ -218,6 +220,9 @@ C         ON RENOMME LES SOMMETS DU SOUS-ELEMENT
             A(J)=ZR(JCOORS-1+NDIM*(1-1)+J)
             B(J)=ZR(JCOORS-1+NDIM*(2-1)+J)
             AB(J)=B(J)-A(J)
+            IF (.NOT.ISMALI(ELREF).AND.NDIM.EQ.2) THEN
+              C(J)=ZR(JCOORS-1+NDIM*(3-1)+J)
+            ENDIF
             IF (NDIM.EQ.3) C(J)=ZR(JCOORS-1+NDIM*(3-1)+J)
             IF (NDIM.EQ.3) AC(J)=C(J)-A(J)
  113      CONTINUE
@@ -228,17 +233,11 @@ C           CREATION DU REPERE LOCAL 2D : (AB,Y)
             CALL NORMEV(ND,NORME)
             CALL NORMEV(AB,NAB)
             CALL PROVEC(ND,AB,Y)
-          ELSEIF (NDIME.EQ.1) THEN
-C           CREATION DU REPERE LOCAL 1D : AB/NAB
-            CALL NORMEV(AB,NAB)
-            CALL VECINI(3,0.D0,ND)
-            ND(1) = AB(2)
-            ND(2) = -AB(1)
           ENDIF
 
 C         COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL
           COORLO='&&TE0036.COORLO'
-          CALL WKVECT(COORLO,'V V R',NNO*NDIME,JCORLO)
+          CALL WKVECT(COORLO,'V V R',6,JCORLO)
           IF (NDIME.EQ.2) THEN
             ZR(JCORLO-1+1)=0.D0
             ZR(JCORLO-1+2)=0.D0
@@ -247,10 +246,32 @@ C         COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL
             ZR(JCORLO-1+5)=DDOT(3,AC,1,AB,1)
             ZR(JCORLO-1+6)=DDOT(3,AC,1,Y ,1)
           ELSEIF (NDIME.EQ.1) THEN
-            ZR(JCORLO-1+1)=0.D0
-            ZR(JCORLO-1+2)=NAB
-            IF (.NOT.ISMALI(ELREFP)) THEN
-            ZR(JCORLO-1+3)=NAB/2
+            IF (ISMALI(ELREF)) THEN
+C           EN LINEAIRE 2D
+              CALL NORMEV(AB,NAB)
+              ZR(JCORLO-1+1)=0.D0
+              ZR(JCORLO-1+2)=0.D0
+              ZR(JCORLO-1+3)=NAB
+              ZR(JCORLO-1+4)=0.D0
+              ZR(JCORLO-1+5)=0.D0
+              ZR(JCORLO-1+6)=0.D0
+              CALL VECINI(3,0.D0,ND)
+              ND(1) = AB(2)
+              ND(2) = -AB(1)
+            ELSEIF (.NOT.ISMALI(ELREF)) THEN
+C           EN QUADRATIQUE 2D
+              KSIB=1.D0
+              CALL ABSCVF(NDIM,JCOORS,KSIB,NAB)
+              ZR(JCORLO-1+1)=0.D0
+              ZR(JCORLO-1+2)=0.D0
+              ZR(JCORLO-1+3)=NAB
+              ZR(JCORLO-1+4)=0.D0
+              ZR(JCORLO-1+5)=NAB/2
+              ZR(JCORLO-1+6)=0.D0
+              SEG(1)=0.D0
+              SEG(2)=NAB
+              SEG(3)=NAB/2
+              CALL NORMEV(AB,NAB)
             ENDIF
           ENDIF
 
@@ -264,6 +285,7 @@ C         COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL
               AN(J)=N(J)-A(J)
  115        CONTINUE
             ZR(IGEOLO-1+NDIME*(INO-1)+1)=DDOT(NDIM,AN,1,AB,1)
+
             IF (NDIME.EQ.2)
      &        ZR(IGEOLO-1+NDIME*(INO-1)+2)=DDOT(NDIM,AN,1,Y ,1)
  114      CONTINUE
@@ -281,7 +303,9 @@ C           CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
             IF     (NDIME.EQ.2) THEN
               CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,ZR(JCORLO),RB1,RB2,POIDS)
             ELSEIF (NDIME.EQ.1) THEN
-               POIDS = ZR(IPOIDS-1+KPG) * NAB/2.D0
+              KK = (KPG-1)*NNO
+              CALL DFDM1D(NNO,ZR(IPOIDS-1+KPG),ZR(IDFDE+KK),ZR(JCORLO),
+     &              RB1,RB2,POIDS,RB3,RB4)
             ENDIF
 
 C           COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
@@ -289,10 +313,36 @@ C           COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
             DO 210 J=1,NNO
               VF=ZR(IVF-1+NNO*(KPG-1)+J)
               DO 211 K=1,NDIME
-                GLOC(K)=GLOC(K)+VF*ZR(JCORLO-1+NDIME*(J-1)+K)
+                GLOC(K)=GLOC(K)+VF*ZR(JCORLO-1+2*J+K-2)
  211          CONTINUE
  210        CONTINUE
-                         
+
+C           CALCUL DE LA NORMALE A LA FACE AU POINT DE GAUSS
+            IF (NDIM.EQ.2 .AND. .NOT.ISMALI(ELREF)) THEN
+              CALL ASSERT(ELREF.EQ.'SE3')
+              CALL VECINI(3,0.D0,ND)
+C             COORDONNEES DE REFERENCE 1D DU POINT DE GAUSS
+              CALL REEREG('S',ELREF,NNO,SEG,GLOC,NDIME,KSIG,IBID)
+C             CALL ELRFDF(ELREF,KSIG,NDIME*NNO,DFF1,IB1,IB2)
+              DFF(1,1) = KSIG-5.D-1
+              DFF(1,2) = KSIG+5.D-1
+              DFF(1,3) = -2*KSIG
+              DX=0.D0
+              DY=0.D0
+              DO 212 I=1,NNO
+                DX = DX+DFF(1,I)*ZR(JCOORS-1+NDIM*(I-1)+1)
+                DY = DY+DFF(1,I)*ZR(JCOORS-1+NDIM*(I-1)+2)
+ 212          CONTINUE
+              JAC=SQRT(DX*DX+DY*DY)
+              IF (ABS(JAC).GT.R8PREM()) THEN
+                ND(1) = DY/JAC
+                ND(2) = -DX/JAC
+              ELSE
+                ND(1) = AB(2)
+                ND(2) = -AB(1)
+              ENDIF
+            ENDIF
+
 C           JUSTE POUR CALCULER LES FF AUX NOEUDS DE L'ELREFP
             CALL REEREF(ELREFP,NNOP,IBID,IGEOLO,GLOC,IBID,.FALSE.,NDIME,
      &         RBID,IBID,IBID,IBID,IBID,RBID,RBID,'NON',XE,FF,RBID,RBID,
@@ -312,7 +362,6 @@ C           DU POINT DE GAUSS
 C            G(1)=A(1)+AB(1)*GLOC(1)+Y(1)*GLOC(2)
 C            G(2)=A(2)+AB(2)*GLOC(1)+Y(2)*GLOC(2)
 C            G(3)=A(3)+AB(3)*GLOC(1)+Y(3)*GLOC(2)
-
 
 C           CALCUL DES FONCTIONS D'ENRICHISSEMENT
 C           -------------------------------------

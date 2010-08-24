@@ -1,7 +1,7 @@
       SUBROUTINE APETS3(ACTION,KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS3 PETSC  DATE 19/07/2010   AUTEUR TARDIEU N.TARDIEU 
+!& MODIF APETS3 PETSC  DATE 23/08/2010   AUTEUR TARDIEU N.TARDIEU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -57,8 +57,8 @@
       INTEGER JSLVK,JSLVR,JSLVI
       INTEGER NIREMP,NSMDI
 
-      CHARACTER*24 PRECON,SOLVBD
-      CHARACTER*19 NOMAT,NOSOLV
+      CHARACTER*24 PRECON
+      CHARACTER*19 NOMAT,NOSOLV,SOLVBD
       CHARACTER*14 NONU
       CHARACTER*4  KBID
 
@@ -79,7 +79,7 @@
        external LDSP2
 !     -- COMMON POUR L'UTILISATION DU PRECONDITIONNEUR
 !     -- SIMPLE PRECISION LDLT_SP
-      COMMON       /LDLTSP/xtemp,SOLVBD,NOMAT,NOSOLV
+      COMMON /LDLTSP/SOLVBD,NOMAT,NOSOLV,xlocal,xscatt,xglobal
       
 !=================================================================
 !  Variables PETSc
@@ -91,7 +91,8 @@
       PetscMPIInt rang,size,ier
       PetscInt fill,ierr,NEQ
       PetscReal fillp
-      Vec xtemp
+      Vec xlocal,xglobal
+      VecScatter   xscatt
       Mat A
       KSP ksp,kspp
       PC  pc,pcp
@@ -119,6 +120,42 @@
       CALL MPI_COMM_RANK(PETSC_COMM_WORLD, rang, ier)
       CALL MPI_COMM_SIZE(PETSC_COMM_WORLD, size, ier)
       
+      
+!     -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
+!     -----------------------------------------------------
+      IF (PRECON.EQ.'LDLT_SP') THEN
+        IF (ACTION.EQ.'PRERES') THEN
+!         LDLT_SP EST MIS EN OEUVRE PAR DES APPELS A 2 ROUTINES EXTERNES
+          call KSPGetPC(ksp,pc,ierr)
+          call PCSetType(pc,PCSHELL,ierr)
+          call PCShellSetSetUp(pc,LDSP1,ierr)
+          call PCShellSetApply(pc,LDSP2,ierr)
+!         CREATION DES VECTEURS TEMPORAIRES UTILISES DANS LDLT_SP
+          CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
+          NEQ=NSMDI
+          call VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,NEQ,xlocal,
+     &                                                             ierr)
+          CALL ASSERT(ierr.EQ.0)
+          call VecCreateSeq(PETSC_COMM_SELF,NEQ,xglobal,ierr)
+          CALL ASSERT(ierr.EQ.0)
+          call VecScatterCreateToAll(xlocal,xscatt,xglobal,ierr)
+          CALL ASSERT(ierr.EQ.0)
+!         CREATION SOLVEUR BIDON SIMPLE PRECISION
+          SOLVBD=ZK24(JSLVK-1+3)
+          CALL CRSMSP(SOLVBD,NOMAT)
+!         INSTANCIATION DU PRECONDITIONNEUR
+          call PCSetUp(pc,ierr)
+          CALL ASSERT(ierr.EQ.0)
+        ELSE IF (ACTION.EQ.'RESOUD') THEN
+!         CREATION SOLVEUR BIDON SIMPLE PRECISION
+          CALL CRSMSP(SOLVBD,NOMAT)
+        ENDIF
+        GOTO 999
+      ENDIF
+
+
+!     -- TRAITEMENT DES AUTRES PRECONDITIONNEURS
+!     ------------------------------------------
       IF (size.GT.1) THEN
          IF (ACTION.NE.'RESOUD') GOTO 999
 ! EN PARALLELE, ON NE PREPARE PAS LE PRECONDITIONNEUR TT DE SUITE
@@ -147,10 +184,6 @@
          call PCSetType(pc,PCJACOBI,ierr)
       ELSEIF (PRECON.eq.'SOR') THEN
          call PCSetType(pc,PCSOR,ierr)
-      ELSEIF (PRECON.eq.'LDLT_SP') THEN
-        call PCSetType(pc,PCSHELL,ierr)
-        call PCShellSetSetUp(pc,LDSP1,ierr)
-        call PCShellSetApply(pc,LDSP2,ierr)
       ELSE
          CALL ASSERT(.FALSE.)
       ENDIF
@@ -161,20 +194,6 @@
       
       
 999   CONTINUE
-
-
-C     ON DOIT CREER CE SOLVEUR BIDON POUR LE PRECONDITIONNEUR LDLT_SP
-C     SI ACTION='PRERES' *ET* ACTION='RESOUD' 
-      IF (PRECON.EQ.'LDLT_SP') THEN
-C       CREATION D'UN VECTEUR TEMPORAIRE UTILISE DANS PREC_SP
-        CALL JELIRA(NONU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
-        NEQ=NSMDI
-        call VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,NEQ,xtemp,ierr)
-        CALL ASSERT(ierr.EQ.0)
-C       CREATION SOLVEUR BIDON
-        SOLVBD=ZK24(JSLVK-1+3)
-        CALL CRSMSP(SOLVBD,NOMAT)
-      ENDIF
 
       CALL JEDEMA()
 

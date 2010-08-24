@@ -1,4 +1,4 @@
-# MODIF  DATE 17/12/2007   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  MURAKAMI 11.39 FISSURE CIRCULAIRE AU CENTRE D'UNE SPHERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,16 +150,16 @@ VECT_ELE=CALC_VECT_ELEM(        CHARGE=CH,
                            )
 
 #
-NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
+NUMEDDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
 
 #
 RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,
-                            NUME_DDL=NUME_DDL
+                            NUME_DDL=NUMEDDL
                         )
 
 #
 FORCE=ASSE_VECTEUR(    VECT_ELEM=VECT_ELE,
-                              NUME_DDL=NUME_DDL
+                              NUME_DDL=NUMEDDL
                          )
 
 #

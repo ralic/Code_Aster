@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF astermodule supervis  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,11 +21,13 @@
 /* ------------------------------------------------------------------ */
 
 #include <stdio.h>
-#include "Python.h"
 #include <math.h>
 #include <ctype.h>
 #include <string.h>
+#include "Python.h"
+
 #include "aster.h"
+#include "aster_fort.h"
 
 /* --- declarations des interfaces des fonctions de ce fichier --- */
 
@@ -174,12 +176,13 @@ static PyObject *static_module  = (PyObject*)0 ;
 static char *NomCas          = "        ";
 
 /* ------------------------------------------------------------------ */
+#define CALL_ISJVUP() STDCALL(ISJVUP, isjvup)()
+
 INTEGER STDCALL(ISJVUP, isjvup)()
 {
    /* "is jeveux up ?" : retourne 1 si jeveux est démarré/initialisé, sinon 0. */
    return (INTEGER)jeveux_status;
 }
-#define CALL_ISJVUP() STDCALL(ISJVUP, isjvup)()
 
 
 /* ------------------------------------------------------------------ */
@@ -358,6 +361,8 @@ void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN c
 }
 
 /* ------------------------------------------------------------------ */
+#define CALL_GETLTX(a,b,c,d,e,f,g) CALLSSPPPPP(GETLTX,getltx,a,b,c,d,e,f,g)
+
 void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
                               _IN char *motcle,_IN STRING_SIZE lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,_OUT INTEGER *isval, _OUT INTEGER *nbval )
@@ -1364,6 +1369,8 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN STRING_SIZE lfac,
 
 
 /* ------------------------------------------------------------------ */
+#define CALL_GETVTX(a,b,c,d,e,f,g) CALLSSPPPSP(GETVTX,getvtx,a,b,c,d,e,f,g)
+
 void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
                               _IN char *motcle,_IN STRING_SIZE lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,
@@ -2006,20 +2013,6 @@ PyObject * get_active_command()
 }
 
 /* ------------------------------------------------------------------ */
-/* -------------------- appels aux routines JEVEUX ------------------ */
-#define CALL_JEMARQ() STDCALL(JEMARQ, jemarq)()
-void CALL_JEMARQ();
-
-#define CALL_JEDEMA() STDCALL(JEDEMA, jedema)()
-void CALL_JEDEMA();
-
-#define CALL_JEDETR(nom) CALLS(JEDETR, jedetr, nom)
-void DEFS(JEDETR, jedetr, char *, STRING_SIZE);
-/* ------------------------------------------------------------------ */
-
-#define CALL_PRCOCH(nomce,nomcs,nomcmp,ktype,itopo,nval,groups) CALLSSSSPPS(PRCOCH,prcoch,nomce,nomcs,nomcmp,ktype,itopo,nval,groups)
-void DEFSSSSPPS(PRCOCH,prcoch,char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE,INTEGER *,INTEGER *,char *,STRING_SIZE);
-
 static PyObject* aster_prepcompcham(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2069,9 +2062,6 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-#define CALL_GETCON(nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob) CALLSPPPPPPS(GETCON,getcon,nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob)
-void DEFSPPPPPPS(GETCON,getcon,char *,STRING_SIZE,INTEGER *,INTEGER *,INTEGER *,INTEGER *,INTEGER *,char **,char *,STRING_SIZE);
-
 static char getvectjev_doc[]=
 "getvectjev(nomsd)->valsd      \n\
 \n\
@@ -2179,9 +2169,6 @@ PyObject *args;
         }
    return NULL;
 }
-
-#define CALL_TAILSD(nom, nomsd, val, nbval) CALLSSPP(TAILSD,tailsd,nom, nomsd, val, nbval)
-void DEFSSPP(TAILSD,tailsd,char *,STRING_SIZE,char *,STRING_SIZE,INTEGER *, INTEGER *);
 
 static char getcolljev_doc[]=
 "getcolljev(nomsd)->valsd      \n\
@@ -2312,10 +2299,6 @@ PyObject *args;
    return NULL;
 }
 
-
-
-#define CALL_PUTCON(nomsd,nbind,ind,valr,valc,num,iret) CALLSPPPPPP(PUTCON,putcon,nomsd,nbind,ind,valr,valc,num,iret)
-void DEFSPPPPPP(PUTCON,putcon,char *,STRING_SIZE,INTEGER *,INTEGER *,DOUBLE *,DOUBLE *,INTEGER *,INTEGER *);
 
 static char putvectjev_doc[]=
 "putvectjev(nomsd, nbval, indices, reel, imag, num)\n\
@@ -2452,25 +2435,6 @@ PyObject *args;
 
 
 /* ------------------------------------------------------------------ */
-void DEFSPSPPPS(RSACCH,rsacch,char *, STRING_SIZE, INTEGER *, char *,STRING_SIZE,INTEGER *, INTEGER *, INTEGER *, char *,STRING_SIZE);
-void DEFSPPSPPPSP(RSACPA,rsacpa,char *, STRING_SIZE, INTEGER *, INTEGER *, char *, STRING_SIZE, INTEGER *, INTEGER *, DOUBLE *, char *, STRING_SIZE, INTEGER *);
-
-/* particulier car on passe les longueurs des chaines en dur */
-#ifdef _POSIX
-#define CALL_RSACCH(nomsd, numch, nomch, nbord, liord, nbcmp, liscmp) \
-                  F_FUNC(RSACCH,rsacch)(nomsd,numch,nomch,nbord,liord,nbcmp,liscmp, strlen(nomsd),16,8)
-#else
-#define CALL_RSACCH(nomsd, numch, nomch, nbord, liord, nbcmp, liscmp) \
-                  F_FUNC(RSACCH,rsacch)(nomsd,strlen(nomsd),numch, nomch,16,nbord, liord, nbcmp, liscmp,8)
-#endif
-
-#define CALL_RSACPA(nomsd, numva, icode, nomva, ctype, ival, rval, kval, ier) \
-                  CALLSPPSPPPSP(RSACPA,rsacpa, nomsd, numva, icode, nomva, ctype, ival, rval, kval, ier)
-
-#define CALL_R8VIDE STDCALL(R8VIDE,r8vide)
-#define CALL_ISNNEM STDCALL(ISNNEM,isnnem)
-
-/* ------------------------------------------------------------------ */
 static PyObject* aster_GetResu(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2514,8 +2478,6 @@ PyObject *args;
    PyObject *dico, *liste, *key;
    char blanc[80];
    void *malloc(size_t size);
-   DOUBLE CALL_R8VIDE();
-   INTEGER CALL_ISNNEM();
 
    BLANK(blanc, 80);
    
@@ -2644,9 +2606,6 @@ PyObject *args;
 
 
 /* ------------------------------------------------------------------ */
-#define CALL_EXPASS(a,b,c,d)  F_FUNC(EXPASS,expass)(a,b,c,d)
-extern void STDCALL(EXPASS,expass)(INTEGER* , INTEGER* , INTEGER* , INTEGER*);
-
 static PyObject* aster_oper(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2689,9 +2648,6 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-#define CALL_OPSEXE(a,b,c,d,e)  CALLPPPSP(OPSEXE,opsexe,a,b,c,d,e)
-extern void DEFPPPSP(OPSEXE,opsexe,INTEGER* , INTEGER* , INTEGER* , char *,STRING_SIZE ,INTEGER* ) ;
-
 static PyObject* aster_opsexe(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2736,9 +2692,6 @@ PyObject *args;
 
 
 /* ------------------------------------------------------------------ */
-extern void STDCALL(IMPERS,impers)();
-#define CALL_IMPERS() F_FUNC(IMPERS,impers)()
-
 static PyObject * aster_impers(self,args)
 PyObject *self, *args; /* Not used */
 {
@@ -2748,9 +2701,6 @@ PyObject *self, *args; /* Not used */
 }
 
 /* ------------------------------------------------------------------ */
-void DEFSS(AFFICH,affich,char *,STRING_SIZE,char *,STRING_SIZE);
-#define CALL_AFFICH(a,b) CALLSS(AFFICH,affich,a,b)
-
 static PyObject * aster_affich(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2835,9 +2785,6 @@ PyObject* GetJdcAttr(_IN char *attribut)
 }
 
 /* ------------------------------------------------------------------ */
-void DEFSSP(ONERRF,onerrf,char *,STRING_SIZE, _OUT char *,STRING_SIZE, _OUT INTEGER *);
-#define CALL_ONERRF(a,b,c) CALLSSP(ONERRF,onerrf,a,b,c)
-
 static PyObject * aster_onFatalError(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2881,9 +2828,6 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-void DEFPSSSS(ULOPEN,ulopen,INTEGER *,char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE);
-#define CALL_ULOPEN(a,b,c,d,e) CALLPSSSS(ULOPEN,ulopen,a,b,c,d,e)
-
 static PyObject * aster_ulopen(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2903,9 +2847,6 @@ PyObject *args;
 
 
 /* ------------------------------------------------------------------ */
-void DEFP(FCLOSE,fclose,INTEGER *);
-#define CALL_FCLOSE(a) CALLP(FCLOSE,fclose,a)
-
 static PyObject * aster_fclose(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2921,10 +2862,6 @@ PyObject *args;
 
 
 /* ------------------------------------------------------------------ */
-void DEFPPS(REPOUT,repout,INTEGER *,INTEGER *,char *,STRING_SIZE);
-#define CALL_REPOUT(a,b,c) CALLPPS(REPOUT,repout,a,b,c)
-
-
 static PyObject * aster_repout(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2943,10 +2880,6 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-void DEFPPS(REPDEX,repdex,INTEGER *,INTEGER *,char *,STRING_SIZE);
-#define CALL_REPDEX(a,b,c) CALLPPS(REPDEX,repdex,a,b,c)
-
-
 static PyObject * aster_repdex(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2965,10 +2898,6 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-void DEFSS(GCNCON,gcncon,char *,STRING_SIZE,char *,STRING_SIZE);
-#define CALL_GCNCON(a,b) CALLSS(GCNCON,gcncon,a,b)
-
-
 static PyObject * aster_gcncon(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2987,9 +2916,6 @@ PyObject *args;
 }
 
 /* ---------------------------------------------------------------------- */
-void DEFSSPSPPSPSS(RCVALE, rcvale, char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, char *,STRING_SIZE, DOUBLE *, char *, STRING_SIZE, char *, STRING_SIZE);
-#define CALL_RCVALE(a,b,c,d,e,f,g,h,i,j) CALLSSPSPPSPSS(RCVALE,rcvale,a,b,c,d,e,f,g,h,i,j)
-
 static char rcvale_doc[] =
 "Interface d'appel a la routine fortran RCVALE.\n"
 "   Arguments : nommat, phenomene, nompar, valpar, nomres, stop\n"
@@ -3054,11 +2980,6 @@ PyObject *args;
 }
 
 /* ---------------------------------------------------------------------- */
-void DEFSSSSPSP(DISMOI, dismoi, char *,STRING_SIZE, char *,STRING_SIZE,
-                                char *,STRING_SIZE, char *,STRING_SIZE,
-                                INTEGER *, char *,STRING_SIZE, INTEGER *);
-#define CALL_DISMOI(a,b,c,d,e,f,g) CALLSSSSPSP(DISMOI,dismoi,a,b,c,d,e,f,g)
-
 static char dismoi_doc[] =
 "Interface d'appel a la routine fortran DISMOI.\n"
 "   usage: iret, repi, repk = aster.dismoi(codmes, question, concept, type_concept) \n\n"
@@ -3095,9 +3016,6 @@ PyObject *args;
 }
 
 /* ---------------------------------------------------------------------- */
-void DEFP(MATFPE, matfpe, INTEGER *);
-#define CALL_MATFPE(a) CALLP(MATFPE,matfpe,a)
-
 static char matfpe_doc[] =
 "Interface d'appel a la routine C matfpe.\n"
 "   usage: matfpe(actif)\n"
@@ -3122,10 +3040,6 @@ PyObject *args;
 }
 
 /* ---------------------------------------------------------------------- */
-void DEFSPSP(MDNOMA,mdnoma,char *,STRING_SIZE,INTEGER *,char *,STRING_SIZE,INTEGER *);
-#define CALL_MDNOMA(a,b,c,d) CALLSPSP(MDNOMA,mdnoma,a,b,c,d)
-
-
 static PyObject * aster_mdnoma(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -3148,9 +3062,6 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-void DEFSPPSSSP(MDNOCH,mdnoch,char *,STRING_SIZE,INTEGER *,INTEGER *,char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE,INTEGER *);
-#define CALL_MDNOCH(a,b,c,d,e,f,g) CALLSPPSSSP(MDNOCH,mdnoch,a,b,c,d,e,f,g)
-
 static PyObject * aster_mdnoch(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -3225,9 +3136,6 @@ void TraitementFinAster( _IN int val )
 }
 
 /* ------------------------------------------------------------------ */
-#define CALL_GETLTX(a,b,c,d,e,f,g) CALLSSPPPPP(GETLTX,getltx,a,b,c,d,e,f,g)
-#define CALL_GETVTX(a,b,c,d,e,f,g) CALLSSPPPSP(GETVTX,getvtx,a,b,c,d,e,f,g)
-
 int RecupNomCas(void)
 {
    /* recuperation du nom du cas */
@@ -3264,12 +3172,6 @@ int RecupNomCas(void)
 }
 
 /* ------------------------------------------------------------------ */
-void DEFPPPP(POURSU,poursu,INTEGER* , INTEGER* , INTEGER* ,INTEGER*) ;
-void DEFS(GCCPTS,gccpts,char *, STRING_SIZE );
-
-#define CALL_POURSU(a,b,c,d) CALLPPPP(POURSU,poursu,a,b,c,d)
-#define CALL_GCCPTS(a,la) F_FUNC(GCCPTS,gccpts)(a,la)
-
 static PyObject * aster_poursu(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -3348,9 +3250,6 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-#define CALL_DEBUT(a,b,c)  F_FUNC(DEBUT,debut)(a,b,c)
-extern void STDCALL(DEBUT,debut)(INTEGER* , INTEGER* , INTEGER* );
-
 static PyObject * aster_debut(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -3407,9 +3306,6 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-#define CALL_IBMAIN(a,b,c)  F_FUNC(IBMAIN,ibmain)(a,b,c)
-extern void STDCALL(IBMAIN,ibmain)(INTEGER* , INTEGER* , INTEGER* );
-
 static PyObject *aster_init(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -3439,10 +3335,6 @@ return PyInt_FromLong(ier);
 
 
 /* ------------------------------------------------------------------ */
-#define CALL_JELST3(a,b,c,d)  CALLSSPP(JELST3,jelst3,a,b,c,d)
-void DEFSSPP(JELST3,jelst3, char*, STRING_SIZE, char*, STRING_SIZE, INTEGER*, INTEGER*);
-
-
 static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)
 {
     INTEGER nmax, total;
@@ -3481,8 +3373,6 @@ static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)
     return the_list;
 }
 
-#define CALL_JELIRA(a,b,c,d)  CALLSSPS(JELIRA,jelira,a,b,c,d)
-void DEFSSPS(JELIRA,jelira, char*, STRING_SIZE, char*, STRING_SIZE, INTEGER*, char*, STRING_SIZE );
 
 /* ------------------------------------------------------------------ */
 static PyObject *jeveux_getattr( PyObject* self, PyObject* args)
@@ -3499,9 +3389,6 @@ static PyObject *jeveux_getattr( PyObject* self, PyObject* args)
     
     return Py_BuildValue( "is", intval, charval );
 }
-
-#define CALL_JEEXIN(a,b)  CALLSP(JEEXIN,jeexin,a,b)
-void DEFSP(JEEXIN,jeexin, char*, STRING_SIZE, INTEGER* );
 
 
 static PyObject *jeveux_exists( PyObject* self, PyObject* args)
@@ -3530,9 +3417,6 @@ static PyObject *jeveux_exists( PyObject* self, PyObject* args)
 }
 
 /* ---------------------------------------------------------------------- */
-void DEFP(JEINFO, jeinfo, DOUBLE *);
-#define CALL_JEINFO(a) CALLP(JEINFO,jeinfo,a)
-
 static char jeinfo_doc[] =
 "Interface d'appel a la routine fortran JEINFO.\n";
 
@@ -3541,7 +3425,6 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
    DOUBLE *rval;
-   INTEGER *ival;
    int i, longueur=9;
    PyObject *tup;
 
@@ -3560,12 +3443,6 @@ PyObject *args;
 /* ------------------------------------------------------------------ */
 /*      Routines d'interface pour l'enregistrement d'un concept       */
 /*                      dans la liste jeveux                          */
-
-#define CALL_GCUGEN(a,b,c,d,e) CALLPSSSP(GCUGEN,gcugen,a,b,c,d,e)
-void DEFPSSSP(GCUGEN, gcugen, INTEGER*, char*, STRING_SIZE,
-                                        char*, STRING_SIZE,
-                                        char*,  STRING_SIZE, INTEGER*);
-
 static PyObject* aster_co_register_jev(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -3970,9 +3847,6 @@ static PyMethodDef aster_methods[] = {
 
 
 /* ------------------------------------------------------------------ */
-void DEFPPPSP(VERSIO,versio,INTEGER *,INTEGER *,INTEGER *,char *,STRING_SIZE,INTEGER *);
-#define CALL_VERSIO(a,b,c,d,e) CALLPPPSP(VERSIO,versio,a,b,c,d,e)
-
 void initvers(PyObject *dict)
 {
     PyObject *v;

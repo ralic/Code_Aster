@@ -7,7 +7,7 @@
      &                    INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       PARAMETER ( NBTYAR = 3 )
       INTEGER IWK0, IWK1, IWK2
       INTEGER NRPASE, NRORES
-      INTEGER IFM, NIV
+      INTEGER IFM, NIV, ETAUSR
       INTEGER IDEPL1
       INTEGER IVITE1, IVITE2
       INTEGER IACCE1
@@ -357,6 +357,12 @@ C
 C====
 C 5. LA FIN
 C====
+C
+C --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
+C
+      IF ( ETAUSR().EQ.1 ) THEN
+         CALL SIGUSR()
+      ENDIF
 C
       IF (ISTOP.EQ.1) THEN
         CALL UTEXCM(28, 'DYNAMIQUE_9', 0, VALK, 1, VALI, 2, VALR)

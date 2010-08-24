@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -687,6 +687,8 @@ def RetablirAlarme(idmess):
 # faux appels à UTMESS
 def __fake__():
     UTMESS('I', 'SUPERVIS_40')    # surcharge émis par asrun
+    UTMESS('I', 'SUPERVIS_96')    # émis depuis le C (inisig)
+    UTMESS('I', 'SUPERVIS_97')    # émis depuis le C (inisig)
     UTMESS('I', 'CATAMESS_6')
     UTMESS('I', 'CATAMESS_41')
     UTMESS('I', 'CATAMESS_55')    # pour u2mesg.f

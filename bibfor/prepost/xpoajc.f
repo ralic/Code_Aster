@@ -4,7 +4,7 @@
      &                  JCESV1,JCESL2,JCESV2,JCVIV1,JCVIL2,JCVIV2)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/07/2010   AUTEUR CARON A.CARON 
+C MODIF PREPOST  DATE 24/08/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -130,15 +130,14 @@ C       VAL : MOYENNE SUR LES POINTS DE GAUSS DU CHAMP 1
         DO 20 IPG = 1,NPG1
           VAL =VAL + ZR(JCESV1-1+IADC-1+IDECAL+NCMP1*(IPG-1)+ICMP)
  20     CONTINUE
-
         VAL = VAL/NPG1
-
-        IPT=1
-        CALL CESEXI('C',JCESD2,JCESL2,NBMAC +INMTOT,
+        DO 35 IPT=1,NPG2
+          CALL CESEXI('C',JCESD2,JCESL2,NBMAC +INMTOT,
      &                                     IPT,1,ICMP,IAD2)
-        CALL ASSERT(IAD2.GT.0) 
-        ZL(JCESL2-1+IAD2) = .TRUE.
-        ZR(JCESV2-1+IAD2) = VAL
+          CALL ASSERT(IAD2.GT.0) 
+          ZL(JCESL2-1+IAD2) = .TRUE.
+          ZR(JCESV2-1+IAD2) = VAL
+ 35     CONTINUE
  30   CONTINUE
  
       IF(NCMV1 .NE. 0) THEN
@@ -148,16 +147,15 @@ C         VAL : MOYENNE SUR LES POINTS DE GAUSS DU CHAMP 1
           DO 40 IPG = 1,NPG1
             VAL =VAL + ZR(JCVIV1-1+IADV-1+IDCALV+NCMV1*(IPG-1)+ICMP)
  40       CONTINUE
-
           VAL = VAL/NPG1
-
-          IPT=1
-          CALL CESEXI('C',JCVID2,JCVIL2,NBMAC +INMTOT,
+          DO 45 IPT=1,NPG2
+            CALL CESEXI('C',JCVID2,JCVIL2,NBMAC +INMTOT,
      &                                       IPT,1,ICMP,IAD2)
-          CALL ASSERT(IAD2.LT.0) 
-          IAD2 = -IAD2
-          ZL(JCVIL2-1+IAD2) = .TRUE.
-          ZR(JCVIV2-1+IAD2) = VAL
+            CALL ASSERT(IAD2.LT.0) 
+            IAD2 = -IAD2
+            ZL(JCVIL2-1+IAD2) = .TRUE.
+            ZR(JCVIV2-1+IAD2) = VAL
+ 45       CONTINUE
  50     CONTINUE
       ENDIF
 

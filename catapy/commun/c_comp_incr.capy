@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 16/08/2010   AUTEUR GRANET S.GRANET 
+#& MODIF COMMUN  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,12 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                    UNITE =SIMP(statut='o',typ='I',max=1),),
            b_umat      = BLOC(condition = "RELATION == 'UMAT' ",
                                  fr="Comportement utilisateur de type UMAT",
-                   NB_VARI =SIMP(statut='o',typ='I',max=1,fr="Nombre de variables internes"),),
+                   NB_VARI =SIMP(statut='o',typ='I',max=1,fr="Nombre de variables internes"),
+                   LIBRAIRIE = SIMP(statut='o', typ='TXM',validators=LongStr(1,128),
+                        fr="Chemin vers la bibliothèque dynamique définissant le comportement UMAT"),
+                   NOM_ROUTINE = SIMP(statut='o', typ='TXM',
+                        fr="Nom de la routine UMAT dans la bibliothèque"),
+                   ),
 
 # KITs
            b_kit_ddi = BLOC(condition = "RELATION == 'KIT_DDI' ",
@@ -53,7 +58,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "MAZARS"
                                        ),),
                    ),
-           b_kit_thm = BLOC(condition = "RELATION in ['KIT_HHM','KIT_HH','KIT_H','KIT_HM','KIT_THHM',\
+           b_kit_thm = BLOC(condition = "RELATION in ['KIT_HHM','KIT_HH','KIT_H','KIT_HM','KIT_THHM', \
                                                       'KIT_THH','KIT_THM','KIT_THV']",
                             fr="lois de comportements thermo-hydro-mecaniques",
                RELATION_KIT    =SIMP(statut='o',typ='TXM',max=9,validators=NoRepeat(),

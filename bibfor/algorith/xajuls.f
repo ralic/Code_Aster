@@ -5,7 +5,7 @@
       CHARACTER*19  CNSLT,CNSLN
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 24/08/2010   AUTEUR CARON A.CARON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,7 +66,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       NA,NB,NM,NUNOA,NUNOB,NUNOM
       INTEGER       JLNSV,JLTSV,NMAABS
       REAL*8        D1,LSNA,LSNB,CRILSN,LSTA,LSTB,CRILST,R8PREM,D2
-      REAL*8        LSNM,LSTM,CRIMIL
+      REAL*8        LSNM,CRIMIL
       CHARACTER*19  MAI
       CHARACTER*8   TYPMA
       LOGICAL       ISMALI
@@ -110,7 +110,7 @@ C       BOUCLE SUR LES ARETES DE LA MAILLE VOLUMIQUE
             NM=AR(IA,3)
             NUNOM=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NM-1)
             LSNM=ZR(JLNSV-1+(NUNOM-1)+1)
-            LSTM=ZR(JLTSV-1+(NUNOM-1)+1)
+C            LSTM=ZR(JLTSV-1+(NUNOM-1)+1)
           ENDIF
 
 C        REAJUSTEMENT DE LA LEVEL SET NORMALE
@@ -131,13 +131,12 @@ C              RÉAJUSTEMENT DE LSNB
           IF (.NOT. ISMALI(TYPMA)) THEN
             IF (ZR(JLNSV-1+(NUNOA-1)+1).EQ.0.D0 .AND. 
      &          ZR(JLNSV-1+(NUNOB-1)+1).EQ.0.D0) THEN 
-              IF (ABS(LSNM-LSNB).LE.R8PREM() ) D2=LSNM
-              IF (ABS(LSNM-LSNB).GT.R8PREM() ) D2=LSNM/(LSNM-LSNB)
-                IF(ABS(D2).LE.CRIMIL) THEN
-C               RÉAJUSTEMENT DE LSNM
-                  ZR(JLNSV-1+(NUNOM-1)+1)=0.D0
-                  CLSM=CLSM+1
-                ENDIF
+              D2=LSNM
+              IF(ABS(D2).LE.CRIMIL) THEN
+C             RÉAJUSTEMENT DE LSNM
+                ZR(JLNSV-1+(NUNOM-1)+1)=0.D0
+                CLSM=CLSM+1
+              ENDIF
             ENDIF
           ENDIF
 
@@ -157,18 +156,19 @@ C              RÉAJUSTEMENT DE LSTB
             ENDIF
           ENDIF
 
-          IF (.NOT. ISMALI(TYPMA)) THEN
-            IF (ZR(JLTSV-1+(NUNOA-1)+1).EQ.0.D0 .AND. 
-     &         ZR(JLTSV-1+(NUNOB-1)+1).EQ.0.D0) THEN
-              IF (ABS(LSTM-LSTB).LE.R8PREM() ) D2=LSTM
-              IF (ABS(LSTM-LSTB).GT.R8PREM() ) D2=LSTM/(LSTM-LSTB)
-                IF(ABS(D2).LE.CRIMIL) THEN
+C        POUR LE MOMENT, LES ELEMENTS QUADRATIQUES NE FONCTIONNENT
+C        QU'AVEC UNE INTERFACE, DONC REAJUSTEMENT DE LA LST OBSOLETE
+C          IF (.NOT. ISMALI(TYPMA)) THEN
+C            IF (ZR(JLTSV-1+(NUNOA-1)+1).EQ.0.D0 .AND. 
+C     &         ZR(JLTSV-1+(NUNOB-1)+1).EQ.0.D0) THEN
+C              D2=LSTM
+C              IF(ABS(D2).LE.CRIMIL) THEN
 C              RÉAJUSTEMENT DE LSTM
-                  ZR(JLTSV-1+(NUNOM-1)+1)=0.D0
-                  CLSM=CLSM+1
-                ENDIF
-              ENDIF
-          ENDIF
+C                ZR(JLTSV-1+(NUNOM-1)+1)=0.D0
+C                CLSM=CLSM+1
+C              ENDIF
+C            ENDIF
+C          ENDIF
 
  210     CONTINUE
         ENDIF

@@ -1,4 +1,4 @@
-#@ MODIF info_fonction_ops Macro  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF info_fonction_ops Macro  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,14 +22,12 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
      Ecriture de la macro INFO_FONCTION
   """
   ier=0
-  import string
   from Cata_Utils.t_fonction import t_fonction,t_fonction_c,t_nappe
   import math
   from Accas import _F
   from Utilitai.Utmess import  UTMESS
-  import types
-  from types import ListType, TupleType
-  EnumTypes = (ListType, TupleType)
+  import numpy as NP
+  from Utilitai.Table import Table
 
   ### On importe les definitions des commandes a utiliser dans la macro
   CREA_TABLE     = self.get_cmd('CREA_TABLE')
@@ -44,70 +42,83 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
   ### type de traitement
   
   ###
-  if (MAX != None): 
-     if type(MAX['FONCTION']) not in EnumTypes : l_fonc=[MAX['FONCTION'],]
-     else                                       : l_fonc=MAX['FONCTION']
-     __tmfonc=[None]*3
-     k=0
-     mfact=[]
-     ltyfo=[]
-     lpara=[]
-     lresu=[]
-     lfnom=[]
-     for fonc in l_fonc :
-        __ff=fonc.convert()
-        __ex=__ff.extreme()
-        ltyfo.append(__ff.__class__)
-        lpara.append(__ff.para['NOM_PARA'])
-        lresu.append(__ff.para['NOM_RESU'])
-        lfnom.append(fonc.nom)
-        n_mini=len(__ex['min'])
-        n_maxi=len(__ex['max'])
-        listeMCF=[_F(LISTE_K=[fonc.nom]*(n_mini+n_maxi),PARA='FONCTION'), 
-                  _F(LISTE_K=['MINI',]*n_mini+['MAXI',]*n_maxi,PARA='TYPE'),]
-        n_resu=__ff.para['NOM_RESU']
-        if isinstance(__ff,t_nappe) :
-           listeMCF=listeMCF+[\
-              _F(LISTE_R=[i[0] for i in __ex['min']]+[i[0] for i in __ex['max']],PARA=__ff.para['NOM_PARA']),\
-              _F(LISTE_R=[i[1] for i in __ex['min']]+[i[1] for i in __ex['max']],PARA=__ff.para['NOM_PARA_FONC']),\
-              _F(LISTE_R=[i[2] for i in __ex['min']]+[i[2] for i in __ex['max']],PARA=__ff.para['NOM_RESU'])]
-        else :
-           listeMCF=listeMCF+[\
-                  _F(LISTE_R=[i[0] for i in __ex['min']]+[i[0] for i in __ex['max']],PARA=__ff.para['NOM_PARA']),\
-                  _F(LISTE_R=[i[1] for i in __ex['min']]+[i[1] for i in __ex['max']],PARA=__ff.para['NOM_RESU'])]
-        __tmfonc[k]=CREA_TABLE(LISTE=listeMCF)
-        if k!=0 :
-           mfact.append(_F(OPERATION = 'COMB',TABLE=__tmfonc[k]))
-        k=k+1
-     ltyfo=dict([(i,0) for i in ltyfo]).keys()
-     lpara=dict([(i,0) for i in lpara]).keys()
-     lresu=dict([(i,0) for i in lresu]).keys()
-     if len(ltyfo)>1 : 
-# n'est pas homogène en type (fonctions et nappes) ''')
-        UTMESS('F','FONCT0_37')
-     if len(lpara)>1 : 
-# n'est pas homogène en label NOM_PARA :'''+' '.join(lpara))
-        UTMESS('F','FONCT0_38',valk=' '.join(lpara))
-     if len(lresu)>1 : 
-# n'est pas homogène en label NOM_RESU : '''+' '.join(lresu))
-        UTMESS('F','FONCT0_39',valk=' '.join(lresu))
-     __tab=CALC_TABLE(TABLE  = __tmfonc[0],
-                      ACTION = mfact        )
-     __min=CALC_TABLE(TABLE  = __tab,
-                      ACTION = _F(OPERATION = 'FILTRE',
-                                  CRIT_COMP = 'MINI',
-                                  NOM_PARA  = lresu[0]  ), )
-     __max=CALC_TABLE(TABLE  = __tab,
-                      ACTION = _F(OPERATION = 'FILTRE',
-                                  CRIT_COMP = 'MAXI',
-                                  NOM_PARA  = lresu[0]  ), )
-     print __min.EXTR_TABLE()
-     print __max.EXTR_TABLE()
-     C_out=CALC_TABLE(TABLE  = __min,
-                      TITRE  = 'Calcul des extrema sur fonction '+' '.join(lfnom),
-                      ACTION = _F(OPERATION = 'COMB',
-                                  TABLE=__max  ), )
-     print C_out.EXTR_TABLE()
+  if (MAX != None):
+      # liste des t_fonction
+      l_cofonc = MAX['FONCTION']
+      if type(l_cofonc) not in (list, tuple):
+          l_cofonc = [l_cofonc,]
+      l_fonc = [concept.convert() for concept in l_cofonc]
+      
+      # intervalles
+      mc_interv = MAX['INTERVALLE']
+      with_intervalle = mc_interv is not None
+      interv = []
+      if with_intervalle:
+          nbv = len(mc_interv)
+          if nbv % 2 != 0:
+              UTMESS('F', 'FONCT0_55')
+          tint = NP.array(mc_interv)
+          tint.shape = (nbv / 2, 2)
+          dx = tint[:,1] - tint[:,0]
+          if min(dx) < 0.:
+              UTMESS('F', 'FONCT0_56')
+          interv = tint.tolist()
+
+      # vérifications de cohérence
+      typobj = set()
+      npara = set()
+      nresu = set()
+      for tf in l_fonc:
+          typobj.add(tf.__class__)
+          npara.add(tf.para['NOM_PARA'])
+          nresu.add(tf.para['NOM_RESU'])
+      if len(typobj) > 1:
+          # types (fonction, fonction_c, nappe) non homogènes
+          UTMESS('F', 'FONCT0_37')
+      if len(npara) > 1:
+          # NOM_PARA non homogènes
+          UTMESS('F', 'FONCT0_38', valk=' '.join(npara))
+      if len(nresu) > 1:
+          # NOM_RESU non homogènes
+          UTMESS('F', 'FONCT0_39', valk=' '.join(nresu))
+      
+      # nom des paramètres et leurs types
+      k_absc = npara.pop()
+      k_ordo = nresu.pop()
+      k_min = k_absc + "_MIN"
+      k_max = k_absc + "_MAX"
+      ordered_params = ['FONCTION', 'TYPE']
+      ordered_type = ['K8', 'K8']
+      if with_intervalle:
+          ordered_params.extend(['INTERVALLE', k_min, k_max])
+          ordered_type.extend(['I', 'R', 'R'])
+      ordered_params.extend([k_absc, k_ordo])
+      ordered_type.extend(['R', 'R'])
+
+      # boucle sur les fonctions, intervalles, min/max, extrema
+      _type = { 'min' : 'MINI', 'max' : 'MAXI' }
+      _PREC = 1.e-6
+      tab = Table(para=ordered_params, typ=ordered_type)
+      for tf in l_fonc:
+          if not with_intervalle:
+              interv = [[float(min(tf.vale_x)), float(max(tf.vale_x))],]
+          for num_int, bornes in enumerate(interv):
+              x1, x2 = bornes
+              stf = tf.cut(x1, x2, _PREC, nom=tf.nom)
+              extrema = stf.extreme()
+              for key in ('min', 'max'):
+                  nb = len(extrema[key])
+                  for i in range(nb):
+                      line = { 'FONCTION' : tf.nom, 'TYPE' : _type[key],
+                          k_absc : extrema[key][i][0], k_ordo : extrema[key][i][1] }
+                      if with_intervalle:
+                          line.update({ 'INTERVALLE' : num_int + 1,
+                                        k_min : x1, k_max : x2})
+                      tab.append(line)
+      tab.titr = "Extrema de la table " + self.sd.nom
+      # table résultat
+      dprod = tab.dict_CREA_TABLE()
+      C_out = CREA_TABLE(**dprod)
 
   ###
   if (ECART_TYPE  != None): 

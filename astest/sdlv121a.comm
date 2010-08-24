@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ONDE DE CISAILLEMENT DANS UNE COLONNE ELASTIQUE
 # sdlv121a.para = tps_job 190 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,18 +125,18 @@ VECT_ELE=CALC_VECT_ELEM(     OPTION='CHAR_MECA',
                              CHARGE=LIAISON 
                            )
 
-NUME_DDL=NUME_DDL(    MATR_RIGI=RIGI_ELE,   METHODE='LDLT')
+NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE,   METHODE='LDLT')
 
 RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
-                            NUME_DDL=NUME_DDL
+                            NUME_DDL=NUMEDDL
                           )
 
 MASSE=ASSE_MATRICE(    MATR_ELEM=MASS_ELE,
-                         NUME_DDL=NUME_DDL
+                         NUME_DDL=NUMEDDL
                        )
 
 VECAS=ASSE_VECTEUR(    VECT_ELEM=VECT_ELE,
-                         NUME_DDL=NUME_DDL
+                         NUME_DDL=NUMEDDL
                        )
 
 TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 0.8, NOMBRE = 1000))

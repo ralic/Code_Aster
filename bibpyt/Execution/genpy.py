@@ -1,4 +1,4 @@
-#@ MODIF genpy Execution  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF genpy Execution  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -268,6 +268,8 @@ class genpy:
       else:
         self.line=self.line+v
     for k,v in self.args.items():
+      if not v:
+          continue
       self.line=self.line+k+'='
       self.__format(v)
       self.setap=self.setap+self.line+',\n'

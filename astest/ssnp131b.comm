@@ -1,6 +1,6 @@
-# MODIF  DATE 16/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
+# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 3D
-# ssnp131b.para = tps_job 500 mem_job 1400Mo mem_aster 180 ncpus 1 liste_test S
+# ssnp131b.para = tps_job 500 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG

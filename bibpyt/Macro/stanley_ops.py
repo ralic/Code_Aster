@@ -1,4 +1,4 @@
-#@ MODIF stanley_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF stanley_ops Macro  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,18 +58,18 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,DISPLAY,**args):
   if os.environ.has_key('DISPLAY'):
 
     import Stanley
-    from Stanley import stanley
+    from Stanley import stanley_engine
 
     if (RESULTAT and MODELE and CHAM_MATER):
       _MAIL = aster.getvectjev( string.ljust(MODELE.nom,8) + '.MODELE    .LGRF        ' )
       _MAIL = string.strip(_MAIL[0])
       MAILLAGE = self.jdc.g_context[_MAIL]
       if CARA_ELEM:
-        stanley.STANLEY(RESULTAT,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM)
+        stanley_engine.STANLEY(RESULTAT,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM)
       else:
-        stanley.STANLEY(RESULTAT,MAILLAGE,MODELE,CHAM_MATER,None)
+        stanley_engine.STANLEY(RESULTAT,MAILLAGE,MODELE,CHAM_MATER,None)
     else:
-      stanley.PRE_STANLEY(FICHIER_VALID)
+      stanley_engine.PRE_STANLEY(FICHIER_VALID)
 
   else:
       UTMESS('A','STANLEY_3',valk=['STANLEY'])

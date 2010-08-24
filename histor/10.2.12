@@ -1,0 +1,1221 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR caron        CARON Axelle           DATE 24/08/2010 - 09:37:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015330 DU 2010-07-13 10:00:19
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   X-FEM : MECA_XH_FACE8 (NEW 10.2.6)
+FONCTIONNALITE
+   Problème :
+   ----------
+   Lors d'une étude sur un maillage X-FEM quadratique 3D, le message d'erreur suivant apparaît :
+   
+   Erreur de programmation :
+   On ne trouve pas le triplet (MECA_XH_FACE8 TR6 RIGI)
+   correspondant à (nomte elrefe famille)
+   
+   Or en regardant le catalogue gener_me_xh_2.cata, on constate que le sous-élt défini n'est
+   pas quadratique mais correspond au sous élément linéaire TR3 :
+   
+   ENTETE__ ELEMENT__ MECA_XH_FACE8     MAILLE__ QUAD8
+      ELREFE__  QU8       GAUSS__  RIGI=FPG9
+      ELREFE__  TR3       GAUSS__  RIGI=FPG6
+      ATTRIBUT__  BORD=OUI   XFEM=XH
+   
+   Solution :
+   ----------
+   En effet, on ne doit pas encore faire appel aux sous éléments quadratiques dans la mesure
+   où la lsn quadratique n'a pas encore été implémentée en 3D. Il suffit de ramener le TR3
+   pour le sous élément 3D.
+   
+   Impact :
+   --------
+   te0036.f, te0046.f, te0288.f, te0297.f, te0382.f, te0400.f, te0440.f, te0441.f, xbsig.f,
+   xbsigr.f, xfovol.f, xgelem.f, xnmel.f, xnmpl.f, xpesro.f, xrigel.f, xsifel.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.2.2
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ?
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015408 DU 2010-08-03 13:51:53
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   X-FEM : bug visu quadratique du champ VARI_ELGA
+FONCTIONNALITE
+   Problème :
+   ----------
+   Une erreur dans la visu quadratique 2D lors de l'impression des variables internes.
+      !---------------------------------------------------!
+      ! <F> <CALCULEL_58>                                 !
+      !                                                   !
+      ! Il manque la composante : V1  sur la maille : MX1 !
+      !  Champ : RES_XFEM.070.000001                      !
+      !                                                   !
+      !                                                   !
+      ! Cette erreur est fatale. Le code s'arrete.        !
+      !---------------------------------------------------!
+   Le problème se trouve lors du calcul de la moyenne sur les points de gauss.
+   
+   Solution :
+   ----------
+   On adapte l'appel à CESEXI en fonction de la valeur de NPG2 (qui a changé en quadratique).
+   
+   Impact :
+   --------
+   xpoajc.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.2.6
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv209m ssnv209n ssnv182k ssnv182l
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015438 DU 2010-08-19 08:23:31
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   X-FEM : Visualisation DDLC aux noeuds pour hexaxc3xa8dres et quadrangles
+FONCTIONNALITE
+   Problème :
+   ----------
+   Suite à la restitution du 21/12/2009 fiche 014332 de Maximilien Siavelis, xlacti et xmoffc
+   modifient les fonctions de forme pour le contact aux noeuds en répartissant les ff des
+   noeuds non actifs sur celles des noeuds actifs. Cela revient à mettre à zéro les DDL de
+   contact/frottement de certains noeuds. Mais dans la visu, la redistribution n'est pas
+   faite. L'interpolation des DDL se faisant sur l'élément parent, il s'avère qu'on perd la
+   contribution des noeuds non actifs. Le lag qui en résulte est donc "inférieur" à ce qu'il
+   devrait être créant ainsi des "oscillations" dans le résultat final.
+   
+   
+   Solution :
+   ----------
+   Comme il est fait dans le TE0533, on utilise l'algorithme de recherche des noeuds non
+   actifs sur la maille (xlacti) et on redistribue leurs ff sur les autres noeuds (xmoffc).
+   On ne peut réexploiter xlacti tel quel dans xpoajd, donc le plus simple a été de
+   l'intégrer directement dans la routine en y appliquant les modifications nécessaires. Il a
+   fallu récupérer les informations sur les points d'intersection de la maille de contact
+   (TOPOFAC.AI et TOPOFAC.LO). Tandis que xmoffc peut être appelée directement.
+   
+   Impact :
+   --------
+   xpoajd,xpomax
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.1.19
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test de la chainette
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015439 DU 2010-08-19 08:34:02
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   X-FEM : Elements quadratiques 2D, bug sur l'arxc3xaate crxc3xa9xc3xa9e
+FONCTIONNALITE
+   Problème :
+   ----------
+   La visualisation des éléments X-FEM quadratiques 2D a permis de mettre en évidence un
+   problème sur l'arête créée lors du sous découpage. Quand la configuration le permet (i.e
+   lorsque la droite reliant un sommet du triangle avec le point d'intersection d'en face ne
+   chevauche pas l'interface), on introduit une arête droite sinon on déroule l'algorithme de
+   calcul d'un noeud milieu qui rend l'arête courbe et positionnée de manière adéquate (i.e
+   "sous" l'interface).
+   Or, cette arête courbe intervient dans des configurations qui ne semblaient pas justifiées
+   et qui engendre alors des courbures trop prononcées qui ne peuvent être contenues dans
+   l'élément parent (du maillage de la visu). On visualise ainsi une droite rectiligne par
+   morceau.
+   
+   Solution :
+   ----------
+   La détection du "chevauchement" doit admettre une certaine tolérance. En effet, les cas
+   qui posent problème sont ceux où la normale à l'arête créée droite et la normale à
+   l'interface se confondent. L'angle admissible entre les deux normales est codé en dur et
+   mis à 2° (i.e si les normales sont séparées d'un angle compris entre +1° et -1° alors on
+   les considèrera comme identiques n'impliquant pas la mise en place d'une arête courbe).
+   
+   Impact :
+   --------
+   xmilac
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.2.2
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test de la chainette
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015442 DU 2010-08-20 09:53:24
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+   X-FEM : Elements quadratiques 2D et chargement en pression repartie
+FONCTIONNALITE
+   Etat actuel :
+   -------------
+   Le traitement d'un chargement en pression répartie pour les éléments X-FEM quadratiques 2D
+   est une sorte d'hybride entre le linéaire et le quadratique.
+   C'est à dire que dans le calcul du vecteur élémentaire TE0036 :
+   1. les points de Gauss sont disposés sur un SE3 mais on intègre sur un SE2... (avec les
+   poids du SE2 codé en dur)
+   2. la normale est unique pour chaque face 
+   
+   Etat évolué et corrigé :
+   ------------------------
+   1. Calcul générique des poids en fonction du type de sous élément
+   2. Calcul d'une normale à la facette en chaque point de Gauss pour les éléments X-FEM
+   quadratiques 2D (sachant qu'en 3D et linéaire 2D, on n'utilise qu'une seule normale)
+   
+   Impact :
+   --------
+   te0036.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.2.2
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test de la deformee
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 08/24/2010 - 06:29:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010536 DU 2007-02-14 17:37:45
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    INFO_FONCTION, obtention de pics sur des intervalles
+FONCTIONNALITE
+   Objectif
+   --------
+   Munir l'opérateur INFO_FONCTION d'un nouveau mot-clé pour 
+   calculer les min/max des fonctions sur des intervalles.
+   
+   On ajoute un mot-clé INTERVALLE sous le mot-clé facteur MAX où 
+   l'on fournit les bornes inf et sup de chaque intervalle.
+   
+   Exemple :  INTERVALLE = (x1i, x1s, x2i, x2s, ...)
+   
+   
+   Exemple:
+   -------
+   FCT.=.DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='DX',
+   ....................VALE=(
+   ..........................0,.0.001,
+   ..........................1,.0.01,
+   ..........................2,.0.1,
+   ..........................3,.0.05,
+   ..........................4,.0.02),)
+   
+   TB.=.INFO_FONCTION(.MAX=_F(FONCTION.=.FCT,
+   ...........................INTERVALLE=(
+   ..........................0,.4.,
+   ..........................0.5,.2.5,
+   ..........................1.5,.3.5),),)
+   
+   La.table.produite.sera.:
+   
+   ..FONCTION...INTERVALLE...INST_MIN...INST_MAX..TYPE..INST..DX
+   ..FCT.................1...0.0........4.0.......MIN...0.0...0.001
+   ..FCT.................1...0.0........4.0.......MAX...2.0...0.1
+   ..FCT.................2...0.5........2.5.......MIN...1.0...0.01
+   ..FCT.................2...0.5........2.5.......MAX...2.0...0.1
+   ..FCT.................3...1.5........3.5.......MIN...3.0...0.05
+   ..FCT.................3...1.5........3.5.......MAX...2.0...0.1
+   
+   Développement
+   -------------
+    - ajout du mot-clé INTERVALLE dans le catalogue 
+   info_fonction.capy
+   
+    - récupération des fonctions et des bornes inf et sup de chaque 
+   intervalle,
+    - boucle sur les fonctions, les intervalles, les min, les max,
+    - ajout de la ligne correspondante dans la table
+   
+    - zzzz100a : ajout de plusieurs INFO_FONCTION/MAX/INTERVALLE 
+   avec une ou plusieurs fonctions, et avec ou sans intervalle.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.32.05
+VALIDATION
+    zzzz100a
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012664 DU 2008-10-20 08:02:10
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+    Pas de sauvegarde contrairement au message d'erreur
+FONCTIONNALITE
+   Demande initiale : en cas d'arrêt CPU, les résultats ne sont pas 
+   sauvegardés dans la base HDF, mais dans la base classique (glob).
+   
+   Problème traité en 10.0.12 (issue13408) et 10.0.16 (issue13822) :
+   - en cas d'erreur, on essaie d'utiliser la commande FIN du jeu de 
+   commandes (avec tous ses mots-clés)
+   - en PAR_LOT='NON', on n'a pas cette commande donc on utilise 
+   FIN()
+   - en cas d'arrêt par manque de temps, on utilise la commande FIN 
+   du jdc mais en enlevant tout ce qui prend du temps. On impose donc 
+   FORMAT_HDF='NON', RETASSAGE='NON'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011849 DU 2008-03-17 11:49:28
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    permettre xc3xa0 mpicm1.c de traiter les vecteurs de complexes.
+FONCTIONNALITE
+   Fiche sans suite : ces utilitaires ont été refaits en fortran90.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ras
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013079 DU 2009-01-21 12:14:25
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+    Blinder les noms des concepts crxc3xa9xc3xa9s par les commandes
+FONCTIONNALITE
+   Problème
+   ========
+   Ce type de jeu de commandes est accepté mais ne peut être exécuté 
+   correctement :
+   
+   DEBUT()
+   FIN=LIRE_MAILLAGE(UNITE=20,
+                     FORMAT='MED',)
+   FIN()
+   
+   
+   Solution
+   ========
+   Lors du nommage des concepts, il est possible d'interdire 
+   certaines valeurs. On construit une liste de mots-clés réservés à 
+   partir du catalogue (on interdit tous les mots en majuscules qui 
+   correspondent aux commandes, règles et objets du superviseur).
+   
+   Dans l'exemple, on s'arrête en <F>_SYNTAX_ERROR :
+   
+   ...!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!!!!!!!!!!!!!!!!!!!!!
+   ...!.Etape..LIRE_MAILLAGE.ligne.:..3.fichier.:..fort.1.Nom.de.con
+   cept.invalide..'FIN'.!
+   ...!.est.un.mot-
+   clé.réservé......................................................
+   .....!
+   ...!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!!!!!!!!!!!!!!!!!!!!!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test joint xc3xa0 la fiche
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015141 DU 2010-06-01 09:24:50
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+    Problxc3xa8me d'utilisation de ZMAT sur la machine Aster
+FONCTIONNALITE
+   Problème
+   ========
+   Sur la machine de référence, si on lance un calcul nécessitant 
+   ZMAT, il faut bien penser à choisir un exécutable spécifique en 
+   surcharge.
+   Sinon on a le message :
+   
+   Erreur :
+     la bibliothèque "ZMAT" n'est pas installée sur cette machine.
+   
+   
+   Solution
+   ========
+   Rappel : On a créé deux exécutables différents car le chargement 
+   des bibliothèques ZMAT coûte très cher en mémoire.
+   
+   Afin d'éviter d'avoir deux exécutables différents (complexe pour 
+   l'utilisateur et la maintenance), on charge dorénavant les 
+   bibliothèques ZMAT dynamiquement quand on en a besoin.
+   
+   Le chargement est déclenché à la première utilisation de nmzmat 
+   (qui appelle zaswrp au lieu de zaster).
+   On charge libzAster après avoir aussi charger libZmat_base car 
+   c'est une dépendance "indirecte" de libzAster (n'apparait pas si 
+   on fait "ldd libzAster.so").
+   
+   Dans FIN, on ajoute un appel à une routine (dllcls) qui décharge 
+   les bibliothèques chargées.
+   
+   L'utilisateur n'aura ainsi plus à se soucier du choix de 
+   l'exécutable. De même à la construction, c'est l'environnement, 
+   et la présence de la bibliothèque (et de sa licence), qui fera 
+   qu'on peut ou non utiliser ZMAT.
+   En cas de problème de chargement, on aura le message :
+   
+   ...!-------------------------------------------------------------
+   ---------!
+   ...!.<F>.<FERMETUR_4>............................................
+   .........!
+   ...!.............................................................
+   .........!
+   ...!.La.bibliothèque."ZMAT".n'est.pas.installée.sur.cette.machine
+   .ou.bien.!
+   ...!.l'environnement.n'est.pas.correctement.défini...............
+   .........!
+   ...!.............................................................
+   .........!
+   ...!.............................................................
+   .........!
+   ...!.Cette.erreur.est.fatale..Le.code.s'arrete...................
+   .........!
+   ...!-------------------------------------------------------------
+   ---------!
+   
+   
+   
+   Rem : Il faut supprimer zaster.f de fermetur (ajouter cette ligne 
+   dans le unigest pour les versions locales "SUPPR 
+   fermetur/zaster.f").
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u2.10.01, u4.51.11
+VALIDATION
+    tests zmat
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015297 DU 2010-07-02 14:33:16
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Simplifier l'appel aux routines umat pour l'utilisateur
+FONCTIONNALITE
+   Suite à issue14958, on tente de simplifier l'utilisation de 
+   comportement de type UMAT (i.e. User MATerial, subroutine Abaqus 
+   permettant d'intégrer une loi de comportement particulière).
+   
+   
+   Utilisation
+   -----------
+   
+   Le fonctionnement est le suivant :
+   
+   1. l'utilisateur écrit sa routine de comportement UMAT (respect 
+   de l'interface...).
+   
+   2. il produit la bibliothèque dynamique associée à ce 
+   comportement (as_run 1.8.2 ou >):
+   
+    cd /chemin/fichiers/etude
+    as_run --make_shared -o libumat.so src1.f utils.c
+   
+   3a. dans astk, il indique :
+   
+    /chemin/fichiers/etude/libumat.so  type="nom", UL=0, en Donnée
+   
+   (le fichier sera recopié dans le répertoire de travail sans 
+   changer de nom)
+   
+   3b. voir 4b
+   
+   4a. dans le .comm, il indique sous COMP_INCR.
+       RELATION=compor,
+       LIBRAIRIE='libumat.so',
+       NOM_ROUTINE='umat_'
+   
+   4b. si 3b :
+       LIBRAIRIE='/chemin/fichiers/etude/libumat.so'
+   
+   
+   Par ce mécanisme, il est tout à fait possible d'avoir plusieurs 
+   comportements UMAT différents (plusieurs routines dans une même 
+   bibliothèque ou des bibliothèques différentes).
+   
+   Voir le cas-test umat002a :
+    - on produit à la volée deux bibliothèques dont le source est 
+   identique à l'exception du nom de la routine (umat et second). 
+   NB : pour les études, produire la bibliothèque AVANT l'exécution 
+   de l'étude comme indiqué plus haut.
+    - dans le premier SIMU_POINT_MAT, on choisit 
+   LIBRAIRIE='libmat1.so', NOM_ROUTINE='umat_'
+    - dans le deuxième SIMU_POINT_MAT, on choisit 
+   LIBRAIRIE='libmat2.so', NOM_ROUTINE='second', le "_" final sera 
+   ajouté automatiquement lors du chargement (car 'second' ne sera 
+   pas trouvé).
+   
+   
+   Développement
+   -------------
+   
+   La carte COMPOR est remplie par NMDOCC (pour STAT_NON_LINE) et 
+   PMDORC (pour SIMU_POINT_MAT).
+   A ce moment, on décode pour chaque occurrence du mot-clé facteur 
+   COMP_INCR les valeurs de LIBRAIRIE, NOM_ROUTINE (et NB_VARI qui 
+   était déjà fait).
+   Le type de la carte COMPOR est imposé et fixe pour tous les 
+   attributs (K16). On stocke donc le chemin de la bibliothèque 
+   dans les composantes KIT1 à KIT8 de la grandeur et le nom de la 
+   routine dans KIT9.
+   Ce qui limite le chemin vers la bibliothèque à 128 caractères 
+   (vérifié au niveau catalogue).
+   
+   Ensuite, dans lc0050, on décode KIT1 à KIT9 pour retrouver le 
+   nom de la bibliothèque et de la routine que l'on passe à un 
+   "wrapper" UMAT.
+   
+   Dans le wrapper, au premier appel, on charge la bibliothèque : 
+   on stocke une pointeur vers cette bibliothèque et un pointeur 
+   vers la routine dans un dictionnaire python (produit et manipulé 
+   dans dll_register.c).
+   Aux appels suivants, on vérifie si le couple (nom_lib, 
+   nom_subroutine) est connu, et on récupère directement le 
+   pointeur sur la fonction umat, et on l'appelle.
+   
+   Dans FIN, on appelle une routine DLLCLS qui exécute la fonction 
+   dlclose sur chacune des bibliothèques chargées pour les libérer 
+   (de la mémoire et du dictionnaire).
+   
+   Deux modules :
+   - dll_interface.c pour charger les bibliothèques dynamiquement, 
+   récupérer les pointeurs sur les fonctions, et définir les 
+   wrappers pour ZMAT et UMAT.
+   - dll_register.c pour enregistrer les pointeurs dans un 
+   dictionnaire, savoir si une bibliothèque est déjà enregistrée, 
+   récupérer un pointeur, appliquer une fonction sur toutes les 
+   bibliothèques (cette fonction sera dlclose en pratique). Le 
+   dictionnaire a cette allure :
+     dll_dict = {
+         (libname, symbname ) : (handle_on_lib, function_pointer)
+     }
+    
+   
+   Validation
+   ----------
+   umat001a (STAT_NON_LINE) et umat002a (SIMU_POINT_MAT)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    umat001a, umat002a
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015411 DU 2010-08-05 09:36:09
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+    CALC_TABLE et INFO
+FONCTIONNALITE
+   Problème
+   --------
+   
+   CALC_TABLE, OPERATION='OPER' s'arrête en erreur avec INFO=2.
+   
+   
+   Correction
+   ----------
+   
+   En INFO=2, on affiche :
+   Ajout de la colonne 'nom du paramètre' : [liste des valeurs...]
+   
+   Le format d'impression était erroné.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz234d en INFO=2
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015072 DU 2010-05-17 11:23:47
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+    STANLEY dans un fichier INCLUDE ne marche pas
+FONCTIONNALITE
+   Problème
+   --------
+   
+   Quand on appelle STANLEY dans un INCLUDE, l'exécution s'arrête 
+   salement.
+   L'origine est que l'étape STANLEY exécutée dans l'INCLUDE n'est 
+   pas dans la liste des étapes connues du JDC.
+   
+   
+   Correction
+   ----------
+   
+   Dans STANLEY, on utilise abondamment les méthodes 
+   get_contexte_courant et get_concept pour récupérer l'état des 
+   concepts disponibles pour le post-traitement.
+   Et on utilisait ces méthodes sur l'objet JDC.
+   Or le contexte du JDC est enrichi du contexte de l'INCLUDE 
+   *après* l'exécution de celui-ci.
+   
+   La bonne manière de faire est d'interroger le contexte sur 
+   l'étape actuelle (ici STANLEY).
+   Dans la classe PRE_STANLEY, on ajoute un nouvel attribut "macro" 
+   et c'est sur celui-ci qu'on appellera les méthodes get_concept() 
+   et get_contexte_courant().
+   
+   Je profite de cette modification pour renommer 
+   Stanley/stanley.py en Stanley/stanley_engine.py car ce n'est pas 
+   pratique d'avoir 2 stanley.py (un dans Stanley, un dans 
+   Messages).
+   (Le diff a été copié à la main pour être conservé)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    fichiers joints
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013863 DU 2009-09-11 13:46:15
+TYPE evolution concernant Code_Aster (VERSION 10.1)
+TITRE
+    Impression des mots cles 'd' des capy
+FONCTIONNALITE
+   Demande
+   -------
+   
+   L'impression des mots-clés facteurs par défaut n'est pas 
+   souhaitable quand aucun mot-clé simple n'apparait dessous. C'est 
+   en particulier le cas quand tous les mots-clés simples sont des 
+   mots-clés cachés.
+   
+   Exemple :
+   
+   MATE=AFFE_MATERIAU(VARC_M_ZIRC=_F(),
+   ..................INFO=1,
+   ..................VARC_TEMP=_F(),
+   ..................MAILLAGE=MAIL,
+   ..................VARC_NEUT2=_F(),
+   ..................VARC_CORR=_F(),
+   ..................VARC_EPSA=_F(),
+   ..................VARC_IRRA=_F(),
+   ..................VARC_NEUT1=_F(),
+   ..................VARC_HYDR=_F(),
+   ..................AFFE=_F(MATER=MA,
+   ..........................TOUT='OUI'),
+   ..................VARC_M_ACIER=_F(),
+   ..................VARC_SECH=_F(),
+   ..................);
+   
+   
+   Solution
+   --------
+   
+   On modifie l'impression des mots-clés de sorte à ignorer les 
+   mots-clés facteurs qui n'ont pas de mots-clés à représenter.
+   
+   On aura maintenant :
+   
+   
+   MATE=AFFE_MATERIAU(INFO=1,
+   ..................MAILLAGE=MAIL,
+   ..................AFFE=_F(MATER=MA,
+   ..........................TOUT='OUI'),
+   ..................);
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test avec AFFE_MATERIAU
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015190 DU 2010-06-14 07:11:28
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Robustesse de l'arret par SIGUSR1
+FONCTIONNALITE
+   Problème
+   --------
+   
+   Il arrive parfois quand on souhaite interrompre un calcul en 
+   envoyant le signal USR1 (Interrompre USR1 dans asjob), que le 
+   calcul s'arrête salement avec un coredump ou des appels 
+   récursifs aux fonctions d'impressions des messages (cf. 
+   issue14244).
+   
+   
+   Solution
+   --------
+   
+   Après plusieurs essais, pas toujours facile à reproduire, il 
+   semble que les problèmes apparaissent quand le signal est 
+   intercepté au moment où on se trouve dans des routines jeveux de 
+   bas niveau (jjcodn par exemple). Dans ce cas, l'impression des 
+   messages ou bien la fermeture des bases qui suit échoue 
+   brutalement.
+   
+   La solution proposée consiste à ne pas interrompre immédiatement 
+   le calcul lorsque le signal est intercepté mais juste de stocker 
+   l'information quelque part que l'arrêt du calcul a été demandé.
+   
+   Une variable globale status_usr1 (INTEGER) est définie dans 
+   inisig.c ainsi qu'une fonction appelable depuis le fortran 
+   ETAUSR (pour ETAt USR1) qui retourne 0 si tout va bien, 1 s'il 
+   faut interrompre le calcul.
+   
+   - Un appel à ETAUSR() est ajouté dans EXECOP après l'exécution 
+   de chaque commande.
+   - On teste aussi ETAUSR() dans OP0070 (détection pour 
+   interruption de la boucle) et NMERRO (émission de l'erreur <S>) 
+   pour interrompre la boucle de STAT_NON_LINE.
+   - dans OP0171 pour THER_NON_LINE_MO
+   - dans OP0186 pour THER_NON_LINE
+   - dans OP0025 pour THER_LINEAIRE
+   - dans MDITM2, MDEUL1, MDNEWM, MDDEVO pour DYNA_TRAN_MODAL
+   - dans DLDIFF, DLNEWI, DLADAP pour DYNA_LINE_TRAN
+   - dans OP0060 pour DYNA_LINE_HARM
+   - dans MESTAT pour MECA_STATIQUE
+   
+   
+   Si cela s'avère nécessaire, on pourra ajouter un wrapper python 
+   pour l'appeler dans les macros. Cela n'aurait d'intérêt que si 
+   une macro consommait beaucoup de temps sans appeler de commande.
+   
+   
+   Rem : Un test unitaire d'asrun valide l'envoi du signal USR1. Il 
+   s'agit de 100_study.TestRunStudy.test06_usr1
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnp125a + kill -USR1
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014316 DU 2009-12-17 07:45:58
+TYPE anomalie concernant astk (VERSION 1.2)
+TITRE
+    Astk 1.8.0 problxc3xa8me d'accent
+FONCTIONNALITE
+   Dans le cas où le nom d'un répertoire contient des accents, on 
+   pouvait avoir ce type de messages :
+   
+     File "/local00/aster/lib/python2.5/site-
+   packages/asrun/build.py", line 570, in PrepEnv
+       self.run.VerbStart(_(u'adding a symbolic link to %s...') % 
+   src, verbose=True)
+   UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in 
+   position 29: ordinal not in range (128)
+   
+   Ceci se produit lors du formattage du message à imprimer.
+   
+   Il faut que les arguments de type chaines de caractères soient 
+   convertis en unicode. C'est le rôle de la nouvelle fonction ufmt 
+   dans mystring.py.
+   
+   Dans l'exemple ci-dessus,
+   _(u'adding a symbolic link to %s...') % src
+   
+   devient
+   ufmt(_(u'adding a symbolic link to %s...'), src)
+   
+   
+   Sera disponible dans asrun 1.8.2
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tests asrun
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015270 DU 2010-06-30 09:24:24
+TYPE anomalie concernant astk (VERSION 1.2)
+TITRE
+    as_run --tail plante sur un fichier avec caractxc3xa8res accentuxc3xa9s
+FONCTIONNALITE
+   La fonction rechercher d'asjob ne marche pas sur certains jobs : 
+   rien ne s'affiche.
+   
+   En fait, il y avait un problème d'encodage du 'tail' de l'output 
+   du fort.6 d'aster.
+   Il faut prendre soin de le convertir avant d'écrire la chaine de 
+   le fichier qui est ensuite relu par le suivi des jobs.
+   
+   Malheureusement, ce problème est corrigé depuis très longtemps (4 
+   février sur Bull) mais n'avait pas été reporté sur la version 
+   Calibre dupliquée.
+   
+   Disponible depuis asrun 1.8.1.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unittest asrun
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013707 DU 2009-08-12 09:47:21
+TYPE anomalie concernant astk (VERSION 1.2)
+TITRE
+    job en interactif + suivi interactif sur bull qui reste en suspens
+FONCTIONNALITE
+   Cette fiche est identique à issue12874 (soldée en oct 2009).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013706 DU 2009-08-12 09:24:01
+TYPE anomalie concernant astk (VERSION 1.2)
+TITRE
+    show/get : comportements diffxc3xa9rents
+FONCTIONNALITE
+   Plusieurs petits problèmes :
+   
+   1. show --diff op0001 (sans indiquer l'extension) ouvrait deux 
+   fenêtres de l'éditeur : corrigé.
+   
+   2. Omettre l'extension fonctionnait pour les sources fortran et 
+   python mais pas pour les catalogues, ni les cas-tests : 
+   complété.
+   
+   3. show ssnp118*.comm fonctionne différemment en local et 
+   nolocal 
+   :
+   Cela dépend du shell : en zsh, si aucun fichier ne correspond au 
+   joker, la commande n'est même pas exécutée : no matches found.
+   
+   En bash, si un fichier correspond au joker, celui-ci est 
+   remplacé 
+   par le nom du fichier, soit show ssnp118a.comm par exemple. 
+   Sinon, des cotes sont ajoutés autour de l'argument, soit show 
+   'ssnp118*.comm'
+   
+   Le traitement du joker fonctionnait naturellement pour tous les 
+   types sauf pour les tests : c'est corrigé.
+   On peut donc maintenant utiliser un joker (sous réserve de 
+   mettre 
+   des cotes autour selon le shell).
+   
+   Sera disponible dans asrun 1.8.2
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unittest asrun
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013470 DU 2009-06-03 13:03:42
+TYPE evolution concernant astk (VERSION )
+TITRE
+    Poursuite distribuxc3xa9e de calculs distribuxc3xa9s
+FONCTIONNALITE
+   La poursuite distribuée de calculs distribués est disponible 
+   depuis asrun 1.8.0.
+   
+   Dans le calcul initial distribué, on indique :
+    - un jeu de paramètres
+    - un répertoire pour les fichiers résultats (type repe)
+    - le même répertoire pour la base en résultats (type base/bhdf)
+   
+   Dans "repe/calc_i", on aura : les .comm, base ou bhdf...
+   
+   Pour la poursuite, il suffit d'indiquer :
+    - le MEME jeu de paramètres (pour que calc_1/base corresponde à 
+   calc_1 en poursuite !)
+    - un autre répertoire pour les fichiers résultats (sinon 
+   certains fichiers seront écrasés)
+    - le MEME répertoire pour la base en donnée (type base/bhdf)
+    - éventuellement un autre répertoire pour la nouvelle base en 
+   résultat.
+   
+   "MEME" : obligatoire !
+   "autre" : conseillé pour s'y retrouver !
+   
+   Cette précision a été ajoutée dans la doc u1.04.00.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : u1.04.00
+VALIDATION
+    unittest asrun
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013525 DU 2009-06-15 15:39:09
+TYPE anomalie concernant astk (VERSION 1.7)
+TITRE
+    Bouton dbgjeveux plus pris en compte
+FONCTIONNALITE
+   En effet, l'argument dbgjeveux n'était plus exporté.
+   
+   Lors d'une correction pour éviter que les arguments rep_outils, 
+   rep_mat, rep_dex soient exportés quand il n'avait aucune valeur, 
+   dbgjeveux est passé à la trappe.
+   
+   Le problème existe depuis asrun 1.7.2, sera disponible dans la 
+   version 1.8.2.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    validation graphique
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012586 DU 2008-10-06 07:29:06
+TYPE anomalie concernant astk (VERSION 1.2)
+TITRE
+    Probleme avec les fichiers joints lors de l'emission d'une fiche
+FONCTIONNALITE
+   corrigé depuis bien longtemps !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010291 DU 2006-11-21 18:59:14
+TYPE evolution concernant astk (VERSION 1.2)
+TITRE
+    La fenxc3xaatre "interrompre" capture intempestivement le focus
+FONCTIONNALITE
+   Le bouton Interrompre qui s'affiche dans une petite fenêtre du 
+   même nom quand l'interface attend le retour d'une commande capture 
+   le focus.
+   
+   Ceci peut être pénible quand asjob s'actualise automatiquement et 
+   que l'on perd le focus sur la fenêtre dans laquelle on travaille.
+   
+   Après mûre réflexion (3.5 ans), le bouton est intégré à la fenêtre 
+   principale (dans le coin en bas à droite) quand celle-ci existe. 
+   Pendant la phase de démarrage, le bouton est indépendant ; idem 
+   dans la bsf.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    graphique
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015340 DU 2010-07-15 08:56:09
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+    En NEW10.2.7, le cas-test ssnp131b s'arrete en <F>_ERROR sur Rocks
+FONCTIONNALITE
+   Le test ssnp131b ne passe pas en 32 bits car il y a une erreur dans le .para : memjob
+   1400Mo mem_aster 180 => ce qui fait 2520 Mo !
+   
+   De plus, le test nécessite moins de 500 Mo : on supprime mem_aster et on diminue la limite
+   mémoire.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnp131b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 24/08/2010 - 09:53:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015437 DU 2010-08-19 08:20:26
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Petite imprxc3xa9cision dans le post-traitement du cas-test SSNV505i
+FONCTIONNALITE
+   Express
+   =======
+   
+   En rédigeant la documentation du cas-test SSNV505, je me suis aperçu que j'avais fait une
+   erreur dans le fichier de commandes de la modélisation I.
+   Le test (de non-régression) se fait sur une réaction d'appui que l'on calcule comme la
+   résultante sur une groupe de mailles (par POST_RELEVE_T/RESULTANTE), j'ai mal choisi le
+   groupe de mailles.
+   
+   Je corrige (et change donc les références de non-régression).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.505
+VALIDATION
+   ssnv505i
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015399 DU 2010-07-29 09:29:46
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW10.2.9, le cas-test ssnp503d est NOOK sur Bull, Rocks et Calibre 5.
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   En NEW10.2.9, le cas-test ssnp503d est NOOK sur Bull, Rocks et Calibre 5.
+   Les tests NOOK sont les suivants:
+   "
+   --------------------------------------------------------------------------------
+    ---- TABLE            NOM_PARA
+         LAG_2            LAGS_C
+         REFERENCE        LEGENDE          VALE_REF         VALE_CAL         ERREUR         
+    TOLE            
+   NOOK  AUTRE_ASTER      XXXX             -9170.9838813643 -9171.9116356233 0.010%         
+    0.010%          
+   "
+   et 
+   "
+   --------------------------------------------------------------------------------
+    ---- TABLE            NOM_PARA
+         LAG_4            LAGS_C
+         REFERENCE        LEGENDE          VALE_REF         VALE_CAL         ERREUR         
+    TOLE            
+   NOOK  AUTRE_ASTER      XXXX             -17065.78142926  -17070.106150117 0.025%         
+    0.010%          
+   "
+   
+   Correction
+   ==========
+   
+   Ce test de contact XFEM est cassé suite à la restitution de la fiche 15246 qui a simplifié
+   les boucles de point fixe (géométrie et seuil de frottement) en rendant le critère de
+   convergence plus cohérent (et plus souple).
+   
+   On fait donc moins d'itérations, 2 valeurs du multiplicateur de contact ont très
+   légèrement bougé (elles sont moins "stabilisées" qu'avant mais c'est la stabilisation de
+   la géométrie qui compte), on ajuste les tolérances dans la mesure où la référence est
+   celle de la modélisation C (qui a aussi bougé mais les tolérances étaient plus lâches).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp503d
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 23/08/2010 - 18:14:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015371 DU 2010-07-21 12:47:17
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En version NEW10.2.8 MPI sur Bull les tests petsc01d,e et f s'arretent en erreur <F>
+FONCTIONNALITE
+   Quand on utilise le préconditionneur simple précision LDLT_SP (basé sur MUMPS) avec PETSc,
+   il se pose un problème de distribution parallèles des vecteurs. PETSc distribue les
+   vecteurs sur les différents procs tandis que l'interface MUMPS nécessite de disposer de
+   l'intégralité des vecteurs sur tous les procs. 
+   On a donc fait le choix de créer un objet PETSc VecScatter qui remplit ce rôle : 
+   - transfert local vers global
+   - appel à MUMPS simple précision
+   - transfert global vers local
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage des tests PETSc en //
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C AJOUT supervis/dll_interface       courtois M.COURTOIS         277    277      0
+       C AJOUT supervis/dll_register        courtois M.COURTOIS         225    225      0
+ CASTEST MODIF fdlv111a                     courtois M.COURTOIS         269      5      5
+ CASTEST MODIF fdlv111b                     courtois M.COURTOIS         245      5      5
+ CASTEST MODIF fdlv112a                     courtois M.COURTOIS         303      5      5
+ CASTEST MODIF hpla311a                     courtois M.COURTOIS         341      4      4
+ CASTEST MODIF hpla311b                     courtois M.COURTOIS         296      4      4
+ CASTEST MODIF hplp101a                     courtois M.COURTOIS         439      4      4
+ CASTEST MODIF hplp311a                     courtois M.COURTOIS         469      4      4
+ CASTEST MODIF hplp311b                     courtois M.COURTOIS         329      4      4
+ CASTEST MODIF hplp311c                     courtois M.COURTOIS         373      4      4
+ CASTEST MODIF hplp311d                     courtois M.COURTOIS         327      4      4
+ CASTEST MODIF hplp311e                     courtois M.COURTOIS         372      4      4
+ CASTEST MODIF hplp311f                     courtois M.COURTOIS         325      4      4
+ CASTEST MODIF hplp311g                     courtois M.COURTOIS         365      4      4
+ CASTEST MODIF miss02a                      courtois M.COURTOIS         530      7      7
+ CASTEST MODIF miss04a                      courtois M.COURTOIS         357      7      7
+ CASTEST MODIF sdld04a                      courtois M.COURTOIS         622      4      4
+ CASTEST MODIF sdll06a                      courtois M.COURTOIS         227      4      4
+ CASTEST MODIF sdll06b                      courtois M.COURTOIS         190      5      5
+ CASTEST MODIF sdll109a                     courtois M.COURTOIS        2054      4      4
+ CASTEST MODIF sdll109c                     courtois M.COURTOIS        1680      4      4
+ CASTEST MODIF sdll109d                     courtois M.COURTOIS        2058      4      4
+ CASTEST MODIF sdll130a                     courtois M.COURTOIS         261      5      5
+ CASTEST MODIF sdll130b                     courtois M.COURTOIS         299      5      5
+ CASTEST MODIF sdll401a                     courtois M.COURTOIS         381      8      8
+ CASTEST MODIF sdls110a                     courtois M.COURTOIS         235      5      5
+ CASTEST MODIF sdlv120b                     courtois M.COURTOIS         234      5      5
+ CASTEST MODIF sdlv121a                     courtois M.COURTOIS         285      5      5
+ CASTEST MODIF sdlv121b                     courtois M.COURTOIS         285      5      5
+ CASTEST MODIF sdlx02a                      courtois M.COURTOIS         456      5      5
+ CASTEST MODIF sdlx02b                      courtois M.COURTOIS         108      4      4
+ CASTEST MODIF sdnd103a                     courtois M.COURTOIS         312      5      5
+ CASTEST MODIF sdnd105a                     courtois M.COURTOIS         217      5      5
+ CASTEST MODIF sdnd105b                     courtois M.COURTOIS         215      5      5
+ CASTEST MODIF sdnl130a                     courtois M.COURTOIS         152      3      3
+ CASTEST MODIF shll101a                     courtois M.COURTOIS         353      9      9
+ CASTEST MODIF shll101c                     courtois M.COURTOIS         358      9      9
+ CASTEST MODIF shll101d                     courtois M.COURTOIS         377      9      9
+ CASTEST MODIF shll101e                     courtois M.COURTOIS         372      9      9
+ CASTEST MODIF shll101f                     courtois M.COURTOIS         371      9      9
+ CASTEST MODIF ssll11c                      courtois M.COURTOIS         155      4      4
+ CASTEST MODIF ssnp131b                     courtois M.COURTOIS         455      2      2
+ CASTEST MODIF ssnp503d                       desoza T.DESOZA           235      3      3
+ CASTEST MODIF ssnv505i                       desoza T.DESOZA           220     12     17
+ CASTEST MODIF umat001a                     courtois M.COURTOIS         216     25      2
+ CASTEST MODIF umat002a                     courtois M.COURTOIS         296     29      4
+ CASTEST MODIF zzzz100a                     courtois M.COURTOIS        2034    129     33
+ CASTEST MODIF zzzz108a                     courtois M.COURTOIS        1194     10     10
+ CASTEST MODIF zzzz115a                     courtois M.COURTOIS         390      4      4
+ CASTEST MODIF zzzz200a                     courtois M.COURTOIS         463      4      4
+ CASTEST MODIF zzzz200b                     courtois M.COURTOIS        1131      5      5
+ CASTEST MODIF zzzz200c                     courtois M.COURTOIS         468      4      4
+ CASTEST MODIF zzzz215b                     courtois M.COURTOIS         166      3      3
+CATALOPY MODIF commande/info_fonction       courtois M.COURTOIS         100      3      1
+CATALOPY MODIF commun/c_comp_incr           courtois M.COURTOIS         154      8      3
+       C MODIF supervis/astermodule         courtois M.COURTOIS        4026     10    136
+       C MODIF utilitai/inisig              courtois M.COURTOIS         148     17      9
+FORTRAN90 MODIF petsc/apets3                  tardieu N.TARDIEU          202     42     23
+FORTRAN90 MODIF petsc/apetsr                  tardieu N.TARDIEU          370     10      7
+FORTRAN90 MODIF petsc/ldsp1                   tardieu N.TARDIEU           80     10      9
+FORTRAN90 MODIF petsc/ldsp2                   tardieu N.TARDIEU           84     24     11
+ FORTRAN MODIF algeline/crsmsp               tardieu N.TARDIEU          114      3      3
+ FORTRAN MODIF algorith/dladap              courtois M.COURTOIS         553      8      2
+ FORTRAN MODIF algorith/dldiff              courtois M.COURTOIS         378      8      2
+ FORTRAN MODIF algorith/dlnewi              courtois M.COURTOIS         625      8      2
+ FORTRAN MODIF algorith/lc0050              courtois M.COURTOIS         281     21     12
+ FORTRAN MODIF algorith/mdadap              courtois M.COURTOIS         719     10     10
+ FORTRAN MODIF algorith/mddevo              courtois M.COURTOIS         388      9      3
+ FORTRAN MODIF algorith/mdeul1              courtois M.COURTOIS         520     11     12
+ FORTRAN MODIF algorith/mditm2              courtois M.COURTOIS         515     11      5
+ FORTRAN MODIF algorith/mdnewm              courtois M.COURTOIS         345      8      1
+ FORTRAN MODIF algorith/mestat              courtois M.COURTOIS         278     10      4
+ FORTRAN MODIF algorith/nmdocc              courtois M.COURTOIS         256     17      5
+ FORTRAN MODIF algorith/nmerro              courtois M.COURTOIS         110      8      1
+ FORTRAN MODIF algorith/nmzmat              courtois M.COURTOIS         198      3      3
+ FORTRAN MODIF algorith/op0025              courtois M.COURTOIS         341      9      3
+ FORTRAN MODIF algorith/op0033              courtois M.COURTOIS         351     11      5
+ FORTRAN MODIF algorith/op0060              courtois M.COURTOIS         736      9      3
+ FORTRAN MODIF algorith/op0070              courtois M.COURTOIS         558     15      2
+ FORTRAN MODIF algorith/op0186              courtois M.COURTOIS         662     16      4
+ FORTRAN MODIF algorith/pmdorc              courtois M.COURTOIS         200     24     11
+ FORTRAN MODIF algorith/xajuls                 caron A.CARON            181     16     16
+ FORTRAN MODIF algorith/xintar                 caron A.CARON            195      4      4
+ FORTRAN MODIF algorith/xmilac                 caron A.CARON            213     12      8
+ FORTRAN MODIF algorith/xnmel                  caron A.CARON            226      4      4
+ FORTRAN MODIF algorith/xnmpl                  caron A.CARON            202      4      4
+ FORTRAN MODIF algorith/xrigel                 caron A.CARON            185      4      4
+ FORTRAN MODIF calculel/op0171              courtois M.COURTOIS         396     11      5
+ FORTRAN MODIF elements/te0036                 caron A.CARON            514     72     23
+ FORTRAN MODIF elements/te0046                 caron A.CARON            199      4      4
+ FORTRAN MODIF elements/te0288                 caron A.CARON            248      4      4
+ FORTRAN MODIF elements/te0297                 caron A.CARON            334      4      4
+ FORTRAN MODIF elements/te0382                 caron A.CARON            545      4      4
+ FORTRAN MODIF elements/te0400                 caron A.CARON            122      4      4
+ FORTRAN MODIF elements/te0440                 caron A.CARON            184      4      4
+ FORTRAN MODIF elements/te0441                 caron A.CARON            206      4      4
+ FORTRAN MODIF elements/xbsig                  caron A.CARON            169      4      4
+ FORTRAN MODIF elements/xbsigr                 caron A.CARON            175      4      4
+ FORTRAN MODIF elements/xfovol                 caron A.CARON            249      4      4
+ FORTRAN MODIF elements/xgelem                 caron A.CARON            430      4      4
+ FORTRAN MODIF elements/xpesro                 caron A.CARON            211      4      4
+ FORTRAN MODIF elements/xsifel                 caron A.CARON            545      4      4
+ FORTRAN MODIF prepost/xpoajc                  caron A.CARON            164      5      7
+ FORTRAN MODIF prepost/xpoajd                  caron A.CARON            358     77     19
+ FORTRAN MODIF prepost/xpomax                  caron A.CARON            568     45      9
+ FORTRAN MODIF supervis/execop              courtois M.COURTOIS         136     10      3
+ FORTRAN MODIF supervis/op9999              courtois M.COURTOIS         164      6      3
+ FORTRAN SUPPR algorith/umat                courtois M.COURTOIS         192      0    192
+       H AJOUT include/aster_fort           courtois M.COURTOIS         178    178      0
+       H AJOUT include/dll_register         courtois M.COURTOIS          67     67      0
+       H MODIF include/aster                courtois M.COURTOIS          82      6      3
+       H MODIF include/definition           courtois M.COURTOIS         307     13      1
+  PYTHON AJOUT Stanley/stanley_engine       courtois M.COURTOIS        3231   3231      0
+  PYTHON MODIF Cata_Utils/t_fonction        courtois M.COURTOIS         748      3      3
+  PYTHON MODIF Execution/genpy              courtois M.COURTOIS         318      3      1
+  PYTHON MODIF Macro/calc_table_ops         courtois M.COURTOIS         193      8      8
+  PYTHON MODIF Macro/info_fonction_ops      courtois M.COURTOIS         318     79     68
+  PYTHON MODIF Macro/stanley_ops            courtois M.COURTOIS          79      5      5
+  PYTHON MODIF Messages/fermetur            courtois M.COURTOIS         105     40     29
+  PYTHON MODIF Messages/fonct0              courtois M.COURTOIS         362     11      1
+  PYTHON MODIF Messages/supervis            courtois M.COURTOIS         442     44     22
+  PYTHON MODIF Noyau/N_JDC                  courtois M.COURTOIS         560     15      1
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         708      3      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    5        3978      3978             +3978
+ MODIF :  118       49498      1333     895      +438
+ SUPPR :    1         192               192      -192
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  124       53668      5311    1087     +4224 

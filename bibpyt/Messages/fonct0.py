@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF fonct0 Messages  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -347,6 +347,16 @@ Conseils :
 54 : ("""
 Nombre de paramètres fournis : %(i1)d
 Noms des paramètres fournis  : %(ktout)s
+"""),
+
+55 : _(""" 
+  La liste des bornes de l'intervalle n'est pas cohérente. 
+  Elle doit comporter un nombre pair de valeurs.
+"""),
+
+56 : _(""" 
+  La borne inf doit etre inférieure à la borne sup. 
+  Veuillez revoir la saisie du mot-clé INTERVALLE.
 """),
 
 }

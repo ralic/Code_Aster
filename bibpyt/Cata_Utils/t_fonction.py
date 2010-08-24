@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Cata_Utils  DATE 26/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF t_fonction Cata_Utils  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -207,7 +207,7 @@ class t_fonction :
     vale_x=NP.sort(list(set(vale_x)))
     return vale_x, prol_gauche, prol_droite
 
-  def cut(self,rinf,rsup,prec,crit='RELATIF') :
+  def cut(self,rinf,rsup,prec,crit='RELATIF',nom='') :
     """Renvoie la fonction self dont on a 'coupé' les extrémités en x=rinf et x=rsup
     pour la recherche de rinf et rsup dans la liste d'abscisses :
        prec=precision crit='absolu' ou 'relatif'
@@ -227,7 +227,7 @@ class t_fonction :
     else                 : j=rsup_tab.tolist().index(0)
     vale_x=NP.array([rinf,]+self.vale_x.tolist()[i:j]+[rsup,])
     vale_y=NP.array([self(rinf),]+self.vale_y.tolist()[i:j]+[self(rsup),])
-    return t_fonction(vale_x,vale_y,para)
+    return t_fonction(vale_x,vale_y,para,nom)
 
   def cat(self,other,surcharge) :
     """renvoie une fonction concaténée avec une autre, avec règles de surcharge

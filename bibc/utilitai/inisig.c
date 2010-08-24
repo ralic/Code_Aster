@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inisig utilitai  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF inisig utilitai  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,7 +17,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-#include "aster.h"
+
 /* ------------------------------------------------------------------ */
 /*
 ** Initialisation de l'interception de certains signaux
@@ -29,6 +29,9 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <errno.h>
+
+#include "aster.h"
+#include "aster_fort.h"
 
 extern int errno;
 
@@ -125,16 +128,21 @@ void STDCALL(INISIG, inisig)()
 
 void stptrap (int sig)
 {
-  printf(" \n <I> arret sur CTRL C \n");
+  CALL_U2MESS("I", "SUPERVIS_97");
   exit(1);
+}
+
+
+static INTEGER status_usr1 = 0;
+
+INTEGER F_FUNC(ETAUSR, etausr)()
+{
+    /* Retourne la variable status_usr1 */
+    return status_usr1;
 }
 
 void stpusr1 (int sig)
 {
-   printf(" \n <I> arret sur signal SIGUSR1 \n");
-#if defined _POSIX
-   void STDCALL(SIGUSR, sigusr)(void);
-   sigusr_();
-#endif
-   exit(sig);
+   CALL_U2MESS("I", "SUPERVIS_96");
+   status_usr1 = (INTEGER)1;
 }

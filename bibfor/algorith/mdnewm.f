@@ -13,7 +13,7 @@
       REAL*8       R8B
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       REAL*8      TPS1(4),VALR(3)
       INTEGER     VALI(2)
+      INTEGER     ETAUSR
       CHARACTER*8 TRAN
 C     ------------------------------------------------------------------
 C
@@ -288,6 +289,12 @@ C           --- ARCHIVAGE ---
      &                     IBID2,0,R8B,IBID,
      &                     DEPSTO,VITSTO,ACCSTO,R8B,LPSTO,IORSTO,TEMSTO,
      &                     R8B,R8B,R8B,IBID, R8B, IBID,R8B )
+            ENDIF
+C
+C       --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1 ---
+C
+            IF ( ETAUSR().EQ.1 ) THEN
+             CALL SIGUSR()
             ENDIF
 C
 C       --- TEST SI LE TEMPS RESTANT EST SUFFISANT POUR CONTINUER ---

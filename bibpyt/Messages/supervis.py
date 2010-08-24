@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF supervis Messages  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -204,7 +204,8 @@ cata_msg={
 """),
 
 39: _("""
- Arret de l'exécution et fermeture des bases jeveux
+Arrêt de l'exécution suite à la réception du signal utilisateur USR1.
+Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 40: _("""
@@ -270,9 +271,9 @@ cata_msg={
 
 63: _("""
      ARRET PAR MANQUE DE TEMPS CPU
-     Les commandes suivantes sont ignorees, on passe directement dans FIN
-     La base globale est sauvegardee
-     Temps consomme de la reserve CPU        :  %(r1).2f s\n
+     Les commandes suivantes sont ignorées, on passe directement dans FIN
+     La base globale est sauvegardée
+     Temps consommé de la réserve CPU        :  %(r1).2f s\n
 """),
 
 64: _("""
@@ -298,42 +299,42 @@ cata_msg={
 """),
 
 71: _("""
- rappel sur les executions précédentes
-   - il a ete executé %(i1)d procédures et opérateurs.
+ rappel sur les exécutions précédentes
+   - il a été executé %(i1)d procédures et opérateurs.
 """),
 
 72: _("""
-   - l'execution précédente s'est terminée correctement.
+   - l'exécution précédente s'est terminée correctement.
 """),
 
 73: _("""
 
-   - l'execution précédente s'est terminée en erreur dans la procédure %(k1)s.
+   - l'exécution précédente s'est terminée en erreur dans la procédure %(k1)s.
 """),
 
 74: _("""
 
-   - l'execution précédente s'est terminée en erreur dans l'opérateur %(k1)s.
+   - l'exécution précédente s'est terminée en erreur dans l'opérateur %(k1)s.
 """),
 
 75: _("""
-     le concept %(k1)s de type %(k2)s  est peut-etre errone.
+     le concept %(k1)s de type %(k2)s  est peut-être erroné.
 """),
 
 76: _("""
-   - l'execution precedente s'est terminee prematurement dans l'operateur %(k1)s.
+   - l'exécution précédente s'est terminée prématurément dans l'opérateur %(k1)s.
 """),
 
 77: _("""
-     le concept %(k1)s de type %(k2)s  a ete néanmoims validé par l'opérateur
+     le concept %(k1)s de type %(k2)s  a été néanmoims validé par l'opérateur
 """),
 
 78: _("""
-     Message attache au concept  %(k1)s
+     Message attaché au concept  %(k1)s
 """),
 
 79: _("""
-     Pas de message attache au concept %(k1)s
+     Pas de message attaché au concept %(k1)s
 """),
 
 80: _("""
@@ -347,7 +348,7 @@ cata_msg={
 """),
 
 82: _("""
- L'argument du mot cle "CAS"  est errone.
+ L'argument du mot cle "CAS" est erroné.
  Valeur lue %(k1)s
  nombre de valeurs attendues %(i1)d
  valeurs attendues : %(k1)s,%(k2)s, ...
@@ -355,8 +356,8 @@ cata_msg={
 
 83: _("""
 
- le nombre d'enregistrements (nmax_enre) et leurs longueurs (long_enre) conduisent a un
- fichier dont la taille maximale en Moctets (%(i1)d) est superieure a limite autorisee :  %(i2)d
+ Le nombre d'enregistrements (nmax_enre) et leurs longueurs (long_enre) conduisent à un
+ fichier dont la taille maximale en Moctets (%(i1)d) est supérieure à limite autorisée :  %(i2)d
  
  Vous pouvez augmenter cette limite en utilisant l'argument "-max_base" sur la ligne
  de commande suivi d'une valeur en Moctets. 
@@ -364,7 +365,7 @@ cata_msg={
 """),
 
 84: _("""
- Nom symbolique errone pour un fichier de s.ortie
+ Nom symbolique erroné pour un fichier de sortie
  Valeur lue %(k1)s
  - nombre de valeurs attendues %(i2)d
  - valeurs attendues           %(k2)s, %(k3)s
@@ -376,7 +377,7 @@ cata_msg={
 """),
 
 86: _("""
- Erreur a la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré.
+ Erreur à la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré.
 """),
 
 87: _("""
@@ -404,10 +405,11 @@ On détruit cette variable ("%(k1)s" dans l'exemple ci-dessus).
 94 : _("""
 Le temps CPU system (%(r1)f) atteint une valeur supérieure à %(i1)d%% du temps CPU (%(r2)f).
 Ce comportement est peut-être anormal. 
-Le nombre d'appel au mécanisme de déchargement de la mémoire depuis le début du calcul vaut : %(i2)d. 
+Le nombre d'appel au mécanisme de déchargement de la mémoire depuis le début du
+calcul est de %(i2)d. 
  
 -> Conseil :
-   Augmenter la mémoire JEVEUX, peut permettre de diminuer le temps système.
+   Augmenter la mémoire JEVEUX peut permettre de diminuer le temps système.
    
 """),
 
@@ -415,6 +417,26 @@ Le nombre d'appel au mécanisme de déchargement de la mémoire depuis le début du 
 Le temps CPU system (%(r1)f) atteint une valeur supérieure à %(i1)d%% du temps CPU (%(r2)f).
 Ce comportement est peut-être anormal. 
  
+"""),
+
+# on ne veut pas émettre d'alarme mais que le message se voit, donc on fait la mise en forme ici !
+96 : _("""
+
+   !--------------------------------------------------------------!
+   !                                                              !
+   ! Réception du signal USR1. Interruption du calcul demandée... !
+   !                                                              !
+   !--------------------------------------------------------------!
+
+"""),
+
+97 : _("""
+   !---------------------------------------------------------------!
+   !                                                               !
+   ! Interruption du calcul suite à la réception d'un <Control-C>. !
+   !                                                               !
+   !---------------------------------------------------------------!
+
 """),
 
 }
