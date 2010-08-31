@@ -1,4 +1,4 @@
-# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 # ssnv506c.para = tps_job 890 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,7 @@ CONT = DEFI_CONTACT(MODELE=MO,
                       GROUP_MA_MAIT='SMAI',
                       GROUP_MA_ESCL='SESC',
                       SANS_GROUP_NO=('E','S'),
-                    
+
                     ),
                     )
 
@@ -181,7 +181,7 @@ SSNV506=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 SSNV506=CALC_NO(reuse =SSNV506,
                  RESULTAT=SSNV506,
                  OPTION='REAC_NODA',
-                 MODELE=MO,);
+                 );
 
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -75,21 +75,12 @@ PyObject * MakeListFloat(long nbval,DOUBLE* kval);
  *   le try doit etre traitée :  par une exception (si try(1)) ou par un abort (si try(0))
  */
 
+#define CodeAbortAster     18
 #define CodeFinAster       19
-#define CodeAbortAster     20
-#define CodeErrorAster     21
-#define CodeNonConvergenceAster           22
-#define CodeEchecComportementAster        23
-#define CodeBandeFrequenceVideAster       24
-#define CodeMatriceSinguliereAster        25
-#define CodeTraitementContactAster        26
-#define CodeMatriceContactSinguliereAster 27
-#define CodeArretCPUAster                 28
-#define CodeEchecPilotageAster            29
+
+static PyObject* exception_args = NULL;
 
 int exception_status=-1;
-#define REASONMAX 800
-static char exception_reason[REASONMAX+1];
 
 #define NIVMAX 10
 static int niveau=0;
@@ -97,7 +88,7 @@ static int niveau=0;
 #ifdef _UTILISATION_SETJMP_
 #include <setjmp.h>
 
-static jmp_buf env[NIVMAX+1] ;           /* utilise par longjmp, le type jmp_buf est defini dans setjmp.h */
+static jmp_buf env[NIVMAX+1] ;   /* utilise par longjmp, le type jmp_buf est defini dans setjmp.h */
 static int exception_flag[NIVMAX+1];
 
 #define try(val) exception_flag[niveau]=val;if((exception_status = setjmp(env[niveau])) == 0)
@@ -129,19 +120,6 @@ void TraiteErreur( _IN int code )
         case CodeFinAster :
                 exit(0);
                 break ;
-        case CodeAbortAster :
-                abort();
-                break ;
-        case CodeErrorAster :
-                abort();
-                break ;
-
-        /* exceptions particularisées */
-        case CodeNonConvergenceAster || CodeEchecComportementAster || CodeBandeFrequenceVideAster \
-          || CodeMatriceSinguliereAster || CodeTraitementContactAster || CodeMatriceContactSinguliereAster \
-          || CodeArretCPUAster || CodeEchecPilotageAster :
-                abort();
-                break ;
         default :
                 INTERRUPTION(1) ;
                 break ;
@@ -168,6 +146,7 @@ static int jeveux_status = 0;
 static PyObject *commande       = (PyObject*)0 ;
 static PyObject *pile_commandes = (PyObject*)0 ;
 static PyObject *static_module  = (PyObject*)0 ;
+static PyObject *except_module = NULL;
 
 /* NomCas est initialise dans aster_debut() */
 /* NomCas est initialise a blanc pour permettre la recuperation de la
@@ -188,92 +167,73 @@ INTEGER STDCALL(ISJVUP, isjvup)()
 /* ------------------------------------------------------------------ */
 void STDCALL(XFINI,xfini)(_IN INTEGER *code)
 {
+   /* XFINI est n'appelé que par JEFINI avec code=19 (=CodeFinAster) */
    /* jeveux est fermé */
    jeveux_status = 0;
 
-   switch( *code ){
-        case CodeFinAster :
-                strcpy(exception_reason,"exit ASTER");
-                break ;
-        case CodeAbortAster :
-                strcpy(exception_reason,"abort ASTER");
-                break ;
-        default:
-                *code=CodeAbortAster;
-                strcpy(exception_reason,"abort ASTER");
-                break ;
-        }
    TraiteErreur(*code);
 }
-
 /* ------------------------------------------------------------------ */
-/*
-    Les exceptions levees dans le Fortran par les developpeurs
-    doivent etre des objets de la classe AsterError (numero equivalent 21) ou d'une classe
-    derivee.
- */
-/* exceptions de base */
-static PyObject *AsterError = (PyObject*)0 ; /* Ce type d'exception est levee sur appel de XFINI avec le parametre 21 */
-static PyObject *FatalError = (PyObject*)0 ; /* Ce type d'exception est levee sur appel de XFINI avec le parametre 20 */
-
-/* exceptions particularisées */
-static PyObject *NonConvergenceError = (PyObject*)0 ;           /* Exception non convergence */
-static PyObject *EchecComportementError = (PyObject*)0 ;        /* Exception échec intégration du comportement */
-static PyObject *BandeFrequenceVideError = (PyObject*)0 ;       /* Exception bande de fréquence vide */
-static PyObject *MatriceSinguliereError = (PyObject*)0 ;        /* Exception matrice singuliere */
-static PyObject *TraitementContactError = (PyObject*)0 ;        /* Exception échec de traitement du contact */
-static PyObject *MatriceContactSinguliereError = (PyObject*)0 ; /* Exception matrice de contact non inversible */
-static PyObject *ArretCPUError = (PyObject*)0 ;                 /* Exception manque de temps CPU */
-static PyObject *PilotageError = (PyObject*)0 ;                 /* Exception échec du pilotage */
 
 void initExceptions(PyObject *dict)
 {
-        /* type d'exception ERREUR <S> */
-        AsterError = PyErr_NewException("aster.error", NULL, NULL);
-        if(AsterError != NULL) PyDict_SetItemString(dict, "error", AsterError);
-        /* type d'exception ERREUR <F> */
-        FatalError = PyErr_NewException("aster.FatalError", NULL, NULL);
-        if(FatalError != NULL) PyDict_SetItemString(dict, "FatalError", FatalError);
-
-        /* Exceptions particularisées */
-        NonConvergenceError = PyErr_NewException("aster.NonConvergenceError", AsterError, NULL);
-        if(NonConvergenceError != NULL) PyDict_SetItemString(dict, "NonConvergenceError", NonConvergenceError);
-
-        EchecComportementError = PyErr_NewException("aster.EchecComportementError", AsterError, NULL);
-        if(EchecComportementError != NULL) PyDict_SetItemString(dict, "EchecComportementError", EchecComportementError);
-
-        BandeFrequenceVideError = PyErr_NewException("aster.BandeFrequenceVideError", AsterError, NULL);
-        if(BandeFrequenceVideError != NULL) PyDict_SetItemString(dict, "BandeFrequenceVideError", BandeFrequenceVideError);
-
-        MatriceSinguliereError = PyErr_NewException("aster.MatriceSinguliereError", AsterError, NULL);
-        if(MatriceSinguliereError != NULL) PyDict_SetItemString(dict, "MatriceSinguliereError", MatriceSinguliereError);
-
-        TraitementContactError = PyErr_NewException("aster.TraitementContactError", AsterError, NULL);
-        if(TraitementContactError != NULL) PyDict_SetItemString(dict, "TraitementContactError", TraitementContactError);
-
-        MatriceContactSinguliereError = PyErr_NewException("aster.MatriceContactSinguliereError", AsterError, NULL);
-        if(MatriceContactSinguliereError != NULL) PyDict_SetItemString(dict, "MatriceContactSinguliereError", MatriceContactSinguliereError);
-
-        ArretCPUError = PyErr_NewException("aster.ArretCPUError", AsterError, NULL);
-        if(ArretCPUError != NULL) PyDict_SetItemString(dict, "ArretCPUError", ArretCPUError);
-
-        PilotageError = PyErr_NewException("aster.PilotageError", AsterError, NULL);
-        if(PilotageError != NULL) PyDict_SetItemString(dict, "PilotageError", PilotageError);
+    /* 
+     * Les exceptions du module 'aster' sont définies dans Execution/E_Exception.py.
+     * Elles sont ajoutées au module par la fonction add_to_dict_module.
+     */
+    PyObject *res;
+    
+    except_module = PyImport_ImportModule("Execution.E_Exception");
+    if ( ! except_module ) {
+        MYABORT("ImportError of except_module!");
+    }
+    
+    /* affectation du dict par le module E_Exception */
+    res = PyObject_CallMethod(except_module, "add_to_dict_module", "O", dict);
+    Py_DECREF(res);
+    Py_DECREF(except_module);
 }
 
 /* ------------------------------------------------------------------ */
-/*
-  Subroutine appelable depuis le Fortran pour demander la levee d'une exception de type exc_type
-  Une chaine de charactere (reason) ajoute un commentaire au type d'exception
-*/
-void DEFPS(UEXCEP,uexcep,_IN INTEGER *exc_type,  _IN char *reason , _IN STRING_SIZE lreason )
+void DEFPSPSPPPP(UEXCEP,uexcep, _IN INTEGER *exc_type,
+                                _IN char *idmess, _IN STRING_SIZE lidmess,
+                                _IN INTEGER *nbk, _IN char *valk, _IN STRING_SIZE lvk,
+                                _IN INTEGER *nbi, _IN INTEGER *vali,
+                                _IN INTEGER *nbr, _IN DOUBLE *valr)
 {
-   int l;
-   l=min(FindLength(reason,lreason),REASONMAX);
-   strncpy(exception_reason,reason,l);
-   exception_reason[l]='\0';
-   TraiteErreur(*exc_type);
+   /*
+      Interface Fortran/Python pour lever une exception avec les arguments complets
+   */
+    PyObject *tup_valk, *tup_vali, *tup_valr;
+    char *kvar;
+    int i;
+
+    tup_valk = PyTuple_New( *nbk ) ;
+    for(i=0;i<*nbk;i++){
+       kvar = valk + i*lvk;
+       PyTuple_SetItem( tup_valk, i, PyString_FromStringAndSize(kvar,lvk) ) ;
+    }
+
+    tup_vali = PyTuple_New( *nbi ) ;    
+    for(i=0;i<*nbi;i++){
+       PyTuple_SetItem( tup_vali, i, PyInt_FromLong(vali[i]) ) ;
+    }
+
+    tup_valr = PyTuple_New( *nbr ) ;
+    for(i=0;i<*nbr;i++){
+       PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble(valr[i]) ) ;
+    }
+
+    exception_args = PyTuple_New( 4 );
+    PyTuple_SetItem( exception_args, (Py_ssize_t)0, PyString_FromStringAndSize(idmess, lidmess) );
+    PyTuple_SetItem( exception_args, (Py_ssize_t)1, tup_valk );
+    PyTuple_SetItem( exception_args, (Py_ssize_t)2, tup_vali );
+    PyTuple_SetItem( exception_args, (Py_ssize_t)3, tup_valr );
+
+    TraiteErreur(*exc_type);
 }
+
+
 
 static char nom_fac[256];        /* utilise par fstr1 */
 static char nom_cle[256];        /* utilise par fstr2 */
@@ -310,17 +270,6 @@ void TraiteMessageErreur( _IN char * message )
         printf("%s\n",message);
         if(PyErr_Occurred())PyErr_Print();
         abort();
-        if(exception_flag[niveau]==1){
-          int l;
-          exception_flag[niveau]=0;
-          l=min(REASONMAX,strlen(message));
-          strncpy(exception_reason,message,l);
-          exception_reason[l+1]='\0';
-          throw(CodeAbortAster);
-        }
-        else{
-          abort();
-        }
 }
 
 /* ------------------------------------------------------------------ */
@@ -2796,7 +2745,7 @@ PyObject *args;
          => on s'arrête avec un JEFINI('ERREUR') dans UTFINM
 
    aster.onFatalError('EXCEPTION')
-         => on lève l'exception FatalError
+         => on lève l'exception aster.error
 
    aster.onFatalError()
          => retourne la valeur actuelle : 'ABORT' ou 'EXCEPTION'.
@@ -2996,23 +2945,29 @@ static PyObject * aster_dismoi(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-   char *codmes, *question, *concept, *typeconcept;
-   INTEGER repi=0, iret;
-   char repk[33],question32[33],concept32[33],typeconcept32[33];
+    char *codmes, *question, *concept, *typeconcept;
+    INTEGER repi=0, iret;
+    char repk[33], question32[33], concept32[33], typeconcept32[33], codme1[2];
 
-   repk[32] = '\0'; question32[32] = '\0'; concept32[32] = '\0'; typeconcept32[32] = '\0';
+    repk[32] = '\0';
+    question32[32] = '\0';
+    concept32[32] = '\0';
+    typeconcept32[32] = '\0';
+    codme1[1] = '\0';
 
-   BLANK(repk, 32);
-   if (!PyArg_ParseTuple(args, "ssss", &codmes, &question, &concept, &typeconcept)) return NULL;
+    BLANK(repk, 32);
+    if (!PyArg_ParseTuple(args, "ssss", &codmes, &question, &concept, &typeconcept))
+        return NULL;
 
-   CSTRING_FCPY(question32, 32, question);
-   CSTRING_FCPY(concept32, 32, concept);
-   CSTRING_FCPY(typeconcept32, 32, typeconcept);
+    CSTRING_FCPY(codme1, 1, codmes);
+    CSTRING_FCPY(question32, 32, question);
+    CSTRING_FCPY(concept32, 32, concept);
+    CSTRING_FCPY(typeconcept32, 32, typeconcept);
 
 
-   CALL_DISMOI(codmes, question32, concept32, typeconcept32, &repi, repk, &iret);
+    CALL_DISMOI(codme1, question32, concept32, typeconcept32, &repi, repk, &iret);
 
-   return Py_BuildValue("lls", iret, repi, repk);
+    return Py_BuildValue("lls", iret, repi, repk);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -3091,48 +3046,19 @@ PyObject *args;
 /* ------------------------------------------------------------------ */
 void TraitementFinAster( _IN int val )
 {
-        switch( val ){
-        case CodeFinAster :
-                PyErr_SetString(PyExc_EOFError, "exit ASTER");
-                break ;
-        case CodeAbortAster :
-                PyErr_SetString(FatalError, exception_reason);
-                break ;
-        case CodeErrorAster :
-                PyErr_SetString(AsterError, exception_reason);
-                break ;
-
-        /* exceptions particularisées */
-        case CodeNonConvergenceAster :
-                PyErr_SetString(NonConvergenceError, exception_reason);
-                break ;
-        case CodeEchecComportementAster :
-                PyErr_SetString(EchecComportementError, exception_reason);
-                break ;
-        case CodeBandeFrequenceVideAster :
-                PyErr_SetString(BandeFrequenceVideError, exception_reason);
-                break ;
-        case CodeMatriceSinguliereAster :
-                PyErr_SetString(MatriceSinguliereError, exception_reason);
-                break ;
-        case CodeTraitementContactAster :
-                PyErr_SetString(TraitementContactError, exception_reason);
-                break ;
-        case CodeMatriceContactSinguliereAster :
-                PyErr_SetString(MatriceContactSinguliereError, exception_reason);
-                break ;
-        case CodeArretCPUAster :
-                PyErr_SetString(ArretCPUError, exception_reason);
-                break ;
-        case CodeEchecPilotageAster :
-                PyErr_SetString(PilotageError, exception_reason);
-                break ;
-
-        default :
-                INTERRUPTION(1) ;
-                break ;
-        }
-        return ;
+    PyObject *exc;
+    
+    if ( val == CodeFinAster ) {
+        PyErr_SetString(PyExc_EOFError, "exit ASTER");
+    } else {
+        exc = PyObject_CallMethod(except_module, "get_exception", "i", val);
+        //fprintf(stdout, "#DBG exception_args = ");
+        //PyObject_Print(exception_args, stdout, 0);
+        //fprintf(stdout, "\n");
+        PyErr_SetObject(exc, exception_args);
+    }
+    
+    return ;
 }
 
 /* ------------------------------------------------------------------ */

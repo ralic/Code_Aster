@@ -1,4 +1,4 @@
-# MODIF  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -537,8 +537,8 @@ U3=CALC_NO(reuse = U3,
                OPTION='FORC_NODA',
                PRECISION=1.E-3,
                RESULTAT=U3,
-               MODELE=MODEL,
-               CHAM_MATER=CHMAT,
+
+
                );
 
 U3 =CALC_ELEM( reuse      = U3,
@@ -547,8 +547,8 @@ U3 =CALC_ELEM( reuse      = U3,
                             'ENEL_ELNO_ELGA',
               ),
               RESULTAT   = U3,
-              MODELE=MODEL,
-              CARA_ELEM = CARELEM,
+
+
               )
 
 TRAV = POST_ELEM(

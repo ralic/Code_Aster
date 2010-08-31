@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (QUAD9)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,8 +95,8 @@ DYNA=DYNA_LINE_HARM(MODELE=MO,
                              COEF_MULT=1,),);
 
 DYNA=CALC_ELEM(reuse =DYNA,
-               MODELE=MO,
-               CHAM_MATER=CM,
+
+
                RESULTAT=DYNA,
                NUME_ORDRE=1,
                OPTION='SIGM_ELNO_DEPL',);

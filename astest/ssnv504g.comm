@@ -1,24 +1,24 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       REPRISE CAS_TEST SSNV504G AVEC GLISSIERE (METHODE 'CONTRAINTES')
-# MODELE 
+# MODELE
 # MAILLAGE : MODELISATION : 3D
 #             SOLIDE : HEXA20 PENTA6
 #             CONTACT : QUAD8 ET TRIA6
@@ -46,7 +46,7 @@ MAILL1=DEFI_GROUP(reuse =MAILL1,
                                  _F(GROUP_MA='LOP_SYM2',),
                                  _F(GROUP_MA='LOP_ESC1',),
                                  _F(GROUP_MA='LOP_DDL',),),);
-                                 
+
 #_____________________________________________________________________
 #
 #                    DEFINITION DU MODELE
@@ -90,7 +90,7 @@ CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
 #_____________________________________________________________________
 #
 #                    AFFECTATION DES CONDITIONS AUX LIMITES
-#                       ET DU DEPLACEMENT IMPOSE 
+#                       ET DU DEPLACEMENT IMPOSE
 #_____________________________________________________________________
 #
 
@@ -122,14 +122,14 @@ CONTACT = DEFI_CONTACT(MODELE       = MO,
                             ALARME_JEU    = 0.15,
                             GROUP_MA_MAIT='FIL_MAI1',
                             GROUP_MA_ESCL='LOP_ESC1',
-                         ),                           
-                                                                           
-                       ),  
+                         ),
+
+                       ),
                   )
 
 #_____________________________________________________________________
 #
-#                    DEFINITIONS DES FONCTIONS TEMPORELLES 
+#                    DEFINITIONS DES FONCTIONS TEMPORELLES
 #_____________________________________________________________________
 #
 #
@@ -164,7 +164,7 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                        _F(CHARGE=DDLIMP,
                           FONC_MULT=DPLY,),
                       ),
-                CONTACT  = CONTACT,      
+                CONTACT  = CONTACT,
                 COMP_INCR=_F(RELATION='ELAS',
                              TOUT='OUI',),
                 INCREMENT=_F(LIST_INST=L_INST,),
@@ -173,8 +173,8 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
 
 U=CALC_ELEM(reuse =U,
-               MODELE=MO,
-               CHAM_MATER=CM,
+
+
                OPTION='SIEF_ELNO_ELGA',
                RESULTAT=U,);
 
@@ -190,7 +190,7 @@ DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
                                LIST_INST=L_INST,
                                TOUT_CMP='OUI',
                                OPERATION='EXTRACTION',),);
-                              
+
 TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                               GROUP_NO='LOP_ESC1',
                               RESULTAT=U,

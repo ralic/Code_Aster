@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION - CONSOLIDATION en AXIS
 # wtnv126b.para = tps_job 260 mem_job 400Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,13 +102,13 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E = 6.972E6,    NU = 0.3,
                     BARCELONE=_F(MU=2.76E6,
                                 PORO=0.14,
                                 LAMBDA=0.2,
-                                KAPA=0.02,           
+                                KAPA=0.02,
                                 M=1.,
                                 PRES_CRIT=2.E5,
                                 PA=1.E5,
                                 R=0.75,
                                 BETA=12.5E-6,
-                                KC=0.6,           
+                                KC=0.6,
                                 PC0_INIT=3.E5,
                                 KAPAS=0.008,
                                 LAMBDAS=0.08,),
@@ -439,14 +439,14 @@ U1=STAT_NON_LINE(reuse=U1,
 U1=CALC_ELEM(reuse =U1,
                RESULTAT=U1,
                PRECISION = 1.E-10,
-               CHAM_MATER=CHMAT,
-               MODELE=MODELE,
+
+
                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),);
 
 U1=CALC_NO(reuse =U1,
                RESULTAT=U1,
                PRECISION = 1.E-10,
-               CHAM_MATER=CHMAT,
+
                OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),);
 
 
@@ -555,14 +555,14 @@ U3=STAT_NON_LINE(MODELE=MODELE,
 U3=CALC_ELEM(reuse =U3,
                RESULTAT=U3,
                PRECISION = 1.E-10,
-               CHAM_MATER=CHMAT,
-               MODELE=MODELE,
+
+
                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),);
 
 U3=CALC_NO(reuse =U3,
                RESULTAT=U3,
                PRECISION = 1.E-10,
-               CHAM_MATER=CHMAT,
+
                OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),);
 
 # PREMIER TEST AU PREMIER POINT D ARRIVEE
@@ -712,14 +712,14 @@ U4=STAT_NON_LINE(ETAT_INIT=_F(
 U4=CALC_ELEM(reuse =U4,
                RESULTAT=U4,
                PRECISION = 1.E-10,
-               CHAM_MATER=CHMAT,
-               MODELE=MODELE,
+
+
                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),);
 
 U4=CALC_NO(reuse =U4,
                RESULTAT=U4,
                PRECISION = 1.E-10,
-               CHAM_MATER=CHMAT,
+
                OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),);
 
 # PREMIER TEST AU DEUXIEME POINT D ARRIVEE

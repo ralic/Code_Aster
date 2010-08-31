@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL MODAL D'UN ARBRE AVEC PALIERS A CARACTERISTIQUES VARIABLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -722,7 +722,7 @@ MACRO_MATR_ASSE(MODELE=modele,
                 CHAM_MATER=chmat,
                 CARA_ELEM=cara_ele,
                 CHARGE=blocage,
-                NUME_DDL=CO('NUME_DDL'),
+                NUME_DDL=CO('NUMEDDL'),
                 MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASSE'),
@@ -736,7 +736,7 @@ GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
                       CARA_ELEM=cara_ele,);
 
 GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
-                   NUME_DDL=NUME_DDL,);
+                   NUME_DDL=NUMEDDL,);
 
 OM=(L_VITROT[0]+L_VITROT[6])/2
 

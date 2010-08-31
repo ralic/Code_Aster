@@ -1,7 +1,7 @@
 
-# MODIF  DATE 16/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
+# MODIF  DATE 30/08/2010   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 2D
-# ssnp131a.para = tps_job 715 mem_job 128Mo ncpus 1 liste_test S
+# ssnp131a.para = tps_job 800 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

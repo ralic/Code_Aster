@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # DATE   : 22/05/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -29,7 +29,7 @@
 #---------------------------------------------------------------------
 #
 DEBUT(CODE=_F(NOM='SSLS503D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
-   
+
 #
 #PRE_IDEAS ();
 #
@@ -126,20 +126,20 @@ RESU=MECA_STATIQUE(       MODELE=MO,
 #COUCHE 2 : CALCUL DES CONTRAINTES
 ##################################
 SIG_C2_S=CALC_ELEM(       RESULTAT=RESU,
-                          MODELE=MO,
+
                           NUME_ORDRE=1,
                           OPTION='SIGM_ELNO_DEPL',
-                          CHAM_MATER=CHAM_MAT,
-                          CARA_ELEM=CAR_ELE,
+
+
                           REPE_COQUE =_F( NUME_COUCHE=2,
                                           NIVE_COUCHE='SUP',),
                           )
 
 #
 SIG_C2_M=CALC_ELEM(       RESULTAT=RESU,
-                          MODELE=MO,
-                          CHAM_MATER=CHAM_MAT,
-                          CARA_ELEM=CAR_ELE,
+
+
+
                           NUME_ORDRE=1,
                           OPTION='SIGM_ELNO_DEPL',
                           REPE_COQUE =_F( NUME_COUCHE=2,
@@ -150,9 +150,9 @@ SIG_C2_M=CALC_ELEM(       RESULTAT=RESU,
 #COUCHE 3 : CALCUL DES CONTRAINTES
 ##################################
 SIG_C3_S=CALC_ELEM(       RESULTAT=RESU,
-                          MODELE=MO,
-                          CHAM_MATER=CHAM_MAT,
-                          CARA_ELEM=CAR_ELE,
+
+
+
                           NUME_ORDRE=1,
                           OPTION='SIGM_ELNO_DEPL',
                           REPE_COQUE =_F( NUME_COUCHE=3,

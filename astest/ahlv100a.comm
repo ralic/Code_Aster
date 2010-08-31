@@ -1,4 +1,4 @@
-# MODIF  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -235,7 +235,7 @@ IMPR_RESU(FORMAT='MED',
                   PARTIE='REEL',NOM_CMP='PRES'),)
 
 
-PRESHARM=CALC_ELEM( reuse=PRESHARM,     MODELE=GUIDE,   CHAM_MATER=CHAMPMAT,
+PRESHARM=CALC_ELEM( reuse=PRESHARM,
                             TOUT_ORDRE='OUI',
                              RESULTAT=PRESHARM,
                                OPTION='INTE_ELNO_ACTI'
@@ -256,7 +256,7 @@ TEST_RESU(RESU=(
             NOEUD = 'NO763', NOM_CMP = 'INTX',  VALE = 0.04370, PRECISION = 3.E-2))
              )
 
-PRESHARM=CALC_ELEM( reuse=PRESHARM,     MODELE=GUIDE,   CHAM_MATER=CHAMPMAT,
+PRESHARM=CALC_ELEM( reuse=PRESHARM,
                             TOUT_ORDRE='OUI',
                              RESULTAT=PRESHARM,
                                OPTION='INTE_ELNO_REAC'
@@ -281,7 +281,7 @@ TEST_RESU(RESU=(
                                                  CRITERE = 'ABSOLU'))
              )
 
-PRESHARM=CALC_ELEM( reuse=PRESHARM,     MODELE=GUIDE,   CHAM_MATER=CHAMPMAT,
+PRESHARM=CALC_ELEM( reuse=PRESHARM,
                             TOUT_ORDRE='OUI',
                              RESULTAT=PRESHARM,
                                OPTION='PRES_ELNO_DBEL'
@@ -302,7 +302,7 @@ TEST_RESU(RESU=(
               NOEUD = 'NO763', NOM_CMP = 'DB',  VALE = 109.9))
              )
 
-PRESHARM=CALC_ELEM( reuse=PRESHARM,     MODELE=GUIDE,   CHAM_MATER=CHAMPMAT,
+PRESHARM=CALC_ELEM( reuse=PRESHARM,
                             TOUT_ORDRE='OUI',
                              RESULTAT=PRESHARM,
                                OPTION='PRES_ELNO_REEL'
@@ -323,7 +323,7 @@ TEST_RESU(RESU=(
               NOEUD = 'NO763', NOM_CMP = 'PRES',  VALE = 6.02368))
              )
 
-PRESHARM=CALC_ELEM( reuse=PRESHARM,     MODELE=GUIDE,   CHAM_MATER=CHAMPMAT,
+PRESHARM=CALC_ELEM( reuse=PRESHARM,
                             TOUT_ORDRE='OUI',
                              RESULTAT=PRESHARM,
                                OPTION='PRES_ELNO_IMAG'

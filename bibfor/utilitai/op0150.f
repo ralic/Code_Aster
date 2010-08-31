@@ -1,7 +1,7 @@
       SUBROUTINE OP0150()
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF UTILITAI  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -761,8 +761,8 @@ C           CHAMP DE GRANDEUR "VARI_R"
                TYPCHA = 'ELNO'
                OPTION = 'VARI_ELNO_ELGA'
                PARAM  = 'PVARINR'
-            ELSE IF (NOCH.EQ.'VARI_NOEU') THEN
-               NOMGD  = 'VARI_R'
+            ELSE IF (NOCH.EQ.'VARI_NOEU_ELGA') THEN
+               NOMGD  = 'VAR2_R'
                TYPCHA = 'NOEU'
             ELSE
                CALL U2MESK('F','UTILITAI2_94',1,NOCH)

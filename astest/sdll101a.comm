@@ -1,5 +1,5 @@
 
-# MODIF  DATE 08/12/2008   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE VIBRATION D'UNE POUTRE AVEC PRE-CONTRAINTES (PETIT MAILLAGE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,9 +125,9 @@ DEP=MACRO_ELAS_MULT(MODELE=MO,
 #
 # PRISE EN COMPTE DES PRECONTRAINTES AU NIVEAU ELEMENTAIRE
 
-DEP=CALC_ELEM( reuse= DEP ,RESULTAT= DEP,MODELE=MO,
-                             CARA_ELEM=CARAELEM,
-                             CHAM_MATER=CHMAT,
+DEP=CALC_ELEM( reuse= DEP ,RESULTAT= DEP,
+
+
                              TOUT_ORDRE='OUI',
                              OPTION=('SIEF_ELGA_DEPL',)
                 )

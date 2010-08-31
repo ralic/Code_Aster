@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,12 +28,13 @@ import re
 # protection pour eficas
 try:
     import aster
+    from aster import error
     aster_exists = True
     from Messages.context_info import message_context_concept
-    AsterError = aster.error
 except:
     aster_exists = False
-    class AsterError(Exception): pass
+    class error(Exception):
+        pass
 
 def _(s):
     return s
@@ -46,13 +47,21 @@ Veuillez contacter votre assistance technique."""
 
 # voir en fin de fin les faux appels à UTMESS pour la vérification des messages
 
-class MessageError(Exception):
-    """Arguments = (id_message, vali, valr, valk)."""
-    def __init__(self, id_message, valk=(), vali=(), valr=()):
-        self.id_message = id_message
-        self.valk = valk
-        self.vali = vali
-        self.valr = valr
+
+def list_unit(code):
+    """Retourne la liste des noms de fichiers (logiques) sur lesquels doit
+    etre imprimé le message.
+    """
+    #IDF  = INDEX('EFIDASXZ', ...)
+    #'Z' (IDF=8) = LEVEE D'EXCEPTION
+    d = {
+        'E' : ('ERREUR', 'MESSAGE', 'RESULTAT'),
+        'I' : ('MESSAGE',),
+        'A' : ('MESSAGE', 'RESULTAT'),
+    }
+    d['F'] = d['S'] = d['Z'] = d['E']
+    d['X'] = d['A']
+    return d.get(code, d['F'])
 
 
 class MESSAGE_LOGGER:
@@ -99,7 +108,8 @@ class MESSAGE_LOGGER:
             code  : 'A', 'E', 'S', 'F', 'I'
             idmess : identificateur du message
             valk, vali, valr : liste des chaines, entiers ou réels.
-        Si exception==True, on lève une exception en cas d'erreur.
+        Si exception==True, on lève une exception en cas d'erreur, sinon
+        c'est l'appelant qui devra s'en charger (dans le C a priori).
         'print_as' : cf. print_buffer_content.
         """
         # récupération du texte du message
@@ -117,7 +127,7 @@ class MESSAGE_LOGGER:
             self.print_buffer_content(print_as, cc)
 
             if exception and code[0] in ('S', 'F'):
-                raise AsterError, ' <EXCEPTION LEVEE> %s' % idmess
+                raise error(idmess, valk, vali, valr)
         
         return None
 
@@ -276,7 +286,7 @@ Exception : %s
         dglob['context_info'] = ''.join(dglob['liste_context'])
         
         # liste des unités d'impression en fonction du type de message
-        l_unit = self.list_unit(print_as or dglob['code'], dglob['id_message'])
+        l_unit = list_unit(print_as or dglob['code'])
         
         # texte final et impression
         txt = self.format_message(dglob)
@@ -493,22 +503,6 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         return clean_string(os.linesep.join(l_txt))
 
 
-    def list_unit(self, code, idmess):
-        """Retourne la liste des noms de fichiers (logiques) sur lesquels doit
-        etre imprimé le message.
-        """
-        #IDF  = INDEX('EFIDASXZ', ...)
-        #'Z' (IDF=8) = LEVEE D'EXCEPTION
-        d = {
-            'E' : ('ERREUR', 'MESSAGE', 'RESULTAT'),
-            'I' : ('MESSAGE',),
-            'A' : ('MESSAGE', 'RESULTAT'),
-        }
-        d['F'] = d['S'] = d['Z'] = d['E']
-        d['X'] = d['A']
-        return d.get(code, d['F'])
-
-
     def get_type_message(self, code):
         """Retourne le type du message affiché.
         En cas d'erreur, si on lève une exception au lieu de s'arreter,
@@ -667,6 +661,14 @@ def ASSERT(condition):
     UTMESS('F', 'DVP_9', valk=(''.join(stack[:-1]),))
 
 
+def message_exception(code, exc):
+    """Retourne le message associé à une exception aster.error
+    tel qu'il aurait été imprimé par UTMESS selon la valeur de
+    `code` ('I', 'A', 'S', 'F', 'Z'...)."""
+    return MessageLog.GetText(code, exc.id_message,
+                              exc.valk, exc.vali, exc.valr)
+
+
 def MasquerAlarme(idmess):
     """Masque une alarme : ni affichee, ni comptee.
     Utilisation dans les macros :
@@ -689,6 +691,7 @@ def __fake__():
     UTMESS('I', 'SUPERVIS_40')    # surcharge émis par asrun
     UTMESS('I', 'SUPERVIS_96')    # émis depuis le C (inisig)
     UTMESS('I', 'SUPERVIS_97')    # émis depuis le C (inisig)
+    UTMESS('I', 'GENERIC_1')      # dans des tests pour traiter les exceptions
     UTMESS('I', 'CATAMESS_6')
     UTMESS('I', 'CATAMESS_41')
     UTMESS('I', 'CATAMESS_55')    # pour u2mesg.f

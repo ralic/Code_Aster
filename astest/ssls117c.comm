@@ -1,5 +1,5 @@
 
-# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DST -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,7 +93,7 @@ EP1=AFFE_CARA_ELEM(MODELE=MO1,
                    COQUE=_F(GROUP_MA='TOUT',
                             EPAIS=0.59999999999999998,
                             ANGL_REP=(0.0,0.0),
-                            COQUE_NCOU=2, 
+                            COQUE_NCOU=2,
                             INER_ROTA='OUI',),);
 
 MAT1A=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=2.E10,
@@ -240,15 +240,15 @@ EFSUP=CALC_ELEM(GROUP_MA='PLAQ2',
 CALC_NO(reuse =EFINF,
               RESULTAT=EFINF,
               OPTION='EFGE_NOEU_DEPL',
-              CHAM_MATER=CHMAT,
-              CARA_ELEM=EP,
+
+
               GROUP_MA='PLAQ1',);
 
 CALC_NO(reuse =EFSUP,
               RESULTAT=EFSUP,
               OPTION='EFGE_NOEU_DEPL',
-              CHAM_MATER=CHMAT,
-              CARA_ELEM=EP,
+
+
               GROUP_MA='PLAQ2',);
 
 EFNINF=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',

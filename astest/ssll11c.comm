@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 # ssll11c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,13 +105,13 @@ DYNHARM=DYNA_LINE_HARM(  MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
                              EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = VECTASS))
 
 DYNHARM=CALC_ELEM(reuse=DYNHARM,     RESULTAT=DYNHARM,
-                              MODELE=MODELE,
+
                               OPTION=( 'SIGM_ELNO_DEPL',
                                        'EFGE_ELNO_DEPL',  ),
-                          CHAM_MATER=CH_MATER,     CARA_ELEM=CARA_ELE
+                               CARA_ELEM=CARA_ELE
                        )
 
-DYNHARM=CALC_NO( reuse=DYNHARM,  CARA_ELEM=CARA_ELE,      CHAM_MATER=CH_MATER,
+DYNHARM=CALC_NO( reuse=DYNHARM,
                          RESULTAT=DYNHARM,
                           OPTION='SIGM_NOEU_DEPL'    )
 

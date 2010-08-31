@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DES COMMANDES COMB_MATR_ASSE ET CALC_CHAR_CINE (REEL/SYMETRIQUE)
 # zzzz213a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -29,11 +29,11 @@
 #--------------------------------------------------------------------------
 
 DEBUT(CODE=_F(NOM='ZZZZ213A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), ERREUR=_F(ERREUR_F='EXCEPTION'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
-import re
+
 fmt_raison='-'*80+"""
 
    Exception erreur_Fatale interceptee
-   Raison : %s
+   Message : %s
 
 """+'-'*80+'\n'
 
@@ -151,7 +151,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("ALGELINE2_28", str(err))<>None :
+   if err.id_message == "ALGELINE2_28":
       is_ok = 1
 
 # TEST_RESU
@@ -170,7 +170,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("ALGELINE3_41", str(err))<>None :
+   if err.id_message == "ALGELINE3_41":
       is_ok = 1
 
 # TEST_RESU
@@ -193,7 +193,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("ALGELINE2_10", str(err))<>None :
+   if err.id_message == "ALGELINE2_10":
       is_ok = 1
 
 # TEST_RESU
@@ -218,7 +218,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("ALGELINE_32", str(err))<>None :
+   if err.id_message == "ALGELINE_32":
       is_ok = 1
 
 # TEST_RESU

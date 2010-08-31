@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE SOUMIS A UN CHOC THERMIQUE ET A UN CHARGEMENT MECANIQUE
 # ssnv301a.para = tps_job 1250 mem_job 200Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,17 +6,17 @@
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # ELEMENTS HEXA20 ET QUAD8 POUR APPLICATION DU FLUX
@@ -50,7 +50,7 @@ FLUX_FO=DEFI_FONCTION(       NOM_PARA='INST',
                         )
 
 CHA=AFFE_CHAR_THER_F(      MODELE=MODEL,
-                             FLUX_REP=_F(  GROUP_MA = 'FACE_INT', 
+                             FLUX_REP=_F(  GROUP_MA = 'FACE_INT',
                                         FLUN = FLUX_FO)
                          )
 
@@ -61,35 +61,35 @@ CAT=DEFI_LIST_REEL(    DEBUT=0.0,
 THERL=THER_LINEAIRE(        MODELE=MODEL,
                            CHAM_MATER=MATER,
                                 EXCIT=_F( CHARGE = CHA),
-                            ETAT_INIT=_F( VALE = 0.),  
+                            ETAT_INIT=_F( VALE = 0.),
                             INCREMENT=_F( LIST_INST = CAT),
                            PARM_THETA=1.
                        )
 
-TEST_RESU(RESU=( 
-          _F(  RESULTAT = THERL, 
+TEST_RESU(RESU=(
+          _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
-            NUME_ORDRE = 1,  
+            NUME_ORDRE = 1,
             NOEUD = 'NO000021',
-            NOM_CMP = 'TEMP',  
+            NOM_CMP = 'TEMP',
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 1.26658E+01),
 
-          _F(  RESULTAT = THERL, 
+          _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
-            NUME_ORDRE = 1,  
+            NUME_ORDRE = 1,
             NOEUD = 'NO000201',
-            NOM_CMP = 'TEMP',  
+            NOM_CMP = 'TEMP',
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 5.64556E+00),
 
-          _F(  RESULTAT = THERL, 
+          _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
-            NUME_ORDRE = 1,  
+            NUME_ORDRE = 1,
             NOEUD = 'NO000202',
-            NOM_CMP = 'TEMP',  
+            NOM_CMP = 'TEMP',
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 2.50690E+00),
@@ -102,7 +102,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 1.10448E+00),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -111,7 +111,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 5.06396E-01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -120,7 +120,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 2.23330E-01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -129,7 +129,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 9.98984E-02),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -138,7 +138,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 4.41255E-02),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -147,7 +147,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 2.02976E-02),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -156,7 +156,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 8.97177E-03),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -165,7 +165,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 4.05352E-03),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -174,7 +174,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 1.79338E-03),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -183,7 +183,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 8.25938E-04),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -192,7 +192,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 3.68531E-04),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -201,7 +201,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 1.74367E-04),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -210,7 +210,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 8.91805E-05),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 1,
@@ -221,30 +221,30 @@ TEST_RESU(RESU=(
             VALE = 6.98548E-05),
 #
 #  RESULTATS A 25S
-# 
-          _F(  RESULTAT = THERL, 
+#
+          _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
-            NUME_ORDRE = 50,  
+            NUME_ORDRE = 50,
             NOEUD = 'NO000021',
-            NOM_CMP = 'TEMP',  
+            NOM_CMP = 'TEMP',
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 8.64175E+01),
 
-          _F(  RESULTAT = THERL, 
+          _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
-            NUME_ORDRE = 50,  
+            NUME_ORDRE = 50,
             NOEUD = 'NO000201',
-            NOM_CMP = 'TEMP',  
+            NOM_CMP = 'TEMP',
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 7.65753E+01),
 
-          _F(  RESULTAT = THERL, 
+          _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
-            NUME_ORDRE = 50,  
+            NUME_ORDRE = 50,
             NOEUD = 'NO000202',
-            NOM_CMP = 'TEMP',  
+            NOM_CMP = 'TEMP',
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 6.77332E+01),
@@ -257,7 +257,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 5.98571E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -266,7 +266,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 5.28510E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -275,7 +275,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 4.66453E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -284,7 +284,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 4.11819E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -293,7 +293,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 3.64095E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -302,7 +302,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 3.22781E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -311,7 +311,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 2.87460E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -320,7 +320,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 2.57736E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -329,7 +329,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 2.33275E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -338,7 +338,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 2.13766E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -347,7 +347,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 1.98979E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -356,7 +356,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 1.88647E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -365,7 +365,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',
             PRECISION = 5.E-2,
             VALE = 1.82450E+01),
- 
+
           _F(  RESULTAT = THERL,
             NOM_CHAM = 'TEMP',
             NUME_ORDRE = 50,
@@ -385,7 +385,7 @@ MODEL2=AFFE_MODELE(    MAILLAGE=MAYA,
                          )
 
 E_FO=DEFI_FONCTION(       NOM_PARA='TEMP',
-                                VALE=( 0.,     195.E9,  
+                                VALE=( 0.,     195.E9,
                                        100.,   175.5E9,    )
                      )
 
@@ -409,8 +409,8 @@ SY_FO=DEFI_FONCTION(       NOM_PARA='TEMP',
                                         100.,   145.E6,     )
                      )
 
-MAT2=DEFI_MATERIAU(      ELAS_FO=_F(  E = E_FO,   
-                                         NU = NU_FO,    
+MAT2=DEFI_MATERIAU(      ELAS_FO=_F(  E = E_FO,
+                                         NU = NU_FO,
                                          RHO = 7860.,
                                          ALPHA = ALPHA_FO,TEMP_DEF_ALPHA=0.),
                           ECRO_LINE_FO=_F(  D_SIGM_EPSI = ET_FO,
@@ -429,9 +429,9 @@ MATER2=AFFE_MATERIAU(   MAILLAGE=MAYA,
 PRES_FO=DEFI_FONCTION(       NOM_PARA='INST',
                              PROL_DROITE='EXCLU',
                             PROL_GAUCHE='EXCLU',
-                                   VALE=( 0.,      0., 
-                                          15.,     0.,        
-                                          20.,     5.5E6,     
+                                   VALE=( 0.,      0.,
+                                          15.,     0.,
+                                          20.,     5.5E6,
                                           25.,     0.,       )
                         )
 
@@ -449,12 +449,12 @@ ROTA_FO=DEFI_FONCTION(       NOM_PARA='INST',
                         )
 
 PRES=AFFE_CHAR_MECA_F(      MODELE=MODEL2,
-                             PRES_REP=_F(  GROUP_MA = 'FACE_INT', 
+                             PRES_REP=_F(  GROUP_MA = 'FACE_INT',
                                         PRES = PRES_FO)
                          )
 
 CONDLIM=AFFE_CHAR_MECA(     MODELE=MODEL2,DDL_IMPO=(
-                              _F(  GROUP_NO = 'FIX_C1',      
+                              _F(  GROUP_NO = 'FIX_C1',
                                                DX = 0.),
                                        _F(  GROUP_NO = 'FIX_C2',
                                                DY = 0.),
@@ -468,26 +468,26 @@ CAT2=DEFI_LIST_REEL(    DEBUT=0.0,INTERVALLE=(
                                      _F(  JUSQU_A = 25.,    NOMBRE = 1))
                       )
 
-CALCNL=STAT_NON_LINE( 
+CALCNL=STAT_NON_LINE(
                             MODELE=MODEL2,
                         CHAM_MATER=MATER2,
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'VMIS_ISOT_LINE',
                 DEFORMATION = 'PETIT_REAC'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = CAT2),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50),EXCIT=(
-                             _F( 
-                CHARGE = PRES), _F( 
+                             _F(
+                CHARGE = PRES), _F(
                 CHARGE = ROTA,
-                FONC_MULT = ROTA_FO), _F( 
+                FONC_MULT = ROTA_FO), _F(
                 CHARGE = CONDLIM)),
-                     RECH_LINEAIRE=_F( 
+                     RECH_LINEAIRE=_F(
                 ITER_LINE_MAXI = 3)
               )
 
@@ -495,11 +495,11 @@ CALCNL=CALC_ELEM( reuse=CALCNL,
                             OPTION=(
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=CALCNL,
-                            MODELE=MODEL2,
-                        CHAM_MATER=MATER2,
+
+
               )
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
           _F(  RESULTAT = CALCNL,
             NOM_CHAM = 'SIEF_ELNO_ELGA',
             NUME_ORDRE = 3,

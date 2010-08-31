@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE TUYAUTERIE SOUMISE A UNE EXCITATION EN DEPLACEMENT,
 # sdlx300a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -230,25 +230,25 @@ MODE1=MODE_ITER_SIMULT(       MATR_A=RIGIDITE,
                             )
 
 #
-MODE1=CALC_ELEM( reuse=MODE1,       MODELE=MO,
+MODE1=CALC_ELEM( reuse=MODE1,
                            RESULTAT=MODE1,
-                         CHAM_MATER=CHMAT,
-                          CARA_ELEM=CARAELEM,
+
+
                              OPTION=( 'SIEF_ELGA_DEPL',
                                       'EFGE_ELNO_DEPL', )
                      )
 
 #
-MODE1=CALC_NO( reuse=MODE1,       MODELE=MO,     RESULTAT=MODE1,
+MODE1=CALC_NO( reuse=MODE1,            RESULTAT=MODE1,
                            OPTION='FORC_NODA',
-                       CHAM_MATER=CHMAT,
+
                         CARA_ELEM=CARAELEM
                    )
 
 #
-MODE1=CALC_NO( reuse=MODE1,       MODELE=MO,     RESULTAT=MODE1,
+MODE1=CALC_NO( reuse=MODE1,            RESULTAT=MODE1,
                            OPTION='REAC_NODA',
-                       CHAM_MATER=CHMAT,
+
                         CARA_ELEM=CARAELEM
                    )
 

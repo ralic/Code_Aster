@@ -1,23 +1,23 @@
 
-# MODIF  DATE 14/09/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE FLUAGE EN 3D VENDOCHAB
 # ssnv183a.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #----------------------------------------------------------------------
 #    TEST MODELE VISCO-PLASTIQUE COUPLE AVEC L'ENDOMMAGEMENT
@@ -181,8 +181,8 @@ SOLNL=STAT_NON_LINE(MODELE=EPD3,
                     TITRE='TEST RELAXATION SIMPLE',);
 
 SOLNL=CALC_ELEM(reuse =SOLNL,
-                MODELE=EPD3,
-                CHAM_MATER=MAT,
+
+
                 RESULTAT=SOLNL,
                 OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
 
@@ -294,8 +294,8 @@ SOLNL2=STAT_NON_LINE(MODELE=EPD3,
                      TITRE='TEST RELAXATION SIMPLE',);
 
 SOLNL2=CALC_ELEM(reuse =SOLNL2,
-                 MODELE=EPD3,
-                 CHAM_MATER=MAT,
+
+
                  RESULTAT=SOLNL2,
                  OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
 
@@ -446,11 +446,11 @@ CL=AFFE_CHAR_MECA(MODELE=EPD3,
                                      DX=0.0,),),
                                     );
 CHA_CART=AFFE_CHAR_MECA(MODELE=EPD3,
-                        SIGM_INTERNE=_F(SIGM=SIG_CART),            
+                        SIGM_INTERNE=_F(SIGM=SIG_CART),
                                     );
 
 CHA_CHAM=AFFE_CHAR_MECA(MODELE=EPD3,
-                        SIGM_INTERNE=_F(SIGM=SIG_CHAM),            
+                        SIGM_INTERNE=_F(SIGM=SIG_CHAM),
                                     );
 
 
@@ -458,14 +458,14 @@ MS_PRES=MECA_STATIQUE(MODELE=EPD3,
                     CHAM_MATER=MAT,
                     EXCIT=_F(CHARGE=COND_LIM,),
                         );
-                    
+
 MS_CART=MECA_STATIQUE(MODELE=EPD3,
                     CHAM_MATER=MAT,
                     EXCIT=(
                     _F(CHARGE=CL),
                     _F(CHARGE=CHA_CART),
                         ))
-                    
+
 MS_CHAM=MECA_STATIQUE(MODELE=EPD3,
                     CHAM_MATER=MAT,
                     EXCIT=(
@@ -500,17 +500,17 @@ SNL_CHAM=STAT_NON_LINE(MODELE=EPD3,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=60),)
 
 SNL_CHAM=CALC_ELEM(reuse =SNL_CHAM,
-                 MODELE=EPD3,
-                 CHAM_MATER=MAT,
+
+
                  RESULTAT=SNL_CHAM,
                  OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
-                 
+
 SNL_CART=CALC_ELEM(reuse =SNL_CART,
-                 MODELE=EPD3,
-                 CHAM_MATER=MAT,
+
+
                  RESULTAT=SNL_CART,
                  OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
-                 
+
 TEST_RESU(RESU=_F(RESULTAT=MS_PRES,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
@@ -518,7 +518,7 @@ TEST_RESU(RESU=_F(RESULTAT=MS_PRES,
                    NUME_ORDRE=1,
                    VALE=4.00000E-03,
                    REFERENCE='ANALYTIQUE',),)
-                   
+
 TEST_RESU(RESU=_F(RESULTAT=MS_CART,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
@@ -526,7 +526,7 @@ TEST_RESU(RESU=_F(RESULTAT=MS_CART,
                    NUME_ORDRE=1,
                    VALE=4.00000E-03,
                    REFERENCE='ANALYTIQUE',),)
-                   
+
 TEST_RESU(RESU=_F(RESULTAT=MS_CHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
@@ -534,7 +534,7 @@ TEST_RESU(RESU=_F(RESULTAT=MS_CHAM,
                    NUME_ORDRE=1,
                    VALE=4.00000E-03,
                    REFERENCE='ANALYTIQUE',),)
-                   
+
 TEST_RESU(RESU=_F(RESULTAT=SNL_CART,
                    NUME_ORDRE=82,
                    NOM_CHAM='VARI_ELNO_ELGA',
@@ -554,7 +554,7 @@ TEST_RESU(RESU=_F(RESULTAT=SNL_CHAM,
                    VALE=0.0152596,
                    PRECISION=0.006,
                    REFERENCE='ANALYTIQUE',),)
-                   
+
 
 FIN();
 #

@@ -1,22 +1,22 @@
-# MODIF  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
-# TITRE ETUDE:  ESSAI BIAXIAL DRAINE SUR SABLE D'HOSTUN 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# TITRE ETUDE:  ESSAI BIAXIAL DRAINE SUR SABLE D'HOSTUN
 # ssnv208a.para = tps_job 160 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #                       AVEC LA LOI DE HUJEUX
 # PRESSION DE CONSOLIDATION P0 = 100KPA
@@ -25,7 +25,7 @@
 DEBUT(CODE=_F(NOM='SSNV208A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
       DEBUG=_F(SDVERI='OUI'));
 
-# modules mecaniques [kPa] 
+# modules mecaniques [kPa]
 K=148.E6
 G=68.E6
 # =>
@@ -152,7 +152,7 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER=1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 20),
-                 ARCHIVAGE =_F(LIST_INST=TEMPS2,),              
+                 ARCHIVAGE =_F(LIST_INST=TEMPS2,),
                  INCREMENT=_F(LIST_INST = DEFLIST1,
                               INST_INIT=0.0,
                               INST_FIN =10.));
@@ -162,18 +162,18 @@ U1=STAT_NON_LINE(MODELE=MODELE,
 #   POST-TRAITEMENT
 #****************************************
 U1=CALC_ELEM(reuse=U1,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT,
+
+
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',
                      'EPSI_ELNO_DEPL','INDI_LOCA_ELGA'),
              RESULTAT=U1);
 
 U1=CALC_NO(reuse=U1,
-           CHAM_MATER=CHMAT,
+
            OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','EPSI_NOEU_DEPL'),
            RESULTAT=U1);
 
-                        
+
 TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
@@ -228,7 +228,7 @@ TAB_SIG=CALC_TABLE(reuse=TAB_SIG,
 #**********************************#
 
 #----------------------------------------------------------
-# TEST DE LA NORME DU DEVIATEUR DES CONTRAINTES PAR RAPPORT 
+# TEST DE LA NORME DU DEVIATEUR DES CONTRAINTES PAR RAPPORT
 #               AUX REFERENCES LAWYER
 #----------------------------------------------------------
 TEST_TABLE(TABLE=TAB_SIG,
@@ -288,7 +288,7 @@ TEST_TABLE(TABLE=TAB_SIG,
 
 
 #----------------------------------------------------
-# TEST DE LA DEFORMATION VOLUMIQUE TOTALE PAR RAPPORT 
+# TEST DE LA DEFORMATION VOLUMIQUE TOTALE PAR RAPPORT
 #               AUX REFERENCES LAWYER
 #----------------------------------------------------
 
@@ -349,7 +349,7 @@ TEST_TABLE(TABLE=TAB_EPSV,
 
 
 #-------------------------------------------------------
-# TEST DU COEF D ECROUISSAGE DEVIATOIRE (YZ) PAR RAPPORT 
+# TEST DU COEF D ECROUISSAGE DEVIATOIRE (YZ) PAR RAPPORT
 #                  AUX REFERENCES LAWYER
 #-------------------------------------------------------
 
@@ -410,7 +410,7 @@ TEST_TABLE(TABLE=TAB_VARI,
 
 
 #-------------------------------------------------------
-# TEST DU COEF D ECROUISSAGE DEVIATOIRE (XY) PAR RAPPORT 
+# TEST DU COEF D ECROUISSAGE DEVIATOIRE (XY) PAR RAPPORT
 #               AUX REFERENCES LAWYER
 #-------------------------------------------------------
 
@@ -470,7 +470,7 @@ TEST_TABLE(TABLE=TAB_VARI,
                      CRITERE='ABSOLU'));
 
 #------------------------------------------------
-# TEST DU COEF D ECROUISSAGE ISOTROPE PAR RAPPORT 
+# TEST DU COEF D ECROUISSAGE ISOTROPE PAR RAPPORT
 #               AUX REFERENCES LAWYER
 #------------------------------------------------
 
@@ -531,7 +531,7 @@ TEST_TABLE(TABLE=TAB_VARI,
 
 
 #------------------------------------------------
-# TEST DU CRITERE DE RICE EN NON REGRESSION 
+# TEST DU CRITERE DE RICE EN NON REGRESSION
 #------------------------------------------------
 
 TEST_RESU(RESU=(
@@ -555,7 +555,7 @@ TEST_RESU(RESU=(
                    PRECISION=1.E-3,
                    VALE_ABS='OUI',
                    REFERENCE='NON_REGRESSION',
-                   VERSION = '9.2.20', ),                   
+                   VERSION = '9.2.20', ),
                 _F(RESULTAT=U1,
                    NUME_ORDRE=100,
                    NOM_CHAM='INDI_LOCA_ELGA',

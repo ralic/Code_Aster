@@ -1,4 +1,4 @@
-# MODIF  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 #
 # TITRE : Cylindre mince sous pression hydrostatique
 # demo005a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -160,8 +160,8 @@ res1=MECA_STATIQUE(
 # element a partir des deplacements
 
 res1=CALC_ELEM(reuse=res1,
-               MODELE = modl,
-               CHAM_MATER=chmat,
+
+
                RESULTAT=res1,
                OPTION='SIGM_ELNO_DEPL',);
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -388,6 +388,11 @@ U=CALC_ELEM(reuse =U,
             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
 
 
+U=CALC_NO(reuse =U,
+            RESULTAT=U,
+            OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA',),);
+
+
 IMPR_RESU(FORMAT='MED', UNITE=71, RESU=_F(RESULTAT=U,),);
 
 UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
@@ -403,6 +408,10 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                               NOM_CHAM    ='SIEF_ELGA'),
                           _F( NOM_RESU='U',
                               NOM_CHAM    ='VARI_ELGA'),
+                          _F( NOM_RESU='U',
+                              NOM_CHAM    ='SIEF_NOEU_ELGA'),
+                          _F( NOM_RESU='U',
+                              NOM_CHAM    ='VARI_NOEU_ELGA'),
                          ) ,
               UNITE=71,
               TOUT_ORDRE='OUI',);
@@ -437,6 +446,14 @@ TEST_RESU ( RESU=(
                          MAILLE     = 'M1',
                          REFERENCE  = 'NON_REGRESSION',
                          POINT      =  1,
+                         NOM_CMP    = 'V1',
+                         VALE       =  5.25001E-04 ),
+                    _F(  RESULTAT   = UUU,
+                         NOM_CHAM   = 'VARI_NOEU_ELGA',
+                         INST       = 9.00000E+01,
+                         MAILLE     = 'M1',
+                         REFERENCE  = 'NON_REGRESSION',
+                         NOEUD      =  'N3',
                          NOM_CMP    = 'V1',
                          VALE       =  5.25001E-04 ),
 

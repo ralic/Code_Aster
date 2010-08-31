@@ -1,22 +1,22 @@
-# MODIF  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE:  ESSAI DE CONSOLIDATION CYCLIQUE DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
 # ssnv204c.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE FOUCAULT A.FOUCAULT
 
@@ -59,7 +59,7 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
 TEMPS0=DEFI_LIST_REEL(DEBUT=-10.,
                       INTERVALLE=(_F(JUSQU_A = 0., NOMBRE = 1),
                                   _F(JUSQU_A =  10., NOMBRE = 200)));
-                         
+
 
 #***********************************************************************
 #    MATERIAU : SOL
@@ -85,7 +85,7 @@ SOL0=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
                             RD_CYC   = 0.005,
                             RI_CYC   = 0.001,
                             DILA     = 1.0,));
-                            
+
 SOL=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
                   HUJEUX=_F(N        = 0.4,
                             BETA     = 24.,
@@ -107,14 +107,14 @@ SOL=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
                             RD_CYC   = 0.005,
                             RI_CYC   = 0.001,
                             DILA     = 1.0,));
-                            
+
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                      AFFE=_F(TOUT='OUI', MATER=SOL0));
-                    
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI', MATER=SOL));
-              
-              
+
+
 #***********************************************************************
 #    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
 #***********************************************************************
@@ -131,7 +131,7 @@ CHAR_U3=AFFE_CHAR_MECA(MODELE=MODELE,
                                   _F(GROUP_MA='DROIT',DX = 1.),
                                   _F(GROUP_MA='ARRIERE',DY = 1.),),);
 
-                                             
+
 DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
                 FACE_IMPO=(_F(GROUP_MA='BAS',DZ = 0.),
                            _F(GROUP_MA='GAUCHE',DX = 0.),
@@ -195,8 +195,8 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 20),
-                 
-                 ARCHIVAGE=_F(LIST_INST = TEMPS0),                              
+
+                 ARCHIVAGE=_F(LIST_INST = TEMPS0),
                  INCREMENT=_F(LIST_INST = DEFLIST0,
                               INST_INIT = 0.0,
                               INST_FIN =  10));
@@ -210,13 +210,13 @@ U0=STAT_NON_LINE(MODELE=MODELE,
 #*******************************************************************************
 
 U0=CALC_ELEM(reuse=U0,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT,
+
+
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EPSI_ELNO_DEPL'),
              RESULTAT=U0);
 
 U0=CALC_NO(reuse=U0,
-           CHAM_MATER=CHMAT,
+
            OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','EPSI_NOEU_DEPL'),
            RESULTAT=U0);
 
@@ -253,7 +253,7 @@ IMPR_TABLE(TABLE=TAB_EPSV);
 IMPR_TABLE(TABLE=TAB_VAR);
 
 ####################################################
-# CONTROLE DE NON-REGRESSION DU CODE 
+# CONTROLE DE NON-REGRESSION DU CODE
 ####################################################
 
 ###################################################
@@ -262,7 +262,7 @@ IMPR_TABLE(TABLE=TAB_VAR);
 #
 ###################################################
 
-# VALEUR DU RAYON ISOTROPE CYCLIQUE 
+# VALEUR DU RAYON ISOTROPE CYCLIQUE
 
 TEST_TABLE(TABLE=TAB_VAR,
            NOM_PARA='V8',
@@ -275,8 +275,8 @@ TEST_TABLE(TABLE=TAB_VAR,
                      PRECISION=1E-6,
                      CRITERE='ABSOLU'));
 
-# VALEUR DE LA DEFORMATION VOLUMIQUE PLASTIQUE 
-        
+# VALEUR DE LA DEFORMATION VOLUMIQUE PLASTIQUE
+
 TEST_TABLE(TABLE=TAB_VAR,
            NOM_PARA='V23',
            VALE=7.42953E-03,
@@ -288,8 +288,8 @@ TEST_TABLE(TABLE=TAB_VAR,
                      PRECISION=1E-6,
                      CRITERE='ABSOLU'));
 
-# VALEUR DES CONTRAINTES PRINCIPALES 
-        
+# VALEUR DES CONTRAINTES PRINCIPALES
+
 TEST_TABLE(TABLE=TAB_SIG,
            NOM_PARA='SIXX',
            VALE=-2.00000,
@@ -307,7 +307,7 @@ TEST_TABLE(TABLE=TAB_SIG,
 #
 ###################################################
 
-# VALEUR DU RAYON ISOTROPE MONOTONE 
+# VALEUR DU RAYON ISOTROPE MONOTONE
 
 TEST_TABLE(TABLE=TAB_VAR,
            NOM_PARA='V4',
@@ -320,8 +320,8 @@ TEST_TABLE(TABLE=TAB_VAR,
                      PRECISION=1E-6,
                      CRITERE='ABSOLU'));
 
-# VALEUR DE LA DEFORMATION VOLUMIQUE PLASTIQUE 
-        
+# VALEUR DE LA DEFORMATION VOLUMIQUE PLASTIQUE
+
 TEST_TABLE(TABLE=TAB_VAR,
            NOM_PARA='V23',
            VALE=-2.0572E-02,
@@ -333,8 +333,8 @@ TEST_TABLE(TABLE=TAB_VAR,
                      PRECISION=1E-6,
                      CRITERE='ABSOLU'));
 
-# VALEUR DES CONTRAINTES PRINCIPALES 
-        
+# VALEUR DES CONTRAINTES PRINCIPALES
+
 TEST_TABLE(TABLE=TAB_SIG,
            NOM_PARA='SIXX',
            VALE=-4.482E+05,

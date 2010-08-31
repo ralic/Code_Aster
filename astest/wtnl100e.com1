@@ -26,7 +26,7 @@ RESU[nbadap]=STAT_NON_LINE(reuse =RESU[nbadap],
                            ETAT_INIT=_F(EVOL_NOLI=RESU[nbadap],),
                            INCREMENT=_F(LIST_INST=LI,
                                         INST_INIT = T1_FIN,
-                                        INST_FIN = T2_FIN, 
+                                        INST_FIN = T2_FIN,
                                         ERRE_TEMPS='OUI',),
                            NEWTON=_F(MATRICE='TANGENTE',
                                      REAC_ITER=10,),
@@ -34,8 +34,8 @@ RESU[nbadap]=STAT_NON_LINE(reuse =RESU[nbadap],
                            SOLVEUR=_F(METHODE='LDLT',),);
 
 RESU[nbadap]=CALC_ELEM(reuse =RESU[nbadap],
-                       MODELE=MODE[nbadap],
-                       CHAM_MATER=CHMAT[nbadap],
+
+
                        RESULTAT=RESU[nbadap],
                        LIST_INST=LI2_BIS,
                        OPTION='SIEF_ELNO_ELGA',);
@@ -75,7 +75,7 @@ RESU_TOT=STAT_NON_LINE(MODELE=MODE[nbadap],
                                     PARM_THETA=0.56999999999999995,),
                        INCREMENT=_F(LIST_INST=LI,
                                     INST_INIT = 0.0,
-                                    INST_FIN = T2_FIN, 
+                                    INST_FIN = T2_FIN,
                                     ERRE_TEMPS='OUI',),
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=10,),
@@ -91,8 +91,8 @@ RESU_TOT=STAT_NON_LINE(MODELE=MODE[nbadap],
 ####print "Derniere valeur de ERRE_TPS_GLOB = ", dico['ERRE_TPS_GLOB'][-1]
 
 RESU_TOT=CALC_ELEM(reuse =RESU_TOT,
-                  MODELE=MODE[nbadap],
-                  CHAM_MATER=CHMAT[nbadap],
+
+
                   RESULTAT=RESU_TOT,
                   LIST_INST=LI,
                   OPTION='SIEF_ELNO_ELGA',);

@@ -1,4 +1,4 @@
-#@ MODIF info_fonction_ops Macro  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF info_fonction_ops Macro  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,33 +67,47 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
       # vérifications de cohérence
       typobj = set()
       npara = set()
+      nparf = set()
       nresu = set()
+      l_nom = []
       for tf in l_fonc:
           typobj.add(tf.__class__)
           npara.add(tf.para['NOM_PARA'])
+          nparf.add(tf.para.get('NOM_PARA_FONC'))
           nresu.add(tf.para['NOM_RESU'])
+          l_nom.append(tf.nom)
       if len(typobj) > 1:
           # types (fonction, fonction_c, nappe) non homogènes
           UTMESS('F', 'FONCT0_37')
+      is_nappe = typobj.pop() is t_nappe
       if len(npara) > 1:
           # NOM_PARA non homogènes
           UTMESS('F', 'FONCT0_38', valk=' '.join(npara))
+      if len(nparf) > 1:
+          # NOM_PARA_FONC non homogènes
+          UTMESS('F', 'FONCT0_38', valk=' '.join(nparf))
       if len(nresu) > 1:
           # NOM_RESU non homogènes
           UTMESS('F', 'FONCT0_39', valk=' '.join(nresu))
       
       # nom des paramètres et leurs types
-      k_absc = npara.pop()
+      k_para = npara.pop()
+      k_parf = nparf.pop()
       k_ordo = nresu.pop()
-      k_min = k_absc + "_MIN"
-      k_max = k_absc + "_MAX"
+      k_min = k_para + "_MIN"
+      k_max = k_para + "_MAX"
       ordered_params = ['FONCTION', 'TYPE']
       ordered_type = ['K8', 'K8']
       if with_intervalle:
           ordered_params.extend(['INTERVALLE', k_min, k_max])
           ordered_type.extend(['I', 'R', 'R'])
-      ordered_params.extend([k_absc, k_ordo])
-      ordered_type.extend(['R', 'R'])
+      ordered_params.append(k_para)
+      ordered_type.append('R')
+      if is_nappe:
+          ordered_params.append(k_parf)
+          ordered_type.append('R')
+      ordered_params.append(k_ordo)
+      ordered_type.append('R')
 
       # boucle sur les fonctions, intervalles, min/max, extrema
       _type = { 'min' : 'MINI', 'max' : 'MAXI' }
@@ -101,21 +115,31 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
       tab = Table(para=ordered_params, typ=ordered_type)
       for tf in l_fonc:
           if not with_intervalle:
-              interv = [[float(min(tf.vale_x)), float(max(tf.vale_x))],]
+              if not is_nappe:
+                  interv = [[float(min(tf.vale_x)), float(max(tf.vale_x))],]
+              else:
+                  interv = [[-1.e-300, 1.e300],]
           for num_int, bornes in enumerate(interv):
               x1, x2 = bornes
-              stf = tf.cut(x1, x2, _PREC, nom=tf.nom)
+              if not is_nappe:
+                  stf = tf.cut(x1, x2, _PREC, nom=tf.nom)
+              else:
+                  stf = tf
               extrema = stf.extreme()
               for key in ('min', 'max'):
                   nb = len(extrema[key])
                   for i in range(nb):
                       line = { 'FONCTION' : tf.nom, 'TYPE' : _type[key],
-                          k_absc : extrema[key][i][0], k_ordo : extrema[key][i][1] }
+                          k_para : extrema[key][i][0] }
+                      if is_nappe:
+                          line.update({ k_parf : extrema[key][i][1], k_ordo :  extrema[key][i][2]})
+                      else:
+                          line.update({ k_ordo :  extrema[key][i][1]})
                       if with_intervalle:
                           line.update({ 'INTERVALLE' : num_int + 1,
                                         k_min : x1, k_max : x2})
                       tab.append(line)
-      tab.titr = "Extrema de la table " + self.sd.nom
+      tab.titr = "Extrema de " + ', '.join(l_nom)
       # table résultat
       dprod = tab.dict_CREA_TABLE()
       C_out = CREA_TABLE(**dprod)

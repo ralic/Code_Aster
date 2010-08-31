@@ -1,4 +1,4 @@
-# MODIF  DATE 09/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
+# MODIF  DATE 30/08/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DE POST_BORDET EN 2D ET 3D
 # zzzz268a.para = tps_job 45 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,8 +92,7 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=INSTANTS,
                                 INST_FIN=10.0,),
-                   NEWTON=_F(REAC_INCR=1,
-                             REAC_ITER=1,),
+                   NEWTON=_F(MATRICE='ELASTIQUE'),
                    CONVERGENCE=_F(RESI_GLOB_RELA=0.000001,
                                   ITER_GLOB_MAXI=20,),
                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',

@@ -1,5 +1,6 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/08/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (3D HHMS)
+# wtnv136b.para = tps_job 150 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -326,7 +327,6 @@ U2=STAT_NON_LINE(
 
                 CONVERGENCE=_F(
                         ITER_GLOB_MAXI=40,
-                        ARRET='NON',
                         ITER_GLOB_ELAS=50,
                         RESI_GLOB_RELA = RESI_GLOB_RELA,
                 ),
@@ -337,14 +337,14 @@ U2=STAT_NON_LINE(
 #############################
 
 U2=CALC_ELEM(reuse =U2,
-                MODELE=MODELE,
-                CHAM_MATER=CHMAT,
+
+
                 OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                 RESULTAT=U2,);
 
 
 U2=CALC_NO(reuse=U2,
-                CHAM_MATER=CHMAT,
+
                 OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA',),
                 RESULTAT=U2)
 

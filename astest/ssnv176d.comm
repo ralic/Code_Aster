@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE COMPRESSION SIMPLE EN 3D AVEC PILOTAGE - COMPORTEMENT ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,8 +135,8 @@ U=STAT_NON_LINE(reuse=U,
 
 U = CALC_ELEM(
    reuse = U,
-   MODELE    =MO,
-   CHAM_MATER=CHP_M,
+
+
    RESULTAT  =U,
    OPTION    =('EPSI_ELGA_DEPL'),
    );

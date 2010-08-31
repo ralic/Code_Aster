@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THHD, 2D ,
 # wtnp112e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -239,8 +239,8 @@ RESU0=STAT_NON_LINE(
               );
 
 RESU0=CALC_ELEM(reuse =RESU0,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT0,
+
+
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
              RESULTAT=RESU0,);

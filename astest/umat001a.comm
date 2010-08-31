@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE CYLINDRE CREUX THERMOELASTICITE LINEAIRE - TEST UMAT AXIS
 # umat001a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
@@ -37,7 +37,7 @@ if conf['ID_PERF'][0] == 'Bull':
 else:
     os.rename("fort.22", "fort.22.f")
     # On force la ligne de commande pour ne pas etre gene par les licences des compilateurs
-    make_shared("libumat.so", "fort.22.f", compiler_command="gfortran")
+    make_shared("libumat.so", "fort.22.f")
 
 
 DEBUT(CODE=_F(NOM='UMAT001A',NIV_PUB_WEB='INTERNET'))

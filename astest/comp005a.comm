@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA MODELISATION 3D_GRAD_VARI
 # comp005a.para = tps_job 130 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -203,8 +203,8 @@ for j in range(0,len(comportement)):
 
     U[i] = CALC_ELEM(
                   reuse = U[i],
-                  MODELE    =MO[i],
-                  CHAM_MATER=CHP_M[i],
+
+
                   RESULTAT  =U[i],
                   OPTION    =('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                    );
@@ -213,7 +213,7 @@ for j in range(0,len(comportement)):
 
     U[i] = CALC_NO(
                 reuse = U[i],
-                CHAM_MATER=CHP_M[i],
+
                 RESULTAT  =U[i],
                 OPTION    =('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','FORC_NODA'),
                 );
@@ -295,10 +295,10 @@ for i in range(0,len(modelisation)):
   DETRUIRE ( CONCEPT = _F (NOM = TEMP[i],),)
   DETRUIRE ( CONCEPT = _F (NOM = CHP_M[i],),)
   DETRUIRE ( CONCEPT = _F (NOM = MO[i],),)
-  DETRUIRE ( CONCEPT = _F (NOM = C_RIG[i],),)  
+  DETRUIRE ( CONCEPT = _F (NOM = C_RIG[i],),)
   DETRUIRE ( CONCEPT = _F (NOM = CHR_C[i],),)
   DETRUIRE ( CONCEPT = _F (NOM = DIFF[i],),)
-  
+
 METAL2 = DEFI_MATERIAU(
   ELAS       = _F(E = 1.E5,
                   NU = 0.3,
@@ -392,8 +392,8 @@ for i in range(0,len(modelisation)):
 
   U[i] = CALC_ELEM(
                 reuse = U[i],
-                MODELE    =MO[i],
-                CHAM_MATER=CHP_M[i],
+
+
                 RESULTAT  =U[i],
                 OPTION    =('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                  );
@@ -402,7 +402,7 @@ for i in range(0,len(modelisation)):
 
   U[i] = CALC_NO(
               reuse = U[i],
-              CHAM_MATER=CHP_M[i],
+
               RESULTAT  =U[i],
               OPTION    =('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','FORC_NODA'),
               );

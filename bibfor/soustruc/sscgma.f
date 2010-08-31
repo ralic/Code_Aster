@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF SOUSTRUC  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C     -----------------------------------
       CALL WKVECT('&&SSCGMA.LIK8','V V K8',NBK8,IALIK8)
       CALL WKVECT('&&SSCGMA.LII1','V V I',NBIS,IALII1)
       CALL WKVECT('&&SSCGMA.LII2','V V I',NBIS,IALII2)
+      CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMAT,KBID,IERD)
 
       CALL GETVTX(' ','ALARME',1,1,1,ALARM,NALAR)
 
@@ -97,19 +98,18 @@ C     -----------------------------------
         N7 = -N7
         N8 = -N8
 
+
 C       -- MOT CLEF TOUT:
 C       -------------------
         IF (N8.GT.0) THEN
-          CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMAT,KBID,IERD)
-          CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
-          CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',NBMAT,KBID)
-          CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOGMA),'E',IAGMA)
+          NBMA=NBMAT
+          CALL WKVECT(LISMA,'V V I',NBMA,JLISMA)
           DO 10,IMA = 1,NBMAT
-            ZI(IAGMA+IMA-1) = IMA
+            ZI(JLISMA-1+IMA) = IMA
    10     CONTINUE
-          NBGNAJ = NBGNAJ + 1
-          GO TO 210
+          GO TO 219
         END IF
+
 
 C       -- MOT CLEF MAILLE:
 C       -------------------
@@ -141,18 +141,16 @@ C       -------------------
             ZI(JMAIL+NBMA-1) = NUM
    20     CONTINUE
           IF (IER.NE.0) CALL ASSERT(.FALSE.)
-          CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
-          CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',NBMA,KBID)
-          CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOGMA),'E',IAGMA)
+          CALL WKVECT(LISMA,'V V I',NBMA,JLISMA)
           DO 30,IMA = 0,NBMA - 1
-            ZI(IAGMA+IMA) = ZI(JMAIL+IMA)
+            ZI(JLISMA+IMA) = ZI(JMAIL+IMA)
    30     CONTINUE
-          NBGNAJ = NBGNAJ + 1
           CALL JEDETR('&&SSCGMA.MAILLE')
           CALL JEDETR('&&SSCGMA.MAILLE2')
           CALL JEDETR('&&SSCGMA.L_MAILLE')
-          GO TO 210
+          GO TO 219
         END IF
+
 
 C       -- MOT CLEF GROUP_MA:
 C       ---------------------
@@ -176,28 +174,26 @@ C       ---------------------
           ELSE
             N6A = 1
           END IF
-          CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
-          CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',N6A,KBID)
-          CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOGMA),'E',IAGMA)
-          NBGNAJ = NBGNAJ + 1
+          CALL WKVECT(LISMA,'V V I',N6A,JLISMA)
+          NBMA=N6A
           IF (N6B.EQ.0) THEN
             N = IND2 - IND1 + 1
             DO 40 II = 1,N
-              ZI(IAGMA-1+II) = ZI(IAGM2-2+IND1+II)
+              ZI(JLISMA-1+II) = ZI(IAGM2-2+IND1+II)
    40       CONTINUE
-            GO TO 210
+            GO TO 219
           END IF
           CALL GETVTX('CREA_GROUP_MA','POSITION',IOCC,1,1,KPOS,N6B)
           IF (KPOS.EQ.'INIT') THEN
-            ZI(IAGMA) = ZI(IAGM2)
+            ZI(JLISMA) = ZI(IAGM2)
           ELSE IF (KPOS.EQ.'FIN') THEN
             II = ILI2
-            ZI(IAGMA) = ZI(IAGM2+II-1)
+            ZI(JLISMA) = ZI(IAGM2+II-1)
           ELSE IF (KPOS.EQ.'MILIEU') THEN
             II = (ILI2+1)/2
-            ZI(IAGMA) = ZI(IAGM2+II-1)
+            ZI(JLISMA) = ZI(IAGM2+II-1)
           END IF
-          GO TO 210
+          GO TO 219
         END IF
 
 
@@ -244,15 +240,13 @@ C       -------------------
               CALL U2MESK('A','SOUSTRUC_36',1,NOGMA)
             END IF
           ELSE
-            CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
-            CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',N,KBID)
-            CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOGMA),'E',IAGMA)
+            CALL WKVECT(LISMA,'V V I',N,JLISMA)
+            NBMA=N
             DO 90 II = 1,N
-              ZI(IAGMA-1+II) = ZI(IALII1-1+II)
+              ZI(JLISMA-1+II) = ZI(IALII1-1+II)
    90       CONTINUE
-            NBGNAJ = NBGNAJ + 1
           END IF
-          GO TO 210
+          GO TO 219
         END IF
 
 
@@ -309,15 +303,13 @@ C       -------------------
               CALL U2MESK('A','SOUSTRUC_36',1,NOGMA)
             END IF
           ELSE
-            CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
-            CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',N,KBID)
-            CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOGMA),'E',IAGMA)
+            CALL WKVECT(LISMA,'V V I',N,JLISMA)
+            NBMA=N
             DO 140 II = 1,N
-              ZI(IAGMA-1+II) = ZI(IALII1-1+II)
+              ZI(JLISMA-1+II) = ZI(IALII1-1+II)
   140       CONTINUE
-            NBGNAJ = NBGNAJ + 1
           END IF
-          GO TO 210
+          GO TO 219
         END IF
 
 
@@ -364,15 +356,13 @@ C       -------------------
               CALL U2MESK('A','SOUSTRUC_36',1,NOGMA)
             END IF
           ELSE
-            CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
-            CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',N,KBID)
-            CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOGMA),'E',IAGMA)
+            CALL WKVECT(LISMA,'V V I',N,JLISMA)
+            NBMA=N
             DO 190 II = 1,N
-              ZI(IAGMA-1+II) = ZI(IALII1-1+II)
+              ZI(JLISMA-1+II) = ZI(IALII1-1+II)
   190       CONTINUE
-            NBGNAJ = NBGNAJ + 1
           END IF
-          GO TO 210
+          GO TO 219
         END IF
 
 
@@ -413,47 +403,50 @@ C               ----------------------------------
           ELSE IF (OPTION(1:5).EQ.'APPUI') THEN
             CALL CGMAAP('CREA_GROUP_MA',IOCC,MA,LISMA,NBMA)
           END IF
-C
-C        -- ON FILTRE LES TYPES DE MAILLES :
-C           --------------------------------
-          IF (NBMA.GT.0) THEN
-            CALL GETVTX('CREA_GROUP_MA','TYPE_MAILLE',IOCC,1,1,
-     &                  TYMA,NTYP)
-            IF(TYMA(1:4).NE.'TOUT')THEN
-               CALL CGMFTM(TYMA,MA,LISMA,NBMA,IERR)
-               IF(IERR.NE.0)THEN
-                  CALL U2MESK('F','SOUSTRUC2_7',1,NOGMA)
-               ENDIF
-            ENDIF
-          ENDIF  
-C
-C        -- CREATION ET AFFECTATION DU GROUP_MA :
-C            ----------------------------------
-          IF (NBMA.EQ.0) THEN
-            IF (ALARM.EQ.'OUI') THEN
-              CALL U2MESK('A','SOUSTRUC_36',1,NOGMA)
-            END IF
-          ELSE
-            CALL JEVEUO(LISMA,'L',IDLIMA)
+        END IF
 
-            CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
-            CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',NBMA,
-     &                  KBID)
-            CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOGMA),'E',IAGMA)
 
-            DO 200 II = 1,NBMA
-              ZI(IAGMA-1+II) = ZI(IDLIMA-1+II)
-  200       CONTINUE
+C       -- ON FILTRE LES TYPES DE MAILLES :
+C       -----------------------------------
+  219   CONTINUE
 
-            NBGNAJ = NBGNAJ + 1
+        IF (NBMA.GT.0) THEN
+          CALL GETVTX('CREA_GROUP_MA','TYPE_MAILLE',IOCC,1,1,
+     &                TYMA,NTYP)
+          IF(TYMA(1:4).NE.'TOUT')THEN
+             CALL CGMFTM(TYMA,MA,LISMA,NBMA,IERR)
+             IF(IERR.NE.0)THEN
+                CALL U2MESK('F','SOUSTRUC2_7',1,NOGMA)
+             ENDIF
+          ENDIF
+        ENDIF
 
+C       -- CREATION ET AFFECTATION DU GROUP_MA :
+C       ----------------------------------
+        IF (NBMA.EQ.0) THEN
+          IF (ALARM.EQ.'OUI') THEN
+            CALL U2MESK('A','SOUSTRUC_36',1,NOGMA)
           END IF
+        ELSE
+          CALL JEVEUO(LISMA,'L',IDLIMA)
 
-          CALL JEDETR(LISMA)
+          CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
+          CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',NBMA,
+     &                KBID)
+          CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOGMA),'E',JGMA)
+
+          DO 200 II = 1,NBMA
+            ZI(JGMA-1+II) = ZI(IDLIMA-1+II)
+  200     CONTINUE
+
+          NBGNAJ = NBGNAJ + 1
 
         END IF
 
+        CALL JEDETR(LISMA)
+
   210 CONTINUE
+
 
 C     IMPRESSIONS NIVEAUX 1 ET 2
 C     --------------------------
@@ -481,7 +474,7 @@ C     --------------------
         MAXCOL = 8
         DO 250 I = 1,NBGNAJ
           II = NBGMIN + I
-          CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',II),'L',IAGMA)
+          CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',II),'L',JLISMA)
           CALL JENUNO(JEXNUM(MA//'.GROUPEMA',II),NOGMA)
           CALL JELIRA(JEXNUM(MA//'.GROUPEMA',II),'LONMAX',NBMA,KBID)
           WRITE (IFM,'(/,3A,/,28(''-''))') 'MAILLES DU GROUPE ',NOGMA,
@@ -495,7 +488,7 @@ C     --------------------
             IF (IRESTE.NE.0 .AND. JJJ.EQ.NBLINE) NBCOL = IRESTE
             DO 230 III = 1,NBCOL
               KKK = KKK + 1
-              CALL JENUNO(JEXNUM(MA//'.NOMMAI',ZI(IAGMA-1+KKK)),NOMA)
+              CALL JENUNO(JEXNUM(MA//'.NOMMAI',ZI(JLISMA-1+KKK)),NOMA)
               CARD((III-1)*10+1:) = ' '//NOMA//' '
   230       CONTINUE
             WRITE (IFM,'(A)') CARD(:10*NBCOL)

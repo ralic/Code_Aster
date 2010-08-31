@@ -1,4 +1,4 @@
-# MODIF  DATE 13/04/2010   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DETECTION DE SINGULARITE SIMPLE AVEC LES SOLVEURS LINEAIRES 
 # erreu03a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,11 +37,10 @@ DEBUT(CODE=_F(NOM='ERREU03A',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
       ERREUR=_F(ERREUR_F='EXCEPTION',),
       PAR_LOT='NON',)
 
-import re
 fmt_raison='-'*80+"""
 
    Exception interceptee
-   Raison : %s
+   Message : %s
 
 """+'-'*80+'\n'
 
@@ -82,7 +81,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("FACTOR_20", str(err))<>None :
+   if err.id_message == "FACTOR_20":
       is_ok = 1
 TAB11=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -99,7 +98,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("FACTOR_20", str(err))<>None :
+   if err.id_message == "FACTOR_20":
       is_ok = 1
 TAB12=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -116,7 +115,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("FACTOR_77", str(err))<>None :
+   if err.id_message == "FACTOR_77":
       is_ok = 1
 TAB130=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -133,7 +132,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("FACTOR_57", str(err))<>None :
+   if err.id_message == "FACTOR_57":
       is_ok = 1
 TAB131=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -155,7 +154,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("FACTOR_41", str(err))<>None :
+   if err.id_message == "FACTOR_41":
       is_ok = 1
 TAB21=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -172,7 +171,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("FACTOR_41", str(err))<>None :
+   if err.id_message == "FACTOR_41":
       is_ok = 1
 TAB22=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -189,7 +188,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("FACTOR_76", str(err))<>None :
+   if err.id_message == "FACTOR_76":
       is_ok = 1
 TAB230=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -206,7 +205,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("FACTOR_42", str(err))<>None :
+   if err.id_message == "FACTOR_42":
       is_ok = 1
 TAB231=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)

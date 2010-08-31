@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 16/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -257,16 +257,9 @@ class JDC:
 
    def traiter_user_exception(self,exc_val):
        """ Cette methode traite les exceptions en provenance du module d'execution
-           codex.FatalError et codex.error.
+           (qui derive de codex.error).
        """
-       if isinstance(exc_val,self.codex.FatalError):
-          # erreur fatale levee et pas trappee, on ne ferme pas les bases
-          # on sort en erreur
-          raison=exc_val.__class__.__name__+" : "+str(exc_val)
-          self.cr.exception("Exception utilisateur levee mais pas interceptee.\n"
-                            "On ne ferme pas les bases et on sort en erreur.\n"+raison)
-
-       elif isinstance(exc_val,self.codex.error):
+       if isinstance(exc_val,self.codex.error):
           # erreur utilisateur levee et pas trappee, on ferme les bases en appelant la commande FIN
           raison=exc_val.__class__.__name__+" : "+str(exc_val)
           self.codex.impers()

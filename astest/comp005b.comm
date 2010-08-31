@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA MODELISATION D_PLAN_GRAD_VARI
 # comp005b.para = tps_job 140 mem_job 128Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -203,8 +203,8 @@ for j in range(0,len(comportement)):
 
     U[i] = CALC_ELEM(
                   reuse = U[i],
-                  MODELE    =MO[i],
-                  CHAM_MATER=CHP_M[i],
+
+
                   RESULTAT  =U[i],
                   OPTION    =('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                    );
@@ -213,7 +213,7 @@ for j in range(0,len(comportement)):
 
     U[i] = CALC_NO(
                 reuse = U[i],
-                CHAM_MATER=CHP_M[i],
+
                 RESULTAT  =U[i],
                 OPTION    =('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','FORC_NODA'),
                 );
@@ -296,10 +296,10 @@ for i in range(0,len(modelisation)):
   DETRUIRE ( CONCEPT = _F (NOM = TEMP[i],),)
   DETRUIRE ( CONCEPT = _F (NOM = CHP_M[i],),)
   DETRUIRE ( CONCEPT = _F (NOM = MO[i],),)
-  DETRUIRE ( CONCEPT = _F (NOM = C_RIG[i],),)  
+  DETRUIRE ( CONCEPT = _F (NOM = C_RIG[i],),)
   DETRUIRE ( CONCEPT = _F (NOM = CHR_C[i],),)
   DETRUIRE ( CONCEPT = _F (NOM = DIFF[i],),)
-  
+
 METAL2 = DEFI_MATERIAU(
   ELAS       = _F(E = 1.E5,
                   NU = 0.3,
@@ -392,8 +392,8 @@ for i in range(0,len(modelisation)):
 
   U[i] = CALC_ELEM(
                 reuse = U[i],
-                MODELE    =MO[i],
-                CHAM_MATER=CHP_M[i],
+
+
                 RESULTAT  =U[i],
                 OPTION    =('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                  );
@@ -402,7 +402,7 @@ for i in range(0,len(modelisation)):
 
   U[i] = CALC_NO(
               reuse = U[i],
-              CHAM_MATER=CHP_M[i],
+
               RESULTAT  =U[i],
               OPTION    =('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','FORC_NODA'),
               );
@@ -442,7 +442,7 @@ for i in range(0,len(modelisation)):
                   PROL_GAUCHE='CONSTANT',);
 
   if i==1 :
-  
+
     DIFF=CALC_TABLE(TABLE=TAB_S[i],
                     TITRE = ' ',
                     ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('SIXX','SIXX_L'),),

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (QUAD9/TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,13 +83,13 @@ TEST_RESU(RESU=(
    MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0))
           )
 
-CO=INTE_MAIL_2D(   MAILLAGE=MAIL,
+CHEM=INTE_MAIL_2D(   MAILLAGE=MAIL,
                       DEFI_SEGMENT=_F( ORIGINE = ( 0.04,  0.07, ),
                                     EXTREMITE = ( 0.07,  0.03, ))
                    )
 
 TR1_C=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
-                           CHEMIN = CO,
+                           CHEMIN = CHEM,
                            RESULTAT = TEMPE,
                            TRAC_NOR = 'OUI',
                            NUME_ORDRE=2,

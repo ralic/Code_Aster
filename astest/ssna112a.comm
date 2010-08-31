@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE Test de arrachement axisymmetrique(La Borderie & Pijaudier Cabot)
 # ssna112a.para = tps_job 160 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,18 +160,18 @@ U1=STAT_NON_LINE(MODELE=MODELO,
                                 RESI_GLOB_RELA=1.E-07,),);
 
 U1=CALC_ELEM(reuse =U1,
-             MODELE=MODELO,
-             CHAM_MATER=CHAMAT,
+
+
              OPTION=('SIEF_ELNO_ELGA',
                      'EPSI_ELNO_DEPL',
                      'EPSI_ELGA_DEPL',),
              RESULTAT=U1,);
 
 U1=CALC_NO(reuse =U1,
-           MODELE=MODELO,
+
            OPTION=('REAC_NODA',
                    'SIEF_NOEU_ELGA',),
-           CHAM_MATER=CHAMAT,
+
            RESULTAT=U1,);
 
 

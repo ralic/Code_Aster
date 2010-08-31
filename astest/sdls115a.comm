@@ -1,4 +1,4 @@
-# MODIF  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE COMPARAISON AVEC LA SOLUTION ANALYTIQUE D'UNE PLAQUE (DKT) EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,7 +73,7 @@ MAT=DEFI_MATERIAU(
                              E    =  EY,
                              NU   =  NU,
                              RHO  = RHO,
-                         AMOR_ALPHA=0.0000001, AMOR_BETA=0.0001,  
+                         AMOR_ALPHA=0.0000001, AMOR_BETA=0.0001,
                            ),
                  );
 
@@ -222,7 +222,7 @@ MAT2=DEFI_MATERIAU(
                              E    =  EY,
                              NU   =  NU,
                              RHO  = RHO,
-                         AMOR_ALPHA=0.0001, AMOR_BETA=0.1,  
+                         AMOR_ALPHA=0.0001, AMOR_BETA=0.1,
                            ),
                  );
 
@@ -295,8 +295,8 @@ RESU1=CALC_NO(reuse = RESU1,
                OPTION='FORC_NODA',
                PRECISION=1.E-3,
                RESULTAT=RESU1,
-               MODELE=MOD1,
-               CHAM_MATER=CHMAT,
+
+
                );
 
 RESU1 =CALC_ELEM( reuse      = RESU1,
@@ -307,8 +307,8 @@ RESU1 =CALC_ELEM( reuse      = RESU1,
                             'ENEL_ELNO_ELGA',
               ),
               RESULTAT   = RESU1,
-              MODELE=MOD1,
-              CARA_ELEM = CELE1,
+
+
               )
 
 TRAV = POST_ELEM(

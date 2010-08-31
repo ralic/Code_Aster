@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR SUR CELLULE UNITAIRE 3D
 # wtnv127b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -184,8 +184,8 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  );
 
 U0=CALC_ELEM(reuse =U0,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT0,
+
+
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
              RESULTAT=U0,);

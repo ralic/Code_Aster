@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE VERIFICATION DE LA BONNE PRISE EN COMPTE DU CISAILLEMENT DANS LE MODELE BETON_UMLV_FP
 # ssnv181a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -48,7 +48,7 @@ NU=DEFI_FONCTION(NOM_PARA='TEMP',
 ALPHA= DEFI_CONSTANTE(VALE=0.);
 
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
-                               NU=NU, 
+                               NU=NU,
                            FONC_DESORP=FONC1,ALPHA=ALPHA,
                            TEMP_DEF_ALPHA=0.),
                     BETON_UMLV_FP=_F(K_RS=120000.0,
@@ -158,8 +158,8 @@ U=STAT_NON_LINE(MODELE=MO,
                                ITER_GLOB_MAXI=25),);
 
 U=CALC_ELEM(reuse =U,
-            MODELE=MO,
-            CHAM_MATER=CM,
+
+
             RESULTAT=U,
             OPTION=('SIEF_ELNO_ELGA','EPSI_ELNO_DEPL',),);
 

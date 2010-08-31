@@ -1,4 +1,4 @@
-#@ MODIF miss_calcul Miss  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_calcul Miss  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ import traceback
 import os.path as osp
 
 import aster
-from Utilitai.Utmess          import UTMESS, MessageError
+from Utilitai.Utmess          import UTMESS
 from Utilitai.System          import ExecCommand
 from Miss.miss_utils          import MISS_PARAMETER, _print
 from Miss.miss_fichier_sol    import fichier_sol
@@ -107,7 +107,7 @@ class CALCUL_MISS(object):
             aster.affiche("MESSAGE", miss_out)
         if not is_ok:
             UTMESS('I', 'EXECLOGICIEL0_10', valk=error, print_as='E')
-            raise MessageError('EXECLOGICIEL0_3', vali=[0, iret])
+            raise aster.error('EXECLOGICIEL0_3', vali=[0, iret])
         self._dbg_trace("Stop")
 
 
@@ -278,7 +278,7 @@ def copie_fichier(src, dst):
         try:
             shutil.copyfile(src, dst)
         except:
-            raise MessageError('MISS0_6', valk=(src, dst))
+            raise aster.error('MISS0_6', valk=(src, dst))
 
 
 

@@ -1,22 +1,22 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE FISSURATION INTERFACE 2D AXIS SUR ARRACHEMENT, LOI CZM_TAC_MIX
 # ssna115c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F( NOM = 'SSNA115C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'))
@@ -32,23 +32,23 @@ MA_0  =  LIRE_MAILLAGE()
 MA = CREA_MAILLAGE(MAILLAGE  = MA_0, LINE_QUAD = _F(TOUT='OUI'))
 
 MA  =  DEFI_GROUP(
-  reuse  = MA, 
-  MAILLAGE = MA, 
-  
+  reuse  = MA,
+  MAILLAGE = MA,
+
   CREA_GROUP_MA = (
-    _F(NOM = 'HAUT',      GROUP_MA = 'GM1'), 
+    _F(NOM = 'HAUT',      GROUP_MA = 'GM1'),
     _F(NOM = 'BAS',       GROUP_MA = 'GM3'),
-    _F(NOM = 'DROITE',    GROUP_MA = 'GM4'),     
+    _F(NOM = 'DROITE',    GROUP_MA = 'GM4'),
     _F(NOM = 'J_G',       GROUP_MA = 'GM5'),
     _F(NOM = 'J_D',       GROUP_MA = 'GM2'),
     _F(NOM = 'J_H',       GROUP_MA = 'GM7'),
     _F(NOM = 'J_B',       GROUP_MA = 'GM6'),
     _F(NOM = 'MATRICE',   GROUP_MA = 'GM8'),
     _F(NOM = 'JOINT'   , GROUP_MA = 'GM9'),
-    ), 
-     
+    ),
+
    CREA_GROUP_NO = (
-    _F(NOM = 'HAUT',      GROUP_MA = 'GM1'), 
+    _F(NOM = 'HAUT',      GROUP_MA = 'GM1'),
     _F(NOM = 'J_H'   ,   GROUP_MA = 'GM7'),
     _F(NOM = 'JOINT' ,   GROUP_MA = 'GM9'),
     _F(NOM = 'NO_JHD',   GROUP_MA = 'GM10'),
@@ -57,18 +57,18 @@ MA  =  DEFI_GROUP(
     _F(NOM = 'NO_JHG',   GROUP_MA = 'GM13'),
     _F(NOM = 'NO_JBG',   GROUP_MA = 'GM14'),
     _F(
-       NOM = 'GN_J_D',   
+       NOM = 'GN_J_D',
        GROUP_MA = 'GM2',
        OPTION = 'NOEUD_ORDO',
        GROUP_NO_ORIG = 'NO_JBD',
-       GROUP_NO_EXTR = 'NO_JHD',),    
+       GROUP_NO_EXTR = 'NO_JHD',),
     _F(
-       NOM = 'GN_J_G',   
+       NOM = 'GN_J_G',
        GROUP_MA = 'GM5',
        OPTION = 'NOEUD_ORDO',
        GROUP_NO_ORIG = 'NO_JBG',
-       GROUP_NO_EXTR = 'NO_JHG',),     
-    )       
+       GROUP_NO_EXTR = 'NO_JHG',),
+    )
   )
 
 MA=MODI_MAILLAGE(reuse =MA,
@@ -76,20 +76,20 @@ MA=MODI_MAILLAGE(reuse =MA,
                    ORIE_FISSURE=_F(GROUP_MA='JOINT'),
                    INFO=2
                    )
-            
+
 
 BETON = DEFI_MATERIAU(
           ELAS      = _F (
-                          E  = 100 , 
+                          E  = 100 ,
                           NU = 0.,
                           ),
           RUPT_FRAG = _F(
                           GC = 0.9,
                           SIGM_C = 3,
                           PENA_LAGR=1000,
-                         )          
+                         )
      )
-  
+
 CHMAT = AFFE_MATERIAU(
           MAILLAGE = MA,
           AFFE = (
@@ -105,15 +105,15 @@ MO = AFFE_MODELE(
   MAILLAGE = MA,
   AFFE = (
     _F(
-      GROUP_MA     = 'MATRICE', 
-      PHENOMENE    = 'MECANIQUE', 
+      GROUP_MA     = 'MATRICE',
+      PHENOMENE    = 'MECANIQUE',
       MODELISATION = 'AXIS'
       ),
     _F(
       GROUP_MA     = 'JOINT',
-      PHENOMENE    = 'MECANIQUE', 
+      PHENOMENE    = 'MECANIQUE',
       MODELISATION = 'AXIS_INTERFACE'
-      ),      
+      ),
     )
   )
 
@@ -121,7 +121,7 @@ MO = AFFE_MODELE(
 
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=(
-                             _F(GROUP_MA='JOINT',ANGL_EULER=(180, 0 ,0)),         
+                             _F(GROUP_MA='JOINT',ANGL_EULER=(180, 0 ,0)),
                                  ));
 
 
@@ -158,12 +158,12 @@ INS_ARCH=DEFI_LIST_REEL(
              ))
 
 
-     
+
 FCT = DEFI_FONCTION(
   NOM_PARA = 'INST',
   VALE     = (-1,0, 0,0.00001)
   )
-     
+
 
 EVOL = STAT_NON_LINE(
          MODELE = MO,
@@ -176,16 +176,16 @@ EVOL = STAT_NON_LINE(
       _F(GROUP_MA = 'MATRICE', RELATION = 'ELAS'),
       _F(GROUP_MA = 'JOINT'  , RELATION = 'CZM_TAC_MIX')),
          INCREMENT = _F(
-                         LIST_INST = INSTANTS, 
+                         LIST_INST = INSTANTS,
                          INST_FIN  = 0.,),
        RECH_LINEAIRE = _F (ITER_LINE_MAXI = 2),
        NEWTON  = _F(
                     MATRICE   = 'TANGENTE',
-                    REAC_ITER = 1,),       
+                    REAC_ITER = 1,),
        CONVERGENCE = _F(ITER_GLOB_MAXI = 20),
        SOLVEUR     = _F(METHODE = 'MUMPS', PCENT_PIVOT=10),
        ARCHIVAGE   = _F(LIST_INST = INS_ARCH)
-    ) 
+    )
 
 
 EVOL = STAT_NON_LINE(reuse  = EVOL,
@@ -228,12 +228,12 @@ EVOL = STAT_NON_LINE(reuse  = EVOL,
     ),
   SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=10),
   ARCHIVAGE =_F(LIST_INST = INS_ARCH)
-  ) 
+  )
 
 
 EVOL = CALC_NO(reuse = EVOL,
-  MODELE = MO,
-  CHAM_MATER = CHMAT,
+
+
   RESULTAT = EVOL,
   OPTION = 'FORC_NODA',
   GROUP_MA='JOINT'
@@ -243,27 +243,27 @@ EVOL = CALC_NO(reuse = EVOL,
 UPILO = POST_RELEVE_T(
  ACTION = _F(
    INTITULE     = 'U_PILOTE',
-   OPERATION    = 'EXTRACTION',   
+   OPERATION    = 'EXTRACTION',
    GROUP_NO     = 'NO_JHG',
    NOM_CHAM     = 'DEPL',
    NOM_CMP      = 'DY',
    RESULTAT     =  EVOL,
    TOUT_ORDRE   = 'OUI',
-    )) 
+    ))
 
 # FORCE RESULTANTE DANS LA DIRECTION Y, SUR UN RADIAN
-# A MULITPLIER PAR 2PI 
+# A MULITPLIER PAR 2PI
 
 FRES = POST_RELEVE_T(
  ACTION = _F(
    INTITULE     = 'F_RESULTANTE',
-   OPERATION    = 'EXTRACTION',   
+   OPERATION    = 'EXTRACTION',
    GROUP_NO     = 'GN_J_G',
    NOM_CHAM     = 'FORC_NODA',
    RESULTANTE   = ('DX','DY'),
    RESULTAT     =  EVOL,
    TOUT_ORDRE   = 'OUI',
-    )) 
+    ))
 
 
 
@@ -320,8 +320,8 @@ TEST_TABLE(TABLE=FRES,
            PRECISION=0.001,
            REFERENCE='ANALYTIQUE',);
 
-               
-IMPR_TABLE(TABLE = UPILO)   
+
+IMPR_TABLE(TABLE = UPILO)
 IMPR_TABLE(TABLE = FRES)
 
-FIN(FORMAT_HDF='OUI') 
+FIN(FORMAT_HDF='OUI')

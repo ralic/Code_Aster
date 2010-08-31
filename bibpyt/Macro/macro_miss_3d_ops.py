@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macro_miss_3d_ops Macro  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,8 +28,9 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
      Ecriture de la macro MACRO_MISS_3D
   """
   import types
+  import aster
   from Accas import _F
-  from Utilitai.Utmess        import UTMESS, MessageError
+  from Utilitai.Utmess        import UTMESS
   from Utilitai.Table         import Table
   from Miss.miss_fichier_sol  import fichier_sol
 
@@ -88,7 +89,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
     tabsol = TABLE_SOL.EXTR_TABLE()
     try:
         texte = fichier_sol(tabsol)
-    except MessageError, err:
+    except aster.error, err:
         UTMESS('F', err.id_message, valk=err.valk, vali=err.vali, valr=err.valr)
     fdsol=open(pdsol,'w')
     fdsol.write(texte)

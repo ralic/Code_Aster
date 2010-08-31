@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,8 +168,8 @@ U=STAT_NON_LINE(MODELE=MO,
                                ITER_GLOB_MAXI=25),);
 
 U=CALC_ELEM(reuse =U,
-            MODELE=MO,
-            CHAM_MATER=CM,
+
+
             RESULTAT=U,
             OPTION=('EPSI_ELNO_DEPL','EPSP_ELNO','SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
             EXCIT=_F(CHARGE=CH1,),);
@@ -177,7 +177,7 @@ U=CALC_ELEM(reuse =U,
 U=CALC_NO(reuse =U,
           RESULTAT=U,
           OPTION=('EPSI_NOEU_DEPL','EPSP_NOEU','SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),
-          CHAM_MATER=CM,);
+          );
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU_DEPL', INST = 3600.,

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TETRA10)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,8 +105,8 @@ DYNAH=DYNA_LINE_HARM(MATR_MASS=MAS,
                               COEF_MULT=1.0,),);
 
 DYNAH=CALC_ELEM(reuse =DYNAH,
-                MODELE=MO,
-                CHAM_MATER=CM,
+
+
                 RESULTAT=DYNAH,
                 OPTION='SIGM_ELNO_DEPL',);
 

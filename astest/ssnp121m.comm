@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121m.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,7 +107,7 @@ RACCOR=AFFE_CHAR_MECA(MODELE=MO,
 CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     ITER_GEOM_MAXI = 4,
-                    ITER_CONT_MAXI = 30, 
+                    ITER_CONT_MAXI = 30,
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'SURESC1',
@@ -124,7 +124,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              COEF_CONT     = 1000.,
                              RACCORD_LINE_QUAD = 'OUI',
                              NOEUD_RACC = 'N44',
-                             ),                             
+                             ),
                           ),
                    );
 
@@ -143,7 +143,7 @@ RESU=STAT_NON_LINE (MODELE     = MO,
                                  FONC_MULT=FONC,),
                                  _F(CHARGE=RACCOR,
                                  FONC_MULT=FONC,),),
-                    CONTACT    = CHA2,            
+                    CONTACT    = CHA2,
                     COMP_ELAS  =_F(RELATION='ELAS'),
                     NEWTON=_F(MATRICE='ELASTIQUE',REAC_ITER=1,),
                     CONVERGENCE=_F(ARRET='OUI',
@@ -153,13 +153,13 @@ RESU=STAT_NON_LINE (MODELE     = MO,
 
 RESU=CALC_ELEM( reuse=RESU,
              RESULTAT=RESU,
-               MODELE=MO,
-           CHAM_MATER=CHMAT,
+
+
                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM'));
 
 RESU=CALC_NO( reuse=RESU,
            RESULTAT=RESU,
-         CHAM_MATER=CHMAT,
+
              OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM'));
 
 SIELNO=CREA_CHAMP(  OPERATION='EXTR',

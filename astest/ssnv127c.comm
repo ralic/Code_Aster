@@ -1,4 +1,4 @@
-# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -156,7 +156,7 @@ CHA2=DEFI_CONTACT(MODELE      = MO,
                            SANS_GROUP_NO = 'BCC_SGN',
                          ),
                   );
-                  
+
 #_____________________________________________________________________
 #
 #               DEFINITION DES FONCTIONS TEMPORELLES
@@ -187,7 +187,7 @@ U=STAT_NON_LINE(MODELE=MO,
                           FONC_MULT=RAMPE,),
                        _F(CHARGE=CHCI,),
                        ),
-                CONTACT = CHA2,       
+                CONTACT = CHA2,
                 COMP_ELAS=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
@@ -198,8 +198,8 @@ U=STAT_NON_LINE(MODELE=MO,
                 );
 
 U=CALC_ELEM(reuse =U,
-            MODELE=MO,
-            CHAM_MATER=CHMAT,
+
+
             OPTION=('SIEF_ELNO_ELGA'),
             RESULTAT=U,);
 #

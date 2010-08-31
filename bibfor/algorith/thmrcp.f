@@ -12,7 +12,7 @@
      &                 ISOT,DFICKS,INSTAP)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/08/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 30/08/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -538,10 +538,6 @@ C VERIFICATION PRESSION DE GAZ DE REFERENCE NON NULLE
      &        (THMC.EQ.'LIQU_AD_GAZ') .OR.
      &        (THMC.EQ.'LIQU_GAZ')           ) THEN
             IF (ABS(P20) .LE. R8PREM()) THEN
-              CALL U2MESS('F','ALGORITH17_13')
-            ENDIF
-         ELSE IF(THMC.EQ.'GAZ')THEN
-            IF (ABS(P10) .LE. R8PREM()) THEN
               CALL U2MESS('F','ALGORITH17_13')
             ENDIF
          ENDIF

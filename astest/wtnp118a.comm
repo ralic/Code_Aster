@@ -1,22 +1,22 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE - REEEQUILIBRAGE GRAVITAIRE D UNE COLONNE - MODELISATION HHD
 # wtnp118a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 #******************************************************************************************
@@ -38,7 +38,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
                      )
 
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
-                        AFFE=_F(  TOUT = 'OUI', 
+                        AFFE=_F(  TOUT = 'OUI',
                       PHENOMENE = 'MECANIQUE',
                       MODELISATION = 'D_PLAN_HHD')
                      )
@@ -54,7 +54,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,
                                  GROUP_MA='GAUCHE'),
                               _F(NOM='DROITS',
                                  CRIT_NOEUD='SOMMET',
-                                 GROUP_MA='DROIT'),                                 
+                                 GROUP_MA='DROIT'),
                                  ),)
 ####################################
 #  LISTE DES INSTANTS DE CALCUL
@@ -81,7 +81,7 @@ DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
 
 DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
 
-####                             
+####
 UN=DEFI_CONSTANTE(    VALE=1.,);
 
 ZERO=DEFI_CONSTANTE(    VALE=0.,);
@@ -97,7 +97,7 @@ LIPC = DEFI_LIST_REEL ( DEBUT      = 0.0,
                        INTERVALLE = (
                          _F( JUSQU_A = 100. , PAS =  0.1 ,),
                                     ),)
-SATC   = FORMULE ( NOM_PARA='PCAP' ,VALE=''' 
+SATC   = FORMULE ( NOM_PARA='PCAP' ,VALE='''
                    (((1.-SRCOX)/
                      (((PCAP/PRCOX)**NCOX+1.)**MCOX) )+SRCOX) ''');
 
@@ -136,19 +136,19 @@ CHPESA = DEFI_FONCTION(NOM_PARA='INST',
                             1. , 0.5),);
 
 
-MATERIAU=DEFI_MATERIAU(  
-   THM_LIQU=_F(  
+MATERIAU=DEFI_MATERIAU(
+   THM_LIQU=_F(
          RHO = 1.,
          UN_SUR_K = 0.,
          ALPHA = 1.E-4,
-         VISC = VISCOL, 
+         VISC = VISCOL,
          D_VISC_TEMP = ZERO,),
    COMP_THM = 'LIQU_GAZ',
 
       THM_GAZ=_F(
          MASS_MOL = 1.,
          VISC = VISCOG,
-         D_VISC_TEMP = ZERO,), 
+         D_VISC_TEMP = ZERO,),
    THM_DIFFU=_F(
         R_GAZ=8.315,
         RHO = 1.,
@@ -169,7 +169,7 @@ MATERIAU=DEFI_MATERIAU(
         FICKA_T =ZERO,
         LAMB_T =ZERO
         ),
-   THM_INIT=_F( 
+   THM_INIT=_F(
          TEMP = 293.,
          PRE1 = 0.,
          PRE2 = 1.,
@@ -183,7 +183,7 @@ CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
                         MATER = MATERIAU),)
 
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
                            _F(TOUT='OUI',
@@ -192,7 +192,7 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                              ),);
 CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(TOUT='OUI',
-                                   PRE2=0.,),); 
+                                   PRE2=0.,),);
 CALF0=AFFE_CHAR_MECA(MODELE=MODELE,
                         FLUX_THM_REP = _F( GROUP_MA   = 'GAUCHE' ,
                                           FLUN_HYDR2 =  0.      ,
@@ -200,7 +200,7 @@ CALF0=AFFE_CHAR_MECA(MODELE=MODELE,
                                           ),)
 
 
-RESU0=STAT_NON_LINE( 
+RESU0=STAT_NON_LINE(
                 MODELE=MODELE,
                 CHAM_MATER=CHMAT0,
                 EXCIT=(
@@ -208,7 +208,7 @@ RESU0=STAT_NON_LINE(
                      ),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               ),
-                COMP_INCR=_F( 
+                COMP_INCR=_F(
                 RELATION = 'KIT_HH',
                 RELATION_KIT = ('LIQU_GAZ','HYDR_UTIL')),
                 INCREMENT=_F(  LIST_INST = LI,
@@ -228,42 +228,42 @@ RESU0=STAT_NON_LINE(
              );
 
 RESU0=CALC_ELEM(reuse =RESU0,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT0,
+
+
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
              RESULTAT=RESU0,);
-             
+
 TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=1,  
+                  NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='N1',
                   VALE=13.94,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);   
+                  REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=5,  
+                  NUME_ORDRE=5,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='N1',
                   VALE=21.92,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);   
+                  REFERENCE='NON_REGRESSION',),);
 
 
 TEST_RESU(RESU=_F(RESULTAT=RESU0,
-                  NUME_ORDRE=14,  
+                  NUME_ORDRE=14,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='N1',
                   VALE=22.79,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);   
+                  REFERENCE='NON_REGRESSION',),);
 
 PR1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             GROUP_NO=('BAS'),

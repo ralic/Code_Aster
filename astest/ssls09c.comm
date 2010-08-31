@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS)
 # ssls09c.para = tps_job 60 mem_job 128Mo mem_aster 95 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,8 +89,8 @@ DEF=STAT_NON_LINE(MODELE=MODELE,
                   NEWTON=_F(REAC_ITER=1,),);
 
 DEF=CALC_ELEM(reuse =DEF,
-              MODELE=MODELE,
-              CHAM_MATER=CHMAT,
+
+
               RESULTAT=DEF,
               OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
               EXCIT=(

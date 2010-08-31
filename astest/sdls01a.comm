@@ -1,5 +1,5 @@
 
-# MODIF  DATE 14/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -177,9 +177,9 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE2,
 #--------- CAS1
 
 MODE1=CALC_ELEM(reuse =MODE1,
-                MODELE=MO,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARELEM,
+
+
+
                 RESULTAT=MODE1,
                 OPTION=('EPOT_ELEM_DEPL','ECIN_ELEM_DEPL',),);
 
@@ -310,9 +310,9 @@ MODE2=NORM_MODE(reuse =MODE2,
                 NORME='MASS_GENE',);
 
 MODE2=CALC_ELEM(reuse =MODE2,
-                MODELE=MO,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARELEM,
+
+
+
                 RESULTAT=MODE2,
                 OPTION=('EPOT_ELEM_DEPL','ECIN_ELEM_DEPL',),);
 

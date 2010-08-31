@@ -1,21 +1,21 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #  PAR UN INDENTEUR SPHERIQUE ELASTIQUE
 #  CAS TEST SSNV506A
@@ -73,11 +73,11 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506A,
                              MATER=ACIER_B,),),);
 
 #CONDITIONS AUX LIMITES
-                               
-                               
+
+
 CHA1 = DEFI_CONTACT(MODELE       = MO,
                    FORMULATION  = 'DISCRETE',
-                   
+
                    ZONE=(
                         _F(
                             GROUP_MA_MAIT='SMAI',
@@ -85,10 +85,10 @@ CHA1 = DEFI_CONTACT(MODELE       = MO,
 ## UNIQUEMENT SI ON MET LE LIAISON_DDL PLUS BAS
 #                               SANS_GROUP_NO=('PLANX','LS','LB'),
 #                               SANS_GROUP_NO=('E','S',),
-                         ),                           
-                                                                           
-                       ),  
-                  )                               
+                         ),
+
+                       ),
+                  )
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='NDPL',
@@ -117,7 +117,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
 #                                  DX=0.0,DY=0.0,),),
 #                                    );
 
-#------------------------------------------------------------------ 
+#------------------------------------------------------------------
 #                         RESOLUTION
 #------------------------------------------------------------------
 
@@ -136,7 +136,7 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',#METHODE='MUMPS',
                 EXCIT=(
                        _F(CHARGE=CHA2,
                           FONC_MULT=DPLY,),),
-                CONTACT  = CHA1,          
+                CONTACT  = CHA1,
                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                              GROUP_MA='MAT2',),
                 COMP_ELAS=_F(RELATION='ELAS',
@@ -150,15 +150,15 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',#METHODE='MUMPS',
                 INFO=1,
                 );
 
-#------------------------------------------------------------------ 
+#------------------------------------------------------------------
 #                         POST TRAITEMENT
 #------------------------------------------------------------------
 
 U=CALC_NO(reuse =U,
           RESULTAT=U,
           OPTION='REAC_NODA',
-          MODELE=MO,
-          CHAM_MATER=CHMAT,
+
+
           );
 
 LINST2=DEFI_LIST_REEL(DEBUT=0.0,
@@ -176,7 +176,7 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
 IMPR_TABLE(TABLE=TAB_REAC,
            FORMAT='TABLEAU',);
 
-#------------------------------------------------------------------ 
+#------------------------------------------------------------------
 #                         TESTS DES RESULTATS
 #------------------------------------------------------------------
 # TESTS SUR DES VALEURS ANALYTIQUES

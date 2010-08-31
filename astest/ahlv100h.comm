@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,8 +113,8 @@ TEST_RESU(RESU=(
            NOEUD = 'N720', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,)))
           )
 
-HARMO=CALC_ELEM( reuse=HARMO, MODELE=MO,
-                     CHAM_MATER=CHM,
+HARMO=CALC_ELEM( reuse=HARMO,
+
                      TOUT_ORDRE='OUI',
                      RESULTAT=HARMO,
                      OPTION='INTE_ELNO_ACTI'

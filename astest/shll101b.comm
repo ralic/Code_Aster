@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE  POUTRE ANALYSE HARMONIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,9 +118,9 @@ DYNA_F1=DYNA_LINE_HARM(  MATR_MASS=MASS1,
 #
 
 
-DYNA_F1=CALC_ELEM(reuse=DYNA_F1,  MODELE=MODELE,
+DYNA_F1=CALC_ELEM(reuse=DYNA_F1,
                          RESULTAT=DYNA_F1,  OPTION='EFGE_ELNO_DEPL',
-                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+                            CARA_ELEM=CARA_ELE   )
 
 #
 
@@ -197,9 +197,9 @@ DYNA_F2=DYNA_LINE_HARM(  MATR_MASS=MASS2,
                             EXCIT=_F( CHARGE = COND_LI2, FONC_MULT_C = FC)
                          )
 
-DYNA_F2=CALC_ELEM(reuse=DYNA_F2,  MODELE=MODELE,
+DYNA_F2=CALC_ELEM(reuse=DYNA_F2,
                         RESULTAT=DYNA_F2,  OPTION='EFGE_ELNO_DEPL',
-                        CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+                           CARA_ELEM=CARA_ELE   )
 
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F2,            NUME_ORDRE = 1,
                        MAILLE = 'E1',                   NOEUD = 'N2',
@@ -235,9 +235,9 @@ DYNA_AF1=DYNA_LINE_HARM( MATR_MASS=MASS1,
 
 #
 
-DYNA_AF1=CALC_ELEM(reuse=DYNA_AF1,  MODELE=MODELE,
+DYNA_AF1=CALC_ELEM(reuse=DYNA_AF1,
                           RESULTAT=DYNA_AF1,  OPTION='EFGE_ELNO_DEPL',
-                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE )
+                             CARA_ELEM=CARA_ELE )
 
 #
 
@@ -279,9 +279,9 @@ DYNA_AF2=DYNA_LINE_HARM( MATR_MASS=MASS2,
 
 #
 
-DYNA_AF2=CALC_ELEM(reuse=DYNA_AF2,  MODELE=MODELE,
+DYNA_AF2=CALC_ELEM(reuse=DYNA_AF2,
                          RESULTAT=DYNA_AF2,  OPTION='EFGE_ELNO_DEPL',
-                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+                            CARA_ELEM=CARA_ELE   )
 
 #
 

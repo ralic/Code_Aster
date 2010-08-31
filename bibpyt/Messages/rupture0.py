@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture0 Messages  DATE 30/08/2010   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,10 @@ def _(x) : return x
 
 cata_msg={
 1: _("""
-Interpolation hors du domaine (prolongement constant utilisé).
+La valeur de Kj critique demandée n'est pas atteinte dans l'étude demandée;
+il n'est donc pas possible d'identifier le Gp critique dans cette étude.
+-> Risque et Conseil :
+Augmentez le chargement.
 """),
 
 2: _("""

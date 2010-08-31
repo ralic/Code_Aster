@@ -1,4 +1,4 @@
-# MODIF  DATE 11/08/2009   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD (ROTATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -198,11 +198,11 @@ DYNHARM=DYNA_LINE_HARM( MATR_MASS=MATASSM3,   MATR_RIGI=MATASSR3,
                              TOUT_CHAM='OUI'     )
 
 DYNHARM=CALC_ELEM(reuse=DYNHARM,     RESULTAT=DYNHARM,
-                              MODELE=MO,
+
                               OPTION=( 'SIEF_ELGA_DEPL',
-                                       'SIGM_ELNO_DEPL',   
+                                       'SIGM_ELNO_DEPL',
                                        'EFGE_ELNO_DEPL',  ),
-                          CHAM_MATER=CHMAT,     CARA_ELEM=CARELEM
+                               CARA_ELEM=CARELEM
                        )
 DYNHARM=CALC_NO(reuse =DYNHARM,
               RESULTAT=DYNHARM,

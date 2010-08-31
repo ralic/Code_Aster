@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE PROPAGATION DYNAMIQUE D'UNE FISSURE
 # sdns105a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -181,8 +181,8 @@ evol=DYNA_NON_LINE(MODELE=MODELE,
 
 
 evol = CALC_ELEM   (   reuse      = evol    ,
-                       MODELE     = MODELE   ,
-                       CHAM_MATER = CHAMPMAT   ,
+
+
                        OPTION     = ('VARI_ELNO_ELGA'),
                        RESULTAT   = evol    ,);
 

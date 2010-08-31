@@ -16,7 +16,7 @@ POURSUITE( CODE=_F(  NOM = 'SSLL102A')) ;
 CHARG1B=AFFE_CHAR_MECA(  MODELE=MO,
       DDL_IMPO  =_F( GROUP_NO = 'A',  DX = 0.,  DY = 0.,  DZ = 0.,
                                       DRX = 0., DRY = 0., DRZ = 0.),
-      DDL_POUTRE=_F( NOEUD = 'N3',  DX = 5.00000E-10,  
+      DDL_POUTRE=_F( NOEUD = 'N3',  DX = 5.00000E-10,
                      VECT_Y = ( 0., 1., 0., ) ,),
                      )
 
@@ -24,7 +24,7 @@ MEST1B=MECA_STATIQUE(  MODELE=MO,
                        CHAM_MATER=CHMAT,  CARA_ELEM=CAREL,
                        EXCIT=_F( CHARGE = CHARG1B)   )
 
-MEST1B=CALC_ELEM( reuse=MEST1B,  MODELE=MO,   CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
+MEST1B=CALC_ELEM( reuse=MEST1B,
                       RESULTAT=MEST1B, EXCIT=_F(  CHARGE = CHARG1B),
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
@@ -85,7 +85,7 @@ TEST_RESU(RESU=(
 CHARG1T=AFFE_CHAR_MECA(  MODELE=MO,
       DDL_IMPO  =_F( GROUP_NO = 'A',  DX = 0.,  DY = 0.,  DZ = 0.,
                                       DRX = 0., DRY = 0., DRZ = 0.),
-      DDL_POUTRE=_F( NOEUD = 'N3',  DX = 5.00000E-10,  
+      DDL_POUTRE=_F( NOEUD = 'N3',  DX = 5.00000E-10,
                      ANGL_VRIL = 0., ),
                      )
 
@@ -93,7 +93,7 @@ MEST1T=MECA_STATIQUE(  MODELE=MO,
                        CHAM_MATER=CHMAT,  CARA_ELEM=CAREL,
                        EXCIT=_F( CHARGE = CHARG1T)   )
 
-MEST1T=CALC_ELEM( reuse=MEST1T,  MODELE=MO,   CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
+MEST1T=CALC_ELEM( reuse=MEST1T,
                       RESULTAT=MEST1T, EXCIT=_F(  CHARGE = CHARG1T),
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 

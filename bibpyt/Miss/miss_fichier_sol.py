@@ -1,4 +1,4 @@
-#@ MODIF miss_fichier_sol Miss  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_fichier_sol Miss  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 # RESPONSABLE COURTOIS M.COURTOIS
 
 import os
-from Utilitai.Utmess import MessageError
+import aster
 from Miss.miss_utils import dict_format
 
 sfmt = dict_format['sR']
@@ -33,13 +33,13 @@ def fichier_sol(tab, param=None):
     # vérification de la table
     for p in ("NUME_COUCHE", "NUME_MATE", "E", "NU", "RHO", "EPAIS", "AMOR_HYST", "RECEPTEUR", "SUBSTRATUM"):
         if not p in tab.para:
-            raise MessageError('TABLE0_2', valk=(p, 'de sol'))
+            raise aster.error('TABLE0_2', valk=(p, 'de sol'))
     nb_couche = len(tab)
     if max(tab.NUME_COUCHE.values()) != nb_couche:
-        raise MessageError('MISS0_5')
+        raise aster.error('MISS0_5')
     tsubstr = (tab.SUBSTRATUM == "OUI")
     if len(tsubstr) != 1:
-        raise MessageError('MISS0_3')
+        raise aster.error('MISS0_3')
     
     # complète la table
     tsol = tab.copy()

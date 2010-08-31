@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CHAUFFAGE D UN MILIEU POREUX SANS AIR
 # wtnp107a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -340,8 +340,8 @@ U0=STAT_NON_LINE(MODELE=MODELE,
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** * * *
 
 U0=CALC_ELEM(reuse =U0,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT0,
+
+
              RESULTAT=U0,
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);

@@ -27,7 +27,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 #######################################################
 
 
-# COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT 
+# COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT
 #######################################################
 
 
@@ -41,7 +41,7 @@ SYG=RECU_FONCTION(RESULTAT=RESUNL,
                   NOM_CMP='SIYY',
                   GROUP_NO='G',);
 
-# COURBES AVEC XMGRACE 
+# COURBES AVEC XMGRACE
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=82,
@@ -63,8 +63,8 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 RESUNL=CALC_NO(reuse =RESUNL,
                RESULTAT=RESUNL,
                OPTION='FORC_NODA',
-               MODELE=MO,
-               CHAM_MATER=CM,);
+
+               );
 
 LH=INTE_MAIL_2D(MAILLAGE=M,
                 DEFI_CHEMIN=_F(GROUP_MA='haut',),);
@@ -81,7 +81,7 @@ F_FY_G=RECU_FONCTION(TABLE=FHAUT,
                      PARA_Y='DY',
                      INTERPOL='LIN',);
 
-# COURBES AVEC XMGRACE 
+# COURBES AVEC XMGRACE
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=83,

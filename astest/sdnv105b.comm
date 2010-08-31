@@ -1,22 +1,22 @@
-# MODIF  DATE 12/04/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105b.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE ABBAS M.ABBAS
 # ASTER version 8.3 CALCULATION
@@ -56,7 +56,7 @@ pas_fin = 2.5e-05;
 pas_arch = 0.0025;
 
 # CHARACTERISTICS COLLISION INSTANTS (multiple of pas_fin)
-# AROUND ANALYTICAL COLLISION INSTANTS : 
+# AROUND ANALYTICAL COLLISION INSTANTS :
 # 0.05565, 0.1403, 0.20956, 0.2639, 0.3081
 
 TC0P = 0.0025;
@@ -182,7 +182,7 @@ MA_poi=MODI_MAILLAGE(reuse =MA_poi,
 # mot-cle disparu de la version NEW8.3.xx
 #                    MODELE=MO,);
                      );
-          
+
 IMPR_RESU(MODELE=MO,
           FORMAT='GMSH',
           UNITE=21,
@@ -292,9 +292,9 @@ u_pesa=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=cara_dis,
 #
 
 #u_pesa=CALC_ELEM(reuse =u_pesa,
-#                   MODELE=MO,
-#                   CHAM_MATER=CHMAT,
-#                   CARA_ELEM=cara_dis,
+#
+#
+#
 #                   RESULTAT=u_pesa,
 #                   TOUT_ORDRE='OUI',
 #                   TYPE_OPTION='TOUTES',
@@ -302,7 +302,7 @@ u_pesa=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=cara_dis,
 
 #IMPR_RESU(FORMAT='RESULTAT', RESU=(_F(RESULTAT=u_pesa)));
 
-#IMPR_RESU(MODELE=MO,
+#IMPR_RESU(
 #          FORMAT='RESULTAT',
 #          RESU=(_F(RESULTAT=u_pesa,
 #                  NOM_CHAM='DEPL',
@@ -399,9 +399,9 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=cara_dis,
                                       ITER_GLOB_MAXI=30,),);
 
 #u_ini_la=CALC_ELEM(reuse =u_ini_la,
-#                   MODELE=MO,
-#                   CHAM_MATER=CHMAT,
-#                   CARA_ELEM=cara_dis,
+#
+#
+#
 #                   RESULTAT=u_ini_la,
 #                   TOUT_ORDRE='OUI',
 #                   TYPE_OPTION='TOUTES',
@@ -409,7 +409,7 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=cara_dis,
 
 #IMPR_RESU(FORMAT='RESULTAT', RESU=(_F(RESULTAT=u_ini_la)));
 
-#IMPR_RESU(MODELE=MO,
+#IMPR_RESU(
 #          FORMAT='RESULTAT',
 #          RESU=(_F(RESULTAT=u_ini_la,
 #                  NOM_CHAM='DEPL',
@@ -503,7 +503,7 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=cara_dis,
 #                  NOM_CHAM='DEPL',
 #                  TOUT_ORDRE='OUI',
 #                  ),);
-                  
+
 #DETRUIRE (CONCEPT = _F (NOM = T_en_ela,) ,INFO=1, );
 #DETRUIRE (CONCEPT = _F (NOM = T_en_cin,) ,INFO=1, );
 
@@ -518,7 +518,7 @@ Ini_vite = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR',
                       INST=0.0,);
 Ini_vit0 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='ASSE',
                       MODELE=MO,
-                      ASSE=_F(TOUT='OUI', 
+                      ASSE=_F(TOUT='OUI',
                               CHAM_GD=Ini_vite, COEF_R=0.0,),);
 
 #
@@ -827,15 +827,15 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                                       ARRET='NON',),);
 
 u_lacher=CALC_ELEM(reuse =u_lacher,
-                   MODELE=MO,
-                   CHAM_MATER=CHMAT, CARA_ELEM=cara_dis,
+
+
                    RESULTAT=u_lacher, TOUT_ORDRE='OUI',
                    TYPE_OPTION='TOUTES',
                    OPTION='SIEF_ELNO_ELGA',);
 
 u_lacher=CALC_NO(reuse =u_lacher,
-                 MODELE=MO,
-                 CHAM_MATER=CHMAT, CARA_ELEM=cara_dis,
+
+
                  RESULTAT=u_lacher,
                  TOUT_ORDRE='OUI',
                  OPTION='FORC_NODA',);
@@ -848,18 +848,18 @@ u_lacher=CALC_NO(reuse =u_lacher,
 #                   MODELE=MO,
 #                  CHAM_MATER=CHMAT, CARA_ELEM=cara_dis,
 #                  RESULTAT=u_lacher,);
-                   
+
 
 B_en_kin=POST_ELEM(ENER_CIN=_F(GROUP_MA='BLOCK',),
                    MODELE=MO, CHAM_MATER=CHMAT,
                    CARA_ELEM=cara_dis, RESULTAT=u_lacher,);
-                   
+
 #T_ma_ine=POST_ELEM(MASS_INER=_F(GROUP_MA='BLOCK',
 #                                ORIG_INER=(0.0,0.0,0.0,),),
 #                   MODELE=MO,
 #                   CARA_ELEM=cara_dis, CHAM_MATER=CHMAT,);
 
-# Displacements                   
+# Displacements
 #DY_O1_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='O1',
 #                       NOM_CHAM='DEPL', NOM_CMP='DY',
 #                       TOUT_ORDRE='OUI', NOM_PARA='INST',
@@ -871,7 +871,7 @@ B_en_kin=POST_ELEM(ENER_CIN=_F(GROUP_MA='BLOCK',),
 #                       TOUT_ORDRE='OUI', NOM_PARA='INST',
 #                       PROL_DROITE='CONSTANT',
 #                       PROL_GAUCHE='CONSTANT',);
-#                   
+#
 #DX_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='A',
 #                       NOM_CHAM='DEPL', NOM_CMP='DX',
 #                       TOUT_ORDRE='OUI', NOM_PARA='INST',
@@ -883,7 +883,7 @@ DY_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='A',
                        TOUT_ORDRE='OUI', NOM_PARA='INST',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',);
-                       
+
 #DX_O_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='O',
 #                       NOM_CHAM='DEPL', NOM_CMP='DX',
 #                       TOUT_ORDRE='OUI', NOM_PARA='INST',
@@ -895,8 +895,8 @@ DY_O_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='O',
                        TOUT_ORDRE='OUI', NOM_PARA='INST',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',);
-                       
-# Velocities                    
+
+# Velocities
 #VX_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='A',
 #                       NOM_CHAM='VITE', NOM_CMP='DX',
 #                       TOUT_ORDRE='OUI', NOM_PARA='INST',
@@ -908,7 +908,7 @@ VY_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='A',
                        TOUT_ORDRE='OUI', NOM_PARA='INST',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',);
-                       
+
 #VX_O_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='O',
 #                       NOM_CHAM='VITE', NOM_CMP='DX',
 #                       TOUT_ORDRE='OUI', NOM_PARA='INST',
@@ -919,7 +919,7 @@ VY_O_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_NO='O',
                        NOM_CHAM='VITE', NOM_CMP='DY',
                        TOUT_ORDRE='OUI', NOM_PARA='INST',
                        PROL_DROITE='CONSTANT',
-                       PROL_GAUCHE='CONSTANT',);                      
+                       PROL_GAUCHE='CONSTANT',);
 
 # Corners reactions
 
@@ -956,7 +956,7 @@ RX_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_MA='A',
 #IMPR_FONCTION(UNITE = 8,
 #              FORMAT='TABLEAU',
 #              COURBE=(_F(FONCTION=DX_O_la,
-#                         LEGENDE='deplacement horizontal de O', 
+#                         LEGENDE='deplacement horizontal de O',
 #                     ),),
 #              );
 
@@ -969,7 +969,7 @@ RX_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_MA='A',
 #IMPR_FONCTION(UNITE = 8,
 #              FORMAT='TABLEAU',
 #              COURBE=(_F(FONCTION=DX_A_la,
-#                         LEGENDE='deplacement horizontal de A', 
+#                         LEGENDE='deplacement horizontal de A',
 #                     ),),
 #              );
 
@@ -982,21 +982,21 @@ RX_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_MA='A',
 #IMPR_FONCTION(UNITE = 8,
 #              FORMAT='TABLEAU',
 #              COURBE=(_F(FONCTION=DX_O1_la,
-#                         LEGENDE='deplacement horizontal de O1', 
+#                         LEGENDE='deplacement horizontal de O1',
 #                     ),),
 #              );
 
 #IMPR_FONCTION(UNITE = 8,
 #              FORMAT='TABLEAU',
 #              COURBE=(_F(FONCTION=DY_O1_la,
-#                         LEGENDE='deplacement vertical de O1', 
+#                         LEGENDE='deplacement vertical de O1',
 #                     ),),
 #              );
 # Velocities
 #IMPR_FONCTION(UNITE = 8,
 #              FORMAT='TABLEAU',
 #              COURBE=(_F(FONCTION=VX_O_la,
-#                         LEGENDE='vitesse horizontale de O', 
+#                         LEGENDE='vitesse horizontale de O',
 #                     ),),
 #              );
 #IMPR_FONCTION(UNITE = 8,
@@ -1022,7 +1022,7 @@ RX_A_la=RECU_FONCTION(RESULTAT=u_lacher, GROUP_MA='A',
 #IMPR_TABLE(TABLE=T_en_ela,
 #           NOM_PARA=('INST','TOTALE',),
 #           );
-          
+
 IMPR_TABLE(TABLE=B_en_kin, FORMAT='TABLEAU', UNITE=8,
            NOM_PARA=('INST','TOTALE',),
            );
@@ -1033,7 +1033,7 @@ IMPR_TABLE(TABLE=B_en_kin, FORMAT='TABLEAU', UNITE=8,
 # Printing and checking some extrema and other values
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Remark : first values : comparison with rigid body model
-#          second values : comparison with estimated 
+#          second values : comparison with estimated
 #                           restitution coefficient
 #
 DY_O_max = INFO_FONCTION(MAX = _F(FONCTION=DY_O_la,),);
@@ -1058,7 +1058,7 @@ TEST_TABLE(TABLE=DY_A_max, NOM_PARA='DY', TYPE_TEST = 'MAX',
 
 VY_O_min = INFO_FONCTION(MAX = _F(FONCTION=VY_O_la,),);
 
-TEST_TABLE(TABLE=VY_O_min, NOM_PARA='DY', TYPE_TEST = 'MIN', 
+TEST_TABLE(TABLE=VY_O_min, NOM_PARA='DY', TYPE_TEST = 'MIN',
            VALE=-0.09983, PRECISION = 0.150, REFERENCE='ANALYTIQUE',);
 TEST_TABLE(TABLE=VY_O_min, NOM_PARA='DY', TYPE_TEST = 'MIN',
            VALE=-0.10552, PRECISION = 0.200, REFERENCE='ANALYTIQUE',);
@@ -1078,7 +1078,7 @@ VY_O_ti2 = CREA_TABLE(FONCTION=_F(FONCTION=VY_O_mi2),);
 
 VY_A_min = INFO_FONCTION(MAX = _F(FONCTION=VY_A_la,),);
 
-TEST_TABLE(TABLE=VY_A_min, NOM_PARA='DY', TYPE_TEST = 'MIN',  
+TEST_TABLE(TABLE=VY_A_min, NOM_PARA='DY', TYPE_TEST = 'MIN',
            VALE=-0.13357, PRECISION = 0.01, REFERENCE='ANALYTIQUE',);
 
 # # # # # # # # # # # # # # # #
@@ -1115,7 +1115,7 @@ RX_O_ma0 = RECU_FONCTION(TABLE=RX_O_lat, PARA_X='INST', PARA_Y='VY',
                                    VALE=0.01,),),);
 
 RX_O_mat = CREA_TABLE(FONCTION=_F(FONCTION=RX_O_ma0),);
-TEST_TABLE(TABLE=RX_O_mat, NOM_PARA='VY', TYPE_TEST = 'MIN', 
+TEST_TABLE(TABLE=RX_O_mat, NOM_PARA='VY', TYPE_TEST = 'MIN',
            VALE=-1150., PRECISION = 0.010, REFERENCE='ANALYTIQUE',);
 
 
@@ -1134,22 +1134,22 @@ TEST_TABLE(TABLE=RX_A_mat, NOM_PARA='VY', TYPE_TEST = 'MAX',
 # # # # # # # # # # # # # # # # # # # # # #
 # Kinetic energies and collisions instants
 # # # # # # # # # # # # # # # # # # # # # #
-# 
+#
 
 TEST_TABLE(TABLE=B_en_kin, NOM_PARA='TOTALE', TYPE_TEST = 'MAX',
            VALE=7.37398, PRECISION = 0.015, REFERENCE='ANALYTIQUE',);
 
 B_en_km1 = RECU_FONCTION(TABLE=B_en_kin, PARA_X='INST', PARA_Y='TOTALE',
-                         FILTRE=_F(NOM_PARA='TOTALE', 
+                         FILTRE=_F(NOM_PARA='TOTALE',
                                    CRIT_COMP='MAXI',),);
 B_en_kt1 = CREA_TABLE(FONCTION=_F(FONCTION=B_en_km1),);
 
 TEST_TABLE(TABLE=B_en_kt1, NOM_PARA='INST', TYPE_TEST = 'MIN',
            VALE=0.05440978, PRECISION = 0.01, REFERENCE='ANALYTIQUE',);
-# 
+#
 
 B_en_k_2 = RECU_FONCTION(TABLE=B_en_kin, PARA_X='INST', PARA_Y='TOTALE',
-                         FILTRE=_F(NOM_PARA='INST', 
+                         FILTRE=_F(NOM_PARA='INST',
                                    CRIT_COMP='GT',
                                    VALE=0.1,),);
 B_en_t_2 = CREA_TABLE(FONCTION=_F(FONCTION=B_en_k_2),);
@@ -1163,7 +1163,7 @@ TEST_TABLE(TABLE=B_en_t_2, NOM_PARA='TOTALE', TYPE_TEST = 'MAX',
 #           VERSION = '8.02',);
 
 B_en_f_2 = RECU_FONCTION(TABLE=B_en_t_2, PARA_X='INST', PARA_Y='TOTALE',
-                         FILTRE=_F(NOM_PARA='TOTALE', 
+                         FILTRE=_F(NOM_PARA='TOTALE',
                                    CRIT_COMP='MAXI',),);
 B_en_kt2 = CREA_TABLE(FONCTION=_F(FONCTION=B_en_f_2),);
 
@@ -1172,10 +1172,10 @@ TEST_TABLE(TABLE=B_en_kt2, NOM_PARA='INST', TYPE_TEST = 'MIN',
 TEST_TABLE(TABLE=B_en_kt2, NOM_PARA='INST', TYPE_TEST = 'MIN',
            VALE=0.13820, PRECISION = 0.1, REFERENCE='ANALYTIQUE',);
 
-# 
+#
 
 B_en_k_3 = RECU_FONCTION(TABLE=B_en_kin, PARA_X='INST', PARA_Y='TOTALE',
-                         FILTRE=_F(NOM_PARA='INST', 
+                         FILTRE=_F(NOM_PARA='INST',
                                    CRIT_COMP='GT',
                                    VALE=0.15,),);
 B_en_t_3 = CREA_TABLE(FONCTION=_F(FONCTION=B_en_k_3),);
@@ -1188,7 +1188,7 @@ B_en_t_3 = CREA_TABLE(FONCTION=_F(FONCTION=B_en_k_3),);
 #           VERSION = '8.02',);
 
 B_en_f_3 = RECU_FONCTION(TABLE=B_en_t_3, PARA_X='INST', PARA_Y='TOTALE',
-                         FILTRE=_F(NOM_PARA='TOTALE', 
+                         FILTRE=_F(NOM_PARA='TOTALE',
                                    CRIT_COMP='MAXI',),);
 B_en_kt3 = CREA_TABLE(FONCTION=_F(FONCTION=B_en_f_3),);
 TEST_TABLE(TABLE=B_en_kt3, NOM_PARA='INST',
@@ -1196,9 +1196,9 @@ TEST_TABLE(TABLE=B_en_kt3, NOM_PARA='INST',
 TEST_TABLE(TABLE=B_en_kt3, NOM_PARA='INST', TYPE_TEST = 'MIN',
            VALE=0.20272, PRECISION = 0.05, REFERENCE='ANALYTIQUE',);
 
-# 
+#
 B_en_k_4 = RECU_FONCTION(TABLE=B_en_kin, PARA_X='INST', PARA_Y='TOTALE',
-                         FILTRE=_F(NOM_PARA='INST', 
+                         FILTRE=_F(NOM_PARA='INST',
                                    CRIT_COMP='GT',
                                    VALE=0.22,),
                          );
@@ -1212,7 +1212,7 @@ B_en_t_4 = CREA_TABLE(FONCTION=_F(FONCTION=B_en_k_4),);
 #          VERSION = '8.02',);
 
 B_en_f_4 = RECU_FONCTION(TABLE=B_en_t_4, PARA_X='INST', PARA_Y='TOTALE',
-                         FILTRE=_F(NOM_PARA='TOTALE', 
+                         FILTRE=_F(NOM_PARA='TOTALE',
                                    CRIT_COMP='MAXI',),
                          );
 B_en_kt4 = CREA_TABLE(FONCTION=_F(FONCTION=B_en_f_4),);
@@ -1221,10 +1221,10 @@ B_en_kt4 = CREA_TABLE(FONCTION=_F(FONCTION=B_en_f_4),);
 #TEST_TABLE(TABLE=B_en_kt4, NOM_PARA='INST', TYPE_TEST = 'MIN',
 #           VALE=0.25240, PRECISION = 0.10, REFERENCE='ANALYTIQUE',);
 
-# 
+#
 
 B_en_k_5 = RECU_FONCTION(TABLE=B_en_kin, PARA_X='INST', PARA_Y='TOTALE',
-                         FILTRE=_F(NOM_PARA='INST', 
+                         FILTRE=_F(NOM_PARA='INST',
                                    CRIT_COMP='GT',
                                    VALE=0.26,),
                          );
@@ -1238,7 +1238,7 @@ B_en_t_5 = CREA_TABLE(FONCTION=_F(FONCTION=B_en_k_5),);
 #           VERSION = '8.02',);
 
 B_en_f_5 = RECU_FONCTION(TABLE=B_en_t_5, PARA_X='INST', PARA_Y='TOTALE',
-                         FILTRE=_F(NOM_PARA='TOTALE', 
+                         FILTRE=_F(NOM_PARA='TOTALE',
                                    CRIT_COMP='MAXI',),
                          );
 B_en_kt5 = CREA_TABLE(FONCTION=_F(FONCTION=B_en_f_5),);
@@ -1251,7 +1251,7 @@ TEST_TABLE(TABLE=B_en_kt5, NOM_PARA='INST', TYPE_TEST = 'MIN',
 
 ################################################
 
-IMPR_RESU(FORMAT='GMSH', UNITE= 37, 
+IMPR_RESU(FORMAT='GMSH', UNITE= 37,
           MODELE=MO,
           RESU=_F(
                   MAILLAGE=MA_poi,

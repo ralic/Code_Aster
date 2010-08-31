@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algorith16 Messages  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,7 @@ cata_msg = {
 """),
 
 4 : _("""
- coordonnees    : x :  %(r1)f
+ coordonnées    : x :  %(r1)f
                   y :  %(r2)f
                   z :  %(r3)f
 """),
@@ -71,7 +71,7 @@ cata_msg = {
 """),
 
 10 : _("""
- <INFO> Pour l'occurence numéro %(i1)d du mot-clé facteur CHOC, RIGI_TAN est
+ <INFO> Pour l'occurrence numéro %(i1)d du mot-clé facteur CHOC, RIGI_TAN est
  renseigné mais pas AMOR_TAN. Le code a donc attribué à AMOR_TAN une valeur
  optimisée : %(r1)f
 """),
@@ -363,6 +363,23 @@ cata_msg = {
 
  """),
 
+72 : _("""
+Erreur utilisateur :
+  On veut déplacer "au quart" les noeuds milieux des arêtes près du fond de fissure
+  (MODI_MAILLAGE / MODI_MAILLE / OPTION='NOEUD_QUART') pour obtenir des éléments de Barsoum.
+
+  Mais on ne trouve aucun noeud à déplacer !
+
+Risques & conseils :
+  * Avez-vous vérifié que le maillage est "quadratique" ?
+  * Si votre maillage est linéaire et que vous souhaitez une solution précise
+    grace aux éléments de Barsoum, vous devez au préalable utiliser la commande :
+      CREA_MAILLAGE / LINE_QUAD  pour rendre le maillage quadratique.
+ """),
+
+
+
+
 77 : _("""
    Arret par manque de temps CPU au numéro d'ordre : %(i1)d
      - Dernier instant archivé :      %(r1)f
@@ -435,15 +452,15 @@ cata_msg = {
 """),
 
 98: _("""
-  La maille de numéro:  %(i1)d appartient à plusieurs sous-domaines ! 
+  La maille de numéro:  %(i1)d appartient à plusieurs sous-domaines !
 """),
 
 99 : _("""
  Valeur du parametre SOLVEUR/DIST_PROC0 incorrecte, routine CRESOL.
- Si le solveur est MUMPS distribue DISTSD, cette valeur doit laisser au moins
+ Si le solveur est MUMPS distribué DISTSD, cette valeur doit laisser au moins
  un SD par processeur restant (hors proc 0) !
- Si le solveur est MUMPS distribue DISTMC, cette valeur doit laisser au moins
- une maille physique du modele par processeur restant (hors proc 0)!
+ Si le solveur est MUMPS distribué DISTMC, cette valeur doit laisser au moins
+ une maille physique du modèle par processeur restant (hors proc 0)!
 """),
 
 }

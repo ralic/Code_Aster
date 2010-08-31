@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121o.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,7 +90,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                     ITER_GEOM_MAXI = 4,
                     ITER_CONT_MAXI = 30,
                     INFO           = 2,
-                    
+
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'SURESC',
@@ -101,7 +101,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              FOND_FISSURE  = 'OUI',
                              GROUP_MA_FOND = 'FONFIS',
                              ),
-                                                        
+
                           ),
                    );
 
@@ -132,13 +132,13 @@ RESU=STAT_NON_LINE (MODELE     = MO,
 
 RESU=CALC_ELEM( reuse=RESU,
              RESULTAT=RESU,
-               MODELE=MO,
-           CHAM_MATER=CHMAT,
+
+
                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM'));
 
 RESU=CALC_NO( reuse=RESU,
            RESULTAT=RESU,
-         CHAM_MATER=CHMAT,
+
              OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM'));
 
 SIELNO=CREA_CHAMP(  OPERATION='EXTR',

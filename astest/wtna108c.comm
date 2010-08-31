@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONDITION DE SUINTEMENT SUR UN BLOC SATURE
 # wtna108c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -137,7 +137,7 @@ CHAR1 = DEFI_CONTACT(MODELE      = MODELE,
                          COEF_IMPO     = F_IMPO,
                          COEF_MULT     = F_MULT,
                          ),
-                     ),                            
+                     ),
                      )
 
 CHARG0=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -187,8 +187,8 @@ IMPR_RESU(RESU=_F( RESULTAT  =  MESTAT,
 MESTAT=CALC_ELEM( reuse      = MESTAT,
               OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EQUI_ELNO_SIGM'),
               RESULTAT   = MESTAT,
-              MODELE     = MODELE,
-              CHAM_MATER = CHMATO,
+
+
               );
 
 MESTAT= CALC_NO( reuse    = MESTAT,

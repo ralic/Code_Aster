@@ -1,27 +1,27 @@
-# MODIF  DATE 15/03/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102f.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 #
 # COPIE DE SSNA102D POUR TESTER MELANGE ZONES CONTACT/FROTTEMENT
-# REFERENCE : CALCULS AVEC ABAQUS, SYSTUS, SAMCEF 
+# REFERENCE : CALCULS AVEC ABAQUS, SYSTUS, SAMCEF
 #
 #########################################
 # METHODE DE CONTACT : CONTINUE
@@ -62,7 +62,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
 # --------------------------------------------------------------------
 #
 
-MOD=AFFE_MODELE( 
+MOD=AFFE_MODELE(
                        MAILLAGE=MAIL,
                        AFFE=_F(
                               GROUP_MA=('STRUCT','CEP2S','CEP3S','LCD4S'),
@@ -76,14 +76,14 @@ MOD=AFFE_MODELE(
 # --------------------------------------------------------------------
 #
 
-ELAS=DEFI_MATERIAU( 
+ELAS=DEFI_MATERIAU(
                           ELAS=_F(  E = 200000.,
                                  NU = 0.3)
                        )
 
 #
 
-CHMAT=AFFE_MATERIAU( 
+CHMAT=AFFE_MATERIAU(
                            MAILLAGE=MAIL,
                            AFFE=_F(  TOUT = 'OUI',
                                   MATER = ELAS)
@@ -95,7 +95,7 @@ CHMAT=AFFE_MATERIAU(
 # --------------------------------------------------------------------
 #
 
-BLOQ=AFFE_CHAR_CINE( 
+BLOQ=AFFE_CHAR_CINE(
                            MODELE=MOD,
                               MECA_IMPO=_F(  GROUP_NO = 'LBC4',
                                          DX = 0.0,  DY = 0.0)
@@ -107,7 +107,7 @@ BLOQ=AFFE_CHAR_CINE(
 # --------------------------------------------------------------------
 #
 
-DEPL=AFFE_CHAR_CINE( 
+DEPL=AFFE_CHAR_CINE(
                            MODELE=MOD,
                               MECA_IMPO=_F(  GROUP_NO = 'LCD1',
                                                   DY = -2.0)
@@ -119,7 +119,7 @@ DEPL=AFFE_CHAR_CINE(
 # --------------------------------------------------------------------
 #
 
-LIAI=AFFE_CHAR_MECA( 
+LIAI=AFFE_CHAR_MECA(
                            MODELE=MOD,LIAISON_DDL=(
                            _F(  GROUP_NO = ('PA1',  'PP2', ),
                                          DDL = ('DY', 'DY',),
@@ -161,9 +161,9 @@ CONT = DEFI_CONTACT(MODELE         = MOD,
                                  GROUP_MA_MAIT = 'CME3S',
                                  GROUP_MA_ESCL = 'LCD4S',
                                  COULOMB = 0.0,
-                               ),                                                              
+                               ),
                            ),
-                    ) 
+                    )
 
 #
 # --------------------------------------------------------------------
@@ -172,7 +172,7 @@ CONT = DEFI_CONTACT(MODELE         = MOD,
 # --------------------------------------------------------------------
 #
 
-FONC=DEFI_FONCTION( 
+FONC=DEFI_FONCTION(
                            NOM_PARA='INST',
                            VALE=( 0.,   0.0,
                                   1.,   1.0, )
@@ -180,7 +180,7 @@ FONC=DEFI_FONCTION(
 
 #
 
-LINST=DEFI_LIST_REEL( 
+LINST=DEFI_LIST_REEL(
                             DEBUT=0.0,
                             INTERVALLE=_F(  JUSQU_A = 1.,  NOMBRE = 1)
                          )
@@ -191,17 +191,17 @@ LINST=DEFI_LIST_REEL(
 # --------------------------------------------------------------------
 #
 
-RESU=STAT_NON_LINE( 
+RESU=STAT_NON_LINE(
                           MODELE=MOD,
                           CHAM_MATER=CHMAT,EXCIT=(
                           _F(  CHARGE = BLOQ),
                                 _F(  CHARGE = DEPL,   FONC_MULT = FONC),
                                 _F(  CHARGE = LIAI),),
-                          CONTACT  = CONT,      
+                          CONTACT  = CONT,
                           COMP_ELAS=_F(  RELATION = 'ELAS'),
                           INCREMENT=_F(  LIST_INST = LINST),
-                          NEWTON   =_F(REAC_ITER=1,) ,  
-                          CONVERGENCE=_F( 
+                          NEWTON   =_F(REAC_ITER=1,) ,
+                          CONVERGENCE=_F(
                                         RESI_GLOB_RELA = 1.E-6,
                                         ITER_GLOB_MAXI = 50,
                                         ARRET = 'OUI'),
@@ -212,15 +212,15 @@ RESU=STAT_NON_LINE(
 # --------------------------------------------------------------------
 #                    CALCUL DES CONTRAINTES AUX NOEUDS
 # --------------------------------------------------------------------
-#  
+#
 
 RESU=CALC_ELEM( reuse=RESU,  RESULTAT=RESU,
-                           MODELE=MOD,
+
                        OPTION='SIEF_ELNO_ELGA',
                        CHAM_MATER=CHMAT
                   )
 
-RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,  
+RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,
                      OPTION='SIEF_NOEU_ELGA'
                   )
 
@@ -231,7 +231,7 @@ RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,
 #
 
 
-RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU, MODELE=MOD,
+RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,
                      OPTION='REAC_NODA'
                   )
 
@@ -244,7 +244,7 @@ RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU, MODELE=MOD,
 # --------------------------------------------------------------------
 
 TEST_RESU(
-            RESU=_F( 
+            RESU=_F(
                   RESULTAT = RESU,
                   NUME_ORDRE = 1,
                   REFERENCE = 'SOURCE_EXTERNE',
@@ -261,7 +261,7 @@ TEST_RESU(
 # --------------------------------------------------------------------
 
 TEST_RESU(
-            RESU=_F( 
+            RESU=_F(
                   RESULTAT = RESU,
                   NUME_ORDRE = 1,
                   REFERENCE = 'NON_REGRESSION',
@@ -281,7 +281,7 @@ TEST_RESU(
 # --------------------------------------------------------------------
 
 
-REACENC=POST_RELEVE_T( 
+REACENC=POST_RELEVE_T(
                  ACTION=_F(  RESULTAT = RESU,
                           INST = 1.,
                           INTITULE = 'ENCASTREMENT',
@@ -297,7 +297,7 @@ REACENC=POST_RELEVE_T(
 TEST_TABLE(    TABLE=REACENC,
                NOM_PARA='DY',
                REFERENCE='SOURCE_EXTERNE',
-               VALE=17229.58,          
+               VALE=17229.58,
                PRECISION=3.0E-2,
                CRITERE='RELATIF' )
 

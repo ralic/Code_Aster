@@ -1,4 +1,4 @@
-# MODIF  DATE 14/03/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 
 # TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,7 +86,7 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARAC,
                 CHARGE=CL,
-                NUME_DDL=CO('NUME_DDL'),
+                NUME_DDL=CO('NUMEDDL'),
                 MATR_ASSE=(_F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('RIGID'),

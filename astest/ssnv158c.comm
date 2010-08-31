@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -130,8 +130,8 @@ U1=CALC_ELEM( reuse=U1,
 
 U1 = CALC_NO( reuse      =  U1         ,
               RESULTAT   =  U1         ,
-              MODELE     =  MODELE     ,
-              CHAM_MATER =  CHMAT      ,
+
+
               OPTION     = ('REAC_NODA',),)
 
 #***********************************************************************

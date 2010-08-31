@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE  POUTRE ANALYSE HARMONIQUE MAILLAGE FIN POU_D_E
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,9 +136,9 @@ DYNA_F=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 
 #
 
-DYNA_F=CALC_ELEM(reuse=DYNA_F,  MODELE=MODELE,
+DYNA_F=CALC_ELEM(reuse=DYNA_F,
                         RESULTAT=DYNA_F,  OPTION='EFGE_ELNO_DEPL',
-                        CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+                           CARA_ELEM=CARA_ELE   )
 
 #
 
@@ -187,9 +187,9 @@ DYNA_FL=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 
 #
 
-DYNA_FL=CALC_ELEM(reuse=DYNA_FL,  MODELE=MODELE,
+DYNA_FL=CALC_ELEM(reuse=DYNA_FL,
                          RESULTAT=DYNA_FL,  OPTION='EFGE_ELNO_DEPL',
-                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+                            CARA_ELEM=CARA_ELE   )
 
 #
 
@@ -248,9 +248,9 @@ DYNA_AF=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 
 #
 
-DYNA_AF=CALC_ELEM(reuse=DYNA_AF,  MODELE=MODELE,
+DYNA_AF=CALC_ELEM(reuse=DYNA_AF,
                          RESULTAT=DYNA_AF,  OPTION='EFGE_ELNO_DEPL',
-                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+                            CARA_ELEM=CARA_ELE   )
 
 #
 
@@ -305,13 +305,13 @@ DYNA_AFL=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 
 #
 
-DYNA_AFL=CALC_ELEM(reuse=DYNA_AFL,  MODELE=MODELE,
+DYNA_AFL=CALC_ELEM(reuse=DYNA_AFL,
                           RESULTAT=DYNA_AFL,  OPTION='EFGE_ELNO_DEPL',
-                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE )
+                             CARA_ELEM=CARA_ELE )
 
 DYNA_AFL=CALC_NO(reuse=DYNA_AFL,
                           RESULTAT=DYNA_AFL,  OPTION='EFGE_NOEU_DEPL',
-                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE )
+                             CARA_ELEM=CARA_ELE )
 
 #
 

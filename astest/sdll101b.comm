@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE VIBRATION D'UNE POUTRE AVEC PRE-CONTRAINTES (MAILLAGE PLUS FIN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,9 +103,9 @@ DEP=MACRO_ELAS_MULT(MODELE=MO,
 #
 
 # PRISE EN COMPTE DES PRECONTRAINTES AU NIVEAU ELEMENTAIRES
-DEP=CALC_ELEM( reuse= DEP ,RESULTAT= DEP,MODELE=MO,
-                             CARA_ELEM=CARAELEM,
-                             CHAM_MATER=CHMAT,
+DEP=CALC_ELEM( reuse= DEP ,RESULTAT= DEP,
+
+
                              TOUT_ORDRE='OUI',
                              OPTION=('SIEF_ELGA_DEPL',)
                 )

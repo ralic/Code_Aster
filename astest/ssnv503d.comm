@@ -1,21 +1,21 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS TEST SSNV503D
 # - MODELISATION AVEC DES ELEMENTS D_PLAN (MAILLES QUA4)
@@ -127,10 +127,10 @@ CTAC =DEFI_CONTACT(MODELE       = MODE,
                           E_N            = 1.E+5,
                           GROUP_MA_MAIT  = 'LMAI',
                           GROUP_MA_ESCL  = 'LESC',
-                         ),                                                   
-                       ),  
+                         ),
+                       ),
                   )
-                  
+
 
 #---------------------------------------------------------------------
 #                         RESOLUTION
@@ -141,19 +141,19 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                           1.0,1.0),
                     PROL_DROITE='LINEAIRE',
                     PROL_GAUCHE='LINEAIRE',);
-                    
+
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=2,),);
-         
-# CHARGEMENT 1          
+
+# CHARGEMENT 1
 U_NOR=STAT_NON_LINE(MODELE=MODE,
                     CHAM_MATER=CM,
                     CARA_ELEM=CARA,
                     EXCIT=(_F(CHARGE=PNOR,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=COND_LIM,),),
-                    CONTACT  =CTAC,       
+                    CONTACT  =CTAC,
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -166,15 +166,15 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
 
 U_NOR=CALC_NO(reuse =U_NOR,
               RESULTAT=U_NOR,
-              MODELE=MODE,
-              CARA_ELEM=CARA,
+
+
               OPTION='REAC_NODA',
               EXCIT=(_F(CHARGE=PNOR,
                         FONC_MULT=RAMPE,),
                      _F(CHARGE=COND_LIM,),),
               );
-                                               
-# CHARGEMENT 2                                 
+
+# CHARGEMENT 2
 U_99=STAT_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CM,
                    CARA_ELEM=CARA,
@@ -183,7 +183,7 @@ U_99=STAT_NON_LINE(MODELE=MODE,
                           _F(CHARGE=PTAN_99,
                              FONC_MULT=RAMPE,),
                           _F(CHARGE=COND_LIM,),),
-                   CONTACT  =CTAC,  
+                   CONTACT  =CTAC,
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,),
@@ -195,8 +195,8 @@ U_99=STAT_NON_LINE(MODELE=MODE,
 
 U_99=CALC_NO(reuse =U_99,
              RESULTAT=U_99,
-             CARA_ELEM = CARA,
-             MODELE=MODE,
+
+
              OPTION='REAC_NODA',
              EXCIT=(_F(CHARGE=PNOR,
                        FONC_MULT=RAMPE,),
@@ -205,7 +205,7 @@ U_99=CALC_NO(reuse =U_99,
                     _F(CHARGE=COND_LIM,),),
               );
 
-# CHARGEMENT 3 
+# CHARGEMENT 3
 U_101=STAT_NON_LINE(MODELE=MODE,
                     CHAM_MATER=CM,
                     CARA_ELEM=CARA,
@@ -214,7 +214,7 @@ U_101=STAT_NON_LINE(MODELE=MODE,
                            _F(CHARGE=PTAN_101,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=COND_LIM,),),
-                           CONTACT  =CTAC,  
+                           CONTACT  =CTAC,
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -228,8 +228,8 @@ U_101=STAT_NON_LINE(MODELE=MODE,
 
 U_101=CALC_NO(reuse =U_101,
               RESULTAT=U_101,
-              CARA_ELEM = CARA,
-              MODELE=MODE,
+
+
               OPTION='REAC_NODA',
               EXCIT=(_F(CHARGE=PNOR,
                         FONC_MULT=RAMPE,),

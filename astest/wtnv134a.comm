@@ -1,23 +1,23 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 #
-# TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI  
+# TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI
 # wtnv134a.para = tps_job 250 mem_job 391Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #                    DE HUJEUX SUR SABLE D'HOSTUN
 #          ===============================================
@@ -93,7 +93,7 @@ MAILLAGE=MODI_MAILLAGE(reuse    = MAILLAGE,
 #*******************************************************************
 TEMPS0=DEFI_LIST_REEL(DEBUT=-1.,
                       INTERVALLE=(_F(JUSQU_A =  0., NOMBRE = 1),));
-                         
+
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A = 10., NOMBRE = 10),
                                   _F(JUSQU_A = 20., NOMBRE = 10),
@@ -115,7 +115,7 @@ TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A = 140.,NOMBRE = 50),
                                   _F(JUSQU_A = 150.,NOMBRE = 50),
                                   _F(JUSQU_A = 160.,NOMBRE = 50),));
-                                  
+
 #*******************************************************************
 #    MATERIAU : SOL
 #*******************************************************************
@@ -138,7 +138,7 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI', MATER=SOL0));
 
 #****************************************************************
-#    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES   
+#    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
 #****************************************************************
 CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA='COTE',
@@ -150,7 +150,7 @@ CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
 
 CHAR_U3=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA='APPUI',PRES = 1.));
-                                             
+
 DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
                       FACE_IMPO=(_F(GROUP_MA='BAS',   DZ = 0.),
                                  _F(GROUP_MA='GAUCHE',DX = 0.),
@@ -158,9 +158,9 @@ DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
 
 
 #*****************************************************************
-#    CHARGEMENT HYDRAULIQUE :          
+#    CHARGEMENT HYDRAULIQUE :
 #    TRIAXIAL NON DRAINE => FLUX NUL SUR TOUTES LES FACES
-#                           (realise par defaut) 
+#                           (realise par defaut)
 #*****************************************************************
 PRE0=AFFE_CHAR_MECA(MODELE=MODELE,
                     DDL_IMPO=_F(GROUP_MA='ECHAN',PRE1 = 0.));
@@ -170,7 +170,7 @@ COEF0=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(-1.0, 0.0,
                            0.0, PCO, ));
-                        
+
 # ---- premier chargement isotrope en elastique jusqu'a 50kPa
 U0M=STAT_NON_LINE(MODELE    = MODELE,
                  CHAM_MATER = CHMAT0,
@@ -186,7 +186,7 @@ U0M=STAT_NON_LINE(MODELE    = MODELE,
                                 ITER_GLOB_MAXI = 50),
                  INCREMENT=_F(LIST_INST = TEMPS0,
                               INST_FIN  = 0.));
-                                 
+
 SIG0=CREA_CHAMP(INFO=1,
                 TYPE_CHAM='ELGA_SIEF_R',
                 OPERATION='EXTR',
@@ -194,7 +194,7 @@ SIG0=CREA_CHAMP(INFO=1,
                 NOM_CHAM='SIEF_ELGA',
                 INST=0.0,);
 
-                        
+
 #***********************************************************************
 #    ESSAI TRIAXIAL NON DRAINE CYCLIQUE
 #***********************************************************************
@@ -232,10 +232,10 @@ SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
                                UN_SUR_K    = UNSURK,
                                VISC        = viscoliq,
                                D_VISC_TEMP = dviscoli));
-                    
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI', MATER=SOL));
-                    
+
 COEF1=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, PCO,
@@ -260,7 +260,7 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',
                           140.0, 15000,
                           150.0, -15000,
                           160.0, 15000,));
-                          
+
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS1 ),
                         ECHEC=_F(SUBD_METHODE='UNIFORME',
                                  SUBD_PAS     = 10,
@@ -293,17 +293,17 @@ U1=STAT_NON_LINE(MODELE=MODELE,
 #-------------------------
 #    TEST_RESU AU POINT C
 #-------------------------
-U1=CALC_ELEM(reuse      = U1, 
-             MODELE     = MODELE,
-             CHAM_MATER = CHMAT,
+U1=CALC_ELEM(reuse      = U1,
+
+
              OPTION     = ('SIEF_ELNO_ELGA','EPSI_ELNO_DEPL','VARI_ELNO_ELGA'),
              RESULTAT   = U1);
 
 U1=CALC_NO(reuse      = U1,
-           CHAM_MATER = CHMAT,
+
            OPTION     = ('SIEF_NOEU_ELGA','EPSI_NOEU_DEPL','VARI_NOEU_ELGA'),
            RESULTAT   = U1);
-              
+
 
 TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIEF_NOEU_ELGA',
                                 GROUP_NO = 'C',
@@ -619,29 +619,29 @@ U2=STAT_NON_LINE(MODELE=MODELE,
                               INST_INIT    = inst_init_1,
                               INST_FIN     = inst_fin_1),
                  RECH_LINEAIRE=_F(METHODE='MIXTE',ITER_LINE_MAXI = 3),);
-                 
+
 
 #-------------------------
 #    TEST_RESU AU POINT C
 #-------------------------
-U2=CALC_ELEM(reuse      = U2, 
-             MODELE     = MODELE,
-             CHAM_MATER = CHMAT1,
+U2=CALC_ELEM(reuse      = U2,
+
+
              OPTION     = ('SIEF_ELNO_ELGA','EPSI_ELNO_DEPL','VARI_ELNO_ELGA'),
              RESULTAT   = U2);
 
 U2=CALC_NO(reuse      = U2,
-           CHAM_MATER = CHMAT1,
+
            OPTION     = ('SIEF_NOEU_ELGA','EPSI_NOEU_DEPL','VARI_NOEU_ELGA'),
            RESULTAT   = U2);
-           
+
 TAB_SIG2=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIEF_NOEU_ELGA',
                                  GROUP_NO = 'C',
                                  RESULTAT = U2,
                                  NOM_CHAM = 'SIEF_NOEU_ELGA',
                                  TOUT_CMP = 'OUI',
                                  OPERATION= 'EXTRACTION'));
-                     
+
 SIGMA_N = FORMULE(NOM_PARA=('SIXX','SIZZ'), VALE='0.5*(SIXX+SIZZ)');
 SIGMA_D = FORMULE(NOM_PARA=('SIXX','SIZZ'), VALE='0.5*(SIXX-SIZZ)');
 
@@ -765,8 +765,8 @@ TEST_TABLE(TABLE    =TAB_SIG2,
                      VALE     =65.,
                      PRECISION=.01,
                      CRITERE  ='ABSOLU',),);
-                     
-                     
+
+
 # TEST DU RAYON DEVIATOIRE CYCLIQUE PAR RAPPORT
 # A UN CALCUL LAWYER (GEFDYN)
 TEST_TABLE(TABLE    =TAB_VAR2,
@@ -859,7 +859,7 @@ TEST_TABLE(TABLE    =TAB_VAR2,
                      VALE     =65.,
                      PRECISION=.01,
                      CRITERE  ='ABSOLU',),);
-                     
+
 TEST_TABLE(TABLE    =TAB_VAR2,
            NOM_PARA ='V23',
            VALE     =-2.92E-04,
@@ -870,5 +870,5 @@ TEST_TABLE(TABLE    =TAB_VAR2,
                      VALE     =67.,
                      PRECISION=.01,
                      CRITERE  ='ABSOLU',),);
-                     
+
 FIN();

@@ -1,7 +1,7 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,7 +93,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*1 BASE
       CHARACTER*2 CODRET
       INTEGER NBIN
-      PARAMETER (NBIN=19)
+      PARAMETER (NBIN=32)
       CHARACTER*8 ZK8,LPAIN(NBIN),LPAOUT(1),TEMPE,NOMA,EXIELE,REPK
       CHARACTER*16 ZK16,OPTION
       CHARACTER*24 CHGEOM,LCHIN(NBIN),LCHOUT(1),KCMP(5)
@@ -136,6 +136,35 @@ C        ET CHAM_MATER :
 
       CALL MEGEOM(MODELE,LCHAR(1),EXIGEO,CHGEOM)
       CALL MECARA(CARA,EXICAR,CHCARA)
+
+C     LES CHAMPS "IN" PRIS DANS CARA_ELEM SONT NUMEROTES DE 21 A 32 :
+C     ---------------------------------------------------------------
+      LPAIN(21)='PCAARPO'
+      LCHIN(21) = CHCARA(9)
+      LPAIN(22)='PCACOQU'
+      LCHIN(22) = CHCARA(7)
+      LPAIN(23)='PCADISM'
+      LCHIN(23) = CHCARA(3)
+      LPAIN(24)='PCAGEPO'
+      LCHIN(24) = CHCARA(5)
+      LPAIN(25)='PCAGNBA'
+      LCHIN(25) = CHCARA(11)
+      LPAIN(26)='PCAGNPO'
+      LCHIN(26) = CHCARA(6)
+      LPAIN(27)='PCAMASS'
+      LCHIN(27) = CHCARA(12)
+      LPAIN(28)='PCAORIE'
+      LCHIN(28) = CHCARA(1)
+      LPAIN(29)='PCASECT'
+      LCHIN(29) = CHCARA(8)
+      LPAIN(30) = 'PCINFDI'
+      LCHIN(30) = CHCARA(15)
+      LPAIN(31) = 'PFIBRES'
+      LCHIN(31) = CHCARA(17)
+      LPAIN(32) = 'PNBSP_I'
+      LCHIN(32) = CHCARA(16)
+
+
       NOMA = CHGEOM(1:8)
       CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
       CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
@@ -164,21 +193,7 @@ C        -- EN PRINCIPE, EXITIM EST TOUJOURS .TRUE.
      &              IBID,TIME,CBID,KBID)
         LPAIN(5) = 'PTEMPSR'
         LCHIN(5) = CHTIME
-        LPAIN(6) = 'PCACOQU'
-        LCHIN(6) = CHCARA(7)
-        LPAIN(7) = 'PCAGNPO'
-        LCHIN(7) = CHCARA(6)
-        LPAIN(8) = 'PCADISM'
-        LCHIN(8) = CHCARA(3)
-        LPAIN(9) = 'PCAORIE'
-        LCHIN(9) = CHCARA(1)
-        LPAIN(10) = 'PCAARPO'
-        LCHIN(10) = CHCARA(9)
-        LPAIN(11) = 'PCASECT'
-        LCHIN(11) = CHCARA(8)
 
-        LPAIN(17) = 'PNBSP_I'
-        LCHIN(17) = CHCARA(16)
 
 
         DO 50 ICHA = 1,NCHAR
@@ -366,10 +381,6 @@ C ====================================================================
             LCHIN(4) = LIGRCH(1:13)//'.F1D1D.DESC'
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
-            LPAIN(12) = 'PCAGEPO'
-            LCHIN(12) = CHCARA(5)
-            LPAIN(13) = 'PCAGNBA'
-            LCHIN(13) = CHCARA(11)
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
@@ -384,12 +395,6 @@ C ====================================================================
             LCHIN(4) = LIGRCH(1:13)//'.PESAN.DESC'
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
-            LPAIN(12) = 'PCAGEPO'
-            LCHIN(12) = CHCARA(5)
-            LPAIN(13) = 'PCAGNBA'
-            LCHIN(13) = CHCARA(11)
-            LPAIN(19) = 'PCINFDI'
-            LCHIN(19) = CHCARA(15)
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
@@ -421,13 +426,9 @@ C ====================================================================
               LPAIN(4) = 'PEPSINR'
             END IF
             LCHIN(4) = LIGRCH(1:13)//'.EPSIN.DESC'
-            LPAIN(12) = 'PCAMASS'
-            LCHIN(12) = CHCARA(12)
             CALL MEHARM(MODELE,NH,CHHARM)
             LPAIN(13) = 'PHARMON'
             LCHIN(13) = CHHARM
-            LPAIN(14) = 'PFIBRES'
-            LCHIN(14) = CHCARA(17)
             LPAIN(15) = 'PCOMPOR'
             LCHIN(15) =  MATE(1:8)//'.COMPOR'
             ILIRES = ILIRES + 1
@@ -493,8 +494,6 @@ C ====================================================================
             LCHIN(4) = LIGRCH(1:13)//'.PRESS.DESC'
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
-            LPAIN(6) = 'PCAGEPO'
-            LCHIN(6) = CHCARA(5)
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
      &                  LPAOUT,BASE)
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
@@ -584,15 +583,9 @@ C       -- CHARGEMENT DE DILATATION THERMIQUE :
           LCHIN(2) = MATE
           LPAIN(4) = 'PVARCRR'
           LCHIN(4) = CHVREF
-          LPAIN(12) = 'PCAMASS'
-          LCHIN(12) = CHCARA(12)
           CALL MEHARM(MODELE,NH,CHHARM)
           LPAIN(13) = 'PHARMON'
           LCHIN(13) = CHHARM
-          LPAIN(14) = 'PCAGEPO'
-          LCHIN(14) = CHCARA(5)
-          LPAIN(15) = 'PCAGNBA'
-          LCHIN(15) = CHCARA(11)
           LPAIN(16) = ' '
           LCHIN(16) = ' '
           ILIRES = ILIRES + 1

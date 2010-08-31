@@ -1,4 +1,4 @@
-#@ MODIF miss_resu_aster Miss  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_resu_aster Miss  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ Cette structure est potentiellement volumineuse et sera donc détruite dès que po
 import os
 import traceback
 
-from Utilitai.Utmess import MessageError
+import aster
 from Miss.miss_utils import lire_nb_valeurs, double
 
 
@@ -98,12 +98,12 @@ def lire_resultat_aster(fich_aster):
                               struct.coupl_rigi, double, 1, 1)
 
     except Exception, err:
-        raise MessageError('MISS0_7', vali=ln, valk=str(err))  
+        raise aster.error('MISS0_7', vali=ln, valk=str(err))  
     # vérifications
     try:
         struct.check()
     except AssertionError, err:
-        raise MessageError('MISS0_8', valk=traceback.format_exc(limit=2))
+        raise aster.error('MISS0_8', valk=traceback.format_exc(limit=2))
     # arrangements : compléter la connectivité à 20
     new = []
     add = [0,] * (20 - struct.maille_dime)

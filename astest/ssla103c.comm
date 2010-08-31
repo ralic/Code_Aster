@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION ET D'HYDRATATION
 #       SUR UN CYLINDRE - LOI DE MAZARS LOCALE
 # -----------------------------------------------------------------
@@ -168,14 +168,14 @@ U=STAT_NON_LINE( MODELE=MO,
                                ITER_GLOB_MAXI=25,),);
 U=CALC_ELEM(reuse =U,
              RESULTAT = U,
-             CHAM_MATER=CM,
+
              EXCIT=_F(CHARGE=CH1,),
-             MODELE=MO,
+
              OPTION=('EPSI_ELNO_DEPL','EPSP_ELNO','SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),         )
 
 U=CALC_NO(reuse =U,
              RESULTAT = U,
-             CHAM_MATER=CM,
+
              OPTION=('EPSI_NOEU_DEPL','SIEF_NOEU_ELGA','EPSP_NOEU','VARI_NOEU_ELGA'),         )
 
 TEST_RESU(RESU=(

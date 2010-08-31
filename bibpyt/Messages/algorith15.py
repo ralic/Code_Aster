@@ -1,4 +1,4 @@
-#@ MODIF algorith15 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algorith15 Messages  DATE 30/08/2010   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -335,18 +335,18 @@ cata_msg = {
 """),
 
 85 : _("""
-  l''interface de droite n'existe pas
-  interface de nom %(k1)s 
+  L'interface de droite %(k1)s n'existe pas
+  Conseil: vérifiez si vous avez défini cette interface dans le modèle
 """),
 
 86 : _("""
-  l''interface de gauche n'existe pas
-  interface de nom %(k1)s 
+  l'interface de gauche %(k1)s n'existe pas
+  Conseil: vérifiez si vous avez défini cette interface dans le modèle
 """),
 
 87 : _("""
-  l'interface axe n'existe pas
-  interface de nom %(k1)s 
+  l'interface axe %(k1)s n'existe pas
+  Conseil: vérifiez si vous avez défini cette interface dans le modèle
 """),
 
 88 : _("""

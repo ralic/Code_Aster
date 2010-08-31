@@ -1,4 +1,4 @@
-# MODIF  DATE 07/04/2010   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 30/08/2010   AUTEUR BOYERE E.BOYERE 
 # TITRE CALCUL MODAL D'UN ARBRE A SECTION CIRCULAIRE VARIABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -383,6 +383,7 @@ MOD2ETAG=MODE_ITER_SIMULT(MATR_A=RIGE,
                           MATR_B=MAGE,
                           MATR_C=OMGE,
                           METHODE='QZ',
+                          VERI_MODE=_F(SEUIL=2.E-6),
                           CALC_FREQ=_F(OPTION='TOUT'),)
 
 TEST_RESU(RESU=(

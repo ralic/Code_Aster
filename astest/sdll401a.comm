@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE SOUMISE A UNE FORCE SINUSOIDALE REPARTIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,9 +151,9 @@ DYNFX=DYNA_LINE_TRAN(        MODELE=MO,
                        )
 
 #
-DYNFX=CALC_ELEM( reuse=DYNFX,       MODELE=MO,
-                       CHAM_MATER=CHMAT,
-                        CARA_ELEM=CAREL,
+DYNFX=CALC_ELEM( reuse=DYNFX,
+
+
                          RESULTAT=DYNFX,
                             EXCIT=_F( CHARGE = REPFX,
                                    FONC_MULT = fCOS),
@@ -281,9 +281,9 @@ DYNPOF20=DYNA_LINE_TRAN(        MODELE=MO,
                           )
 
 #
-DYNPOF20=CALC_ELEM( reuse=DYNPOF20,       MODELE=MO,
-                          CHAM_MATER=CHMAT,
-                           CARA_ELEM=CAREL,
+DYNPOF20=CALC_ELEM( reuse=DYNPOF20,
+
+
                             RESULTAT=DYNPOF20,
                                EXCIT=_F( CHARGE = PONF20,
                                       FONC_MULT = fCOS),
@@ -335,9 +335,9 @@ DYNPOM20=DYNA_LINE_TRAN(        MODELE=MO,
                        )
 
 #
-DYNPOM20=CALC_ELEM( reuse=DYNPOM20,       MODELE=MO,
-                          CHAM_MATER=CHMAT,
-                           CARA_ELEM=CAREL,
+DYNPOM20=CALC_ELEM( reuse=DYNPOM20,
+
+
                             RESULTAT=DYNPOM20,
                                EXCIT=_F( CHARGE = PONM20,
                                       FONC_MULT = fCOS),

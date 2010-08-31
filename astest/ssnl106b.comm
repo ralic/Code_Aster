@@ -1,4 +1,4 @@
-# MODIF  DATE 14/01/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -305,9 +305,9 @@ TEST_RESU(RESU=(
 # TEST DES REACTIONS
 
 
-REST=CALC_NO( reuse=REST,     RESULTAT=REST,  MODELE=MO,
-                     CHAM_MATER=CHMAT1,
-                      CARA_ELEM=CAREL,
+REST=CALC_NO( reuse=REST,     RESULTAT=REST,
+
+
                     OPTION='REAC_NODA' )
 
 TEST_RESU(RESU=(_F( RESULTAT = REST,
@@ -344,9 +344,9 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  PRECISION = 1.E-3))
           )
 
-RESM=CALC_NO( reuse=RESM,     RESULTAT=RESM,  MODELE=MO,
-                     CHAM_MATER=CHMAT2,
-                      CARA_ELEM=CAREL,
+RESM=CALC_NO( reuse=RESM,     RESULTAT=RESM,
+
+
                     OPTION='REAC_NODA' )
 
 TEST_RESU(RESU=(_F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA', NOEUD = 'R3',

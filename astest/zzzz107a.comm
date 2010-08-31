@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA RECUPERATION DES EXCEPTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,41 +45,41 @@ print sep
 
 is_ok = 0
 try:
-   raise aster.error, \
-      """CAS 1 : declencher error car l'exception n'est pas particularisee."""
+   raise aster.error("GENERIC_1",
+        valk="""CAS 1 : declencher error car l'exception n'est pas particularisee.""")
 
 except aster.NonConvergenceError,err:
    print "Exception NonConvergence interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 except aster.EchecComportementError,err:
    print "Exception EchecComportement interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 except aster.BandeFrequenceVideError,err:
    print "Exception BandeFrequenceVide interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 except aster.MatriceSinguliereError,err:
    print "Exception MatriceSinguliere interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 except aster.TraitementContactError,err:
    print "Exception TraitementContact interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 except aster.MatriceContactSinguliereError,err:
    print "Exception MatriceContactSinguliere interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 except aster.ArretCPUError,err:
    print "Exception ArretCPU interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 except aster.error,err:
    is_ok = 1
    print "Exception error interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 print sep
 
@@ -100,17 +100,17 @@ print sep
 
 is_ok = 0
 try:
-   raise aster.NonConvergenceError, \
-      'CAS 2 : declencher une exception particularisee plus precise que "error"'
+   raise aster.NonConvergenceError("GENERIC_1",
+      'CAS 2 : declencher une exception particularisee plus precise que "error"')
 
 except aster.NonConvergenceError,err:
    is_ok = 1
    print "Exception NonConvergence interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 except aster.error,err:
    print "Exception error interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 print sep
 
@@ -131,21 +131,21 @@ print sep
 
 is_ok = 0
 try:
-   raise aster.EchecComportementError, \
-      'CAS 3 : ne pas confondre les exceptions particularisees'
+   raise aster.EchecComportementError("GENERIC_1",
+      'CAS 3 : ne pas confondre les exceptions particularisees')
 
 except aster.BandeFrequenceVideError,err:
    print "Exception BandeFrequenceVide interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 except aster.EchecComportementError,err:
    is_ok = 1
    print "Exception EchecComportement interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 except aster.error,err:
    print "Exception error interceptee"
-   print "Raison : " + str(err)
+   print "Raison : " + str(err.valk)
 
 print sep
 
@@ -175,13 +175,12 @@ print fmt % prev
 aster.onFatalError('EXCEPTION')
 print fmt % aster.onFatalError()
 try:
-   ma=LIRE_MAILLAGE(UNITE=999)   # unite invalide
-except aster.error, msg:
-   is_ok = 1
-   print """
-   Message emis lors de l'erreur dans LIRE_MAILLAGE :
-      %s
-""" % str(msg)
+    ma=LIRE_MAILLAGE(UNITE=999)   # unite invalide
+except aster.error, err:
+    # on verifie que la bonne exception a ete levee
+    assert err.id_message == "MODELISA4_94", 'unexpected id : %s' % err.id_message
+    is_ok = 1
+
 
 # on remet dans l'etat initial
 aster.onFatalError(prev)
@@ -232,12 +231,17 @@ try:
                   AFFE=_F(MAILLE='XXX',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='DIS_TR',),);
-except aster.error:
-   DETRUIRE(CONCEPT=_F(NOM=MO),)
-   MO=AFFE_MODELE(MAILLAGE=MA,
-                  AFFE=_F(MAILLE='D1',
-                          PHENOMENE='MECANIQUE',
-                          MODELISATION='DIS_TR',),);
+except aster.error, err:
+    # on verifie que la bonne exception a ete levee
+    assert err.id_message == "MODELISA6_10", 'unexpected id : %s' % err.id_message
+    # on peut aussi verifier les arguments
+    assert err.valk[0].strip() == "XXX", "unexpected argument : %s" % err.valk[0]
+    assert err.valk[1].strip() == "MA", "unexpected argument : %s" % err.valk[1]
+    DETRUIRE(CONCEPT=_F(NOM=MO),)
+    MO=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(MAILLE='D1',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='DIS_TR',),);
 
 
 F1=DEFI_FONCTION(NOM_PARA='INST',
@@ -326,8 +330,10 @@ try :
                           NEWTON=_F(MATRICE='ELASTIQUE',
                                     REAC_ITER=1,),)
 
-except aster.NonConvergenceError:
+except aster.NonConvergenceError, err:
      is_ok = 1
+     # on verifie que la bonne exception a ete levee
+     assert err.id_message == "MECANONLINE_83", 'unexpected id : %s' % err.id_message
      print """\nNon convergence, on augmente le nombre d'iterations...\n"""
 # on recupere le dernier instant proprement calcule dans le try precedent
 # dans la variable last_iter pour repartir de cet ETAT_INIT
@@ -356,7 +362,9 @@ try:
                                      NOM_CHAM='TEMP',
                                      NOM_CMP='TEMP',
                                      OPERATION='EXTRACTION',),);
-except aster.error:
+except aster.error, err:
+    # on verifie que la bonne exception a ete levee
+    assert err.id_message == "POSTRELE_46", 'unexpected id : %s' % err.id_message
     DETRUIRE(CONCEPT=_F(NOM=TAB_DEPL),)
     TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                      NOEUD='N2',

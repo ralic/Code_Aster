@@ -1,4 +1,4 @@
-# MODIF  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 # zzzz121d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -195,8 +195,8 @@ RESU_0=MECA_STATIQUE(MODELE=MODE_0,
 # 3.5. Calcul de l'indicateur d'erreur
 
 RESU_0=CALC_ELEM(reuse =RESU_0,
-                 MODELE=MODE_0,
-                 CHAM_MATER=MATE_0,
+
+
                  RESULTAT=RESU_0,
                  OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
                  EXCIT=(
@@ -275,8 +275,8 @@ RESU_1=MECA_STATIQUE(MODELE=MODE_1,
 # 5.5. Calcul de l'indicateur d'erreur
 
 RESU_1=CALC_ELEM(reuse =RESU_1,
-                 MODELE=MODE_1,
-                 CHAM_MATER=MATE_1,
+
+
                  RESULTAT=RESU_1,
                  OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
                  EXCIT=(
@@ -361,8 +361,8 @@ RESU_2=MECA_STATIQUE(MODELE=MODE_2,
 # 7.5. Calcul des contraintes
 
 RESU_2=CALC_ELEM(reuse =RESU_2,
-                 MODELE=MODE_2,
-                 CHAM_MATER=MATE_2,
+
+
                  RESULTAT=RESU_2,
                  OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
                  EXCIT=(
@@ -440,8 +440,8 @@ RESU_3=MECA_STATIQUE(MODELE=MODE_3,
 # 9.5. Calcul des contraintes
 
 RESU_3=CALC_ELEM(reuse =RESU_3,
-                 MODELE=MODE_3,
-                 CHAM_MATER=MATE_3,
+
+
                  RESULTAT=RESU_3,
                  OPTION='SIGM_ELNO_DEPL',
                  EXCIT=(

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,7 +96,7 @@ TEST_RESU(RESU=(
              )
 
 
-DYNAHARM=CALC_ELEM( reuse=DYNAHARM,     MODELE=COLONNE,   CHAM_MATER=CHAMPMAT,
+DYNAHARM=CALC_ELEM( reuse=DYNAHARM,
                             TOUT_ORDRE='OUI',
                              RESULTAT=DYNAHARM,
                                OPTION='PRES_DBEL_DEPL'

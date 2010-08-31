@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 16/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
+#@ MODIF post_gp_ops Macro  DATE 30/08/2010   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ def post_gp_ops(self, **args):
    import string
    import numpy as NP
    from sets import Set 
-   
+   global DEFI_GROUP, POST_RELEVE_T, DETRUIRE
    # ----- On importe les definitions des commandes a utiliser dans la macro
    CALC_THETA    = self.get_cmd('CALC_THETA')
    CALC_G        = self.get_cmd('CALC_G')
@@ -75,6 +75,12 @@ def post_gp_ops(self, **args):
    # ---- Recuperation du nombre d'instants deja calculés 
    num_ord = len(NP.nonzero(aster.getvectjev(string.ljust(self['RESULTAT'].nom,19)+'.ORDR        '))[0])
            
+   # Cas 2D
+   if self['THETA_2D'] is not None:
+      is_2D = True
+   else:
+      is_2D = False
+
    info = self['INFO']
    type_def = self['TYPE_DEF']
    
@@ -125,39 +131,11 @@ def post_gp_ops(self, **args):
    args={}      
    if self['EXCIT']:args={'EXCIT'   : self['EXCIT'].List_F()}
 
+   
    # 1. ----- calcul de G-theta
-   
-   # Cas 2D
-   if self['THETA_2D'] is not None:
-      is_2D = True
-   else:
-      is_2D = False
 
-   l_copo_tot = []
-   for tmpocc in self['TRANCHE']:
-     dMCT = tmpocc.cree_dict_valeurs(tmpocc.mc_liste)
-     for grma in dMCT['GROUP_MA'] :
-       l_copo_tot.append(grma)
-   nb_tranches = len(self['TRANCHE'])
-#  En supposant que le nombre de copeaux est identique par tranche
-   nbcop_tot = len(l_copo_tot)
-   nbcop = nbcop_tot/nb_tranches
-   l_ep_copeaux_tot_3D = []   
-   
-
-   # ----- RECUPERE LE VECTEUR NORMALE DEFINIE DANS FOND_FISS UNIQUEMENT POUR LE CAS 3D
-   if not is_2D:
-       FOND_FISS =  self['FOND_FISS']
-       ldirection = aster.getvectjev(FOND_FISS.nom.ljust(8)+'.NORMALE              ')
-   else:
-       if (self['DIRECTION'][0]==1.):
-         ldirection = (0.,1.)
-       elif (self['DIRECTION'][1]==1.):
-         ldirection = (1.,0.)
-   
    if is_2D:
       nbcour = len(self['THETA_2D'])
-      ep_z = 1
       l_tab = []
       for occ in self['THETA_2D']:
          dMC = occ.cree_dict_valeurs(occ.mc_liste)
@@ -179,109 +157,7 @@ def post_gp_ops(self, **args):
          tab = __gtheta.EXTR_TABLE()
          
          # une Table par couronne
-         l_tab.append(tab)
-      
-      Nds_fdfiss = dMC['GROUP_NO']
-         
-      # Récupération des noeuds appartenant à la mesure de symétrie
-      # le vecteur normal et la précision doivent être donné par l'utilisateur 
-      DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 DETR_GROUP_NO=_F(NOM='Nds_Plan'),
-                 CREA_GROUP_NO=_F(OPTION='PLAN',
-                                  NOM='Nds_Plan',
-                                  GROUP_NO_CENTRE=Nds_fdfiss,
-                                  VECT_NORMALE=ldirection,PRECISION=1e-6,),INFO=1);
-
-      # Récupération des noeuds appartenant à la mesure de symétrie et à chaque copeau
-      mesure = {}     
-      for C_k in range(nbcop) :
-        Copeau_k = l_copo_tot[C_k]
-        DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 DETR_GROUP_NO=(_F(NOM=Copeau_k),_F(NOM='Cop_Pl')),
-                 CREA_GROUP_NO=_F(GROUP_MA=Copeau_k,
-                                  NOM=Copeau_k,),INFO=1);
-        DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 CREA_GROUP_NO=_F(INTERSEC=(Copeau_k,'Nds_Plan',),
-                                  NOM='Cop_Pl',),INFO=1);
-        if C_k!=0:
-          DEFI_GROUP(reuse =maya,
-                   MAILLAGE=maya,
-                   DETR_GROUP_MA=_F(NOM='Mai_Pla1'),
-                   CREA_GROUP_MA=_F(NOM='Mai_Pla1',
-                   OPTION='APPUI',
-                   GROUP_NO='Cop_Pl',
-                   TYPE_APPUI='TOUT',),INFO=1);
-
-          DEFI_GROUP(reuse =maya,
-                   MAILLAGE=maya,
-                   DETR_GROUP_MA=_F(NOM='Mai_Plan'),
-                   CREA_GROUP_MA=_F(NOM='Mai_Plan',
-                                    DIFFE=('Mai_Pla1','Mai_Pla2'),),);
-                          
-          DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 DETR_GROUP_MA=_F(NOM='Mai_Pla2'),
-                 CREA_GROUP_MA=_F(NOM='Mai_Pla2',
-                                  UNION=('Mai_Pla1','Mai_Plan'),),);
-          mesure[Copeau_k] = mesure[l_copo_tot[C_k-1]]
-        else:
-          DEFI_GROUP(reuse =maya,
-                   MAILLAGE=maya,
-                   DETR_GROUP_MA=_F(NOM='Mai_Plan'),
-                   CREA_GROUP_MA=_F(NOM='Mai_Plan',
-                   OPTION='APPUI',
-                   GROUP_NO='Cop_Pl',
-                   TYPE_APPUI='TOUT',),INFO=1);
-          
-          DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 DETR_GROUP_MA=_F(NOM='Mai_Pla2'),
-                 CREA_GROUP_MA=_F(NOM='Mai_Pla2',
-                                  GROUP_MA=('Mai_Plan'),),);
-          mesure[Copeau_k] = NP.zeros(num_ord)
-
-          
-        # Calcul de la surface des mailles du copeau courant pour chaque instant
-        coord_dana = []  
-        mon_nom = 'Mai_Plan'
-        tmp_mesure = NP.zeros(num_ord)
-        for maille_courante in maya.GROUPEMA.get()[mon_nom.ljust(8)]:
-          if ltyma[maya.TYPMAIL.get()[maille_courante]][0:3]=='SEG':
-            connexe = maya.CONNEX.get()[maille_courante]
-            coord_nds = []
-            deforme=[]
-            DEP_el = [None]*2
-            for i in range(0,2):
-               DEP_el[i] = POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION', 
-                                         RESULTAT=self['RESULTAT'],
-                                         INTITULE='DEP_el',
-                                         TOUT_CMP='OUI',
-                                         NOM_CHAM='DEPL',
-                                         TOUT_ORDRE='OUI',
-                                         MAILLE=maya.NOMMAI.get()[maille_courante],
-                                         NOEUD=maya.NOMNOE.get()[connexe[i]-1]),);
-               tab_DEP_el = DEP_el[i].EXTR_TABLE()
-               coord_nds.append((tab_DEP_el.COOR_X.values(),tab_DEP_el.COOR_Y.values()))
-               deforme.append((tab_DEP_el.DX.values(),tab_DEP_el.DY.values()))       
-
-            DETRUIRE(CONCEPT=_F(NOM=DEP_el),INFO=1);
-            if type_def=='GRAND':
-              for it in range(num_ord):
-                Coor_int=[]
-                Def_int=[]
-                for i in range(0,2):
-                  Coor_int.append((coord_nds[i][0][it],coord_nds[i][1][it]))
-                  Def_int.append((deforme[i][0][it],deforme[i][1][it]))
-                tmp_mesure[it] = mesure[Copeau_k][it] + NP.sqrt((Coor_int[0][0]+Def_int[0][0]-Coor_int[1][0]-Def_int[1][0])**2 + 
-                                 (Coor_int[0][1]+Def_int[0][1]-Coor_int[1][1]-Def_int[1][1])**2 )
-            
-              mesure[Copeau_k] = tmp_mesure
-    
-            else:
-              mesure[Copeau_k] = NP.sqrt((coord_nds[0][0][0]-coord_nds[1][0][0])**2 + (coord_nds[0][1][0]-coord_nds[1][1][0])**2 ) + mesure[Copeau_k]
+         l_tab.append(tab)      
   
    else:
       #Cas 3D
@@ -314,163 +190,42 @@ def post_gp_ops(self, **args):
  
          tab = __gtheta.EXTR_TABLE()
 
-
          # une Table par couronne
          l_tab.append(tab)
 
+   # 1.1.----- calcul de la mesure des mailles appartenant à l'axe de symétrie 
+   # ou au plan de symétrie
+   l_copo_tot = []
+   l_ep_copeaux_tot_3D = []
+   for tmpocc in self['TRANCHE']:
+     dMCT = tmpocc.cree_dict_valeurs(tmpocc.mc_liste)
+     for grma in dMCT['GROUP_MA'] :
+       l_copo_tot.append(grma)
+   nb_tranches = len(self['TRANCHE'])
+   #  En supposant que le nombre de copeaux est identique par tranche
+   nbcop_tot = len(l_copo_tot)
+   nbcop = nbcop_tot/nb_tranches
+     
+
+   if is_2D:
+      # Récupération des noeuds appartenant à la droite de symétrie
+      # le vecteur normal est construit comme étant perpendiculaire au vecteur direction
+       if (self['DIRECTION'][0]==1.):
+           ldirection = (0.,1.)
+       elif (self['DIRECTION'][1]==1.):
+           ldirection = (1.,0.)
+       Nds_fdfiss = dMC['GROUP_NO']
+       Recup_Noeuds_Surf(is_2D,maya,Nds_fdfiss,ldirection)
+       mesure = Calcul_mesure_2D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,self['RESULTAT'],type_def)
+
+   else:
       # Récupération des noeuds appartenant à la surface de symétrie
-      # le vecteur normal et la précision doivent être donné par l'utilisateur 
-      DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 DETR_GROUP_NO=_F(NOM='Nds_Plan'),
-                 CREA_GROUP_NO=(_F(OPTION='PLAN',
-                                  NOM='Nds_Plan',
-                                  NOEUD_CENTRE=l_noeuds_fissure[0],
-                                  VECT_NORMALE=ldirection,
-                                  PRECISION=1e-6,),
-                                _F(NOM='Nds_Fond',
-                                   NOEUD=l_noeuds_fissure,),),INFO=1);
-
-      # Récupération des noeuds appartenant à la mesure de symétrie et à chaque copeau
-      mesure = {}     
-      for C_k in range(len(l_copo_tot)) :
-        Copeau_k = l_copo_tot[C_k]
-        DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 DETR_GROUP_NO=(_F(NOM=Copeau_k),_F(NOM='Cop_Pl')),
-                 CREA_GROUP_NO=_F(GROUP_MA=Copeau_k,
-                                  NOM=Copeau_k,),INFO=1);
-        DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 CREA_GROUP_NO=_F(INTERSEC=(Copeau_k,'Nds_Plan',),
-                                  NOM='Cop_Pl',),INFO=1);
-
-        if C_k%nbcop!=0:
-          DEFI_GROUP(reuse =maya,
-                   MAILLAGE=maya,
-                   DETR_GROUP_MA=_F(NOM='Mai_Pla1'),
-                   CREA_GROUP_MA=_F(NOM='Mai_Pla1',
-                   OPTION='APPUI',
-                   GROUP_NO='Cop_Pl',
-                   TYPE_APPUI='TOUT',),INFO=1);
-                   
-          DEFI_GROUP(reuse =maya,
-                   MAILLAGE=maya,
-                   DETR_GROUP_MA=_F(NOM='Mai_Plan'),
-                   CREA_GROUP_MA=_F(NOM='Mai_Plan',
-                                    DIFFE=('Mai_Pla1','Mai_Pla2'),),);
-          DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 DETR_GROUP_NO=(_F(NOM='Nds_Delt',),
-                                _F(NOM='Mai_Plan',),
-                                _F(NOM='Mai_Pla2',),),
-                 CREA_GROUP_NO=(_F(GROUP_MA='Mai_Plan',
-                                  NOM='Mai_Plan',),
-                                  _F(GROUP_MA='Mai_Pla2',
-                                  NOM='Mai_Pla2',),
-                               _F(NOM='Nds_Delt',
-                                  INTERSEC=('Mai_Pla2','Mai_Plan'),),),);
-          DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 DETR_GROUP_MA=_F(NOM='Mai_Pla2'),
-                 CREA_GROUP_MA=_F(NOM='Mai_Pla2',
-                                  GROUP_MA=('Mai_Pla1'),),);
-          mesure[Copeau_k] = mesure[l_copo_tot[C_k-1]]
-        else:
-          DEFI_GROUP(reuse =maya,
-                   MAILLAGE=maya,
-                   DETR_GROUP_MA=_F(NOM='Mai_Plan'),
-                   CREA_GROUP_MA=_F(NOM='Mai_Plan',
-                   OPTION='APPUI',
-                   GROUP_NO='Cop_Pl',
-                   TYPE_APPUI='TOUT',),INFO=1);
-
-          DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 DETR_GROUP_MA=_F(NOM='Mai_Pla2'),
-                 CREA_GROUP_MA=_F(NOM='Mai_Pla2',
-                                  GROUP_MA=('Mai_Plan'),),);
-          DEFI_GROUP(reuse =maya,
-                 MAILLAGE=maya,
-                 DETR_GROUP_NO=(_F(NOM='Nds_Delt'),
-                                _F(NOM='Nds_Floc'),
-                                _F(NOM='Mai_Plan',),),
-                 CREA_GROUP_NO=(_F(GROUP_MA='Mai_Plan',
-                                   NOM='Mai_Plan',),
-                                _F(NOM='Nds_Delt',
-                                   INTERSEC=('Nds_Fond','Mai_Plan'),),
-                                _F(NOM='Nds_Floc',
-                                   GROUP_NO='Nds_Delt',)),);
-          coord_fond = []  
-          for noeud_courant in maya.GROUPENO.get()['Nds_Floc'.ljust(8)]:
-                DEP_el = POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION', 
-                                          RESULTAT=self['RESULTAT'],
-                                          INTITULE='DEP_el',
-                                          TOUT_CMP='OUI',
-                                          NOM_CHAM='DEPL',
-                                          TOUT_ORDRE='OUI',                                         
-                                          NOEUD=maya.NOMNOE.get()[noeud_courant-1]),);
-                tab_DEP_el = DEP_el.EXTR_TABLE()
-                coord_fond.append((tab_DEP_el.COOR_X.values()[0],tab_DEP_el.COOR_Y.values()[0],
-                                    tab_DEP_el.COOR_Z.values()[0]))
-                DETRUIRE(CONCEPT=_F(NOM=DEP_el),INFO=1);  
-          mesure[Copeau_k] = NP.zeros(num_ord)
-        
-        # Calcul de la surface des mailles du copeau courant pour chaque instant
-        mon_nom = 'Mai_Plan'
-        tmp_mesure = NP.zeros(num_ord)
-        for maille_courante in maya.GROUPEMA.get()[mon_nom.ljust(8)]:
-          if ltyma[maya.TYPMAIL.get()[maille_courante]][0:4]=='QUAD':
-            connexe = maya.CONNEX.get()[maille_courante]
-            coord_nds = []
-            deforme=[]
-            DEP_el = [None]*4
-            for i in range(0,4):
-               DEP_el[i] = POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION', 
-                                         RESULTAT=self['RESULTAT'],
-                                         INTITULE='DEP_el',
-                                         TOUT_CMP='OUI',
-                                         NOM_CHAM='DEPL',
-                                         TOUT_ORDRE='OUI',
-                                         MAILLE=maya.NOMMAI.get()[maille_courante],
-                                         NOEUD=maya.NOMNOE.get()[connexe[i]-1]),);
-               tab_DEP_el = DEP_el[i].EXTR_TABLE()
-               coord_nds.append((tab_DEP_el.COOR_X.values(),tab_DEP_el.COOR_Y.values(),
-                                   tab_DEP_el.COOR_Z.values()))
-               deforme.append((tab_DEP_el.DX.values(),tab_DEP_el.DY.values(),
-                                   tab_DEP_el.DZ.values()))
-            DETRUIRE(CONCEPT=_F(NOM=DEP_el),INFO=1);  
-            if type_def=='GRAND':
-              for it in range(num_ord):
-                Coor_int=[]
-                Def_int=[]
-                for i in range(0,4):
-                  Coor_int.append((coord_nds[i][0][it],coord_nds[i][1][it],coord_nds[i][2][it]))
-                  Def_int.append((deforme[i][0][it],deforme[i][1][it],deforme[i][2][it]))
-                tmp_mesure[it] = mesure[Copeau_k][it] + CalSurf(Coor_int,Def_int)
-              mesure[Copeau_k] = tmp_mesure
-            else:
-              mesure[Copeau_k] = CalSurf(coord_nds,[tuple(NP.zeros(3))]*len(coord_nds)) + mesure[Copeau_k]
-            
-        # Calcul de la distance du copeau au fond d'entaille
-        coord_nds = [] 
-        dist_moy=0. 
-        for noeud_courant in maya.GROUPENO.get()['Nds_Delt'.ljust(8)]:
-            DEP_el = POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION', 
-                                      RESULTAT=self['RESULTAT'],
-                                      INTITULE='DEP_el',
-                                      TOUT_CMP='OUI',
-                                      NOM_CHAM='DEPL',
-                                      TOUT_ORDRE='OUI',                                         
-                                      NOEUD=maya.NOMNOE.get()[noeud_courant-1]),);
-            tab_DEP_el = DEP_el.EXTR_TABLE()
-            coord_nds=(tab_DEP_el.COOR_X.values()[0],tab_DEP_el.COOR_Y.values()[0],
-                                tab_DEP_el.COOR_Z.values()[0])
-            dist_moy = dist_moy + CalDist(coord_nds,NP.zeros(3),coord_fond,[tuple(NP.zeros(3))]*len(coord_fond))
-            DETRUIRE(CONCEPT=_F(NOM=DEP_el),INFO=1);  
-        l_ep_copeaux_tot_3D.append(dist_moy/len(maya.GROUPENO.get()['Nds_Delt'.ljust(8)]))
-
-
+      # le vecteur normal est récuperé dans FOND_FISS
+       FOND_FISS =  self['FOND_FISS']
+       ldirection = aster.getvectjev(FOND_FISS.nom.ljust(8)+'.NORMALE              ')
+       Recup_Noeuds_Surf(is_2D,maya,l_noeuds_fissure[0],ldirection,l_noeuds_fissure)
+       mesure, l_ep_copeaux_tot_3D = Calcul_mesure_3D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,self['RESULTAT'],type_def)
+   Supr_mano(maya)
    # 2. ----- Calcul de l'energie élastique en exploitant les groupes de
    #          mailles fournis par la procedure de maillage
    l_ep_copeaux_tot = []
@@ -478,8 +233,7 @@ def post_gp_ops(self, **args):
      for k in range(0,len(l_copo_tot)) :
        Copeau_k = l_copo_tot[k]
        l_ep_copeaux_tot.append(mesure[Copeau_k][it])
-   l_ep_copeaux_tot_3D=l_ep_copeaux_tot_3D*num_ord
-   
+   l_ep_copeaux_tot_3D=l_ep_copeaux_tot_3D*num_ord   
    l_t_enel = []
    
    if self['TRAC_COMP']=='OUI':
@@ -939,10 +693,11 @@ def post_gp_ops(self, **args):
       if identification:
          KJ_CRIT = l_crit[iocc]
          # on verifie que KJ_CRIT soit compris dans l'intervalle [KMOY_min, KMOY_max]
-         valkmoy = tabres.KMOY.values()            
+         valkmoy = tabres.KMOY.values()
+         message_kjcritique_non_atteint = 0
          if not (min(valkmoy) <= KJ_CRIT <= max(valkmoy)):
-#                               'constant utilisé).')
             UTMESS('A','RUPTURE0_1')
+            message_kjcritique_non_atteint = 1
          if is_2D:
             # définition des fonctions pour faire les interpolations
             d_para.update({ 'NOM_RESU' : 'DELTALMAX' })
@@ -951,7 +706,7 @@ def post_gp_ops(self, **args):
             # Gpmax fonction du temps
             d_para.update({ 'NOM_RESU' : 'GPMAX' })
             fGp = t_fonction(tb_Gpmax.INST.values(), tb_Gpmax.GPMAX.values(), d_para)
-            
+
             d_para.update({ 'NOM_PARA' : 'KMOY',
                            'NOM_RESU' : 'INST', })
             valkmoy = tabres.KMOY.values()
@@ -961,16 +716,34 @@ def post_gp_ops(self, **args):
             # valeurs à mettre dans la table
             # temps correspondant à KJ_CRIT
             ti   = finv(KJ_CRIT)
+            
             # GP correspondant au temps critique
-            Gpi  = fGp(ti)
+            if (message_kjcritique_non_atteint == 1) :
+              Gpi     = '-'
+              kgpcrit = '-'
+              dLcrit  = '-'
+              message = 'KJ CRITIQUE NON ATTEINT'
+              type_tab_ident=('R', 'R', 'K8', 'K8', 'K8', 'K24' )
+      
+            else :
+              Gpi  = fGp(ti)
+              kgpcrit = fKj(Gpi, **dict_constantes)
+              dLcrit  = fdL(ti)
+              message = 'KJ CRITIQUE ATTEINT'    
+              type_tab_ident=('R', 'R', 'R', 'R', 'R', 'K24' )
+
+      
             d_ident = {
-               'KJ_CRIT'   : KJ_CRIT,
-               'INST'      : ti,
-               'GPMAX'     : Gpi,
-               'KGPMAX'    : fKj(Gpi, **dict_constantes),
-               'DELTALMAX' : fdL(ti),
-            }
+               'KJ_CRIT'     : KJ_CRIT,
+               'INST'        : ti,
+               'GP_CRIT'     : Gpi,
+               'KGP_CRIT'    : kgpcrit,
+               'DELTALCRIT'  : dLcrit,
+               'MESSAGE'     : message
+             }
             lv_ident.append(d_ident)
+
+
          else:
             
             l_i_noeuds_sommets = range(0,len(l_noeuds_fissure),pas)
@@ -1037,19 +810,33 @@ def post_gp_ops(self, **args):
             # valeurs à mettre dans la table
             # temps correspondant a KJ_CRIT
             ti   = finv(KJ_CRIT)
+
+            if (message_kjcritique_non_atteint == 1) :
+               Gpi     = '-'
+               kgpcrit = '-'
+               dLcrit  = '-'
+               message = 'KJ CRITIQUE NON ATTEINT'
+               type_tab_ident=('R', 'R', 'I', 'K8', 'K8', 'K8', 'K24' ) 
+            else :
             # GP correspondant au temps critique
-            Gpi  = fGp(ti)
-            # par rapport a 2D, on ajoute 'NUME_TRANCHE'
+               Gpi  = fGp(ti)
+               kgpcrit = fKj(Gpi, **dict_constantes)
+               dLcrit  = fdL(ti)
+               message = 'KJ CRITIQUE ATTEINT'
+               type_tab_ident=('R', 'R', 'I', 'R', 'R', 'R', 'K24' )
+
+             # par rapport a 2D, on ajoute 'NUME_TRANCHE'
             d_ident = {
-               'KJ_CRIT'      : KJ_CRIT,
-               'INST'         : ti,
-               'NUME_TRANCHE' : int(nume_tranche_Gpmax),
-               'GPMAX'        : Gpi,
-               'KGPMAX'       : fKj(Gpi, **dict_constantes),
-               'DELTALMAX'    : fdL(ti),
-            }
+               'KJ_CRIT'     : KJ_CRIT,
+               'INST'        : ti,
+               'NUME_TRANCHE': int(nume_tranche_Gpmax),
+               'GP_CRIT'     : Gpi,
+               'KGP_CRIT'    : kgpcrit,
+               'DELTALCRIT'  : dLcrit,
+               'MESSAGE'     : message
+              }
             lv_ident.append(d_ident)
-            
+
       # 3.6.2. --- prédiction
       else:
          pass
@@ -1058,12 +845,12 @@ def post_gp_ops(self, **args):
    # 4.1. --- identification
    if identification:
       if is_2D:
-         para_tab_ident=('KJ_CRIT', 'INST', 'GPMAX', 'KGPMAX', 'DELTALMAX')
+          para_tab_ident=('KJ_CRIT', 'INST', 'GP_CRIT', 'KGP_CRIT', 'DELTALCRIT', 'MESSAGE' )
       else:
-         para_tab_ident=('KJ_CRIT', 'INST', 'NUME_TRANCHE', 'GPMAX', 'KGPMAX', 'DELTALMAX')
+         para_tab_ident=('KJ_CRIT', 'INST', 'NUME_TRANCHE', 'GP_CRIT', 'KGP_CRIT', 'DELTALCRIT','MESSAGE')
       tab_ident = Table(rows=lv_ident,
                         para=para_tab_ident,
-                        typ = ('R')*len(para_tab_ident),
+                        typ = type_tab_ident,
                         titr='Identification aux valeurs de tenacités critiques')
       dprod_result = tab_ident.dict_CREA_TABLE()
       if info >= 2:
@@ -1120,28 +907,7 @@ def post_gp_ops(self, **args):
          liste_2d_inst_reduit = []
          liste_2d_inst_reduit = dict().fromkeys(t_enel['INST'].values()['INST']).keys()
 
-         trouve = False
-         for tmp_liste in liste_inst_postgp:
-           trouve = False
-           for tmp_resu_reduit in liste_2d_inst_reduit:
-             if (tmp_liste == tmp_resu_reduit):
-               trouve = True
-               break
-           if (trouve == False):
-             UTMESS('F','POST0_36')
-
-         for tmp_liste in liste_inst_postgp :
-           compteur = 0
-           message = True
-           for tmp_resu in t_enel['INST'].values()['INST'] : 
-             if (tmp_liste == tmp_resu) :           
-               temps_agarde_gp.append(compteur)
-             else :
-               if (message):
-                 message = False
-             compteur = compteur + 1
-         if (len(temps_agarde_gp)==0):  
-               UTMESS('F','POST0_36')
+         temps_agarde_gp = Save_VALGP_DE_LISTINST (liste_inst_postgp,liste_2d_inst_reduit, t_enel['INST'].values()['INST'])
 
          for i in temps_agarde_gp : 
  
@@ -1168,14 +934,8 @@ def post_gp_ops(self, **args):
                'GP' : t_enel['GP'].values()['GP'][i],
               }
            lv_tabgp.append(d_tabgp)
-       para_tab_tabgp=('INST', 'GROUP_MA', 'NUMERO_COP', 'DELTAL', 'GP')
-       liste_tab_tabgp = ('R','K24','I','R','R')
-       tab_tabgp = Table(rows=lv_tabgp,
-                          para=para_tab_tabgp,
-                          typ = liste_tab_tabgp,
-                          titr='GP 2D pour chaque instant')
-       dprod_tabgp = tab_tabgp.dict_CREA_TABLE()
-       tabgp = CREA_TABLE(**dprod_tabgp)
+
+       texte = 'GP 2D pour chaque instant'
        
      # CAS 3D
      else :
@@ -1185,30 +945,8 @@ def post_gp_ops(self, **args):
          liste_3d_inst_reduit = []
          liste_3d_inst_reduit = dict().fromkeys(liste_3d_inst).keys()
 
-         trouve = False
-         for tmp_liste in liste_inst_postgp:
-           trouve = False
-           for tmp_resu_reduit in liste_3d_inst_reduit:
-             if (tmp_liste == tmp_resu_reduit):
-               trouve = True
-               break
-           if (trouve == False):
-             UTMESS('F','POST0_36')
- 
-         for tmp_liste in liste_inst_postgp :
-           compteur = 0
-           message = True
-           for tmp_resu in liste_3d_inst:              
-             if (tmp_liste == tmp_resu) :           
-               temps_agarde_gp.append(compteur)
-             else :
-               if (message):
-                message = False
-             compteur = compteur + 1
+         temps_agarde_gp = Save_VALGP_DE_LISTINST (liste_inst_postgp,liste_3d_inst_reduit,liste_3d_inst)
 
-         if (len(temps_agarde_gp)==0):  
-            UTMESS('F','POST0_36')
-            
          for i in temps_agarde_gp : 
  
            d_tabgp = {
@@ -1226,7 +964,7 @@ def post_gp_ops(self, **args):
          inst_agarde_gp.sort()
 
          inst_sauv = []
- 
+         # réorganisation
          for j in range(len(inst_agarde_gp)) :
           if j < len(inst_agarde_gp)-1 :
            if (inst_agarde_gp[j] != inst_agarde_gp[j+1]) :
@@ -1250,16 +988,21 @@ def post_gp_ops(self, **args):
                'GP' : liste_3d_gp[i],
                 }
            lv_tabgp.append(d_tabgp)
+       texte = 'GP 3D pour chaque instant'
+     
+     
+#    Creation du tableau Gp 2D ou 3D     
+     para_tab_tabgp=('INST', 'GROUP_MA', 'NUMERO_COP', 'DELTAL', 'GP')
+     liste_tab_tabgp = ('R','K8','I','R','R')
 
-       para_tab_tabgp=('INST', 'GROUP_MA', 'NUMERO_COP', 'DELTAL', 'GP')
-       liste_tab_tabgp = ('R','K24','I','R','R')
+     tab_tabgp = Table(rows=lv_tabgp,
+                       para=para_tab_tabgp,
+                       typ = liste_tab_tabgp,
+                       titr= texte)
 
-       tab_tabgp = Table(rows=lv_tabgp,
-                          para=para_tab_tabgp,
-                          typ = liste_tab_tabgp,
-                          titr='GP 3D pour chaque instant')
-       dprod_tabgp = tab_tabgp.dict_CREA_TABLE()
-       tabgp = CREA_TABLE(**dprod_tabgp)
+
+     dprod_tabgp = tab_tabgp.dict_CREA_TABLE()
+     tabgp = CREA_TABLE(**dprod_tabgp)
 
 
 # -----------------------------------------------------------------------------
@@ -1444,6 +1187,315 @@ def CalSurf(coord_noeuds,deformation):
    mesure = (dAB+dCD)/2.*(dBC+dDA)/2.
          
    return mesure
-   
-      
 
+#-------------------------------------------------------------
+def Recup_Noeuds_Surf(is_2D,maya,var1,var2,var3=None):
+   
+      # Récupération des noeuds appartenant à la surface de symétrie
+      from Accas import _F
+      dicma=[]
+      dicma.append({'NOM' : 'Nds_Plan'})
+      DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_NO=dicma);
+      dicma=[]
+      dicma.append({'NOM' : 'Nds_Plan', 'OPTION' : 'PLAN', 'VECT_NORMALE' : var2, 'PRECISION' : 1e-6})
+      if is_2D:
+        dicma[0].__setitem__('GROUP_NO_CENTRE' , var1)
+        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_NO=dicma);
+      else:
+        dicma[0].__setitem__('NOEUD_CENTRE' , var1)
+        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_NO=dicma);
+        dicma=[]
+        dicma.append({'NOM' : 'Nds_Fond', 'NOEUD' : var3 })
+        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_NO=dicma);
+
+def Recup_Noeuds_Copeaux(is_2D,maya,Copeau_k):
+   
+      # Récupération des noeuds appartenant à la surface de symétrie
+      # et aux copeaux
+      from Accas import _F
+      dicma=[];
+      dicma.append(_F(NOM = Copeau_k))
+      dicma.append(_F(NOM = 'Cop_Pl'))
+      DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_NO=dicma);
+
+      dicma=[];
+      dicma.append(_F(NOM = Copeau_k , GROUP_MA = Copeau_k));
+      dicma.append(_F(NOM = 'Cop_Pl' , INTERSEC = (Copeau_k,'Nds_Plan',)));
+      DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_NO=dicma);
+
+
+def Recup_2D(maya,C_k):
+
+   from Accas import _F
+   if C_k==0:
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Plan' })
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Plan', 'OPTION' : 'APPUI', 'GROUP_NO' : 'Cop_Pl', 'TYPE_APPUI' : 'TOUT'})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma)
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla2'})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma)
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla2', 'GROUP_MA' : ('Mai_Plan')})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma)
+   else:
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla1' })
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla1', 'OPTION' : 'APPUI', 'GROUP_NO' : 'Cop_Pl', 'TYPE_APPUI' : 'TOUT'})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Plan'})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Plan', 'DIFFE' : ('Mai_Pla1','Mai_Pla2')})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),       
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla2'})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla2', 'UNION' : ('Mai_Pla1','Mai_Plan')})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma)
+      
+def Recup_3D(maya,C_k):
+
+   from Accas import _F
+   if C_k==0:
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Plan' })
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Plan', 'OPTION' : 'APPUI', 'GROUP_NO' : 'Cop_Pl', 'TYPE_APPUI' : 'TOUT'})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla2'})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla2', 'GROUP_MA' : ('Mai_Plan')})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),       
+
+
+       dicma=[]
+       dicma.append(_F(NOM = 'Nds_Delt'))
+       dicma.append(_F(NOM = 'Nds_Floc'))
+       dicma.append(_F(NOM = 'Mai_Plan'))
+       DEFI_GROUP(reuse =maya,MAILLAGE=maya,DETR_GROUP_NO=dicma,);
+
+       dicma=[]
+       dicma.append(_F(NOM = 'Mai_Plan',GROUP_MA='Mai_Plan'))
+       dicma.append(_F(NOM = 'Nds_Delt',INTERSEC=('Nds_Fond','Mai_Plan')))
+       dicma.append(_F(NOM = 'Nds_Floc',GROUP_NO='Nds_Delt'))
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_NO=dicma);
+
+   else :
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla1' })
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla1', 'OPTION' : 'APPUI', 'GROUP_NO' : 'Cop_Pl', 'TYPE_APPUI' : 'TOUT'})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Plan'})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Plan', 'DIFFE' : ('Mai_Pla1','Mai_Pla2')})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),       
+       dicma=[]
+       dicma.append(_F(NOM = 'Nds_Delt'))
+       dicma.append(_F(NOM = 'Mai_Plan'))
+       dicma.append(_F(NOM = 'Mai_Pla2'))
+       DEFI_GROUP(reuse =maya,MAILLAGE=maya,DETR_GROUP_NO=dicma,);
+       dicma=[]
+       dicma.append(_F(NOM = 'Mai_Plan', GROUP_MA ='Mai_Plan'))
+       dicma.append(_F(NOM = 'Mai_Pla2', GROUP_MA ='Mai_Pla2'))
+       dicma.append(_F(NOM = 'Nds_Delt', INTERSEC = ('Mai_Pla2','Mai_Plan')))
+       DEFI_GROUP(reuse =maya,MAILLAGE=maya,CREA_GROUP_NO=dicma);
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla2'})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
+       dicma=[]
+       dicma.append({'NOM' : 'Mai_Pla2', 'GROUP_MA' : 'Mai_Pla1'})
+       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma);
+
+
+def Calcul_mesure_2D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,resu,type_def):
+   # Calcul de la mesure des mailles déformées ou non 
+   # appartenant à l'axe de symétrie
+      
+   import numpy as NP
+
+   mesure = {}     
+   for C_k in range(nbcop) :
+        Copeau_k = l_copo_tot[C_k]
+        Recup_Noeuds_Copeaux(True,maya,Copeau_k)
+        Recup_2D(maya,C_k)
+        if C_k==0:
+          mesure[Copeau_k] = NP.zeros(num_ord)
+        else:
+          mesure[Copeau_k] = mesure[l_copo_tot[C_k-1]]
+          
+        # Calcul de la surface des mailles du copeau courant pour chaque instant
+        mon_nom = 'Mai_Plan'
+        tmp_mesure = NP.zeros(num_ord)
+        for maille_courante in maya.GROUPEMA.get()[mon_nom.ljust(8)]:
+          if ltyma[maya.TYPMAIL.get()[maille_courante]][0:3]=='SEG':
+            connexe = maya.CONNEX.get()[maille_courante]
+            coord_nds = []
+            deforme=[]
+            DEP_el = [None]*2
+            for i in range(0,2):
+               tab_DEP_el = Coord_Recup(maya.NOMNOE.get()[connexe[i]-1],maya.NOMMAI.get()[maille_courante],resu)
+               coord_nds.append((tab_DEP_el.COOR_X.values(),tab_DEP_el.COOR_Y.values()))
+               deforme.append((tab_DEP_el.DX.values(),tab_DEP_el.DY.values()))       
+
+            if type_def=='GRAND':
+              for it in range(num_ord):
+                Coor_int=[]
+                Def_int=[]
+                for i in range(0,2):
+                  Coor_int.append((coord_nds[i][0][it],coord_nds[i][1][it]))
+                  Def_int.append((deforme[i][0][it],deforme[i][1][it]))
+                tmp_mesure[it] = mesure[Copeau_k][it] + NP.sqrt((Coor_int[0][0]+Def_int[0][0]-Coor_int[1][0]-Def_int[1][0])**2 + 
+                                 (Coor_int[0][1]+Def_int[0][1]-Coor_int[1][1]-Def_int[1][1])**2 )
+            
+              mesure[Copeau_k] = tmp_mesure
+    
+            else:
+              mesure[Copeau_k] = NP.sqrt((coord_nds[0][0][0]-coord_nds[1][0][0])**2 + (coord_nds[0][1][0]-coord_nds[1][1][0])**2 ) + mesure[Copeau_k]
+   return mesure
+       
+def Calcul_mesure_3D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,resu,type_def):
+   # Calcul de la mesure des mailles déformées ou non 
+   # appartenant à l'axe de symétrie
+
+   import numpy as NP
+   
+   mesure={}
+   l_ep_copeaux_tot_3D = [] 
+   for C_k in range(len(l_copo_tot)) :
+
+       Copeau_k = l_copo_tot[C_k]
+       Recup_Noeuds_Copeaux(False,maya,Copeau_k)
+       Recup_3D(maya,C_k%nbcop)
+
+       if C_k%nbcop==0:
+          coord_fond = []
+          for noeud_courant in maya.GROUPENO.get()['Nds_Floc'.ljust(8)]:
+               tab_DEP_el = Coord_Recup(maya.NOMNOE.get()[noeud_courant-1],None,resu)
+               coord_fond.append((tab_DEP_el.COOR_X.values()[0],tab_DEP_el.COOR_Y.values()[0],tab_DEP_el.COOR_Z.values()[0]))
+               
+          mesure[Copeau_k] = NP.zeros(num_ord)
+       else :
+          mesure[Copeau_k] = mesure[l_copo_tot[C_k-1]]
+
+       # Calcul de la surface des mailles du copeau courant pour chaque instant
+       mon_nom = 'Mai_Plan'
+       tmp_mesure = NP.zeros(num_ord)
+       for maille_courante in maya.GROUPEMA.get()[mon_nom.ljust(8)]:
+           if ltyma[maya.TYPMAIL.get()[maille_courante]][0:4]=='QUAD':
+               connexe = maya.CONNEX.get()[maille_courante]
+               coord_nds = []
+               deforme=[]
+               DEP_el = [None]*4
+               for i in range(0,4):
+                   tab_DEP_el = Coord_Recup(maya.NOMNOE.get()[connexe[i]-1],maya.NOMMAI.get()[maille_courante],resu)
+                   coord_nds.append((tab_DEP_el.COOR_X.values(),tab_DEP_el.COOR_Y.values(),
+                                   tab_DEP_el.COOR_Z.values()))
+                   deforme.append((tab_DEP_el.DX.values(),tab_DEP_el.DY.values(),
+                                   tab_DEP_el.DZ.values()))  
+
+               if type_def=='GRAND':
+                   for it in range(num_ord):
+                       Coor_int=[]
+                       Def_int=[]
+                       for i in range(0,4):
+                           Coor_int.append((coord_nds[i][0][it],coord_nds[i][1][it],coord_nds[i][2][it]))
+                           Def_int.append((deforme[i][0][it],deforme[i][1][it],deforme[i][2][it]))
+                       tmp_mesure[it] = mesure[Copeau_k][it] + CalSurf(Coor_int,Def_int)
+                   mesure[Copeau_k] = tmp_mesure
+               else:
+                   mesure[Copeau_k] = CalSurf(coord_nds,[tuple(NP.zeros(3))]*len(coord_nds)) + mesure[Copeau_k]
+            
+       # Calcul de la distance du copeau au fond d'entaille
+       coord_nds = [] 
+       dist_moy=0. 
+       for noeud_courant in maya.GROUPENO.get()['Nds_Delt'.ljust(8)]:
+            tab_DEP_el = Coord_Recup(maya.NOMNOE.get()[noeud_courant-1],None,resu)
+            coord_nds = (tab_DEP_el.COOR_X.values()[0],tab_DEP_el.COOR_Y.values()[0],tab_DEP_el.COOR_Z.values()[0])
+            dist_moy  = dist_moy + CalDist(coord_nds,NP.zeros(3),coord_fond,[tuple(NP.zeros(3))]*len(coord_fond))
+
+       l_ep_copeaux_tot_3D.append(dist_moy/len(maya.GROUPENO.get()['Nds_Delt'.ljust(8)]))
+   return mesure, l_ep_copeaux_tot_3D
+
+def Coord_Recup(noeud_courant,maille_courante,resu):
+   # Utilisation de POST_RELEVE_T pour extraire des nouvelles coordonnées des
+   # noeuds des copeaux appartenant à la surface de symétrie
+
+   from Accas import _F
+   from Utilitai.Table        import Table
+   dicarg =[]
+   if maille_courante :
+       dicarg.append(_F(OPERATION='EXTRACTION',RESULTAT=resu, INTITULE='DEP_el',
+                    TOUT_CMP='OUI',NOM_CHAM='DEPL', TOUT_ORDRE='OUI', 
+                    NOEUD=noeud_courant,MAILLE=maille_courante))
+   else:
+       dicarg.append(_F(OPERATION='EXTRACTION',RESULTAT=resu, INTITULE='DEP_el',
+                    TOUT_CMP='OUI',NOM_CHAM='DEPL', TOUT_ORDRE='OUI', 
+                    NOEUD=noeud_courant))
+
+   DEP_el_i = POST_RELEVE_T(ACTION=dicarg)
+   tab_DEP_el = DEP_el_i.EXTR_TABLE()
+   DETRUIRE(CONCEPT=_F(NOM=DEP_el_i),INFO=1);  
+   return tab_DEP_el
+
+def Supr_mano(maya):
+
+      from Accas import _F
+      dicno=[];
+      dicno.append(_F(NOM = 'Cop_Pl'));
+      dicno.append(_F(NOM = 'Mai_Plan'));
+      dicno.append(_F(NOM = 'Mai_Pla1'));
+      dicno.append(_F(NOM = 'Mai_Pla2'));
+      dicno.append(_F(NOM = 'Nds_Plan'));
+      dicno.append(_F(NOM = 'Nds_Fond'));
+      dicno.append(_F(NOM = 'Nds_Floc'));
+      dicno.append(_F(NOM = 'Nds_Delt'));
+      dicma=[];
+      dicma.append(_F(NOM = 'Mai_Plan'));
+      dicma.append(_F(NOM = 'Mai_Pla1'));
+      dicma.append(_F(NOM = 'Mai_Pla2'));
+      DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_NO=dicno, DETR_GROUP_MA=dicma);
+#-------------------------------------------------------------                          
+
+def Save_VALGP_DE_LISTINST (liste_inst_postgp,liste_inst_reduit, liste_inst_complete):
+  # sauvegarde les positions de liste des valeurs de GP à des instants définis par l'utilisateur sous le mot clé
+  # LIST_INST ou INST
+    
+  from Utilitai.Utmess       import UTMESS
+  temps_agarde_gp = []
+  trouve = False
+  for tmp_liste in liste_inst_postgp:
+    trouve = False
+    for tmp_resu_reduit in liste_inst_reduit:
+      if (tmp_liste == tmp_resu_reduit):
+          trouve = True
+          break
+    if (trouve == False):
+      UTMESS('F','POST0_36')
+
+  for tmp_liste in liste_inst_postgp :
+    compteur = 0
+    message  = True
+    for tmp_resu in liste_inst_complete : 
+      if (tmp_liste == tmp_resu) :              
+          temps_agarde_gp.append(compteur)
+      else :
+          if (message):
+            message = False
+      compteur = compteur + 1
+  if (len(temps_agarde_gp)==0):  
+          UTMESS('F','POST0_36')
+  return temps_agarde_gp

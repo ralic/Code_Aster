@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,8 +131,8 @@ CTAC =DEFI_CONTACT(MODELE       = MODE,
                           GROUP_MA_MAIT='LMAI',
                           GROUP_MA_ESCL='LESC',
                           DIST_ESCL=F_DIST_E,
-                         ),                                                   
-                       ),  
+                         ),
+                       ),
                   )
 
 
@@ -157,7 +157,7 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
                     EXCIT=(_F(CHARGE=PNOR,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=COND_LIM,),),
-                    CONTACT  = CTAC,       
+                    CONTACT  = CTAC,
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -170,8 +170,8 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
 
 U_NOR=CALC_NO(reuse =U_NOR,
               RESULTAT=U_NOR,
-              MODELE=MODE,
-              CARA_ELEM=CARA,
+
+
               OPTION='REAC_NODA',
               EXCIT=(_F(CHARGE=PNOR,
                         FONC_MULT=RAMPE,),
@@ -187,7 +187,7 @@ U_99=STAT_NON_LINE(MODELE=MODE,
                           _F(CHARGE=PTAN_99,
                              FONC_MULT=RAMPE,),
                           _F(CHARGE=COND_LIM,),),
-                   CONTACT  = CTAC,       
+                   CONTACT  = CTAC,
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,),
@@ -199,8 +199,8 @@ U_99=STAT_NON_LINE(MODELE=MODE,
 
 U_99=CALC_NO(reuse =U_99,
              RESULTAT=U_99,
-             CARA_ELEM = CARA,
-             MODELE=MODE,
+
+
              OPTION='REAC_NODA',
              EXCIT=(_F(CHARGE=PNOR,
                        FONC_MULT=RAMPE,),
@@ -218,7 +218,7 @@ U_101=STAT_NON_LINE(MODELE=MODE,
                            _F(CHARGE=PTAN_101,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=COND_LIM,),),
-                    CONTACT  = CTAC,       
+                    CONTACT  = CTAC,
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -232,8 +232,8 @@ U_101=STAT_NON_LINE(MODELE=MODE,
 
 U_101=CALC_NO(reuse =U_101,
               RESULTAT=U_101,
-              CARA_ELEM = CARA,
-              MODELE=MODE,
+
+
               OPTION='REAC_NODA',
               EXCIT=(_F(CHARGE=PNOR,
                         FONC_MULT=RAMPE,),

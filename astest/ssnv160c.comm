@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JOUMANA J. EL GHARIB
 
 # TITRE CAS TEST HYDROSTATIQUE CAM_CLAY EN 3D
@@ -6,19 +6,19 @@
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(   CODE=_F( NOM = 'SSNV160C',NIV_PUB_WEB='INTERNET')   )
@@ -35,7 +35,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),);
-                                                    
+
 ############################################
 
 #  LISTE DES INSTANTS DE CALCUL
@@ -72,13 +72,13 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                 CAM_CLAY=_F(MU       = 3.846154E6,
                             PORO     = 0.5,
                             LAMBDA   = 0.2,
-                            KAPA     = 0.05,           
+                            KAPA     = 0.05,
                             M        = 1.02,
                             PRES_CRIT= 1.E7,
                             KCAM     = 6.5E6,
                             PTRAC    = -1.E5),);
 
-                         
+
 CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
                       AFFE=_F(TOUT='OUI',
                               MATER=MATER,),);
@@ -149,7 +149,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
 
 ############################################
 #
-#  DECHARGE 
+#  DECHARGE
 #
 
 RESU1=STAT_NON_LINE(reuse=RESU1,
@@ -178,9 +178,9 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
 
 TDEP=(5000.,6500.,7000.,7500.,8000.,8500.,9000.,9500.)
 
-RESU1=CALC_ELEM(  reuse=RESU1, 
-                  MODELE=MODELE,
-                  CHAM_MATER=CHM,
+RESU1=CALC_ELEM(  reuse=RESU1,
+
+
                   OPTION=('SIEF_ELNO_ELGA',
                           'VARI_ELNO_ELGA',
                           'EPSI_ELNO_DEPL',
@@ -188,98 +188,98 @@ RESU1=CALC_ELEM(  reuse=RESU1,
                   RESULTAT=RESU1
                         )
 RESU1=CALC_NO(  reuse=RESU1,
-                CHAM_MATER=CHM,
+
                 OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA',
                         'EPSI_NOEU_DEPL'),
-                RESULTAT=RESU1 
+                RESULTAT=RESU1
                         )
 
 #
 #-------------------------
-#    TEST_RESU 
+#    TEST_RESU
 #-------------------------
 
 TEST_RESU(RESU=(
 
 # DEFORMATION EPXX
-                _F(    RESULTAT = RESU1,  
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO6',      
-                       NOM_CHAM = 'EPSI_NOEU_DEPL',    
-                       NOM_CMP = 'EPXX',     
-                       INST=5000.,  
-                       PRECISION = 1.E-5,   
-                       VALE = -4.76986E-02,        
+                _F(    RESULTAT = RESU1,
+                       REFERENCE = 'ANALYTIQUE',
+                       NOEUD = 'NO6',
+                       NOM_CHAM = 'EPSI_NOEU_DEPL',
+                       NOM_CMP = 'EPXX',
+                       INST=5000.,
+                       PRECISION = 1.E-5,
+                       VALE = -4.76986E-02,
                      ),
 
-                _F(    RESULTAT = RESU1,    
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO6',      
-                       NOM_CHAM = 'EPSI_NOEU_DEPL',    
-                       NOM_CMP = 'EPXX',     
-                       INST=6000.,  
-                       PRECISION = 1.E-5,   
-                       VALE = -4.984035E-02,        
+                _F(    RESULTAT = RESU1,
+                       REFERENCE = 'ANALYTIQUE',
+                       NOEUD = 'NO6',
+                       NOM_CHAM = 'EPSI_NOEU_DEPL',
+                       NOM_CMP = 'EPXX',
+                       INST=6000.,
+                       PRECISION = 1.E-5,
+                       VALE = -4.984035E-02,
                      ),
 
-                _F(    RESULTAT = RESU1,    
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO6',      
-                       NOM_CHAM = 'EPSI_NOEU_DEPL',    
-                       NOM_CMP = 'EPXX',     
-                       INST=6500.,  
-                       PRECISION = 1.E-5,   
-                       VALE = -5.0861712E-02,        
+                _F(    RESULTAT = RESU1,
+                       REFERENCE = 'ANALYTIQUE',
+                       NOEUD = 'NO6',
+                       NOM_CHAM = 'EPSI_NOEU_DEPL',
+                       NOM_CMP = 'EPXX',
+                       INST=6500.,
+                       PRECISION = 1.E-5,
+                       VALE = -5.0861712E-02,
                      ),
 
-                _F(    RESULTAT = RESU1,    
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO6',      
-                       NOM_CHAM = 'EPSI_NOEU_DEPL',    
-                       NOM_CMP = 'EPXX',     
-                       INST=7000.,  
-                       PRECISION = 1.E-5,   
-                       VALE = -5.18527E-02,        
+                _F(    RESULTAT = RESU1,
+                       REFERENCE = 'ANALYTIQUE',
+                       NOEUD = 'NO6',
+                       NOM_CHAM = 'EPSI_NOEU_DEPL',
+                       NOM_CMP = 'EPXX',
+                       INST=7000.,
+                       PRECISION = 1.E-5,
+                       VALE = -5.18527E-02,
                      ),
 
-                _F(    RESULTAT = RESU1,    
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO6',      
-                       NOM_CHAM = 'EPSI_NOEU_DEPL',    
-                       NOM_CMP = 'EPXX',     
-                       INST=7500.,  
-                       PRECISION = 1.E-5,   
-                       VALE = -5.281508E-02,        
+                _F(    RESULTAT = RESU1,
+                       REFERENCE = 'ANALYTIQUE',
+                       NOEUD = 'NO6',
+                       NOM_CHAM = 'EPSI_NOEU_DEPL',
+                       NOM_CMP = 'EPXX',
+                       INST=7500.,
+                       PRECISION = 1.E-5,
+                       VALE = -5.281508E-02,
                      ),
 
-                _F(    RESULTAT = RESU1,    
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO6',      
-                       NOM_CHAM = 'EPSI_NOEU_DEPL',    
-                       NOM_CMP = 'EPXX',     
-                       INST=8000.,  
-                       PRECISION = 1.E-5,   
-                       VALE = -5.375045E-02,        
+                _F(    RESULTAT = RESU1,
+                       REFERENCE = 'ANALYTIQUE',
+                       NOEUD = 'NO6',
+                       NOM_CHAM = 'EPSI_NOEU_DEPL',
+                       NOM_CMP = 'EPXX',
+                       INST=8000.,
+                       PRECISION = 1.E-5,
+                       VALE = -5.375045E-02,
                      ),
 
-                _F(    RESULTAT = RESU1,    
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO6',      
-                       NOM_CHAM = 'EPSI_NOEU_DEPL',    
-                       NOM_CMP = 'EPXX',     
-                       INST=9000.,  
-                       PRECISION = 1.E-5,   
-                       VALE = -4.051615E-02,        
+                _F(    RESULTAT = RESU1,
+                       REFERENCE = 'ANALYTIQUE',
+                       NOEUD = 'NO6',
+                       NOM_CHAM = 'EPSI_NOEU_DEPL',
+                       NOM_CMP = 'EPXX',
+                       INST=9000.,
+                       PRECISION = 1.E-5,
+                       VALE = -4.051615E-02,
                      ),
 
-                _F(    RESULTAT = RESU1,    
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO6',      
-                       NOM_CHAM = 'EPSI_NOEU_DEPL',    
-                       NOM_CMP = 'EPXX',     
-                       INST=10000.,  
-                       PRECISION = 1.E-5,   
-                       VALE = -2.2572216E-03,        
+                _F(    RESULTAT = RESU1,
+                       REFERENCE = 'ANALYTIQUE',
+                       NOEUD = 'NO6',
+                       NOM_CHAM = 'EPSI_NOEU_DEPL',
+                       NOM_CMP = 'EPXX',
+                       INST=10000.,
+                       PRECISION = 1.E-5,
+                       VALE = -2.2572216E-03,
                      ),),),
 
 FIN ();

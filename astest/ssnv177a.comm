@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE WILLAM AVEC LA LOI ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,8 +162,8 @@ U=STAT_NON_LINE(reuse=U,
 
 U = CALC_ELEM(
    reuse = U,
-   MODELE    =MO,
-   CHAM_MATER=CHP_M,
+
+
    RESULTAT  =U,
    OPTION    =('EPSI_ELGA_DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
    );

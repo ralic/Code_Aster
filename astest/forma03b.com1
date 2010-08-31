@@ -55,18 +55,18 @@ IMPR_FONCTION( FORMAT    = 'XMGRACE',
               BORNE_X   = ( 0.,20.),
               BORNE_Y   = (-2., 5.),
 	       TITRE     = "Sigma Theta-Theta le long de l arc de cercle AB ",
-	       COURBE    = (_F(FONCTION = STCALC, 
+	       COURBE    = (_F(FONCTION = STCALC,
                               LEGENDE  = 'Aster',
                               MARQUEUR = 2,
                               STYLE    = 1),
-                           _F(FONCTION = STTAC , 
+                           _F(FONCTION = STTAC ,
                               LEGENDE = 'Analytique',
                               MARQUEUR = 1,
                               STYLE    = 1),
                           )
             )
 
-                       
+
 #######################################################
 #
 # COURBE FORCE RESULTANTE EN HAUT EN FONCTION DU DEPLACEMENT
@@ -77,8 +77,8 @@ IMPR_FONCTION( FORMAT    = 'XMGRACE',
 RESUNL=CALC_NO(reuse =RESUNL,
                RESULTAT=RESUNL,
                OPTION='FORC_NODA',
-               MODELE=MO,
-               CHAM_MATER=CM,);
+
+               );
 
 LH=INTE_MAIL_2D(MAILLAGE=M,
                 DEFI_CHEMIN=_F(GROUP_MA='haut',),);
@@ -96,7 +96,7 @@ F_FY_G=RECU_FONCTION(TABLE=FHAUT,
                      PARA_Y='DY',
                      INTERPOL='LIN',);
 
-# COURBES AVEC XMGRACE 
+# COURBES AVEC XMGRACE
 
 IMPR_FONCTION( FORMAT    = 'XMGRACE',
       #   PILOTE    = 'INTERACTIF',
@@ -112,7 +112,7 @@ IMPR_FONCTION( FORMAT    = 'XMGRACE',
                                FONC_Y = F_FY_G,),),);
 
 
-                  
+
 
 
 

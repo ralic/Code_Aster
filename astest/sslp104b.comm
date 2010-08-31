@@ -1,4 +1,4 @@
-# MODIF  DATE 22/06/2009   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE CONSOLE 3D EN FLEXION
 # VALIDATION DE LA METHODE ARLEQUIN
 # sslp104b.para = tps_job 60 mem_job 70Mo ncpus 1 liste_test S
@@ -115,14 +115,14 @@ RES=MECA_STATIQUE(MODELE=MOD,
                          _F(CHARGE=ARL,),),);
 
 RES=CALC_ELEM(reuse =RES,
-              CHAM_MATER=CHMAT,
+
               RESULTAT=RES,
               OPTION='SIEF_ELNO_ELGA',);
 
 RES=CALC_NO(reuse =RES,
             RESULTAT=RES,
             OPTION='SIEF_NOEU_ELGA',
-            CHAM_MATER=CHMAT,);
+            );
 
 TEST_RESU(RESU=(_F(RESULTAT=RES,
                    NUME_ORDRE=1,

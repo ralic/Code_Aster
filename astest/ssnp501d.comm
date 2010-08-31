@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,7 +101,7 @@ CON    = DEFI_CONTACT(MODELE       = MO,
                                SANS_GROUP_NO = ('A','P1'),
                              ),
                       );
-                      
+
 
 #--------- DEFINITION DES FONCTIONS -----------------
 
@@ -122,7 +122,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                           _F(CHARGE=CL,),
                           _F(CHARGE=DEPL,
                              FONC_MULT=RAMPE,),),
-                   CONTACT  = CON,          
+                   CONTACT  = CON,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 DEFORMATION='GROT_GDEP',),
                    INCREMENT=_F(LIST_INST=LINST,),
@@ -136,16 +136,16 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 #------- POST TRAITEMENT -----------------------
 
 RESU=CALC_ELEM(reuse =RESU,
-               MODELE=MO,
-               CHAM_MATER=CHMAT,
+
+
                OPTION='SIEF_ELNO_ELGA',
                RESULTAT=RESU,);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION=('REAC_NODA','SIEF_NOEU_ELGA'),
-             MODELE=MO,
-             CHAM_MATER=CHMAT,
+
+
              );
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',

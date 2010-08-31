@@ -1,6 +1,6 @@
       SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,11 +28,10 @@ C     ==================================================================
       COMMON /UTEXC /  NEXCEP
 C     ------------------------------------------------------------------
       INTEGER          RECURS
-      CHARACTER*132    K132B
       CHARACTER *16    COMPEX
       CHARACTER *8     NOMRES, K8B
       LOGICAL          LERROR, LVALID, LABORT, LTRACE, SUITE
-      INTEGER          LOUT,IDF,I,LL,LC,ICMD,IMAAP,LXLGUT
+      INTEGER          LOUT,IDF,I,LC,ICMD,IMAAP,LXLGUT
 C     ------------------------------------------------------------------
       SAVE             RECURS
 C     ------------------------------------------------------------------
@@ -96,8 +95,8 @@ C     -- LEVEE D'UNE EXCEPTION
 C        -- QUELLE EXCEPTION ?
 C           SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP
             IF ( IDF.NE.8 ) THEN
-C           SINON ON APPELLE ASTER.ERROR
-               NEXCEP = 21
+C           SINON ON APPELLE ASTER.MESSAGEERROR
+               NEXCEP = 20
             ENDIF
 C
 C           NOM DU CONCEPT COURANT
@@ -129,10 +128,8 @@ C           REMONTER LES N JEDEMA COURT-CIRCUITES
  10         CONTINUE
 C
 C           ON REMONTE UNE EXCEPTION AU LIEU DE FERMER LES BASES
-            LL=MIN(LEN(IDMESS),80)
-            K132B= ' <EXCEPTION LEVEE> '//IDMESS(1:LL)
             RECURS = 0
-            CALL UEXCEP(NEXCEP,K132B)
+            CALL UEXCEP(NEXCEP, IDMESS, NK, VALK, NI, VALI, NR, VALR)
          ENDIF
 C
       ENDIF

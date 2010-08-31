@@ -1,4 +1,4 @@
-#@ MODIF meidee_calcul_correlation Meidee  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF meidee_calcul_correlation Meidee  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -196,7 +196,7 @@ class MeideeCorrelation:
                                BASE_2 = o2,
                                MATR_ASSE = norme,
                                INFO = 1)
-        except aster.FatalError:
+        except aster.error:
             self.mess.disp_mess( "Calcul de MAC impossible : bases incompatibles")
             UTMESS('A','MEIDEE0_3')
             return

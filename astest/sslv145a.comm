@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU RACCORD 3D-PLAQUE DKT AVEC LA METHODE ARLEQUIN
 # sslv145a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -167,17 +167,17 @@ RESU=MECA_STATIQUE(MODELE=MODMECA,
                            _F(CHARGE=ARLE,),),);
 
 RESU=CALC_ELEM(reuse =RESU,
-                MODELE=MODMECA,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARA_COQ,
+
+
+
                 RESULTAT=RESU,
                 OPTION='SIGM_ELNO_DEPL',);
 
 RESU=CALC_NO(reuse =RESU,
               RESULTAT=RESU,
               OPTION='SIGM_NOEU_DEPL',
-              CHAM_MATER=CHMAT,
-              CARA_ELEM=CARA_COQ,);
+
+              );
 
 
 DEPL1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',

@@ -1,4 +1,4 @@
-#@ MODIF soustruc2 Messages  DATE 19/07/2010   AUTEUR NISTOR I.NISTOR 
+#@ MODIF soustruc2 Messages  DATE 30/08/2010   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,8 +73,8 @@ cata_msg={
 
 
 9 : _("""
- Le support (SQUELETTE, SOUS_STRUC ou SECTEUR) indiqué pour la restitution %(k1)s n'est
-  pas cohérent avec celui utilisé pour la base modale %(k2)s.
+ Le support indiqué pour la restitution %(k1)s n'est
+  pas cohérent avec le support utilisé pour la base modale %(k2)s.
  CONSEIL : Renseigner le bon support de restitution dans le fichier de commande.
 """),
 

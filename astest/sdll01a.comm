@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE COURTE SUR APPUIS SIMPLES
 # sdll01a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,21 +150,21 @@ MODE1=MODE_ITER_INV(  MATR_A=MATASSR1,
                           FREQ = ( 430.,     4500.,  ))   )
 
 MODE1=CALC_ELEM( reuse=MODE1,     RESULTAT=MODE1,
-                          MODELE=MO1,
-                       CARA_ELEM=CARELEM1,
-                      CHAM_MATER=CHMAT1,
+
+
+
                           OPTION='SIGM_ELNO_DEPL'   )
 
 MODE3=CALC_ELEM(      RESULTAT=MODE1,
-                          MODELE=MO1,
-                       CARA_ELEM=CARELEM1,
-                      CHAM_MATER=CHMAT1,
+
+
+
                           OPTION='SIGM_ELNO_DEPL'   )
 
 MODE4=CALC_ELEM(      RESULTAT=MODE1,
-                          MODELE=MO1,
-                       CARA_ELEM=CARELEM1,
-                      CHAM_MATER=CHMAT1,
+
+
+
                           OPTION='ECIN_ELEM_DEPL'   )
 
 #----- CAS 2

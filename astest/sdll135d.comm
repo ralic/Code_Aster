@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
 
 # TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
 # sdll135d.para = tps_job 2770 mem_job 384Mo ncpus 1 liste_test S
@@ -82,7 +82,7 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARAC,
                 CHARGE=CL,
-                NUME_DDL=CO('NUME_DDL'),
+                NUME_DDL=CO('NUMEDDL'),
                 MATR_ASSE=(_F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('RIGID'),

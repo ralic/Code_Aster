@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 import os
 
 DEBUT(CODE=_F(NOM='DEMO006A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
@@ -141,7 +141,7 @@ for k in range(1,10):
                        EXCIT=_F(CHARGE=CHAR[k],),
                        )
 
-   RESU[k]=CALC_ELEM(reuse=RESU[k],RESULTAT=RESU[k],MODELE=MODE[k],
+   RESU[k]=CALC_ELEM(reuse=RESU[k],RESULTAT=RESU[k],
                        REPE_COQUE=_F(NIVE_COUCHE='SUP',ANGL_REP=(0.0,90.0),),
                        OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM'),)
 

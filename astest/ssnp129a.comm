@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE LOI DE COMPORTEMENT BETON_REGLE_PR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,9 +92,9 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_ITER=1,),)
 
 RESU=CALC_ELEM(reuse =RESU,
-               MODELE=MO,
-               CHAM_MATER=MATER,
-               CARA_ELEM=CAEL,
+
+
+
                RESULTAT=RESU,
                TOUT_ORDRE='OUI',
                TOUT='OUI',
@@ -103,9 +103,9 @@ RESU=CALC_ELEM(reuse =RESU,
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION=('FORC_NODA','REAC_NODA',),
-             MODELE=MO,
-             CHAM_MATER=MATER,
-             CARA_ELEM=CAEL,)
+
+
+             )
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   INST = 4.6,

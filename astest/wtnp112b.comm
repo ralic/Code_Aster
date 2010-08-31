@@ -1,6 +1,6 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # ======================================================================
-# TITRE RESATURATION D UNE COLONNE TEST THHD, 2D , MODELISATION THMC=LIQU_GAZ 
+# TITRE RESATURATION D UNE COLONNE TEST THHD, 2D , MODELISATION THMC=LIQU_GAZ
 #       TEST31 ALLIANCES
 # ======================================================================
 # wtnp112b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -9,17 +9,17 @@
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 DEBUT(CODE=_F( NOM = 'WTNP112B',NIV_PUB_WEB='INTERNET'))
 
@@ -58,7 +58,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                   GROUP_MA='DROIT',),
                                ),);
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
-                        AFFE=_F(  TOUT = 'OUI', 
+                        AFFE=_F(  TOUT = 'OUI',
                       PHENOMENE = 'MECANIQUE',
                       MODELISATION = 'D_PLAN_HHD')
                      )
@@ -86,7 +86,7 @@ DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
 
 DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
 
-####                             
+####
 UN=DEFI_CONSTANTE(    VALE=1.,);
 
 ZERO=DEFI_CONSTANTE(    VALE=0.,);
@@ -147,25 +147,25 @@ DPERML=CALC_FONC_INTERP(FONCTION=DPL,
                        INFO=2,);
 
 
-MATERIAU=DEFI_MATERIAU(  
-  ELAS=_F( 
+MATERIAU=DEFI_MATERIAU(
+  ELAS=_F(
          E = 225.E6,
          NU = 0.,
          RHO = 2000.,
          ALPHA = 0.),
-   THM_LIQU=_F(  
+   THM_LIQU=_F(
          RHO = 1000.,
          UN_SUR_K = 1.E-10,
          CP=1000.0,
          ALPHA = 1.E-4,
-         VISC = UN, 
+         VISC = UN,
          D_VISC_TEMP = ZERO,),
    COMP_THM = 'LIQU_GAZ',
-   THM_GAZ=_F( 
+   THM_GAZ=_F(
          MASS_MOL = 28.96E-3,
          CP=1000.0,
          VISC = UN,
-         D_VISC_TEMP = ZERO,), 
+         D_VISC_TEMP = ZERO,),
    THM_DIFFU=_F(
         R_GAZ=8.315,
         RHO = 1.6E3,
@@ -184,7 +184,7 @@ MATERIAU=DEFI_MATERIAU(
         D_PERM_PRES_GAZ=ZERO,
         LAMB_T=ZERO,
         ),
-   THM_INIT=_F( 
+   THM_INIT=_F(
          TEMP = 293.,
          PRE1 = 0.,
          PRE2 = 1.E5,
@@ -196,7 +196,7 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      MATER = MATERIAU),)
 
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
                            _F(TOUT='OUI',
@@ -211,11 +211,11 @@ CALDRO=AFFE_CHAR_MECA(MODELE=MODELE,
                                    PRE1=1.15,),);
 CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='ROCHES',
-                                   PRE2=0.,),); 
-                           
+                                   PRE2=0.,),);
 
 
-RESU0=STAT_NON_LINE( 
+
+RESU0=STAT_NON_LINE(
                 MODELE=MODELE,
                 CHAM_MATER=CHMAT0,
                 EXCIT=(_F(CHARGE=CALDRO,),
@@ -223,7 +223,7 @@ RESU0=STAT_NON_LINE(
                         _F(CHARGE=CALGAZ,),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               ),
-                COMP_INCR=_F( 
+                COMP_INCR=_F(
                 RELATION = 'KIT_HH',
                 RELATION_KIT = ('LIQU_GAZ','HYDR_UTIL')),
                 INCREMENT=_F(  LIST_INST = LI),
@@ -233,8 +233,8 @@ RESU0=STAT_NON_LINE(
               );
 
 RESU0=CALC_ELEM(reuse =RESU0,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT0,
+
+
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
              RESULTAT=RESU0,);
@@ -247,7 +247,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   VALE=0.44,
                   CRITERE='RELATIF',
                   PRECISION=1.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);   
+                  REFERENCE='SOURCE_EXTERNE',),);
 
 FIN()
 #

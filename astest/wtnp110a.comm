@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE  - ECOULEMENT ORTHOTROPE SATURE EN 2D
 # wtnp110a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,8 +187,8 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=1,),);
 
 U0=CALC_ELEM(reuse =U0,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT0,
+
+
              RESULTAT=U0,
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);

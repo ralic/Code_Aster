@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS) - ANCIEN SSLP09b
 # ssls09b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,8 +82,8 @@ NOM_CHAM='DEPL', RESULTAT=DEF,
 # CALCUL DES CONTRAINTES AUX NOEUDS
 
 DEF=CALC_ELEM(reuse =DEF,
-              MODELE=MODELE,
-              CHAM_MATER=CHMAT,
+
+
               RESULTAT=DEF,
               OPTION='SIGM_ELNO_DEPL',
               EXCIT=(_F(CHARGE=CHARGT,),
@@ -188,8 +188,8 @@ DEF_PESA=STAT_NON_LINE(MODELE=MODELE,
                     );
 
 DEF_PESA=CALC_ELEM(reuse =DEF_PESA,
-               MODELE=MODELE,
-               CHAM_MATER=CHMAT,
+
+
                EXCIT=(_F(CHARGE=CLIM,),
                       _F(CHARGE=CH_PESA,
                          FONC_MULT=RAMPE,),

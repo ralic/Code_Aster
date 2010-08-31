@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 512Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,7 +88,7 @@ list_group_ma=['ELEM0'];
 for n in range(nbcouche-1):
 
   list_group_ma.append('ELEM'+str(n+1));
-  
+
   print '   n=',n,'; liste=',list_group_ma
 
   MOD[n] = AFFE_MODELE(MAILLAGE=MA,
@@ -269,7 +269,7 @@ SIG[0]=CREA_CHAMP(INFO=1,
                 RESULTAT=U[0],
                 NOM_CHAM='SIEF_ELGA',
                 INST=2000000.0,);
-                
+
 VAR[0]=CREA_CHAMP(INFO=1,
                 TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='EXTR',
@@ -278,8 +278,8 @@ VAR[0]=CREA_CHAMP(INFO=1,
                 INST=2000000.0,);
 
 U[0]=CALC_ELEM(reuse=U[0],
-               MODELE     = MOD[0],
-               CHAM_MATER = AFFMAT[0],
+
+
                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                RESULTAT=U[0]);
 
@@ -385,21 +385,21 @@ for n in range(1,nbcouche-1):
     # >>    list_noeu_haut = list_no_later_dro[3:2*n_couche:2]
 
     print ' > list_noeu_haut    =',list_noeu_haut
-    
+
     print ' > list_no_later_dro =',list_no_later_dro[:n_couche]
-    
+
     t_init=(n+1)*1.E+6;
-    
+
     t_pesa=t_init+1.E+4;
-    
+
     t_fin =(n+2)*1.E+6;
-    
+
     FONCH = DEFI_FONCTION(NOM_PARA='INST',
                           PROL_DROITE='CONSTANT',
                           PROL_GAUCHE='CONSTANT',
                           VALE=(t_init, 0.,
                                 t_pesa, 1.),);
-    
+
     # ---- COUCHES SUIVANTES : HUJEUX
     MAT[n]=DEFI_MATERIAU(ELAS=_F(E     = YOUNG,
                            NU    = NU,
@@ -439,7 +439,7 @@ for n in range(1,nbcouche-1):
                                UN_SUR_K   = INV_K_EAU,
                                VISC       = VISCOLIQ,
                                D_VISC_TEMP= DVISCOL),);
-                               
+
     AFFMAT[n]=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=(_F(GROUP_MA=list_group_ma[n+1],
                               MATER=MAT[n]),
@@ -447,12 +447,12 @@ for n in range(1,nbcouche-1):
                               MATER=MAT[0]),
                             _F(GROUP_MA=list_group_ma[0],
                               MATER=MAT0),),);
-    
+
     PESHAU=AFFE_CHAR_MECA(MODELE=MOD[n],
                           PESANTEUR=_F(GRAVITE=9.81,
                                        DIRECTION=(0.0,0.0,-1.0,),
                                        GROUP_MA =list_group_ma[n+1]),);
-                                       
+
     PESBAS=AFFE_CHAR_MECA(MODELE=MOD[n],
                           PESANTEUR=_F(GRAVITE=9.81,
                                        DIRECTION=(0.0,0.0,-1.0,),
@@ -548,7 +548,7 @@ for n in range(1,nbcouche-1):
                             _F(GROUP_MA=list_group_ma[n+1],
                                CHAM_GD=CART,
                                NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12',),
-                                     
+
                                NOM_CMP_RESU=('V41','V42','V43','V44','V45','V46','V47','V48',
                                              'V49','V50','V51','V52'),
                                CUMUL='OUI',
@@ -613,31 +613,31 @@ for n in range(1,nbcouche-1):
 
 # -->15: Boucle sur le nombre de noeuds a post-traiter
 #     for noeud in list_noeu_haut:
-# 
+#
 #        T_TMP = POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT',
 #                                        NOEUD=noeud,
 #                                        RESULTAT=U[n],
 #                                        NOM_CHAM='DEPL',
 #                                        NOM_CMP=('DZ','PRE1'),
 #                                        OPERATION='EXTRACTION'),);
-# 
+#
 #        T_TMP = CALC_TABLE(reuse=T_TMP,
 #                           TABLE=T_TMP,
 #                           ACTION=(_F(OPERATION='EXTR',
 #                                      NOM_PARA=('INST', 'DZ', 'NOEUD')),
 #                                   _F(OPERATION='RENOMME',
 #                                      NOM_PARA=('DZ', 'DZ_%s' % noeud)),),);
-# 
+#
 #        T_DEPL = CALC_TABLE(reuse=T_DEPL,
 #                            TABLE=T_DEPL,
 #                            ACTION=_F(OPERATION='COMB',
 #                                      TABLE=T_TMP,
 #                                      NOM_PARA='INST'),);
-# 
+#
 #        DETRUIRE(CONCEPT=_F(NOM=T_TMP),);
-# 
+#
 # # <--15: fin boucle for
-# 
+#
 #     IMPR_TABLE(UNITE=6, TABLE=T_DEPL, FORMAT='ASTER');
 
     T_DEP[n+1]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT',
@@ -665,7 +665,7 @@ for n in range(1,nbcouche-1):
 #     IMPR_TABLE(TABLE=T_DEP[n+1]);
 #     IMPR_TABLE(TABLE=T_SIG[n+1]);
 #     IMPR_TABLE(TABLE=T_VAR[n+1]);
-    
+
     DETRUIRE(CONCEPT=_F(NOM=(INIVAR,FONCH,PESHAU,PESBAS,),),);
 
 # <--10: fin boucle for

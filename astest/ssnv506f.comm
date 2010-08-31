@@ -1,22 +1,22 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE INDENTATION ELASTOPLASTIQUE D UN DEMI-PLAN
 # ssnv506f.para = tps_job 780 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       PAR UN INDENTEUR SPHERIQUE ELASTIQUE
 #       REPRISE CAS-TEST SSNV506F: 3D (H8), METHODE CONTINUE
@@ -118,7 +118,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=18,),),);
 
 #---------------------------------------------------------------------
-#              AFFECTATION DES CONDITIONS AUX LIMITES 
+#              AFFECTATION DES CONDITIONS AUX LIMITES
 #                     ET DU DEPLACEMENT IMPOSE
 #---------------------------------------------------------------------
 
@@ -142,8 +142,8 @@ CONT = DEFI_CONTACT(MODELE         = MO,
                     ZONE =(
                            _F(
                               GROUP_MA_MAIT='SMAI',
-                              GROUP_MA_ESCL='SESC',    
-                             ),               
+                              GROUP_MA_ESCL='SESC',
+                             ),
                           ),
                    );
 
@@ -157,7 +157,7 @@ SSNV506=STAT_NON_LINE(MODELE=MO,
                        EXCIT=(_F(CHARGE=DPLIMPO,
                                  FONC_MULT=RAMPE,),
                               ),
-                       CONTACT  = CONT,       
+                       CONTACT  = CONT,
                        COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                                     GROUP_MA='BATI'),
                        COMP_ELAS=_F(RELATION='ELAS',
@@ -182,11 +182,11 @@ SSNV506=STAT_NON_LINE(MODELE=MO,
 SSNV506=CALC_NO(reuse =SSNV506,
                  RESULTAT=SSNV506,
                  OPTION='REAC_NODA',
-                 MODELE=MO,);
+                 );
 
 LINST2=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.,
-                                   NOMBRE=10,),);                                   
+                                   NOMBRE=10,),);
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  GROUP_NO='SESC',
@@ -194,8 +194,8 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  NOM_CHAM='REAC_NODA',
                                  LIST_INST=LINST,
                                  RESULTANTE='DY',
-                                 OPERATION = 'EXTRACTION'),); 
- 
+                                 OPERATION = 'EXTRACTION'),);
+
 IMPR_TABLE(TABLE=TAB_REAC,
            FORMAT='TABLEAU',);
 
@@ -218,7 +218,7 @@ TEST_TABLE(TABLE=TAB_REAC,
 #            VALE=-6.402702E+05,
 #            PRECISION=0.20,
 #            REFERENCE='ANALYTIQUE',);
-# 
+#
 # TEST_TABLE(TABLE=TAB_REAC,
 #            NOM_PARA='DY',
 #            FILTRE=_F(NOM_PARA='INST',
@@ -226,7 +226,7 @@ TEST_TABLE(TABLE=TAB_REAC,
 #            VALE=-9.604053E+05,
 #            PRECISION=0.20,
 #            REFERENCE='ANALYTIQUE',);
-# 
+#
 # TEST_TABLE(TABLE=TAB_REAC,
 #            NOM_PARA='DY',
 #            FILTRE=_F(NOM_PARA='INST',
@@ -234,7 +234,7 @@ TEST_TABLE(TABLE=TAB_REAC,
 #            VALE=-1.280540E+06,
 #            PRECISION=0.10,
 #            REFERENCE='ANALYTIQUE',);
-# 
+#
 # TEST_TABLE(TABLE=TAB_REAC,
 #            NOM_PARA='DY',
 #            FILTRE=_F(NOM_PARA='INST',
@@ -260,7 +260,7 @@ TEST_TABLE(TABLE=TAB_REAC,
 #            VALE=-7.02671E+05,
 #            VERSION='9.2.18',
 #            REFERENCE='NON_REGRESSION',);
-# 
+#
 # TEST_TABLE(TABLE=TAB_REAC,
 #            NOM_PARA='DY',
 #            FILTRE=_F(NOM_PARA='INST',
@@ -268,7 +268,7 @@ TEST_TABLE(TABLE=TAB_REAC,
 #            VALE=-9.41081E+05,
 #            VERSION='9.2.18',
 #            REFERENCE='NON_REGRESSION',);
-# 
+#
 # TEST_TABLE(TABLE=TAB_REAC,
 #            NOM_PARA='DY',
 #            FILTRE=_F(NOM_PARA='INST',
@@ -276,7 +276,7 @@ TEST_TABLE(TABLE=TAB_REAC,
 #            VALE=-1.32923E+06,
 #            VERSION='9.2.18',
 #            REFERENCE='NON_REGRESSION',);
-# 
+#
 # TEST_TABLE(TABLE=TAB_REAC,
 #            NOM_PARA='DY',
 #            FILTRE=_F(NOM_PARA='INST',
@@ -284,4 +284,4 @@ TEST_TABLE(TABLE=TAB_REAC,
 #            VALE=-1.67127E+06,
 #            VERSION='9.2.18',
 #            REFERENCE='NON_REGRESSION',);
-FIN();             
+FIN();

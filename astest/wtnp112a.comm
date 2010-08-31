@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THHD, 2D , MODELISATION THMC=LIQU_GAZ
 #       TEST31 ALLIANCES
@@ -231,8 +231,8 @@ RESU0=STAT_NON_LINE(
               );
 
 RESU0=CALC_ELEM(reuse =RESU0,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT0,
+
+
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
              RESULTAT=RESU0,);

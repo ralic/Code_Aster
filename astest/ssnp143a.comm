@@ -1,36 +1,36 @@
-# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU CLAVAGE EN 2D POUR LA LOI DE JOINT DE PLOT DES BARRAGES
 # ssnp143a.para = tps_job 200 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNP143A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI')
 
 ######## PARAMETRES #############
 tfin   = 3
-nbpas  = tfin 
-nbarch = tfin 
+nbpas  = tfin
+nbarch = tfin
 
 # PARAMETRES MECANIQUES DES PLOTS (VALEURS TESTS)
 young = 3.E12
 poiss = 0.25
-rho_b = 2400 
-ap    = 9.81    
+rho_b = 2400
+ap    = 9.81
 h     = 10.
 
 # PARAMETRES DES JOINTS (VALEURS TESTS)
@@ -56,19 +56,19 @@ MA=LIRE_MAILLAGE(FORMAT='MED');
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              
-  CREA_GROUP_MA = (  
-      _F(NOM = 'JOINT',    GROUP_MA = 'G_2D_14'),       
-      _F(NOM = 'BARRAGE',  GROUP_MA = 'G_2D_15'),       
-      _F(NOM = 'FONDATIO',GROUP_MA = 'G_1D_16'),  
-      _F(NOM = 'JOINT_G',  GROUP_MA = 'G_1D_17'),       
-      _F(NOM = 'JOINT_D',  GROUP_MA = 'G_1D_18'),  
-           
-          ), 
-  CREA_GROUP_NO = (  
-      _F(NOM = 'JOINT_G', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_G'),       
-      _F(NOM = 'JOINT_D', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_D'),       
-          ), 
+
+  CREA_GROUP_MA = (
+      _F(NOM = 'JOINT',    GROUP_MA = 'G_2D_14'),
+      _F(NOM = 'BARRAGE',  GROUP_MA = 'G_2D_15'),
+      _F(NOM = 'FONDATIO',GROUP_MA = 'G_1D_16'),
+      _F(NOM = 'JOINT_G',  GROUP_MA = 'G_1D_17'),
+      _F(NOM = 'JOINT_D',  GROUP_MA = 'G_1D_18'),
+
+          ),
+  CREA_GROUP_NO = (
+      _F(NOM = 'JOINT_G', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_G'),
+      _F(NOM = 'JOINT_D', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_D'),
+          ),
     );
 
 MA=MODI_MAILLAGE(reuse =MA,
@@ -76,7 +76,7 @@ MA=MODI_MAILLAGE(reuse =MA,
                    ORIE_FISSURE=_F(GROUP_MA='JOINT'),
                    INFO=1)
 
-                               
+
 MO=AFFE_MODELE(MAILLAGE=MA,
                VERIF='MAILLE',
                INFO=1,
@@ -94,17 +94,17 @@ MATPLO=DEFI_MATERIAU(ELAS=_F(
                               E   = young,
                               NU  = poiss,
                               RHO = rho_b),)
-                          
+
 # MATERIAU JOINT
 MATJOI=DEFI_MATERIAU(
                   JOINT_MECA_RUPT=_F(K_N=k_n,
                                      K_T=k_n,
                                      SIGM_MAX=sig_m,
                                      PENA_RUPTURE=penrup,
-                                     ALPHA=alpha, 
-                                     PRES_CLAVAGE=fonc_cla, 
+                                     ALPHA=alpha,
+                                     PRES_CLAVAGE=fonc_cla,
                           ),)
-                                                    
+
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
                       _F(GROUP_MA='BARRAGE',MATER = MATPLO),
@@ -119,8 +119,8 @@ CL_TER=AFFE_CHAR_MECA(MODELE=MO,
 CH_PES = AFFE_CHAR_MECA(
   MODELE = MO,
   FORCE_INTERNE = (_F(GROUP_MA=('BARRAGE',),FX=0.0, FY=-rho_b*ap)));
-  
-# CREATION DE LISTE D'INSTANT                                   
+
+# CREATION DE LISTE D'INSTANT
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbpas,),);
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbarch,),);
 
@@ -141,32 +141,32 @@ U_1=STAT_NON_LINE(MODELE=MO,
                                  RESI_GLOB_RELA=1E-6),
                   SOLVEUR=_F(METHODE='MUMPS',),
                   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',
-                                 LIST_INST = L_ARCH,), 
+                                 LIST_INST = L_ARCH,),
                   );
 
 
 ############# POST TRAITEMENT #################
 
 U_1=CALC_ELEM(reuse =U_1,
-              MODELE=MO,
+
               RESULTAT=U_1,
               OPTION='VARI_ELNO_ELGA',
-              NOM_CHAM='VARI_ELGA',GROUP_MA='JOINT');   
+              NOM_CHAM='VARI_ELGA',GROUP_MA='JOINT');
 
 U_1=CALC_ELEM(reuse =U_1,
-              MODELE=MO,
+
               RESULTAT=U_1,
               OPTION='SIEF_ELNO_ELGA',
-              NOM_CHAM='SIEF_ELGA',GROUP_MA='JOINT');   
+              NOM_CHAM='SIEF_ELGA',GROUP_MA='JOINT');
 
 
 U_1=CALC_NO(reuse =U_1,
             RESULTAT=U_1,
             OPTION=('VARI_NOEU_ELGA','SIEF_NOEU_ELGA'),
-            GROUP_MA='JOINT'); 
+            GROUP_MA='JOINT');
 
 
-# AVANT CLAVAGE 
+# AVANT CLAVAGE
 ################
 
 # OUVERTURE ET VARIABLE INTERNE DE CLAVAGE
@@ -178,7 +178,7 @@ VAR_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                GROUP_NO='JOINT_D',
                                NOM_CMP=('V7','V10'),),);
 
-                            
+
 # CONTRAINTE NORMALE DANS LE JOINT
 SIG_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIG_N',
@@ -186,10 +186,10 @@ SIG_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU_ELGA',
                                INST=av_cla,
                                GROUP_NO = 'JOINT_D',
-                               NOM_CMP=('SIGN')),);  
+                               NOM_CMP=('SIGN')),);
 
-                           
-# APRES CLAVAGE 
+
+# APRES CLAVAGE
 ################
 
 # OUVERTURE ET VARIABLE INTERNE DE CLAVAGE
@@ -201,7 +201,7 @@ VAR_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                GROUP_NO='JOINT_D',
                                NOM_CMP=('V7','V10')),);
 
-                            
+
 
 # CONTRAINTE NORMALE DANS LE JOINT
 SIG_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -210,7 +210,7 @@ SIG_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU_ELGA',
                                INST=ap_cla,
                                GROUP_NO = 'JOINT_D',
-                               NOM_CMP=('SIGN')),);  
+                               NOM_CMP=('SIGN')),);
 
 
 
@@ -233,8 +233,8 @@ TEST_TABLE(TABLE=VAR_AP,
            NOM_PARA='V7',
            VALE=3.88E-6,
            PRECISION=0.07,
-           REFERENCE='SOURCE_EXTERNE')   
-           
+           REFERENCE='SOURCE_EXTERNE')
+
 
 ################ TESTS NON REGRESSION ###########################
 
@@ -269,7 +269,7 @@ TEST_TABLE(TABLE=SIG_AP,
            NOM_PARA='SIGN',
            VALE=-4.99997E+04,
            REFERENCE='NON_REGRESSION')
-           
+
 TEST_TABLE(TABLE=VAR_AP,
            FILTRE=(_F(NOM_PARA='COOR_Y',VALE=8.5)),
            NOM_PARA='V7',
@@ -286,9 +286,9 @@ TEST_TABLE(TABLE=SIG_AP,
            VALE=-4.99992E+04,
            REFERENCE='NON_REGRESSION')
 
-IMPR_TABLE(TABLE=VAR_AV,FORMAT='TABLEAU',NOM_PARA=('COOR_Y','V7','V10'),);                                  
-IMPR_TABLE(TABLE=SIG_AV,FORMAT='TABLEAU',NOM_PARA=('COOR_Y','SIGN',),);   
-IMPR_TABLE(TABLE=VAR_AP ,FORMAT='TABLEAU',NOM_PARA=('COOR_Y','V7','V10'),);                                  
-IMPR_TABLE(TABLE=SIG_AP, FORMAT='TABLEAU',NOM_PARA=('COOR_Y','SIGN',),);   
+IMPR_TABLE(TABLE=VAR_AV,FORMAT='TABLEAU',NOM_PARA=('COOR_Y','V7','V10'),);
+IMPR_TABLE(TABLE=SIG_AV,FORMAT='TABLEAU',NOM_PARA=('COOR_Y','SIGN',),);
+IMPR_TABLE(TABLE=VAR_AP ,FORMAT='TABLEAU',NOM_PARA=('COOR_Y','V7','V10'),);
+IMPR_TABLE(TABLE=SIG_AP, FORMAT='TABLEAU',NOM_PARA=('COOR_Y','SIGN',),);
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # DATE   : 13/11/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -151,8 +151,8 @@ C2_M=CALC_ELEM( OPTION='SIGM_ELNO_DEPL',
 C2_M=CALC_NO(reuse =C2_M,
               RESULTAT=C2_M,
               OPTION='SIGM_NOEU_DEPL',
-              CHAM_MATER=CHAM_MAT,
-              CARA_ELEM=CAR_ELE,)
+
+              )
 
 SIG_C2_M=CREA_CHAMP(    RESULTAT=C2_M,
                     OPERATION='EXTR',
@@ -169,8 +169,8 @@ C2_S=CALC_ELEM( OPTION='SIGM_ELNO_DEPL',
 C2_S=CALC_NO(reuse =C2_S,
               RESULTAT=C2_S,
               OPTION='SIGM_NOEU_DEPL',
-              CHAM_MATER=CHAM_MAT,
-              CARA_ELEM=CAR_ELE,)
+
+              )
 
 SIG_C2_S=CREA_CHAMP(    RESULTAT=C2_S,
                     OPERATION='EXTR',
@@ -189,8 +189,8 @@ C3_S=CALC_ELEM( OPTION='SIGM_ELNO_DEPL',
 C3_S=CALC_NO(reuse =C3_S,
               RESULTAT=C3_S,
               OPTION='SIGM_NOEU_DEPL',
-              CHAM_MATER=CHAM_MAT,
-              CARA_ELEM=CAR_ELE,)
+
+              )
 
 SIG_C3_S=CREA_CHAMP(    RESULTAT=C3_S,
                     OPERATION='EXTR',

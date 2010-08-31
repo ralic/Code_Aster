@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE SOUS CHARGEMENT THERMIQUE (AXIS_FOURIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,8 +97,8 @@ NOM_CHAM='DEPL',  RESULTAT=DEF,
 #
 # CALCUL DES CONTRAINTES
 
-DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,MODELE=MODELE,
-                           CHAM_MATER=CHMAT,
+DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
+
                            TOUT_ORDRE='OUI',
                            OPTION=('SIGM_ELNO_DEPL',)
                 )
