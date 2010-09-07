@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 06/09/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -185,7 +185,12 @@ void initExceptions(PyObject *dict)
     
     except_module = PyImport_ImportModule("Execution.E_Exception");
     if ( ! except_module ) {
-        MYABORT("ImportError of except_module!");
+        fprintf(stderr, "\n\nWARNING:\n    ImportError of Execution.E_Exception module!\n");
+        fprintf(stderr, "    No exception defined in the aster module.\n");
+        fprintf(stderr, "    It may be unusable.\n\n");
+        PyErr_Clear();
+        Py_XDECREF(except_module);
+        return;
     }
     
     /* affectation du dict par le module E_Exception */

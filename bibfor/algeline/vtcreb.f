@@ -1,21 +1,21 @@
       SUBROUTINE VTCREB(CHAMPZ,NUMEDZ,BASEZ,TYPCZ,NEQ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGELINE  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C     CREATION D'UNE STRUCTURE CHAM_NO "CHAMP"
@@ -37,12 +37,11 @@ C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
-C DECLARATION PARAMETRES D'APPELS      
+C DECLARATION PARAMETRES D'APPELS
       CHARACTER*(*) CHAMPZ,NUMEDZ,BASEZ,TYPCZ
       INTEGER NEQ
-      
+
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -63,9 +62,9 @@ C DECLARATION VARIABLES LOCALES
       INTEGER      IDIME,NBSD,IFETC,IDD,ILIMPI,IFETN,NEQL
       CHARACTER*1  CLASSE,TYPC
       CHARACTER*8  K8BID
-      CHARACTER*11 K11B      
+      CHARACTER*11 K11B
       CHARACTER*24 CHAMP,NUMEDD,METHOD,SDFETI,K24BID,K24B
-      
+
 C------------------------------------------------------------------
 C INIT.
       CALL JEMARQ()
@@ -76,42 +75,42 @@ C INIT.
 
 C --------------------------------------------------------------
 C CREATION ET REMPLISSAGE DE LA SD CHAM_NO "MAITRE"
-C --------------------------------------------------------------      
-      
-      CALL VTCRE1(CHAMP,NUMEDD,CLASSE,TYPC,METHOD,SDFETI,0,NEQ)
+C --------------------------------------------------------------
+
+      CALL VTCRE1(CHAMP,NUMEDD,CLASSE,TYPC,METHOD,SDFETI,NEQ)
 C --------------------------------------------------------------
 C CREATION ET REMPLISSAGE DE LA SD CHAM_NO.REFE "ESCLAVE" LIEE A
 C CHAQUE SOUS-DOMAINE
 C --------------------------------------------------------------
       IF (METHOD(1:4).EQ.'FETI') THEN
-      
+
         CALL JEVEUO(SDFETI(1:19)//'.FDIM','L',IDIME)
         NBSD=ZI(IDIME)
 
 C CONSTITUTION DE L'OBJET JEVEUX .FETC
         CALL WKVECT(CHAMP(1:19)//'.FETC',CLASSE//' V K24',NBSD,
      &    IFETC)
-C STOCKE &&//NOMPRO(1:6)//'.2.' POUR COHERENCE AVEC L'EXISTANT     
+C STOCKE &&//NOMPRO(1:6)//'.2.' POUR COHERENCE AVEC L'EXISTANT
         K11B=CHAMP(1:10)//'.'
 
         K24B=' '
         CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
         DO 10 IDD=1,NBSD
           IF (ZI(ILIMPI+IDD).EQ.1) THEN
-          
-            CALL JEMARQ()        
+
+            CALL JEMARQ()
 C REMPLISSAGE OBJET .FETC
 C NOUVELLE CONVENTION POUR LES CHAM_NOS FILS, GESTTION DE NOMS
 C ALEATOIRES
             CALL GCNCON('.',K8BID)
-            K8BID(1:1)='F'          
-            K24B(1:19)=K11B//K8BID          
+            K8BID(1:1)='F'
+            K24B(1:19)=K11B//K8BID
             ZK24(IFETC+IDD-1)=K24B
-            CALL JEVEUO(NUMEDD(1:14)//'.FETN','L',IFETN)          
+            CALL JEVEUO(NUMEDD(1:14)//'.FETN','L',IFETN)
             CALL VTCRE1(K24B,ZK24(IFETN+IDD-1),CLASSE,TYPC,K24BID,
-     &        K24BID,IDD,NEQL)
+     &        K24BID,NEQL)
             CALL JEDEMA()
-            
+
           ENDIF
    10   CONTINUE
 
@@ -119,7 +118,7 @@ C ALEATOIRES
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 
-                        
+
 C FIN ------------------------------------------------------------------
       CALL JEDEMA()
       END

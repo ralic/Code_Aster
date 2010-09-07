@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 06/09/2010   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            CHAM_GD         =SIMP(statut='o',typ=cham_no_sdaster),
            NOEUD           =SIMP(statut='f',typ=no   ),
            GROUP_NO        =SIMP(statut='f',typ=grno ),
-           NOM_CMP         =SIMP(statut='f',typ='TXM'),
+           NOM_CMP         =SIMP(statut='f',typ='TXM',max=1),
            TYPE_TEST       =SIMP(statut='f',typ='TXM',into=("SOMM_ABS","SOMM","MAX","MIN")),
            VALE            =SIMP(statut='f',typ='R',max='**'),
            VALE_I          =SIMP(statut='f',typ='I',max='**'),
@@ -60,7 +60,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            SOUS_POINT      =SIMP(statut='f',typ='I'),
            NOEUD           =SIMP(statut='f',typ=no),
            GROUP_NO        =SIMP(statut='f',typ=grno),
-           NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
+           NOM_CMP         =SIMP(statut='f',typ='TXM',max=1),
            TYPE_TEST       =SIMP(statut='f',typ='TXM',into=("SOMM_ABS","SOMM","MAX","MIN") ),
            VALE            =SIMP(statut='f',typ='R',max='**' ),
            VALE_I          =SIMP(statut='f',typ='I',max='**' ),
@@ -98,7 +98,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            ANGL            =SIMP(statut='f',typ='R'),
            PARA            =SIMP(statut='f',typ='TXM'),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',into=C_NOM_CHAM_INTO()),
-           NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
+           NOM_CMP         =SIMP(statut='f',typ='TXM',max=1),
            MAILLE          =SIMP(statut='f',typ=ma   ,max='**'),
            NOEUD           =SIMP(statut='f',typ=no   ,max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno ,max='**'),

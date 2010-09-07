@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 06/09/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TREMPE D'UN BARREAU CYLINDRIQUE EN 16MND5
 # mtlp103a.para = tps_job 350 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -490,6 +490,7 @@ TEMPE = THER_NON_LINE(
           MODELE     = MOTH,
           CHAM_MATER = MAT,
           EXCIT      =_F( CHARGE   = CH1, ),
+          SOLVEUR    =_F(METHODE='MUMPS',MIXER_PRECISION='OUI',),
           INCREMENT  =_F( LIST_INST = LIST,
                           NUME_INST_FIN  = 14,),
           ETAT_INIT  = _F(VALE = 906., ),
@@ -503,6 +504,7 @@ TEMPE = THER_NON_LINE(reuse=TEMPE,
           MODELE     = MOTH,
           CHAM_MATER = MAT,
           EXCIT      =_F( CHARGE    = CH2, ),
+          SOLVEUR    =_F(METHODE='MUMPS',MIXER_PRECISION='OUI',),
           INCREMENT  =_F( LIST_INST = LIST,
                           NUME_INST_INIT = 14,
                           NUME_INST_FIN  = 105, ),

@@ -1,7 +1,7 @@
       SUBROUTINE APETS3(ACTION,KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS3 PETSC  DATE 23/08/2010   AUTEUR TARDIEU N.TARDIEU 
+!& MODIF APETS3 PETSC  DATE 06/09/2010   AUTEUR TARDIEU N.TARDIEU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -148,6 +148,7 @@
           CALL ASSERT(ierr.EQ.0)
         ELSE IF (ACTION.EQ.'RESOUD') THEN
 !         CREATION SOLVEUR BIDON SIMPLE PRECISION
+          SOLVBD=ZK24(JSLVK-1+3)
           CALL CRSMSP(SOLVBD,NOMAT)
         ENDIF
         GOTO 999

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inisig utilitai  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF inisig utilitai  DATE 06/09/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -137,12 +137,26 @@ static INTEGER status_usr1 = 0;
 
 INTEGER F_FUNC(ETAUSR, etausr)()
 {
-    /* Retourne la variable status_usr1 */
+    /* ETAt USR1 :
+     * Retourne la variable status_usr1 */
     return status_usr1;
 }
 
 void stpusr1 (int sig)
 {
-   CALL_U2MESS("I", "SUPERVIS_96");
-   status_usr1 = (INTEGER)1;
+    /* SToP USR1 :
+     * callback appelé lors de la réception du signal USR1.
+     */
+    CALL_U2MESS("I", "SUPERVIS_96");
+    status_usr1 = (INTEGER)1;
 }
+
+void STDCALL(CLRUSR, clrusr)()
+{
+    /* CLeaR USR1 :
+     * Réinitialise la valeur de status_usr1
+     * Utile pour éviter la récursivité.
+     */
+   status_usr1 = (INTEGER)0;
+}
+

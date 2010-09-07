@@ -1,4 +1,4 @@
-#@ MODIF jeveux1 Messages  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux1 Messages  DATE 07/09/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -401,6 +401,13 @@ cata_msg = {
 
  L'attribut LONCUM n'est pas accessible pour cette collection.
  
+"""),
+
+64 : _("""
+
+ Le volume des données temporaires (objets de la base Volatile) écrites sur disque (%(r3).2f Mo)  
+ est plus de %(r1).2f fois supérieur au volume de données lues (%(r2).2f Mo). 
+  
 """),
 
 }

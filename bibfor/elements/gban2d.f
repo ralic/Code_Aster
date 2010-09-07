@@ -1,7 +1,7 @@
       SUBROUTINE GBAN2D ( RESU, NOMA, COOR, RINF, RSUP, MODULE )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32       JEXNUM , JEXNOM
+      CHARACTER*32       JEXNOM
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES
@@ -109,7 +109,7 @@ C
 C ---  .REFE DU CHAMNO :
 C       --------------
       CHAMNO = RESU(1:19)//'.REFE'
-      CALL WKVECT ( CHAMNO, 'G V K24', 2, IREFE )
+      CALL WKVECT ( CHAMNO, 'G V K24', 4, IREFE )
       ZK24(IREFE+1-1) = NOMA//'                '
 C
 C ---  .VALE DU CHAMNO :

@@ -1,11 +1,11 @@
-      SUBROUTINE GCOUR3 (RESU,NOMA,NOMO,NOMNO,COORN,LNOFF,TRAV1,
-     &           TRAV2,TRAV3,CHFOND,GRLT,DIREC,CONNEX,THLAGR,THLAG2,
+      SUBROUTINE GCOUR3 (RESU,NOMA,COORN,LNOFF,TRAV1,
+     &           TRAV2,TRAV3,CHFOND,GRLT,THLAGR,THLAG2,
      &           BASFON,NBRE,MILIEU,PAIR,NDIMTE)
        IMPLICIT REAL*8 (A-H,O-Z)
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,14 +38,10 @@ C     ------------------------------------------------------------------
 C ENTREE:
 C        RESU   : NOM DU CONCEPT RESULTAT
 C        NOMA   : NOM DU CONCEPT MAILLAGE
-C        NOMO   : NOM DU CONCEPT MODELE
-C        NOMNO  : NOM DE L'OBJET CONTENANT LES NOEUDS DU MAILLAGE
 C        COORN  : NOM DE L'OBJET CONTENANT LES COORDONNEES DU MAILLAGE
 C        LNOFF  : NOMBRE DE NOEUDS DE GAMM0
 C        CHFOND : NOMS DES NOEUDS DU FOND DE FISSURE
 C        GRLT   : GRADIENT DE LA LEVEL-SET TANGENTE
-C        DIREC  : DIRECTION CALCULEE SI DIREC=.FALSE.
-C                       APPEL A GDIREC
 C        TRAV1  : RINF
 C        TRAV2  : RSUP
 C        THLAGR  : SI PRESENCE DU MOT CLE THETA_LAGRANGE
@@ -53,8 +49,6 @@ C        THLAG2  : SI PRESENCE DU MOT CLE THETA_LAGRANGE_REGU
 C        BASFON  : BASE LOCALE AUX POINTS DU FOND DE FISSURE
 C        NBRE   : DEGRE DES POLYNOMES DE LEGENDRE
 C                     SINON 0
-C        CONNEX: .TRUE.  : FOND DE FISSURE FERME
-C                .FALSE. : FOND DE FISSURE DEBOUCHANT
 C SORTIE:
 C                 LISTE DE CHAMPS_NO THETA
 C        TRAV3 : MODULE(THETA)
@@ -64,7 +58,7 @@ C     ------------------------------------------------------------------
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      CHARACTER*32       JEXNOM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -79,17 +73,16 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*1 K1BID
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*24      TRAV1,TRAV2,TRAV3,CHFOND,CHAMNO,COORN,NOMNO
+      CHARACTER*24      TRAV1,TRAV2,TRAV3,CHFOND,CHAMNO,COORN
       CHARACTER*24      BASFON
       CHARACTER*19      CNSGT, GRLT
-      CHARACTER*8       CHBID, FISS,RESU, NOMA, NOMO
+      CHARACTER*8       CHBID,RESU, NOMA
       CHARACTER*6       KIORD
 C
       INTEGER           LNOFF,IADRT1,IADRT2,IADRT3,ITHETA,IADRCO,JMIN
-      INTEGER           IERD,IMODU,NBRE,IRET,NUMA,NDIMTE,JGT,JGN,TMP
+      INTEGER           IERD,IMODU,NBRE,IRET,NUMA,NDIMTE,JGT
       INTEGER           NBNO,IFON,I,IDESC,IREFE,J,JRESU,K,JGTL
       INTEGER           NORIG,NEXTR,JORIG,JEXTR,JBAS
 C
@@ -99,7 +92,7 @@ C
       REAL*8            RII,RSI,ALPHA,VALX,VALY,VALZ,NORM2,R8MAEM
       REAL*8            GRTX0,GRTY0,GRTZ0,GRTX1,GRTY1,GRTZ1
 C
-      LOGICAL           DIREC,THLAGR,MILIEU,CONNEX, DEBUG,THLAG2,PAIR
+      LOGICAL           THLAGR,MILIEU, DEBUG,THLAG2,PAIR
 C
       CALL JEMARQ()
 
@@ -117,7 +110,7 @@ C
 
       CALL JEVEUO(CHFOND,'L',IFON)
       CALL JEVEUO(BASFON,'E',JBAS)
-      
+
 C          -----------------------
       CALL GETVR8 ('THETA','DTAN_ORIG',1,1,0,ZRBID,NORIG)
       IF(NORIG.NE.0) THEN
@@ -182,7 +175,7 @@ C
 C
 C  .REFE
         CHAMNO(20:24) = '.REFE'
-        CALL WKVECT(CHAMNO,'V V K24',2,IREFE)
+        CALL WKVECT(CHAMNO,'V V K24',4,IREFE)
         ZK24(IREFE+1-1) = NOMA//'                '
 C
 C  .VALE
@@ -302,7 +295,7 @@ C               DISTANCE MN
                     ZR(ITHETA+(I-1)*3+2-1) = (1-ALPHA)*VALY
                     ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
                   ENDIF
-C CORRECTION DE LA DIRECTION A L ORIGINE                  
+C CORRECTION DE LA DIRECTION A L ORIGINE
                   IF ((JMIN .EQ. 1) .AND. (NORIG.NE.0) ) THEN
                     GRTX0=ZR(JORIG+1-1)* ZR(IMODU)
                     GRTY0=ZR(JORIG+2-1)* ZR(IMODU)
@@ -325,7 +318,7 @@ C CORRECTION DE LA DIRECTION A L ORIGINE
                       ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
                     ENDIF
                   ENDIF
-C CORRECTION DE LA DIRECTION A L ETREMITE                  
+C CORRECTION DE LA DIRECTION A L ETREMITE
                   IF ((JMIN .EQ. (LNOFF-1)) .AND. (NEXTR.NE.0) ) THEN
                     GRTX0=ZR(JBAS+(LNOFF-1-1)*6+4-1)* ZR(IMODU)
                     GRTY0=ZR(JBAS+(LNOFF-1-1)*6+5-1)* ZR(IMODU)
@@ -338,7 +331,7 @@ C CORRECTION DE LA DIRECTION A L ETREMITE
                     VALZ =((1-SMIN) * GRTZ0 + SMIN * GRTZ1)
                     IF((ABS(ALPHA).LE.EPS).OR.(ALPHA.LT.0)) THEN
                       IF (K. EQ. 1) THEN
-                      ENDIF                      
+                      ENDIF
                       ZR(ITHETA+(I-1)*3+1-1) = VALX
                       ZR(ITHETA+(I-1)*3+2-1) = VALY
                       ZR(ITHETA+(I-1)*3+3-1) = VALZ

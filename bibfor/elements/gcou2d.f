@@ -9,7 +9,7 @@
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ C
 C
 C  .REFE
       CHAMNO = RESU(1:19)//'.REFE'
-      CALL WKVECT ( CHAMNO, BASE//' V K24', 2, IREFE )
+      CALL WKVECT ( CHAMNO, BASE//' V K24', 4, IREFE )
       ZK24(IREFE+1-1) = NOMA//'                '
 C
 C  .VALE

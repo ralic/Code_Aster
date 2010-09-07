@@ -1,6 +1,6 @@
       SUBROUTINE OP0060()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -304,8 +304,8 @@ C
      &                                 CARELE, VADIRI, VACHAM)
 
       ENDIF
-      
-      CALL GETFAC('EXCIT_RESU',NBEXRE)      
+
+      CALL GETFAC('EXCIT_RESU',NBEXRE)
       IF ( NBEXRE.NE.0 ) THEN
 
         CALL WKVECT(BASENO//'.COEF_CRE'    ,'V V C  ',NBEXRE,LCCRE)
@@ -530,7 +530,7 @@ C
      &                                           NEQ, LSECMB)
 
         ENDIF
-        
+
 C
 C   Chargement venant d'un RESU a IFREQ
 C
@@ -547,7 +547,7 @@ C
             IF (ABS(FREQ).GT.EPS0) THEN
               CALL RSORAC(ZK8(LRESU+IRESU-1),'FREQ',IBID,FREQ,K8BID,
      &                    CBID,PREC,'RELATIF',IFRE2,1,IBID)
-            ELSE      
+            ELSE
               CALL RSORAC(ZK8(LRESU+IRESU-1),'FREQ',IBID,FREQ,K8BID,
      &                    CBID,EPS0,'ABSOLU',IFRE2,1,IBID)
             ENDIF
@@ -555,11 +555,11 @@ C
             CALL VTCOPY(CHAM19,CHAMN2,IBID)
             CALL JEVEUO(CHAMN2//'.VALE','L',LVALE)
             DO 211 IEQ  = 0,NEQ-1
-              ZC(LSECMB+IEQ) = ZC(LSECMB+IEQ) + 
+              ZC(LSECMB+IEQ) = ZC(LSECMB+IEQ) +
      &                         ZC(LVALE+IEQ)*ZC(LCCRE+IRESU-1)
-  211       CONTINUE  
+  211       CONTINUE
             CALL JELIBE(CHAM19//'.VALE')
-  210     CONTINUE  
+  210     CONTINUE
         ENDIF
 
 C 4.2.3     --- CALCUL DE LA MATRICE DYNAMIQUE ---
@@ -631,9 +631,9 @@ C
             CALL JEVEUO(SOLUTI(1:19)//'.VALE','L',JSOLUT)
             CALL ZCOPY(NEQ,ZC(JSOLUT),1,ZC(LSECMB+NEQ*NRPASE),1)
             CALL JEDETR(SOLUTI)
-            
+
  427      CONTINUE
- 
+
         ENDIF
 
 C
@@ -655,8 +655,12 @@ C         NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
                CALL VTCREM(CHAMNO,MASSE,'G',TYPRES)
 C              -- VTCREM CREE TOUJOURS DES CHAM_NO. PARFOIS IL FAUT LES
 C                 DECLARER CHAM_GENE :
-               IF (TYPCON.EQ.'HARM_GENE') CALL JEECRA(CHAMNO//'.DESC',
-     &                                         'DOCU',0,'VGEN')
+               IF (TYPCON.EQ.'HARM_GENE') THEN
+                  CALL JEECRA(CHAMNO//'.DESC','DOCU',0,'VGEN')
+C GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
+C DE TAILLE 2 ET NON 4 COMME UN CHAM_NO
+                  CALL JUVECA (CHAMNO//'.REFE',2)
+               ENDIF
             ELSE
                CALL U2MESS('F','ALGORITH2_65')
             ENDIF

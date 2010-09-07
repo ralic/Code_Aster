@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 06/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -259,12 +259,13 @@ class JDC:
        """ Cette methode traite les exceptions en provenance du module d'execution
            (qui derive de codex.error).
        """
-       if isinstance(exc_val,self.codex.error):
+       if isinstance(exc_val, self.codex.error):
           # erreur utilisateur levee et pas trappee, on ferme les bases en appelant la commande FIN
-          raison=exc_val.__class__.__name__+" : "+str(exc_val)
           self.codex.impers()
           self.cr.exception("<S> Exception utilisateur levee mais pas interceptee.\n"
-                            "Les bases sont fermees.\n"+raison)
+                            "Les bases sont fermees.\n"
+                            "Type de l'exception : " + exc_val.__class__.__name__ + "\n" \
+                            + str(exc_val))
           self.fini_jdc(exc_val)
 
 
@@ -288,7 +289,6 @@ class JDC:
             break
       if fin_etape is None:
          # au moins en PAR_LOT='NON', FIN n'est pas dans la liste des étapes
-         #XXX (MC) je ne sais pas pourquoi, on "passe" en par lot NON
          self.set_par_lot("NON")
          fin_cmd = self.get_cmd("FIN")
          try:

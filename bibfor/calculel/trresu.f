@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 06/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -231,63 +231,61 @@ C                    123456789012345678901234567890123
 
             IF (N1.NE.0) THEN
 
-              NL1 = LXLGUT(LIGN1)
-              NL2 = LXLGUT(LIGN2)
-              LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TYPE_TEST'
-              LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//TYPTES
-              LIGN1(NL1+17:NL1+17)='.'
-              LIGN2(NL2+17:NL2+17)='.'
+                NL1 = LXLGUT(LIGN1)
+                NL2 = LXLGUT(LIGN2)
+                LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TYPE_TEST'
+                LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//TYPTES
+                LIGN1(NL1+17:NL1+17)='.'
+                LIGN2(NL2+17:NL2+17)='.'
 
-              IF(NOPASE.NE.' ')THEN
-                 NL1 = LXLGUT(LIGN1)
-                 NL2 = LXLGUT(LIGN2)
-                 LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TITRE'
-                 LIGN2(1:NL2+33)=LIGN2(1:NL2-1)//' '//TITRES
-                 LIGN1(NL1+17:NL1+17)='.'
-                 LIGN2(NL2+34:NL2+34)='.'
-              ENDIF
+                IF(NOPASE.NE.' ')THEN
+                   NL1 = LXLGUT(LIGN1)
+                   NL2 = LXLGUT(LIGN2)
+                   LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TITRE'
+                   LIGN2(1:NL2+33)=LIGN2(1:NL2-1)//' '//TITRES
+                   LIGN1(NL1+17:NL1+17)='.'
+                   LIGN2(NL2+34:NL2+34)='.'
+                ENDIF
 
-              NL1 = LXLGUT(LIGN1)
-              NL11 = LXLGUT(LIGN1(1:NL1-1))
-              NL2 = LXLGUT(LIGN2)
-              NL22 = LXLGUT(LIGN2(1:NL2-1))
-                IF(NL11.LT.80)THEN
-                   WRITE (IFIC,*) LIGN1(1:NL11)
-                ELSEIF(NL11.LT.160)THEN
-                   WRITE (IFIC,1160) LIGN1(1:80),
-     &                               LIGN1(81:NL11)
-                ELSE
-                   WRITE (IFIC,1200) LIGN1(1:80),
-     &                               LIGN1(81:160),
+
+                CALL GETVTX('RESU','NOM_CMP',IOCC,1,0,NODDL,N4)
+
+                IF (N4.EQ.0) THEN
+                  NL1 = LXLGUT(LIGN1)
+                  NL11 = LXLGUT(LIGN1(1:NL1-1))
+                  NL2 = LXLGUT(LIGN2)
+                  NL22 = LXLGUT(LIGN2(1:NL2-1))
+                  IF(NL11.LT.80)THEN
+                    WRITE (IFIC,*) LIGN1(1:NL11)
+                  ELSEIF(NL11.LT.160)THEN
+                    WRITE (IFIC,1160) LIGN1(1:80),LIGN1(81:NL11)
+                  ELSE
+                    WRITE (IFIC,1200) LIGN1(1:80),LIGN1(81:160),
      &                               LIGN1(161:NL11)
-                ENDIF
-                IF(NL22.LT.80)THEN
-                   WRITE (IFIC,*) LIGN2(1:NL22)
-                ELSEIF(NL22.LT.160)THEN
-                   WRITE (IFIC,1160) LIGN2(1:80),
-     &                               LIGN2(81:NL22)
-                ELSE
-                   WRITE (IFIC,1200) LIGN2(1:80),
-     &                               LIGN2(81:160),
+                  ENDIF
+                  IF(NL22.LT.80)THEN
+                    WRITE (IFIC,*) LIGN2(1:NL22)
+                  ELSEIF(NL22.LT.160)THEN
+                    WRITE (IFIC,1160) LIGN2(1:80),LIGN2(81:NL22)
+                  ELSE
+                    WRITE (IFIC,1200) LIGN2(1:80),LIGN2(81:160),
      &                               LIGN2(161:NL22)
-                ENDIF
+                  ENDIF
 
-
-              CALL GETVTX('RESU','NOM_CMP',IOCC,1,0,NODDL,N4)
-
-              IF (N4.EQ.0) THEN
-                CALL UTEST1(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
+                  CALL UTEST1(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
      &                      ZR(IREFR),ZC(IREFC),EPSI,
      &                      CRIT,IFIC,SSIGNE)
-              ELSE
-                NBCMP = -N4
-                CALL WKVECT('&&TRRESU.NOM_CMP','V V K8',NBCMP,JCMP)
-                CALL GETVTX('RESU','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),N4)
-                CALL UTEST4(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
-     &                      ZR(IREFR),ZC(IREFC),EPSI,
+                ELSE
+                  NBCMP = -N4
+                  CALL WKVECT('&&TRRESU.NOM_CMP','V V K8',NBCMP,JCMP)
+                  CALL GETVTX('RESU','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),
+     &                        N4)
+                  CALL UTEST4(CHAM19,TYPTES,TYPRES,NREF,TBTXT,ZI(IREFI),
+     &                      ZR(IREFR),ZC(IREFC),EPSI,LIGN1,LIGN2,
      &                      CRIT,IFIC,NBCMP,ZK8(JCMP),SSIGNE)
-                CALL JEDETR('&&TRRESU.NOM_CMP')
-              END IF
+                  CALL JEDETR('&&TRRESU.NOM_CMP')
+                END IF
+
 
             ELSE
               CALL GETVTX('RESU','NOM_CMP',IOCC,1,1,NODDL,N1)

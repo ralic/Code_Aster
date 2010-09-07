@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C ----------------------------------------------------------------------
       CHARACTER*24 VALK(2)
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      CHARACTER*32 JEXNUM,JEXNOM
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)
@@ -92,7 +92,7 @@ C     ------------------------------------
            VALK(1) = NOCMP
            VALK(2) = GD2
            CALL U2MESK('F','CALCULEL2_22', 2 ,VALK)
-        ENDIF 
+        ENDIF
  1    CONTINUE
       CALL DISMOI('F','NB_EC',GD2,'GRANDEUR',NEC,KBID,IED)
       CALL DISMOI('F','TYPE_SCA',GD2,'GRANDEUR',IBID,TYSCA,IED)
@@ -104,7 +104,7 @@ C     -----------------------
       CALL DISMOI('F','NB_NO_MAILLA',MAILL2,'MAILLAGE',NBNO,KBID,IED)
       CALL WKVECT(CH19//'.VALE',BAS2//' V R',NBCMP*NBNO,IAVALE)
       CALL WKVECT(CH19//'.DESC',BAS2//' V I',NEC+2,IADESC)
-      CALL WKVECT(CH19//'.REFE',BAS2//' V K24',2,IAREFE)
+      CALL WKVECT(CH19//'.REFE',BAS2//' V K24',4,IAREFE)
 C
 C     OBJET: .REFE
 C     ------------
@@ -132,6 +132,5 @@ C     ------------
  3    CONTINUE
 C
 C
- 9999 CONTINUE
       CALL JEDEMA()
       END

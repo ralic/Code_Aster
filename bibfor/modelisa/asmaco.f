@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*8        MA1, MA2, MAG
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/05/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -401,7 +401,7 @@ C     -- TOUJOURS 3 COMPOSANTES X, Y ET Z
 C     -- 14 = 2**1 + 2**2 + 2**3
       ZI (IADESC-1+3)= 14
 C
-      CALL WKVECT(COORDO//'.REFE','G V K24',2,IAREFE)
+      CALL WKVECT(COORDO//'.REFE','G V K24',4,IAREFE)
       ZK24(IAREFE-1+1)= MAG
       CALL JEVEUO(MA1//'.COORDO    .VALE','L',IACOO1)
       CALL JEVEUO(MA2//'.COORDO    .VALE','L',IACOO2)
@@ -636,6 +636,5 @@ CCC   ------------------------------------------------------------------
  82     CONTINUE
       END IF
 C
-9999  CONTINUE
       CALL JEDEMA()
       END

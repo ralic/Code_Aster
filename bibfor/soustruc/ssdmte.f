@@ -1,6 +1,6 @@
       SUBROUTINE SSDMTE(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*8  KBI81,KBI82,NOMACR,NOMAIL,KBID,MA,NOMNOE
+      CHARACTER*8  NOMACR,KBID,NOMNOE
       LOGICAL      RECOM
       CHARACTER*19 COORDO
 C ----------------------------------------------------------------------
@@ -131,7 +131,7 @@ C     -- TOUJOURS 3 COMPOSANTES X, Y ET Z
 C     -- 14 = 2**1 + 2**2 + 2**3
       ZI (IADESC-1+3)= 14
 C
-      CALL WKVECT(COORDO//'.REFE','G V K24',2,IAREFE)
+      CALL WKVECT(COORDO//'.REFE','G V K24',4,IAREFE)
       ZK24(IAREFE-1+1)= MAG
       CALL WKVECT(COORDO//'.VALE','G V R',3*NBNOP2,IAVALE)
 C     -- NOM DES NOEUDS PHYSIQUES (ET LEUR COORDONNEES) :
@@ -254,6 +254,5 @@ C     ----------------------------------------------------------
       ZI(IADIME-1+1)=NBNOP2
 C
 C
- 9999 CONTINUE
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_no SD  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cham_no SD  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,8 +19,8 @@
 # ======================================================================
 
 from SD import *
+from SD.sd_util import *
 from SD.sd_titre import sd_titre
-
 from SD.sd_prof_chno import sd_prof_chno
 
 
@@ -28,7 +28,7 @@ class sd_cham_no(sd_titre):
 #------------------------------------
     nomj = SDNom(fin=19)
     VALE = AsVect(ltyp=Parmi(4,8,16,24), type=Parmi('C', 'I', 'K', 'R'), docu=Parmi('', '2', '3'), )
-    REFE = AsVK24()
+    REFE = AsVK24(lonmax=4)
     DESC = AsVI(docu='CHNO', )
 
 
@@ -36,19 +36,45 @@ class sd_cham_no(sd_titre):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
         return self.REFE.exists
 
+    def u_desc(self):
+        desc=self.DESC.get()
+        gd  = desc[0]
+        num = desc[1]
+        return gd,num
+
+    def u_refe(self):
+        refe=self.REFE.get()
+        mail      = refe[0]
+        prof_chno = refe[1]
+        return mail,prof_chno
+
     def check_cham_no_i_REFE(self, checker):
         if not self.exists() : return
-        lnom = self.REFE.get()
+        if checker.names.has_key(self.REFE): return
+        
+        mail, prof_chno = self.u_refe()
 
         # faut-il vérifier le sd_maillage de chaque sd_cham_no ?   AJACOT_PB
         #  - cela risque de couter cher
         #  - cela pose un problème "import circulaire" avec sd_maillage -> sd_cham_no => import ici
         from SD.sd_maillage import sd_maillage
-        sd2 = sd_maillage(lnom[0])
+        sd2 = sd_maillage(mail)
         sd2.check(checker)
 
-        if lnom[1].strip() :
-            if checker.names.has_key(lnom[1][:14]+'.NUME.PRNO'):  return
-            sd2 = sd_prof_chno(lnom[1]) ; sd2.check(checker)
+        if prof_chno.strip() :
+            if checker.names.has_key(prof_chno[:14]+'.NUME.PRNO'):  return
+            sd2 = sd_prof_chno(prof_chno)
+            sd2.check(checker)
 
-
+    def check_cham_no_DESC(self, checker):
+        if not self.exists(): return
+        if checker.names.has_key(self.DESC): return
+        
+        gd, num = self.u_desc()
+        if (num < 0):
+           nb_ec = sdu_nb_ec(gd)
+           assert self.DESC.lonmax == 2 + nb_ec
+        else:
+           assert self.DESC.lonmax == 2
+           
+        

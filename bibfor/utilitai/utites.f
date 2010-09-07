@@ -7,7 +7,7 @@
       COMPLEX*16                          VALC,REFC(NBREF)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 06/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,15 +108,32 @@ C
          ENDIF
 
          CALL UTCOVT('R',TVALR,TVALI,TERRR,RELA,TCHVAL,TCHERR)
-         IF(LXLGUT(TCHVAL(2)).LT.17)THEN
-            WRITE(IFIC,1616)(LIGN2(I), I=1,NL)
-            WRITE(IFIC,5616)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
+         
+         NL1=LXLGUT(TCHVAL(1))
+         NL2=LXLGUT(TCHVAL(2))
+       
+         IF(NL1.LT.17)THEN
+           IF(NL2.LT.17)THEN
+              WRITE(IFIC,1616)(LIGN2(I), I=1,NL)
+              WRITE(IFIC,5616)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
 
-         ELSE
-            WRITE(IFIC,2424)(LIGN2(I), I=1,NL)
-            WRITE(IFIC,6424)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
+           ELSE
+              WRITE(IFIC,1624)(LIGN2(I), I=1,NL)
+              WRITE(IFIC,5624)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
+           ENDIF
+         ELSE
+           IF(NL2.LT.17)THEN
+              WRITE(IFIC,2416)(LIGN2(I), I=1,NL)
+              WRITE(IFIC,6416)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
+     &                      TCHERR(1),TCHERR(2)
+
+           ELSE
+              WRITE(IFIC,2424)(LIGN2(I), I=1,NL)
+              WRITE(IFIC,6424)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
+     &                      TCHERR(1),TCHERR(2)
+           ENDIF
          ENDIF       
 C
 C-------------------
@@ -164,15 +181,33 @@ C
          ENDIF
 
          CALL UTCOVT('I',TVALR,TVALI,TERRR,RELA,TCHVAL,TCHERR)
-         IF(LXLGUT(TCHVAL(2)).LT.17)THEN
-            WRITE(IFIC,1616)(LIGN2(I), I=1,NL)
-            WRITE(IFIC,5616)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
+
+         NL1=LXLGUT(TCHVAL(1))
+         NL2=LXLGUT(TCHVAL(2))
+       
+         IF(NL1.LT.17)THEN
+           IF(NL2.LT.17)THEN
+              WRITE(IFIC,1616)(LIGN2(I), I=1,NL)
+              WRITE(IFIC,5616)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
+
+           ELSE
+              WRITE(IFIC,1624)(LIGN2(I), I=1,NL)
+              WRITE(IFIC,5624)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
+     &                      TCHERR(1),TCHERR(2)
+           ENDIF
          ELSE
-            WRITE(IFIC,2424)(LIGN2(I), I=1,NL)
-            WRITE(IFIC,6424)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
+           IF(NL2.LT.17)THEN
+              WRITE(IFIC,2416)(LIGN2(I), I=1,NL)
+              WRITE(IFIC,6416)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
      &                      TCHERR(1),TCHERR(2)
-         ENDIF
+
+           ELSE
+              WRITE(IFIC,2424)(LIGN2(I), I=1,NL)
+              WRITE(IFIC,6424)TESTOK,K120,K170,TCHVAL(1),TCHVAL(2),
+     &                      TCHERR(1),TCHERR(2)
+           ENDIF
+         ENDIF       
 C         
 C---------------------
 C --- CAS COMPLEXE ---
@@ -300,6 +335,10 @@ C
 C     IF (TESTOK.EQ.'NOOK') CALL ABORT()
 1616  FORMAT(5X,6(1X,A16))
 5616  FORMAT(A4,1X,6(1X,A16))
+1624  FORMAT(5X,3(1X,A16),1(1X,A24),2(1X,A16))
+5624  FORMAT(A4,1X,3(1X,A16),1(1X,A24),2(1X,A16))
+2416  FORMAT(5X,2(1X,A16),1(1X,A24),3(1X,A16))
+6416  FORMAT(A4,1X,2(1X,A16),1(1X,A24),3(1X,A16))
 2424  FORMAT(5X,2(1X,A16),2(1X,A24),2(1X,A16))
 6424  FORMAT(A4,1X,2(1X,A16),2(1X,A24),2(1X,A16))
 2436  FORMAT(5X,2(1X,A16),1X,A24,1X,A36,2(1X,A16))

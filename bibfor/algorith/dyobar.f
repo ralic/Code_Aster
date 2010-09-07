@@ -2,7 +2,7 @@
      &                  SDOBSE,SDDYNA,RESOCO,VALINC,LSUIVI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -456,7 +456,7 @@ C              VALR = VALR
                  NBSP=ZI(JCESD+5+4*(IMA-1)+1)
                  DO 60 IPT=1,NBPT
                    DO 70 ISP=1,NBSP
-                     CALL CESEXI('S',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
+                     CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
                      IF (IAD.GT.0) VALR=MIN(VALR,ZR(JCESV+IAD-1))
   70               CONTINUE
   60             CONTINUE
@@ -469,7 +469,7 @@ C              VALR = VALR
                  NBSP=ZI(JCESD+5+4*(IMA-1)+1)
                  DO 90 IPT=1,NBPT
                    DO 100 ISP=1,NBSP
-                     CALL CESEXI('S',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
+                     CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
                      IF (IAD.GT.0) VALR=MAX(VALR,ZR(JCESV+IAD-1))
   100              CONTINUE
   90             CONTINUE

@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C
 C  BUT:  CREATION D'UN MAILLAGE SQUELETTE POUR LA SOUS-STRUCTURATION
 C        CYCLIQUE
@@ -27,7 +27,6 @@ C-----------------------------------------------------------------------
 C
 C NOMRES   /I/: NOM UT DU RESULTAT OPERATEUR COURANT
 C NOMA    /I/: NOM DU MAILLAGE
-C RESCYC   /I/: NOMBRE DE SECTEUR
 C
 C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
@@ -54,7 +53,7 @@ C
       REAL*8       DEPI,R8DEPI
       CHARACTER*3  KNUSEC
       CHARACTER*6  KCHIFF
-      CHARACTER*8  K8BID,NOMRES,RESCYC,MAILLA,GRMCOU,NOMCOU
+      CHARACTER*8  K8BID,NOMRES,MAILLA,GRMCOU,NOMCOU
       CHARACTER*16 MCGRM,MOTFAC,MCMAIL
 C-----------------------------------------------------------------------
 C
@@ -207,7 +206,7 @@ C
      +            'DISPERSE','VARIABLE',NBSECT)
 C
 C
-      CALL WKVECT(NOMRES//'.COORDO    .REFE','G V K24',2,LDREF)
+      CALL WKVECT(NOMRES//'.COORDO    .REFE','G V K24',4,LDREF)
       CALL WKVECT(NOMRES//'.COORDO    .DESC','G V I',3,LDDESC)
       CALL JEECRA(NOMRES//'.COORDO    .DESC','DOCU',IBID,'CHNO')
       CALL WKVECT(NOMRES//'.COORDO    .VALE','G V R',3*NBNOTO,LDCOO)

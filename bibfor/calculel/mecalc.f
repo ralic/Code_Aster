@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 31/05/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 06/09/2010   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -574,7 +574,6 @@ C     MENAGE :
 C     -------
         IF (POUX.EQ.'OUI') CALL JEDETC('V','&&MECHPO',1)
         CALL DETRSD('CHAM_ELEM_S',CHELE2)
-        CALL JEDETC ('V',CHNOVA,1)
 
       END IF
    40 CONTINUE

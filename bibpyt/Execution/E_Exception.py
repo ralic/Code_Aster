@@ -1,4 +1,4 @@
-#@ MODIF E_Exception Execution  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Exception Execution  DATE 06/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,13 +38,25 @@ class error(Exception):
         self.valr = valr
 
     def __repr__(self):
-        """Return a simple representation."""
-        return str((self.id_message, self.valk, self.vali, self.valr))
+        """Return the representation of the exception formatted as <EXCEPTION>."""
+        return self.format('Z')
 
     def __str__(self):
-        """Return the related message of the exception with formatting."""
-        from Utilitai.Utmess import message_exception
-        return message_exception('Z', self)
+        """Return the representation of the exception formatted as <I>."""
+        return self.format('I')
+
+    def basic_format(self):
+        """Return a minimal representation."""
+        return str((self.id_message, self.valk, self.vali, self.valr))
+
+    def format(self, code):
+        """Return the related message of the exception with formatting
+        as `code` says."""
+        try:
+            from Utilitai.Utmess import message_exception
+            return message_exception(code, self)
+        except:
+            return self.basic_format()
 
 
 class FatalError(error):

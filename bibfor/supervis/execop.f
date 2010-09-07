@@ -3,7 +3,7 @@
       INTEGER            ICMD  , ICOND , IERTOT, IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 06/09/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C
 C --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 C
       IF ( ETAUSR().EQ.1 ) THEN
-         CALL U2MESS('S', 'SUPERVIS_39')
+         CALL SIGUSR()
       ENDIF
 
       CALL UTTRST(TPRES)

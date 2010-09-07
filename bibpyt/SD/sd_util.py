@@ -1,4 +1,4 @@
-#@ MODIF sd_util SD  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
+#@ MODIF sd_util SD  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,7 +176,11 @@ def sdu_licmp_gd(numgd) :
     nocmp=aster.getcolljev('&CATA.GD.NOMCMP')
     return nocmp[nomgd.ljust(8)]
 
-
+def sdu_nb_ec(numgd) :
+    # retourne le nombre d'entiers codés pour décrire les composantes de la grandeur (numgd)
+    assert numgd > 0 and numgd <1000 , numgd
+    descrigd=aster.getcolljev('&CATA.GD.DESCRIGD')
+    return descrigd[numgd-1][-1+3]
 
 #  3) Utilitaires pour la vérification de l'existence des objets :
 #  -----------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
       SUBROUTINE JEDETV()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/09/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 07/09/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C TOLE CRP_18 CRS_508 CRS_512 CRS_505
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
@@ -22,7 +22,6 @@ C ======================================================================
 C
 C DETRUIT TOUS LES OBJETS JEVEUX PRESENTS SUR LA BASE VOLATILE A
 C L'EXCEPTION DES OBJETS SYSTEME
-C
 C
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER          NIVIMP
@@ -60,6 +59,15 @@ C
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IFNIVO, NIVO
       COMMON /JVNIVO/  IFNIVO, NIVO
+      COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
+      INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
+     &                 KITLEC    , KITECR    ,             KIADM    ,
+     &                 IITLEC    , IITECR    , NITECR    , KMARQ
+      COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
+     &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
+     &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
+      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
      &               IDMARQ     , IDNOM      ,             IDLONG     ,
@@ -71,11 +79,19 @@ C     ------------------------------------------------------------------
       INTEGER          LIDBAS      , LIDEFF
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
       INTEGER          IC,J,ID(IDNUM),IDO,IADDI(2)
+      REAL*8           VALR(3)
       CHARACTER*1      CGENR
       CHARACTER*32     CRNOM,NOM32
 C DEB ------------------------------------------------------------------
 C
       IC = INDEX ( CLASSE , 'V')
+C
+      VALR(1)= 100.D0
+      VALR(2)= NBACCE(2*IC-1)*LONGBL(IC)*LOIS/1024.D0
+      VALR(3)= NBACCE(2*IC  )*LONGBL(IC)*LOIS/1024.D0
+      IF ( VALR(3) .GT. VALR(1)*VALR(2) .AND. VALR(2) .NE. 0) THEN 
+        CALL U2MESR ('A','JEVEUX1_64',3,VALR)
+      ENDIF
 C
       DO 150 IDO = LIDBAS+1 , NREMAX(IC)
         CRNOM = RNOM(JRNOM(IC)+IDO)

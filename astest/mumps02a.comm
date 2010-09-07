@@ -1,6 +1,6 @@
-# MODIF  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 06/09/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DU SOLVEUR MUMPS POUR UN MODELE DPLAN_INCO
-# mumps02a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
+# mumps02a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test RI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU11, INST       = 1.0,  NOM_CHAM   = 'DEPL',
                    ));
 
 RESU12=STAT_NON_LINE(MODELE=MO,     
-                   SOLVEUR=_F(METHODE='MUMPS',MIXER_PRECISION='OUI'),
+                   SOLVEUR=_F(METHODE='MUMPS',MIXER_PRECISION='OUI',),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2,),),
                    COMP_INCR=_F(RELATION='ELAS',),
@@ -96,10 +96,10 @@ RESU12=STAT_NON_LINE(MODELE=MO,
 
 TEST_RESU(RESU=(_F(RESULTAT   = RESU12, INST       = 1.0,  NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'C',  NOM_CMP    = 'DX',  VALE       = 1.,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',),
+                   PRECISION  = 5.E-7, REFERENCE  = 'ANALYTIQUE',),
                 _F(RESULTAT   = RESU12, INST       = 1.0, NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
-                   PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',)
+                   PRECISION  = 5.E-7, REFERENCE  = 'ANALYTIQUE',)
                    ));
 
 RESU13=STAT_NON_LINE(MODELE=MO,     

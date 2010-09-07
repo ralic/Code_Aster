@@ -1,7 +1,7 @@
       SUBROUTINE APETSR(ACTION,KPTSC,RSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETSR PETSC  DATE 23/08/2010   AUTEUR TARDIEU N.TARDIEU 
+!& MODIF APETSR PETSC  DATE 06/09/2010   AUTEUR TARDIEU N.TARDIEU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -317,9 +317,6 @@
         IF (PRECON .EQ. 'LDLT_SP') THEN
            SOLVBD=ZK24(JSLVK-1+3)
            CALL DETRSD('SOLVEUR',SOLVBD)
-           call VecDestroy(xlocal,ierr)
-           call VecDestroy(xglobal,ierr)
-           call VecScatterDestroy(xscatt,ierr)
         ENDIF
 
 
@@ -345,6 +342,13 @@
             NOMATS(KPTSC)=' '
             NOSOLS(KPTSC)=' '
             NONUS(KPTSC)=' '
+
+    !       -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
+            IF (PRECON .EQ. 'LDLT_SP') THEN
+               call VecDestroy(xlocal,ierr)
+               call VecDestroy(xglobal,ierr)
+               call VecScatterDestroy(xscatt,ierr)
+            ENDIF
 
          END IF
 

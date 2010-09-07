@@ -5,7 +5,7 @@
      &                  SDTIME,CONV  ,LDCCVG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/09/2010   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -240,10 +240,10 @@ C
         RHOM = 0.D0
         FM   = F0
       ELSEIF (METHOD(7).EQ.'MIXTE') THEN
-        IF (F0.LE.0) THEN
-          SENS = 1
+        IF (F0.LE.0.D0) THEN
+          SENS = 1.D0
         ELSE
-          SENS = -1
+          SENS = -1.D0
         ENDIF 
         CALL ZBINIT(SENS*F0,PARMUL,DIMMEM,MEM   )
         RHOOPT = 1.D0

@@ -2,7 +2,7 @@
      &                   ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,22 +47,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER          NBMODE,NBSAUV,IERD,INUMG,LDLIM,
-     &                 IMODE,IER,JREFE,IBID,LVALE,J1REFE,I,J,
-     &                 LDCONL,IBLO,JREFA
+      INTEGER          NBMODE,NBSAUV,LDLIM,
+     &                 IMODE,IER,IBID,LVALE,I,
+     &                 JREFA
       LOGICAL          LREFE,ZCMPLX
-      CHARACTER*8      RESU1,RESU2,CBID,MATGEN,K8B,BASEMO,TYP
+      CHARACTER*8      RESU1,RESU2,MATGEN,K8B,BASEMO,TYP
       CHARACTER*14     NUGENE
-      CHARACTER*16     NOMCMD
       CHARACTER*19     CHAMGE
-      CHARACTER*24     RAIDE
       REAL*8           VECPR8(NBMODE,*)
       COMPLEX*16       VECPC8(NBMODE,*)
 C
       INTEGER          NBMAX, IPAR, IPAR1, IPAR2
       PARAMETER        (NBMAX=50)
       CHARACTER*24     KPAR(NBMAX)
-      CHARACTER*32     JEXNUM
 
       CALL JEMARQ()
 
@@ -97,6 +94,9 @@ C        --- VECTEUR PROPRE ---
           ELSE
             CALL VTCREM (CHAMGE, MATGEN, 'G', 'C' )
           ENDIF
+C GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
+C DE TAILLE 2 ET NON 4 COMME UN CHAM_NO
+          CALL JUVECA (CHAMGE//'.REFE',2)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF

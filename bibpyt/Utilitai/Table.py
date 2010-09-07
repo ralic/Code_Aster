@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 06/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -565,9 +565,7 @@ class Table(TableBase):
          # nom du paramètre et type si K*
          d={ 'PARA' : self.para[i], }
          typ=self.type[i]
-         if typ==None:
-            UTMESS('F', 'TABLE0_31', valk=self.para[i])
-         elif typ[0]=='K':
+         if typ[0]=='K':
             mc='LISTE_K'
             if not typ in ('K8', 'K16', 'K24'):
                UTMESS('A','TABLE0_32', valk=(self.para[i],Kdef))
@@ -577,6 +575,8 @@ class Table(TableBase):
             mc='LISTE_I'
          elif typ=='R':
             mc='LISTE_R'
+         else:
+            UTMESS('F', 'TABLE0_31', valk=self.para[i])
          # valeurs sans trou / avec trou
          vals=getattr(self, self.para[i]).values()
          if typ == 'R':

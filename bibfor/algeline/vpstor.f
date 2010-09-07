@@ -10,7 +10,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGELINE  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C     ------------------------------------------------------------------
       INTEGER       VALI(3),JPARA
       INTEGER       NMIN1, KMODE, NORDR, IBID, I, LADPA, LMODE, LVALE
       INTEGER       INDK24, NBPAST, IRANG,IRET,JMODG,JMACR,JBASM,JRAID
-      INTEGER       JMOD2,JMODL,JMATE,JCARA,JLIME,JMERI,LTYBA
+      INTEGER       JMOD2,JLIME,JMERI,LTYBA
       PARAMETER    ( NBPAST = 18 )
       CHARACTER*8   RES ,K8B, RAIDE, MODELE, CHMAT, CARAEL
       CHARACTER*16  TYPCON, NOMCMD, NOSY
@@ -107,7 +107,7 @@ C On teste l'existence du REFD
         CALL JEVEUO(REFD,'L',LTYBA)
         TYPEBA=ZK24(LTYBA+6)
         IF (TYPEBA(1:1).NE.' ') THEN
-          LBASM=.TRUE.     
+          LBASM=.TRUE.
         ENDIF
         IF(LBASM)THEN
            LNUME = .TRUE.
@@ -278,6 +278,9 @@ C        --- VECTEUR PROPRE ---
         ENDIF
         IF (TYPCON.EQ.'MODE_GENE' .OR. TYPCON.EQ.'HARM_GENE') THEN
            CALL JEECRA (CHAMNO//'.DESC','DOCU',IBID,'VGEN')
+C GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
+C DE TAILLE 2 ET NON 4 COMME UN CHAM_NO
+           CALL JUVECA (CHAMNO//'.REFE',2)
         ENDIF
         CALL JEVEUO (CHAMNO//'.VALE', 'E', LVALE )
         IF (TYPE(1:1) .EQ. 'R' ) THEN

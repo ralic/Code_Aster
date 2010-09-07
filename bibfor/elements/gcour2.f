@@ -4,7 +4,7 @@
        IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C     ------------------------------------------------------------------
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      CHARACTER*32       JEXNOM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -76,21 +76,20 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*1 K1BID
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*24      TRAV1,TRAV2,TRAV3,OBJOR,OBJEX,CHFOND,REPK
-      CHARACTER*24      OBJ3,NORM,STOK1,STOK2,STOK3,NUMGAM,CHAMNO
+      CHARACTER*24      OBJ3,NORM,NUMGAM,CHAMNO
       CHARACTER*24      STOK4,DIRE4,COORN,NOMNO,DIRE5,INDICG
       CHARACTER*24      ABSGAM
       CHARACTER*16      K16B,NOMCMD
       CHARACTER*8       CHBID, FOND, RESU, NOMA, NOMO,K8B
       CHARACTER*6       KIORD
 C
-      INTEGER           NBNOEU,IADRT1,IADRT2,IADRT3,IDIREC,ITHETA
-      INTEGER           IADR8,IM2,IN2,IADRCO,JMIN,IELINF,IADNUM
-      INTEGER           IADRNO,NNOEU,NUM,INDIC,IERD,IADRTT,NBRE,NBR8
-      INTEGER           IRET,NUMA,NDIMTE,IDEEQ,NBDIR,IAORIG
+      INTEGER           NBNOEU,IADRT1,IADRT2,IADRT3,ITHETA
+      INTEGER           IN2,IADRCO,JMIN,IELINF,IADNUM
+      INTEGER           IADRNO,NUM,INDIC,IERD,IADRTT,NBRE,NBR8
+      INTEGER           IRET,NUMA,NDIMTE,IAORIG
       INTEGER           ITANEX,ITANOR,NBNOS,IADABS,KNO,IAEXTR,JNORM
 C
       REAL*8            DIRX,DIRY,DIRZ,XI1,YI1,ZI1,XJ1,YJ1,ZJ1
@@ -99,7 +98,7 @@ C
       REAL*8            RII,RSI,ALPHA,VALX,VALY,VALZ,NORM2,PSCA
       REAL*8            NORME,VECX,VECY,VECZ,R8MAEM,XL,TMPV(3)
 C
-      LOGICAL           THLAGR,SUIV,MILIEU,CONNEX,THLAG2,PAIR
+      LOGICAL           THLAGR,MILIEU,CONNEX,THLAG2,PAIR
 C
       CALL JEMARQ()
 
@@ -323,7 +322,7 @@ C
 C
 C  .REFE
         CHAMNO(20:24) = '.REFE'
-        CALL WKVECT(CHAMNO,'V V K24',2,IREFE)
+        CALL WKVECT(CHAMNO,'V V K24',4,IREFE)
         ZK24(IREFE+1-1) = NOMA//'                '
 C
 C  .VALE
@@ -405,7 +404,7 @@ C
                 ZR(IADRTT-1) = 0.D0
               ENDIF
             ENDIF
-            IF ((K .EQ. 1) .AND. (CONNEX))  THEN
+            IF ((K .EQ. 1) .AND. CONNEX)  THEN
               IADRTT = IADRT3 + (K-1)*NBNOEU + NBNOEU - 1
               IF (MILIEU) THEN
                 S0 = ZR(IADABS+NBNOEU-1)
@@ -420,7 +419,7 @@ C
                 ZR(IADRTT-1) = (ZR(IADABS+NBNOEU-1-1)-S1)/(S0-S1)
               ENDIF
             ENDIF
-            IF ((K .EQ. NDIMTE) .AND. (CONNEX))  THEN
+            IF ((K .EQ. NDIMTE) .AND. CONNEX)  THEN
               IADRTT = IADRT3 + (K-1)*NBNOEU + 1 - 1
               IF (MILIEU) THEN
                 S0 = ZR(IADABS+1-1)
@@ -486,7 +485,7 @@ C
             ZR(ITHETA+(NUM-1)*3+1-1) = ZR(IADRTT)*ZR(IN2+(K-1)*3+1-1)
             ZR(ITHETA+(NUM-1)*3+2-1) = ZR(IADRTT)*ZR(IN2+(K-1)*3+2-1)
             ZR(ITHETA+(NUM-1)*3+3-1) = ZR(IADRTT)*ZR(IN2+(K-1)*3+3-1)
-            IF ((CONNEX).AND.(K.EQ.1)) THEN
+            IF (CONNEX.AND.(K.EQ.1)) THEN
               NUM    = ZI(IADNUM+NDIMTE-1)
               IADRTT = IADRT3 + (K-1)*NBNOEU + NDIMTE - 1
               ZR(IADRTT) = 1.D0
@@ -494,7 +493,7 @@ C
             ZR(ITHETA+(NUM-1)*3+2-1)=ZR(IADRTT)*ZR(IN2+(NDIMTE-1)*3+2-1)
             ZR(ITHETA+(NUM-1)*3+3-1)=ZR(IADRTT)*ZR(IN2+(NDIMTE-1)*3+3-1)
             ENDIF
-            IF ((CONNEX).AND.(K.EQ.NDIMTE)) THEN
+            IF (CONNEX.AND.(K.EQ.NDIMTE)) THEN
               NUM    = ZI(IADNUM+1-1)
               IADRTT = IADRT3 + (K-1)*NBNOEU + 1 - 1
               ZR(IADRTT) = 1.D0
